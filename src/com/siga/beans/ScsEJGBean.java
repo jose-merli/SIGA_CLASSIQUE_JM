@@ -93,8 +93,7 @@ public class ScsEJGBean extends MasterBean{
 	private Integer idTipoenCalidad;
     private Integer calidadidinstitucion;
     private String docResolucion;
-	
-
+    private String NIG;
 	
 	/*
 	 *  Nombre de Tabla*/
@@ -179,6 +178,7 @@ public class ScsEJGBean extends MasterBean{
     static public final String C_DOCRESOLUCION   = "DOCRESOLUCION";
     static public final String C_FECHACREACION  = "FECHACREACION";
     static public final String C_USUCREACION   = "USUCREACION";
+    static public final String C_NIG   = "NIG";
 	
 	
 		
@@ -888,6 +888,13 @@ public class ScsEJGBean extends MasterBean{
 	}
 	public void setDocResolucion(String docResolucion) {
 		this.docResolucion = docResolucion;
+	}
+	
+	public String getNIG() {
+		return NIG;
+	}
+	public void setNIG(String nIG) {
+		NIG = nIG;
 	}
 
 

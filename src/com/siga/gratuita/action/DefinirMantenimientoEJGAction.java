@@ -381,7 +381,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 								   ScsEJGBean.C_FECHADESIGPROC,             ScsEJGBean.C_PRECEPTIVO,
 								   ScsEJGBean.C_SITUACION,                  ScsEJGBean.C_IDRENUNCIA,
 								   ScsEJGBean.C_IDTIPOENCALIDAD,            ScsEJGBean.C_CALIDADIDINSTITUCION,
-								   ScsEJGBean.C_NUMERODESIGNAPROC};
+								   ScsEJGBean.C_NUMERODESIGNAPROC, 			ScsEJGBean.C_NIG};
 
 				// Campos a modificar
 				hash = miForm.getDatos();
@@ -472,6 +472,13 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 					UtilidadesHash.set(hash, ScsEJGBean.C_IDTIPOENCALIDAD, "");
 					UtilidadesHash.set(hash, ScsEJGBean.C_CALIDADIDINSTITUCION,"");
 					UtilidadesHash.set(hash, ScsEJGBean.C_CALIDAD,"");	
+				}
+				
+				String nig= miForm.getNIG();
+				if (nig != null && !nig.equals("")) {
+					UtilidadesHash.set(hash, ScsEJGBean.C_NIG,nig);
+				}else{
+					UtilidadesHash.set(hash, ScsEJGBean.C_NIG, "");
 				}
 				
 				tx.begin();

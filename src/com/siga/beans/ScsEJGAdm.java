@@ -352,7 +352,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							ScsEJGBean.C_SITUACION,					ScsEJGBean.C_IDTIPOENCALIDAD,
 							ScsEJGBean.C_CALIDADIDINSTITUCION,		ScsEJGBean.C_NUMERODESIGNAPROC,
 							ScsEJGBean.C_DOCRESOLUCION,				ScsEJGBean.C_USUCREACION,
-							ScsEJGBean.C_FECHACREACION};
+							ScsEJGBean.C_FECHACREACION,				ScsEJGBean.C_NIG};
 		return campos;
 	}
 	
@@ -445,6 +445,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			bean.setCalidadidinstitucion(UtilidadesHash.getInteger(hash,ScsEJGBean.C_CALIDADIDINSTITUCION));
 			bean.setNumeroDesignaProc(UtilidadesHash.getString(hash,ScsEJGBean.C_NUMERODESIGNAPROC));
 			bean.setDocResolucion(UtilidadesHash.getString(hash,ScsEJGBean.C_DOCRESOLUCION));
+			bean.setNIG(UtilidadesHash.getString(hash,ScsEJGBean.C_NIG));
 		}
 		catch (Exception e){
 			throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR HASHTABLE A BEAN");
@@ -532,6 +533,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,ScsEJGBean.C_CALIDADIDINSTITUCION, b.getCalidadidinstitucion());
 			UtilidadesHash.set(htData,ScsEJGBean.C_NUMERODESIGNAPROC, b.getNumeroDesignaProc());
 			UtilidadesHash.set(htData,ScsEJGBean.C_DOCRESOLUCION, b.getDocResolucion());
+			UtilidadesHash.set(htData,ScsEJGBean.C_NIG, b.getNIG());
 		}
 		catch (Exception e){
 			 throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR EL BEAN A HASHTABLE");

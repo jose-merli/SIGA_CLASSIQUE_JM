@@ -57,7 +57,7 @@
    	String numeroDiligenciaAsi    = "",numeroProcedimientoAsi = "", juzgadoAsi="", juzgadoInstitucionAsi="", comisariaAsi="", comisariaInstitucionAsi="";
    	String idPretension    = "", idPretensionInstitucion="",pretension="", idPreceptivo="", idSituacion="", numeroDesignaProc="";
    	
-   	String idRenuncia="";
+   	String idRenuncia="", nig = "";
    	String idInstintucion="";
    	String calidadidinstitucion="";
 	Hashtable hash = (Hashtable)ses.getAttribute("DATABACKUP");
@@ -83,6 +83,7 @@
 //		if (hash.containsKey("CALIDAD")) calidad					  			=  hash.get("CALIDAD").toString();
 		if (hash.containsKey("IDTIPOENCALIDAD")) idcalidad					  			=  hash.get("IDTIPOENCALIDAD").toString();
 		if (hash.containsKey(ScsEJGBean.C_CALIDADIDINSTITUCION)) calidadidinstitucion	=  hash.get(ScsEJGBean.C_CALIDADIDINSTITUCION).toString();
+		if (hash.containsKey(ScsEJGBean.C_NIG)) nig	=  									hash.get(ScsEJGBean.C_NIG).toString();
 		
 		if (hash.containsKey(ScsEJGBean.C_NUMERODILIGENCIA)) numeroDiligenciaAsi					  			=  hash.get(ScsEJGBean.C_NUMERODILIGENCIA).toString();
 		if (hash.containsKey(ScsEJGBean.C_NUMEROPROCEDIMIENTO)) numeroProcedimientoAsi					  			=  hash.get(ScsEJGBean.C_NUMEROPROCEDIMIENTO).toString();
@@ -241,6 +242,7 @@
 		<html:hidden property = "fechaProc" value=""/>
 		<html:hidden property = "numeroDesignaProc" value="<%=numeroDesignaProc%>"/>
 		<html:hidden property = "idRenuncia" value="<%=idRenuncia%>"/>
+		<html:hidden property = "NIG" value="<%=nig%>"/>
 	</html:form>
 	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="submitArea" type=""  style="display:none">
 		<input type="hidden" name="actionModal" value="">
@@ -426,6 +428,18 @@
 								<siga:ComboBD nombre="pretensiones2" tipo="comboPretensiones" ancho="345" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="true"/>           	   
 							<%}%>	
 							
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="4" class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/>
+						</td>
+						<td colspan="20"> 
+							<%if(modopestanha.equals("editar")){%>
+							 	<input name="nig2" size="28" type="text" value="<%=nig%>" class="<%=estilo%>" maxlength="50"/>
+							<%}else{%>
+								<input name="nig2" size="28" type="text" value="<%=nig%>" class="boxConsulta"/>
+							<%}%>						
 						</td>
 					</tr>
 					
@@ -620,6 +634,7 @@
 				document.DefinirMantenimientoEJGForm.fechaProc.value				=	document.getElementById("fechaProc1").value;				
 				document.DefinirMantenimientoEJGForm.idRenuncia.value               =   document.getElementById("renuncia").value;
 				document.DefinirMantenimientoEJGForm.numeroDesignaProc.value        =   document.getElementById("numDesignaProc").value;
+				document.DefinirMantenimientoEJGForm.NIG.value        				=   document.getElementById("nig2").value;
 
 //				alert("observaciones->"+document.DefinirMantenimientoEJGForm.observaciones.value+"<observaciones2->"+document.getElementById("observaciones").value);							
 //				alert("Procedimiento->"+document.DefinirMantenimientoEJGForm.numeroProcedimiento.value+"<Procedimiento2->"+document.getElementById("numeroProcedimiento").value);											

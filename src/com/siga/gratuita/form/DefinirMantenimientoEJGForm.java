@@ -31,6 +31,7 @@ import com.siga.general.MasterForm;
 	String idRenuncia="";
 	String idTipoenCalidad="";
 	String calidadIdinstitucion="";
+	String NIG = "";
 
 	
 
@@ -365,6 +366,15 @@ import com.siga.general.MasterForm;
 	public String getNumeroDesignaProc () {
 		return this.datos.get(ScsEJGBean.C_NUMERODESIGNAPROC).toString();
 	}
+
+	public String getNIG() {
+		return NIG;
+	}
+
+	public void setNIG(String nIG) {
+		NIG = nIG;
+	}
+	
 	
 	
 }
