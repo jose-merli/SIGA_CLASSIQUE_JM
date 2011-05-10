@@ -1775,9 +1775,12 @@ public class CenClienteAdm extends MasterBeanAdmVisible
        		sqlClientes += " having sum (decode("+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_SITUACIONRESIDENTE+",'1',1,'S',1,0))>1";
        	} 
        }
-       sqlClientes+=" group by "+CenPersonaBean.C_NIFCIF+", "+CenPersonaBean.C_NOMBRE+", "+CenPersonaBean.C_APELLIDOS1+", "+
-	                  CenPersonaBean.C_APELLIDOS2+", "+CenPersonaBean.C_FECHANACIMIENTO+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+", "+
-	                  CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+", "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOAPARECERREDABOGACIA;
+       sqlClientes+=" group by "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+", "+
+	                  CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_FECHANACIMIENTO+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+", "+
+	                  CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+", "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOAPARECERREDABOGACIA+", "+
+	                  CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_DOMICILIO+", "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_CODIGOPOSTAL+", "+ 
+	                  CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_NOMBRE+", "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_POBLACIONEXTRANJERA;
+	                 
        }
       
        sqlClientes+= " ORDER BY "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE;
