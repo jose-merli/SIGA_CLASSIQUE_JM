@@ -1870,7 +1870,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 
 			if (defendidos != null && defendidos.size() > 0) {
 				Hashtable htPrimerDefendido = (Hashtable) defendidos.get(0);
-				if (((String) htPrimerDefendido.get("COUNT_EJG")).equals("1")) {
+				int ejgs = Integer.parseInt((String)htPrimerDefendido.get("COUNT_EJG"));
+				if (ejgs>=1) {
 					Vector datos = getDatosEJGDefendidoDesigna(idInstitucion, numero, idTurno, anio);
 					// Recorrer los defendidos
 					for (int i = 0; i < defendidos.size(); i++) {
@@ -1982,7 +1983,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" POB.NOMBRE AS POBLACION_DEFENDIDO, ");
 		sql.append(" PROV.NOMBRE AS PROVINCIA_DEFENDIDO, ");
 		sql.append(" f_siga_getrecurso(PAIS.NOMBRE, 1) AS NOMBRE_PAIS, ");
-		sql.append(" perjg.OBSERVACIONES AS OBS_INTERESADO, ");
 		sql.append(" perjg.OBSERVACIONES AS OBS_DEFENDIDO, ");
 		sql.append(" (SELECT TEL2.NUMEROTELEFONO ");
 		sql.append(" FROM SCS_TELEFONOSPERSONA TEL2 ");
@@ -2003,7 +2003,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 
 		sql.append(" f_siga_getrecurso(CAL.DESCRIPCION, 1) AS CALIDAD, ");
 		sql.append(" CAL.IDTIPOENCALIDAD, ");
-		sql.append(" f_siga_getrecurso(CAL.DESCRIPCION, 1) AS CALIDADIDINSTITUCION ");
 
 		sql.append(" FROM SCS_DEFENDIDOSDESIGNA DEF, ");
 		sql.append(" SCS_PERSONAJG         PERJG, ");
@@ -2058,7 +2057,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" POB.NOMBRE AS POBLACION_DEFENDIDO, ");
 		sql.append(" PROV.NOMBRE AS PROVINCIA_DEFENDIDO, ");
 		sql.append(" f_siga_getrecurso(PAIS.NOMBRE, 1) AS NOMBRE_PAIS, ");
-		sql.append(" perjg.OBSERVACIONES AS OBS_INTERESADO, ");
 		sql.append(" perjg.OBSERVACIONES AS OBS_DEFENDIDO, ");
 		sql.append(" (SELECT TEL2.NUMEROTELEFONO ");
 		sql.append(" FROM SCS_TELEFONOSPERSONA TEL2 ");
@@ -2074,9 +2072,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" ejg.ANIO || '/' || ejg.NUMEJG AS NUMERO_EJG, ");
 		sql.append(" to_char(ejg.FECHARESOLUCIONCAJG, 'dd/mm/yyyy') AS FECHARESOLUCIONCAJG, ");
 
-		sql.append(" f_siga_getrecurso(CAL.DESCRIPCION, 1) AS CALIDAD, ");
+		sql.append(" f_siga_getrecurso(CAL.DESCRIPCION, 1) AS CALIDAD_DEFENDIDO, ");
 		sql.append(" CAL.IDTIPOENCALIDAD, ");
-		sql.append(" f_siga_getrecurso(CAL.DESCRIPCION, 1) AS CALIDADIDINSTITUCION ");
 
 		sql.append(" FROM SCS_EJG          ejg, ");
 		sql.append(" Scs_Ejgdesigna        des, ");
