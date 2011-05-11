@@ -1725,7 +1725,33 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 							vSalida.add(clone);
 						}
 					}else{
-						registro.put("LISTA_TELEFONOS_INTERESADO", "");					
+						if (idiomaletrado != null && !idiomaletrado.equals("")) {
+							idioma = idiomaletrado;
+						}
+						registro.putAll(getregistrodatosDesigna(registro, idInstitucion, idioma));
+						switch (Integer.parseInt(idioma)) {
+							case 1:  idiomainforme="ES"; break;
+							case 2:  idiomainforme="CA"; break;
+							case 3:  idiomainforme="EU"; break;
+							case 4:  idiomainforme="GL"; break;
+						}
+						registro.put("CODIGOLENGUAJE", idiomainforme);	
+						registro.put("LISTA_TELEFONOS_INTERESADO", "");		
+						registro.put("LISTA_TELEFONOS_INTERESADO", "");
+						registro.put("NUMERO_EJG", "");
+						registro.put("NIF_DEFENDIDO", "");
+						registro.put("NOMBRE_DEFENDIDO", "");
+						registro.put("DOMICILIO_DEFENDIDO", "");
+						registro.put("CP_DEFENDIDO", "");
+						registro.put("POBLACION_DEFENDIDO", "");
+						registro.put("PROVINCIA_DEFENDIDO", "");
+						registro.put("TELEFONO1_DEFENDIDO", "");
+						registro.put("SEXO_DEFENDIDO", "");
+						registro.put("IDLENGUAJE_DEFENDIDO", "");
+						registro.put("CALIDAD_DEFENDIDO", "");
+						registro.put("OBS_DEFENDIDO", "");		
+						registro.put("O_A_DEFENDIDO", "");
+						registro.put("EL_LA_DEFENDIDO", "");
 						vSalida.add(registro);
 					}	
 				
@@ -1753,12 +1779,12 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					registro.put("SEXO_DEFENDIDO", "");
 					registro.put("IDLENGUAJE_DEFENDIDO", "");
 					registro.put("CALIDAD_DEFENDIDO", "");
-					registro.put("OBS_DEFENDIDO", "");				
+					registro.put("OBS_DEFENDIDO", "");		
+					registro.put("O_A_DEFENDIDO", "");
+					registro.put("EL_LA_DEFENDIDO", "");
 					vSalida.add(registro);
 				}		
-		}
-			
-
+			}
 		}
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al obtener la informacion en getDatosSalidaOficio");
@@ -1991,6 +2017,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" AND ROWNUM < 2) AS TELEFONO1_DEFENDIDO, ");
 		sql.append(" PERJG.NIF AS NIF_DEFENDIDO, ");
 		sql.append(" DECODE(PERJG.SEXO,  null,  null,  'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_DEFENDIDO, ");
+		sql.append(" DECODE(PERJG.SEXO, 'H','o','a') AS O_A_DEFENDIDO, ");
+		sql.append(" DECODE(PERJG.SEXO, 'H','el','la') AS EL_LA_DEFENDIDO, ");
 		sql.append(" PERJG.IDLENGUAJE AS IDLENGUAJE_DEFENDIDO, ");		
 		sql.append(" 0 as ANIOEJG,  ");
 		sql.append(" 0 AS NUMERO_EJG, ");
@@ -2039,7 +2067,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	
 	public Vector getSolicitantesEJGDesigna(String idInstitucion, String numero, String idTurno, String anio, String idPersonaJG) {
 
-		HelperInformesAdm helperInformes = new HelperInformesAdm();
 		Vector solicitantes = null;
 		Hashtable h = new Hashtable();
 		h.put(new Integer(1), idInstitucion);
@@ -2113,7 +2140,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		}
 
 		try {
-			solicitantes = helperInformes.ejecutaConsultaBind(sql.toString(), h);
+			solicitantes = this.ejecutaSelectBind(sql.toString(), h);
 		} catch (ClsExceptions e) {
 			e.printStackTrace();
 		}
@@ -2610,15 +2637,15 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					if(idLetradoEjg!=null && !idLetradoEjg.trim().equalsIgnoreCase("")){
 							Vtramitador=ejgadm.getColegiadoSalida(idInstitucion,idLetradoEjg,"TRAMITADOR_EGJ");							
 							for (int l = 0; l < Vtramitador.size(); l++) {							  
-									Hashtable registrotramitador = (Hashtable) Vtramitador.get(l);
-									String nombretramitador = (String)registrotramitador.get("NOMBRE_TRAMITADOR_EGJ");									
-									if(nombretramitador!=null && !nombretramitador.trim().equalsIgnoreCase("")){										
-										if (((aniocajg==null || aniocajg.equals(""))&&(numerocajg==null || numerocajg.equals("")))||(tamanio==1)){
-											Listadotramitador+=","+nombretramitador;
-										}else{	
-											Listadotramitador+=","+nombretramitador+"("+aniocajg+"/"+numerocajg+")";
-											}
-									 }
+								Hashtable registrotramitador = (Hashtable) Vtramitador.get(l);
+								String nombretramitador = (String)registrotramitador.get("NOMBRE_TRAMITADOR_EGJ");									
+								if(nombretramitador!=null && !nombretramitador.trim().equalsIgnoreCase("")){										
+									if (((aniocajg==null || aniocajg.equals(""))&&(numerocajg==null || numerocajg.equals("")))||(tamanio==1)){
+										Listadotramitador+=","+nombretramitador;
+									}else{	
+										Listadotramitador+=","+nombretramitador+"("+aniocajg+"/"+numerocajg+")";
+										}
+								 }
 						   }							
 				    }
 				}//FIN FOR				
