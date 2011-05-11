@@ -576,6 +576,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPEXCESIVO + "," +
 			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERSONA + "," +
 			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + "," +
+			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPAGOSJG + "," +
 			"F_SIGA_ESTADOSABONO("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") AS ESTADO" + "," +
 			"PKG_SIGA_TOTALESABONO.TOTALNETO("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") AS TOTALNETO" + "," +
 			"PKG_SIGA_TOTALESABONO.TOTALIVA("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") AS TOTALIVA" + "," +

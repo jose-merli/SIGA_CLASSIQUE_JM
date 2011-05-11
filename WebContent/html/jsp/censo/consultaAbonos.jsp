@@ -11,7 +11,7 @@
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
-
+<%@ page import="com.siga.tlds.FilaExtElement"%>
 <!-- TAGLIBS -->
 <%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
@@ -149,7 +149,7 @@
 		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		<script>
-			function incluirRegBajaLogica(o) {
+	function incluirRegBajaLogica(o) {
 			if (o.checked) {
 			document.AbonosClienteForm.incluirRegistrosConBajaLogica.value = "s";
 			} else {
@@ -158,7 +158,33 @@
 			document.AbonosClienteForm.modo.value = "abrir";
 			
 			document.AbonosClienteForm.submit();
-		}		
+		}
+	function comunicar(fila)
+	{
+		sub();
+	var idPers = "idPersona"+fila;
+	var idPago = "idPago"+fila;
+	var idInst = "oculto"+fila+"_2";
+	idPersona = document.getElementById(idPers).value;
+	idPago = document.getElementById(idPago).value;
+	idInstitucion =  document.getElementById(idInst).value;
+	datos = +idInstitucion +","+idPago+","+idPersona +"#";
+	
+	var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
+	formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucion%>'>"));
+	   formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
+	   formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='CPAGO'>"));
+	   formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
+	   formu.appendChild(document.createElement("<input type='hidden' name='tablaDatosDinamicosD' value=''>"));
+	   formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
+	   document.appendChild(formu);
+	   formu.tablaDatosDinamicosD.value = datos;
+	   formu.submit();
+ 
+
+}
+
+						
 		</script>
 	
 		<!-- INICIO: TITULO Y LOCALIZACION -->
@@ -241,17 +267,33 @@
 							int recordNumber=1;
 							while (en.hasMoreElements())
 							{
-				            	Row row = (Row) en.nextElement();%>
+
+								Row row = (Row) en.nextElement();
+				            	String s = row.getString(FacAbonoBean.C_IDPAGOSJG);
+				            	FilaExtElement[] elemento= null;
+				            	if(s!=null && !s.trim().equals("")){
+				            		elemento = new FilaExtElement[1];
+									elemento[0] = new FilaExtElement("enviar", "comunicar", SIGAConstants.ACCESS_READ);
+				            	}
+								
+								%>
+
 						        
 								<siga:FilaConIconos
 									  fila='<%=String.valueOf(recordNumber)%>'
-									  botones="C"
+									  botones="C" 
 									  visibleEdicion="no"
 									  visibleBorrado="no"
+									  pintarEspacio="no"
+									  elementos='<%=elemento%>'
 									  modo='<%=accion%>'
 									  clase="listaNonEdit"
 									  >
-									  
+									 <input type="hidden" name="idPersona<%="" + String.valueOf(recordNumber)%>"	
+									 		value="<%=row.getString(FacAbonoBean.C_IDPERSONA)%>">
+			
+									<input type="hidden" name="idPago<%="" + String.valueOf(recordNumber)%>"
+										value="<%=row.getString(FacAbonoBean.C_IDPAGOSJG)%>"> 
 									<td>
 										<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=row.getString(FacAbonoBean.C_IDABONO)%>">
 										<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=idInstitucion%>">
