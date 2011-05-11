@@ -1982,7 +1982,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" PERJG.CODIGOPOSTAL AS CP_DEFENDIDO, ");
 		sql.append(" POB.NOMBRE AS POBLACION_DEFENDIDO, ");
 		sql.append(" PROV.NOMBRE AS PROVINCIA_DEFENDIDO, ");
-		sql.append(" f_siga_getrecurso(PAIS.NOMBRE, 1) AS NOMBRE_PAIS, ");
+		sql.append(" PAIS.NOMBRE AS NOMBRE_PAIS, ");
 		sql.append(" perjg.OBSERVACIONES AS OBS_DEFENDIDO, ");
 		sql.append(" (SELECT TEL2.NUMEROTELEFONO ");
 		sql.append(" FROM SCS_TELEFONOSPERSONA TEL2 ");
@@ -1991,7 +1991,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" AND ROWNUM < 2) AS TELEFONO1_DEFENDIDO, ");
 		sql.append(" PERJG.NIF AS NIF_DEFENDIDO, ");
 		sql.append(" DECODE(PERJG.SEXO,  null,  null,  'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_DEFENDIDO, ");
-		sql.append(" PERJG.IDLENGUAJE AS IDLENGUAJE_DEFENDIDO, ");		sql.append(" 0 as ANIOEJG,  ");
+		sql.append(" PERJG.IDLENGUAJE AS IDLENGUAJE_DEFENDIDO, ");		
+		sql.append(" 0 as ANIOEJG,  ");
 		sql.append(" 0 AS NUMERO_EJG, ");
 		sql.append(" '' FECHARESOLUCIONCAJG, ");		
 		sql.append(" (SELECT COUNT(1) ");
@@ -2001,7 +2002,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" AND ejgdes.Aniodesigna = :3 ");
 		sql.append(" AND ejgdes.Numerodesigna = :4 ) COUNT_EJG, ");
 
-		sql.append(" f_siga_getrecurso(CAL.DESCRIPCION, 1) AS CALIDAD, ");
+		sql.append(" CAL.DESCRIPCION AS CALIDAD_DEFENDIDO, ");
 		sql.append(" CAL.IDTIPOENCALIDAD ");
 
 		sql.append(" FROM SCS_DEFENDIDOSDESIGNA DEF, ");
@@ -2056,7 +2057,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" PERJG.CODIGOPOSTAL AS CP_DEFENDIDO, ");
 		sql.append(" POB.NOMBRE AS POBLACION_DEFENDIDO, ");
 		sql.append(" PROV.NOMBRE AS PROVINCIA_DEFENDIDO, ");
-		sql.append(" f_siga_getrecurso(PAIS.NOMBRE, 1) AS NOMBRE_PAIS, ");
+		sql.append(" PAIS.NOMBRE AS NOMBRE_PAIS, ");
 		sql.append(" perjg.OBSERVACIONES AS OBS_DEFENDIDO, ");
 		sql.append(" (SELECT TEL2.NUMEROTELEFONO ");
 		sql.append(" FROM SCS_TELEFONOSPERSONA TEL2 ");
@@ -2071,8 +2072,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" ejg.anio ANIOEJG,  ");
 		sql.append(" ejg.ANIO || '/' || ejg.NUMEJG AS NUMERO_EJG, ");
 		sql.append(" to_char(ejg.FECHARESOLUCIONCAJG, 'dd/mm/yyyy') AS FECHARESOLUCIONCAJG, ");
-
-		sql.append(" f_siga_getrecurso(CAL.DESCRIPCION, 1) AS CALIDAD_DEFENDIDO, ");
+		sql.append(" CAL.DESCRIPCION AS CALIDAD_DEFENDIDO, ");
 		sql.append(" CAL.IDTIPOENCALIDAD ");
 
 		sql.append(" FROM SCS_EJG          ejg, ");
@@ -2889,7 +2889,17 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 								helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETRECURSO", "CALIDAD_DEFENDIDO"));
 							}else{
 								registro.put("CALIDAD_DEFENDIDO", "");
-							}						
+							}			
+							
+							String nombrePais="";
+							if((String)registro.get("NOMBRE_PAIS")!=null && !((String)registro.get("NOMBRE_PAIS")).trim().equals("")){
+								nombrePais=	(String)registro.get("NOMBRE_PAIS");
+								htCodigo.put(new Integer(1), nombrePais);
+								htCodigo.put(new Integer(2), idioma);
+								helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETRECURSO", "NOMBRE_PAIS"));
+							}else{
+								registro.put("NOMBRE_PAIS", "");
+							}
 							htCodigo = new Hashtable();
 							htCodigo.put(new Integer(1), idInstitucion);
 							htCodigo.put(new Integer(2), numeroDesigna);
