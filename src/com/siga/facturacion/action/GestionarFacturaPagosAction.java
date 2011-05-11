@@ -467,7 +467,7 @@ public class GestionarFacturaPagosAction extends MasterAction {
 			tx.commit();
 			
 			if(isTodasRenegociadas){
-				forward = exitoModal("facturacion.nuevoFichero.literal.procesoCorrecto",request);
+				forward = exitoModal("facturacion.renegociacionMasiva.literal.procesoCorrecto",request);
 				
 			}else{
 				forward=exitoModal("facturacion.renegociar.aviso.noTodasRenegociadas",request);
