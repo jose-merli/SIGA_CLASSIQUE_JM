@@ -1753,7 +1753,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					registro.put("SEXO_DEFENDIDO", "");
 					registro.put("IDLENGUAJE_DEFENDIDO", "");
 					registro.put("CALIDAD_DEFENDIDO", "");
-					registro.put("OBS_INTERESADO", "");				
+					registro.put("OBS_DEFENDIDO", "");				
 					vSalida.add(registro);
 				}		
 		}
