@@ -1598,10 +1598,10 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			   
 			
 			//añadimos la información sobre las direcciones del censo web
-			sqlClientes+= "AND "+ CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDPOBLACION+" = "+CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_IDPOBLACION +"(+)"+
-                  " AND "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA +
-                  " AND "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+
-                  " AND "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDDIRECCION+" = f_siga_getiddireccion_tipopre2("+idInstitucion+","+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+",3,null)";
+			sqlClientes+= " AND "+ CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDPOBLACION+" = "+CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_IDPOBLACION +"(+)"+
+                  " AND "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDPERSONA+"(+) = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA +
+                  " AND "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDINSTITUCION+"(+) = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+
+                  " AND "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDDIRECCION+"(+) = f_siga_getiddireccion_tipopre2("+idInstitucion+","+CenClienteBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+",3,null)";
                    
                   
 // 3

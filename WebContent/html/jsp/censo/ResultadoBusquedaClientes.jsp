@@ -581,7 +581,21 @@
 		<td><%=apellido1 + " " + apellido2%></td>
 		<td><%=nombre%></td>
 		<td><%=fechaNacimiento%></td>
-		<td><%=domicilio + ", " + CP + ", " + poblacion%></td>
+		
+			<%
+				if (domicilio != null && !domicilio.equals("&nbsp")) {
+			%>
+				<td><%=domicilio + ", " + CP + ", " + poblacion%></td>
+			<%
+				} else {
+			%>
+			<td>&nbsp;</td>
+				
+			<%
+				}
+			%>
+		
+		
 		<%
 			}
 		%>
