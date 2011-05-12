@@ -1,5 +1,6 @@
 package com.siga.test;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.atos.utils.*;
@@ -7,6 +8,7 @@ import com.pra.core.filters.security.helper.UsuariosTO;
 import com.siga.beans.*;
 import com.siga.general.SIGAException;
 
+import org.apache.log4j.MDC;
 import org.apache.struts.*;
 import javax.servlet.http.*;
 
@@ -201,7 +203,20 @@ public class SIGATemporalAccessAction extends Action
 		    result="topMenu";
 			ses.setAttribute(SIGAConstants.MENU_POSITION_REF, SIGAConstants.MENU_TOP);
 		}
-
+		
+		String idsession = (String)ses.getId();
+		long fcses = ses.getCreationTime();
+        if (idsession != null && idsession.length() > 0)
+        {
+        	SimpleDateFormat fm = new SimpleDateFormat("ddMMyyyyhhmmssSSS");
+        	String fecha = fm.format(new Date(fcses));
+        	String idSesion = idsession.substring(0, 5)+fecha;
+            // Put the principal's name into the message diagnostic
+            // context. May be shown using %X{username} in the layout
+            // pattern.
+        	MDC.put("idSesion", idSesion);
+            
+        }
 		
 		return mapping.findForward(result);
 	}	

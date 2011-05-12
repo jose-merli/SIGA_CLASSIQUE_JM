@@ -1,8 +1,13 @@
 package com.siga.general;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import com.atos.utils.*;
 
 import javax.servlet.http.*;
+
+import org.apache.log4j.MDC;
 import org.apache.struts.action.*;
 
 import com.siga.Utilidades.UtilidadesString;
@@ -66,7 +71,19 @@ public class SIGAAuthAction extends Action
 		    result="topMenu";
 			ses.setAttribute(SIGAConstants.MENU_POSITION_REF, SIGAConstants.MENU_TOP);
 //		}
-
+			String idsession = (String)ses.getId();
+			long fcses = ses.getCreationTime();
+	        if (idsession != null && idsession.length() > 0)
+	        {
+	        	SimpleDateFormat fm = new SimpleDateFormat("ddMMyyyyhhmmssSSS");
+	        	String fecha = fm.format(new Date(fcses));
+	        	String idSesion = idsession.substring(0, 5)+fecha;
+	            // Put the principal's name into the message diagnostic
+	            // context. May be shown using %X{username} in the layout
+	            // pattern.
+	        	MDC.put("idSesion", idSesion);
+	            
+	        }
 		return mapping.findForward(result);
 	}
 }
