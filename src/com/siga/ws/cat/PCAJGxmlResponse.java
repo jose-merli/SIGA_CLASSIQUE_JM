@@ -404,6 +404,8 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 						", " + ScsEJGBean.C_FECHARESOLUCIONCAJG + " = TO_DATE('" + fechaEstado + "', 'YYYY-MM-DD')" +
 						", " + ScsEJGBean.C_REFAUTO + " = '" + (identificadorResolucion==null?"":identificadorResolucion) + "'" +
 						", " + ScsEJGBean.C_RATIFICACIONDICTAMEN + " = '" + observaciones + "'" +
+						", " + ScsEJGBean.C_FECHAMODIFICACION + " = SYSDATE" +
+						", " + ScsEJGBean.C_USUMODIFICACION + " = " + getUsrBean().getUserName() +
 						" WHERE " + ScsEJGBean.C_IDINSTITUCION + " = " + idInstitucion +
 				        " AND " + ScsEJGBean.C_ANIO + " = " + scsEJGBean.getAnio() +
 				        " AND " + ScsEJGBean.C_NUMERO + " = " + scsEJGBean.getNumero() +

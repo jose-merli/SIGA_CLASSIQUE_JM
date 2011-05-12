@@ -185,7 +185,10 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 					numDetalles += addExpedienteTipoGenerico(tipoGenerico, ht, tipoIntercambio);
 				}
 				
-			} catch (IllegalArgumentException e) {				
+			} catch (IllegalArgumentException e) {	
+				if (tipoGenerico.sizeOfExpedienteArray() > 0) {
+					tipoGenerico.removeExpediente(tipoGenerico.sizeOfExpedienteArray()-1);
+				}
 				escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, e.getMessage(), CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
 			}
 			
@@ -476,7 +479,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			tramiteDictamen.setObservacionesDictamen((String)htEJGs.get(DTE_TD_OBSERVACIONESDICTAMEN));
 			
 			if (tramiteDictamen.getCodTipoDictamen() == null || tramiteDictamen.getCodTipoDictamen().trim().equals("")) {
-				throw new IllegalArgumentException("Debe rellenar el tipo de dictámen.");
+				throw new IllegalArgumentException("Debe rellenar el tipo de dictamen.");
 			}
 		} else if (tipoIntercambio.equals(INTERCAMBIO_RESOLUCIONES)) {		
 			datosTramitacionExpediente = expediente.addNewDatosTramitacionExpediente();
