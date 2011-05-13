@@ -3395,6 +3395,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
             sql.append(" , to_char(EJG.fecharesolucioncajg,'dd/mm/yyyy') AS FECHARESOLUCIONCAJGLETRA ");
             sql.append(" , to_char(EJG.FECHAAPERTURA,'dd/mm/yyyy') AS FECHAAPERTURA_EJGLETRA ");
             sql.append(" , to_char(SYSDATE,'dd/mm/yyyy') AS FECHAACTUALLETRA ");
+            sql.append(" , FUND.TEXTOPLANTILLA AS FUNDAMENTOJURIDICO ");
 		    //sql.append(" , pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(EJG.Fecharatificacion,'M',"+idioma+") AS Fecharatificacion_LETRA ");
 			//sql.append(" , pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(EJG.FECHAPRESENTACION,'M',"+idioma+") AS FECHAPRESENTACION_LETRA ");
 			//sql.append(" , pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(EJG.FECHALIMITEPRESENTACION,'M',"+idioma+") AS FECHALIMITEPRESENTACION_LETRA ");
@@ -3405,7 +3406,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			//sql.append(" , pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(EJG.FECHAAPERTURA,'M',"+idioma+") AS FECHAAPERTURA_EJG_LETRA ");
 			//sql.append(" , pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(SYSDATE,'M',"+idioma+") AS FECHAACTUAL_LETRA");
 
-			sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGD, SCS_ASISTENCIA EASI ");
+			sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGD, SCS_ASISTENCIA EASI , SCS_TIPOFUNDAMENTOS FUND");
 			sql.append(" WHERE  ");
 
    
@@ -3419,6 +3420,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" AND EJG.IDINSTITUCION = EASI.IDINSTITUCION(+) ");
 			sql.append(" AND EJG.ANIO = EASI.EJGANIO(+) ");
 
+			sql.append(" and fund.idfundamento(+)=ejg.idfundamentojuridico ");
+			sql.append(" and fund.idinstitucion(+)=ejg.idinstitucion ");
+   
      		sql.append(" AND  ");
 			
 			keyContador++;
