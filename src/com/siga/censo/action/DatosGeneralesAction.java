@@ -1103,25 +1103,58 @@ public class DatosGeneralesAction extends MasterAction {
 			tx = usr.getTransactionPesada();
 			tx.begin();	
 
-			// insert de la parte de cliente
-			// paso un solo hash con los datos de cliente y de persona
-			CenClienteBean beanCli = adminCli.insertNoColegiado(hash, request);
+			CenPersonaBean perBean = null;
+			String idinstitucion = miForm.getIdInstitucion();
+			CenPersonaAdm perAdm = new CenPersonaAdm(this.getUserBean(request));
+			long idPersonaValor=0;
+			Vector personas = new Vector();
+			if (numIdentificacion != null) {
+				personas = perAdm.select("WHERE UPPER(" + CenPersonaBean.C_NIFCIF + ") = '" + numIdentificacion.toUpperCase() + "'");
+				// insert de la parte de cliente paso un solo hash con los datos de cliente y de persona
+				// CenClienteBean beanCli = adminCli.insertNoColegiado(hash, request);
+				if ((personas != null) && personas.size() == 1) {
+					perBean = (CenPersonaBean) personas.get(0);
+					idPersonaValor = new Long(perBean.getIdPersona()).longValue();
+				}
+			}
+
+			CenClienteBean beanCli = null;
+			boolean existenDatos = false;
+			
+			if (miForm.getContinuarAprobacion().equals("1")) {
+				beanCli = adminCli.insertNoColegiado(hash, request);
+
+			} else {
+
+				if (perBean != null) {
+					beanCli = adminCli.existeCliente(idPersonaValor, new Integer(idInstitucion));
+					if (beanCli != null) {
+						existenDatos = false;
+					} else {
+						beanCli = adminCli.existeClienteOtraInstitucion(idPersonaValor, new Integer(idInstitucion));
+						if (beanCli != null) {
+							existenDatos = true;
+						} else {
+							beanCli = adminCli.insertNoColegiado(hash, request);
+							existenDatos = false;
+						}
+					}
+				} else {
+					beanCli = adminCli.insertNoColegiado(hash, request);
+					existenDatos = false;
+				}
+			}
+			
 			/**se verifica que bien la persona existe con isExisteDatos que indica que es la misma persona,
 			 *  pero que esta dado de alta en otro colegio y preguntara si quiere que también
 			 *  se le de de alta en el actual colegio con los valores de datos generales
 			 *  que tiene actualmente en el sistema**/
-			if (beanCli==null||beanCli.isExisteDatos()){
-			  	CenPersonaBean perBean = null;
-			  	String idinstitucion= miForm.getIdInstitucion();			 
-			  	CenPersonaAdm perAdm = new CenPersonaAdm(this.getUserBean(request));
-			  	if (numIdentificacion!=null){
-				Vector personas = perAdm.select("WHERE UPPER(" + CenPersonaBean.C_NIFCIF + ") = '" + numIdentificacion.toUpperCase() + "'");
-			  	
+			if(existenDatos){
 				String nombrePersona="", apellido1Persona="", apellido2Persona="";
 				String nifcif="";
 				if ((personas != null) && personas.size() == 1) {
-					perBean = (CenPersonaBean)personas.get(0);
-					long idPersonaValor = new Long(perBean.getIdPersona()).longValue();
+					//perBean = (CenPersonaBean)personas.get(0);
+					
 					nombrePersona = perBean.getNombre().toUpperCase(); 
 					apellido1Persona = perBean.getApellido1().toUpperCase(); 
 					apellido2Persona = perBean.getApellido2().toUpperCase();
@@ -1138,6 +1171,7 @@ public class DatosGeneralesAction extends MasterAction {
 		            	  	/**En la función de getDatosPersonalesOtraInstitucion se verifica si el nocolegiado 
 		            	  	 * existe en el otras instituciones y se cogeran los datos en el que 
 		            	  	 * se dio primero de alta dicho nocolegiado****/
+		            	  
 		            	  resultado = clienteAdm.getDatosPersonalesOtraInstitucion(idPersonaValor);
 		            	  if (beanCli!=null){
 		            		   msj = UtilidadesString.getMensajeIdioma (usr, "messages.censo.nifcifNombreApellidoExiste");	
@@ -1164,8 +1198,7 @@ public class DatosGeneralesAction extends MasterAction {
 			
 		              }
 				}//Fin if 					
-					
-			  }//Fin numIdentificacion
+				
 			  }//Fin beanCli==null||beanCli.isExisteDatos()
 			String mensInformacion = "messages.inserted.success"; 
 			if (!adminCli.getError().equals("")) {

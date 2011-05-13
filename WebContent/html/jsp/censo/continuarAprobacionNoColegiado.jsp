@@ -101,13 +101,13 @@
 <body onload="reloadPage();">
 <html:form action="/CEN_DatosGenerales.do" method="POST" target="_self">
 		<html:hidden property = "modo" value = "insertar"/>
-		<html:hidden name="datosGeneralesForm"  property = "continuarAprobacion" value = ""/>
-		<html:hidden  name="datosGeneralesForm" property="idInstitucion"/>
-		<html:hidden name="datosGeneralesForm"  property="numIdentificacion"  value="<%=nIdentificacion%>" />
-		<html:hidden  name="datosGeneralesForm" property="idPersona" value="<%=idPersona%>" />
-		<html:hidden  name="datosGeneralesForm" property="nombre" value="<%=nombre%>" />
-		<html:hidden  name="datosGeneralesForm" property="apellido1" value="<%=apellido1%>" />
-		<html:hidden  name="datosGeneralesForm" property="apellido2" value="<%=apellido2%>" />
+		<html:hidden name="datosGeneralesForm" property = "continuarAprobacion" value = ""/>
+		<html:hidden name="datosGeneralesForm" property="idInstitucion"/>
+		<html:hidden name="datosGeneralesForm" property="numIdentificacion"  value="<%=nIdentificacion%>" />
+		<html:hidden name="datosGeneralesForm" property="idPersona" value="<%=idPersona%>" />
+		<html:hidden name="datosGeneralesForm" property="nombre" value="<%=nombre%>" />
+		<html:hidden name="datosGeneralesForm" property="apellido1" value="<%=apellido1%>" />
+		<html:hidden name="datosGeneralesForm" property="apellido2" value="<%=apellido2%>" />
 		<html:hidden name="datosGeneralesForm" property="abono" value="<%=abono%>"/>
 		<html:hidden name="datosGeneralesForm" property="cargo"  value="<%=cargo%>"/>
 		<html:hidden name="datosGeneralesForm" property="cuentaContable" value="<%=cuentaContable %>"></html:hidden>

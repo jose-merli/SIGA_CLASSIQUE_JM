@@ -649,7 +649,7 @@ import com.siga.comun.vos.Vo;
 	String domicilio;
 	String fax1;
 	String fax2;
-	
+	String continuarAprobacion;
 	String numColegiado="";
 
 	public String getIdTipoDireccion() {
@@ -812,6 +812,14 @@ import com.siga.comun.vos.Vo;
 
 	public void setNumColegiado(String numColegiado) {
 		this.numColegiado = numColegiado;
+	}
+	
+	public String getContinuarAprobacion() {
+		return continuarAprobacion;
+	}
+
+	public void setContinuarAprobacion(String continuarAprobacion) {
+		this.continuarAprobacion = continuarAprobacion;
 	}
 	
 	public String getId() {

@@ -1385,6 +1385,8 @@ function str_replace(search, replace, subject) {
 		}
 
 	function validarFormulario() {
+
+		
 		if (datosGeneralesForm.sexo.value=='0'){
 			alert ('<siga:Idioma key="censo.fichaCliente.literal.sexo"/>');
 		   	return false;
@@ -1400,11 +1402,11 @@ function str_replace(search, replace, subject) {
 			rc=validaNIE(document.datosGeneralesForm.numIdentificacion.value);
 			
 		}
-		
-		return rc;	
+
+			return rc;	
 		}else{
 		  return false;
-	}
+		}
 	}
 		<!-- Asociada al boton Guardar -->
 		function accionGuardar() {		
