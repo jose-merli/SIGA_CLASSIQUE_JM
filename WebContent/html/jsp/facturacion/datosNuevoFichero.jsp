@@ -114,15 +114,15 @@
 					<siga:ConjCampos leyenda="facturacion.nuevoFichero.literal.datosFichero">
 						<table class="tablaCampos" align="center">	
 							<tr>
-								<td class="labelText" width="90%">
+								<td class="labelText" >
 									<siga:Idioma key="facturacion.nuevoFichero.literal.seleccion"/>&nbsp;(*)
 								</td>
 							</tr>
 							<tr>
 								<td class="labelText">
-									<html:file property="ruta" size="50" styleClass="box" readOnly="false" onChange="rutaVisible.value=ruta.value"></html:file>
+									<html:file property="ruta" size="85" styleClass="box" readOnly="false" onChange="rutaVisible.value=ruta.value"></html:file>
 									<div style="display:none;position:absolute; width:18; height:35; z-index:2; top: 60px; left: 25px">
-										<html:text styleClass="box" property="rutaVisible" size="50" value="" readOnly="true"></html:text>
+										<html:text styleClass="box" property="rutaVisible" size="60" value="" readOnly="true"></html:text>
 									</div>
 								</td>
 							</tr>
@@ -146,11 +146,11 @@
 							</td>
 						</tr>
 						<tr>
-							<td colspan="2">
-								<table class="tablaCampos" border="0">
+							<td>
+								<table border="0">
 									<tr>
 										<td class="labelText"><siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.Observaciones"/></td>
-										<td class="labelText"><html:textarea property="datosPagosRenegociarObservaciones" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" cols="80" rows="3" styleClass="box" value=""/></td>
+										<td class="labelText"><html:textarea property="datosPagosRenegociarObservaciones" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" style="width:525px" cols="80" rows="7" styleClass="box" value=""/></td>
 									</tr>
 								</table>
 							</td>

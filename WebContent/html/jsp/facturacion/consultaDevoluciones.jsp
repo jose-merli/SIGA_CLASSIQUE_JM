@@ -240,7 +240,7 @@
 					function procesarNuevoFichero()
 					{
 						document.forms[0].modo.value='nuevo';							
-						var resultado = ventaModalGeneral("DevolucionesForm","P");
+						var resultado = ventaModalGeneral("DevolucionesForm","M");
 						if (resultado=="MODIFICADO")
 						{
 							refrescarLocal();
