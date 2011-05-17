@@ -513,6 +513,10 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				miForm.setFechaSolicitud("sysdate");
 				InscripcionTurno inscripcion = new InscripcionTurno(new ScsInscripcionTurnoBean());
 				inscripcion.solicitarAlta(miForm, usr);
+				CenDireccionesAdm dirAdm = new CenDireccionesAdm(usr);			
+				dirAdm.insertarDireccionGuardia(new Integer(miForm.getIdInstitucion()),new Long(miForm.getIdPersona()),
+				miForm.getIdDireccion(),miForm.getFax1(),miForm.getFax2(),miForm.getMovil(),miForm.getTelefono1(),miForm.getTelefono2());
+
 			}
 			//miForm.re
 			request.setAttribute("mensaje","messages.updated.success");
@@ -881,11 +885,19 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					}
 					InscripcionTurno inscripcion = new InscripcionTurno(new ScsInscripcionTurnoBean());
 					inscripcion.solicitarAlta(miForm, usr);
+
+					
 				} catch (Exception e) {
 					existenErrores = true;
 				}
 				
 			}
+			
+			CenDireccionesAdm dirAdm = new CenDireccionesAdm(usr);
+			
+			dirAdm.insertarDireccionGuardia(new Integer(miForm.getIdInstitucion()),new Long(miForm.getIdPersona()),
+			miForm.getIdDireccion(),miForm.getFax1(),miForm.getFax2(),miForm.getMovil(),miForm.getTelefono1(),miForm.getTelefono2());
+		
 			if(existenErrores){
 				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.error.masivo.solapamiento"));
 			}else{

@@ -140,9 +140,7 @@ public class InscripcionTurno
 			solicitarAlta(new Integer(form.getIdInstitucion()),new Integer(form.getIdTurno()),new Long(form.getIdPersona()),
 					form.getObservacionesSolicitud(),form.getFechaValidacion(),form.getObservacionesValidacion(),
 					form.getValidarInscripciones(),new Integer(form.getTipoGuardias()),
-					form.getGuardiasSel(),form.getIdDireccion(),
-					form.getFax1(),form.getFax2(),form.getMovil(),form.getTelefono1(),form.getTelefono2(),
-					form.getIdRetencion(),usr);
+					form.getGuardiasSel(),form.getIdRetencion(),usr);
 			
 //			tx.commit();
 			
@@ -313,13 +311,7 @@ public class InscripcionTurno
 			String observacionesValidacion,
 			String validarInscripciones,
 			Integer tipoGuardias,
-			String guardiasSeleccionadas,
-			String idDireccion,
-			String fax1,
-			String fax2,
-			String movil,
-			String telefono1,
-			String telefono2,
+			String guardiasSeleccionadas,			
 			String idRetencion,
 			UsrBean usr) throws ClsExceptions, SIGAException
 			{
@@ -377,63 +369,6 @@ public class InscripcionTurno
 		
 
 
-		// ACTUALIZAMOS LA DIRECCIÓN DE GUARDIA DEL CLIENTE. EN CASO DE QUE NO EXISTIERA UNA DIRECCIÓN DE GUARDIA
-		// ENTONCES LA INSERTAMOS Y SI YA EXISTIA ACTUALIZAMOS LOS DATOS DE LA MISMA
-	
-		CenDireccionesBean beanDir  = new CenDireccionesBean ();
-		CenDireccionesAdm direccionesAdm = new CenDireccionesAdm (usr);
-		beanDir.setFax1(fax1);
-		beanDir.setFax2(fax2);
-		beanDir.setIdInstitucion(idInstitucion);
-		beanDir.setIdPersona(new Long(idPersona));
-		beanDir.setMovil(movil);
-		beanDir.setTelefono1(telefono1);
-		beanDir.setTelefono2(telefono2);
-		if(idDireccion!=null&&!idDireccion.equals(""))
-		{
-			// Actualizamos el registro de la dirección de guardia
-			beanDir.setIdDireccion(new Long(idDireccion));
-			String[] claves ={CenDireccionesBean.C_IDDIRECCION,CenDireccionesBean.C_IDINSTITUCION,CenDireccionesBean.C_IDPERSONA}; 
-			String[] campos ={CenDireccionesBean.C_FAX1,CenDireccionesBean.C_FAX2,CenDireccionesBean.C_MOVIL,CenDireccionesBean.C_TELEFONO1,CenDireccionesBean.C_TELEFONO2};
-			if (!direccionesAdm.updateDirect(beanDir,claves,campos)) {
-				throw new ClsExceptions (direccionesAdm.getError());
-			}
-		}
-		else
-		{
-
-			//Insertamos la nueva direccion de guardia
-			beanDir.setCodigoPostal("");
-			beanDir.setCorreoElectronico("");
-			beanDir.setDomicilio("");
-			beanDir.setFechaBaja("");
-			beanDir.setIdPais("");
-			beanDir.setIdPoblacion("");
-			beanDir.setIdProvincia("");
-			beanDir.setPaginaweb("");
-			beanDir.setPreferente("");
-			try {
-				beanDir.setIdDireccion(direccionesAdm.getNuevoID(beanDir));
-			} catch (SIGAException e) {
-				throw new ClsExceptions (e.getMessage());
-			}
-			if (!direccionesAdm.insert(beanDir)) {
-				throw new ClsExceptions (direccionesAdm.getError());
-			}
-			// insertamos el tipo de dirección
-			CenDireccionTipoDireccionAdm admTipoDir = new CenDireccionTipoDireccionAdm (usr);
-			CenDireccionTipoDireccionBean beanTipoDir=new CenDireccionTipoDireccionBean();
-			beanTipoDir.setIdDireccion(beanDir.getIdDireccion());
-			beanTipoDir.setIdInstitucion(beanDir.getIdInstitucion());
-			beanTipoDir.setIdPersona(beanDir.getIdPersona());
-			beanTipoDir.setIdTipoDireccion(new Integer(ClsConstants.TIPO_DIRECCION_GUARDIA));
-			if (!admTipoDir.insert(beanTipoDir)){
-				throw new ClsExceptions (admTipoDir.getError());
-			}
-
-
-		}
-		
 
 		ScsInscripcionTurnoAdm inscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
 
@@ -553,7 +488,8 @@ public class InscripcionTurno
 	} 
 	//solicitarAlta ()
 	
-	/**
+	
+/**
 	 * Valida la inscripcion de un colegiado a un turno
 	 * @throws SystemException 
 	 * @throws SecurityException 
