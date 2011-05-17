@@ -1361,8 +1361,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 			int codigo = 0;
 			
 			sql.append(" SELECT ");
-			if (idPersona == null)
-				sql.append("    IDPERSONASJCS, ");
+			sql.append("    IDPERSONASJCS, ");
 			sql.append("        SUM(TOTALIMPORTESJCS) + SUM(IMPORTETOTALMOVIMIENTOS) TOTALIMPORTESJCS, ");
 			sql.append("        abs(SUM(TOTALIMPORTEIRPF)) TOTALIMPORTEIRPF ");
 			sql.append("   FROM (SELECT IDPERSONASJCS, ");
@@ -1373,17 +1372,17 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 			sql.append("                MAX(TOTALIMPORTEIRPF) AS TOTALIMPORTEIRPF ");
 			sql.append("           FROM (");
 			sql.append(new FcsPagosJGAdm(usrbean).getQueryDetallePagoColegiado(idInstitucion,
-					null, true, idioma));
+					null,idPersona, true, idioma));
 			sql.append("                ) ");
 			sql.append("          WHERE ");
 			
-			if (idPersona != null) {
+			/*if (idPersona != null) {
 				sql.append("            IDPERSONASJCS = :");
 				codigo++;
 				sql.append(codigo);
 				htCodigos.put(new Integer(codigo), idPersona);
 				sql.append("        AND ");
-			}
+			}*/
 			
 			sql.append("                IDPAGOS IN (SELECT FAC_ABONO.IDPAGOSJG ");
 			sql.append("                              FROM FAC_ABONO ");
@@ -1416,8 +1415,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 			sql.append("          GROUP BY IDPERSONASJCS, IDPAGOS ");
 			sql.append("          ) ");
 			
-			if (idPersona == null)
-				sql.append("GROUP BY IDPERSONASJCS ");
+			sql.append("GROUP BY IDPERSONASJCS ");
 
 			//consultando en BD
 			RowsContainer rc = new RowsContainer();
@@ -1427,15 +1425,12 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 					Row fila = (Row) rc.get(i);
 					Hashtable htRegistro = fila.getRow();
 					
-					if (idPersona != null) {
-						htRegistro.put("IDPERSONASJCS", idPersona);
-						if (htRegistro.get("TOTALIMPORTESJCS") == null
-								|| ((String) htRegistro.get("TOTALIMPORTESJCS"))
-										.equals(""))
+					if (idPersona != null) {						
+						if (htRegistro.get("IDPERSONASJCS") == null || ((String) htRegistro.get("IDPERSONASJCS")).equals(""))
+							htRegistro.put("IDPERSONASJCS", idPersona);
+						if (htRegistro.get("TOTALIMPORTESJCS") == null || ((String) htRegistro.get("TOTALIMPORTESJCS"))	.equals(""))
 							htRegistro.put("TOTALIMPORTESJCS", "0");
-						if (htRegistro.get("TOTALIMPORTEIRPF") == null
-								|| ((String) htRegistro.get("TOTALIMPORTEIRPF"))
-										.equals(""))
+						if (htRegistro.get("TOTALIMPORTEIRPF") == null || ((String) htRegistro.get("TOTALIMPORTEIRPF")).equals(""))
 							htRegistro.put("TOTALIMPORTEIRPF", "0");
 					}
 					datosObtenidos.add(htRegistro);

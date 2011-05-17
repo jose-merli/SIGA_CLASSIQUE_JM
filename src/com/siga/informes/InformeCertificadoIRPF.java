@@ -304,7 +304,7 @@ public class InformeCertificadoIRPF extends MasterReport
 		for (int i = 0; i < vDatosInforme.size(); i++) {
 			htRowDatosInforme = (Hashtable) vDatosInforme.get(i);
 			htRowDatosInforme.putAll(htDatosComunesInforme);
-			if (!isPersonaUnica)
+			//if (!isPersonaUnica)
 				idPersona = (String) htRowDatosInforme.get("IDPERSONASJCS");
 			htRowDatosInforme = anyadePersonaDatosInforme(htRowDatosInforme,
 					idPersona, usr);

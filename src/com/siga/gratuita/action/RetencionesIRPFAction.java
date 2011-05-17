@@ -114,6 +114,7 @@ public class RetencionesIRPFAction extends MasterAction {
 			String nombre = personaAdm.obtenerNombreApellidos(miform
 					.getIdPersona());
 			request.setAttribute("nombre", nombre);
+			request.setAttribute("idPersona", idPersona.toString());
 			request.setAttribute("colegiado", beanCol);
 			request.setAttribute("desdeFicha", desdeFicha);
 			request.setAttribute("anyoIRPF", String.valueOf(Calendar
@@ -286,14 +287,16 @@ public class RetencionesIRPFAction extends MasterAction {
 				request.setAttribute("idSociedadLetradoSel","0");				
 				request.setAttribute("SOCIEDAD", "0");
 				
-				String sq2 = "select idpersona from cen_componentes  WHERE cen_cliente_idpersona = "+idPersona;
+				/*String sq2 = "select idpersona from cen_componentes  WHERE cen_cliente_idpersona = "+idPersona;
 				Vector cenPersona = reten.select(sq2);
 				if(cenPersona.size() == 0) {
-					request.setAttribute("idPersona","0");
+					request.setAttribute("idPersona",idPersona);
 				}else{
 					Hashtable<String, String> hash = (Hashtable<String, String>)cenPersona.get(0);				
 					request.setAttribute("idPersona", hash.get("IDPERSONA"));
-				}
+				}*/
+				
+				request.setAttribute("idPersona",idPersona);
 			}
 			// Si es > 0, el letrado actua como sociedad
 			else

@@ -27,6 +27,7 @@
 	
 	ArrayList alElementoSelec = new ArrayList();
 	alElementoSelec.add(userBean.getLanguage());
+	String idPersona =(String)request.getAttribute("idPersona");
 	String desdeFicha=(String)request.getAttribute("desdeFicha");
 	String anyoIRPF=(String)request.getAttribute("anyoIRPF");
 	String botones="EN,GF";
@@ -74,9 +75,8 @@
 		target="submitArea">
 		
 		<html:hidden name="RetencionesIRPFForm" property="modo" />
-		<html:hidden name="RetencionesIRPFForm" property="idInstitucion"
-			value="<%=idInstitucion%>" />
-		<html:hidden name="RetencionesIRPFForm" property="idPersona" />
+		<html:hidden name="RetencionesIRPFForm" property="idInstitucion" value="<%=idInstitucion%>" />
+		<html:hidden name="RetencionesIRPFForm" property="idPersona" value="<%=idPersona%>" />
 
 		<tr>
 			<td>

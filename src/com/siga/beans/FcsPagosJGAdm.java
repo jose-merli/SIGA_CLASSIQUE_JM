@@ -1087,17 +1087,16 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		sql.append("       null, 'gratuita.pagos.porCaja', 'gratuita.pagos.porBanco'), "+idioma+") ");
 		sql.append("       as FORMADEPAGO ");
 		
-		sql.append("  from FCS_PAGO_COLEGIADO pc, cen_persona cen ");
+		sql.append("  from FCS_PAGO_COLEGIADO pc ");
 		sql.append(" where pc.IDINSTITUCION = "+idInstitucion+" ");
-		sql.append("   and pc.IDPAGOSJG = nvl("+idPagosJg+", pc.IDPAGOSJG) ");
-		sql.append("   and pc.IDPERORIGEN = nvl("+idPersona+", pc.IDPERORIGEN) ");
-		sql.append("   and cen.idpersona = nvl("+idPersona+", pc.IDPERORIGEN) ");
-		
+		if(idPersona!=null){
+			sql.append("   and nvl(idperdestino, idperorigen) in ("+idPersona+", nvl((select idpersona from cen_componentes comp ");
+			sql.append("   where comp.cen_cliente_idpersona = "+idPersona+"), -1)) ");
+		}
 		if (irpf)
-			sql.append(
-					"  and impirpf > 0 ");		
-		sql.append(" group by cen.apellidos1,cen.apellidos2, pc.IDPERORIGEN, pc.IDPERDESTINO, pc.IDPAGOSJG, pc.IDINSTITUCION ");
-		sql.append(" order by cen.apellidos1, cen.apellidos2 ");
+			sql.append("  and impirpf > 0 ");		
+		sql.append(" group by pc.IDPERORIGEN, pc.IDPERDESTINO, pc.IDPAGOSJG, pc.IDINSTITUCION ");
+
 		
 		return sql.toString();
 	} //getQueryDetallePagoColegiado()
