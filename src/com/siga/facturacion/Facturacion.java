@@ -2612,7 +2612,7 @@ public class Facturacion {
 		
     }
     
-    public void insertarRenegociar(Integer idInstitucion,String idFactura,Integer estadoFactura,String formaPago,String idCuenta,Double importePtePagar,String observaciones,boolean isTransaccionCreada,boolean isAutomatica,boolean isDesdeDisco,Hashtable htCuenta) throws SIGAException, Exception{
+    public void insertarRenegociar(Integer idInstitucion,String idFactura,Integer estadoFactura,String formaPago,String idCuenta,Double importePtePagar,String observaciones,boolean isTransaccionCreada,boolean isAutomatica,Hashtable htCuenta) throws SIGAException, Exception{
     	UserTransaction t = this.usrbean.getTransaction();
 
     	try {
@@ -2732,7 +2732,7 @@ public class Facturacion {
     		}
 
     		// Actualizamos la tabla FacFacturaInclidaEnDisquete
-    		if (isDesdeDisco&& actualizarFacturaEnDisco ) {
+    		if (actualizarFacturaEnDisco ) {
     			FacFacturaIncluidaEnDisqueteAdm facturaDiscoAdm = new FacFacturaIncluidaEnDisqueteAdm (this.usrbean); 
     			if (!facturaDiscoAdm.updateRenegociacion(renegociacionBean.getIdInstitucion(), renegociacionBean.getIdFactura(), renegociacionBean.getIdRenegociacion())) {
     				throw new ClsExceptions("Error al actualizar la factura incluida en disquete: "+facturaDiscoAdm.getError());

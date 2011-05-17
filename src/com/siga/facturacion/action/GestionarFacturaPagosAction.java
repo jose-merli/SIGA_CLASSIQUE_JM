@@ -418,7 +418,7 @@ public class GestionarFacturaPagosAction extends MasterAction {
 			facturacion.insertarRenegociar(idInstitucion, idFactura, estadoFactura, 
 					nuevaFormaPago, miForm.getDatosPagosRenegociarIdCuenta().toString(),
 						miForm.getDatosPagosRenegociarImportePendiente(), 
-						miForm.getDatosPagosRenegociarObservaciones(),false,false,false,null);
+						miForm.getDatosPagosRenegociarObservaciones(),false,false,null);
 			
 		}catch (SIGAException e) { 
 			return exito(e.getLiteral(), request);
@@ -457,7 +457,7 @@ public class GestionarFacturaPagosAction extends MasterAction {
 				try {
 					facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, 
 							nuevaFormaPago, null,	impTotalPorPagar, 
-								miForm.getDatosPagosRenegociarObservaciones(),true,true,false,null);	
+								miForm.getDatosPagosRenegociarObservaciones(),true,true,null);	
 				} catch (SIGAException e) {
 					isTodasRenegociadas = false;
 					continue;
