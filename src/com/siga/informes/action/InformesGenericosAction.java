@@ -527,8 +527,7 @@ public class InformesGenericosAction extends MasterAction {
 		boolean isPermisoEnvio = true;
 		try {
 			accessEnvio = testAccess(request.getContextPath()+"/ENV_DefinirEnvios.do",null,request);
-			if (!accessEnvio.equals(SIGAConstants.ACCESS_READ) && 
-					!accessEnvio.equals(SIGAConstants.ACCESS_FULL)) {
+			if (!accessEnvio.equals(SIGAConstants.ACCESS_READ) && !accessEnvio.equals(SIGAConstants.ACCESS_FULL)) {
 				//miForm.setEnviar(ClsConstants.DB_FALSE);
 				isPermisoEnvio = false;
 				ClsLogging.writeFileLog("Acceso denegado al modulo de envios, descargamos el informe",request,3);

@@ -726,6 +726,7 @@ public class HelperInformesAdm  {
 								
 				StringBuffer sql = new StringBuffer();
 				sql.append(" select pe.nifcif as NIFCIF,f_siga_getrecurso(tra.descripcion,1) TRATAMIENTO,dir.idpersona as IDPERSONA_DIR, dir.iddireccion as IDDIRECCION_DIR, dir.domicilio,       dir.codigopostal,       dir.telefono1,       dir.telefono2,       dir.movil,       dir.fax1,       dir.fax2,       dir.correoelectronico,       dir.paginaweb,       dir.poblacionextranjera,       (select po.nombre          from cen_poblaciones po         where po.idpoblacion = dir.idpoblacion) as NOMBRE_POBLACION,       (select pr.nombre          from cen_provincias pr         where pr.idprovincia = dir.idprovincia) as NOMBRE_PROVINCIA,       (select f_siga_getrecurso(pa.nombre,:1)          from cen_pais pa         where pa.idpais = dir.idpais) as NOMBRE_PAIS,       pe.nombre as NOMBRE, pe.apellidos1 as APELLIDO1, pe.apellidos2 as APELLIDO2     "); 
+				sql.append(" , pe.sexo AS SEXO, DECODE(pe.SEXO, 'H','o','a') AS O_A, DECODE(pe.SEXO, 'H','el','la') AS EL_LA ");
 				sql.append(" from exp_expediente ex, cen_persona pe, cen_direcciones dir, cen_cliente cli, cen_tratamiento tra");
 				sql.append(" where ex.idpersona = pe.idpersona ");
 				sql.append(" and   ex.idpersona = dir.idpersona(+) ");
@@ -748,6 +749,9 @@ public class HelperInformesAdm  {
 					datoNuevo.put("NOMBRE_DEST", (String) reg.get("NOMBRE"));
 					datoNuevo.put("APELLIDO1_DEST", (String) reg.get("APELLIDO1"));
 					datoNuevo.put("APELLIDO2_DEST", (String) reg.get("APELLIDO2"));
+					datoNuevo.put("SEXO_DEST", (String) reg.get("SEXO"));
+					datoNuevo.put("O_A_DEST", (String) reg.get("O_A"));
+					datoNuevo.put("EL_LA_DEST", (String) reg.get("EL_LA"));					
 					// .. resto de campos obtenidos.
 					datoNuevo.put("TRATAMIENTO_DEST", (String) reg.get("TRATAMIENTO"));
 					datoNuevo.put("NIFCIF_DEST", (String) reg.get("NIFCIF"));
@@ -807,6 +811,7 @@ public class HelperInformesAdm  {
 					
 						// NO OLVIDAR SACAR LOS NOMBRES DE POBLACION, PROVINCIA, PAIS, ETC...
 						sql1.append(" select pe.nifcif as NIFCIF,f_siga_getrecurso(tra.descripcion,1) TRATAMIENTO, dir.idpersona as IDPERSONA_DIR, dir.iddireccion as IDDIRECCION_DIR, dir.domicilio,       dir.codigopostal,       dir.telefono1,       dir.telefono2,       dir.movil,       dir.fax1,       dir.fax2,       dir.correoelectronico,       dir.paginaweb,       dir.poblacionextranjera,       (select po.nombre          from cen_poblaciones po         where po.idpoblacion = dir.idpoblacion) as NOMBRE_POBLACION,       (select pr.nombre          from cen_provincias pr         where pr.idprovincia = dir.idprovincia) as NOMBRE_PROVINCIA,       (select f_siga_getrecurso(pa.nombre,:1)          from cen_pais pa         where pa.idpais = dir.idpais) as NOMBRE_PAIS,pe.nombre as NOMBRE, pe.apellidos1 as APELLIDO1, pe.apellidos2 as APELLIDO2 "); 
+						sql1.append(" , pe.sexo AS SEXO, DECODE(pe.SEXO, 'H','o','a') AS O_A, DECODE(pe.SEXO, 'H','el','la') AS EL_LA ");
 						sql1.append(" from exp_denunciado d, cen_persona pe, cen_direcciones dir, cen_cliente cli, cen_tratamiento tra ");
 						sql1.append(" where d.idpersona = pe.idpersona ");
 						sql1.append(" and	d.idpersona = dir.idpersona(+) ");
@@ -832,6 +837,9 @@ public class HelperInformesAdm  {
 							datoNuevo.put("APELLIDO2_DEST", (String) reg.get("APELLIDO2"));						
 							datoNuevo.put("TRATAMIENTO_DEST", (String) reg.get("TRATAMIENTO"));
 							datoNuevo.put("NIFCIF_DEST", (String) reg.get("NIFCIF"));
+							datoNuevo.put("SEXO_DEST", (String) reg.get("SEXO"));
+							datoNuevo.put("O_A_DEST", (String) reg.get("O_A"));
+							datoNuevo.put("EL_LA_DEST", (String) reg.get("EL_LA"));
 							// .. resto de campos obtenidos.
 							datoNuevo.put("IDPERSONA_DEST", (String) reg.get("IDPERSONA_DIR"));
 							datoNuevo.put("IDDIRECCION_DEST", (String) reg.get("IDDIRECCION_DIR"));
@@ -888,7 +896,8 @@ public class HelperInformesAdm  {
 					
 						sql2 = new StringBuffer();
 						// 	NO OLVIDAR SACAR LOS NOMBRES DE POBLACION, PROVINCIA, PAIS, ETC...
-						sql2.append(" select pe.nifcif as NIFCIF,f_siga_getrecurso(tra.descripcion,1) TRATAMIENTO, dir.idpersona as IDPERSONA_DIR, dir.iddireccion as IDDIRECCION_DIR, dir.domicilio,       dir.codigopostal,       dir.telefono1,       dir.telefono2,       dir.movil,       dir.fax1,       dir.fax2,       dir.correoelectronico,       dir.paginaweb,       dir.poblacionextranjera,       (select po.nombre          from cen_poblaciones po         where po.idpoblacion = dir.idpoblacion) as NOMBRE_POBLACION,       (select pr.nombre          from cen_provincias pr         where pr.idprovincia = dir.idprovincia) as NOMBRE_PROVINCIA,       (select f_siga_getrecurso(pa.nombre,:1)          from cen_pais pa         where pa.idpais = dir.idpais) as NOMBRE_PAIS,pe.nombre as NOMBRE, pe.apellidos1 as APELLIDO1, pe.apellidos2 as APELLIDO2 "); 
+						sql2.append(" select pe.nifcif as NIFCIF,f_siga_getrecurso(tra.descripcion,1) TRATAMIENTO, dir.idpersona as IDPERSONA_DIR, dir.iddireccion as IDDIRECCION_DIR, dir.domicilio,       dir.codigopostal,       dir.telefono1,       dir.telefono2,       dir.movil,       dir.fax1,       dir.fax2,       dir.correoelectronico,       dir.paginaweb,       dir.poblacionextranjera,       (select po.nombre          from cen_poblaciones po         where po.idpoblacion = dir.idpoblacion) as NOMBRE_POBLACION,       (select pr.nombre          from cen_provincias pr         where pr.idprovincia = dir.idprovincia) as NOMBRE_PROVINCIA,       (select f_siga_getrecurso(pa.nombre,:1)          from cen_pais pa         where pa.idpais = dir.idpais) as NOMBRE_PAIS,pe.nombre as NOMBRE, pe.apellidos1 as APELLIDO1, pe.apellidos2 as APELLIDO2, ");
+						sql2.append(" pe.sexo AS SEXO, DECODE(pe.SEXO, 'H','o','a') AS O_A, DECODE(pe.SEXO, 'H','el','la') AS EL_LA ");
 						sql2.append(" from exp_denunciante d, cen_persona pe, cen_direcciones dir, cen_cliente cli, cen_tratamiento tra ");
 						sql2.append(" where d.idpersona = pe.idpersona ");
 						sql2.append(" and	d.idpersona = dir.idpersona(+) ");
@@ -912,6 +921,9 @@ public class HelperInformesAdm  {
 							datoNuevo.put("APELLIDO2_DEST", (String) reg.get("APELLIDO2"));						
 							datoNuevo.put("TRATAMIENTO_DEST", (String) reg.get("TRATAMIENTO"));
 							datoNuevo.put("NIFCIF_DEST", (String) reg.get("NIFCIF"));
+							datoNuevo.put("SEXO_DEST", (String) reg.get("SEXO"));
+							datoNuevo.put("O_A_DEST", (String) reg.get("O_A"));
+							datoNuevo.put("EL_LA_DEST", (String) reg.get("EL_LA"));
 							// 	.. resto de campos obtenidos.
 							datoNuevo.put("IDPERSONA_DEST", (String) reg.get("IDPERSONA_DIR"));
 							datoNuevo.put("IDDIRECCION_DEST", (String) reg.get("IDDIRECCION_DIR"));
@@ -973,6 +985,7 @@ public class HelperInformesAdm  {
 						sql3 = new StringBuffer();
 						// NO OLVIDAR SACAR LOS NOMBRES DE POBLACION, PROVINCIA, PAIS, ETC...
 						sql3.append(" select pe.nifcif as NIFCIF,f_siga_getrecurso(tra.descripcion,1) TRATAMIENTO, dir.idpersona as IDPERSONA_DIR, dir.iddireccion as IDDIRECCION_DIR, dir.domicilio,       dir.codigopostal,       dir.telefono1,       dir.telefono2,       dir.movil,       dir.fax1,       dir.fax2,       dir.correoelectronico,       dir.paginaweb,       dir.poblacionextranjera,       (select po.nombre          from cen_poblaciones po         where po.idpoblacion = dir.idpoblacion) as NOMBRE_POBLACION,       (select pr.nombre          from cen_provincias pr         where pr.idprovincia = dir.idprovincia) as NOMBRE_PROVINCIA,       (select f_siga_getrecurso(pa.nombre,:1)          from cen_pais pa         where pa.idpais = dir.idpais) as NOMBRE_PAIS, pe.nombre as NOMBRE, pe.apellidos1 as APELLIDO1, pe.apellidos2 as APELLIDO2,       f_siga_getrecurso(r.nombre, :2) as NOMBREROL "); 
+						sql3.append(" , pe.sexo AS SEXO, DECODE(pe.SEXO, 'H','o','a') AS O_A, DECODE(pe.SEXO, 'H','el','la') AS EL_LA ");
 						sql3.append(" from exp_parte d, cen_persona pe, exp_rolparte r , cen_direcciones dir, cen_cliente cli, cen_tratamiento tra "); 
 						sql3.append(" where d.idpersona = pe.idpersona "); 
 						sql3.append(" and   d.idrol = r.idrol  ");
@@ -999,6 +1012,9 @@ public class HelperInformesAdm  {
 							datoNuevo.put("APELLIDO2_DEST", (String) reg.get("APELLIDO2"));						
 							datoNuevo.put("TRATAMIENTO_DEST", (String) reg.get("TRATAMIENTO"));
 							datoNuevo.put("NIFCIF_DEST", (String) reg.get("NIFCIF"));
+							datoNuevo.put("SEXO_DEST", (String) reg.get("SEXO"));
+							datoNuevo.put("O_A_DEST", (String) reg.get("O_A"));
+							datoNuevo.put("EL_LA_DEST", (String) reg.get("EL_LA"));
 							datoNuevo.put("DESC_ROLPARTE", (String) reg.get("NOMBREROL"));
 							// 	.. resto de campos obtenidos.
 							datoNuevo.put("IDPERSONA_DEST", (String) reg.get("IDPERSONA_DIR"));
