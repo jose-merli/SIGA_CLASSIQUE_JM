@@ -1689,7 +1689,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				String idiomaletrado = (String)registro.get("IDIOMA_LETRADO");			
 				
 				if(isSolicitantes){						
-					Vector vDefendidos = getDefendidosDesignaSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna,idPersonaJG);
+					Vector vDefendidos = getDefendidosDesignaSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna,idPersonaJG, idPersona);
 					if(vDefendidos!=null && vDefendidos.size()>0){
 						for (int k = 0; k < vDefendidos.size(); k++) {
 							Hashtable clone = (Hashtable) registro.clone();							
@@ -1888,11 +1888,11 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		}
 	} //getDesignaSalidaOficio()
 	
-	public Vector getDefendidosDesignaSalidaOficio(String idInstitucion, String numero, String idTurno, String anio, String idPersonaJG)
+	public Vector getDefendidosDesignaSalidaOficio(String idInstitucion, String numero, String idTurno, String anio, String idPersonaJG,String idPersona)
 			throws ClsExceptions {
 		try {
 
-			Vector defendidos = getVectorDefendidosDesigna(idInstitucion, numero, idTurno, anio, idPersonaJG);
+			Vector defendidos = getVectorDefendidosDesigna(idInstitucion, numero, idTurno, anio, idPersonaJG, idPersona);
 
 			if (defendidos != null && defendidos.size() > 0) {
 				Hashtable htPrimerDefendido = (Hashtable) defendidos.get(0);
@@ -1901,9 +1901,13 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					Vector datos = getDatosEJGDefendidoDesigna(idInstitucion, numero, idTurno, anio);
 					// Recorrer los defendidos
 					for (int i = 0; i < defendidos.size(); i++) {
-						((Hashtable) defendidos.get(i)).put("ANIO_EJG", (String) ((Hashtable) datos.get(0)).get("ANIO_EJG"));
-						((Hashtable) defendidos.get(i)).put("NUMERO_EJG", (String) ((Hashtable) datos.get(0)).get("NUMERO_EJG"));
-						((Hashtable) defendidos.get(i)).put("FECHARESOLUCIONCAJG", (String) ((Hashtable) datos.get(0)).get("FECHARESOLUCIONCAJG"));
+						if(((Hashtable) defendidos.get(i)).get("ANIO_EJG") == null ||((Hashtable) defendidos.get(i)).get("ANIO_EJG").equals("")){
+							((Hashtable) defendidos.get(i)).put("ANIO_EJG", (String) ((Hashtable) datos.get(0)).get("ANIO_EJG"));
+						}else if(((Hashtable) defendidos.get(i)).get("NUMERO_EJG")== null ||((Hashtable) defendidos.get(i)).get("NUMERO_EJG").equals("")){
+							((Hashtable) defendidos.get(i)).put("NUMERO_EJG", (String) ((Hashtable) datos.get(0)).get("NUMERO_EJG"));
+						}else if(((Hashtable) defendidos.get(i)).get("FECHARESOLUCIONCAJG")== null ||((Hashtable) defendidos.get(i)).get("FECHARESOLUCIONCAJG").equals("")){
+							((Hashtable) defendidos.get(i)).put("FECHARESOLUCIONCAJG", (String) ((Hashtable) datos.get(0)).get("FECHARESOLUCIONCAJG"));
+						}
 					}
 				}
 				return defendidos;
@@ -1986,7 +1990,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		}
 	}
 	
-	public Vector getVectorDefendidosDesigna(String idInstitucion, String numero, String idTurno, String anio, String idPersonaJG) {
+	public Vector getVectorDefendidosDesigna(String idInstitucion, String numero, String idTurno, String anio, String idPersonaJG, String idPersona){
 		Hashtable h = new Hashtable();
 		h.put(new Integer(1), idInstitucion);
 		h.put(new Integer(2), idTurno);
@@ -1996,6 +2000,18 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		h.put(new Integer(6), idTurno);
 		h.put(new Integer(7), anio);
 		h.put(new Integer(8), numero);
+		h.put(new Integer(9), idInstitucion);
+		h.put(new Integer(10), idTurno);
+		h.put(new Integer(11), anio);
+		h.put(new Integer(12), numero);
+		h.put(new Integer(13), idInstitucion);
+		h.put(new Integer(14), idTurno);
+		h.put(new Integer(15), anio);
+		h.put(new Integer(16), numero);
+		h.put(new Integer(17), idInstitucion);
+		h.put(new Integer(18), idTurno);
+		h.put(new Integer(19), anio);
+		h.put(new Integer(20), numero);		
 
 		StringBuffer sql = new StringBuffer("SELECT DEF.IDINSTITUCION, ");
 		Vector defendidos = null;
@@ -2019,16 +2035,106 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" DECODE(PERJG.SEXO,  null,  null,  'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_DEFENDIDO, ");
 		sql.append(" DECODE(PERJG.SEXO, 'H','o','a') AS O_A_DEFENDIDO, ");
 		sql.append(" DECODE(PERJG.SEXO, 'H','el','la') AS EL_LA_DEFENDIDO, ");
-		sql.append(" PERJG.IDLENGUAJE AS IDLENGUAJE_DEFENDIDO, ");		
-		sql.append(" 0 as ANIOEJG,  ");
-		sql.append(" 0 AS NUMERO_EJG, ");
-		sql.append(" '' FECHARESOLUCIONCAJG, ");		
+		sql.append(" PERJG.IDLENGUAJE AS IDLENGUAJE_DEFENDIDO, ");
+		sql.append(" (SELECT ejg.anio  ");
+		sql.append(" FROM SCS_EJG               ejg,  ");
+		sql.append(" Scs_Ejgdesigna        ejgdes,  ");
+		sql.append(" Scs_designa           des,  ");
+		sql.append(" Scs_Defendidosdesigna def2,  ");
+		sql.append(" scs_unidadfamiliarejg ufa  ");
+		sql.append(" WHERE des.IDINSTITUCION = ejgdes.IDINSTITUCION  ");
+		sql.append(" AND des.idturno = ejgdes.idturno  ");
+		sql.append(" AND des.Anio = ejgdes.aniodesigna  ");
+		sql.append(" AND des.Numero = ejgdes.Numerodesigna  ");
+		sql.append(" AND ejgdes.IDINSTITUCION = ejg.IDINSTITUCION  ");
+		sql.append(" AND ejgdes.Idtipoejg = ejg.IDTIPOEJG  ");
+		sql.append(" AND ejgdes.anioejg = ejg.anio  ");
+		sql.append(" AND ejgdes.numeroejg = ejg.numero  ");
+		sql.append(" AND des.IDINSTITUCION = def2.IDINSTITUCION  ");
+		sql.append(" AND des.idturno = def2.idturno  ");
+		sql.append(" AND des.anio = def2.anio  ");
+		sql.append(" AND des.numero = def2.Numero  ");
+		sql.append(" AND ejg.IDINSTITUCION = ufa.IDINSTITUCION  ");
+		sql.append(" AND ejg.Idtipoejg = ufa.IDTIPOEJG  ");
+		sql.append(" AND ejg.anio = ufa.anio  ");
+		sql.append(" AND ejg.numero = ufa.numero  ");
+		sql.append(" AND def2.IDINSTITUCION = ufa.IDINSTITUCION  ");
+		sql.append(" AND def2.idpersona = ufa.idpersona  ");
+		sql.append(" AND def2.idpersona = def.idpersona  ");
+		sql.append(" AND des.IDINSTITUCION = :1   ");
+		sql.append(" AND des.IDTURNO = :2   ");
+		sql.append(" AND des.ANIO = :3   ");
+		sql.append(" AND des.NUMERO = :4   ");
+		sql.append(" and rownum = 1)  ");
+		sql.append(" AS ANIO_EJG,  ");
+		sql.append(" (SELECT (ejg.ANIO || '/' || ejg.NUMEJG)  ");
+		sql.append(" FROM SCS_EJG               ejg,  ");
+		sql.append(" Scs_Ejgdesigna        ejgdes,  ");
+		sql.append(" Scs_designa           des,  ");
+		sql.append(" Scs_Defendidosdesigna def2,  ");
+		sql.append(" scs_unidadfamiliarejg ufa  ");
+		sql.append(" WHERE des.IDINSTITUCION = ejgdes.IDINSTITUCION  ");
+		sql.append(" AND des.idturno = ejgdes.idturno  ");
+		sql.append(" AND des.Anio = ejgdes.aniodesigna  ");
+		sql.append(" AND des.Numero = ejgdes.Numerodesigna  ");
+		sql.append(" AND ejgdes.IDINSTITUCION = ejg.IDINSTITUCION  ");
+		sql.append(" AND ejgdes.Idtipoejg = ejg.IDTIPOEJG  ");
+		sql.append(" AND ejgdes.anioejg = ejg.anio  ");
+		sql.append(" AND ejgdes.numeroejg = ejg.numero  ");
+		sql.append(" AND des.IDINSTITUCION = def2.IDINSTITUCION  ");
+		sql.append(" AND des.idturno = def2.idturno  ");
+		sql.append(" AND des.anio = def2.anio  ");
+		sql.append(" AND des.numero = def2.Numero  ");
+		sql.append(" AND ejg.IDINSTITUCION = ufa.IDINSTITUCION  ");
+		sql.append(" AND ejg.Idtipoejg = ufa.IDTIPOEJG  ");
+		sql.append(" AND ejg.anio = ufa.anio  ");
+		sql.append(" AND ejg.numero = ufa.numero  ");
+		sql.append(" AND def2.IDINSTITUCION = ufa.IDINSTITUCION  ");
+		sql.append(" AND def2.idpersona = ufa.idpersona  ");
+		sql.append(" AND def2.idpersona = def.idpersona  ");
+		sql.append(" AND des.IDINSTITUCION = :5   ");
+		sql.append(" AND des.IDTURNO = :6   ");
+		sql.append(" AND des.ANIO = :7   ");
+		sql.append(" AND des.NUMERO = :8   ");
+		sql.append(" and rownum = 1)  ");
+		sql.append(" AS NUMERO_EJG, ");		
+		sql.append(" (SELECT to_char(ejg.FECHARESOLUCIONCAJG, 'dd/mm/yyyy')  ");
+		sql.append(" FROM SCS_EJG               ejg,  ");
+		sql.append(" Scs_Ejgdesigna        ejgdes,  ");
+		sql.append(" Scs_designa           des,  ");
+		sql.append(" Scs_Defendidosdesigna def2,  ");
+		sql.append(" scs_unidadfamiliarejg ufa  ");
+		sql.append(" WHERE des.IDINSTITUCION = ejgdes.IDINSTITUCION  ");
+		sql.append(" AND des.idturno = ejgdes.idturno  ");
+		sql.append(" AND des.Anio = ejgdes.aniodesigna  ");
+		sql.append(" AND des.Numero = ejgdes.Numerodesigna  ");
+		sql.append(" AND ejgdes.IDINSTITUCION = ejg.IDINSTITUCION  ");
+		sql.append(" AND ejgdes.Idtipoejg = ejg.IDTIPOEJG  ");
+		sql.append(" AND ejgdes.anioejg = ejg.anio  ");
+		sql.append(" AND ejgdes.numeroejg = ejg.numero  ");
+		sql.append(" AND des.IDINSTITUCION = def2.IDINSTITUCION  ");
+		sql.append(" AND des.idturno = def2.idturno  ");
+		sql.append(" AND des.anio = def2.anio  ");
+		sql.append(" AND des.numero = def2.Numero  ");
+		sql.append(" AND ejg.IDINSTITUCION = ufa.IDINSTITUCION  ");
+		sql.append(" AND ejg.Idtipoejg = ufa.IDTIPOEJG  ");
+		sql.append(" AND ejg.anio = ufa.anio  ");
+		sql.append(" AND ejg.numero = ufa.numero  ");
+		sql.append(" AND def2.IDINSTITUCION = ufa.IDINSTITUCION  ");
+		sql.append(" AND def2.idpersona = ufa.idpersona  ");
+		sql.append(" AND def2.idpersona = def.idpersona  ");
+		sql.append(" AND des.IDINSTITUCION = :9   ");
+		sql.append(" AND des.IDTURNO = :10   ");
+		sql.append(" AND des.ANIO = :11   ");
+		sql.append(" AND des.NUMERO = :12   ");
+		sql.append(" and rownum = 1)  ");
+		sql.append(" AS FECHARESOLUCIONCAJG, ");		
 		sql.append(" (SELECT COUNT(1) ");
 		sql.append(" FROM scs_ejgdesigna ejgdes ");
-		sql.append(" WHERE ejgdes.idinstitucion  = :1  ");
-		sql.append(" AND ejgdes.IDTURNO = :2 ");
-		sql.append(" AND ejgdes.Aniodesigna = :3 ");
-		sql.append(" AND ejgdes.Numerodesigna = :4 ) COUNT_EJG, ");
+		sql.append(" WHERE ejgdes.idinstitucion  = :13  ");
+		sql.append(" AND ejgdes.IDTURNO = :14 ");
+		sql.append(" AND ejgdes.Aniodesigna = :15 ");
+		sql.append(" AND ejgdes.Numerodesigna = :16 ) COUNT_EJG, ");
 
 		sql.append(" CAL.DESCRIPCION AS CALIDAD_DEFENDIDO, ");
 		sql.append(" CAL.IDTIPOENCALIDAD ");
@@ -2047,13 +2153,13 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" AND PERJG.IDPROVINCIA = PROV.IDPROVINCIA(+) ");
 		sql.append(" AND PERJG.IDPAIS = PAIS.IDPAIS(+) ");
 
-		sql.append(" AND DEF.IDINSTITUCION = :5 ");
-		sql.append(" AND DEF.IDTURNO = :6 ");
-		sql.append(" AND DEF.ANIO = :7 ");
-		sql.append(" AND DEF.NUMERO = :8  ");
+		sql.append(" AND DEF.IDINSTITUCION = :17 ");
+		sql.append(" AND DEF.IDTURNO = :18 ");
+		sql.append(" AND DEF.ANIO = :19 ");
+		sql.append(" AND DEF.NUMERO = :20  ");
 		if (idPersonaJG != null && !idPersonaJG.trim().equals("")) {
-			h.put(new Integer(9), idPersonaJG);
-			sql.append(" AND PERJG.IDPERSONA = :9  ");
+			h.put(new Integer(21), idPersonaJG);
+			sql.append(" AND PERJG.IDPERSONA = :21  ");
 		}
 
 		try {
@@ -2096,7 +2202,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" DECODE(PERJG.SEXO, 'H','o','a') AS O_A_DEFENDIDO, ");
 		sql.append(" DECODE(PERJG.SEXO, 'H','el','la') AS EL_LA_DEFENDIDO, ");
 		sql.append(" PERJG.IDLENGUAJE AS IDLENGUAJE_DEFENDIDO, ");		
-		sql.append(" ejg.anio ANIOEJG,  ");
+		sql.append(" ejg.anio ANIO_EJG,  ");
 		sql.append(" ejg.ANIO || '/' || ejg.NUMEJG AS NUMERO_EJG, ");
 		sql.append(" to_char(ejg.FECHARESOLUCIONCAJG, 'dd/mm/yyyy') AS FECHARESOLUCIONCAJG, ");
 		sql.append(" CAL.DESCRIPCION AS CALIDAD_DEFENDIDO, ");
@@ -2148,7 +2254,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		return solicitantes;
 	}
 	
-	public Vector getDatosEJGDefendidoDesigna(String idInstitucion, String numero, String idTurno, String anio) {
+	public Vector getDatosEJGDefendidoDesigna(String idInstitucion, String numero, String idTurno, String anio) throws ClsExceptions {
 
 		Vector datos = null;
 		Hashtable h = new Hashtable();
@@ -2157,7 +2263,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		h.put(new Integer(3), anio);
 		h.put(new Integer(4), numero);
 
-		StringBuffer sql = new StringBuffer("SELECT ejg.ANIO ANIO_EJG, (ejg.ANIO || '/' || ejg.NUMEJG) AS NUMERO_EJG, to_char(ejg.FECHARESOLUCIONCAJG, 'dd/mm/yyyy') AS FECHARESOLUCIONCAJG");
+		StringBuffer sql = new StringBuffer("SELECT ejg.ANIO ANIO_EJG, (ejg.ANIO || '/' || ejg.NUMEJG) AS NUMERO_EJG, ");
+		sql.append(" to_char(ejg.FECHARESOLUCIONCAJG, 'dd/mm/yyyy') AS FECHARESOLUCIONCAJG");
 		sql.append(" FROM SCS_EJG ejg, Scs_Ejgdesigna des ");
 		sql.append(" WHERE des.IDINSTITUCION = ejg.IDINSTITUCION ");
 		sql.append(" AND des.Idtipoejg = ejg.IDTIPOEJG ");
@@ -2172,7 +2279,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		try {
 			datos = this.ejecutaSelectBind(sql.toString(), h);
 		} catch (ClsExceptions e) {
-			e.printStackTrace();
+			throw new ClsExceptions(e,e.toString()); 
 		}
 
 		return datos;
