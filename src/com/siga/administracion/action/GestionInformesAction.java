@@ -22,9 +22,12 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.form.InformeForm;
 import com.siga.administracion.service.InformesService;
+import com.siga.beans.AdmConsultaInformeAdm;
+import com.siga.beans.AdmConsultaInformeBean;
 import com.siga.beans.AdmInformeBean;
 import com.siga.beans.AdmTipoInformeBean;
 import com.siga.beans.CenInstitucionBean;
+import com.siga.beans.ConConsultaBean;
 import com.siga.beans.FileInforme;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -58,10 +61,13 @@ public class GestionInformesAction extends MasterAction {
 						mapDestino = getAjaxBusqueda (mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("nuevo")){
 						mapDestino = nuevo(mapping, miForm, request, response);
+					}else if ( accion.equalsIgnoreCase("nuevoInformeConsulta")){
+						mapDestino = nuevoInformeConsulta(mapping, miForm, request, response);
 					}
-//					else if ( accion.equalsIgnoreCase("comprobarInsertar")){
-//						mapDestino = comprobarInsertar(mapping, miForm, request, response);
-//					}
+					
+					else if ( accion.equalsIgnoreCase("borrarConsultaInforme")){
+						mapDestino = borrarConsultaInforme(mapping, miForm, request, response);
+					}
 					else if ( accion.equalsIgnoreCase("insertar")){
 						mapDestino = insertar(mapping, miForm, request, response);
 					}
@@ -75,8 +81,12 @@ public class GestionInformesAction extends MasterAction {
 						mapDestino = borrar(mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("consultar")){
 						mapDestino = consultar(mapping, miForm, request, response);
+					}else if ( accion.equalsIgnoreCase("consultarInformeConsulta")){
+						mapDestino = consultarInformeConsulta(mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("editar")){
 						mapDestino = editar(mapping, miForm, request, response);
+					}else if ( accion.equalsIgnoreCase("editarInformeConsulta")){
+						mapDestino = editarInformeConsulta(mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("modificar")){
 						mapDestino = modificar(mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("refrescar")){
@@ -186,6 +196,47 @@ public class GestionInformesAction extends MasterAction {
 		return forward;
 	}
 	
+	protected String nuevoInformeConsulta (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException 
+			{
+		InformeForm informeForm = (InformeForm) formulario;
+		// informeForm.clear();
+		informeForm.setModo("insertar");
+		UsrBean usrBean = this.getUserBean(request);
+		informeForm.setIdInstitucion(usrBean.getLocation());
+		BusinessManager bm = getBusinessManager();
+		InformesService informeService = (InformesService)bm.getService(InformesService.class);
+		List<AdmTipoInformeBean> tiposInformeList = informeService.getTiposInforme(usrBean);
+		informeForm.setTiposInforme(tiposInformeList);
+		List<CenInstitucionBean> institucionesList = informeService.getInstitucionesInformes(new Integer(usrBean.getLocation()),usrBean);
+		informeForm.setInstituciones(institucionesList);
+		informeForm.setLenguajes(informeService.getLenguajes(usrBean));
+
+		InformeForm informeFormEdicion = new InformeForm();
+		informeFormEdicion.setUsrBean(this.getUserBean(request));
+		informeFormEdicion.setIdInstitucion(informeFormEdicion.getUsrBean().getLocation());
+		informeFormEdicion.setLenguajes(informeForm.getLenguajes());
+		informeFormEdicion.setAlias(informeForm.getAlias());
+		informeFormEdicion.setIdConsulta(informeForm.getIdConsulta());
+		informeFormEdicion.setIdInstitucionConsulta(informeForm.getIdInstitucionConsulta());
+		
+		for(AdmTipoInformeBean tipoInformeConsulta:tiposInformeList){
+			if(tipoInformeConsulta.getIdTipoInforme().equals(AdmTipoInformeBean.TIPOINFORME_CONSULTAS)){
+				informeFormEdicion.setClaseTipoInforme(tipoInformeConsulta.getClase());
+				informeFormEdicion.setIdTipoInforme(tipoInformeConsulta.getIdTipoInforme());
+				informeFormEdicion.setDirectorio(tipoInformeConsulta.getDirectorio());
+				break;
+				
+			}
+			
+		}
+		
+		
+		request.setAttribute("InformeFormEdicion", informeFormEdicion);
+		return "edicion";
+	}
 	protected String nuevo (ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
@@ -227,6 +278,39 @@ public class GestionInformesAction extends MasterAction {
 		
 		return "edicion";
 	}
+	protected String editarInformeConsulta(ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException 
+			{
+		
+		InformeForm informeForm = (InformeForm) formulario;
+		UsrBean usrBean = this.getUserBean(request);
+		try {
+			//Si no estuviera todo en el formulario accederiamos a ello de la manera que comento
+			BusinessManager bm = getBusinessManager();
+			InformesService informeService = (InformesService)bm.getService(InformesService.class);
+			
+			informeForm.setIdInstitucion(usrBean.getLocation());
+			List<AdmTipoInformeBean> tiposInformeList = informeService.getTiposInforme(usrBean);
+			informeForm.setTiposInforme(tiposInformeList);
+			List<CenInstitucionBean> institucionesList = informeService.getInstitucionesInformes(new Integer(usrBean.getLocation()),usrBean);
+			informeForm.setInstituciones(institucionesList);
+			informeForm.setLenguajes(informeService.getLenguajes(usrBean));
+			
+			AdmInformeBean informeBean =  informeService.getInforme(informeForm, usrBean);
+			InformeForm informeFormEdicion = informeBean.getInforme();
+			informeFormEdicion.setLenguajes(informeForm.getLenguajes());
+			informeFormEdicion.setClaseTipoInforme(informeForm.getClaseTipoInforme());
+			
+			request.setAttribute("InformeFormEdicion", informeFormEdicion);
+			informeForm.setModo("modificar");
+		}catch (Exception e){
+			throwExcp("messages.general.errorExcepcion", e, null); 			
+		}
+		
+		return "edicion";
+	}
 	protected String consultar(ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
@@ -250,7 +334,36 @@ public class GestionInformesAction extends MasterAction {
 		}
 		return "edicion";
 	}
-	
+	protected String consultarInformeConsulta(ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException 
+			{
+		
+		InformeForm informeForm = (InformeForm) formulario;
+		UsrBean usrBean = this.getUserBean(request);
+		try {
+			informeForm.setIdInstitucion(usrBean.getLocation());
+			BusinessManager bm = getBusinessManager();
+			InformesService informeService = (InformesService)bm.getService(InformesService.class);
+			List<AdmTipoInformeBean> tiposInformeList = informeService.getTiposInforme(usrBean);
+			informeForm.setTiposInforme(tiposInformeList);
+			List<CenInstitucionBean> institucionesList = informeService.getInstitucionesInformes(new Integer(usrBean.getLocation()),usrBean);
+			informeForm.setInstituciones(institucionesList);
+			informeForm.setLenguajes(informeService.getLenguajes(usrBean));
+
+			AdmInformeBean informeBean =  informeService.getInforme(informeForm, usrBean);
+			InformeForm informeFormEdicion = informeBean.getInforme();
+			informeFormEdicion.setLenguajes(informeForm.getLenguajes());
+			informeFormEdicion.setClaseTipoInforme(informeForm.getClaseTipoInforme());
+			
+			request.setAttribute("InformeFormEdicion", informeFormEdicion);
+			informeForm.setModo("consultar");
+		}catch (Exception e){
+			throwExcp("messages.general.errorExcepcion", e, null); 			
+		}
+		return "edicion";
+	}
 	protected String duplicar(ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
@@ -354,7 +467,42 @@ public class GestionInformesAction extends MasterAction {
 //	}
 	
 	
-	
+	protected String borrarConsultaInforme(ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException 
+			{
+
+		InformeForm informeForm = (InformeForm) formulario;
+		UsrBean usrBean = this.getUserBean(request);
+		String forward = "exception";
+		try {
+			
+			BusinessManager bm = getBusinessManager();
+			InformesService informeService = (InformesService)bm.getService(InformesService.class);
+			AdmInformeBean informeBean =  informeService.getInforme(informeForm, usrBean);
+			InformeForm informeFormEdicion = informeBean.getInforme();
+			informeFormEdicion.setClaseTipoInforme(informeForm.getClaseTipoInforme());
+			AdmConsultaInformeBean consultaInformeBean = new AdmConsultaInformeBean();
+			consultaInformeBean.setIdInstitucion_consulta(new Integer(informeForm.getIdInstitucionConsulta()));
+			consultaInformeBean.setIdInstitucion(new Integer(informeForm.getIdInstitucion()));
+			consultaInformeBean.setIdPlantilla(informeForm.getIdPlantilla());
+			consultaInformeBean.setIdConsulta(new Integer(informeForm.getIdConsulta()));
+			
+			informeService.borrarConsultaInforme(consultaInformeBean,informeFormEdicion, usrBean);
+			forward = exitoRefresco("messages.updated.success",request);
+			
+		} catch (ClsExceptions e) {
+			
+			String error = UtilidadesString.getMensajeIdioma(usrBean,e.getMsg());
+			informeForm.setMsgError(error);
+		}catch (Exception e){
+			String error = UtilidadesString.getMensajeIdioma(usrBean,"messages.general.errorExcepcion");
+			informeForm.setMsgError(error);			
+		}
+		
+		return forward;
+	}
 	protected String borrar(ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
@@ -371,7 +519,16 @@ public class GestionInformesAction extends MasterAction {
 			AdmInformeBean informeBean =  informeService.getInforme(informeForm, usrBean);
 			InformeForm informeFormEdicion = informeBean.getInforme();
 			informeFormEdicion.setClaseTipoInforme(informeForm.getClaseTipoInforme());
-			informeService.borrarInforme(informeFormEdicion, usrBean);
+			if(informeBean.getIdTipoInforme().equals(AdmTipoInformeBean.TIPOINFORME_CONSULTAS)){
+				AdmConsultaInformeBean consultaInformeBean = new AdmConsultaInformeBean();
+				consultaInformeBean.setIdInstitucion(new Integer(informeForm.getIdInstitucion()));
+				consultaInformeBean.setIdPlantilla(informeForm.getIdPlantilla());
+				
+				informeService.borrarConsultaInforme(consultaInformeBean,informeFormEdicion, usrBean);
+			}else{
+				informeService.borrarInforme(informeFormEdicion, usrBean);
+			}
+			
 			forward = exitoRefresco("messages.updated.success",request);
 			
 		} catch (ClsExceptions e) {
@@ -537,7 +694,16 @@ public class GestionInformesAction extends MasterAction {
 			BusinessManager bm = getBusinessManager();
 			InformesService informeService = (InformesService)bm.getService(InformesService.class);
 			String idIntitucionPropietario = informeForm.getIdInstitucion();
+			
+			
+			if(informeForm.getUsrBean()==null){
+				UsrBean usrBean = this.getUserBean(request);
+				informeForm.setUsrBean(usrBean);
+				
+			}
 			String  idInstitucionUsuario = informeForm.getUsrBean().getLocation();
+			
+			
 			//solo se tendra pemiso de borrado cuando sea de su propia intitucion o
 			boolean isPermitidoBorrar = (informeForm.getModoInterno()!=null && !informeForm.getModoInterno().equals("consultar")) && ((idIntitucionPropietario.equals("0")&&idInstitucionUsuario.equals("2000"))
 					|| !idIntitucionPropietario.equals("0")&&idIntitucionPropietario.equals(idInstitucionUsuario));

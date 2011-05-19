@@ -1209,26 +1209,33 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			
 			//Si el nombre físico del dichero no se ha guardado antes, se actualiza en bbdd
 			if((nombreFichero.equals("")) && (fichero==null || !fichero.exists())){
-				nombreFichero = fact.generarInformeYObtenerRuta(idInstitucion,idFacturacion);
+				
+				
+//				nombreFichero = fact.generarInformeYObtenerRuta(idInstitucion,idFacturacion);
+				ArrayList filtrosInforme = fact.getFiltrosInforme(idInstitucion,idFacturacion);
+				InformePersonalizable informePersonalizable = new InformePersonalizable();
+				fichero = informePersonalizable.getFicheroGenerado(user,  InformePersonalizable.I_INFORMEFACTSJCS, filtrosInforme);
+				nombreFichero = fichero.getPath();
 				FcsFacturacionJGBean bean = new FcsFacturacionJGBean();
 				bean.setIdInstitucion(Integer.parseInt(idInstitucion));
 				bean.setIdFacturacion(Integer.parseInt(idFacturacion));
 				bean.setNombreFisico(nombreFichero);
 				fact.update(bean,beanOriginal);
-				fichero = new File(nombreFichero);
 
 				if (fichero == null || !fichero.exists()) {
 					throw new SIGAException("messages.general.error.ficheroNoExiste");
 				}
 
 			}else if((!nombreFichero.equals("")) && (fichero==null || !fichero.exists())){
-				nombreFichero = fact.generarInformeYObtenerRuta(idInstitucion,idFacturacion);
+				ArrayList filtrosInforme = fact.getFiltrosInforme(idInstitucion,idFacturacion);
+				InformePersonalizable informePersonalizable = new InformePersonalizable();
+				fichero = informePersonalizable.getFicheroGenerado(user,  InformePersonalizable.I_INFORMEFACTSJCS, filtrosInforme);
+				nombreFichero = fichero.getPath();
 				FcsFacturacionJGBean bean = new FcsFacturacionJGBean();
 				bean.setIdInstitucion(Integer.parseInt(idInstitucion));
 				bean.setIdFacturacion(Integer.parseInt(idFacturacion));
 				bean.setNombreFisico(nombreFichero);
 				fact.update(bean,beanOriginal);
-				fichero = new File(nombreFichero);
 				if (fichero == null || !fichero.exists()) {
 					throw new SIGAException("messages.general.error.ficheroNoExiste");
 				}

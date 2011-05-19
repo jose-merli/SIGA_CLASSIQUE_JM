@@ -4109,17 +4109,10 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				if(prevision){
 					//////////////////////////////////////
 					/// CREAMOS EL INFORME
-					String rutaFichero = this.generarInformeYObtenerRuta(beanFac.getIdInstitucion().toString(), beanFac.getIdFacturacion().toString());
-					File fichero = null;
-					try {
-						fichero = new File(rutaFichero);
-						if (fichero == null || !fichero.exists()) {
-							throw new SIGAException("messages.general.error.ficheroNoExiste");
-						}
-					} catch (Exception e) {
-						throw new SIGAException("messages.general.error");
-					}
-					beanFac.setNombreFisico(rutaFichero);
+					ArrayList filtrosInforme = this.getFiltrosInforme(beanFac.getIdInstitucion().toString(), beanFac.getIdFacturacion().toString());
+					InformePersonalizable informePersonalizable = new InformePersonalizable();
+					File fichero = informePersonalizable.getFicheroGenerado(usrbean,  InformePersonalizable.I_INFORMEFACTSJCS, filtrosInforme);
+					beanFac.setNombreFisico(fichero.getPath());
 				
 					tx.rollback();
 				}else{
@@ -4228,7 +4221,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		}
 	}
 	
-	public String generarInformeYObtenerRuta(String idInstitucion, String idFacturacion)throws ClsExceptions,SIGAException{
+	public ArrayList<HashMap<String, String>> getFiltrosInforme(String idInstitucion, String idFacturacion)throws ClsExceptions,SIGAException{
 		
 		String rutaFichero = "";
 		InformePersonalizable inf = new InformePersonalizable();
@@ -4252,16 +4245,13 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDIOMA");
 			filtro.put("VALOR", this.usrbean.getLanguage());
 			filtrosInforme.add(filtro);			
-			rutaFichero = inf.generarInformes(this.usrbean, InformePersonalizable.I_INFORMEFACTSJCS, filtrosInforme);
 			
-		} catch (ClsExceptions e) {
-			throw new SIGAException(e);
-		
+			
 		} finally {
 			setNadieEjecutando();
 		}
 		
-		return rutaFichero;							
+		return filtrosInforme;							
 	}
 	
 	

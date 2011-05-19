@@ -1,6 +1,7 @@
 package com.siga.informes.action;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,6 +13,7 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -53,7 +55,6 @@ import com.siga.beans.ScsInclusionGuardiasEnListasBean;
 import com.siga.beans.ScsListaGuardiasAdm;
 import com.siga.beans.ScsListaGuardiasBean;
 import com.siga.beans.ScsPersonaJGBean;
-import com.siga.beans.ScsSOJBean;
 import com.siga.beans.ScsTipoDocumentoEJGBean;
 import com.siga.certificados.Plantilla;
 import com.siga.envios.EnvioInformesGenericos;
@@ -348,12 +349,8 @@ public class InformesGenericosAction extends MasterAction {
 							} else if (idTipoInforme.equals("FJGM")) {
 								mapDestino = generaInfFacJG(mapping, miForm, request, response);
 							} else if (idTipoInforme.equals(InformePersonalizable.I_INFORMEFACTSJCS)) {
-								ArrayList<HashMap<String, String>> filtrosInforme = 
-										obtenerDatosFormInformeFacturacionJG(miForm, request);
-								InformePersonalizable inf = new InformePersonalizable();
-								mapDestino = inf.generarInformes(miForm, request, 
-										InformePersonalizable.I_INFORMEFACTSJCS, filtrosInforme);
-								//mapDestino = generaInfFacJG(mapping, miForm, request, response);
+								
+								mapDestino = generaInfPersonalizableFacJG(mapping, miForm, request, response);
 							} else if (idTipoInforme.equals("EJGCA")) {
 								mapDestino = ejgca(mapping, miForm, request, response);
 							} else if (idTipoInforme.equals("EJG")){
@@ -470,6 +467,31 @@ public class InformesGenericosAction extends MasterAction {
 		request.setAttribute("generacionOK","OK");
 		return "descarga";	
 	}
+	protected String generaInfPersonalizableFacJG (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) 
+	throws SIGAException, ClsExceptions{
+		UsrBean usr = this.getUserBean(request);
+		ArrayList<HashMap<String, String>> filtrosInforme = 
+			obtenerDatosFormInformeFacturacionJG(formulario, request);
+		InformePersonalizable inf = new InformePersonalizable();
+		File ficheroSalida = inf.getFicheroGenerado(usr, InformePersonalizable.I_INFORMEFACTSJCS, filtrosInforme);
+		
+		
+
+		
+			request.setAttribute("nombreFichero", ficheroSalida.getName());
+			request.setAttribute("rutaFichero", ficheroSalida.getPath());
+			request.setAttribute("borrarFichero", "true");
+			request.setAttribute("generacionOK","OK");
+			return "descarga";
+		
+
+		
+
+		
+
+
+	}
+	
 	protected String irpf (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) 
 	throws SIGAException{
 		InformesGenericosForm miForm = (InformesGenericosForm) formulario;
@@ -477,9 +499,16 @@ public class InformesGenericosAction extends MasterAction {
 		InformeCertificadoIRPF informeIRPF = new InformeCertificadoIRPF();
 		File ficheroSalida=null;
 		try {
+			HttpSession session = request.getSession(false);
+			String pepe = session.getId();
+			SimpleDateFormat  fm = new SimpleDateFormat("ddMMyyyyhhmmssSSSS");
+			String fecha = fm.format(new Date(session.getCreationTime()));
+			System.out.println(fecha);
+			
 			ficheroSalida = informeIRPF.getInformeIRPF(formulario, this.getUserBean(request),isAEnviar);
 
 		}
+		
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.informes"},e,null);
 		}

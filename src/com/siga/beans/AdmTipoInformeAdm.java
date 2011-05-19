@@ -107,10 +107,16 @@ import com.siga.Utilidades.UtilidadesString;
 		    }
 		    return salida;
 		}
+		/**
+		 * se mostraran solo las genericas y las de consulta
+		 * @param isCombo
+		 * @return
+		 * @throws ClsExceptions
+		 */
 		public List<AdmTipoInformeBean> getTiposInforme(boolean isCombo)throws ClsExceptions{
 
 			StringBuffer sql = new StringBuffer();
-			sql.append("SELECT * FROM ADM_TIPOINFORME WHERE ADM_TIPOINFORME.CLASE <> 'O' ORDER BY DESCRIPCION ");			
+			sql.append("SELECT * FROM ADM_TIPOINFORME WHERE ADM_TIPOINFORME.CLASE in ('G','C')  ORDER BY DESCRIPCION ");			
 			List<AdmTipoInformeBean> tipoInformeList = null;
 			try {
 				RowsContainer rc = new RowsContainer(); 

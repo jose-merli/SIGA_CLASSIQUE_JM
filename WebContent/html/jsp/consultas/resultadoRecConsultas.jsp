@@ -57,10 +57,10 @@
 		<html:form action="/CON_RecuperarConsultas.do" method="POST" target="mainWorkArea" style="display:none">			
 		    <html:hidden property = "modo" value = ""/>
 			<html:hidden property = "hiddenFrame" value = "1"/>			
-			<html:hidden property = "idInstitucion" value = ""/>
-			<html:hidden property = "idConsulta" value = ""/>
+			<html:hidden property = "idInstitucion"/>
+			<html:hidden property = "idConsulta"/>
 			<html:hidden property = "tipoConsulta"/>
-			<html:hidden property = "tipoEnvio" value=""/>
+			<html:hidden property = "tipoEnvio"/>
 			
 			<!-- RGG: cambio a formularios ligeros -->
 			<input type="hidden" name="filaSelD">

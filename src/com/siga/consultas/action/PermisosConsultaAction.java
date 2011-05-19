@@ -5,7 +5,9 @@
  */
 package com.siga.consultas.action;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -16,6 +18,9 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.UsrBean;
+import com.siga.administracion.form.InformeForm;
+import com.siga.administracion.service.InformesService;
+import com.siga.beans.AdmTipoInformeBean;
 import com.siga.beans.ConConsultaAdm;
 import com.siga.beans.ConConsultaBean;
 import com.siga.beans.ConConsultaPerfilAdm;
@@ -24,6 +29,8 @@ import com.siga.consultas.form.PermisosConsultaForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+
+import es.satec.businessManager.BusinessManager;
 
 /**
  * Action para los permisos sobre consultas
@@ -55,7 +62,16 @@ public class PermisosConsultaAction extends MasterAction {
 			//Recuperamos los permisos de la consulta
 			Vector datos = consAdm.obtenerPermisosGrupos(idConsulta,idInstitucion_Consulta,idInstitucion);
 			request.setAttribute("datos",datos);
-        	
+			InformeForm informeForm = new InformeForm();
+			informeForm.setIdInstitucion(idInstitucion);
+			informeForm.setAlias(consBean.getDescripcion());
+			informeForm.setIdTipoInforme(AdmTipoInformeBean.TIPOINFORME_CONSULTAS);
+			BusinessManager bm = getBusinessManager();
+			InformesService informeService = (InformesService)bm.getService(InformesService.class);
+			List<InformeForm> listadoInformes = informeService.getInformesConsulta(consBean,informeForm,userBean);
+			request.setAttribute("listadoInformes", listadoInformes);
+			
+
         }catch(Exception e){
         	throwExcp("messages.general.error",new String[] {"modulo.consultas"},e,null); 
         }        

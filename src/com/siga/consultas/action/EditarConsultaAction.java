@@ -402,6 +402,8 @@ public class EditarConsultaAction extends MasterAction {
 			throwExcp("messages.general.error",new String[] {"modulo.consultas"},e,null); 
 		}
 		
+		
+		
 		if (consultaExperta!=null && consultaExperta.equals(ClsConstants.DB_TRUE)){	
 			
 			return "inicioExperta";

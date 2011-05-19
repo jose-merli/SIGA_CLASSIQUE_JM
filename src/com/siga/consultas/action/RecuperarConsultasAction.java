@@ -5,8 +5,12 @@
  */
 package com.siga.consultas.action;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,23 +23,36 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitiveBind;
+import com.siga.Utilidades.SIGAReferences;
+import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.administracion.SIGAConstants;
+import com.siga.administracion.form.InformeForm;
+import com.siga.administracion.service.InformesService;
+import com.siga.beans.AdmInformeAdm;
+import com.siga.beans.AdmInformeBean;
+import com.siga.beans.AdmTipoInformeAdm;
+import com.siga.beans.AdmTipoInformeBean;
 import com.siga.beans.ConCampoConsultaBean;
 import com.siga.beans.ConConsultaAdm;
 import com.siga.beans.ConConsultaBean;
 import com.siga.beans.ConCriteriosDinamicosAdm;
 import com.siga.beans.ConOperacionConsultaAdm;
 import com.siga.beans.ConOperacionConsultaBean;
+import com.siga.certificados.Plantilla;
 import com.siga.consultas.CriterioDinamico;
 import com.siga.consultas.form.RecuperarConsultasForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.informes.InformePersonalizable;
+
+import es.satec.businessManager.BusinessManager;
 
 
 
@@ -445,16 +462,51 @@ public class RecuperarConsultasAction extends MasterAction {
 	
 		
 		try {
-			
+			UsrBean userBean = this.getUserBean (request);
 			HashMap databackup = (HashMap)request.getSession().getAttribute("DATABACKUP");
 			ConConsultaBean conBean = (ConConsultaBean)databackup.get("datosParticulares");
-			PaginadorCaseSensitiveBind p = (PaginadorCaseSensitiveBind)databackup.get("paginador");
-			RowsContainer rc = new RowsContainer();
-			rc.queryBind(p.getQueryOriginal(), p.getCodigos());
-			request.setAttribute("datos",rc.getAll());
-			request.setAttribute("descripcion",conBean.getDescripcion());
-			request.setAttribute("cabeceras",databackup.get("cabeceras"));
-					
+			Integer idConsulta = conBean.getIdConsulta();
+			Integer idInstitucion = conBean.getIdInstitucion();
+			BusinessManager bm = getBusinessManager();
+			InformesService informeService = (InformesService)bm.getService(InformesService.class);
+			InformeForm informeForm = new InformeForm();
+			informeForm.setIdInstitucion(userBean.getLocation());
+			informeForm.setIdTipoInforme(AdmTipoInformeBean.TIPOINFORME_CONSULTAS);
+			List<InformeForm> informesForms = informeService.getInformesConsulta(conBean,informeForm,userBean);
+			
+			
+			if(informesForms!=null && informesForms.size()>0){
+				ArrayList<File> listaFicheros = new ArrayList<File>();
+				
+				AdmInformeAdm adm = new AdmInformeAdm(userBean);
+				
+				PaginadorCaseSensitiveBind p = (PaginadorCaseSensitiveBind)databackup.get("paginador");
+				Vector datos = adm.selectGenericoBind(p.getQueryOriginal(), p.getCodigos());
+				String[] columnas = (String[]) databackup.get("cabeceras");
+				
+				/*if(datos!=null)
+					datos.*/
+				InformePersonalizable informePersonalizable = new InformePersonalizable();
+				File ficheroSalida = informePersonalizable.getFicheroGenerado(informesForms, datos,columnas, userBean);
+				request.setAttribute("nombreFichero", ficheroSalida.getName());
+				request.setAttribute("rutaFichero", ficheroSalida.getPath());
+				request.setAttribute("borrarFichero", "true");
+				request.setAttribute("generacionOK","OK");
+				
+				return "descarga";	
+				
+				
+				
+				
+			}else{
+			
+				PaginadorCaseSensitiveBind p = (PaginadorCaseSensitiveBind)databackup.get("paginador");
+				RowsContainer rc = new RowsContainer();
+				rc.queryBind(p.getQueryOriginal(), p.getCodigos());
+				request.setAttribute("datos",rc.getAll());
+				request.setAttribute("descripcion",conBean.getDescripcion());
+				request.setAttribute("cabeceras",databackup.get("cabeceras"));
+			}
 			
 		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.consultas"},e,null); 
@@ -941,5 +993,25 @@ public class RecuperarConsultasAction extends MasterAction {
 		
 	 return sentencia;
 	}
-
+//	boolean flag = true;
+//    Vector vIndices = new Vector();
+//    while (flag) {
+//        int beginIndex = textoAux.indexOf(marca)+2;
+//        if(beginIndex==-1){
+//            flag= false;
+//            continue;
+//        }
+//        cadena = textoAux.substring(beginIndex);
+//        int endIndex = cadena.indexOf(marca);
+//        if(endIndex==-1){
+//            flag= false;
+//            continue;
+//        }
+//        int[] indices = {beginIndex,beginIndex+endIndex};
+//        vIndices.add(indices);
+//        textoAux = textoAux.substring(beginIndex+endIndex+2);
+//        beginIndex = textoAux.indexOf(marca);
+//        if(beginIndex==-1)
+//            flag= false;
+//    }
 }

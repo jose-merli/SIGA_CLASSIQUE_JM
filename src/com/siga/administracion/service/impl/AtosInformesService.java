@@ -28,6 +28,8 @@ import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.form.InformeForm;
 import com.siga.administracion.service.InformesService;
+import com.siga.beans.AdmConsultaInformeAdm;
+import com.siga.beans.AdmConsultaInformeBean;
 import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.AdmInformeBean;
 import com.siga.beans.AdmLenguajesAdm;
@@ -36,6 +38,7 @@ import com.siga.beans.AdmTipoInformeAdm;
 import com.siga.beans.AdmTipoInformeBean;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenInstitucionBean;
+import com.siga.beans.ConConsultaBean;
 import com.siga.beans.FileInforme;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -106,7 +109,7 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 			
 			directorio.append(informeForm.getDirectorio());
 			
-		}else if(informeForm.getClaseTipoInforme().equals(AdmTipoInformeBean.CLASETIPOINFORME_PERSONALIZABLE)){
+		}else if(informeForm.getClaseTipoInforme().equals(AdmTipoInformeBean.CLASETIPOINFORME_PERSONALIZABLE)||informeForm.getClaseTipoInforme().equals(AdmTipoInformeBean.CLASETIPOINFORME_CONSULTAS)){
 			ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 			final String directorioFisicoPlantillaInformesJava = rp3.returnProperty("informes.directorioFisicoPlantillaInformesJava");
 			directorio = new StringBuffer(directorioFisicoPlantillaInformesJava);
@@ -156,6 +159,19 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 		informeAdm.insert(informeVo);
 		informeForm.setIdPlantilla(idPlantilla.toString());
 		creaDirectorio(getDirectorio(informeForm));
+ 		if(informeForm.getIdTipoInforme().equals(AdmTipoInformeBean.TIPOINFORME_CONSULTAS)){
+			AdmConsultaInformeAdm consultaInformeAdm = new AdmConsultaInformeAdm(usrBean);
+			Hashtable consultaHashtable = new Hashtable();
+			consultaHashtable.put(AdmConsultaInformeBean.C_IDINSTITUCION, informeForm.getIdInstitucion());
+			consultaHashtable.put(AdmConsultaInformeBean.C_IDINSTITUCION_CONSULTA, informeForm.getIdInstitucionConsulta());
+			consultaHashtable.put(AdmConsultaInformeBean.C_IDCONSULTA, informeForm.getIdConsulta());
+			consultaHashtable.put(AdmConsultaInformeBean.C_IDPLANTILLA, informeForm.getIdPlantilla());
+			consultaHashtable.put(AdmConsultaInformeBean.C_VARIASLINEAS, ClsConstants.DB_TRUE);
+			consultaHashtable.put(AdmConsultaInformeBean.C_NOMBRE, informeForm.getASolicitantes());
+			consultaInformeAdm.insert(consultaHashtable);
+			//Hay que insertar en admconsultainforme
+			
+		}
 		
 		
 	}
@@ -436,6 +452,30 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 	    	}
    			
    			
+	}
+	public List<InformeForm> getInformesConsulta(ConConsultaBean consulta,
+			InformeForm informeForm, UsrBean usrBean) throws ClsExceptions {
+		AdmInformeAdm informeAdm = new AdmInformeAdm(usrBean);
+		List<InformeForm> lista = informeAdm.getInformesConsulta(consulta, informeForm);
+		return lista;
+	}
+	public void borrarConsultaInforme(AdmConsultaInformeBean consultaInforme,
+			InformeForm informeForm, UsrBean usrBean) throws ClsExceptions,
+			SIGAException {
+		AdmConsultaInformeAdm admConsulta = new AdmConsultaInformeAdm(usrBean);
+//		Hashtable<String, String> deleteHash = new Hashtable<String, String>();
+//		deleteHash.put(AdmConsultaInformeBean.C_IDINSTITUCION, consultaInforme.getIdInstitucion().toString());
+//		deleteHash.put(AdmConsultaInformeBean.C_IDPLANTILLA, consultaInforme.getIdPlantilla());
+//		if(consultaInforme.getIdConsulta()!=null){
+//			deleteHash.put(AdmConsultaInformeBean.C_IDCONSULTA, consultaInforme.getIdConsulta().toString());
+//			deleteHash.put(AdmConsultaInformeBean.C_IDINSTITUCION_CONSULTA, consultaInforme.getIdInstitucion_consulta().toString());
+//		}
+		admConsulta.deleteConsultaInforme(consultaInforme);
+		borrarInforme(informeForm, usrBean);
+
+		
+		
+		
 	}
 
 }

@@ -12,6 +12,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.beans.AdmTipoFiltroInformeBean;
 import com.siga.general.MasterAction;
@@ -65,12 +66,8 @@ public class MantenimientoInformesAction extends MasterAction {
 							formulario, request, response);
 					return mapping.findForward(mapDestino);
 				} else if (modo.equalsIgnoreCase("generarCertificadoPago")) {
-					ArrayList<HashMap<String, String>> filtrosInforme = 
-							obtenerDatosFormCertificadoPago(formulario, request);
-					InformePersonalizable inf = new InformePersonalizable();
-					mapDestino = inf.generarInformes(formulario, request, 
-							InformePersonalizable.I_CERTIFICADOPAGO, filtrosInforme);
-					return mapping.findForward(mapDestino);/**/
+					
+					return  mapping.findForward(generaInfPersonalizablePago(mapping, miForm, request, response));/**/
 				} else if (miForm.getModo().equalsIgnoreCase(
 						"generarInformeIRPF")) {
 					return mapping.findForward(this.generarInformeIRPF(mapping,
@@ -93,7 +90,21 @@ public class MantenimientoInformesAction extends MasterAction {
 					new String[] { "modulo.facturacionSJCS" });
 		}
 	}
+	protected String generaInfPersonalizablePago(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) 
+	throws SIGAException, ClsExceptions{
+		
+		UsrBean usr = this.getUserBean(request);
+		ArrayList<HashMap<String, String>> filtrosInforme = 
+			obtenerDatosFormCertificadoPago(formulario, request);
+		InformePersonalizable inf = new InformePersonalizable();
+		File ficheroSalida = inf.getFicheroGenerado(usr, InformePersonalizable.I_CERTIFICADOPAGO, filtrosInforme);
+		request.setAttribute("nombreFichero", ficheroSalida.getName());
+		request.setAttribute("rutaFichero", ficheroSalida.getPath());
+		request.setAttribute("borrarFichero", "true");
+		request.setAttribute("generacionOK","OK");
+		return "descarga";
 
+	}
 	/**
 	 * Abre la JSP de inicio
 	 */

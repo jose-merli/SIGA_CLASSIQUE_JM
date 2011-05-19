@@ -509,6 +509,66 @@ public class MasterReport
 		
 	}
 	
+	/*III. XML a RTF XML to RTF 
+xml a la conversión rtf hay algunos pocos problemas, no tenemos un XML a RTF directa de la API, vamos a utilizar la API de JFOR aún no se ha integrado en el FOP xml to rtf conversion there are some little trouble, we do not have a direct XML to RTF from the API, we will use the JFor API has not yet integrated into the FOP 
+
+Ir. Go. JFOR API se puede lograr desde el caso de los documentos a la conversión de archivos RTF, sino que también ofrece una interfaz CONSLE. JFor API can be achieved from the FO documents to RTF file conversion, it also offers consle interface. 
+
+Podemos www.jfor.org obtenidos a partir de la información pertinente JFOR. We can www.jfor.org obtained from jfor relevant information. 
+
+A partir de documentos XML a la conversión de archivos RTF se pueden dividir en dos pasos: From XML documents to the RTF file conversion can be divided into two steps: 
+
+1. 1. Xml con FOP para convertir a Xml using FOP to convert fo 
+
+2. 2. JFOR con RTF se convertirá en la JFor with RTF will be converted into fo 
+
+3.1 con FOP a xml para convertir 3.1 with FOP to xml convert fo 
+
+Este paso se puede utilizar el método descrito anteriormente, el código XML siguiente para la realización de la conversión, todavía puede utilizar el documento XML utilizado anteriormente en This step we can easily use the method described above, the following xml to the realization of fo conversion, they may still use the above xml document used in 
+
+Y el documento XSL-FO. And xsl-fo document. 
+
+OutputStream foOut = new FileOutputStream (fofile); OutputStream foOut = new FileOutputStream (fofile); 
+TransformerFactory fábrica = TransformerFactory.newInstance (); TransformerFactory factory = TransformerFactory.newInstance (); 
+Transformador = factory.newTransformer (nuevo StreamSource ( Transformer transformer = factory.newTransformer (new StreamSource ( 
+xsltfile)); xsltfile)); 
+Fuente src = new StreamSource (archivo_xml); Source src = new StreamSource (xmlfile); 
+res Resultado = StreamResult nueva (foOut); Result res = new StreamResult (foOut); 
+transformer.transform (resolución src); transformer.transform (src, res); 
+foOut.close (); foOut.close (); 
+
+3.2 con JFOR convertir RTF a la 3.2 with JFor convert RTF to fo 
+
+Serlvet sólo tiene que conseguir como un ejemplo: Serlvet only needs to achieve as an example: 
+
+InputStream foInput = new FileInputStream (fofile); InputStream foInput = new FileInputStream (fofile); 
+InputSource InputSource = new InputSource (foInput); InputSource inputSource = new InputSource (foInput); 
+
+a cabo ByteArrayOutputStream = new ByteArrayOutputStream (); ByteArrayOutputStream out = new ByteArrayOutputStream (); 
+Escritor de salida = new OutputStreamWriter (fuera); Writer output = new OutputStreamWriter (out); 
+
+response.setContentType ("application / pdf"); response.setContentType ( "application / msword"); 
+
+nuevo convertidor (InputSource, la producción, Converter.createConverterOption ()); new Converter (inputSource, output, Converter.createConverterOption ()); 
+output.flush (); output.flush (); 
+
+bytes de contenido] [= out.toByteArray (); byte [] content = out.toByteArray (); 
+
+System.out.println (out.toString ()); System.out.println (out.toString ()); 
+
+response.setContentLength (content.length); response.setContentLength (content.length); 
+response.getOutputStream (). response.getOutputStream (). escribir (contenido); write (content); 
+response.getOutputStream (). response.getOutputStream (). flush (); flush (); 
+
+foInput.close (); foInput.close (); 
+salida.close (); output.close (); 
+out.close (); out.close (); 
+
+
+Así que hemos logrado convertirse en el documento en formato RTF xml. So that we successfully converted into RTF format xml document. 
+
+*/
+	
 	/***
 	 * 
 	 * @param xml Fichero xml a transfomar en pdf

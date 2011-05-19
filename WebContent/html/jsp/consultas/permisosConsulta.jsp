@@ -16,6 +16,7 @@
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants" %>
@@ -87,7 +88,7 @@
 	</head>
 
 	<body class="detallePestanas">
-	
+	<bean:define id="listadoInformes" name="listadoInformes" scope="request"/>
 		<table class="tablaTitulo" align="center" cellspacing="0">
 			<tr>
 				<td id="titulo" class="titulitosDatos">
@@ -111,6 +112,7 @@
 			<html:hidden name="PermisosConsultaForm" property="gruposAntiguos"/>
 			<html:hidden name="PermisosConsultaForm" property="idConsulta"/>
 			<html:hidden name="PermisosConsultaForm" property="idInstitucion_Consulta"/>
+			<html:hidden name="PermisosConsultaForm" property="nombreConsulta" value="<%=nombreConsulta %>"/>
 		
 		<tr><td colspan="3">&nbsp;</td></tr>
 		<tr>
@@ -167,9 +169,109 @@
 %>
 												
 		</tr>
+		<tr><td colspan="3">&nbsp;</td></tr>
 		</table>
 			
 		</html:form>
+		
+<table class="tablaTitulo" align="center" cellspacing="0">
+	<tr>
+		<td id="titulo" class="titulitosDatos" style="width:95%;">
+			<siga:Idioma key="menu.administracion.informes"/>
+		</td>
+		
+		<td class="tdBotones" style="vertical-align: left">
+		
+			<input type="button" alt="<siga:Idioma key="general.boton.new"/>"  id="idButton" onclick="return accionNuevo();" class="button" name="idButton" value="<siga:Idioma key="general.boton.new"/>">
+		</td>
+	</tr>
+</table>		
+	<table id='listadoArchivosCab' border='1' width='100%' cellspacing='0' cellpadding='0'>
+		<tr class ='tableTitle'>
+			<td align='center' width='30%'><siga:Idioma key="administracion.informes.literal.descripcion"/></td>
+			<td align='center' width='30%'><siga:Idioma key="administracion.informes.literal.formato"/></td>
+			<td width='30%'></td>
+		</tr>
+		<c:choose>
+			<c:when test="${listadoInformes==null}">
+			<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr class ='titulitos' id="noRecordFound">
+					<td class="titulitos" style="text-align:center" colspan = "3">
+						<siga:Idioma key="messages.noRecordFound"/>
+	   		 		</td>
+	 			</tr>
+				
+   			</c:when>
+   			<c:when test="${empty listadoInformes}">
+   				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					
+					
+				</tr>
+   				
+				<tr class ='titulitos' id="noRecordFound">
+					<td class="titulitos" style="text-align:center" colspan = "3">
+						<siga:Idioma key="messages.noRecordFound"/>
+	   		 		
+	   		 		</td>
+	 			</tr>
+   			</c:when>
+   			<c:otherwise>
+		
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					
+				</tr>
+				<c:forEach items="${listadoInformes}" var="informe" varStatus="status">                 
+					<siga:FilaConIconos	fila='${status.count}'
+		  				pintarEspacio="no"
+		  				visibleConsulta="no"
+		  				visibleEdicion = "no"
+		  				visibleBorrado = "si"
+		  				clase="listaNonEdit"
+		  				id="filaInforme_${status.count}"
+		  				>
+		  				<input type="hidden" name="idPlantilla_${status.count}" value="${informe.idPlantilla}">
+						<input type="hidden" name="idInstitucion_${status.count}" value="${informe.idInstitucion}">
+						<input type="hidden" name="claseTipoInforme_${status.count}" value="${informe.claseTipoInforme}">
+						
+						<td align='left'><c:out value="${informe.descripcion}"></c:out></td>
+						<td align='left'>
+							<c:choose>
+							<c:when test="${informe.tipoFormato=='W'}">
+								<siga:Idioma key="administracion.informes.formato.word"/>
+							</c:when>
+							<c:when test="${informe.tipoFormato=='X'}">
+							<siga:Idioma key="administracion.informes.formato.excel"/>
+							</c:when>
+							<c:otherwise>
+								<c:out value="${informe.tipoFormato}"></c:out>
+							</c:otherwise>
+							</c:choose>
+							
+						 </td>
+					
+					</siga:FilaConIconos>
+				</c:forEach>
+				
+				
+			</c:otherwise>
+	</c:choose>
+
+</table>
+
+		
+		
+		
+		
 		<!-- FIN: LISTA DE VALORES -->
 
 	<!-- INICIO: BOTONES REGISTRO -->
@@ -289,8 +391,63 @@
 			document.PermisosConsultaForm.gruposAntiguos.value="<%=gruposAntiguos%>";
 			document.PermisosConsultaForm.submit();
 		}
-		
+		function accionNuevo() 
+		{		
+			document.InformeForm.modo.value = "nuevoInformeConsulta";
+			document.InformeForm.alias.value = PermisosConsultaForm.nombreConsulta.value;
+			document.InformeForm.idConsulta.value="<%=idConsulta%>";
+			document.InformeForm.idInstitucionConsulta.value="<%=idInstitucion%>";
+			var resultado = ventaModalGeneral(document.InformeForm.name,"G");
+			refrescarLocal();
+			
+		}
+		function consultar(fila){
+			
+			var idPlantillaFila = 'idPlantilla_'+fila;
+			var idInstitucionFila = 'idInstitucion_'+fila;
+			var claseTipoInformeFila = 'claseTipoInforme_'+fila;
+			document.InformeForm.idPlantilla.value = document.getElementById(idPlantillaFila).value;
+			document.InformeForm.idInstitucion.value = document.getElementById(idInstitucionFila).value;
+			document.InformeForm.claseTipoInforme.value = document.getElementById(claseTipoInformeFila).value;
+			document.InformeForm.idConsulta.value="<%=idConsulta%>";
+			document.InformeForm.idInstitucionConsulta.value="<%=idInstitucion%>";
+			document.InformeForm.modo.value = "consultarInformeConsulta";
+			var resultado = ventaModalGeneral(document.InformeForm.name,"G");
+			
+		}
+		function editar(fila){
+			var idPlantillaFila = 'idPlantilla_'+fila;
+			var idInstitucionFila = 'idInstitucion_'+fila;
+			var claseTipoInformeFila = 'claseTipoInforme_'+fila;
+			document.InformeForm.idPlantilla.value = document.getElementById(idPlantillaFila).value;
+			document.InformeForm.idInstitucion.value = document.getElementById(idInstitucionFila).value;
+			document.InformeForm.claseTipoInforme.value = document.getElementById(claseTipoInformeFila).value;
+			document.InformeForm.idConsulta.value="<%=idConsulta%>";
+			document.InformeForm.idInstitucionConsulta.value="<%=idInstitucion%>";
+			document.InformeForm.modo.value = "editarInformeConsulta";
+			
+			var resultado = ventaModalGeneral(document.InformeForm.name,"G");
+			refrescarLocal();
+			 
 
+		}
+		function borrar(fila){
+			if (confirm('<siga:Idioma key="messages.deleteConfirmation"/>')) { 
+				
+				var idPlantillaFila = 'idPlantilla_'+fila;
+				var idInstitucionFila = 'idInstitucion_'+fila;
+				var claseTipoInformeFila = 'claseTipoInforme_'+fila;
+				document.InformeForm.idPlantilla.value = document.getElementById(idPlantillaFila).value;
+				document.InformeForm.idInstitucion.value = document.getElementById(idInstitucionFila).value;
+				document.InformeForm.claseTipoInforme.value = document.getElementById(claseTipoInformeFila).value;
+				document.InformeForm.idConsulta.value="<%=idConsulta%>";
+				document.InformeForm.idInstitucionConsulta.value="<%=idInstitucion%>";
+				document.InformeForm.target = "submitArea";
+				document.InformeForm.modo.value = "borrarConsultaInforme";
+				document.InformeForm.submit();
+					
+			}
+		}
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 
@@ -298,7 +455,20 @@
 		<html:form action="/CON_RecuperarConsultas.do?noReset=true" method="POST" target="mainWorkArea">
 			<html:hidden property = "modo" value = ""/>
 		</html:form>
+		<html:form action="/ADM_GestionInformes" method="POST" target="mainWorkArea">
+			<html:hidden property = "modo"/>
+			<html:hidden property = "actionModal" value = ""/>
+			<html:hidden property = "claseTipoInforme" value = "P"/>
+			<html:hidden property = "idTipoInforme" value = "CON"/>
+			<html:hidden property = "alias"/>
+			<html:hidden property = "idPlantilla"/>
+			<html:hidden property = "idInstitucion"/>
+			<html:hidden property = "claseTipoInforme"/>
+			<html:hidden property = "idConsulta"/>
+			<html:hidden property = "idInstitucionConsulta"/>
 	
+			
+		</html:form>
 		</div>
 		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	</body>

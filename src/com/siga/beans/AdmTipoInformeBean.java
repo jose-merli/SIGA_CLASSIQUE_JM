@@ -16,8 +16,10 @@ package com.siga.beans;
 public class AdmTipoInformeBean extends MasterBean {
 
 	static public final String CLASETIPOINFORME_PERSONALIZABLE = "P";
+	static public final String CLASETIPOINFORME_CONSULTAS = "C";
 	static public final String CLASETIPOINFORME_GENERICO = "G";
 	static public final String CLASETIPOINFORME_ORDINARIO = "O";
+	static public final String TIPOINFORME_CONSULTAS = "CON";
 	/* Variables */	
 	private String 	idTipoInforme, descripcion, idTipoInformePadre, idTipoFormato,clase,directorio;
 	

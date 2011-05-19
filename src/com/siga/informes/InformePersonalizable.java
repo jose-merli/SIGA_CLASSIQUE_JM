@@ -23,14 +23,19 @@ import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.apache.tools.ant.types.selectors.modifiedselector.HashvalueAlgorithm;
 
 import com.aspose.words.Document;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.LinkedHashMap;
 import com.atos.utils.ReadProperties;
+import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.PaginadorCaseSensitiveBind;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
+import com.siga.administracion.form.InformeForm;
 import com.siga.beans.AdmConsultaInformeAdm;
 import com.siga.beans.AdmConsultaInformeBean;
 import com.siga.beans.AdmConsultaInformeConsultaBean;
@@ -51,43 +56,8 @@ public class InformePersonalizable extends MasterReport
 	public static final String I_CERTIFICADOPAGO = "CERPA";
 	public static final String I_INFORMEFACTSJCS = "FACJ2";
 	
-	/**
-	 * Invoca a la generacion de formulario personalizado pasandole los datos
-	 * del formulario y el tipo
-	 * @throws SIGAException 
-	 */
-	public String generarInformes(ActionForm formulario,
-								  HttpServletRequest request,
-								  String idtipoinforme,
-								  ArrayList<HashMap<String, String>> filtrosInforme)
-		throws ClsExceptions, SIGAException
-	{
-		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-		UserTransaction tx = null;
-		String fichero = null;
-		tx = usr.getTransactionLigera();
-		try {			
-//			tx.begin();
-			fichero = generarInformes(usr, idtipoinforme, filtrosInforme);
-//			tx.commit();
-		}  catch (SIGAException e) {
-			throw e;
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		if (!fichero.equals(""))
-			request.setAttribute("rutaFichero", fichero);
-
-		// devolviendo el fichero generado
-		MasterForm miform = (MasterForm) formulario;
-		miform.setRutaFichero((String) request.getAttribute("rutaFichero"));
-		request.setAttribute("borrarFichero", "true");
-		request.setAttribute("generacionOK", "OK");
-
-		return "descarga";
-	}
-	public String generarInformes(UsrBean usr,
+	
+	public File getFicheroGenerado(UsrBean usr,
 								  String idtipoinforme,
 								  ArrayList<HashMap<String, String>> filtrosInforme)
 		throws ClsExceptions, SIGAException
@@ -96,7 +66,7 @@ public class InformePersonalizable extends MasterReport
 
 		AdmInformeBean informe;
 		ArrayList<File> listaFicheros;
-
+		
 		try {
 			// obteniendo las plantillas por tipo
 			AdmInformeAdm adm = new AdmInformeAdm(usr);
@@ -105,41 +75,33 @@ public class InformePersonalizable extends MasterReport
 
 			if (infs.size() == 0)
 				throw new SIGAException("Error al buscar la plantilla del informe");
+			AdmTipoInformeAdm admT = new AdmTipoInformeAdm(usr);
+			AdmTipoInformeBean tipoInformeBean = admT.obtenerTipoInforme(AdmTipoInformeBean.TIPOINFORME_CONSULTAS);
 			
 			// por cada plantilla, se genera el documento
 			listaFicheros = new ArrayList<File>();
 			for (Object inf : infs) {
 				informe = (AdmInformeBean) inf;
-				if (informe.getTipoformato().equalsIgnoreCase(AdmInformeBean.TIPOFORMATO_WORD))
-					listaFicheros.addAll(this.generarInformeDOC(informe, filtrosInforme, usr));
+				if (informe.getTipoformato().equalsIgnoreCase(AdmInformeBean.TIPOFORMATO_WORD)){
+					try {
+						listaFicheros.addAll(this.generarInformeDOC(informe, filtrosInforme, usr));	
+					} catch (SIGAException e) {
+						if(e.toString().equals("noExistePlantilla")){
+							listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme, usr));
+						}else
+							throw e;
+							
+					}
+					
+				}
 				else if (informe.getTipoformato().equalsIgnoreCase(AdmInformeBean.TIPOFORMATO_EXCEL))
 					listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme, usr));
 				else
 					listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme, usr));
 			}
-
+			File ficheroSalida = getFicheroSalida(listaFicheros, tipoInformeBean, usr);
+			return ficheroSalida;
 			// haciendo zip con todos los ficheros devueltos
-			if (listaFicheros.size() > 1) {
-			    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-				AdmTipoInformeAdm admT = new AdmTipoInformeAdm(usr);
-				AdmTipoInformeBean beanT = admT.obtenerTipoInforme(idtipoinforme);
-				String rutaServidorDescargasZip = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")
-						+ ClsConstants.FILE_SEP
-						+ idinstitucion + ClsConstants.FILE_SEP
-						+ "temp" + ClsConstants.FILE_SEP;
-				String nombreFicheroZIP = beanT.getDescripcion().trim() + "_"
-						+ idinstitucion + "_" + usr.getUserName() + "_"
-						+ UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "");
-				File ruta = new File(rutaServidorDescargasZip);
-				ruta.mkdirs();
-				Plantilla.doZip(rutaServidorDescargasZip, nombreFicheroZIP, listaFicheros);
-				
-				return rutaServidorDescargasZip + nombreFicheroZIP + ".zip";
-			} else if (listaFicheros.size() == 1) {
-				return listaFicheros.get(0).getAbsolutePath();
-			} else {
-				return "";
-			}
 			
 		} catch (SIGAException e) {
 			throw e;
@@ -147,6 +109,8 @@ public class InformePersonalizable extends MasterReport
 			throw new SIGAException(e, new String [] {"Error al generar el informe"});
 		}
 	}
+	
+	
 	
 	/**
 	 * Genera un informe
@@ -158,7 +122,7 @@ public class InformePersonalizable extends MasterReport
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 */
-	public ArrayList<File> generarInformeDOC(AdmInformeBean informe,
+	private ArrayList<File> generarInformeDOC(AdmInformeBean informe,
 								  ArrayList<HashMap<String, String>> filtrosInforme,
 								  UsrBean usr)
 		throws ClsExceptions, SIGAException
@@ -194,7 +158,7 @@ public class InformePersonalizable extends MasterReport
 		MasterWords words = new MasterWords(rutaPl + nombrePlantilla);
 		File plantilla = new File(rutaPl + nombrePlantilla);
 		if (!plantilla.exists()) // si no existe la plantilla, generar un Excel
-			return this.generarInformeXLS(informe, filtrosInforme, usr);
+			throw new SIGAException("noExistePlantilla");
 		Document doc = words.nuevoDocumento();
 		File crear = new File(rutaAlm);
 		if (!crear.exists())
@@ -304,7 +268,7 @@ public class InformePersonalizable extends MasterReport
 		
 	} // generarInformeDOC()
 	
-	public ArrayList<File> generarInformeXLS(AdmInformeBean informe,
+	private ArrayList<File> generarInformeXLS(AdmInformeBean informe,
 								  ArrayList<HashMap<String, String>> filtrosInforme,
 								  UsrBean usr)
 		throws ClsExceptions, SIGAException
@@ -459,5 +423,218 @@ public class InformePersonalizable extends MasterReport
 		return listaFicheros;
 		
 	} // generarInformeXLS()
+	
+	private File generarInformeDOC(AdmInformeBean informe,Vector<Hashtable> vDatos, UsrBean usr)
+			throws ClsExceptions, SIGAException
+			{
+		// Variables
 
+		// Controles generales
+		//UserTransaction tx;
+
+		//UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+
+		// obteniendo la plantilla
+		String idinstitucionInforme = informe.getIdInstitucion().toString();
+		String idinstitucion = usr.getLocation();
+		String idiomainforme = usr.getLanguageExt();
+		ReadProperties rp = new ReadProperties(
+				SIGAReferences.RESOURCE_FILES.SIGA);
+		String rutaPl = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava")
+		+ ClsConstants.FILE_SEP
+		+ informe.getDirectorio() + ClsConstants.FILE_SEP
+		+ (idinstitucionInforme.equals("0") ? "2000" : idinstitucionInforme) + ClsConstants.FILE_SEP;
+		String nombrePlantilla = informe.getNombreFisico() + "_"
+		+ idiomainforme + ".doc";
+		String rutaAlm = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")
+		+ ClsConstants.FILE_SEP
+		+ informe.getDirectorio() + ClsConstants.FILE_SEP
+		+ (idinstitucionInforme.equals("0") ? "2000" : idinstitucionInforme) + ClsConstants.FILE_SEP;
+
+		// creando el documento de salida
+		MasterWords words = new MasterWords(rutaPl + nombrePlantilla);
+		File plantilla = new File(rutaPl + nombrePlantilla);
+		if (!plantilla.exists()) // si no existe la plantilla, generar un Excel
+			throw new SIGAException("No existe la plantilla");
+		Document doc = words.nuevoDocumento();
+		File crear = new File(rutaAlm);
+		if (!crear.exists())
+			crear.mkdirs();
+		
+		doc = words.sustituyeRegionDocumento(doc, "region", vDatos);
+		// sustituyendo la descripcion del informe en el fichero
+		Hashtable<String, Object> descripcionInforme = new Hashtable<String, Object>();
+		descripcionInforme.put("DESCRIPCION_INFORME", informe.getDescripcion());
+		doc = words.sustituyeDocumento(doc, descripcionInforme);
+
+		// obteniendo el fichero de salida:
+		/**
+		 * @TODO Habria que obtener un identificador unico: de momento se genera
+		 *       el numero de sesion, que vale si el mismo usuario no ejecuta
+		 *       informes a la vez (por ejemplo en dos navegadores).
+		 *       Ademas, estaria bien dar un numero unico pero que sea algo
+		 *       descriptivo ¿?
+		 */
+		String nombreFichero = informe.getNombreSalida() + "_" + idinstitucion + "_" + usr.getUserName() + "_"
+		+ UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "")
+		+ ".doc";
+		File ficheroGenerado = words.grabaDocumento(doc, rutaAlm, nombreFichero);
+		
+		return ficheroGenerado;
+
+	} // generarInformeDOC()
+	private File generarInformeXLS(AdmInformeBean informe,
+			Vector<Hashtable> vDatos,
+			String[] columnas, UsrBean usr)
+	throws ClsExceptions, SIGAException
+	{
+		// Variables
+		String nombreFichero;
+		File ficheroGenerado = null;
+		BufferedWriter out;
+		// Controles generales
+		//UserTransaction tx = null;
+
+		// obteniendo ruta de almacenamiento
+		String idinstitucionInforme = informe.getIdInstitucion().toString();
+		String idinstitucion = usr.getLocation();
+		ReadProperties rp = new ReadProperties(
+				SIGAReferences.RESOURCE_FILES.SIGA);
+		String rutaAlm = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")
+		+ ClsConstants.FILE_SEP
+		+ informe.getDirectorio() + ClsConstants.FILE_SEP
+		+ (idinstitucionInforme.equals("0") ? "2000" : idinstitucionInforme) + ClsConstants.FILE_SEP;
+
+		
+
+			try {
+					// creando fichero para cada consulta
+					nombreFichero = informe.getNombreSalida() + "_" + idinstitucion + "_" + usr.getUserName() + "_"
+					+ UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "") + '_'
+					+ informe.getAlias() + ".xls";
+					ficheroGenerado = new File (rutaAlm + ClsConstants.FILE_SEP + nombreFichero);
+					if (ficheroGenerado.exists())
+						ficheroGenerado.delete();
+					ficheroGenerado.createNewFile();
+					out = new BufferedWriter(new FileWriter(ficheroGenerado));
+
+					// escribiendo las cabeceras
+					for (int i = 0; i < columnas.length; i++) {
+						String columna = columnas[i];
+						out.write(columna + "\t");
+						
+					}
+					out.newLine();
+					/*Hashtable hashOrdenado = vDatos.get(0);
+					Iterator ite0 = hashOrdenado.keySet().iterator();
+					while (ite0.hasNext()) {
+						String key = (String) ite0.next();
+						
+						
+					}
+					out.newLine();
+					*/
+					out.newLine();
+
+					// escribiendo los resultados
+					
+					
+					for (int i = 0; i < vDatos.size(); i++) {
+						Hashtable hashOrdenado = vDatos.get(i);
+						for (int j = 0; j < columnas.length; j++) {
+							String columna = columnas[j];
+							out.write(hashOrdenado.get(columna) + "\t");
+							
+						}
+						out.newLine();
+						/*
+						
+						Iterator ite = hashOrdenado.keySet().iterator();
+						while (ite.hasNext()) {
+							String key = (String) ite.next();
+							out.write(hashOrdenado.get(key) + "\t");
+							
+						}
+						
+						out.newLine();*/
+					}
+					
+					
+					
+					
+					// cerrando el fichero
+					out.close();
+				
+				
+			} catch (Exception sqle) {
+				throw new SIGAException(
+						"Problema en la generacion del fichero Excel",
+						sqle, new String[] { sqle.toString() });
+			}
+		
+
+		// devolviendo el fichero
+		return ficheroGenerado;
+
+	} // generarInformeXLS()
+
+	public File getFicheroGenerado(List<InformeForm> informesForms, Vector datos,String[] columnas, UsrBean userBean) throws ClsExceptions, SIGAException{
+		ArrayList<File> listaFicheros = new ArrayList<File>();
+		String idInstitucion = userBean.getLocation();
+		AdmTipoInformeAdm admT = new AdmTipoInformeAdm(userBean);
+		AdmTipoInformeBean tipoInformeBean = admT.obtenerTipoInforme(AdmTipoInformeBean.TIPOINFORME_CONSULTAS);
+		boolean isGeneradoFicheroExcelDefecto = false;
+		for (InformeForm informeForm2 : informesForms) {
+			if(informeForm2.getTipoFormato()!=null && informeForm2.getTipoFormato().equals(AdmInformeBean.TIPOFORMATO_WORD)){
+				try {
+					File  fichero= generarInformeDOC(informeForm2.getInformeVO(), datos, userBean);
+					listaFicheros.add(fichero);	
+				} catch (SIGAException e) {
+					if(!isGeneradoFicheroExcelDefecto){
+						File  fichero= generarInformeXLS(informeForm2.getInformeVO(), datos,columnas, userBean);
+						listaFicheros.add(fichero);
+					}
+					isGeneradoFicheroExcelDefecto = true;
+					
+				}
+				
+			}else if(informeForm2.getTipoFormato()!=null && informeForm2.getTipoFormato().equals(AdmInformeBean.TIPOFORMATO_EXCEL)){
+				File  fichero= generarInformeXLS(informeForm2.getInformeVO(), datos,columnas, userBean);
+				listaFicheros.add(fichero);
+			}
+		}                
+		File ficheroSalida = getFicheroSalida(listaFicheros,tipoInformeBean, userBean);
+		
+		return ficheroSalida;
+	}
+	private File getFicheroSalida(ArrayList<File> listaFicheros,AdmTipoInformeBean tipoInformeBean,UsrBean userBean) throws SIGAException, ClsExceptions{
+		String idInstitucion = userBean.getLocation();
+		File ficheroSalida = null;
+		if(listaFicheros.size()==0){
+			throw new SIGAException("No se ha generado ningun informe");
+		
+		}else if(listaFicheros.size() == 1){
+			ficheroSalida = listaFicheros.get(0);	
+		} 
+		else if(listaFicheros.size() > 1) {
+			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			
+			String rutaServidorDescargasZip = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")
+			+ ClsConstants.FILE_SEP            
+			+ idInstitucion + ClsConstants.FILE_SEP
+			+ "temp" + ClsConstants.FILE_SEP;
+			String nombreFicheroZIP = tipoInformeBean.getDescripcion().trim() + "_"
+			+ idInstitucion + "_" + userBean.getUserName() + "_"
+			+ UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "");
+			File ruta = new File(rutaServidorDescargasZip);
+			ruta.mkdirs();
+			Plantilla.doZip(rutaServidorDescargasZip, nombreFicheroZIP, listaFicheros);
+			ficheroSalida= new File(rutaServidorDescargasZip+ClsConstants.FILE_SEP+nombreFicheroZIP+".zip");
+		}
+		return ficheroSalida;
+		
+		
+		
+	}
+	
 }

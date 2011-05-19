@@ -48,8 +48,6 @@
 	<html:hidden property="modo" />
 	<html:hidden property="modoInterno" />
 	<html:hidden property="claseTipoInforme" />
-	
-	
 </html:form>
 <html:javascript formName="InformeFormEdicion" staticJavascript="true" />
 <html:form action="/ADM_GestionInformes"  name="InformeFormEdicion" type="com.siga.administracion.form.InformeForm" method="POST" target="submitArea" enctype="multipart/form-data">
@@ -58,6 +56,8 @@
 	<html:hidden property="idPlantilla" value="${InformeFormEdicion.idPlantilla}"/>
 	<html:hidden property="destinatarios" value="${InformeFormEdicion.destinatarios}"/>
 	<html:hidden property="claseTipoInforme" value="${InformeFormEdicion.claseTipoInforme}"/>
+	<html:hidden property="idConsulta" value="${InformeFormEdicion.idConsulta}"/>
+	<html:hidden property="idInstitucionConsulta" value="${InformeFormEdicion.idInstitucionConsulta}"/>
 	<input type="hidden" name="location" value="${InformeFormEdicion.usrBean.location}"/>
 	<input type="hidden" name="actionModal" />
 
@@ -129,7 +129,7 @@
 			
 			
 		</tr>
-		<tr>
+		<tr id="ocultarOrden">
 			<td class="labelText">
 				<siga:Idioma key="administracion.informes.literal.orden"/>
 			</td>
@@ -190,10 +190,10 @@
 							<html:option value="N"><siga:Idioma key="general.no"/></html:option>
 					</html:select>							
 			</td>
-			<td class="labelText">
+			<td class="labelText" id="ocultarLabelPreseleccionado">
 					<siga:Idioma key="administracion.informes.literal.preseleccionado"/>(*)
 			</td>
-			<td class="labelText">
+			<td class="labelText" id="ocultarSelectPreseleccionado">
 					<html:select property="preseleccionado"  name="InformeFormEdicion"  styleClass="boxCombo" >
 						<html:option value=""><siga:Idioma key="general.combo.seleccionar"/>
 						</html:option>
@@ -203,7 +203,7 @@
 					</html:select>		
 			</td>
 		</tr>
-		<tr>
+		<tr  id="ocultarSolicitantes">
 			<td class="labelText">
 				<siga:Idioma key="administracion.informes.literal.solicitantes"/>(*)
 			</td>
@@ -287,7 +287,7 @@ function onChangeIdTipoInforme()
 	document.getElementById("directorio").disabled = "";
 	document.InformeFormEdicion.directorio.value = directorioTipoInforme;
 	document.getElementById("directorio").disabled = "disabled";
-	if(claseTipoInforme=='P'){
+	if(claseTipoInforme=='P'||claseTipoInforme=='C'){
 		document.getElementById("tipoFormato").disabled="";
 	}else{
 		document.getElementById("tipoFormato").disabled="disabled";	
@@ -306,7 +306,7 @@ function inicio()
 	
 		}
 	}
-	if(document.InformeForm.claseTipoInforme.value=='P'){
+	if(document.InformeForm.claseTipoInforme.value=='P'||document.InformeForm.claseTipoInforme.value=='C'){
 		document.getElementById("tipoFormato").disabled="";
 	}else{
 		document.getElementById("tipoFormato").disabled="disabled";	
@@ -358,6 +358,13 @@ function inicio()
 		}
 	
 	}
+	if(document.InformeFormEdicion.idTipoInforme.value=='CON'){
+		//document.InformeFormEdicion.idTipoInforme.value=document.InformeForm.idTipoInforme.value;
+		//alert("document.getElementById(idTipoInforme)"+document.getElementById("idTipoInforme").disabled);
+		gestionarDatosConsultas();
+		// document.getElementById("idTipoInforme").disabled = "disabled";
+		
+	}
 }
 function accionGuardar() 
 {		
@@ -392,25 +399,31 @@ function accionGuardar()
 		document.InformeFormEdicion.visible.value = '';
 	
 	sub();
-	 
-	listaDestinatarios = document.getElementsByName("destinatariosCheck");
-	var destinatarios ="";
-	for(var i = 0 ; i <listaDestinatarios.length ; i++) {
-		if(listaDestinatarios[i].checked){
-			destinatarios+=listaDestinatarios[i].value
-		}	
+	if(document.InformeFormEdicion.idTipoInforme.value!='CON'){ 
+		listaDestinatarios = document.getElementsByName("destinatariosCheck");
+		var destinatarios ="";
+		for(var i = 0 ; i <listaDestinatarios.length ; i++) {
+			if(listaDestinatarios[i].checked){
+				destinatarios+=listaDestinatarios[i].value
+			}	
+		}
+		if(destinatarios==''){
+			error = "<siga:Idioma key='errors.required' arg0='administracion.informes.literal.destinatarios' />";
+			alert(error);
+			fin();
+			document.getElementById("idInstitucion").disabled="disabled";
+			document.getElementById("idPlantilla").disabled="disabled";
+			document.getElementById("idTipoInforme").disabled="disabled";
+			document.getElementById("directorio").disabled="disabled";
+			return false;
+		}
+		document.InformeFormEdicion.destinatarios.value = destinatarios;
+	}else{
+		document.InformeFormEdicion.destinatarios.value = 'C';
+		document.InformeFormEdicion.preseleccionado.value = 'S';
+		document.InformeFormEdicion.ASolicitantes.value = 'S';
 	}
-	if(destinatarios==''){
-		error = "<siga:Idioma key='errors.required' arg0='administracion.informes.literal.destinatarios' />";
-		alert(error);
-		fin();
-		document.getElementById("idInstitucion").disabled="disabled";
-		document.getElementById("idPlantilla").disabled="disabled";
-		document.getElementById("idTipoInforme").disabled="disabled";
-		document.getElementById("directorio").disabled="disabled";
-		return false;
-	}
-	document.InformeFormEdicion.destinatarios.value = destinatarios;
+	
 	document.InformeFormEdicion.modo.value = document.InformeForm.modo.value; 
 	document.getElementById("directorio").disabled = "";
 	 if (validateInformeFormEdicion(document.InformeFormEdicion)){
@@ -469,7 +482,17 @@ function accionCerrar()
 	 // window.close(); 
 	
 }
-
+function gestionarDatosConsultas() 
+{		
+	document.getElementsByName("idTipoInforme")[0].disabled =  "disabled";
+	document.getElementById("alias").disabled =  "disabled";
+	document.getElementById("ocultarSolicitantes").style.display =  "none";
+	//document.getElementById("ocultarOrden").style.display =  "none";
+	document.getElementById("ocultarLabelPreseleccionado").style.display =  "none";
+	document.getElementById("ocultarSelectPreseleccionado").style.display =  "none";
+	
+	
+}
 <!-- Asociada al boton Restablecer -->
 function accionRestablecer() 
 {		

@@ -67,6 +67,7 @@
 		
 		function accionDownload() 
 		{
+			sub();
 			RecuperarConsultasForm.modo.value = "download";
 			RecuperarConsultasForm.target = "submitArea";
 			RecuperarConsultasForm.submit();
@@ -126,6 +127,8 @@
 	
 	<html:form action="/CON_RecuperarConsultas.do" method="POST" target="submitArea">
 		<html:hidden property = "modo" value = ""/>	
+		<html:hidden property = "idInstitucion"/>
+		<html:hidden property = "idConsulta"/>
 	</html:form>
 	
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"

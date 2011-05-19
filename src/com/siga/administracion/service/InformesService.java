@@ -7,10 +7,12 @@ import java.util.List;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.administracion.form.InformeForm;
+import com.siga.beans.AdmConsultaInformeBean;
 import com.siga.beans.AdmInformeBean;
 import com.siga.beans.AdmLenguajesBean;
 import com.siga.beans.AdmTipoInformeBean;
 import com.siga.beans.CenInstitucionBean;
+import com.siga.beans.ConConsultaBean;
 import com.siga.beans.FileInforme;
 import com.siga.general.SIGAException;
 
@@ -31,6 +33,8 @@ public interface InformesService extends BusinessService{
 	public void borrarInformeFile(InformeForm informeForm) throws  SIGAException;
 	public void uploadFile(InformeForm informeForm) throws  SIGAException;
 	public boolean isNombreFisicoUnico(InformeForm informeForm,boolean isInsertar, UsrBean usrBean) throws SIGAException, ClsExceptions;
+	public List<InformeForm> getInformesConsulta(ConConsultaBean 	consulta,InformeForm informeForm,UsrBean usrBean)throws ClsExceptions;
+	public void borrarConsultaInforme(AdmConsultaInformeBean 	consulta,InformeForm informeForm,UsrBean usrBean)throws ClsExceptions, SIGAException;
 //	public boolean isNombreFisicoComun(InformeForm informeForm, UsrBean usrBean) throws SIGAException, ClsExceptions;
 	
 }

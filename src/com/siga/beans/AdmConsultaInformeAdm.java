@@ -207,5 +207,24 @@ public class AdmConsultaInformeAdm extends MasterBeanAdministrador {
 		}
 		return datos;
 	} // selectCamposOrdenados()
+	
+	public void deleteConsultaInforme(AdmConsultaInformeBean consultaInforme) throws ClsExceptions {
+		StringBuffer sql = new StringBuffer();
+		try {
+			sql.append(" delete from "+AdmConsultaInformeBean.T_NOMBRETABLA);
+			sql.append(" where "+AdmConsultaInformeBean.C_IDINSTITUCION+"="+ consultaInforme.getIdInstitucion().toString());
+			sql.append(" and "+AdmConsultaInformeBean.C_IDPLANTILLA+"="+ consultaInforme.getIdPlantilla());
+			if(consultaInforme.getIdConsulta()!=null){
+				sql.append(" and "+AdmConsultaInformeBean.C_IDCONSULTA+"="+consultaInforme.getIdConsulta().toString());
+				sql.append(" and "+AdmConsultaInformeBean.C_IDINSTITUCION_CONSULTA+"="+consultaInforme.getIdInstitucion_consulta().toString());
+			}
+			
+			
+			
+			deleteSQL(sql.toString());
+		} catch (Exception e) {
+			throw new ClsExceptions(e, e.getMessage() + "Consulta SQL:" + sql.toString());
+		}
+	}
 
 }

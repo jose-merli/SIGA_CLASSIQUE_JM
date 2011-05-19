@@ -466,6 +466,65 @@ public class AdmInformeAdm extends MasterBeanAdministrador
         Long idInforme = getSecuenciaNextVal(AdmInformeBean.SEQ_ADM_INFORME);
         return idInforme;
     }
+	public List<InformeForm> getInformesConsulta(ConConsultaBean 	consulta,InformeForm informeForm)throws ClsExceptions{
+    	Hashtable codigosHashtable = new Hashtable();
+    	int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT I.*, ");
+		sql.append(" TI.DESCRIPCION DESCRIPCIONTIPOINFORME, ");
+		sql.append(" TI.CLASE CLASETIPOINFORME,CI.* ");
+		sql.append(" FROM ADM_INFORME I, ADM_TIPOINFORME TI,ADM_CONSULTAINFORME CI ");
+		sql.append(" WHERE I.IDPLANTILLA = CI.IDPLANTILLA ");
+		sql.append(" AND I.IDINSTITUCION = CI.IDINSTITUCION ");
+		sql.append(" AND I.IDINSTITUCION = :");//colegio
+		contador++;
+		sql.append(contador);
+		codigosHashtable.put(new Integer(contador),informeForm.getIdInstitucion() );
+    	sql.append("");
+		sql.append(" AND I.IDTIPOINFORME = TI.IDTIPOINFORME ");
+		sql.append(" AND I.IDTIPOINFORME = :");
+		contador++;
+		sql.append(contador);
+		codigosHashtable.put(new Integer(contador),informeForm.getIdTipoInforme() );
+		sql.append(" AND CI.IDCONSULTA =  :");
+		contador++;
+		sql.append(contador);
+		codigosHashtable.put(new Integer(contador),consulta.getIdConsulta() );
+		sql.append(" AND CI.IDINSTITUCION_CONSULTA = :");//consulta
+		contador++;
+		sql.append(contador);
+		codigosHashtable.put(new Integer(contador),consulta.getIdInstitucion() );
+		sql.append(" ORDER BY DESCRIPCIONTIPOINFORME, I.IDINSTITUCION, I.ORDEN, I.ALIAS ");
+	
+    	List<InformeForm> informeList = null;
+    	try {
+			RowsContainer rc = new RowsContainer(); 
+			if (rc.findBind(sql.toString(),codigosHashtable)) {
+				informeList = new ArrayList<InformeForm>();
+				
+				AdmInformeBean informeBean = null;
+				InformeForm informeFormConsulta = null;
+				for (int i = 0; i < rc.size(); i++){
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila=fila.getRow();
+					informeBean =  (AdmInformeBean)this.hashTableToBean(htFila);
+					informeBean.setUsrBean(this.usrbean);
+					informeFormConsulta = informeBean.getInforme();
+					informeFormConsulta.setClaseTipoInforme(UtilidadesHash.getString(htFila, "CLASETIPOINFORME"));
+					informeFormConsulta.setDescripcionTipoInforme(UtilidadesHash.getString(htFila, "DESCRIPCIONTIPOINFORME"));
+					informeFormConsulta.setDescripcionInstitucion(UtilidadesHash.getString(htFila, "ABREVIATURAINSTITUCION"));
+					informeList.add(informeFormConsulta);
+					
+				}
+			}else{
+				informeList = new ArrayList<InformeForm>();
+			} 
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar consulta.");
+		}
+
+    	return informeList;
+    }
 
 	
 }

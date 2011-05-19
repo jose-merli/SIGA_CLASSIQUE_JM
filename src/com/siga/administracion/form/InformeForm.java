@@ -49,6 +49,23 @@ public class InformeForm extends MasterForm {
 	int filaInformeSeleccionada;
 	String botones;
 	private String lenguaje;
+	String idConsulta;
+	String idInstitucionConsulta;
+	public String getIdConsulta() {
+		return idConsulta;
+	}
+
+	public void setIdConsulta(String idConsulta) {
+		this.idConsulta = idConsulta;
+	}
+
+	public String getIdInstitucionConsulta() {
+		return idInstitucionConsulta;
+	}
+
+	public void setIdInstitucionConsulta(String idInstitucionConsulta) {
+		this.idInstitucionConsulta = idInstitucionConsulta;
+	}
 
 	public String getBotones() {
 		if (usrBean.getLocation() != null
