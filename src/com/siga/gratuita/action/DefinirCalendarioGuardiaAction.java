@@ -685,12 +685,16 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		if (guardiaBean.getIdPersona_Ultimo() == null) {
 			idPersonaUltimoAnterior = "";
 			fechaSuscUltimoAnterior = "";
-			idGrupoGuardiaColegiadoAnterior = "";
 		}
 		else {
 			idPersonaUltimoAnterior = guardiaBean.getIdPersona_Ultimo().toString();
-			idGrupoGuardiaColegiadoAnterior = guardiaBean.getIdGrupoGuardiaColegiado_Ultimo().toString();
 			fechaSuscUltimoAnterior = guardiaBean.getFechaSuscripcion_Ultimo();
+		}
+		if (guardiaBean.getIdGrupoGuardiaColegiado_Ultimo() == null) {
+			idGrupoGuardiaColegiadoAnterior = "";
+		}
+		else {
+			idGrupoGuardiaColegiadoAnterior = guardiaBean.getIdGrupoGuardiaColegiado_Ultimo().toString();
 		}
 
 		// calculando nuevo idcalendarioguardias
