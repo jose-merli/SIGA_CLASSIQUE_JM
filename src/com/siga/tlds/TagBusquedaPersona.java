@@ -20,6 +20,8 @@ public class TagBusquedaPersona extends TagSupport
 	String anchoDesc = "";
 	String anchoNum = "";
 	String campoObligatorio = "";
+	private String preFunction;
+	private String postFunction;
 
 //	public String getNumeroColegiado() {
 //		return numeroColegiado;
@@ -63,6 +65,23 @@ public class TagBusquedaPersona extends TagSupport
 	public void setAccion(String accion) {
 		this.accion = accion;
 	}
+	
+	public String getPreFunction() {
+		return preFunction==null?"":preFunction+"();";
+	}
+
+	public void setPreFunction(String preFunction) {
+		this.preFunction = preFunction;
+	}
+
+	public String getPostFunction() {
+		return postFunction==null?"":postFunction+"();";
+	}
+
+	public void setPostFunction(String postFunction) {
+		this.postFunction = postFunction;
+	}
+
 	public int doStartTag() 
 	{
 		try {
@@ -116,7 +135,7 @@ public class TagBusquedaPersona extends TagSupport
 			}
 			out.println("<td>");
 			
-			out.println("	<input type=\"text\" id=\"numeroNifTagBusquedaPersonas\" name=\"numeroNifTagBusquedaPersonas\" size="+this.anchoNum+" maxlength=\"9\" class=\"box\" onBlur=\"obtenerPersonas();\"/>");				
+			out.println("	<input type=\"text\" id=\"numeroNifTagBusquedaPersonas\" name=\"numeroNifTagBusquedaPersonas\" size="+this.anchoNum+" maxlength=\"9\" class=\"box\" onBlur=\""+ getPreFunction()+"obtenerPersonas();\"/>");				
 			out.println("</td>");
 			out.println("<td>");
 			out.println("	<input type=\"text\" name=\"nombrePersona\" size="+this.anchoDesc+" maxlength=\"50\" class=\"box\" readonly=\"true\"/>");				
@@ -125,10 +144,10 @@ public class TagBusquedaPersona extends TagSupport
 									
 			if(tipo.equals("personas")){
 				out.println("	<!-- Boton buscar -->");
-				out.println("	<input type=\"button\" class=\"button\" id=\"idButton\" name=\"buscarCliente\" value='"+UtilidadesString.getMensajeIdioma(usrbean,"gratuita.inicio_SaltosYCompensaciones.literal.buscar")+"' onClick=\"buscarPersonaDni();\">");
+				out.println("	<input type=\"button\" class=\"button\" id=\"idButton\" name=\"buscarCliente\" value='"+UtilidadesString.getMensajeIdioma(usrbean,"gratuita.inicio_SaltosYCompensaciones.literal.buscar")+"' onClick=\""+ getPreFunction()+"buscarPersonaDni();"+ getPostFunction()+"\">");
 			}else{
 				out.println("	<!-- Boton buscar -->");
-				out.println("	<input type=\"button\" class=\"button\" id=\"idButton\" name=\"buscarCliente\" value='"+UtilidadesString.getMensajeIdioma(usrbean,"gratuita.inicio_SaltosYCompensaciones.literal.buscar")+"' onClick=\"buscarPersona();\">");
+				out.println("	<input type=\"button\" class=\"button\" id=\"idButton\" name=\"buscarCliente\" value='"+UtilidadesString.getMensajeIdioma(usrbean,"gratuita.inicio_SaltosYCompensaciones.literal.buscar")+"' onClick=\""+ getPreFunction()+"buscarPersona();"+ getPostFunction()+"\">");
 			}				
 			out.println("	<!-- Boton limpiar -->");
 			out.println("	&nbsp;<input type=\"button\" class=\"button\" id=\"idButton\" name=\"limpiar\" value='"+UtilidadesString.getMensajeIdioma(usrbean,"gratuita.inicio_SaltosYCompensaciones.literal.limpiar")+"' onClick=\"limpiarPersona();\">");
@@ -221,6 +240,7 @@ public class TagBusquedaPersona extends TagSupport
 			out.println("				document.getElementById('" + this.idPersona + "').value = \"\";");			
 			out.println("				document.getElementById('numeroNifTagBusquedaPersonas').value = \"\";");
 			out.println("				document.getElementById('nombrePersona').value = \"\";");
+			out.println("		 "+ getPostFunction()+"");			
 			out.println("		}	");
 			out.println("		function obtenerPersonas () ");
 			out.println("		{sub();");
@@ -247,11 +267,11 @@ public class TagBusquedaPersona extends TagSupport
 			if (accion != null && !accion.equals("")) {
 				out.println("                     " + this.accion + ";");
 			}
-			
+			out.println("		 "+ getPostFunction()+"");			
 			out.println("			}");
 			out.println("			else{");
 			out.println("				limpiarPersona();");
-			out.println("			}");
+			out.println("			} ");
 			out.println("		}");
 			out.println("</script>");
 			out.println("<!-- Inicio tag busqueda personas -->");

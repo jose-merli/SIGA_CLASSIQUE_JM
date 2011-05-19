@@ -31,6 +31,10 @@
 	String nombre="";
 	String numero="";
 	String nif="";	
+	boolean esConsejo=false;
+	int idConsejo = new Integer(user.getLocation()).intValue();
+	if(idConsejo==2000 || idConsejo>=3000)
+		esConsejo=true;
 	
 	Hashtable htData = (Hashtable)request.getSession().getAttribute("DATABACKUP");
 		if(htData != null){	
@@ -87,9 +91,12 @@
 				}			 	
 			}
 		
-			function buscarProductosYServicios(){		
+			function buscarProductosYServicios(){
+
+						
 						document.all.solicitudBajaForm.target="resultado";
-						document.all.solicitudBajaForm.modo.value = "buscarArticulos";						
+						document.all.solicitudBajaForm.modo.value = "buscarArticulos";		
+						//window.setTimeout ("document.all.solicitudBajaForm.submit();", 5000); 						
 						document.all.solicitudBajaForm.submit();											
 			}
 	</script>	
@@ -101,18 +108,41 @@
 
 <!-- INICIO ******* CAPA DE PRESENTACION ****** -->
 <div class="tablaCentralCampos">
- 	
-						<siga:ConjCampos leyenda="pys.solicitudCompra.leyenda.cliente">	
-							<table class="tablaCampos" align="center">
+ 
+			<siga:ConjCampos leyenda="pys.solicitudCompra.leyenda.cliente">	
+				<table class="tablaCampos" align="center">
 				<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
   				<input type="hidden" name="actionModal" value="">
   				<input type="hidden" name="clientes"	value="1">
   				<input type="hidden" name="modo" value="abrirBusquedaModal">
+								
+							<%
+							if (esConsejo){
+						 		
+						 	%>	<tr>
+								
+								<td >
+								<siga:BusquedaPersona tipo="personas" idPersona="idPersona" postFunction="buscarProductosYServicios"></siga:BusquedaPersona>
+								</td>
+								</tr>
+
+							<%
+							 	}else if (!esLetrado){ 
+							%>
+								 <tr>
+								<td>
+								<siga:BusquedaPersona tipo="colegiado" idPersona="idPersona" postFunction="buscarProductosYServicios"></siga:BusquedaPersona>
+								</td>
+								</tr>
+	
+							<%
+							 	}else{ 
+							%>
 								<!-- FILA -->
 								<tr>	
 									<td class="labelText" nowrap><siga:Idioma key="pys.solicitudCompra.literal.nombre"/></td>				
 									<td colspan=3>
-										<html:text name="busquedaClientesModalForm" property="nombrePersona" value="<%=nombre%>" size="110" styleClass="boxConsulta" readOnly="true"></html:text></td>
+										<html:text name="busquedaClientesModalForm"  property="nombrePersona" value="<%=nombre%>" size="110" styleClass="boxConsulta" readOnly="true"></html:text></td>
 									</td>
 									<td>
 	<%								if(!esLetrado)	{
@@ -134,6 +164,9 @@
 									</td>	
 									<td>&nbsp;</td>
 								</tr>
+							<%
+							}
+						 	%>
 					</html:form>
 							</table>
 						</siga:ConjCampos>

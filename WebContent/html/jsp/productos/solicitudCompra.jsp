@@ -28,6 +28,10 @@
 			"USRBEAN");
 
 	boolean esLetrado = user.isLetrado();
+	boolean esConsejo=false;
+	int idConsejo = new Integer(user.getLocation()).intValue();
+	if(idConsejo==2000 || idConsejo>=3000)
+		esConsejo=true;
 	String DB_TRUE = ClsConstants.DB_TRUE;
 	String DB_FALSE = ClsConstants.DB_FALSE;
 	String estiloComboInstitucionPresentador = "boxCombo";
@@ -583,7 +587,7 @@
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
 	<!-- Zona de campos de busqueda o filtro -->
 					<siga:ConjCampos leyenda="pys.solicitudCompra.leyenda.datosSolicitud">		
-							<table class="tablaCampos" align="center" border=0>
+						<table class="tablaCampos" align="center" border=0>
 						<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="submitArea" type="">
 		  				<input type="hidden" name="actionModal" value="">
 		  				<input type="hidden" name="modo" value="abrirBusquedaModal">
@@ -592,63 +596,43 @@
 						<input type="hidden" name="clientes"	value="1">
 						<html:hidden name="busquedaClientesModalForm" property="numeroColegiado" value="<%=numero%>" size="10" ></html:hidden>
 						<html:hidden name="busquedaClientesModalForm" property="nif" value="<%=nif%>"></html:hidden>
+						 <tr>	
+							<%
+							if (esConsejo){
+						 		
+						 	%>	
+								
+								<td>
+								<siga:BusquedaPersona tipo="personas" idPersona="idPersona"></siga:BusquedaPersona>
+								</td>
+
+							<%
+							 	}else if (!esLetrado){ 
+							%>
+							 
+								<td>
+								<siga:BusquedaPersona tipo="colegiado" idPersona="idPersona"></siga:BusquedaPersona>
+								</td>
+
+	
+							<%
+							 	}else{ 
+							%>
+
 							<!-- FILA -->
-								<tr>
+								
 									<td class="labelText" width="180">
 										<siga:Idioma key="pys.solicitudCompra.literal.interesado"/>&nbsp;(*)
 									</td>
 									<td  width="150">
 										<html:text name="busquedaClientesModalForm" property="nombrePersona" value="<%=nombre%>" size="40" styleClass="boxConsulta" readOnly="true"></html:text>
 									</td>	
-									<td class="labelText">
-										<siga:Idioma key="pys.solicitudCompra.literal.institucion"/> 
-									</td>
-									<td>
-									<%
-										if (!idPersonaCombo[0].equals("")) {
-									%>
-										<siga:ComboBD nombre="idInstitucion" 
-																	tipo="cmbInstitucionAbreviada" 
-																	parametro="<%=idPersonaCombo%>"
-																	elementoSel ="<%=idInstitucion%>"
-																	clase="<%=estiloComboInstitucion%>"
-																	filasMostrar="1" 
-																	obligatorioSinTextoSeleccionar="true"
-																	readonly="<%=lecturaComboInstitucion%>"
-																	accion="borrarCarrito(true);"/>
 
-									<%
-										} else {
-									%>
-											<siga:ComboBD nombre="idInstitucion" 
-																	tipo="cmbInstitucionAbreviada" 
-																	elementoSel ="<%=idInstitucion%>"
-																	clase="<%=estiloComboInstitucion%>"
-																	filasMostrar="1"
-																	obligatorioSinTextoSeleccionar="true"
-																	readonly="<%=lecturaComboInstitucion%>"
-																	accion="borrarCarrito(true);"/>
-									<%
-										}
-									%>
-										
-									</td>
-									<td align="right" width="80">	
-	<%
-			if (!esLetrado) {
-		%>									
-											<input type="button" id="idButton" onclick="return buscarCliente();" class="button" value="<siga:Idioma key="general.boton.search"/>"/> 
-	<%
- 		}
- 	%>
-									</td>	
-								</tr>
-								<!-- FILA -->
-								<tr>	
-									<td colspan="2">
-									&nbsp;
-									</td>
-									<td class="labelText" width="300">
+								
+							<%
+							 	} 
+							%>
+									<td class="labelText">
 										<siga:Idioma key="pys.solicitudCompra.literal.presentador"/>
 									</td>
 									<td>
@@ -661,15 +645,13 @@
 																	accion="actualizarInstitucionPresentador();"
 																	/>									
 									</td>
-									<td align="right" width="80">	
-									&nbsp;
-									</td>
-								</tr>
+								</tr>	
+
 							</html:form>
 							</table>
 						</siga:ConjCampos>
+						
 
-<!------------------------------------------>
 
 <table class="tablaCampos" align="center" border="0">
 	<html:form action="/PYS_GenerarSolicitudes.do" method="POST"
