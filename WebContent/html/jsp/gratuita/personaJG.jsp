@@ -2162,7 +2162,13 @@ function limpiarPersonaContrario() {
 			}			
 			sub();
 			var tipoIdent=document.forms[0].tipoId.value;
-			var numId=document.forms[0].NIdentificacion.value;						
+			var numId=document.forms[0].NIdentificacion.value;		
+			if (!validaNumeroIdentificacion()) {
+				fin();
+				return false;
+			}
+			if(document.forms[0].NIdentificacion.value=="") document.forms[0].tipoId.value = "";
+							
 			document.forms[0].importeIngresosAnuales.value=document.forms[0].importeIngresosAnuales.value.replace(/,/,".").trim();
 			document.forms[0].importeBienesInmuebles.value=document.forms[0].importeBienesInmuebles.value.replace(/,/,".").trim();
 			document.forms[0].importeBienesMuebles.value=document.forms[0].importeBienesMuebles.value.replace(/,/,".").trim();
@@ -2175,11 +2181,7 @@ function limpiarPersonaContrario() {
 			var msg1="<siga:Idioma key="gratuita.personaJG.messages.alertTipo1"/>";
 			var msg2="<siga:Idioma key="gratuita.personaJG.messages.alertTipo2"/>";
 
-			if (!validaNumeroIdentificacion()) {
-				fin();
-				return false;
-			}
-			if(document.forms[0].NIdentificacion.value=="") document.forms[0].tipoId.value = "";
+
 			var envio=1;
 				if (isNaN(document.forms[0].importeIngresosAnuales.value)||
 						document.forms[0].importeIngresosAnuales.value>99999999.99){
@@ -2279,8 +2281,15 @@ function limpiarPersonaContrario() {
 			}		
 				
 		   	sub();
+
 		   	var tipoIdent=document.forms[0].tipoId.value;
-			var numId=document.forms[0].NIdentificacion.value;				
+			var numId=document.forms[0].NIdentificacion.value;	
+			if (!validaNumeroIdentificacion()) {
+				fin();
+				return false;
+			}
+			if(document.forms[0].NIdentificacion.value=="") document.forms[0].tipoId.value = "";
+						
 			document.forms[0].importeIngresosAnuales.value=document.forms[0].importeIngresosAnuales.value.replace(/,/,".").trim();
 			document.forms[0].importeBienesInmuebles.value=document.forms[0].importeBienesInmuebles.value.replace(/,/,".").trim();
 			document.forms[0].importeBienesMuebles.value=document.forms[0].importeBienesMuebles.value.replace(/,/,".").trim();
@@ -2294,11 +2303,7 @@ function limpiarPersonaContrario() {
 			var msg1="<siga:Idioma key="gratuita.personaJG.messages.alertTipo1"/>";
 			var msg2="<siga:Idioma key="gratuita.personaJG.messages.alertTipo2"/>";
 		  	  				
-			if (!validaNumeroIdentificacion()) {
-				fin();
-				return false;
-			}
-			if(document.forms[0].NIdentificacion.value=="") document.forms[0].tipoId.value = "";
+
 			
 				var envio=1;
 				if (isNaN(document.forms[0].importeIngresosAnuales.value)||
@@ -2654,15 +2659,19 @@ function limpiarPersonaContrario() {
 
 		//Asociada al boton Guardar -->
 		function accionGuardarCerrar()	{	
-			var lNumerosTelefonos=getDatos();						
+			
+			var lNumerosTelefonos=getDatos();					
 			if (!lNumerosTelefonos){
                  fin();
                  return false;
-			}	
+			}				
+
+			
 			sub();
 			var tipoIdent=document.forms[0].tipoId.value;
-			var numId=document.forms[0].NIdentificacion.value;
-
+			var numId=document.forms[0].NIdentificacion.value;		
+					
+						
 			if (!validaNumeroIdentificacion()) {
 				fin();
 				return false;
