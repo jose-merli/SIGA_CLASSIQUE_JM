@@ -28,6 +28,8 @@ import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.bea.wlw.debug.DefaultSimpleValueFactory.DoubleValue;
+import com.businessobjects.visualization.dataexchange.data.impl.DoubleValueData;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
@@ -144,8 +146,8 @@ public class InformeColegiadosPagos extends MasterReport {
 			String sAux="";
 			plantillaFO=UtilidadesString.reemplazaEntreMarcasCon(plantillaFO, delimIni, delimFin,sAux);
 		}
-		
-		
+
+	
 		//Datos de las Asistencias
 		Vector datosAsistencias = (Vector)htDatos.get("VASISTENCIAS");
 		plantillaFO = this.reemplazaRegistros(plantillaFO,datosAsistencias,htDatos,"ASISTENCIA");
@@ -717,9 +719,20 @@ public class InformeColegiadosPagos extends MasterReport {
 		double dTotalOficio=0;
 		double dTotalFactOficio=0;
 		double dCompensadoCaja=0;
+		double sPagadoCaja=0;
+		double sPagoRectificado=0;
+		double sTotalFactura=0;
+		double sPagadoBanco;
 		String pcAsistencia=null;
 		String pcOficio=null;
 		String fechaPago=null;
+		String idFactura=null;
+		String numFactura;
+		String conceptoFactura;
+		String sDescripcion="";
+		double sTotalLiquidacion = 0;
+		String sFormaPago;
+		
 		
 		int IRPF = 0;
 		
@@ -745,27 +758,46 @@ public class InformeColegiadosPagos extends MasterReport {
 			}
 
 			
-			//Obtiene el importe del compensado o pagado por caja
+			//Obtiene el importe del compensado o pagado por caja o rectificativo
 			buf0 = new StringBuffer();
-			buf0.append("select abo.numeroabono as NUMEROABONO, sum(efe.importe) as COMPENSADO_CAJA");
+			buf0.append("SELECT   abo.numeroabono numeroabono, SUM (caj.importe) compensado_factura,");
+			buf0.append(" SUM (efe.importe) pagado_caja");
+			buf0.append(" FROM fac_pagoabonoefectivo efe RIGHT JOIN fac_abono abo");
+			buf0.append(" ON efe.idinstitucion = abo.idinstitucion");
+			buf0.append(" AND efe.idabono = abo.idabono");
+			buf0.append(" LEFT JOIN fac_pagosporcaja caj");
+			buf0.append(" ON efe.idinstitucion = caj.idinstitucion");
+			buf0.append(" AND efe.idabono = caj.idabono");
+			buf0.append(" AND efe.idpagoabono = caj.idpagoabono");
+			buf0.append(" WHERE abo.idpersona = " + idPersona);
+			buf0.append(" and abo.idpagosjg = " +idPago);
+			buf0.append(" and abo.idinstitucion = " + idInstitucion);
+			buf0.append(" group by abo.numeroabono, abo.idpagosjg, caj.idfactura");		
+			
+	/*		buf0.append("select abo.numeroabono as NUMEROABONO, sum(efe.importe) as COMPENSADO_CAJA");
 			buf0.append(" from FAC_ABONO ABO, FAC_PAGOABONOEFECTIVO EFE");
 			buf0.append(" where abo.idinstitucion = efe.idinstitucion(+)");
 			buf0.append(" and abo.idabono = efe.idabono(+)");
 			buf0.append(" and abo.idpersona = " + idPersona);
 			buf0.append(" and abo.idpagosjg = " +idPago);
 			buf0.append(" and abo.idinstitucion = " + idInstitucion);
-			buf0.append(" group by abo.numeroabono");
+			buf0.append(" group by abo.numeroabono");*/
 			rc = new RowsContainer();
 			rc.find(buf0.toString());
 			if(rc!=null && rc.size()>0){
 				Row r=(Row)rc.get(0);
 				result.putAll(r.getRow());
-				if(!r.getString("COMPENSADO_CAJA").equalsIgnoreCase("")){
-					dCompensadoCaja= Double.parseDouble(r.getString("COMPENSADO_CAJA"));
-				}else dCompensadoCaja=0.0;
-//				result.put("COMPENSADO_CAJA",UtilidadesString.formatoImporte(dCompensadoCaja)+ClsConstants.CODIGO_EURO);
+				if(!r.getString("COMPENSADO_FACTURA").equalsIgnoreCase("")){
+					dCompensadoCaja= Double.parseDouble(r.getString("COMPENSADO_FACTURA"));
+				}else {    
+					dCompensadoCaja = 0;
+
+
+				}					
 			}
 
+			result.put("COMPENSADO_CAJA",UtilidadesString.formatoImporte(dCompensadoCaja)+ClsConstants.CODIGO_EURO);
+			
 			//Se reutiliza la query del detalle de pagos para recuperar importes
 			FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(usr);
 			String sql = pagosAdm.getQueryDetallePagoColegiado(idInstitucion, idPago, idPersona, false, usr.getLanguage());
@@ -803,7 +835,47 @@ public class InformeColegiadosPagos extends MasterReport {
 											Double.parseDouble(sTotalMovimientos)-
 											dCompensadoCaja; // Restamos lo compensado
 				result.put("TOTAL_LIQUIDACION",UtilidadesNumero.formatoCartaPago(dTotalLiquidacion.toString())+ClsConstants.CODIGO_EURO);
+				
+				sTotalLiquidacion = dTotalLiquidacion.doubleValue();
 			}
+			
+			//Obtiene lo que se ha pagado por banco
+			
+			sPagadoBanco =  sTotalLiquidacion;
+			result.put("PAGADO_TOTAL",UtilidadesString.formatoImporte(sPagadoBanco)+ClsConstants.CODIGO_EURO);
+			if (String.valueOf(sPagadoBanco).equals(null) || sPagadoBanco == 0 || String.valueOf(sPagadoBanco).equals("")) {
+				
+				buf0 = new StringBuffer();
+				buf0.append("SELECT   descripcion DESCRIP");
+				buf0.append(" from GEN_RECURSOS");
+				buf0.append(" where idrecurso = 'censo.tipoAbono.caja'");
+				buf0.append(" and idlenguaje = " +usr.getLanguage());
+	
+				rc = new RowsContainer();
+				rc.find(buf0.toString());
+				if(rc!=null && rc.size()>0){
+					Row r=(Row)rc.get(0);
+					result.putAll(r.getRow());
+					result.put("FORMA_PAGO",r.getString("DESCRIP"));
+				}
+				
+			} else {
+				
+				buf0 = new StringBuffer();
+				buf0.append("SELECT   descripcion DESCRIP");
+				buf0.append(" from GEN_RECURSOS");
+				buf0.append(" where idrecurso = 'censo.tipoAbono.banco'");
+				buf0.append(" and idlenguaje = " +usr.getLanguage());
+	
+				rc = new RowsContainer();
+				rc.find(buf0.toString());
+				if(rc!=null && rc.size()>0){
+					Row r=(Row)rc.get(0);
+					result.putAll(r.getRow());
+					result.put("FORMA_PAGO",r.getString("DESCRIP"));
+				}
+			}
+						
 			
 			//Obtiene el IRPF,los totales y facturados de oficios
 			buf0 = new StringBuffer();
