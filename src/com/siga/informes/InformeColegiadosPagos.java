@@ -841,9 +841,8 @@ public class InformeColegiadosPagos extends MasterReport {
 			
 			//Obtiene lo que se ha pagado por banco
 			
-			sPagadoBanco =  sTotalLiquidacion;
-			result.put("PAGADO_TOTAL",UtilidadesString.formatoImporte(sPagadoBanco)+ClsConstants.CODIGO_EURO);
-			if (String.valueOf(sPagadoBanco).equals(null) || sPagadoBanco == 0 || String.valueOf(sPagadoBanco).equals("")) {
+			
+			if (String.valueOf(sTotalLiquidacion).equals(null) || sTotalLiquidacion == 0 || String.valueOf(sTotalLiquidacion).equals("")) {
 				
 				buf0 = new StringBuffer();
 				buf0.append("SELECT   descripcion DESCRIP");
