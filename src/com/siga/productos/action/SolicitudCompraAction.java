@@ -203,13 +203,15 @@ public class SolicitudCompraAction extends MasterAction{
 				form = (SolicitudCompraForm)request.getSession().getAttribute("auxSolicitudCompraForm");
 				request.setAttribute("catalogo", form.getCatalogo());
 				request.setAttribute("tipoProducto", form.getTipoProducto());
-				request.setAttribute("categoriaProducto", form.getTipoProducto().toString()+","+form.getCategoriaProducto());
+				if(form.getTipoProducto()!=null)
+					request.setAttribute("categoriaProducto", form.getTipoProducto().toString()+","+form.getCategoriaProducto());
 		    	request.setAttribute("producto", form.getProducto());
 				
 			
 				//Datos de los Servicios seleccionados en los combos:
 				request.setAttribute("tipoServicio", form.getTipoServicio());
-				request.setAttribute("categoriaServicio", form.getTipoServicio().toString()+","+form.getCategoriaServicio());
+				if(form.getTipoServicio()!=null)
+					request.setAttribute("categoriaServicio", form.getTipoServicio().toString()+","+form.getCategoriaServicio());
 				request.setAttribute("servicio", form.getServicio());
 			
 										
