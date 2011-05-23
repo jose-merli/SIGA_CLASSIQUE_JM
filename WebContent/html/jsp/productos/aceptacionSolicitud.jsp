@@ -201,14 +201,20 @@
 					numeroCuenta=eval("f.cuenta" + j);				
 					pago=eval("f.formaPago" + j);
 					cuentaelegida=eval("f.oculto" + j +"_8");	
-					idcuenta=eval("f.oculto" + j +"_9");
+					idcuenta=eval("f.oculto" + j +"_9");					
 					if(pago.value==<%=factura%>){	
 						if(cuentaelegida.value!=""){
 							cuenta.value=idcuenta.value;						
 							numeroCuenta.value=cuentaelegida.value;
-							document.getElementById("cuenta"+j).value = 1;								
+							document.getElementById("cuenta"+j).value = idcuenta.value;								
 						}
+					}else{
+						document.getElementById("cuenta"+j).disabled="disabled";
+						document.getElementById("cuenta"+j).style.display ='none';						
 					}
+				}else{
+					document.getElementById("cuenta"+j).disabled="disabled";
+					document.getElementById("cuenta"+j).style.display ='none';
 				}
 			}		   
  		}
@@ -222,39 +228,27 @@
 			pago=eval("f.formaPago" + fila);
 			cuentaelegida=eval("f.oculto" + fila +"_8");	
 			idcuenta=eval("f.oculto" + fila +"_9");
-			if(pago.value==<%=factura%>){
+			if(pago.value==<%=factura%>){				
 				document.getElementById("cuenta" + fila).disabled="";	
-				// numeroCuenta.clase = "boxCombo";
-				// numeroCuenta.readonly = "false";
-				if(cuentaelegida.value==""){
-					/*			
-					f.modo.value = "modificarCuenta";
-					var resultado = ventaModalGeneral("solicitudCompraForm","P");					
-					if(resultado!= undefined && resultado[0]!=undefined){
-						cuenta.value=resultado[0];
-						numeroCuenta.value=resultado[1];
-					}else{			
-						cuenta.value="";
-						numeroCuenta.value="";
-						//pago.value="";			
-					}*/
-
+				document.getElementById("cuenta" + fila).style.display ='block';
+				if(cuenta.value == 1 && document.getElementById("cuenta"+fila).childNodes.length <= 2){
 					alert("Seleccione una Cuenta Bancaria en Nº de Cuenta");
-					
-					
+				}else if(cuenta.value == "" && document.getElementById("cuenta"+fila).childNodes.length > 2){
+					alert("Seleccione una Cuenta Bancaria en Nº de Cuenta");
 				}else{
 					cuenta.value=idcuenta.value;
-					//alert(idcuenta.value);
-					numeroCuenta.value=cuentaelegida.value;
-					//alert(cuentaelegida.value);
+					numeroCuenta.value=cuentaelegida.value;		
+					if(document.getElementById("cuenta"+fila).childNodes.length > 2){
+						document.getElementById("cuenta"+fila).value = 0;
+					}else{
+						document.getElementById("cuenta"+fila).value = idcuenta.value;
+					}				
 				}
 			}else{
 				document.getElementById("cuenta" + fila).disabled="disabled";			
-				// numeroCuenta.readonly = "true";
-				//numeroCuenta.clase = "boxConsulta";
+				document.getElementById("cuenta" + fila).style.display ='none';
 				cuenta.value="";
-				numeroCuenta.value="";	
-							
+				numeroCuenta.value="";								
 			}	
 			formaPago.value=pago[pago.selectedIndex].text; 					   
  		}
@@ -802,12 +796,12 @@
 
 <%@ include file="/html/jsp/censo/includeVolver.jspf" %>
 
-<html:form action="/PYS_SolicitarDireccion.do" method="POST" target="submitArea" type="">  	
-  	<input type="hidden" name="idInstitucion" value="<%=String.valueOf(idInstitucion)%>">
+<html:form action="/PYS_SolicitarDireccion.do" 	method="POST" target="submitArea" type="">  	
+  	<input type="hidden" name="idInstitucion" 	value="<%=String.valueOf(idInstitucion)%>">
   	<input type="hidden" name="idPersona" 		value="<%=String.valueOf((Long)carro.getIdPersona())%>">
   	<input type="hidden" name="idTipoEnvio" 	value="">
   	<input type="hidden" name="actionModal" 	value="">
-  	<input type="hidden" name="modo" 					value="buscar">
+  	<input type="hidden" name="modo" 			value="buscar">
 </html:form>
 
 
