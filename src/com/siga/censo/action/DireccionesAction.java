@@ -530,6 +530,13 @@ protected String insertar (ActionMapping mapping,
 							}
 						}else cambiodireccioncensoweb (miForm,i,sql1, tipo, idDireccionesCensoWeb, request);
 					}
+				} else if (new Integer(tipos[i]).intValue() == ClsConstants.TIPO_DIRECCION_FACTURACION) {
+					boolean tieneDirFacturacion = tipoDirAdm.tieneDireccionFacturacion(miForm.getIDInstitucion().toString(), miForm.getIDPersona()
+							.toString(), null);
+					if (tieneDirFacturacion) {
+						t.rollback();
+						return exito("messages.directions.duplicatedFact", request);
+					}
 					
 				}else { if (!preferenteModif.equals("")){
 							 if (!idDireccionesCensoWeb.equals("") &&(!idDireccionesPreferentes.equals(""))){
@@ -776,6 +783,13 @@ protected String insertar (ActionMapping mapping,
 						} else
 							cambiodireccioncensoweb(miForm, i, sql1, tipo, idDireccionesCensoWeb, request);
 					}
+				}else if (new Integer (tipos[i]).intValue () == ClsConstants.TIPO_DIRECCION_FACTURACION){	
+					boolean tieneDirFacturacion = tipoDirAdm.tieneDireccionFacturacion(miForm.getIDInstitucion().toString(), miForm.getIDPersona().toString(),miForm.getIdDireccion().toString());
+					if(tieneDirFacturacion){
+						t.rollback();
+						return exito("messages.directions.duplicatedFact", request);
+					}	
+				
 				} else {
 					if (!preferenteModif.equals("")) {
 						if (!idDireccionesCensoWeb.equals("") && (!idDireccionesPreferentes.equals(""))) {

@@ -239,4 +239,41 @@ public class CenDireccionTipoDireccionAdm extends MasterBeanAdmVisible {
 		}
 		return registro;
 	}
+	
+	public boolean tieneDireccionFacturacion(String idInstitucion, String idPersona, String idDireccion) throws ClsExceptions {
+
+		Hashtable codigos = new Hashtable();
+		codigos.put(new Integer(1), idInstitucion);
+		codigos.put(new Integer(2), idPersona);
+		codigos.put(new Integer(3), ClsConstants.TIPO_DIRECCION_FACTURACION);
+		
+		String sql = " SELECT *	FROM  cen_direcciones dir, cen_direccion_tipodireccion tpd " 
+				+ 	 " WHERE dir.idinstitucion = tpd.idinstitucion				 "
+						+ " AND dir.idpersona = tpd.idpersona					 "
+						+ " AND dir.iddireccion = tpd.iddireccion				 "
+						+ " AND dir.idinstitucion =:1							 "
+						+ " AND dir.idpersona =:2								 "
+						+ " AND dir.FECHABAJA IS NULL							 "
+						+ " AND tpd.idtipodireccion =:3  						 ";
+		if(idDireccion != null){
+			codigos.put(new Integer(4), idDireccion);
+			sql = sql + " AND dir.idDireccion <> :4 ";
+		}
+		
+		try {
+			RowsContainer rc = this.findBind(sql, codigos);
+			if (rc != null) {
+				if (rc.size() > 0) {
+					return true;
+				} else {
+					return false;
+				}
+			}else{
+				return false;
+			}	
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al buscar la direccion adecuada con un tipo determinado. ");
+		}
+	}
+	
 }

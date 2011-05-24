@@ -128,11 +128,12 @@ public class ClsConstants {
 	public static final String HISTORICO_REGISTRO_ELIMINADO 			= "Registro eliminado";
 
     // Tipo direcciones que tienen logica asociada
-	public static final int TIPO_DIRECCION_CORREO	= 3;
-	public static final int TIPO_DIRECCION_DESPACHO	= 2;
-	public static final int TIPO_DIRECCION_GUIA	    = 5;
-	public static final int TIPO_DIRECCION_GUARDIA  = 6;
-	public static final int TIPO_DIRECCION_PUBLICA	= 4;
+	public static final int TIPO_DIRECCION_CORREO		= 3;
+	public static final int TIPO_DIRECCION_DESPACHO		= 2;
+	public static final int TIPO_DIRECCION_GUIA	    	= 5;
+	public static final int TIPO_DIRECCION_GUARDIA  	= 6;
+	public static final int TIPO_DIRECCION_FACTURACION  = 8;
+	public static final int TIPO_DIRECCION_PUBLICA		= 4;
 	
 	// Tipo Institucion
 	public static final int TIPO_INTITUCION_CGAE	            = 1;
