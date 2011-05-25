@@ -62,6 +62,10 @@
 	}	 
 	String action=app+"/JGR_Designas.do?noReset=true";
     /**************/
+    
+	// Chapuza para el Colegio de Badajoz: al perfil "Procuradores" no hay que permitirle borrar las designaciones
+	// Se ha de hacer asi porque en SIGA no existe el permiso de borrado separado del de edicion
+    String botonesLinea = "E,C" + ((usr.getLocation().equals("2010") && Arrays.asList(usr.getProfile()).contains("PRO")) ? "" : ",B");
 %>	
 
 <html>
@@ -142,7 +146,7 @@
 					
 					
 			 	%>	
-				  	<siga:FilaConIconos fila='<%=String.valueOf(contadorFila)%>' botones="E,C,B" clase="listaNonEdit">
+				  	<siga:FilaConIconos fila='<%=String.valueOf(contadorFila)%>' botones="<%=String.valueOf(botonesLinea)%>" clase="listaNonEdit">
 						
 						<td align="center">
 						<%String valorCheck = registro.get("IDINSTITUCION")+"||"+registro.get("ANIO")+"||"+registro.get("IDTURNO")+"||"+registro.get("NUMERO");
