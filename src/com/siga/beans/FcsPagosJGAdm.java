@@ -1089,6 +1089,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		
 		sql.append("  from FCS_PAGO_COLEGIADO pc ");
 		sql.append(" where pc.IDINSTITUCION = "+idInstitucion+" ");
+		sql.append("   and pc.IDPAGOSJG = nvl("+idPagosJg+", pc.IDPAGOSJG) ");
 		if(idPersona!=null){
 			sql.append("   and nvl(idperdestino, idperorigen) in ("+idPersona+", nvl((select idpersona from cen_componentes comp ");
 			sql.append("   where comp.cen_cliente_idpersona = "+idPersona+"), -1)) ");
