@@ -2229,8 +2229,28 @@
 			
 		</action>
 		
+		<action path="/JGR_ValidarTurnosGuardias" type="com.siga.gratuita.action.GestionInscripcionesTGAction" name="InscripcionTGForm" >
 		
+			<forward name="inicio" path="/html/jsp/gratuita/gestionInscripcionesTG.jsp"/>
+			<forward name="listadoInscripcionTurnos" path="/html/jsp/gratuita/listadoInscripcionTurnos.jsp"/>
+			<forward name="listadoInscripcionGuardias" path="/html/jsp/gratuita/listadoInscripcionGuardias.jsp"/>
+			<forward name="consultaTurnoInscripcion" path="/html/jsp/gratuita/consultaTurnoInscripcion.jsp"/>
+			<forward name="consultaGuardiasInscripcion" path="/html/jsp/gratuita/consultaGuardiasInscripcion.jsp"/>
+			<forward name="validarInscripcion" path="/html/jsp/gratuita/validarInscripcion.jsp"/>
+			<forward name="editarFechaValidacion" path="/html/jsp/gratuita/cambioFechaValidacion.jsp"/>
+			<forward name="editarFechaBaja" path="/html/jsp/gratuita/cambioFechaBaja.jsp"/>
+			<forward name="msjAvisoEstado" path="/html/jsp/gratuita/msjAvisoEstado.jsp"/>
+			
+		</action>
 		<action path="/JGR_BajasTemporales" type="com.siga.censo.action.GestionBajasTemporalesAction" name="BajasTemporalesForm">
+			<forward name="inicio" path="/html/jsp/censo/bajasTemporales/gestionBajasTemporales.jsp"/>
+			<forward name="listadoBajasTemporales" path="/html/jsp/censo/bajasTemporales/listadoBajasTemporales.jsp"/>
+			<forward name="solicitud" path="/html/jsp/censo/bajasTemporales/solicitudBajasTemporales.jsp"/>
+			<forward name="incidencias" path="/html/jsp/censo/bajasTemporales/incidenciasBajasTemporales.jsp"/>
+			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
+			
+		</action>
+		<action path="/JGR_BajasTemporalesGuardias" type="com.siga.censo.action.GestionBajasTemporalesAction" name="BajasTemporalesForm">
 			<forward name="inicio" path="/html/jsp/censo/bajasTemporales/gestionBajasTemporales.jsp"/>
 			<forward name="listadoBajasTemporales" path="/html/jsp/censo/bajasTemporales/listadoBajasTemporales.jsp"/>
 			<forward name="solicitud" path="/html/jsp/censo/bajasTemporales/solicitudBajasTemporales.jsp"/>
@@ -2628,7 +2648,13 @@
 			<forward name="nuevo" path="/html/jsp/gratuita/modalNuevo_SaltosYCompensaciones.jsp"/>
 			<forward name="mantenimiento" path="/html/jsp/gratuita/modalMantenimiento_SaltosYCompensaciones.jsp"/>
 		</action>
-
+		
+		<action path="/JGR_SaltosYCompensacionesGuardias" type="com.siga.gratuita.action.SaltosYCompensacionesAction" name="SaltosYCompensacionesForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/inicio_SaltosYCompensaciones.jsp"/>
+			<forward name="listado" path="/html/jsp/gratuita/listado_SaltosYCompensaciones.jsp"/>
+			<forward name="nuevo" path="/html/jsp/gratuita/modalNuevo_SaltosYCompensaciones.jsp"/>
+			<forward name="mantenimiento" path="/html/jsp/gratuita/modalMantenimiento_SaltosYCompensaciones.jsp"/>
+		</action>
 		<!-- ***** Justicia Gratuita / Mantenimiento Grupos de Facturación *****
 -->
 		<action path="/JGR_MantenimientoGruposFacturacion" type="com.siga.gratuita.action.DefinirGrupoFacturacionAction" name="DefinirGrupoFacturacionForm" scope="request">

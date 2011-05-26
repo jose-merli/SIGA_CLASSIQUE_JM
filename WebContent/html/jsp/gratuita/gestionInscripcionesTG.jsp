@@ -456,7 +456,8 @@
 <input type="hidden" name="claseBusqueda">
 <input type="hidden" name="estadoBusqueda">
 <!-- INICIO: CAMPOS DE BUSQUEDA-->
-<html:form action="/JGR_ValidarTurnos" method="POST" target="mainWorkArea">
+<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+<html:form action="${path}"  method="POST" target="mainWorkArea">
 <html:hidden property="modo"/>
 <html:hidden property="idPersona"/>
 <html:hidden property="idInstitucion"/>
@@ -608,11 +609,11 @@
 
 
 	<ajax:select
-	baseUrl="/SIGA/JGR_ValidarTurnos.do?modo=getAjaxGuardias"
+	baseUrl="/SIGA${path}.do?modo=getAjaxGuardias"
 	source="turnosInscripcion" target="guardiasInscripcion" parameters="idTurno={idTurno}"
 	/>
 <ajax:updateFieldFromField 
-	baseUrl="/SIGA/JGR_ValidarTurnos.do?modo=getAjaxColegiado"
+	baseUrl="/SIGA${path}.do?modo=getAjaxColegiado"
     source="colegiadoNumero" target="idPersona,colegiadoNumero,colegiadoNombre"
 	parameters="colegiadoNumero={colegiadoNumero}" 
 	preFunction="preAccionColegiado"
@@ -638,7 +639,7 @@
 </html:form>
 
 <ajax:htmlContent
-	baseUrl="/SIGA/JGR_ValidarTurnos.do?modo=getAjaxBusqueda"
+	baseUrl="/SIGA${path}.do?modo=getAjaxBusqueda"
 	source="idBusqueda"
 	target="divInscripciones"
 	preFunction="preAccionBusqueda"
@@ -653,7 +654,7 @@
 	<input type="hidden" name="actionModal" value="">
 	<input type="hidden" name="modo" value="abrirBusquedaModal">
 </html:form>
-<html:form action="/JGR_ValidarTurnos"  name="FormAValidar" type ="com.siga.gratuita.form.InscripcionTGForm">
+<html:form action="${path}"  name="FormAValidar" type ="com.siga.gratuita.form.InscripcionTGForm">
 	<html:hidden property="modo"/>
 	<html:hidden property="idInstitucion" />
 	<html:hidden property="idPersona" />

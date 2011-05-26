@@ -56,8 +56,8 @@
 
 <table class="tablaCentralCamposPeque" align="center">
 
-
-	<html:form action="/JGR_ValidarTurnos" method="POST"
+<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+	<html:form action="${path}" method="POST"
 		target="submitArea">
 		<html:hidden name="InscripcionTGForm" property="modo" />
 		<html:hidden name="InscripcionTGForm" property="idInstitucion" />

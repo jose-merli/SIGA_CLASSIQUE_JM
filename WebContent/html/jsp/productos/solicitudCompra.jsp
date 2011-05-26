@@ -632,10 +632,10 @@
 							<%
 							 	} 
 							%>
-									<td class="labelText">
+									<td class="labelText" width="100">
 										<siga:Idioma key="pys.solicitudCompra.literal.presentador"/>
 									</td>
-									<td>
+									<td width="100">
 									
 										<siga:ComboBD nombre="idInstitucionPresentador" 
 																	tipo="cmbInstitucionesAbreviadas" 

@@ -94,7 +94,8 @@
 	<table class="tablaCentralCamposPeque" align="center"  border="0">
 	
 	<!-- Comienzo del formulario con los campos -->	
-	<html:form action="/JGR_SaltosYCompensaciones.do" method="post">
+	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+	<html:form  action="${path}"  method="post">
 		<html:hidden property = "usuMod" value = "<%=usr.getUserName()%>"/>
 		<html:hidden property = "modo" value = "modificar"/>
 		

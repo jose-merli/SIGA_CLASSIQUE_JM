@@ -72,7 +72,8 @@
 
 
 <!-- INICIO: CAMPOS DE BUSQUEDA-->
-<html:form action="/JGR_BajasTemporales" method="POST" target="mainWorkArea">
+<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+<html:form action="${path}"  method="POST" target="mainWorkArea">
 <html:hidden property="modo"/>
 <html:hidden property="idPersona"/>
 <html:hidden property="fichaColegial"/>
@@ -258,11 +259,11 @@
 
 
 <ajax:select
-	baseUrl="/SIGA/JGR_BajasTemporales.do?modo=getAjaxGuardias"
+	baseUrl="/SIGA${path}.do?modo=getAjaxGuardias"
 	source="turnos" target="guardias" parameters="idTurno={idTurno}"
 	/>
 <ajax:updateFieldFromField 
-	baseUrl="/SIGA/JGR_BajasTemporales.do?modo=getAjaxColegiado"
+	baseUrl="/SIGA${path}.do?modo=getAjaxColegiado"
     source="colegiadoNumero" target="idPersona,colegiadoNumero,colegiadoNombre"
 	parameters="colegiadoNumero={colegiadoNumero}" 
 	preFunction="preAccionColegiado"
@@ -294,7 +295,7 @@
 
 
 <ajax:htmlContent
-	baseUrl="/SIGA/JGR_BajasTemporales.do?modo=getAjaxBusqueda"
+	baseUrl="/SIGA${path}.do?modo=getAjaxBusqueda"
 	source="idBusqueda"
 	target="divBajasTemporales"
 	preFunction="preAccionBusqueda"
@@ -309,7 +310,7 @@
 	<input type="hidden" name="actionModal" value="">
 	<input type="hidden" name="modo" value="abrirBusquedaModal">
 </html:form>
-<html:form action="/JGR_BajasTemporales"  name="FormBajasTemporales" type ="com.siga.censo.form.BajasTemporalesForm">
+<html:form action="${path}"  name="FormBajasTemporales" type ="com.siga.censo.form.BajasTemporalesForm">
 	<html:hidden property="modo"/>
 	<html:hidden property="idInstitucion" />
 	<html:hidden property="idPersona" />

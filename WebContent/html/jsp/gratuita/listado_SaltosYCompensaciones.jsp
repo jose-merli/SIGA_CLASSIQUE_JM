@@ -57,8 +57,8 @@
 </head>
 
 <body>
-
-	<html:form action="/JGR_SaltosYCompensaciones.do" method="post" target="submitArea" style="display:none">
+<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+	<html:form action="${path}"  method="post" target="submitArea" style="display:none">
 		<html:hidden property = "modo" value = ""/>
 
 		<!-- RGG: cambio a formularios ligeros -->

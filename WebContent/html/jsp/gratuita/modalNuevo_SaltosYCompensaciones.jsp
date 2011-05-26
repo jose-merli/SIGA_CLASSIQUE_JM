@@ -68,9 +68,9 @@
 	<!-- INICIO: CAMPOS -->
 	<!-- Zona de campos de busqueda o filtro -->
 	<table class="tablaCentralCamposPeque" align="center" border="0" valign="top" >
-	
+	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 	<!-- Comienzo del formulario con los campos -->	
-	<html:form action="/JGR_SaltosYCompensaciones.do" method="post">
+	<html:form  action="${path}"  method="post">
 		<html:hidden property = "usuMod" value = "<%=usr.getUserName()%>"/>
 		<html:hidden property = "modo" value = "insertar"/>
 		<html:hidden property = "idPersona" value ="" />

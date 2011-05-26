@@ -102,7 +102,8 @@
 		<html:hidden property = "fechaMod" value = "sysdate"/>
 		<html:hidden property = "idLista" value = "<%=idlista%>"/>
 		<html:hidden property = "idInstitucion" value = "<%=idinstitucion%>"/>
-		<html:hidden property = "actionModal" value = ""/>	
+		<html:hidden property = "actionModal" value = ""/>
+		<html:hidden property = "comunicacion" value = ""/>			
 	<tr>
 		<td class="labelText">	
 			<siga:Idioma key="gratuita.mantenimientoLG.literal.nombre"/>&nbsp;(*)
@@ -151,10 +152,10 @@
 	-->
 
      <% if(accion.equals("nuevo")) { %> 
-        <siga:ConjBotonesAccion botones="G,R" clase="botonesSeguido" modo="<%=modo%>" />
+        <siga:ConjBotonesAccion botones="G,R,COM" clase="botonesSeguido" modo="<%=modo%>" />
     <% } else {%>
 	<% if (modo.equalsIgnoreCase("EDITAR")) {%>
-		<siga:ConjBotonesAccion botones="G,R,GM" clase="botonesSeguido" modo="<%=modo%>" />
+		<siga:ConjBotonesAccion botones="G,R,GM,COM" clase="botonesSeguido" modo="<%=modo%>" />
 	<% } else {%>
 		<siga:ConjBotonesAccion botones="" clase="botonesSeguido" modo="<%=modo%>" />
 	<% } 
@@ -218,7 +219,7 @@
 		}
 		
 		function accionGenerarInforme() 
-		{  
+		{ 
 			document.forms[0].modo.value	= "generarInforme";
 	   		var resultado = ventaModalGeneral(document.forms[0].name,"P");
 			
@@ -227,6 +228,18 @@
 	   		}
 	
 		}
+		//Asociada al boton Guardar -->
+		function accionComunicar() 
+		{	
+			document.forms[0].modo.value	= "generarInforme";
+			document.forms[0].comunicacion.value = "true";
+	   		var resultado = ventaModalGeneral(document.forms[0].name,"P");
+			
+	   		if(resultado == "MODIFICADO"){
+	   			buscar();
+	   		}
+		}
+		
 		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->

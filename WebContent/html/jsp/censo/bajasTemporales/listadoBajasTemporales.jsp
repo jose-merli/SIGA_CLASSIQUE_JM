@@ -187,8 +187,8 @@
 	</table>
 	
 
-
-	<html:form action="/JGR_BajasTemporales" name="FormBajasTemporales"
+<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+	<html:form action="${path}"  name="FormBajasTemporales"
 		type="com.siga.censo.form.BajasTemporalesForm">
 		<html:hidden property="modo" />
 		<html:hidden property="idInstitucion" />

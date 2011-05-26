@@ -72,9 +72,9 @@
 </head>
 
 <body onLoad="ajusteAlto('resultado');">
-	
+<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 	<table class="tablaCentralCampos" align="center">
-	<html:form action="/JGR_SaltosYCompensaciones.do" method="POST" target="resultado">
+	<html:form action="${path}" method="POST" target="resultado">
 		<html:hidden property = "modo" value = ""/>	
 		<html:hidden property = "usuMod" value = "<%=usr.getUserName()%>"/>
 		<html:hidden property = "idPersona" value = ""/>
