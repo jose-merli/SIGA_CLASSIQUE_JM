@@ -2581,7 +2581,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	            RowsContainer rc = new RowsContainer();
 		        StringBuffer sql = new StringBuffer();		        
 		        sql.append(" select  ejg.aniocajg || '/' || ejg.numero_cajg as ANIONUMEROCAJG, ejg.numero_cajg  || '/' || ejg.aniocajg as NUMEROANIOCAJG, ejg.aniocajg as ANIOCAJG, ejg.numero_cajg as NUMEROCAJG, ejg.idpersona as IDPERSONA ");
-		        sql.append(" ,ejg.anio || '/' || ejg.numero ANIONUMEROEJG,ejg.numero || '/' || ejg.anio NUMEROANIOEJG ");
+		        sql.append(" ,ejg.anio || '/' || ejg.numejg ANIONUMEROEJG,ejg.numejg || '/' || ejg.anio NUMEROANIOEJG ");
 		        sql.append(" from scs_ejg ejg, scs_designa des, ");
 		        sql.append(" scs_turno tur, scs_tipoejg tip, ");
 		        sql.append(" scs_tipodictamenejg tdic, scs_ejgdesigna ejgDes");        
