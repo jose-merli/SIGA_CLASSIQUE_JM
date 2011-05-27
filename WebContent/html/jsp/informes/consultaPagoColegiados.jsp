@@ -45,7 +45,7 @@
 
 <html:javascript formName="mantenimientoInformesForm" staticJavascript="false" />
 
-<html:form action="/INF_CartaPago.do" method="POST"
+<html:form action="/INF_CartaPago.do?noReset=true" method="POST"
 	target="resultado">
 <fieldset>
 	<html:hidden property="modo" value="" />
@@ -164,12 +164,11 @@
 <script language="JavaScript">
 		
 		<!-- Funcion asociada a boton buscar -->
-		function buscar(modo) 
-		{
+		function buscar(modo){
 			sub();	
 			var f=document.getElementById("mantenimientoInformesForm");
 		    if (validateMantenimientoInformesForm(f)) {
-			
+		    	document.forms[0].seleccionarTodos.value = "";
 				document.forms[0].modo.value="buscarInicio";
 				document.forms[0].target="resultado";	
 				document.forms[0].submit();
@@ -182,6 +181,7 @@
 		{
 			sub();	
 			var f=document.getElementById("mantenimientoInformesForm");
+			
 		    if (validateMantenimientoInformesForm(f)) {
 			
 				document.forms[0].modo.value="buscarPor";
@@ -192,6 +192,7 @@
 			}
 				
 		}
+
 		function seleccionarTodos(pagina) 
 		{
 				document.forms[0].seleccionarTodos.value = pagina;
@@ -200,6 +201,7 @@
 				document.forms[0].submit();
 				
 		}
+
 		
 		
        

@@ -113,8 +113,7 @@ public class InformePagosColegiadoAction extends MasterAction {
 
 				// throw new SIGAException("El ActionMapping no puede ser
 				// nulo");
-				throw new ClsExceptions("El ActionMapping no puede ser nulo",
-						"", "0", "GEN00", "15");
+				throw new ClsExceptions("El ActionMapping no puede ser nulo","", "0", "GEN00", "15");
 			}
 
 		} catch (SIGAException es) {
@@ -134,6 +133,7 @@ public class InformePagosColegiadoAction extends MasterAction {
 
 		UsrBean user = ((UsrBean) request.getSession()
 				.getAttribute(("USRBEAN")));
+		
 		String parametrosComboPago[] = new String[2];
 		parametrosComboPago[0] = user.getLocation();
 		parametrosComboPago[1] = ClsConstants.ESTADO_PAGO_EJECUTADO;
@@ -157,8 +157,7 @@ public class InformePagosColegiadoAction extends MasterAction {
 			MantenimientoInformesForm miFormulario = (MantenimientoInformesForm) formulario;
 			//Si es seleccionar todos esta variable no vandra nula y ademas nos traera el numero de pagina 
 			//donde nos han marcado el seleccionar todos(asi evitamos meter otra variable)
-			boolean isSeleccionarTodos = miFormulario.getSeleccionarTodos()!=null 
-				&& !miFormulario.getSeleccionarTodos().equals("");
+			boolean isSeleccionarTodos = miFormulario.getSeleccionarTodos()!=null && !miFormulario.getSeleccionarTodos().equals("");
 			//si no es seleccionar todos los cambios van a fectar a los datos que se han mostrado en 
 			//la jsp por lo que parseamos los datos dento dela variable Registro seleccionados. Cuando hay modificacion
 			//habra que actualizar estos datos
@@ -167,7 +166,7 @@ public class InformePagosColegiadoAction extends MasterAction {
 				String seleccionados = request.getParameter("Seleccion");
 				if (seleccionados != null ) {
 					ArrayList alRegistros = actualizarSelecionados(this.clavesBusqueda,seleccionados, clavesRegSeleccinados);
-					if (alRegistros != null) {
+					if (alRegistros != null) {					
 						clavesRegSeleccinados = alRegistros;
 						miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
 					}

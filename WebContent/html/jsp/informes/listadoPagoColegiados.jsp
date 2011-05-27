@@ -30,11 +30,8 @@
 <%@page import="com.siga.beans.CenColegiadoBean"%>
 
 
-<bean:define id="registrosSeleccionados"
-	name="mantenimientoInformesForm" property="registrosSeleccionados"
-	type="java.util.ArrayList" />
-<bean:define id="datosPaginador" name="mantenimientoInformesForm"
-	property="datosPaginador" type="java.util.HashMap" />
+<bean:define id="registrosSeleccionados" name="mantenimientoInformesForm" property="registrosSeleccionados" type="java.util.ArrayList" />
+<bean:define id="datosPaginador" name="mantenimientoInformesForm" property="datosPaginador" type="java.util.HashMap" />
 <!-- JSP -->
 <%
 	String app = request.getContextPath();
@@ -49,11 +46,11 @@
 	String registrosPorPagina = "";
 	Vector resultado = null;
 	String valorCheckPersona = "";
+	
 	if (datosPaginador != null) {
 
 		if (datosPaginador.get("datos") != null && !datosPaginador.get("datos").equals("")) {
 			resultado = (Vector) datosPaginador.get("datos");
-
 			PaginadorCaseSensitiveBind paginador = (PaginadorCaseSensitiveBind) datosPaginador.get("paginador");
 			paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
 
@@ -77,7 +74,7 @@
 
 		registrosPorPagina = "0";
 	}
-	String action = app + "/INF_CartaPago.do";
+	String action = app + "/INF_CartaPago.do?noReset=true";
 	/**************/
 %>
 
@@ -104,7 +101,7 @@
 <!-- Tratamiento del tagTabla y tagFila para la formacion de la lista 
 			 de cabeceras fijas -->
 
-<html:form action="/INF_CartaPago" method="POST" target="submitArea"
+<html:form action="/INF_CartaPago?noReset=true" method="POST" target="mainWorkArea"
 	style="display:none">
 	<html:hidden property="modo" value="" />
 	<html:hidden property="hiddenFrame" value="1" />
@@ -136,7 +133,6 @@
 	<html:hidden property="idPersona" value="" />
 	<html:hidden property="descEnvio" value="" />
 	<html:hidden property="datosEnvios" value="" />
-
 
 </html:form>
 
@@ -190,22 +186,20 @@
 			String valorCheck = idInstitucionRow + "||" + idPersonaRow + "##" + idPagosRow;
 			boolean isChecked = false;
 			for (int z = 0; z < registrosSeleccionados.size(); z++) {
-
+	
 				Hashtable clavesRegistro = (Hashtable) registrosSeleccionados.get(z);
-
+	
 				if (valorCheck.equals((String) clavesRegistro.get("CLAVE"))) {
 					isChecked = true;
 					break;
 				}
-
+	
 			}
-
+	
 			if (isChecked) {
-		%> <input type="checkbox" value="<%=valorCheck%>" name="chkPersona"
-			checked onclick="pulsarCheck(this)"> <%
+		%> 	<input type="checkbox" value="<%=valorCheck%>" name="chkPersona" checked onclick="pulsarCheck(this)"> <%
  	} else {
- %> <input type="checkbox" value="<%=valorCheck%>" name="chkPersona"
-			onclick="pulsarCheck(this)"> <%
+ %> 	<input type="checkbox" value="<%=valorCheck%>" name="chkPersona" onclick="pulsarCheck(this)"> <%
  	}
  %>
 		</td>
@@ -216,17 +210,15 @@
 		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(fila.getString("TOTALIMPORTESJCS"), 2))%>&nbsp;&euro;</td>
 		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(fila.getString("IMPORTETOTALMOVIMIENTOS"), 2))%>&nbsp;&euro;</td>
 		<%
-			float aux = Float.parseFloat(fila.getString("TOTALIMPORTESJCS"))
-									+ Float.parseFloat(fila.getString("IMPORTETOTALMOVIMIENTOS"));
-							String importe = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea((new Float(aux)).toString(), 2));
+			float aux = Float.parseFloat(fila.getString("TOTALIMPORTESJCS"))+ Float.parseFloat(fila.getString("IMPORTETOTALMOVIMIENTOS"));
+			String importe = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea((new Float(aux)).toString(), 2));
 		%>
 		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(importe, 2))%>&nbsp;&euro;</td>
 		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(fila.getString("TOTALIMPORTEIRPF"), 2))%>&nbsp;&euro;</td>
 		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(fila.getString("IMPORTETOTALRETENCIONES"), 2))%>&nbsp;&euro;</td>
 		<%
-			aux = aux + Float.parseFloat(fila.getString("TOTALIMPORTEIRPF"))
-									+ Float.parseFloat(fila.getString("IMPORTETOTALRETENCIONES"));
-							importe = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea((new Float(aux)).toString(), 2));
+			aux = aux + Float.parseFloat(fila.getString("TOTALIMPORTEIRPF"))+ Float.parseFloat(fila.getString("IMPORTETOTALRETENCIONES"));
+			importe = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea((new Float(aux)).toString(), 2));
 		%>
 		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(importe, 2))%>&nbsp;&euro;</td>
 
@@ -285,29 +277,38 @@
 		
 		document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
 		checkTodos();
-		
 		   
 	}
-	function cargarChecks(){
+
+	function cargarChecks(){		
 		<%if (registrosSeleccionados != null) {
-				for (int p = 0; p < registrosSeleccionados.size(); p++) {
-					Hashtable clavesEJG = (Hashtable) registrosSeleccionados.get(p);
-					valorCheckPersona = (String) clavesEJG.get("CLAVE");
-					String valorPago =(String) clavesEJG.get("IDPAGOS");%>
-					var aux='<%=valorCheckPersona +"##" + valorPago%>';
-					ObjArray.push(aux);
-				<%}
-			}%>
-	   	
-		ObjArray.toString();
-		seleccionados1=ObjArray;
-			
-		document.forms[0].registrosSeleccionados.value=seleccionados1;
+			for (int p = 0; p < registrosSeleccionados.size(); p++) {
+				Hashtable clavesEJG = (Hashtable) registrosSeleccionados.get(p);
+				valorCheckPersona = (String) clavesEJG.get("CLAVE");
+				String valorPago = "";
+				if((String) clavesEJG.get("IDPAGOS")!=null){
+					valorPago = "##" + (String) clavesEJG.get("IDPAGOS");
+				}%>	
+								
+				var aux='<%=valorCheckPersona + valorPago%>';
+				ObjArray.push(aux);
+			<%}
+		}
 		
+		if(registrosSeleccionados.size() == Integer.parseInt(totalRegistros)){ %>
+			var ele = document.getElementsByName("chkPersona");
+		  	for (i = 0; i < ele.length; i++) {
+	   			ele[i].checked = true;
+	   		}
+		<%}%>
+		ObjArray.toString();
+		seleccionados1=ObjArray;			
+		document.forms[0].registrosSeleccionados.value=seleccionados1;		
 		if(document.getElementById('registrosSeleccionadosPaginador'))
-			document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
-			
+			document.getElementById('registrosSeleccionadosPaginador').value=ObjArray.length;
 	}
+	
+	
 	function cargarChecksTodos(o){
   	   if (document.getElementById('registrosSeleccionadosPaginador')){ 	
   	   var conf = confirm("<siga:Idioma key="paginador.message.marcarDesmarcar"/>"); 
@@ -335,8 +336,7 @@
 				  	for (i = 0; i < ele.length; i++) {
 				  		if(!ele[i].disabled){
 				  			if(ele[i].checked){	
-		     					ele[i].checked = false;
-		     				
+		     					ele[i].checked = false;		     				
 								ObjArray.splice(ObjArray.indexOf(ele[i].value),1);
 							}
 						}
@@ -344,7 +344,6 @@
 				   	seleccionados1=ObjArray;
 			   }else{
 				   	var ele = document.getElementsByName("chkPersona");
-							
 				  	for (i = 0; i < ele.length; i++) {
 				  		if(!ele[i].disabled){
 							if(!ele[i].checked){				  		
@@ -356,8 +355,8 @@
 				   		
 			   		seleccionados1=ObjArray;
 			   }
+			   
 			   document.forms[0].registrosSeleccionados.value=seleccionados1;
-		   		
 	   	  }
 	   	 if (document.getElementById('registrosSeleccionadosPaginador')){ 		 
 		  document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
@@ -366,25 +365,26 @@
 	 }
 	   
 	function checkTodos(){
-	
+		
 	 	var ele = document.getElementsByName("chkPersona");
 		var todos=1;	
+
 	  	for (i = 0; i < ele.length; i++) {
-   			if(!ele[i].checked){
+   			if(!ele[i].checked && !ele[i].disabled){
    				todos=0;
    				break;
    			} 
    		}
-	   if (todos==1){
+	   
+	    if (todos==1){
 			document.getElementById("chkGeneral").checked=true;
 		}else{
 			document.getElementById("chkGeneral").checked=false;
 		}
-	   	
+		
    	}
    	
-   	function accionComunicar()
-		{
+   	function accionComunicar(){
 		sub();
 		datos = "";
 		
@@ -425,6 +425,7 @@
 		formu.datosInforme.value=datos;
 		formu.submit();
 	}
+	
 	function comunicar(fila)
 		{
 		var idPers = "idPersona"+fila;
@@ -447,9 +448,9 @@
 		formu.datosInforme.value=datos;
 		formu.submit();
 	}
-	function refrescarLocal()
-	{			
-		parent.buscarPaginador() ;			
+	
+	function refrescarLocal() {
+		//parent.buscarTodos();
 	}
 	function accionCerrar() 
 	{		
