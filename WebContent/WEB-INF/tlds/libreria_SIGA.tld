@@ -1013,7 +1013,6 @@
       <rtexprvalue>true</rtexprvalue>
     </attribute>
   </tag>  
-
   <!-- Etiqueta SI/NO-->
   <tag>
     <name>SINO</name>
