@@ -228,7 +228,7 @@ String[] getdatos = { usr.getLocation() };
 			<siga:Idioma key="gratuita.busquedaDesignas.literal.tipoDesigna"/>
 		</td>
 		<td colspan="3">	
-			<siga:ComboBD nombre="tipoDesigna" tipo="tipoDesignaColegio" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"/>
+			<siga:ComboBD nombre="tipoDesigna" tipo="tipoDesignaColegio" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="250" />
 		</td>	
 		
 	</tr>
