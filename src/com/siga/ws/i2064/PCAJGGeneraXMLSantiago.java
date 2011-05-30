@@ -126,7 +126,7 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 					rellenaDocumentosAdjuntos(anexoIType, mapExp);
 					anexoIType.setOBSERVACIONS(mapExp.get(OBSERVACIONES));
 					
-					SigaWSHelper.deleteEmptyNode(anexoIType.getDomNode());				
+								
 					if(!validateXML_EJG(anexoIType, anio, numejg, numero, idTipoEJG)){
 						solicitudeAXG.removeANEXOI(solicitudeAXG.sizeOfANEXOIArray()-1);								
 					}

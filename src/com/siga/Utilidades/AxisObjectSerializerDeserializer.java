@@ -51,7 +51,7 @@ public class AxisObjectSerializerDeserializer {
         
         String xml = outStr.toString();
         if (removeNamespaces) {
-            xml = xml.replaceAll(" xmlns[:=].*?\".*?\"", "") .replaceAll(" xsi:type=\".*?\"", "");
+            xml = xml.replaceAll(" xmlns[:=].*?\".*?\"", "") .replaceAll(" xsi:type=\".*?\"", "") .replaceAll(" soapenc:arrayType=\".*?\"", "");
         }
 
         return(xml);

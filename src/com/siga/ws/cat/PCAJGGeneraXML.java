@@ -311,8 +311,6 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 		expediente.addNewProfesionalesDesignados().set(getTipoProfesionalesDesignados(htEJGs));
 		
-		SigaWSHelper.deleteEmptyNode(expediente.getDomNode());
-		
 		if(!validateXML_EJG(expediente, anyo, numejg, numero, idTipoEJG)){
 			tipoICD.removeExpediente(tipoICD.sizeOfExpedienteArray()-1);
 			return 0;			
@@ -397,7 +395,6 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			datosTramitacionExpediente(expediente, htEJGs, tipoIntercambio);
 		}
 		
-		SigaWSHelper.deleteEmptyNode(expediente.getDomNode());
 		
 		if(!validateXML_EJG(expediente, anyo, numejg, numero, idTipoEJG)){
 			tipoGenerico.removeExpediente(tipoGenerico.sizeOfExpedienteArray()-1);
