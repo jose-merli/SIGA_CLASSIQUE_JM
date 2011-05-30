@@ -7,56 +7,26 @@
  */
 package com.siga.informes;
 
-import java.io.File;
-
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
-
-import weblogic.servlet.internal.CompEnv;
-
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
-import com.bea.wlw.debug.DefaultSimpleValueFactory.DoubleValue;
-import com.businessobjects.visualization.dataexchange.data.impl.DoubleValueData;
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.AdmInformeBean;
-import com.siga.beans.AdmLenguajesAdm;
-import com.siga.beans.CenClienteAdm;
-import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenDireccionTipoDireccionBean;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
-import com.siga.beans.EnvEnvioProgramadoBean;
-import com.siga.beans.EnvEnviosBean;
-import com.siga.beans.EnvProgramPagosBean;
-import com.siga.beans.FacAbonoAdm;
-import com.siga.beans.FacAbonoBean;
 import com.siga.beans.FcsPagoColegiadoAdm;
 import com.siga.beans.FcsPagosJGAdm;
-import com.siga.beans.GenParametrosAdm;
-import com.siga.certificados.Plantilla;
-import com.siga.envios.Documento;
-import com.siga.envios.Envio;
 import com.siga.general.SIGAException;
-import com.siga.informes.form.MantenimientoInformesForm;
 
 /**
  * Clase para el Mantenimiento de los Informes generados en formato PDF para los Pagos a Colegiados.
