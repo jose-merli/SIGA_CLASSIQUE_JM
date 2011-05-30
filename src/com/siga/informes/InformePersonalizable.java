@@ -4,35 +4,17 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
-
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
-import org.apache.tools.ant.types.selectors.modifiedselector.HashvalueAlgorithm;
-
 import com.aspose.words.Document;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.LinkedHashMap;
 import com.atos.utils.ReadProperties;
-import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.PaginadorCaseSensitiveBind;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.administracion.form.InformeForm;
@@ -46,7 +28,6 @@ import com.siga.beans.AdmTipoFiltroInformeBean;
 import com.siga.beans.AdmTipoInformeAdm;
 import com.siga.beans.AdmTipoInformeBean;
 import com.siga.certificados.Plantilla;
-import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.informes.MasterReport;
 
