@@ -117,6 +117,8 @@
 	<html:hidden name="CambiosProcuradoresDesignasForm" property = "anio"/>
 	<html:hidden name="CambiosProcuradoresDesignasForm" property = "numero"/>
 	<html:hidden name="CambiosProcuradoresDesignasForm" property = "idTurno"/>
+	
+	<html:hidden property = "cambioMismoDia" value=""/>
 
 	<table  class="tablaCentralCamposMedia"  align="center">
 	<tr>				
@@ -258,8 +260,7 @@
 	}
 
 		//Asociada al boton GuardarCerrar
-		function accionGuardarCerrar() 
-		{
+		function accionGuardarCerrar() {
 			// jbd 01-02-2010 Añadida comprobacion de numero desginacion inc-6788
 			<%if (pcajgActivo>0){%>
 			var error = "";
@@ -274,29 +275,42 @@
 			// JBD 23-1-2009 Añadida comprobacion de seleccionadoProcurador INC-5643
 			if(seleccionadoProc){	
 				sub();
-				if (validateCambiosProcuradoresDesignasForm(document.forms[0])) 		
-				{
-				
-					if(fechaActual==null || isAfter(document.forms[0].fechaDesigna.value,fechaActual))
-					{
-					    document.forms[0].modo.value="insertar";
-						document.forms[0].submit();
-					}else
-					{
-						alert("<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.literal.fechaDesigna"/>"+
-						  	  "<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.alert1"/>"+fechaActual);
-						  	  fin();
-						  	  return false;
+				if (validateCambiosProcuradoresDesignasForm(document.forms[0])){
+					if(fechaActual!=''){
+						if(fechaActual == null){
+							document.forms[0].modo.value="insertar";
+							document.forms[0].submit();
+						}else if (isEquals(document.forms[0].fechaDesigna.value,fechaActual)){
+						    if (confirm("<siga:Idioma key='messages.designa.confirmacion.igualdadFechas' />")) {	
+						    	document.CambiosProcuradoresDesignasForm.cambioMismoDia.value="1";						 
+							  	document.forms[0].modo.value="insertar";
+							  	document.forms[0].submit();
+							}else{
+								document.CambiosProcuradoresDesignasForm.cambioMismoDia.value="0";
+							 	fin();
+							    return false;
+							}
+					
+							}else{
+							  if (!isAfter(document.forms[0].fechaDesigna.value,fechaActual)){
+									alert("<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.literal.fechaDesigna"/>"+
+									  "<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.alert1"/>"+fechaActual);
+									 fin();
+									 return false;
+							  }else{
+							    	document.forms[0].modo.value="insertar";
+									document.forms[0].submit();								
+								}
+							}				
+					}else{				
+						fin();
+						return false;
 					}
-				
+					
 				}else{
-				
-					fin();
-					return false;
+					alert("<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.alertProcurador"/>");
+				  	return false;
 				}
-			}else{
-				alert("<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.alertProcurador"/>");
-			  	 return false;
 			}
 		}
 		

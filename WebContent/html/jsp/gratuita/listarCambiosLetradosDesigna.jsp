@@ -98,6 +98,7 @@
 			</td>
 		</tr>
 		</table>
+		<table width="100%" border ="0"><tr><td>
 		<siga:TablaCabecerasFijas 
 			   nombre="tablaDatos"
 			   borde="1"
@@ -142,6 +143,7 @@
 			<%	}
 			}%>	
 		</siga:TablaCabecerasFijas>
+		</td></tr></table>
 
 
 <!-- FIN: LISTA DE VALORES -->

@@ -335,7 +335,7 @@ public class CambiosProcuradoresDesignasAction extends MasterAction {
 		String fCambio=miform.getAplFechaDesigna();
 		String motivo=miform.getIdTipoMotivo();
 		String observ=miform.getObservaciones();
-		
+		String cambioMismoDia = request.getParameter("cambioMismoDia");
 		
 		try{
 			
@@ -350,9 +350,13 @@ public class CambiosProcuradoresDesignasAction extends MasterAction {
 				designaActual.put(ScsDesignasProcuradorBean.C_FECHARENUNCIA,fCambio);
 				designaActual.put(ScsDesignasProcuradorBean.C_IDTIPOMOTIVO,motivo);
 				
-				ok=designaAdm.update(designaActual,datos);
-				if (!ok) throw new ClsExceptions(designaAdm.getError());
-			
+				if (cambioMismoDia != null && cambioMismoDia.equalsIgnoreCase("1")) {		
+					if (!designaAdm.delete(designaActual))
+						throw new ClsExceptions(designaAdm.getError());
+				}else{
+					ok=designaAdm.update(designaActual,datos);
+					if (!ok) throw new ClsExceptions(designaAdm.getError());
+				}
 			}
 			
 			// HASH DE INSERCION para el nuevo

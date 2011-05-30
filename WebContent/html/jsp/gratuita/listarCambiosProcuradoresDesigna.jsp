@@ -95,14 +95,18 @@
 			</td>
 		</tr>
 		</table>
+		<table width="100%" border ="0"><tr><td>
 		<siga:TablaCabecerasFijas 
 			   nombre="tablaDatos"
 			   borde="1"
 			   clase="tableTitle"
-			   nombreCol="censo.resultadosSolicitudesModificacion.literal.fecha,gratuita.cambiosProcuradoresDesigna.literal.numeroDesigna,gratuita.busquedaSOJ.literal.nColegiado,gratuita.defendidosDesigna.literal.nombreApellidos,gratuita.cambiosProcuradoresDesigna.literal.fechaRenuncia,"
+			   nombreCol="censo.resultadosSolicitudesModificacion.literal.fecha,
+			   gratuita.cambiosProcuradoresDesigna.literal.numeroDesigna,
+			   gratuita.busquedaSOJ.literal.nColegiado,
+			   gratuita.defendidosDesigna.literal.nombreApellidos,
+			   gratuita.cambiosProcuradoresDesigna.literal.fechaRenuncia,"
 			   tamanoCol="12,12,12,42,12,10"
-		   			alto="100%"
-
+		   	   alto="100%"
 			   modal="M">
 			   
 		<!-- Campo obligatorio -->
@@ -142,6 +146,7 @@
 			<%	}
 			}%>	
 		</siga:TablaCabecerasFijas>
+		</td></tr></table>
 
 <!-- FIN: LISTA DE VALORES -->
 		
