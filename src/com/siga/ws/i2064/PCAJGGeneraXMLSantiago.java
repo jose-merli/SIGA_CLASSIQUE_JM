@@ -547,24 +547,6 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 		return lo;
 	}
 	
-	/**
-	 * 
-	 * @param fecha
-	 * @return
-	 * @throws Exception
-	 * 
-	 */
-	private Calendar getCalendar(String fecha) throws Exception {		
-		Calendar cal = null;		
-		if (fecha != null && !fecha.trim().equals("")) {
-			cal = Calendar.getInstance();
-			cal.setTime(GstDate.convertirFecha(fecha));
-			clearCalendar(cal);
-		}	
-		
-		return cal;
-	}
-	
 
 	/**
 	 * 

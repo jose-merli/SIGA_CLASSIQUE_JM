@@ -31,6 +31,7 @@ import org.w3c.dom.Document;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.SIGAReferences;
@@ -502,5 +503,23 @@ public abstract class SIGAWSClientAbstract {
 
 	public void setSimular(boolean simular) {
 		this.simular = simular;
+	}
+	
+	/**
+	 * 
+	 * @param fecha
+	 * @return
+	 * @throws Exception
+	 * 
+	 */
+	protected Calendar getCalendar(String fecha) throws Exception {		
+		Calendar cal = null;		
+		if (fecha != null && !fecha.trim().equals("")) {
+			cal = Calendar.getInstance();
+			cal.setTime(GstDate.convertirFecha(fecha));
+			clearCalendar(cal);
+		}	
+		
+		return cal;
 	}
 }

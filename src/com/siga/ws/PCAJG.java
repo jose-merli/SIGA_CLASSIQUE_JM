@@ -27,7 +27,6 @@ import org.apache.xmlbeans.XmlOptions;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsLogging;
-import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.LogHandler;
 import com.siga.Utilidades.UtilidadesString;
@@ -1385,23 +1384,6 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 		return null;
 	}
 
-	/**
-	 * 
-	 * @param fecha
-	 * @return
-	 * @throws Exception
-	 * 
-	 */
-	private Calendar getCalendar(String fecha) throws Exception {		
-		Calendar cal = null;		
-		if (fecha != null && !fecha.trim().equals("")) {
-			cal = Calendar.getInstance();
-			cal.setTime(GstDate.convertirFecha(fecha));
-			clearCalendar(cal);
-		}	
-		
-		return cal;
-	}
 	
 
 	/**

@@ -19,7 +19,6 @@ import javax.xml.transform.stream.StreamSource;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
-import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
 import com.jcraft.jsch.JSchException;
@@ -33,7 +32,6 @@ import com.siga.general.SIGAException;
 import com.siga.gratuita.action.DefinirRemesasCAJGAction;
 import com.siga.ws.PCAJGConstantes;
 import com.siga.ws.SIGAWSClientAbstract;
-import com.siga.ws.SigaWSHelper;
 import com.siga.ws.cat.ftp.FtpPcajgAbstract;
 import com.siga.ws.cat.ftp.FtpPcajgFactory;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument;
@@ -1101,25 +1099,6 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		}
 		return bi;
 	}
-
-	/**
-	 * 
-	 * @param fecha
-	 * @return
-	 * @throws Exception
-	 * 
-	 */
-	private Calendar getCalendar(String fecha) throws Exception {		
-		Calendar cal = null;		
-		if (fecha != null && !fecha.trim().equals("")) {
-			cal = Calendar.getInstance();
-			cal.setTime(GstDate.convertirFecha(fecha));
-			clearCalendar(cal);
-		}	
-		
-		return cal;
-	}
-
 
 	
 	private String getCodigoElementoTipificado(String elementoTipificado) {
