@@ -468,7 +468,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			tramiteDictamen.setDescTipoDictamen(getDescripcionElementoTipificado((String)htEJGs.get(DTE_TD_TIPODICTAMEN_CDA)));
 			
 			tramiteDictamen.setCodMotivoDictamen(getCodigoElementoTipificado((String)htEJGs.get(DTE_TD_MOTIVODICTAMEN_CDA)));			
-			tramiteDictamen.setDescMotivoDictamen(getDescripcionElementoTipificado((String)htEJGs.get(DTE_TD_MOTIVODICTAMEN_CDA)));
+			tramiteDictamen.setDescMotivoDictamen(reemplazaCaracteres(getDescripcionElementoTipificado((String)htEJGs.get(DTE_TD_MOTIVODICTAMEN_CDA))));
 			
 			tramiteDictamen.setIntervaloIngresosRecursos((String)htEJGs.get(DTE_TD_INTERVALOINGRESOSRECURS));
 			tramiteDictamen.setObservacionesDictamen((String)htEJGs.get(DTE_TD_OBSERVACIONESDICTAMEN));
@@ -1117,10 +1117,25 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if (elementoTipificado != null && !elementoTipificado.trim().equals("")) {
 			String[] array = elementoTipificado.split("##");
 			if (array != null && array.length > 1) {
-				desc = array[1];
+				desc = array[1];				
 			}
 		}
 		return desc;
+	}
+	
+	
+	private String reemplazaCaracteres(String texto) {
+		if (texto != null) {
+			for (int i = 0 ; i < texto.getBytes().length; i++) {
+				byte b = texto.getBytes()[i];
+				if (b == 63) {//cambio de apostrofe ’ por ' 
+					byte[] bs = texto.getBytes(); 
+					bs[i] = 39;
+					texto = new String(bs);
+				}
+			}
+		}
+		return texto;
 	}
 	
 	/**

@@ -5,7 +5,6 @@ package com.siga.ws;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -19,15 +18,10 @@ import java.util.Map;
 import java.util.Vector;
 
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
 import org.apache.xmlbeans.XmlValidationError;
-import org.w3c.dom.Document;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
@@ -463,7 +457,7 @@ public abstract class SIGAWSClientAbstract {
 		xmlOptions.setSavePrettyPrintIndent(4);
 		xmlOptions.setSavePrettyPrint();
 		
-		//xmlOptions.setCharacterEncoding("ISO-8859-15");
+		xmlOptions.setCharacterEncoding("ISO-8859-15");
 		Map<String, String> mapa = new HashMap<String, String>();
 		mapa.put(intercambioDocument.getIntercambio().getDomNode().getNamespaceURI(), "");
 		xmlOptions.setSaveSuggestedPrefixes(mapa);
@@ -473,22 +467,22 @@ public abstract class SIGAWSClientAbstract {
 		//comprobamos que el fichero generado sea correcto
 		StringBuffer sbErrores = SIGAWSClientAbstract.validateXML(intercambioDocument); 
 				
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		Document xmldoc = builder.parse(file);
-		//quitamos el namespace. solicitado por ibermatica en correo del 01/02/2011 16:04
-		xmldoc.getDocumentElement().removeAttribute("xmlns");
-		
-		FileOutputStream fos = new FileOutputStream(file);		
-		OutputFormat of = new OutputFormat("XML", "ISO-8859-15", true);				
-		of.setIndent(2);
-		of.setLineWidth(1500);
-		
-		XMLSerializer serializer = new XMLSerializer(fos, of);
-		serializer.asDOMSerializer();
-		serializer.serialize( xmldoc.getDocumentElement() );
-		fos.flush();
-		fos.close();
+//		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+//		DocumentBuilder builder = factory.newDocumentBuilder();
+//		Document xmldoc = builder.parse(file);
+//		//quitamos el namespace. solicitado por ibermatica en correo del 01/02/2011 16:04
+//		xmldoc.getDocumentElement().removeAttribute("xmlns");
+//		
+//		FileOutputStream fos = new FileOutputStream(file);		
+//		OutputFormat of = new OutputFormat("XML", "ISO-8859-15", true);				
+//		of.setIndent(2);
+//		of.setLineWidth(1500);
+//		
+//		XMLSerializer serializer = new XMLSerializer(fos, of);
+//		serializer.asDOMSerializer();
+//		serializer.serialize( xmldoc.getDocumentElement() );
+//		fos.flush();
+//		fos.close();
 		
 		//si no es correcto lo genero y lo transformo para poder ver por qué no es correcto
 		if (sbErrores != null) {
