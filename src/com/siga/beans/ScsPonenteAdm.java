@@ -136,7 +136,7 @@ public class ScsPonenteAdm extends MasterBeanAdministrador {
 		return datos;	
 	}	
 
-	public Integer getNuevoIdJuzgado(String idInstitucion) throws ClsExceptions {
+	public Integer getNuevoIdPonente(String idInstitucion) throws ClsExceptions {
 		Vector datos = new Vector();
 		String select = null;
 		Integer nuevoId;
