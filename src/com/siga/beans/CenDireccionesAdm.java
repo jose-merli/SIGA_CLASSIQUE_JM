@@ -1519,6 +1519,27 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 		}
 		return datos;
 	}
+	
+	public Vector getDatosCV (String idInstitucion, String idPersona) throws ClsExceptions  
+	{
+		Vector datos = null;
+		try {
+			HelperInformesAdm helperInformes = new HelperInformesAdm();
+			Hashtable htFuncion = new Hashtable();
+			htFuncion.put(new Integer(1), idInstitucion);
+			htFuncion.put(new Integer(2), idPersona);
+							
+			
+			
+			
+			//datos = helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos); 
+			
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion getDireccionPreferente");
+		}
+		return datos;
+	}
 
 	/**
 	 * Metodo que obtiene el idDireccion para una persona en una institucion.

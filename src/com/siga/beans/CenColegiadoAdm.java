@@ -1097,6 +1097,11 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			HelperInformesAdm helperInformes = new HelperInformesAdm();
 			CenEstadoColegialAdm admEstadoCol = null;
 			CenDireccionesAdm admDirecciones = null;
+			CenDatosCVAdm admDatosCV = null;
+			CenTiposCVAdm admTiposCV = null;
+			CenTiposCVSubtipo1Adm admSubtipo1CV = null;
+			CenTiposCVSubtipo2Adm admSubtipo2CV = null;
+			
 			try {
 				
 				vInforme = getDatosInformeColegiado(idInstitucion, idPersona, idioma, isInforme); 
@@ -1118,13 +1123,91 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 				//AHORA SE LO METO A PELO
 				admDirecciones = new CenDireccionesAdm(usrbean);
 				helperInformes.completarHashSalida(registro,admDirecciones.getDireccionPreferente(idInstitucion, idPersona, "1"));
-				
+								
 			}catch (Exception e) {
 				throw new ClsExceptions (e, "Error ScsEJGAdm.getInformeColegiado.");
 			}
 		return vInforme;
 						
 	}
+	
+	public void updateInformeDatosCV(UsrBean usrBean, int idInstitucion, Long idPersona, Hashtable htDatosInforme) throws ClsExceptions {
+
+		CenClienteAdm clienteAdm = new CenClienteAdm(new Integer(usrBean.getUserName()), usrBean, idInstitucion, idPersona);
+		CenTiposCVAdm tipoCVAdm  = new CenTiposCVAdm(usrBean);
+		Vector datosCV = new Vector();
+
+		try {
+
+			//Se rellenan todos los datos que restan
+			datosCV = new Vector();
+			datosCV = tipoCVAdm.getRestoDatosCV(idInstitucion);
+			if (datosCV != null) {
+				this.rellenarDatosCVInforme(datosCV, htDatosInforme, false);
+			}
+			
+			//Se rellenan los datos del colegiado
+			datosCV = clienteAdm.getDatosCVInforme(idPersona, idInstitucion, true);
+			if (datosCV != null) {
+				this.rellenarDatosCVInforme(datosCV, htDatosInforme, true);
+			}
+
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error updateInformeDatosCV");
+		}
+
+	}
+	
+	public void rellenarDatosCVInforme(Vector datosCV, Hashtable htDatosInforme, boolean conDatos) {
+		Vector tipo = null;
+		Vector subtipo1 = null;
+		Vector subtipo2 = null;
+		for (int i = 0; i < datosCV.size(); i++) {
+			Hashtable reg = ((Hashtable) datosCV.get(i));
+			if (reg.get("IDTIPOCVSUBTIPO1") != null && !reg.get("IDTIPOCVSUBTIPO1").equals("")) {
+				if (reg.get("IDTIPOCVSUBTIPO2") != null && !reg.get("IDTIPOCVSUBTIPO2").equals("")) {
+					if(conDatos){
+						if (subtipo2 != null && ((Hashtable) subtipo2.get(0)).get("IDTIPOCVSUBTIPO2").equals(reg.get("IDTIPOCVSUBTIPO2"))) {
+							subtipo2.add(reg);
+						} else {
+							subtipo2 = new Vector();
+							subtipo2.add(reg);
+						}
+						htDatosInforme.put(reg.get("IDTIPOCV") + "-" + reg.get("IDTIPOCVSUBTIPO1") + "-" + reg.get("IDTIPOCVSUBTIPO2"), subtipo2);
+					}else{
+						subtipo2 = new Vector();
+						subtipo2.add(reg);
+						htDatosInforme.put(reg.get("IDTIPOCV") + "-" + reg.get("IDTIPOCVSUBTIPO1") + "-" + reg.get("IDTIPOCVSUBTIPO2"), subtipo2);
+					}
+
+				} else {
+					if(conDatos){
+						if (subtipo1 != null && ((Hashtable) subtipo1.get(0)).get("IDTIPOCVSUBTIPO1").equals(reg.get("IDTIPOCVSUBTIPO1"))) {
+							subtipo1.add(reg);
+						} else {
+							subtipo1 = new Vector();
+							subtipo1.add(reg);
+						}
+						htDatosInforme.put(reg.get("IDTIPOCV") + "-" + reg.get("IDTIPOCVSUBTIPO1"), subtipo1);
+					}else{
+						subtipo1 = new Vector();
+						subtipo1.add(reg);
+						htDatosInforme.put(reg.get("IDTIPOCV") + "-" + reg.get("IDTIPOCVSUBTIPO1"), subtipo1);
+					}
+				}
+
+			} else {
+				if (tipo != null && ((Hashtable) tipo.get(0)).get("IDTIPOCV").equals(reg.get("IDTIPOCV"))) {
+					tipo.add(reg);
+				} else {
+					tipo = new Vector();
+					tipo.add(reg);
+				}
+				htDatosInforme.put(reg.get("IDTIPOCV"), tipo);
+			}
+		}
+	}
+	
 	private Vector getDatosInformeColegiado (String idInstitucion, String idPersona,String idioma,boolean isInforme
 	) throws ClsExceptions  
 	{

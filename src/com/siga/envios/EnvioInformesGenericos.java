@@ -28,6 +28,7 @@ import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.AdmInformeBean;
 import com.siga.beans.AdmTipoInformeAdm;
 import com.siga.beans.AdmTipoInformeBean;
+import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenNoColegiadoAdm;
@@ -160,8 +161,9 @@ public class EnvioInformesGenericos extends MasterReport {
 			case 1:
 
 				colegiadoAdm = new CenColegiadoAdm(usrBean);
-				vDatosInformeFinal = colegiadoAdm.getInformeColegiado(
-						idInstitucion, idPersona, idioma, true);
+				vDatosInformeFinal = colegiadoAdm.getInformeColegiado(idInstitucion, idPersona, idioma, true);
+				colegiadoAdm.updateInformeDatosCV(usrBean,Integer.parseInt(idInstitucion),Long.parseLong(idPersona),htDatosInforme);	
+				
 				break;
 				//Caso de letrados
 			case 2:

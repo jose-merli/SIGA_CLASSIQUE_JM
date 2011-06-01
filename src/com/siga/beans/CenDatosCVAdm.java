@@ -254,6 +254,56 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 		}
 		return v;
 	}
+	
+		/**
+	 * Devuelve un vector con los datos de los CV del cliente pasado como parámetro 
+	 * @author nuria.rgonzalez 22-12-04
+	 * @version 1	 
+	 * @param idPersona, es el identificador de la persona de al que vamos a obtener los datos. 
+	 * @param idInstitucion, es el identificador de la institucion de la persona de la que vamos a obtener los datos. 
+	 */	
+	public Vector selectDatosCVInforme(Long idPersona, Integer idInstitucion, boolean bIncluirRegistrosConBajaLogica)throws ClsExceptions, SIGAException
+	{
+		Vector v = null;
+		try {
+			RowsContainer rc = null;
+			rc = new RowsContainer(); 
+			String sql = "Select IDTIPOCV,IDTIPOCVSUBTIPO1,IDTIPOCVSUBTIPO2,TIPOAPUNTE,IDCV,IDINSTITUCION,IDPERSONA, "+
+						 " to_char(FECHAINICIO, 'dd/mm/yyyy') FECHAINICIO, " +
+						 " to_char(FECHAFIN, 'dd-mm-yyyy') FECHAFIN, "+
+						 " f_siga_getrecurso_etiqueta(decode(CERTIFICADO,1, 'messages.si','messages.no'),"+usrbean.getLanguage()+") CERTIFICADO, "+
+						 " DESCRIPCION,CREDITOS,IDINSTITUCION_SUBT1,IDINSTITUCION_SUBT2, "+
+						 " to_char(FECHAMOVIMIENTO, 'dd/mm/yyyy')FECHAMOVIMIENTO, "+
+						 " to_char(FECHABAJA, 'dd/mm/yyyy')FECHABAJA,"+
+						 " DESCSUBTIPO1, DESCSUBTIPO2 FROM ( " +UtilidadesBDAdm.sqlSelect(this.getTablasDatosCV(), this.getCamposDatosCV());
+
+			String where = " WHERE " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDPERSONA + " = " + idPersona +
+			       		   " AND " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDINSTITUCION + " = " + idInstitucion;
+			
+			if(!bIncluirRegistrosConBajaLogica) {
+				where += " AND " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_FECHABAJA + " IS NULL";
+			}
+			
+			sql += where;
+			sql += UtilidadesBDAdm.sqlOrderBy(this.getOrdenDatosCV()) +")";
+
+            // RGG cambio visibilidad
+            rc = this.find(sql);
+            if (rc!=null) {
+ 				v = new Vector();
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable)fila.getRow(); 
+					if (registro != null) 
+						v.add(registro);
+				}
+			}
+		}
+		catch(Exception e) {
+			throw new ClsExceptions (e, "Error en selectDatosCV");
+		}
+		return v;
+	}
 
 	/**
 	 * Devuelve un Hastable con los datos del CV del cliente pasado como parámetro.

@@ -334,6 +334,31 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 		return vector;
 	}
 	
+		/**
+	 * Devuelve un vector con los DatosCV del cliente pasado como parámetro 
+	 * @author nuria.rgonzalez 18-01-05
+	 * @version 2	 
+	 * @param idPersona, es el identificador de la persona de al que vamos a obtener los datos. 
+	 * @param idInstitucion, es el identificador de la institucion de la persona de al que vamos a obtener los datos. 
+	 */	
+	public Vector getDatosCVInforme(Long idPersona, Integer idInstitucion, boolean bIncluirRegistrosConBajaLogica) throws ClsExceptions, SIGAException{
+		Vector vector = null;
+		try{
+			
+			CenDatosCVAdm datosCVAdm = null;
+			if (this.usrbean!=null) {
+				datosCVAdm = new CenDatosCVAdm(this.usuModificacion,this.usrbean,this.idInstitucionCliente, this.idPersonaCliente);
+			} else {
+				datosCVAdm = new CenDatosCVAdm(this.usrbean); 
+			}
+			vector = datosCVAdm.selectDatosCVInforme(idPersona,idInstitucion, bIncluirRegistrosConBajaLogica);
+		}
+		catch(Exception e) {
+			throw new ClsExceptions (e, "Error al obtener DatosCV");
+		}
+		return vector;
+	}
+	
 	/**
 	 * Devuelve un Hastable con el CV del cliente pasado como parámetro 
 	 * @author nuria.rgonzalez 18-01-05

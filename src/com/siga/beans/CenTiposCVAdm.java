@@ -167,4 +167,36 @@ public class CenTiposCVAdm extends MasterBeanAdministrador
 		return datos;
 	}	
 
+	public Vector getRestoDatosCV(int idInstitucion) throws ClsExceptions {
+		Vector datos = new Vector();
+		String sql = " SELECT   tip.IDTIPOCV,  sub1.IDTIPOCVSUBTIPO1,  sub2.IDTIPOCVSUBTIPO2,  '' TIPOAPUNTE,  '' IDCV, '' IDINSTITUCION, " +
+					 "			'' IDPERSONA,  '' FECHAINICIO,'' FECHAFIN,  '' DESCRIPCION, '' CERTIFICADO,  '' CREDITOS, '' IDINSTITUCION_SUBT1, "+
+					 "			'' IDINSTITUCION_SUBT2,  '' FECHAMOVIMIENTO,'' FECHABAJA, '' DESCSUBTIPO1, '' DESCSUBTIPO2 "+
+					 " FROM 	cen_tiposcv tip, cen_tiposcvsubtipo1 sub1, cen_tiposcvsubtipo2 sub2 "+
+					 " WHERE    tip.idtipocv = sub1.idtipocv(+) "+
+					 " 		  	and tip.idtipocv = sub2.idtipocv(+) "+
+					 //"	 	  	and sub1.idInstitucion in (2000, "+idInstitucion+") "+
+					 " ORDER BY tip.idtipocv ";
+		
+		// Acceso a BBDD
+		RowsContainer rc = null;
+		try { 
+			rc = new RowsContainer(); 
+			if (rc.query(sql)) {
+				if (rc != null) {
+					for (int i = 0; i < rc.size(); i++) {
+						Row fila = (Row) rc.get(i);
+						Hashtable registro = (Hashtable) fila.getRow();
+						if (registro != null)
+							datos.add(registro);
+					}
+				}
+			}
+		} 
+		catch (Exception e) { 	
+			throw new ClsExceptions (e, "Error al ejecutar el \"select\" en B.D."); 
+		}
+		return datos;
+	}
+	
 }
