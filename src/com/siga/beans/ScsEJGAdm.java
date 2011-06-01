@@ -352,7 +352,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							ScsEJGBean.C_SITUACION,					ScsEJGBean.C_IDTIPOENCALIDAD,
 							ScsEJGBean.C_CALIDADIDINSTITUCION,		ScsEJGBean.C_NUMERODESIGNAPROC,
 							ScsEJGBean.C_DOCRESOLUCION,				ScsEJGBean.C_USUCREACION,
-							ScsEJGBean.C_FECHACREACION,				ScsEJGBean.C_NIG};
+							ScsEJGBean.C_FECHACREACION,				ScsEJGBean.C_NIG,
+							ScsEJGBean.C_IDPONENTE};
 		return campos;
 	}
 	
@@ -446,6 +447,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			bean.setNumeroDesignaProc(UtilidadesHash.getString(hash,ScsEJGBean.C_NUMERODESIGNAPROC));
 			bean.setDocResolucion(UtilidadesHash.getString(hash,ScsEJGBean.C_DOCRESOLUCION));
 			bean.setNIG(UtilidadesHash.getString(hash,ScsEJGBean.C_NIG));
+			bean.setIdPonente(UtilidadesHash.getLong(hash,ScsEJGBean.C_IDPONENTE));
 		}
 		catch (Exception e){
 			throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR HASHTABLE A BEAN");
@@ -534,6 +536,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,ScsEJGBean.C_NUMERODESIGNAPROC, b.getNumeroDesignaProc());
 			UtilidadesHash.set(htData,ScsEJGBean.C_DOCRESOLUCION, b.getDocResolucion());
 			UtilidadesHash.set(htData,ScsEJGBean.C_NIG, b.getNIG());
+			UtilidadesHash.set(htData,ScsEJGBean.C_IDPONENTE, b.getIdPonente());
 		}
 		catch (Exception e){
 			 throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR EL BEAN A HASHTABLE");
@@ -3367,6 +3370,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" TO_CHAR(EJG.fechaauto,'dd-mm-yyyy') AS fechaauto,");
 			sql.append(" EJG.idtiporesolauto, ");
 			sql.append(" EJG.idtiposentidoauto, ");
+			sql.append(" (Select pon.nombre from SCS_PONENTE pon where pon.idPonente = EJG.idPONENTE and pon.idInstitucion = EJG.IDINSTITUCION) as PONENTE, ");
 			
 			sql.append(" (Select DESCRIPCION ");
 			sql.append("  From SCS_TIPOEJGCOLEGIO TEC");

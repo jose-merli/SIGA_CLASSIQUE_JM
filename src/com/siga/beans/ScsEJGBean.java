@@ -94,6 +94,7 @@ public class ScsEJGBean extends MasterBean{
     private Integer calidadidinstitucion;
     private String docResolucion;
     private String NIG;
+    private Long idPonente;
 	
 	/*
 	 *  Nombre de Tabla*/
@@ -179,6 +180,7 @@ public class ScsEJGBean extends MasterBean{
     static public final String C_FECHACREACION  = "FECHACREACION";
     static public final String C_USUCREACION   = "USUCREACION";
     static public final String C_NIG   = "NIG";
+    static public final String C_IDPONENTE   = "IDPONENTE";
 	
 	
 		
@@ -896,6 +898,15 @@ public class ScsEJGBean extends MasterBean{
 	public void setNIG(String nIG) {
 		NIG = nIG;
 	}
+	
+	public Long getIdPonente() {
+		return idPonente;
+	}
+	public void setIdPonente(Long idPonente) {
+		this.idPonente = idPonente;
+	}
+	
+	
 
 
 }

@@ -179,6 +179,15 @@ import com.siga.general.MasterForm;
 	public void setIdTipoRatificacionEJG		(String idTipoRatificacionEJG)		{ this.datos.put(ScsEJGBean.C_IDTIPORATIFICACIONEJG, idTipoRatificacionEJG);}
 	
 	/**
+	 * Almacena en la Hashtable el identificador del ponente del EJG 
+	 * 
+	 * @param valor Identificador del ponente del EJG. De tipo "String". 
+	 * @return void 
+	 */
+	public void setIdPonente		(String idPonente)		{ this.datos.put(ScsEJGBean.C_IDPONENTE, idPonente);}
+
+	
+	/**
 	 * Almacena en la Hashtable el identificador del tipo del dictamen del EJG 
 	 * 
 	 * @param valor Identificador del tipo del dictamen del EJG. De tipo "String". 
@@ -470,7 +479,14 @@ import com.siga.general.MasterForm;
 	 * @return Observaciones de la EJG
 	 */
 	public String getIdTipoRatificacionEJG		()		{ return this.datos.get(ScsEJGBean.C_IDTIPORATIFICACIONEJG).toString();}
-		
+
+	/**
+	 * Recupera de la Hashtable el identificador del ponente de la EJG
+	 * 
+	 * @return Ponente de la EJG
+	 */
+	public String getIdPonente				()		{ return this.datos.get(ScsEJGBean.C_IDPONENTE).toString();}
+	
 	/**
 	 * Recupera de la Hashtable el identificador de la persona de la EJG
 	 * 

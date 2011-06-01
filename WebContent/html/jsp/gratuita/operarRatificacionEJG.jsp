@@ -35,7 +35,7 @@
 	String anio= "", numero="", idTipoEJG = "", observaciones = "",refA="",docResolucion="";
 	String fechaRatificacion = "", fechaResolucionCAJG= "", fechaNotificacion= "";
 	boolean requiereTurnado= false;
-	ArrayList vFundamentoJuridico= new ArrayList(), vTipoRatificacion= new ArrayList();
+	ArrayList vFundamentoJuridico= new ArrayList(), vTipoRatificacion= new ArrayList(), vPonente = new ArrayList();
 	
 	try {
 		anio = miHash.get("ANIO").toString();
@@ -62,6 +62,9 @@
 		}
 		if (miHash.containsKey("DOCRESOLUCION") && miHash.get("DOCRESOLUCION") != null) {
 			docResolucion = miHash.get("DOCRESOLUCION").toString();
+		}
+		if (miHash.containsKey("IDPONENTE") && miHash.get("IDPONENTE") != null) {
+			vPonente.add(miHash.get("IDPONENTE").toString());
 		}
 	}catch(Exception e){e.printStackTrace();};
 %>
@@ -147,7 +150,7 @@
 	
 	<!-- FILA -->
 	<tr>
-	<td class="labelText" width="150">
+	<td class="labelText" width="200">
 		<siga:Idioma key="gratuita.operarRatificacion.literal.fechaResolucionCAJG"/>
 	</td>
 	<td>
@@ -161,7 +164,21 @@
 			</a>
 		<%}%>
 	</td>
+	
+		<td class="labelText">
+			<siga:Idioma key="gratuita.operarRatificacion.literal.ponente"/>
+			&nbsp;&nbsp;&nbsp;
+		
+			<%if (accion.equalsIgnoreCase("ver")){%>
+				<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" readOnly="true"/>
+			<%} else {%>
+				<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxCombo"  	  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>"/>
+			<%}%>
+		</td>
+	
 	</tr>
+	
+	
 	<tr>
 	<td class="labelText">
 	  <siga:Idioma key="gratuita.operarRatificacion.literal.tipoRatificacion"/>
@@ -204,7 +221,7 @@
 		<%}%>
 	</td>
 	<td class="labelText">
-			<siga:Idioma key="gratuita.EJG.resolucion.refAuto"/>
+			<siga:Idioma key="gratuita.EJG.resolucion.refAuto"/>&nbsp;&nbsp;&nbsp;
 			<%if (accion.equalsIgnoreCase("ver")){%>
 				<html:text name="DefinirEJGForm" property="refAuto" size="10" styleClass="boxConsulta" value="<%=refA%>" readonly="false" disabled="false"></html:text>
 			<%} else {%>
