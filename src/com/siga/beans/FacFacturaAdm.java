@@ -2780,6 +2780,11 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 				if (direccion.size()==0){// si no existe direccion de despacho, mostramos la de correo
 					direccion=direccionAdm.getEntradaDireccionEspecifica(idPersona,(String)factura.get(FacFacturaBean.C_IDINSTITUCION),"3");
 				}
+				
+				//Si no existe ninguna de estas dos direcciones se escoge una cualquiera //inc8356 
+				if (direccion.size()==0){
+					direccion=direccionAdm.getEntradaDireccionEspecifica(idPersona,(String)factura.get(FacFacturaBean.C_IDINSTITUCION),"");
+				}
 
 				if (direccion.get(CenDireccionesBean.C_DOMICILIO)!=null&&!((String)direccion.get(CenDireccionesBean.C_DOMICILIO)).equals("")){
 					nuevo.put("DIRECCION_CLIENTE",(String)direccion.get(CenDireccionesBean.C_DOMICILIO));
