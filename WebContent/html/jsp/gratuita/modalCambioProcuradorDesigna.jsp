@@ -281,7 +281,7 @@
 							document.forms[0].modo.value="insertar";
 							document.forms[0].submit();
 						}else if (isEquals(document.forms[0].fechaDesigna.value,fechaActual)){
-						    if (confirm("<siga:Idioma key='messages.designa.confirmacion.igualdadFechas' />")) {	
+						    if (confirm("<siga:Idioma key='messages.designa.confirmacion.igualdadFechas.procurador' />")) {	
 						    	document.CambiosProcuradoresDesignasForm.cambioMismoDia.value="1";						 
 							  	document.forms[0].modo.value="insertar";
 							  	document.forms[0].submit();
