@@ -67,7 +67,7 @@ public class InformePersonalizable extends MasterReport
 					try {
 						listaFicheros.addAll(this.generarInformeDOC(informe, filtrosInforme, usr));	
 					} catch (SIGAException e) {
-						if(e.toString().equals("noExistePlantilla")){
+						if(e.getLiteral().equals("noExistePlantilla")){
 							listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme, usr));
 						}else
 							throw e;
@@ -139,7 +139,7 @@ public class InformePersonalizable extends MasterReport
 		MasterWords words = new MasterWords(rutaPl + nombrePlantilla);
 		File plantilla = new File(rutaPl + nombrePlantilla);
 		if (!plantilla.exists()) // si no existe la plantilla, generar un Excel
-			return this.generarInformeXLS(informe, filtrosInforme, usr);
+			throw new SIGAException("noExistePlantilla");
 		Document doc = words.nuevoDocumento();
 		File crear = new File(rutaAlm);
 		if (!crear.exists())
