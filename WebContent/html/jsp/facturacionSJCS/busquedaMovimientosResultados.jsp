@@ -77,8 +77,8 @@
 			 de cabeceras fijas -->
 
 		<!-- Formulario de la lista de detalle multiregistro -->
-		<html:form action="/CEN_MantenimientoMovimientos.do?noReset=true" method="POST" target="mainWorkArea" style="display:none">
-
+		<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+	    <html:form action="${path}?noReset=true" method="POST" target="mainWorkArea" style="display:none">
 			<!-- Campo obligatorio -->
 			<html:hidden property = "modo" value = "" />
 	

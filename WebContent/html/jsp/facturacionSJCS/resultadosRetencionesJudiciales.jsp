@@ -65,7 +65,8 @@
 </head>
 
 <body >
-	<html:form action="/FCS_RetencionesJudiciales.do" method="post" target="submitArea">
+	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+    <html:form action="${path}" method="post" target="submitArea">
 		<input type="hidden" name="modo" value="">		
 		
 		<!-- RGG: cambio a formularios ligeros -->
