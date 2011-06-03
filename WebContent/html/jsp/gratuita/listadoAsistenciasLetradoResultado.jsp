@@ -231,7 +231,7 @@ String nC="";
 					String idFacturacion = (String)registro.get("IDFACTURACION");
 					if (usr.isLetrado()) {
 						
-						botones = "E";
+						botones = "C,E";
 					} else { //Como administrador
 						
 						if(idFacturacion != null && !idFacturacion.trim().equals("")) {

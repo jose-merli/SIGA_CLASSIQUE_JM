@@ -100,7 +100,8 @@
 
 	<table class="tablaCampos" align="center">
 
-	<html:form action="/CEN_MantenimientoMovimientos.do?noReset=true" method="POST" target="resultado">
+<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+    <html:form action="${path}?noReset=true" method="POST" target="resultado">
 		<html:hidden name="MantenimientoMovimientosForm" property = "modo" value = ""/>
 		<html:hidden name="MantenimientoMovimientosForm" property = "actionModal" value = ""/>
 		<input type="hidden" name="limpiarFilaSeleccionada" value="">

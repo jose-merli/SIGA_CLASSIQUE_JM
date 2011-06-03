@@ -61,7 +61,9 @@
 		<input type="hidden" name="actionModal" value="">
 		<input type="hidden" name="modo" value="abrirBusquedaModal">
 	</html:form>
-	<html:form action="/FCS_RetencionesJudiciales.do" method="POST" target="resultado">
+	
+	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+    <html:form action="${path}" method="POST" target="resultado">
 		<html:hidden property = "modo" value = "inicio"/>
 		<html:hidden property = "actionModal" value = ""/>
 		<input type="hidden" name="limpiarFilaSeleccionada" value="">
