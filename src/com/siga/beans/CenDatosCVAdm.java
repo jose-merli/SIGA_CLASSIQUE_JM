@@ -271,9 +271,9 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 			String sql = "Select IDTIPOCV,IDTIPOCVSUBTIPO1,IDTIPOCVSUBTIPO2,TIPOAPUNTE,IDCV,IDINSTITUCION,IDPERSONA, "+
 						 " to_char(FECHAINICIO, 'dd/mm/yyyy') FECHAINICIO, " +
 						 " to_char(FECHAFIN, 'dd/mm/yyyy') FECHAFIN, "+
-						 " f_siga_getrecurso_etiqueta(decode(CERTIFICADO,1, 'messages.si','messages.no'),"+usrbean.getLanguage()+") CERTIFICADO, "+
+						 " f_siga_getrecurso_etiqueta(decode(CERTIFICADO,1, 'messages.si','messages.no'),"+usrbean.getLanguage()+") AS VERIFICADO, "+
 						 " DESCRIPCION,CREDITOS,IDINSTITUCION_SUBT1,IDINSTITUCION_SUBT2, "+
-						 " to_char(FECHAMOVIMIENTO, 'dd/mm/yyyy')FECHAMOVIMIENTO, "+
+						 " to_char(FECHAMOVIMIENTO, 'dd/mm/yyyy') AS FECHAVERIFICACION, "+
 						 " to_char(FECHABAJA, 'dd/mm/yyyy')FECHABAJA,"+
 						 " DESCSUBTIPO1, DESCSUBTIPO2 FROM ( " +UtilidadesBDAdm.sqlSelect(this.getTablasDatosCV(), this.getCamposDatosCV());
 

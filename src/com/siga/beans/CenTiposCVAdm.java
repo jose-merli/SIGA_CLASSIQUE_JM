@@ -170,8 +170,8 @@ public class CenTiposCVAdm extends MasterBeanAdministrador
 	public Vector getRestoDatosCV(int idInstitucion) throws ClsExceptions {
 		Vector datos = new Vector();
 		String sql = " SELECT   tip.IDTIPOCV,  sub1.IDTIPOCVSUBTIPO1,  sub2.IDTIPOCVSUBTIPO2,  '' TIPOAPUNTE,  '' IDCV, '' IDINSTITUCION, " +
-					 "			'' IDPERSONA,  '' FECHAINICIO,'' FECHAFIN,  '' DESCRIPCION, '' CERTIFICADO,  '' CREDITOS, '' IDINSTITUCION_SUBT1, "+
-					 "			'' IDINSTITUCION_SUBT2,  '' FECHAMOVIMIENTO,'' FECHABAJA, '' DESCSUBTIPO1, '' DESCSUBTIPO2 "+
+					 "			'' IDPERSONA,  '' FECHAINICIO,'' FECHAFIN,  '' DESCRIPCION, '' VERIFICADO,  '' CREDITOS, '' IDINSTITUCION_SUBT1, "+
+					 "			'' IDINSTITUCION_SUBT2,  '' FECHAVERIFICACION,'' FECHABAJA, '' DESCSUBTIPO1, '' DESCSUBTIPO2 "+
 					 " FROM 	cen_tiposcv tip, cen_tiposcvsubtipo1 sub1, cen_tiposcvsubtipo2 sub2 "+
 					 " WHERE    tip.idtipocv = sub1.idtipocv(+) "+
 					 " 		  	and tip.idtipocv = sub2.idtipocv(+) "+
