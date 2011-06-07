@@ -14,6 +14,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
@@ -123,13 +124,12 @@ public class GestionBajasTemporalesAction extends MasterAction {
 		bajasTemporalesForm.setMsgError("");
 		UsrBean usrBean = this.getUserBean(request);
 		bajasTemporalesForm.setUsrBean(usrBean);
-		String parameter = request.getParameter("fichaColegial");
-		if(parameter!=null && Boolean.parseBoolean(parameter)){
+		
+		// Si vengo desde la ficha colegial
+		if (mapping.getParameter() != null && mapping.getParameter().toUpperCase().contains(ClsConstants.PARAM_ESFICHACOLEGIAL.toUpperCase())) {
 			return inicioFichaColegial(mapping, formulario, request, response);
 		}else{
 			return inicioGestion(mapping, formulario, request, response);
-			
-			
 		}
 	}
 	protected String refrescar (ActionMapping mapping, 		

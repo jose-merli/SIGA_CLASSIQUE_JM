@@ -84,10 +84,8 @@ public class MantenimientoRetencionesJudicialesAction extends MasterAction {
 							HttpServletRequest request, 
 							HttpServletResponse response) throws SIGAException
 	{
-		
 		// Si vengo desde la ficha colegial
-		String fichaColegial = (String)request.getParameter("esFichaColegial");
-		if (fichaColegial != null && fichaColegial.equals("1")) {
+		if (mapping.getParameter() != null && mapping.getParameter().toUpperCase().contains(ClsConstants.PARAM_ESFICHACOLEGIAL.toUpperCase())) {
 			return this.buscarPor(mapping, formulario, request,response);
 		}
 
@@ -326,9 +324,8 @@ public class MantenimientoRetencionesJudicialesAction extends MasterAction {
 				consulta += " AND RETENCIONES." + FcsRetencionesJudicialesBean.C_IDDESTINATARIO + " = " + miHash.get(FcsRetencionesJudicialesBean.C_IDDESTINATARIO);
 
 			
-			// Si vengo de la ficha colegial aniadimos la persona
-			String fichaColegial = (String)request.getParameter("esFichaColegial");
-			if (fichaColegial != null && fichaColegial.equals("1")) {
+			// Si vengo desde la ficha colegial
+			if (mapping.getParameter() != null && mapping.getParameter().toUpperCase().contains(ClsConstants.PARAM_ESFICHACOLEGIAL.toUpperCase())) {
 				String idPersona = (String) request.getSession().getAttribute("idPersonaPestanha");
 				consulta += " AND RETENCIONES." + FcsRetencionesJudicialesBean.C_IDPERSONA + " = " + idPersona;
 			}

@@ -47,10 +47,8 @@ public class MantenimientoMovimientosAction extends MasterAction {
 							HttpServletResponse response) throws SIGAException
 	{
 		try {
-
 			// Si vengo desde la ficha colegial
-			String fichaColegial = (String)request.getParameter("esFichaColegial");
-			if (fichaColegial != null && fichaColegial.equals("1")) {
+			if (mapping.getParameter() != null && mapping.getParameter().toUpperCase().contains(ClsConstants.PARAM_ESFICHACOLEGIAL.toUpperCase())) {
 				return this.buscarPor(mapping, formulario, request,response);
 			}
 
@@ -312,9 +310,8 @@ public class MantenimientoMovimientosAction extends MasterAction {
 			//falta la institucion
 			datos.put("IDINSTITUCION",(String)usr.getLocation());
 
-			// Si vengo de la ficha colegial aniadimos la persona
-			String fichaColegial = (String)request.getParameter("esFichaColegial");
-			if (fichaColegial != null && fichaColegial.equals("1")) {
+			// Si vengo desde la ficha colegial
+			if (mapping.getParameter() != null && mapping.getParameter().toUpperCase().contains(ClsConstants.PARAM_ESFICHACOLEGIAL.toUpperCase())) {
 				String idPersona = (String)request.getParameter("idPersonaPestanha");
 				UtilidadesHash.set(datos, "IDPERSONA", idPersona);
 			}

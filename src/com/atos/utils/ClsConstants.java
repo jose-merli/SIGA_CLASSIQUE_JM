@@ -601,6 +601,8 @@ MDB Microsoft Access Database
     public static final int ESTADO_REMESA_RECIBIDA= 3;
 
     public static final String GEN_PARAM_ACEPTAR_SOLICITUD_BAJA_TEMPORAL="ACEPTAR_SOLICITUD_BAJA_TEMPORAL";
+	
+	public static final String PARAM_ESFICHACOLEGIAL = "esFichaColegial";
   
   public ClsConstants() {
   }

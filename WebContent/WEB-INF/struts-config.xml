@@ -2053,13 +2053,13 @@
             
         </action>
 
-		<action path="/JGR_MovimientosVariosLetrado" type="com.siga.facturacionSJCS.action.MantenimientoMovimientosAction" parameter="esFichaColegial=1" name="MantenimientoMovimientosForm" scope="session">
+		<action path="/JGR_MovimientosVariosLetrado" type="com.siga.facturacionSJCS.action.MantenimientoMovimientosAction" parameter="esFichaColegial" name="MantenimientoMovimientosForm" scope="session">
             <forward name="inicio" path="/html/jsp/facturacionSJCS/busquedaMovimientos.jsp"/>
             <forward name="resultado" path="/html/jsp/facturacionSJCS/busquedaMovimientosResultados.jsp"/>
             <forward name="nuevo" path="/html/jsp/facturacionSJCS/datosMovimientos.jsp"/>
         </action>
 	
-		<action path="/JGR_RetencionesJudicialesLetrado" type="com.siga.facturacionSJCS.action.MantenimientoRetencionesJudicialesAction" parameter="esFichaColegial=1" name="MantenimientoRetencionesJudicialesForm" scope="request">
+		<action path="/JGR_RetencionesJudicialesLetrado" type="com.siga.facturacionSJCS.action.MantenimientoRetencionesJudicialesAction" parameter="esFichaColegial" name="MantenimientoRetencionesJudicialesForm" scope="request">
 			<forward name="inicio"	path="/html/jsp/facturacionSJCS/busquedaRetencionesJudiciales.jsp"/>
 			<forward name="resultado" path="/html/jsp/facturacionSJCS/resultadosRetencionesJudiciales.jsp"/>
 			<forward name="operar"	path="/html/jsp/facturacionSJCS/datosRetencionesJudiciales.jsp"/>
@@ -2274,7 +2274,7 @@
 			<forward name="confirmar" path="/html/jsp/general/msjConfirmar.jsp"/>
 		</action>
 		
-		<action path="/CEN_BajasTemporales" type="com.siga.censo.action.GestionBajasTemporalesAction" parameter="esFichaColegial=1" name="BajasTemporalesForm">
+		<action path="/CEN_BajasTemporales" type="com.siga.censo.action.GestionBajasTemporalesAction" parameter="esFichaColegial" name="BajasTemporalesForm">
 			<forward name="inicio" path="/html/jsp/censo/bajasTemporales/gestionBajasTemporales.jsp"/>
 			<forward name="listadoBajasTemporales" path="/html/jsp/censo/bajasTemporales/listadoBajasTemporales.jsp"/>
 			<forward name="solicitud" path="/html/jsp/censo/bajasTemporales/solicitudBajasTemporales.jsp"/>
