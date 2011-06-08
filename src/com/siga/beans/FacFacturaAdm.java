@@ -2774,11 +2774,15 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 				}else{
 					nuevo.put("NOMBRE_CLIENTE","-");
 				}
+				direccion = new Hashtable();
+				direccion=direccionAdm.getEntradaDireccionEspecifica(idPersona,(String)factura.get(FacFacturaBean.C_IDINSTITUCION),""+ClsConstants.TIPO_DIRECCION_FACTURACION);
+				if (direccion.size()==0){
+				    // Si no hay direccion de despacho (porque es un no colegiado), miramos su direccion de correo
+				 	direccion=direccionAdm.getEntradaDireccionEspecifica(idPersona,(String)factura.get(FacFacturaBean.C_IDINSTITUCION),""+ClsConstants.TIPO_DIRECCION_DESPACHO);
+			    }
 				
-				// jbd // inc8271 // En vez de mirar primero la direccion de despacho y luego la de censo se comprueba primero la facturacion
-				direccion=direccionAdm.getEntradaDireccionEspecifica(idPersona,(String)factura.get(FacFacturaBean.C_IDINSTITUCION),"8");
-				if (direccion.size()==0){// si no existe direccion de despacho, mostramos la de correo
-					direccion=direccionAdm.getEntradaDireccionEspecifica(idPersona,(String)factura.get(FacFacturaBean.C_IDINSTITUCION),"3");
+				if (direccion.size()==0){							// jbd // inc8271 // En vez de mirar primero la direccion de despacho y luego la de censo se comprueba primero la facturacion
+					direccion=direccionAdm.getEntradaDireccionEspecifica(idPersona,(String)factura.get(FacFacturaBean.C_IDINSTITUCION),""+ClsConstants.TIPO_DIRECCION_CENSOWEB);
 				}
 				
 				//Si no existe ninguna de estas dos direcciones se escoge una cualquiera //inc8356 

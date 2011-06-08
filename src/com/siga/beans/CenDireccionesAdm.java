@@ -865,7 +865,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 			Integer estado = UtilidadesHash.getInteger(d, CenEstadoColegialBean.C_IDESTADO);
 
 			// QUE EXISTA UNA DIRECCION DE CORREO
-			if (this.getNumDirecciones(beanDir, ClsConstants.TIPO_DIRECCION_CORREO) < 1) {
+			if (this.getNumDirecciones(beanDir, ClsConstants.TIPO_DIRECCION_CENSOWEB) < 1) {
 				SIGAException sigaExp = new SIGAException ("messages.censo.direcciones.tipoCorreo");
 				throw sigaExp;
 			}

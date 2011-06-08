@@ -3483,7 +3483,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			beanTipoDir.setUsuMod (this.usuModificacion);
 			
 			//tipo direccion correo
-			beanTipoDir.setIdTipoDireccion (new Integer (ClsConstants.TIPO_DIRECCION_CORREO));
+			beanTipoDir.setIdTipoDireccion (new Integer (ClsConstants.TIPO_DIRECCION_CENSOWEB));
 			if (! admTipoDir.insert (beanTipoDir))
 				throw new ClsExceptions (admTipoDir.getError ());
 			

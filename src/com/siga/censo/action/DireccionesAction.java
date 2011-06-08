@@ -519,7 +519,7 @@ protected String insertar (ActionMapping mapping,
 							t.rollback();
 							return exito("messages.inserted.error.ExisteYaGuardia", request);
 						}	
-				}else if (new Integer (tipos[i]).intValue () == ClsConstants.TIPO_DIRECCION_CORREO){//dirección de tipo censoweb					
+				}else if (new Integer (tipos[i]).intValue () == ClsConstants.TIPO_DIRECCION_CENSOWEB){//dirección de tipo censoweb					
 					String sql1 = direccionesAdm.comprobarTipoDireccion(tipo, miForm.getIDInstitucion().toString(), miForm.getIDPersona().toString());
 					cambiodireccioncensoweb (miForm,i,sql1, tipo, idDireccionesCensoWeb, request);
 					if ((request.getParameter("modificarPreferencias")!=null && request.getParameter("modificarPreferencias").equals("1")) || (request.getParameter("modificarDireccionesCensoWeb")!=null && request.getParameter("modificarDireccionesCensoWeb").equals("1"))){
@@ -768,7 +768,7 @@ protected String insertar (ActionMapping mapping,
 									preferenteModif, request);
 						}
 					}  
-				}else if (new Integer (tipos[i]).intValue () == ClsConstants.TIPO_DIRECCION_CORREO){						
+				}else if (new Integer (tipos[i]).intValue () == ClsConstants.TIPO_DIRECCION_CENSOWEB){						
 					String sql1 = direccionesAdm.comprobarTipoDireccion(tipo, miForm.getIDInstitucion().toString(), miForm.getIDPersona().toString());
 					cambiodireccioncensoweb(miForm, i, sql1, tipo, idDireccionesCensoWeb, request);
 					if ((request.getParameter("modificarPreferencias") != null && request.getParameter("modificarPreferencias").equals("1"))
@@ -1361,7 +1361,7 @@ protected String insertar (ActionMapping mapping,
 							t.rollback();
 							return exito("messages.inserted.error.ExisteYaGuardia", request);
 						}	
-					}else if (new Integer (tipos[i]).intValue () == ClsConstants.TIPO_DIRECCION_CORREO){						
+					}else if (new Integer (tipos[i]).intValue () == ClsConstants.TIPO_DIRECCION_CENSOWEB){						
 					String sql1 = direccionesAdm.comprobarTipoDireccion(tipo, miForm.getIDInstitucion().toString(), miForm.getIDPersona().toString());
 					cambiodireccioncensoweb (miForm,i,sql1, tipo, idDireccionesCensoWeb, request);
 					if ((request.getParameter("modificarPreferencias")!=null && request.getParameter("modificarPreferencias").equals("1")) || (request.getParameter("modificarDireccionesCensoWeb")!=null && request.getParameter("modificarDireccionesCensoWeb").equals("1"))){

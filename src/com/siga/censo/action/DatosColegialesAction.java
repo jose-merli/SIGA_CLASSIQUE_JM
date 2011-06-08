@@ -599,7 +599,7 @@ public class DatosColegialesAction extends MasterAction {
 					Hashtable h = new Hashtable();
 					UtilidadesHash.set (h,CenDireccionTipoDireccionBean.C_IDINSTITUCION,miForm.getIdInstitucion());
 					UtilidadesHash.set (h,CenDireccionTipoDireccionBean.C_IDPERSONA,miForm.getIdPersona());
-					UtilidadesHash.set (h,CenDireccionTipoDireccionBean.C_IDTIPODIRECCION,new Integer(ClsConstants.TIPO_DIRECCION_CORREO));
+					UtilidadesHash.set (h,CenDireccionTipoDireccionBean.C_IDTIPODIRECCION,new Integer(ClsConstants.TIPO_DIRECCION_CENSOWEB));
 					CenDireccionTipoDireccionAdm direccionAdm =	new CenDireccionTipoDireccionAdm(this.getUserBean(request));
 					
 					Vector vDir = direccionAdm.select(h);

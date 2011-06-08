@@ -19,6 +19,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
@@ -207,12 +208,17 @@ public class GestionarFacturaDatosGeneralesAction extends MasterAction{
  			    nColegiado = (String)UtilidadesHash.getString(htCol,"NCOLEGIADO_LETRADO");
  			}			 
 			 
-			Hashtable direccion=direccionAdm.getEntradaDireccionEspecifica(idPersonaFactura,institucion,"2");
+			Hashtable direccion=direccionAdm.getEntradaDireccionEspecifica(idPersonaFactura,institucion,""+ClsConstants.TIPO_DIRECCION_FACTURACION);
 			if (direccion.size()==0){
 			    // Si no hay direccion de despacho (porque es un no colegiado), miramos su direccion de correo
-			 	direccion=direccionAdm.getEntradaDireccionEspecifica(idPersonaFactura,institucion,"3");
+			 	direccion=direccionAdm.getEntradaDireccionEspecifica(idPersonaFactura,institucion,""+ClsConstants.TIPO_DIRECCION_DESPACHO);
 		    }
 			
+			if (direccion.size()==0){							// jbd // inc8271 // En vez de mirar primero la direccion de despacho y luego la de censo se comprueba primero la facturacion
+				direccion=direccionAdm.getEntradaDireccionEspecifica(idPersonaFactura,institucion,""+ClsConstants.TIPO_DIRECCION_CENSOWEB);
+			}
+			
+		
 			if (direccion.size()>0 || (direccion.size()==0 && request.getParameter("generarFactura")!=null && request.getParameter("generarFactura").equals("1"))){
 
 			    ClsLogging.writeFileLog("ANTES DE LA GENERACION DE LA FACTURA. ",10);
