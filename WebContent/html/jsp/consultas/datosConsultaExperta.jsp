@@ -443,7 +443,7 @@ if (!bEditable){
 		<tr>
 
 			<td  align="center" width="93%">
-		    	<html:textarea onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" style="width:800px" rows="20" property="selectExperta"  styleclass="boxExpert" value="<%=sentenciaSelect%>"></html:textarea> 
+		    	<html:textarea style="width:800px" rows="20" property="selectExperta"  styleclass="boxExpert" value="<%=sentenciaSelect%>"></html:textarea> 
 		    </td>	
 			<td align="left">
 			   <a HREF="javascript:abrirAyuda();"><IMG border=0 src="<%=app_imagen%>help.gif"  alt="<%=help%>"></a>
