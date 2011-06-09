@@ -3064,6 +3064,7 @@
 		<action path="/FCS_BusquedaRentencionesAplicadas" type="com.siga.facturacionSJCS.action.BusquedaRetencionesAplicadasAction" name="BusquedaRetencionesAplicadasForm" scope="request">
 			<forward name="inicio" path="/html/jsp/facturacionSJCS/busquedaRetencionesAplicadas.jsp"/>
 			<forward name="resultado" path="/html/jsp/facturacionSJCS/busquedaRetencionesAplicadasResultados.jsp"/>
+			<forward name="consultaLEC" path="/html/jsp/facturacionSJCS/consultaLEC.jsp"/>
 			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
 			
 		</action>	

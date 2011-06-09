@@ -206,7 +206,7 @@
 
 	<siga:ConjBotonesBusqueda   botones="B,ge"  titulo=""/>
 
-	<iframe name="submitArea" src="<html:rewrite page="/html/jsp/general/blank.jsp"/>" style="display:none"></iframe>
+	
 
 	<iframe align="center" src="<html:rewrite page="/html/jsp/general/blank.jsp"/>"
 					id="resultado"
@@ -218,7 +218,7 @@
 					class="frameGeneral">
 	</iframe>
 	
-	
+	<iframe name="submitArea" src="<html:rewrite page="/html/jsp/general/blank.jsp"/>" style="display:none"></iframe>
 	
 	
   </body>

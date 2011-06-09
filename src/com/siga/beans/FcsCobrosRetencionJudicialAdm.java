@@ -8,6 +8,7 @@ import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -206,8 +207,11 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 		sql.append(" RET.IDDESTINATARIO,dest.nombre NOMBREDESTINATARIO,RET.DESCDESTINATARIO,RET.FECHAINICIO, " );
 		sql.append(" RET.FECHAFIN, ");
 		sql.append(" COB.FECHARETENCION,COB.IMPORTERETENIDO,COB.IDPAGOSJG, ");
+		sql.append(" COB.MES,COB.ANIO, ");
 		sql.append(" PAGO.NOMBRE PAGORELACIONADO, ");
-		sql.append(" ABONO.NUMEROABONO ABONORELACIONADO");
+		sql.append(" ABONO.NUMEROABONO ABONORELACIONADO ");
+		sql.append(" ,COB.IDCOBRO,COB.IDRETENCION, COB.IDINSTITUCION,    COB.IDPERSONA ");
+		sql.append(" , TO_CHAR(PAGO.FECHADESDE,'dd/mm/yyyy') FECHADESDE,TO_CHAR(PAGO.FECHAHASTA,'dd/mm/yyyy') FECHAHASTA ");
 		sql.append(" FROM FCS_COBROS_RETENCIONJUDICIAL COB, FCS_RETENCIONES_JUDICIALES RET, fcs_destinatarios_retenciones dest, ");
 		sql.append(" Fcs_Pago_Colegiado PCOL, FAC_ABONO ABONO, FCS_PAGOSJG PAGO, CEN_PERSONA PER ");
 		sql.append(" WHERE  ");
@@ -273,6 +277,7 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 			codigos.put(new Integer(contador),abonoRelacionado);
 			sql.append(":"+contador);
 		}
+		sql.append(" ORDER BY PER.APELLIDOS1,PER.APELLIDOS2,PER.NOMBRE,RET.DESCDESTINATARIO,ANIO DESC,MES DESC");
 		return sql.toString();
 		
 	}
@@ -321,8 +326,10 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 					String tipoRetencion = (String)registro.get("TIPORETENCION");
 			
 					retencionJudicial.setDestinatarioRetencion(destinatarioRetencion);
-					retencionJudicial.setFechaInicio((String)registro.get("FECHAINICIO"));
-					retencionJudicial.setFechaFin((String)registro.get("FECHAFIN"));
+					retencionJudicial.setFechaInicio(GstDate.getFormatedDateShort(usrBean.getLanguage(),(String)registro.get("FECHAINICIO")));
+					retencionJudicial.setFechaFin(GstDate.getFormatedDateShort(usrBean.getLanguage(),(String)registro.get("FECHAFIN")));
+//					retencionJudicial.setFechaInicio((String)registro.get("FECHAINICIO"));
+//					retencionJudicial.setFechaFin((String)registro.get("FECHAFIN"));
 					retencionJudicial.setTipoRetencion(tipoRetencion);
 					
 					retencionAplicada.setRetencionJudicial(retencionJudicial);
@@ -341,6 +348,14 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 					
 					retencionAplicada.setAbonoRelacionado((String)registro.get("ABONORELACIONADO"));
 					retencionAplicada.setPagoRelacionado((String)registro.get("PAGORELACIONADO"));
+					retencionAplicada.setAnio(UtilidadesHash.getString(registro, "ANIO") );
+					retencionAplicada.setMes(UtilidadesHash.getString(registro, "MES") );
+					retencionAplicada.setIdInstitucion(new Integer((String)registro.get("IDINSTITUCION")));
+					retencionAplicada.setIdCobro(new Integer((String)registro.get("IDCOBRO")));
+					retencionAplicada.setIdPersona(new Integer((String)registro.get("IDPERSONA")));
+					retencionAplicada.setIdRetencion(new Integer((String)registro.get("IDRETENCION")));
+					retencionAplicada.setFechaDesdePago(UtilidadesHash.getString(registro, "FECHADESDE") );
+					retencionAplicada.setFechaHastaPago(UtilidadesHash.getString(registro, "FECHAHASTA") );
 					
 					datos.add(retencionAplicada);
 				}
@@ -394,7 +409,11 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 					
 					if((String)registro.get("IMPORTERETENIDO")!=null){
 						registro.put("IMPORTERETENIDO",UtilidadesNumero.formatoCampo(UtilidadesHash.getString(registro, "IMPORTERETENIDO")));
-					}  
+					}
+					registro.put("MES",UtilidadesHash.getString(registro, "MES") );
+					registro.put("ANIO",UtilidadesHash.getString(registro, "ANIO") );
+						
+					
 					datos.add(fila);
 				}
 			}
@@ -462,6 +481,59 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 		}catch(Exception e){
 			throw new ClsExceptions (e,"Error en FcsCobrosRetencionJudicialAdm.getRetenciones:"+consulta);
 		}
+	}
+	
+	public Vector getConsultaLEC (String idInstitucion, String idPersona, String idRetencion, String fechaDesde, String fechaHasta) throws ClsExceptions 
+	{
+		//donde devolveremos el resultado
+		Vector resultado = new Vector();
+		//query con la select a ejecutar
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT T.IDINSTITUCION,  T.IDPERSONA, T.IDRETENCION,  T.IDCOBRO , T.MES, T.ANIO, ");     
+		sql.append("T.IMPORTEANTAPLICARETENCION,  T.IMPORTEANTRETENIDO,         T.IMPORTEAPLICARETENCION, ");
+		sql.append("T.IMPORTETOTAPLICARETENCION,     T.IMPORTETOTRETENIDO,         T.IMPORTERETENIDO, ");          
+		sql.append("T.IMPORTESMI ");
+		sql.append(",C.NCOLEGIADO||' ' ||P.NOMBRE||' '||P.APELLIDOS1||' '||NVL(P.APELLIDOS2,'') COLEGIADO ");
+		sql.append(",PG.NOMBRE NOMBREPAGO ");
+		sql.append("FROM FCS_RETLECCOBROS T,FCS_COBROS_RETENCIONJUDICIAL CB,FCS_PAGOSJG PG, CEN_PERSONA P , CEN_COLEGIADO C ");  
+		sql.append("WHERE "); 
+
+		sql.append("C.IDPERSONA = P.IDPERSONA ");
+		sql.append("AND C.IDINSTITUCION = T.IDINSTITUCION ");
+		sql.append("AND P.IDPERSONA = T.IDPERSONA ");
+		sql.append("AND CB.IDINSTITUCION = PG.IDINSTITUCION ");
+		sql.append("AND CB.IDPAGOSJG = PG.IDPAGOSJG ");
+		sql.append("AND CB.IDINSTITUCION =T.IDINSTITUCION "); 
+		sql.append("AND CB.IDPERSONA=T.IDPERSONA ");
+		sql.append("AND CB.IDRETENCION = T.IDRETENCION ");
+		sql.append("AND CB.IDCOBRO = T.IDCOBRO ");
+		
+		sql.append("AND T.IDINSTITUCION = "); 
+		sql.append(idInstitucion);
+		sql.append(" AND T.IDPERSONA = ");
+		sql.append(idPersona);
+		sql.append(" AND T.IDRETENCION = ");
+		sql.append(idRetencion);
+		sql.append(" AND T.MES BETWEEN ");
+		sql.append(" TO_CHAR(TO_DATE('");
+		sql.append(fechaDesde);
+		sql.append("'), 'MM')");
+		sql.append(" AND TO_CHAR(TO_DATE('");
+		sql.append(fechaHasta);
+		sql.append("'), 'MM')");
+		
+		sql.append(" ORDER BY T.MES,T.IDCOBRO ");
+
+		
+							
+		try{
+			resultado = (Vector)this.selectGenerico(sql.toString());
+		}catch(Exception e){
+			throw new ClsExceptions (e,"Error en FcsCobrosRetencionJudicialAdm.getConsultaLEC:"+sql);
+		}
+		
+		return resultado;
+		
 	}
 	
 }

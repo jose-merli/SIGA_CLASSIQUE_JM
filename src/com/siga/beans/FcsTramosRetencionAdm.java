@@ -231,11 +231,11 @@ public class FcsTramosRetencionAdm extends MasterBeanAdministrador {
 		htCodigos.put(new Integer(contador),anio);
 		contador ++;
 		sql.append(contador);
-		sql.append(",:");
+//		sql.append(",:");
 		htCodigos.put(new Integer(contador),idInstitucion);
-		contador ++;
-		sql.append(contador);
-		htCodigos.put(new Integer(contador),numMeses);
+//		contador ++;
+//		sql.append(contador);
+//		htCodigos.put(new Integer(contador),numMeses);
 				
 		sql.append(") AS IMPORTE_RETENCION FROM DUAL ");
 		
@@ -251,6 +251,7 @@ public class FcsTramosRetencionAdm extends MasterBeanAdministrador {
             	Row fila = (Row) rc.get(0);
         		Hashtable<String, Object> htFila=fila.getRow();
         		importeRetencion = UtilidadesHash.getDouble(htFila,"IMPORTE_RETENCION");
+        		importeRetencion = importeRetencion*Double.valueOf(numMeses);
             	
             	
     			

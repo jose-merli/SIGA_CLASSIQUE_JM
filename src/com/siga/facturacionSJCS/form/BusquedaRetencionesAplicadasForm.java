@@ -8,7 +8,50 @@ import com.siga.general.MasterForm;
 public class BusquedaRetencionesAplicadasForm extends MasterForm 
 {
 	
+	String idInstitucion;
+	String idPersona;
+	String idCobro;
+	String idRetencion;
+	String fechaDesdePago;
+	String fechaHastaPago;
 	
+	
+	public String getFechaDesdePago() {
+		return fechaDesdePago;
+	}
+	public void setFechaDesdePago(String fechaDesdePago) {
+		this.fechaDesdePago = fechaDesdePago;
+	}
+	public String getFechaHastaPago() {
+		return fechaHastaPago;
+	}
+	public void setFechaHastaPago(String fechaHastaPago) {
+		this.fechaHastaPago = fechaHastaPago;
+	}
+	public String getIdInstitucion() {
+		return idInstitucion;
+	}
+	public void setIdInstitucion(String idInstitucion) {
+		this.idInstitucion = idInstitucion;
+	}
+	public String getIdPersona() {
+		return idPersona;
+	}
+	public void setIdPersona(String idPersona) {
+		this.idPersona = idPersona;
+	}
+	public String getIdCobro() {
+		return idCobro;
+	}
+	public void setIdCobro(String idCobro) {
+		this.idCobro = idCobro;
+	}
+	public String getIdRetencion() {
+		return idRetencion;
+	}
+	public void setIdRetencion(String idRetencion) {
+		this.idRetencion = idRetencion;
+	}
 	public String getLetrado() {
 		return UtilidadesHash.getString(this.datos, "letrado");
 	}

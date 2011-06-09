@@ -966,10 +966,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 		
 		//Controles
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
-		GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
-		String numMesesPagoTramoLEC = paramAdm.getValor (idInstitucion, ClsConstants.MODULO_FACTURACION_SJCS, ClsConstants.GEN_PARAM_NUM_MESES_PAGO_TRAMO_LEC, "1");
-		if(Integer.parseInt(numMesesPagoTramoLEC)==0 ||Integer.parseInt(numMesesPagoTramoLEC)>12)
-			numMesesPagoTramoLEC = "1";
+		
 		FcsPagosJGAdm pagoAdm = new FcsPagosJGAdm(usr);
 		Hashtable importes = new Hashtable();
 
@@ -981,17 +978,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 		Double porcentajeIRPF;
 		double importeIrpfTotal=0.0d;
 		
-		Hashtable htPagosJG = new Hashtable();
-		htPagosJG.put(FcsPagosJGBean.C_IDINSTITUCION, idInstitucion);
-		htPagosJG.put(FcsPagosJGBean.C_IDPAGOSJG, idPago);
-		Vector pagoVector=  pagoAdm.selectByPK(htPagosJG);
-		FcsPagosJGBean pagoBean = (FcsPagosJGBean)pagoVector.get(0); 
-		String anyo = "2011";
-		try {
-			anyo = GstDate.getYear(GstDate.convertirFecha(pagoBean.getFechaDesde()));
-		} catch (Exception e1) {
-			throw new ClsExceptions(e1, "");
-		}
+		
 		
 		// Recuperamos los colegiados a los que tenemos que pagar
 		// aquellos incluidos en el pago o con movimientos varios pendientes
@@ -1045,7 +1032,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 
 			// 5. Aplicar retenciones judiciales y no judiciales
 			aplicarRetencionesJudiciales( idInstitucion, idPago, idPersona, 
-					Double.toString(importeNeto), Long.toString(usr.getIdPersona()),anyo,numMesesPagoTramoLEC);
+					Double.toString(importeNeto), Long.toString(usr.getIdPersona()),usr.getLanguage());
 			// obtener el importe de las retenciones judiciales
 			FcsCobrosRetencionJudicialAdm crjAdm = new FcsCobrosRetencionJudicialAdm(usr); 
 			importeRetenciones = crjAdm.getSumaRetenciones(idInstitucion, idPago, idPersona);
@@ -1106,6 +1093,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 	 * Devuelve el porcentaje de irpf a aplicar en un pago
 	 * @param idInstitucion
 	 * @param idPersonaSociedad
+	 * @param idioma 
 	 * @param usuario de modificacion 
 	 * @return
 	 * @throws ClsExceptions
@@ -1113,12 +1101,12 @@ public class DatosGeneralesPagoAction extends MasterAction {
 	 */
 	private void aplicarRetencionesJudiciales(
 			String idInstitucion, String idPagoJg, String idPersonaSociedad, 
-			String importeNeto, String usuMod,String anyo,String numMesesPago) throws ClsExceptions, SIGAException {
+			String importeNeto, String usuMod, String idioma) throws ClsExceptions, SIGAException {
 
 
 		// Aplicar las retenciones judiciales
 		String resultado[] = EjecucionPLs.ejecutarPLAplicarRetencionesJudiciales(
-				idInstitucion, idPagoJg, idPersonaSociedad, importeNeto, usuMod,anyo,numMesesPago);
+				idInstitucion, idPagoJg, idPersonaSociedad, importeNeto, usuMod,idioma);
 		//comprueba si el pl se ha ejecutado correctamente
 		if (!resultado[0].equals("0")){
 			if(resultado[0].equals("11"))

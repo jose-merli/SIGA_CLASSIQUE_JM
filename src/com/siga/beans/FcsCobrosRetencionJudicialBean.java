@@ -75,7 +75,37 @@ public class FcsCobrosRetencionJudicialBean extends MasterBean {
 	private CenPersonaBean persona = null;
 	String abonoRelacionado = null;
 	String pagoRelacionado = null;
+	String mes = null;
+	String anio = null;
+	String fechaDesdePago = null;
+	String fechaHastaPago = null;
+	
 
+	
+	public String getFechaDesdePago() {
+		return fechaDesdePago;
+	}
+	public void setFechaDesdePago(String fechaDesdePago) {
+		this.fechaDesdePago = fechaDesdePago;
+	}
+	public String getFechaHastaPago() {
+		return fechaHastaPago;
+	}
+	public void setFechaHastaPago(String fechaHastaPago) {
+		this.fechaHastaPago = fechaHastaPago;
+	}
+	public String getMes() {
+		return mes;
+	}
+	public void setMes(String mes) {
+		this.mes = mes;
+	}
+	public String getAnio() {
+		return anio;
+	}
+	public void setAnio(String anio) {
+		this.anio = anio;
+	}
 	public CenPersonaBean getPersona() {
 		return persona;
 	}

@@ -157,9 +157,9 @@ public class EjecucionPLs {
 	 */
 	public static String[] ejecutarPLAplicarRetencionesJudiciales(
 			String idInstitucion, String idPago,
-			String idPersona, String importeNeto, String usuMod,String anyo,String numMesesPago) throws ClsExceptions{
+			String idPersona, String importeNeto, String usuMod,String idioma) throws ClsExceptions{
 		
-		Object[] param_in = new Object[7]; //Parametros de entrada del PL
+		Object[] param_in = new Object[6]; //Parametros de entrada del PL
 		String resultado[] = new String[2]; //Parametros de salida del PL
 
 		try {
@@ -169,12 +169,11 @@ public class EjecucionPLs {
 			param_in[2] = idPersona;
 			param_in[3] = importeNeto;
 			param_in[4] = usuMod;
-			param_in[5] = anyo;
-			param_in[6] = numMesesPago;
+			param_in[5] = idioma;
 			
 	 		//Ejecucion del PL
 			resultado = ClsMngBBDD.callPLProcedure(
-					"{call PKG_SIGA_RETENCIONES_SJCS.PROC_FCS_APLICAR_RETENC_JUDIC (?,?,?,?,?,?,?,?,?)}", 
+					"{call PKG_SIGA_RETENCIONES_SJCS.PROC_FCS_APLICAR_RETENC_JUDIC (?,?,?,?,?,?,?,?)}", 
 					2, param_in);			
 		} catch (Exception e) { 
 	    	resultado[0] = "1"; //ERROR P_CODRETORNO

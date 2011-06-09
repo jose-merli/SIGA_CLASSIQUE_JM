@@ -43,6 +43,9 @@ public class BusquedaRetencionesAplicadasAction extends MasterAction {
 					}else if (accion.equalsIgnoreCase("generaExcel")) {
 						mapDestino = generaExcel(mapping, miForm, request, response);
 						break;
+					}else if (accion.equalsIgnoreCase("consultaLEC")) {
+						mapDestino = consultaLEC(mapping, miForm, request, response);
+						break;
 					} 
 					else if (accion.equalsIgnoreCase("")) {
 						mapDestino = "";
@@ -105,12 +108,15 @@ public class BusquedaRetencionesAplicadasAction extends MasterAction {
 				UtilidadesString.getMensajeIdioma(user, "factSJCS.busquedaRetAplicadas.literal.fechaHasta"),
 				UtilidadesString.getMensajeIdioma(user, "factSJCS.busquedaRetAplicadas.literal.fechaRetencion"),
 				UtilidadesString.getMensajeIdioma(user, "factSJCS.busquedaRetAplicadas.literal.abonoRelacionado"),
+				UtilidadesString.getMensajeIdioma(user, "factSJCS.busquedaRetAplicadas.literal.mes"),
+				UtilidadesString.getMensajeIdioma(user, "factSJCS.busquedaRetAplicadas.literal.anio"),
 				UtilidadesString.getMensajeIdioma(user, "factSJCS.busquedaRetAplicadas.literal.pagoRelacionado"),
-				UtilidadesString.getMensajeIdioma(user, "factSJCS.busquedaRetAplicadas.literal.importeRetenido")};
+				UtilidadesString.getMensajeIdioma(user, "factSJCS.busquedaRetAplicadas.literal.importeRetenido")
+			};
 			
 			
 			String[] campos = new String[]{"NOMBRE","DESCTIPORETENCION","NOMBREDESTINATARIO","FECHAINICIO","FECHAFIN",
-					"FECHARETENCION","ABONORELACIONADO","PAGORELACIONADO","IMPORTERETENIDO"	};
+					"FECHARETENCION","ABONORELACIONADO","MES","ANIO","PAGORELACIONADO","IMPORTERETENIDO"	};
 				//
 			request.setAttribute("campos",campos);
 			request.setAttribute("datos",vRetencionesAplicadas);
@@ -130,7 +136,28 @@ public class BusquedaRetencionesAplicadasAction extends MasterAction {
 		
 		
 	}
+	protected String consultaLEC(ActionMapping mapping, MasterForm formulario,
+			HttpServletRequest request, HttpServletResponse response)
+			throws ClsExceptions, SIGAException {
+		BusquedaRetencionesAplicadasForm form = (BusquedaRetencionesAplicadasForm) formulario;
+		//Vector vRetencionesAplicadas = form.getRetencionesAplicadas();
+		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		
+		try {
+			
+			FcsCobrosRetencionJudicialAdm cobrosRetencionAdm = new FcsCobrosRetencionJudicialAdm(user);
+			Vector vConsultaLEC = cobrosRetencionAdm.getConsultaLEC(form.getIdInstitucion(),form.getIdPersona(),form.getIdRetencion(),form.getFechaDesdePago(),form.getFechaHastaPago());
+			request.setAttribute("consultaLEC", vConsultaLEC);
+			
+		} 
+		catch (Exception e) { 
+			
+			throwExcp("facturacion.consultaMorosos.errorInformes", new String[] {"modulo.facturacion"}, e, null); 
+		}
 	
+		return "consultaLEC";
+		
+	}
 	
 	protected String buscar(ActionMapping mapping, MasterForm formulario,
 			HttpServletRequest request, HttpServletResponse response)

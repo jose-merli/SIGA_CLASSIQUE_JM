@@ -157,6 +157,7 @@ public class GestionTramosRetencionAction extends MasterAction {
 			Double importeRetencion = admFcsTramosRetencionAdm.getImporteRetenido(importe,anio,usr.getLocation(),numMeses);
 			if(importeRetencion==-1)
 				importeRetencion = (double)0;
+			
 			miForm.setImporteRetencion(UtilidadesNumero.formato(importeRetencion));
 			List listaParametros = new ArrayList();
 			listaParametros.add(miForm.getImporteRetencion());
