@@ -1121,7 +1121,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		else
 			sql.append("   pc.IDPERORIGEN as idpersonaSJCS, ");
 		
-		sql.append("       pc.idpagosjg as idpagos, ");
+		sql.append("       pc.idpagosjg as idpagos,pj.nombre AS NOMBREPAGO, ");
 		sql.append("       sum(pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ) as totalImporteSJCS, ");
 		sql.append("       sum(pc.impRet) as importeTotalRetenciones, ");
 		sql.append("       sum(pc.impMovVar) as importeTotalMovimientos, ");
@@ -1137,17 +1137,20 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		sql.append("       null, 'gratuita.pagos.porCaja', 'gratuita.pagos.porBanco'), "+idioma+") ");
 		sql.append("       as FORMADEPAGO ");
 		
-		sql.append("  from FCS_PAGO_COLEGIADO pc, cen_persona cen ");
+		sql.append("  from FCS_PAGO_COLEGIADO pc, cen_persona cen, fcs_pagosjg pj ");
 		sql.append(" where pc.IDINSTITUCION = "+idInstitucion+" ");
 		sql.append("   and pc.IDPAGOSJG IN("+idPagos+") ");
 		sql.append("   and pc.IDPERORIGEN = nvl("+idPersona+", pc.IDPERORIGEN) ");
 		sql.append("   and cen.idpersona = nvl("+idPersona+", pc.IDPERORIGEN) ");
-		
+		sql.append("   AND pj.idinstitucion = pc.idinstitucion ");
+		sql.append("   AND pj.idpagosjg = pc.Idpagosjg   ");
+		                           
+                              
 		if (irpf)
 			sql.append(
 					"  and impirpf > 0 ");		
-		sql.append(" group by cen.apellidos1,cen.apellidos2, pc.IDPERORIGEN, pc.IDPERDESTINO, pc.IDPAGOSJG, pc.IDINSTITUCION ");
-		sql.append(" order by cen.apellidos1, cen.apellidos2 ");
+		sql.append(" group by cen.apellidos1,cen.apellidos2, pc.IDPERORIGEN, pc.IDPERDESTINO, pc.IDPAGOSJG, pc.IDINSTITUCION,  pj.nombre, pj.fechadesde ");
+		sql.append(" ORDER BY cen.apellidos1, cen.apellidos2, pj.fechadesde");
 		
 		return sql.toString();
 	} //getQueryDetallePagoColegiado()
@@ -1180,7 +1183,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 														String idioma)
 	{
 		StringBuffer sql = new StringBuffer();
-		sql.append(" select pagoAColegiados.*, ");
+		sql.append(" select pagoAColegiados.*,");
 		sql.append("        f_siga_calculoncolegiado(pagoAColegiados.idinstitucion, pagoAColegiados.idpersonaSJCS) as NCOLEGIADO, ");
 		sql.append("        (select p.apellidos1 || ' ' || p.apellidos2 || ', ' || p.nombre ");
 		sql.append("           from cen_persona p, cen_cliente c ");

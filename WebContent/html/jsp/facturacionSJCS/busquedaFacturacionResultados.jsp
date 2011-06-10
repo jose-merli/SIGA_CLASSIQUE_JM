@@ -35,7 +35,7 @@
 <%@ page import="java.util.Enumeration"%>
 <%@ page import="com.siga.Utilidades.*"%>
 
-<%@ page import="com.siga.Utilidades.Paginador"%>
+<%@ page import="com.siga.Utilidades.paginadores.Paginador"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.atos.utils.Row"%>
 

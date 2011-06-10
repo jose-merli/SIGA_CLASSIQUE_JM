@@ -1970,12 +1970,13 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		try {
 		    rcQueries = new RowsContainer();
 
-			 sql = "SELECT DISTINCT " + C_SENTENCIA + "," + C_ESEXPERTA + "," + C_IDCONSULTA + " FROM ";
+			sql = "SELECT " + C_SENTENCIA + "," + C_ESEXPERTA + "," + C_IDCONSULTA + " FROM ";
+		    sql +=  T_CON_CONSULTA;
+
+		    sql += " WHERE EXISTS ( SELECT * FROM ";
 		    sql +=  T_ENV_LISTACORREOSENVIOS + ", " +
 		    		T_ENV_LISTACORREOS + ", " +
-		    		T_ENV_LISTACORREOCONSULTA + ", " +
-		    		T_CON_CONSULTA;
-
+		    		T_ENV_LISTACORREOCONSULTA;
 		    sql += " WHERE ";
 		    sql += LE_IDINSTITUCION + " = " + idInstitucion;
 		    sql += " AND " + LE_IDENVIO + " = " + idEnvio;
@@ -1990,7 +1991,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			//puesto que se podría recuperar una consulta erronea
 			sql += " AND " + LC_IDINSTITUCION_CON + " = " + C_IDINSTITUCION;
 			sql += " AND " + LC_IDCONSULTA + " = " + C_IDCONSULTA;
-			sql += " AND " + LI_DINAMICA + " = 'S'";
+			sql += " AND " + LI_DINAMICA + " = 'S')";
 					
 			ClsLogging.writeFileLog("EnvEnviosAdm.getDestinatarios.queries -> QUERY: "+sql,10);
 

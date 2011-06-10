@@ -1,10 +1,14 @@
-package com.siga.informes.form;
+//VERSIONES
+//ruben.fernandez : 04/04/2005 Creacion
+//
+
+package com.siga.gratuita.form;
 
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.MasterForm;
 
-public class MantenimientoInformesForm extends MasterForm
-{
+public class CartaFacturacionCensoForm extends MasterForm {
+
 	// Atributos
 	private String idInstitucion;
 	private String letrado;

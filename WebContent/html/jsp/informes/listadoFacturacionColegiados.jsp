@@ -1,4 +1,4 @@
-<!-- listadoPagoColegiados.jsp -->
+<!-- listadoFacturacionColegiados.jsp -->
 <!-- 
 	 VERSIONES:
 	 jtacosta 2009 
@@ -26,8 +26,9 @@
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
 <%@ page import="com.siga.tlds.FilaExtElement"%>
-<%@ page import="com.siga.Utilidades.PaginadorCaseSensitiveBind"%>
-<%@page import="com.siga.beans.CenColegiadoBean"%>
+<%@ page import="com.siga.Utilidades.paginadores.PaginadorCaseSensitive"%>
+<%@ page import="com.siga.beans.CenColegiadoBean"%>
+<%@ page import="com.siga.beans.FcsFacturacionJGBean"%>
 
 
 <bean:define id="registrosSeleccionados" name="mantenimientoInformesForm" property="registrosSeleccionados" type="java.util.ArrayList" />
@@ -51,7 +52,7 @@
 
 		if (datosPaginador.get("datos") != null && !datosPaginador.get("datos").equals("")) {
 			resultado = (Vector) datosPaginador.get("datos");
-			PaginadorCaseSensitiveBind paginador = (PaginadorCaseSensitiveBind) datosPaginador.get("paginador");
+			PaginadorCaseSensitive paginador = (PaginadorCaseSensitive) datosPaginador.get("paginador");
 			paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
 
 			totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());
@@ -74,7 +75,7 @@
 
 		registrosPorPagina = "0";
 	}
-	String action = app + "/INF_CartaPago.do?noReset=true";
+	String action = app + "/INF_CartaFacturaciones.do?noReset=true";
 	/**************/
 %>
 
@@ -89,8 +90,7 @@
 
 <!-- INICIO: TITULO Y LOCALIZACION -->
 <!-- Escribe el título y localización en la barra de título del frame principal -->
-<siga:Titulo titulo="informes.sjcs.pagos.literal.titulo"
-	localizacion="facturacion.localizacion" />
+<siga:Titulo titulo="menu.justiciaGratuita.cartaFact" localizacion="factSJCS.informes.ruta" />
 <!-- FIN: TITULO Y LOCALIZACION -->
 
 </head>
@@ -101,7 +101,7 @@
 <!-- Tratamiento del tagTabla y tagFila para la formacion de la lista 
 			 de cabeceras fijas -->
 
-<html:form action="/INF_CartaPago?noReset=true" method="POST" target="mainWorkArea"
+<html:form action="/INF_CartaFacturaciones?noReset=true" method="POST" target="mainWorkArea"
 	style="display:none">
 	<html:hidden property="modo" value="" />
 	<html:hidden property="hiddenFrame" value="1" />
@@ -139,16 +139,15 @@
 <siga:TablaCabecerasFijas nombre="tablaDatos" borde="1"
 	clase="tableTitle"
 	nombreCol="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/> ,
-		   		   	informes.sjcs.pagos.literal.ncolegiado,
-				  	informes.sjcs.pagos.literal.colegiado,
-				  	Nombre Pago,
-				  	factSJCS.datosPagos.literal.importeSJCS,
-		   		  	factSJCS.datosPagos.literal.importeMovimientosVarios,
-		   		  	informes.sjcs.pagos.literal.importeBruto,
-		   		  	informes.sjcs.pagos.literal.importeIRPF,
-		   		  	factSJCS.datosPagos.literal.importeRetenciones,
+		   		   	Num. Col.,
+		   		   	Nombre Col.,
+				  	Nombre Facturación,
+					informes.sjcs.pagos.literal.turnos,
+					informes.sjcs.pagos.literal.guardias,
+					informes.sjcs.pagos.literal.ejg,
+					informes.sjcs.pagos.literal.soj,
 		   		  	factSJCS.detalleFacturacion.literal.importe,"
-	tamanoCol="4,9,19,15,8,8,8,8,8,8,4" alto="70%" ajusteBotonera="true"
+	tamanoCol="5,7,18,26,8,8,8,8,8,4" alto="70%" ajusteBotonera="true"
 	activarFilaSel="true" ajustePaginador="true">
 
 	<!-- INICIO: ZONA DE REGISTROS -->
@@ -167,24 +166,29 @@
 					Row fila = (Row) resultado.elementAt(i);
 					FilaExtElement[] elemento = new FilaExtElement[1];
 					elemento[0] = new FilaExtElement("enviar", "comunicar", SIGAConstants.ACCESS_READ);
+					String importeOficio =fila.getString("IMPORTEOFICIO");
+					String importeGuardia =fila.getString("IMPORTEGUARDIA");
+					String importeSOJ =fila.getString("IMPORTESOJ");
+					String importeEJG =fila.getString("IMPORTEEJG");
+					String importeTotal = fila.getString("IMPORTETOTAL");
+										
 	%>
 	<siga:FilaConIconos fila='<%=""+(i+1)%>' botones=""
 		visibleConsulta="no" visibleEdicion="no" visibleBorrado="no"
 		elementos='<%=elemento%>' pintarEspacio="no" clase="listaNonEdit">
-
-
+		
 		<input type="hidden" name="idPersona<%="" + (i + 1)%>"
-			value="<%=fila.getString("IDPERSONASJCS")%>">
-			
-		<input type="hidden" name="idPago<%="" + (i + 1)%>"
-			value="<%=fila.getString("IDPAGOS")%>">
+			value="<%=fila.getString("IDPERSONA")%>">
+
+		<input type="hidden" name="idFacturacion<%="" + (i + 1)%>"
+			value="<%=fila.getString("IDFACTURACION")%>">
 
 		<td align="center">
 		<%
-			String idInstitucionRow = fila.getString("IDINSTITUCION");
-			String idPersonaRow = fila.getString("IDPERSONASJCS");
-			String idPagosRow = fila.getString("IDPAGOS");
-			String valorCheck = idInstitucionRow + "||" + idPersonaRow + "##" + idPagosRow;
+			String idInstitucionRow = idInstitucion;
+			String idPersonaRow = fila.getString("IDPERSONA");
+			String idFacturacionRow = fila.getString("IDFACTURACION");
+			String valorCheck =  idFacturacionRow + "||" + idPersonaRow;
 			boolean isChecked = false;
 			for (int z = 0; z < registrosSeleccionados.size(); z++) {
 	
@@ -198,31 +202,22 @@
 			}
 	
 			if (isChecked) {
-		%> 	<input type="checkbox" value="<%=valorCheck%>" name="chkPersona" checked onclick="pulsarCheck(this)"> <%
- 	} else {
- %> 	<input type="checkbox" value="<%=valorCheck%>" name="chkPersona" onclick="pulsarCheck(this)"> <%
- 	}
- %>
+			%> 	<input type="checkbox" value="<%=valorCheck%>" name="chkPersona" checked onclick="pulsarCheck(this)"> <%
+	 	} else {
+	 %> 		<input type="checkbox" value="<%=valorCheck%>" name="chkPersona" onclick="pulsarCheck(this)"> <%
+	 	}
+	 %>
 		</td>
 
 
 		<td><%=UtilidadesString.mostrarDatoJSP(fila.getString(CenColegiadoBean.C_NCOLEGIADO))%></td>
+		<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("APELLIDOS1")) +" "+ UtilidadesString.mostrarDatoJSP(fila.getString("APELLIDOS2"))+", "+UtilidadesString.mostrarDatoJSP(fila.getString("NOMBRECOL"))%></td>
 		<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("NOMBRE"))%></td>
-		<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("NOMBREPAGO"))%></td>
-		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(fila.getString("TOTALIMPORTESJCS"), 2))%>&nbsp;&euro;</td>
-		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(fila.getString("IMPORTETOTALMOVIMIENTOS"), 2))%>&nbsp;&euro;</td>
-		<%
-			float aux = Float.parseFloat(fila.getString("TOTALIMPORTESJCS"))+ Float.parseFloat(fila.getString("IMPORTETOTALMOVIMIENTOS"));
-			String importe = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea((new Float(aux)).toString(), 2));
-		%>
-		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(importe, 2))%>&nbsp;&euro;</td>
-		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(fila.getString("TOTALIMPORTEIRPF"), 2))%>&nbsp;&euro;</td>
-		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(fila.getString("IMPORTETOTALRETENCIONES"), 2))%>&nbsp;&euro;</td>
-		<%
-			aux = aux + Float.parseFloat(fila.getString("TOTALIMPORTEIRPF"))+ Float.parseFloat(fila.getString("IMPORTETOTALRETENCIONES"));
-			importe = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea((new Float(aux)).toString(), 2));
-		%>
-		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(importe, 2))%>&nbsp;&euro;</td>
+		<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(importeOficio)%>&nbsp;&euro;</td>
+		<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(importeGuardia)%>&nbsp;&euro;</td>
+		<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(importeSOJ)%>&nbsp;&euro;</td>
+		<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(importeEJG)%>&nbsp;&euro;</td>
+		<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(importeTotal)%>&nbsp;&euro;</td>
 
 	</siga:FilaConIconos>
 	<%
@@ -286,13 +281,8 @@
 		<%if (registrosSeleccionados != null) {
 			for (int p = 0; p < registrosSeleccionados.size(); p++) {
 				Hashtable clavesEJG = (Hashtable) registrosSeleccionados.get(p);
-				valorCheckPersona = (String) clavesEJG.get("CLAVE");
-				String valorPago = "";
-				if((String) clavesEJG.get("IDPAGOS")!=null){
-					valorPago = "##" + (String) clavesEJG.get("IDPAGOS");
-				}%>	
-								
-				var aux='<%=valorCheckPersona + valorPago%>';
+				valorCheckPersona = (String) clavesEJG.get("CLAVE");%>	
+				var aux='<%=valorCheckPersona%>';
 				ObjArray.push(aux);
 			<%}
 		}
@@ -393,12 +383,11 @@
 		for (i = 0; i < ObjArray.length; i++) {
 			var idRegistros = ObjArray[i];
 			index = idRegistros.indexOf('||');
-			idInstitucion  = idRegistros.substring(0,index);
+			idInstitucion  = document.mantenimientoInformesForm.idInstitucion.value;
+			idFacturacion= idRegistros.substring(0,index);
 			idPersona = idRegistros.substring(index+2);
-			index2 = idRegistros.indexOf('##');
-			idPago = idRegistros.substring(index2+2);
 			idioma = parent.document.mantenimientoInformesForm.idioma.value;
- 		   	datos += "idPersona=="+idPersona + "##idPago==" +idPago + "##idInstitucion==" +idInstitucion + "##idioma==" +idioma +"%%%";
+ 		   	datos += "idPersona=="+idPersona + "##idFacturacion==" +idFacturacion + "##idInstitucion==" +idInstitucion + "##idioma==" +idioma +"%%%";
 		}
 		
 		numElementosSeleccionados =  ObjArray.length; 
@@ -410,11 +399,11 @@
 		var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
 		formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucion%>'>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='CPAGO'>"));
+		formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='CFACT'>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='enviar' value='1'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='clavesIteracion' value='IDPERSONASJCS'>"));
+		formu.appendChild(document.createElement("<input type='hidden' name='clavesIteracion' value='IDPERSONA'>"));
 		
 		if(numElementosSeleccionados>50){
 			formu.appendChild(document.createElement("<input type='hidden' name='descargar' value='0'>"));
@@ -428,24 +417,24 @@
 		formu.submit();
 	}
 	
-	function comunicar(fila)
-		{
+	function comunicar(fila){
 		var idPers = "idPersona"+fila;
-		var idPago = "idPago"+fila;
-		idPersona = document.getElementById(idPers).value;
-		idPago = document.getElementById(idPago).value;
-		idInstitucion = document.mantenimientoInformesForm.idInstitucion.value;
-		datos = "idInstitucion=="+idInstitucion +"##idPago=="+idPago+"##idPersona=="+idPersona +"%%%";
+		var idFacturacion = "idFacturacion"+fila;
 		
+		idPersona = document.getElementById(idPers).value;
+		idFacturacion = document.getElementById(idFacturacion).value;
+		idInstitucion = document.mantenimientoInformesForm.idInstitucion.value;
+		datos = "idInstitucion=="+idInstitucion +"##idFacturacion=="+idFacturacion+"##idPersona=="+idPersona +"%%%";
 		var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
 		formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucion%>'>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='CPAGO'>"));
+		formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='CFACT'>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='enviar' value='1'>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='descargar' value='1'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='clavesIteracion' value='IDPERSONASJCS'>"));
+		formu.appendChild(document.createElement("<input type='hidden' name='clavesIteracion' value='IDPERSONA'>"));
+		
 		document.appendChild(formu);
 		formu.datosInforme.value=datos;
 		formu.submit();

@@ -248,6 +248,24 @@ public class InformesGenericosAction extends MasterAction {
                                 datosInforme.append(idPago);
                                 
                             }
+						}else if (idTipoInforme.equals("CFACT")) {
+                            Vector vCampos = miForm.getDatosTablaOcultos(0);
+                            //idInstitucion==2040##idPago==308##idPersona==2046000001
+                            if(vCampos!=null&&vCampos.size()==3){
+                                String idInstitucion2 = (String) vCampos.get(0);
+                                String idPago =  (String) vCampos.get(1);
+                                String idPersona = (String) vCampos.get(2);
+                                datosInforme = new StringBuffer();
+                                datosInforme.append("idPersona==");
+                                datosInforme.append(idPersona);
+                                datosInforme.append("##");
+                                datosInforme.append("idInstitucion==");
+                                datosInforme.append(idInstitucion2);
+                                datosInforme.append("##");
+                                datosInforme.append("idPago==");
+                                datosInforme.append(idPago);
+                                
+                            }
 						}else if (idTipoInforme.equals("DEJG")) {
 							datosInforme = new StringBuffer();
 							datosInforme.append(ScsEJGBean.C_IDINSTITUCION + "==");
@@ -331,6 +349,8 @@ public class InformesGenericosAction extends MasterAction {
 						mapDestino = abono(mapping, miForm, request, response);
 					} else if (idTipoInforme.equals("CPAGO")) {
 						mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesPagoColegiados);
+					} else if (idTipoInforme.equals("CFACT")) {
+						mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesFacturacionesColegiados);
 					} else {
 						throw new ClsExceptions("ERROR: El tipo de informe seleccionado no está configurado.");
 					}

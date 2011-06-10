@@ -731,6 +731,15 @@ public class DefinirEnviosAction extends MasterAction {
 				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.sjcs.pagos.envio.asunto");
 
 
+			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesFacturacionesColegiados)){
+				idPersona = getIdPersonaUnica(form);
+				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
+				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")));
+				
+				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null));
+				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.sjcs.facturacion.envio.asunto");
+
+
 			}
 			else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesExpedientes)){
 				idPersona = getIdColegiadoUnico(form);
@@ -930,6 +939,7 @@ public class DefinirEnviosAction extends MasterAction {
 					!subModo.equals(EnvioInformesGenericos.comunicacionesExpedientes)&&
 					!subModo.equals(EnvioInformesGenericos.comunicacionesMorosos)&&
 					!subModo.equals(EnvioInformesGenericos.comunicacionesPagoColegiados)&&
+					!subModo.equals(EnvioInformesGenericos.comunicacionesFacturacionesColegiados)&&
 					!subModo.equals("certificadoIRPF")){
 					idEnvio = form.getIdEnvio();
 				if (idEnvio.equalsIgnoreCase("")){
@@ -1136,6 +1146,16 @@ public class DefinirEnviosAction extends MasterAction {
 					throwExcp("facturacion.consultaMorosos.errorInformes", new String[] {"modulo.facturacion"}, e, null);
 				}
 
+			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesFacturacionesColegiados)){
+				try {
+					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
+					envioInformesGenericos.gestionarComunicacionFacturacionColegiados(form,  request.getLocale(), userBean);
+					idEnvio = form.getIdEnvio();
+					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
+				} catch (Exception e) {
+					throwExcp("facturacion.consultaMorosos.errorInformes", new String[] {"modulo.facturacion"}, e, null);
+				}				
+				
 			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesCenso)){
 				
 				try {

@@ -1,4 +1,4 @@
-<!-- consultaPagoColegiados.jsp -->
+<!-- consultaFacturacionColegiados.jsp -->
 <!-- 
 	 VERSIONES:
 	 jtacosta 2009
@@ -17,9 +17,21 @@
 <%@ taglib uri="struts-html.tld" prefix="html"%>
 <%@ taglib uri="struts-logic.tld" prefix="logic"%>
 
+
 <!-- IMPORTS -->
+<%@ page import="com.atos.utils.UsrBean"%>
+<%@ page import="com.atos.utils.ClsConstants"%>
+
 
 <!-- JSP -->
+<%
+	String app = request.getContextPath();
+	UsrBean usrbean = (UsrBean) session.getAttribute(ClsConstants.USERBEAN);
+
+	//Combo Facturaciones
+	String comboParams[] = new String[1];
+	comboParams[0] = usrbean.getLocation();
+%>
 
 <html>
 
@@ -33,8 +45,7 @@
 	<script src=""	type="text/javascript"></script>
 	<script src="<html:rewrite page="/html/js/validacionStruts.js"/>" type="text/javascript"></script>
 
-	<siga:Titulo 	titulo="informes.sjcs.pagos.literal.titulo"
-					localizacion="factSJCS.informes.ruta" />
+	<siga:Titulo titulo="menu.justiciaGratuita.cartaFact" localizacion="factSJCS.informes.ruta" />
 
 </head>
 
@@ -43,10 +54,8 @@
 <!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 
 
-<html:javascript formName="mantenimientoInformesForm" staticJavascript="false" />
 
-<html:form action="/INF_CartaPago.do" method="POST"
-	target="resultado">
+<html:form action="/INF_CartaFacturaciones.do?noReset=true" method="POST" target="resultado">
 <fieldset>
 	<html:hidden property="modo" value="" />
 	<html:hidden property="idInstitucion"/>
@@ -54,29 +63,23 @@
 	<html:hidden property="letrado"/>
 	<html:hidden property="idioma"/>
 	<html:hidden property="registrosSeleccionados" />
-			<html:hidden property="datosPaginador" />
-			<html:hidden property="seleccionarTodos" />
+	<html:hidden property="datosPaginador" />
+	<html:hidden property="seleccionarTodos" />
 			
-	
-
-
 <table class="tablaCampos" align="center">
 		
-	<tr>
-		<td class="labelText" width="10%">
-			<siga:Idioma key="informes.sjcs.pagos.literal.pago"/>&nbsp;(*)&nbsp;&nbsp;
-			<bean:define id="parametrosComboPago" name="mantenimientoInformesForm" property="parametrosComboPago"/>
-			<siga:ComboBD nombre="idPago" tipo="cmb_PagosCerrados" parametro="<%=(String[])parametrosComboPago%>" clase="boxCombo" obligatorio="true" obligatorioSinTextoSeleccionar="true" />
-		</td>
-	</tr>
-	
-	<tr>
-		<td class="labelText" width="10%">
-			<siga:Idioma key="informes.sjcs.pagos.literal.pagoFin"/>&nbsp;&nbsp;&nbsp;(*)&nbsp;&nbsp;
-			<bean:define id="parametrosComboPagoFin" name="mantenimientoInformesForm" property="parametrosComboPagoFin"/>
-			<siga:ComboBD nombre="idPagoFinal" tipo="cmb_PagosCerrados" parametro="<%=(String[])parametrosComboPagoFin%>" clase="boxCombo" obligatorio="false" />
-		</td>
-	</tr>
+		<tr>
+			<td class="labelText" >
+			<siga:Idioma key="factSJCS.informes.informeMultiple.factInicial" />&nbsp;(*)&nbsp;&nbsp;
+			<siga:ComboBD nombre="idFacturacion" tipo="cmb_FactInformes" parametro="<%=comboParams%>" clase="boxCombo" obligatorio="true" obligatorioSinTextoSeleccionar="true"/>
+			</td>
+		</tr>
+		<tr>
+			<td class="labelText" >
+			<siga:Idioma key="factSJCS.informes.informeMultiple.factFinal" />&nbsp;(*)&nbsp;&nbsp;&nbsp;&nbsp;
+			<siga:ComboBD nombre="idFacturacionFinal"	tipo="cmb_FactInformes" parametro="<%=comboParams%>" clase="boxCombo" obligatorio="false"  />
+			</td>
+		</tr>
 
 	<tr>
 		<td>
@@ -163,33 +166,27 @@
 <!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 <script language="JavaScript">
 		
-		<!-- Funcion asociada a boton buscar -->
 		function buscar(modo){
+
 			sub();	
-			var f=document.getElementById("mantenimientoInformesForm");
-		    if (validateMantenimientoInformesForm(f)) {
-		    	document.forms[0].seleccionarTodos.value = "";
+			if(document.forms[0].idFacturacion.value != null && document.forms[0].idFacturacion.value != ""){
+			    document.forms[0].seleccionarTodos.value = "";
 				document.forms[0].modo.value="buscarInicio";
 				document.forms[0].target="resultado";	
 				document.forms[0].submit();
 			}else{
+				alert("Debe seleccionar una Facturación Inicial");
 				fin();
 			}
 				
 		}
-		function buscarPaginador() 
-		{
+		
+		function buscarPaginador(){
 			sub();	
-			var f=document.getElementById("mantenimientoInformesForm");
-			
-		    if (validateMantenimientoInformesForm(f)) {
 			
 				document.forms[0].modo.value="buscarPor";
 				document.forms[0].target="resultado";	
 				document.forms[0].submit();
-			}else{
-				fin();
-			}
 				
 		}
 

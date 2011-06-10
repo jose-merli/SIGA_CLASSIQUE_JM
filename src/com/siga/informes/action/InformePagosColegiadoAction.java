@@ -82,8 +82,8 @@ public class InformePagosColegiadoAction extends MasterAction {
 
 			// La primera vez que se carga el formulario
 			// Abrir
-			if (accion == null || accion.equalsIgnoreCase("")
-					|| accion.equalsIgnoreCase("abrir")) {
+			if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")) {
+				this.limpiarFormulario(miForm);
 				mapDestino = abrir(mapping, miForm, request, response);
 			} else if (accion.equalsIgnoreCase("buscarInicio")){
 				miForm.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
@@ -421,6 +421,15 @@ public class InformePagosColegiadoAction extends MasterAction {
 
 		return datos;
 
+	}
+	
+	private void limpiarFormulario(MasterForm formulario){
+		MantenimientoInformesForm form = (MantenimientoInformesForm) formulario;
+		form.setLetrado("");
+		form.setInteresadoApellido1("");
+		form.setInteresadoApellido2("");
+		form.setInteresadoNif("");
+		form.setInteresadoNombre("");
 	}
 
 }

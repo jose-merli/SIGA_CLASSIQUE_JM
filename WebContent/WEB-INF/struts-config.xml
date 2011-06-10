@@ -208,6 +208,7 @@
 		<form-bean name="BusquedaDesignasForm" type="com.siga.gratuita.form.BusquedaDesignasForm"/>
 		<form-bean name="RetencionesIRPFForm" type="com.siga.gratuita.form.RetencionesIRPFForm"/>
 		<form-bean name="informeRetencionesIRPFForm" type="com.siga.gratuita.form.RetencionesIRPFForm"/>
+		<form-bean name="CartaFacturacionCensoForm" type="com.siga.gratuita.form.CartaFacturacionCensoForm"/>		
 		<form-bean name="PermutasForm" type="com.siga.gratuita.form.DefinirPermutaGuardiasForm"/>
 		<form-bean name="DefinirSOJForm" type="com.siga.gratuita.form.DefinirSOJForm"/>
 		<form-bean name="DatosGeneralesSOJForm" type="com.siga.gratuita.form.DatosGeneralesSOJForm"/>
@@ -2012,13 +2013,18 @@
 			<forward name="listado" path="/html/jsp/gratuita/listarProximasDesignasTurno.jsp"/>
 		</action>
 
+		<action path="/JGR_PestanaRetencionesFacturacion" type="com.siga.gratuita.action.CartaFacturacionCensoAction" name="CartaFacturacionCensoForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/consultaCartaFacturacionCenso.jsp"/>
+		</action>
+		
 		<action path="/JGR_PestanaRetencionesIRPF" type="com.siga.gratuita.action.RetencionesIRPFAction" name="RetencionesIRPFForm" scope="request">
 			<forward name="abrir" path="/html/jsp/gratuita/retencionesIRPFIndex.jsp"/>
 			<forward name="listado" path="/html/jsp/gratuita/retencionesIRPF.jsp"/>
 			<forward name="nuevo" path="/html/jsp/gratuita/altaRetencionIRPF.jsp"/>
 			<forward name="editar" path="/html/jsp/gratuita/editarRetencionIRPF.jsp"/>
 			<forward name="dialogoInformeIRPF" path="/html/jsp/gratuita/dialogoInformeIRPF.jsp"/>
-		</action>
+		</action>		
+		
 		<action path="/INF_CertificadoIRPF" type="com.siga.informes.action.MantenimientoInformesAction" name="mantenimientoInformesForm" scope="request">
             <forward name="inicio" path="/html/jsp/gratuita/dialogoInformeIRPF.jsp"/>
         </action>
@@ -2938,10 +2944,13 @@
 			<forward name="resultado" path="/html/jsp/informes/listadoPagoColegiados.jsp"/>
 			<forward name="detallePagoColegiado" path="/html/jsp/informes/detallePagoColegiado.jsp"/>
 			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
-			
 		</action>
-        
 
+		<action path="/INF_CartaFacturaciones" type="com.siga.informes.action.InformeFacturacionColegiadoAction" name="mantenimientoInformesForm" validate="true" scope="session">
+			<forward name="inicio" path="/html/jsp/informes/consultaFacturacionColegiados.jsp" />
+			<forward name="resultado" path="/html/jsp/informes/listadoFacturacionColegiados.jsp" />
+		</action>
+		
         <!-- ***** Facturacion SJCS / mantenimiento de Informes de Facturaciones *****
 -->
         <action path="/INF_CertificadoPago" type="com.siga.informes.action.MantenimientoInformesAction" name="mantenimientoInformesForm" scope="request">

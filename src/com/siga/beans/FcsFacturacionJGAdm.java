@@ -35,16 +35,19 @@ import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.SIGALogging;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
+import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.Utilidades.paginadores.Paginador;
+import com.siga.Utilidades.paginadores.PaginadorCaseSensitive;
 import com.siga.facturacionSJCS.UtilidadesFacturacionSJCS;
 import com.siga.facturacionSJCS.form.GenerarImpreso190Form;
 import com.siga.general.CenVisibilidad;
 import com.siga.general.SIGAException;
 import com.siga.informes.InformePersonalizable;
+import com.siga.informes.form.MantenimientoInformesForm;
 
 /**
 * Administrador de Facturacion de justicia gratuita
@@ -4549,5 +4552,259 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		}
 		return salida;
 	}
+	
+	public PaginadorCaseSensitive getPaginadorDetalleFacturacion(MantenimientoInformesForm form, String idInstitucion,String facturaciones, String idPersona) throws ClsExceptions {
+		try{
+			String sql = "  SELECT  per.nombre NOMBRECOL, per.apellidos1 , per.apellidos2 , importes.idpersona,  fac.nombre , fac.idfacturacion,  "+
+						 "          to_char(fac.fechadesde,'dd/mm/yyyy') fechadesde, to_char(fac.fechahasta,'dd/mm/yyyy')fechahasta," +
+					     "  		decode(col.comunitario,1,col.ncomunitario,col.ncolegiado) ncolegiado," +
+						 "  		SUM(impguardia) + SUM(impoficio) + SUM(impejg) + SUM(impsoj)IMPORTETOTAL," +
+					     " 			SUM(impguardia)IMPORTEGUARDIA," +
+					     " 			SUM(impoficio)IMPORTEOFICIO," +
+					     " 			SUM(impejg)IMPORTEEJG," +
+					     " 			SUM(impsoj)IMPORTESOJ" +
+						 "  FROM (SELECT idpersona, " +
+						 "                        idInstitucion, " +
+						 "                        idFacturacion, " +
+						 "                        precioaplicado + preciocostesfijos impguardia, " +
+						 "                        0 impoficio, " +
+						 "                        0 impejg, " +
+						 "                        0 impsoj " +
+						 "                   FROM fcs_fact_apunte " +
+						 "                 UNION ALL " +
+						 "                 SELECT idpersona, " +
+						 "                       idInstitucion, " +
+						 "                       idFacturacion, " +
+						 "                        0, " +
+						 "                        precioaplicado * porcentajefacturado / 100 impoficio, " +
+						 "                        0, " +
+						 "                        0 " +
+						 "                   FROM fcs_fact_actuaciondesigna " +
+						 "                 UNION ALL " +
+						 "                 SELECT idpersona, " +
+						 "                        idInstitucion, " +
+						 "                        idFacturacion, " +
+						 "                        0, " +
+						 "                        0, " +
+						 "                        precioaplicado impejg, " +
+						 "                        0 " +
+						 "                   FROM fcs_fact_ejg " +
+						 "                 UNION ALL " +
+						 "                 SELECT idpersona, " +
+						 "                        idInstitucion, " +
+						 "                        idFacturacion, " +
+						 "                        0, " +
+						 "                        0, " +
+						 "                        0, " +
+						 "                        precioaplicado impsoj " +
+						 "                   FROM fcs_fact_soj) importes, " +
+						 "        cen_persona per, " +						 
+						 "        cen_colegiado col, " +
+						 "        fcs_facturacionjg fac " +
+						 "  WHERE col.idpersona = importes.idpersona " +
+						 "    AND col.idinstitucion = importes.idinstitucion " +
+						 "    AND col.idpersona = per.idpersona " +
+						 "    AND fac.idfacturacion = importes.idFacturacion " +
+						 "    AND fac.idinstitucion = importes.idInstitucion " +
+						 "    AND fac.idInstitucion = "+idInstitucion ;
+						 
+						if (facturaciones != null && !facturaciones.equals("")) {
+							 sql = sql + "   AND fac.idfacturacion IN ("+facturaciones+") ";
+						 }
+			
+						 if (idPersona != null && !idPersona.equals("")) {
+							sql = sql + "    AND col.idpersona= " + idPersona;
+						 }
+						 
+						 if (form.getInteresadoNif() != null && !form.getInteresadoNif().equals("")) {
+							sql = sql + "    AND per.nifcif like '" + form.getInteresadoNif() +"%'";
+						 }
+						 
+						 if (form.getInteresadoNombre() != null && !form.getInteresadoNombre().equals("")) {
+							sql = sql + "    AND per.nombre like '" + form.getInteresadoNombre() +"%'";
+						 }
+						 						 
+						 if (form.getInteresadoApellido1() != null && !form.getInteresadoApellido1().equals("")) {
+							sql = sql + "    AND per.apellidos1 like '" + form.getInteresadoApellido1() +"%'";
+						 }
+						 						 						 
+						 if (form.getInteresadoApellido2() != null && !form.getInteresadoApellido2().equals("")) {
+							sql = sql + "    AND per.apellidos2 like '" + form.getInteresadoApellido2() +"%'";
+						 }
+			
+						sql = sql + "	GROUP BY importes.idpersona, col.ncolegiado,col.comunitario,col.ncomunitario, fac.nombre, fac.fechadesde, fac.fechahasta,fac.idfacturacion,per.nombre,per.apellidos1,per.apellidos2 "+
+									"	ORDER BY fac.fechadesde desc ";
+			//ejecutando la consulta
+			PaginadorCaseSensitive paginador = new PaginadorCaseSensitive (sql);
+			int totalRegistros = paginador.getNumeroTotalRegistros();
+			
+			if (totalRegistros==0) {
+				paginador=null;
+			} else {
+				paginador.getNumeroRegistrosPorPagina();
+				paginador.obtenerPagina (1);
+			}
+			return paginador;
+		
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error en getFacturaciones");
+		}
+	}//getPaginadorDetalleFacturacion()
 
+	
+	public Hashtable obtenerDetalleFacturacion(String idInstitucion, String idFacturacion) throws ClsExceptions {
+		RowsContainer rc = null;
+		Hashtable result = new Hashtable();
+		try{
+			String sql = "  SELECT  fac.nombre NOMBRE_FACTURACION , "+
+						 "          to_char(fac.fechadesde,'dd/mm/yyyy') fechadesde, to_char(fac.fechahasta,'dd/mm/yyyy')fechahasta," +
+						 "          (select PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(sysdate,'m',1) from dual) FECHALETRA,"+
+					     "  		SUM(impguardia) + SUM(impoficio) + SUM(impejg) + SUM(impsoj)IMPORTETOTAL," +
+					     " 			SUM(impguardia)IMPORTEGUARDIA," +
+					     " 			SUM(impoficio)IMPORTEOFICIO," +
+					     " 			SUM(impejg)IMPORTEEJG," +
+					     " 			SUM(impsoj)IMPORTESOJ" +
+						 "  FROM (SELECT idpersona, " +
+						 "                        idInstitucion, " +
+						 "                        idFacturacion, " +
+						 "                        precioaplicado + preciocostesfijos impguardia, " +
+						 "                        0 impoficio, " +
+						 "                        0 impejg, " +
+						 "                        0 impsoj " +
+						 "                   FROM fcs_fact_apunte " +
+						 "                 UNION ALL " +
+						 "                 SELECT idpersona, " +
+						 "                       idInstitucion, " +
+						 "                       idFacturacion, " +
+						 "                        0, " +
+						 "                        precioaplicado * porcentajefacturado / 100 impoficio, " +
+						 "                        0, " +
+						 "                        0 " +
+						 "                   FROM fcs_fact_actuaciondesigna " +
+						 "                 UNION ALL " +
+						 "                 SELECT idpersona, " +
+						 "                        idInstitucion, " +
+						 "                        idFacturacion, " +
+						 "                        0, " +
+						 "                        0, " +
+						 "                        precioaplicado impejg, " +
+						 "                        0 " +
+						 "                   FROM fcs_fact_ejg " +
+						 "                 UNION ALL " +
+						 "                 SELECT idpersona, " +
+						 "                        idInstitucion, " +
+						 "                        idFacturacion, " +
+						 "                        0, " +
+						 "                        0, " +
+						 "                        0, " +
+						 "                        precioaplicado impsoj " +
+						 "                   FROM fcs_fact_soj) importes, " +
+						 "        cen_colegiado col, " +
+						 "        fcs_facturacionjg fac " +
+						 "  WHERE col.idpersona = importes.idpersona " +
+						 "    AND col.idinstitucion = importes.idinstitucion " +
+						 "    AND fac.idfacturacion = importes.idFacturacion " +
+						 "    AND fac.idinstitucion = importes.idInstitucion " +
+						 "    AND fac.idfacturacion ="+idFacturacion +
+						 "    AND fac.idInstitucion = "+idInstitucion +
+						 "	GROUP BY fac.nombre, fac.fechadesde, fac.fechahasta,fac.idfacturacion  "+
+						 "	ORDER BY fac.fechadesde desc ";
+
+		
+			rc = new RowsContainer();
+			rc.find(sql);
+			if (rc != null && rc.size() > 0) {
+				Row r = (Row) rc.get(0);
+				result.putAll(r.getRow());
+				result.put("IMPORTETOTAL", UtilidadesNumero.formato(r.getString("IMPORTETOTAL")));
+				result.put("fechadesde", r.getString("fechadesde"));
+				result.put("fechahasta", r.getString("fechahasta"));
+				result.put("IMPORTEGUARDIA", UtilidadesNumero.formato(r.getString("IMPORTEGUARDIA")));
+				result.put("IMPORTEOFICIO", UtilidadesNumero.formato(r.getString("IMPORTEOFICIO")));
+				result.put("IMPORTEEJG", UtilidadesNumero.formato(r.getString("IMPORTEEJG")));
+				result.put("IMPORTESOJ", UtilidadesNumero.formato(r.getString("IMPORTESOJ")));
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al generar el informe");
+		}
+		return result;
+	}
+
+	public Vector getVectorDetalleFacturacionPorColegiado(String idInstitucion, String idPersona) throws ClsExceptions {
+			String sql = "  SELECT  per.nombre NOMBRECOL, per.apellidos1 , per.apellidos2 , importes.idpersona, col.ncolegiado, fac.nombre NOMBREFACT, fac.idfacturacion,  "+
+						 "          to_char(fac.fechadesde,'dd/mm/yyyy') fechadesde, to_char(fac.fechahasta,'dd/mm/yyyy')fechahasta," +
+					     "  		SUM(impguardia) + SUM(impoficio) + SUM(impejg) + SUM(impsoj)IMPORTETOTAL," +
+					     " 			SUM(impguardia)IMPORTEGUARDIA," +
+					     " 			SUM(impoficio)IMPORTEOFICIO," +
+					     " 			SUM(impejg)IMPORTEEJG," +
+					     " 			SUM(impsoj)IMPORTESOJ" +
+						 "  FROM (SELECT idpersona, " +
+						 "                        idInstitucion, " +
+						 "                        idFacturacion, " +
+						 "                        precioaplicado + preciocostesfijos impguardia, " +
+						 "                        0 impoficio, " +
+						 "                        0 impejg, " +
+						 "                        0 impsoj " +
+						 "                   FROM fcs_fact_apunte " +
+						 "                 UNION ALL " +
+						 "                 SELECT idpersona, " +
+						 "                       idInstitucion, " +
+						 "                       idFacturacion, " +
+						 "                        0, " +
+						 "                        precioaplicado * porcentajefacturado / 100 impoficio, " +
+						 "                        0, " +
+						 "                        0 " +
+						 "                   FROM fcs_fact_actuaciondesigna " +
+						 "                 UNION ALL " +
+						 "                 SELECT idpersona, " +
+						 "                        idInstitucion, " +
+						 "                        idFacturacion, " +
+						 "                        0, " +
+						 "                        0, " +
+						 "                        precioaplicado impejg, " +
+						 "                        0 " +
+						 "                   FROM fcs_fact_ejg " +
+						 "                 UNION ALL " +
+						 "                 SELECT idpersona, " +
+						 "                        idInstitucion, " +
+						 "                        idFacturacion, " +
+						 "                        0, " +
+						 "                        0, " +
+						 "                        0, " +
+						 "                        precioaplicado impsoj " +
+						 "                   FROM fcs_fact_soj) importes, " +
+						 "        cen_persona per, " +						 
+						 "        cen_colegiado col, " +
+						 "        fcs_facturacionjg fac " +
+						 "  WHERE col.idpersona = importes.idpersona " +
+						 "    AND col.idinstitucion = importes.idinstitucion " +
+						 "    AND col.idpersona = per.idpersona " +
+						 "    AND fac.idfacturacion = importes.idFacturacion " +
+						 "    AND fac.idinstitucion = importes.idInstitucion " +
+						 "    AND fac.idInstitucion = "+idInstitucion  +
+						 "    AND col.idpersona= " + idPersona +
+						 "	GROUP BY importes.idpersona, col.ncolegiado, fac.nombre, fac.fechadesde, fac.fechahasta,fac.idfacturacion,per.nombre,per.apellidos1,per.apellidos2 "+
+						 "	ORDER BY fac.fechadesde desc ";
+			
+		Vector datos = new Vector();
+		
+		// Acceso a BBDD
+		RowsContainer rc = null;
+		try { 
+			rc = new RowsContainer(); 
+			if (rc.query(sql)) {
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable) fila.getRow(); 
+					if (registro != null) 
+						datos.add(registro);
+				}
+			}
+		} 
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Excepcion en getVectorDetalleFacturacionPorColegiado. Consulta SQL:"+sql);
+		}
+		return datos;	
+	}
+	
 }

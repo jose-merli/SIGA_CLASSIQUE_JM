@@ -6,22 +6,27 @@ package com.siga.facturacionSJCS.action;
 
 import java.util.HashMap;
 import java.util.Hashtable;
-import javax.servlet.http.*;
-import javax.transaction.*;
+import java.util.Vector;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.transaction.UserTransaction;
 
-import org.apache.struts.action.*;
+import org.apache.struts.action.ActionMapping;
 
-import com.siga.Utilidades.Paginador;
-import com.siga.beans.*;
-import com.siga.facturacionSJCS.UtilidadesFacturacionSJCS;
-import com.siga.facturacionSJCS.form.MantenimientoFacturacionForm;
-import com.siga.general.*;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.UsrBean;
-import java.util.Vector;
+import com.siga.Utilidades.paginadores.Paginador;
+import com.siga.beans.FcsFacturacionJGAdm;
+import com.siga.facturacionSJCS.UtilidadesFacturacionSJCS;
+import com.siga.facturacionSJCS.form.MantenimientoFacturacionForm;
+import com.siga.general.CenVisibilidad;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
 
 /**
 * Clase action del caso de uso BUSCAR FACTURACION
