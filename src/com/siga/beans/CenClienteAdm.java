@@ -4558,7 +4558,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
             	  contador ++;
             	  codigos.put(new Integer(contador), this.usrbean.getLocation());
             	   
-            	  sql+= " AND cli.idinstitucion =: "+contador;
+            	  sql+= " AND cli.idinstitucion = :"+contador;
             
 	     	      contador++;
 		      	  codigos.put(new Integer(contador),nombreCompleto.toUpperCase());
