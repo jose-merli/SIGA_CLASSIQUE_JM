@@ -183,11 +183,10 @@
 
 				if(document.forms[0].comunicacion.value=="true"){
 
-					document.forms[0].modo.value="finalizarInforme";
-					document.forms[0].submit;
 					var auxlist = <%=(String)datos.get("IDLISTA")%>;
 					var idInstitucion = <%=(String)datos.get("IDINSTITUCION")%>;
 				   	datos = "idInstitucion==" +idInstitucion+"##idTipoPersonas==1##fechaIni=="+fechaIni+"##fechaFin=="+fechaFin+"##idLista=="+auxlist; 
+					alert(datos);
 					var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
 					formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=(String)datos.get("IDINSTITUCION")%>'>"));
 					formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
@@ -200,13 +199,13 @@
 					document.appendChild(formu);
 					formu.datosInforme.value=datos;
 					formu.submit();				
-					accionCerrar();
+
 				}else{	
 					document.forms[0].modo.value="finalizarInforme";
-					document.forms[0].submit();
-		
+					document.forms[0].submit;
+	
 				}
-				
+			
 			}
 			//-- Asociada al boton Cerrar -->
 			function accionCerrar() 

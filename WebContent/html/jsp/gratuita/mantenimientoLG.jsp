@@ -28,6 +28,7 @@
 	//Datos propios del jsp:	
 	String accion = request.getAttribute("accion") == null?"":(String)request.getAttribute("accion");
 	String modo = request.getAttribute("modo")==null?"":(String)request.getAttribute("modo");
+	String comunicacion = request.getAttribute("comunicacion")==null?"":(String)request.getAttribute("comunicacion");	
 
 	boolean desactivado = false;
 	String clase = "box";
@@ -103,7 +104,7 @@
 		<html:hidden property = "idLista" value = "<%=idlista%>"/>
 		<html:hidden property = "idInstitucion" value = "<%=idinstitucion%>"/>
 		<html:hidden property = "actionModal" value = ""/>
-		<html:hidden property = "comunicacion" value = ""/>			
+		<html:hidden property = "comunicacion"/>			
 	<tr>
 		<td class="labelText">	
 			<siga:Idioma key="gratuita.mantenimientoLG.literal.nombre"/>&nbsp;(*)
@@ -154,9 +155,12 @@
      <% if(accion.equals("nuevo")) { %> 
         <siga:ConjBotonesAccion botones="G,R,COM" clase="botonesSeguido" modo="<%=modo%>" />
     <% } else {%>
-	<% if (modo.equalsIgnoreCase("EDITAR")) {%>
-		<siga:ConjBotonesAccion botones="G,R,GM,COM" clase="botonesSeguido" modo="<%=modo%>" />
-	<% } else {%>
+	<% if (modo.equalsIgnoreCase("EDITAR")) {
+		if(comunicacion.equalsIgnoreCase("true")){%>
+		<siga:ConjBotonesAccion botones="G,R,COMC" clase="botonesSeguido" modo="<%=modo%>" />
+		<% } else {%>
+		<siga:ConjBotonesAccion botones="G,R,GM" clase="botonesSeguido" modo="<%=modo%>" />
+	<% } } else {%>
 		<siga:ConjBotonesAccion botones="" clase="botonesSeguido" modo="<%=modo%>" />
 	<% } 
 	   }%>
@@ -221,6 +225,7 @@
 		function accionGenerarInforme() 
 		{ 
 			document.forms[0].modo.value	= "generarInforme";
+			document.forms[0].comunicacion.value = "";
 	   		var resultado = ventaModalGeneral(document.forms[0].name,"P");
 			
 	   		if(resultado == "MODIFICADO"){

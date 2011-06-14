@@ -1,23 +1,43 @@
 package com.siga.gratuita.action;
 
-import javax.servlet.http.*;
-import javax.transaction.UserTransaction;
-import com.siga.general.MasterAction;
-import com.siga.general.MasterForm;
-import com.siga.general.SIGAException;
-import com.siga.gratuita.form.*;
-import com.atos.utils.*;
-
-import org.apache.struts.action.*;
-
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.UserTransaction;
+
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.ReadProperties;
+import com.atos.utils.UsrBean;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.beans.*;
+import com.siga.beans.AdmInformeAdm;
+import com.siga.beans.CenInstitucionAdm;
+import com.siga.beans.CenPartidoJudicialAdm;
+import com.siga.beans.CenPartidoJudicialBean;
+import com.siga.beans.ScsGuardiasTurnoAdm;
+import com.siga.beans.ScsInclusionGuardiasEnListasAdm;
+import com.siga.beans.ScsInclusionGuardiasEnListasBean;
+import com.siga.beans.ScsListaGuardiasAdm;
+import com.siga.beans.ScsListaGuardiasBean;
 import com.siga.certificados.Plantilla;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
+import com.siga.gratuita.form.DefinirListaGuardiasForm;
 
 
 /**
@@ -66,6 +86,7 @@ public class DefinirListaGuardiasAction extends MasterAction {
 				}else if (accion.equalsIgnoreCase("finalizarInforme")){
 					mapDestino = finalizarInforme(mapping, miForm, request, response);
 				} else {
+					
 					return super.executeInternal(mapping,
 							      formulario,
 							      request, 
@@ -230,11 +251,19 @@ public class DefinirListaGuardiasAction extends MasterAction {
 					backupHash.put("FECHAMODIFICACION",(String)((Hashtable)fechaYUsu.elementAt(0)).get("FECHAMODIFICACION"));
 					backupHash.put("IDINSTITUCION",(String)((Hashtable)fechaYUsu.elementAt(0)).get("IDINSTITUCION"));
 					backupHash.put("IDLISTA",(String)((Hashtable)fechaYUsu.elementAt(0)).get("IDLISTA"));
-					
+					AdmInformeAdm admInforme = new AdmInformeAdm(this.getUserBean(request));
+					Vector infs=admInforme.obtenerInformesTipo(idinstitucion,"LIGUA",null, null);
+					if(infs.size()!=0){
+						miForm.setComunicacion("true");
+					}else{
+						miForm.setComunicacion("");
+					}	
+						
 					request.getSession().removeAttribute("DATABACKUP");
 					request.getSession().setAttribute("DATABACKUP",backupHash);					
 					request.setAttribute("accion",miForm.getAccion());
-					request.setAttribute("modo",miForm.getModo());									
+					request.setAttribute("modo",miForm.getModo());	
+					request.setAttribute("comunicacion",miForm.getComunicacion());
 			}
 		}
 		catch (Exception e) {
@@ -687,6 +716,7 @@ public class DefinirListaGuardiasAction extends MasterAction {
 			Hashtable paramBusqueda = new Hashtable();
 			paramBusqueda.put(ScsInclusionGuardiasEnListasBean.C_IDINSTITUCION,miForm.getIdInstitucion());
 			paramBusqueda.put(ScsInclusionGuardiasEnListasBean.C_IDLISTA,miForm.getIdLista());
+			request.setAttribute("LUGAR",miForm.getLugar());
 			Vector v = admIGL.select(paramBusqueda);
 			if (v != null &&  v.size() > 0){
 				// Guardo el formulario en sesión para poder fijar a quienes hay que enviar la carta
@@ -717,7 +747,9 @@ public class DefinirListaGuardiasAction extends MasterAction {
 		String resultado="exito";
 		String institucion="";
 		File ficFOP=null;
-			
+		ArrayList ficherosPDF = new ArrayList();	
+		File ficPDF= null;
+		String rutaServidor = null;
 		try {
 			
 			DefinirListaGuardiasForm miForm = (DefinirListaGuardiasForm) formulario;
@@ -739,7 +771,6 @@ public class DefinirListaGuardiasAction extends MasterAction {
 			paramBusqueda.put(ScsInclusionGuardiasEnListasBean.C_IDLISTA,miForm.getIdLista());
 			Vector listasIncluidas=admIGL.select(paramBusqueda);
 			String idlista=miForm.getIdLista();
-							
 			
 			Enumeration listaResultados=listasIncluidas.elements();
 			
@@ -754,7 +785,7 @@ public class DefinirListaGuardiasAction extends MasterAction {
 				// Gestion de nombres de ficheros
 			    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 //				ReadProperties rp = new ReadProperties("SIGA.properties");			
-			    String rutaServidor = rp.returnProperty("sjcs.directorioFisicoSJCSJava")+rp.returnProperty("sjcs.directorioSJCSJava");
+			    rutaServidor = rp.returnProperty("sjcs.directorioFisicoSJCSJava")+rp.returnProperty("sjcs.directorioSJCSJava");
 	    		String barra = "";
 	    		String nombreFichero = "";
 	    		if (rutaServidor.indexOf("/") > -1){ 
@@ -770,13 +801,7 @@ public class DefinirListaGuardiasAction extends MasterAction {
 						throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");					
 					}
 				}     		
-	     		nombreFichero=rutaServidor+barra+institucion+"_"+this.getUserName(request).toString()+".fo";     		
-				ficFOP = new File(nombreFichero);
-				if (ficFOP.exists()){
-					if(!ficFOP.delete()){
-						throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");					
-					}
-				}
+	     		
 				
 				Plantilla plantilla = new Plantilla(this.getUserBean(request));
 		    				
@@ -825,55 +850,121 @@ public class DefinirListaGuardiasAction extends MasterAction {
 				// RGG
 				datos = admGT.getDatosListaGuardias(institucion,idlista,guardias,fechaInicio,fechaFin);  
 				
+
+				Hashtable listaPorUsu;
 				
-//				 Comentado por PDM
-	    		/*if (datos.size()<=numeroLineas){
-	    			correcto=plantilla.obtencionPaginaInformeListaGuardias(institucion, ficFOP, datos, nombreInstitucion, fechaInicio, fechaFin, datos.size(),rutaPlantilla+barra+institucion+barra,usr.getLanguage());    			
-	    		}
-	    		else{*/
-	    			/*correcto=plantilla.obtencionPaginaInformeListaGuardias(institucion, ficFOP, datos, nombreInstitucion, fechaInicio, fechaFin, numeroLineas,rutaPlantilla+barra+institucion+barra,usr.getLanguage());
-	        		for (int cont=0; cont<numeroLineas; cont++){
+//				if(miForm.getComunicacion()!=null && miForm.getComunicacion().equalsIgnoreCase("true")){
+					
+					
+					nombreFichero=rutaServidor+barra+institucion+"_"+this.getUserName(request).toString()+"_todos.fo";     		
+					ficFOP = new File(nombreFichero);
+					if (ficFOP.exists()){
+						if(!ficFOP.delete()){
+							throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");					
+						}
+					}
+	    			correcto=plantilla.obtencionPaginaInformeListaGuardias(institucion, ficFOP, datos, nombreInstitucion, fechaInicio, fechaFin, datos.size(),rutaPlantilla+barra+institucion+barra,usr.getLanguage(), nombreLista, lugar, observaciones);
+	    		
+	    			// Obtencion fichero PDF
+					if (correcto){
+						nombreFicheroPDF="listaTotalGuardias_"+UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","_").replaceAll(":","_").replaceAll(" ","_")+".pdf";
+						ficPDF=new File(rutaServidor+barra+nombreFicheroPDF); 
+						plantilla.convertFO2PDF(ficFOP, ficPDF, rutaPlantilla+File.separator+institucion);
+						ficFOP.delete();
+					}
+					else{
+						ficFOP.delete();					
+					}
+					ficherosPDF.add(ficPDF);
+					listaPorUsu = calcularPersona(datos);
+					for (int cont=0; cont<datos.size(); cont++){
 	        			datos.removeElementAt(0);
-	        		}
-	        		while (datos.size()>numeroLineas){
-	        			correcto=plantilla.insercionSimplePaginaNuevaDocumentoFOP(ficFOP);
-		    			correcto=plantilla.obtencionPaginaInformeListaGuardias(institucion, ficFOP, datos, nombreInstitucion, fechaInicio, fechaFin, numeroLineas,rutaPlantilla+barra+institucion+barra,usr.getLanguage());
-	            		for (int cont=0; cont<numeroLineas; cont++){
-	            			datos.removeElementAt(0);
-	            		}
-	        	    }*/
-        			//correcto=plantilla.insercionSimplePaginaNuevaDocumentoFOP(ficFOP);
+	        		} 
+					
+					Enumeration e = listaPorUsu.keys();
+					Object obj;
+					 while (e.hasMoreElements()) {
+						    obj = e.nextElement();
+						    datos= (Vector) listaPorUsu.get(obj);
+						    
+						    nombreFichero=rutaServidor+barra+institucion+"_"+this.getUserName(request).toString()+obj+".fo";     		
+							ficFOP = new File(nombreFichero);
+							if (ficFOP.exists()){
+								if(!ficFOP.delete()){
+									throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");					
+								}
+							}
+							
+							correcto=plantilla.obtencionPaginaInformeListaGuardias(institucion, ficFOP, datos, nombreInstitucion, fechaInicio, fechaFin, datos.size(),rutaPlantilla+barra+institucion+barra,usr.getLanguage(), nombreLista, lugar, observaciones);
+							// Obtencion fichero PDF
+							if (correcto){
+								nombreFicheroPDF="listaGuardias_"+obj+UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","_").replaceAll(":","_").replaceAll(" ","_")+".pdf";
+								ficPDF=new File(rutaServidor+barra+nombreFicheroPDF); 
+								plantilla.convertFO2PDF(ficFOP, ficPDF, rutaPlantilla+File.separator+institucion);
+							}
+							ficherosPDF.add(ficPDF);
+					}
+						 
+					String idsesion=request.getSession().getId();
+					String nombreFicheroZIP = 
+						idsesion.replaceAll("!", "") + "_" +
+						UtilidadesBDAdm.getFechaCompletaBD("").
+								replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "");
+	
+					
+					File ruta = new File(rutaServidor);
+					ruta.mkdirs();
+					Plantilla.doZip(rutaServidor+barra, nombreFicheroZIP, ficherosPDF);
+					File ficheroSalida = new File(rutaServidor +barra+ nombreFicheroZIP + ".zip");
+					request.setAttribute("nombreFichero", nombreFicheroZIP + ".zip");
+					request.setAttribute("rutaFichero", rutaServidor +barra+ nombreFicheroZIP + ".zip");
+					request.setAttribute("generacionOK","OK");
+					resultado="descarga";				
+					ficFOP.delete();
+					//miForm.setComunicacion("");
+				
+/*				}else{// si es un fichero
+					nombreFichero=rutaServidor+barra+institucion+"_"+this.getUserName(request).toString()+".fo";     		
+					ficFOP = new File(nombreFichero);
+					if (ficFOP.exists()){
+						if(!ficFOP.delete()){
+							throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");					
+						}
+					}
 	    			correcto=plantilla.obtencionPaginaInformeListaGuardias(institucion, ficFOP, datos, nombreInstitucion, fechaInicio, fechaFin, datos.size(),rutaPlantilla+barra+institucion+barra,usr.getLanguage(), nombreLista, lugar, observaciones);
 	        		for (int cont=0; cont<datos.size(); cont++){
 	        			datos.removeElementAt(0);
 	        		}    			
-	    		//}
 	    		
-				// Insertamos fin documento
-	        	// Comentado por PDM, todo esta en las plantillas	
-	    		//correcto=plantilla.insercionPieSimpleDocumentoFOP(ficFOP);
-				
-				// Obtencion fichero PDF
-				if (correcto){
-					nombreFicheroPDF="listaGuardias_"+UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","_").replaceAll(":","_").replaceAll(" ","_")+".pdf";
-					File ficPDF=new File(rutaServidor+barra+nombreFicheroPDF); 
-					plantilla.convertFO2PDF(ficFOP, ficPDF, rutaPlantilla+File.separator+institucion);
-					ficFOP.delete();
-				}
-				else{
-					ficFOP.delete();					
-				}
-				
-			request.setAttribute("nombreFichero", nombreFicheroPDF);
-			request.setAttribute("rutaFichero", rutaServidor+barra+nombreFicheroPDF);
-			request.setAttribute("generacionOK","OK");
-			resultado="descarga";
-			
+	    			// Obtencion fichero PDF
+					if (correcto){
+						nombreFicheroPDF="listaGuardias_"+UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","_").replaceAll(":","_").replaceAll(" ","_")+".pdf";
+						ficPDF=new File(rutaServidor+barra+nombreFicheroPDF); 
+						plantilla.convertFO2PDF(ficFOP, ficPDF, rutaPlantilla+File.separator+institucion);
+						ficFOP.delete();
+					}
+					else{
+						ficFOP.delete();					
+					}
+					
+				request.setAttribute("nombreFichero", nombreFicheroPDF);
+				request.setAttribute("rutaFichero", rutaServidor+barra+nombreFicheroPDF);
+				request.setAttribute("generacionOK","OK");
+				resultado="descarga";
+				}*/
 			}
 			else{
 			    resultado = exito("messages.listaGuardias.definirListaGuardias.generarInforme.sinGuardias.error",request);
 				// Por el cambio 2417 Quitar este mensaje: throw new ClsExceptions("Se ha producido un error en la generación de informes.");
-			} 
+			}
+			
+			
+
+			
+		// Insertamos fin documento
+    	// Comentado por PDM, todo esta en las plantillas	
+		//correcto=plantilla.insercionPieSimpleDocumentoFOP(ficFOP);
+		
 			
 		}
 		catch (Exception e) 
@@ -884,6 +975,69 @@ public class DefinirListaGuardiasAction extends MasterAction {
         return resultado;
 	}	
 	
+	protected Hashtable calcularPersona(Vector datos) throws SIGAException  
+	{
+		
+		Hashtable todos= new Hashtable();
+		//vector guardiaPers= null;
+		 Map map = new HashMap();
+		try {
+			List guardiasList = null;
+			for (int j=0; j<datos.size(); j++){		    						
+				   Hashtable lineaGuardia=(Hashtable)datos.get(j);			
+				   Long letrado =new Long((String)lineaGuardia.get("IDPERSONA")).longValue();	
+				   if(map.containsKey(letrado)){
+					   guardiasList = (List) map.get(letrado);
+				   }else{
+					   guardiasList = new ArrayList();
+				   }
+				   guardiasList.add(lineaGuardia);
+				   map.put(letrado, guardiasList);
+				   System.out.println("letrado:"+letrado);
+			}
+			Iterator it = map.keySet().iterator();
+		    List guardiasOutList = null;
+		    while (it.hasNext()) {
+		    	long letradoOut = (Long) it.next();
+		    	System.out.println("Letrado:" +letradoOut);
+		    	guardiasOutList  = (List) map.get(letradoOut);
+		    	Vector v =  new Vector();
+		    	for (int i = 0; i < guardiasOutList.size(); i++) {
+		    		Hashtable lineaGuardiaHashtable = ((Hashtable) guardiasOutList.get(i));
+		    		v.add(lineaGuardiaHashtable);
+		    		System.out.println("Dia Guardia:"+lineaGuardiaHashtable.get("GUARDIA")+"FECHA:"+lineaGuardiaHashtable.get("FECHA_INICIO"));
+				}
+		    	todos.put(letradoOut, v);
+		    }
+
+			/*Collections.s
+			 *     Iterator it = h.keySet().iterator();
+    while (it.hasNext()) {
+       String element =  (String)it.next();
+       System.out.println(element + " " + (String)h.get(element));
+    }
+
+    System.out.println("============");
+
+    // sorted keys output  thanks to T. GUIRADO for the tip!
+    Vector v = new Vector(h.keySet());
+    Collections.sort(v);
+    it = v.iterator();
+    while (it.hasNext()) {
+       String element =  (String)it.next();
+       System.out.println( element + " " + (String)h.get(element));
+    }
+
+			*/
+			
+		}
+		catch (Exception e) 
+		{
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
+		} 
+        return  todos;
+	}
+
 //	protected String finalizarInforme(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException  {
 //	    
 //		String resultado="exito";

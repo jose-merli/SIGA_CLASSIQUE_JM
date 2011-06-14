@@ -10,9 +10,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.Vector;
@@ -65,6 +68,9 @@ import com.siga.beans.PysProductosInstitucionAdm;
 import com.siga.beans.PysProductosInstitucionBean;
 import com.siga.beans.ScsDefendidosDesignaAdm;
 import com.siga.beans.ScsDesignaAdm;
+import com.siga.beans.ScsGuardiasTurnoAdm;
+import com.siga.beans.ScsInclusionGuardiasEnListasAdm;
+import com.siga.beans.ScsInclusionGuardiasEnListasBean;
 import com.siga.envios.Documento;
 import com.siga.envios.Envio;
 import com.siga.envios.EnvioInformesGenericos;
@@ -722,6 +728,14 @@ public class DefinirEnviosAction extends MasterAction {
 				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.genericos.censo.asunto");
 
 
+			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesListadoGuardias)){
+				idPersona = getIdColegiados(form, request);
+				datosEnvios = form.getDatosEnvios();				
+				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")));
+				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
+				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null));
+				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.sjcs.lista.envio.guardias");
+
 			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesPagoColegiados)){
 				idPersona = getIdPersonaUnica(form);
 				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
@@ -940,7 +954,7 @@ public class DefinirEnviosAction extends MasterAction {
 					!subModo.equals(EnvioInformesGenericos.comunicacionesMorosos)&&
 					!subModo.equals(EnvioInformesGenericos.comunicacionesPagoColegiados)&&
 					!subModo.equals(EnvioInformesGenericos.comunicacionesFacturacionesColegiados)&&
-					!subModo.equals("certificadoIRPF")){
+					!subModo.equals("certificadoIRPF") && !subModo.equals(EnvioInformesGenericos.comunicacionesListadoGuardias)){
 					idEnvio = form.getIdEnvio();
 				if (idEnvio.equalsIgnoreCase("")){
 					EnvEnviosAdm envAdm = new EnvEnviosAdm(this.getUserBean(request));
@@ -1161,6 +1175,17 @@ public class DefinirEnviosAction extends MasterAction {
 				try {
 					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 					envioInformesGenericos.gestionarComunicacionCenso(form,  request.getLocale(), userBean);
+					idEnvio = form.getIdEnvio();
+					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
+				} catch (Exception e) {
+					throwExcp("facturacion.consultaMorosos.errorInformes", new String[] {"modulo.facturacion"}, e, null);
+				}
+
+			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesListadoGuardias)){
+				
+				try {
+					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
+					envioInformesGenericos.gestionarComunicacionListadoGuardias(form,  request.getLocale(), userBean);
 					idEnvio = form.getIdEnvio();
 					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
 				} catch (Exception e) {
@@ -1941,6 +1966,121 @@ public class DefinirEnviosAction extends MasterAction {
 		}
 		return idPersona;
 	}
+	private String getIdColegiados(DefinirEnviosForm form, HttpServletRequest request) throws ClsExceptions{
+		Hashtable htPersonas = new Hashtable();
+		Vector datos = new Vector();
+		Vector guardias = new Vector();
+		String fechaInicio = null;
+		String fechaFin = null;
+		String idlista = null;
+		String idPersona  = null;
+		String idInstitucion  = null;
+		try {		
+				MasterReport masterReport = new  MasterReport(); 
+				Vector vCampos = masterReport.obtenerDatosFormulario(form);
+				if ( vCampos.size()>0) {
+					Hashtable ht = (Hashtable) vCampos.get(0); 
+					idInstitucion = (String) ht.get("idInstitucion");
+					fechaInicio = (String) ht.get("fechaIni");
+					fechaFin = (String) ht.get("fechaFin");
+					idlista = (String) ht.get("idLista");
+				}
+				ScsInclusionGuardiasEnListasAdm admIGL =new ScsInclusionGuardiasEnListasAdm(this.getUserBean(request));
+				Hashtable paramBusqueda=new Hashtable();
+				paramBusqueda.put(ScsInclusionGuardiasEnListasBean.C_IDINSTITUCION,idInstitucion);
+				paramBusqueda.put(ScsInclusionGuardiasEnListasBean.C_IDLISTA,idlista);
+				Vector listasIncluidas=admIGL.select(paramBusqueda);
+				Enumeration listaResultados=listasIncluidas.elements();
+				
+				while(listaResultados.hasMoreElements()){
+					ScsInclusionGuardiasEnListasBean fila=(ScsInclusionGuardiasEnListasBean)listaResultados.nextElement();
+					// Recopilacion datos
+					/* RGG 08/10/2007 cambio para que obtenga todas las guardias del tiron
+					 * Vector datosParciales= admGT.getDatosListaGuardias(fila.getIdInstitucion().toString(),fila.getIdTurno().toString(),fila.getIdGuardia().toString(),fechaInicio,fechaFin);
+					int i=0;
+					while (i<datosParciales.size()){
+						datos.add(datosParciales.elementAt(i));
+						i++;
+					}
+					*/
+					Vector guardia = new Vector();
+					guardia.add(fila.getIdTurno().toString());
+					guardia.add(fila.getIdGuardia().toString());
+					
+					guardias.add(guardia);
+					
+				}
+				
+				ScsGuardiasTurnoAdm admGT = new ScsGuardiasTurnoAdm(this.getUserBean(request));
+				
+				datos = admGT.getDatosPersonasGuardias(idInstitucion,idlista,guardias,fechaInicio,fechaFin);
+				idPersona = calcularPersona(datos,form);
+				
+				
+			} catch (SIGAException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}  
+
+		return idPersona;
+	}
+	
+	protected String calcularPersona(Vector datos, DefinirEnviosForm form) throws SIGAException  
+	{
+		
+		String todos="";
+		String idPersona=null;
+
+		 //Map map = new HashMap();
+		try {
+		    String datosInforme = "";
+		    int j;
+		    String resto = form.getDatosEnvios();	
+			for (j=0; j<datos.size(); j++){		    						
+				Hashtable letradoOut=(Hashtable)datos.get(j);	
+				Long letrado =new Long((String)letradoOut.get("IDPERSONA")).longValue();	
+		    	datosInforme="idPersona==" +letrado+"##"+resto;
+		    	todos+= datosInforme;
+		    	idPersona="" +letrado;
+
+			}				   
+			
+			/*List guardiasList = null;
+			for (int j=0; j<datos.size(); j++){		    						
+				   Hashtable lineaGuardia=(Hashtable)datos.get(j);			
+				   Long letrado =new Long((String)lineaGuardia.get("IDPERSONA")).longValue();	
+				   if(map.containsKey(letrado)){
+					   guardiasList = (List) map.get(letrado);
+				   }else{
+					   guardiasList = new ArrayList();
+				   }
+				   guardiasList.add(lineaGuardia);
+				   map.put(letrado, guardiasList);
+			}
+			Iterator it = map.keySet().iterator();
+		    List guardiasOutList = null;
+		    String datosInforme = "";
+		    String resto = form.getDatosEnvios();	
+		    while (it.hasNext()) {
+	    		i++;
+		    	long letradoOut = (Long) it.next();
+		    	datosInforme="idPersona==" +letradoOut+"##"+resto;
+		    	todos+= datosInforme;
+		    	idPersona="" +letradoOut;
+		    }
+			*/
+			form.setDatosEnvios(todos);
+			if(datos.size()!=1)
+				idPersona=null;
+			
+		}
+		catch (Exception e) 
+		{
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
+		} 
+        return  idPersona;
+	}
+
 	private String getIdColegiadoUnicoDesignas(Vector vCampos,UsrBean userBean)throws ClsExceptions,SIGAException{
 
 		

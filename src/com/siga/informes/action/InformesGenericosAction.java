@@ -246,7 +246,7 @@ public class InformesGenericosAction extends MasterAction {
                                 datosInforme.append("##");
                                 datosInforme.append("idPago==");
                                 datosInforme.append(idPago);
-                                
+                              
                             }
 						}else if (idTipoInforme.equals("CFACT")) {
                             Vector vCampos = miForm.getDatosTablaOcultos(0);
@@ -387,7 +387,9 @@ public class InformesGenericosAction extends MasterAction {
 								mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesCenso);
 							}else if (idTipoInforme.equals("EXP")) {
 								mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesExpedientes);
-							} 
+							}else if (idTipoInforme.equals("LIGUA")) {
+								mapDestino = informeGenerico(mapping, miForm, request, response,"LIGUA");
+							}  
 							else if (idTipoInforme.equals("DEJG")) {
 								mapDestino = dejg(mapping, miForm, request, response);
 							} else {

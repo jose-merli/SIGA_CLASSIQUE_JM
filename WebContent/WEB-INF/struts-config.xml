@@ -2059,20 +2059,12 @@
             
         </action>
 
-		<action path="/JGR_MovimientosVariosLetrado" type="com.siga.facturacionSJCS.action.MantenimientoMovimientosAction" parameter="esFichaColegial" name="MantenimientoMovimientosForm" scope="session">
-            <forward name="inicio" path="/html/jsp/facturacionSJCS/busquedaMovimientos.jsp"/>
-            <forward name="resultado" path="/html/jsp/facturacionSJCS/busquedaMovimientosResultados.jsp"/>
-            <forward name="nuevo" path="/html/jsp/facturacionSJCS/datosMovimientos.jsp"/>
+
+		<action path="/JGR_MovimientosVariosLetrado" forward="/CEN_MantenimientoMovimientos.do?esFichaColegial=1" >
         </action>
-	
-		<action path="/JGR_RetencionesJudicialesLetrado" type="com.siga.facturacionSJCS.action.MantenimientoRetencionesJudicialesAction" parameter="esFichaColegial" name="MantenimientoRetencionesJudicialesForm" scope="request">
-			<forward name="inicio"	path="/html/jsp/facturacionSJCS/busquedaRetencionesJudiciales.jsp"/>
-			<forward name="resultado" path="/html/jsp/facturacionSJCS/resultadosRetencionesJudiciales.jsp"/>
-			<forward name="operar"	path="/html/jsp/facturacionSJCS/datosRetencionesJudiciales.jsp"/>
-			<forward name="inicioListado" path="/html/jsp/facturacionSJCS/busquedaListadoRetenciones.jsp"/>
-			<forward name="resultadoListado" path="/html/jsp/facturacionSJCS/resultadosListadoRetenciones.jsp"/>
-		</action>	
-	
+
+		<action path="/JGR_RetencionesJudicialesLetrado" forward="/FCS_RetencionesJudiciales.do?esFichaColegial=1" >
+        </action>
         <!-- ***** Censo / Ficha Colegial / SJCS /Retenciones ***** -->
         <action path="/JGR_RetencionesCenso" forward="/html/jsp/gratuita/pestanaRetencionesCenso.jsp"/>
 
@@ -2280,14 +2272,8 @@
 			<forward name="confirmar" path="/html/jsp/general/msjConfirmar.jsp"/>
 		</action>
 		
-		<action path="/CEN_BajasTemporales" type="com.siga.censo.action.GestionBajasTemporalesAction" parameter="esFichaColegial" name="BajasTemporalesForm">
-			<forward name="inicio" path="/html/jsp/censo/bajasTemporales/gestionBajasTemporales.jsp"/>
-			<forward name="listadoBajasTemporales" path="/html/jsp/censo/bajasTemporales/listadoBajasTemporales.jsp"/>
-			<forward name="solicitud" path="/html/jsp/censo/bajasTemporales/solicitudBajasTemporales.jsp"/>
-			<forward name="incidencias" path="/html/jsp/censo/bajasTemporales/incidenciasBajasTemporales.jsp"/>
-			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
+		<action path="/CEN_BajasTemporales" forward="/JGR_BajasTemporales.do?fichaColegial=true" >
 		</action>
-		
 		<!-- ***** Justicia Gratuita / Definir Calendario de Guardias ***** -->
 		<action path="/JGR_DefinirCalendarioGuardia" type="com.siga.gratuita.action.DefinirCalendarioGuardiaAction" name="DefinirCalendarioGuardiaForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/inicio_DefinirCalendarioGuardia.jsp"/>
@@ -2301,7 +2287,7 @@
 		</action>
 
 		<!-- ***** Justicia Gratuita / Definir Lista de Guardias ***** -->
-		<action path="/JGR_DefinirListaGuardias" type="com.siga.gratuita.action.DefinirListaGuardiasAction" name="DefinirListaGuardiasForm" scope="request">
+		<action path="/JGR_DefinirListaGuardias" type="com.siga.gratuita.action.DefinirListaGuardiasAction" name="DefinirListaGuardiasForm" scope="session">
 			<forward name="inicio" path="/html/jsp/gratuita/busquedaLG.jsp"/>
 			<forward name="listarLG" path="/html/jsp/gratuita/listadoLG.jsp"/>
 			<forward name="consultarLG" path="/html/jsp/gratuita/mantenimientoLG.jsp"/>
@@ -3073,7 +3059,6 @@
 		<action path="/FCS_BusquedaRentencionesAplicadas" type="com.siga.facturacionSJCS.action.BusquedaRetencionesAplicadasAction" name="BusquedaRetencionesAplicadasForm" scope="request">
 			<forward name="inicio" path="/html/jsp/facturacionSJCS/busquedaRetencionesAplicadas.jsp"/>
 			<forward name="resultado" path="/html/jsp/facturacionSJCS/busquedaRetencionesAplicadasResultados.jsp"/>
-			<forward name="consultaLEC" path="/html/jsp/facturacionSJCS/consultaLEC.jsp"/>
 			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
 			
 		</action>	

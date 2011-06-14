@@ -32,6 +32,8 @@ import com.siga.general.MasterForm;
  	public void setIdTurno (String valor)				{ this.datos.put("IDTURNO",valor); 	 				}
  	public void setOrdenOriginal (String valor)			{ this.datos.put("ORDENORIGINAL",valor); 	 		}
  	public void setIdInstitucion (String valor)			{ this.datos.put("IDINSTITUCION",valor); 	 		}
+ 	public void setComunicacion (String valor)			{ this.datos.put("COMUNICACION",valor); 	 		}
+ 	
  	
  	
 	// Metodos Get para leer de la tabla hash datos los campos del formulario.
@@ -54,6 +56,7 @@ import com.siga.general.MasterForm;
  	public String getIdTurno ()					{ return ((String)this.datos.get("IDTURNO")); 				}
  	public String getOrdenOriginal ()			{ return ((String)this.datos.get("ORDENORIGINAL")); 		}
  	public String getIdInstitucion ()			{ return ((String)this.datos.get("IDINSTITUCION")); 		}
+ 	public String getComunicacion ()			{ return ((String)this.datos.get("COMUNICACION"));  		}
 
  	// Variables para la gestion de informes (Listas de Guardias)
  	
