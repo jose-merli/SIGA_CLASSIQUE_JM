@@ -763,7 +763,26 @@ public class EnvioInformesGenericos extends MasterReport {
 						fileDocumento = getInformeGenerico(beanInforme,
 								htDatosInformeFinal, idiomaExt, identificador.toString(), usrBean,tipoPlantillaFo);
 						
-					}else if(tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesMorosos)){
+					}else if(tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesFacturacionesColegiados)){
+						String nColegiado = (String) datosInforme.get("NCOLEGIADO");
+//						String idPago = (String) datosInforme.get("IDPAGOS");
+						String idTipoInforme = (String) datosInforme.get("idTipoInforme");
+						identificador = new StringBuffer();
+						identificador.append(nColegiado);
+						identificador.append("_");
+						identificador.append(idInstitucion);
+						identificador.append("_");
+						identificador.append(idPersona);
+						identificador.append("_");
+						String hoy = UtilidadesString.formatoFecha(new Date(),"yyyyMMddhhmmssSSS");
+						identificador.append(hoy);
+						fileDocumento = getInformeGenerico(beanInforme,
+								htDatosInformeFinal, idiomaExt, identificador.toString(), usrBean,tipoPlantillaFo);
+					
+					
+					
+					}else {
+						if(tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesMorosos)){
 							if(htDatosInformeFinal.get("region")!=null){
 								Vector v = (Vector)htDatosInformeFinal.get("region"); 
 								if(v.get(0)!=null){
@@ -782,28 +801,12 @@ public class EnvioInformesGenericos extends MasterReport {
 							identificador.append("_");
 							String hoy = UtilidadesString.formatoFecha(new Date(),"yyyyMMddhhmmssSSS");
 							identificador.append(hoy);
+						}
 						
 						fileDocumento = getInformeGenerico(beanInforme,	htDatosInformeFinal, idiomaExt, identificador.toString(), usrBean,tipoPlantillaWord);
-						
-						
-					}else if(tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesFacturacionesColegiados)){
-						String nColegiado = (String) datosInforme.get("NCOLEGIADO");
-//						String idPago = (String) datosInforme.get("IDPAGOS");
-						String idTipoInforme = (String) datosInforme.get("idTipoInforme");
-						identificador = new StringBuffer();
-						identificador.append(nColegiado);
-						identificador.append("_");
-						identificador.append(idInstitucion);
-						identificador.append("_");
-						identificador.append(idPersona);
-						identificador.append("_");
-						String hoy = UtilidadesString.formatoFecha(new Date(),"yyyyMMddhhmmssSSS");
-						identificador.append(hoy);
-						fileDocumento = getInformeGenerico(beanInforme,
-								htDatosInformeFinal, idiomaExt, identificador.toString(), usrBean,tipoPlantillaFo);
-					
 					}
-					
+						
+						
 					String pathDocumento = fileDocumento.getPath();
 					// Creacion documentos
 					int indice = pathDocumento.lastIndexOf(ClsConstants.FILE_SEP);
