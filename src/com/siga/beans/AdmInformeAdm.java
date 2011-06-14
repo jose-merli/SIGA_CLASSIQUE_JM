@@ -1,8 +1,6 @@
 package com.siga.beans;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -49,7 +47,8 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 				AdmInformeBean.C_DESTINATARIOS,
 				AdmInformeBean.C_TIPOFORMATO,
 				AdmInformeBean.C_CODIGO,
-				AdmInformeBean.C_ORDEN
+				AdmInformeBean.C_ORDEN,
+				AdmInformeBean.C_CLASEJAVA
 				
 		};
 		return campos;
@@ -97,6 +96,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 			bean.setTipoformato		(UtilidadesHash.getString(hash, AdmInformeBean.C_TIPOFORMATO));
 			bean.setCodigo	(UtilidadesHash.getString(hash, AdmInformeBean.C_CODIGO));
 			bean.setOrden	(UtilidadesHash.getString(hash, AdmInformeBean.C_ORDEN));
+			bean.setClaseJava	(UtilidadesHash.getString(hash, AdmInformeBean.C_CLASEJAVA));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -128,6 +128,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(htData, AdmInformeBean.C_TIPOFORMATO, 		b.getTipoformato());
 			UtilidadesHash.set(htData, AdmInformeBean.C_CODIGO, 		b.getCodigo());
 			UtilidadesHash.set(htData, AdmInformeBean.C_ORDEN, 		b.getOrden());
+			UtilidadesHash.set(htData, AdmInformeBean.C_CLASEJAVA, 		b.getClaseJava());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -168,7 +169,8 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 				"       "+AdmInformeBean.C_DESTINATARIOS+", " +
 				"       "+AdmInformeBean.C_TIPOFORMATO+", " +
 				"       "+AdmInformeBean.C_CODIGO+", " +
-				"       "+AdmInformeBean.C_ORDEN+" " +
+				"       "+AdmInformeBean.C_ORDEN+", " +
+				"       "+AdmInformeBean.C_CLASEJAVA+" " +
 				"  FROM "+AdmInformeBean.T_NOMBRETABLA+" " +
 				" WHERE "+AdmInformeBean.C_IDPLANTILLA+" = '"+idInforme+"' " +
 //				"   AND "+AdmInformeBean.C_VISIBLE+" = 'S' " +
@@ -198,6 +200,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 				salida.setTipoformato		((String)ht.get(AdmInformeBean.C_TIPOFORMATO));
 				salida.setCodigo		((String)ht.get(AdmInformeBean.C_CODIGO));
 				salida.setOrden		((String)ht.get(AdmInformeBean.C_ORDEN));
+				salida.setClaseJava((String)ht.get(AdmInformeBean.C_CLASEJAVA));
 			}
 		}
 		catch (ClsExceptions e) {

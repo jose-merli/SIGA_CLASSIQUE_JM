@@ -18,7 +18,6 @@ import javax.transaction.UserTransaction;
 import org.apache.xmlbeans.XmlOptions;
 
 import com.atos.utils.ClsConstants;
-import com.atos.utils.GstDate;
 import com.siga.beans.CajgRemesaEstadosAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaBean;
@@ -116,7 +115,7 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 				try {
 					anexoIType = solicitudeAXG.addNewANEXOI();
 					rellenaNumeroSox(anexoIType.addNewNUMEROSOX(), mapExp);
-					anexoIType.setDATARECEPCION(getCalendar(mapExp.get(DATA_RECEPCION)));
+					anexoIType.setDATARECEPCION(SigaWSHelper.getCalendar(mapExp.get(DATA_RECEPCION)));
 					rellenaDatosPersoais(anexoIType.addNewDATOSPERSOAIS(), mapExp);
 					rellenaDatosEconomicos(anexoIType.addNewDATOSECONOMICOS(), mapExp);
 					rellenaProcedimiento(anexoIType.addNewPROCEDEMENTO(), mapExp);					
@@ -258,7 +257,7 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 	 * @throws Exception
 	 */
 	private void rellenaProcedimiento(PROCEDEMENTO procedemento, Map<String, String> mapExp) throws Exception {		
-		procedemento.xsetXURISDICCION(XURISDICCION.Factory.newValue(getInteger(mapExp.get(P_XURISDICCION), "jurisdicción")));		
+		procedemento.xsetXURISDICCION(XURISDICCION.Factory.newValue(SigaWSHelper.getInteger("jurisdicción", mapExp.get(P_XURISDICCION))));		
 		
 		TIPOPROCEDEMENTO tipoProcedemento = procedemento.addNewTIPOPROCEDEMENTO();
 		if (TIPO_PROCEDEMENTO_XUDICIAL.equals(mapExp.get(TIPO_PROCEDEMENTO_CHOICE))) {
@@ -269,7 +268,7 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 			xudicial.setNIG(mapExp.get(P_TPX_NIG));
 			xudicial.setDESCRICION(mapExp.get(P_TPX_DESCRIPCION));
 			ORGANO organo = xudicial.addNewORGANO();			
-			organo.xsetORGANO(ORGANO2.Factory.newValue(getInteger(mapExp.get(P_TPXO_ORGANO), "juzgado")));
+			organo.xsetORGANO(ORGANO2.Factory.newValue(SigaWSHelper.getInteger("juzgado", mapExp.get(P_TPXO_ORGANO))));
 			organo.setNUMEROSALASECCION(getBigInteger(mapExp.get(P_TPXO_NUMEROSALASECCION)));
 			organo.setPARTIDOXUDICIAL(getBigInteger(mapExp.get(P_TPXO_PARTIDO_XUDICIAL)));
 		} else if (TIPO_PROCEDEMENTO_ADMINISTRATIVO.equals(mapExp.get(TIPO_PROCEDEMENTO_CHOICE))) {
@@ -285,7 +284,7 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 		}
 		procedemento.setPRETENSION(mapExp.get(P_PRETENSION));
 		procedemento.setCONDICION(mapExp.get(P_CONDICION));
-		procedemento.setDATAINICIO(getCalendar(mapExp.get(P_DATA_INICIO)));
+		procedemento.setDATAINICIO(SigaWSHelper.getCalendar(mapExp.get(P_DATA_INICIO)));
 	}
 
 
@@ -425,7 +424,7 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 		nomeapelidostype.setNOME(map.get(NOME));
 		nomeapelidostype.setPRIMERAPELLIDO(map.get(APELLIDO1));
 		nomeapelidostype.setSEGUNDOAPELLIDO(map.get(APELLIDO2));
-		familiar.xsetIDADE(com.siga.ws.i2064.xsd.FAMILIARTYPE.IDADE.Factory.newValue(getInteger(map.get(IDADE), "edad")));
+		familiar.xsetIDADE(com.siga.ws.i2064.xsd.FAMILIARTYPE.IDADE.Factory.newValue(SigaWSHelper.getInteger("edad", map.get(IDADE))));
 		familiar.setPARENTESCO(getBigInteger(map.get(PARENTESCO)));
 	}
 
@@ -442,10 +441,10 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 		nombreApeSol.setNOME(map.get(NOME));
 		nombreApeSol.setPRIMERAPELLIDO(map.get(APELLIDO1));
 		nombreApeSol.setSEGUNDOAPELLIDO(map.get(APELLIDO2));		
-		personaType.xsetNACIONALIDADE(com.siga.ws.i2064.xsd.PERSOATYPE.NACIONALIDADE.Factory.newValue(getInteger(map.get(NACIONALIDADE), "nacionalidad")));		
+		personaType.xsetNACIONALIDADE(com.siga.ws.i2064.xsd.PERSOATYPE.NACIONALIDADE.Factory.newValue(SigaWSHelper.getInteger("nacionalidad", map.get(NACIONALIDADE))));		
 		personaType.setESTADOCIVIL(getBigInteger(map.get(ESTADO_CIVIL)));
 		personaType.setNIF(map.get(NIF));
-		personaType.setDATANACEMENTO(getCalendar(map.get(DATA_NACEMENTO)));
+		personaType.setDATANACEMENTO(SigaWSHelper.getCalendar(map.get(DATA_NACEMENTO)));
 		DATOSCONTACTO datosContacto = personaType.addNewDATOSCONTACTO();
 		DIRECCIONTYPE direccion = datosContacto.addNewENDEREZO();
 		direccion.setENDEREZO(map.get(DC_ENDEREZO));
@@ -548,23 +547,7 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 	}
 	
 
-	/**
-	 * 
-	 * @param st
-	 * @param campo
-	 * @return
-	 */
-	private Integer getInteger(String st, String campo) {		
-		Integer in = null;
-		if (st != null && !st.trim().equals("")) {
-			try {
-				in = Integer.valueOf(st);
-			} catch (NumberFormatException e) {
-				throw new IllegalArgumentException("Compruebe el valor del código del campo " + campo + " (valor='" + st + "')");
-			}
-		}
-		return in;
-	}
+	
 	
 	/**
 	 * 

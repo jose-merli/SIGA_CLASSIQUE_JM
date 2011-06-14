@@ -35,6 +35,7 @@ import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
 import com.siga.ws.PCAJGConstantes;
 import com.siga.ws.SIGAWSClientAbstract;
+import com.siga.ws.SigaWSHelper;
 import com.siga.ws.cat.ftp.FtpPcajgAbstract;
 import com.siga.ws.cat.ftp.FtpPcajgFactory;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument;
@@ -184,7 +185,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				xmlOptions.setLoadSubstituteNamespaces(map);
 				
 				IntercambioDocument intercambioIRDoc = IntercambioDocument.Factory.parse(file, xmlOptions);
-				if (validate(intercambioIRDoc).size() > 0) {					
+				if (SigaWSHelper.validate(intercambioIRDoc).size() > 0) {					
 					throw new ClsExceptions("El xml " + file.getName() + " no es válido");
 				}
 				
@@ -303,7 +304,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 		idIntercambio.setCodOrigenIntercambio(String.valueOf(getIdInstitucion()));
 		idIntercambio.setCodDestinoIntercambio(informacionIntercambioIR.getIdentificacionIntercambio().getCodOrigenIntercambio());		
 		idIntercambio.setIdentificadorIntercambio(informacionIntercambioIR.getIdentificacionIntercambio().getIdentificadorIntercambio());
-		idIntercambio.setFechaIntercambio(clearCalendar(Calendar.getInstance()));		
+		idIntercambio.setFechaIntercambio(SigaWSHelper.clearCalendar(Calendar.getInstance()));		
 		idIntercambio.setNumeroDetallesIntercambio(numeroDetalles);
 		idIntercambio.setVersion(informacionIntercambioIR.getIdentificacionIntercambio().getVersion());
 	}
@@ -467,7 +468,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 					escribeLogRemesa("El xml " + file.getName() + " no es un fichero de \"Intercambio\" válido.");
 					throw e;
 				}	
-				if (validate(intercambioRespuestaDoc).size() > 0) {
+				if (SigaWSHelper.validate(intercambioRespuestaDoc).size() > 0) {
 					throw new ClsExceptions("El xml " + file.getName() + " no es válido");
 				}			
 				

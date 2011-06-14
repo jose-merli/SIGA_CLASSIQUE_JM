@@ -242,7 +242,7 @@
 	    	document.DefinicionRemesas_CAJG_Form.modo.value="erroresResultadoCAJG";	    	
 	    	document.DefinicionRemesas_CAJG_Form.idEjgRemesa.value=idEjgRemesa.value
 		   	
-			ventaModalGeneral(document.DefinicionRemesas_CAJG_Form.name,'P')
+			ventaModalGeneral(document.DefinicionRemesas_CAJG_Form.name,'M')
 		}
 		
 		function deshabilita(button) {

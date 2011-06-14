@@ -9,7 +9,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -25,7 +24,6 @@ import org.apache.xmlbeans.XmlValidationError;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
-import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.SIGAReferences;
@@ -54,10 +52,6 @@ public abstract class SIGAWSClientAbstract {
 	private boolean generaTXT;
 	private boolean firmarXML;
 	private boolean simular;
-	
-			
-	
-
 
 	public abstract void execute() throws Exception;
 	
@@ -243,7 +237,7 @@ public abstract class SIGAWSClientAbstract {
 		SigaWSHelper.deleteEmptyNode(xmlObject.getDomNode());
 		
 		boolean valido = true;
-		List<String> list = validate(xmlObject);
+		List<String> list = SigaWSHelper.validate(xmlObject);
 		if (list.size() > 0) {
 			valido = false;
 			for (String st : list) {
@@ -275,57 +269,6 @@ public abstract class SIGAWSClientAbstract {
 			}
 		}
 		return sb;
-	}
-	
-
-	/**
-	 * 
-	 * @param xmlObject
-	 * @return
-	 * @throws Exception
-	 */
-	protected List<String> validate(XmlObject xmlObject) throws Exception {
-		
-		List<String> list = new ArrayList<String>();
-		XmlOptions xmlOptions = new XmlOptions();
-		List<XmlValidationError> errores = new ArrayList<XmlValidationError>();
-		xmlOptions.setErrorListener(errores);
-				
-		if (!xmlObject.validate(xmlOptions)){
-				
-			String st = null;
-			for (XmlValidationError error : errores) {				
-				if (error.getErrorType() == XmlValidationError.INCORRECT_ELEMENT) {
-					String campos = "";
-					if (error.getExpectedQNames() != null) {
-						for (int i = 0; i < error.getExpectedQNames().size(); i++) {
-							QName qName = (QName) error.getExpectedQNames().get(i);
-							if (qName != null) {
-								if (i == 0){
-									campos += qName.getLocalPart();
-								} else {
-									campos += ", " + qName.getLocalPart();
-								}
-							}
-						}
-					}
-					st = "Debe rellenar el campo o los campos " + campos + " en el apartado " + error.getFieldQName().getLocalPart();
-//				} else if (error.getErrorType() == XmlValidationError.ATTRIBUTE_TYPE_INVALID) {
-//					String mensaje = error.getMessage();
-//					if (mensaje != null) {
-//						//parsear el mensaje!!!
-//					}
-				} else {				
-					st = "Error de validación: " + error;
-				}
-				if (!list.contains(st)) {
-					list.add(st);
-					ClsLogging.writeFileLog(st, 3);
-				}				
-			}		
-			
-		}
-		return list;
 	}
 	
 	
@@ -427,11 +370,7 @@ public abstract class SIGAWSClientAbstract {
 		return pathFichero + File.separator + idInstitucion  + File.separator + idRemesa + File.separator + "xml";
 	}
 	
-	protected Calendar clearCalendar(Calendar cal) {
-		cal.clear(Calendar.ZONE_OFFSET);
-		//cal.clear(Calendar.DST_OFFSET);
-		return cal;
-	}
+
 	
 	
 	protected String getNombreFichero(TipoIdentificacionIntercambio tipoIdentificacionIntercambio) {
@@ -499,21 +438,5 @@ public abstract class SIGAWSClientAbstract {
 		this.simular = simular;
 	}
 	
-	/**
-	 * 
-	 * @param fecha
-	 * @return
-	 * @throws Exception
-	 * 
-	 */
-	protected Calendar getCalendar(String fecha) throws Exception {		
-		Calendar cal = null;		
-		if (fecha != null && !fecha.trim().equals("")) {
-			cal = Calendar.getInstance();
-			cal.setTime(GstDate.convertirFecha(fecha));
-			clearCalendar(cal);
-		}	
-		
-		return cal;
-	}
+
 }

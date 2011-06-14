@@ -80,7 +80,7 @@
 	</table>
 		
 			
-		<div id='listadoEJGDiv' style='height:100%; position:absolute; width:100%; overflow-y:auto'>
+		<div id='listadoEJGDiv' style='height:100%; position:absolute; width:100%; overflow:auto'>
 		<table border='1' width='100%' cellspacing='0' cellpadding='0' align='center'>			
 			<% if (vector != null){
 				for (int i = 0; i < vector.size(); i++) {
@@ -97,7 +97,7 @@
 
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 	<!-- INICIO: BOTONES REGISTRO -->
-		<siga:ConjBotonesAccion botones='<%="C"%>' modal="P" />
+		<siga:ConjBotonesAccion botones='<%="C"%>' modal="M" />
 	<!-- FIN: BOTONES REGISTRO -->
 
 	

@@ -29,14 +29,16 @@ import com.siga.beans.AdmTipoInformeAdm;
 import com.siga.beans.AdmTipoInformeBean;
 import com.siga.certificados.Plantilla;
 import com.siga.general.SIGAException;
-import com.siga.informes.MasterReport;
+import com.siga.ws.InformeXML;
 
 public class InformePersonalizable extends MasterReport
 {
 	// Informes personalizables
 	public static final String I_CERTIFICADOPAGO = "CERPA";
 	public static final String I_INFORMEFACTSJCS = "FACJ2";
-	
+		
+	private String idFacturacion = null;
+	private boolean eliminarFichero = false;
 	
 	public File getFicheroGenerado(UsrBean usr,
 								  String idtipoinforme,
@@ -74,11 +76,27 @@ public class InformePersonalizable extends MasterReport
 							
 					}
 					
+				} else if (informe.getTipoformato().equalsIgnoreCase(AdmInformeBean.TIPOFORMATO_EXCEL)) {
+					listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme, usr));
+				} else if (informe.getTipoformato().equalsIgnoreCase(AdmInformeBean.TIPOFORMATO_XML)) {
+//					llamada
+					String claseJava = informe.getClaseJava();
+					if (claseJava == null || claseJava.trim().equals("")) {
+						throw new IllegalArgumentException("Si se selecciona informe en formato XML se debe configurar la clase java que genera el XML.");
+					}
+					Class clazz = Class.forName(claseJava);
+					Object obj = clazz.newInstance();
+					if (obj instanceof InformeXML) {
+						InformeXML informeXML = (InformeXML)obj;
+						listaFicheros.add(informeXML.execute(informe, idinstitucion, idFacturacion, usr));
+						setEliminarFichero(true);
+					} else {
+						throw new IllegalArgumentException("La clase java debe extender de " + InformeXML.class.getName());
+					}
+					
+				} else {
+					listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme, usr));
 				}
-				else if (informe.getTipoformato().equalsIgnoreCase(AdmInformeBean.TIPOFORMATO_EXCEL))
-					listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme, usr));
-				else
-					listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme, usr));
 			}
 			File ficheroSalida = getFicheroSalida(listaFicheros, tipoInformeBean, usr);
 			return ficheroSalida;
@@ -87,6 +105,7 @@ public class InformePersonalizable extends MasterReport
 		} catch (SIGAException e) {
 			throw e;
 		}catch (Exception e) {
+			e.printStackTrace();
 			throw new SIGAException(e, new String [] {"Error al generar el informe"});
 		}
 	}
@@ -618,4 +637,19 @@ public class InformePersonalizable extends MasterReport
 		
 	}
 	
+	public String getIdFacturacion() {
+		return idFacturacion;
+	}
+
+	public void setIdFacturacion(String idFacturacion) {
+		this.idFacturacion = idFacturacion;
+	}
+
+	public boolean isEliminarFichero() {
+		return eliminarFichero;
+	}
+
+	public void setEliminarFichero(boolean eliminarFichero) {
+		this.eliminarFichero = eliminarFichero;
+	}
 }

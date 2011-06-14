@@ -13,7 +13,6 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
@@ -34,7 +33,6 @@ import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.beans.AdmTipoFiltroInformeBean;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.FcsEstadosFacturacionBean;
 import com.siga.beans.FcsFactEstadosFacturacionAdm;
@@ -1204,41 +1202,31 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			Vector vf = fact.select("where idInstitucion ="+idInstitucion+" and idfacturacion="+idFacturacion);
 			FcsFacturacionJGBean beanOriginal = (FcsFacturacionJGBean) vf.get(0);	
 			String nombreFichero = beanOriginal.getNombreFisico();
-
+			InformePersonalizable informePersonalizable = new InformePersonalizable();
+			
 			File fichero=new File(nombreFichero);
 			
 			//Si el nombre físico del dichero no se ha guardado antes, se actualiza en bbdd
-			if((nombreFichero.equals("")) && (fichero==null || !fichero.exists())){
-				
-				
-//				nombreFichero = fact.generarInformeYObtenerRuta(idInstitucion,idFacturacion);
+			if(fichero==null || !fichero.exists()){				
 				ArrayList filtrosInforme = fact.getFiltrosInforme(idInstitucion,idFacturacion);
-				InformePersonalizable informePersonalizable = new InformePersonalizable();
+				
+				informePersonalizable.setIdFacturacion(idFacturacion);
 				fichero = informePersonalizable.getFicheroGenerado(user,  InformePersonalizable.I_INFORMEFACTSJCS, filtrosInforme);
-				nombreFichero = fichero.getPath();
-				FcsFacturacionJGBean bean = new FcsFacturacionJGBean();
-				bean.setIdInstitucion(Integer.parseInt(idInstitucion));
-				bean.setIdFacturacion(Integer.parseInt(idFacturacion));
-				bean.setNombreFisico(nombreFichero);
-				fact.update(bean,beanOriginal);
+				if (!informePersonalizable.isEliminarFichero()) {
+					nombreFichero = fichero.getPath();
+					FcsFacturacionJGBean bean = new FcsFacturacionJGBean();
+					bean.setIdInstitucion(Integer.parseInt(idInstitucion));
+					bean.setIdFacturacion(Integer.parseInt(idFacturacion));
+					bean.setNombreFisico(nombreFichero);
+					fact.update(bean,beanOriginal);
 
-				if (fichero == null || !fichero.exists()) {
-					throw new SIGAException("messages.general.error.ficheroNoExiste");
+					if (fichero == null || !fichero.exists()) {
+						throw new SIGAException("messages.general.error.ficheroNoExiste");
+					}
 				}
-
-			}else if((!nombreFichero.equals("")) && (fichero==null || !fichero.exists())){
-				ArrayList filtrosInforme = fact.getFiltrosInforme(idInstitucion,idFacturacion);
-				InformePersonalizable informePersonalizable = new InformePersonalizable();
-				fichero = informePersonalizable.getFicheroGenerado(user,  InformePersonalizable.I_INFORMEFACTSJCS, filtrosInforme);
-				nombreFichero = fichero.getPath();
-				FcsFacturacionJGBean bean = new FcsFacturacionJGBean();
-				bean.setIdInstitucion(Integer.parseInt(idInstitucion));
-				bean.setIdFacturacion(Integer.parseInt(idFacturacion));
-				bean.setNombreFisico(nombreFichero);
-				fact.update(bean,beanOriginal);
-				if (fichero == null || !fichero.exists()) {
-					throw new SIGAException("messages.general.error.ficheroNoExiste");
-				}
+			}
+			if (informePersonalizable.isEliminarFichero()) {
+				request.setAttribute("borrarFichero", "true");
 			}
 			request.setAttribute("nombreFichero", fichero.getName());
 			request.setAttribute("rutaFichero", fichero.getPath());

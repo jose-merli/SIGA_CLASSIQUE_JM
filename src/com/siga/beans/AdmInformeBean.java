@@ -19,13 +19,14 @@ public class AdmInformeBean extends MasterBean {
 
 	// Variables	
 	private String idPlantilla, descripcion, alias, nombreFisico, directorio, idTipoInforme, visible, nombreSalida,
-			preseleccionado, aSolicitantes, destinatarios, tipoformato,codigo,orden;
+			preseleccionado, aSolicitantes, destinatarios, tipoformato,codigo,orden, claseJava;
 	private Integer idInstitucion;
 	static public final String TIPODESTINATARIO_CENPERSONA = "C";
 	static public final String TIPODESTINATARIO_SCSPERSONAJG = "S";
 	static public final String TIPODESTINATARIO_SCSJUZGADO = "J";
 	static public final String TIPOFORMATO_WORD = "W";
-	static public final String TIPOFORMATO_EXCEL = "X";
+	static public final String TIPOFORMATO_EXCEL = "E";
+	static public final String TIPOFORMATO_XML = "X";
 	
 	static public final String SEQ_ADM_INFORME = "SEQ_ADMINFORME";
 	// Nombre tabla
@@ -50,6 +51,7 @@ public class AdmInformeBean extends MasterBean {
 	static public final String C_TIPOFORMATO = "TIPOFORMATO";
 	static public final String C_CODIGO = "CODIGO";
 	static public final String C_ORDEN = "ORDEN";
+	static public final String C_CLASEJAVA = "CLASEJAVA";
 
 	
 	// Metodos SET
@@ -68,6 +70,7 @@ public class AdmInformeBean extends MasterBean {
 	public void setTipoformato(String tipoformato) {this.tipoformato = tipoformato;}
 	public void setCodigo(String codigo) {this.codigo = codigo;}
 	public void setOrden(String orden) {this.orden = orden;}
+	public void setClaseJava(String claseJava) {this.claseJava = claseJava;}
 	
 	
 	//Metodos GET
@@ -86,6 +89,7 @@ public class AdmInformeBean extends MasterBean {
 	public String getTipoformato() {return tipoformato;}
 	public String getCodigo() {return codigo;}
 	public String getOrden() {return orden;}
+	public String getClaseJava() {return claseJava;}
 	public UsrBean getUsrBean() {
 		return usrBean;
 	}

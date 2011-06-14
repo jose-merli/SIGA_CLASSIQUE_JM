@@ -32,6 +32,7 @@ import com.siga.general.SIGAException;
 import com.siga.gratuita.action.DefinirRemesasCAJGAction;
 import com.siga.ws.PCAJGConstantes;
 import com.siga.ws.SIGAWSClientAbstract;
+import com.siga.ws.SigaWSHelper;
 import com.siga.ws.cat.ftp.FtpPcajgAbstract;
 import com.siga.ws.cat.ftp.FtpPcajgFactory;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument;
@@ -322,7 +323,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		codigoExpediente.setColegioExpediente((String)htEJGs.get(DE_CE_COLEGIOEXPEDIENTE));
 		String numExpediente = UtilidadesString.formatea(htEJGs.get(DE_CE_NUMEXPEDIENTE), 8, true);
 		codigoExpediente.setNumExpediente(numExpediente);		
-		Integer anyoExpediente = getInteger("año del expediente", (String)htEJGs.get(DE_CE_ANYOEXPEDIENTE));		
+		Integer anyoExpediente = SigaWSHelper.getInteger("año del expediente", (String)htEJGs.get(DE_CE_ANYOEXPEDIENTE));		
 		if (anyoExpediente != null) {
 			codigoExpediente.setAnyoExpediente(anyoExpediente);	
 		}
@@ -343,7 +344,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			codigoExpedienteServicio.setNumExpedienteServicio(value);
 		}		
 		
-		Integer anyoExpServicio = getInteger("año CAJG" ,(String)htEJGs.get(DE_CES_ANYOEXPEDIENTESERVICIO));
+		Integer anyoExpServicio = SigaWSHelper.getInteger("año CAJG" ,(String)htEJGs.get(DE_CES_ANYOEXPEDIENTESERVICIO));
 		if (anyoExpServicio != null) {			
 			codigoExpedienteServicio.setAnyoExpedienteServicio(anyoExpServicio);
 		}
@@ -427,7 +428,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 		
 		ProcuradorDesignado procuradorDesignado = profesionalesDesignados.addNewProcuradorDesignado();		
-		Integer valueInt = getInteger("baja procurador designado", (String)htEJGs.get(PD_PD_BAJAPROCURADORDESIGNADO));
+		Integer valueInt = SigaWSHelper.getInteger("baja procurador designado", (String)htEJGs.get(PD_PD_BAJAPROCURADORDESIGNADO));
 		if (valueInt != null) {
 			procuradorDesignado.setBajaProcuradorDesignado(valueInt.intValue());
 		}
@@ -437,7 +438,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		datosProcurador.setNumColegiadoProcurador((String)htEJGs.get(PD_PD_DP_NUMCOLEGIADOPROCURADO));		
 		datosProcurador.setNombreCompletoProcurador((String)htEJGs.get(PD_PD_DP_NOMBRECOMPLETOPROCURA));		
 		
-		Calendar cal = getCalendar((String)htEJGs.get(PD_PD_FECHADESIGNACIONPROCURAD));
+		Calendar cal = SigaWSHelper.getCalendar((String)htEJGs.get(PD_PD_FECHADESIGNACIONPROCURAD));
 		if (cal != null) {
 			procuradorDesignado.setFechaDesignacionProcurador(cal);
 		}
@@ -512,7 +513,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		identificacionTramite.setCodEstadoExpediente(getCodigoElementoTipificado((String)htEJGs.get(it_estadoexpediente_cda)));
 		identificacionTramite.setDescEstadoExpediente(getDescripcionElementoTipificado((String)htEJGs.get(it_estadoexpediente_cda)));
 				
-		Calendar cal = getCalendar((String)htEJGs.get(it_fechaestado));
+		Calendar cal = SigaWSHelper.getCalendar((String)htEJGs.get(it_fechaestado));
 		if (cal != null) {
 			identificacionTramite.setFechaEstado(cal);
 		}
@@ -544,7 +545,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 		String codOrganoJudicial = getCodigoElementoTipificado((String)htEJGs.get(DAD_ORGANOJUDICIAL_CDA));
 		if (codOrganoJudicial != null) {//por juzgado DILIGENCIA
-			Calendar cal = getCalendar((String)htEJGs.get(DAD_FECHAASISTENCIADILIGENCIA));
+			Calendar cal = SigaWSHelper.getCalendar((String)htEJGs.get(DAD_FECHAASISTENCIADILIGENCIA));
 			if (cal != null) {
 				asistenciaPenal.setFechaAsistencia(cal);
 			}
@@ -553,7 +554,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			asistenciaOrganoJudicial.setDescOrganoJudicial(getDescripcionElementoTipificado((String)htEJGs.get(DAD_ORGANOJUDICIAL_CDA)));
 			asistenciaPenal.setIdentificadorAsistencia((String)htEJGs.get(DAD_NUMERODILIGENCIA));
 		} else { //por comisaría ATESTADO
-			Calendar cal = getCalendar((String)htEJGs.get(DAD_FECHAASISTENCIAATESTADO));
+			Calendar cal = SigaWSHelper.getCalendar((String)htEJGs.get(DAD_FECHAASISTENCIAATESTADO));
 			if (cal != null) {
 				asistenciaPenal.setFechaAsistencia(cal);
 			}
@@ -595,13 +596,13 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	
 	private void abogadoDesignado(AbogadoDesignado abogadoDesignado, Hashtable ht) throws Exception {	
 		
-		Integer valueInt = getInteger("baja abogado designado", (String)ht.get(PD_AD_AD_BAJAABOGADODESIGNADO));
+		Integer valueInt = SigaWSHelper.getInteger("baja abogado designado", (String)ht.get(PD_AD_AD_BAJAABOGADODESIGNADO));
 		if (valueInt != null) {
 			abogadoDesignado.setBajaAbogadoDesignado(valueInt.intValue());
 		}
 		
 		abogadoDesignado.setNumColegiadoAbogado((String)ht.get(PD_AD_AD_NUMCOLEGIADOABOGADO));
-		Calendar cal = getCalendar((String)ht.get(PD_AD_AD_FECHADESIGNACIONABOGA));
+		Calendar cal = SigaWSHelper.getCalendar((String)ht.get(PD_AD_AD_FECHADESIGNACIONABOGA));
 		if (cal != null) {
 			abogadoDesignado.setFechaDesignacionAbogado(cal);
 		}
@@ -647,17 +648,17 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		pretension.setDescTipoProcedimiento(getDescripcionElementoTipificado((String)htEJGs.get(DDJ_TIPOPROCEDIMIENTO_CDA)));
 		pretension.setResumenPretension((String)htEJGs.get(DDJ_RESUMENPRETENSION));
 		
-		Integer renunciaDesignacion = getInteger("renuncia designación", (String)htEJGs.get(DDJ_RENUNCIADESIGNACION));
+		Integer renunciaDesignacion = SigaWSHelper.getInteger("renuncia designación", (String)htEJGs.get(DDJ_RENUNCIADESIGNACION));
 		if (renunciaDesignacion != null){
 			pretension.setRenunciaDesignacion(renunciaDesignacion.shortValue());			
 		}
 		
-		BigInteger renunciaHonorarios = getBigInteger("renuncia honorarios", (String)htEJGs.get(DDJ_RENUNCIAHONORARIOS));
+		BigInteger renunciaHonorarios = SigaWSHelper.getBigInteger("renuncia honorarios", (String)htEJGs.get(DDJ_RENUNCIAHONORARIOS));
 		if (renunciaHonorarios != null){
 			pretension.setRenunciaHonorarios(renunciaHonorarios);			
 		}
 		
-		Integer demandanteDemandado = getInteger("demandante o demandado", (String)htEJGs.get(DDJ_DEMANDADODEMANDANTE));
+		Integer demandanteDemandado = SigaWSHelper.getInteger("demandante o demandado", (String)htEJGs.get(DDJ_DEMANDADODEMANDANTE));
 		if (demandanteDemandado != null) {
 			pretension.setDemandadoDemandante(demandanteDemandado.shortValue());
 		}
@@ -695,7 +696,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		datosFamiliares.setCodParentesco(getCodigoElementoTipificado((String)htFam.get(F_F_PARENTESCO_CDA)));		
 		datosFamiliares.setDescParentesco(getDescripcionElementoTipificado((String)htFam.get(F_F_PARENTESCO_CDA)));
 						
-		Integer familiarMenor =  getInteger("familiar menor", ((String)htFam.get(F_F_FAMILIARMENOR)));
+		Integer familiarMenor = SigaWSHelper.getInteger("familiar menor", ((String)htFam.get(F_F_FAMILIARMENOR)));
 		if (familiarMenor != null) {
 			datosFamiliares.setFamiliarMenor(familiarMenor.shortValue());
 		}
@@ -820,7 +821,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if (value != null) {
 			ingresos.setImporteBruto(value.floatValue());
 		}
-		Integer valueInt = getInteger("acumulable de los ingresos", (String) htEJGs.get(DS_DEP_I_ACUMULABLE));
+		Integer valueInt = SigaWSHelper.getInteger("acumulable de los ingresos", (String) htEJGs.get(DS_DEP_I_ACUMULABLE));
 		if (valueInt != null) {
 			ingresos.setAcumulable(valueInt.shortValue());
 		}
@@ -839,7 +840,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if (value != null) {
 			propiedadesBienesInmuebles.setValoracionEconomica(value.floatValue());
 		}
-		valueInt = getInteger("acumulable de los bienes inmuebles", (String) htEJGs.get(DS_DEP_PBI_ACUMULABLE));
+		valueInt = SigaWSHelper.getInteger("acumulable de los bienes inmuebles", (String) htEJGs.get(DS_DEP_PBI_ACUMULABLE));
 		if (valueInt != null) {
 			propiedadesBienesInmuebles.setAcumulable(valueInt.shortValue());
 		}
@@ -853,7 +854,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if (value != null) {
 			propiedadesBienesMuebles.setValoracionEconomica(value.floatValue());
 		}
-		valueInt = getInteger("acumulable de los bienes muebles", (String) htEJGs.get(DS_DEP_PBM_ACUMULABLE));
+		valueInt = SigaWSHelper.getInteger("acumulable de los bienes muebles", (String) htEJGs.get(DS_DEP_PBM_ACUMULABLE));
 		if (valueInt != null) {
 			propiedadesBienesMuebles.setAcumulable(valueInt.shortValue());
 		}
@@ -867,7 +868,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			propiedadesBienesOtros.setValoracionEconomica(value.floatValue());
 		}
 
-		valueInt = getInteger("acumulable de bienes otros",(String) htEJGs.get(DS_DEP_PBO_ACUMULABLE));
+		valueInt = SigaWSHelper.getInteger("acumulable de bienes otros",(String) htEJGs.get(DS_DEP_PBO_ACUMULABLE));
 		if (valueInt != null) {
 			propiedadesBienesOtros.setAcumulable(valueInt.shortValue());
 		}
@@ -899,12 +900,12 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		datosDocumento.setCodTipoDocumento(getCodigoElementoTipificado((String)htDocumentacion.get(de_dd_tipodocumento_cda)));
 		datosDocumento.setDescTipoDocumento(getDescripcionElementoTipificado((String)htDocumentacion.get(de_dd_tipodocumento_cda)));
 				
-		Calendar cal = getCalendar((String)htDocumentacion.get(de_dd_fechapresentaciondocumento));
+		Calendar cal = SigaWSHelper.getCalendar((String)htDocumentacion.get(de_dd_fechapresentaciondocumento));
 		if (cal != null) {
 			datosDocumento.setFechaPresentacionDocumento(cal);
 		}
 		datosDocumento.setDescripcionAmpliadaDocumento((String)htDocumentacion.get(de_dd_descripcionampliadadocumento));
-		Integer valueInt = getInteger("procedente de la documentación", (String)htDocumentacion.get(de_dd_procedente));
+		Integer valueInt = SigaWSHelper.getInteger("procedente de la documentación", (String)htDocumentacion.get(de_dd_procedente));
 		if (valueInt != null) {
 			datosDocumento.setProcedente(valueInt.shortValue());
 		}
@@ -1017,7 +1018,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		datosPersona.setPrimerApellido((String)htEJGs.get(dp_primerapellido));
 		datosPersona.setSegundoApellido((String)htEJGs.get(dp_segundoapellido));
 		datosPersona.setRazonSocial((String)htEJGs.get(dp_razonsocial));
-		Calendar cal = getCalendar((String)htEJGs.get(dp_fechanacimiento));
+		Calendar cal = SigaWSHelper.getCalendar((String)htEJGs.get(dp_fechanacimiento));
 		if (cal != null) {
 			datosPersona.setFechaNacimiento(cal);
 		}
@@ -1042,7 +1043,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if (value != null) {
 			datosPersona.setNumHijos(value.longValue());
 		}
-		cal = getCalendar((String)htEJGs.get(dp_fechaformalizacion));
+		cal = SigaWSHelper.getCalendar((String)htEJGs.get(dp_fechaformalizacion));
 		if (cal != null) {
 			datosPersona.setFechaFormalizacion(cal);
 		}
@@ -1074,32 +1075,6 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		}
 		return null;
 	}
-	
-	/**
-	 * 
-	 * @param value
-	 * @return
-	 */
-	private Integer getInteger(String campo, String value) {
-		try {
-			if (value != null && !value.trim().equals("")) {
-				return Integer.valueOf(value);
-			}
-		} catch (NumberFormatException e) {
-			throw new IllegalArgumentException("El campo \"" + campo + "\" debe ser un número y se ha obtenido \"" + value + "\"");
-		}
-		return null;
-	}
-	
-	private BigInteger getBigInteger(String campo, String value) {
-		BigInteger bi = null;
-		Integer intValue = getInteger(campo, value);		
-		if (intValue != null) {
-			bi = new BigInteger(intValue.toString());
-		}
-		return bi;
-	}
-
 	
 	private String getCodigoElementoTipificado(String elementoTipificado) {
 		String code = null;
@@ -1158,7 +1133,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		}
 		
 		
-		Calendar cal = getCalendar((String)htEJGs.get(DE_FECHASOLICITUD));
+		Calendar cal = SigaWSHelper.getCalendar((String)htEJGs.get(DE_FECHASOLICITUD));
 		if (cal != null) {
 			datosExpediente.setFechaSolicitud(cal);
 		}
@@ -1219,7 +1194,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 						
 			Long valueLong = getLong((String)ht.get(IDENTIFICADORINTERCAMBIO));
 			identificacionIntercambio.setIdentificadorIntercambio((valueLong.longValue() * 10) + sufijoIdIntercambio);		
-			identificacionIntercambio.setFechaIntercambio(clearCalendar(Calendar.getInstance()));			
+			identificacionIntercambio.setFechaIntercambio(SigaWSHelper.clearCalendar(Calendar.getInstance()));			
 			identificacionIntercambio.setVersion((String)ht.get(VERSION_XSD_GENERALITAT));
 		}
 		return informacionIntercambio;
