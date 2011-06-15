@@ -183,8 +183,6 @@
 
 				if(document.forms[0].comunicacion.value=="true"){
 
-					document.forms[0].modo.value="finalizarInforme";
-					document.forms[0].submit;
 					var auxlist = <%=(String)datos.get("IDLISTA")%>;
 					var idInstitucion = <%=(String)datos.get("IDINSTITUCION")%>;
 				   	datos = "idInstitucion==" +idInstitucion+"##idTipoPersonas==1##fechaIni=="+fechaIni+"##fechaFin=="+fechaFin+"##idLista=="+auxlist; 
