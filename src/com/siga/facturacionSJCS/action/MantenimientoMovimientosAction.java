@@ -312,7 +312,7 @@ public class MantenimientoMovimientosAction extends MasterAction {
 
 			// Si vengo desde la ficha colegial
 			if (mapping.getParameter() != null && mapping.getParameter().toUpperCase().contains(ClsConstants.PARAM_ESFICHACOLEGIAL.toUpperCase())) {
-				String idPersona = (String)request.getParameter("idPersonaPestanha");
+				String idPersona = (String) request.getSession().getAttribute("idPersonaPestanha");
 				UtilidadesHash.set(datos, "IDPERSONA", idPersona);
 			}
 			//Si no se viene de ficha colegial y se ha pulsado el botón buscar, no se tiene 
