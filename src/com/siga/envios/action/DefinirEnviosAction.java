@@ -729,7 +729,13 @@ public class DefinirEnviosAction extends MasterAction {
 
 
 			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesListadoGuardias)){
-				idPersona = getIdColegiados(form, request);
+				request.setAttribute("exitenDatos","");
+				try{
+					idPersona = getIdColegiados(form, request);
+
+				} catch (SIGAException e) {
+					request.setAttribute("exitenDatos","messages.general.error.noExistenDatos");
+				}
 				datosEnvios = form.getDatosEnvios();				
 				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")));
 				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
@@ -849,10 +855,14 @@ public class DefinirEnviosAction extends MasterAction {
 			request.setAttribute("datosEnvios",datosEnvios);
 			GenParametrosAdm param = new GenParametrosAdm(userBean);
 			request.setAttribute("smsHabilitado",param.getValor(idInstitucion, "ENV", "HABILITAR_SMS_BUROSMS", "N"));
-
-		} catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
+		
+		
+		} catch (SIGAException e) {
+			throwExcp(e.getLiteral(),new String[] {},e,null);
+		} catch (Exception ex) {
+			throwExcp("messages.general.error",new String[] {"modulo.envios"},ex,null);
 		}
+
 		return "envioModal";
 	}
 
@@ -1966,7 +1976,7 @@ public class DefinirEnviosAction extends MasterAction {
 		}
 		return idPersona;
 	}
-	private String getIdColegiados(DefinirEnviosForm form, HttpServletRequest request) throws ClsExceptions{
+	private String getIdColegiados(DefinirEnviosForm form, HttpServletRequest request) throws ClsExceptions, SIGAException{
 		Hashtable htPersonas = new Hashtable();
 		Vector datos = new Vector();
 		Vector guardias = new Vector();
@@ -1975,7 +1985,7 @@ public class DefinirEnviosAction extends MasterAction {
 		String idlista = null;
 		String idPersona  = null;
 		String idInstitucion  = null;
-		try {		
+	
 				MasterReport masterReport = new  MasterReport(); 
 				Vector vCampos = masterReport.obtenerDatosFormulario(form);
 				if ( vCampos.size()>0) {
@@ -2016,11 +2026,7 @@ public class DefinirEnviosAction extends MasterAction {
 				datos = admGT.getDatosPersonasGuardias(idInstitucion,idlista,guardias,fechaInicio,fechaFin);
 				idPersona = calcularPersona(datos,form);
 				
-				
-			} catch (SIGAException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}  
+ 
 
 		return idPersona;
 	}
@@ -2032,10 +2038,12 @@ public class DefinirEnviosAction extends MasterAction {
 		String idPersona=null;
 
 		 //Map map = new HashMap();
-		try {
+		
 		    String datosInforme = "";
 		    int j;
-		    String resto = form.getDatosEnvios();	
+		    String resto = form.getDatosEnvios();
+		    if(datos.size()==0)
+		    	throw new SIGAException("messages.general.error.noExistenDatos"); 
 			for (j=0; j<datos.size(); j++){		    						
 				Hashtable letradoOut=(Hashtable)datos.get(j);	
 				Long letrado =new Long((String)letradoOut.get("IDPERSONA")).longValue();	
@@ -2073,11 +2081,8 @@ public class DefinirEnviosAction extends MasterAction {
 			if(datos.size()!=1)
 				idPersona=null;
 			
-		}
-		catch (Exception e) 
-		{
-			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
-		} 
+		
+		
         return  idPersona;
 	}
 
@@ -2182,7 +2187,7 @@ public class DefinirEnviosAction extends MasterAction {
 
 
 		} catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.consultas"},e,null); 
+			throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null); 
 		}
 		return "export";
 	}

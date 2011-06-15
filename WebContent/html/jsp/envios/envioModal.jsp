@@ -41,7 +41,13 @@
 	String datosEnvios = (String)request.getAttribute("datosEnvios");
 	String clavesIteracion = (String)request.getAttribute("clavesIteracion");
 	String envioSms = (String)request.getAttribute("smsHabilitado");
-	
+	String Datos = (String)request.getAttribute("exitenDatos");	
+	String noExistDatos="";		
+	if (Datos!="")  {
+		noExistDatos="noExisteDatos('"+Datos+"');";
+	} else {
+		noExistDatos = "";
+	}
 	
 	ArrayList comboTipoEnvio = (ArrayList) request.getAttribute("comboTipoEnvio");
 	String recargarCombos="";	
@@ -92,7 +98,7 @@
 
 </head>
 
-<body onload="recargarCombos();">
+<body onload="recargarCombos();<%=noExistDatos %>">
 
 <!-- INICIO ******* CAPA DE PRESENTACION ****** -->
 <!-- dentro de esta capa se tienen que situar los diferentes componentes 
@@ -260,8 +266,13 @@
 		{			
 			window.close();
 		}
-	
-	function recargarCombos() 
+		
+		function noExisteDatos(mensaje) 
+		{			
+ 			alert('<siga:Idioma key="messages.general.error.noExistenDatos"/>');
+			window.close();
+		}
+		function recargarCombos() 
 		{		
 			var tmp1 = document.getElementsByName("comboTipoEnvio");
 				var tmp2 = tmp1[0];			 
