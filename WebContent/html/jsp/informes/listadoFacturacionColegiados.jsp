@@ -396,7 +396,7 @@
 			fin();
 			return;
 		}
-		var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
+		var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='<%=app%>/INF_InformesGenericos.do' target='submitArea'>");
 		formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucion%>'>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='CFACT'>"));
@@ -425,7 +425,7 @@
 		idFacturacion = document.getElementById(idFacturacion).value;
 		idInstitucion = document.mantenimientoInformesForm.idInstitucion.value;
 		datos = "idInstitucion=="+idInstitucion +"##idFacturacion=="+idFacturacion+"##idPersona=="+idPersona +"%%%";
-		var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
+		var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='<%=app%>/INF_InformesGenericos.do' target='submitArea'>");
 		formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucion%>'>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='CFACT'>"));
