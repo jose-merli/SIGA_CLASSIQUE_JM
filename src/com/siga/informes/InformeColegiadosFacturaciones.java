@@ -67,7 +67,7 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 				
 		Hashtable htFacturacion=null;
 		FcsFacturacionJGAdm factAdm = new FcsFacturacionJGAdm(usr);
-		htFacturacion = factAdm.obtenerDetalleFacturacion(institucion, idFacturacion);
+		htFacturacion = factAdm.obtenerDetalleFacturacion(institucion, idFacturacion, idPersona);
 		htDatos.putAll(htFacturacion);
 		
 		return htDatos;
