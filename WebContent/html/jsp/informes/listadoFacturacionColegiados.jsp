@@ -213,11 +213,11 @@
 		<td><%=UtilidadesString.mostrarDatoJSP(fila.getString(CenColegiadoBean.C_NCOLEGIADO))%></td>
 		<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("APELLIDOS1")) +" "+ UtilidadesString.mostrarDatoJSP(fila.getString("APELLIDOS2"))+", "+UtilidadesString.mostrarDatoJSP(fila.getString("NOMBRECOL"))%></td>
 		<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("NOMBRE"))%></td>
-		<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(importeOficio)%>&nbsp;&euro;</td>
-		<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(importeGuardia)%>&nbsp;&euro;</td>
-		<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(importeSOJ)%>&nbsp;&euro;</td>
-		<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(importeEJG)%>&nbsp;&euro;</td>
-		<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(importeTotal)%>&nbsp;&euro;</td>
+		<td align="right"><%=UtilidadesNumero.formatoCampo(importeOficio)%>&nbsp;&euro;</td>
+		<td align="right"><%=UtilidadesNumero.formatoCampo(importeGuardia)%>&nbsp;&euro;</td>
+		<td align="right"><%=UtilidadesNumero.formatoCampo(importeSOJ)%>&nbsp;&euro;</td>
+		<td align="right"><%=UtilidadesNumero.formatoCampo(importeEJG)%>&nbsp;&euro;</td>
+		<td align="right"><%=UtilidadesNumero.formatoCampo(importeTotal)%>&nbsp;&euro;</td>
 
 	</siga:FilaConIconos>
 	<%

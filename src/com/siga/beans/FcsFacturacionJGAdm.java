@@ -4633,7 +4633,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 						 }
 			
 						sql = sql + "	GROUP BY importes.idpersona, col.ncolegiado,col.comunitario,col.ncomunitario, fac.nombre, fac.fechadesde, fac.fechahasta,fac.idfacturacion,per.nombre,per.apellidos1,per.apellidos2 "+
-									"	ORDER BY fac.fechadesde desc ";
+									"	ORDER BY fac.fechadesde desc,per.apellidos1,per.apellidos2,per.nombre ";
 			//ejecutando la consulta
 			PaginadorCaseSensitive paginador = new PaginadorCaseSensitive (sql);
 			int totalRegistros = paginador.getNumeroTotalRegistros();
@@ -4652,7 +4652,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 	}//getPaginadorDetalleFacturacion()
 
 	
-	public Hashtable obtenerDetalleFacturacion(String idInstitucion, String idFacturacion) throws ClsExceptions {
+	public Hashtable obtenerDetalleFacturacion(String idInstitucion, String idFacturacion, String idPersona) throws ClsExceptions {
 		RowsContainer rc = null;
 		Hashtable result = new Hashtable();
 		try{
@@ -4705,8 +4705,9 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 						 "    AND col.idinstitucion = importes.idinstitucion " +
 						 "    AND fac.idfacturacion = importes.idFacturacion " +
 						 "    AND fac.idinstitucion = importes.idInstitucion " +
-						 "    AND fac.idfacturacion ="+idFacturacion +
+						 "    AND fac.idfacturacion = "+idFacturacion +
 						 "    AND fac.idInstitucion = "+idInstitucion +
+						 "    AND col.idpersona 	= "+idPersona +
 						 "	GROUP BY fac.nombre, fac.fechadesde, fac.fechahasta,fac.idfacturacion  "+
 						 "	ORDER BY fac.fechadesde desc ";
 
@@ -4783,8 +4784,8 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 						 "    AND fac.idinstitucion = importes.idInstitucion " +
 						 "    AND fac.idInstitucion = "+idInstitucion  +
 						 "    AND col.idpersona= " + idPersona +
-						 "	GROUP BY importes.idpersona, col.ncolegiado, fac.nombre, fac.fechadesde, fac.fechahasta,fac.idfacturacion,per.nombre,per.apellidos1,per.apellidos2 "+
-						 "	ORDER BY fac.fechadesde desc ";
+						 "	GROUP BY importes.idpersona, col.ncolegiado, fac.nombre, fac.fechadesde, fac.fechahasta,fac.idfacturacion,per.apellidos1,per.apellidos2,per.nombre "+
+						 "	ORDER BY fac.fechadesde desc,per.apellidos1,per.apellidos2,per.nombre ";
 			
 		Vector datos = new Vector();
 		
