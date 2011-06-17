@@ -33,7 +33,8 @@
 	Vector obj = (Vector) request.getAttribute("resultado");
 %>
 
-<html>
+
+<%@page import="com.siga.beans.ScsSaltoCompensacionGrupoBean"%><html>
 
 <!-- HEAD -->
 <head>
@@ -72,7 +73,7 @@
 		   borde="2"
 		   clase="tableTitle"		   
 		   nombreCol="gratuita.inicio_SaltosYCompensaciones.literal.turno,gratuita.inicio_SaltosYCompensaciones.literal.guardia,gratuita.inicio_SaltosYCompensaciones.literal.nColegiado,gratuita.inicio_SaltosYCompensaciones.literal.letrado,gratuita.inicio_SaltosYCompensaciones.literal.tipo,gratuita.inicio_SaltosYCompensaciones.literal.fecha,gratuita.inicio_SaltosYCompensaciones.literal.fechaUso,"
-		   tamanoCol="20,17,10,15,10,8,10,10"
+		   tamanoCol="18,18,7,20,11,8,8,10"
 		   alto="100%" 
 		   modal="P"
 		   activarFilaSel="true" >
@@ -81,10 +82,10 @@
 	<% if ((obj!= null) && (obj.size()>0)) { %>
 			<%
 			//Datos ocultos:
-			String idInstitucion="", idTurno="", idSaltosTurno="", idGuardia="", idPersona="";
-			String saltoOCompensacion="", fecha="", motivos="", fechaCumplimiento="";
+			String idInstitucion="", idTurno="", idSaltosTurno="", idGuardia="", idPersona="", idGrupoGuardia = "";
+			String saltoOCompensacion="", fecha="", motivos="", fechaCumplimiento="", motivosGrupo= "";
 			//Datos visibles:
-			String nombreTurno="", nombreGuardia="", datosLetrado="", nCol="&nbsp;";
+			String nombreTurno="", nombreGuardia="", datosLetrado="", nCol="&nbsp;", idSaltoCompensacionGrupo="";
 			
 			int recordNumber=1;
 			while ((recordNumber) <= obj.size())
@@ -115,6 +116,7 @@
 			idInstitucion = hash.get(ScsSaltosCompensacionesBean.C_IDINSTITUCION)==null?"&nbsp;":(String)hash.get(ScsSaltosCompensacionesBean.C_IDINSTITUCION);
 			idTurno = hash.get(ScsSaltosCompensacionesBean.C_IDTURNO)==null?"&nbsp;":(String)hash.get(ScsSaltosCompensacionesBean.C_IDTURNO);
 			idSaltosTurno = hash.get(ScsSaltosCompensacionesBean.C_IDSALTOSTURNO)==null?"&nbsp;":(String)hash.get(ScsSaltosCompensacionesBean.C_IDSALTOSTURNO);
+			idSaltoCompensacionGrupo = hash.get(ScsSaltoCompensacionGrupoBean.C_IDSALTOCOMPENSACIONGRUPO)==null?"&nbsp;":(String)hash.get(ScsSaltoCompensacionGrupoBean.C_IDSALTOCOMPENSACIONGRUPO);
 			idPersona = hash.get(ScsSaltosCompensacionesBean.C_IDPERSONA)==null?"&nbsp;":(String)hash.get(ScsSaltosCompensacionesBean.C_IDPERSONA);
 			saltoOCompensacion = hash.get(ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION)==null?"&nbsp;":(String)hash.get(ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION);
 			fecha = hash.get(ScsSaltosCompensacionesBean.C_FECHA)==null?"":(String)hash.get(ScsSaltosCompensacionesBean.C_FECHA);
@@ -124,10 +126,18 @@
 				motivos = " ";
 			else
 				motivos = (String)hash.get(ScsSaltosCompensacionesBean.C_MOTIVOS);
+			if (hash.get(ScsSaltoCompensacionGrupoBean.C_MOTIVO)!=null && ((String)hash.get(ScsSaltoCompensacionGrupoBean.C_MOTIVO)).equals(""))
+				motivosGrupo = " ";
+			else
+				motivosGrupo = (String)hash.get(ScsSaltoCompensacionGrupoBean.C_MOTIVO);
 			if (hash.get(ScsSaltosCompensacionesBean.C_IDGUARDIA)!=null && ((String)hash.get(ScsSaltosCompensacionesBean.C_IDGUARDIA)).equals(""))
 				idGuardia = " ";
 			else
 				idGuardia = (String)hash.get(ScsSaltosCompensacionesBean.C_IDGUARDIA);
+			if (hash.get(ScsSaltoCompensacionGrupoBean.C_IDGRUPOGUARDIA)!=null && ((String)hash.get(ScsSaltoCompensacionGrupoBean.C_IDGRUPOGUARDIA)).equals(""))
+				idGrupoGuardia = " ";
+			else
+				idGrupoGuardia = (String)hash.get(ScsSaltoCompensacionGrupoBean.C_IDGRUPOGUARDIA);
 			if (hash.get(ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO)!=null && ((String)hash.get(ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO)).equals(""))
 				fechaCumplimiento = " ";
 			else
@@ -141,13 +151,16 @@
 			if (hash.get("NUMERO")!=null && ((String)hash.get("NUMERO")).equals("")) {
 				datosLetrado = UtilidadesHash.getString(hash,"LETRADO");
 			} else {
-			//	datosLetrado = "("+UtilidadesHash.getString(hash,"NUMERO")+") "+UtilidadesHash.getString(hash,"LETRADO");
 				nCol = UtilidadesHash.getString(hash,"NUMERO");
 				datosLetrado = UtilidadesHash.getString(hash,"LETRADO");
 			}
+			String permisos = "C";
+			if(fechaCumplimiento==null || fechaCumplimiento.trim().equals("")){
+				permisos += ",E,B";			
+			}
 
 			%>
-	       	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="C,E,B" clase="listaNonEdit">
+	       	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=permisos%>" clase="listaNonEdit">
 				<td>
 					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idInstitucion%>'>
 					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=idTurno%>'>
@@ -158,6 +171,9 @@
 					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_7' value='<%=fecha%>'>
 					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_8' value='<%=motivos%>'>
 					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_9' value='<%=fechaCumplimiento%>'>
+					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_10' value='<%=idGrupoGuardia%>'>
+					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_11' value='<%=motivosGrupo%>'>
+					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_12' value='<%=idSaltoCompensacionGrupo%>'>
 					<%=nombreTurno%>
 				</td>
 				<td><% if(nombreGuardia.equals(" ")) { %>
@@ -170,9 +186,13 @@
 				<td><%=datosLetrado%></td>
 				<td >
 					<% if (saltoOCompensacion.equalsIgnoreCase("S")) { %>
-						<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.salto"/>
-					<% } else { %>
-						<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.compensacion"/>
+						<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.salto"/>
+					<% } else if (saltoOCompensacion.equalsIgnoreCase("C")) {  %>
+						<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.compensacion"/>
+					<% } else if (saltoOCompensacion.equalsIgnoreCase("CG")) {  %>
+						<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.compensacionGrupo"/>
+					<% } else if (saltoOCompensacion.equalsIgnoreCase("SG")) {  %>
+						<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.saltoGrupo"/>												
 					<% } %>
 				</td>
 				<td >

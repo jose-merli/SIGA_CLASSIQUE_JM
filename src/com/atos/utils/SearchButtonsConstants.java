@@ -25,7 +25,8 @@ public enum SearchButtonsConstants {
 	LISTO_PARA_ENVIAR ("le","gratuita.busquedaEJG_CAJG.listoParaEnviar","accionListoParaEnviar()",18),
 	ANIADIR_A_REMESA ("ar","general.boton.aniadirARemesa","aniadirARemesa(true)",19),
 	DESCARGA_EJG ("dee","general.boton.descargaEejg","descargaEejg(true)",20),
-	RENEGOCIAR ("rn","general.boton.renegociar","renegociar(true)",21);
+	RENEGOCIAR ("rn","general.boton.renegociar","renegociar(true)",21),
+	NUEVO_GRUPOS ("ng","general.boton.nuevoGrupos","nuevoGrupos()",22);
 	
 	
     private final String valor;   

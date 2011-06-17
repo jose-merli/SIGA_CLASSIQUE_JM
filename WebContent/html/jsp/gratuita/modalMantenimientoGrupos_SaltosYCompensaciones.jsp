@@ -12,15 +12,19 @@
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
+<!-- AJAX -->
+<%@ taglib uri="ajaxtags.tld" prefix="ajax" %>
+
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.siga.Utilidades.UtilidadesHash"%>
 <%@ page import="com.atos.utils.GstDate"%>
-<%@ page import="com.siga.beans.ScsSaltosCompensacionesBean"%>
+<%@ page import="com.siga.beans.ScsSaltoCompensacionGrupoBean"%>
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.util.Hashtable"%>
+
 <!-- JSP -->
 <% 
 	String app=request.getContextPath(); 
@@ -37,15 +41,15 @@
 	String guardia = UtilidadesHash.getString(datosIniciales,"NOMBREGUARDIA");
 	String letrado = UtilidadesHash.getString(datosIniciales,"LETRADO");
 	//Datos de la Tabla:
-	String idInstitucion = UtilidadesHash.getString(datosIniciales,ScsSaltosCompensacionesBean.C_IDINSTITUCION);
-	String idTurno = UtilidadesHash.getString(datosIniciales,ScsSaltosCompensacionesBean.C_IDTURNO);
-	String idSaltosTurno = UtilidadesHash.getString(datosIniciales,ScsSaltosCompensacionesBean.C_IDSALTOSTURNO);
-	String idGuardia = UtilidadesHash.getString(datosIniciales,ScsSaltosCompensacionesBean.C_IDGUARDIA);
-	String idPersona = UtilidadesHash.getString(datosIniciales,ScsSaltosCompensacionesBean.C_IDPERSONA);
-	String salto = UtilidadesHash.getString(datosIniciales,ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION);
-	String fecha = UtilidadesHash.getString(datosIniciales,ScsSaltosCompensacionesBean.C_FECHA);	
-	String motivos = UtilidadesHash.getString(datosIniciales,ScsSaltosCompensacionesBean.C_MOTIVOS);
-	String fechaCumplimiento = UtilidadesHash.getString(datosIniciales,ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO);
+	String idInstitucion = UtilidadesHash.getString(datosIniciales,ScsSaltoCompensacionGrupoBean.C_IDINSTITUCION);
+	String idSaltoCompensacionGrupo = UtilidadesHash.getString(datosIniciales,ScsSaltoCompensacionGrupoBean.C_IDSALTOCOMPENSACIONGRUPO);
+	String idTurno = UtilidadesHash.getString(datosIniciales,ScsSaltoCompensacionGrupoBean.C_IDTURNO);
+	String idGuardia = UtilidadesHash.getString(datosIniciales,ScsSaltoCompensacionGrupoBean.C_IDGUARDIA);
+	String idGrupoGuardia = UtilidadesHash.getString(datosIniciales,ScsSaltoCompensacionGrupoBean.C_IDGRUPOGUARDIA);
+	String salto = UtilidadesHash.getString(datosIniciales,ScsSaltoCompensacionGrupoBean.C_SALTOCOMPENSACION);
+	String fecha = UtilidadesHash.getString(datosIniciales,ScsSaltoCompensacionGrupoBean.C_FECHA);	
+	String motivos = UtilidadesHash.getString(datosIniciales,ScsSaltoCompensacionGrupoBean.C_MOTIVO);
+	String fechaCumplimiento = UtilidadesHash.getString(datosIniciales,ScsSaltoCompensacionGrupoBean.C_FECHACUMPLIMIENTO);
 	if (fechaCumplimiento!=null && !fechaCumplimiento.equals(""))
 		fechaCumplimiento = GstDate.getFormatedDateShort(usr.getLanguage(),fechaCumplimiento);
 
@@ -71,11 +75,24 @@
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
-	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css"	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
+	<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript"></script>
+	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
+	<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
+	
+	<!--Step 2 -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
+	
+	
+	<!--Step 3 -->
+	  <!-- defaults for Autocomplete and displaytag -->
+	  <link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />
+	  <link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
 
+	
 </head>
 
 <body>
@@ -108,8 +125,8 @@
 		<html:hidden property = "idInstitucion" value = "<%=idInstitucion%>"/>
 		<html:hidden property = "idTurno" value = "<%=idTurno%>"/>
 		<html:hidden property = "idGuardia" value = "<%=idGuardia%>"/>
-		<html:hidden property = "idPersona" value = "<%=idPersona%>"/>
-		<html:hidden property = "idSaltosTurno" value = "<%=idSaltosTurno%>"/>
+		<html:hidden property = "idGrupoGuardia" value = "<%=idGrupoGuardia%>"/>
+		<html:hidden property = "idSaltoCompensacionGrupo" value = "<%=idSaltoCompensacionGrupo%>"/>
 		<html:hidden property = "salto" value = "<%=salto%>"/>
 	<% } %>
 	<!-- INICIO: CAMPOS DEL REGISTRO -->
@@ -120,19 +137,34 @@
 				<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensaciones.literal.turno"/>&nbsp;(*)
 			</td>		
 			<td colspan="3">
-				<siga:ComboBD nombre = "idTurno" tipo="turnos" clase="boxCombo" obligatorio="false" accion="Hijo:idGuardia" parametro="<%=dato%>" ancho="400"/>
+				<siga:ComboBD nombre = "idTurno" tipo="turnos" clase="boxCombo" obligatorio="true" accion="Hijo:idGuardia" parametro="<%=dato%>" ancho="500"/>
 			</td>		
 		</tr>
 		<tr>
 			<td  class="labelText">
-				<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensaciones.literal.guardia"/>
+				<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensaciones.literal.guardia"/>&nbsp;(*)
 			</td>		
 			<td colspan="3">
-				<siga:ComboBD nombre = "idGuardia" tipo="guardias" clase="boxCombo" obligatorio="false" hijo="t" ancho="400"/> 
+				<siga:ComboBD nombre = "idGuardia" tipo="cmbGuardiasSyC" clase="boxCombo" obligatorio="true" hijo="t" accion="Hijo:idGrupoGuardia;" ancho="500"/> 
 			</td>		
 		</tr>
-
+		<tr>
+			<td class="labelText">
+				<siga:Idioma key='gratuita.modalNuevo_SaltosYCompensaciones.literal.grupo'/>&nbsp;(*)
+			</td>
+			<td colspan="3">
+				<siga:ComboBD nombre="idGrupoGuardia" tipo="cmbGruposSyC" clase="boxCombo" obligatorio="true" hijo="t" accion="parent.forzarAjax();"/>
+			</td>	
+		</tr>
 		
+		<tr>
+			<td class="labelText">
+				<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensaciones.literal.letrados"/>
+			</td>
+			<td colspan="4">
+				<html:textarea property="letrado"  styleClass="boxConsulta" readOnly="true" cols="75" rows="2"  style="width=500;height=80" />
+			</td>
+		</tr>		
 		<tr>
 			<td class="labelText">
 				<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensaciones.literal.fecha"/>&nbsp;(*)
@@ -150,7 +182,12 @@
 				&nbsp;
 				<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.compensacion"/>
 			</td>
-		</tr>		
+		</tr>
+		<tr>
+		<td>
+		&nbsp;
+		</td>
+		</tr>	
 		<tr>
 			<td class="labelText">
 				<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensaciones.literal.motivos"/>
@@ -164,38 +201,7 @@
 		&nbsp;
 		</td>
 		</tr>	
-		<tr>
-			<td class="labelText">
-				<siga:Idioma key='gratuita.seleccionColegiadoJG.literal.colegiado'/>
-			</td>
-			<td colspan="3">
-				<input type="text" name="nombreMostrado" class="boxConsulta" readonly value="" style="width:'400px';">
-			</td>	
-		</tr>
-		<tr>
-			<td colspan="4">
-				<html:hidden property="flagSalto" value=""></html:hidden>
-				<html:hidden property="flagCompensacion" value=""></html:hidden>
-				<html:hidden property="numeroLetrado" value=""></html:hidden>
-					<siga:BusquedaSJCS	
-						propiedad="seleccionLetrado" 
-						botones="M"
-						concepto="SALTOSCOMP" 
-						operacion="Asignacion" 
-						nombre="SaltosYCompensacionesForm" 
-						campoTurno="idTurno" 
-						campoGuardia="idGuardia"
-						campoFecha="fecha"
-						campoPersona="idPersona" 
-						campoColegiado="numeroLetrado" 
-						mostrarNColegiado="true"
-						campoNombreColegiado="nombreMostrado" 
-						campoFlagSalto="flagSalto" 
-						campoFlagCompensacion="flagCompensacion" 
-						modo="nuevo"
-					/>
-			</td>
-		</tr>
+
 		
 		<% } else { %>
 
@@ -204,7 +210,7 @@
 				<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.turno"/>
 			</td>
 			<td colspan="3">
-				<html:text name="SaltosYCompensacionesForm" property="turno" size="50" maxlength="100" styleClass="boxConsulta" value="<%=turno%>" readOnly="true"></html:text>
+				<html:text name="SaltosYCompensacionesForm" property="turno" size="50" maxlength="100" styleClass="boxConsulta" value="<%=turno%>" readOnly="true" style="width=400"></html:text>
 			</td>
 		</tr>
 		<tr>
@@ -212,12 +218,12 @@
 				<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.guardia"/>
 			</td>
 			<td colspan="3">
-				<html:text name="SaltosYCompensacionesForm" property="guardia" size="50" maxlength="100" styleClass="boxConsulta" value="<%=guardia%>" readOnly="true"></html:text>
+				<html:text name="SaltosYCompensacionesForm" property="guardia" size="50" maxlength="100" styleClass="boxConsulta" value="<%=guardia%>" readOnly="true" style="width=400"></html:text>
 			</td>
 		</tr>
 		<tr>
 			<td class="labelText">
-				<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.letrado"/>
+				<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensaciones.literal.grupoSYC"/>
 			</td>
 			<td>
 				<html:text name="SaltosYCompensacionesForm" property="letrado" size="10" maxlength="300" styleClass="boxConsulta" value="<%=letrado%>" readOnly="true"></html:text>
@@ -226,19 +232,19 @@
 				<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.tipo"/>
 			</td>
 			<td class="labelTextValor">
-				<% if(salto.equals("S")) {%>
-				<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.salto"/>
-			<% } else { %>
-				<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.compensacion"/>
+			<% if(salto.equals("SG")) {%>
+				<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.saltoGrupo"/>
+			<% } else if(salto.equals("CG")) { %>
+				<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.compensacionGrupo"/>
 			<% } %>
 			</td>
 		</tr>		
 		<tr>
-			<td class="labelText">
+			<td class="labelText"  width="500">
 				<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.fecha"/> (*)
 			</td>
 			<td>
-				<html:text name="SaltosYCompensacionesForm" property="fecha" size="10" styleClass="<%=estilo %>" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fecha)%>" readOnly="true"></html:text>
+				<html:text name="SaltosYCompensacionesForm" property="fecha" size="7" styleClass="<%=estilo %>" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fecha)%>" readOnly="true"></html:text>
 				&nbsp;
 				<% if(modo.equalsIgnoreCase("EDITAR")) { %>
 					<a onClick="return showCalendarGeneral(fecha);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="general.literal.seleccionarFecha"/>'  border="0"></a>
@@ -257,7 +263,7 @@
 			</td>
 			<td  colspan="3">
 				<% if(modo.equalsIgnoreCase("EDITAR")) { %>
-					<html:textarea name="SaltosYCompensacionesForm" property="motivos" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" cols="80" rows="4" style="overflow:auto" style="width=400;height=120" onkeydown="cuenta(this,1024);" styleClass="box" value="<%=motivos%>" readOnly="false" ></html:textarea>
+					<html:textarea name="SaltosYCompensacionesForm" property="motivos" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" cols="80" rows="4" style="overflow:auto" style="width=350;height=120" onkeydown="cuenta(this,1024);" styleClass="box" value="<%=motivos%>" readOnly="false" ></html:textarea>
 				<% } else { %>
 					<html:textarea name="SaltosYCompensacionesForm" property="motivos" cols="50" rows="4" style="overflow:auto" styleClass="boxConsulta" value="<%=motivos%>" readOnly="true" ></html:textarea>
 				<% } %>
@@ -268,6 +274,12 @@
 	<% } %>			
 		</table>
 	</table>
+	
+<ajax:updateFieldFromSelect  
+	baseUrl="/SIGA${path}.do?modo=getAjaxLetradosInscritos"
+    source="idGrupoGuardia" target="letrado"
+	parameters="idTurno={idTurno},idGuardia={idGuardia},idGrupoGuardia={idGrupoGuardia}" />
+	
 	</html:form>			
 	</fieldset>	
 	
@@ -276,6 +288,8 @@
 		<input type="hidden" name="actionModal" value="">
 		<input type="hidden" name="modo" value="abrirBusquedaModal">
 	</html:form>
+	
+
 	
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 	<!-- Aqui comienza la zona de botones de acciones -->
@@ -287,7 +301,9 @@
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">
 	
-	
+		function forzarAjax(){
+			document.getElementById('idGrupoGuardia').onchange();
+		}
 	
 	
 		//Asociada al boton GuardarCerrar
@@ -297,16 +313,21 @@
 
 				//Valido e inserto:
 				sub();
-				if (document.forms[0].idTurno.value==""){
-					alert('<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensaciones.literal.error1"/>');
+				if (document.forms[0].idGuardia.value==""){
+					alert('<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensacionesGrupo.literal.error1"/>');
 					fin();
 					return false;
-	 			}else if (validateSaltosYCompensacionesForm(document.SaltosYCompensacionesForm)) {
-					document.forms[0].modo.value = "insertar";
+					
+				}else if (document.forms[0].idGrupoGuardia.value==""){
+					alert('<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensacionesGrupo.literal.error2"/>');
+					fin();
+					return false;
+				
+				}else if (validateSaltosYCompensacionesForm(document.SaltosYCompensacionesForm)) {
+					document.forms[0].modo.value = "insertarGrupos";
 					document.forms[0].target = "submitArea";							
 					document.forms[0].submit();	
 				}else{
-					
 					fin();
 					return false;
 				}
@@ -316,7 +337,7 @@
 				//Valido y modifico:
 				sub();	
 				if (validateSaltosYCompensacionesForm(document.SaltosYCompensacionesForm)) {
-					document.forms[0].modo.value = "modificar";
+					document.forms[0].modo.value = "modificarGrupos";
 					document.forms[0].target = "submitArea";							
 					document.forms[0].submit();	
 				}else{
@@ -331,7 +352,7 @@
 		function accionCerrar() 
 		{		
 			top.cierraConParametros("NORMAL");
-		}		
+		}
 
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->

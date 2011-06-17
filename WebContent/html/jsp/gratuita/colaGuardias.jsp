@@ -497,19 +497,22 @@
 			<td align='center' width='100%'><siga:Idioma key="gratuita.turnos.literal.compensaciones"/></td>
 		  </tr>
 		</table> 
-		<siga:TablaCabecerasFijas
-		   nombre="tablaCompensaciones"
-		   borde="1"
-		   clase="tableTitle"
-		   tamanoCol="22,50,28"
-		   nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.compensaciones"
-		   alto="170"
-		   ajusteAlto="">
+		
+		 
+		<% if (porGrupos) {	%>
+		 <siga:TablaCabecerasFijas
+		    nombre="tablaCompensaciones"
+		    borde="1"
+		    clase="tableTitle"
+	 		tamanoCol="10,80,10"
+	     	nombreCol="Gr,gratuita.turnos.literal.nombreSolo,Nº"
+ 		    alto="170"
+		    ajusteAlto="">
 
 			<!-- INICIO: ZONA DE REGISTROS -->
 			<!-- Aqui se iteran los diferentes registros de la lista -->
 			
-<%
+			<%
 				Vector resultado = (Vector) request.getAttribute("vCompensaciones");
 					if (resultado == null || resultado.size() == 0) {
 			%>			
@@ -518,18 +521,78 @@
 	   		 	<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
 			  </td>
 	 		</tr>	 		
-<%
+			<%
 	 			} else {
 	 					// recorro el resultado
 	 					for (int i = 0; i < resultado.size(); i++) {
-	 						Row registro = (Row) resultado.elementAt(i);
+	 							String  nombre="", ncolegiado="", numero="";
+	 							Hashtable registro = (Hashtable) resultado.get(i);
+								if (registro != null){
+									nombre =  UtilidadesString.mostrarDatoJSP(registro.get("LETRADO"));
+		 							ncolegiado = UtilidadesString.mostrarDatoJSP(registro.get("NUMERO"));
+		 							numero = UtilidadesString.mostrarDatoJSP(registro.get("REP"));									
+								}
 
-	 						// calculo de campos
-	 						String apellido1 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS1));
-	 						String apellido2 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS2));
-	 						String nombre = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_NOMBRE));
-	 						String ncolegiado = UtilidadesString.mostrarDatoJSP(registro.getString(CenColegiadoBean.C_NCOLEGIADO));
-	 						String numero = UtilidadesString.mostrarDatoJSP(registro.getString("NUMERO"));
+	 		%>
+			<!-- REGISTRO  -->
+  			<tr class="listaNonEdit">
+				<td align="center">
+					<%=ncolegiado%>
+				</td>
+				<td>
+					<%=nombre%>
+				</td>
+				<td align="center">
+					<%=numero%>
+				</td>
+			</tr>		
+			<!-- FIN REGISTRO -->
+<%
+	} // del for
+%>			
+			<!-- FIN: ZONA DE REGISTROS -->
+<%
+	} // del if
+%>			
+
+		</siga:TablaCabecerasFijas>
+		
+	<% } else { %>			
+		
+		<siga:TablaCabecerasFijas
+		    nombre="tablaCompensaciones"
+		    borde="1"
+		    clase="tableTitle"
+			tamanoCol="22,50,28"			
+			nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.compensaciones"
+		    alto="170"
+		    ajusteAlto="">
+
+			<!-- INICIO: ZONA DE REGISTROS -->
+			<!-- Aqui se iteran los diferentes registros de la lista -->
+			
+			<%
+				Vector resultado = (Vector) request.getAttribute("vCompensaciones");
+					if (resultado == null || resultado.size() == 0) {
+			%>			
+	 		<tr>
+			  <td colspan="4" height="75px">
+	   		 	<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
+			  </td>
+	 		</tr>	 		
+			<%
+	 			} else {
+	 					// recorro el resultado
+	 					for (int i = 0; i < resultado.size(); i++) {
+	 							String apellido1="", apellido2="", nombre="", ncolegiado="", numero="";
+ 							
+		 						Row registro = (Row) resultado.elementAt(i);
+		 						// calculo de campos
+		 						apellido1 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS1));
+		 						apellido2 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS2));
+		 						nombre = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_NOMBRE));
+		 						ncolegiado = UtilidadesString.mostrarDatoJSP(registro.getString(CenColegiadoBean.C_NCOLEGIADO));
+		 						numero = UtilidadesString.mostrarDatoJSP(registro.getString("NUMERO"));
 	 		%>
 			<!-- REGISTRO  -->
   			<tr class="listaNonEdit">
@@ -544,16 +607,16 @@
 				</td>
 			</tr>		
 			<!-- FIN REGISTRO -->
-<%
-	} // del for
-%>			
-			<!-- FIN: ZONA DE REGISTROS -->
-<%
-	} // del if
-%>			
+		<%
+			} // del for
+		%>			
+					<!-- FIN: ZONA DE REGISTROS -->
+		<%
+			} // del if
+		%>			
 
 		</siga:TablaCabecerasFijas>
-	  
+	<% } %>  
 <!-------------------------------------------------------------------------------------------------->	
 	  </td>
 	</tr>
@@ -569,6 +632,67 @@
 			<td align='center' width='100%'><siga:Idioma key="gratuita.turnos.literal.saltos"/></td>
 		  </tr>
 		</table>
+		
+		
+		<% if (porGrupos) {	%>		
+		<siga:TablaCabecerasFijas
+		   nombre="tablaSaltos"
+		   borde="1"
+		   clase="tableTitle"
+		   tamanoCol="10,80,10"
+	       nombreCol="Gr,gratuita.turnos.literal.nombreSolo,Nº"
+		   alto="170"
+		   ajusteAlto="">
+
+			<!-- INICIO: ZONA DE REGISTROS -->
+			<!-- Aqui se iteran los diferentes registros de la lista -->
+			
+			<%
+				Vector resultado = (Vector) request.getAttribute("vSaltos");
+					if (resultado == null || resultado.size() == 0) {
+			%>			
+	 		<tr>
+			  <td colspan="4" height="75px">
+	   		 	<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
+			  </td>
+	 		</tr>	 		
+			<%
+	 			} else {
+	 					// recorro el resultado
+	 					for (int i = 0; i < resultado.size(); i++) {
+	 							String  nombre="", ncolegiado="", numero="";
+	 							Hashtable registro = (Hashtable) resultado.get(i);
+								if (registro != null){
+									nombre =  UtilidadesString.mostrarDatoJSP(registro.get("LETRADO"));
+		 							ncolegiado = UtilidadesString.mostrarDatoJSP(registro.get("NUMERO"));
+		 							numero = UtilidadesString.mostrarDatoJSP(registro.get("REP"));									
+								}
+
+	 		%>
+			<!-- REGISTRO  -->
+  			<tr class="listaNonEdit">
+				<td align="center">
+					<%=ncolegiado%>
+				</td>
+				<td >
+					<%=nombre%>
+				</td>
+				<td align="center">
+					<%=numero%>
+				</td>
+			</tr>		
+			<!-- FIN REGISTRO -->
+<%
+	} // del for
+%>			
+			<!-- FIN: ZONA DE REGISTROS -->
+<%
+	} // del if
+%>			
+
+		</siga:TablaCabecerasFijas>
+		
+	<%	} else { %>			
 		<siga:TablaCabecerasFijas
 		   nombre="tablaSaltos"
 		   borde="1"
@@ -594,14 +718,15 @@
 	 			} else {
 	 					// recorro el resultado
 	 					for (int i = 0; i < resultado.size(); i++) {
-	 						Row registro = (Row) resultado.elementAt(i);
-
-	 						// calculo de campos
-	 						String apellido1 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS1));
-	 						String apellido2 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS2));
-	 						String nombre = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_NOMBRE));
-	 						String ncolegiado = UtilidadesString.mostrarDatoJSP(registro.getString(CenColegiadoBean.C_NCOLEGIADO));
-	 						String numero = UtilidadesString.mostrarDatoJSP(registro.getString("NUMERO"));
+	 							String apellido1="", apellido2="", nombre="", ncolegiado="", numero="";
+	 							
+		 						Row registro = (Row) resultado.elementAt(i);
+		 						// calculo de campos
+		 						apellido1 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS1));
+		 						apellido2 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS2));
+		 						nombre = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_NOMBRE));
+		 						ncolegiado = UtilidadesString.mostrarDatoJSP(registro.getString(CenColegiadoBean.C_NCOLEGIADO));
+		 						numero = UtilidadesString.mostrarDatoJSP(registro.getString("NUMERO"));
 	 		%>
 			<!-- REGISTRO  -->
   			<tr class="listaNonEdit">
@@ -625,7 +750,8 @@
 %>			
 
 		</siga:TablaCabecerasFijas>
-
+		
+<% } %>
 
 <!-------------------------------------------------------------------------------------------------->	
 	  </td>

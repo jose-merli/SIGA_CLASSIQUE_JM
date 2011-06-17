@@ -2665,8 +2665,8 @@
 		<action path="/JGR_SaltosYCompensaciones" type="com.siga.gratuita.action.SaltosYCompensacionesAction" name="SaltosYCompensacionesForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/inicio_SaltosYCompensaciones.jsp"/>
 			<forward name="listado" path="/html/jsp/gratuita/listado_SaltosYCompensaciones.jsp"/>
-			<forward name="nuevo" path="/html/jsp/gratuita/modalNuevo_SaltosYCompensaciones.jsp"/>
 			<forward name="mantenimiento" path="/html/jsp/gratuita/modalMantenimiento_SaltosYCompensaciones.jsp"/>
+			<forward name="mantenimientoGrupos" path="/html/jsp/gratuita/modalMantenimientoGrupos_SaltosYCompensaciones.jsp"/>
 		</action>
 		
 		<action path="/JGR_SaltosYCompensacionesGuardias" type="com.siga.gratuita.action.SaltosYCompensacionesAction" name="SaltosYCompensacionesForm" scope="request">

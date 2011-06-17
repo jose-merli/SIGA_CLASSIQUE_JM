@@ -8,6 +8,7 @@ import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -462,5 +463,192 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 		}
 		return salida;
 	}
+	
+	/** 
+	 * Devuelve la consulta SQL de la búsqueda de Turnos, Guardias y Letrados con saltos o compensaciones.
+	 * 
+	 * @param Hashtable registros: tabla hash con los datos de la pantalla para realizar la busqueda.
+	 * @return String: tiene la consulta SQL a ejecutar
+	 * @throws ClsExceptions
+	 */	
+	public String buscar(Hashtable registros) throws ClsExceptions {
+		String consulta = "";
+		String fechaDesde="", fechaHasta="", idTurno="", idGuardia="", idGrupoGuardia="", salto="", compensado="", idPersona="";		
+
+		try { 
+			//Datos iniciales:
+			fechaDesde = UtilidadesHash.getString(registros,"FECHADESDE"); 
+			fechaHasta = UtilidadesHash.getString(registros,"FECHAHASTA");
+			idTurno = UtilidadesHash.getString(registros,"IDTURNO");
+			idGuardia = UtilidadesHash.getString(registros,"IDGUARDIA");
+			idPersona = UtilidadesHash.getString(registros,"IDPERSONA");
+			idGrupoGuardia = UtilidadesHash.getString(registros,"IDGRUPOGUARDIA");
+			salto = UtilidadesHash.getString(registros,"SALTO");
+			compensado = UtilidadesHash.getString(registros,"COMPENSADO");
+			
+			//Consulta:
+			consulta  = "SELECT ";
+			consulta += " decode(saltos.saltoocompensacion,'S','SG','C','CG') SALTOOCOMPENSACION, ";
+			consulta += " saltos.*,";
+			consulta += " grupo."+ScsGrupoGuardiaBean.C_NUMEROGRUPO+ " AS NUMERO,";
+			consulta += " turno."+ScsTurnoBean.C_NOMBRE+" AS NOMBRETURNO,";
+			consulta += " guardia."+ScsGuardiasTurnoBean.C_NOMBRE+" AS NOMBREGUARDIA ";
+			//Campos para mostrar en la ventana de cola guardia
+			consulta += " , turno.IDINSTITUCION AS ID1, turno.IDTURNO AS ID2, saltos.IDGUARDIA AS ID3, grupo.IDGRUPOGUARDIA AS ID4 ";
+			consulta += " FROM "+ScsSaltoCompensacionGrupoBean.T_NOMBRETABLA+" saltos, ";
+			consulta += ScsTurnoBean.T_NOMBRETABLA+" turno, ";
+			consulta += ScsGuardiasTurnoBean.T_NOMBRETABLA+" guardia, ";
+			consulta += ScsGrupoGuardiaBean.T_NOMBRETABLA+" grupo ";
+ 			consulta += " WHERE ";
+			consulta += " saltos."+ScsSaltoCompensacionGrupoBean.C_IDINSTITUCION+"="+UtilidadesHash.getString(registros,"IDINSTITUCION");
+			if(salto!=null)
+				consulta += " AND saltos."+ScsSaltoCompensacionGrupoBean.C_SALTOCOMPENSACION+"='"+salto+"'";
+			if (!idTurno.equals(""))
+				consulta += " AND saltos."+ScsSaltoCompensacionGrupoBean.C_IDTURNO+"="+idTurno;
+			if (!idGuardia.equals(""))
+				consulta += " AND saltos."+ScsSaltoCompensacionGrupoBean.C_IDGUARDIA+"="+idGuardia;
+			if (idGrupoGuardia!=null && !idGrupoGuardia.equals(""))
+				consulta += " AND saltos."+ScsSaltoCompensacionGrupoBean.C_IDGRUPOGUARDIA+"="+idGrupoGuardia;
+			if (compensado!=null && compensado.equals("S"))
+				consulta += " AND saltos."+ScsSaltoCompensacionGrupoBean.C_FECHACUMPLIMIENTO+" > TO_DATE('01/01/2001','DD/MM/YYYY')";
+			if (compensado!=null && compensado.equals("N"))
+				consulta += " AND saltos."+ScsSaltoCompensacionGrupoBean.C_FECHACUMPLIMIENTO+" is null ";
+			
+			if ((fechaDesde != null && !fechaDesde.trim().equals("")) || (fechaHasta != null && !fechaHasta.trim().equals(""))) {
+				if (!fechaDesde.equals(""))
+					fechaDesde = GstDate.getApplicationFormatDate("", fechaDesde); 
+				if (!fechaHasta.equals(""))
+					fechaHasta = GstDate.getApplicationFormatDate("", fechaHasta);
+				consulta += " AND " + GstDate.dateBetweenDesdeAndHasta("saltos."+ScsSaltoCompensacionGrupoBean.C_FECHA, fechaDesde, fechaHasta);
+			}
+			
+			if (idPersona!=null && !idPersona.equals(""))
+				consulta += " AND grupo.idgrupoguardia in (select grupo2.idgrupoguardia from scs_grupoguardiacolegiado col2 where col2.idpersona = "+idPersona+")";
+
+			consulta += " AND grupo."+ScsGrupoGuardiaBean.C_IDGRUPOGUARDIA+"=saltos."+ScsSaltoCompensacionGrupoBean.C_IDGRUPOGUARDIA;
+			
+			consulta += " AND turno."+ScsTurnoBean.C_IDINSTITUCION+"=guardia."+ScsGuardiasTurnoBean.C_IDINSTITUCION;
+			consulta += " AND turno."+ScsTurnoBean.C_IDTURNO+"=guardia."+ScsGuardiasTurnoBean.C_IDTURNO;
+			
+			consulta += " AND guardia."+ScsGuardiasTurnoBean.C_IDINSTITUCION+"(+)=grupo."+ScsGrupoGuardiaBean.C_IDINSTITUCION;
+			consulta += " AND guardia."+ScsGuardiasTurnoBean.C_IDTURNO+"(+)=grupo."+ScsGrupoGuardiaBean.C_IDTURNO;
+			consulta += " AND guardia."+ScsGuardiasTurnoBean.C_IDGUARDIA+"(+)=grupo."+ScsGrupoGuardiaBean.C_IDGUARDIA;
+
+			//ORDENACION
+			consulta += " ORDER BY saltos."+ScsSaltoCompensacionGrupoBean.C_FECHA+" desc";
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Excepcion en ScsSaltosCompensacionesGrupoAdm.buscar() en la consulta:"+consulta);
+		}
+		return consulta;
+	}	
+	
+	public String selectSaltosCompensaciones(Hashtable registros) throws ClsExceptions {
+		String consulta = "";
+		try{
+			consulta  = "SELECT ID1, ID2, ID3, ID4, NUMERO , COUNT(1) REP from (";
+			consulta +=  this.buscar(registros);
+			consulta += ")";
+			consulta += "  GROUP BY numero, ID1, ID2, ID3, ID4";
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Excepcion en ScsSaltosCompensacionesGrupoAdm.buscar() en la consulta:"+consulta);
+		}
+		return consulta;
+	}	
+	
+	public Vector selectMantenimientoSYC(String consulta) throws ClsExceptions
+	{
+		Vector datos = new Vector();
+
+		// Acceso a BBDD
+		try {
+			RowsContainer rc = new RowsContainer();
+			if (rc.query(consulta)) {
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable) fila.getRow();
+					if (registro != null){
+						String idInstitucion =  (String) registro.get("IDINSTITUCION");
+						String idTurno = (String) registro.get("IDTURNO"); 
+						String idGuardia = (String) registro.get("IDGUARDIA"); 
+						String idGrupoGuardia = (String) registro.get("IDGRUPOGUARDIA");
+						registro.put("LETRADO",getInfoLetradosGrupoGuardia(idInstitucion, idTurno, idGuardia, idGrupoGuardia));
+						datos.add(registro);
+					}
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Excepcion en ScsSaltoCompensacionGrupoAdm.selectGenerico(). Consulta SQL:"
+					+ consulta);
+		}
+		return datos;
+	}
+	
+	public Vector selectDatosColaGuardiaSYC(String consulta) throws ClsExceptions {
+		Vector datos = new Vector();
+
+		// Acceso a BBDD
+		try {
+			RowsContainer rc = new RowsContainer();
+			if (rc.query(consulta)) {
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable) fila.getRow();
+					if (registro != null){
+						String idInstitucion =  (String) registro.get("ID1");
+						String idTurno = (String) registro.get("ID2"); 
+						String idGuardia = (String) registro.get("ID3"); 
+						String idGrupoGuardia = (String) registro.get("ID4");
+						registro.put("LETRADO",getInfoLetradosGrupoGuardia(idInstitucion, idTurno, idGuardia, idGrupoGuardia));
+						datos.add(registro);
+					}
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Excepcion en ScsSaltoCompensacionGrupoAdm.selectGenerico(). Consulta SQL:"
+					+ consulta);
+		}
+		return datos;
+	}	
+	
+	public String getInfoLetradosGrupoGuardia(String idInstitucion, String idTurno, String idGuardia, String idGrupoGuardia) throws ClsExceptions {
+		Vector datos = new Vector();
+		String letrados = "";
+		String consulta = "   SELECT (DECODE(col.COMUNITARIO,'1',col.NCOMUNITARIO, col.NCOLEGIADO) || ' - ' || perso.APELLIDOS1 || ' ' || perso.APELLIDOS2 || ', ' || perso.NOMBRE) AS LETRADO   "+
+						  "   FROM cen_persona perso,cen_colegiado col, scs_grupoguardiacolegiado ggc   "+
+						  "   WHERE perso.idpersona = ggc.idpersona   "+
+						  "     AND col.idpersona = perso.idpersona   "+
+						  "     AND col.idinstitucion = ggc.idinstitucion   "+
+						  "     AND ggc.idInstitucion = " + idInstitucion +
+						  "     AND ggc.idturno = " + idTurno +
+						  "     AND ggc.idguardia = " + idGuardia +
+						  "     AND ggc.idgrupoguardia = " + idGrupoGuardia +
+						  "   ORDER BY perso.APELLIDOS1 ";
+								
+		// Acceso a BBDD
+		try {
+			RowsContainer rc = new RowsContainer();
+			if (rc.query(consulta)) {
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable) fila.getRow();
+					if (registro != null)
+						datos.add(registro);
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Excepcion en ScsSaltoCompensacionGrupoAdm.getLetrados. Consulta SQL:"
+					+ consulta);
+		}
+		
+		for(int i = 0; i<datos.size(); i++){
+			Hashtable reg = (Hashtable) datos.get(i);
+			letrados = letrados + reg.get("LETRADO") + "; \n";
+		}
+		
+		return letrados;
+	}
+	
 	
 }

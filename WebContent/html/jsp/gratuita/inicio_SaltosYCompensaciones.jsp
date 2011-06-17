@@ -125,6 +125,8 @@
 					<option value='todo' selected ><siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.todo"/></option>
 					<option value='S' ><siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.salto"/></option>
 					<option value='C' ><siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.compensacion"/></option>
+					<option value='SG' ><siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.saltoGrupos"/></option>
+					<option value='CG' ><siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.compensacionGrupos"/></option>
 			</Select>
 		</td>	
 	</tr>
@@ -149,8 +151,8 @@
 		</td>
 		<td>	
 			<Select name="compensado" class="boxCombo">
-					<option value='todo' selected ></option>
-					<option value='no' ><siga:Idioma key="general.no"/></option>
+					<option value='todo'></option>
+					<option value='no' selected ><siga:Idioma key="general.no"/></option>
 					<option value='si' ><siga:Idioma key="general.yes"/></option>
 			</Select>
 		</td>
@@ -174,7 +176,7 @@
 	<!-- FIN: CAMPOS DE BUSQUEDA-->	
 
 	<!-- INICIO: BOTONES BUSQUEDA -->	
-	<siga:ConjBotonesBusqueda botones="N,B" />
+	<siga:ConjBotonesBusqueda botones="N,NG,B"  />
 	<!-- FIN: BOTONES BUSQUEDA -->
 	
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
@@ -205,6 +207,15 @@
 			document.forms[0].reset();
 			document.getElementsByName("idTurno")[0].onchange();
 			
+		}
+
+		<!-- Funcion asociada a boton NuevosGrupos -->
+		function nuevoGrupos() 
+		{		
+			document.forms[0].modo.value = "nuevoGrupos";
+			var salida = ventaModalGeneral(document.forms[0].name,"M");	
+			if (salida == "MODIFICADO") 
+				buscar();
 		}
 		
 	</script>

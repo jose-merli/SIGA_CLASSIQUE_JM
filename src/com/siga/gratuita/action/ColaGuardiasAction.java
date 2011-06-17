@@ -30,6 +30,7 @@ import com.siga.beans.ScsGrupoGuardiaColegiadoBean;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsInscripcionGuardiaAdm;
+import com.siga.beans.ScsSaltoCompensacionGrupoAdm;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -125,6 +126,7 @@ public class ColaGuardiasAction extends MasterAction {
 		String fecha  = coForm.getFechaConsulta();
 		fecha = (fecha!=null&&!fecha.trim().equals(""))?fecha:null;
 		ScsSaltosCompensacionesAdm saltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.getUserBean(request));
+		ScsSaltoCompensacionGrupoAdm saltosCompensacionesGruposAdm = new ScsSaltoCompensacionGrupoAdm(this.getUserBean(request));
 		
 		//Cargar último letrado
 		cargarUltimoLetrado(this.getUserBean(request), institucion, turno, guardia, coForm);
@@ -140,17 +142,6 @@ public class ColaGuardiasAction extends MasterAction {
 			}
 		}
 		
-		//Cargar listado de compensaciones
-		Vector vCompensaciones=saltosCompensacionesAdm.selectSaltosCompensaciones(institucion, turno, guardia, ClsConstants.COMPENSACIONES);
-		if(vCompensaciones!=null && !vCompensaciones.isEmpty()){
-			request.setAttribute("vCompensaciones",vCompensaciones);
-		}
-		//Cargar listado de saltos
-		Vector vSaltos=saltosCompensacionesAdm.selectSaltosCompensaciones(institucion, turno, guardia, ClsConstants.SALTOS);
-		if(vSaltos!=null && !vSaltos.isEmpty()){
-			request.setAttribute("vSaltos",vSaltos);
-		}
-
 		hashGuardia.put(ScsGuardiasTurnoBean.C_IDGUARDIA, guardia);
 		hashGuardia.put(ScsGuardiasTurnoBean.C_IDTURNO, turno);
 		hashGuardia.put(ScsGuardiasTurnoBean.C_IDINSTITUCION, institucion);
@@ -158,6 +149,42 @@ public class ColaGuardiasAction extends MasterAction {
 		if(vectGuardia!=null && vectGuardia.size()>0){
 			beanGuardia=(ScsGuardiasTurnoBean)vectGuardia.get(0);
 			request.setAttribute("porGrupos",beanGuardia.getPorGrupos());
+			
+			if(beanGuardia.getPorGrupos().equals("1")){
+				
+				//Cargamos los datos del registro
+				Hashtable registros = new Hashtable();
+				UtilidadesHash.set(registros,"IDINSTITUCION",institucion);
+				UtilidadesHash.set(registros,"IDTURNO",turno);
+				UtilidadesHash.set(registros,"IDGUARDIA",guardia);
+				//UtilidadesHash.set(registros,"IDGRUPOGUARDIA",miForm.getIdGrupoGuardia());	
+				UtilidadesHash.set(registros,"SALTO",ClsConstants.COMPENSACIONES);
+				
+				//Cargar listado de compensaciones
+				Vector vCompensaciones=saltosCompensacionesGruposAdm.selectDatosColaGuardiaSYC(saltosCompensacionesGruposAdm.selectSaltosCompensaciones(registros));
+				if(vCompensaciones!=null && !vCompensaciones.isEmpty()){
+					request.setAttribute("vCompensaciones",vCompensaciones);
+				}
+				
+				UtilidadesHash.set(registros,"SALTO",ClsConstants.SALTOS);
+				//Cargar listado de saltos
+				Vector vSaltos=saltosCompensacionesGruposAdm.selectDatosColaGuardiaSYC(saltosCompensacionesGruposAdm.selectSaltosCompensaciones(registros));
+				if(vSaltos!=null && !vSaltos.isEmpty()){
+					request.setAttribute("vSaltos",vSaltos);
+				}			
+				
+			}else{
+				//Cargar listado de compensaciones
+				Vector vCompensaciones=saltosCompensacionesAdm.selectSaltosCompensaciones(institucion, turno, guardia, ClsConstants.COMPENSACIONES);
+				if(vCompensaciones!=null && !vCompensaciones.isEmpty()){
+					request.setAttribute("vCompensaciones",vCompensaciones);
+				}
+				//Cargar listado de saltos
+				Vector vSaltos=saltosCompensacionesAdm.selectSaltosCompensaciones(institucion, turno, guardia, ClsConstants.SALTOS);
+				if(vSaltos!=null && !vSaltos.isEmpty()){
+					request.setAttribute("vSaltos",vSaltos);
+				}
+			}
 		}
 		
 		request.setAttribute("idGuardia", guardia);
