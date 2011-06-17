@@ -512,6 +512,8 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 					
 					in = getInteger(map.get(IDESTADOCIVIL));
 					if (in != null)	datosPersona.setIDEstadoCivil(in);
+					in = getInteger(map.get(SEXO));
+					if (in != null) datosPersona.setSexo(in);					
 					BigInteger bi = getBigInteger(map.get(RAZONSOCIAL));
 					if (bi != null)	datosPersona.setRazonSocial(bi);
 					BigDecimal bd = getBigDecimal(map.get(INGRESOSANUALES));
@@ -577,6 +579,8 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 					
 					in = getInteger(map.get(IDESTADOCIVIL));
 					if (in != null)	datosPersona.setIDEstadoCivil(in);
+					in = getInteger(map.get(SEXO));
+					if (in != null) datosPersona.setSexo(in);
 					BigInteger bi = getBigInteger(map.get(RAZONSOCIAL));
 					if (bi != null)	datosPersona.setRazonSocial(bi);
 					BigDecimal bd = getBigDecimal(map.get(INGRESOSANUALES));

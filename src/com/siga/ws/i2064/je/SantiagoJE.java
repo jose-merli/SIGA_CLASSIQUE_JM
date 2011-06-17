@@ -78,6 +78,15 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 			
 			Asistencias asistencias = datosJustificaciones.addNewAsistencias();
 			Colegiado colegiadoAsistencia = null;
+			String rutaAlm = getDirectorioSalida(informe, idInstitucion);
+			
+			File file = new File(rutaAlm);
+			file.delete();
+			file.mkdirs();
+			
+			for (File f : file.listFiles()) {
+				ClsLogging.writeFileLog("Fichero eliminado (" + f.delete() + ") " + file.getAbsolutePath(), 3);			
+			}
 			
 			for (Hashtable<String, String> hash : listMapAsis) {
 				String asistencia = hash.get(ANIO_ASISTENCIA) + "/" + hash.get(NUMERO_ASISTENCIA);
@@ -183,17 +192,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 			xmlOptions.setSavePrettyPrintIndent(4);
 			xmlOptions.setSavePrettyPrint();
 			
-			String rutaAlm = getDirectorioSalida(informe, idInstitucion);
-			
-			String nombreFichero = getNombreFichero(informe, idInstitucion, usrBean); 
-			
-			File file = new File(rutaAlm);
-			file.delete();
-			file.mkdirs();
-			
-			for (File f : file.listFiles()) {
-				ClsLogging.writeFileLog("Fichero eliminado (" + f.delete() + ") " + file.getAbsolutePath(), 3);			
-			}
+			String nombreFichero = getNombreFichero(informe, idInstitucion, usrBean);
 			
 			file = new File(file, nombreFichero + ".xml");
 			datosJustificacionesDocument.save(file, xmlOptions);

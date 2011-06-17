@@ -17,7 +17,6 @@ public interface PCAJGConstantes {
 	public final String IDTIPOEJG = "IDTIPOEJG";
 	public final String ANIO = "ANIO";
 	public final String NUMERO = "NUMERO";
-	public final String NUMEJG = "NUMEJG";
 	public final String IDARCHIVO = "IDARCHIVO";
 	public final String NOMBREARCHIVO = "NOMBREARCHIVO";
 	public final String IDTIPOARCHIVO = "IDTIPOARCHIVO";
@@ -26,6 +25,8 @@ public interface PCAJGConstantes {
 
      /***** CAMPOS DE LA VISTA v_ws_2055_ejg ****/
 
+	public final String IDEJGREMESA = "IDEJGREMESA";
+	public final String NUMEJG = "NUMEJG";
 	public final String IDEXPEDIENTESIGA = "IDEXPEDIENTESIGA";
 	public final String NUMEROEXPEDIENTESIGA = "NUMEROEXPEDIENTESIGA";
 	public final String ANOEXPEDIENTESIGA = "ANOEXPEDIENTESIGA";
@@ -57,7 +58,7 @@ public interface PCAJGConstantes {
 
      /***** CAMPOS DE LA VISTA v_ws_2055_persona ****/
 
-	public final String IDTIPOTERCERO = "IDTIPOTERCERO";
+	public final String IDPERSONA = "IDPERSONA";
 	public final String IDTIPOPERSONA = "IDTIPOPERSONA";
 	public final String NOMBRE = "NOMBRE";
 	public final String APELLIDO1 = "APELLIDO1";
@@ -65,8 +66,8 @@ public interface PCAJGConstantes {
 	public final String IDTIPOIDENTIFICACION = "IDTIPOIDENTIFICACION";
 	public final String NUMEROIDENTIFICACION = "NUMEROIDENTIFICACION";
 	public final String IDESTADOCIVIL = "IDESTADOCIVIL";
+	public final String SEXO = "SEXO";
 	public final String RAZONSOCIAL = "RAZONSOCIAL";
-	public final String INGRESOSANUALES = "INGRESOSANUALES";
 	public final String FECHANACIMIENTO = "FECHANACIMIENTO";
 	public final String OBSERVACIONES = "OBSERVACIONES";
 	public final String PROFESION = "PROFESION";
@@ -86,5 +87,7 @@ public interface PCAJGConstantes {
 	public final String DIR_FAX = "DIR_FAX";
 	public final String DIR_EMAIL = "DIR_EMAIL";
 	public final String DIR_IDPAIS = "DIR_IDPAIS";
+	public final String IDTIPOTERCERO = "IDTIPOTERCERO";
+	public final String INGRESOSANUALES = "INGRESOSANUALES";
 
 }
