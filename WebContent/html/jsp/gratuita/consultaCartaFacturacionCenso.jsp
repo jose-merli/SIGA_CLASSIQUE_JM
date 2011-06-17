@@ -139,7 +139,7 @@
 				for (int i = 0; i < resultado.size(); i++) {
 					Hashtable fila = (Hashtable) resultado.elementAt(i);
 					FilaExtElement[] elemento = new FilaExtElement[1];
-					elemento[0] = new FilaExtElement("enviar", "comunicar", SIGAConstants.ACCESS_READ);
+					elemento[0] = new FilaExtElement("download","download",SIGAConstants.ACCESS_READ); 	
 					String importeOficio =(String)fila.get("IMPORTEOFICIO");
 					String importeGuardia =(String)fila.get("IMPORTEGUARDIA");
 					String importeSOJ =(String)fila.get("IMPORTESOJ");
@@ -188,29 +188,26 @@
 		return false;
 	}
 
-	
-	function comunicar(fila){
+	function download(fila) {
 		var idPers = "idPersona"+fila;
 		var idFacturacion = "idFacturacion"+fila;
 		
 		idPersona = document.getElementById(idPers).value;
 		idFacturacion = document.getElementById(idFacturacion).value;
 		idInstitucion = document.CartaFacturacionCensoForm.idInstitucion.value;
-		datos = "idInstitucion=="+idInstitucion +"##idFacturacion=="+idFacturacion+"##idPersona=="+idPersona +"%%%";
+		datos = "idInstitucion=="+idInstitucion +"##idFacturacion=="+idFacturacion+"##idPersona=="+idPersona +"##idTipoInforme==CFACT"+"%%%";
 		var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
 		formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucion%>'>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='CFACT'>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='enviar' value='1'>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='descargar' value='1'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='clavesIteracion' value='IDPERSONA'>"));
 		
 		document.appendChild(formu);
 		formu.datosInforme.value=datos;
 		formu.submit();
-	}
+	 }
 	
 	function refrescarLocal() {
 		//parent.buscarTodos();

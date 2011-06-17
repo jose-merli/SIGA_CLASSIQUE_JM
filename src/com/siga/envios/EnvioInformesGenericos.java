@@ -1598,9 +1598,8 @@ public class EnvioInformesGenericos extends MasterReport {
 			ficheroSalida = null;
 		}
 		else { //se generan los ficheros para descargar, comprueba cpago cuando se accede por medio de abonos a las cartas de pago
-			if(!isPermisoEnvio || informeGenerico.getIdTipoInforme().equalsIgnoreCase("CPAGO"))
-				informeGenerico.setDatosInforme(getDatosAEnviar(informeGenerico, 
-							getDatosSeparados(informeGenerico.getIdInforme(), "##")));
+			if(!isPermisoEnvio || informeGenerico.getIdTipoInforme().equalsIgnoreCase("CPAGO") || informeGenerico.getIdTipoInforme().equalsIgnoreCase("CFACT"))
+				informeGenerico.setDatosInforme(getDatosAEnviar(informeGenerico,getDatosSeparados(informeGenerico.getIdInforme(), "##")));
 			Vector informesRes = new Vector();
 			Vector datosFormulario = this.obtenerDatosFormulario(informeGenerico);
 			
