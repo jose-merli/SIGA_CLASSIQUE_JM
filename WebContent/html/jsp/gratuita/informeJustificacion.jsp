@@ -280,14 +280,21 @@ function inicio ()
 }
 	function informeJustificacion ()
 	{
-		sub();
-		document.InformeJustificacionMasivaForm.activarRestriccionesFicha.value =document.getElementById("activarRestricciones").checked;
-		document.InformeJustificacionMasivaForm.mostrarTodas.value =document.getElementById("mostrarSoloPendientes").checked;
-		document.InformeJustificacionMasivaForm.modo.value = "informe";
-		//document.InformeJustificacionMasivaForm.submit();
-		var f = document.InformeJustificacionMasivaForm.name;	
-		document.frames.submitArea21.location = '<html:rewrite page="/html/jsp/general/loadingWindowOpener.jsp"/>?formName=' + f + '&msg=messages.wait';
-			
+		if (document.InformeJustificacionMasivaForm.idPersona.value) {
+
+			sub();
+			document.InformeJustificacionMasivaForm.activarRestriccionesFicha.value =document.getElementById("activarRestricciones").checked;
+			document.InformeJustificacionMasivaForm.mostrarTodas.value =document.getElementById("mostrarSoloPendientes").checked;
+			document.InformeJustificacionMasivaForm.modo.value = "informe";
+			//document.InformeJustificacionMasivaForm.submit();
+			var f = document.InformeJustificacionMasivaForm.name;	
+			document.frames.submitArea21.location = '<html:rewrite page="/html/jsp/general/loadingWindowOpener.jsp"/>?formName=' + f + '&msg=messages.wait';
+		}else{
+			alert ("<siga:Idioma key="gratuita.informeJustificacionMasiva.mensaje.aviso.letradoRequerido"/>");
+			fin();
+			return false;
+				
+		}	
 			
 	}
 	
