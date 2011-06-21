@@ -174,6 +174,9 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 			select.append("   FROM CEN_BAJASTEMPORALES BAJAS, SCS_INSCRIPCIONGUARDIA INS ");
 			select.append("  WHERE BAJAS.IDINSTITUCION = INS.IDINSTITUCION ");
 			select.append("    AND BAJAS.IDPERSONA = INS.IDPERSONA ");
+			select.append("    AND BAJAS.VALIDADO = 1 ");
+			
+			
 			select.append("    AND INS.IDINSTITUCION = :");
 			keyContador++;
 			select.append(keyContador);
