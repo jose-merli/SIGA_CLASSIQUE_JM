@@ -43,7 +43,7 @@
 	String envioSms = (String)request.getAttribute("smsHabilitado");
 	String Datos = (String)request.getAttribute("exitenDatos");	
 	String noExistDatos="";		
-	if (Datos!="")  {
+	if (subModo.equals("LIGUA") && Datos!="")  {
 		noExistDatos="noExisteDatos('"+Datos+"');";
 	} else {
 		noExistDatos = "";
