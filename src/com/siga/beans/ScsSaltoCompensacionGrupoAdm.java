@@ -304,13 +304,14 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 		hash.put(ScsSaltoCompensacionGrupoBean.C_IDSALTOCOMPENSACIONGRUPO, getNuevoIdSaltoCompensacionGrupo());
 		hash.put(ScsSaltoCompensacionGrupoBean.C_IDGRUPOGUARDIA, idGrupoGuardia);
 		hash.put(ScsSaltoCompensacionGrupoBean.C_SALTOCOMPENSACION, ClsConstants.SALTOS);
-		hash.put(ScsSaltoCompensacionGrupoBean.C_FECHA, fecha);
+		 
+		hash.put(ScsSaltoCompensacionGrupoBean.C_FECHA, GstDate.getApplicationFormatDate("", fecha));
 		hash.put(ScsSaltoCompensacionGrupoBean.C_MOTIVO, motivo);
 		hash.put(ScsSaltoCompensacionGrupoBean.C_IDINSTITUCION, idInstitucion);
 		hash.put(ScsSaltoCompensacionGrupoBean.C_IDTURNO, idTurno);
 		hash.put(ScsSaltoCompensacionGrupoBean.C_IDGUARDIA, idGuardia);
 		hash.put(ScsSaltoCompensacionGrupoBean.C_IDCALENDARIOGUARDIAS, idCalendarioGuardias);
-		hash.put(ScsSaltoCompensacionGrupoBean.C_FECHACUMPLIMIENTO, fecha);
+		hash.put(ScsSaltoCompensacionGrupoBean.C_FECHACUMPLIMIENTO, GstDate.getApplicationFormatDate("", fecha));
 		hash.put(ScsSaltoCompensacionGrupoBean.C_MOTIVOCUMPLIMIENTO, motivo);
 		hash.put(ScsSaltoCompensacionGrupoBean.C_IDINSTITUCION_CUMPLI, idInstitucion);
 		hash.put(ScsSaltoCompensacionGrupoBean.C_IDTURNO_CUMPLI, idTurno);
