@@ -3842,7 +3842,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 					sql2 += " AND " + CenCuentasBancariasBean.C_FECHABAJA + " is null ";   
 					sql2 += " AND (" + CenCuentasBancariasBean.C_ABONOCARGO + "='" + ClsConstants.TIPO_CUENTA_ABONO_CARGO + "'" +   
 					" OR " + CenCuentasBancariasBean.C_ABONOCARGO + "='" + ClsConstants.TIPO_CUENTA_ABONO + "')" +   
-					" ORDER BY " + CenCuentasBancariasBean.C_ABONOSJCS + " DESC ";   
+					" ORDER BY " + CenCuentasBancariasBean.C_ABONOSJCS + " DESC " + CenCuentasBancariasBean.C_FECHAMODIFICACION + " DESC ";   
 														
 					rc2 = this.findBind(sql2,codigos2); 
 					if (rc2!=null && rc2.size()>0) {

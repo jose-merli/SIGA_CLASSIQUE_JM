@@ -24,9 +24,11 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.atos.utils.Row;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
+import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.GestorContadores;
 import com.siga.Utilidades.UtilidadesHash;
@@ -538,6 +540,16 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			EjecucionPLs.ejecutarPL_PagoSOJ(idInstitucion, idPagoJG, idPersona);
 			EjecucionPLs.ejecutarPL_PagoEJG(idInstitucion, idPagoJG, idPersona);
 			
+			//añadido cerrar abono
+			request.setAttribute("modo","modificarPago");
+			
+			//Calculo de todos los importes totales, importes de movimientos, importes de irpf, importe bruto, importe neto ......
+			//así como la forma de pago, si el pago es por banco, obtención del nombre del banco y la cuenta corriente.
+			String idInstitucionStr = usr.getLocation();
+			String idPagoStr = miform.getIdPagosJG();
+
+			this.obtencionImportes(idInstitucionStr, idPagoStr, request, null);
+			
 			tx.commit();
 
 			// Exportacion de datos a EXCEL
@@ -840,7 +852,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			String idInstitucion = usr.getLocation();
 			idPago = miform.getIdPagosJG();
 			idFacturacion=miform.getIdFacturacion();
-			generarAbonos(idInstitucion, idPago, request, null);
+			this.generarAbonos(idInstitucion, idPago, request, null);
 
 			request.setAttribute("mensaje","messages.updated.success");
 			tx.commit();			
@@ -886,7 +898,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 		UserTransaction tx=null;
 		
 		try	{
-			tx = usr.getTransaction();
+			tx = usr.getTransactionPesada();
 			usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 	
 			//Obtenemos el Pago modificado del JSP:			
@@ -942,14 +954,15 @@ public class DatosGeneralesPagoAction extends MasterAction {
 
 	/**
 	 *
-	 * 	Por cada colegiado aplicamos el proceso de generar Abonos
+	 * 	Por cada colegiado aplicamos el proceso de obtención de importes
 	 * 		1. Obtener el total SJCS
 	 * 		2. Aplicar los movimientos varios
 	 * 		3. Obtener importe bruto como la suma de los movimientos varios y el total SJCS
-	 * 		4. Obtener el importe neto aplicando el IRPF
-	 * 		5. Aplicar retenciones judiciales y no judiciales
-	 * 			- ¿Aplicar tramos LEC?
-	 * 		6. Generar abono	 
+	 * 		4. Obtener el importe de irpf 
+	 * 		5. Obtener el importe neto aplicando el importe de irpf obtendio anteriormente
+	 * 		6. Aplicar retenciones judiciales y no judiciales
+	 * 		7. Aplicar el importe total aplicando el importe de retenciones obtenido previamente
+	 * 		
 	 * 
 	 * @param idInstitucion
 	 * @param idPago
@@ -959,7 +972,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 	 * @throws ClsExceptions
 	 * @throws SIGAException 
 	 */
-	protected void generarAbonos(String idInstitucion, String idPago, HttpServletRequest request, 
+	protected void obtencionImportes(String idInstitucion, String idPago, HttpServletRequest request, 
 			Vector colegiadosMarcados) throws ClsExceptions, SIGAException {
 		
 
@@ -977,6 +990,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 		double importeMovimientos=0.0d, importeRetenciones=0.0d;	
 		Double porcentajeIRPF;
 		double importeIrpfTotal=0.0d;
+		String idCuenta;
 		
 		
 		
@@ -998,12 +1012,26 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			// Si no existe un pago para el colegiado debe existir al menos un MV
 			// por lo que pasa a tratar los movimientos varios
 			if (!vector.isEmpty()){
+				// Obtenemos el idcuenta con el fin de actualizar el registro de la persona de la tabla fcs_pago_colegiado
+
 				FcsPagoColegiadoBean pcBean = (FcsPagoColegiadoBean) vector.get(0);
+				idPersonaSociedad 	= pcBean.getIdPerDestino() == null ? "" : pcBean.getIdPerDestino().toString();				
+				
+				CenClienteAdm clienteAdm = new CenClienteAdm (usr);
+				ArrayList cuenta = clienteAdm.getCuentaAbono (idInstitucion, 
+						(!idPersonaSociedad.equals("") ? idPersonaSociedad : idPersona));	
+				
+				idCuenta = cuenta.get(2).toString().equals("-1")?"null":cuenta.get(2).toString();
+				
+				pagoAdm.updatePagoIdCuenta(idInstitucion, idCuenta, idPago, idPersona);
+				
+				pagoAdm.updatePagoIdIrpf(idInstitucion, idPago, idPersona);
+				
 				importeTurnos		= pcBean.getImpOficio().doubleValue();
 				importeGuardias		= pcBean.getImpAsistencia().doubleValue();
 				importeSoj			= pcBean.getImpSOJ().doubleValue();
 				importeEjg			= pcBean.getImpEJG().doubleValue();		
-				idPersonaSociedad 	= pcBean.getIdPerDestino() == null ? "" : pcBean.getIdPerDestino().toString();
+
 
 				// 1. Calcula el IMPORTE SJCS BRUTO
 				importeSJCS = importeTurnos + importeGuardias + importeSoj + importeEjg;
@@ -1042,13 +1070,106 @@ public class DatosGeneralesPagoAction extends MasterAction {
 					porcentajeIRPF, importeMovimientos, importeRetenciones, vector.isEmpty());
 
 
+		} //fin del for de colegiados
+
+	}	
+	
+	/**
+	 *
+	 * 	Por cada colegiado aplicamos el proceso de generar Abonos
+	 * 		1. Obtener el total SJCS
+	 * 		2. Aplicar los movimientos varios
+	 * 		3. Obtener importe bruto como la suma de los movimientos varios y el total SJCS
+	 * 		4. Obtener el importe neto aplicando el IRPF
+	 * 		5. Aplicar retenciones judiciales y no judiciales
+	 * 			- ¿Aplicar tramos LEC?
+	 * 		6. Generar abono	 
+	 * 
+	 * @param idInstitucion
+	 * @param idPago
+	 * @param request
+	 * @param colegiadosMarcados
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException 
+	 */
+	protected void generarAbonos(String idInstitucion, String idPago, HttpServletRequest request, 
+			Vector colegiadosMarcados) throws ClsExceptions, SIGAException {
+		
+
+		
+		//Controles
+		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+		
+		FcsPagosJGAdm pagoAdm = new FcsPagosJGAdm(usr);
+		Hashtable importes = new Hashtable();
+
+		//variables para hacer el calculo del importe final a pagar
+		String idPersonaSociedad="";
+		double importeSJCS=0.0d;
+		double importeTurnos=0.0d, importeGuardias=0.0d, importeSoj=0.0d, importeEjg=0.0d;
+		double importeMovimientos=0.0d, importeRetenciones=0.0d;	
+		double importeIrpfTotal=0.0d;
+		double importeBruto=0.0d;
+		double importeNeto=0.0d;
+		RowsContainer rc;
+		Hashtable result= new Hashtable();
+		
+		String idCuenta = null;
+		
+		
+		
+		// Recuperamos los colegiados a los que tenemos que pagar
+		// aquellos incluidos en el pago o con movimientos varios pendientes
+		Vector colegiados = (Vector) pagoAdm.getColegiadosAPagar(idInstitucion, idPago);
+
+		for (Iterator iter = colegiados.iterator(); iter.hasNext(); ) {
+			//recupera el colegiado
+			String idPersona = UtilidadesHash.getString((Hashtable) iter.next(), "IDPERSONA_SJCS");
+			
+			String sql = pagoAdm.getQueryDetallePagoColegiado(idInstitucion, idPago, idPersona, false, usr.getLanguage());
+			
+			rc = new RowsContainer();
+			rc.find(sql);
+
+			if(rc!=null && rc.size()>0){
+				
+				Row r=(Row)rc.get(0);
+				result.putAll(r.getRow());
+
+				importeTurnos = Double.valueOf(r.getString("IMPORTETOTALOFICIO")).doubleValue();
+				
+				importeGuardias = Double.valueOf(r.getString("IMPORTETOTALASISTENCIA")).doubleValue();
+				
+				importeSoj = Double.valueOf(r.getString("IMPORTETOTALSOJ")).doubleValue();
+				
+				importeEjg = Double.valueOf(r.getString("IMPORTETOTALEJG")).doubleValue();
+				
+				importeSJCS = Double.valueOf(r.getString("TOTALIMPORTESJCS")).doubleValue();
+
+				importeMovimientos = Double.valueOf(r.getString("IMPORTETOTALMOVIMIENTOS")).doubleValue();
+				
+				importeBruto = importeSJCS + importeMovimientos;
+				
+				importeIrpfTotal = Double.valueOf(r.getString("TOTALIMPORTEIRPF")).doubleValue();
+				
+				importeNeto = importeBruto + importeIrpfTotal;
+				
+				importeRetenciones = Double.valueOf(r.getString("IMPORTETOTALRETENCIONES")).doubleValue();
+				
+				idPersonaSociedad 	= r.getString("IDPERDESTINO") == null ? "" : r.getString("IDPERDESTINO");
+				
+				idCuenta 	= r.getString("IDCUENTA") == null ? "" : r.getString("IDCUENTA");
+
+			}
+
 			// 6. Generar abono	si corresponde
 			if (importeMovimientos > 0 || importeNeto > 0){
 				try {
 					//consultamos la cuenta
 					CenClienteAdm clienteAdm = new CenClienteAdm (usr);
-					ArrayList cuenta = clienteAdm.getCuentaAbono (idInstitucion, 
-							(!idPersonaSociedad.equals("") ? idPersonaSociedad : idPersona));
+					/*ArrayList cuenta = clienteAdm.getCuentaAbono (idInstitucion, 
+							(!idPersonaSociedad.equals("") ? idPersonaSociedad : idPersona));*/
 
 					//Guardamos los importes:
 					importes.put("importeTurnos", String.valueOf(importeTurnos));
@@ -1059,7 +1180,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 					importes.put("importeRetenciones", String.valueOf(importeRetenciones));
 
 					//Creamos el Abono:
-					this.crearAbonos (cuenta, request, colegiadosMarcados, 
+					this.crearAbonos (idPersona, idCuenta, request, colegiadosMarcados, 
 							(!idPersonaSociedad.equals("") ? idPersonaSociedad: idPersona),
 							idPago, idInstitucion, importes, importeIrpfTotal, idPersona);
 				} catch (Exception e) {
@@ -1429,7 +1550,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 	 * @throws ClsExceptions
 	 */
 	//Crea los abonos a partir de los importes e irpfs calculados.
-	private void crearAbonos(ArrayList cuenta,HttpServletRequest request, Vector colegiadosMarcados,
+	private void crearAbonos(String idPersona, String idCuenta,HttpServletRequest request, Vector colegiadosMarcados,
 							 String idPersonaSoc, String idPago, String idInstitucion, 
 							 Hashtable importes, double irpfTotal, String idPersonaSJCS) throws ClsExceptions {
 		UsrBean usr = null;
@@ -1482,8 +1603,8 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			hash.put(FacAbonoBean.C_MOTIVOS, motivoPago);
 			hash.put(FacAbonoBean.C_FECHA,"SYSDATE");
 			hash.put(FacAbonoBean.C_CONTABILIZADA,ClsConstants.FACTURA_ABONO_NO_CONTABILIZADA);
-			hash.put(FacAbonoBean.C_IDPERSONA,cuenta.get(1));
-			hash.put(FacAbonoBean.C_IDCUENTA,cuenta.get(2).equals("-1")?"null":cuenta.get(2));
+			hash.put(FacAbonoBean.C_IDPERSONA,idPersona);
+			hash.put(FacAbonoBean.C_IDCUENTA,idCuenta);
 			hash.put(FacAbonoBean.C_IDPAGOSJG,idPago);
 			
 			// Recuperamos el nombre del pago si esta disponible y lo metemos en las observaciones

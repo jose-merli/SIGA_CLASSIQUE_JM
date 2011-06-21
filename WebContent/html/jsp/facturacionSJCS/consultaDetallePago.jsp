@@ -144,7 +144,7 @@
 <% } else {
 		//Si el estado del pago es mayor o igual a cerrado muestro 2 columnas mas: importe retenciones y el importe sjcs.
 		String columnas="", tamanoCol="";
-		if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_CERRADO)) {
+		if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_EJECUTADO)) {
 			columnas = "factSJCS.detalleFacturacion.literal.nColegiado,factSJCS.detalleFacturacion.literal.colegiado,factSJCS.datosPagos.literal.importeSJCS,factSJCS.datosPagos.literal.importeMovimientosVarios,factSJCS.datosFacturacion.literal.importeBruto,factSJCS.detalleFacturacion.literal.importeIRPF,factSJCS.datosPagos.literal.importeRetenciones,factSJCS.detalleFacturacion.literal.importe";
 			tamanoCol = "9,20,12,12,12,12,12";
 		}
@@ -204,18 +204,18 @@
   		<tr class="<%=((cont+1)%2==0?"filaTablaPar":"filaTablaImpar")%>">
 				<td><input type="hidden" name="oculto<%=cont%>_1" value="<%=idPersona%>"><%=ncolegiado%></td>
 				<td><%=nombreColegiado%></td>
-				<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_CERRADO)) { %>
+				<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_EJECUTADO)) { %>
 					<td align="right"><%=UtilidadesString.formatoImporte(importeTotalSJCS)%>&nbsp;&euro;</td>				
 					<td align="right"><%=UtilidadesString.formatoImporte(importeTotalMovimientoVarios)%>&nbsp;&euro;</td>				
 				<% } %>
 				<td align="right"><%=UtilidadesString.formatoImporte(totalBrutos)%>&nbsp;&euro;</td>
 				<td align="right">
-				<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_CERRADO)) { %>
+				<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_EJECUTADO)) { %>
 					<%=UtilidadesString.formatoImporte(irpf)%>&nbsp;&euro;
 				<% } else { %>
 					<siga:Idioma key="factSJCS.datosFacturacion.literal.IRPFSinCalcular"/>
 				<% } %>
-				<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_CERRADO)) { %>
+				<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_EJECUTADO)) { %>
 					<td align="right"><%=UtilidadesString.formatoImporte(importeRetenciones)%>&nbsp;&euro;</td>
 					<td align="right"><%=UtilidadesString.formatoImporte(importeTotalTotal)%>&nbsp;&euro;</td>
 				<% } %>
@@ -231,7 +231,7 @@
 	
 	<!-- Totales -->
 	<%int tamIni = 50, tamA = 25; // 4 columnas
-		if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_CERRADO)) { 
+		if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_EJECUTADO)) { 
 			//tamIni = 72; // 7 columnas
 			//tamA = 14;
 			tamIni = 50; // 7 columnas
@@ -263,22 +263,22 @@
 					<%=UtilidadesString.formatoImporte(valorFinal)%>&nbsp;&euro;
 				</td>
 				<td width="<%=tamA%>%" class="labelTextNum" align="right">
-						<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_CERRADO)) { %>
+						<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_EJECUTADO)) { %>
 							<%=UtilidadesString.formatoImporte(valorFinalIrpf)%>&nbsp;&euro;
 						<% } else {	%>
 							-
 						<% } %>
 				</td>
-				<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_CERRADO)) { %>
+				<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_EJECUTADO)) { %>
 				<td width="<%=tamA%>%" class="labelTextNum" align="right">
-					<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_CERRADO)) { %>
+					<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_EJECUTADO)) { %>
 						<%=UtilidadesString.formatoImporte(valorFinalRetencion)%>&nbsp;&euro;
 					<% } else {	%>
 						-
 					<% } %>
 				</td>
 				<td width="<%=tamA%>%" class="labelTextNum" align="right">
-					<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_CERRADO)) { %>
+					<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_EJECUTADO)) { %>
 						<%=UtilidadesString.formatoImporte(valorFinalTotal)%>&nbsp;&euro;
 					<% } else {	%>
 						-

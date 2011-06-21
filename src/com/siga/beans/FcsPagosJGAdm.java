@@ -10,6 +10,7 @@ import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
@@ -1072,20 +1073,58 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 			sql.append("   pc.IDPERORIGEN as idpersonaSJCS, ");
 		
 		sql.append("       pc.idpagosjg as idpagos, ");
+		sql.append("       sum (pc.impOficio) as importeTotalOficio, ");
+		sql.append("       sum (pc.impAsistencia) as importeTotalAsistencia, ");
+		sql.append("       sum (pc.impEJG) as importeTotalEJG, ");
+		sql.append("       sum (pc.impSOJ) as importeTotalSOJ, ");
+		sql.append("       idperdestino as idperdestino, ");
 		sql.append("       sum(pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ) as totalImporteSJCS, ");
 		sql.append("       sum(pc.impRet) as importeTotalRetenciones, ");
 		sql.append("       sum(pc.impMovVar) as importeTotalMovimientos, ");
 		sql.append("       -1*round(abs(sum((pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ + pc.impMovVar) * pc.impirpf / 100)), 2) as TOTALIMPORTEIRPF, ");
+		sql.append("       (SELECT retencion ");
+		sql.append("       		FROM scs_maestroretenciones ma ");
+		sql.append("       		WHERE pc.idretencion = ma.idretencion) AS tipoirpf, ");
+		sql.append("       DECODE (pc.idperdestino, ");
+		sql.append("       		NULL, 'Colegiado', ");
+		sql.append("       		'Sociedad' ");
+		sql.append("       		) AS destinatario,  ");
 		sql.append("       pc.idinstitucion, ");
 		sql.append("       f_siga_getrecurso_etiqueta(decode(");
-		sql.append("       (select a.idcuenta ");
-		sql.append("          from FAC_ABONO A ");
-		sql.append("         where nvl(idperdestino, idperorigen) = a.idpersona ");
-		sql.append("           and pc.idinstitucion = a.idinstitucion ");
-		sql.append("           and pc.idpagosjg = a.idpagosjg ");
-		sql.append("           and rownum = 1), ");
+		sql.append("       pc.idcuenta, ");
 		sql.append("       null, 'gratuita.pagos.porCaja', 'gratuita.pagos.porBanco'), "+idioma+") ");
-		sql.append("       as FORMADEPAGO ");
+		sql.append("       as FORMADEPAGO, ");
+		sql.append("       (select cen_bancos.nombre ");
+		sql.append("          from cen_cuentasbancarias ");
+		sql.append("               INNER JOIN cen_bancos ");
+		sql.append("               ON cen_cuentasbancarias.cbo_codigo = ");
+		sql.append("                        cen_bancos.codigo ");
+		sql.append("          WHERE NVL (idperdestino, idperorigen) = ");
+		sql.append("                        cen_cuentasbancarias.idpersona ");
+		sql.append("                        AND pc.idinstitucion = cen_cuentasbancarias.idinstitucion ");
+		sql.append("                        AND pc.idcuenta = cen_cuentasbancarias.idcuenta ");
+		sql.append("                        AND ROWNUM = 1) AS nombrebanco, ");		
+		sql.append("       (select (   cen_cuentasbancarias.cbo_codigo ");
+		sql.append("       || '-' ");
+		sql.append("       || cen_cuentasbancarias.codigosucursal ");
+		sql.append("       || '-' ");		
+		sql.append("       || cen_cuentasbancarias.digitocontrol ");
+		sql.append("       || '-' ");
+		sql.append("       || LPAD (SUBSTR (cen_cuentasbancarias.numerocuenta, ");
+		sql.append("       7 ");
+		sql.append("        ), ");
+		sql.append("       10, ");
+		sql.append("       '*' ");
+		sql.append("       ) ");
+		sql.append("       ) AS cuenta ");
+		sql.append("          FROM cen_cuentasbancarias ");
+		sql.append("          WHERE NVL (idperdestino, idperorigen) = ");
+		sql.append("                        cen_cuentasbancarias.idpersona ");
+		sql.append("                        AND pc.idinstitucion = cen_cuentasbancarias.idinstitucion ");
+		sql.append("                        AND pc.idcuenta = cen_cuentasbancarias.idcuenta ");
+		sql.append("                        AND ROWNUM = 1) AS numerocuenta ");				
+		
+		
 		
 		sql.append("  from FCS_PAGO_COLEGIADO pc ");
 		sql.append(" where pc.IDINSTITUCION = "+idInstitucion+" ");
@@ -1098,7 +1137,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		}
 		if (irpf)
 			sql.append("  and impirpf > 0 ");		
-		sql.append(" group by pc.IDPERORIGEN, pc.IDPERDESTINO, pc.IDPAGOSJG, pc.IDINSTITUCION ");
+		sql.append(" group by pc.IDPERORIGEN, pc.IDPERDESTINO, pc.IDPAGOSJG, pc.IDINSTITUCION, pc.idretencion, pc.idcuenta ");
 		
 		return sql.toString();
 	} //getQueryDetallePagoColegiado()
@@ -1320,4 +1359,78 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		return totalConceptos;
 	}
 
+	
+	/**
+	 * Actualizar el identificador de cuenta, columna localizada en la tabla fcs_pago_colegiado
+	 * @param idInstitucion
+	 * @param idCuenta
+	 * @param idPagosJG
+	 * @param idPersona
+	 * @param porcentajeIRPF
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public boolean updatePagoIdCuenta(
+			String idInstitucion, String idCuenta, String idPagosJG, String idPersona) throws ClsExceptions {
+		//query con la select a ejecutar
+		StringBuffer consulta = new StringBuffer();
+		consulta.append("UPDATE FCS_PAGO_COLEGIADO SET idcuenta = ");
+		consulta.append(idCuenta);
+		consulta.append(" WHERE IDINSTITUCION = ");
+		consulta.append(idInstitucion);
+		consulta.append(" AND idperorigen = ");
+		consulta.append(idPersona);
+		consulta.append(" AND IDPAGOSJG = ");
+		consulta.append(idPagosJG);
+		int resultado;				
+		try{
+			resultado = ClsMngBBDD.executeUpdate(consulta.toString());
+		}catch(Exception e){
+			throw new ClsExceptions (e,"Error en FcsMovimientosVarios.getMovimientos()"+consulta);
+		}
+		return (resultado > 0);
+	}	
+
+	/**
+	 * Actualizar en la tabla fcs_pago_colegiado el tipo de tetención que se aplicará
+	 * a un determinado pago con esta finalidad se almacena en dicha tabla,fcs_pago_colegiado
+	 * el idretencion que hace referencia al tipo de irpf aplicado
+	 * @param idInstitucion
+	 * @param idPago
+	 * @param idPersona
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public boolean updatePagoIdIrpf(
+			String idInstitucion, String idPago, String idPersona) throws ClsExceptions {
+		
+		//Update de la columna idretencion, el valor de la actualización se obtiene al 
+		//ejecutar la subconsulta integrada en la sentencia de update
+		
+		StringBuffer consulta = new StringBuffer();
+		consulta.append("UPDATE FCS_PAGO_COLEGIADO SET idretencion = ");
+		consulta.append(" (SELECT ma.idretencion ");
+		consulta.append(" FROM scs_retencionesirpf re INNER JOIN scs_maestroretenciones ma ");
+		consulta.append(" ON re.idretencion = ma.idretencion ");
+		consulta.append(" WHERE re.idpersona =  ");
+		consulta.append(idPersona);
+		consulta.append(" AND re.idinstitucion = ");
+		consulta.append(idInstitucion);
+		consulta.append(" AND (re.fechafin IS NULL OR re.fechafin >= SYSDATE)) ");
+		consulta.append(" WHERE idinstitucion = ");
+		consulta.append(idInstitucion);
+		consulta.append(" AND idpagosjg = ");
+		consulta.append(idPago);
+		consulta.append(" AND idperorigen = ");
+		consulta.append(idPersona);
+				
+		int resultado;				
+		try{
+			resultado = ClsMngBBDD.executeUpdate(consulta.toString());
+		}catch(Exception e){
+			throw new ClsExceptions (e,"Error en FcsMovimientosVarios.getMovimientos()"+consulta);
+		}
+		return (resultado > 0);
+	}		
+	
 } 
