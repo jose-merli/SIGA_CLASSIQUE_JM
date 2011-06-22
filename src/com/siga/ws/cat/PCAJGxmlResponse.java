@@ -64,6 +64,7 @@ import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionInte
 public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConstantes {
 
 	private String namespace = IntercambioDocument.type.getProperties()[0].getName().getNamespaceURI();//"rp.cat.ws.siga.com";
+	private static String DESCRIPCION_SIN_ERRORES = "No hi han errors";	
 		
 	/**
 	 * 
@@ -509,25 +510,26 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 					
 					if (errorGeneral != null) {
 						escribeLogRemesa(errorGeneral.getDescErrorGen().toString());
+						if (!DESCRIPCION_SIN_ERRORES.equals(errorGeneral.getDescErrorGen())) {
 						
-						Hashtable<String, Object> hashEjgRem = new Hashtable<String, Object>();
-						
-						hashEjgRem.put(CajgEJGRemesaBean.C_IDINSTITUCIONREMESA, idInstitucion);
-						hashEjgRem.put(CajgEJGRemesaBean.C_IDREMESA, getIdRemesa());
-						
-						Vector<CajgEJGRemesaBean> vectorRemesa = cajgEJGRemesaAdm.select(hashEjgRem);
-						
-						for (CajgEJGRemesaBean cajgEJGRemesaBean : vectorRemesa) {							
-							CajgRespuestaEJGRemesaBean cajgRespuestaEJGRemesaBean = new CajgRespuestaEJGRemesaBean();											
-							cajgRespuestaEJGRemesaBean.setIdEjgRemesa(cajgEJGRemesaBean.getIdEjgRemesa());
-							cajgRespuestaEJGRemesaBean.setCodigo("-1");
-							cajgRespuestaEJGRemesaBean.setDescripcion(errorGeneral.getDescErrorGen().toString());
-							cajgRespuestaEJGRemesaBean.setFecha("SYSDATE");
-							cajgRespuestaEJGRemesaBean.setIdTipoRespuesta(CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_COMISION);
+							Hashtable<String, Object> hashEjgRem = new Hashtable<String, Object>();
 							
-							cajgRespuestaEJGRemesaAdm.insert(cajgRespuestaEJGRemesaBean);
+							hashEjgRem.put(CajgEJGRemesaBean.C_IDINSTITUCIONREMESA, idInstitucion);
+							hashEjgRem.put(CajgEJGRemesaBean.C_IDREMESA, getIdRemesa());
+							
+							Vector<CajgEJGRemesaBean> vectorRemesa = cajgEJGRemesaAdm.select(hashEjgRem);
+							
+							for (CajgEJGRemesaBean cajgEJGRemesaBean : vectorRemesa) {							
+								CajgRespuestaEJGRemesaBean cajgRespuestaEJGRemesaBean = new CajgRespuestaEJGRemesaBean();											
+								cajgRespuestaEJGRemesaBean.setIdEjgRemesa(cajgEJGRemesaBean.getIdEjgRemesa());
+								cajgRespuestaEJGRemesaBean.setCodigo("-1");
+								cajgRespuestaEJGRemesaBean.setDescripcion(errorGeneral.getDescErrorGen().toString());
+								cajgRespuestaEJGRemesaBean.setFecha("SYSDATE");
+								cajgRespuestaEJGRemesaBean.setIdTipoRespuesta(CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_COMISION);
+								
+								cajgRespuestaEJGRemesaAdm.insert(cajgRespuestaEJGRemesaBean);
+							}
 						}
-					
 						
 					} else {
 						ErrorContenido[] erroresContenido = datosError.getErrorContenidoArray();
