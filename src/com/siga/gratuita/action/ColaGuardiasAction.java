@@ -159,6 +159,7 @@ public class ColaGuardiasAction extends MasterAction {
 				UtilidadesHash.set(registros,"IDGUARDIA",guardia);
 				//UtilidadesHash.set(registros,"IDGRUPOGUARDIA",miForm.getIdGrupoGuardia());	
 				UtilidadesHash.set(registros,"SALTO",ClsConstants.COMPENSACIONES);
+				UtilidadesHash.set(registros,"COMPENSADO","N");
 				
 				//Cargar listado de compensaciones
 				Vector vCompensaciones=saltosCompensacionesGruposAdm.selectDatosColaGuardiaSYC(saltosCompensacionesGruposAdm.selectSaltosCompensaciones(registros));
