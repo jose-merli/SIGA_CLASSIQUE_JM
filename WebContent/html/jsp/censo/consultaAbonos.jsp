@@ -159,7 +159,7 @@
 			
 			document.AbonosClienteForm.submit();
 		}
-	function comunicar(fila)
+	function download(fila)
 	{
 		sub();
 	var idPers = "idPersona"+fila;
@@ -273,7 +273,7 @@
 				            	FilaExtElement[] elemento= null;
 				            	if(s!=null && !s.trim().equals("")){
 				            		elemento = new FilaExtElement[1];
-									elemento[0] = new FilaExtElement("enviar", "comunicar", SIGAConstants.ACCESS_READ);
+									elemento[0] = new FilaExtElement("download", "download", SIGAConstants.ACCESS_READ);
 				            	}
 								
 								%>
