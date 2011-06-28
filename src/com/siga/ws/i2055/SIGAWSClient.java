@@ -253,7 +253,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		if (bi != null) dtExpedientes.setNumeroExpedienteSIGA(bi);
 		bi = getBigInteger(map.get(ANOEXPEDIENTESIGA));
 		if (bi != null) dtExpedientes.setAnoExpedienteSIGA(bi);
-		PositiveInteger in = getInteger(map.get(IDORGANISMOCOLEGIOABOGADOS));
+		Integer in = getInteger(map.get(IDORGANISMOCOLEGIOABOGADOS));
 		if (in != null) dtExpedientes.setIDOrganismoColegioAbogados(in);
 		Calendar date = SigaWSHelper.getCalendar(map.get(FECHAREGISTRO));
 		if (date != null) dtExpedientes.setFechaRegistro(date);	
@@ -356,10 +356,10 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		return bigInteger;
 	}
 	
-	private PositiveInteger getInteger(String st) {		
-		PositiveInteger in = null;
+	private Integer getInteger(String st) {		
+		Integer in = null;
 		if (st != null && !st.trim().equals("")) {
-			in = new PositiveInteger(st);
+			in = Integer.valueOf(st);
 		}
 		return in;
 	}
@@ -373,44 +373,6 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 	}
 
 	
-	/**
-	 * 
-	 * @param dtPersona 
-	 * @param map
-	 * @return
-	 */
-	 
-	private SIGAAsignaDtExpedientesDtSolicitanteDtDirecciones getDtDireccion(Map<String, String> map) {		
-		SIGAAsignaDtExpedientesDtSolicitanteDtDirecciones dtDirecciones = new SIGAAsignaDtExpedientesDtSolicitanteDtDirecciones();
-		PositiveInteger in = getInteger(map.get(DIR_IDTIPOVIA));
-		if (in != null) dtDirecciones.setIDTipoVia(in);
-		String st = map.get(DIR_NOMBREVIA);
-		if (st != null) dtDirecciones.setNombreVia(st);
-		st = map.get(DIR_NUMERO);
-		if (st != null) dtDirecciones.setNumero(st);
-		st = map.get(DIR_PISO);
-		if (st != null) dtDirecciones.setPiso(st);
-		in = getInteger(map.get(DIR_IDPOBLACION));
-		if (in != null) dtDirecciones.setIDPoblacion(in);
-		st = map.get(DIR_CODIGOPOSTAL);
-		if (st != null) dtDirecciones.setCodigoPostal(st);
-		st = map.get(DIR_TELEFONO1);
-		if (st != null) dtDirecciones.setTelefono1(st);
-		st = map.get(DIR_TELEFONO2);
-		if (st != null)	dtDirecciones.setTelefono2(st);
-		st = map.get(DIR_FAX);
-		if (st != null) dtDirecciones.setFax(st);
-		st = map.get(DIR_EMAIL);
-		if (st != null) dtDirecciones.setEmail(st);
-		in = getInteger(map.get(DIR_IDPAIS));
-		if (in != null) dtDirecciones.setIDPais(in);
-		
-		if (dtDirecciones.getIDPoblacion() == null) {
-			dtDirecciones = null;
-		}
-		return dtDirecciones;
-	}
-
 	
 	/**
 	 * 
@@ -428,7 +390,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 				DtArchivos dtArchivos = dtExpedientes.addNewDtArchivos();
 				if (map.get(IDARCHIVO) != null && !map.get(IDARCHIVO).trim().equals("")) {
 					SIGAAsignaDtExpedientesDtArchivos dtArchivo = new SIGAAsignaDtExpedientesDtArchivos();
-					PositiveInteger in = getInteger(map.get(IDARCHIVO));
+					Integer in = getInteger(map.get(IDARCHIVO));
 					if (in != null) dtArchivo.setIDArchivo(in);
 					String st = map.get(NOMBREARCHIVO);
 					if (st != null) dtArchivo.setNombreArchivo(st);
@@ -453,18 +415,11 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		
 		List<Map<String, String>> list = htCargaDtPersonas.get(str);		
 		if (list != null) {			
-			SIGAAsignaDtExpedientesDtIntervinientes[] dtIntervinientes = null;
-			
-			if (list.size() > 1) {//tiene solicitante y contrarios o miembros de la unidad familiar
-				dtIntervinientes = new SIGAAsignaDtExpedientesDtIntervinientes[list.size()-1];	
-			}
-			
-			int pos = 0;
 			
 			for (int i = 0; i < list.size(); i++) {
 				Map<String, String> map = list.get(i);				
 				
-				PositiveInteger in = getInteger(map.get(IDTIPOTERCERO));
+				Integer in = getInteger(map.get(IDTIPOTERCERO));
 				
 				if (in != null && in.intValue() == TIPO_TERCERO_SOLICITANTE) {
 					DtSolicitante datosPersona = dtExpedientes.addNewDtSolicitante();					
@@ -506,7 +461,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 					if (st != null) dtDirecciones.setEmail(st);
 					in = getInteger(map.get(DIR_IDPAIS));
 					if (in != null) dtDirecciones.setIDPais(in);					
-					if (dtDirecciones.getIDPoblacion() == null) {
+					if (dtDirecciones.getIDPoblacion() > 0) {
 						dtDirecciones = null;
 					}
 					
@@ -573,7 +528,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 					if (st != null) dtDirecciones.setEmail(st);
 					in = getInteger(map.get(DIR_IDPAIS));
 					if (in != null) dtDirecciones.setIDPais(in);					
-					if (dtDirecciones.getIDPoblacion() == null) {
+					if (dtDirecciones.getIDPoblacion() > 0) {
 						dtDirecciones = null;
 					}
 					
@@ -652,7 +607,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		
 		Boolean b = getBoolean(map.get(PRE_PRECISAABOGADO));
 		if (b != null) dtPretensionesDefender.setPrecisaAbogado(b);
-		PositiveInteger in = getInteger(map.get(PRE_IDTIPOPROCEDIMIENTO));
+		Integer in = getInteger(map.get(PRE_IDTIPOPROCEDIMIENTO));
 		if (in != null) dtPretensionesDefender.setIDTipoProcedimiento(in);
 		String st = map.get(PRE_OTROSASPECTOS);
 		if (st != null) dtPretensionesDefender.setOtrosAspectos(st);

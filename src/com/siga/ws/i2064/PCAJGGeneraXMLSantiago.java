@@ -186,7 +186,12 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 		if (b != null) {//RENUNCIA O NO RENUNCIA 
 			com.siga.ws.i2064.xsd.PROCURADORTYPE.DESIGNACION designacion = procurador.addNewDESIGNACION();
 			designacion.setCOLEXIO(getBigInteger(mapExp.get(PR_COLEXIO)));
-			designacion.setNUMCOLEXIADO(getBigInteger(mapExp.get(PR_NUM_COLEXIADO)));			
+			designacion.setNUMCOLEXIADO(getBigInteger(mapExp.get(PR_NUM_COLEXIADO)));
+			designacion.setNIF(mapExp.get(PR_NIF));
+			NOMEAPELIDOSTYPE nomeapelidostype = designacion.addNewNOMEAPELIDOS();
+			nomeapelidostype.setNOME(mapExp.get(PR_NOME));
+			nomeapelidostype.setPRIMERAPELLIDO(mapExp.get(PR_PRIMERAPELLIDO));
+			nomeapelidostype.setSEGUNDOAPELLIDO(mapExp.get(PR_SEGUNDOAPELLIDO));
 			procurador.setRENUNCIAPROCURADOR(b);	
 		}		
 	}

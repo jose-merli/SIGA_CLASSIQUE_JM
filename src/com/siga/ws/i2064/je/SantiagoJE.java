@@ -85,7 +85,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 			file.mkdirs();
 			
 			for (File f : file.listFiles()) {
-				ClsLogging.writeFileLog("Fichero eliminado (" + f.delete() + ") " + file.getAbsolutePath(), 3);			
+				ClsLogging.writeFileLog("Fichero eliminado (" + f.delete() + ") " + f.getAbsolutePath(), 3);			
 			}
 			
 			for (Hashtable<String, String> hash : listMapAsis) {
@@ -109,7 +109,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 					if (in != null) idExpAXG.setAno(in);
 					idExpAXG.setNum(SigaWSHelper.getBigInteger("número exp AXG", hash.get(A_EXP_NUM)));
 					in = SigaWSHelper.getInteger("prov exp AXG", hash.get(A_EXP_PROV));
-					if (in != null) idExpAXG.setProv(Prov.Enum.forInt(in));
+					if (in != null) idExpAXG.setProv(Prov.Enum.forInt(in+1));//El enumerado empieza en 1
 					
 					Datosatestado datosatestado = asuntos.addNewDatosatestado();
 					
@@ -162,7 +162,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 					if (in != null) idExpAXG.setAno(in);
 					idExpAXG.setNum(SigaWSHelper.getBigInteger("número exp AXG", hash.get(TO_EXP_NUM)));
 					in = SigaWSHelper.getInteger("prov exp AXG", hash.get(TO_EXP_PROV));
-					if (in != null)	idExpAXG.setProv(com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.TurnoOficio.Colegiado.Asuntos.IDExpAXG.Prov.Enum.forInt(in));
+					idExpAXG.setProv(com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.TurnoOficio.Colegiado.Asuntos.IDExpAXG.Prov.Enum.forInt(in+1));//El enumerado empieza en 1
 					
 					rellenaDatosJudiciales(asuntos.addNewDatosxudiciais(), hash);
 					rellenaPersonaType(asuntos.addNewSolicitante(), hash.get(TO_S_NOME), hash.get(TO_S_PRIMER_APELLIDO), hash.get(TO_S_SEGUNDO_APELLIDO), hash.get(TO_S_NIF));
@@ -233,7 +233,10 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 		if (in != null) procbaremotype.setANOPROC(in);
 		Long l = SigaWSHelper.getLong("número del procedimiento", hash.get(TO_J_NUM_PROC));
 		if (l != null) procbaremotype.setNUMPROC(l);
-		procbaremotype.setDESCPROC(hash.get(TO_J_DESC_PROC));
+		String st = hash.get(TO_J_DESC_PROC);
+		if (st != null && st.trim().equals("")) {
+			procbaremotype.setDESCPROC(st);
+		}
 	}
 
 	private void rellenaSoxClaveType(SOXCLAVETYPE soxClave, Integer soxAno, BigInteger soxNumero) {

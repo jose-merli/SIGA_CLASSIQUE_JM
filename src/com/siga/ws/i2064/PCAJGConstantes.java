@@ -57,6 +57,10 @@ public interface PCAJGConstantes {
 	public final String A_RENUNCIA_AVOGADO = "A_RENUNCIA_AVOGADO";
 	public final String PR_COLEXIO = "PR_COLEXIO";
 	public final String PR_NUM_COLEXIADO = "PR_NUM_COLEXIADO";
+	public final String PR_NIF = "PR_NIF";
+	public final String PR_NOME = "PR_NOME";
+	public final String PR_PRIMERAPELLIDO = "PR_PRIMERAPELLIDO";
+	public final String PR_SEGUNDOAPELLIDO = "PR_SEGUNDOAPELLIDO";
 	public final String PR_RENUNCIA_PROCURADOR = "PR_RENUNCIA_PROCURADOR";
 	public final String OBSERVACIONES = "OBSERVACIONES";
 
