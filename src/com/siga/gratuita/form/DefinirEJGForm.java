@@ -914,6 +914,15 @@ import com.siga.general.MasterForm;
 			this.origen = origen;
 		}
 		
+		public String getIdOrigenCAJG() {
+			//return origen;
+			return UtilidadesHash.getString(datos, ScsEJGBean.C_IDORIGENCAJG);
+		}
+		public void setIdOrigenCAJG(String origen) {
+			//this.origen = origen;
+			UtilidadesHash.set(this.datos, ScsEJGBean.C_IDORIGENCAJG, origen);
+		}
+	
 		private String urlDocumentacionDS;
 
 
@@ -930,16 +939,16 @@ import com.siga.general.MasterForm;
 			this.urlDocumentacionDS = urlDocumentacionDS;
 		}
 		public String getNumeroCAJG() {
-			return numeroCAJG;
+			return UtilidadesHash.getString(datos, ScsEJGBean.C_NUMERO_CAJG);
 		}
 		public void setNumeroCAJG(String numeroCAJG) {
-			this.numeroCAJG = numeroCAJG;
+			UtilidadesHash.set(this.datos, ScsEJGBean.C_NUMERO_CAJG, numeroCAJG);
 		}
 		public String getAnioCAJG() {
-			return anioCAJG;
+			return UtilidadesHash.getString(datos, ScsEJGBean.C_ANIO_CAJG);
 		}
 		public void setAnioCAJG(String anioCAJG) {
-			this.anioCAJG = anioCAJG;
+			UtilidadesHash.set(this.datos, ScsEJGBean.C_ANIO_CAJG, anioCAJG);
 		}
 		
 		public String getDocResolucion() {

@@ -34,8 +34,12 @@
 		
 	String anio= "", numero="", idTipoEJG = "", observaciones = "",refA="",docResolucion="";
 	String fechaRatificacion = "", fechaResolucionCAJG= "", fechaNotificacion= "";
+	String numeroCAJG="", anioCAJG="";
 	boolean requiereTurnado= false;
 	ArrayList vFundamentoJuridico= new ArrayList(), vTipoRatificacion= new ArrayList(), vPonente = new ArrayList();
+	
+	ArrayList vOrigenCAJGSel = new ArrayList();
+	
 	
 	try {
 		anio = miHash.get("ANIO").toString();
@@ -47,13 +51,13 @@
 		if (miHash.containsKey("FECHARATIFICACION")) fechaRatificacion = GstDate.getFormatedDateShort("",miHash.get("FECHARATIFICACION").toString()).toString();
 		if (miHash.containsKey("FECHARESOLUCIONCAJG")) fechaResolucionCAJG = GstDate.getFormatedDateShort("",miHash.get("FECHARESOLUCIONCAJG").toString()).toString();
 		if (miHash.containsKey("FECHANOTIFICACION")) fechaNotificacion = GstDate.getFormatedDateShort("",miHash.get("FECHANOTIFICACION").toString()).toString();
+		if (miHash.containsKey(ScsEJGBean.C_ANIO_CAJG)) anioCAJG = miHash.get(ScsEJGBean.C_ANIO_CAJG).toString();
+		if (miHash.containsKey(ScsEJGBean.C_NUMERO_CAJG)) numeroCAJG = miHash.get(ScsEJGBean.C_NUMERO_CAJG).toString();
 		if (miHash.containsKey("TURNADORATIFICACION")){
 		 if (!miHash.get("TURNADORATIFICACION").toString().equals("") && !miHash.get("TURNADORATIFICACION").toString().equals("0")){
 		  requiereTurnado=true;
 		 }
 		} 
-		
-
 		if (miHash.containsKey("IDFUNDAMENTOJURIDICO") && miHash.get("IDFUNDAMENTOJURIDICO") != "") {
 			vFundamentoJuridico.add(miHash.get("IDFUNDAMENTOJURIDICO").toString());
 		}
@@ -66,6 +70,11 @@
 		if (miHash.containsKey("IDPONENTE") && miHash.get("IDPONENTE") != null) {
 			vPonente.add(miHash.get("IDPONENTE").toString());
 		}
+		String vOrigenCAJG = (String) miHash.get("IDORIGENCAJG");
+		if (vOrigenCAJG != null && vOrigenCAJG != null){
+			vOrigenCAJGSel.add(0, vOrigenCAJG);
+		}
+		
 	}catch(Exception e){e.printStackTrace();};
 %>
 
@@ -76,6 +85,7 @@
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>	
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>	
+	<script src="<%=app%>/html/js/validation.js" type="text/jscript"></script>
 	<script type="text/javascript">
 		function refrescarLocal()
 		{
@@ -150,77 +160,99 @@
 	
 	<!-- FILA -->
 	<tr>
-	<td class="labelText" width="200">
-		<siga:Idioma key="gratuita.operarRatificacion.literal.fechaResolucionCAJG"/>
-	</td>
-	<td>
-		<%if (accion.equalsIgnoreCase("ver")){%>
-			<html:text name="DefinirEJGForm" property="fechaResolucionCAJG" size="10" styleClass="boxConsulta" value="<%=fechaResolucionCAJG%>" disabled="false" readonly="true"></html:text>
-		<%} else {%>
-			<html:text name="DefinirEJGForm" property="fechaResolucionCAJG" size="10" styleClass="box" value="<%=fechaResolucionCAJG%>" disabled="false" readonly="true"></html:text>
-			&nbsp;
-			<a onClick="return showCalendarGeneral(fechaResolucionCAJG);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-			<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
-			</a>
-		<%}%>
-	</td>
-	
+		<td class="labelText"  width="300">	
+			<siga:Idioma key='gratuita.operarEJG.literal.CAJG'/> <siga:Idioma key='gratuita.operarEJG.literal.anio'/> / <siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/>
+		</td>
+	   	<td >	
+			<% if (accion.equalsIgnoreCase("ver")) {%>
+			  	<html:text name="DefinirEJGForm"  onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);"  onblur="filterCharsNaN(this);" property="anioCAJG" size="4" maxlength="4" styleClass="boxConsulta"  value="<%=anioCAJG%>" readonly="true"></html:text> / 
+                <html:text name="DefinirEJGForm" property="numeroCAJG" size="6" maxlength="20" onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);"  onblur="filterCharsNaN(this);"  styleClass="boxConsulta" value="<%=numeroCAJG%>" readonly="true"></html:text>
+			<%} else {%>
+				<html:text name="DefinirEJGForm"  onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);"  onblur="filterCharsNaN(this);" property="anioCAJG" size="4" maxlength="4" styleClass="boxNumber"  value="<%=anioCAJG%>" ></html:text> / 
+                <html:text name="DefinirEJGForm" property="numeroCAJG" size="6" maxlength="20" onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);"  onblur="filterCharsNaN(this);"  styleClass="boxNumber" value="<%=numeroCAJG%>"></html:text>
+			<%}%>
+	  	</td>
+		<td class="labelText">	
+			<siga:Idioma key='gratuita.operarEJG.literal.origen'/>
+			&nbsp;&nbsp;&nbsp;
+			
+			<% if (accion.equalsIgnoreCase("ver")) {%> 
+				<siga:ComboBD nombre="idOrigenCAJG" tipo="origenCAJG" clase="boxConsulta" ancho="230"  filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vOrigenCAJGSel%>" readOnly="true"/>
+			<%}else{ %>
+		    	<siga:ComboBD nombre="idOrigenCAJG" tipo="origenCAJG" clase="boxCombo" ancho="230" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vOrigenCAJGSel%>" />
+		 	<%}%>		
+		</td>
+	  </tr>
+	  <tr>
+		<td class="labelText">
+			<siga:Idioma key="gratuita.operarRatificacion.literal.fechaResolucionCAJG"/>
+		</td>
+		<td>
+			<%if (accion.equalsIgnoreCase("ver")){%>
+				<html:text name="DefinirEJGForm" property="fechaResolucionCAJG" size="10" styleClass="boxConsulta" value="<%=fechaResolucionCAJG%>" disabled="false" readonly="true"></html:text>
+			<%} else {%>
+				<html:text name="DefinirEJGForm" property="fechaResolucionCAJG" size="10" styleClass="box" value="<%=fechaResolucionCAJG%>" disabled="false" readonly="true"></html:text>
+				&nbsp;
+				<a onClick="return showCalendarGeneral(fechaResolucionCAJG);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
+				<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
+				</a>
+			<%}%>
+		</td>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.operarRatificacion.literal.ponente"/>
 			&nbsp;&nbsp;&nbsp;
 		
 			<%if (accion.equalsIgnoreCase("ver")){%>
-				<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" readOnly="true"/>
+				<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" ancho="400" readOnly="true"/>
 			<%} else {%>
-				<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxCombo"  	  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>"/>
+				<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxCombo"  	  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" ancho="400"/>
 			<%}%>
 		</td>
-	
 	</tr>
 	
 	
 	<tr>
-	<td class="labelText">
-	  <siga:Idioma key="gratuita.operarRatificacion.literal.tipoRatificacion"/>
-	</td>
-	<td  colspan="2">
-		
-		<%if (accion.equalsIgnoreCase("ver")){%>
-			<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucion" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vTipoRatificacion%>" readOnly="true"/>
-		<%} else {%>
-			<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucion" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vTipoRatificacion%>"/>
-		<%}%>
-	</td>
+		<td class="labelText">
+		  <siga:Idioma key="gratuita.operarRatificacion.literal.tipoRatificacion"/>
+		</td>
+		<td  colspan="4">
+			<%if (accion.equalsIgnoreCase("ver")){%>
+				<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucion" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vTipoRatificacion%>" readOnly="true"/>
+			<%} else {%>
+				<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucion" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vTipoRatificacion%>"/>
+			<%}%>
+		</td>
 	</tr>
 	
 	<tr>
-	<td class="labelText">
-		<siga:Idioma key="gratuita.operarRatificacion.literal.fundamentoJuridico"/>
-	</td>
-	<td colspan="3">
-		<%if (accion.equalsIgnoreCase("ver")){%>
-			<siga:ComboBD nombre="idFundamentoJuridico"  ancho="790" tipo="tipoFundamentos" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vFundamentoJuridico%>" readOnly="true"/>
-		<%} else {%>
-			<siga:ComboBD nombre="idFundamentoJuridico" ancho="790" tipo="tipoFundamentos" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vFundamentoJuridico%>"/>
-		<%}%>
-	</td>
+		<td class="labelText">
+			<siga:Idioma key="gratuita.operarRatificacion.literal.fundamentoJuridico"/>
+		</td>
+		<td colspan="4">
+			<%if (accion.equalsIgnoreCase("ver")){%>
+				<siga:ComboBD nombre="idFundamentoJuridico" ancho="700" tipo="tipoFundamentos" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vFundamentoJuridico%>" readOnly="true"/>
+			<%} else {%>
+				<siga:ComboBD nombre="idFundamentoJuridico" ancho="700" tipo="tipoFundamentos" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vFundamentoJuridico%>"/>
+			<%}%>
+		</td>
 	</tr>
+	
 	<tr>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.operarRatificacion.literal.fechaNotificacion"/>
 		</td>
-	<td>
-		<%if (accion.equalsIgnoreCase("ver")){%>
-			<html:text name="DefinirEJGForm" property="fechaNotificacion" size="10" styleClass="boxConsulta" value="<%=fechaNotificacion%>" disabled="false" readonly="true"></html:text>
-		<%} else {%>
-			<html:text name="DefinirEJGForm" property="fechaNotificacion" size="10" styleClass="box" value="<%=fechaNotificacion%>" disabled="false" readonly="true"></html:text>
-			&nbsp;
-			<a onClick="return showCalendarGeneral(fechaNotificacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-			<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
-			</a>
-		<%}%>
-	</td>
-	<td class="labelText">
+		<td>
+			<%if (accion.equalsIgnoreCase("ver")){%>
+				<html:text name="DefinirEJGForm" property="fechaNotificacion" size="10" styleClass="boxConsulta" value="<%=fechaNotificacion%>" disabled="false" readonly="true"></html:text>
+			<%} else {%>
+				<html:text name="DefinirEJGForm" property="fechaNotificacion" size="10" styleClass="box" value="<%=fechaNotificacion%>" disabled="false" readonly="true"></html:text>
+				&nbsp;
+				<a onClick="return showCalendarGeneral(fechaNotificacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
+				<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
+				</a>
+			<%}%>
+		</td>
+		<td class="labelText" colspan="3">
 			<siga:Idioma key="gratuita.EJG.resolucion.refAuto"/>&nbsp;&nbsp;&nbsp;
 			<%if (accion.equalsIgnoreCase("ver")){%>
 				<html:text name="DefinirEJGForm" property="refAuto" size="10" styleClass="boxConsulta" value="<%=refA%>" readonly="false" disabled="false"></html:text>
@@ -229,6 +261,7 @@
 			<%}%>
 		</td>
 	</tr>
+	
 	<tr>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.operarRatificacion.literal.fechaRatificacion"/>
@@ -256,7 +289,7 @@
 	<tr>
 	<%}%>
 	<tr>
-		<td class="labelText" colspan="2">
+		<td class="labelText" colspan="4">
 			<siga:Idioma key="gratuita.operarRatificacion.literal.requiereTurnado"/>&nbsp;&nbsp;
 			<%if (accion.equalsIgnoreCase("ver")){%>
 				<input type="Checkbox" name="turnadoRatificacion" <%=(requiereTurnado?"checked":"")%> disabled>
@@ -270,7 +303,7 @@
 		<td class="labelText" colspan="1">
 			<siga:Idioma key="gratuita.operarRatificacion.literal.observacionRatificacion"/>
 		</td>
-		<td class="labelText" colspan="3">	
+		<td class="labelText" colspan="4">	
 			<%if (accion.equalsIgnoreCase("ver")) {%>	
 				<textarea name="ratificacionDictamen" class="boxConsulta" style="width:770px" rows="18" readOnly="true"><%=observaciones%></textarea>
 			<%} else {%>
@@ -312,6 +345,13 @@
 		function accionGuardar()
 		{ 
 			sub();
+			if( !((document.forms[0].anioCAJG.value!="" && document.forms[0].numeroCAJG.value!="" && document.forms[0].idOrigenCAJG.value!="")
+			    || (document.forms[0].anioCAJG.value=="" && document.forms[0].numeroCAJG.value=="" && document.forms[0].idOrigenCAJG.value=="")) ){
+			    fin();
+			    alert('<siga:Idioma key="gratuita.operarEJG.message.anioNumeroOrigen.obligatorios"/>');
+			    return false;
+			   
+			}
 			document.forms[0].submit();
 
 		}
