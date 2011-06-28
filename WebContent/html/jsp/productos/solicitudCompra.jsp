@@ -196,9 +196,13 @@
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo 
-		titulo="pys.solicitudCompra.cabecera" 
-		localizacion="pys.solicitudCompra.ruta"/>
+	
+	<% if(user.getStrutsTrans().equals("PYS_SolicitarCertificado")){ %>
+		<siga:Titulo titulo="certificados.solicitudCertificado.literal.titulo"	localizacion="certificados.solicitudes.literal.localizacion"/>
+	<%}else{ %>
+		<siga:Titulo titulo="pys.solicitudCompra.cabecera"	localizacion="pys.solicitudCompra.ruta"/>
+	<% } %>
+	
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->

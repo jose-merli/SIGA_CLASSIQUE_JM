@@ -52,8 +52,8 @@
 	String numcuenta="";
 	String idcuenta="";
 	//if(cuentaelegida!=null){
-		numcuenta=(String)cuentaelegida.get("NUMCUENTA");
-		idcuenta=(String)cuentaelegida.get("IDCUENTA");
+		//numcuenta=(String)cuentaelegida.get("NUMCUENTA");
+		//idcuenta=(String)cuentaelegida.get("IDCUENTA");
 	//}
 
 	String numero = (String)request.getAttribute("numero");
@@ -713,11 +713,15 @@
 	   						 	parametro[0] = carro.getIdPersona().toString();
 	   						 	parametro[1] = idInstitucion.toString(); 
 	   						 	String n = "cuenta"+String.valueOf(fila);
-	   						 	
-	   						 	ArrayList cuentaSel   = new ArrayList();
-  								cuentaSel.add("1");
+	   						 	if(sIdCuenta!= null && !sIdCuenta.equals("")){
+	   						 		ArrayList cuentaSel   = new ArrayList();
+  									cuentaSel.add(sIdCuenta);%>	
+  									<siga:ComboBD nombre="<%=n%>" tipo="cuentaCargo" clase="boxCombo" parametro="<%=parametro%>" ancho="15" readonly="false" elementoSel="<%=cuentaSel%>" />
+	   						 	<%}else{%>	
+	   						 		<siga:ComboBD nombre="<%=n%>" tipo="cuentaCargo" clase="boxCombo" parametro="<%=parametro%>" ancho="15" readonly="false" />
+	   						 	<%}
 	%>
-								<siga:ComboBD nombre="<%=n%>" tipo="cuentaCargo" clase="boxCombo" parametro="<%=parametro%>" ancho="15" readonly="false"  />
+								
 							</td>
 			  				<td>
 								<input type='text' name='cantidad<%=String.valueOf(fila)%>' value="<%=sCantidad%>" maxlength="5" class="box" styleClass="box" size="3" <%=desactivado%> onBlur="<%=validarCantidad%>,this)">

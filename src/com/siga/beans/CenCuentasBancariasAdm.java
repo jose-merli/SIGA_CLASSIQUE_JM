@@ -872,7 +872,41 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 	return cuentaBean;                        
 }
 	
-
+	public String getNumeroCuentaCompra(String idInstitucion, String idPersona, String idCuenta) throws ClsExceptions{
+		String cuentaBancaria = "";
+				
+		try {
+			
+			Hashtable codigosHashtable = new Hashtable();
+			int contador = 0;
+			RowsContainer rc = new RowsContainer();
+			String sql = new String();
+			
+			sql = "  SELECT C.cbo_codigo || ' ' || C.codigosucursal || ' ' || C.digitocontrol || ' ' ||  LPAD(SUBSTR(C.numerocuenta, 7), 10, '*') || ' [' || substr(B.NOMBRE, 0, 0) || '...]' AS CUENTABANCARIA";
+			sql += " FROM CEN_CUENTASBANCARIAS C, CEN_BANCOS B ";
+			sql += " WHERE C.CBO_CODIGO = B.CODIGO ";
+			sql += " 	AND C.IDCUENTA = "+idCuenta;
+			sql += " 	AND C.IDINSTITUCION = "+idInstitucion;
+			sql += " 	AND C.IDPERSONA =  "+idPersona;
+			sql += " 	AND (C.ABONOCARGO = 'C' OR C.ABONOCARGO = 'T')";
+			sql += " 	AND c.fechabaja IS NULL";   
+	
+	        // RGG cambio visibilidad
+	        rc = this.find(sql);
+	        if (rc!=null) {
+	           for (int i = 0; i < rc.size(); i++){
+	              Row fila = (Row) rc.get(i);
+	              cuentaBancaria = (String) fila.getString("CUENTABANCARIA");
+	           }
+	        } 
+		 
+		}catch (Exception e) {
+	       	throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla cuentas bancarias.");
+	    }
+	
+		return cuentaBancaria;
+	}
+	
 
 	
 }

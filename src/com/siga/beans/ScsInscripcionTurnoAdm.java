@@ -726,6 +726,8 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 						turno.setRequisitos(UtilidadesHash.getString(htFila,ScsTurnoBean.C_REQUISITOS));
 						turno.setIdPersonaUltimo(UtilidadesHash.getLong(htFila,ScsTurnoBean.C_IDPERSONAULTIMO));
 						turno.setActivarRestriccionAcreditacion(UtilidadesHash.getString(htFila,ScsTurnoBean.C_ACTIVARRETRICCIONACREDIT));
+						turno.setVisibilidad(UtilidadesHash.getString(htFila,ScsTurnoBean.C_VISIBILIDAD));
+						turno.setIdTipoTurno(UtilidadesHash.getString(htFila,ScsTurnoBean.C_IDTIPOTURNO));
 						turno.setLetradoActuaciones(UtilidadesHash.getString(htFila,ScsTurnoBean.C_LETRADOACTUACIONES));
 						turno.setLetradoAsistencias(UtilidadesHash.getString(htFila,ScsTurnoBean.C_LETRADOASISTENCIAS));
 						
@@ -1203,6 +1205,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 		sql +=","+ScsAreaBean.T_NOMBRETABLA+"."+ScsAreaBean.C_IDAREA	+ " IDAREA";
 		sql +=","+ScsMateriaBean.T_NOMBRETABLA+"."+ScsMateriaBean.C_NOMBRE	+" MATERIA";
 		sql +=","+ScsMateriaBean.T_NOMBRETABLA+"."+ScsMateriaBean.C_IDMATERIA	+" IDMATERIA";
+		sql +=", decode("+ScsTurnoBean.T_NOMBRETABLA+".VISIBILIDAD,'1', 'Alta','Baja') ESTADOLOGICO ";
 		sql +=","+ScsZonaBean.T_NOMBRETABLA+"."+ScsZonaBean.C_NOMBRE+" ZONA";
 		sql +=","+ScsZonaBean.T_NOMBRETABLA+"."+ScsZonaBean.C_IDZONA+" IDZONA";
 		sql +=","+ScsSubzonaBean.T_NOMBRETABLA+"."+ScsSubzonaBean.C_NOMBRE+" SUBZONA";
@@ -1269,8 +1272,8 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 						
 						" AND SCS_INSCRIPCIONTURNO.idpersona = "+idPersona+" ";
 						if (!historico){
+							where +=" AND SCS_TURNO.VISIBILIDAD = '1'";
 							where += getWhereInscripcion(fecha);
-							
 						}
 		sql += where;
 		sql += " ORDER BY NOMBRE,FECHASOLICITUD";

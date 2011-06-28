@@ -222,7 +222,7 @@ String[] getdatos = { usr.getLocation() };
 			<siga:Idioma key="gratuita.busquedaSOJ.literal.turno"/>
 		</td>
 		<td colspan="3">	
-			<siga:ComboBD nombre="idTurno" tipo="turnos" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="400"/>
+			<siga:ComboBD nombre="idTurno" tipo="turnosDesignacion" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="400"/>
 		</td>	
 		<td class="labelText">
 			<siga:Idioma key="gratuita.busquedaDesignas.literal.tipoDesigna"/>

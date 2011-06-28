@@ -60,7 +60,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 		String[] campos = {	ScsTurnoBean.C_IDINSTITUCION,			ScsTurnoBean.C_IDTURNO, 
 				ScsTurnoBean.C_NOMBRE,					ScsTurnoBean.C_ABREVIATURA,
 				ScsTurnoBean.C_DESCRIPCION,				ScsTurnoBean.C_GUARDIAS,
-				ScsTurnoBean.C_VALIDARJUSTIFICACIONES,	
+				ScsTurnoBean.C_VALIDARJUSTIFICACIONES,	ScsTurnoBean.C_VISIBILIDAD,
 				ScsTurnoBean.C_DESIGNADIRECTA,			ScsTurnoBean.C_VALIDARINSCRIPCIONES,	
 				ScsTurnoBean.C_IDMATERIA,				ScsTurnoBean.C_IDZONA,
 				ScsTurnoBean.C_IDSUBZONA,				ScsTurnoBean.C_IDORDENADIONCOLAS,
@@ -69,7 +69,8 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 				ScsTurnoBean.C_IDPARTIDAPRESUPUESTARIA,	ScsTurnoBean.C_USUMODIFICACION,
 				ScsTurnoBean.C_FECHAMODIFICACION, 		ScsTurnoBean.C_ACTIVARRETRICCIONACREDIT,
 				ScsTurnoBean.C_LETRADOACTUACIONES,		ScsTurnoBean.C_LETRADOASISTENCIAS, 
-				ScsTurnoBean.C_CODIGOEXT,ScsTurnoBean.C_FECHASOLICITUD_ULTIMO};
+				ScsTurnoBean.C_CODIGOEXT,				ScsTurnoBean.C_FECHASOLICITUD_ULTIMO,
+				ScsTurnoBean.C_IDTIPOTURNO};
 		return campos;
 	}
 	/**
@@ -120,6 +121,8 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 					ScsOrdenacionColasBean.T_NOMBRETABLA+"."+ScsOrdenacionColasBean.C_FECHANACIMIENTO+" EDAD",
 					ScsOrdenacionColasBean.T_NOMBRETABLA+"."+ScsOrdenacionColasBean.C_NUMEROCOLEGIADO+" ANTIGUEDAD",
 					ScsOrdenacionColasBean.T_NOMBRETABLA+"."+ScsOrdenacionColasBean.C_ANTIGUEDADCOLA+" ANTIGUEDADENCOLA",
+					"decode(turnos."+ScsTurnoBean.C_VISIBILIDAD+", '1','Alta','Baja') AS ESTADO",
+					"turnos."+ScsTurnoBean.C_IDTIPOTURNO +" IDTIPOTURNO",
 					//nuevo campo para contar el numero de letrados en cola
 					"(select count(*) from SCS_INSCRIPCIONTURNO INS where ins.idinstitucion=turnos.idinstitucion and ins.idturno=turnos.idturno and " +
 					"(ins.FECHABAJA IS NULL OR TRUNC(ins.FECHABAJA)>TRUNC(SYSDATE))			AND (ins.FECHAVALIDACION IS NOT NULL AND TRUNC(ins.FECHAVALIDACION)<=TRUNC(SYSDATE))) " +
@@ -209,6 +212,8 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 			bean.setLetradoAsistencias(UtilidadesHash.getString(hash,ScsTurnoBean.C_LETRADOASISTENCIAS));
 			bean.setCodigoExt(UtilidadesHash.getString(hash,ScsTurnoBean.C_CODIGOEXT));
 			bean.setFechaSolicitudUltimo(UtilidadesHash.getString(hash,ScsTurnoBean.C_FECHASOLICITUD_ULTIMO));
+			bean.setVisibilidad(UtilidadesHash.getString(hash,ScsTurnoBean.C_VISIBILIDAD));
+			bean.setIdTipoTurno(UtilidadesHash.getString(hash,ScsTurnoBean.C_IDTIPOTURNO));
 			
 		}
 		catch(Exception e){
@@ -256,6 +261,8 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 			if (aux==null)aux="";
 			hash.put(ScsTurnoBean.C_IDPERSONAULTIMO, aux);
 			UtilidadesHash.set(hash, ScsTurnoBean.C_ACTIVARRETRICCIONACREDIT, b.getActivarRestriccionAcreditacion());
+			UtilidadesHash.set(hash, ScsTurnoBean.C_VISIBILIDAD, b.getVisibilidad());
+			UtilidadesHash.set(hash, ScsTurnoBean.C_IDTIPOTURNO, b.getIdTipoTurno());
 			UtilidadesHash.set(hash, ScsTurnoBean.C_LETRADOACTUACIONES, b.getLetradoActuaciones());
 			UtilidadesHash.set(hash, ScsTurnoBean.C_LETRADOASISTENCIAS, b.getLetradoAsistencias());
 			UtilidadesHash.set(hash, ScsTurnoBean.C_CODIGOEXT, b.getCodigoExt());
@@ -417,7 +424,8 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 	public Hashtable getDatosTurno(String idInstitucion, String idTurno) {
 		String consulta =	" select turno.nombre nombre, turno.abreviatura abreviatura, turno.idarea idarea, turno.idmateria idmateria, turno.idzona idzona, "+
 		" turno.idpartidapresupuestaria idpartidapresupuestaria, turno.idgrupofacturacion idgrupofacturacion, turno.guardias guardias, turno.descripcion descripcion,"+
-		" turno.requisitos requisitos, turno.idordenacioncolas idordenacioncolas, turno.idpersona_ultimo idpersona_ultimo,turno.FECHASOLICITUD_ULTIMO FECHASOLICITUD_ULTIMO, turno.idsubzona idsubzona, area.nombre area,"+
+		" turno.requisitos requisitos, turno.idordenacioncolas idordenacioncolas,turno.visibilidad visibilidad, turno.idtipoturno, "+
+		" (SELECT f_siga_getrecurso(descripcion,"+usrbean.getLanguage()+") FROM scs_tipoturno tt WHERE turno.idtipoturno = tt.idtipoturno) TIPOTURNO, turno.idpersona_ultimo idpersona_ultimo,turno.FECHASOLICITUD_ULTIMO FECHASOLICITUD_ULTIMO, turno.idsubzona idsubzona, area.nombre area,"+
 		" materia.nombre materia, zona.nombre zona, subzona.nombre subzona, partida.nombrepartida partidapresupuestaria, turno.idordenacioncolas idordenacioncolas, turno.idturno idturno, turno.validarjustificaciones validarjustificaciones, turno.validarinscripciones validarinscripciones,"+
 		" turno.designadirecta designadirecta, subzona.idpartido idpartidojudicial, "+
 		"  PKG_SIGA_SJCS.FUN_SJ_PARTIDOSJUDICIALES(turno.idinstitucion, turno.idsubzona, turno.idzona) partidojudicial, " +
@@ -796,6 +804,8 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 					turno.setIdPersonaUltimo(UtilidadesHash.getLong(htFila,ScsTurnoBean.C_IDPERSONAULTIMO));
 					turno.setFechaSolicitudUltimo(UtilidadesHash.getString(htFila,ScsTurnoBean.C_FECHASOLICITUD_ULTIMO));
 					turno.setActivarRestriccionAcreditacion(UtilidadesHash.getString(htFila,ScsTurnoBean.C_ACTIVARRETRICCIONACREDIT));
+					turno.setVisibilidad(UtilidadesHash.getString(htFila,ScsTurnoBean.C_VISIBILIDAD));
+					turno.setIdTipoTurno(UtilidadesHash.getString(htFila,ScsTurnoBean.C_IDTIPOTURNO));
 					turno.setLetradoActuaciones(UtilidadesHash.getString(htFila,ScsTurnoBean.C_LETRADOACTUACIONES));
 					turno.setLetradoAsistencias(UtilidadesHash.getString(htFila,ScsTurnoBean.C_LETRADOASISTENCIAS));
 					
@@ -1100,6 +1110,58 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 		this.updateDirect(hash, this.getClavesBean(), campos);
 	} // cambiarUltimoCola()
 	
-	
+	public List<ScsTurnoBean> getTurnosConTipo(String idInstitucion, String idTipoTurno)throws ClsExceptions{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		
+		sql.append(" SELECT IDINSTITUCION , IDTURNO ");
+		sql.append(" , NOMBRE FROM SCS_TURNO TURNO  ");
+		sql.append(" WHERE TURNO.IDINSTITUCION = :");
+	    contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),idInstitucion);
+		
+		if(idTipoTurno!=null && !idTipoTurno.equals("")){
+			sql.append(" AND NVL(TURNO.IDTIPOTURNO,0) <> :");
+		    contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),idTipoTurno);
+		}
+		sql.append(" AND TURNO.VISIBILIDAD = '1' ");
+		sql.append(" ORDER BY TURNO.NOMBRE ");
+		
+		List<ScsTurnoBean> alTurnos = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.findBind(sql.toString(),htCodigos)) {
+            	alTurnos = new ArrayList<ScsTurnoBean>();
+            	ScsTurnoBean turnoBean = null;
+            	if(rc.size()>1){
+            		turnoBean = new ScsTurnoBean();
+	    			turnoBean.setNombre(UtilidadesString.getMensajeIdioma(this.usrbean, "general.combo.seleccionar"));
+	    			turnoBean.setIdTurno(new Integer(-1));
+	            	alTurnos.add(turnoBean);
+            	}
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		
+            		
+            		turnoBean = new ScsTurnoBean();
+            		turnoBean.setIdInstitucion(UtilidadesHash.getInteger(htFila,ScsTurnoBean.C_IDINSTITUCION));
+            		turnoBean.setIdTurno(UtilidadesHash.getInteger(htFila,ScsTurnoBean.C_IDTURNO));
+        			turnoBean.setNombre(UtilidadesHash.getString(htFila,ScsTurnoBean.C_NOMBRE));
+            		alTurnos.add(turnoBean);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }
+       return alTurnos;
+		
+	}	
 	
 }

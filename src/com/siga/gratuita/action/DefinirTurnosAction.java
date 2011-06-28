@@ -77,6 +77,7 @@ public class DefinirTurnosAction extends MasterAction {
 			datosPestanas.put("turno",idTurno);
 			datosPestanas.put("institucion",usr.getLocation());
 			request.setAttribute("datosTurnoPestana",datosPestanas);
+			request.getSession().setAttribute("BAJALOGICATURNOS",form.getTurnosBajaLogica());
 
 		}
 		catch (Exception e) {
@@ -117,6 +118,7 @@ public class DefinirTurnosAction extends MasterAction {
 			}
 			request.getSession().setAttribute("IDTURNOSESION",idTurno);	
 			request.getSession().setAttribute("FECHASOLICITUDTURNOSESION",(String)ocultos.get(19));
+			request.getSession().setAttribute("BAJALOGICATURNOS",form.getTurnosBajaLogica());
 /*
 			String idTurno ="";
 			try{
@@ -268,6 +270,17 @@ public class DefinirTurnosAction extends MasterAction {
 			else { 
 				hash.put (ScsTurnoBean.C_LETRADOASISTENCIAS, ClsConstants.DB_FALSE);
 			}
+
+			if (miform.getVisibilidad() != null && UtilidadesString.stringToBoolean(miform.getVisibilidad())) {
+				hash.put(ScsTurnoBean.C_VISIBILIDAD, ClsConstants.DB_TRUE);
+			}
+			else { 
+				hash.put (ScsTurnoBean.C_VISIBILIDAD, ClsConstants.DB_FALSE);
+			}
+			
+			if (miform.getIdTipoTurno() != null){
+				hash.put(ScsTurnoBean.C_IDTIPOTURNO, miform.getIdTipoTurno());
+			}
 			
 			if (miform.getCodigoExterno() != null) {
 				hash.put(ScsTurnoBean.C_CODIGOEXT,miform.getCodigoExterno());
@@ -361,6 +374,8 @@ public class DefinirTurnosAction extends MasterAction {
 		aux.put(ScsTurnoBean.C_ACTIVARRETRICCIONACREDIT,(hash.get(ScsTurnoBean.C_ACTIVARRETRICCIONACREDIT)));
 		aux.put(ScsTurnoBean.C_LETRADOACTUACIONES,(hash.get(ScsTurnoBean.C_LETRADOACTUACIONES)));
 		aux.put(ScsTurnoBean.C_LETRADOASISTENCIAS,(hash.get(ScsTurnoBean.C_LETRADOASISTENCIAS)));
+		aux.put(ScsTurnoBean.C_VISIBILIDAD,(hash.get(ScsTurnoBean.C_VISIBILIDAD)));
+		aux.put(ScsTurnoBean.C_IDTIPOTURNO,(hash.get(ScsTurnoBean.C_IDTIPOTURNO)));
 		aux.put(ScsTurnoBean.C_CODIGOEXT,(hash.get(ScsTurnoBean.C_CODIGOEXT)));
 		return aux;
 	}
@@ -420,7 +435,16 @@ public class DefinirTurnosAction extends MasterAction {
 				hash.put(ScsTurnoBean.C_CODIGOEXT,miform.getCodigoExterno());
 			}
 			
-
+			if (miform.getVisibilidad() != null && UtilidadesString.stringToBoolean(miform.getVisibilidad())) {
+				hash.put(ScsTurnoBean.C_VISIBILIDAD, ClsConstants.DB_TRUE);
+			}
+			else { 
+				hash.put (ScsTurnoBean.C_VISIBILIDAD, ClsConstants.DB_FALSE);
+			}
+			
+			if (miform.getIdTipoTurno() != null){
+				hash.put(ScsTurnoBean.C_IDTIPOTURNO, miform.getIdTipoTurno());
+			}
 			
 			//Chequeo que el IDMATERIA no sea nulo:
 			if (miform.getMateria()==null || miform.getMateria().trim().equals(""))
@@ -617,12 +641,16 @@ public class DefinirTurnosAction extends MasterAction {
 	//			}
 	//		}catch(Exception e){}
 						
-			
+			if(form.getTurnosBajaLogica().equalsIgnoreCase("N")){
+				where+=	" AND turnos.visibilidad = '1'";
+			}
 			
 			request.getSession().setAttribute("DATOSFORMULARIO",hash);
 			request.getSession().setAttribute("BUSQUEDAREALIZADA","SI");
+			
 			Vector vTurno = turno.selectTurnos(where); //el segundo parámetro sirve para indicarle al método que los campos a recuperar en el select son:
 														  //abreviatura,nombre, area, materia, zona, subzona, partidoJudicial,partidaPresupuestaria, grupoFacturacion
+			request.setAttribute("BAJALOGICATURNOS",form.getTurnosBajaLogica());
 			request.setAttribute("resultado",vTurno);
 			request.setAttribute("mantTurnos","1");
 
@@ -687,7 +715,6 @@ public class DefinirTurnosAction extends MasterAction {
 					
 			request.setAttribute("pcajgActivo", tipoCAJG);
 
-			
 			request.getSession().setAttribute("turnoElegido",miTurno);
 			
 			request.getSession().removeAttribute("accionTurno");

@@ -5,12 +5,16 @@
 
 package com.siga.gratuita.form;
 
+import java.util.List;
+
 import com.atos.utils.ClsConstants;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.ScsAsistenciasBean;
 import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsEJGDESIGNABean;
+import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsPersonaJGBean;
+import com.siga.beans.ScsTurnoBean;
 import com.siga.general.MasterForm;
 
 
@@ -699,10 +703,11 @@ import com.siga.general.MasterForm;
 	public boolean getTurnadoRatificacion() 			{return UtilidadesHash.getBoolean(this.datos, ScsEJGBean.C_TURNADORATIFICACION).booleanValue(); 	 	}
 	public void setTurnadoRatificacion(boolean dato)	{this.datos.put(ScsEJGBean.C_TURNADORATIFICACION, (dato?ClsConstants.DB_TRUE:ClsConstants.DB_FALSE));	}
 	
-	String rutaFicheroDownload, ficheroDownload, borrarFicheroDownload;
+	String rutaFicheroDownload, ficheroDownload, borrarFicheroDownload, idTipoTurno, idTurno, idGuardia;
 	String fechaAperturaDesde, fechaAperturaHasta, fechaLimitePresentacionDesde, fechaLimitePresentacionHasta, fechaEstadoDesde, fechaEstadoHasta, fechaDictamenDesde, fechaDictamenHasta;
 	String idRenuncia="";
-	
+	List<ScsTurnoBean> turnos;
+	List<ScsGuardiasTurnoBean> guardias;
 	
 
     public String getBorrarFicheroDownload() {
@@ -774,6 +779,47 @@ import com.siga.general.MasterForm;
 	public void setfechaDictamenHasta(String fechaDictamenHasta) {
 		this.fechaDictamenHasta = fechaDictamenHasta;
 	}
+	
+	public String getIdTipoTurno() {
+		return idTipoTurno;
+	}
+
+	public void setIdTipoTurno(String idTipoTurno) {
+		this.idTipoTurno = idTipoTurno;
+	}
+	
+	public List<ScsTurnoBean> getTurnos() {
+		return turnos;
+	}
+
+	public void setTurnos(List<ScsTurnoBean> turnos) {
+		this.turnos = turnos;
+	}
+
+	public String getIdTurno() {
+		return idTurno;
+	}
+
+	public void setIdTurno(String idTurno) {
+		this.idTurno = idTurno;
+	}
+	
+	public String getIdGuardia() {
+		return idGuardia;
+	}
+
+	public void setIdGuardia(String idGuardia) {
+		this.idGuardia = idGuardia;
+	}
+
+	public List<ScsGuardiasTurnoBean> getGuardias() {
+		return guardias;
+	}
+
+	public void setGuardias(List<ScsGuardiasTurnoBean> guardias) {
+		this.guardias = guardias;
+	}
+
 	public String  getChkDocumentacion(){
  		return UtilidadesHash.getString(this.datos, "ChkDocumentacion");
 	 }

@@ -18,8 +18,11 @@ public class DefinirTurnosForm extends MasterForm {
 	public String activarRestriccionActuacion = "";
 	public String activarActuacionesLetrado = "";
 	public String activarAsistenciasLetrado = "";
-	public String incluirRegistrosConBajaLogica = "S";
-	
+	public String incluirRegistrosConBajaLogica = "N";
+	public String turnosBajaLogica = "N";
+	public String visibilidad ="";
+	public String idTipoTurno ="";
+	public String nameBajaLogica ="";
 
 	String codigoExterno="";
 	
@@ -61,8 +64,34 @@ public class DefinirTurnosForm extends MasterForm {
 	public void setActivarRestriccionActuacion(String activarRestriccionActuacion) {
 		this.activarRestriccionActuacion = activarRestriccionActuacion;
 	}
+	
+	public String getVisibilidad() {
+		return visibilidad;
+	}
+
+	public void setVisibilidad(String visibilidad) {
+		this.visibilidad = visibilidad;
+	}
+	
+	public String getTurnosBajaLogica() {
+		return turnosBajaLogica;
+	}
+
+	public void setTurnosBajaLogica(String turnosBajaLogica) {
+		this.turnosBajaLogica = turnosBajaLogica;
+	}
+
+	public String getIdTipoTurno() {
+		return idTipoTurno;
+	}
+
+	public void setIdTipoTurno(String idTipoTurno) {
+		this.idTipoTurno = idTipoTurno;
+	}
+	
+	
 //metodos set de los campos del formulario
-    
+
 	public void setnLetrados (String valor){ 
 		this.datos.put("NLETRADOS", valor);
 	}

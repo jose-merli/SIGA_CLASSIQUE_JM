@@ -1,7 +1,10 @@
 package com.siga.gratuita.form;
 
+import java.util.List;
+
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.ScsDesignaBean;
+import com.siga.beans.ScsTurnoBean;
 import com.siga.general.MasterForm;
 
 /**
@@ -237,11 +240,11 @@ public class BuscarDesignasForm extends MasterForm {
 	 * @param Turno  
 	 * @return void 
 	 */
-	public void setIdTurno	(String turno)	{
+	/*public void setIdTurno	(String turno)	{
 		String aux = "";
 		if (turno.indexOf(",")>0)this.datos.put("IDTURNO", turno.substring(turno.indexOf(",")+1,turno.length()));
 		else this.datos.put("IDTURNO","");
-	}
+	}*/
 	
 	/**
 	 * Almacena en la Hashtable el TIPO de la designa que se quiere buscar 
@@ -405,9 +408,9 @@ public class BuscarDesignasForm extends MasterForm {
 	 * @param Turno  
 	 * @return  
 	 */
-	public String getIdTurno	()	{
+	/*public String getIdTurno	()	{
 		return (String)this.datos.get("IDTURNO");
-	}
+	}*/
 	
 	/**
 	 * Recupera de la Hashtable el TIPO de la designa que se quiere buscar 
@@ -494,6 +497,9 @@ public class BuscarDesignasForm extends MasterForm {
 	private String cabeceraCarta="";
 	private String motivoCarta="";
 	private String pieCarta="";
+	private String idTipoTurno = "";
+	List<ScsTurnoBean> turnos;
+	private String idTurno = "";
 	
 	public void setCabeceraCarta(String id){
 		this.cabeceraCarta=id;
@@ -526,6 +532,27 @@ public class BuscarDesignasForm extends MasterForm {
 		return UtilidadesHash.getString(datos,"JUZGADO");
 	}
 	
+	public String getIdTipoTurno() {
+		return idTipoTurno;
+	}
+	public void setIdTipoTurno(String idTipoTurno) {
+		this.idTipoTurno = idTipoTurno;
+	}
+
+	public List<ScsTurnoBean> getTurnos() {
+		return turnos;
+	}
+
+	public void setTurnos(List<ScsTurnoBean> turnos) {
+		this.turnos = turnos;
+	}
+	
+	public String getIdTurno() {
+		return idTurno;
+	}
+	public void setIdTurno(String idTurno) {
+		this.idTurno = idTurno;
+	}
 
 	String rutaFicheroDownload, ficheroDownload, borrarFicheroDownload;
 	

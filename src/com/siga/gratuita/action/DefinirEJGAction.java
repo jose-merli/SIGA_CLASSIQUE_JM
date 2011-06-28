@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,10 +24,12 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.AjaxCollectionXmlBuilder;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
@@ -67,11 +70,15 @@ import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsEJGDESIGNAAdm;
 import com.siga.beans.ScsEJGDESIGNABean;
+import com.siga.beans.ScsGuardiasTurnoAdm;
+import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsPersonaJGAdm;
 import com.siga.beans.ScsPersonaJGBean;
 import com.siga.beans.ScsSOJBean;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
 import com.siga.beans.ScsSaltosCompensacionesBean;
+import com.siga.beans.ScsTurnoAdm;
+import com.siga.beans.ScsTurnoBean;
 import com.siga.beans.ScsUnidadFamiliarEJGAdm;
 import com.siga.beans.ScsUnidadFamiliarEJGBean;
 import com.siga.certificados.Plantilla;
@@ -132,6 +139,14 @@ public class DefinirEJGAction extends MasterAction
 					mapDestino = generarCarta(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("finalizarCarta")){
 					mapDestino = finalizarCarta(mapping, miForm, request, response);
+				}else if ( accion.equalsIgnoreCase("getAjaxTurnos")){
+					ClsLogging.writeFileLog("DEFINIR EJG:getAjaxTurnos", 10);
+					getAjaxTurnos(mapping, miForm, request, response);
+					return null;					
+				}else if ( accion.equalsIgnoreCase("getAjaxGuardias")){
+					ClsLogging.writeFileLog("DEFINIR EJG:getAjaxGuardias", 10);
+					getAjaxGuardias(mapping, miForm, request, response);
+					return null;	
 				} else {
 					return super.executeInternal(mapping,
 							      formulario,
@@ -590,8 +605,15 @@ public class DefinirEJGAction extends MasterAction
 			} 
 		}
 		DefinirEJGForm miform = (DefinirEJGForm)formulario;
+
 		try{
-			
+			List<ScsTurnoBean> alTurnos = new ArrayList<ScsTurnoBean>();
+			List<ScsGuardiasTurnoBean> alGuardias = new ArrayList<ScsGuardiasTurnoBean>();
+			ScsTurnoAdm admTurnos = new ScsTurnoAdm(this.getUserBean(request));
+			alTurnos = admTurnos.getTurnosConTipo(usr.getLocation(), "2");
+			miform.setTurnos(alTurnos);
+			miform.setIdTurno("");
+			miform.setGuardias(alGuardias);
 						
 			request.setAttribute("asistenciaNumero", (String)miform.getAsistenciaNumero());
 			request.setAttribute("asistenciaAnio", (String)miform.getAsistenciaAnio());
@@ -1307,6 +1329,7 @@ public class DefinirEJGAction extends MasterAction
 			CenPersonaAdm persona = new CenPersonaAdm(this.getUserBean(request));
 			
 			try {
+				
 				String numeroColegiado = colegiado.getIdentificadorColegiado(usr);
 				String nombreColegiado = persona.obtenerNombreApellidos(new Long(usr.getIdPersona()).toString());
 				request.setAttribute("nColegiado",numeroColegiado);
@@ -1670,4 +1693,74 @@ public class DefinirEJGAction extends MasterAction
 		}
 		
 	}
+	
+	protected void getAjaxTurnos (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
+			{
+		
+		DefinirEJGForm miForm = (DefinirEJGForm) formulario;
+		//Recogemos el parametro enviado por ajax
+		String idTipoTurno = request.getParameter("idTipoTurno");
+		String idInstitucion= request.getParameter("idInstitucion");
+
+		
+		miForm.setIdTipoTurno(idTipoTurno);
+		miForm.setIdInstitucion(idInstitucion);
+		
+		ClsLogging.writeFileLog("DEFINIR EJG:getAjaxTurnos.fechaGuardia:"+idTipoTurno+"/", 10);
+		
+		//Sacamos los turnos
+		ScsTurnoAdm admTurnos = new ScsTurnoAdm(this.getUserBean(request));
+		List<ScsTurnoBean> alTurnos = admTurnos.getTurnosConTipo(miForm.getIdInstitucion(),miForm.getIdTipoTurno());
+		ClsLogging.writeFileLog("VOLANTES EXPRESS:Select Turnos", 10);
+		if(alTurnos==null){
+			alTurnos = new ArrayList<ScsTurnoBean>();
+		}else{
+			for(ScsTurnoBean turno:alTurnos){
+				ClsLogging.writeFileLog("DEFINIR EJG:turno:"+turno.getNombre(), 10);
+			}
+		}
+		ClsLogging.writeFileLog("DEFINIR EJG:Fin Select Turnos", 10);
+	    respuestaAjax(new AjaxCollectionXmlBuilder<ScsTurnoBean>(), alTurnos,response);
+	    
+		
+	}	
+	
+	protected void getAjaxGuardias (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
+			{
+		DefinirEJGForm miForm = (DefinirEJGForm) formulario;
+		//Recogemos el parametro enviado por ajax
+		String idInstitucion = request.getParameter("idInstitucion");
+		String idTurno = request.getParameter("idTurno");
+		miForm.setIdTurno(idTurno);
+		ClsLogging.writeFileLog("DEFINIR EJG:getAjaxGuardias.idInstitucion:"+idInstitucion+"/", 10);
+		ClsLogging.writeFileLog("DEFINIR EJG:getAjaxGuardias.idTurno:"+idTurno+"/", 10);
+		
+		//Sacamos las guardias si hay algo selccionado en el turno
+		List<ScsGuardiasTurnoBean> alGuardias = null;
+		ClsLogging.writeFileLog("DEFINIR EJG:Select Guardias", 10);
+		if(miForm.getIdTurno()!= null && !miForm.getIdTurno().equals("-1")&& !miForm.getIdTurno().equals("")){
+			ScsGuardiasTurnoAdm admGuardias = new ScsGuardiasTurnoAdm(this.getUserBean(request));
+			alGuardias = admGuardias.getGuardiasTurnos(new Integer(idTurno), new Integer(idInstitucion), true);
+		}
+		if(alGuardias==null){
+			alGuardias = new ArrayList<ScsGuardiasTurnoBean>();
+			
+		}else{
+			for(ScsGuardiasTurnoBean guardia:alGuardias){
+				ClsLogging.writeFileLog("DEFINIR EJG:guardia:"+guardia.getNombre(), 10);
+			}
+		}
+		
+		miForm.setGuardias(alGuardias);
+		ClsLogging.writeFileLog("DEFINIR EJG:Select Guardias", 10);
+		
+		respuestaAjax(new AjaxCollectionXmlBuilder<ScsGuardiasTurnoBean>(), alGuardias,response);
+		
+	}	
 }

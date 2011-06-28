@@ -46,6 +46,7 @@
 
 	DefinirTurnosForm miform = (DefinirTurnosForm) request.getAttribute("DefinirTurnosForm");
 	request.setAttribute("BUSQUEDAREALIZADA",(String)request.getSession().getAttribute("BUSQUEDAREALIZADA"));
+	String turnosBajaLogica = (String)request.getSession().getAttribute("BAJALOGICATURNOS");
 	
 	Vector campos = new Vector();
 	//Vector ocultos = new Vector();
@@ -54,6 +55,7 @@
 	String where="";
 	String[] dato1 = {usr.getLocation()};
 	String[] dato2 = {usr.getLocation(),""};
+	String[] datos2={usr.getLocation(),usr.getLanguage()};
 	String conPestanas="";
 	if (!accion.equalsIgnoreCase("nuevo")){
 		campos = (Vector)request.getSession().getAttribute("campos");
@@ -106,6 +108,7 @@
 	}
 	
 	String alto = "345";
+	ArrayList vTipoTurno = new ArrayList();
 %>
 
 <html>
@@ -157,6 +160,8 @@
 		{
 		   	
 		   sub();
+
+		   
 		   if (document.forms[0].validacionInscripcion.checked){
 		     
 		       validarNew="S";
@@ -200,7 +205,6 @@
 						    document.forms[0].validarAltas.value="0";
 						  }
 						 }					
-						  
 						document.forms[0].target="submitArea";
 						document.forms[0].modo.value="modificar";
 						document.forms[0].submit();
@@ -274,6 +278,31 @@
 	<input type="hidden" name="modo" value="modificar">
 	<input type="hidden" name="validarAltas" value="0">
 	<input type="hidden" name="validarOld" value="<%=validarInscripciones%>">
+	<input type="hidden" name="turnosBajaLogica" value="<%=turnosBajaLogica%>">
+	
+		<siga:ConjCampos leyenda="gratuita.listarTurnos.literal.estado">
+		<%if (accion.equalsIgnoreCase("editar")){%>
+
+			<table width="30%" border="0" align="left" class="labelText" >
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<INPUT NAME="visibilidad" TYPE=RADIO VALUE="1" <% if((((String)turno.get("VISIBILIDAD")).equalsIgnoreCase("1"))||(accion.equalsIgnoreCase("nuevo"))){ %> checked <% } %> > <siga:Idioma key="gratuita.maestroTurnos.literal.bajaLogica.alta"/> 
+				</td>
+
+				<td>
+					<INPUT NAME="visibilidad" TYPE=RADIO VALUE="0" <% if((((String)turno.get("VISIBILIDAD")).equalsIgnoreCase("0"))){ %> checked <% } %>> <siga:Idioma key="gratuita.maestroTurnos.literal.bajaLogica.baja"/>
+				</td>
+			</table>
+			<%}else{
+				String estadoVisibilidad = "";
+				if(((String)turno.get("VISIBILIDAD")).equalsIgnoreCase("1")){
+					estadoVisibilidad="ALTA";
+				}else{
+					estadoVisibilidad="BAJA";
+				}
+					%>
+			<td style="text-align:left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<html:text name="DefinirTurnosForm" property="visibilidad" size="50" maxlength="50" styleClass="boxConsulta" value='<%=estadoVisibilidad%>' readOnly="true"></html:text></td>
+			<%}%>
+		</siga:ConjCampos>
 
 		<siga:ConjCampos leyenda="gratuita.maestroTurnos.literal.datosGenerales">
 		<table width="100%" border="0" align="center" >
@@ -479,6 +508,31 @@
 			</td>
 	
 		</tr>	
+		
+		<tr>
+			<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.maestroTurnos.literal.tipoturno"/>&nbsp;
+			</td>
+			<td style="text-align:left">
+				<%if (accion.equalsIgnoreCase("ver")){%>
+					<html:text name="DefinirTurnosForm" property="idTipoTurno" size="50" maxlength="50" styleClass="boxConsulta" value='<%=(String)turno.get("TIPOTURNO")%>' readOnly="true"></html:text>
+				<%}else {
+					try {
+						 
+						if ((String)turno.get("IDTIPOTURNO") == "-1") { 
+							vTipoTurno.add(usr.getLocation());
+							vTipoTurno.add("0");
+						}
+						else {
+							vTipoTurno.add(usr.getLocation());
+							vTipoTurno.add((String)turno.get("IDTIPOTURNO")); 
+						}
+					} catch (Exception e) {
+						vTipoTurno.add("0");
+					}%>
+					<siga:ComboBD nombre="idTipoTurno" tipo="tipoTurno" clase="boxCombo" estilo="true" obligatorio="false" elementoSel='<%=vTipoTurno%>' parametro="<%=datos2%>"/>
+				<%}%>
+			</td>
+		</tr>			
 		</table>	
 		</siga:ConjCampos>
 			<siga:ConjCampos leyenda="gratuita.listarTurnos.literal.guardias">

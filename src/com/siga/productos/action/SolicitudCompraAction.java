@@ -52,6 +52,7 @@ import com.siga.beans.PysPeticionCompraSuscripcionBean;
 
 import com.siga.beans.PysProductosBean;
 
+import com.siga.beans.CenCuentasBancariasAdm;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.beans.FacFacturacionProgramadaBean;
@@ -919,6 +920,9 @@ public class SolicitudCompraAction extends MasterAction{
 		Integer idTipoArticulo;
 		Long idArticulo, idArticuloInstitucion;
 		int claseArticulo;
+		String idInstitucion = "", idPersona;
+		UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
+		CenCuentasBancariasAdm cb = new CenCuentasBancariasAdm(user); 
 		
 		CarroCompra carro = (CarroCompra)request.getSession().getAttribute(CarroCompraAdm.nombreCarro);	
 		Articulo a ;
@@ -927,7 +931,8 @@ public class SolicitudCompraAction extends MasterAction{
 			idArticulo 				= Long.valueOf(request.getParameter("oculto"+i+"_2"));
 			idArticuloInstitucion 	= Long.valueOf(request.getParameter("oculto"+i+"_3"));
 			claseArticulo			= Integer.parseInt(request.getParameter("oculto"+i+"_4"));				
-			
+			idInstitucion			= carro.getIdinstitucion().toString();
+			idPersona 				= carro.getIdPersona().toString();
 			
 			if(claseArticulo == Articulo.CLASE_PRODUCTO){
 				a=carro.buscarArticuloProducto(idArticulo, idArticuloInstitucion, idTipoArticulo);
@@ -938,8 +943,7 @@ public class SolicitudCompraAction extends MasterAction{
 				Double precio = new Double (aux.replaceAll(",","."));				
 				a.setPrecio(precio);
 				/////////////////////////////
-			}
-			else{
+			} else{
 				a=carro.buscarArticuloServicio(idArticulo, idArticuloInstitucion, idTipoArticulo);
 			}
 			
@@ -957,8 +961,11 @@ public class SolicitudCompraAction extends MasterAction{
 			}
 			
 			a.setFormaPago((String)request.getParameter("oculto"+i+"_6"));
-			a.setNumeroCuenta((String)request.getParameter("cuenta"+i));	
-			
+			if(request.getParameter("cuenta"+i) != null && !request.getParameter("cuenta"+i).equals("")){
+				a.setIdCuenta(Integer.parseInt(request.getParameter("cuenta"+i).trim()));
+				String numeroCuenta = cb.getNumeroCuentaCompra(idInstitucion,idPersona,(String)request.getParameter("cuenta"+i));
+				a.setNumeroCuenta(numeroCuenta);	
+			}
 			// Anhadido para productos de Certificacion			
 			if((request.getParameter("certificado"+i+"_1")!= null)&& !request.getParameter("certificado"+i+"_1").equals("")){
 				a.setTipoCertificado((String)request.getParameter("certificado"+i+"_1"));

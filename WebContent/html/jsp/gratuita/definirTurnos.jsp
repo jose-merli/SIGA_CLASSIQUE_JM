@@ -17,6 +17,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.atos.utils.UsrBean"%>
+<%@ page import="com.siga.gratuita.form.DefinirTurnosForm"%>
 <%@ page import="com.siga.gratuita.util.Colegio"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 
@@ -41,6 +42,8 @@
 	request.getSession().removeAttribute("accionTurno");	//borrar esta variable de sesion que habría quedado almacenada y ya no sirve
 	
 	request.getSession().removeAttribute("CenBusquedaClientesTipo");
+	DefinirTurnosForm miform = (DefinirTurnosForm) request.getAttribute("DefinirTurnosForm");
+	String turnosBajaLogica = miform.getTurnosBajaLogica();
 %>	
 
 <html>
@@ -61,6 +64,9 @@
 		function buscar() 
 		{
 			sub();
+			if(document.forms[0].turnosBajaLogica.value = "on"){
+				document.forms[0].turnosBajaLogica.value = "S";
+			}
 			document.forms[0].modo.value = "buscarPor";
 			document.forms[0].submit();
 		}		
@@ -95,7 +101,7 @@
 </script>
 		 
 </head>
-<body  onLoad="ajusteAlto('resultado');<%if((hayBusqueda).equals("1")){%>buscar();<%}%>" >
+<body  onLoad="ajusteAlto('resultado');<%if((turnosBajaLogica).equalsIgnoreCase("S")){%>activarCheckBajaLogica();<%}%>;<%if((hayBusqueda).equals("1")){%>buscar();<%}%>" >
 
 
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
@@ -111,7 +117,7 @@
 			<input type="hidden" name="modo" value="">
 			<input type="hidden" name="materia" value="">
 			<input type="hidden" name="limpiarFilaSeleccionada" value="">
-	
+				
 <%if (entrada.equalsIgnoreCase("1")){%>		<!--esto se quitara el dia en que se entre desde el menu-->
 	
 	<tr>
@@ -254,6 +260,10 @@
 			<siga:ComboBD estilo="true" obligatorio="false" nombre="grupoFacturacion" filasMostrar="1" seleccionMultiple="false" elementoSel="<%=vGrupo%>" tipo="grupoFacturacion" clase="boxCombo"  parametro="<%=dato%>"/>
 			<script> document.forms[0].grupoFacturacion[0].value=-1;</script>
 		</td>
+	</tr>
+	<tr>		
+		<td class="labelText"><siga:Idioma key="gratuita.definirTurnosIndex.literal.bajalogica"/></td>
+		<td><html:checkbox property="turnosBajaLogica"  onclick="activarBajaLogica(this);" /></td>
 	</tr>	
 	<%}%>
 	</html:form>
@@ -310,6 +320,19 @@
 			document.forms[0].modo.value="nuevo";
 			document.forms[0].submit();
 		}
+
+		function activarBajaLogica(valorCheck){
+			 if (valorCheck.checked){
+				 document.forms[0].turnosBajaLogica.value = "S";			   
+			 }else{
+				 document.forms[0].turnosBajaLogica.value = "N";
+			 }
+		}
+
+		function activarCheckBajaLogica(){
+			document.forms[0].turnosBajaLogica.checked = true;
+			document.forms[0].turnosBajaLogica.value = "S";			   
+		}				
 	</script>
 
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->

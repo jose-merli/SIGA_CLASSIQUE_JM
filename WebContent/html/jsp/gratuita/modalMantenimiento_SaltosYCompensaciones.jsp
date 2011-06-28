@@ -120,7 +120,7 @@
 				<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensaciones.literal.turno"/>&nbsp;(*)
 			</td>		
 			<td colspan="3">
-				<siga:ComboBD nombre = "idTurno" tipo="turnos" clase="boxCombo" obligatorio="false" accion="Hijo:idGuardia" parametro="<%=dato%>" ancho="400"/>
+				<siga:ComboBD nombre = "idTurno" tipo="turnosSinBaja" clase="boxCombo" obligatorio="false" accion="Hijo:idGuardia" parametro="<%=dato%>" ancho="400"/>
 			</td>		
 		</tr>
 		<tr>
@@ -145,10 +145,10 @@
 			<td class="labelText" colspan="2">
 				<html:radio name="SaltosYCompensacionesForm" property="salto" value="S"></html:radio>				
 				&nbsp;
-				<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.salto"/>
+				<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.salto"/>
 				<html:radio name="SaltosYCompensacionesForm" property="salto" value="C"></html:radio>		
 				&nbsp;
-				<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.compensacion"/>
+				<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.compensacion"/>			
 			</td>
 		</tr>		
 		<tr>
@@ -204,7 +204,7 @@
 				<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.turno"/>
 			</td>
 			<td colspan="3">
-				<html:text name="SaltosYCompensacionesForm" property="turno" size="50" maxlength="100" styleClass="boxConsulta" value="<%=turno%>" readOnly="true"></html:text>
+				<html:text name="SaltosYCompensacionesForm" property="turnosSinBaja" size="50" maxlength="100" styleClass="boxConsulta" value="<%=turno%>" readOnly="true"></html:text>
 			</td>
 		</tr>
 		<tr>
@@ -286,10 +286,7 @@
 	<!-- FIN: BOTONES REGISTRO -->
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">
-	
-	
-	
-	
+		
 		//Asociada al boton GuardarCerrar
 		function accionGuardarCerrar() {	
 

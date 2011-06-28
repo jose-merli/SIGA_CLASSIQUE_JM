@@ -46,6 +46,7 @@
 	DefinirTurnosForm miform = (DefinirTurnosForm) request.getAttribute("DefinirTurnosForm");
 	
 	String[] dato1 = {usr.getLocation()};
+	String[] datos2={usr.getLocation(),usr.getLanguage()};	
 	String classCombo="boxCombo";
 	if(entrada.equalsIgnoreCase("1")){
 		localiz="SJCS > Turnos > Inserción Turno";
@@ -191,6 +192,19 @@
 	
 	<html:form action = "/DefinirTurnosAction.do" method="POST" target="submitArea" enctype="multipart/form-data" onSubmit="return Buscar()">
 	<input type="hidden" name="modo" value="insertar">
+	
+			<siga:ConjCampos leyenda="gratuita.listarTurnos.literal.estado">
+
+			<table width="30%" border="0" align="left" class="labelText" >
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<INPUT NAME="visibilidad" TYPE=RADIO VALUE="1" checked> <siga:Idioma key="gratuita.maestroTurnos.literal.bajaLogica.alta"/> 
+				</td>
+
+				<td>
+					<INPUT NAME="visibilidad" TYPE=RADIO VALUE="0">  <siga:Idioma key="gratuita.maestroTurnos.literal.bajaLogica.baja"/>
+				</td>
+			</table>
+		</siga:ConjCampos>
 
 <siga:ConjCampos leyenda="gratuita.maestroTurnos.literal.datosGenerales">
 
@@ -269,6 +283,13 @@
 			<textarea class="box" onKeyDown="cuenta(this,1023)" onChange="cuenta(this,1023)" name="requisitos" rows="2" cols="50"></textarea>
 		</td>
 	</tr>
+	<tr>
+		<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.maestroTurnos.literal.tipoturno"/>&nbsp;
+		</td>
+		<td style="text-align:left">
+			<siga:ComboBD nombre="idTipoTurno" tipo="tipoTurno" clase="boxCombo" estilo="true" obligatorio="false" parametro="<%=datos2%>"/>
+		</td>
+	</tr>	
 	</table>
 </siga:ConjCampos>
 

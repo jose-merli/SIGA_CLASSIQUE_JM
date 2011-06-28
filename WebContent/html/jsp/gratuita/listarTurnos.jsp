@@ -55,6 +55,7 @@
 		activaSeleccionFila = "false";
 	}
 	String mantTurnos=(String)request.getAttribute("mantTurnos");
+	String turnosBajaLogica = (String)request.getAttribute("BAJALOGICATURNOS");
 	boolean bMant=true;
 	String ajusteB="false";	
 	if (mantTurnos==null || !mantTurnos.equals("1")) {
@@ -190,14 +191,14 @@
 		
 		//Entrada desde el menu de  SJCS:
 		if (isEntradaSJCS){
-			nC="gratuita.definirTurnosIndex.literal.abreviatura,censo.SolicitudIncorporacion.literal.nombre,gratuita.definirTurnosIndex.literal.area,gratuita.definirTurnosIndex.literal.materia,gratuita.definirTurnosIndex.literal.zona,gratuita.definirTurnosIndex.literal.subzona,gratuita.definirTurnosIndex.literal.grupoFacturacion,gratuita.listarTurnos.literal.letradosInscritos,";
-			tC="10,20,10,14,10,10,10,5,10";
+			nC="gratuita.definirTurnosIndex.literal.abreviatura,censo.SolicitudIncorporacion.literal.nombre,gratuita.definirTurnosIndex.literal.area,gratuita.definirTurnosIndex.literal.materia,gratuita.definirTurnosIndex.literal.zona,gratuita.definirTurnosIndex.literal.subzona,gratuita.definirTurnosIndex.literal.grupoFacturacion,gratuita.listarTurnos.literal.letradosInscritos,Estado,";
+			tC="10,20,10,12,9,8,10,5,5,10";
 			botones="C,E,B";
 			alto="253";}
 		//Entrada desde el menu de Censo:
 		else {	
-				nC="gratuita.definirTurnosIndex.literal.abreviatura,censo.SolicitudIncorporacion.literal.nombre,gratuita.definirTurnosIndex.literal.materia,gratuita.definirTurnosIndex.literal.subzona,gratuita.listaTurnosLetrados.literal.fechasolicitud,F. Valor,gratuita.altaTurnos.literal.fsbaja,F. Valor Baja,Estado,";
-				tC="16,16,8,8,8,8,8,8,8,10";
+				nC="gratuita.definirTurnosIndex.literal.abreviatura,censo.SolicitudIncorporacion.literal.nombre,gratuita.definirTurnosIndex.literal.materia,gratuita.definirTurnosIndex.literal.subzona,gratuita.listaTurnosLetrados.literal.fechasolicitud,F. Valor,gratuita.altaTurnos.literal.fsbaja,F. Valor Baja,Estado Inscripción,Estado Turno,";
+				tC="15,15,7,7,8,8,8,8,8,5,10";
 				if(bIncluirBajaLogica)
 					botones="";
 				else
@@ -205,9 +206,6 @@
 				alto="326";}
 	%>
 		<html:form action="DefinirTurnosAction.do" method="post" target="<%=elTarget%>" style="display:none">
-			
-			
-			
 			
 			<!-- Datos del Colegiado seleccionado -->
 			<input type="hidden" name = "nombreColegiadoPestanha" value = "<%=nombrePestanha%>"/>
@@ -226,14 +224,12 @@
 			<input type="hidden" name="observacionesValidacion"/>
 			<input type="hidden" name="fechaSolicitudBaja"/>
 			<input type="hidden" name="observacionesBaja"/>
-		
+			<input type="hidden" name="turnosBajaLogica" value="<%=turnosBajaLogica%>">
+			
 			<!-- RGG: cambio a formularios ligeros -->
 			<input type="hidden" name="filaSelD">
 			<input type="hidden" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
-			
-			
-			
 			
 			
 		</html:form>	
@@ -310,66 +306,55 @@
 			if(fechaDenegacion == null) 	fechaDenegacion = "";
 			if(fechaValor == null) 	fechaValor = "";
 			if(fechaValorBaja == null) 	fechaValorBaja = "";
-			String estado = null;
+			String estadoInscripcion = null;
 			if(!isEntradaSJCS){
 				elems[0]=new FilaExtElement("consultaInscripcion","consultaInscripcion",SIGAConstants.ACCESS_FULL);
-				estado= "No aplica";
+				estadoInscripcion= "No aplica";
 				if(fechaValidacion.equals("")){
 					if(fechaSolicitudBaja.equals("")){
 						if(fechaDenegacion.equals("")){
-							estado =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.alta.pendiente");
+							estadoInscripcion =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.alta.pendiente");
 							elems[1]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);
 						}else{
-							estado =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.alta.denegada");
+							estadoInscripcion =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.alta.denegada");
 						}
 						
 					}else{
 						if(fechaBaja.equals("")){
 							if(fechaDenegacion.equals("")){
-								estado  =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.pendiente");
+								estadoInscripcion  =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.pendiente");
 							}else{
 								elems[1]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);
-								estado =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.denegada");
+								estadoInscripcion =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.denegada");
 							}
 							
 						}else{
-							estado =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.confirmada");
+							estadoInscripcion =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.confirmada");
 							
 						}
-						
-						
 						
 					}
 					
 				}else{
 					
 					if(fechaSolicitudBaja.equals("")){
-						estado =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.alta.confirmada");
+						estadoInscripcion =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.alta.confirmada");
 						elems[1]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);
 					}else{
 						if(fechaBaja.equals("")){
 							if(fechaDenegacion.equals("")){
-								estado =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.pendiente");
+								estadoInscripcion =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.pendiente");
 							}else{
 								elems[1]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);
-								estado =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.denegada");
+								estadoInscripcion =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.denegada");
 							}
 							
 						}else{
-							estado =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.confirmada");
+							estadoInscripcion =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.confirmada");
 							
 						}
-						
-						
 					}
-					
-					
-					
 				}
-				
-				
-				
-				
 			}
 			%>
 
@@ -441,7 +426,8 @@
 					<% }%>
 					</td>
 					
-					<td ><%=estado%></td>
+					<td ><%=estadoInscripcion%></td>
+					<td  align="center"><%=registro.get("ESTADOLOGICO")%>&nbsp;</td>
 				
 				<%}else{%>
 				<td ><%=registro.get("ABREVIATURA")%>&nbsp;</td>
@@ -452,7 +438,7 @@
 				<td ><%if (!((String)registro.get("SUBZONA")).equals("")){%><%=registro.get("SUBZONA")%><%}else{%> &nbsp <%}%>&nbsp;</td>
 				<td ><%=registro.get("GRUPOFACTURACION")%></td>
 				<td align="right"><%=registro.get("NLETRADOS")%>&nbsp;</td>
-				
+				<td align="center"><%=registro.get("ESTADO")%>&nbsp;</td>
 			  	<%} %>
 				</siga:FilaConIconos>
 			<!-- FIN REGISTRO -->
