@@ -276,7 +276,7 @@
 				<siga:Idioma key="gratuita.busquedaAsistencias.literal.turno"/>
 			</td>
 			<td colspan="3">
-				<siga:ComboBD nombre ="turnos" tipo ="turnosSinTramitacion" clase="boxCombo" ancho="300" obligatorio="false" accion="Hijo:scsinscripcionguardia" parametro="<%=dato%>" elementoSel="<%=turnosA%>" />
+				<siga:ComboBD nombre ="turnos" tipo ="turnosDesignacion" clase="boxCombo" ancho="300" obligatorio="false" accion="Hijo:scsinscripcionguardia" parametro="<%=dato%>" elementoSel="<%=turnosA%>" />
 			</td>	
 			<td class="labelText">
 				<siga:Idioma key="gratuita.busquedaAsistencias.literal.guardia"/>
