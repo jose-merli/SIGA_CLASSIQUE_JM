@@ -1117,6 +1117,8 @@ public class DatosGeneralesPagoAction extends MasterAction {
 		
 		String idCuenta = null;
 		
+		String idpersonaAbono = null;
+		
 		
 		
 		// Recuperamos los colegiados a los que tenemos que pagar
@@ -1178,9 +1180,11 @@ public class DatosGeneralesPagoAction extends MasterAction {
 					importes.put("importeEjg", String.valueOf (importeEjg));
 					importes.put("importeMovimientos", String.valueOf(importeMovimientos));
 					importes.put("importeRetenciones", String.valueOf(importeRetenciones));
+					
+					idpersonaAbono = idPersonaSociedad == null ? idPersona : idPersonaSociedad; 
 
 					//Creamos el Abono:
-					this.crearAbonos (idPersona, idCuenta, request, colegiadosMarcados, 
+					this.crearAbonos (idpersonaAbono, idCuenta, request, colegiadosMarcados, 
 							(!idPersonaSociedad.equals("") ? idPersonaSociedad: idPersona),
 							idPago, idInstitucion, importes, importeIrpfTotal, idPersona);
 				} catch (Exception e) {

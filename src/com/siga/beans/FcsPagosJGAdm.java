@@ -1081,6 +1081,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		sql.append("       sum(pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ) as totalImporteSJCS, ");
 		sql.append("       sum(pc.impRet) as importeTotalRetenciones, ");
 		sql.append("       sum(pc.impMovVar) as importeTotalMovimientos, ");
+		sql.append("       pc.idcuenta as IDCUENTA, ");
 		sql.append("       -1*round(abs(sum((pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ + pc.impMovVar) * pc.impirpf / 100)), 2) as TOTALIMPORTEIRPF, ");
 		sql.append("       (SELECT retencion ");
 		sql.append("       		FROM scs_maestroretenciones ma ");
