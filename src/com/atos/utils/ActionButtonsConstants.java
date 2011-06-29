@@ -40,7 +40,7 @@ public enum ActionButtonsConstants {
 	FINALIZAR_COMPARA ("fc","general.boton.finalizarCompra","accionfinalizarCompra()",33),
 	PROCESAR_SOLICITUDES ("ps","general.boton.procesarSolicitud","accionProcesarSolicitud()",34),
 	PROCESAR_DEVOLUCIONES ("pd","general.boton.procesarDevoluciones","accionProcesarDevoluciones()",35),
-	DEMARCAR_TODOS ("dt","general.boton.cancel","accionDesmarcarTodos()",36),
+	DEMARCAR_TODOS ("dt","general.boton.desmarcarTodos","accionDesmarcarTodos()",36),
 	CONFIRMA_COMPRA ("cc","general.boton.confirmarCompra","accionConfirmarCompra()",37),
 	LISTA_CONSEJO ("lc","general.boton.listaParaConsejo","accionListaConsejo()",38),
 	DOWNLOAD ("d","general.boton.download","accionDownload()",39),
