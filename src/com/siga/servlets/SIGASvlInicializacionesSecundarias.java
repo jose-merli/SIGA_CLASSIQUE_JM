@@ -50,7 +50,7 @@ public final class SIGASvlInicializacionesSecundarias extends SIGAContextListene
 	    ClsLogging.writeFileLogWithoutSession("  Arrancando Inicializaciones Secundarias ", 3);
 	    ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);
 	    SIGAReferences.initialize(arg0.getServletContext());
-	    this.inicializarCrystal();
+	    // this.inicializarCrystal();
 	    this.inicializarWords();
 	}
 
