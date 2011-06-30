@@ -71,13 +71,15 @@
 		<tr>
 			<td class="labelText" >
 			<siga:Idioma key="factSJCS.informes.informeMultiple.factInicial" />&nbsp;(*)&nbsp;&nbsp;
-			<siga:ComboBD nombre="idFacturacion" tipo="cmb_FactInformes" parametro="<%=comboParams%>" clase="boxCombo" obligatorio="true" obligatorioSinTextoSeleccionar="true"/>
+			<!--siga:ComboBD nombre="idFacturacion" tipo="cmb_FactInformes" parametro="<%=comboParams%>" clase="boxCombo" obligatorio="true" obligatorioSinTextoSeleccionar="true"/-->
+			<siga:ComboBD nombre="idFacturacion" tipo="cmb_CartaFactColegidados" parametro="<%=comboParams%>" clase="boxCombo" obligatorio="true" obligatorioSinTextoSeleccionar="true"/>
 			</td>
 		</tr>
 		<tr>
 			<td class="labelText" >
 			<siga:Idioma key="factSJCS.informes.informeMultiple.factFinal" />&nbsp;(*)&nbsp;&nbsp;&nbsp;&nbsp;
-			<siga:ComboBD nombre="idFacturacionFinal"	tipo="cmb_FactInformes" parametro="<%=comboParams%>" clase="boxCombo" obligatorio="false"  />
+			<!-- siga:ComboBD nombre="idFacturacionFinal"	tipo="cmb_FactInformes" parametro="<%=comboParams%>" clase="boxCombo" obligatorio="false"  /-->
+			<siga:ComboBD nombre="idFacturacionFinal"	tipo="cmb_CartaFactColegidados" parametro="<%=comboParams%>" clase="boxCombo" obligatorio="false"  />
 			</td>
 		</tr>
 
