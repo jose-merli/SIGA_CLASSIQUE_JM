@@ -607,7 +607,7 @@
 						 	%>	
 								
 								<td>
-								<siga:BusquedaPersona tipo="personas" idPersona="idPersona"></siga:BusquedaPersona>
+								<siga:BusquedaPersona tipo="personas" idPersona="idPersona" ></siga:BusquedaPersona>
 								</td>
 
 							<%
@@ -635,7 +635,9 @@
 								
 							<%
 							 	} 
-							%>
+							
+							if (esConsejo && user.getStrutsTrans().equals("PYS_SolicitarCertificado")){	%>
+							
 									<td class="labelText" width="100">
 										<siga:Idioma key="pys.solicitudCompra.literal.presentador"/>
 									</td>
@@ -649,6 +651,8 @@
 																	accion="actualizarInstitucionPresentador();"
 																	/>									
 									</td>
+							<% } %>
+									
 								</tr>	
 
 							</html:form>

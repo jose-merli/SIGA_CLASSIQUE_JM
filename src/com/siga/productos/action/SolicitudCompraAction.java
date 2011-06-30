@@ -503,6 +503,9 @@ public class SolicitudCompraAction extends MasterAction{
 		String modo = "continuar";	
 		try{
 			SolicitudCompraForm form = (SolicitudCompraForm) formulario;
+			UsrBean user = this.getUserBean(request);
+			CenPersonaAdm per = new CenPersonaAdm(user);
+			
 			
 			CarroCompra carro = CarroCompraAdm.getCarroCompra(form.getIdPersona(), form.getIdInstitucion(),form.getIdInstitucionPresentador(), request);
 			CarroCompraAdm.setCarroCompra(carro, request);
@@ -513,9 +516,9 @@ public class SolicitudCompraAction extends MasterAction{
 		    if (certificado!=null && certificado.equals("1")) carro.setCompraCertificado(true);
 			request.setAttribute("idInstitucion", form.getIdInstitucion());
 			request.setAttribute("idInstitucionPresentador", form.getIdInstitucionPresentador());
-			request.setAttribute("nombrePersona", request.getParameter("nombrePersona"));
+			request.setAttribute("nombrePersona",  per.obtenerNombreApellidos(form.getIdPersona().toString()));
 			request.setAttribute("numero", request.getParameter("numeroColegiado"));
-			request.setAttribute("nif", request.getParameter("nif"));
+			request.setAttribute("nif",per.obtenerNIF(form.getIdPersona().toString()));
 			request.setAttribute("existeCarro", "S");
 			//request.setAttribute("deCertificado",certificado);
 			request.getSession().setAttribute("CenBusquedaClientesTipo","P");
@@ -1004,6 +1007,7 @@ public class SolicitudCompraAction extends MasterAction{
 		Vector vArticulos = new Vector();
 		String pagoConTarjeta = "N";
 		String importeDecimal="", importeEntero="";
+		SolicitudCompraForm form =  (SolicitudCompraForm) formulario;
 		
 		try {
 			user=(UsrBean)request.getSession().getAttribute("USRBEAN");							
@@ -1067,8 +1071,11 @@ public class SolicitudCompraAction extends MasterAction{
 		    	
 		    	//Envio si hay pago con tarjeta	    	
 		    	request.setAttribute("PAGOTARJETA",pagoConTarjeta);
+		    	
+		    	//ALmaceno el nombre del comprador
+		    	request.setAttribute("nombrePersona",form.getNombrePersona());
 				
-				//Almaceno el carro en sesion:				
+		    	//Almaceno el carro en sesion:				
 				request.getSession().setAttribute(CarroCompraAdm.nombreCarro,carro);
 			}
 		} catch (Exception e) { 

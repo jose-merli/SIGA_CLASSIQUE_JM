@@ -96,6 +96,16 @@
   <html:hidden name="solicitudCompraForm" property="pan" value="" />
   <html:hidden name="solicitudCompraForm" property="fechaCaducidad" value="" />
   <input type="hidden" name="pagoConTarjeta" value="<%=pagoConTarjeta%>" />
+  
+  	<table class="tablaTitulo" align="center" cellspacing="0" height="20">
+		<tr>
+			<td class="titulitosDatos">
+				<siga:Idioma key="pys.solicitudCompra.titulo1"/> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP((String)request.getAttribute("nombrePersona"))%> &nbsp;&nbsp;
+		
+			</td>
+		</tr>
+	</table>
+  
 
 	<table class="tablaTitulo" cellspacing="0" heigth="32">
 			<tr>

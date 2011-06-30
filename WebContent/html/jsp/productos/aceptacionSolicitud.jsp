@@ -201,7 +201,7 @@
 					numeroCuenta=eval("f.cuenta" + j);				
 					pago=eval("f.formaPago" + j);
 					cuentaelegida=eval("f.oculto" + j +"_8");	
-					idcuenta=eval("f.oculto" + j +"_9");					
+					idcuenta=eval("f.oculto" + j +"_9");
 					if(pago.value==<%=factura%>){	
 						if(cuentaelegida.value!=""){
 							cuenta.value=idcuenta.value;						
@@ -219,7 +219,34 @@
 			}		   
  		}
 	
-	
+		function obtenerCuentaAccion(fila) {
+			f = document.solicitudCompraForm;
+			cuenta=eval("f.oculto" + fila +"_5");	
+			formaPago=eval("f.oculto" + fila +"_6");
+			numeroCuenta=eval("f.cuenta" + fila);				
+			pago=eval("f.formaPago" + fila);
+			cuentaelegida=eval("f.oculto" + fila +"_8");	
+			idcuenta=eval("f.oculto" + fila +"_9");
+			if(pago.value==<%=factura%>){				
+				document.getElementById("cuenta" + fila).disabled="";	
+				document.getElementById("cuenta" + fila).style.display ='block';
+				alert("Seleccione una Cuenta Bancaria en Nº de Cuenta");
+				cuenta.value=idcuenta.value;
+				numeroCuenta.value=cuentaelegida.value;		
+				if(document.getElementById("cuenta"+fila).childNodes.length > 2){
+					document.getElementById("cuenta"+fila).value = 0;
+				}else{
+					document.getElementById("cuenta"+fila).value = idcuenta.value;
+				}
+			}else{
+				document.getElementById("cuenta" + fila).disabled="disabled";			
+				document.getElementById("cuenta" + fila).style.display ='none';
+				cuenta.value="";
+				numeroCuenta.value="";								
+			}	
+			formaPago.value=pago[pago.selectedIndex].text; 					   
+ 		}
+		
 		function obtenerCuenta(fila) {
 			f = document.solicitudCompraForm;
 			cuenta=eval("f.oculto" + fila +"_5");	
@@ -231,20 +258,14 @@
 			if(pago.value==<%=factura%>){				
 				document.getElementById("cuenta" + fila).disabled="";	
 				document.getElementById("cuenta" + fila).style.display ='block';
-				if(cuenta.value == 1 && document.getElementById("cuenta"+fila).childNodes.length <= 2){
-					alert("Seleccione una Cuenta Bancaria en Nº de Cuenta");
-				}else if(cuenta.value == "" && document.getElementById("cuenta"+fila).childNodes.length > 2){
-					alert("Seleccione una Cuenta Bancaria en Nº de Cuenta");
+				cuenta.value=idcuenta.value;
+				numeroCuenta.value=cuentaelegida.value;		
+				if(document.getElementById("cuenta"+fila).childNodes.length > 2){
+					document.getElementById("cuenta"+fila).value = 0;
 				}else{
-					cuenta.value=idcuenta.value;
-					numeroCuenta.value=cuentaelegida.value;		
-					if(document.getElementById("cuenta"+fila).childNodes.length > 2){
-						document.getElementById("cuenta"+fila).value = 0;
-					}else{
-						document.getElementById("cuenta"+fila).value = idcuenta.value;
-					}				
-				}
-			}else{
+					document.getElementById("cuenta"+fila).value = idcuenta.value;
+				}				
+			} else {
 				document.getElementById("cuenta" + fila).disabled="disabled";			
 				document.getElementById("cuenta" + fila).style.display ='none';
 				cuenta.value="";
@@ -354,9 +375,7 @@
 						else if(pago.value==<%=factura%>){
 							
 							if((testigo==0)&&(cuenta.value==null||cuenta.value=="")){
-								obtenerCuenta(j);
-								//alert("cuenta="+cuenta.value);
-								//alert("cuentaelegida="+cuentaelegida.value);
+								obtenerCuentaAccion(j);
 								testigo=j;
 
 							}
@@ -674,7 +693,6 @@
 				  					<input type='hidden' name='oculto<%=String.valueOf(fila)%>_7' value='<%=nofacturable%>'>
 				  					<input type='hidden' name='oculto<%=String.valueOf(fila)%>_8' value='<%=numcuenta%>'>				  					
 				  					<input type='hidden' name='oculto<%=String.valueOf(fila)%>_9' value='<%=idcuenta%>'>
-				  					
 			  					
 				  					
 				  					<input type='hidden' name='certificado<%=String.valueOf(fila)%>_1' value='<%=sTipoCertificado%>'>
@@ -717,11 +735,15 @@
 	   						 		ArrayList cuentaSel   = new ArrayList();
   									cuentaSel.add(sIdCuenta);%>	
   									<siga:ComboBD nombre="<%=n%>" tipo="cuentaCargo" clase="boxCombo" parametro="<%=parametro%>" ancho="15" readonly="false" elementoSel="<%=cuentaSel%>" />
-	   						 	<%}else{%>	
-	   						 		<siga:ComboBD nombre="<%=n%>" tipo="cuentaCargo" clase="boxCombo" parametro="<%=parametro%>" ancho="15" readonly="false" />
-	   						 	<%}
-	%>
-								
+	   						 	<%}else{
+	   						 		if(cuentaelegida.get("IDCUENTA")!=null && !cuentaelegida.get("IDCUENTA").equals("")){ 
+	   						 			ArrayList cuentaSel = new ArrayList();
+  										cuentaSel.add(cuentaelegida.get("IDCUENTA"));%>	
+	   						 			<siga:ComboBD nombre="<%=n%>" tipo="cuentaCargo" clase="boxCombo" parametro="<%=parametro%>" ancho="15" readonly="false" elementoSel="<%=cuentaSel%>"/>
+	   						 		<%}else{ %>
+	   						 			<siga:ComboBD nombre="<%=n%>" tipo="cuentaCargo" clase="boxCombo" parametro="<%=parametro%>" ancho="15" readonly="false" />
+									<%} 
+								}%>
 							</td>
 			  				<td>
 								<input type='text' name='cantidad<%=String.valueOf(fila)%>' value="<%=sCantidad%>" maxlength="5" class="box" styleClass="box" size="3" <%=desactivado%> onBlur="<%=validarCantidad%>,this)">
