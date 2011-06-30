@@ -70,6 +70,16 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 		htFacturacion = factAdm.obtenerDetalleFacturacion(institucion, idFacturacion, idPersona);
 		htDatos.putAll(htFacturacion);
 		
+		//Datos de las Asistencias
+		Vector datosAsistencias=this.obtenerDatosAsistencia(institucion, idPersona, idFacturacion, idioma);
+		htDatos.put("VASISTENCIAS", datosAsistencias);
+		
+		//Datos de los Oficios
+		Vector datosOficios=this.obtenerDatosOficio(institucion,idPersona, idFacturacion);
+		htDatos.put("VOFICIOS", datosOficios);
+		
+		
+		
 		return htDatos;
 	}
 	
@@ -262,4 +272,341 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 							
 	       return sql;                        
 	    }
+	
+		/**
+	 * Obtiene el listado de datos del pago de las asistencias 
+	 * @param idInstitucion
+	 * @param idPersona
+	 * @param idioma
+	 * @return
+	 * @throws SIGAException
+	 */	
+	protected Vector obtenerDatosAsistencia(String idInstitucion, String idPersona, String idFacturacion, String idioma) throws ClsExceptions {
+		Vector result= new Vector();
+		String sinActuaciones=//"Guardia sense actuacions";
+			UtilidadesString.getMensajeIdioma(idioma,"informes.colegiadosPagos.guardiaSinActuaciones");
+		int contador=0;
+		Hashtable codigo =new Hashtable();
+		double importeAsistenciaAux=0;
+		boolean porActuacion = false;
+		
+		try {
+			StringBuffer sql1 = new StringBuffer();
+			sql1.append("select to_char(fa.fechainicio, 'DD/MM/YYYY') FECHADESDE, ");
+			sql1.append(" to_char(fa.fechainicio, 'DD/MM/YYYY') FECHAHASTA, ");
+			sql1.append(" (select to_char(max(cab.fecha_fin), 'DD/MM/YYYY') ");
+			sql1.append(" from SCS_CABECERAGUARDIAS cab ");
+			sql1.append(" where cab.idturno = gu.idturno ");
+			sql1.append(" and cab.idinstitucion = gu.idinstitucion ");
+			sql1.append(" and cab.idguardia = gu.idguardia ");
+			sql1.append(" and cab.idcalendarioguardias = fa.idcalendarioguardias ");
+			sql1.append(" and cab.idpersona = fa.idpersona ");
+			sql1.append(" group by cab.idinstitucion, cab.idguardia, cab.idcalendarioguardias, cab.idpersona) FECHAFIN, ");
+			sql1.append(" TU.NOMBRE TURNO, ");
+			sql1.append(" tu.abreviatura ABREVIATURA_TURNO, ");
+			sql1.append("fa.IDFACTURACION, ");
+			sql1.append("fa.IDTURNO, ");
+			sql1.append("fa.IDGUARDIA, ");
+			sql1.append("fa.IDCALENDARIOGUARDIAS, ");
+			sql1.append("f_siga_formatonumero(fa.precioaplicado, 2) IMPORTE_ACTUACION, ");
+			sql1.append("fa.IDAPUNTE, ");
+			sql1.append("gu.nombre as NOMBRE_GUARDIA ");
+			sql1.append("from fcs_fact_apunte fa, SCS_TURNO TU, scs_guardiasturno gu ");
+
+			sql1.append(" where FA.IDTURNO = TU.IDTURNO ");
+			sql1.append("   and FA.IDINSTITUCION = TU.IDINSTITUCION ");
+			sql1.append("   and gu.idinstitucion = tu.idinstitucion");
+			sql1.append("   and gu.idturno = tu.idturno");
+			sql1.append("   and gu.idguardia = fa.idguardia");
+			contador++;
+			codigo.put(new Integer(contador),idInstitucion);
+			sql1.append(" AND FA.IDINSTITUCION = :"+contador);
+			contador++;
+			codigo.put(new Integer(contador),idPersona);
+			sql1.append("   and FA.IDPERSONA = :" +contador);
+			contador++;
+			codigo.put(new Integer(contador),idFacturacion);	
+			sql1.append("   and FA.IDFACTURACION = :"+contador);
+			sql1.append("   and fa.precioaplicado >0.0 "); // Eliminamos las asistencias de importe 0
+			sql1.append(" order by fa.fechainicio, GU.NOMBRE, TU.NOMBRE, FA.IDAPUNTE");
+	 
+			RowsContainer rc=new RowsContainer();
+			rc.findBind(sql1.toString(),codigo);
+			if(rc!=null && rc.size()>0){
+				int size=rc.size();
+				for(int i=0;i<size;i++){
+					Row r1=(Row)rc.get(i);
+					Hashtable htAux=r1.getRow();
+					String sImportePagado=r1.getString("IMPORTEPAGADO");
+					htAux.put("IMPORTEPAGADO",sImportePagado+ClsConstants.CODIGO_EURO);
+					String sImporteFacturado=r1.getString("IMPORTE_ACTUACION");
+					htAux.put("IMPORTE_ACTUACION",sImporteFacturado+ClsConstants.CODIGO_EURO);
+					
+					String idTurno=r1.getString("IDTURNO");
+					String idGuardia=r1.getString("IDGUARDIA");
+					String idCalendarioGuardias=r1.getString("IDCALENDARIOGUARDIAS");
+					String fechaDesde=r1.getString("FECHADESDE");
+					String idApunte=r1.getString("IDAPUNTE");
+					
+					// inc7405 // Comprobamos si se para por actuacion para saber si hay que mostrar las actuaciones o no
+					StringBuffer sqlAct = new StringBuffer();
+					sqlAct.append(" select 1 from scs_hitofacturableguardia where ");
+					sqlAct.append(" idinstitucion= "+idInstitucion);
+					sqlAct.append(" and idturno= "+idTurno);
+					sqlAct.append(" and idguardia= "+idGuardia);
+					sqlAct.append(" and idhito in (4,7,22,46)");
+					RowsContainer rows=new RowsContainer();
+					rows.find(sqlAct.toString());
+					if (rows!=null && rows.size()>0)
+						porActuacion=true;
+					else
+						porActuacion=false;
+					String sql2="";
+					if(porActuacion){
+						sql2=
+						"select f_siga_getrecurso(TA.descripcion, "+ idioma +" ) TIPOACTUACION, AAS.ANIO || '/' || AAS.NUMERO || '-' || AAS.IDACTUACION ACTUACION, AAS.ANIO || '/' || AAS.NUMERO ASISTENCIA," +
+						"       PJG.NOMBRE||' '||PJG.APELLIDO1||' '||PJG.APELLIDO2 NOMBRE_ASISTIDO, to_char(AAS.FECHA,'DD/MM/YYYY') FECHA_ACTUACION, " +
+						"       DECODE(FAAS.PRECIOAPLICADO,0,NULL,FAAS.PRECIOAPLICADO) AS PRECIO_ACTUACION," +
+						"		f_siga_getrecurso(COS.DESCRIPCION, "+ idioma +" ) AS TIPO_DESPLAZAMIENTO," +
+						"		TACTCOS.IMPORTE AS IMPORTE_DESPLAZAMIENTO, " +
+						"		(case when instr(f_siga_getrecurso(COS.DESCRIPCION, 1),' 5 km') > 0 then '5 km' " +
+						"		when instr(f_siga_getrecurso(COS.DESCRIPCION, 1),' 25 km') > 0 then '25 km' " +
+						"		when instr(f_siga_getrecurso(COS.DESCRIPCION, 1),' 50 km') > 0 then '50 km' " +
+						"		else f_siga_getrecurso(COS.DESCRIPCION, "+ idioma+" ) " +
+						"       end ) ABREVIATURA_DESPLAZAMIENTO " +
+						"  from FCS_FACT_APUNTE FAP, FCS_FACT_ACTUACIONASISTENCIA FAAS," +
+						"		SCS_ACTUACIONASISTENCIA AAS," +
+						"		SCS_ASISTENCIA ASI," +
+						"		SCS_PERSONAJG PJG," +
+						"		SCS_ACTUACIONASISTCOSTEFIJO  ACTCOS," +
+						"		SCS_TIPOACTUACIONCOSTEFIJO   TACTCOS," +
+						"		SCS_COSTEFIJO                COS," +
+						"       SCS_TIPOACTUACION            TA "+
+						" where FAP.IDINSTITUCION = FAAS.IDINSTITUCION " +
+						"   and FAP.IDFACTURACION = FAAS.IDFACTURACION " +
+						"   and FAP.IDAPUNTE = FAAS.IDAPUNTE " +
+						"   and FAP.IDPERSONA = FAAS.IDPERSONA " +
+						"   and FAP.IDINSTITUCION = "+idInstitucion +
+						"   and FAP.IDFACTURACION = "+idFacturacion +
+						"   and FAP.IDTURNO ="+idTurno +
+						"   and FAP.IDGUARDIA = "+idGuardia +
+						"   and FAP.IDCALENDARIOGUARDIAS = "+idCalendarioGuardias +
+						"   and trunc(FAP.FECHAINICIO)= '"+fechaDesde+"' "+
+						"   and FAP.Idpersona = "+idPersona+" "+
+						"   and FAP.IdApunte = "+idApunte+" "+
+						"   and FAAS.IDINSTITUCION = AAS.IDINSTITUCION (+)" +
+						"   and FAAS.NUMERO = AAS.NUMERO (+)" +
+						"   and FAAS.ANIO = AAS.ANIO (+)" +
+						"   and FAAS.IDACTUACION=AAS.IDACTUACION (+)" +
+						"   and FAAS.IDINSTITUCION = ASI.IDINSTITUCION (+)" +
+						"   and FAAS.NUMERO = ASI.NUMERO (+)" +
+						"   and FAAS.ANIO = ASI.ANIO (+)" +
+						"   and ASI.IDPERSONAJG = PJG.IDPERSONA(+)" +
+						"   and ASI.IDINSTITUCION = PJG.IDINSTITUCION(+)" +
+						// Cruzamos con tablas nuevas para sacar los desplazamientos 
+						" 	and ACTCOS.IDINSTITUCION(+) = AAS.IDINSTITUCION " +
+						"	and ACTCOS.ANIO(+) = AAS.ANIO" +
+						" 	and ACTCOS.NUMERO(+) = AAS.NUMERO" +
+						" 	and ACTCOS.IDACTUACION(+) = AAS.IDACTUACION" +
+						" 	and TACTCOS.IDINSTITUCION(+) = ACTCOS.IDINSTITUCION " +       
+						" 	and TACTCOS.IDTIPOASISTENCIA(+) = ACTCOS.IDTIPOASISTENCIA " + 
+						" 	and TACTCOS.IDTIPOACTUACION(+) = ACTCOS.IDTIPOACTUACION " +   
+						" 	and TACTCOS.IDCOSTEFIJO(+) = ACTCOS.IDCOSTEFIJO  " +          
+						" 	and COS.IDINSTITUCION(+)= ACTCOS.IDINSTITUCION " +            
+						" 	and COS.IDCOSTEFIJO(+)=ACTCOS.IDCOSTEFIJO " +      
+						 //Relacionamos la tabla  SCS_TIPORACTUACION  TA, SCS_ACTUACIONASISTENCIA AAS
+						"   and TA.idinstitucion = AAS.idinstitucion " +
+						"   and TA.idtipoasistencia= AAS.idtipoasistencia "+
+						"   and TA.idtipoactuacion = AAS.idtipoactuacion " +	
+						" order by AAS.ANIO, AAS.NUMERO, AAS.IDACTUACION, NOMBRE_ASISTIDO";
+						}else{
+							// inc7405 // Si se factura por asistencia solo escribimos la primera actuacion de la asistencia
+							// asi que filtramos para que salga solo la primera actuacion
+							sql2=
+							" select '' TIPOACTUACION, " +
+							"       '' ACTUACION, " +
+							"       ASI.ANIO || '/' || ASI.NUMERO ASISTENCIA, " +
+							"       PJG.NOMBRE || ' ' || PJG.APELLIDO1 || ' ' || PJG.APELLIDO2 NOMBRE_ASISTIDO, " +
+							"       to_char(ASI.FECHAHORA, 'DD/MM/YYYY') FECHA_ACTUACION, " +
+							"       DECODE(FASI.PRECIOAPLICADO, 0, NULL, FASI.PRECIOAPLICADO) AS PRECIO_ACTUACION, " +
+							"       '' AS TIPO_DESPLAZAMIENTO, " +
+							"       SUM(TACTCOS.IMPORTE) AS IMPORTE_DESPLAZAMIENTO, " +
+							"       '' AS ABREVIATURA_DESPLAZAMIENTO " +
+							"  from FCS_FACT_ASISTENCIA FASI, " +
+							"       SCS_ASISTENCIA               ASI, " +
+							"       FCS_FACT_APUNTE              FAP, " +
+
+							"       SCS_PERSONAJG                PJG, " +
+							"       FCS_FACT_ACTUACIONASISTENCIA FAAS, " +
+							"       SCS_ACTUACIONASISTENCIA      AAS, " +
+							"       SCS_ACTUACIONASISTCOSTEFIJO  ACTCOS, " +
+							"       SCS_TIPOACTUACIONCOSTEFIJO   TACTCOS, " +
+							"       SCS_COSTEFIJO                COS, " +
+							"       SCS_TIPOACTUACION            TA " +
+
+							" where FASI.IDINSTITUCION = ASI.IDINSTITUCION " +
+							"   and FASI.ANIO = ASI.ANIO " +
+							"   and FASI.NUMERO = ASI.NUMERO " +
+							"   and FASI.IDINSTITUCION = FAP.IDINSTITUCION " +
+							"   and FASI.IDFACTURACION = FAP.IDFACTURACION " +
+							"   and FASI.IDAPUNTE = FAP.IDAPUNTE " +
+
+							"   and FASI.IDINSTITUCION = "+idInstitucion +
+							"   and FAP.IDFACTURACION = "+idFacturacion +
+							"   and FAP.IDTURNO ="+idTurno +
+							"   and FAP.IDGUARDIA = "+idGuardia +
+							"   and FAP.IDCALENDARIOGUARDIAS = "+idCalendarioGuardias +
+							"   and trunc(FAP.FECHAINICIO)= '"+fechaDesde+"' "+
+							"   and FAP.Idpersona = "+idPersona+" "+
+							"   and FAP.IdApunte = "+idApunte+" "+
+							" " +
+							"   and ASI.IDPERSONAJG = PJG.IDPERSONA(+) " +
+							"   and ASI.IDINSTITUCION = PJG.IDINSTITUCION(+) " + 
+							"   and FASI.IDINSTITUCION = FAAS.IDINSTITUCION(+) " +
+							"   and FASI.IDFACTURACION = FAAS.IDFACTURACION(+) " +
+							"   and FASI.ANIO = FAAS.ANIO(+) " +
+							"   and FASI.NUMERO = FAAS.NUMERO(+) " +
+							"   and FAAS.IDINSTITUCION = AAS.IDINSTITUCION(+) " +
+							"   and FAAS.NUMERO = AAS.NUMERO(+) " +
+							"   and FAAS.ANIO = AAS.ANIO(+) " +
+							"   and FAAS.IDACTUACION = AAS.IDACTUACION(+) " +
+							"   and AAS.IDINSTITUCION = ACTCOS.IDINSTITUCION(+) " +
+							"   and AAS.ANIO = ACTCOS.ANIO(+) " +
+							"   and AAS.NUMERO = ACTCOS.NUMERO(+) " +
+							"   and AAS.IDACTUACION = ACTCOS.IDACTUACION(+) " +
+							"   and ACTCOS.IDINSTITUCION = TACTCOS.IDINSTITUCION(+) " +
+							"   and ACTCOS.IDTIPOASISTENCIA = TACTCOS.IDTIPOASISTENCIA(+) " +
+							"   and ACTCOS.IDTIPOACTUACION = TACTCOS.IDTIPOACTUACION(+) " +
+							"   and ACTCOS.IDCOSTEFIJO = TACTCOS.IDCOSTEFIJO(+) " +
+							"   and ACTCOS.IDINSTITUCION = COS.IDINSTITUCION(+) " +
+							"   and ACTCOS.IDCOSTEFIJO = COS.IDCOSTEFIJO(+) " +
+							"   and AAS.idinstitucion = TA.idinstitucion(+) " +
+							"   and AAS.idtipoasistencia = TA.idtipoasistencia(+) " +
+							"   and AAS.idtipoactuacion = TA.idtipoactuacion(+) " +
+							" group by ASI.ANIO, ASI.NUMERO, " +
+							"       PJG.NOMBRE || ' ' || PJG.APELLIDO1 || ' ' || PJG.APELLIDO2, " +
+							"       to_char(ASI.FECHAHORA, 'DD/MM/YYYY'), " +
+							"       DECODE(FASI.PRECIOAPLICADO, 0, NULL, FASI.PRECIOAPLICADO) " +
+							" order by ASI.ANIO, ASI.NUMERO, PJG.NOMBRE || ' ' || PJG.APELLIDO1 || ' ' || PJG.APELLIDO2 " ;
+						}
+
+					RowsContainer rc2 = new RowsContainer();
+					rc2.find(sql2);
+					if(rc2!=null && rc2.size()>0){
+						//tratar el primero
+						Row r2=(Row)rc2.get(0);
+						htAux.putAll(r2.getRow());
+						result.addElement(htAux);
+						//tratar el resto
+						int size2=rc2.size();
+						for(int j=1;j<size2;j++){
+							r2=(Row)rc2.get(j);
+							htAux=r2.getRow();
+							result.addElement(htAux);
+						}
+					}else{
+						htAux.put("NOMBRE_ASISTIDO",sinActuaciones);
+						result.addElement(htAux);
+					}
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e,"Error al generar el informe");
+		}
+		return result;
+	}
+	
+
+	
+	/**
+	 * Obtiene el listado de datos del pago de los oficios 
+	 * @param idInstitucion
+	 * @param idPersona
+	 * @param idPagos
+	 * @return
+	 * @throws SIGAException
+	 */
+	protected Vector obtenerDatosOficio(String idInstitucion, String idPersona, String idFacturacion) throws ClsExceptions {
+		Vector result= null;
+		int contador=0;
+		Hashtable codigo=new Hashtable();
+		
+		try {
+			StringBuffer sql = new StringBuffer();
+			
+			sql.append(" Select  ");
+			sql.append(" f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,1) as NUMEROEJG,  ");
+			sql.append(" f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,4) as ANIOEJG,  ");
+			sql.append(" f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,3) as NUMERO_CAJG,  ");
+			sql.append(" f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,2) as ANIO_CAJG,  ");
+			sql.append("        decode(cole.comunitario,'1',cole.ncomunitario,cole.ncolegiado) as NUMERO_COLEGIADO, AD.FECHA, to_char(AD.FECHA,'DD/MM/YYYY') FECHA_OFICIO,  PRO.NOMBRE PROCEDIMIENTO, ");
+			sql.append("        DES.ANIO || '/' || DES.CODIGO  ASIOFI, ");
+			sql.append("        f_siga_getdefendidosdesigna(DES.IDINSTITUCION, des.anio, des.idturno, des.numero,0) NOMBRE_SOLICITANTE, ");
+			sql.append("        f_siga_formatonumero(fact.precioaplicado,2) IMPORTE_PROCEDIMIENTO, ");
+			sql.append("        f_siga_formatonumero(fact.precioaplicado*fact.porcentajefacturado/100,2) IMPORTE_OFICIO, ");
+			sql.append("        acreprod.porcentaje as PORCENTAJE_PAGADO,");
+			sql.append("        acre.descripcion as ACREDITACION, ");
+			sql.append("        ad.numeroasunto as NUMEROASUNTO ");
+			sql.append("  from  SCS_ACTUACIONDESIGNA      AD, ");
+			sql.append("        SCS_PROCEDIMIENTOS        PRO, ");
+			sql.append("        SCS_DESIGNA               DES, ");
+			sql.append("        FCS_FACT_ACTUACIONDESIGNA fact, ");
+			sql.append("        FCS_FACTURACIONJG         fac, ");      
+	       	sql.append("        SCS_ACREDITACIONPROCEDIMIENTO acreprod, ");
+	       	sql.append("        SCS_ACREDITACION acre, ");
+	       	sql.append("        CEN_COLEGIADO cole ");	   
+	       	
+			sql.append("  where DES.IDINSTITUCION = AD.IDINSTITUCION ");
+			sql.append("    AND DES.IDTURNO = AD.IDTURNO ");
+			sql.append("    AND DES.ANIO = AD.ANIO ");
+			sql.append("    AND DES.NUMERO = AD.NUMERO ");			
+			sql.append("    and AD.IDINSTITUCION = PRO.IDINSTITUCION ");
+			sql.append("    and AD.IDPROCEDIMIENTO = PRO.IDPROCEDIMIENTO ");			  
+			sql.append("    and ad.idinstitucion = fact.idinstitucion ");
+			sql.append("    and ad.idpersonacolegiado = fact.idpersona ");
+			sql.append("    and ad.NUMEROASUNTO = fact.NUMEROASUNTO ");
+			sql.append("    and ad.NUMERO = fact.NUMERO ");
+			sql.append("    and ad.ANIO = fact.ANIO ");
+			sql.append("    and ad.IDTURNO = fact.IDTURNO ");			
+			sql.append("    and fac.idinstitucion = fact.idinstitucion ");
+			sql.append("    and fac.idfacturacion = fact.idfacturacion ");
+			sql.append("    and fact.idfacturacion = "+idFacturacion);
+			
+			sql.append(" and acreprod.idprocedimiento = ad.idprocedimiento ");
+			sql.append(" and acreprod.idinstitucion = ad.idinstitucion_proc ");
+			sql.append(" and acreprod.idacreditacion = ad.idacreditacion ");			
+			sql.append(" and acre.idacreditacion = acreprod.idacreditacion ");
+			
+			//Relacioamos la tabla SCS_ACTUACIONDESIGNA AD, CEN_COLEGIADO cole 
+			sql.append(" and  AD.idinstitucion= cole.idinstitucion ");	
+			sql.append(" and  AD.idpersonacolegiado= cole.idpersona ");
+			sql.append(" and  AD.idinstitucion= "+idInstitucion);
+			sql.append(" and  AD.idpersonacolegiado= "+idPersona);
+			
+			sql.append(" order by AD.FECHA, ASIOFI, NUMEROASUNTO, PROCEDIMIENTO");
+			
+			RowsContainer rc=new RowsContainer();
+			rc.find(sql.toString());
+			result=new Vector();
+			if(rc!=null && rc.size()>0){
+				Vector result3=rc.getAll();
+				Vector aux=new Vector();
+				for (int g=0;result3!=null && g<result3.size();g++){
+				    aux.add(g,(Row) result3.get(g));
+				}
+				for (int g=0;aux!=null && g<aux.size();g++){
+				    Hashtable ht = ((Row) aux.get(g)).getRow();
+				    ht.put("IMPORTEPAGADO", ((String)ht.get("IMPORTEPAGADO"))+ClsConstants.CODIGO_EURO);
+				    ht.put("IMPORTE_OFICIO", ((String)ht.get("IMPORTE_OFICIO"))+ClsConstants.CODIGO_EURO);
+				    result.add(g,ht);
+				}
+			}
+
+		} catch (Exception e) {
+			throw new ClsExceptions(e,"Error al generar el informe");
+		}
+		
+		return result;
+	}
+
 }
