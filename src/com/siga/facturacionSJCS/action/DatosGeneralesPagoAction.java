@@ -1181,7 +1181,13 @@ public class DatosGeneralesPagoAction extends MasterAction {
 					importes.put("importeMovimientos", String.valueOf(importeMovimientos));
 					importes.put("importeRetenciones", String.valueOf(importeRetenciones));
 					
-					idpersonaAbono = idPersonaSociedad == null ? idPersona : idPersonaSociedad; 
+					if ((idPersonaSociedad == null) || (idPersonaSociedad.equals(""))){
+						idpersonaAbono = idPersona;
+					} else {
+						idpersonaAbono = idPersonaSociedad;
+					}
+					
+				//	idpersonaAbono = idPersonaSociedad == null ? idPersona : idPersonaSociedad; 
 
 					//Creamos el Abono:
 					this.crearAbonos (idpersonaAbono, idCuenta, request, colegiadosMarcados, 
