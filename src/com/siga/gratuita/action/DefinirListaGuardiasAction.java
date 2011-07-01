@@ -257,8 +257,7 @@ public class DefinirListaGuardiasAction extends MasterAction {
 						miForm.setComunicacion("true");
 					}else{
 						miForm.setComunicacion("");
-					}	
-						
+					}
 					request.getSession().removeAttribute("DATABACKUP");
 					request.getSession().setAttribute("DATABACKUP",backupHash);					
 					request.setAttribute("accion",miForm.getAccion());
@@ -853,7 +852,7 @@ public class DefinirListaGuardiasAction extends MasterAction {
 
 				Hashtable listaPorUsu;
 				
-//				if(miForm.getComunicacion()!=null && miForm.getComunicacion().equalsIgnoreCase("true")){
+				/*if(miForm.getComunicacion()!=null && miForm.getComunicacion().equalsIgnoreCase("true")){
 					
 					
 					nombreFichero=rutaServidor+barra+institucion+"_"+this.getUserName(request).toString()+"_todos.fo";     		
@@ -923,7 +922,7 @@ public class DefinirListaGuardiasAction extends MasterAction {
 					ficFOP.delete();
 					//miForm.setComunicacion("");
 				
-/*				}else{// si es un fichero
+				}else{*/
 					nombreFichero=rutaServidor+barra+institucion+"_"+this.getUserName(request).toString()+".fo";     		
 					ficFOP = new File(nombreFichero);
 					if (ficFOP.exists()){
@@ -951,8 +950,7 @@ public class DefinirListaGuardiasAction extends MasterAction {
 				request.setAttribute("rutaFichero", rutaServidor+barra+nombreFicheroPDF);
 				request.setAttribute("generacionOK","OK");
 				resultado="descarga";
-				}*/
-			}
+				}
 			else{
 			    resultado = exito("messages.listaGuardias.definirListaGuardias.generarInforme.sinGuardias.error",request);
 				// Por el cambio 2417 Quitar este mensaje: throw new ClsExceptions("Se ha producido un error en la generación de informes.");
@@ -993,7 +991,6 @@ public class DefinirListaGuardiasAction extends MasterAction {
 				   }
 				   guardiasList.add(lineaGuardia);
 				   map.put(letrado, guardiasList);
-				   System.out.println("letrado:"+letrado);
 			}
 			Iterator it = map.keySet().iterator();
 		    List guardiasOutList = null;
@@ -1005,7 +1002,6 @@ public class DefinirListaGuardiasAction extends MasterAction {
 		    	for (int i = 0; i < guardiasOutList.size(); i++) {
 		    		Hashtable lineaGuardiaHashtable = ((Hashtable) guardiasOutList.get(i));
 		    		v.add(lineaGuardiaHashtable);
-		    		System.out.println("Dia Guardia:"+lineaGuardiaHashtable.get("GUARDIA")+"FECHA:"+lineaGuardiaHashtable.get("FECHA_INICIO"));
 				}
 		    	todos.put(letradoOut, v);
 		    }

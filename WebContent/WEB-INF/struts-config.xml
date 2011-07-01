@@ -3064,7 +3064,9 @@
 		<action path="/CEN_GestionarComisiones" type="com.siga.censo.action.BusquedaComisionesAction" name="BusquedaComisionesForm" scope="request">
 			<forward name="inicio" path="/html/jsp/censo/busquedaComisiones.jsp"/>
 			<forward name="busqueda" path="/html/jsp/censo/resultadoBusquedaComisiones.jsp"/>
+			<forward name="modificar" path="/html/jsp/censo/resultadoBusquedaComisiones.jsp"/>			
 			<forward name="ver" path="/html/jsp/censo/datosCVComision.jsp"/>
+			<forward name="editar" path="/html/jsp/censo/datosCV.jsp"/>
 		</action>
 		
 		<!-- ***** CENSO / Gestionar Comisiones ***** -->

@@ -736,7 +736,9 @@ public class DefinirEnviosAction extends MasterAction {
 				} catch (SIGAException e) {
 					request.setAttribute("exitenDatos","messages.general.error.noExistenDatos");
 				}
-				datosEnvios = form.getDatosEnvios();				
+				datosEnvios = form.getDatosEnvios();
+	    		Hashtable backupHash = (Hashtable)request.getSession().getAttribute("DATABACKUP");
+	    		request.setAttribute("DATABACKUP",backupHash);
 				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")));
 				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
 				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null));

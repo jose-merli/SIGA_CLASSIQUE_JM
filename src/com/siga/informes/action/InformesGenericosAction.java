@@ -388,7 +388,7 @@ public class InformesGenericosAction extends MasterAction {
 							}else if (idTipoInforme.equals("EXP")) {
 								mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesExpedientes);
 							}else if (idTipoInforme.equals("LIGUA")) {
-								mapDestino = informeGenerico(mapping, miForm, request, response,"LIGUA");
+								mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesListadoGuardias);
 							}  
 							else if (idTipoInforme.equals("DEJG")) {
 								mapDestino = dejg(mapping, miForm, request, response);
@@ -589,8 +589,9 @@ public class InformesGenericosAction extends MasterAction {
 		File ficheroSalida=null;
 		try {
 			String idsesion = request.getSession().getId();
+			Hashtable backupHash = (Hashtable)request.getSession().getAttribute("DATABACKUP");
 			ficheroSalida = informeGenerico.getInformeGenerico(
-					miForm, idsesion, this.getUserBean(request), isAEnviar,isPermisoEnvio);
+					miForm, idsesion, this.getUserBean(request), isAEnviar,isPermisoEnvio,backupHash);
 		}
 		catch (Exception e) {
 			throwExcp("messages.general.error", new String[] {"modulo.informes"}, e, null);

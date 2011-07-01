@@ -727,7 +727,44 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 	
 	
 
-	
+	  public Integer getPosicion(String idinstitucion,String idguardia,String idturno,String fechainicio,String idpersona) throws ClsExceptions{
+			String consulta = "";
+			Integer posicion = null;
+		
+			try {
+
+				consulta = "SELECT guard."+ ScsCabeceraGuardiasBean.C_POSICION;
+				consulta += " FROM "+ScsCabeceraGuardiasBean.T_NOMBRETABLA+" guard,";					
+				consulta += " (  select fechainicio, idcalendarioguardias"; 
+				consulta += " from scs_guardiascolegiado ";
+				consulta += "  where idinstitucion = '"+idinstitucion;
+				consulta += "' and idturno = '"+idturno;
+				consulta += "' and idguardia = '"+idguardia;
+				consulta += "' and idpersona = '"+idpersona;
+				consulta += "' and fechafin = TO_DATE('"+fechainicio+"', 'DD/MM/YYYY')) g  ";
+				consulta += " WHERE ";
+				consulta += " guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+"="+idpersona;
+				consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDINSTITUCION+"="+idinstitucion;
+				consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDTURNO+"="+idturno;
+				consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDGUARDIA+"="+idguardia;
+				consulta += " AND guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+" = g.fechainicio";
+				consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS+" = g.idcalendarioguardias";
+				
+				Vector v = this.selectGenerico(consulta);
+				Hashtable cabecera = new Hashtable();
+				if (v!=null && !v.isEmpty()) {
+					cabecera = (Hashtable)v.firstElement();
+					posicion =(Integer) cabecera.get(0);
+				}
+			}
+			catch (Exception e){
+				throw new ClsExceptions(e,"Excepcion en ScsCabeceraGuardiasAdm.getDatosColegiado(). Consulta SQL:"+consulta);
+			}
+			
+			return posicion;
+		}
+
+
 
 	
 
