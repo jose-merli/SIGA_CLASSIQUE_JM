@@ -154,8 +154,20 @@
 			document.DefinicionRemesas_CAJG_Form.target="submitArea";
 			document.DefinicionRemesas_CAJG_Form.submit();	
 		}
+
+		function preguntaSimular() {
+			//'¿Antes de realizar el envío desea comprobar si los expedientes cumplen los requisitos para ser enviados?
+			if (confirm('<siga:Idioma key="gratuita.cajg.preguntaSimular"/>')) {			
+				document.DefinicionRemesas_CAJG_Form.simular.value=1;
+			} else {
+				document.DefinicionRemesas_CAJG_Form.simular.value=0;
+			}
+		}
+
 		
 		function generaXML(){
+			preguntaSimular();
+			
 			document.DefinicionRemesas_CAJG_Form.modo.value="generaXML";
 			document.DefinicionRemesas_CAJG_Form.idRemesa.value=document.forms[0].idRemesa.value;	
 			document.DefinicionRemesas_CAJG_Form.idInstitucion.value=document.forms[0].idInstitucion.value;	
@@ -164,12 +176,8 @@
 		}
 
 		function envioFTP(){
-			//'¿Antes de realizar el envío desea comprobar si los expedientes cumplen los requisitos para ser enviados?
-			if (confirm('<siga:Idioma key="gratuita.cajg.preguntaSimular"/>')) {			
-				document.DefinicionRemesas_CAJG_Form.simular.value=1;
-			} else {
-				document.DefinicionRemesas_CAJG_Form.simular.value=0;
-			}
+			preguntaSimular();
+			
 			document.DefinicionRemesas_CAJG_Form.modo.value="envioFTP";
 			document.DefinicionRemesas_CAJG_Form.idRemesa.value=document.forms[0].idRemesa.value;	
 			document.DefinicionRemesas_CAJG_Form.idInstitucion.value=document.forms[0].idInstitucion.value;	

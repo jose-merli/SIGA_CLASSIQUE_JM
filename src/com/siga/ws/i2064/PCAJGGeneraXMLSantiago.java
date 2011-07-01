@@ -165,9 +165,11 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 				//hacemos el zip. Este método copia en un zip los xml y los borra del origen
 				MasterWords.doZip((ArrayList<File>)files, getNombreRutaZIPconXMLs(getIdInstitucion(), getIdRemesa()));				
 				
-				CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(getUsrBean());
-				// Marcar como generada
-				cajgRemesaEstadosAdm.nuevoEstadoRemesa(getUsrBean(), getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_GENERADA);				
+				if (!isSimular()) {
+					CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(getUsrBean());
+					//Marcar como generada
+					cajgRemesaEstadosAdm.nuevoEstadoRemesa(getUsrBean(), getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_GENERADA);
+				}
 
 			}
 		} finally {

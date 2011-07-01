@@ -1562,7 +1562,10 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 			List<File> files = generaFicherosXML(dirFicheros);	
 			tx.commit();//hacemos commit para setear los posibles errores de negocio
 			
-			if (files.size() > 0) {
+			String nombreFichero = getNombreRutaZIPconXMLs(getIdInstitucion(), getIdRemesa());			
+			MasterWords.doZip((ArrayList<File>)files, nombreFichero);
+			
+			if (!isSimular() && files.size() > 0) {
 				
 				tx.begin();
 										
@@ -1573,13 +1576,8 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 				// Marcar como generada
 				cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_GENERADA);
 	
-				if (SUBTIPOCAJG.DESCARGA_FICHERO.equals(subTipoCAJG)) {
-					//hacemos zip con el fichero					
-					
-					String nombreFichero = getNombreRutaZIPconXMLs(getIdInstitucion(), getIdRemesa());
-					
-					MasterWords.doZip((ArrayList<File>)files, nombreFichero);
-				} else if (cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_ENVIADA)) {
+				if (!SUBTIPOCAJG.DESCARGA_FICHERO.equals(subTipoCAJG)
+							&& cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_ENVIADA)) {
 					//MARCAMOS COMO ENVIADA
 					cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), ClsConstants.REMITIDO_COMISION);
 				}
