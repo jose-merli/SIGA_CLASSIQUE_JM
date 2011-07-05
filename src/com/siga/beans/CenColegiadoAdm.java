@@ -1042,7 +1042,8 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			"d2.*,"+
 			"d6."+CenDireccionesBean.C_TELEFONO1+" TELEFONO1_LETRADO,"+
 			"d6."+CenDireccionesBean.C_TELEFONO2+" TELEFONO2_LETRADO,"+
-			"d6."+CenDireccionesBean.C_MOVIL+" MOVIL_LETRADO"+
+			"d6."+CenDireccionesBean.C_MOVIL+" MOVIL_LETRADO,"+
+			"d6."+CenDireccionesBean.C_FAX1+" FAX1"+
 			" from "+
 			CenPersonaBean.T_NOMBRETABLA+" p,"+
 			CenColegiadoBean.T_NOMBRETABLA+" c,"+
@@ -1065,7 +1066,7 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			"    and d."+CenDireccionesBean.C_IDPOBLACION+"=pb."+CenPoblacionesBean.C_IDPOBLACION+"(+)"+
 			"  order by d."+CenDireccionesBean.C_FECHAMODIFICACION+" desc "+
 			")    d2,"+
-			"(select d."+CenDireccionesBean.C_IDPERSONA+",d."+CenDireccionesBean.C_TELEFONO1+",d."+CenDireccionesBean.C_TELEFONO2+",d."+CenDireccionesBean.C_MOVIL+
+			"(select d."+CenDireccionesBean.C_IDPERSONA+",d."+CenDireccionesBean.C_TELEFONO1+",d."+CenDireccionesBean.C_TELEFONO2+",d."+CenDireccionesBean.C_MOVIL+",d."+CenDireccionesBean.C_FAX1+
 			"   from "+CenDireccionesBean.T_NOMBRETABLA+" d,"+CenDireccionTipoDireccionBean.T_NOMBRETABLA+" td "+
 			"  where d."+CenDireccionesBean.C_IDINSTITUCION+"=:2"+
 			"    and d."+CenDireccionesBean.C_IDINSTITUCION+"= td."+CenDireccionTipoDireccionBean.C_IDINSTITUCION+
