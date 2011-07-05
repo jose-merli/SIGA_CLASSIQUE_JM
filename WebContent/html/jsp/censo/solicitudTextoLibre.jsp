@@ -90,7 +90,7 @@
 										<siga:Idioma key="censo.solicitudTextoLibre.literal.descripcion"/>&nbsp;(*)
 									</td>				
 									<td>
-										<textarea name="descripcion" class="box" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" style="overflow:hidden" rows="24" cols="180"></textarea>
+										<textarea name="descripcion" class="box" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" style="overflow:auto" rows="24" cols="180"></textarea>
 									</td>
 								</tr>
 							</table>

@@ -314,6 +314,7 @@
 			function accionProcesarSolicitud() 
 			{	sub();	
 				var datos = "";
+				var checked=false;
 				if (document.getElementById("solicita_1")!=null){
 					var dd = document.getElementsByName("validado");
 					if (dd.type != 'checkbox') {
@@ -322,12 +323,8 @@
 								var j=i+1;
 								var aux="solicita_"+j;
 								var solicitado=document.getElementById(aux);
-								datos=datos + solicitado.value + "%";						
-							}else{
-							  if (datos==""){
-							    fin();
-							    return false;
-							  }
+								datos=datos + solicitado.value + "%";				
+								checked=true;		
 							}	
 						}
 					}	
@@ -335,18 +332,24 @@
 						if (dd.checked==1){
 							var aux="solicita_1";
 							var solicitado=document.getElementById(aux);
-							datos=datos + solicitado.value + "%";						
+							datos=datos + solicitado.value + "%";				
+							checked=true;		
 						}	
 					}
 				}else{
 				fin();
 				  return false;
 				}	
-				
-				document.forms[0].solicitudes.value = datos;				
-				document.forms[0].modo.value = "procesarSolicitud";
-				document.forms[0].target = "submitArea";
-				document.forms[0].submit();
+				if(checked){
+					document.forms[0].solicitudes.value = datos;				
+					document.forms[0].modo.value = "procesarSolicitud";
+					document.forms[0].target = "submitArea";
+					document.forms[0].submit();
+				}else{
+					alert("<siga:Idioma key='general.message.seleccionar'/>");
+					fin();
+					 return false;
+				}
 			}
 
 			//Asociada al boton DenegarSolicitud -->			

@@ -725,5 +725,11 @@ public class GstDate {
 		
 	
 	}
+	
+	public static String getHoyJava()
+	{
+		SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+		return sdf.format(new Date());
+	}
 
 }

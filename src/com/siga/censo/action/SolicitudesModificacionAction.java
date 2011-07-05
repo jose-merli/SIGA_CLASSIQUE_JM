@@ -20,7 +20,11 @@ import org.apache.struts.action.*;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
+import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesFecha;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.*;
 import com.siga.general.*;
 import com.siga.censo.form.SolicitudesModificacionForm;
@@ -371,6 +375,10 @@ public class SolicitudesModificacionAction extends MasterAction {
 		
 		String result="error";
 		UserTransaction tx = null;
+		CenHistoricoAdm admHistorico = new CenHistoricoAdm(this.getUserBean(request));
+		CenHistoricoBean beanHistorico = new CenHistoricoBean();
+		String sol="";
+		Hashtable hashSol = new Hashtable();
 		
 		try {		
 			Hashtable hashOriginal = new Hashtable(); 		
@@ -400,12 +408,31 @@ public class SolicitudesModificacionAction extends MasterAction {
 				// Comienzo control de transacciones
 				tx = usr.getTransaction();				
 				while(i<solicitudes.length){
+					sol=solicitudes[i];
+					if (!sol.equalsIgnoreCase("")){
+						original=admin.obtenerEntradaSolicitudesModificacion(sol);
+						Row row = (Row)original.firstElement();
+						hashSol = row.getRow();
+					}
 					tx.begin();
 //					if (!solicitudes[i].equalsIgnoreCase("")){
 					
 					///MODIFICACION///////////////////////////////////////////////////////////////	
-					correcto=admin.procesadoSolicitud(solicitudes[i]);//
+					correcto=admin.procesadoSolicitud(sol);//
 					if (correcto){																//
+						// Si la modificación se realiza correctamente añadimos el historico del cambio
+						beanHistorico = new CenHistoricoBean();
+						beanHistorico.setIdInstitucion(Integer.parseInt(miForm.getIdInstitucion()));
+						beanHistorico.setIdPersona(Long.parseLong(miForm.getIdPersona()));
+						beanHistorico.setDescripcion(miForm.getDescripcion());
+						beanHistorico.setFechaEfectiva(UtilidadesString.formatoFecha(GstDate.getHoyJava(),ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_LONG_SPANISH));
+						beanHistorico.setFechaEntrada(UtilidadesString.formatoFecha(hashSol.get("FECHAALTA").toString(),ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_LONG_SPANISH));
+						int tipoCambio = Integer.parseInt(hashSol.get("IDTIPOMODIFICACION").toString());
+						if(tipoCambio % 10 != 0) tipoCambio=99;
+						beanHistorico.setIdTipoCambio(tipoCambio);
+						beanHistorico.setDescripcion(hashSol.get("DESCRIPCION").toString());
+						beanHistorico.setMotivo(UtilidadesString.getMensajeIdioma(usr, "censo.solicitudModificacion.motivoGenerico"));
+						admHistorico.insertarRegistroHistorico(beanHistorico, usr);
 						procesados++;															//
 						tx.commit();															//
 					}																			//
