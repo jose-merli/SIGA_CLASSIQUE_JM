@@ -68,6 +68,7 @@ import com.siga.beans.ScsDesignaAdm;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsInclusionGuardiasEnListasAdm;
 import com.siga.beans.ScsInclusionGuardiasEnListasBean;
+import com.siga.beans.ScsListaGuardiasAdm;
 import com.siga.beans.ScsPersonaJGAdm;
 import com.siga.certificados.Plantilla;
 import com.siga.envios.form.DefinirEnviosForm;
@@ -288,7 +289,19 @@ public class EnvioInformesGenericos extends MasterReport {
 	    				        }
 	    				   }
 	    			 }
-	
+	    		if(backupHash==null){	
+	    			backupHash = new Hashtable();
+	    			ScsListaGuardiasAdm admListaGuardias = new ScsListaGuardiasAdm(usrBean);
+					Vector fechaYUsu = admListaGuardias.selectGenerico(admListaGuardias.getFechaYUsu(idInstitucion,idLista));
+					//Almacenamos en sesion el registro de la lista de guardias			
+					backupHash.put("NOMBRE",(String)((Hashtable)fechaYUsu.elementAt(0)).get("NOMBRE"));
+					backupHash.put("LUGAR",(String)((Hashtable)fechaYUsu.elementAt(0)).get("LUGAR"));
+					backupHash.put("OBSERVACIONES",(String)((Hashtable)fechaYUsu.elementAt(0)).get("OBSERVACIONES"));
+					backupHash.put("USUMODIFICACION",(String)((Hashtable)fechaYUsu.elementAt(0)).get("USUMODIFICACION"));
+					backupHash.put("FECHAMODIFICACION",(String)((Hashtable)fechaYUsu.elementAt(0)).get("FECHAMODIFICACION"));
+					backupHash.put("IDINSTITUCION",(String)((Hashtable)fechaYUsu.elementAt(0)).get("IDINSTITUCION"));
+					backupHash.put("IDLISTA",(String)((Hashtable)fechaYUsu.elementAt(0)).get("IDLISTA"));
+	    		}	
 	    		String nombreLista =UtilidadesHash.getString(backupHash,"NOMBRE");
 	    		String lugar =UtilidadesHash.getString(backupHash,"LUGAR");
 	    		String observaciones =UtilidadesHash.getString(backupHash,"OBSERVACIONES");	                  
