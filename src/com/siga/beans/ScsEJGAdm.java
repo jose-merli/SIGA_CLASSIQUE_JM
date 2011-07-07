@@ -290,6 +290,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			entrada.put(ScsEJGBean.C_JUZGADO, idJuzgado);			
 			entrada.put(ScsEJGBean.C_JUZGADOIDINSTITUCION, idInstitucionJuzgado);				
 		}
+		if (entrada.get(ScsEJGBean.C_GUARDIATURNO_IDGUARDIA)!=null && (entrada.get(ScsEJGBean.C_GUARDIATURNO_IDGUARDIA)).equals("-1")) {
+			entrada.put(ScsEJGBean.C_GUARDIATURNO_IDGUARDIA, "");						
+		}
+		if (entrada.get(ScsEJGBean.C_GUARDIATURNO_IDTURNO)!=null && (entrada.get(ScsEJGBean.C_GUARDIATURNO_IDTURNO)).equals("-1")) {
+			entrada.put(ScsEJGBean.C_GUARDIATURNO_IDTURNO, "");						
+		}
 		
 		entrada.put(ScsEJGBean.C_NUMERO,numeroMaximo);
 		
