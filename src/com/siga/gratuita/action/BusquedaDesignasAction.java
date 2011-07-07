@@ -614,6 +614,7 @@ public class BusquedaDesignasAction extends MasterAction {
 					request.getSession().setAttribute("idTipoEjg",(String)miform.getIdTipoEjg());
 					request.setAttribute("anioEJG", miform.getAnioEjg());
 					request.setAttribute("turnoEJG", this.getIDInstitucion(request) + "," + miform.getIdTurnoEJG());
+					miform.setIdTurno(miform.getIdTurnoEJG());
 					request.setAttribute("idjuzgadoEJG", miform.getJuzgadoAsi()+ "," + miform.getJuzgadoInstitucionAsi());
 					request.setAttribute("numProcedimiento",miform.getNumProcedimiento()); 
 
