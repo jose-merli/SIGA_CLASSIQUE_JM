@@ -358,4 +358,21 @@ public class UsrBean implements Serializable {
 	public void setAplicarLOPD(boolean aplicarLOPD) {
 		this.aplicarLOPD = aplicarLOPD;
 	}
+	
+	public String getPermisoProceso(String process) {
+		if (accessControl==null) {
+			accessControl=new AccessControl(); 
+		}
+		try {
+			String aa=accessControl.checkAccessByProcessName(getProfile(),process,Integer.parseInt(getLocation()));
+			
+			if (process.equals("CEN_BusquedaClientes")||process.equals("10")){
+				                                                                
+				return getAccessType(); 
+			}
+			return aa;
+		} catch (Exception e) {
+			return SIGAConstants.ACCESS_DENY;
+		}
+	}
 }
