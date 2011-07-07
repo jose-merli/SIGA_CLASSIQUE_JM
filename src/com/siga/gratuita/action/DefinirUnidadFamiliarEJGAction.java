@@ -26,6 +26,7 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.administracion.SIGAConstants;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
@@ -580,8 +581,10 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			}
 			GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
 			String eejg = paramAdm.getValor (usr.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_EEJG, "");
+			String accesoEEJGSt=usr.getPermisoProceso("JGR_UnidadFamiliarEEJG");
+			boolean accesoEEJG = accesoEEJGSt!=null && (accesoEEJGSt.equalsIgnoreCase(SIGAConstants.ACCESS_FULL));
 			Boolean isPermisoEejg = new Boolean((eejg!=null && eejg.equalsIgnoreCase(ClsConstants.DB_TRUE)));
-			miForm.setPermisoEejg(isPermisoEejg);
+			miForm.setPermisoEejg(isPermisoEejg&&accesoEEJG);
 			//seteamos si es comision pcaj
 			miForm.setEsComision(usr.isComision());
 			
