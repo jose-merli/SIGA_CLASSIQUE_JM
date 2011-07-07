@@ -245,9 +245,28 @@
 							
 				
 			}
+
+			if (idFiltro == 3) {
+				comboGuardias = document.getElementById("identificador2").value;
+				if (comboGuardias == "") {
+					alert("<siga:Idioma key="gratuita.busquedaSJCS.error.guardiaInscritosObligatoria"/>");
+					fin();
+					return;
+				}
+			}
+			
 			if (idFiltro == 2) {
 				comboTurnos   = document.getElementById("identificador").value;
-				if (comboTurnos == "") {
+				if (comboTurnos == "" || comboTurnos == "-1") {
+					alert("<siga:Idioma key="gratuita.busquedaSJCS.error.turnoObligatorio"/>");
+					fin();
+					return;
+				}
+			}
+
+			if (idFiltro == 4) {
+				comboTurnos   = document.getElementById("identificador").value;
+				if (comboTurnos == "" || comboTurnos == "-1") {
 					alert("<siga:Idioma key="gratuita.busquedaSJCS.error.turnoObligatorio"/>");
 					fin();
 					return;

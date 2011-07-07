@@ -1398,6 +1398,11 @@ public class BusquedaDesignasAction extends MasterAction {
 		BuscarDesignasForm miFormulario =(BuscarDesignasForm)formulario;
 		Hashtable miHash= new Hashtable();
 		miHash = miFormulario.getDatos();
+		if(miFormulario.getIdTurno()!=null && !miFormulario.getIdTurno().equals("")){
+			String[] turnoEJG = miFormulario.getIdTurno().split(",");
+			miHash.put("IDTURNO",turnoEJG[1]);
+		}
+		
 		String consulta= "";
 
 		try {

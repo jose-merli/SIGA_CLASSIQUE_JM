@@ -71,6 +71,7 @@ String app=request.getContextPath();
 <script type="text/javascript">	
 		function buscarCliente ()
 		{
+			alert("ii");
 			var resultado = ventaModalGeneral("busquedaClientesModalForm","G");
 			if (resultado != null && resultado[2]!=null)
 			{
