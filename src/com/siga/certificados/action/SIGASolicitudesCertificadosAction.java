@@ -1146,9 +1146,11 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 							
 						}
 						if (!htNew.get(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO).equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO)){
-					      htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO);
-					      htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
-						}
+							htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO);
+							htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
+                        }else{
+                        	htNew.put(CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO,"sysdate");
+                        }
 			        	
 						
 						///////////////////////////////////////////////
@@ -1480,9 +1482,11 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 						}
 				    // Si el estado de la solicitud es finalizado, cuando volvemos a generar el certificado, NO cambiamos el estado de la solicitu a aprobado
                         if (!htNew.get(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO).equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO)){
-					     htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO);
+                        	htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO);
+                        	htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
+                        }else{
+                        	htNew.put(CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO,"sysdate");
                         }
-			        	
 						
 						///////////////////////////////////////////////
 
@@ -1494,7 +1498,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 				            htNew.put(CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO,"sysdate");
 				        }
 				        htNew.put(CerSolicitudCertificadosBean.C_FECHAMODIFICACION,"sysdate");
-					  	htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate"); 
+					  	 
 
 					    if (!admSolicitud.updateDirect(htNew,claves,campos))
 					    {

@@ -82,6 +82,8 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 		        		   CerSolicitudCertificadosBean.C_FECHAENTREGAINFO,
 		        		   CerSolicitudCertificadosBean.C_FECHAMODIFICACION,
 		        		   CerSolicitudCertificadosBean.C_IDMETODOSOLICITUD,
+		        		   CerSolicitudCertificadosBean.C_FECHACREACION,
+		        		   CerSolicitudCertificadosBean.C_USUCREACION,
 		        		   CerSolicitudCertificadosBean.C_USUMODIFICACION};
 
 		return campos;
@@ -134,6 +136,8 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 			bean.setMetodoSolicitud(UtilidadesHash.getString(hash, CerSolicitudCertificadosBean.C_IDMETODOSOLICITUD));
 			bean.setFechaMod(UtilidadesHash.getString(hash, CerSolicitudCertificadosBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash, CerSolicitudCertificadosBean.C_USUMODIFICACION));
+			bean.setFechaCreacion(UtilidadesHash.getString(hash, CerSolicitudCertificadosBean.C_FECHACREACION));
+			bean.setUsuMod(UtilidadesHash.getInteger(hash, CerSolicitudCertificadosBean.C_USUCREACION));
 		}
 
 		catch (Exception e)
@@ -188,6 +192,8 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_IDMETODOSOLICITUD, b.getMetodoSolicitud());
 			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_USUMODIFICACION, b.getUsuMod());
+			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_FECHACREACION, b.getFechaCreacion());
+			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_USUCREACION, b.getUsuCreacion());			
 		}
 		catch (Exception e)
 		{
@@ -670,23 +676,17 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 		// RGG 28/05/2007 Obtencion de parametro para ver si se envian
 		// comunicados
 		GenParametrosAdm admParam = new GenParametrosAdm(this.usrbean);
-		String sCom = admParam.getValor(user.getLocation(), "CER",
-				"GENERAR_COMUNICADOS", "1");
+		String sCom = admParam.getValor(user.getLocation(), "CER", "GENERAR_COMUNICADOS", "1");
 		boolean comunicado = (sCom.equals("1")) ? true : false;
 
 		CerSolicitudCertificadosBean solicConsejoBean = null;
 		String idInstitucion = user.getLocation();
 		CenInstitucionAdm instAdm = new CenInstitucionAdm(this.usrbean);
-		String idInstPadre = String.valueOf(instAdm.getInstitucionPadre(Integer
-				.valueOf(idInstOrigen)));
-		boolean instCorrecta = idInstitucion
-				.equals(CerSolicitudCertificadosAdm.IDCGAE)
-				|| idInstitucion.equals(idInstOrigen)
-				|| idInstitucion.equals(idInstDestino)
-				|| idInstitucion.equals(idInstPadre);
+		String idInstPadre = String.valueOf(instAdm.getInstitucionPadre(Integer.valueOf(idInstOrigen)));
+		boolean instCorrecta = idInstitucion.equals(CerSolicitudCertificadosAdm.IDCGAE) || idInstitucion.equals(idInstOrigen)
+				|| idInstitucion.equals(idInstDestino) || idInstitucion.equals(idInstPadre);
 		if (instCorrecta) {
-			PysProductosInstitucionAdm pysAdm = new PysProductosInstitucionAdm(
-					this.usrbean);
+			PysProductosInstitucionAdm pysAdm = new PysProductosInstitucionAdm(this.usrbean);
 			Vector diligenciasConsejo, comunicacionesColegio;
 			PysProductosInstitucionBean pysDilBean = null, pysComBean = null;
 
@@ -699,56 +699,40 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 
 				// Petición para el CGAE
 				try {
-					diligenciasConsejo = pysAdm
-							.getDiligenciasConsejo(idInstitucion);
+					diligenciasConsejo = pysAdm.getDiligenciasConsejo(idInstitucion);
 				} catch (ClsExceptions e) {
 					throw e;
 				}
 				if (diligenciasConsejo.size() > 0) {
-					pysDilBean = (PysProductosInstitucionBean) diligenciasConsejo
-							.firstElement();
+					pysDilBean = (PysProductosInstitucionBean) diligenciasConsejo.firstElement();
 				} else {
-					throw new SIGAException(
-							"messages.certificados.error.nodiligenciacgae");
+					throw new SIGAException("messages.certificados.error.nodiligenciacgae");
 				}
 
 				solicConsejoBean = new CerSolicitudCertificadosBean();
-				solicConsejoBean.setIdSolicitud(this
-						.getNewIdSolicitudCertificado(idInstitucion));
+				solicConsejoBean.setIdSolicitud(this.getNewIdSolicitudCertificado(idInstitucion));
 
-				solicConsejoBean.setIdInstitucion(Integer
-						.valueOf(idInstitucion));
-				solicConsejoBean.setPpn_IdTipoProducto(pysDilBean
-						.getIdTipoProducto());
-				solicConsejoBean.setPpn_IdProductoInstitucion(pysDilBean
-						.getIdProductoInstitucion());
+				solicConsejoBean.setIdInstitucion(Integer.valueOf(idInstitucion));
+				solicConsejoBean.setPpn_IdTipoProducto(pysDilBean.getIdTipoProducto());
+				solicConsejoBean.setPpn_IdProductoInstitucion(pysDilBean.getIdProductoInstitucion());
 				solicConsejoBean.setPpn_IdProducto(pysDilBean.getIdProducto());
 
 				solicConsejoBean.setIdPersona_Des(Long.valueOf(idPersona));
-				solicConsejoBean.setIdInstitucionOrigen(Integer
-						.valueOf(idInstOrigen));
-				solicConsejoBean.setIdInstitucionDestino(Integer
-						.valueOf(idInstDestino));
-				solicConsejoBean
-						.setIdEstadoSolicitudCertificado(Integer
-								.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND));
+				solicConsejoBean.setIdInstitucionOrigen(Integer.valueOf(idInstOrigen));
+				solicConsejoBean.setIdInstitucionDestino(Integer.valueOf(idInstDestino));
+				solicConsejoBean.setIdEstadoSolicitudCertificado(Integer.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND));
 				solicConsejoBean.setDescripcion(descripcion);
 				if (fechaSolicitud.equalsIgnoreCase("")) {
 					solicConsejoBean.setFechaSolicitud("SYSDATE");
 				} else {
-					solicConsejoBean.setFechaSolicitud(GstDate
-							.getApplicationFormatDate("", GstDate
-									.anyadeHora(fechaSolicitud)));
+					solicConsejoBean.setFechaSolicitud(GstDate.getApplicationFormatDate("", GstDate.anyadeHora(fechaSolicitud)));
 				}
 				if (!metodoSolicitud.equalsIgnoreCase("")) {
 					solicConsejoBean.setMetodoSolicitud(metodoSolicitud);
 				}
 				solicConsejoBean.setFechaEstado("SYSDATE");
-				solicConsejoBean.setIdInstitucion_Sol(Integer
-						.valueOf(idInstitucion));
-				solicConsejoBean
-						.setIdEstadoCertificado(Integer
-								.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_CER_INICIAL));
+				solicConsejoBean.setIdInstitucion_Sol(Integer.valueOf(idInstitucion));
+				solicConsejoBean.setIdEstadoCertificado(Integer.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_CER_INICIAL));
 
 				this.insert(solicConsejoBean);
 
@@ -757,82 +741,53 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 					// Petición para el colegio
 					if (instAdm.tieneSIGA(Integer.valueOf(idInstOrigen))) {
 						try {
-							comunicacionesColegio = pysAdm
-									.getComunicacionesInst(Integer
-											.valueOf(idInstOrigen));
+							comunicacionesColegio = pysAdm.getComunicacionesInst(Integer.valueOf(idInstOrigen));
 						} catch (ClsExceptions e) {
 							throw e;
 						}
 						if (comunicacionesColegio.size() > 0) {
-							pysComBean = (PysProductosInstitucionBean) comunicacionesColegio
-									.firstElement();
+							pysComBean = (PysProductosInstitucionBean) comunicacionesColegio.firstElement();
 						} else {
-							throw new SIGAException(
-									"messages.certificados.error.nocomunicacion");
+							throw new SIGAException("messages.certificados.error.nocomunicacion");
 						}
 						CerSolicitudCertificadosBean solicColegioBean = new CerSolicitudCertificadosBean();
-						solicColegioBean.setIdSolicitud(this
-								.getNewIdSolicitudCertificado(idInstOrigen));
+						solicColegioBean.setIdSolicitud(this.getNewIdSolicitudCertificado(idInstOrigen));
 
-						solicColegioBean.setIdInstitucion(Integer
-								.valueOf(idInstOrigen));
-						solicColegioBean.setPpn_IdTipoProducto(pysComBean
-								.getIdTipoProducto());
-						solicColegioBean
-								.setPpn_IdProductoInstitucion(pysComBean
-										.getIdProductoInstitucion());
-						solicColegioBean.setPpn_IdProducto(pysComBean
-								.getIdProducto());
+						solicColegioBean.setIdInstitucion(Integer.valueOf(idInstOrigen));
+						solicColegioBean.setPpn_IdTipoProducto(pysComBean.getIdTipoProducto());
+						solicColegioBean.setPpn_IdProductoInstitucion(pysComBean.getIdProductoInstitucion());
+						solicColegioBean.setPpn_IdProducto(pysComBean.getIdProducto());
 
-						solicColegioBean.setIdPersona_Des(Long
-								.valueOf(idPersona));
-						solicColegioBean.setIdInstitucionOrigen(Integer
-								.valueOf(idInstOrigen));
-						solicColegioBean.setIdInstitucionDestino(Integer
-								.valueOf(idInstDestino));
-						solicColegioBean
-								.setIdEstadoSolicitudCertificado(Integer
-										.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND));
+						solicColegioBean.setIdPersona_Des(Long.valueOf(idPersona));
+						solicColegioBean.setIdInstitucionOrigen(Integer.valueOf(idInstOrigen));
+						solicColegioBean.setIdInstitucionDestino(Integer.valueOf(idInstDestino));
+						solicColegioBean.setIdEstadoSolicitudCertificado(Integer.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND));
 						solicColegioBean.setDescripcion(descripcion);
 						solicColegioBean.setFechaSolicitud("SYSDATE");
 						solicColegioBean.setFechaEstado("SYSDATE");
-						solicColegioBean.setIdInstitucion_Sol(Integer
-								.valueOf(idInstitucion));
-						solicColegioBean
-								.setIdEstadoCertificado(Integer
-										.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_CER_INICIAL));
+						solicColegioBean.setIdInstitucion_Sol(Integer.valueOf(idInstitucion));
+						solicColegioBean.setIdEstadoCertificado(Integer.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_CER_INICIAL));
 
 						this.insert(solicColegioBean);
 					}
 
 					// Si el colegio origen es distinto del actual...
-					if (!idInstitucion.equals(idInstOrigen)
-							&& !idInstitucion
-									.equals(CerSolicitudCertificadosAdm.IDCGAE)) {
+					if (!idInstitucion.equals(idInstOrigen) && !idInstitucion.equals(CerSolicitudCertificadosAdm.IDCGAE)) {
 						CerSolicitudCertificadosBean solicBean = new CerSolicitudCertificadosBean();
-						solicBean.setIdSolicitud(this
-								.getNewIdSolicitudCertificado(idInstitucion));
+						solicBean.setIdSolicitud(this.getNewIdSolicitudCertificado(idInstitucion));
 
-						solicBean.setIdInstitucion(Integer
-								.valueOf(idInstitucion));
+						solicBean.setIdInstitucion(Integer.valueOf(idInstitucion));
 						solicBean.setIdPersona_Des(Long.valueOf(idPersona));
-						solicBean.setIdInstitucionOrigen(Integer
-								.valueOf(idInstOrigen));
-						solicBean.setIdInstitucionDestino(Integer
-								.valueOf(idInstDestino));
+						solicBean.setIdInstitucionOrigen(Integer.valueOf(idInstOrigen));
+						solicBean.setIdInstitucionDestino(Integer.valueOf(idInstDestino));
 						solicBean.setDescripcion(descripcion);
-						String estado = instAdm.tieneSIGA(Integer
-								.valueOf(idInstOrigen)) ? CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO
+						String estado = instAdm.tieneSIGA(Integer.valueOf(idInstOrigen)) ? CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO
 								: CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND;
-						solicBean.setIdEstadoSolicitudCertificado(Integer
-								.valueOf(estado));
+						solicBean.setIdEstadoSolicitudCertificado(Integer.valueOf(estado));
 						solicBean.setFechaSolicitud("SYSDATE");
 						solicBean.setFechaEstado("SYSDATE");
-						solicBean.setIdInstitucion_Sol(Integer
-								.valueOf(idInstitucion));
-						solicBean
-								.setIdEstadoCertificado(Integer
-										.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_CER_INICIAL));
+						solicBean.setIdInstitucion_Sol(Integer.valueOf(idInstitucion));
+						solicBean.setIdEstadoCertificado(Integer.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_CER_INICIAL));
 
 						this.insert(solicBean);
 					}

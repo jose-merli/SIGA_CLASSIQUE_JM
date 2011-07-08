@@ -32,7 +32,8 @@ public class CerSolicitudCertificadosBean extends MasterBean
 	private String fechaEnvio;
 	private String comentario;
 	private String fechaEntregaInfo;
-
+	private String fechaCreacion;
+	private Integer usuCreacion;
 
 	/* Nombre campos de la tabla */
 	static public final String C_IDINSTITUCION = "IDINSTITUCION";
@@ -65,6 +66,9 @@ public class CerSolicitudCertificadosBean extends MasterBean
 	static public final String C_COMENTARIO = "COMENTARIO";
 	static public final String C_FECHAENTREGAINFO = "FECHAENTREGAINFO";
 	static public final String C_IDMETODOSOLICITUD = "IDMETODOSOLICITUD";
+	
+	static public final String C_FECHACREACION  = "FECHACREACION";
+    static public final String C_USUCREACION   = "USUCREACION";
 
 	static public final String T_NOMBRETABLA = "CER_SOLICITUDCERTIFICADOS";
 
@@ -313,4 +317,21 @@ public class CerSolicitudCertificadosBean extends MasterBean
 	public void setMetodoSolicitud(String metodoSolicitud) {
 		this.metodoSolicitud = metodoSolicitud;
 	}
+
+	public String getFechaCreacion() {
+		return fechaCreacion;
+	}
+
+	public void setFechaCreacion(String fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
+	public Integer getUsuCreacion() {
+		return usuCreacion;
+	}
+
+	public void setUsuCreacion(Integer usuCreacion) {
+		this.usuCreacion = usuCreacion;
+	}
+	
 }

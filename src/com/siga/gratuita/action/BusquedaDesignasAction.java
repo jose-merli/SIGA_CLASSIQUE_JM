@@ -587,9 +587,16 @@ public class BusquedaDesignasAction extends MasterAction {
 			List<ScsGuardiasTurnoBean> alGuardias = new ArrayList<ScsGuardiasTurnoBean>();
 			ScsTurnoAdm admTurnos = new ScsTurnoAdm(this.getUserBean(request));
 			alTurnos = admTurnos.getTurnosConTipo(this.getUserBean(request).getLocation(), "1");
+			String [] turnosAsis = null;
+			if(!miform.getIdTurno().equals("")){
+				turnosAsis = miform.getIdTurno().split(",");
+			}
 			miform.setIdTurno("");
 			miform.setTurnos(alTurnos);
 			if ((miform.getDesdeAsistencia()!=null)&&(!miform.getDesdeAsistencia().equalsIgnoreCase(""))){
+				if(turnosAsis!=null){
+					miform.setIdTurno(turnosAsis[1]);
+				}
 				request.getSession().setAttribute("asistencia","si");
 				request.getSession().setAttribute("numeroAsistencia",(String)miform.getNumeroAsistencia());
 				request.setAttribute("anioAsistencia", miform.getAnioAsistencia());
