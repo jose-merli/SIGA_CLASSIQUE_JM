@@ -764,6 +764,12 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 					sql.append(" select 'gratuita.operarEJG.literal.asistencia' as asunto, a.anio as anio, lpad(to_char(a.numero),5,'0') as numero");
 					sql.append("   from scs_asistencia a");
 					sql.append("   where a.idinstitucion= " + idInstitucion + " and a.anio=" + anioActual + " and a.numero =" + numeroActual );
+				} else if(asuntoActual.equalsIgnoreCase("guardarContrariosEJG")){
+					sql.append(" minus ");
+					sql.append(" ");
+					sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,5,'0') as numero");
+					sql.append("   from scs_ejg e ");
+					sql.append("   where e.idinstitucion= " + idInstitucion + " and e.anio=" + anioActual + " and e.numero =" + numeroActual + " and e.idtipoejg= "+tipo  );
 				} 
 				
 				sql.append("    order by asunto, anio desc, numero desc ");
@@ -908,7 +914,6 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			sql.append("   and d.numero = a.designa_numero ");
 				
 				sql.append("    order by asunto, anio desc, numero desc ");
-			Vector<String> prueba = new Vector<String>();
 			try {
 				resultado=selectGenerico(sql.toString());
 
