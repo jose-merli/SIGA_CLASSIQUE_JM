@@ -728,6 +728,8 @@ public class DefinirEJGAction extends MasterAction
 				miHash.put(ScsEJGBean.C_CALIDAD,"0");
 				miHash.put(ScsEJGBean.C_IDTIPOENCALIDAD,0);
 				miHash.put(ScsEJGBean.C_CALIDADIDINSTITUCION,usr.getLocation());
+				
+				//Se entra cuando creamos desde ejg y soj
 				miHash.put(ScsEJGBean.C_USUCREACION,new Integer (usr.getUserName()));
 				miHash.put(ScsEJGBean.C_FECHACREACION,"sysdate");
 				
@@ -852,6 +854,10 @@ public class DefinirEJGAction extends MasterAction
 					miHash.put(ScsEJGBean.C_CALIDAD,"0");
 				    miHash.put(ScsEJGBean.C_IDTIPOENCALIDAD,0);					
 				    miHash.put(ScsEJGBean.C_CALIDADIDINSTITUCION,usr.getLocation());
+				    
+				    //Se entra cuando creamos desde designacion
+				    miHash.put(ScsEJGBean.C_USUCREACION,new Integer (usr.getUserName()));
+				    miHash.put(ScsEJGBean.C_FECHACREACION,"sysdate");
 					
 					if (!ejgAdm.insert(miHash)) {
 						throw new ClsExceptions ("Error al crear el EJG desde la designa");
@@ -998,6 +1004,11 @@ public class DefinirEJGAction extends MasterAction
 					miHash.put(ScsEJGBean.C_CALIDAD,"0");
 				    miHash.put(ScsEJGBean.C_IDTIPOENCALIDAD,0);
 					miHash.put(ScsEJGBean.C_CALIDADIDINSTITUCION,usr.getLocation());
+					
+					//Se entra cuando creamos desde asistencia y VE
+				    miHash.put(ScsEJGBean.C_USUCREACION,new Integer (usr.getUserName()));
+				    miHash.put(ScsEJGBean.C_FECHACREACION,"sysdate");
+					
 					if (!ejgAdm.insert(miHash)) {
 						throw new ClsExceptions ("Error al crear el EJG desde la asistencia");
 					}
