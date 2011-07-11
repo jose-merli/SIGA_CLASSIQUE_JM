@@ -6,12 +6,12 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
@@ -20,20 +20,20 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.GstDate;
+import com.atos.utils.LogFileWriter;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.AjaxCollectionXmlBuilder;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmLenguajesAdm;
+import com.siga.beans.BusquedaClientesFiltrosAdm;
 import com.siga.beans.CenBajasTemporalesAdm;
 import com.siga.beans.CenBajasTemporalesBean;
 import com.siga.beans.CenColegiadoAdm;
@@ -63,12 +63,10 @@ import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsEJGDESIGNAAdm;
 import com.siga.beans.ScsEJGDESIGNABean;
-import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsJuzgadoAdm;
 import com.siga.beans.ScsJuzgadoBean;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
 import com.siga.beans.ScsTurnoAdm;
-import com.siga.beans.ScsTurnoBean;
 import com.siga.certificados.Plantilla;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -145,10 +143,7 @@ public class BusquedaDesignasAction extends MasterAction {
 				miForm.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
 				request.getSession().removeAttribute("DATAPAGINADOR");
 				mapDestino = insertar(mapping, miForm, request, response); 
-			} else if (accion.equalsIgnoreCase("getAjaxTurnos")) {
-				ClsLogging.writeFileLog("BUSQUEDA DESIGNA:getAjaxTurnos", 10);
-				getAjaxTurnos(mapping, miForm, request, response);
-				return null;
+				
 			}else {
 				return super.executeInternal(mapping,
 						formulario,
@@ -583,20 +578,7 @@ public class BusquedaDesignasAction extends MasterAction {
 		Hashtable hashAux=new Hashtable();
 		try {
 			BuscarDesignasForm miform = (BuscarDesignasForm)formulario;
-			List<ScsTurnoBean> alTurnos = new ArrayList<ScsTurnoBean>();
-			List<ScsGuardiasTurnoBean> alGuardias = new ArrayList<ScsGuardiasTurnoBean>();
-			ScsTurnoAdm admTurnos = new ScsTurnoAdm(this.getUserBean(request));
-			alTurnos = admTurnos.getTurnosConTipo(this.getUserBean(request).getLocation(), "1");
-			String [] turnosAsis = null;
-			if(!miform.getIdTurno().equals("")){
-				turnosAsis = miform.getIdTurno().split(",");
-			}
-			miform.setIdTurno("");
-			miform.setTurnos(alTurnos);
 			if ((miform.getDesdeAsistencia()!=null)&&(!miform.getDesdeAsistencia().equalsIgnoreCase(""))){
-				if(turnosAsis!=null){
-					miform.setIdTurno(turnosAsis[1]);
-				}
 				request.getSession().setAttribute("asistencia","si");
 				request.getSession().setAttribute("numeroAsistencia",(String)miform.getNumeroAsistencia());
 				request.setAttribute("anioAsistencia", miform.getAnioAsistencia());
@@ -621,7 +603,6 @@ public class BusquedaDesignasAction extends MasterAction {
 					request.getSession().setAttribute("idTipoEjg",(String)miform.getIdTipoEjg());
 					request.setAttribute("anioEJG", miform.getAnioEjg());
 					request.setAttribute("turnoEJG", this.getIDInstitucion(request) + "," + miform.getIdTurnoEJG());
-					miform.setIdTurno(miform.getIdTurnoEJG());
 					request.setAttribute("idjuzgadoEJG", miform.getJuzgadoAsi()+ "," + miform.getJuzgadoInstitucionAsi());
 					request.setAttribute("numProcedimiento",miform.getNumProcedimiento()); 
 
@@ -655,17 +636,25 @@ public class BusquedaDesignasAction extends MasterAction {
 		BuscarDesignasForm miform = (BuscarDesignasForm)formulario;
 		String desdeAsistencia=(String)request.getSession().getAttribute("asistencia");
 		String desdeEjg=(String)request.getSession().getAttribute("ejg");
+		String [] splitTurno = null;
+		String idTurno = "";
+		if(miform.getIdTurno()!=null && !miform.getIdTurno().equals("")){
+			splitTurno = miform.getIdTurno().split(",");
+			idTurno = splitTurno[1];
+		}
 		
-
 		if ((desdeAsistencia!=null &&  desdeAsistencia.equalsIgnoreCase("si"))||(desdeEjg!=null &&  desdeEjg.equalsIgnoreCase("si"))){
 			request.getSession().removeAttribute("DATAPAGINADOR");
 		}
 		Hashtable formDesignaHash = (Hashtable)miform.getDatos();
-		formDesignaHash.put(ScsDesignaBean.C_IDTURNO,miform.getIdTurno());
 		formDesignaHash.remove("registrosSeleccionados");
 		formDesignaHash.remove("datosPaginador");
-		if (((String)formDesignaHash.get("IDTURNO")==null)&&(formAvanzada!=null))formDesignaHash = this.recogerDatosEntrada(miform.getDatos(),formAvanzada);
+		if (((String)formDesignaHash.get("IDTURNO")==null)&&(formAvanzada!=null))
+			formDesignaHash = this.recogerDatosEntrada(miform.getDatos(),formAvanzada);
 		formDesignaHash.put("IDINSTITUCION",(String)usr.getLocation());
+		
+		if ((String)formDesignaHash.get("IDTURNO")==null)
+			formDesignaHash.put("IDTURNO",idTurno);
 
 
 		Hashtable nuevaDesigna = new Hashtable();
@@ -688,7 +677,7 @@ public class BusquedaDesignasAction extends MasterAction {
 					
 					ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 					
-					CalendarioSJCS calendario = new CalendarioSJCS(new Integer(usr.getLocation()), new Integer(miform.getIdTurno()),fecha,usr);
+					CalendarioSJCS calendario = new CalendarioSJCS(new Integer(usr.getLocation()), new Integer(idTurno),fecha,usr);
 					letradoTurno = calendario.getLetradoTurno();
 					idPersonaSel = letradoTurno.getIdPersona().toString();					
 					
@@ -767,7 +756,7 @@ public class BusquedaDesignasAction extends MasterAction {
 				}
 			}
 			String idInstitucionSJCS=usr.getLocation();
-			String idTurnoSJCS=miform.getIdTurno();
+			String idTurnoSJCS=idTurno;
 			String idGuardiaSJCS=null;
 			String anioSJCS=miform.getAnio();
 			String numeroSJCS=miform.getNumero();
@@ -1406,11 +1395,6 @@ public class BusquedaDesignasAction extends MasterAction {
 		BuscarDesignasForm miFormulario =(BuscarDesignasForm)formulario;
 		Hashtable miHash= new Hashtable();
 		miHash = miFormulario.getDatos();
-		if(miFormulario.getIdTurno()!=null && !miFormulario.getIdTurno().equals("")){
-			String[] turnoEJG = miFormulario.getIdTurno().split(",");
-			miHash.put("IDTURNO",turnoEJG[1]);
-		}
-		
 		String consulta= "";
 
 		try {
@@ -1819,33 +1803,4 @@ public class BusquedaDesignasAction extends MasterAction {
 
 	}
 
-	protected void getAjaxTurnos (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
-			{
-		
-		BuscarDesignasForm miForm = (BuscarDesignasForm) formulario;
-		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
-		//Recogemos el parametro enviado por ajax
-		String idTipoTurno = request.getParameter("idTipoTurno");
-
-		miForm.setIdTipoTurno(idTipoTurno);
-		ClsLogging.writeFileLog("BUSQUEDA DESIGNA:getAjaxTurnos.fechaGuardia:"+idTipoTurno+"/", 10);
-		
-		//Sacamos los turnos
-		ScsTurnoAdm admTurnos = new ScsTurnoAdm(this.getUserBean(request));
-		List<ScsTurnoBean> alTurnos = admTurnos.getTurnosConTipo(usr.getLocation(),miForm.getIdTipoTurno());
-		ClsLogging.writeFileLog("BUSQUEDA DESIGNA:Select Turnos", 10);
-		if(alTurnos==null){
-			alTurnos = new ArrayList<ScsTurnoBean>();
-		}else{
-			for(ScsTurnoBean turno:alTurnos){
-				ClsLogging.writeFileLog("BUSQUEDA DESIGNA:turno:"+turno.getNombre(), 10);
-			}
-		}
-		ClsLogging.writeFileLog("BUSQUEDA DESIGNA:Fin Select Turnos", 10);
-	    respuestaAjax(new AjaxCollectionXmlBuilder<ScsTurnoBean>(), alTurnos,response);
-	}		
-	
 }

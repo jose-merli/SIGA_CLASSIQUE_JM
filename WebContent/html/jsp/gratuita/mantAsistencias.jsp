@@ -127,7 +127,7 @@
 	String[] parametroJuzgado = {usr.getLocation(), idTurno};
 	
 	// Para cuando creamos la designacion
-	idTurno = " ," + idTurno;
+	//idTurno = " ," + idTurno;
 	String nombreCompletoLetrado = NOMBRELETRADO + " " + APELLIDO1LETRADO + " " + APELLIDO2LETRADO;
 	String juzgado = (String) request.getAttribute("JUZGADO");
 	if (juzgado == null) juzgado = new String ("");

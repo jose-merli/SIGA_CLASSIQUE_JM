@@ -605,15 +605,8 @@ public class DefinirEJGAction extends MasterAction
 			} 
 		}
 		DefinirEJGForm miform = (DefinirEJGForm)formulario;
-
 		try{
-			List<ScsTurnoBean> alTurnos = new ArrayList<ScsTurnoBean>();
-			List<ScsGuardiasTurnoBean> alGuardias = new ArrayList<ScsGuardiasTurnoBean>();
-			ScsTurnoAdm admTurnos = new ScsTurnoAdm(this.getUserBean(request));
-			alTurnos = admTurnos.getTurnosConTipo(usr.getLocation(), "2");
-			miform.setTurnos(alTurnos);
-			miform.setIdTurno("");
-			miform.setGuardias(alGuardias);
+			
 						
 			request.setAttribute("asistenciaNumero", (String)miform.getAsistenciaNumero());
 			request.setAttribute("asistenciaAnio", (String)miform.getAsistenciaAnio());

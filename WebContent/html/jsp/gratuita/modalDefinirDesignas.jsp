@@ -23,9 +23,6 @@
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
 
-<!-- AJAX -->
-<%@ taglib uri="ajaxtags.tld" prefix="ajax" %>
-
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();
@@ -132,23 +129,13 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
+
 	<html:javascript formName="BuscarDesignasForm" staticJavascript="false" />
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-	<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript"></script>
-	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
-	<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
-
-	<!--Step 2 -->
-	<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
-
-	<!--Step 3 -->
-	  <!-- defaults for Autocomplete and displaytag -->
-	  <link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />
-	  <link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
-	
+ 	
+ 	
 	<!--TITULO Y LOCALIZACION -->
 
 </head>
@@ -291,16 +278,9 @@
 					<siga:Idioma key="gratuita.busquedaSOJ.literal.turno"/>&nbsp;(*)
 				</td>
 				<td class="labelText" colspan="3">
-					<html:select styleId="turnos" styleClass="boxCombo" style="width:'320px';" property="idTurno">
-						<bean:define id="turnos" name="BuscarDesignasForm" property="turnos" type="java.util.Collection" />
-						<html:optionsCollection name="turnos" value="idTurno" label="nombre" />
-					</html:select>
+					<siga:ComboBD nombre="idTurno" tipo="turnosDesignacionAlta" estilo="true" ancho="480" clase="<%=claseComboTurno%>" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=elementoSelTurno%>" accion="Hijo:juzgado" readOnly="<%=sreadonly%>" ancho="500"/>
 				</td>
 			</tr>
-			<tr>		
-				<td class="labelText" colspan="3"><siga:Idioma key="gratuita.busquedaEJG.literal.servicioDesignacion"/>&nbsp;
-				<html:checkbox property="idTipoTurno"  onclick="activarTipoTurno(this);" /></td>
-			</tr>				
 			<tr>
 
 		   <td class="labelText" colspan="4">	
@@ -387,12 +367,6 @@
 		</td>
 	</tr>
 -->	
-<ajax:updateSelectFromField
-	baseUrl="/SIGA/JGR_Designas.do?modo=getAjaxTurnos"
-	source="idTipoTurno" target="turnos"
-	parameters="idTipoTurno={idTipoTurno}" 
-	/>	
-
 
 	</html:form>
 	
@@ -419,8 +393,8 @@
 		function accionGuardarCerrar() 
 		{	 
 			sub();
-
-			if((document.forms[1].idTurno.selectedIndex < 1) ||(document.forms[1].fechaAperturaInicio.value.length < 1) ||(document.forms[1].idSolicitante && document.forms[1].idSolicitante.value=="")){
+			if((document.forms[1].idTurno.selectedIndex < 1)//||(document.forms[1].ncolegiado.value.length < 1)
+			   ||(document.forms[1].fechaAperturaInicio.value.length < 1)||(document.forms[1].idSolicitante && document.forms[1].idSolicitante.value=="")){
 				alert("Debe rellenar todos los campos");
 				fin();
 				return false;
@@ -450,14 +424,6 @@
 		{		
 			document.forms[1].reset();
 		}
-
-		function activarTipoTurno(valorCheck){
-			if(valorCheck){
-				document.getElementById('idTipoTurno').value = '2';
-			}
-
-			document.getElementById('idTipoTurno').onchange();
-		}		
 		
 		<!-- Funcion asociada a boton buscar -->
 

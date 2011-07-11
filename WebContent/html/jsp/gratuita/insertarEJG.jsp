@@ -15,9 +15,6 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
 
-<!-- AJAX -->
-<%@ taglib uri="ajaxtags.tld" prefix="ajax" %>
-
 <!-- JSP -->
 <% 
 
@@ -50,28 +47,11 @@ String app=request.getContextPath();
 	<html:javascript formName="DefinirEJGForm" staticJavascript="false" />  
   	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-
-
-	<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript"></script>
-	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
-	<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
-
-	<!--Step 2 -->
-	<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
-
-
-	<!--Step 3 -->
-	  <!-- defaults for Autocomplete and displaytag -->
-	  <link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />
-	  <link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
-
-<script type="text/javascript">	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>	
+	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
+	<script type="text/javascript">
 		function buscarCliente ()
 		{
-			alert("ii");
 			var resultado = ventaModalGeneral("busquedaClientesModalForm","G");
 			if (resultado != null && resultado[2]!=null)
 			{
@@ -83,7 +63,6 @@ String app=request.getContextPath();
 		<!-- Modif Carlos -->
 		function busquedaAutomatica ()
 		{
-			
 			document.forms[1].idTurno.value 	= document.forms[2].identificador.value;
 			document.forms[1].idGuardia.value 	= document.forms[2].identificador2.value;
 			document.forms[1].modo.value		= "buscarPor";
@@ -105,18 +84,11 @@ String app=request.getContextPath();
 				alert("<siga:Idioma key='gratuita.nuevaAsistencia.mensaje.alert5' />");
 		}
 		<!-- Fin Modif Carlos -->
-
-
-		
 		function actualizarFecha(){
 		  document.forms[1].fechaAperturaEJG.value=DefinirEJGForm.fechaApertura.value;
 		}
-
-		function preAccionTurno(){
-			document.getElementById("guardias").disabled= true;
-			
-		}
 	</script>
+	
 	
 </head>
 
@@ -148,6 +120,8 @@ String app=request.getContextPath();
 	<html:form action="/JGR_EJG.do" method="POST" target="submitArea" type="">
 	
 	<!-- Para seleccion automatica -->
+	<html:hidden property = "idTurno" value="" />
+	<html:hidden property = "idGuardia" value=""  />	
 	
 	<!-- ************************ //-->
 	<html:hidden property = "actionModal" value = ""/>
@@ -172,73 +146,74 @@ String app=request.getContextPath();
 	<input type="hidden" name = "flagSalto" value=""/>
 	<input type="hidden" name = "flagCompensacion" value=""/>	
 	<html:hidden name="DefinirEJGForm" property="NColegiado" value="<%=nColegiado%>"/>	
-	<tr><td>			
-	
-		<!-- SUBCONJUNTO DE DATOS -->
-		<siga:ConjCampos leyenda="gratuita.busquedaEJG.literal.expedientesEJG" >
-		<table class="tablaCampos" align="center" border ="0">
-
-			<tr>		
-				<td class="labelText">
-					<siga:Idioma key="gratuita.busquedaEJG.literal.tipoEJG"/>&nbsp;(*)
-				</td>
-				<td class="labelText">
-					<siga:ComboBD nombre="idTipoEJG" tipo="tipoEJG"  parametro="<%=datoTipoOrdinario%>" clase="boxCombo" obligatorio="false"  obligatorioSinTextoSeleccionar="true" />
-				</td>	
-			</tr>
-				
-			<tr>
-				<td class="labelText">
-					<siga:Idioma key="gratuita.busquedaEJG.literal.fechaApertura"/>&nbsp;(*)
-				</td>
-				<td class="labelText">		
-					<html:text name="DefinirEJGForm" property="fechaApertura" size="10" maxlength="10" styleClass="box"  value="<%=fecha%>" readOnly="true"></html:text>
-					<a onClick="showCalendarGeneral(fechaApertura);actualizarFecha();rellenarComboGuardia();" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
-				</td>
-			</tr>
+	<tr>		
+			<td>			
+			<!-- SUBCONJUNTO DE DATOS -->
+			<siga:ConjCampos leyenda="gratuita.busquedaEJG.literal.expedientesEJG">
+			<table class="tablaCampos" align="center" border ="0">
 			
-		</table>
-		</siga:ConjCampos>	
+	</tr>
+
 	
-	</td></tr>
+
 	
+	<tr>		
+		<td class="labelText">
+			<siga:Idioma key="gratuita.busquedaEJG.literal.tipoEJG"/>&nbsp;(*)
+		</td>
+		<td class="labelText" colspan="2">
+			<siga:ComboBD nombre="idTipoEJG" tipo="tipoEJG"  parametro="<%=datoTipoOrdinario%>" clase="boxCombo" obligatorio="false"  obligatorioSinTextoSeleccionar="true" />
+		</td>	
+	</tr>
+		
+	<tr>
+		<td class="labelText">
+			<siga:Idioma key="gratuita.busquedaEJG.literal.fechaApertura"/>&nbsp;(*)
+		</td>
+		<td class="labelText">		
+			<html:text name="DefinirEJGForm" property="fechaApertura" size="10" maxlength="10" styleClass="box"  value="<%=fecha%>" readOnly="true"></html:text>
+			<a onClick="showCalendarGeneral(fechaApertura);actualizarFecha();rellenarComboGuardia();" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
+<!--	</td>
+			<td class="labelText" colspan="2">
+			<siga:Idioma key="gratuita.insertarSOJ.literal.demandante"/>
+			<input type="radio" name="calidad" value="D" checked>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<siga:Idioma key="gratuita.insertarSOJ.literal.demandado"/>
+			<input type="radio" name="calidad" value="O">
+		</td> -->
+	</tr>
+		
+	</table>
+	</siga:ConjCampos>	
+	</td>
+	</tr>
 	<tr><td>
 	<siga:ConjCampos leyenda="gratuita.seleccionColegiadoJG.literal.tituloEJG"> 
 
-		<table class="tablaCampos" border="0" >
+		<table class="tablaCampos" border="0" width="100%">
 
 			<tr>
 				<td class="labelText" >
 					<siga:Idioma key="gratuita.busquedaEJG.literal.turno"/>&nbsp;
 				</td>
-				<td>
-					<html:select styleId="turnos" styleClass="boxCombo" style="width:'320px';" property="idTurno">
-						<bean:define id="turnos" name="DefinirEJGForm" property="turnos" type="java.util.Collection" />
-						<html:optionsCollection name="turnos" value="idTurno" label="nombre" />
-					</html:select>
+				<td class="labelText" colspan="4" >
+					<siga:ComboBD nombre = "identificador" tipo="turnosTramitacionAlta" clase="boxCombo" obligatorio="false" accion="Hijo:identificador2" ancho="550" parametro="<%=dato%>"/>
 				</td>
 			</tr>
-			<tr>		
-				<td class="labelText" colspan="3"><siga:Idioma key="gratuita.busquedaEJG.literal.servicioTramitacion"/>&nbsp;
-				<html:checkbox property="idTipoTurno"  onclick="activarTipoTurno(this);" /></td>
-			</tr>	
-			<tr><td>&nbsp;</td></tr>
 			<tr>
 				<td class="labelText">	
 					<siga:Idioma key="gratuita.busquedaEJG.literal.guardia"/>&nbsp;
 				</td>
-				<td><html:select styleId="guardias" styleClass="boxCombo" style="width:'240px';" property="idGuardia" disabled="true">
-						<bean:define id="guardias" name="DefinirEJGForm" property="guardias" type="java.util.Collection" />
-						<html:optionsCollection name="guardias" value="idGuardia" label="nombre" />
-					</html:select>
+				<td class="labelText" colspan="4">
+					<siga:ComboBD nombre = "identificador2" tipo="guardias" clase="boxCombo"  accion="parent.rellenarComboGuardia();" obligatorio="false" hijo="t"/>
 				</td>
 			</tr>	
-			<tr><td>&nbsp;</td></tr>
+
 			<tr>
-				<td colspan="4">
+				<td colspan="5">
 					<siga:BusquedaSJCS nombre="DefinirEJGForm" propiedad="buscaLetrado"
 	 				   concepto="EJG" operacion="Asignacion" 
-					   campoTurno="idTurno" campoGuardia="idGuardia" campoFecha="fechaApertura"
+					   campoTurno="identificador" campoGuardia="identificador2" campoFecha="fechaApertura"
 					   campoPersona="idPersona" campoColegiado="numeroColegiado" campoNombreColegiado="nomColegiado"  
 					   campoFlagSalto="flagSalto" campoFlagCompensacion="flagCompensacion" campoSalto="checkSalto" campoCompensacion="compensacion"
 					   diaGuardia="true"
@@ -246,40 +221,24 @@ String app=request.getContextPath();
 					   />				
 				</td>
 			</tr>
-			</table>
-			<table>
 			<tr>
 				<td class="labelText">
 					<siga:Idioma key='gratuita.busquedaEJG.literal.numeroColegidado'/>
 				</td>		
 				<td>
-					<input type="text" name="numeroColegiado" class="boxConsulta" readOnly value="">
+					<input type="text" name="numeroColegiado" class="boxConsulta" readOnly value="" style="width:'100px';">
 				</td>
 				<td class="labelText">
 					<siga:Idioma key='FactSJCS.listadoRetencionesJ.literal.nombreColegiado'/>
 				</td>
-				<td>
+				<td colspan="2">
 					<input type="text" name="nomColegiado" class="boxConsulta" readOnly value="" style="width:'240px';">
 				</td>			
 			</tr>	
-			
 		</table>
 				
 	</siga:ConjCampos> 
 	</td></tr>
-	
-<ajax:updateSelectFromField
-	baseUrl="/SIGA/JGR_EJG.do?modo=getAjaxTurnos"
-	source="idTipoTurno" target="turnos"
-	parameters="idTipoTurno={idTipoTurno},idInstitucion={idInstitucion}" 
-	/>	
-	
-<ajax:select
-	baseUrl="/SIGA/JGR_EJG.do?modo=getAjaxGuardias"
-	source="turnos" target="guardias" 
-	parameters="idInstitucion={idInstitucion},idTurno={idTurno}"
-	preFunction="preAccionTurno" />
-	
 	</html:form>
 	</table>
 
@@ -303,10 +262,21 @@ String app=request.getContextPath();
 		<!-- Asociada al boton Guardar y Cerrar -->
 		function accionGuardarCerrar() 		
 		{	
+			
+			
 			sub();
-
-			document.forms[1].guardiaTurnoIdTurno.value = document.forms[1].idTurno.value;
-			document.forms[1].guardiaTurnoIdGuardia.value = document.forms[1].idGuardia.value;	
+			/* El identificador está compuesto por [idinstitucion,idturno] por tanto hay que dividirlo y quedarnos sólo
+			 	con el turno, ya que la institución se recogerá del formulario. Viene ha sido debido a que es necesario para
+			 	el combo hijo de guardias
+			*/
+			var id = document.forms[1].identificador.value;
+			var id2 = document.forms[1].identificador2.value;
+			var posicion = 0;
+			/* Se recorre hasta encontrar el separador, que es ","*/									
+			posicion = id.indexOf(',') + 1;
+			/* El substring que queda a partir de ahí es el identificador del turno, que almacenamos en el formulario */			
+			document.forms[1].guardiaTurnoIdTurno.value = id.substring(posicion);
+			document.forms[1].guardiaTurnoIdGuardia.value = id2;	
 
 			if (validateDefinirEJGForm(document.forms[1])){
 				document.forms[1].modo.value="Insertar";
@@ -324,14 +294,6 @@ String app=request.getContextPath();
 		{
 			top.cierraConParametros("NORMAL");			
 		}
-
-		function activarTipoTurno(valorCheck){
-			if(valorCheck){
-				document.getElementById('idTipoTurno').value = '1';
-			}
-
-			document.getElementById('idTipoTurno').onchange();
-		}			
 		 
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
