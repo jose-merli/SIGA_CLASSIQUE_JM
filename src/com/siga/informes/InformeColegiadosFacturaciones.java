@@ -292,15 +292,8 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 		
 		try {
 			StringBuffer sql1 = new StringBuffer();
-			sql1.append("select to_char(fa.fechainicio, 'DD/MM/YYYY') FECHADESDE, ");
-			sql1.append(" to_char(fa.fechainicio, 'DD/MM/YYYY') FECHAHASTA, ");
-			sql1.append(" (select to_char(max(cab.fecha_fin), 'DD/MM/YYYY') ");
-			sql1.append(" from SCS_CABECERAGUARDIAS cab ");
-			sql1.append(" where cab.idturno = gu.idturno ");
-			sql1.append(" and cab.idinstitucion = gu.idinstitucion ");
-			sql1.append(" and cab.idguardia = gu.idguardia ");
-			sql1.append(" and cab.idcalendarioguardias = fa.idcalendarioguardias ");
-			sql1.append(" and cab.idpersona = fa.idpersona ");
+			sql1.append("select to_char(fa.fechainicio, 'DD/MM/YYYY') FECHAINICIO, ");
+			sql1.append(" to_char(cab.fecha_fin, 'DD/MM/YYYY') FECHAFIN, ");
 			sql1.append(" group by cab.idinstitucion, cab.idguardia, cab.idcalendarioguardias, cab.idpersona) FECHAFIN, ");
 			sql1.append(" TU.NOMBRE TURNO, ");
 			sql1.append(" tu.abreviatura ABREVIATURA_TURNO, ");
@@ -311,9 +304,15 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 			sql1.append("f_siga_formatonumero(fa.precioaplicado, 2) IMPORTE_ACTUACION, ");
 			sql1.append("fa.IDAPUNTE, ");
 			sql1.append("gu.nombre as NOMBRE_GUARDIA ");
-			sql1.append("from fcs_fact_apunte fa, SCS_TURNO TU, scs_guardiasturno gu ");
+			sql1.append("from fcs_fact_apunte fa, SCS_TURNO TU, scs_guardiasturno gu, SCS_CABECERAGUARDIAS cab  ");
 
 			sql1.append(" where FA.IDTURNO = TU.IDTURNO ");
+			sql1.append(" and cab.idturno = fa.idturno ");
+			sql1.append(" and cab.idinstitucion = fa.idinstitucion ");
+			sql1.append(" and cab.idguardia = fa.idguardia ");
+			sql1.append(" and cab.idcalendarioguardias = fa.idcalendarioguardias ");
+			sql1.append(" and cab.idpersona = fa.idpersona ");
+			sql1.append(" and cab.fechainicio = fa.fechainicio ");
 			sql1.append("   and FA.IDINSTITUCION = TU.IDINSTITUCION ");
 			sql1.append("   and gu.idinstitucion = tu.idinstitucion");
 			sql1.append("   and gu.idturno = tu.idturno");
