@@ -294,7 +294,6 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 			StringBuffer sql1 = new StringBuffer();
 			sql1.append("select to_char(fa.fechainicio, 'DD/MM/YYYY') FECHAINICIO, ");
 			sql1.append(" to_char(cab.fecha_fin, 'DD/MM/YYYY') FECHAFIN, ");
-			sql1.append(" group by cab.idinstitucion, cab.idguardia, cab.idcalendarioguardias, cab.idpersona) FECHAFIN, ");
 			sql1.append(" TU.NOMBRE TURNO, ");
 			sql1.append(" tu.abreviatura ABREVIATURA_TURNO, ");
 			sql1.append("fa.IDFACTURACION, ");
@@ -344,7 +343,7 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 					String idTurno=r1.getString("IDTURNO");
 					String idGuardia=r1.getString("IDGUARDIA");
 					String idCalendarioGuardias=r1.getString("IDCALENDARIOGUARDIAS");
-					String fechaDesde=r1.getString("FECHADESDE");
+					String fechaDesde=r1.getString("FECHAINICIO");
 					String idApunte=r1.getString("IDAPUNTE");
 					
 					// inc7405 // Comprobamos si se para por actuacion para saber si hay que mostrar las actuaciones o no
