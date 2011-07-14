@@ -25,15 +25,14 @@
 <%
 	String app = request.getContextPath();
 	HttpSession ses = request.getSession();
-	Properties src = (Properties) ses
-			.getAttribute(SIGAConstants.STYLESHEET_REF);
-	UsrBean usrbean = (UsrBean) session
-			.getAttribute(ClsConstants.USERBEAN);
+	Properties src = (Properties) ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	UsrBean usrbean = (UsrBean) session.getAttribute(ClsConstants.USERBEAN);
 
 	//COMBO PAGOS CERRADOS:
 	String comboParams[] = new String[2];
 	comboParams[0] = usrbean.getLocation();
 	comboParams[1] = ClsConstants.ESTADO_PAGO_EJECUTADO;
+	String dato[] = {usrbean.getLocation()};
 %>
 
 <html>
@@ -59,15 +58,29 @@
 		<html:hidden name="mantenimientoInformesForm" property="modo" value="" />
 
 		<table class="tablaCentralCampos" align="center">
+		
 			<tr>
-				<td class="labelText" width="150">
-					<siga:Idioma key="factSJCS.datosPagos.literal.pago" />&nbsp;(*)
-				</td>
-				<td>
-					<siga:ComboBD nombre="idPago" tipo="cmb_PagosCerrados"
-					parametro="<%=comboParams%>" clase="boxCombo" obligatorio="false" />
+				<td class="labelText">
+					<siga:Idioma key="gratuita.definirTurnosIndex.literal.grupoFacturacion"/>&nbsp;&nbsp;&nbsp;&nbsp;
+					<siga:ComboBD estilo="true" obligatorio="false" nombre="grupoFacturacion" filasMostrar="1" ancho="700" accion="Hijo:idPago;Hijo:idPagoFinal" seleccionMultiple="false" tipo="grupoFacturacion" clase="boxCombo"  parametro="<%=dato%>"/>
+					<script> document.forms[0].grupoFacturacion[0].value=-1;</script>
 				</td>
 			</tr>
+		
+			<tr>
+				<td class="labelText" width="10%">
+					<siga:Idioma key="informes.sjcs.pagos.literal.pago"/>&nbsp;(*)&nbsp;&nbsp;
+					<siga:ComboBD estilo="true" nombre="idPago" tipo="cmb_CertificadosPagos" ancho="700" parametro="<%=comboParams%>" clase="boxCombo" hijo="t" obligatorio="true" obligatorioSinTextoSeleccionar="true" />
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="labelText" width="10%">
+					<siga:Idioma key="informes.sjcs.pagos.literal.pagoFin"/>&nbsp;&nbsp;&nbsp;(*)&nbsp;&nbsp;
+					<siga:ComboBD estilo="true" nombre="idPagoFinal" tipo="cmb_CertificadosPagos" ancho="700" parametro="<%=comboParams%>" clase="boxCombo" hijo="t" obligatorio="false" />
+				</td>
+			</tr>
+
 <!--	<tr>-->
 <!--	<td class="labelText">-->
 <!--		<siga:Idioma key="factSJCS.datosPagos.literal.idioma"/>&nbsp;(*)-->
@@ -94,15 +107,22 @@
 		sub();	
 		var f=document.getElementById("mantenimientoInformesForm");
 		var fname = document.getElementById("mantenimientoInformesForm").name;
-	    if (validateMantenimientoInformesForm(f)) {
-			f.modo.value="generarCertificadoPago";
-			// con pantalla de espera
-			document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.factSJCS.procesandoInforme';
-		}
-		else {
+		if (f.idPago.value != "") {
+	    	if (validateMantenimientoInformesForm(f)) {
+				f.modo.value="generarCertificadoPago";
+				// con pantalla de espera
+				document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.factSJCS.procesandoInforme';
+			} else {
+				fin();
+				return false;
+			}
+
+		} else {
+			alert("Seleccione un pago");
 			fin();
 			return false;
 		} 
+	 
 	}
 </script>
 <!-- FIN: SCRIPTS BOTONES -->

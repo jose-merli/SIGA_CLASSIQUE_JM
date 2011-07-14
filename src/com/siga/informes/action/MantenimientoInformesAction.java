@@ -15,6 +15,7 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.beans.AdmTipoFiltroInformeBean;
+import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -146,16 +147,26 @@ public class MantenimientoInformesAction extends MasterAction {
 		HashMap<String, String> filtro;
 		String idinstitucion = null;
 		String idpago = null;
+		String idpagoFinal = null;
 		String idioma = null;
+		String idpagos = null;
+		String grupoFacturaciones = null;
 		
 		// obteniendo valores del formulario
 		try {
 			idinstitucion = usr.getLocation();
 			idpago = request.getParameter("idPago");
 			idioma = usr.getLanguage();
+			idpagoFinal = request.getParameter("idPagoFinal");
+			grupoFacturaciones = request.getParameter("grupoFacturacion");
+			if(idpagoFinal != null && !idpagoFinal.equals("")){
+				idpagos = EjecucionPLs.ejecutarFuncPagosIntervaloGrupoFacturacion(idinstitucion, idpago,idpagoFinal,grupoFacturaciones);
+			}else{
+				idpagos = idpago;
+			}
+			
 		} catch(Exception e) {
-			throwExcp("messages.general.error",
-					new String[] { "modulo.facturacionSJCS" }, e, null);
+			throwExcp("messages.general.error", new String[] { "modulo.facturacionSJCS" }, e, null);
 		}
 
 		// generando lista de filtros
@@ -165,10 +176,12 @@ public class MantenimientoInformesAction extends MasterAction {
 		filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDINSTITUCION");
 		filtro.put("VALOR", idinstitucion);
 		filtros.add(filtro);
+		
 		filtro = new HashMap<String, String>();
 		filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDPAGO");
-		filtro.put("VALOR", idpago);
+		filtro.put("VALOR", idpagos);
 		filtros.add(filtro);
+
 		filtro = new HashMap<String, String>();
 		filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDIOMA");
 		filtro.put("VALOR", idioma);

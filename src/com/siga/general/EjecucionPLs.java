@@ -963,6 +963,37 @@ public static String[] ejecutarF_SIGA_COMPROBAR_ANTICIPAR (
 		return resultado;
 	}
 	
+	/**
+	 * Devuelve una lista de idPagos separada por "," de todas aquellas facturaciones cuyas fechas "desde/hasta" 
+	 * se encuentren en el intervalo que marcan la fecha "desde" menor y la fecha "hasta" mayor de las facturaciones
+	 * <code>idPagosIni</code> e <code>idPagosFin</code>
+	 * @param idInstitucion
+	 * @param idPagosIni
+	 * @param idPagosFin
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public static String ejecutarFuncPagosIntervaloGrupoFacturacion (String idInstitucion, String idPagosIni, String idPagosFin, String grupoFacturacion) throws ClsExceptions{
+		RowsContainer rc = null;
+		Hashtable miHash = new Hashtable();
+		Hashtable codigos = new Hashtable();
+		codigos.put(new Integer(1),idInstitucion);
+		codigos.put(new Integer(2),idPagosIni);
+		codigos.put(new Integer(3),idPagosFin);
+		codigos.put(new Integer(4),grupoFacturacion);
+		String resultado = null;
+	
+		String consulta = "select PKG_SIGA_PAGOS_SJCS.FUNC_PAGOS_INTERVALO_GRUPOFACT(:1,:2,:3,:4) PAGOS FROM DUAL ";
+		rc = new RowsContainer(); 
+		if (rc.queryBind(consulta,codigos)) {
+			Row fila = (Row) rc.get(0);
+			miHash = fila.getRow();            
+			resultado = (String)miHash.get("PAGOS");            
+		}
+	
+		return resultado;
+	}
+	
 	public static String ejecutarFuncion (Hashtable<Integer,Object> htCodigos, 
 			String funcion) throws ClsExceptions{
 		RowsContainer rc  = new RowsContainer(); 
