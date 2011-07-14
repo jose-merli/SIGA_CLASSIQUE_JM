@@ -298,6 +298,10 @@
 					alert('<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensaciones.literal.error1"/>');
 					fin();
 					return false;
+				}else if (document.forms[0].idPersona.value==""){
+					alert('<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensaciones.literal.error3"/>');
+					fin();
+					return false;
 	 			}else if (validateSaltosYCompensacionesForm(document.SaltosYCompensacionesForm)) {
 					document.forms[0].modo.value = "insertar";
 					document.forms[0].target = "submitArea";							
