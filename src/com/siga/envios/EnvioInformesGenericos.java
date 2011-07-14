@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
-import javax.servlet.http.HttpServletRequest;
+
 import com.aspose.words.Document;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -31,7 +31,6 @@ import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.AdmInformeBean;
 import com.siga.beans.AdmTipoInformeAdm;
 import com.siga.beans.AdmTipoInformeBean;
-import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenInstitucionAdm;
@@ -54,14 +53,12 @@ import com.siga.beans.EnvProgramIRPFBean;
 import com.siga.beans.EnvProgramInformesAdm;
 import com.siga.beans.EnvProgramInformesBean;
 import com.siga.beans.EnvTipoEnviosAdm;
-import com.siga.beans.EnvTipoEnviosBean;
 import com.siga.beans.EnvValorCampoClaveAdm;
 import com.siga.beans.EnvValorCampoClaveBean;
 import com.siga.beans.ExpExpedienteAdm;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.HelperInformesAdm;
-import com.siga.beans.ScsCabeceraGuardiasAdm;
 import com.siga.beans.ScsDefendidosDesignaAdm;
 import com.siga.beans.ScsDefendidosDesignaBean;
 import com.siga.beans.ScsDesignaAdm;
@@ -145,11 +142,10 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		Hashtable htDatosInforme = new Hashtable();
 
+		
 		//Velores comunes para la obttencion de los datos del informe
 		String idTipoInforme = (String) datosInforme.get("idTipoInforme");
-		
-	
-		
+
 		String idioma = (String) datosInforme.get("idioma");
 
 		if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesCenso)) {
@@ -201,170 +197,31 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		}else if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesListadoGuardias)) {
 
-			 //backupHash
-			Hashtable datosLista = getIdColegiados(datosInforme, usrBean);
-			String idInstitucion = (String) datosInforme.get("idInstitucion");
-			String idLista = (String) datosInforme.get("idLista");
-			Hashtable htCabeceraInforme = new Hashtable();
-			Vector vDatosInforme = new Vector();			
-			Date hoy = new Date();
-			SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
-			String sHoy = sdf2.format(hoy);
-
-			List guardiasList = null;
+/*
+			Vector datosFormulario = (Vector) datosInforme.get("datosFormulario");
+			Hashtable datoInforme = (Hashtable) datosFormulario.get(0);
+			Vector vTotal = new Vector();
+			String aSolicitantes = (String) datosInforme.get("aSolicitantes");
+			boolean isSolicitantes = aSolicitantes!=null && aSolicitantes.equalsIgnoreCase("S");
+			if(isSolçicitantes==false){*/
+			String aSolicitantes = (String) datosInforme.get("aSolicitantes");
+			boolean isSolicitantes = aSolicitantes!=null && aSolicitantes.equalsIgnoreCase("S");
+			Hashtable datosconsulta= getDatosSalidaListaGuardias(datosInforme, usrBean, backupHash, isSolicitantes);
+			htDatosInforme.put("row", datosconsulta.get("htCabeceraInforme"));
+			htDatosInforme.put("region", datosconsulta.get("vDatosInforme"));
+			/*}else{
+				for (int j = 0; j < datosFormulario.size(); j++) {
+					Hashtable htDatoInforme = new Hashtable();
+					Hashtable datoInform = (Hashtable) datosFormulario.get(j);
+					Hashtable datosconsulta= getDatosSalidaListaGuardias(datoInform, usrBean, backupHash, isSolicitantes);
+					htDatoInforme.put("row", datosconsulta.get("htCabeceraInforme"));
+					htDatoInforme.put("region", datosconsulta.get("vDatosInforme"));
+					vTotal.add(htDatosInforme);
+				}	
+				htDatosInforme.put("row", vTotal);
+			}*/
 			
-			Enumeration e = datosLista.keys();  
-            Object obj;
-           
-            while (e.hasMoreElements()) {  
-            	   
-                  obj = e.nextElement(); 
-      			  String idPersona = obj.toString();
-                  Vector list= (Vector) datosLista.get(obj);
-                  int tam =0;
-	      			CenColegiadoAdm admCol = new CenColegiadoAdm(usrBean);
-	
-
-	    			Hashtable htCol = admCol.obtenerDatosColegiado(idInstitucion
-	    					.toString(), idPersona, usrBean.getLanguage());
-	    			//se añade esta linea para que recupere todos los campos de la select que esta en la función obtenerDatosColegiado(..)
-	    			//y posteriormente utilizarla en las plantillas.
-	    			htCabeceraInforme.putAll(htCol);
-	    			
-	    			String direccion = "";
-	    			if (htCol != null && htCol.size() > 0) {
-	    				direccion = (String) htCol.get("DIRECCION_LETR");
-	    			}
-	    			htCabeceraInforme.put("DOMICILIO_LETRADO", direccion);
-	    			String codPostal = "";
-	    			if (htCol != null && htCol.size() > 0) {
-	    				codPostal = (String) htCol.get("CP_LETR");
-	    			}
-	    			htCabeceraInforme.put("CP_LETRADO", codPostal);
-	    			String localidad = "";
-	    			if (htCol != null && htCol.size() > 0) {
-	    				localidad = (String) htCol.get("POBLACION_LETR");
-	    			}
-	    			htCabeceraInforme.put("POBLACION_LETRADO", localidad);
-	    			String provincia = "";
-	    			if (htCol != null && htCol.size() > 0) {
-	    				provincia = (String) htCol.get("PROVINCIA_LETR");
-	    			}
-	    			htCabeceraInforme.put("PROVINCIA_LETRADO", provincia);
-	    			
-	    			
-	    			
-	    			if ((direccion.equals(""))&&(codPostal.equals(""))&&(localidad.equals("")) &&(provincia.equals(""))){
-	    			  Vector direcciones = null;
-	    			  String idprovincia="";
-	    			  String idpoblacion="";
-	    			  
-	    			  //se llama a la funcion de getDirecciones donde si no tiene dirección de tipo despacho, coge la 
-	    			  //la dirección preferente y si no tiene ninguna dirección como preferente coge la primera dirección que encuentra.
-	    			  //el parametro de valor 2, es valor que se le pasa a la funcion para que sepa que tipo de dirección queremos.
-	    	            	EnvEnviosAdm enviosAdm = new EnvEnviosAdm(usrBean);
-	    	            	direcciones = enviosAdm.getDirecciones(String.valueOf(idInstitucion),
-	    							  idPersona,
-	    							  "2");
-	    	            	
-	    					CenPersonaAdm personaAdm = new CenPersonaAdm(usrBean);
-	    					Hashtable htPersona = new Hashtable();
-	    					htPersona.put(CenPersonaBean.C_IDPERSONA, idPersona);
-	    					CenPersonaBean persona= (CenPersonaBean) ((Vector)personaAdm.selectByPK(htPersona)).get(0);					
-	    					
-	    			        if (direcciones!=null && direcciones.size()>0) {
-	    		            	Hashtable htDir = (Hashtable)direcciones.firstElement();
-	    				    	htCabeceraInforme.put("DOMICILIO_LETRADO",(String)htDir.get(CenDireccionesBean.C_DOMICILIO));
-	    				        htCabeceraInforme.put("CP_LETRADO", (String)htDir.get(CenDireccionesBean.C_CODIGOPOSTAL));				       
-	    				       
-	    				        idpoblacion=(String)htDir.get(CenDireccionesBean.C_IDPOBLACION);
-	    				        CenPoblacionesAdm admpoblacion= new    CenPoblacionesAdm(usrBean);
-	    				        if (!idpoblacion.equals("")){
-	    				        	htCabeceraInforme.put("POBLACION_LETRADO",admpoblacion.getDescripcion(idpoblacion));
-	    				        }				        
-	    				        idprovincia=(String)htDir.get(CenDireccionesBean.C_IDPROVINCIA);
-	    				        CenProvinciaAdm admprovincia= new   CenProvinciaAdm(usrBean);
-	    				        if (!idprovincia.equals("")){
-	    				        	htCabeceraInforme.put("PROVINCIA_LETRADO",admprovincia.getDescripcion(idprovincia));
-	    				        }
-	    				   }
-	    			 }
-	    		if(backupHash==null){	
-	    			backupHash = new Hashtable();
-	    			ScsListaGuardiasAdm admListaGuardias = new ScsListaGuardiasAdm(usrBean);
-					Vector fechaYUsu = admListaGuardias.selectGenerico(admListaGuardias.getFechaYUsu(idInstitucion,idLista));
-					//Almacenamos en sesion el registro de la lista de guardias			
-					backupHash.put("NOMBRE",(String)((Hashtable)fechaYUsu.elementAt(0)).get("NOMBRE"));
-					backupHash.put("LUGAR",(String)((Hashtable)fechaYUsu.elementAt(0)).get("LUGAR"));
-					backupHash.put("OBSERVACIONES",(String)((Hashtable)fechaYUsu.elementAt(0)).get("OBSERVACIONES"));
-					backupHash.put("USUMODIFICACION",(String)((Hashtable)fechaYUsu.elementAt(0)).get("USUMODIFICACION"));
-					backupHash.put("FECHAMODIFICACION",(String)((Hashtable)fechaYUsu.elementAt(0)).get("FECHAMODIFICACION"));
-					backupHash.put("IDINSTITUCION",(String)((Hashtable)fechaYUsu.elementAt(0)).get("IDINSTITUCION"));
-					backupHash.put("IDLISTA",(String)((Hashtable)fechaYUsu.elementAt(0)).get("IDLISTA"));
-	    		}	
-	    		String nombreLista =UtilidadesHash.getString(backupHash,"NOMBRE");
-	    		String lugar =UtilidadesHash.getString(backupHash,"LUGAR");
-	    		String observaciones =UtilidadesHash.getString(backupHash,"OBSERVACIONES");	                  
-	    		
-    			htCabeceraInforme.put("DIA_ACTUAL", sHoy.substring(0,2));
-    			htCabeceraInforme.put("MES_ACTUAL", sHoy.substring(3,5));
-    			htCabeceraInforme.put("ANIO_ACTUAL", sHoy.substring(6,10));
-				String fechaInicio = (String) datosInforme.get("fechaIni");
-				String fechaFin = (String) datosInforme.get("fechaFin");
-    			htCabeceraInforme.put("FECHA_INI", fechaInicio);
-    			htCabeceraInforme.put("FECHA_FIN", fechaFin);	
-	    		// Obtenemos nombre de la institucion
-	    		CenInstitucionAdm admInstitucion = new CenInstitucionAdm(usrBean); 
-	    		String nombreInstitucion=admInstitucion.getNombreInstitucion(idInstitucion);
-    			htCabeceraInforme.put("NOMBRE_COLEGIO_PERIODO",nombreInstitucion+"  "+fechaInicio+" - "+fechaFin);
-    			htCabeceraInforme.put("NOMBRE_LISTA_GUARDIA",nombreLista);
-    			htCabeceraInforme.put("LUGAR",lugar);
-    			htCabeceraInforme.put("OBSERVACIONES",observaciones);
-                  
-                 while(tam<list.size()){
-                	 
-         			 Hashtable fila = new Hashtable();
-                	 Hashtable f = new Hashtable();
-                	 f=(Hashtable) list.elementAt(tam);
-         			String nombre = "";
-        			  htCabeceraInforme.put("LETRADO",(String)f.get("LETRADO"));
-        			  fila.put("LETRADO",(String)f.get("LETRADO"));
-                	  fila.put("GUARDIA_DIA_TEXTO", (String)f.get("DIA_FECHA_INICIO"));
-                	  fila.put("GUARDIA",(String)f.get("GUARDIA"));
-                	  Date fecha_inicio = new Date((String)f.get("FECHA_INICIO"));
-                	  SimpleDateFormat formateador = new SimpleDateFormat("dd/MM/yyyy");
-                	  String fechaIni=formateador.format(fecha_inicio);
-                	 
-                	  fila.put("DIA_GUA", fechaIni.substring(0,2));
-                	  fila.put("MES_GUA", fechaIni.substring(3,5));
-                	  fila.put("ANIO_GUA", fechaIni.substring(6,10));
-                	  fila.put("FECHA_INICIO", fechaIni);
-                	  fila.put("TURNO",(String)f.get("TURNO") );
-                	  fila.put("TFNO_OFICINA1", (String) htCol.get("TELEFONO1_LETRADO"));
-                	  fila.put("TFNO_OFICINA2", (String) htCol.get("TELEFONO2_LETRADO"));
-                	  fila.put("MOVIL",(String) htCol.get("MOVIL_LETRADO"));
-                	  fila.put("FAX1", (String) htCol.get("FAX1"));
-                	  fila.put("NCOLEGIADO", (String) htCol.get("NCOLEGIADO_LETRADO"));
-                      //ScsCabeceraGuardiasAdm admCab = new ScsCabeceraGuardiasAdm(usrBean);
-                      //Integer posicion = admCab.getPosicion(idInstitucion,idLista, idturno, fecha_inicio,idPersona);   
-                	  String posicion= (String)f.get("POSICION");
-                      if(posicion!=null)
-                	   fila.put("POSICION", posicion);
-                      else
-                    	  fila.put("POSICION", " ");
-                	  vDatosInforme.add(fila);
-                	  tam++;
-                  }
-               }        
-		   
-			
-			htDatosInforme.put("region", vDatosInforme);
-			htDatosInforme.put("row", htCabeceraInforme);
-			//htDatosInforme.put("region", vDatosInforme);
-
-		}
-		
-		else if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesMorosos)) {
+		}else if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesMorosos)) {
 			String idPersona = (String) datosInforme.get("idPersona");
 			String idInstitucion = (String) datosInforme.get("idInstitucion");
 			String idFactura = (String) datosInforme.get("idFactura");
@@ -631,19 +488,179 @@ public class EnvioInformesGenericos extends MasterReport {
 		if(idPersonaJG!=null){
 			identificador.append("_");
 			identificador.append(idPersonaJG);
-			
+	
 		}
 		
 		Hashtable htDatosInformeFinal = null;
 
-		if(!tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesDesigna) && !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesExpedientes))
+		if(!tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesDesigna) && !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesExpedientes)&& !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesListadoGuardias))
 			htDatosInformeFinal = getDatosInformeFinal(datosInforme,
 					usrBean,  backupHash);
 		
 		Hashtable hashConsultasHechas = new Hashtable();
 		for (int i = 0; i < vPlantillas.size(); i++) {
 			AdmInformeBean beanInforme = (AdmInformeBean) vPlantillas.get(i);
+			
+			
+			if(tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesListadoGuardias)){
+	
+				Hashtable datos= new Hashtable();
+				
+				Vector datosFormulario = (Vector) datosInforme.get("datosFormulario");
+				Vector vTotal = new Vector();
+				
+				boolean isSolicitantes = beanInforme.getASolicitantes()!=null && beanInforme.getASolicitantes().equalsIgnoreCase("S");
+				
+				if(datosFormulario!=null){
+					
+					
+					Hashtable datoInforme = (Hashtable) datosFormulario.get(0);
+					
+	
+					
+					if(isSolicitantes){
+					
+					
+						for (int k = 0; k < datosFormulario.size(); k++) {
+							Hashtable htDatoInforme = new Hashtable();
+							Hashtable datoInform = (Hashtable)datosFormulario.get(k);
+							datoInform.put("aSolicitantes", beanInforme.getASolicitantes());
+							datoInform.put("idTipoInforme", tipoComunicacion);				
+	
+							htDatoInforme = getDatosInformeFinal(datoInform,
+									usrBean,backupHash);
+							
+							
+							identificador= new StringBuffer();
+							identificador.append((String)datoInforme.get("idLista"));
+							identificador.append("_");
+							identificador.append((String)datoInforme.get("idInstitucion"));
+							identificador.append("_");
+							identificador.append(new Integer(k).toString());
+							identificador.append("_");
+							String hoy = UtilidadesString.formatoFecha(new Date(),"yyyyMMddhhmmssSSS");
+							identificador.append(hoy);
+							
+							File fileDocumento = getInformeGenerico(beanInforme,
+									htDatoInforme, idiomaExt, identificador.toString(), usrBean,tipoPlantillaWord);
+							String pathDocumento = fileDocumento.getPath();
+							// Creacion documentos
+							int indice = pathDocumento.lastIndexOf(ClsConstants.FILE_SEP);
+							String descDocumento = "";
+							if (indice > 0)
+								descDocumento = pathDocumento.substring(indice + 1);
+		
+		
+							switch (tipoDocumento) {
+							case 1:
+								vDocumentos.add(fileDocumento);
+								break;
+							case 2:
+								Documento documento = new Documento(pathDocumento,
+										descDocumento);
+								vDocumentos.add(documento);
+								break;
+		
+							default:
+								break;
+							}
+		
+		
+						}
+						
+					}else{
+						datos.put("idInstitucion",(String)datoInforme.get("idInstitucion"));
+						datos.put("fechaIni",(String)datoInforme.get("fechaIni"));
+						datos.put("fechaFin",(String)datoInforme.get("fechaFin"));
+						datos.put("idLista",(String)datoInforme.get("idLista"));
+						datos.put("idPersona",(String)datoInforme.get("idPersona"));	
+						datos.put("aSolicitantes", beanInforme.getASolicitantes());
+						datos.put("idTipoInforme", tipoComunicacion);				
+	
+						htDatosInformeFinal = getDatosInformeFinal(datos,
+								usrBean,backupHash);
+						
+						identificador= new StringBuffer();
+						identificador.append((String)datoInforme.get("idLista"));
+						identificador.append("_");
+						identificador.append((String)datoInforme.get("idPersona"));
+						identificador.append("_");
+						identificador.append((String)datoInforme.get("idInstitucion"));
+						identificador.append("_");
+						String hoy = UtilidadesString.formatoFecha(new Date(),"yyyyMMddhhmmssSSS");
+						identificador.append(hoy);
+						
+						File fileDocumento = getInformeGenerico(beanInforme,
+								htDatosInformeFinal, idiomaExt, identificador.toString(), usrBean,tipoPlantillaWord);
+						String pathDocumento = fileDocumento.getPath();
+						// Creacion documentos
+						int indice = pathDocumento.lastIndexOf(ClsConstants.FILE_SEP);
+						String descDocumento = "";
+						if (indice > 0)
+							descDocumento = pathDocumento.substring(indice + 1);
+	
+		
+						switch (tipoDocumento) {
+						case 1:
+							vDocumentos.add(fileDocumento);
+							break;
+						case 2:
+							Documento documento = new Documento(pathDocumento,
+									descDocumento);
+							vDocumentos.add(documento);
+							break;
+							default:
+							break;
+						}
+					}	
+				}else{
+					
+					datos.put("idInstitucion",(String)datosInforme.get("idInstitucion"));
+					datos.put("fechaIni",(String)datosInforme.get("fechaIni"));
+					datos.put("fechaFin",(String)datosInforme.get("fechaFin"));
+					datos.put("idLista",(String)datosInforme.get("idLista"));
+					datos.put("idPersona",(String)datosInforme.get("idPersona"));	
+					datos.put("aSolicitantes", beanInforme.getASolicitantes());
+					datos.put("idTipoInforme", tipoComunicacion);				
 
+					htDatosInformeFinal = getDatosInformeFinal(datos,
+							usrBean,backupHash);
+					
+					identificador= new StringBuffer();
+					identificador.append((String)datosInforme.get("idLista"));
+					identificador.append("_");
+					identificador.append((String)datosInforme.get("idPersona"));
+					identificador.append("_");
+					identificador.append((String)datosInforme.get("idInstitucion"));
+					identificador.append("_");
+					String hoy = UtilidadesString.formatoFecha(new Date(),"yyyyMMddhhmmssSSS");
+					identificador.append(hoy);
+					
+					File fileDocumento = getInformeGenerico(beanInforme,
+							htDatosInformeFinal, idiomaExt, identificador.toString(), usrBean,tipoPlantillaWord);
+					String pathDocumento = fileDocumento.getPath();
+					// Creacion documentos
+					int indice = pathDocumento.lastIndexOf(ClsConstants.FILE_SEP);
+					String descDocumento = "";
+					if (indice > 0)
+						descDocumento = pathDocumento.substring(indice + 1);
+
+	
+					switch (tipoDocumento) {
+					case 1:
+						vDocumentos.add(fileDocumento);
+						break;
+					case 2:
+						Documento documento = new Documento(pathDocumento,
+								descDocumento);
+						vDocumentos.add(documento);
+						break;
+						default:
+						break;
+					}
+
+				}
+			}else
 			if(tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesDesigna)){
 				String tipoDestinatarioEnvio = (String) datosInforme.get("tipoDestinatario");
 				char[] tipoDestinatario = beanInforme.getDestinatarios().toCharArray();
@@ -1654,9 +1671,24 @@ public class EnvioInformesGenericos extends MasterReport {
 			}
 			
 			Vector vPlantillas = null;
-			Hashtable datosInforme;
-			String idTipoInforme;
-			for (int j = 0; j < datosFormulario.size(); j++) {
+			Hashtable datosInforme=(Hashtable) datosFormulario.get(0);
+			String idTipoInforme=(String) datosInforme.get("idTipoInforme");
+			if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesListadoGuardias)) {
+				Hashtable datosTotales =  new Hashtable();
+				datosTotales.put("datosFormulario",datosFormulario);
+				if (datosInforme != null) {
+					//cargando plantillas una sola vez
+					if (vPlantillas == null) {
+						vPlantillas = getPlantillasInforme((String) datosInforme.get("plantillas"), usr
+								.getLocation(), usr);
+					}
+				informesRes.addAll(this.getDocumentosAEnviar(
+						datosTotales, vPlantillas, usr,
+						EnvioInformesGenericos.docFile, idTipoInforme, backupHash));
+				}
+			}else{
+				for (int j = 0; j < datosFormulario.size(); j++) {
+			
 				datosInforme = (Hashtable) datosFormulario.get(j);
 				idTipoInforme = (String) datosInforme.get("idTipoInforme");
 				
@@ -1747,7 +1779,7 @@ public class EnvioInformesGenericos extends MasterReport {
 					}
 				}
 			}
-
+			}//else listaGuardias
 			//como es para descargar, se generan los ficheros y se comprimen en ZIP
 			if (informesRes.size() == 0)
 				throw new SIGAException("messages.general.error.ficheroNoExiste");
@@ -2267,7 +2299,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	}
 	public void gestionarComunicacionListadoGuardias(DefinirEnviosForm form,Locale locale, UsrBean userBean)throws ClsExceptions,SIGAException{
 
-		String idPersona = getIdColegiadoUnico(form);
+	/*	String idPersona = getIdColegiadoUnico(form);
 		String idInstitucion = userBean.getLocation();
 			
 		Vector vCampos = this.obtenerDatosFormulario(form);
@@ -2402,7 +2434,177 @@ public class EnvioInformesGenericos extends MasterReport {
 			informesGenericoAdm.insert(informesBean);
 		}
 		setEnvioBatch(true);
+*/
+		///hasta aki
+		
+		
+		String idInstitucion = userBean.getLocation();
+		Vector vCampos = this.obtenerDatosFormulario(form);		
+		Hashtable h = (Hashtable) vCampos.get(0); 
+		String idTipoInforme = (String) h.get("idTipoInforme");
+		//vCampos = this.obtenerDatosFormulario(form);
+		String idioma = null;
+		String plantillas = null;
+		EnvEnvioProgramadoAdm envioProgramadoAdm  = new EnvEnvioProgramadoAdm(userBean);
+		EnvProgramInformesAdm programInformesAdm = new EnvProgramInformesAdm(userBean);
+		EnvDestProgramInformesAdm destProgramInformesAdm = new EnvDestProgramInformesAdm(userBean);
+		EnvInformesGenericosAdm informesGenericoAdm = new EnvInformesGenericosAdm(userBean);
+		EnvEnvioProgramadoBean envioProgramado = null;
+		EnvProgramInformesBean programInformes = null;
+		EnvDestProgramInformesBean destProgramInformes = null;
+		EnvInformesGenericosBean informesBean = null;
 
+		EnvValorCampoClaveAdm valorCampoClaveAdm = new EnvValorCampoClaveAdm(userBean);
+
+		envioProgramado = new EnvEnvioProgramadoBean();
+		envioProgramado.setIdEnvio(envioProgramadoAdm.getNewIdEnvio(idInstitucion));
+		envioProgramado.setIdInstitucion(new Integer(idInstitucion));
+		envioProgramado.setIdTipoEnvios(new Integer(form.getIdTipoEnvio()));
+		envioProgramado.setIdPlantillaEnvios(Integer.valueOf(form.getIdPlantillaEnvios()));
+		if (form.getIdPlantillaGeneracion()!=null && !form.getIdPlantillaGeneracion().equals("")) {
+			envioProgramado.setIdPlantilla(Integer.valueOf(form.getIdPlantillaGeneracion()));
+		} else {
+			envioProgramado.setIdPlantilla(null);
+		}
+
+		envioProgramado.setNombre(form.getNombre());
+		envioProgramado.setEstado(ClsConstants.DB_FALSE);
+		envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(), locale, userBean));
+		
+		envioProgramadoAdm.insert(envioProgramado);
+
+		boolean isInformeProgramado = false;
+		boolean isInformesInsertados = false;
+		ArrayList alClavesLista = new ArrayList();
+		//alClavesLista.add("idInstitucion");
+		alClavesLista.add("idLista");
+		alClavesLista.add("fechaIni");
+		alClavesLista.add("fechaFin");
+		//alClavesDesigna.add("idPersona");
+
+//		vCampos = this.setCamposIterantes(vCampos,alClavesDesigna,"idDesignas");
+
+		//Ponemos esta lista para comprobar que no se ha insertado el destinatario
+
+		List<String> lPersonas = new ArrayList<String>();
+		Vector vPlantillas = null;
+		//for (int i = 0; i < vCampos.size(); i++) {  Si hubiera mas de una lista
+		if(vCampos.size()>0){
+			Hashtable ht = (Hashtable) vCampos.get(0); 
+			String idLista = (String) ht.get("idLista");
+			String fechaFin = (String) ht.get("fechaFin");
+			String fechaIni = (String) ht.get("fechaIni");
+//			ArrayList alDesignas = (ArrayList) ht.get("idDesignas");
+			plantillas = (String) ht.get("plantillas");
+			//String idPersona = (String) ht.get("idPersona");
+
+			List<EnvDestProgramInformesBean> lDestinatarios = new ArrayList<EnvDestProgramInformesBean>();
+			List<String> lDestPersonas = new ArrayList<String>();
+			if(!isInformeProgramado){
+				programInformes = new EnvProgramInformesBean();
+				programInformes.setIdProgram(programInformesAdm.getNewIdProgramInformes(idInstitucion));
+				programInformes.setIdEnvio(envioProgramado.getIdEnvio());
+				programInformes.setIdInstitucion(envioProgramado.getIdInstitucion());
+				idioma = userBean.getLanguage();
+				programInformes.setIdioma(new Integer(idioma));
+				programInformes.setEstado(ClsConstants.DB_FALSE);
+				programInformes.setIdTipoInforme(idTipoInforme);
+				programInformes.setPlantillas(plantillas);
+				programInformesAdm.insert(programInformes);
+
+				informesBean = new EnvInformesGenericosBean();
+				informesBean.setIdProgram(programInformes.getIdProgram());
+				informesBean.setIdEnvio(programInformes.getIdEnvio());
+				informesBean.setIdInstitucion(programInformes.getIdInstitucion());
+
+				vPlantillas = getPlantillasInforme(plantillas, idInstitucion, userBean);
+
+
+				for (int j = 0; j < vPlantillas.size(); j++) {
+					AdmInformeBean informeBean = (AdmInformeBean)vPlantillas.get(j);
+					informesBean.setIdPlantilla(informeBean.getIdPlantilla());
+					informesGenericoAdm.insert(informesBean);
+
+				}
+
+
+
+				isInformeProgramado = true;
+
+
+
+			}
+
+
+
+			for (int j = 0; j < vPlantillas.size(); j++) {
+				AdmInformeBean informeBean = (AdmInformeBean)vPlantillas.get(j);
+
+				String tiposDestinatario = informeBean.getDestinatarios();
+				informesBean.setIdPlantilla(informeBean.getIdPlantilla());
+				if(tiposDestinatario!=null){
+					char[] tipoDestinatario = tiposDestinatario.toCharArray();
+					for (int i = 0; i < vCampos.size(); i++) {  //Si hubiera mas de una persona
+								Hashtable hPersonas = (Hashtable) vCampos.get(i); 
+								String idPersona = (String) hPersonas.get("idPersona");
+								destProgramInformes = new EnvDestProgramInformesBean();
+								destProgramInformes.setIdProgram(programInformes.getIdProgram());
+								destProgramInformes.setIdEnvio(programInformes.getIdEnvio());
+								destProgramInformes.setIdInstitucion(programInformes.getIdInstitucion());
+								destProgramInformes.setIdPersona(new Long(idPersona));
+								destProgramInformes.setIdInstitucionPersona(new Integer(idInstitucion));
+								destProgramInformes.setTipoDestinatario(EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA);
+
+								if(!lPersonas.contains(idPersona)){
+									destProgramInformesAdm.insert(destProgramInformes);
+									lPersonas.add(idPersona);
+									lDestinatarios.add(destProgramInformes);
+
+								}
+								
+	
+						
+					}//for
+					
+				}
+			}//for
+
+			EnvValorCampoClaveBean valorCampoClave = null;
+
+
+			//Iterator itClave = htClaves.keySet().iterator();
+			valorCampoClave = new EnvValorCampoClaveBean();
+			for (int k = 0; k < lDestinatarios.size(); k++) {
+				destProgramInformes = (EnvDestProgramInformesBean) lDestinatarios.get(k);  
+
+				valorCampoClave.setIdValor(valorCampoClaveAdm.getNewIdEnvio());
+				for (int j = 0; j < alClavesLista.size(); j++) {
+					String  clave = (String)alClavesLista.get(j);
+					String valorClave = (String)ht.get(clave);
+					valorCampoClave.setIdProgram(destProgramInformes.getIdProgram());
+					valorCampoClave.setIdEnvio(destProgramInformes.getIdEnvio());
+					valorCampoClave.setIdInstitucion(destProgramInformes.getIdInstitucion());
+					valorCampoClave.setIdPersona(destProgramInformes.getIdPersona());
+					valorCampoClave.setIdInstitucionPersona(destProgramInformes.getIdInstitucionPersona());
+
+					valorCampoClave.setIdTipoInforme(idTipoInforme);
+					valorCampoClave.setClave("idListas");
+					valorCampoClave.setCampo(clave);
+					valorCampoClave.setValor(valorClave);
+					valorCampoClaveAdm.insert(valorCampoClave);
+
+				}
+			}
+
+		
+
+		setEnvioBatch(true);
+
+		}//for vCampos
+
+		
+		
+		
 	}
 
 	public void gestionarComunicacionPagoColegiados(DefinirEnviosForm form,Locale locale, UsrBean userBean)throws ClsExceptions,SIGAException{
@@ -2934,8 +3136,193 @@ public class EnvioInformesGenericos extends MasterReport {
 		}
 		return idPersona;
 	}
+	
+	public Hashtable getDatosSalidaListaGuardias (Hashtable datosInforme, UsrBean usrBean,  Hashtable backupHash, boolean isSolicitantes) throws ClsExceptions  
+	{	 
+
+		Hashtable vSalida = null;
+		HelperInformesAdm helperInformes = new HelperInformesAdm();	
+		try {
+			vSalida = new Hashtable();	
+			String idInstitucion = (String) datosInforme.get("idInstitucion");
+			String idLista = (String) datosInforme.get("idLista");
+			Hashtable htE = new Hashtable();
+			Hashtable htCabeceraInforme = new Hashtable();
+			Vector vDatosInforme = new Vector();			
+			Date hoy = new Date();
+			SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
+			String sHoy = sdf2.format(hoy);
+			Hashtable datosLista= null;
+			//for (int j = 0; j < vGuardias.size(); j++) {
+				if(isSolicitantes){						
+					datosLista = getIdColegiados(datosInforme, usrBean);
+				}else{
+					datosLista = getIdColegiadosTotal(datosInforme, usrBean);
+				}
+					Enumeration e = datosLista.keys();  
+		            Object obj;
+		           
+		            while (e.hasMoreElements()) {  
+		            	   
+		                  obj = e.nextElement(); 
+		      			  String idPersona = obj.toString();
+		                  Vector list= (Vector) datosLista.get(obj);
+		                  int tam =0;
+			      			CenColegiadoAdm admCol = new CenColegiadoAdm(usrBean);
+			
+
+			    			Hashtable htCol = admCol.obtenerDatosColegiado(idInstitucion
+			    					.toString(), idPersona, usrBean.getLanguage());
+			    			//se añade esta linea para que recupere todos los campos de la select que esta en la función obtenerDatosColegiado(..)
+			    			//y posteriormente utilizarla en las plantillas.
+			    			htCabeceraInforme.putAll(htCol);
+			    			
+			    			String direccion = "";
+			    			if (htCol != null && htCol.size() > 0) {
+			    				direccion = (String) htCol.get("DIRECCION_LETR");
+			    			}
+			    			htCabeceraInforme.put("DOMICILIO_LETRADO", direccion);
+			    			String codPostal = "";
+			    			if (htCol != null && htCol.size() > 0) {
+			    				codPostal = (String) htCol.get("CP_LETR");
+			    			}
+			    			htCabeceraInforme.put("CP_LETRADO", codPostal);
+			    			String localidad = "";
+			    			if (htCol != null && htCol.size() > 0) {
+			    				localidad = (String) htCol.get("POBLACION_LETR");
+			    			}
+			    			htCabeceraInforme.put("POBLACION_LETRADO", localidad);
+			    			String provincia = "";
+			    			if (htCol != null && htCol.size() > 0) {
+			    				provincia = (String) htCol.get("PROVINCIA_LETR");
+			    			}
+			    			htCabeceraInforme.put("PROVINCIA_LETRADO", provincia);
+			    			
+			    			
+			    			
+			    			if ((direccion.equals(""))&&(codPostal.equals(""))&&(localidad.equals("")) &&(provincia.equals(""))){
+			    			  Vector direcciones = null;
+			    			  String idprovincia="";
+			    			  String idpoblacion="";
+			    			  
+			    			  //se llama a la funcion de getDirecciones donde si no tiene dirección de tipo despacho, coge la 
+			    			  //la dirección preferente y si no tiene ninguna dirección como preferente coge la primera dirección que encuentra.
+			    			  //el parametro de valor 2, es valor que se le pasa a la funcion para que sepa que tipo de dirección queremos.
+			    	            	EnvEnviosAdm enviosAdm = new EnvEnviosAdm(usrBean);
+			    	            	direcciones = enviosAdm.getDirecciones(String.valueOf(idInstitucion),
+			    							  idPersona,
+			    							  "2");
+			    	            	
+			    					CenPersonaAdm personaAdm = new CenPersonaAdm(usrBean);
+			    					Hashtable htPersona = new Hashtable();
+			    					htPersona.put(CenPersonaBean.C_IDPERSONA, idPersona);
+			    					CenPersonaBean persona= (CenPersonaBean) ((Vector)personaAdm.selectByPK(htPersona)).get(0);					
+			    					
+			    			        if (direcciones!=null && direcciones.size()>0) {
+			    		            	Hashtable htDir = (Hashtable)direcciones.firstElement();
+			    				    	htCabeceraInforme.put("DOMICILIO_LETRADO",(String)htDir.get(CenDireccionesBean.C_DOMICILIO));
+			    				        htCabeceraInforme.put("CP_LETRADO", (String)htDir.get(CenDireccionesBean.C_CODIGOPOSTAL));				       
+			    				       
+			    				        idpoblacion=(String)htDir.get(CenDireccionesBean.C_IDPOBLACION);
+			    				        CenPoblacionesAdm admpoblacion= new    CenPoblacionesAdm(usrBean);
+			    				        if (!idpoblacion.equals("")){
+			    				        	htCabeceraInforme.put("POBLACION_LETRADO",admpoblacion.getDescripcion(idpoblacion));
+			    				        }				        
+			    				        idprovincia=(String)htDir.get(CenDireccionesBean.C_IDPROVINCIA);
+			    				        CenProvinciaAdm admprovincia= new   CenProvinciaAdm(usrBean);
+			    				        if (!idprovincia.equals("")){
+			    				        	htCabeceraInforme.put("PROVINCIA_LETRADO",admprovincia.getDescripcion(idprovincia));
+			    				        }
+			    				   }
+			    			 }
+			    		if(backupHash==null){	
+			    			backupHash = new Hashtable();
+			    			ScsListaGuardiasAdm admListaGuardias = new ScsListaGuardiasAdm(usrBean);
+							Vector fechaYUsu = admListaGuardias.selectGenerico(admListaGuardias.getFechaYUsu(idInstitucion,idLista));
+							//Almacenamos en sesion el registro de la lista de guardias			
+							backupHash.put("NOMBRE",(String)((Hashtable)fechaYUsu.elementAt(0)).get("NOMBRE"));
+							backupHash.put("LUGAR",(String)((Hashtable)fechaYUsu.elementAt(0)).get("LUGAR"));
+							backupHash.put("OBSERVACIONES",(String)((Hashtable)fechaYUsu.elementAt(0)).get("OBSERVACIONES"));
+							backupHash.put("USUMODIFICACION",(String)((Hashtable)fechaYUsu.elementAt(0)).get("USUMODIFICACION"));
+							backupHash.put("FECHAMODIFICACION",(String)((Hashtable)fechaYUsu.elementAt(0)).get("FECHAMODIFICACION"));
+							backupHash.put("IDINSTITUCION",(String)((Hashtable)fechaYUsu.elementAt(0)).get("IDINSTITUCION"));
+							backupHash.put("IDLISTA",(String)((Hashtable)fechaYUsu.elementAt(0)).get("IDLISTA"));
+			    		}	
+			    		String nombreLista =UtilidadesHash.getString(backupHash,"NOMBRE");
+			    		String lugar =UtilidadesHash.getString(backupHash,"LUGAR");
+			    		String observaciones =UtilidadesHash.getString(backupHash,"OBSERVACIONES");	                  
+			    		htCabeceraInforme.put("IDLISTA", nombreLista);
+
+		    			htCabeceraInforme.put("DIA_ACTUAL", sHoy.substring(0,2));
+		    			htCabeceraInforme.put("MES_ACTUAL", sHoy.substring(3,5));
+		    			htCabeceraInforme.put("ANIO_ACTUAL", sHoy.substring(6,10));
+						String fechaInicio = (String) datosInforme.get("fechaIni");
+						String fechaFin = (String) datosInforme.get("fechaFin");
+		    			htCabeceraInforme.put("FECHA_INI", fechaInicio);
+		    			htCabeceraInforme.put("FECHA_FIN", fechaFin);	
+			    		// Obtenemos nombre de la institucion
+			    		CenInstitucionAdm admInstitucion = new CenInstitucionAdm(usrBean); 
+			    		String nombreInstitucion=admInstitucion.getNombreInstitucion(idInstitucion);
+		    			htCabeceraInforme.put("NOMBRE_COLEGIO_PERIODO",nombreInstitucion+"  "+fechaInicio+" - "+fechaFin);
+		    			//htCabeceraInforme.put("NOMBRE_LISTA_GUARDIA",nombreLista);
+		    			htCabeceraInforme.put("LUGAR",lugar);
+		    			htCabeceraInforme.put("OBSERVACIONES",observaciones);
+		    			htCabeceraInforme.put("LETRADO",(String) htCol.get("APELLIDO1_LETRADO")+" "+(String) htCol.get("APELLIDO2_LETRADO")+", "+(String) htCol.get("N_LETRADO"));
+		                 while(tam<list.size()){
+		                	 
+		         			 Hashtable fila = new Hashtable();
+		                	 Hashtable f = new Hashtable();
+		                	 f=(Hashtable) list.elementAt(tam);
+		         			String nombre = "";
+		        			  
+		        			  fila.put("LETRADO",(String) htCol.get("APELLIDO1_LETRADO")+" "+(String) htCol.get("APELLIDO2_LETRADO")+", "+(String) htCol.get("N_LETRADO"));
+		                	  fila.put("GUARDIA_DIA_TEXTO", (String)f.get("DIA_FECHA_INICIO"));
+		                	  fila.put("GUARDIA",(String)f.get("GUARDIA"));
+		                	  Date fecha_inicio = new Date((String)f.get("FECHA_INICIO"));
+		                	  SimpleDateFormat formateador = new SimpleDateFormat("dd/MM/yyyy");
+		                	  String fechaIni=formateador.format(fecha_inicio);
+		                	 
+		                	  fila.put("DIA_GUA", fechaIni.substring(0,2));
+		                	  fila.put("MES_GUA", fechaIni.substring(3,5));
+		                	  fila.put("ANIO_GUA", fechaIni.substring(6,10));
+		                	  fila.put("FECHA_INICIO", fechaIni);
+		                	  fila.put("TURNO",(String)f.get("TURNO") );
+		                	  fila.put("TFNO_OFICINA1", (String) htCol.get("TELEFONO1_LETRADO"));
+		                	  fila.put("TFNO_OFICINA2", (String) htCol.get("TELEFONO2_LETRADO"));
+		                	  fila.put("MOVIL",(String) htCol.get("MOVIL_LETRADO"));
+		                	  fila.put("FAX1", (String) htCol.get("FAX1"));
+		                	  fila.put("NCOLEGIADO", (String) htCol.get("NCOLEGIADO_LETRADO"));
+		                      //ScsCabeceraGuardiasAdm admCab = new ScsCabeceraGuardiasAdm(usrBean);
+		                      //Integer posicion = admCab.getPosicion(idInstitucion,idLista, idturno, fecha_inicio,idPersona);   
+		                	  String posicion= (String)f.get("POSICION");
+		                      if(posicion!=null)
+		                	   fila.put("POSICION", posicion);
+		                      else
+		                    	  fila.put("POSICION", " ");
+		                	  vDatosInforme.add(fila);
+		                	  tam++;
+		                  }
+		               }        
+					
+				
+				vSalida.put("htCabeceraInforme",htCabeceraInforme);
+				vSalida.put("vDatosInforme",vDatosInforme);
+
+			//}
+			
+			
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion en getDatosSalidaOficio");
+		}
+		return vSalida;
+		
+		
+		
+	}
+
+
 	private Hashtable getIdColegiados(Hashtable datosInforme, UsrBean usrBean) throws ClsExceptions{
-		Hashtable htPersonas = new Hashtable();
 		Vector datos = new Vector();
 		Vector guardias = new Vector();
 		String fechaInicio = null;
@@ -2996,6 +3383,67 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		return  listaPorUsu;
 	}
+	private Hashtable getIdColegiadosTotal(Hashtable datosInforme, UsrBean usrBean) throws ClsExceptions{
+		Vector datos = new Vector();
+		Vector guardias = new Vector();
+		String fechaInicio = null;
+		String fechaFin = null;
+		String idlista = null;
+		String idPersona  = null;
+		String idInstitucion  = null;
+		Hashtable lista = null;
+		try {		
+				//MasterReport masterReport = new  MasterReport(); 
+				//Vector vCampos = masterReport.obtenerDatosFormulario(form);
+				if(datosInforme.size()>0){		    						
+					//Hashtable ht=(Hashtable)datosInforme.get(j);	
+					//Long letrado =new Long((String)ht.get("IDPERSONA")).longValue();	
+					idInstitucion = (String) datosInforme.get("idInstitucion");
+					fechaInicio = (String) datosInforme.get("fechaIni");
+					fechaFin = (String) datosInforme.get("fechaFin");
+					idlista = (String) datosInforme.get("idLista");
+					idPersona = (String) datosInforme.get("idPersona");					
+
+				}	
+				ScsInclusionGuardiasEnListasAdm admIGL =new ScsInclusionGuardiasEnListasAdm(usrBean);
+				Hashtable paramBusqueda=new Hashtable();
+				paramBusqueda.put(ScsInclusionGuardiasEnListasBean.C_IDINSTITUCION,idInstitucion);
+				paramBusqueda.put(ScsInclusionGuardiasEnListasBean.C_IDLISTA,idlista);
+				Vector listasIncluidas=admIGL.select(paramBusqueda);
+				Enumeration listaResultados=listasIncluidas.elements();
+				
+				while(listaResultados.hasMoreElements()){
+					ScsInclusionGuardiasEnListasBean fila=(ScsInclusionGuardiasEnListasBean)listaResultados.nextElement();
+					// Recopilacion datos
+					/* RGG 08/10/2007 cambio para que obtenga todas las guardias del tiron
+					 * Vector datosParciales= admGT.getDatosListaGuardias(fila.getIdInstitucion().toString(),fila.getIdTurno().toString(),fila.getIdGuardia().toString(),fechaInicio,fechaFin);
+					int i=0;
+					while (i<datosParciales.size()){
+						datos.add(datosParciales.elementAt(i));
+						i++;
+					}
+					*/
+					Vector guardia = new Vector();
+					guardia.add(fila.getIdTurno().toString());
+					guardia.add(fila.getIdGuardia().toString());
+					
+					guardias.add(guardia);
+					
+				}
+				
+				ScsGuardiasTurnoAdm admGT = new ScsGuardiasTurnoAdm(usrBean);
+				
+				datos = admGT.getDatosListaGuardias(idInstitucion,idlista,guardias,fechaInicio,fechaFin);
+				lista=calcularPersona(datos);
+				
+			} catch (SIGAException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}  
+
+		return  lista;
+	}
+
 	protected Hashtable calcularPersona(Vector datos) throws SIGAException  
 	{
 		
@@ -3019,7 +3467,6 @@ public class EnvioInformesGenericos extends MasterReport {
 		    List guardiasOutList = null;
 		    while (it.hasNext()) {
 		    	long letradoOut = (Long) it.next();
-		    	System.out.println("Letrado:" +letradoOut);
 		    	guardiasOutList  = (List) map.get(letradoOut);
 		    	Vector v =  new Vector();
 		    	for (int i = 0; i < guardiasOutList.size(); i++) {
@@ -3153,7 +3600,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			EnvioInformesGenericos informesAdm = new EnvioInformesGenericos();
 			Vector vPlantillas = informesAdm.getPlantillasInforme(plantillas, idInstitucion, userBean);
 			
-			for (int j = 0; j < vPlantillas.size(); j++) {
+			for (int j = 0; j <  vPlantillas.size(); j++) {
 				AdmInformeBean informeBean = (AdmInformeBean)vPlantillas.get(j);
 				
 				String tiposDestinatario = informeBean.getDestinatarios();
