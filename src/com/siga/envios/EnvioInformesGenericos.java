@@ -62,11 +62,13 @@ import com.siga.beans.HelperInformesAdm;
 import com.siga.beans.ScsDefendidosDesignaAdm;
 import com.siga.beans.ScsDefendidosDesignaBean;
 import com.siga.beans.ScsDesignaAdm;
+import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsInclusionGuardiasEnListasAdm;
 import com.siga.beans.ScsInclusionGuardiasEnListasBean;
 import com.siga.beans.ScsListaGuardiasAdm;
 import com.siga.beans.ScsPersonaJGAdm;
+import com.siga.beans.ScsUnidadFamiliarEJGAdm;
 import com.siga.certificados.Plantilla;
 import com.siga.envios.form.DefinirEnviosForm;
 import com.siga.general.SIGAException;
@@ -96,6 +98,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	
 	public static final int docFile = 1;
 	public static final int docDocument = 2;
+	public static final String comunicacionesEjg = "EJG";
 	public static final String comunicacionesCenso = "CENSO";
 	public static final String comunicacionesMorosos = "COBRO";
 	public static final String comunicacionesDesigna = "OFICI";
@@ -142,9 +145,12 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		Hashtable htDatosInforme = new Hashtable();
 
-		
+
 		//Velores comunes para la obttencion de los datos del informe
 		String idTipoInforme = (String) datosInforme.get("idTipoInforme");
+		
+	
+		
 
 		String idioma = (String) datosInforme.get("idioma");
 
@@ -197,7 +203,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		}else if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesListadoGuardias)) {
 
-/*
+			/*
 			Vector datosFormulario = (Vector) datosInforme.get("datosFormulario");
 			Hashtable datoInforme = (Hashtable) datosFormulario.get(0);
 			Vector vTotal = new Vector();
@@ -212,6 +218,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			/*}else{
 				for (int j = 0; j < datosFormulario.size(); j++) {
 					Hashtable htDatoInforme = new Hashtable();
+
 					Hashtable datoInform = (Hashtable) datosFormulario.get(j);
 					Hashtable datosconsulta= getDatosSalidaListaGuardias(datoInform, usrBean, backupHash, isSolicitantes);
 					htDatoInforme.put("row", datosconsulta.get("htCabeceraInforme"));
@@ -220,6 +227,8 @@ public class EnvioInformesGenericos extends MasterReport {
 				}	
 				htDatosInforme.put("row", vTotal);
 			}*/
+
+			
 			
 		}else if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesMorosos)) {
 			String idPersona = (String) datosInforme.get("idPersona");
@@ -412,6 +421,32 @@ public class EnvioInformesGenericos extends MasterReport {
 			htDatosInforme.put("row", datosconsulta);
 
 
+		}else if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesEjg)) {
+			ScsEJGAdm ejgAdm = new ScsEJGAdm(usrBean);
+			String idTipoEJG = "s";
+			if (datosInforme.get("idtipo")!=null){
+				idTipoEJG= (String) datosInforme.get("idtipo");
+			}else{
+				idTipoEJG= (String)datosInforme.get("idTipoEJG");
+			}
+			String anio= (String)datosInforme.get("anio");
+			String numero= (String)datosInforme.get("numero");
+			String idPersonaJG=null;
+			if (datosInforme.get("idPersonaJG")!=null){
+				idPersonaJG = (String)datosInforme.get("idPersonaJG");
+			}
+			String aSolicitantes = (String) datosInforme.get("aSolicitantes");
+			boolean isSolicitantes = aSolicitantes!=null && aSolicitantes.equalsIgnoreCase("S");
+			String languageInstitucion=(String) 	usrBean.getLanguageInstitucion();
+			Vector datosconsulta=ejgAdm.getDatosInformeEjg(usrBean.getLocation(),idTipoEJG,anio,numero,
+					languageInstitucion,isSolicitantes,idPersonaJG);
+			Vector regionUF = ejgAdm.getDatosRegionUF(usrBean.getLocation(),idTipoEJG,anio,numero);
+			Vector regionConyuge = ejgAdm.getDatosRegionConyuge(usrBean.getLocation(),idTipoEJG,anio,numero);
+			htDatosInforme.put("unidadfamiliar", regionUF);
+			htDatosInforme.put("conyuge", regionConyuge);
+			htDatosInforme.put("row", datosconsulta);
+
+
 		}else if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesExpedientes)) {
 			
 			String idInstitucion = (String)datosInforme.get("idInstitucion");
@@ -488,20 +523,21 @@ public class EnvioInformesGenericos extends MasterReport {
 		if(idPersonaJG!=null){
 			identificador.append("_");
 			identificador.append(idPersonaJG);
-	
+			
+
 		}
 		
 		Hashtable htDatosInformeFinal = null;
 
-		if(!tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesDesigna) && !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesExpedientes)&& !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesListadoGuardias))
+		if(!tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesDesigna) && !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesExpedientes)&& !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesListadoGuardias)&& !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesEjg))
 			htDatosInformeFinal = getDatosInformeFinal(datosInforme,
 					usrBean,  backupHash);
 		
 		Hashtable hashConsultasHechas = new Hashtable();
 		for (int i = 0; i < vPlantillas.size(); i++) {
 			AdmInformeBean beanInforme = (AdmInformeBean) vPlantillas.get(i);
-			
-			
+
+
 			if(tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesListadoGuardias)){
 	
 				Hashtable datos= new Hashtable();
@@ -764,7 +800,117 @@ public class EnvioInformesGenericos extends MasterReport {
 	
 					}
 				}
+			}else if(tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesEjg)){
+				String tipoDestinatarioEnvio = (String) datosInforme.get("tipoDestinatario");
+				char[] tipoDestinatario = beanInforme.getDestinatarios().toCharArray();
+				boolean añadir = tipoDestinatarioEnvio==null;
+				for (int jta = 0; jta < tipoDestinatario.length&&!añadir; jta++) {
+					if(String.valueOf(tipoDestinatario[jta]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_CENPERSONA)){
+						añadir = tipoDestinatarioEnvio.equalsIgnoreCase(EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA) ;
+						
+							
+					}else if(String.valueOf(tipoDestinatario[jta]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)){
+						añadir = tipoDestinatarioEnvio.equalsIgnoreCase(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG) ;
+						
+					}else if(String.valueOf(tipoDestinatario[jta]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO)){
+						//TODO SCS_JUZGADOSJG
+					} 
 
+				}
+				
+				
+				if(añadir){
+					idInstitucion = (String) datosInforme.get("idinstitucion");
+					if(idInstitucion == null)
+						idInstitucion = (String) datosInforme.get("idInstitucion");
+						
+					
+					String anio = (String) datosInforme.get("anio");
+					String idTipoEJG = "";
+					if ((String)datosInforme.get("idtipo")!=null){
+						idTipoEJG= (String)datosInforme.get("idtipo");
+					}else{
+						idTipoEJG= (String)datosInforme.get("idTipoEJG");
+					}
+					String numero = (String) datosInforme.get("numero");
+					boolean isSolicitantes = beanInforme.getASolicitantes()!=null && beanInforme.getASolicitantes().equalsIgnoreCase("S");
+					String keyConsultasHechas = idInstitucion+anio+idTipoEJG+numero+isSolicitantes;
+					datosInforme.put("aSolicitantes", beanInforme.getASolicitantes());
+					if(hashConsultasHechas.containsKey(keyConsultasHechas)){
+						// como esto se recorre para cada plantilla (for (int i=0;i<plantillas.size();i++))
+						// no hace falta hacer de nuevo las consultas para cada una
+							htDatosInformeFinal = (Hashtable) hashConsultasHechas.get(keyConsultasHechas);
+
+						}else{
+							htDatosInformeFinal = getDatosInformeFinal(datosInforme,
+									usrBean,null);
+							
+							hashConsultasHechas.put(keyConsultasHechas, htDatosInformeFinal);
+
+						}
+			
+
+					Vector datosInformeEjg = (Vector)htDatosInformeFinal.get("row");
+					
+					Vector regionUF = (Vector) htDatosInformeFinal.get("unidadfamiliar");
+					Vector regionConyuge = (Vector) htDatosInformeFinal.get("conyuge");
+					
+					HelperInformesAdm helperInformes = new HelperInformesAdm();
+					String idiomainteresado="";
+					String idiomainforme="";
+					if (datosInformeEjg!=null && datosInformeEjg.size()>0) {
+						for (int k=0;k<datosInformeEjg.size();k++) {
+							
+							Hashtable datosInformeK = (Hashtable)datosInformeEjg.get(k);
+							Hashtable htDatosInforme = new Hashtable();
+							htDatosInforme.put("row", datosInformeK);
+							htDatosInforme.put("unidadfamiliar", regionUF);
+							htDatosInforme.put("conyuge", regionConyuge);
+							
+							
+							identificador= new StringBuffer();
+							identificador.append(idInstitucion);
+							identificador.append("_");
+							identificador.append(idTipoEJG);
+							identificador.append("_");
+							identificador.append(anio);
+							identificador.append("_");
+							identificador.append(numero);
+							identificador.append("_");
+							identificador.append(i);
+							identificador.append("_");
+							identificador.append(k);
+							
+							File fileDocumento = getInformeGenerico(beanInforme,
+									htDatosInforme, idiomaExt, identificador.toString(), usrBean,tipoPlantillaWord);
+							String pathDocumento = fileDocumento.getPath();
+							// Creacion documentos
+							int indice = pathDocumento.lastIndexOf(ClsConstants.FILE_SEP);
+							String descDocumento = "";
+							if (indice > 0)
+								descDocumento = pathDocumento.substring(indice + 1);
+		
+		
+							switch (tipoDocumento) {
+							case 1:
+								vDocumentos.add(fileDocumento);
+								break;
+							case 2:
+								Documento documento = new Documento(pathDocumento,
+										descDocumento);
+								vDocumentos.add(documento);
+								break;
+		
+							default:
+								break;
+							}
+
+						}
+					}
+					
+					
+				}
+				
 
 
 			}else{
@@ -936,6 +1082,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		}
 		List lComunicacionesMorosos = new ArrayList();
 		Hashtable htPersonas = new Hashtable();
+		Hashtable htPersonasJG = new Hashtable();
 		for (int j = 0; j < vDestProgramInfBean.size(); j++) {
 			EnvDestProgramInformesBean destProgramInfBean = (EnvDestProgramInformesBean) vDestProgramInfBean
 			.get(j);
@@ -1131,17 +1278,29 @@ public class EnvioInformesGenericos extends MasterReport {
 				comunicacion.setDescripcion(enviosBean.getDescripcion());
 				lComunicacionesMorosos.add(comunicacion);
 			}
+			if(destProgramInfBean.getTipoDestinatario().equals(EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA)){
 
-			if (htPersonas.containsKey(idPersona)) {
-				Vector vAuxDocumentos = (Vector) htPersonas.get(idPersona);
-				vDocumentos.addAll(vAuxDocumentos);
+				if (htPersonas.containsKey(idPersona)) {
+					Vector vAuxDocumentos = (Vector) htPersonas.get(idPersona);
+					vDocumentos.addAll(vAuxDocumentos);
+	
+				}
+				htPersonas.put(idPersona, vDocumentos);
+			}else if(destProgramInfBean.getTipoDestinatario().equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG)){
 
+				if (htPersonasJG.containsKey(idPersona)) {
+					Vector vAuxDocumentos = (Vector) htPersonasJG.get(idPersona);
+					vDocumentos.addAll(vAuxDocumentos);
+	
+				}
+				htPersonasJG.put(idPersona, vDocumentos);
 			}
-			htPersonas.put(idPersona, vDocumentos);
+
 
 		}
 
-		envio.generarEnvioOrdinario(envio.getEnviosBean(), htPersonas);
+		envio.generarEnvioOrdinario(envio.getEnviosBean(), htPersonas,htPersonasJG);
+		
 		if(programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesMorosos)){
 			for (int i = 0; i < lComunicacionesMorosos.size(); i++) {
 				ComunicacionMoroso comunicacion = (ComunicacionMoroso)lComunicacionesMorosos.get(i);
@@ -1658,6 +1817,12 @@ public class EnvioInformesGenericos extends MasterReport {
 		else { //se generan los ficheros para descargar, comprueba cpago cuando se accede por medio de abonos a las cartas de pago
 			if(!isPermisoEnvio || informeGenerico.getIdTipoInforme().equalsIgnoreCase("CPAGO") || informeGenerico.getIdTipoInforme().equalsIgnoreCase("CFACT"))
 				informeGenerico.setDatosInforme(getDatosAEnviar(informeGenerico,getDatosSeparados(informeGenerico.getIdInforme(), "##")));
+			if(informeGenerico.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesEjg)){
+				String datos = getDatosAEnviar(informeGenerico, 
+						getDatosSeparados(informeGenerico.getIdInforme(), "##"));
+				informeGenerico.setDatosInforme(datos);
+			}
+			
 			Vector informesRes = new Vector();
 			Vector datosFormulario = this.obtenerDatosFormulario(informeGenerico);
 			
@@ -1688,20 +1853,22 @@ public class EnvioInformesGenericos extends MasterReport {
 				}
 			}else{
 				for (int j = 0; j < datosFormulario.size(); j++) {
-			
+
 				datosInforme = (Hashtable) datosFormulario.get(j);
 				idTipoInforme = (String) datosInforme.get("idTipoInforme");
-				
+
 				if (datosInforme != null) {
 					//cargando plantillas una sola vez
 					if (vPlantillas == null) {
 						vPlantillas = getPlantillasInforme((String) datosInforme.get("plantillas"), usr
 								.getLocation(), usr);
 					}
-					
+						
+
 					//Informe de comunicaciones de EJGs
 					if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesExpedientes)) {
-						
+							
+
 						//obteniendo los datos del expediente
 						String idiomaExt = (String) datosInforme.get("idiomaExt");
 						if (idiomaExt == null || idiomaExt.equals(""))
@@ -1777,8 +1944,10 @@ public class EnvioInformesGenericos extends MasterReport {
 								datosInforme, vPlantillas, usr,
 								EnvioInformesGenericos.docFile, idTipoInforme, backupHash));
 					}
+					}
 				}
-			}
+
+
 			}//else listaGuardias
 			//como es para descargar, se generan los ficheros y se comprimen en ZIP
 			if (informesRes.size() == 0)
@@ -2039,6 +2208,8 @@ public class EnvioInformesGenericos extends MasterReport {
 				break;
 
 			}else{
+				if(idPersona==null)
+					return null;
 				htPersonas.put(key, idPersona);
 
 			}
@@ -2046,6 +2217,35 @@ public class EnvioInformesGenericos extends MasterReport {
 		}
 
 		return idPersona;
+
+
+
+	}
+	public Hashtable getDestinatariosEjg(Vector vCampos){
+		
+		Hashtable htPersonas = new Hashtable();
+		String idPersona  = null;
+		String idInstitucion  = null;
+		Vector solicitantes = null;
+		for (int i = 0; i < vCampos.size(); i++) {
+			Hashtable ht = (Hashtable) vCampos.get(i);
+			//Colegiado Tramitador
+			idPersona = (String) ht.get("idPersona");
+			solicitantes = (Vector) ht.get("solicitantesEjg"); 
+			if(idPersona!=null){
+				htPersonas.put(idPersona,EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA );
+			}
+			if(solicitantes != null){
+				for (int j = 0; j < solicitantes.size(); j++) {
+					Hashtable personaHashtable = (Hashtable)solicitantes.get(j);
+					String idPersonaJG = (String)personaHashtable.get("IDPERSONA");
+					htPersonas.put(idPersonaJG,EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG );
+				}
+			}
+
+		}
+
+		return htPersonas;
 
 
 
@@ -2299,7 +2499,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	}
 	public void gestionarComunicacionListadoGuardias(DefinirEnviosForm form,Locale locale, UsrBean userBean)throws ClsExceptions,SIGAException{
 
-	/*	String idPersona = getIdColegiadoUnico(form);
+	/*  String idPersona = getIdColegiadoUnico(form);
 		String idInstitucion = userBean.getLocation();
 			
 		Vector vCampos = this.obtenerDatosFormulario(form);
@@ -2604,7 +2804,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		
 		
-		
+
 	}
 
 	public void gestionarComunicacionPagoColegiados(DefinirEnviosForm form,Locale locale, UsrBean userBean)throws ClsExceptions,SIGAException{
@@ -3321,8 +3521,11 @@ public class EnvioInformesGenericos extends MasterReport {
 		
 	}
 
+	
+	
 
 	private Hashtable getIdColegiados(Hashtable datosInforme, UsrBean usrBean) throws ClsExceptions{
+		Hashtable htPersonas = new Hashtable();
 		Vector datos = new Vector();
 		Vector guardias = new Vector();
 		String fechaInicio = null;
@@ -3443,6 +3646,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		return  lista;
 	}
+	
 
 	protected Hashtable calcularPersona(Vector datos) throws SIGAException  
 	{
@@ -3467,6 +3671,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		    List guardiasOutList = null;
 		    while (it.hasNext()) {
 		    	long letradoOut = (Long) it.next();
+
 		    	guardiasOutList  = (List) map.get(letradoOut);
 		    	Vector v =  new Vector();
 		    	for (int i = 0; i < guardiasOutList.size(); i++) {
@@ -3528,6 +3733,55 @@ public class EnvioInformesGenericos extends MasterReport {
 
 	}
 	
+	public void setPersonasEjg(Vector vCampos,UsrBean userBean)throws ClsExceptions,SIGAException{
+		ScsEJGAdm ejgAdm = new ScsEJGAdm(userBean);
+		ScsUnidadFamiliarEJGAdm unidadFamiliarEJGAdm = new ScsUnidadFamiliarEJGAdm(userBean);
+		String idTipoEJG  = null;
+		String idInstitucion  = null;
+		String anio  = null;
+		String numero  = null;
+		List auxiliar = new ArrayList();
+		Iterator iteCampos = vCampos.iterator();
+		while (iteCampos.hasNext()) {
+			Hashtable ht = (Hashtable) iteCampos.next();
+			idInstitucion = (String) ht.get("idinstitucion");
+			String idPersonaJG  = (String) ht.get("idPersonaJG");
+			anio = (String)ht.get("anio");
+			if ((String)ht.get("idtipo")!=null){
+				idTipoEJG= (String)ht.get("idtipo");
+			}else{
+				idTipoEJG= (String)ht.get("idTipoEJG");
+			}
+			numero = (String)ht.get("numero");
+			Vector solicitantesEjg = null;
+			if(idPersonaJG!=null){
+				//Si viene persona jg				//Lo añadimos
+					solicitantesEjg = new Vector();
+					Hashtable personaJGHashtable = new Hashtable();
+					personaJGHashtable.put("IDPERSONA", idPersonaJG);
+					solicitantesEjg.add(personaJGHashtable);
+					ht.put("solicitantesEjg", solicitantesEjg);
+					
+
+			}else{
+				String idPersona =  ejgAdm.getIdColegiadoTramitadorEJG(idInstitucion,idTipoEJG,anio,numero);
+				 solicitantesEjg = unidadFamiliarEJGAdm.getSolicitantesEjg(new Integer(idInstitucion), new Integer(idTipoEJG), new Integer(anio),new Integer(numero));
+				if(solicitantesEjg!=null)
+					ht.put("solicitantesEjg", solicitantesEjg);
+				if(idPersona!=null&&!idPersona.equals(""))
+					ht.put("idPersona", idPersona);
+				
+				
+				if(idPersona==null || idPersona.equals("") &&(solicitantesEjg==null ||solicitantesEjg.size()==0))
+					iteCampos.remove();
+			}
+				
+		}	
+			
+		
+
+	}
+	
 	
 	private List getSolicitantesDesignas(Vector vCampos,UsrBean userBean)throws ClsExceptions,SIGAException{
 		ScsDesignaAdm desigAdm = new ScsDesignaAdm(userBean);
@@ -3558,6 +3812,8 @@ public class EnvioInformesGenericos extends MasterReport {
 		return alSolicitantes;
 
 	}
+	
+	
 	
 	
 	/**
@@ -3884,6 +4140,338 @@ public class EnvioInformesGenericos extends MasterReport {
 		//return isEnvioBatch;
 
 	}
+	public void gestionarComunicacionEjg(DefinirEnviosForm form, Locale locale, UsrBean userBean)throws ClsExceptions,SIGAException{
+
+
+
+		MasterReport masterReport = new  MasterReport(); 
+		Vector vCampos = masterReport.obtenerDatosFormulario(form);
+		//Tenemos que obtener el letrado de la designa ya que no se saca en la query del
+		//paginador(¡¡¡¡Esta persona se obtiene en la jsp!!!!)
+		setPersonasEjg(vCampos,userBean);
+		if(vCampos.size()==0)
+			throw new SIGAException("No se ha generado ningún envio");
+		
+		Hashtable destinatariosHashtable = getDestinatariosEjg(vCampos);
+		
+
+
+		String idInstitucion = userBean.getLocation();
+		
+		
+		
+		//si la persona es null es que hay mas de un colegiado de las distintas designas
+		//si solo hay uno comprobaremos que si hay mas de un solicitante(siempre y cuando algun informe sea
+		// de tipo solicitante)
+		boolean isDestinatarioUnico = destinatariosHashtable!=null && destinatariosHashtable.size()==1;
+		
+		boolean isASolicitantes = false;
+		if(isDestinatarioUnico){
+			
+			
+			Hashtable ht = (Hashtable) vCampos.get(0); 
+			String plantillas = (String)ht.get("plantillas");
+			EnvioInformesGenericos informesAdm = new EnvioInformesGenericos();
+			Vector vPlantillas = informesAdm.getPlantillasInforme(plantillas, idInstitucion, userBean);
+			
+			for (int j = 0; j < vPlantillas.size(); j++) {
+				AdmInformeBean informeBean = (AdmInformeBean)vPlantillas.get(j);
+				
+				String tiposDestinatario = informeBean.getDestinatarios();
+				if(tiposDestinatario!=null){
+					char[] tipoDestinatario = tiposDestinatario.toCharArray();
+					for (int k = 0; k < tipoDestinatario.length; k++) {
+						
+						if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)){
+							isASolicitantes = true;
+							break;
+						}
+					}
+
+				}
+				//Comprbamos que al ser a solicitantes haya una persona unica
+			}
+			
+		}
+
+		if(isDestinatarioUnico){
+			//String claveIterante = this.getClaveIterante(vCampos);
+			//if(claveIterante!=null){
+			//vCampos = this.setCamposIterantes(vCampos,"idPersona");
+			//}
+			Vector vDocumentos = new Vector();
+			Vector vPlantillas = null;
+			for (int i = 0; i < vCampos.size(); i++) {
+				Hashtable datosInforme = (Hashtable) vCampos.get(i);
+				if(vPlantillas==null){
+					String plantillas = (String) datosInforme.get("plantillas");
+
+					vPlantillas = getPlantillasInforme(plantillas, idInstitucion, userBean);
+				}
+				vDocumentos.addAll(this.getDocumentosAEnviar(datosInforme,vPlantillas, userBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesEjg,null));							
+
+			} 
+			Envio envio = getEnvio(form,true,locale, userBean);
+
+
+			// Genera el envio:
+			//Tenemos que mirar si es persona JG o Persona
+			String idPersonaUnica = (String) destinatariosHashtable.keySet().iterator().next();
+			envio.generarEnvio(idPersonaUnica, (String) destinatariosHashtable.get(idPersonaUnica),vDocumentos);
+
+		}else{
+			//vCampos = this.obtenerDatosFormulario(form);
+			String idioma = null;
+			String idTipoInforme = null;
+			String plantillas = null;
+			EnvEnvioProgramadoAdm envioProgramadoAdm  = new EnvEnvioProgramadoAdm(userBean);
+			EnvProgramInformesAdm programInformesAdm = new EnvProgramInformesAdm(userBean);
+			EnvDestProgramInformesAdm destProgramInformesAdm = new EnvDestProgramInformesAdm(userBean);
+			EnvInformesGenericosAdm informesGenericoAdm = new EnvInformesGenericosAdm(userBean);
+			EnvEnvioProgramadoBean envioProgramado = null;
+			EnvProgramInformesBean programInformes = null;
+			EnvDestProgramInformesBean destProgramInformes = null;
+			EnvInformesGenericosBean informesBean = null;
+	
+			EnvValorCampoClaveAdm valorCampoClaveAdm = new EnvValorCampoClaveAdm(userBean);
+	
+			envioProgramado = new EnvEnvioProgramadoBean();
+			envioProgramado.setIdEnvio(envioProgramadoAdm.getNewIdEnvio(idInstitucion));
+			envioProgramado.setIdInstitucion(new Integer(idInstitucion));
+			envioProgramado.setIdTipoEnvios(new Integer(form.getIdTipoEnvio()));
+			envioProgramado.setIdPlantillaEnvios(Integer.valueOf(form.getIdPlantillaEnvios()));
+			if (form.getIdPlantillaGeneracion()!=null && !form.getIdPlantillaGeneracion().equals("")) {
+				envioProgramado.setIdPlantilla(Integer.valueOf(form.getIdPlantillaGeneracion()));
+			} else {
+				envioProgramado.setIdPlantilla(null);
+			}
+	
+			envioProgramado.setNombre(form.getNombre());
+			envioProgramado.setEstado(ClsConstants.DB_FALSE);
+			envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(), locale, userBean));
+	
+			envioProgramadoAdm.insert(envioProgramado);
+	
+			boolean isInformeProgramado = false;
+			boolean isInformesInsertados = false;
+			ArrayList alClavesEjg = new ArrayList();
+			alClavesEjg.add("idInstitucion");
+			alClavesEjg.add("anio");
+			alClavesEjg.add("idTipoEJG");
+			alClavesEjg.add("numero");
+	
+	
+	//		vCampos = this.setCamposIterantes(vCampos,alClavesDesigna,"idDesignas");
+	
+			//Ponemos esta lista para comprobar que no se ha insertado el destinatario
+	
+			List<String> lPersonas = new ArrayList<String>();
+			Vector vPlantillas = null;
+			for (int i = 0; i < vCampos.size(); i++) {
+				Hashtable ht = (Hashtable) vCampos.get(i); 
+				String idPersona = (String) ht.get("idPersona");
+				Vector vSolicitantesEjg = (Vector)ht.get("solicitantesEjg");
+				
+				String idJuzgado = (String) ht.get("idJuzgado");
+				idInstitucion = (String) ht.get("idinstitucion");
+				idTipoInforme = (String) ht.get("idTipoInforme");
+				String idTipoEjg ="";
+				if ((String)ht.get("idtipo")!=null){
+					idTipoEjg= (String)ht.get("idtipo");
+				}else{
+					idTipoEjg= (String)ht.get("idTipoEJG");
+				}
+				ht.put("idTipoEJG", idTipoEjg);
+				ht.put("idInstitucion", idInstitucion);
+	//			ht.put("anio", (String) ht.get("anio"));
+	//			ht.put("numero", (String) ht.get("numero"));
+				
+				
+	//			ArrayList alDesignas = (ArrayList) ht.get("idDesignas");
+				plantillas = (String) ht.get("plantillas");
+				String idSolicitanteJG = (String) ht.get("idPersonaJG");
+	
+				List<EnvDestProgramInformesBean> lDestinatarios = new ArrayList<EnvDestProgramInformesBean>();
+				List<String> lDestPersonas = new ArrayList<String>();
+				if(!isInformeProgramado){
+					programInformes = new EnvProgramInformesBean();
+					programInformes.setIdProgram(programInformesAdm.getNewIdProgramInformes(idInstitucion));
+					programInformes.setIdEnvio(envioProgramado.getIdEnvio());
+					programInformes.setIdInstitucion(envioProgramado.getIdInstitucion());
+					idioma = userBean.getLanguage();
+					programInformes.setIdioma(new Integer(idioma));
+					programInformes.setEstado(ClsConstants.DB_FALSE);
+					programInformes.setPlantillas(plantillas);
+					programInformes.setIdTipoInforme(idTipoInforme);
+	
+					programInformesAdm.insert(programInformes);
+	
+					informesBean = new EnvInformesGenericosBean();
+					informesBean.setIdProgram(programInformes.getIdProgram());
+					informesBean.setIdEnvio(programInformes.getIdEnvio());
+					informesBean.setIdInstitucion(programInformes.getIdInstitucion());
+	
+					vPlantillas = getPlantillasInforme(plantillas, idInstitucion, userBean);
+	
+	
+					for (int j = 0; j < vPlantillas.size(); j++) {
+						AdmInformeBean informeBean = (AdmInformeBean)vPlantillas.get(j);
+						informesBean.setIdPlantilla(informeBean.getIdPlantilla());
+						informesGenericoAdm.insert(informesBean);
+	
+					}
+	
+	
+	
+					isInformeProgramado = true;
+	
+	
+	
+				}
+	
+	
+	
+				for (int j = 0; j < vPlantillas.size(); j++) {
+					AdmInformeBean informeBean = (AdmInformeBean)vPlantillas.get(j);
+	
+	
+	
+					String tiposDestinatario = informeBean.getDestinatarios();
+					informesBean.setIdPlantilla(informeBean.getIdPlantilla());
+					if(tiposDestinatario!=null){
+						char[] tipoDestinatario = tiposDestinatario.toCharArray();
+						for (int k = 0; k < tipoDestinatario.length; k++) {
+							if(idSolicitanteJG!=null && !idSolicitanteJG.equals("")){
+	
+								if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)){
+									for (int jta = 0; jta< vSolicitantesEjg.size(); jta++) {
+										Hashtable htSolicitante = (Hashtable)vSolicitantesEjg.get(jta);
+										String idPersonaJG = (String) htSolicitante.get(ScsDefendidosDesignaBean.C_IDPERSONA);
+										if(idPersonaJG.equals(idSolicitanteJG)){
+											destProgramInformes = new EnvDestProgramInformesBean();
+											destProgramInformes.setIdProgram(programInformes.getIdProgram());
+											destProgramInformes.setIdEnvio(programInformes.getIdEnvio());
+											destProgramInformes.setIdInstitucion(programInformes.getIdInstitucion());
+											destProgramInformes.setIdPersona(new Long(idPersonaJG));
+											destProgramInformes.setIdInstitucionPersona(new Integer(idInstitucion));
+											destProgramInformes.setTipoDestinatario(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG);
+	
+											if(!lPersonas.contains(idPersonaJG)){
+												destProgramInformesAdm.insert(destProgramInformes);
+												lPersonas.add(idPersonaJG);
+											}
+	
+											if(!lDestPersonas.contains(idPersonaJG)){
+												lDestinatarios.add(destProgramInformes);
+												lDestPersonas.add(idPersonaJG);
+	
+											}
+										}
+	
+	
+									}
+								}
+	
+	
+	
+							}else{
+								if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_CENPERSONA)){
+									if(idPersona==null)
+										continue;
+									destProgramInformes = new EnvDestProgramInformesBean();
+									destProgramInformes.setIdProgram(programInformes.getIdProgram());
+									destProgramInformes.setIdEnvio(programInformes.getIdEnvio());
+									destProgramInformes.setIdInstitucion(programInformes.getIdInstitucion());
+									destProgramInformes.setIdPersona(new Long(idPersona));
+									destProgramInformes.setIdInstitucionPersona(new Integer(idInstitucion));
+									destProgramInformes.setTipoDestinatario(EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA);
+									if(!lPersonas.contains(idPersona)){
+										destProgramInformesAdm.insert(destProgramInformes);
+										lPersonas.add(idPersona);
+	
+									}
+									if(!lDestPersonas.contains(idPersona)){
+										lDestinatarios.add(destProgramInformes);
+										lDestPersonas.add(idPersona);
+	
+									}
+	
+	
+								}else if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)){
+									for (int jta = 0; jta< vSolicitantesEjg.size(); jta++) {
+										Hashtable htSolicitante = (Hashtable)vSolicitantesEjg.get(jta);
+										String idPersonaJG = (String) htSolicitante.get(ScsDefendidosDesignaBean.C_IDPERSONA);
+										destProgramInformes = new EnvDestProgramInformesBean();
+										destProgramInformes.setIdProgram(programInformes.getIdProgram());
+										destProgramInformes.setIdEnvio(programInformes.getIdEnvio());
+										destProgramInformes.setIdInstitucion(programInformes.getIdInstitucion());
+										destProgramInformes.setIdPersona(new Long(idPersonaJG));
+										destProgramInformes.setIdInstitucionPersona(new Integer(idInstitucion));
+										destProgramInformes.setTipoDestinatario(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG);
+	
+										if(!lPersonas.contains(idPersonaJG)){
+											destProgramInformesAdm.insert(destProgramInformes);
+											lPersonas.add(idPersonaJG);
+										}
+	
+										if(!lDestPersonas.contains(idPersonaJG)){
+											lDestinatarios.add(destProgramInformes);
+											lDestPersonas.add(idPersonaJG);
+	
+										}
+	
+	
+									}
+								}else if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO)){
+									//TODO SCS_JUZGADOSJG
+								}
+							}
+	
+						}
+	
+					}
+	
+				}
+	
+	
+	
+	
+				EnvValorCampoClaveBean valorCampoClave = null;
+	
+	
+				//Iterator itClave = htClaves.keySet().iterator();
+				valorCampoClave = new EnvValorCampoClaveBean();
+				for (int k = 0; k < lDestinatarios.size(); k++) {
+					destProgramInformes = (EnvDestProgramInformesBean) lDestinatarios.get(k);  
+	
+					valorCampoClave.setIdValor(valorCampoClaveAdm.getNewIdEnvio());
+					for (int j = 0; j < alClavesEjg.size(); j++) {
+						String  clave = (String)alClavesEjg.get(j);
+						String valorClave = (String)ht.get(clave);
+						valorCampoClave.setIdProgram(destProgramInformes.getIdProgram());
+						valorCampoClave.setIdEnvio(destProgramInformes.getIdEnvio());
+						valorCampoClave.setIdInstitucion(destProgramInformes.getIdInstitucion());
+						valorCampoClave.setIdPersona(destProgramInformes.getIdPersona());
+						valorCampoClave.setIdInstitucionPersona(destProgramInformes.getIdInstitucionPersona());
+	
+						valorCampoClave.setIdTipoInforme(idTipoInforme);
+						valorCampoClave.setClave("idEjgs");
+						valorCampoClave.setCampo(clave);
+						valorCampoClave.setValor(valorClave);
+						valorCampoClaveAdm.insert(valorCampoClave);
+	
+					}
+				}
+	
+			}
+
+			setEnvioBatch(true);
+
+		}
+		//return isEnvioBatch;
+
+	}
+	
 	/**
 	 * Metodo que gestiona el envio y comunicacion de Expedientes
 	 * @param form

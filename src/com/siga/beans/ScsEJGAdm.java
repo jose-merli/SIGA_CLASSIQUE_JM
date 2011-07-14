@@ -5220,6 +5220,38 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			return registro;
 		
 	}
-	 
+	public String getIdColegiadoTramitadorEJG (String idInstitucion, String idTipoEjg, String anio, String numero) throws ClsExceptions,SIGAException {
+	    Hashtable codigos = new Hashtable();
+	    try {
+	        codigos.put(new Integer(1),idInstitucion.toString());
+	        codigos.put(new Integer(2),idTipoEjg);
+	        codigos.put(new Integer(3),anio);
+	        codigos.put(new Integer(4),numero);
+	       
+			String select =	"SELECT IDPERSONA FROM SCS_EJG WHERE IDINSTITUCION =:1 AND IDTIPOEJG=:2 AND ANIO=:3 AND NUMERO = :4 "; 
+
+			RowsContainer rc = new RowsContainer(); 
+			if (rc.queryBind(select, codigos)) {
+				if (rc.size() != 1) return null;
+				Hashtable aux = (Hashtable)((Row) rc.get(0)).getRow();
+				String num = UtilidadesHash.getString(aux, "IDPERSONA");
+				return num;
+			}
+		}
+	    catch (Exception e) {
+	   		if (e instanceof SIGAException){
+	   			throw (SIGAException)e;
+	   		}
+	   		else {
+	   			if (e instanceof ClsExceptions){
+	   				throw (ClsExceptions)e;
+	   			}
+	   			else {
+	   				throw new ClsExceptions(e, "Error al obtener el id del letrado designado.");
+	   			}
+	   		}	
+	    }
+		return null;
+	}
 }
 

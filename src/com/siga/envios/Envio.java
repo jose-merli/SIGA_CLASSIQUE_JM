@@ -19,6 +19,7 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
+import com.jcraft.jsch.HASH;
 import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenPersonaAdm;
@@ -431,7 +432,7 @@ public class Envio
      * @throws SIGAException
      * @throws ClsExceptions
      */
-    public void generarEnvioOrdinario(EnvEnviosBean enviosBean,Hashtable htPersonas) throws SIGAException,ClsExceptions
+    public void generarEnvioOrdinario(EnvEnviosBean enviosBean,Hashtable htPersonas,Hashtable htPersonasJG) throws SIGAException,ClsExceptions
 	{
         EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
         envAdm.insert(enviosBean);
@@ -446,6 +447,13 @@ public class Envio
 			String idPersona = (String) itePersona.next();
 			Vector documentos = (Vector)htPersonas.get(idPersona);
 			addDocumentosDestinatario(idPersona,EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,documentos);
+			
+		}
+        Iterator itePersonaJG = htPersonasJG.keySet().iterator();
+        while (itePersonaJG.hasNext()) {
+			String idPersona = (String) itePersonaJG.next();
+			Vector documentos = (Vector)htPersonasJG.get(idPersona);
+			addDocumentosDestinatario(idPersona,EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG,documentos);
 			
 		}
        

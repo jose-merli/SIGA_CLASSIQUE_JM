@@ -406,7 +406,9 @@
 		}
 		return datos;
    	}
-   	
+   	function refrescarLocal(){
+		parent.buscar();
+	}
    	function accionGenerarCarta()
 		{
 		
@@ -422,22 +424,32 @@
 		
 		confirmar = '';
 		confirmar += "<siga:Idioma key='general.confirmar.demora' arg0='"+numElementosSeleccionados+"'/>";
-		if(numElementosSeleccionados<=50 ||confirm(confirmar)){
+		//if(numElementosSeleccionados<=50 ||confirm(confirmar)){
+		
 			
-				var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='INF_InformesGenericos.do' target='submitArea21'>");
-				formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=usr.getLocation() %>'>"));
-				formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
-				formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='EJG'>"));
-				formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
-				formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
-				document.appendChild(formu);
-				formu.datosInforme.value=datos;
-				formu.submit();
+		var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='INF_InformesGenericos.do' target='submitArea'>");
+		formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=usr.getLocation() %>'>"));
+		formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
+		formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='EJG'>"));
+		formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
+		formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
+		formu.appendChild(document.createElement("<input type='hidden' name='enviar' value='1'>"));
+		if(numElementosSeleccionados>50){
+			formu.appendChild(document.createElement("<input type='hidden' name='descargar' value='0'>"));
+		}
+		else{
+			
+			formu.appendChild(document.createElement("<input type='hidden' name='descargar' value='1'>"));
+		}
+		
+		document.appendChild(formu);
+		formu.datosInforme.value=datos;
+		formu.submit();
 					
 			
-		}else {
-			fin();
-		}
+		//}else {
+			//fin();
+		//}
 	}
 		
 	

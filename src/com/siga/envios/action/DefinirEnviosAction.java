@@ -68,6 +68,7 @@ import com.siga.beans.PysProductosInstitucionAdm;
 import com.siga.beans.PysProductosInstitucionBean;
 import com.siga.beans.ScsDefendidosDesignaAdm;
 import com.siga.beans.ScsDesignaAdm;
+import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsInclusionGuardiasEnListasAdm;
 import com.siga.beans.ScsInclusionGuardiasEnListasBean;
@@ -719,6 +720,60 @@ public class DefinirEnviosAction extends MasterAction {
 				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.genericos.designas.asunto");
 
 
+			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesEjg)){
+				MasterReport masterReport = new  MasterReport(); 
+				Vector vCampos = masterReport.obtenerDatosFormulario(form);
+				EnvioInformesGenericos informesAdm = new EnvioInformesGenericos();
+				informesAdm.setPersonasEjg(vCampos,userBean);
+				Hashtable destinatariosHashtable = informesAdm.getDestinatariosEjg(vCampos);
+				
+				
+
+				//si la persona es null es que hay mas de un colegiado de las distintas designas
+				//si solo hay uno comprobaremos que si hay mas de un solicitante(siempre y cuando algun informe sea
+				// de tipo solicitante)
+				boolean isDestinatarioUnico = destinatariosHashtable!=null && destinatariosHashtable.size()==1;
+				//Vamos a permitir editar cuando sea solo a colegiados
+				
+				boolean isASolicitantes = false;
+				if(isDestinatarioUnico){
+					
+					
+					Hashtable ht = (Hashtable) vCampos.get(0); 
+					String plantillas = (String)ht.get("plantillas");
+					
+					Vector vPlantillas = informesAdm.getPlantillasInforme(plantillas, idInstitucion, userBean);
+					
+					for (int j = 0; j < vPlantillas.size(); j++) {
+						AdmInformeBean informeBean = (AdmInformeBean)vPlantillas.get(j);
+						
+						String tiposDestinatario = informeBean.getDestinatarios();
+						if(tiposDestinatario!=null){
+							char[] tipoDestinatario = tiposDestinatario.toCharArray();
+							for (int k = 0; k < tipoDestinatario.length; k++) {
+								
+								if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)){
+									isASolicitantes = true;
+									break;
+								}
+							}
+
+						}
+						//Comprbamos que al ser a solicitantes haya una persona unica
+						
+						
+					}
+					
+					
+					
+				}
+				
+				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")));
+				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
+				request.setAttribute("isEditarEnvio",Boolean.valueOf(isDestinatarioUnico));
+				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.genericos.ejg.asunto");
+
+
 			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesCenso)){
 				idPersona = getIdColegiadoUnico(form);
 
@@ -962,6 +1017,7 @@ public class DefinirEnviosAction extends MasterAction {
 			// obtener idEnvio
 			if(!subModo.equals(EnvioInformesGenericos.comunicacionesCenso)&&
 					!subModo.equals(EnvioInformesGenericos.comunicacionesDesigna)&&
+					!subModo.equals(EnvioInformesGenericos.comunicacionesEjg)&&
 					!subModo.equals(EnvioInformesGenericos.comunicacionesExpedientes)&&
 					!subModo.equals(EnvioInformesGenericos.comunicacionesMorosos)&&
 					!subModo.equals(EnvioInformesGenericos.comunicacionesPagoColegiados)&&
@@ -1155,6 +1211,19 @@ public class DefinirEnviosAction extends MasterAction {
 				try{
 					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 					envioInformesGenericos.gestionarComunicacionDesignas(form,  request.getLocale(), userBean);
+					idEnvio = form.getIdEnvio();
+					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
+				}
+				catch (Exception e) {
+
+					throwExcp("facturacion.consultaMorosos.errorInformes", new String[] {"modulo.facturacion"}, e, null); 
+				}
+			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesEjg)){
+
+
+				try{
+					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
+					envioInformesGenericos.gestionarComunicacionEjg(form,  request.getLocale(), userBean);
 					idEnvio = form.getIdEnvio();
 					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
 				}
@@ -2120,6 +2189,7 @@ public class DefinirEnviosAction extends MasterAction {
 		return idPersona;
 
 	}
+	
 	private int getNumSolicitantesDesignas(Vector vCampos,UsrBean userBean)throws ClsExceptions,SIGAException{
 		ScsDesignaAdm desigAdm = new ScsDesignaAdm(userBean);
 		ScsDefendidosDesignaAdm defendidosAdm = new ScsDefendidosDesignaAdm(userBean);

@@ -374,7 +374,8 @@ public class InformesGenericosAction extends MasterAction {
 							} else if (idTipoInforme.equals("EJGCA")) {
 								mapDestino = ejgca(mapping, miForm, request, response);
 							} else if (idTipoInforme.equals("EJG")){
-								mapDestino = ejg(mapping, miForm, request, response);
+								// mapDestino = ejg(mapping, miForm, request, response);
+								mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesEjg);
 							}else if (idTipoInforme.equals("SOJ")){
 								mapDestino = soj(mapping, miForm, request, response);
 							} else if (idTipoInforme.equalsIgnoreCase("CAJG")) {

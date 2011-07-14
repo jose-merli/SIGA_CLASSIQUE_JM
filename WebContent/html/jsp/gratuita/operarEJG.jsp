@@ -369,8 +369,43 @@
 		}				
 		function traspasoDatos(resultado){
 		 seleccionComboSiga("vistaJuzgado",resultado[0]);
-		}	
+		}
 
+		
+			
+		function generarCarta() {
+			sub();
+			
+			//idInstitucion  = document.MaestroDesignasForm.idInstitucion;
+			var idInstitucion  = <%=idInstitucion%>;
+			
+			var anio  = <%=ANIO%>;
+			var idTipo  = <%=IDTIPOEJG%>;
+			var numero = <%=NUMERO%>;
+			var datos = "idinstitucion=="+idInstitucion + "##idtipo==" +idTipo+"##anio=="+anio +"##numero==" +numero+"%%%";
+			
+			
+			var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='INF_InformesGenericos.do' target='submitArea'>");
+			formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucion %>'>"));
+			formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
+			formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='EJG'>"));
+			formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
+			formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
+			formu.appendChild(document.createElement("<input type='hidden' name='enviar' value='1'>"));
+			
+				
+			formu.appendChild(document.createElement("<input type='hidden' name='descargar' value='1'>"));
+			
+			
+			document.appendChild(formu);
+			formu.datosInforme.value=datos;
+			formu.submit();
+			
+			
+      	    					
+					
+	
+} 	
 	</script>
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
@@ -438,10 +473,19 @@
 				<%if (!modo.equalsIgnoreCase("ver")) {%>
 				<table>
 					<tr>
-						<td><siga:InformeSimple
-							idInstitucion="<%=usr.getLocation()%>"
-							recurso="gratuita.EJG.botonComunicaciones" idTipoInforme="EJG"
-							formularioDatos="DefinirMantenimientoEJGForm" /></td>
+						<td>
+						<input 	type="button" 
+				alt="UtilidadesString.getMensajeIdioma(usrbean,general.boton.cartaInteresados)"  
+		       	id="idButton"  
+		       	onclick="return generarCarta();" 
+		       	class="button" 
+		       	value=<%=UtilidadesString.getMensajeIdioma(usr,"gratuita.EJG.botonComunicaciones")%> />
+						
+						
+						
+							
+							
+							</td>
 					</tr>
 				</table>
 				<%}%>

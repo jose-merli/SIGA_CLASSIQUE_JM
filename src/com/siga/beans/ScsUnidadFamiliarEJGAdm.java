@@ -23,6 +23,7 @@ import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.eejg.ScsEejgPeticionesAdm;
 import com.siga.beans.eejg.ScsEejgPeticionesBean;
 import com.siga.beans.eejg.ScsEejgXmlAdm;
+import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirUnidadFamiliarEJGForm;
 import com.siga.gratuita.vos.VolantesExpressVo;
 			 
@@ -602,5 +603,37 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error ScsEJGAdm.getInteresadosEjgSalida.");
 		}
 	}
+	public Vector getSolicitantesEjg(Integer idInstitucion, Integer idTipoEJG, Integer anio, Integer numero) throws ClsExceptions,SIGAException {
+		Vector datos=new Vector();
+		try {
+			
+			StringBuffer sql = new StringBuffer();
+			sql.append(" SELECT IDPERSONA FROM SCS_UNIDADFAMILIAREJG "); 
+			sql.append(" WHERE ANIO =  ");
+			sql.append(anio);
+			sql.append(" AND IDINSTITUCION =  ");
+			sql.append(idInstitucion);
+			sql.append("  AND NUMERO = "); 
+			sql.append(numero);
+			sql.append(" AND IDTIPOEJG = "); 
+			sql.append(idTipoEJG);
+			sql.append(" AND SOLICITANTE = 1 ");
+			
+			
+			RowsContainer rc = new RowsContainer(); 
+			if (rc.find(sql.toString())) {
+				for (int i = 0; i < rc.size(); i++){
+					Row fila = (Row) rc.get(i);
+					Hashtable resultado=fila.getRow();	                  
+					datos.add(resultado);
+				}
+			} 
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion sobre getSolicitantesEjg");
+		}
+		return datos;                        
+	}
+	
 
 }

@@ -134,6 +134,8 @@
 						<input type="hidden" name="oculto<%=index%>_10" value="${DefinirUnidadFamiliarEJGForm.numero}">
 						<input type="hidden" name="oculto<%=index%>_11" value="${solicitante.peticionEejg.idPeticion}">
 						<input type="hidden" name="oculto<%=index%>_12" value="${DefinirUnidadFamiliarEJGForm.esComision}">
+						<input type="hidden" name="oculto<%=index%>_13" value="${solicitante.solicitante}">
+						
 						<c:out value="${solicitante.parentesco.descripcion}"></c:out>
 					
 					</td>
@@ -215,6 +217,7 @@
 						<input type="hidden" name="oculto<%=index%>_9" value="${DefinirUnidadFamiliarEJGForm.anio}">
 						<input type="hidden" name="oculto<%=index%>_10" value="${DefinirUnidadFamiliarEJGForm.numero}">
 						<input type="hidden" name="oculto<%=index%>_12" value="${DefinirUnidadFamiliarEJGForm.esComision}">
+						<input type="hidden" name="oculto<%=index%>_13" value="${solicitante.solicitante}">
 						<c:choose>
 							<c:when test="${solicitante.peticionEejg.idPeticion!=null}">
 							<input type="hidden" name="oculto<%=index%>_11" value="${solicitante.peticionEejg.idPeticion}">
@@ -353,24 +356,30 @@
 		var anio = document.getElementById( 'oculto' + fila + '_9');
 		var numero = document.getElementById( 'oculto' + fila + '_10');
 		var esComision = document.getElementById( 'oculto' + fila + '_12');
-	   	datos = idPersonaJG.value + 	','
-	   			+idInstitucionEJG.value + 	','
-	   			+idTipoEJG.value + 	','
-	   			+anio.value + 	','
-	   			+numero.value + '#';
-	   				 
+		var solicitante = document.getElementById( 'oculto' + fila + '_13');
 		
-		var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
- 		formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='${DefinirUnidadFamiliarEJGForm.idInstitucion}'>"));
+		var datos = "idinstitucion=="+idInstitucionEJG.value + "##idtipo==" +idTipoEJG.value+"##anio=="+anio.value +"##numero==" +numero.value+"##idPersonaJG==" +idPersonaJG.value+"%%%";
+	   				 
+	   	var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='INF_InformesGenericos.do' target='submitArea'>");
+		formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='${DefinirUnidadFamiliarEJGForm.idInstitucion}'>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='EJG'>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='asolicitantes' value='S'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='tablaDatosDinamicosD' value=''>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
+		if(solicitante.value==1){
+			formu.appendChild(document.createElement("<input type='hidden' name='enviar' value='1'>"));
+		}else
+			formu.appendChild(document.createElement("<input type='hidden' name='enviar' value='0'>"));
+		formu.appendChild(document.createElement("<input type='hidden' name='descargar' value='1'>"));
+		
+		
 		document.appendChild(formu);
-		formu.tablaDatosDinamicosD.value = datos;
+		formu.datosInforme.value=datos;
 		formu.submit();
+
+		
+		
 		
 		
 	   
@@ -395,6 +404,9 @@
 		document.EEJG.submit();
 	
 	}	
+	function accionCerrar() {
+
+	}
 	function descargarEejg(fila) {
 		var idPersonaJG = document.getElementById( 'oculto' + fila + '_6');
 		var idInstitucionEJG = document.getElementById( 'oculto' + fila + '_7');
