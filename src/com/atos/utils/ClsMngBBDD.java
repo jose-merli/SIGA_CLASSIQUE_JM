@@ -27,9 +27,9 @@ public final class ClsMngBBDD {
   private static String poolName="none";
   private static ReadProperties dsProperties= new ReadProperties(SIGAReferences.RESOURCE_FILES.POOL);
 //private static ReadProperties dsProperties=new ReadProperties("pool.properties");
-  private static String POOLWR = dsProperties.returnProperty("POOL.WRITE");
-  private static String POOLRD = dsProperties.returnProperty("POOL.READ");
-  private static String POOLNLS = dsProperties.returnProperty("POOL.NLS");
+  public static String POOLWR = dsProperties.returnProperty("POOL.WRITE");
+  public static String POOLRD = dsProperties.returnProperty("POOL.READ");
+  public static String POOLNLS = dsProperties.returnProperty("POOL.NLS");
   
   private static DataSource ds=null;
   private static DataSource dsread=null;

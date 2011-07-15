@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
+import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -472,6 +474,7 @@ public class ExpAnotacionAdm extends MasterBeanAdministrador {
 	
     public boolean insertarAnotacionAutomatica(ExpExpedienteBean expBean, String texto) throws ClsExceptions 
 	{
+	    RowsContainer rc2 = new RowsContainer();
 		try{	
     		ExpAnotacionBean anotacionBean = new ExpAnotacionBean();
 			
@@ -492,7 +495,11 @@ public class ExpAnotacionAdm extends MasterBeanAdministrador {
 			anotacionBean.setIdInstitucion_Usuario(expBean.getIdInstitucion());
 			anotacionBean.setIdTipoAnotacion(ExpTiposAnotacionesAdm.codigoTipoAutomatico);	    
 			
+			rc2.query("select user USUARIO from user_users");
+			ClsLogging.writeFileLog("  Antes de ejecutar la consulta problematica 2, el usuario es "+((Row) rc2.get(0)).getString("USUARIO")+" y los POOLs son: "+ClsMngBBDD.POOLRD+", "+ClsMngBBDD.POOLWR+", "+ClsMngBBDD.POOLNLS,7);
 	        if (!this.insert(anotacionBean)){
+				rc2.query("select user USUARIO from user_users");
+				ClsLogging.writeFileLog("  Despues de ejecutar la consulta problematica 2, el usuario es "+((Row) rc2.get(0)).getString("USUARIO")+" y los POOLs son: "+ClsMngBBDD.POOLRD+", "+ClsMngBBDD.POOLWR+", "+ClsMngBBDD.POOLNLS,7);
 	            throw new ClsExceptions("Error al insertar anotación: "+this.getError());
 	        }
         	return true;

@@ -16,6 +16,7 @@ import javax.transaction.UserTransaction;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
@@ -1522,6 +1523,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 	    ExpAlertaAdm alertaAdm = new ExpAlertaAdm(this.usrbean);
 	    ExpAnotacionAdm anotacionAdm = new ExpAnotacionAdm(this.usrbean);
 	    RowsContainer rc1 = new RowsContainer();
+	    RowsContainer rc2 = new RowsContainer();
 
 	    try {
        		
@@ -1549,8 +1551,11 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			       " AND E.FECHAFINALESTADO IS NOT NULL"+
 			       " AND decode(abs(E.FECHAPRORROGAESTADO - E.FECHAFINALESTADO) - (E.FECHAPRORROGAESTADO - E.FECHAFINALESTADO),0,E.FECHAPRORROGAESTADO,E.FECHAFINALESTADO) < SYSDATE ";
 			
+			rc2.query("select user USUARIO from user_users");
+			ClsLogging.writeFileLog("  Antes de ejecutar la consulta problematica 1, el usuario es "+((Row) rc2.get(0)).getString("USUARIO")+" y los POOLs son: "+ClsMngBBDD.POOLRD+", "+ClsMngBBDD.POOLWR+", "+ClsMngBBDD.POOLNLS,7);
 			if (rc1.query(sql_estado1)) {
-				String linea = "";
+				rc2.query("select user USUARIO from user_users");
+				ClsLogging.writeFileLog("  Despues de ejecutar la consulta problematica 1, el usuario es "+((Row) rc2.get(0)).getString("USUARIO")+" y los POOLs son: "+ClsMngBBDD.POOLRD+", "+ClsMngBBDD.POOLWR+", "+ClsMngBBDD.POOLNLS,7);
 				ClsLogging.writeFileLog("  Resultado de consulta anterior:",7);
 				ClsLogging.writeFileLog("  IDINSTITUCION,IDINSTITUCION_TIPOEXPEDIENTE,IDTIPOEXPEDIENTE,ANIOEXPEDIENTE,NUMEROEXPEDIENTE,FECHAFINAL",7);
 				for (int i = 0; i < rc1.size(); i++)	{
