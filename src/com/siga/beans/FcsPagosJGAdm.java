@@ -1417,6 +1417,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		consulta.append(idPersona);
 		consulta.append(" AND re.idinstitucion = ");
 		consulta.append(idInstitucion);
+		consulta.append(" AND re.fechainicio >= sysdate ");
 		consulta.append(" AND (re.fechafin IS NULL OR re.fechafin >= SYSDATE)) ");
 		consulta.append(" WHERE idinstitucion = ");
 		consulta.append(idInstitucion);
