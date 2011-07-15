@@ -524,7 +524,7 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 			}
 			
 			if (idPersona!=null && !idPersona.equals(""))
-				consulta += " AND grupo.idgrupoguardia in (select grupo2.idgrupoguardia from scs_grupoguardiacolegiado col2 where col2.idpersona = "+idPersona+")";
+				consulta += " AND grupo.idgrupoguardia in (select col2.idgrupoguardia from scs_grupoguardiacolegiado col2 where col2.idpersona = "+idPersona+")";
 
 			consulta += " AND grupo."+ScsGrupoGuardiaBean.C_IDGRUPOGUARDIA+"=saltos."+ScsSaltoCompensacionGrupoBean.C_IDGRUPOGUARDIA;
 			

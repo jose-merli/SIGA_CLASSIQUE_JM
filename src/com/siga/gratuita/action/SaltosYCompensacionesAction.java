@@ -665,7 +665,8 @@ public class SaltosYCompensacionesAction extends MasterAction {
 				UtilidadesHash.set(registros,"IDPERSONA",miForm.getIdPersona());
 				UtilidadesHash.set(registros,"FECHADESDE",miForm.getFechaDesde());
 				UtilidadesHash.set(registros,"FECHAHASTA",miForm.getFechaHasta());
-				UtilidadesHash.set(registros,"IDGRUPOGUARDIA",miForm.getIdGrupoGuardia());	
+				if(miForm.getIdGrupoGuardia()!=null)
+					UtilidadesHash.set(registros,"IDGRUPOGUARDIA",miForm.getIdGrupoGuardia());	
 				
 				//Campo Compensado/No compensado/Todo:
 				if (miForm.getCompensado().equalsIgnoreCase("si")){
