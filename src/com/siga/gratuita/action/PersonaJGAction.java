@@ -702,6 +702,8 @@ public class PersonaJGAction extends MasterAction {
 
 			// obtener Concepto
 			String concepto = request.getParameter("conceptoE");
+			
+
 
 			// obtener titulos
 			String titulo = request.getParameter("tituloE");
@@ -717,6 +719,9 @@ public class PersonaJGAction extends MasterAction {
 			idInstitucionJG = request.getParameter("idInstitucionJG");
 			idPersonaJG = request.getParameter("idPersonaJG");
 			
+			//Obtener el tipo PCAJG
+			int tipoCAJG = CajgConfiguracion.getTipoCAJG(new Integer(idInstitucionJG));					
+			  request.setAttribute("pcajgActivo", tipoCAJG);
 			
 			if (concepto==null) {
 				throw new ClsExceptions("Falta de parámetro obligatorio (concepto)");

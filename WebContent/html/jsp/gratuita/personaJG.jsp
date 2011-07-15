@@ -57,8 +57,7 @@
 		pcajgActivo = Integer.parseInt(sEsPcajgActivo);
 	}*/
 	if (request.getAttribute("pcajgActivo") != null) {
-		pcajgActivo = Integer.parseInt(request.getAttribute(
-				"pcajgActivo").toString());
+		pcajgActivo = Integer.parseInt(request.getAttribute("pcajgActivo").toString());
 	}
 
 	// RGG 23-03-2006  cambios de personaJG
@@ -142,6 +141,7 @@
 	boolean obligatorioRegimenConyuge= false;
 	boolean obligatorioIngreso = false;
 	boolean obligatorioFechaNac = false;
+	boolean obligatorioSexo = false;
 	
 	if ((pcajgActivo == 1)
 			&& ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE
@@ -158,21 +158,24 @@
 		obligatorioIdentificador = true;		
 		if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR))
 			obligatorioParentesco = true;
-	} else if ((pcajgActivo == 4) &&
-			   (conceptoE.equals(PersonaJGAction.EJG) || 
-				conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) ||
-				conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)
-			)) {		
+	} else if ((pcajgActivo == 4) && (conceptoE.equals(PersonaJGAction.EJG) || conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) ||
+				conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)  || conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS) || 
+				conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS))) {		
 		if (conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)){
 			 obligatorioEstadoCivil= true;
-		     obligatorioRegimenConyuge=true;		    
-		 }else{
+			 obligatorioSexo = true;
+		     obligatorioRegimenConyuge=true;
+		}else if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS) || conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS)){
+			obligatorioNacionalidad=true;
+		}else{
 			obligatorioDireccion = true;
 			obligatorioPoblacion = true;
 			obligatorioCodigoPostal = true;
 			obligatorioIngreso= true;
 		    obligatorioRegimenConyuge=true;
 		    obligatorioNacionalidad=true;
+		    obligatorioEstadoCivil= true;
+		    obligatorioSexo = true;
 			if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)){
 				obligatorioParentesco = true;
 			    obligatorioEstadoCivil= true;
@@ -1206,7 +1209,10 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 	
 	<tr>
 	<td class="labelText">
-			<siga:Idioma key="gratuita.personaJG.literal.sexo"/>		
+			<siga:Idioma key="gratuita.personaJG.literal.sexo"/>	
+			<%if (obligatorioSexo){%>
+				<%=asterisco%> 
+			<%}%>		
 		</td>
 		<td >
 		<%
@@ -2225,8 +2231,7 @@ function limpiarPersonaContrario() {
 					alert(msg2);
 					fin();
 					return false;
-				} else
-					if (validatePersonaJGForm(document.forms[0])){
+				} else if (validatePersonaJGForm(document.forms[0])){
 								
 					// jbd: comprobaciones adicionales para el pcajg
 					if(<%=pcajgActivo > 0%>){
@@ -2249,8 +2254,13 @@ function limpiarPersonaContrario() {
 						if (<%=obligatorioNacionalidad%> && document.forms[0].nacionalidad.value =="")
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';						
 						if (<%=obligatorioIngreso%> && document.forms[0].importeIngresosAnuales.value =="")
-								error += "<siga:Idioma key='errors.required' arg0='gratuita.operarInteresado.literal.ingresos'/>"+ '\n';	
-						
+								error += "<siga:Idioma key='errors.required' arg0='gratuita.operarInteresado.literal.ingresos'/>"+ '\n';
+						if(<%=pcajgActivo == 4%>){
+							if (<%=obligatorioSexo%> && document.forms[0].sexo.value=="0")
+								error += "<siga:Idioma key='errors.required' arg0='Sexo'/>"+ '\n';
+							if (<%=obligatorioEstadoCivil%> && document.forms[0].estadoCivil.value=="")
+								error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.estadoCivil'/>"+ '\n';										
+						}
 						if(error!=""){
 							alert(error);
 							fin();
@@ -2593,10 +2603,7 @@ function limpiarPersonaContrario() {
 			window.location=window.location;
 		}
 					
-<%} else
-
-			if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) {%>
-
+<%} else if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) {%>
 		
 		// Asociada al boton Cerrar -->
 		function accionCerrar()   
@@ -2642,6 +2649,17 @@ function limpiarPersonaContrario() {
 					return false;
 				} else {
 					if (validatePersonaJGForm(document.forms[0]) ){
+						if(<%=pcajgActivo == 4%>){
+							var error = "";
+							if (<%=obligatorioNacionalidad%> && document.forms[0].nacionalidad.value =="")
+								error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';	
+
+							if(error!=""){
+								alert(error);
+								fin();
+								return false;
+							}
+						}
 						document.forms[0].submit();
 					}else{
 						fin();
@@ -2733,8 +2751,7 @@ function limpiarPersonaContrario() {
 			window.location=window.location;
 		}
 
-<%} else if (conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS)
-					|| conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)) {%>
+<%} else if (conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS)) {%>
 		//Asociada al boton Cerrar -->
 		function accionCerrar()   
 		{	
@@ -2774,6 +2791,8 @@ function limpiarPersonaContrario() {
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.estadoCivil'/>"+ '\n';
 			if (<%=obligatorioRegimenConyuge%> && document.forms[0].regimenConyugal.value=="")
 			    error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.regimenConyugal'/>"+ '\n';
+			if (<%=obligatorioNacionalidad%> && document.forms[0].nacionalidad.value =="")
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';	
 			    
 			if(error!=""){
 			  alert(error);
@@ -2813,8 +2832,90 @@ function limpiarPersonaContrario() {
 		
 			
 		}
-<%}%>
+<%} else if(conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)){ %>
+//Asociada al boton Cerrar -->
+function accionCerrar()   
+{	
+	window.close();
+}
 
+//Asociada al boton Guardar -->
+function accionGuardarCerrar()	{	
+	
+	var lNumerosTelefonos=getDatos();					
+	if (!lNumerosTelefonos){
+         fin();
+         return false;
+	}				
+
+	
+	sub();
+	var tipoIdent=document.forms[0].tipoId.value;
+	var numId=document.forms[0].NIdentificacion.value;		
+			
+				
+	if (!validaNumeroIdentificacion()) {
+		fin();
+		return false;
+	}
+	if(document.forms[0].NIdentificacion.value=="") document.forms[0].tipoId.value = "";
+
+	var error = "";
+	if (document.getElementById('calidad2')){				 
+		document.forms[0].idTipoenCalidad.value	=	document.getElementById("calidad2").value;
+		var calidad=document.forms[0].idTipoenCalidad.value;   
+		if (calidad==""){			
+			error+="<siga:Idioma key='gratuita.personaJG.literal.mensajecalidad'/>";				
+		}				
+	}			
+	if (<%=obligatorioEstadoCivil%> && document.forms[0].estadoCivil.value=="")
+		error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.estadoCivil'/>"+ '\n';
+	if (<%=obligatorioRegimenConyuge%> && document.forms[0].regimenConyugal.value=="")
+	    error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.regimenConyugal'/>"+ '\n';
+	if(<%=pcajgActivo == 4%>){
+		if (<%=obligatorioSexo%> && document.forms[0].sexo.value=="0")
+			error += "<siga:Idioma key='errors.required' arg0='Sexo'/>"+ '\n';								
+	}	    
+	    
+	if(error!=""){
+	  alert(error);
+	  fin();
+	  return false;
+	 }	
+	
+ 	document.forms[0].action="<%=app + actionE%>";	
+	document.forms[0].modo.value='guardarDesigna';
+	
+	document.forms[0].target="submitArea2";
+	//var tipo = document.forms[0].tipo.value;
+	var tipo = document.forms[0].idTipoPersona.value;			
+	var tipoId = document.forms[0].tipoId.value;
+	var msg1="<siga:Idioma key="gratuita.personaJG.messages.alertTipo1"/>";
+	var msg2="<siga:Idioma key="gratuita.personaJG.messages.alertTipo2"/>";
+	
+	if (tipo=="F" && (tipoId!="" && tipoId!="50" && tipoId!="10" && tipoId!="30" && tipoId!="40")) {
+		alert(msg1);
+		fin();
+		return false;
+	} else{
+		if (tipo=="J" && (tipoId!="" && tipoId!="20" && tipoId!="50")) {
+			alert(msg2);
+			fin();
+			return false;
+		} else {
+			if (validatePersonaJGForm(document.forms[0]) ){						
+				document.forms[0].submit();
+			}else{
+				fin();
+				return false;
+			}
+		}
+	}
+
+
+	
+}
+<%}%>
 
 
 function buscar() 
