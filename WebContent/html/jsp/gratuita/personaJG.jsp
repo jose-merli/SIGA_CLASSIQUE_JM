@@ -180,6 +180,7 @@
 				obligatorioParentesco = true;
 			    obligatorioEstadoCivil= true;
 			    obligatorioIngreso= true;
+			    obligatorioSexo = false;
 			}
 		 }
 	} else if ((pcajgActivo == 5)

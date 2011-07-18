@@ -1329,6 +1329,10 @@ public class PersonaJGAction extends MasterAction {
 							if (ufBean.getIdProcurador()!=null) {
 								miform.setIdProcurador(ufBean.getIdProcurador().toString()+ "," + ufBean.getIdInstitucionProcurador().toString());
 							}
+							
+							int tipoCAJG = CajgConfiguracion.getTipoCAJG(new Integer(miform.getIdInstitucionJG()));					
+						    request.setAttribute("pcajgActivo", tipoCAJG);
+							
 						} else {
 							dataBackup.remove(ScsContrariosDesignaBean.T_NOMBRETABLA);
 						}
@@ -1452,6 +1456,10 @@ public class PersonaJGAction extends MasterAction {
 									miform.setNcolegiadoContrario(" ");
 									miform.setIdPersonaContrario("");
 								}
+								
+								int tipoCAJG = CajgConfiguracion.getTipoCAJG(new Integer(miform.getIdInstitucionDES()));					
+								request.setAttribute("pcajgActivo", tipoCAJG);
+								
 							} else {
 								dataBackup.remove(ScsContrariosDesignaBean.T_NOMBRETABLA);
 							}
