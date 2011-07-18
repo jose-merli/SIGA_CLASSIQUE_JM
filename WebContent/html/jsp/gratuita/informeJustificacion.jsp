@@ -317,8 +317,7 @@ function refrescarLocal(){
 		if(idPersona!='')
 			document.InformesGenericosForm.descargar.value="1";
 		else
-			document.InformesGenericosForm.descargars
-			.value="0";
+			document.InformesGenericosForm.descargar.value="0";
 		
 		var anio = document.InformeJustificacionMasivaForm.anio.value;
 		var estado= document.InformeJustificacionMasivaForm.estado.value;
