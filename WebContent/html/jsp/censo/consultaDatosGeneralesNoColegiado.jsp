@@ -1009,17 +1009,41 @@ caracterParam[0] = tipoCliente;
 								//Validamos el formato del CIF:
 								var tipo = document.forms[0].tipos.value;
 								var numIdentificacion = document.forms[0].numIdentificacion.value.charAt(0);
-								
+
 								if(tipo == 'Y') tipo='J';
-										
-								//El tipo debe ser igual a la primera letra del cif salvo para tipo Otro 'O' que no importa:
-								if  ( tipo=="<%=ClsConstants.COMBO_TIPO_OTROS%>" || 
-									  (tipo!="<%=ClsConstants.COMBO_TIPO_OTROS%>" && (tipo.toUpperCase()==numIdentificacion.toUpperCase()) )) {
-										return true;
-								} else {
-										alert ('<siga:Idioma key="censo.fichaCliente.literal.errorCIF"/>');
+
+								//si el usuario ha elegido el tipo de CIF otros, se debe comprobar que el cif no se corresponde con
+								//ninguno de los otros tipos definidos en la lista
+								if ( tipo=="<%=ClsConstants.COMBO_TIPO_OTROS%>")
+								{
+									var i = 0;
+									var esTipoPredefinido = false;
+									while ((i < document.forms[0].tipos.length) && (esTipoPredefinido == false))
+									{
+										if (numIdentificacion == document.forms[0].tipos[i].value)
+										{
+											esTipoPredefinido = true;
+										}
+										i++;
+									} 
+									if (esTipoPredefinido)
+									{
+										alert('<siga:Idioma key="censo.fichaCliente.literal.avisoOtrosCIF"/>');
 										return false;
+									}
+									else return true;
+								}			
+								
 										
+								//El tipo debe ser igual a la primera letra del cif 
+								else if  (tipo!="<%=ClsConstants.COMBO_TIPO_OTROS%>" && (tipo.toUpperCase()==numIdentificacion.toUpperCase()) ) 
+								{
+									return true;
+								} 
+								else 
+								{
+									alert ('<siga:Idioma key="censo.fichaCliente.literal.errorCIF"/>');
+									return false;		
 								} //Fin validar el CIF
 					} else {
 
