@@ -362,9 +362,7 @@ public class InformesGenericosAction extends MasterAction {
 						if (idTipoInforme.equals("OFICI")) {
 							mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesDesigna);
 							//mapDestino = ofici(mapping, miForm, request, response);
-						} else 
-
-							if (idTipoInforme.equals("FACJG")) {
+						} else 	if (idTipoInforme.equals("FACJG")) {
 								mapDestino = generaInfFacJG(mapping, miForm, request, response);
 							} else if (idTipoInforme.equals("FJGM")) {
 								mapDestino = generaInfFacJG(mapping, miForm, request, response);
@@ -390,6 +388,8 @@ public class InformesGenericosAction extends MasterAction {
 								mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesExpedientes);
 							}else if (idTipoInforme.equals("LIGUA")) {
 								mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesListadoGuardias);
+							} else if (idTipoInforme.equals("JUSDE")) {
+								mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesJustificacion);
 							}  
 							else if (idTipoInforme.equals("DEJG")) {
 								mapDestino = dejg(mapping, miForm, request, response);

@@ -32,12 +32,44 @@
 	type="text/javascript"></script>
 
 <script>
-function informeJustificacion(){
+
+function informeGenerico(){
 	sub();
-	document.InformeJustificacionMasivaForm.modo.value = "informe";
-	//document.InformeJustificacionMasivaForm.submit();
-	var f = document.InformeJustificacionMasivaForm.name;	
-	document.frames.submitArea.location = '<html:rewrite page="/html/jsp/general/loadingWindowOpener.jsp"/>?formName=' + f + '&msg=messages.wait';
+	datos = "";
+	
+		
+	
+	var mostrarTodas = document.InformeJustificacionMasivaForm.mostrarTodas.value;
+	var idInstitucion  =document.InformeJustificacionMasivaForm.idInstitucion.value
+	var idPersona = document.InformeJustificacionMasivaForm.idPersona.value;
+	var anio = document.InformeJustificacionMasivaForm.anio.value;
+	var estado= document.InformeJustificacionMasivaForm.estado.value;
+	var fechaJustificacionDesde = document.InformeJustificacionMasivaForm.fechaJustificacionDesde.value;
+	var fechaJustificacionHasta = document.InformeJustificacionMasivaForm.fechaJustificacionHasta.value;
+	var fechaDesde = document.InformeJustificacionMasivaForm.fechaDesde.value;
+	var fechaHasta = document.InformeJustificacionMasivaForm.fechaHasta.value;
+	var interesadoApellidos = document.InformeJustificacionMasivaForm.interesadoApellidos.value;
+	var interesadoNombre = document.InformeJustificacionMasivaForm.interesadoNombre.value;
+	var incluirEjgNoFavorable = document.InformeJustificacionMasivaForm.incluirEjgNoFavorable.value;
+	var incluirEjgSinResolucion = document.InformeJustificacionMasivaForm.incluirEjgSinResolucion.value;
+	var incluirSinEJG = document.InformeJustificacionMasivaForm.incluirSinEJG.value;
+	var incluirEjgPteCAJG = document.InformeJustificacionMasivaForm.incluirEjgPteCAJG.value;
+	var activarRestriccionesFicha = document.InformeJustificacionMasivaForm.activarRestriccionesFicha.value;
+	var fichaColegial = document.InformeJustificacionMasivaForm.fichaColegial.value; 
+	if(fichaColegial=='true'){
+		document.InformesGenericosForm.enviar.value ='0';
+		activarRestriccionesFicha = 'true';
+	}
+	else{
+		document.InformesGenericosForm.enviar.value ='1';
+	}
+	
+	datos = "fichaColegial=="+fichaColegial+"##mostrarTodas=="+mostrarTodas+ "##idInstitucion==" +idInstitucion+ "##idPersona==" +idPersona+ "##anio==" +anio+ "##estado==" +estado+ "##fechaJustificacionDesde==" +fechaJustificacionDesde+ "##fechaJustificacionHasta==" +fechaJustificacionHasta+ "##fechaDesde==" +fechaDesde+ "##fechaHasta==" +fechaHasta+ "##interesadoApellidos==" +interesadoApellidos+ "##interesadoNombre==" +interesadoNombre+ "##incluirEjgNoFavorable==" +incluirEjgNoFavorable+ "##incluirEjgSinResolucion==" +incluirEjgSinResolucion+ "##incluirSinEJG==" +incluirSinEJG+ "##incluirEjgPteCAJG==" +incluirEjgPteCAJG+ "##activarRestriccionesFicha==" +activarRestriccionesFicha+"%%%";
+	document.InformesGenericosForm.idInstitucion.value = document.InformeJustificacionMasivaForm.idInstitucion.value;
+	document.InformesGenericosForm.datosInforme.value=datos;
+	document.InformesGenericosForm.submit();
+	
+
 				
 }
 
@@ -50,6 +82,9 @@ function ajustarCabeceraTabla(){
 		   document.all.listadoInformeJustificacionCab.width='98.43%';
 		   
 	  }
+}
+function accionCerrar(){
+	
 }
 function refrescarLocal(){
 	parent.buscar();
@@ -602,6 +637,22 @@ function downloadDocumentoResolucion(docResolucion) {
 	<html:hidden property="mensajeResponsabilidadJustificacionLetrado" />
 	<html:hidden property="docResolucion" />
 
+	<html:hidden property="idInstitucion" />
+	<html:hidden property="anio" />
+	<html:hidden property="estado" />
+	<html:hidden property="actuacionesPendientes" />
+	<html:hidden property="fechaJustificacionDesde" />
+	<html:hidden property="fechaJustificacionHasta" />
+	<html:hidden property="fechaDesde" />
+	<html:hidden property="fechaHasta" />
+	<html:hidden property="interesadoApellidos" />
+	<html:hidden property="interesadoNombre" />
+	<html:hidden property="incluirEjgNoFavorable" />
+	<html:hidden property="incluirEjgSinResolucion" />
+	<html:hidden property="incluirSinEJG" />
+	<html:hidden property="incluirEjgPteCAJG" />
+	<html:hidden property="activarRestriccionesFicha" />
+	
 	<input type="hidden" name="tablaDatosDinamicosD">
 	<input type="hidden" name="actionModal" value="">
 
@@ -1558,6 +1609,9 @@ function downloadDocumentoResolucion(docResolucion) {
 			<td class="tdBotones"><input type="button" alt="Informe Justif."
 				id="idInformeJustificacion" onclick="return informeJustificacion();"
 				class="button" name="idButton" value="Informe Justif."></td>
+			<td class="tdBotones"><input type="button" alt="Informe Justif."
+				id="idInformeJustificacion" onclick="return informeGenerico();"
+				class="button" name="idButton" value="Informe Justif."></td>
 		</tr>
 	</table>
 </c:when>
@@ -1602,6 +1656,16 @@ function downloadDocumentoResolucion(docResolucion) {
 
 
 </html:form>
+
+<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
+	<html:hidden property="idInstitucion" />
+	<html:hidden property="idTipoInforme" value="JUSDE"/>
+	<html:hidden property="seleccionados" value="0"/>
+	<html:hidden property="enviar" />
+	<html:hidden property="descargar" value="1"/>
+	<html:hidden property="datosInforme"/>
+</html:form>
+
 <iframe name="submitArea"
 	src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
 	style="display: none"></iframe>

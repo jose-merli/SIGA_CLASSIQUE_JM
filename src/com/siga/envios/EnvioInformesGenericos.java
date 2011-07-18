@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import com.aspose.words.Document;
@@ -29,9 +30,11 @@ import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.AdmInformeBean;
+import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.AdmTipoInformeAdm;
 import com.siga.beans.AdmTipoInformeBean;
 import com.siga.beans.CenColegiadoAdm;
+import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenNoColegiadoAdm;
@@ -62,6 +65,8 @@ import com.siga.beans.HelperInformesAdm;
 import com.siga.beans.ScsDefendidosDesignaAdm;
 import com.siga.beans.ScsDefendidosDesignaBean;
 import com.siga.beans.ScsDesignaAdm;
+import com.siga.beans.ScsDesignaBean;
+import com.siga.beans.ScsDesignasLetradoAdm;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsInclusionGuardiasEnListasAdm;
@@ -71,7 +76,13 @@ import com.siga.beans.ScsPersonaJGAdm;
 import com.siga.beans.ScsUnidadFamiliarEJGAdm;
 import com.siga.certificados.Plantilla;
 import com.siga.envios.form.DefinirEnviosForm;
+import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.form.AcreditacionForm;
+import com.siga.gratuita.form.ActuacionDesignaForm;
+import com.siga.gratuita.form.DefinirEJGForm;
+import com.siga.gratuita.form.DesignaForm;
+import com.siga.gratuita.form.InformeJustificacionMasivaForm;
 import com.siga.informes.InformeCertificadoIRPF;
 import com.siga.informes.InformeColegiadosFacturaciones;
 import com.siga.informes.InformeColegiadosPagos;
@@ -105,7 +116,8 @@ public class EnvioInformesGenericos extends MasterReport {
 	public static final String comunicacionesExpedientes = "EXP";
 	public static final String comunicacionesPagoColegiados = "CPAGO";
 	public static final String comunicacionesFacturacionesColegiados = "CFACT";
-	public static final String comunicacionesListadoGuardias = "LIGUA";		
+	public static final String comunicacionesListadoGuardias = "LIGUA";
+	public static final String comunicacionesJustificacion = "JUSDE";
 	public static final int tipoPlantillaWord= 1;
 	public static final int tipoPlantillaFo = 2;
 	
@@ -468,6 +480,326 @@ public class EnvioInformesGenericos extends MasterReport {
 					idTipoExp, anio, numero, idPersona, true, isSolicitantes);
 
 			htDatosInforme.put("row", vDatosInformeFinal);
+		}else if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesJustificacion)) {
+			ScsDesignasLetradoAdm admDesignas = new ScsDesignasLetradoAdm(usrBean);
+			InformeJustificacionMasivaForm informeJustificacionMasivaForm = new InformeJustificacionMasivaForm();
+			String fichaColegial = (String)datosInforme.get("fichaColegial");
+			informeJustificacionMasivaForm.setFichaColegial(Boolean.valueOf(fichaColegial));
+			informeJustificacionMasivaForm.setIdInstitucion((String)datosInforme.get("idInstitucion"));
+			String mostrarTodas = (String)datosInforme.get("mostrarTodas");
+			informeJustificacionMasivaForm.setMostrarTodas(mostrarTodas);
+			String activarRestriccionesFicha = (String)datosInforme.get("activarRestriccionesFicha");
+			informeJustificacionMasivaForm.setActivarRestriccionesFicha(Boolean.valueOf(activarRestriccionesFicha));
+			informeJustificacionMasivaForm.setIdPersona((String)datosInforme.get("idPersona"));
+			informeJustificacionMasivaForm.setAnio((String)datosInforme.get("anio"));
+			informeJustificacionMasivaForm.setEstado((String)datosInforme.get("estado"));
+			informeJustificacionMasivaForm.setFechaJustificacionDesde((String)datosInforme.get("fechaJustificacionDesde"));
+			informeJustificacionMasivaForm.setFechaJustificacionHasta((String)datosInforme.get("fechaJustificacionHasta"));
+			informeJustificacionMasivaForm.setFechaDesde((String)datosInforme.get("fechaDesde"));
+			informeJustificacionMasivaForm.setFechaHasta((String)datosInforme.get("fechaHasta"));
+			informeJustificacionMasivaForm.setInteresadoApellidos((String)datosInforme.get("interesadoApellidos"));
+			informeJustificacionMasivaForm.setInteresadoNombre((String)datosInforme.get("interesadoNombre"));
+			informeJustificacionMasivaForm.setIncluirEjgNoFavorable((String)datosInforme.get("incluirEjgNoFavorable"));
+			informeJustificacionMasivaForm.setIncluirEjgSinResolucion((String)datosInforme.get("incluirEjgSinResolucion"));
+			informeJustificacionMasivaForm.setIncluirSinEJG((String)datosInforme.get("incluirSinEJG"));
+			informeJustificacionMasivaForm.setIncluirEjgPteCAJG((String)datosInforme.get("incluirEjgPteCAJG"));
+			
+			
+			Vector personasVector = new Vector();
+			
+			Hashtable htCabeceraInforme = null;
+			Hashtable htPersonas = admDesignas.getPersonasSalidaInformeJustificacion(informeJustificacionMasivaForm,true);
+			if(htPersonas==null ||htPersonas.size()<1){
+				throw new SIGAException("messages.informes.ficheroVacio");
+				
+			}else{
+				String hoy = GstDate.getHoyJsp();
+				if(idioma ==null ||idioma.equalsIgnoreCase("")){
+					hoy = EjecucionPLs.ejecutarPLPKG_SIGA_FECHA_EN_LETRA(hoy,"dma",usrBean.getLanguage());
+					idioma = usrBean.getLanguageExt();
+				
+				}else{
+					hoy = EjecucionPLs.ejecutarPLPKG_SIGA_FECHA_EN_LETRA(hoy,"dma",idioma);
+					AdmLenguajesAdm admLenguajes = new AdmLenguajesAdm(usrBean);
+					idioma = admLenguajes.getLenguajeExt(idioma);
+				
+				}
+				
+			
+				//Hashtable htPersonas = getHashPersonaInforme(vRowsInforme,usr,idInstitucion);
+				Iterator itePersonas = htPersonas.keySet().iterator();
+				int j = 0;
+				while (itePersonas.hasNext()) {
+					String keyPersona = (String) itePersonas.next();
+					TreeMap tmRowsInformePorPersona = (TreeMap) htPersonas.get(keyPersona);
+					Vector vRowsInformePorPersona = new Vector();
+					Iterator itRowsDesigna = tmRowsInformePorPersona.keySet().iterator();
+					 
+					while (itRowsDesigna.hasNext()) {
+						String keyRowDesigna = (String) itRowsDesigna.next();
+						Hashtable htRowDesigna = (Hashtable) tmRowsInformePorPersona.get(keyRowDesigna);
+						//esto es de lo viejo lo meto
+						htRowDesigna.put("PENDIENTE"," ");
+						htRowDesigna.put("ACREDITACION_INI"," ");
+						htRowDesigna.put("ACREDITACION_FIN"," ");
+						String estado = (String)htRowDesigna.get(ScsDesignaBean.C_ESTADO);
+						if (estado != null && estado.equals("F"))
+							htRowDesigna.put("BAJA","X");
+						else
+							htRowDesigna.put("BAJA"," ");
+						
+						
+						
+						
+						List<DesignaForm> designaList = (List<DesignaForm>) htRowDesigna.get("designaList");
+						for(DesignaForm designaForm:designaList){
+							String tipoResolucionDesigna = designaForm.getTipoResolucionDesigna();
+							
+							String expedientes = getExpedienteIJ(designaForm.getExpedientes());
+							htRowDesigna.put("EXPEDIENTES", expedientes);
+							if(!designaForm.getPermitidoJustificar()&&informeJustificacionMasivaForm.isActivarRestriccionesFicha()){
+								String acreditacion = "";
+								Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
+								htRowDesignaClone.put("PROCEDIMIENTO", "");
+								htRowDesignaClone.put("CATEGORIA", "");
+								htRowDesignaClone.put("FECHAJUSTIFICACION", "");
+								htRowDesignaClone.put("VALIDADA", "");
+								htRowDesignaClone.put("N_ACTUACION", "");
+								htRowDesignaClone.put("DESCRIPCIONFACTURACION", "");
+								
+								
+								if( tipoResolucionDesigna.equals(admDesignas.resolucionDesignaNoFavorable)){
+									acreditacion = UtilidadesString.getMensajeIdioma(usrBean,"gratuita.informeJustificacionMasiva.resolucionDesignaNoFavorable");
+								}else if( tipoResolucionDesigna.equals(admDesignas.resolucionDesignaSinResolucion)){
+									acreditacion = UtilidadesString.getMensajeIdioma(usrBean,"gratuita.informeJustificacionMasiva.resolucionDesignaSinResolucion");
+									
+								}else if( tipoResolucionDesigna.equals(admDesignas.resolucionDesignaPteCAJG)){
+									acreditacion = UtilidadesString.getMensajeIdioma(usrBean,"gratuita.informeJustificacionMasiva.resolucionDesignaPteCAJG");
+								}else if( tipoResolucionDesigna.equals(admDesignas.resolucionDesignaSinEjg)){
+									acreditacion = UtilidadesString.getMensajeIdioma(usrBean,"gratuita.informeJustificacionMasiva.resolucionDesignaSinEjg");
+									
+								}
+								htRowDesignaClone.put("ACREDITACION", acreditacion);
+								vRowsInformePorPersona.add(htRowDesignaClone);
+										
+							}else{
+								boolean isPrimero = true;
+								if(designaForm.getActuaciones()!=null && designaForm.getActuaciones().size()>0){
+									Map<String, List<ActuacionDesignaForm>> actuacionesMap = designaForm.getActuaciones();
+									Iterator actuacionesIterator = actuacionesMap.keySet().iterator();
+									String categoria = "";
+									String procedimiento = "";
+									while (actuacionesIterator.hasNext()) {
+										String idProcedimineto = (String) actuacionesIterator.next();
+										List<ActuacionDesignaForm> actuacionesList = actuacionesMap.get(idProcedimineto);
+										if(actuacionesList!=null && actuacionesList.size()>0){
+											
+											for (ActuacionDesignaForm actuacionForm : actuacionesList) {
+												categoria = actuacionForm.getCategoria();
+												procedimiento = actuacionForm.getDescripcionProcedimiento();
+												//String acreditacion = actuacionForm.getDescripcion();
+												String acreditacion = actuacionForm.getAcreditacion().getDescripcion();
+												String fechaJustificacion ="";
+												String validada = "";
+												if(actuacionForm.getFechaJustificacion()!=null && !actuacionForm.getFechaJustificacion().equals("")){
+													fechaJustificacion =  actuacionForm.getFechaJustificacion();
+													if(actuacionForm.getValidada().equals("1")){
+														validada = "X";
+													}
+													
+												}												
+												String numeroAsunto="";
+												if (actuacionForm.getNumero()!=null &&!actuacionForm.getNumero().equals("")){
+													numeroAsunto=actuacionForm.getNumero();
+												}
+												
+												String descripcionFacturacion="";
+												if (actuacionForm.getDescripcionFacturacion()!=null && !actuacionForm.getDescripcionFacturacion().equals("")){
+													descripcionFacturacion=actuacionForm.getDescripcionFacturacion();
+												}
+												
+												Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
+												if(isPrimero){
+													isPrimero = false;
+												}else{
+													htRowDesignaClone.put("CODIGODESIGNA", "");
+													htRowDesignaClone.put("EXPEDIENTES", "");
+													htRowDesignaClone.put("IDJUZGADO", "");
+													htRowDesignaClone.put("FECHADESIGNA", "");
+													htRowDesignaClone.put("ASUNTO", "");
+													htRowDesignaClone.put("CLIENTE", "");
+													
+												}
+												htRowDesignaClone.put("CATEGORIA", categoria);
+												htRowDesignaClone.put("PROCEDIMIENTO", procedimiento);
+												htRowDesignaClone.put("ACREDITACION", acreditacion);
+												htRowDesignaClone.put("FECHAJUSTIFICACION", fechaJustificacion);
+												htRowDesignaClone.put("VALIDADA", validada);
+												htRowDesignaClone.put("N_ACTUACION", numeroAsunto);
+												htRowDesignaClone.put("DESCRIPCIONFACTURACION", descripcionFacturacion);
+												vRowsInformePorPersona.add(htRowDesignaClone);
+												
+											}
+											if(designaForm.getAcreditaciones()!=null && designaForm.getAcreditaciones().size()>0){
+												Map<String, List<AcreditacionForm>> acreditacionesMap = designaForm.getAcreditaciones();
+												List<AcreditacionForm> acreditacionesList = acreditacionesMap.get(idProcedimineto);
+												if(acreditacionesList!=null && acreditacionesList.size()>0){
+													for (AcreditacionForm acreditacionForm : acreditacionesList) {
+														//String categoria =  actuacionForm.getCategoria();
+														String fechaJustificacion = "";
+														String validada = "";
+														String numeroAsunto = "";
+														String descripcionFacturacion="";
+														String acreditacion = acreditacionForm.getDescripcion();
+														Hashtable htRowDesignaClone2 = (Hashtable) htRowDesigna.clone();
+														if(isPrimero){
+															isPrimero = false;
+														}else{
+															htRowDesignaClone2.put("CODIGODESIGNA", "");
+															htRowDesignaClone2.put("EXPEDIENTES", "");
+															htRowDesignaClone2.put("IDJUZGADO", "");
+															htRowDesignaClone2.put("FECHADESIGNA", "");
+															htRowDesignaClone2.put("ASUNTO", "");
+															htRowDesignaClone2.put("CLIENTE", "");
+															
+														}
+														htRowDesignaClone2.put("PROCEDIMIENTO", procedimiento);
+														htRowDesignaClone2.put("CATEGORIA", categoria);
+														htRowDesignaClone2.put("ACREDITACION", acreditacion);
+														htRowDesignaClone2.put("FECHAJUSTIFICACION", fechaJustificacion);
+														htRowDesignaClone2.put("VALIDADA", validada);
+														htRowDesignaClone2.put("N_ACTUACION", numeroAsunto);
+														htRowDesignaClone2.put("DESCRIPCIONFACTURACION", descripcionFacturacion);
+														vRowsInformePorPersona.add(htRowDesignaClone2);
+													}
+												}
+											}
+										}
+									}
+								}else{
+									if(designaForm.getIdJuzgado()==null||designaForm.getIdJuzgado().equals("")){
+										
+										String acreditacion = UtilidadesString.getMensajeIdioma(usrBean,"gratuita.informeJustificacionMasiva.aviso.sinJuzgado");
+										Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
+										htRowDesignaClone.put("CATEGORIA", "");
+										htRowDesignaClone.put("PROCEDIMIENTO", "");
+										htRowDesignaClone.put("ACREDITACION", acreditacion);
+										htRowDesignaClone.put("FECHAJUSTIFICACION", "");
+										htRowDesignaClone.put("VALIDADA", "");
+										htRowDesignaClone.put("N_ACTUACION", "");
+										htRowDesignaClone.put("DESCRIPCIONFACTURACION", "");
+										vRowsInformePorPersona.add(htRowDesignaClone);
+										
+									}else if(designaForm.getIdProcedimiento()==null||designaForm.getIdProcedimiento().equals("")){
+										String acreditacion = UtilidadesString.getMensajeIdioma(usrBean,"gratuita.informeJustificacionMasiva.aviso.sinModulo");
+										Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
+										htRowDesignaClone.put("CATEGORIA", "");
+										htRowDesignaClone.put("PROCEDIMIENTO", "");
+										
+										htRowDesignaClone.put("ACREDITACION", acreditacion);
+										htRowDesignaClone.put("FECHAJUSTIFICACION", "");
+										htRowDesignaClone.put("VALIDADA", "");
+										htRowDesignaClone.put("N_ACTUACION", "");
+										htRowDesignaClone.put("DESCRIPCIONFACTURACION", "");
+										vRowsInformePorPersona.add(htRowDesignaClone);
+									}else{
+										String categoria = designaForm.getCategoria();
+										String procedimiento = designaForm.getDescripcionProcedimiento();
+										
+										if(designaForm.getAcreditaciones()!=null && designaForm.getAcreditaciones().size()>0){
+											Map<String, List<AcreditacionForm>> acreditacionesMap = designaForm.getAcreditaciones();
+											Iterator acreditacionesIterator = acreditacionesMap.keySet().iterator(); 
+											while (acreditacionesIterator.hasNext()) {
+												String idProcedimineto = (String) acreditacionesIterator.next();
+												List<AcreditacionForm> acreditacionesList = acreditacionesMap.get(idProcedimineto);
+												if(acreditacionesList!=null && acreditacionesList.size()>0){
+													for (AcreditacionForm acreditacionForm : acreditacionesList) {
+														String acreditacion = acreditacionForm.getDescripcion();
+														Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
+														if(isPrimero){
+															isPrimero = false;
+														}else{
+															htRowDesignaClone.put("CODIGODESIGNA", "");
+															htRowDesignaClone.put("EXPEDIENTES", "");
+															htRowDesignaClone.put("IDJUZGADO", "");
+															htRowDesignaClone.put("FECHADESIGNA", "");
+															htRowDesignaClone.put("ASUNTO", "");
+															htRowDesignaClone.put("CLIENTE", "");
+															
+														}
+														htRowDesignaClone.put("CATEGORIA", categoria);
+														htRowDesignaClone.put("PROCEDIMIENTO", procedimiento);
+														htRowDesignaClone.put("ACREDITACION", acreditacion);
+														htRowDesignaClone.put("FECHAJUSTIFICACION", "");
+														htRowDesignaClone.put("VALIDADA", "");
+														htRowDesignaClone.put("N_ACTUACION", "");
+														htRowDesignaClone.put("DESCRIPCIONFACTURACION", "");
+														vRowsInformePorPersona.add(htRowDesignaClone);
+														
+													}
+												}
+												
+											}
+											
+										}else{
+											
+											String acreditacion = UtilidadesString.getMensajeIdioma(usrBean,"gratuita.informeJustificacionMasiva.literal.moduloSinAcreditaciones");
+											Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
+											htRowDesignaClone.put("CATEGORIA", categoria);
+											htRowDesignaClone.put("PROCEDIMIENTO", procedimiento);
+											htRowDesignaClone.put("ACREDITACION", acreditacion);
+											htRowDesignaClone.put("FECHAJUSTIFICACION", "");
+											htRowDesignaClone.put("VALIDADA", "");
+											htRowDesignaClone.put("N_ACTUACION", "");
+											htRowDesignaClone.put("DESCRIPCIONFACTURACION", "");
+											vRowsInformePorPersona.add(htRowDesignaClone);
+										}
+									}
+									
+									
+									
+								}
+								
+								
+								
+								
+							}
+						}
+					}
+					//En toda las filas tenemos la descripcion del colegiado asi que cogemos la
+					//primera para sacar la cabecera
+					Hashtable htRow = (Hashtable)vRowsInformePorPersona.get(0);
+					htCabeceraInforme = new Hashtable();
+					String nColegiado =  (String)htRow.get(CenColegiadoBean.C_NCOLEGIADO);
+					htCabeceraInforme.put("NCOLEGIADO",nColegiado);
+					htCabeceraInforme.put("ETIQUETA","Nº Colegiado");
+					htCabeceraInforme.put("NOMBRE",(String)htRow.get(CenPersonaBean.C_NOMBRE));
+					htCabeceraInforme.put("FECHA",hoy);
+		
+					String direccion = "";
+					String codPostal = "";
+					String pobLetrado = "";
+					String provLetrado = "";
+					
+					if (htRow!=null && htRow.size()>0) {
+						codPostal = (String)htRow.get("CP_LETRADO");
+						pobLetrado = (String)htRow.get("POBLACION_LETRADO");
+						direccion = (String)htRow.get("DOMICILIO_LETRADO");
+						provLetrado = (String)htRow.get("PROVINCIA_LETRADO");
+					}
+					htCabeceraInforme.put("DIRECCION",direccion);
+					htCabeceraInforme.put("CP",codPostal);
+					htCabeceraInforme.put("POBLACION",pobLetrado);
+					htCabeceraInforme.put("PROVINCIA",provLetrado);
+					htCabeceraInforme.put("CRONOLOGICO",nColegiado);
+					Hashtable aux = new Hashtable();
+					aux.put("row", htCabeceraInforme);
+					aux.put("region", vRowsInformePorPersona);
+					htDatosInforme.put(keyPersona,aux);
+				}
+			}
+			
+
 		}
 		return htDatosInforme;
 
@@ -696,8 +1028,7 @@ public class EnvioInformesGenericos extends MasterReport {
 					}
 
 				}
-			}else
-			if(tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesDesigna)){
+			}else if(tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesDesigna)){
 				String tipoDestinatarioEnvio = (String) datosInforme.get("tipoDestinatario");
 				char[] tipoDestinatario = beanInforme.getDestinatarios().toCharArray();
 				boolean añadir = tipoDestinatarioEnvio==null;
@@ -911,7 +1242,53 @@ public class EnvioInformesGenericos extends MasterReport {
 					
 				}
 				
+			}else if(tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesJustificacion)){
+				Iterator itePersonas = htDatosInformeFinal.keySet().iterator();
+				int j = 0;
+				while (itePersonas.hasNext()) {
+					
+					String keyPersona = (String) itePersonas.next();
+					Hashtable htDatosInforme = (Hashtable)htDatosInformeFinal.get(keyPersona);
+					
+					identificador= new StringBuffer();
+					identificador.append(idInstitucion);
+					identificador.append("_");
+					identificador.append(j);
+					
+					String nColegiado = (String) ((Hashtable) htDatosInforme.get("row")).get("NCOLEGIADO");
+					
+					if(nColegiado!=null && !nColegiado.trim().equals("")){
+						identificador.append("_");
+						identificador.append(nColegiado);
+					}
+					
+					
+					File fileDocumento = getInformeGenerico(beanInforme,	htDatosInforme, idiomaExt, identificador.toString(), usrBean,tipoPlantillaWord);
+					String pathDocumento = fileDocumento.getPath();
+					// Creacion documentos
+					int indice = pathDocumento.lastIndexOf(ClsConstants.FILE_SEP);
+					String descDocumento = "";
+					if (indice > 0)
+						descDocumento = pathDocumento.substring(indice + 1);
 
+					j++;
+					switch (tipoDocumento) {
+					case 1:
+						vDocumentos.add(fileDocumento);
+						break;
+					case 2:
+						Documento documento = new Documento(pathDocumento,
+								descDocumento);
+						vDocumentos.add(documento);
+						break;
+
+					default:
+						break;
+					}
+					
+					
+				}
+				
 
 			}else{
 					if(tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesExpedientes)){
@@ -1817,7 +2194,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		else { //se generan los ficheros para descargar, comprueba cpago cuando se accede por medio de abonos a las cartas de pago
 			if(!isPermisoEnvio || informeGenerico.getIdTipoInforme().equalsIgnoreCase("CPAGO") || informeGenerico.getIdTipoInforme().equalsIgnoreCase("CFACT"))
 				informeGenerico.setDatosInforme(getDatosAEnviar(informeGenerico,getDatosSeparados(informeGenerico.getIdInforme(), "##")));
-			if(informeGenerico.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesEjg)){
+			if(informeGenerico.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesEjg) || informeGenerico.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesJustificacion)){
 				String datos = getDatosAEnviar(informeGenerico, 
 						getDatosSeparados(informeGenerico.getIdInforme(), "##"));
 				informeGenerico.setDatosInforme(datos);
@@ -2685,7 +3062,7 @@ public class EnvioInformesGenericos extends MasterReport {
 //		vCampos = this.setCamposIterantes(vCampos,alClavesDesigna,"idDesignas");
 
 		//Ponemos esta lista para comprobar que no se ha insertado el destinatario
-
+		
 		List<String> lPersonas = new ArrayList<String>();
 		Vector vPlantillas = null;
 		//for (int i = 0; i < vCampos.size(); i++) {  Si hubiera mas de una lista
@@ -4471,6 +4848,246 @@ public class EnvioInformesGenericos extends MasterReport {
 		//return isEnvioBatch;
 
 	}
+	public void gestionarComunicacionJustificaciones(DefinirEnviosForm form, Locale locale, UsrBean userBean)throws ClsExceptions,SIGAException{
+
+
+
+		MasterReport masterReport = new  MasterReport(); 
+		Vector vCampos = masterReport.obtenerDatosFormulario(form);
+		//Tenemos que obtener el letrado de la designa ya que no se saca en la query del
+		//paginador(¡¡¡¡Esta persona se obtiene en la jsp!!!!)
+		if(vCampos.size()==0)
+			throw new SIGAException("No se ha generado ningún envio");
+		
+		String idPersona = getIdColegiadoUnico(form);		
+
+
+		String idInstitucion = userBean.getLocation();
+		
+		
+		
+		//si la persona es null es que hay mas de un colegiado de las distintas designas
+		//si solo hay uno comprobaremos que si hay mas de un solicitante(siempre y cuando algun informe sea
+		// de tipo solicitante)
+		
+		
+		
+		
+		if(idPersona!=null){
+			//String claveIterante = this.getClaveIterante(vCampos);
+			//if(claveIterante!=null){
+			//vCampos = this.setCamposIterantes(vCampos,"idPersona");
+			//}
+			Vector vDocumentos = new Vector();
+			Vector vPlantillas = null;
+			for (int i = 0; i < vCampos.size(); i++) {
+				Hashtable datosInforme = (Hashtable) vCampos.get(i);
+				if(vPlantillas==null){
+					String plantillas = (String) datosInforme.get("plantillas");
+
+					vPlantillas = getPlantillasInforme(plantillas, idInstitucion, userBean);
+				}
+				vDocumentos.addAll(this.getDocumentosAEnviar(datosInforme,vPlantillas, userBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesJustificacion,null));							
+
+			} 
+			Envio envio = getEnvio(form,true,locale, userBean);
+
+
+			// Genera el envio:
+			//Tenemos que mirar si es persona JG o Persona
+			envio.generarEnvio(idPersona, EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,vDocumentos);
+
+		}else{
+			//vCampos = this.obtenerDatosFormulario(form);
+			ScsDesignasLetradoAdm admDesignas = new ScsDesignasLetradoAdm(userBean);
+			InformeJustificacionMasivaForm informeJustificacionMasivaForm = new InformeJustificacionMasivaForm();
+			
+			for (int i = 0; i < vCampos.size(); i++) {
+				//solo habria uno ya solo hay un formularim, pero daigua iteramos
+				Hashtable datosInforme = (Hashtable) vCampos.get(i);
+				String fichaColegial = (String)datosInforme.get("fichaColegial");
+				informeJustificacionMasivaForm.setFichaColegial(Boolean.valueOf(fichaColegial));
+				idInstitucion  = (String)datosInforme.get("idInstitucion");
+				informeJustificacionMasivaForm.setIdInstitucion(idInstitucion);
+				String mostrarTodas = (String)datosInforme.get("mostrarTodas");
+				informeJustificacionMasivaForm.setMostrarTodas(mostrarTodas);
+				String activarRestriccionesFicha = (String)datosInforme.get("activarRestriccionesFicha");
+				informeJustificacionMasivaForm.setActivarRestriccionesFicha(Boolean.valueOf(activarRestriccionesFicha));
+				informeJustificacionMasivaForm.setIdPersona((String)datosInforme.get("idPersona"));
+				informeJustificacionMasivaForm.setAnio((String)datosInforme.get("anio"));
+				informeJustificacionMasivaForm.setEstado((String)datosInforme.get("estado"));
+				informeJustificacionMasivaForm.setFechaJustificacionDesde((String)datosInforme.get("fechaJustificacionDesde"));
+				informeJustificacionMasivaForm.setFechaJustificacionHasta((String)datosInforme.get("fechaJustificacionHasta"));
+				informeJustificacionMasivaForm.setFechaDesde((String)datosInforme.get("fechaDesde"));
+				informeJustificacionMasivaForm.setFechaHasta((String)datosInforme.get("fechaHasta"));
+				informeJustificacionMasivaForm.setInteresadoApellidos((String)datosInforme.get("interesadoApellidos"));
+				informeJustificacionMasivaForm.setInteresadoNombre((String)datosInforme.get("interesadoNombre"));
+				informeJustificacionMasivaForm.setIncluirEjgNoFavorable((String)datosInforme.get("incluirEjgNoFavorable"));
+				informeJustificacionMasivaForm.setIncluirEjgSinResolucion((String)datosInforme.get("incluirEjgSinResolucion"));
+				informeJustificacionMasivaForm.setIncluirSinEJG((String)datosInforme.get("incluirSinEJG"));
+				informeJustificacionMasivaForm.setIncluirEjgPteCAJG((String)datosInforme.get("incluirEjgPteCAJG"));
+				String idTipoInforme = (String) datosInforme.get("idTipoInforme");
+				String plantillas = (String) datosInforme.get("plantillas");
+
+			
+			
+				Hashtable htPersonas = admDesignas.getPersonasSalidaInformeJustificacion(informeJustificacionMasivaForm,false);
+				
+				String idioma = null;
+				EnvEnvioProgramadoAdm envioProgramadoAdm  = new EnvEnvioProgramadoAdm(userBean);
+				EnvProgramInformesAdm programInformesAdm = new EnvProgramInformesAdm(userBean);
+				EnvDestProgramInformesAdm destProgramInformesAdm = new EnvDestProgramInformesAdm(userBean);
+				EnvInformesGenericosAdm informesGenericoAdm = new EnvInformesGenericosAdm(userBean);
+				EnvEnvioProgramadoBean envioProgramado = null;
+				EnvProgramInformesBean programInformes = null;
+				EnvDestProgramInformesBean destProgramInformes = null;
+				EnvInformesGenericosBean informesBean = null;
+		
+				EnvValorCampoClaveAdm valorCampoClaveAdm = new EnvValorCampoClaveAdm(userBean);
+		
+				envioProgramado = new EnvEnvioProgramadoBean();
+				envioProgramado.setIdEnvio(envioProgramadoAdm.getNewIdEnvio(idInstitucion));
+				envioProgramado.setIdInstitucion(new Integer(idInstitucion));
+				envioProgramado.setIdTipoEnvios(new Integer(form.getIdTipoEnvio()));
+				envioProgramado.setIdPlantillaEnvios(Integer.valueOf(form.getIdPlantillaEnvios()));
+				if (form.getIdPlantillaGeneracion()!=null && !form.getIdPlantillaGeneracion().equals("")) {
+					envioProgramado.setIdPlantilla(Integer.valueOf(form.getIdPlantillaGeneracion()));
+				} else {
+					envioProgramado.setIdPlantilla(null);
+				}
+		
+				envioProgramado.setNombre(form.getNombre());
+				envioProgramado.setEstado(ClsConstants.DB_FALSE);
+				envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(), locale, userBean));
+		
+				envioProgramadoAdm.insert(envioProgramado);
+		
+				boolean isInformeProgramado = false;
+				boolean isInformesInsertados = false;
+				ArrayList alClavesJustificacion = new ArrayList();
+				alClavesJustificacion.add("fichaColegial");
+		
+				alClavesJustificacion.add("idInstitucion");
+				alClavesJustificacion.add("mostrarTodas");
+		
+				alClavesJustificacion.add("activarRestriccionesFicha");
+		
+				alClavesJustificacion.add("idPersona");
+				alClavesJustificacion.add("anio");
+				alClavesJustificacion.add("estado");
+				alClavesJustificacion.add("fechaJustificacionDesde");
+				alClavesJustificacion.add("fechaJustificacionHasta");
+				alClavesJustificacion.add("fechaDesde");
+				alClavesJustificacion.add("fechaHasta");
+				alClavesJustificacion.add("interesadoApellidos");
+				alClavesJustificacion.add("interesadoNombre");
+				alClavesJustificacion.add("incluirEjgNoFavorable");
+				alClavesJustificacion.add("incluirEjgSinResolucion");
+				alClavesJustificacion.add("incluirSinEJG");
+				alClavesJustificacion.add("incluirEjgPteCAJG");
+				
+				
+				
+		
+		//		vCampos = this.setCamposIterantes(vCampos,alClavesDesigna,"idDesignas");
+		
+				//Ponemos esta lista para comprobar que no se ha insertado el destinatario
+		
+				List<String> lPersonas = new ArrayList<String>();
+				if(htPersonas==null ||htPersonas.size()<1){
+					throw new SIGAException("messages.informes.ficheroVacio");
+					
+				}else{
+						//Hashtable htPersonas = getHashPersonaInforme(vRowsInforme,usr,idInstitucion);
+					Iterator itePersonas = htPersonas.keySet().iterator();
+					
+					while (itePersonas.hasNext()) {
+						idPersona = (String) itePersonas.next();
+				
+						Vector vPlantillas = null;
+						List<EnvDestProgramInformesBean> lDestinatarios = new ArrayList<EnvDestProgramInformesBean>();
+						List<String> lDestPersonas = new ArrayList<String>();
+						if(!isInformeProgramado){
+							programInformes = new EnvProgramInformesBean();
+							programInformes.setIdProgram(programInformesAdm.getNewIdProgramInformes(idInstitucion));
+							programInformes.setIdEnvio(envioProgramado.getIdEnvio());
+							programInformes.setIdInstitucion(envioProgramado.getIdInstitucion());
+							idioma = userBean.getLanguage();
+							programInformes.setIdioma(new Integer(idioma));
+							programInformes.setEstado(ClsConstants.DB_FALSE);
+							programInformes.setPlantillas(plantillas);
+							programInformes.setIdTipoInforme(idTipoInforme);
+			
+							programInformesAdm.insert(programInformes);
+			
+							informesBean = new EnvInformesGenericosBean();
+							informesBean.setIdProgram(programInformes.getIdProgram());
+							informesBean.setIdEnvio(programInformes.getIdEnvio());
+							informesBean.setIdInstitucion(programInformes.getIdInstitucion());
+			
+							vPlantillas = getPlantillasInforme(plantillas, idInstitucion, userBean);
+			
+			
+							for (int j = 0; j < vPlantillas.size(); j++) {
+								AdmInformeBean informeBean = (AdmInformeBean)vPlantillas.get(j);
+								informesBean.setIdPlantilla(informeBean.getIdPlantilla());
+								informesGenericoAdm.insert(informesBean);
+			
+							}
+			
+			
+			
+							isInformeProgramado = true;
+			
+			
+			
+						}
+			
+						destProgramInformes = new EnvDestProgramInformesBean();
+						destProgramInformes.setIdProgram(programInformes.getIdProgram());
+						destProgramInformes.setIdEnvio(programInformes.getIdEnvio());
+						destProgramInformes.setIdInstitucion(programInformes.getIdInstitucion());
+						destProgramInformes.setIdPersona(new Long(idPersona));
+						destProgramInformes.setIdInstitucionPersona(new Integer(idInstitucion));
+						destProgramInformes.setTipoDestinatario(EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA);
+						destProgramInformesAdm.insert(destProgramInformes);
+		
+						EnvValorCampoClaveBean valorCampoClave = null;
+						//Iterator itClave = htClaves.keySet().iterator();
+						valorCampoClave = new EnvValorCampoClaveBean();
+						for (int k = 0; k < lDestinatarios.size(); k++) {
+							destProgramInformes = (EnvDestProgramInformesBean) lDestinatarios.get(k);  
+			
+							valorCampoClave.setIdValor(valorCampoClaveAdm.getNewIdEnvio());
+							for (int j = 0; j < alClavesJustificacion.size(); j++) {
+								String  clave = (String)alClavesJustificacion.get(j);
+								String valorClave = (String)datosInforme.get(clave);
+								valorCampoClave.setIdProgram(destProgramInformes.getIdProgram());
+								valorCampoClave.setIdEnvio(destProgramInformes.getIdEnvio());
+								valorCampoClave.setIdInstitucion(destProgramInformes.getIdInstitucion());
+								valorCampoClave.setIdPersona(destProgramInformes.getIdPersona());
+								valorCampoClave.setIdInstitucionPersona(destProgramInformes.getIdInstitucionPersona());
+			
+								valorCampoClave.setIdTipoInforme(idTipoInforme);
+								valorCampoClave.setClave("justificaciones");
+								valorCampoClave.setCampo(clave);
+								valorCampoClave.setValor(valorClave);
+								valorCampoClaveAdm.insert(valorCampoClave);
+			
+							}
+						}
+					}
+				}
+			
+			}
+			setEnvioBatch(true);
+
+		}
+		//return isEnvioBatch;
+
+	}
+	
+	
 	
 	/**
 	 * Metodo que gestiona el envio y comunicacion de Expedientes
@@ -4770,6 +5387,24 @@ public class EnvioInformesGenericos extends MasterReport {
 		//return isEnvioBatch;
 
 	}
+	private String getExpedienteIJ(List<DefinirEJGForm> ejgList){
+		StringBuffer expedientes = new StringBuffer("");
+		if(ejgList!=null && ejgList.size()>0){
+			for(DefinirEJGForm ejgForm:ejgList){
+				expedientes.append(ejgForm.getNombre());
+				expedientes.append(", ");
+				
+			}
+			//quitamos la ltima coma
+			expedientes.delete(expedientes.lastIndexOf(","), expedientes.length());
+			
+		}
+		
+		
+		return expedientes.toString();
+		
+	}
+	
 	public boolean isAlguienEjecutando(){
 		synchronized(EnvioInformesGenericos.alguienEjecutando){
 			if (!EnvioInformesGenericos.alguienEjecutando){

@@ -774,6 +774,20 @@ public class DefinirEnviosAction extends MasterAction {
 				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.genericos.ejg.asunto");
 
 
+			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesJustificacion)){
+				
+				Hashtable htPersonas = new Hashtable();
+				MasterReport masterReport = new  MasterReport(); 
+				Vector vCampos = masterReport.obtenerDatosFormulario(form);
+				Hashtable ht = (Hashtable) vCampos.get(0); 
+				idPersona = (String) ht.get("idPersona");
+				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")));//
+				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
+				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null)); 
+
+
+				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.genericos.justificacion.asunto");
+
 			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesCenso)){
 				idPersona = getIdColegiadoUnico(form);
 
@@ -1267,6 +1281,17 @@ public class DefinirEnviosAction extends MasterAction {
 				try {
 					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 					envioInformesGenericos.gestionarComunicacionListadoGuardias(form,  request.getLocale(), userBean);
+					idEnvio = form.getIdEnvio();
+					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
+				} catch (Exception e) {
+					throwExcp("facturacion.consultaMorosos.errorInformes", new String[] {"modulo.facturacion"}, e, null);
+				}
+
+			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesJustificacion)){
+				
+				try {
+					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
+					envioInformesGenericos.gestionarComunicacionJustificaciones(form,  request.getLocale(), userBean);
 					idEnvio = form.getIdEnvio();
 					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
 				} catch (Exception e) {
