@@ -16,6 +16,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
@@ -32,7 +33,6 @@ import com.siga.beans.ExpDenunciadoAdm;
 import com.siga.beans.ExpDenunciadoBean;
 import com.siga.beans.ExpExpedienteAdm;
 import com.siga.beans.ExpExpedienteBean;
-import com.siga.censo.form.BusquedaClientesForm;
 import com.siga.expedientes.form.ExpDenunciadoForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -155,7 +155,7 @@ public class ExpDenunciadoAction extends MasterAction {
 			StringBuffer where= new StringBuffer("where ");
 			where.append(ExpCampoTipoExpedienteBean.C_IDINSTITUCION).append("=").append(idInstitucion)
 				 .append(" and ").append(ExpCampoTipoExpedienteBean.C_IDTIPOEXPEDIENTE).append("=").append(idTipoExpediente)
-				 .append(" and ").append(ExpCampoTipoExpedienteBean.C_IDCAMPO).append("=").append(16)
+				 .append(" and ").append(ExpCampoTipoExpedienteBean.C_IDCAMPO).append("=").append(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_DENUNCIADO)
 				 .append(" and ").append(ExpCampoTipoExpedienteBean.C_NOMBRE).append(" like ").append("'%impugnado%'");
 			ExpCampoTipoExpedienteAdm campoTipoExpedienteAdm = new ExpCampoTipoExpedienteAdm (this.getUserBean(request));
 			Vector resultado=campoTipoExpedienteAdm.select(where.toString());

@@ -76,7 +76,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			Hashtable h = new Hashtable();
 			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDINSTITUCION, this.getIDInstitucion(request));
 			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDTIPOEXPEDIENTE, request.getParameter("idTipoExpediente"));
-			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer("12")); // Minuta
+			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_MINUTA_INICIAL)); // Minuta
 			Vector v = adm.select(h);
 			if (v != null && v.size() > 0) {
 				ExpCampoTipoExpedienteBean b = (ExpCampoTipoExpedienteBean)v.get(0);
@@ -87,7 +87,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			h = new Hashtable();
 			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDINSTITUCION, this.getIDInstitucion(request));
 			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDTIPOEXPEDIENTE, request.getParameter("idTipoExpediente"));
-			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer("13")); // Minuta final
+			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_MINUTA_FINAL)); // Minuta final
 			v = adm.select(h);
 			if (v != null && v.size() > 0) {
 				ExpCampoTipoExpedienteBean b = (ExpCampoTipoExpedienteBean)v.get(0);
@@ -99,7 +99,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			h = new Hashtable();
 			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDINSTITUCION, this.getIDInstitucion(request));
 			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDTIPOEXPEDIENTE, request.getParameter("idTipoExpediente"));
-			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer("15")); // Derechos
+			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_DERECHOS_COLEGIALES)); // Derechos
 			v = adm.select(h);
 			if (v != null && v.size() > 0) {
 				ExpCampoTipoExpedienteBean b = (ExpCampoTipoExpedienteBean)v.get(0);
@@ -107,7 +107,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			}
 			
 			
-			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer("9")); // Denunciante/Impugnante
+			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_DENUNCIANTE)); // Denunciante/Impugnante
 			v = adm.select(h);
 			
 			//Obtenemos el Titulo Impugnante o Denunciante
@@ -117,6 +117,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			
 			if (v != null && v.size() > 0) {
 				aux = (ExpCampoTipoExpedienteBean)v.get(0);
+				request.setAttribute("mostrarDenunciante",aux.getVisible());
 				nombreAux = aux.getNombre();
 				if(nombreAux ==null||nombreAux.equals(""))
 					nombreAux = ExpCampoTipoExpedienteBean.DENUNCIANTE;
@@ -128,13 +129,14 @@ public class ExpDatosGeneralesAction extends MasterAction
 			String nombre = "pestana.auditoriaexp.interesado";
 			if (v != null && v.size() > 0) {
 				ExpCampoTipoExpedienteBean b = (ExpCampoTipoExpedienteBean)v.get(0);
-			
+				
 				if(b.getVisible()!=null && b.getVisible().equals(ExpCampoTipoExpedienteBean.si)){
 				
-					UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer("16")); // Denunciado/Impugnado
+					UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_DENUNCIADO)); // Denunciado/Impugnado
 					v = adm.select(h);
 					if (v != null && v.size() > 0) {
 						b = (ExpCampoTipoExpedienteBean)v.get(0);
+						request.setAttribute("mostrarDenunciado",b.getVisible());
 						nombre = b.getNombre();
 						if(nombre ==null||nombre.equals(""))
 							nombre = ExpCampoTipoExpedienteBean.DENUNCIADO;

@@ -603,7 +603,26 @@ MDB Microsoft Access Database
     public static final String GEN_PARAM_ACEPTAR_SOLICITUD_BAJA_TEMPORAL="ACEPTAR_SOLICITUD_BAJA_TEMPORAL";
 	
 	public static final String PARAM_ESFICHACOLEGIAL = "esFichaColegial";
-  
+	
+	
+	//IDCAMPOS para tipos de expedientes
+	public static final int IDCAMPO_TIPOEXPEDIENTE_N_DISCIPLINARIO = 2;
+	public static final int IDCAMPO_TIPOEXPEDIENTE_ESTADO = 3;
+	public static final int IDCAMPO_TIPOEXPEDIENTE_INSTITUCION = 4;
+	public static final int IDCAMPO_TIPOEXPEDIENTE_ASUNTOJUDICIAL = 5;
+	public static final int IDCAMPO_TIPOEXPEDIENTE_ALERTAS = 6;
+	public static final int IDCAMPO_TIPOEXPEDIENTE_DOCUMENTACION = 7;
+	public static final int IDCAMPO_TIPOEXPEDIENTE_SEGUIMIENTO = 8;
+	public static final int IDCAMPO_TIPOEXPEDIENTE_DENUNCIANTE = 9;
+	public static final int IDCAMPO_TIPOEXPEDIENTE_PARTES = 10;
+	public static final int IDCAMPO_TIPOEXPEDIENTE_RESOLUCION = 11;
+	public static final int IDCAMPO_TIPOEXPEDIENTE_MINUTA_INICIAL = 12;
+	public static final int IDCAMPO_TIPOEXPEDIENTE_MINUTA_FINAL = 13;
+	public static final int IDCAMPO_TIPOEXPEDIENTE_RESULTADO_INFORME = 14;
+	public static final int IDCAMPO_TIPOEXPEDIENTE_DERECHOS_COLEGIALES = 15;
+	public static final int IDCAMPO_TIPOEXPEDIENTE_DENUNCIADO = 16;
+
+	
   public ClsConstants() {
   }
   /**

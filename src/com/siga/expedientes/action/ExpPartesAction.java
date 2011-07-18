@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.ActionMapping;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
@@ -107,7 +108,7 @@ public class ExpPartesAction extends MasterAction {
 			StringBuffer sbWhere= new StringBuffer("where ");
 			sbWhere.append(ExpCampoTipoExpedienteBean.C_IDINSTITUCION).append("=").append(idInstitucion)
 				 .append(" and ").append(ExpCampoTipoExpedienteBean.C_IDTIPOEXPEDIENTE).append("=").append(idTipoExpediente)
-				 .append(" and ").append(ExpCampoTipoExpedienteBean.C_IDCAMPO).append("=").append(9)
+				 .append(" and ").append(ExpCampoTipoExpedienteBean.C_IDCAMPO).append("=").append(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_DENUNCIANTE)
 				 .append(" and ").append(ExpCampoTipoExpedienteBean.C_NOMBRE).append(" like ").append("'%impugnante%'");
 			ExpCampoTipoExpedienteAdm campoTipoExpedienteAdm = new ExpCampoTipoExpedienteAdm (this.getUserBean(request));
 			Vector resultado=campoTipoExpedienteAdm.select(sbWhere.toString());

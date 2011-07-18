@@ -267,56 +267,56 @@ public class CampoTipoExpedienteAction extends MasterAction {
  	    return "exito";
 	}	
 
-	protected void establecerCheck(int idCampo,String visible,String nombre, CampoTipoExpedienteForm form)
-	{
-	    switch(idCampo){	    
-		    case 1:
+	protected void establecerCheck(int idCampo,String visible,String nombre, CampoTipoExpedienteForm form){
+		
+		int campo = idCampo + 1;
+	    switch(campo){	    
+		    case ClsConstants.IDCAMPO_TIPOEXPEDIENTE_N_DISCIPLINARIO:
 		        form.setNexpDisciplinario(visible.equals("S"));
 		        break;
-		    case 2:
+		    case ClsConstants.IDCAMPO_TIPOEXPEDIENTE_ESTADO:
 		        form.setEstado(visible.equals("S"));
 		        break;
-		    case 3:
+		    case ClsConstants.IDCAMPO_TIPOEXPEDIENTE_INSTITUCION:
 		        form.setInstitucion(visible.equals("S"));
 		        break;
-		    case 4:
+		    case ClsConstants.IDCAMPO_TIPOEXPEDIENTE_ASUNTOJUDICIAL:
 		        form.setAsuntoJudicial(visible.equals("S"));
 		        break;
-		    case 5:
+		    case ClsConstants.IDCAMPO_TIPOEXPEDIENTE_ALERTAS:
 		        form.setAlertas(visible.equals("S"));
 		        break;
-		    case 6:
+		    case ClsConstants.IDCAMPO_TIPOEXPEDIENTE_DOCUMENTACION:
 		        form.setDocumentacion(visible.equals("S"));
 		        break;
-		    case 7:
+		    case ClsConstants.IDCAMPO_TIPOEXPEDIENTE_SEGUIMIENTO:
 		        form.setSeguimiento(visible.equals("S"));
 		        break;
-		    case 8:
+		    case ClsConstants.IDCAMPO_TIPOEXPEDIENTE_DENUNCIANTE:
 		    	if(nombre ==null||nombre.equals(""))
 		    		nombre = ExpCampoTipoExpedienteBean.DENUNCIANTE;
 		    	form.setNombreCampoDenunciante(nombre);
 		        form.setDenunciantes(visible.equals("S"));
 		        break;
-		    case 9:
+		    case ClsConstants.IDCAMPO_TIPOEXPEDIENTE_PARTES:
 		        form.setPartes(visible.equals("S"));
 		        break;    
-			case 10:
+			case ClsConstants.IDCAMPO_TIPOEXPEDIENTE_RESOLUCION:
 		        form.setResolucion(visible.equals("S"));
-		        break;	        
-	
-			case 11:
+		        break;	        	
+			case ClsConstants.IDCAMPO_TIPOEXPEDIENTE_MINUTA_INICIAL:
 		        form.setMinutaInicial(visible.equals("S"));
 		        break;	        
-			case 13:
-		        form.setResultadoInforme(visible.equals("S"));
-		        break;
-			case 12:
+			case ClsConstants.IDCAMPO_TIPOEXPEDIENTE_MINUTA_FINAL:
 		        form.setMinutaFinal(visible.equals("S"));
 		        break;
-			case 14:
+			case ClsConstants.IDCAMPO_TIPOEXPEDIENTE_RESULTADO_INFORME:
+		        form.setResultadoInforme(visible.equals("S"));
+		        break;
+			case ClsConstants.IDCAMPO_TIPOEXPEDIENTE_DERECHOS_COLEGIALES:
 		        form.setDerechos(visible.equals("S"));
 		        break;		        
-			case 15:
+			case ClsConstants.IDCAMPO_TIPOEXPEDIENTE_DENUNCIADO:
 				if(nombre ==null||nombre.equals(""))
 		    		nombre = ExpCampoTipoExpedienteBean.DENUNCIADO;
 		    	form.setNombreCampoDenunciado(nombre);

@@ -99,7 +99,7 @@ public class PestanaConfigurableAction extends MasterAction {
 		StringBuffer sbWhere= new StringBuffer("where ");
 		sbWhere.append(ExpCampoTipoExpedienteBean.C_IDINSTITUCION).append("=").append(idInstitucion)
 			 .append(" and ").append(ExpCampoTipoExpedienteBean.C_IDTIPOEXPEDIENTE).append("=").append(idTipoExpediente)
-			 .append(" and ").append(ExpCampoTipoExpedienteBean.C_IDCAMPO).append("=").append(9)
+			 .append(" and ").append(ExpCampoTipoExpedienteBean.C_IDCAMPO).append("=").append(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_DENUNCIANTE)
 			 .append(" and ").append(ExpCampoTipoExpedienteBean.C_NOMBRE).append(" like ").append("'%impugnante%'");
 		ExpCampoTipoExpedienteAdm campoTipoExpedienteAdm = new ExpCampoTipoExpedienteAdm (this.getUserBean(request));
 		Vector resultado=campoTipoExpedienteAdm.select(sbWhere.toString());
