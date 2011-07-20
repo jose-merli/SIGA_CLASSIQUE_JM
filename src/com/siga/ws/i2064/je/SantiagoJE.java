@@ -47,6 +47,7 @@ import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificacione
 import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado.Asuntos.Datosatestado.UnidadYJuzgado.Juzgado;
 import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado.Asuntos.Datosatestado.UnidadYJuzgado.UnidadPolicial;
 import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado.Asuntos.IDExpAXG.Prov;
+import com.siga.ws.i2064.je.xsd.PROCBAREMOTYPE.PROCPORCENTUAL;
 
 public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 
@@ -234,8 +235,21 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 		Long l = SigaWSHelper.getLong("número del procedimiento", hash.get(TO_J_NUM_PROC));
 		if (l != null) procbaremotype.setNUMPROC(l);
 		String st = hash.get(TO_J_DESC_PROC);
-		if (st != null && st.trim().equals("")) {
+		if (st != null) {
 			procbaremotype.setDESCPROC(st);
+		}
+		String porcentaje = hash.get(TO_J_PORCENTAJE);
+		String codBaremoPorcentaje = hash.get(TO_J_COD_BAREM_POR);
+		if (!vacio(porcentaje) && !vacio(codBaremoPorcentaje)) {
+			PROCPORCENTUAL procPorcentual = procbaremotype.addNewPROCPORCENTUAL();
+			sh = SigaWSHelper.getShort("porcentaje", porcentaje);
+			if (sh != null) {
+				procPorcentual.setPORCENTAJE(sh);
+			}
+			sh = SigaWSHelper.getShort("código acreditación", codBaremoPorcentaje);
+			if (sh != null) {
+				procPorcentual.setCODBAREMO(sh);
+			}
 		}
 	}
 

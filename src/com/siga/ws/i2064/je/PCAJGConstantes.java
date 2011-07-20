@@ -73,6 +73,8 @@ public interface PCAJGConstantes {
 	public final String TO_J_COD_BAREMO = "TO_J_COD_BAREMO";
 	public final String TO_J_ANO_PROC = "TO_J_ANO_PROC";
 	public final String TO_J_NUM_PROC = "TO_J_NUM_PROC";
+	public final String TO_J_PORCENTAJE = "TO_J_PORCENTAJE";
+	public final String TO_J_COD_BAREM_POR = "TO_J_COD_BAREM_POR";
 	public final String TO_J_DESC_PROC = "TO_J_DESC_PROC";
 	public final String TO_S_NOME = "TO_S_NOME";
 	public final String TO_S_PRIMER_APELLIDO = "TO_S_PRIMER_APELLIDO";
