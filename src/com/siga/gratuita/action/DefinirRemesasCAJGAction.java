@@ -735,8 +735,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				hashRemesa.put("IDINSTITUCION", idInstitucion);
 				hashRemesa.put("IDREMESA", miForm.getIdRemesa());				
 				CajgRemesaAdm admRemesa = new CajgRemesaAdm(this.getUserBean(request));
-				CajgRespuestaEJGRemesaAdm RespuestaEJGRemesaAdm = new CajgRespuestaEJGRemesaAdm(this.getUserBean(request));
-				RespuestaEJGRemesaAdm.eliminaAnterioresErrores(Integer.parseInt(idInstitucion), Integer.parseInt(miForm.getIdRemesa()));				
+				CajgRespuestaEJGRemesaAdm respuestaEJGRemesaAdm = new CajgRespuestaEJGRemesaAdm(this.getUserBean(request));
+				respuestaEJGRemesaAdm.eliminaAnterioresErrores(Integer.parseInt(idInstitucion), Integer.parseInt(miForm.getIdRemesa()));				
 				admRemesa.delete(hashRemesa);
 
 				eliminaFicheroTXTGenerado(idInstitucion, miForm.getIdRemesa());
@@ -1628,6 +1628,9 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		
 		try {		
 			eliminaFicheroTXTGenerado(idInstitucion, form.getIdRemesa());//por si se estan regenerando...
+			CajgRespuestaEJGRemesaAdm respuestaEJGRemesaAdm = new CajgRespuestaEJGRemesaAdm(this.getUserBean(request));
+			respuestaEJGRemesaAdm.eliminaAnterioresErrores(Integer.parseInt(idInstitucion), Integer.parseInt(form.getIdRemesa()));
+			
 			File fileZIP = generaFicherosTXT(idInstitucion, form.getIdRemesa(), nombreFicheroPorDefecto, mensaje, null);
 				
 			if (fileZIP != null) {
