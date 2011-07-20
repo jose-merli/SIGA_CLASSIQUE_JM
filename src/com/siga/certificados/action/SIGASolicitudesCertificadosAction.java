@@ -22,6 +22,9 @@ import com.siga.certificados.form.*;
 
 public class SIGASolicitudesCertificadosAction extends MasterAction
 {
+	
+	public static Hashtable<String,Integer> contadores = new Hashtable<String, Integer>();
+	
 	public ActionForward executeInternal (ActionMapping mapping, ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
 	{
     	String mapDestino = "exception";
@@ -783,37 +786,14 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 						// obtenemos el contador de la FK del producto
 						String idContador=beanProd.getIdContador();
 						
-						Hashtable contadorTablaHash=gc.getContador(new Integer(idInstitucion),idContador);
-							
-						
-						if (!tieneContador && contadorTablaHash.get("MODO").toString().equals("0")){
-							// MODO REGISTRO. Se suponen siempre asi estos
-							
-							Integer longitud= new Integer((contadorTablaHash.get("LONGITUDCONTADOR").toString()));
-							int longitudContador=longitud.intValue();
-							
-							int numContador= new Integer((contadorTablaHash.get("CONTADOR").toString())).intValue();
-							gc.validarLogitudContador(numContador,contadorTablaHash);
-							
-							//Comprobamos la unicidad de este contador junto con el prefijo y sufijo guardado en la hash contador
-							while(gc.comprobarUnicidadContadorProdCertif(numContador,contadorTablaHash, idTipoProducto, idProducto, idProductoInstitucion)){
-								numContador++;
-								gc.validarLogitudContador(numContador,contadorTablaHash);
-							}
-							
-						  	Integer contadorSugerido=new Integer(numContador);
-						  	String contadorFinalSugerido=UtilidadesString.formatea(contadorSugerido,longitudContador,true);
-						  	
-						  	htNew.put(CerSolicitudCertificadosBean.C_PREFIJO_CER,(String)contadorTablaHash.get("PREFIJO"));
-						  	htNew.put(CerSolicitudCertificadosBean.C_SUFIJO_CER,(String)contadorTablaHash.get("SUFIJO"));
-						  	htNew.put(CerSolicitudCertificadosBean.C_CONTADOR_CER,contadorFinalSugerido);
-						  
-						  	gc.setContador(contadorTablaHash,contadorFinalSugerido);
-							
-						}
+						// INICIO BLOQUE SINCRONIZADO 
+						obtenerContadorSinronizado(gc, idInstitucionOrigen, idContador, idTipoProducto, idProducto, idProductoInstitucion, tieneContador, htNew);
+						//FIN BLOQUE SINCRONIZADO 				
+
 						///////////////////////////////////////////////
                         if (!htNew.get(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO).equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO)){
 					      htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO);    
+					      htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
                         }
 
 					    String[] claves = {CerSolicitudCertificadosBean.C_IDINSTITUCION, CerSolicitudCertificadosBean.C_IDSOLICITUD};
@@ -826,7 +806,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 				        }
 				        
 					  	htNew.put(CerSolicitudCertificadosBean.C_FECHAMODIFICACION,"sysdate");
-					  	htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
+					  	htNew.put(CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO,"sysdate");
+					  	
 					    
 				        if (!admSolicitud.updateDirect(htNew, claves, campos ))
 					    {
@@ -1117,39 +1098,15 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 //						String idContador="PYS_"+idTipoProducto+"_"+idProducto+"_"+idProductoInstitucion;
 						String idContador="";
 						idContador=beanProd.getIdContador();
-						Hashtable contadorTablaHash=gc.getContador(new Integer(idInstitucion),idContador);
-							
 						
-						if (!tieneContador && contadorTablaHash.get("MODO").toString().equals("0")){
-							// MODO REGISTRO. Se suponen siempre asi estos
-							
-							Integer longitud= new Integer((contadorTablaHash.get("LONGITUDCONTADOR").toString()));
-							int longitudContador=longitud.intValue();
-							
-							int numContador= new Integer((contadorTablaHash.get("CONTADOR").toString())).intValue();
-							gc.validarLogitudContador(numContador,contadorTablaHash);
-							
-							//Comprobamos la unicidad de este contador junto con el prefijo y sufijo guardado en la hash contador
-							while(gc.comprobarUnicidadContadorProdCertif(numContador,contadorTablaHash, idTipoProducto, idProducto, idProductoInstitucion)){
-								numContador++;
-								gc.validarLogitudContador(numContador,contadorTablaHash);
-							}
-							
-						  	Integer contadorSugerido=new Integer(numContador);
-						  	String contadorFinalSugerido=UtilidadesString.formatea(contadorSugerido,longitudContador,true);
-						  	
-						  	htNew.put(CerSolicitudCertificadosBean.C_PREFIJO_CER,(String)contadorTablaHash.get("PREFIJO"));
-						  	htNew.put(CerSolicitudCertificadosBean.C_SUFIJO_CER,(String)contadorTablaHash.get("SUFIJO"));
-						  	htNew.put(CerSolicitudCertificadosBean.C_CONTADOR_CER,contadorFinalSugerido);
-						  
-						  	gc.setContador(contadorTablaHash,contadorFinalSugerido);
-							
-						}
+						// INICIO BLOQUE SINCRONIZADO 
+						obtenerContadorSinronizado(gc, idInstitucionOrigen, idContador, idTipoProducto, idProducto, idProductoInstitucion, tieneContador, htNew);
+						//FIN BLOQUE SINCRONIZADO 				
+						
 						if (!htNew.get(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO).equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO)){
 							htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO);
 							htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
                         }
-			        	
 						
 						///////////////////////////////////////////////
 
@@ -1166,6 +1123,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 				        }
 					  	htNew.put(CerSolicitudCertificadosBean.C_FECHAMODIFICACION,"sysdate");
 					  	htNew.put(CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO,"sysdate");
+					  	
 
 					    if (!admSolicitud.updateDirect(htNew,claves,campos))  {
 					        throw new ClsExceptions("Error al APROBAR el/los PDF/s");
@@ -1448,36 +1406,12 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 //						String idContador="PYS_"+idTipoProducto+"_"+idProducto+"_"+idProductoInstitucion;
 						String idContador="";
 						idContador=beanProd.getIdContador();
-						Hashtable contadorTablaHash=gc.getContador(new Integer(idInstitucion),idContador);
-							
 						
-						if (!tieneContador && contadorTablaHash.get("MODO").toString().equals("0")){
-							// MODO REGISTRO. Se suponen siempre asi estos
-							
-							Integer longitud= new Integer((contadorTablaHash.get("LONGITUDCONTADOR").toString()));
-							int longitudContador=longitud.intValue();
-							
-							int numContador= new Integer((contadorTablaHash.get("CONTADOR").toString())).intValue();
-							numContador =numContador + 1; // En la tabla contador se guarda el ultimo nº utilizado por lo que el siguiente a utilizar el contador + 1 
-							gc.validarLogitudContador(numContador,contadorTablaHash);
-							
-							//Comprobamos la unicidad de este contador junto con el prefijo y sufijo guardado en la hash contador
-							while(gc.comprobarUnicidadContadorProdCertif(numContador,contadorTablaHash, idTipoProducto, idProducto, idProductoInstitucion)){
-								numContador++;
-								gc.validarLogitudContador(numContador,contadorTablaHash);
-							}
-							
-						  	Integer contadorSugerido=new Integer(numContador);
-						  	String contadorFinalSugerido=UtilidadesString.formatea(contadorSugerido,longitudContador,true);
-						  	
-						  	htNew.put(CerSolicitudCertificadosBean.C_PREFIJO_CER,(String)contadorTablaHash.get("PREFIJO"));
-						  	htNew.put(CerSolicitudCertificadosBean.C_SUFIJO_CER,(String)contadorTablaHash.get("SUFIJO"));
-						  	htNew.put(CerSolicitudCertificadosBean.C_CONTADOR_CER,contadorFinalSugerido);
-						  	
-						  
-						  	gc.setContador(contadorTablaHash,contadorFinalSugerido);
-							
-						}
+						// INICIO BLOQUE SINCRONIZADO 
+						obtenerContadorSinronizado(gc, idInstitucionOrigen, idContador, idTipoProducto, idProducto, idProductoInstitucion, tieneContador, htNew);
+						//FIN BLOQUE SINCRONIZADO 				
+						
+						
 				    // Si el estado de la solicitud es finalizado, cuando volvemos a generar el certificado, NO cambiamos el estado de la solicitu a aprobado
                         if (!htNew.get(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO).equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO)){
                         	htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO);
@@ -3086,5 +3020,64 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		return salida;
 	}
 	
+	
+	public void obtenerContadorSinronizado(GestorContadores gc, String idInstitucion, String idContador, String idTipoProducto, String idProducto,
+			String idProductoInstitucion, boolean tieneContador, Hashtable htNew) {
+
+		try {
+			synchronized (contadores) {
+
+				// obteniendo registro de contador de BD
+				Hashtable contadorTablaHash = gc.getContador(new Integer(idInstitucion), idContador);
+
+				if (!tieneContador && contadorTablaHash.get("MODO").toString().equals("0")) {
+					// MODO REGISTRO. Se suponen siempre asi estos
+
+					int numContador;
+					// comprobando si el contador ya ha sido actualizado en este
+					// metodo (por otro hilo)
+					if (contadores.size() > 0 && contadores.get(idInstitucion + "#" + idContador) != null
+							&& contadores.get(idInstitucion + "#" + idContador) >= (Long) contadorTablaHash.get("CONTADOR")) {
+						numContador = contadores.get(idInstitucion + "#" + idContador) + 1;
+						// en el caso de que no se haya actualizado en este metodo, o bien este desactualizado el contador en Java
+						// respecto a BD: se tiene que leer de BD
+					} else {
+						numContador = new Integer((contadorTablaHash.get("CONTADOR").toString())).intValue();
+						numContador = numContador + 1; 
+						// En la tabla contador se guarda el ultimo nº utilizado por lo que el siguiente a utilizar el contador + 1
+					}
+
+					// comprobando la unicidad de este contador junto con el prefijo y sufijo guardado en la hash contador
+					while (gc.comprobarUnicidadContadorProdCertif(numContador, contadorTablaHash, idTipoProducto, idProducto, idProductoInstitucion)) {
+						numContador++;
+					}
+					gc.validarLogitudContador(numContador, contadorTablaHash);
+
+					// guardando el contador para que el siguiente hilo lo encuentre actualizado
+					contadores.put(idInstitucion + "#" + idContador, numContador);
+
+					// construyendo contador final
+					Integer longitud = new Integer((contadorTablaHash.get("LONGITUDCONTADOR").toString()));
+					int longitudContador = longitud.intValue();
+					Integer contadorSugerido = new Integer(numContador);
+					String contadorFinalSugerido = UtilidadesString.formatea(contadorSugerido, longitudContador, true);
+
+					// guardando contador en BD
+					gc.setContador(contadorTablaHash, contadorFinalSugerido);
+
+					// devolviendo el contador para la continuacion del proceso
+					htNew.put(CerSolicitudCertificadosBean.C_PREFIJO_CER, (String) contadorTablaHash.get("PREFIJO"));
+					htNew.put(CerSolicitudCertificadosBean.C_SUFIJO_CER, (String) contadorTablaHash.get("SUFIJO"));
+					htNew.put(CerSolicitudCertificadosBean.C_CONTADOR_CER, contadorFinalSugerido);
+				}
+			}
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (ClsExceptions e) {
+			e.printStackTrace();
+		} catch (SIGAException e) {
+			e.printStackTrace();
+		}
+	}
 
 }
