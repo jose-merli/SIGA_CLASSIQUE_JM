@@ -972,6 +972,11 @@
       <required>false</required>
       <rtexprvalue>fecha</rtexprvalue>
     </attribute>
+    <attribute>
+      <name>campoCargarFechaDesde</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue> 
+    </attribute>
     
     
   </tag>  

@@ -91,8 +91,8 @@
 			<td class="labelText"><siga:Idioma key="censo.busquedaSolicitudesIncorporacion.literal.fechaHasta"/></td>
 			<td>
 				<!--input class="box" type="text" name="buscarFechaHasta" style="width:75px" maxlength="10" class="box" readonly="true"-->
-				<siga:Fecha nombreCampo="buscarFechaHasta" />
-				<a href='javascript://'onClick="return showCalendarGeneral(buscarFechaHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
+				<siga:Fecha nombreCampo="buscarFechaHasta" campoCargarFechaDesde="buscarFechaDesde"/>
+				<a href='javascript://'onClick="document.forms[0].buscarFechaHasta.value=document.forms[0].buscarFechaDesde.value; return showCalendarGeneral(buscarFechaHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
 			</td>
 		</tr>
 	</html:form>
@@ -141,6 +141,16 @@
      		  document.SolicitudIncorporacionForm.buscarEstadoSolicitud.disabled=false;
 		  }
 		}
+
+
+		function deshabilitarCombo(a){
+			  if (document.SolicitudIncorporacionForm.buscarVerAlarmas.checked){
+			  document.SolicitudIncorporacionForm.buscarEstadoSolicitud.value="";
+			    document.SolicitudIncorporacionForm.buscarEstadoSolicitud.disabled=true;
+			  }	else{
+	     		  document.SolicitudIncorporacionForm.buscarEstadoSolicitud.disabled=false;
+			  }
+			}
 	</script>
 	
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->

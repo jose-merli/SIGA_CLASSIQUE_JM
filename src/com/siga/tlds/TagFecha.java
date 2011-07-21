@@ -30,6 +30,7 @@ public class TagFecha extends TagSupport {
 	private String anchoTextField = "";
     private String necesario = ""; // Si fuese necesario no puede llevar el valor ""
     private String styleId;
+    private String campoCargarFechaDesde;
     
 	public void setValorInicial(String valorInicial) {
 		this.valorInicial = valorInicial;
@@ -39,6 +40,9 @@ public class TagFecha extends TagSupport {
 	}
 	public void setNecesario(String necesario) {
 		this.necesario = necesario;
+	}
+	public void setCampoCargarFechaDesde(String campoCargarFechaDesde) {
+		this.campoCargarFechaDesde = campoCargarFechaDesde;
 	}
     
 	public int doStartTag() {
@@ -152,6 +156,13 @@ public class TagFecha extends TagSupport {
 			if ((this.valorInicial != "")&&(this.valorInicial != null)){
 				out.println("		alert(this.valorInicial); ");
 				out.println("	value=\"" + this.valorInicial + "\" ");
+			}
+			else
+			{
+				if ((this.campoCargarFechaDesde != null) && (!this.campoCargarFechaDesde.equals("")))
+				{
+					out.println("	onfocus=\"this.value=document.forms[0]." + this.campoCargarFechaDesde + ".value;\" ");
+				}
 			}
 			if ((this.styleId != null)&&(this.styleId.equals(""))){
 				out.println("		styleId = =\"" + this.styleId + "\" ");
