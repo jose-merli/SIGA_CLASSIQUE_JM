@@ -234,8 +234,7 @@ public abstract class SIGAWSClientAbstract {
 	 * @throws Exception
 	 */
 	protected boolean validateXML_EJG(XmlObject xmlObject, String anio, String numejg, String numero, String idTipoEJG) throws Exception {
-		SigaWSHelper.deleteEmptyNode(xmlObject.getDomNode());
-		
+				
 		boolean valido = true;
 		List<String> list = SigaWSHelper.validate(xmlObject);
 		if (list.size() > 0) {

@@ -195,6 +195,7 @@ public class SigaWSHelper {
 	 */
 	public static List<String> validate(XmlObject xmlObject) throws Exception {
 		
+		deleteEmptyNode(xmlObject.getDomNode());
 		List<String> list = new ArrayList<String>();
 		XmlOptions xmlOptions = new XmlOptions();
 		List<XmlValidationError> errores = new ArrayList<XmlValidationError>();

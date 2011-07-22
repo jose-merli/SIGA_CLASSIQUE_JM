@@ -181,7 +181,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 					escribeLog(informe, idInstitucion, usrBean, msg);
 				}
 			}
-			SigaWSHelper.deleteEmptyNode(datosJustificacionesDocument.getDomNode());
+			
 			List<String> erroresList = SigaWSHelper.validate(datosJustificacionesDocument);
 			for (String error : erroresList) {	
 				String msg = "Error en el fichero generado;";
