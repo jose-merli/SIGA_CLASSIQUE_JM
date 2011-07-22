@@ -117,7 +117,7 @@ public class SigaWSHelper {
 		Integer in = null;
 		if (valor != null && !valor.trim().equals("")) {
 			try {
-				in = Integer.valueOf(valor);
+				in = Integer.valueOf(valor.trim());
 			} catch (NumberFormatException e) {
 				throw new IllegalArgumentException("Compruebe el valor del código del campo " + campo + " (valor='" + valor + "'). No es un número válido.");
 			}
@@ -136,7 +136,7 @@ public class SigaWSHelper {
 		BigInteger in = null;
 		if (valor != null && !valor.trim().equals("")) {
 			try {
-				in = new BigInteger(valor);
+				in = new BigInteger(valor.trim());
 			} catch (NumberFormatException e) {
 				throw new IllegalArgumentException("Compruebe el valor del código del campo " + campo + " (valor='" + valor + "'). No es un número válido.");
 			}
@@ -154,7 +154,7 @@ public class SigaWSHelper {
 		Short in = null;
 		if (valor != null && !valor.trim().equals("")) {
 			try {
-				in = Short.valueOf(valor);
+				in = Short.valueOf(valor.trim());
 			} catch (NumberFormatException e) {
 				throw new IllegalArgumentException("Compruebe el valor del código del campo " + campo + " (valor='" + valor + "'). No es un número válido. Rango [" + Short.MIN_VALUE + " - " + Short.MAX_VALUE + "]");
 			}
@@ -167,7 +167,7 @@ public class SigaWSHelper {
 		Long in = null;
 		if (valor != null && !valor.trim().equals("")) {
 			try {
-				in = Long.valueOf(valor);
+				in = Long.valueOf(valor.trim());
 			} catch (NumberFormatException e) {
 				throw new IllegalArgumentException("Compruebe el valor del código del campo " + campo + " (valor='" + valor + "'). No es un número válido.");
 			}
@@ -179,7 +179,7 @@ public class SigaWSHelper {
 		BigDecimal in = null;
 		if (valor != null && !valor.trim().equals("")) {
 			try {
-				in = new BigDecimal(valor);
+				in = new BigDecimal(valor.trim());
 			} catch (NumberFormatException e) {
 				throw new IllegalArgumentException("Compruebe el valor del código del campo " + campo + " (valor='" + valor + "'). No es un número válido.");
 			}
