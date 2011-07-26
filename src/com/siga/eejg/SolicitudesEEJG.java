@@ -73,13 +73,13 @@ public class SolicitudesEEJG {
 		String dNI_NIE_Tramitador = getDNITramitador(usrBean, scsEejgPeticionesBean);
 		
 		ScsPersonaJGBean scsPersonaJGBean = getDatosSolicitante(usrBean, scsEejgPeticionesBean);
-		String dNI_NIE_Solicitante = scsPersonaJGBean.getNif();
+		String dNI_NIE_Solicitado = scsPersonaJGBean.getNif();
 		String nombre = scsPersonaJGBean.getNombre();
 		String apellido1 = scsPersonaJGBean.getApellido1();
 		String apellido2 = scsPersonaJGBean.getApellido2();
 		String idioma = scsEejgPeticionesBean.getIdioma();
 		
-		DatosPeticionInfoAAPP datosPeticionInfoAAPP = new DatosPeticionInfoAAPP(idSistema, idSolicitudImportada, idZona, dNI_NIE_Tramitador, dNI_NIE_Solicitante, nombre, apellido1, apellido2, idioma);
+		DatosPeticionInfoAAPP datosPeticionInfoAAPP = new DatosPeticionInfoAAPP(idSistema, idSolicitudImportada, idZona, dNI_NIE_Tramitador, dNI_NIE_Solicitado, nombre, apellido1, apellido2, idioma);
 		Informacion informacion = new Informacion(datosPeticionInfoAAPP);
 				
 		SolicitudPeticionInfoAAPP solicitudPeticionInfoAAPP = new SolicitudPeticionInfoAAPP(informacion);
@@ -92,7 +92,7 @@ public class SolicitudesEEJG {
 				if (respuesta != null) {
 					if ((respuesta.getTipoError() != null && !respuesta.getTipoError().trim().equals("")) || (respuesta.getDescripcionError() != null && !respuesta.getDescripcionError().trim().equals(""))) {
 						String error = respuesta.getTipoError() + ": " + respuesta.getDescripcionError();
-						throw new ClsExceptions("IdPetición: " + scsEejgPeticionesBean.getIdPeticion() + ". Se ha obtenido el siguiente mensaje de error como respuesta del webservice para el colegio " + idZona + " y DNI/NIE solicitado \"" + dNI_NIE_Solicitante + "\": " + error);
+						throw new ClsExceptions("IdPetición: " + scsEejgPeticionesBean.getIdPeticion() + ". Se ha obtenido el siguiente mensaje de error como respuesta del webservice para el colegio " + idZona + " y DNI/NIE solicitado \"" + dNI_NIE_Solicitado + "\" y DNI/NIE del tramitador \""  + dNI_NIE_Tramitador + "\": " + error);
 					} else {
 						idPeticionInfoAAPP = respuestaSolicitudPeticionInfoAAPP.getInformacion().getRespuestaPeticionInfoAAPP().getIdPeticionInfoAAPP();
 					}
