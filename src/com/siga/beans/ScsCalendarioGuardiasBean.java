@@ -1,11 +1,22 @@
 package com.siga.beans;
 
+import java.util.Vector;
+
+import com.siga.gratuita.form.DefinirCalendarioGuardiaForm;
+
 /**
  * Implementa las operaciones sobre el bean de la tabla SCS_CALENDARIOGUARDIAS
  * @since 06/12/2004
  */
 public class ScsCalendarioGuardiasBean extends MasterBean
 {
+	static public final String estadoProgramado = "0";
+	static public final String estadoProcesando = "1";
+	static public final String estadoError = "2";
+	static public final String estadoGenerado = "3";
+    static public final String estadoCancelado = "4";
+    static public final String estadoPteManual = "5";
+	
 	// Atributos
 	private Integer	idInstitucion;
 	private Integer idTurno;
@@ -20,7 +31,7 @@ public class ScsCalendarioGuardiasBean extends MasterBean
 	private Integer idTurnoPrincipal;
 	private Integer idGuardiaPrincipal;
 	private Integer	idCalendarioGuardiasPrincipal;	
-	
+	ScsGuardiasTurnoBean guardiaTurno;
 	
 	/** Nombre de Tabla */
 	static public String T_NOMBRETABLA = "SCS_CALENDARIOGUARDIAS";
@@ -96,5 +107,38 @@ public class ScsCalendarioGuardiasBean extends MasterBean
 	public String toString() {
 		return "Cal. " + this.idTurno + "." + this.idGuardia + "." + this.idCalendarioGuardias + "-" + this.fechaInicio + "-" + this.fechaFin + "-" + this.idTurnoPrincipal + "-"  + this.idGuardiaPrincipal + this.idCalendarioGuardiasPrincipal;
 	}
+	public ScsGuardiasTurnoBean getGuardiaTurno() {
+		return guardiaTurno;
+	}
+	public void setGuardiaTurno(ScsGuardiasTurnoBean guardiaTurno) {
+		this.guardiaTurno = guardiaTurno;
+	}
+		Vector<ScsCalendarioGuardiasBean> calendariosVinculados;
+
+
+		public Vector<ScsCalendarioGuardiasBean> getCalendariosVinculados() {
+			return calendariosVinculados;
+		}
+		public void setCalendariosVinculados(
+				Vector<ScsCalendarioGuardiasBean> calendariosVinculados) {
+			this.calendariosVinculados = calendariosVinculados;
+		} 
+	public DefinirCalendarioGuardiaForm getDefinirCalendarioGuardiaForm() {
+		DefinirCalendarioGuardiaForm  definirCalendarioGuardiaForm = new DefinirCalendarioGuardiaForm();
+		definirCalendarioGuardiaForm.setObservaciones(observaciones);
+		definirCalendarioGuardiaForm.setFechaInicio(fechaInicio);
+		definirCalendarioGuardiaForm.setFechaFin(fechaFin);
+		if(idInstitucion!=null)
+			definirCalendarioGuardiaForm.setIdInstitucion(idInstitucion.toString());
+		if(idTurno!=null)
+			definirCalendarioGuardiaForm.setIdTurno(idTurno.toString());
+		if(idGuardia!=null)
+			definirCalendarioGuardiaForm.setIdGuardia(idGuardia.toString());
+		if(idCalendarioGuardias!=null)
+			definirCalendarioGuardiaForm.setIdCalendarioGuardias(idCalendarioGuardias.toString());
+		return definirCalendarioGuardiaForm;
+	}
+		
+	
 	
 }

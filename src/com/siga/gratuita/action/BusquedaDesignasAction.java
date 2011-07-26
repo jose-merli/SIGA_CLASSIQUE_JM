@@ -11,7 +11,6 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
@@ -23,7 +22,6 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.GstDate;
-import com.atos.utils.LogFileWriter;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
@@ -33,7 +31,6 @@ import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmLenguajesAdm;
-import com.siga.beans.BusquedaClientesFiltrosAdm;
 import com.siga.beans.CenBajasTemporalesAdm;
 import com.siga.beans.CenBajasTemporalesBean;
 import com.siga.beans.CenColegiadoAdm;
@@ -66,7 +63,6 @@ import com.siga.beans.ScsEJGDESIGNABean;
 import com.siga.beans.ScsJuzgadoAdm;
 import com.siga.beans.ScsJuzgadoBean;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
-import com.siga.beans.ScsTurnoAdm;
 import com.siga.certificados.Plantilla;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -677,8 +673,10 @@ public class BusquedaDesignasAction extends MasterAction {
 					
 					ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 					
-					CalendarioSJCS calendario = new CalendarioSJCS(new Integer(usr.getLocation()), new Integer(idTurno),fecha,usr);
-					letradoTurno = calendario.getLetradoTurno();
+					CalendarioSJCS calendarioSJCS = new CalendarioSJCS();
+					calendarioSJCS.inicializaParaObtenerLetrado(
+					new Integer(usr.getLocation()), new Integer(miform.getIdTurno()),fecha,usr);
+					letradoTurno = calendarioSJCS.getLetradoTurno();
 					idPersonaSel = letradoTurno.getIdPersona().toString();					
 					
 

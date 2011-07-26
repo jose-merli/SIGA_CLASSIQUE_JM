@@ -1,7 +1,6 @@
 package com.siga.gratuita.action;
 
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -17,7 +16,6 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
-import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
@@ -375,8 +373,9 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 //			calculando letrado automatico si no ha sido seleccionado manualmente
 			if (idPersona == null || idPersona.trim().equals("")) {
 				isManual = false;
-				CalendarioSJCS calendario = new CalendarioSJCS(new Integer(idInstitucion), new Integer(idTurno),GstDate.getFormatedDateShort("", miform.getAplFechaDesigna()),usr);
-				letradoTurno = calendario.getLetradoTurno();
+				CalendarioSJCS calendarioSJCS = new CalendarioSJCS();
+				calendarioSJCS.inicializaParaObtenerLetrado(new Integer(idInstitucion), new Integer(idTurno),GstDate.getFormatedDateShort("", miform.getAplFechaDesigna()),usr);
+				letradoTurno = calendarioSJCS.getLetradoTurno();
 				idPersona = letradoTurno.getIdPersona().toString();
 
 			}

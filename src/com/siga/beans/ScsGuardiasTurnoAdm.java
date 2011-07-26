@@ -1988,5 +1988,50 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 		
 		this.updateDirect(hash, this.getClavesBean(), campos);
 	} // cambiarUltimoCola()
+	public ScsGuardiasTurnoBean getGuardiaTurno(String idInstitucion, String idTurno, String idGuardia) throws ClsExceptions{
+		StringBuffer sql = new StringBuffer();
+		sql.append("WHERE " + ScsGuardiasTurnoBean.C_IDINSTITUCION + "=" + idInstitucion);
+		sql.append(" AND " + ScsGuardiasTurnoBean.C_IDTURNO + "=" + idTurno);
+		sql.append(" AND " + ScsGuardiasTurnoBean.C_IDGUARDIA + "=" + idGuardia);
+		
+		ScsGuardiasTurnoBean guardiaBean = null;
+		try {
+			Vector v = this.select(sql.toString());
+			if (v == null || v.isEmpty())
+				throw new Exception();
+			guardiaBean = (ScsGuardiasTurnoBean) v.get(0);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			throw new ClsExceptions("Error al buscar la guardia del calendario");
+		}
+		
+			
+		
+		
+		return guardiaBean;
+	}
+	
+
+	public Vector<ScsGuardiasTurnoBean> getGuardiasVinculadas(
+			Integer idInstitucion, Integer idTurno, Integer idGuardia) throws ClsExceptions {
+		StringBuffer where = new StringBuffer();
+		where.append("WHERE idinstitucionprincipal = ");
+		where.append(idInstitucion);
+		where.append(" AND idturnoprincipal =");
+		where.append( idTurno);
+		where.append(" AND idguardiaprincipal =");
+		where.append( idGuardia);
+		
+		Vector<ScsGuardiasTurnoBean> guardiasVinculadas = null;
+		try {
+			guardiasVinculadas = this.select(where.toString());
+			if (guardiasVinculadas == null)
+				guardiasVinculadas = new Vector<ScsGuardiasTurnoBean>();
+		} catch (Exception e) {
+			throw new ClsExceptions("Error al buscar la guardia del calendario");
+		}
+		return guardiasVinculadas;
+	}
+	
 	
 }

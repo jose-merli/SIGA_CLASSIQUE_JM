@@ -74,6 +74,14 @@ public class UtilidadesHash {
 			return null;
 		}
 	}
+	static public Short getShort (Hashtable hash, String key){ // throws ClsExceptions {
+		try {
+			return Short.valueOf((String)hash.get(key));
+		}
+		catch (Exception e) {
+			return null;
+		}
+	}
 	
 	static public Date getDate (Hashtable hash, String key){ // throws ClsExceptions {
 		try {
@@ -145,6 +153,15 @@ public class UtilidadesHash {
 	}
 
 	static public void set (Hashtable hash, String key, Integer valor){
+		try {
+			if (key==null || valor==null) return;
+			hash.put (key, String.valueOf(valor));
+		}
+		catch (Exception e) { 	
+		    return;
+		}
+	}
+	static public void set (Hashtable hash, String key, Short valor){
 		try {
 			if (key==null || valor==null) return;
 			hash.put (key, String.valueOf(valor));

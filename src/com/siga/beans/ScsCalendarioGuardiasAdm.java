@@ -1,21 +1,36 @@
 
 package com.siga.beans;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
+import com.atos.utils.GstDate;
+import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences.RESOURCE_FILES;
 import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
-
+import com.siga.Utilidades.UtilidadesString;
+import com.siga.administracion.SIGAConstants;
+import com.siga.gratuita.beans.ScsHcoConfProgCalendariosBean;
+import com.siga.gratuita.beans.ScsProgCalendariosBean;
+import com.siga.gratuita.form.DefinirCalendarioGuardiaForm;
+import com.siga.gratuita.form.DefinirGuardiasTurnosForm;
+import com.siga.gratuita.form.DefinirTurnosForm;
+import com.siga.gratuita.form.ProgrCalendariosForm;
+import com.siga.tlds.FilaExtElement;
+import com.siga.Utilidades.SIGAReferences;
 /**
  * Implementa las operaciones sobre la base de datos, es decir: select, insert, update... a la tabla SCS_CALENDARIGUARDIAS
  * Modificado por david.sanchezp el 19-1-2005 para incluir nuevos métodos: getDatosCalendario(),<br>
@@ -82,7 +97,7 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 	 *  @return bean con la información de la hashtable
 	 * 
 	 */
-	protected MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions {
+	public MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions {
 		ScsCalendarioGuardiasBean bean = null;
 		try{
 			bean = new ScsCalendarioGuardiasBean();
@@ -114,7 +129,7 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 	 *  @return hashtable con la información del bean
 	 * 
 	 */
-	protected Hashtable beanToHashTable(MasterBean bean) throws ClsExceptions {
+	public Hashtable beanToHashTable(MasterBean bean) throws ClsExceptions {
 		Hashtable hash = null;
 		try{
 			hash = new Hashtable();
@@ -139,7 +154,7 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 			hash = null;
 			throw new ClsExceptions (e, "Error al construir el hashTable a partir del bean");			
 		}
-		return null;
+		return hash;
 	}
 
 	/** Funcion getOrdenCampos ()
@@ -225,7 +240,7 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 	 * @return String con la consulta SQL.
 	 * @throws ClsExceptions
 	 */	
-	public String getIdCalendarioGuardias(String idinstitucion_pestanha, String idturno_pestanha, String idguardia_pestanha) throws ClsExceptions{
+	public String getIdCalendarioGuardias(Integer idinstitucion_pestanha, Integer idturno_pestanha, Integer idguardia_pestanha) throws ClsExceptions{
 		String consulta = "";
 		
 		try {
@@ -339,10 +354,10 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 		return fechaFin;
 	}
 
-	public boolean validarBorradoCalendario(String idInstitucion,
-			String idCalendarioGuardias,
-			String idTurno,
-			String idGuardia)
+	public boolean validarBorradoCalendario(Integer idInstitucion,
+			Integer idCalendarioGuardias,
+			Integer idTurno,
+			Integer idGuardia)
 	{
 		boolean correcto = false;
 
@@ -432,7 +447,7 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 	 * @return String con la consulta SQL.
 	 * @throws ClsExceptions
 	 */	
-	public String getDatosCalendarioVinculadas(String idinstitucion_pestanha, String idturno_pestanha, String idguardia_pestanha, String idcalendario) throws ClsExceptions{
+	public String getDatosCalendarioVinculadas(Integer idinstitucion_pestanha, Integer idturno_pestanha, Integer idguardia_pestanha, Integer idcalendario) throws ClsExceptions{
 		String consulta = "";
 		
 		try {
@@ -450,5 +465,375 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 		
 		return consulta;
 	}		
+	public List<ScsCalendarioGuardiasBean> getCalendariosProgramados(
+			ScsProgCalendariosBean progCalendariosBean) throws ClsExceptions {
+		Hashtable codigosHashtable = new Hashtable();
+    	int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT CG.FECHAINICIO,CG.FECHAFIN,CG.IDCALENDARIOGUARDIAS,CG.IDTURNO,CG.IDGUARDIA,CG.IDINSTITUCION ");
+		sql.append(" FROM SCS_PROG_CALENDARIOS PG,SCS_HCO_CONF_PROG_CALENDARIOS HP,SCS_CALENDARIOGUARDIAS CG ");
+		sql.append(" WHERE  ");
+		sql.append(" TRUNC(PG.FECHACALINICIO) = TRUNC(CG.FECHAINICIO) ");
+		sql.append(" AND TRUNC(PG.FECHACALFIN) = TRUNC(CG.FECHAFIN) ");
+		sql.append(" AND HP.IDTURNO = CG.IDTURNO ");
+		sql.append(" AND HP.IDGUARDIA = CG.IDGUARDIA ");
+		sql.append(" AND HP.IDINSTITUCION = CG.IDINSTITUCION ");
+		sql.append(" AND PG.IDPROGCALENDARIO = HP.IDPROGCALENDARIO "); 
+		sql.append(" AND PG.IDPROGCALENDARIO =:");
+		contador++;
+		sql.append(contador);
+		codigosHashtable.put(new Integer(contador),progCalendariosBean.getIdProgrCalendario());
+		sql.append(" AND PG.IDINSTITUCION = :");
+		contador++;
+		sql.append(contador);
+		codigosHashtable.put(new Integer(contador),progCalendariosBean.getIdInstitucion());
+		sql.append(" ORDER  BY HP.ORDEN DESC ");
+
+    	List<ScsCalendarioGuardiasBean> calendarioGuardiasBeans = null;
+    	try {
+			RowsContainer rc = new RowsContainer(); 
+			if (rc.findBind(sql.toString(),codigosHashtable)) {
+				calendarioGuardiasBeans = new ArrayList<ScsCalendarioGuardiasBean>();
+				ScsCalendarioGuardiasBean calendarioGuardiasBean = null;
+				
+				for (int i = 0; i < rc.size(); i++){
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila=fila.getRow();
+					calendarioGuardiasBean =  (ScsCalendarioGuardiasBean)this.hashTableToBean(htFila);
+					
+					calendarioGuardiasBeans.add(calendarioGuardiasBean);
+					
+				}
+			}else{
+				calendarioGuardiasBeans = new ArrayList<ScsCalendarioGuardiasBean>();
+			} 
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar consulta.");
+		}
+
+    	return calendarioGuardiasBeans;
+	}
+	public List<DefinirCalendarioGuardiaForm> getCalendarios(DefinirCalendarioGuardiaForm definirCalendarioGuardiaFiltroForm) throws ClsExceptions {
+		Hashtable codigosHashtable = new Hashtable();
+    	int contador = 0;
+//    	static public final Short estadoProgramado = new Short("0");
+//    	static public final Short estadoProcesando = new Short("1");
+//    	static public final Short estadoError = new Short("2");
+//    	static public final Short estadoGenerado = new Short("3");
+//        static public final Short estadoCancelado = new Short("4");
+//        static public final Short estadoPteManual = new Short("5");
+    	
+		StringBuffer sql = new StringBuffer();
+		definirCalendarioGuardiaFiltroForm.getEstado().equals("");
+		
+		sql.append("SELECT * FROM (");
+		if(definirCalendarioGuardiaFiltroForm.getEstado().equals("")||definirCalendarioGuardiaFiltroForm.getEstado().equals(ScsCalendarioGuardiasBean.estadoGenerado)||definirCalendarioGuardiaFiltroForm.getEstado().equals(ScsCalendarioGuardiasBean.estadoPteManual)){
+			
+			sql.append(" SELECT T.NOMBRE NOMBRETURNO, ");
+			sql.append(" GT.NOMBRE NOMBREGUARDIA, ");
+			sql.append(" CG.FECHAINICIO, ");
+			sql.append(" CG.FECHAFIN, ");
+			sql.append(" CG.OBSERVACIONES, ");
+			sql.append(" DECODE((SELECT count(1) TOTAL ");
+			sql.append(" 	                 FROM SCS_CABECERAGUARDIAS CAG ");
+			sql.append(" WHERE CAG.IDINSTITUCION = CG.IDINSTITUCION ");
+			sql.append(" AND CAG.IDTURNO = CG.IDTURNO ");
+			sql.append(" AND CAG.IDGUARDIA = CG.IDGUARDIA ");
+			sql.append(" AND CAG.IDCALENDARIOGUARDIAS = CG.IDCALENDARIOGUARDIAS) , 0, ");
+			sql.append(ScsCalendarioGuardiasBean.estadoPteManual);
+			sql.append(", ");
+			sql.append(ScsCalendarioGuardiasBean.estadoGenerado);
+			sql.append(" ) ESTADO");
+			sql.append(",CG.IDTURNO ");
+			sql.append(",CG.IDGUARDIA ");
+			sql.append(",CG.IDCALENDARIOGUARDIAS ");
+			sql.append(",CG.IDINSTITUCION ");
+			sql.append(" FROM SCS_CALENDARIOGUARDIAS CG, SCS_GUARDIASTURNO GT, SCS_TURNO T ");
+			sql.append(" WHERE CG.IDINSTITUCION = GT.IDINSTITUCION ");
+			sql.append(" AND CG.IDTURNO = GT.IDTURNO ");
+			sql.append(" AND CG.IDGUARDIA = GT.IDGUARDIA ");
+			sql.append(" AND GT.IDINSTITUCION = T.IDINSTITUCION ");
+			sql.append(" AND GT.IDTURNO = T.IDTURNO ");
+			sql.append(" AND CG.IDINSTITUCION = :");
+			contador++;
+			sql.append(contador);
+			codigosHashtable.put(new Integer(contador),definirCalendarioGuardiaFiltroForm.getIdInstitucion());
+			
+			if(!definirCalendarioGuardiaFiltroForm.getFechaInicio().equals("")){
+				sql.append(" AND TRUNC(CG.FECHAINICIO) = :");
+				contador++;
+				sql.append(contador);
+				codigosHashtable.put(new Integer(contador),definirCalendarioGuardiaFiltroForm.getFechaInicio());
+				
+				
+			}
+			if(!definirCalendarioGuardiaFiltroForm.getFechaFin().equals("")){
+				sql.append(" AND TRUNC(CG.FECHAFIN) = :");
+				contador++;
+				sql.append(contador);
+				codigosHashtable.put(new Integer(contador),definirCalendarioGuardiaFiltroForm.getFechaFin());
+				
+				
+			}
+			if(!definirCalendarioGuardiaFiltroForm.getIdTurnoCalendario().equals("")&&!definirCalendarioGuardiaFiltroForm.getIdTurnoCalendario().equals("-1")){
+				sql.append(" AND T.IDTURNO = :");
+				contador++;
+				sql.append(contador);
+				codigosHashtable.put(new Integer(contador),definirCalendarioGuardiaFiltroForm.getIdTurnoCalendario());
+				
+				
+			}
+			if(!definirCalendarioGuardiaFiltroForm.getIdGuardiaCalendario().equals("")&&!definirCalendarioGuardiaFiltroForm.getIdGuardiaCalendario().equals("-1")){
+				sql.append(" AND GT.IDGUARDIA = :");
+				contador++;
+				sql.append(contador);
+				codigosHashtable.put(new Integer(contador),definirCalendarioGuardiaFiltroForm.getIdGuardiaCalendario());
+				
+				
+			}
+				
+			
+			
+		}
+		if(definirCalendarioGuardiaFiltroForm.getEstado().equals(""))
+			sql.append(" UNION ");
+			
+		
+		if(definirCalendarioGuardiaFiltroForm.getEstado().equals("")||(!definirCalendarioGuardiaFiltroForm.getEstado().equals(ScsCalendarioGuardiasBean.estadoGenerado)&&!definirCalendarioGuardiaFiltroForm.getEstado().equals(ScsCalendarioGuardiasBean.estadoPteManual))){
+			String etiquetaConjuntoGuardias = UtilidadesString.getMensajeIdioma(usrbean, "gratuita.calendarios.programacion.conjuntoGuardias");
+		
+			sql.append(" SELECT T.NOMBRE NOMBRETURNO,  GT.NOMBRE NOMBREGUARDIA,PC.FECHACALINICIO FECHAINICIO,PC.FECHACALFIN FECHAFIN , ");
+			sql.append("'");
+			sql.append(etiquetaConjuntoGuardias);
+			sql.append(": '||CG.DESCRIPCION OBSERVACIONES, ");
+			sql.append(" DECODE(PC.ESTADO,NULL,");
+			sql.append(ScsCalendarioGuardiasBean.estadoProgramado);
+			sql.append(",");
+			sql.append(ScsHcoConfProgCalendariosBean.estadoProgramado);
+			sql.append(",");
+			sql.append(ScsCalendarioGuardiasBean.estadoProgramado);
+			sql.append(",");
+			sql.append(ScsHcoConfProgCalendariosBean.estadoProcesando);
+			sql.append(",");
+			sql.append(ScsCalendarioGuardiasBean.estadoProcesando);
+			sql.append(",");
+			sql.append(ScsHcoConfProgCalendariosBean.estadoError);
+			sql.append(",");
+			sql.append(ScsCalendarioGuardiasBean.estadoError);
+			sql.append(",");
+			sql.append(ScsHcoConfProgCalendariosBean.estadoCancelado);
+			sql.append(",");
+			sql.append(ScsCalendarioGuardiasBean.estadoCancelado);
+			sql.append(",");
+			sql.append(ScsHcoConfProgCalendariosBean.estadoReprogramado);
+			sql.append(",");
+			sql.append(ScsCalendarioGuardiasBean.estadoProgramado);
+			
+			sql.append(") ESTADO ");
+			sql.append(",null IDTURNO ");
+			sql.append(",null IDGUARDIA ");
+			sql.append(",null IDCALENDARIOGUARDIAS ");
+			sql.append(",PC.IDINSTITUCION ");
+		
+			
+			
+			sql.append(" FROM SCS_PROG_CALENDARIOS          PC, ");
+			sql.append(" SCS_CONJUNTOGUARDIAS          CG, ");
+			sql.append(" SCS_CONF_CONJUNTO_GUARDIAS    GG, ");
+			sql.append(" SCS_GUARDIASTURNO             GT, ");
+			sql.append(" SCS_TURNO                     T ");
+			sql.append(" WHERE PC.IDCONJUNTOGUARDIA = CG.IDCONJUNTOGUARDIA ");
+			sql.append(" AND PC.IDINSTITUCION = CG.IDINSTITUCION ");
+
+			sql.append(" AND CG.IDINSTITUCION = GG.IDINSTITUCION(+) ");
+			sql.append(" AND CG.IDCONJUNTOGUARDIA = GG.IDCONJUNTOGUARDIA(+) ");
+
+			sql.append(" AND GG.IDINSTITUCION = GT.IDINSTITUCION(+) ");
+			sql.append(" AND GG.IDTURNO = GT.IDTURNO(+) ");
+			sql.append(" AND GG.IDGUARDIA = GT.IDGUARDIA(+) ");
+			sql.append(" AND GT.IDINSTITUCION = T.IDINSTITUCION(+) ");
+			sql.append(" AND GT.IDTURNO = T.IDTURNO(+) ");
+
+
+			sql.append(" AND PC.ESTADO NOT IN (:");
+			contador++;
+			sql.append(contador);
+			codigosHashtable.put(new Integer(contador),ScsProgCalendariosBean.estadoFinalizado);
+			sql.append(") ");
+   
+			sql.append(" AND (SELECT HCO.ESTADO from SCS_HCO_CONF_PROG_CALENDARIOS HCO ");
+			sql.append(" WHERE HCO.IDPROGCALENDARIO = PC.IDPROGCALENDARIO ");
+			sql.append(" AND HCO.IDCONJUNTOGUARDIA = PC.IDCONJUNTOGUARDIA ");
+			sql.append(" AND HCO.IDINSTITUCION = PC.IDINSTITUCION ");
+			sql.append(" AND HCO.IDTURNO = GG.IDTURNO ");
+			sql.append(" AND HCO.IDGUARDIA = GG.IDGUARDIA) NOT IN (:");
+			contador++;
+			sql.append(contador);
+			codigosHashtable.put(new Integer(contador),ScsHcoConfProgCalendariosBean.estadoFinalizado);
+			sql.append(") ");
+		
+			
+			sql.append(" AND GG.IDINSTITUCION = :");
+			contador++;
+			sql.append(contador);
+			codigosHashtable.put(new Integer(contador),definirCalendarioGuardiaFiltroForm.getIdInstitucion());
+			
+			if(!definirCalendarioGuardiaFiltroForm.getFechaInicio().equals("")){
+				sql.append(" AND TRUNC(PC.FECHACALINICIO) = :");
+				contador++;
+				sql.append(contador);
+				codigosHashtable.put(new Integer(contador),definirCalendarioGuardiaFiltroForm.getFechaInicio());
+				
+				
+			}
+			if(!definirCalendarioGuardiaFiltroForm.getFechaFin().equals("")){
+				sql.append(" AND TRUNC(PC.FECHACALFIN) = :");
+				contador++;
+				sql.append(contador);
+				codigosHashtable.put(new Integer(contador),definirCalendarioGuardiaFiltroForm.getFechaFin());
+				
+				
+			}
+			if(!definirCalendarioGuardiaFiltroForm.getIdTurnoCalendario().equals("")&&!definirCalendarioGuardiaFiltroForm.getIdTurnoCalendario().equals("-1")){
+				sql.append(" AND T.IDTURNO = :");
+				contador++;
+				sql.append(contador);
+				codigosHashtable.put(new Integer(contador),definirCalendarioGuardiaFiltroForm.getIdTurnoCalendario());
+				
+				
+			}
+			if(!definirCalendarioGuardiaFiltroForm.getIdGuardiaCalendario().equals("")&&!definirCalendarioGuardiaFiltroForm.getIdGuardiaCalendario().equals("-1")){
+				sql.append(" AND GT.IDGUARDIA = :");
+				contador++;
+				sql.append(contador);
+				codigosHashtable.put(new Integer(contador),definirCalendarioGuardiaFiltroForm.getIdGuardiaCalendario());
+				
+				
+			}
+			
+			
+
+		}
+		sql.append(" )");
+		if(!definirCalendarioGuardiaFiltroForm.getEstado().equals("")){
+			sql.append(" WHERE ESTADO = :");
+			contador++;
+			sql.append(contador);
+			codigosHashtable.put(new Integer(contador),definirCalendarioGuardiaFiltroForm.getEstado());
+			
+			
+		}
+		sql.append("ORDER BY NOMBRETURNO, NOMBREGUARDIA,FECHAINICIO,FECHAFIN");
+	
+		
+
+    	List<DefinirCalendarioGuardiaForm> calendarioGuardiasForms = null;
+//    	DefinirCalendarioGuardiaForm
+    	
+    	try {
+			RowsContainer rc = new RowsContainer(); 
+			
+			if (rc.findBind(sql.toString(),codigosHashtable)) {
+				ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+				String directorioLogCalendarios = rp.returnProperty("sjcs.directorioFisicoGeneracionCalendarios");
+				calendarioGuardiasForms = new ArrayList<DefinirCalendarioGuardiaForm>();
+				ScsCalendarioGuardiasBean calendarioGuardiasBean = null;
+				DefinirGuardiasTurnosForm guardia;
+				DefinirTurnosForm turno;
+				for (int i = 0; i < rc.size(); i++){
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila=fila.getRow();
+					calendarioGuardiasBean =  (ScsCalendarioGuardiasBean)this.hashTableToBean(htFila);
+					DefinirCalendarioGuardiaForm definirCalendarioGuardiaForm = calendarioGuardiasBean.getDefinirCalendarioGuardiaForm(); 
+					calendarioGuardiasForms.add(definirCalendarioGuardiaForm);
+					guardia = new DefinirGuardiasTurnosForm();
+					turno = new DefinirTurnosForm();
+					guardia.setNombreGuardia(UtilidadesHash.getString(htFila, "NOMBREGUARDIA"));
+					turno.setNombre(UtilidadesHash.getString(htFila, "NOMBRETURNO"));
+					definirCalendarioGuardiaForm.setGuardia(guardia);
+					definirCalendarioGuardiaForm.setTurno(turno);
+					definirCalendarioGuardiaForm.setEstado(UtilidadesHash.getString(htFila, "ESTADO"));
+					if(definirCalendarioGuardiaForm.getEstado().equals(ScsCalendarioGuardiasBean.estadoGenerado)||definirCalendarioGuardiaForm.getEstado().equals(ScsCalendarioGuardiasBean.estadoPteManual)){
+						StringBuffer sFicheroLog = new StringBuffer(directorioLogCalendarios);
+						sFicheroLog.append(File.separator);
+						sFicheroLog.append(calendarioGuardiasBean.getIdInstitucion());
+						sFicheroLog.append(File.separator);
+						sFicheroLog.append(calendarioGuardiasBean.getIdTurno());
+						sFicheroLog.append(".");
+						sFicheroLog.append(calendarioGuardiasBean.getIdGuardia());
+						sFicheroLog.append(".");
+						sFicheroLog.append(calendarioGuardiasBean.getIdCalendarioGuardias());
+						sFicheroLog.append("-");
+						sFicheroLog.append(GstDate.getFormatedDateShort(usrbean.getLanguage(),calendarioGuardiasBean.getFechaInicio()).replace('/', '.'));
+						sFicheroLog.append("-");
+						sFicheroLog.append(GstDate.getFormatedDateShort(usrbean.getLanguage(),calendarioGuardiasBean.getFechaFin()).replace('/', '.'));
+						sFicheroLog.append(".log.xls");
+					
+						File fichero = new File(sFicheroLog.toString());
+						FilaExtElement[] elementosFila=new FilaExtElement[1];
+						if(fichero!=null && fichero.exists()){
+							//Boton de descarga del envio:
+							elementosFila[0]=new FilaExtElement("descargaLog", "descargaLog", SIGAConstants.ACCESS_READ);
+						} else {
+							elementosFila[0] = null;
+						}
+						definirCalendarioGuardiaForm.setElementosFila(elementosFila);
+					
+						
+					}
+					
+					
+				}
+			}else{
+				calendarioGuardiasForms = new ArrayList<DefinirCalendarioGuardiaForm>();
+			} 
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar consulta.");
+		}
+
+    	return calendarioGuardiasForms;
+	}
+	public Integer getIdCalendarioGuardias(Integer idInstitucion,
+			Integer idTurno,
+			Integer idGuardia,
+			String fechaInicioCalendario,String fechaFinCalendario)
+	{
+		Hashtable codigosHashtable = new Hashtable();
+    	int contador = 0;
+		StringBuffer where = new StringBuffer();
+		where.append(" Where Idinstitucion =:");
+		contador++;
+		where.append(contador);
+		codigosHashtable.put(new Integer(contador),idInstitucion);
+		where.append(" And Idturno =:");
+		contador++;
+		where.append(contador);
+		codigosHashtable.put(new Integer(contador),idTurno);
+		where.append(" And Idguardia = :");
+		contador++;
+		where.append(contador);
+		codigosHashtable.put(new Integer(contador),idGuardia);
+		where.append(" And trunc(Fechainicio)=:");
+		contador++;
+		where.append(contador);
+		codigosHashtable.put(new Integer(contador),fechaInicioCalendario);
+ 
+		where.append("And trunc(Fechafin)=:");
+		contador++;
+		where.append(contador);
+		codigosHashtable.put(new Integer(contador),fechaFinCalendario);
+
+		try {
+			Vector resultado = this.selectBind(where.toString(),codigosHashtable);
+			if (resultado != null && resultado.size() > 0)
+				return ((ScsCalendarioGuardiasBean) resultado.get(0)).getIdCalendarioGuardias();
+			else
+				return null;
+		} catch (ClsExceptions e) {
+			return null;
+		}
+	}
+
+	
 	
 }

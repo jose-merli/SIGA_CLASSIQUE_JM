@@ -903,7 +903,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 	
 
 	//Comprueba antes de borrar un CALENDARIO de guardias que no exista ninguna guardia realizada. 
-	public boolean validarBorradoGuardias(String idInstitucion, String idCalendarioGuardias, String idTurno, String idGuardia) {
+	public boolean validarBorradoGuardias(Integer idInstitucion, Integer idCalendarioGuardias, Integer idTurno, Integer idGuardia) {
 		boolean correcto = false;
 		StringBuffer consulta = new StringBuffer();
 		
@@ -928,6 +928,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		}
 		return correcto;
 	}
+	
 
 	//Comprueba antes de borrar UNA guardia no este realizada.
 	//Nota: las fechas de inicio y fin son del periodo.
@@ -1740,7 +1741,8 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			throw new SIGAException("gratuita.volantesExpres.mensaje.diaSinCalendarioGuardias");
 
 		// calculando los periodos de guardias
-		CalendarioSJCS calendarioSJCS = new CalendarioSJCS(new Integer(idInstitucion), new Integer(idTurno),
+		CalendarioSJCS calendarioSJCS = new CalendarioSJCS();
+		calendarioSJCS.inicializaParaMatriz(new Integer(idInstitucion), new Integer(idTurno),
 				new Integer(idGuardia), new Integer(idCalendarioGuardias), null, usr, null);
 		calendarioSJCS.calcularMatrizPeriodosDiasGuardia();
 		// Nota: El array arrayPeriodosSJCS es un array periodos y cada periodo es un array de dias

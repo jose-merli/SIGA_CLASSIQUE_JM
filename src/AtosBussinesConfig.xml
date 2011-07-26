@@ -1,13 +1,14 @@
 <configuration>
 	<context id="volantesExpress">
 		<transactionManager type="JTA">
-			<property name="TransactionTimeOut">100</property>
+			<property name="TransactionTimeOut">1000</property>
 			<property name="TransactionContext">javax.transaction.UserTransaction</property>
 		</transactionManager>
 		<service interface="com.siga.gratuita.service.VolantesExpressService" implementation="com.siga.gratuita.service.impl.AtosVolantesExpressService"/>
 		<service interface="com.siga.gratuita.service.EejgService" implementation="com.siga.gratuita.service.impl.AtosEejgService"/>		
 		<service interface="com.siga.censo.service.BajasTemporalesService" implementation="com.siga.censo.service.impl.AtosBajasTemporalesService"/>
 		<service interface="com.siga.administracion.service.InformesService" implementation="com.siga.administracion.service.impl.AtosInformesService"/>
+		<service interface="com.siga.gratuita.service.ProgramacionCalendariosService" implementation="com.siga.gratuita.service.impl.AtosProgramacionCalendariosService"/>
 	</context>
 	
 	<context id="letrados">

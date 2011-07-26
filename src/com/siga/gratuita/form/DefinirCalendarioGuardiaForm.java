@@ -1,6 +1,14 @@
 package com.siga.gratuita.form;
 
+import java.util.List;
+
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
+import com.siga.administracion.SIGAConstants;
+import com.siga.beans.ScsGuardiasTurnoBean;
+import com.siga.beans.ScsTurnoBean;
 import com.siga.general.MasterForm;
+import com.siga.tlds.FilaExtElement;
 import com.siga.Utilidades.UtilidadesHash;
 
 /**
@@ -119,5 +127,112 @@ public class DefinirCalendarioGuardiaForm extends MasterForm
 	public String getFechaSolicitud ()			{ return ((String)this.datos.get("FECHASOLICITUD"));		}
 	public String getFlagConfirmacion()			{ return ((String)this.datos.get("FLAGCONFIRMACION"));		}
 	public DefinirPermutaGuardiasForm getPermutaGuardias() {return permutaGuardias;}
+	private DefinirTurnosForm turno;
+	private DefinirGuardiasTurnosForm guardia;
+	private String estado;
+	String idTurnoCalendario ;
+	String idGuardiaCalendario ;
+	List<ScsTurnoBean> turnos;
+	List<ScsGuardiasTurnoBean> guardias;
+	private String botones;
+	private FilaExtElement[] elementosFila;
+
+	public DefinirTurnosForm getTurno() {
+		return turno;
+	}
+	public void setTurno(DefinirTurnosForm turno) {
+		this.turno = turno;
+	}
+	public DefinirGuardiasTurnosForm getGuardia() {
+		return guardia;
+	}
+	public void setGuardia(DefinirGuardiasTurnosForm guardia) {
+		this.guardia = guardia;
+	}
+	public String getEstado() {
+		return estado;
+	}
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	public List<ScsTurnoBean> getTurnos() {
+		return turnos;
+	}
+	public void setTurnos(List<ScsTurnoBean> turnos) {
+		this.turnos = turnos;
+	}
+	public List<ScsGuardiasTurnoBean> getGuardias() {
+		return guardias;
+	}
+	public void setGuardias(List<ScsGuardiasTurnoBean> guardias) {
+		this.guardias = guardias;
+	}
+	public String getIdTurnoCalendario() {
+		return idTurnoCalendario;
+	}
+	public void setIdTurnoCalendario(String idTurnoCalendario) {
+		this.idTurnoCalendario = idTurnoCalendario;
+	}
+	public String getIdGuardiaCalendario() {
+		return idGuardiaCalendario;
+	}
+	public void setIdGuardiaCalendario(String idGuardiaCalendario) {
+		this.idGuardiaCalendario = idGuardiaCalendario;
+	}
+	public String  getFechaInicioTxt() {
+		String fechaInicioTxt = "";
+		try {
+			String fechaInicio = getFechaInicio();
+			if(fechaInicio!=null && !fechaInicio.equals(""))
+				fechaInicioTxt = GstDate.getFormatedDateShort("",  fechaInicio);
+		} catch (ClsExceptions e) {
+			
+		}
+		return fechaInicioTxt;
+	}
+	public String  getFechaFinTxt() {
+		String fechaFinTxt = "";
+		try {
+			String fechaFin = getFechaFin();
+			if(fechaFin!=null && !fechaFin.equals(""))
+				fechaFinTxt = GstDate.getFormatedDateShort("",  fechaFin);
+		} catch (ClsExceptions e) {
+			
+		}
+		return fechaFinTxt;
+	}
+//	static public final String estadoProgramado = "0";
+//	static public final String estadoProcesando = "1";
+//	static public final String estadoError = "2";
+//	static public final String estadoGenerado = "3";
+//    static public final String estadoCancelado = "4";
+//    static public final String estadoPteManual = "5";
+	
+	public String getBotones() {
+//		<html:option value="0">Programada</html:option>
+//		<html:option value="1">En proceso</html:option>
+//		<html:option value="2">Generada con Errores</html:option>
+//		<html:option value="3">Generada</html:option>
+		switch (Integer.parseInt(estado)) {
+		
+		case 3:case 5:
+			botones  = "C,E,B";
+			break;
+		
+		default:
+			botones="";
+			break;
+		}
+		return botones;
+	}
+	public FilaExtElement[] getElementosFila() {
+		return elementosFila;
+	}
+	public void setElementosFila(FilaExtElement[] elementosFila) {
+		this.elementosFila = elementosFila;
+	}
+	
+	
 
 }

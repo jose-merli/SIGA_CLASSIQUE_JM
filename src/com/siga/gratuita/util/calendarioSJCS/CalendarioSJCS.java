@@ -6,12 +6,11 @@
  */
 package com.siga.gratuita.util.calendarioSJCS;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -20,12 +19,20 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
+
+import org.omg.CosTransactions.Status;
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.LogFileWriter;
+import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenBajasTemporalesAdm;
 import com.siga.beans.CenBajasTemporalesBean;
@@ -43,6 +50,8 @@ import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsHitoFacturableGuardiaAdm;
 import com.siga.beans.ScsHitoFacturableGuardiaBean;
+import com.siga.beans.ScsInscripcionTurnoBean;
+import com.siga.beans.ScsPermutaGuardiasAdm;
 import com.siga.beans.ScsSaltoCompensacionGrupoAdm;
 import com.siga.beans.ScsSaltoCompensacionGrupoBean;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
@@ -117,12 +126,15 @@ public class CalendarioSJCS
 	
 	/**Buffer de lineas para log*/
 	private LogFileWriter log;
-
+	
+	
+	public CalendarioSJCS() {
+	}
 
 	/**
 	 * Constructor
 	 */
-	public CalendarioSJCS(Integer idInstitucion, Integer idTurno, Integer idGuardia, Integer idCalendarioGuardias,
+	public void inicializaParaMatriz(Integer idInstitucion, Integer idTurno, Integer idGuardia, Integer idCalendarioGuardias,
 			Vector<ScsCalendarioGuardiasBean> calendariosVinculados, UsrBean usr, LogFileWriter log)
 	{
 		// Controles
@@ -192,13 +204,57 @@ public class CalendarioSJCS
 		this.log = log;
 	} // CalendarioSJCS()
 	
-	public CalendarioSJCS(Integer idInstitucion, Integer idTurno,String fecha, UsrBean usr)
+	/*public CalendarioSJCS(ScsCalendarioGuardiasBean calendarioGuardiasBean,
+			 UsrBean usr, LogFileWriter log)
 	{
-
-		// Variables
-
-
 		
+	
+		
+		// Controles
+		ScsGuardiasTurnoAdm admGuardiasTurno = new ScsGuardiasTurnoAdm(this.usrBean);
+		ScsCalendarioGuardiasAdm admCalendarioGuardias = new ScsCalendarioGuardiasAdm(this.usrBean);
+		ScsCalendarioLaboralAdm admCalendarioLaboral = new ScsCalendarioLaboralAdm(this.usrBean);
+		
+		// Variables
+		String where;
+		Vector<ScsGuardiasTurnoBean> vGuardias;
+		
+		// Claves
+		this.idInstitucion = calendarioGuardiasBean.getIdInstitucion();
+		this.idTurno = calendarioGuardiasBean.getIdTurno();
+		this.idGuardia = calendarioGuardiasBean.getIdGuardia();
+		this.idCalendarioGuardias = calendarioGuardiasBean.getIdCalendarioGuardias();
+
+		// UsrBean
+		this.usrBean = usr;
+
+		// obteniendo el resto de datos:
+		
+		
+		this.beanGuardiasTurno = calendarioGuardiasBean.getGuardiaTurno();
+		
+		// Calendarios vinculados (guardias vinculadas)
+		this.calendariosVinculados = calendarioGuardiasBean.getCalendariosVinculados();
+
+		// 2. CALENDARIO: Fecha de inicio y fin
+		this.fechaInicio = calendarioGuardiasBean.getFechaInicio();
+		this.fechaFin = calendarioGuardiasBean.getFechaFin();
+		
+
+		// 3. CALENDARIO FESTIVOS:
+		this.vDiasFestivos = (Vector) admCalendarioLaboral.obtenerFestivosTurno(calendarioGuardiasBean.getIdInstitucion(), calendarioGuardiasBean.getIdTurno(),
+				this.fechaInicio, this.fechaFin).clone();
+
+		// 4. INICIALIZACION DE LOS 2 ARRAYS:
+		this.arrayPeriodosDiasGuardiaSJCS = new ArrayList();
+		this.arrayPeriodosLetradosSJCS = new ArrayList();
+		this.log = log;
+	} // CalendarioSJCS()
+	
+	*/
+	public void inicializaParaObtenerLetrado(Integer idInstitucion, Integer idTurno,String fecha, UsrBean usr)
+	{
+		// Variables
 		// Claves
 		this.idInstitucion = idInstitucion;
 		this.idTurno = idTurno;
@@ -1645,6 +1701,486 @@ public class CalendarioSJCS
 		// una vez comprobado todo, se selecciona a este letrado
 		return true;
 	} // comprobarRestriccionesLetradoCola()
+	
+	public void inicializaParaGenerarCalendario(Integer idInstitucion, Integer idTurno,
+			Integer idGuardia, Integer idCalendarioGuardias, 
+
+			String fechaInicio, String fechaFin,UsrBean usrBean) {
+		this.idInstitucion = idInstitucion;
+		this.idTurno = idTurno;
+		this.idGuardia = idGuardia;
+		this.idCalendarioGuardias = idCalendarioGuardias;
+		this.usrBean = usrBean;
+		this.fechaInicio = fechaInicio;
+		this.fechaFin = fechaFin;
+	}
+
+	public void generarCalendario() throws ClsExceptions,
+			SIGAException {
+		ScsGuardiasTurnoAdm admGuardiaTurno = new ScsGuardiasTurnoAdm(this.usrBean);
+		ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(
+				this.usrBean);
+		ScsCalendarioGuardiasAdm admCalendarioGuardia = new ScsCalendarioGuardiasAdm(
+				this.usrBean);
+		ScsCalendarioGuardiasAdm admCalendarioGuardiaAux = new ScsCalendarioGuardiasAdm(
+				this.usrBean);
+		UserTransaction tx = null;
+
+		// Variables generales
+
+		int idCalendario;
+		String porGrupos = ClsConstants.DB_FALSE;
+		boolean rotacion = false;
+		Vector<ScsGuardiasTurnoBean> guardiasVinculadas = null;
+		ScsGuardiasTurnoBean beanGuardia = null;
+		LogFileWriter log = null;
+		ArrayList<String> lineaLog = null;
+		Vector registro = new Vector();
+
+		String idTurnoPrincipal;
+		String idGuardiaPrincipal;
+		String idCalendarioGuardiasPrincipal;
+
+		// obteniendo valores del formulario
+
+		// obteniendo datos de la guardia
+		Hashtable miHash = new Hashtable();
+		miHash.put(ScsCalendarioGuardiasBean.C_IDINSTITUCION, idInstitucion);
+		miHash.put(ScsCalendarioGuardiasBean.C_IDTURNO, idTurno);
+		miHash.put(ScsCalendarioGuardiasBean.C_IDGUARDIA, idGuardia);
+		Vector vGuardia = admGuardiaTurno.select(miHash);
+		beanGuardia = (ScsGuardiasTurnoBean) vGuardia.get(0);
+		String nombreGuardia = beanGuardia.getNombre();
+		porGrupos = beanGuardia.getPorGrupos();
+		rotacion = (beanGuardia.getRotarComponentes()
+				.equals(ClsConstants.DB_TRUE));
+
+		// validando que no haya ninguna guardia realizada
+		if (!admGuardiasColegiado.validarBorradoGuardias(idInstitucion,
+				idCalendarioGuardias, idTurno, idGuardia))
+			throw new SIGAException(
+					"error.messagess.borrarGuardiasGenerarCalendario");
+
+		// obteniendo las Guardias vinculadas
+		String where = " WHERE idinstitucionprincipal = " + idInstitucion
+				+ " AND idturnoprincipal = " + idTurno
+				+ " AND idguardiaprincipal = " + idGuardia;
+		if ((guardiasVinculadas = admGuardiaTurno.select(where)) == null)
+			guardiasVinculadas = new Vector<ScsGuardiasTurnoBean>();
+
+		try {
+			// preparando log del calendario
+			ReadProperties rp = new ReadProperties(
+					SIGAReferences.RESOURCE_FILES.SIGA);
+			log = LogFileWriter
+					.getLogFileWriter(
+							rp.returnProperty("sjcs.directorioFisicoGeneracionCalendarios")
+									+ File.separator + idInstitucion,
+							getNombreFicheroLogCalendario(idTurno, idGuardia,
+									idCalendarioGuardias, fechaInicio, fechaFin));
+			log.clear();
+
+			// iniciando transaccion
+			tx = this.usrBean.getTransactionPesada();
+			tx.begin();
+
+			// si hay guardias vinculadas, hay que crear los calendarios antes
+			// que nada
+			String textoAutomatico = UtilidadesString.getMensajeIdioma(usrBean, "gratuita.calendarios.generado.automatico") ;
+			Vector<ScsCalendarioGuardiasBean> calendariosVinculados = new Vector<ScsCalendarioGuardiasBean>();
+			for (ScsGuardiasTurnoBean guardia : guardiasVinculadas) {
+				lineaLog = new ArrayList<String>();
+				lineaLog.add("Creando calendario para:");
+				lineaLog.add("Guardia vinculada '" + guardia.getNombre()
+						+ "'...");
+				ScsCalendarioGuardiasBean calendarioGuardiasBean = new ScsCalendarioGuardiasBean(
+						guardia.getIdInstitucion(),
+						guardia.getIdTurno(),
+						guardia.getIdGuardia(),
+						null,
+						fechaInicio,
+						fechaFin,
+						textoAutomatico,
+						new Integer(idTurno), new Integer(idGuardia),
+						new Integer(idCalendarioGuardias));
+				idCalendario = crearCalendario(calendarioGuardiasBean, this.usrBean);
+				if (idCalendario > 0) {
+					calendarioGuardiasBean
+							.setIdCalendarioGuardias(idCalendario);
+
+					lineaLog.add("OK");
+					calendariosVinculados.add(calendarioGuardiasBean);
+				} else
+					lineaLog.add("Fallo. Puede que ya exista el calendario");
+				log.addLog(lineaLog);
+			}
+
+			// inicializando calendario
+			CalendarioSJCS calendarioSJCS = new CalendarioSJCS();
+			calendarioSJCS.inicializaParaMatriz(new Integer(
+					idInstitucion), new Integer(idTurno),
+					new Integer(idGuardia), new Integer(idCalendarioGuardias),
+					calendariosVinculados, this.usrBean, log);
+
+			// obteniendo los periodos
+			calendarioSJCS.calcularMatrizPeriodosDiasGuardiaAutomatico();
+			List lDiasASeparar = calendarioSJCS.getDiasASeparar(new Integer(
+					idInstitucion), new Integer(idTurno),
+					new Integer(idGuardia), this.usrBean);
+
+			// obteniendo la matriz de letrados de guardia
+			log.addLog(new String[] {
+					"INICIO generacion",
+					beanGuardia.getNombre() + " (" + fechaInicio + " - "
+							+ fechaFin + ")" });
+			if (porGrupos.equals("1")) {
+				calendarioSJCS.calcularMatrizLetradosGuardiaPorGrupos(
+						lDiasASeparar, rotacion);
+			} else {
+				calendarioSJCS.calcularMatrizLetradosGuardia(lDiasASeparar);
+			}
+			log.addLog(new String[] { "FIN generacion" });
+
+			tx.commit();
+		} catch (SIGAException e) {
+			try {
+				tx.rollback();
+			} catch (Exception e2) {
+			}
+			throw e;
+		} catch (Exception e) {
+			try {
+				tx.rollback();
+			} catch (Exception e2) {
+			}
+			throw new ClsExceptions("messages.general.error");
+		} finally {
+			// escribiendo fichero de log
+			if (log != null)
+				log.flush();
+		}
+
+	}
+
+	public String getNombreFicheroLogCalendario(Integer idTurno,
+			Integer idGuardia, Integer idCalendarioGuardias,
+			String fechaInicio, String fechaFin) throws ClsExceptions {
+		if(fechaInicio.indexOf(":")!=-1)
+			fechaInicio = GstDate.getFormatedDateShort("", fechaInicio);
+		if(fechaFin.indexOf(":")!=-1)
+			fechaFin = GstDate.getFormatedDateShort("", fechaFin);
+		
+		return (idTurno + "." + idGuardia + "." + idCalendarioGuardias + "-"
+				+ fechaInicio.replace('/', '.') + "-" + fechaFin.replace('/',
+				'.'));
+	}
+
+	public int crearCalendario(
+			ScsCalendarioGuardiasBean calendarioGuardiasBean, UsrBean usr)
+			throws ClsExceptions, SIGAException {
+		return crearCalendario(calendarioGuardiasBean.getIdInstitucion(),
+				calendarioGuardiasBean.getIdTurno(),
+				calendarioGuardiasBean.getIdGuardia(),
+				calendarioGuardiasBean.getFechaInicio(),
+				calendarioGuardiasBean.getFechaFin(),
+				calendarioGuardiasBean.getObservaciones(),
+				calendarioGuardiasBean.getIdTurnoPrincipal(),
+				calendarioGuardiasBean.getIdGuardiaPrincipal(),
+				calendarioGuardiasBean.getIdCalendarioGuardiasPrincipal(), usr);
+
+	}
+
+	/**
+	 * Crea un calendario para los parametros dados
+	 * 
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param idGuardia
+	 * @param fechaDesde
+	 * @param fechaHasta
+	 * @param observaciones
+	 * @param usr
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public int crearCalendario(Integer idInstitucion, Integer idTurno,
+			Integer idGuardia, String fechaDesde, String fechaHasta,
+			String observaciones, Integer idTurnoPrincipal,
+			Integer idGuardiaPrincipal, Integer idCalendarioPrincipal,
+			UsrBean usr) throws ClsExceptions,SIGAException {
+		// Controles
+		ScsCalendarioGuardiasAdm admCalendarioGuardia = new ScsCalendarioGuardiasAdm(
+				usr);
+		ScsGuardiasTurnoAdm admGuardiasTurno = new ScsGuardiasTurnoAdm(usr);
+
+		// Variables
+		Hashtable miHash = new Hashtable();
+		String idcalendarioguardias;
+		String idPersonaUltimoAnterior, fechaSuscUltimoAnterior, idGrupoGuardiaColegiadoAnterior;
+		Vector registros = new Vector();
+
+		//Comprobamos que no haya ninguna cabecera de calendario para el turno , guardia,
+		//fecha desde y fecha hasta. Si esta generada damos error. si no lo esta la cogemos 
+		//y le concatenamos las observaciones
+
+		StringBuffer sqlCalGuardia = new StringBuffer(); 
+		sqlCalGuardia.append(" WHERE IDINSTITUCION =");
+		sqlCalGuardia.append(idInstitucion);
+		sqlCalGuardia.append(" AND IDTURNO =");
+		sqlCalGuardia.append(idTurno);
+		sqlCalGuardia.append(" AND IDGUARDIA =");
+		sqlCalGuardia.append(idGuardia);
+		sqlCalGuardia.append(" AND TRUNC(FECHAINICIO) ='");
+		sqlCalGuardia.append(GstDate.getFormatedDateShort("", fechaDesde) );
+		sqlCalGuardia.append("' AND TRUNC(FECHAFIN) ='");
+		sqlCalGuardia.append(GstDate.getFormatedDateShort("", fechaHasta) );
+		sqlCalGuardia.append("'");
+		
+		Vector calGuardiavVector=admCalendarioGuardia.select(sqlCalGuardia.toString());
+		if (calGuardiavVector != null && calGuardiavVector.size()>0){
+			ScsCalendarioGuardiasBean calendarioGuardiasBean = (ScsCalendarioGuardiasBean) calGuardiavVector.get(0);
+			StringBuffer sqlCabecera = new StringBuffer();
+			
+			  
+			sqlCabecera.append(" WHERE IDINSTITUCION =");
+			sqlCabecera.append(calendarioGuardiasBean.getIdInstitucion());
+			sqlCabecera.append(" AND IDTURNO =");
+			sqlCabecera.append(calendarioGuardiasBean.getIdTurno());
+			sqlCabecera.append(" AND IDGUARDIA =");
+			sqlCabecera.append(calendarioGuardiasBean.getIdGuardia());
+			sqlCabecera.append(" AND IDCALENDARIOGUARDIAS =");
+			sqlCabecera.append(calendarioGuardiasBean.getIdCalendarioGuardias());
+			ScsCabeceraGuardiasAdm  cabeceraGuardiasAdm = new ScsCabeceraGuardiasAdm(usr);
+			
+			Vector cabGuardiavVector=cabeceraGuardiasAdm.select(sqlCabecera.toString());
+			if (cabGuardiavVector != null && cabGuardiavVector.size()>0){
+				throw new SIGAException("el calendario para esas fechas ya esta generado");
+			}
+			
+			//modificamos las observaciones
+			if(calendarioGuardiasBean.getObservaciones()!=null && !calendarioGuardiasBean.getObservaciones().equals("")&& observaciones!=null &&!calendarioGuardiasBean.getObservaciones().equals(observaciones)){
+				
+				calendarioGuardiasBean.setObservaciones(calendarioGuardiasBean.getObservaciones()+". "+observaciones);
+				String[] claves = {ScsCalendarioGuardiasBean.C_IDINSTITUCION,
+						ScsCalendarioGuardiasBean.C_IDGUARDIA, 
+						ScsCalendarioGuardiasBean.C_IDTURNO,ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS};
+				String[] campos = {ScsCalendarioGuardiasBean.C_OBSERVACIONES};
+				
+				admCalendarioGuardia.updateDirect(admCalendarioGuardia.beanToHashTable(calendarioGuardiasBean),claves,campos);
+			}
+			return calendarioGuardiasBean.getIdCalendarioGuardias().intValue();
+			
+		
+		}
+		
+		
+		// calculando idPersonaUltimoAnterior de guardias turno
+		StringBuffer sql = new StringBuffer();
+		sql.append("WHERE " + ScsGuardiasTurnoBean.C_IDINSTITUCION + "="
+				+ idInstitucion);
+		sql.append(" AND " + ScsGuardiasTurnoBean.C_IDTURNO + "=" + idTurno);
+		sql.append(" AND " + ScsGuardiasTurnoBean.C_IDGUARDIA + "=" + idGuardia);
+		Vector v = admGuardiasTurno.select(sql.toString());
+		if (v == null || v.isEmpty())
+			throw new ClsExceptions("Error al buscar la guardia del calendario");
+
+		ScsGuardiasTurnoBean guardiaBean = (ScsGuardiasTurnoBean) v.get(0);
+		if (guardiaBean.getIdPersona_Ultimo() == null) {
+			idPersonaUltimoAnterior = "";
+			fechaSuscUltimoAnterior = "";
+		} else {
+			idPersonaUltimoAnterior = guardiaBean.getIdPersona_Ultimo()
+					.toString();
+			fechaSuscUltimoAnterior = guardiaBean.getFechaSuscripcion_Ultimo();
+		}
+		if (guardiaBean.getIdGrupoGuardiaColegiado_Ultimo() == null) {
+			idGrupoGuardiaColegiadoAnterior = "";
+		} else {
+			idGrupoGuardiaColegiadoAnterior = guardiaBean
+					.getIdGrupoGuardiaColegiado_Ultimo().toString();
+		}
+
+		// calculando nuevo idcalendarioguardias
+		registros = admCalendarioGuardia.selectGenerico(admCalendarioGuardia
+				.getIdCalendarioGuardias(idInstitucion, idTurno, idGuardia));
+		idcalendarioguardias = (String) (((Hashtable) registros.get(0))
+				.get("IDCALENDARIOGUARDIAS"));
+		if (idcalendarioguardias.equals(""))
+			idcalendarioguardias = "1";
+		miHash.put(ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS,
+				idcalendarioguardias);
+
+		miHash.put(ScsCalendarioGuardiasBean.C_IDINSTITUCION, idInstitucion);
+		miHash.put(ScsCalendarioGuardiasBean.C_IDTURNO, idTurno);
+		miHash.put(ScsCalendarioGuardiasBean.C_IDGUARDIA, idGuardia);
+		miHash.put(ScsCalendarioGuardiasBean.C_FECHAINICIO, fechaDesde);
+		miHash.put(ScsCalendarioGuardiasBean.C_FECHAFIN,fechaHasta);
+		miHash.put(ScsCalendarioGuardiasBean.C_OBSERVACIONES, observaciones);
+		miHash.put(ScsCalendarioGuardiasBean.C_USUMODIFICACION, "0");
+		miHash.put(ScsCalendarioGuardiasBean.C_FECHAMODIFICACION, "sysdate");
+		miHash.put(ScsCalendarioGuardiasBean.C_IDPERSONA_ULTIMOANTERIOR,
+				idPersonaUltimoAnterior);
+		miHash.put(
+				ScsCalendarioGuardiasBean.C_IDGRUPOGUARDIACOLEGIADO_ULTIMOANTERIOR,
+				idGrupoGuardiaColegiadoAnterior);
+		miHash.put(ScsCalendarioGuardiasBean.C_FECHASUSC_ULTIMOANTERIOR,
+				fechaSuscUltimoAnterior);
+		if (idTurnoPrincipal != null) {
+			miHash.put(ScsCalendarioGuardiasBean.C_IDTURNO_PRINCIPAL,
+					idTurnoPrincipal);
+			miHash.put(ScsCalendarioGuardiasBean.C_IDGUARDIA_PRINCIPAL,
+					idGuardiaPrincipal);
+			miHash.put(
+					ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS_PRINCIPAL,
+					idCalendarioPrincipal);
+		}
+
+		// insert
+		if (admCalendarioGuardia.insert(miHash))
+			return Integer.parseInt(idcalendarioguardias);
+		else
+			return 0;
+	} // crearCalendario()
+	public void inicializaParaBorrarCalendarios(Integer idInstitucion,Integer idTurno,Integer idGuardia,Integer idCalendarioGuardias ,UsrBean usrBean){
+		this.idInstitucion = idInstitucion;
+		this.idTurno = idTurno;
+		this.idGuardia = idGuardia;
+		this.idCalendarioGuardias = idCalendarioGuardias;
+		this.usrBean = usrBean;
+		
+	}
+	
+	public void borrarCalendario()throws ClsExceptions,SIGAException{
+		
+		
+				
+		String idTurnoPrincipal;
+		String idGuardiaPrincipal;
+		String idCalendarioGuardiasPrincipal;
+		int contadorRegistor = 0;
+		int inicioRegistro = 0;
+		
+		Vector registro = new Vector();
+		ScsCalendarioGuardiasAdm admCalendarioGuardiaAux = new ScsCalendarioGuardiasAdm(this.usrBean);
+		ScsCalendarioGuardiasAdm admCalendarioGuardia = new ScsCalendarioGuardiasAdm(this.usrBean);
+		ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(this.usrBean);
+		ScsPermutaGuardiasAdm admPermutaGuardias = new ScsPermutaGuardiasAdm(this.usrBean);
+		ScsCabeceraGuardiasAdm admCabeceraGuardias = new ScsCabeceraGuardiasAdm(this.usrBean);
+		ScsSaltosCompensacionesAdm admSaltosCompensaciones = new ScsSaltosCompensacionesAdm(this.usrBean); 
+
+
+		//generando el hash para tratar la guardia del calendario
+		Hashtable miHash = new Hashtable();
+		
+		miHash.put(ScsCalendarioGuardiasBean.C_IDINSTITUCION, this.idInstitucion.toString());
+		miHash.put(ScsCalendarioGuardiasBean.C_IDTURNO, this.idTurno.toString());
+		miHash.put(ScsCalendarioGuardiasBean.C_IDGUARDIA, this.idGuardia.toString());
+		miHash.put(ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS, this.idCalendarioGuardias.toString());
+		
+		registro = admCalendarioGuardia.selectGenerico(
+				(admCalendarioGuardiaAux.getDatosCalendarioVinculadas(this.idInstitucion, 
+						this.idTurno, this.idGuardia, this.idCalendarioGuardias)));
+
+		contadorRegistor = registro.size();
+		
+		UserTransaction tx = null;
+		boolean transactionOpened = false;
+		//comprobando que sea el ultimo calendario
+		if (admCalendarioGuardia.validarBorradoCalendario(this.idInstitucion, this.idCalendarioGuardias, this.idTurno, this.idGuardia)) {
+			//comprobando que no haya ninguna guardia realizada
+			if (admGuardiasColegiado.validarBorradoGuardias(this.idInstitucion, this.idCalendarioGuardias, this.idTurno, this.idGuardia)) {
+				
+				//empezando transaccion
+				
+				
+				//borrando el calendario
+				try {
+					tx = this.usrBean.getTransaction();
+					if(tx.getStatus()==Status._StatusNoTransaction){
+						transactionOpened = true;
+						tx.begin();
+					}
+					for (int i = 0; i < contadorRegistor; i++) {
+					
+						idTurnoPrincipal = UtilidadesHash.getString((Hashtable)registro.get(i),"IDTURNOPRINCIPAL");
+						idGuardiaPrincipal = UtilidadesHash.getString((Hashtable)registro.get(i),"IDGUARDIAPRINCIPAL");
+						idCalendarioGuardiasPrincipal = UtilidadesHash.getString((Hashtable)registro.get(i),"IDCALENDARIOGUARDIASPRINCIPAL");
+
+						Hashtable miHashVinculada = new Hashtable();
+					
+						miHashVinculada.put(ScsCalendarioGuardiasBean.C_IDINSTITUCION, UtilidadesHash.getString((Hashtable)registro.get(i),"IDINSTITUCION"));
+						miHashVinculada.put(ScsCalendarioGuardiasBean.C_IDTURNO, UtilidadesHash.getString((Hashtable)registro.get(i),"IDTURNO"));
+						miHashVinculada.put(ScsCalendarioGuardiasBean.C_IDGUARDIA, UtilidadesHash.getString((Hashtable)registro.get(i),"IDGUARDIA"));
+						miHashVinculada.put(ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS, UtilidadesHash.getString((Hashtable)registro.get(i),"IDCALENDARIOGUARDIAS"));
+					
+						this.borrarGeneracionCalendario(miHashVinculada, this.usrBean);
+						this.borrarRegistroCalendario(miHashVinculada, this.usrBean);
+					}
+				
+					this.borrarGeneracionCalendario(miHash, this.usrBean);
+					this.borrarRegistroCalendario(miHash, this.usrBean);
+					if(transactionOpened)
+						tx.commit();
+				} catch (Exception e) {
+					if (tx != null){
+						try {
+							if(transactionOpened)
+								tx.rollback();
+						} catch (Exception e1) {
+						} 
+					}
+					throw new SIGAException("error.messages.deleted");
+				}
+			} else
+				throw new SIGAException("error.messagess.borrarCalendario");
+		} else
+			throw new SIGAException("error.message.hayCalendarioFechaFinMayor");
+		
+	}
+	private void borrarGeneracionCalendario(Hashtable calendario, UsrBean usr)
+	throws ClsExceptions, SIGAException
+	{
+		ScsSaltosCompensacionesAdm admSaltosCompensaciones = new ScsSaltosCompensacionesAdm(usr);
+		ScsSaltoCompensacionGrupoAdm admSaltoCompensacionGrupo = new ScsSaltoCompensacionGrupoAdm(usr);
+		ScsPermutaGuardiasAdm admPermutaGuardias = new ScsPermutaGuardiasAdm(usr);
+		ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(usr);
+		ScsCabeceraGuardiasAdm admCabeceraGuardias = new ScsCabeceraGuardiasAdm(usr);
+		ScsCalendarioGuardiasAdm admCalendarioGuardia = new ScsCalendarioGuardiasAdm(usr);
+
+		if (! admSaltosCompensaciones.updateSaltosCompensacionesCumplidos(calendario))
+			throw new SIGAException("Error en borrado de calendario: al quitar cumplimientos de saltos y compensaciones");
+		if (! admSaltosCompensaciones.deleteSaltosCompensacionesCreadosEnCalendario(calendario))
+			throw new SIGAException("Error en borrado de calendario: al borrar saltos y compensaciones creados en el calendario");
+		if (! admSaltosCompensaciones.deleteSaltosCompensacionesCalendariosInexistentes(calendario))	
+			throw new SIGAException("Error en borrado de calendario: al borrar saltos y compensaciones de calendarios que ya no existen");
+
+		if (! admSaltoCompensacionGrupo.updateSaltosCompensacionesCumplidos(calendario))
+			throw new SIGAException("Error en borrado de calendario: al quitar cumplimientos de saltos y compensaciones de grupo");
+		if (! admSaltoCompensacionGrupo.deleteSaltosCompensacionesCreadosEnCalendario(calendario))
+			throw new SIGAException("Error en borrado de calendario: al borrar saltos y compensaciones de grupo creados en el calendario");
+		if (! admSaltoCompensacionGrupo.deleteSaltosCompensacionesCalendariosInexistentes(calendario))	
+			throw new SIGAException("Error en borrado de calendario: al borrar saltos y compensaciones de grupo de calendarios que ya no existen");
+
+		if (! admPermutaGuardias.deletePermutasCalendario(calendario))
+			throw new ClsExceptions("Error en borrado de calendario: al quitar permutas del calendario");
+
+		if (! admGuardiasColegiado.deleteGuardiasCalendario(calendario))
+			throw new SIGAException("Error en borrado de calendario: al borrar dias de guardia");
+		if (! admCabeceraGuardias.deleteCabecerasGuardiasCalendario(calendario))
+			throw new SIGAException("Error en borrado de calendario: al borrar cabeceras de guardia");
+
+		if(! admCalendarioGuardia.actualizarGuardia(calendario))
+			throw new SIGAException("Error en borrado de calendario: al actualizar el ultimo en la cola de guardia");
+	} //borrarGeneracionCalendario()
+
+	private void borrarRegistroCalendario(Hashtable calendario, UsrBean usr)
+	throws ClsExceptions, SIGAException
+	{
+		ScsCalendarioGuardiasAdm admCalendarioGuardia = new ScsCalendarioGuardiasAdm(usr);
+
+		if(! admCalendarioGuardia.delete(calendario))
+			throw new SIGAException("Error en borrado de registro de calendario");
+	}
 	
 	public class Puntero
 	{

@@ -96,6 +96,7 @@
 
 	<!--************ Seguridad de Certificados FIN ************-->
 
+
 	<!--
 		<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoCenso</listener-class></listener>
 		<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoServicios</listener-class></listener>
@@ -109,7 +110,7 @@
 		<listener-class>com.siga.general.BusinessManagerListener</listener-class>
 	</listener>
 
-
+<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoGeneracionCalendarios</listener-class></listener>
 
 	<!--
 		<servlet> <servlet-name>SIGASvlProcesoAutomaticoEnvios</servlet-name>
