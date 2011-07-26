@@ -153,7 +153,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	 * @throws SIGAException
 	 */
 	private Hashtable getDatosInformeFinal(Hashtable datosInforme,
-			UsrBean usrBean,  Hashtable backupHash) throws ClsExceptions, SIGAException {
+			UsrBean usrBean) throws ClsExceptions, SIGAException {
 
 		Hashtable htDatosInforme = new Hashtable();
 
@@ -224,9 +224,10 @@ public class EnvioInformesGenericos extends MasterReport {
 			if(isSolçicitantes==false){*/
 			String aSolicitantes = (String) datosInforme.get("aSolicitantes");
 			boolean isSolicitantes = aSolicitantes!=null && aSolicitantes.equalsIgnoreCase("S");
-			Hashtable datosconsulta= getDatosSalidaListaGuardias(datosInforme, usrBean, backupHash, isSolicitantes);
+			Hashtable datosconsulta= getDatosSalidaListaGuardias(datosInforme, usrBean, isSolicitantes);
 			htDatosInforme.put("row", datosconsulta.get("htCabeceraInforme"));
 			htDatosInforme.put("region", datosconsulta.get("vDatosInforme"));
+			htDatosInforme.put("hDatosListaGuardias", datosconsulta.get("hDatosListaGuardias"));
 			/*}else{
 				for (int j = 0; j < datosFormulario.size(); j++) {
 					Hashtable htDatoInforme = new Hashtable();
@@ -819,7 +820,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	 * @throws SIGAException
 	 */
 	public Vector getDocumentosAEnviar(Hashtable datosInforme,
-			Vector vPlantillas, UsrBean usrBean, int tipoDocumento,String tipoComunicacion, Hashtable backupHash)
+			Vector vPlantillas, UsrBean usrBean, int tipoDocumento,String tipoComunicacion)
 	throws ClsExceptions, SIGAException {
 
 		Vector vDocumentos = new Vector();
@@ -863,7 +864,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		if(!tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesDesigna) && !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesExpedientes)&& !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesListadoGuardias)&& !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesEjg))
 			htDatosInformeFinal = getDatosInformeFinal(datosInforme,
-					usrBean,  backupHash);
+					usrBean);
 		
 		Hashtable hashConsultasHechas = new Hashtable();
 		for (int i = 0; i < vPlantillas.size(); i++) {
@@ -871,34 +872,50 @@ public class EnvioInformesGenericos extends MasterReport {
 
 
 			if(tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesListadoGuardias)){
-	
+				
 				Hashtable datos= new Hashtable();
 				
 				Vector datosFormulario = (Vector) datosInforme.get("datosFormulario");
 				Vector vTotal = new Vector();
 				
 				boolean isSolicitantes = beanInforme.getASolicitantes()!=null && beanInforme.getASolicitantes().equalsIgnoreCase("S");
+				Hashtable atoInforme= new Hashtable();
 				
-				if(datosFormulario!=null){
+				if(datosFormulario!=null){ //Descarga de fichero
 					
 					
 					Hashtable datoInforme = (Hashtable) datosFormulario.get(0);
 					
 	
 					
-					if(isSolicitantes){
-					
+					if(isSolicitantes){//Descarga de ficheros
+						
 					
 						for (int k = 0; k < datosFormulario.size(); k++) {
 							Hashtable htDatoInforme = new Hashtable();
 							Hashtable datoInform = (Hashtable)datosFormulario.get(k);
 							datoInform.put("aSolicitantes", beanInforme.getASolicitantes());
 							datoInform.put("idTipoInforme", tipoComunicacion);				
-	
+//							String nombreGlobal = (String) htDatoInforme.get("NOMBRE");
+//							if(nombreGlobal!=null){
+//								datoInform.put("OBSERVACIONES", nombreGlobal);
+							
+								
+							
 							htDatoInforme = getDatosInformeFinal(datoInform,
-									usrBean,backupHash);
+									usrBean);
 							
-							
+							if(datoInforme.get("NOMBRE")==null){
+								atoInforme=(Hashtable) htDatoInforme.get("hDatosListaGuardias");
+								datoInforme.put("NOMBRE",atoInforme.get("NOMBRE"));
+								datoInforme.put("LUGAR",atoInforme.get("LUGAR"));
+								datoInforme.put("OBSERVACIONES",atoInforme.get("OBSERVACIONES"));
+								datoInforme.put("USUMODIFICACION",atoInforme.get("USUMODIFICACION"));
+								datoInforme.put("FECHAMODIFICACION",atoInforme.get("FECHAMODIFICACION"));
+								datoInforme.put("IDINSTITUCION",atoInforme.get("IDINSTITUCION"));
+								datoInforme.put("IDLISTA",atoInforme.get("IDLISTA"));
+							}
+							htDatoInforme.remove("hDatosListaGuardias");
 							identificador= new StringBuffer();
 							identificador.append((String)datoInforme.get("idLista"));
 							identificador.append("_");
@@ -936,7 +953,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		
 						}
 						
-					}else{
+					}else{//Descarga de un fichero total
 						datos.put("idInstitucion",(String)datoInforme.get("idInstitucion"));
 						datos.put("fechaIni",(String)datoInforme.get("fechaIni"));
 						datos.put("fechaFin",(String)datoInforme.get("fechaFin"));
@@ -946,8 +963,20 @@ public class EnvioInformesGenericos extends MasterReport {
 						datos.put("idTipoInforme", tipoComunicacion);				
 	
 						htDatosInformeFinal = getDatosInformeFinal(datos,
-								usrBean,backupHash);
-						
+								usrBean);
+						if(datos.get("NOMBRE")==null){
+
+							atoInforme=(Hashtable) htDatosInformeFinal.get("hDatosListaGuardias");
+							datos.put("NOMBRE",atoInforme.get("NOMBRE"));
+							datos.put("LUGAR",atoInforme.get("LUGAR"));
+							datos.put("OBSERVACIONES",atoInforme.get("OBSERVACIONES"));
+							datos.put("USUMODIFICACION",atoInforme.get("USUMODIFICACION"));
+							datos.put("FECHAMODIFICACION",atoInforme.get("FECHAMODIFICACION"));
+							datos.put("IDINSTITUCION",atoInforme.get("IDINSTITUCION"));
+							datos.put("IDLISTA",atoInforme.get("IDLISTA"));
+
+						}
+						htDatosInformeFinal.remove("hDatosListaGuardias");						
 						identificador= new StringBuffer();
 						identificador.append((String)datoInforme.get("idLista"));
 						identificador.append("_");
@@ -981,7 +1010,7 @@ public class EnvioInformesGenericos extends MasterReport {
 							break;
 						}
 					}	
-				}else{
+				}else{//Envio de ficheros
 					
 					datos.put("idInstitucion",(String)datosInforme.get("idInstitucion"));
 					datos.put("fechaIni",(String)datosInforme.get("fechaIni"));
@@ -992,8 +1021,8 @@ public class EnvioInformesGenericos extends MasterReport {
 					datos.put("idTipoInforme", tipoComunicacion);				
 
 					htDatosInformeFinal = getDatosInformeFinal(datos,
-							usrBean,backupHash);
-					
+							usrBean);
+					htDatosInformeFinal.remove("hDatosListaGuardias");			
 					identificador= new StringBuffer();
 					identificador.append((String)datosInforme.get("idLista"));
 					identificador.append("_");
@@ -1028,7 +1057,8 @@ public class EnvioInformesGenericos extends MasterReport {
 					}
 
 				}
-			}else if(tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesDesigna)){
+			}else
+				if(tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesDesigna)){
 				String tipoDestinatarioEnvio = (String) datosInforme.get("tipoDestinatario");
 				char[] tipoDestinatario = beanInforme.getDestinatarios().toCharArray();
 				boolean añadir = tipoDestinatarioEnvio==null;
@@ -1063,7 +1093,7 @@ public class EnvioInformesGenericos extends MasterReport {
 						//datosconsulta =	clase.getDatosPlantillas(idinstitucion,anio,idturno,numero,
 						//usr.getLanguage(),isSolicitantes,idPersonaJG, codigo);	
 						htDatosInformeFinal = getDatosInformeFinal(datosInforme,
-								usrBean,null);
+								usrBean);
 						hashConsultasHechas.put(keyConsultasHechas, htDatosInformeFinal);
 					}
 					
@@ -1174,7 +1204,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 						}else{
 							htDatosInformeFinal = getDatosInformeFinal(datosInforme,
-									usrBean,null);
+									usrBean);
 							
 							hashConsultasHechas.put(keyConsultasHechas, htDatosInformeFinal);
 
@@ -1511,7 +1541,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				//datosInforme.putAll(htClavesDestinatario);
 				vDocumentos = getDocumentosAEnviar(datosInforme,
 						vPlantillasInforme, usrBean,
-						EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme(),null);
+						EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme());
 			}else{
 				
 				
@@ -1524,7 +1554,7 @@ public class EnvioInformesGenericos extends MasterReport {
 						Hashtable  htClaves =   (Hashtable) alClavesDestinatario.get(i);
 						datosInforme.putAll(htClaves);
 						vDocumentos.addAll(getDocumentosAEnviar(datosInforme,vPlantillasInforme, usrBean,
-								EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme(),null));
+								EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme()));
 					}else{
 						Hashtable  htClaves =   (Hashtable) alClavesDestinatario.get(i);
 						String idFactura = (String)htClaves.get("idFactura");
@@ -1537,7 +1567,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				if(programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesMorosos)){
 					datosInforme.put("idFacturas", alFacturas);
 					vDocumentos.addAll(getDocumentosAEnviar(datosInforme,vPlantillasInforme, usrBean,
-							EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme(),null));
+							EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme()));
 				}
 			}
 			
@@ -1632,7 +1662,7 @@ public class EnvioInformesGenericos extends MasterReport {
 						
 						if (idPersonaReal!=null && !idPersonaReal.trim().equals("")) {
 							
-							vDocumentos.addAll(this.getDocumentosAEnviar(datoReal,vPlantillas, usrBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesExpedientes,null));
+							vDocumentos.addAll(this.getDocumentosAEnviar(datoReal,vPlantillas, usrBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesExpedientes));
 							// Genera el envio:
 							
 						}
@@ -1789,7 +1819,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			if(alClavesDestinatario==null){
 				//datosInforme.putAll(htClavesDestinatario);
 				vDocumentos = getDocumentosAEnviar(datosInforme,
-						vPlantillasInforme, usrBean, EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme(),null);
+						vPlantillasInforme, usrBean, EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme());
 			}else{
 				//List aClavesMultiple = (ArrayList)htClavesDestinatario.get("clavesMultiple");
 				//datosInforme.putAll(htClavesDestinatario);
@@ -1802,7 +1832,7 @@ public class EnvioInformesGenericos extends MasterReport {
 						Hashtable  htClaves =   (Hashtable) alClavesDestinatario.get(i);
 						datosInforme.putAll(htClaves);
 						vDocumentos.addAll(getDocumentosAEnviar(datosInforme,vPlantillasInforme, usrBean,
-								EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme(),null));
+								EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme()));
 					}else{
 						Hashtable  htClaves =   (Hashtable) alClavesDestinatario.get(i);
 						String idFactura = (String)htClaves.get("idFactura");
@@ -1814,7 +1844,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				if(programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesMorosos)){
 					datosInforme.put("idFacturas", alFacturas);
 					vDocumentos.addAll(getDocumentosAEnviar(datosInforme,vPlantillasInforme, usrBean,
-							EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme(),null));
+							EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme()));
 				}
 			}
 			
@@ -1940,7 +1970,7 @@ public class EnvioInformesGenericos extends MasterReport {
 						// obtengo sus documentos según vPlantillas
 												
 						vDocumentos = new Vector();
-						vDocumentos.addAll(this.getDocumentosAEnviar(datoReal,vPlantillas, usrBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesExpedientes,null));
+						vDocumentos.addAll(this.getDocumentosAEnviar(datoReal,vPlantillas, usrBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesExpedientes));
 						// Genera el envio:
 						
 						envio2.generarEnvioDireccionEspecifica(idPersonaReal, idDireccionReal, vDocumentos);				
@@ -2174,7 +2204,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	public File getInformeGenerico (InformesGenericosForm informeGenerico,
 									String idsesion,
 									UsrBean usr, 
-									boolean isEnviar,boolean isPermisoEnvio, Hashtable backupHash)
+									boolean isEnviar,boolean isPermisoEnvio)
 		throws SIGAException, Exception
 	{
 		File ficheroSalida = null; //Fichero para devolver
@@ -2226,7 +2256,7 @@ public class EnvioInformesGenericos extends MasterReport {
 					}
 				informesRes.addAll(this.getDocumentosAEnviar(
 						datosTotales, vPlantillas, usr,
-						EnvioInformesGenericos.docFile, idTipoInforme, backupHash));
+						EnvioInformesGenericos.docFile, idTipoInforme));
 				}
 			}else{
 				for (int j = 0; j < datosFormulario.size(); j++) {
@@ -2309,7 +2339,7 @@ public class EnvioInformesGenericos extends MasterReport {
 								vDocumentos.addAll(this.getDocumentosAEnviar(
 										datoReal, vPlantillas, usr,
 										EnvioInformesGenericos.docFile,
-										EnvioInformesGenericos.comunicacionesExpedientes,null));
+										EnvioInformesGenericos.comunicacionesExpedientes));
 								informesRes.addAll(vDocumentos);
 							//}
 						}
@@ -2319,7 +2349,7 @@ public class EnvioInformesGenericos extends MasterReport {
 					else {
 						informesRes.addAll(this.getDocumentosAEnviar(
 								datosInforme, vPlantillas, usr,
-								EnvioInformesGenericos.docFile, idTipoInforme, backupHash));
+								EnvioInformesGenericos.docFile, idTipoInforme));
 					}
 					}
 				}
@@ -2765,7 +2795,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 					vPlantillas = this.getPlantillasInforme(plantillas,userBean.getLocation(),userBean);
 				}
-				vDocumentos.addAll(this.getDocumentosAEnviar(datosInforme,vPlantillas, userBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesCenso,null));							
+				vDocumentos.addAll(this.getDocumentosAEnviar(datosInforme,vPlantillas, userBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesCenso));							
 
 			} 
 			Envio envio = getEnvio(form,true,locale, userBean);
@@ -3203,7 +3233,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 					vPlantillas = this.getPlantillasInforme(plantillas,userBean.getLocation(),userBean);
 				}
-				vDocumentos.addAll(this.getDocumentosAEnviar(datosInforme,vPlantillas, userBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesPagoColegiados,null));							
+				vDocumentos.addAll(this.getDocumentosAEnviar(datosInforme,vPlantillas, userBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesPagoColegiados));							
 
 			} 
 			Envio envio = getEnvio(form,true,locale, userBean);
@@ -3359,7 +3389,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 					vPlantillas = this.getPlantillasInforme(plantillas,userBean.getLocation(),userBean);
 				}
-				vDocumentos.addAll(this.getDocumentosAEnviar(datosInforme,vPlantillas, userBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesPagoColegiados,null));							
+				vDocumentos.addAll(this.getDocumentosAEnviar(datosInforme,vPlantillas, userBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesPagoColegiados));							
 
 			} 
 			Envio envio = getEnvio(form,true,locale, userBean);
@@ -3542,7 +3572,7 @@ public class EnvioInformesGenericos extends MasterReport {
 					vPlantillas = this.getPlantillasInforme(plantillas,userBean.getLocation(),userBean);
 				}
 				//en el metodo getDatosInformeFinal metemos la key definitiva idFacturas en el datosInforme
-				vDocumentos.addAll(this.getDocumentosAEnviar(datosInforme,vPlantillas, userBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesMorosos,null));
+				vDocumentos.addAll(this.getDocumentosAEnviar(datosInforme,vPlantillas, userBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesMorosos));
 				alFacturas.addAll((ArrayList)datosInforme.get("idFacturas"));
 
 			} 
@@ -3714,11 +3744,12 @@ public class EnvioInformesGenericos extends MasterReport {
 		return idPersona;
 	}
 	
-	public Hashtable getDatosSalidaListaGuardias (Hashtable datosInforme, UsrBean usrBean,  Hashtable backupHash, boolean isSolicitantes) throws ClsExceptions  
+	public Hashtable getDatosSalidaListaGuardias (Hashtable datosInforme, UsrBean usrBean, boolean isSolicitantes) throws ClsExceptions  
 	{	 
 
 		Hashtable vSalida = null;
 		HelperInformesAdm helperInformes = new HelperInformesAdm();	
+		Hashtable datosListaGuardias =null;
 		try {
 			vSalida = new Hashtable();	
 			String idInstitucion = (String) datosInforme.get("idInstitucion");
@@ -3739,6 +3770,29 @@ public class EnvioInformesGenericos extends MasterReport {
 					Enumeration e = datosLista.keys();  
 		            Object obj;
 		           
+	    			if(datosInforme.get("NOMBRE")==null){
+			    		datosListaGuardias = new Hashtable();
+			    		ScsListaGuardiasAdm admListaGuardias = new ScsListaGuardiasAdm(usrBean);
+						Vector fechaYUsu = admListaGuardias.selectGenerico(admListaGuardias.getFechaYUsu(idInstitucion,idLista));
+							//Almacenamos en sesion el registro de la lista de guardias			
+						datosListaGuardias.put("NOMBRE",(String)((Hashtable)fechaYUsu.elementAt(0)).get("NOMBRE"));
+						datosListaGuardias.put("LUGAR",(String)((Hashtable)fechaYUsu.elementAt(0)).get("LUGAR"));
+						datosListaGuardias.put("OBSERVACIONES",(String)((Hashtable)fechaYUsu.elementAt(0)).get("OBSERVACIONES"));
+						datosListaGuardias.put("USUMODIFICACION",(String)((Hashtable)fechaYUsu.elementAt(0)).get("USUMODIFICACION"));
+						datosListaGuardias.put("FECHAMODIFICACION",(String)((Hashtable)fechaYUsu.elementAt(0)).get("FECHAMODIFICACION"));
+						datosListaGuardias.put("IDINSTITUCION",(String)((Hashtable)fechaYUsu.elementAt(0)).get("IDINSTITUCION"));
+						datosListaGuardias.put("IDLISTA",(String)((Hashtable)fechaYUsu.elementAt(0)).get("IDLISTA"));
+	    			}else{
+	    				datosListaGuardias = new Hashtable();
+	    				datosListaGuardias.put("NOMBRE",datosInforme.get("NOMBRE"));
+						datosListaGuardias.put("LUGAR",datosInforme.get("LUGAR"));
+						datosListaGuardias.put("OBSERVACIONES",datosInforme.get("OBSERVACIONES"));
+						datosListaGuardias.put("USUMODIFICACION",datosInforme.get("USUMODIFICACION"));
+						datosListaGuardias.put("FECHAMODIFICACION",datosInforme.get("FECHAMODIFICACION"));
+						datosListaGuardias.put("IDINSTITUCION",datosInforme.get("IDINSTITUCION"));
+						datosListaGuardias.put("IDLISTA",datosInforme.get("IDLISTA"));
+	    				
+	    			}		            
 		            while (e.hasMoreElements()) {  
 		            	   
 		                  obj = e.nextElement(); 
@@ -3812,22 +3866,12 @@ public class EnvioInformesGenericos extends MasterReport {
 			    				        }
 			    				   }
 			    			 }
-			    		if(backupHash==null){	
-			    			backupHash = new Hashtable();
-			    			ScsListaGuardiasAdm admListaGuardias = new ScsListaGuardiasAdm(usrBean);
-							Vector fechaYUsu = admListaGuardias.selectGenerico(admListaGuardias.getFechaYUsu(idInstitucion,idLista));
-							//Almacenamos en sesion el registro de la lista de guardias			
-							backupHash.put("NOMBRE",(String)((Hashtable)fechaYUsu.elementAt(0)).get("NOMBRE"));
-							backupHash.put("LUGAR",(String)((Hashtable)fechaYUsu.elementAt(0)).get("LUGAR"));
-							backupHash.put("OBSERVACIONES",(String)((Hashtable)fechaYUsu.elementAt(0)).get("OBSERVACIONES"));
-							backupHash.put("USUMODIFICACION",(String)((Hashtable)fechaYUsu.elementAt(0)).get("USUMODIFICACION"));
-							backupHash.put("FECHAMODIFICACION",(String)((Hashtable)fechaYUsu.elementAt(0)).get("FECHAMODIFICACION"));
-							backupHash.put("IDINSTITUCION",(String)((Hashtable)fechaYUsu.elementAt(0)).get("IDINSTITUCION"));
-							backupHash.put("IDLISTA",(String)((Hashtable)fechaYUsu.elementAt(0)).get("IDLISTA"));
-			    		}	
-			    		String nombreLista =UtilidadesHash.getString(backupHash,"NOMBRE");
-			    		String lugar =UtilidadesHash.getString(backupHash,"LUGAR");
-			    		String observaciones =UtilidadesHash.getString(backupHash,"OBSERVACIONES");	                  
+
+
+			    			
+			    		String nombreLista =UtilidadesHash.getString(datosListaGuardias,"NOMBRE");
+			    		String lugar =UtilidadesHash.getString(datosListaGuardias,"LUGAR");
+			    		String observaciones =UtilidadesHash.getString(datosListaGuardias,"OBSERVACIONES");	                  
 			    		htCabeceraInforme.put("IDLISTA", nombreLista);
 
 		    			htCabeceraInforme.put("DIA_ACTUAL", sHoy.substring(0,2));
@@ -3884,6 +3928,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				
 				vSalida.put("htCabeceraInforme",htCabeceraInforme);
 				vSalida.put("vDatosInforme",vDatosInforme);
+				vSalida.put("hDatosListaGuardias",datosListaGuardias);				
 
 			//}
 			
@@ -3897,8 +3942,6 @@ public class EnvioInformesGenericos extends MasterReport {
 		
 		
 	}
-
-	
 	
 
 	private Hashtable getIdColegiados(Hashtable datosInforme, UsrBean usrBean) throws ClsExceptions{
@@ -4271,7 +4314,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 					vPlantillas = getPlantillasInforme(plantillas, idInstitucion, userBean);
 				}
-				vDocumentos.addAll(this.getDocumentosAEnviar(datosInforme,vPlantillas, userBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesDesigna,null));							
+				vDocumentos.addAll(this.getDocumentosAEnviar(datosInforme,vPlantillas, userBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesDesigna));							
 
 			} 
 			Envio envio = getEnvio(form,true,locale, userBean);
@@ -4585,7 +4628,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 					vPlantillas = getPlantillasInforme(plantillas, idInstitucion, userBean);
 				}
-				vDocumentos.addAll(this.getDocumentosAEnviar(datosInforme,vPlantillas, userBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesEjg,null));							
+				vDocumentos.addAll(this.getDocumentosAEnviar(datosInforme,vPlantillas, userBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesEjg));							
 
 			} 
 			Envio envio = getEnvio(form,true,locale, userBean);
@@ -4887,7 +4930,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 					vPlantillas = getPlantillasInforme(plantillas, idInstitucion, userBean);
 				}
-				vDocumentos.addAll(this.getDocumentosAEnviar(datosInforme,vPlantillas, userBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesJustificacion,null));							
+				vDocumentos.addAll(this.getDocumentosAEnviar(datosInforme,vPlantillas, userBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesJustificacion));							
 
 			} 
 			Envio envio = getEnvio(form,true,locale, userBean);
@@ -5186,7 +5229,7 @@ public class EnvioInformesGenericos extends MasterReport {
 						// obtengo sus documentos según vPlantillas
 												
 						Vector vDocumentos = new Vector();
-						vDocumentos.addAll(this.getDocumentosAEnviar(datoReal,vPlantillas, userBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesExpedientes,null));
+						vDocumentos.addAll(this.getDocumentosAEnviar(datoReal,vPlantillas, userBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesExpedientes));
 						// Genera el envio:
 						
 						envio.generarEnvioDireccionEspecifica(idPersonaReal, idDireccionReal, vDocumentos);				

@@ -590,9 +590,8 @@ public class InformesGenericosAction extends MasterAction {
 		File ficheroSalida=null;
 		try {
 			String idsesion = request.getSession().getId();
-			Hashtable backupHash = (Hashtable)request.getSession().getAttribute("DATABACKUP");
 			ficheroSalida = informeGenerico.getInformeGenerico(
-					miForm, idsesion, this.getUserBean(request), isAEnviar,isPermisoEnvio,backupHash);
+					miForm, idsesion, this.getUserBean(request), isAEnviar,isPermisoEnvio);
 		}
 		catch (Exception e) {
 			throwExcp("messages.general.error", new String[] {"modulo.informes"}, e, null);
