@@ -655,10 +655,14 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 	 */
 	public Vector getRelacionesPersonaJG(String idPersona, String idInstitucion,
 			String asuntoActual, String tipo, String anioActual, String numeroActual) throws ClsExceptions{
+		
+			GenParametrosAdm paramAdm = new GenParametrosAdm(this.usrbean);
+			String longitudNumero=paramAdm.getValor(idInstitucion, "SCS", "LONGITUD_CODDESIGNA", "5");
+			
 		Vector resultado=new Vector();
 		StringBuffer sql = new StringBuffer();
 		
-				sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,5,'0') as numero");
+				sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,"+longitudNumero+",'0') as numero");
 				sql.append("   from scs_ejg e, scs_personajg per, scs_unidadfamiliarejg uf ");
 				sql.append("  where per.idinstitucion = " + idInstitucion + " ");
 				sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
@@ -671,7 +675,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 				sql.append(" ");
 				sql.append(" union ");
 				sql.append(" ");
-				sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,5,'0') as numero");
+				sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,"+longitudNumero+",'0') as numero");
 				sql.append("   from scs_ejg e, scs_personajg per, scs_contrariosejg cont ");
 				sql.append("  where per.idinstitucion = " + idInstitucion + " ");
 				sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
@@ -684,7 +688,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 				sql.append(" ");
 				sql.append(" union ");
 				sql.append(" ");
-				sql.append(" select 'gratuita.operarEJG.literal.designa' as asunto, d.anio as anio, lpad(d.codigo,5,'0') as numero");
+				sql.append(" select 'gratuita.operarEJG.literal.designa' as asunto, d.anio as anio, lpad(d.codigo,"+longitudNumero+",'0') as numero");
 				sql.append("   from scs_designa d, scs_personajg per, scs_defendidosdesigna def ");
 				sql.append("  where per.idinstitucion = " + idInstitucion + " ");
 				sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
@@ -697,7 +701,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 				sql.append(" ");
 				sql.append(" union ");
 				sql.append(" ");
-				sql.append(" select 'gratuita.operarEJG.literal.designa' as asunto, d.anio as anio, lpad(d.codigo,5,'0') as numero");
+				sql.append(" select 'gratuita.operarEJG.literal.designa' as asunto, d.anio as anio, lpad(d.codigo,"+longitudNumero+",'0') as numero");
 				sql.append("   from scs_designa d, scs_personajg per, scs_contrariosdesigna cont ");
 				sql.append("  where per.idinstitucion = " + idInstitucion + " ");
 				sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
@@ -710,7 +714,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 				sql.append(" ");
 				sql.append(" union ");
 				sql.append(" ");
-				sql.append(" select 'gratuita.operarEJG.literal.asistencia' as asunto, a.anio as anio, lpad(to_char(a.numero),5,'0') as numero");
+				sql.append(" select 'gratuita.operarEJG.literal.asistencia' as asunto, a.anio as anio, to_char(a.numero) as numero");
 				sql.append("   from scs_asistencia a, scs_personajg per ");
 				sql.append("  where per.idinstitucion = " + idInstitucion + " ");
 				sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
@@ -719,7 +723,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 				sql.append(" ");
 				sql.append(" union ");
 				sql.append(" ");
-				sql.append(" select 'gratuita.operarEJG.literal.asistencia' as asunto, a.anio as anio, lpad(to_char(a.numero),5,'0') as numero");
+				sql.append(" select 'gratuita.operarEJG.literal.asistencia' as asunto, a.anio as anio, to_char(a.numero) as numero");
 				sql.append("   from scs_asistencia a, scs_personajg per, scs_contrariosdesigna cont ");
 				sql.append("  where per.idinstitucion = " + idInstitucion + " ");
 				sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
@@ -732,7 +736,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 				sql.append(" ");
 				sql.append(" union ");
 				sql.append(" ");
-				sql.append(" select 'gratuita.operarEJG.literal.SOJ' as asunto, s.anio as anio, lpad(s.numsoj,5,'0') as numero");
+				sql.append(" select 'gratuita.operarEJG.literal.SOJ' as asunto, s.anio as anio, lpad(s.numsoj,"+longitudNumero+",'0') as numero");
 				sql.append("   from scs_soj s, scs_personajg per ");
 				sql.append("  where per.idinstitucion = " + idInstitucion + " ");
 				sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
@@ -743,31 +747,31 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 				if(asuntoActual.equalsIgnoreCase("guardarEJG")){
 					sql.append(" minus ");
 					sql.append(" ");
-					sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,5,'0') as numero");
+					sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,"+longitudNumero+",'0') as numero");
 					sql.append("   from scs_ejg e ");
 					sql.append("   where e.idinstitucion= " + idInstitucion + " and e.anio=" + anioActual + " and e.numero =" + numeroActual + " and e.idtipoejg= "+tipo  );
 				}else if(asuntoActual.equalsIgnoreCase("guardarSOJ")){
 					sql.append(" minus ");
 					sql.append(" ");
-					sql.append(" select 'gratuita.operarEJG.literal.SOJ' as asunto, s.anio as anio, lpad(s.numsoj,5,'0') as numero");
+					sql.append(" select 'gratuita.operarEJG.literal.SOJ' as asunto, s.anio as anio, lpad(s.numsoj,"+longitudNumero+",'0') as numero");
 					sql.append("   from scs_soj s");
 					sql.append("   where s.idinstitucion= " + idInstitucion + " and s.anio=" + anioActual + " and s.numero =" + numeroActual + " and s.idtiposoj= "+tipo  );
 				}else if(asuntoActual.equalsIgnoreCase("guardarDesigna")){
 					sql.append(" minus ");
 					sql.append(" ");
-					sql.append(" select 'gratuita.operarEJG.literal.designa' as asunto, d.anio as anio, lpad(d.codigo,5,'0') as numero");
+					sql.append(" select 'gratuita.operarEJG.literal.designa' as asunto, d.anio as anio, lpad(d.codigo,"+longitudNumero+",'0') as numero");
 					sql.append("   from scs_designa d");
 					sql.append("   where d.idinstitucion= " + idInstitucion + " and d.anio=" + anioActual + " and d.numero =" + numeroActual + " and d.idturno= "+tipo  );
 				}else if(asuntoActual.equalsIgnoreCase("guardarAsistencia")){
 					sql.append(" minus ");
 					sql.append(" ");
-					sql.append(" select 'gratuita.operarEJG.literal.asistencia' as asunto, a.anio as anio, lpad(to_char(a.numero),5,'0') as numero");
+					sql.append(" select 'gratuita.operarEJG.literal.asistencia' as asunto, a.anio as anio, lpad(to_char(a.numero),"+longitudNumero+",'0') as numero");
 					sql.append("   from scs_asistencia a");
 					sql.append("   where a.idinstitucion= " + idInstitucion + " and a.anio=" + anioActual + " and a.numero =" + numeroActual );
 				} else if(asuntoActual.equalsIgnoreCase("guardarContrariosEJG")){
 					sql.append(" minus ");
 					sql.append(" ");
-					sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,5,'0') as numero");
+					sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,"+longitudNumero+",'0') as numero");
 					sql.append("   from scs_ejg e ");
 					sql.append("   where e.idinstitucion= " + idInstitucion + " and e.anio=" + anioActual + " and e.numero =" + numeroActual + " and e.idtipoejg= "+tipo  );
 				} 
@@ -796,10 +800,16 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 	public Vector getRelacionesPersonaJGAsistencia(String idPersona, String idInstitucion,
 			String tipo, String anioActual, String numeroActual) throws ClsExceptions{
 		
+		
 			Vector resultado=new Vector();
 			StringBuffer sql = new StringBuffer();
+			
+			GenParametrosAdm paramAdm = new GenParametrosAdm(this.usrbean);
+			String longitudNumero=paramAdm.getValor(idInstitucion, "SCS", "LONGITUD_CODDESIGNA", "5");
+			
 		
-			sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,5,'0') as numero");
+			//sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,"+longitudNumero+",'0') as numero");
+			sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,"+longitudNumero+",'0') as numero");
 			sql.append("   from scs_ejg e, scs_personajg per, scs_unidadfamiliarejg uf ");
 			sql.append("  where per.idinstitucion = " + idInstitucion + " ");
 			sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
@@ -812,7 +822,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			sql.append(" ");
 			sql.append(" union ");
 			sql.append(" ");
-			sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,5,'0') as numero");
+			sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,"+longitudNumero+",'0') as numero");
 			sql.append("   from scs_ejg e, scs_personajg per, scs_contrariosejg cont ");
 			sql.append("  where per.idinstitucion = " + idInstitucion + " ");
 			sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
@@ -825,7 +835,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			sql.append(" ");
 			sql.append(" union ");
 			sql.append(" ");
-			sql.append(" select 'gratuita.operarEJG.literal.designa' as asunto, d.anio as anio, lpad(d.codigo,5,'0') as numero");
+			sql.append(" select 'gratuita.operarEJG.literal.designa' as asunto, d.anio as anio, lpad(d.codigo,"+longitudNumero+",'0') as numero");
 			sql.append("   from scs_designa d, scs_personajg per, scs_defendidosdesigna def ");
 			sql.append("  where per.idinstitucion = " + idInstitucion + " ");
 			sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
@@ -838,7 +848,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			sql.append(" ");
 			sql.append(" union ");
 			sql.append(" ");
-			sql.append(" select 'gratuita.operarEJG.literal.designa' as asunto, d.anio as anio, lpad(d.codigo,5,'0') as numero");
+			sql.append(" select 'gratuita.operarEJG.literal.designa' as asunto, d.anio as anio, lpad(d.codigo,"+longitudNumero+",'0') as numero");
 			sql.append("   from scs_designa d, scs_personajg per, scs_contrariosdesigna cont ");
 			sql.append("  where per.idinstitucion = " + idInstitucion + " ");
 			sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
@@ -851,7 +861,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			sql.append(" ");
 			sql.append(" union ");
 			sql.append(" ");
-			sql.append(" select 'gratuita.operarEJG.literal.asistencia' as asunto, a.anio as anio, lpad(to_char(a.numero),5,'0') as numero");
+			sql.append(" select 'gratuita.operarEJG.literal.asistencia' as asunto, a.anio as anio, to_char(a.numero) as numero");
 			sql.append("   from scs_asistencia a, scs_personajg per ");
 			sql.append("  where per.idinstitucion = " + idInstitucion + " ");
 			sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
@@ -860,7 +870,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			sql.append(" ");
 			sql.append(" union ");
 			sql.append(" ");
-			sql.append(" select 'gratuita.operarEJG.literal.asistencia' as asunto, a.anio as anio, lpad(to_char(a.numero),5,'0') as numero");
+			sql.append(" select 'gratuita.operarEJG.literal.asistencia' as asunto, a.anio as anio, to_char(a.numero) as numero");
 			sql.append("   from scs_asistencia a, scs_personajg per, scs_contrariosdesigna cont ");
 			sql.append("  where per.idinstitucion = " + idInstitucion + " ");
 			sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
@@ -873,7 +883,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			sql.append(" ");
 			sql.append(" union ");
 			sql.append(" ");
-			sql.append(" select 'gratuita.operarEJG.literal.SOJ' as asunto, s.anio as anio, lpad(s.numsoj,5,'0') as numero");
+			sql.append(" select 'gratuita.operarEJG.literal.SOJ' as asunto, s.anio as anio, lpad(s.numsoj,"+longitudNumero+",'0') as numero");
 			sql.append("   from scs_soj s, scs_personajg per ");
 			sql.append("  where per.idinstitucion = " + idInstitucion + " ");
 			sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
@@ -884,7 +894,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			// Aqui restamos la Asistencia y sus relaciones
 			sql.append(" minus ");
 			sql.append(" ");
-			sql.append(" select 'gratuita.operarEJG.literal.asistencia' as asunto, a.anio as anio, lpad(to_char(a.numero),5,'0') as numero");
+			sql.append(" select 'gratuita.operarEJG.literal.asistencia' as asunto, a.anio as anio, to_char(a.numero) as numero");
 			sql.append("   from scs_asistencia a");
 			sql.append("   where a.idinstitucion= " + idInstitucion + " and a.anio=" + anioActual + " and a.numero =" + numeroActual );
 			sql.append("  minus ");
