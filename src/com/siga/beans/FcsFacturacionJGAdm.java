@@ -1029,7 +1029,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				}
 		
 				StringBuffer select = new StringBuffer();
-				select.append(" SELECT NVL (" + FcsPagoColegiadoBean.C_IDPERDESTINO + ", " + FcsPagoColegiadoBean.C_IDPERORIGEN + ") AS IDPERSONAIMPRESO, ");
+				select.append(" SELECT " + FcsPagoColegiadoBean.C_IDPERDESTINO + " AS IDPERSONAIMPRESO, ");
 				select.append(" SUM ( round ( (" + FcsPagoColegiadoBean.C_IMPOFICIO + " + ");
 				select.append(                  FcsPagoColegiadoBean.C_IMPASISTENCIA + " + ");
 				select.append(                  FcsPagoColegiadoBean.C_IMPEJG + " + ");
@@ -1043,7 +1043,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				select.append(" FROM "  + FcsPagoColegiadoBean.T_NOMBRETABLA);
 				select.append(" WHERE " + FcsPagoColegiadoBean.C_IDINSTITUCION + " = " + idInstitucion);
 				select.append(" AND "   + FcsPagoColegiadoBean.C_IDPAGOSJG + " IN (" + sPagos + ")");
-				select.append(" GROUP BY NVL (" + FcsPagoColegiadoBean.C_IDPERDESTINO + ", " + FcsPagoColegiadoBean.C_IDPERORIGEN + ")");
+				select.append(" GROUP BY " + FcsPagoColegiadoBean.C_IDPERDESTINO);
 
 				Vector vIRPF = (Vector) this.selectGenerico(select.toString());
 				if (vIRPF != null && vIRPF.size() > 0) {					

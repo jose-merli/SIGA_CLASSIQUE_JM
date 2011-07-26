@@ -1068,7 +1068,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		
 		sql.append("select ");
 		if (irpf)
-			sql.append("   nvl(idperdestino, idperorigen) as idpersonaSJCS, ");
+			sql.append("   idperdestino as idpersonaSJCS, ");
 		else
 			sql.append("   pc.IDPERORIGEN as idpersonaSJCS, ");
 		
@@ -1083,11 +1083,9 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		sql.append("       sum(pc.impMovVar) as importeTotalMovimientos, ");
 		sql.append("       pc.idcuenta as IDCUENTA, ");
 		sql.append("       -1*round(abs(sum((pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ + pc.impMovVar) * pc.impirpf / 100)), 2) as TOTALIMPORTEIRPF, ");
-		sql.append("       (SELECT retencion ");
-		sql.append("       		FROM scs_maestroretenciones ma ");
-		sql.append("       		WHERE pc.idretencion = ma.idretencion) AS tipoirpf, ");
+		sql.append("       pc.impirpf AS tipoirpf, ");
 		sql.append("       DECODE (pc.idperdestino, ");
-		sql.append("       		NULL, 'Colegiado', ");
+		sql.append("       		pc.IDPERORIGEN, 'Colegiado', ");
 		sql.append("       		'Sociedad' ");
 		sql.append("       		) AS destinatario,  ");
 		sql.append("       pc.idinstitucion, ");
@@ -1100,7 +1098,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		sql.append("               INNER JOIN cen_bancos ");
 		sql.append("               ON cen_cuentasbancarias.cbo_codigo = ");
 		sql.append("                        cen_bancos.codigo ");
-		sql.append("          WHERE NVL (idperdestino, idperorigen) = ");
+		sql.append("          WHERE idperdestino = ");
 		sql.append("                        cen_cuentasbancarias.idpersona ");
 		sql.append("                        AND pc.idinstitucion = cen_cuentasbancarias.idinstitucion ");
 		sql.append("                        AND pc.idcuenta = cen_cuentasbancarias.idcuenta ");
@@ -1119,7 +1117,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		sql.append("       ) ");
 		sql.append("       ) AS cuenta ");
 		sql.append("          FROM cen_cuentasbancarias ");
-		sql.append("          WHERE NVL (idperdestino, idperorigen) = ");
+		sql.append("          WHERE idperdestino = ");
 		sql.append("                        cen_cuentasbancarias.idpersona ");
 		sql.append("                        AND pc.idinstitucion = cen_cuentasbancarias.idinstitucion ");
 		sql.append("                        AND pc.idcuenta = cen_cuentasbancarias.idcuenta ");
@@ -1138,7 +1136,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		}
 		if (irpf)
 			sql.append("  and impirpf > 0 ");		
-		sql.append(" group by pc.IDPERORIGEN, pc.IDPERDESTINO, pc.IDPAGOSJG, pc.IDINSTITUCION, pc.idretencion, pc.idcuenta ");
+		sql.append(" group by pc.IDPERORIGEN, pc.IDPERDESTINO, pc.IDPAGOSJG, pc.IDINSTITUCION, pc.impirpf, pc.idcuenta ");
 		
 		return sql.toString();
 	} //getQueryDetallePagoColegiado()
@@ -1157,7 +1155,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		
 		sql.append("select ");
 		if (irpf)
-			sql.append("   nvl(idperdestino, idperorigen) as idpersonaSJCS, ");
+			sql.append("   idperdestino as idpersonaSJCS, ");
 		else
 			sql.append("   pc.IDPERORIGEN as idpersonaSJCS, ");
 		
@@ -1170,7 +1168,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		sql.append("       f_siga_getrecurso_etiqueta(decode(");
 		sql.append("       (select a.idcuenta ");
 		sql.append("          from FAC_ABONO A ");
-		sql.append("         where nvl(idperdestino, idperorigen) = a.idpersona ");
+		sql.append("         where idperdestino = a.idpersona ");
 		sql.append("           and pc.idinstitucion = a.idinstitucion ");
 		sql.append("           and pc.idpagosjg = a.idpagosjg ");
 		sql.append("           and rownum = 1), ");

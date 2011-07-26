@@ -222,7 +222,7 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 		sql.append(" AND COB.IDINSTITUCION = PCOL.Idinstitucion ");
 		sql.append(" AND COB.Idpagosjg = PCOL.IDPAGOSJG  ");
 		sql.append(" AND COB.Idpersona = PCOL.IDPERORIGEN ");
-		sql.append(" AND NVL(PCOL.IDPERDESTINO, PCOL.IDPERORIGEN) = ABONO.IDPERSONA ");
+		sql.append(" AND PCOL.IDPERDESTINO = ABONO.IDPERSONA ");
 		sql.append(" AND PCOL.IDINSTITUCION = ABONO.IDINSTITUCION ");
 		sql.append(" AND PCOL.IDPAGOSJG = ABONO.IDPAGOSJG ");
 		sql.append(" AND PCOL.IDINSTITUCION = PAGO.IDINSTITUCION ");

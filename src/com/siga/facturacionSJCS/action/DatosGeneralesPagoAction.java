@@ -984,7 +984,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 		Hashtable importes = new Hashtable();
 
 		//variables para hacer el calculo del importe final a pagar
-		String idPersonaSociedad="";
+		String idPersonaDestino="";
 		double importeSJCS=0.0d;
 		double importeTurnos=0.0d, importeGuardias=0.0d, importeSoj=0.0d, importeEjg=0.0d;
 		double importeMovimientos=0.0d, importeRetenciones=0.0d;	
@@ -1015,17 +1015,17 @@ public class DatosGeneralesPagoAction extends MasterAction {
 				// Obtenemos el idcuenta con el fin de actualizar el registro de la persona de la tabla fcs_pago_colegiado
 
 				FcsPagoColegiadoBean pcBean = (FcsPagoColegiadoBean) vector.get(0);
-				idPersonaSociedad 	= pcBean.getIdPerDestino() == null ? "" : pcBean.getIdPerDestino().toString();				
+				idPersonaDestino 	= pcBean.getIdPerDestino().toString();				
 				
 				CenClienteAdm clienteAdm = new CenClienteAdm (usr);
 				ArrayList cuenta = clienteAdm.getCuentaAbono (idInstitucion, 
-						(!idPersonaSociedad.equals("") ? idPersonaSociedad : idPersona));	
+						(idPersonaDestino ));	
 				
 				idCuenta = cuenta.get(2).toString().equals("-1")?"null":cuenta.get(2).toString();
 				
 				pagoAdm.updatePagoIdCuenta(idInstitucion, idCuenta, idPago, idPersona);
 				
-				pagoAdm.updatePagoIdIrpf(idInstitucion, idPago, idPersona);
+				//pagoAdm.updatePagoIdIrpf(idInstitucion, idPago, idPersona);
 				
 				importeTurnos		= pcBean.getImpOficio().doubleValue();
 				importeGuardias		= pcBean.getImpAsistencia().doubleValue();
@@ -1040,8 +1040,8 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			//obtiene el porcentajeIRPF del colegiado para utilizarlo al aplicar 
 			//los movimientos varios y calcular el IRPF del importe bruto.
 			porcentajeIRPF = obtenerIrpf(idInstitucion, 
-					!idPersonaSociedad.equals("") ? idPersonaSociedad: idPersona, 
-				    !idPersonaSociedad.equals(""));
+					idPersonaDestino, 
+				    !idPersonaDestino.equals(idPersona));
 
 			// 2. Aplicar los movimientos varios
 			// Asocia todos los movimientos sin idpago al pago actual.
@@ -1105,7 +1105,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 		Hashtable importes = new Hashtable();
 
 		//variables para hacer el calculo del importe final a pagar
-		String idPersonaSociedad="";
+		String idPersonaDestino="";
 		double importeSJCS=0.0d;
 		double importeTurnos=0.0d, importeGuardias=0.0d, importeSoj=0.0d, importeEjg=0.0d;
 		double importeMovimientos=0.0d, importeRetenciones=0.0d;	
@@ -1116,8 +1116,6 @@ public class DatosGeneralesPagoAction extends MasterAction {
 		Hashtable result= new Hashtable();
 		
 		String idCuenta = null;
-		
-		String idpersonaAbono = null;
 		
 		
 		
@@ -1159,7 +1157,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 				
 				importeRetenciones = Double.valueOf(r.getString("IMPORTETOTALRETENCIONES")).doubleValue();
 				
-				idPersonaSociedad 	= r.getString("IDPERDESTINO") == null ? "" : r.getString("IDPERDESTINO");
+				idPersonaDestino 	= r.getString("IDPERDESTINO");
 				
 				idCuenta 	= r.getString("IDCUENTA") == null ? "" : r.getString("IDCUENTA");
 
@@ -1169,9 +1167,8 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			if (importeMovimientos > 0 || importeNeto > 0){
 				try {
 					//consultamos la cuenta
-					CenClienteAdm clienteAdm = new CenClienteAdm (usr);
-					/*ArrayList cuenta = clienteAdm.getCuentaAbono (idInstitucion, 
-							(!idPersonaSociedad.equals("") ? idPersonaSociedad : idPersona));*/
+					//CenClienteAdm clienteAdm = new CenClienteAdm (usr);
+
 
 					//Guardamos los importes:
 					importes.put("importeTurnos", String.valueOf(importeTurnos));
@@ -1181,18 +1178,10 @@ public class DatosGeneralesPagoAction extends MasterAction {
 					importes.put("importeMovimientos", String.valueOf(importeMovimientos));
 					importes.put("importeRetenciones", String.valueOf(importeRetenciones));
 					
-					if ((idPersonaSociedad == null) || (idPersonaSociedad.equals(""))){
-						idpersonaAbono = idPersona;
-					} else {
-						idpersonaAbono = idPersonaSociedad;
-					}
-					
-				//	idpersonaAbono = idPersonaSociedad == null ? idPersona : idPersonaSociedad; 
 
 					//Creamos el Abono:
-					this.crearAbonos (idpersonaAbono, idCuenta, request, colegiadosMarcados, 
-							(!idPersonaSociedad.equals("") ? idPersonaSociedad: idPersona),
-							idPago, idInstitucion, importes, importeIrpfTotal, idPersona);
+					this.crearAbonos (idPersonaDestino, idCuenta, request, colegiadosMarcados, 
+							idPersonaDestino, idPago, idInstitucion, importes, importeIrpfTotal, idPersona);
 				} catch (Exception e) {
 					throw new ClsExceptions(e,"DatosGeneralesPagoAction.generarAbonos");
 				} 
