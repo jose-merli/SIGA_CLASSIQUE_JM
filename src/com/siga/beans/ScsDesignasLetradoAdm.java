@@ -1263,6 +1263,13 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			codigos.put(new Integer(contador),formulario.getFechaDesde());
 			sql.append(contador);
 			 
+		}else{
+			sql.append(" and trunc(d.fechaentrada) > :");
+			
+			contador++;
+			codigos.put(new Integer(contador),"01/01/1950");
+			sql.append(contador);
+			
 		}
 		
 		if (formulario.getFechaHasta() != null && !formulario.getFechaHasta().equals("")) {
