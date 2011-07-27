@@ -423,7 +423,8 @@ public class SolicitudesModificacionAction extends MasterAction {
 						// Si la modificación se realiza correctamente añadimos el historico del cambio
 						beanHistorico = new CenHistoricoBean();
 						beanHistorico.setIdInstitucion(Integer.parseInt(miForm.getIdInstitucion()));
-						beanHistorico.setIdPersona(Long.parseLong(miForm.getIdPersona()));
+						//beanHistorico.setIdPersona(Long.parseLong(miForm.getIdPersona()));
+						beanHistorico.setIdPersona(Long.parseLong((String) hashSol.get("IDPERSONA")));
 						beanHistorico.setDescripcion(miForm.getDescripcion());
 						beanHistorico.setFechaEfectiva(UtilidadesString.formatoFecha(GstDate.getHoyJava(),ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_LONG_SPANISH));
 						beanHistorico.setFechaEntrada(UtilidadesString.formatoFecha(hashSol.get("FECHAALTA").toString(),ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_LONG_SPANISH));
