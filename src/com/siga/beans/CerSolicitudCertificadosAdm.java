@@ -82,8 +82,6 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 		        		   CerSolicitudCertificadosBean.C_FECHAENTREGAINFO,
 		        		   CerSolicitudCertificadosBean.C_FECHAMODIFICACION,
 		        		   CerSolicitudCertificadosBean.C_IDMETODOSOLICITUD,
-		        		   CerSolicitudCertificadosBean.C_FECHACREACION,
-		        		   CerSolicitudCertificadosBean.C_USUCREACION,
 		        		   CerSolicitudCertificadosBean.C_USUMODIFICACION};
 
 		return campos;
