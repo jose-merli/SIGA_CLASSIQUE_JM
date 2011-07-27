@@ -10,6 +10,7 @@ import java.util.List;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.siga.Utilidades.UtilidadesNumero;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.SIGAConstants;
 import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsParentescoBean;
@@ -610,7 +611,91 @@ import com.siga.tlds.FilaExtElement;
 	public void setBotones(String botones) {
 		this.botones = botones;
 	}
+	/*
+	private String getIdLenguaje(String idioma){
+		String idLenguaje = "1";
+		if(idioma!=null && idioma.toUpperCase().equals("ES_ES"))
+			idLenguaje = "1";
+		else if(idioma!=null && idioma.toUpperCase().equals("CA_ES"))
+			idLenguaje = "2";
+		else if(idioma!=null && idioma.toUpperCase().equals("GL_ES"))
+			idLenguaje = "3";
+		else if(idioma!=null && idioma.toUpperCase().equals("EU_ES"))
+			idLenguaje = "4";
+		return idLenguaje;
+		
+		
+	}
 	
+	public FilaExtElement[] getElementosFilaNew() {
+		FilaExtElement[] elementosFila = null;
+		
+		if (getModo().equalsIgnoreCase("ver")){
+			elementosFila = new FilaExtElement[3];
+		}else{
+			//System.out.println("ejg"+ejg);
+			//System.out.println("ejg.getestado"+ejg.getIdEstadoEjg());
+			if(permisoEejg!=null && permisoEejg.booleanValue() && 
+					(personaJG!=null && personaJG.getNif()!=null && !personaJG.getNif().trim().equals("") &&personaJG.getTipoIdentificacion()!=null&&!personaJG.getTipoIdentificacion().equalsIgnoreCase("")&&(Integer.parseInt(personaJG.getTipoIdentificacion())==ClsConstants.TIPO_IDENTIFICACION_NIF||Integer.parseInt(personaJG.getTipoIdentificacion())==ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE) )
+					&& ejg!=null && ((ejg.getIdEstadoEjg()==null || (ejg.getIdEstadoEjg()!=null&&ejg.getIdEstadoEjg().shortValue()<9))||esComision)){
+				
+				
+				if(getPeticionEejg()!=null){
+					int	estado = getPeticionEejg().getEstado();
+					String idLenguajeMsg = getIdLenguaje(getPeticionEejg().getIdioma());
+					switch (estado) {
+						case ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL:
+							elementosFila = new FilaExtElement[5];
+							elementosFila[3] = new FilaExtElement("espera", "esperaEejg",UtilidadesString.getMensajeIdioma(idLenguajeMsg, "general.boton.esperaEejg")+" "+UtilidadesString.getMensajeIdioma(idLenguajeMsg, "eejg.usuariopeticion")+": "+peticionEejg.getUsuarioPeticion().getDescripcion(),SIGAConstants.ACCESS_READ);
+							elementosFila[4] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+						break;
+						case ScsEejgPeticionesBean.EEJG_ESTADO_PENDIENTE_INFO:
+							elementosFila = new FilaExtElement[6];
+							elementosFila[3] = new FilaExtElement("espera", "avisoEsperaInfoEejg",UtilidadesString.getMensajeIdioma(idLenguajeMsg, "general.boton.esperaInfoEejg")+" "+UtilidadesString.getMensajeIdioma(idLenguajeMsg, "eejg.usuariopeticion")+": "+peticionEejg.getUsuarioPeticion().getDescripcion(),SIGAConstants.ACCESS_READ);
+							elementosFila[4] = new FilaExtElement("download", "esperaInfoEejg",UtilidadesString.getMensajeIdioma(idLenguajeMsg, "general.boton.descargarEejg")+" "+UtilidadesString.getMensajeIdioma(idLenguajeMsg, "eejg.usuariopeticion")+": "+peticionEejg.getUsuarioPeticion().getDescripcion(),	SIGAConstants.ACCESS_READ);
+							elementosFila[5] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+						break;
+						case ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA:case ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA_ESPERANDO:case ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL_ESPERANDO:
+							elementosFila = new FilaExtElement[5];
+							elementosFila[3] = new FilaExtElement("espera", "esperaAdministracionesEejg",UtilidadesString.getMensajeIdioma(idLenguajeMsg, "general.boton.esperaAdministracionesEejg")+" "+UtilidadesString.getMensajeIdioma(idLenguajeMsg, "eejg.usuariopeticion")+": "+peticionEejg.getUsuarioPeticion().getDescripcion(),SIGAConstants.ACCESS_READ);
+							elementosFila[4] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+						break;
+						case ScsEejgPeticionesBean.EEJG_ESTADO_ERROR_SOLICITUD:case ScsEejgPeticionesBean.EEJG_ESTADO_ERROR_CONSULTA_INFO:
+							elementosFila = new FilaExtElement[6];
+							elementosFila[3] = new FilaExtElement(null, "solicitarEejg","general.boton.solicitarEejg",	SIGAConstants.ACCESS_READ,"general.boton.solicitudEejg","90");
+							elementosFila[4] = new FilaExtElement("descargaLog", "errorEejg",UtilidadesString.getMensajeIdioma(idLenguajeMsg, "general.boton.errorEejg")+" "+UtilidadesString.getMensajeIdioma(idLenguajeMsg, "eejg.usuariopeticion")+": "+peticionEejg.getUsuarioPeticion().getDescripcion(),SIGAConstants.ACCESS_READ);
+							elementosFila[5] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+						break;
+						case ScsEejgPeticionesBean.EEJG_ESTADO_FINALIZADO:
+							elementosFila = new FilaExtElement[5];
+							elementosFila[3] = new FilaExtElement("download", "descargarEejg",UtilidadesString.getMensajeIdioma(idLenguajeMsg, "general.boton.descargarEejg")+" "+UtilidadesString.getMensajeIdioma(idLenguajeMsg, "eejg.usuariopeticion")+": "+peticionEejg.getUsuarioPeticion().getDescripcion(),	SIGAConstants.ACCESS_READ);
+							elementosFila[4] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+						break;
+					default:
+						elementosFila = new FilaExtElement[5];
+						elementosFila[3] = new FilaExtElement(null, "solicitarEejg","general.boton.solicitarEejg",	SIGAConstants.ACCESS_READ,"general.boton.solicitudEejg","90");
+						elementosFila[4] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+						break;
+					}
+				}else{
+					if(esComision){
+						// A la comision no les dejaremos solicitar
+						elementosFila = new FilaExtElement[4];
+						elementosFila[3] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+					}else{
+						elementosFila = new FilaExtElement[5];
+						elementosFila[3] = new FilaExtElement(null, "solicitarEejg","general.boton.solicitarEejg",	SIGAConstants.ACCESS_READ,"general.boton.solicitudEejg","100");
+						elementosFila[4] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+					}
+				}
+			}else{
+				elementosFila = new FilaExtElement[4];
+				elementosFila[3] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+			}
+		}
+		this.setElementosFila(elementosFila);
+		return elementosFila;
+	}*/
 	public FilaExtElement[] getElementosFila() {
 		FilaExtElement[] elementosFila = null;
 		

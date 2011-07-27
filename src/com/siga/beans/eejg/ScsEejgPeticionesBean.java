@@ -1,5 +1,7 @@
 package com.siga.beans.eejg;
 
+import com.atos.utils.UsrBean;
+import com.siga.beans.AdmUsuariosBean;
 import com.siga.beans.MasterBean;
 import com.siga.beans.ScsUnidadFamiliarEJGBean;
 /**
@@ -26,6 +28,8 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	
 	Long idPeticion;
 	Integer idUsuarioPeticion;
+	AdmUsuariosBean usuarioPeticion;
+	
 	Integer idInstitucion;
 	String fechaPeticion;	
 	Integer estado;
@@ -228,6 +232,14 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	public void setNumeroIntentosPendienteInfo(Integer numeroIntentosPendienteInfo) {
 		this.numeroIntentosPendienteInfo = numeroIntentosPendienteInfo;
 	}
+	public AdmUsuariosBean getUsuarioPeticion() {
+		return usuarioPeticion;
+	}
+	public void setUsuarioPeticion(AdmUsuariosBean usuarioPeticion) {
+		this.usuarioPeticion = usuarioPeticion;
+	}
+	
+	
 	
 	
 

@@ -382,9 +382,10 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 		sql.append(" and parentesco.idparentesco=familia.idparentesco) PARENTESCO  ");
 		sql.append(" ,decode(ejg.idpersonajg,familia.IDPERSONA,1,0) orden ");
 		sql.append(" ,eejg.idpeticion , eejg.estado ,eejg.idxml ,eejg.idpeticion ");
-		sql.append(" ,eejg.idioma ,eejg.fechaconsulta ");
+		sql.append(" ,eejg.idioma ,eejg.fechaconsulta,TO_CHAR(eejg.fechapeticion,'DD/MM/YYYY') FECHAPETICION ");
+		sql.append(" ,USU.DESCRIPCION DESCRIPCIONUSUARIO,USU.NIF NIFUSUARIO ");
 		
-		sql.append(" FROM SCS_UNIDADFAMILIAREJG familia, SCS_PERSONAJG persona,scs_ejg ejg, scs_eejg_peticiones eejg ");
+		sql.append(" FROM SCS_UNIDADFAMILIAREJG familia, SCS_PERSONAJG persona,scs_ejg ejg, scs_eejg_peticiones eejg,ADM_USUARIOS USU ");
 		sql.append(" WHERE familia.IDINSTITUCION = :");
 		contador ++;
 		sql.append(contador);
@@ -411,6 +412,9 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 	    sql.append(" and familia.ANIO = eejg.anio (+) ");
 	    sql.append(" and familia.numero = eejg.numero (+) ");
 	    sql.append(" and familia.idpersona = eejg.idpersona (+) ");
+	    sql.append(" AND eejg.Idusuariopeticion = USU.IDUSUARIO(+) ");
+	    sql.append(" AND eejg.IDINSTITUCION = USU.IDINSTITUCION(+) ");
+	    
 	    if(unidadFamiliarForm.getPeticionEejg()!=null && unidadFamiliarForm.getPeticionEejg().getEstado()!=null){
 	    	if(unidadFamiliarForm.getPeticionEejg().getEstado().compareTo(ScsEejgPeticionesBean.EEJG_ESTADO_FINALIZADO)==0){
 		    	sql.append(" and (eejg.estado =:");
@@ -472,6 +476,10 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
             		unidadFamiliar.setParentesco(parentesco);
             		if(htFila.get(ScsEejgPeticionesBean.C_IDPETICION)!=null && !htFila.get(ScsEejgPeticionesBean.C_IDPETICION).equals("")){
 	            		peticionEejg = (ScsEejgPeticionesBean)admEejgPeticion.hashTableToBean(htFila);
+	            		AdmUsuariosBean usuarioPeticion = new AdmUsuariosBean();
+	            		usuarioPeticion.setDescripcion(UtilidadesHash.getString(htFila,"DESCRIPCIONUSUARIO"));
+	            		usuarioPeticion.setNIF(UtilidadesHash.getString(htFila,"NIFUSUARIO"));
+	            		peticionEejg.setUsuarioPeticion(usuarioPeticion);
 	            		unidadFamiliar.setPeticionEejg(peticionEejg);
             		}
             		if(unidadFamiliar.getImoporteBienesMuebles()!=null)

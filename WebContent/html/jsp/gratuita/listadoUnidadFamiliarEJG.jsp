@@ -24,6 +24,55 @@
 	<siga:Titulo 
 		titulo="gratuita.busquedaEJG.unidadFamiliar" 
 		localizacion="gratuita.busquedaEJG.localizacion"/>
+
+<script>	
+	function actualizaTexto(fila,style,usuario,dni,fecha){
+		// document.getElementById(idFilaBotones).className = 'labelText';
+		td = document.getElementById("idFilaBotones_"+fila);
+		if(usuario!=''){
+			var textoUsuarioPeticion = "<siga:Idioma key='eejg.peticion'/>";
+			textoUsuarioPeticion += '(';
+			textoUsuarioPeticion += fecha;
+			textoUsuarioPeticion += ') ';
+			textoUsuarioPeticion += dni;
+			textoUsuarioPeticion += '-';
+			textoUsuarioPeticion += usuario;
+
+			
+			var innerHTMLOld = td.innerHTML;
+			td.innerHTML = '';
+			tabla = document.createElement('table');
+			tabla.setAttribute("width","100%");
+			
+			tr1 = tabla.insertRow();
+			tr1.className = style;
+			td1 = tr1.insertCell();
+			td1.innerHTML = innerHTMLOld;
+
+			
+			tr2 = tabla.insertRow();
+			tr2.className = style;
+			
+			td2 = tr2.insertCell();
+			tablatd = document.createElement('table');
+			tablatd.setAttribute("width","100%");
+			tablatd.setAttribute("border","1");
+			tablatd.setAttribute("cellspacing","0");
+			tablatd.setAttribute("cellpadding","0");
+			tr1tablatd = tablatd.insertRow();
+			tr1tablatd.className = style;
+			td1tablatd = tr1tablatd.insertCell();
+			td1tablatd.innerHTML = textoUsuarioPeticion;
+			td2.appendChild(tablatd);
+			td.appendChild(tabla);
+
+
+			}
+		
+		
+		 
+	}
+	</script>
 </head>
 
 <body class="tablaCentralCampos" >	
@@ -86,7 +135,7 @@
 		   borde="2"
 		   clase="tableTitle"		   
 		   nombreCol="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='checkTodos()'/> ,gratuita.personaJG.literal.parentescoNormalizado,gratuita.busquedaEJG.literal.nif,gratuita.busquedaEJG.literal.nombre,gratuita.operarInteresado.literal.ingresosAnuales,gratuita.operarInteresado.literal.bienesMobiliarios,gratuita.operarInteresado.literal.bienesInmuebles,gratuita.operarInteresado.literal.otrosBienes,"
-		   tamanoCol="5,10,9,21,7,7,7,7,28"
+		   tamanoCol="5,8,7,21,7,7,7,7,32"
 		   alto="100%"
 		   ajusteBotonera="true"		
 		   mensajeBorrado="gratuita.ejg.unidadFamiliar.borrado"
@@ -99,7 +148,7 @@
  		<br>
 	</logic:empty>
 	<logic:notEmpty name="DefinirUnidadFamiliarEJGForm"	property="unidadFamiliar">
-		<logic:iterate name="DefinirUnidadFamiliarEJGForm"	property="unidadFamiliar" id="solicitante" indexId="index">
+		<logic:iterate name="DefinirUnidadFamiliarEJGForm"	property="unidadFamiliar" id="solicitante" indexId="index" type="com.siga.gratuita.form.DefinirUnidadFamiliarEJGForm">
 			<%index = index.intValue()+1; %>
 			<input type="hidden" id="idPersonaJG_<%=index%>" value="<bean:write name="solicitante" property="idPersona" />">			
 			<c:if	test="${solicitante.idPersona!=DefinirUnidadFamiliarEJGForm.personaJG.idPersona}">
@@ -189,6 +238,7 @@
 					</td>
 
 					</siga:FilaConIconos>
+					<script> actualizaTexto('<%=String.valueOf(index.intValue())%>','<%=((index)%2==0?"filaTablaPar":"filaTablaImpar")%>','<%=(solicitante.getPeticionEejg()!=null&&solicitante.getPeticionEejg().getUsuarioPeticion()!=null)?solicitante.getPeticionEejg().getUsuarioPeticion().getDescripcion():""%>','<%=(solicitante.getPeticionEejg()!=null&&solicitante.getPeticionEejg().getUsuarioPeticion()!=null)?solicitante.getPeticionEejg().getUsuarioPeticion().getNIF():""%>','<%=(solicitante.getPeticionEejg()!=null&&solicitante.getPeticionEejg().getFechaPeticion()!=null)?solicitante.getPeticionEejg().getFechaPeticion():""%>');</script>
 				</c:if>
 				<c:if	test="${solicitante.idPersona==DefinirUnidadFamiliarEJGForm.personaJG.idPersona}">
 				<bean:define id="elementosFila" name="solicitante" property="elementosFila" type="com.siga.tlds.FilaExtElement[]"/>
@@ -273,7 +323,7 @@
 					</td>
 
 					</siga:FilaConIconos>
-				
+				<script> actualizaTexto('<%=String.valueOf(index.intValue())%>','<%=((index)%2==0?"filaTablaPar":"filaTablaImpar")%>','<%=(solicitante.getPeticionEejg()!=null&&solicitante.getPeticionEejg().getUsuarioPeticion()!=null)?solicitante.getPeticionEejg().getUsuarioPeticion().getDescripcion():""%>','<%=(solicitante.getPeticionEejg()!=null&&solicitante.getPeticionEejg().getUsuarioPeticion()!=null)?solicitante.getPeticionEejg().getUsuarioPeticion().getNIF():""%>','<%=(solicitante.getPeticionEejg()!=null&&solicitante.getPeticionEejg().getFechaPeticion()!=null)?solicitante.getPeticionEejg().getFechaPeticion():""%>');</script>
 				
 				
 				</c:if>

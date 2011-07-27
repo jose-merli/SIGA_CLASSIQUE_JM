@@ -151,7 +151,7 @@ public class TagFila extends TagSupport
 		try {
 			pageContext.getResponse().setContentType("text/html");
 			PrintWriter out = pageContext.getResponse().getWriter();
-			out.println("<td name='celda' align=\"left\">");
+			out.println("<td name='celda' id='idFilaBotones_"+fila+"' align=\"left\">");
 			
 			HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 			HttpSession session = (HttpSession) request.getSession();
