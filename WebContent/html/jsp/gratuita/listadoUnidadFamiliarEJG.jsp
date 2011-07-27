@@ -30,10 +30,12 @@
 		// document.getElementById(idFilaBotones).className = 'labelText';
 		td = document.getElementById("idFilaBotones_"+fila);
 		if(usuario!=''){
-			var textoUsuarioPeticion = "<siga:Idioma key='eejg.peticion'/>";
+			var textoUsuarioPeticion = "<siga:Idioma key='eejg.solicitado'/>";
 			textoUsuarioPeticion += '(';
 			textoUsuarioPeticion += fecha;
 			textoUsuarioPeticion += ') ';
+			textoUsuarioPeticion += "<siga:Idioma key='general.por'/>";
+			textoUsuarioPeticion += ' ';
 			textoUsuarioPeticion += dni;
 			textoUsuarioPeticion += '-';
 			textoUsuarioPeticion += usuario;
