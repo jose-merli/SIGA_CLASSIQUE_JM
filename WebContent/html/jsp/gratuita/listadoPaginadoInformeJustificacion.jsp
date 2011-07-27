@@ -1607,9 +1607,6 @@ function downloadDocumentoResolucion(docResolucion) {
 				id="idButton" onclick="return accionGuardar(${usrBean.letrado});" class="button"
 				name="idButton" value="Guardar"></td>
 			<td class="tdBotones"><input type="button" alt="Informe Justif."
-				id="idInformeJustificacion" onclick="return informeJustificacion();"
-				class="button" name="idButton" value="Informe Justif."></td>
-			<td class="tdBotones"><input type="button" alt="Informe Justif."
 				id="idInformeJustificacion" onclick="return informeGenerico();"
 				class="button" name="idButton" value="Informe Justif."></td>
 		</tr>
