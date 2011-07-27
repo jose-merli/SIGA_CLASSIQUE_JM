@@ -415,10 +415,14 @@ public class AtosProgramacionCalendariosService extends JtaBusinessServiceTempla
 		if(alGuardias==null)
 			alGuardias = new ArrayList<ScsGuardiasTurnoBean>();
 		else{
+			
 			ScsGuardiasTurnoBean guardiaBean = new ScsGuardiasTurnoBean();
 			guardiaBean.setIdGuardia(new Integer(-1));
 			guardiaBean.setNombre("");
-			alGuardias.set(0, guardiaBean);
+			if(alGuardias.size()==1)
+				alGuardias.add(0, guardiaBean);
+			else
+				alGuardias.set(0, guardiaBean);
 			
 		}
 		return alGuardias;
