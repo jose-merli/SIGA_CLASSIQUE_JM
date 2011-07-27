@@ -55,7 +55,7 @@ function accionNuevoConjuntoGuardias(){
 
 	var checksConfiguracion = document.getElementsByName("chkConfiguracion");
 	var guardiasInsertar='';
-	//Hay que validar que todos los marcados traigan orden
+
 	for (i = 1; i <= checksConfiguracion.length; i++) {
   	  	//var checkConfiguracion = checksConfiguracion[i];
   	  	var checkConfiguracion = document.getElementById("checkConfiguracion_"+i);
@@ -69,7 +69,22 @@ function accionNuevoConjuntoGuardias(){
   			
   	  	}
 	}
+	/*
 	
+	for (i = 1; i <= checksConfiguracion.length; i++) {
+  	  	//var checkConfiguracion = checksConfiguracion[i];
+  	  	var checkConfiguracion = document.getElementById("checkConfiguracion_"+i);
+  		var orden = document.getElementById("orden_"+i).value;
+		// Si estan marcados deberemos actulizar elementosInsertar o, si ha cambiado el orden actualizar elementosModificar
+  		if(checkConfiguracion.checked && orden==''){
+  			error = "<siga:Idioma key='errors.required' arg0='gratuita.calendarios.programacion.orden'/>";
+  			alert(error);
+  			fin();
+  	  		return false;
+  			
+  	  	}
+	}
+	*/ 
 	
 	
   	for (i = 1; i <= checksConfiguracion.length; i++) {
@@ -79,6 +94,7 @@ function accionNuevoConjuntoGuardias(){
 		// Si estan marcados deberemos actulizar elementosInsertar o, si ha cambiado el orden actualizar elementosModificar
   		if(checkConfiguracion.checked){
   			var orden = document.getElementById("orden_"+i).value;
+  			if(orden!='')
   	  			guardiasInsertar += "idTurno=="+idTurno+",idGuardia=="+idGuardia+",orden=="+orden+"##";
 
   	  	  	
@@ -155,21 +171,6 @@ function accionGuardar(){
 	var checksConfiguracion = document.getElementsByName("chkConfiguracion");
 	var guardiasBorrar='';
 	var guardiasInsertar='';
-	//Hay que validar que todos los marcados traigan orden
-	/* for (i = 1; i <= checksConfiguracion.length; i++) {
-  	  	//var checkConfiguracion = checksConfiguracion[i];
-  	  	var checkConfiguracion = document.getElementById("checkConfiguracion_"+i);
-  		var orden = document.getElementById("orden_"+i).value;
-		// Si estan marcados deberemos actulizar elementosInsertar o, si ha cambiado el orden actualizar elementosModificar
-  		if(checkConfiguracion.checked && orden==''){
-  			alert("<siga:Idioma key='gratuita.calendarios.programacion.error.ordenTodasSeleccionadas'/>");
-  			fin();
-  	  		return false;
-  			
-  	  	}
-	}
-	*/ 
-	
 	
   	for (i = 1; i <= checksConfiguracion.length; i++) {
   		var checkConfiguracion = document.getElementById("checkConfiguracion_"+i); 
@@ -185,7 +186,9 @@ function accionGuardar(){
 			if(ordenOld.value==''){
 				guardiasInsertar += "idTurno=="+idTurno+",idGuardia=="+idGuardia+",orden=="+orden+"##";
 			}else{
-				if(ordenOld!=orden){
+				if(orden==''){
+					guardiasBorrar += "idTurno=="+idTurno+",idGuardia=="+idGuardia+",orden=="+ordenOld+"##";
+				}else if(ordenOld!=orden){
 					guardiasInsertar += "idTurno=="+idTurno+",idGuardia=="+idGuardia+",orden=="+orden+"##";
 					guardiasBorrar += "idTurno=="+idTurno+",idGuardia=="+idGuardia+",orden=="+ordenOld+"##";
   	  	  		}
