@@ -172,6 +172,7 @@ public class ScsDelitoAdm extends MasterBeanAdministrador {
 		sql.append(" WHERE IDINSTITUCION = :");
 		contador ++;
 		sql.append(contador);
+		sql.append(" AND FECHABAJA IS NULL");
 		htCodigos.put(new Integer(contador),volanteExpres.getIdInstitucion());
 		sql.append(" ORDER BY DESCRIPCION ");
 		

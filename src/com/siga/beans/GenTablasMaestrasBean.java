@@ -17,6 +17,7 @@ public class GenTablasMaestrasBean extends MasterBean
 	private String idLenguaje;
 	private String tipoCodigo;
 	private String local;
+	private Integer aceptabaja;
 
 	/* Nombre campos de la tabla */
 	static public final String C_IDTABLAMAESTRA = "IDTABLAMAESTRA";
@@ -34,6 +35,7 @@ public class GenTablasMaestrasBean extends MasterBean
 	static public final String C_TIPO_CODIGO = "TIPOCODIGO";
 	static public final String C_LOCAL = "LOCAL";
 	static public final String C_IDCAMPOBLOQUEADO = "IDCAMPODESCRIPCION";
+	static public final String C_ACEPTABAJA = "ACEPTABAJA";
 	
 	// RGG Cambio para codigo ext
 	private String idCampoCodigoExt;
@@ -211,4 +213,12 @@ public class GenTablasMaestrasBean extends MasterBean
     {
         this.local = local;
     }
+	public Integer getAceptabaja() {
+		return aceptabaja;
+	}
+	public void setAceptabaja(Integer aceptabaja) {
+		this.aceptabaja = aceptabaja;
+	}
+    
+    
 }

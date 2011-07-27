@@ -33,6 +33,9 @@
 	
 	UsrBean userBean = (UsrBean)request.getSession().getAttribute("USRBEAN");
 	String idioma=userBean.getLanguage().toUpperCase();
+	int aceptabaja = beanTablaMaestra.getAceptabaja();
+	String ncols = "";
+	String nombrecols = "";
 	
 	
 	/** PAGINADOR ***/
@@ -125,13 +128,21 @@
 			<input type="hidden" name="actionModal" value="">
 		</html:form>	
 		
+		<% if(aceptabaja == 1){
+				ncols = "20,55,15,10";
+				nombrecols = "general.codeext,general.description,general.estado,";
+			}else{
+				ncols = "20,70,10";
+				nombrecols = "general.codeext,general.description,";
+			}
+		%>
 			
 			<siga:TablaCabecerasFijas 
 		   	      nombre="tablaDatos"
 		   		  borde="1"
 		   		  clase="tableTitle"
-		   		  nombreCol="general.codeext,general.description,"
-		   		  tamanoCol="20,70,10"
+		   		  nombreCol="<%=nombrecols%>"
+		   		  tamanoCol="<%=ncols%>"
 		   		  alto="100%"
 		   		  ajustePaginador="true"
 		   		  modal="P"
@@ -153,11 +164,19 @@
 			   			String  botones="C,E,B";
 				  		Row fila = (Row)resultado.elementAt(i);
 						Hashtable registro = (Hashtable) fila.getRow();
+						String estado = "Alta";
 
 						//Si es estan bloqueadas no se pueden ni modificar ni borrar, solo consultar
 						if(((String)registro.get("BLOQUEADO"))!=null && ((String)registro.get("BLOQUEADO")).equalsIgnoreCase("S")){
 							botones="C";
 						}
+						
+						if(aceptabaja == 1){
+							if(((String)registro.get("FECHABAJA"))!=null && !((String)registro.get("FECHABAJA")).equalsIgnoreCase("")){
+								estado="Baja desde: "+GstDate.getFormatedDateShort("", (String)registro.get("FECHABAJA"));
+							}
+						}
+						
 
 %>
 	  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=botones%>" clase="listaNonEdit">
@@ -168,6 +187,11 @@
 						<%=registro.get("CODIGOEXTERNO")%>
 					</td>
 					<td><%=registro.get("DESCRIPCION")%></td>
+					
+					<% if(aceptabaja == 1){%>
+						<td><%=estado%></td>
+					<% } %>
+					
 				</siga:FilaConIconos>
 <%
 					}
@@ -177,7 +201,7 @@
 			</siga:TablaCabecerasFijas>
 
 		
-		<%if ( hm.get("datos")!=null && !hm.get("datos").equals("")){%>
+		<%if (hm.get("datos")!=null && !hm.get("datos").equals("")){%>
 	     
 		        <siga:Paginador totalRegistros="<%=totalRegistros%>" 
 								registrosPorPagina="<%=registrosPorPagina%>" 

@@ -65,6 +65,7 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 			}   
 			
 			request.setAttribute("beanTablaMaestra", beanTablaMaestra);
+			request.getSession().setAttribute("aceptaBaja", beanTablaMaestra.getAceptabaja());
 			request.getSession().setAttribute("beanTablaMaestraOld", request.getAttribute("beanTablaMaestra"));
 	  }	
 	        
@@ -100,7 +101,10 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        String sCampoDescripcion = beanTablaMaestra.getIdCampoDescripcion();
 	        String sAliasTabla = beanTablaMaestra.getAliasTabla();
 	        String sLocal = beanTablaMaestra.getLocal();
-	
+	        if(beanTablaMaestra.getAceptabaja()==1)
+	        	form.setPonerBajaLogica("S");
+	        else
+	        	form.setPonerBajaLogica("N");
 	        String sCodigoBusqueda = form.getCodigoBusqueda().trim();
 	        String sDescripcionBusqueda = form.getDescripcionBusqueda().trim();
 	        
@@ -108,8 +112,12 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        
 	        String sSQL = "SELECT " + sCampoCodigoExt + " AS CODIGOEXTERNO," + sCampoCodigo + " AS CODIGO, " +
 	        		              " F_SIGA_GETRECURSO(" + sCampoDescripcion + ", " + this.getUserBean(request).getLanguage() +") AS DESCRIPCION" +
-	                       ",BLOQUEADO AS BLOQUEADO FROM " + idTabla + 
-						  " WHERE 1 = 1 "; 
+	                       ",BLOQUEADO AS BLOQUEADO ";
+	        
+	        if(beanTablaMaestra.getAceptabaja()==1)
+	        	sSQL += " ,FECHABAJA ";
+	        
+	        sSQL += " FROM " + idTabla +  " WHERE 1 = 1 "; 
 	                      
 	        //sSQL += (sCodigoBusqueda!=null && !sCodigoBusqueda.equals("")) ? " AND " + sCampoCodigoExt + " = '" + sCodigoBusqueda + "'" : "";
 	        sSQL += (sCodigoBusqueda!=null && !sCodigoBusqueda.equals("")) ? " AND "+sCampoCodigoExt+ComodinBusquedas.prepararSentenciaExacta(sCodigoBusqueda.trim()): "";
@@ -293,6 +301,7 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        String sNombreCampoCodigo = form.getNombreCampoCodigo();
 	        String sNombreCampoCodigoExt = form.getNombreCampoCodigoExt();
 	        String sNombreCampoDescripcion = form.getNombreCampoDescripcion();
+	        String sNombreCampoFechaBaja = "FECHABAJA";
 	        String sLocal = form.getLocal();
 	        String sAliasTabla = form.getAliasTabla();
 	        String sLongitudCodigo = form.getLongitudCodigo();
@@ -300,7 +309,8 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        String sLongitudDescripcion = form.getLongitudDescripcion();
 	        String sTipoCodigo = form.getTipoCodigo();
 	        String sTipoCodigoExt = form.getTipoCodigoExt();
-	        
+	        String sDarDeBaja = form.getPonerBajaLogica();
+	        int aceptaBaja = (Integer)request.getSession().getAttribute("aceptaBaja");
 	       
 	        String sFechaModificacion =MasterBean.C_FECHAMODIFICACION;
 	        String sUsuModif = MasterBean.C_USUMODIFICACION;
@@ -316,7 +326,7 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 		    if (sLocal.equals("S")) {
 		        sSQL += " AND IDINSTITUCION = " + userBean.getLocation();
 		    }
-		    
+		    		    
 		    RowsContainer rc = new RowsContainer();
 		    
 		    Object[] claves = null;
@@ -331,8 +341,22 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 		        claves[0] = sNombreCampoCodigo;
 		    }
 	
-		    Object[] campos = {sNombreCampoDescripcion,sNombreCampoCodigoExt,sFechaModificacion,sUsuModif};
-	
+		    Object[] campos = null;
+		    if(aceptaBaja == 1){
+		    	campos = new Object[5];
+		    	campos[0] = sNombreCampoDescripcion;
+		        campos[1] = sNombreCampoCodigoExt;
+		        campos[2] = sFechaModificacion;
+		        campos[3] = sUsuModif;
+		    	campos[4] = sNombreCampoFechaBaja;
+	        }else{
+	        	campos = new Object[4];
+	        	campos[0] = sNombreCampoDescripcion;
+		        campos[1] = sNombreCampoCodigoExt;
+		        campos[2] = sFechaModificacion;
+		        campos[3] = sUsuModif;
+	        }
+		    
 	        //Chequeo si existe una descripcion igual:
 	        if (this.existeDescripcion(userBean.getLocation(),sDescripcion,sNombreCampoDescripcion, sNombreCampoCodigo,sNombreTabla,sLocal,sCodigo, sTipoCodigo, userBean.getLanguage())) {
 	        	return error("messages.inserted.descDuplicated", new ClsExceptions("messages.inserted.descDuplicated"), request);
@@ -355,6 +379,15 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	    			}
 	    			htNew.put(sFechaModificacion, "SYSDATE");
 	    			htNew.put(sUsuModif, userBean.getUserName());
+	    			if(aceptaBaja == 1){
+	    				if(sDarDeBaja.equals("S")){
+	    					if(!this.existeFechaBaja(userBean.getLocation(), sNombreCampoCodigoExt, sNombreTabla, sLocal,sTipoCodigo, sCodigo)){
+	    						htNew.put(sNombreCampoFechaBaja, "SYSDATE");
+	    					}
+	    				}else{
+	    					htNew.put(sNombreCampoFechaBaja, "");
+	    				}
+	    			}
 			        row.load(htNew);
 			        if (row.update(sNombreTabla, claves, campos) <= 0) {
 			        	throw new SIGAException ("messages.updated.error");
@@ -499,6 +532,11 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        String sLongitudDescripcion = form.getLongitudDescripcion();
 	        String sTipoCodigo = form.getTipoCodigo();
 	        String sTipoCodigoExt = form.getTipoCodigoExt();
+	        String sDarDeBaja = "N";
+	        int aceptaBaja = (Integer)request.getSession().getAttribute("aceptaBaja");
+	        if(aceptaBaja == 1){
+	        	sDarDeBaja = "S";
+	        }
 	       
 	        if (!bNuevo)
 	        {
@@ -509,9 +547,18 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 			    sBloqueo = (String)vOcultos.elementAt(1);
 			    
 		        
-			    String sSQL = "SELECT " + sNombreCampoCodigoExt + " AS CODIGOEXTERNO, " + sNombreCampoCodigo + " AS CODIGO, F_SIGA_GETRECURSO(" + sNombreCampoDescripcion + ", " + this.getUserBean(request).getLanguage() + ") AS DESCRIPCION " + 
+			    String sSQL = "";
+			    
+			    if(aceptaBaja == 1){
+			    	sSQL = 	"SELECT " + sNombreCampoCodigoExt + " AS CODIGOEXTERNO, " + sNombreCampoCodigo + " AS CODIGO, F_SIGA_GETRECURSO(" + sNombreCampoDescripcion + ", " + this.getUserBean(request).getLanguage() + ") AS DESCRIPCION, FECHABAJA " + 
 			    	          " FROM " + sNombreTabla +
 			    	          " WHERE " + sNombreCampoCodigo + " = '" + sCodigoExt + "'";
+			    }else{
+			    	sSQL = 	"SELECT " + sNombreCampoCodigoExt + " AS CODIGOEXTERNO, " + sNombreCampoCodigo + " AS CODIGO, F_SIGA_GETRECURSO(" + sNombreCampoDescripcion + ", " + this.getUserBean(request).getLanguage() + ") AS DESCRIPCION " + 
+			    	          " FROM " + sNombreTabla +
+			    	          " WHERE " + sNombreCampoCodigo + " = '" + sCodigoExt + "'";
+			    }
+			    
 			    
 			    if (sLocal.equals("S"))
 			    {
@@ -546,6 +593,7 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        request.setAttribute("longitudDescripcion", sLongitudDescripcion);
 	        request.setAttribute("tipoCodigo", sTipoCodigo);
 	        request.setAttribute("tipoCodigoExt", sTipoCodigoExt);
+	        request.setAttribute("darDeBaja", sDarDeBaja);
 	        
 
 	    return "mostrar";
@@ -680,6 +728,37 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	    if (row.getString("CODEXT")!=null && !row.getString("CODEXT").equals("0"))
 	    	existe = true;
 		
+		return existe;
+	}
+	
+		//Compruebo si existe un registro con esa descripcion:
+	private boolean existeFechaBaja(String idInstitucion, String sNombreCampoCodigo, String sNombreTabla, String sLocal,String sTipoCodigo, String codigo) throws ClsExceptions{
+		String sSQL=null;
+		boolean existe = false;
+
+		sSQL = "SELECT FECHABAJA" +  
+        	   " FROM  " + sNombreTabla;
+		
+		sSQL += " WHERE   "+ sNombreCampoCodigo +" = '"+codigo+"' ";
+		
+		/*if (sTipoCodigo.equalsIgnoreCase("A")) {
+			sSQL += " WHERE   "+ sNombreCampoCodigo +" = '"+codigo+"' ";
+		} else  {
+			sSQL += " WHERE   "+ sNombreCampoCodigo +" = "+codigo+" ";
+		}*/
+		
+		if (sLocal.equals("S"))
+	    {
+	        sSQL += " AND IDINSTITUCION = " + idInstitucion;
+	    }
+
+		RowsContainer rc = new RowsContainer();
+		rc.findForUpdate(sSQL);
+	    Row row = (Row)rc.get(0);
+	    if(row !=null){
+	    	if (row.getString("FECHABAJA")!=null && !row.getString("FECHABAJA").equals(""))
+	    		existe = true;
+	    }
 		return existe;
 	}
 }

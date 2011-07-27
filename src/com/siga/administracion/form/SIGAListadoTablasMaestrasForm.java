@@ -22,6 +22,7 @@ public class SIGAListadoTablasMaestrasForm extends MasterForm
     private String tipoCodigoExt="";
     private String codigoBusqueda="";
     private String descripcionBusqueda="";
+    private String ponerBajaLogica="";
     
     
 //    public String getModo() 
@@ -202,4 +203,12 @@ public class SIGAListadoTablasMaestrasForm extends MasterForm
         this.descripcionBusqueda = descripcionBusqueda;
     }
 
+	public String getPonerBajaLogica() {
+		return ponerBajaLogica;
+	}
+
+	public void setPonerBajaLogica(String ponerBajaLogica) {
+		this.ponerBajaLogica = ponerBajaLogica;
+	}
+    
 }

@@ -26,12 +26,18 @@
 	String codigoAux ="";
 	String codigoExternoAux ="";
 	String descAux ="";
+	String fechaBaja = "";
 	if (datos!=null) {
 		codigoAux=(String)datos.getString("CODIGO");
 		descAux=(String)datos.getString("DESCRIPCION");
 		codigoExternoAux=(String)datos.getString("CODIGOEXTERNO");
+		if((String)datos.getString("FECHABAJA")!=null && !((String)datos.getString("FECHABAJA")).equals("null"))
+			fechaBaja = GstDate.getFormatedDateShort("", (String)datos.getString("FECHABAJA"));
 	}
-
+	String ponerBaja = "N";
+	if(fechaBaja !=null && !fechaBaja.equals("")){
+		ponerBaja = "S";
+	}
 	boolean bEditable = ((String)request.getAttribute("editable")).equals("1");
 	boolean bNuevo = ((String)request.getAttribute("nuevo")).equals("1");
 	String sNombreTabla = (String)request.getAttribute("nombreTabla");
@@ -45,6 +51,7 @@
 	String sLongitudDescripcion = (String)request.getAttribute("longitudDescripcion");
 	String sTipoCodigo = (String)request.getAttribute("tipoCodigo");
 	String sTipoCodigoExt = (String)request.getAttribute("tipoCodigoExt");
+	String sDarDeBaja = (String)request.getAttribute("darDeBaja");
 	//Nuevo identificador:
 	//	String codigoNuevo = (String)request.getAttribute("codigoNuevo");
 
@@ -74,6 +81,7 @@
 	request.removeAttribute("tipoCodigoExt");
 	
 	UsrBean userBean = (UsrBean)request.getSession().getAttribute("USRBEAN");
+
 %>	
 
 <html>
@@ -140,6 +148,15 @@
 			}
 			return true;
 		}
+
+ 		function darDeBaja (o) {
+ 			if (o.checked) {
+ 				listadoTablasMaestrasForm.ponerBajaLogica.value = "S";
+			} else {
+				listadoTablasMaestrasForm.ponerBajaLogica.value = "N";
+			}
+ 		}
+		
 		</script>
 	</head>
 
@@ -172,6 +189,7 @@
 				<input type="hidden" name="longitudDescripcion" value="<%=sLongitudDescripcion%>">
 				<input type="hidden" name="tipoCodigo" value="<%=sTipoCodigo%>">
 				<input type="hidden" name="tipoCodigoExt" value="<%=sTipoCodigoExt%>">
+				
 
 				<table class="tablaCentralCamposPeque" align="center" border="0">
 					<tr>		
@@ -244,7 +262,20 @@
 %>
                                     
 									</tr>
-									
+									<%if (sDarDeBaja!=null && sDarDeBaja.equals("S")){%>
+										<tr>
+											<td class="labelText">
+												<siga:Idioma key="general.baja"/>
+
+											</td>
+											<td class="labelTextValue">
+												<input type="checkbox" name="ponerBajaLogica" style="" onclick="darDeBaja(this);" <%if (!bEditable && !bNuevo) {%>disabled<%}%> value="<%=ponerBaja%>" <%if (fechaBaja !=null && !fechaBaja.equals("")) {%>checked<%}%>>
+												<%if (fechaBaja !=null && !fechaBaja.equals("")) {%>
+													&nbsp;&nbsp;&nbsp; Baja desde: <%=fechaBaja%>
+												<%}%>								
+											</td>
+										</tr>
+									<%}%>									
 								</table>
 							</siga:ConjCampos>
 						</td>

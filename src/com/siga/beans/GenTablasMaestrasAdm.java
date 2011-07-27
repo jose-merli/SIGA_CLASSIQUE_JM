@@ -31,8 +31,9 @@ public class GenTablasMaestrasAdm extends MasterBeanAdministrador
 		        		   GenTablasMaestrasBean.C_IDLENGUAJE,
 		        		   GenTablasMaestrasBean.C_TIPO_CODIGO,
 		        		   GenTablasMaestrasBean.C_LOCAL,
-		        		   GenTablasMaestrasBean.C_FECHAMODIFICACION, 
-						   GenTablasMaestrasBean.C_USUMODIFICACION};
+		        		   GenTablasMaestrasBean.C_FECHAMODIFICACION,
+						   GenTablasMaestrasBean.C_USUMODIFICACION,
+						   GenTablasMaestrasBean.C_ACEPTABAJA,};
 
 		return campos;
 	}
@@ -73,6 +74,7 @@ public class GenTablasMaestrasAdm extends MasterBeanAdministrador
 			bean.setLocal(UtilidadesHash.getString(hash, GenTablasMaestrasBean.C_LOCAL));
 			bean.setFechaMod(UtilidadesHash.getString(hash, GenTablasMaestrasBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash, GenTablasMaestrasBean.C_USUMODIFICACION));
+			bean.setAceptabaja(UtilidadesHash.getInteger(hash, GenTablasMaestrasBean.C_ACEPTABAJA));
 		}
 
 		catch (Exception e)
@@ -116,6 +118,7 @@ public class GenTablasMaestrasAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(htData, GenTablasMaestrasBean.C_LOCAL, b.getLocal());
 			UtilidadesHash.set(htData, GenTablasMaestrasBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(htData, GenTablasMaestrasBean.C_USUMODIFICACION, b.getUsuMod());
+			UtilidadesHash.set(htData, GenTablasMaestrasBean.C_ACEPTABAJA, b.getAceptabaja());
 		}
 
 		catch (Exception e)
