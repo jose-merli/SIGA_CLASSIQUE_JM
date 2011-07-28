@@ -700,9 +700,16 @@ public class InformesGenericosAction extends MasterAction {
 						}
 					}
     				/**se guarda en el documento con el lenguaje del solicitante**/
-					String rutaPl = rutaPlantilla + ClsConstants.FILE_SEP+usr.getLocation()+ClsConstants.FILE_SEP+b.getDirectorio()+ClsConstants.FILE_SEP;
+					String carpetaInstitucion = "";
+					if(b.getIdInstitucion()==null || b.getIdInstitucion().compareTo(Integer.valueOf(0))==0){
+						carpetaInstitucion = "2000";
+					}else{
+						carpetaInstitucion = ""+b.getIdInstitucion();
+					}
+					
+					String rutaPl = rutaPlantilla + ClsConstants.FILE_SEP+carpetaInstitucion+ClsConstants.FILE_SEP+b.getDirectorio()+ClsConstants.FILE_SEP;
 					String nombrePlantilla=b.getNombreFisico()+"_"+codigoext+".doc";
-					String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP+usr.getLocation()+ClsConstants.FILE_SEP+b.getDirectorio();			
+					String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP+carpetaInstitucion+ClsConstants.FILE_SEP+b.getDirectorio();			
 
 					File crear = new File(rutaAlm);
 					if(!crear.exists())
@@ -871,10 +878,17 @@ public class InformesGenericosAction extends MasterAction {
 											if (idiomainteresado!=null && !idiomainteresado.trim().equals("")){
 												idiomainforme=idiomainteresado;												
 											}
-								
-											String rutaPl = rutaPlantilla + ClsConstants.FILE_SEP+usr.getLocation()+ClsConstants.FILE_SEP+beanInforme.getDirectorio()+ClsConstants.FILE_SEP;
+											
+											String carpetaInstitucion = "";
+											if(beanInforme.getIdInstitucion()==null ||beanInforme.getIdInstitucion().compareTo(Integer.valueOf(0))==0){
+												carpetaInstitucion = "2000";
+											}else{
+												carpetaInstitucion = ""+beanInforme.getIdInstitucion();
+											}
+											
+											String rutaPl = rutaPlantilla + ClsConstants.FILE_SEP+carpetaInstitucion+ClsConstants.FILE_SEP+beanInforme.getDirectorio()+ClsConstants.FILE_SEP;
 											String nombrePlantilla=beanInforme.getNombreFisico()+"_"+idiomainforme+".doc";
-											String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP+usr.getLocation()+ClsConstants.FILE_SEP+beanInforme.getDirectorio();
+											String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP+carpetaInstitucion+ClsConstants.FILE_SEP+beanInforme.getDirectorio();
 											MasterWords words=new MasterWords(rutaPl+nombrePlantilla);
 											Document doc=words.nuevoDocumento(); 
 											File crear = new File(rutaAlm);
@@ -1023,11 +1037,16 @@ public class InformesGenericosAction extends MasterAction {
 										
 											//Seleccionamos el idioma del interesado para seleccionar la plantilla
 											//String idiomainforme=usr.getLanguageExt();		             				
-											
+											String carpetaInstitucion = "";
+											if(beanInforme.getIdInstitucion()==null ||beanInforme.getIdInstitucion().compareTo(Integer.valueOf(0))==0){
+												carpetaInstitucion = "2000";
+											}else{
+												carpetaInstitucion = ""+beanInforme.getIdInstitucion();
+											}
 								
-											String rutaPl = rutaPlantilla + ClsConstants.FILE_SEP+usr.getLocation()+ClsConstants.FILE_SEP+beanInforme.getDirectorio()+ClsConstants.FILE_SEP;
+											String rutaPl = rutaPlantilla + ClsConstants.FILE_SEP+carpetaInstitucion+ClsConstants.FILE_SEP+beanInforme.getDirectorio()+ClsConstants.FILE_SEP;
 											String nombrePlantilla=beanInforme.getNombreFisico()+"_"+idiomainforme+".doc";
-											String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP+usr.getLocation()+ClsConstants.FILE_SEP+beanInforme.getDirectorio();
+											String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP+carpetaInstitucion+ClsConstants.FILE_SEP+beanInforme.getDirectorio();
 											MasterWords words=new MasterWords(rutaPl+nombrePlantilla);
 											Document doc=words.nuevoDocumento(); 
 											File crear = new File(rutaAlm);
@@ -1244,14 +1263,22 @@ public class InformesGenericosAction extends MasterAction {
 			for (int i=0; i<plantillas.size(); i++)
 			{
 				infBean = (AdmInformeBean) plantillas.get (i); 
+				
+				String carpetaInstitucion = "";
+				if(infBean.getIdInstitucion()==null ||infBean.getIdInstitucion().compareTo(Integer.valueOf(0))==0){
+					carpetaInstitucion = "2000";
+				}else{
+					carpetaInstitucion = ""+infBean.getIdInstitucion();
+				}
+				
 				//obteniendo rutas de plantilla y fichero a generar
 				rutaPlantilla = baseRutaPlantilla + ClsConstants.FILE_SEP +
-				usr.getLocation() + ClsConstants.FILE_SEP +
+				carpetaInstitucion + ClsConstants.FILE_SEP +
 				infBean.getDirectorio() + ClsConstants.FILE_SEP;
 				nombrePlantilla = infBean.getNombreFisico() + "_" +
 				(new AdmLenguajesAdm(usr)).getLenguajeExt(idioma) + ".doc";
 				rutaAlmacen = baseRutaAlmacen + ClsConstants.FILE_SEP +
-				usr.getLocation() + ClsConstants.FILE_SEP +
+				carpetaInstitucion + ClsConstants.FILE_SEP +
 				infBean.getDirectorio();
 
 				//creando la ruta del fichero a generar
@@ -2020,10 +2047,15 @@ public class InformesGenericosAction extends MasterAction {
 					String directorioInforme = b.getDirectorio();
 					String nombreFisicoInforme = b.getNombreFisico();
 					String nombreSalidaInforme = b.getNombreSalida();
-
-					String rutaPl = rutaPlantilla + ClsConstants.FILE_SEP+userBean.getLocation()+ClsConstants.FILE_SEP+directorioInforme+ClsConstants.FILE_SEP;
+					String carpetaInstitucion = "";
+					if(b.getIdInstitucion()==null ||b.getIdInstitucion().compareTo(Integer.valueOf(0))==0){
+						carpetaInstitucion = "2000";
+					}else{
+						carpetaInstitucion = ""+b.getIdInstitucion();
+					}
+					String rutaPl = rutaPlantilla + ClsConstants.FILE_SEP+carpetaInstitucion+ClsConstants.FILE_SEP+directorioInforme+ClsConstants.FILE_SEP;
 					String nombrePlantilla=nombreFisicoInforme+"_"+idiomaPer+".doc";
-					rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP+userBean.getLocation()+ClsConstants.FILE_SEP+directorioInforme;
+					rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP+carpetaInstitucion+ClsConstants.FILE_SEP+directorioInforme;
 
 					File crear = new File(rutaAlm);
 					if(!crear.exists())

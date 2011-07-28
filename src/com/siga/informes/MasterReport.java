@@ -759,14 +759,19 @@ Así que hemos logrado convertirse en el documento en formato RTF xml. So that we
 			+ rp.returnProperty("informes.directorioPlantillaInformesJava");
 
 // MODELO DE TIPO FO:
-
+		String carpetaInstitucion = "";
+		if(beanInforme.getIdInstitucion()==null || beanInforme.getIdInstitucion().compareTo(Integer.valueOf(0))==0){
+			carpetaInstitucion = "2000";
+		}else{
+			carpetaInstitucion = ""+beanInforme.getIdInstitucion();
+		}
 		String rutaPlantillaInstitucion = rutaPlantilla + ClsConstants.FILE_SEP
-			+ usr.getLocation() + ClsConstants.FILE_SEP
+			+ carpetaInstitucion + ClsConstants.FILE_SEP
 				+ beanInforme.getDirectorio() + ClsConstants.FILE_SEP;
 		String nombrePlantilla = beanInforme.getNombreFisico() + "_"
 			+ idiomaExt + ".fo";
 		String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP
-			+ usr.getLocation() + ClsConstants.FILE_SEP
+			+ carpetaInstitucion + ClsConstants.FILE_SEP
 				+ beanInforme.getDirectorio();
 
 		UtilidadesHash.set(htDatosInforme,"RUTA_LOGO",rutaPlantillaInstitucion+ClsConstants.FILE_SEP+"recursos"+ClsConstants.FILE_SEP+"Logo.jpg");

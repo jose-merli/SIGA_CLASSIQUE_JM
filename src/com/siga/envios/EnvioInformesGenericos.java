@@ -2523,14 +2523,20 @@ public class EnvioInformesGenericos extends MasterReport {
 							+ rp.returnProperty("informes.directorioPlantillaInformesJava");
 		// //////////////////////////////////////////////
 		// MODELO DE TIPO WORD: LLAMADA A ASPOSE.WORDS
-
+		String carpetaInstitucion = "";
+		if(beanInforme.getIdInstitucion()==null || beanInforme.getIdInstitucion().compareTo(Integer.valueOf(0))==0){
+			carpetaInstitucion = "2000";
+		}else{
+			carpetaInstitucion = ""+beanInforme.getIdInstitucion();
+		}
+		
 		String rutaPl = rutaPlantilla + ClsConstants.FILE_SEP
-		+ usr.getLocation() + ClsConstants.FILE_SEP
+		+ carpetaInstitucion + ClsConstants.FILE_SEP
 		+ beanInforme.getDirectorio() + ClsConstants.FILE_SEP;
 		String nombrePlantilla = beanInforme.getNombreFisico() + "_"
 		+ idiomaExt + ".doc";
 		String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP
-		+ usr.getLocation() + ClsConstants.FILE_SEP
+		+ carpetaInstitucion + ClsConstants.FILE_SEP
 		+ beanInforme.getDirectorio();
 
 		File crear = new File(rutaAlm);
