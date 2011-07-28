@@ -170,7 +170,7 @@
 				<html:option value="W">
 					<siga:Idioma key="administracion.informes.formato.word"/>
 				</html:option>
-				<html:option value="X">
+				<html:option value="E">
 					<siga:Idioma key="administracion.informes.formato.excel"/>
 				</html:option>
 				<html:option value="P"><siga:Idioma key="administracion.informes.formato.pdf"/></html:option>

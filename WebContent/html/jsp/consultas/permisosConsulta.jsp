@@ -249,7 +249,7 @@
 							<c:when test="${informe.tipoFormato=='W'}">
 								<siga:Idioma key="administracion.informes.formato.word"/>
 							</c:when>
-							<c:when test="${informe.tipoFormato=='X'}">
+							<c:when test="${informe.tipoFormato=='E'}">
 							<siga:Idioma key="administracion.informes.formato.excel"/>
 							</c:when>
 							<c:otherwise>
