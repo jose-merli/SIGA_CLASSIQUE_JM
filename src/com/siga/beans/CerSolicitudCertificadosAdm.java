@@ -86,6 +86,44 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 
 		return campos;
 	}
+	
+	protected String[] getCamposInsertBean()
+	{
+		String[] campos = {CerSolicitudCertificadosBean.C_IDINSTITUCION,
+		        		   CerSolicitudCertificadosBean.C_IDSOLICITUD,
+		        		   CerSolicitudCertificadosBean.C_DESCRIPCION,
+		        		   CerSolicitudCertificadosBean.C_FECHASOLICITUD,
+		        		   CerSolicitudCertificadosBean.C_FECHAESTADO,
+		        		   CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO,
+		        		   CerSolicitudCertificadosBean.C_IDINSTITUCION_SOL,
+		        		   CerSolicitudCertificadosBean.C_IDPERSONA_DES,
+		        		   CerSolicitudCertificadosBean.C_IDPERSONA_DIR,
+		        		   CerSolicitudCertificadosBean.C_IDDIRECCION_DIR,
+		        		   CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO,
+		        		   CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION,
+		        		   CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO,
+		        		   CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO,
+		        		   CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO,
+		        		   CerSolicitudCertificadosBean.C_IDTIPOENVIOS,
+		        		   CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN,
+		        		   CerSolicitudCertificadosBean.C_IDINSTITUCIONDESTINO,
+		        		   CerSolicitudCertificadosBean.C_IDPETICIONPRODUCTO,
+		        		   CerSolicitudCertificadosBean.C_CONTADOR_CER,
+		        		   CerSolicitudCertificadosBean.C_SUFIJO_CER,
+		        		   CerSolicitudCertificadosBean.C_PREFIJO_CER,
+		        		   CerSolicitudCertificadosBean.C_FECHADESCARGA,
+		        		   CerSolicitudCertificadosBean.C_FECHACOBRO,
+		        		   CerSolicitudCertificadosBean.C_FECHAENVIO,
+		        		   CerSolicitudCertificadosBean.C_COMENTARIO,
+		        		   CerSolicitudCertificadosBean.C_FECHAENTREGAINFO,
+		        		   CerSolicitudCertificadosBean.C_FECHAMODIFICACION,
+		        		   CerSolicitudCertificadosBean.C_IDMETODOSOLICITUD,
+		        		   CerSolicitudCertificadosBean.C_USUMODIFICACION,
+		        		   CerSolicitudCertificadosBean.C_FECHACREACION,
+		        		   CerSolicitudCertificadosBean.C_USUCREACION};
+
+		return campos;
+	}
 
 	protected String[] getClavesBean()
 	{
@@ -732,7 +770,10 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 				solicConsejoBean.setIdInstitucion_Sol(Integer.valueOf(idInstitucion));
 				solicConsejoBean.setIdEstadoCertificado(Integer.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_CER_INICIAL));
 
-				this.insert(solicConsejoBean);
+				solicConsejoBean.setFechaCreacion("SYSDATE");
+				solicConsejoBean.setUsuCreacion(new Integer(user.getUserName()));				
+				
+				this.insertCertificado(this.beanToHashTable(solicConsejoBean));
 
 				if (comunicado) {
 
@@ -766,7 +807,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 						solicColegioBean.setIdInstitucion_Sol(Integer.valueOf(idInstitucion));
 						solicColegioBean.setIdEstadoCertificado(Integer.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_CER_INICIAL));
 
-						this.insert(solicColegioBean);
+						this.insertCertificado(this.beanToHashTable(solicConsejoBean));
 					}
 
 					// Si el colegio origen es distinto del actual...
@@ -787,7 +828,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 						solicBean.setIdInstitucion_Sol(Integer.valueOf(idInstitucion));
 						solicBean.setIdEstadoCertificado(Integer.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_CER_INICIAL));
 
-						this.insert(solicBean);
+						this.insertCertificado(this.beanToHashTable(solicConsejoBean));
 					}
 				}
 
@@ -815,6 +856,32 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 		
 	} //insertarSolicitudCertificado()
     
+	/** Funcion insert (Hashtable hash)
+	 *  @param hasTable con las parejas campo-valor para realizar un where en el insert 
+	 *  @return true si todo va bien OK, false si hay algun error 
+	 * */
+	public boolean insertCertificado(Hashtable hash) throws ClsExceptions{
+		try
+		{
+			// Establecemos las datos de insercion
+			UtilidadesHash.set(hash, MasterBean.C_USUMODIFICACION, this.usuModificacion); 
+			UtilidadesHash.set(hash, MasterBean.C_FECHAMODIFICACION, "sysdate");
+
+			Row row = new Row();
+			row.load(hash);
+
+			String [] campos = this.getCamposInsertBean();
+			
+			if (row.add(this.nombreTabla, campos) == 1) {
+				return true;
+			}
+		}
+		catch (Exception e) {
+			throw new ClsExceptions(e,  e.getMessage());
+		}
+		return false;
+	}
+	
     public Long getNewIdSolicitudCertificado(String idInstitucion) throws ClsExceptions{
     	
     	String sql;
