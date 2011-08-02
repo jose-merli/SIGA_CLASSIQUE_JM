@@ -50,9 +50,12 @@
 	
 	MantenimientoDuplicadosForm form = (MantenimientoDuplicadosForm)request.getAttribute("MantenimientoDuplicadosForm");
 	
-	boolean ocultarColegiaciones = form.getAgruparColegiaciones().equalsIgnoreCase("s");
 	String nombreCol="&nbsp;,censo.resultadoDuplicados.identificador,censo.resultadoDuplicados.nif,censo.resultadoDuplicados.nombre,censo.resultadoDuplicados.apellido1,censo.resultadoDuplicados.apellido2,censo.resultadoDuplicados.institucion,censo.resultadoDuplicados.numeroColegiado";
 	String tamanoCol="3,10,10,18,18,18,10,8";
+	boolean ocultarColegiaciones=true;
+	if(form!=null){
+		ocultarColegiaciones = form.getAgruparColegiaciones()!=null&&form.getAgruparColegiaciones().equalsIgnoreCase("s");
+	}
 	if(ocultarColegiaciones){
 		nombreCol="&nbsp;,censo.resultadoDuplicados.identificador,censo.resultadoDuplicados.nif,censo.resultadoDuplicados.nombre,censo.resultadoDuplicados.apellido1,censo.resultadoDuplicados.apellido2, Número de colegiaciones";
 		tamanoCol="3,10,10,20,20,20,12";
@@ -82,7 +85,6 @@
 
 	function refrescarLocal () 
 	{
-		alert("Vuelta");
 		parent.buscar();
 	}
 	
@@ -92,8 +94,8 @@
 			document.MantenimientoDuplicadosForm.modo.value = "gestionar";
 			sub(); 
 			var resultado = ventaModalGeneral("MantenimientoDuplicadosForm","G");
-			if(resultado!="NOMODIFICADO"){
-				parent.buscar();
+			if(resultado&&resultado!="NOMODIFICADO"){
+				buscar();
 			}else{
 				fin();
 			}
@@ -134,6 +136,48 @@
 		}
 		if(document.getElementById('seleccionados'))  		 
 			document.getElementById('seleccionados').value =ObjArray.length;
+		fin();
+	}
+
+	function accionVolver() 
+	{	
+		desmarcar();
+		document.forms[0].modo.value="volver";
+		document.forms[0].target="mainWorkArea";
+		document.forms[0].submit();
+	}
+
+	function buscar() 
+	{	
+		desmarcar();
+		document.forms[0].modo.value="buscar";
+		document.forms[0].target="mainWorkArea";
+		document.forms[0].submit();
+	}
+
+	function accionExportar(){
+		
+		if(<%=nRegistros<100%>||confirm("Hay muchos registros. El proceso de exportación puede tardar varios minutos.")){
+			//sub();
+			seleccionarTodo();
+			document.forms[0].modo.value="export";
+			document.forms[0].target="new";
+			document.forms[0].submit();
+			desmarcar();
+		}
+	}
+
+	function seleccionarTodo(){
+		var ele = document.getElementsByName("chkPersona");
+		selArray = new Array();
+	  	for (i = 0; i < ele.length; i++) {
+		  	obj=ele[i];
+			selArray.push(obj.value);
+		   	seleccionados1=selArray;
+   		}
+		document.forms[0].registrosSeleccionados.value=seleccionados1;
+		document.getElementById('seleccionados').value =selArray.length;
+		document.forms[0].seleccion.value=seleccionados1;
 	}
 	
 	</script>
@@ -147,7 +191,29 @@
 	<html:hidden property="modo"/>
 	<html:hidden property="registrosSeleccionados" />
 	<html:hidden property="seleccionados" />
+	<html:hidden property="seleccion" />
 	<html:hidden property="datosPaginador" />
+	<html:hidden property="chkApellidos" />
+	<html:hidden property="chkNombreApellidos" />
+	<html:hidden property="chkNumColegiado" />
+	<html:hidden property="chkIdentificador" />
+	<html:hidden property="nifcif" />
+	<html:hidden property="nombre" />
+	<html:hidden property="numeroColegiado" />
+	<html:hidden property="apellido1" />
+	<html:hidden property="apellido2" />
+	<html:hidden property="agruparColegiaciones" />
+	<html:hidden property="tipoConexion" />
+	<html:hidden property="sentidoOrdenacion" />
+	<html:hidden property="campoOrdenacion" />
+	
+	<table class="tablaTitulo" align="center">
+		<tr>
+		<td class="titulitos">
+			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.resultados" />
+		</td>
+		</tr>
+	</table>
 	
 	<siga:TablaCabecerasFijas 
 	   nombre="tablaDatos"
@@ -206,13 +272,27 @@
 		<%}%>
 		</siga:TablaCabecerasFijas>
 		
-	<%if (resultado != null) {%>
+	<%if (resultado == null || resultado.size() == 0) {%>
 	<table id="tablaBotonesDetalle" class="botonesDetalle" align="center">
 		<tr>
 			<td class="tdBotones">
+				<input type="button" id="idButton" name="idButton" class="button" value="Volver" onclick="accionVolver();">
+			</td>
+		</tr>
+	</table>
+	<%} else {%>
+	<table id="tablaBotonesDetalle" class="botonesDetalle" align="center">
+		<tr>
+			<td class="tdBotones">
+				<input type="button" id="idButton" name="idButton" class="button" value="Volver" onclick="accionVolver();">
+			</td>
+			<td class="tdBotones">
 				<input type="button" id="idButton" name="idButton" class="button" value="<siga:Idioma key="censo.resultadoDuplicados.botonLimpiar"/>" onclick="desmarcar();">
 			</td>
-			<td style="width:900px;text-align:center" class="labelText"><%=nRegistros%> registros</td>
+			<td style="width:550px;text-align:center" class="labelText"><%=nRegistros%> registros</td>
+			<td class="tdBotones">
+				<input type="button" id="idButton" name="idButton" class="button" value="<siga:Idioma key="general.boton.exportarExcel"/>" onclick="accionExportar();">
+			</td>
 			<td class="tdBotones">
 				<input type="button" id="idButton" name="idButton" class="button" value="<siga:Idioma key="censo.resultadoDuplicados.botonFusionar"/>" onclick="comparar();">
 			</td>

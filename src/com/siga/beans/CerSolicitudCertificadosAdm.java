@@ -1661,4 +1661,33 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 	    }
 		return salida;
 	}   
+	
+	public int getNumeroCertificados(String idInstitucion, String idPersona) throws ClsExceptions{
+    	
+    	StringBuffer sql = new StringBuffer();
+		RowsContainer rc = null;
+		int contador = 0;
+		int id=0;
+		
+		try { rc = new RowsContainer(); }
+		catch(Exception e) { e.printStackTrace(); }
+		
+		sql.append("select count(*) CERTIFICADOS from " + CerSolicitudCertificadosBean.T_NOMBRETABLA);
+		sql.append(" where " + CerSolicitudCertificadosBean.C_IDINSTITUCION + " = " + idInstitucion);
+		sql.append(" and " + CerSolicitudCertificadosBean.C_IDPERSONA_DES + " = " + idPersona);
+		
+		
+		try {		
+			if (rc.find(sql.toString())) {						
+				Row fila = (Row) rc.get(0);
+				id = Integer.valueOf((String)fila.getRow().get("CERTIFICADOS"));														
+			}
+		}	
+ 
+		catch (ClsExceptions e) {		
+			throw new ClsExceptions (e, "Error al ejecutar el 'getNuevoId' en BBDD");		
+		}		
+		return id;
+  
+    }
 }

@@ -146,13 +146,13 @@
 							<siga:Idioma key="censo.fusionDuplicados.datosPersonales.fechaNacimiento"/>
 							|<siga:Idioma key="censo.fusionDuplicados.datosPersonales.lugarNacimiento"/></td>
 						<td class="labelTextValue">
-							<c:out value="${datos.persona1.datosPersonales.fechaNacimiento}"/>
-							|<c:out value="${datos.persona1.datosPersonales.naturalDe}"/></td>
+							<c:out value="${datos.persona0.datosPersonales.fechaNacimiento}"/>
+							|<c:out value="${datos.persona0.datosPersonales.naturalDe}"/></td>
 						<td class="labelTextValue">
 							<c:out value="${datos.persona1.datosPersonales.fechaNacimiento}"/>
 							|<c:out value="${datos.persona1.datosPersonales.naturalDe}"/></td>
 					</tr>
-					<tr style="border-top:1px solid">
+					<tr>
 						<td class="labelText"></td>
 						<!-- Aqui se meten los radio buttons para seleccionar el colegiado base -->
 						<td class="labelTextValue">
@@ -161,7 +161,8 @@
 							<input name="idPersonaSel" value="${datos.persona0.datosPersonales.idPersona}" type="radio" onclick="seleccionar(1, <%=idPersona1%>, <%=idPersona0%>, '<%=colegiaciones0%>');"/></td>
 					</tr>
 				</table>
-		<div name="divScroll" style="overflow:auto;height:450;">
+				<hr style="color:black;"></hr>
+		<div name="divScroll" style="overflow:auto;height:420px;">
 				<table width="100%">
 					<tr>
 						<td class="tableTitle" colspan="3">
@@ -173,6 +174,8 @@
 					<tr>
 						<td>
 							<table>
+								<tr><td class="labelText">Sanciones y Certificados</td></tr>
+								<tr><td>&nbsp;</td></tr>
 								<tr><td class="labelText"> 
 									<siga:Idioma key="Colegio"/> 
 									| <siga:Idioma key="NºColegiado"/> 
@@ -192,6 +195,13 @@
 						</td>
 						<td>
 							<table>
+								<tr>
+									<td class="labelTextValue">
+										<c:out value="${datos.persona0.sanciones}"></c:out> sanciones y 
+										<c:out value="${datos.persona0.certificados}"></c:out> certificados
+									</td>
+								</tr>
+								<tr><td>&nbsp;</td></tr>
 								<c:forEach items="${datos.persona0.datosColegiales}" var="datosCol"  varStatus="status">
 									<tr>
 										<td class="labelTextValue" colspan="2">
@@ -212,14 +222,11 @@
 										</td>
 										</c:otherwise>
 									</c:choose>
-									<td class="labelTextValue">
+									<td class="labelText">
 									<c:choose>
 										<c:when test="${datosCol.datosColegiacion.comunitario=='1'}">
 											<c:out value="Inscrito"/>
 										</c:when>
-										<c:otherwise>
-											<c:out value="No Inscrito"/>
-										</c:otherwise>
 									</c:choose>
 									</td>
 									</tr>
@@ -243,11 +250,20 @@
 									</c:if>
 									</tr>
 									<tr><td>&nbsp;</td></tr>
+															
 								</c:forEach>
+
 							</table>
 						</td>
 						<td>
 							<table>
+								<tr>
+									<td class="labelTextValue">
+										<c:out value="${datos.persona1.sanciones}"></c:out> sanciones y 
+										<c:out value="${datos.persona1.certificados}"></c:out> certificados
+									</td>
+								</tr>
+								<tr><td>&nbsp;</td></tr>
 								<c:forEach items="${datos.persona1.datosColegiales}" var="datosCol"  varStatus="status">
 									<tr>
 										<td class="labelTextValue" colspan="2">
@@ -268,14 +284,11 @@
 										</td>
 										</c:otherwise>
 									</c:choose>
-									<td class="labelTextValue">
+									<td class="labelText">
 									<c:choose>
 										<c:when test="${datosCol.datosColegiacion.comunitario=='1'}">
 											<c:out value="Inscrito"/>
 										</c:when>
-										<c:otherwise>
-											<c:out value="No Inscrito"/>
-										</c:otherwise>
 									</c:choose>
 									</td>
 									</tr>

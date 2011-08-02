@@ -37,7 +37,6 @@
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
-	MantenimientoDuplicadosForm formulario = (MantenimientoDuplicadosForm)request.getSession().getAttribute("mantenimientoDuplicadosForm");
 	String titulo = "Mantenimiento de Duplicados";
 	String localizacion = "Censo";
 	
@@ -68,12 +67,57 @@
 		function postAccionBusqueda(){
 			fin();
 		}
-		function buscar(){		
+		function buscar(){
 			sub();
-			document.MantenimientoDuplicadosForm.modo.value = "buscar";
-			document.MantenimientoDuplicadosForm.target="resultado";	
-		 	document.MantenimientoDuplicadosForm.submit();
+			if(comprobarFiltros()){
+				document.MantenimientoDuplicadosForm.modo.value = "buscar";
+				document.MantenimientoDuplicadosForm.target="mainWorkArea";
+			 	document.MantenimientoDuplicadosForm.submit();
+			}else{
+				fin();
+			}
 		}		
+
+		function limpiar()
+		{
+			document.MantenimientoDuplicadosForm.reset();
+		}	
+		function refrescarLocal(){
+			buscar();
+		}
+		function comprobarFiltros(){
+			var error=false;
+			var msg="";
+			if(!(document.MantenimientoDuplicadosForm.chkApellidos.checked ||
+				document.MantenimientoDuplicadosForm.chkNombreApellidos.checked||
+				document.MantenimientoDuplicadosForm.chkIdentificador.checked||
+				document.MantenimientoDuplicadosForm.chkNumColegiado.checked)){
+				
+				if(document.MantenimientoDuplicadosForm.nombre.value.length>0&&
+				   document.MantenimientoDuplicadosForm.nombre.value.length<4){
+					error=true;
+				   	msg=msg+"El campo Nombre es demasiado corto\n";
+				}
+				if(document.MantenimientoDuplicadosForm.apellido1.value.length>0&&
+				   document.MantenimientoDuplicadosForm.apellido1.value.length<4){	
+					error=true;
+					msg=msg+"El campo Apellido 1 es demasiado corto\n";
+				}		
+				if(document.MantenimientoDuplicadosForm.apellido2.value.length>0&&
+				   document.MantenimientoDuplicadosForm.apellido2.value.length<4){
+					error=true;
+					msg=msg+"El campo Apellido 2 es demasiado corto\n";
+				}
+			}
+			if(error){
+				msg= msg + "Si no se rellenan al menos 4 caracteres la consulta devolverá demasiados resultados.\nIntente afinar la búsqueda";
+				alert(msg);
+				return false;
+			}else{
+				return true;
+			}
+		}
+		
 
 		</script>
 		<siga:Titulo 
@@ -81,12 +125,12 @@
 			localizacion="censo.busquedaDuplicados.localizacion"/>
 </head>
 
-<body onload="ajusteAlto('resultado')">
+<body onload="ajusteAlto('resultado');">
 
 
 	
 
-<html:form action="/CEN_MantenimientoDuplicados.do?noReset=true" method="POST" target="resultado">
+<html:form action="/CEN_MantenimientoDuplicados.do?noReset=true" method="POST" target="mainWorkArea" >
 	<input type="hidden" name="modo" value="">
 	
 	<table  class="tablaCentralCampos"  align="center"><tr><td>
@@ -156,13 +200,13 @@
 			<tr></tr>
 			
 			<tr>
-				<td class="labelText"> <siga:Idioma key="censo.busquedaDuplicados.patron.nif"/> </td>
+				<td class="labelText" width="100px"> <siga:Idioma key="censo.busquedaDuplicados.patron.nif"/> </td>
 				<td> <html:text name="MantenimientoDuplicadosForm" property="nifcif" size="15" styleClass="box"></html:text> </td>
 				
-				<td class="labelText"> <siga:Idioma key="censo.busquedaDuplicados.patron.institucion"/> </td>
+				<td class="labelText" width="100px"> <siga:Idioma key="censo.busquedaDuplicados.patron.institucion"/> </td>
 				<td> <siga:ComboBD nombre = "idInstitucion" tipo="cmbNombreColegiosTodos" parametro="<%=parametro %>" clase="boxCombo" /> </td>
 				
-				<td class="labelText"> <siga:Idioma key="censo.busquedaDuplicados.patron.numeroColegiado"/> </td>
+				<td class="labelText" width="100px"> <siga:Idioma key="censo.busquedaDuplicados.patron.numeroColegiado"/> </td>
 				<td> <html:text name="MantenimientoDuplicadosForm" property="numeroColegiado" size="20" styleClass="box"></html:text> </td>
 			</tr>
 			<tr>
@@ -178,7 +222,8 @@
 			</table>
 		</siga:ConjCampos>
 	</td></tr></table>
-	<siga:ConjBotonesBusqueda botones="B"/>  
+	<siga:ConjBotonesBusqueda botones="B,L"/>
+	</html:form>  
    <iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
 			id="resultado"
 			name="resultado" 
@@ -187,7 +232,7 @@
 			marginheight="0"
 			marginwidth="0"
 			class="frameGeneral"/>
-</html:form>
+
 
 
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"/>

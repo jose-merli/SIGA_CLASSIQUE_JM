@@ -20,6 +20,9 @@ public class MantenimientoDuplicadosForm extends MasterForm {
 	String listaDirecciones;
 	String seleccionados;
 	String agruparColegiaciones;
+	String seleccion;
+	boolean chkApellidos,chkNombreApellidos,chkNumColegiado,chkIdentificador = false;
+	private Vector resultadoBusqueda;
 
 	public String getListaDirecciones() {
 		return listaDirecciones;
@@ -52,8 +55,7 @@ public class MantenimientoDuplicadosForm extends MasterForm {
 	public void setIdInstOrigen(String idInstOrigen) {
 		this.idInstOrigen = idInstOrigen;
 	}
-	// Checks para indicar el tipo de busqueda
-	boolean chkApellidos,chkNombreApellidos,chkNumColegiado,chkIdentificador = false;
+
 
 	public boolean getChkApellidos() {
 		return chkApellidos;
@@ -149,6 +151,17 @@ public class MantenimientoDuplicadosForm extends MasterForm {
 	public void setAgruparColegiaciones(String agruparColegiaciones) {
 		this.agruparColegiaciones = agruparColegiaciones;
 	}
-	
+	public void setResultadoBusqueda(Vector resul) {
+		this.resultadoBusqueda = resul;
+	}
+	public Vector getResultadoBusqueda() {
+		return this.resultadoBusqueda;
+	}
+	public String getSeleccion() {
+		return seleccion;
+	}
+	public void setSeleccion(String seleccion) {
+		this.seleccion = seleccion;
+	}	
 	
 }

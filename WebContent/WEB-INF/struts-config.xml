@@ -873,6 +873,8 @@
 			<forward name="inicio" path="/html/jsp/censo/busquedaDuplicados.jsp"/>
 			<forward name="resultado" path="/html/jsp/censo/resultadoBusquedaDuplicados.jsp"/>
 			<forward name="gestionar" path="/html/jsp/censo/gestionarDuplicado.jsp"/>
+			<forward name="espera" path="/html/jsp/censo/esperaDuplicados.jsp"/>
+			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>	
 		</action>
 		
 
@@ -3088,37 +3090,6 @@
 			<forward name="inicio" path="/html/jsp/facturacionSJCS/consultaTramosRetencion.jsp"/>
 			<forward name="listadoTramosRetencion" path="/html/jsp/facturacionSJCS/listadoTramosRetencion.jsp"/>
 		</action>
-		<action path="/JGR_ProgramacionCalendarios" type="com.siga.gratuita.action.GestionProgramacionCalendariosAction" name="ProgramacionCalendariosForm" >
-			<forward name="inicio" path="/html/jsp/gratuita/pestanasProgramacionCalendarios.jsp"/>
-		</action>
-		<action path="/JGR_ProgrCalendariosProgr" type="com.siga.gratuita.action.GestionProgramacionCalendariosAction" name="ProgrCalendariosForm" >
-			<forward name="inicio" path="/html/jsp/gratuita/pestanaProgrCalendariosProgr.jsp"/>
-			<forward name="listadoProgrCalendarios" path="/html/jsp/gratuita/listadoProgrCalendarios.jsp"/>
-			<forward name="editarProgrCalendarios" path="/html/jsp/gratuita/editarProgrCalendarios.jsp"/>
-			<forward name="listadoHcoProgrCalendarios" path="/html/jsp/gratuita/listadoHcoProgrCalendarios.jsp"/>
-			
-			
-		</action>
-		<action path="/JGR_HcoProgrCalendarios" type="com.siga.gratuita.action.GestionProgramacionCalendariosAction" name="HcoConfProgrCalendarioForm" >
-		</action>
-		
-		
-		
-		<action path="/JGR_ProgrCalendariosCal" type="com.siga.gratuita.action.GestionProgramacionCalendariosAction" name="DefinirCalendarioGuardiaForm" >
-		
-			<forward name="inicio" path="/html/jsp/gratuita/pestanaProgrCalendariosCal.jsp"/>
-			<forward name="listadoCalendarios" path="/html/jsp/gratuita/listadoCalendarios.jsp"/>
-			
-		</action>
-		<action path="/JGR_ProgrCalendariosConf" type="com.siga.gratuita.action.GestionProgramacionCalendariosAction" name="ConfConjuntoGuardiasForm" >
-			<forward name="inicio" path="/html/jsp/gratuita/pestanaProgrCalendariosConf.jsp"/>
-			<forward name="listadoConfConjuntoGuardias" path="/html/jsp/gratuita/listadoConfConjuntoGuardias.jsp"/>
-		</action>
-		<action path="/JGR_ConjuntoGuardiaProgrCalendarios" type="com.siga.gratuita.action.GestionProgramacionCalendariosAction" name="ConjuntoGuardiasForm" >
-			
-		</action>
-		
-		
 
 		<!-- ****************************************************************************
 -->
