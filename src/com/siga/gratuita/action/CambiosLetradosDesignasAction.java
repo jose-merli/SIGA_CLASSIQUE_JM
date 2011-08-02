@@ -340,9 +340,9 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 			String sufijo =miform.getsufijo();	
 			String mensajes="";
 			if (sufijo!=null && !sufijo.equals("")){ 
-				mensajes=codigo+"-"+sufijo;
+				mensajes=anio+"/"+codigo+"-"+sufijo;
 			}else{
-				mensajes=codigo;
+				mensajes=anio+"/"+codigo;
 			}			
 			String idPersonaSaliente = "";
 			String flagSalto = request.getParameter("flagSalto");

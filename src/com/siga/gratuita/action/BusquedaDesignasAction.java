@@ -711,7 +711,9 @@ public class BusquedaDesignasAction extends MasterAction {
 			// 1. Creamos la Designa
 
 			nuevaDesigna = designaAdm.prepararInsert(formDesignaHash);
-
+			
+			
+			
 			// 1.1 Si se crea desde asistencia
 			if ((asistencia!=null)&&(asistencia.equalsIgnoreCase("si"))){
 				ScsAsistenciasAdm asistenciaAdm = new ScsAsistenciasAdm(this.getUserBean(request));
@@ -766,13 +768,27 @@ public class BusquedaDesignasAction extends MasterAction {
 	
 				String checkSalto = request.getParameter("checkSalto");
 				//String checkCompensacion = request.getParameter("checkCompensacion");
-				String motivoSaltoSJCS = UtilidadesString.getMensajeIdioma(usr,"gratuita.literal.insertarSaltoPor") + " " +
-				UtilidadesString.getMensajeIdioma(usr,origenSJCS);
+				
+						
+				
 				// Aplicar cambios (COMENTAR LO QUE NO PROCEDA) Revisar que no se hace algo ya en el action. 
 				ScsSaltosCompensacionesAdm saltosCompAdm = new ScsSaltosCompensacionesAdm(this.getUserBean(request));
-				if (checkSalto != null&&(checkSalto.equals("on") || checkSalto.equals("1")))
+				if (checkSalto != null&&(checkSalto.equals("on") || checkSalto.equals("1"))){
 				// Tercero: Generación de salto (Designaciones y asistencias)
+					String motivoSaltoSJCS = UtilidadesString.getMensajeIdioma(usr,"gratuita.literal.insertarSaltoPor") + " " +
+					UtilidadesString.getMensajeIdioma(usr,origenSJCS);
+					String codigoDesigna="";
+					String codigo = UtilidadesHash.getString(nuevaDesigna, ScsDesignaBean.C_CODIGO);
+					if (nuevaDesigna.get(ScsDesignaBean.C_SUFIJO)!=null && !nuevaDesigna.get(ScsDesignaBean.C_SUFIJO).equals("")){ 
+						codigoDesigna=codigo+"-"+nuevaDesigna.get(ScsDesignaBean.C_SUFIJO);
+					}else{
+						codigoDesigna=codigo;
+					}
+					motivoSaltoSJCS +=".\n"+UtilidadesString.getMensajeIdioma(usr,"gratuita.literal.numeroDesignacion")+":"; 
+					
+					motivoSaltoSJCS += UtilidadesHash.getString(nuevaDesigna, ScsDesignaBean.C_ANIO)+"/"+ codigoDesigna;
 					saltosCompAdm.crearSaltoCompensacion(idInstitucionSJCS,idTurnoSJCS,idGuardiaSJCS,idPersonaSel, motivoSaltoSJCS,ClsConstants.SALTOS);
+				}
 				// Cuarto: Generación de compensación (Designaciones NO ALTAS)
 				//admFiltros.crearCompensacion(idInstitucionSJCS,idTurnoSJCS,idGuardiaSJCS,idPersonaSJCS,checkCompensacion,motivoCompensacionSJCS);
 				///////////////////////////////////////////////////////////////////////////////////////////
