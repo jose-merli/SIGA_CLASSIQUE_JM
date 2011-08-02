@@ -617,10 +617,11 @@ MDB Microsoft Access Database
 	public static final int IDCAMPO_TIPOEXPEDIENTE_PARTES = 10;
 	public static final int IDCAMPO_TIPOEXPEDIENTE_RESOLUCION = 11;
 	public static final int IDCAMPO_TIPOEXPEDIENTE_MINUTA_INICIAL = 12;
-	public static final int IDCAMPO_TIPOEXPEDIENTE_MINUTA_FINAL = 13;
-	public static final int IDCAMPO_TIPOEXPEDIENTE_RESULTADO_INFORME = 14;
-	public static final int IDCAMPO_TIPOEXPEDIENTE_DERECHOS_COLEGIALES = 15;
-	public static final int IDCAMPO_TIPOEXPEDIENTE_DENUNCIADO = 16;
+	public static final int IDCAMPO_TIPOEXPEDIENTE_RESULTADO_INFORME = 13;
+	public static final int IDCAMPO_TIPOEXPEDIENTE_DENUNCIADO = 16;	
+	public static final int IDCAMPO_TIPOEXPEDIENTE_MINUTA_FINAL = 17;
+	public static final int IDCAMPO_TIPOEXPEDIENTE_DERECHOS_COLEGIALES = 18;
+
 
 	
   public ClsConstants() {

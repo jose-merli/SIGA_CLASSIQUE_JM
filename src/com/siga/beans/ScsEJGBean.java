@@ -33,7 +33,7 @@ public class ScsEJGBean extends MasterBean{
 	private String	ratificacionDictamen;
 	private String	fechaRatificacion;
 	private Integer idTipoDictamenEJG;
-	private Integer idFundamentoCalificacion;
+	private Integer idFundamentoCalif;
 	private Integer idPersona;
 	private Integer idInstitucion;
 	private Integer idTipoEJG;
@@ -480,17 +480,12 @@ public class ScsEJGBean extends MasterBean{
 	public void setIdTipoDictamenEJG(Integer idTipoDictamenEJG) {
 		this.idTipoDictamenEJG = idTipoDictamenEJG;
 	}
-	/**
-	 * @return Returns the idFundamentoCalificacion.
-	 */
-	public Integer getIdFundamentoCalificacion() {
-		return idFundamentoCalificacion;
+
+	public Integer getIdFundamentoCalif() {
+		return idFundamentoCalif;
 	}
-	/**
-	 * @param idTipoDictamenEJG The idFundamentoCalificacion to set.
-	 */
-	public void setIdFundamentoCalificacion(Integer idFundamentoCalificacion) {
-		this.idFundamentoCalificacion = idFundamentoCalificacion;
+	public void setIdFundamentoCalif(Integer idFundamentoCalif) {
+		this.idFundamentoCalif = idFundamentoCalif;
 	}
 	/**
 	 * @return Returns the idTipoEJG.

@@ -221,17 +221,17 @@ public class CampoTipoExpedienteAction extends MasterAction {
 	        beanMinuta.setVisible(form.getMinutaInicial()?ExpCampoTipoExpedienteBean.si:ExpCampoTipoExpedienteBean.no);
 	        campoTipoExpedienteAdm.update(beanMinuta);
 	        
-	        ExpCampoTipoExpedienteBean beanFinal = (ExpCampoTipoExpedienteBean)camposExp.elementAt(11);
+	        ExpCampoTipoExpedienteBean beanFinal = (ExpCampoTipoExpedienteBean)camposExp.elementAt(15);
 	        //  Modificamos el bean antiguo
 	        beanFinal.setVisible(form.getMinutaFinal()?ExpCampoTipoExpedienteBean.si:ExpCampoTipoExpedienteBean.no);
 	        campoTipoExpedienteAdm.update(beanFinal);
 	        
-	        ExpCampoTipoExpedienteBean beanDerechos = (ExpCampoTipoExpedienteBean)camposExp.elementAt(13);
+	        ExpCampoTipoExpedienteBean beanDerechos = (ExpCampoTipoExpedienteBean)camposExp.elementAt(16);
 	        //  Modificamos el bean antiguo
 	        beanDerechos.setVisible(form.getDerechos()?ExpCampoTipoExpedienteBean.si:ExpCampoTipoExpedienteBean.no);
 	        campoTipoExpedienteAdm.update(beanDerechos);	        
 
-	        ExpCampoTipoExpedienteBean beanResolucionInforme = (ExpCampoTipoExpedienteBean)camposExp.elementAt(12);
+	        ExpCampoTipoExpedienteBean beanResolucionInforme = (ExpCampoTipoExpedienteBean)camposExp.elementAt(11);
 	        //  Modificamos el bean antiguo
 	        beanResolucionInforme.setVisible(form.getResultadoInforme()?ExpCampoTipoExpedienteBean.si:ExpCampoTipoExpedienteBean.no);
 	        campoTipoExpedienteAdm.update(beanResolucionInforme);

@@ -144,7 +144,7 @@ import com.siga.general.MasterForm;
 	 * @param valor Identificador del fundamento de calificacion. De tipo "String". 
 	 * @return void 
 	 */
-	public void setIdFundamentoCalificacion		(String idFundamentoCalificacion)		{ this.datos.put(ScsEJGBean.C_IDFUNDAMENTOCALIF, idFundamentoCalificacion);}
+	public void setIdFundamentoCalif		(String idFundamentoCalif)		{ this.datos.put(ScsEJGBean.C_IDFUNDAMENTOCALIF, idFundamentoCalif);}
 	
 	/**
 	 * Almacena en la Hashtable el identificador de la persona del dictamen del EJG 
@@ -348,7 +348,7 @@ import com.siga.general.MasterForm;
 	 * 
 	 * @return Observaciones de la EJG
 	 */
-	public String getIdFundamentoCalificacion		()		{ return this.datos.get(ScsEJGBean.C_IDFUNDAMENTOCALIF).toString();}
+	public String getIdFundamentoCalif		()		{ return this.datos.get(ScsEJGBean.C_IDFUNDAMENTOCALIF).toString();}
 	
 	/**
 	 * Recupera de la Hashtable el identificador de la persona de la EJG

@@ -423,7 +423,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			bean.setIdTipoRatificacionEJG(UtilidadesHash.getInteger(hash,ScsEJGBean.C_IDTIPORATIFICACIONEJG));
 			bean.setNumeroCAJG(UtilidadesHash.getString(hash,ScsEJGBean.C_NUMERO_CAJG));
 			bean.setAnioCAJG(UtilidadesHash.getString(hash,ScsEJGBean.C_ANIO_CAJG));
-			bean.setIdFundamentoCalificacion(UtilidadesHash.getInteger(hash,ScsEJGBean.C_IDFUNDAMENTOCALIF));
+			bean.setIdFundamentoCalif(UtilidadesHash.getInteger(hash,ScsEJGBean.C_IDFUNDAMENTOCALIF));
 
 			bean.setFechaAuto(UtilidadesHash.getString(hash,ScsEJGBean.C_FECHAAUTO));
 			bean.setFechaNotificacion(UtilidadesHash.getString(hash,ScsEJGBean.C_FECHANOTIFICACION));
@@ -513,7 +513,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,ScsEJGBean.C_IDTIPORATIFICACIONEJG, b.getIdTipoRatificacionEJG());
 			UtilidadesHash.set(htData,ScsEJGBean.C_NUMERO_CAJG, b.getNumeroCAJG());
 			UtilidadesHash.set(htData,ScsEJGBean.C_ANIO_CAJG, b.getAnioCAJG());
-			UtilidadesHash.set(htData,ScsEJGBean.C_IDFUNDAMENTOCALIF,b.getIdFundamentoCalificacion());
+			UtilidadesHash.set(htData,ScsEJGBean.C_IDFUNDAMENTOCALIF,b.getIdFundamentoCalif());
 
 			UtilidadesHash.set(htData,ScsEJGBean.C_FECHAAUTO,b.getFechaAuto());
 			UtilidadesHash.set(htData,ScsEJGBean.C_FECHANOTIFICACION,b.getFechaNotificacion());

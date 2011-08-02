@@ -21,6 +21,7 @@
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
 
+
 <!-- JSP -->
 <% 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -185,14 +186,13 @@
 							<td class="labelText">
 								<%if (accion.equalsIgnoreCase("ver")) {%> 
 									<siga:ComboBD
-										nombre="idTipoDictamenEJG" tipo="dictamenEJG"
-										clase="boxConsulta" filasMostrar="1" seleccionMultiple="false"
-										obligatorio="false" parametro="<%=dato%>"
-										elementoSel="<%=vIntFDict%>" readOnly="true" /> 
+										nombre="idTipoDictamenEJG" tipo="dictamenEJG" clase="boxConsulta"  pestana="t" accion="Hijo:idFundamentoCalif"
+										filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>"
+										elementoSel="<%=vIntFDict%>" readOnly="true"  /> 
 								<%}else{%> 
 									<siga:ComboBD
 										nombre="idTipoDictamenEJG" tipo="dictamenEJG" clase="boxCombo"
-										filasMostrar="1" seleccionMultiple="false" obligatorio="false"
+										filasMostrar="1" seleccionMultiple="false" obligatorio="false" pestana="t" accion="Hijo:idFundamentoCalif;"
 										parametro="<%=dato%>" elementoSel="<%=vIntFDict%>" /> 
 								<%}%>
 							</td>
@@ -207,18 +207,18 @@
 							<%
 								if (accion.equalsIgnoreCase("ver")) {
 							%> <siga:ComboBD
-								nombre="idFundamentoCalificacion" ancho="815"
-								tipo="tipoFundamentos1" parametro="<%=dato%>"
+								nombre="idFundamentoCalif" ancho="815"
+								tipo="tipoFundamentos1" pestana="t" hijo="t" parametro="<%=dato%>"
 								clase="boxConsulta" filasMostrar="1" seleccionMultiple="false"
 								obligatorio="false" elementoSel="<%=vIntFCalf%>" readOnly="true" />
 							<%
 								} else {
-							%> <siga:ComboBD nombre="idFundamentoCalificacion"
-								ancho="815" tipo="tipoFundamentos1" parametro="<%=dato%>"
+							%> <siga:ComboBD nombre="idFundamentoCalif"
+								ancho="815" tipo="tipoFundamentos1" pestana="t" hijo="t"  parametro="<%=dato%>"
 								clase="boxCombo" filasMostrar="1" seleccionMultiple="false"
-								obligatorio="false" elementoSel="<%=vIntFCalf%>" /> <%
- 	}
- %>
+								obligatorio="false" elementoSel="<%=vIntFCalf%>"  /> <%
+							 	}
+							 %>
 							</td>
 						</tr>
 						<tr>
@@ -279,7 +279,7 @@
 			sub();
 			<%if (pcajgActivo>0){%>
 				var error = "";
-		   		if (<%=obligatorioFundamento%> && document.getElementById("idFundamentoCalificacion").value=="")
+		   		if (<%=obligatorioFundamento%> && document.getElementById("idFundamentoCalif").value=="")
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.operarDictamen.literal.fundamentoclf'/>"+ '\n';
 				if (<%=obligatorioTipoDictamen%> && document.getElementById("idTipoDictamenEJG").value=="")
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.operarDictamen.literal.tipoDictamen'/>"+ '\n';

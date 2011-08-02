@@ -343,13 +343,23 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	
 		    Object[] campos = null;
 		    if(aceptaBaja == 1){
-		    	campos = new Object[5];
+		    	campos = new Object[6];
 		    	campos[0] = sNombreCampoDescripcion;
 		        campos[1] = sNombreCampoCodigoExt;
 		        campos[2] = sFechaModificacion;
 		        campos[3] = sUsuModif;
 		    	campos[4] = sNombreCampoFechaBaja;
-	        }else{
+		    	if (sNombreTabla !=null && sNombreTabla.equals(ScsTipoFundamentosCalifBean.T_NOMBRETABLA)){
+		    		campos[5] = ScsTipoFundamentosCalifBean.C_IDTIPODICTAMENEJG;
+		    	}
+	        }else if (sNombreTabla !=null && sNombreTabla.equals(ScsTipoFundamentosCalifBean.T_NOMBRETABLA)){
+	        	campos = new Object[5];
+	        	campos[0] = sNombreCampoDescripcion;
+		        campos[1] = sNombreCampoCodigoExt;
+		        campos[2] = sFechaModificacion;
+		        campos[3] = sUsuModif;
+		        campos[4] = ScsTipoFundamentosCalifBean.C_IDTIPODICTAMENEJG;
+		    }else{
 	        	campos = new Object[4];
 	        	campos[0] = sNombreCampoDescripcion;
 		        campos[1] = sNombreCampoCodigoExt;
@@ -388,6 +398,12 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	    					htNew.put(sNombreCampoFechaBaja, "");
 	    				}
 	    			}
+	    			
+	    			//En el caso de la tabla SCS_TIPOFUNDAMENTOCALIF se añade el tipo de dictamen escogido
+	    			if (sNombreTabla !=null && sNombreTabla.equals(ScsTipoFundamentosCalifBean.T_NOMBRETABLA)){
+	    				htNew.put(ScsTipoFundamentosCalifBean.C_IDTIPODICTAMENEJG, new Integer(form.getIdTipoDictamen()));
+	    			}	
+	    			
 			        row.load(htNew);
 			        if (row.update(sNombreTabla, claves, campos) <= 0) {
 			        	throw new SIGAException ("messages.updated.error");
@@ -545,19 +561,19 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 			    sCodigoExt = (String)vOcultos.elementAt(0);
 			   // sDescripcion = (String)vOcultos.elementAt(1);
 			    sBloqueo = (String)vOcultos.elementAt(1);
-			    
 		        
-			    String sSQL = "";
+			    String sSQL = 	"SELECT " + sNombreCampoCodigoExt + " AS CODIGOEXTERNO, " + sNombreCampoCodigo + " AS CODIGO, F_SIGA_GETRECURSO(" + sNombreCampoDescripcion + ", " + this.getUserBean(request).getLanguage() + ") AS DESCRIPCION "; 
 			    
 			    if(aceptaBaja == 1){
-			    	sSQL = 	"SELECT " + sNombreCampoCodigoExt + " AS CODIGOEXTERNO, " + sNombreCampoCodigo + " AS CODIGO, F_SIGA_GETRECURSO(" + sNombreCampoDescripcion + ", " + this.getUserBean(request).getLanguage() + ") AS DESCRIPCION, FECHABAJA " + 
-			    	          " FROM " + sNombreTabla +
-			    	          " WHERE " + sNombreCampoCodigo + " = '" + sCodigoExt + "'";
-			    }else{
-			    	sSQL = 	"SELECT " + sNombreCampoCodigoExt + " AS CODIGOEXTERNO, " + sNombreCampoCodigo + " AS CODIGO, F_SIGA_GETRECURSO(" + sNombreCampoDescripcion + ", " + this.getUserBean(request).getLanguage() + ") AS DESCRIPCION " + 
-			    	          " FROM " + sNombreTabla +
-			    	          " WHERE " + sNombreCampoCodigo + " = '" + sCodigoExt + "'";
+			    	sSQL += " ,FECHABAJA ";           
 			    }
+			    
+			    if (sNombreTabla !=null && sNombreTabla.equals(ScsTipoFundamentosCalifBean.T_NOMBRETABLA)){
+			    	sSQL += " ,IDTIPODICTAMENEJG"; 
+			    }
+			    
+			    sSQL += "  FROM " + sNombreTabla +
+			    	   " WHERE " + sNombreCampoCodigo + " = '" + sCodigoExt + "'";
 			    
 			    
 			    if (sLocal.equals("S"))

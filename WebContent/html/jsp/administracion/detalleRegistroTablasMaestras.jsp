@@ -27,12 +27,15 @@
 	String codigoExternoAux ="";
 	String descAux ="";
 	String fechaBaja = "";
+	String tipoDictamenEJG = "";
 	if (datos!=null) {
 		codigoAux=(String)datos.getString("CODIGO");
 		descAux=(String)datos.getString("DESCRIPCION");
 		codigoExternoAux=(String)datos.getString("CODIGOEXTERNO");
 		if((String)datos.getString("FECHABAJA")!=null && !((String)datos.getString("FECHABAJA")).equals("null"))
 			fechaBaja = GstDate.getFormatedDateShort("", (String)datos.getString("FECHABAJA"));
+		if((String)datos.getString("IDTIPODICTAMENEJG")!=null && !((String)datos.getString("IDTIPODICTAMENEJG")).equals("null"))
+			tipoDictamenEJG = (String)datos.getString("IDTIPODICTAMENEJG");
 	}
 	String ponerBaja = "N";
 	if(fechaBaja !=null && !fechaBaja.equals("")){
@@ -81,7 +84,7 @@
 	request.removeAttribute("tipoCodigoExt");
 	
 	UsrBean userBean = (UsrBean)request.getSession().getAttribute("USRBEAN");
-
+	
 %>	
 
 <html>
@@ -280,6 +283,33 @@
 							</siga:ConjCampos>
 						</td>
 					</tr>
+					<%if (sNombreTabla !=null && sNombreTabla.equals(ScsTipoFundamentosCalifBean.T_NOMBRETABLA)){
+							//Para el Combo de dictamen
+							String[] dato={userBean.getLocation()};
+							ArrayList vTipoDictamen = new ArrayList();
+							vTipoDictamen.add(userBean.getLocation());
+							//Añadir tipo dictamen
+							vTipoDictamen.add(tipoDictamenEJG);  
+					%>
+					<tr>		
+						<td>
+							<siga:ConjCampos leyenda="Asociado a">
+								<table class="tablaCampos" align="center">
+									<tr>
+										<td class="labelText">
+											<siga:Idioma key="Tipo Dictamen"/>
+										</td>
+										<td class="labelTextValue">
+											<siga:ComboBD nombre="idTipoDictamen" tipo="cmbTipoDictamen" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vTipoDictamen%>" clase="boxCombo" readonly="false"/>	
+										</td>
+									</tr>
+							
+								</table>
+							</siga:ConjCampos>
+						</td>
+					</tr>					
+					<%}%>	
+					
 					<%if (sBloqueo!=null && sBloqueo.equals("S") ){%>
 					
 					<tr>
