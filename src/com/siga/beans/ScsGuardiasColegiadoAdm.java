@@ -1736,9 +1736,10 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		int indexPeriodo;// Integer.parseInt(miForm.getIndicePeriodo());
 
 		// obteniendo calendario donde se insertara la guardia
-		idCalendarioGuardias = calAdm.getIdCalendarioPorFecha(idInstitucion, idTurno, idGuardia, (fechaInicio == null) ? fechaFin : fechaInicio);
-		if (idCalendarioGuardias == null)
+		ScsCalendarioGuardiasBean calendarioGuardiasBean = calAdm.getCalendarioGuardias(new Integer(idInstitucion), new Integer(idTurno), new Integer(idGuardia), (fechaInicio == null) ? fechaFin : fechaInicio); 
+		if (calendarioGuardiasBean == null)
 			throw new SIGAException("gratuita.volantesExpres.mensaje.diaSinCalendarioGuardias");
+		idCalendarioGuardias = calendarioGuardiasBean.getIdCalendarioGuardias();
 
 		// calculando los periodos de guardias
 		CalendarioSJCS calendarioSJCS = new CalendarioSJCS();
@@ -1760,6 +1761,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			fechaFinCalendario = "";
 			
 			for (int i = 0; i < arrayPeriodosSJCS.size(); i++) {
+				
 				auxArrayPeriodoSeleccionado = (ArrayList) arrayPeriodosSJCS.get(i);
 				for (int j = 0; j < auxArrayPeriodoSeleccionado.size(); j++) {
 					fecha = (String) auxArrayPeriodoSeleccionado.get(j);
@@ -1775,11 +1777,14 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 					break;
 				}
 			}
+			if(!findIt)
+				throw new SIGAException("gratuita.asistencias.mensaje.diaSinGuardia");
 		} else {
 			fechaInicioCalendario = fechaInicio;
 			fechaFinCalendario = fechaFin;
 			indexPeriodo = indicePeriodo.intValue();
 		}
+		
 		ArrayList arrayPeriodoSeleccionado = (ArrayList) arrayPeriodosSJCS.get(indexPeriodo);
 		
 		// obteniendo el letrado
@@ -1807,61 +1812,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			throw e;
 		}
 	} // insertarGuardiaManual()
-
-	public ScsGuardiasColegiadoBean getGuardiaSinCabecera(VolantesExpressVo volanteExpres)throws ClsExceptions{
-
-		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
-		int contador = 0;
-		StringBuffer sql = new StringBuffer();
-        
-		sql.append(" SELECT * FROM SCS_CALENDARIOGUARDIAS GC ");
-		sql.append(" WHERE GC.IDINSTITUCION = :");
-		contador ++;
-		sql.append(contador);
-		htCodigos.put(new Integer(contador),volanteExpres.getIdInstitucion());
-		sql.append(" AND  GC.IDTURNO = :");
-		contador ++;
-		sql.append(contador);
-		htCodigos.put(new Integer(contador),volanteExpres.getIdTurno());
-		sql.append(" AND  GC.IDGUARDIA = :");
-		contador ++;
-		sql.append(contador);
-		htCodigos.put(new Integer(contador),volanteExpres.getIdGuardia());
-		sql.append(" AND :");
-		contador ++;
-		sql.append(contador);
-		String truncFechaGuardia = GstDate.getFormatedDateShort("", volanteExpres.getFechaGuardia());
-		htCodigos.put(new Integer(contador),truncFechaGuardia);
-		sql.append(" BETWEEN TRUNC(GC.FECHAINICIO) AND ");
-		sql.append(" TRUNC(GC.FECHAFIN) ");	
-		
-
-			
-			
-		
-		ScsGuardiasColegiadoBean guardiaBean = null;
-		try {
-			RowsContainer rc = new RowsContainer(); 
-												
-            if (rc.findBind(sql.toString(),htCodigos)) {
-        		if(rc.size()>0){
-	            	Row fila = (Row) rc.get(0);
-	        		Hashtable<String, Object> htFila=fila.getRow(); 
-	            	guardiaBean = new ScsGuardiasColegiadoBean();
-	           		guardiaBean.setIdTurno(UtilidadesHash.getInteger(htFila,ScsGuardiasColegiadoBean.C_IDTURNO));
-	           		guardiaBean.setIdGuardia(UtilidadesHash.getInteger(htFila,ScsGuardiasColegiadoBean.C_IDGUARDIA));
-	           		guardiaBean.setIdCalendarioGuardias(UtilidadesHash.getInteger(htFila,ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS));
-        		}
-            	
-            }
- 
-       } catch (Exception e) {
-       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
-       }
-       return guardiaBean;
-		
-		
-	} 
+	
 	
 	public Map<Long,CenPersonaBean> getColegiadosDeGuardia(Integer idInstitucion, String fechaDesde,String fechaHasta)throws ClsExceptions{
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();

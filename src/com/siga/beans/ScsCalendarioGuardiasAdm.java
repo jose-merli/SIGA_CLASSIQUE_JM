@@ -12,25 +12,23 @@ import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.SIGAReferences.RESOURCE_FILES;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.SIGAConstants;
+import com.siga.general.SIGAException;
 import com.siga.gratuita.beans.ScsHcoConfProgCalendariosBean;
 import com.siga.gratuita.beans.ScsProgCalendariosBean;
 import com.siga.gratuita.form.DefinirCalendarioGuardiaForm;
 import com.siga.gratuita.form.DefinirGuardiasTurnosForm;
 import com.siga.gratuita.form.DefinirTurnosForm;
-import com.siga.gratuita.form.ProgrCalendariosForm;
 import com.siga.tlds.FilaExtElement;
-import com.siga.Utilidades.SIGAReferences;
 /**
  * Implementa las operaciones sobre la base de datos, es decir: select, insert, update... a la tabla SCS_CALENDARIGUARDIAS
  * Modificado por david.sanchezp el 19-1-2005 para incluir nuevos métodos: getDatosCalendario(),<br>
@@ -415,27 +413,146 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 		return ok;
 	}
 
-	public Integer getIdCalendarioPorFecha(String idInstitucion,
-			String idTurno,
-			String idGuardia,
-			String fecha)
+	
+	
+	public ScsCalendarioGuardiasBean getCalendarioGuardias(Integer idInstitucion,
+			Integer idTurno,
+			Integer idGuardia,
+			String fecha) throws ClsExceptions, SIGAException
 	{
-		StringBuffer where = new StringBuffer();
-		where.append(" Where Idinstitucion = " + idInstitucion + " ");
-		where.append("   And Idturno = " + idTurno + " ");
-		where.append("   And Idguardia = " + idGuardia + " ");
-		where.append("   And '" + fecha + "' Between Fechainicio And Fechafin ");
-
+		
+		ScsCalendarioGuardiasBean  calendarioGuardiasBean = null;
 		try {
-			Vector resultado = this.select(where.toString());
-			if (resultado != null && resultado.size() > 0)
-				return ((ScsCalendarioGuardiasBean) resultado.get(0)).getIdCalendarioGuardias();
-			else
-				return null;
-		} catch (ClsExceptions e) {
-			return null;
+			calendarioGuardiasBean = getCalendarioGuardiasGenerado(idInstitucion,
+					idTurno, idGuardia, fecha);	
+		} catch (SIGAException e) {
+			 calendarioGuardiasBean = getCalendarioGuardiasNoGenerado(idInstitucion,
+						idTurno, idGuardia, fecha);	
+			
 		}
+		return calendarioGuardiasBean;
 	}
+	
+	
+	 private ScsCalendarioGuardiasBean getCalendarioGuardiasGenerado(Integer idInstitucion,Integer idTurno,Integer idGuardia, String fechaGuardia)throws ClsExceptions, SIGAException{
+			Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+			int contador = 0;
+			StringBuffer sql = new StringBuffer();
+			sql.append(" SELECT CG.IDINSTITUCION,CG.IDTURNO,    CG.IDGUARDIA,     CG.IDCALENDARIOGUARDIAS ");
+			sql.append(" FROM SCS_CALENDARIOGUARDIAS CG ");
+			sql.append(" WHERE CG.IDINSTITUCION = :");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),idInstitucion);
+			sql.append(" AND CG.IDTURNO = :");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),idTurno);
+			sql.append(" AND CG.IDGUARDIA = :");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),idGuardia);
+			sql.append(" AND CG.IDCALENDARIOGUARDIAS = ");
+			sql.append(" ( SELECT MAX(CAB.IDCALENDARIOGUARDIAS) FROM SCS_CABECERAGUARDIAS CAB ");
+			sql.append(" WHERE CAB.IDINSTITUCION = CG.IDINSTITUCION ");  
+			sql.append(" AND CAB.IDTURNO = CG.IDTURNO AND CAB.IDGUARDIA = CG.IDGUARDIA AND :");
+			contador ++;
+			sql.append(contador);
+//			String truncFechaGuardia = GstDate.getFormatedDateShort("", fechaGuardia);
+			htCodigos.put(new Integer(contador),fechaGuardia);
+			sql.append(" BETWEEN TRUNC(CAB.FECHAINICIO) AND TRUNC(CAB.FECHA_FIN) ) ");
+			sql.append(" ORDER BY IDINSTITUCION, IDTURNO, IDGUARDIA, IDCALENDARIOGUARDIAS ");
+				
+			
+			ScsCalendarioGuardiasBean guardiaBean = null;
+			try {
+				RowsContainer rc = new RowsContainer(); 
+													
+	            if (rc.findBind(sql.toString(),htCodigos)) {
+	        		if(rc.size()>0){
+		            	Row fila = (Row) rc.get(0);
+		        		Hashtable<String, Object> htFila=fila.getRow(); 
+		            	guardiaBean = new ScsCalendarioGuardiasBean();
+		           		guardiaBean.setIdTurno(UtilidadesHash.getInteger(htFila,ScsGuardiasColegiadoBean.C_IDTURNO));
+		           		guardiaBean.setIdGuardia(UtilidadesHash.getInteger(htFila,ScsGuardiasColegiadoBean.C_IDGUARDIA));
+		           		guardiaBean.setIdCalendarioGuardias(UtilidadesHash.getInteger(htFila,ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS));
+	        		}else{
+	        			throw new SIGAException("gratuita.volantesExpres.mensaje.diaSinCalendarioGuardias");
+	        			
+	        		}
+	            	
+	            }else{
+	            	throw new SIGAException("gratuita.volantesExpres.mensaje.diaSinCalendarioGuardias");
+	            	
+	            }
+			}catch (SIGAException e) {
+	            	throw e;
+	         
+	       } catch (Exception e) {
+	       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+	       }
+	       return guardiaBean;
+			
+			
+		}
+		
+	
+	
+	private ScsCalendarioGuardiasBean getCalendarioGuardiasNoGenerado(Integer idInstitucion,Integer idTurno,Integer idGuardia, String fechaGuardia)throws ClsExceptions, SIGAException{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+        
+		sql.append(" SELECT * FROM SCS_CALENDARIOGUARDIAS GC ");
+		sql.append(" WHERE GC.IDINSTITUCION = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),idInstitucion);
+		sql.append(" AND  GC.IDTURNO = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),idTurno);
+		sql.append(" AND  GC.IDGUARDIA = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),idGuardia);
+		sql.append(" AND :");
+		contador ++;
+		sql.append(contador);
+//		String truncFechaGuardia = GstDate.getFormatedDateShort("", fechaGuardia);
+		htCodigos.put(new Integer(contador),fechaGuardia);
+		sql.append(" BETWEEN TRUNC(GC.FECHAINICIO) AND ");
+		sql.append(" TRUNC(GC.FECHAFIN) ");	
+		ScsCalendarioGuardiasBean guardiaBean = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.findBind(sql.toString(),htCodigos)) {
+        		if(rc.size()>0){
+	            	Row fila = (Row) rc.get(0);
+	        		Hashtable<String, Object> htFila=fila.getRow(); 
+	            	guardiaBean = new ScsCalendarioGuardiasBean();
+	           		guardiaBean.setIdTurno(UtilidadesHash.getInteger(htFila,ScsGuardiasColegiadoBean.C_IDTURNO));
+	           		guardiaBean.setIdGuardia(UtilidadesHash.getInteger(htFila,ScsGuardiasColegiadoBean.C_IDGUARDIA));
+	           		guardiaBean.setIdCalendarioGuardias(UtilidadesHash.getInteger(htFila,ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS));
+        		}else{
+        			throw new SIGAException("gratuita.volantesExpres.mensaje.diaSinCalendarioGuardias");
+        			
+        		}
+            	
+            }else{
+            	throw new SIGAException("gratuita.volantesExpres.mensaje.diaSinCalendarioGuardias");
+            	
+            }
+		}catch (ClsExceptions e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }
+       return guardiaBean;
+		
+		
+	}
+	
 
 	/** 
 	 * Devuelve un String con la consulta SQL que devuelve registros con los datos de los calendarios de las guardias vinculadas

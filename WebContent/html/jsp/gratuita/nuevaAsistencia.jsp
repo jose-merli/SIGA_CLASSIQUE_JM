@@ -288,7 +288,7 @@
 		}
 		function refrescarLocal() 
 		{		
-		
+			fin();
 		}
 		//Funcion asociada a boton Guardar -->
 		function accionGuardarCerrar() 

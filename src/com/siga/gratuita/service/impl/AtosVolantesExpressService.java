@@ -92,7 +92,7 @@ public class AtosVolantesExpressService extends JtaBusinessServiceTemplate
 				//si no existe calendario saltara la excepcion y no insertara
 				
 				if (vGuardias == null || vGuardias.size()<1 ){
-					try {
+
 						CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(volantesExpressVo.getUsrBean());
 						//comprobamos que el letrado no esta de vacaciones 
 						Map<String,CenBajasTemporalesBean> mBajasTemporales =  bajasTemporalescioneAdm.getDiasBajaTemporal(volantesExpressVo.getIdColegiado(), volantesExpressVo.getIdInstitucion());
@@ -103,17 +103,6 @@ public class AtosVolantesExpressService extends JtaBusinessServiceTemplate
 						guardiasColegiadoAdm.insertarGuardiaManual(volantesExpressVo.getIdInstitucion().toString(), volantesExpressVo.getIdTurno().toString(),
 								volantesExpressVo.getIdGuardia().toString(), volantesExpressVo.getIdColegiado().toString(),  
 								null,null,truncFechaGuardia, volantesExpressVo.getUsrBean());
-					} catch (SIGAException e) {
-						
-						//Si es un dia sin calendario de guardias habra que insertarlo
-						if(e.getLiteral().equals("gratuita.volantesExpres.mensaje.diaSinCalendarioGuardias")){
-							ScsGuardiasColegiadoBean guardiaColegiadoBean = guardiasColegiadoAdm.getGuardiaSinCabecera(volantesExpressVo);
-							
-							guardiasColegiadoAdm.insertarCabeceraYGuardia(volantesExpressVo.getIdInstitucion(), volantesExpressVo.getIdTurno(), volantesExpressVo.getIdGuardia(),
-									guardiaColegiadoBean.getIdCalendarioGuardias(), volantesExpressVo.getIdColegiado(), volantesExpressVo.getFechaGuardia(), volantesExpressVo.getUsrBean());
-						}else
-							throw e;
-					}
 					
 				}
 			}

@@ -33,7 +33,6 @@ import com.siga.beans.ScsActuacionAsistenciaBean;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
 import com.siga.beans.ScsCabeceraGuardiasAdm;
-import com.siga.beans.ScsCabeceraGuardiasBean;
 import com.siga.beans.ScsCalendarioLaboralAdm;
 import com.siga.beans.ScsDesignaAdm;
 import com.siga.beans.ScsEJGAdm;
@@ -406,27 +405,24 @@ public class MantenimientoAsistenciasAction extends MasterAction
 	 * @exception  ClsExceptions,SIGAException   En cualquier caso de error
 	 */
 	protected synchronized String insertar(	ActionMapping mapping, MasterForm formulario,
-								HttpServletRequest request, HttpServletResponse response)
-								throws SIGAException  {
+			HttpServletRequest request, HttpServletResponse response)
+	throws SIGAException  {
 
-		
+
 		UsrBean usr = null;
 		UserTransaction tx = null;
-		Vector v=new Vector();
+		
 		try{
 			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			tx = usr.getTransaction();
 			ScsSaltosCompensacionesAdm saltosCompAdm = new ScsSaltosCompensacionesAdm(this.getUserBean(request));
 			ScsAsistenciasAdm asistencias = new ScsAsistenciasAdm(this.getUserBean(request));
 			ScsGuardiasColegiadoAdm guardiasAdm = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
-			BusquedaClientesFiltrosAdm admFiltros = new BusquedaClientesFiltrosAdm(this.getUserBean(request));
-			ScsCabeceraGuardiasAdm cabeceraAdm = new ScsCabeceraGuardiasAdm(this.getUserBean(request));
-			
+
 			AsistenciasForm miForm = (AsistenciasForm) formulario;
 			String idTurno = miForm.getIdTurno();
 			// El turno viene con la institucion por delante.
 			idTurno = idTurno.substring(idTurno.indexOf(",")+1);
-			String colegiado = miForm.getColegiado();
 			String idPersona = miForm.getIdPersona();
 			String idGuardia = miForm.getIdGuardia();
 			String salto = request.getParameter("checkSalto");
@@ -440,126 +436,61 @@ public class MantenimientoAsistenciasAction extends MasterAction
 			String fecha = GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaHora());
 			boolean esFichaColegial  = UtilidadesString.stringToBoolean(request.getParameter("esFichaColegial").toString());
 
-			
+
 			//-------------------------------------------------------------------------------------------
 			// Comprobamos si el asistente esta ya inscrito en alguna guardia en la fecha de asistencia.
 			// si ya esta inscrito seguimos con el proceso e insertamos la asistencia. Si no lo está primero
 			//  le inscribimos en la guardia, si procede insertaremos saltos y compensaciones y finalmente 
 			// insertamos la asistencia.
 			//-------------------------------------------------------------------------------------------
-			
+
 			Hashtable guardia = new Hashtable();
 			guardia.put(ScsGuardiasColegiadoBean.C_IDINSTITUCION,usr.getLocation());
 			guardia.put(ScsGuardiasColegiadoBean.C_IDTURNO,idTurno);
 			guardia.put(ScsGuardiasColegiadoBean.C_IDGUARDIA,idGuardia);
 			guardia.put(ScsGuardiasColegiadoBean.C_IDPERSONA,idPersona);
 			guardia.put(ScsGuardiasColegiadoBean.C_FECHAFIN,fecha);
-			
-			 v = guardiasAdm.select(guardia);
-			 //lo pongo esto aqui porque todavia no me ha abioerto la transaccion
-			 if((v == null || v.isEmpty())&&!esFichaColegial){
-				 CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usr);
-					//comprobamos que el confirmador no esta de vacaciones la fecha que del solicitante
-				 Map<String,CenBajasTemporalesBean> mBajasTemporalesConfirmador =  bajasTemporalescioneAdm.getDiasBajaTemporal(new Long(idPersona), new Integer(usr.getLocation()));
-					if(mBajasTemporalesConfirmador.containsKey(miForm.getFechaHora()))
-						throw new SIGAException("censo.bajastemporales.messages.colegiadoEnVacaciones");
-						
-					
-				 
-			 }
-				
+			Vector guardiasVector = guardiasAdm.select(guardia);
+			//lo pongo esto aqui porque todavia no me ha abioerto la transaccion
+			if((guardiasVector == null || guardiasVector.isEmpty())&&!esFichaColegial){
+				CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usr);
+				//comprobamos que el confirmador no esta de vacaciones la fecha que del solicitante
+				Map<String,CenBajasTemporalesBean> mBajasTemporalesConfirmador =  bajasTemporalescioneAdm.getDiasBajaTemporal(new Long(idPersona), new Integer(usr.getLocation()));
+				if(mBajasTemporalesConfirmador.containsKey(miForm.getFechaHora()))
+					throw new SIGAException("censo.bajastemporales.messages.colegiadoEnVacaciones");
+
+			}
 			tx.begin();
-			
-			if(v == null || v.isEmpty())
+			if(guardiasVector == null || guardiasVector.isEmpty())
 			{ 
 				if (!esFichaColegial){
-				// EL ASISTENTE NO ESTÁ DE GUARDIA ESE DÍA. 
-				
-					
-					
-				//----------------------------------------------------------------------------------------------------------------------------------
-				// Tenemos que inscribirle en la guardia.Primero intentamos obtener registros de 
-				// ScsGuardiasColegiado en los que fechafin sea la fecha de asistencia. Si existe algun registro, obtenemos la cabecera de guardia
-				// correspondiente a ese registro. Despues a partir de esa cabecera obtendremos las guardiascolegiado asociadas y daremos de alta al asistente
-				// en ambas tablas con los registros obtenidos de ellas cambiando el idpersona de ese registro por el del asistente. Si existen varios registros en 
-				// guardiascolegiado con fechafin = fecha asistencia entonces cogemos el primero. Si no existe ningún registro lanzaremos el mensaje de que
-				// no hay calendario definido para ese periodo.
-				//----------------------------------------------------------------------------------------------------------------------------------
+					// EL ASISTENTE NO ESTÁ DE GUARDIA ESE DÍA. 
 
-
-				guardia.remove(ScsGuardiasColegiadoBean.C_IDPERSONA);
-				Vector v2 = guardiasAdm.select(guardia);
-				if(v2 != null && v2.size() > 0){
-					
-					// EXISTEN REGISTROS DE LA TABLA SCS_GUARDIASCOLEGIADO PARA LOS QUE LA FECHA DE ASISTENCIA = FECHAFIN(FECHA DE
-					// REALIZACIÓN DE LA GUARDIA). COGEMOS ESE REGISTRO COMO MODELO
-					
-					ScsGuardiasColegiadoBean guardiaParticular = (ScsGuardiasColegiadoBean)v2.get(0);
-					String fechaInicio = guardiaParticular.getFechaInicio();
-					Long idPersonaModelo = guardiaParticular.getIdPersona();
-					
-					// CON ESE REGISTRO DE GUARDIAS COLEGIADO VAMOS A OBTENER SU CABECERA ASOCIADA EN SCS_CABECERAGUARDIAS
-					Hashtable cabecera = new Hashtable();
-					cabecera.put(ScsCabeceraGuardiasBean.C_IDINSTITUCION,usr.getLocation());
-					cabecera.put(ScsCabeceraGuardiasBean.C_IDTURNO,idTurno);
-					cabecera.put(ScsCabeceraGuardiasBean.C_IDGUARDIA,idGuardia);
-					cabecera.put(ScsCabeceraGuardiasBean.C_IDPERSONA,idPersonaModelo);
-					cabecera.put(ScsCabeceraGuardiasBean.C_FECHA_INICIO,fechaInicio);
-					
-					Vector v3 = cabeceraAdm.select(cabecera);
-					ScsCabeceraGuardiasBean cabeceraGuardiasModelo = (ScsCabeceraGuardiasBean)v3.get(0);
-					
-					guardia.clear();
-					
-					// AHORA VAMOS A OBTENER LAS GUARDIAS COLEGIADO ASOCIADAS A ESA CABECERA
-					
-					guardia.put(ScsGuardiasColegiadoBean.C_IDINSTITUCION,cabeceraGuardiasModelo.getIdInstitucion());
-					guardia.put(ScsGuardiasColegiadoBean.C_IDTURNO,cabeceraGuardiasModelo.getIdTurno());
-					guardia.put(ScsGuardiasColegiadoBean.C_IDGUARDIA,cabeceraGuardiasModelo.getIdGuardia());
-					guardia.put(ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS,cabeceraGuardiasModelo.getIdCalendario());
-					guardia.put(ScsGuardiasColegiadoBean.C_IDPERSONA,cabeceraGuardiasModelo.getIdPersona());
-					guardia.put(ScsGuardiasColegiadoBean.C_FECHAINICIO,cabeceraGuardiasModelo.getFechaInicio());
-					
-					Vector v4 = guardiasAdm.select(guardia);
-					
-					
-					// INSERTAMOS 
-					//cabeceraGuardiasModelo.setLetradoSustituido(cabeceraGuardiasModelo.getIdPersona());
-
-					
-					cabeceraGuardiasModelo.setIdPersona(new Long(idPersona));
-					cabeceraGuardiasModelo.setComenSustitucion(UtilidadesString.getMensajeIdioma(usr.getLanguage(),"gratuita.literal.letrado.refuerzo.asistencias"));
-					cabeceraGuardiasModelo.setSustituto("1");
-					cabeceraGuardiasModelo.setFechaAlta("SYSDATE");
-					cabeceraGuardiasModelo.setUsuAlta(new Integer(usr.getUserName()));
-					if(!cabeceraAdm.insert(cabeceraGuardiasModelo))
-						throw new ClsExceptions(cabeceraAdm.getError());
-					
-					if(v4 != null && v4.size() > 0){
-						for(int i=0;i<v4.size();i++){
-							ScsGuardiasColegiadoBean guardiasColegiadoModelo = (ScsGuardiasColegiadoBean)v4.elementAt(i);
-							guardiasColegiadoModelo.setIdPersona(new Long(idPersona));
-							if(!guardiasAdm.insert(guardiasColegiadoModelo))
-								throw new ClsExceptions(guardiasAdm.getError());
-						}
-					}
+					//----------------------------------------------------------------------------------------------------------------------------------
+					// Tenemos que inscribirle en la guardia.Primero intentamos obtener registros de 
+					// ScsGuardiasColegiado en los que fechafin sea la fecha de asistencia. Si existe algun registro, obtenemos la cabecera de guardia
+					// correspondiente a ese registro. Despues a partir de esa cabecera obtendremos las guardiascolegiado asociadas y daremos de alta al asistente
+					// en ambas tablas con los registros obtenidos de ellas cambiando el idpersona de ese registro por el del asistente. Si existen varios registros en 
+					// guardiascolegiado con fechafin = fecha asistencia entonces cogemos el primero. Si no existe ningún registro lanzaremos el mensaje de que
+					// no hay calendario definido para ese periodo.
+					//----------------------------------------------------------------------------------------------------------------------------------
+					String truncFechaGuardia = GstDate.getFormatedDateShort("", fecha); 
+					guardiasAdm.insertarGuardiaManual(usr.getLocation(), idTurno,
+							idGuardia, idPersona,  
+							null,null,truncFechaGuardia,usr);
 				}else{
 					// Si no cerramos la transaccion no vuelve correctamente
 					tx.rollback();
-					throw new SIGAException("gratuita.nuevaAsistencia.literal.noCalendario");
+					throw new SIGAException("gratuita.nuevaAsistencia.literal.letradoSinGuardia");
 				}
-			}else{
-				// Si no cerramos la transaccion no vuelve correctamente
-				tx.rollback();
-				throw new SIGAException("gratuita.nuevaAsistencia.literal.letradoSinGuardia");
-			}
-				
+
 			}
 			// Insertamos la asistencia
+
 			String numero = asistencias.getNumeroAsistencia(usr.getLocation(), Integer.parseInt(anio));
 			String estadoAsistencia = "1";	// Activo
 			asistencias.insertarNuevaAsistencia(usr.getLocation(), anio,numero, fecha, idTurno, idGuardia, idTipoAsistencia, idTipoAsistenciaColegio,idPersona, estadoAsistencia);
-			
+
 			// Si estamos clonando puede que necesitemos meter el juzgado y comisaria
 			// Esto lo hacemos con un update por no modificar el insert, que podria dar problemas ya que se llama desde mas sitios
 			Hashtable hash = new Hashtable();
@@ -577,7 +508,7 @@ public class MantenimientoAsistenciasAction extends MasterAction
 					camposAct.add(ScsAsistenciasBean.C_JUZGADO);
 					camposAct.add(ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION);
 				}
-	
+
 				if (comisaria != null && !comisaria.equals("")) {
 					String a[] = comisaria.split(",");
 					UtilidadesHash.set(hash, ScsAsistenciasBean.C_COMISARIA, a[0].trim());
@@ -585,13 +516,13 @@ public class MantenimientoAsistenciasAction extends MasterAction
 					camposAct.add(ScsAsistenciasBean.C_COMISARIA);
 					camposAct.add(ScsAsistenciasBean.C_COMISARIA_IDINSTITUCION);
 				}
-				
+
 				String claves [] ={ScsAsistenciasBean.C_ANIO,ScsAsistenciasBean.C_NUMERO, ScsAsistenciasBean.C_IDINSTITUCION};
-	
+
 				asistencias.updateDirect(hash,claves,camposAct.toArray(new String[camposAct.size()]));
 			}
 			//		
-				
+
 			// Para abrir la ventana de la asistencia
 			request.getSession().setAttribute("Asistencia_ANIO", anio);
 			request.getSession().setAttribute("Asistencia_NUMERO", numero);
@@ -599,15 +530,15 @@ public class MantenimientoAsistenciasAction extends MasterAction
 
 			//Insertamos saltos y compensaciones si procede
 			String motivo = UtilidadesString.getMensajeIdioma(usr,"gratuita.literal.altaAsistencia.motivo");
-			
-			 
+
+
 			if (salto != null&&(salto.equals("on") || salto.equals("1")))
 				saltosCompAdm.crearSaltoCompensacion(usr.getLocation(),idTurno,idGuardia,idPersona, motivo,ClsConstants.SALTOS);
 			if (compensacion != null&&(compensacion.equals("on") || compensacion.equals("1")))
 				saltosCompAdm.crearSaltoCompensacion(usr.getLocation(),idTurno,idGuardia,idPersona, motivo,ClsConstants.COMPENSACIONES);
 			if(miForm.getModo()!=null && miForm.getModo().equals("insertar"))
 				miForm.setModo("");
-			
+
 			tx.commit();
 
 		}catch (SIGAException e) {
@@ -618,7 +549,7 @@ public class MantenimientoAsistenciasAction extends MasterAction
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
 		}		
 		return exitoModal("messages.inserted.success",request);
-		
+
 	}
 
 	/** 
