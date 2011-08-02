@@ -7,6 +7,7 @@
 package com.siga.beans;
 
 import java.util.Hashtable;
+import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
@@ -276,4 +277,39 @@ public class CenDireccionTipoDireccionAdm extends MasterBeanAdmVisible {
 		}
 	}
 	
+	/**
+	 * Busca el numero de tipos (registros) con las mismas claves que recibe en la tabla Cen_DireccionTipoDireccion 
+	 * @author daniel.campos 22-01-05
+	 * @version 1
+	 * @param Hsah con las claves de los datos a buscar.
+	 * @return el numero de registros
+	 */
+	public Vector getTiposDireccion (String idInstitucion, String idPersona, String idDireccion) throws ClsExceptions, SIGAException {
+		RowsContainer rc = null;
+		Vector tiposDireccion = new Vector();
+		
+		try { rc = new RowsContainer(); }
+		catch(Exception e) { e.printStackTrace(); }
+		
+		try {		
+			String sql = " SELECT * "+ 
+			  			 " FROM " + CenDireccionTipoDireccionBean.T_NOMBRETABLA +
+						 " WHERE " + CenDireccionTipoDireccionBean.T_NOMBRETABLA +"." + CenDireccionTipoDireccionBean.C_IDPERSONA +"= " + idPersona +
+						 " AND " + CenDireccionTipoDireccionBean.T_NOMBRETABLA +"." + CenDireccionTipoDireccionBean.C_IDINSTITUCION +" = " + idInstitucion + 
+						 " AND " + CenDireccionTipoDireccionBean.T_NOMBRETABLA +"." + CenDireccionTipoDireccionBean.C_IDDIRECCION +" = " + idDireccion;
+
+			rc = this.find(sql);
+			if (rc!=null) {
+				for(int i=0;i<rc.size();i++){
+				Row fila = (Row) rc.get(i);
+				Hashtable ht = fila.getRow();
+				tiposDireccion.add(ht);
+				}
+			}
+		}	
+		catch (ClsExceptions e) {		
+			throw new ClsExceptions (e, "Error al ejecutar el 'select' para verificar si hay mas datos en B.D.");		
+		}
+		return tiposDireccion;
+	}
 }

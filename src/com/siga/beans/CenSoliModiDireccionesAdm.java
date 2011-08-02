@@ -478,9 +478,33 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 					// Actualizo el registro Direcciones con historico				
 					if (!adminDir.updateConHistorico(dirModificada,null,beanHist, idioma)){
 						correcto=false;
-					}								
-				}				
-			}	
+					}
+					
+
+					// Nos quedamos con una copia de la direccion original (pedido por Jaen) 
+					// y la insertamos hacemos
+					CenDireccionesBean beanDir = new CenDireccionesBean();
+					beanDir=(CenDireccionesBean) adminDir.hashTableToBean(dirOriginal);
+					String oldId = beanDir.getIdDireccion().toString();
+					beanDir.setIdDireccion( adminDir.getNuevoID(beanDir));
+					beanDir.setFechaBaja(GstDate.getHoyJava());
+					if (!adminDir.insert(beanDir)){
+						correcto=false;
+					}
+					
+					CenDireccionTipoDireccionAdm tipoDirAdm = new CenDireccionTipoDireccionAdm (this.usrbean);
+					CenTipoDireccionAdm cenTipoDirAdm = new CenTipoDireccionAdm (this.usrbean);
+					Vector vTipos = new Vector();
+					vTipos=tipoDirAdm.getTiposDireccion(beanDir.getIdInstitucion().toString(),beanDir.getIdPersona().toString(), oldId);
+					if ( (vTipos != null) && (vTipos.size() > 0) ){
+						for (int i = 0; i <= vTipos.size()-1; i++) {
+							CenDireccionTipoDireccionBean tipoDir = (CenDireccionTipoDireccionBean) tipoDirAdm.hashTableToBean((Hashtable)vTipos.get(i));
+							tipoDir.setIdDireccion(beanDir.getIdDireccion());
+							tipoDirAdm.insert(tipoDir);
+						}
+					}
+				}
+			}
        }
 		catch (SIGAException e) {
 			throw e;
