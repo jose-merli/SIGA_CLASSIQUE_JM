@@ -675,7 +675,7 @@ public class BusquedaDesignasAction extends MasterAction {
 					
 					CalendarioSJCS calendarioSJCS = new CalendarioSJCS();
 					calendarioSJCS.inicializaParaObtenerLetrado(
-					new Integer(usr.getLocation()), new Integer(miform.getIdTurno()),fecha,usr);
+					new Integer(usr.getLocation()), new Integer(idTurno),fecha,usr);
 					letradoTurno = calendarioSJCS.getLetradoTurno();
 					idPersonaSel = letradoTurno.getIdPersona().toString();					
 					
