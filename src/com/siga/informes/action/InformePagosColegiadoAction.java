@@ -5,10 +5,12 @@
  */
 package com.siga.informes.action;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,25 +24,21 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.PaginadorCaseSensitiveBind;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
-import com.siga.beans.CenClienteAdm;
+import com.siga.administracion.form.InformeForm;
+import com.siga.beans.AdmInformeAdm;
+import com.siga.beans.AdmInformeBean;
 import com.siga.beans.CenPersonaAdm;
-import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FcsPagoColegiadoBean;
 import com.siga.beans.FcsPagosJGAdm;
-import com.siga.beans.FcsPagosJGBean;
 import com.siga.beans.HelperInformesAdm;
-import com.siga.beans.ScsDesignaBean;
-import com.siga.censo.form.BusquedaClientesForm;
-import com.siga.facturacion.form.ConsultaMorososForm;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.informes.InformeColegiadosPagos;
+import com.siga.informes.InformePersonalizable;
 import com.siga.informes.form.MantenimientoInformesForm;
 
 /**
@@ -88,6 +86,8 @@ public class InformePagosColegiadoAction extends MasterAction {
 			} else if (accion.equalsIgnoreCase("buscarInicio")){
 				miForm.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
 				mapDestino = buscarPor(mapping, miForm, request, response); 
+			}else if (accion.equalsIgnoreCase("imprimir")){
+				mapDestino = imprimir(mapping, miForm, request, response); 
 			}else if (accion.equalsIgnoreCase("detallePago")) {
 				mapDestino = detallePago(mapping, miForm, request, response);
 			}/* else if (accion.equalsIgnoreCase("download")) {
@@ -235,108 +235,62 @@ public class InformePagosColegiadoAction extends MasterAction {
 		}
 		return destino;
 	}
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.siga.general.MasterAction#buscar(org.apache.struts.action.ActionMapping,
-	 *      com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest,
-	 *      javax.servlet.http.HttpServletResponse)
-	 */
-	protected String buscarOld(ActionMapping mapping, MasterForm formulario,
-			HttpServletRequest request, HttpServletResponse response)
-			throws SIGAException {
+	protected String imprimir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+
 		try {
-			MantenimientoInformesForm form = (MantenimientoInformesForm) formulario;
-			UsrBean user = ((UsrBean) request.getSession().getAttribute(
-					("USRBEAN")));
-			String idInstitucion = user.getLocation();
-			form.setIdInstitucion(idInstitucion);
-			// String idPago = form.getIdPago();
+			// obtener institucion
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			// casting del formulario
+			MantenimientoInformesForm miFormulario = (MantenimientoInformesForm) formulario;
+			
+			HashMap databackup = (HashMap) miFormulario.getDatosPaginador();
+			if (databackup!=null && databackup.get("paginador")!=null){ 
+				PaginadorCaseSensitiveBind paginador = (PaginadorCaseSensitiveBind)databackup.get("paginador");
+				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
+				AdmInformeAdm adm = new AdmInformeAdm(user);
+				Vector datos = adm.selectGenericoBind(paginador.getQueryOriginal(), paginador.getCodigos());
+				Hashtable<String, Object> datosHashtable = (Hashtable<String, Object>)datos.get(0);
+				//La linea de debajo serviria si no se necesita Orden
+				//String[] cabeceras = UtilidadesHash.getClaves(datosHashtable);
+				String[] cabeceras = new String[9];
+				cabeceras[0] = "NCOLEGIADO";
+				cabeceras[1] = "NOMBRE";
+				cabeceras[2] = "NOMBREPAGO";
+				cabeceras[3] = "TOTALIMPORTESJCS";
+				cabeceras[4] = "IMPORTETOTALMOVIMIENTOS";
+				cabeceras[5] = "TOTALIMPORTEBRUTO";//TOTALIMPORTESJCS+IMPORTETOTALMOVIMIENTOS
+				cabeceras[6] = "TOTALIMPORTEIRPF";
+				cabeceras[7] = "IMPORTETOTALRETENCIONES";
+							
+				cabeceras[8] = "IMPORTETOTAL";//IMPORTEBRUTO + TOTALIMPORTEIRPF + IMPORTETOTALRETENCIONES
+				
+				InformePersonalizable informePersonalizable = new InformePersonalizable();
+				List<InformeForm> informesForms = new ArrayList<InformeForm>();
+				InformeForm informeForm = new InformeForm();
+				informeForm.setDirectorio("");
+				informeForm.setIdInstitucion(user.getLocation());
+				informeForm.setNombreSalida("excelPago");
+				informeForm.setAlias("");
+				informeForm.setTipoFormato(AdmInformeBean.TIPOFORMATO_EXCEL);
+				informesForms.add(informeForm);
 
-			HashMap databackup = new HashMap();
-
-			if (request.getSession().getAttribute("DATAPAGINADOR") != null) {
-				databackup = (HashMap) request.getSession().getAttribute(
-						"DATAPAGINADOR");
-				PaginadorCaseSensitiveBind paginador = (PaginadorCaseSensitiveBind) databackup
-						.get("paginador");
-				Vector datos = new Vector();
-
-				// Si no es la primera llamada, obtengo la página del request y
-				// la busco con el paginador
-				String pagina = (String) request.getParameter("pagina");
-
-				if (paginador != null) {
-					if (pagina != null) {
-						datos = paginador.obtenerPagina(Integer
-								.parseInt(pagina));
-					} else {// cuando hemos editado un registro de la busqueda y
-						// volvemos a la paginacion
-						datos = paginador.obtenerPagina((paginador
-								.getPaginaActual()));
-					}
-					Row fila = (Row) datos.get(0);
-					Hashtable registro = (Hashtable) fila.getRow();
-					String nColegiado = (String) registro.get("NCOLEGIADO");
-					// miramos si se han actualiozado los datos. Para ello
-					// miramos si tiene
-					// metida uno de los campos que se actualizan en la
-					// actualizacion
-					// como es NCOLEGIADO
-					if (nColegiado == null)
-
-						datos = actualizarColegiado(user, idInstitucion, datos);
-
-				}
-
-				databackup.put("paginador", paginador);
-				databackup.put("datos", datos);
-
-			} else {
-
-				databackup = new HashMap();
-
-				// obtengo datos de la consulta
-				PaginadorCaseSensitiveBind resultado = null;
-				Vector datos = null;
-
-				FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(user);
-
-				resultado = pagosAdm.getPaginadorDetallePago(form,"",idInstitucion, user.getLanguage());
-				// resultado = facAdm.selectMorosos(user,form);
-
-				// Paso de parametros empleando la sesion
-				databackup.put("paginador", resultado);
-				if (resultado != null) {
-					datos = resultado.obtenerPagina(1);
-					Row fila = (Row) datos.get(0);
-					Hashtable registro = (Hashtable) fila.getRow();
-					String nColegiado = (String) registro.get("NCOLEGIADO");
-					// miramos si se han actualizado los datos. Para ello
-					// miramos si tiene
-					// metida uno de los campos que se actualizan en la
-					// actualizacion
-					// como es NCOLEGIADO
-					if (nColegiado == null)
-						datos = actualizarColegiado(user, idInstitucion, datos);
-
-					databackup.put("datos", datos);
-					request.getSession().setAttribute("DATAPAGINADOR",
-							databackup);
-				}
-				request.getSession().setAttribute("DATABACKUP", form);
-				// request.setAttribute("idPago",idPago);
-				// request.setAttribute("idInstitucion",idInstitucion);
-
+				File ficheroSalida = informePersonalizable.getFicheroGenerado(informesForms, datos,cabeceras, user);
+				request.setAttribute("nombreFichero", ficheroSalida.getName());
+				request.setAttribute("rutaFichero", ficheroSalida.getPath());
+				request.setAttribute("borrarFichero", "true");
+				request.setAttribute("generacionOK","OK");
+				
+				return "descarga";	
+				
+				
 			}
 
-		} catch (Exception e) {
-			throwExcp("messages.general.error",
-					new String[] { "modulo.facturacion" }, e, null);
+		}catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null);
 		}
-
-		return "resultado";
+		return exitoRefresco("messages.noRecordFound",request);
 	}
+	
 
 	/*
 	 * (non-Javadoc)

@@ -204,25 +204,15 @@
  	}
  %>
 		</td>
-
-
 		<td><%=UtilidadesString.mostrarDatoJSP(fila.getString(CenColegiadoBean.C_NCOLEGIADO))%></td>
 		<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("NOMBRE"))%></td>
 		<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("NOMBREPAGO"))%></td>
 		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(fila.getString("TOTALIMPORTESJCS"), 2))%>&nbsp;&euro;</td>
 		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(fila.getString("IMPORTETOTALMOVIMIENTOS"), 2))%>&nbsp;&euro;</td>
-		<%
-			float aux = Float.parseFloat(fila.getString("TOTALIMPORTESJCS"))+ Float.parseFloat(fila.getString("IMPORTETOTALMOVIMIENTOS"));
-			String importe = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea((new Float(aux)).toString(), 2));
-		%>
-		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(importe, 2))%>&nbsp;&euro;</td>
+		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(fila.getString("TOTALIMPORTEBRUTO"), 2))%>&nbsp;&euro;</td>
 		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(fila.getString("TOTALIMPORTEIRPF"), 2))%>&nbsp;&euro;</td>
 		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(fila.getString("IMPORTETOTALRETENCIONES"), 2))%>&nbsp;&euro;</td>
-		<%
-			aux = aux + Float.parseFloat(fila.getString("TOTALIMPORTEIRPF"))+ Float.parseFloat(fila.getString("IMPORTETOTALRETENCIONES"));
-			importe = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea((new Float(aux)).toString(), 2));
-		%>
-		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(importe, 2))%>&nbsp;&euro;</td>
+		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(fila.getString("IMPORTETOTAL"), 2))%>&nbsp;&euro;</td>
 
 	</siga:FilaConIconos>
 	<%
@@ -233,7 +223,7 @@
 
 	<!-- FIN: ZONA DE REGISTROS -->
 </siga:TablaCabecerasFijas>
-<siga:ConjBotonesAccion botones="COM" />
+<siga:ConjBotonesAccion botones="COM,i" />
 <%
 	if (datosPaginador != null && datosPaginador.get("datos") != null && !datosPaginador.get("datos").equals("")) {
 		String regSeleccionados = ("" + ((registrosSeleccionados == null) ? 0 : registrosSeleccionados.size()));
@@ -449,6 +439,13 @@
 		document.appendChild(formu);
 		formu.datosInforme.value=datos;
 		formu.submit();
+	}
+	function accionImprimir() 
+	{		
+
+		document.mantenimientoInformesForm.modo.value = 'imprimir';
+		document.mantenimientoInformesForm.target = "submitArea";
+		document.mantenimientoInformesForm.submit();
 	}
 	
 	function refrescarLocal() {

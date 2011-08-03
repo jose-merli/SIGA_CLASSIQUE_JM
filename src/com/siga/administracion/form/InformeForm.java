@@ -272,7 +272,8 @@ public class InformeForm extends MasterForm {
 		informeVO.setIdTipoInforme(idTipoInforme);
 		informeVO.setVisible(visible);
 		informeVO.setNombreSalida(nombreSalida);
-		informeVO.setIdInstitucion(new Integer(idInstitucion));
+		if(idInstitucion!=null)
+			informeVO.setIdInstitucion(new Integer(idInstitucion));
 		informeVO.setPreseleccionado(preseleccionado);
 		informeVO.setDestinatarios(destinatarios);
 		informeVO.setASolicitantes(aSolicitantes);

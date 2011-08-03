@@ -1163,7 +1163,11 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		sql.append("       sum(pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ) as totalImporteSJCS, ");
 		sql.append("       sum(pc.impRet) as importeTotalRetenciones, ");
 		sql.append("       sum(pc.impMovVar) as importeTotalMovimientos, ");
+		sql.append("       sum(pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ + pc.impMovVar) as TOTALIMPORTEBRUTO, ");
+		
 		sql.append("       -1*round(abs(sum(pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ + pc.impMovVar) * max(pc.impirpf) / 100), 2) as TOTALIMPORTEIRPF, ");
+		sql.append("       (sum(pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ + pc.impMovVar)+(-1*round(abs(sum(pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ + pc.impMovVar) * max(pc.impirpf) / 100), 2))+(sum(pc.impRet))) as IMPORTETOTAL, ");
+		
 		sql.append("       pc.idinstitucion, ");
 		sql.append("       f_siga_getrecurso_etiqueta(decode(");
 		sql.append("       (select a.idcuenta ");
@@ -1189,6 +1193,10 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 					"  and impirpf > 0 ");		
 		sql.append(" group by cen.apellidos1,cen.apellidos2, pc.IDPERORIGEN, pc.IDPERDESTINO, pc.IDPAGOSJG, pc.IDINSTITUCION,  pj.nombre, pj.fechadesde ");
 		sql.append(" ORDER BY cen.apellidos1, cen.apellidos2, pj.fechadesde");
+		
+		
+		
+		
 		
 		return sql.toString();
 	} //getQueryDetallePagoColegiado()

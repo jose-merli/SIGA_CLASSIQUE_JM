@@ -359,4 +359,11 @@ public class UtilidadesHash {
 		}
 		return salida;
 	}
+	static public String[] getClaves(Hashtable<String, Object> hashtable){
+		String[] cabeceras = new String[hashtable.keySet().size()];
+		hashtable.keySet().toArray(cabeceras);
+		return cabeceras;
+		
+		
+	}
 }

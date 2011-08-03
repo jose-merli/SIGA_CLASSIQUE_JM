@@ -504,7 +504,7 @@ public class InformePersonalizable extends MasterReport
 		+ ClsConstants.FILE_SEP
 		+ informe.getDirectorio() + ClsConstants.FILE_SEP
 		+ (idinstitucionInforme.equals("0") ? "2000" : idinstitucionInforme) + ClsConstants.FILE_SEP;
-
+		new File(rutaAlm).mkdirs();
 		
 
 			try {
