@@ -742,7 +742,7 @@ public class InformeColegiadosPagos extends MasterReport {
 			buf0.append(" WHERE abo.idpersona = " + idPersona);
 			buf0.append(" and abo.idpagosjg = " +idPago);
 			buf0.append(" and abo.idinstitucion = " + idInstitucion);
-			buf0.append(" group by abo.numeroabono, abo.idpagosjg, caj.idfactura");		
+			buf0.append(" group by abo.numeroabono, abo.idpagosjg");		
 			
 	/*		buf0.append("select abo.numeroabono as NUMEROABONO, sum(efe.importe) as COMPENSADO_CAJA");
 			buf0.append(" from FAC_ABONO ABO, FAC_PAGOABONOEFECTIVO EFE");
