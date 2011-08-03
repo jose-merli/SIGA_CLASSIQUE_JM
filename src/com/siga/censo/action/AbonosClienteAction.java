@@ -12,8 +12,11 @@
 
 package com.siga.censo.action;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +30,12 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
+import com.siga.Utilidades.PaginadorCaseSensitiveBind;
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.administracion.form.InformeForm;
+import com.siga.beans.AdmInformeAdm;
+import com.siga.beans.AdmInformeBean;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
@@ -39,6 +47,8 @@ import com.siga.censo.form.DatosFacturacionForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.informes.InformePersonalizable;
+import com.siga.informes.form.MantenimientoInformesForm;
 
 
 public class AbonosClienteAction extends MasterAction {
@@ -80,6 +90,9 @@ public class AbonosClienteAction extends MasterAction {
 				}
 				else if (accion.equalsIgnoreCase("abrirAbonosPaginados")){
 					mapDestino = abrirAbonosPaginados(mapping, miForm, request, response);
+					break;
+				}else if (accion.equalsIgnoreCase("imprimir")){
+					mapDestino = imprimir(mapping, miForm, request, response);
 					break;
 				} else {
 					return super.executeInternal(mapping,
@@ -328,7 +341,7 @@ public class AbonosClienteAction extends MasterAction {
 			request.setAttribute("NUMERO", numero);
 			request.setAttribute("container", abonos);
 			request.setAttribute("bIncluirRegistrosConBajaLogica",new Boolean(bIncluirRegistrosConBajaLogica).toString());
-
+			
 
 			
 		}catch (SIGAException e1) {
@@ -483,6 +496,64 @@ public class AbonosClienteAction extends MasterAction {
 		String result="listar";
 		return (result);
 				
+	}
+	protected String imprimir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+
+		try {
+			// obtener institucion
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			// casting del formulario
+//			AbonosClienteForm miFormulario = (AbonosClienteForm) formulario;
+			
+			HashMap databackup = getPaginador(request, paginadorPenstania);
+			
+			if (databackup != null) {
+		
+			
+				PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
+				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
+				AdmInformeAdm adm = new AdmInformeAdm(user);
+				Vector datos = adm.selectGenericoBind(paginador.getQueryInicio(), paginador.getCodigosInicio());
+				Hashtable<String, Object> datosHashtable = (Hashtable<String, Object>)datos.get(0);
+				//La linea de debajo serviria si no se necesita Orden
+//				String[] cabeceras = UtilidadesHash.getClaves(datosHashtable);
+				String[] cabeceras = new String[7];
+				cabeceras[0] = "FECHA";
+				cabeceras[1] = "NUMEROABONO";
+				cabeceras[2] = "OBSERVACIONES";
+				cabeceras[3] = "TOTALNETO";
+				cabeceras[4] = "TOTALIVA";
+				cabeceras[5] = "TOTAL";
+				cabeceras[6] = "TOTALABONADO";
+							
+				
+				
+				
+				InformePersonalizable informePersonalizable = new InformePersonalizable();
+				List<InformeForm> informesForms = new ArrayList<InformeForm>();
+				InformeForm informeForm = new InformeForm();
+				informeForm.setDirectorio("");
+				informeForm.setIdInstitucion(user.getLocation());
+				informeForm.setNombreSalida("excelAbonosCliente");
+				informeForm.setAlias("");
+				informeForm.setTipoFormato(AdmInformeBean.TIPOFORMATO_EXCEL);
+				informesForms.add(informeForm);
+
+				File ficheroSalida = informePersonalizable.getFicheroGenerado(informesForms, datos,cabeceras, user);
+				request.setAttribute("nombreFichero", ficheroSalida.getName());
+				request.setAttribute("rutaFichero", ficheroSalida.getPath());
+				request.setAttribute("borrarFichero", "true");
+				request.setAttribute("generacionOK","OK");
+				
+				return "descarga";	
+				
+				
+			}
+
+		}catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null);
+		}
+		return exitoRefresco("messages.noRecordFound",request);
 	}
 
 }

@@ -86,7 +86,7 @@
 	}
 	
 	if (!busquedaVolver.equals("volverNo")) { 
-		botonesAccion="V";
+		botonesAccion="V,i";
 	}
 	 String sTipo = request.getParameter("tipoCliente");		
 	 
@@ -159,6 +159,13 @@
 			
 			document.AbonosClienteForm.submit();
 		}
+	function accionImprimir() 
+	{		
+
+		document.AbonosClienteForm.modo.value = 'imprimir';
+		document.AbonosClienteForm.target = "submitArea";
+		document.AbonosClienteForm.submit();
+	}
 	function download(fila)
 	{
 		sub();
@@ -223,7 +230,8 @@
 		</table>
 		
 		<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
-
+		
+		
 		<!-- INICIO: CAMPOS DE BUSQUEDA-->
 		<!-- Zona de campos de busqueda o filtro -->
 

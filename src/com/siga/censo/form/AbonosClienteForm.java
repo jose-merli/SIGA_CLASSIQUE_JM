@@ -23,7 +23,7 @@ public class AbonosClienteForm extends MasterForm{
 	private String idAbono="";
 	private String numeroAbono="";
 	private String incluirRegistrosConBajaLogica;
-
+	
 	/**
 	 * @return Returns the numeroAbono.
 	 */
