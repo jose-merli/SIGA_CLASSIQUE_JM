@@ -343,13 +343,19 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	
 		    Object[] campos = null;
 		    if(aceptaBaja == 1){
-		    	campos = new Object[6];
+		    	campos = new Object[5];
 		    	campos[0] = sNombreCampoDescripcion;
 		        campos[1] = sNombreCampoCodigoExt;
 		        campos[2] = sFechaModificacion;
 		        campos[3] = sUsuModif;
 		    	campos[4] = sNombreCampoFechaBaja;
 		    	if (sNombreTabla !=null && sNombreTabla.equals(ScsTipoFundamentosCalifBean.T_NOMBRETABLA)){
+			    	campos = new Object[6];
+			    	campos[0] = sNombreCampoDescripcion;
+			        campos[1] = sNombreCampoCodigoExt;
+			        campos[2] = sFechaModificacion;
+			        campos[3] = sUsuModif;
+			    	campos[4] = sNombreCampoFechaBaja;
 		    		campos[5] = ScsTipoFundamentosCalifBean.C_IDTIPODICTAMENEJG;
 		    	}
 	        }else if (sNombreTabla !=null && sNombreTabla.equals(ScsTipoFundamentosCalifBean.T_NOMBRETABLA)){
