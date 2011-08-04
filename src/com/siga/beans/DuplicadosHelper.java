@@ -125,13 +125,16 @@ public class DuplicadosHelper{
 	       	if (campoOrden.equalsIgnoreCase("numeroColegiado"))
 	       		sqlOrden.append(" order by to_number(ncolegiado) ");
 	       	if (campoOrden.equalsIgnoreCase("apellidos"))
-	       		sqlOrden.append(" order by p1.apellidos1, p1.apellidos2 ");
+	       		sqlOrden.append(" order by upper(apellidos1||' '||apellidos2) ");
 			sqlOrden.append(formulario.getSentidoOrdenacion());      	
 	       	
 			if(formulario.getTipoConexion()!=null && formulario.getTipoConexion().equalsIgnoreCase("union")){
-				
+				if(buscar)
+					sqlFinal += sqlGenerico.toString();
 				// Añadimos las querys especificas que han sido seleccionadas
 		       	if(checkIdentificador){
+		       		if(!sqlFinal.equalsIgnoreCase(""))
+		       			sqlFinal+=" union ";
 					sqlFinal += sqlGenerico.toString()+sqlMismoNif.toString();
 				}
 		       	if(checkNumColegiado){
@@ -150,8 +153,13 @@ public class DuplicadosHelper{
 		       		sqlFinal += sqlGenerico.toString()+sqlMismoNombreApellidos.toString();
 				}
 			}else{
+				if(buscar)
+					sqlFinal += sqlGenerico.toString();
 				if(checkIdentificador){
-					sqlFinal += sqlGenerico.toString()+sqlMismoNif.toString();
+					if(!sqlFinal.equalsIgnoreCase(""))
+						sqlFinal += sqlMismoNif.toString();
+					else
+						sqlFinal += sqlGenerico.toString()+sqlMismoNif.toString();
 				}
 		       	if(checkNumColegiado){
 		       		if(!sqlFinal.equalsIgnoreCase(""))
@@ -172,8 +180,14 @@ public class DuplicadosHelper{
 		       			sqlFinal += sqlGenerico.toString()+sqlMismoNombreApellidos.toString();
 				}
 			}
-			if(sqlFinal!=""){
-				sqlFinal += " group by p1.idpersona, p1.nifcif, p1.nombre, p1.apellidos1, p1.apellidos2 ";
+			if(formulario.getTipoConexion()!=null && formulario.getTipoConexion().equalsIgnoreCase("union")){
+				if(sqlFinal!=""){
+					sqlFinal = "select distinct * from ( " + sqlFinal +")";
+				}
+			}else{
+				if(sqlFinal!=""){
+					sqlFinal += " group by p1.idpersona, p1.nifcif, p1.nombre, p1.apellidos1, p1.apellidos2 ";
+				}
 			}
 	       	Vector similares = new Vector();
 	       	// Completamos la query que se va a ejecutar
