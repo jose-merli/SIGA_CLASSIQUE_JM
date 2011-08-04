@@ -68,7 +68,8 @@
 	
 	<script>
 		function refrescarLocal(){
-			parent.refrescarGuardias();		
+			
+			parent.buscar();		
 		}
 		
 		function buscarLetradoEnColaLetrado () 

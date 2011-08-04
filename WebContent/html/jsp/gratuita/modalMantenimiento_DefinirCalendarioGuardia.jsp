@@ -88,24 +88,31 @@
 	<script>
 
 		//Busqueda de colegiados de guardias			
-		function refrescarGuardias() {
+		function buscar() {
 			sub();
-			document.forms[0].reserva.value="N";			
-			document.forms[0].accion.value="guardias";	
-			document.forms[0].modo.value="buscarPor";
-			document.forms[0].target="guardias";
-			document.forms[0].submit();
+			if (compararFecha (document.DefinirCalendarioGuardiaForm.buscarFechaDesde, document.DefinirCalendarioGuardiaForm.buscarFechaHasta) == 1) {
+				mensaje = '<siga:Idioma key="messages.fechas.rangoFechas"/>'
+				alert(mensaje);
+				fin();
+				return false;
+			}
+			document.DefinirCalendarioGuardiaForm.reserva.value="N";			
+			document.DefinirCalendarioGuardiaForm.accion.value="guardias";	
+			document.DefinirCalendarioGuardiaForm.modo.value="buscarPor";
+			//document.DefinirCalendarioGuardiaForm.target="guardias";
+			document.DefinirCalendarioGuardiaForm.target="guardias";
+			document.DefinirCalendarioGuardiaForm.submit();
 		}
 
 		//Busqueda de colegiados de guardias y reservas 	
 		function refrescarLocal() {
-			refrescarGuardias()
+			buscar()
 		}
 		
 	</script>
 </head>
 
-<body onload="ajusteAlto('guardias');">
+<body onload="ajusteAltoBotones('guardias');">
 
 <!-- TITULO -->
 <!-- Barra de titulo actualizable desde los mantenimientos -->
@@ -192,13 +199,31 @@
 				<siga:Idioma key="gratuita.modalNuevo_DefinirCalendarioGuardia.literal.fechaDesde"/>
 			</td>
 			<td class="labelTextValor">
-				<html:text name="DefinirCalendarioGuardiaForm" property="fechaDesde" size="10" styleClass="boxConsulta" value="<%=fechaDesde%>" readonly="true"></html:text>
+			<% if (modo.equalsIgnoreCase("VER")||tieneGuardias) { %>
+					<html:text name="DefinirCalendarioGuardiaForm" property="fechaDesde" size="10" styleClass="boxConsulta" value="<%=fechaDesde%>" readonly="true"></html:text>
+				<% } else { %>
+					<html:text name="DefinirCalendarioGuardiaForm" property="fechaDesde" size="10" styleClass="box" value="<%=fechaDesde%>" readonly="true">
+					
+					</html:text>
+					<a href='javascript://'onClick="return showCalendarGeneral(fechaDesde);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
+				<% } %>
+			
+			
+				
 			</td>
 			<td class="labelText">
 				<siga:Idioma key="gratuita.modalNuevo_DefinirCalendarioGuardia.literal.fechaHasta"/>
 			</td>
 			<td class="labelTextValor">
-				<html:text name="DefinirCalendarioGuardiaForm" property="fechaHasta" size="10" styleClass="boxConsulta" value="<%=fechaHasta%>" readonly="true"></html:text>
+			<% if (modo.equalsIgnoreCase("VER")||tieneGuardias) { %>
+					<html:text name="DefinirCalendarioGuardiaForm" property="fechaHasta" size="10" styleClass="boxConsulta" value="<%=fechaHasta%>" readonly="true"></html:text>
+				<% } else { %>
+					<html:text name="DefinirCalendarioGuardiaForm" property="fechaHasta" size="10" styleClass="box" value="<%=fechaHasta%>" readonly="true"></html:text>
+					<a href='javascript://'onClick="return showCalendarGeneral(fechaHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
+				<% } %>
+			
+		
+				
 			</td>
 			<td class="labelText">
 				<siga:Idioma key="gratuita.modalNuevo_DefinirCalendarioGuardia.literal.observaciones"/>
@@ -228,9 +253,7 @@
 		
 					<td width="120" class="labelText"><siga:Idioma key="facturacion.buscarFactura.literal.FechaHasta"/></td>
 					<td><html:text name="DefinirCalendarioGuardiaForm" styleClass="box" property="buscarFechaHasta" size="8" maxlength="10" readonly="true"/><a href='javascript://'onClick="return showCalendarGeneral(buscarFechaHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a></td>
-					<td>
-					<html:button property="idButton" onclick="return refrescarGuardias();" styleClass="button"><siga:Idioma key="general.boton.search"/> </html:button>
-					</td>
+					
 				</tr>
 			
 			</table>
@@ -248,11 +271,17 @@
 		 LA PROPIEDAD CLASE SE CARGA CON EL ESTILO "botonesDetalle" 
 		 PARA POSICIONARLA EN SU SITIO NATURAL, SI NO SE POSICIONA A MANO
 	-->
-	<%if(tieneGuardias){%>
-		<siga:ConjBotonesAccion botones="Y,C,NL" clase="botonesSeguido" modal="G" modo="<%=modo%>" />
+	<%if(modo.equalsIgnoreCase("ver")){%>
+		<siga:ConjBotonesAccion botones="B" clase="botonesSeguido" modal="G"  />
 	<%}else{%>
-		<siga:ConjBotonesAccion botones="GC,Y,C,NL" clase="botonesSeguido" modal="G" modo="<%=modo%>" />
+	
+		<siga:ConjBotonesAccion botones="Y,B" clase="botonesSeguido" modal="G" modo="<%=modo%>" />
+		
 	<%}%>
+		
+	
+	
+	
 	
 <html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
   <input type="hidden" name="actionModal" value="">
@@ -284,23 +313,12 @@
 			document.DefinirCalendarioGuardiaForm.buscarIdPersona.value 		 = datos[0];
 		}
 
-		//Funcion asociada a boton buscar
-		function buscar() 
-		{		
-						
-				// Rango Fechas (desde / hasta)
-				if (compararFecha (document.DefinirCalendarioGuardiaForm.buscarFechaDesde, document.DefinirCalendarioGuardiaForm.buscarFechaHasta) == 1) {
-					mensaje = '<siga:Idioma key="messages.fechas.rangoFechas"/>'
-					alert(mensaje);
-					return false;
-				}
-				document.BusquedaFacturaForm.modo.value = "buscarInit";
-				document.BusquedaFacturaForm.submit();
-		}
+		
+		
 		
 		//Funcion que devuelve true si alguna de las fechas del calendario es anterior a la actual
 		function esFechaAnteriorHoy(){
-			var f_desde = document.forms[0].fechaDesde.value; //DD/MM/YYYY
+			var f_desde = document.DefinirCalendarioGuardiaForm.fechaDesde.value; //DD/MM/YYYY
 			
 			var mes_1 = parseInt(f_desde.substring(3,5),10)-1;
 			var f_1 = new Date(f_desde.substring(6,10), mes_1, f_desde.substring(0,2));
@@ -317,8 +335,8 @@
 		//Asociada al boton GenerarCalendario
 		function accionGenerarCalendario() {
 			// Creo Calendario de Titulares y despues el de Reservas
-			document.forms[0].modo.value = "insertarCalendarioAutomaticamente";
-			document.forms[0].target = "submitAreaPrincipal";
+			document.DefinirCalendarioGuardiaForm.modo.value = "insertarCalendarioAutomaticamente";
+			document.DefinirCalendarioGuardiaForm.target = "submitAreaPrincipal";
 			var fname = document.getElementById("DefinirCalendarioGuardiaForm").name;
 			sub();
 			//Control de la fecha de generacion:
@@ -340,9 +358,9 @@
 			sub();	
 			//Valido por struts las observaciones
 			if (validateDefinirCalendarioGuardiaForm(document.DefinirCalendarioGuardiaForm)){
-					document.forms[0].modo.value = "modificar";
-					document.forms[0].target = "submitAreaPrincipal";							
-					document.forms[0].submit();	
+					document.DefinirCalendarioGuardiaForm.modo.value = "modificar";
+					document.DefinirCalendarioGuardiaForm.target = "submitAreaPrincipal";							
+					document.DefinirCalendarioGuardiaForm.submit();	
 					window.returnValue="MODIFICADO";
 			}
 			else{ 
@@ -355,15 +373,17 @@
 		//Asociada al boton Cerrar
 		function accionCerrar() 
 		{		
-			top.cierraConParametros("NORMAL");
+			top.cierraConParametros("MODIFICADO");
+			
+			
 		}		
 
 		//Funcion asociada a boton Nuevo
 		function accionNuevoLetrado() {		
-			document.forms[0].modo.value = "modalNuevaGuardia";
-			var salida = ventaModalGeneral(document.forms[0].name,"M");	
+			document.DefinirCalendarioGuardiaForm.modo.value = "modalNuevaGuardia";
+			var salida = ventaModalGeneral(document.DefinirCalendarioGuardiaForm.name,"M");	
 			if (salida == "MODIFICADO") 
-				refrescarGuardias();
+				buscar();
 		}
 
 	</script>
@@ -380,6 +400,17 @@
 					marginwidth="0";					 
 					class="frameGeneral">
 	</iframe>
+	<%
+	if(tieneGuardias){
+	
+	%>
+		<siga:ConjBotonesAccion botones="NL,C"  modal="G" modo="<%=modo%>" />
+	<%}else{%>
+	
+		<siga:ConjBotonesAccion  botones="GC,NL,C"  modal="G" modo="<%=modo%>" />
+		
+	<%}%>
+	
 	<!-- FIN: IFRAME LISTA RESULTADOS -->
 
 <!-- FIN ******* CAPA DE PRESENTACION ****** -->

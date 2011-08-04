@@ -85,6 +85,7 @@ public enum ActionButtonsConstants {
 	BAJA_EN_TURNOS_SEL ("bajaEnTurnosSel","general.boton.bajaEnTurnosSel","darDeBajaEnTurnosSel(true)",78),
 	RENEGOCIAR ("rn","general.boton.renegociar","renegociar()",78),
 	COMUNICAR_COLEGIADOS ("comc","general.boton.comunicarColegiados","accionComunicar()",79),
+	BUSCAR ("b","general.search","buscar()",80),
 	;
 
 
