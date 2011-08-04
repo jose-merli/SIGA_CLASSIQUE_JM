@@ -806,8 +806,9 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 						solicColegioBean.setFechaEstado("SYSDATE");
 						solicColegioBean.setIdInstitucion_Sol(Integer.valueOf(idInstitucion));
 						solicColegioBean.setIdEstadoCertificado(Integer.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_CER_INICIAL));
-
-						this.insertCertificado(this.beanToHashTable(solicConsejoBean));
+						solicColegioBean.setFechaCreacion("SYSDATE");
+						solicColegioBean.setUsuCreacion(new Integer(user.getUserName()));	
+						this.insertCertificado(this.beanToHashTable(solicColegioBean));
 					}
 
 					// Si el colegio origen es distinto del actual...
@@ -827,8 +828,9 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 						solicBean.setFechaEstado("SYSDATE");
 						solicBean.setIdInstitucion_Sol(Integer.valueOf(idInstitucion));
 						solicBean.setIdEstadoCertificado(Integer.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_CER_INICIAL));
-
-						this.insertCertificado(this.beanToHashTable(solicConsejoBean));
+						solicBean.setFechaCreacion("SYSDATE");
+						solicBean.setUsuCreacion(new Integer(user.getUserName()));	
+						this.insertCertificado(this.beanToHashTable(solicBean));
 					}
 				}
 
