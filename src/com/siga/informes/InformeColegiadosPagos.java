@@ -577,6 +577,8 @@ public class InformeColegiadosPagos extends MasterReport {
 			sql.append("        f_siga_formatonumero(fact.precioaplicado*fact.porcentajefacturado/100,2) IMPORTE_OFICIO, ");
 			sql.append("        acreprod.porcentaje as PORCENTAJE_PAGADO,");
 			sql.append("        acre.descripcion as ACREDITACION, ");
+			sql.append("   turno.nombre AS NOMBRE_TURNO, ");
+			sql.append("   turno.abreviatura AS ABREVIATURA_TURNO, ");
 			sql.append("        ad.numeroasunto as NUMEROASUNTO ");
 			sql.append("   from FCS_PAGO_COLEGIADO   COL, ");
 			sql.append("        SCS_ACTUACIONDESIGNA      AD, ");
@@ -587,11 +589,14 @@ public class InformeColegiadosPagos extends MasterReport {
 			sql.append("        FCS_FACTURACIONJG         fac, ");      
 	       	sql.append("        SCS_ACREDITACIONPROCEDIMIENTO acreprod, ");
 	       	sql.append("        SCS_ACREDITACION acre, ");
+	       	sql.append("        SCS_TURNO turno, ");	       	
 	       	sql.append("        CEN_COLEGIADO cole ");	      
 			sql.append("  where DES.IDINSTITUCION = AD.IDINSTITUCION ");
 			sql.append("    AND DES.IDTURNO = AD.IDTURNO ");
 			sql.append("    AND DES.ANIO = AD.ANIO ");
 			sql.append("    AND DES.NUMERO = AD.NUMERO ");
+			sql.append("    AND DES.IDTURNO = turno.idturno ");
+			sql.append("    AND DES.Idinstitucion = turno.Idinstitucion ");			
 			sql.append("    AND COL.IDINSTITUCION = AD.IDINSTITUCION ");
 			sql.append("    and AD.IDINSTITUCION = PRO.IDINSTITUCION ");
 			sql.append("    and AD.IDPROCEDIMIENTO = PRO.IDPROCEDIMIENTO ");
