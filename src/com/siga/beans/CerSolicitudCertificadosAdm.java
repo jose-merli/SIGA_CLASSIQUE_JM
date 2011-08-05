@@ -173,7 +173,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 			bean.setFechaMod(UtilidadesHash.getString(hash, CerSolicitudCertificadosBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash, CerSolicitudCertificadosBean.C_USUMODIFICACION));
 			bean.setFechaCreacion(UtilidadesHash.getString(hash, CerSolicitudCertificadosBean.C_FECHACREACION));
-			bean.setUsuMod(UtilidadesHash.getInteger(hash, CerSolicitudCertificadosBean.C_USUCREACION));
+			bean.setUsuCreacion(UtilidadesHash.getInteger(hash, CerSolicitudCertificadosBean.C_USUCREACION));
 		}
 
 		catch (Exception e)
