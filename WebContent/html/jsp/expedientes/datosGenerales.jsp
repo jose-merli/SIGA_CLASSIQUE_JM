@@ -35,7 +35,6 @@
 	String mostrarMinutaFinal = (String)request.getAttribute("mostarMinutaFinal");
 	String derechosColegiales = (String)request.getAttribute("derechosColegiales");
 	String mostrarDenunciante = (String)request.getAttribute("mostrarDenunciante");
-	String mostrarDenunciado = (String)request.getAttribute("mostrarDenunciado");
 	
 	String totalMinuta = (String) request.getAttribute("totalMinuta");
 	if (totalMinuta == null) totalMinuta = new String("");
@@ -931,10 +930,8 @@
 		
 	</siga:ConjCampos>
 	
-<% } 
+<% } %>
 
- if (mostrarDenunciado != null && mostrarDenunciado.equalsIgnoreCase("S")) {%>
-	
 	<siga:ConjCampos leyenda="<%=tituloDenunciado%>">
 
 	<table class="tablaCampos" align="center">
@@ -996,9 +993,8 @@
 	</table>
 		
 	</siga:ConjCampos>
-<% } 
-
- if (mostrarDenunciante != null && mostrarDenunciante.equalsIgnoreCase("S")) {%>
+	
+<% if (mostrarDenunciante != null && mostrarDenunciante.equalsIgnoreCase("S")) {%>
 
 	<siga:ConjCampos leyenda="<%=tituloDenunciante%>">
 
