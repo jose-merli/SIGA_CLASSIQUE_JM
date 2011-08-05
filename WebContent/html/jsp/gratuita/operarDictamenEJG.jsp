@@ -31,6 +31,7 @@
 	String accion = (String)ses.getAttribute("accion");
 	String modo = (String)request.getAttribute("MODO");
 	String dato[] = {(String)usr.getLocation()};
+	String datos[] = new String[2];
 		
 	String anio= "", numero="", idTipoEJG = "", dictamen = "", fechaDictamen = "";
 	ArrayList vIntFDict = new ArrayList();
@@ -47,7 +48,9 @@
 	if (miHash.containsKey("IDTIPODICTAMENEJG")){
 		try {
 			obj=miHash.get("IDTIPODICTAMENEJG");
-			vIntFDict.add(obj.equals("")? "0":obj.toString());
+			vIntFDict.add(obj.equals("")? "0":obj.toString() + "," + (String)usr.getLocation());
+			datos[0]=(String) vIntFDict.get(0);
+			datos[1]=(String)usr.getLocation();
 		} catch (Exception e) {}
 	}
 	if (miHash.containsKey("IDFUNDAMENTOCALIF")){
@@ -57,7 +60,7 @@
 		} catch (Exception e) {		
 		}
 	}
-	
+		
 	int pcajgActivo = 0;
 	if (request.getAttribute("PCAJG_ACTIVO")!=null){
 		pcajgActivo = Integer.parseInt(request.getAttribute("PCAJG_ACTIVO").toString());
@@ -186,14 +189,14 @@
 							<td class="labelText">
 								<%if (accion.equalsIgnoreCase("ver")) {%> 
 									<siga:ComboBD
-										nombre="idTipoDictamenEJG" tipo="dictamenEJG" clase="boxConsulta"  pestana="t" accion="Hijo:idFundamentoCalif"
+										nombre="idTipoDictamenEJG" tipo="dictamenEJGCalif" clase="boxConsulta"  pestana="t" accion="Hijo:idFundamentoCalif"
 										filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>"
 										elementoSel="<%=vIntFDict%>" readOnly="true"  /> 
 								<%}else{%> 
 									<siga:ComboBD
-										nombre="idTipoDictamenEJG" tipo="dictamenEJG" clase="boxCombo"
-										filasMostrar="1" seleccionMultiple="false" obligatorio="false" pestana="t" accion="Hijo:idFundamentoCalif;"
-										parametro="<%=dato%>" elementoSel="<%=vIntFDict%>" /> 
+										nombre="idTipoDictamenEJG" tipo="dictamenEJGCalif" clase="boxCombo"
+										filasMostrar="1" seleccionMultiple="false" obligatorio="false" pestana="t" accion="Hijo:idFundamentoCalif"
+										elementoSel="<%=vIntFDict%>" parametro="<%=dato%>" /> 
 								<%}%>
 							</td>
 						</tr>
@@ -208,15 +211,15 @@
 								if (accion.equalsIgnoreCase("ver")) {
 							%> <siga:ComboBD
 								nombre="idFundamentoCalif" ancho="815"
-								tipo="tipoFundamentos1" pestana="t" hijo="t" parametro="<%=dato%>"
+								tipo="tipoFundamentos1" pestana="t" parametro="<%=datos%>"  hijo="t" 
 								clase="boxConsulta" filasMostrar="1" seleccionMultiple="false"
 								obligatorio="false" elementoSel="<%=vIntFCalf%>" readOnly="true" />
 							<%
 								} else {
 							%> <siga:ComboBD nombre="idFundamentoCalif"
-								ancho="815" tipo="tipoFundamentos1" pestana="t" hijo="t"  parametro="<%=dato%>"
+								ancho="815" tipo="tipoFundamentos1" pestana="t" hijo="t" parametro="<%=datos%>"
 								clase="boxCombo" filasMostrar="1" seleccionMultiple="false"
-								obligatorio="false" elementoSel="<%=vIntFCalf%>"  /> <%
+								obligatorio="false" elementoSel="<%=vIntFCalf%>" /> <%
 							 	}
 							 %>
 							</td>
@@ -290,7 +293,8 @@
 					fin();
 					return false;
 				}
-		 	<%}%> 
+		 	<%}%>
+
 			document.forms[0].submit();
 
 		}

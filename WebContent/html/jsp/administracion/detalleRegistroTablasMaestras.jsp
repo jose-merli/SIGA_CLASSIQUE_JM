@@ -300,7 +300,11 @@
 											<siga:Idioma key="Tipo Dictamen"/>
 										</td>
 										<td class="labelTextValue">
-											<siga:ComboBD nombre="idTipoDictamen" tipo="cmbTipoDictamen" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vTipoDictamen%>" clase="boxCombo" readonly="false"/>	
+										<%if (bEditable){ %>
+											<siga:ComboBD nombre="idTipoDictamen" tipo="cmbTipoDictamen" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vTipoDictamen%>" clase="boxCombo" readonly="false"/>
+										<% } else { %>
+											<siga:ComboBD nombre="idTipoDictamen" tipo="cmbTipoDictamen" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vTipoDictamen%>" clase="boxCombo" readonly="true"/>	
+										<% } %>
 										</td>
 									</tr>
 							

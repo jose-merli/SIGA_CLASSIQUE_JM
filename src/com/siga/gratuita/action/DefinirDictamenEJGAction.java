@@ -103,6 +103,13 @@ public class DefinirDictamenEJGAction extends MasterAction {
 			DefinirDictamenEJGForm miForm = (DefinirDictamenEJGForm)formulario;		
 			nuevos = miForm.getDatos();			
 			ScsEJGAdm admEJG = new ScsEJGAdm(this.getUserBean(request));
+			
+			//Se realiza el nuevo parseo de IDTIPODICTAMENEJG
+			if (!nuevos.get("IDTIPODICTAMENEJG").equals("")) {
+				// Ponemos el IDTIPODICTAMENEJG en el formato correcto
+				String[] tipoDictamenEJG = nuevos.get("IDTIPODICTAMENEJG").toString().split(",");
+				nuevos.put("IDTIPODICTAMENEJG", tipoDictamenEJG[0] );
+			}
 		
 			if (!nuevos.get("FECHADICTAMEN").equals("")) {
 				// Ponemos la fecha en el formato correcto
