@@ -787,7 +787,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 						String idContador=beanProd.getIdContador();
 						
 						// INICIO BLOQUE SINCRONIZADO 
-						obtenerContadorSinronizado(gc, idInstitucionOrigen, idContador, idTipoProducto, idProducto, idProductoInstitucion, tieneContador, htNew);
+						//obtenerContadorSinronizado(gc, idInstitucionOrigen, idContador, idTipoProducto, idProducto, idProductoInstitucion, tieneContador, htNew);
+						obtenerContadorSinronizado(gc, idInstitucion, idContador, idTipoProducto, idProducto, idProductoInstitucion, tieneContador, htNew);
 						//FIN BLOQUE SINCRONIZADO 				
 
 						///////////////////////////////////////////////
@@ -1100,7 +1101,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 						idContador=beanProd.getIdContador();
 						
 						// INICIO BLOQUE SINCRONIZADO 
-						obtenerContadorSinronizado(gc, idInstitucionOrigen, idContador, idTipoProducto, idProducto, idProductoInstitucion, tieneContador, htNew);
+						//obtenerContadorSinronizado(gc, idInstitucionOrigen, idContador, idTipoProducto, idProducto, idProductoInstitucion, tieneContador, htNew);
+						obtenerContadorSinronizado(gc, idInstitucion, idContador, idTipoProducto, idProducto, idProductoInstitucion, tieneContador, htNew);
 						//FIN BLOQUE SINCRONIZADO 				
 						
 						if (!htNew.get(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO).equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO)){
@@ -1408,7 +1410,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 						idContador=beanProd.getIdContador();
 						
 						// INICIO BLOQUE SINCRONIZADO 
-						obtenerContadorSinronizado(gc, idInstitucionOrigen, idContador, idTipoProducto, idProducto, idProductoInstitucion, tieneContador, htNew);
+						//obtenerContadorSinronizado(gc, idInstitucionOrigen, idContador, idTipoProducto, idProducto, idProductoInstitucion, tieneContador, htNew);
+						obtenerContadorSinronizado(gc, idInstitucion, idContador, idTipoProducto, idProducto, idProductoInstitucion, tieneContador, htNew);
 						//FIN BLOQUE SINCRONIZADO 				
 						
 						
