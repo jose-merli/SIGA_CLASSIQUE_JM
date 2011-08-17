@@ -31,10 +31,12 @@ import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenNoColegiadoAdm;
 import com.siga.beans.CenNoColegiadoBean;
+import com.siga.beans.ScsRetencionesAdm;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.action.RetencionesIRPFAction;
 
 
 /**
@@ -368,6 +370,17 @@ public class ColegiarAction extends MasterAction
 				} //for
 			} //if
 			
+			if(estadoColegial.equalsIgnoreCase("20")){
+			try{
+				RetencionesIRPFAction irpf = new  RetencionesIRPFAction();
+				irpf.insertarNuevo(idPersona, "SYSDATE",request);
+				}
+				catch (Exception e) {
+					t.rollback();
+					throw e;
+				}
+			}
+
 			//cerrando los cambios en BD
 			t.commit();
 			

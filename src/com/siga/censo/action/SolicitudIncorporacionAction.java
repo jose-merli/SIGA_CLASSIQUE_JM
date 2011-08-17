@@ -56,11 +56,14 @@ import com.siga.beans.CenTipoSolicitudBean;
 import com.siga.beans.CenTratamientoAdm;
 import com.siga.beans.CenTratamientoBean;
 import com.siga.beans.GenParametrosAdm;
+import com.siga.beans.ScsRetencionesAdm;
+import com.siga.beans.ScsRetencionesBean;
 import com.siga.censo.form.SolicitudIncorporacionForm;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.action.RetencionesIRPFAction;
 
 
 /**
@@ -583,10 +586,20 @@ public class SolicitudIncorporacionAction extends MasterAction
 				//quitando el boton volver porque va a ir a la ficha colegial
 				request.getSession ().setAttribute ("CenBusquedaClientesTipo", "SI");
 				fichaColegial = true;
+					try{
+					RetencionesIRPFAction irpf = new  RetencionesIRPFAction();
+					irpf.insertarNuevo(beanCli.getIdPersona().toString(),"SYSDATE",request);
+					}
+					catch (Exception e) {
+						t.rollback();
+						throw e;
+					}
+				
 			} //si se aprueba la solicitud
 			
 			//confirmando los cambios en BD
 			t.commit ();
+			
 			
 			//terminando para saltar a la ficha colegial
 			if (fichaColegial)

@@ -19,6 +19,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
+import org.json.JSONObject;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -106,10 +107,12 @@ public class DatosGeneralesAction extends MasterAction {
 				mapDestino = insertarNoColegiado(mapping, miForm, request, response);
 			} else if (accion.equalsIgnoreCase("modificarSociedad")){
 				mapDestino = modificarSociedad(mapping, miForm, request, response);
+			}else if ( accion.equalsIgnoreCase("getIdenHistorico")){
+				ClsLogging.writeFileLog("DATOS NO COLEGIALES:getIdenHistorico", 10);
+				mapDestino = getIdenHistorico(mapping, miForm, request, response);
 			}else if ( accion.equalsIgnoreCase("getAjaxTipo")){
-				ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxTipo", 10);
-				getAjaxTipo(mapping, miForm, request, response);
-						
+					ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxTipo", 10);
+					getAjaxTipo(mapping, miForm, request, response);
 			} else {
 				return super.executeInternal(mapping,
 						      formulario,
@@ -1883,7 +1886,38 @@ public class DatosGeneralesAction extends MasterAction {
 	   return "exitoInsercion";			
 	} //insertarSociedad ()
 	
-	
+	@SuppressWarnings("unchecked")
+	protected String getIdenHistorico (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
+			{
+		DatosGeneralesForm miForm = (DatosGeneralesForm)formulario;
+		//Sacamos las guardias si hay algo selccionado en el turno
+		String numero= null;
+		String insti= miForm.getIdInstitucion();
+		CenPersonaAdm admCli = new CenPersonaAdm(this.getUserBean(request) );
+		numero = admCli.obtenerUltiIdenHistorico(insti);
+		JSONObject json = new JSONObject();
+		if(numero==null){
+			numero="NIHN" + insti + "0001";//[0-9]{4}, donde el ultimo numero sera un max+1. Ej. NIHN2040;0011";
+		}else{
+			int num = new Integer(numero.substring(8)).intValue();
+			num++;
+			String numfinal=new Integer(num).toString();
+			while(numfinal.length()<4){
+				numfinal="0"+numfinal;
+			}
+			numero="NIHN" + insti + numfinal;
+		}
+		json.put("numHistorico", numero);
+		 //response.setContentType("text/x-json;charset=UTF-8");
+		 response.setHeader("Cache-Control", "no-cache");
+		 response.setHeader("Content-Type", "application/json");
+	     response.setHeader("X-JSON", json.toString());
+		 response.getWriter().write(json.toString()); 
+		return null;//"completado";
+	}
 	// NO se utiliza. Por si se quiesiera emplear Ajax.
 	protected void getAjaxTipo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)
 			throws ClsExceptions, SIGAException, Exception {

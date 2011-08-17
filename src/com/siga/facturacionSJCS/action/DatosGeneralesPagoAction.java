@@ -1197,13 +1197,18 @@ public class DatosGeneralesPagoAction extends MasterAction {
 	 * @param esSociedad 
 	 * @return
 	 * @throws ClsExceptions
+	 * @throws SIGAException 
 	 */
-	private Double obtenerIrpf(String idInstitucion, String idPersonaSociedad, boolean esSociedad) throws ClsExceptions {
+	private Double obtenerIrpf(String idInstitucion, String idPersonaSociedad, boolean esSociedad) throws ClsExceptions, SIGAException {
 		String resultado[] = EjecucionPLs.ejecutarPLCalcularIRPF_Pagos(
 				idInstitucion, idPersonaSociedad, esSociedad);
 		//comprueba si el pl se ha ejecutado correctamente
 		if (!resultado[2].equals("0")){
-			throw new ClsExceptions("Error al obtener importes de colegiado: " + resultado[3]);
+			if (resultado[2].equals("100"))
+				throw new SIGAException("error.irpf.fileNotExist"); 
+				//throw new ClsExceptions("Existen colegiados sin IRPF, por favor realicen la consulta experta ");
+			else	
+				throw new ClsExceptions("Error al obtener importes de colegiado: " + resultado[3]);
 		}
 		return new Double((String) resultado[0]);
 	}

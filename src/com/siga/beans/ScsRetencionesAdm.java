@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.atos.utils.*;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.general.SIGAException;
 
 // Clase: ScsRetencionesAdm 
 // Autor: julio.vicente@atosorigin.com
@@ -91,8 +92,45 @@ public class ScsRetencionesAdm extends MasterBeanAdministrador {
 		}
 		return beanRetencion;
 	}
-	
-	
+
+	public String getRetencionPorDefecto() throws ClsExceptions, SIGAException {
+		ScsRetencionesBean beanRetencion = null;
+		
+		String sql = new String();
+		String idRetencion = null;
+		sql+=" SELECT ";
+		sql+=" IDRETENCION "; 
+		sql+=" FROM SCS_MAESTRORETENCIONES  WHERE ";
+		sql+=" (letranifsociedad is null or letranifsociedad = '') AND ";
+		sql+=ScsRetencionesBean.C_PORDEFECTO;
+		sql+=" = '1'";
+		
+		   
+
+			Vector datos;
+			try {
+				datos = this.selectGenerico(sql);
+			} catch (SIGAException e) {
+				throw new SIGAException ("Error BBDD");
+			}
+			//como es por PK
+			if(datos.size()==1){
+				Hashtable row = (Hashtable)datos.get(0);
+				//String descripcion = (String)row.get(ScsRetencionesBean.C_DESCRIPCION);
+				//String letra = (String)row.get(ScsRetencionesBean.C_LETRANIFSOCIEDAD);
+				idRetencion = (String)row.get(ScsRetencionesBean.C_IDRETENCION);
+			}else{
+				if(datos.size()==0)
+					throw new SIGAException("messages.irpfxdef.error",new String[] {"modulo.censo"});
+					//throw new SIGAException("Error al no existir un irpf por defecto");
+				if(datos.size()>1)
+					throw new SIGAException("messages.irpfxdef2.error",new String[] {"modulo.censo"});
+					//throw new SIGAException("Error al existir mas de un irpf por defecto");
+			
+			}	
+		
+		return idRetencion;
+	}
 	
 	/**
 	 * Efectúa un SELECT en la tabla SCS_MAESTRORETENCIONES con los datos de selección intoducidos. 
@@ -189,7 +227,7 @@ public class ScsRetencionesAdm extends MasterBeanAdministrador {
 				sql.append(where);
 			
 
-			sql.append(" ORDER BY DESCRIPCION ");
+			sql.append(" ORDER BY PORDEFECTO  DESC, DESCRIPCION ");
 			
 			List<ScsRetencionesBean> alRetenciones = null;
 			try {

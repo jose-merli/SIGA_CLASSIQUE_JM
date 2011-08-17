@@ -33,9 +33,11 @@
 	boolean desactivado = false;
 	String DB_TRUE = ClsConstants.DB_TRUE;
 	String DB_FALSE = ClsConstants.DB_FALSE;
-
+	String idpersonacol=(String) request.getSession().getAttribute("idPersonaTurno");
 	ArrayList idBanco = new ArrayList();
-	idBanco.add ((String) request.getAttribute("idCuenta"));
+	String clave= ((String)request.getAttribute("idCuenta"))+"*"+idSociedadLetradoSel;
+	idBanco.add (clave);
+	//idBanco.add ((String) request.getAttribute("idCuenta"));
 	ArrayList comboSocSel = new ArrayList();
 	comboSocSel.add(idSociedadLetradoSel);
 
@@ -93,7 +95,8 @@
 	
 	function accionGuardar()
 	{
-		//var idPersonaSociedadInicial = <%=idSociedadLetradoSel%>;
+
+		
 		//var idPersonaSociedadActual = document.forms[0].sociedadesCliente.value;
 		
 		//if(idPersonaSociedadActual == idPersonaSociedadInicial)
@@ -115,6 +118,8 @@
 			alert ("<siga:Idioma key="messages.censo.componentes.errorCuentaObligatoria"/>");
 			fin();
 			return false;
+		}else if ((document.forms[0].sociedadesCliente.checked) && (document.forms[0].idCuenta.value != "")) {
+			document.forms[0].idsociedad.value= document.forms[0].idCuenta.value;
 		}
 
 		document.forms[0].action		= "<%=app%>/JGR_PestanaRetencionesIRPF.do";
@@ -193,7 +198,8 @@
 	
 		<html:form action="/JGR_PestanaRetencionesIRPF.do" method="post">
 		<html:hidden property = "idpersona" value = ""/>
-				
+		<html:hidden property = "idsociedad" value = ""/>	
+		<html:hidden property = "idsociedadant" value = ""/>				
 		<tr>
 			<td>
 				<siga:ConjCampos leyenda="censo.busquedaClientes.literal.liquidacionSJCS" >	
@@ -213,11 +219,12 @@
 						
 						<td id="cuentaBancaria">
 						<%
-							String parametro[] = new String[2];
-									parametro[0] = idPersona;
-									parametro[1] = idInstitucion;
-						%>
-							<siga:ComboBD nombre="idCuenta" tipo="cuentaSJCS" parametro="<%=parametro%>"clase="box" obligatorio="false" elementoSel="<%=idBanco%>" />
+						String parametro[] = new String[2];
+						parametro[0] = idpersonacol;
+						parametro[1] = idInstitucion;
+							//cuentaSJCS
+					  %>
+					   <siga:ComboBD nombre="idCuenta" tipo="cuentasSJCSSociedades" parametro="<%=parametro%>"clase="box" obligatorio="false" elementoSel="<%=idBanco%>" />
 						</td>
 						
 					</tr>						

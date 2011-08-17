@@ -24,9 +24,17 @@ public class ScsRetencionesBean extends MasterBean {
 	static public final String C_DESCRIPCION 			= "DESCRIPCION";
 	static public final String C_LETRANIFSOCIEDAD 		= "LETRANIFSOCIEDAD";
 	static public final String C_RETENCION 				= "RETENCION";	
+	static public final String C_PORDEFECTO 			= "PORDEFECTO";	
 	
 	
 	
+	public static String getPordefecto() {
+		return C_PORDEFECTO;
+	}
+	
+	public void setPordefecto (Integer id)			{ this.idRetencion = id; 		}
+	
+
 	// Metodos SET
 	/**
 	 * Almacena en la Bean el identificador de una retención "idretencion" 

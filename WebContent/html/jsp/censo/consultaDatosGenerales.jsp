@@ -246,7 +246,7 @@ caracterParam[0] = tipoCliente;
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
-		
+		<script src="<%=app%>/html/js/jquery.js" type="text/javascript"></script>
 		<!-- Calendario -->
 		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 
@@ -285,6 +285,7 @@ caracterParam[0] = tipoCliente;
 			
 	function formatearDocumento()
 	{
+
 	   if((document.forms[0].tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")&&(document.forms[0].numIdentificacion.value!="")) {
 			var sNIF = document.forms[0].numIdentificacion.value;
 			document.forms[0].numIdentificacion.value = formateaNIF(sNIF);
@@ -295,9 +296,43 @@ caracterParam[0] = tipoCliente;
 	   }
 	   	
 	}
-		
-		
-		function adaptaTamanoFoto () 
+	
+	function generaNumOtro()
+	{
+	   if((document.forms[0].tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>") && (document.forms[0].numIdentificacion.value=="")) {
+			generarIdenHistorico();
+			//NIHN (Número de Identificación Histórico para No colegiados) = 'NIHN' + idinstitucion + [0-9]{4}, donde el ultimo numero sera un max+1. Ej. NIHN20400011
+		}
+	   	
+	}	
+	$(document).ready(function(){
+		$(".box").change(function() {	
+		//$("input[type=select][name='tipoIdentificacion']").change(function(){
+			if($(this).attr("name")=="tipoIdentificacion"){
+				generaNumOtro();
+			}
+		 });	 
+	});
+	function generarIdenHistorico()
+	{
+
+		$.ajax({ //Comunicación jQuery hacia JSP  
+	           type: "POST",
+	           url: "/SIGA/CEN_DatosGenerales.do?modo=getIdenHistorico",
+	           data: "idInstitucion="+'<%=institucionParam[0]%>',
+	           //contentType: "application/json; charset=utf-8",
+	           dataType: "json",
+	           success:  function(json) {
+		           		document.forms[0].numIdentificacion.value=json.numHistorico;
+	           },
+	           error: function(xml,msg){
+	        	   //alert("Error1: "+xml);//$("span#ap").text(" Error");
+	        	   alert("Error: "+msg);//$("span#ap").text(" Error");
+	           }
+	        }); 
+	}
+
+	function adaptaTamanoFoto () 
 		{
 			widthMax = 180;
 			heightMax = 240;
@@ -977,7 +1012,7 @@ function str_replace(search, replace, subject) {
 					<% } %>
 					&nbsp;
 				 <% if ( formulario.getAccion().equalsIgnoreCase("nuevo")) { %>
-				      <html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="<%=estiloCajaNif%>" value="<%=nIdentificacion %>"  onBlur="formatearDocumento();"></html:text>&nbsp;
+				      <html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="<%=estiloCajaNif%>" value="<%=nIdentificacion %>" onfocus="generaNumOtro();" onBlur="formatearDocumento();"></html:text>&nbsp;
 				      <input type="button" name="idButton" value='<siga:Idioma key="censo.nif.letra.letranif" />' onclick="generarLetra();" style="align:right" class="button">
 				 <% }else{ %>
 				     <% if(formulario.getAccion().equalsIgnoreCase("editar")){ %> 

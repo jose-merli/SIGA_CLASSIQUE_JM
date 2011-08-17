@@ -767,6 +767,7 @@
 -->
 		<action path="/CEN_DatosGenerales" type="com.siga.censo.action.DatosGeneralesAction" name="datosGeneralesForm" scope="request">
 			<forward name="inicio" path="/html/jsp/censo/consultaDatosGenerales.jsp"/>
+			<forward name="completado" path="/html/jsp/censo/blanco.jsp"/>
 			<forward name="exitoInsercion" path="/html/jsp/censo/exitoInsercion.jsp"/>
 			<forward name="solicitarModificacion" path="/CEN_SolicitudDatosGenerales.do"/>
 			<forward name="sociedadSJ_inicio" path="/html/jsp/censo/consultaDatosGeneralesNoColegiado.jsp"/>

@@ -80,7 +80,7 @@
   				estilo=""
 	   			clase="tableTitle"
   				nombreCol="censo.busquedaClientes.literal.apellidos,censo.busquedaClientes.literal.nombre,censo.busquedaClientes.literal.nColegiado,censo.busquedaClientes.literal.institucion,censo.datosCV.literal.comision,censo.datosCV.literal.cargo,FactSJCS.mantRetencionesJ.literal.fechaInicio,gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.fechafin,"  
-   				tamanoCol="20,13,8,8,10,12,10,10,7"
+   				tamanoCol="20,15,8,8,10,12,10,10,5"
 	   			ajusteBotonera="true"
 				modal="M" 
 		   		activarFilaSel="true" >
@@ -108,7 +108,7 @@
 				}else{
 				 c_subTipo2=(String)b.get(CenDatosCVBean.C_IDTIPOCVSUBTIPO2);
 				}
-				String botones = "C,E";
+				String botones = "C";
 				String institucion = CenVisibilidad.getAbreviaturaInstitucion(idInstitucion);
 						
 						

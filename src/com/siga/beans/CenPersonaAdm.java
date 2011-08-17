@@ -630,7 +630,37 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 		}
 		return nif;
 	}
-	
+	public String obtenerUltiIdenHistorico(String idInstitucion) throws ClsExceptions, SIGAException{
+		CenPersonaBean personaBean;	
+		Vector v = null;
+		String nif = null;
+	    
+		try{
+			String sql = "select nifcif from cen_persona where idtipoidentificacion='50' and nifcif like '%NIHN"+idInstitucion+"%' order by nifcif desc";
+			RowsContainer rc = new RowsContainer(); 
+			rc = this.find(sql);
+//			if (rc.query(sql)) {
+			if (rc!=null) {
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable)fila.getRow(); 
+					if (registro != null){ 
+						nif =  (String) registro.get("NIFCIF");
+						return nif;
+					}	
+						
+				}
+			}
+
+		}
+//		catch (SIGAException e) {
+//			throw e;
+//		}
+		catch(Exception e) {
+			throw new ClsExceptions (e, "Error al obtener el nif");
+		}
+		return nif;
+	}
 	/** 
 	 * Funcion que elimina una entrada de la tabla  
 	 * @param  idPersona - identificador del usuario
