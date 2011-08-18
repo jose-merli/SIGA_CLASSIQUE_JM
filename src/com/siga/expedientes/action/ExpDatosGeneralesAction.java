@@ -901,6 +901,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			expBean.setIdMateria(form.getIdMateria().equals("")?null:Integer.valueOf(form.getIdMateria()));
 			expBean.setIdPretension(form.getIdPretension().equals("")?null:Integer.valueOf(form.getIdPretension()));
 			expBean.setOtrasPretensiones(form.getOtrasPretensiones());
+			expBean.setIdDireccion(form.getIdDireccion());
 			expBean.setDescripcionResolucion("");
 			expBean.setActuacionesPrescritas(null);
 			expBean.setAnotacionesCanceladas(null);
