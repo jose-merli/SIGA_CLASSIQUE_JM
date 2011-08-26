@@ -158,12 +158,12 @@
 			value="<%=(String)fila.get("IDFACTURACION")%>">
 
 		<td><%=UtilidadesString.mostrarDatoJSP((String)fila.get("FECHADESDE"))+" - "+UtilidadesString.mostrarDatoJSP((String)fila.get("FECHAHASTA"))%></td>
-		<td><%= UtilidadesString.mostrarDatoJSP((String)fila.get("NOMBREFACT"))%></td>
-		<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(importeOficio)%>&nbsp;&euro;</td>
-		<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(importeGuardia)%>&nbsp;&euro;</td>
-		<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(importeSOJ)%>&nbsp;&euro;</td>
-		<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(importeEJG)%>&nbsp;&euro;</td>
-		<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(importeTotal)%>&nbsp;&euro;</td>
+		<td><%=UtilidadesString.mostrarDatoJSP((String)fila.get("NOMBREFACT"))%></td>
+		<td style="text-align:right"><%=UtilidadesNumero.formatoCampo(importeOficio)%>&nbsp;&euro;</td>
+		<td style="text-align:right"><%=UtilidadesNumero.formatoCampo(importeGuardia)%>&nbsp;&euro;</td>
+		<td style="text-align:right"><%=UtilidadesNumero.formatoCampo(importeSOJ)%>&nbsp;&euro;</td>
+		<td style="text-align:right"><%=UtilidadesNumero.formatoCampo(importeEJG)%>&nbsp;&euro;</td>
+		<td style="text-align:right"><%=UtilidadesNumero.formatoCampo(importeTotal)%>&nbsp;&euro;</td>
 
 	</siga:FilaConIconos>
 	<%
