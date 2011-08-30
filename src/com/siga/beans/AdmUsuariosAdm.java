@@ -123,28 +123,28 @@ public class AdmUsuariosAdm extends MasterBeanAdministrador
         
         return ordenCampos;
     }
-    
-    public Vector getDatosUsuario (String idUsuario, String idInstitucion) 
-    {
-		String sql = " SELECT " + AdmUsuariosBean.C_DESCRIPCION + " NOMBRE_USUARIO, " + 
-								  AdmUsuariosBean.C_NIF + " NIF_USUARIO, " +
-								  AdmUsuariosBean.C_CODIGOEXT + " CODIGOEXT, " + 
-								  CenInstitucionBean.C_NOMBRE + " NOMBRE_INSTITUCION, " +
-								  "F_SIGA_ROLES_USUARIO(u." + AdmUsuariosBean.C_IDINSTITUCION + ", u." + AdmUsuariosBean.C_IDUSUARIO + ") NOMBRE_GRUPO " +
-						" FROM " + AdmUsuariosBean.T_NOMBRETABLA + " u, " + CenInstitucionBean.T_NOMBRETABLA + " i " +
-						" WHERE " + "u." + AdmUsuariosBean.C_IDUSUARIO + " = " + idUsuario + 
-						" AND " + "u." + AdmUsuariosBean.C_IDINSTITUCION + " = " + idInstitucion +
-						" AND " + "u." + AdmUsuariosBean.C_IDINSTITUCION + " = i." + CenInstitucionBean.C_IDINSTITUCION;
-		
+	
+	public Vector getDatosUsuario(String idUsuario, String idInstitucion)
+	{
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT U." + AdmUsuariosBean.C_DESCRIPCION + " NOMBRE_USUARIO, ");
+		sql.append("        U." + AdmUsuariosBean.C_NIF + " NIF_USUARIO, ");
+		sql.append("        U." + AdmUsuariosBean.C_CODIGOEXT + " CODIGOEXT, ");
+		sql.append("        I." + CenInstitucionBean.C_NOMBRE + " NOMBRE_INSTITUCION, ");
+		sql.append("        F_SIGA_ROLES_USUARIO(u." + AdmUsuariosBean.C_IDINSTITUCION + ", ");
+		sql.append("                             u." + AdmUsuariosBean.C_IDUSUARIO + ") NOMBRE_GRUPO ");
+		sql.append("   FROM " + AdmUsuariosBean.T_NOMBRETABLA + " u, " + CenInstitucionBean.T_NOMBRETABLA + " i ");
+		sql.append("  WHERE " + "u." + AdmUsuariosBean.C_IDUSUARIO + " = " + idUsuario);
+		sql.append("    AND " + "u." + AdmUsuariosBean.C_IDINSTITUCION + " = " + idInstitucion);
+		sql.append("    AND " + "u." + AdmUsuariosBean.C_IDINSTITUCION + " = i." + CenInstitucionBean.C_IDINSTITUCION);
+
 		try {
-			return this.selectGenerico(sql);
-		} 
-		catch (Exception e) 
-		{
+			return this.selectGenerico(sql.toString());
+		} catch (Exception e) {
 			e.printStackTrace();
 			return new Vector();
-		} 
-	
-    }
+		}
+
+	}
     
 }
