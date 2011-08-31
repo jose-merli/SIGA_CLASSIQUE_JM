@@ -1124,7 +1124,6 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 				            htNew.put(CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO, "sysdate");
 				        }
 					  	htNew.put(CerSolicitudCertificadosBean.C_FECHAMODIFICACION,"sysdate");
-					  	htNew.put(CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO,"sysdate");
 					  	
 
 					    if (!admSolicitud.updateDirect(htNew,claves,campos))  {
