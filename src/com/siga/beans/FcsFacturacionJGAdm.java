@@ -4658,7 +4658,6 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		try{
 			String sql = "  SELECT  fac.nombre NOMBRE_FACTURACION , "+
 						 "          to_char(fac.fechadesde,'dd/mm/yyyy') fechadesde, to_char(fac.fechahasta,'dd/mm/yyyy')fechahasta," +
-						 "          (select PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(sysdate,'m',1) from dual) FECHALETRA,"+
 					     "  		SUM(impguardia) + SUM(impoficio) + SUM(impejg) + SUM(impsoj)IMPORTETOTAL," +
 					     " 			SUM(impguardia)IMPORTEGUARDIA," +
 					     " 			SUM(impoficio)IMPORTEOFICIO," +

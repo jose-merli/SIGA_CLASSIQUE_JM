@@ -61,17 +61,7 @@ public class UtilidadesBDAdm
 	 *  @return String con la fecha actual 
 	 * */
 	static public String getFechaEscritaBD(String lang) throws ClsExceptions {
-		String sFecha= UtilidadesBDAdm.getDateBD("SELECT TO_CHAR(SYSDATE, 'DD/MM/YYYY') AS FECHA FROM DUAL");
-		try {
-			Locale loc= new Locale(lang);
-			SimpleDateFormat sdf1 = new SimpleDateFormat("dd/MM/yyyy"); 
-			SimpleDateFormat sdf2 = new SimpleDateFormat("d 'de' MMMM 'de' yyyy",loc); 
-			Date date = sdf1.parse(sFecha);
-			sFecha = sdf2.format(date);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return sFecha;
+		return UtilidadesBDAdm.getDateBD("SELECT PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(sysdate,'m',"+lang+") AS FECHA FROM DUAL");
 	}
 	
 	/** Funcion getHoraBD

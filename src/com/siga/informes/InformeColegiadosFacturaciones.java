@@ -37,8 +37,9 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 	protected String formatoImportes="999,999,999,999,990.00";
 	
 	public Hashtable getDatosInformeColegiado(UsrBean usr, Hashtable htDatos) throws ClsExceptions, SIGAException{
-		UtilidadesHash.set(htDatos,"FECHA",UtilidadesBDAdm.getFechaEscritaBD((String)htDatos.get("idiomaExt")));
-		String idioma = usr.getLanguage().toUpperCase();
+		String idioma = usr.getLanguage();
+		UtilidadesHash.set(htDatos,"FECHA",UtilidadesBDAdm.getFechaEscritaBD(idioma));
+		UtilidadesHash.set(htDatos,"FECHALETRA",UtilidadesBDAdm.getFechaEscritaBD(idioma));
 		String institucion =usr.getLocation();
 		String idFacturacion =(String)htDatos.get("idFacturacion");
 		Hashtable htAux=null;

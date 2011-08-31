@@ -36,8 +36,8 @@ public class InformeColegiadosPagos extends MasterReport {
 	protected String formatoImportes="999,999,999,999,990.00";
 	
 	public Hashtable getDatosInformeColegiado(UsrBean usr, Hashtable htDatos) throws ClsExceptions, SIGAException{
-		UtilidadesHash.set(htDatos,"FECHA",UtilidadesBDAdm.getFechaEscritaBD((String)htDatos.get("idiomaExt")));
 		String idioma = usr.getLanguage().toUpperCase();
+		UtilidadesHash.set(htDatos,"FECHA",UtilidadesBDAdm.getFechaEscritaBD(idioma));
 		String institucion =usr.getLocation();
 		String idPagos =(String)htDatos.get("idPago");
 		Hashtable htAux=null;
