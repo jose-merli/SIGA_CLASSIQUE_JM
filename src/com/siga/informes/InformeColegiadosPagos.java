@@ -556,20 +556,25 @@ public class InformeColegiadosPagos extends MasterReport {
 	 * @return
 	 * @throws SIGAException
 	 */
-	protected Vector obtenerDatosOficio(String idInstitucion, String idPersona, String idPagos) throws ClsExceptions {
-		Vector result= null;
-		int contador=0;
-		Hashtable codigo=new Hashtable();
-		
+	protected Vector obtenerDatosOficio(String idInstitucion, String idPersona, String idPagos) throws ClsExceptions
+	{
+		Vector result = null;
+		int contador = 0;
+		Hashtable codigo = new Hashtable();
+
 		try {
 			StringBuffer sql = new StringBuffer();
-			
+
 			sql.append(" Select  ");
-			sql.append(" f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,1) as NUMEROEJG,  ");
-			sql.append(" f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,4) as ANIOEJG,  ");
-			sql.append(" f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,3) as NUMERO_CAJG,  ");
-			sql.append(" f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,2) as ANIO_CAJG,  ");
-			sql.append("        decode(cole.comunitario,'1',cole.ncomunitario,cole.ncolegiado) as NUMERO_COLEGIADO, AD.FECHA, to_char(AD.FECHA,'DD/MM/YYYY') FECHA_OFICIO,  PRO.NOMBRE PROCEDIMIENTO, ");
+			sql.append("        f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,1) as NUMEROEJG,  ");
+			sql.append("        f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,4) as ANIOEJG,  ");
+			sql.append("        f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,3) as NUMERO_CAJG,  ");
+			sql.append("        f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,2) as ANIO_CAJG,  ");
+			sql.append("        decode(cole.comunitario,'1',cole.ncomunitario,cole.ncolegiado) as NUMERO_COLEGIADO, ");
+			sql.append("        AD.FECHA, ");
+			sql.append("        to_char(AD.FECHA,'DD/MM/YYYY') FECHA_OFICIO, ");
+			sql.append("        to_char(DES.fechaentrada,'DD/MM/YYYY') FECHA_DESIGNA, ");
+			sql.append("        PRO.NOMBRE PROCEDIMIENTO, ");
 			sql.append("        f_siga_formatonumero(COL.IMPOFICIO,2)  IMPORTEPAGADO, ");
 			sql.append("        DES.ANIO || '/' || DES.CODIGO  ASIOFI, ");
 			sql.append("        f_siga_getdefendidosdesigna(DES.IDINSTITUCION, des.anio, des.idturno, des.numero,0) NOMBRE_SOLICITANTE, ");
@@ -577,88 +582,89 @@ public class InformeColegiadosPagos extends MasterReport {
 			sql.append("        f_siga_formatonumero(fact.precioaplicado*fact.porcentajefacturado/100,2) IMPORTE_OFICIO, ");
 			sql.append("        acreprod.porcentaje as PORCENTAJE_PAGADO,");
 			sql.append("        acre.descripcion as ACREDITACION, ");
-			sql.append("   turno.nombre AS NOMBRE_TURNO, ");
-			sql.append("   turno.abreviatura AS ABREVIATURA_TURNO, ");
+			sql.append("        turno.nombre AS NOMBRE_TURNO, ");
+			sql.append("        turno.abreviatura AS ABREVIATURA_TURNO, ");
 			sql.append("        ad.numeroasunto as NUMEROASUNTO ");
+			
 			sql.append("   from FCS_PAGO_COLEGIADO   COL, ");
 			sql.append("        SCS_ACTUACIONDESIGNA      AD, ");
 			sql.append("        SCS_PROCEDIMIENTOS        PRO, ");
 			sql.append("        SCS_DESIGNA               DES, ");
 			sql.append("        FCS_FACT_ACTUACIONDESIGNA fact, ");
 			sql.append("        FCS_PAGOSJG               pag, ");
-			sql.append("        FCS_FACTURACIONJG         fac, ");      
-	       	sql.append("        SCS_ACREDITACIONPROCEDIMIENTO acreprod, ");
-	       	sql.append("        SCS_ACREDITACION acre, ");
-	       	sql.append("        SCS_TURNO turno, ");	       	
-	       	sql.append("        CEN_COLEGIADO cole ");	      
+			sql.append("        FCS_FACTURACIONJG         fac, ");
+			sql.append("        SCS_ACREDITACIONPROCEDIMIENTO acreprod, ");
+			sql.append("        SCS_ACREDITACION acre, ");
+			sql.append("        SCS_TURNO turno, ");
+			sql.append("        CEN_COLEGIADO cole ");
+			
 			sql.append("  where DES.IDINSTITUCION = AD.IDINSTITUCION ");
 			sql.append("    AND DES.IDTURNO = AD.IDTURNO ");
 			sql.append("    AND DES.ANIO = AD.ANIO ");
 			sql.append("    AND DES.NUMERO = AD.NUMERO ");
 			sql.append("    AND DES.IDTURNO = turno.idturno ");
-			sql.append("    AND DES.Idinstitucion = turno.Idinstitucion ");			
+			sql.append("    AND DES.Idinstitucion = turno.Idinstitucion ");
 			sql.append("    AND COL.IDINSTITUCION = AD.IDINSTITUCION ");
 			sql.append("    and AD.IDINSTITUCION = PRO.IDINSTITUCION ");
 			sql.append("    and AD.IDPROCEDIMIENTO = PRO.IDPROCEDIMIENTO ");
-			   
-			sql.append("    and COL.IDINSTITUCION = "+idInstitucion);
-			sql.append("    and COL.IDPERORIGEN = "+idPersona);
-			sql.append("    and COL.IDPAGOSJG = "+idPagos);
-			  
+
+			sql.append("    and COL.IDINSTITUCION = " + idInstitucion);
+			sql.append("    and COL.IDPERORIGEN = " + idPersona);
+			sql.append("    and COL.IDPAGOSJG = " + idPagos);
+
 			sql.append("    and col.idinstitucion = pag.idinstitucion ");
 			sql.append("    and col.idpagosjg = pag.idpagosjg ");
 			sql.append("    and COL.idinstitucion = fact.idinstitucion ");
 			sql.append("    and COL.idperorigen = fact.idpersona ");
-			  
+
 			sql.append("    and ad.idinstitucion = fact.idinstitucion ");
 			sql.append("    and ad.idpersonacolegiado = fact.idpersona ");
 			sql.append("    and ad.NUMEROASUNTO = fact.NUMEROASUNTO ");
 			sql.append("    and ad.NUMERO = fact.NUMERO ");
 			sql.append("    and ad.ANIO = fact.ANIO ");
 			sql.append("    and ad.IDTURNO = fact.IDTURNO ");
-			
+
 			sql.append("    and pag.idinstitucion = fact.idinstitucion ");
 			sql.append("    and pag.idfacturacion = fact.idfacturacion ");
-			  
+
 			sql.append("    and fac.idinstitucion = fact.idinstitucion ");
 			sql.append("    and fac.idfacturacion = fact.idfacturacion ");
-			
+
 			// Relacionamos las nuevas tablas para sacar la forma de pago
-			sql.append(" and acreprod.idprocedimiento = ad.idprocedimiento ");
-			sql.append(" and acreprod.idinstitucion = ad.idinstitucion_proc ");
-			sql.append(" and acreprod.idacreditacion = ad.idacreditacion ");
-			sql.append(" and acre.idacreditacion = acreprod.idacreditacion ");
-			
-			//Relacioamos la tabla SCS_ACTUACIONDESIGNA AD, CEN_COLEGIADO cole 
-			sql.append(" and  AD.idinstitucion= cole.idinstitucion ");	
-			sql.append(" and  AD.idpersonacolegiado= cole.idpersona ");			
-	          
-			sql.append(" order by AD.FECHA, ASIOFI, NUMEROASUNTO, PROCEDIMIENTO");
-			
-			RowsContainer rc=new RowsContainer();
+			sql.append("    and acreprod.idprocedimiento = ad.idprocedimiento ");
+			sql.append("    and acreprod.idinstitucion = ad.idinstitucion_proc ");
+			sql.append("    and acreprod.idacreditacion = ad.idacreditacion ");
+			sql.append("    and acre.idacreditacion = acreprod.idacreditacion ");
+
+			// Relacioamos la tabla SCS_ACTUACIONDESIGNA AD, CEN_COLEGIADO cole
+			sql.append("    and  AD.idinstitucion= cole.idinstitucion ");
+			sql.append("    and  AD.idpersonacolegiado= cole.idpersona ");
+
+			sql.append("  order by AD.FECHA, ASIOFI, NUMEROASUNTO, PROCEDIMIENTO");
+
+			RowsContainer rc = new RowsContainer();
 			rc.find(sql.toString());
-			result=new Vector();
-			if(rc!=null && rc.size()>0){
-				Vector result3=rc.getAll();
-				Vector aux=new Vector();
-				for (int g=0;result3!=null && g<result3.size();g++){
-				    aux.add(g,(Row) result3.get(g));
+			result = new Vector();
+			if (rc != null && rc.size() > 0) {
+				Vector result3 = rc.getAll();
+				Vector aux = new Vector();
+				for (int g = 0; result3 != null && g < result3.size(); g++) {
+					aux.add(g, (Row) result3.get(g));
 				}
-				for (int g=0;aux!=null && g<aux.size();g++){
-				    Hashtable ht = ((Row) aux.get(g)).getRow();
-				    ht.put("IMPORTEPAGADO", ((String)ht.get("IMPORTEPAGADO"))+ClsConstants.CODIGO_EURO);
-				    ht.put("IMPORTE_OFICIO", ((String)ht.get("IMPORTE_OFICIO"))+ClsConstants.CODIGO_EURO);
-				    result.add(g,ht);
+				for (int g = 0; aux != null && g < aux.size(); g++) {
+					Hashtable ht = ((Row) aux.get(g)).getRow();
+					ht.put("IMPORTEPAGADO", ((String) ht.get("IMPORTEPAGADO")) + ClsConstants.CODIGO_EURO);
+					ht.put("IMPORTE_OFICIO", ((String) ht.get("IMPORTE_OFICIO")) + ClsConstants.CODIGO_EURO);
+					result.add(g, ht);
 				}
 			}
 
 		} catch (Exception e) {
-			throw new ClsExceptions(e,"Error al generar el informe");
+			throw new ClsExceptions(e, "Error al generar el informe");
 		}
-		
+
 		return result;
-	}
-	
+	}	
 	
 	/**
 	 * Calcula la cantidad equivalente al cien por cien, dada una cantidad y el porcentaje al que corresponde
