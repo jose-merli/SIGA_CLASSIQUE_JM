@@ -114,7 +114,9 @@ public class ActuacionesAsistenciaLetradoAction extends MasterAction {
 				 " DECODE("+ScsActuacionAsistenciaBean.T_NOMBRETABLA+"."+ScsActuacionAsistenciaBean.C_VALIDADA+",'1','Si','No') validada, "+
 				 " DECODE("+ScsActuacionAsistenciaBean.T_NOMBRETABLA+"."+ScsActuacionAsistenciaBean.C_ANULACION+",'1','Si','No') ANULADA "+//INC-4848
 				 /**/
-				"  FROM "+ScsActuacionAsistenciaBean.T_NOMBRETABLA+
+				",(select TO_CHAR(ASI.FECHAHORA,'dd/mm/yyyy') AS FECHAHORA from SCS_ASISTENCIA ASI where ASI.IDINSTITUCION=SCS_ACTUACIONASISTENCIA.IDINSTITUCION AND ASI.ANIO=SCS_ACTUACIONASISTENCIA.ANIO AND ASI.NUMERO=SCS_ACTUACIONASISTENCIA.NUMERO) AS FECHAHORA"+
+				 
+				 "  FROM "+ScsActuacionAsistenciaBean.T_NOMBRETABLA+
 				"  where IDINSTITUCION = "+usr.getLocation()+" AND "+
 				"  ANIO = "+anio+" AND NUMERO = "+numero;
 			
@@ -445,6 +447,7 @@ public class ActuacionesAsistenciaLetradoAction extends MasterAction {
 				" asistencia.anio aanio,"+
 				" asistencia.numero anumero,"+
 				" asistencia.fechaanulacion fechaanulacion,"+
+				" TO_CHAR(asistencia.FECHAHORA,'dd/mm/yyyy') FECHAHORA,"+
 				" turno.nombre tnombre,"+
 				" guardiasturno.nombre gtnombre,"+
 				" personajg.nif pjgnif,"+

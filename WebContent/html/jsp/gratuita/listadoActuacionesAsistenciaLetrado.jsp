@@ -99,7 +99,7 @@
 		    	String select2 = "";
 		    	Vector v = null;
 		    	Vector asi = null;
-		    	ScsAsistenciasAdm scsAsistenciasAdm = new ScsAsistenciasAdm(usr);
+		    	
 				while ((recordNumber) <= obj.size())
 				{	 
 					Hashtable hash = (Hashtable)obj.get(recordNumber-1);
@@ -126,9 +126,6 @@
 				 	if((anulacion!=null)&&(anulacion).equalsIgnoreCase("1"))
 				 		modo="VER";
 					
-				 	select2 = "select TO_CHAR(FECHAHORA,'dd/mm/yyyy')AS FECHAASI from SCS_ASISTENCIA where IDINSTITUCION="+hash.get("IDINSTITUCION")+"AND ANIO="+hash.get("ANIO") +"AND NUMERO="+hash.get("NUMERO");
-					asi=scsAsistenciasAdm.ejecutaSelect(select2);
-					Hashtable asihash = (Hashtable) asi.get(0);
 					
 				%>
 					<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" clase="listaNonEdit" modo="<%=modo%>">
@@ -141,7 +138,7 @@
 						<% fecha = GstDate.getFormatedDateShort("",(String) hash.get("FECHA")); %>
 
 						<td><%=fecha%></td>
-<!-- -->				<% fechasi= (String) asihash.get("FECHAASI");%>
+<!-- -->				<% fechasi= (String) hash.get("FECHAHORA");%>
 						<td><%=fechasi%>
 						</td>
 						<td><%=((String) hash.get("NOMBREFACTURACION")==null?"":(String) hash.get("NUMEROASUNTO"))%>&nbsp;</td>

@@ -84,6 +84,7 @@
 	String idTipoActuacion = "";
 	String idCosteFijo = "";
 	String descripcionCosteFijo = "";
+	String FECHAHORA="";
 	String IDTURNO = "";
 	String facturada = "";
 	String fechaDelDia = UtilidadesBDAdm.getFechaBD("");
@@ -144,6 +145,7 @@
 		 ACDIADESPUES=(String) hash.get("ACDIADESPUES");
 		 ACNUMEROASUNTO=(String) hash.get("ACNUMEROASUNTO");
 		 ACOJUSTIFICACION=(String) hash.get("ACOJUSTIFICACION");
+		 FECHAHORA=(String) hash.get("FECHAHORA");
 		 IDTURNO=(String) hash.get("IDTURNO");
 		if(modo.equals("alta")) 
 			ACIDACTUACION=(String) request.getAttribute("idactuacion");
@@ -186,6 +188,7 @@
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 	<!-- validaciones struct -->
 	<html:javascript formName="AsistenciasForm" staticJavascript="false" />  
+	<script language="JavaScript" src="<%=app%>/html/js/validation.js" type="text/jscript"></script>
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	<!-- fin validaciones struct -->
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
@@ -270,6 +273,7 @@
 	<html:form action = "/JGR_ActuacionAsistenciaLetrado.do" method="POST">
 		<input type="hidden" name="acidactuacion" value="<%=ACIDACTUACION%>" />
 		<input type="hidden" name="actuacionValidada" value="<%=actuacionValidada%>" />
+		<input type="hidden" name="fechaHora" value="<%=FECHAHORA%>" />
 		<input type="hidden" name="validarJustificacion" value="<%=validarJustificaciones%>" />
 		<html:hidden name="AsistenciasForm" property="modo" value = "<%=modo%>"/>	
 		<html:hidden name="AsistenciasForm" property="anio" />
@@ -397,7 +401,7 @@
 				<siga:Idioma key='gratuita.mantActuacion.literal.fecha'/>&nbsp(*)
 			</td>
 			<td>	
-				<html:text name="AsistenciasForm" property="acfecha" size="10" maxlength="10" styleClass="box" value="<%=fecha%>"  readOnly="true"></html:text><%if(!modo.equals("consulta")) {%>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(acfecha);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a><%}%>
+				<html:text name="AsistenciasForm" property="acfecha" size="10" maxlength="10" styleClass="box" value="<%=fecha%>"  readOnly="true"></html:text><%if(!modo.equals("consulta")) {%>&nbsp;&nbsp;<a onClick="showCalendarGeneral(acfecha); checkDiaDespues(acfecha,fechaHora);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a><%}%>
 			</td>
 			<%}else{%>
 			<td class="labelText">	
@@ -698,7 +702,24 @@
 				
 				//document.forms[0].checkActuacionValidacion.checked=true;
 			}
-
+			function checkDiaDespues(fecha1, fecha2){
+				 var fechaAct=fecha1.value;
+				 var fechaHora=fecha2.value;
+				  /*validar(fecha1.value, fecha2.value){*/
+				  if (isAfter(fechaAct,fechaHora)){
+				   document.forms[0].acdiadespues.checked=true;
+				  
+				  }else{
+				    if (isAfter(fechaHora,fechaAct)){
+					  alert("La fecha de actuación no puede ser anterior a la fecha de la asistencia ("+fechaHora+")");
+					  AsistenciasForm.acfecha.value="";
+					  document.forms[0].acdiadespues.checked=false;
+					}else{// cuando la fecha de asistencia es igual que la de la actuacion el check del dia despues no se chequea.
+					  document.forms[0].acdiadespues.checked=false;
+					
+					}// fin del if
+				  }// fin del if
+				}
 	</script>
 
 	<!-- INICIO: BOTONES BUSQUEDA -->	
