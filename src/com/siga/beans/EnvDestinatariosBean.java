@@ -9,6 +9,7 @@ public class EnvDestinatariosBean extends MasterBean {
 	static public final String TIPODESTINATARIO_CENPERSONA = "CEN_PERSONA";
 	static public final String TIPODESTINATARIO_SCSPERSONAJG = "SCS_PERSONAJG";
 	static public final String TIPODESTINATARIO_SCSJUZGADO = "SCS_JUZGADO";
+	static public final String TIPODESTINATARIO_SCSPROCURADOR = "SCS_PROCURADOR";
 	
 	//Variables
     private Integer idEnvio;

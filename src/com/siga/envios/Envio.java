@@ -47,6 +47,8 @@ import com.siga.beans.PysProductosInstitucionAdm;
 import com.siga.beans.PysProductosInstitucionBean;
 import com.siga.beans.ScsPersonaJGAdm;
 import com.siga.beans.ScsPersonaJGBean;
+import com.siga.beans.ScsProcuradorAdm;
+import com.siga.beans.ScsProcuradorBean;
 import com.siga.beans.ScsTelefonosPersonaJGBean;
 import com.siga.certificados.Plantilla;
 import com.siga.general.SIGAException;
@@ -265,6 +267,30 @@ public class Envio
 				        	}
 						}
 			        }
+			        
+	    			
+	    			
+	    			
+	    		}else if(tipoDestinatario.equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR)){
+	    			ScsProcuradorAdm procuradorAdm = new ScsProcuradorAdm(usrBean);
+	    			Vector procuradorVector = procuradorAdm.busquedaProcurador(enviosBean.getIdInstitucion().toString(),idPersona);
+	    			Hashtable procuradorHashtable = (Hashtable) procuradorVector.get(0);
+	    			
+					destBean.setApellidos1((String)procuradorHashtable.get(ScsProcuradorBean.C_APELLIDO1));
+			        destBean.setApellidos2((String)procuradorHashtable.get(ScsProcuradorBean.C_APELLIDO2));
+			        destBean.setNombre((String)procuradorHashtable.get(ScsProcuradorBean.C_NOMBRE));
+			        destBean.setNifcif("");
+			        
+			        destBean.setDomicilio((String)procuradorHashtable.get(ScsProcuradorBean.C_DIRECCION));
+			        destBean.setIdPoblacion((String)procuradorHashtable.get(ScsProcuradorBean.C_IDPOBLACION));
+			        destBean.setIdProvincia((String)procuradorHashtable.get(ScsProcuradorBean.C_IDPROVINCIA));
+			        destBean.setIdPais(ClsConstants.ID_PAIS_ESPANA);
+			         
+			        destBean.setCodigoPostal((String)procuradorHashtable.get(ScsProcuradorBean.C_CODIGOPOSTAL));
+			        destBean.setCorreoElectronico((String)procuradorHashtable.get(ScsProcuradorBean.C_EMAIL));
+			        destBean.setFax1((String)procuradorHashtable.get(ScsProcuradorBean.C_FAX1));
+			        destBean.setFax2((String)procuradorHashtable.get(ScsProcuradorBean.C_FAX1));
+			        destBean.setMovil((String)procuradorHashtable.get(ScsProcuradorBean.C_TELEFONO1));
 			        
 	    			
 	    			

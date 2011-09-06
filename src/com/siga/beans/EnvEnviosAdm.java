@@ -447,6 +447,18 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			sql.append(" AND D.Tipodestinatario ='");
 			sql.append(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG);
 			sql.append("') ");
+			sql.append(" UNION ");
+			sql.append(" (SELECT  D.NOMBRE || ' ' || D.APELLIDOS1 || ' ' || D.APELLIDOS2 AS NOMBREYAPELLIDOS,D.NIFCIF,null,D.IDPERSONA ");
+			sql.append(", D.TIPODESTINATARIO");
+			sql.append(" FROM ENV_DESTINATARIOS D ");
+			sql.append(" WHERE D.IDINSTITUCION = ");
+			sql.append(idInstitucion);
+			sql.append(" AND D.IDENVIO = ");
+			sql.append(idEnvio);
+			sql.append(" AND D.Tipodestinatario ='");
+			sql.append(EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR);
+			sql.append("') ");
+			
 			sql.append(") ORDER BY NOMBREYAPELLIDOS ");   
 			
 			// TODO AÑADIR UNION PARA JUZGADOS

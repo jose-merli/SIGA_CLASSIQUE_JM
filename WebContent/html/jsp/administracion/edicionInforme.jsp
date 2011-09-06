@@ -224,6 +224,7 @@
 			<td class="labelText">
 					<input type="checkbox" name="destinatariosCheck" value="C" ><siga:Idioma key="administracion.informes.destinatarios.colegiados"/>
 					<input type="checkbox" name="destinatariosCheck" value="S" ><siga:Idioma key="administracion.informes.destinatarios.solicitantes"/>
+					<input type="checkbox" name="destinatariosCheck" value="P" ><siga:Idioma key="administracion.informes.destinatarios.procurador"/>
 					<input type="hidden" name="destinatariosCheck" value="J" >
 			</td>
 		</tr>

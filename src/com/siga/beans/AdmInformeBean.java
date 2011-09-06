@@ -23,6 +23,7 @@ public class AdmInformeBean extends MasterBean {
 	private Integer idInstitucion;
 	static public final String TIPODESTINATARIO_CENPERSONA = "C";
 	static public final String TIPODESTINATARIO_SCSPERSONAJG = "S";
+	static public final String TIPODESTINATARIO_SCSPROCURADOR = "P";
 	static public final String TIPODESTINATARIO_SCSJUZGADO = "J";
 	static public final String TIPOFORMATO_WORD = "W";
 	static public final String TIPOFORMATO_EXCEL = "E";

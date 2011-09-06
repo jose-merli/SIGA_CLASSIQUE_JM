@@ -196,7 +196,24 @@ public class EnvDestinatariosAdm extends MasterBeanAdministrador {
             sb.append(" AND DES.IDPERSONA = PER.IDPERSONA  AND DES.IDINSTITUCION = COL.IDINSTITUCION(+) AND DES.IDPERSONA = COL.IDPERSONA(+) AND DES.IDPAIS = PA.IDPAIS(+)");
             sb.append(" AND DES.IDPROVINCIA = PR.IDPROVINCIA(+) AND DES.IDPOBLACION = PO.IDPOBLACION(+) and DES.TIPODESTINATARIO='SCS_PERSONAJG'");
             sb.append(" AND PER.IDINSTITUCION="+idInstitucion);
-  
+            
+            sb.append(" UNION "); 
+            
+            sb.append(" SELECT DES.IDINSTITUCION, DES.IDPERSONA,  DES.DOMICILIO, DES.POBLACIONEXTRANJERA, DES.CODIGOPOSTAL, DES.FAX1, DES.FAX2, DES.MOVIL,");
+            sb.append(" DES.CORREOELECTRONICO, DES.NOMBRE,  DES.APELLIDOS1,  DES.APELLIDOS2, DES.NIFCIF, PRO.NCOLEGIADO, F_SIGA_GETRECURSO(PA.NOMBRE, 1) AS PAIS,");
+            sb.append(" PR.NOMBRE AS PROVINCIA, PO.NOMBRE AS POBLACION FROM ENV_DESTINATARIOS DES, SCS_PROCURADOR  PRO,");
+            sb.append(" CEN_PAIS  PA, CEN_PROVINCIAS  PR, CEN_POBLACIONES   PO  WHERE DES.IDINSTITUCION ="+idInstitucion+"  AND DES.IDENVIO ="+idEnvio+ " AND DES.IDPERSONA ="+idPersona);
+            sb.append(" AND DES.IDPERSONA = PRO.IDPROCURADOR  AND DES.IDINSTITUCION = PRO.IDINSTITUCION AND DES.IDPAIS = PA.IDPAIS(+)");
+            sb.append(" AND DES.IDPROVINCIA = PR.IDPROVINCIA(+) AND DES.IDPOBLACION = PO.IDPOBLACION(+) and DES.TIPODESTINATARIO='SCS_PROCURADOR'");
+            
+            
+            
+            
+            
+           
+            
+            
+             
 
 			if (rc.query(sb.toString())) {
 				for (int i = 0; i < rc.size(); i++)	{

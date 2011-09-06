@@ -682,6 +682,7 @@ public class DefinirEnviosAction extends MasterAction {
 					}
 					*/
 				boolean isASolicitantes = false;
+				boolean isAprocurador = false;
 				if(isPersonaUnica){
 					
 					
@@ -701,6 +702,9 @@ public class DefinirEnviosAction extends MasterAction {
 								if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)){
 									isASolicitantes = true;
 									break;
+								}else if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPROCURADOR)){
+									isAprocurador = true;
+									break;
 								}
 							}
 
@@ -716,7 +720,8 @@ public class DefinirEnviosAction extends MasterAction {
 				
 				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")));
 				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
-				request.setAttribute("isEditarEnvio",Boolean.valueOf(isPersonaUnica&&!isASolicitantes));
+				request.setAttribute("isEditarEnvio",Boolean.valueOf(isPersonaUnica&&!isASolicitantes&&!isAprocurador));
+				//request.setAttribute("isEditarEnvio",Boolean.valueOf(false));
 				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.genericos.designas.asunto");
 
 
@@ -2214,6 +2219,7 @@ public class DefinirEnviosAction extends MasterAction {
 		return idPersona;
 
 	}
+	
 	
 	private int getNumSolicitantesDesignas(Vector vCampos,UsrBean userBean)throws ClsExceptions,SIGAException{
 		ScsDesignaAdm desigAdm = new ScsDesignaAdm(userBean);

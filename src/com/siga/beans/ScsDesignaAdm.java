@@ -1164,6 +1164,43 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	    }
 		return null;
 	}
+	public String getIDProcuradorDesig (String idInstitucion, String idTurno, String anio, String numero) throws ClsExceptions,SIGAException {
+	    Hashtable codigos = new Hashtable();
+	    try {
+	        codigos.put(new Integer(1),idInstitucion.toString());
+	        codigos.put(new Integer(2),idTurno);
+	        codigos.put(new Integer(3),anio);
+	        codigos.put(new Integer(4),numero);
+	        codigos.put(new Integer(5),5);
+	        
+ 
+	        
+	       
+			String select =	"SELECT F_SIGA_GETPROCURADOR_DESIGNA(:1, :2, :3, :4,:5) as IDPROCURADOR_DESIG FROM DUAL"; 
+
+			RowsContainer rc = new RowsContainer(); 
+			if (rc.queryBind(select, codigos)) {
+				if (rc.size() != 1) return null;
+				Hashtable aux = (Hashtable)((Row) rc.get(0)).getRow();
+				String num = UtilidadesHash.getString(aux, "IDPROCURADOR_DESIG");
+				return num;
+			}
+		}
+	    catch (Exception e) {
+	   		if (e instanceof SIGAException){
+	   			throw (SIGAException)e;
+	   		}
+	   		else {
+	   			if (e instanceof ClsExceptions){
+	   				throw (ClsExceptions)e;
+	   			}
+	   			else {
+	   				throw new ClsExceptions(e, "Error al obtener el id del PROCURADOR designado.");
+	   			}
+	   		}	
+	    }
+		return null;
+	}
 	
 	/**
 	 * Obtiene el id letrado de la designacion
