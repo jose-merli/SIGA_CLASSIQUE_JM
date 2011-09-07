@@ -15,6 +15,7 @@
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.censo.form.DatosGeneralesForm"%>
+<%@ page import="com.siga.censo.form.BusquedaCensoForm"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%> 
@@ -31,7 +32,7 @@
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
 	UsrBean user = (UsrBean) ses.getAttribute("USRBEAN");
 	boolean bOcultarHistorico = user.getOcultarHistorico();
-
+	String buscarPersona = UtilidadesString.getMensajeIdioma(user, "general.censo.search");
 	DatosGeneralesForm formulario = (DatosGeneralesForm)request.getAttribute("datosGeneralesForm");
 	String modo = formulario.getAccion();
 
@@ -616,7 +617,66 @@ function str_replace(search, replace, subject) {
     return sa ? s : s[0];
 } 			  		
 		
+	function buscar() 
+	{
+		sub();		
+		document.all.modo.value="buscar";						
+		auditoriaAdminForm.submit();
+				
+	}
+	var poblacionSeleccionada;
+	function recargarComboHijo() {
+		var acceso = poblacionFrame.document.getElementsByTagName("select");
+		acceso[0].value = poblacionSeleccionada;
+		document.datosGeneralesForm.poblacion.value = poblacionSeleccionada;
+	}
+	function buscarCliente()
+	{		
 		
+		var resultado=ventaModalGeneral("busquedaCensoModalForm","G");
+		if (resultado!=undefined && resultado[0]!=undefined ){
+		
+			datosGeneralesForm.idPersona.value       = resultado[0];
+			datosGeneralesForm.idInstitucion.value   = resultado[1];
+			datosGeneralesForm.numColegiado.value   =  resultado[2];
+			//datosGeneralesForm.numIdentificacion.value = formateaNIF(resultado[3]);
+			//generarLetra();
+			datosGeneralesForm.numIdentificacion.value = resultado[3];
+			document.busquedaCensoModalForm.nif.value= datosGeneralesForm.numIdentificacion.value;
+			datosGeneralesForm.nombre.value          = resultado[4];
+			datosGeneralesForm.apellido1.value       = resultado[5];
+			datosGeneralesForm.apellido2.value = resultado[6]; 
+			datosGeneralesForm.domicilio.value   = resultado[7];
+			datosGeneralesForm.provincia.value   = resultado[9];
+			document.getElementById("provincia").onchange();
+			window.setTimeout("recargarComboHijo()",100,"Javascript");
+			poblacionSeleccionada = resultado[8];
+			if(resultado[11]!=null && trim(resultado[11])!='')
+				datosGeneralesForm.codigoPostal.value     = trim(resultado[11]);
+			if(resultado[12]!=null && trim(resultado[12])!='')
+				datosGeneralesForm.telefono1.value=trim(resultado[12]);
+			if(resultado[13]!=null&& trim(resultado[13])!='')
+				datosGeneralesForm.correoElectronico.value=trim(resultado[13]);
+			datosGeneralesForm.sexo.value=resultado[14];
+			datosGeneralesForm.tratamiento.value=resultado[15];
+			if(resultado[16]!=null&& trim(resultado[16])!='')
+				datosGeneralesForm.fax1.value=trim(resultado[16]);
+			
+			document.forms[0].otroCol.value = "S";
+			datosGeneralesForm.tipoIdentificacion.disabled="disabled";
+			datosGeneralesForm.numIdentificacion.disabled="disabled";
+			datosGeneralesForm.tratamiento.disabled="disabled";
+			datosGeneralesForm.sexo.disabled="disabled";
+			datosGeneralesForm.idInstitucion.disabled="disabled";
+			datosGeneralesForm.numColegiado.disabled="disabled";   
+			datosGeneralesForm.nombre.disabled="disabled";      
+			datosGeneralesForm.apellido1.disabled="disabled";   
+			datosGeneralesForm.apellido2.disabled="disabled"; 
+			
+		}		
+		//a.a();
+	}
+	
 		
 		</script>
 
@@ -652,26 +712,51 @@ function str_replace(search, replace, subject) {
 			<html:hidden  name="datosGeneralesForm" property="idInstitucion"/>
 			<html:hidden  name="datosGeneralesForm" property="idPersona"/>
 			<html:hidden  name="datosGeneralesForm" property="accion"/>
-			<html:hidden  name="datosGeneralesForm" property="tratamiento" value="1"/>
 			<html:hidden name="datosGeneralesForm" property="motivo"/>
 			<html:hidden name="datosGeneralesForm" property="abono" value="B" />
 			<html:hidden name="datosGeneralesForm" property="cargo" value="B" />
 			<html:hidden name="datosGeneralesForm" property="idTipoDireccion" value=""/>
 			<html:hidden name="datosGeneralesForm" property="numColegiado"/>
+			<input type ="hidden" name="otroCol">
 			<html:hidden property="actionModal" value=""/>
 			<html:hidden property="tipo" value="<%=sTipo%>"/>
+
+			
 	<tr>
 
 		<!-- FILA 1: Datos Generales -->
+		
+		<td>
+			<siga:ConjCampos leyenda="general.censo.titulo.search">	
+			<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0">
+				<tr>
+					<!-- TIPO IDENTIFICACION -->
+					<td class="labelText"  colspan="4">
+					<input type="button" class="button" name="idButton" alt="<%=buscarPersona%>" id="idButton"  onclick="return buscarCliente();" value="<%=buscarPersona%>"/>&nbsp;
+					</td>	
+				</tr>	
+				<tr>
+					<td class="labelText"  colspan="4">
+				</td>	
+				</tr>	
+		    </table>
+					
+			</siga:ConjCampos>	
+		</td>
+		
+	</tr>
+   
+	<!-- FILA 2: Informacion Personal -->
+	<tr>
 		<td>
 				<siga:ConjCampos leyenda="censo.busquedaClientes.literal.titulo1">
-				<table  class="tablaCampos"  align="center" cellpadding="0" cellpadding="0">
+		<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0">
 				<tr>
 					<!-- TIPO IDENTIFICACION -->
 					<td class="labelText">
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.tipoIdentificacion"/>&nbsp;(*)
 					</td>				
-					<td>
+					<td colspan="3">
 					<% if ( formulario.getAccion().equalsIgnoreCase("nuevo")) { %>
 							<siga:ComboBD nombre = "tipoIdentificacion" tipo="cmbTipoIdentificacionSinCIF" clase="box" obligatorio="true" elementoSel="<%=tipoIdentificacionSel%>" />						
 					<% } else { 
@@ -681,8 +766,7 @@ function str_replace(search, replace, subject) {
 							<siga:ComboBD nombre = "tipoIdentificacion" tipo="cmbTipoIdentificacionSinCIF" clase="boxConsulta" obligatorio="true" elementoSel="<%=tipoIdentificacionSel%>" readonly="true"/>
 						<% } %>
 					<% } %>
-					</td>
-					<td> 
+					
 					
 				 <% if ( formulario.getAccion().equalsIgnoreCase("nuevo")) { %>
 				      <html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="<%=estiloCajaNif%>" value="<%=nIdentificacion %>"  onblur="formatearDocumento();"></html:text>		
@@ -710,23 +794,13 @@ function str_replace(search, replace, subject) {
 				 <% } %>
 					</td>
 				</tr>
-				</table>
-				</siga:ConjCampos>
-		</td>
-	</tr>
-   
-	<!-- FILA 2: Informacion Personal -->
-	<tr>
-		<td>
-				<siga:ConjCampos leyenda="censo.general.literal.informacionOrganizacion">
-				<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0">
 				<tr>
 					<!-- TRATAMIENTO -->
 					<td class="labelText" style="width:170px">
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.tratamiento"/>&nbsp;(*)
 					</td>
 					<td  style="width:200px">
-						<siga:ComboBD nombre = "tratamiento" tipo="cmbTratamiento" clase="<%=estiloCaja %>" obligatorio="true" elementoSel="<%=tratamientoSel %>" readonly="<%=readonly %>" />						
+						<siga:ComboBD nombre = "tratamiento" tipo="cmbTratamiento"  clase="<%=estiloCaja %>" obligatorio="true" readonly="<%=readonly %>" />						
 					</td>
 					<td class="labelText" style="width:170px">
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.nombre"/>&nbsp;(*)
@@ -1044,6 +1118,32 @@ function str_replace(search, replace, subject) {
 
 </html:form>
 
+<html:form action="/CEN_BusquedaCensoModal" method="POST" target="_self">
+	<input type="hidden" name="actionModal" value="">
+	<input type="hidden" name="modo" value="abrirBusquedaCensoModal">
+	<input type="hidden" name="clientes"	value="1">
+	<input type="hidden" name="permitirAniadirNuevo" value="S">
+				<html:hidden  name="busquedaCensoModalForm" property="nombre"/>
+			<html:hidden  name="busquedaCensoModalForm" property="apellido1"/>
+			<html:hidden  name="busquedaCensoModalForm" property="apellido2"/>
+			<html:hidden  name="busquedaCensoModalForm" property="numeroColegiado"/>
+			<html:hidden  name="busquedaCensoModalForm" property="idPersona"/>
+			<html:hidden  name="busquedaCensoModalForm" property="idInstitucion"/>
+			<html:hidden  name="busquedaCensoModalForm" property="nif"/>
+			<html:hidden  name="busquedaCensoModalForm" property="direccion"/>
+			<html:hidden  name="busquedaCensoModalForm" property="codPostal"/>
+			<html:hidden  name="busquedaCensoModalForm" property="pais"/>
+			<html:hidden  name="busquedaCensoModalForm" property="provincia"/>
+			<html:hidden  name="busquedaCensoModalForm" property="poblacion"/>
+			<html:hidden  name="busquedaCensoModalForm" property="poblacionExt"/>
+			<html:hidden name="busquedaCensoModalForm" property="telefono"/>
+			<html:hidden name="busquedaCensoModalForm" property="telefono2"/>
+			<html:hidden name="busquedaCensoModalForm" property="movil"/>
+			<html:hidden name="busquedaCensoModalForm" property="fax1" />
+			<html:hidden name="busquedaCensoModalForm" property="fax2"/>
+			<html:hidden name="busquedaCensoModalForm" property="mail" />
+			<html:hidden name="busquedaCensoModalForm" property="paginaWeb"/>
+</html:form>
 
 
 
@@ -1104,6 +1204,15 @@ function str_replace(search, replace, subject) {
 var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
 		//Asociada al boton Restablecer
 		function accionRestablecer() {
+			document.forms[0].otroCol.value="";
+			datosGeneralesForm.idInstitucion.disabled="";
+			datosGeneralesForm.tipoIdentificacion.disabled="";
+			datosGeneralesForm.numColegiado.disabled="";   
+			datosGeneralesForm.numIdentificacion.disabled="";
+			datosGeneralesForm.nombre.disabled="";      
+			datosGeneralesForm.apellido1.disabled="";   
+			datosGeneralesForm.apellido2.disabled=""; 
+			datosGeneralesForm.tratamiento.disabled="";
 			document.forms[0].reset();	
 		}
 
@@ -1144,9 +1253,37 @@ var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
 		function accionGuardar() {
 		
 			sub();
-			if (validarFormulario() && validarDireccion()) {
-				document.datosGeneralesForm.modo.value = "validarNoColegiado";
-				document.datosGeneralesForm.submit();
+			if (validarDireccion()) {
+				if(document.forms[0].otroCol.value=="S"){
+					document.busquedaCensoModalForm.numeroColegiado.value    =document.datosGeneralesForm.numColegiado.value;
+					document.busquedaCensoModalForm.apellido2.value=document.datosGeneralesForm.apellido2.value;
+					document.busquedaCensoModalForm.apellido1.value    =document.datosGeneralesForm.apellido1.value;
+					document.busquedaCensoModalForm.nombre.value    =document.datosGeneralesForm.nombre.value;
+					document.busquedaCensoModalForm.idPersona.value    =document.datosGeneralesForm.idPersona.value;
+					document.busquedaCensoModalForm.idInstitucion.value=document.datosGeneralesForm.idInstitucion.value;
+					document.busquedaCensoModalForm.nif.value          =document.datosGeneralesForm.numIdentificacion.value;					
+					document.busquedaCensoModalForm.direccion.value    =document.datosGeneralesForm.domicilio.value;
+					document.busquedaCensoModalForm.codPostal.value    =document.datosGeneralesForm.codigoPostal.value;
+					document.busquedaCensoModalForm.pais.value         =document.datosGeneralesForm.pais.value;
+					document.busquedaCensoModalForm.provincia.value    =document.datosGeneralesForm.provincia.value;
+					document.busquedaCensoModalForm.poblacion.value    =document.datosGeneralesForm.poblacion.value;
+					document.busquedaCensoModalForm.poblacionExt.value =document.datosGeneralesForm.poblacionExt.value;
+					document.busquedaCensoModalForm.telefono.value     =document.datosGeneralesForm.telefono1.value;
+					document.busquedaCensoModalForm.telefono2.value    =document.datosGeneralesForm.telefono2.value;
+					document.busquedaCensoModalForm.movil.value        =document.datosGeneralesForm.movil.value;
+					document.busquedaCensoModalForm.fax1.value         =document.datosGeneralesForm.fax1.value;
+					document.busquedaCensoModalForm.fax2.value         =document.datosGeneralesForm.fax2.value;
+					document.busquedaCensoModalForm.mail.value         =document.datosGeneralesForm.correoElectronico.value;
+					document.busquedaCensoModalForm.paginaWeb.value    =document.datosGeneralesForm.paginaWeb.value;
+					document.busquedaCensoModalForm.modo.value = "insertarNoColegiado";
+					document.busquedaCensoModalForm.submit();
+					window.returnValue="MODIFICADO";
+				}else{
+					if (validarFormulario()){ 
+						document.datosGeneralesForm.modo.value = "validarNoColegiado";
+						document.datosGeneralesForm.submit();
+					}
+				}
 				
 			}else{
 				fin();
@@ -1161,9 +1298,10 @@ var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
 		
 		}
 		function traspasaDatosCliente(resultado){
+			
 			top.cierraConParametros(resultado);
 		}
-		
+	
 		//funciones de direcciones
 		function selPais(valor) {                                                                   
 		   if (valor!="" && valor!=idEspana) {

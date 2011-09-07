@@ -459,5 +459,33 @@ public class CenVisibilidad
 	}
   }
 
+  public static String getVisibilidadCenso (String idInstitucion) throws ClsExceptions
+  {
+	  
+	String sqlInstituciones = "";
+	String instituciones = "";
+  	try {
+  	  	// Acceso a BBDD
+  		RowsContainer rcInstituciones = null;
+  		RowsContainer rcVisibilidad = null;
+		// consulta de insituciones
+		sqlInstituciones = "SELECT ID_COLEGIO FROM v_censo_colegios where ID_COLEGIO <>"+idInstitucion;
+  		rcInstituciones = new RowsContainer(); 
+  		if (rcInstituciones.query(sqlInstituciones)) {
+  				for (int i = 0; i < rcInstituciones.size(); i++)	{
+  					Row filaInstituciones = (Row) rcInstituciones.get(i);
+  					String id = (String)filaInstituciones.getValue("ID_COLEGIO");
+  					instituciones += id;
+  					if((i+1) != rcInstituciones.size())
+  						instituciones = instituciones + ",";
+  				}
+  		}	
+  		return instituciones;
+  	}
+  	catch (Exception e) { 	
+		throw new ClsExceptions (e, "Error al obtener la visibilidad de una institución."); 
+	}
+  }
+
 
 }

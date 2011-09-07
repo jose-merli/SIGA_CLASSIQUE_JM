@@ -26,7 +26,8 @@ public enum SearchButtonsConstants {
 	ANIADIR_A_REMESA ("ar","general.boton.aniadirARemesa","aniadirARemesa(true)",19),
 	DESCARGA_EJG ("dee","general.boton.descargaEejg","descargaEejg(true)",20),
 	RENEGOCIAR ("rn","general.boton.renegociar","renegociar(true)",21),
-	NUEVO_GRUPOS ("ng","general.boton.nuevoGrupos","nuevoGrupos()",22);
+	NUEVO_GRUPOS ("ng","general.boton.nuevoGrupos","nuevoGrupos()",22),
+	CERRAR ("ce","general.boton.close","cerrar()",23);	
 	
 	
     private final String valor;   

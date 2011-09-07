@@ -4793,5 +4793,73 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 		}
 		return clientes;
 	}
+	
+	public CenClienteBean existeClienteOtraInstitucionCenso (Long idPersona, Integer idInstitucion) throws ClsExceptions, SIGAException 
+	{
+		try {
+			CenClienteBean salida = null;
+			Hashtable codigos = new Hashtable();
+		    codigos.put(new Integer(1),idPersona.toString());
+    		codigos.put(new Integer(2),idInstitucion.toString());
+		    Vector v = this.selectBind(" WHERE IDPERSONA=:1" + " AND IDINSTITUCION=:2",codigos);
+			if (v!=null && v.size()>0) {
+				salida = (CenClienteBean) v.get(0);
+			}
+			return salida;
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al consultar datos en B.D.");
+		}
+	}
+	public CenClienteBean insertNoColegiadoCenso ( HttpServletRequest request, Long idPersona, String institucion) throws SIGAException
+	{
+		
+			CenClienteBean auxCli = null;			
+			CenPersonaBean auxPer = null; 
+			boolean existePersona = false; 
+			boolean existeCliente = false; 						
+		try	{
+		
+			CenPersonaAdm admPer = new CenPersonaAdm(this.usrbean);
+			
+			//pongo en mayusculas el nifcif
+				
+				existePersona= false;
+								 
+
+				/**Busca si existe cliente en la institucion actual**/
+				auxCli =  this.existeCliente(idPersona,new Integer(this.usrbean.getLocation()));
+				if (auxCli!=null) {
+					existeCliente= true;
+				}else{				
+						/**Busca si no existe el cliente en la institución actual, busca si existe en cualquier colegio y si existe 
+						 * se realiza la pregunta si quiere que utilize los mismos datos ya existentes**/
+					auxCli = this.existeClienteOtraInstitucionCenso (idPersona,new Integer(institucion));
+					if (auxCli!=null){
+							auxCli.setExisteDatos(true);
+							//Se deberia de insertar un registro en cen_clientes para la nueva institucion
+							auxCli.setIdInstitucion(new Integer(this.usrbean.getLocation()));
+							if (!this.insert(auxCli)) {
+								throw new SIGAException(this.getError());
+							}
+							return auxCli;
+
+					}
+				}
+				return auxCli;
+			}
+			catch (SIGAException e) {
+				auxCli = null;
+				return auxCli;
+			} catch (NumberFormatException e) {
+				auxCli = null;
+			return auxCli;
+			} catch (ClsExceptions e) {
+				auxCli = null;
+				return auxCli;
+			}	
+		
+	}
+	
 
 }
