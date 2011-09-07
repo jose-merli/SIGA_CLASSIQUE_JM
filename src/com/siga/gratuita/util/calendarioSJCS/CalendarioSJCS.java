@@ -1786,7 +1786,7 @@ public class CalendarioSJCS
 
 			// si hay guardias vinculadas, hay que crear los calendarios antes
 			// que nada
-			String textoAutomatico = UtilidadesString.getMensajeIdioma(usrBean, "gratuita.calendarios.generado.automatico") ;
+			String textoAutomatico = UtilidadesString.getMensajeIdioma(usrBean, "gratuita.calendarios.generado.automatico.principal") ;
 			Vector<ScsCalendarioGuardiasBean> calendariosVinculados = new Vector<ScsCalendarioGuardiasBean>();
 			for (ScsGuardiasTurnoBean guardia : guardiasVinculadas) {
 				lineaLog = new ArrayList<String>();
