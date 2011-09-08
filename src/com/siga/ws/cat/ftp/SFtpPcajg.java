@@ -73,7 +73,7 @@ public class SFtpPcajg extends FtpPcajgAbstract {
 		// Abrimos el canal de sftp y conectamos
 		chan = (ChannelSftp) session.openChannel("sftp");
 		chan.connect();
-		ClsLogging.writeFileLog("Conetado a SFTP", 3);		
+		ClsLogging.writeFileLog("Conectado a SFTP", 3);		
 	}
 
 	public void disconnect() {

@@ -1271,7 +1271,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		} catch (JSchException e) {
 			tx.rollback();
 			escribeLogRemesa("Se ha producido un error de conexión con el servidor FTP en la institución " + getIdInstitucion());
-			ClsLogging.writeFileLogError("Error en el envío FTP", e, 3);			
+			ClsLogging.writeFileLogError("Se ha producido un error en el envío FTP para la institución " + getIdInstitucion(), e, 3);			
 		} catch (Exception e) {
 			ClsLogging.writeFileLogError("Error en al generar y enviar el fichero xml para la institución " + getIdInstitucion(), e, 3);
 			tx.rollback();
