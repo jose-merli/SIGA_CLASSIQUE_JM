@@ -420,9 +420,8 @@
 				}			 	
 			}
 
-			function actualizarInstitucionPresentador() {
-				// copiamos el valor del idInstitucionPresentador
-				document.all.solicitudCompraForm.idInstitucionPresentador.value = document.all.busquedaClientesModalForm.idInstitucionPresentador.value;
+			function actualizarInstitucionPresentador(objeto) {
+				document.all.solicitudCompraForm.idInstitucionPresentador.value = objeto.value;
 
 				actualizarCliente();
 			}
@@ -648,7 +647,7 @@
 																	elementoSel ="<%=idInstitucionPresentador%>"
 																	clase="<%=estiloComboInstitucionPresentador%>"
 																	readonly="<%=soloLectura%>"
-																	accion="actualizarInstitucionPresentador();"
+																	accion="actualizarInstitucionPresentador(this);"
 																	/>									
 									</td>
 							<% } %>
