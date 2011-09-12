@@ -1197,116 +1197,90 @@ public class DefinirEnviosAction extends MasterAction {
 			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesMorosos)){
 
 
-				try{
+				
 					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 					envioInformesGenericos.gestionarComunicacionMorosos(form,  request.getLocale(), userBean);
 					idEnvio = form.getIdEnvio();
 					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
-				}
-				catch (Exception e) {
-
-					throwExcp("facturacion.consultaMorosos.errorInformes", new String[] {"modulo.facturacion"}, e, null); 
-				}
+				
 
 
 			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesExpedientes)){
 
 
-				try{
+				
 					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 					envioInformesGenericos.gestionarComunicacionExpedientes(form,  request.getLocale(), userBean);
 					idEnvio = form.getIdEnvio();
 					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
-				}
-				catch (Exception e) {
-
-					throwExcp("facturacion.consultaMorosos.errorInformes", new String[] {"modulo.facturacion"}, e, null); 
-				}
+				
 
 
 			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesDesigna)){
 
 
-				try{
+			
 					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 					envioInformesGenericos.gestionarComunicacionDesignas(form,  request.getLocale(), userBean);
 					idEnvio = form.getIdEnvio();
 					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
-				}
-				catch (Exception e) {
-
-					throwExcp("facturacion.consultaMorosos.errorInformes", new String[] {"modulo.facturacion"}, e, null); 
-				}
+			
 			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesEjg)){
 
 
-				try{
+				
 					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
+					
 					envioInformesGenericos.gestionarComunicacionEjg(form,  request.getLocale(), userBean);
 					idEnvio = form.getIdEnvio();
 					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
-				}
-				catch (Exception e) {
-
-					throwExcp("facturacion.consultaMorosos.errorInformes", new String[] {"modulo.facturacion"}, e, null); 
-				}
+				
 			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesPagoColegiados)){
-				try {
+				
 					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 					envioInformesGenericos.gestionarComunicacionPagoColegiados(form,  request.getLocale(), userBean);
 					idEnvio = form.getIdEnvio();
 					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
-				} catch (Exception e) {
-					throwExcp("facturacion.consultaMorosos.errorInformes", new String[] {"modulo.facturacion"}, e, null);
-				}
-
+				
 			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesFacturacionesColegiados)){
-				try {
+				
 					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 					envioInformesGenericos.gestionarComunicacionFacturacionColegiados(form,  request.getLocale(), userBean);
 					idEnvio = form.getIdEnvio();
 					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
-				} catch (Exception e) {
-					throwExcp("facturacion.consultaMorosos.errorInformes", new String[] {"modulo.facturacion"}, e, null);
-				}				
+								
 				
 			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesCenso)){
 				
-				try {
+				
 					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 					envioInformesGenericos.gestionarComunicacionCenso(form,  request.getLocale(), userBean);
 					idEnvio = form.getIdEnvio();
 					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
-				} catch (Exception e) {
-					throwExcp("facturacion.consultaMorosos.errorInformes", new String[] {"modulo.facturacion"}, e, null);
-				}
+				
 
 			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesListadoGuardias)){
 				
-				try {
+				
 					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 					envioInformesGenericos.gestionarComunicacionListadoGuardias(form,  request.getLocale(), userBean);
 					idEnvio = form.getIdEnvio();
 					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
-				} catch (Exception e) {
-					throwExcp("facturacion.consultaMorosos.errorInformes", new String[] {"modulo.facturacion"}, e, null);
-				}
+				
 
 			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesJustificacion)){
 				
-				try {
+				
 					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 					envioInformesGenericos.gestionarComunicacionJustificaciones(form,  request.getLocale(), userBean);
 					idEnvio = form.getIdEnvio();
 					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
-				} catch (Exception e) {
-					throwExcp("facturacion.consultaMorosos.errorInformes", new String[] {"modulo.facturacion"}, e, null);
-				}
+				
 
 			}else if (subModo!=null && subModo.equalsIgnoreCase("certificadoIRPF")){
 
 
-				try {
+				
 					// Obtenemos la información pertinente relacionada con los certificados
 					idPersona = getIdPersonaUnica(form);
 					InformeCertificadoIRPF informeCertificado = new InformeCertificadoIRPF();
@@ -1427,11 +1401,7 @@ public class DefinirEnviosAction extends MasterAction {
 						isEnvioBatch = true;
 					}
 
-				} 
-				catch (Exception e) {
-
-					throwExcp("facturacion.consultaMorosos.errorInformes", new String[] {"modulo.facturacion"}, e, null); 
-				}
+				
 			}  
 			else {
 				//Generamos el envío

@@ -1556,285 +1556,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al obtener la informacion sobre las relaciones de un ejg.");
 		}
 	}
-	/*
-	public Vector comunesEjg (String idinstitucion,
-			  String anio,
-			  String idTipoEJG,
-			  String numero,
-			  String lenguaje, boolean isASolicitantes,String idPersonaJG)
-		throws ClsExceptions,SIGAException
-		{
-		Vector datos=new Vector();
-		try {
-		RowsContainer rc = new RowsContainer();
-		
-		//ESTA CONSULTA HAY QUE CAMBIARLA CUANDO ESTE LISTA LA CONSULTA QUE VENDRÁ AQUI
-	    Hashtable codigos = new Hashtable();
-	    int contador=0;
-		
-		String query = "SELECT  DISTINCT COL.NCOLEGIADO AS NCOLEGIADO_LETRADO,      " +
-				"   COL.NOMBRE || ' ' || COL.APELLIDOS1 || ' ' || COL.APELLIDOS2 AS NOMBRE_LETRADO," +
-				"DECODE(COL.SEXO,null,null,'M'," ;
-				contador++;
-				codigos.put(new Integer(contador),lenguaje);
-				
-	     query += "                F_SIGA_GETRECURSO_ETIQUETA('gratuita.personaEJG.sexo.mujer',:"+contador+")," ;
-			contador++;
-			codigos.put(new Integer(contador),lenguaje);
-			
-			query += "                F_SIGA_GETRECURSO_ETIQUETA('gratuita.personaEJG.sexo.hombre',:"+contador+")) AS SEXO_LETRADO," +
-				"		  f_siga_getdireccioncliente(col.IDINSTITUCION,col.IDPERSONA,2,1)  AS DOMICILIO_LETRADO,"+
-        		"	      f_siga_getdireccioncliente(col.IDINSTITUCION,col.IDPERSONA,2,2)  AS CP_LETRADO,"+
-        		"		  f_siga_getdireccioncliente(col.IDINSTITUCION,col.IDPERSONA,2,3)  AS POBLACION_LETRADO,"+
-        		"		  f_siga_getdireccioncliente(col.IDINSTITUCION,col.IDPERSONA,2,4)  AS PROVINCIA_LETRADO,"+
-        		"		  f_siga_getdireccioncliente(col.IDINSTITUCION,col.IDPERSONA,2,11)  AS TELEFONODESPACHO_LET,"+
-        		"		  f_siga_getdireccioncliente(col.IDINSTITUCION,col.IDPERSONA,2,16)  AS EMAIL_LETRADO,"+
-        		"		  f_siga_getdireccioncliente(col.IDINSTITUCION,col.IDPERSONA,2,14)  AS FAX_LETRADO,"+
-        		"		  f_siga_getdireccioncliente(col.IDINSTITUCION,col.IDPERSONA,6,11)  AS TELEFONO1_LETRADO,"+
-        		"		  f_siga_getdireccioncliente(col.IDINSTITUCION,col.IDPERSONA,6,12)  AS TELEFONO2_LETRADO,"+
-        		"		  f_siga_getdireccioncliente(col.IDINSTITUCION,col.IDPERSONA,6,13)  AS MOVIL_LETRADO,"+
-				"         COLDES.NCOLEGIADO AS NCOLEGIADO_LETRADO_DESIGNADO," +
-				"         COLDES.NOMBRE || ' ' || COLDES.APELLIDOS1 || ' ' || COLDES.APELLIDOS2 AS NOMBRE_LETRADO_DESIGNADO," +
-				"DECODE(COLDES.SEXO,null,null,'M'," ;
-				contador++;
-				codigos.put(new Integer(contador),lenguaje);
-				
-				query += "                F_SIGA_GETRECURSO_ETIQUETA('gratuita.personaEJG.sexo.mujer',:"+contador+")," ;
-				contador++;
-				codigos.put(new Integer(contador),lenguaje);
-				
-				query += "                F_SIGA_GETRECURSO_ETIQUETA('gratuita.personaEJG.sexo.hombre',:"+contador+")) AS SEXO_LETRADO_DESIGNADO," +
-				"		  f_siga_getdireccioncliente(COLDES.IDINSTITUCION,COLDES.IDPERSONA,2,1)  AS DOMICILIO_LETRADO_DESIGNADO,"+
-        		"	      f_siga_getdireccioncliente(COLDES.IDINSTITUCION,COLDES.IDPERSONA,2,2)  AS CP_LETRADO_DESIGNADO,"+
-        		"		  f_siga_getdireccioncliente(COLDES.IDINSTITUCION,COLDES.IDPERSONA,2,3)  AS POBLACION_LETRADO_DESIGNADO,"+
-        		"		  f_siga_getdireccioncliente(COLDES.IDINSTITUCION,COLDES.IDPERSONA,2,4)  AS PROVINCIA_LETRADO_DESIGNADO,"+
-        		"		  f_siga_getdireccioncliente(COLDES.IDINSTITUCION,COLDES.IDPERSONA,2,11)  AS TELEFONODESPACHO_LET_DESIGNADO,"+
-        		"		  f_siga_getdireccioncliente(COLDES.IDINSTITUCION,COLDES.IDPERSONA,2,16)  AS EMAIL_LETRADO_DESIGNADO,"+
-        		"		  f_siga_getdireccioncliente(COLDES.IDINSTITUCION,COLDES.IDPERSONA,2,14)  AS FAX_LETRADO_DESIGNADO,"+
-        		"		  f_siga_getdireccioncliente(COLDES.IDINSTITUCION,COLDES.IDPERSONA,6,11)  AS TELEFONO1_LETRADO_DESIGNADO,"+
-        		"		  f_siga_getdireccioncliente(COLDES.IDINSTITUCION,COLDES.IDPERSONA,6,12)  AS TELEFONO2_LETRADO_DESIGNADO,"+
-        		"		  f_siga_getdireccioncliente(COLDES.IDINSTITUCION,COLDES.IDPERSONA,6,13)  AS MOVIL_LETRADO_DESIGNADO,";
-				
-				//if(isASolicitantes){
-					query+= "         INTERESADO.NOMBRE || ' ' || INTERESADO.APELLIDO1 || ' ' || INTERESADO.APELLIDO2 AS NOMBRE_DEFENDIDO," +
-					"         INTERESADO.DIRECCION AS DOMICILIO_DEFENDIDO," +
-					"         INTERESADO.CODIGOPOSTAL AS CP_DEFENDIDO," +
-					"         INTERESADO.NOMBRE_POB AS POBLACION_DEFENDIDO," +
-					"         INTERESADO.TELEFONO AS TELEFONO1_DEFENDIDO," +
-					"         INTERESADO.NIF AS NIF_DEFENDIDO," +
-					"         INTERESADO.NOMBRE_PROV AS PROVINCIA_DEFENDIDO," +
-					"DECODE(INTERESADO.SEXO,null,null,'M'," ;
-					contador++;
-					codigos.put(new Integer(contador),lenguaje);
-					
-					query += "                F_SIGA_GETRECURSO_ETIQUETA('gratuita.personaEJG.sexo.mujer',:"+contador+")," ;
-					contador++;
-					codigos.put(new Integer(contador),lenguaje);
-					
-					query += "                F_SIGA_GETRECURSO_ETIQUETA('gratuita.personaEJG.sexo.hombre',:"+contador+")) AS SEXO_INTERESADO," +
-					"         INTERESADO.IDLENGUAJE  AS LENGUAJE_INTERESADO," +
-					"         DECODE(INTERESADO.CALIDAD,null,'','D'," ;
-					contador++;
-					codigos.put(new Integer(contador),lenguaje);
-					
-					query += "                F_SIGA_GETRECURSO_ETIQUETA('gratuita.personaJG.calidad.literal.demandante',:"+contador+")," ;
-					contador++;
-					codigos.put(new Integer(contador),lenguaje);
-					
-					query += "                F_SIGA_GETRECURSO_ETIQUETA('gratuita.personaJG.calidad.literal.demandado',:"+contador+")) AS CALIDAD_INTERESADO," +
-					"         DECODE(INTERESADO.ANIOEJG,NULL,NULL,INTERESADO.ANIOEJG || '/' || INTERESADO.NUMEJG) AS NUMERO_EJG,"+
-					"		  F_SIGA_GETCODIDIOMA(INTERESADO.IDLENGUAJE) AS CODIGOLENGUAJE, ";
-				//}
-				query+="         DES.NUMPROCEDIMIENTO AS AUTOS," +
-				"         TO_CHAR(DES.FECHAJUICIO, 'dd/MM/yyyy') AS FECHA_JUICIO," +
-				"         TO_CHAR(DES.FECHAJUICIO, 'HH24:MM') AS HORA_JUICIO," +
-				"         JUZ.NOMBRE AS JUZGADO," +
-				"         JUZ.DOMICILIO AS DIR_JUZGADO," +
-				"         JUZ.CODIGOPOSTAL AS CP_JUZGADO," +
-				"         JUZ.POBLACION_NOMBRE AS POBLACION_JUZGADO," +
-				"         F_SIGA_GETCONTRARIOS_DESIGNA(DES.IDINSTITUCION," +
-				"                                      DES.IDTURNO," +
-				"                                      DES.ANIO," +
-				"                                      DES.NUMERO) AS CONTRARIOS," +
-				"         F_SIGA_GETPROCURADORCONT_DESIG(DES.IDINSTITUCION," +
-				"                                        DES.IDTURNO," +
-				"                                        DES.ANIO," +
-				"                                        DES.NUMERO) AS PROCURADOR_CONTRARIOS," +
-				"         DES.ANIO AS ANIO_DESIGNA," +
-				"         DES.CODIGO AS CODIGO," +
-				"         DES.RESUMENASUNTO AS ASUNTO," +
-				"         DES.ANIO || '/' || DES.CODIGO AS NOFICIO," +
-				"         PROC.NOMBRE || ' ' || PROC.APELLIDOS1 || ' ' || PROC.APELLIDOS2 AS PROCURADOR," +
-				"         DES.NOMBRE_PROCEDIMIENTO AS PROCEDIMIENTO," +
-				"         F_SIGA_GETDELITOS_DESIGNA(DES.IDINSTITUCION, DES.NUMERO, DES.IDTURNO, DES.ANIO, 1) AS DELITOS," +
-				"         TO_CHAR(DES.FECHAENTRADA, 'dd-mm-yyyy') AS FECHA_DESIGNA," +
-				"         DES.TURNO_DESCRIPCION AS DESCRIPCION_TURNO," +
-				"		  DES.ABREV_TURNO AS ABREV_TURNO, "+
-				"         F_SIGA_NOMBRE_PARTIDO(DES.IDTURNO,DES.IDINSTITUCION) as NOMBRE_PARTIDO," +
-				"         DECODE(EJG.COMISARIA, NULL, (SELECT J.NOMBRE" +
-				"                                        FROM SCS_JUZGADO J" +
-				"                                       WHERE J.IDINSTITUCION = EJG.JUZGADOIDINSTITUCION" +
-				"                                         AND J.IDJUZGADO = EJG.JUZGADO)," +
-				"                                     (SELECT C.NOMBRE" +
-				"                                        FROM SCS_COMISARIA C" +
-				"                                       WHERE C.IDINSTITUCION = EJG.COMISARIAIDINSTITUCION" +
-				"                                         AND C.IDCOMISARIA = EJG.COMISARIA)) AS LUGAR," +
-				"         EJG.ANIO AS ANIO_EJG," ;
-				contador++;
-				codigos.put(new Integer(contador),lenguaje);
-				
-				query += "         PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(EJG.FECHAAPERTURA,'m',:"+contador+") AS FECHAAPERTURA_EJG," +
-				"         EJG.OBSERVACIONES AS OBSERVACIONES" +
-				"         ,ASI.ASUNTODILIGENCIA AS ASUNTODILIGENCIA" +
-				"         ,ASI.COMISARIAJUZGADO AS COMISARIAJUZGADO" +
-				 ",F_SIGA_GETINTERESADOSDESIGNA(DES.IDINSTITUCION,DES.ANIO,DES.IDTURNO,DES.NUMERO,0) LISTA_INTERESADOS_DESIGNA"+
-    			
-    			 ",F_SIGA_GETACTUACIONESDESIGNA(DES.IDINSTITUCION,DES.ANIO,DES.IDTURNO,DES.NUMERO) LISTA_ACTUACIONES_DESIGNA"+
-				
-				
-    			"        ,TO_CHAR(SYSDATE, 'dd') AS DIA_ACTUAL" +
-				"        , TO_CHAR(SYSDATE, 'MONTH', 'NLS_DATE_LANGUAGE = SPANISH') AS MES_ACTUAL" +
-				"        , TO_CHAR(SYSDATE, 'yyyy') AS ANIO_ACTUAL" ;
-				contador++;
-				codigos.put(new Integer(contador),lenguaje);
-				
-				query += "         ,F_SIGA_GETRECURSO(TF.descripcion,:"+contador+") AS FUNDAMENTO "+
-				"  ,TO_CHAR(F_SIGA_GETFIRSTACTDESIGNA(DES.IDINSTITUCION,DES.ANIO, DES.IDTURNO, DES.NUMERO), 'dd-mm-yyyy') AS FECHA_ACTUACION,"+
-				"  TO_CHAR(F_SIGA_GETFIRSTACTDESIGNA(DES.IDINSTITUCION,DES.ANIO, DES.IDTURNO, DES.NUMERO), 'hh:MM:ss') AS HORA_ACTUACION,"+
-				"  TO_CHAR(F_SIGA_GETFIRSTASISDESIGNA(DES.IDINSTITUCION,DES.ANIO, DES.IDTURNO, DES.NUMERO), 'dd-mm-yyyy') AS FECHA_ASISTENCIA,"+
-				"  EJG.IDTIPOEJG, EJG.ANIO, EJG.NUMERO, EJG.IDPERSONA "+
-				"         ,DECODE(ejg.CALIDAD,null,'','D'," ;
-				contador++;
-				codigos.put(new Integer(contador),lenguaje);
-				
-				query += "                F_SIGA_GETRECURSO_ETIQUETA('gratuita.personaJG.calidad.literal.demandante',:"+contador+")," ;
-				contador++;
-				codigos.put(new Integer(contador),lenguaje);
-				
-				query += "                F_SIGA_GETRECURSO_ETIQUETA('gratuita.personaJG.calidad.literal.demandado',:"+contador+")) AS CALIDAD_DEFENSA_JURIDICA," +
-				" EJG.OBSERVACIONES AS ASUNTO_DEFENSA_JURIDICA, "+
-				" EJG.DELITOS AS COM_DEL_DEFENSA_JURIDICA, "+
-				" EJG.NUMERO_CAJG AS NUMERO_CAJG_DEFENSA_JURIDICA, "+
-				" EJG.ANIOCAJG AS ANIO_CAJG_DEFENSA_JURIDICA, "+
-				" EJG.NUMERODILIGENCIA AS NUMDILIGENCIA_DEFENSA_JURIDICA, "+
-				" EJG.NUMEROPROCEDIMIENTO AS NUMPROCED_DEFENSA_JURIDICA "+
-				" ,PROCDF.NOMBRE PROCURADOR_DEFENSA_JURIDICA, "+
-				" JUZDF.NOMBRE AS JUZGADO_DEFENSA_JURIDICA, "+
-				"  COMDF.NOMBRE AS COMISARIA_DEFENSA_JURIDICA ";
-				contador++;
-				codigos.put(new Integer(contador),lenguaje);
-				
-				query += "  ,F_SIGA_GETDELITOS_EJG(EJG.IDINSTITUCION,EJG.IDTIPOEJG, EJG.ANIO, EJG.NUMERO,:"+contador+") DELITOS_DEFENSA_JURIDICA "+
-				"  ,F_SIGA_GETCONTRARIOS_EJG(EJG.IDINSTITUCION,EJG.IDTIPOEJG, EJG.ANIO, EJG.NUMERO) CONTRARIOS_DEFENSA_JURIDICA "+
-				
-				
-				
-				
-				"         FROM SCS_EJG EJG," +
-				"       V_SIGA_EJG_DESIGNA EJGD," +
-				"        V_SIGA_DESIGNACIONES DES," +
-				"        V_SIGA_DATOSLETRADO_COLEGIADO COL," +
-				"        V_SIGA_DATOSLETRADO_COLEGIADO COLDES," +
-				"        V_SIGA_JUZGADOS JUZ"+
-				//if(isASolicitantes)
-				     ",V_SIGA_INTERESADOS_EJG INTERESADO"+
-				"        ,V_SIGA_PROCURADOR_EJG PROC" +
-				"        ,V_SIGA_ASISTENCIA_EJG ASI " +
-				"        ,scs_tipofundamentocalif  TF "+
-				" ,SCS_PROCURADOR         PROCDF, "+
-				" SCS_JUZGADO JUZDF, "+
-				"  SCS_COMISARIA COMDF "+
-		
-				"  WHERE EJG.IDINSTITUCION = COL.IDINSTITUCION(+)" +
-				"    AND EJG.IDPERSONA = COL.IDPERSONA(+)" +
-				"    AND DES.IDINSTITUCION = COLDES.IDINSTITUCION(+)" +
-				"    AND DES.IDPERSONA_DESIGNADA = COLDES.IDPERSONA(+)" +
-				"  AND EJG.IDINSTITUCION = EJGD.IDINSTITUCION(+)" +
-				"  AND EJG.IDTIPOEJG = EJGD.IDTIPOEJG(+)" +
-				"  AND EJG.ANIO = EJGD.ANIO(+)" +
-				"  AND EJG.NUMERO = EJGD.NUMERO (+)" +
-				"  AND EJG.IDINSTITUCION = ASI.EJG_IDINSTITUCION(+)" +
-				"  AND EJG.IDTIPOEJG = ASI.EJG_IDTIPOEJG(+)" +
-				"  AND EJG.ANIO = ASI.EJG_ANIO(+)" +
-				"  AND EJG.NUMERO = ASI.EJG_NUMERO(+)" +
-				
-				"  AND EJGD.IDINSTITUCION = DES.IDINSTITUCION(+)" +
-				"  AND EJGD.IDTURNO_DES = DES.IDTURNO(+)" +
-				"  AND EJGD.ANIO_DES = DES.ANIO(+)" +
-				"  AND EJGD.NUMERO_DES = DES.NUMERO(+)" +
-				   
-				"  AND DES.IDINSTITUCION_JUZG = JUZ.IDINSTITUCION(+)" +
-				"  AND DES.IDJUZGADO = JUZ.IDJUZGADO(+)" +
-				"  AND EJG.IDINSTITUCION = INTERESADO.IDINSTITUCION(+)" +
-				"  AND EJG.IDTIPOEJG = INTERESADO.IDTIPOEJG(+)" +
-				"  AND EJG.ANIO = INTERESADO.ANIO(+)" +
-				"  AND EJG.NUMERO = INTERESADO.NUMERO(+)" +
-				"  AND EJG.IDINSTITUCION = PROC.IDINSTITUCION(+)" +
-				"  AND EJG.IDTIPOEJG = PROC.IDTIPOEJG(+)" +
-				"  AND EJG.ANIO = PROC.ANIO(+)" +
-				"  AND EJG.NUMERO = PROC.NUMERO(+)" +
-				"    and EJG.idfundamentocalif = TF.idfundamentocalif(+)"+
-				"    and EJG.idinstitucion = TF.idinstitucion(+)"+
-				
-				" AND EJG.IDPROCURADOR = PROCDF.IDPROCURADOR(+) " +
-				"  AND EJG.IDINSTITUCION_PROC = PROCDF.IDINSTITUCION(+) " +
-				"  and EJG.JUZGADO = JUZDF.IDJUZGADO(+) " +
-				"  and EJG.JUZGADOIDINSTITUCION = JUZDF.IDINSTITUCION(+) " +
-				"  and EJG.COMISARIA = COMDF.IDCOMISARIA(+) " +
-				"  and EJG.COMISARIAIDINSTITUCION = COMDF.IDINSTITUCION(+) " ;
-				contador++;
-				codigos.put(new Integer(contador),idinstitucion);
-				
-				query += "   and EJG.IDINSTITUCION =:"+contador;
-				contador++;
-				codigos.put(new Integer(contador),idTipoEJG);
-				
-				query += "   and EJG.IDTIPOEJG =:" +contador;
-				contador++;
-				codigos.put(new Integer(contador),anio);
-				
-				query += "   and EJG.ANIO = :"+contador;
-				contador++;
-				codigos.put(new Integer(contador),numero);
-				
-				query += "   and EJG.NUMERO =:"+contador ;
-				if(idPersonaJG!=null && !idPersonaJG.equalsIgnoreCase("")){
-				    contador++;
-					codigos.put(new Integer(contador),idPersonaJG);
-					query +="   and INTERESADO.IDPERSONAJG =  :"+ contador;
-        			
-        		}
-		        query +="  ORDER BY EJG.IDPERSONA ";
-//		        query +="  ORDER BY EJG.IDTIPOEJG," +
-//				"           EJG.ANIO," +
-//				"           EJG.NUMERO," +
-//				"           EJG.IDPERSONA";
-           
 
 	
-		
-
-		
-		
-		if (rc.findBind(query,codigos)) {
-			for (int i = 0; i < rc.size(); i++){
-				Row fila = (Row) rc.get(i);
-				Hashtable resultado=fila.getRow();	 
-				datos.add(resultado);
-				if(!isASolicitantes){
-					break;
-				}
-				
-			}
-			} 
-		}
-		catch (Exception e) {
-		throw new ClsExceptions (e, " Error al obtener la informacion sobre listas de guardias.");
-		}
-		return datos;                        
-} //getDatosPlantillas ()
 	
-	*/
 	/*Devuelve la clave de la asistencia en caso de que este creado o relacionado con una asistencia*/
 	public Hashtable procedeDeAsistencia(String tipo,String numero, String anio){
 		
@@ -3388,11 +3112,6 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			
 			sql.append(" ,TO_CHAR(EJG.FECHAPRESENTACION, 'dd-mm-yyyy') as FECHAPRESENTACION");
 			sql.append(" ,TO_CHAR(EJG.FECHALIMITEPRESENTACION, 'dd-mm-yyyy') as FECHALIMITEPRESENTACION");
-			sql.append(" ,Easi.Idturno AS IDTURNOASISTENCIA "); 
-            sql.append(" ,Easi.Idguardia AS IDGUARDIAASISTENCIA ");
-			sql.append(" ,to_char(EASI.FECHAHORA, 'dd/mm/yyyy') AS FECHA_ASISTENCIA ");
-			sql.append(" ,  (select nombre ||' '||apellidos1||' '|| apellidos2 from cen_persona where idpersona = EASI.IDPERSONACOLEGIADO) AS NOMBRE_LETRADO_ASISTENCIA");
-			sql.append(" ,  (SELECT Ncolegiado FROM cen_colegiado WHERE idpersona = EASI.IDPERSONACOLEGIADO and idinstitucion = EASI.IDINSTITUCION) AS NCOLEGIADO_LETRADO_ASISTENCIA ");
 			// Campos necesarios para las comucioncaciones de la comision
 			// Nos quedamos con los digitos para saber la cantidad que se reduce
 			sql.append(" ,regexp_replace( (select F_SIGA_GETRECURSO(r.descripcion, 1) From Scs_Tiporesolucion r");
@@ -3401,24 +3120,13 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
             sql.append(" ,to_char(EJG.Fecharatificacion, 'dd/mm/yyyy') AS FECHARATIFICACIONLETRA ");
             sql.append(" ,to_char(EJG.FECHAPRESENTACION, 'dd/mm/yyyy') AS FECHAPRESENTACIONLETRA "); 
             sql.append(" , to_char(EJG.FECHALIMITEPRESENTACION,'dd/mm/yyyy') AS  FECHALIMITEPRESENTACIONLETRA ");
-            sql.append(" , to_char(EASI.FECHAHORA,'dd/mm/yyyy') AS FECHA_ASISTENCIALETRA ");
             sql.append(" , to_char(EJG.fechaauto,'dd/mm/yyyy') AS FECHAAUTO_LETRA ");
             sql.append(" , to_char(EJG.fechanotificacion,'dd/mm/yyyy') AS FECHANOTIFICACIONLETRA ");
             sql.append(" , to_char(EJG.fecharesolucioncajg,'dd/mm/yyyy') AS FECHARESOLUCIONCAJGLETRA ");
             sql.append(" , to_char(EJG.FECHAAPERTURA,'dd/mm/yyyy') AS FECHAAPERTURA_EJGLETRA ");
             sql.append(" , to_char(SYSDATE,'dd/mm/yyyy') AS FECHAACTUALLETRA ");
             sql.append(" , FUND.TEXTOPLANTILLA AS FUNDAMENTOJURIDICO ");
-		    //sql.append(" , pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(EJG.Fecharatificacion,'M',"+idioma+") AS Fecharatificacion_LETRA ");
-			//sql.append(" , pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(EJG.FECHAPRESENTACION,'M',"+idioma+") AS FECHAPRESENTACION_LETRA ");
-			//sql.append(" , pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(EJG.FECHALIMITEPRESENTACION,'M',"+idioma+") AS FECHALIMITEPRESENTACION_LETRA ");
-			//sql.append(" , pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(EASI.FECHAHORA,'M',"+idioma+") AS FECHA_ASISTENCIA_LETRA ");
-			//sql.append(" , pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(EJG.fechaauto,'M',"+idioma+") AS fechaauto_LETRA ");
-			//sql.append(" , pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(EJG.fechanotificacion,'M',"+idioma+") AS fechanotificacion_LETRA ");
-			//sql.append(" , pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(EJG.fecharesolucioncajg,'M',"+idioma+") AS fecharesolucioncajg_LETRA ");
-			//sql.append(" , pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(EJG.FECHAAPERTURA,'M',"+idioma+") AS FECHAAPERTURA_EJG_LETRA ");
-			//sql.append(" , pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(SYSDATE,'M',"+idioma+") AS FECHAACTUAL_LETRA");
-
-			sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGD, SCS_ASISTENCIA EASI , SCS_TIPOFUNDAMENTOS FUND");
+		   			sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGD, SCS_TIPOFUNDAMENTOS FUND");
 			sql.append(" WHERE  ");
 
    
@@ -3426,11 +3134,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" AND EJG.IDTIPOEJG = EJGD.IDTIPOEJG(+) ");
 			sql.append(" AND EJG.ANIO = EJGD.ANIOEJG(+) ");
 			sql.append(" AND EJG.NUMERO = EJGD.NUMEROEJG (+) ");
+
 			
-			sql.append(" and EJG.IDTIPOEJG = EASI.EJGIDTIPOEJG(+) ");
-			sql.append(" AND EJG.NUMERO = EASI.EJGNUMERO(+) ");
-			sql.append(" AND EJG.IDINSTITUCION = EASI.IDINSTITUCION(+) ");
-			sql.append(" AND EJG.ANIO = EASI.EJGANIO(+) ");
 
 			sql.append(" and fund.idfundamento(+)=ejg.idfundamentojuridico ");
 			sql.append(" and fund.idinstitucion(+)=ejg.idinstitucion ");
@@ -3477,39 +3182,59 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			Hashtable htCodigos = new Hashtable();
 			int keyContador = 0;
 			StringBuffer sql = new StringBuffer();
-			sql.append(" ");
-			sql.append(" SELECT  ");
-			
-			sql.append(" DECODE (ASI.NUMERODILIGENCIA,NULL, ");
-			sql.append(" ASI.NUMEROPROCEDIMIENTO,ASI.NUMERODILIGENCIA) AS ASUNTODILIGENCIA, ");
-			sql.append(" DECODE (ASI.COMISARIA,NULL, ");
-			sql.append(" (SELECT J.NOMBRE FROM SCS_JUZGADO J WHERE J.IDINSTITUCION=ASI.JUZGADOIDINSTITUCION AND J.IDJUZGADO=ASI.JUZGADO), ");
-			sql.append(" (SELECT C.NOMBRE FROM SCS_COMISARIA C WHERE C.IDINSTITUCION=ASI.COMISARIAIDINSTITUCION AND C.IDCOMISARIA=ASI.COMISARIA) ");
-			sql.append(" ) AS COMISARIAJUZGADO ");
-			sql.append(" FROM SCS_ASISTENCIA ASI ");
-		
-			
-			
-			sql.append(" WHERE "); 	
+			sql.append(" SELECT A.*,FECHA_ASISTENCIA_LETRA AS FECHA_ASISTENCIALETRA,ROWNUM FROM ( ");
+			sql.append(" (SELECT  ");
+			 
+			sql.append(" TO_CHAR(ASI.FECHAHORA,'DD/MM/YYYY') FECHA_ASISTENCIA, ");
+			sql.append(" PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(ASI.FECHAHORA ,'m',1) FECHA_ASISTENCIA_LETRA, ");
+			sql.append(" DECODE(ASI.NUMERODILIGENCIA, ");
+			sql.append(" NULL, ");
+			sql.append(" ASI.NUMEROPROCEDIMIENTO, ");
+			sql.append(" ASI.NUMERODILIGENCIA) AS ASUNTODILIGENCIA, ");
+			sql.append(" DECODE(ASI.COMISARIA, ");
+			sql.append(" NULL, ");
+			sql.append(" (SELECT J.NOMBRE ");
+			sql.append(" FROM SCS_JUZGADO J ");
+			sql.append(" WHERE J.IDINSTITUCION = ASI.JUZGADOIDINSTITUCION ");
+			sql.append(" AND J.IDJUZGADO = ASI.JUZGADO), ");
+			sql.append(" (SELECT C.NOMBRE ");
+			sql.append(" FROM SCS_COMISARIA C ");
+			sql.append(" WHERE C.IDINSTITUCION = ASI.COMISARIAIDINSTITUCION ");
+			sql.append(" AND C.IDCOMISARIA = ASI.COMISARIA)) AS COMISARIAJUZGADO, ");
+	 
+			sql.append(" GT.NOMBRE NOMBRE_GUARDIA_ASISTENCIA, ");
+			sql.append(" PER.nombre || ' ' || PER.apellidos1 || ' ' || PER.apellidos2 AS NOMBRE_LETRADO_ASISTENCIA, ");
+			sql.append(" DECODE(COL.COMUNITARIO,'1',COL.NCOMUNITARIO, COL.NCOLEGIADO) NCOLEGIADO_LETRADO_ASISTENCIA ");
+
+			sql.append(" FROM SCS_ASISTENCIA ASI, SCS_GUARDIASTURNO GT,CEN_COLEGIADO COL, CEN_PERSONA PER ");
+			sql.append(" WHERE  ");
+			sql.append(" ASI.IDINSTITUCION = GT.IDINSTITUCION ");
+			sql.append(" AND ASI.IDTURNO = GT.IDTURNO ");
+			sql.append(" AND ASI.IDGUARDIA = GT.IDGUARDIA ");
+			sql.append(" AND ASI.IDPERSONACOLEGIADO = COL.IDPERSONA ");
+			sql.append(" AND ASI.IDINSTITUCION = COL.IDINSTITUCION ");
+			sql.append(" AND ASI.IDPERSONACOLEGIADO = PER.IDPERSONA ");
+			sql.append(" AND ASI.IDINSTITUCION = :");
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
-			sql.append(" ASI.IDINSTITUCION = :");
 			sql.append(keyContador);
-			
+			sql.append(" AND ASI.EJGIDTIPOEJG = :");
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), tipoEjg);
-			sql.append(" and ASI.EJGIDTIPOEJG = :");
 			sql.append(keyContador);
-			
+			sql.append(" AND ASI.EJGANIO = :");
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), anio);
-			sql.append(" and ASI.EJGANIO = :");
 			sql.append(keyContador);
-			
+			sql.append(" AND ASI.EJGNUMERO =  :");
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), numero);
-			sql.append(" and ASI.EJGNUMERO = :");
 			sql.append(keyContador);
+			sql.append(" ORDER BY ASI.FECHAHORA DESC ) A ");
+			sql.append(" ) ");
+	   
+	   
+			sql.append(" WHERE ROWNUM = 1 ");
 			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
 			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
@@ -4475,7 +4200,6 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			String fecharatificacion="";
 			String fechaPresentacion="";
 			String fechaLimitePresentacion="";
-			String fechaAsistenciaLetra="";
 			String fechaAutoLetra="";
 			String fechaNotificacion="";
 			String fechaResolucionCajg ="";
@@ -4610,9 +4334,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							}
 					
 							
-							fechaAsistenciaLetra  = (String)registro.get("FECHA_ASISTENCIALETRA");							
 								
-							if (fechaAsistenciaLetra!=null && !fechaAsistenciaLetra.trim().equals("")){						
+							/*if (fechaAsistenciaLetra!=null && !fechaAsistenciaLetra.trim().equals("")){						
 								htFuncion =  new Hashtable();
 								htFuncion.put(new Integer(1), fechaAsistenciaLetra);
 								htFuncion.put(new Integer(2), "m");
@@ -4621,7 +4344,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 													htFuncion, "PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA", "FECHA_ASISTENCIA_LETRA"));
 							}else {
 									registro.put("FECHA_ASISTENCIA_LETRA", "");
-							}
+//							}*/
 								
 							fechaAutoLetra  = (String)registro.get("FECHAAUTOLETRA");					
 							if (fechaAutoLetra!=null && !fechaAutoLetra.trim().equals("")){						
@@ -4961,38 +4684,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				
 							
 							//nombre GuardiaAsistencia	relacionada con ejg			
-							String idturnoAsistencia = (String)registro.get("IDTURNOASISTENCIA");
-							String idGuardiaAsistencia = (String)registro.get("IDGUARDIAASISTENCIA");
-							String nombreGuardiaAsistencia=ScsGuardiasTurnoAdm.getNombreGuardiaJSP(idInstitucion,idturnoAsistencia, idGuardiaAsistencia);				
-							if (nombreGuardiaAsistencia!=null && !nombreGuardiaAsistencia.trim().equalsIgnoreCase("")){
-								registro.put("NOMBRE_GUARDIA_ASISTENCIA", nombreGuardiaAsistencia);
-							}else{
-								registro.put("NOMBRE_GUARDIA_ASISTENCIA", " ");
-							}
-							// Datos de la asistencia asociada
-							String fechaAsistencia = (String)registro.get("FECHA_ASISTENCIA");				
-							if(fechaAsistencia!=null && !fechaAsistencia.trim().equalsIgnoreCase("")){					
-								registro.put("FECHA_ASISTENCIA", registro.get("FECHA_ASISTENCIA"));									 
-							}else{
-								registro.put("FECHA_ASISTENCIA", "");
-							} 
-							String letradoAsistencia = (String)registro.get("NCOLEGIADO_LETRADO_ASISTENCIA");
-							if(letradoAsistencia!=null && !letradoAsistencia.trim().equalsIgnoreCase("")){
-								registro.put("NCOLEGIADO_LETRADO_ASISTENCIA", letradoAsistencia);
-								
-							}else{
-								registro.put("NCOLEGIADO_LETRADO_ASISTENCIA", "");
-							} 
 							
-							String numColLetradoAsistencia = (String)registro.get("NOMBRE_LETRADO_ASISTENCIA");
-							if(numColLetradoAsistencia!=null && !fechaAsistencia.trim().equalsIgnoreCase("")){
-								registro.put("NOMBRE_LETRADO_ASISTENCIA", numColLetradoAsistencia);
-								
-							}else{
-								registro.put("NOMBRE_LETRADO_ASISTENCIA", "");
-							} 
-							
-				
 							 idTipoResolAuto = (String)registro.get("IDTIPORESOLAUTO");
 							if(idTipoResolAuto!=null && !idTipoResolAuto.trim().equals("")){
 								helperInformes.completarHashSalida(registro,helperInformes.getTipoResolucionAutomatico(idTipoResolAuto,idioma));	
@@ -5220,7 +4912,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			return registro;
 		
 	}
-	public String getIdColegiadoTramitadorEJG (String idInstitucion, String idTipoEjg, String anio, String numero) throws ClsExceptions,SIGAException {
+	/*public String getIdColegiadoTramitadorEJG (String idInstitucion, String idTipoEjg, String anio, String numero) throws ClsExceptions,SIGAException {
 	    Hashtable codigos = new Hashtable();
 	    try {
 	        codigos.put(new Integer(1),idInstitucion.toString());
@@ -5252,6 +4944,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	   		}	
 	    }
 		return null;
-	}
+	}*/
+	
 }
 
