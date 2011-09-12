@@ -772,3 +772,19 @@ function validarValorAnio(anio){
 	}
 	return true;
 }
+
+/*
+ * Valida que solo haya valores AlfaNuméricos y guiónes -,_
+*/
+function validarAlfaNumericoYGuiones(texto){
+    var objRegExp=/^[\w,\-,_]+$/      
+   if(texto == "" || objRegExp.test(texto))	   	   	
+	   	return true;	   
+   else	   	   
+	   return false;
+	   
+} 
+
+
+
+

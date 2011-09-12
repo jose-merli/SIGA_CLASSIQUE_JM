@@ -32,6 +32,7 @@
 	src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
 	
 	<script src="<html:rewrite page='/html/js/validacionStruts.js'/>" type="text/javascript"></script>
+	<script src="<html:rewrite page='/html/js/validation.js'/>" type="text/javascript"></script>
 	
 	
 </head>
@@ -368,8 +369,7 @@ function inicio()
 	}
 }
 function accionGuardar() 
-{		
-	
+{
 	document.getElementById("directorio").disabled="";
 	document.getElementById("idInstitucion").disabled="";
 	document.getElementById("idPlantilla").disabled="";
@@ -398,7 +398,17 @@ function accionGuardar()
 		document.InformeFormEdicion.ASolicitantes.value = '';
 	if(document.InformeFormEdicion.visible.value=='-1')
 		document.InformeFormEdicion.visible.value = '';
+
+	//Validación del campo Nombre Fichero Generado
+	//Sólo se permite carac. Alfanumércos y guión bajo y alto
 	
+	if(!(validarAlfaNumericoYGuiones(document.InformeFormEdicion.nombreSalida.value)))
+	{
+		error = "<siga:Idioma key='administracion.informes.mensaje.aviso.caracteresAlfaNumericos'/>";
+		alert(error);
+		fin();
+		return false;
+	}		 	
 	sub();
 	if(document.InformeFormEdicion.idTipoInforme.value!='CON'){ 
 		listaDestinatarios = document.getElementsByName("destinatariosCheck");

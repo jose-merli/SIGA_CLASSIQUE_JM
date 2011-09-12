@@ -134,9 +134,12 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 		return directorio.toString();
 		
 	}
-	private void formatearInforme(InformeForm informe){
+	private void formatearInforme(InformeForm informe)throws SIGAException{
 		sustituyeEspacios(informe);
 		
+		boolean validar = UtilidadesString.validarAlfaNumericoYGuiones(informe.getNombreSalida());				
+		if (!validar)
+    		throw new SIGAException ("administracion.informes.mensaje.aviso.caracteresAlfaNumericos");    			
 	}
 	
 	private void sustituyeEspacios(InformeForm informe){

@@ -25,6 +25,9 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -1384,4 +1387,12 @@ public class UtilidadesString {
         
     }
     
+	//Valida una cadena para que sólo tenga caracteres AlfaNuméricos y guiones
+	public static boolean validarAlfaNumericoYGuiones(String textorValidar){
+		Pattern p = Pattern.compile("^[\\w,\\-,_]+$");
+        Matcher m = p.matcher(textorValidar);
+        return m.find();       
+	}
+	
+	
 }
