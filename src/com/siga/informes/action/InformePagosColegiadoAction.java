@@ -263,7 +263,24 @@ public class InformePagosColegiadoAction extends MasterAction {
 				cabeceras[7] = "IMPORTETOTALRETENCIONES";
 							
 				cabeceras[8] = "IMPORTETOTAL";//IMPORTEBRUTO + TOTALIMPORTEIRPF + IMPORTETOTALRETENCIONES
-				
+				Vector datosFormateados = new Vector();
+				//Como alguno de los metodos set, formatoCampo o redondea esta mal no es posible
+				//que UtilidadesHash.set(filaHashtable, "TOTALIMPORTESJCS", UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea((String)filaHashtable.get("TOTALIMPORTESJCS"), 2))); 
+				//nos guarde la direccion de memoria correcta
+				for (int i = 0; i < datos.size(); i++) {
+					Hashtable filaHashtable = (Hashtable) datos.elementAt(i);
+					//Hashtable filaHashtable = fila.getRow();
+					
+					UtilidadesHash.set(filaHashtable, "TOTALIMPORTESJCS", UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea((String)filaHashtable.get("TOTALIMPORTESJCS"), 2)));
+					UtilidadesHash.set(filaHashtable, "IMPORTETOTALMOVIMIENTOS", UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea((String)filaHashtable.get("IMPORTETOTALMOVIMIENTOS"), 2)));
+					UtilidadesHash.set(filaHashtable, "TOTALIMPORTEBRUTO", UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea((String)filaHashtable.get("TOTALIMPORTEBRUTO"), 2)));
+					UtilidadesHash.set(filaHashtable, "TOTALIMPORTEIRPF", UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea((String)filaHashtable.get("TOTALIMPORTEIRPF"), 2)));
+					UtilidadesHash.set(filaHashtable, "IMPORTETOTALRETENCIONES", UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea((String)filaHashtable.get("IMPORTETOTALRETENCIONES"), 2)));
+					UtilidadesHash.set(filaHashtable, "IMPORTETOTAL", UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea((String)filaHashtable.get("IMPORTETOTAL"), 2)));
+					
+					
+				}
+
 				InformePersonalizable informePersonalizable = new InformePersonalizable();
 				List<InformeForm> informesForms = new ArrayList<InformeForm>();
 				InformeForm informeForm = new InformeForm();
@@ -273,6 +290,8 @@ public class InformePagosColegiadoAction extends MasterAction {
 				informeForm.setAlias("");
 				informeForm.setTipoFormato(AdmInformeBean.TIPOFORMATO_EXCEL);
 				informesForms.add(informeForm);
+				
+				
 
 				File ficheroSalida = informePersonalizable.getFicheroGenerado(informesForms, datos,cabeceras, user);
 				request.setAttribute("nombreFichero", ficheroSalida.getName());

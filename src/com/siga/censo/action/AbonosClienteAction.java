@@ -28,10 +28,12 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.PaginadorCaseSensitiveBind;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.form.InformeForm;
 import com.siga.beans.AdmInformeAdm;
@@ -526,7 +528,17 @@ public class AbonosClienteAction extends MasterAction {
 				cabeceras[5] = "TOTAL";
 				cabeceras[6] = "TOTALABONADO";
 							
-				
+				for (int i = 0; i < datos.size(); i++) {
+					Hashtable filaHashtable = (Hashtable) datos.elementAt(i);
+					//Hashtable filaHashtable = fila.getRow();
+					UtilidadesHash.set(filaHashtable, "TOTALNETO", UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea((String)filaHashtable.get("TOTALNETO"), 2)));
+					UtilidadesHash.set(filaHashtable, "TOTALIVA", UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea((String)filaHashtable.get("TOTALIVA"), 2)));
+					UtilidadesHash.set(filaHashtable, "TOTAL", UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea((String)filaHashtable.get("TOTAL"), 2)));
+					UtilidadesHash.set(filaHashtable, "TOTALABONADO", UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea((String)filaHashtable.get("TOTALABONADO"), 2)));
+					UtilidadesHash.set(filaHashtable, "FECHA", GstDate.getFormatedDateShort("",(String)filaHashtable.get("FECHA")));
+					
+					
+				}
 				
 				
 				InformePersonalizable informePersonalizable = new InformePersonalizable();
