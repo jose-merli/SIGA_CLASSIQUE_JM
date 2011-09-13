@@ -3791,14 +3791,14 @@ public class EnvioInformesGenericos extends MasterReport {
 			Date hoy = new Date();
 			SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 			String sHoy = sdf2.format(hoy);
-			Hashtable datosLista= null;
+			TreeMap datosLista= null;
 			//for (int j = 0; j < vGuardias.size(); j++) {
 				if(isSolicitantes){						
 					datosLista = getIdColegiados(datosInforme, usrBean);
 				}else{
 					datosLista = getIdColegiadosTotal(datosInforme, usrBean);
 				}
-					Enumeration e = datosLista.keys();  
+					Iterator e = datosLista.keySet().iterator();  
 		            Object obj;
 		           
 	    			if(datosInforme.get("NOMBRE")==null){
@@ -3824,10 +3824,11 @@ public class EnvioInformesGenericos extends MasterReport {
 						datosListaGuardias.put("IDLISTA",datosInforme.get("IDLISTA"));
 	    				
 	    			}		            
-		            while (e.hasMoreElements()) {  
+		            while (e.hasNext()) {  
 		            	   
-		                  obj = e.nextElement(); 
-		      			  String idPersona = obj.toString();
+		                  obj = e.next(); 
+		                  //Hashtable aux = (Hashtable) datosLista.get(obj);
+		      			  String idPersona = UtilidadesString.split(obj.toString(), "|||")[1];
 		                  Vector list= (Vector) datosLista.get(obj);
 		                  int tam =0;
 			      			CenColegiadoAdm admCol = new CenColegiadoAdm(usrBean);
@@ -3975,8 +3976,8 @@ public class EnvioInformesGenericos extends MasterReport {
 	}
 	
 
-	private Hashtable getIdColegiados(Hashtable datosInforme, UsrBean usrBean) throws ClsExceptions{
-		Hashtable htPersonas = new Hashtable();
+	private TreeMap getIdColegiados(Hashtable datosInforme, UsrBean usrBean) throws ClsExceptions{
+		TreeMap htPersonas = new TreeMap();
 		Vector datos = new Vector();
 		Vector guardias = new Vector();
 		String fechaInicio = null;
@@ -3984,7 +3985,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		String idlista = null;
 		String idPersona  = null;
 		String idInstitucion  = null;
-		Hashtable listaPorUsu = null;
+		TreeMap listaPorUsu = null;
 		try {		
 				//MasterReport masterReport = new  MasterReport(); 
 				//Vector vCampos = masterReport.obtenerDatosFormulario(form);
@@ -4037,7 +4038,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		return  listaPorUsu;
 	}
-	private Hashtable getIdColegiadosTotal(Hashtable datosInforme, UsrBean usrBean) throws ClsExceptions{
+	private TreeMap getIdColegiadosTotal(Hashtable datosInforme, UsrBean usrBean) throws ClsExceptions{
 		Vector datos = new Vector();
 		Vector guardias = new Vector();
 		String fechaInicio = null;
@@ -4045,7 +4046,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		String idlista = null;
 		String idPersona  = null;
 		String idInstitucion  = null;
-		Hashtable lista = null;
+		TreeMap lista = null;
 		try {		
 				//MasterReport masterReport = new  MasterReport(); 
 				//Vector vCampos = masterReport.obtenerDatosFormulario(form);
@@ -4088,7 +4089,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				ScsGuardiasTurnoAdm admGT = new ScsGuardiasTurnoAdm(usrBean);
 				
 				datos = admGT.getDatosListaGuardias(idInstitucion,idlista,guardias,fechaInicio,fechaFin);
-				lista=calcularPersona(datos);
+				lista=calcularPersonasTotal(datos);
 				
 			} catch (SIGAException e) {
 				// TODO Auto-generated catch block
@@ -4099,17 +4100,17 @@ public class EnvioInformesGenericos extends MasterReport {
 	}
 	
 
-	protected Hashtable calcularPersona(Vector datos) throws SIGAException  
+	protected TreeMap calcularPersona(Vector datos) throws SIGAException  
 	{
 		
-		Hashtable todos= new Hashtable();
+		TreeMap todos= new TreeMap();
 		//vector guardiaPers= null;
-		 Map map = new HashMap();
+		TreeMap map = new TreeMap();
 		try {
 			List guardiasList = null;
 			for (int j=0; j<datos.size(); j++){		    						
 				   Hashtable lineaGuardia=(Hashtable)datos.get(j);			
-				   Long letrado =new Long((String)lineaGuardia.get("IDPERSONA")).longValue();	
+				   String letrado = "litos|||"+(String)lineaGuardia.get("IDPERSONA");	
 				   if(map.containsKey(letrado)){
 					   guardiasList = (List) map.get(letrado);
 				   }else{
@@ -4121,7 +4122,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			Iterator it = map.keySet().iterator();
 		    List guardiasOutList = null;
 		    while (it.hasNext()) {
-		    	long letradoOut = (Long) it.next();
+		    	String letradoOut = (String) it.next();
 
 		    	guardiasOutList  = (List) map.get(letradoOut);
 		    	Vector v =  new Vector();
@@ -4139,6 +4140,48 @@ public class EnvioInformesGenericos extends MasterReport {
 		} 
         return  todos;
 	}
+	protected TreeMap calcularPersonasTotal(Vector datos) throws SIGAException  
+	{
+		
+		TreeMap todos= new TreeMap();
+		//vector guardiaPers= null;
+		 TreeMap map = new TreeMap();
+		try {
+			List guardiasList = null;
+			for (int j=0; j<datos.size(); j++){		    						
+				   Hashtable lineaGuardia=(Hashtable)datos.get(j);
+				   String key = (GstDate.convertirFecha((String)lineaGuardia.get("FECHA_INICIO"),"yyyy/MM/dd HH:mm:ss").getTime())+(String)lineaGuardia.get("ORDEN")+"|||"+(String)lineaGuardia.get("IDPERSONA");
+				   //Long letrado =new Long().longValue();	
+				   if(map.containsKey(key)){
+					   guardiasList = (List) map.get(key);
+				   }else{
+					   guardiasList = new ArrayList();
+				   }
+				   guardiasList.add(lineaGuardia);
+				   map.put(key, guardiasList);
+			}
+			Iterator it = map.keySet().iterator();
+		    List guardiasOutList = null;
+		    while (it.hasNext()) {
+		    	String keyoOut = (String) it.next();
+
+		    	guardiasOutList  = (List) map.get(keyoOut);
+		    	Vector v =  new Vector();
+		    	for (int i = 0; i < guardiasOutList.size(); i++) {
+		    		Hashtable lineaGuardiaHashtable = ((Hashtable) guardiasOutList.get(i));
+		    		v.add(lineaGuardiaHashtable);
+				}
+		    	todos.put(keyoOut, v);
+		    }
+			
+		}
+		catch (Exception e) 
+		{
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
+		} 
+        return  todos;
+	}
+
 
 	
 	private void setPersonasDesignas(Vector vCampos,UsrBean userBean)throws ClsExceptions,SIGAException{
