@@ -651,17 +651,20 @@ function str_replace(search, replace, subject) {
 			document.getElementById("provincia").onchange();
 			window.setTimeout("recargarComboHijo()",100,"Javascript");
 			poblacionSeleccionada = resultado[8];
-			if(resultado[11]!=null && trim(resultado[11])!='')
-				datosGeneralesForm.codigoPostal.value     = trim(resultado[11]);
-			if(resultado[12]!=null && trim(resultado[12])!='')
-				datosGeneralesForm.telefono1.value=trim(resultado[12]);
-			if(resultado[13]!=null&& trim(resultado[13])!='')
-				datosGeneralesForm.correoElectronico.value=trim(resultado[13]);
+			datosGeneralesForm.codigoPostal.value  = resultado[11];
+			if(datosGeneralesForm.codigoPostal.value=' ')
+				datosGeneralesForm.codigoPostal.value="";
+			datosGeneralesForm.telefono1.value=resultado[12];
+			if(datosGeneralesForm.telefono1.value=' ')
+				datosGeneralesForm.telefono1.value="";
+			datosGeneralesForm.correoElectronico.value=resultado[13];
+			if(datosGeneralesForm.correoElectronico.value=' ')
+				datosGeneralesForm.correoElectronico.value="";
 			datosGeneralesForm.sexo.value=resultado[14];
 			datosGeneralesForm.tratamiento.value=resultado[15];
-			if(resultado[16]!=null&& trim(resultado[16])!='')
-				datosGeneralesForm.fax1.value=trim(resultado[16]);
-			
+			datosGeneralesForm.fax1.value=resultado[16];
+			if(datosGeneralesForm.fax1.value=' ')
+				datosGeneralesForm.fax1.value="";
 			document.forms[0].otroCol.value = "S";
 			datosGeneralesForm.tipoIdentificacion.disabled="disabled";
 			datosGeneralesForm.numIdentificacion.disabled="disabled";

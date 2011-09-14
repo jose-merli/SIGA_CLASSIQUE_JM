@@ -708,18 +708,18 @@ public class BusquedaCensoAction extends MasterAction {
 			String nifCif = miform.getNif();
 			// obtener nombre
 			//String nombre = (String)vOcultos.get(4);
-			String nombre = miform.getNombre();
-			String apellido1 = miform.getApellido1();
-			String apellido2 = miform.getApellido2();
-			String poblacion = miform.getPoblacion();
-			String provincia = miform.getProvincia();
-			String direcion = miform.getDireccion();
-			String codPostal = miform.getCodPostal();
-			String telefono = miform.getTelefono();
-			String mail = miform.getMail();
-			String sexo = miform.getSexo();
-			String tratamiento = miform.getTratamiento();			
-			String fax = miform.getFax1();			
+			String nombre = miform.getNombre().trim();
+			String apellido1 = miform.getApellido1().trim();
+			String apellido2 = miform.getApellido2().trim();
+			String poblacion = miform.getPoblacion().trim();
+			String provincia = miform.getProvincia().trim();
+			String direcion = miform.getDireccion().trim();
+			String codPostal = miform.getCodPostal().trim();
+			String telefono = miform.getTelefono().trim();
+			String mail = miform.getMail().trim();
+			String sexo = miform.getSexo().trim();
+			String tratamiento = miform.getTratamiento().trim();			
+			String fax = miform.getFax1().trim();			
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			
 			Hashtable datosCliente = new Hashtable();
