@@ -490,6 +490,7 @@ public class InformeCertificadosEspeciales extends MasterReport
 		sql.append("	p.apellidos1 AS APELLIDO1,");
 		sql.append("	p.apellidos2 AS APELLIDO2,");
 		sql.append("	decode(p.sexo,'H','o','a') as O_A,");
+		sql.append("	decode(p.sexo,'H','o','a') as O_A2,");		
 		sql.append("	s.FECHAEMISIONCERTIFICADO,");
 		sql.append(" f_siga_getrecurso_etiqueta(decode(l.SITUACIONRESIDENTE,1,'censo.consultaDatosColegiales.literal.residente','censo.consultaDatosColegiales.literal.noResidente'),@IDIOMA@) as RESIDENTE,");
 		sql.append(" (SELECT nombre");
