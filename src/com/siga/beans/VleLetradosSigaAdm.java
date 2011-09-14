@@ -313,7 +313,7 @@ public class VleLetradosSigaAdm extends MasterBeanAdmVisible
 				       	}
 				       	
 				       }
-				       
+		    sqlClientes+= " ORDER BY L.apellido1||' '||L.apellido2, L.nombre, C.descripcion";	       
 			PaginadorBind paginado = new PaginadorBind(sqlClientes, codigos);
 
 			int totalRegistros = paginado.getNumeroTotalRegistros();
