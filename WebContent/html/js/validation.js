@@ -781,9 +781,29 @@ function validarAlfaNumericoYGuiones(texto){
    if(texto == "" || objRegExp.test(texto))	   	   	
 	   	return true;	   
    else	   	   
-	   return false;
-	   
-} 
+	   return false;	   
+}
+
+/*
+ * Método que solo valida digitos y no deja que se escriba otros caracteres.
+*/
+function soloDigitos(event)
+{			
+ 	var key;
+ 	if(window.event) // para navegadores IE
+ 	{
+  		key = event.keyCode;
+ 	}
+ 	else if(event.which) // para navegadores Firefox/Opera/Netscape
+ 	{
+  		key = event.which;
+ 	}
+ 	if (key < 48 || key > 57) 
+ 	{
+    	 return false;
+ 	}
+ 	return true;
+}
 
 
 
