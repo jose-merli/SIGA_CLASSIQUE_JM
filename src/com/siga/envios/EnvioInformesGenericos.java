@@ -494,6 +494,8 @@ public class EnvioInformesGenericos extends MasterReport {
 			informeJustificacionMasivaForm.setActivarRestriccionesFicha(Boolean.valueOf(activarRestriccionesFicha));
 			informeJustificacionMasivaForm.setIdPersona((String)datosInforme.get("idPersona"));
 			informeJustificacionMasivaForm.setAnio((String)datosInforme.get("anio"));
+			informeJustificacionMasivaForm.setActuacionesPendientes((String)datosInforme.get("actuacionesPendientes"));
+			
 			informeJustificacionMasivaForm.setEstado((String)datosInforme.get("estado"));
 			informeJustificacionMasivaForm.setFechaJustificacionDesde((String)datosInforme.get("fechaJustificacionDesde"));
 			informeJustificacionMasivaForm.setFechaJustificacionHasta((String)datosInforme.get("fechaJustificacionHasta"));
@@ -5061,11 +5063,16 @@ public class EnvioInformesGenericos extends MasterReport {
 				informeJustificacionMasivaForm.setActivarRestriccionesFicha(Boolean.valueOf(activarRestriccionesFicha));
 				informeJustificacionMasivaForm.setIdPersona((String)datosInforme.get("idPersona"));
 				informeJustificacionMasivaForm.setAnio((String)datosInforme.get("anio"));
+				informeJustificacionMasivaForm.setActuacionesPendientes((String)datosInforme.get("actuacionesPendientes"));
+				
+				
 				informeJustificacionMasivaForm.setEstado((String)datosInforme.get("estado"));
 				informeJustificacionMasivaForm.setFechaJustificacionDesde((String)datosInforme.get("fechaJustificacionDesde"));
 				informeJustificacionMasivaForm.setFechaJustificacionHasta((String)datosInforme.get("fechaJustificacionHasta"));
 				informeJustificacionMasivaForm.setFechaDesde((String)datosInforme.get("fechaDesde"));
 				informeJustificacionMasivaForm.setFechaHasta((String)datosInforme.get("fechaHasta"));
+				
+				
 				informeJustificacionMasivaForm.setInteresadoApellidos((String)datosInforme.get("interesadoApellidos"));
 				informeJustificacionMasivaForm.setInteresadoNombre((String)datosInforme.get("interesadoNombre"));
 				informeJustificacionMasivaForm.setIncluirEjgNoFavorable((String)datosInforme.get("incluirEjgNoFavorable"));
@@ -5112,13 +5119,16 @@ public class EnvioInformesGenericos extends MasterReport {
 				boolean isInformesInsertados = false;
 				ArrayList alClavesJustificacion = new ArrayList();
 				alClavesJustificacion.add("fichaColegial");
-		
 				alClavesJustificacion.add("idInstitucion");
 				alClavesJustificacion.add("mostrarTodas");
-		
 				alClavesJustificacion.add("activarRestriccionesFicha");
+				alClavesJustificacion.add("incluirEjgNoFavorable");
+				alClavesJustificacion.add("incluirEjgSinResolucion");
+				alClavesJustificacion.add("incluirSinEJG");
+				alClavesJustificacion.add("incluirEjgPteCAJG");
 		
 				alClavesJustificacion.add("idPersona");
+				alClavesJustificacion.add("actuacionesPendientes");
 				alClavesJustificacion.add("anio");
 				alClavesJustificacion.add("estado");
 				alClavesJustificacion.add("fechaJustificacionDesde");
@@ -5127,10 +5137,6 @@ public class EnvioInformesGenericos extends MasterReport {
 				alClavesJustificacion.add("fechaHasta");
 				alClavesJustificacion.add("interesadoApellidos");
 				alClavesJustificacion.add("interesadoNombre");
-				alClavesJustificacion.add("incluirEjgNoFavorable");
-				alClavesJustificacion.add("incluirEjgSinResolucion");
-				alClavesJustificacion.add("incluirSinEJG");
-				alClavesJustificacion.add("incluirEjgPteCAJG");
 				
 				
 				
@@ -5151,8 +5157,8 @@ public class EnvioInformesGenericos extends MasterReport {
 						idPersona = (String) itePersonas.next();
 				
 						Vector vPlantillas = null;
-						List<EnvDestProgramInformesBean> lDestinatarios = new ArrayList<EnvDestProgramInformesBean>();
-						List<String> lDestPersonas = new ArrayList<String>();
+//						List<EnvDestProgramInformesBean> lDestinatarios = new ArrayList<EnvDestProgramInformesBean>();
+//						List<String> lDestPersonas = new ArrayList<String>();
 						if(!isInformeProgramado){
 							programInformes = new EnvProgramInformesBean();
 							programInformes.setIdProgram(programInformesAdm.getNewIdProgramInformes(idInstitucion));
@@ -5201,13 +5207,16 @@ public class EnvioInformesGenericos extends MasterReport {
 						EnvValorCampoClaveBean valorCampoClave = null;
 						//Iterator itClave = htClaves.keySet().iterator();
 						valorCampoClave = new EnvValorCampoClaveBean();
-						for (int k = 0; k < lDestinatarios.size(); k++) {
-							destProgramInformes = (EnvDestProgramInformesBean) lDestinatarios.get(k);  
+						//for (int k = 0; k < lDestinatarios.size(); k++) {
+							//destProgramInformes = (EnvDestProgramInformesBean) lDestinatarios.get(k);  
 			
 							valorCampoClave.setIdValor(valorCampoClaveAdm.getNewIdEnvio());
 							for (int j = 0; j < alClavesJustificacion.size(); j++) {
 								String  clave = (String)alClavesJustificacion.get(j);
 								String valorClave = (String)datosInforme.get(clave);
+								if(valorClave == null || valorClave.trim().equals(""))
+									continue;
+								
 								valorCampoClave.setIdProgram(destProgramInformes.getIdProgram());
 								valorCampoClave.setIdEnvio(destProgramInformes.getIdEnvio());
 								valorCampoClave.setIdInstitucion(destProgramInformes.getIdInstitucion());
@@ -5221,7 +5230,7 @@ public class EnvioInformesGenericos extends MasterReport {
 								valorCampoClaveAdm.insert(valorCampoClave);
 			
 							}
-						}
+					//	}
 					}
 				}
 			
