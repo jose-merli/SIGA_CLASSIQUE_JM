@@ -37,7 +37,9 @@
 	String anio = "", numero = "", idTipoEJG = "", observaciones = "";
 	String fechaRatificacion = "", fechaResolucionCAJG = "", fechaNotificacion = "";
 	String fechaAuto = "";
-	boolean requiereTurnado = false;
+	//Nuevas cadenas para las nueas cajas de la ventana
+	String fechaPublicacion = "", observacionImpugnacion ="",numeroResolucion="", anioResolucion="",bisResolucion ="";
+	boolean requiereTurnado = false, requiereBis = false;
 	ArrayList vTipoSentidoAuto = new ArrayList(), vTipoResolAuto = new ArrayList();
 
 	try {
@@ -52,6 +54,7 @@
 				&& miHash.get(ScsEJGBean.C_IDTIPOSENTIDOAUTO) != "")
 			vTipoSentidoAuto.add(miHash.get(
 					ScsEJGBean.C_IDTIPOSENTIDOAUTO).toString());
+		
 		if (miHash.containsKey(ScsEJGBean.C_IDTIPORESOLAUTO)
 				&& miHash.get(ScsEJGBean.C_IDTIPORESOLAUTO) != "")
 			vTipoResolAuto.add(miHash.get(ScsEJGBean.C_IDTIPORESOLAUTO)
@@ -61,6 +64,22 @@
 			fechaAuto = GstDate.getFormatedDateShort("",
 					miHash.get("FECHAAUTO").toString()).toString();
 
+		//Crear nuevos campos en la pestaña de impugnaciones del EJG
+		if (miHash.containsKey("FECHAPUBLICACION"))
+			fechaPublicacion = GstDate.getFormatedDateShort("",
+					miHash.get("FECHAPUBLICACION").toString()).toString();
+				
+		if (miHash.containsKey("OBSERVACIONIMPUGNACION"))
+			observacionImpugnacion = miHash.get("OBSERVACIONIMPUGNACION").toString();
+		
+		if (miHash.containsKey("NUMERORESOLUCION"))
+			numeroResolucion = miHash.get("NUMERORESOLUCION").toString();
+		
+		if (miHash.containsKey("ANIORESOLUCION"))
+			anioResolucion = miHash.get("ANIORESOLUCION").toString();
+		
+		if (miHash.containsKey("BISRESOLUCION"))			
+			requiereBis = !miHash.get("BISRESOLUCION").toString().equals("0");			
 	} catch (Exception e) {
 		e.printStackTrace();
 	}
@@ -72,7 +91,8 @@
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>	
-	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
+	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/validation.js" type="text/javascript"></script>	
 	<script type="text/javascript">
 		function refrescarLocal()
 		{
@@ -165,7 +185,7 @@
 		<tr>
 			<td class="labelText"><siga:Idioma
 				key="gratuita.EJG.literal.sentidoAuto" /></td>
-			<td colspan="3">
+			<td>
 			<%if (accion.equalsIgnoreCase("ver")) {%> 
 				<siga:ComboBD
 					nombre="idTipoSentidoAuto" tipo="idTipoSentidoAuto"
@@ -179,7 +199,61 @@
 					obligatorio="false" elementoSel="<%=vTipoSentidoAuto%>" /> 
 			<%}%>
 			</td>
+			
+			<!-- Inicio Código Crear nuevos campos en la pestaña de impugnaciones del EJG -->
+			<td class="labelText">
+				<siga:Idioma key="gratuita.operarRatificacion.literal.fechaPublicacion"/>
+			</td>
+			<td>			
+				<%if (accion.equalsIgnoreCase("ver")) {%>
+					<html:text name="DefinirEJGForm" property="fechaPublicacion" size="10" styleClass="boxConsulta" value="<%=fechaPublicacion%>" disabled="false" readonly="true"></html:text>
+				<%}else{%>
+					<html:text name="DefinirEJGForm" property="fechaPublicacion" size="10" styleClass="box" value="<%=fechaPublicacion%>" disabled="false" readonly="true"></html:text>
+					&nbsp;
+					<a onClick="return showCalendarGeneral(fechaPublicacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
+					<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
+					</a>
+				<%}%>
+			</td>
+			<!-- Fin Código Crear nuevos campos en la pestaña de impugnaciones del EJG -->
+			
 		</tr>
+												
+		<!-- Inicio Código Crear nuevos campos en la pestaña de impugnaciones del EJG -->
+		
+		<tr>
+			<td class="labelText"  width="300">	
+				<siga:Idioma key='gratuita.operarRatificacion.literal.numeroResolucion'/> 
+			</td>
+	   		<td >	
+				<% if (accion.equalsIgnoreCase("ver")) {%>
+			  		<html:text name="DefinirEJGForm"  property="numeroResolucion"  onkeypress="javascript:return soloDigitos(event)"  onblur="habilitarBisResolucion();" size="11" maxlength="11"  styleClass="boxConsulta"  value="<%=numeroResolucion%>" readonly="true"></html:text> / 
+                	<html:text name="DefinirEJGForm"  property="anioResolucion"    onkeypress="javascript:return soloDigitos(event)"  onblur="habilitarBisResolucion();" size="4" maxlength="4"    styleClass="boxConsulta"  value="<%=anioResolucion%>" readonly="true"></html:text>
+                	<siga:Idioma key="gratuita.operarRatificacion.literal.bisResolucion"/>&nbsp;&nbsp;
+                	<input type="Checkbox" name="bisResolucion"  <%=(requiereBis?"checked":"")%> disabled>
+                	
+				<%} else {%>
+					<html:text name="DefinirEJGForm"  property="numeroResolucion" onkeypress="javascript:return soloDigitos(event)" onblur="habilitarBisResolucion();" size="11" maxlength="11"  styleClass="boxNumber"  value="<%=numeroResolucion%>" ></html:text> / 
+                	<html:text name="DefinirEJGForm"  property="anioResolucion"   onkeypress="javascript:return soloDigitos(event)" onblur="habilitarBisResolucion();" size="4" maxlength="4"    styleClass="boxNumber"  value="<%=anioResolucion%>"></html:text>
+                	<siga:Idioma key="gratuita.operarRatificacion.literal.bisResolucion"/>&nbsp;&nbsp;
+                	<input type="Checkbox" name="bisResolucion"  <%=(requiereBis?"checked":"")%>>
+				<%}%>
+	  		</td>
+	  	</tr>
+		
+		<tr>
+			<td class="labelText" colspan="1">
+				<siga:Idioma key="gratuita.operarRatificacion.literal.observaciones"/>
+			</td>
+			<td class="labelText" colspan="4">	
+				<%if (accion.equalsIgnoreCase("ver")) {%>	
+					<textarea name="observacionImpugnacion" class="boxConsulta" style="width:770px" rows="18" readOnly="true"><%=observacionImpugnacion%></textarea>
+				<%} else {%>
+					<textarea name="observacionImpugnacion" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" class="box" style="width:770px" rows="18"><%=observacionImpugnacion%></textarea>
+				<%}%>
+			</td>		
+		</tr>
+		<!-- Fin Código Crear nuevos campos en la pestaña de impugnaciones del EJG -->
 
 		<tr>
 			<td class="labelText" colspan="4">
@@ -231,7 +305,19 @@
 				return false;
 			}
 			document.forms[0].submit();
+		}
 
+		//Método que habilita o deshabilita el check de Bis
+		function habilitarBisResolucion()
+		{
+			if (document.forms[0].numeroResolucion.value!="" || document.forms[0].anioResolucion.value!="") 
+				{
+					document.forms[0].bisResolucion.disabled=false;				
+				} 
+				else
+				{
+					document.forms[0].bisResolucion.disabled=true;			
+				}
 		}
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
