@@ -359,7 +359,10 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							ScsEJGBean.C_CALIDADIDINSTITUCION,		ScsEJGBean.C_NUMERODESIGNAPROC,
 							ScsEJGBean.C_DOCRESOLUCION,				ScsEJGBean.C_USUCREACION,
 							ScsEJGBean.C_FECHACREACION,				ScsEJGBean.C_NIG,
-							ScsEJGBean.C_IDPONENTE,					ScsEJGBean.C_IDORIGENCAJG};
+							ScsEJGBean.C_IDPONENTE,					ScsEJGBean.C_IDORIGENCAJG,
+							ScsEJGBean.C_OBSERVACIONIMPUGNACION,	ScsEJGBean.C_FECHAPUBLICACION,
+							ScsEJGBean.C_NUMERORESOLUCION,			ScsEJGBean.C_ANIORESOLUCION,
+							ScsEJGBean.C_BISRESOLUCION};
 		return campos;
 	}
 	
@@ -455,6 +458,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			bean.setNIG(UtilidadesHash.getString(hash,ScsEJGBean.C_NIG));
 			bean.setIdOrigenCAJG(UtilidadesHash.getString(hash,ScsEJGBean.C_IDORIGENCAJG));
 			bean.setIdPonente(UtilidadesHash.getLong(hash,ScsEJGBean.C_IDPONENTE));
+			//David
+			bean.setObservacionImpugnacion(UtilidadesHash.getString(hash,ScsEJGBean.C_OBSERVACIONIMPUGNACION));
+			bean.setFechaPublicacion(UtilidadesHash.getString(hash,ScsEJGBean.C_FECHAPUBLICACION));
+			bean.setNumeroResolucion(UtilidadesHash.getString(hash,ScsEJGBean.C_NUMERORESOLUCION));
+			bean.setAnioResolucion(UtilidadesHash.getString(hash,ScsEJGBean.C_ANIORESOLUCION));
+			bean.setBisResolucion(UtilidadesHash.getString(hash,ScsEJGBean.C_BISRESOLUCION));
 		}
 		catch (Exception e){
 			throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR HASHTABLE A BEAN");
@@ -545,6 +554,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,ScsEJGBean.C_NIG, b.getNIG());
 			UtilidadesHash.set(htData,ScsEJGBean.C_IDORIGENCAJG, b.getIdOrigenCAJG());
 			UtilidadesHash.set(htData,ScsEJGBean.C_IDPONENTE, b.getIdPonente());
+			//David
+			UtilidadesHash.set(htData,ScsEJGBean.C_OBSERVACIONIMPUGNACION, b.getObservacionImpugnacion());
+			UtilidadesHash.set(htData,ScsEJGBean.C_FECHAPUBLICACION, b.getFechaPublicacion());
+			UtilidadesHash.set(htData,ScsEJGBean.C_NUMERORESOLUCION, b.getNumeroResolucion());
+			UtilidadesHash.set(htData,ScsEJGBean.C_ANIORESOLUCION, b.getAnioResolucion());
+			UtilidadesHash.set(htData,ScsEJGBean.C_BISRESOLUCION, b.getBisResolucion());						
 		}
 		catch (Exception e){
 			 throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR EL BEAN A HASHTABLE");

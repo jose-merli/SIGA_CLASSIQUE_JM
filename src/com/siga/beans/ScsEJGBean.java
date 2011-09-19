@@ -91,10 +91,21 @@ public class ScsEJGBean extends MasterBean{
 	private String idRenuncia;
 	private String numeroDesignaProc;
 	private Integer idTipoenCalidad;
-    private Integer calidadidinstitucion;
-    private String docResolucion;
+    private Integer calidadidinstitucion;    
+	private String docResolucion;
     private String NIG;
     private Long idPonente;
+    
+    //Nuevos campos David
+    private String observacionImpugnacion;
+    private String fechaPublicacion;
+    private String numeroResolucion;
+    private String anioResolucion;
+    private String bisResolucion;
+    
+
+    
+    
 	
 	/*
 	 *  Nombre de Tabla*/
@@ -181,9 +192,14 @@ public class ScsEJGBean extends MasterBean{
     static public final String C_USUCREACION   = "USUCREACION";
     static public final String C_NIG   = "NIG";
     static public final String C_IDPONENTE   = "IDPONENTE";
+    //Crear nuevos campos en la pestaña de impugnaciones del EJG
+    static public final String C_OBSERVACIONIMPUGNACION = "OBSERVACIONIMPUGNACION";
+    static public final String C_FECHAPUBLICACION ="FECHAPUBLICACION";
+    static public final String C_NUMERORESOLUCION = "NUMERORESOLUCION";
+    static public final String C_ANIORESOLUCION = "ANIORESOLUCION";
+    static public final String C_BISRESOLUCION = "BISRESOLUCION";
 	
-	
-		
+			
 	public String getIdRenuncia() {
 		return idRenuncia;
 	}
@@ -901,7 +917,36 @@ public class ScsEJGBean extends MasterBean{
 		this.idPonente = idPonente;
 	}
 	
+	public String getObservacionImpugnacion() {
+		return observacionImpugnacion;
+	}
+	public void setObservacionImpugnacion(String observacionImpugnacion) {
+		this.observacionImpugnacion = observacionImpugnacion;
+	}
+	public String getFechaPublicacion() {
+		return fechaPublicacion;
+	}
+	public void setFechaPublicacion(String fechaPublicacion) {
+		this.fechaPublicacion = fechaPublicacion;
+	}
+	public String getNumeroResolucion() {
+		return numeroResolucion;
+	}
+	public void setNumeroResolucion(String numeroResolucion) {
+		this.numeroResolucion = numeroResolucion;
+	}
+	public String getAnioResolucion() {
+		return anioResolucion;
+	}
+	public void setAnioResolucion(String anioResolucion) {
+		this.anioResolucion = anioResolucion;
+	}
+
+	public String getBisResolucion() {
+		return bisResolucion;
+	}
+	public void setBisResolucion(String bisResolucion) {
+		this.bisResolucion = bisResolucion;
+	}
 	
-
-
 }

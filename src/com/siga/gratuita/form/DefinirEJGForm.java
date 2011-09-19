@@ -31,6 +31,11 @@ import com.siga.general.MasterForm;
 	 String anioCAJG;
 	 String numeroCAJG;
 	 
+	 //Crear nuevos campos en la pestaña de impugnaciones del EJG
+	 String numeroResolucion;
+	 String anioResolucion;
+	 //String bisResolucion;
+	 
 	 
  	public void setRefAuto 					(String refAuto)					{ this.datos.put(ScsEJGBean.C_REFAUTO, refAuto);									} 	
  	
@@ -958,4 +963,21 @@ import com.siga.general.MasterForm;
 		public void setDocResolucion(String docResolucion) {
 			UtilidadesHash.set(this.datos, ScsEJGBean.C_DOCRESOLUCION, docResolucion);
 		}
+		
+		//Crear nuevos campos en la pestaña de impugnaciones del EJG
+		
+		public String getObservacionImpugnacion() 	{return UtilidadesHash.getString(this.datos, ScsEJGBean.C_OBSERVACIONIMPUGNACION);}
+		public void setObservacionImpugnacion(String dato)	{this.datos.put(ScsEJGBean.C_OBSERVACIONIMPUGNACION, dato);}
+		
+		public String getFechaPublicacion() 	{return UtilidadesHash.getString(this.datos, ScsEJGBean.C_FECHAPUBLICACION);}
+		public void setFechaPublicacion(String dato)	{this.datos.put(ScsEJGBean.C_FECHAPUBLICACION, dato);}
+						
+		public String getNumeroResolucion() {return UtilidadesHash.getString(datos, ScsEJGBean.C_NUMERORESOLUCION);}
+		public void setNumeroResolucion(String numeroResolucion){UtilidadesHash.set(this.datos, ScsEJGBean.C_NUMERORESOLUCION, numeroResolucion);}
+		
+		public String getAnioResolucion() {return UtilidadesHash.getString(datos, ScsEJGBean.C_ANIORESOLUCION);}
+		public void setAnioResolucion(String anioResolucion){UtilidadesHash.set(this.datos, ScsEJGBean.C_ANIORESOLUCION, anioResolucion);}
+								
+		public boolean getBisResolucion() 	{return UtilidadesHash.getBoolean(this.datos, ScsEJGBean.C_BISRESOLUCION).booleanValue();}
+		public void setBisResolucion(boolean bisResolucion)	{this.datos.put(ScsEJGBean.C_BISRESOLUCION, (bisResolucion?ClsConstants.DB_TRUE:ClsConstants.DB_FALSE));}						
 }
