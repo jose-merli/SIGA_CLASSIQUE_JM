@@ -329,7 +329,7 @@
 			     
 					document.all.solicitudCompraForm.target = "mainWorkArea";
 					document.all.solicitudCompraForm.modo.value = "actualizarCliente";
-					document.all.solicitudCompraForm.submit();
+					//document.all.solicitudCompraForm.submit();
 								   		   
 			}		  
 		
@@ -479,8 +479,20 @@
 			
 			
 			function mostrarCombos(){
+				var institucion = <%=idInstitucionP%>;				
+				if (document.solicitudCompraForm.catalogo.value=='C' && (institucion == 2000 || institucion>=3000))
+				{
+					document.getElementById("comboPresentador").style.display="block";
+					document.getElementById("presentador").style.display="block";								
+				}
+				else
+				{
+					document.getElementById("comboPresentador").style.display="none";
+					document.getElementById("presentador").style.display="none";										
+				}
+					
 			  document.solicitudCompraForm.nombreProducto.value='';
-		
+
 			  if (document.solicitudCompraForm.catalogo.value=='P'||document.solicitudCompraForm.catalogo.value==''||document.solicitudCompraForm.catalogo.value=='C'){
 			      if (document.solicitudCompraForm.catalogo.value=='P'){
 				    <%if(esLetrado)	{%>
@@ -513,35 +525,29 @@
 				var a = cmbs1[0].options;
 				a[0].selected = true;
 				cmbs1[0].onchange();
-//				
-				
+//								
 			  }
 			}
-			function buscarProducto(){
-			  sub();
- 			 if (document.solicitudCompraForm.catalogo.value==''){
-			    alert ("<siga:Idioma key="producto.campo.catalogo"/>");
-			    fin();
- 			   return;
-			 }else{ 
-			 
-			  if (document.solicitudCompraForm.catalogo.value=='S'){
-			   document.solicitudCompraForm.concepto.value='Servicio';
-			  }else if(document.solicitudCompraForm.catalogo.value=='P'){
-      		   document.solicitudCompraForm.concepto.value='Producto';
 			
-			  }else{
-			   document.solicitudCompraForm.concepto.value='Certificado';
-			  }
 			
-			    document.solicitudCompraForm.target="resultado1";
-			
-			    document.solicitudCompraForm.modo.value = "buscarProducto";
-			
-				document.solicitudCompraForm.submit();
-				
-			 
-			 
+			function buscarProducto()
+			{
+			 	sub();
+ 			 	if (document.solicitudCompraForm.catalogo.value==''){
+			    	alert ("<siga:Idioma key="producto.campo.catalogo"/>");
+			    	fin();
+					return;
+			 }else{ 			 
+				  if (document.solicitudCompraForm.catalogo.value=='S'){
+			   			document.solicitudCompraForm.concepto.value='Servicio';
+			  	  }else if(document.solicitudCompraForm.catalogo.value=='P'){
+      		   			document.solicitudCompraForm.concepto.value='Producto';			
+			  		}else{
+			   			document.solicitudCompraForm.concepto.value='Certificado';
+			  		}			
+			  	document.solicitudCompraForm.target="resultado1";
+   		      	document.solicitudCompraForm.modo.value = "buscarProducto";
+			  	document.solicitudCompraForm.submit();							 			 
 			 }	
 			 fin();
 			}
@@ -571,19 +577,14 @@
 		}
 		
 
-
-		
-		
-		
-		
-
+								
 	</script>	
 	
 	<!-- INICIO: TITULO Y LOCALIZACION 	-->	
 
 </head>
 
-<body onload="cargarCombos();ajusteAlto('resultado');">
+<body onload="cargarCombos();ajusteAlto('resultado');mostrarColegio();">
 
 <!-- INICIO ******* CAPA DE PRESENTACION ****** -->
 
@@ -629,28 +630,8 @@
 									</td>
 									<td  width="150">
 										<html:text name="busquedaClientesModalForm" property="nombrePersona" value="<%=nombre%>" size="40" styleClass="boxConsulta" readOnly="true"></html:text>
-									</td>	
-
-								
-							<%
-							 	} 
-							
-							if (esConsejo && user.getStrutsTrans().equals("PYS_SolicitarCertificado")){	%>
-							
-									<td class="labelText" width="100">
-										<siga:Idioma key="pys.solicitudCompra.literal.presentador"/>
 									</td>
-									<td width="100">
-									
-										<siga:ComboBD nombre="idInstitucionPresentador" 
-																	tipo="cmbInstitucionesAbreviadas" 
-																	elementoSel ="<%=idInstitucionPresentador%>"
-																	clase="<%=estiloComboInstitucionPresentador%>"
-																	readonly="<%=soloLectura%>"
-																	accion="actualizarInstitucionPresentador(this);"
-																	/>									
-									</td>
-							<% } %>
+							<%}%>
 									
 								</tr>	
 
@@ -675,10 +656,7 @@
 		<html:hidden name="solicitudCompraForm" property="nif"
 			value="<%=nif%>" />
 		<html:hidden name="solicitudCompraForm" property="idInstitucion"
-			value="<%=String.valueOf(idInstitucion.get(0))%>" />
-		<html:hidden name="solicitudCompraForm"
-			property="idInstitucionPresentador"
-			value="<%=String.valueOf(idInstitucionPresentador.get(0))%>" />
+			value="<%=String.valueOf(idInstitucion.get(0))%>" />								 
 		<input type="hidden" name="deCertificado" value="<%=deCertificado%>">
 		<tr>
 			<td>
@@ -763,7 +741,7 @@
 
 
 
-					<td align=left id="solicitarProducto1"><html:button
+					<td align=right id="solicitarProducto1"><html:button
 						property="idButton" onclick="return solicitar('Producto');"
 						styleClass="button">
 						<siga:Idioma key="general.boton.solicitarCompra" />
@@ -776,34 +754,34 @@
 					</html:button></td>
 
 				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-
-					<td id="nombreProducto"><html:text name="solicitudCompraForm"
-						property="nombreProducto" size="25" maxlength="100"
+		</table>
+		<table class="tablaCampos" align="center" border="0">
+			<tr>																					
+					<td id ="presentador" class="labelText">
+							<siga:Idioma key="pys.solicitudCompra.literal.presentador"/>
+					</td>
+					<td id = "comboPresentador">									
+						<siga:ComboBD nombre="idInstitucionPresentador" 
+								tipo="cmbInstitucionesAbreviadas" 
+								elementoSel ="<%=idInstitucionPresentador%>"
+								clase="<%=estiloComboInstitucionPresentador%>"
+								readonly="<%=soloLectura%>"
+								accion="actualizarInstitucionPresentador(this);"												
+						/>																			
+					</td>
+																																																									
+					<td align=right id="nombreProducto"><html:text name="solicitudCompraForm"
+						property="nombreProducto" size="20" maxlength="100"
 						styleClass="box" readonly="false" onKeyPress="return disableEnterKey(event)"/></td>
-					<td align=left id="solicitarServicio1"><html:button
+					<td align=right id="solicitarServicio1"><html:button
 						property="idButton" onclick="return buscarProducto();"
 						styleClass="button">
 						<siga:Idioma key="general.boton.search" />
 						</html:button>
 					</td>
-					
-
-
-
-				</tr>
-				<!-- FILA -->
-
-			</table>
+			</tr>
+		</table>
 			</td>
-
 			
 		</tr>
 		<!-- FILA -->
@@ -873,8 +851,6 @@ function compruebaComboSigaPadre ()
 function compruebaComboSigaHijo (valor, tipo) 
 
 {   
-
-
   if (tipo=='P'){ 
     <%	String aux11 = (String)request.getAttribute("categoriaProducto");
 	    
@@ -889,11 +865,8 @@ function compruebaComboSigaHijo (valor, tipo)
 	  
 	  if (valor.indexOf(',')!=-1){
 	   valor=valor.substring((valor.indexOf(','))+1);
-	  } 
-	 
-
+	  }
           if (valor!=aux111){
-		    
 			limpiarSeleccionComboSiga ('producto');
 		  }
  <%  } %>
@@ -926,6 +899,45 @@ function limpiarSeleccionComboSiga (idCombo)
 	top.frames[0].document.getElementById(idCombo+'Frame').src = cadena.substring(0,ini) + "&elementoSel=" + cadena.substring(fin);
 
 }
+
+function oculta(id)
+{         
+	var elDiv = document.getElementById(id); 
+	//se define la variable "elDiv" igual a nuestro div         
+	elDiv.style.display='none'; 
+	//damos un atributo display:none que oculta el div            
+}
+function muestra(id)
+{       
+	var elDiv = document.getElementById(id); 
+	//se define la variable "elDiv" igual a nuestro div  
+	elDiv.style.display='block';//damos un atributo display:block que  el div
+}
+
+function mostrarColegio()
+{		
+	<%
+	if (esConsejo && user.getStrutsTrans().equals("PYS_SolicitarCertificado")){	%>	
+		document.getElementById("comboPresentador").style.display="block";
+		document.getElementById("presentador").style.display="block";
+		<%if (request.getSession().getAttribute("volver") != null && request.getSession().getAttribute("volver").equals("s")) {%>
+		alert("se blosque despues de volver");
+		document.solicitudCompraForm.catalogo.disabled=true;
+		document.solicitudCompraForm.idInstitucionPresentador.disabled=true;
+		
+		<%request.getSession().setAttribute("volver","");}%>		
+	<%}else
+	{
+	%>	
+		document.getElementById("comboPresentador").style.display="none";
+		document.getElementById("presentador").style.display="none";
+		<%if (request.getSession().getAttribute("volver") != null && request.getSession().getAttribute("volver").equals("s")) {%>
+			document.solicitudCompraForm.catalogo.disabled=true;
+		<%}%>
+	<%request.getSession().setAttribute("volver","");}%>
+	
+}
+
 
 </script>
 
