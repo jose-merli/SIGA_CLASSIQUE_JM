@@ -119,6 +119,7 @@ public class SolicitudCompraAction extends MasterAction{
 					request.getSession().removeAttribute("auxSolicitudCompraForm");
 					mapDestino = abrir(mapping, miForm, request, response);						
 				}else if (accion.equalsIgnoreCase("abrirAlVolver")){
+					request.getSession().setAttribute("volver","s");
 					mapDestino = abrir(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("solicitar")){
 					mapDestino = solicitar(mapping, miForm, request, response);
