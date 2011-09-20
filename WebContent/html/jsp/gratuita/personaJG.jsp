@@ -995,15 +995,7 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 		   	}
 		   %>
 		   <html:text name="PersonaJGForm" property="NIdentificacion" size="10" maxlength="20" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" onblur="rellenarFormulario()"></html:text>
-		   <%if (!accion.equalsIgnoreCase("ver")) {%>
-		   		<%if (miform.getTipoId()!=null &&
-		   					((miform.getTipoId().equalsIgnoreCase("10"))
-		   					|| (miform.getTipoId().equalsIgnoreCase("40")))) {%>
-		   			<input type="button" id="idButtonNif" name="idButton" value='<siga:Idioma key="censo.nif.letra.letranif" />' onclick="obtenerNif();" style="align:right" class="button" style="display:inline;">
-		   		<%} else {%>
-		   			<input type="button" id="idButtonNif" name="idButton" value='<siga:Idioma key="censo.nif.letra.letranif" />' onclick="obtenerNif();" style="align:right" class="button" style="display:inline;visibility: hidden;">
-		   		<%}%>
-		   <%}%>
+
 		  	
 		</td>
 		<td class="labelText" align="left" >
