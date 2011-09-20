@@ -20,7 +20,15 @@ import com.siga.general.MasterForm;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class SolicitudCompraForm extends MasterForm{
+	
+	Integer idInstitucionPresentador;
 
+	public Integer getIdInstitucionPresentador() {
+		return idInstitucionPresentador;
+	}
+	public void setIdInstitucionPresentador(Integer idInstitucionPresentador) {
+		this.idInstitucionPresentador = idInstitucionPresentador;
+	}
 	public void setIdPeticion(String dato) {
 		UtilidadesHash.set(this.datos, "IDPETICION", dato);		
 	}
@@ -142,14 +150,14 @@ public class SolicitudCompraForm extends MasterForm{
 	public Integer getIdInstitucion () {
 		return UtilidadesHash.getInteger(this.datos, "_IDINSTITUCION_");
 	}
-
+/*
 	public void setIdInstitucionPresentador (Integer dato) {
 		UtilidadesHash.set(this.datos, "_IDINSTITUCIONPRESENTADOR_", dato);
 	}
 	public Integer getIdInstitucionPresentador () {
 		return UtilidadesHash.getInteger(this.datos, "_IDINSTITUCIONPRESENTADOR_");
 	}
-
+*/
 	
 	
 	public String getFechaEfectivaCompra() {
