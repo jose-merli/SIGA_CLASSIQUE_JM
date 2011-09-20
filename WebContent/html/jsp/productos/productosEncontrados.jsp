@@ -42,9 +42,7 @@
 	if (request.getSession().getAttribute("resultBusqueda")!=null){
 	  resultado=(Vector)request.getSession().getAttribute("resultBusqueda");	
 	}
-	
-	
-	
+		
 %>
 <html>
 
@@ -68,33 +66,34 @@
 			parent.solicitar("");
 		}	
 		
-		function solicitaralta(fila){ 
-		   var fpadre = parent.document.solicitudCompraForm;
+		function solicitaralta(fila){
+		    var fpadre = parent.document.solicitudCompraForm;
 		 	var f = document.forms[0];
 			f.concepto.value=fpadre.concepto.value;
 			f.catalogo.value=fpadre.catalogo.value;
 			f.idPersona.value=fpadre.idPersona.value;
-			f.idInstitucion.value=fpadre.idInstitucion.value;;
-			f.idInstitucionPresentador.value=fpadre.idInstitucionPresentador.value;;
+			f.idInstitucion.value=fpadre.idInstitucion.value;
+			f.idInstitucionPresentador.value=fpadre.idInstitucionPresentador.value;
 			
 			f.categoriaAux.value=eval("f.oculto"+fila+"_1").value;
-		    f.tipoAux.value = eval("f.oculto"+fila+"_2").value
-		    f.productoAux.value = eval("f.oculto"+fila+"_3").value
-				if(f.idPersona.value == ""){
+		    f.tipoAux.value = eval("f.oculto"+fila+"_2").value;
+		    f.productoAux.value = eval("f.oculto"+fila+"_3").value;
+			if(f.idPersona.value == ""){
 					var mensaje = "<siga:Idioma key="messages.pys.solicitudCompra.seleccionCliente"/>";
 					alert (mensaje);					
 					return false;
-				}
+			}
 				
-				f.target="resultado";
-				f.modo.value = "solicitar";
-				if (f.catalogo.value!='S'){
-				  f.concepto.value="Producto";
-				}else{
-  				  f.concepto.value="Servicio";
-				}
-				
-				f.submit();
+			f.target="resultado";
+			f.modo.value = "solicitar";
+			if (f.catalogo.value!='S'){
+			  f.concepto.value="Producto";
+			}else{
+  			  f.concepto.value="Servicio";
+			}
+			fpadre.catalogo.disabled=true;
+			parent.document.all.solicitudCompraForm.idInstitucionPresentador.disabled=true;
+			f.submit();
 		}
 		
 	</script>	
@@ -116,9 +115,8 @@
 		<input type="hidden" name="idInstitucion" 	value="">	
 		<input type="hidden" name="idInstitucionPresentador" 	value="">	
 		<input type="hidden" name="resultBusqueda" 	value="1">	
-
-	
 		
+					
 		<table  class="tablaTitulo" cellpadding="0" cellspacing="0">
 		 <tr>
 		   <td class="titulosPeq">
@@ -138,20 +136,15 @@
 			   		   
 			>
 
-<% 				
-				
-			if(resultado==null || resultado.size()<1){
-				
-				
-						botones = ""; 
-%> 	
+<%
+			if(resultado==null || resultado.size()<1){								
+				botones = ""; 
+%>
 			  		<br><br>
 				   		 <p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
 			 		<br><br>  			 						
 <% 
-					}else{ 
-					 		
-					 			
+					}else{ 					 							 			
  						botones="CT";
  						Enumeration enumSel = ((Vector)request.getSession().getAttribute("resultBusqueda")).elements();	
 						int fila=1;
@@ -159,11 +152,6 @@
 							Row row = (Row) enumSel.nextElement();
 				
 							String seguro=row.getString("TIPO");
-			
-		
-						
-	 				
-
 							
 				            FilaExtElement[] elems=new FilaExtElement[1];
 							elems[0]=new FilaExtElement("solicitaralta","solicitaralta",SIGAConstants.ACCESS_READ);
