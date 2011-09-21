@@ -444,9 +444,9 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 			// Solo se genera el NIF o CIF de la persona
 			if((document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")||
 				(document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")){
-				document.getElementById("idButtonNif").style.visibility="visible";
+				//document.getElementById("idButtonNif").style.visibility="visible";
 			}	else{
-				document.getElementById("idButtonNif").style.visibility="hidden";
+				//document.getElementById("idButtonNif").style.visibility="hidden";
 			}
 			<%}%>
 		}	
