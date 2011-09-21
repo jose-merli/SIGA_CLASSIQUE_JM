@@ -342,7 +342,17 @@ public class MantenimientoRetencionesJudicialesAction extends MasterAction {
 			boolean checkHistorico  = UtilidadesString.stringToBoolean(UtilidadesHash.getString(miHash,"CHECKHISTORICO"));
 			if (!checkHistorico){
 				consulta += " AND (" + FcsRetencionesJudicialesBean.C_FECHAFIN+" is null "+
-				            " or trunc("+ FcsRetencionesJudicialesBean.C_FECHAFIN+")>=trunc(sysdate))";
+				            " or trunc("+ FcsRetencionesJudicialesBean.C_FECHAFIN+")>=trunc(sysdate))" +
+				            " and (( " + FcsRetencionesJudicialesBean.C_IMPORTE + 
+				            " + NVL ((SELECT SUM (c." + FcsCobrosRetencionJudicialBean.C_IMPORTERETENIDO+")" +
+				            " from " + FcsCobrosRetencionJudicialBean.T_NOMBRETABLA + " c" + 
+				            " where c." + FcsCobrosRetencionJudicialBean.C_IDINSTITUCION + " = retenciones." + FcsRetencionesJudicialesBean.C_IDINSTITUCION +
+				            " and c." + FcsCobrosRetencionJudicialBean.C_IDPERSONA + " = retenciones." + FcsRetencionesJudicialesBean.C_IDPERSONA +
+				            " and c." + FcsCobrosRetencionJudicialBean.C_IDRETENCION + " = retenciones." + FcsRetencionesJudicialesBean.C_IDRETENCION + "), 0)" + 
+				            " ) > 0" + 
+				            " or " + FcsRetencionesJudicialesBean.C_TIPORETENCION + " = 'P'" + 
+				            " or (" + FcsRetencionesJudicialesBean.C_TIPORETENCION + " = 'L'" + 
+				            " and " + FcsRetencionesJudicialesBean.C_IMPORTE + " is null))";
 				
 			}
 			
