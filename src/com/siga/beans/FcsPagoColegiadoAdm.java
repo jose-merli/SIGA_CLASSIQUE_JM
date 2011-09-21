@@ -7,6 +7,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -214,6 +215,62 @@ public class FcsPagoColegiadoAdm extends MasterBeanAdministrador {
 		}
 		return ((Hashtable)resultado.get(0)).get("IMPIRPF").toString();
 	}
+	
+
+	/**
+	 * Generar una lista los registros de la tabla FCS_PAGO_COLEGIADO que tengan el valo de la institución
+	 * y del identificador del pago que se les ha pasado por parámetro.
+	 *  
+	 * @param idInstitucion
+	 * @param idPago
+	 * @return
+	 */	
+	
+   	public Vector selectPagoColegiado (String idinstitucion,
+			  String idPago)
+   		throws ClsExceptions {
+   		
+   		String consulta = "";
+   		
+   		Vector resultado = new Vector();
+   		
+   		try {
+   			consulta += " select * from "+FcsPagoColegiadoBean.T_NOMBRETABLA+" ";
+   			consulta += " where ("+FcsPagoColegiadoBean.C_IDINSTITUCION+"="+idinstitucion+") ";
+   			consulta += "   and ("+FcsPagoColegiadoBean.C_IDPAGOSJG+"="+idPago+") ";
+
+   			resultado = (Vector)this.selectGenerico(consulta.toString());
+   		} catch (Exception e) {
+   			throw new ClsExceptions (e, "Excepcion en FcsPagocolegiadoAdm.selectPagoColegiado(). Consulta SQL:" + consulta);
+   		}
+   		
+   		return resultado;
+   	} //selectPagoColegiado ()			
+	
+	/**
+	 * Elimina los registros de la tabla FCS_PAGO_COLEGIADO que tengan el valo de la institución
+	 * y del identificador del pago que se les ha pasado por parámetro.
+	 *  
+	 * @param idInstitucion
+	 * @param idPago
+	 * @return
+	 */	
+	
+   	public void deletePagoColegiado (String idinstitucion,
+			  String idPago)
+   		throws ClsExceptions {
+   		
+   		String consulta = "";
+   		try {
+   			consulta += " delete from "+FcsPagoColegiadoBean.T_NOMBRETABLA+" ";
+   			consulta += " where ("+FcsPagoColegiadoBean.C_IDINSTITUCION+"="+idinstitucion+") ";
+   			consulta += "   and ("+FcsPagoColegiadoBean.C_IDPAGOSJG+"="+idPago+") ";
+
+   			ClsMngBBDD.executeUpdate (consulta);
+   		} catch (Exception e) {
+   			throw new ClsExceptions (e, "Excepcion en FcsPagocolegiadoAdm.deletePagoColegiado(). Consulta SQL:" + consulta);
+   		}
+   	} //deletePagoColegiado ()		
 
 }
 

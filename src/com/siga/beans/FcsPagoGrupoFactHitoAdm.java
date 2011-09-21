@@ -4,6 +4,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -148,4 +149,61 @@ public class FcsPagoGrupoFactHitoAdm extends MasterBeanAdministrador {
 		}
 		return datos;	
 	}
+	
+	/**
+	 * Obtener una lista los registros de la tabla FCS_PAGO_GRUPOFACT_HITO que tengan el valo de la institución
+	 * y del identificador del pago que se les ha pasado por parámetro.
+	 *  
+	 * @param idInstitucion
+	 * @param idPago
+	 * @return
+	 */	
+	
+   	public Vector selectPagoGrupoFactHito (String idinstitucion,
+			  String idPago)
+   		throws ClsExceptions {
+   		
+   		String consulta = "";
+   		
+   		Vector resultado = new Vector();
+   		
+   		try {
+   			consulta += " select * from "+FcsPagoGrupoFactHitoBean.T_NOMBRETABLA+" ";
+   			consulta += " where ("+FcsPagoGrupoFactHitoBean.C_IDINSTITUCION+"="+idinstitucion+") ";
+   			consulta += "   and ("+FcsPagoGrupoFactHitoBean.C_IDPAGOSJG+"="+idPago+") ";
+
+   			resultado = (Vector)this.selectGenerico(consulta.toString());
+   			
+   		} catch (Exception e) {
+   			throw new ClsExceptions (e, "Excepcion en FcsPagoGrupoFactHitoAdm.selectPagoGrupoFactHito(). Consulta SQL:" + consulta);
+   		}
+   		
+   		return resultado;
+   		
+   	} //selectPagoGrupoFactHito ()		
+	
+	/**
+	 * Elimina los registros de la tabla FCS_PAGO_GRUPOFACT_HITO que tengan el valo de la institución
+	 * y del identificador del pago que se les ha pasado por parámetro.
+	 *  
+	 * @param idInstitucion
+	 * @param idPago
+	 * @return
+	 */	
+	
+   	public void deletePagoGrupoFactHito (String idinstitucion,
+			  String idPago)
+   		throws ClsExceptions {
+   		
+   		String consulta = "";
+   		try {
+   			consulta += " delete from "+FcsPagoGrupoFactHitoBean.T_NOMBRETABLA+" ";
+   			consulta += " where ("+FcsPagoGrupoFactHitoBean.C_IDINSTITUCION+"="+idinstitucion+") ";
+   			consulta += "   and ("+FcsPagoGrupoFactHitoBean.C_IDPAGOSJG+"="+idPago+") ";
+
+   			ClsMngBBDD.executeUpdate (consulta);
+   		} catch (Exception e) {
+   			throw new ClsExceptions (e, "Excepcion en FcsPagoGrupoFactHitoAdm.deletePagoGrupoFactHito(). Consulta SQL:" + consulta);
+   		}
+   	} //deletePagoGrupoFactHito ()		
 }

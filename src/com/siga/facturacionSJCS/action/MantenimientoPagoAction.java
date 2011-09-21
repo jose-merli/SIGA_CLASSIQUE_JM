@@ -280,7 +280,10 @@ public class MantenimientoPagoAction extends MasterAction {
 	 */	
 	protected String borrar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		FcsPagosJGAdm pagosJGAdm = new FcsPagosJGAdm(this.getUserBean(request));
-		FcsMovimientosVariosAdm fcsMovimientosVariosAdm = new FcsMovimientosVariosAdm(this.getUserBean(request)); 
+		FcsMovimientosVariosAdm fcsMovimientosVariosAdm = new FcsMovimientosVariosAdm(this.getUserBean(request));
+		FcsCobrosRetencionJudicialAdm cobrosRetencionJudicialAdm = new FcsCobrosRetencionJudicialAdm(this.getUserBean(request));
+		FcsPagoGrupoFactHitoAdm pagoGrupoFactHitoAdm = new FcsPagoGrupoFactHitoAdm(this.getUserBean(request));
+		FcsPagoColegiadoAdm pagoColegiadoAdm = new FcsPagoColegiadoAdm(this.getUserBean(request));
 		UsrBean usr;
 		String forward="";
 		MantenimientoPagoForm miform = (MantenimientoPagoForm)formulario;
@@ -314,9 +317,27 @@ public class MantenimientoPagoAction extends MasterAction {
 			// Recupero el nombre de los ficheros asociados a la facturacion
 			Hashtable nombreFicheros = UtilidadesFacturacionSJCS.getNombreFicherosPago(idInstitucion, idFacturacion, idPago, null, this.getUserBean(request));
 			
+			Vector vAuxCobrosRetencionJudicial = cobrosRetencionJudicialAdm.selectCobroRetencionJudicial(idInstitucion.toString(), idPago.toString());
+			
+			if ((vAuxCobrosRetencionJudicial != null) && (vAuxCobrosRetencionJudicial.size() > 0)) {
+				cobrosRetencionJudicialAdm.deleteCobroRetencionJudicial(idInstitucion.toString(), idPago.toString());
+			}
+			
+			Vector vAuxPagoGrupoFactHito = pagoGrupoFactHitoAdm.selectPagoGrupoFactHito(idInstitucion.toString(), idPago.toString());
+			
+			if ((vAuxPagoGrupoFactHito != null) && (vAuxPagoGrupoFactHito.size() > 0)) {
+				pagoGrupoFactHitoAdm.deletePagoGrupoFactHito(idInstitucion.toString(), idPago.toString());
+			}
+			
+			Vector vAuxPagoColegiado = pagoColegiadoAdm.selectPagoColegiado(idInstitucion.toString(), idPago.toString());
+			
+			if ((vAuxPagoColegiado != null) && (vAuxPagoColegiado.size() > 0)) {
+				pagoColegiadoAdm.deletePagoColegiado(idInstitucion.toString(), idPago.toString());
+			}				
+			
 			//Borramos: se hace borrado en cascada de todos los apuntes, movimientos varios, estados, criterios pago y cobros de retenciones judiciales
 			if(pagosJGAdm.delete(bean)) {
-				
+							
 				// borrado fisico de ficheros del servidor web
 				UtilidadesFacturacionSJCS.borrarFicheros(idInstitucion, nombreFicheros, this.getUserBean(request));
 			}
