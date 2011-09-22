@@ -304,10 +304,11 @@ public class MantenimientoRetencionesJudicialesAction extends MasterAction {
 							  CenPersonaBean.T_NOMBRETABLA + " PER" + " WHERE PER." + CenPersonaBean.C_IDPERSONA +  " = RETENCIONES." + CenPersonaBean.C_IDPERSONA + ") AS " + CenPersonaBean.C_NOMBRE + ", (SELECT " + FcsDestinatariosRetencionesBean.C_NOMBRE + 
 							  " FROM " + FcsDestinatariosRetencionesBean.T_NOMBRETABLA + " DES" + " WHERE DES." + FcsDestinatariosRetencionesBean.C_IDINSTITUCION + " = RETENCIONES." + FcsRetencionesJudicialesBean.C_IDINSTITUCION +
 							  " AND DES." + FcsDestinatariosRetencionesBean.C_IDDESTINATARIO + " = RETENCIONES." + FcsRetencionesJudicialesBean.C_IDDESTINATARIO + ") AS NOMBREDESTINATARIO" + ", RETENCIONES." + 
-							  FcsRetencionesJudicialesBean.C_FECHAINICIO + ", RETENCIONES." + FcsRetencionesJudicialesBean.C_FECHAFIN + ", RETENCIONES."+FcsRetencionesJudicialesBean.C_IMPORTE+", F_SIGA_APLICADARETENCION(2040,retenciones.idretencion) RETENCIONAPLICADA FROM " + FcsRetencionesJudicialesBean.T_NOMBRETABLA + " RETENCIONES";
+							  FcsRetencionesJudicialesBean.C_FECHAINICIO + ", RETENCIONES." + FcsRetencionesJudicialesBean.C_FECHAFIN + ", RETENCIONES."+FcsRetencionesJudicialesBean.C_IMPORTE+", F_SIGA_APLICADARETENCION(2040,retenciones.idretencion) RETENCIONAPLICADA FROM " + FcsRetencionesJudicialesBean.T_NOMBRETABLA + " RETENCIONES, " + FcsDestinatariosRetencionesBean.T_NOMBRETABLA + " o";
 			
 			// Segunda parte de la consulta (con los criterios de búsqueda seleccionados)
 			consulta += " WHERE RETENCIONES." + FcsRetencionesJudicialesBean.C_IDINSTITUCION + " = " + user.getLocation();
+			consulta += " AND RETENCIONES." + FcsRetencionesJudicialesBean.C_IDDESTINATARIO + " = O." + FcsDestinatariosRetencionesBean.C_IDDESTINATARIO;
 			boolean checkEsDeTurno  = UtilidadesString.stringToBoolean(miFormulario.getCheckEsDeTurno());
 			if (checkEsDeTurno){
 				
@@ -357,7 +358,7 @@ public class MantenimientoRetencionesJudicialesAction extends MasterAction {
 			}
 			
 			// Y por último se anhaden los criterios de ordenación
-			consulta += " ORDER BY " + CenColegiadoBean.C_NCOLEGIADO;
+			consulta += " ORDER BY o." + FcsDestinatariosRetencionesBean.C_ORDEN + ", " + FcsRetencionesJudicialesBean.C_FECHAINICIO + ", " + FcsRetencionesJudicialesBean.C_FECHAALTA;
 			
 			resultado = admRetenciones.selectGenerico(consulta);	
 			
