@@ -1,6 +1,7 @@
 package com.siga.beans;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.atos.utils.UsrBean;
@@ -12,7 +13,7 @@ private File file;
 private String nombre;
 private String permisos;
 private String fecha;
-private List<FileInforme> files;
+private List<FileInforme> files= new ArrayList<FileInforme>();
 UsrBean usrBean;
 boolean permitidoBorrar;
 public boolean isPermitidoBorrar() {
