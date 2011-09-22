@@ -88,7 +88,7 @@ public class DuplicadosHelper{
 			}
 			if(nif!=null && !nif.equalsIgnoreCase("")){
 				buscar=true;
-				sqlPersona.append(" and to_number(regexp_replace(per.nifcif, '[^[:digit:]]', '')) = to_number(regexp_replace("+nif+", '[^[:digit:]]', '')) ");
+				sqlPersona.append(" and to_number(regexp_replace(per.nifcif, '[^[:digit:]]', '')) = to_number(regexp_replace('"+nif+"', '[^[:digit:]]', '')) ");
 			}
 
 			
