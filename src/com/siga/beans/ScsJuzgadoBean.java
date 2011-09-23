@@ -14,6 +14,8 @@ public class ScsJuzgadoBean extends MasterBean{
 	private String	nombre=null, direccion=null, codigoPostal=null, idProvincia=null, idPoblacion=null, 
 					telefono1=null, telefono2=null, fax1=null,codProcurador="", visible="", movil="";
 	
+	private String fechabaja;
+	
 	/* Nombre de Tabla*/
 	
 	static public String T_NOMBRETABLA = "SCS_JUZGADO";
@@ -34,6 +36,7 @@ public class ScsJuzgadoBean extends MasterBean{
 	static public final String 	C_FAX1 = 					"FAX1";
 	static public final String 	C_CODPROCURADOR = 			"CODIGOPROCURADOR";
 	static public final String 	C_VISIBLE =      			"VISIBLE";
+	static public final String 	C_FECHABAJA = 				"FECHABAJA";	
 	static public final String 	C_MOVIL =      			"MOVIL";
 	/* cambio para codigo ext */
 	private String codigoExt;
@@ -202,4 +205,14 @@ public class ScsJuzgadoBean extends MasterBean{
 	public void setMovil(String movil) {
 		this.movil = movil;
 	}
+
+	public String getFechabaja() {
+		return fechabaja;
+	}
+
+	public void setFechabaja(String fechabaja) {
+		this.fechabaja = fechabaja;
+	}
+	
+
 }

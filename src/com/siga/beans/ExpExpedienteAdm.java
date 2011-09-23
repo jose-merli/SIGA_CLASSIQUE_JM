@@ -2061,7 +2061,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			else
 				UtilidadesHash.set(htData, ExpExpedienteBean.C_PROCEDIMIENTO, b.getProcedimiento());
 			if (b.getNumAsunto()==null)
-				UtilidadesHash.set(htData, ExpExpedienteBean.C_NUMASUNTO, b.getNumAsunto());
+				UtilidadesHash.set(htData, ExpExpedienteBean.C_NUMASUNTO, "");
 			else
 				UtilidadesHash.set(htData, ExpExpedienteBean.C_NUMASUNTO, b.getNumAsunto());
 			if (b.getIdFase()==null)
@@ -2096,8 +2096,8 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE, b.getIdInstitucion_tipoExpediente());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_ESVISIBLE, b.getEsVisible());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDAREA, b.getIdArea());
-			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDMATERIA, b.getIdMateria());
-			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDPRETENSION, b.getIdPretension());
+			UtilidadesHash.setForCompare(htData, ExpExpedienteBean.C_IDMATERIA, b.getIdMateria());
+			UtilidadesHash.setForCompare(htData, ExpExpedienteBean.C_IDPRETENSION, b.getIdPretension());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_OTRASPRETENSIONES, b.getOtrasPretensiones());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_ESVISIBLEENFICHA, b.getEsVisibleEnFicha());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDCLASIFICACION, b.getIdClasificacion());

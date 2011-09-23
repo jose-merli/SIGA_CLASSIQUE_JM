@@ -121,7 +121,8 @@
 		}
 	}catch(Exception e){e.printStackTrace(); };*/
 	
-		
+	String[] datoCom 	= {usr.getLocation(),"-1"};	
+	String[] datoJuzg 	= {usr.getLocation(),"-1"};
 	
 	if(vec != null && vec.size()>0)
 	{
@@ -143,10 +144,13 @@
 			if (!idJuzgado.equalsIgnoreCase("") && !idInstitucionJuzgado.equalsIgnoreCase("") && idComisaria.equalsIgnoreCase("") && idInstitucionComisaria.equalsIgnoreCase("")){
 				juzgadoSel.add(0,idJuzgado+","+idInstitucionJuzgado);
 				ACNUMEROASUNTO = numeroProcedimiento;
+				if(!idJuzgado.equals(""))
+			    	datoJuzg[1]=idJuzgado;				
 			}
 			
 			if (!idComisaria.equalsIgnoreCase("") && !idInstitucionComisaria.equalsIgnoreCase("") && idJuzgado.equalsIgnoreCase("") && idInstitucionJuzgado.equalsIgnoreCase("")){
 				comisariaSel.add(0,idComisaria+","+idInstitucionComisaria);
+				datoCom[1]=idComisaria;
 				ACNUMEROASUNTO = numeroDiligencia;
 			}
 			
@@ -159,12 +163,17 @@
 			}
 		}else{
 			// Una actuacion creada antes de meter jta la restriccion puede tener comisaria Y juzgado
-			if (idComisaria!=null && idInstitucionComisaria!=null)
+			if (idComisaria!=null && idInstitucionComisaria!=null){
 				comisariaSel.add(0,idComisaria+","+idInstitucionComisaria);
-		
-			if (idJuzgado!=null && idInstitucionJuzgado!=null)
+				if(!idComisaria.equals(""))
+			    	datoCom[1]=idComisaria;
+			}
+			
+			if (idJuzgado!=null && idInstitucionJuzgado!=null){
 				juzgadoSel.add(0,idJuzgado+","+idInstitucionJuzgado);
-
+				if(!idJuzgado.equals(""))
+			    	datoJuzg[1]=idJuzgado;	
+			}
 		}
 
 
@@ -237,7 +246,6 @@
 	 String[] parametroTipoActuacion = {usr.getLocation(), idTipoAsistenciaColegio}; //pdm yo creo que deberia ser parametro el idTipoAsistencia y no el idTipoAsistenciaColegio. ¡¡preguntar!!
 	 String[] dato 	= {usr.getLocation(),IDTURNO};
 	 String[] datos = {usr.getLocation()};
-	
 
 	String estiloCombo=null, readOnlyCombo=null, estiloInput=null, comboSize=null;
 	if (modo.equalsIgnoreCase("CONSULTA")) {
@@ -557,7 +565,7 @@
 			<%if(!modo.equals("consulta")){%>
 			    <input type="text" name="codigoExtComisaria" class="box" size="8" maxlength="10" onBlur="obtenerComisaria();" />			
 			<%}%>	
-				<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" accion="cambioComisaria();"  ancho="680" clase="<%=estiloCombo%>" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=dato%>"  elementoSel="<%=comisariaSel%>"  />
+				<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" accion="cambioComisaria();"  ancho="680" clase="<%=estiloCombo%>" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=datoCom%>"  elementoSel="<%=comisariaSel%>"  />
 			</td>
 		</tr>
 		<tr>			
@@ -573,7 +581,7 @@
 			   <%if(!modo.equals("consulta")){%>
 			   <input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();" />
 			   <%}%>
-				<siga:ComboBD nombre="juzgado" ancho="680" tipo="comboJuzgadosTurno" accion="cambioJuzgado();" obligatorio="false" parametro="<%=dato%>" clase="<%=estiloCombo%>" elementoSel="<%=juzgadoSel%>"   readOnly="<%=readOnlyCombo%>"/>
+				<siga:ComboBD nombre="juzgado" ancho="680" tipo="comboJuzgadosTurno" accion="cambioJuzgado();" obligatorio="false" parametro="<%=datoJuzg%>" clase="<%=estiloCombo%>" elementoSel="<%=juzgadoSel%>"   readOnly="<%=readOnlyCombo%>"/>
 			</td>
 		</tr>
 		<tr>

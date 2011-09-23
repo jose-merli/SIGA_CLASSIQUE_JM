@@ -88,6 +88,8 @@
 	String IDTURNO = "";
 	String facturada = "";
 	String fechaDelDia = UtilidadesBDAdm.getFechaBD("");
+	String[] datoCom 	= {usr.getLocation(), "-1"};
+	String[] datoJuzg 	= {usr.getLocation(),"-1"};
 	
 	if(vec != null && vec.size()>0)
 	{
@@ -98,14 +100,20 @@
 	 	// Datos del Juzgado seleccionado:
 	 	idJuzgado = (String)hash.get(ScsActuacionAsistenciaBean.C_IDJUZGADO);
 	 	idInstitucionJuzgado =  (String)hash.get(ScsActuacionAsistenciaBean.C_IDINSTITUCIONJUZGADO);
-		if (idJuzgado!=null && idInstitucionJuzgado!=null)
-			juzgadoSel.add(0,idJuzgado+","+idInstitucionJuzgado);	
+		if (idJuzgado!=null && idInstitucionJuzgado!=null){
+			juzgadoSel.add(0,idJuzgado+","+idInstitucionJuzgado);
+			if(!idJuzgado.equals(""))
+			   	datoJuzg[1]=idJuzgado;		
+		}
 		
 	 	// Datos de la comisaria seleccionado:
 	 	idComisaria = (String)hash.get(ScsActuacionAsistenciaBean.C_IDCOMISARIA);
 	 	idInstitucionComisaria =  (String)hash.get(ScsActuacionAsistenciaBean.C_IDINSTITUCIONCOMISARIA);
-		if (idComisaria!=null && idInstitucionComisaria!=null)
+		if (idComisaria!=null && idInstitucionComisaria!=null){
 			comisariaSel.add(0,idComisaria+","+idInstitucionComisaria);
+			if(!idComisaria.equals(""))
+				datoCom[1] = idComisaria;
+		}
 
 	  	// Datos del Tipo Actuacion seleccionado:
 	 	idTipoActuacion = (String)hash.get(ScsActuacionAsistenciaBean.C_IDTIPOACTUACION);
@@ -506,7 +514,7 @@
 			 <%if(!modo.equals("consulta")){%>	
 			    <input type="text" name="codigoExtComisaria" class="box" size="8"  style="margin-top:3px;" maxlength="10" onBlur="obtenerComisaria();" />
 			 <%}%>			
-				<siga:ComboBD ancho="680"  nombre="comisaria" tipo="comboComisariasTurno" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=dato%>"  elementoSel="<%=comisariaSel%>"  />
+				<siga:ComboBD ancho="680"  nombre="comisaria" tipo="comboComisariasTurno" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=datoCom%>"  elementoSel="<%=comisariaSel%>"  />
 			</td>
 		</tr>
 		<tr>
@@ -523,7 +531,7 @@
 			   <input type="text" name="codigoExtJuzgado" class="box" size="8"  style="margin-top:0px;" maxlength="10" onBlur="obtenerJuzgado();" />
 			   <%}%>
 	
-			  <siga:ComboBD ancho="<%=comboSize%>"  ancho="680" nombre="juzgado" tipo="comboJuzgadosTurno" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=dato%>"  elementoSel="<%=juzgadoSel%>"  />
+			  <siga:ComboBD ancho="<%=comboSize%>"  ancho="680" nombre="juzgado" tipo="comboJuzgadosTurno" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>"  />
 				
 			</td>
 		

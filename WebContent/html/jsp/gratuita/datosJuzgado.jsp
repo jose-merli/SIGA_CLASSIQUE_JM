@@ -26,6 +26,7 @@
 <%@ page import="java.util.ArrayList"%>
 <%@ page import="java.util.Hashtable"%>
 <%@ page import="java.util.Vector"%>
+<%@ page import="com.atos.utils.*"%>
 
 <!-- JSP -->
 <% 
@@ -40,13 +41,20 @@
 		ArrayList provinciaSel = new ArrayList();
 		ArrayList poblacionSel = new ArrayList();
 		String parametro[] = new String[1];
-
+		String fechaBaja = "";
+		
 		//Procedimientos de este Juzgado:
 		Vector vProcedimientos = (Vector)request.getAttribute("vProcedimientos");
 
 		// Formulario
 		MantenimientoJuzgadoForm formulario = (MantenimientoJuzgadoForm) request.getAttribute("MantenimientoJuzgadoForm");
-		
+		if(formulario.getDatos().get("FECHABAJA")!=null && !((String)formulario.getDatos().get("FECHABAJA")).equals("")){
+			fechaBaja = GstDate.getFormatedDateShort("", (String)formulario.getDatos().get("FECHABAJA"));
+		}
+		String ponerBaja = "N";
+		if(fechaBaja !=null && !fechaBaja.equals("")){
+			ponerBaja = "S";
+		}
 
 		String topBotones=null, topTabla=null;
 		String activarVisible="";
@@ -206,6 +214,14 @@
 			document.forms[0].target = "_self";
 			document.forms[0].submit();
 		}
+
+ 		function darDeBaja (o) {
+ 			if (o.checked) {
+ 				MantenimientoJuzgadoForm.ponerBaja.value = "S";
+			} else {
+				MantenimientoJuzgadoForm.ponerBaja.value = "N";
+			}
+ 		}
 		
 	</script>	
 </head>
@@ -242,13 +258,18 @@
 								<td class="labelText">
 									<html:text name="MantenimientoJuzgadoForm" property="nombre" size="30" maxlength="200"  readonly="<%=desactivado %>" styleClass="<%=estilo%>"></html:text>
 								</td>
+								
 								<td class="labelText">
-									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.visible"/>
+									<siga:Idioma key="general.baja"/>
+	
 								</td>
-								<td class="labelText">
-									<input type="checkbox" name="visible"  <%=activarVisible%> <%=deshabilitarVisible%> />
-									<!--< %if(complemento.equals(ClsConstants.DB_TRUE)){%> checked < %}%> -->
+								<td class="labelTextValue">
+									<input type="checkbox" name="ponerBaja" style="" onclick="darDeBaja(this);" <% if (modo.equalsIgnoreCase("VER")) { %>disabled<%}%> value="<%=ponerBaja%>" <%if (fechaBaja !=null && !fechaBaja.equals("")) {%>checked<%}%>>
+									<%if (fechaBaja !=null && !fechaBaja.equals("")) {%>
+										&nbsp;&nbsp;&nbsp; Baja desde: <%=fechaBaja%>
+									<%}%>								
 								</td>
+								
 							</tr>
 							<tr>
 								<td class="labelText">

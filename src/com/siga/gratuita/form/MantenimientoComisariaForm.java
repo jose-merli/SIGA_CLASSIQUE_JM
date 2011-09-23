@@ -11,6 +11,8 @@ import com.siga.general.MasterForm;
  */
 public class MantenimientoComisariaForm extends MasterForm {
 	
+	String ponerBaja;
+	
 	
 	// METODOS SET
 	public void setIdInstitucionComisaria(String dato) {
@@ -113,5 +115,11 @@ public class MantenimientoComisariaForm extends MasterForm {
 	public String getNombreObjetoDestino() {
 		return UtilidadesHash.getString(this.datos, "NOMBRE_OBJETO_DESTINOP");
 	}
-	
+	public String getPonerBaja() {
+		return ponerBaja;
+	}
+	public void setPonerBaja(String ponerBaja) {
+		this.ponerBaja = ponerBaja;
+	}
+
 }

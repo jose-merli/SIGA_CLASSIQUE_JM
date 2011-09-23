@@ -226,8 +226,10 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 			//String visibleOrig=UtilidadesHash.getString(hashJuzgadoOriginal,ScsJuzgadoBean.C_VISIBLE);
 			String bVisibleOrig  = UtilidadesHash.getString(hashJuzgadoOriginal,ScsJuzgadoBean.C_VISIBLE);
 			hashJuzgadoModificado.put(ScsJuzgadoBean.C_VISIBLE,miForm.getVisible());
-			
-			
+			if(miForm.getPonerBaja() != null && miForm.getPonerBaja().equalsIgnoreCase("S"))
+				hashJuzgadoModificado.put(ScsJuzgadoBean.C_FECHABAJA,"SYSDATE");
+			else
+				hashJuzgadoModificado.put(ScsJuzgadoBean.C_FECHABAJA,"");
 		
 			boolean modificar=true;
 
@@ -309,6 +311,10 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 			beanJuzgado.setIdJuzgado(juzgadoAdm.getNuevoIdJuzgado(idInstitucion));
 			beanJuzgado.setVisible(miForm.getVisible());
 			beanJuzgado.setMovil(miForm.getMovil());
+			if(miForm.getPonerBaja() != null && miForm.getPonerBaja().equalsIgnoreCase("S"))
+				beanJuzgado.setFechabaja("SYSDATE");
+			else
+				beanJuzgado.setFechabaja("");
 			
 			ScsJuzgadoAdm admJuz = new ScsJuzgadoAdm(this.getUserBean(request));
 //			if (!codigoExt.trim().equals("") && admJuz.comprobarCodigoExt(idInstitucion,null,codigoExt)) {

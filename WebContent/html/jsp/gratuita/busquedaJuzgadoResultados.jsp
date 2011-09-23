@@ -18,6 +18,7 @@
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.siga.beans.ScsJuzgadoBean"%>
 <%@ page import="com.atos.utils.UsrBean"%>
+<%@ page import="com.atos.utils.*"%>
 <%@ page import="java.util.Vector"%>
 <%@ page import="java.util.Hashtable"%>
 
@@ -64,11 +65,10 @@
 						  gratuita.mantenimientoTablasMaestra.literal.codigoext,
 			   			  gratuita.mantenimientoTablasMaestra.literal.nombre,
 			   			  gratuita.mantenimientoTablasMaestra.literal.direccion,
-			   			  gratuita.mantenimientoTablasMaestra.literal.provincia,
 			   			  gratuita.mantenimientoTablasMaestra.literal.poblacion,
 			   			  gratuita.mantenimientoTablasMaestra.literal.telefono2,
-			   			  gratuita.mantenimientoTablasMaestra.literal.fax1,"
-			   tamanoCol = "10,8,17,15,12,12,8,8,10"
+			   			  gratuita.mantenimientoTablasMaestra.literal.estado,"
+			   tamanoCol = "10,8,17,17,18,8,12,10"
 			   alto="100%"
 			   modal = "G" 
 			   activarFilaSel="true">
@@ -93,6 +93,10 @@
 									String telefono1 = (String)hashPrision.get(ScsJuzgadoBean.C_TELEFONO1);
 									String telefono2 = (String)hashPrision.get(ScsJuzgadoBean.C_TELEFONO2);
 									String fax1 = (String)hashPrision.get(ScsJuzgadoBean.C_FAX1);
+									String estado = "Alta";
+									if (hashPrision.get(ScsJuzgadoBean.C_FECHABAJA) != null && !((String)hashPrision.get(ScsJuzgadoBean.C_FECHABAJA)).equals("")){
+										estado="Baja desde: "+GstDate.getFormatedDateShort("", (String)hashPrision.get(ScsJuzgadoBean.C_FECHABAJA)); 
+									}
 									String botones=(idInstitucion.equals(idInstitucionJuzgado)?"E,C,B":"C");
    	 		%>
 									<siga:FilaConIconos fila='<%=""+i%>' botones='<%=botones%>' visibleConsulta="false" clase="listaNonEdit"> 
@@ -110,10 +114,9 @@
 										<%=UtilidadesString.mostrarDatoJSP(nombre)%>
 									</td>
 									<td><%=UtilidadesString.mostrarDatoJSP(direccion)%></td>
-									<td><%=UtilidadesString.mostrarDatoJSP(provincia)%></td>
-									<td><%=UtilidadesString.mostrarDatoJSP(poblacion)%></td>
+									<td><%=UtilidadesString.mostrarDatoJSP(poblacion) +"("+UtilidadesString.mostrarDatoJSP(provincia)+")"%></td>
 									<td><%=UtilidadesString.mostrarDatoJSP(telefono1)%></td>
-									<td><%=UtilidadesString.mostrarDatoJSP(fax1)%></td>
+									<td align="center"><%=estado%></td>
 									</siga:FilaConIconos>
 							 		
 			<%	 		 } // if

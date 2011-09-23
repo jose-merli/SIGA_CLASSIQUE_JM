@@ -146,6 +146,10 @@ public class MantenimientoComisariaAction extends MasterAction {
 
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
 			hashComisariaModificado.put(ScsComisariaBean.C_IDINSTITUCION,user.getLocation());
+			if(miForm.getPonerBaja() != null && miForm.getPonerBaja().equalsIgnoreCase("S"))
+				hashComisariaModificado.put(ScsComisariaBean.C_FECHABAJA,"SYSDATE");
+			else
+				hashComisariaModificado.put(ScsComisariaBean.C_FECHABAJA,"");
 
 			String nombreOrig=UtilidadesHash.getString(hashComisariaOriginal,ScsComisariaBean.C_NOMBRE);
 			String nombreModif=UtilidadesHash.getString(hashComisariaModificado,ScsComisariaBean.C_NOMBRE);
@@ -213,7 +217,11 @@ public class MantenimientoComisariaAction extends MasterAction {
 			beanComisaria.setTelefono2(miForm.getTelefono2());
 			beanComisaria.setFax1(miForm.getFax1());			
 			beanComisaria.setIdComisaria(comisariaAdm.getNuevoIdComisaria(idInstitucion));
-			beanComisaria.setCodigoExt(miForm.getCodigoExt());	
+			beanComisaria.setCodigoExt(miForm.getCodigoExt());
+			if(miForm.getPonerBaja() != null && miForm.getPonerBaja().equalsIgnoreCase("S"))
+				beanComisaria.setFechabaja("SYSDATE");
+			else
+				beanComisaria.setFechabaja("");
 			
 			if(ScsComisariaAdm.comprobarDuplicidad(idInstitucion,idPoblacion,nombre)){
 				tx.begin();

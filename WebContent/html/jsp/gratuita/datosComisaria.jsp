@@ -16,6 +16,7 @@
 <!-- IMPORTS -->
 <%@page import="com.siga.gratuita.form.MantenimientoComisariaForm"%>
 <%@ page import="java.util.ArrayList"%>
+<%@ page import="com.atos.utils.*"%>
 
 <!-- JSP -->
 <% 
@@ -26,14 +27,22 @@
 		boolean desactivado = true;
 		String accion = "";
 		String modo = (String)request.getAttribute("modo");	
+		String fechaBaja = "";
 
+			
 		ArrayList provinciaSel = new ArrayList();
 		ArrayList poblacionSel = new ArrayList();
 		String parametro[] = new String[1];
 
-	// Formulario
-	MantenimientoComisariaForm formulario = (MantenimientoComisariaForm) request.getAttribute("MantenimientoComisariaForm");
-
+		// Formulario
+		MantenimientoComisariaForm formulario = (MantenimientoComisariaForm) request.getAttribute("MantenimientoComisariaForm");
+		if(formulario.getDatos().get("FECHABAJA")!=null && !((String)formulario.getDatos().get("FECHABAJA")).equals("")){
+			fechaBaja = GstDate.getFormatedDateShort("", (String)formulario.getDatos().get("FECHABAJA"));
+		}
+		String ponerBaja = "N";
+		if(fechaBaja !=null && !fechaBaja.equals("")){
+			ponerBaja = "S";
+		}
 		if (modo.equalsIgnoreCase("EDITAR")) {
 			desactivado  = false;
 			estilo = "box";
@@ -101,7 +110,16 @@
 				return false;
 			
 			}
-		}		
+		}	
+
+
+ 		function darDeBaja (o) {
+ 			if (o.checked) {
+ 				MantenimientoComisariaForm.ponerBaja.value = "S";
+			} else {
+				MantenimientoComisariaForm.ponerBaja.value = "N";
+			}
+ 		}	
 	</script>	
 </head>
 
@@ -209,6 +227,19 @@
 									<html:text name="MantenimientoComisariaForm" property="fax1" size="20" styleClass="<%=estilo%>"></html:text>
 								</td>
 							</tr>
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="general.baja"/>
+	
+								</td>
+								<td class="labelTextValue">
+									<input type="checkbox" name="ponerBaja" style="" onclick="darDeBaja(this);" <% if (modo.equalsIgnoreCase("VER")) { %>disabled<%}%> value="<%=ponerBaja%>" <%if (fechaBaja !=null && !fechaBaja.equals("")) {%>checked<%}%>>
+									<%if (fechaBaja !=null && !fechaBaja.equals("")) {%>
+										&nbsp;&nbsp;&nbsp; Baja desde: <%=fechaBaja%>
+									<%}%>								
+								</td>
+							</tr>
+							
 					</table>
 				</siga:ConjCampos>	
 				</td>

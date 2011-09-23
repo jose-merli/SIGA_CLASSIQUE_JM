@@ -121,6 +121,9 @@
   catch (Exception e) {};
 
 	String[] parametroJuzgado = {usr.getLocation(), idTurno};
+	String[] datosCom={usr.getLocation(), "-1"};	
+	String[] datos={usr.getLocation(),idTurno};
+	String[] datosJuz={usr.getLocation(),idTurno,"-1"};
 
 	if (idPretension!=null && idPretensionInstitucion!=null)
 		pretensionesSel.add(0,idPretension+","+idPretensionInstitucion);	
@@ -128,11 +131,17 @@
 	if (idcalidad!=null)
 		calidadSel.add(0,idcalidad+","+idInstintucion);	
 
-	if (juzgadoAsi!=null && juzgadoInstitucionAsi!=null)
+	if (juzgadoAsi!=null && juzgadoInstitucionAsi!=null){
 		juzgadoSel.add(0,juzgadoAsi+","+juzgadoInstitucionAsi);	
+		if(!juzgadoAsi.equals(""))
+			datosJuz[2] = juzgadoAsi;
+	}
 	
-	if (comisariaAsi!=null && comisariaInstitucionAsi!=null)
+	if (comisariaAsi!=null && comisariaInstitucionAsi!=null){
 		comisariaSel.add(0,comisariaAsi+","+comisariaInstitucionAsi);
+		if(!comisariaAsi.equals(""))
+			datosCom[1] = comisariaAsi;
+	}
 	
 	if (idPreceptivo!=null)
 		preceptivoSel.add(0,idPreceptivo);	
@@ -145,7 +154,7 @@
 	
 
 	String estilo = "box", readOnly="false", estiloCombo="boxCombo";
-	String[] datos={usr.getLocation(),idTurno};		
+		
 	String[] datos2={usr.getLocation(),usr.getLanguage()};	
 	
 	String asterisco = "&nbsp(*)&nbsp";
@@ -348,9 +357,9 @@
 							<td colspan="23">
 							<%if(modopestanha.equals("editar")){%>
 							 	<input type="text" name="codigoExtComisaria" class="box" size="3"  style="margin-top:3px;" maxlength="10" onBlur="obtenerComisaria();"/>
-								<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="505" obligatorio="false" parametro="<%=datos%>" elementoSel="<%=comisariaSel%>" clase="<%=estilo%>" hijo="t" readonly="false"/>
+								<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="505" obligatorio="false" parametro="<%=datosCom%>" elementoSel="<%=comisariaSel%>" clase="<%=estilo%>" hijo="t" readonly="false"/>
 							<%}else{%>
-									<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="555" obligatorio="false" parametro="<%=datos%>" elementoSel="<%=comisariaSel%>" clase="boxConsulta" hijo="t" readonly="true"/>
+									<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="555" obligatorio="false" parametro="<%=datosCom%>" elementoSel="<%=comisariaSel%>" clase="boxConsulta" hijo="t" readonly="true"/>
 							<%}%>							
 						</td>
 					 </tr>
@@ -373,9 +382,9 @@
 						<td colspan="23">	
 							<%if(modopestanha.equals("editar")){%>
 							 	  <input type="text" name="codigoExtJuzgado" class="box" size="3"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />							 	  
-							 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="505" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="false"/>           	   
+							 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosEJG" ancho="505" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuz%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="false"/>           	   
 							<%}else{%>
-									<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="555" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="true"/>           	   
+									<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosEJG" ancho="555" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuz%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="true"/>           	   
 							<%}%>							
 						</td>	
 					</tr>

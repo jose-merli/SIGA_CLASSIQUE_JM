@@ -50,17 +50,25 @@
 	if (form.getIdPretension()!=null) idPretension	=  form.getIdPretension();
 	if (form.getIdArea()!=null) idArea		=  form.getIdArea();
 	if (form.getIdMateria()!=null) idMateria =  form.getIdMateria();
-	if (idMateria!=null) {
-		materiaSel.add(0,userBean.getLocation()+","+idArea+","+idMateria);	
-	}
+
+	
+	String[] datosJuzgado={userBean.getLocation(),idArea, idMateria,"-1"};	
+	String[] datosMateria={"-1",userBean.getLocation()};
+	
 	if (idJuzgado!=null && idInstitucionJuzgado!=null) {
 		juzgadoSel.add(0,idJuzgado+","+idInstitucionJuzgado);	
+		if(!idJuzgado.equals("")){
+			datosJuzgado[3] = idJuzgado;
+			datosMateria[0] = idJuzgado;
+		}
 	}
 	if (idPretension!=null) {
 		pretensionSel.add(0,idPretension);	
 	}
-	String[] datosJuzgado={userBean.getLocation(),idArea, idMateria};		
-	String[] datosMateria={userBean.getLocation()};		
+	
+	if (idMateria!=null) {
+		materiaSel.add(0,userBean.getLocation()+","+idArea+","+idMateria+","+datosJuzgado[3]);	
+	}
 	
 	//recupero los campos visibles para mostrar o no ciertas leyendas
 	Hashtable camposVisibles = (Hashtable)request.getAttribute("camposVisibles");
@@ -300,6 +308,7 @@
 						<%}else{%>
 							document.forms[0].modo.value="modificar";
 						<%}%>
+
 						document.forms[0].target="submitArea";	
 						document.forms[0].submit();	
 				}
@@ -322,7 +331,7 @@
 		{
 			<%if (bEditable){%> 
 				<%if (bAsuntoJud){%>
-					document.getElementById("idMateria").value='<%=userBean.getLocation()+","+idArea+","+idMateria %>';
+					document.getElementById("idMateria").value='<%=userBean.getLocation()+","+idArea+","+idMateria+","+datosJuzgado[3] %>';
 					document.getElementById("idMateria").onchange();
 					window.setTimeout('recargarComboJuzgado()',1000,"JavaScript");
 					
@@ -1047,9 +1056,9 @@
 			</td>				
 			<td>
 				<%if(bEditable){%>
-				 	  <siga:ComboBD nombre="idMateria" tipo="materiaarea" ancho="250" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosMateria%>" elementoSel="<%=materiaSel%>" accion="Hijo:juzgado" readonly="false"/>           	   
+				 	  <siga:ComboBD nombre="idMateria" tipo="materiaareaExp" ancho="250" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosMateria%>" elementoSel="<%=materiaSel%>" accion="Hijo:juzgado" readonly="false"/>           	   
 				<%}else{%>
-					  <siga:ComboBD nombre="idMateria" tipo="materiaarea" ancho="250" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosMateria%>" elementoSel="<%=materiaSel%>"  accion="Hijo:juzgado" readonly="true"/>           	   
+					  <siga:ComboBD nombre="idMateria" tipo="materiaareaExp" ancho="250" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosMateria%>" elementoSel="<%=materiaSel%>"  accion="Hijo:juzgado" readonly="true"/>           	   
 				<%}%>							
 				
 			</td>
@@ -1059,9 +1068,9 @@
 			<td COLSPAN="3">
 				<%if(bEditable){%>
 				 	  <input type="text" name="codigoExtJuzgado" class="box" size="3"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />
-				 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateria" ancho="330" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" elementoSel="<%=juzgadoSel%>" hijo="t" accion="Hijo:procedimiento" readonly="false"/>           	   
+				 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateriaExp" ancho="330" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" elementoSel="<%=juzgadoSel%>" hijo="t" accion="Hijo:procedimiento" readonly="false"/>           	   
 				<%}else{%>
-						<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateria" ancho="330" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" elementoSel="<%=juzgadoSel%>" hijo="t" accion="Hijo:procedimiento" readonly="true"/>           	   
+						<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateriaExp" ancho="330" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" elementoSel="<%=juzgadoSel%>" hijo="t" accion="Hijo:procedimiento" readonly="true"/>           	   
 				<%}%>							
 				
 			</td>

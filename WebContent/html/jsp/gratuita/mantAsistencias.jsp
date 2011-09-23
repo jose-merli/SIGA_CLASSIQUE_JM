@@ -124,7 +124,8 @@
 	}
 
 	String idTurno = (String) hash.get("IDTURNO");
-	String[] parametroJuzgado = {usr.getLocation(), idTurno};
+	String[] parametroJuzgado = {usr.getLocation(), "-1"};
+	String[] parametroComisaria = {usr.getLocation(), "-1"};
 	
 	// Para cuando creamos la designacion
 	//idTurno = " ," + idTurno;
@@ -143,15 +144,20 @@
 	// Datos del Juzgado seleccionado:
 	String juzgadoAsi            = (String) hash.get(ScsAsistenciasBean.C_JUZGADO);
  	String juzgadoInstitucionAsi = (String) hash.get(ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION);
-	if (juzgadoAsi!=null && juzgadoInstitucionAsi!=null)
-		juzgadoSel.add(0,juzgadoAsi+","+juzgadoInstitucionAsi);	
+	if (juzgadoAsi!=null && juzgadoInstitucionAsi!=null){
+		juzgadoSel.add(0,juzgadoAsi+","+juzgadoInstitucionAsi);
+		if(!juzgadoAsi.equals(""))
+			parametroJuzgado[1] = juzgadoAsi;	
+	}
 	
  	// Datos de la comisaria seleccionado:
 	String comisariaAsi            = (String) hash.get(ScsAsistenciasBean.C_COMISARIA);
 	String comisariaInstitucionAsi = (String) hash.get(ScsAsistenciasBean.C_COMISARIA_IDINSTITUCION);
-	if (comisariaAsi!=null && comisariaInstitucionAsi!=null)
+	if (comisariaAsi!=null && comisariaInstitucionAsi!=null){
 		comisariaSel.add(0,comisariaAsi+","+comisariaInstitucionAsi);
-
+		if(!comisariaAsi.equals(""))
+			parametroComisaria[1] = comisariaAsi;
+	}
  	// Datos del estadoseleccionado:
 	String estadoAsi = (String) hash.get(ScsAsistenciasBean.C_IDESTADOASISTENCIA);
 	if (estadoAsi!=null)
@@ -402,7 +408,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			&nbsp;
 			<input type="text" name="codigoExtComisaria" class="box" size="8"  maxlength="10" onBlur="obtenerComisaria();" />
 			<%}%>
-			<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="420" obligatorio="false" parametro="<%=parametroJuzgado%>" elementoSel="<%=comisariaSel%>" clase="<%=estilo%>" readonly="<%=readOnly%>"/>
+			<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="420" obligatorio="false" parametro="<%=parametroComisaria%>" elementoSel="<%=comisariaSel%>" clase="<%=estilo%>" readonly="<%=readOnly%>"/>
 			</td>
 			</tr>
 		</table>

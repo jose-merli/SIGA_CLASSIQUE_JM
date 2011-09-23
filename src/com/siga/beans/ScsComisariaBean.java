@@ -13,7 +13,7 @@ public class ScsComisariaBean extends MasterBean{
 	private Integer	idInstitucion, idComisaria;
 	private String	nombre=null, direccion=null, codigoPostal=null, idProvincia=null, idPoblacion=null, 
 					telefono1=null, telefono2=null, fax1=null;
-	private String codigoExt;
+	private String codigoExt, fechabaja;
 	
 	/* Nombre de Tabla*/
 	
@@ -33,6 +33,7 @@ public class ScsComisariaBean extends MasterBean{
 	static public final String 	C_TELEFONO1 = 				"TELEFONO1";
 	static public final String 	C_TELEFONO2 = 				"TELEFONO2";
 	static public final String 	C_FAX1 = 					"FAX1";
+	static public final String 	C_FECHABAJA = 				"FECHABAJA";
 	static public final String C_CODIGOEXT = "CODIGOEXT";
 	
 	/**
@@ -172,4 +173,14 @@ public class ScsComisariaBean extends MasterBean{
 	public void setTelefono2(String telefono2) {
 		this.telefono2 = telefono2;
 	}
+
+	public String getFechabaja() {
+		return fechabaja;
+	}
+
+	public void setFechabaja(String fechabaja) {
+		this.fechabaja = fechabaja;
+	}
+	
+	
 }

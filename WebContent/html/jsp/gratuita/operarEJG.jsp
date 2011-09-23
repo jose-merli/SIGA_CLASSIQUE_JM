@@ -226,7 +226,8 @@
 	String idTurno = (String) hash.get("IDTURNO");
 	if (idTurno == null)
 		idTurno = new String("");
-	String[] parametroJuzgado = { usr.getLocation(), idTurno };
+	String[] datosJuz={usr.getLocation(),idTurno,"-1"};
+	String[] parametroComisarias = { usr.getLocation(), "-1"};
 
 	ArrayList estadoSel = new ArrayList();
 	ArrayList juzgadoSel = new ArrayList();
@@ -241,16 +242,20 @@
 	String juzgadoAsi = (String) hash.get(ScsEJGBean.C_JUZGADO);
 	String juzgadoInstitucionAsi = (String) hash
 			.get(ScsEJGBean.C_JUZGADOIDINSTITUCION);
-	if (juzgadoAsi != null && juzgadoInstitucionAsi != null)
+	if (juzgadoAsi != null && juzgadoInstitucionAsi != null){
 		juzgadoSel.add(0, juzgadoAsi + "," + juzgadoInstitucionAsi);
-
+		if(!juzgadoAsi.equals(""))
+			datosJuz[2] = juzgadoAsi;
+	}
 	// Datos de la comisaria seleccionado:
 	String comisariaAsi = (String) hash.get(ScsEJGBean.C_COMISARIA);
 	String comisariaInstitucionAsi = (String) hash
 			.get(ScsEJGBean.C_COMISARIAIDINSTITUCION);
-	if (comisariaAsi != null && comisariaInstitucionAsi != null)
-		comisariaSel.add(0, comisariaAsi + ","
-				+ comisariaInstitucionAsi);
+	if (comisariaAsi != null && comisariaInstitucionAsi != null){
+		comisariaSel.add(0, comisariaAsi + ","+ comisariaInstitucionAsi);
+		if(!comisariaAsi.equals(""))
+			parametroComisarias[1] = comisariaAsi;
+	}
 
 	String estilo = "box", readOnly = "false", estiloCombo = "boxCombo";
 
@@ -652,7 +657,7 @@
 				</td> 
 				<td class="labelText" ><siga:Idioma key='gratuita.mantAsistencias.literal.centroDetencion'/></td>
 				<td  colspan="3">	
-					<siga:ComboBD nombre="vistaComisaria" tipo="comboComisariasTurno" ancho="450" obligatorio="false" parametro="<%=parametroJuzgado%>" elementoSel="<%=comisariaSel%>" clase="boxConsulta" hijo="t" readonly="true"/>
+					<siga:ComboBD nombre="vistaComisaria" tipo="comboComisariasTurno" ancho="450" obligatorio="false" parametro="<%=parametroComisarias%>" elementoSel="<%=comisariaSel%>" clase="boxConsulta" hijo="t" readonly="true"/>
 				</td>
 				
 			</tr>
@@ -668,7 +673,7 @@
 				 <%}%>
 				</td>	 
 				<td  colspan="3">	
-					<siga:ComboBD nombre="vistaJuzgado" tipo="comboJuzgados" ancho="480" clase="boxComboConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="true"/>          	   
+					<siga:ComboBD nombre="vistaJuzgado" tipo="comboJuzgadosEJG" ancho="480" clase="boxComboConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuz%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="true"/>          	   
 				</td>	
 			</tr>
 			<tr>

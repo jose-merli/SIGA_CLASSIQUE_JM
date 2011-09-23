@@ -12,6 +12,7 @@ import com.siga.general.MasterForm;
  */
 public class MantenimientoJuzgadoForm extends MasterForm {
 	
+	private String ponerBaja;
 	
 	// METODOS SET
 	public void setIdInstitucionJuzgado(String dato) {
@@ -149,4 +150,11 @@ public class MantenimientoJuzgadoForm extends MasterForm {
 	public String getMovil() {
 		return UtilidadesHash.getString(this.datos, ScsJuzgadoBean.C_MOVIL);
 	}
+	public String getPonerBaja() {
+		return ponerBaja;
+	}
+	public void setPonerBaja(String ponerBaja) {
+		this.ponerBaja = ponerBaja;
+	}
+
 }

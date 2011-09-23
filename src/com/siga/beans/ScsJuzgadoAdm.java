@@ -48,7 +48,7 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 				ScsJuzgadoBean.C_NOMBRE, ScsJuzgadoBean.C_DIRECCION, ScsJuzgadoBean.C_CODIGOEXT,
 							ScsJuzgadoBean.C_CODIGOPOSTAL, ScsJuzgadoBean.C_IDPROVINCIA,
 							ScsJuzgadoBean.C_IDPOBLACION, ScsJuzgadoBean.C_TELEFONO1,
-							ScsJuzgadoBean.C_TELEFONO2, ScsJuzgadoBean.C_FAX1,
+							ScsJuzgadoBean.C_TELEFONO2, ScsJuzgadoBean.C_FAX1,ScsJuzgadoBean.C_FECHABAJA,
 							ScsJuzgadoBean.C_USUMODIFICACION, ScsJuzgadoBean.C_FECHAMODIFICACION,
 							ScsJuzgadoBean.C_CODPROCURADOR, ScsJuzgadoBean.C_VISIBLE, ScsJuzgadoBean.C_MOVIL};
 		return campos;
@@ -86,6 +86,7 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 			bean.setTelefono1(UtilidadesHash.getString(hash,ScsJuzgadoBean.C_TELEFONO1));
 			bean.setTelefono2(UtilidadesHash.getString(hash,ScsJuzgadoBean.C_TELEFONO2));
 			bean.setFax1(UtilidadesHash.getString(hash,ScsJuzgadoBean.C_FAX1));
+			bean.setFechabaja(UtilidadesHash.getString(hash,ScsJuzgadoBean.C_FECHABAJA));
 			bean.setCodProcurador(UtilidadesHash.getString(hash,ScsJuzgadoBean.C_CODPROCURADOR));
 			bean.setVisible(UtilidadesHash.getString(hash,ScsJuzgadoBean.C_VISIBLE));
 			bean.setFechaMod(UtilidadesHash.getString(hash, ScsJuzgadoBean.C_FECHAMODIFICACION));
@@ -121,6 +122,7 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 			hash.put(ScsJuzgadoBean.C_TELEFONO1, b.getTelefono1());
 			hash.put(ScsJuzgadoBean.C_TELEFONO2, b.getTelefono2());
 			hash.put(ScsJuzgadoBean.C_FAX1, b.getFax1());	
+			hash.put(ScsJuzgadoBean.C_FECHABAJA, b.getFechabaja());	
 			hash.put(ScsJuzgadoBean.C_CODPROCURADOR, b.getCodProcurador());
 			hash.put(ScsJuzgadoBean.C_VISIBLE, b.getVisible());
 			hash.put(ScsJuzgadoBean.C_USUMODIFICACION, String.valueOf(b.getUsuMod()));
@@ -182,6 +184,7 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 			select += " , juzgado."+ScsJuzgadoBean.C_TELEFONO1;
 			select += " , juzgado."+ScsJuzgadoBean.C_TELEFONO2;
 			select += " , juzgado."+ScsJuzgadoBean.C_FAX1;
+			select += " , juzgado."+ScsJuzgadoBean.C_FECHABAJA;
 			select += " , juzgado."+ScsJuzgadoBean.C_MOVIL;
 			select += " , (SELECT provincia."+CenProvinciaBean.C_NOMBRE+
 					  "    FROM "+CenProvinciaBean.T_NOMBRETABLA +" provincia "+
@@ -314,6 +317,7 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 			select += " , juzgado."+ScsJuzgadoBean.C_TELEFONO1;
 			select += " , juzgado."+ScsJuzgadoBean.C_TELEFONO2;
 			select += " , juzgado."+ScsJuzgadoBean.C_FAX1;
+			select += " , juzgado."+ScsJuzgadoBean.C_FECHABAJA;
 			select += " , juzgado."+ScsJuzgadoBean.C_CODPROCURADOR;
 			select += " , juzgado."+ScsJuzgadoBean.C_VISIBLE;
 			select += " , juzgado."+ScsJuzgadoBean.C_MOVIL;

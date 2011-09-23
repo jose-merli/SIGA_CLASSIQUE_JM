@@ -28,6 +28,8 @@
 
 	String nColegiado = request.getAttribute("nColegiado") == null ? "": (String) request.getAttribute("nColegiado");
 	String[] dato = { usr.getLocation() };
+	String[] datoCom = { usr.getLocation(),"-1"};
+	String[] datoJuzg 	= {usr.getLocation(),"-1"};
 
 	AsistenciasForm miForm = (AsistenciasForm) request.getAttribute("miForm");
 	ArrayList idTurno = new ArrayList();
@@ -61,8 +63,17 @@
 	
 	ArrayList comisariaSel = new ArrayList();
 	ArrayList juzgadoSel = new ArrayList();
-	if (comisaria!=null && !comisaria.equalsIgnoreCase("")) comisariaSel.add(0,comisaria);
-	if (juzgado!=null && !juzgado.equalsIgnoreCase("")) juzgadoSel.add(0,juzgado);
+	if (comisaria!=null && !comisaria.equalsIgnoreCase("")){
+		comisariaSel.add(0,comisaria);
+		datoCom[1] = comisaria;
+	}
+	
+	
+	
+	if (juzgado!=null && !juzgado.equalsIgnoreCase("")) {
+		juzgadoSel.add(0,juzgado);
+	   	datoJuzg[1]=juzgado;	
+	}
 	if (turno!=null && !turno.equalsIgnoreCase("")) idTurno.add(0,usr.getLocation()+","+turno);
 	if (guardia!=null && !guardia.equalsIgnoreCase("")) idGuardia.add(0,usr.getLocation()+","+guardia);
 	if (tipoAsistenciaColegio!=null && !tipoAsistenciaColegio.equalsIgnoreCase("")) tAsistenciaColegio.add(0,tipoAsistenciaColegio);
@@ -176,7 +187,7 @@
 				<siga:Idioma key="gratuita.mantAsistencias.literal.centroDetencion"/>
 			</td>
 			<td>
-				<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" clase="boxCombo" ancho="480" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=comisariaSel%>"/>
+				<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" clase="boxCombo" ancho="480" obligatorio="false" parametro="<%=datoCom%>" elementoSel="<%=comisariaSel%>"/>
 			</td>
 		</tr>
 		<tr>
@@ -184,7 +195,7 @@
 				<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/>
 			</td>
 			<td>
-				<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" clase="boxCombo" ancho="480" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=juzgadoSel%>"/>
+				<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" clase="boxCombo" ancho="480" obligatorio="false" parametro="<%=datoJuzg%>" elementoSel="<%=juzgadoSel%>"/>
 			</td>
 		</tr>
 <%}%>

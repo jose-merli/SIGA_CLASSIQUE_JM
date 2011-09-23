@@ -41,6 +41,8 @@
 	String idInstitucionLocation = usr.getLocation();
 	String[] dato = { usr.getLocation() };
 	String[] datoJuzgado = new String[2];
+	datoJuzgado[0] = usr.getLocation();
+	datoJuzgado[1] = "-1";
 	String tipo = "", estado = "", fecha = "", procurador = "", asunto = "", observaciones = "", delitos = "", fechaAnulacion = "", fechaEstado = "";
 	String fechaApertura = "";
 	String fechaOficioJuzgado = "";
@@ -160,6 +162,7 @@
 				idJuzgado = beanDesigna.getIdJuzgado().toString();
 				idInstitucionJuzgado = beanDesigna.getIdInstitucionJuzgado().toString();
 				juzgadoSel.add(0, idJuzgado + "," + idInstitucionJuzgado);
+				datoJuzgado[1]=beanDesigna.getIdJuzgado().toString();
 
 		} else {
 			if (request.getAttribute("idDesigna") != null) {
@@ -184,8 +187,7 @@
 			idProcedimiento = beanDesigna.getProcedimiento().toString();
 			procedimientoSel.add(0, idProcedimiento + "," + usr.getLocation());
 		}
-		datoJuzgado[0] = usr.getLocation();
-		datoJuzgado[1] = idTurno;
+
 		
 		if ((beanDesigna != null) &&  (beanDesigna.getIdPretension()!= null)){
 			idPretension = beanDesigna.getIdPretension().toString();

@@ -101,6 +101,7 @@
 	}
 	String fechaAnulacion = hashDesigna.get("FECHAANULACION") == null?"":(String)hashDesigna.get("FECHAANULACION");	
     String param[] = {usr.getLocation(),idTurno};
+    String[] datoJuzg 	= {usr.getLocation(),"-1"};
 	// Caso de estar en Edicion o Consulta:
 	
 	idInstitucionProcedimiento =  usr.getLocation();
@@ -153,6 +154,7 @@
 			
 	 	// Datos del Juzgado seleccionado:
 	 	idJuzgado =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDJUZGADO);
+	
 		idInstitucionJuzgado =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO);
 		
 		
@@ -190,6 +192,8 @@
 			
 	String paramAcreditacion[] = {idProcedimiento,usr.getLocation()};	
 
+	if(idJuzgado!=null && !idJuzgado.equals(""))
+		datoJuzg[1]=idJuzgado;
 	
 	%>
 <html>
@@ -396,12 +400,12 @@
 		
 			<% if (esLetrado||modoAnterior.equalsIgnoreCase("VER")){%>
 					<td colspan="8" >
-							<siga:ComboBD nombre="juzgado" ancho="800" tipo="comboJuzgadosTurno" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=param%>"  elementoSel="<%=juzgadoSel%>" accion="Hijo:procedimiento" />
+							<siga:ComboBD nombre="juzgado" ancho="800" tipo="comboJuzgadosTurno" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>" accion="Hijo:procedimiento" />
 					</td>
 					<%}else{%>
 					  <td colspan="7" >
 							<input type="text" name="codigoExtJuzgado" class="box" size="8"  style="margin-top:0px;" maxlength="10" onBlur="obtenerJuzgado();" />
-							<siga:ComboBD nombre="juzgado" ancho="700" tipo="comboJuzgadosTurno" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=param%>"  elementoSel="<%=juzgadoSel%>"  accion="Hijo:procedimiento" />
+							<siga:ComboBD nombre="juzgado" ancho="700" tipo="comboJuzgadosTurno" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>"  accion="Hijo:procedimiento" />
 					</td>
 			<%}%>
 				

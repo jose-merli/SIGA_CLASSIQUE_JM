@@ -46,7 +46,7 @@ public class ScsComisariaAdm extends MasterBeanAdministrador {
 							ScsComisariaBean.C_NOMBRE, ScsComisariaBean.C_DIRECCION,
 							ScsComisariaBean.C_CODIGOPOSTAL, ScsComisariaBean.C_IDPROVINCIA,
 							ScsComisariaBean.C_IDPOBLACION, ScsComisariaBean.C_TELEFONO1,
-							ScsComisariaBean.C_TELEFONO2, ScsComisariaBean.C_FAX1,
+							ScsComisariaBean.C_TELEFONO2, ScsComisariaBean.C_FAX1,ScsComisariaBean.C_FECHABAJA,
 							ScsComisariaBean.C_USUMODIFICACION, ScsComisariaBean.C_FECHAMODIFICACION,
 							ScsComisariaBean.C_CODIGOEXT};
 		return campos;
@@ -83,7 +83,7 @@ public class ScsComisariaAdm extends MasterBeanAdministrador {
 			bean.setTelefono1(UtilidadesHash.getString(hash,ScsComisariaBean.C_TELEFONO1));
 			bean.setTelefono2(UtilidadesHash.getString(hash,ScsComisariaBean.C_TELEFONO2));
 			bean.setFax1(UtilidadesHash.getString(hash,ScsComisariaBean.C_FAX1));
-			
+			bean.setFechabaja(UtilidadesHash.getString(hash,ScsComisariaBean.C_FECHABAJA));
 			bean.setFechaMod(UtilidadesHash.getString(hash, ScsComisariaBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,ScsComisariaBean.C_USUMODIFICACION));
 			bean.setCodigoExt(UtilidadesHash.getString(hash,ScsComisariaBean.C_CODIGOEXT));
@@ -114,7 +114,8 @@ public class ScsComisariaAdm extends MasterBeanAdministrador {
 			hash.put(ScsComisariaBean.C_IDPOBLACION, b.getIdPoblacion());
 			hash.put(ScsComisariaBean.C_TELEFONO1, b.getTelefono1());
 			hash.put(ScsComisariaBean.C_TELEFONO2, b.getTelefono2());
-			hash.put(ScsComisariaBean.C_FAX1, b.getFax1());			
+			hash.put(ScsComisariaBean.C_FAX1, b.getFax1());		
+			hash.put(ScsComisariaBean.C_FECHABAJA, b.getFechabaja());		
 			hash.put(ScsComisariaBean.C_USUMODIFICACION, String.valueOf(b.getUsuMod()));
 			hash.put(ScsComisariaBean.C_FECHAMODIFICACION, b.getFechaMod());
 			hash.put(ScsComisariaBean.C_CODIGOEXT, b.getCodigoExt());
@@ -173,6 +174,7 @@ public class ScsComisariaAdm extends MasterBeanAdministrador {
 			select += " , comisaria."+ScsComisariaBean.C_TELEFONO1;
 			select += " , comisaria."+ScsComisariaBean.C_TELEFONO2;
 			select += " , comisaria."+ScsComisariaBean.C_FAX1;
+			select += " , comisaria."+ScsComisariaBean.C_FECHABAJA;
 			select += " , comisaria."+ScsComisariaBean.C_CODIGOEXT;
 			select += " , (SELECT provincia."+CenProvinciaBean.C_NOMBRE+
 					  "    FROM "+CenProvinciaBean.T_NOMBRETABLA +" provincia "+
@@ -312,6 +314,7 @@ public class ScsComisariaAdm extends MasterBeanAdministrador {
 			select += " , comisaria."+ScsComisariaBean.C_TELEFONO1;
 			select += " , comisaria."+ScsComisariaBean.C_TELEFONO2;
 			select += " , comisaria."+ScsComisariaBean.C_FAX1;
+			select += " , comisaria."+ScsComisariaBean.C_FECHABAJA;
 			select += " , comisaria."+ScsComisariaBean.C_CODIGOEXT;
 			select += " , (SELECT provincia."+CenProvinciaBean.C_NOMBRE+
 					  "    FROM "+CenProvinciaBean.T_NOMBRETABLA +" provincia "+
