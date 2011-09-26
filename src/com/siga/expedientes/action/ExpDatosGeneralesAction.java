@@ -266,17 +266,17 @@ public class ExpDatosGeneralesAction extends MasterAction
 			String idInstitucion = request.getParameter("idInstitucion");
 			String idInstitucion_TipoExpediente = request.getParameter("idInstitucion_TipoExpediente");
 			String idTipoExpediente = request.getParameter("idTipoExpediente");
-			//String numExpediente = request.getParameter("numeroExpediente");
-			//String anioExpediente = request.getParameter("anioExpediente");
+			String numExpediente = request.getParameter("numeroExpediente");
+			String anioExpediente = request.getParameter("anioExpediente");
 			
-			//Recogemos el año y el num
-			String numExpedienteSession = (String)request.getSession().getAttribute("numeroExpedienteSession");
-			String anioExpedienteSession = (String)request.getSession().getAttribute("anioExpedienteSession");
-			
-			//String numExpedienteForm = form.getNumExpediente();
-			//String anioExpedienteForm = form.getAnioExpediente();
-			
-			
+			//Se pregunta si numExpediente y anioExpediente vienes como parámetros en la request, si no vienen
+			//se recuperan de la sesión
+			if((numExpediente==null ||numExpediente.equals("")) && (anioExpediente==null ||anioExpediente.equals("")))
+			{
+				numExpediente = (String)request.getSession().getAttribute("numeroExpedienteSession");
+				anioExpediente = (String)request.getSession().getAttribute("anioExpedienteSession");
+			}
+
 			String soloSeguimiento = request.getParameter("soloSeguimiento");
 			String editable = request.getParameter("editable");
 			boolean edit = (editable.equals("1")&&soloSeguimiento.equals("false"))?true:false;
@@ -291,8 +291,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			Vector datosExp = null;
 			Vector datosFase = null;
 			Vector datosEstado = null;
-			Vector datosClasif = null;
-			int numeroRegistros = 0;
+			Vector datosClasif = null;			
 			
 			ExpExpedienteAdm expAdm = new ExpExpedienteAdm (this.getUserBean(request));	
 			
@@ -302,8 +301,8 @@ public class ExpDatosGeneralesAction extends MasterAction
 				hashExp.put(ExpExpedienteBean.C_IDINSTITUCION,idInstitucion);
 				hashExp.put(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE,idInstitucion_TipoExpediente);
 				hashExp.put(ExpExpedienteBean.C_IDTIPOEXPEDIENTE,idTipoExpediente);
-				hashExp.put(ExpExpedienteBean.C_NUMEROEXPEDIENTE,numExpedienteSession);
-				hashExp.put(ExpExpedienteBean.C_ANIOEXPEDIENTE,anioExpedienteSession);
+				hashExp.put(ExpExpedienteBean.C_NUMEROEXPEDIENTE,numExpediente);
+				hashExp.put(ExpExpedienteBean.C_ANIOEXPEDIENTE,anioExpediente);
 				datosExp =expAdm.select(hashExp);
 				ExpExpedienteBean expBean = (ExpExpedienteBean)datosExp.elementAt(0);
 				HashMap datosExpediente=new HashMap();
@@ -326,8 +325,8 @@ public class ExpDatosGeneralesAction extends MasterAction
 			whereCount += "AND DEN."+ExpDenuncianteBean.C_IDINSTITUCION + " = '" + idInstitucion + "' AND ";
 			whereCount += "DEN."+ExpDenuncianteBean.C_IDINSTITUCION_TIPOEXPEDIENTE + " = '" + idInstitucion_TipoExpediente + "' AND ";
 			whereCount += "DEN."+ExpDenuncianteBean.C_IDTIPOEXPEDIENTE + " = '" + idTipoExpediente + "' AND ";	
-			whereCount += "DEN."+ExpDenuncianteBean.C_NUMEROEXPEDIENTE + " = '" + numExpedienteSession + "' AND ";
-			whereCount += "DEN."+ExpDenuncianteBean.C_ANIOEXPEDIENTE + " = '" + anioExpedienteSession + "' ";			
+			whereCount += "DEN."+ExpDenuncianteBean.C_NUMEROEXPEDIENTE + " = '" + numExpediente + "' AND ";
+			whereCount += "DEN."+ExpDenuncianteBean.C_ANIOEXPEDIENTE + " = '" + anioExpediente + "' ";			
 			
 			numeroCount = expAdm.getNumeroDenunciantes(whereCount); 
 			
@@ -347,13 +346,13 @@ public class ExpDatosGeneralesAction extends MasterAction
 				where += "AND E."+ExpExpedienteBean.C_IDINSTITUCION + " = '" + idInstitucion + "' AND ";
 				where += "E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE + " = '" + idInstitucion_TipoExpediente + "' AND ";
 				where += "E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE + " = '" + idTipoExpediente + "' AND ";
-				where += "E."+ExpExpedienteBean.C_NUMEROEXPEDIENTE + " = '" + numExpedienteSession + "' AND ";
-				where += "E."+ExpExpedienteBean.C_ANIOEXPEDIENTE + " = '" + anioExpedienteSession + "' AND ";
+				where += "E."+ExpExpedienteBean.C_NUMEROEXPEDIENTE + " = '" + numExpediente + "' AND ";
+				where += "E."+ExpExpedienteBean.C_ANIOEXPEDIENTE + " = '" + anioExpediente + "' AND ";
 				where += "DEN."+ExpDenuncianteBean.C_IDINSTITUCION + " = '" + idInstitucion + "' AND ";
 				where += "DEN."+ExpDenuncianteBean.C_IDINSTITUCION_TIPOEXPEDIENTE + " = '" + idInstitucion_TipoExpediente + "' AND ";
 				where += "DEN."+ExpDenuncianteBean.C_IDTIPOEXPEDIENTE + " = '" + idTipoExpediente + "' AND ";	
-				where += "DEN."+ExpDenuncianteBean.C_NUMEROEXPEDIENTE + " = '" + numExpedienteSession + "' AND ";
-				where += "DEN."+ExpDenuncianteBean.C_ANIOEXPEDIENTE + " = '" + anioExpedienteSession + "' ";
+				where += "DEN."+ExpDenuncianteBean.C_NUMEROEXPEDIENTE + " = '" + numExpediente + "' AND ";
+				where += "DEN."+ExpDenuncianteBean.C_ANIOEXPEDIENTE + " = '" + anioExpediente + "' ";
 			} else {
 				//join de las tablas EXPEDIENTE E, TIPOEXPEDIENTE T, PERSONA P, COLEGIADO C, INSTITUCION I
 				where += "E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE+" = T."+ExpTipoExpedienteBean.C_IDINSTITUCION+"(+)";
@@ -366,8 +365,8 @@ public class ExpDatosGeneralesAction extends MasterAction
 				where += "AND E."+ExpExpedienteBean.C_IDINSTITUCION + " = '" + idInstitucion + "' AND ";
 				where += "E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE + " = '" + idInstitucion_TipoExpediente + "' AND ";
 				where += "E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE + " = '" + idTipoExpediente + "' AND ";
-				where += "E."+ExpExpedienteBean.C_NUMEROEXPEDIENTE + " = '" + numExpedienteSession + "' AND ";
-				where += "E."+ExpExpedienteBean.C_ANIOEXPEDIENTE + " = '" + anioExpedienteSession + "' ";				
+				where += "E."+ExpExpedienteBean.C_NUMEROEXPEDIENTE + " = '" + numExpediente + "' AND ";
+				where += "E."+ExpExpedienteBean.C_ANIOEXPEDIENTE + " = '" + anioExpediente + "' ";				
 			}
 				
 			datosExp = expAdm.selectDatosGenerales(where, numeroCount);
