@@ -1,5 +1,5 @@
 /*
- * VERSIONES: modificado por david.sanchez para incluir el pago con tarjeta.
+ * VERSIONES: modificado por david.sanchez para incluir el pago con tarjeta. 
  * 
  * nuria.rodriguezg	- 27-01-2005 - Inicio
  * pilar.duran 01/02/2007- Se ha modificado el metod solicitar para la adquisicion del producto

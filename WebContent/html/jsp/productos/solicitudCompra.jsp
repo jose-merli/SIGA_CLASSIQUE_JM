@@ -12,7 +12,7 @@
 <%@ taglib uri = "struts-html.tld" 		prefix = "html"%>
 <%@ taglib uri = "struts-logic.tld" 	prefix = "logic"%>
 
-<!-- IMPORTS -->
+<!-- IMPORTS --> 
 <%@ page import = "com.siga.administracion.SIGAConstants"%>
 <%@ page import = "com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import = "com.siga.Utilidades.UtilidadesString"%>
