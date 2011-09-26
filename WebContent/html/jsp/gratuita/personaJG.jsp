@@ -165,8 +165,9 @@
 			 obligatorioEstadoCivil= true;
 			 obligatorioSexo = true;
 		     obligatorioRegimenConyuge=true;
-		}else if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS) || conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS)){
-			obligatorioNacionalidad=true;
+		}else if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS) || conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS) 
+				|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) || conceptoE.equals(PersonaJGAction.EJG)){
+			obligatorioNacionalidad=false;
 		}else{
 			obligatorioDireccion = true;
 			obligatorioPoblacion = true;
