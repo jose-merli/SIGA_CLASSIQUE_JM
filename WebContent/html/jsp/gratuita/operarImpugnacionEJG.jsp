@@ -307,7 +307,7 @@
 			document.forms[0].submit();
 		}
 
-		//Método que habilita o deshabilita el check de Bis
+		//Método que habilita o deshabilita el check de Bis 
 		function habilitarBisResolucion()
 		{
 			if (document.forms[0].numeroResolucion.value!="" || document.forms[0].anioResolucion.value!="") 

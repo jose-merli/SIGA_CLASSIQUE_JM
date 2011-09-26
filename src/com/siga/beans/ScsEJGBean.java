@@ -599,7 +599,7 @@ public class ScsEJGBean extends MasterBean{
 	public void setRatificacionDictamen(String ratificacionDictamen) {
 		this.ratificacionDictamen = ratificacionDictamen;
 	}
-//	/**
+//	/** 
 //	 * @return Returns the sOJ_anio.
 //	 */
 //	public Integer getSOJ_anio() {

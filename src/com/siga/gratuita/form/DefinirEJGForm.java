@@ -1,5 +1,5 @@
 /*
- * Fecha creación: 14/02/2005
+ * Fecha creación: 14/02/2005 
  * Autor: julio.vicente
  */
 

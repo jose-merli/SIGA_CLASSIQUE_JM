@@ -18,7 +18,7 @@ import com.siga.gratuita.form.DefinirEJGForm;
 
 //Clase: ScsEJGAdm 
 //Autor: julio.vicente@atosorigin.com
-//Ultima modificación: 17/02/2005
+//Ultima modificación: 17/02/2005 
 /**
  * Implementa las operaciones sobre la base de datos, es decir: select, insert, update...
  * 

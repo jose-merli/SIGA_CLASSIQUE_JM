@@ -1,6 +1,6 @@
 //Clase: DefinirRatificacionEJGAction 
 //Autor: julio.vicente@atosorigin.com
-//Ultima modificación: 17/02/2005
+//Ultima modificación: 17/02/2005 
 
 package com.siga.gratuita.action;
 

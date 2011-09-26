@@ -785,7 +785,7 @@ function validarAlfaNumericoYGuiones(texto){
 }
 
 /*
- * Método que solo valida digitos y no deja que se escriba otros caracteres.
+ * Método que solo valida digitos y no deja que se escriba otros caracteres. 
 */
 function soloDigitos(event)
 {			
