@@ -18,7 +18,12 @@ import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.form.ActuacionAsistenciaForm;
+import com.siga.gratuita.form.AsistenciaForm;
 import com.siga.gratuita.form.AsistenciasForm;
+import com.siga.gratuita.form.DefinirGuardiasTurnosForm;
+import com.siga.gratuita.form.DefinirTurnosForm;
+import com.siga.gratuita.form.PersonaJGForm;
 import com.siga.gratuita.vos.VolantesExpressVo;
 
 
@@ -2052,6 +2057,117 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 	}
 	
 	
-	
+	public AsistenciaForm getDatosAsistencia(ScsAsistenciasBean asistencia) throws ClsExceptions 
+	{
+		StringBuffer sql =  new StringBuffer();
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		sql.append(" SELECT AA.ANIO||'/'||AA.NUMERO||DECODE(AA.IDPERSONAJG,null,null,' - '||PJG.NOMBRE ||' '||PJG.APELLIDO1||' '||PJG.APELLIDO2) DESCRIPCIONASISTENCIA ");
+		sql.append(" ,AA.FECHAANULACION, AA.IDTIPOASISTENCIACOLEGIO,AA.IDTURNO,AA.FECHAHORA ");
+		sql.append(" ,AA.NUMERODILIGENCIA, AA.NUMEROPROCEDIMIENTO ");
+		sql.append(" ,AA.COMISARIA, AA.JUZGADO ");
+		
+		sql.append(",TU.LETRADOACTUACIONES,TU.VALIDARJUSTIFICACIONES ");
+		sql.append(",TU.NOMBRE NOMBRETURNO, ");
+		sql.append("GU.NOMBRE NOMBREGUARDIA, ");
+		
+		
+		sql.append("PJG.NIF PJGNIF, ");
+		sql.append("PJG.NOMBRE PJGNOMBRE, ");
+		sql.append("PJG.APELLIDO1 PJGAPELLIDO1, ");
+		sql.append("PJG.APELLIDO2 PJGAPELLIDO2, ");
+		sql.append("COL.NCOLEGIADO CNCOLEGIADO, ");
+		sql.append("PER.NOMBRE PNOMBRE, ");
+		sql.append("PER.APELLIDOS1 PAPELLIDOS1, ");
+		sql.append("PER.APELLIDOS2 PAPELLIDOS2 ");
+
+		sql.append(" FROM "); 
+		sql.append(" SCS_ASISTENCIA AA, SCS_TURNO TU,SCS_GUARDIASTURNO GU, SCS_PERSONAJG PJG,CEN_PERSONA PER, CEN_COLEGIADO COL ");
+		sql.append(" WHERE " );
+		sql.append(" AA.IDINSTITUCION = COL.IDINSTITUCION " );
+		sql.append(" AND AA.IDPERSONACOLEGIADO = COL.IDPERSONA " );
+		sql.append(" AND COL.IDPERSONA = PER.IDPERSONA " );
+		sql.append(" AND GU.IDTURNO(+) = AA.IDTURNO " );
+		sql.append(" AND GU.IDGUARDIA(+) = AA.IDGUARDIA " );
+
+		sql.append(" AND PJG.IDPERSONA(+) = AA.IDPERSONAJG ");
+		sql.append(" AND PJG.IDINSTITUCION(+) = AA.IDINSTITUCION ");
+		sql.append(" AND TU.IDTURNO(+) = AA.IDTURNO ");
+		sql.append(" AND TU.IDINSTITUCION(+) = AA.IDINSTITUCION ");
+		sql.append("AND  AA.IDINSTITUCION = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),asistencia.getIdInstitucion());
+		sql.append(" AND AA.ANIO = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),asistencia.getAnio());
+		sql.append(" AND AA.NUMERO = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),asistencia.getNumero());
+
+		AsistenciaForm	asistenciaForm = null;
+		
+		try {
+			RowsContainer rc = new RowsContainer(); 
+			if (rc.findBind(sql.toString(),htCodigos)) {
+				if(rc.size()>0){
+					Row fila = (Row) rc.get(0);
+					Hashtable<String, Object> htFila=fila.getRow();
+					 
+					asistenciaForm = asistencia.getAsistenciaForm();
+					DefinirTurnosForm turno = new DefinirTurnosForm();
+					DefinirGuardiasTurnosForm guardia = new DefinirGuardiasTurnosForm();
+					PersonaJGForm personaJG = new PersonaJGForm();
+					CenPersonaBean persona = new CenPersonaBean();
+					CenColegiadoBean colegiado = new CenColegiadoBean();
+					persona.setColegiado(colegiado);
+//					asistenciaForm.setIdInstitucion(idInstitucion);
+//					asistenciaForm.setAnio(idInstitucion);
+//					asistenciaForm.setNumero(idInstitucion);
+					asistenciaForm.setTurno(turno);
+					asistenciaForm.setGuardia(guardia);
+					asistenciaForm.setPersonaColegiado(persona);
+					asistenciaForm.setPersonaJG(personaJG);
+					asistenciaForm.setIdTipoAsistenciaColegio(UtilidadesHash.getString(htFila, "IDTIPOASISTENCIACOLEGIO"));
+					asistenciaForm.setIdTurno(UtilidadesHash.getString(htFila, "IDTURNO"));
+					asistenciaForm.setDescripcion(UtilidadesHash.getString(htFila, "DESCRIPCIONASISTENCIA"));
+					asistenciaForm.setFechaAnulacion(UtilidadesHash.getString(htFila, "FECHAANULACION"));
+					asistenciaForm.setLetradoActuaciones(UtilidadesHash.getString(htFila, "LETRADOACTUACIONES"));
+					asistenciaForm.setFechaHora(GstDate.getFormatedDateShort("", UtilidadesHash.getString(htFila, "FECHAHORA")) );
+					asistenciaForm.setNumeroDiligencia(UtilidadesHash.getString(htFila, "NUMERODILIGENCIA"));
+					asistenciaForm.setNumeroProcedimiento(UtilidadesHash.getString(htFila, "NUMEROPROCEDIMIENTO"));
+					asistenciaForm.setComisaria(UtilidadesHash.getString(htFila, "COMISARIA"));
+					asistenciaForm.setJuzgado(UtilidadesHash.getString(htFila, "JUZGADO"));
+
+					asistenciaForm.setValidarJustificaciones(UtilidadesHash.getString(htFila, "VALIDARJUSTIFICACIONES"));
+					turno.setNombre(UtilidadesHash.getString(htFila, "NOMBRETURNO"));
+					turno.setActivarActuacionesLetrado(UtilidadesHash.getString(htFila, "LETRADOACTUACIONES"));
+					turno.setValidarJustificaciones(UtilidadesHash.getString(htFila, "VALIDARJUSTIFICACIONES"));
+					guardia.setNombreGuardia(UtilidadesHash.getString(htFila, "NOMBREGUARDIA"));
+					personaJG.setNIdentificacion(UtilidadesHash.getString(htFila, "PJGNIF"));
+					personaJG.setApellido1(UtilidadesHash.getString(htFila, "PJGAPELLIDO1"));
+					personaJG.setApellido2(UtilidadesHash.getString(htFila, "PJGAPELLIDO2"));
+					personaJG.setNombre(UtilidadesHash.getString(htFila, "PJGNOMBRE"));
+
+					persona.setApellido1(UtilidadesHash.getString(htFila, "PAPELLIDOS1"));
+					persona.setApellido2(UtilidadesHash.getString(htFila, "PAPELLIDOS2"));
+					persona.setNombre(UtilidadesHash.getString(htFila, "PNOMBRE"));
+					colegiado.setNColegiado(UtilidadesHash.getString(htFila, "CNCOLEGIADO"));
+					
+					
+					
+					
+				}
+
+			} 
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar consulta getDatosAsistencia.");
+		}
+
+		return asistenciaForm;
+	}
+
 	
 }

@@ -417,6 +417,11 @@ public class ScsComisariaAdm extends MasterBeanAdministrador {
 		return sinDuplicar;
 	}
 	public List<ScsComisariaBean> getComisarias(VolantesExpressVo volanteExpres)throws ClsExceptions{
+		return getComisarias(volanteExpres.getIdInstitucion(),volanteExpres.getIdTurno(),true);
+		
+		
+	}
+	public List<ScsComisariaBean> getComisarias(Integer idInstitucion, Integer idTurno,boolean isObligatorio)throws ClsExceptions{
 
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;
@@ -443,12 +448,12 @@ public class ScsComisariaAdm extends MasterBeanAdministrador {
 		sql.append(" and TU.IDINSTITUCION = :");
 		contador ++;
 		sql.append(contador);
-		htCodigos.put(new Integer(contador),volanteExpres.getIdInstitucion());
+		htCodigos.put(new Integer(contador),idInstitucion);
 		sql.append(" and tu.idinstitucion = c.idinstitucion ");
 		sql.append(" AND TU.IDTURNO = :");
 		contador ++;
 		sql.append(contador);
-		htCodigos.put(new Integer(contador),volanteExpres.getIdTurno());
+		htCodigos.put(new Integer(contador),idTurno);
 		sql.append(" ORDER BY NOMBRE ");
 		
 		List<ScsComisariaBean> alComisarias = null;
@@ -458,8 +463,13 @@ public class ScsComisariaAdm extends MasterBeanAdministrador {
             if (rc.findBind(sql.toString(),htCodigos)) {
             	alComisarias = new ArrayList<ScsComisariaBean>();
             	ScsComisariaBean comisariaBean = new ScsComisariaBean();
-            	comisariaBean.setNombre(UtilidadesString.getMensajeIdioma(volanteExpres.getUsrBean(), "general.combo.seleccionar"));
-            	comisariaBean.setIdComisaria(new Integer(-1));
+            	if(isObligatorio){
+	            	comisariaBean.setNombre(UtilidadesString.getMensajeIdioma(this.usrbean, "general.combo.seleccionar"));
+	            	comisariaBean.setIdComisaria(new Integer(-1));
+            	}else{
+            		comisariaBean.setNombre("");
+            		
+            	}
     			alComisarias.add(comisariaBean);
     			for (int i = 0; i < rc.size(); i++){
             		Row fila = (Row) rc.get(i);
@@ -477,7 +487,9 @@ public class ScsComisariaAdm extends MasterBeanAdministrador {
        }
        return alComisarias;
 		
-	} 
+	}
+	
+	
 	
 	
 	

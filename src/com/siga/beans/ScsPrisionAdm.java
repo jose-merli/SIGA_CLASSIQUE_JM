@@ -1,6 +1,8 @@
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
@@ -11,6 +13,7 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.gratuita.form.MantenimientoPrisionForm;
 
 /**
@@ -395,6 +398,57 @@ public class ScsPrisionAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
 		}
 		return salida;
+	}
+	public List<ScsPrisionBean> getPrisiones(Integer idInstitucion,boolean isObligatorio)throws ClsExceptions{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT IDPRISION, IDINSTITUCION , NOMBRE  "); 
+		sql.append(" FROM SCS_PRISION WHERE IDINSTITUCION =  :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),idInstitucion);
+		  
+		sql.append(" OR IDINSTITUCION =  ");
+		sql.append(ClsConstants.INSTITUCION_CGAE);
+		sql.append(" ORDER BY NOMBRE ");
+		
+		
+		
+		
+		
+		List<ScsPrisionBean> prisionBeans = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.findBind(sql.toString(),htCodigos)) {
+            	prisionBeans = new ArrayList<ScsPrisionBean>();
+            	ScsPrisionBean prisionBean = new ScsPrisionBean();
+            	if(isObligatorio){
+	            	prisionBean.setNombre(UtilidadesString.getMensajeIdioma(this.usrbean, "general.combo.seleccionar"));
+	            	prisionBean.setIdPrision(new Integer(-1));
+            	}else{
+            		prisionBean.setNombre("");
+            	}
+    			prisionBeans.add(prisionBean);
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		
+            		prisionBean = new ScsPrisionBean();
+            		prisionBean.setIdInstitucion(UtilidadesHash.getInteger(htFila,ScsPrisionBean.C_IDINSTITUCION));
+            		prisionBean.setIdPrision(UtilidadesHash.getInteger(htFila,ScsPrisionBean.C_IDPRISION));
+            		prisionBean.setNombre(UtilidadesHash.getString(htFila,ScsPrisionBean.C_NOMBRE));
+            		prisionBean.setCodigoExt(prisionBean.getIdInstitucion()+","+prisionBean.getIdPrision());
+            		prisionBeans.add(prisionBean);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta getPrisiones.");
+       }
+       return prisionBeans;
+		
 	}
 
 }

@@ -4586,6 +4586,19 @@
 			            </var>
 				</field>
         </form>
+        
+        <form name="ActuacionAsistenciaFormEdicion">
+        <field property = "numero" depends = "required">
+            <arg0 key="gratuita.mantActuacion.literal.nactuacion"/>
+        </field>
+        <field property = "fecha" depends = "required">
+            <arg0 key="gratuita.mantActuacion.literal.fecha"/>
+        </field>
+        <field property = "idTipoActuacion" depends = "required,integer">
+            <arg0 key="gratuita.mantActuacion.literal.tipoActuacion"/>
+            
+        </field>
+    </form> 
 					
 </formset>
 

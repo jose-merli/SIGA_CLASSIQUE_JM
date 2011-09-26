@@ -229,6 +229,8 @@
 		<form-bean name="DefensaJuridicaDesignasForm" type="com.siga.gratuita.form.DefensaJuridicaDesignasForm"/>
 		<form-bean name="ActuacionesDesignasForm" type="com.siga.gratuita.form.ActuacionesDesignasForm"/>
 		<form-bean name="AsistenciasForm" type="com.siga.gratuita.form.AsistenciasForm"/>
+		<form-bean name="ActuacionAsistenciaForm" type="com.siga.gratuita.form.ActuacionAsistenciaForm"/>
+		<form-bean name="ActuacionAsistenciaFormEdicion" type="com.siga.gratuita.form.ActuacionAsistenciaForm"/>
 		<form-bean name="DefinirEJGForm" type="com.siga.gratuita.form.DefinirEJGForm"/>
 		<form-bean name="BusquedaCAJG_EJGForm" type="com.siga.gratuita.form.BusquedaCAJG_EJGForm"/>
 		<form-bean name="DefinicionRemesas_CAJG_Form" type="com.siga.gratuita.form.DefinicionRemesas_CAJG_Form"/>
@@ -2113,9 +2115,16 @@
             <forward name="editar" path="/html/jsp/gratuita/contAnulDeliJuriAsistencia.jsp?esFichaColegial=1"/>
     </action>
 
-		<action path="/JGR_ActuacionesAsistencia" type="com.siga.gratuita.action.ActuacionesAsistenciaAction" name="AsistenciasForm">
-            <forward name="listado" path="/html/jsp/gratuita/listadoActuacionesAsistencia.jsp?esFichaColegial=0"/>
-            <forward name="editar" path="/html/jsp/gratuita/mantActuacion.jsp?esFichaColegial=0"/>
+		<action path="/JGR_ActuacionesAsistencia" type="com.siga.gratuita.action.ActuacionesAsistenciaAction" name="ActuacionAsistenciaForm">
+            <forward name="listadoActuacionesAsistencia" path="/html/jsp/gratuita/listadoActuacionesAsistencia.jsp?esFichaColegial=0"/>
+            <forward name="edicion" path="/html/jsp/gratuita/edicionActuacionAsistencia.jsp?esFichaColegial=0"/>
+            
+            <forward name="consultarAsistencia" path="/html/jsp/gratuita/consultaAsistencia.jsp"/>
+        </action>
+        
+		<action path="/JGR_ActuacionAsistenciaLetrado" type="com.siga.gratuita.action.ActuacionesAsistenciaAction" name="ActuacionAsistenciaForm">
+           <forward name="listadoActuacionesAsistencia" path="/html/jsp/gratuita/listadoActuacionesAsistenciado.jsp?esFichaColegial=1"/>
+            <forward name="edicion" path="/html/jsp/gratuita/edicionActuacionAsistencia.jsp?esFichaColegial=1"/>
             <forward name="consultarAsistencia" path="/html/jsp/gratuita/consultaAsistencia.jsp"/>
         </action>
 
@@ -2135,11 +2144,7 @@
             <forward name="recogidaDatos" path="/html/jsp/gratuita/datosCartaAsistencia.jsp?esFichaColegial=1"/>
     </action>
 
-		<action path="/JGR_ActuacionAsistenciaLetrado" type="com.siga.gratuita.action.ActuacionesAsistenciaLetradoAction" name="AsistenciasForm">
-            <forward name="listado" path="/html/jsp/gratuita/listadoActuacionesAsistenciaLetrado.jsp?esFichaColegial=1"/>
-            <forward name="editar" path="/html/jsp/gratuita/mantActuacionLetrado.jsp?esFichaColegial=1"/>
-        </action>
-
+	
 		<action path="/JGR_ResponsableAsistencia" type="com.siga.gratuita.action.AsisRespAsistenciaAction" name="AsistenciasForm">
 		    <forward name="editar" path="/html/jsp/gratuita/asisRespAsistencias.jsp"/>
 		    <forward name="abrirBusquedaModal" path="/html/jsp/gratuita/personasJG.jsp"/>

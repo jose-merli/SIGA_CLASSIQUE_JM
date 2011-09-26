@@ -1,5 +1,7 @@
 package com.siga.beans;
 
+import com.siga.gratuita.form.AsistenciaForm;
+
 /**
  * Implementa las operaciones sobre el bean de la tabla SCS_ASISTENCIAS
  * 
@@ -174,7 +176,8 @@ public class ScsAsistenciasBean extends MasterBean{
 	public Integer getEjgIdTipoEjg		     ()	{ return this.ejgidtipoejg      	 ;}
 	public Integer getEjgAnio		     ()	{ return this.ejganio      	 ;}
 	public Long getEjgNumero		     ()	{ return this.ejgnumero      	 ;}
-
+	AsistenciaForm asistenciaForm;
+	private String fichaColegial;
 	/**
 	 * @return Returns the facturado.
 	 */
@@ -382,6 +385,34 @@ public class ScsAsistenciasBean extends MasterBean{
 	}
 	public void setEjg(ScsEJGBean ejg) {
 		this.ejg = ejg;
+	}
+	
+	
+	public AsistenciaForm getAsistenciaForm(){
+		if(asistenciaForm==null)
+			asistenciaForm = new AsistenciaForm();
+		if(idInstitucion!=null && !idInstitucion.equals(""))
+			asistenciaForm.setIdInstitucion(idInstitucion.toString());
+		if(anio!=null&& !anio.equals(""))
+			asistenciaForm.setAnio(anio.toString());
+		if(numero!=null&& !numero.equals(""))
+			asistenciaForm.setNumero(numero.toString());
+		if(idTurno!=null && !idTurno.equals(""))
+			asistenciaForm.setIdTurno(idTurno.toString());
+		if(idTipoAsistenciaColegio!=null && !idTipoAsistenciaColegio.equals(""))
+			asistenciaForm.setIdTipoAsistenciaColegio(idTipoAsistenciaColegio.toString());
+		
+		asistenciaForm.setFichaColegial(fichaColegial);
+		
+		
+		return asistenciaForm;
+		
+	}
+	public String getFichaColegial() {
+		return fichaColegial;
+	}
+	public void setFichaColegial(String fichaColegial) {
+		this.fichaColegial = fichaColegial;
 	}
 	
 	

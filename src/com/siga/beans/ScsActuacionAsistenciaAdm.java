@@ -5,6 +5,11 @@ import java.util.*;
 import com.atos.utils.*;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.beans.eejg.ScsEejgPeticionesBean;
+import com.siga.gratuita.beans.ScsProgCalendariosBean;
+import com.siga.gratuita.form.ActuacionAsistenciaForm;
+import com.siga.gratuita.form.AsistenciaForm;
+import com.siga.gratuita.form.ProgrCalendariosForm;
 import com.siga.gratuita.vos.VolantesExpressVo;
 
 // Clase: ScsActuacionAsistenciaAdm 
@@ -404,7 +409,125 @@ public class ScsActuacionAsistenciaAdm extends MasterBeanAdministrador {
 	
 	return alActuacionesAsistencias;
 }
+	public  List<ActuacionAsistenciaForm> getActuacionesAsistencia(ScsAsistenciasBean asistencia) throws ClsExceptions{
+		StringBuffer sql =  new StringBuffer();
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		sql.append("SELECT  AA.IDINSTITUCION, AA.ANIO, AA.NUMERO, AA.IDACTUACION, ");
+		sql.append("AA.FECHA, AA.NUMEROASUNTO,  ");
+		sql.append("AA.FECHAJUSTIFICACION,       AA.VALIDADA, AA.ANULACION, ");
+		sql.append("AA.IDFACTURACION, AA.FACTURADO, ");
+		
+		
+		sql.append("F_SIGA_GETRECURSO(TA.DESCRIPCION, 1) DESCRIPCIONACTUACION, ");
+		
+		sql.append("DECODE(AA.IDFACTURACION,null, null, ");
+		sql.append("FJG.NOMBRE || ' (' || TO_CHAR(FJG.FECHADESDE, 'DD/MM/YYYY') || '-' || ");
+		sql.append("TO_CHAR(FJG.FECHAHASTA, 'DD/MM/YYYY') || ')') NOMBREFACTURACION,  ");
+		
+		sql.append("TO_CHAR(A.FECHAHORA, 'DD/MM/YYYY') FECHAHORAASISTENCIA, ");
+		sql.append("TU.LETRADOACTUACIONES ");
+		sql.append(",A.FECHAANULACION FECHAANULACIONASISTENCIA ");
+		sql.append(" ,A.NUMERODILIGENCIA , A.NUMEROPROCEDIMIENTO ");
+		sql.append(" ,A.COMISARIA , A.JUZGADO ");
+		
+//		sql.append(",A.ANIO||'/'||A.NUMERO||DECODE(A.IDPERSONAJG,null,null,' - '||PJG.NOMBRE ||' '||PJG.APELLIDO1||' '||PJG.APELLIDO2) DESCRIPCIONASISTENCIA "); 
+		sql.append("FROM SCS_ACTUACIONASISTENCIA AA,SCS_ASISTENCIA A, SCS_TURNO TU ");
+		sql.append(",SCS_TIPOACTUACION TA, FCS_FACTURACIONJG FJG  ");
+		sql.append("WHERE "); 
+		sql.append("FJG.IDFACTURACION(+) =      AA.IDFACTURACION ");
+		sql.append("AND FJG.IDINSTITUCION(+) = AA.IDINSTITUCION ");
+		sql.append("AND TA.IDINSTITUCION(+) = AA.IDINSTITUCION ");
+		sql.append("AND TA.IDTIPOASISTENCIA(+) = AA.IDTIPOASISTENCIA ");
+		sql.append("AND TA.IDTIPOACTUACION(+) = AA.IDTIPOACTUACION ");
+		sql.append("AND TU.IDTURNO(+) = A.IDTURNO ");
+		sql.append("AND TU.IDINSTITUCION(+) = A.IDINSTITUCION ");
+		sql.append("AND AA.IDINSTITUCION = A.IDINSTITUCION ");
+		sql.append("AND AA.ANIO = A.ANIO ");
+		sql.append("AND AA.NUMERO =  A.NUMERO ");
+		sql.append("AND  AA.IDINSTITUCION = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),asistencia.getIdInstitucion());
+		sql.append(" AND AA.ANIO = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),asistencia.getAnio());
+		sql.append(" AND AA.NUMERO = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),asistencia.getNumero());
+		sql.append(" ORDER BY AA.IDACTUACION ");
+
+		List<ActuacionAsistenciaForm> alActuacionesAsistencias = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.findBind(sql.toString(),htCodigos)) {
+            	alActuacionesAsistencias = new ArrayList<ActuacionAsistenciaForm>();
+            	ScsActuacionAsistenciaBean actuacionAsistenciaBean = null;
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		actuacionAsistenciaBean =  (ScsActuacionAsistenciaBean)this.hashTableToBean(htFila);
+            		ActuacionAsistenciaForm actuacionAsistenciaForm = actuacionAsistenciaBean.getActuacionAsistenciaForm();
+            		actuacionAsistenciaForm.setDescripcionActuacion(UtilidadesHash.getString(htFila, "DESCRIPCIONACTUACION"));
+            		actuacionAsistenciaForm.setNombreFacturacion(UtilidadesHash.getString(htFila, "NOMBREFACTURACION"));
+            		actuacionAsistenciaForm.setFechaHoraAsistencia(UtilidadesHash.getString(htFila, "FECHAHORAASISTENCIA"));
+            		actuacionAsistenciaForm.setLetradoActuaciones(UtilidadesHash.getString(htFila, "LETRADOACTUACIONES"));
+            		actuacionAsistenciaForm.setFechaAnulacionAsistencia(UtilidadesHash.getString(htFila, "FECHAANULACIONASISTENCIA"));
+            		actuacionAsistenciaForm.setFichaColegial(asistencia.getFichaColegial());
+            		actuacionAsistenciaForm.setNumeroDiligenciaAsistencia(UtilidadesHash.getString(htFila, "NUMERODILIGENCIA"));
+            		actuacionAsistenciaForm.setNumeroProcedimientoAsistencia(UtilidadesHash.getString(htFila, "NUMEROPROCEDIMIENTO"));
+            		actuacionAsistenciaForm.setComisariaAsistencia(UtilidadesHash.getString(htFila, "COMISARIA"));
+            		actuacionAsistenciaForm.setJuzgadoAsistencia(UtilidadesHash.getString(htFila, "JUZGADO"));
+            		
+            		alActuacionesAsistencias.add(actuacionAsistenciaForm);
+            	}
+            }else{
+            	alActuacionesAsistencias = new ArrayList<ActuacionAsistenciaForm>();
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }
+		
 	
 	
+		return alActuacionesAsistencias;
+	
+	}
+	public ScsActuacionAsistenciaBean getActuacionAsistencia(
+			ActuacionAsistenciaForm actuacionAsistenciaForm) throws ClsExceptions {
+		Hashtable actuacionAsistenciaHashtable = new Hashtable();
+		
+		actuacionAsistenciaHashtable.put(ScsActuacionAsistenciaBean.C_IDINSTITUCION,actuacionAsistenciaForm.getIdInstitucion());
+		actuacionAsistenciaHashtable.put(ScsActuacionAsistenciaBean.C_ANIO,actuacionAsistenciaForm.getAnio());
+		actuacionAsistenciaHashtable.put(ScsActuacionAsistenciaBean.C_NUMERO,actuacionAsistenciaForm.getNumero());
+		actuacionAsistenciaHashtable.put(ScsActuacionAsistenciaBean.C_IDACTUACION,actuacionAsistenciaForm.getIdActuacion());
+		
+		Vector  actuacionAsistenciaVector = selectByPK(actuacionAsistenciaHashtable);
+		
+		
+		return (ScsActuacionAsistenciaBean) actuacionAsistenciaVector.get(0);
+	}
+	public Integer getNuevaActuacionAsistencia(AsistenciaForm asistencia) throws ClsExceptions{
+        RowsContainer rows=new RowsContainer();
+        String sql="SELECT MAX(IDACTUACION)+1 MAXVALOR FROM scs_actuacionasistencia WHERE "+
+				" IDINSTITUCION = "+asistencia.getIdInstitucion()+
+				" AND ANIO = "+asistencia.getAnio()+
+				" AND NUMERO = "+asistencia.getNumero();
+        int valor=1; // Si no hay registros, es el valor que tomará
+        if(rows.find(sql)){
+            Hashtable htRow=((Row)rows.get(0)).getRow();
+            // El valor devuelto será "" Si no hay registros
+            if(!((String)htRow.get("MAXVALOR")).equals("")) {
+                Integer valorInt=Integer.valueOf((String)htRow.get("MAXVALOR"));
+                valor=valorInt.intValue();
+                
+            }
+            
+        }
+        return new Integer(valor);        
+    }
 
 }

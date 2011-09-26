@@ -1,6 +1,8 @@
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
@@ -8,6 +10,8 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
+import com.siga.comun.vos.ValueKeyVO;
 
 /**
  * @author A203486/david.sanchezp
@@ -143,4 +147,164 @@ public class ScsActuacionAsistCosteFijoAdm extends MasterBeanAdministrador {
 		String[] campos= {ScsActuacionAsistCosteFijoBean.C_IDCOSTEFIJO};	
 		return campos;
 	}
+	public List<ValueKeyVO> getTipoCosteFijoActuaciones(Integer idInstitucion, Integer idTipoAsistencia,Integer idTipoActuacion,boolean isObligatorio)throws ClsExceptions{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		
+		
+		sql.append(" SELECT tipo.IDCOSTEFIJO, "); 
+		sql.append(" f_siga_getrecurso (coste.DESCRIPCION,:");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),usrbean.getLanguage());
+		sql.append(") AS DESCRIPCION ");
+		sql.append(" FROM SCS_TIPOACTUACIONCOSTEFIJO tipo, SCS_COSTEFIJO coste  ");
+		sql.append(" WHERE tipo.IDTIPOACTUACION = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),idTipoActuacion);
+		sql.append(" AND tipo.IDINSTITUCION = :"); 
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),idInstitucion);
+		sql.append(" AND tipo.IDTIPOASISTENCIA = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),idTipoAsistencia);
+		sql.append(" AND tipo.IDINSTITUCION = coste.IDINSTITUCION "); 
+		sql.append(" AND tipo.IDCOSTEFIJO = coste.IDCOSTEFIJO ORDER BY DESCRIPCION ");
+		
+		
+		
+		
+		
+		
+		
+		List<ValueKeyVO> valueKeyVOs = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.findBind(sql.toString(),htCodigos)) {
+            	valueKeyVOs = new ArrayList<ValueKeyVO>();
+            	ValueKeyVO valueKeyVO = new ValueKeyVO();
+            	if(isObligatorio){
+	            	valueKeyVO.setKey("-1");
+	            	valueKeyVO.setValue(UtilidadesString.getMensajeIdioma(this.usrbean, "general.combo.seleccionar"));
+            	}else{
+            		valueKeyVO.setValue("");
+            		valueKeyVO.setKey("");
+            		
+            	}
+    			valueKeyVOs.add(valueKeyVO);
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		
+            		valueKeyVO = new ValueKeyVO();
+            		valueKeyVO.setKey(UtilidadesHash.getString(htFila,ScsActuacionAsistCosteFijoBean.C_IDCOSTEFIJO));
+            		valueKeyVO.setValue(UtilidadesHash.getString(htFila,"DESCRIPCION"));
+            		valueKeyVOs.add(valueKeyVO);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta getTipoCosteFijoActuaciones.");
+       }
+       return valueKeyVOs;
+		
+	}
+	public void borrarCosteActuacionAsistencia(ScsActuacionAsistenciaBean actuacionAsistenciaBean) throws ClsExceptions{
+		Hashtable htCosteABorrar = new Hashtable();
+		htCosteABorrar.put(ScsActuacionAsistCosteFijoBean.C_IDINSTITUCION, actuacionAsistenciaBean.getIdInstitucion());
+		htCosteABorrar.put(ScsActuacionAsistCosteFijoBean.C_ANIO, actuacionAsistenciaBean.getAnio());
+		htCosteABorrar.put(ScsActuacionAsistCosteFijoBean.C_NUMERO, actuacionAsistenciaBean.getNumero());
+		htCosteABorrar.put(ScsActuacionAsistCosteFijoBean.C_IDACTUACION, actuacionAsistenciaBean.getIdActuacion());
+		htCosteABorrar.put(ScsActuacionAsistCosteFijoBean.C_IDTIPOASISTENCIA, actuacionAsistenciaBean.getIdTipoAsistencia());
+		
+		String clavesCosteABorrar[] =  new String[]{ScsActuacionAsistCosteFijoBean.C_IDINSTITUCION,
+				ScsActuacionAsistCosteFijoBean.C_ANIO,ScsActuacionAsistCosteFijoBean.C_NUMERO,
+			ScsActuacionAsistCosteFijoBean.C_IDACTUACION,ScsActuacionAsistCosteFijoBean.C_IDTIPOASISTENCIA};
+		this.deleteDirect(htCosteABorrar,clavesCosteABorrar);
+		
+	}
+	public void insertarCosteActuacionAsistencia(ScsActuacionAsistenciaBean actuacionAsistenciaBean, Integer idCosteFijo) throws ClsExceptions{
+		ScsActuacionAsistCosteFijoBean actuacionAsistCosteFijoBean = new ScsActuacionAsistCosteFijoBean();
+		Hashtable hashCoste = new Hashtable();
+		hashCoste.put(ScsActuacionAsistCosteFijoBean.C_IDINSTITUCION, actuacionAsistenciaBean.getIdInstitucion());
+		hashCoste.put(ScsActuacionAsistCosteFijoBean.C_ANIO, actuacionAsistenciaBean.getAnio());
+		hashCoste.put(ScsActuacionAsistCosteFijoBean.C_NUMERO, actuacionAsistenciaBean.getNumero());
+		hashCoste.put(ScsActuacionAsistCosteFijoBean.C_IDACTUACION, actuacionAsistenciaBean.getIdActuacion());
+		hashCoste.put(ScsActuacionAsistCosteFijoBean.C_IDTIPOACTUACION, actuacionAsistenciaBean.getIdTipoActuacion());
+		hashCoste.put(ScsActuacionAsistCosteFijoBean.C_IDTIPOASISTENCIA, actuacionAsistenciaBean.getIdTipoAsistencia());
+		hashCoste.put(ScsActuacionAsistCosteFijoBean.C_IDCOSTEFIJO, idCosteFijo);
+		insert(hashCoste);
+
+		
+	}
+	public Integer getTipoCosteFijoActuacion(ScsActuacionAsistenciaBean actuacionAsistenciaBean)throws ClsExceptions{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		
+		
+		sql.append(" SELECT IDCOSTEFIJO "); 
+		
+		sql.append(" FROM scs_actuacionasistcostefijo tipo");
+		sql.append(" WHERE tipo.IDTIPOACTUACION = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),actuacionAsistenciaBean.getIdTipoActuacion());
+		sql.append(" AND tipo.IDINSTITUCION = :"); 
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),actuacionAsistenciaBean.getIdInstitucion());
+		sql.append(" AND tipo.IDTIPOASISTENCIA = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),actuacionAsistenciaBean.getIdTipoAsistencia());
+		
+		sql.append(" AND tipo.ANIO = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),actuacionAsistenciaBean.getAnio());
+		
+		sql.append(" AND tipo.NUMERO = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),actuacionAsistenciaBean.getNumero());
+		
+		sql.append(" AND tipo.IDACTUACION = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),actuacionAsistenciaBean.getIdActuacion());
+		
+		
+		
+		
+		
+		
+		
+		Integer idCosteFijo = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.findBind(sql.toString(),htCodigos)) {
+            		Row fila = (Row) rc.get(0);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		idCosteFijo= UtilidadesHash.getInteger(htFila,"IDCOSTEFIJO");
+            	}
+            
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta getTipoCosteFijoActuacion.");
+       }
+       return idCosteFijo;
+		
+	}
+	
+	
+	
+	
+	
 }

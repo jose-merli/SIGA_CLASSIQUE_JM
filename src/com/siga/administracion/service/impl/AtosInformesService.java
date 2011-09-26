@@ -40,8 +40,10 @@ import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenInstitucionBean;
 import com.siga.beans.ConConsultaBean;
 import com.siga.beans.FileInforme;
+import com.siga.beans.ScsActuacionAsistenciaAdm;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.form.AsistenciaForm;
 
 import es.satec.businessManager.BusinessException;
 import es.satec.businessManager.BusinessManager;
@@ -480,5 +482,6 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 		
 		
 	}
+	
 
 }

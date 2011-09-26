@@ -458,12 +458,12 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 	public List<ScsJuzgadoBean> getJuzgados(VolantesExpressVo volanteExpres)throws ClsExceptions{
 
 		
-       return getJuzgados(volanteExpres.getIdInstitucion().toString(),volanteExpres.getIdTurno().toString(),volanteExpres.getUsrBean());
+       return getJuzgados(volanteExpres.getIdInstitucion().toString(),volanteExpres.getIdTurno().toString(),volanteExpres.getUsrBean(),true);
 		
        
 	} 
 	
-	public List<ScsJuzgadoBean> getJuzgados(String idInstitucion,String idTurno,UsrBean usrBean)throws ClsExceptions{
+	public List<ScsJuzgadoBean> getJuzgados(String idInstitucion,String idTurno,UsrBean usrBean,boolean isObligatorio)throws ClsExceptions{
 
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;
@@ -510,8 +510,13 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
             if (rc.findBind(sql.toString(),htCodigos)) {
             	alJuzgados = new ArrayList<ScsJuzgadoBean>();
             	ScsJuzgadoBean juzgadoBean = new ScsJuzgadoBean();
-            	juzgadoBean.setNombre(UtilidadesString.getMensajeIdioma(usrBean, "general.combo.seleccionar"));
-            	juzgadoBean.setIdJuzgado(new Integer(-1));
+            	if(isObligatorio){
+	            	juzgadoBean.setNombre(UtilidadesString.getMensajeIdioma(usrBean, "general.combo.seleccionar"));
+	            	juzgadoBean.setIdJuzgado(new Integer(-1));
+            	}else{
+            		juzgadoBean.setNombre("");
+            		
+            	}
             	alJuzgados.add(juzgadoBean);
     			for (int i = 0; i < rc.size(); i++){
             		Row fila = (Row) rc.get(i);

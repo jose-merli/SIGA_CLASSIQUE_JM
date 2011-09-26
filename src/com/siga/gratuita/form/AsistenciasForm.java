@@ -144,7 +144,8 @@ public class AsistenciasForm extends MasterForm
 	private String acIdPrision = "acIdPrision";
 	private String acIdInstitucionPrision = "acIdInstitucionPrision";
 	private ScsAsistenciasBean asistenciaBean;
-	
+	private String botonesDetalle;
+	String letradoActuaciones;
 	/*
 	 * Metodos SET y GET 
 	 */
@@ -532,4 +533,44 @@ public class AsistenciasForm extends MasterForm
 	public void setJuzgadoAsistencia(String juzgadoAsistencia) {
 		this.juzgadoAsistencia = juzgadoAsistencia;
 	}
+	public ScsAsistenciasBean getAsistenciaVO(){
+		ScsAsistenciasBean asistenciasBean = new ScsAsistenciasBean();
+		idInstitucion = getIdInstitucion();
+		anio = getAnio();
+		numero = getNumero();
+		if(idInstitucion!=null && !idInstitucion.equals(""))
+			asistenciasBean.setIdInstitucion(new Integer(idInstitucion));
+		if(anio!=null && !anio.equals(""))
+			asistenciasBean.setAnio(new Integer(anio));
+		if(numero!=null && !numero.equals(""))
+			asistenciasBean.setNumero(new Integer(numero));
+		
+		return asistenciasBean;
+		
+	}
+	public String getBotonesDetalle() {
+		if(esFichaColegial!=null && esFichaColegial.equals("0")){
+			if(fechaAnulacion!=null && !fechaAnulacion.equals(""))
+				botonesDetalle = "";
+			else
+				botonesDetalle = "N";
+		}else{
+			if(fechaAnulacion!=null && !fechaAnulacion.equals(""))
+				botonesDetalle = "V";
+			else{
+				if(letradoActuaciones!=null && letradoActuaciones.equals("S"))
+					botonesDetalle = "V,N";
+				else
+					botonesDetalle = "V";
+			}
+		}
+		return botonesDetalle;
+	}
+	public String getLetradoActuaciones() {
+		return letradoActuaciones;
+	}
+	public void setLetradoActuaciones(String letradoActuaciones) {
+		this.letradoActuaciones = letradoActuaciones;
+	}
+	
 }

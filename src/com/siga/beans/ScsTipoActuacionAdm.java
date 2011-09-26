@@ -1,7 +1,9 @@
 
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
@@ -9,6 +11,7 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 
 /**
  * Implementa las operaciones sobre la base de datos, es decir: select, insert, update... a la tabla SCS_HITOFACTURABLEGUARDIA
@@ -134,6 +137,69 @@ public class ScsTipoActuacionAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
 		}
 		return datos;
+	}
+	/**
+	 * 
+	 * @param idInstitucion
+	 * @param idTipoAsistenciaColegio
+	 * @param isObligatorio
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public List<ScsTipoActuacionBean> getTipoActuaciones(Integer idInstitucion, Integer idTipoAsistenciaColegio,boolean isObligatorio)throws ClsExceptions{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT IDINSTITUCION,IDTIPOACTUACION, substr(F_SIGA_GETRECURSO(DESCRIPCION,:");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),this.usrbean.getLanguage());
+		 
+		sql.append(" ),0,60)   AS DESCRIPCION ");
+		sql.append(" FROM SCS_TIPOACTUACION WHERE IDINSTITUCION = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),idInstitucion);
+		sql.append(" AND IDTIPOASISTENCIA = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),idTipoAsistenciaColegio);
+		sql.append(" ORDER BY DESCRIPCION ");
+		
+		
+		
+		
+		List<ScsTipoActuacionBean> tipoActuacionBeans = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.findBind(sql.toString(),htCodigos)) {
+            	tipoActuacionBeans = new ArrayList<ScsTipoActuacionBean>();
+            	ScsTipoActuacionBean tipoActuacionBean = new ScsTipoActuacionBean();
+            	if(isObligatorio){
+	            	tipoActuacionBean.setDescripcion(UtilidadesString.getMensajeIdioma(this.usrbean, "general.combo.seleccionar"));
+	            	tipoActuacionBean.setIdTipoActuacion(new Integer(-1));
+            	}else{
+            		tipoActuacionBean.setDescripcion("");
+	            	
+            	}
+            	tipoActuacionBeans.add(tipoActuacionBean);
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		tipoActuacionBean = new ScsTipoActuacionBean();
+            		tipoActuacionBean.setIdInstitucion(UtilidadesHash.getInteger(htFila,tipoActuacionBean.C_IDINSTITUCION));
+            		tipoActuacionBean.setIdTipoActuacion(UtilidadesHash.getInteger(htFila,tipoActuacionBean.C_IDTIPOACTUACION));
+            		tipoActuacionBean.setDescripcion(UtilidadesHash.getString(htFila,tipoActuacionBean.C_DESCRIPCION));
+            		tipoActuacionBeans.add(tipoActuacionBean);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta getTipoActuaciones ");
+       }
+       return tipoActuacionBeans;
+		
 	}
 		
 }

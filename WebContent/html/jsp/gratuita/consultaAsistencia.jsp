@@ -46,10 +46,12 @@
 	</table>
 
 
-<bean:define id="asistencia" name="AsistenciasForm" property="asistenciaBean" type="com.siga.beans.ScsAsistenciasBean" />
-<!-- INICIO: CAMPOS DE BUSQUEDA-->
-<html:form action="/JGR_Asistencia" method="POST" target="mainWorkArea">
 
+<!-- INICIO: CAMPOS DE BUSQUEDA-->
+<bean:define id="path" name="org.apache.struts.action.mapping.instance"
+	property="path" scope="request" />
+<html:form action="${path}" method="POST" target="mainWorkArea">
+<html:hidden property="modo" value="abrir"/>
 	<table class="tablaCentralCampos">
 		<tr>
 			<td valign="top"><siga:ConjCampos

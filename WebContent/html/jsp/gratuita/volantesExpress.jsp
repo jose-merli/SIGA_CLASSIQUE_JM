@@ -1040,14 +1040,14 @@
 			<html:form action="/JGR_ActuacionesAsistencia" method="post"
 				target="submitArea" style="display:none">
 				<input type="hidden" name="modo" value="nuevo" />
-				<html:hidden name="AsistenciasForm" property="anio" />
-				<html:hidden name="AsistenciasForm" property="numero" />
-				<html:hidden name="AsistenciasForm" property="esFichaColegial" />
-				<html:hidden name="AsistenciasForm" property="modoPestanha" />
+				<html:hidden name="ActuacionAsistenciaForm" property="anio" />
+				<html:hidden name="ActuacionAsistenciaForm" property="numero" />
+				<html:hidden name="ActuacionAsistenciaForm" property="fichaColegial" />
+				<html:hidden name="ActuacionAsistenciaForm" property="modoPestanha" />
 				<!-- RGG: cambio a formularios ligeros -->
 				<input type="hidden" name="tablaDatosDinamicosD">
 				<input type="hidden" name="actionModal" value="">
-				<html:hidden name="AsistenciasForm" property="idInstitucion" />
+				<html:hidden name="ActuacionAsistenciaForm" property="idInstitucion" />
 			</html:form>
 
 <!-- FIN: BOTONES BUSQUEDA -->
@@ -1182,11 +1182,12 @@
 	}
 	function accionNuevaActuacion(anioAsistencia,numeroAsistencia,idInstitucion) 
 	{	
-		document.AsistenciasForm.modo.value = "nuevo";
-		document.AsistenciasForm.anio.value = anioAsistencia;
-		document.AsistenciasForm.numero.value = numeroAsistencia;
+		document.ActuacionAsistenciaForm.modo.value = "nuevo";
+		document.ActuacionAsistenciaForm.anio.value = anioAsistencia;
+		document.ActuacionAsistenciaForm.numero.value = numeroAsistencia;
+		document.ActuacionAsistenciaForm.idInstitucion.value = idInstitucion;
 		
-		var resultado=ventaModalGeneral(document.AsistenciasForm.name,"G");
+		var resultado=ventaModalGeneral(document.ActuacionAsistenciaForm.name,"G");
 
 		if (resultado){
 			if(resultado=="MODIFICADO"){
@@ -1196,11 +1197,11 @@
 	}
 	function accionConsultaAsistencia(anioAsistencia,numeroAsistencia,idInstitucion) 
 	{	
-		document.AsistenciasForm.modo.value = "consultarAsistencia";
-		document.AsistenciasForm.anio.value = anioAsistencia;
-		document.AsistenciasForm.numero.value = numeroAsistencia;
-		document.AsistenciasForm.idInstitucion.value = idInstitucion;
-		var resultado=ventaModalGeneral(document.AsistenciasForm.name,"M");
+		document.ActuacionAsistenciaForm.modo.value = "consultarAsistencia";
+		document.ActuacionAsistenciaForm.anio.value = anioAsistencia;
+		document.ActuacionAsistenciaForm.numero.value = numeroAsistencia;
+		document.ActuacionAsistenciaForm.idInstitucion.value = idInstitucion;
+		var resultado=ventaModalGeneral(document.ActuacionAsistenciaForm.name,"M");
 	}
 	function  borrarFila (idFila) 
 	{ 

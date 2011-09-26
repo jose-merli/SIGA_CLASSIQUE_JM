@@ -1,5 +1,10 @@
 package com.siga.beans;
 
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
+import com.siga.gratuita.form.ActuacionAsistenciaForm;
+
 //Clase: ScsActuacionAsistenciaBean 
 //Autor: carlos.vidal@atosorigin.com
 //Ultima modificación: 20/12/2004
@@ -24,7 +29,7 @@ public class ScsActuacionAsistenciaBean extends MasterBean {
 	private Long idInstitucionJuzgado, idInstitucionComisaria, idInstitucionPrision;
 	private Long numero, idActuacion;
 
-	
+	ActuacionAsistenciaForm actuacionAsistenciaForm;
 	
 
 	/* Nombre tabla */
@@ -219,7 +224,83 @@ public class ScsActuacionAsistenciaBean extends MasterBean {
 	public void setValidada(String validada) {
 		this.validada = validada;
 	}
-	
+	public ActuacionAsistenciaForm getActuacionAsistenciaForm() {
+		if(actuacionAsistenciaForm==null)
+			actuacionAsistenciaForm  = new ActuacionAsistenciaForm();
+		if(idInstitucion!=null && !idInstitucion.equals(""))
+			actuacionAsistenciaForm.setIdInstitucion(idInstitucion.toString());
+		if(anio!=null&& !anio.equals(""))
+			actuacionAsistenciaForm.setAnio(anio.toString());
+		if(numero!=null&& !numero.equals(""))
+			actuacionAsistenciaForm.setNumero(numero.toString());
+		if(idActuacion!=null&& !idActuacion.equals(""))
+			actuacionAsistenciaForm.setIdActuacion(idActuacion.toString());
+		if(fecha!=null&& !fecha.equals("")){
+			try {
+				actuacionAsistenciaForm.setFecha(GstDate.getFormatedDateShort("", fecha) );
+			} catch (ClsExceptions e1) {}
+		}
+
+		if(diaDespues!=null)
+			actuacionAsistenciaForm.setDiaDespues(diaDespues);
+		if(acuerdoExtrajudicial!=null&& !acuerdoExtrajudicial.equals(""))
+			actuacionAsistenciaForm.setAcuerdoExtrajudicial(acuerdoExtrajudicial.toString());
+		if(idTipoActuacion!=null&& !idTipoActuacion.equals(""))
+			actuacionAsistenciaForm.setIdTipoActuacion(idTipoActuacion.toString());
+		if(idTipoAsistencia!=null&& !idTipoAsistencia.equals(""))
+			actuacionAsistenciaForm.setIdTipoAsistencia(idTipoAsistencia.toString());
+
+		if(fechaJustificacion!=null && !fechaJustificacion.equals("")){
+			try {
+				actuacionAsistenciaForm.setFechaJustificacion(GstDate.getFormatedDateShort("",  fechaJustificacion));
+			} catch (ClsExceptions e1) {}
+		}else{
+			actuacionAsistenciaForm.setFechaJustificacion("");
+			
+		}
+
+		if(descripcionBreve!=null)
+			actuacionAsistenciaForm.setDescripcionBreve(descripcionBreve);
+		if(lugar!=null)
+			actuacionAsistenciaForm.setLugar(lugar);
+		if(numeroAsunto!=null)
+			actuacionAsistenciaForm.setNumeroAsunto(numeroAsunto);
+		if(anulacion!=null && !anulacion.equals(""))
+			actuacionAsistenciaForm.setAnulacion(anulacion.toString());
+		else
+			actuacionAsistenciaForm.setAnulacion(ClsConstants.DB_FALSE);
+		if(observacionesJustificacion!=null)
+			actuacionAsistenciaForm.setObservacionesJustificacion(observacionesJustificacion);
+		if(observaciones!=null)
+			actuacionAsistenciaForm.setObservaciones(observaciones);
+		if(facturado!=null)
+			actuacionAsistenciaForm.setFacturado(facturado);
+		else
+			actuacionAsistenciaForm.setFacturado(ClsConstants.DB_FALSE);
+		if(pagado!=null)
+			actuacionAsistenciaForm.setPagado(pagado);
+		if(idFacturacion!=null && !idFacturacion.equals(""))
+			actuacionAsistenciaForm.setIdFacturacion(idFacturacion.toString());
+		if(idPrision!=null && !idPrision.equals("")){
+			actuacionAsistenciaForm.setIdPrision(idPrision.toString());
+			actuacionAsistenciaForm.setIdInstitucionPris(idInstitucionPrision.toString());
+		}
+		if(idComisaria!=null && !idComisaria.equals("")){
+			actuacionAsistenciaForm.setIdComisaria(idComisaria.toString());
+			actuacionAsistenciaForm.setIdInstitucionComis(idInstitucionComisaria.toString());
+		}
+		if(idJuzgado!=null && !idJuzgado.equals("")){
+			actuacionAsistenciaForm.setIdJuzgado(idJuzgado.toString());
+			actuacionAsistenciaForm.setIdInstitucionJuzg(idInstitucionJuzgado.toString());
+		}
+		if(validada!=null)
+			actuacionAsistenciaForm.setValidada(validada);
+		else
+			actuacionAsistenciaForm.setValidada(ClsConstants.DB_FALSE);
+
+		return actuacionAsistenciaForm;
+	}
+
 	
 	
 	
