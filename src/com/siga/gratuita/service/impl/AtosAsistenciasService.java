@@ -100,7 +100,7 @@ public class AtosAsistenciasService extends JtaBusinessServiceTemplate
 	  
 	    	ScsComisariaAdm admComisarias = new ScsComisariaAdm(usrBean);
 	    	ScsAsistenciasBean asistencia = asistenciaForm.getAsistenciaVO();
-	    	List<ScsComisariaBean> alComisarias = admComisarias.getComisarias(asistencia.getIdInstitucion(),asistencia.getIdTurno(),false);
+	    	List<ScsComisariaBean> alComisarias = admComisarias.getComisarias(asistencia.getIdInstitucion(),asistencia.getIdTurno(),false, false, asistenciaForm.getComisaria());
 	    	if(alComisarias==null)
 	    		alComisarias = new ArrayList<ScsComisariaBean>();
 	    	return alComisarias;
@@ -109,7 +109,7 @@ public class AtosAsistenciasService extends JtaBusinessServiceTemplate
 			UsrBean usrBean) throws ClsExceptions {
 		
 		ScsJuzgadoAdm juzgadoAdm = new ScsJuzgadoAdm(usrBean);
-    	List<ScsJuzgadoBean> juzgadosList = juzgadoAdm.getJuzgados(asistenciaForm.getIdInstitucion(),asistenciaForm.getIdTurno(),usrBean,false);
+    	List<ScsJuzgadoBean> juzgadosList = juzgadoAdm.getJuzgados(asistenciaForm.getIdInstitucion(),asistenciaForm.getIdTurno(),usrBean,false, false, asistenciaForm.getJuzgado());
     	if(juzgadosList==null)
     		juzgadosList = new ArrayList<ScsJuzgadoBean>();
     	return juzgadosList;

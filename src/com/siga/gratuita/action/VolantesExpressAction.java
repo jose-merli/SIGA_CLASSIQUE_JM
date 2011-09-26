@@ -592,6 +592,9 @@ public class VolantesExpressAction extends MasterAction
 		 
 		try {
 			
+			List<ScsAsistenciasBean> alAsistencias = admAsistencias.getAsistenciasVolantesExpres(volantesExpressVo);
+			miForm.setAsistencias(alAsistencias);
+			
 			if(miForm.getLugar().equals("centro")){
 				List<ScsComisariaBean> alComisarias = null;
 				ScsComisariaAdm admComisarias = new ScsComisariaAdm(miForm.getUsrBean());
@@ -613,8 +616,7 @@ public class VolantesExpressAction extends MasterAction
 				
 			}
 			
-			List<ScsAsistenciasBean> alAsistencias = admAsistencias.getAsistenciasVolantesExpres(volantesExpressVo);
-			miForm.setAsistencias(alAsistencias);
+
 			
 			
 			

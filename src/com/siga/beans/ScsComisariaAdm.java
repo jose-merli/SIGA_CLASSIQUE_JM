@@ -417,17 +417,22 @@ public class ScsComisariaAdm extends MasterBeanAdministrador {
 		return sinDuplicar;
 	}
 	public List<ScsComisariaBean> getComisarias(VolantesExpressVo volanteExpres)throws ClsExceptions{
-		return getComisarias(volanteExpres.getIdInstitucion(),volanteExpres.getIdTurno(),true);
+		return getComisarias(volanteExpres.getIdInstitucion(),volanteExpres.getIdTurno(),true, true, "-1");
 		
 		
 	}
-	public List<ScsComisariaBean> getComisarias(Integer idInstitucion, Integer idTurno,boolean isObligatorio)throws ClsExceptions{
+	public List<ScsComisariaBean> getComisarias(Integer idInstitucion, Integer idTurno,boolean isObligatorio, boolean isBusqueda, String idComisaria)throws ClsExceptions{
 
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;
 		StringBuffer sql = new StringBuffer();
 		sql.append(" SELECT C.IDCOMISARIA , C.IDINSTITUCION, ");
-		sql.append(" c.NOMBRE || ' (' || po.nombre || ')' AS NOMBRE ");
+		
+		if(isBusqueda)
+			sql.append(" decode(c.fechabaja, NULL,c.NOMBRE || ' (' || po.nombre || ')',c.NOMBRE || ' (' || po.nombre || ') (BAJA)') AS NOMBRE");
+		else
+			sql.append(" c.NOMBRE || ' (' || po.nombre || ')' AS NOMBRE ");		
+		
 		sql.append(" FROM SCS_COMISARIA       c, ");
 		sql.append(" cen_poblaciones     po, ");
 		sql.append(" cen_partidojudicial par, ");
@@ -454,7 +459,15 @@ public class ScsComisariaAdm extends MasterBeanAdministrador {
 		contador ++;
 		sql.append(contador);
 		htCodigos.put(new Integer(contador),idTurno);
-		sql.append(" ORDER BY NOMBRE ");
+		if(isBusqueda){
+			sql.append("  ORDER BY c.fechabaja DESC, NOMBRE ");
+		} else {
+			sql.append(" AND (c.fechabaja is null OR c.idComisaria = :");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),idComisaria);
+			sql.append(" ) ORDER BY NOMBRE ");		
+		}
 		
 		List<ScsComisariaBean> alComisarias = null;
 		try {
