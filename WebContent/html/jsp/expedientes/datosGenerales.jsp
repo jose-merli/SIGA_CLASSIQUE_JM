@@ -26,6 +26,8 @@
 
 <!-- JSP -->
 <%  
+	//Se pasa por defectola fecha de sistema al campo Fecha de Apertura
+	String fechaApertura = (String)request.getAttribute("fechaApertura");
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
@@ -204,7 +206,7 @@
 		
 		<!-- Asociada al boton Volver -->
 		function accionVolver() 
-		{		
+		{
 			<% if (busquedaVolver.equals("AB")) { %>
 				document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true";
 				document.forms[1].modo.value="buscarPor";
@@ -575,7 +577,7 @@
 			anioExpediente= '<%=form.getAnioExpediente()%>';
 			numeroExpediente= '<%=form.getNumExpediente()%>';
 
-		 
+
 		   	datos = "idInstitucion=="+idInstitucion +"##idInstitucionTipoExp=="+idInstitucionTipoExp +
  		   		 "##idTipoExp==" +idTipoExpediente+"##anioExpediente=="+anioExpediente 
  		   		 +"##numeroExpediente=="+numeroExpediente +"##idPersona=="+idPersona +"%%%";
@@ -647,11 +649,14 @@
 			</td>
 			
 			<td class="labelTextValue">
+			<!-- Se comenta por que no se quiere mostrar el número de Expediente  al usuario 
 				<bean:write name="ExpDatosGeneralesForm" property="numExpediente"/>				
 				/
 				<bean:write name="ExpDatosGeneralesForm" property="anioExpediente"/>
+			-->				
 				<html:hidden name="ExpDatosGeneralesForm" property = "numExpediente"/>
-				<html:hidden name="ExpDatosGeneralesForm" property = "anioExpediente"/>			
+				<html:hidden name="ExpDatosGeneralesForm" property = "anioExpediente"/>
+					
 			</td>
 <% if (bNumExpDisc){%>								
 			<td class="labelText">
@@ -681,7 +686,7 @@
 			</td>
 			<td>
 				<%if (accion.equals("nuevo")){%>
-					<html:text name="ExpDatosGeneralesForm" property="fecha" styleClass="box" readonly="true" size="10"></html:text>
+					<html:text name="ExpDatosGeneralesForm" property="fecha" styleClass="box" readonly="true" size="10" value="<%=fechaApertura%>"></html:text>
 					<a href='javascript://'onClick="return showCalendarGeneral(fecha);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
 				<%}else{%>
 					<html:text name="ExpDatosGeneralesForm" property="fecha" styleClass="boxConsulta" readonly="true"></html:text>

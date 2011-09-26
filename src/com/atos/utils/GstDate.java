@@ -599,6 +599,13 @@ public class GstDate {
 		fecha = sdf.parse(sFecha);
 		return fecha;
 	}
+	
+	public static Date convertirFechaDiaMesAnio(String sFecha) throws Exception {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		Date fecha = null;
+		fecha = sdf.parse(sFecha);
+		return fecha;
+	}
 
 	public static Date convertirFecha(String sFecha, String pattern)
 			throws Exception {

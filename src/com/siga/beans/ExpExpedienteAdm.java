@@ -1233,14 +1233,14 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 	/** Funcion getNewNumAnioExpediente (Hashtable hash)
 	 * Genera el numero y el anho de un nuevo expediente
 	 * @param hash con la clave primaria sin el numero y el anio expediente
+	 * @param anioFechaActual año con la fecha introducida por el usuario
 	 * @return Hashtable con numero(Integer) y anho de expediente(Integer)
 	 * */
-	public Hashtable getNewNumAnioExpediente(Hashtable hash) throws ClsExceptions 
+	public Hashtable getNewNumAnioExpediente(Hashtable hash,String anioFechaActual) throws ClsExceptions 
 	{		
 		Hashtable resultado = new Hashtable();
 		int nuevoNumExp = 1;
-		Calendar fecha = Calendar.getInstance();
-		int anioActual = fecha.get(Calendar.YEAR);
+		Calendar fecha = Calendar.getInstance();		
 		
 		// Acceso a BBDD
 		RowsContainer rc = null;
@@ -1257,7 +1257,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			sql += ExpExpedienteBean.C_IDINSTITUCION+" = "+hash.get(ExpExpedienteBean.C_IDINSTITUCION)+" AND ";
 			sql += ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE+" = "+hash.get(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE)+" AND ";
 			sql += ExpExpedienteBean.C_IDTIPOEXPEDIENTE+" = "+hash.get(ExpExpedienteBean.C_IDTIPOEXPEDIENTE)+" AND ";
-			sql += ExpExpedienteBean.C_ANIOEXPEDIENTE+" = "+anioActual;
+			sql += ExpExpedienteBean.C_ANIOEXPEDIENTE+" = "+anioFechaActual;
 						
 			if (rc.find(sql)) {
 				Hashtable htRow=((Row)rc.get(0)).getRow();
@@ -1273,7 +1273,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
 		}
 		resultado.put(ExpExpedienteBean.C_NUMEROEXPEDIENTE,new Integer(nuevoNumExp));
-		resultado.put(ExpExpedienteBean.C_ANIOEXPEDIENTE,new Integer(anioActual));
+		resultado.put(ExpExpedienteBean.C_ANIOEXPEDIENTE,new Integer(anioFechaActual));
 		return resultado;
 	}
 	
