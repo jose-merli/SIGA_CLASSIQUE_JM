@@ -708,14 +708,15 @@ function compruebaDiaDespues(fecha1, fecha2){
 	 var fechaAct=fecha1.value;
 	 var fechaHora=fecha2;
 	  if (isAfter(fechaAct,fechaHora)){
+		  	
 			document.getElementById("checkDiaDespues").checked = true;
 	  }else{
-	    	if (isAfter(fechaHora,fechaAct)){
-		  		alert("La fecha de actuación no puede ser anterior a la fecha de la asistencia ("+fechaHora+")");
+	    	if (isEquals(fechaHora,fechaAct)){
+	    		document.getElementById("checkDiaDespues").checked = false;
+			}else{// cuando la fecha de asistencia es igual que la de la actuacion el check del dia despues no se chequea.
+				alert("La fecha de actuación no puede ser anterior a la fecha de la asistencia ("+fechaHora+")");
 		  		document.ActuacionAsistenciaFormEdicion.fecha.value = '';
 		  		document.getElementById("checkDiaDespues").checked = false;
-			}else{// cuando la fecha de asistencia es igual que la de la actuacion el check del dia despues no se chequea.
-				document.getElementById("checkDiaDespues").checked = true;
 		
 			}// fin del if
 	  }// fin del if

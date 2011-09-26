@@ -352,6 +352,16 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 			actuacionAsistenciaFormEdicion.setIdTipoAsistencia(asistenciaForm.getIdTipoAsistenciaColegio());
 			actuacionAsistenciaFormEdicion.setFacturado("0");
 			actuacionAsistenciaFormEdicion.setValidada("0");
+			if(asistenciaForm.getJuzgado()!=null&&!asistenciaForm.getJuzgado().equals("")&&(asistenciaForm.getComisaria()==null||asistenciaForm.getComisaria().equals(""))){
+				actuacionAsistenciaFormEdicion.setIdJuzgado(asistenciaForm.getJuzgado());
+				actuacionAsistenciaFormEdicion.setIdInstitucionJuzg(asistenciaForm.getIdInstitucion());
+				actuacionAsistenciaFormEdicion.setNumeroAsunto(asistenciaForm.getNumeroProcedimiento());
+			}
+			if(asistenciaForm.getComisaria()!=null&&!asistenciaForm.getComisaria().equals("")&&(asistenciaForm.getJuzgado()==null||asistenciaForm.getJuzgado().equals(""))){
+				actuacionAsistenciaFormEdicion.setIdComisaria(asistenciaForm.getComisaria());
+				actuacionAsistenciaFormEdicion.setIdInstitucionComis(asistenciaForm.getIdInstitucion());
+				actuacionAsistenciaFormEdicion.setNumeroAsunto(asistenciaForm.getNumeroDiligencia());
+			}
 			//No hay campo en el formulario y no admite nulos. Por defecto 0
 			actuacionAsistenciaFormEdicion.setAcuerdoExtrajudicial("0");
 			actuacionAsistenciaFormEdicion.setIdInstitucion(asistenciaForm.getIdInstitucion());
@@ -376,7 +386,7 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 			actuacionAsistenciaFormEdicion.setModo("insertar");
 			request.setAttribute("ActuacionAsistenciaFormEdicion", actuacionAsistenciaFormEdicion);
 			request.setAttribute("botones", "R,Y,C"); 
-			forward=  "editar";
+			forward=  "edicion";
 		} catch (Exception e) {
 			throwExcp("messages.general.errorExcepcion", e, null); 
 		}
