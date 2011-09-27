@@ -1861,6 +1861,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				"       Des.Idinstitucion_Juzg, " +
 				"       Des.Idjuzgado, " +
 				"       Des.Observaciones As Observaciones, " +
+				"       Des.DELITOS As COMENTARIO_DELITOS, " +
+				
 				"       Des.Numprocedimiento As Autos, " +
 				"       To_Char(Des.Fechajuicio, 'dd/MM/yyyy') As Fecha_Juicio, " +
 				"       To_Char(Des.Fechajuicio, 'HH24:MI') As Hora_Juicio, " +
