@@ -403,6 +403,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			String stInstitucion = "";
 			String nombreInstitucion = "";
 			int intInstitucion;
+			int institucionEscogida = -1;
 			// muevePersona
 			
 			for(int i=0;i<instCliente.size();i++){	
@@ -432,6 +433,11 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			// Recorremos la lista de clientes del colegiado origen
 				stInstitucion = instCliente.get(i).toString();
 				intInstitucion = Integer.parseInt(stInstitucion);
+				if(institucionEscogida == -1){
+					if(intInstitucion<=3000&&intInstitucion>2000){
+						institucionEscogida=intInstitucion;
+					}
+				}
 				nombreInstitucion = admInst.getAbreviaturaInstitucion(stInstitucion);
 				if(admCliente.existeCliente(Long.parseLong(personaDestino),intInstitucion )==null){
 					msgError= "Error al borrar los datos del cliente de " + nombreInstitucion;
@@ -443,12 +449,17 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			resul = EjecucionPLs.ejecutarPL_borraPersona(personaOrigen); // borraPersona
 			acciones+=resul[1];
 			
-			EjecucionPLs.ejecutarPL_ActualizarDatosLetrado(
-					ClsConstants.INSTITUCION_CGAE, 
-					Long.valueOf(personaDestino), 
-					10, 
-					Long.valueOf(0), 
-					Integer.parseInt(String.valueOf(user.getIdPersona())));
+			if(institucionEscogida != -1){
+				String resultado[] = EjecucionPLs.ejecutarPL_ActualizarDatosLetrado(
+						institucionEscogida, 
+						Long.valueOf(personaDestino), 
+						10, 
+						null, 
+						Integer.parseInt(String.valueOf(user.getUserName())));
+				if(resultado[0].equals("-1")){
+					throw new SIGAException("Error en ejecución de paquete PKG_SIGA_CENSO.ACTUALIZARDATOSLETRADO. Contacte con el Administrador.");
+				}
+			}
 			
 			// Modificamos la persona para que modifique la fechamodificacion
 			admPersona.update(admPersona.getPersonaPorId(personaDestino));
