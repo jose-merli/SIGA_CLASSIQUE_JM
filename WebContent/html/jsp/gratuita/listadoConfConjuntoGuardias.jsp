@@ -166,11 +166,11 @@
 						<c:when test="${confConjuntoGuardiasForm.orden!=null}">
 							<input type="text" class="box" style="width: 40;"
 								id="orden_${status.count}"
-								value="${confConjuntoGuardiasForm.orden}" disabled='disabled'>
+								value="${confConjuntoGuardiasForm.orden}" disabled='disabled' maxlength="5">
 						</c:when>
 						<c:otherwise>
 							<input type="text" class="box" style="width: 40;"
-								id="orden_${status.count}" value="" disabled='disabled'>
+								id="orden_${status.count}" value="" disabled='disabled' maxlength="5">
 						</c:otherwise>
 
 					</c:choose></td>
