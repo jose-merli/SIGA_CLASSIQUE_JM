@@ -869,7 +869,11 @@ public class MaestroDesignasAction extends MasterAction {
 		
 		List<ScsJuzgadoBean> alJuzgados = null;
 		ScsJuzgadoAdm admJuzgados = new ScsJuzgadoAdm(usr);
-		alJuzgados = admJuzgados.getJuzgados((String)usr.getLocation(),miform.getIdTurno(),usr,true, false, miform.getJuzgado());
+		String idJuzgado = "";
+		if(miform.getJuzgado()!=null)
+			idJuzgado = miform.getJuzgado();
+		
+		alJuzgados = admJuzgados.getJuzgados((String)usr.getLocation(),miform.getIdTurno(),usr,true, false, idJuzgado);
 		if(alJuzgados==null){
 			alJuzgados = new ArrayList<ScsJuzgadoBean>();
 		
