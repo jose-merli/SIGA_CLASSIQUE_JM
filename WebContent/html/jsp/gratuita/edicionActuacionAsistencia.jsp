@@ -697,6 +697,7 @@ function accionGuardarCerrar()
 		document.ActuacionAsistenciaFormEdicion.anulacion.value = '0';
 	}
 	if (validateActuacionAsistenciaFormEdicion(document.ActuacionAsistenciaFormEdicion)){
+		document.ActuacionAsistenciaForm.modo.value = 'abrir';
 		document.ActuacionAsistenciaFormEdicion.submit();
 	 }else{
 	 	fin();
@@ -772,6 +773,7 @@ function volverJustificacion () {
 <!-- Asociada al boton Cerrar -->
 function accionCerrar() 
 {		
+	document.ActuacionAsistenciaForm.modo.value = 'abrir';
 	window.close(); 
 	
 }

@@ -241,7 +241,6 @@ function accionVolver() {
 }
 
 function refrescarLocal() {
-	//alert("refresco Local");
 	document.ActuacionAsistenciaForm.target="_self";
 	document.ActuacionAsistenciaForm.modo.value = "abrir";
 	document.ActuacionAsistenciaForm.submit();		
@@ -268,6 +267,7 @@ function selectRow(fila) {
 		else
 			refrescarLocal();
 		
+		
 	 }
 	 
 	 function editar(fila) {
@@ -281,18 +281,13 @@ function selectRow(fila) {
 			document.ActuacionAsistenciaFormEdicion.idActuacion.value = idActuacion;
 			document.ActuacionAsistenciaFormEdicion.modo.value="editar";
 	   		var resultado = ventaModalGeneral(document.ActuacionAsistenciaFormEdicion.name,"G");
-	   		//alert("resultado"+resultado);
-	   		if (resultado) {
-	  	 		if (resultado[0]) {
-	   				refrescarLocalArray(resultado);
-	   			} else {
-		   			if (resultado=="MODIFICADO")
-		   			{
-		      			refrescarLocal();
-		   			}
-	   			}
-	   		}
-	   		document.ActuacionAsistenciaFormEdicion.modo.value="";
+	   		
+	   		if(resultado)
+				refrescarLocal();
+			else
+				refrescarLocal();
+	   		//document.ActuacionAsistenciaForm.modo.value="";
+	   		// document.ActuacionAsistenciaFormEdicion.modo.value="";
 	 }
 	 
 	 function borrar(fila) {

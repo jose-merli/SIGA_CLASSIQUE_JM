@@ -382,7 +382,7 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 				
 			}
 			
-			
+			actuacionAsistenciaForm.setModo("abrir");
 			actuacionAsistenciaFormEdicion.setModo("insertar");
 			request.setAttribute("ActuacionAsistenciaFormEdicion", actuacionAsistenciaFormEdicion);
 			request.setAttribute("botones", "R,Y,C"); 
@@ -432,6 +432,7 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 			
 			asistenciasService.insertarActuacionAsistencia(actuacionAsistenciaFormEdicion, usrBean);
 			
+			actuacionAsistenciaFormEdicion.setModo("abrir");
 			forward = exitoModal("messages.inserted.success",request);
 		} catch (Exception e) {
 			throwExcp("messages.general.errorExcepcion", e, null); 
@@ -469,8 +470,9 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 			}
 			//No hay campo en el formulario y no admite nulos. Por defecto 0
 			actuacionAsistenciaFormEdicion.setAcuerdoExtrajudicial("0");
-			asistenciasService.modificarActuacionAsistencia(actuacionAsistenciaFormEdicion, usrBean);
 			
+			asistenciasService.modificarActuacionAsistencia(actuacionAsistenciaFormEdicion, usrBean);
+			actuacionAsistenciaFormEdicion.setModo("abrir");
 			forward = exitoModal("messages.updated.success",request);
 		} catch (Exception e) {
 			throwExcp("messages.general.errorExcepcion", e, null); 

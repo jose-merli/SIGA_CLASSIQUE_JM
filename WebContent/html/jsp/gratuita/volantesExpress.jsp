@@ -1182,18 +1182,14 @@
 	}
 	function accionNuevaActuacion(anioAsistencia,numeroAsistencia,idInstitucion) 
 	{	
-		document.ActuacionAsistenciaForm.modo.value = "nuevo";
+		document.ActuacionAsistenciaForm.modo.value = "nuevoDesdeVolanteExpress";
 		document.ActuacionAsistenciaForm.anio.value = anioAsistencia;
 		document.ActuacionAsistenciaForm.numero.value = numeroAsistencia;
 		document.ActuacionAsistenciaForm.idInstitucion.value = idInstitucion;
-		
 		var resultado=ventaModalGeneral(document.ActuacionAsistenciaForm.name,"G");
-
-		if (resultado){
-			if(resultado=="MODIFICADO"){
-				
-			}
-	   }	
+		if(true){
+			document.ActuacionAsistenciaForm.modo.value = 'abrir';
+		}
 	}
 	function accionConsultaAsistencia(anioAsistencia,numeroAsistencia,idInstitucion) 
 	{	
@@ -1202,6 +1198,10 @@
 		document.ActuacionAsistenciaForm.numero.value = numeroAsistencia;
 		document.ActuacionAsistenciaForm.idInstitucion.value = idInstitucion;
 		var resultado=ventaModalGeneral(document.ActuacionAsistenciaForm.name,"M");
+		if(true){
+			document.ActuacionAsistenciaForm.modo.value = 'abrir';
+		}
+		
 	}
 	function  borrarFila (idFila) 
 	{ 
