@@ -553,6 +553,84 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 		
        
 	} 
+	
+	public List<ScsJuzgadoBean> getJuzgados(String idInstitucion,UsrBean usrBean,boolean isObligatorio, boolean isBusqueda, String idJuzgado)throws ClsExceptions{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT scs_JUZGADO.Idjuzgado || ',' || scs_juzgado.IDINSTITUCION AS ID,scs_JUZGADO.Idjuzgado,scs_juzgado.idinstitucion, ");
+		if(isBusqueda)
+			sql.append(" decode(scs_JUZGADO.fechabaja, NULL,scs_JUZGADO.NOMBRE || ' (' || cen_poblaciones.nombre || ')',scs_JUZGADO.NOMBRE || ' (' || cen_poblaciones.nombre || ') (BAJA)') AS NOMBRE");
+		else
+			sql.append(" scs_juzgado.NOMBRE || ' (' || cen_poblaciones.nombre || ')' AS NOMBRE ");
+		
+		sql.append(" from scs_juzgado, ");
+		sql.append(" cen_poblaciones ");
+		sql.append(" where scs_juzgado.idpoblacion = cen_poblaciones.idpoblacion(+) ");
+		sql.append("   AND EXISTS (SELECT * ");
+        sql.append(" FROM scs_procedimientos, ");
+        sql.append(" scs_juzgadoprocedimiento ");
+        sql.append(" WHERE scs_procedimientos.idinstitucion = ");
+        sql.append(" scs_juzgadoprocedimiento.idinstitucion ");
+        sql.append(" AND scs_procedimientos.idprocedimiento = ");
+        sql.append(" scs_juzgadoprocedimiento.idprocedimiento ");
+        sql.append(" AND scs_juzgadoprocedimiento.idinstitucion_juzg = ");
+        sql.append(" scs_juzgado.idinstitucion ");
+        sql.append(" AND scs_juzgadoprocedimiento.idjuzgado = scs_juzgado.idjuzgado ");
+        
+        sql.append(" AND scs_juzgado.IDINSTITUCION =:");
+        contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),idInstitucion);
+		
+		
+		if(isBusqueda){
+			sql.append("  ) ORDER BY scs_juzgado.fechabaja DESC, NOMBRE ");
+		} else {
+			sql.append(" AND (scs_juzgado.fechabaja is null OR scs_juzgado.idjuzgado = :");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),idJuzgado);
+			sql.append(" )) ORDER BY NOMBRE ");		
+		}
+		
+		
+        
+		
+		List<ScsJuzgadoBean> alJuzgados= null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.findBind(sql.toString(),htCodigos)) {
+            	alJuzgados = new ArrayList<ScsJuzgadoBean>();
+            	ScsJuzgadoBean juzgadoBean = new ScsJuzgadoBean();
+            	if(isObligatorio){
+	            	juzgadoBean.setNombre(UtilidadesString.getMensajeIdioma(usrBean, "general.combo.seleccionar"));
+	            	juzgadoBean.setIdJuzgado(new Integer(-1));
+            	}else{
+            		juzgadoBean.setNombre("");
+            		
+            	}
+            	alJuzgados.add(juzgadoBean);
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		
+            		juzgadoBean = new ScsJuzgadoBean();
+            		juzgadoBean.setIdInstitucion(UtilidadesHash.getInteger(htFila,ScsJuzgadoBean.C_IDINSTITUCION));
+            		juzgadoBean.setIdJuzgado(UtilidadesHash.getInteger(htFila,ScsJuzgadoBean.C_IDJUZGADO));
+            		juzgadoBean.setNombre(UtilidadesHash.getString(htFila,ScsJuzgadoBean.C_NOMBRE));
+            		alJuzgados.add(juzgadoBean);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }
+       return alJuzgados;
+		
+       
+	} 
       
        
 	 

@@ -151,20 +151,11 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 				
 			}
 			request.setAttribute("actuacionesAsistenciaList",actuacionesAsistenciaList);
-//			
 			actuacionAsistenciaForm.setTiposActuacion(asistenciasService.getTiposActuacion(asistenciaForm, usrBean));
 			actuacionAsistenciaForm.setTipoCosteFijoActuaciones(new ArrayList<ValueKeyVO>());
-			actuacionAsistenciaForm.setComisarias(asistenciasService.getComisarias(asistenciaForm, usrBean));
-			actuacionAsistenciaForm.setJuzgados(asistenciasService.getJuzgados(asistenciaForm, usrBean));
 			actuacionAsistenciaForm.setPrisiones(asistenciasService.getPrisiones(asistenciaForm, usrBean));
 			
-			
-			
-//			asistenciasForm.setIdInstitucion(usrBean.getLocation());
-//			asistenciasForm.setAnio(anio);
-//			asistenciasForm.setNumero(numero);
-//			asistenciasForm.setEsFichaColegial(miForm.getFichaColegial());
-//			
+		
 			request.setAttribute("error", "");
 		}
 		catch (Exception e) 
@@ -252,6 +243,26 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 				String codigoPrision = idInstitucionPrision+","+idPrision;
 				actuacionAsistenciaFormEdicion.setIdPrision(codigoPrision);
 			}
+			
+			String idComisaria = actuacionAsistenciaFormEdicion.getIdComisaria();
+			if(idComisaria==null ||idComisaria.equals(""))
+				idComisaria = asistenciaForm.getComisaria();
+			
+			if(idComisaria==null ||idComisaria.equals(""))
+				actuacionAsistenciaForm.setComisarias(asistenciasService.getComisarias(asistenciaForm, usrBean));
+			else
+				actuacionAsistenciaForm.setComisarias(asistenciasService.getComisarias(asistenciaForm,idComisaria, usrBean));
+			
+			
+			String idJuzgado = actuacionAsistenciaFormEdicion.getIdJuzgado();
+			if(idJuzgado==null ||idJuzgado.equals(""))
+				idJuzgado = asistenciaForm.getJuzgado();
+			
+			if(idJuzgado==null ||idJuzgado.equals(""))
+				actuacionAsistenciaForm.setJuzgados(asistenciasService.getJuzgados(asistenciaForm, usrBean));
+			else
+				actuacionAsistenciaForm.setJuzgados(asistenciasService.getJuzgados(asistenciaForm,idJuzgado, usrBean));
+			
 		
 			actuacionAsistenciaFormEdicion.setModo("modificar");
 			request.setAttribute("ActuacionAsistenciaFormEdicion", actuacionAsistenciaFormEdicion);
@@ -305,6 +316,24 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 				String codigoPrision = idInstitucionPrision+","+idPrision;
 				actuacionAsistenciaFormEdicion.setIdPrision(codigoPrision);
 			}
+			String idComisaria = actuacionAsistenciaFormEdicion.getIdComisaria();
+			if(idComisaria==null ||idComisaria.equals(""))
+				idComisaria = asistenciaForm.getComisaria();
+			
+			if(idComisaria==null ||idComisaria.equals(""))
+				actuacionAsistenciaForm.setComisarias(asistenciasService.getComisarias(asistenciaForm, usrBean));
+			else
+				actuacionAsistenciaForm.setComisarias(asistenciasService.getComisarias(asistenciaForm,idComisaria, usrBean));
+			
+			
+			String idJuzgado = actuacionAsistenciaFormEdicion.getIdJuzgado();
+			if(idJuzgado==null ||idJuzgado.equals(""))
+				idJuzgado = asistenciaForm.getJuzgado();
+			
+			if(idJuzgado==null ||idJuzgado.equals(""))
+				actuacionAsistenciaForm.setJuzgados(asistenciasService.getJuzgados(asistenciaForm, usrBean));
+			else
+				actuacionAsistenciaForm.setJuzgados(asistenciasService.getJuzgados(asistenciaForm,idJuzgado, usrBean));
 			actuacionAsistenciaForm.setModo("ver");
 			request.setAttribute("ActuacionAsistenciaFormEdicion", actuacionAsistenciaFormEdicion);
 			request.setAttribute("botones", "C");
@@ -375,12 +404,13 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 			if(actuacionAsistenciaForm.getModo().equals("nuevoDesdeVolanteExpress")){
 				actuacionAsistenciaForm.setTiposActuacion(asistenciasService.getTiposActuacion(asistenciaForm, usrBean));
 				actuacionAsistenciaForm.setTipoCosteFijoActuaciones(new ArrayList<ValueKeyVO>());
-				actuacionAsistenciaForm.setComisarias(asistenciasService.getComisarias(asistenciaForm, usrBean));
-				actuacionAsistenciaForm.setJuzgados(asistenciasService.getJuzgados(asistenciaForm, usrBean));
 				actuacionAsistenciaForm.setPrisiones(asistenciasService.getPrisiones(asistenciaForm, usrBean));
 				
 				
 			}
+			
+			actuacionAsistenciaForm.setComisarias(asistenciasService.getComisarias(asistenciaForm, usrBean));
+			actuacionAsistenciaForm.setJuzgados(asistenciasService.getJuzgados(asistenciaForm, usrBean));
 			
 			actuacionAsistenciaForm.setModo("abrir");
 			actuacionAsistenciaFormEdicion.setModo("insertar");

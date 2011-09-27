@@ -100,16 +100,34 @@ public class AtosAsistenciasService extends JtaBusinessServiceTemplate
 	  
 	    	ScsComisariaAdm admComisarias = new ScsComisariaAdm(usrBean);
 	    	ScsAsistenciasBean asistencia = asistenciaForm.getAsistenciaVO();
-	    	List<ScsComisariaBean> alComisarias = admComisarias.getComisarias(asistencia.getIdInstitucion(),asistencia.getIdTurno(),false, false, asistenciaForm.getComisaria());
+	    	List<ScsComisariaBean> alComisarias = admComisarias.getComisarias(asistencia.getIdInstitucion(),false, false, asistenciaForm.getComisaria());
 	    	if(alComisarias==null)
 	    		alComisarias = new ArrayList<ScsComisariaBean>();
 	    	return alComisarias;
 	}
+	public List<ScsComisariaBean> getComisarias(AsistenciaForm asistenciaForm,String idComisaria, UsrBean usrBean) throws ClsExceptions{
+		  
+    	ScsComisariaAdm admComisarias = new ScsComisariaAdm(usrBean);
+    	ScsAsistenciasBean asistencia = asistenciaForm.getAsistenciaVO();
+    	List<ScsComisariaBean> alComisarias = admComisarias.getComisarias(asistencia.getIdInstitucion(),false, false, idComisaria);
+    	if(alComisarias==null)
+    		alComisarias = new ArrayList<ScsComisariaBean>();
+    	return alComisarias;
+}
 	public List<ScsJuzgadoBean> getJuzgados(AsistenciaForm asistenciaForm,
 			UsrBean usrBean) throws ClsExceptions {
 		
 		ScsJuzgadoAdm juzgadoAdm = new ScsJuzgadoAdm(usrBean);
-    	List<ScsJuzgadoBean> juzgadosList = juzgadoAdm.getJuzgados(asistenciaForm.getIdInstitucion(),asistenciaForm.getIdTurno(),usrBean,false, false, asistenciaForm.getJuzgado());
+    	List<ScsJuzgadoBean> juzgadosList = juzgadoAdm.getJuzgados(asistenciaForm.getIdInstitucion(),usrBean,false, false, asistenciaForm.getJuzgado());
+    	if(juzgadosList==null)
+    		juzgadosList = new ArrayList<ScsJuzgadoBean>();
+    	return juzgadosList;
+	}
+	public List<ScsJuzgadoBean> getJuzgados(AsistenciaForm asistenciaForm,String idJuzgado,
+			UsrBean usrBean) throws ClsExceptions {
+		
+		ScsJuzgadoAdm juzgadoAdm = new ScsJuzgadoAdm(usrBean);
+    	List<ScsJuzgadoBean> juzgadosList = juzgadoAdm.getJuzgados(asistenciaForm.getIdInstitucion(),usrBean,false, false, idJuzgado);
     	if(juzgadosList==null)
     		juzgadosList = new ArrayList<ScsJuzgadoBean>();
     	return juzgadosList;

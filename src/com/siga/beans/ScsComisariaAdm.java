@@ -501,7 +501,68 @@ public class ScsComisariaAdm extends MasterBeanAdministrador {
        return alComisarias;
 		
 	}
-	
+	public List<ScsComisariaBean> getComisarias(Integer idInstitucion, boolean isObligatorio, boolean isBusqueda, String idComisaria)throws ClsExceptions{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT C.IDCOMISARIA , C.IDINSTITUCION, ");
+		
+		if(isBusqueda)
+			sql.append(" decode(c.fechabaja, NULL,c.NOMBRE || ' (' || po.nombre || ')',c.NOMBRE || ' (' || po.nombre || ') (BAJA)') AS NOMBRE");
+		else
+			sql.append(" c.NOMBRE || ' (' || po.nombre || ')' AS NOMBRE ");		
+		
+		sql.append(" FROM SCS_COMISARIA       c, ");
+		sql.append(" cen_poblaciones     po ");
+		sql.append(" where ");
+		sql.append("  c.idpoblacion = po.idpoblacion(+) ");
+		sql.append(" and c.IDINSTITUCION = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),idInstitucion);		
+		if(isBusqueda){
+			sql.append("  ORDER BY c.fechabaja DESC, NOMBRE ");
+		} else {
+			sql.append(" AND (c.fechabaja is null OR c.idComisaria = :");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),idComisaria);
+			sql.append(" ) ORDER BY NOMBRE ");		
+		}
+		
+		List<ScsComisariaBean> alComisarias = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.findBind(sql.toString(),htCodigos)) {
+            	alComisarias = new ArrayList<ScsComisariaBean>();
+            	ScsComisariaBean comisariaBean = new ScsComisariaBean();
+            	if(isObligatorio){
+	            	comisariaBean.setNombre(UtilidadesString.getMensajeIdioma(this.usrbean, "general.combo.seleccionar"));
+	            	comisariaBean.setIdComisaria(new Integer(-1));
+            	}else{
+            		comisariaBean.setNombre("");
+            		
+            	}
+    			alComisarias.add(comisariaBean);
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		
+            		comisariaBean = new ScsComisariaBean();
+            		comisariaBean.setIdInstitucion(UtilidadesHash.getInteger(htFila,ScsComisariaBean.C_IDINSTITUCION));
+            		comisariaBean.setIdComisaria(UtilidadesHash.getInteger(htFila,ScsComisariaBean.C_IDCOMISARIA));
+            		comisariaBean.setNombre(UtilidadesHash.getString(htFila,ScsComisariaBean.C_NOMBRE));
+            		alComisarias.add(comisariaBean);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }
+       return alComisarias;
+		
+	}
 	
 	
 	
