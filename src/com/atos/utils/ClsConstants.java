@@ -344,6 +344,9 @@ public class ClsConstants {
 	  public static final int ESTADO_FACTURACION_LISTA_CONSEJO=30;
 	  public static final int ESTADO_FACTURACION_EN_EJECUCION=40;
 	  public static final int ESTADO_FACTURACION_PROGRAMADA=50;
+	  public static final int ESTADO_FACTURACION_VALIDACION_NO_CORRECTA=60;
+	  public static final int ESTADO_FACTURACION_ENVIO_NO_ACEPTADO=70;
+	  public static final int ESTADO_FACTURACION_ENVIO_NO_DISPONIBLE=80;
 	  
 	  // hitos generales de facturacion
 	  public static final int HITO_GENERAL_TURNO=10;

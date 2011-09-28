@@ -26,6 +26,7 @@
 <%@ page import = "com.siga.beans.*"%>
 <%@ page import = "com.siga.Utilidades.*"%>
 <%@ page import = "com.atos.utils.*"%>
+<%@ page import = "com.siga.ws.CajgConfiguracion"%>
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
 
 
@@ -144,7 +145,11 @@
 		if (bYaHaSidoEjecutada) botones += ",LF";
 	}
 	else if ((idEstado!=null) && (
-			idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_EJECUTADA)) {
+			idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_EJECUTADA)
+			|| idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA
+			|| idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_ENVIO_NO_DISPONIBLE
+			|| idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO
+			) {
 		if (strutTrans.equalsIgnoreCase("FCS_MantenimientoPrevisiones")) {
 			botones = "EF,GM"; //en las previsiones ejecutadas se permite reejecutar y descargar el informe
 		}
@@ -154,7 +159,18 @@
 			readonly = true;
 			clase = "boxConsulta";
 			
-			botones = "LC,GM"; //en las facturaciones ejecutadas se permite reejecutar y descargar el informe
+			//en las facturaciones ejecutadas se permite reejecutar y descargar el informe			
+			if (CajgConfiguracion.QUITAR_PARA_QUE_FUNCIONE_EN_PRODUCCION && CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) {
+				botones = "LC2,GM";
+				if (idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA
+						|| idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO) {				
+					botonesAbajo = "V,II";
+				}
+			} else {
+				botones = "LC,GM";
+			}
+			
+			 
 		}
 	}
 	else {
@@ -301,6 +317,12 @@
 					+ "idFacturacionFin" + "==" + idFactFin;
 			f.seleccionados.value = "1";
 			f.submit();*/
+		}
+
+		function accionInformeIncidencias() {
+			document.forms[0].modo.value="descargarInformeIncidencias";
+			document.forms[0].target = "submitArea2";
+			document.forms[0].submit();
 		}
 		</script>	
 </head>

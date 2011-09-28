@@ -51,6 +51,12 @@ import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.informes.InformePersonalizable;
 import com.siga.servlets.SIGASvlProcesoAutomaticoRapido;
+import com.siga.ws.CajgConfiguracion;
+import com.siga.ws.InformeXML;
+import com.siga.ws.JustificacionEconomicaWS;
+import com.siga.ws.i2064.je.error.ErrorEnvioWS;
+import com.siga.ws.i2064.je.error.ErrorNegocioWS;
+import com.siga.ws.i2064.je.error.ErrorValidacionXML;
 
 
 public class DatosGeneralesFacturacionAction extends MasterAction {
@@ -103,6 +109,10 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			if ((miForm.getModo() != null) && (miForm.getModo().equalsIgnoreCase("descargaFicheroFact"))){
 				return mapping.findForward(this.descargarFicheroFact(mapping, miForm, request, response));
 			}
+			
+			if ((miForm.getModo() != null) && (miForm.getModo().equalsIgnoreCase("descargarInformeIncidencias"))){
+				return mapping.findForward(this.descargarInformeIncidencias(mapping, miForm, request, response));
+			}
 
 			return super.executeInternal(mapping, formulario, request, response);
 		}
@@ -133,30 +143,70 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 		UserTransaction  tx = null;
 		String forward = null;
 		String[] resultadoPL = null;
+		String mensajePantalla = "messages.updated.success";
 		
 		try {
 			usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
-			tx = usr.getTransaction();
+								
+			FcsFactEstadosFacturacionAdm fcsFactEstadosFacturacionAdm = new FcsFactEstadosFacturacionAdm(usr);
+			String estadoActualFacturacion = fcsFactEstadosFacturacionAdm.getIdEstadoFacturacion(miform.getIdInstitucion(), idFacturacion);
 			
-			//Ejecutamos el PL PROC_FCS_PREPARAR_PARA_CONSEJO para modificar el idfacturacion de las tablas de SJCS y el estado de la
-			// facturacion a lista para consejo:
-			tx.begin();
-			resultadoPL = this.ejecutarPLPrepararParaConsejo(miform.getIdInstitucion(), idFacturacion, this.getUserName(request).toString());
-			if (!resultadoPL[0].equals("0")) {
-				throw new ClsExceptions("Ha ocurrido un error al cerrar la facturación.");
-				//tx.rollback();
-				//forward = exito("messages.factSJCS.error.prepararConsejo",request);
-			} else {
-				//Si todo ha ido bien:
-				
-				forward = exitoRefresco("messages.updated.success",request);//"refrescar";
-				//le pasamos los parametros a las pestanhas
-				Hashtable datosFacturacion = new Hashtable();
-				datosFacturacion.put("idFacturacion", idFacturacion);
-				datosFacturacion.put("idInstitucion", (String)usr.getLocation());
-				datosFacturacion.put("accion", "Edicion");
-				request.setAttribute("datosFacturacion",datosFacturacion);
+			//comprobamos que la facturacion se encuentra ejecutada o no validada o rechazada
+			switch (Integer.parseInt(estadoActualFacturacion)) {
+				case ClsConstants.ESTADO_FACTURACION_EJECUTADA:				
+					break;
+				case ClsConstants.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA:				
+					break;
+				case ClsConstants.ESTADO_FACTURACION_ENVIO_NO_DISPONIBLE:				
+					break;
+				case ClsConstants.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO:				
+					break;				
+				default:
+					throw new ClsExceptions("Ha ocurrido un error al cerrar la facturación. No se puede cerrar la facturación porque el estado actual no es correcto.");
 			}
+			
+			tx = usr.getTransaction();
+			tx.begin();
+			
+						
+			int estadoFuturo = ClsConstants.ESTADO_FACTURACION_LISTA_CONSEJO;
+			//SI TIENE CONFIGURADO EL WEBSERVICE HACEMOS LA LLAMADA
+			InformeXML informeXML = JustificacionEconomicaWS.getInstance(miform.getIdInstitucion());
+			if (CajgConfiguracion.QUITAR_PARA_QUE_FUNCIONE_EN_PRODUCCION && informeXML != null) {
+				try {
+					informeXML.envioWS(miform.getIdInstitucion(), idFacturacion, usr);
+				} catch (ErrorValidacionXML e) {
+					estadoFuturo = ClsConstants.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA;
+					mensajePantalla = "messages.facturacion.validacionIncorrecta";
+				} catch (ErrorEnvioWS e) {
+					estadoFuturo = ClsConstants.ESTADO_FACTURACION_ENVIO_NO_DISPONIBLE;
+					mensajePantalla = "messages.facturacion.envioNoDisponible";
+				} catch (ErrorNegocioWS e) {
+					estadoFuturo = ClsConstants.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO;
+					mensajePantalla = "messages.facturacion.envioNoAceptado";
+				} 
+			}
+			
+			
+			
+			String idOrdenEstado = fcsFactEstadosFacturacionAdm.getIdordenestadoMaximo(miform.getIdInstitucion(), idFacturacion);
+			FcsFactEstadosFacturacionBean fcsFactEstadosFacturacionBean = new FcsFactEstadosFacturacionBean();
+			fcsFactEstadosFacturacionBean.setIdInstitucion(Integer.parseInt(miform.getIdInstitucion()));
+			fcsFactEstadosFacturacionBean.setIdFacturacion(Integer.parseInt(idFacturacion));
+			fcsFactEstadosFacturacionBean.setIdEstadoFacturacion(estadoFuturo);
+			fcsFactEstadosFacturacionBean.setIdOrdenEstado(Integer.parseInt(idOrdenEstado));
+			fcsFactEstadosFacturacionBean.setFechaEstado("SYSDATE");
+			
+			fcsFactEstadosFacturacionAdm.insert(fcsFactEstadosFacturacionBean);
+			
+			forward = exitoRefresco(mensajePantalla,request);//"refrescar";
+			//le pasamos los parametros a las pestanhas
+			Hashtable datosFacturacion = new Hashtable();
+			datosFacturacion.put("idFacturacion", idFacturacion);
+			datosFacturacion.put("idInstitucion", (String)usr.getLocation());
+			datosFacturacion.put("accion", "Edicion");
+			request.setAttribute("datosFacturacion",datosFacturacion);
+
 			tx.commit();
 		} catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,tx);
@@ -164,6 +214,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 		
 		return forward;
 	}
+	
 	
 	/** 
 	 *  Funcion que atiende la accion abrirAvanzada.
@@ -311,7 +362,11 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 					.getEstadoFacturacion(idInstitucion, idFacturacion))
 					.get(FcsEstadosFacturacionBean.C_IDESTADOFACTURACION);
 			
-			if (estado.equals("20") || estado.equals("30"))
+			if (estado.equals(String.valueOf(ClsConstants.ESTADO_FACTURACION_EJECUTADA)) 
+					|| estado.equals(String.valueOf(ClsConstants.ESTADO_FACTURACION_LISTA_CONSEJO))
+					|| estado.equals(String.valueOf(ClsConstants.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA))
+					|| estado.equals(String.valueOf(ClsConstants.ESTADO_FACTURACION_ENVIO_NO_DISPONIBLE))
+					|| estado.equals(String.valueOf(ClsConstants.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO)))
 				hayDetalle = true;
 			else
 				hayDetalle = false;
@@ -1188,6 +1243,29 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 		}
 		return "descargaFichero";	
 	}
+	
+	private String descargarInformeIncidencias(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+
+		try {
+			
+			DatosGeneralesFacturacionForm miform = (DatosGeneralesFacturacionForm)formulario;
+			String idFacturacion = (String)miform.getIdFacturacion();
+			File file = InformeXML.getFileInformeIncidencias(miform.getIdInstitucion(), idFacturacion);			
+
+			if(file==null || !file.exists()){
+				throw new SIGAException("messages.general.error.ficheroNoExiste"); 
+			}
+
+			request.setAttribute("nombreFichero", file.getName());
+			request.setAttribute("rutaFichero", file.getPath());
+		} catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
+		}
+
+		return "descargaFichero";
+	}
+	
+	
 	
 		protected String descargarFicheroFact(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
 	{

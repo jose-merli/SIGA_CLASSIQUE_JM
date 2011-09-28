@@ -208,7 +208,11 @@
 				permisos += ",B";			
 			}
 			
-			if (idInstitucion.equals(usrbean.getLocation()) && (idestado.equals(new Integer(ClsConstants.ESTADO_FACTURACION_ABIERTA).toString()) || idestado.equals(new Integer(ClsConstants.ESTADO_FACTURACION_EJECUTADA).toString()))) {
+			if (idInstitucion.equals(usrbean.getLocation()) && (idestado.equals(new Integer(ClsConstants.ESTADO_FACTURACION_ABIERTA).toString()) 
+					|| idestado.equals(new Integer(ClsConstants.ESTADO_FACTURACION_EJECUTADA).toString())
+					|| idestado.equals(new Integer(ClsConstants.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA).toString())
+					|| idestado.equals(new Integer(ClsConstants.ESTADO_FACTURACION_ENVIO_NO_DISPONIBLE).toString())
+					|| idestado.equals(new Integer(ClsConstants.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO).toString()))) {
 				permisos += ",E";
 			}
 			

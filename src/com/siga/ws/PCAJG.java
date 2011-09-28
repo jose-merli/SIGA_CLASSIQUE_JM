@@ -28,7 +28,7 @@ import org.apache.xmlbeans.XmlOptions;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.LogHandler;
+import com.siga.Utilidades.LogBDDHandler;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CajgEJGRemesaAdm;
 import com.siga.beans.CajgRemesaEstadosAdm;
@@ -387,9 +387,9 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 	 * 
 	 * @return
 	 */
-	private EngineConfiguration createClientConfig() {
+	private EngineConfiguration createClientConfig(UsrBean usrBean, String idInstitucion, String logDescripcion) {
 		SimpleProvider clientConfig = new SimpleProvider();
-		Handler logSIGAasignaHandler = (Handler) new LogHandler();
+		Handler logSIGAasignaHandler = (Handler) new LogBDDHandler(usrBean, idInstitucion, logDescripcion);
 		Handler signerXMLHandler = null;
 		SimpleChain reqHandler = new SimpleChain();
 		SimpleChain respHandler = new SimpleChain();

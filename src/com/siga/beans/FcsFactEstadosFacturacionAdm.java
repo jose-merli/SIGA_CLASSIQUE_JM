@@ -101,7 +101,11 @@ public class FcsFactEstadosFacturacionAdm extends MasterBeanAdministrador {
  					   " FROM "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+
 					   " WHERE "+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+"="+idInstitucion+
 					   " AND "+FcsFactEstadosFacturacionBean.C_IDFACTURACION+"="+idFacturacion+
-					   " ORDER BY "+FcsFactEstadosFacturacionBean.C_FECHAESTADO+" DESC ";
+					   " AND " + FcsFactEstadosFacturacionBean.C_IDORDENESTADO + " = (SELECT MAX(" + FcsFactEstadosFacturacionBean.C_IDORDENESTADO + ")" +
+					   		" FROM " + FcsFactEstadosFacturacionBean.T_NOMBRETABLA +
+					   		" WHERE " + FcsFactEstadosFacturacionBean.C_IDINSTITUCION + " = " + idInstitucion +
+							" AND " + FcsFactEstadosFacturacionBean.C_IDFACTURACION + " = "+idFacturacion + ")";
+			
 			idEstado = (String)((Hashtable)this.selectGenerico(consulta).get(0)).get(FcsFactEstadosFacturacionBean.C_IDESTADOFACTURACION);
 		} catch (Exception e){
 			return null;

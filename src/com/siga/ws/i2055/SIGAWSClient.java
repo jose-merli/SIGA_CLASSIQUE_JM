@@ -30,8 +30,9 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ReadProperties;
+import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AxisObjectSerializerDeserializer;
-import com.siga.Utilidades.LogHandler;
+import com.siga.Utilidades.LogBDDHandler;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.beans.CajgEJGRemesaAdm;
 import com.siga.beans.CajgRemesaEstadosAdm;
@@ -69,7 +70,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		
 //		Registrar_SolicitudXML_Solicitud registrar_SolicitudXML_Solicitud = new Registrar_SolicitudXML_Solicitud();
 					
-		ServiceLocator locator = new ServiceLocator(createClientConfig());
+		ServiceLocator locator = new ServiceLocator(createClientConfig(getUsrBean(), String.valueOf(getIdInstitucion()), "Envío y recepción webservice del colegio " + getIdInstitucion() + " de la remesa " + getIdRemesa()));
 
 		ServiceSoap_BindingStub stub = new ServiceSoap_BindingStub(new java.net.URL(getUrlWS()), locator);
 		
@@ -220,10 +221,10 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 	 * 
 	 * @return
 	 */
-	private EngineConfiguration createClientConfig() {
+	private EngineConfiguration createClientConfig(UsrBean usrBean, String idInstitucion, String logDescripcion) {
 		
 		SimpleProvider clientConfig = new SimpleProvider();		
-		Handler logSIGAasignaHandler = (Handler) new LogHandler();		
+		Handler logSIGAasignaHandler = (Handler) new LogBDDHandler(usrBean, idInstitucion, logDescripcion);		
 		SimpleChain reqHandler = new SimpleChain();
 		SimpleChain respHandler = new SimpleChain();		
 		reqHandler.addHandler(logSIGAasignaHandler);

@@ -88,7 +88,7 @@ public class InformePersonalizable extends MasterReport
 					Object obj = clazz.newInstance();
 					if (obj instanceof InformeXML) {
 						InformeXML informeXML = (InformeXML)obj;
-						listaFicheros.add(informeXML.execute(informe, idinstitucion, idFacturacion, usr));
+						listaFicheros.add(informeXML.execute(informe.getDirectorio(), informe.getNombreSalida(), idinstitucion, idFacturacion, usr));
 						setEliminarFichero(true);
 					} else {
 						throw new IllegalArgumentException("La clase java debe extender de " + InformeXML.class.getName());

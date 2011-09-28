@@ -157,7 +157,11 @@ public class DatosDetalleFacturacionAction extends MasterAction {
 					.getEstadoFacturacion(idInstitucion, idFacturacion))
 					.get(FcsEstadosFacturacionBean.C_IDESTADOFACTURACION);
 			
-			if (estado.equals("20") || estado.equals("30"))
+			if (estado.equals(String.valueOf(ClsConstants.ESTADO_FACTURACION_EJECUTADA)) 
+					|| estado.equals(String.valueOf(ClsConstants.ESTADO_FACTURACION_LISTA_CONSEJO))
+					|| estado.equals(String.valueOf(ClsConstants.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA))
+					|| estado.equals(String.valueOf(ClsConstants.ESTADO_FACTURACION_ENVIO_NO_DISPONIBLE))
+					|| estado.equals(String.valueOf(ClsConstants.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO)))
 				hayDetalle = true;
 			else
 				hayDetalle = false;
