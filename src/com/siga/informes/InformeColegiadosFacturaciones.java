@@ -61,6 +61,9 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 		CenPersonaBean beanPersona = perAdm.getPersonaColegiado(new Long(idPersona), new Integer(institucion));
 		htDatos.put("NCOLEGIADO", beanPersona.getColegiado().getNColegiado());
 		htDatos.put("NIF", beanPersona.getNIFCIF());
+		htDatos.put("NOMBRE", beanPersona.getNombre());
+		htDatos.put("APELLIDOS1", beanPersona.getApellido1());
+		htDatos.put("APELLIDOS2", beanPersona.getApellido2());
 		
 		//Datos Cabecera
 		htAux=this.obtenerDatosPersonaSociedad(institucion,idPersona,usr, idFacturacion);
@@ -142,7 +145,7 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 		try {
 			 //buscamos el nombre de la persona
 			String sql=
-				 "select "+UtilidadesMultidioma.getCampoMultidiomaSimple("T.DESCRIPCION",user.getLanguage())+"||' '||P.NOMBRE||' '||P.APELLIDOS1||' '||P.APELLIDOS2 NOMBRE_PERSONA" +
+				 "select "+UtilidadesMultidioma.getCampoMultidiomaSimple("T.DESCRIPCION",user.getLanguage())+"||' '||P.NOMBRE||' '||P.APELLIDOS1||' '||P.APELLIDOS2 NOMBRE_PERSONA, P.APELLIDOS1||' '||P.APELLIDOS2 APELLIDOS_PERSONA" +
 				 "  from CEN_PERSONA P, CEN_CLIENTE C, CEN_TRATAMIENTO T " +
 				 " where C.IDPERSONA = P.IDPERSONA  " +
 				 "   and C.IDTRATAMIENTO = T.IDTRATAMIENTO " +
