@@ -649,11 +649,11 @@
 			</td>
 			
 			<td class="labelTextValue">
-			<!-- Se comenta por que no se quiere mostrar el número de Expediente  al usuario 
+			<!-- En caso de ser nuevo no se muestran ni el numExpediente ni el anioExpediente -->	
 				<bean:write name="ExpDatosGeneralesForm" property="numExpediente"/>				
 				/
 				<bean:write name="ExpDatosGeneralesForm" property="anioExpediente"/>
-			-->				
+						
 				<html:hidden name="ExpDatosGeneralesForm" property = "numExpediente"/>
 				<html:hidden name="ExpDatosGeneralesForm" property = "anioExpediente"/>
 					
