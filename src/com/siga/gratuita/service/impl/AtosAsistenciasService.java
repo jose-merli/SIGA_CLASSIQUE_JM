@@ -188,6 +188,8 @@ public class AtosAsistenciasService extends JtaBusinessServiceTemplate
 					asistencia.setComisariaIdInstitucion(actuaAsistenciaBean.getIdInstitucion());
 					if(actuacionAsistenciaForm.getNumeroDiligenciaAsistencia()==null||actuacionAsistenciaForm.getNumeroDiligenciaAsistencia().equals("")){
 						asistencia.setNumeroDiligencia(actuaAsistenciaBean.getNumeroAsunto());
+					}else{
+						asistencia.setNumeroDiligencia(actuacionAsistenciaForm.getNumeroDiligenciaAsistencia());
 					}
 					admAsistencias.updateAsistenciaDesdeActuacion(asistencia);
 				}
@@ -204,6 +206,8 @@ public class AtosAsistenciasService extends JtaBusinessServiceTemplate
 					asistencia.setJuzgadoIdInstitucion(actuaAsistenciaBean.getIdInstitucion());
 					if(actuacionAsistenciaForm.getNumeroProcedimientoAsistencia()==null||actuacionAsistenciaForm.getNumeroProcedimientoAsistencia().equals("")){
 						asistencia.setNumeroProcedimiento(actuaAsistenciaBean.getNumeroAsunto());
+					}else{
+						asistencia.setNumeroProcedimiento(actuacionAsistenciaForm.getNumeroProcedimientoAsistencia());
 					}
 					admAsistencias.updateAsistenciaDesdeActuacion(asistencia);
 				}
@@ -251,6 +255,9 @@ if(actuacionAsistenciaForm.getNumeroAsunto()!=null && !actuacionAsistenciaForm.g
 					asistencia.setComisariaIdInstitucion(actuaAsistenciaBean.getIdInstitucion());
 					if(actuacionAsistenciaForm.getNumeroDiligenciaAsistencia()==null||actuacionAsistenciaForm.getNumeroDiligenciaAsistencia().equals("")){
 						asistencia.setNumeroDiligencia(actuaAsistenciaBean.getNumeroAsunto());
+					}else{
+						asistencia.setNumeroDiligencia(actuacionAsistenciaForm.getNumeroDiligenciaAsistencia());
+						
 					}
 					admAsistencias.updateAsistenciaDesdeActuacion(asistencia);
 				}
@@ -267,6 +274,9 @@ if(actuacionAsistenciaForm.getNumeroAsunto()!=null && !actuacionAsistenciaForm.g
 					asistencia.setJuzgadoIdInstitucion(actuaAsistenciaBean.getIdInstitucion());
 					if(actuacionAsistenciaForm.getNumeroProcedimientoAsistencia()==null||actuacionAsistenciaForm.getNumeroProcedimientoAsistencia().equals("")){
 						asistencia.setNumeroProcedimiento(actuaAsistenciaBean.getNumeroAsunto());
+					}else{
+						asistencia.setNumeroProcedimiento(actuacionAsistenciaForm.getNumeroProcedimientoAsistencia());
+						
 					}
 					admAsistencias.updateAsistenciaDesdeActuacion(asistencia);
 				}
