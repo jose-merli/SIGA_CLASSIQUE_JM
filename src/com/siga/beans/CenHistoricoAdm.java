@@ -531,6 +531,11 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 					break;
 				}
 				
+				if (nombreClaseBean.equalsIgnoreCase("CenPersonaBean")) {
+					adm = new CenPersonaAdm(this.usrbean);
+					break;
+				}
+				
 				if (nombreClaseBean.equalsIgnoreCase("PysServiciosSolicitadosBean")) {
 					adm = new PysServiciosSolicitadosAdm(this.usrbean);
 					break;
@@ -564,6 +569,19 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 				beanHistorico = new CenHistoricoBean();
 			
 			do {
+				
+				if (beanAsociado instanceof CenPersonaBean) {
+					CenPersonaBean beanCliente = (CenPersonaBean) beanAsociado;
+					CenPersonaAdm adm = new CenPersonaAdm(this.usrbean);
+					hBeanAsociado = adm.beanToHashTable(beanCliente);
+					hBeanAsociadoAnterior = adm.beanToHashTable(adm.hashTableToBean(beanCliente.getOriginalHash()));
+					
+					beanHistorico.setIdInstitucion(Integer.parseInt(this.usrbean.getLocation()));
+					beanHistorico.setIdPersona(beanCliente.getIdPersona());
+					beanHistorico.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_DATOS_GENERALES));
+					break;
+				}				
+				
 				if (beanAsociado instanceof CenClienteBean) {
 					CenClienteBean beanCliente = (CenClienteBean) beanAsociado;
 					CenClienteAdm adm = new CenClienteAdm(this.usrbean);
