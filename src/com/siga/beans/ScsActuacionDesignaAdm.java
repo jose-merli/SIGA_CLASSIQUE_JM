@@ -60,7 +60,8 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 							ScsActuacionDesignaBean.C_IDPRISION,				    ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION,
 							ScsActuacionDesignaBean.C_IDACREDITACION,				ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO,
 							ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO,			ScsActuacionDesignaBean.C_IDPRETENSION,
-		    				ScsActuacionDesignaBean.C_TALONARIO,					ScsActuacionDesignaBean.C_TALON};
+		    				ScsActuacionDesignaBean.C_TALONARIO,					ScsActuacionDesignaBean.C_TALON,
+		    				ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO};
 		return campos;
 	}
 	/** Funcion getClavesBean ()
@@ -111,8 +112,9 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 			bean.setValidada(UtilidadesHash.getString(hash, ScsActuacionDesignaBean.C_VALIDADA));
 			bean.setFacturado(UtilidadesHash.getString(hash, ScsActuacionDesignaBean.C_FACTURADO));
 			bean.setIdPretension(UtilidadesHash.getInteger(hash, ScsActuacionDesignaBean.C_IDPRETENSION));
-		    bean.setIdPretension(UtilidadesHash.getInteger(hash, ScsActuacionDesignaBean.C_TALONARIO));
-		    bean.setIdPretension(UtilidadesHash.getInteger(hash, ScsActuacionDesignaBean.C_TALON));
+		    bean.setTalonario(UtilidadesHash.getString(hash, ScsActuacionDesignaBean.C_TALONARIO));
+		    bean.setTalon(UtilidadesHash.getString(hash, ScsActuacionDesignaBean.C_TALON));
+		    bean.setNumeroProcedimiento(UtilidadesHash.getString(hash, ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO));
 		}
 		catch(Exception e){
 			bean = null;
@@ -163,6 +165,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_IDPRETENSION, String.valueOf(b.getIdPretension()));
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_TALONARIO,b.getTalonario());
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_TALON,b.getTalon());
+			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO,b.getNumeroProcedimiento());
 		}
 		catch (Exception e){
 			hash = null;
@@ -548,6 +551,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 									" col.ncolegiado ncolegiado, "+
 									" act."+ScsActuacionDesignaBean.C_TALONARIO+
 									" ,act."+ScsActuacionDesignaBean.C_TALON+		
+									" ,act."+ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO+
 									",(select "+FcsFacturacionJGBean.C_NOMBRE+"||' ('||TO_CHAR("+FcsFacturacionJGBean.C_FECHADESDE+",'DD/MM/YYYY')||'-'||TO_CHAR("+FcsFacturacionJGBean.C_FECHAHASTA+",'DD/MM/YYYY')||')'"+
 									" from "+FcsFacturacionJGBean.T_NOMBRETABLA+
 								    " where "+FcsFacturacionJGBean.C_IDINSTITUCION+" = "+entrada.get("IDINSTITUCION")+
@@ -587,7 +591,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 							    " Numeroasunto,Acuerdoextrajudicial,Anulacion,Idprocedimiento,Lugar,Observacionesjustificacion, "+
 							    " Observaciones,Fechajustificacion,Facturado,Pagado,Idfacturacion,Validada,Idjuzgado,Idinstitucion_Juzg, "+
 							    " Idcomisaria,Idinstitucion_Comis,Idprision,Idinstitucion_Pris,Idacreditacion,Idinstitucion_Proc, "+
-							    " Idpersonacolegiado,Idpretension,Talonario,Talon "+
+							    " Idpersonacolegiado,Idpretension,Talonario,Talon,NUMEROPROCEDIMIENTO "+
 								" From Scs_Actuaciondesigna " +
 								" WHERE IDINSTITUCION =  "+ entrada.get("IDINSTITUCION")+
 								" and IDTURNO = "+entrada.get("IDTURNO")+
@@ -615,7 +619,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		StringBuffer sql = new StringBuffer();
 		sql.append(" SELECT AC.IDACREDITACION,AC.DESCRIPCION ACREDITACION,AC.IDTIPOACREDITACION,ACP.PORCENTAJE, TAC.DESCRIPCION TIPO, ");
 		sql.append(" PRO.NOMBRE PROCEDIMIENTO,PRO.CODIGO CATEGORIA, PRO.IDJURISDICCION,PRO.COMPLEMENTO,PRO.PERMITIRANIADIRLETRADO,ACT.NUMEROASUNTO,ACT.IDPROCEDIMIENTO,ACT.IDJUZGADO,");
-		sql.append(" TO_CHAR(ACT.FECHAJUSTIFICACION,'dd/mm/yyyy') FECHAJUSTIFICACION,ACT.VALIDADA,ACT.IDFACTURACION ");
+		sql.append(" TO_CHAR(ACT.FECHAJUSTIFICACION,'dd/mm/yyyy') FECHAJUSTIFICACION,ACT.VALIDADA,ACT.IDFACTURACION,ACT.NUMEROPROCEDIMIENTO ");
 		sql.append(" ,(SELECT NOMBRE || ' (' || FECHADESDE || '-' || FECHAHASTA || ')' ");
 		sql.append(" FROM FCS_FACTURACIONJG FJG ");
 		sql.append(" WHERE FJG.IDINSTITUCION = ACT.IDINSTITUCION ");
@@ -681,6 +685,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 				actuacionDesigna.setIdFacturacion((String)registro.get("IDFACTURACION"));
 				actuacionDesigna.setDescripcionFacturacion((String)registro.get("DESCRIPCIONFACTURACION"));
 				actuacionDesigna.setPermitirEditarActuacion((String)registro.get("PERMITIRANIADIRLETRADO"));
+				actuacionDesigna.setNumeroProcedimiento((String)registro.get("NUMEROPROCEDIMIENTO"));
 				acreditacion = new AcreditacionForm();
 				actuacionDesigna.setAcreditacion(acreditacion);
 				acreditacion.setId((String)registro.get("IDACREDITACION"));

@@ -51,6 +51,7 @@ public class ScsActuacionDesignaBean extends MasterBean{
 	static public final String  C_IDPRETENSION      		  = "IDPRETENSION";
 	static public final String  C_TALONARIO  	     		  = "TALONARIO";
 	static public final String  C_TALON      	     		  = "TALON";
+	static public final String  C_NUMEROPROCEDIMIENTO      	  = "NUMEROPROCEDIMIENTO";
 	
 	
 	/*
@@ -85,6 +86,7 @@ public class ScsActuacionDesignaBean extends MasterBean{
 	private Integer idPretension;
 	private String   talonario;
     private String   talon;
+    private String   numeroProcedimiento;
 	
     /**
 	 * @return Returns the getTalonario.
@@ -442,4 +444,16 @@ public class ScsActuacionDesignaBean extends MasterBean{
 	public void setIdPretension(Integer idPretension) {
 		this.idPretension = idPretension;
 	}
+
+	public String getNumeroProcedimiento() {
+		return numeroProcedimiento;
+	}
+
+	public void setNumeroProcedimiento(String numeroProcedimiento) {
+		this.numeroProcedimiento = numeroProcedimiento;
+	}
+
+	
+
+	
 }

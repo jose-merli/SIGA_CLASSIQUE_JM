@@ -2446,7 +2446,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					" Scs_actuaciondesigna.idprocedimiento IDPROCEDIMIENTO_UA, " +
 					" Scs_actuaciondesigna.observaciones OBSERVACIONES_UA, " +
 					" to_char(Scs_actuaciondesigna.Fechajustificacion,'dd-mm-yyyy') FECHA_JUSTIF_UA, " +
-					" Scs_actuaciondesigna.observacionesjustificacion OBSERVACIONES_JUSTIF_UA " +
+					" Scs_actuaciondesigna.observacionesjustificacion OBSERVACIONES_JUSTIF_UA, " +
+					" Scs_actuaciondesigna.NUMEROPROCEDIMIENTO NUMEROPROCEDIMIENTO_UA " +
 					" from scs_actuaciondesigna " +
 					" WHERE scs_actuaciondesigna.IDINSTITUCION = :1 " +
 					" AND scs_actuaciondesigna.idturno = :2 " +
@@ -3027,7 +3028,9 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					registro.put("CATEGORIA_UA", " ");
 					registro.put("IDJURISDICCION_UA", " ");
 					registro.put("IDINSTITUCION_JUZG_UA", " ");
-					registro.put("COMPLEMENTO_UA", " ");					
+					registro.put("COMPLEMENTO_UA", " ");	
+					registro.put("NUMEROPROCEDIMIENTO_UA", " ");
+					
 				}
 							
 					htCodigo = new Hashtable();

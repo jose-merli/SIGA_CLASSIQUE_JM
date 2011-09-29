@@ -38,6 +38,7 @@
 	String nactuacion = "", fechaActuacion="", acuerdoExtrajudicial="";
 	String anulacion = "", observaciones = "", fechaJustificacion ="", observacionesJustificacion ="", modo="";
 	String idPersona=null;
+	String numeroProcedimiento="";
 	
 	String estiloCombo=null, readOnlyCombo=null;
 	
@@ -160,6 +161,7 @@
 		
 
 		actuacionValidada = (String) hashActuacion.get("ACTUACIONVALIDADA");
+		numeroProcedimiento = (String) hashActuacion.get("NUMEROPROCEDIMIENTO");
 	} else { //Para el caso de estar en NUEVO:
 	 	// Datos del Juzgado seleccionado:
 	 	idJuzgado =  (String)hashDesigna.get(ScsDesignaBean.C_IDJUZGADO);
@@ -176,6 +178,7 @@
 		idPersona = (String)hashDesigna.get("IDPERSONA");
 		 nombreJuzgado = (String)hashDesigna.get("NOMBREJUZGADO");
 	    nombreProcedimiento = (String)hashDesigna.get("NOMBREPROCEDIMIENTO");
+	    numeroProcedimiento = (String) hashDesigna.get("NUMPROCEDIMIENTO");
 	    if(validarActuacion!=null)
 	    	actuacionValidada = validarActuacion!=null&&validarActuacion.equals("S")?"0":"1";
 	}
@@ -390,7 +393,19 @@
 					</td>
 				<tr>
 				
-              <td class="labelText"  width="17%">	
+				<td class="labelText" style="vertical-align: middle;">
+							<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento" />
+						</td>
+						<td style="vertical-align: middle;">
+						<% if (!modoAnterior.equalsIgnoreCase("VER")) { %> 
+							<html:text name="ActuacionesDesignasForm" property="numeroProcedimiento" style="width:100" maxlength="20" styleClass="box" value="<%=numeroProcedimiento%>"></html:text> 
+						<% } else { %> 
+							<html:text name="ActuacionesDesignasForm" property="numeroProcedimiento" style="width:100" maxlength="20" styleClass="boxConsulta" value="<%=numeroProcedimiento%>" readonly="true"></html:text> 
+						<% } %>
+						</td>
+				
+				
+              <td class="labelText">	
 				 <siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/>
 				 <%if(!modoAnterior.equalsIgnoreCase("VER")){%>
 				    &nbsp;/&nbsp;<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext"/>
@@ -399,13 +414,13 @@
 			  </td>	 
 		
 			<% if (esLetrado||modoAnterior.equalsIgnoreCase("VER")){%>
-					<td colspan="8" >
-							<siga:ComboBD nombre="juzgado" ancho="800" tipo="comboJuzgadosTurno" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>" accion="Hijo:procedimiento" />
+					<td colspan="6" >
+							<siga:ComboBD nombre="juzgado" ancho="530" tipo="comboJuzgadosTurno" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>" accion="Hijo:procedimiento" />
 					</td>
 					<%}else{%>
-					  <td colspan="7" >
+					  <td colspan="5" >
 							<input type="text" name="codigoExtJuzgado" class="box" size="8"  style="margin-top:0px;" maxlength="10" onBlur="obtenerJuzgado();" />
-							<siga:ComboBD nombre="juzgado" ancho="700" tipo="comboJuzgadosTurno" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>"  accion="Hijo:procedimiento" />
+							<siga:ComboBD nombre="juzgado" ancho="430" tipo="comboJuzgadosTurno" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>"  accion="Hijo:procedimiento" />
 					</td>
 			<%}%>
 				

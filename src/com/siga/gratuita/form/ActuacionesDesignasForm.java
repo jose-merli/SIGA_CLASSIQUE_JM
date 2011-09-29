@@ -39,6 +39,7 @@ public class ActuacionesDesignasForm extends MasterForm {
 	protected String pretension = "PRETENSION";
 	protected String talonario = "TALONARIO";
 	protected String talon = "TALON";
+	protected String numeroProcedimiento = "NUMEROPROCEDIMIENTO";
 	private boolean fichaColegial = false;
 	public boolean getFichaColegial() {
 		return fichaColegial;
@@ -464,5 +465,11 @@ public class ActuacionesDesignasForm extends MasterForm {
 	public void setCodigo(String codigo) {
 		this.codigo = codigo;
 	}
+		public String getNumeroProcedimiento() {
+			return UtilidadesHash.getString(this.datos, this.numeroProcedimiento);
+		}
+		public void setNumeroProcedimiento(String numeroProcedimiento) {
+			this.datos.put(this.numeroProcedimiento, numeroProcedimiento);
+		}
 
 }

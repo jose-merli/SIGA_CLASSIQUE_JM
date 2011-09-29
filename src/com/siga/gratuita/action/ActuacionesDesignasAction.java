@@ -515,6 +515,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 								" des."+ScsDesignaBean.C_IDINSTITUCIONJUZGADO+","+
 								" des."+ScsDesignaBean.C_IDJUZGADO+","+
 								" des."+ScsDesignaBean.C_IDPROCEDIMIENTO+","+
+								" des."+ScsDesignaBean.C_NUMPROCEDIMIENTO+","+
 								" des."+ScsDesignaBean.C_IDPRETENSION+","+
 								" per."+CenPersonaBean.C_IDPERSONA+" AS IDPERSONA, "+
 								" (select nombre "+
@@ -658,6 +659,12 @@ public class ActuacionesDesignasAction extends MasterAction {
 					hash.put(ScsActuacionDesignaBean.C_TALON, talon);
 			}else{
 				hash.put(ScsActuacionDesignaBean.C_TALON, "");
+			}
+			String numeroProcedimiento= miform.getNumeroProcedimiento();
+			if (numeroProcedimiento!=null && !numeroProcedimiento.equals("")){
+					hash.put(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, numeroProcedimiento);
+			}else{
+				hash.put(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, "");
 			}
 
 			// Obtengo el idJuzgado y la idInstitucion del Juzgado:
@@ -865,7 +872,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 							ScsActuacionDesignaBean.C_IDPRISION,				    ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION,
 							ScsActuacionDesignaBean.C_IDACREDITACION,				ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO,
 							ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO,			ScsActuacionDesignaBean.C_IDPRETENSION,
-		    				ScsActuacionDesignaBean.C_TALONARIO,					ScsActuacionDesignaBean.C_TALON};
+		    				ScsActuacionDesignaBean.C_TALONARIO,					ScsActuacionDesignaBean.C_TALON,ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO};
 		
 		ScsActuacionDesignaAdm actuacionDesignaAdm = new ScsActuacionDesignaAdm(this.getUserBean(request));
 		boolean ok = false;
@@ -946,6 +953,12 @@ public class ActuacionesDesignasAction extends MasterAction {
 			} else {
 				actuacionModificada.put(ScsActuacionDesignaBean.C_TALON, "");
 				
+			}
+			String numeroProcedimiento= miform.getNumeroProcedimiento();
+			if (numeroProcedimiento!=null && !numeroProcedimiento.equals("")){
+				actuacionModificada.put(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, numeroProcedimiento);
+			}else{
+				actuacionModificada.put(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, "");
 			}
 
 			// Obtengo el idJuzgado y la idInstitucion del Juzgado:

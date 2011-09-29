@@ -31,6 +31,7 @@ public class ActuacionDesignaForm extends MasterForm
 	private String idFacturacion;
 	private String descripcionFacturacion;
 	private String permitirEditarActuacion;
+	private String numeroProcedimiento;
 	
 	
 	public String getDescripcionProcedimiento() {
@@ -133,6 +134,14 @@ public class ActuacionDesignaForm extends MasterForm
 	public void setPermitirEditarActuacion(String permitirEditarActuacion) {
 		this.permitirEditarActuacion = permitirEditarActuacion;
 	}
+	public String getNumeroProcedimiento() {
+		return numeroProcedimiento;
+	}
+	public void setNumeroProcedimiento(String numeroProcedimiento) {
+		this.numeroProcedimiento = numeroProcedimiento;
+	}
+	
+	
 	
 	
 	
