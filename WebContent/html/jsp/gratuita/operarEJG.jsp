@@ -299,7 +299,12 @@
 	}	
 	
 	String[] datos = { usr.getLocation(), idTurno };
-	String[] datos2 = { usr.getLocation(), usr.getLanguage() };
+	//String[] datos2 = { usr.getLocation(), usr.getLanguage() };
+	
+	//datos2 es para idPresentacion
+	String[] datos2={usr.getLocation(),usr.getLanguage(),"-1"};
+	if(idPretension!=null && (!idPretension.equals("")))
+		datos2[1]= idPretension;
 	
 	boolean obligatorioFechaPresentacion = false;
 	if (PCAJG_ACTIVADO!=null && PCAJG_ACTIVADO==4){

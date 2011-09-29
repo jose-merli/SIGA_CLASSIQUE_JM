@@ -230,7 +230,10 @@
 	datoProcedimiento[0] = idJuzgado;
 	datoProcedimiento[1] = idInstitucionJuzgado;
 	
-	String[] datos2={usr.getLocation(),usr.getLanguage()};	
+	//datos2 es para idPresentacion
+	String[] datos2={usr.getLocation(),usr.getLanguage(),"-1"};
+	if(beanDesigna.getIdPretension()!=null && (!beanDesigna.getIdPretension().toString().equals("")))
+		datos2[1]= beanDesigna.getIdPretension().toString();
 	
 	String asterisco = "&nbsp(*)&nbsp";
 	int pcajgActivo = 0;

@@ -184,6 +184,10 @@
 	}
 	// Datos de la designa comunes a todos los modos de visualizacion:
 	
+	String[] paramPretension = {usr.getLocation(), "-1"};
+	if(idPretension!=null && (!idPretension.equals("")))
+		paramPretension[1]= idPretension;
+	
 	validarJustificaciones = (String) hashDesigna.get("VALIDARJUSTIFICACIONES");
 	actuacionValidada = actuacionValidada ==null ? "0":actuacionValidada;
 	//Actualizo el combo de juzgados:
@@ -501,7 +505,7 @@
 						<siga:Idioma key="gratuita.actuacionesDesigna.literal.pretensiones"/>
 					</td>
 					<td colspan="7">
-						<siga:ComboBD  ancho="300" nombre="pretension" tipo="comboPretensiones"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=param%>" elementoSel="<%=pretensionSel%>" />
+						<siga:ComboBD  ancho="300" nombre="pretension" tipo="comboPretensiones"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" />
 					 
 					</td>
 				</tr>

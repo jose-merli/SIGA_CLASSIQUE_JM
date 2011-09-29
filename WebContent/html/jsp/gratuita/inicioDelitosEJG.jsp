@@ -156,6 +156,11 @@
 	String estilo = "box", readOnly="false", estiloCombo="boxCombo";
 		
 	String[] datos2={usr.getLocation(),usr.getLanguage()};	
+		
+	String[] paramPretension = {usr.getLocation(), "-1"};
+	
+	if( idPretension != null && (!idPretension.equals("")))
+		paramPretension[1]= idPretension;
 	
 	String asterisco = "&nbsp(*)&nbsp";
 
@@ -432,9 +437,9 @@
 						</td>	
 						<td  colspan="15">
 							<%if(modopestanha.equals("editar")){%>
-								<siga:ComboBD nombre="pretensiones2" tipo="comboPretensiones" ancho="345" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="false"/>           	   
+								<siga:ComboBD nombre="pretensiones2" tipo="comboPretensiones" ancho="345" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=paramPretension%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="false"/>           	   
 							<%}else{%>
-								<siga:ComboBD nombre="pretensiones2" tipo="comboPretensiones" ancho="345" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="true"/>           	   
+								<siga:ComboBD nombre="pretensiones2" tipo="comboPretensiones" ancho="345" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=paramPretension%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="true"/>           	   
 							<%}%>	
 							
 						</td>

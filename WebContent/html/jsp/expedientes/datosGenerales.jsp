@@ -147,7 +147,9 @@
 	paramPro[0]=idJuzgado;
 	paramPro[1]=idInstitucionJuzgado;
 
-	String[] paramPretension = {userBean.getLocation()};
+	String[] paramPretension = {userBean.getLocation(), "-1"};
+	if(form.getIdPretension()!=null && (!form.getIdPretension().equals("")))
+		paramPretension[1]= form.getIdPretension();
 
 
 	if (idProcedimiento!=null && idInstitucionProcedimiento!=null)
@@ -610,7 +612,7 @@
 				}
 			}
 		}
-		
+
 	</script>
 	
 	<!-- FIN: SCRIPTS BOTONES -->
@@ -1105,7 +1107,6 @@
 			<td>
 				<siga:ComboBD nombre="idPretension" tipo="comboPretensiones" estilo="true" clase="<%=estiloCombo%>" ancho="250" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" pestana="true"/>
 			</td>
-		
 			<td class="labelText">
 				<siga:Idioma key="expedientes.auditoria.literal.otrasPretensiones"/>
 			</td>
