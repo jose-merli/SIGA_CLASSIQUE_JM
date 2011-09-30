@@ -1,4 +1,4 @@
-<!-- operarEJG.jsp -->
+<!-- operarEJG.jsp --> 
 <!-- CABECERA JSP  -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>

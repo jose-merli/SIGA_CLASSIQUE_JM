@@ -230,7 +230,7 @@
 	datoProcedimiento[0] = idJuzgado;
 	datoProcedimiento[1] = idInstitucionJuzgado;
 	
-	//datos2 es para idPresentacion
+	// datos2 es para idPresentacion
 	String[] datos2={usr.getLocation(),usr.getLanguage(),"-1"};
 	if(beanDesigna.getIdPretension()!=null && (!beanDesigna.getIdPretension().toString().equals("")))
 		datos2[1]= beanDesigna.getIdPretension().toString();

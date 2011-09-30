@@ -182,7 +182,7 @@
 	    if(validarActuacion!=null)
 	    	actuacionValidada = validarActuacion!=null&&validarActuacion.equals("S")?"0":"1";
 	}
-	// Datos de la designa comunes a todos los modos de visualizacion:
+	//  Datos de la designa comunes a todos los modos de visualizacion:
 	
 	String[] paramPretension = {usr.getLocation(), "-1"};
 	if(idPretension!=null && (!idPretension.equals("")))

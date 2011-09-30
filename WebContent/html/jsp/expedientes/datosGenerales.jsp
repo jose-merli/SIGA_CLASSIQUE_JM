@@ -1,7 +1,7 @@
 <!-- datosGenerales.jsp -->
 <!-- 
 	 VERSIONES:
-	 emilio.grau 28-12-2004 Versión inicial
+	 emilio.grau 28-12-2004 Versión inicial 
 -->
 
 <!-- CABECERA JSP -->
