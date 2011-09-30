@@ -775,7 +775,7 @@ function downloadDocumentoResolucion(docResolucion) {
 					value="${designa.fecha}">
 				<c:set var="disabledPorCambioLetrado" value="" />
 				<c:if
-					test="${(designa.cambioLetrado=='S'&&InformeJustificacionMasivaForm.fichaColegial==true)}">
+					test="${designa.cambioLetrado=='S'}">
 					<c:set var="disabledPorCambioLetrado" value="disabled='disabled'" />
 				</c:if>
 				<c:set var="valiDisabled" value="" />
@@ -896,6 +896,33 @@ function downloadDocumentoResolucion(docResolucion) {
 						</c:otherwise>
 					</c:choose></td>
 					<c:choose>
+					<c:when test="${designa.cambioLetrado=='S'}">
+							<td align="center" rowspan="${designa.rowSpan}" colspan="3">
+							<siga:Idioma	key="gratuita.informeJustificacionMasiva.cambioLetrado" />
+							</td>
+							<td rowspan="${designa.rowSpan}"><input type="checkbox"
+								disabled="disabled" /></td>
+							<td rowspan="${designa.rowSpan}">
+							
+									&nbsp;
+							</td>
+							<td rowspan="${designa.rowSpan}">
+									&nbsp;
+								</td>
+							<td><c:choose>
+								<c:when test="${designa.baja=='1'}">
+									<input type="checkbox" disabled="disabled" checked="checked" />
+								</c:when>
+								<c:when test="${InformeJustificacionMasivaForm.fichaColegial==true}">
+									<input type="checkbox" disabled="disabled" />
+								</c:when>
+								<c:otherwise>
+									<input name="checkBaja" id="baja_${status.count}"
+										${disabledPorCambioLetrado} type="checkbox" />
+								</c:otherwise>
+							</c:choose></td>
+				</tr>
+				</c:when>
 					<c:when test="${designa.permitidoJustificar==false}">
 							<td align="center" rowspan="${designa.rowSpan}" colspan="3">
 							<c:choose>
@@ -940,6 +967,7 @@ function downloadDocumentoResolucion(docResolucion) {
 							</c:choose></td>
 				</tr>
 				</c:when>
+				
 				<c:otherwise>
 					
 					

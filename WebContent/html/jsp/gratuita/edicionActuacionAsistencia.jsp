@@ -46,8 +46,12 @@
 <script>
 function preAccionTipoActuacion()
 {	
-	if(document.ActuacionAsistenciaFormEdicion.idTipoActuacion.value=='-1')
+	if(document.ActuacionAsistenciaFormEdicion.idTipoActuacion.value=='-1'){
+		document.getElementById('tiposCosteFijoActuaciones').options.length = 0;
+		
 		return 'cancel';
+		
+	}
 	document.ActuacionAsistenciaForm.idTipoAsistencia.value = document.ActuacionAsistenciaFormEdicion.idTipoAsistencia.value;
 }
 

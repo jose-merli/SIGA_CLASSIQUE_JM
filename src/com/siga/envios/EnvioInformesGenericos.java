@@ -561,7 +561,22 @@ public class EnvioInformesGenericos extends MasterReport {
 							
 							String expedientes = getExpedienteIJ(designaForm.getExpedientes());
 							htRowDesigna.put("EXPEDIENTES", expedientes);
-							if(!designaForm.getPermitidoJustificar()&&informeJustificacionMasivaForm.isActivarRestriccionesFicha()){
+							if(designaForm.getCambioLetrado()!=null && designaForm.getCambioLetrado().equals("S")){
+								String acreditacion = UtilidadesString.getMensajeIdioma(usrBean,"gratuita.informeJustificacionMasiva.cambioLetrado");
+								
+								Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
+								htRowDesignaClone.put("PROCEDIMIENTO", "");
+								htRowDesignaClone.put("CATEGORIA", "");
+								htRowDesignaClone.put("FECHAJUSTIFICACION", "");
+								htRowDesignaClone.put("VALIDADA", "");
+								htRowDesignaClone.put("N_ACTUACION", "");
+								htRowDesignaClone.put("DESCRIPCIONFACTURACION", "");
+								
+								
+								
+								htRowDesignaClone.put("ACREDITACION", acreditacion);
+								vRowsInformePorPersona.add(htRowDesignaClone);
+							}else if(!designaForm.getPermitidoJustificar()&&informeJustificacionMasivaForm.isActivarRestriccionesFicha()){
 								String acreditacion = "";
 								Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
 								htRowDesignaClone.put("PROCEDIMIENTO", "");
