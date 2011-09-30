@@ -4469,6 +4469,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				String idSolicitanteJG = (String) ht.get("idPersonaJG");
 	
 				List<EnvDestProgramInformesBean> lDestinatarios = new ArrayList<EnvDestProgramInformesBean>();
+				List<String> lDestPersonas = new ArrayList<String>();
 				if(!isInformeProgramado){
 					programInformes = new EnvProgramInformesBean();
 					programInformes.setIdProgram(programInformesAdm.getNewIdProgramInformes(idInstitucion));
@@ -4535,9 +4536,14 @@ public class EnvioInformesGenericos extends MasterReport {
 											if(!lPersonas.contains(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG+idPersonaJG)){
 												destProgramInformesAdm.insert(destProgramInformes);
 												lPersonas.add(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG+idPersonaJG);
-												lDestinatarios.add(destProgramInformes);
+												
 											}
-	
+											if(!lDestPersonas.contains(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG+idPersonaJG)){
+												lDestinatarios.add(destProgramInformes);
+												lDestPersonas.add(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG+idPersonaJG);
+
+											}
+
 											
 										}
 	
@@ -4559,8 +4565,13 @@ public class EnvioInformesGenericos extends MasterReport {
 									if(!lPersonas.contains(EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA+idPersona)){
 										destProgramInformesAdm.insert(destProgramInformes);
 										lPersonas.add(EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA+idPersona);
-										lDestinatarios.add(destProgramInformes);
+										
 	
+									}
+									if(!lDestPersonas.contains(EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA+idPersona)){
+										lDestinatarios.add(destProgramInformes);
+										lDestPersonas.add(EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA+idPersona);
+
 									}
 									
 	
@@ -4577,8 +4588,12 @@ public class EnvioInformesGenericos extends MasterReport {
 										if(!lPersonas.contains(EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR+idProcurador)){
 											destProgramInformesAdm.insert(destProgramInformes);
 											lPersonas.add(EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR+idProcurador);
-											lDestinatarios.add(destProgramInformes);
 		
+										}
+										if(!lDestPersonas.contains(EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR+idProcurador)){
+											lDestinatarios.add(destProgramInformes);
+											lDestPersonas.add(EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR+idProcurador);
+
 										}
 								
 								}else if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)){
@@ -4595,8 +4610,12 @@ public class EnvioInformesGenericos extends MasterReport {
 	
 										if(!lPersonas.contains(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG+idPersonaJG)){
 											destProgramInformesAdm.insert(destProgramInformes);
-											lDestinatarios.add(destProgramInformes);
 											lPersonas.add(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG+idPersonaJG);
+										}
+										if(!lDestPersonas.contains(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG+idPersonaJG)){
+											lDestinatarios.add(destProgramInformes);
+											lDestPersonas.add(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG+idPersonaJG);
+
 										}
 	
 										
