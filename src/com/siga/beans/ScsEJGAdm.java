@@ -3330,6 +3330,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" INTERESADO.TELEFONO AS TELEFONO1_DEFENDIDO, ");
 			sql.append(" INTERESADO.NIF AS NIF_DEFENDIDO, ");
 			sql.append(" INTERESADO.NOMBRE_PROV AS PROVINCIA_DEFENDIDO, ");
+			sql.append(" (SELECT tg.descripcion FROM Scs_Tipogrupolaboral tg  WHERE tg.idinstitucion = "+idInstitucion+" ");
+			sql.append(" AND tg.idtipogrupolab = Interesado.IDTIPOGRUPOLAB) AS GRUPOLABORAL_DEFENDIDO, ");
 			sql.append(" DECODE(INTERESADO.SEXO, null, null, 'M', ");
 			sql.append(" 'gratuita.personaEJG.sexo.mujer', ");
 			sql.append(" 'gratuita.personaEJG.sexo.hombre' ");
@@ -4228,6 +4230,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			String idTipoResolAuto ="";
 			String idTipoSentidoAuto="";
 			String idTipoDictamenEjg ="";
+			String tipoGrupoLaboral ="";
 			String idTipoRatificacionEjg="";
 	try {		
 		
@@ -4270,9 +4273,19 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							htFuncion.put(new Integer(1), regimenConyugalInteresado);
 							htFuncion.put(new Integer(2), idioma);				
 							helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-							htFuncion, "F_SIGA_GETRECURSO_ETIQUETA", "REGIMENCONYUGAL_DEFENDIDO"));
+							htFuncion, "F_SIGA_GETRECURSO", "REGIMENCONYUGAL_DEFENDIDO"));
 						}else{
 							registro.put("REGIMENCONYUGAL_DEFENDIDO", "");
+						}
+						
+						tipoGrupoLaboral = (String)registro.get("GRUPOLABORAL_DEFENDIDO");		
+						if (tipoGrupoLaboral!=null && !regimenConyugalInteresado.trim().equals("")){
+							htFuncion.put(new Integer(1), tipoGrupoLaboral);
+							htFuncion.put(new Integer(2), idioma);				
+							helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
+							htFuncion, "F_SIGA_GETRECURSO", "GRUPOLABORAL_DEFENDIDO"));
+						}else{
+							registro.put("GRUPOLABORAL_DEFENDIDO", "");
 						}
 						
 						 profesionDefendido = (String)registro.get("PROFESIONDEFENDIDO");		
