@@ -17,6 +17,7 @@ public class CajgRemesaBean extends MasterBean{
 	private String numero;
 	private String sufijo;
 	private String descripcion;
+	private Integer idIntercambio;
 	
 	
 	/*
@@ -32,6 +33,7 @@ public class CajgRemesaBean extends MasterBean{
 	static public final String	C_NUMERO=						"NUMERO";
 	static public final String	C_SUFIJO	=					"SUFIJO";
 	static public final String	C_DESCRIPCION	=				"DESCRIPCION";
+	static public final String	C_IDINTERCAMBIO	=				"IDINTERCAMBIO";
 	
 	
 	public Integer getIdInstitucion() {
@@ -69,6 +71,12 @@ public class CajgRemesaBean extends MasterBean{
 	}
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+	public Integer getIdIntercambio() {
+		return idIntercambio;
+	}
+	public void setIdIntercambio(Integer idIntercambio) {
+		this.idIntercambio = idIntercambio;
 	}
 	
 

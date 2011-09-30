@@ -125,6 +125,8 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 	private Map htContrarios = new Hashtable();
 	private Map htDocumentacionExpediente = new Hashtable();
 	private Map htDelitos = new Hashtable();
+	
+	private IntercambioDocument intercambioDocument = null;
 		
 		
 	/**
@@ -162,7 +164,7 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 		Hashtable ht = null;
 		String tipoIntercambio = "";
 		
-		IntercambioDocument intercambioDocument = null;
+		
 		Intercambio intercambio = null;
 		Expedientes expedientes = null;
 		
@@ -1580,6 +1582,8 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 							&& cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_ENVIADA)) {
 					//MARCAMOS COMO ENVIADA
 					cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), ClsConstants.REMITIDO_COMISION);
+					//cuando se envía el intercambio se envía * 10
+					guardarIdIntercambioRemesa((int)intercambioDocument.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().getIdentificadorIntercambio()/10);
 				}
 				
 				//TODO FALTA EL ENVIO WEBSERVICE !!!!

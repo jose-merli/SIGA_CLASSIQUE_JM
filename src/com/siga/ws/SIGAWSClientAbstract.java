@@ -29,6 +29,8 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.beans.CajgEJGRemesaAdm;
 import com.siga.beans.CajgEJGRemesaBean;
+import com.siga.beans.CajgRemesaAdm;
+import com.siga.beans.CajgRemesaBean;
 import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaBean;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument;
@@ -436,6 +438,21 @@ public abstract class SIGAWSClientAbstract {
 	public void setSimular(boolean simular) {
 		this.simular = simular;
 	}
-	
+
+	protected void guardarIdIntercambioRemesa(int idIntercambio) throws Exception {
+		//como la hemos enviado seteamos el identificador de intercambio de envio
+		CajgRemesaAdm cajgRemesaAdm = new CajgRemesaAdm(getUsrBean());
+		Hashtable hash = new Hashtable();
+		hash.put(CajgRemesaBean.C_IDINSTITUCION, getIdInstitucion());
+		hash.put(CajgRemesaBean.C_IDREMESA, getIdRemesa());
+		Vector v = cajgRemesaAdm.selectByPK(hash);
+		if (v != null && v.size() == 1) {
+			CajgRemesaBean cajgRemesaBean = (CajgRemesaBean)v.get(0);			
+			cajgRemesaBean.setIdIntercambio(idIntercambio);
+			cajgRemesaAdm.updateDirect(cajgRemesaBean);
+		} else {
+			throw new Exception("No se ha recuperado la remesa con idinstitucion " + getIdInstitucion() + " e idremesa = " + getIdRemesa());
+		}		
+	}
 
 }

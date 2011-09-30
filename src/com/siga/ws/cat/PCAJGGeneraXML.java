@@ -107,6 +107,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	private Map htContrarios = new Hashtable();
 	private Map htDocumentacionExpediente = new Hashtable();
 	private Map htDelitos = new Hashtable();
+	
+	private IntercambioDocument intercambioDocument = null;
 		
 		
 	/**
@@ -144,8 +146,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		Hashtable ht = null;
 		String tipoIntercambio = "";
 		InformacionIntercambio informacionIntercambio = null;
-		Intercambio intercambio = null;
-		IntercambioDocument intercambioDocument = null;
+		Intercambio intercambio = null;		
 		
 		int numDetalles = 0;
 		int sufijoIdIntercambio = 0;
@@ -1223,7 +1224,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		//si se ha hecho una remesa txt previa hay que borrarla previamente
 		DefinirRemesasCAJGAction.eliminaFicheroTXTGenerado(String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()));//por si se estan regenerando...
 		
-		//si no queremos generar el fichero txt ademas del xml hay que cometar solamente esta línea
+		//si no queremos generar el fichero txt ademas del xml hay que comentar solamente esta línea
 		if (isGeneraTXT()) {
 			generaTXT(dirFicheros);
 		}
@@ -1263,6 +1264,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 					//MARCAMOS COMO ENVIADA
 					if (cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_ENVIADA )) {
 						cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), ClsConstants.REMITIDO_COMISION);
+						//cuando se envía el intercambio se envía * 10
+						guardarIdIntercambioRemesa((int)intercambioDocument.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().getIdentificadorIntercambio()/10);						
 					}
 					tx.commit();
 				}				
@@ -1286,6 +1289,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 	}
 	
+
+
 	/**
 	 * 
 	 * @param pathFichero

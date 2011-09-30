@@ -28,6 +28,8 @@ import com.jcraft.jsch.JSchException;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.beans.CajgEJGRemesaAdm;
 import com.siga.beans.CajgEJGRemesaBean;
+import com.siga.beans.CajgRemesaAdm;
+import com.siga.beans.CajgRemesaBean;
 import com.siga.beans.CajgRemesaEstadosAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaBean;
@@ -171,6 +173,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 	 * @param dirOUT
 	 * @param file
 	 */
+	
 	private void procesaIR(FtpPcajgAbstract ftpPcajgAbstract, File file) {
 		
 		UserTransaction tx = null;
@@ -480,8 +483,22 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				DatosError[] datosErrors = intercambioErroneo.getDatosErrorArray();
 				TipoIdentificacionIntercambio identificacionIntercambio = intercambioErroneo.getIdentificacionIntercambio();
 				String idInstitucion = identificacionIntercambio.getCodOrigenIntercambio();
-				int idRemesa = (int)identificacionIntercambio.getIdentificadorIntercambio();
-				setIdRemesa(idRemesa/10);
+				int idIntercambio = (int)identificacionIntercambio.getIdentificadorIntercambio();
+				idIntercambio = idIntercambio / 10;
+				
+				//
+				CajgRemesaAdm cajgRemesaAdm = new CajgRemesaAdm(getUsrBean());
+				Hashtable hash = new Hashtable();
+				hash.put(CajgRemesaBean.C_IDINSTITUCION, getIdInstitucion());
+				hash.put(CajgRemesaBean.C_IDINTERCAMBIO, idIntercambio);
+				Vector v = cajgRemesaAdm.select(hash);
+				
+				if (v == null || v.size() != 1) {
+					throw new ClsExceptions("No se ha encontrado la remesa con idinstitucion = " + getIdInstitucion() + " e idintercambio = " + idIntercambio);
+				}
+				CajgRemesaBean cajgRemesaBean = (CajgRemesaBean) v.get(0);
+								
+				setIdRemesa(cajgRemesaBean.getIdRemesa());
 				//cerramos el log para a partir de ahora escribir en el log correspondiente
 				closeLogFile();
 				
