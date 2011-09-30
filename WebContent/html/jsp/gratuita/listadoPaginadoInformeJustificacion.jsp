@@ -971,18 +971,8 @@ function downloadDocumentoResolucion(docResolucion) {
 								</c:otherwise>
 							</c:choose></td>
 							<td rowspan="${designa.rowSpan}">
-							<c:choose>
-								<c:when
-									test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& (designa.cambioLetrado=='N'&&InformeJustificacionMasivaForm.fichaColegial==false)}">
-									<img src="<html:rewrite page='/html/imagenes/icono+.gif'/>" style="cursor: hand;"
-										alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.nuevaActuacion"/>"
-										name="" border="0"
-										onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},'${designa.actuacionValidarJustificaciones}');" />
-								</c:when>
-								<c:otherwise>
 									&nbsp;
-								</c:otherwise>
-							</c:choose></td>
+							</td>
 							<td><c:choose>
 								<c:when test="${designa.baja=='1'}">
 									<input type="checkbox" disabled="disabled" checked="checked" />
@@ -1023,18 +1013,9 @@ function downloadDocumentoResolucion(docResolucion) {
 											&nbsp;
 										</c:otherwise>
 							</c:choose></td>
-							<td rowspan="${designa.rowSpan}"><c:choose>
-								<c:when
-									test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& (designa.cambioLetrado=='N'&&InformeJustificacionMasivaForm.fichaColegial==false)}">
-									<img src="<html:rewrite page='/html/imagenes/icono+.gif'/>" style="cursor: hand;"
-										alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.nuevaActuacion"/>"
-										name="" border="0"
-										onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},'${designa.actuacionValidarJustificaciones}');" />
-								</c:when>
-								<c:otherwise>
-											&nbsp;
-										</c:otherwise>
-							</c:choose></td>
+							<td rowspan="${designa.rowSpan}">
+									&nbsp;
+							</td>
 							<td><c:choose>
 								<c:when test="${designa.baja=='1'}">
 									<input type="checkbox" disabled="disabled" checked="checked" />
@@ -1091,19 +1072,9 @@ function downloadDocumentoResolucion(docResolucion) {
 															&nbsp;
 														</c:otherwise>
 											</c:choose></td>
-											<td rowspan="${designa.rowSpan}"><c:choose>
-												<c:when
-													test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& (designa.cambioLetrado=='N'&&InformeJustificacionMasivaForm.fichaColegial==false)}">
-													<img src="<html:rewrite page='/html/imagenes/icono+.gif'/>"
-														style="cursor: hand;"
-														alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.nuevaActuacion"/>"
-														name="" border="0"
-														onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},'${designa.actuacionValidarJustificaciones}');" />
-												</c:when>
-												<c:otherwise>
+											<td rowspan="${designa.rowSpan}">
 															&nbsp;
-														</c:otherwise>
-											</c:choose></td>
+											</td>
 											<td><c:choose>
 												<c:when test="${designa.baja=='1'}">
 													<input type="checkbox" disabled="disabled"
@@ -1156,19 +1127,9 @@ function downloadDocumentoResolucion(docResolucion) {
 																		&nbsp;
 																	</c:otherwise>
 														</c:choose></td>
-														<td rowspan="${designa.rowSpan}"><c:choose>
-															<c:when
-																test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& (designa.cambioLetrado=='N'&&InformeJustificacionMasivaForm.fichaColegial==false)}">
-																<img src="<html:rewrite page='/html/imagenes/icono+.gif'/>"
-																	style="cursor: hand;"
-																	alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.nuevaActuacion"/>"
-																	name="" border="0"
-																	onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},'${designa.actuacionValidarJustificaciones}');" />
-															</c:when>
-															<c:otherwise>
-																	&nbsp;
-																</c:otherwise>
-														</c:choose></td>
+														<td rowspan="${designa.rowSpan}">
+																&nbsp;
+														</td>
 														<td><c:choose>
 															<c:when test="${designa.baja=='1'}">
 																<input type="checkbox" disabled="disabled"
@@ -1217,19 +1178,9 @@ function downloadDocumentoResolucion(docResolucion) {
 																					&nbsp;
 																				</c:otherwise>
 																	</c:choose></td>
-																	<td rowspan="${designa.rowSpan}"><c:choose>
-																		<c:when
-																			test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& (designa.cambioLetrado=='N'&&InformeJustificacionMasivaForm.fichaColegial==false)}">
-																			<img src="<html:rewrite page='/html/imagenes/icono+.gif'/>"
-																				style="cursor: hand;"
-																				alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.nuevaActuacion"/>"
-																				name="" border="0"
-																				onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},'${designa.actuacionValidarJustificaciones}');" />
-																		</c:when>
-																		<c:otherwise>
+																	<td rowspan="${designa.rowSpan}">
 																					&nbsp;
-																				</c:otherwise>
-																	</c:choose></td>
+																	</td>
 																	<td rowspan="${designa.rowSpan}"><c:choose>
 																		<c:when test="${designa.baja=='1'}">
 																			<input type="checkbox" disabled="disabled"
