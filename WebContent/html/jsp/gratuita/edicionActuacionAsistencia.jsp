@@ -60,10 +60,11 @@ function postAccionTipoActuacion()
 	document.getElementById('idCosteFijoActuacion').value=  document.getElementById('auxIdCosteFijoActuacion').value ;
 	document.getElementById('auxIdCosteFijoActuacion').value = '';
 	//alert("document.ActuacionAsistenciaForm.modo.value"+document.ActuacionAsistenciaForm.modo.value);
-	if(document.ActuacionAsistenciaForm.modo.value =='ver')
+	if(document.ActuacionAsistenciaForm.modo.value =='ver' || document.ActuacionAsistenciaFormEdicion.validada.value==1 ||  document.ActuacionAsistenciaFormEdicion.anulacion.value==1){
 		document.getElementById('idCosteFijoActuacion').disabled ="disabled";
-	else
+	}else{
 		document.getElementById('idCosteFijoActuacion').disabled ="";
+	}
 
 }
 
@@ -296,7 +297,7 @@ function postAccionTipoActuacion()
 
 					<td colspan ="2" class="labelTextValor">
 					<c:choose>
-							<c:when test="${ActuacionAsistenciaForm.modo=='ver'}">
+							<c:when test="${ActuacionAsistenciaForm.modo=='ver' ||  ActuacionAsistenciaFormEdicion.validada==1 ||  ActuacionAsistenciaFormEdicion.anulacion==1}">
 								<html:text property="fecha" size="10" readonly="true"
 									styleClass="box" value="${ActuacionAsistenciaFormEdicion.fecha}" />
 							
@@ -665,8 +666,26 @@ function inicio()
 		}
 		
 	}
-	
-	
+
+
+	//Si la asistencia está valiada o anulada se deshabilitan todos los campos
+	if(document.ActuacionAsistenciaFormEdicion.validada.value=="1" || document.ActuacionAsistenciaFormEdicion.anulacion.value=='1'){
+		document.getElementById('descripcionBreve').disabled =  "disabled"; 
+		document.getElementById('fecha').disabled =  "disabled"; 
+		document.getElementById('checkDiaDespues').disabled =  "disabled"; 
+		document.getElementById('idTipoActuacion').disabled =  "disabled";
+		document.getElementById('numeroAsunto').disabled =  "disabled"; 
+		document.getElementById('codComisaria').disabled =  "disabled"; 
+		document.getElementById('codJuzgado').disabled =  "disabled"; 		
+		document.getElementById('idComisaria').disabled =  "disabled"; 
+		document.getElementById('idJuzgado').disabled =  "disabled"; 
+		document.getElementById('idPrision').disabled =  "disabled"; 
+		document.getElementById('observaciones').disabled =  "disabled"; 
+
+		document.ActuacionAsistenciaFormEdicion.tiposCosteFijoActuaciones.disabled =  "disabled";
+		document.ActuacionAsistenciaFormEdicion.idCosteFijoActuacion.disabled ="disabled";
+	}
+
 	
 	//Aqui dependiendo del modo, si es consulta deshabiliatremos todo
 	//si es nuevo
