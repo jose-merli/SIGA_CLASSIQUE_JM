@@ -99,7 +99,10 @@ public class DesignaForm extends MasterForm
 				rowSpan += ((List<AcreditacionForm>)acreditaciones.get(codProcedimineto)).size();
 			}
 		}
+		
 		if(rowSpan==0)rowSpan=1;
+		
+		
 	}
 
 	public String getActuacionValidarJustificaciones() {
@@ -143,6 +146,8 @@ public class DesignaForm extends MasterForm
 		this.ejgs = ejgs;
 	}*/
 	public String getJuzgado() {
+		if(juzgado!=null)
+			juzgado=juzgado.trim();
 		return juzgado;
 	}
 	public void setJuzgado(String juzgado) {

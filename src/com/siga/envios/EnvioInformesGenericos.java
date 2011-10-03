@@ -561,22 +561,7 @@ public class EnvioInformesGenericos extends MasterReport {
 							
 							String expedientes = getExpedienteIJ(designaForm.getExpedientes());
 							htRowDesigna.put("EXPEDIENTES", expedientes);
-							if(designaForm.getCambioLetrado()!=null && designaForm.getCambioLetrado().equals("S")){
-								String acreditacion = UtilidadesString.getMensajeIdioma(usrBean,"gratuita.informeJustificacionMasiva.cambioLetrado");
-								
-								Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
-								htRowDesignaClone.put("PROCEDIMIENTO", "");
-								htRowDesignaClone.put("CATEGORIA", "");
-								htRowDesignaClone.put("FECHAJUSTIFICACION", "");
-								htRowDesignaClone.put("VALIDADA", "");
-								htRowDesignaClone.put("N_ACTUACION", "");
-								htRowDesignaClone.put("DESCRIPCIONFACTURACION", "");
-								
-								
-								
-								htRowDesignaClone.put("ACREDITACION", acreditacion);
-								vRowsInformePorPersona.add(htRowDesignaClone);
-							}else if(!designaForm.getPermitidoJustificar()&&informeJustificacionMasivaForm.isActivarRestriccionesFicha()){
+							if(!designaForm.getPermitidoJustificar()&&informeJustificacionMasivaForm.isActivarRestriccionesFicha()){
 								String acreditacion = "";
 								Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
 								htRowDesignaClone.put("PROCEDIMIENTO", "");
@@ -584,6 +569,7 @@ public class EnvioInformesGenericos extends MasterReport {
 								htRowDesignaClone.put("FECHAJUSTIFICACION", "");
 								htRowDesignaClone.put("VALIDADA", "");
 								htRowDesignaClone.put("N_ACTUACION", "");
+								htRowDesignaClone.put("NUMEROPROCEDIMIENTOACT", "");
 								htRowDesignaClone.put("DESCRIPCIONFACTURACION", "");
 								
 								
@@ -603,11 +589,14 @@ public class EnvioInformesGenericos extends MasterReport {
 										
 							}else{
 								boolean isPrimero = true;
+								StringBuffer asuntoDesigna  = new StringBuffer(designaForm.getAsunto()==null?"":designaForm.getAsunto());
+								asuntoDesigna.append(" ");
 								if(designaForm.getActuaciones()!=null && designaForm.getActuaciones().size()>0){
 									Map<String, List<ActuacionDesignaForm>> actuacionesMap = designaForm.getActuaciones();
 									Iterator actuacionesIterator = actuacionesMap.keySet().iterator();
 									String categoria = "";
 									String procedimiento = "";
+									 
 									while (actuacionesIterator.hasNext()) {
 										String idProcedimineto = (String) actuacionesIterator.next();
 										List<ActuacionDesignaForm> actuacionesList = actuacionesMap.get(idProcedimineto);
@@ -615,7 +604,13 @@ public class EnvioInformesGenericos extends MasterReport {
 											
 											for (ActuacionDesignaForm actuacionForm : actuacionesList) {
 												categoria = actuacionForm.getCategoria();
+												
 												procedimiento = actuacionForm.getDescripcionProcedimiento();
+												if(actuacionForm.getNumeroProcedimiento()!=null && !actuacionForm.getNumeroProcedimiento().equals("")){
+													asuntoDesigna.append(actuacionForm.getNumeroProcedimiento());
+													asuntoDesigna.append(" ");
+												}
+												
 												//String acreditacion = actuacionForm.getDescripcion();
 												String acreditacion = actuacionForm.getAcreditacion().getDescripcion();
 												String fechaJustificacion ="";
@@ -630,6 +625,10 @@ public class EnvioInformesGenericos extends MasterReport {
 												String numeroAsunto="";
 												if (actuacionForm.getNumero()!=null &&!actuacionForm.getNumero().equals("")){
 													numeroAsunto=actuacionForm.getNumero();
+												}
+												String numeroProcediminetoAct = "";
+												if (actuacionForm.getNumeroProcedimiento()!=null &&!actuacionForm.getNumeroProcedimiento().equals("")){
+													numeroProcediminetoAct=actuacionForm.getNumeroProcedimiento();
 												}
 												
 												String descripcionFacturacion="";
@@ -655,6 +654,7 @@ public class EnvioInformesGenericos extends MasterReport {
 												htRowDesignaClone.put("FECHAJUSTIFICACION", fechaJustificacion);
 												htRowDesignaClone.put("VALIDADA", validada);
 												htRowDesignaClone.put("N_ACTUACION", numeroAsunto);
+												htRowDesignaClone.put("NUMEROPROCEDIMIENTOACT", numeroProcediminetoAct);
 												htRowDesignaClone.put("DESCRIPCIONFACTURACION", descripcionFacturacion);
 												vRowsInformePorPersona.add(htRowDesignaClone);
 												
@@ -668,6 +668,7 @@ public class EnvioInformesGenericos extends MasterReport {
 														String fechaJustificacion = "";
 														String validada = "";
 														String numeroAsunto = "";
+														String numeroProcediminetoAct = "";
 														String descripcionFacturacion="";
 														String acreditacion = acreditacionForm.getDescripcion();
 														Hashtable htRowDesignaClone2 = (Hashtable) htRowDesigna.clone();
@@ -688,6 +689,7 @@ public class EnvioInformesGenericos extends MasterReport {
 														htRowDesignaClone2.put("FECHAJUSTIFICACION", fechaJustificacion);
 														htRowDesignaClone2.put("VALIDADA", validada);
 														htRowDesignaClone2.put("N_ACTUACION", numeroAsunto);
+														htRowDesignaClone2.put("NUMEROPROCEDIMIENTOACT", numeroProcediminetoAct);
 														htRowDesignaClone2.put("DESCRIPCIONFACTURACION", descripcionFacturacion);
 														vRowsInformePorPersona.add(htRowDesignaClone2);
 													}
@@ -695,6 +697,7 @@ public class EnvioInformesGenericos extends MasterReport {
 											}
 										}
 									}
+									
 								}else{
 									if(designaForm.getIdJuzgado()==null||designaForm.getIdJuzgado().equals("")){
 										
@@ -706,6 +709,7 @@ public class EnvioInformesGenericos extends MasterReport {
 										htRowDesignaClone.put("FECHAJUSTIFICACION", "");
 										htRowDesignaClone.put("VALIDADA", "");
 										htRowDesignaClone.put("N_ACTUACION", "");
+										htRowDesignaClone.put("NUMEROPROCEDIMIENTOACT", "");
 										htRowDesignaClone.put("DESCRIPCIONFACTURACION", "");
 										vRowsInformePorPersona.add(htRowDesignaClone);
 										
@@ -719,6 +723,7 @@ public class EnvioInformesGenericos extends MasterReport {
 										htRowDesignaClone.put("FECHAJUSTIFICACION", "");
 										htRowDesignaClone.put("VALIDADA", "");
 										htRowDesignaClone.put("N_ACTUACION", "");
+										htRowDesignaClone.put("NUMEROPROCEDIMIENTOACT", "");
 										htRowDesignaClone.put("DESCRIPCIONFACTURACION", "");
 										vRowsInformePorPersona.add(htRowDesignaClone);
 									}else{
@@ -752,6 +757,7 @@ public class EnvioInformesGenericos extends MasterReport {
 														htRowDesignaClone.put("FECHAJUSTIFICACION", "");
 														htRowDesignaClone.put("VALIDADA", "");
 														htRowDesignaClone.put("N_ACTUACION", "");
+														htRowDesignaClone.put("NUMEROPROCEDIMIENTOACT", "");
 														htRowDesignaClone.put("DESCRIPCIONFACTURACION", "");
 														vRowsInformePorPersona.add(htRowDesignaClone);
 														
@@ -770,6 +776,7 @@ public class EnvioInformesGenericos extends MasterReport {
 											htRowDesignaClone.put("FECHAJUSTIFICACION", "");
 											htRowDesignaClone.put("VALIDADA", "");
 											htRowDesignaClone.put("N_ACTUACION", "");
+											htRowDesignaClone.put("NUMEROPROCEDIMIENTOACT", "");
 											htRowDesignaClone.put("DESCRIPCIONFACTURACION", "");
 											vRowsInformePorPersona.add(htRowDesignaClone);
 										}
@@ -783,6 +790,7 @@ public class EnvioInformesGenericos extends MasterReport {
 								
 								
 							}
+							
 						}
 					}
 					//En toda las filas tenemos la descripcion del colegiado asi que cogemos la

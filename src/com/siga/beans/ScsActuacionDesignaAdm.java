@@ -663,8 +663,12 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		List<ActuacionDesignaForm> actuacionesList = null;
 		ActuacionDesignaForm actuacionDesigna = null;
 		AcreditacionForm acreditacion = null;
+		StringBuffer asuntoDesigna = null; 
 		if(actuacionesVector!=null && actuacionesVector.size()>0){
+			asuntoDesigna = new StringBuffer(designa.getAsunto()==null?"":designa.getAsunto());
+			asuntoDesigna.append(" ");
 			for (int j = 0; j < actuacionesVector.size(); j++) {
+
 				Hashtable registro = (Hashtable) actuacionesVector.get(j);
 				String idProcedimiento  = (String)registro.get("IDPROCEDIMIENTO");
 				if(tmActuaciones.containsKey(idProcedimiento)){
@@ -686,6 +690,11 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 				actuacionDesigna.setDescripcionFacturacion((String)registro.get("DESCRIPCIONFACTURACION"));
 				actuacionDesigna.setPermitirEditarActuacion((String)registro.get("PERMITIRANIADIRLETRADO"));
 				actuacionDesigna.setNumeroProcedimiento((String)registro.get("NUMEROPROCEDIMIENTO"));
+				if(actuacionDesigna.getNumeroProcedimiento()!=null && !actuacionDesigna.getNumeroProcedimiento().equals("")){
+					asuntoDesigna.append(actuacionDesigna.getNumeroProcedimiento());
+					asuntoDesigna.append(" ");
+				}
+				
 				acreditacion = new AcreditacionForm();
 				actuacionDesigna.setAcreditacion(acreditacion);
 				acreditacion.setId((String)registro.get("IDACREDITACION"));
@@ -699,6 +708,8 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 				
 			}
 		}
+		if(asuntoDesigna!=null)
+			designa.setAsunto(asuntoDesigna.toString().trim());
 		designa.setActuaciones(tmActuaciones);
 		TreeMap<String, List<AcreditacionForm>> tmAcreditaciones = new TreeMap<String, List<AcreditacionForm>>();
 		designa.setAcreditaciones(tmAcreditaciones);

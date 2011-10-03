@@ -897,7 +897,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 				
 
 				
-				if(designaForm.getCambioLetrado().equals("N")&&((!formulario.getFichaColegial()) ||( tipoResolucionDesigna.equals(this.resolucionDesignaFavorable)||
+				if((!formulario.getFichaColegial()) ||( tipoResolucionDesigna.equals(this.resolucionDesignaFavorable)||
 						(tipoResolucionDesigna.equals(this.resolucionDesignaPteCAJG)&&formulario.getIncluirEjgPteCAJG()!=null&&formulario.getIncluirEjgPteCAJG().equals("2"))
 						||
 						(tipoResolucionDesigna.equals(this.resolucionDesignaNoFavorable)&&formulario.getIncluirEjgNoFavorable()!=null&&formulario.getIncluirEjgNoFavorable().equals("2"))
@@ -905,7 +905,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 						(tipoResolucionDesigna.equals(this.resolucionDesignaSinEjg)&&formulario.getIncluirSinEJG()!=null&&formulario.getIncluirSinEJG().equals("2"))
 						||
 						(tipoResolucionDesigna.equals(this.resolucionDesignaSinResolucion)&&formulario.getIncluirEjgSinResolucion()!=null&&formulario.getIncluirEjgSinResolucion().equals("2"))
-				))){
+				)){
 					
 					designaForm.setPermitidoJustificar(true);
 					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes);
