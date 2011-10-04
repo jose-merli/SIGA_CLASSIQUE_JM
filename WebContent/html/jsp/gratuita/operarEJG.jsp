@@ -325,6 +325,12 @@
 	
 	<script type="text/javascript">
 
+
+		function cargarComboTipoColegio(){
+		 	if(document.getElementById("idTipoEJGColegio").options.length<=2){
+		 		document.getElementById("idTipoEJGColegio").value=1;
+			 }
+		}
 	
 		function refrescarLocal()
 		{
@@ -380,8 +386,6 @@
 		function traspasoDatos(resultado){
 		 seleccionComboSiga("vistaJuzgado",resultado[0]);
 		}
-
-		
 			
 		function generarCarta() {
 			sub();
@@ -427,7 +431,7 @@
 </head>
 
 
-<body>
+<body onload="cargarComboTipoColegio();">
 	<html:form action = "/JGR_MantenimientoEJG.do" method="POST" target="mainWorkArea">
 	
 		<html:hidden property = "modo" value = ""/>	
@@ -589,9 +593,9 @@
 			</td>
 			<td>	
 			<%if (modo.equals("ver")) {%>
-				<siga:ComboBD nombre="idTipoEJGColegio" tipo="tipoEJGColegio" estilo="true" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=TIPOEJGCOLEGIOSEL%>" parametro="<%=dato%>" clase="boxConsulta" readOnly="true"/>
+				<siga:ComboBD nombre="idTipoEJGColegio" tipo="tipoEJGColegio" estilo="true" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=TIPOEJGCOLEGIOSEL%>" parametro="<%=dato%>" clase="boxConsulta" readOnly="true" />
 			<%} else {%>
-				<siga:ComboBD nombre="idTipoEJGColegio" tipo="tipoEJGColegio" estilo="true" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=TIPOEJGCOLEGIOSEL%>" parametro="<%=dato%>" clase="boxCombo"/>
+				<siga:ComboBD nombre="idTipoEJGColegio" tipo="tipoEJGColegio" estilo="true" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=TIPOEJGCOLEGIOSEL%>" parametro="<%=dato%>" clase="boxCombo" />
 			<%}%>
 			</td>
 			<td class="labelText" nowrap>
