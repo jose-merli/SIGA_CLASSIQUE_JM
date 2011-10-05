@@ -24,7 +24,6 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.AxisObjectSerializerDeserializer;
 import com.siga.Utilidades.LogBDDHandler;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
@@ -67,9 +66,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 
 	private static String CODIGO_PETICION_CORRECTA = "C0001";
 	private static int CODIGO_APLICACION = 1;
-	private static String USUARIO = "Pepe";
-	
-	
+	private static String USUARIO = "DatosJustificaciones";	
 	
 	private int idFacturacion = -1; 
 	private BufferedWriter bw = null;
@@ -445,8 +442,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 						
 				DatosJustificacionesDocument datosJustificacionesDocument = getDatosJustificacionesDocument(idInstitucion, idFacturacion, usrBean);
 				
-				if (closeLogFile()) {
-					//TODO
+				if (closeLogFile()) {					
 					throw new ErrorValidacionXML("El fichero xml generado no ha sido validado correctamente para la institución " + idInstitucion);
 				}		
 				
@@ -454,11 +450,6 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 				EnvioJustificacionesServicePortBindingStub stub = new EnvioJustificacionesServicePortBindingStub(new java.net.URL(urlWS), locator);
 				
 				String datosJustificaciones = datosJustificacionesDocument.xmlText();
-
-				EnvioJustificacion envioJustificacion = EnvioJustificacion.Factory.newInstance();
-				envioJustificacion.setCodAplicacion(CODIGO_APLICACION);
-				envioJustificacion.setUsuario(USUARIO);
-				envioJustificacion.setDatosJustificaciones(datosJustificacionesDocument.getDatosJustificaciones());
 								
 				com.siga.ws.i2064.je.axis.Resposta resposta = null;
 				
@@ -468,14 +459,11 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 					String s = "Se ha producido un error en el envío de WebService para la institución " + idInstitucion;
 					ClsLogging.writeFileLogError(s, e, 3);
 					throw new ErrorEnvioWS(s, e);
-//					throw new Exception(s, e);
 				}
 								
 				if (!CODIGO_PETICION_CORRECTA.equals(resposta.getCodResposta())) {
-//					escribeLog(idInstitucion, idFacturacion, usrBean, resposta.getCodResposta() + ";" + resposta.getDescResposta());
-//					throw new ErrorNegocioWS(resposta.getCodResposta() + ": " + resposta.getDescResposta());
-					escribeLog(idInstitucion, idFacturacion, usrBean, resposta.getCodResposta());
-					throw new ErrorNegocioWS(resposta.getCodResposta());
+					escribeLog(idInstitucion, idFacturacion, usrBean, resposta.getCodResposta() + ";" + resposta.getDescricion());
+					throw new ErrorNegocioWS(resposta.getCodResposta() + ": " + resposta.getDescricion());					
 				}			
 			} finally {
 				closeLogFile();			
