@@ -53,6 +53,7 @@ public class ActuacionAsistenciaForm extends MasterForm
 	  String fichaColegial;
 	  
 	  String botones="";
+	  String tipoPcajg="";
 	  String numeroProcedimientoAsistencia;
 	  String numeroDiligenciaAsistencia;
 	  String comisariaAsistencia;
@@ -372,6 +373,12 @@ public class ActuacionAsistenciaForm extends MasterForm
 		return botones;
 	}
 	
+	public String getTipoPcajg() {
+		return tipoPcajg;
+	}
+	public void setTipoPcajg(String tipoPcajg) {
+		this.tipoPcajg = tipoPcajg;
+	}
 	public String getModo() {
 		return modo;
 	}

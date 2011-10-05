@@ -39,6 +39,7 @@
 	String anulacion = "", observaciones = "", fechaJustificacion ="", observacionesJustificacion ="", modo="";
 	String idPersona=null;
 	String numeroProcedimiento="";
+	String maxLenghtProc = "20";
 	
 	String estiloCombo=null, readOnlyCombo=null;
 	
@@ -201,6 +202,15 @@
 
 	if(idJuzgado!=null && !idJuzgado.equals(""))
 		datoJuzg[1]=idJuzgado;
+	
+	int pcajgActivo = 0;
+	if (request.getAttribute("PCAJG_ACTIVO")!=null){
+		pcajgActivo = Integer.parseInt(request.getAttribute("PCAJG_ACTIVO").toString());
+	}
+	
+	if(pcajgActivo==2)
+		maxLenghtProc = "15";
+	
 	
 	%>
 <html>
@@ -402,9 +412,9 @@
 						</td>
 						<td style="vertical-align: middle;">
 						<% if (!modoAnterior.equalsIgnoreCase("VER")) { %> 
-							<html:text name="ActuacionesDesignasForm" property="numeroProcedimiento" style="width:100" maxlength="20" styleClass="box" value="<%=numeroProcedimiento%>"></html:text> 
+							<html:text name="ActuacionesDesignasForm" property="numeroProcedimiento" style="width:100" maxlength="<%=maxLenghtProc%>" styleClass="box" value="<%=numeroProcedimiento%>"></html:text> 
 						<% } else { %> 
-							<html:text name="ActuacionesDesignasForm" property="numeroProcedimiento" style="width:100" maxlength="20" styleClass="boxConsulta" value="<%=numeroProcedimiento%>" readonly="true"></html:text> 
+							<html:text name="ActuacionesDesignasForm" property="numeroProcedimiento" style="width:100" maxlength="<%=maxLenghtProc%>" styleClass="boxConsulta" value="<%=numeroProcedimiento%>" readonly="true"></html:text> 
 						<% } %>
 						</td>
 				

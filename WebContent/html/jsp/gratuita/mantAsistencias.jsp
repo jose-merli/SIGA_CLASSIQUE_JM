@@ -29,6 +29,7 @@
 	// Validamos si es una consulta o no.
 	String modo = request.getParameter("MODO")!=null?request.getParameter("MODO"):"";
 	String accion = (String) request.getSession().getAttribute("accion");
+	String maxLenghtProc = "20";
 
 	boolean esFichaColegial = false;
 
@@ -82,6 +83,10 @@
 	String INCIDENCIAS 			= (String) hash.get("INCIDENCIAS");
 	String TIPOASISTENCIACOLEGIO = (String) hash.get("TIPOASISTENCIACOLEGIO");
 	String idfacturacion = (String) hash.get("IDFACTURACION");
+	
+	//Tipo PCAJG
+	Integer PCAJG_ACTIVADO =(Integer) (request.getAttribute("PCAJG_ACTIVO"));
+	
 	// Seleccion.
 	ArrayList TIPOASISTENCIACOLEGIOSEL = new ArrayList();
 	TIPOASISTENCIACOLEGIOSEL.add(TIPOASISTENCIACOLEGIO);
@@ -121,6 +126,10 @@
 	{
 		fechaAnulacion = GstDate.getFormatedDateShort("",fechaAnulacion);
 		anulada = true;
+	}
+	
+	if(PCAJG_ACTIVADO == 2){
+		maxLenghtProc = "15";
 	}
 
 	String idTurno = (String) hash.get("IDTURNO");
@@ -400,7 +409,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 		   	<tr>
 		   		<td class="labelText" style="vertical-align:text-top;"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligencia'/>
 		   		&nbsp;
-				<input name="numeroDilegencia" type="text" value="<%=numeroDiligenciaAsi%>" class="<%=estilo%>" maxLength="20" />
+				<input name="numeroDilegencia" type="text" value="<%=numeroDiligenciaAsi%>" class="<%=estilo%>" maxLength="<%=maxLenghtProc%>" />
 			</td> 
 			<% if(!modo.equals("ver")){%>
 			<td class="labelText" style="vertical-align:text-top;text-align: right">
@@ -426,7 +435,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 		   	<tr>
 		   	<td class="labelText" style="vertical-align:text-top;"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/>
 		   	&nbsp;
-		   	<input name="numeroProcedimiento" maxlength="20" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>"/>
+		   	<input name="numeroProcedimiento" maxLength="<%=maxLenghtProc%>" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>"/>
 			</td>
 			<% if(!modo.equals("ver")){%>	
 			<td class="labelText" style="vertical-align:text-top;text-align: right">	

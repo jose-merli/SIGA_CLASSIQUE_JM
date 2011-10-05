@@ -93,7 +93,7 @@
 	String sMinutosJuicio = "";
 	String calidad ="";
 
-	
+	String maxLenghtProc = "20";
 	String estilo = "box", readOnly="false", estiloCombo="boxCombo";
 	String idPretension = "",pretension="";
 	String turno = "";
@@ -246,7 +246,12 @@
 	boolean obligatorioModulo=false;
 	boolean obligatorioTipoDesigna=false;
 	
-	if (pcajgActivo==2 || pcajgActivo==3){
+	if (pcajgActivo==2){
+		maxLenghtProc = "15";
+		obligatorioProcedimiento = true;
+	}
+	
+	if(pcajgActivo==3){
 		obligatorioProcedimiento = true;
 	}	
 
@@ -734,9 +739,9 @@ function accionCerrar() {
 						</td>
 						<td style="vertical-align: middle;">
 						<% if (!modo.equalsIgnoreCase("ver")) { %> 
-							<html:text name="MaestroDesignasForm" property="numeroProcedimiento" style="width:100" maxlength="20" styleClass="box" value="<%=numeroProcedimiento%>"></html:text> 
+							<html:text name="MaestroDesignasForm" property="numeroProcedimiento" style="width:100" maxlength="<%=maxLenghtProc%>" styleClass="box" value="<%=numeroProcedimiento%>"></html:text> 
 						<% } else { %> 
-							<html:text name="MaestroDesignasForm" property="numeroProcedimiento" style="width:100" maxlength="20" styleClass="boxConsulta" value="<%=numeroProcedimiento%>" readonly="true"></html:text> 
+							<html:text name="MaestroDesignasForm" property="numeroProcedimiento" style="width:100" maxlength="<%=maxLenghtProc%>" styleClass="boxConsulta" value="<%=numeroProcedimiento%>" readonly="true"></html:text> 
 						<% } %>
 						</td>
 						<td colspan="5"><!-- Busqueda automatica de juzgados--> 						

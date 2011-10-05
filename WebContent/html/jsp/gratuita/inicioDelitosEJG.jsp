@@ -156,6 +156,7 @@
 	String estilo = "box", readOnly="false", estiloCombo="boxCombo";
 		
 	String[] datos2={usr.getLocation(),usr.getLanguage()};	
+	String maximaLongitud = "20";
 		
 	String[] paramPretension = {usr.getLocation(), "-1"};
 	
@@ -181,6 +182,7 @@
 	}else if (pcajgActivo==2){
 		obligatorioPreceptivo = true;
 		obligatorioPretension = true;
+		maximaLongitud = "15";		
 	}else if (pcajgActivo==3){
 		obligatorioPreceptivo = true;
 		obligatorioPretension = true;
@@ -353,9 +355,9 @@
 						<td colspan="4" class="labelText" ><siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligenciasolo'/></td>
 							<td colspan="6" width="100">
 							<%if(modopestanha.equals("editar")){%>
-							<input name="numeroDilegencia2" size="10" maxlength="20" type="text" value="<%=numeroDiligenciaAsi%>" class="<%=estilo%>" />
+							<input name="numeroDilegencia2" size="10" maxlength="<%=maximaLongitud%>" type="text" value="<%=numeroDiligenciaAsi%>" class="<%=estilo%>" />
 							<%}else{%>
-							<input name="numeroDilegencia2" size="10" maxlength="20" type="text" value="<%=numeroDiligenciaAsi%>" class="boxConsulta" />
+							<input name="numeroDilegencia2" size="10" maxlength="<%=maximaLongitud%>" type="text" value="<%=numeroDiligenciaAsi%>" class="boxConsulta" />
 							<%}%>								
 						</td> 
 						<td colspan="4" class="labelText" ><siga:Idioma key='gratuita.mantAsistencias.literal.c.Detencion'/></td>
@@ -376,7 +378,7 @@
 						</td>
 						<td colspan="6"> 
 							<%if(modopestanha.equals("editar")){%>
-							 	<input name="numeroProcedimiento2" size="10" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>" maxlength="20"/>
+							 	<input name="numeroProcedimiento2" size="10" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>" maxlength="<%=maximaLongitud%>"/>
 							<%}else{%>
 								<input name="numeroProcedimiento2" size="10" type="text" value="<%=numeroProcedimientoAsi%>" class="boxConsulta"/>
 							<%}%>						

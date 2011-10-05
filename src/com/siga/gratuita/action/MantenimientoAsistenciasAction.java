@@ -23,7 +23,6 @@ import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.BusquedaClientesFiltrosAdm;
 import com.siga.beans.CenBajasTemporalesAdm;
 import com.siga.beans.CenBajasTemporalesBean;
 import com.siga.beans.CenColegiadoAdm;
@@ -32,7 +31,6 @@ import com.siga.beans.ScsActuacionAsistenciaAdm;
 import com.siga.beans.ScsActuacionAsistenciaBean;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
-import com.siga.beans.ScsCabeceraGuardiasAdm;
 import com.siga.beans.ScsCalendarioLaboralAdm;
 import com.siga.beans.ScsDesignaAdm;
 import com.siga.beans.ScsEJGAdm;
@@ -45,6 +43,7 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.AsistenciasForm;
+import com.siga.ws.CajgConfiguracion;
 
 
 /**
@@ -175,6 +174,10 @@ public class MantenimientoAsistenciasAction extends MasterAction
 		" AND A.ANIO = "+anio+" AND A.NUMERO ="+numero+" AND A.IDINSTITUCION ="+usr.getLocation();
 		ScsAsistenciasAdm asistencias = new ScsAsistenciasAdm(this.getUserBean(request));
 		try{
+			
+			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
+			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
+			
 			Vector resultado = null;
 			resultado=(Vector)asistencias.ejecutaSelect(select);
 			request.setAttribute("resultado",resultado);

@@ -77,8 +77,9 @@ function postAccionTipoActuacion()
 <bean:define id="usrBean" name="USRBEAN" scope="session"
 	type="com.atos.utils.UsrBean"/>
 <bean:define id="botones" name="botones" scope="request"/>
-
+<bean:define id="tipoPcajg" name="tipoPcajg" scope="request"/>
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+
 <table class="tablaTitulo" cellspacing="0" heigth="32">
 	<tr>
 		<td id="titulo" class="titulosPeq"><siga:Idioma key="gratuita.mantActuacion.literal.titulo"/>
@@ -351,9 +352,16 @@ function postAccionTipoActuacion()
 					<td class="labelText"><siga:Idioma
 							key='gratuita.mantActuacion.literal.nasunto' /></td>
 
-					<td align="left" colspan ="2"><html:text
-							name="ActuacionAsistenciaFormEdicion" property="numeroAsunto"
-							size="30" maxlength="20" styleClass="box"></html:text></td>
+					<td align="left" colspan ="2">
+						<c:choose>
+							<c:when test="${tipoPcajg=='2'}">
+								<html:text name="ActuacionAsistenciaFormEdicion" property="numeroAsunto" size="30" maxlength="15" styleClass="box"></html:text>
+							</c:when>
+							<c:otherwise>
+								<html:text name="ActuacionAsistenciaFormEdicion" property="numeroAsunto" size="30" maxlength="20" styleClass="box"></html:text>
+							</c:otherwise>
+						</c:choose>	
+					</td>
 
 					<td class="labelText"><siga:Idioma
 							key='gratuita.mantActuacion.literal.anulacion' /></td>

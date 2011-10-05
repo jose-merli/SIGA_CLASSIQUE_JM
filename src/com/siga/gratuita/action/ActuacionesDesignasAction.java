@@ -34,7 +34,6 @@ import com.siga.beans.ScsDesignasLetradoAdm;
 import com.siga.beans.ScsDesignasLetradoBean;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
-import com.siga.beans.ScsJuzgadoBean;
 import com.siga.beans.ScsProcedimientosAdm;
 import com.siga.beans.ScsProcedimientosBean;
 import com.siga.beans.ScsTurnoAdm;
@@ -43,6 +42,7 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.ActuacionesDesignasForm;
+import com.siga.ws.CajgConfiguracion;
 
 
 /**
@@ -452,6 +452,8 @@ public class ActuacionesDesignasAction extends MasterAction {
 		    //Mostrar Las Actuaciones antiguas.
 		   Hashtable actuacionAntigua =(Hashtable)(designaAdm.getDesignaActuaciones(hashDatosDesigna, request)).get(0);
 		    
+		   	int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
+			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 			request.setAttribute("hashDesigna",hashDesigna);
 			request.setAttribute("hashActuacionActual",hashActuacion);
 			ses.setAttribute("hashActuacionAntigua",actuacionAntigua);
@@ -563,6 +565,8 @@ public class ActuacionesDesignasAction extends MasterAction {
 			 UtilidadesHash.set(designaActual,ScsEJGBean.C_FECHANOTIFICACION,((ScsEJGBean)vEjgRelacionado.get(0)).getFechaNotificacion());
 		    }
 			designaActual = actuacionDesignaAdm.prepararInsert(designaActual);
+			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
+			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 			request.setAttribute("hashDesigna",designaActual);
 			request.setAttribute("MODO_ANTERIOR","NUEVO");
 		} catch(Exception e){

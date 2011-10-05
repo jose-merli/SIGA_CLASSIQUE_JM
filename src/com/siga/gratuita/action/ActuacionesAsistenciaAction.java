@@ -23,6 +23,7 @@ import com.siga.general.SIGAException;
 import com.siga.gratuita.form.ActuacionAsistenciaForm;
 import com.siga.gratuita.form.AsistenciaForm;
 import com.siga.gratuita.service.AsistenciasService;
+import com.siga.ws.CajgConfiguracion;
 
 import es.satec.businessManager.BusinessManager;
 
@@ -266,6 +267,8 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 		
 			actuacionAsistenciaFormEdicion.setModo("modificar");
 			request.setAttribute("ActuacionAsistenciaFormEdicion", actuacionAsistenciaFormEdicion);
+			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usrBean.getLocation()));
+			request.setAttribute("tipoPcajg", new Integer(valorPcajgActivo));
 			request.setAttribute("botones", "R,Y,C");
 			forward=  "edicion";
 		} catch (Exception e) {
