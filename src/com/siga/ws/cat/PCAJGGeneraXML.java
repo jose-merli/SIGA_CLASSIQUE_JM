@@ -124,8 +124,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 //		doc.setSchemaLocation("IntercambioEJG.xsd");
 //		doc.setXsiType();		
-		Vector datos = cajgEJGRemesaAdm.getDatosEJGs(getIdInstitucion(), getIdRemesa());
-		Vector datosFamiliares = cajgEJGRemesaAdm.getFamiliares(getIdInstitucion(), getIdRemesa());
+		Vector datos = cajgEJGRemesaAdm.getDatosEJGs(getIdInstitucion(), getIdRemesa(), getUsrBean().getLanguage());
+		Vector datosFamiliares = cajgEJGRemesaAdm.getFamiliares(getIdInstitucion(), getIdRemesa(), getUsrBean().getLanguage());
 		construyeHTxEJG(datosFamiliares, htFamiliares);
 		
 		Vector datosMarcasExpediente = cajgEJGRemesaAdm.getDatosMarcasExpediente(getIdInstitucion(), getIdRemesa());
@@ -134,13 +134,13 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		Vector datosAbogadosDesignados = cajgEJGRemesaAdm.getAbogadosDesignados(getIdInstitucion(), getIdRemesa());
 		construyeHTxEJG(datosAbogadosDesignados, htAbogadosDesignados);
 		
-		Vector datosContrarios = cajgEJGRemesaAdm.getContrarios(getIdInstitucion(), getIdRemesa());
+		Vector datosContrarios = cajgEJGRemesaAdm.getContrarios(getIdInstitucion(), getIdRemesa(), getUsrBean().getLanguage());
 		construyeHTxEJG(datosContrarios, htContrarios);	
 		
-		Vector datosDocumentacionExpedienteDS = cajgEJGRemesaAdm.getDocumentacionExpedienteDS(getIdInstitucion(), getIdRemesa());
+		Vector datosDocumentacionExpedienteDS = cajgEJGRemesaAdm.getDocumentacionExpedienteDS(getIdInstitucion(), getIdRemesa(), getUsrBean().getLanguage());
 		construyeHTxPersona(datosDocumentacionExpedienteDS, htDocumentacionExpediente);
 		
-		Vector datosDelitos = cajgEJGRemesaAdm.getDelitos(getIdInstitucion(), getIdRemesa());
+		Vector datosDelitos = cajgEJGRemesaAdm.getDelitos(getIdInstitucion(), getIdRemesa(), getUsrBean().getLanguage());
 		construyeHTxEJG(datosDelitos, htDelitos);
 		
 		Hashtable ht = null;
@@ -527,10 +527,17 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		procedimientoJudicial.setCodJurisdiccion(getCodigoElementoTipificado((String)htEJGs.get(DDJ_JURISDICCION_CDA)));
 		procedimientoJudicial.setDescJurisdiccion(getDescripcionElementoTipificado((String)htEJGs.get(DDJ_JURISDICCION_CDA)));
 		
-		procedimientoJudicial.setCodOrganoJudicial(getCodigoElementoTipificado((String)htEJGs.get(DDJ_ORGANOJUDICIAL_CDA)));
+		String codOrganoJudicial = getCodigoElementoTipificado((String)htEJGs.get(DDJ_ORGANOJUDICIAL_CDA));
+		procedimientoJudicial.setCodOrganoJudicial(codOrganoJudicial);
 		procedimientoJudicial.setDescOrganoJudicial(getDescripcionElementoTipificado((String)htEJGs.get(DDJ_ORGANOJUDICIAL_CDA)));
 		
-		procedimientoJudicial.setIdentificadorProcedimiento((String)htEJGs.get(DDJ_IDENTIFICADORPROCEDIMIENTO));
+		String identificadorProcedimiento = getString((String)htEJGs.get(DDJ_IDENTIFICADORPROCEDIMIENTO));
+		Boolean b = getBoolean((String)htEJGs.get(DDJ_ORGANOJUDICIAL_ESDECANO));
+		//si el identificadorProcedimiento es null y no es juzgado decano
+		if (codOrganoJudicial != null && identificadorProcedimiento == null && (b == null || !b.booleanValue())) {
+			throw new IllegalArgumentException("Debe rellenar número de procedimiento");
+		}
+		procedimientoJudicial.setIdentificadorProcedimiento(identificadorProcedimiento);
 	}
 
 	/**

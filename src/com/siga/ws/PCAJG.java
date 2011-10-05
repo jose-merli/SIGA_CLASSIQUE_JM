@@ -142,8 +142,8 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 		
 //		doc.setSchemaLocation("IntercambioEJG.xsd");
 //		doc.setXsiType();		
-		Vector datos = cajgEJGRemesaAdm.getDatosEJGs(getIdInstitucion(), getIdRemesa());
-		Vector datosFamiliares = cajgEJGRemesaAdm.getFamiliares(getIdInstitucion(), getIdRemesa());
+		Vector datos = cajgEJGRemesaAdm.getDatosEJGs(getIdInstitucion(), getIdRemesa(), getUsrBean().getLanguage());
+		Vector datosFamiliares = cajgEJGRemesaAdm.getFamiliares(getIdInstitucion(), getIdRemesa(), getUsrBean().getLanguage());
 		construyeHTxEJG(datosFamiliares, htFamiliares);
 		
 		Vector datosMarcasExpediente = cajgEJGRemesaAdm.getDatosMarcasExpediente(getIdInstitucion(), getIdRemesa());
@@ -152,13 +152,13 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 		Vector datosAbogadosDesignados = cajgEJGRemesaAdm.getAbogadosDesignados(getIdInstitucion(), getIdRemesa());
 		construyeHTxEJG(datosAbogadosDesignados, htAbogadosDesignados);
 		
-		Vector datosContrarios = cajgEJGRemesaAdm.getContrarios(getIdInstitucion(), getIdRemesa());
+		Vector datosContrarios = cajgEJGRemesaAdm.getContrarios(getIdInstitucion(), getIdRemesa(), getUsrBean().getLanguage());
 		construyeHTxEJG(datosContrarios, htContrarios);	
 		
-		Vector datosDocumentacionExpedienteDS = cajgEJGRemesaAdm.getDocumentacionExpedienteDS(getIdInstitucion(), getIdRemesa());
+		Vector datosDocumentacionExpedienteDS = cajgEJGRemesaAdm.getDocumentacionExpedienteDS(getIdInstitucion(), getIdRemesa(), getUsrBean().getLanguage());
 		construyeHTxPersona(datosDocumentacionExpedienteDS, htDocumentacionExpediente);
 		
-		Vector datosDelitos = cajgEJGRemesaAdm.getDelitos(getIdInstitucion(), getIdRemesa());
+		Vector datosDelitos = cajgEJGRemesaAdm.getDelitos(getIdInstitucion(), getIdRemesa(), getUsrBean().getLanguage());
 		construyeHTxEJG(datosDelitos, htDelitos);
 		
 		Hashtable ht = null;
