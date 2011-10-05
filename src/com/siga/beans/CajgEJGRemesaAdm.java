@@ -175,11 +175,12 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 */	
-	public Vector getDatosEJGs(int idInstitucion, int idRemesa) throws ClsExceptions, SIGAException {				
+	public Vector getDatosEJGs(int idInstitucion, int idRemesa, String idLenguaje) throws ClsExceptions, SIGAException {				
 		String consulta = "SELECT *" +
 					" FROM V_PCAJG_EJG" +
 					" WHERE " + PCAJGConstantes.IDREMESA + "  = " + idRemesa +
 					" AND " + PCAJGConstantes.IDINSTITUCION + " = " + idInstitucion +
+					" AND " + PCAJGConstantes.IDLENGUAJE + " = " + idLenguaje +
 					" ORDER BY " + PCAJGConstantes.TIPOINTERCAMBIO;				
 			
 		return getDatos(consulta);
@@ -213,11 +214,12 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 */
-	public Vector getFamiliares(int idInstitucion, int idRemesa) throws ClsExceptions, SIGAException {				
+	public Vector getFamiliares(int idInstitucion, int idRemesa, String idLenguaje) throws ClsExceptions, SIGAException {				
 		String sql = "SELECT *" +
 				" FROM V_PCAJG_FAMILIARES" +
-				" WHERE IDREMESA = " + idRemesa +
-				" AND IDINSTITUCION = " + idInstitucion;
+				" WHERE " + PCAJGConstantes.IDREMESA + "  = " + idRemesa +
+				" AND " + PCAJGConstantes.IDINSTITUCION + " = " + idInstitucion +
+				" AND " + PCAJGConstantes.IDLENGUAJE + " = " + idLenguaje;
 
 		return getDatos(sql);
 	}
@@ -231,11 +233,12 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 */
-	public Vector getContrarios(int idInstitucion, int idRemesa) throws ClsExceptions, SIGAException {
+	public Vector getContrarios(int idInstitucion, int idRemesa, String idLenguaje) throws ClsExceptions, SIGAException {
 		String sql = "SELECT *" +
 				" FROM V_PCAJG_CONTRARIOS" +
-				" WHERE IDINSTITUCION = " + idInstitucion +
-				" AND IDREMESA = " + idRemesa;
+				" WHERE " + PCAJGConstantes.IDREMESA + "  = " + idRemesa +
+				" AND " + PCAJGConstantes.IDINSTITUCION + " = " + idInstitucion +
+				" AND " + PCAJGConstantes.IDLENGUAJE + " = " + idLenguaje;
 		
 		return getDatos(sql);
 	}
@@ -265,11 +268,12 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 */
-	public Vector getDocumentacionExpedienteDS(int idInstitucion, int idRemesa) throws ClsExceptions, SIGAException {
+	public Vector getDocumentacionExpedienteDS(int idInstitucion, int idRemesa, String idLenguaje) throws ClsExceptions, SIGAException {
 		String sql = "SELECT *" +
 				" FROM V_PCAJG_M_DOCUMENTACIONEXP" +
-				" WHERE IDINSTITUCION = " + idInstitucion +
-				" AND IDREMESA = " + idRemesa;
+				" WHERE " + PCAJGConstantes.IDREMESA + "  = " + idRemesa +
+				" AND " + PCAJGConstantes.IDINSTITUCION + " = " + idInstitucion +
+				" AND " + PCAJGConstantes.IDLENGUAJE + " = " + idLenguaje;
 		return getDatos(sql);
 	}
 	
@@ -289,11 +293,12 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 		return getDatos(sql);
 	}
 	
-	public Vector getDelitos(int idInstitucion, int idRemesa) throws ClsExceptions, SIGAException {
+	public Vector getDelitos(int idInstitucion, int idRemesa, String idLenguaje) throws ClsExceptions, SIGAException {
 		String sql = "SELECT *" +
 				" FROM V_PCAJG_DELITOS" +
-				" WHERE IDINSTITUCION = " + idInstitucion +
-				" AND IDREMESA = " + idRemesa;
+				" WHERE " + PCAJGConstantes.IDREMESA + "  = " + idRemesa +
+				" AND " + PCAJGConstantes.IDINSTITUCION + " = " + idInstitucion +
+				" AND " + PCAJGConstantes.IDLENGUAJE + " = " + idLenguaje;
 		return getDatos(sql);
 	}
 	
