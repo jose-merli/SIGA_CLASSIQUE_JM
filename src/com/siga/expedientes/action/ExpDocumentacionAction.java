@@ -58,7 +58,13 @@ public class ExpDocumentacionAction extends MasterAction {
 			String idInstitucion_TipoExpediente = request.getParameter("idInstitucion_TipoExpediente");
 			String idTipoExpediente = request.getParameter("idTipoExpediente");
 			String numExpediente = request.getParameter("numeroExpediente");
-			String anioExpediente = request.getParameter("anioExpediente");							
+			String anioExpediente = request.getParameter("anioExpediente");		
+			
+			if(numExpediente==null || numExpediente.equals(""))
+	           numExpediente = (String) request.getSession().getAttribute("numeroExpedienteSession");
+	   
+			if(anioExpediente==null || anioExpediente.equals(""))
+	           anioExpediente = (String) request.getSession().getAttribute("anioExpedienteSession");
 	               
 			
 	        //Recuperamos el nombre del denunciado

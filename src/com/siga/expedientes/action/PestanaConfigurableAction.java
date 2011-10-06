@@ -61,6 +61,14 @@ public class PestanaConfigurableAction extends MasterAction {
 		String idTipoExpediente = request.getParameter("idTipoExpediente");
 		String numExpediente = request.getParameter("numeroExpediente");
 		String anioExpediente = request.getParameter("anioExpediente");
+		
+	   if(numExpediente==null || numExpediente.equals(""))
+	           numExpediente = (String) request.getSession().getAttribute("numeroExpedienteSession");
+	   
+	   if(anioExpediente==null || anioExpediente.equals(""))
+	           anioExpediente = (String) request.getSession().getAttribute("anioExpedienteSession");
+		
+		
 		if (form.getIdPestanaConf().equals("1")) {
 		    form.setIdCampo(ClsConstants.IDCAMPO_PARAPESTANACONF1);
 		} else {

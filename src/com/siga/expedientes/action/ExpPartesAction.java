@@ -61,6 +61,12 @@ public class ExpPartesAction extends MasterAction {
 			String idTipoExpediente = request.getParameter("idTipoExpediente");
 			String numExpediente = request.getParameter("numeroExpediente");
 			String anioExpediente = request.getParameter("anioExpediente");
+			
+			if(numExpediente==null || numExpediente.equals(""))
+	           numExpediente = (String) request.getSession().getAttribute("numeroExpedienteSession");
+	   
+			if(anioExpediente==null || anioExpediente.equals(""))
+	           anioExpediente = (String) request.getSession().getAttribute("anioExpedienteSession");
 					
 			where += "E."+ExpExpedienteBean.C_IDINSTITUCION + " = '" + idInstitucion + "' AND ";
 			where += "E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE + " = '" + idInstitucion_TipoExpediente + "' AND ";

@@ -112,6 +112,12 @@ public class ExpDenunciadoAction extends MasterAction {
 			String numExpediente = request.getParameter("numeroExpediente");
 			String anioExpediente = request.getParameter("anioExpediente");
 			
+			if(numExpediente==null || numExpediente.equals(""))
+	           numExpediente = (String) request.getSession().getAttribute("numeroExpedienteSession");
+	   
+			if(anioExpediente==null || anioExpediente.equals(""))
+	           anioExpediente = (String) request.getSession().getAttribute("anioExpedienteSession");			
+			
 			Hashtable hash = new Hashtable();
 			hash.put(ExpExpedienteBean.C_IDINSTITUCION,idInstitucion);
 			hash.put(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE,idInstitucion_TipoExpediente);

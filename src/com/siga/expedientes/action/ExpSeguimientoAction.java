@@ -57,6 +57,13 @@ public class ExpSeguimientoAction extends MasterAction {
 			String idTipoExpediente = request.getParameter("idTipoExpediente");
 			String numExpediente = request.getParameter("numeroExpediente");
 			String anioExpediente = request.getParameter("anioExpediente");
+			
+			if(numExpediente==null || numExpediente.equals(""))
+	           numExpediente = (String) request.getSession().getAttribute("numeroExpedienteSession");
+	   
+			if(anioExpediente==null || anioExpediente.equals(""))
+	           anioExpediente = (String) request.getSession().getAttribute("anioExpedienteSession");			
+			
 			String editable = (String)request.getParameter("editable");
 			boolean isEditable = editable.equals("1")? true : false;
 			
