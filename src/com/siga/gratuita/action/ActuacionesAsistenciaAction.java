@@ -339,6 +339,8 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 				actuacionAsistenciaForm.setJuzgados(asistenciasService.getJuzgados(asistenciaForm,idJuzgado, usrBean));
 			actuacionAsistenciaForm.setModo("ver");
 			request.setAttribute("ActuacionAsistenciaFormEdicion", actuacionAsistenciaFormEdicion);
+			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usrBean.getLocation()));
+			request.setAttribute("tipoPcajg", new Integer(valorPcajgActivo));			
 			request.setAttribute("botones", "C");
 			forward=  "edicion";
 		} catch (Exception e) {
@@ -418,6 +420,8 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 			actuacionAsistenciaForm.setModo("abrir");
 			actuacionAsistenciaFormEdicion.setModo("insertar");
 			request.setAttribute("ActuacionAsistenciaFormEdicion", actuacionAsistenciaFormEdicion);
+			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usrBean.getLocation()));
+			request.setAttribute("tipoPcajg", new Integer(valorPcajgActivo));			
 			request.setAttribute("botones", "R,Y,C"); 
 			forward=  "edicion";
 		} catch (Exception e) {

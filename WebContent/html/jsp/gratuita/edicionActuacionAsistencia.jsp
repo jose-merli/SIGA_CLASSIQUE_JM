@@ -651,7 +651,7 @@ function inicio()
 	}
 	
 	
-	if(document.ActuacionAsistenciaForm.modo.value=='ver'){
+	if(document.ActuacionAsistenciaForm.modo.value=='ver' || document.ActuacionAsistenciaFormEdicion.validada.value=="1" || document.ActuacionAsistenciaFormEdicion.anulacion.value=='1'){
 		inputs = document.getElementsByTagName("input");
 		for(var i = 0 ; i <inputs.length ; i++) {
 			input = inputs[i];
@@ -678,20 +678,10 @@ function inicio()
 
 	//Si la asistencia está valiada o anulada se deshabilitan todos los campos
 	if(document.ActuacionAsistenciaFormEdicion.validada.value=="1" || document.ActuacionAsistenciaFormEdicion.anulacion.value=='1'){
-		document.getElementById('descripcionBreve').disabled =  "disabled"; 
-		document.getElementById('fecha').disabled =  "disabled"; 
-		document.getElementById('checkDiaDespues').disabled =  "disabled"; 
-		document.getElementById('idTipoActuacion').disabled =  "disabled";
-		document.getElementById('numeroAsunto').disabled =  "disabled"; 
-		document.getElementById('codComisaria').disabled =  "disabled"; 
-		document.getElementById('codJuzgado').disabled =  "disabled"; 		
-		document.getElementById('idComisaria').disabled =  "disabled"; 
-		document.getElementById('idJuzgado').disabled =  "disabled"; 
-		document.getElementById('idPrision').disabled =  "disabled"; 
-		document.getElementById('observaciones').disabled =  "disabled"; 
-
-		document.ActuacionAsistenciaFormEdicion.tiposCosteFijoActuaciones.disabled =  "disabled";
-		document.ActuacionAsistenciaFormEdicion.idCosteFijoActuacion.disabled ="disabled";
+		document.getElementById('observacionesJustificacion').disabled =  ""; 
+		document.getElementById('idButton').className =  "box";
+		document.getElementById('checkAnulacion').disabled =  ""; 
+		
 	}
 
 	
@@ -711,6 +701,27 @@ function refrescarLocal() {
 function accionGuardarCerrar() 
 {
 	sub();
+
+	inputs = document.getElementsByTagName("input");
+	for(var i = 0 ; i <inputs.length ; i++) {
+		input = inputs[i];
+		if(input.type=="checkbox")
+			input.disabled =  "";
+		else if(input.type!="button"){
+			input.className =  "box";
+		}
+	}
+	selects = document.getElementsByTagName("select");
+	for(var i = 0 ; i <selects.length ; i++) {
+		select = selects[i];
+		select.disabled =  ""; 
+	}
+	textareas = document.getElementsByTagName("textarea");
+	for(var i = 0 ; i <textareas.length ; i++) {
+		textarea = textareas[i];
+		textarea.disabled =  ""; 
+	}
+	
 	if(document.ActuacionAsistenciaFormEdicion.idTipoActuacion.value== '-1'){
 		msg = "<siga:Idioma key='errors.required' arg0='gratuita.mantActuacion.literal.tipoActuacion'/>";
 		alert(msg);
