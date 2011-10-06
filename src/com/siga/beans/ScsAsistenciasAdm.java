@@ -1788,7 +1788,7 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 			if(isInsertar)
 				act.setIdActuacion(new Long(1));
 			act.setIdInstitucion(asistencia.getIdInstitucion());
-			act.setIdTipoAsistencia(asistencia.getIdTipoAsistencia());
+			act.setIdTipoAsistencia(asistencia.getIdTipoAsistenciaColegio());
 			act.setNumero(new Long(""+asistencia.getNumero()));
 			
 			
