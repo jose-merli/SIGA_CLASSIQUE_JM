@@ -677,13 +677,11 @@ function inicio()
 
 
 	//Si la asistencia está valiada o anulada se deshabilitan todos los campos
-	if(document.ActuacionAsistenciaFormEdicion.validada.value=="1" || document.ActuacionAsistenciaFormEdicion.anulacion.value=='1'){
+	if(document.ActuacionAsistenciaForm.modo.value!='ver' && (document.ActuacionAsistenciaFormEdicion.validada.value=="1" || document.ActuacionAsistenciaFormEdicion.anulacion.value=='1')){
 		document.getElementById('observacionesJustificacion').disabled =  ""; 
 		document.getElementById('idButton').className =  "box";
 		document.getElementById('checkAnulacion').disabled =  ""; 
-		
 	}
-
 	
 	//Aqui dependiendo del modo, si es consulta deshabiliatremos todo
 	//si es nuevo
