@@ -160,7 +160,7 @@
 			clase = "boxConsulta";
 			
 			//en las facturaciones ejecutadas se permite reejecutar y descargar el informe			
-			if (CajgConfiguracion.QUITAR_PARA_QUE_FUNCIONE_EN_PRODUCCION && CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) {
+			if (CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) {
 				botones = "LC2,GM";
 				if (idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA
 						|| idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO) {				

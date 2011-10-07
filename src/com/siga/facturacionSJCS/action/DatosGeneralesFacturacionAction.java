@@ -172,7 +172,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			int estadoFuturo = ClsConstants.ESTADO_FACTURACION_LISTA_CONSEJO;
 			//SI TIENE CONFIGURADO EL WEBSERVICE HACEMOS LA LLAMADA
 			InformeXML informeXML = JustificacionEconomicaWS.getInstance(miform.getIdInstitucion());
-			if (CajgConfiguracion.QUITAR_PARA_QUE_FUNCIONE_EN_PRODUCCION && informeXML != null) {
+			if (informeXML != null) {
 				try {
 					informeXML.envioWS(miform.getIdInstitucion(), idFacturacion, usr);
 				} catch (ErrorValidacionXML e) {

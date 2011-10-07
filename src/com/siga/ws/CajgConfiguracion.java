@@ -23,8 +23,6 @@ public class CajgConfiguracion  {
 	public static final int TIPO_CAJG_XML_SANTIAGO = 6;
 	
 	
-	public static boolean QUITAR_PARA_QUE_FUNCIONE_EN_PRODUCCION = false;
-	
 	private static final String PCAJG_ENVIO_WEBSERVICE_TIPO_CAJG3 = "PCAJG_ENVIO_WEBSERVICE_TIPO_CAJG3";
 
 	public static SIGAWSClientAbstract getSIGAWSClientAbstract (UsrBean usrBean, Integer idInstitucion, int respuesta) throws ClsExceptions {

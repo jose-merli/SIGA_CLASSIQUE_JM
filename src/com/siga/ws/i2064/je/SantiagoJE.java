@@ -27,6 +27,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.LogBDDHandler;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.ws.InformeXML;
 import com.siga.ws.SigaWSHelper;
 import com.siga.ws.i2064.WSSantiagoAdm;
@@ -65,8 +66,8 @@ import com.siga.ws.i2064.je.xsd.PROCBAREMOTYPE.PROCPORCENTUAL;
 public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 
 	private static String CODIGO_PETICION_CORRECTA = "C0001";
-	private static int CODIGO_APLICACION = 1;
-	private static String USUARIO = "DatosJustificaciones";	
+	private static String PCAJG_JE_CODIGO_APLICACION = "PCAJG_JE_CODIGO_APLICACION";
+	private static String PCAJG_JE_USUARIO = "PCAJG_JE_USUARIO";	
 	
 	private int idFacturacion = -1; 
 	private BufferedWriter bw = null;
@@ -453,8 +454,12 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 								
 				com.siga.ws.i2064.je.axis.Resposta resposta = null;
 				
+				GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);		
+				int codAplicacion = Integer.parseInt(admParametros.getValor(idInstitucion, MODULO_SCS, PCAJG_JE_CODIGO_APLICACION, ""));
+				String usuario = admParametros.getValor(idInstitucion, MODULO_SCS, PCAJG_JE_USUARIO, "");
+				
 				try {
-					resposta = stub.envioJustificacion(CODIGO_APLICACION, USUARIO, datosJustificaciones);
+					resposta = stub.envioJustificacion(codAplicacion, usuario, datosJustificaciones);
 				} catch (Exception e) {
 					String s = "Se ha producido un error en el envío de WebService para la institución " + idInstitucion;
 					ClsLogging.writeFileLogError(s, e, 3);
