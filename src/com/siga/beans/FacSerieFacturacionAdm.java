@@ -389,9 +389,7 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 	                " select idinstitucion, idseriefacturacion " +
 	            	" from fac_tiposproduincluenfactu  " +
 	            	" where idproducto||'__'||idtipoproducto in ("+aux+") " +
-	            	" and idinstitucion=" +idInstitucion +
-	            	" group by idinstitucion, idseriefacturacion " +
-	            	" having count (*) = "+contador+")";
+	            	" and idinstitucion=" +idInstitucion +")";
 	        
 	        salida = this.select(where);
 	        
