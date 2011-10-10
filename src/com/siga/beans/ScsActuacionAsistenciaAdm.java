@@ -481,6 +481,7 @@ public class ScsActuacionAsistenciaAdm extends MasterBeanAdministrador {
             		actuacionAsistenciaForm.setNumeroProcedimientoAsistencia(UtilidadesHash.getString(htFila, "NUMEROPROCEDIMIENTO"));
             		actuacionAsistenciaForm.setComisariaAsistencia(UtilidadesHash.getString(htFila, "COMISARIA"));
             		actuacionAsistenciaForm.setJuzgadoAsistencia(UtilidadesHash.getString(htFila, "JUZGADO"));
+            		actuacionAsistenciaForm.setLetrado(usrbean.isLetrado());
             		
             		alActuacionesAsistencias.add(actuacionAsistenciaForm);
             	}

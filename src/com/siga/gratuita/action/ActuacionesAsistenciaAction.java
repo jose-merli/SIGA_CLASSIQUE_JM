@@ -232,7 +232,6 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 			
 			ActuacionAsistenciaForm actuacionAsistenciaFormEdicion = asistenciasService.getActuacionAsistencia(
 					actuacionAsistenciaForm, usrBean);
-			
 			actuacionAsistenciaFormEdicion.setNumeroProcedimientoAsistencia(asistenciaForm.getNumeroDiligencia());
 			actuacionAsistenciaFormEdicion.setNumeroDiligenciaAsistencia(asistenciaForm.getNumeroDiligencia());
 			actuacionAsistenciaFormEdicion.setComisariaAsistencia(asistenciaForm.getComisaria());
@@ -312,6 +311,7 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 			
 			ActuacionAsistenciaForm actuacionAsistenciaFormEdicion = asistenciasService.getActuacionAsistencia(
 					actuacionAsistenciaForm, usrBean);
+			
 			
 			String idPrision = actuacionAsistenciaFormEdicion.getIdPrision();
 			String idInstitucionPrision = actuacionAsistenciaFormEdicion.getIdInstitucionPris();

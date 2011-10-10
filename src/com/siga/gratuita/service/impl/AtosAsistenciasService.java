@@ -85,11 +85,7 @@ public class AtosAsistenciasService extends JtaBusinessServiceTemplate
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public Object executeService(VolantesExpressVo volantesExpressVo)
-			throws SIGAException, ClsExceptions {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 	public AsistenciaForm getDatosAsistencia(AsistenciaForm asistenciaForm, UsrBean usrBean)
 			throws ClsExceptions {
 		ScsAsistenciasAdm asistenciasAdm = new ScsAsistenciasAdm(usrBean);
@@ -175,44 +171,44 @@ public class AtosAsistenciasService extends JtaBusinessServiceTemplate
 		
 		actuacionAsistenciaAdm.updateDirect(actuaAsistenciaBean);
 		
-		if(actuacionAsistenciaForm.getNumeroAsunto()!=null && !actuacionAsistenciaForm.getNumeroAsunto().equals("")){
+		if(actuacionAsistenciaForm.getIdComisaria()!=null && !actuacionAsistenciaForm.getIdComisaria().equals("")){
+			if(actuacionAsistenciaForm.getComisariaAsistencia()==null||actuacionAsistenciaForm.getComisariaAsistencia().equals("")){
+				ScsAsistenciasAdm admAsistencias = new ScsAsistenciasAdm(usrBean);
+				ScsAsistenciasBean asistencia = new ScsAsistenciasBean();
+				asistencia.setIdInstitucion(actuaAsistenciaBean.getIdInstitucion());
+				asistencia.setAnio(actuaAsistenciaBean.getAnio());
+				asistencia.setNumero(actuaAsistenciaBean.getNumero().intValue());
+				asistencia.setComisaria(actuaAsistenciaBean.getIdComisaria().longValue());
+				asistencia.setComisariaIdInstitucion(actuaAsistenciaBean.getIdInstitucion());
+				
+				if((actuacionAsistenciaForm.getNumeroDiligenciaAsistencia()==null||actuacionAsistenciaForm.getNumeroDiligenciaAsistencia().equals(""))&&actuacionAsistenciaForm.getNumeroAsunto()!=null && !actuacionAsistenciaForm.getNumeroAsunto().equals("")){
+					asistencia.setNumeroDiligencia(actuaAsistenciaBean.getNumeroAsunto());
+				}else{
+					asistencia.setNumeroDiligencia(actuacionAsistenciaForm.getNumeroDiligenciaAsistencia());
+					
+				}
+				admAsistencias.updateAsistenciaDesdeActuacion(asistencia);
+			}
 			
-			if(actuacionAsistenciaForm.getIdComisaria()!=null && !actuacionAsistenciaForm.getIdComisaria().equals("")){
-				if(actuacionAsistenciaForm.getComisariaAsistencia()==null||actuacionAsistenciaForm.getComisariaAsistencia().equals("")){
-					ScsAsistenciasAdm admAsistencias = new ScsAsistenciasAdm(usrBean);
-					ScsAsistenciasBean asistencia = new ScsAsistenciasBean();
-					asistencia.setIdInstitucion(actuaAsistenciaBean.getIdInstitucion());
-					asistencia.setAnio(actuaAsistenciaBean.getAnio());
-					asistencia.setNumero(actuaAsistenciaBean.getNumero().intValue());
-					asistencia.setComisaria(actuaAsistenciaBean.getIdComisaria().longValue());
-					asistencia.setComisariaIdInstitucion(actuaAsistenciaBean.getIdInstitucion());
-					if(actuacionAsistenciaForm.getNumeroDiligenciaAsistencia()==null||actuacionAsistenciaForm.getNumeroDiligenciaAsistencia().equals("")){
-						asistencia.setNumeroDiligencia(actuaAsistenciaBean.getNumeroAsunto());
-					}else{
-						asistencia.setNumeroDiligencia(actuacionAsistenciaForm.getNumeroDiligenciaAsistencia());
-					}
-					admAsistencias.updateAsistenciaDesdeActuacion(asistencia);
+		}
+		if(actuacionAsistenciaForm.getIdJuzgado()!=null && !actuacionAsistenciaForm.getIdJuzgado().equals("")){
+			if(actuacionAsistenciaForm.getJuzgadoAsistencia()==null||actuacionAsistenciaForm.getJuzgadoAsistencia().equals("")){
+				ScsAsistenciasAdm admAsistencias = new ScsAsistenciasAdm(usrBean);
+				ScsAsistenciasBean asistencia = new ScsAsistenciasBean();
+				asistencia.setIdInstitucion(actuaAsistenciaBean.getIdInstitucion());
+				asistencia.setAnio(actuaAsistenciaBean.getAnio());
+				asistencia.setNumero(actuaAsistenciaBean.getNumero().intValue());
+				asistencia.setJuzgado(actuaAsistenciaBean.getIdJuzgado().longValue());
+				asistencia.setJuzgadoIdInstitucion(actuaAsistenciaBean.getIdInstitucion());
+				if((actuacionAsistenciaForm.getNumeroProcedimientoAsistencia()==null||actuacionAsistenciaForm.getNumeroProcedimientoAsistencia().equals(""))&&actuacionAsistenciaForm.getNumeroAsunto()!=null && !actuacionAsistenciaForm.getNumeroAsunto().equals("")){
+					asistencia.setNumeroProcedimiento(actuaAsistenciaBean.getNumeroAsunto());
+				}else{
+					asistencia.setNumeroProcedimiento(actuacionAsistenciaForm.getNumeroProcedimientoAsistencia());
+					
 				}
-				
+				admAsistencias.updateAsistenciaDesdeActuacion(asistencia);
 			}
-			if(actuacionAsistenciaForm.getIdJuzgado()!=null && !actuacionAsistenciaForm.getIdJuzgado().equals("")){
-				if(actuacionAsistenciaForm.getJuzgadoAsistencia()==null||actuacionAsistenciaForm.getJuzgadoAsistencia().equals("")){
-					ScsAsistenciasAdm admAsistencias = new ScsAsistenciasAdm(usrBean);
-					ScsAsistenciasBean asistencia = new ScsAsistenciasBean();
-					asistencia.setIdInstitucion(actuaAsistenciaBean.getIdInstitucion());
-					asistencia.setAnio(actuaAsistenciaBean.getAnio());
-					asistencia.setNumero(actuaAsistenciaBean.getNumero().intValue());
-					asistencia.setJuzgado(actuaAsistenciaBean.getIdJuzgado().longValue());
-					asistencia.setJuzgadoIdInstitucion(actuaAsistenciaBean.getIdInstitucion());
-					if(actuacionAsistenciaForm.getNumeroProcedimientoAsistencia()==null||actuacionAsistenciaForm.getNumeroProcedimientoAsistencia().equals("")){
-						asistencia.setNumeroProcedimiento(actuaAsistenciaBean.getNumeroAsunto());
-					}else{
-						asistencia.setNumeroProcedimiento(actuacionAsistenciaForm.getNumeroProcedimientoAsistencia());
-					}
-					admAsistencias.updateAsistenciaDesdeActuacion(asistencia);
-				}
-				
-			}
+			
 		}
 		
 		
@@ -242,46 +238,45 @@ public class AtosAsistenciasService extends JtaBusinessServiceTemplate
 		
 		actuacionAsistenciaAdm.insert(actuaAsistenciaBean);
 		
-if(actuacionAsistenciaForm.getNumeroAsunto()!=null && !actuacionAsistenciaForm.getNumeroAsunto().equals("")){
 			
-			if(actuacionAsistenciaForm.getIdComisaria()!=null && !actuacionAsistenciaForm.getIdComisaria().equals("")){
-				if(actuacionAsistenciaForm.getComisariaAsistencia()==null||actuacionAsistenciaForm.getComisariaAsistencia().equals("")){
-					ScsAsistenciasAdm admAsistencias = new ScsAsistenciasAdm(usrBean);
-					ScsAsistenciasBean asistencia = new ScsAsistenciasBean();
-					asistencia.setIdInstitucion(actuaAsistenciaBean.getIdInstitucion());
-					asistencia.setAnio(actuaAsistenciaBean.getAnio());
-					asistencia.setNumero(actuaAsistenciaBean.getNumero().intValue());
-					asistencia.setComisaria(actuaAsistenciaBean.getIdComisaria().longValue());
-					asistencia.setComisariaIdInstitucion(actuaAsistenciaBean.getIdInstitucion());
-					if(actuacionAsistenciaForm.getNumeroDiligenciaAsistencia()==null||actuacionAsistenciaForm.getNumeroDiligenciaAsistencia().equals("")){
-						asistencia.setNumeroDiligencia(actuaAsistenciaBean.getNumeroAsunto());
-					}else{
-						asistencia.setNumeroDiligencia(actuacionAsistenciaForm.getNumeroDiligenciaAsistencia());
-						
-					}
-					admAsistencias.updateAsistenciaDesdeActuacion(asistencia);
-				}
+		if(actuacionAsistenciaForm.getIdComisaria()!=null && !actuacionAsistenciaForm.getIdComisaria().equals("")){
+			if(actuacionAsistenciaForm.getComisariaAsistencia()==null||actuacionAsistenciaForm.getComisariaAsistencia().equals("")){
+				ScsAsistenciasAdm admAsistencias = new ScsAsistenciasAdm(usrBean);
+				ScsAsistenciasBean asistencia = new ScsAsistenciasBean();
+				asistencia.setIdInstitucion(actuaAsistenciaBean.getIdInstitucion());
+				asistencia.setAnio(actuaAsistenciaBean.getAnio());
+				asistencia.setNumero(actuaAsistenciaBean.getNumero().intValue());
+				asistencia.setComisaria(actuaAsistenciaBean.getIdComisaria().longValue());
+				asistencia.setComisariaIdInstitucion(actuaAsistenciaBean.getIdInstitucion());
 				
-			}
-			if(actuacionAsistenciaForm.getIdJuzgado()!=null && !actuacionAsistenciaForm.getIdJuzgado().equals("")){
-				if(actuacionAsistenciaForm.getJuzgadoAsistencia()==null||actuacionAsistenciaForm.getJuzgadoAsistencia().equals("")){
-					ScsAsistenciasAdm admAsistencias = new ScsAsistenciasAdm(usrBean);
-					ScsAsistenciasBean asistencia = new ScsAsistenciasBean();
-					asistencia.setIdInstitucion(actuaAsistenciaBean.getIdInstitucion());
-					asistencia.setAnio(actuaAsistenciaBean.getAnio());
-					asistencia.setNumero(actuaAsistenciaBean.getNumero().intValue());
-					asistencia.setJuzgado(actuaAsistenciaBean.getIdJuzgado().longValue());
-					asistencia.setJuzgadoIdInstitucion(actuaAsistenciaBean.getIdInstitucion());
-					if(actuacionAsistenciaForm.getNumeroProcedimientoAsistencia()==null||actuacionAsistenciaForm.getNumeroProcedimientoAsistencia().equals("")){
-						asistencia.setNumeroProcedimiento(actuaAsistenciaBean.getNumeroAsunto());
-					}else{
-						asistencia.setNumeroProcedimiento(actuacionAsistenciaForm.getNumeroProcedimientoAsistencia());
-						
-					}
-					admAsistencias.updateAsistenciaDesdeActuacion(asistencia);
+				if((actuacionAsistenciaForm.getNumeroDiligenciaAsistencia()==null||actuacionAsistenciaForm.getNumeroDiligenciaAsistencia().equals(""))&&actuacionAsistenciaForm.getNumeroAsunto()!=null && !actuacionAsistenciaForm.getNumeroAsunto().equals("")){
+					asistencia.setNumeroDiligencia(actuaAsistenciaBean.getNumeroAsunto());
+				}else{
+					asistencia.setNumeroDiligencia(actuacionAsistenciaForm.getNumeroDiligenciaAsistencia());
+					
 				}
-				
+				admAsistencias.updateAsistenciaDesdeActuacion(asistencia);
 			}
+			
+		}
+		if(actuacionAsistenciaForm.getIdJuzgado()!=null && !actuacionAsistenciaForm.getIdJuzgado().equals("")){
+			if(actuacionAsistenciaForm.getJuzgadoAsistencia()==null||actuacionAsistenciaForm.getJuzgadoAsistencia().equals("")){
+				ScsAsistenciasAdm admAsistencias = new ScsAsistenciasAdm(usrBean);
+				ScsAsistenciasBean asistencia = new ScsAsistenciasBean();
+				asistencia.setIdInstitucion(actuaAsistenciaBean.getIdInstitucion());
+				asistencia.setAnio(actuaAsistenciaBean.getAnio());
+				asistencia.setNumero(actuaAsistenciaBean.getNumero().intValue());
+				asistencia.setJuzgado(actuaAsistenciaBean.getIdJuzgado().longValue());
+				asistencia.setJuzgadoIdInstitucion(actuaAsistenciaBean.getIdInstitucion());
+				if((actuacionAsistenciaForm.getNumeroProcedimientoAsistencia()==null||actuacionAsistenciaForm.getNumeroProcedimientoAsistencia().equals(""))&&actuacionAsistenciaForm.getNumeroAsunto()!=null && !actuacionAsistenciaForm.getNumeroAsunto().equals("")){
+					asistencia.setNumeroProcedimiento(actuaAsistenciaBean.getNumeroAsunto());
+				}else{
+					asistencia.setNumeroProcedimiento(actuacionAsistenciaForm.getNumeroProcedimientoAsistencia());
+					
+				}
+				admAsistencias.updateAsistenciaDesdeActuacion(asistencia);
+			}
+			
 		}
 			
 

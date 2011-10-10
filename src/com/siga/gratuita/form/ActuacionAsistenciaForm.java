@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
+import com.atos.utils.UsrBean;
 import com.siga.beans.ScsActuacionAsistenciaBean;
 import com.siga.beans.ScsComisariaBean;
 import com.siga.beans.ScsJuzgadoBean;
@@ -17,8 +18,8 @@ import com.siga.general.MasterForm;
 
 public class ActuacionAsistenciaForm extends MasterForm 
 {
-	
-	  String idInstitucion; 
+
+      String idInstitucion; 
 	  String anio;   
 	  String numero;               
 	  String idActuacion;        
@@ -51,7 +52,7 @@ public class ActuacionAsistenciaForm extends MasterForm
 	  String letradoActuaciones;
 	  
 	  String fichaColegial;
-	  
+	  boolean isLetrado= true;
 	  String botones="";
 	  String tipoPcajg="";
 	  String numeroProcedimientoAsistencia;
@@ -291,7 +292,10 @@ public class ActuacionAsistenciaForm extends MasterForm
 			
 			if(fechaJustificacion!=null&& !fechaJustificacion.equals("")){
 				try {
-					actuacionAsistenciaBean.setFechaJustificacion(GstDate.getApplicationFormatDate("", fechaJustificacion) );
+					if(!fechaJustificacion.equals("sysdate"))
+						actuacionAsistenciaBean.setFechaJustificacion(GstDate.getApplicationFormatDate("", fechaJustificacion) );
+					else
+						actuacionAsistenciaBean.setFechaJustificacion(fechaJustificacion);
 				} catch (ClsExceptions e1) {}
 			}
 			
@@ -359,6 +363,9 @@ public class ActuacionAsistenciaForm extends MasterForm
 		}else{
 			if(fechaAnulacionAsistencia!=null && !fechaAnulacionAsistencia.equals("")){
 				botones = "C";
+			}else if(isLetrado&&((validada!=null && validada.equals("1"))||(anulacion!=null && anulacion.equals("1")))){
+				botones = "C";
+			
 			}else{
 				if(fichaColegial!=null && fichaColegial.equals("0")){
 					botones = "B,C,E";
@@ -456,6 +463,13 @@ public class ActuacionAsistenciaForm extends MasterForm
 	public void setJuzgadoAsistencia(String juzgadoAsistencia) {
 		this.juzgadoAsistencia = juzgadoAsistencia;
 	}
+	public boolean isLetrado() {
+		return isLetrado;
+	}
+	public void setLetrado(boolean isLetrado) {
+		this.isLetrado = isLetrado;
+	}
+	
 	
 	
 	

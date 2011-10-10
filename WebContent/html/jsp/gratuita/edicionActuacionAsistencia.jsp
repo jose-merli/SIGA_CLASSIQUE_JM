@@ -48,9 +48,7 @@ function preAccionTipoActuacion()
 {	
 	if(document.ActuacionAsistenciaFormEdicion.idTipoActuacion.value=='-1'){
 		document.getElementById('tiposCosteFijoActuaciones').options.length = 0;
-		
 		return 'cancel';
-		
 	}
 	document.ActuacionAsistenciaForm.idTipoAsistencia.value = document.ActuacionAsistenciaFormEdicion.idTipoAsistencia.value;
 }
@@ -59,7 +57,6 @@ function postAccionTipoActuacion()
 {	
 	document.getElementById('idCosteFijoActuacion').value=  document.getElementById('auxIdCosteFijoActuacion').value ;
 	document.getElementById('auxIdCosteFijoActuacion').value = '';
-	//alert("document.ActuacionAsistenciaForm.modo.value"+document.ActuacionAsistenciaForm.modo.value);
 	if(document.ActuacionAsistenciaForm.modo.value =='ver' || document.ActuacionAsistenciaFormEdicion.validada.value==1 ||  document.ActuacionAsistenciaFormEdicion.anulacion.value==1){
 		document.getElementById('idCosteFijoActuacion').disabled ="disabled";
 	}else{
@@ -109,6 +106,7 @@ function postAccionTipoActuacion()
 	
 	
 	<input type="hidden" name="validarJustificaciones" value="${asistencia.validarJustificaciones}" />
+	<input type="hidden" name="isLetrado" value="${usrBean.letrado}" />
 	<html:hidden property="idTipoAsistencia" value="${ActuacionAsistenciaFormEdicion.idTipoAsistencia}"/>
 	
 	<input type="hidden" name="auxIdCosteFijoActuacion" value="${ActuacionAsistenciaFormEdicion.idCosteFijoActuacion}" />
@@ -121,13 +119,15 @@ function postAccionTipoActuacion()
 <siga:ConjCampos leyenda="gratuita.mantActuacion.literal.dasistencia">
 	<table width="100%" style="table-layout:fixed">
 		<tr>
-			<td width="12%"></td>
+			<td width="6%"></td>
 			<td width="22%"></td>
-			<td width="8%"></td>
-			<td width="26%"></td>
-			<td width="8%"></td>
-			<td width="8%"></td>
-			<td width="8%"></td>
+			<td width="6%"></td>
+			<td width="22%"></td>
+			<td width="4%"></td>
+			<td width="4%"></td>
+			<td width="6%"></td>
+			<td width="4%"></td>
+			<td width="6%"></td>
 			<td width="8%"></td>
 			
 		</tr>
@@ -158,6 +158,13 @@ function postAccionTipoActuacion()
 			</td>
 			<td class="labelTextValor">	
 				<c:out value="${asistencia.numero}"></c:out>
+				
+			</td>
+			<td class="labelText">	
+				<siga:Idioma key='gratuita.mantActuacion.literal.fecha'/>
+			</td>
+			<td class="labelTextValor">	
+				<c:out value="${asistencia.fechaHora}"></c:out>
 				
 			</td>
 		</tr>
@@ -272,7 +279,7 @@ function postAccionTipoActuacion()
 				<tr>
 					<td class="labelText"><siga:Idioma
 							key='gratuita.mantActuacion.literal.nactuacion' />&nbsp;(*)</td>
-					<td colspan ="2" class="labelTextValor">
+					<td class="labelTextValor">
 						<c:choose>
 							<c:when test="${ActuacionAsistenciaForm.modo=='nuevo'}">
 								<html:text name="ActuacionAsistenciaFormEdicion"
@@ -286,6 +293,12 @@ function postAccionTipoActuacion()
 						
 						
 					</td>
+					
+					<td class="labelText" style="text-align: center;"><siga:Idioma
+							key='gratuita.mantActuacion.literal.anulacion' />
+					<input type="checkbox"	id="checkAnulacion" onclick="onclickCheckAnulacion();"/>
+					</td>
+					
 					<td class="labelText"><siga:Idioma
 							key='gratuita.mantActuacion.literal.descripcion' />
 					</td>
@@ -296,7 +309,7 @@ function postAccionTipoActuacion()
 					<td class="labelText"><siga:Idioma
 							key='gratuita.mantActuacion.literal.fecha' />&nbsp;(*)</td>
 
-					<td colspan ="2" class="labelTextValor">
+					<td colspan ="2">
 					<c:choose>
 							<c:when test="${ActuacionAsistenciaForm.modo=='ver' ||  ActuacionAsistenciaFormEdicion.validada==1 ||  ActuacionAsistenciaFormEdicion.anulacion==1}">
 								<html:text property="fecha" size="10" readonly="true"
@@ -339,7 +352,7 @@ function postAccionTipoActuacion()
 					<td class="labelText"><siga:Idioma
 							key="gratuita.mantActuacion.literal.Coste" /></td>
 					<td colspan="4"><html:select styleClass="boxCombo"
-							style="width:310px;" styleId="tiposCosteFijoActuaciones" name="ActuacionAsistenciaFormEdicion"
+							style="width:600px;" styleId="tiposCosteFijoActuaciones" name="ActuacionAsistenciaFormEdicion"
 							property="idCosteFijoActuacion">
 							<bean:define id="tipoCosteFijoActuaciones"
 								name="ActuacionAsistenciaForm"
@@ -363,19 +376,28 @@ function postAccionTipoActuacion()
 						</c:choose>	
 					</td>
 
-					<td class="labelText"><siga:Idioma
-							key='gratuita.mantActuacion.literal.anulacion' /></td>
-					<td><input type="checkbox"	id="checkAnulacion"/>
+					<td class="labelText" colspan="2">&nbsp;
 					</td>
 
 				</tr>
 				<tr>
-					<td class="labelText"><siga:Idioma
+					<td colspan="5">
+					<table>
+					<tr>
+						<td width="20%"></td>
+						<td width="5%"></td>
+						<td width="5%"></td>
+						<td width="70%"></td>
+					</tr>
+					<tr>
+						<td >&nbsp;
+						</td>
+						<td class="labelText"><siga:Idioma
 							key="gratuita.mantenimientoTablasMaestra.literal.comisaria" /></td>
-					<td><input type="text" id="codComisaria" class="box" size="8"
+						<td><input type="text" id="codComisaria" class="box" size="8"
 						style=" margin-top: 2px;" maxlength="10"
 						onBlur="obtenerComisaria();" /></td>
-					<td colspan="3"><html:select styleClass="boxCombo"
+						<td ><html:select styleClass="boxCombo"
 							style="width:680px;" name="ActuacionAsistenciaFormEdicion"
 							property="idComisaria" onchange="cambioComisaria();">
 							<bean:define id="comisarias" name="ActuacionAsistenciaForm"
@@ -389,14 +411,21 @@ function postAccionTipoActuacion()
 
 				</tr>
 				<tr>
-
+						<td ></td>
+						<td class="labelText" style="text-align: center;">ó</td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+					<td >&nbsp;
+					</td>
 					<td class="labelText"><siga:Idioma
 							key="gratuita.mantenimientoTablasMaestra.literal.juzgado" /></td>
 
 					<td><input type="text" id="codJuzgado" class="box" size="8"
 						style=" margin-top: 2px;" maxlength="10"
 						onBlur="obtenerJuzgado();" /></td>
-					<td colspan="3"><html:select styleClass="boxCombo"
+					<td ><html:select styleClass="boxCombo"
 							style="width:680px;" name="ActuacionAsistenciaFormEdicion"
 							property="idJuzgado" onchange="cambioJuzgado();">
 							<bean:define id="juzgados" name="ActuacionAsistenciaForm"
@@ -405,6 +434,8 @@ function postAccionTipoActuacion()
 								label="nombre" />
 						</html:select></td>
 				</tr>
+				</table>
+				</td>
 				<tr>
 					<td class="labelText"><siga:Idioma
 							key="gratuita.mantenimientoTablasMaestra.literal.prision" /></td>
@@ -424,8 +455,48 @@ function postAccionTipoActuacion()
 			</table>
 		</siga:ConjCampos>
 
-		<c:choose>
-<c:when test="${usrBean.letrado==false}">
+	<c:choose>
+		<c:when test="${ActuacionAsistenciaFormEdicion.facturado=='1' ||ActuacionAsistenciaForm.modo=='ver'}">
+		<siga:ConjCampos leyenda="gratuita.mantActuacion.literal.justificacion">
+			<table width="100%" border="0">
+				<tr>
+					<td width="15%"></td>
+					<td width="15%"></td>
+					<td width="10%"></td>
+					<td width="20%"></td>
+					<td width="15%"></td>
+					<td width="30%"></td>
+
+				</tr>
+	
+		<tr>
+
+			<td class="labelText" valign="top">	
+				<siga:Idioma key='gratuita.mantActuacion.literal.fecha' />
+			</td>	
+			<td class="labelTextValor">	
+				<html:text property="fechaJustificacion" size="10" readonly="true"
+												styleClass="boxConsulta"
+												value="${ActuacionAsistenciaFormEdicion.fechaJustificacion}" />
+			</td>
+			<td colspan="2" class="labelTextValor">&nbsp;
+					<c:if test="${ ActuacionAsistenciaFormEdicion.validada==1}">
+						<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>
+					</c:if>
+				</td>
+				
+				<td class="labelText">	
+					<siga:Idioma key='gratuita.mantActuacion.literal.observaciones' />
+				</td>	
+				<td class="labelTextValor">
+					<html:textarea name="ActuacionAsistenciaFormEdicion" property="observacionesJustificacion" cols="90" rows="3" style="overflow:auto" styleClass="boxCombo"></html:textarea>
+				</td>
+				</tr>
+				</table>
+				</siga:ConjCampos>								
+		</c:when>
+		
+	<c:when test="${usrBean.letrado==false}">
 	
 	
 	<siga:ConjCampos leyenda="gratuita.mantActuacion.literal.justificacion">
@@ -447,51 +518,19 @@ function postAccionTipoActuacion()
 			</td>	
 								
 			<td class="labelTextValor">	
-			
-				<c:choose>
-							<c:when test="${ActuacionAsistenciaForm.modo=='ver'}">
-								<html:text property="fechaJustificacion" size="10" readonly="true"
-												styleClass="boxConsulta"
-												value="${ActuacionAsistenciaFormEdicion.fechaJustificacion}" />
-							
-							</c:when>
-							<c:otherwise>
-								<html:text property="fechaJustificacion" size="10" readonly="true"
-												styleClass="box"
-												value="${ActuacionAsistenciaFormEdicion.fechaJustificacion}" />&nbsp; <a
-											name="calendarioTd" 
-											href='javascript://'
-											onClick="showCalendarGeneral(fechaJustificacion);volverJustificacion();"> <img
-												src="<html:rewrite page='/html/imagenes/calendar.gif'/>"
-												border="0"> </a>
-							</c:otherwise>	
-						</c:choose>
-			
-			
-				
+					<html:text property="fechaJustificacion" size="10" readonly="true"
+							styleClass="box"
+							value="${ActuacionAsistenciaFormEdicion.fechaJustificacion}" />&nbsp; <a
+							name="calendarioTd" 
+							href='javascript://'
+							onClick="showCalendarGeneral(fechaJustificacion);volverJustificacion();"> <img
+							src="<html:rewrite page='/html/imagenes/calendar.gif'/>"
+							border="0"> </a>
 			</td>
 				
 
 			
-			<c:choose>
-				<c:when test="${ActuacionAsistenciaForm.modo=='ver'}">
-					
-					<td colspan="2" class="labelTextValor">&nbsp;
-						<c:if test="${ ActuacionAsistenciaFormEdicion.validada==1}">
-							<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>
-						</c:if>
-					</td>
-					
-					<td class="labelText">	
-						<siga:Idioma key='gratuita.mantActuacion.literal.observaciones' />
-					</td>	
-					<td class="labelTextValor">
-						<html:textarea name="ActuacionAsistenciaFormEdicion" property="observacionesJustificacion" cols="90" rows="3" style="overflow:auto" styleClass="boxCombo"></html:textarea>
-					</td>
-				</c:when>
-				
-				<c:when
-						test="${ActuacionAsistenciaFormEdicion.facturado==0}">
+
 					<td>
 					<input type="button" alt="<siga:Idioma key='gratuita.altaTurnos.literal.validacion'/>"
 								id="idButton" onclick="validaJustificacion();"
@@ -509,26 +548,20 @@ function postAccionTipoActuacion()
 					<td class="labelTextValor">
 						<html:textarea name="ActuacionAsistenciaFormEdicion" property="observacionesJustificacion" cols="90" rows="3" style="overflow:auto" styleClass="boxCombo"></html:textarea>
 					</td>
-				</c:when>
-				
-				<c:when
-					test="${ActuacionAsistenciaForm.modo!='ver'&&ActuacionAsistenciaFormEdicion.facturado==1}">
-					<td colspan = "2" class="labelTextValor">Actuacion facturada</td>
-					
-				<td class="labelText">	
-						<siga:Idioma key='gratuita.mantActuacion.literal.observaciones' />
-					</td>	
-					<td class="labelTextValor">
-						<c:out	value="${ActuacionAsistenciaFormEdicion.observacionesJustificacion}"></c:out>
-					</td>
-				</c:when>
-			</c:choose>		
+
 			
 				
 		</tr>
 		
 	</table>
 	</siga:ConjCampos>
+</c:when>
+<c:when test="${usrBean.letrado==true && asistencia.validarJustificaciones=='N' }">
+	<html:hidden name="ActuacionAsistenciaFormEdicion"
+								property="fechaJustificacion" value="sysdate"/>
+	<html:hidden name="ActuacionAsistenciaFormEdicion"
+								property="observacionesJustificacion" value="Validado automáticamente por configuración del turno" />
+	
 </c:when>
 <c:otherwise>
 	<html:hidden name="ActuacionAsistenciaFormEdicion"
@@ -650,8 +683,61 @@ function inicio()
 
 	}
 	
+	// if(document.ActuacionAsistenciaForm.modo.value=='ver' || document.ActuacionAsistenciaFormEdicion.validada.value=="1" || document.ActuacionAsistenciaFormEdicion.anulacion.value=='1'){
+	if(document.ActuacionAsistenciaForm.modo.value=='ver' ){
+		habilitarCampos(false);
+		
+	}else{
+		
+		if(document.getElementById('isLetrado').value=='false'){
+						
+			if(document.ActuacionAsistenciaFormEdicion.anulacion.value=="1"){
+				habilitarCampos(false);
+				document.getElementById('fechaJustificacion').className="boxConsulta";
+				document.getElementById("calendarioTd").style.visibility="hidden";
+				document.getElementById("idValidacion").style.visibility="hidden";
+				
+				document.getElementById("checkAnulacion").disabled = "";
+			}else if(document.ActuacionAsistenciaFormEdicion.validada.value=="1"){
+				habilitarCampos(false);	
+				
+			}
+			
+		}else{
+			if(document.ActuacionAsistenciaFormEdicion.anulacion.value=="1" ||document.ActuacionAsistenciaFormEdicion.validada.value=="1"){
+				habilitarCampos(false);
+			}
+		}
+	}
+
 	
-	if(document.ActuacionAsistenciaForm.modo.value=='ver' || document.ActuacionAsistenciaFormEdicion.validada.value=="1" || document.ActuacionAsistenciaFormEdicion.anulacion.value=='1'){
+	
+}
+function habilitarCampos(isHabilitar) {
+	if(isHabilitar==true){
+		inputs = document.getElementsByTagName("input");
+		for(var i = 0 ; i <inputs.length ; i++) {
+			input = inputs[i];
+			if(input.type=="checkbox")
+				input.disabled =  "";
+			else if(input.type!="button"){
+				input.className =  "box";
+				//input.disabled =  "disabled";
+			}
+		}
+		selects = document.getElementsByTagName("select");
+		for(var i = 0 ; i <selects.length ; i++) {
+			select = selects[i];
+			select.disabled =  ""; 
+		}
+		textareas = document.getElementsByTagName("textarea");
+		for(var i = 0 ; i <textareas.length ; i++) {
+			textarea = textareas[i];
+			textarea.disabled =  ""; 
+		}	
+	
+		
+	}else{
 		inputs = document.getElementsByTagName("input");
 		for(var i = 0 ; i <inputs.length ; i++) {
 			input = inputs[i];
@@ -672,53 +758,22 @@ function inicio()
 			textarea = textareas[i];
 			textarea.disabled =  "disabled"; 
 		}
+	}
 		
-	}
 
-
-	//Si la asistencia está valiada o anulada se deshabilitan todos los campos
-	if(document.ActuacionAsistenciaForm.modo.value!='ver' && (document.ActuacionAsistenciaFormEdicion.validada.value=="1" || document.ActuacionAsistenciaFormEdicion.anulacion.value=='1')){
-		document.getElementById('observacionesJustificacion').disabled =  ""; 
-		document.getElementById('idButton').className =  "box";
-		document.getElementById('checkAnulacion').disabled =  ""; 
-	}
 	
-	//Aqui dependiendo del modo, si es consulta deshabiliatremos todo
-	//si es nuevo
 	
 }
 function refrescarLocal() {
 	document.ActuacionAsistenciaForm.modo.value = 'abrir';
 	window.close();
-	// document.ActuacionAsistenciaForm.target ='submitArea';
-	// document.ActuacionAsistenciaForm.modo.value = 'abrir';
-	//document.ActuacionAsistenciaForm.submit();
 	
 }
 
 function accionGuardarCerrar() 
 {
 	sub();
-
-	inputs = document.getElementsByTagName("input");
-	for(var i = 0 ; i <inputs.length ; i++) {
-		input = inputs[i];
-		if(input.type=="checkbox")
-			input.disabled =  "";
-		else if(input.type!="button"){
-			input.className =  "box";
-		}
-	}
-	selects = document.getElementsByTagName("select");
-	for(var i = 0 ; i <selects.length ; i++) {
-		select = selects[i];
-		select.disabled =  ""; 
-	}
-	textareas = document.getElementsByTagName("textarea");
-	for(var i = 0 ; i <textareas.length ; i++) {
-		textarea = textareas[i];
-		textarea.disabled =  ""; 
-	}
+	
 	
 	if(document.ActuacionAsistenciaFormEdicion.idTipoActuacion.value== '-1'){
 		msg = "<siga:Idioma key='errors.required' arg0='gratuita.mantActuacion.literal.tipoActuacion'/>";
@@ -736,11 +791,19 @@ function accionGuardarCerrar()
 	}else{
 		document.ActuacionAsistenciaFormEdicion.anulacion.value = '0';
 	}
+	if(document.getElementById("validarJustificaciones").value=='N' &&document.getElementById("isLetrado").value=='true' ){
+		document.ActuacionAsistenciaFormEdicion.validada.value = "1";
+	}
+	habilitarCampos(true);
+	
 	if (validateActuacionAsistenciaFormEdicion(document.ActuacionAsistenciaFormEdicion)){
 		document.ActuacionAsistenciaForm.modo.value = 'abrir';
 		document.ActuacionAsistenciaFormEdicion.submit();
 	 }else{
-	 	fin();
+		 fin();
+	 
+		
+
  	}
 	
 }
@@ -762,6 +825,9 @@ function compruebaDiaDespues(fecha1, fecha2){
 			}// fin del if
 	  }// fin del if
 }
+function onclickCheckAnulacion () {
+	
+}
 
 function validaJustificacion () {
 	
@@ -773,6 +839,7 @@ function validaJustificacion () {
 		document.getElementById('fechaJustificacion').value="";
 		
 		
+		
 	}else{
 		document.getElementById('fechaJustificacion').className="boxConsulta";
 		document.ActuacionAsistenciaFormEdicion.validada.value="1";
@@ -782,7 +849,9 @@ function validaJustificacion () {
 			document.getElementById('fechaJustificacion').value=getFechaActualDDMMYYYY();
 			
 		}
+		
 	}
+	
 
 }
 function volverJustificacion () {
