@@ -4,11 +4,12 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.beans.GenParametrosAdm;
-import com.siga.ws.PCAJG.SUBTIPOCAJG;
 import com.siga.ws.cat.PCAJGGeneraXML;
 import com.siga.ws.cat.PCAJGxmlResponse;
 import com.siga.ws.i2055.SIGAWSClient;
 import com.siga.ws.i2064.PCAJGGeneraXMLSantiago;
+import com.siga.ws.i2083.PCAJGAragon;
+import com.siga.ws.i2083.PCAJGAragon.SUBTIPOCAJGAragon;
 
 /**
  * @author angel.corral
@@ -39,9 +40,9 @@ public class CajgConfiguracion  {
 			String paramEnvioWS = admParametros.getValor(idInstitucion.toString(), "SCS", PCAJG_ENVIO_WEBSERVICE_TIPO_CAJG3, "");
 			
 			if ("1".equals(paramEnvioWS)) {
-				obj = new PCAJG(SUBTIPOCAJG.ENVIO_WEBSERVICE);	
+				obj = new PCAJGAragon(SUBTIPOCAJGAragon.ENVIO_WEBSERVICE);	
 			} else {
-				obj = new PCAJG(SUBTIPOCAJG.DESCARGA_FICHERO);
+				obj = new PCAJGAragon(SUBTIPOCAJGAragon.DESCARGA_FICHERO);
 			}			
 			
 		} else if (tipoCAJG == TIPO_CAJG_WEBSERVICE_PAMPLONA) {

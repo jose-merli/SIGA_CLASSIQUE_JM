@@ -1,4 +1,4 @@
-package com.siga.ws;
+package com.siga.ws.i2083;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -38,53 +38,56 @@ import com.siga.eejg.SignerXMLHandler;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.action.DefinirRemesasCAJGAction;
 import com.siga.informes.MasterWords;
-import com.siga.ws.pcajg.DatosDomicilio;
-import com.siga.ws.pcajg.IntercambioDocument;
-import com.siga.ws.pcajg.TipoAbogadoDesignado;
-import com.siga.ws.pcajg.TipoCodigoExpediente;
-import com.siga.ws.pcajg.TipoDatosContacto;
-import com.siga.ws.pcajg.TipoDatosPersona;
-import com.siga.ws.pcajg.TipoDatosProcurador;
-import com.siga.ws.pcajg.TipoDocumentacionExpediente;
-import com.siga.ws.pcajg.TipoDomiciliosPersona;
-import com.siga.ws.pcajg.TipoElementoTipificadoEstandar;
-import com.siga.ws.pcajg.TipoElementoTipificadoIntercambio;
-import com.siga.ws.pcajg.TipoExpediente;
-import com.siga.ws.pcajg.TipoIdentificacionIntercambio;
-import com.siga.ws.pcajg.TipoIdentificacionTramite;
-import com.siga.ws.pcajg.TipoInformacion;
-import com.siga.ws.pcajg.DatosDomicilio.Municipio;
-import com.siga.ws.pcajg.DatosDomicilio.Municipio.Municipio2;
-import com.siga.ws.pcajg.IntercambioDocument.Intercambio;
-import com.siga.ws.pcajg.TipoDocumentacionExpediente.Documentacion;
-import com.siga.ws.pcajg.TipoDocumentacionExpediente.Documentacion.DatosDocumento;
-import com.siga.ws.pcajg.TipoExpediente.Contrarios;
-import com.siga.ws.pcajg.TipoExpediente.DatosAsistenciaDetenido;
-import com.siga.ws.pcajg.TipoExpediente.DatosDefensaJudicial;
-import com.siga.ws.pcajg.TipoExpediente.DatosExpediente;
-import com.siga.ws.pcajg.TipoExpediente.DatosRepresentante;
-import com.siga.ws.pcajg.TipoExpediente.DatosSolicitante;
-import com.siga.ws.pcajg.TipoExpediente.DatosTramitacionExpediente;
-import com.siga.ws.pcajg.TipoExpediente.Familiares;
-import com.siga.ws.pcajg.TipoExpediente.ProfesionalesDesignados;
-import com.siga.ws.pcajg.TipoExpediente.Contrarios.Contrario;
-import com.siga.ws.pcajg.TipoExpediente.DatosAsistenciaDetenido.AbogadoAsistencia;
-import com.siga.ws.pcajg.TipoExpediente.DatosExpediente.CodigoExpedienteServicio;
-import com.siga.ws.pcajg.TipoExpediente.DatosExpediente.MarcasExpediente;
-import com.siga.ws.pcajg.TipoExpediente.DatosExpediente.MarcasExpediente.MarcaExpediente;
-import com.siga.ws.pcajg.TipoExpediente.DatosSolicitante.DatosEconomicosPersona;
-import com.siga.ws.pcajg.TipoExpediente.DatosSolicitante.DatosEconomicosPersona.Ingresos;
-import com.siga.ws.pcajg.TipoExpediente.DatosSolicitante.DatosEconomicosPersona.PropiedadesBienesInmuebles;
-import com.siga.ws.pcajg.TipoExpediente.DatosSolicitante.DatosEconomicosPersona.PropiedadesBienesMuebles;
-import com.siga.ws.pcajg.TipoExpediente.DatosSolicitante.DatosEconomicosPersona.PropiedadesBienesOtros;
-import com.siga.ws.pcajg.TipoExpediente.DatosTramitacionExpediente.TramiteArchivo;
-import com.siga.ws.pcajg.TipoExpediente.DatosTramitacionExpediente.TramiteDictamen;
-import com.siga.ws.pcajg.TipoExpediente.DatosTramitacionExpediente.TramiteResolucion;
-import com.siga.ws.pcajg.TipoExpediente.DatosTramitacionExpediente.TramiteResolucion.PrestacionesResolucion;
-import com.siga.ws.pcajg.TipoExpediente.Familiares.Familiar;
-import com.siga.ws.pcajg.TipoExpediente.ProfesionalesDesignados.AbogadosDesignados;
-import com.siga.ws.pcajg.TipoExpediente.ProfesionalesDesignados.ProcuradorDesignado;
-import com.siga.ws.pcajg.TipoInformacion.Expedientes;
+import com.siga.ws.PCAJGConstantes;
+import com.siga.ws.SIGAWSClientAbstract;
+import com.siga.ws.SigaWSHelper;
+import com.siga.ws.i2083.DatosDomicilio;
+import com.siga.ws.i2083.IntercambioDocument;
+import com.siga.ws.i2083.TipoAbogadoDesignado;
+import com.siga.ws.i2083.TipoCodigoExpediente;
+import com.siga.ws.i2083.TipoDatosContacto;
+import com.siga.ws.i2083.TipoDatosPersona;
+import com.siga.ws.i2083.TipoDatosProcurador;
+import com.siga.ws.i2083.TipoDocumentacionExpediente;
+import com.siga.ws.i2083.TipoDomiciliosPersona;
+import com.siga.ws.i2083.TipoElementoTipificadoEstandar;
+import com.siga.ws.i2083.TipoElementoTipificadoIntercambio;
+import com.siga.ws.i2083.TipoExpediente;
+import com.siga.ws.i2083.TipoIdentificacionIntercambio;
+import com.siga.ws.i2083.TipoIdentificacionTramite;
+import com.siga.ws.i2083.TipoInformacion;
+import com.siga.ws.i2083.DatosDomicilio.Municipio;
+import com.siga.ws.i2083.DatosDomicilio.Municipio.Municipio2;
+import com.siga.ws.i2083.IntercambioDocument.Intercambio;
+import com.siga.ws.i2083.TipoDocumentacionExpediente.Documentacion;
+import com.siga.ws.i2083.TipoDocumentacionExpediente.Documentacion.DatosDocumento;
+import com.siga.ws.i2083.TipoExpediente.Contrarios;
+import com.siga.ws.i2083.TipoExpediente.DatosAsistenciaDetenido;
+import com.siga.ws.i2083.TipoExpediente.DatosDefensaJudicial;
+import com.siga.ws.i2083.TipoExpediente.DatosExpediente;
+import com.siga.ws.i2083.TipoExpediente.DatosRepresentante;
+import com.siga.ws.i2083.TipoExpediente.DatosSolicitante;
+import com.siga.ws.i2083.TipoExpediente.DatosTramitacionExpediente;
+import com.siga.ws.i2083.TipoExpediente.Familiares;
+import com.siga.ws.i2083.TipoExpediente.ProfesionalesDesignados;
+import com.siga.ws.i2083.TipoExpediente.Contrarios.Contrario;
+import com.siga.ws.i2083.TipoExpediente.DatosAsistenciaDetenido.AbogadoAsistencia;
+import com.siga.ws.i2083.TipoExpediente.DatosExpediente.CodigoExpedienteServicio;
+import com.siga.ws.i2083.TipoExpediente.DatosExpediente.MarcasExpediente;
+import com.siga.ws.i2083.TipoExpediente.DatosExpediente.MarcasExpediente.MarcaExpediente;
+import com.siga.ws.i2083.TipoExpediente.DatosSolicitante.DatosEconomicosPersona;
+import com.siga.ws.i2083.TipoExpediente.DatosSolicitante.DatosEconomicosPersona.Ingresos;
+import com.siga.ws.i2083.TipoExpediente.DatosSolicitante.DatosEconomicosPersona.PropiedadesBienesInmuebles;
+import com.siga.ws.i2083.TipoExpediente.DatosSolicitante.DatosEconomicosPersona.PropiedadesBienesMuebles;
+import com.siga.ws.i2083.TipoExpediente.DatosSolicitante.DatosEconomicosPersona.PropiedadesBienesOtros;
+import com.siga.ws.i2083.TipoExpediente.DatosTramitacionExpediente.TramiteArchivo;
+import com.siga.ws.i2083.TipoExpediente.DatosTramitacionExpediente.TramiteDictamen;
+import com.siga.ws.i2083.TipoExpediente.DatosTramitacionExpediente.TramiteResolucion;
+import com.siga.ws.i2083.TipoExpediente.DatosTramitacionExpediente.TramiteResolucion.PrestacionesResolucion;
+import com.siga.ws.i2083.TipoExpediente.Familiares.Familiar;
+import com.siga.ws.i2083.TipoExpediente.ProfesionalesDesignados.AbogadosDesignados;
+import com.siga.ws.i2083.TipoExpediente.ProfesionalesDesignados.ProcuradorDesignado;
+import com.siga.ws.i2083.TipoInformacion.Expedientes;
 
 
 
@@ -94,16 +97,16 @@ import com.siga.ws.pcajg.TipoInformacion.Expedientes;
  * @author angelcpe
  *
  */
-public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
+public class PCAJGAragon extends SIGAWSClientAbstract implements PCAJGConstantes {
 		
-	protected static enum SUBTIPOCAJG {
+	public static enum SUBTIPOCAJGAragon {
 		DESCARGA_FICHERO,
 		ENVIO_WEBSERVICE
 	}
 	
-	private SUBTIPOCAJG subTipoCAJG = SUBTIPOCAJG.ENVIO_WEBSERVICE;
+	private SUBTIPOCAJGAragon subTipoCAJG = SUBTIPOCAJGAragon.ENVIO_WEBSERVICE;
 	
-	public PCAJG(SUBTIPOCAJG subTipoCAJG) {
+	public PCAJGAragon(SUBTIPOCAJGAragon subTipoCAJG) {
 		super();
 		this.subTipoCAJG = subTipoCAJG;
 	}
@@ -253,7 +256,7 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 		}
 
 		
-//		if (SUBTIPOCAJG.ENVIO_WEBSERVICE.equals(subTipoCAJG) && expedientes.size() > 0) {			
+//		if (SUBTIPOCAJGAragon.ENVIO_WEBSERVICE.equals(subTipoCAJG) && expedientes.size() > 0) {			
 //			if (getUrlWS() == null || getUrlWS().trim().equals("")) {
 //				throw new SIGAException("Falta especificar la url del webservice para la institución " + getIdInstitucion());
 //			}
@@ -1578,7 +1581,7 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 				// Marcar como generada
 				cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_GENERADA);
 	
-				if (!SUBTIPOCAJG.DESCARGA_FICHERO.equals(subTipoCAJG)
+				if (!SUBTIPOCAJGAragon.DESCARGA_FICHERO.equals(subTipoCAJG)
 							&& cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_ENVIADA)) {
 					//MARCAMOS COMO ENVIADA
 					cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), ClsConstants.REMITIDO_COMISION);

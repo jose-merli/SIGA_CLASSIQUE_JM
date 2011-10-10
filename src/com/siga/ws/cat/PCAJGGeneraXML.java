@@ -721,7 +721,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			for (int i = 0; i < list.size(); i++) {
 				Hashtable htDoc = (Hashtable)list.get(i);				
 				crearDocumentacionExpediente(datosFamiliares.addNewDocumentacionExpediente(), htDoc, D_TIPODOCUMENTACION_CDA
-						, D_TIPODOCUMENTO_CDA, D_FECHAPRESENTACIDO, D_DESCRIPCIONAMPLIAD, D_PROCEDENTE);
+						, D_TIPODOCUMENTO_CDA, D_FECHAPRESENTACIONDO, D_DESCRIPCIONAMPLIADA, D_PROCEDENTE);
 			}
 		}
 	}
@@ -813,7 +813,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			for (int i = 0; i < list.size(); i++) {
 				Hashtable ht = (Hashtable)list.get(i);
 				crearDocumentacionExpediente(datosSolicitante.addNewDocumentacionExpediente(), ht, D_TIPODOCUMENTACION_CDA, 
-						D_TIPODOCUMENTO_CDA, D_FECHAPRESENTACIDO, D_DESCRIPCIONAMPLIAD, D_PROCEDENTE);
+						D_TIPODOCUMENTO_CDA, D_FECHAPRESENTACIONDO, D_DESCRIPCIONAMPLIADA, D_PROCEDENTE);
 			}
 		}
 		
