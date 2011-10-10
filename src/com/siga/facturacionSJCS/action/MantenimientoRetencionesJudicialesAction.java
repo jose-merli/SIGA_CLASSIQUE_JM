@@ -308,6 +308,7 @@ public class MantenimientoRetencionesJudicialesAction extends MasterAction {
 			
 			// Segunda parte de la consulta (con los criterios de búsqueda seleccionados)
 			consulta += " WHERE RETENCIONES." + FcsRetencionesJudicialesBean.C_IDINSTITUCION + " = " + user.getLocation();
+			consulta += " AND RETENCIONES." + FcsRetencionesJudicialesBean.C_IDINSTITUCION + " = O." + FcsDestinatariosRetencionesBean.C_IDINSTITUCION;
 			consulta += " AND RETENCIONES." + FcsRetencionesJudicialesBean.C_IDDESTINATARIO + " = O." + FcsDestinatariosRetencionesBean.C_IDDESTINATARIO;
 			boolean checkEsDeTurno  = UtilidadesString.stringToBoolean(miFormulario.getCheckEsDeTurno());
 			if (checkEsDeTurno){
