@@ -327,9 +327,11 @@
 
 
 		function cargarComboTipoColegio(){
-		 	if(document.getElementById("idTipoEJGColegio").options.length<=2){
-		 		document.getElementById("idTipoEJGColegio").value=1;
-			 }
+			<%if (!modo.equalsIgnoreCase("ver")) {%>
+			 	if(document.getElementById("idTipoEJGColegio").options.length<=2){
+			 		document.getElementById("idTipoEJGColegio").value=1;
+				 }
+		 	<%}%>
 		}
 	
 		function refrescarLocal()
