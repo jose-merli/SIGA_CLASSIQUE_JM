@@ -68,8 +68,8 @@
 
 <!-- INICIO: TITULO Y LOCALIZACION -->
 <!-- Escribe el título y localización en la barra de título del frame principal -->
-<siga:Titulo titulo="informes.sjcs.pagos.literal.titulo"
-	localizacion="facturacion.localizacion" />
+<siga:Titulo titulo="censo.fichaCliente.sjcs.to.facturacion.titulo"
+	localizacion="censo.fichaCliente.sjcs.to.facturacion.localizacion" />
 <!-- FIN: TITULO Y LOCALIZACION -->
 
 </head>

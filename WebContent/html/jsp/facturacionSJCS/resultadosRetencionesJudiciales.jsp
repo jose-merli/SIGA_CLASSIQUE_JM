@@ -58,7 +58,7 @@
 	
 	<% if(esFicha != null && esFicha.equalsIgnoreCase("1")){%>
 	<siga:TituloExt 
-		titulo="gratuita.retencionesJudiciales.literal.titulo"  
+		titulo="censo.fichaCliente.sjcs.to.facturacion.titulo"  
 		localizacion="gratuita.retencionesJudiciales.literal.localizacion"/>
 	<%}%>
 	

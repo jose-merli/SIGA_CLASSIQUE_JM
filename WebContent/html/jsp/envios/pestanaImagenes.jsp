@@ -94,7 +94,7 @@
 		</script>
 		<!-- FIN: SCRIPTS BOTONES -->
 		<siga:Titulo
-			titulo="envios.definirTiposPlantillas.plantillas.cabecera" 
+			titulo="envios.definirTiposPlantillas.imagenes.cabecera" 
 			localizacion="envios.definirTiposPlantillas.localizacion"
 		/>
 	</head>

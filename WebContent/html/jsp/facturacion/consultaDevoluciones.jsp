@@ -76,7 +76,7 @@
 		<!-- Escribe el título y localización en la barra de título del frame principal -->
 		<siga:Titulo 
 			  titulo="facturacion.consultaDevolucion.cabecera" 
-			  localizacion="facturacion.busquedaAbonos.ruta"/>
+			  localizacion="facturacion.datosDevoluciones.ruta"/>
 		<!-- FIN: TITULO Y LOCALIZACION -->
 	
 	

@@ -45,7 +45,7 @@
 		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 		<!-- INICIO: TITULO Y LOCALIZACION -->
 		<!-- Escribe el título y localización en la barra de título del frame principal -->
-		<siga:Titulo titulo="expedientes.auditoria.seguimiento.cabecera" localizacion="expedientes.auditoria.literal.localizacion" />
+		<siga:Titulo titulo="expedientes.auditoria.seguimiento.cabecera" localizacion="expedientes.auditoria.localizacion" />
 		<!-- FIN: TITULO Y LOCALIZACION -->
 	</head>
 

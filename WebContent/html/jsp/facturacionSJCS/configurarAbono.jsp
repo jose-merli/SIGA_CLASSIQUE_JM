@@ -82,6 +82,13 @@
 	<script src="<%=app%>/html/js/validacionStrutsWithHidden.js" type="text/javascript"></script>
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	
+	<!-- INICIO: TITULO Y LOCALIZACION -->
+	<!-- Escribe el título y localización en la barra de título del frame principal -->
+	<siga:Titulo 
+		titulo="factSJCS.pagos.confabonos" 
+		localizacion="factSJCS.Pagos.localizacion"/>
+	<!-- FIN: TITULO Y LOCALIZACION -->	
 
 </head>
 

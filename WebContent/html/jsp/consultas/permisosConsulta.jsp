@@ -80,9 +80,9 @@
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:TituloExt 
-		titulo="consultas.consultasRecuperar.consulta.cabecera" 
-		localizacion=""/>
+	<siga:Titulo
+		titulo="consultas.consultasRecuperar.permisos" 
+		localizacion="consultas.consultasRecuperar.consulta.cabecera"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->	
 	
 	</head>

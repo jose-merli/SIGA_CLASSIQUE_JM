@@ -72,7 +72,7 @@
 		<!-- Escribe el título y localización en la barra de título del frame principal -->
 		<siga:Titulo 
 			titulo="expedientes.auditoria.resolucion.cabecera" 
-			localizacion="expedientes.auditoria.literal.localizacion"/>
+			localizacion="expedientes.auditoria.localizacion"/>
 		<!-- FIN: TITULO Y LOCALIZACION -->
 	
 	<!-- Calendario -->

@@ -37,6 +37,7 @@
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
+	<siga:Titulo titulo="sjcs.guardias.programacionCalendarios.configuracion" localizacion="sjcs.guardias.programacionCalendarios.localizacion"/>	
 	
 	<!-- FIN: TITULO Y LOCALIZACION -->
 

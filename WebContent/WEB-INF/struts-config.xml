@@ -2083,13 +2083,13 @@
 
 		<action path="/JGR_MovimientosVariosLetrado" type="com.siga.facturacionSJCS.action.MantenimientoMovimientosAction" parameter="esFichaColegial" name="MantenimientoMovimientosForm" scope="session">
             <forward name="inicio" path="/html/jsp/facturacionSJCS/busquedaMovimientos.jsp"/>
-            <forward name="resultado" path="/html/jsp/facturacionSJCS/busquedaMovimientosResultados.jsp"/>
+            <forward name="resultado" path="/html/jsp/facturacionSJCS/busquedaMovimientosResultados.jsp?esFichaColegial=1"/>
             <forward name="nuevo" path="/html/jsp/facturacionSJCS/datosMovimientos.jsp"/>
         </action>
 	
 		<action path="/JGR_RetencionesJudicialesLetrado" type="com.siga.facturacionSJCS.action.MantenimientoRetencionesJudicialesAction" parameter="esFichaColegial" name="MantenimientoRetencionesJudicialesForm" scope="request">
 			<forward name="inicio"	path="/html/jsp/facturacionSJCS/busquedaRetencionesJudiciales.jsp"/>
-			<forward name="resultado" path="/html/jsp/facturacionSJCS/resultadosRetencionesJudiciales.jsp"/>
+			<forward name="resultado" path="/html/jsp/facturacionSJCS/resultadosRetencionesJudiciales.jsp?esFichaColegial=1"/>
 			<forward name="operar"	path="/html/jsp/facturacionSJCS/datosRetencionesJudiciales.jsp"/>
 			<forward name="inicioListado" path="/html/jsp/facturacionSJCS/busquedaListadoRetenciones.jsp"/>
 			<forward name="resultadoListado" path="/html/jsp/facturacionSJCS/resultadosListadoRetenciones.jsp"/>

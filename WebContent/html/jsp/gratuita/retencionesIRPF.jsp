@@ -166,10 +166,6 @@
 		
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<siga:TituloExt 
-		titulo="gratuita.retencionesIRPF.literal.titulo" 
-		localizacion="gratuita.retencionesIRPF.literal.localizacion"/>
-		
-	<siga:TituloExt 
 			titulo="censo.fichaCliente.sjcs.retencionesIRPF.cabecera" 
 			localizacion="censo.fichaCliente.sjcs.retencionesIRPF.localizacion"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->

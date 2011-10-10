@@ -185,7 +185,7 @@
 <!-- HEAD -->
 <head>
 	<% if(strutTrans.equalsIgnoreCase("FCS_MantenimientoPrevisiones")){  %>
-		<siga:Titulo titulo="factSJCS.previsiones.cabecera" localizacion="factSJCS.previsiones.ruta"/>
+		<siga:Titulo titulo="factSJCS.mantenimientoFacturacion.datosGenerales" localizacion="factSJCS.previsiones.ruta.localizacion"/>
 	<% } else if(strutTrans.equalsIgnoreCase("CEN_MantenimientoFacturacion")) { %>
 		<siga:Titulo titulo="factSJCS.mantenimientoFacturacion.datosGenerales" localizacion="factSJCS.mantenimientoFacturacion.localizacion"/>
 	<% }  %>

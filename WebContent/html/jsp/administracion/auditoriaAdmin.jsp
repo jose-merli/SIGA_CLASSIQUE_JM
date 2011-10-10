@@ -57,7 +57,7 @@
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo titulo="administracion.auditoria.titulo" localizacion="menu.administracion"/>
+	<siga:Titulo titulo="administracion.auditoria.configuracion.titulo" localizacion="menu.auditoriaUsuarios.localizacion"/>
 	
 	<!-- FIN: TITULO Y LOCALIZACION -->
 	
