@@ -790,7 +790,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 	 */
 	protected String insertar(ActionMapping mapping, MasterForm formulario,
 			HttpServletRequest request, HttpServletResponse response)
-	throws SIGAException {
+	throws SIGAException, ClsExceptions {
 		
 		UserTransaction tx = null;
 		try{
@@ -800,13 +800,20 @@ public class ExpDatosGeneralesAction extends MasterAction
 			ExpDatosGeneralesForm form = (ExpDatosGeneralesForm)formulario;
 			HttpSession ses = request.getSession();
 			UsrBean user = (UsrBean)ses.getAttribute("USRBEAN");
-			
-			Hashtable hash = (Hashtable)request.getSession().getAttribute("DATABACKUP");	  
-			
 			String idInstitucion = user.getLocation();
+			Hashtable hash = new Hashtable();
+			
+			if(request.getSession().getAttribute("DATABACKUP") instanceof Hashtable){
+				hash = (Hashtable)request.getSession().getAttribute("DATABACKUP");	  
+
+			}else if(request.getSession().getAttribute("DATABACKUP") instanceof HashMap<?, ?>){
+				HashMap hashMap = (HashMap)request.getSession().getAttribute("DATABACKUP");	  
+				hash = (Hashtable)hashMap.get("datosGenerales");
+			}
+			
 			String idInstitucion_TipoExpediente = (String)hash.get(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE);
 			String idTipoExpediente = (String)hash.get(ExpExpedienteBean.C_IDTIPOEXPEDIENTE);
-
+				
 			// obtenemos el tipo de expediente para ver el tiempo de caducidad y calcularlo
 			Hashtable hashTipo = new Hashtable();
 			hashTipo.put(ExpTipoExpedienteBean.C_IDINSTITUCION, idInstitucion_TipoExpediente);
@@ -938,7 +945,8 @@ public class ExpDatosGeneralesAction extends MasterAction
 			Integer anioExpAGuardar = null;
 			Date fechaActual = (Date)GstDate.convertirFechaDiaMesAnio(form.getFecha());
 			
-			Integer numExp= devuelveNumExpediente(GstDate.getYear(fechaActual),hash,expAdm);
+			Hashtable numAnioExp= expAdm.getNewNumAnioExpediente(hash,GstDate.getYear(fechaActual));
+			Integer numExp = (Integer)numAnioExp.get(ExpExpedienteBean.C_NUMEROEXPEDIENTE);
 			
 			numExpAGuardar = numExp;
 			anioExpAGuardar = Integer.valueOf(GstDate.getYear(fechaActual));
@@ -973,6 +981,8 @@ public class ExpDatosGeneralesAction extends MasterAction
 			//Iniciamos la transacción
 			tx = user.getTransaction();
 			tx.begin();   
+			
+			
 			
 			//Ahora procedemos a insertarlo
 			if (expAdm.insert(expBean)){
@@ -1056,6 +1066,14 @@ public class ExpDatosGeneralesAction extends MasterAction
 			} else {
 				throw new ClsExceptions(expAdm.getError());
 			}
+			
+		}catch (ClsExceptions cl) {
+			if(cl.getMsg().contains("PK_EXP_EXPEDIENTE")){
+				throw new SIGAException("No se ha podido guardar el expediente porque otro usuario estaba guardando otro del mismo tipo al mismo tiempo. Por favor, vuelva a darle al botón Guardar");
+			}else{
+				throwExcp("messages.general.error",new String[] {"modulo.expediente"},cl,tx);
+			}
+					
 		}catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,tx); 
 		}
@@ -1073,7 +1091,15 @@ public class ExpDatosGeneralesAction extends MasterAction
 		try{
 			ExpDatosGeneralesForm form = (ExpDatosGeneralesForm)formulario;
 			
-			Hashtable datosExp = (Hashtable)request.getSession().getAttribute("DATABACKUP");
+			Hashtable datosExp = new Hashtable();
+			
+			if(request.getSession().getAttribute("DATABACKUP") instanceof Hashtable){
+				datosExp = (Hashtable)request.getSession().getAttribute("DATABACKUP");	  
+
+			}else if(request.getSession().getAttribute("DATABACKUP") instanceof HashMap<?, ?>){
+				HashMap hashMap = (HashMap)request.getSession().getAttribute("DATABACKUP");	  
+				datosExp = (Hashtable)hashMap.get("datosGenerales");
+			}
 			
 			Hashtable htParametros=new Hashtable();
 		    htParametros.put("idInstitucion",datosExp.get(ExpExpedienteBean.C_IDINSTITUCION));
