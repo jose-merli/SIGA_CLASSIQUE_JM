@@ -193,10 +193,13 @@ public class InformeColegiadosPagos extends MasterReport {
 			 rc = new RowsContainer(); 
 			 rc.find(sql);
 			 if(rc!=null && rc.size()>0){
-				 Row r=(Row)rc.get(0);
-				 String sSociedad= r.getString("SOCIEDAD");
-				 if(sSociedad!=null && sSociedad.equals(ClsConstants.DB_TRUE)){
-					 idSociedad=r.getString("IDPERSONA");
+				 for (int i=0;i<rc.size();i++)
+				 {
+					 Row r=(Row)rc.get(i);
+					 String sSociedad= r.getString("SOCIEDAD");
+					 if(sSociedad!=null && sSociedad.equals(ClsConstants.DB_TRUE)){
+						 idSociedad=r.getString("IDPERSONA");
+					 }
 				 }
 			 }
 
@@ -779,6 +782,8 @@ public class InformeColegiadosPagos extends MasterReport {
 
 				}					
 			}
+			
+			result.put("COMPENSADO_FACTURA",UtilidadesString.formatoImporte(dCompensadoCaja)+ClsConstants.CODIGO_EURO);
 
 			result.put("COMPENSADO_CAJA",UtilidadesString.formatoImporte(dCompensadoCaja)+ClsConstants.CODIGO_EURO);
 			
