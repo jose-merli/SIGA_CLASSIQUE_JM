@@ -103,9 +103,9 @@
 				buttons+=",gf";//generar fichero txt
 			} else if (cajgConfig == 2) {
 				if (ejecutandose) {
-					buttons+=",ftp";//genera fichero txt, envio ftp
+					buttons+=",val,ftp";//genera fichero txt, envio ftp
 				} else {
-					buttons+=",gf,ftp";//genera fichero txt, envio ftp
+					buttons+=",gf,val,ftp";//genera fichero txt, envio ftp
 				}
 			} else if (cajgConfig == 3) {
 				if (tipoPCAJGGeneral == 1) {
@@ -202,6 +202,12 @@
 			deshabilitaTodos();
 			parent.generarFichero();	
 		}
+
+		function validarRemesa(obj) {
+			sub();
+			deshabilitaTodos();						
+			parent.validarRemesa();	
+		}
 		
 		function generaXML(){	
 			deshabilitaTodos();		
@@ -209,9 +215,11 @@
 		}
 
 		function envioFTP(obj) {
-			sub();
-			deshabilitaTodos();						
-			parent.envioFTP();	
+			if (confirm('<siga:Idioma key="gratuita.cajg.info.envioFTP"/>')) {
+				sub();
+				deshabilitaTodos();						
+				parent.envioFTP();
+			}	
 		}
 		
 		function envioWS(obj){		
@@ -253,6 +261,7 @@
 		
 		function deshabilitaTodos() {
 			deshabilita(document.getElementById('idButtonEnvioFTP'));
+			deshabilita(document.getElementById('idButtonValidarRemesa'));
 			deshabilita(document.getElementById('idButtonGeneraXML'));			
 			deshabilita(document.getElementById('idButtonEnvioWS'));
 			deshabilita(document.getElementById('idButtonRespuestaFTP'));

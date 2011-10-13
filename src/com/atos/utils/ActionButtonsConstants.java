@@ -78,6 +78,7 @@ public enum ActionButtonsConstants {
 	LOG_FACTURACION ("lf","general.boton.descargaLogFacturacion","descargaLogFacturacion()",69),
 	CERRAR ("c","general.boton.close","accionCerrar()",70),
 	ENVIAR_SEL ("es","general.boton.enviarSel","accionEnviarSel()",71),
+	VALIDA_REMESA("val","general.boton.validarRemesa","validarRemesa(this)", "idButtonValidarRemesa",71),
 	ENVIO_FTP ("ftp","general.boton.envioFTP","envioFTP(this)", "idButtonEnvioFTP",72),
 	RESPUESTA_FTP ("respFTP","general.boton.respuestaFTP","respuestaFTP(this)", "idButtonRespuestaFTP",73),
 	RESOLUCION_FTP ("resolucionFTP","general.boton.resolucionFTP","resolucionFTP(this)", "idButtonResolucionFTP",74),

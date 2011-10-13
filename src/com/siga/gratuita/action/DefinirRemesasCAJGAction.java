@@ -135,6 +135,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				mapDestino = generarFichero(mapping, miForm, request, response);			
 			} else if (accion.equalsIgnoreCase("envioFTP")) {
 				mapDestino = envioFTP(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("validarRemesa")) {
+				mapDestino = validarRemesa(mapping, miForm, request, response);
 			} else if (accion.equalsIgnoreCase("envioWS")) {
 				mapDestino = envioWS(mapping, miForm, request, response);
 			} else if (accion.equalsIgnoreCase("respuestaFTP")) {
@@ -1757,6 +1759,22 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		ejecutaBackground(formulario, request, 0);		
 		return exitoRefresco("messages.cajg.envioFTP.correcto", request);
 	}
+	
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	private String validarRemesa(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws Exception {				
+		ejecutaBackground(formulario, request, 0);		
+		return exitoRefresco("messages.cajg.validarRemesa", request);
+	}
+	
+	
 
 
 	/**
