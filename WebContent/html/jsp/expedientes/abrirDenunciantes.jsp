@@ -50,8 +50,13 @@
 
 	String idInstitucion    = (String)request.getParameter("idInstitucion");
 	String idTipoExpediente = (String)request.getParameter("idTipoExpediente");
-	String numExpediente    = (String)request.getParameter("numeroExpediente");
-	String anioExpediente   = (String)request.getParameter("anioExpediente");
+	String numExpediente = (String)request.getParameter("numeroExpediente");
+	if(numExpediente==null || numExpediente.equals(""))
+         numExpediente = (String) request.getSession().getAttribute("numeroExpedienteSession");
+	
+ 	String anioExpediente = (String)request.getParameter("anioExpediente");
+	if(anioExpediente==null || anioExpediente.equals(""))
+         anioExpediente = (String) request.getSession().getAttribute("anioExpedienteSession");	
 	String idInstitucion_TipoExpediente = (String)request.getParameter("idInstitucion_TipoExpediente");
 
 	

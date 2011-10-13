@@ -51,7 +51,12 @@
 	String denunciado = (String)request.getAttribute("denunciado");
 	String nombreTipoExpediente = (String)request.getParameter("nombreTipoExpediente");
 	String numExpediente = (String)request.getParameter("numeroExpediente");
-	String anioExpediente = (String)request.getParameter("anioExpediente");
+	if(numExpediente==null || numExpediente.equals(""))
+         numExpediente = (String) request.getSession().getAttribute("numeroExpedienteSession");
+	
+ 	String anioExpediente = (String)request.getParameter("anioExpediente");
+	if(anioExpediente==null || anioExpediente.equals(""))
+         anioExpediente = (String) request.getSession().getAttribute("anioExpedienteSession");	
 	
 	String busquedaVolver = (String) request.getSession().getAttribute("volverAuditoriaExpedientes");
 	

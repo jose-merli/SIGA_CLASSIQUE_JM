@@ -481,9 +481,18 @@ public class ExpDenunciadoAction extends MasterAction {
 		    ExpDenunciadoAdm  denAdm  = new ExpDenunciadoAdm(this.getUserBean(request));
 		    denBean.setIdInstitucion(Integer.valueOf(form.getIdInstitucion()));
 		    denBean.setIdInstitucion_TipoExpediente(Integer.valueOf(form.getIdInstitucion_TipoExpediente()));
+		    String numExpediente = form.getNumExpediente();
+		    String anioExpediente = form.getAnioExpediente();
+		    
+			if(numExpediente==null || numExpediente.equals(""))
+	           numExpediente = (String) request.getSession().getAttribute("numeroExpedienteSession");
+	   
+			if(anioExpediente==null || anioExpediente.equals(""))
+	           anioExpediente = (String) request.getSession().getAttribute("anioExpedienteSession");
+		    
 		    denBean.setIdTipoExpediente(Integer.valueOf(form.getIdTipoExpediente()));
-		    denBean.setNumeroExpediente(Integer.valueOf(form.getNumExpediente()));
-		    denBean.setAnioExpediente(Integer.valueOf(form.getAnioExpediente()));
+		    denBean.setNumeroExpediente(Integer.valueOf(numExpediente));
+		    denBean.setAnioExpediente(Integer.valueOf(anioExpediente));
 		    denBean.setIdDenunciado(denAdm.getNewIdDenunciado(denBean));
 		    denBean.setIdPersona(Long.valueOf(form.getIdPersona()));
 		    

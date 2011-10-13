@@ -312,6 +312,19 @@ public class ExpDatosGeneralesAction extends MasterAction
 				}
 				datosExpediente.put("datosParticulares",expBean);
 				ses.setAttribute("DATABACKUP",datosExpediente);
+			
+				//Metemos los datos no editables del expediente en Backup.
+			    //Los datos particulares se anhadirán a la HashMap en cada caso.
+			    datosExpediente = new HashMap();
+			    Hashtable datosGenerales = new Hashtable();
+			    datosGenerales.put(ExpExpedienteBean.C_IDINSTITUCION,idInstitucion);
+			    datosGenerales.put(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE,idInstitucion_TipoExpediente);
+			    datosGenerales.put(ExpExpedienteBean.C_IDTIPOEXPEDIENTE,idTipoExpediente);
+			    datosGenerales.put(ExpExpedienteBean.C_NUMEROEXPEDIENTE,numExpediente);
+			    datosGenerales.put(ExpExpedienteBean.C_ANIOEXPEDIENTE,anioExpediente);
+				datosExpediente.put("datosGenerales",datosGenerales);
+				request.getSession().setAttribute("DATABACKUP",datosExpediente);
+				
 			}					
 	
 	        
