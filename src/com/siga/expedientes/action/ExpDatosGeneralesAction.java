@@ -315,7 +315,6 @@ public class ExpDatosGeneralesAction extends MasterAction
 			
 				//Metemos los datos no editables del expediente en Backup.
 			    //Los datos particulares se anhadirán a la HashMap en cada caso.
-			    datosExpediente = new HashMap();
 			    Hashtable datosGenerales = new Hashtable();
 			    datosGenerales.put(ExpExpedienteBean.C_IDINSTITUCION,idInstitucion);
 			    datosGenerales.put(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE,idInstitucion_TipoExpediente);
