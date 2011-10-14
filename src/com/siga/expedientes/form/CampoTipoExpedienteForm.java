@@ -34,21 +34,36 @@ public class CampoTipoExpedienteForm extends MasterForm {
     private boolean minutaFinal;
     private boolean derechos;
     private boolean resultadoInforme;
-
+    private boolean relacionEJG;  
+    
     private String chkPestanaConf1;
     private String pestanaConf1;
     private String chkPestanaConf2;
     private String pestanaConf2;
     private String tiempoCaducidad;
     private String diasAntelacionCad;
-    
-    private String nombre;
+ 
+	private String nombre;
 	private String idTipoExpediente;
 	private String nombreCampoDenunciante;
 	private String nombreCampoDenunciado;
+	private String nombreCampoNumExp;
 	
 
-    public String getNombre() {
+
+    public boolean isRelacionEJG() {
+		return relacionEJG;
+	}
+	public void setRelacionEJG(boolean relacionEJG) {
+		this.relacionEJG = relacionEJG;
+	}
+	public String getNombreCampoNumExp() {
+		return nombreCampoNumExp;
+	}
+	public void setNombreCampoNumExp(String nombreCampoNumExp) {
+		this.nombreCampoNumExp = nombreCampoNumExp;
+	}
+	public String getNombre() {
         return nombre;
     }
     public void setNombre(String nombre) {

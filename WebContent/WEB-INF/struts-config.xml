@@ -1420,9 +1420,11 @@
 
 		<action path="/EXP_Auditoria_DatosGenerales" type="com.siga.expedientes.action.ExpDatosGeneralesAction" name="ExpDatosGeneralesForm" scope="request">
 			<forward name="inicio" path="/html/jsp/expedientes/datosGenerales.jsp"/>
+			<forward name="inicioEjg" path="/html/jsp/expedientes/datosGeneralesEjg.jsp"/>			
 			<forward name="editar" path="/html/jsp/expedientes/pestanasAuditExpedientes.jsp"/>
 			<forward name="plazo" path="/html/jsp/expedientes/setPlazo.jsp"/>
 			<forward name="ejecucionSancion" path="/html/jsp/expedientes/abrirEjecucionSancion.jsp"/>
+			<forward name="seleccion" path="/html/jsp/expedientes/selecTipoNuevoExpEjg.jsp"/>			
 		</action>
 
 		<action path="/EXP_Auditoria_Denunciante" type="com.siga.expedientes.action.ExpDenuncianteAction" name="ExpDenuncianteForm" scope="request">

@@ -56,6 +56,7 @@
 				else
 					document.camposForm.nombreCampoDenunciado.value = '<%=ExpCampoTipoExpedienteBean.IMPUGNADO%>' ;
 			}
+			
 			function cambiarDenunciante(){
 			
 				if(document.camposForm.nombreCampoDenunciado.value == '<%=ExpCampoTipoExpedienteBean.DENUNCIADO%>')
@@ -252,7 +253,10 @@
 								</tr>--%>
 								<tr>
 									<td id="titulo" class="labelText">
-										<siga:Idioma key="expedientes.auditoria.literal.nexpdisciplinario"/> : 				    
+										<html:select  name="camposForm" property="nombreCampoNumExp" styleClass="boxCombo">
+												<html:option value="<%=ExpCampoTipoExpedienteBean.NUMEXPEDIENTE%>" key="<%=ExpCampoTipoExpedienteBean.NUMEXPEDIENTE%>"></html:option>
+												<html:option value="<%=ExpCampoTipoExpedienteBean.NUMEJG%>" key="<%=ExpCampoTipoExpedienteBean.NUMEJG%>"></html:option>
+										</html:select>
 									</td>
 									<td>
 										<html:checkbox name="camposForm" property="nexpDisciplinario" value="true" disabled="<%=bLectura%>"/>
@@ -450,7 +454,24 @@
 							</table>
 							</siga:ConjCampos>						
 						</td>
-					</tr>				
+					</tr>
+					<tr>
+						<td>
+							<table cellspacing="0">
+								<tr>
+									<td>
+										<html:checkbox name="camposForm" property="relacionEJG" value="true" disabled="<%=bLectura%>"/>
+									</td>
+									<td id="titulo" class="labelText">
+										<siga:Idioma key="expedientes.tiposexpedientes.literal.relacionEJG"/> 
+									</td>
+									
+								</tr>
+							</table>
+						</td>
+							<td>
+							</td>	
+					</tr>			
 				</table>
 			
 			</html:form>

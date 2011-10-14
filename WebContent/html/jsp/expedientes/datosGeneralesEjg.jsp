@@ -1,7 +1,7 @@
-<!-- datosGenerales.jsp -->
+<!-- datosGeneralesEjg.jsp -->
 <!-- 
 	 VERSIONES:
-	 emilio.grau 28-12-2004 Versión inicial 
+	 emilio.grau 28-12-2004 Versión inicial
 -->
 
 <!-- CABECERA JSP -->
@@ -33,21 +33,20 @@
 	HttpSession ses=request.getSession();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
 	UsrBean userBean = ((UsrBean)ses.getAttribute(("USRBEAN")));
-
+	String tipoExp = (String)request.getParameter("idTipoExpediente");
+	tipoExp = (String)request.getParameter("idTExpediente");
 	String mostrarMinuta = (String)request.getAttribute("mostarMinuta");
 	String mostrarMinutaFinal = (String)request.getAttribute("mostarMinutaFinal");
 	String derechosColegiales = (String)request.getAttribute("derechosColegiales");
 	String mostrarDenunciante = (String)request.getAttribute("mostrarDenunciante");
-	Boolean tieneEjgRelacionado =false;
-	if(request.getAttribute("tipoExpedienteEjg")!=null)
-		tieneEjgRelacionado = ((Boolean) request.getAttribute("tipoExpedienteEjg")).booleanValue();
+	
 	String totalMinuta = (String) request.getAttribute("totalMinuta");
 	if (totalMinuta == null) totalMinuta = new String("");
 	
 	ArrayList juzgadoSel   = new ArrayList();
 	ArrayList materiaSel   = new ArrayList();
 	ArrayList pretensionSel   = new ArrayList();
-	String idJuzgado="", idInstitucionJuzgado="", idArea="", idMateria="", idPretension="" ,codigoEjg="", tipoExpD="",anioExpD = "", numExpD="",CODIGO= "",SUFIJO="";
+	String idJuzgado="", idInstitucionJuzgado="", codigoEjg="",CODIGO= "",SUFIJO="", idArea="", idMateria="", idPretension="", tipoExpD="",anioExpD = "", numExpD="";
 	// Datos del Juzgado seleccionado:
 	ExpDatosGeneralesForm form = (ExpDatosGeneralesForm) request.getAttribute("ExpDatosGeneralesForm");
 	if (form.getJuzgado()!=null) idJuzgado = form.getJuzgado();
@@ -59,7 +58,30 @@
 	if (form.getTipoExpDisciplinario()!=null) tipoExpD	=  form.getTipoExpDisciplinario();
 	if (form.getAnioExpDisciplinario()!=null) anioExpD		=  form.getAnioExpDisciplinario();
 	if (form.getNumExpDisciplinario()!=null) numExpD =  form.getNumExpDisciplinario();
+	if (form.getNumExpDisciplinarioCalc()!=null) tipoExp =  form.getNumExpDisciplinarioCalc();
+	
+	
+	//////
+	
+	ScsEJGAdm admEjg = new ScsEJGAdm(userBean);
+	if (tipoExpD != null && !tipoExpD.equals("")) {
+		Hashtable haste = admEjg
+				.getCalculoNumEjg(userBean.getLocation(),
+						anioExpD, numExpD, tipoExpD);
+		SUFIJO = (String) haste.get("SUFIJO");
+		CODIGO = (String) haste.get("CODIGO");
+		  if (SUFIJO!=null && !SUFIJO.equals("")){ 
+		    codigoEjg= CODIGO+"-"+SUFIJO; 
+		    
+		  }else{
+			  codigoEjg= CODIGO;  
+		  }
+	}
 
+
+		
+	////	
+	
 	String[] datosJuzgado={userBean.getLocation(),idArea, idMateria,"-1"};	
 	String[] datosMateria={"-1",userBean.getLocation()};
 	
@@ -97,23 +119,6 @@
 	ArrayList vEstado = new ArrayList();
 	ArrayList vClasif = new ArrayList();
 	
-	
-	ScsEJGAdm admEjg = new ScsEJGAdm(userBean);
-	if (tipoExpD != null && !tipoExpD.equals("")) {
-		Hashtable haste = admEjg
-				.getCalculoNumEjg(userBean.getLocation(),
-						anioExpD, numExpD, tipoExpD);
-		SUFIJO = (String) haste.get("SUFIJO");
-		CODIGO = (String) haste.get("CODIGO");
-		  if (SUFIJO!=null && !SUFIJO.equals("")){ 
-		    codigoEjg= CODIGO+"-"+SUFIJO; 
-		    form.setNumExpDisciplinarioCalc(codigoEjg);
-		  }else{
-			  codigoEjg= CODIGO; 
-			  form.setNumExpDisciplinarioCalc(codigoEjg);
-		  }
-	}
-
 	String accion = (String)request.getAttribute("accion");
 	if (!accion.equals("nuevo")){	//pestanhas:edicion o consulta
 		idinst_idtipo_idfase = (String)request.getAttribute("idinst_idtipo_idfase");
@@ -122,10 +127,13 @@
 		vFase.add(idinst_idtipo_idfase);
 		vEstado.add(idinst_idtipo_idfase_idestado);
 		vClasif.add(idclasificacion);
+	}else {
+		idclasificacion = (String)request.getAttribute("idclasificacion");
+		vClasif.add(idclasificacion);
 	}
 	
 	String idinstitucion_tipoexpediente = (String)request.getParameter("idInstitucion_TipoExpediente");
-	String tipoExp = (String)request.getParameter("idTipoExpediente");
+
 	String editable = (String)request.getParameter("editable");		
 	String soloSeguimiento = (String)request.getParameter("soloSeguimiento");	
 	boolean bEditable=false;
@@ -170,9 +178,7 @@
 	paramPro[0]=idJuzgado;
 	paramPro[1]=idInstitucionJuzgado;
 
-	String[] paramPretension = {userBean.getLocation(), "-1"};
-	if(form.getIdPretension()!=null && (!form.getIdPretension().equals("")))
-		paramPretension[1]= form.getIdPretension();
+	String[] paramPretension = {userBean.getLocation(), idPretension};
 
 
 	if (idProcedimiento!=null && idInstitucionProcedimiento!=null)
@@ -190,8 +196,6 @@
 	
 	String nombreExpDisciplinario = (String)request.getAttribute("tituloExpDisciplinario");
 
-	
-	
 %>	
 
 <html>
@@ -236,10 +240,7 @@
 		<!-- Asociada al boton Volver -->
 		function accionVolver() 
 		{
-			<% if (busquedaVolver== null) { %>
-				document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true&buscar=true";
-				document.forms[1].modo.value="abrir";
-			<% } else if (busquedaVolver== null || busquedaVolver.equals("AB")) { %>
+			<% if (busquedaVolver.equals("AB")) { %>
 				document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true";
 				document.forms[1].modo.value="buscarPor";
 				document.forms[1].avanzada.value="<%=ClsConstants.DB_TRUE %>";
@@ -337,35 +338,13 @@
 							  document.forms[0].derechosColegiales.value = document.forms[0].derechosColegiales.value.replace(/,/,".");
 						}
 										
-						<%if (accion.equals("nuevo")){%>
-							document.forms[0].modo.value="insertar";
-						<%}else{%>
-							document.forms[0].modo.value="modificar";
-						<%}%>
-
+						document.forms[0].modo.value="insertar";
 						document.forms[0].target="submitArea";	
 						document.forms[0].submit();	
 				}
 			}else{
 				fin();
 				return false;
-			}
-		}
-		function relacionarConEJG() 
-		{
-			document.BusquedaPorTipoSJCSForm.tipo.value="EJG";
-						
-			var resultado = ventaModalGeneral("BusquedaPorTipoSJCSForm","G");	
-
-			if (resultado != null && resultado.length >= 4)
-			{
-				//document.forms[0].ejgIdInstitucion.value=resultado[0];
-
-				document.forms[0].anioExpDisciplinario.value=resultado[1];
-				document.forms[0].numExpDisciplinario.value=resultado[2];
-				document.forms[0].tipoExpDisciplinario.value=resultado[3];
-				document.forms[0].modo.value="modificar";
-				document.forms[0].submit();	
 			}
 		}
 		
@@ -399,13 +378,17 @@
 		
 		function refrescarLocal()
 		{	
-			<%if (accion.equals("nuevo")){%>
-				document.forms[0].modo.value="abrirAvanzada";
-				document.forms[0].target="mainWorkArea";	
-				document.forms[0].submit();
-			<%}else{%>
-				document.location.reload();
-			<%}%>
+				
+				//document.forms[0].target="mainWorkArea";	
+				document.busquedaExpedientesForm.numeroExpediente.value='<%=(String) ses.getAttribute("numeroExpedienteSession")%>';
+				document.busquedaExpedientesForm.idTipoExpediente.value='<%=tipoExp%>';
+				document.busquedaExpedientesForm.idInstitucion_TipoExpediente.value='<%=idinstitucion_tipoexpediente%>';
+				document.busquedaExpedientesForm.anioExpediente.value= '<%=(String)ses.getAttribute("anioExpedienteSession")%>';
+				document.busquedaExpedientesForm.institucion.value='<%=userBean.getLocation()%>';
+				document.busquedaExpedientesForm.tipoExpediente.value=document.ExpDatosGeneralesForm.tipoExpediente.value;			
+				document.busquedaExpedientesForm.submit();
+
+				
 		
 		}
 		function altaPersona()
@@ -659,19 +642,6 @@
 				}
 			}
 		}
-		 function consultarEjg(){
-			 //document.DefinirEJGForm.anio.value=document.getElementById("anioExpDisciplinario").value;
-			 //document.DefinirEJGForm.numero.value=document.getElementById("numExpDisciplinario").value;
-			// document.DefinirEJGForm.idTipoEJG.value=document.getElementById("tipoExpDisciplinario").value;
-			 document.DefinirEJGForm.modo.value='ver';
-			 document.DefinirEJGForm.submit();
-			 	
-		  }
-
-
-			
-				
-
 
 
 	</script>
@@ -695,10 +665,11 @@
 	<html:form action="/EXP_Auditoria_DatosGenerales" method="POST" target="submitArea">
 	<html:hidden property = "modo" value = ""/>
 	<html:hidden property = "hiddenFrame" value = "1"/>
-	<html:hidden property = "tipoExpDisciplinario"/>
-
-
-<tr>				
+	<html:hidden name="ExpDatosGeneralesForm" property = "tipoExpDisciplinario"/>	
+	<html:hidden name="ExpDatosGeneralesForm" property="numExpDisciplinario"/>
+	<html:hidden name="ExpDatosGeneralesForm" property="anioExpDisciplinario"/>	
+	<html:hidden name="ExpDatosGeneralesForm" property="idTipoExpediente"/>	
+	<tr>				
 	<td>
 
 	<siga:ConjCampos leyenda="expedientes.auditoria.literal.datosgenerales">
@@ -714,18 +685,11 @@
 			</td>
 			
 			<td class="labelTextValue">
-			<!-- Se comenta por que no se quiere mostrar el número de Expediente  al usuario -->
-				
-				<bean:write name="ExpDatosGeneralesForm" property="anioExpediente"/>
-				/
-			<!-- En caso de ser nuevo no se muestran ni el numExpediente ni el anioExpediente -->	
+			<!-- Se comenta por que no se quiere mostrar el número de Expediente  al usuario 
 				<bean:write name="ExpDatosGeneralesForm" property="numExpediente"/>				
-				
-				
-							
 				/
 				<bean:write name="ExpDatosGeneralesForm" property="anioExpediente"/>
-						
+			-->				
 				<html:hidden name="ExpDatosGeneralesForm" property = "numExpediente"/>
 				<html:hidden name="ExpDatosGeneralesForm" property = "anioExpediente"/>
 					
@@ -734,57 +698,20 @@
 			<td class="labelText">
 				<siga:Idioma key="<%=nombreExpDisciplinario%>"/>
 			</td>		
-			<%if (!bEditable){%>
-			<td class="labelTextValue" styleClass="box" style= "text-align:right" >
+<td class="labelTextValue">			
+				
+				
 				<bean:write name="ExpDatosGeneralesForm" property="anioExpDisciplinario"></bean:write>
 				/
-			<%	if(codigoEjg!=null && !codigoEjg.trim().equals("") ){%>
-				<bean:write name="ExpDatosGeneralesForm" property="numExpDisciplinarioCalc"></bean:write>			
-			<%}else{%>
-				<bean:write name="ExpDatosGeneralesForm" property="numExpDisciplinario"></bean:write>
-			<%}%>
-			<%	if(codigoEjg!=null && !codigoEjg.trim().equals("") ){%>
-						<td>
-						<img id="iconoboton_consultar1" src="/SIGA/html/imagenes/bconsultar_off.gif" style="cursor:hand;" alt="Consultar" name="consultar_1" border="0" onClick="consultarEjg();">
-					</td>
-			<%}%>
+				<%=codigoEjg %>
 			</td>
-			<%}else{%>	
-			<%if (!tieneEjgRelacionado){%>
-			<td class="labelTextValue">			
-				<html:text name="ExpDatosGeneralesForm" property="anioExpDisciplinario" size="4" maxlength="4" styleClass="box" style="text-align:right;"></html:text>
-				/
-				<html:text name="ExpDatosGeneralesForm" property="numExpDisciplinario" size="6" maxlength="6" styleClass="box" style="text-align:right;"></html:text>
-				
-			</td>
-			<%}else{%>
-				<td>
-					<table>
-					<tr>
-					<td class="labelTextValue">			
-					<html:text name="ExpDatosGeneralesForm" property="anioExpDisciplinario" size="4" maxlength="4" style="text-align:right;" styleClass="boxConsulta"></html:text>
-					/
-					<html:text name="ExpDatosGeneralesForm" property="numExpDisciplinarioCalc" size="6" maxlength="6"   styleClass="boxConsulta"  ></html:text>
-					<html:hidden name="ExpDatosGeneralesForm" property="numExpDisciplinario"/>
-					</td>
-					<%	if(codigoEjg!=null && !codigoEjg.trim().equals("") ){%>
-						<td>
-						<img id="iconoboton_consultar1" src="/SIGA/html/imagenes/bconsultar_off.gif" style="cursor:hand;" alt="Consultar" name="consultar_1" border="0" onClick="consultarEjg();">
-						<img id="iconoboton_editar1" src="/SIGA/html/imagenes/beditar_off.gif" style="cursor:hand;" alt="Editar" name="editar_1" border="0" onClick="relacionarConEJG();">
-					</td>
-					<%}%>
-					</tr>
-					</table>
-				</td>
-			
-			<%}	}%>
 <%}else{%>						
 			<html:hidden name="ExpDatosGeneralesForm" property="numExpDisciplinario"/>
 			<html:hidden name="ExpDatosGeneralesForm" property="anioExpDisciplinario"/>			
 
 <%}%>		
 			
-			<td class="labelText">
+			<td  class="labelText">
 				<siga:Idioma key="expedientes.gestionarExpedientes.fechaApertura"/>
 			</td>
 			<td>
@@ -883,7 +810,7 @@
 					if (bEstado)
 						comboHijo = "Hijo:comboEstados";
 				%>
-				<siga:ComboBD nombre = "comboFases" tipo="cmbFases"  clase="boxCombo" obligatorio="true" ElementoSel="<%=vFase%>" parametro="<%=dato%>" accion="<%=comboHijo%>" pestana="t"/>
+				<siga:ComboBD nombre = "comboFases" tipo="cmbFases"  clase="boxCombo" obligatorio="true" ElementoSel="<%=vFase%>" parametro="<%=dato%>" accion="<%=comboHijo%>"/>
 				<% } else { %>
 				<html:text name="ExpDatosGeneralesForm" property="faseSel"  styleClass="boxConsulta" readonly="true"></html:text>
 				<% } %>
@@ -895,7 +822,7 @@
 			
 			<td colspan="2">
 				<%if (bEditable){%>		
-				<siga:ComboBD  nombre = "comboEstados" tipo="cmbEstados" ancho="400" clase="boxCombo" obligatorio="true" accion="parent.limpiarFechas();" ElementoSel="<%=vEstado%>" hijo="t" pestana="t"/>						
+				<siga:ComboBD  nombre = "comboEstados" tipo="cmbEstados" ancho="400" clase="boxCombo" obligatorio="true" accion="parent.limpiarFechas();" ElementoSel="<%=vEstado%>" hijo="t"/>						
 				<%}else{%>
 				<html:text name="ExpDatosGeneralesForm" property="estadoSel"  styleClass="boxConsulta" readonly="true"></html:text>
 				<%}%>
@@ -1164,9 +1091,9 @@
 			</td>				
 			<td>
 				<%if(bEditable){%>
-				 	  <siga:ComboBD nombre="idMateria" tipo="materiaareaExp" ancho="250" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosMateria%>" elementoSel="<%=materiaSel%>" accion="Hijo:juzgado" readonly="false"/>           	   
+				 	  <siga:ComboBD nombre="idMateria" tipo="materiaareaExp" ancho="250" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosMateria%>" elementoSel="<%=materiaSel%>" accion="Hijo:juzgado" readonly="false"/>           	   
 				<%}else{%>
-					  <siga:ComboBD nombre="idMateria" tipo="materiaareaExp" ancho="250" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosMateria%>" elementoSel="<%=materiaSel%>"  accion="Hijo:juzgado" readonly="true"/>           	   
+					  <siga:ComboBD nombre="idMateria" tipo="materiaareaExp" ancho="250" clase="boxConsulta" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosMateria%>" elementoSel="<%=materiaSel%>"  accion="Hijo:juzgado" readonly="true"/>           	   
 				<%}%>							
 				
 			</td>
@@ -1176,9 +1103,9 @@
 			<td COLSPAN="3">
 				<%if(bEditable){%>
 				 	  <input type="text" name="codigoExtJuzgado" class="box" size="3"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />
-				 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateriaExp" ancho="330" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" elementoSel="<%=juzgadoSel%>" hijo="t" accion="Hijo:procedimiento" readonly="false"/>           	   
+				 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateriaExp" ancho="330" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" elementoSel="<%=juzgadoSel%>" hijo="t" accion="Hijo:procedimiento" readonly="false"/>           	   
 				<%}else{%>
-						<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateriaExp" ancho="330" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" elementoSel="<%=juzgadoSel%>" hijo="t" accion="Hijo:procedimiento" readonly="true"/>           	   
+						<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateriaExp" ancho="330" clase="boxConsulta" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" elementoSel="<%=juzgadoSel%>" hijo="t" accion="Hijo:procedimiento" readonly="true"/>           	   
 				<%}%>							
 				
 			</td>
@@ -1189,7 +1116,7 @@
 				<siga:Idioma key="expedientes.auditoria.literal.procedimiento"/>
 			</td>
 			<td>
-				<siga:ComboBD nombre="procedimiento" tipo="comboProcedimientos" estilo="true" clase="<%=estiloCombo%>" ancho="250" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" hijo="t" parametro="<%=paramPro%>" elementoSel="<%=procedimientoSel%>" pestana="true"/>
+				<siga:ComboBD nombre="procedimiento" tipo="comboProcedimientos" estilo="true" clase="<%=estiloCombo%>" ancho="250" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" hijo="t" parametro="<%=paramPro%>" elementoSel="<%=procedimientoSel%>"/>
 			</td>
 		
 			<td class="labelText">
@@ -1206,8 +1133,9 @@
 				<siga:Idioma key="expedientes.auditoria.literal.pretensiones"/>
 			</td>
 			<td>
-				<siga:ComboBD nombre="idPretension" tipo="comboPretensiones" estilo="true" clase="<%=estiloCombo%>" ancho="250" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" pestana="true"/>
+				<siga:ComboBD nombre="idPretension" tipo="comboPretensiones" estilo="true" clase="<%=estiloCombo%>" ancho="250" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>"/>
 			</td>
+		
 			<td class="labelText">
 				<siga:Idioma key="expedientes.auditoria.literal.otrasPretensiones"/>
 			</td>
@@ -1243,23 +1171,27 @@
 	<%if (accion.equals("nuevo")){%>
 		<siga:ConjBotonesAccion botones="V,G" clase="botonesDetalle" />
 	<% } else if (bEditable){%>
-	<% if (tieneEjgRelacionado){%>
-		<siga:ConjBotonesAccion botones="V,R,G,COM,re" clase="botonesDetalle" />
-		
-	<%} else{%>
 		<siga:ConjBotonesAccion botones="V,R,G,COM" clase="botonesDetalle" />
-	<%} } else{%>
+	<% } else{%>
 		<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
 	<% } %>	
 	
 </div>	
 
 	<html:form action="/EXP_AuditoriaExpedientes" method="POST" target="mainWorkArea">
-		<html:hidden property = "modo" value = ""/>
+		<html:hidden property = "modo" value = "editarDesdeEjg"/>
 		<html:hidden property = "avanzada" value = ""/>	
-		<html:hidden property = "numeroExpediente" value = ""/>
-		<html:hidden property = "anioExpediente" value = ""/>			
-
+		<html:hidden property = "hiddenFrame" value = "1"/>
+		<html:hidden property ="numeroExpediente"  value=""/>
+		<html:hidden property ="tipoExpediente"  value=""/>
+		<html:hidden property ="idInstitucion_TipoExpediente"  value=""/>		
+		<html:hidden property ="anioExpediente"  value=""/>
+		<html:hidden property ="institucion" value=""/>	
+		<html:hidden property ="soloSeguimiento" value="false"/>
+		<html:hidden property ="editable" value="1"/>			
+	
+					
+		<input type="hidden" name="idTipoExpediente" value="">	
 	</html:form>
 
 	<html:form action="/CEN_BusquedaClientesModal" method="POST" target="mainWorkArea" type="">
@@ -1276,9 +1208,6 @@
 		<html:hidden property = "idDireccion"/>
 		<html:hidden property = "idInstitucion"/>
 		
-		
-		
-		
 	</html:form>
 
 	<html:form action = "/JGR_MantenimientoJuzgados" method="POST" target="submitArea33">
@@ -1290,27 +1219,13 @@
 		<input type="hidden" name="actionModal" value="1">
 		<input type="hidden" name="modo" value="altaNoColegiado">
 	</html:form>
-	<html:form action="/JGR_EJG" method="POST" target="mainWorkArea">
-		<html:hidden property = "modo"  />
-		<html:hidden property = "anio"  value="<%=anioExpD%>"/>
-		<html:hidden property = "numero"  value="<%=numExpD%>"/>
-		<html:hidden property = "idTipoEJG" value="<%=tipoExpD%>"/>
-		<html:hidden property = "idInstitucion" value="<%=userBean.getLocation()%>"/>
-	</html:form>
-	<html:form action="/JGR_BusquedaPorTipoSJCS.do" method="POST" target="submitArea"  style="display:none">
-		<input type="hidden" name="actionModal" value="">
-		<input type="hidden" name="modo"        value="abrir">
-		<input type="hidden" name="tipo"        value="">
+	
+
 		
-	</html:form>
-
-
 <!-- INICIO: SUBMIT AREA -->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	<iframe name="submitArea33" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 <!-- FIN: SUBMIT AREA -->
-
-
 
 </body>
 </html>

@@ -145,7 +145,7 @@ function accionEditarDesigna(anio,idTurno,numero,idInstitucion)
 	document.MaestroDesignasForm.idTurno.value = idTurno;
 	document.MaestroDesignasForm.numero.value = numero;
 	document.MaestroDesignasForm.modo.value = "actualizarDesigna";
-	var resultado=ventaModalGeneral(document.MaestroDesignasForm.name,"M");
+	var resultado=ventaModalGeneral(document.MaestroDesignasForm.name,"G");
 	if(resultado=='MODIFICADO') {
 		parent.buscar();
 	}

@@ -17,8 +17,11 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsExceptions;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.ExpCampoTipoExpedienteAdm;
+import com.siga.beans.ExpExpedienteAdm;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
+import com.siga.beans.ExpExpedienteBean;
 import com.siga.beans.ScsDefinirSOJAdm;
 import com.siga.beans.ScsDesignaAdm;
 import com.siga.beans.ScsEJGAdm;
@@ -73,6 +76,7 @@ public class RelacionadoConSJCSAction extends MasterAction
 			String relacionesDe = (String)request.getParameter("conceptoE");
 
 			Vector v = new Vector();
+			Vector v2 = new Vector();			
 			String anio = "", numero = "", idTipo = "", idInstitucion ="", modo = "";
 
 			// Pestana en Designa
@@ -127,13 +131,14 @@ public class RelacionadoConSJCSAction extends MasterAction
 				numero        = request.getParameter("numeroEJG");
 				idTipo        = request.getParameter("idTipoEJG");
 				idInstitucion = request.getParameter("idInstitucionEJG");
-				
+				int i = 0;
 				ScsEJGAdm ejg = new ScsEJGAdm (this.getUserBean(request));
+				ExpExpedienteAdm exp = new ExpExpedienteAdm (this.getUserBean(request));
 				v = ejg.getRelacionadoCon(idInstitucion, anio, numero, idTipo);
 				// JBD INC_CAT_5 >>
 				// Para recuperar el nombre del letrado de cada relacion hemos añadido el IDLETRADO a getRelacionadoCon
 				CenPersonaAdm perAdm = new CenPersonaAdm(this.getUserBean(request));
-				for (int i = 0; i < v.size(); i++){
+				for ( i = 0; i < v.size(); i++){
 					Hashtable h = new Hashtable();
 					Vector vPersona = new Vector();
 					String nombreLetrado = "";
@@ -159,6 +164,15 @@ public class RelacionadoConSJCSAction extends MasterAction
 					}
 					UtilidadesHash.set(h, "NOMBRELETRADO", nombreLetrado);
 					v.set(i, h);
+				}
+
+				v2 = exp.getRelacionadoConEjg(idInstitucion, anio, numero, idTipo);
+				for (int  j = 0; j < v2.size(); j++){
+					Hashtable h2 = new Hashtable();
+					Vector vPersona = new Vector();
+					h2 = (Hashtable)v2.get(j);
+					v.add(h2);
+					i++;
 				}
 				// << JBD INC_CAT_5
 
@@ -191,6 +205,7 @@ public class RelacionadoConSJCSAction extends MasterAction
 			String idTipo        = (String)ocultos.get(4);
 			String idTurno        = (String)ocultos.get(5);
 			String idTurnoDesigna = (String)ocultos.get(6);
+			String numExp = (String)ocultos.get(7);
 			String relacionesDe  = (String)request.getParameter("conceptoE");
 	
 			if (tipoSJCS == null || tipoSJCS.equals("")) {
@@ -276,7 +291,22 @@ public class RelacionadoConSJCSAction extends MasterAction
 	
 					ScsDefinirSOJAdm adm = new ScsDefinirSOJAdm (this.getUserBean(request));
 					adm.updateDirect(h, null, new String [] {ScsSOJBean.C_EJGANIO, ScsSOJBean.C_EJGNUMERO, ScsSOJBean.C_EJGIDTIPOEJG});
+				}else if (tipoSJCS.equalsIgnoreCase("EXPEDIENTE")) {
+					ExpExpedienteAdm exp = new ExpExpedienteAdm (this.getUserBean(request));
+					UtilidadesHash.set(h, ExpExpedienteBean.C_ANIOEXPEDIENTE, anio);
+					UtilidadesHash.set(h, ExpExpedienteBean.C_NUMEROEXPEDIENTE, numExp);
+					UtilidadesHash.set(h, ExpExpedienteBean.C_IDTIPOEXPEDIENTE, idTipo);
+					UtilidadesHash.set(h, ExpExpedienteBean.C_IDINSTITUCION, idInstitucion);
+					UtilidadesHash.set(h, ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE, idInstitucion);
+					UtilidadesHash.set(h, ExpExpedienteBean.C_ANIOEJG, "");
+					UtilidadesHash.set(h, ExpExpedienteBean.C_NUMEROEJG, "");
+					UtilidadesHash.set(h, ExpExpedienteBean.C_IDTIPOEJG, "");
+	
+					exp.updateDirect(h, null, new String [] {ExpExpedienteBean.C_ANIOEJG, ExpExpedienteBean.C_NUMEROEJG, ExpExpedienteBean.C_IDTIPOEJG});
 				}
+	
+				
+				
 			}
 
 			tx.commit();

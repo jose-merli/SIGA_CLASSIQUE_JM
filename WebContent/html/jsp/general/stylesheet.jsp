@@ -1242,3 +1242,104 @@ a.paginator:active {
 #iconoboton {
 	margin-bottom:-3px;
 }
+
+
+div#panel {
+	position: relative;
+	width:500px;
+	height: 500px;
+	left: 5px;
+}
+
+
+ul#tabs {
+	position:absolute;
+	left: 0px;
+	top: 0px;
+	margin:0;
+	padding:0;
+	width: 400px;
+	height: 24px;
+	z-index: 20;
+	font-family: <%=src.get("font.style")%>;
+	font-size: <%=fontSize %>;
+	font-weight: normal;
+	color: #000000;
+	text-decoration:none;
+}
+	ul#tabs li {
+		float:left;
+		width: 80px;
+		height: 23px;
+		padding-left: 8px;
+		list-style: none;
+		margin-right: 1px;
+		background-color: #<%=src.get("color.labelTable")%>;
+		font-family: <%=src.get("font.style")%>;
+		font-size: <%=fontSize %>;
+		font-weight: normal;
+		color: #FFFFFF;
+	}
+	ul#tabs li.actual {
+		height: 24px;
+		width: 80px;
+		background: url(<%=app%>/html/imagenes/pestahover.gif) no-repeat right;
+		background-color: #<%=src.get("color.labelTable")%>;
+		font-family: <%=src.get("font.style")%>;
+		font-size: <%=fontSize %>;
+		font-weight: normal;
+		color: #FFFFFF;
+		text-decoration:none;
+		border-left-width: 2px;
+		border-left-style: solid;
+		border-left-color: #<%=src.get("color.background")%>;
+			
+	}
+		ul#tabs li a {
+	
+			display: block;
+				/* hack para ie6 */
+				.display: inline-block;
+				/* fin del hack */
+			height: 23px;
+			line-height: 23px;
+			padding-right: 8px;
+			outline: 0px none;
+			font-family: <%=src.get("font.style")%>;
+			font-size: <%=fontSize%>;
+			text-decoration: none;
+			color: #FFFFFF;
+			background: url(tabs.png) right 0px;
+		}
+		
+		ul#tabs li.actual a {
+		
+			height: 24px;
+			line-height: 24px;
+			background: url(tabs.png) right -24px;
+			cursor: default;
+			color: #FFFFFF;	
+		}
+
+
+div#panel #paneles {
+	position:absolute;
+	left: 1px;
+	top: 23px;
+	width: 950px;
+	height: 350px;
+	border: 1px solid #91a7b4;
+	background: #<%=src.get("color.background")%>;
+	overflow: hidden;
+	z-index: 10px;
+}
+	div#panel #paneles div {
+		margin:10px;
+		width: 935px;
+		height: 345px;
+		font-family: <%=src.get("font.style")%>;
+		font-size: <%=fontSize%>;
+		text-decoration: none;
+		color: #000;
+		overflow: auto;
+	}

@@ -31,7 +31,7 @@
 	Integer PCAJG_ACTIVADO =(Integer) (request.getAttribute("PCAJG_ACTIVO"));
 	String pintarAsterisco="&nbsp;(*)";
 	boolean tipoEJGColegioObligatorio = PCAJG_ACTIVADO!=null && (PCAJG_ACTIVADO.intValue() == 2 || PCAJG_ACTIVADO.intValue() == 3 || PCAJG_ACTIVADO.intValue() == 4 || PCAJG_ACTIVADO.intValue() == 5);  
-	
+	String nombreDesignacion="";
 
 	// Validamos si es una consulta o no.
 	String modo = (String) request.getAttribute("MODO");
@@ -40,7 +40,9 @@
 	String idInstitucion = usr.getLocation();
 	if(usr.isComision()) modo="ver";
 	
-
+	String numtramidesig = "";
+	String nombretramidesig = "";
+	boolean designaExiste = false;
 	// Obtenemos el resultado
 	String ANIO = "", CODIGO = "", NUMERO = "", TIPOEJG = "", IDTIPOEJG = "", IDTIPOEJGCOLEGIO = "", TURNO = "", GUARDIA = "", NIFASISTIDO = "", NOMBREASISTIDO = "", APELLIDO1ASISTIDO = "", APELLIDO2ASISTIDO = "", NUMEROCOLEGIADO = "", NOMBRELETRADO = "", APELLIDO1LETRADO = "", APELLIDO2LETRADO = "", ANIOSOJ = "", NUMEROSOJ = "", TIPOSOJ = "", IDTIPOSOJ = "", FECHAAPERTURA = "", DESIGNA_ANIO = "", DESIGNA_NUMERO = "", DESIGNA_TURNO_NOMBRE = "", NOMBRETURNO = "", FECHAAPERTURASOJ = "", TIPOASISTENCIA = "", NUMEROASISTENCIA = "", FECHAPRESENTACION = "", FECHALIMITEPRESENTACION = "", OBSERVACIONES = "", DELITOS = "", TIPOEJGCOLEGIO = "", PROCURADOR = "", IDGUARDIA = "", CREADODESDE = "", ASISTENCIA_ANIO = "", ASISTENCIA_NUMERO = "", ASISTENCIAFECHA = "", FECHAENTRADADESIGNA = "", FECHARATIFICACION = "", PROCURADORNECESARIO = "", idProcurador = "", idInstitucionProcurador = "", numeroCAJG = "", anioCAJG = "", calidad = "", DESIGNA_CODIGO = "", CODIGOSOJ = "", IDPERSONA = "", procuradorNombreCompleto = "";
     String procuradorNumColegiado = "", procuradorSel = "", nombreCompleto = "", ESTADO="", SUFIJO="";
@@ -120,6 +122,7 @@
 
 		if (hash.containsKey("CODIGO"))
 			DESIGNA_CODIGO = hash.get("CODIGO").toString();
+		
 		if (hash.containsKey("NOMBRETURNO"))
 			NOMBRETURNO = hash.get("NOMBRETURNO").toString();
 		if (hash.containsKey("FECHAENTRADADESIGNA"))
@@ -207,8 +210,7 @@
 
 	//Obtenemos el letrado tramitador de la designa
 
-	String numtramidesig = "";
-	String nombretramidesig = "";
+
 	ScsDesignaAdm scsDesignaAdm = new ScsDesignaAdm(usr);
 
 	if (!(designaAnio == null || designaAnio.equals("")
@@ -219,6 +221,7 @@
 						designaIdTurno, designaAnio, designaNumero);
 		numtramidesig = (String) hastramitadordesigna.get("NCOLEGIADO");
 		nombretramidesig = (String) hastramitadordesigna.get("NOMBRE");
+		designaExiste=true;
 	}
 
 	Object obj = null;
@@ -264,8 +267,9 @@
 		estiloCombo = "boxComboConsulta";
 		readOnly = "true";
 	}
-	String t_nombreD = "", t_apellido1D = "", t_apellido2D = "";
+	String t_nombreD = "", t_apellido1D = "", t_apellido2D = "", t_idpersonaD = "", t_ncolegiadoD= "";
 	ScsDesignaAdm admD = new ScsDesignaAdm(usr);
+
 	if (!(designaAnio == null || designaAnio.equals("")
 			|| designaNumero == null || designaNumero.equals("")
 			|| designaIdTurno == null || designaIdTurno.equals(""))) {
@@ -279,6 +283,10 @@
 					.get(CenPersonaBean.C_APELLIDOS1);
 			t_apellido2D = (String) hTituloD
 					.get(CenPersonaBean.C_APELLIDOS2);
+			t_nombreD = (String) hTituloD.get(CenPersonaBean.C_NOMBRE);
+			t_idpersonaD = (String) hTituloD.get(CenPersonaBean.C_IDPERSONA);
+			t_ncolegiadoD = (String) hTituloD.get("ncolegiado");
+			
 
 		}
 	}
@@ -310,6 +318,22 @@
 	if (PCAJG_ACTIVADO!=null && PCAJG_ACTIVADO==4){
 		obligatorioFechaPresentacion =true;
 	}
+	
+	String anioExpe = (String)request.getAttribute("anioExpe");
+	String codigoExpe = (String)request.getAttribute("codigoExpe");
+
+	String idtipoExpe = (String)request.getAttribute("idtipoExpe");
+
+	String idInstiExpe = (String) request.getAttribute("idInstiExpe");
+
+	Boolean tienePermisos = ((Boolean) request.getAttribute(
+	"tienePermisos")).booleanValue();
+	Boolean tipoExpedienteRepetido = ((Boolean) request.getAttribute(
+	"tipoExpedienteRepetido")).booleanValue();
+
+
+	
+	
 %>
 
 <html>
@@ -388,6 +412,18 @@
 		function traspasoDatos(resultado){
 		 seleccionComboSiga("vistaJuzgado",resultado[0]);
 		}
+		function generarExpediente(){
+
+
+
+			if(<%=tipoExpedienteRepetido%>)
+				alert("Tiene repetidos el tipo de Expediente de Insostenibilidad.");
+			else if(!<%=designaExiste%>)
+				alert("No existe una designación relacionada.");
+			else 	
+				document.ExpDatosGeneralesForm.submit();
+	
+		} 		
 			
 		function generarCarta() {
 			sub();
@@ -417,9 +453,6 @@
 			formu.datosInforme.value=datos;
 			formu.submit();
 			
-			
-      	    					
-					
 	
 } 	
 	</script>
@@ -485,27 +518,37 @@
 				%> <%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
 				- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%>
 				<%=UtilidadesString.mostrarDatoJSP(t_apellido2)%></td>
-				<td>
-				<%if (!modo.equalsIgnoreCase("ver")) {%>
-				<table>
-					<tr>
-						<td>
+				
+				<%if (!modo.equalsIgnoreCase("ver")) {
+					if (tienePermisos) {
+				
+				%>
+					
+					<td>
+						<input 	type="button" 
+				alt="UtilidadesString.getMensajeIdioma(usrbean,gratuita.EJG.expInsostenibilidad)"    
+		       	id="idButton"  
+		       	onclick="return generarExpediente();" 
+		       	class="button" 
+		       	value='<%=UtilidadesString.getMensajeIdioma(usr,"gratuita.EJG.expInsostenibilidad")%>' />
+						
+					</td>
+				<% }else{
+				%>	
+				<td ></td>
+				<% }
+				%>
+					<td >
 						<input 	type="button" 
 				alt="UtilidadesString.getMensajeIdioma(usrbean,general.boton.cartaInteresados)"  
 		       	id="idButton"  
 		       	onclick="return generarCarta();" 
 		       	class="button" 
-		       	value=<%=UtilidadesString.getMensajeIdioma(usr,"gratuita.EJG.botonComunicaciones")%> />
-						
-						
-						
-							
-							
-							</td>
-					</tr>
-				</table>
+		       	value='<%=UtilidadesString.getMensajeIdioma(usr,"gratuita.EJG.botonComunicaciones")%>' />
+					</td>
+
 				<%}%>
-				</td>
+				
 			</tr>
 		</table>
 
@@ -946,6 +989,35 @@
 		<html:hidden property = "codigoExtBusqueda" value=""/>
 	</html:form>	
 	
+	<html:form action="/EXP_Auditoria_DatosGenerales.do"  method="POST" target="mainWorkArea">
+
+
+		<input type="hidden" name="soloSeguimiento" value = "false">		
+		<input type="hidden" name="editable" value = "1" >
+		<html:hidden property = "modo" value = ""/>
+		<html:hidden property = "avanzada" value = ""/>
+		<html:hidden property = "metodo" value = "abrirNuevoEjg"/>
+		<html:hidden property ="numeroEjg"   value = "<%=NUMERO%>"/>
+		<html:hidden property ="idTipoEjg"   value = "<%=IDTIPOEJG%>"/>
+		<html:hidden property ="anioEjg"     value = "<%=ANIO%>"/>
+		<html:hidden property ="nifSolicitante"     value = "<%=NIFASISTIDO%>" />
+		<html:hidden property ="nombreSolicitante"     value = "<%=NOMBREASISTIDO%>" />
+		<html:hidden property ="idInstitucion_TipoExpediente" value= "<%=usr.getLocation()%>"/>	
+		<html:hidden property ="numeroProcedimiento"   value = "<%=numeroProcedimientoAsi%>"/>
+		<html:hidden property ="asunto"     value = "<%=OBSERVACIONES%>"/>
+		<html:hidden property ="juzgado"   value = "<%=juzgadoAsi%>"/>
+		<html:hidden property ="juzgadoInstitucion"   value = "<%= juzgadoInstitucionAsi%>"/>
+		<html:hidden property ="pretension"     value = "<%=idPretension%>" />
+		<html:hidden property ="pretensionInstitucion"     value = "<%=idPretensionInstitucion%>" />
+		<html:hidden property ="idturnoDesignado"     value = "<%=designaIdTurno%>" />
+		<html:hidden property ="nombreDesignado" value= "<%=t_idpersonaD%>"/>	
+		<html:hidden property ="numColDesignado" value= "<%=numtramidesig%>"/>
+		<html:hidden property ="idclasificacion" value= "1"/>
+		
+	
+	
+				
+	</html:form>	
 	<!-- FIN: CAMPOS DE BUSQUEDA-->	
 
 	
@@ -978,7 +1050,6 @@
 		{		
 			document.forms[0].reset();
 		}
-		
 		
 		function accionGuardar() 
 		{	

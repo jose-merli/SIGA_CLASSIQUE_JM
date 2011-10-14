@@ -85,6 +85,7 @@
 	<script type="text/javascript">
 		function refrescarLocal()
 		{
+			alert(document.forms[0].target);
 			parent.buscar();
 		}
 	</script>

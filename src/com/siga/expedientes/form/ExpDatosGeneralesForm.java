@@ -16,11 +16,16 @@ public class ExpDatosGeneralesForm extends MasterForm {
 //    private String modo="";
     private String modal="";
     private String tipoExpediente="";
-    private String numExpediente="";
+    private String idTipoExpediente="";    
+    private String idturnoDesignado="";    
+
+	private String numExpediente="";
     private String anioExpediente="";
     private String numExpDisciplinario="";
     private String anioExpDisciplinario="";
-    private String fecha="";
+    private String numExpDisciplinarioCalc="";
+    private String tipoExpDisciplinario="";
+	private String fecha="";
     private String institucion="";
     private String asunto="";
     private String clasificacion="";
@@ -53,12 +58,7 @@ public class ExpDatosGeneralesForm extends MasterForm {
     private String idPersona="";
     private String idPretension="";
     private String otrasPretensiones="";
-    
-
-    
-    
-    
-    
+     
     private String fechaCaducidad="";
     private String observaciones="";
     private String minuta="";
@@ -72,7 +72,33 @@ public class ExpDatosGeneralesForm extends MasterForm {
     private String importeIVAFinal="";
     private String importeTotalFinal="";
     private String derechosColegiales="";
-        
+    
+	public String getIdturnoDesignado() {
+		return idturnoDesignado;
+	}
+	public void setIdturnoDesignado(String idturnoDesignado) {
+		this.idturnoDesignado = idturnoDesignado;
+	}
+    public String getIdTipoExpediente() {
+		return idTipoExpediente;
+	}
+	public void setIdTipoExpediente(String idTipoExpediente) {
+		this.idTipoExpediente = idTipoExpediente;
+	}
+	
+	public String getNumExpDisciplinarioCalc() {
+		return numExpDisciplinarioCalc;
+	}
+	public void setNumExpDisciplinarioCalc(String numExpDisciplinarioCalc) {
+		this.numExpDisciplinarioCalc = numExpDisciplinarioCalc;
+	}
+
+    public String getTipoExpDisciplinario() {
+		return tipoExpDisciplinario;
+	}
+	public void setTipoExpDisciplinario(String tipoExpDisciplinario) {
+		this.tipoExpDisciplinario = tipoExpDisciplinario;
+	}
     public String getDerechosColegiales() {
 		return derechosColegiales;
 	}

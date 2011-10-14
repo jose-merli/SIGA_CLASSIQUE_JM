@@ -5,6 +5,7 @@ import java.util.List;
 import com.atos.utils.GstDate;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.ScsDesignaBean;
+import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsJuzgadoBean;
 import com.siga.beans.ScsProcedimientosBean;
 import com.siga.general.MasterForm;
@@ -38,14 +39,20 @@ public class MaestroDesignasForm extends MasterForm {
 	private String IDPRETENSION="IDPRETENSION";
 	private String FECHARECEPCIONCOLEGIO = 	"FECHARECEPCIONCOLEGIO";
 	private String FECHAOFICIOJUZGADO 	= 	"FECHAOFICIOJUZGADO";	
-	
+	private String procedimiento;
 	private String letrado;
 	private List<ScsJuzgadoBean> juzgados;  
 	private String idJuzgado;
 	private List<ScsProcedimientosBean> modulos;
-	
-	
-	private String procedimiento;
+	private List<ScsEJGBean> ejgs;  	
+
+	public List<ScsEJGBean> getEjgs() {
+		return ejgs;
+	}
+	public void setEjgs(List<ScsEJGBean> ejgs) {
+		this.ejgs = ejgs;
+	}
+
 	
 	public String getLetrado() {
 		return letrado;

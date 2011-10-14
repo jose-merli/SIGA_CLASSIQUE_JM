@@ -15,6 +15,7 @@ public class BusquedaExpedientesForm extends MasterForm {
     
 	String orden;
 	String tipoOrden;
+	String idTipoExpediente;
 	
 
 	
@@ -22,6 +23,12 @@ public class BusquedaExpedientesForm extends MasterForm {
 
 	// BLOQUE PARA EL FORMULARIO DE BUSQUEDA SIMPLE 
 
+	public String getIdTipoExpediente() {
+		return idTipoExpediente;
+	}
+	public void setIdTipoExpediente(String idTipoExpediente) {
+		this.idTipoExpediente = idTipoExpediente;
+	}
 	//Para los combos que devuelven más de un dato separados por comas---
 	public void setComboTipoExpediente (String dato) { 
  		try {

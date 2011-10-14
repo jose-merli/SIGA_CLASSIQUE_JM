@@ -89,6 +89,14 @@ public class BusquedaExpedientesAction extends MasterAction {
 			}else if (accion.equalsIgnoreCase("buscarPorAvanzada")){
 				mapDestino = buscarInit(mapping, miForm, request, response); 
 			}
+			else if (accion.equalsIgnoreCase("nuevoDesdeEjg")){
+				mapDestino = nuevoDesdeEjg(mapping, miForm, request, response);
+			}
+			else if (accion.equalsIgnoreCase("editarDesdeEjg")){
+				mapDestino = editarDesdeEjg(mapping, miForm, request, response);
+			}else if (accion.equalsIgnoreCase("verDesdeEjg")){
+				mapDestino = verDesdeEjg(mapping, miForm, request, response);
+			}
 			else if (accion.equalsIgnoreCase("generaExcel")){
 				mapDestino = generaExcel(mapping, miForm, request, response);
 			}else {
@@ -365,7 +373,128 @@ public class BusquedaExpedientesAction extends MasterAction {
 
 		return exitoRefresco("messages.deleted.success",request);
 	}	
+	
+	protected String verDesdeEjg(ActionMapping mapping, MasterForm formulario,
+			HttpServletRequest request, HttpServletResponse response)
+	throws SIGAException {
 
+		return verEjg(mapping,formulario,request,response,false,false);
+	}
+	protected String editarDesdeEjg(ActionMapping mapping, MasterForm formulario,
+			HttpServletRequest request, HttpServletResponse response)
+	throws SIGAException {
+
+		return verEjg(mapping,formulario,request,response,true,false);
+	}
+
+	protected String nuevoDesdeEjg(ActionMapping mapping, MasterForm formulario,
+			HttpServletRequest request, HttpServletResponse response)
+	throws SIGAException {
+
+		return verEjg(mapping,formulario,request,response,true,true);
+	}
+
+	
+	protected String verEjg(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response, boolean bEditable, boolean bNuevo) throws SIGAException{
+
+		try{
+			BusquedaExpedientesForm form = (BusquedaExpedientesForm)formulario;	
+			UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));   						
+
+			if (!bNuevo){
+				
+				String idInstitucion = form.getInstitucion();
+				String idInstitucion_TipoExpediente = form.getInstitucion();
+				String idTipoExpediente = null;
+				if( request.getParameter("idTipoExpediente")==null ||  request.getParameter("idTipoExpediente").toString().trim().equals(""))
+					 idTipoExpediente = (String) form.getIdTipoExpediente();
+				else
+					 idTipoExpediente = (String) request.getParameter("idTipoExpediente");
+
+				String numExpediente = form.getNumeroExpediente();
+				if(numExpediente==null || numExpediente.equals(""))
+					numExpediente = (String) request.getSession().getAttribute("numeroExpedienteSession");
+				
+				String anioExpediente = form.getAnioExpediente();
+				if(anioExpediente==null || anioExpediente.equals(""))
+					anioExpediente = (String) request.getSession().getAttribute("anioExpedienteSession");
+
+				
+				
+				
+				String nombreTipoExpediente = UtilidadesString.mostrarDatoJSP(form.getTipoExpediente());
+
+				//Si se intenta editar un expediente de otra institucion,
+				//sólo se permitirá modificar las anotaciones (pestanha de seguimiento)
+				String soloSeguimiento = "false";
+				if (bEditable){
+					soloSeguimiento = (!userBean.getLocation().equals(idInstitucion))?"true":"false";	        	
+				}
+
+				//Anhadimos parametros para las pestanhas
+				Hashtable htParametros=new Hashtable();
+				htParametros.put("idInstitucion",idInstitucion);
+				htParametros.put("idInstitucion_TipoExpediente",idInstitucion_TipoExpediente);
+				htParametros.put("idTipoExpediente",idTipoExpediente);
+				htParametros.put("numeroExpediente",numExpediente);
+				htParametros.put("anioExpediente",anioExpediente);
+				htParametros.put("nombreTipoExpediente",nombreTipoExpediente);
+				htParametros.put("editable", bEditable ? "1" : "0");
+				htParametros.put("accion", bEditable ? "edicion" : "consulta");	
+				htParametros.put("soloSeguimiento",soloSeguimiento);
+
+				request.setAttribute("expediente", htParametros);
+
+				//Recuperamos las pestanhas ocultas para no mostrarlas
+				ExpCampoTipoExpedienteAdm campoAdm = new ExpCampoTipoExpedienteAdm(this.getUserBean(request));
+				String[] pestanasOcultas = campoAdm.obtenerPestanasOcultas(idInstitucion_TipoExpediente,idTipoExpediente);
+				
+				request.setAttribute("pestanasOcultas",pestanasOcultas);
+				request.setAttribute("idTipoExpediente",idTipoExpediente);
+				request.setAttribute("idInstitucionTipoExpediente",idInstitucion_TipoExpediente);
+				
+				
+
+				// Metemos los datos no editables del expediente en Backup.
+				//Los datos particulares se anhadirán a la HashMap en cada caso.
+				HashMap datosExpediente = new HashMap();
+				Hashtable datosGenerales = new Hashtable();
+				datosGenerales.put(ExpExpedienteBean.C_IDINSTITUCION,idInstitucion);
+				datosGenerales.put(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE,idInstitucion_TipoExpediente);
+				datosGenerales.put(ExpExpedienteBean.C_IDTIPOEXPEDIENTE,idTipoExpediente);
+				datosGenerales.put(ExpExpedienteBean.C_NUMEROEXPEDIENTE,numExpediente);
+				datosGenerales.put(ExpExpedienteBean.C_ANIOEXPEDIENTE,anioExpediente);
+				datosExpediente.put("datosGenerales",datosGenerales);
+				request.getSession().setAttribute("DATABACKUP",datosExpediente);
+
+
+			}else{
+				String idInstitucion_TipoExpediente = request.getParameter("idInstitucion_TipoExpediente");
+				String idTipoExpediente = request.getParameter("idTipoExpediente");
+//				String nombreTipoExpediente = request.getParameter("nombreTipo");
+				Hashtable htParametros=new Hashtable();
+				htParametros.put("idInstitucion_TipoExpediente",idInstitucion_TipoExpediente);
+				htParametros.put("idTipoExpediente",idTipoExpediente);
+				htParametros.put("editable", "1");	
+				htParametros.put("accion", "nuevo");
+				htParametros.put("soloSeguimiento", "false");
+
+				request.setAttribute("expediente", htParametros);
+			}
+
+			String nuevo = bNuevo?"true":"false";
+			request.setAttribute("nuevo", nuevo);	
+		}catch(Exception e){
+			throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,null); 
+		}
+
+
+		return "editar";
+	}
+
+	
+	
+	
 	/** 
 	 * Funcion que muestra el formulario en modo consulta o edicion
 	 * @param  mapping

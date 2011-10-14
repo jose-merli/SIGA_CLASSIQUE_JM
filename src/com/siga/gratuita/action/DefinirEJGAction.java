@@ -22,6 +22,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.siga.beans.ExpExpedienteAdm;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
@@ -38,6 +39,8 @@ import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.ExpExpedienteAdm;
+import com.siga.beans.ExpExpedienteBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
@@ -1277,10 +1280,11 @@ public class DefinirEJGAction extends MasterAction
 		
 		Vector ocultos = formulario.getDatosTablaOcultos(0);			
 		ScsEJGAdm admBean =  new ScsEJGAdm(this.getUserBean(request));
-		
+		ExpExpedienteAdm exp = new ExpExpedienteAdm (this.getUserBean(request));
 		Hashtable miHash = new Hashtable();
 		
-		try {				
+		try {
+
 			miHash.put(ScsEJGBean.C_IDTIPOEJG,(ocultos.get(0)));
 			miHash.put(ScsEJGBean.C_IDINSTITUCION,(ocultos.get(1)));						
 			miHash.put(ScsEJGBean.C_ANIO,(ocultos.get(2)));
@@ -1289,8 +1293,32 @@ public class DefinirEJGAction extends MasterAction
 			tx=usr.getTransaction();
 			tx.begin();
 			admBean.delete(miHash);		    
-			tx.commit();
+			/// Relacion con Expediente de insostenibilidad
+
+			Vector v2 = exp.getRelacionadoConEjg((String)ocultos.get(1), (String)ocultos.get(2),(String) ocultos.get(3), (String)ocultos.get(0));
+			if (v2.size()>0){
+				String anio          = UtilidadesHash.getString((Hashtable)v2.get(0),"ANIO");
+				String numero        = UtilidadesHash.getString((Hashtable)v2.get(0),"CODIGO");
+				String idTipo        = UtilidadesHash.getString((Hashtable)v2.get(0),"IDTIPO");
+				String idInstitucion = UtilidadesHash.getString((Hashtable)v2.get(0),"IDINSTITUCION");
+				
+				Hashtable h = new Hashtable ();
+	
+				UtilidadesHash.set(h, ExpExpedienteBean.C_ANIOEXPEDIENTE, anio);
+				UtilidadesHash.set(h, ExpExpedienteBean.C_NUMEROEXPEDIENTE, numero);
+				UtilidadesHash.set(h, ExpExpedienteBean.C_IDTIPOEXPEDIENTE, idTipo);
+				UtilidadesHash.set(h, ExpExpedienteBean.C_IDINSTITUCION, idInstitucion);
+				UtilidadesHash.set(h, ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE, idInstitucion);
+				UtilidadesHash.set(h, ExpExpedienteBean.C_ANIOEJG, "");
+				UtilidadesHash.set(h, ExpExpedienteBean.C_NUMEROEJG, "");
+				UtilidadesHash.set(h, ExpExpedienteBean.C_IDTIPOEJG, "");
+	
+				exp.updateDirect(h, null, new String [] {ExpExpedienteBean.C_ANIOEJG, ExpExpedienteBean.C_NUMEROEJG, ExpExpedienteBean.C_IDTIPOEJG});
+
+			}
 			
+			tx.commit();
+						
 		} catch (Exception e) {
 			throwExcp("messages.general.error",e,tx);
 		}		

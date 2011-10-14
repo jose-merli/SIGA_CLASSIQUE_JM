@@ -96,7 +96,10 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			ExpExpedienteBean.C_IDTIPOIVA,
 			ExpExpedienteBean.C_IDRESULTADOJUNTAGOBIERNO,
 			ExpExpedienteBean.C_IDENTIFICADORDS,
-			ExpExpedienteBean.C_IDDIRECCION};
+			ExpExpedienteBean.C_IDDIRECCION,
+			ExpExpedienteBean.C_ANIOEJG,
+			ExpExpedienteBean.C_NUMEROEJG,
+			ExpExpedienteBean.C_IDTIPOEJG};
 
 		return campos;
 	}
@@ -134,9 +137,17 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		try
 		{
 			bean = new ExpExpedienteBean();
-						
+			 if(hash.get(ExpExpedienteBean.C_IDTIPOEJG)==null || hash.get(ExpExpedienteBean.C_IDTIPOEJG).toString().equals("")){
+				 bean.setAnioExpDisciplinario(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_ANIOEXPDISCIPLINARIO));
+				 bean.setNumExpDisciplinario(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_NUMEXPDISCIPLINARIO));
+			 }else{
+				 
+				 	bean.setTipoExpDisciplinario(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_IDTIPOEJG));
+					bean.setNumExpDisciplinario(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_NUMEROEJG));
+					bean.setAnioExpDisciplinario(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_ANIOEJG));
+					
+			 }
 			bean.setNumeroExpediente(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_NUMEROEXPEDIENTE));
-			bean.setNumExpDisciplinario(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_NUMEXPDISCIPLINARIO));
 			bean.setFecha(UtilidadesHash.getString(hash, ExpExpedienteBean.C_FECHA));
 			bean.setAsunto(UtilidadesHash.getString(hash, ExpExpedienteBean.C_ASUNTO));
 			bean.setJuzgado(UtilidadesHash.getString(hash, ExpExpedienteBean.C_JUZGADO));
@@ -161,7 +172,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			bean.setUsuModificacion(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_USUMODIFICACION));
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_IDINSTITUCION));
 			bean.setAnioExpediente(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_ANIOEXPEDIENTE));
-			bean.setAnioExpDisciplinario(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_ANIOEXPDISCIPLINARIO));
+			
 			bean.setIdPersona(UtilidadesHash.getLong(hash, ExpExpedienteBean.C_IDPERSONA));
 			bean.setIdTipoExpediente(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_IDTIPOEXPEDIENTE));
 			bean.setIdInstitucion_tipoExpediente(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE));
@@ -217,8 +228,15 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 
 			ExpExpedienteBean b = (ExpExpedienteBean) bean;
 
+			 if(b.getTipoExpDisciplinario()==null){
+				 UtilidadesHash.set(htData, ExpExpedienteBean.C_ANIOEXPDISCIPLINARIO, b.getAnioExpDisciplinario());
+				UtilidadesHash.set(htData, ExpExpedienteBean.C_NUMEXPDISCIPLINARIO, b.getNumExpDisciplinario());
+			 }else{
+				 UtilidadesHash.set(htData, ExpExpedienteBean.C_ANIOEJG, b.getAnioExpDisciplinario());
+				 UtilidadesHash.set(htData, ExpExpedienteBean.C_IDTIPOEJG, b.getTipoExpDisciplinario());
+				 UtilidadesHash.set(htData, ExpExpedienteBean.C_NUMEROEJG, b.getNumExpDisciplinario());
+			 }
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_NUMEROEXPEDIENTE, b.getNumeroExpediente());
-			UtilidadesHash.set(htData, ExpExpedienteBean.C_NUMEXPDISCIPLINARIO, b.getNumExpDisciplinario());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_FECHA, b.getFecha());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_ASUNTO, b.getAsunto());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_JUZGADO, b.getJuzgado());
@@ -242,7 +260,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_USUMODIFICACION, b.getUsuModificacion());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDINSTITUCION, b.getIdInstitucion());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_ANIOEXPEDIENTE, b.getAnioExpediente());
-			UtilidadesHash.set(htData, ExpExpedienteBean.C_ANIOEXPDISCIPLINARIO, b.getAnioExpDisciplinario());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDPERSONA, b.getIdPersona());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDTIPOEXPEDIENTE, b.getIdTipoExpediente());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE, b.getIdInstitucion_tipoExpediente());
@@ -271,7 +288,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_DERECHOSCOLEGIALES, b.getDerechosColegiales());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDTIPOIVA, b.getIdTipoIVA());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDRESULTADOJUNTAGOBIERNO, b.getIdResultadoJuntaGobierno());
-
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDENTIFICADORDS, b.getIdentificadorDS());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDDIRECCION, b.getIdDireccion());
 
@@ -1127,6 +1143,43 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 	 * @param criteros para filtrar el select, campo where 
 	 * @return vector con los datos de un expediente  
 	 * */
+	public Integer selectTipoExpedienteEJG(String idInstitucion) throws ClsExceptions 
+	{
+		Vector datos = new Vector();
+		Integer tipoExpediente = null;
+		
+		//NOMBRES TABLAS PARA LA JOIN
+		String T_EXP_TIPOEXPEDIENTE = ExpTipoExpedienteBean.T_NOMBRETABLA + " T";
+		String E_IDINSTITUCION = ExpTipoExpedienteBean.C_IDINSTITUCION;
+		String RELACIONEJG = ExpTipoExpedienteBean.C_RELACIONEJG;
+		String IDTIPOEXPEDIENTE = ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE;
+		//Acceso a BBDD
+		RowsContainer rc = null;
+		try { 
+			rc = new RowsContainer(); 
+			
+	        String sql = "SELECT "+ IDTIPOEXPEDIENTE ;
+	        sql += " FROM ";
+		    sql += 	T_EXP_TIPOEXPEDIENTE+" " ;
+			sql += " WHERE ";
+			sql += E_IDINSTITUCION + " = " + idInstitucion + " and "+ RELACIONEJG + " = 1";
+
+			ClsLogging.writeFileLog("ExpExpedienteAdm, selectTipoExpedienteEJG() -> QUERY: " + sql,3);
+
+			if (rc.query(sql)) {
+				if (rc.size()==1)	{
+					Row fila = (Row) rc.get(0);										
+					tipoExpediente=new Integer(fila.getString("IDTIPOEXPEDIENTE"));					
+				}
+				else
+					return null;
+			}
+		} 
+		catch (Exception e) { 	
+			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
+		}
+		return tipoExpediente;
+	}
 	public Vector selectExpedientesCliente(long idPersona, int idInstitucion) throws ClsExceptions 
 	{
 		Vector datos = new Vector();
@@ -2035,15 +2088,33 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			htData = new Hashtable();
 
 			ExpExpedienteBean b = (ExpExpedienteBean) bean;
-
-			if (b.getNumExpDisciplinario()==null)
-				UtilidadesHash.set(htData, ExpExpedienteBean.C_NUMEXPDISCIPLINARIO, "");
-			else
-				UtilidadesHash.set(htData, ExpExpedienteBean.C_NUMEXPDISCIPLINARIO, b.getNumExpDisciplinario());
-			if (b.getAnioExpDisciplinario()==null)
-				UtilidadesHash.set(htData, ExpExpedienteBean.C_ANIOEXPDISCIPLINARIO, "");
-			else
-				UtilidadesHash.set(htData, ExpExpedienteBean.C_ANIOEXPDISCIPLINARIO, b.getAnioExpDisciplinario());
+	        if(b.getTipoExpDisciplinario()!=null && !b.getTipoExpDisciplinario().toString().trim().equals("") ){
+	        	if (b.getTipoExpDisciplinario()==null)
+					UtilidadesHash.set(htData, ExpExpedienteBean.C_IDTIPOEJG, "");
+				else
+					UtilidadesHash.set(htData, ExpExpedienteBean.C_IDTIPOEJG, b.getTipoExpDisciplinario());
+	        	if (b.getNumExpDisciplinario()==null)
+					UtilidadesHash.set(htData, ExpExpedienteBean.C_NUMEROEJG, "");
+				else
+					UtilidadesHash.set(htData, ExpExpedienteBean.C_NUMEROEJG, b.getNumExpDisciplinario());
+				if (b.getAnioExpDisciplinario()==null)
+					UtilidadesHash.set(htData, ExpExpedienteBean.C_ANIOEJG, "");
+				else
+					UtilidadesHash.set(htData, ExpExpedienteBean.C_ANIOEJG, b.getAnioExpDisciplinario());
+	        }else{
+	        	if (b.getTipoExpDisciplinario()==null)
+					UtilidadesHash.set(htData, ExpExpedienteBean.C_IDTIPOEJG, "");
+				else
+					UtilidadesHash.set(htData, ExpExpedienteBean.C_IDTIPOEJG, b.getTipoExpDisciplinario());
+				if (b.getNumExpDisciplinario()==null)
+					UtilidadesHash.set(htData, ExpExpedienteBean.C_NUMEXPDISCIPLINARIO, "");
+				else
+					UtilidadesHash.set(htData, ExpExpedienteBean.C_NUMEXPDISCIPLINARIO, b.getNumExpDisciplinario());
+				if (b.getAnioExpDisciplinario()==null)
+					UtilidadesHash.set(htData, ExpExpedienteBean.C_ANIOEXPDISCIPLINARIO, "");
+				else
+					UtilidadesHash.set(htData, ExpExpedienteBean.C_ANIOEXPDISCIPLINARIO, b.getAnioExpDisciplinario());
+	        }
 			if (b.getProcedimiento()==null)
 				UtilidadesHash.set(htData, ExpExpedienteBean.C_PROCEDIMIENTO, "");
 			else
@@ -2289,8 +2360,61 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		return datos;
 	}
 	
-	
-	
+	public Vector getRelacionadoConEjg (String institucion, String anio, String numero, String idTipo) throws ClsExceptions,SIGAException 
+	{
+		try {
+	            	            
+	       	String sql = " SELECT 'EXPEDIENTE' AS SJCS, " + 
+									 "EXP.IDINSTITUCION IDINSTITUCION, " + 
+									 "EXP.ANIOEXPEDIENTE ANIO, " + 
+									 "' ' AS NUMERO, " +
+									 " EXP.IDPERSONA IDLETRADO, " + 
+									 "PER.APELLIDOS1||' '||PER.APELLIDOS2||', '||PER.NOMBRE AS NOMBRELETRADO, "+
+									 "' ' AS IDTURNO, " +
+									 "EXP.IDTIPOEXPEDIENTE  AS IDTIPO, " +
+									 "EXP.NUMEROEXPEDIENTE  AS CODIGO, " +
+									 "EXT.NOMBRE AS DES_TIPO, " +
+									 "' ' AS DES_TURNO " +
+		  " FROM EXP_EXPEDIENTE   EXP,  CEN_PERSONA   PER, EXP_TIPOEXPEDIENTE EXT   "+ 
+			 " WHERE EXP.ANIOEJG = " + anio +
+			   " AND EXP.NUMEROEJG = " + numero +
+			   " AND EXP.IDTIPOEJG = " + idTipo +
+			   " AND EXP.IDINSTITUCION_TIPOEXPEDIENTE = " + institucion + 
+			   " AND EXP.IDPERSONA= PER.IDPERSONA  AND EXP.IDTIPOEXPEDIENTE = EXT.IDTIPOEXPEDIENTE";
+						
+
+	       	return this.selectGenerico(sql);
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion sobre las relaciones de un ejg.");
+		}
+	}
+
+	public boolean tienePermisos (String institucion, String perfil) throws ClsExceptions,SIGAException 
+	{
+		try {
+	            	            
+			String sql ="SELECT " +
+		     " max(decode(DERECHOACCESO, 1, 10, DERECHOACCESO)) as TIPOACCESO "+
+			" FROM EXP_PERMISOSTIPOSEXPEDIENTES WHERE IDINSTITUCION =" +institucion+" " +
+		     " AND IDPERFIL IN ('"+perfil+"')";
+						
+			Hashtable contador = (Hashtable)((Vector)this.selectGenerico(sql)).get(0);
+			//devolverá true si el contador es = 0
+			String resultado = (String)contador.get("TIPOACCESO");
+			if (resultado!=null && resultado.equalsIgnoreCase("3"))
+				return true;
+			else 
+				return false;
+			
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion sobre las relaciones de un ejg.");
+		}
+
+		
+}
+
 	
 	
 	

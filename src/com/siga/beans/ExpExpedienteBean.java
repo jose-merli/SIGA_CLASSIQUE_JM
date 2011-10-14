@@ -22,6 +22,7 @@ public class ExpExpedienteBean extends MasterBean {
 	private Long idPersona;
 	private Integer numExpDisciplinario;
 	private Integer anioExpDisciplinario;
+	private Integer tipoExpDisciplinario;	
 	private String fecha;
 	private String asunto;
 	private String juzgado;
@@ -130,13 +131,20 @@ public class ExpExpedienteBean extends MasterBean {
 	static public final String C_IDTIPOIVA ="IDTIPOIVA";
 	static public final String C_IDRESULTADOJUNTAGOBIERNO ="IDRESULTADOJUNTAGOBIERNO";
 	static public final String C_ALERTAFASEGENERADA ="ALERTAFASEGENERADA";
+	static public final String C_IDTIPOEJG ="IDTIPOEJG";
+	
+	static public final String C_ANIOEJG = "ANIOEJG";
+	
+	static public final String C_NUMEROEJG ="NUMEROEJG";
+	
 	static public final String C_IDENTIFICADORDS ="IDENTIFICADORDS";
 	
 	static public final String T_NOMBRETABLA = "EXP_EXPEDIENTE";
 	
 	static public final String C_IDDIRECCION ="IDDIRECCION";
 	
-	
+
+
 	public String getFechaCaducidad() {
 		return fechaCaducidad;
 	}
@@ -493,5 +501,12 @@ public class ExpExpedienteBean extends MasterBean {
 	}
 	public void setDerechosColegiales(Double derechosColegiales) {
 		this.derechosColegiales = derechosColegiales;
+	}
+	public void setTipoExpDisciplinario(Integer integer) {
+		this.tipoExpDisciplinario = integer;
+		
+	}
+	public Integer getTipoExpDisciplinario() {
+		return tipoExpDisciplinario;
 	}
 }

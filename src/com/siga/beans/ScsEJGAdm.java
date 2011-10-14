@@ -136,6 +136,29 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	
 	
 	
+	public Hashtable getCalculoNumEjg (String idInstitucion, String anio, String numero, String idTipoEJG) 
+	{
+		try {
+			String sql = 	"select " + ScsEJGBean.C_SUFIJO+","+
+								ScsEJGBean.C_NUMEJG+ " AS CODIGO "	+					
+							" from " + ScsEJGBean.T_NOMBRETABLA + " a " + 
+							" where a." + ScsEJGBean.C_IDINSTITUCION + " = " + idInstitucion +  
+							  " and a." + ScsEJGBean.C_ANIO + " = " + anio +
+							  " and a." + ScsEJGBean.C_NUMERO  + " = " + numero +
+							  " and a." + ScsEJGBean.C_IDTIPOEJG  + " = " + idTipoEJG;
+
+			Vector v = this.selectGenerico(sql);
+			if (v!=null && v.size()>0) {
+				return (Hashtable) v.get(0);
+			}
+		} 
+		catch (ClsExceptions e) {
+			e.printStackTrace();
+		}
+		return new Hashtable();
+	}
+
+	
 	/** Funcion select (String where). Devuele todos los campos de los registros que cumplan los criterios.
 	 * @param criteros para filtrar el select, campo where 
 	 *  @return vector con los registros encontrados. El objeto es de tipo administrador del bean 

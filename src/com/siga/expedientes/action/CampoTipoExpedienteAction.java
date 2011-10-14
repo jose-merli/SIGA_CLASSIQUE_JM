@@ -86,6 +86,7 @@ public class CampoTipoExpedienteAction extends MasterAction {
         if (beantipoexp.getDiasAntelacionCad()!=null) {
             form.setDiasAntelacionCad(beantipoexp.getDiasAntelacionCad().toString());        
         }
+        form.setRelacionEJG(beantipoexp.getRelacionEjg().equals(new Integer(1)) );
         //Metemos en el backup los resultados de los campos obtenidos y el tipo de expediente
         Vector backup=new Vector();
         backup.add(0,beantipoexp);
@@ -135,7 +136,10 @@ public class CampoTipoExpedienteAction extends MasterAction {
         UserTransaction tx = userBean.getTransaction();
 	    try {
 	        tx.begin();     
-        
+
+	        //Actualizamos los registros de campos de expediente        
+	        Vector camposExp=(Vector)backup.elementAt(1); 
+	        
 	        // Actualizamos el nombre del expediente
 	        ExpTipoExpedienteBean tipoExp=(ExpTipoExpedienteBean)backup.elementAt(0);	    
 	        tipoExp.setNombre(form.getNombre());
@@ -149,26 +153,22 @@ public class CampoTipoExpedienteAction extends MasterAction {
 	        } else {
 	        	tipoExp.setDiasAntelacionCad(new Integer(form.getDiasAntelacionCad()));
 	        }
+	  	        //  Modificamos el bean antiguo
+	        tipoExp.setRelacionEjg(form.isRelacionEJG()?new Integer(1):new Integer(0));
 	        tipoExpAdm.update(tipoExp);        
 	        
-	        //Actualizamos los registros de campos de expediente        
-	        Vector camposExp=(Vector)backup.elementAt(1);      
-	        
-	        /*ExpCampoTipoExpedienteBean beanFecha = (ExpCampoTipoExpedienteBean)camposExp.elementAt(0);
-	        //  Modificamos el bean antiguo
-	        beanFecha.setVisible(form.getFecha()?"S":"N");
-	        campoTipoExpedienteAdm.update(beanFecha);*/
-	       
 	        ExpCampoTipoExpedienteBean beanNexpDisciplinario = (ExpCampoTipoExpedienteBean)camposExp.elementAt(0);
 	        //  Modificamos el bean antiguo
 	        beanNexpDisciplinario.setVisible(form.getNexpDisciplinario()?ExpCampoTipoExpedienteBean.si:ExpCampoTipoExpedienteBean.no);
+	        beanNexpDisciplinario.setNombre(form.getNombreCampoNumExp());
 	        campoTipoExpedienteAdm.update(beanNexpDisciplinario);
-	       
+	        
 	        ExpCampoTipoExpedienteBean beanEstado = (ExpCampoTipoExpedienteBean)camposExp.elementAt(1);
 	        //  Modificamos el bean antiguo
 	        beanEstado.setVisible(form.getEstado()?ExpCampoTipoExpedienteBean.si:ExpCampoTipoExpedienteBean.no);
 	        campoTipoExpedienteAdm.update(beanEstado);
 	       
+
 	        ExpCampoTipoExpedienteBean beanInstitucion = (ExpCampoTipoExpedienteBean)camposExp.elementAt(2);
 	        //  Modificamos el bean antiguo
 	        beanInstitucion.setVisible(form.getInstitucion()?ExpCampoTipoExpedienteBean.si:ExpCampoTipoExpedienteBean.no);
@@ -272,6 +272,9 @@ public class CampoTipoExpedienteAction extends MasterAction {
 		int campo = idCampo + 1;
 	    switch(campo){	    
 		    case ClsConstants.IDCAMPO_TIPOEXPEDIENTE_N_DISCIPLINARIO:
+		    	if(nombre ==null||nombre.equals(""))
+		    		nombre = ExpCampoTipoExpedienteBean.NUMEXPEDIENTE;
+		    	form.setNombreCampoNumExp(nombre);
 		        form.setNexpDisciplinario(visible.equals("S"));
 		        break;
 		    case ClsConstants.IDCAMPO_TIPOEXPEDIENTE_ESTADO:

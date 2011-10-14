@@ -87,6 +87,31 @@
 			optionsProcedimientos.selectedIndex=0;
 		}
 	}
+	function tab(pestana,panel)
+	{
+		pst 	= document.getElementById(pestana);
+		pnl 	= document.getElementById(panel);
+		psts	= document.getElementById('tabs').getElementsByTagName('li');
+		pnls	= document.getElementById('paneles').getElementsByTagName('div');
+		
+		// eliminamos las clases de las pestañas
+		for(i=0; i< psts.length; i++)
+		{
+			psts[i].className = '';
+		}
+		
+		// Añadimos la clase "actual" a la pestaña activa
+		pst.className = 'actual';
+		
+		// eliminamos las clases de las pestañas
+		for(i=0; i< pnls.length; i++)
+		{
+			pnls[i].style.display = 'none';
+		}
+		
+		// Añadimos la clase "actual" a la pestaña activa
+		pnl.style.display = 'block';
+	}
  
 </script>
 </head>
@@ -151,24 +176,23 @@
 						<!-- JBD 16/2/2009 INC-5682-SIGA -->
 					</tr>
 				</table>
-			</siga:ConjCampos> <siga:ConjCampos leyenda="gratuita.busquedaDesignas.literal.designa">
+			</siga:ConjCampos> 
+			<siga:ConjCampos leyenda="gratuita.busquedaDesignas.literal.designa">
 				<table class="tablaCampos" align="center" cellpadding="0"
 					cellpadding="0" width="100%" border="0">
-
 					<tr>
-
-						
-								<tr>
-
-									<td class="labelText" width="10%"><siga:Idioma
+									<td  width="20%" class="labelText"><siga:Idioma
+										key='gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento' /></td>
+									<td width="20%"><html:text name="MaestroDesignasForm" property="numeroProcedimiento"  maxlength="15" 
+										styleClass="box" style="width: 100" /></td>
+									<td width="10%" class="labelText" width="10%"><siga:Idioma
 										key="gratuita.mantenimientoTablasMaestra.literal.juzgado" />
 									</td>
 									<td class="labelText" width="10%">
 										<input type="text"
 										name="codigoExtJuzgado" styleId="codigoExtJuzgado" class="box" size="8" maxlength="10"/>
 										&nbsp;</td>
-									<td>&nbsp;</td>
-									<td width="80%">
+									<td width="40%">
 										<html:select styleId="juzgados" styleClass="boxCombo" style="width:500px;"
 											property="idJuzgado">
 											<bean:define id="juzgados" name="MaestroDesignasForm"
@@ -180,10 +204,11 @@
 						
 					</tr>
 					<tr>
-						<td class="labelText"><siga:Idioma
-							key="gratuita.actuacionesDesigna.literal.modulo" /></td>
-						<td colspan= "3">
-						<html:select styleId="modulos" styleClass="boxCombo" style="width:500px;"
+						
+						<td width="20%"  class="labelText"><siga:Idioma
+										key="gratuita.actuacionesDesigna.literal.modulo" /></td>
+						<td colspan="5">
+						<html:select styleId="modulos" styleClass="boxCombo" style="width:400px;"
 								property="idProcedimiento" >
 								<bean:define id="modulos" name="MaestroDesignasForm"
 									property="modulos" type="java.util.Collection" />
@@ -193,10 +218,209 @@
 						
 						</td>
 					</tr>
+					<tr><td  colspan="6">&nbsp;</td></tr>
 				</table>
-			</siga:ConjCampos></td>
+			</siga:ConjCampos>
+		
+ 			<siga:ConjCampos leyenda="gratuita.operarEJG.literal.expedienteEJG">
+
+			 	<bean:define id="ejgs" name="MaestroDesignasForm"	property="ejgs" type="java.util.Collection"/>
+	   	<c:choose>
+		<c:when test="${empty ejgs}">
+		<table class="tablaCampos" align="center" cellpadding="0"
+					cellpadding="0" width="100%" border="0">
+
+			<tr>
+				<td colspan="13" class="titulitos" style="text-align: center"><siga:Idioma
+					key="messages.noRecordFound" /></td>
+			</tr>
+		</table>	
+		</c:when>
+		<c:otherwise>
+				<div align="right" id="panel">
+					<ul id="tabs">
+					<logic:notEmpty name="MaestroDesignasForm" property="ejgs">
+						<logic:iterate name="MaestroDesignasForm" property="ejgs" id="ejg1" indexId="index">
+					    	<li id="tab_${index}"><a href="#" onclick="tab('tab_${index}','panel_${index}');"><c:out
+							value="${ejg1.anio}" />/<c:out
+							value="${ejg1.numEJG}" /></a></li>
+						</logic:iterate>
+					</logic:notEmpty>		   
+				    </ul>
+					<div id="paneles">
+
+					<logic:notEmpty name="MaestroDesignasForm" property="ejgs">
+						<logic:iterate name="MaestroDesignasForm" property="ejgs" id="ejg2" indexId="index2">
+							<div id="panel_${index2}" style="display: inline">
+								<table class="tablaCampos" align="center" cellpadding="0"
+									cellpadding="0" width="100%" border="0">
+								<tr>
+										<td colspan="2"   class="labelText" style="width:100px;">	
+											<siga:Idioma key='gratuita.operarEJG.literal.interesado'/>
+										</td>
+										<td colspan="4" class="labelTextValue" style="width:300px;">	
+										<c:out		value="${ejg2.tipoLetrado}" />
+
+										</td>
+								
+								</tr>
+								<tr>
+									<td class="labelText" style="width:100px;">
+										<siga:Idioma key='gratuita.busquedaEJG.literal.fechaApertura'/>
+									</td>
+									<td  class="labelTextValue" style="width:100px;">
+									 	<c:out		value="${ejg2.fechaApertura}" />	
+									</td>
+									<td class="labelText" style="width:100px;">	
+										<siga:Idioma key='gratuita.busquedaEJG.literal.estadoEJG'/>
+									</td>
+									<td  class="labelTextValue" colspan="3" style="width:200px;">	
+											<c:out		value="${ejg2.estadoEjg}" />	
+									</td>	
+								</tr>
+								<tr>
+									<td class="labelText" width="100px">	
+										<siga:Idioma key='gratuita.operarEJG.literal.tipo'/>
+									</td>
+									<td  class="labelTextValue" colspan="5" style="width:300px;">	
+										<c:out		value="${ejg2.deTipoEjg}" />	
+									</td>
+							</tr>
+							<tr>
+								<td class="labelText" width="15%">
+									 <siga:Idioma key='gratuita.busquedaEJG.literal.EJGColegio'/>
+								</td>
+								<td class="labelTextValue" width="15%">
+									<c:out		value="${ejg2.tipoEjgCol}" />	
+								</td>
+								<td class="labelText" nowrap width="20%">
+									<siga:Idioma key='gratuita.operarEJG.literal.fechaPresentacion'/>&nbsp;
+								</td>
+								<td  class="labelTextValue" width="15%">
+									<c:out		value="${ejg2.fechaPresentacion}" />	
+								</td>
+								<td class="labelText" nowrap width="20%">
+												<siga:Idioma key='gratuita.operarEJG.literal.fechaLimitePresentacion'/>
+								</td>
+								<td  class="labelTextValue" width="15%">
+								
+								<c:out		value="${ejg2.fechaLimitePresentacion}" />	
+								</td>
+							</tr>
+							<tr>
+			
+								 <td class="labelText" >	
+									<siga:Idioma key='gratuita.operarEJG.literal.CAJG'/> <siga:Idioma key='gratuita.operarEJG.literal.anio'/> / <siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/>
+								</td>
+								<td  class="labelTextValue"  >
+								<c:out		value="${ejg2.anioCAJG}" />	/<c:out		value="${ejg2.numeroCAJG}" />
+								</td>
+								<td class="labelText">	
+								<siga:Idioma key='gratuita.operarEJG.literal.origen'/> 
+
+								</td>
+								<td  class="labelTextValue">
+								
+								<c:out		value="${ejg2.descripcionOrigen}" />	
+								</td>
+								<td class="labelText" >	
+								<siga:Idioma key='gratuita.busquedaEJG.dictamen'/>
+								</td> 
+								<td  class="labelTextValue">
+								<c:out		value="${ejg2.dictamen}" />	
+								</td>	
+							</td>
+							</tr>
+								<tr><td colspan="6">   &nbsp;</td></tr>
+								</table>
+
+								
+								<table class="tablaCampos" align="center" cellpadding="0"
+									cellpadding="0" width="100%" border="0">
+									
+									<tr>
+									<td  id="titulo" class="titulitosDatos"  colspan="4" class="labelText" >
+									<siga:Idioma key='pestana.justiciagratuitadesigna.defensajuridica'/></td>
+									
+									</tr>
+									<tr><td style="width:100px;"> &nbsp;</td>
+									<td style="width:100px;">  &nbsp;</td>
+									<td style="width:100px;">  &nbsp;</td>
+									<td style="width:100px;"> &nbsp;</td>
+									</tr>
+									<tr>
+										<td class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligencia'/></td>
+										<td class="labelTextValue">
+										<c:out		value="${ejg2.numeroDiligencia}" />	
+										
+										</td> 
+										<td class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.centroDetencion'/></td>
+										<td  class="labelTextValue" >	
+												<c:out		value="${ejg2.descripcionComisaria}" />
+										</td>
+										
+									</tr>
+									<tr>
+										<td class="labelText" ><siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/></td>
+										<td class="labelTextValue">
+										<c:out		value="${ejg2.numeroProcedimiento}" />	
+										</td>
+										<td class="labelText">	
+										 <siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/>
+										</td>	 
+										<td  class="labelTextValue">	
+										<c:out		value="${ejg2.descripcionJuzgado}" />
+										</td>	
+									</tr>
+									<tr>
+										<td class="labelText">
+											<siga:Idioma key='gratuita.operarEJG.literal.observacionesAsunto'/>
+										</td>
+										<td  class="labelTextValue">	
+										<c:out		value="${ejg2.observaciones}" />
+										</td>
+										<td class="labelText">
+											<siga:Idioma key='gratuita.general.literal.comentariosDelitos'/>
+										</td>
+										<td   class="labelTextValue">	
+										<c:out		value="${ejg2.delitos}" />
+										</td>		
+									</tr>			
+									<tr>
+										<td  class="labelText">	
+											<siga:Idioma key='gratuita.personaJG.literal.calidad'/>
+										</td>		
+										
+										<td class="labelTextValue">					
+												<c:out		value="${ejg2.calidad}" />										
+										</td>	
+
+										<td class="labelText">	
+											<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/>
+										</td>	
+										<td class="labelTextValue" >
+										<c:out		value="${ejg2.descripcionPretension}" />	
+										</td>
+									</tr>
+									
+									</table>
+								</div>
+							</logic:iterate>
+						</logic:notEmpty>	
+							
+						</div>
+						<script type="text/javascript">
+							tab('tab_0','panel_0');
+						</script>
+					</div>
+				  </c:otherwise>
+				</c:choose>
+			</siga:ConjCampos> 
+			
+			</td>
 		</tr>
 	</table>
+
 <ajax:select
 	baseUrl="/SIGA/JGR_MantenimientoDesignas.do?modo=getAjaxModulos"
 	source="juzgados" target="modulos" parameters="idJuzgado={idJuzgado}"

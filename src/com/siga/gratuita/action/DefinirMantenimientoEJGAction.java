@@ -26,6 +26,7 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmLenguajesAdm;
+import com.siga.beans.ExpExpedienteAdm;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
 import com.siga.beans.ScsContrariosDesignaAdm;
@@ -541,6 +542,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 			String nombreTurnoAsistencia="", nombreGuardiaAsistencia="", consultaTurnoAsistencia="", consultaGuardiaAsistencia="";
 			ScsEJGAdm admBean =  new ScsEJGAdm(this.getUserBean(request));
+			String anio="", numero="", idtipoEjg="";
 			
 			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
@@ -550,13 +552,19 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 				miHash.put(ScsEJGBean.C_NUMERO,(String)request.getParameter("NUMERO"));
 				miHash.put(ScsEJGBean.C_ANIO,(String)request.getParameter("ANIO"));
 				miHash.put(ScsEJGBean.C_IDTIPOEJG,(String)request.getParameter("IDTIPOEJG"));
+				anio=(String)request.getParameter("ANIO");
+				numero=(String)request.getParameter("NUMERO");
+				idtipoEjg=(String)request.getParameter("IDTIPOEJG");
 			}
 			// O si venimos al recargar la página después de modificarla habrá que recuperarlo del formulario
 			catch (Exception e){
 				miHash.put(ScsEJGBean.C_IDINSTITUCION,usr.getLocation());
 				miHash.put(ScsEJGBean.C_NUMERO,((DefinirMantenimientoEJGForm)formulario).getNumero());
 				miHash.put(ScsEJGBean.C_ANIO,((DefinirMantenimientoEJGForm)formulario).getAnio());
-				miHash.put(ScsEJGBean.C_IDTIPOEJG,((DefinirMantenimientoEJGForm)formulario).getIdTipoEJG());				
+				miHash.put(ScsEJGBean.C_IDTIPOEJG,((DefinirMantenimientoEJGForm)formulario).getIdTipoEJG());
+				anio=((DefinirMantenimientoEJGForm)formulario).getAnio();
+				numero=((DefinirMantenimientoEJGForm)formulario).getNumero();
+				idtipoEjg=((DefinirMantenimientoEJGForm)formulario).getIdTipoEJG();
 			}
 			
 			// Ahora realizamos la consulta. Primero cogemos los campos que queremos recuperar 
@@ -701,15 +709,52 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 					request.setAttribute("nombreGuardiaAsistencia",nombreGuardiaAsistencia);
 				}
 			}
-
 			
-			
+			existeExpediente( request,  anio,  numero,  idtipoEjg);
 			
 			request.setAttribute("MODO",request.getSession().getAttribute("accion"));
 		} catch (Exception e) {
 			   throwExcp("messages.general.error",e,null);
 		}			
 		return "inicio";	
+	}
+	protected void existeExpediente( HttpServletRequest request,String anio,String numero,String idtipoEjg) throws SIGAException {
+			
+		try {
+			UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");			
+			ExpExpedienteAdm exp = new ExpExpedienteAdm (this.getUserBean(request));
+			Integer idTipoExpediente = exp.selectTipoExpedienteEJG(usr.getLocation());
+			request.setAttribute("tipoExpedienteRepetido", Boolean.FALSE);
+			if(idTipoExpediente==null)
+				request.setAttribute("tipoExpedienteRepetido", Boolean.TRUE);
+			
+			String[] perfiles = usr.getProfile();
+			request.setAttribute("anioExpe","");
+			request.setAttribute("codigoExpe","");
+			request.setAttribute("idtipoExpe","");
+			request.setAttribute("idInstiExpe", "");
+			request.setAttribute("tienePermisos", Boolean.FALSE);
+			boolean tienepermisos = exp.tienePermisos (usr.getLocation(), perfiles[0]);
+			if(tienepermisos){
+				request.setAttribute("tienePermisos", Boolean.TRUE);
+				Vector v2 = exp.getRelacionadoConEjg(usr.getLocation(), anio, numero, idtipoEjg);
+				if(v2.size()!=0)
+					tienepermisos=false;
+				for (int  j = 0; j < v2.size(); j++){
+					Hashtable h2 = new Hashtable();
+					Vector vPersona = new Vector();
+					h2 = (Hashtable)v2.get(j);
+					request.setAttribute("anioExpe", h2.get("ANIO"));
+					request.setAttribute("codigoExpe", h2.get("CODIGO"));
+					request.setAttribute("idtipoExpe", h2.get("IDTIPO"));
+					request.setAttribute("idInstiExpe", h2.get("IDINSTITUCION"));
+					request.setAttribute("tienePermisos", Boolean.FALSE);
+				}
+				
+			}
+		} catch (ClsExceptions e) {
+			throwExcp("messages.general.error",e,null);
+		}
 	}
 		
 	protected String abrirAvanzada(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {

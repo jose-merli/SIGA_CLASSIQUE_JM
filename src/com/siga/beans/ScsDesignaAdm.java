@@ -1675,7 +1675,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	public Vector getActuacionDesignaSalidaOficio (String idInstitucion, String numero, String turno, String anio) throws ClsExceptions  
 	{
 		try {
-			Hashtable h = new Hashtable();
+			Hashtable h = new Hashtable(); 
 			h.put(new Integer(1), idInstitucion);
 			h.put(new Integer(2), turno);
 			h.put(new Integer(3), anio);
@@ -2283,7 +2283,36 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		return datos;
 	}
 	
+	public Vector getDatosEJG(String idInstitucion, String numero, String idTurno, String anio) throws ClsExceptions {
 
+		Vector datos = null;
+		Hashtable h = new Hashtable();
+		h.put(new Integer(1), idInstitucion);
+		h.put(new Integer(2), idTurno);
+		h.put(new Integer(3), anio);
+		h.put(new Integer(4), numero);
+
+		StringBuffer sql = new StringBuffer("SELECT ejg.ANIO ANIO_EJG, ejg.numero AS NUMERO_EJG, ");
+		sql.append(" ejg.idtipoejg AS TIPO_EJG");
+		sql.append(" FROM SCS_EJG ejg, Scs_Ejgdesigna des ");
+		sql.append(" WHERE des.IDINSTITUCION = ejg.IDINSTITUCION ");
+		sql.append(" AND des.Idtipoejg = ejg.IDTIPOEJG ");
+		sql.append(" AND des.Anioejg = ejg.ANIO ");
+		sql.append(" AND des.Numeroejg = ejg.NUMERO ");
+
+		sql.append(" AND DES.IDINSTITUCION = :1 ");
+		sql.append(" AND DES.IDTURNO = :2 ");
+		sql.append(" AND DES.ANIODESIGNA = :3 ");
+		sql.append(" AND DES.NUMERODESIGNA = :4  ");
+
+		try {
+			datos = this.ejecutaSelectBind(sql.toString(), h);
+		} catch (ClsExceptions e) {
+			throw new ClsExceptions(e,e.toString()); 
+		}
+
+		return datos;
+	}
 	
 	public void anularDesigna(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException{
 		// TODO Auto-generated method stub

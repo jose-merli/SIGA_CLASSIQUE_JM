@@ -20,11 +20,17 @@ public class ExpTipoExpedienteBean extends MasterBean {
 	private Integer idTipoExpediente;
 	private Integer tiempoCaducidad;
 	private Integer diasAntelacionCad;
-	
+	private Integer relacionEjg;	
 	
 	
 	// Nombre campos de la tabla 
 	static public final String C_NOMBRE = "NOMBRE";
+	public Integer getRelacionEjg() {
+		return relacionEjg;
+	}
+	public void setRelacionEjg(Integer relacionEjg) {
+		this.relacionEjg = relacionEjg;
+	}
 	static public final String C_FECHAMODIFICACION = "FECHAMODIFICACION";
 	static public final String C_USUMODIFICACION = "USUMODIFICACION";
 	static public final String C_IDINSTITUCION = "IDINSTITUCION";
@@ -32,8 +38,9 @@ public class ExpTipoExpedienteBean extends MasterBean {
 	static public final String C_TIEMPOCADUCIDAD = "TIEMPOCADUCIDAD";
 	static public final String C_DIASANTELACIONCAD = "DIASANTELACIONCAD";
 	static public final String C_IDTIPOEXPEDIENTE = "IDTIPOEXPEDIENTE";
-	
+	static public final String C_RELACIONEJG = "RELACIONEJG";
 	static public final String T_NOMBRETABLA = "EXP_TIPOEXPEDIENTE";
+	
 	
 	
 	

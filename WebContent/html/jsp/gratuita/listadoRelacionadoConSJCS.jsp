@@ -193,7 +193,9 @@
 							<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=regNumero%>">
 							<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=regIdTipo%>">
 							<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_6" value="<%=v_regIdTurno%>">
-							<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_7" value="<%=v_regIdTurnoDesigna%>">						
+							<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_7" value="<%=v_regIdTurnoDesigna%>">		
+							<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_8" value="<%=regCodigo%>">
+							<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_9" value="<%=regDesTipo%>">																				
 							<siga:Idioma key="<%=regSJCS%>"/>
 						</td>
 						<td><%=regAnio%></td>
@@ -257,6 +259,22 @@
 		<html:hidden property ="desdeEJG" value= "si"/>
 	</html:form>	
 	
+		<!-- EXPEDIENTES -->	
+	<html:form action="/EXP_AuditoriaExpedientes"  method="POST" target="mainWorkArea">
+		<html:hidden property ="modo" 	  value= ""/>	
+		<html:hidden property = "hiddenFrame" value = "1"/>
+		<html:hidden property ="numeroExpediente"  value=""/>
+		<html:hidden property ="tipoExpediente"  value=""/>
+		<html:hidden property ="idInstitucion_TipoExpediente"  value=""/>		
+		<html:hidden property ="anioExpediente"  value=""/>
+		<html:hidden property ="institucion" value=""/>	
+		<html:hidden property ="soloSeguimiento" value="false"/>
+		<html:hidden property ="editable" value="1"/>			
+	
+					
+		<input type="hidden" name="idTipoExpediente" value="">
+	</html:form>	
+	
 	<script>
 
 		function enviarFormulario(fila, modo) 
@@ -304,8 +322,35 @@
 				formulario.anio.value          = datos[2];
 				formulario.numero.value        = datos[3];
 		 	}
-	
-		 	formulario.modo.value = modo;
+		 	
+	 	 	if (datos[0] == "EXPEDIENTE") {
+
+	 	 		
+				formulario = document.busquedaExpedientesForm;
+				document.getElementById("idTipoExpediente").value= datos[4];
+				formulario.anioExpediente.value          = datos[2];
+				formulario.numeroExpediente.value        = datos[7];
+				formulario.idTipoExpediente.value          = datos[4];
+				formulario.institucion.value        = datos[1];
+				formulario.tipoExpediente.value          = datos[8];
+				formulario.idInstitucion_TipoExpediente.value          =<%=usr.getLocation()%> ;
+				//document.getElementById("anioExpediente").value = datos[2];
+				//document.getElementById("numExpediente").value        = datos[8];
+				//document.getElementById("tipoExpediente").value     = datos[7];
+				//document.getElementById("idTipoExpediente").value     = datos[7];		
+				//document.getElementById("institucion").value     = datos[1];	
+				if(modo=="Ver"){
+					formulario.modo.value = "verDesdeEjg";
+				}else{
+					formulario.modo.value = "editarDesdeEjg";
+				}
+		 	}else{
+			 	
+		 		formulario.modo.value = modo;
+			 }
+
+
+		 	
 		 	formulario.submit();
 		 	return;
 		}

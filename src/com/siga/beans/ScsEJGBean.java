@@ -91,7 +91,8 @@ public class ScsEJGBean extends MasterBean{
 	private String idRenuncia;
 	private String numeroDesignaProc;
 	private Integer idTipoenCalidad;
-    private Integer calidadidinstitucion;    
+ 
+	private Integer calidadidinstitucion;    
 	private String docResolucion;
     private String NIG;
     private Long idPonente;
@@ -102,11 +103,52 @@ public class ScsEJGBean extends MasterBean{
     private String numeroResolucion;
     private String anioResolucion;
     private String bisResolucion;
+   
+    private String deTipoEjg;
+    private String tipoEjgCol;
+	private String estadoEjg;    
+	private String descripcionJuzgado;   
+	private String descripcionComisaria;
+    private String descripcionOrigen;
+	private String descripcionPretension;
+    
+    public String getDescripcionOrigen() {
+		return descripcionOrigen;
+	}
+	public void setDescripcionOrigen(String descripcionOrigen) {
+		this.descripcionOrigen = descripcionOrigen;
+	}
+	public String getDescripcionPretension() {
+		return descripcionPretension;
+	}
+	public void setDescripcionPretension(String descripcionPretension) {
+		this.descripcionPretension = descripcionPretension;
+	}
+
+
     
 
     
     
 	
+	public String getDescripcionJuzgado() {
+		return descripcionJuzgado;
+	}
+	public void setDescripcionJuzgado(String descripcionJuzgado) {
+		this.descripcionJuzgado = descripcionJuzgado;
+	}
+	public String getDescripcionComisaria() {
+		return descripcionComisaria;
+	}
+	public void setDescripcionComisaria(String descripcionComisaria) {
+		this.descripcionComisaria = descripcionComisaria;
+	}
+	public String getEstadoEjg() {
+		return estadoEjg;
+	}
+	public void setEstadoEjg(String estadoEjg) {
+		this.estadoEjg = estadoEjg;
+	}
 	/*
 	 *  Nombre de Tabla*/
 	static public String T_NOMBRETABLA = "SCS_EJG";
@@ -199,7 +241,18 @@ public class ScsEJGBean extends MasterBean{
     static public final String C_ANIORESOLUCION = "ANIORESOLUCION";
     static public final String C_BISRESOLUCION = "BISRESOLUCION";
 	
-			
+    public String getDeTipoEjg() {
+		return deTipoEjg;
+	}
+	public void setDeTipoEjg(String deTipoEjg) {
+		this.deTipoEjg = deTipoEjg;
+	}
+	public String getTipoEjgCol() {
+		return tipoEjgCol;
+	}
+	public void setTipoEjgCol(String tipoEjgCol) {
+		this.tipoEjgCol = tipoEjgCol;
+	}		
 	public String getIdRenuncia() {
 		return idRenuncia;
 	}

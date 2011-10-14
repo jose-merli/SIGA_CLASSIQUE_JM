@@ -36,7 +36,8 @@ public class ExpTipoExpedienteAdm extends MasterBeanAdministrador {
 				ExpTipoExpedienteBean.C_ESGENERAL,
 				ExpTipoExpedienteBean.C_TIEMPOCADUCIDAD,
 				ExpTipoExpedienteBean.C_DIASANTELACIONCAD,
-				ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE};
+				ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE,
+				ExpTipoExpedienteBean.C_RELACIONEJG};
 
 		return campos;
 	}
@@ -76,6 +77,7 @@ public class ExpTipoExpedienteAdm extends MasterBeanAdministrador {
 			bean.setTiempoCaducidad(UtilidadesHash.getInteger(hash, ExpTipoExpedienteBean.C_TIEMPOCADUCIDAD));
 			bean.setDiasAntelacionCad(UtilidadesHash.getInteger(hash, ExpTipoExpedienteBean.C_DIASANTELACIONCAD));
 			bean.setIdTipoExpediente(UtilidadesHash.getInteger(hash, ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE));
+			bean.setRelacionEjg(UtilidadesHash.getInteger(hash, ExpTipoExpedienteBean.C_RELACIONEJG));
 		}
 
 		catch (Exception e)
@@ -107,6 +109,7 @@ public class ExpTipoExpedienteAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ExpTipoExpedienteBean.C_TIEMPOCADUCIDAD, b.getTiempoCaducidad());
 			UtilidadesHash.set(htData, ExpTipoExpedienteBean.C_DIASANTELACIONCAD, b.getDiasAntelacionCad());
 			UtilidadesHash.set(htData, ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE, b.getIdTipoExpediente());
+			UtilidadesHash.set(htData, ExpTipoExpedienteBean.C_RELACIONEJG, b.getRelacionEjg());
 		}
 
 		catch (Exception e)

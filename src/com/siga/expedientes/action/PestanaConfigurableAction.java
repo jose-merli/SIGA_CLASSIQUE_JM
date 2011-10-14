@@ -62,6 +62,7 @@ public class PestanaConfigurableAction extends MasterAction {
 		String numExpediente = request.getParameter("numeroExpediente");
 		String anioExpediente = request.getParameter("anioExpediente");
 		
+		
 	   if(numExpediente==null || numExpediente.equals(""))
 	           numExpediente = (String) request.getSession().getAttribute("numeroExpedienteSession");
 	   
