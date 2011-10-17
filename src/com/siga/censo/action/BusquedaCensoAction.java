@@ -719,7 +719,8 @@ public class BusquedaCensoAction extends MasterAction {
 			String mail = miform.getMail().trim();
 			String sexo = miform.getSexo().trim();
 			String tratamiento = miform.getTratamiento().trim();			
-			String fax = miform.getFax1().trim();			
+			String fax = miform.getFax1().trim();		
+			String pais = miform.getPais().trim();		
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			
 			Hashtable datosCliente = new Hashtable();
@@ -737,7 +738,7 @@ public class BusquedaCensoAction extends MasterAction {
 			datosCliente.put("codPostal",codPostal);
 			datosCliente.put("telefono",telefono);
 			datosCliente.put("idDireccion","");
-			datosCliente.put("idPais","");
+			datosCliente.put("pais",pais);
 			datosCliente.put("mail",mail);
 			datosCliente.put("sexo",sexo);
 			datosCliente.put("tratamiento",tratamiento);

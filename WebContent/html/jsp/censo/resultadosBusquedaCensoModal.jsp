@@ -130,6 +130,8 @@
 						document.busquedaCensoModalForm.tratamiento.value = oculto.value;
 					}else if(j=='16'){
 						document.busquedaCensoModalForm.fax1.value = oculto.value;
+					}else if(j=='17'){
+						document.busquedaCensoModalForm.pais.value = oculto.value;
 					}  
 							
 					j++;
@@ -173,6 +175,7 @@
 			<html:hidden property="sexo" value=""/>
 			<html:hidden property="tratamiento" value=""/>	
 		    <html:hidden property="fax1" value=""/>
+		    <html:hidden property="pais" value=""/>
 			
 		</html:form>
 		<%
@@ -261,7 +264,14 @@
 					
 					String institucion = (String)registro.get("ID_COLEGIO");
 					String mail = UtilidadesString.mostrarDatoJSP(registro.get("MAIL"));
-					String poblacion = UtilidadesString.mostrarDatoJSP(registro.get("IDPOBLACION"));
+					String pais = UtilidadesString.mostrarDatoJSP(registro.get("PAIS"));
+					
+					String poblacion = ""; 
+					if(pais.equalsIgnoreCase(ClsConstants.ID_PAIS_ESPANA)){
+						poblacion = UtilidadesString.mostrarDatoJSP(registro.get("IDPOBLACION"));
+					}else{
+						poblacion = UtilidadesString.mostrarDatoJSP(registro.get("POBLACION"));
+					}
 					String dir = UtilidadesString.mostrarDatoJSP(registro.get("DIR_PROFESIONAL"));
 					String provincia = UtilidadesString.mostrarDatoJSP(registro.get("PROVINCIA"));
 					String cp = UtilidadesString.mostrarDatoJSP(registro.get("COD_POSTAL"));
@@ -275,6 +285,7 @@
 					String sexo = UtilidadesString.mostrarDatoJSP(registro.get("SEXO"));
 					String tratamiento = UtilidadesString.mostrarDatoJSP(registro.get("TRATAMIENTO"));
 					String fax1 = UtilidadesString.mostrarDatoJSP(registro.get("FAX1"));
+					
 			 		%>
 						<!-- REGISTRO  -->
 						<!-- Esto es un ejemplo de dos columnas de datos, lo que significa
@@ -303,7 +314,8 @@
 								<input type="hidden" name="oculto<%=cont%>_13" value="<%=telefono%>">
 								<input type="hidden" name="oculto<%=cont%>_14" value="<%=sexo%>">
 								<input type="hidden" name="oculto<%=cont%>_15" value="<%=tratamiento%>">
-								<input type="hidden" name="oculto<%=cont%>_16" value="<%=fax1%>">								
+								<input type="hidden" name="oculto<%=cont%>_16" value="<%=fax1%>">		
+								<input type="hidden" name="oculto<%=cont%>_17" value="<%=pais%>">								
 								<%=descripcion%>
 							</td>
 							<td>

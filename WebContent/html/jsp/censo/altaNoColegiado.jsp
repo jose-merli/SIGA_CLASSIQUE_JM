@@ -650,21 +650,21 @@ function str_replace(search, replace, subject) {
 			datosGeneralesForm.provincia.value   = resultado[9];
 			document.getElementById("provincia").onchange();
 			window.setTimeout("recargarComboHijo()",100,"Javascript");
-			poblacionSeleccionada = resultado[8];
+			
 			datosGeneralesForm.codigoPostal.value  = resultado[11];
-			if(datosGeneralesForm.codigoPostal.value=' ')
-				datosGeneralesForm.codigoPostal.value="";
 			datosGeneralesForm.telefono1.value=resultado[12];
-			if(datosGeneralesForm.telefono1.value=' ')
-				datosGeneralesForm.telefono1.value="";
 			datosGeneralesForm.correoElectronico.value=resultado[13];
-			if(datosGeneralesForm.correoElectronico.value=' ')
-				datosGeneralesForm.correoElectronico.value="";
 			datosGeneralesForm.sexo.value=resultado[14];
 			datosGeneralesForm.tratamiento.value=resultado[15];
 			datosGeneralesForm.fax1.value=resultado[16];
-			if(datosGeneralesForm.fax1.value=' ')
-				datosGeneralesForm.fax1.value="";
+			selPais(resultado[17]);
+			datosGeneralesForm.pais.value=resultado[17];
+			if (resultado[17]!="" && resultado[17]!=idEspana) {
+				datosGeneralesForm.poblacionExt.value=resultado[8];
+			}else{
+				poblacionSeleccionada = resultado[8];			
+			}
+			
 			document.forms[0].otroCol.value = "S";
 			datosGeneralesForm.tipoIdentificacion.disabled="disabled";
 			datosGeneralesForm.numIdentificacion.disabled="disabled";

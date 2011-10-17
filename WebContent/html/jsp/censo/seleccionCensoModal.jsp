@@ -58,7 +58,7 @@
 	String pais = "",  cPostal = "", telefono1 = "", movil = "", idDireccion = "", direccion = "", idPais = "", poblacionExtranjera = "", fax="";
 	Hashtable h = (Hashtable) request.getAttribute("unicaDireccion");
 
-		pais        = null; 											 if (pais        == null) pais        = new String("");
+		pais        = (String) datosCliente.get("pais");				 if (pais        == null) pais        = new String("");
 		poblacion   = (String) datosCliente.get("poblacion");	         if (poblacion   == null) poblacion   = new String("");
 		provincia   = (String) datosCliente.get("provincia");	         if (provincia   == null) provincia   = new String("");
 		direccion   = (String) datosCliente.get("direcion");	         if (direccion   == null) direccion   = new String("");
@@ -107,6 +107,7 @@
 					aux[14] = "<%=sexo%>";
 					aux[15] = "<%=tratamiento%>";
 					aux[16] = "<%=fax%>";
+					aux[17] = "<%=pais%>";
 
 				
 				top.cierraConParametros(aux);
