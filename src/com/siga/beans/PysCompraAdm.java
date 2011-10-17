@@ -13,6 +13,8 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
 import com.siga.general.SIGAException;
 
 /**
@@ -193,10 +195,43 @@ public class PysCompraAdm extends MasterBeanAdministrador {
 		}
 	}
 	
+		/** Funcion selectGenerico (String consulta). Ejecuta la consulta que se le pasa en un string 
+	 *  @return vector con los registros encontrados. El objeto es de tipo administrador del bean 
+	 * */
+	public Vector selectGenerico(String consulta) throws ClsExceptions 
+	{
+		Vector datos = new Vector();
+		
+		// Acceso a BBDD
+		RowsContainer rc = null;
+		try { 
+			rc = new RowsContainer();			
+
+			if (rc.query(consulta)) {
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					PysCompraBean registro = (PysCompraBean) this.hashTableToBeanInicial(fila.getRow()); 
+					if (registro != null) 
+						datos.add(registro);
+				}
+			}
+		} 
+		catch (Exception e) { 	
+			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
+		}
+		return datos;
+	}
+	
 	public Vector obtenerComprasPorPeticion(PysPeticionCompraSuscripcionBean beanPeticion) throws ClsExceptions {
 	    Vector salida = new Vector();
 	    try{
-	        salida = this.select("WHERE idinstitucion="+beanPeticion.getIdInstitucion().toString()+" and idpeticion="+beanPeticion.getIdPeticion().toString());
+	        salida = this.selectGenerico("SELECT ACEPTADO, CANTIDAD, DESCRIPCION,FECHA,FECHABAJA,FECHAMODIFICACION, IDFACTURA, "+
+									     " IDFORMAPAGO,IDINSTITUCION,IDPETICION, IDPRODUCTO,IDPRODUCTOINSTITUCION, "+
+									     " IDTIPOPRODUCTO, IMPORTEUNITARIO, IMPORTEANTICIPADO, NUMEROLINEA,PORCENTAJEIVA, "+
+									     " IDCUENTA, IDPERSONA,IDCUENTADEUDOR,IDPERSONADEUDOR,USUMODIFICACION,NOFACTURABLE "+
+					" FROM PYS_COMPRA " +
+	        		" WHERE idinstitucion="+beanPeticion.getIdInstitucion().toString()+" and idpeticion="+beanPeticion.getIdPeticion().toString() +
+	        		" ORDER BY IDINSTITUCION,IDPETICION, IDTIPOPRODUCTO,IDPRODUCTO,IDPRODUCTOINSTITUCION");
 		}
 		catch(Exception e){
 			throw new ClsExceptions(e,"Error al buscar las series de facturacion candidatas.");

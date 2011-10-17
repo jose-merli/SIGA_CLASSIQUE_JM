@@ -2415,6 +2415,7 @@ public class Facturacion {
 
     	    FacTiposProduIncluEnFactuAdm admTipoProd = new FacTiposProduIncluEnFactuAdm(this.usrbean);
             int tipoProductoAux=0;
+            int idProductoAux = -1;
             
             Date fechaMin=null;
             Date fechaMax=null;
@@ -2435,12 +2436,22 @@ public class Facturacion {
 	    	    beanTipoProd.setIdTipoProducto(compra.getIdTipoProducto());
 	    	    beanTipoProd.setIdSerieFacturacion(salida.getIdSerieFacturacion());
 	    	   //hacemos previamente la comprobacion de si los tipos de productos son el mismo
+	    	    
+	    	    //Si el idtipoproducto es diferente, se inserta
 	    	    if (tipoProductoAux!=compra.getIdTipoProducto().intValue()){
-	    	      if (!admTipoProd.insert(beanTipoProd)) {
-	    	        throw new ClsExceptions("Error al insertar producto incluido en serie: "+admTipoProd.getError());
-	    	      }
-	    	    }  
+	    	    	if (!admTipoProd.insert(beanTipoProd)) {
+	    	    		throw new ClsExceptions("Error al insertar producto incluido en serie: "+admTipoProd.getError());
+	    	    	}
+	    	    } else{
+	    	    	//Si el idtipoproducto es el mismo, se inserta solo si el idprudcuto es diferente
+	    	    	if(idProductoAux!=compra.getIdProducto()){
+	    	    		if (!admTipoProd.insert(beanTipoProd)) {
+	    	    			throw new ClsExceptions("Error al insertar producto incluido en serie: "+admTipoProd.getError());
+	    	    		}
+	    	    	}
+	    	    }
 	    	    tipoProductoAux=compra.getIdTipoProducto().intValue();
+	    	    idProductoAux = compra.getIdProducto().intValue();
     	    }
     	    
     	    // inserto el destinatario individual
