@@ -361,7 +361,7 @@ public class ActuacionAsistenciaForm extends MasterForm
 		if(modoPestanha!=null && modoPestanha.equalsIgnoreCase("ver")){
 			botones = "C";
 		}else{
-			if(fechaAnulacionAsistencia!=null && !fechaAnulacionAsistencia.equals("")){
+			if(fechaAnulacionAsistencia!=null && !fechaAnulacionAsistencia.equals("")||(idFacturacion!=null && !idFacturacion.equals(""))){
 				botones = "C";
 			}else if(isLetrado&&((validada!=null && validada.equals("1"))||(anulacion!=null && anulacion.equals("1")))){
 				botones = "C";
