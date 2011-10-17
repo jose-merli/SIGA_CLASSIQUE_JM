@@ -50,6 +50,7 @@ import com.siga.general.SIGAException;
 import com.siga.gratuita.form.VolantesExpressForm;
 import com.siga.gratuita.service.VolantesExpressService;
 import com.siga.gratuita.vos.VolantesExpressVo;
+import com.siga.ws.CajgConfiguracion;
 
 import es.satec.businessManager.BusinessManager;
 
@@ -615,10 +616,10 @@ public class VolantesExpressAction extends MasterAction
 				miForm.setJuzgados(alJuzgados);
 				
 			}
-			
-
-			
-			
+			UsrBean usrBean = this.getUserBean(request);
+			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usrBean.getLocation()));
+			miForm.setTipoPcajg(""+valorPcajgActivo);
+			//request.setAttribute("tipoPcajg", new Integer(valorPcajgActivo));
 			
 			
 		} catch (ClsExceptions e) {

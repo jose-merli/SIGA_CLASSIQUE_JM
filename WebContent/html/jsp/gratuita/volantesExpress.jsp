@@ -637,10 +637,21 @@
 				alert ("'"+ campo + "' " + obligatorio);
 				return false;
 			}
+			
+		    if (document.getElementById("tipoPcajg").value="2" && (document.getElementById("diligencia_"+fila).value=='-1' || document.getElementById("diligencia_"+fila).value=='')) {
+				campo = "<siga:Idioma key='gratuita.volantesExpres.literal.numeroDiligencia'/>" ;
+				alert ("'"+ campo + "' " + obligatorio);
+				return false;
+			}
 		}else{
 		
 			if (document.getElementById("juzgado_"+fila).value=='-1' ||document.getElementById("juzgado_"+fila).value=='') {
 				campo = "<siga:Idioma key='gratuita.volantesExpres.literal.juzgado'/>";
+				alert ("'"+ campo + "' " + obligatorio);
+				return false;
+			}
+		    if (document.getElementById("tipoPcajg").value="2" && (document.getElementById("diligencia_"+fila).value=='-1' || document.getElementById("diligencia_"+fila).value=='')) {
+				campo = "<siga:Idioma key='gratuita.volantesExpres.procedimiento'/>" ;
 				alert ("'"+ campo + "' " + obligatorio);
 				return false;
 			}
@@ -677,6 +688,7 @@
 <!-- INICIO: CAMPOS DE BUSQUEDA-->
 <html:form action="/JGR_VolantesExpres" method="POST"
 	target="mainWorkArea">
+	<html:hidden property="tipoPcajg" />
 	<html:hidden property="modo" value=""/>
 	<html:hidden property="idColegiado" />
 	<html:hidden property="idInstitucion" />

@@ -86,6 +86,7 @@ function postAccionTipoActuacion()
 <html:form action="${path}" >
 	<html:hidden property="modo" />
 	<html:hidden property="idTipoAsistencia" />
+
 	
 	
 </html:form>
@@ -103,8 +104,7 @@ function postAccionTipoActuacion()
 	<html:hidden property="numeroProcedimientoAsistencia" value="${ActuacionAsistenciaFormEdicion.numeroProcedimientoAsistencia}"/>
 	<html:hidden property="comisariaAsistencia" value="${ActuacionAsistenciaFormEdicion.comisariaAsistencia}"/>
 	<html:hidden property="juzgadoAsistencia" value="${ActuacionAsistenciaFormEdicion.juzgadoAsistencia}"/>
-	
-	
+	<html:hidden property="tipoPcajg"  value="${ActuacionAsistenciaFormEdicion.tipoPcajg}"/>	
 	<input type="hidden" name="validarJustificaciones" value="${asistencia.validarJustificaciones}" />
 	<input type="hidden" name="isLetrado" value="${usrBean.letrado}" />
 	<html:hidden property="idTipoAsistencia" value="${ActuacionAsistenciaFormEdicion.idTipoAsistencia}"/>
@@ -777,6 +777,13 @@ function accionGuardarCerrar()
 	
 	if(document.ActuacionAsistenciaFormEdicion.idTipoActuacion.value== '-1'){
 		msg = "<siga:Idioma key='errors.required' arg0='gratuita.mantActuacion.literal.tipoActuacion'/>";
+		alert(msg);
+		fin();
+		return false;
+	}
+
+	if(document.getElementById("tipoPcajg").value=='2' &&  (document.ActuacionAsistenciaFormEdicion.numeroAsunto.value== '-1' || document.ActuacionAsistenciaFormEdicion.numeroAsunto.value== '')){
+		msg = "<siga:Idioma key='errors.required' arg0='gratuita.mantActuacion.literal.nasunto'/>";
 		alert(msg);
 		fin();
 		return false;

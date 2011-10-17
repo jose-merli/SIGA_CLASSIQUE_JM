@@ -421,7 +421,8 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 			actuacionAsistenciaFormEdicion.setModo("insertar");
 			request.setAttribute("ActuacionAsistenciaFormEdicion", actuacionAsistenciaFormEdicion);
 			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usrBean.getLocation()));
-			request.setAttribute("tipoPcajg", new Integer(valorPcajgActivo));			
+			request.setAttribute("tipoPcajg", new Integer(valorPcajgActivo));		
+			actuacionAsistenciaFormEdicion.setTipoPcajg(""+valorPcajgActivo);
 			request.setAttribute("botones", "R,Y,C"); 
 			forward=  "edicion";
 		} catch (Exception e) {

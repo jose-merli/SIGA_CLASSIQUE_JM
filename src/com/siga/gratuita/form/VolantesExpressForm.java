@@ -51,7 +51,7 @@ public class VolantesExpressForm extends MasterForm
 	List<ScsAsistenciasBean> asistencias;
 	
 	String datosAsistencias;
-	
+	String tipoPcajg;
 
 	UsrBean usrBean;
 	String fechaJustificacion;
@@ -61,6 +61,13 @@ public class VolantesExpressForm extends MasterForm
 	String msgError;
 	String msgAviso;
 	
+	
+	public String getTipoPcajg() {
+		return tipoPcajg;
+	}
+	public void setTipoPcajg(String tipoPcajg) {
+		this.tipoPcajg = tipoPcajg;
+	}
 	public String getFechaJustificacion() {
 		return fechaJustificacion;
 	}
