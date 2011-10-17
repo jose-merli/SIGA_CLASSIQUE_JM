@@ -27,6 +27,7 @@
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
+	String[] pestanasOcultas = (String[])request.getAttribute("pestanasOcultas");
 %>	
 	
 <html>
@@ -82,6 +83,7 @@
 			target="mainPestanas"
 			parametros="tipoexpediente"
 			elementoactivo="1"
+			procesosinvisibles="<%=pestanasOcultas%>"
 	/>	
 		
 

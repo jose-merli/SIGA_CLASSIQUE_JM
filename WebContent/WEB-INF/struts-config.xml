@@ -1376,6 +1376,20 @@
 			<forward name="mostrar" path="/html/jsp/expedientes/fases_Edit.jsp"/>
 			<forward name="refresh" path="/html/jsp/general/genericLoadForm.jsp"/>
 		</action>
+		
+		<action path="/EXP_TiposExpedientes_DestinatariosAvisos" type="com.siga.envios.action.DestinatarioManualAction" name="RemitentesForm" scope="request">
+			<forward name="inicio" path="/html/jsp/envios/abrirDestinatarioManual.jsp"/>
+			<forward name="editar" path="/html/jsp/envios/direccionDestinatarioModal.jsp"/>
+			<forward name="buscarDirecciones" path="/html/jsp/envios/busquedaDireccionesModal.jsp"/>
+			<forward name="mostrarDirecciones" path="/html/jsp/envios/resultadoBusqDireccion.jsp"/>
+			<forward name="seleccion" path="/html/jsp/envios/seleccionDireccionModal.jsp"/>
+		</action>
+		
+		<action path="/EXP_DestinatariosAvisos" type="com.siga.expedientes.action.DestinatariosAvisos" name="RemitentesForm" scope="request">
+			<forward name="abrir" path="/html/jsp/expedientes/abrirFases.jsp"/>
+			<forward name="mostrar" path="/html/jsp/expedientes/fases_Edit.jsp"/>
+			<forward name="refresh" path="/html/jsp/general/genericLoadForm.jsp"/>
+		</action>
 
 		<action path="/EXP_TiposExpedientes_Clasificaciones" type="com.siga.expedientes.action.ClasificacionesAction" name="ClasificacionesForm" scope="request">
 			<forward name="abrir" path="/html/jsp/expedientes/abrirClasificaciones.jsp"/>
@@ -1725,7 +1739,6 @@
 		<action path="/ENV_Destinatario_Manual" type="com.siga.envios.action.DestinatarioManualAction" name="RemitentesForm" scope="request">
 			<forward name="inicio" path="/html/jsp/envios/abrirDestinatarioManual.jsp"/>
 			<forward name="editar" path="/html/jsp/envios/direccionDestinatarioModal.jsp"/>
-			<!--forward name="buscarDirecciones" path="/html/jsp/envios/resultadoBusqDireccion.jsp"/-->
 			<forward name="buscarDirecciones" path="/html/jsp/envios/busquedaDireccionesModal.jsp"/>
 			<forward name="mostrarDirecciones" path="/html/jsp/envios/resultadoBusqDireccion.jsp"/>
 			<forward name="seleccion" path="/html/jsp/envios/seleccionDireccionModal.jsp"/>

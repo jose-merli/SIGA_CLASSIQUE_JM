@@ -31,6 +31,7 @@ import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.AdmInformeBean;
 import com.siga.beans.AdmLenguajesAdm;
+import com.siga.beans.AdmLenguajesBean;
 import com.siga.beans.AdmTipoInformeAdm;
 import com.siga.beans.AdmTipoInformeBean;
 import com.siga.beans.CenColegiadoAdm;
@@ -58,7 +59,14 @@ import com.siga.beans.EnvProgramInformesBean;
 import com.siga.beans.EnvTipoEnviosAdm;
 import com.siga.beans.EnvValorCampoClaveAdm;
 import com.siga.beans.EnvValorCampoClaveBean;
+import com.siga.beans.ExpAlertaAdm;
+import com.siga.beans.ExpAlertaBean;
+import com.siga.beans.ExpAnotacionBean;
+import com.siga.beans.ExpDestinatariosAvisosAdm;
+import com.siga.beans.ExpDestinatariosAvisosBean;
 import com.siga.beans.ExpExpedienteAdm;
+import com.siga.beans.ExpTipoExpedienteAdm;
+import com.siga.beans.ExpTipoExpedienteBean;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.HelperInformesAdm;
@@ -90,6 +98,7 @@ import com.siga.informes.InformeColegiadosPagos;
 import com.siga.informes.MasterReport;
 import com.siga.informes.MasterWords;
 import com.siga.informes.form.InformesGenericosForm;
+import com.siga.servlets.SIGASvlProcesoAutomaticoRapido;
 
 
 /**
@@ -119,6 +128,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	public static final String comunicacionesFacturacionesColegiados = "CFACT";
 	public static final String comunicacionesListadoGuardias = "LIGUA";
 	public static final String comunicacionesJustificacion = "JUSDE";
+	public static final String comunicacionesAvisoExpedientes = "EXPAV";
 	public static final int tipoPlantillaWord= 1;
 	public static final int tipoPlantillaFo = 2;
 	
@@ -1851,55 +1861,8 @@ public class EnvioInformesGenericos extends MasterReport {
 				.getIdInstitucionPersona().toString());
 		datosInforme.put("idTipoInforme", programInfBean.getIdTipoInforme());
 		
-		if(!programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesExpedientes)){
-		
-			
-	
-			// (JTA) IDEA!!!!! Ahora mismo el idioma de las comunicaciones es el de el usuario que la genera. si por necesidades se va a meter
-			// en algun formulario el idioma seleccionable, se puede meter como clave de la
-			// programacion. de este modo el idioma inicial se macahacara con este ultimo, por eso es
-			// importante que el putAll este aqui y no antes.
-			
-			datosInforme.putAll(htClavesProgramacion);
-			if(alClavesDestinatario==null){
-				//datosInforme.putAll(htClavesDestinatario);
-				vDocumentos = getDocumentosAEnviar(datosInforme,
-						vPlantillasInforme, usrBean, EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme());
-			}else{
-				//List aClavesMultiple = (ArrayList)htClavesDestinatario.get("clavesMultiple");
-				//datosInforme.putAll(htClavesDestinatario);
-				vDocumentos = new Vector();
-				ArrayList alFacturas = new ArrayList();
-				for (int i = 0; i < alClavesDestinatario.size(); i++) {
-					
-					
-					if(!programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesMorosos)){
-						Hashtable  htClaves =   (Hashtable) alClavesDestinatario.get(i);
-						datosInforme.putAll(htClaves);
-						vDocumentos.addAll(getDocumentosAEnviar(datosInforme,vPlantillasInforme, usrBean,
-								EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme()));
-					}else{
-						Hashtable  htClaves =   (Hashtable) alClavesDestinatario.get(i);
-						String idFactura = (String)htClaves.get("idFactura");
-						alFacturas.add(idFactura);
-						
-					}
-					
-				}
-				if(programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesMorosos)){
-					datosInforme.put("idFacturas", alFacturas);
-					vDocumentos.addAll(getDocumentosAEnviar(datosInforme,vPlantillasInforme, usrBean,
-							EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme()));
-				}
-			}
-			
-	
-	
-			// Genera el envio:
-			envio.generarEnvio(destProgramInfBean.getIdPersona().toString(), destProgramInfBean.getTipoDestinatario(),
-					vDocumentos);
+		if(programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesExpedientes)){
 
-		} else {
 			// caso de envio de expedientes
 
 			
@@ -2024,6 +1987,105 @@ public class EnvioInformesGenericos extends MasterReport {
 				
 			//}
 			////////////////////*************************************************************		
+			
+	
+		}else if(programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesAvisoExpedientes)){
+			datosInforme.putAll(htClavesProgramacion);
+		
+				//List aClavesMultiple = (ArrayList)htClavesDestinatario.get("clavesMultiple");
+				//datosInforme.putAll(htClavesDestinatario);
+				/*for (int i = 0; i < alClavesDestinatario.size(); i++) {
+						Hashtable  htClaves =   (Hashtable) alClavesDestinatario.get(i);
+						datosInforme.putAll(htClaves);
+						vDocumentos.addAll(getDocumentosAEnviar(datosInforme,vPlantillasInforme, usrBean,
+								EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme()));
+				}*/
+				//con las claves tenemos que acceder a la desripcion de la anotacion, pasarselo a enviosBean(algun atributo)
+				//y a la hora de generar el envio coger este atributo y pegarlo en este metodo copiarCamposPlantilla donde
+				//pone pepe
+				
+			
+			
+	
+			// Genera el envio:
+			ExpAlertaAdm alertaAdm = new ExpAlertaAdm(usrBean);
+			Hashtable hashAlerta = new Hashtable();
+			for (int i = 0; i < alClavesDestinatario.size(); i++) {
+				Hashtable htClave = (Hashtable) alClavesDestinatario.get(i);
+				if(htClave.get("idInstitucionTipoExpediente")!=null){
+					hashAlerta.put(ExpAlertaBean.C_IDINSTITUCIONTIPOEXPEDIENTE, (String)htClave.get("idInstitucionTipoExpediente"));		
+					
+				}else if(htClave.get("idTipoExpediente")!=null){
+					hashAlerta.put(ExpAlertaBean.C_IDTIPOEXPEDIENTE, (String)htClave.get("idTipoExpediente"));		
+					
+				}else if(htClave.get("idInstitucion")!=null){
+					hashAlerta.put(ExpAlertaBean.C_IDINSTITUCION, (String)htClave.get("idInstitucion"));		
+					
+				}else if(htClave.get("idAlerta")!=null){
+					hashAlerta.put(ExpAlertaBean.C_IDALERTA, (String)htClave.get("idAlerta"));		
+					
+				}else if(htClave.get("numeroExpediente")!=null){
+					hashAlerta.put(ExpAlertaBean.C_NUMEROEXPEDIENTE, (String)htClave.get("numeroExpediente"));		
+					
+				}else if(htClave.get("anioExpediente")!=null){
+					hashAlerta.put(ExpAlertaBean.C_ANIOEXPEDIENTE, (String)htClave.get("anioExpediente"));		
+					
+				}
+				
+			}
+			
+			
+			Vector alertaVector = alertaAdm.selectByPK(hashAlerta);
+			ExpAlertaBean alertaBean = (ExpAlertaBean) alertaVector.get(0); 
+			
+			envio.generarEnvio(destProgramInfBean.getIdPersona().toString(), destProgramInfBean.getTipoDestinatario(),
+					alertaBean);
+		} else{
+
+			// (JTA) IDEA!!!!! Ahora mismo el idioma de las comunicaciones es el de el usuario que la genera. si por necesidades se va a meter
+			// en algun formulario el idioma seleccionable, se puede meter como clave de la
+			// programacion. de este modo el idioma inicial se macahacara con este ultimo, por eso es
+			// importante que el putAll este aqui y no antes.
+			
+			datosInforme.putAll(htClavesProgramacion);
+			if(alClavesDestinatario==null){
+				//datosInforme.putAll(htClavesDestinatario);
+				if(vPlantillasInforme!=null && vPlantillasInforme.size()>0)
+					vDocumentos = getDocumentosAEnviar(datosInforme,
+						vPlantillasInforme, usrBean, EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme());
+			}else{
+				//List aClavesMultiple = (ArrayList)htClavesDestinatario.get("clavesMultiple");
+				//datosInforme.putAll(htClavesDestinatario);
+				vDocumentos = new Vector();
+				ArrayList alFacturas = new ArrayList();
+				for (int i = 0; i < alClavesDestinatario.size(); i++) {
+					
+					
+					if(!programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesMorosos)){
+						Hashtable  htClaves =   (Hashtable) alClavesDestinatario.get(i);
+						datosInforme.putAll(htClaves);
+						vDocumentos.addAll(getDocumentosAEnviar(datosInforme,vPlantillasInforme, usrBean,
+								EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme()));
+					}else{
+						Hashtable  htClaves =   (Hashtable) alClavesDestinatario.get(i);
+						String idFactura = (String)htClaves.get("idFactura");
+						alFacturas.add(idFactura);
+						
+					}
+					
+				}
+				if(programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesMorosos)){
+					datosInforme.put("idFacturas", alFacturas);
+					vDocumentos.addAll(getDocumentosAEnviar(datosInforme,vPlantillasInforme, usrBean,
+							EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme()));
+				}
+			}
+			
+	
+	
+			// Genera el envio:
+			envio.generarEnvio(destProgramInfBean.getIdPersona().toString(), destProgramInfBean.getTipoDestinatario(),
+					vDocumentos);
 
 			
 		}
@@ -5785,6 +5847,120 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		ClsLogging.writeFileLogWithoutSession(" FIN ENVIOS PROGRAMADOS DE INFORMES GENERICOS ", 3);
 
+	}
+	public void enviarAvisoAlerta(ExpTipoExpedienteBean tipoExpedienteBean,ExpAlertaBean alertaBean,UsrBean userBean) throws Exception{
+		
+			ExpDestinatariosAvisosAdm destinatariosAvisosAdm = new ExpDestinatariosAvisosAdm(userBean);
+			EnvValorCampoClaveAdm valorCampoClaveAdm = new EnvValorCampoClaveAdm(userBean);
+			Hashtable tipoExpHashtable = new Hashtable();
+			tipoExpHashtable.put(ExpTipoExpedienteBean.C_IDINSTITUCION,alertaBean.getIdInstitucionTipoExpediente());
+			tipoExpHashtable.put(ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE,alertaBean.getIdTipoExpediente());
+			Vector destinatariosAvisosVector=destinatariosAvisosAdm.select(tipoExpHashtable);
+			String idioma = userBean.getLanguage();
+			if(userBean.getLanguage()==null ||userBean.getLanguage().equals("")){
+				idioma = UsrBean.UsrBeanAutomatico(alertaBean.getIdInstitucion().toString()).getLanguage();
+			}
+			
+			EnvEnvioProgramadoAdm envioProgramadoAdm  = new EnvEnvioProgramadoAdm(userBean);
+			EnvProgramInformesAdm programInformesAdm = new EnvProgramInformesAdm(userBean);
+			EnvDestProgramInformesAdm destProgramInformesAdm = new EnvDestProgramInformesAdm(userBean);
+			EnvEnvioProgramadoBean envioProgramado = null;
+			EnvProgramInformesBean programInformes = null;
+			EnvDestProgramInformesBean destProgramInformes = null;
+			envioProgramado = new EnvEnvioProgramadoBean();
+			envioProgramado.setIdEnvio(envioProgramadoAdm.getNewIdEnvio(alertaBean.getIdInstitucion().toString()));
+			envioProgramado.setIdInstitucion(alertaBean.getIdInstitucion());
+			envioProgramado.setIdTipoEnvios(tipoExpedienteBean.getIdTipoEnvios());
+			envioProgramado.setIdPlantillaEnvios(tipoExpedienteBean.getIdPlantillaEnvios());
+			if (tipoExpedienteBean.getIdPlantilla()!=null && !tipoExpedienteBean.getIdPlantilla().toString().equals("")) {
+				envioProgramado.setIdPlantilla(tipoExpedienteBean.getIdPlantilla());
+			} else {
+				envioProgramado.setIdPlantilla(null);
+			}
+			
+			envioProgramado.setNombre(UtilidadesString.getMensajeIdioma(idioma, "expedientes.tiposexpedientes.alertas.envio.nombre")+" "+tipoExpedienteBean.getNombre());
+			envioProgramado.setEstado(ClsConstants.DB_FALSE);
+			envioProgramado.setFechaProgramada("sysdate");
+
+			envioProgramadoAdm.insert(envioProgramado);
+			
+			
+			programInformes = new EnvProgramInformesBean();
+			//envioProgramado.setProgramInformes(programInformes);
+			programInformes.setIdProgram(programInformesAdm.getNewIdProgramInformes(alertaBean.getIdInstitucion().toString()));
+			programInformes.setIdEnvio(envioProgramado.getIdEnvio());
+			programInformes.setIdInstitucion(envioProgramado.getIdInstitucion());
+			
+			
+			programInformes.setIdioma(new Integer(idioma));
+			programInformes.setEstado(ClsConstants.DB_FALSE);
+			programInformes.setClaves("");
+			programInformes.setPlantillas(tipoExpedienteBean.getIdPlantillaEnvios().toString());
+			programInformes.setIdTipoInforme(EnvioInformesGenericos.comunicacionesAvisoExpedientes);
+			programInformesAdm.insert(programInformes);
+			
+			
+			for (int i = 0; i < destinatariosAvisosVector.size(); i++) {
+				ExpDestinatariosAvisosBean destinatariosAvisosBean =  (ExpDestinatariosAvisosBean) destinatariosAvisosVector.get(i);
+				destProgramInformes = new EnvDestProgramInformesBean();
+				destProgramInformes.setIdProgram(programInformes.getIdProgram());
+				destProgramInformes.setIdEnvio(programInformes.getIdEnvio());
+				destProgramInformes.setIdInstitucion(programInformes.getIdInstitucion());
+				destProgramInformes.setIdPersona(destinatariosAvisosBean.getIdPersona());
+				destProgramInformes.setIdInstitucionPersona(destinatariosAvisosBean.getIdInstitucion());
+				destProgramInformesAdm.insert(destProgramInformes);
+				EnvValorCampoClaveBean valorCampoClave = null;
+				valorCampoClave = new EnvValorCampoClaveBean();
+					
+					valorCampoClave.setIdProgram(destProgramInformes.getIdProgram());
+					valorCampoClave.setIdEnvio(destProgramInformes.getIdEnvio());
+					valorCampoClave.setIdInstitucion(destProgramInformes.getIdInstitucion());
+					valorCampoClave.setIdPersona(destProgramInformes.getIdPersona());
+					valorCampoClave.setIdInstitucionPersona(destProgramInformes.getIdInstitucionPersona());
+
+					valorCampoClave.setIdTipoInforme(EnvioInformesGenericos.comunicacionesAvisoExpedientes);
+					valorCampoClave.setClave("idAvisos");
+					valorCampoClave.setCampo("idInstitucion");
+					valorCampoClave.setValor(""+alertaBean.getIdInstitucion());
+					valorCampoClave.setIdValor(valorCampoClaveAdm.getNewIdEnvio());
+					valorCampoClaveAdm.insert(valorCampoClave);
+					
+					valorCampoClave.setCampo("idTipoExpediente");
+					valorCampoClave.setValor(""+alertaBean.getIdTipoExpediente());
+					valorCampoClave.setIdValor(valorCampoClaveAdm.getNewIdEnvio());
+					valorCampoClaveAdm.insert(valorCampoClave);
+					
+					valorCampoClave.setCampo("idInstitucionTipoExpediente");
+					valorCampoClave.setValor(""+alertaBean.getIdInstitucionTipoExpediente());
+					valorCampoClave.setIdValor(valorCampoClaveAdm.getNewIdEnvio());
+					valorCampoClaveAdm.insert(valorCampoClave);
+					
+					valorCampoClave.setCampo("anioExpediente");
+					valorCampoClave.setValor(""+alertaBean.getAnioExpediente());
+					valorCampoClave.setIdValor(valorCampoClaveAdm.getNewIdEnvio());
+					valorCampoClaveAdm.insert(valorCampoClave);
+					
+					valorCampoClave.setCampo("numeroExpediente");
+					valorCampoClave.setValor(""+alertaBean.getNumeroExpediente());
+					valorCampoClave.setIdValor(valorCampoClaveAdm.getNewIdEnvio());
+					valorCampoClaveAdm.insert(valorCampoClave);
+					
+					valorCampoClave.setCampo("idAlerta");
+					valorCampoClave.setValor(""+alertaBean.getIdAlerta());
+					valorCampoClave.setIdValor(valorCampoClaveAdm.getNewIdEnvio());
+					valorCampoClaveAdm.insert(valorCampoClave);
+				
+			}
+		
+			
+			
+		
+		
+		SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoGeneracionEnvio);
+		
+
+		
+		
 	}
 
 

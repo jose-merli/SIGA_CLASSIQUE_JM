@@ -64,6 +64,7 @@ public class TipoExpedienteAction extends MasterAction {
         Vector datos = tipoExpAdm.select(where);
         
         request.setAttribute("datos", datos); 
+       
         
 		return "abrir";
 	}
@@ -76,23 +77,41 @@ public class TipoExpedienteAction extends MasterAction {
 			throws ClsExceptions {
 	    	        
 	    TipoExpedienteForm form = (TipoExpedienteForm)formulario;
+	    String idtipoexpediente= null;
+	    String idInstitucionTipoExpediente = null;
+	    if(form.getIdTipoExpediente()!=null &&!form.getIdTipoExpediente().equals("") &&
+	    		form.getIdInstitucion()!=null &&!form.getIdInstitucion().equals("")){
+	    	idtipoexpediente=form.getIdTipoExpediente();
+		    idInstitucionTipoExpediente = form.getIdInstitucion();
+	    }else{
+		    Vector vOcultos = form.getDatosTablaOcultos(0);
+		    // Recuperamos el tipo de expediente
+		    
+		    idtipoexpediente=(String)vOcultos.elementAt(0);
+		    idInstitucionTipoExpediente = (String)vOcultos.elementAt(1);
+	    }
+	    
 	    UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
-            
+	    ExpTipoExpedienteAdm tipoExpedienteAdm = new ExpTipoExpedienteAdm(userBean);
+    	Hashtable tipoExpedienteHashtable = new Hashtable();
+    	tipoExpedienteHashtable.put(ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE,idtipoexpediente);
+    	tipoExpedienteHashtable.put(ExpTipoExpedienteBean.C_IDINSTITUCION,idInstitucionTipoExpediente);
+    	Vector tipoExpVector= tipoExpedienteAdm.selectByPK(tipoExpedienteHashtable);
+    	ExpTipoExpedienteBean tipoExpedienteBean = (ExpTipoExpedienteBean) tipoExpVector.get(0);
+    	if(tipoExpedienteBean.getEnviarAvisos()==null || tipoExpedienteBean.getEnviarAvisos().toString().equals(ClsConstants.DB_FALSE)){
+	    	String[] pestanasOcultas=new String [1];
+	 		pestanasOcultas[0]=ClsConstants.IDPROCESO_DESTINATARIOSEXPEDIENTE;
+	 		request.setAttribute("pestanasOcultas",pestanasOcultas);
+    	} 
+	    
+	    
 	    if(form.getRefresh()==null) {	        
 	    request.setAttribute("urlAction",request.getRequestURI());
 	    return "refresh2";
 	    }
 	    
 	    form.setModal("false");
-	    
-	    Vector vOcultos = form.getDatosTablaOcultos(0);
-	    
-	    // Recuperamos el tipo de expediente
-	    /*StringTokenizer pdatos=new StringTokenizer(request.getParameter("tablaDatosDinamicosD"),",");
-	    String idtipoexpediente=pdatos.nextToken();
-	    String idInstitucionTipoExpediente = pdatos.nextToken();*/
-	    String idtipoexpediente=(String)vOcultos.elementAt(0);
-	    String idInstitucionTipoExpediente = (String)vOcultos.elementAt(1);
+	   
 	    
 	    // Controlamos el tipo de acceso 
 	    String acceso="Editar";
@@ -108,6 +127,7 @@ public class TipoExpedienteAction extends MasterAction {
 	    request.setAttribute("urlAction", "/SIGA/EXP_MantenerTiposExpedientes.do");
         
 	    if (userBean.getLocation().equals(idInstitucionTipoExpediente)){
+	    	
 	        return "editar";
 	    } else {	    
 	        return "permisos";

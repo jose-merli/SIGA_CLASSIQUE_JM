@@ -27,6 +27,21 @@
 	if (bLectura) estiloCaja="boxCOnsulta";	
 	request.removeAttribute("datos");	
 	CampoTipoExpedienteForm form1 = (CampoTipoExpedienteForm) request.getAttribute("camposForm");
+	String idTipoEnvioCorreoElectronico = ""+EnvEnviosAdm.TIPO_CORREO_ELECTRONICO;
+	String parametrosCmbPlantillaEnvios2[] = {user.getLocation(),idTipoEnvioCorreoElectronico};
+	ArrayList plantillaEnviosSeleccionada = new ArrayList();
+	ArrayList plantillaSeleccionada = new ArrayList();
+	if(form1.getEnviarAvisos().equals("1")){
+		plantillaEnviosSeleccionada.add(form1.getIdPlantillaEnvios()+","+user.getLocation() +","+ form1.getIdTipoEnvios());
+		
+		if(form1.getIdPlantilla()!=null && !form1.getIdPlantilla().equals("")){
+			plantillaSeleccionada.add(form1.getIdPlantilla());
+		}
+		
+	}
+	
+	
+	
 
 %>	
 
@@ -47,8 +62,12 @@
 			<!-- esta función es llamada desde exito.jsp tras mostrar el mensaje de éxito --!
 			function refrescarLocal() 
 			{		
-				var elemento=parent.document.getElementById('pestana.tiposexpedientes.campos');
-				parent.pulsar(elemento,'mainPestanas')
+				
+				
+				// var elemento=parent.document.getElementById('pestana.tiposexpedientes.campos');
+				// parent.pulsar(elemento,'mainPestanas');
+				document.TipoExpedienteForm.modo.value = 'editar';
+				document.TipoExpedienteForm.submit();
 			}			
 			function cambiarDenunciado(){
 				if(document.camposForm.nombreCampoDenunciante.value == '<%=ExpCampoTipoExpedienteBean.DENUNCIANTE%>')
@@ -94,6 +113,36 @@
 					inicioPestana();
 					return false;
 				}
+				if (document.getElementById("checkEnviarAvisos").checked){
+					document.camposForm.enviarAvisos.value = "1";
+					if (document.getElementById("comboPlantillaEnvio").value=='') {
+						error = "<siga:Idioma key='errors.required' arg0='envios.definir.literal.plantillageneracion'/>";
+						alert(error);
+						fin();
+						return false;
+					}
+				}else{
+					document.camposForm.enviarAvisos.value = "0";
+					
+				}
+				if (document.getElementById("comboPlantillaEnvio").value!='') {
+					var idPlantillaEnvio=document.getElementById("comboPlantillaEnvio").value.split(",")[0];
+					document.camposForm.idPlantillaEnvios.value = idPlantillaEnvio;	
+				}else{
+					document.camposForm.idPlantillaEnvios.value = "";
+					
+				}
+				if (document.getElementById("idPlantillaGeneracion").value!='' ) {
+					document.camposForm.idPlantilla.value = document.getElementById("idPlantillaGeneracion").value;	
+				}else{
+					document.camposForm.idPlantilla.value = "";
+					
+				}
+				
+				
+				
+				
+				
 				if (validateCamposForm(document.camposForm)) {
 					if (document.getElementById("estado").checked!=false) {
 						alert('<siga:Idioma key="pestana.tiposexpedientes.campos.aviso"/>');
@@ -106,6 +155,7 @@
 
 			var bLectura = <%=""+bLectura %>;
 			function inicioPestana() {
+				
 				var chk1=document.getElementById("chkPestanaConf1");
 				var caja1=document.getElementById("pestanaConf1");
 				var boton1=document.getElementById("botonPestana1");
@@ -133,6 +183,18 @@
 					caja2.className="boxConsulta";
 				}
 				if (bLectura) boton2.disabled=false;
+				if (document.camposForm.enviarAvisos.value == "1"){
+					document.getElementById("checkEnviarAvisos").checked = "checked";
+					document.getElementById("comboPlantillaEnvio").disabled = "";
+					document.getElementById("comboPlantillaEnvio").onchange();
+					document.getElementById("idPlantillaGeneracion").disabled = "";
+				}else{
+					document.getElementById("checkEnviarAvisos").checked = "";
+					document.getElementById("comboPlantillaEnvio").disabled = "disabled";
+					document.getElementById("idPlantillaGeneracion").disabled = "disabled";
+					
+				}
+				
 				
 			}
 
@@ -180,8 +242,28 @@
 				}
 	 			var resultado=ventaModalGeneral(document.camposConfigurablesForm.name,"M");
 	 			
-			}	
+			}
+			function onclickCheckEnviarAvisos() {
+				
+				if(document.getElementById("checkEnviarAvisos").checked==true){
+					
+					document.getElementById("idPlantillaGeneracion").disabled = "";
+					document.getElementById("comboPlantillaEnvio").disabled = "";
+					document.getElementById("comboPlantillaEnvio").value = "";
+					document.getElementById("comboPlantillaEnvio").onchange();
+					//document.getElementById("idPlantillaGeneracion").value = "";
+					
+				}else{
+					
+					//document.getElementById("idPlantillaGeneracion").value = "";
+					document.getElementById("comboPlantillaEnvio").value = "";
+					document.getElementById("comboPlantillaEnvio").onchange();
+					document.getElementById("comboPlantillaEnvio").disabled = "disabled";
+					document.getElementById("idPlantillaGeneracion").disabled = "disabled";
+					
+				}
 
+			}
 			
 			function faviso() {
 				 if (document.getElementById("estado").checked!=false) {
@@ -214,6 +296,11 @@
 				<html:hidden property = "actionModal" value = ""/>
 				<html:hidden property = "idTipoExpediente"/>
 				<html:hidden property = "idCampo" value=""/>
+				<html:hidden property = "enviarAvisos" />
+				<html:hidden property = "idTipoEnvios" value="<%=idTipoEnvioCorreoElectronico%>"/>
+				<html:hidden property = "idPlantillaEnvios"/>
+				<html:hidden property = "idPlantilla"/>
+				
 				
 				<table class="tablaTitulo" align="center"  cellspacing="0">
 					<tr>
@@ -472,6 +559,54 @@
 							<td>
 							</td>	
 					</tr>			
+					<tr>
+						<td>
+							<siga:ConjCampos leyenda="expedientes.tiposexpedientes.leyenda.avisos">							
+							<table align="center" cellspacing="0">
+							
+								<tr>
+									<td class="labelText" colspan="2">
+										<siga:Idioma key="expedientes.tiposexpedientes.literal.enviarAvisos"/>
+										<input type="checkbox" id="checkEnviarAvisos" onclick="onclickCheckEnviarAvisos();" />	
+										 
+									</td>
+									
+								</tr>
+								<tr>
+									<td class="labelText" colspan="2">
+										<siga:Idioma key="expedientes.tiposexpedientes.aviso.insertarDestinatarios"/>
+											
+										 
+									</td>
+									
+								</tr>
+								
+								<tr>
+									<td id="titulo" class="labelText">
+									<siga:Idioma key="envios.plantillas.literal.plantilla"/> 
+										
+									</td>
+									<td>
+										<siga:ComboBD nombre = "comboPlantillaEnvio"   tipo="cmbPlantillaEnvios2" clase="boxCombo" elementoSel="<%=plantillaEnviosSeleccionada%>" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios2%>"  accion="Hijo:idPlantillaGeneracion"/>
+										
+									</td>
+								</tr>
+								<tr>
+									<td id="titulo" class="labelText">
+										<siga:Idioma key="envios.definir.literal.plantillageneracion"/>
+									</td>
+									<td>
+										<siga:ComboBD nombre="idPlantillaGeneracion" tipo="cmbPlantillaGeneracion" clase="boxCombo" elementoSel="<%=plantillaSeleccionada%>" obligatorio="false" hijo="t" pestana="true"/>
+										
+									</td>
+								</tr>
+							</table>
+							</siga:ConjCampos>		
+						</td>
+						<td>
+											
+						</td>
+					</tr>			
 				</table>
 			
 			</html:form>
@@ -495,7 +630,15 @@
 				<html:hidden property = "idPestanaConf" value = ""/>
 				<html:hidden property = "nombre" value = ""/>
 				<html:hidden property = "orden" value = ""/>
-			</html:form>			
+			</html:form>	
+			<html:form action="/EXP_MantenerTiposExpedientes.do" method="POST" target="submitArea" style="display:none">
+				<html:hidden property = "modo" value = ""/>
+				<html:hidden property = "hiddenFrame" value = "1"/>
+				<html:hidden property = "idInstitucion" value = "<%=user.getLocation()%>"/>
+				<html:hidden property = "idTipoExpediente" value = "<%=form1.getIdTipoExpediente()%>"/>
+				
+			<!-- RGG: cambio a formularios ligeros -->
+		</html:form>		
 			
 		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	</body>

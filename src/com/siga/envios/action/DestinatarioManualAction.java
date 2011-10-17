@@ -20,6 +20,7 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaBean;
@@ -29,6 +30,10 @@ import com.siga.beans.EnvEnviosAdm;
 import com.siga.beans.EnvEnviosBean;
 import com.siga.beans.EnvTipoEnviosAdm;
 import com.siga.beans.EnvTipoEnviosBean;
+import com.siga.beans.ExpDestinatariosAvisosAdm;
+import com.siga.beans.ExpDestinatariosAvisosBean;
+import com.siga.beans.ExpTipoExpedienteAdm;
+import com.siga.beans.ExpTipoExpedienteBean;
 import com.siga.envios.form.RemitentesForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -96,48 +101,92 @@ public class DestinatarioManualAction extends MasterAction {
 		}
 	}
 
-    protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
+	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
 	{	                  
-		//Aplicar acceso
-        if(request.getParameter("acceso").equalsIgnoreCase("Ver")) {
-            HttpSession ses=request.getSession();
-        	UsrBean user=(UsrBean)ses.getAttribute("USRBEAN");
-		    user.setAccessType(SIGAPTConstants.ACCESS_READ);
-        }
-        
-        UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
-        
-        String idInstitucion = userBean.getLocation();
-        String idEnvio = (String)request.getParameter("idEnvio");
-        
-        //Recuperamos los datos del envio
-        Hashtable htPk = new Hashtable();
-        htPk.put(EnvDestinatariosBean.C_IDINSTITUCION,idInstitucion);
-        htPk.put(EnvDestinatariosBean.C_IDENVIO,idEnvio);        
-        
-        //Recupero el bean del envio para mostrar el nombre y el tipo
-        EnvEnviosAdm envioAdm = new EnvEnviosAdm (this.getUserBean(request));
-        EnvTipoEnviosAdm tipoAdm = new EnvTipoEnviosAdm (this.getUserBean(request));
-        Vector envio, tipo, datos;
-        try {
-            envio = envioAdm.selectByPK(htPk);        
-	        EnvEnviosBean envioBean = (EnvEnviosBean)envio.firstElement();
-	        request.setAttribute("nombreEnv", envioBean.getDescripcion());
-	        
-	        Hashtable htTipo = new Hashtable();
-	        htTipo.put(EnvTipoEnviosBean.C_IDTIPOENVIOS,envioBean.getIdTipoEnvios());
-	        tipo = tipoAdm.selectByPK(htTipo);
-	        EnvTipoEnviosBean tipoBean = (EnvTipoEnviosBean)tipo.firstElement();	        
-	        request.setAttribute("tipo", tipoBean.getNombre());
-	        request.setAttribute("idTipoEnvio", tipoBean.getIdTipoEnvios());
-	        
-	        //recupero los destinatarios manuales y las paso a la jsp
-	        datos = envioAdm.getDestinatariosManuales(idInstitucion,idEnvio);
-	        request.setAttribute("datos", datos); 
-	        
-        } catch (Exception e) {
-            throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
-        }
+
+		MasterForm form = (MasterForm)formulario;
+		UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
+		try {
+			if(mapping.getPath().equals("/EXP_TiposExpedientes_DestinatariosAvisos")){
+				String idTipoExpediente = (String)request.getParameter("idTipoExpediente");
+				String idInstitucionTipoExpediente = (String)request.getParameter("idInstitucionTipoExpediente");
+				ExpTipoExpedienteAdm tipoExpedienteAdm = new ExpTipoExpedienteAdm (this.getUserBean(request));
+				Hashtable tipoExpedienteHashtable = new Hashtable();
+				tipoExpedienteHashtable.put(ExpTipoExpedienteBean.C_IDINSTITUCION, idInstitucionTipoExpediente);
+				tipoExpedienteHashtable.put(ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE, idTipoExpediente);
+
+				Vector tipoExpVector = tipoExpedienteAdm.selectByPK(tipoExpedienteHashtable);
+				ExpTipoExpedienteBean beantipoexp=(ExpTipoExpedienteBean)tipoExpVector.get(0);
+				StringBuffer titulo = new StringBuffer();
+
+				titulo.append(UtilidadesString.getMensajeIdioma(userBean, "expedientes.literal.tiposexpedientes"));
+				titulo.append(": " );
+				titulo.append(beantipoexp.getNombre());
+				request.setAttribute("titulo",titulo.toString());
+				
+				request.setAttribute("idTipoExpediente", idTipoExpediente);
+				request.setAttribute("idTipoEnvio", EnvTipoEnviosAdm.K_CORREO_ELECTRONICO);
+				ExpDestinatariosAvisosAdm destinatariosAvisosAdm = new ExpDestinatariosAvisosAdm (this.getUserBean(request));    
+				//recupero los destinatarios manuales y las paso a la jsp
+				Vector datos = destinatariosAvisosAdm.getDestinatariosManuales(idInstitucionTipoExpediente,idTipoExpediente);
+				request.setAttribute("datos", datos); 
+				request.setAttribute("busquedaVolver", "DA");
+
+
+			}else{
+				//Aplicar acceso
+				if(request.getParameter("acceso").equalsIgnoreCase("Ver")) {
+					HttpSession ses=request.getSession();
+					UsrBean user=(UsrBean)ses.getAttribute("USRBEAN");
+					user.setAccessType(SIGAPTConstants.ACCESS_READ);
+				}
+
+				String idInstitucion = userBean.getLocation();
+				String idEnvio = (String)request.getParameter("idEnvio");
+
+				//Recuperamos los datos del envio
+				Hashtable htPk = new Hashtable();
+				htPk.put(EnvDestinatariosBean.C_IDINSTITUCION,idInstitucion);
+				htPk.put(EnvDestinatariosBean.C_IDENVIO,idEnvio);        
+
+				//Recupero el bean del envio para mostrar el nombre y el tipo
+				EnvEnviosAdm envioAdm = new EnvEnviosAdm (this.getUserBean(request));
+				EnvTipoEnviosAdm tipoAdm = new EnvTipoEnviosAdm (this.getUserBean(request));
+				Vector envio = envioAdm.selectByPK(htPk);        
+				EnvEnviosBean envioBean = (EnvEnviosBean)envio.get(0);
+				Hashtable htTipo = new Hashtable();
+				htTipo.put(EnvTipoEnviosBean.C_IDTIPOENVIOS,envioBean.getIdTipoEnvios());
+				Vector tipo = tipoAdm.selectByPK(htTipo);
+				EnvTipoEnviosBean tipoBean = (EnvTipoEnviosBean)tipo.get(0);
+				
+				String tipoEnvio = UtilidadesMultidioma.getDatoMaestroIdioma(tipoBean.getNombre(),userBean);
+				
+				
+				
+				StringBuffer titulo = new StringBuffer();
+				titulo.append(UtilidadesString.getMensajeIdioma(userBean, "envios.definir.literal.nombre"));
+				titulo.append(" : " );
+				titulo.append(envioBean.getDescripcion());
+				titulo.append("     ");
+				titulo.append(UtilidadesString.getMensajeIdioma(userBean, "envios.definir.literal.tipoenvio"));
+				titulo.append(" : " );
+				titulo.append(tipoEnvio);
+				
+				request.setAttribute("titulo",titulo.toString());
+				
+				request.setAttribute("idTipoEnvio", tipoBean.getIdTipoEnvios().toString());
+				request.setAttribute("idEnvio", idEnvio);
+
+				//recupero los destinatarios manuales y las paso a la jsp
+				Vector datos = envioAdm.getDestinatariosManuales(idInstitucion,idEnvio);
+				request.setAttribute("datos", datos); 
+				request.setAttribute("busquedaVolver", "");
+
+			}
+			
+		} catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
+		}
 		return "inicio";
 	}
 
@@ -149,60 +198,109 @@ public class DestinatarioManualAction extends MasterAction {
 			HttpServletRequest request, HttpServletResponse response)
 			throws SIGAException {
 	    
-	    EnvDestinatariosAdm destinatariosAdm = new EnvDestinatariosAdm(this.getUserBean(request));
+	    
 	    RemitentesForm form = (RemitentesForm) formulario;
 	    
 	    try {
 	        //Rellenamos el nuevo Bean		    
-		    EnvDestinatariosBean destinatario = new EnvDestinatariosBean();
+		    
 		    
 		    String idInstitucion = form.getIdInstitucion();
 		    String idPersona = form.getIdPersona();
 		    String idEnvio = form.getIdEnvio();		    
-		    
-		    destinatario.setIdInstitucion(Integer.valueOf(idInstitucion));
-		    destinatario.setIdEnvio(Integer.valueOf(idEnvio));
-		    destinatario.setIdPersona(Long.valueOf(idPersona));
-		    destinatario.setDomicilio(form.getDomicilio());
-		    destinatario.setCodigoPostal(form.getCodigoPostal());
-		    destinatario.setNombre(form.getNombre());
-		    destinatario.setApellidos1(form.getApellidos1());
-		    destinatario.setApellidos2(form.getApellidos2());
-		    destinatario.setMovil(form.getMovil());
-		    
-		    
-		    String idPoblacion="", idProvincia="", idPais="";
-		    try{
-		        Integer.valueOf(form.getIdPoblacion());
-		        destinatario.setIdPoblacion(form.getIdPoblacion());			    
-		    } catch (NumberFormatException e){
-		        destinatario.setIdPoblacion("");			    
-		    }
-		    try{
-		        Integer.valueOf(form.getIdProvincia());
-		        destinatario.setIdProvincia(form.getIdProvincia());
-		    } catch (NumberFormatException e){
-		        destinatario.setIdProvincia("");
-		    }
-		    try{
-		        Integer.valueOf(form.getIdPais());
-		        destinatario.setIdPais(form.getIdPais());
-		        if (destinatario.getIdPais().equals("")) destinatario.setIdPais(ClsConstants.ID_PAIS_ESPANA); 
-		    } catch (NumberFormatException e){}
+		    String idTipoExpediente = form.getIdTipoExpediente();
+		    if(mapping.getPath().equals("/EXP_TiposExpedientes_DestinatariosAvisos")){
+		    	ExpDestinatariosAvisosAdm destinatariosAdm = new ExpDestinatariosAvisosAdm(this.getUserBean(request));
+		    	ExpDestinatariosAvisosBean destinatario = new ExpDestinatariosAvisosBean();
+		    	destinatario.setIdInstitucion(Integer.valueOf(idInstitucion));
+			    destinatario.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));
+			    destinatario.setIdPersona(Long.valueOf(idPersona));
+			    destinatario.setDomicilio(form.getDomicilio());
+			    destinatario.setCodigoPostal(form.getCodigoPostal());
+			    destinatario.setNombre(form.getNombre());
+			    destinatario.setApellidos1(form.getApellidos1());
+			    destinatario.setApellidos2(form.getApellidos2());
+			    destinatario.setMovil(form.getMovil());
+			    
+			    
+			    try{
+			        Integer.valueOf(form.getIdPoblacion());
+			        destinatario.setIdPoblacion(form.getIdPoblacion());			    
+			    } catch (NumberFormatException e){
+			        destinatario.setIdPoblacion("");			    
+			    }
+			    try{
+			        Integer.valueOf(form.getIdProvincia());
+			        destinatario.setIdProvincia(form.getIdProvincia());
+			    } catch (NumberFormatException e){
+			        destinatario.setIdProvincia("");
+			    }
+			    try{
+			        Integer.valueOf(form.getIdPais());
+			        destinatario.setIdPais(form.getIdPais());
+			        if (destinatario.getIdPais().equals("")) destinatario.setIdPais(ClsConstants.ID_PAIS_ESPANA); 
+			    } catch (NumberFormatException e){}
 
-			destinatario.setPoblacionExtranjera(form.getPoblacionExt());
+				destinatario.setPoblacionExtranjera(form.getPoblacionExt());
 
-			destinatario.setFax1(form.getFax1());
-			destinatario.setFax2(form.getFax2());
-			destinatario.setCorreoElectronico(form.getCorreoElectronico());
-			
-			//Ahora procedemos a insertarlo si no ha sido insertado previamente
-		    if (!destinatariosAdm.existeDestinatario(idEnvio,idInstitucion,idPersona)){
-		        destinatariosAdm.insert(destinatario);
-		        request.setAttribute("descOperation","messages.inserted.success");	            
-		    } else {
-		        throw new SIGAException("messages.envios.error.existeelemento");
-		    }			
+				destinatario.setFax1(form.getFax1());
+				destinatario.setFax2(form.getFax2());
+				destinatario.setCorreoElectronico(form.getCorreoElectronico());
+				
+				//Ahora procedemos a insertarlo si no ha sido insertado previamente
+			    if (!destinatariosAdm.existeDestinatario(idTipoExpediente,idInstitucion,idPersona)){
+			        destinatariosAdm.insert(destinatario);
+			        request.setAttribute("descOperation","messages.inserted.success");	            
+			    } else {
+			        throw new SIGAException("messages.envios.error.existeelemento");
+			    }	
+		    	
+		    }else{
+		    	EnvDestinatariosAdm destinatariosAdm = new EnvDestinatariosAdm(this.getUserBean(request));
+		    	EnvDestinatariosBean destinatario = new EnvDestinatariosBean();
+		    	destinatario.setIdInstitucion(Integer.valueOf(idInstitucion));
+			    destinatario.setIdEnvio(Integer.valueOf(idEnvio));
+			    destinatario.setIdPersona(Long.valueOf(idPersona));
+			    destinatario.setDomicilio(form.getDomicilio());
+			    destinatario.setCodigoPostal(form.getCodigoPostal());
+			    destinatario.setNombre(form.getNombre());
+			    destinatario.setApellidos1(form.getApellidos1());
+			    destinatario.setApellidos2(form.getApellidos2());
+			    destinatario.setMovil(form.getMovil());
+			    try{
+			        Integer.valueOf(form.getIdPoblacion());
+			        destinatario.setIdPoblacion(form.getIdPoblacion());			    
+			    } catch (NumberFormatException e){
+			        destinatario.setIdPoblacion("");			    
+			    }
+			    try{
+			        Integer.valueOf(form.getIdProvincia());
+			        destinatario.setIdProvincia(form.getIdProvincia());
+			    } catch (NumberFormatException e){
+			        destinatario.setIdProvincia("");
+			    }
+			    try{
+			        Integer.valueOf(form.getIdPais());
+			        destinatario.setIdPais(form.getIdPais());
+			        if (destinatario.getIdPais().equals("")) destinatario.setIdPais(ClsConstants.ID_PAIS_ESPANA); 
+			    } catch (NumberFormatException e){}
+
+				destinatario.setPoblacionExtranjera(form.getPoblacionExt());
+
+				destinatario.setFax1(form.getFax1());
+				destinatario.setFax2(form.getFax2());
+				destinatario.setCorreoElectronico(form.getCorreoElectronico());
+				
+				//Ahora procedemos a insertarlo si no ha sido insertado previamente
+			    if (!destinatariosAdm.existeDestinatario(idEnvio,idInstitucion,idPersona)){
+			        destinatariosAdm.insert(destinatario);
+			        request.setAttribute("descOperation","messages.inserted.success");	            
+			    } else {
+			        throw new SIGAException("messages.envios.error.existeelemento");
+			    }			
+		    }
+		    
+		    
 		    
 		  } catch (Exception e) {
 		      throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
@@ -240,60 +338,118 @@ public class DestinatarioManualAction extends MasterAction {
 			throws SIGAException {
 	    
 	    RemitentesForm form = (RemitentesForm)formulario;
-	    EnvDestinatariosAdm destAdm = new EnvDestinatariosAdm (this.getUserBean(request));
 	    
-	    Hashtable htPk = new Hashtable();
-	    htPk.put(EnvDestinatariosBean.C_IDINSTITUCION,form.getIdInstitucion());
-	    htPk.put(EnvDestinatariosBean.C_IDENVIO,form.getIdEnvio());
-	    htPk.put(EnvDestinatariosBean.C_IDPERSONA,form.getIdPersona());
-	    
-	    //Recupero el bean de la lista
-	    EnvDestinatariosBean destBean = null;
-        try {
-            destBean = (EnvDestinatariosBean)destAdm.selectByPKForUpdate(htPk).firstElement();
-        } catch (Exception e) {
-            throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
-        }
-        // Modificamos los valores que vienen del formulario
-        // Recordar que el bean guarda en su interior los datos antiguos
-        destBean.setDomicilio(form.getDomicilio());
-        destBean.setCodigoPostal(form.getCodigoPostal());
-        
-        String idPoblacion="", idProvincia="", idPais="";
-	    try{
-	        Integer.valueOf(form.getIdPoblacion());
-	        destBean.setIdPoblacion(form.getIdPoblacion());			    
-	    } catch (NumberFormatException e){
-	        destBean.setIdPoblacion("");			    
-		}
-	    try{
-	        Integer.valueOf(form.getIdProvincia());
-	        destBean.setIdProvincia(form.getIdProvincia());
-	    } catch (NumberFormatException e){
-	        destBean.setIdProvincia("");
-    	}
-	    try{
-	        Integer.valueOf(form.getIdPais());
-	        destBean.setIdPais(form.getIdPais());
-	        if (destBean.getIdPais().equals("")) destBean.setIdPais(ClsConstants.ID_PAIS_ESPANA); 
-	    } catch (NumberFormatException e){}
-
-	    destBean.setPoblacionExtranjera(form.getPoblacionExt());
-
-	    destBean.setCorreoElectronico(form.getCorreoElectronico());
-	    destBean.setMovil(form.getMovil());
-	    
-        destBean.setFax1(form.getFax1());
-        destBean.setFax2(form.getFax2());        
-	    
-	    destBean.setNombre(form.getNombre());
-	    destBean.setApellidos1(form.getApellidos1());
-	    destBean.setApellidos2(form.getApellidos2());
-	    
-        try{
-            destAdm.update(destBean);            
-	    } catch (Exception exc) {
-	        throwExcp("messages.general.error",new String[] {"modulo.expediente"},exc,null);
+	    String idTipoExpediente = form.getIdTipoExpediente();
+	    if(mapping.getPath().equals("/EXP_TiposExpedientes_DestinatariosAvisos")){
+	    	ExpDestinatariosAvisosAdm destinatariosAdm = new ExpDestinatariosAvisosAdm(this.getUserBean(request));
+	    	 Hashtable htPk = new Hashtable();
+			    htPk.put(ExpDestinatariosAvisosBean.C_IDINSTITUCION,form.getIdInstitucion());
+			    htPk.put(ExpDestinatariosAvisosBean.C_IDTIPOEXPEDIENTE,idTipoExpediente);
+			    htPk.put(ExpDestinatariosAvisosBean.C_IDPERSONA,form.getIdPersona());
+	    	ExpDestinatariosAvisosBean destBean = null;
+		        try {
+		        	destBean = (ExpDestinatariosAvisosBean)destinatariosAdm.selectByPKForUpdate(htPk).firstElement();
+		        } catch (Exception e) {
+		            throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
+		        }
+		     // Modificamos los valores que vienen del formulario
+		        // Recordar que el bean guarda en su interior los datos antiguos
+		        destBean.setDomicilio(form.getDomicilio());
+		        destBean.setCodigoPostal(form.getCodigoPostal());
+		        
+		        String idPoblacion="", idProvincia="", idPais="";
+			    try{
+			        Integer.valueOf(form.getIdPoblacion());
+			        destBean.setIdPoblacion(form.getIdPoblacion());			    
+			    } catch (NumberFormatException e){
+			        destBean.setIdPoblacion("");			    
+				}
+			    try{
+			        Integer.valueOf(form.getIdProvincia());
+			        destBean.setIdProvincia(form.getIdProvincia());
+			    } catch (NumberFormatException e){
+			        destBean.setIdProvincia("");
+		    	}
+			    try{
+			        Integer.valueOf(form.getIdPais());
+			        destBean.setIdPais(form.getIdPais());
+			        if (destBean.getIdPais().equals("")) destBean.setIdPais(ClsConstants.ID_PAIS_ESPANA); 
+			    } catch (NumberFormatException e){}
+		
+			    destBean.setPoblacionExtranjera(form.getPoblacionExt());
+		
+			    destBean.setCorreoElectronico(form.getCorreoElectronico());
+			    destBean.setMovil(form.getMovil());
+			    
+		        destBean.setFax1(form.getFax1());
+		        destBean.setFax2(form.getFax2());        
+			    
+			    destBean.setNombre(form.getNombre());
+			    destBean.setApellidos1(form.getApellidos1());
+			    destBean.setApellidos2(form.getApellidos2());
+			    
+		        try{
+		        	destinatariosAdm.update(destBean);            
+			    } catch (Exception exc) {
+			        throwExcp("messages.general.error",new String[] {"modulo.expediente"},exc,null);
+			    }
+	    }else{
+		    
+		    EnvDestinatariosAdm destAdm = new EnvDestinatariosAdm (this.getUserBean(request));
+		    
+		    Hashtable htPk = new Hashtable();
+		    htPk.put(EnvDestinatariosBean.C_IDINSTITUCION,form.getIdInstitucion());
+		    htPk.put(EnvDestinatariosBean.C_IDENVIO,form.getIdEnvio());
+		    htPk.put(EnvDestinatariosBean.C_IDPERSONA,form.getIdPersona());
+		    
+		    //Recupero el bean de la lista
+		    EnvDestinatariosBean destBean = null;
+	        try {
+	            destBean = (EnvDestinatariosBean)destAdm.selectByPKForUpdate(htPk).firstElement();
+	        } catch (Exception e) {
+	            throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
+	        }
+	        // Modificamos los valores que vienen del formulario
+	        // Recordar que el bean guarda en su interior los datos antiguos
+	        destBean.setDomicilio(form.getDomicilio());
+	        destBean.setCodigoPostal(form.getCodigoPostal());
+	        
+	        String idPoblacion="", idProvincia="", idPais="";
+		    try{
+		        Integer.valueOf(form.getIdPoblacion());
+		        destBean.setIdPoblacion(form.getIdPoblacion());			    
+		    } catch (NumberFormatException e){
+		        destBean.setIdPoblacion("");			    
+			}
+		    try{
+		        Integer.valueOf(form.getIdProvincia());
+		        destBean.setIdProvincia(form.getIdProvincia());
+		    } catch (NumberFormatException e){
+		        destBean.setIdProvincia("");
+	    	}
+		    try{
+		        Integer.valueOf(form.getIdPais());
+		        destBean.setIdPais(form.getIdPais());
+		        if (destBean.getIdPais().equals("")) destBean.setIdPais(ClsConstants.ID_PAIS_ESPANA); 
+		    } catch (NumberFormatException e){}
+	
+		    destBean.setPoblacionExtranjera(form.getPoblacionExt());
+	
+		    destBean.setCorreoElectronico(form.getCorreoElectronico());
+		    destBean.setMovil(form.getMovil());
+		    
+	        destBean.setFax1(form.getFax1());
+	        destBean.setFax2(form.getFax2());        
+		    
+		    destBean.setNombre(form.getNombre());
+		    destBean.setApellidos1(form.getApellidos1());
+		    destBean.setApellidos2(form.getApellidos2());
+		    
+	        try{
+	            destAdm.update(destBean);            
+		    } catch (Exception exc) {
+		        throwExcp("messages.general.error",new String[] {"modulo.envios"},exc,null);
+		    }
 	    }
 	    return exitoModal("messages.updated.success",request);
 	}
@@ -310,30 +466,43 @@ public class DestinatarioManualAction extends MasterAction {
 			throws SIGAException{
 	    
 	    RemitentesForm form = (RemitentesForm)formulario;
-	    Vector vOcultos = form.getDatosTablaOcultos(0);
 	    
-	    String idPersona = (String)vOcultos.elementAt(0);
-	    String idEnvio = (String)vOcultos.elementAt(1);
-	    String idTipoEnvio = (String)vOcultos.elementAt(2);
+	    String idPersona = form.getIdPersona();
+	    String idEnvio = form.getIdEnvio();
+	    String idTipoExpediente = form.getIdTipoExpediente();
         
 	    UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));   
 	    String idInstitucion = userBean.getLocation();
-	    
-		EnvDestinatariosAdm destAdm = new EnvDestinatariosAdm(this.getUserBean(request));
-		Vector datos = new Vector();
-		Row datosDest = new Row();
-		try {
-            datos = destAdm.getDatosDestinatario(idEnvio,idInstitucion,idPersona);
-            datosDest = (Row)datos.firstElement();    		
-		} catch (Exception e) {
-            this.throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
-        }        
+	    Vector datos = null;
+	    if(mapping.getPath().equals("/EXP_TiposExpedientes_DestinatariosAvisos")){
+	    	ExpDestinatariosAvisosAdm destinatariosAdm = new ExpDestinatariosAvisosAdm(this.getUserBean(request));
+			datos = new Vector();
+			
+			try {
+	            datos = destinatariosAdm.getDatosDestinatario(idTipoExpediente,idInstitucion,idPersona);
+	                		
+			} catch (Exception e) {
+	            this.throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
+	        }    
+	    }else{
+			EnvDestinatariosAdm destAdm = new EnvDestinatariosAdm(this.getUserBean(request));
+			datos = new Vector();
+			
+			try {
+	            datos = destAdm.getDatosDestinatario(idEnvio,idInstitucion,idPersona);
+	                		
+			} catch (Exception e) {
+	            this.throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
+	        }        
+	    }
+	    Row datosDest = new Row();
+	    datosDest = (Row)datos.firstElement();
         
         //seteamos los valores del formulario
 		form.setIdInstitucion(idInstitucion);
-		form.setIdEnvio(idEnvio);
-		form.setIdTipoEnvio(idTipoEnvio);
-		form.setIdPersona(idPersona);
+//		form.setIdEnvio(idEnvio);
+//		form.setIdTipoEnvio(idTipoEnvio);
+//		form.setIdPersona(idPersona);
         form.setNombre(datosDest.getString(CenPersonaBean.C_NOMBRE));
         form.setApellidos1(datosDest.getString(CenPersonaBean.C_APELLIDOS1));
         form.setApellidos2(datosDest.getString(CenPersonaBean.C_APELLIDOS2));
@@ -455,21 +624,37 @@ public class DestinatarioManualAction extends MasterAction {
 	    form.setModal("false");
 	    
 	    UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
-	    EnvDestinatariosAdm destinatarioAdm = new EnvDestinatariosAdm (this.getUserBean(request));
+	    String idTipoExpediente = form.getIdTipoExpediente();
+	    if(mapping.getPath().equals("/EXP_TiposExpedientes_DestinatariosAvisos")){
+	    	ExpDestinatariosAvisosAdm destinatariosAdm = new ExpDestinatariosAvisosAdm(this.getUserBean(request));
+	    	 Hashtable htPk = new Hashtable();
+			    htPk.put(ExpDestinatariosAvisosBean.C_IDINSTITUCION,userBean.getLocation());
+			    htPk.put(ExpDestinatariosAvisosBean.C_IDTIPOEXPEDIENTE,idTipoExpediente);
+			    htPk.put(ExpDestinatariosAvisosBean.C_IDPERSONA,form.getIdPersona());
+			    try {
+			    	destinatariosAdm.delete(htPk);	        
+			    } catch (Exception e) {
+			        this.throwExcp("messages.elementoenuso.error",e,null);
+		        }
+	    }else{
 	    
-	    Vector vOcultos = form.getDatosTablaOcultos(0);	    					
 	    
-	    Hashtable hash = new Hashtable();
-	    	    
-	    hash.put(EnvDestinatariosBean.C_IDINSTITUCION, userBean.getLocation());
-	    hash.put(EnvDestinatariosBean.C_IDPERSONA,(String)vOcultos.elementAt(0) );
-	    hash.put(EnvDestinatariosBean.C_IDENVIO, (String)vOcultos.elementAt(1));	
-	    
-	    try {
-	        destinatarioAdm.delete(hash);	        
-	    } catch (Exception e) {
-	        this.throwExcp("messages.elementoenuso.error",e,null);
-        }
+		    EnvDestinatariosAdm destinatarioAdm = new EnvDestinatariosAdm (this.getUserBean(request));
+		    
+		    String idPersona = form.getIdPersona();
+		    String idEnvio = form.getIdEnvio();
+		    Hashtable hash = new Hashtable();
+		    	    
+		    hash.put(EnvDestinatariosBean.C_IDINSTITUCION, userBean.getLocation());
+		    hash.put(EnvDestinatariosBean.C_IDPERSONA,idPersona);
+		    hash.put(EnvDestinatariosBean.C_IDENVIO, idEnvio);	
+		    
+		    try {
+		        destinatarioAdm.delete(hash);	        
+		    } catch (Exception e) {
+		        this.throwExcp("messages.elementoenuso.error",e,null);
+	        }
+	    }
 		
 		return exitoRefresco("messages.deleted.success",request);
 	}

@@ -7,6 +7,7 @@
  */
 package com.siga.expedientes.action;
 
+import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,8 +23,13 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.atos.utils.Validaciones;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CenBajasTemporalesBean;
+import com.siga.beans.EnvDestinatariosAdm;
+import com.siga.beans.EnvEnviosAdm;
 import com.siga.beans.ExpCampoTipoExpedienteAdm;
 import com.siga.beans.ExpCampoTipoExpedienteBean;
+import com.siga.beans.ExpDestinatariosAvisosAdm;
+import com.siga.beans.ExpDestinatariosAvisosBean;
 import com.siga.beans.ExpPestanaConfAdm;
 import com.siga.beans.ExpPestanaConfBean;
 import com.siga.beans.ExpTipoExpedienteAdm;
@@ -49,7 +55,7 @@ public class CampoTipoExpedienteAction extends MasterAction {
         HttpSession ses=request.getSession();
         ses.removeAttribute("DATABACKUP");
         //Aplicar acceso
-        if(request.getParameter("acceso").equalsIgnoreCase("Ver")) {
+        if(request.getParameter("acceso") !=null && request.getParameter("acceso").equalsIgnoreCase("Ver")) {
             UsrBean user=(UsrBean)ses.getAttribute("USRBEAN");
 		    user.setAccessType(SIGAPTConstants.ACCESS_READ);
         }
@@ -77,6 +83,25 @@ public class CampoTipoExpedienteAction extends MasterAction {
             ExpCampoTipoExpedienteBean bean = (ExpCampoTipoExpedienteBean)camposExp.elementAt(i);
             establecerCheck((bean.getIdCampo().intValue())-1,bean.getVisible(),bean.getNombre(),form);
         }   
+        
+        if(beantipoexp.getEnviarAvisos()!=null && beantipoexp.getEnviarAvisos().toString().equals(ClsConstants.DB_TRUE)){
+        	form.setEnviarAvisos(ClsConstants.DB_TRUE);
+        	form.setIdTipoEnvios(beantipoexp.getIdTipoEnvios().toString());
+        	form.setIdPlantillaEnvios(beantipoexp.getIdPlantillaEnvios().toString());
+        	if(beantipoexp.getIdPlantilla()!=null)
+        		form.setIdPlantilla(beantipoexp.getIdPlantilla().toString());
+        	else
+        		form.setIdPlantilla("");
+        	
+        }else{
+        	form.setEnviarAvisos(ClsConstants.DB_FALSE);
+        	form.setIdTipoEnvios(""+EnvEnviosAdm.TIPO_CORREO_ELECTRONICO);
+        	form.setIdPlantillaEnvios("");
+       		form.setIdPlantilla("");
+        	
+        }
+        
+        
         
         //Seteo el nombre del expediente 
         form.setNombre(beantipoexp.getNombre());
@@ -141,7 +166,9 @@ public class CampoTipoExpedienteAction extends MasterAction {
 	        Vector camposExp=(Vector)backup.elementAt(1); 
 	        
 	        // Actualizamos el nombre del expediente
-	        ExpTipoExpedienteBean tipoExp=(ExpTipoExpedienteBean)backup.elementAt(0);	    
+	        ExpTipoExpedienteBean tipoExp=(ExpTipoExpedienteBean)backup.elementAt(0);	 
+	        boolean isEliminarDestinatarios = tipoExp.getEnviarAvisos()!=null &&  tipoExp.getEnviarAvisos().toString().equals(ClsConstants.DB_TRUE) && form.getEnviarAvisos()!=null && form.getEnviarAvisos().equals(ClsConstants.DB_FALSE); 
+	        
 	        tipoExp.setNombre(form.getNombre());
 	        if (Validaciones.validaNoInformado(form.getTiempoCaducidad())) {
 		        tipoExp.setTiempoCaducidad(0);
@@ -155,7 +182,24 @@ public class CampoTipoExpedienteAction extends MasterAction {
 	        }
 	  	        //  Modificamos el bean antiguo
 	        tipoExp.setRelacionEjg(form.isRelacionEJG()?new Integer(1):new Integer(0));
-	        tipoExpAdm.update(tipoExp);        
+	  	  
+	        if(form.getEnviarAvisos().equalsIgnoreCase("1")){
+	        	tipoExp.setEnviarAvisos(Integer.valueOf(ClsConstants.DB_TRUE));
+	        	tipoExp.setIdTipoEnvios(new Integer(form.getIdTipoEnvios()));
+	        	tipoExp.setIdPlantillaEnvios(new Integer(form.getIdPlantillaEnvios()));
+	        	if(form.getIdPlantilla()!=null&&!form.getIdPlantilla().equals(""))
+	        		tipoExp.setIdPlantilla(new Integer(form.getIdPlantilla()));
+	        	else
+	        		tipoExp.setIdPlantilla(null);
+	        	
+	        }else{
+	        	tipoExp.setEnviarAvisos(Integer.valueOf(ClsConstants.DB_FALSE));
+	        	tipoExp.setIdTipoEnvios(null);
+	        	tipoExp.setIdPlantillaEnvios(null);
+	        	tipoExp.setIdPlantilla(null);
+	        	
+	        }
+	        tipoExpAdm.updateDirect(tipoExp);        
 	        
 	        ExpCampoTipoExpedienteBean beanNexpDisciplinario = (ExpCampoTipoExpedienteBean)camposExp.elementAt(0);
 	        //  Modificamos el bean antiguo
@@ -255,7 +299,16 @@ public class CampoTipoExpedienteAction extends MasterAction {
 	                throw new ClsExceptions("Error al actualizar pestaña configurable. "+admPestana.getError());
 	            }
 	        }
-	        
+	        if(isEliminarDestinatarios){
+	        	ExpDestinatariosAvisosAdm destinatariosAvisosAdm = new ExpDestinatariosAvisosAdm(userBean);
+	        	String[] claves ={ExpDestinatariosAvisosBean.C_IDINSTITUCION,ExpDestinatariosAvisosBean.C_IDTIPOEXPEDIENTE};
+	        	Hashtable destinatariosHashtable = new Hashtable();
+	        	destinatariosHashtable.put(ExpDestinatariosAvisosBean.C_IDINSTITUCION, tipoExp.getIdInstitucion());
+	        	destinatariosHashtable.put(ExpDestinatariosAvisosBean.C_IDTIPOEXPEDIENTE, tipoExp.getIdTipoExpediente());
+	        	
+	        	destinatariosAvisosAdm.deleteDirect(destinatariosHashtable, claves);
+	        	
+	        }
 	        tx.commit();
 	        ClsLogging.writeFileLog("Transacción de Campos realizada.",10);        
 	        request.setAttribute("mensaje","messages.updated.success");
@@ -263,8 +316,7 @@ public class CampoTipoExpedienteAction extends MasterAction {
 	    } catch (Exception e) {        
 	        throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,tx);
 	    }      
-        
- 	    return "exito";
+ 	    return exitoRefresco("messages.updated.success",request);
 	}	
 
 	protected void establecerCheck(int idCampo,String visible,String nombre, CampoTipoExpedienteForm form){

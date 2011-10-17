@@ -203,7 +203,7 @@ public class EnvInformesGenericosAdm extends MasterBeanAdministrador {
 			
 			Vector datos = this.selectGenericoBind(select.toString(), htCodigos);
 			if (datos==null || datos.size()==0) {
-				throw new ClsExceptions ("No existe el informe que se busca. ID=");
+				vSalida = new Vector();
 			}
 			else {
 				AdmInformeBean salida = null;

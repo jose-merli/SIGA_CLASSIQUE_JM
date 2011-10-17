@@ -49,6 +49,10 @@ public class CampoTipoExpedienteForm extends MasterForm {
 	private String nombreCampoDenunciado;
 	private String nombreCampoNumExp;
 	
+	private String enviarAvisos;
+	private String idTipoEnvios;
+	private String idPlantillaEnvios;
+	private String idPlantilla;
 
 
     public boolean isRelacionEJG() {
@@ -238,5 +242,29 @@ public class CampoTipoExpedienteForm extends MasterForm {
     public void setDiasAntelacionCad(String valor) {
         this.diasAntelacionCad = valor;
     }
+	public String getEnviarAvisos() {
+		return enviarAvisos;
+	}
+	public void setEnviarAvisos(String enviarAvisos) {
+		this.enviarAvisos = enviarAvisos;
+	}
+	public String getIdTipoEnvios() {
+		return idTipoEnvios;
+	}
+	public void setIdTipoEnvios(String idTipoEnvios) {
+		this.idTipoEnvios = idTipoEnvios;
+	}
+	public String getIdPlantillaEnvios() {
+		return idPlantillaEnvios;
+	}
+	public void setIdPlantillaEnvios(String idPlantillaEnvios) {
+		this.idPlantillaEnvios = idPlantillaEnvios;
+	}
+	public String getIdPlantilla() {
+		return idPlantilla;
+	}
+	public void setIdPlantilla(String idPlantilla) {
+		this.idPlantilla = idPlantilla;
+	}
 
 }

@@ -821,6 +821,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	            ceBean.setIdCampo(cpBean.getIdCampo());
 	            ceBean.setIdFormato(cpBean.getIdFormato());
 	            ceBean.setTipoCampo(cpBean.getTipoCampo());
+//	            ceBean.setValor("Pepe");	            
 	            ceBean.setValor(cpBean.getValor());	            
 	            
 	            ceAdm.insert(ceBean);
@@ -835,6 +836,88 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
         	throw new ClsExceptions(e, "Error al copiar remitentes en el envio");
         }
     }
+    public void copiarCamposPlantilla(Integer idInstitucion, Integer id, Integer idTipoEnvio, Integer idPlantilla,Object bean) throws ClsExceptions, SIGAException 
+	{
+        EnvCamposPlantillaAdm cpAdm = new EnvCamposPlantillaAdm(this.usrbean);
+        EnvCamposEnviosAdm ceAdm = new EnvCamposEnviosAdm(this.usrbean);
+
+        //Borramos los campos de un envío
+        Hashtable ht = new Hashtable();
+        ht.put(EnvCamposEnviosBean.C_IDINSTITUCION,idInstitucion);
+        ht.put(EnvCamposEnviosBean.C_IDENVIO,id);
+        String[] campos = {EnvCamposEnviosBean.C_IDINSTITUCION,
+                			EnvCamposEnviosBean.C_IDENVIO};
+        ceAdm.deleteDirect(ht,campos);
+
+        //Copiamos los campos de la plantilla al envío
+        ht.remove(EnvCamposEnviosBean.C_IDENVIO);
+        ht.put(EnvCamposPlantillaBean.C_IDTIPOENVIOS,idTipoEnvio);
+        ht.put(EnvCamposPlantillaBean.C_IDPLANTILLAENVIOS,idPlantilla);
+        Vector vCamposPlantilla = cpAdm.select(ht);
+
+        if (vCamposPlantilla!=null){
+	        for (int i=0;i<vCamposPlantilla.size();i++){
+	            EnvCamposPlantillaBean cpBean = (EnvCamposPlantillaBean) vCamposPlantilla.elementAt(i);
+	            EnvCamposEnviosBean ceBean = new EnvCamposEnviosBean();
+
+	            ceBean.setIdEnvio(id);
+	            ceBean.setIdInstitucion(idInstitucion);
+	            ceBean.setIdCampo(cpBean.getIdCampo());
+	            ceBean.setIdFormato(cpBean.getIdFormato());
+	            ceBean.setTipoCampo(cpBean.getTipoCampo());
+	    	    if(cpBean.getTipoCampo().equals(EnvCamposAdm.K_TIPOCAMPO_E)){
+	    	    	if(cpBean.getIdCampo().toString().equals(EnvCamposPlantillaAdm.K_IDCAMPO_CUERPO)){
+	    	    		Hashtable htDatosEnvio = new Hashtable();
+	    	    		if(bean instanceof ExpAlertaBean){
+	    	    			ExpAlertaBean expAlertaBean = (ExpAlertaBean)bean;
+	    	    			htDatosEnvio.put("CAMPO_CUERPO_PARAMETRIZADO", expAlertaBean.getTexto());	
+	    	    			//htDatosEnvio.put("CAMPO_CUERPO_PARAMETRIZADO", "ESTE ES EL CUERDO PARAMETRIZADO CON INFORMACION DE LA ANOTACION");
+	    	    		}
+	    	    		
+	    	    		String sCuerpo = sustituirEtiquetas(cpBean.getValor(),htDatosEnvio);
+	    	    		cpBean.setValor(sCuerpo);
+	    	    		
+	    	    		
+	    	    	}else if(cpBean.getIdCampo().toString().equals(EnvCamposPlantillaAdm.K_IDCAMPO_ASUNTO)){
+	    	    		Hashtable htDatosEnvio = new Hashtable();
+	    	    		StringBuffer asunto = new StringBuffer();
+	    	    		//asunto.append(cpBean.getValor());
+	    	    		if(bean instanceof ExpAlertaBean){
+	    	    			ExpAlertaBean expAlertaBean = (ExpAlertaBean)bean;
+	    	    			//asunto.append(" ");
+	    	    			asunto.append(expAlertaBean.getNumeroExpediente());
+		    	    		asunto.append(" / ");
+		    	    		asunto.append(expAlertaBean.getAnioExpediente());
+	    	    			htDatosEnvio.put("CAMPO_ASUNTO_PARAMETRIZADO", asunto.toString());
+		    	    		//htDatosEnvio.put("CAMPO_ASUNTO_PARAMETRIZADO", "ASUNTO PARAMETRIZADO AL MOMENTO DE CREAR EL ENVIO");
+	    	    				
+	    	    		}
+	    	    		
+	    	    		
+	    	    		String sAsunto = sustituirEtiquetas(cpBean.getValor(),htDatosEnvio);
+	    	    		cpBean.setValor(sAsunto);
+	    	    		 
+	    	    	}
+	    	    		
+	    	    		
+	    	    	
+	    	    }
+	    	    
+	    	    ceBean.setValor(cpBean.getValor());	            
+	            ceAdm.insert(ceBean);
+	        }
+        }
+
+        // Copiamos los remitentes de la plantilla
+        try {
+        	this.copiarRemitentesDesdePlantilla(idInstitucion, id, idTipoEnvio, idPlantilla);
+        }
+        catch (Exception e) {
+        	throw new ClsExceptions(e, "Error al copiar remitentes en el envio");
+        }
+    }
+    
+
     
     /**
      * Funcion que copia los remitentes de la plantilla si los tiene. 

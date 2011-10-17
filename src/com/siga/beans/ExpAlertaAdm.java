@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ComodinBusquedas;
@@ -18,7 +19,9 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.envios.EnvioInformesGenericos;
 import com.siga.expedientes.form.BusquedaAlertaForm;
+import com.siga.servlets.SIGASvlProcesoAutomaticoRapido;
 
 /**
  * TODO To change the template for this generated type comment go to
@@ -397,17 +400,32 @@ public class ExpAlertaAdm extends MasterBeanAdministrador {
 			alertaBean.setIdTipoExpediente(expBean.getIdTipoExpediente());
 			alertaBean.setNumeroExpediente(expBean.getNumeroExpediente());
 			alertaBean.setTexto(texto);
+			Hashtable tipoExpHashtable = new Hashtable();
+			tipoExpHashtable.put(ExpTipoExpedienteBean.C_IDINSTITUCION,alertaBean.getIdInstitucionTipoExpediente());
+			tipoExpHashtable.put(ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE,alertaBean.getIdTipoExpediente());
+			ExpTipoExpedienteAdm tipoExpedienteAdm = new ExpTipoExpedienteAdm(this.usrbean);
+			Vector tipoExpedienteVector=tipoExpedienteAdm.selectByPK(tipoExpHashtable);
+			ExpTipoExpedienteBean tipoExpedienteBean =  (ExpTipoExpedienteBean) tipoExpedienteVector.get(0);
 			
 	        if (this.insert(alertaBean)){
+	        	if(tipoExpedienteBean.getEnviarAvisos()!=null && tipoExpedienteBean.getEnviarAvisos().intValue()==Integer.parseInt(ClsConstants.DB_TRUE)){
+	        		EnvioInformesGenericos envio = new EnvioInformesGenericos();
+	        		envio.enviarAvisoAlerta(tipoExpedienteBean,alertaBean, this.usrbean);
+	        	}
 	        	return true;
 	        }else{
 	        	return false;
 	        }
-		} catch (ClsExceptions e) {
+		} catch (ClsExceptions  e) {
 	        throw new ClsExceptions (e, "Error al insertar alerta en B.D.");
-	    }	    
+	    } catch (Exception e) {
+	    	throw new ClsExceptions (e, "Error al insertar alerta en B.D.");
+		}	    
 		
 	}
+    
+
+    
     
     public Integer getNewIdAlerta(String _idinstitucion, 
             					  String _idinstituciontipoexpediente, 

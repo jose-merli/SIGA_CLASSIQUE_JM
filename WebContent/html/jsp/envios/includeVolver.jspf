@@ -107,6 +107,10 @@
 <% 		} else if (busquedaVolver.equals("EDP")) {  %>
 
 			document.PlantillasEnviosForm.submit();
+<% 		} else if (busquedaVolver.equals("DA")) {  
+
+			request.getSession().removeAttribute("nombreExp");%>
+			top.frames["mainWorkArea"].location.href='<%=app%>/Dispatcher.do?proceso=41';
 
 <%		} else { %>
 				document.DefinirEnviosForm.submit();

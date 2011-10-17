@@ -625,6 +625,8 @@ MDB Microsoft Access Database
 	public static final int IDCAMPO_TIPOEXPEDIENTE_MINUTA_FINAL = 17;
 	public static final int IDCAMPO_TIPOEXPEDIENTE_DERECHOS_COLEGIALES = 18;
 
+	 // proceso RegTel
+	  public static String IDPROCESO_DESTINATARIOSEXPEDIENTE="11P";
 
 	
   public ClsConstants() {

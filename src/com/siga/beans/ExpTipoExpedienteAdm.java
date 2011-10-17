@@ -36,8 +36,13 @@ public class ExpTipoExpedienteAdm extends MasterBeanAdministrador {
 				ExpTipoExpedienteBean.C_ESGENERAL,
 				ExpTipoExpedienteBean.C_TIEMPOCADUCIDAD,
 				ExpTipoExpedienteBean.C_DIASANTELACIONCAD,
-				ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE,
-				ExpTipoExpedienteBean.C_RELACIONEJG};
+				ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE
+				,ExpTipoExpedienteBean.C_RELACIONEJG
+				,ExpTipoExpedienteBean.C_ENVIARAVISOS
+				,ExpTipoExpedienteBean.C_IDTIPOENVIOS
+				,ExpTipoExpedienteBean.C_IDPLANTILLAENVIOS
+				,ExpTipoExpedienteBean.C_IDPLANTILLA
+				};
 
 		return campos;
 	}
@@ -78,6 +83,10 @@ public class ExpTipoExpedienteAdm extends MasterBeanAdministrador {
 			bean.setDiasAntelacionCad(UtilidadesHash.getInteger(hash, ExpTipoExpedienteBean.C_DIASANTELACIONCAD));
 			bean.setIdTipoExpediente(UtilidadesHash.getInteger(hash, ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE));
 			bean.setRelacionEjg(UtilidadesHash.getInteger(hash, ExpTipoExpedienteBean.C_RELACIONEJG));
+			bean.setEnviarAvisos(UtilidadesHash.getInteger(hash, ExpTipoExpedienteBean.C_ENVIARAVISOS));
+			bean.setIdTipoEnvios(UtilidadesHash.getInteger(hash, ExpTipoExpedienteBean.C_IDTIPOENVIOS));
+			bean.setIdPlantillaEnvios(UtilidadesHash.getInteger(hash, ExpTipoExpedienteBean.C_IDPLANTILLAENVIOS));
+			bean.setIdPlantilla(UtilidadesHash.getInteger(hash, ExpTipoExpedienteBean.C_IDPLANTILLA));
 		}
 
 		catch (Exception e)
@@ -110,6 +119,10 @@ public class ExpTipoExpedienteAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ExpTipoExpedienteBean.C_DIASANTELACIONCAD, b.getDiasAntelacionCad());
 			UtilidadesHash.set(htData, ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE, b.getIdTipoExpediente());
 			UtilidadesHash.set(htData, ExpTipoExpedienteBean.C_RELACIONEJG, b.getRelacionEjg());
+			UtilidadesHash.set(htData, ExpTipoExpedienteBean.C_ENVIARAVISOS, b.getEnviarAvisos());
+			UtilidadesHash.set(htData, ExpTipoExpedienteBean.C_IDTIPOENVIOS, b.getIdTipoEnvios());
+			UtilidadesHash.set(htData, ExpTipoExpedienteBean.C_IDPLANTILLAENVIOS, b.getIdPlantillaEnvios());
+			UtilidadesHash.set(htData, ExpTipoExpedienteBean.C_IDPLANTILLA, b.getIdPlantilla());
 		}
 
 		catch (Exception e)

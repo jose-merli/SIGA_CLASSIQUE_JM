@@ -41,6 +41,8 @@ public class RemitentesForm extends MasterForm {
     private String nifcif;
 	private String numColegiado;
 	
+	private String idTipoExpediente;
+	
     
     public String getIdEnvio() {
         return idEnvio;
@@ -206,4 +208,10 @@ public class RemitentesForm extends MasterForm {
     public void setIdDireccion(String idDireccion) {
         this.idDireccion = idDireccion;
     }
+	public String getIdTipoExpediente() {
+		return idTipoExpediente;
+	}
+	public void setIdTipoExpediente(String idTipoExpediente) {
+		this.idTipoExpediente = idTipoExpediente;
+	}
 }

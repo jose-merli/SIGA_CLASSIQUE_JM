@@ -8,6 +8,7 @@
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <%@ page import="com.siga.administracion.SIGAConstants,com.atos.utils.*,com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="java.util.*"%>
@@ -18,18 +19,11 @@
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	Vector vDatos = (Vector)request.getAttribute("datos");
-	UsrBean user=(UsrBean) ses.getAttribute("USRBEAN");
-	String tipoacceso=user.getAccessType();
-	
 	// para saber hacia donde volver
-	String busquedaVolver = (String) request.getSession().getAttribute("EnvEdicionEnvio");
-	if (busquedaVolver==null) busquedaVolver="";
+	
 	
 	//Recupero el nombre y tipo del envio
-	String nombreEnv = (String)request.getAttribute("nombreEnv");
-	String tipo = UtilidadesMultidioma.getDatoMaestroIdioma((String)request.getAttribute("tipo"),user);
-	String idTipoEnvio =((Integer)request.getAttribute("idTipoEnvio")).toString();
-	String idEnvio = (String)request.getParameter("idEnvio");
+	
 	String botonesFila;
 	request.removeAttribute("datos");	
 %>	
@@ -69,15 +63,6 @@
 					}	
 			}
 	
-			<!-- Asociada al boton Volver -->
-			/*function accionVolver() 
-			{		
-				document.forms[0].action = "<%=app%>/ENV_DefinirEnvios.do?buscar=true";
-				document.forms[0].modo.value="abrir";
-				document.forms[0].target = "mainWorkArea";
-				document.forms[0].submit();
-			}*/
-	
 			function refrescarLocal()
 			{			
 				document.location.reload();			
@@ -95,46 +80,34 @@
 	</head>
 	
 	<body>
-	
-	<table class="tablaTitulo" align="center" cellspacing="0">
-			<html:form  action="/ENV_Destinatario_Manual.do" method="POST" target="submitArea">
-				<html:hidden property = "modo" value = ""/>
-				<html:hidden property = "hiddenFrame" value = "1"/>
-				<html:hidden property = "accion" value = ""/>
-				
-				<html:hidden property = "idEnvio" value = "<%=idEnvio%>"/>
-				<html:hidden property = "idTipoEnvio" value = "<%=idTipoEnvio%>"/>
-				<html:hidden property = "idPersona" value = ""/>
-				<html:hidden property = "idInstitucion" value = ""/>
-				<html:hidden property = "numColegiado" value = ""/>
-				<html:hidden property = "nifcif" value = ""/>
-				<html:hidden property = "nombre" value = ""/>
-				<html:hidden property = "apellidos1" value = ""/>
-				<html:hidden property = "apellidos2" value = ""/>
-				
-				<html:hidden property = "domicilio" value = ""/>
-				<html:hidden property = "cp" value = ""/>
-				<html:hidden property = "idPoblacion" value = ""/>
-				<html:hidden property = "idProvincia" value = ""/>
-				<html:hidden property = "idPais" value = ""/>
-				<html:hidden property = "fax1" value = ""/>
-				<html:hidden property = "fax2" value = ""/>
-				<html:hidden property = "correoElectronico" value = ""/>
+<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+<bean:define id="busquedaVolver" name="busquedaVolver" scope="request"/>
 
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
-		</html:form>
+			
+<table class="tablaTitulo" align="center" cellspacing="0">			
+	<tr>
+		<td id="titulo" class="titulitosDatos">
+			<c:out value="${titulo}"/> 				    
+		</td>
+	</tr>
+</table>
 
-				
-		<tr>
-			<td id="titulo" class="titulitosDatos">
-				<siga:Idioma key="envios.definir.literal.nombre"/> :&nbsp;<%=nombreEnv%> 				    
-	&nbsp;&nbsp;&nbsp;	
-			<siga:Idioma key="envios.definir.literal.tipoenvio"/> :&nbsp;<%=tipo%> 				    
-			</td>
-		</tr>
-	</table>
+
+<html:form  action="${path}" method="POST" target="submitArea">
+	<html:hidden property = "modo" value = ""/>
+	<html:hidden property = "idPersona" />
+	<html:hidden property = "idInstitucion" />
+	<html:hidden property = "numColegiado" />
+	<html:hidden property = "nifcif" />
+	<html:hidden property = "nombre" />
+	<html:hidden property = "apellidos1" />
+	<html:hidden property = "apellidos2" />
+	<html:hidden property = "idEnvio" value="${idEnvio}"/>
+	<html:hidden property = "idTipoEnvio" value="${idTipoEnvio}"/>
+	<html:hidden property = "idTipoExpediente" value="${idTipoExpediente}"/>
+	<input type="hidden" name="tablaDatosDinamicosD">
+	<input type="hidden" name="actionModal" value="">
+</html:form>
 	
 				
 			<siga:TablaCabecerasFijas 
@@ -176,9 +149,7 @@
 			%>
 	  		
 	  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=botonesFila %>" clase="listaNonEdit" visibleConsulta="no">
-					<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=fila.getString("IDPERSONA")%>"/>
-					<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=idEnvio%>"/>
-					<input type="hidden" name="oculto<%=""+(i+1)%>_3" value="<%=idTipoEnvio%>"/>
+					<input type="hidden" name="idPersona_<%=""+(i+1)%>" value="<%=fila.getString("IDPERSONA")%>"/>
 					<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("NOMBREYAPELLIDOS"))%></td>
 					<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("NCOLEGIADO"))%></td>
 					<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("NIFCIF"))%></td>
@@ -200,8 +171,62 @@
 	</html:form>
 	
 	<%@ include file="/html/jsp/envios/includeVolver.jspf" %>
-		
-		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+
+	<script type="text/javascript">
+		function selectRow(fila) {
+		   document.getElementById('filaSelD').value = fila;
+		   var tabla;
+		   tabla = document.getElementById('tablaDatos');
+		   for (var i=0; i<tabla.rows.length; i++) {
+		     if (i%2 == 0) tabla.rows[i].className = 'filaTablaPar';
+		     else          tabla.rows[i].className = 'filaTablaImpar';
+		   }
+		   tabla.rows[fila].className = 'listaNonEditSelected';
+		}
+		 
+		 function consultar(fila) {
+		   document.RemitentesForm.idPersona.value = document.getElementById('idPersona_'+fila).value;
+		   document.RemitentesForm.modo.value = "Ver";
+		   ventaModalGeneral(document.RemitentesForm.name,"G");
+		 }
+		 
+		 function editar(fila) {
+		  
+		   document.RemitentesForm.idPersona.value = document.getElementById('idPersona_'+fila).value;
+		   document.RemitentesForm.modo.value = "Editar";
+		   var resultado = ventaModalGeneral(document.RemitentesForm.name,"G");
+		   if (resultado) {
+		  	 	if (resultado[0]) {
+		   		refrescarLocalArray(resultado);
+		   	} else 
+		   	if (resultado=="MODIFICADO")
+		   	{
+		      		refrescarLocal();
+		   	}
+		   }
+		 }
+		 
+		 function borrar(fila) {
+		   var datos;
+			if(confirm('<siga:Idioma key="messages.deleteConfirmation"/>')){
+		   	
+		   	var auxTarget = document.RemitentesForm.target;
+		   	document.RemitentesForm.target="submitArea";
+		   	document.RemitentesForm.idPersona.value = document.getElementById('idPersona_'+fila).value;
+		   	document.RemitentesForm.modo.value = "Borrar";
+		   	document.RemitentesForm.submit();
+		   	document.RemitentesForm.target=auxTarget;
+		 	}
+		 }
+		</script>
+
+
+
+
+
+
+
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	</body>
 </html>
 	

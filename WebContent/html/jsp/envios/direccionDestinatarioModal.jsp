@@ -95,14 +95,15 @@
 	<!-- Zona de campos de busqueda o filtro -->
 
 	<table  class="tablaCentralCamposGrande"  align="center">
-
-	<html:form action="/ENV_Destinatario_Manual.do" method="POST" target="submitArea">
+<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+	<html:form action="${path}" method="POST" target="submitArea">
 		<html:hidden property = "modo" value = ""/>
 		<html:hidden property = "modal" value = "true"/>	
 		<html:hidden property = "actionModal" value = ""/>
 		
 		<html:hidden property = "idTipoEnvio"/>
 		<html:hidden property = "idEnvio"/>
+		<html:hidden property = "idTipoExpediente"/>
 		<html:hidden property = "idPersona"/>
 		<html:hidden property = "idInstitucion"/>
 		<html:hidden property = "idPoblacion"/>

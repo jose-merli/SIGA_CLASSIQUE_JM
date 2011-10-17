@@ -20,17 +20,16 @@ public class ExpTipoExpedienteBean extends MasterBean {
 	private Integer idTipoExpediente;
 	private Integer tiempoCaducidad;
 	private Integer diasAntelacionCad;
-	private Integer relacionEjg;	
+	private Integer relacionEjg;
+	private Integer enviarAvisos;
+	private Integer idTipoEnvios;
+	private Integer idPlantillaEnvios;
+	private Integer idPlantilla;
+	
 	
 	
 	// Nombre campos de la tabla 
 	static public final String C_NOMBRE = "NOMBRE";
-	public Integer getRelacionEjg() {
-		return relacionEjg;
-	}
-	public void setRelacionEjg(Integer relacionEjg) {
-		this.relacionEjg = relacionEjg;
-	}
 	static public final String C_FECHAMODIFICACION = "FECHAMODIFICACION";
 	static public final String C_USUMODIFICACION = "USUMODIFICACION";
 	static public final String C_IDINSTITUCION = "IDINSTITUCION";
@@ -39,8 +38,13 @@ public class ExpTipoExpedienteBean extends MasterBean {
 	static public final String C_DIASANTELACIONCAD = "DIASANTELACIONCAD";
 	static public final String C_IDTIPOEXPEDIENTE = "IDTIPOEXPEDIENTE";
 	static public final String C_RELACIONEJG = "RELACIONEJG";
-	static public final String T_NOMBRETABLA = "EXP_TIPOEXPEDIENTE";
+	static public final String C_ENVIARAVISOS = "ENVIARAVISOS";
+	static public final String C_IDTIPOENVIOS = "IDTIPOENVIOS";
+	static public final String C_IDPLANTILLAENVIOS = "IDPLANTILLAENVIOS";
+	static public final String C_IDPLANTILLA = "IDPLANTILLA";
 	
+	
+	static public final String T_NOMBRETABLA = "EXP_TIPOEXPEDIENTE";
 	
 	
 	
@@ -106,6 +110,37 @@ public class ExpTipoExpedienteBean extends MasterBean {
 	}
 	public void setDiasAntelacionCad(Integer valor) {
 		this.diasAntelacionCad = valor;
+	}
+	public Integer getRelacionEjg() {
+		return relacionEjg;
+	}
+	public void setRelacionEjg(Integer relacionEjg) {
+		this.relacionEjg = relacionEjg;
+	}
+	public Integer getEnviarAvisos() {
+		return enviarAvisos;
+	}
+	public void setEnviarAvisos(Integer enviarAvisos) {
+		this.enviarAvisos = enviarAvisos;
+	}
+	public Integer getIdTipoEnvios() {
+		return idTipoEnvios;
+	}
+	public void setIdTipoEnvios(Integer idTipoEnvios) {
+		this.idTipoEnvios = idTipoEnvios;
+	}
+	public Integer getIdPlantillaEnvios() {
+		return idPlantillaEnvios;
+	}
+	public void setIdPlantillaEnvios(Integer idPlantillaEnvios) {
+		this.idPlantillaEnvios = idPlantillaEnvios;
+	}
+	public Integer getIdPlantilla() {
+		return idPlantilla;
+	}
+	public void setIdPlantilla(Integer idPlantilla) {
+		this.idPlantilla = idPlantilla;
 	}	
+	
 
 }
