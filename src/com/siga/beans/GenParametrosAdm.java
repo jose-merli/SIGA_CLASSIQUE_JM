@@ -84,21 +84,35 @@ public class GenParametrosAdm extends MasterBeanAdministrador {
 		return htData;	
 	}
 	
+	public Hashtable getValores(String idModulo, String idParametro) throws ClsExceptions	{
+		
+		Hashtable htData = new Hashtable();
+		
+		try {
+			Hashtable hashParams = new Hashtable();
+			UtilidadesHash.set(hashParams, GenParametrosBean.C_MODULO, idModulo);
+			UtilidadesHash.set(hashParams, GenParametrosBean.C_PARAMETRO, idParametro);
+			Vector auxV = this.select(hashParams);
+			
+			if (auxV != null && auxV.size() > 0) {
+				for (int i = 0; i < auxV.size(); i++) {
+					GenParametrosBean registro = (GenParametrosBean) auxV.get(i);
+					htData.put(registro.getIdInstitucion().toString(), registro.getValor());
+				}
+			}
+			return htData;
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al obtener los valores del parámetro " + idParametro);
+		}
+	}
+	
+	
 	public String getValor(String idInstitucion, String idModulo, String idParametro, String valorDefecto) throws ClsExceptions 
 	{
 		Hashtable htData = new Hashtable();
 		String salida = valorDefecto;
 		try {
-		    Hashtable hashParams = new Hashtable();
-			UtilidadesHash.set(hashParams, GenParametrosBean.C_MODULO, idModulo);
-			UtilidadesHash.set(hashParams, GenParametrosBean.C_PARAMETRO, idParametro);
-			Vector auxV = this.select(hashParams);
-			if (auxV!=null && auxV.size()>0) {
-				for (int i=0; i<auxV.size(); i++) {
-					GenParametrosBean registro = (GenParametrosBean)auxV.get(i);
-					htData.put(registro.getIdInstitucion().toString(),registro.getValor());
-				}
-			}
+			htData = getValores(idModulo, idParametro);
 			// ya tengo todos los path de las instituciones
 			// miro si existe para la mia
 			if (htData.containsKey(idInstitucion)) {
