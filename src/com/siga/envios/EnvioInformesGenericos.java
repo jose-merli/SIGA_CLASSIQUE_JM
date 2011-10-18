@@ -64,7 +64,11 @@ import com.siga.beans.ExpAlertaBean;
 import com.siga.beans.ExpAnotacionBean;
 import com.siga.beans.ExpDestinatariosAvisosAdm;
 import com.siga.beans.ExpDestinatariosAvisosBean;
+import com.siga.beans.ExpEstadosAdm;
+import com.siga.beans.ExpEstadosBean;
 import com.siga.beans.ExpExpedienteAdm;
+import com.siga.beans.ExpFasesAdm;
+import com.siga.beans.ExpFasesBean;
 import com.siga.beans.ExpTipoExpedienteAdm;
 import com.siga.beans.ExpTipoExpedienteBean;
 import com.siga.beans.FacFacturaAdm;
@@ -2037,6 +2041,19 @@ public class EnvioInformesGenericos extends MasterReport {
 			
 			Vector alertaVector = alertaAdm.selectByPK(hashAlerta);
 			ExpAlertaBean alertaBean = (ExpAlertaBean) alertaVector.get(0); 
+			ExpFasesAdm fasesAdm = new ExpFasesAdm(usrBean);
+			ExpEstadosAdm estadosAdm = new ExpEstadosAdm(usrBean);
+			ExpTipoExpedienteAdm tipoExpedienteAdm = new ExpTipoExpedienteAdm(usrBean);
+			hashAlerta.put(ExpAlertaBean.C_IDFASE, alertaBean.getIdFase());
+			Vector faseVector = fasesAdm.selectByPK(hashAlerta);
+			hashAlerta.put(ExpAlertaBean.C_IDESTADO, alertaBean.getIdEstado());
+			Vector estadoVector = estadosAdm.selectByPK(hashAlerta);
+			Vector tipoExpVector = tipoExpedienteAdm.selectByPK(hashAlerta);
+			
+			alertaBean.setFase((ExpFasesBean) faseVector.get(0));
+			alertaBean.setEstado((ExpEstadosBean) estadoVector.get(0));
+			alertaBean.setTipoExpediente((ExpTipoExpedienteBean)tipoExpVector.get(0));
+			
 			
 			envio.generarEnvio(destProgramInfBean.getIdPersona().toString(), destProgramInfBean.getTipoDestinatario(),
 					alertaBean);

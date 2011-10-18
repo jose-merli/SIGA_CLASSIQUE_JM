@@ -865,13 +865,27 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	            ceBean.setIdCampo(cpBean.getIdCampo());
 	            ceBean.setIdFormato(cpBean.getIdFormato());
 	            ceBean.setTipoCampo(cpBean.getTipoCampo());
+
 	    	    if(cpBean.getTipoCampo().equals(EnvCamposAdm.K_TIPOCAMPO_E)){
 	    	    	if(cpBean.getIdCampo().toString().equals(EnvCamposPlantillaAdm.K_IDCAMPO_CUERPO)){
 	    	    		Hashtable htDatosEnvio = new Hashtable();
+	    	    		StringBuffer asunto = new StringBuffer();
 	    	    		if(bean instanceof ExpAlertaBean){
 	    	    			ExpAlertaBean expAlertaBean = (ExpAlertaBean)bean;
-	    	    			htDatosEnvio.put("CAMPO_CUERPO_PARAMETRIZADO", expAlertaBean.getTexto());	
-	    	    			//htDatosEnvio.put("CAMPO_CUERPO_PARAMETRIZADO", "ESTE ES EL CUERDO PARAMETRIZADO CON INFORMACION DE LA ANOTACION");
+	    	    			asunto.append(expAlertaBean.getNumeroExpediente());
+		    	    		asunto.append(" / ");
+		    	    		asunto.append(expAlertaBean.getAnioExpediente());
+	    	    			htDatosEnvio.put("EXP_MENSAJE_ALERTA", expAlertaBean.getTexto());
+	    	    			htDatosEnvio.put("EXP_NUMERO", asunto.toString());
+	    	    			try {
+								htDatosEnvio.put("EXP_FECHA_ALERTA", GstDate.getFormatedDateLong("",expAlertaBean.getFechaAlerta()));
+							} catch (Exception e) {
+
+							}
+	    	    			htDatosEnvio.put("EXP_TIPO", expAlertaBean.getTipoExpediente().getNombre());
+	    	    			htDatosEnvio.put("EXP_FASE", expAlertaBean.getFase().getNombre());
+	    	    			htDatosEnvio.put("EXP_ESTADO", expAlertaBean.getEstado().getNombre());
+	    	    			
 	    	    		}
 	    	    		
 	    	    		String sCuerpo = sustituirEtiquetas(cpBean.getValor(),htDatosEnvio);
@@ -884,12 +898,21 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    		//asunto.append(cpBean.getValor());
 	    	    		if(bean instanceof ExpAlertaBean){
 	    	    			ExpAlertaBean expAlertaBean = (ExpAlertaBean)bean;
-	    	    			//asunto.append(" ");
+	    	    			
 	    	    			asunto.append(expAlertaBean.getNumeroExpediente());
 		    	    		asunto.append(" / ");
 		    	    		asunto.append(expAlertaBean.getAnioExpediente());
-	    	    			htDatosEnvio.put("CAMPO_ASUNTO_PARAMETRIZADO", asunto.toString());
-		    	    		//htDatosEnvio.put("CAMPO_ASUNTO_PARAMETRIZADO", "ASUNTO PARAMETRIZADO AL MOMENTO DE CREAR EL ENVIO");
+		    	    		htDatosEnvio.put("EXP_MENSAJE_ALERTA", expAlertaBean.getTexto());
+	    	    			htDatosEnvio.put("EXP_NUMERO", asunto.toString());
+	    	    			try {
+								htDatosEnvio.put("EXP_FECHA_ALERTA", GstDate.getFormatedDateLong("",expAlertaBean.getFechaAlerta()));
+							} catch (Exception e) {
+
+								
+							}
+	    	    			htDatosEnvio.put("EXP_TIPO", expAlertaBean.getTipoExpediente().getNombre());
+	    	    			htDatosEnvio.put("EXP_FASE", expAlertaBean.getFase().getNombre());
+	    	    			htDatosEnvio.put("EXP_ESTADO", expAlertaBean.getEstado().getNombre());
 	    	    				
 	    	    		}
 	    	    		

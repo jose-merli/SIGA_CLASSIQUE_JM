@@ -22,6 +22,10 @@ public class ExpAlertaBean extends MasterBean {
 	private Integer idFase;
 	private Integer idEstado;
 	private String borrado;	
+	ExpFasesBean fase =null;
+	ExpEstadosBean estado = null;
+	ExpTipoExpedienteBean tipoExpediente;
+	String fechaAlertaTxt;
 	
 	// Nombre campos de la tabla 
 	static public final String C_IDINSTITUCION = "IDINSTITUCION";
@@ -106,4 +110,28 @@ public class ExpAlertaBean extends MasterBean {
     public void setTexto(String texto) {
         this.texto = texto;
     }
+	public ExpFasesBean getFase() {
+		return fase;
+	}
+	public void setFase(ExpFasesBean fase) {
+		this.fase = fase;
+	}
+	public ExpEstadosBean getEstado() {
+		return estado;
+	}
+	public void setEstado(ExpEstadosBean estado) {
+		this.estado = estado;
+	}
+	public ExpTipoExpedienteBean getTipoExpediente() {
+		return tipoExpediente;
+	}
+	public void setTipoExpediente(ExpTipoExpedienteBean tipoExpediente) {
+		this.tipoExpediente = tipoExpediente;
+	}
+	public String getFechaAlertaTxt() {
+		return fechaAlertaTxt;
+	}
+	public void setFechaAlertaTxt(String fechaAlertaTxt) {
+		this.fechaAlertaTxt = fechaAlertaTxt;
+	}
 }
