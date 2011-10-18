@@ -332,14 +332,23 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 
 				function traspasoDatos(resultado,bNuevo) 
 				{
+					
 					document.forms[0].nuevo.value = bNuevo;					
 				  if (bNuevo=="1"){// sólo cargamos los datos de la persona si esta ya estaba dada de alta en personaJG
-					if (trim(resultado[1])!="") {						
+					 
+					if (resultado[1]!="null" && trim(resultado[1])!="") {			
 						document.forms[0].idTipoPersona.value=resultado[22];						
 						document.getElementById('idTipoPersona').onchange();
 						//recuperamos el valor del tipoIdentificacion.											
 						var funcionRetardo = 'retarda('+resultado[0]+')';
 						window.setTimeout(funcionRetardo,150,"Javascript");						 															
+					}else
+					if(resultado[0]!=null && resultado[2]!=null  && trim(resultado[0])!=""  && trim(resultado[2])!=""){
+						
+						document.forms[0].tipoId.value = resultado[0];
+						document.forms[0].NIdentificacion.value = resultado[2]; 
+						
+						//document.forms[0].tipoId.value=	resultado[0];
 					}						
 
 					document.forms[0].idPersonaJG.value = resultado[1]; 
@@ -996,7 +1005,6 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 		   	}
 		   %>
 		   <html:text name="PersonaJGForm" property="NIdentificacion" size="10" maxlength="20" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" onblur="rellenarFormulario()"></html:text>
-
 		  	
 		</td>
 		<td class="labelText" align="left" >
@@ -2917,6 +2925,7 @@ function buscar()
 	var resultado = ventaModalGeneral("BusquedaPersonaJGForm","G");			
 	if (resultado != null && resultado[1]!=null)
 	{
+		alert("ayy2");
 		traspasoDatos(resultado,resultado[17]);
 	}
 }

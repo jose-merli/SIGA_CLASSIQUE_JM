@@ -10,6 +10,8 @@ import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -996,15 +998,30 @@ public class PersonaJGAction extends MasterAction {
 	     	}
 
 			// Consultamos las personas con el nif indicado
+	     	Vector resultadoNIF1 = new Vector();
 			ScsPersonaJGAdm admBean =  new ScsPersonaJGAdm(this.getUserBean(request));
 			String elNif = miform.getNIdentificacion().toUpperCase();
-			
+			String tipoNif = miform.getTipoId();
+			String nuevoNif =formateaNif(elNif,tipoNif);
+			miform.setNIdentificacion(nuevoNif);
+			ScsPersonaJGBean person = new ScsPersonaJGBean();
+			person.setNif(nuevoNif);
+			person.setTipoIdentificacion(tipoNif);
+			person.setNombre("");
+			person.setApellido1("");
+			person.setApellido2("");
+			person.setDireccion("");
+			person.setCodigoPostal("");
+			person.setCorreoElectronico("");
+			person.setFax("");
+			resultadoNIF1.add(person);
+			request.setAttribute("resultadoNIF", resultadoNIF1);
 			//Quitamos caracteres no alfanumericos, 
 			// anhadimos 0 por delante hasta completar los 20 caracteres maximo
 			// y lo dejamos todo en mayusculas
 			// La configuracion del sistema tambien ignora acentos y demas en las letras
 			Hashtable codigos = new Hashtable();
-			codigos.put(new Integer(1),elNif);
+			codigos.put(new Integer(1),nuevoNif);
 			codigos.put(new Integer(2),user.getLocation());
 			String where = 
 				" where upper(lpad(regexp_replace(nif, '[^[:alnum:]]', ''), 20, '0')) = " +
@@ -1048,7 +1065,8 @@ public class PersonaJGAction extends MasterAction {
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_SEXO,perBean.getSexo());
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_HIJOS,perBean.getHijos());
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_FAX,perBean.getFax());
-				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_CORREOELECTRONICO,perBean.getCorreoElectronico());	
+				if(perBean.getCorreoElectronico()!=null)
+				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_CORREOELECTRONICO,perBean.getCorreoElectronico().trim());	
 				
 				// cuelgo el anterior
 				if (hashAnt!=null) {
@@ -1074,7 +1092,8 @@ public class PersonaJGAction extends MasterAction {
 			
 			
 			//LMSP Se redirige a un jsp que se carga en el frame oculto, y hace todo lo demás :)
-			request.setAttribute("resultadoNIF",resultadoNIF);
+			if(resultadoNIF.size()!=0)
+				request.setAttribute("resultadoNIF",resultadoNIF);
 			
 			if (miform.getNombreObjetoDestino() != null) {
 				request.setAttribute("NombreObjetoDestino", miform.getNombreObjetoDestino());
@@ -1086,6 +1105,71 @@ public class PersonaJGAction extends MasterAction {
 			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
 		}
 		return "buscarNIF";
+	}
+	private String formateaNif(String nif, String tipo){
+		String nif1="";
+		//letras correctas para un nif
+        String caracteres = "TRWAGMYFPDXBNJZSQVHLCKE";
+        // quito el guion si lo hay
+        String nif_sin_guion = nif.replaceAll("-","");
+        nif_sin_guion = nif.replaceAll(" ","");
+        //quito espacios en blanco
+        nif = nif_sin_guion.trim();
+        //calculo la longitud
+        int longitud_nif = nif.length();
+        String expresion="[TRWAGMYFPDXBNJZSQVHLCKEtrwagmyfpdxbnjzsqvhlcke]";
+        Pattern patron = null;
+        Matcher coincidencias_inicio = null;
+        Matcher coincidencias_fin = null;
+        patron = Pattern.compile(expresion);
+        String inicio=nif.substring(0,1);
+        String fin=nif.substring(longitud_nif - 1);
+        coincidencias_inicio = patron.matcher(inicio);
+        coincidencias_fin = patron.matcher(fin);
+        try{
+						/************** nif x-9999999 ************************/
+	        if( tipo==null || !tipo.trim().equals("10")){
+	        	return nif;
+	        }else if (coincidencias_inicio.find()){
+				        //guardo el nif sin la letra
+				        nif1 = nif.substring(1,longitud_nif);
+				        //algoritmo
+				        while(nif1.length()<7)
+				        	nif1="0"+nif1;
+				        int nif2 =  Integer.parseInt(nif1);
+				        int posicion = (nif2 % 23)+1;
+				        String caracter = caracteres.substring(posicion-1,posicion);
+				        
+				        return inicio+nif1;
+				}
+				/************** nif 9999999-x ************************/
+				else if (coincidencias_fin.find()){
+				        //guardo el nif sin la letra
+				        nif1 = nif.substring(0,longitud_nif-1);
+				        //algoritmo
+				        while(nif1.length()<7)
+				        	nif1="0"+nif1;
+				        int nif2 =  Integer.parseInt(nif1);
+				        int posicion = (nif2 % 23)+1;
+				        String caracter = caracteres.substring(posicion-1,posicion);
+			                return nif1+fin;
+				        
+				}else{
+					nif1 = nif.substring(0,longitud_nif);
+			        //algoritmo
+			        while(nif1.length()<7)
+			        	nif1="0"+nif1;
+			        /*
+			        int nif2 =  Integer.parseInt(nif1);
+			        int posicion = (nif2 % 23)+1;
+			        String caracter = caracteres.substring(posicion-1,posicion);*/
+			        return nif1;
+				}
+        }
+		catch(Exception e) {
+			return nif;
+		}
+		
 	}
 
 	/**

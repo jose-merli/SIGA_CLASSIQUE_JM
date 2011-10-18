@@ -61,7 +61,17 @@
 	{
 %>	    bNuevo = "1";
 		aux[0]="<%=myBean.getTipoIdentificacion()%>";
-		aux[1]="<%=myBean.getIdPersona()%>";
+		<% 
+		if (myBean.getIdPersona()==null){
+		%>
+			aux[1]="";
+		<% 
+		}else{
+		%>
+			aux[1]="<%=myBean.getIdPersona()%>";
+		<% 
+		}
+		%>
 		aux[2]="<%=myBean.getNif()%>";
 		aux[3]="<%=myBean.getNombre()%>";
 		aux[4]="<%=myBean.getApellido1()%>";
@@ -79,7 +89,7 @@
 		aux[18]="<%=myBean.getHijos()%>";
 		aux[19]="<%=myBean.getSexo()%>";
 		aux[20]="<%=myBean.getFax()%>";	
-		aux[21]="<%=myBean.getCorreoElectronico().trim()%>";
+		aux[21]="<%=myBean.getCorreoElectronico()%>";
 		aux[22]="<%=myBean.getTipo()%>"; //Este es El tipo persona F o J 	
 		<% 
 		String nom = (String) request.getAttribute("nombreRepresentante");
