@@ -840,6 +840,11 @@ public class PCAJGAragon extends SIGAWSClientAbstract implements PCAJGConstantes
 		if (tipoElementoTipificadoEstandar != null) {
 			datosDefensaJudicial.setPreceptivo(tipoElementoTipificadoEstandar);
 		}
+		
+		st = getString((String)htEJGs.get(DDJ_NIG));
+		if (st != null) {
+			datosDefensaJudicial.setNIG(st);
+		}
 	}
 
 	/**
