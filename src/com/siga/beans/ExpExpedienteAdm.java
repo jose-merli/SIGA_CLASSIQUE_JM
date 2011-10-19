@@ -2390,14 +2390,14 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		}
 	}
 
-	public boolean tienePermisos (String institucion, String perfil) throws ClsExceptions,SIGAException 
+	public boolean tienePermisos (String institucion, String perfil, Integer idTipoExpediente) throws ClsExceptions,SIGAException 
 	{
 		try {
 	            	            
 			String sql ="SELECT " +
 		     " max(decode(DERECHOACCESO, 1, 10, DERECHOACCESO)) as TIPOACCESO "+
 			" FROM EXP_PERMISOSTIPOSEXPEDIENTES WHERE IDINSTITUCION =" +institucion+" " +
-		     " AND IDPERFIL IN ('"+perfil+"')";
+		     " AND IDPERFIL IN ('"+perfil+"') AND idtipoexpediente = " +idTipoExpediente;
 						
 			Hashtable contador = (Hashtable)((Vector)this.selectGenerico(sql)).get(0);
 			//devolverá true si el contador es = 0

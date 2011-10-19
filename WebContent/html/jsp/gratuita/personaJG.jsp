@@ -2925,7 +2925,7 @@ function buscar()
 	var resultado = ventaModalGeneral("BusquedaPersonaJGForm","G");			
 	if (resultado != null && resultado[1]!=null)
 	{
-		alert("ayy2");
+
 		traspasoDatos(resultado,resultado[17]);
 	}
 }

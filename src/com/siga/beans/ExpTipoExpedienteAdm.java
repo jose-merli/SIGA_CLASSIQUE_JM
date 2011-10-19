@@ -222,4 +222,24 @@ public class ExpTipoExpedienteAdm extends MasterBeanAdministrador {
 		}
 		return datos;
 	}
+    
+	public boolean updateRelacion(UsrBean user) throws ClsExceptions
+	{
+
+		StringBuffer sql = new StringBuffer();
+		boolean salida= false;
+		try {
+
+			sql.append(" update " + ExpTipoExpedienteBean.T_NOMBRETABLA);
+			sql.append("    set " + ExpTipoExpedienteBean.C_RELACIONEJG + " = 0");
+			sql.append("  where " + ExpTipoExpedienteBean.C_IDINSTITUCION + "=" + user.getLocation());
+
+			updateSQL(sql.toString());
+			salida = true;
+		} catch (Exception e) {
+			salida = false;
+		}
+		return salida;
+	}
+
 }

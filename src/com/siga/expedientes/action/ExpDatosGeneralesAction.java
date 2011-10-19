@@ -829,27 +829,48 @@ public class ExpDatosGeneralesAction extends MasterAction
 	        	expBean.setObservaciones(form.getObservaciones());
 	        if (form.getMinuta()!= null){
 	        	if(!form.getMinuta().equals(""))
-	        		expBean.setMinuta(new Double(form.getMinuta()));
+	        		try{
+	        		expBean.setMinuta(new Double(form.getMinuta().trim()));
+	        		}catch (Exception e) {
+	        			String minuta = form.getMinuta().replace(',', '.');
+	        			expBean.setMinuta(Double.parseDouble(minuta));
+	    		    }
 	        	else
 	        		expBean.setMinuta(null);
 	        }
 			if (form.getImporteIVA()!= null){
 				 if(!form.getImporteIVA().trim().equals("")) {
-					 expBean.setImporteIVA(new Double(form.getImporteIVA()));
+					 
+					 try{
+						 expBean.setImporteIVA(new Double(form.getImporteIVA()));
+			        	}catch (Exception e) {
+			        		String iva = form.getImporteIVA().replace(',', '.');
+			        		expBean.setImporteIVA(Double.parseDouble(iva));
+			    	    }
 				 }else{
 					 expBean.setImporteIVA(null);
 				 }
 			}
 			if (form.getImporteTotal()!= null){
 				if(!form.getImporteTotal().trim().equals("")) {
-					expBean.setImporteTotal(new Double(form.getImporteTotal()));
+					 try{
+						 expBean.setImporteTotal(new Double(form.getImporteTotal()));
+						}catch (Exception e) {
+			        		String impor = form.getImporteTotal().replace(',', '.');
+			        		expBean.setImporteTotal(Double.parseDouble(impor));
+			    	    }
 				}else{
 					expBean.setImporteTotal(null);
 				}
 			}
 			if (form.getMinutaFinal()!= null){
 				if(!form.getMinutaFinal().equals("")){
-					expBean.setMinutaFinal(new Double(form.getMinutaFinal()));
+					 try{
+						 expBean.setMinutaFinal(new Double(form.getMinutaFinal()));
+						}catch (Exception e) {
+			        		String minutaf = form.getMinutaFinal().replace(',', '.');
+			        		expBean.setMinutaFinal(Double.parseDouble(minutaf));
+			    	    }
 				}else{
 					expBean.setMinutaFinal(null);
 				}
@@ -857,26 +878,52 @@ public class ExpDatosGeneralesAction extends MasterAction
 
 			if (form.getImporteIVAFinal()!= null){
 				if(!form.getImporteIVAFinal().trim().equals("")) {
-					expBean.setImporteIVAFinal(new Double(form.getImporteIVAFinal()));
+					
+					try{
+						expBean.setImporteIVAFinal(new Double(form.getImporteIVAFinal()));
+						}catch (Exception e) {
+			        		String imporiva = form.getImporteIVAFinal().replace(',', '.');
+			        		expBean.setImporteIVAFinal(Double.parseDouble(imporiva));
+			    	    }
 				}else{
 					expBean.setImporteIVAFinal(null);
 				}
 			}
 			if (form.getImporteTotalFinal()!= null) {
 				if(!form.getImporteTotalFinal().trim().equals("")) {
-					expBean.setImporteTotalFinal(new Double(form.getImporteTotalFinal()));
+					
+					try{
+						expBean.setImporteTotalFinal(new Double(form.getImporteTotalFinal()));
+						}catch (Exception e) {
+			        		String imporiva = form.getImporteTotalFinal().replace(',', '.');
+			        		expBean.setImporteTotalFinal(Double.parseDouble(imporiva));
+			    	    }
 				}else{
 					expBean.setImporteTotalFinal(null);
 				}
 			}
 			
 			if (form.getDerechosColegiales()!= null && !form.getDerechosColegiales().trim().equals("")) {
-			    expBean.setDerechosColegiales(new Double(form.getDerechosColegiales()));
+			   
+			    try{
+			    	 expBean.setDerechosColegiales(new Double(form.getDerechosColegiales()));
+					}catch (Exception e) {
+		        		String derechos = form.getDerechosColegiales().replace(',', '.');
+		        		expBean.setDerechosColegiales(Double.parseDouble(derechos));
+		    	    }
 			}
 			if (form.getPorcentajeIVA()!= null){
 				if(!form.getPorcentajeIVA().trim().equals("")) {
-					expBean.setPorcentajeIVA(new Double(form.getPorcentajeIVA()));
-			    	expBean.setPorcentajeIVAFinal(new Double(form.getPorcentajeIVA()));
+					
+
+			    	try{
+						expBean.setPorcentajeIVA(new Double(form.getPorcentajeIVA()));
+				    	expBean.setPorcentajeIVAFinal(new Double(form.getPorcentajeIVA()));
+						}catch (Exception e) {
+			        		String porceniva = form.getPorcentajeIVA().replace(',', '.');
+			        		expBean.setPorcentajeIVA(Double.parseDouble(porceniva));
+			        		expBean.setPorcentajeIVAFinal(Double.parseDouble(porceniva));
+			    	    }
 				}else{
 					expBean.setPorcentajeIVA(null);
 			    	expBean.setPorcentajeIVAFinal(null);

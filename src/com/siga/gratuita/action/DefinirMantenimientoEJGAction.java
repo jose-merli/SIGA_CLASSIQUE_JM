@@ -734,7 +734,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			request.setAttribute("idtipoExpe","");
 			request.setAttribute("idInstiExpe", "");
 			request.setAttribute("tienePermisos", Boolean.FALSE);
-			boolean tienepermisos = exp.tienePermisos (usr.getLocation(), perfiles[0]);
+			boolean tienepermisos = exp.tienePermisos (usr.getLocation(), perfiles[0], idTipoExpediente);
 			if(tienepermisos){
 				request.setAttribute("tienePermisos", Boolean.TRUE);
 				Vector v2 = exp.getRelacionadoConEjg(usr.getLocation(), anio, numero, idtipoEjg);

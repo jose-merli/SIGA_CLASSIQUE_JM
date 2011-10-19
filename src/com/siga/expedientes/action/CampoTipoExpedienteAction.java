@@ -111,7 +111,10 @@ public class CampoTipoExpedienteAction extends MasterAction {
         if (beantipoexp.getDiasAntelacionCad()!=null) {
             form.setDiasAntelacionCad(beantipoexp.getDiasAntelacionCad().toString());        
         }
-        form.setRelacionEJG(beantipoexp.getRelacionEjg().equals(new Integer(1)) );
+        if(beantipoexp.getRelacionEjg()==null)
+        	 form.setRelacionEJG(false);
+        else 
+        	form.setRelacionEJG(beantipoexp.getRelacionEjg().equals(new Integer(1)) );
         //Metemos en el backup los resultados de los campos obtenidos y el tipo de expediente
         Vector backup=new Vector();
         backup.add(0,beantipoexp);
@@ -182,7 +185,9 @@ public class CampoTipoExpedienteAction extends MasterAction {
 	        }
 	  	        //  Modificamos el bean antiguo
 	        tipoExp.setRelacionEjg(form.isRelacionEJG()?new Integer(1):new Integer(0));
-	  	  
+	  	  	if (form.isRelacionEJG())
+	  	  		tipoExpAdm.updateRelacion(userBean);
+	        
 	        if(form.getEnviarAvisos().equalsIgnoreCase("1")){
 	        	tipoExp.setEnviarAvisos(Integer.valueOf(ClsConstants.DB_TRUE));
 	        	tipoExp.setIdTipoEnvios(new Integer(form.getIdTipoEnvios()));

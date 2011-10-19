@@ -1108,13 +1108,18 @@ public class PersonaJGAction extends MasterAction {
 	}
 	private String formateaNif(String nif, String tipo){
 		String nif1="";
+		if(nif==null)
+			return "";
 		//letras correctas para un nif
         String caracteres = "TRWAGMYFPDXBNJZSQVHLCKE";
         // quito el guion si lo hay
         String nif_sin_guion = nif.replaceAll("-","");
         nif_sin_guion = nif.replaceAll(" ","");
         //quito espacios en blanco
+        
         nif = nif_sin_guion.trim();
+        if(nif.equals(""))
+        	return "";
         //calculo la longitud
         int longitud_nif = nif.length();
         String expresion="[TRWAGMYFPDXBNJZSQVHLCKEtrwagmyfpdxbnjzsqvhlcke]";

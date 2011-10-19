@@ -638,7 +638,7 @@
 				return false;
 			}
 			
-		    if (document.getElementById("tipoPcajg").value="2" && (document.getElementById("diligencia_"+fila).value=='-1' || document.getElementById("diligencia_"+fila).value=='')) {
+		    if (document.getElementById("tipoPcajg").value=="2" && (document.getElementById("diligencia_"+fila).value=='-1' || document.getElementById("diligencia_"+fila).value=='')) {
 				campo = "<siga:Idioma key='gratuita.volantesExpres.literal.numeroDiligencia'/>" ;
 				alert ("'"+ campo + "' " + obligatorio);
 				return false;
@@ -650,7 +650,7 @@
 				alert ("'"+ campo + "' " + obligatorio);
 				return false;
 			}
-		    if (document.getElementById("tipoPcajg").value="2" && (document.getElementById("diligencia_"+fila).value=='-1' || document.getElementById("diligencia_"+fila).value=='')) {
+		    if (document.getElementById("tipoPcajg").value=="2" && (document.getElementById("diligencia_"+fila).value=='-1' || document.getElementById("diligencia_"+fila).value=='')) {
 				campo = "<siga:Idioma key='gratuita.volantesExpres.procedimiento'/>" ;
 				alert ("'"+ campo + "' " + obligatorio);
 				return false;
