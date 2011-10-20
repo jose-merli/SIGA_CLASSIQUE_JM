@@ -170,9 +170,11 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
  	
 		<!-- INICIO: TITULO Y LOCALIZACION -->
 		<!-- Escribe el título y localización en la barra de título del frame principal -->
-		<siga:Titulo 
-			titulo="facturacion.pagos.pagos.cabecera" 
-			localizacion="facturacion.abonos.localizacion"/>
+		 	<% 	if (usr.getStrutsTrans().equals("FAC_GenerarAbonos")) {%>
+						<siga:Titulo titulo="facturacion.pagos.pagos.cabecera"	localizacion="facturacion.abonos.localizacion"/>
+			<% } else if (usr.getStrutsTrans().equals("CEN_BusquedaClientesColegiados")) {%>
+					<siga:Titulo titulo="facturacion.pagos.pagos.cabecera"	localizacion="censo.facturacion.abonos.localizacion"/>
+			<% }%>	
 		<!-- FIN: TITULO Y LOCALIZACION -->
 	
 	</head>

@@ -80,9 +80,13 @@
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>	
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
-	<siga:Titulo 
-		titulo="<%=TITULO%>" 
-		localizacion="gratuita.contAnulDeliJuriAsistencia.literal.localizacion"/>
+	<% if(esFichaColegial){ %>
+		<siga:Titulo titulo="<%=TITULO%>" 
+				 localizacion="censo.gratuita.asistencias.literal.localizacion"/>
+	<% } else { %>
+		<siga:Titulo titulo="<%=TITULO%>" 
+				 localizacion="gratuita.contAnulDeliJuriAsistencia.literal.localizacion"/>
+	<% } %>		
 	<!-- FIN: TITULO Y LOCALIZACION -->
 	
 </head>

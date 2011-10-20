@@ -61,9 +61,13 @@
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo 
-		titulo="gratuita.EJG.delitos" 
-		localizacion="gratuita.mantAsistencias.literal.localizacion"/>
+	<% if(esFichaColegial){ %>
+		<siga:Titulo titulo="gratuita.EJG.delitos" 
+				 localizacion="censo.gratuita.asistencias.literal.localizacion"/>
+	<% } else { %>
+		<siga:Titulo titulo="gratuita.EJG.delitos" 
+				 localizacion="gratuita.mantAsistencias.literal.localizacion"/>
+	<% } %>	
 	<!-- FIN: TITULO Y LOCALIZACION -->			
 	
 </head>

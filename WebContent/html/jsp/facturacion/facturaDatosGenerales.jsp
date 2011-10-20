@@ -33,7 +33,8 @@ ActionMapping actionMapping = (ActionMapping)request.getAttribute("org.apache.st
 String path = actionMapping.getPath();
 	String volver = (String)request.getAttribute("volver");
 		
-
+	// Obtencion del tipo de acceso sobre la pestanha del usuario de la aplicacion
+	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 
 		String facturaPDF = "factura.pdf";
 		String app = request.getContextPath(); 
@@ -244,9 +245,11 @@ String path = actionMapping.getPath();
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo
-		titulo="facturacion.facturas.datosGenerales.cabecera" 
-		localizacion="facturacion.facturas.localizacion"/>
+		 	<% 	if (usr.getStrutsTrans().equals("FAC_BusquedaFactura")) {%>
+					<siga:Titulo titulo="facturacion.facturas.datosGenerales.cabecera"	localizacion="facturacion.facturas.localizacion"/>
+			<% } else if (usr.getStrutsTrans().equals("CEN_BusquedaClientesColegiados")) {%>
+					<siga:Titulo titulo="facturacion.facturas.datosGenerales.cabecera"	localizacion="censo.facturacion.facturas.localizacion"/>
+			<% }%>		
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
 </head>

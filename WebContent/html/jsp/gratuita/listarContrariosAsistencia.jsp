@@ -46,15 +46,19 @@
 <html>
 <!-- HEAD -->
 <head>
-
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo 
-		titulo="gratuita.contrariosAsistencia.literal.titulo" 
-		localizacion="gratuita.mantAsistencias.literal.localizacion"/>
+	<% if(esFichaColegial){ %>
+		<siga:Titulo titulo="gratuita.contrariosAsistencia.literal.titulo" 
+				 localizacion="censo.gratuita.asistencias.literal.localizacion"/>
+	<% } else { %>
+		<siga:Titulo titulo="gratuita.contrariosAsistencia.literal.titulo" 
+				 localizacion="gratuita.mantAsistencias.literal.localizacion"/>
+	<% } %>	
+
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
 	<!-- SCRIPTS LOCALES -->

@@ -287,7 +287,7 @@ public class BusquedaAsistenciasLetradoAction extends MasterAction {
 		hash.put("numeroASI",ocultos.get(1));
 		// titulo
 		hash.put("tituloE","gratuita.mantAsistencias.literal.asistido");
-		hash.put("localizacionE","gratuita.mantAsistencias.literal.localizacion");
+		hash.put("localizacionE","censo.gratuita.asistencias.literal.localizacion");
 		// accion
 		hash.put("accionE","editar");
 		// action

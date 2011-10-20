@@ -22,7 +22,7 @@
 	type="text/javascript"></script>
 	
 </head>
-<body onload="ajustarCabeceraTabla();">
+<body onload="ajustarCabeceraTabla();ponerTitulo()">
 <bean:define id="asistencia" name="asistencia" scope="request" type="com.siga.gratuita.form.AsistenciaForm"/>
 
 <bean:define id="error" name="error" scope="request" />
@@ -224,6 +224,16 @@ function ajustarCabeceraTabla(){
 		   
 	  }
 }
+
+function ponerTitulo(){
+	var siga ="SIGA";
+	var tit ="<siga:Idioma key="gratuita.listadoActuacionesAsistencia.literal.titulo"/>";
+	top.setTitulo(siga, tit);
+	var loc ="<siga:Idioma key="censo.gratuita.asistencias.actuaciones.literal.localizacion"/>";
+	top.setLocalizacion(loc);
+	
+}
+
 function accionNuevo()	{
     document.ActuacionAsistenciaFormEdicion.modo.value = "nuevo";
     resultadoVentanaCondicion = ventaModalGeneral(document.ActuacionAsistenciaFormEdicion.name, "G");

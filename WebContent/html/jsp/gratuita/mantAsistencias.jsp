@@ -226,8 +226,13 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>	
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
-	<siga:Titulo titulo="gratuita.mantAsistencias.literal.titulo" 
+	<% if(esFichaColegial){ %>
+		<siga:Titulo titulo="gratuita.mantAsistencias.literal.titulo" 
+				 localizacion="censo.gratuita.asistencias.literal.localizacion"/>
+	<% } else { %>
+		<siga:Titulo titulo="gratuita.mantAsistencias.literal.titulo" 
 				 localizacion="gratuita.mantAsistencias.literal.localizacion"/>
+	<% } %>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 	
 </head>

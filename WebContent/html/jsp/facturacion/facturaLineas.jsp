@@ -25,6 +25,10 @@
 ActionMapping actionMapping = (ActionMapping)request.getAttribute("org.apache.struts.action.mapping.instance");
 String path = actionMapping.getPath();	
 String volver = request.getAttribute("volver")==null?"NO":(String)request.getAttribute("volver");
+
+	// Obtencion del tipo de acceso sobre la pestanha del usuario de la aplicacion
+	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
+	
 		String botonesAccion = "";
 
 		// Gestion de Volver
@@ -79,9 +83,11 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo
-		titulo="facturacion.facturas.lineas.cabecera" 
-		localizacion="facturacion.facturas.localizacion"/>
+		 	<% 	if (usr.getStrutsTrans().equals("FAC_BusquedaFactura")) {%>
+					<siga:Titulo titulo="facturacion.facturas.lineas.cabecera"	localizacion="facturacion.facturas.localizacion"/>
+			<% } else if (usr.getStrutsTrans().equals("CEN_BusquedaClientesColegiados")) {%>
+					<siga:Titulo titulo="facturacion.facturas.lineas.cabecera"	localizacion="censo.facturacion.facturas.localizacion"/>
+			<% }%>			
 	<!-- FIN: TITULO Y LOCALIZACION -->
 	
 </head>     
