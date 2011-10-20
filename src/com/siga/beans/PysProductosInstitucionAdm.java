@@ -747,7 +747,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 			Articulo articulo = new Articulo(Articulo.CLASE_PRODUCTO,idProducto, idInstitucion, idProductoInstitucion, idTipoProducto);
 
 			articulo.setIdPeticion(idPeticion);
-			
+			if(idFormaPago!=null){
 			// ponemos la forma de pago
 			articulo.setIdFormaPago(new Integer(idFormaPago));
 			// comprobamos que tiene cuentas bancarias si es forma de pago banco
@@ -791,7 +791,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 					} 
 				}
 			}
-			
+			}
 			// ponemos el tipo de envio
 			articulo.setIdTipoEnvios(new Integer(idTipoEnvio));
 			// comprobamos que tiene dirección según el tipo de envío.
@@ -817,7 +817,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 			// jbd 17/02/2010 inc-6361
 			articulo.setMetodoSolicitud(new Integer(metodoSolicitud));
 			articulo.setFechaSolicitud(fechaSolicitud);
-			
+			//articulo.getNoFacturable()
 			productosAdm.insertProducto(articulo, idPeticion, (idInstitucionPresentador.trim().equals(""))?null:new Integer(idInstitucionPresentador), idPersona);
 
 			return articulo;

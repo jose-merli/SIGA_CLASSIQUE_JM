@@ -1176,7 +1176,10 @@ public class CompraPredefinidaAction extends MasterAction {
 			String tipoEnvio=null; 
 			if (v2!=null && v2.size()>0) {
 				beanVal=(AdmValorPreferenteBean)v2.get(0);
-				formaPago=beanVal.getValor();
+				if(beanPI.getnoFacturable()!=null && beanPI.getnoFacturable().trim().equals("1"))
+					formaPago=null;
+				else
+					formaPago=beanVal.getValor();
 			} else {
 				throw new SIGAException("certificados.boton.mensaje.preferenciasMal");
 			} 
