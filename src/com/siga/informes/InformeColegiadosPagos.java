@@ -102,8 +102,10 @@ public class InformeColegiadosPagos extends MasterReport {
 		
 		//plantillaFO = this.reemplazaRegistros(plantillaFO,datosOficios,htDatos,"OFICIOS");
 		
+		String idPerDestino = (String)htDatos.get("IDPERDESTINO");
+		
 		//Datos del Pago y Totales
-		htAux=this.obtenerDatosPago(institucion, idPersona, idPagos, usr);
+		htAux=this.obtenerDatosPago(institucion, idPersona, idPagos, usr,idPerDestino);
 		htDatos.putAll(htAux);
 		
 		return htDatos;
@@ -263,8 +265,25 @@ public class InformeColegiadosPagos extends MasterReport {
 				 		}  
 				 	}
 				 }
-				
-			String sql1 = "select * from fac_abono where idpersona="+idSociedad +"and idinstitucion="+idInstitucion+" and idpagosjg ="+idPagos;
+				 			
+			String sqlQuery = "select idperdestino from fcs_pago_colegiado where idperorigen="+idPersona +" and idinstitucion="+idInstitucion+" and idpagosjg ="+idPagos;
+					RowsContainer rct=new RowsContainer();
+					rct.find(sqlQuery);
+					String idPerDestino="";
+					if(rct!=null && rct.size()>0){
+						int size=rct.size();
+						for(int i=0;i<size;i++){
+							Row r1=(Row)rct.get(i);
+							Hashtable htAux=r1.getRow();
+							idPerDestino=r1.getString("IDPERDESTINO");
+							result.put("IDPERDESTINO",idPerDestino);
+						}
+					}	 
+				 
+			if(idPerDestino == null || idPerDestino.equals(""))
+				idPerDestino ="";
+					
+			String sql1 = "select * from fac_abono where idpersona="+idPerDestino +"and idinstitucion="+idInstitucion+" and idpagosjg ="+idPagos;
 			RowsContainer rc1=new RowsContainer();
 			rc1.find(sql1);
 			String idCuenta="";
@@ -698,7 +717,7 @@ public class InformeColegiadosPagos extends MasterReport {
 	 * @return
 	 * @throws SIGAException
 	 */
-	protected Hashtable obtenerDatosPago(String idInstitucion, String idPersona, String idPago, UsrBean usr) throws ClsExceptions {
+	protected Hashtable obtenerDatosPago(String idInstitucion, String idPersona, String idPago, UsrBean usr,String IdPerDestino) throws ClsExceptions {
 		RowsContainer rc=null;
 		Hashtable result= new Hashtable();
 		double dTotalAsistencia=0;
@@ -756,7 +775,7 @@ public class InformeColegiadosPagos extends MasterReport {
 			buf0.append(" ON efe.idinstitucion = caj.idinstitucion");
 			buf0.append(" AND efe.idabono = caj.idabono");
 			buf0.append(" AND efe.idpagoabono = caj.idpagoabono");
-			buf0.append(" WHERE abo.idpersona = " + idPersona);
+			buf0.append(" WHERE abo.idpersona = " + IdPerDestino);
 			buf0.append(" and abo.idpagosjg = " +idPago);
 			buf0.append(" and abo.idinstitucion = " + idInstitucion);
 			buf0.append(" group by abo.numeroabono, abo.idpagosjg");		
@@ -953,7 +972,7 @@ public class InformeColegiadosPagos extends MasterReport {
 			buf0.append("SELECT TO_CHAR(fd.fecha, 'DD/MM/YYYY') FECHAABONODISCOBANCO FROM FAC_ABONO fa, FCS_PAGOSJG fp,fac_abonoincluidoendisquete fi, fac_disqueteabonos fd ");
 			buf0.append(" where fa.idinstitucion =" + idInstitucion);
 			buf0.append(" and fa.idpagosjg= " + idPago);
-			buf0.append(" and fa.idpersona="+ idPersona);
+			buf0.append(" and fa.idpersona="+ IdPerDestino);
 			buf0.append(" AND fa.idinstitucion = fa.idinstitucion ");
 			buf0.append(" AND fa.idpagosjg = fp.idpagosjg ");
 			buf0.append(" and fi.idinstitucion= fa.idinstitucion ");
