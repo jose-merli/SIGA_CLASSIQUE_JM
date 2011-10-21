@@ -63,9 +63,12 @@ public class DefinirImpugnacionEJGAction extends MasterAction {
 			
 		try {
 			// Ponemos la fecha en el formato correcto
-			nuevos.put("FECHAAUTO", GstDate.getApplicationFormatDate("",nuevos.get("FECHAAUTO").toString()));
+			nuevos.put("FECHAAUTO", GstDate.getApplicationFormatDate(usr.getLanguage(), nuevos.get("FECHAAUTO").toString()));
+			//nuevos.put("FECHAAUTO", GstDate.getApplicationFormatDate("",nuevos.get("FECHAAUTO").toString()));
 			//Ponemos la fecha en el formato correcto
-			nuevos.put("FECHAPUBLICACION", GstDate.getApplicationFormatDate("",nuevos.get("FECHAPUBLICACION").toString()));
+			if(nuevos.get("FECHAPUBLICACION")!=null && !nuevos.get("FECHAPUBLICACION").toString().trim().equals(""))
+				nuevos.put("FECHAPUBLICACION", GstDate.getApplicationFormatDate(usr.getLanguage(),nuevos.get("FECHAPUBLICACION").toString()));
+			
 			nuevos.put("BISRESOLUCION",(nuevos.containsKey("BISRESOLUCION")?nuevos.get("BISRESOLUCION"):ClsConstants.DB_FALSE));
 			
 			nuevos.put("TURNADOAUTO",(nuevos.containsKey("TURNADOAUTO")?nuevos.get("TURNADOAUTO"):ClsConstants.DB_FALSE));

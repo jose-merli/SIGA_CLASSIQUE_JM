@@ -157,14 +157,13 @@
 	<!-- FILA -->
 		<tr>
 			<td class="labelText">
-				<siga:Idioma key="gratuita.operarRatificacion.literal.fechaAuto"/>
+				<siga:Idioma key="gratuita.operarRatificacion.literal.fechaAuto"/>&nbsp;(*)
 			</td>
 			<td>
 				<%if (accion.equalsIgnoreCase("ver")) {%>
 					<html:text name="DefinirEJGForm" property="fechaAuto" size="10" styleClass="boxConsulta" value="<%=fechaAuto%>" disabled="false" readonly="true"></html:text>
 				<%}else{%>
 					<html:text name="DefinirEJGForm" property="fechaAuto" size="10" styleClass="box" value="<%=fechaAuto%>" disabled="false" readonly="true"></html:text>
-					&nbsp;
 					<a onClick="return showCalendarGeneral(fechaAuto);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
 					<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
 					</a>
@@ -225,7 +224,7 @@
 			<td class="labelText"  width="300">	
 				<siga:Idioma key='gratuita.operarRatificacion.literal.numeroResolucion'/> 
 			</td>
-	   		<td >	
+	   		<td  class="labelText">	
 				<% if (accion.equalsIgnoreCase("ver")) {%>
 			  		<html:text name="DefinirEJGForm"  property="numeroResolucion"  onkeypress="javascript:return soloDigitos(event)"  onblur="habilitarBisResolucion();" size="11" maxlength="11"  styleClass="boxConsulta"  value="<%=numeroResolucion%>" readonly="true"></html:text> / 
                 	<html:text name="DefinirEJGForm"  property="anioResolucion"    onkeypress="javascript:return soloDigitos(event)"  onblur="habilitarBisResolucion();" size="4" maxlength="4"    styleClass="boxConsulta"  value="<%=anioResolucion%>" readonly="true"></html:text>
