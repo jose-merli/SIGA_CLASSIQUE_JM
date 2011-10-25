@@ -60,6 +60,14 @@
 		
 		
 	}
+	function onChangeSmi(){
+		
+		document.getElementById('idImporte').onchange();
+		document.getElementById('idBuscarTramosRetencion').onclick();
+		
+		
+		
+	}
 	function preAccionImporte(){
 		TramosRetencionForm.importe.value=TramosRetencionForm.importe.value.replace(/,/,".");
 		if(TramosRetencionForm.importe.value==''){
@@ -109,7 +117,7 @@
 				styleClass="box" style="width:50"></html:text></td>
 			<td class="labelText"><siga:Idioma
 					key="fcs.tramosLEC.literal.smi" /></td>
-			<td><html:text	property="smi" styleClass="box" readonly="true"></html:text></td>
+			<td><html:text	property="smi" styleClass="box" onchange="onChangeSmi();"></html:text></td>
 		</tr>
 		<tr>
 			<td class="labelText"><siga:Idioma key="fcs.tramosLEC.literal.numeroMeses" /></td>

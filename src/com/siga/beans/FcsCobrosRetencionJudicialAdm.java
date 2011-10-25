@@ -513,8 +513,8 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 		sql.append(idInstitucion);
 		sql.append(" AND T.IDPERSONA = ");
 		sql.append(idPersona);
-		sql.append(" AND T.IDRETENCION = ");
-		sql.append(idRetencion);
+//		sql.append(" AND T.IDRETENCION = ");
+//		sql.append(idRetencion);
 		sql.append(" AND T.MES BETWEEN ");
 		sql.append(" TO_CHAR(TO_DATE('");
 		sql.append(fechaDesde);
@@ -523,7 +523,7 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 		sql.append(fechaHasta);
 		sql.append("'), 'MM')");
 		
-		sql.append(" ORDER BY T.MES,T.IDCOBRO ");
+		sql.append(" ORDER BY T.MES,T.IMPORTEANTAPLICARETENCION ");
 
 		
 							
