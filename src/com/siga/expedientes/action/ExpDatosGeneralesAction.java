@@ -722,7 +722,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 				ExpExpedienteAdm exp = new ExpExpedienteAdm (this.getUserBean(request));
 				Integer idTipoExpe = exp.selectTipoExpedienteEJG(this.getUserBean(request).getLocation());
 							
-				if(idTipoExpe.toString().equals(idTipoExpediente)){
+				if(idTipoExpe != null && idTipoExpe.toString().equals(idTipoExpediente)){
 					//if(form.getNumExpDisciplinario()!=null && !form.getNumExpDisciplinario().trim().equals(""))
 						request.setAttribute("tipoExpedienteEjg", Boolean.TRUE);
 				//	else
