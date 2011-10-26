@@ -4021,7 +4021,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			    		CenInstitucionAdm admInstitucion = new CenInstitucionAdm(usrBean); 
 			    		String nombreInstitucion=admInstitucion.getNombreInstitucion(idInstitucion);
 		    			htCabeceraInforme.put("NOMBRE_COLEGIO_PERIODO",nombreInstitucion+"  "+fechaInicio+" - "+fechaFin);
-		    			//htCabeceraInforme.put("NOMBRE_LISTA_GUARDIA",nombreLista);
+		    			htCabeceraInforme.put("NOMBRE_LISTA_GUARDIA",nombreLista);
 		    			htCabeceraInforme.put("LUGAR",lugar);
 		    			htCabeceraInforme.put("OBSERVACIONES",observaciones);
 		    			htCabeceraInforme.put("LETRADO",(String) htCol.get("APELLIDO1_LETRADO")+" "+(String) htCol.get("APELLIDO2_LETRADO")+", "+(String) htCol.get("N_LETRADO"));
