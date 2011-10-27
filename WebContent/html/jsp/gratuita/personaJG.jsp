@@ -394,7 +394,11 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 				
          <%if (conceptoE.equals(PersonaJGAction.ASISTENCIA_ASISTIDO)
 					|| conceptoE.equals(PersonaJGAction.SOJ)) {%> 
-            	document.forms[0].hijos.value = resultado[18]; 
+				if (resultado[18] != null && trim(resultado[18])!="" && trim(resultado[18])!="null") {
+            		document.forms[0].hijos.value = resultado[18]; 
+				} else {
+            		document.forms[0].hijos.value = ""; 
+				}
          <%}%>
 
 <%if (!conceptoE.equals(PersonaJGAction.PERSONAJG)
