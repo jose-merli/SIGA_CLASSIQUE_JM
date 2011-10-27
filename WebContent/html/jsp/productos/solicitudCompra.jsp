@@ -921,7 +921,6 @@ function mostrarColegio()
 		document.getElementById("comboPresentador").style.display="block";
 		document.getElementById("presentador").style.display="block";
 		<%if (request.getSession().getAttribute("volver") != null && request.getSession().getAttribute("volver").equals("s")) {%>
-		alert("se blosque despues de volver");
 		document.solicitudCompraForm.catalogo.disabled=true;
 		document.solicitudCompraForm.idInstitucionPresentador.disabled=true;
 		
