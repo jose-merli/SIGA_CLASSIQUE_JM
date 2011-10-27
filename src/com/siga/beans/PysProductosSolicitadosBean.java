@@ -15,7 +15,7 @@ package com.siga.beans;
 public class PysProductosSolicitadosBean extends MasterBean{
 
 	/* Variables */
-	private Integer idInstitucion, idInstitucionOrigen, idTipoProducto, idCuenta, idFormaPago, cantidad, idTipoEnvios, metodoSolicitud;
+	private Integer idInstitucion, idInstitucionOrigen, idInstitucionColegiacion, idTipoProducto, idCuenta, idFormaPago, cantidad, idTipoEnvios, metodoSolicitud;
 	private Long 	idProducto, idProductoInstitucion, idPeticion, idPersona, idDireccion;
 	private String 	aceptado,noFacturable, fechaSolicitud;	
 	private Double 	valor;
@@ -28,6 +28,7 @@ public class PysProductosSolicitadosBean extends MasterBean{
 	/* Nombre campos de la tabla */
 	static public final String C_IDINSTITUCION        	= "IDINSTITUCION";
 	static public final String C_IDINSTITUCIONORIGEN	= "IDINSTITUCIONORIGEN";
+	static public final String C_IDINSTITUCIONCOLEGIACION	= "IDINSTITUCIONCOLEGIACION";	
 	static public final String C_IDTIPOPRODUCTO			= "IDTIPOPRODUCTO";
 	static public final String C_IDPRODUCTO				= "IDPRODUCTO";
 	static public final String C_IDPRODUCTOINSTITUCION	= "IDPRODUCTOINSTITUCION";
@@ -64,7 +65,8 @@ public class PysProductosSolicitadosBean extends MasterBean{
 	public void setIdDireccion(Long direccion)				{this.idDireccion = direccion;}
 	public void setMetodoSolicitud(Integer metodoSolicitud)	{this.metodoSolicitud = metodoSolicitud;}	
 	public void setFechaSolicitud(String fechaSolicitud)	{this.fechaSolicitud = fechaSolicitud;}
-	
+	public void setIdInstitucionColegiacion(Integer idInstitucionColegiacion) {this.idInstitucionColegiacion = idInstitucionColegiacion;}	
+
 	// Metodos GET
 	
 	public String getNoFacturable() 		{return noFacturable;}
@@ -85,4 +87,6 @@ public class PysProductosSolicitadosBean extends MasterBean{
 	public Long getIdDireccion()			{return this.idDireccion;}
 	public String getFechaSolicitud()		{return this.fechaSolicitud;}	
 	public Integer getMetodoSolicitud()		{return this.metodoSolicitud;}
+	public Integer getIdInstitucionColegiacion() {return idInstitucionColegiacion;}
+	
 }

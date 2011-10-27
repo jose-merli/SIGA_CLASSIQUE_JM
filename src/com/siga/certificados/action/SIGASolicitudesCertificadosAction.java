@@ -503,6 +503,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    
 		    String idInstitucionOrigen = ""+beanSolicitud.getIdInstitucionOrigen();
 		    String idInstitucionDestino = ""+beanSolicitud.getIdInstitucionDestino();
+		    String idInstitucionColegiacion = ""+beanSolicitud.getIdInstitucionColegiacion();
 		    CenInstitucionBean beanInstitucionOrigen = null;
 		    Hashtable htInstitucion = new Hashtable();
 		    if(!idInstitucionOrigen.equalsIgnoreCase("null") ){
@@ -515,7 +516,16 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    		    
 		    }
 		    	    
-		    
+		    CenInstitucionBean beanInstitucionColegiacion = null;
+		    if(!idInstitucionColegiacion.equalsIgnoreCase("null") ){
+		    htInstitucion.put(CenInstitucionBean.C_IDINSTITUCION, idInstitucionColegiacion);
+				    vDatos = admInstitucion.selectByPK(htInstitucion);
+				    if (vDatos!=null && vDatos.size()==1)
+				    {
+				        beanInstitucionColegiacion = (CenInstitucionBean)vDatos.elementAt(0);
+				    }
+		    		    
+		    }
 		    
 		    CenInstitucionBean beanInstitucionDestino = null;
 		    
@@ -564,6 +574,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    }
 		    request.setAttribute("institucionOrigen", beanInstitucionOrigen);
 		    request.setAttribute("institucionDestino", beanInstitucionDestino);
+		    request.setAttribute("institucionColegiacion", beanInstitucionColegiacion);
 		    request.setAttribute("tipoCertificado", tipoCertificado);
 		    
 			// TRATAMIENTO DEL CONTADOR
@@ -2287,11 +2298,17 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    }else{
 		    	bean.setFechaEntregaInfo(null);
 		    }
-		    	
+		    
 		    if (!form.getIdInstitucionOrigen().trim().equals("")) {
 		    	bean.setIdInstitucionOrigen(new Integer(form.getIdInstitucionOrigen()));
 		    } else {
 		    	bean.setIdInstitucionOrigen(null);
+		    }		    
+		    	
+		    if (!form.getIdInstitucionColegiacion().trim().equals("")) {
+		    	bean.setIdInstitucionColegiacion(new Integer(form.getIdInstitucionColegiacion()));
+		    } else {
+		    	bean.setIdInstitucionColegiacion(null);
 		    }
 
 		    if (!form.getIdInstitucionDestino().trim().equals("")) {

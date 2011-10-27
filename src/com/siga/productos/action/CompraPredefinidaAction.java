@@ -900,6 +900,7 @@ public class CompraPredefinidaAction extends MasterAction {
 			String idInstitucion=user.getLocation();
 			String idInstitucionX=request.getParameter("idInstitucion");
 			String idInstitucionPresentadorX=request.getParameter("idInstitucionPresentador");
+			String idInstitucionColegiacionX=request.getParameter("idInstitucionColegiacion");
 			String idPersonaX=request.getParameter("idPersona");
 			String idBoton=request.getParameter("idBoton");
 			String metodoSolicitud=request.getParameter("metodoSolicitud");
@@ -987,7 +988,7 @@ public class CompraPredefinidaAction extends MasterAction {
 			tx.begin();
 			
 			// proceso de compra de certificado
-			Articulo a = admPI.realizarCompraPredefinida(new Integer(idInstitucionX),idInstitucionPresentadorX,new Integer(idTipoProducto),new Long(idProducto), new Long(idProductoInstitucion), new Long(idPersonaX),formaPago ,tipoEnvio,false, fechaSolicitud, metodoSolicitud);
+			Articulo a = admPI.realizarCompraPredefinida(new Integer(idInstitucionX),idInstitucionPresentadorX,new Integer(idTipoProducto),new Long(idProducto), new Long(idProductoInstitucion), new Long(idPersonaX),formaPago ,tipoEnvio,false, fechaSolicitud, metodoSolicitud,idInstitucionColegiacionX);
 
 			// Insertamos el certificado (esto antes lo hacia un trigger)
 		    CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
@@ -1116,6 +1117,10 @@ public class CompraPredefinidaAction extends MasterAction {
 			String idInstitucionX=request.getParameter("idInstitucion");
 			String idInstitucionPresentadorX=request.getParameter("idInstitucionPresentador");
 			String idPersonaX=request.getParameter("idPersona");
+			String idInstitucionColegiacionX=request.getParameter("idInstitucionPresentador");
+			if(request.getParameter("idInstitucionColegiacion")!= null && !request.getParameter("idInstitucionColegiacion").equals("")){
+				idInstitucionColegiacionX=request.getParameter("idInstitucionColegiacion");
+			}
 			String idBoton=request.getParameter("idBoton");
 			String metodoSolicitud=request.getParameter("metodoSolicitud");
 			String fechaSolicitud=request.getParameter("fechaSolicitud");
@@ -1206,7 +1211,7 @@ public class CompraPredefinidaAction extends MasterAction {
 			tx.begin();
 			
 			// proceso de compra de certificado
-			Articulo a = admPI.realizarCompraPredefinida(new Integer(idInstitucionX),idInstitucionPresentadorX,new Integer(idTipoProducto),new Long(idProducto), new Long(idProductoInstitucion), new Long(idPersonaX),formaPago ,tipoEnvio,false, fechaSolicitud, metodoSolicitud);
+			Articulo a = admPI.realizarCompraPredefinida(new Integer(idInstitucionX),idInstitucionPresentadorX,new Integer(idTipoProducto),new Long(idProducto), new Long(idProductoInstitucion), new Long(idPersonaX),formaPago ,tipoEnvio,false, fechaSolicitud, metodoSolicitud,idInstitucionColegiacionX);
 
 			// Insertamos el certificado (esto antes lo hacia un trigger)
 		    CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
@@ -1315,7 +1320,7 @@ public class CompraPredefinidaAction extends MasterAction {
 			// proceso de compra de certificado
 			PysProductosInstitucionAdm admProductos = new PysProductosInstitucionAdm(this.getUserBean(request));
 			
-			Articulo a = admProductos.realizarCompraPredefinida(new Integer(idInstitucionX),idInstitucionX,new Integer(idTipoProducto),new Long(idProducto), new Long(idProductoInstitucion), new Long(idPersonaX),formaPago ,tipoEnvio,true, fechaSolicitud, metodoSolicitud);
+			Articulo a = admProductos.realizarCompraPredefinida(new Integer(idInstitucionX),idInstitucionX,new Integer(idTipoProducto),new Long(idProducto), new Long(idProductoInstitucion), new Long(idPersonaX),formaPago ,tipoEnvio,true, fechaSolicitud, metodoSolicitud,idInstitucionX);
 
 			// Insertamos el certificado (esto antes lo hacia un trigger)
 		    CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));	    

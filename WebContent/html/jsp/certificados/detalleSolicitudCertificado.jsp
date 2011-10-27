@@ -31,6 +31,7 @@
 	CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean) request.getAttribute("solicitud");
 	CenInstitucionBean beanInstitucionOrigen = (CenInstitucionBean) request.getAttribute("institucionOrigen");
 	CenInstitucionBean beanInstitucionDestino = (CenInstitucionBean) request.getAttribute("institucionDestino");
+	CenInstitucionBean beanInstitucionColegiacion = (CenInstitucionBean) request.getAttribute("institucionColegiacion");
 	String modificarSolicitud = (String) request.getAttribute("modificarSolicitud");
 	String idEstadoSolicitud = (String) request.getAttribute("idEstadoSolicitud");
 	String tipoCertificado = (String) request.getAttribute("tipoCertificado");
@@ -55,6 +56,11 @@
 	ArrayList idInstitucionPresentador = new ArrayList();
 	if (beanInstitucionOrigen != null) {
 		idInstitucionPresentador.add(beanInstitucionOrigen.getIdInstitucion().toString());
+	}
+	
+	ArrayList idInstitucionColegiacion = new ArrayList();
+	if (beanInstitucionColegiacion != null) {
+		idInstitucionColegiacion.add(beanInstitucionColegiacion.getIdInstitucion().toString());
 	}
 	
 	ArrayList aMetodoSol = new ArrayList();
@@ -310,8 +316,14 @@
 			<td><siga:ConjCampos leyenda="certificados.solicitudes.ventanaEdicion.datosSolicitud">
 				<table class="tablaCampos" align="center">
 					<tr>
-						<td class="labelText" ><siga:Idioma key="certificados.solicitudes.literal.numeroSolicitud" /></td>
-						<td class="labelTextValor"><%=numSolicitud%></td>
+						<td class="labelTextValue" ><b><siga:Idioma key="certificados.solicitudes.literal.numeroSolicitud" /></b>
+						&nbsp;&nbsp;&nbsp;<%=numSolicitud%></td>
+						<% if (sIdCompra != null) { %>
+							<td class="labelTextvalue"><b><siga:Idioma key="certificados.solicitudes.literal.idSolicitudCompra" /></b>
+							&nbsp;&nbsp;&nbsp;<%=sIdCompra%></td>
+						<%}else{%>
+							<td>&nbsp;</td>
+						<% } %>						
 						<td class="labelText" ><siga:Idioma key="certificados.solicitudes.literal.numeroCertificado" /></td>
 						<td class="labelTextValor"><%=codigo%></td>
 						<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.fechaSolicitud" /></td>
@@ -335,20 +347,6 @@
 										value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaSolicitud()) %>">
 									</html:text>
 							<%}%>
-						</td>
-					</tr>
-					<tr>
-					<% if (sIdCompra != null) { %>
-						<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.idSolicitudCompra" /></td>
-						<td class="labelTextValor"><%=sIdCompra%></td>
-						<td colspan="2"></td>
-					<%}else{%>
-						<td colspan="4"></td>
-					<% } %>
-						<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.metodoSolicitud"/></td>
-						<td>
-							<siga:ComboBD nombre="metodoSolicitud" tipo="comboMetodoSolicitud" obligatorio="false" parametro="<%=parametros%>" ElementoSel="<%=aMetodoSol%>" 
-								clase="<%=tipoBox%>" readonly="<%=stLectura%>"/>
 						</td>
 					</tr>
 					<tr>
@@ -387,7 +385,37 @@
 								filasMostrar="1" readonly="true" /> 
 						<%}%>
 						</td>
+						<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.metodoSolicitud"/></td>
+						<td>
+							<siga:ComboBD nombre="metodoSolicitud" tipo="comboMetodoSolicitud" obligatorio="false" parametro="<%=parametros%>" ElementoSel="<%=aMetodoSol%>" 
+								clase="<%=tipoBox%>" readonly="<%=stLectura%>"/>
+						</td>						
 					</tr>
+					<tr>
+						<td class="labelText">
+							<siga:Idioma key="pys.solicitudCompra.literal.colegiadoen"/>
+						</td>	
+						<td class="labelTextValor">
+						<%if (modificarSolicitud.equals("1")) { %> 
+							<siga:ComboBD
+								nombre="idInstitucionColegiacion" tipo="<%=consultaOrigen%>" obligatorioSinTextoSeleccionar="true"
+								elementoSel="<%=idInstitucionColegiacion%>" parametro="<%=parametros%>" clase="<%=tipoBox%>"
+								filasMostrar="1" readonly="<%=stLectura%>" /> 
+						<%} else {%> 						
+							<siga:ComboBD
+								nombre="idInstitucionColegiacion" tipo="<%=consultaOrigen%>" obligatorioSinTextoSeleccionar="true"
+								elementoSel="<%=idInstitucionColegiacion%>" parametro="<%=parametros%>" clase="boxConsulta"
+								filasMostrar="1" readonly="true" /> 
+						<%}%>
+						</td>
+						<td class="labelTextValor" colspan="4">
+							<%if (modificarSolicitud.equals("1")) { %> 
+								<i><siga:Idioma key="pys.solicitudCompra.literal.indicacion"/></i>
+							<%} else {%> 						
+								&nbsp;
+							<%}%>							
+						</td>
+					</tr>					
 					<tr>
 						<td class="labelText">
 							<siga:Idioma key="certificados.solicitudes.literal.descripcion"/>

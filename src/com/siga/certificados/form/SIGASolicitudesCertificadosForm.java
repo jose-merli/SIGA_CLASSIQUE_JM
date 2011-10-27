@@ -28,6 +28,7 @@ public class SIGASolicitudesCertificadosForm extends MasterForm
     private String idInstitucionOrigen="";
     private String idInstitucionDestino="";
     private String idInstitucionSolicitud="";
+    private String idInstitucionColegiacion="";
     private String idInstitucion="";
     
     private String observaciones="";
@@ -440,5 +441,12 @@ public class SIGASolicitudesCertificadosForm extends MasterForm
 	public void setMetodoSolicitud(String metodo) {
         this.metodoSolicitud = metodo;
     }
+	public String getIdInstitucionColegiacion() {
+		return idInstitucionColegiacion;
+	}
+	public void setIdInstitucionColegiacion(String idInstitucionColegiacion) {
+		this.idInstitucionColegiacion = idInstitucionColegiacion;
+	}
+	
 	
 }

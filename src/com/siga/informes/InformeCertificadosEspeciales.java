@@ -499,6 +499,9 @@ public class InformeCertificadosEspeciales extends MasterReport
 		sql.append(" (SELECT nombre");
 		sql.append(" FROM CEN_INSTITUCION");
 		sql.append(" WHERE IDINSTITUCION = s.idinstituciondestino) as INSTITUCIONDESTINO,");
+		sql.append(" (SELECT nombre");
+		sql.append(" FROM CEN_INSTITUCION");
+		sql.append(" WHERE IDINSTITUCION = s.idinstitucioncolegiacion) as INSTITUCIONCOLEGIACION,");		
 		sql.append("	S.PREFIJO_CER,");
 		sql.append(" S.CONTADOR_CER,");
 		sql.append(" S.SUFIJO_CER,");

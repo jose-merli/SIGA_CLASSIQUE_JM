@@ -725,7 +725,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 	}
 	
 	
-	public Articulo realizarCompraPredefinida(Integer idInstitucion, String idInstitucionPresentador, Integer idTipoProducto, Long idProducto, Long idProductoInstitucion, Long idPersona, String idFormaPago, String idTipoEnvio,boolean isColegio, String fechaSolicitud, String metodoSolicitud) throws SIGAException, ClsExceptions {
+	public Articulo realizarCompraPredefinida(Integer idInstitucion, String idInstitucionPresentador, Integer idTipoProducto, Long idProducto, Long idProductoInstitucion, Long idPersona, String idFormaPago, String idTipoEnvio,boolean isColegio, String fechaSolicitud, String metodoSolicitud, String idInstitucionColegiacion) throws SIGAException, ClsExceptions {
 	    
 	    try {
 			PysPeticionCompraSuscripcionAdm  peticionAdm = new PysPeticionCompraSuscripcionAdm(this.usrbean);
@@ -818,7 +818,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 			articulo.setMetodoSolicitud(new Integer(metodoSolicitud));
 			articulo.setFechaSolicitud(fechaSolicitud);
 			//articulo.getNoFacturable()
-			productosAdm.insertProducto(articulo, idPeticion, (idInstitucionPresentador.trim().equals(""))?null:new Integer(idInstitucionPresentador), idPersona);
+			productosAdm.insertProducto(articulo, idPeticion, (idInstitucionPresentador.trim().equals(""))?null:new Integer(idInstitucionPresentador),(idInstitucionColegiacion.trim().equals(""))?null:new Integer(idInstitucionColegiacion), idPersona);
 
 			return articulo;
 			

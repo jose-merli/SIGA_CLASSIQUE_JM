@@ -70,6 +70,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 		        		   CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO,
 		        		   CerSolicitudCertificadosBean.C_IDTIPOENVIOS,
 		        		   CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN,
+		        		   CerSolicitudCertificadosBean.C_IDINSTITUCIONCOLEGIACION,
 		        		   CerSolicitudCertificadosBean.C_IDINSTITUCIONDESTINO,
 		        		   CerSolicitudCertificadosBean.C_IDPETICIONPRODUCTO,
 		        		   CerSolicitudCertificadosBean.C_CONTADOR_CER,
@@ -156,6 +157,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 			bean.setFechaEmisionCertificado(UtilidadesHash.getString(hash, CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO));
 			bean.setIdEstadoCertificado(UtilidadesHash.getInteger(hash, CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO));
 			bean.setIdTipoEnvios(UtilidadesHash.getInteger(hash, CerSolicitudCertificadosBean.C_IDTIPOENVIOS));
+			bean.setIdInstitucionColegiacion(UtilidadesHash.getInteger(hash, CerSolicitudCertificadosBean.C_IDINSTITUCIONCOLEGIACION));
 			bean.setIdInstitucionOrigen(UtilidadesHash.getInteger(hash, CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN));
 			bean.setIdInstitucionDestino(UtilidadesHash.getInteger(hash, CerSolicitudCertificadosBean.C_IDINSTITUCIONDESTINO));
 			bean.setIdPeticionProducto(UtilidadesHash.getLong(hash, CerSolicitudCertificadosBean.C_IDPETICIONPRODUCTO));
@@ -213,6 +215,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO, b.getIdEstadoCertificado());
 			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_IDTIPOENVIOS, b.getIdTipoEnvios());
 			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN, b.getIdInstitucionOrigen());
+			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_IDINSTITUCIONCOLEGIACION, b.getIdInstitucionColegiacion());
 			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_IDINSTITUCIONDESTINO, b.getIdInstitucionDestino());
 			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_IDPETICIONPRODUCTO, b.getIdPeticionProducto());
 

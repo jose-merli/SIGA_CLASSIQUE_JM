@@ -15,7 +15,7 @@
 <html:html>
 <head>
 <%
-	String app=request.getContextPath();
+ 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	
 	// ATRIBUTOS
@@ -49,6 +49,9 @@
 			if (ret[2]!=undefined) {
 				document.DummyForm.fechaSolicitud.value=ret[2];
 			}
+			if (ret[3]!=undefined) {
+				document.DummyForm.idInstitucionColegiacion.value=ret[3];
+			}
 			document.DummyForm.modo.value="insertar";
 			document.DummyForm.submit();
 		}
@@ -64,6 +67,7 @@
 	<input type="hidden" name="actionModal" value="">
 	<input type="hidden" name="idPlantilla" value="">
 	<input type="hidden" name="idInstitucionPresentador" value="">
+	<input type="hidden" name="idInstitucionColegiacion" value="">
 	<input type="hidden" name="idProductoCertificado" value="">
 	<input type="hidden" name="idBoton" value="<%=idBoton %>">
 	<input type="hidden" name="idPersona" value="<%=idPersonaX%>">

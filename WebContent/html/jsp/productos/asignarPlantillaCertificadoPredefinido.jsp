@@ -62,11 +62,19 @@
 			window.close();
 		}
 
+		function completarColegiacion()
+		{
+			//if(document.forms[0].idInstitucionColegiacion.value== null || document.forms[0].idInstitucionColegiacion.value == ""){
+				document.forms[0].idInstitucionColegiacion.value = document.forms[0].idInstitucionPresentador.value;
+			//}
+		}
+		
 		<!-- Asociada al boton Aceptar -->
 		function accionAceptar()
 		{
 			//var aux=document.forms[0].idPlantilla.value;
 			var aux2=document.forms[0].idInstitucionPresentador.value;
+			var aux3=document.forms[0].idInstitucionColegiacion.value;
 			var metodo = document.forms[0].metodoSolicitud.value;
 			var fecha = document.forms[0].fechaSolicitud.value;
 
@@ -85,11 +93,19 @@
 				return false;
 			}
 
+			if(aux3=="")
+			{
+				var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.colegiadoen"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+				alert (mensaje);
+				return false;
+			}			
+
 			var a = new Array;
 			//a[0]=aux;
 			a[0]=aux2;
 			a[1]=metodo;
 			a[2]=fecha;
+			a[3]=aux3;
 			
 			top.cierraConParametros(a);
 		}
@@ -135,12 +151,33 @@
 						<siga:Idioma key="pys.solicitudCompra.literal.presentador"/>&nbsp;(*)
 					</td>
 					<td>
-						<siga:ComboBD nombre="idInstitucionPresentador"  tipo="cmbInstitucionesAbreviadas" clase="boxCombo" readonly="false" obligatorio="true"/>									
+						<siga:ComboBD nombre="idInstitucionPresentador"  tipo="cmbInstitucionesAbreviadas" clase="boxCombo" readonly="false" obligatorio="true" accion="completarColegiacion()"/>									
 					</td>
-				</tr>
+				</tr></table>
+				<table><td>
+					<siga:ConjCampos>
+						<table>
+							<tr>
+								<td class="labelText" width="200px" >
+									<siga:Idioma key="pys.solicitudCompra.literal.colegiadoen"/>&nbsp;(*)
+								</td>
+								<td>
+									<siga:ComboBD nombre="idInstitucionColegiacion"  tipo="cmbInstitucionesAbreviadas" clase="boxCombo" readonly="false" obligatorio="true"/>									
+								</td>
+							</tr>	
+							<tr >
+								<td class="labelText" colspan="2">
+									<i><siga:Idioma key="pys.solicitudCompra.literal.indicacion"/></i>
+								</td>
+							</tr>
+						</table>	
+					</siga:ConjCampos>
+				</td></table>
+				<table>
+				<tr>&nbsp;</tr>
 				<tr>	
 					<td class="labelText">
-						<siga:Idioma key="certificados.solicitudes.literal.fechaSolicitud"/>
+						<siga:Idioma key="certificados.solicitudes.literal.fechaSolicitud"/>&nbsp;(*)
 					</td>				
 					<td>
 						<siga:Fecha nombreCampo="fechaSolicitud" valorInicial="<%=fechaSolicitud%>"></siga:Fecha>
@@ -149,7 +186,7 @@
 				</tr>
 				<tr>
 					<td class="labelText">
-						<siga:Idioma key="certificados.solicitudes.literal.metodoSolicitud"/>
+						<siga:Idioma key="certificados.solicitudes.literal.metodoSolicitud"/>&nbsp;(*)
 					</td>				
 					<td>
 						<siga:ComboBD nombre="metodoSolicitud" tipo="comboMetodoSolicitud" obligatorio="false" parametro="<%=parametro%>" ElementoSel="<%=aMetodoSol%>" clase="boxCombo"/>

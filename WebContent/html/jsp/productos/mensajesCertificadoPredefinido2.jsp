@@ -48,6 +48,9 @@
 			if (ret[3]!=undefined) {
 				document.DummyForm.fechaSolicitud.value=ret[3];
 			}
+			if (ret[4]!=undefined) {
+				document.DummyForm.idInstitucionColegiacion.value=ret[4];
+			}			
 			document.DummyForm.modo.value="modificar";
 			document.DummyForm.submit();
 		}
@@ -62,6 +65,7 @@
 	<input type="hidden" name="actionModal" value="">
 	<input type="hidden" name="idPlantilla" value="">
 	<input type="hidden" name="idInstitucionPresentador" value="">
+	<input type="hidden" name="idInstitucionColegiacion" value="">	
 	<input type="hidden" name="idProductoCertificado" value="">
 	<input type="hidden" name="idBoton" value="<%=idBoton %>">
 	<input type="hidden" name="idPersona" value="<%=idPersonaX%>">

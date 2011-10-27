@@ -21,6 +21,7 @@ public class CerSolicitudCertificadosBean extends MasterBean
 	private Integer idTipoEnvios;
 	private Integer idInstitucionOrigen;
 	private Integer idInstitucionDestino;
+	private Integer idInstitucionColegiacion;
 	private String 	metodoSolicitud;
 	private Long idPeticionProducto;
 
@@ -54,6 +55,7 @@ public class CerSolicitudCertificadosBean extends MasterBean
 	static public final String C_IDTIPOENVIOS = "IDTIPOENVIOS";
 	static public final String C_IDINSTITUCIONORIGEN = "IDINSTITUCIONORIGEN";
 	static public final String C_IDINSTITUCIONDESTINO = "IDINSTITUCIONDESTINO";
+	static public final String C_IDINSTITUCIONCOLEGIACION = "IDINSTITUCIONCOLEGIACION";
 	static public final String C_IDPETICIONPRODUCTO = "IDPETICIONPRODUCTO";
 
 	static public final String C_CONTADOR_CER = "CONTADOR_CER";
@@ -332,6 +334,14 @@ public class CerSolicitudCertificadosBean extends MasterBean
 
 	public void setUsuCreacion(Integer usuCreacion) {
 		this.usuCreacion = usuCreacion;
+	}
+
+	public Integer getIdInstitucionColegiacion() {
+		return idInstitucionColegiacion;
+	}
+
+	public void setIdInstitucionColegiacion(Integer idInstitucionColegiacion) {
+		this.idInstitucionColegiacion = idInstitucionColegiacion;
 	}
 	
 }

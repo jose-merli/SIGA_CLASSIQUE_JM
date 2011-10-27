@@ -56,6 +56,13 @@
 			window.close();
 		}
 
+		function completarColegiacion()
+		{
+			//if(document.forms[0].idInstitucionColegiacion.value== null || document.forms[0].idInstitucionColegiacion.value == ""){
+				document.forms[0].idInstitucionColegiacion.value = document.forms[0].idInstitucionPresentador.value;
+			//}
+		}		
+
 		<!-- Asociada al boton Aceptar -->
 		function accionAceptar()
 		{
@@ -64,6 +71,7 @@
 			var aux3=document.forms[0].idProductoCertificado.value;
 			var metodo = document.forms[0].metodoSolicitud.value;
 			var fecha = document.forms[0].fechaSolicitud.value;
+			var aux4=document.forms[0].idInstitucionColegiacion.value;
 			if(aux3=="")
 			{
 				var mensaje = "<siga:Idioma key="certificados.mantenimiento.literal.productoCertificado"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
@@ -84,6 +92,13 @@
 				alert (mensaje);
 				return false;
 			}
+			
+			if(aux4=="")
+			{
+				var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.colegiadoen"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+				alert (mensaje);
+				return false;
+			}			
 
 			var a = new Array;
 			//a[0]=aux;
@@ -91,6 +106,7 @@
 			a[1]=aux3;
 			a[2]=metodo;
 			a[3]=fecha;
+			a[4]=aux4;
 
 			top.cierraConParametros(a);
 		}
@@ -124,9 +140,30 @@
 						<siga:Idioma key="pys.solicitudCompra.literal.presentador"/>&nbsp;(*)
 					</td>
 					<td>
-						<siga:ComboBD nombre="idInstitucionPresentador" tipo="cmbInstitucionesAbreviadas" clase="boxCombo" readonly="false" obligatorio="true" />									
+						<siga:ComboBD nombre="idInstitucionPresentador" tipo="cmbInstitucionesAbreviadas" clase="boxCombo" readonly="false" obligatorio="true" accion="completarColegiacion()" />									
 					</td>
-				</tr>
+				</tr></table>
+				<table><td>
+					<siga:ConjCampos>
+						<table>
+							<tr>
+								<td class="labelText" width="200px" >
+									<siga:Idioma key="pys.solicitudCompra.literal.colegiadoen"/>&nbsp;(*)
+								</td>
+								<td>
+									<siga:ComboBD nombre="idInstitucionColegiacion"  tipo="cmbInstitucionesAbreviadas" clase="boxCombo" readonly="false" obligatorio="true"/>									
+								</td>
+							</tr>	
+							<tr >
+								<td class="labelText" colspan="2">
+									<i><siga:Idioma key="pys.solicitudCompra.literal.indicacion"/></i>
+								</td>
+							</tr>
+						</table>	
+					</siga:ConjCampos>
+				</td></table>
+				<table>
+				<tr>&nbsp;</tr>
 				<tr>	
 					<td class="labelText">
 						<siga:Idioma key="certificados.solicitudes.literal.fechaSolicitud"/>
