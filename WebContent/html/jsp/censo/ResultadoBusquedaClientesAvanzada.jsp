@@ -52,6 +52,7 @@
 	CenClienteAdm admCen = new CenClienteAdm(usrbean);
 	int idInstitucionInt = Integer.parseInt(idInstitucionLocation);
 	boolean esColegio = (idInstitucionInt>2000 && idInstitucionInt<3000);
+	boolean ParametrolopdActivo = ((String) request.getAttribute("ParametrolopdActivo")).equals("1");
 %>	
 
 <%  
@@ -350,6 +351,11 @@
 					
 				}
 			} 
+			
+			if (ParametrolopdActivo) {
+				isAplicarLOPD = false;
+			}
+			
 			String modo = "";
 			String idInstitucion = (registro.get(CenColegiadoBean.C_IDINSTITUCION)==null||((String)registro.get(CenColegiadoBean.C_IDINSTITUCION)).equals(""))?"&nbsp;":(String)registro.get(CenColegiadoBean.C_IDINSTITUCION);
 			
