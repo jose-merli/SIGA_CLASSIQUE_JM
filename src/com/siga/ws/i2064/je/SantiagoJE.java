@@ -71,8 +71,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 	
 	private int idFacturacion = -1; 
 	private BufferedWriter bw = null;
-	private File fileError;
-	
+		
 	public int getIdFacturacion() {
 		return idFacturacion;
 	}
@@ -231,7 +230,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 			ClsLogging.writeFileLog("Generando fichero xml en: " + file.getAbsolutePath(), 3);
 
 			if (closeLogFile()) {
-				return fileError;
+				return getFileInformeIncidencias(idInstitucion, idFacturacion);
 			} else {
 				return file;
 			}
