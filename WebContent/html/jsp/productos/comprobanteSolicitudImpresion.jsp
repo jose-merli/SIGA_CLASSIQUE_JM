@@ -163,12 +163,24 @@
 			  				</td>
 			  				<td>
 	<%
-							int estado = Integer.parseInt(UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDFORMAPAGO)); 
-							if(estado==tarjeta) { %>
-									<siga:Idioma key="pys.estadoPago.pagado"/>
-	<%						} else { %>
-									<siga:Idioma key="pys.estadoPago.pendiente"/>
-	<%						} %>
+							String formapago = UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDFORMAPAGO);
+							if (formapago == null) {
+	%>
+								&nbsp;
+	<%
+							} else {
+								int estado = Integer.parseInt(formapago); 
+								if(estado==tarjeta) {
+	%>
+								<siga:Idioma key="pys.estadoPago.pagado"/>
+	<%
+								} else {
+	%>
+								<siga:Idioma key="pys.estadoPago.pendiente"/>
+	<%
+								} 
+							}
+	%>
 			  				</td>
 	  				 </tr>
 
