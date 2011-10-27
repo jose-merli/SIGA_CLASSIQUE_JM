@@ -443,7 +443,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if (cal != null) {
 			procuradorDesignado.setFechaDesignacionProcurador(cal);
 		}
-		Long valueLong = getLong((String)htEJGs.get(PD_PD_NUMDESIGNACIONPROCURADOR));
+		Long valueLong = SigaWSHelper.getLong("número designación procurador", (String)htEJGs.get(PD_PD_NUMDESIGNACIONPROCURADOR));
 		if (valueLong != null) {
 			procuradorDesignado.setNumDesignacionProcurador(valueLong);
 		}
@@ -614,7 +614,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if (cal != null) {
 			abogadoDesignado.setFechaDesignacionAbogado(cal);
 		}
-		Long valueLong = getLong((String)ht.get(PD_AD_AD_NUMDESIGNACIONABOGADO));
+		Long valueLong = SigaWSHelper.getLong("número designación abogado", (String)ht.get(PD_AD_AD_NUMDESIGNACIONABOGADO));
 		if (valueLong != null) {
 			abogadoDesignado.setNumDesignacionAbogado(valueLong.longValue());
 		}
@@ -825,7 +825,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				
 		ingresos.setObservacionesIngresos((String) htEJGs.get(DS_DEP_I_OBSERVACIONESINGRESOS));
 		ingresos.setDescripcionIngresos((String) htEJGs.get(DS_DEP_I_DESCRIPCIONINGRESOS));
-		Double value = getDouble((String) htEJGs.get(DS_DEP_I_IMPORTEBRUTO));
+		Double value = SigaWSHelper.getDouble("importe bruto", (String) htEJGs.get(DS_DEP_I_IMPORTEBRUTO));
 		if (value != null) {
 			ingresos.setImporteBruto(value.floatValue());
 		}
@@ -844,7 +844,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				
 		propiedadesBienesInmuebles.setCargas((String) htEJGs.get(DS_DEP_PBI_CARGAS));
 		propiedadesBienesInmuebles.setObservaciones((String) htEJGs.get(DS_DEP_PBI_OBSERVACIONES));
-		value = getDouble((String) htEJGs.get(DS_DEP_PBI_VALORACIONECONOMICA));
+		value = SigaWSHelper.getDouble("valoración económica bienes inmuebles", (String) htEJGs.get(DS_DEP_PBI_VALORACIONECONOMICA));
 		if (value != null) {
 			propiedadesBienesInmuebles.setValoracionEconomica(value.floatValue());
 		}
@@ -858,7 +858,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		propiedadesBienesMuebles.setDescTipoBienMueble(getDescripcionElementoTipificado((String) htEJGs.get(DS_DEP_PBM_TIPOBIENMUEBLE_CDA)));
 				
 		propiedadesBienesMuebles.setObservaciones((String) htEJGs.get(DS_DEP_PBM_OBSERVACIONES));
-		value = getDouble((String) htEJGs.get(DS_DEP_PBM_VALORACIONECONOMICA));
+		value = SigaWSHelper.getDouble("valoracion económica bienes muebles", (String) htEJGs.get(DS_DEP_PBM_VALORACIONECONOMICA));
 		if (value != null) {
 			propiedadesBienesMuebles.setValoracionEconomica(value.floatValue());
 		}
@@ -871,7 +871,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		propiedadesBienesOtros.setCargas((String) htEJGs.get(DS_DEP_PBO_CARGAS));
 		propiedadesBienesOtros.setDescripcionBien((String) htEJGs.get(DS_DEP_PBO_DESCRIPCIONBIEN));
 		propiedadesBienesOtros.setObservaciones((String) htEJGs.get(DS_DEP_PBO_OBSERVACIONES));
-		value = getDouble((String) htEJGs.get(DS_DEP_PBO_VALORACIONECONOMICA));
+		value = SigaWSHelper.getDouble("valoración económica otros bienes", (String) htEJGs.get(DS_DEP_PBO_VALORACIONECONOMICA));
 		if (value != null) {
 			propiedadesBienesOtros.setValoracionEconomica(value.floatValue());
 		}
@@ -1047,7 +1047,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 		datosPersona.setCodRegimenEconomico(getCodigoElementoTipificado((String)htEJGs.get(dp_regimeneconomico_cda)));
 				
-		Long value = getLong((String)htEJGs.get(dp_numhijos));
+		Long value = SigaWSHelper.getLong("número de hijos", (String)htEJGs.get(dp_numhijos));
 		if (value != null) {
 			datosPersona.setNumHijos(value.longValue());
 		}
@@ -1060,29 +1060,6 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		datosPersona.setDescTipoPersonaJuridica(getDescripcionElementoTipificado((String)htEJGs.get(dp_tipopersonajuridica_cda)));						
 	}
 
-	/**
-	 * 
-	 * @param value
-	 * @return
-	 */
-	private Long getLong(String value) {
-		if (value != null && !value.trim().equals("")) {
-			return Long.valueOf(value);
-		}
-		return null;
-	}
-	
-	/**
-	 * 
-	 * @param value
-	 * @return
-	 */
-	private Double getDouble(String value) {
-		if (value != null && !value.trim().equals("")) {
-			return Double.valueOf(value);
-		}
-		return null;
-	}
 	
 	private String getCodigoElementoTipificado(String elementoTipificado) {
 		String code = null;
@@ -1200,7 +1177,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			identificacionIntercambio.setCodDestinoIntercambio(getCodigoElementoTipificado((String)ht.get(DESTINOINTERCAMBIO_CDA)));
 			identificacionIntercambio.setDescDestinoIntercambio(getDescripcionElementoTipificado((String)ht.get(DESTINOINTERCAMBIO_CDA)));
 						
-			Long valueLong = getLong((String)ht.get(IDENTIFICADORINTERCAMBIO));
+			Long valueLong = SigaWSHelper.getLong("identificador del intercambio", (String)ht.get(IDENTIFICADORINTERCAMBIO));
 			identificacionIntercambio.setIdentificadorIntercambio((valueLong.longValue() * 10) + sufijoIdIntercambio);		
 			identificacionIntercambio.setFechaIntercambio(SigaWSHelper.clearCalendar(Calendar.getInstance()));			
 			identificacionIntercambio.setVersion((String)ht.get(VERSION_XSD_GENERALITAT));
