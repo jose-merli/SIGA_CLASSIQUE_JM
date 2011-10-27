@@ -1146,7 +1146,7 @@
 		if (!(bNuevo && fila)) 
 			return traspasoDatosJuzgado (resultado);
 		
-		if (resultado && resultado.length > 7 && (bNuevo == 1)) { // Existe
+		if (resultado && resultado.length > 7 && resultado[3] != "" && (bNuevo == 1)) { // Existe
 			document.getElementById("dni_" + fila).value = resultado[2];
 			document.getElementById("nombre_" + fila).value = resultado[3];
 			document.getElementById("apellido1_" + fila).value = resultado[4];
@@ -1157,6 +1157,9 @@
 		}
 		else {	// Nuevo
 			document.getElementById("idPersona_" + fila).value = "nuevo";
+			document.getElementById("nombre_" + fila).value = "";
+			document.getElementById("apellido1_" + fila).value = "";
+			document.getElementById("apellido2_" + fila).value = "";
 			ponerIconoIdentPersona (fila, false);
 		}
 	} //traspasoDatos ()
