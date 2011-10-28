@@ -76,121 +76,111 @@ public class ExpDatosGeneralesAction extends MasterAction
 					
 	public static Hashtable<String,Integer> ultimoAniosNumExpediente = new Hashtable<String, Integer>();
 	
-	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
+	protected String abrir(ActionMapping mapping,
+			MasterForm formulario,
+			HttpServletRequest request,
+			HttpServletResponse response) throws SIGAException
 	{
+		// Controles
+		UsrBean usr = this.getUserBean(request);
+		ExpCampoTipoExpedienteAdm adm = new ExpCampoTipoExpedienteAdm(usr);
+		
+		Vector v;
+		Hashtable h;
+
 		try {
-			// Aplicar visibilidad a campos
-			ExpCampoTipoExpedienteAdm adm = new ExpCampoTipoExpedienteAdm(this.getUserBean(request));
-			Hashtable h = new Hashtable();
-			String idTipoExpediente="";
-			/////
-			String accion = (String)request.getParameter("accion");
-			if(request.getParameter("idTipoExpediente")==null || request.getParameter("idTipoExpediente").toString().trim().equals("")){
-				 idTipoExpediente =nuevo( mapping,  formulario,  request,  response);
-				 accion = "nuevo";
-			}else
-			     idTipoExpediente =(String)request.getParameter("idTipoExpediente");
-			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDTIPOEXPEDIENTE, idTipoExpediente);
-			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_MINUTA_INICIAL)); // Minuta
-			Vector v = adm.select(h);
-			if (v != null && v.size() > 0) {
-				ExpCampoTipoExpedienteBean b = (ExpCampoTipoExpedienteBean)v.get(0);
-				request.setAttribute("mostarMinuta", b.getVisible());
+			// Buscando idTipoExpediente
+			String idTipoExpediente = "";
+			String accion = (String) request.getParameter("accion");
+			if (request.getParameter("idTipoExpediente") == null || request.getParameter("idTipoExpediente").toString().trim().equals("")) {
+				idTipoExpediente = nuevo(mapping, formulario, request, response);
+				accion = "nuevo";
+			} else {
+				idTipoExpediente = (String) request.getParameter("idTipoExpediente");
 			}
-			
-			//Minuta Final
+
+			// Aplicar visibilidad a campos generales
 			h = new Hashtable();
 			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDINSTITUCION, this.getIDInstitucion(request));
 			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDTIPOEXPEDIENTE, idTipoExpediente);
-			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_MINUTA_FINAL)); // Minuta final
+
+			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_MINUTA_INICIAL));
 			v = adm.select(h);
 			if (v != null && v.size() > 0) {
-				ExpCampoTipoExpedienteBean b = (ExpCampoTipoExpedienteBean)v.get(0);
-				request.setAttribute("mostarMinutaFinal", b.getVisible());
+				request.setAttribute("mostarMinuta", ((ExpCampoTipoExpedienteBean) v.get(0)).getVisible());
 			}
-			
-			
-			//Derechos colegiales
-			h = new Hashtable();
-			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDINSTITUCION, this.getIDInstitucion(request));
-			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDTIPOEXPEDIENTE, idTipoExpediente);
-			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_DERECHOS_COLEGIALES)); // Derechos
+
+			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_MINUTA_FINAL));
 			v = adm.select(h);
 			if (v != null && v.size() > 0) {
-				ExpCampoTipoExpedienteBean b = (ExpCampoTipoExpedienteBean)v.get(0);
-				request.setAttribute("derechosColegiales", b.getVisible());
+				request.setAttribute("mostarMinutaFinal", ((ExpCampoTipoExpedienteBean) v.get(0)).getVisible());
 			}
-			
-			
-			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_DENUNCIANTE)); // Denunciante/Impugnante
+
+			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_DERECHOS_COLEGIALES));
 			v = adm.select(h);
-			
-			//Obtenemos el Titulo Impugnante o Denunciante
-			
+			if (v != null && v.size() > 0) {
+				request.setAttribute("derechosColegiales", ((ExpCampoTipoExpedienteBean) v.get(0)).getVisible());
+			}
+
+			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_DENUNCIANTE));
+			v = adm.select(h);
+
+			// Obtenemos el Titulo Impugnante o Denunciante
 			String nombreAux = "pestana.auditoriaexp.interesado";
-			
 			if (v != null && v.size() > 0) {
-				ExpCampoTipoExpedienteBean aux = (ExpCampoTipoExpedienteBean)v.get(0);
-				aux = (ExpCampoTipoExpedienteBean)v.get(0);
-				request.setAttribute("mostrarDenunciante",aux.getVisible());
-				nombreAux = aux.getNombre();
-				if(nombreAux ==null||nombreAux.equals(""))
+				ExpCampoTipoExpedienteBean b = (ExpCampoTipoExpedienteBean) v.get(0);
+				request.setAttribute("mostrarDenunciante", b.getVisible());
+				nombreAux = b.getNombre();
+				if (nombreAux == null || nombreAux.equals(""))
 					nombreAux = ExpCampoTipoExpedienteBean.DENUNCIANTE;
 			}
-			
-			//Comprobamos si tiene visible la pestaña denunciante. Si no la tiene ponemos interesado
-			//si esta visible la descripcion del campo dependera de lo que haya seleccionado
-			//en la configuiracion del tipo de expediente
+
+			// Comprobamos si tiene visible la pestaña denunciante. Si no la tiene ponemos interesado
+			// si esta visible la descripcion del campo dependera de lo que haya seleccionado
+			// en la configuiracion del tipo de expediente
 			String nombre = "pestana.auditoriaexp.interesado";
 			if (v != null && v.size() > 0) {
-				ExpCampoTipoExpedienteBean b = (ExpCampoTipoExpedienteBean)v.get(0);
-				
-				if(b.getVisible()!=null && b.getVisible().equals(ExpCampoTipoExpedienteBean.si)){
-				
-					UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_DENUNCIADO)); // Denunciado/Impugnado
+				ExpCampoTipoExpedienteBean b = (ExpCampoTipoExpedienteBean) v.get(0);
+				if (b.getVisible() != null && b.getVisible().equals(ExpCampoTipoExpedienteBean.si)) {
+					UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_DENUNCIADO));
 					v = adm.select(h);
 					if (v != null && v.size() > 0) {
-						b = (ExpCampoTipoExpedienteBean)v.get(0);
-						request.setAttribute("mostrarDenunciado",b.getVisible());
+						b = (ExpCampoTipoExpedienteBean) v.get(0);
+						request.setAttribute("mostrarDenunciado", b.getVisible());
 						nombre = b.getNombre();
-						if(nombre ==null||nombre.equals(""))
+						if (nombre == null || nombre.equals(""))
 							nombre = ExpCampoTipoExpedienteBean.DENUNCIADO;
 					}
-					
-					
+				}
+				
+				request.setAttribute("tituloDenunciado", nombre);
+				request.setAttribute("tituloDenunciante", nombreAux);
 			}
-			request.setAttribute("tituloDenunciado", nombre);
-			request.setAttribute("tituloDenunciante", nombreAux);
 			
-			}
-			///// Obtenemos el num expediente o num ejg
-			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_N_DISCIPLINARIO)); // Denunciante/Impugnante
+			// Obtenemos el num expediente o num ejg
+			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_N_DISCIPLINARIO));
 			v = adm.select(h);
-			
+
 			String nombreAux2 = "expedientes.auditoria.literal.nexpdisciplinario";
-			
 			if (v != null && v.size() > 0) {
-				ExpCampoTipoExpedienteBean aux2 = (ExpCampoTipoExpedienteBean)v.get(0);
-				aux2 = (ExpCampoTipoExpedienteBean)v.get(0);
-				request.setAttribute("mostrarNumExpNumEjg",aux2.getVisible());
-				nombreAux2 = aux2.getNombre();
-				if(nombreAux2 ==null||nombreAux2.equals(""))
+				ExpCampoTipoExpedienteBean b = (ExpCampoTipoExpedienteBean) v.get(0);
+				request.setAttribute("mostrarNumExpNumEjg", b.getVisible());
+				nombreAux2 = b.getNombre();
+				if (nombreAux2 == null || nombreAux2.equals(""))
 					nombreAux2 = ExpCampoTipoExpedienteBean.NUMEXPEDIENTE;
 			}
-			
-			
 			request.setAttribute("tituloExpDisciplinario", nombreAux2);
-			
-			if (accion!=null && accion.equals("nuevo")){				
-				return abrirNuevo(mapping, formulario, request, response);			
-			}else{
+
+			if (accion != null && accion.equals("nuevo")) {
+				return abrirNuevo(mapping, formulario, request, response);
+			} else {
 				return abrirExistente(mapping, formulario, request, response);
 			}
-		}catch(Exception e){		
-			throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,null); 
+			
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.expediente" }, e, null);
 			return "exception";
 		}
-		
 	}
 	
 	/** 
