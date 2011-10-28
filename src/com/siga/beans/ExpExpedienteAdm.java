@@ -2360,33 +2360,39 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		return datos;
 	}
 	
-	public Vector getRelacionadoConEjg (String institucion, String anio, String numero, String idTipo) throws ClsExceptions,SIGAException 
+	/**
+	 * @return lista de Expedientes relacionados con un EJG dado
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	public Vector getRelacionadoConEjg(String institucion, String anio, String numero, String idTipo) throws ClsExceptions, SIGAException
 	{
-		try {
-	            	            
-	       	String sql = " SELECT 'EXPEDIENTE' AS SJCS, " + 
-									 "EXP.IDINSTITUCION IDINSTITUCION, " + 
-									 "EXP.ANIOEXPEDIENTE ANIO, " + 
-									 "' ' AS NUMERO, " +
-									 " EXP.IDPERSONA IDLETRADO, " + 
-									 "PER.APELLIDOS1||' '||PER.APELLIDOS2||', '||PER.NOMBRE AS NOMBRELETRADO, "+
-									 "' ' AS IDTURNO, " +
-									 "EXP.IDTIPOEXPEDIENTE  AS IDTIPO, " +
-									 "EXP.NUMEROEXPEDIENTE  AS CODIGO, " +
-									 "EXT.NOMBRE AS DES_TIPO, " +
-									 "' ' AS DES_TURNO " +
-		  " FROM EXP_EXPEDIENTE   EXP,  CEN_PERSONA   PER, EXP_TIPOEXPEDIENTE EXT   "+ 
-			 " WHERE EXP.ANIOEJG = " + anio +
-			   " AND EXP.NUMEROEJG = " + numero +
-			   " AND EXP.IDTIPOEJG = " + idTipo +
-			   " AND EXP.IDINSTITUCION_TIPOEXPEDIENTE = " + institucion + 
-			   " AND EXP.IDPERSONA= PER.IDPERSONA  AND EXP.IDTIPOEXPEDIENTE = EXT.IDTIPOEXPEDIENTE";
-						
+		StringBuffer sql = new StringBuffer();
+		sql.append("");
+		sql.append("SELECT 'EXPEDIENTE' AS SJCS, ");
+		sql.append("       EXP.IDINSTITUCION IDINSTITUCION, ");
+		sql.append("       EXP.ANIOEXPEDIENTE ANIO, ");
+		sql.append("       ' ' AS NUMERO, ");
+		sql.append("       EXP.IDPERSONA IDLETRADO, ");
+		sql.append("       PER.APELLIDOS1||' '||PER.APELLIDOS2||', '||PER.NOMBRE AS NOMBRELETRADO, ");
+		sql.append("       ' ' AS IDTURNO, ");
+		sql.append("       EXP.IDTIPOEXPEDIENTE  AS IDTIPO, ");
+		sql.append("       EXP.NUMEROEXPEDIENTE  AS CODIGO, ");
+		sql.append("       EXT.NOMBRE AS DES_TIPO, ");
+		sql.append("       ' ' AS DES_TURNO ");
+		sql.append("  FROM EXP_EXPEDIENTE   EXP,  CEN_PERSONA   PER, EXP_TIPOEXPEDIENTE EXT ");
+		sql.append(" WHERE EXP.ANIOEJG = " + anio + " ");
+		sql.append("   AND EXP.NUMEROEJG = " + numero + " ");
+		sql.append("   AND EXP.IDTIPOEJG = " + idTipo + " ");
+		sql.append("   AND EXP.IDINSTITUCION_TIPOEXPEDIENTE = " + institucion + " ");
+		sql.append("   AND EXP.IDPERSONA= PER.IDPERSONA ");
+		sql.append("   AND EXP.IDTIPOEXPEDIENTE = EXT.IDTIPOEXPEDIENTE");
+		sql.append("   AND Exp.Idinstitucion_Tipoexpediente = Ext.Idinstitucion");
 
-	       	return this.selectGenerico(sql);
-		}
-		catch (Exception e) {
-			throw new ClsExceptions (e, "Error al obtener la informacion sobre las relaciones de un ejg.");
+		try {
+			return this.selectGenerico(sql.toString());
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al obtener la informacion sobre las relaciones de un ejg.");
 		}
 	}
 
