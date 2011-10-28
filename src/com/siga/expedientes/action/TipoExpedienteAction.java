@@ -190,6 +190,7 @@ public class TipoExpedienteAction extends MasterAction {
 		    tipo.setIdTipoExpediente(id);
 		    tipo.setNombre(form.getNombre());
 		    tipo.setEsGeneral(form.getEsGeneral());
+		    tipo.setRelacionEjg(0);
 		    
 		    Vector camposExp = camposExpAdm.select();
 		    Iterator camposIt = camposExp.iterator();		    
