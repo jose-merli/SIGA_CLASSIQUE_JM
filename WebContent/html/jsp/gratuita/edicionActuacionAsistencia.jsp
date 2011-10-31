@@ -729,7 +729,7 @@ function habilitarCampos(isHabilitar) {
 				input.disabled =  "";
 			else if(input.type!="button"){
 				input.className =  "box";
-				//input.disabled =  "disabled";
+				input.readOnly =  "false";
 			}
 		}
 		selects = document.getElementsByTagName("select");
@@ -752,7 +752,7 @@ function habilitarCampos(isHabilitar) {
 				input.disabled =  "disabled";
 			else if(input.type!="button"){
 				input.className =  "boxConsulta";
-				//input.disabled =  "disabled";
+				input.readOnly =  "true";
 			}
 		}
 		selects = document.getElementsByTagName("select");
