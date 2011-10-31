@@ -279,6 +279,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 <html:hidden property = "idPersonaJG" value = "<%=IDPERSONAJG%>"/>
 <input type="hidden" name="esFichaColegial" value="<%=sEsFichaColegial%>"/>
 <input type="hidden" name="estadoAsinteciaAnterior" value="<%=estadoAsi%>" >
+<input type="hidden" id="tipoPcajg" value="<%=PCAJG_ACTIVADO%>" >
 
 <html:hidden property = "ejg_anio"    		value= "<%=ANIOEJG%>"/>
 <html:hidden property = "ejg_numero"  		value= "<%=NUMEROEJG%>"/>
@@ -827,6 +828,28 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 
 		function accionGuardar() 
 		{	sub();	
+			// aqui numeroDilegencia numeroProcedimiento comboJuzgadosTurno
+			if (document.getElementById("tipoPcajg").value=="2"){
+				var idJuzgado = document.getElementsByName('juzgado')[0];
+				if(idJuzgado.value!='' && document.getElementById('numeroProcedimiento').value==''){
+					var obligatorio = "<siga:Idioma key='messages.campoObligatorio.error'/>";
+					var campo = "<siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/>" ;
+					alert ("'"+ campo + "' " + obligatorio);
+					fin();
+					return false;
+				}
+				var idComisaria = document.getElementsByName('comisaria')[0];
+				if(idComisaria.value!='' && document.getElementById('numeroDilegencia').value==''){
+					var obligatorio = "<siga:Idioma key='messages.campoObligatorio.error'/>";
+					var campo = "<siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligencia'/>" ;
+					alert ("'"+ campo + "' " + obligatorio);
+					fin();
+					return false;
+				}
+				
+			}
+			
+			
 			var fecha = "<%=FECHAHORA%>";
 			var fechaCierre = document.forms[0].fechaCierre.value;
 			var fi = fecha.substring(6,10)+fecha.substring(3,5)+fecha.substring(0,2);

@@ -362,19 +362,26 @@ function postAccionTipoActuacion()
 						</html:select></td>
 				</tr>
 				<tr>
-					<td class="labelText"><siga:Idioma
-							key='gratuita.mantActuacion.literal.nasunto' /></td>
+					
 
-					<td align="left" colspan ="2">
+					
 						<c:choose>
 							<c:when test="${tipoPcajg=='2'}">
+							<td class="labelText"><siga:Idioma
+							key='gratuita.mantActuacion.literal.nasunto' />(*)</td>
+								<td align="left" colspan ="2">
 								<html:text name="ActuacionAsistenciaFormEdicion" property="numeroAsunto" size="30" maxlength="15" styleClass="box"></html:text>
+								</td>
 							</c:when>
 							<c:otherwise>
+							<td class="labelText"><siga:Idioma
+							key='gratuita.mantActuacion.literal.nasunto' /></td>
+							<td align="left" colspan ="2">
 								<html:text name="ActuacionAsistenciaFormEdicion" property="numeroAsunto" size="30" maxlength="20" styleClass="box"></html:text>
+								</td>
 							</c:otherwise>
 						</c:choose>	
-					</td>
+					
 
 					<td class="labelText" colspan="2">&nbsp;
 					</td>

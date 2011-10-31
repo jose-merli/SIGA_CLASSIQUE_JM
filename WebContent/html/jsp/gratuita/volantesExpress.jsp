@@ -332,7 +332,7 @@
 			i = table.rows[a].id.split("_")[1];
 			 
 			var validado = validarDatosFila (i);
-			  
+						  
 			if (!validado) {
 				fin();
 				return 'cancel';
@@ -628,7 +628,7 @@
 		var campo = "";
 		var obligatorio = "<siga:Idioma key='messages.campoObligatorio.error'/>";
 		
-		
+		var isValidado = true;
 		
 		if (document.VolantesExpressForm.lugar[0].checked && document.VolantesExpressForm.lugar[0].value == "centro") {
 		
@@ -637,7 +637,7 @@
 				alert ("'"+ campo + "' " + obligatorio);
 				return false;
 			}
-			
+		    //alert("diligencia"+(document.getElementById("diligencia_"+fila).value));
 		    if (document.getElementById("tipoPcajg").value=="2" && (document.getElementById("diligencia_"+fila).value=='-1' || document.getElementById("diligencia_"+fila).value=='')) {
 				campo = "<siga:Idioma key='gratuita.volantesExpres.literal.numeroDiligencia'/>" ;
 				alert ("'"+ campo + "' " + obligatorio);
@@ -675,7 +675,7 @@
 			//}
 		// }
 
-		return true;
+		return isValidado;
 	}
 		
 	</script>
