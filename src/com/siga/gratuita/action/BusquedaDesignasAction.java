@@ -577,6 +577,7 @@ public class BusquedaDesignasAction extends MasterAction {
 			if ((miform.getDesdeAsistencia()!=null)&&(!miform.getDesdeAsistencia().equalsIgnoreCase(""))){
 				request.getSession().setAttribute("asistencia","si");
 				request.getSession().setAttribute("numeroAsistencia",(String)miform.getNumeroAsistencia());
+				request.getSession().setAttribute("anioAsistencia",(String)miform.getAnioAsistencia());
 				request.setAttribute("anioAsistencia", miform.getAnioAsistencia());
 
 				//hashAux=asistenciaAdm.existeLetradoAsistencia(this.getIDInstitucion(request).toString(),(String)miform.getNumeroAsistencia(),miform.getAnioAsistencia());
@@ -694,16 +695,18 @@ public class BusquedaDesignasAction extends MasterAction {
 			//Seteamos el letrado
 			formDesignaHash.put(ScsDesignasLetradoBean.C_IDPERSONA,idPersonaSel);
 
-			String asistencia, ejg, numeroAsistencia, numeroEjg, idTipoEjg;
+			String asistencia, ejg, numeroAsistencia, numeroEjg, idTipoEjg,anioAsistencia;
 
 			asistencia       = (String)request.getSession().getAttribute("asistencia");
 			numeroAsistencia = (String)request.getSession().getAttribute("numeroAsistencia");
+			anioAsistencia = (String)request.getSession().getAttribute("anioAsistencia");
 			ejg       = (String)request.getSession().getAttribute("ejg");
 			numeroEjg = (String)request.getSession().getAttribute("numeroEjg");
 			idTipoEjg = (String)request.getSession().getAttribute("idTipoEjg");
 
 			request.getSession().removeAttribute("asistencia");
 			request.getSession().removeAttribute("numeroAsistencia");
+			request.getSession().removeAttribute("anioAsistencia");
 			request.getSession().removeAttribute("ejg");
 			request.getSession().removeAttribute("numeroEjg");
 			request.getSession().removeAttribute("idTipoEjg");
@@ -719,7 +722,7 @@ public class BusquedaDesignasAction extends MasterAction {
 				ScsAsistenciasAdm asistenciaAdm = new ScsAsistenciasAdm(this.getUserBean(request));
 				// Obtenemos la asistencia
 				Hashtable datos = new Hashtable ();
-				UtilidadesHash.set(datos, ScsAsistenciasBean.C_ANIO, miform.getAnioAsistencia());
+				UtilidadesHash.set(datos, ScsAsistenciasBean.C_ANIO, anioAsistencia);
 				UtilidadesHash.set(datos, ScsAsistenciasBean.C_IDINSTITUCION, usr.getLocation());
 				UtilidadesHash.set(datos, ScsAsistenciasBean.C_NUMERO, numeroAsistencia);
 				ScsAsistenciasBean asistenciaBean = (ScsAsistenciasBean)((Vector)asistenciaAdm.selectByPK(datos)).get(0);
