@@ -708,50 +708,91 @@ public class HelperInformesAdm  {
 		
 	}	
 	
-	public Vector getImplicadosDireccionesExpediente(Vector datos, String idInstitucion, String idInstitucionTipoExp, String idTipoExp, String anio, String numero, String idPersona, String lenguaje, boolean isASolicitantes)throws SIGAException,ClsExceptions
-	{	
-		try { 			 			
-			Vector datosNuevos = new Vector();
-			for (int j=0;j<datos.size();j++) {
-				Hashtable dato = (Hashtable) datos.get(j);				
-				Hashtable codigos = new Hashtable();
+	public Vector getImplicadosDireccionesExpediente(Vector datos,
+			String idInstitucion,
+			String idInstitucionTipoExp,
+			String idTipoExp,
+			String anio,
+			String numero,
+			String idPersona,
+			String lenguaje,
+			boolean isASolicitantes) throws SIGAException, ClsExceptions
+	{
+		Vector datosNuevos = new Vector();
+		Hashtable datoActual, datoNuevo;
+		
+		// Variables para la ejecucion de las consultas
+		StringBuffer sql; // sentencia
+		Hashtable codigos; // codigos para select BIND
+		Vector resultadoConsulta; // resultado de la sentencia
+		Hashtable reg; // cada uno de los registros del resultado de la sentencia
+
+		try {
+			// Para cada registro, se consultan varios datos
+			for (int j = 0; j < datos.size(); j++) {
+				// Obteniendo el registro actual
+				datoActual = (Hashtable) datos.get(j);
+
+				// ///// NOMBRE Y DIRECCION DEl DENUNCIADO PRINCIPAL
+				codigos = new Hashtable();
 				codigos.put(new Integer(1), lenguaje);
 				codigos.put(new Integer(2), idInstitucion);
 				codigos.put(new Integer(3), idInstitucionTipoExp);
 				codigos.put(new Integer(4), idTipoExp);
 				codigos.put(new Integer(5), anio);
 				codigos.put(new Integer(6), numero);
-				
-				/////// NOMBRE Y DIRECCION DEl DENUNCIADO PRINCIPAL
-								
-				StringBuffer sql = new StringBuffer();
-				sql.append(" select pe.nifcif as NIFCIF,f_siga_getrecurso(tra.descripcion,1) TRATAMIENTO,dir.idpersona as IDPERSONA_DIR, dir.iddireccion as IDDIRECCION_DIR, dir.domicilio,       dir.codigopostal,       dir.telefono1,       dir.telefono2,       dir.movil,       dir.fax1,       dir.fax2,       dir.correoelectronico,       dir.paginaweb,       dir.poblacionextranjera,       (select po.nombre          from cen_poblaciones po         where po.idpoblacion = dir.idpoblacion) as NOMBRE_POBLACION,       (select pr.nombre          from cen_provincias pr         where pr.idprovincia = dir.idprovincia) as NOMBRE_PROVINCIA,       (select f_siga_getrecurso(pa.nombre,:1)          from cen_pais pa         where pa.idpais = dir.idpais) as NOMBRE_PAIS,       pe.nombre as NOMBRE, pe.apellidos1 as APELLIDO1, pe.apellidos2 as APELLIDO2     "); 
-				sql.append(" , pe.sexo AS SEXO, DECODE(pe.SEXO, 'H','o','a') AS O_A, DECODE(pe.SEXO, 'H','el','la') AS EL_LA ");
+
+				sql = new StringBuffer();
+				sql.append(" select pe.nifcif as NIFCIF, ");
+				sql.append("        f_siga_getrecurso(tra.descripcion,1) TRATAMIENTO, ");
+				sql.append("        dir.idpersona as IDPERSONA_DIR, ");
+				sql.append("        dir.iddireccion as IDDIRECCION_DIR, ");
+				sql.append("        dir.domicilio, ");
+				sql.append("        dir.codigopostal, ");
+				sql.append("        dir.telefono1, ");
+				sql.append("        dir.telefono2, ");
+				sql.append("        dir.movil, ");
+				sql.append("        dir.fax1, ");
+				sql.append("        dir.fax2, ");
+				sql.append("        dir.correoelectronico, ");
+				sql.append("        dir.paginaweb, ");
+				sql.append("        dir.poblacionextranjera, ");
+				sql.append("        (select po.nombre from cen_poblaciones po where po.idpoblacion = dir.idpoblacion) as NOMBRE_POBLACION, ");
+				sql.append("        (select pr.nombre from cen_provincias pr where pr.idprovincia = dir.idprovincia) as NOMBRE_PROVINCIA, ");
+				sql.append("        (select f_siga_getrecurso(pa.nombre,:1) from cen_pais pa where pa.idpais = dir.idpais) as NOMBRE_PAIS, ");
+				sql.append("        pe.nombre as NOMBRE, ");
+				sql.append("        pe.apellidos1 as APELLIDO1, ");
+				sql.append("        pe.apellidos2 as APELLIDO2, ");
+				sql.append("        pe.sexo AS SEXO, ");
+				sql.append("        DECODE(pe.SEXO, 'H','o','a') AS O_A, ");
+				sql.append("        DECODE(pe.SEXO, 'H','el','la') AS EL_LA ");
 				sql.append(" from exp_expediente ex, cen_persona pe, cen_direcciones dir, cen_cliente cli, cen_tratamiento tra");
 				sql.append(" where ex.idpersona = pe.idpersona ");
 				sql.append(" and   ex.idpersona = dir.idpersona(+) ");
 				sql.append(" and   ex.idinstitucion = dir.idinstitucion(+) ");
 				sql.append(" and   ex.iddireccion = dir.iddireccion(+) ");
 				sql.append(" and   ex.idinstitucion =:2 ");
-				sql.append(" and   ex.idinstitucion_tipoexpediente=:3 "); 
+				sql.append(" and   ex.idinstitucion_tipoexpediente=:3 ");
 				sql.append(" and   ex.idtipoexpediente=:4 ");
 				sql.append(" and   ex.anioexpediente=:5 ");
 				sql.append(" and   ex.numeroexpediente=:6 ");
-				sql.append(" and   pe.idpersona=cli.idpersona ");     
-                sql.append(" and   cli.idtratamiento= tra.idtratamiento ");
-                sql.append(" and   cli.idinstitucion=ex.idinstitucion ");					
-				Vector aux = ejecutaConsultaBind(sql.toString(), codigos);
-			
-				for (int i=0;i<aux.size();i++) {
-					Hashtable reg = (Hashtable) aux.get(i);					
-					Hashtable datoNuevo = new Hashtable();
-					datoNuevo.putAll(dato);					
+				sql.append(" and   pe.idpersona=cli.idpersona ");
+				sql.append(" and   cli.idtratamiento= tra.idtratamiento ");
+				sql.append(" and   cli.idinstitucion=ex.idinstitucion ");
+
+				resultadoConsulta = ejecutaConsultaBind(sql.toString(), codigos);
+				for (int i = 0; i < resultadoConsulta.size(); i++) {
+					reg = (Hashtable) resultadoConsulta.get(i);
+					if (((String) reg.get("IDPERSONA_DIR")).trim().equals("")) continue; // esto hay que hacerlo porque el metodo ejecutaConsultaBind devuelve un Hash con valores vacios si la consulta no obtiene resultados
+					datoNuevo = new Hashtable();
+					datoNuevo.putAll(datoActual);
+
 					datoNuevo.put("NOMBRE_DEST", (String) reg.get("NOMBRE"));
 					datoNuevo.put("APELLIDO1_DEST", (String) reg.get("APELLIDO1"));
 					datoNuevo.put("APELLIDO2_DEST", (String) reg.get("APELLIDO2"));
 					datoNuevo.put("SEXO_DEST", (String) reg.get("SEXO"));
 					datoNuevo.put("O_A_DEST", (String) reg.get("O_A"));
-					datoNuevo.put("EL_LA_DEST", (String) reg.get("EL_LA"));					
+					datoNuevo.put("EL_LA_DEST", (String) reg.get("EL_LA"));
 					// .. resto de campos obtenidos.
 					datoNuevo.put("TRATAMIENTO_DEST", (String) reg.get("TRATAMIENTO"));
 					datoNuevo.put("NIFCIF_DEST", (String) reg.get("NIFCIF"));
@@ -769,98 +810,13 @@ public class HelperInformesAdm  {
 					datoNuevo.put("POBLACIONEXTRANJERA_DEST", (String) reg.get("POBLACIONEXTRANJERA"));
 					datoNuevo.put("NOMBRE_POBLACION_DEST", (String) reg.get("NOMBRE_POBLACION"));
 					datoNuevo.put("NOMBRE_PROVINCIA_DEST", (String) reg.get("NOMBRE_PROVINCIA"));
-					datoNuevo.put("NOMBRE_PAIS_DEST", (String) reg.get("NOMBRE_PAIS"));					
+					datoNuevo.put("NOMBRE_PAIS_DEST", (String) reg.get("NOMBRE_PAIS"));
+					
 					datosNuevos.add(datoNuevo);
-					
 				}
-				
+
 				if (isASolicitantes) {
-					//////// NOMBRES Y DIRECCIONES DE DENUNCIADOS					
-					StringBuffer sql1 = new StringBuffer();
-					
-					Hashtable codigosContador = new Hashtable();
-					codigosContador.put(new Integer(1), idInstitucion);
-					codigosContador.put(new Integer(2), idInstitucionTipoExp);
-					codigosContador.put(new Integer(3), idTipoExp);
-					codigosContador.put(new Integer(4), anio);
-					codigosContador.put(new Integer(5), numero);
-					
-					sql1.append(" SELECT COUNT(*) AS TOTAL"); 
-					sql1.append(" from exp_denunciado d, cen_persona pe, cen_direcciones dir, cen_cliente cli, cen_tratamiento tra ");
-					sql1.append(" where d.idpersona = pe.idpersona ");
-					sql1.append(" and	d.idpersona = dir.idpersona(+) ");
-					sql1.append(" and   d.idinstitucion = dir.idinstitucion(+) ");
-					sql1.append(" and   d.iddireccion = dir.iddireccion(+) ");
-					sql1.append(" and   d.idinstitucion =:1 ");
-					sql1.append(" and   d.idinstitucion_tipoexpediente=:2 "); 
-					sql1.append(" and   d.idtipoexpediente=:3 ");
-					sql1.append(" and   d.anioexpediente=:4 ");
-					sql1.append(" and   d.numeroexpediente=:5 ");
-					sql1.append(" and   pe.idpersona=cli.idpersona ");     
-					sql1.append(" and   cli.idtratamiento= tra.idtratamiento ");
-					sql1.append(" and   cli.idinstitucion=d.idinstitucion ");						
-					Vector auxContador = ejecutaConsultaBind(sql1.toString(), codigosContador);
-					
-					Hashtable regContador = (Hashtable) auxContador.get(0);
-					
-					int sContador = new Integer((String)regContador.get("TOTAL")).intValue();
-					
-					if (sContador > 0) {
-					
-						sql1 = new StringBuffer();
-					
-						// NO OLVIDAR SACAR LOS NOMBRES DE POBLACION, PROVINCIA, PAIS, ETC...
-						sql1.append(" select pe.nifcif as NIFCIF,f_siga_getrecurso(tra.descripcion,1) TRATAMIENTO, dir.idpersona as IDPERSONA_DIR, dir.iddireccion as IDDIRECCION_DIR, dir.domicilio,       dir.codigopostal,       dir.telefono1,       dir.telefono2,       dir.movil,       dir.fax1,       dir.fax2,       dir.correoelectronico,       dir.paginaweb,       dir.poblacionextranjera,       (select po.nombre          from cen_poblaciones po         where po.idpoblacion = dir.idpoblacion) as NOMBRE_POBLACION,       (select pr.nombre          from cen_provincias pr         where pr.idprovincia = dir.idprovincia) as NOMBRE_PROVINCIA,       (select f_siga_getrecurso(pa.nombre,:1)          from cen_pais pa         where pa.idpais = dir.idpais) as NOMBRE_PAIS,pe.nombre as NOMBRE, pe.apellidos1 as APELLIDO1, pe.apellidos2 as APELLIDO2 "); 
-						sql1.append(" , pe.sexo AS SEXO, DECODE(pe.SEXO, 'H','o','a') AS O_A, DECODE(pe.SEXO, 'H','el','la') AS EL_LA ");
-						sql1.append(" from exp_denunciado d, cen_persona pe, cen_direcciones dir, cen_cliente cli, cen_tratamiento tra ");
-						sql1.append(" where d.idpersona = pe.idpersona ");
-						sql1.append(" and	d.idpersona = dir.idpersona(+) ");
-						sql1.append(" and   d.idinstitucion = dir.idinstitucion(+) ");
-						sql1.append(" and   d.iddireccion = dir.iddireccion(+) ");
-						sql1.append(" and   d.idinstitucion =:2 ");
-						sql1.append(" and   d.idinstitucion_tipoexpediente=:3 "); 
-						sql1.append(" and   d.idtipoexpediente=:4 ");
-						sql1.append(" and   d.anioexpediente=:5 ");
-						sql1.append(" and   d.numeroexpediente=:6 ");
-						sql1.append(" and   pe.idpersona=cli.idpersona ");     
-						sql1.append(" and   cli.idtratamiento= tra.idtratamiento ");
-						sql1.append(" and   cli.idinstitucion=d.idinstitucion ");						
-						Vector aux1 = ejecutaConsultaBind(sql1.toString(), codigos);
-
-						for (int i=0;i<aux1.size();i++) {
-							Hashtable reg = (Hashtable) aux1.get(i);
-
-							Hashtable datoNuevo = new Hashtable();
-							datoNuevo.putAll(dato);
-							datoNuevo.put("NOMBRE_DEST", (String) reg.get("NOMBRE"));
-							datoNuevo.put("APELLIDO1_DEST", (String) reg.get("APELLIDO1"));
-							datoNuevo.put("APELLIDO2_DEST", (String) reg.get("APELLIDO2"));						
-							datoNuevo.put("TRATAMIENTO_DEST", (String) reg.get("TRATAMIENTO"));
-							datoNuevo.put("NIFCIF_DEST", (String) reg.get("NIFCIF"));
-							datoNuevo.put("SEXO_DEST", (String) reg.get("SEXO"));
-							datoNuevo.put("O_A_DEST", (String) reg.get("O_A"));
-							datoNuevo.put("EL_LA_DEST", (String) reg.get("EL_LA"));
-							// .. resto de campos obtenidos.
-							datoNuevo.put("IDPERSONA_DEST", (String) reg.get("IDPERSONA_DIR"));
-							datoNuevo.put("IDDIRECCION_DEST", (String) reg.get("IDDIRECCION_DIR"));
-							datoNuevo.put("DOMICILIO_DEST", (String) reg.get("DOMICILIO"));
-							datoNuevo.put("CODIGOPOSTAL_DEST", (String) reg.get("CODIGOPOSTAL"));
-							datoNuevo.put("TELEFONO1_DEST", (String) reg.get("TELEFONO1"));
-							datoNuevo.put("TELEFONO2_DEST", (String) reg.get("TELEFONO2"));
-							datoNuevo.put("MOVIL_DEST", (String) reg.get("MOVIL"));
-							datoNuevo.put("FAX1_DEST", (String) reg.get("FAX1"));
-							datoNuevo.put("FAX2_DEST", (String) reg.get("FAX2"));
-							datoNuevo.put("CORREOELECTRONICO_DEST", (String) reg.get("CORREOELECTRONICO"));
-							datoNuevo.put("PAGINAWEB_DEST", (String) reg.get("PAGINAWEB"));
-							datoNuevo.put("POBLACIONEXTRANJERA_DEST", (String) reg.get("POBLACIONEXTRANJERA"));
-							datoNuevo.put("NOMBRE_POBLACION_DEST", (String) reg.get("NOMBRE_POBLACION"));
-							datoNuevo.put("NOMBRE_PROVINCIA_DEST", (String) reg.get("NOMBRE_PROVINCIA"));
-							datoNuevo.put("NOMBRE_PAIS_DEST", (String) reg.get("NOMBRE_PAIS"));
-							datosNuevos.add(datoNuevo);
-						
-						}
-					
-					//////// NOMBRES Y DIRECCIONES DE DENUNCIANTES					
+					// ////// NOMBRES Y DIRECCIONES DE DENUNCIADOS
 					codigos = new Hashtable();
 					codigos.put(new Integer(1), lenguaje);
 					codigos.put(new Integer(2), idInstitucion);
@@ -868,197 +824,268 @@ public class HelperInformesAdm  {
 					codigos.put(new Integer(4), idTipoExp);
 					codigos.put(new Integer(5), anio);
 					codigos.put(new Integer(6), numero);
-					}
-					StringBuffer sql2 = new StringBuffer();
-					
-					sql2.append(" select COUNT(*) AS TOTAL"); 
-					sql2.append(" from exp_denunciante d, cen_persona pe, cen_direcciones dir, cen_cliente cli, cen_tratamiento tra ");
-					sql2.append(" where d.idpersona = pe.idpersona ");
-					sql2.append(" and	d.idpersona = dir.idpersona(+) ");
-					sql2.append(" and   d.iddireccion = dir.iddireccion(+) ");
-					sql2.append(" and   d.idinstitucion = dir.idinstitucion(+) ");
-					sql2.append(" and   d.idinstitucion =:1 ");
-					sql2.append(" and   d.idinstitucion_tipoexpediente=:2 "); 
-					sql2.append(" and   d.idtipoexpediente=:3 ");
-					sql2.append(" and   d.anioexpediente=:4 ");
-					sql2.append(" and   d.numeroexpediente=:5 ");
-					sql2.append(" and   pe.idpersona=cli.idpersona ");     
-					sql2.append(" and   cli.idtratamiento= tra.idtratamiento ");
-					sql2.append(" and   cli.idinstitucion=d.idinstitucion ");	
-					
-					Vector auxContador2 = ejecutaConsultaBind(sql2.toString(), codigosContador);
-					
-					Hashtable regContador2 = (Hashtable) auxContador2.get(0);
-					
-					int sContador2 = new Integer((String)regContador2.get("TOTAL")).intValue();
-					
-					if (sContador2 > 0) {
-					
-						sql2 = new StringBuffer();
-						// 	NO OLVIDAR SACAR LOS NOMBRES DE POBLACION, PROVINCIA, PAIS, ETC...
-						sql2.append(" select pe.nifcif as NIFCIF,f_siga_getrecurso(tra.descripcion,1) TRATAMIENTO, dir.idpersona as IDPERSONA_DIR, dir.iddireccion as IDDIRECCION_DIR, dir.domicilio,       dir.codigopostal,       dir.telefono1,       dir.telefono2,       dir.movil,       dir.fax1,       dir.fax2,       dir.correoelectronico,       dir.paginaweb,       dir.poblacionextranjera,       (select po.nombre          from cen_poblaciones po         where po.idpoblacion = dir.idpoblacion) as NOMBRE_POBLACION,       (select pr.nombre          from cen_provincias pr         where pr.idprovincia = dir.idprovincia) as NOMBRE_PROVINCIA,       (select f_siga_getrecurso(pa.nombre,:1)          from cen_pais pa         where pa.idpais = dir.idpais) as NOMBRE_PAIS,pe.nombre as NOMBRE, pe.apellidos1 as APELLIDO1, pe.apellidos2 as APELLIDO2, ");
-						sql2.append(" pe.sexo AS SEXO, DECODE(pe.SEXO, 'H','o','a') AS O_A, DECODE(pe.SEXO, 'H','el','la') AS EL_LA ");
-						sql2.append(" from exp_denunciante d, cen_persona pe, cen_direcciones dir, cen_cliente cli, cen_tratamiento tra ");
-						sql2.append(" where d.idpersona = pe.idpersona ");
-						sql2.append(" and	d.idpersona = dir.idpersona(+) ");
-						sql2.append(" and   d.iddireccion = dir.iddireccion(+) ");
-						sql2.append(" and   d.idinstitucion = dir.idinstitucion(+) ");
-						sql2.append(" and   d.idinstitucion =:2 ");
-						sql2.append(" and   d.idinstitucion_tipoexpediente=:3 "); 
-						sql2.append(" and   d.idtipoexpediente=:4 ");
-						sql2.append(" and   d.anioexpediente=:5 ");
-						sql2.append(" and   d.numeroexpediente=:6 ");
-						sql2.append(" and   pe.idpersona=cli.idpersona ");     
-						sql2.append(" and   cli.idtratamiento= tra.idtratamiento ");
-						sql2.append(" and   cli.idinstitucion=d.idinstitucion ");	
-						Vector aux2 = ejecutaConsultaBind(sql2.toString(), codigos);
-						for (int i=0;i<aux2.size();i++) {
-							Hashtable reg = (Hashtable) aux2.get(i);
-							Hashtable datoNuevo = new Hashtable();
-							datoNuevo.putAll(dato);
-							datoNuevo.put("NOMBRE_DEST", (String) reg.get("NOMBRE"));
-							datoNuevo.put("APELLIDO1_DEST", (String) reg.get("APELLIDO1"));
-							datoNuevo.put("APELLIDO2_DEST", (String) reg.get("APELLIDO2"));						
-							datoNuevo.put("TRATAMIENTO_DEST", (String) reg.get("TRATAMIENTO"));
-							datoNuevo.put("NIFCIF_DEST", (String) reg.get("NIFCIF"));
-							datoNuevo.put("SEXO_DEST", (String) reg.get("SEXO"));
-							datoNuevo.put("O_A_DEST", (String) reg.get("O_A"));
-							datoNuevo.put("EL_LA_DEST", (String) reg.get("EL_LA"));
-							// 	.. resto de campos obtenidos.
-							datoNuevo.put("IDPERSONA_DEST", (String) reg.get("IDPERSONA_DIR"));
-							datoNuevo.put("IDDIRECCION_DEST", (String) reg.get("IDDIRECCION_DIR"));
-							datoNuevo.put("DOMICILIO_DEST", (String) reg.get("DOMICILIO"));
-							datoNuevo.put("CODIGOPOSTAL_DEST", (String) reg.get("CODIGOPOSTAL"));
-							datoNuevo.put("TELEFONO1_DEST", (String) reg.get("TELEFONO1"));
-							datoNuevo.put("TELEFONO2_DEST", (String) reg.get("TELEFONO2"));
-							datoNuevo.put("MOVIL_DEST", (String) reg.get("MOVIL"));
-							datoNuevo.put("FAX1_DEST", (String) reg.get("FAX1"));
-							datoNuevo.put("FAX2_DEST", (String) reg.get("FAX2"));
-							datoNuevo.put("CORREOELECTRONICO_DEST", (String) reg.get("CORREOELECTRONICO"));
-							datoNuevo.put("PAGINAWEB_DEST", (String) reg.get("PAGINAWEB"));
-							datoNuevo.put("POBLACIONEXTRANJERA_DEST", (String) reg.get("POBLACIONEXTRANJERA"));
-							datoNuevo.put("NOMBRE_POBLACION_DEST", (String) reg.get("NOMBRE_POBLACION"));
-							datoNuevo.put("NOMBRE_PROVINCIA_DEST", (String) reg.get("NOMBRE_PROVINCIA"));
-							datoNuevo.put("NOMBRE_PAIS_DEST", (String) reg.get("NOMBRE_PAIS"));
-							datosNuevos.add(datoNuevo);
+
+					sql = new StringBuffer();
+					// NO OLVIDAR SACAR LOS NOMBRES DE POBLACION, PROVINCIA, PAIS, ETC...
+					sql.append(" select pe.nifcif as NIFCIF, ");
+					sql.append("        f_siga_getrecurso(tra.descripcion,1) TRATAMIENTO, ");
+					sql.append("        dir.idpersona as IDPERSONA_DIR, ");
+					sql.append("        dir.iddireccion as IDDIRECCION_DIR, ");
+					sql.append("        dir.domicilio, ");
+					sql.append("        dir.codigopostal, ");
+					sql.append("        dir.telefono1, ");
+					sql.append("        dir.telefono2, ");
+					sql.append("        dir.movil, ");
+					sql.append("        dir.fax1, ");
+					sql.append("        dir.fax2, ");
+					sql.append("        dir.correoelectronico, ");
+					sql.append("        dir.paginaweb, ");
+					sql.append("        dir.poblacionextranjera, ");
+					sql.append("        (select po.nombre from cen_poblaciones po where po.idpoblacion = dir.idpoblacion) as NOMBRE_POBLACION, ");
+					sql.append("        (select pr.nombre from cen_provincias pr where pr.idprovincia = dir.idprovincia) as NOMBRE_PROVINCIA, ");
+					sql.append("        (select f_siga_getrecurso(pa.nombre,:1) from cen_pais pa where pa.idpais = dir.idpais) as NOMBRE_PAIS, ");
+					sql.append("        pe.nombre as NOMBRE, ");
+					sql.append("        pe.apellidos1 as APELLIDO1, ");
+					sql.append("        pe.apellidos2 as APELLIDO2, ");
+					sql.append("        pe.sexo AS SEXO, ");
+					sql.append("        DECODE(pe.SEXO, 'H','o','a') AS O_A, ");
+					sql.append("        DECODE(pe.SEXO, 'H','el','la') AS EL_LA ");
+					sql.append(" from exp_denunciado d, cen_persona pe, cen_direcciones dir, cen_cliente cli, cen_tratamiento tra ");
+					sql.append(" where d.idpersona = pe.idpersona ");
+					sql.append(" and	d.idpersona = dir.idpersona(+) ");
+					sql.append(" and   d.idinstitucion = dir.idinstitucion(+) ");
+					sql.append(" and   d.iddireccion = dir.iddireccion(+) ");
+					sql.append(" and   d.idinstitucion =:2 ");
+					sql.append(" and   d.idinstitucion_tipoexpediente=:3 ");
+					sql.append(" and   d.idtipoexpediente=:4 ");
+					sql.append(" and   d.anioexpediente=:5 ");
+					sql.append(" and   d.numeroexpediente=:6 ");
+					sql.append(" and   pe.idpersona=cli.idpersona ");
+					sql.append(" and   cli.idtratamiento= tra.idtratamiento ");
+					sql.append(" and   cli.idinstitucion=d.idinstitucion ");
+
+					resultadoConsulta = this.ejecutaConsultaBind(sql.toString(), codigos);
+					for (int i = 0; i < resultadoConsulta.size(); i++) {
+						reg = (Hashtable) resultadoConsulta.get(i);
+						if (((String) reg.get("IDPERSONA_DIR")).trim().equals("")) continue; // esto hay que hacerlo porque el metodo ejecutaConsultaBind devuelve un Hash con valores vacios si la consulta no obtiene resultados
+						datoNuevo = new Hashtable();
+						datoNuevo.putAll(datoActual);
+
+						datoNuevo.put("NOMBRE_DEST", (String) reg.get("NOMBRE"));
+						datoNuevo.put("APELLIDO1_DEST", (String) reg.get("APELLIDO1"));
+						datoNuevo.put("APELLIDO2_DEST", (String) reg.get("APELLIDO2"));
+						datoNuevo.put("TRATAMIENTO_DEST", (String) reg.get("TRATAMIENTO"));
+						datoNuevo.put("NIFCIF_DEST", (String) reg.get("NIFCIF"));
+						datoNuevo.put("SEXO_DEST", (String) reg.get("SEXO"));
+						datoNuevo.put("O_A_DEST", (String) reg.get("O_A"));
+						datoNuevo.put("EL_LA_DEST", (String) reg.get("EL_LA"));
+						// .. resto de campos obtenidos.
+						datoNuevo.put("IDPERSONA_DEST", (String) reg.get("IDPERSONA_DIR"));
+						datoNuevo.put("IDDIRECCION_DEST", (String) reg.get("IDDIRECCION_DIR"));
+						datoNuevo.put("DOMICILIO_DEST", (String) reg.get("DOMICILIO"));
+						datoNuevo.put("CODIGOPOSTAL_DEST", (String) reg.get("CODIGOPOSTAL"));
+						datoNuevo.put("TELEFONO1_DEST", (String) reg.get("TELEFONO1"));
+						datoNuevo.put("TELEFONO2_DEST", (String) reg.get("TELEFONO2"));
+						datoNuevo.put("MOVIL_DEST", (String) reg.get("MOVIL"));
+						datoNuevo.put("FAX1_DEST", (String) reg.get("FAX1"));
+						datoNuevo.put("FAX2_DEST", (String) reg.get("FAX2"));
+						datoNuevo.put("CORREOELECTRONICO_DEST", (String) reg.get("CORREOELECTRONICO"));
+						datoNuevo.put("PAGINAWEB_DEST", (String) reg.get("PAGINAWEB"));
+						datoNuevo.put("POBLACIONEXTRANJERA_DEST", (String) reg.get("POBLACIONEXTRANJERA"));
+						datoNuevo.put("NOMBRE_POBLACION_DEST", (String) reg.get("NOMBRE_POBLACION"));
+						datoNuevo.put("NOMBRE_PROVINCIA_DEST", (String) reg.get("NOMBRE_PROVINCIA"));
+						datoNuevo.put("NOMBRE_PAIS_DEST", (String) reg.get("NOMBRE_PAIS"));
 						
-						}										
-						//////// NOMBRES Y DIRECCIONES DE PARTES
-						codigos = new Hashtable();
-						codigos.put(new Integer(1), lenguaje);
-						codigos.put(new Integer(2), lenguaje);
-						codigos.put(new Integer(3), idInstitucion);
-						codigos.put(new Integer(4), idInstitucionTipoExp);
-						codigos.put(new Integer(5), idTipoExp);
-						codigos.put(new Integer(6), anio);
-						codigos.put(new Integer(7), numero);
+						datosNuevos.add(datoNuevo);
+
 					}
 
-					StringBuffer sql3 = new StringBuffer();
+					// ////// NOMBRES Y DIRECCIONES DE DENUNCIANTES
+					codigos = new Hashtable();
+					codigos.put(new Integer(1), lenguaje);
+					codigos.put(new Integer(2), idInstitucion);
+					codigos.put(new Integer(3), idInstitucionTipoExp);
+					codigos.put(new Integer(4), idTipoExp);
+					codigos.put(new Integer(5), anio);
+					codigos.put(new Integer(6), numero);
+
+					sql = new StringBuffer();
+					// NO OLVIDAR SACAR LOS NOMBRES DE POBLACION, PROVINCIA, PAIS, ETC...
+					sql.append(" select pe.nifcif as NIFCIF, ");
+					sql.append("        f_siga_getrecurso(tra.descripcion,1) TRATAMIENTO, ");
+					sql.append("        dir.idpersona as IDPERSONA_DIR, ");
+					sql.append("        dir.iddireccion as IDDIRECCION_DIR, ");
+					sql.append("        dir.domicilio, ");
+					sql.append("        dir.codigopostal, ");
+					sql.append("        dir.telefono1, ");
+					sql.append("        dir.telefono2, ");
+					sql.append("        dir.movil, ");
+					sql.append("        dir.fax1, ");
+					sql.append("        dir.fax2, ");
+					sql.append("        dir.correoelectronico, ");
+					sql.append("        dir.paginaweb, ");
+					sql.append("        dir.poblacionextranjera, ");
+					sql.append("        (select po.nombre from cen_poblaciones po where po.idpoblacion = dir.idpoblacion) as NOMBRE_POBLACION, ");
+					sql.append("        (select pr.nombre from cen_provincias pr where pr.idprovincia = dir.idprovincia) as NOMBRE_PROVINCIA, ");
+					sql.append("        (select f_siga_getrecurso(pa.nombre,:1) from cen_pais pa where pa.idpais = dir.idpais) as NOMBRE_PAIS, ");
+					sql.append("        pe.nombre as NOMBRE, ");
+					sql.append("        pe.apellidos1 as APELLIDO1, ");
+					sql.append("        pe.apellidos2 as APELLIDO2, ");
+					sql.append("        pe.sexo AS SEXO, ");
+					sql.append("        DECODE(pe.SEXO, 'H','o','a') AS O_A, ");
+					sql.append("        DECODE(pe.SEXO, 'H','el','la') AS EL_LA ");
+					sql.append(" from exp_denunciante d, cen_persona pe, cen_direcciones dir, cen_cliente cli, cen_tratamiento tra ");
+					sql.append(" where d.idpersona = pe.idpersona ");
+					sql.append(" and	d.idpersona = dir.idpersona(+) ");
+					sql.append(" and   d.iddireccion = dir.iddireccion(+) ");
+					sql.append(" and   d.idinstitucion = dir.idinstitucion(+) ");
+					sql.append(" and   d.idinstitucion =:2 ");
+					sql.append(" and   d.idinstitucion_tipoexpediente=:3 ");
+					sql.append(" and   d.idtipoexpediente=:4 ");
+					sql.append(" and   d.anioexpediente=:5 ");
+					sql.append(" and   d.numeroexpediente=:6 ");
+					sql.append(" and   pe.idpersona=cli.idpersona ");
+					sql.append(" and   cli.idtratamiento= tra.idtratamiento ");
+					sql.append(" and   cli.idinstitucion=d.idinstitucion ");
 					
-					sql3.append(" select COUNT(*) AS TOTAL"); 
-					sql3.append(" from exp_parte d, cen_persona pe, exp_rolparte r , cen_direcciones dir, cen_cliente cli, cen_tratamiento tra "); 
-					sql3.append(" where d.idpersona = pe.idpersona "); 
-					sql3.append(" and   d.idrol = r.idrol  ");
-					sql3.append(" and   d.idinstitucion_tipoexpediente = r.idinstitucion "); 
-					sql3.append(" and   d.idtipoexpediente = r.idtipoexpediente ");
-					sql3.append(" and   d.idpersona = dir.idpersona(+) ");
-					sql3.append(" and   d.iddireccion = dir.iddireccion(+) ");
-					sql3.append(" and   d.idinstitucion = dir.idinstitucion(+) ");
-					sql3.append(" and   d.idinstitucion =:3 ");
-					sql3.append(" and   d.idinstitucion_tipoexpediente=:4 "); 
-					sql3.append(" and   d.idtipoexpediente=:5 ");
-					sql3.append(" and   d.anioexpediente=:6 ");
-					sql3.append(" and   d.numeroexpediente=:7 ");
-					sql3.append(" and   pe.idpersona=cli.idpersona ");     
-					sql3.append(" and   cli.idtratamiento= tra.idtratamiento ");
-					sql3.append(" and   cli.idinstitucion=d.idinstitucion ");					
-					
-					Vector auxContador3 = ejecutaConsultaBind(sql3.toString(), codigosContador);
-					
-					Hashtable regContador3 = (Hashtable) auxContador3.get(0);
-					
-					int sContador3 = new Integer((String)regContador3.get("TOTAL")).intValue();
-					
-					if (sContador3 > 0) {
-					
-						sql3 = new StringBuffer();
-						// NO OLVIDAR SACAR LOS NOMBRES DE POBLACION, PROVINCIA, PAIS, ETC...
-						sql3.append(" select pe.nifcif as NIFCIF,f_siga_getrecurso(tra.descripcion,1) TRATAMIENTO, dir.idpersona as IDPERSONA_DIR, dir.iddireccion as IDDIRECCION_DIR, dir.domicilio,       dir.codigopostal,       dir.telefono1,       dir.telefono2,       dir.movil,       dir.fax1,       dir.fax2,       dir.correoelectronico,       dir.paginaweb,       dir.poblacionextranjera,       (select po.nombre          from cen_poblaciones po         where po.idpoblacion = dir.idpoblacion) as NOMBRE_POBLACION,       (select pr.nombre          from cen_provincias pr         where pr.idprovincia = dir.idprovincia) as NOMBRE_PROVINCIA,       (select f_siga_getrecurso(pa.nombre,:1)          from cen_pais pa         where pa.idpais = dir.idpais) as NOMBRE_PAIS, pe.nombre as NOMBRE, pe.apellidos1 as APELLIDO1, pe.apellidos2 as APELLIDO2,       f_siga_getrecurso(r.nombre, :2) as NOMBREROL "); 
-						sql3.append(" , pe.sexo AS SEXO, DECODE(pe.SEXO, 'H','o','a') AS O_A, DECODE(pe.SEXO, 'H','el','la') AS EL_LA ");
-						sql3.append(" from exp_parte d, cen_persona pe, exp_rolparte r , cen_direcciones dir, cen_cliente cli, cen_tratamiento tra "); 
-						sql3.append(" where d.idpersona = pe.idpersona "); 
-						sql3.append(" and   d.idrol = r.idrol  ");
-						sql3.append(" and   d.idinstitucion_tipoexpediente = r.idinstitucion "); 
-						sql3.append(" and   d.idtipoexpediente = r.idtipoexpediente ");
-						sql3.append(" and   d.idpersona = dir.idpersona(+) ");
-						sql3.append(" and   d.iddireccion = dir.iddireccion(+) ");
-						sql3.append(" and   d.idinstitucion = dir.idinstitucion(+) ");
-						sql3.append(" and   d.idinstitucion =:3 ");
-						sql3.append(" and   d.idinstitucion_tipoexpediente=:4 "); 
-						sql3.append(" and   d.idtipoexpediente=:5 ");
-						sql3.append(" and   d.anioexpediente=:6 ");
-						sql3.append(" and   d.numeroexpediente=:7 ");
-						sql3.append(" and   pe.idpersona=cli.idpersona ");     
-						sql3.append(" and   cli.idtratamiento= tra.idtratamiento ");
-						sql3.append(" and   cli.idinstitucion=d.idinstitucion ");
-						Vector aux3 = ejecutaConsultaBind(sql3.toString(), codigos);
-						for (int i=0;i<aux3.size();i++) {
-							Hashtable reg = (Hashtable) aux3.get(i);
-							Hashtable datoNuevo = new Hashtable();
-							datoNuevo.putAll(dato);
-							datoNuevo.put("NOMBRE_DEST", (String) reg.get("NOMBRE"));
-							datoNuevo.put("APELLIDO1_DEST", (String) reg.get("APELLIDO1"));
-							datoNuevo.put("APELLIDO2_DEST", (String) reg.get("APELLIDO2"));						
-							datoNuevo.put("TRATAMIENTO_DEST", (String) reg.get("TRATAMIENTO"));
-							datoNuevo.put("NIFCIF_DEST", (String) reg.get("NIFCIF"));
-							datoNuevo.put("SEXO_DEST", (String) reg.get("SEXO"));
-							datoNuevo.put("O_A_DEST", (String) reg.get("O_A"));
-							datoNuevo.put("EL_LA_DEST", (String) reg.get("EL_LA"));
-							datoNuevo.put("DESC_ROLPARTE", (String) reg.get("NOMBREROL"));
-							// 	.. resto de campos obtenidos.
-							datoNuevo.put("IDPERSONA_DEST", (String) reg.get("IDPERSONA_DIR"));
-							datoNuevo.put("IDDIRECCION_DEST", (String) reg.get("IDDIRECCION_DIR"));
-							datoNuevo.put("DOMICILIO_DEST", (String) reg.get("DOMICILIO"));
-							datoNuevo.put("CODIGOPOSTAL_DEST", (String) reg.get("CODIGOPOSTAL"));
-							datoNuevo.put("TELEFONO1_DEST", (String) reg.get("TELEFONO1"));
-							datoNuevo.put("TELEFONO2_DEST", (String) reg.get("TELEFONO2"));
-							datoNuevo.put("MOVIL_DEST", (String) reg.get("MOVIL"));
-							datoNuevo.put("FAX1_DEST", (String) reg.get("FAX1"));
-							datoNuevo.put("FAX2_DEST", (String) reg.get("FAX2"));
-							datoNuevo.put("CORREOELECTRONICO_DEST", (String) reg.get("CORREOELECTRONICO"));
-							datoNuevo.put("PAGINAWEB_DEST", (String) reg.get("PAGINAWEB"));
-							datoNuevo.put("POBLACIONEXTRANJERA_DEST", (String) reg.get("POBLACIONEXTRANJERA"));
-							datoNuevo.put("NOMBRE_POBLACION_DEST", (String) reg.get("NOMBRE_POBLACION"));
-							datoNuevo.put("NOMBRE_PROVINCIA_DEST", (String) reg.get("NOMBRE_PROVINCIA"));
-							datoNuevo.put("NOMBRE_PAIS_DEST", (String) reg.get("NOMBRE_PAIS"));						
-							datosNuevos.add(datoNuevo);					
-						}
+					resultadoConsulta = ejecutaConsultaBind(sql.toString(), codigos);
+					for (int i = 0; i < resultadoConsulta.size(); i++) {
+						reg = (Hashtable) resultadoConsulta.get(i);
+						if (((String) reg.get("IDPERSONA_DIR")).trim().equals("")) continue; // esto hay que hacerlo porque el metodo ejecutaConsultaBind devuelve un Hash con valores vacios si la consulta no obtiene resultados
+						datoNuevo = new Hashtable();
+						datoNuevo.putAll(datoActual);
+						
+						datoNuevo.put("NOMBRE_DEST", (String) reg.get("NOMBRE"));
+						datoNuevo.put("APELLIDO1_DEST", (String) reg.get("APELLIDO1"));
+						datoNuevo.put("APELLIDO2_DEST", (String) reg.get("APELLIDO2"));
+						datoNuevo.put("TRATAMIENTO_DEST", (String) reg.get("TRATAMIENTO"));
+						datoNuevo.put("NIFCIF_DEST", (String) reg.get("NIFCIF"));
+						datoNuevo.put("SEXO_DEST", (String) reg.get("SEXO"));
+						datoNuevo.put("O_A_DEST", (String) reg.get("O_A"));
+						datoNuevo.put("EL_LA_DEST", (String) reg.get("EL_LA"));
+						// .. resto de campos obtenidos.
+						datoNuevo.put("IDPERSONA_DEST", (String) reg.get("IDPERSONA_DIR"));
+						datoNuevo.put("IDDIRECCION_DEST", (String) reg.get("IDDIRECCION_DIR"));
+						datoNuevo.put("DOMICILIO_DEST", (String) reg.get("DOMICILIO"));
+						datoNuevo.put("CODIGOPOSTAL_DEST", (String) reg.get("CODIGOPOSTAL"));
+						datoNuevo.put("TELEFONO1_DEST", (String) reg.get("TELEFONO1"));
+						datoNuevo.put("TELEFONO2_DEST", (String) reg.get("TELEFONO2"));
+						datoNuevo.put("MOVIL_DEST", (String) reg.get("MOVIL"));
+						datoNuevo.put("FAX1_DEST", (String) reg.get("FAX1"));
+						datoNuevo.put("FAX2_DEST", (String) reg.get("FAX2"));
+						datoNuevo.put("CORREOELECTRONICO_DEST", (String) reg.get("CORREOELECTRONICO"));
+						datoNuevo.put("PAGINAWEB_DEST", (String) reg.get("PAGINAWEB"));
+						datoNuevo.put("POBLACIONEXTRANJERA_DEST", (String) reg.get("POBLACIONEXTRANJERA"));
+						datoNuevo.put("NOMBRE_POBLACION_DEST", (String) reg.get("NOMBRE_POBLACION"));
+						datoNuevo.put("NOMBRE_PROVINCIA_DEST", (String) reg.get("NOMBRE_PROVINCIA"));
+						datoNuevo.put("NOMBRE_PAIS_DEST", (String) reg.get("NOMBRE_PAIS"));
+						
+						datosNuevos.add(datoNuevo);
 					}
-				}				
-				
+					
+					// ////// NOMBRES Y DIRECCIONES DE PARTES
+					codigos = new Hashtable();
+					codigos.put(new Integer(1), lenguaje);
+					codigos.put(new Integer(2), lenguaje);
+					codigos.put(new Integer(3), idInstitucion);
+					codigos.put(new Integer(4), idInstitucionTipoExp);
+					codigos.put(new Integer(5), idTipoExp);
+					codigos.put(new Integer(6), anio);
+					codigos.put(new Integer(7), numero);
+
+					sql = new StringBuffer();
+					// NO OLVIDAR SACAR LOS NOMBRES DE POBLACION, PROVINCIA, PAIS, ETC...
+					sql.append(" select pe.nifcif as NIFCIF, ");
+					sql.append("        f_siga_getrecurso(tra.descripcion,1) TRATAMIENTO, ");
+					sql.append("        dir.idpersona as IDPERSONA_DIR, ");
+					sql.append("        dir.iddireccion as IDDIRECCION_DIR, ");
+					sql.append("        dir.domicilio, ");
+					sql.append("        dir.codigopostal, ");
+					sql.append("        dir.telefono1, ");
+					sql.append("        dir.telefono2, ");
+					sql.append("        dir.movil, ");
+					sql.append("        dir.fax1, ");
+					sql.append("        dir.fax2, ");
+					sql.append("        dir.correoelectronico, ");
+					sql.append("        dir.paginaweb, ");
+					sql.append("        dir.poblacionextranjera, ");
+					sql.append("        (select po.nombre from cen_poblaciones po where po.idpoblacion = dir.idpoblacion) as NOMBRE_POBLACION, ");
+					sql.append("        (select pr.nombre from cen_provincias pr where pr.idprovincia = dir.idprovincia) as NOMBRE_PROVINCIA, ");
+					sql.append("        (select f_siga_getrecurso(pa.nombre,:1) from cen_pais pa where pa.idpais = dir.idpais) as NOMBRE_PAIS, ");
+					sql.append("        pe.nombre as NOMBRE, ");
+					sql.append("        pe.apellidos1 as APELLIDO1, ");
+					sql.append("        pe.apellidos2 as APELLIDO2, ");
+					sql.append("        f_siga_getrecurso(r.nombre, :2) as NOMBREROL, ");
+					sql.append("        pe.sexo AS SEXO, ");
+					sql.append("        DECODE(pe.SEXO, 'H','o','a') AS O_A, ");
+					sql.append("        DECODE(pe.SEXO, 'H','el','la') AS EL_LA ");
+					sql.append(" from exp_parte d, cen_persona pe, exp_rolparte r , cen_direcciones dir, cen_cliente cli, cen_tratamiento tra ");
+					sql.append(" where d.idpersona = pe.idpersona ");
+					sql.append(" and   d.idrol = r.idrol  ");
+					sql.append(" and   d.idinstitucion_tipoexpediente = r.idinstitucion ");
+					sql.append(" and   d.idtipoexpediente = r.idtipoexpediente ");
+					sql.append(" and   d.idpersona = dir.idpersona(+) ");
+					sql.append(" and   d.iddireccion = dir.iddireccion(+) ");
+					sql.append(" and   d.idinstitucion = dir.idinstitucion(+) ");
+					sql.append(" and   d.idinstitucion =:3 ");
+					sql.append(" and   d.idinstitucion_tipoexpediente=:4 ");
+					sql.append(" and   d.idtipoexpediente=:5 ");
+					sql.append(" and   d.anioexpediente=:6 ");
+					sql.append(" and   d.numeroexpediente=:7 ");
+					sql.append(" and   pe.idpersona=cli.idpersona ");
+					sql.append(" and   cli.idtratamiento= tra.idtratamiento ");
+					sql.append(" and   cli.idinstitucion=d.idinstitucion ");
+					
+					resultadoConsulta = ejecutaConsultaBind(sql.toString(), codigos);
+					for (int i = 0; i < resultadoConsulta.size(); i++) {
+						reg = (Hashtable) resultadoConsulta.get(i);
+						if (((String) reg.get("IDPERSONA_DIR")).trim().equals("")) continue; // esto hay que hacerlo porque el metodo ejecutaConsultaBind devuelve un Hash con valores vacios si la consulta no obtiene resultados
+						datoNuevo = new Hashtable();
+						datoNuevo.putAll(datoActual);
+						
+						datoNuevo.put("NOMBRE_DEST", (String) reg.get("NOMBRE"));
+						datoNuevo.put("APELLIDO1_DEST", (String) reg.get("APELLIDO1"));
+						datoNuevo.put("APELLIDO2_DEST", (String) reg.get("APELLIDO2"));
+						datoNuevo.put("TRATAMIENTO_DEST", (String) reg.get("TRATAMIENTO"));
+						datoNuevo.put("NIFCIF_DEST", (String) reg.get("NIFCIF"));
+						datoNuevo.put("SEXO_DEST", (String) reg.get("SEXO"));
+						datoNuevo.put("O_A_DEST", (String) reg.get("O_A"));
+						datoNuevo.put("EL_LA_DEST", (String) reg.get("EL_LA"));
+						datoNuevo.put("DESC_ROLPARTE", (String) reg.get("NOMBREROL"));
+						// .. resto de campos obtenidos.
+						datoNuevo.put("IDPERSONA_DEST", (String) reg.get("IDPERSONA_DIR"));
+						datoNuevo.put("IDDIRECCION_DEST", (String) reg.get("IDDIRECCION_DIR"));
+						datoNuevo.put("DOMICILIO_DEST", (String) reg.get("DOMICILIO"));
+						datoNuevo.put("CODIGOPOSTAL_DEST", (String) reg.get("CODIGOPOSTAL"));
+						datoNuevo.put("TELEFONO1_DEST", (String) reg.get("TELEFONO1"));
+						datoNuevo.put("TELEFONO2_DEST", (String) reg.get("TELEFONO2"));
+						datoNuevo.put("MOVIL_DEST", (String) reg.get("MOVIL"));
+						datoNuevo.put("FAX1_DEST", (String) reg.get("FAX1"));
+						datoNuevo.put("FAX2_DEST", (String) reg.get("FAX2"));
+						datoNuevo.put("CORREOELECTRONICO_DEST", (String) reg.get("CORREOELECTRONICO"));
+						datoNuevo.put("PAGINAWEB_DEST", (String) reg.get("PAGINAWEB"));
+						datoNuevo.put("POBLACIONEXTRANJERA_DEST", (String) reg.get("POBLACIONEXTRANJERA"));
+						datoNuevo.put("NOMBRE_POBLACION_DEST", (String) reg.get("NOMBRE_POBLACION"));
+						datoNuevo.put("NOMBRE_PROVINCIA_DEST", (String) reg.get("NOMBRE_PROVINCIA"));
+						datoNuevo.put("NOMBRE_PAIS_DEST", (String) reg.get("NOMBRE_PAIS"));
+						
+						datosNuevos.add(datoNuevo);
+					}
+				}
+
 			}
-			
+
 			// en caso de no haber datos por lo menos devuelvo lo que he recibido.
-			if (datosNuevos==null || datosNuevos.size()==0) {
+			if (datosNuevos == null || datosNuevos.size() == 0) {
 				return datos;
 			} else {
 				return datosNuevos;
 			}
-			
-		}
-		catch (Exception e) {
-			throw new ClsExceptions (e, "Error al ejecutar getImplicadosDireccionesExpediente");
-		}
-		
-	}	
-	
-	
-	
-		
 
-	
-	
-	
-	
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al ejecutar getImplicadosDireccionesExpediente");
+		}
+
+	} //getImplicadosDireccionesExpediente()
+
 }
