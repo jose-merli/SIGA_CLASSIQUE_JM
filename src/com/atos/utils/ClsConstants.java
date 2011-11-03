@@ -557,6 +557,9 @@ MDB Microsoft Access Database
   
   //Parametro que permite validar las guardias por parte de los colegiados desde la ficha colegial
   public static final String GEN_PARAM_VALIDA_GUARDIAS_COLEGIADO="VALIDA_GUARDIAS_COLEGIADO";
+  //Parametro que dice cual es el colegio por defecto del EJG
+  
+  public static final String GEN_PARAM_TIPO_EJG_COLEGIO="TIPO_EJG_COLEGIO";
   
   public static final String PERMITIR_FACTURA_CERTIFICADO="PERMITIR_FACTURA_CERTIFICADO";
   

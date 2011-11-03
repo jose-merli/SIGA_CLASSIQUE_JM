@@ -225,9 +225,14 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		RowsContainer rc1 = null;
 		String numeroMaximo = null;		
 		String codigo="";
+		String idTipoEJGColegioDefecto = null;
+		
 		
 		// Primero calculamos el NUMERO del EJG que se obtiene a partir del NUMERO máximo de EJG almacenado en la base de datos
-		try { 
+		try {
+
+			
+			
 			rc = new RowsContainer();		
 			rc1 = new RowsContainer();
 			// Se prepara la sentencia SQL para hacer el select
@@ -253,7 +258,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			                               // y asi poder crear una UK del campo Codigo por institucion y anio.
 			GenParametrosAdm paramAdm = new GenParametrosAdm (this.usrbean);
 			String longitudEJG = paramAdm.getValor (this.usrbean.getLocation (), "SCS", "LONGITUD_CODEJG", "");
-				
+			idTipoEJGColegioDefecto = paramAdm.getValor (this.usrbean.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_TIPO_EJG_COLEGIO, "");				
 			
 			if (rc.query(sql)) {
 				Row fila = (Row) rc.get(0);
@@ -325,6 +330,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		// Por último ponemos la FECHAAPERTURA en el formato correcto de la base de datos.
 		entrada.put(ScsEJGBean.C_FECHAAPERTURA,GstDate.getApplicationFormatDate("",entrada.get(ScsEJGBean.C_FECHAAPERTURA).toString()));		
 		
+		if(idTipoEJGColegioDefecto!=null && !idTipoEJGColegioDefecto.trim().equals(""))
+			entrada.put(ScsEJGBean.C_IDTIPOEJGCOLEGIO,idTipoEJGColegioDefecto);
+			
 		return entrada;
 	}
 	
@@ -4963,39 +4971,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			return registro;
 		
 	}
-	/*public String getIdColegiadoTramitadorEJG (String idInstitucion, String idTipoEjg, String anio, String numero) throws ClsExceptions,SIGAException {
-	    Hashtable codigos = new Hashtable();
-	    try {
-	        codigos.put(new Integer(1),idInstitucion.toString());
-	        codigos.put(new Integer(2),idTipoEjg);
-	        codigos.put(new Integer(3),anio);
-	        codigos.put(new Integer(4),numero);
-	       
-			String select =	"SELECT IDPERSONA FROM SCS_EJG WHERE IDINSTITUCION =:1 AND IDTIPOEJG=:2 AND ANIO=:3 AND NUMERO = :4 "; 
-
-			RowsContainer rc = new RowsContainer(); 
-			if (rc.queryBind(select, codigos)) {
-				if (rc.size() != 1) return null;
-				Hashtable aux = (Hashtable)((Row) rc.get(0)).getRow();
-				String num = UtilidadesHash.getString(aux, "IDPERSONA");
-				return num;
-			}
-		}
-	    catch (Exception e) {
-	   		if (e instanceof SIGAException){
-	   			throw (SIGAException)e;
-	   		}
-	   		else {
-	   			if (e instanceof ClsExceptions){
-	   				throw (ClsExceptions)e;
-	   			}
-	   			else {
-	   				throw new ClsExceptions(e, "Error al obtener el id del letrado designado.");
-	   			}
-	   		}	
-	    }
-		return null;
-	}*/
+	
 	
 }
 

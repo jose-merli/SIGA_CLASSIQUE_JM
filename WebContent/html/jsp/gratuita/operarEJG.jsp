@@ -189,10 +189,10 @@
 	String designaNumero = hash.get("DESIGNA_NUMERO").toString();
 	String designaIdTurno = hash.get("DESIGNA_IDTURNO").toString();
 
-	if ((IDTIPOEJGCOLEGIO == null) || IDTIPOEJGCOLEGIO.equals(""))
-		TIPOEJGCOLEGIOSEL.add("0");
-	else
+	if (IDTIPOEJGCOLEGIO != null && !IDTIPOEJGCOLEGIO.equals(""))
 		TIPOEJGCOLEGIOSEL.add(IDTIPOEJGCOLEGIO);
+	else	
+		TIPOEJGCOLEGIOSEL.add("");
 
 	NOMBRELETRADO += " " + APELLIDO1LETRADO + " " + APELLIDO2LETRADO;
 	NOMBREASISTIDO += " " + APELLIDO1ASISTIDO + " " + APELLIDO2ASISTIDO;
@@ -351,11 +351,7 @@
 
 
 		function cargarComboTipoColegio(){
-			<%if (!modo.equalsIgnoreCase("ver")) {%>
-			 	if(document.getElementById("idTipoEJGColegio").options.length<=2){
-			 		document.getElementById("idTipoEJGColegio").value=1;
-				 }
-		 	<%}%>
+			
 		}
 	
 		function refrescarLocal()
@@ -638,9 +634,9 @@
 			</td>
 			<td>	
 			<%if (modo.equals("ver")) {%>
-				<siga:ComboBD nombre="idTipoEJGColegio" tipo="tipoEJGColegio" estilo="true" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=TIPOEJGCOLEGIOSEL%>" parametro="<%=dato%>" clase="boxConsulta" readOnly="true" />
+				<siga:ComboBD nombre="idTipoEJGColegio" tipo="tipoEJGColegio"  seleccionMultiple="false" obligatorio="false"  elementoSel="<%=TIPOEJGCOLEGIOSEL%>" parametro="<%=dato%>" clase="boxConsulta" readOnly="true" />
 			<%} else {%>
-				<siga:ComboBD nombre="idTipoEJGColegio" tipo="tipoEJGColegio" estilo="true" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=TIPOEJGCOLEGIOSEL%>" parametro="<%=dato%>" clase="boxCombo" />
+				<siga:ComboBD nombre="idTipoEJGColegio" tipo="tipoEJGColegio" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=TIPOEJGCOLEGIOSEL%>" parametro="<%=dato%>" clase="boxCombo" />
 			<%}%>
 			</td>
 			<td class="labelText" nowrap>
