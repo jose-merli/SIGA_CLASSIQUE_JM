@@ -1178,6 +1178,9 @@ public class BusquedaClientesAction extends MasterAction {
 				miformSession2.reset(mapping,request);
 			}
 			BusquedaClientesForm miform = (BusquedaClientesForm)formulario;
+	        		
+			String obtenerColegiados = (String)miform.getObtenerColegiados();	        
+			
 			miform.reset(mapping,request);
 			
 			// obtengo la visibilidad para el user
@@ -1185,9 +1188,11 @@ public class BusquedaClientesAction extends MasterAction {
 			request.setAttribute("CenInstitucionesVisibles",visibilidad);
 			request.setAttribute("clientes",request.getParameter("clientes"));
 			request.setAttribute("deudor",request.getParameter("deudor"));
+			request.setAttribute("obtenerColegiados",obtenerColegiados);
 	        if (request.getParameter("busquedaSancion")!=null && request.getParameter("busquedaSancion").equals("1")){
 	        	request.setAttribute("busquedaSancion","1");
 	        }
+	                
 	     } 	
 		 catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
@@ -1300,7 +1305,7 @@ public class BusquedaClientesAction extends MasterAction {
 				request.setAttribute("busquedaSancion","1");
 				
 			}
-			
+					
 			
 			String idPaginador = getIdPaginador(super.paginadorModal,getClass().getName());
 			request.setAttribute(ClsConstants.PARAM_PAGINACION,idPaginador);

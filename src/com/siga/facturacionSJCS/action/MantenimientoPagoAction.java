@@ -284,6 +284,8 @@ public class MantenimientoPagoAction extends MasterAction {
 		FcsCobrosRetencionJudicialAdm cobrosRetencionJudicialAdm = new FcsCobrosRetencionJudicialAdm(this.getUserBean(request));
 		FcsPagoGrupoFactHitoAdm pagoGrupoFactHitoAdm = new FcsPagoGrupoFactHitoAdm(this.getUserBean(request));
 		FcsPagoColegiadoAdm pagoColegiadoAdm = new FcsPagoColegiadoAdm(this.getUserBean(request));
+		FcsAplicaMovimientosVariosAdm aplicacionAdm = new FcsAplicaMovimientosVariosAdm(this.getUserBean(request));
+
 		UsrBean usr;
 		String forward="";
 		MantenimientoPagoForm miform = (MantenimientoPagoForm)formulario;
@@ -301,7 +303,7 @@ public class MantenimientoPagoAction extends MasterAction {
 			Integer idInstitucion = new Integer ((String)ocultos.get(1));
 
 			//Antes de borrar  ponemos a null el IDPAGOJG si este es igual idPago:
-			fcsMovimientosVariosAdm.desasignarPago(""+idInstitucion, ""+idPago);
+//			fcsMovimientosVariosAdm.desasignarPago(""+idInstitucion, ""+idPago);
 			
 			// Obtenemos el idFacturacion
 			registro = new Hashtable();
@@ -328,6 +330,13 @@ public class MantenimientoPagoAction extends MasterAction {
 			if ((vAuxPagoGrupoFactHito != null) && (vAuxPagoGrupoFactHito.size() > 0)) {
 				pagoGrupoFactHitoAdm.deletePagoGrupoFactHito(idInstitucion.toString(), idPago.toString());
 			}
+					
+			Vector vAuxMovimientosAplicados = aplicacionAdm.getMovimientoAplicado(idInstitucion.toString(), idPago.toString());
+			
+			
+			if ((vAuxMovimientosAplicados != null) && (vAuxMovimientosAplicados.size() > 0)) {
+				aplicacionAdm.deleteMovimientoaplicado(idInstitucion.toString(), idPago.toString());
+			}	
 			
 			Vector vAuxPagoColegiado = pagoColegiadoAdm.selectPagoColegiado(idInstitucion.toString(), idPago.toString());
 			

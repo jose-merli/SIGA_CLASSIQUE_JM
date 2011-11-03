@@ -2097,9 +2097,9 @@
         </action>
 
 		<action path="/JGR_MovimientosVariosLetrado" type="com.siga.facturacionSJCS.action.MantenimientoMovimientosAction" parameter="esFichaColegial" name="MantenimientoMovimientosForm" scope="session">
-            <forward name="inicio" path="/html/jsp/facturacionSJCS/busquedaMovimientos.jsp"/>
+            <forward name="inicio" path="/html/jsp/facturacionSJCS/busquedaMovimientos.jsp?esFichaColegial=1"/>
             <forward name="resultado" path="/html/jsp/facturacionSJCS/busquedaMovimientosResultados.jsp?esFichaColegial=1"/>
-            <forward name="nuevo" path="/html/jsp/facturacionSJCS/datosMovimientos.jsp"/>
+            <forward name="nuevo" path="/html/jsp/facturacionSJCS/datosMovimientos.jsp?esFichaColegial=0"/>
         </action>
 	
 		<action path="/JGR_RetencionesJudicialesLetrado" type="com.siga.facturacionSJCS.action.MantenimientoRetencionesJudicialesAction" parameter="esFichaColegial" name="MantenimientoRetencionesJudicialesForm" scope="request">
@@ -2159,7 +2159,6 @@
             <forward name="recogidaDatos" path="/html/jsp/gratuita/datosCartaAsistencia.jsp?esFichaColegial=1"/>
     </action>
 
-	
 		<action path="/JGR_ResponsableAsistencia" type="com.siga.gratuita.action.AsisRespAsistenciaAction" name="AsistenciasForm">
 		    <forward name="editar" path="/html/jsp/gratuita/asisRespAsistencias.jsp"/>
 		    <forward name="abrirBusquedaModal" path="/html/jsp/gratuita/personasJG.jsp"/>
@@ -2870,6 +2869,7 @@
 			<forward name="inicio" path="/html/jsp/facturacionSJCS/busquedaMovimientos.jsp"/>
 			<forward name="resultado" path="/html/jsp/facturacionSJCS/busquedaMovimientosResultados.jsp"/>
 			<forward name="nuevo" path="/html/jsp/facturacionSJCS/datosMovimientos.jsp"/>
+			<forward name="resultadoAplicacion" path="/html/jsp/facturacionSJCS/aplicacionMovimiento.jsp"/>
 		</action>
 
 		<action path="/FCS_DetalleFacturacion" type="com.siga.facturacionSJCS.action.DatosDetalleFacturacionAction" name="DatosDetalleFacturacionForm" scope="request">

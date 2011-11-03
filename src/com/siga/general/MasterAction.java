@@ -155,6 +155,12 @@ public abstract class MasterAction extends SIGAAuxAction {
 					break;
 				}
 				
+				// consultaAplicacion
+				if (accion.equalsIgnoreCase("consultaAplicacion")){
+					mapDestino = consultaAplicacion(mapping, miForm, request, response);
+					break;
+				}				
+				
 			} while (false);
 			
 			// Redireccionamos el flujo a la JSP correspondiente
@@ -500,6 +506,23 @@ public abstract class MasterAction extends SIGAAuxAction {
 		request.setAttribute("sinrefresco","");
 		request.setAttribute("modal","");
 		return "exito"; 
+	}
+	
+	/** 
+	 *  Funcion que atiende la accion buscarPor
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 * @exception  SIGAException  Errores de aplicación
+	 */
+	protected String consultaAplicacion (ActionMapping mapping,
+			MasterForm formulario,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException {
+		return mapSinDesarrollar;
 	}
 	
 	

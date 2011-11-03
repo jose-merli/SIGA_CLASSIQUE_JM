@@ -39,6 +39,8 @@
 	parametro[0] = institucionesVisibles;
 	String busquedaSancion=(String) request.getAttribute("busquedaSancion");
 
+	
+	String obtenerColegiados=(String) request.getAttribute("obtenerColegiados");
 %>	
 
 <html>
@@ -97,6 +99,8 @@
 	<html:hidden name="busquedaClientesModalForm" property = "idInstitucion" />
 	<input type="hidden" name="clientes" value="<%=(String)request.getAttribute("clientes")%>">
     <input type="hidden" name="busquedaSancion" value="<%=busquedaSancion%>">
+    
+    <input type="hidden" name="obtenerColegiados" value="<%=obtenerColegiados%>">
  
 	<!-- campos ocultos -->
 	<html:hidden name="busquedaClientesModalForm" property = "nombreInstitucion" />

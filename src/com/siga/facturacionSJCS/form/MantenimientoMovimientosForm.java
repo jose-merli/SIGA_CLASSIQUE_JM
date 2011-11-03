@@ -8,17 +8,20 @@ import com.siga.general.MasterForm;
 
 public class MantenimientoMovimientosForm extends MasterForm {
 
-	private String nif = 			"NIF";
-	private String ncolegiado = 	"NCOLEGIADO";
-	private String nombre = 		"NOMBRE";
-	private String pagoAsociado = 	"PAGOASOCIADO";
-	private String descripcion = 	"DESCRIPCION";
-	private String cantidad = 		"CANTIDAD";
-	private String motivo = 		"MOTIVO";
-	private String idPersona = 		"IDPERSONA";
-	private String idPagoJg = 		"IDPAGOJG";
-	private String idMovimiento = 	"IDMOVIMIENTO";
-	private String buscar = 		"BUSCAR";
+	private String nif              = 	"NIF";
+	private String ncolegiado       = 	"NCOLEGIADO";
+	private String nombre           = 	"NOMBRE";
+	private String pagoAsociado     = 	"PAGOASOCIADO";
+	private String descripcion      = 	"DESCRIPCION";
+	private String cantidad         = 	"CANTIDAD";
+	private String motivo           = 	"MOTIVO";
+	private String idPersona        = 	"IDPERSONA";
+	private String idPagoJg         = 	"IDPAGOJG";
+	private String idMovimiento     = 	"IDMOVIMIENTO";
+	private String buscar           = 	"BUSCAR";
+	private String checkHistorico   = 	"CHECKHISTORICO";
+	private String cantidadRestante = 	"CANTIDADRESTANTE";
+	private String fechaAlta        =   "FECHAALTA";
 	
 
 	/**
@@ -147,11 +150,32 @@ public class MantenimientoMovimientosForm extends MasterForm {
 	public String getBuscar() {
 		return (String)datos.get(buscar);
 	}
+	public String getFechaAlta() {
+		return fechaAlta;
+	}
+	public void setFechaAlta(String fechaAlta) {
+		this.fechaAlta = fechaAlta;
+	}
 	/**
 	 * @param cantidad The cantidad to set.
 	 */
 	public void setBuscar(String valor) {
 		this.datos.put(buscar, valor);
 	}
+	
+	
+	public String getCheckHistorico() {
+		return checkHistorico;
+	}
+	public void setCheckHistorico(String checkHistorico) {
+		this.checkHistorico = checkHistorico;
+	}
+	public String getCantidadRestante() {
+		return cantidadRestante;
+	}
+	public void setCantidadRestante(String cantidadRestante) {
+		this.cantidadRestante = cantidadRestante;
+	}	
+	
 	
 }

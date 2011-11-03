@@ -26,6 +26,8 @@ import com.siga.general.MasterForm;
  	String idPersona=  null;
  	String idInstitucion;
  	private String verFichaLetrado;
+ 	
+ 	public String obtenerColegiados;
 
 	
 
@@ -569,4 +571,12 @@ import com.siga.general.MasterForm;
 	public void setVerFichaLetrado(String verFichaLetrado){
 		this.verFichaLetrado = verFichaLetrado;
 	}
+	public String getObtenerColegiados() {
+		return obtenerColegiados;
+	}
+	public void setObtenerColegiados(String obtenerColegiados) {
+		this.obtenerColegiados = obtenerColegiados;
+	}
+	
+	
 }

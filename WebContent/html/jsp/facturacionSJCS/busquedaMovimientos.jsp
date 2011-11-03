@@ -98,7 +98,7 @@
 
 	<siga:ConjCampos leyenda="factSJCS.datosMovimientos.leyenda">
 
-	<table class="tablaCampos" align="center">
+	<table align="center">
 
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
     <html:form action="${path}?noReset=true" method="POST" target="resultado">
@@ -106,36 +106,42 @@
 		<html:hidden name="MantenimientoMovimientosForm" property = "actionModal" value = ""/>
 		<input type="hidden" name="limpiarFilaSeleccionada" value="">
 		<input type="hidden" name="botonBuscarPulsado" value="">
+		<input type="hidden" name="checkHistoricoMovimiento" value="">
 	<!-- FILA -->
-	<tr>				
+	<tr>	
 		<td class="labelText">
 			<siga:Idioma key="factSJCS.datosMovimientos.literal.nifCif"/>
-		</td>				
-		<td>
-			<html:text name="MantenimientoMovimientosForm" property="nif" maxlength="20" styleClass="box" readonly="false"/>
-		</td>
+		</td>			
 		<td class="labelText">
+			<html:text name="MantenimientoMovimientosForm" property="nif" maxlength="20" styleClass="box" readonly="false"/>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;					
 			<siga:Idioma key="factSJCS.datosMovimientos.literal.nColegiado"/>
-		</td>				
-		<td>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<html:text name="MantenimientoMovimientosForm" property="ncolegiado" maxlength="20" styleClass="box" readonly="false"/>
 		</td>
-
-			
-	</tr>
-	<tr>
 		<td class="labelText">
-			<siga:Idioma key="factSJCS.datosFacturacion.literal.nombre"/>
+			<siga:Idioma key="factSJCS.datosMovimientos.literal.descripcion"/>
 		</td>
 		<td>
 			<html:text name="MantenimientoMovimientosForm" property="nombre" maxlength="100" styleClass="box" readonly="false"/>
-		</td>
+		</td>	
+	</tr>
+	<tr>
 		<td class="labelText">
 			<siga:Idioma key="factSJCS.datosMovimientos.literal.pago"/>
 		</td>
 		<td>
+			&nbsp;	
 			<siga:ComboBD nombre = "pagoAsociado" tipo="cmbPagoAsociado" clase="boxCombo" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=pagoA%>"/>
 		</td>
+		<td></td>
+		<!-- Introducción del check de histórico -->
+		<td class="labelText" aligna ="right">
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.checkHistorico"/>
+			<input type="checkbox" name="checkHistorico" property="checkHistorico" onclick="comprobarCheckHistorico(this);"/>
+		</td>			
+	
 	</tr>
 	<!-- FILA -->
 
@@ -162,7 +168,7 @@
 	
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
-
+	
 		//Funcion asociada a boton buscar
 		function buscar() 
 		{		
@@ -195,12 +201,18 @@
 			document.forms[0].modo.value="abrir";
 			document.forms[0].submit();
 		}
+
+		function comprobarCheckHistorico(valorCheck){
+			if (!valorCheck.checked){
+				document.forms[0].checkHistoricoMovimiento.value="false";
+			} else document.forms[0].checkHistoricoMovimiento.value="true";
+		}
 		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 
 	<!-- INICIO: IFRAME LISTA RESULTADOS -->
-	<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
+ 	<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
 					id="resultado"
 					name="resultado" 
 					scrolling="no"
@@ -208,7 +220,7 @@
 					marginheight="0"
 					marginwidth="0";					 
 					class="frameGeneral">
-	</iframe>
+	</iframe>  
 
 	<!-- FIN: IFRAME LISTA RESULTADOS -->
 
@@ -218,7 +230,7 @@
 
 <!-- INICIO: SUBMIT AREA -->
 <!-- Obligatoria en todas las páginas-->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+ <iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>  	
 <!-- FIN: SUBMIT AREA -->
 
 </body>

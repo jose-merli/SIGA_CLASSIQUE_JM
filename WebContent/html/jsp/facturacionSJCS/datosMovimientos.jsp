@@ -32,6 +32,8 @@
 
 	//campos a mostrar
 	String nif = "", ncolegiado="", nombre ="", descripcion = "", cantidad="", motivo="", idMovimiento="", idPersona="", pago="", idPago="";
+	String fechaAlta ="";
+	String accionAplicacion = "consultaAplicacion";
 
 	//variables para controlar el modo
 	String accion ="", modo="", readonly="false", clase="box", claseNum="boxNumber";
@@ -69,6 +71,7 @@
 			idMovimiento = (String)resultado.get("IDMOVIMIENTO");
 			pago = (String)resultado.get("PAGO");
 			idPago = (String)resultado.get("IDPAGO");
+			fechaAlta = (String)resultado.get("FECHAALTA");
 			request.getSession().removeAttribute("resultado");
 		}
 		catch(Exception e)
@@ -149,7 +152,7 @@
 
 <body>
 
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" heigth="62">
 	<tr>
 		<td id="titulo" class="titulitosDatos">
 			<siga:Idioma key="factSJCS.datosMovimientos.cabecera"/>
@@ -164,6 +167,7 @@
 	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="" style="display:none">
 		<input type="hidden" name="actionModal" value="">
 		<input type="hidden" name="modo" value="abrirBusquedaModal">
+		<input type="hidden" name="obtenerColegiados" value="true">
 	</html:form>
 
 
@@ -171,22 +175,24 @@
 
 	<!-- INICIO: CAMPOS -->
 	
-	<table  class="tablaCentralCamposMedia"  align="center">
+	<table class="tablaCentralCamposMedia" align="center">
 
 	<html:form action="/CEN_MantenimientoMovimientos.do" method="POST" target="submitArea">
 	<html:hidden property = "modo" value = "insertar"/>
 	<html:hidden property = "idPersona" value = "<%=idPersona%>"/>
 	<html:hidden property = "idMovimiento" value = "<%=idMovimiento%>"/>
+	<html:hidden property = "fechaAlta" value = "<%=fechaAlta%>"/>
 	<html:hidden property = "actionModal" value = ""/>
+	
 	
 	<tr>
 	<td>
-		<siga:ConjCampos leyenda="factSJCS.datosMovimientos.leyenda">
-		<table>
+		<siga:ConjCampos leyenda="factSJCS.datosMovimientos.leyenda" >
+		<table> 
 			<tr>
 			<td colspan="4">
 				<siga:ConjCampos leyenda="factSJCS.datosMovimientos.leyendaCliente">
-				<table width="100%">
+				<table>
 					<tr>
 						<td class="labelText">
 							<siga:Idioma key="factSJCS.datosMovimientos.literal.nifCif"/>&nbsp;(*)
@@ -254,7 +260,28 @@
 					<html:textarea name="MantenimientoMovimientosForm" property="motivo" cols="60" rows="4" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" styleClass="<%=clase%>" value="<%=motivo%>"/>
 				</td>
 			</tr>
-		
+			<tr>
+				<td colspan="4">
+					&nbsp;
+				</td>
+			</tr>			
+			<tr>
+			<td colspan="4">
+				<siga:ConjCampos leyenda="factSJCS.datosMovimientos.leyendaMovimiento">
+				<table>
+					<tr>
+						<td rowspan=2>
+								<iframe align="top"
+								src="<%=app%>/CEN_MantenimientoMovimientos.do?modo=<%=accionAplicacion%>&idPersona=<%=idPersona%>&idInstitucion=<%=usr.getLocation()%>&idMovimiento=<%=idMovimiento%>"
+								id="resultadoAplica" name="resultadoAplica" scrolling="no" frameborder="0"
+								marginheight="0" marginwidth="0"
+								style="width: 380px; height:80px;"> </iframe>
+						</td>
+					</tr>
+				</table>
+				</siga:ConjCampos>
+			</td>
+			</tr>					
 		</table>
 		</siga:ConjCampos>
 	</td>
@@ -263,12 +290,15 @@
 	</html:form>
 
 	</table>
-	<!-- INICIO: BOTONES REGISTRO -->
-	
-		<siga:ConjBotonesAccion botones="Y,R,C" modal="M" modo="<%=modo%>"/>
 
-	<!-- FIN: BOTONES REGISTRO -->
+<%
+	String bot = "C";
+	if (!accion.equalsIgnoreCase("ver"))	{
+		bot += ",Y,R";
+	}	
+%>
 
+	<siga:ConjBotonesAccion botones="<%=bot%>" modal="M"  />
 	
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
