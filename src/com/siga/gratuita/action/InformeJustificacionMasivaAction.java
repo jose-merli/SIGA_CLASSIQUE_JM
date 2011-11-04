@@ -2,14 +2,10 @@ package com.siga.gratuita.action;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,48 +15,34 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import com.aspose.words.Document;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.SIGAReferences;
-import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.PaginadorBind;
 import com.siga.administracion.SIGAConstants;
-import com.siga.beans.AdmInformeAdm;
-import com.siga.beans.AdmInformeBean;
-import com.siga.beans.AdmLenguajesAdm;
-import com.siga.beans.AdmTipoInformeAdm;
-import com.siga.beans.AdmTipoInformeBean;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
-import com.siga.beans.CenPersonaBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsActuacionDesignaAdm;
 import com.siga.beans.ScsActuacionDesignaBean;
 import com.siga.beans.ScsDesignaAdm;
 import com.siga.beans.ScsDesignaBean;
 import com.siga.beans.ScsDesignasLetradoAdm;
-import com.siga.certificados.Plantilla;
-import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.gratuita.form.AcreditacionForm;
-import com.siga.gratuita.form.ActuacionDesignaForm;
 import com.siga.gratuita.form.DefinirEJGForm;
 import com.siga.gratuita.form.DesignaForm;
 import com.siga.gratuita.form.InformeJustificacionMasivaForm;
 import com.siga.gratuita.pcajg.resoluciones.ResolucionesFicheroAbstract;
-import com.siga.informes.MasterWords;
 
 
 public class InformeJustificacionMasivaAction extends MasterAction {
@@ -671,10 +653,32 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		
 	}
 	
+	protected String download (ActionMapping mapping,
+			MasterForm formulario,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException {
+		
+		InformeJustificacionMasivaForm miForm = (InformeJustificacionMasivaForm) formulario;
+		File file = getFicheroPDF(getIDInstitucion(request).toString(), miForm.getDocResolucion());
+
+		if (file == null) {								
+			throw new SIGAException("messages.general.error.ficheroNoExiste");
+		}				
+		
+		request.setAttribute("nombreFichero", file.getName());
+		request.setAttribute("rutaFichero", file.getAbsolutePath());
+
+		return "descargaFichero";
+	}	
 	
-	
-	
-	
+	private File getFicheroPDF(String idInstitucion, String docResolucion) {
+		File file = new File(ResolucionesFicheroAbstract.getDirectorioArchivos(idInstitucion));
+		file = new File(file, docResolucion + "." + ResolucionesFicheroAbstract.getExtension(idInstitucion));
+		if (!file.exists()) {
+			file = null;
+		}		
+		return file;
+	}
 
 
 }
