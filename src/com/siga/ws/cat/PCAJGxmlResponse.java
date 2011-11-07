@@ -156,7 +156,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 			}
 		} catch (JSchException e) {
 			escribeLogRemesa("Se ha producido un error de conexión con el servidor FTP");
-			ClsLogging.writeFileLogError("Error en el envío FTP", e, 3);		
+			ClsLogging.writeFileLogError("Error en el envío FTP. Revisar la configuración FTP del colegio " + getIdInstitucion(), e, 3);		
 		} finally {
 			if (ftpPcajgAbstract != null) {
 				ftpPcajgAbstract.disconnect();
