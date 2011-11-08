@@ -716,13 +716,8 @@
 			<td class="labelTextValue">
 			<!-- Se comenta por que no se quiere mostrar el número de Expediente  al usuario -->
 				
-				<bean:write name="ExpDatosGeneralesForm" property="anioExpediente"/>
-				/
 			<!-- En caso de ser nuevo no se muestran ni el numExpediente ni el anioExpediente -->	
 				<bean:write name="ExpDatosGeneralesForm" property="numExpediente"/>				
-				
-				
-							
 				/
 				<bean:write name="ExpDatosGeneralesForm" property="anioExpediente"/>
 						
