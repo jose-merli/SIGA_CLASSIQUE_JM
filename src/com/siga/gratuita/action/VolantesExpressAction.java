@@ -205,6 +205,10 @@ public class VolantesExpressAction extends MasterAction
 		// Por defecto marcamos "Guardia 24h. Asistencia al detenido. Procedimiento general"
 		miForm.setIdTipoAsistenciaColegio(String.valueOf(ScsTipoAsistenciaColegioBean.TIPO_ASISTENCIA_DETENIDO_PROC_GENERAL));
 		 
+		int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usrBean.getLocation()));
+		miForm.setTipoPcajg(""+valorPcajgActivo);
+		//request.setAttribute("tipoPcajg", new Integer(valorPcajgActivo));
+		
 		return "inicio";
 	}
 
@@ -616,10 +620,7 @@ public class VolantesExpressAction extends MasterAction
 				miForm.setJuzgados(alJuzgados);
 				
 			}
-			UsrBean usrBean = this.getUserBean(request);
-			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usrBean.getLocation()));
-			miForm.setTipoPcajg(""+valorPcajgActivo);
-			//request.setAttribute("tipoPcajg", new Integer(valorPcajgActivo));
+			
 			
 			
 		} catch (ClsExceptions e) {
