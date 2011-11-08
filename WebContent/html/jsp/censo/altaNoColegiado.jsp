@@ -772,8 +772,9 @@ function str_replace(search, replace, subject) {
 					
 					
 				 <% if ( formulario.getAccion().equalsIgnoreCase("nuevo")) { %>
-				 <!--  Se quita de manera provisonal
-				      <html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="<%=estiloCajaNif%>" value="<%=nIdentificacion %>"  onblur="formatearDocumento();"></html:text>		
+				 
+				      <html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="<%=estiloCajaNif%>" value="<%=nIdentificacion %>"  onblur="formatearDocumento();"></html:text>
+				  <!--  Se quita de manera provisonal		
 				      <input type="button" name="idButton" value='<siga:Idioma key="censo.nif.letra.letranif" />' onclick="generarLetra();" style="align:right" class="button">
 				   -->		
 				 <% }else{ %>
