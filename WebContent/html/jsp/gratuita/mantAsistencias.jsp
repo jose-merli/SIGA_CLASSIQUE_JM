@@ -413,8 +413,9 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 	<siga:ConjCampos leyenda="gratuita.mantAsistencias.literal.centroDetencion"> 
 		   <table width="100%">
 		   	<tr>
-		   		<td class="labelText" style="vertical-align:text-top;"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligencia'/>
-		   		&nbsp;
+		   		<td class="labelText" style="vertical-align:text-top;;width:200" id="tdNumeroDiligencia"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligencia'/>(*)
+		   		</td>
+		   	<td>
 				<input name="numeroDilegencia" type="text" value="<%=numeroDiligenciaAsi%>" class="<%=estilo%>" maxLength="<%=maxLenghtProc%>" />
 			</td> 
 			<% if(!modo.equals("ver")){%>
@@ -423,7 +424,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			&nbsp;
 			<input type="text" name="codigoExtComisaria" class="box" size="8"  maxlength="10" onBlur="obtenerComisaria();" />
 			<%}%>
-			<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="420" obligatorio="false" parametro="<%=parametroComisaria%>" elementoSel="<%=comisariaSel%>" clase="<%=estilo%>" readonly="<%=readOnly%>"/>
+			<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="420" obligatorio="false" parametro="<%=parametroComisaria%>" elementoSel="<%=comisariaSel%>" clase="<%=estilo%>" readonly="<%=readOnly%>" accion="actualizarTdNumeroDiligencia()"/>
 			</td>
 			</tr>
 		</table>
@@ -439,9 +440,9 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 
 		   <table width="100%">
 		   	<tr>
-		   	<td class="labelText" style="vertical-align:text-top;"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/>
-		   	&nbsp;
-		   	<input name="numeroProcedimiento" maxLength="<%=maxLenghtProc%>" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>"/>
+		   	<td class="labelText" style="vertical-align:text-top;width:200" id="tdNumeroProcedimiento" ><siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/>(*)
+		   	</td>
+		   	<td><input name="numeroProcedimiento" maxLength="<%=maxLenghtProc%>" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>"/>
 			</td>
 			<% if(!modo.equals("ver")){%>	
 			<td class="labelText" style="vertical-align:text-top;text-align: right">	
@@ -449,7 +450,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			   &nbsp;
 			   <input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();"/>
 			<%}%>
-			<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="420" obligatorio="false" parametro="<%=parametroJuzgado%>" elementoSel="<%=juzgadoSel%>" clase="<%=estilo%>" readonly="<%=readOnly%>" />
+			<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="420" obligatorio="false" parametro="<%=parametroJuzgado%>" elementoSel="<%=juzgadoSel%>" clase="<%=estilo%>" readonly="<%=readOnly%>" accion="actualizarTdNumeroProcedimiento()"/>
 			</td>   
 				
 				</tr>
@@ -1020,6 +1021,30 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 				
 	   		}
 		}
+		function actualizarTdNumeroProcedimiento(){
+			if (document.getElementById("tipoPcajg").value=="2"){
+				var idJuzgado = document.getElementsByName('juzgado')[0];
+				if(idJuzgado.value!="")
+					document.getElementById("tdNumeroProcedimiento").innerText = '<siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/>(*)';
+				else
+					document.getElementById("tdNumeroProcedimiento").innerText = '<siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/>';
+			}
+			
+		}
+		function actualizarTdNumeroDiligencia(){
+			if (document.getElementById("tipoPcajg").value=="2"){
+				var idComisaria = document.getElementsByName('comisaria')[0];
+				if(idComisaria.value!="")
+					document.getElementById("tdNumeroDiligencia").innerText = '<siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligencia'/>(*)';
+				else
+					document.getElementById("tdNumeroDiligencia").innerText = '<siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligencia'/>';
+			}
+			
+		}
+		
+		actualizarTdNumeroDiligencia();
+		
+		actualizarTdNumeroProcedimiento();
 	</script>
 
 	
