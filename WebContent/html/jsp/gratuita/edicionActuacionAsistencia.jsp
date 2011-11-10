@@ -788,8 +788,6 @@ function accionGuardarCerrar()
 		fin();
 		return false;
 	}
-	alert("document.getElementById(tipoPcajg).value"+document.getElementById("tipoPcajg").value);
-	alert("document.ActuacionAsistenciaFormEdicion.numeroAsunto.value"+document.ActuacionAsistenciaFormEdicion.numeroAsunto.value);
 	if(document.getElementById("tipoPcajg").value=='2' &&  document.ActuacionAsistenciaFormEdicion.numeroAsunto.value== ''){
 		msg = "<siga:Idioma key='errors.required' arg0='gratuita.mantActuacion.literal.nasunto'/>";
 		alert(msg);
