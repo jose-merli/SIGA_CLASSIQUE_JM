@@ -933,9 +933,9 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    			ScsEJGBean ejgBean = (ScsEJGBean)bean;
 	    	    			Hashtable ejgHashtable =  ejgBean.getOriginalHash();
 	    	    			htDatosEnvio.put("EJG_NU",(String) ejgHashtable.get("NUMERO_EJG"));
-	    	    			htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APELLI_1",(String) ejgHashtable.get("SMS_NOMBRE_APELLI_1_LETRADO_DESIGNADO"));
-	    	    			htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APEL_1_2",(String) ejgHashtable.get("SMS_NOMBRE_APEL_1_2_LETRADO_DESIGNADO"));
-	    	    			htDatosEnvio.put("EJG_LETRADODES_APEL_1_2_NOMBRE",(String) ejgHashtable.get("SMS_APEL_1_2_NOMBRE_LETRADO_DESIGNADO"));
+	    	    			htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APELLI_1",(String) ejgHashtable.get("N_APELLI_1_LETRADO_DESIGNADO"));
+	    	    			htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APEL_1_2",(String) ejgHashtable.get("N_APEL_1_2_LETRADO_DESIGNADO"));
+	    	    			htDatosEnvio.put("EJG_LETRADODES_APEL_1_2_NOMBRE",(String) ejgHashtable.get("APEL_1_2_N_LETRADO_DESIGNADO"));
 	    	    			htDatosEnvio.put("EJG_TLFN", (String) ejgHashtable.get("TELEFONODESPACHO_LET_DESIGNADO"));
 	    	    			String dictamenEJG =  (String) ejgHashtable.get("DESC_TIPODICTAMENEJG");
 	    	    			if(dictamenEJG.length()>10)
