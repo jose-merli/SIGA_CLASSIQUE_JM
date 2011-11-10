@@ -111,12 +111,12 @@
 				if (tipoPCAJGGeneral == 1) {
 					buttons+=",ws";//envio WebService
 				} else {
-					buttons+=",gxml";//generar XML	
+					buttons+=",val,gxml";//generar XML	
 				}
 			} else if (cajgConfig == 4) {
 				buttons+=",ws";//envio WebService
 			} else if (cajgConfig == 6) {
-				buttons+=",gxml";//generar XML
+				buttons+=",gxml";//generar XML			
 			}
 		}
 	} else if (idEstado == 1) {//GENERADA
