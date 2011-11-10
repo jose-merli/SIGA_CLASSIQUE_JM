@@ -921,8 +921,29 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    		cpBean.setValor(sAsunto);
 	    	    		 
 	    	    	}
+	    	    	
 	    	    		
 	    	    		
+	    	    	
+	    	    }else if(cpBean.getTipoCampo().equals(EnvCamposAdm.K_TIPOCAMPO_S)){
+	    	    	if(cpBean.getIdCampo().toString().equals(EnvCamposPlantillaAdm.K_IDCAMPO_SMS)){
+	    	    		Hashtable htDatosEnvio = new Hashtable();
+	    	    		if(bean instanceof ScsEJGBean){
+	    	    			
+	    	    			ScsEJGBean ejgBean = (ScsEJGBean)bean;
+	    	    			Hashtable ejgHashtable =  ejgBean.getOriginalHash();
+	    	    			htDatosEnvio.put("EJG_NU",(String) ejgHashtable.get("NUMERO_EJG"));
+	    	    			htDatosEnvio.put("EJG_LETRADO_DESIGNADO",(String) ejgHashtable.get("SMS_NOMBRE_LETRADO_DESIGNADO"));
+	    	    			htDatosEnvio.put("EJG_TLFN", (String) ejgHashtable.get("TELEFONODESPACHO_LET_DESIGNADO"));
+	    	    			
+	    	    			
+	    	    		}
+	    	    		
+	    	    		String sCuerpo = sustituirEtiquetas(cpBean.getValor(),htDatosEnvio);
+	    	    		cpBean.setValor(sCuerpo);
+	    	    		
+	    	    		
+	    	    	}
 	    	    	
 	    	    }
 	    	    

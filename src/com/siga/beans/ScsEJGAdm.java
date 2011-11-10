@@ -3571,7 +3571,14 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append("_");
 			sql.append(aliasSalida);
 			sql.append(" ,COLDES.NOMBRE || ' ' || COLDES.APELLIDOS1 || ' ' ||COLDES.APELLIDOS2 AS NOMBRE");
+			
 			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(" ,substr(COLDES.NOMBRE || ' ' || COLDES.APELLIDOS1,1,21)  AS SMS_NOMBRE");
+			
+			sql.append("_");
+			
+			
 			sql.append(aliasSalida);
 			sql.append(" ,DECODE(COLDES.SEXO, null, null,'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_ST");
 			sql.append("_");

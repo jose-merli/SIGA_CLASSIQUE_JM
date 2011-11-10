@@ -38,7 +38,7 @@
 </head>
 
 <body onload="cargarListadoArchivos();inicio();">
- 
+
 <table class="tablaTitulo" cellspacing="0" heigth="32">
 	<tr>
 		<td id="titulo" class="titulosPeq"><siga:Idioma key="administracion.informes.edicion.titulo"/>
@@ -59,11 +59,26 @@
 	<html:hidden property="claseTipoInforme" value="${InformeFormEdicion.claseTipoInforme}"/>
 	<html:hidden property="idConsulta" value="${InformeFormEdicion.idConsulta}"/>
 	<html:hidden property="idInstitucionConsulta" value="${InformeFormEdicion.idInstitucionConsulta}"/>
+	<html:hidden property="idTipoEnvio" value="${InformeFormEdicion.idTipoEnvio}"/>
+	<html:hidden property="idPlantillaEnvio" value="${InformeFormEdicion.idPlantillaEnvio}"/>
+	<html:hidden property="idPlantillaGeneracion" value="${InformeFormEdicion.idPlantillaGeneracion}"/>
+	
+	
+	
 	<input type="hidden" name="location" value="${InformeFormEdicion.usrBean.location}"/>
 	<input type="hidden" name="actionModal" />
 
 	
 	<bean:define id="location" name="InformeFormEdicion" property="usrBean.location"  />
+	<bean:define id="comboTipoEnvio" name="comboTipoEnvio"  scope="request"/>
+	<input type="hidden" id="comboTipoEnvioHidden" value="${comboTipoEnvio}" />
+	<bean:define id="parametrosComboEnvios" name="parametrosComboEnvios" type="String[]" scope="request" />
+	<bean:define id="idTipoEnvioSeleccionado" name="idTipoEnvioSeleccionado" type="java.util.ArrayList" scope="request"  />
+	<bean:define id="idPlantillaGeneracionSeleccionado" name="idPlantillaGeneracionSeleccionado" type="java.util.ArrayList" scope="request"  />
+	<bean:define id="idPlantillaEnvioSeleccionado" name="idPlantillaEnvioSeleccionado" type="java.util.ArrayList" scope="request"  />
+	
+	
+	
 	
 	<table width="100%" border="0">
 		<tr>
@@ -229,7 +244,58 @@
 					<input type="hidden" name="destinatariosCheck" value="J" >
 			</td>
 		</tr>
-		<tr>
+			<tr id="trEnvios">
+
+				<td colspan="4">
+					<table>
+						<tr>
+							<td width="15%"></td>
+							<td width="25%"></td>
+							<td width="15%"></td>
+							<td width="15%"></td>
+							<td width="15%"></td>
+							<td width="15%"></td>
+
+						</tr>
+
+						<tr>
+							<td class="labelText"><siga:Idioma
+									key="envios.definir.literal.tipoenvio" />&nbsp;(*)</td>
+							<td ><siga:ComboBD nombre="comboTipoEnvio"
+									tipo="${comboTipoEnvio}" clase="boxCombo" obligatorio="false"
+									parametro="${parametrosComboEnvios}"
+									elementoSel="${idTipoEnvioSeleccionado}"
+									accion="Hijo:comboPlantillaEnvio;accionComboTipoEnvio();" /></td>
+
+
+							<td class="labelText"><siga:Idioma
+									key="envios.plantillas.literal.plantilla" />&nbsp;(*)</td>
+
+							<td ><siga:ComboBD
+									nombre="comboPlantillaEnvio" tipo="cmbPlantillaEnvios2"
+									clase="boxCombo" obligatorio="FALSE" hijo="t"
+									elementoSel="${idPlantillaEnvioSeleccionado}"
+									accion="Hijo:idPlantillaGeneracion" /></td>
+							<td class="labelText" style="display: none"><siga:Idioma
+									key="envios.definir.literal.plantillageneracion" /></td>
+							<td style="display: none"><siga:ComboBD
+									nombre="idPlantillaGeneracion" tipo="cmbPlantillaGeneracion"
+									elementoSel="${idPlantillaGeneracionSeleccionado}"
+									clase="boxCombo" obligatorio="false" hijo="t"  />
+							</td>
+						</tr>
+					</table></td>
+
+
+
+			</tr>
+
+
+
+
+
+
+			<tr>
 			<td colspan = "4" >&nbsp;</td>
 		</tr>
 	</table>
@@ -262,7 +328,10 @@ function cargarListadoArchivos(){
 	
 	document.InformeFormEdicion.target = "resultado";
 	document.InformeFormEdicion.modoInterno.value = document.InformeForm.modo.value;
-	if(document.InformeForm.modo.value=='modificar'||document.InformeForm.modo.value=='consultar'){
+	//if(document.InformeForm.modo.value=='modificar'||document.InformeForm.modo.value=='consultar'){
+		
+	if((document.InformeForm.modo.value=='modificar'||document.InformeForm.modo.value=='consultar') && document.InformeFormEdicion.idTipoEnvio.value!='4' && document.InformeFormEdicion.idTipoEnvio.value!='5'){
+
 		document.InformeFormEdicion.modo.value = "listadoArchivosInforme";
 		document.InformeFormEdicion.submit();
 		ajusteAlto('resultado');
@@ -294,6 +363,11 @@ function onChangeIdTipoInforme()
 	}else{
 		document.getElementById("tipoFormato").disabled="disabled";	
 	}
+	if(document.getElementById("idTipoInforme").value!='EJG' || document.getElementById("comboTipoEnvioHidden").value=='cmbTipoEnviosInst')
+		document.getElementById("trEnvios").style.display =  "none";
+	else
+		document.getElementById("trEnvios").style.display =  "block";
+	
 }
 function inicio() 
 {	
@@ -367,7 +441,15 @@ function inicio()
 		// document.getElementById("idTipoInforme").disabled = "disabled";
 		
 	}
+	inicioCombos();
+	if(document.getElementById("idTipoInforme").value!='EJG' || document.getElementById("comboTipoEnvioHidden").value=='cmbTipoEnviosInst')
+		document.getElementById("trEnvios").style.display =  "none";
+	else
+		document.getElementById("trEnvios").style.display =  "block";
+	
 }
+
+
 function accionGuardar() 
 {
 	document.getElementById("directorio").disabled="";
@@ -375,7 +457,9 @@ function accionGuardar()
 	document.getElementById("idPlantilla").disabled="";
 	document.getElementById("idTipoInforme").disabled="";
 	// document.getElementById("tipoFormato").disabled="";
-				
+	
+	
+	
 	if (document.InformeForm.modo.value=='insertar'){
 		indiceTipoInforme = document.getElementById("idTipoInforme").selectedIndex;
 		idClaseTipoInforme = 'claseTipoInforme_'+indiceTipoInforme;
@@ -408,7 +492,32 @@ function accionGuardar()
 		alert(error);
 		fin();
 		return false;
-	}		 	
+	}
+	var cmbTipoEnvio = document.getElementsByName("comboTipoEnvio")[0];
+	var cmbPlantillaEnvio = document.getElementsByName("comboPlantillaEnvio")[0];
+	var cmbPlantillaGeneracion = document.getElementsByName("idPlantillaGeneracion")[0];
+	if (cmbTipoEnvio.value!='') {
+		var idTipoEnvio=cmbTipoEnvio.value.split(",")[1];
+		document.InformeFormEdicion.idTipoEnvio.value = idTipoEnvio;	
+	}else{
+		document.InformeFormEdicion.idTipoEnvio.value = "";
+		
+	}
+	if (cmbPlantillaEnvio.value!='') {
+		var idPlantillaEnvio=cmbPlantillaEnvio.value.split(",")[0];
+		document.InformeFormEdicion.idPlantillaEnvio.value = idPlantillaEnvio;	
+	}else{
+		document.InformeFormEdicion.idPlantillaEnvio.value = "";
+		
+	}
+	if (cmbPlantillaGeneracion.value!='') {
+		var idPlantillaGeneracion=cmbPlantillaGeneracion.value;
+		document.InformeFormEdicion.idPlantillaGeneracion.value = idPlantillaGeneracion;	
+	}else{
+		document.InformeFormEdicion.idPlantillaGeneracion.value = "";
+		
+	}
+	
 	sub();
 	if(document.InformeFormEdicion.idTipoInforme.value!='CON'){ 
 		listaDestinatarios = document.getElementsByName("destinatariosCheck");
@@ -501,14 +610,50 @@ function gestionarDatosConsultas()
 	//document.getElementById("ocultarOrden").style.display =  "none";
 	document.getElementById("ocultarLabelPreseleccionado").style.display =  "none";
 	document.getElementById("ocultarSelectPreseleccionado").style.display =  "none";
+	document.getElementById("trEnvios").style.display =  "none";
+	
 	
 	
 }
+function accionComboTipoEnvio() {
+	
+	var cmbTipoEnvio = document.getElementsByName("comboTipoEnvio")[0];
+	var cmbPlantillaGeneracion = document.getElementsByName("idPlantillaGeneracion")[0];
+	if (cmbTipoEnvio.value!='') {
+		var idTipoEnvio=cmbTipoEnvio.value.split(",")[1];
+		if(idTipoEnvio=='4' ||idTipoEnvio=='5' ){
+				
+		
+			cmbPlantillaGeneracion.disabled="disabled";		
+			document.InformeFormEdicion.preseleccionado.value = 'N';
+			document.getElementById("preseleccionado").disabled = "disabled";
+		}else{
+			cmbPlantillaGeneracion.disabled="";
+			document.getElementById("preseleccionado").disabled = "";
+		}
+	}else{
+		cmbPlantillaGeneracion.disabled="";
+		document.getElementById("preseleccionado").disabled = "";
+		
+	}
+
+	
+}
+
+
+function inicioCombos() 
+{		
+	var cmbTipoEnvio = document.getElementsByName("comboTipoEnvio")[0];
+	cmbTipoEnvio.onchange();
+}
+
 <!-- Asociada al boton Restablecer -->
 function accionRestablecer() 
 {		
 	document.InformeFormEdicion.reset();
 }
+
+	
 
 </script>
 

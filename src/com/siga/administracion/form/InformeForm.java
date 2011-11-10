@@ -51,6 +51,10 @@ public class InformeForm extends MasterForm {
 	private String lenguaje;
 	String idConsulta;
 	String idInstitucionConsulta;
+	String idTipoEnvio;
+	private String idPlantillaEnvio;
+	private String idPlantillaGeneracion;
+	
 	public String getIdConsulta() {
 		return idConsulta;
 	}
@@ -280,6 +284,10 @@ public class InformeForm extends MasterForm {
 		informeVO.setTipoformato(tipoFormato);
 		informeVO.setUsrBean(usrBean);
 		informeVO.setOrden(orden);
+		informeVO.setIdTipoEnvio(idTipoEnvio);
+		informeVO.setIdPlantillaEnvio(idPlantillaEnvio);
+		informeVO.setIdPlantillaGeneracion(idPlantillaGeneracion);
+		
 		return informeVO;
 
 	}
@@ -384,4 +392,30 @@ public class InformeForm extends MasterForm {
 	public void setOrden(String orden) {
 		this.orden = orden;
 	}
+
+	public String getIdTipoEnvio() {
+		return idTipoEnvio;
+	}
+
+	public void setIdTipoEnvio(String idTipoEnvio) {
+		this.idTipoEnvio = idTipoEnvio;
+	}
+
+	public String getIdPlantillaEnvio() {
+		return idPlantillaEnvio;
+	}
+
+	public void setIdPlantillaEnvio(String idPlantillaEnvio) {
+		this.idPlantillaEnvio = idPlantillaEnvio;
+	}
+
+	public String getIdPlantillaGeneracion() {
+		return idPlantillaGeneracion;
+	}
+
+	public void setIdPlantillaGeneracion(String idPlantillaGeneracion) {
+		this.idPlantillaGeneracion = idPlantillaGeneracion;
+	}
+
+	
 }

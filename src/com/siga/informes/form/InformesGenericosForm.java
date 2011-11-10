@@ -10,7 +10,7 @@ public class InformesGenericosForm extends MasterForm
 {
 	//datos esta en MasterForm
 	
-	
+	private String idTipoEnvio;
 	//GETTERS
 	public String getIdInstitucion() { return UtilidadesHash.getString(this.datos, "IDINSTITUCION"); }
 	public String getDatosInforme() { return UtilidadesHash.getString(this.datos, "DATOSINFORME");	}
@@ -50,4 +50,11 @@ public class InformesGenericosForm extends MasterForm
 			this.datos.put("destinatarios", "CJS");
 	}
 	public void setPeriodo(String valor) { UtilidadesHash.set(this.datos, "PERIODO", valor); }
+	public String getIdTipoEnvio() {
+		return idTipoEnvio;
+	}
+	public void setIdTipoEnvio(String idTipoEnvio) {
+		this.idTipoEnvio = idTipoEnvio;
+	}
+	
 }

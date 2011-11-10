@@ -15,6 +15,7 @@
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
 <%@ taglib uri="struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="struts-html.tld" prefix="html"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
@@ -98,7 +99,7 @@
 
 </head>
 
-<body onload="recargarCombos();<%=noExistDatos %>">
+<body onload="recargarCombos();inicio();<%=noExistDatos %>">
 
 <!-- INICIO ******* CAPA DE PRESENTACION ****** -->
 <!-- dentro de esta capa se tienen que situar los diferentes componentes 
@@ -136,6 +137,7 @@
 		<html:hidden property = "idEnvioBuscar" value=""/>
 		<html:hidden property = "descargar"/>
 		<html:hidden property="clavesIteracion" value="<%=clavesIteracion%>"/>
+		<html:hidden property = "idTipoEnvio"/>
 		
 		
 			
@@ -160,39 +162,45 @@
 						<siga:ComboBD nombre = "comboTipoEnvio" tipo="<%=consultaPlantillas %>" clase="boxCombo" obligatorio="true" parametro="<%=idInstitucion%>" elementoSel="<%=comboTipoEnvio%>" accion="Hijo:comboPlantillaEnvio"/>
 				</td>				
 			</tr>
-			
-			<tr>	
-				<td class="labelText">
-						<siga:Idioma key="envios.plantillas.literal.plantilla"/>&nbsp;(*)
-				</td>
-				<td class="labelText">
-						<siga:ComboBD nombre = "comboPlantillaEnvio" tipo="cmbPlantillaEnvios2" clase="boxCombo" obligatorio="true" hijo="t" accion="Hijo:idPlantillaGeneracion"/>
-				</td>				
-			</tr>
-			
-			<tr>
-				<td class="labelText">
-					<siga:Idioma key="envios.definir.literal.plantillageneracion"/>
-				</td>
-				<td class="labelText">
-					<siga:ComboBD nombre="idPlantillaGeneracion" tipo="cmbPlantillaGeneracion" clase="boxCombo" obligatorio="false" hijo="t" pestana="true"/>
-						<siga:Idioma key="envios.definir.literal.editarenvio"/>	
-									
-						<% if(isEditarEnvio){%>									
-						<html:checkbox name="DefinirEnviosForm" property="editarEnvio" value="true" />
-						<%}else{%>
-						<html:checkbox name="DefinirEnviosForm" property="editarEnvio" value="true" disabled="true"/>
-						<%}%>
-				</td>				
-			</tr>
-
+			<c:choose>
+				<c:when test="${DefinirEnviosForm.idTipoEnvio!='4'&&DefinirEnviosForm.idTipoEnvio!='5'}">
+				<tr >	
+					<td class="labelText">
+							<siga:Idioma key="envios.plantillas.literal.plantilla"/>&nbsp;(*)
+					</td>
+					<td class="labelText">
+							<siga:ComboBD nombre = "comboPlantillaEnvio" tipo="cmbPlantillaEnvios2" clase="boxCombo" obligatorio="true" hijo="t" accion="Hijo:idPlantillaGeneracion"/>
+					</td>				
+				</tr>
+				
+				<tr>
+					<td class="labelText" >
+						<siga:Idioma key="envios.definir.literal.plantillageneracion"/>
+					</td>
+					<td class="labelText">
+						<siga:ComboBD nombre="idPlantillaGeneracion" tipo="cmbPlantillaGeneracion" clase="boxCombo" obligatorio="false" hijo="t" pestana="true"/>
+							
+					</td>				
+				</tr>
+			</c:when>
+			<c:otherwise>
+				<html:hidden property="comboPlantillaEnvio" value="predefinida"/>
+				</c:otherwise>
+			</c:choose>
 			<tr>	
 				<td class="labelText" colspan="2">
 						<siga:Idioma key="envios.definir.literal.fechaprogramada"/>
 						&nbsp;&nbsp;&nbsp;&nbsp;
 						<html:text name="DefinirEnviosForm" property="fechaProgramada" size="10" maxlength="10" styleClass="box" readonly="true"/>					
 						<a href='javascript://' onClick="return showCalendarGeneral(fechaProgramada);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
-				</td>
+					<siga:Idioma key="envios.definir.literal.editarenvio"/>	
+									
+						<% if(isEditarEnvio){%>									
+						<html:checkbox name="DefinirEnviosForm" property="editarEnvio" value="true" />
+						<%}else{%>
+						<html:checkbox name="DefinirEnviosForm" property="editarEnvio" value="true" disabled="true"/>
+						<%}%>
+					</td>
 			</tr>
 		</table>
 
@@ -245,6 +253,9 @@
 			if (validateDefinirEnviosForm(document.DefinirEnviosForm)){
 				var insTipoEnvio = document.forms[0].comboTipoEnvio.value;
 				var opcion_array=insTipoEnvio.split(",");
+				document.DefinirEnviosForm.idTipoEnvio.value = opcion_array[1]; 
+				
+				
 				DefinirEnviosForm.submit();
 			} else {
 				fin();
@@ -272,13 +283,21 @@
  			alert('<siga:Idioma key="messages.general.error.noExistenDatos"/>');
 			window.close();
 		}
+		
 		function recargarCombos() 
 		{		
-			var tmp1 = document.getElementsByName("comboTipoEnvio");
-				var tmp2 = tmp1[0];			 
-				tmp2.onchange();
+			var cmbTipoEnvio = document.getElementsByName("comboTipoEnvio")[0];
+			cmbTipoEnvio.onchange();
 		}
-	
+		function inicio() {
+			if(document.DefinirEnviosForm.idTipoEnvio.value=="4" ||document.DefinirEnviosForm.idTipoEnvio.value=="5"){
+				 document.getElementById("comboTipoEnvio").disabled="disabled";
+				 
+				 
+			}
+			
+		}
+		recargarCombos();
 	</script>
 	
 	<!-- FIN: SCRIPTS BOTONES -->

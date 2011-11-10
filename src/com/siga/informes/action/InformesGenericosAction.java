@@ -140,7 +140,7 @@ public class InformesGenericosAction extends MasterAction {
 			String aSolicitantes =  miForm.getAsolicitantes();
 			String destinatarios =  miForm.getDestinatarios();
 			String enviar =  miForm.getEnviar();
-
+			String idTipoEnvio = miForm.getIdTipoEnvio();
 			String idPersonaJG = null;
 			String idinstitucion = null;
 			String idPK = null;
@@ -526,7 +526,7 @@ public class InformesGenericosAction extends MasterAction {
 			String pepe = session.getId();
 			SimpleDateFormat  fm = new SimpleDateFormat("ddMMyyyyhhmmssSSSS");
 			String fecha = fm.format(new Date(session.getCreationTime()));
-			System.out.println(fecha);
+			
 			
 			ficheroSalida = informeIRPF.getInformeIRPF(formulario, this.getUserBean(request),isAEnviar);
 
@@ -601,6 +601,7 @@ public class InformesGenericosAction extends MasterAction {
 			request.setAttribute("datosEnvios", informeGenerico.getDatosEnvios());
 			//Para redirigeDefinicionenvios
 			request.setAttribute("subModo", tipoInforme);
+			request.setAttribute("idTipoEnvio", miForm.getIdTipoEnvio());
 			if (isADescargar)
 				request.setAttribute("descargar","1");
 			else

@@ -1,4 +1,4 @@
-<!-- genericLoadForm.jsp -->
+<!-- redirigeDefinicionEnvios.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -14,9 +14,13 @@
 <script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
 </head>
 <body>
+<%
+String idTipoEnvio = (request.getAttribute("idTipoEnvio")!=null?(String) request.getAttribute("idTipoEnvio"):"");
+%>
 <html:form action="/ENV_DefinirEnvios.do" method="POST" target="mainWorkArea" scope="session" style="display:none">
 			<html:hidden property = "actionModal" value = ""/>
 			<html:hidden property = "modo" value = "envioModal"/>
+			<html:hidden property = "idTipoEnvio" value = "<%=idTipoEnvio%>"/>
 			<input type="hidden" name= "datosEnvios" value="<%=request.getAttribute("datosEnvios")%>"/>
 			<input type="hidden" name= "descargar" value="<%=request.getAttribute("descargar")%>"/>
 			<input type="hidden" name="subModo" value ="<%=request.getAttribute("subModo")%>"/>
@@ -40,6 +44,7 @@ function reloadPage() {
   		parent.accionCerrar();
   		var idEnvio = resultado[0];
     	var idTipoEnvio = resultado[1];
+    	//alert("idTipoEnvio"+idTipoEnvio);
     	var nombreEnvio = resultado[2];				    
    		document.DefinirEnviosForm.tablaDatosDinamicosD.value= idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio+ "#";;		
    		document.DefinirEnviosForm.modo.value='editar';

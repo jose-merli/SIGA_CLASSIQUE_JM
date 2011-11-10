@@ -554,7 +554,8 @@ public class DefinirEnviosAction extends MasterAction {
 
 		String nombreyapellidos = "";
 		String idEnvio=null;
-		String idTipoEnvio=null;
+		String idTipoEnvio=form.getIdTipoEnvio();
+		boolean isEnvioSMS = idTipoEnvio!=null && !idTipoEnvio.equals("") && (Integer.parseInt(idTipoEnvio)==EnvEnviosAdm.TIPO_SMS || Integer.parseInt(idTipoEnvio)==EnvEnviosAdm.TIPO_BUROSMS);
 
 		try {
 			//SOLICITUD CERTIFICADO:
@@ -614,7 +615,7 @@ public class DefinirEnviosAction extends MasterAction {
 				//Hashtable htFacturasPersona  = getFacturasPersonaAComunicar(form);
 				idPersona = getIdColegiadoUnico(form);
 
-				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")));//
+				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")&&!isEnvioSMS ));//
 				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
 				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null)); 
 
@@ -718,7 +719,7 @@ public class DefinirEnviosAction extends MasterAction {
 					
 				}
 				
-				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")));
+				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")&&!isEnvioSMS));
 				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
 				request.setAttribute("isEditarEnvio",Boolean.valueOf(isPersonaUnica&&!isASolicitantes&&!isAprocurador));
 				//request.setAttribute("isEditarEnvio",Boolean.valueOf(false));
@@ -773,9 +774,16 @@ public class DefinirEnviosAction extends MasterAction {
 					
 				}
 				
-				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")));
+				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")&&!isEnvioSMS));
 				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
 				request.setAttribute("isEditarEnvio",Boolean.valueOf(isDestinatarioUnico));
+				
+				if(form.getIdTipoEnvio()!=null && !form.getIdTipoEnvio().equals("")){
+					ArrayList comboTipoEnvio = new ArrayList();
+					comboTipoEnvio.add(idInstitucion+","+form.getIdTipoEnvio());
+					request.setAttribute("comboTipoEnvio",comboTipoEnvio);
+				}
+				
 				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.genericos.ejg.asunto");
 
 
@@ -786,7 +794,7 @@ public class DefinirEnviosAction extends MasterAction {
 				Vector vCampos = masterReport.obtenerDatosFormulario(form);
 				Hashtable ht = (Hashtable) vCampos.get(0); 
 				idPersona = (String) ht.get("idPersona");
-				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")));//
+				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")&&!isEnvioSMS));//
 				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
 				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null)); 
 
@@ -796,7 +804,7 @@ public class DefinirEnviosAction extends MasterAction {
 			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesCenso)){
 				idPersona = getIdColegiadoUnico(form);
 
-				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")));
+				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")&&!isEnvioSMS));
 				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
 				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null));
 				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.genericos.censo.asunto");
@@ -813,7 +821,7 @@ public class DefinirEnviosAction extends MasterAction {
 				datosEnvios = form.getDatosEnvios();
 	    		Hashtable backupHash = (Hashtable)request.getSession().getAttribute("DATABACKUP");
 	    		request.setAttribute("DATABACKUP",backupHash);
-				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")));
+				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")&&!isEnvioSMS));
 				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
 				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null));
 				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.sjcs.lista.envio.guardias");
@@ -821,7 +829,7 @@ public class DefinirEnviosAction extends MasterAction {
 			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesPagoColegiados)){
 				idPersona = getIdPersonaUnica(form);
 				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
-				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")));
+				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")&&!isEnvioSMS));
 				
 				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null));
 				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.sjcs.pagos.envio.asunto");
@@ -830,7 +838,7 @@ public class DefinirEnviosAction extends MasterAction {
 			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesFacturacionesColegiados)){
 				idPersona = getIdPersonaUnica(form);
 				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
-				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")));
+				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")&&!isEnvioSMS));
 				
 				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null));
 				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.sjcs.facturacion.envio.asunto");
@@ -840,7 +848,7 @@ public class DefinirEnviosAction extends MasterAction {
 			else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesExpedientes)){
 				idPersona = getIdColegiadoUnico(form);
 
-				request.setAttribute("isDescargar",new Boolean(idPersona!=null));
+				request.setAttribute("isDescargar",new Boolean(idPersona!=null&&!isEnvioSMS));
 				form.setDescargar((idPersona!=null)?"1":"");
 				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
 				// RGG también se añade que, incluso siendo un aúnica persona, no sea asolicitantes
@@ -997,7 +1005,12 @@ public class DefinirEnviosAction extends MasterAction {
 			String nombreEnvio = form.getNombre();
 			// obtener tipoEnvio
 			String idTipoEnvio = form.getIdTipoEnvio();
+			boolean isEnvioSMS = Integer.parseInt(idTipoEnvio)==EnvEnviosAdm.TIPO_BUROSMS || Integer.parseInt(idTipoEnvio)==EnvEnviosAdm.TIPO_SMS;
+			
 			// obtener plantilla
+			
+			if(form.getIdPlantillaEnvios().equals("predefinida"))
+				form.setIdPlantillaEnvios("");
 			String idPlantilla = form.getIdPlantillaEnvios();
 			//obtener plantilla de generacion
 			String idPlantillaGeneracion = form.getIdPlantillaGeneracion();
@@ -1061,11 +1074,13 @@ public class DefinirEnviosAction extends MasterAction {
 				enviosBean.setIdEnvio(Integer.valueOf(idEnvio));
 			enviosBean.setDescripcion(nombreEnvio);
 			enviosBean.setIdTipoEnvios(Integer.valueOf(idTipoEnvio));
-			enviosBean.setIdPlantillaEnvios(Integer.valueOf(idPlantilla));
-			if (idPlantillaGeneracion!=null && !idPlantillaGeneracion.equals("")) {
-				enviosBean.setIdPlantilla(Integer.valueOf(idPlantillaGeneracion));
-			} else {
-				enviosBean.setIdPlantilla(null);
+			if(!isEnvioSMS){
+				enviosBean.setIdPlantillaEnvios(Integer.valueOf(idPlantilla));
+				if (idPlantillaGeneracion!=null && !idPlantillaGeneracion.equals("")) {
+					enviosBean.setIdPlantilla(Integer.valueOf(idPlantillaGeneracion));
+				} else {
+					enviosBean.setIdPlantilla(null);
+				}
 			}
 			enviosBean.setFechaProgramada(fechaProgramada);
 			enviosBean.setFechaCreacion("SYSDATE");

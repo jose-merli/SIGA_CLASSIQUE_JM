@@ -52,7 +52,7 @@
 	
 	</head>
 
-	<body>
+	<body onload="inicioCheckInforme();">
 
 			<!-- TITULO -->
 			<!-- Barra de titulo actualizable desde los mantenimientos -->
@@ -102,10 +102,14 @@
 				  		AdmInformeBean bean = (AdmInformeBean)plantillas.elementAt(i);
 %>
 			  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="" visibleConsulta="false" visibleEdicion="false" visibleBorrado="false" pintarEspacio="no" clase="listaNonEdit">
+							
 							<td>
-								<input type="checkbox" value="<%=bean.getIdPlantilla()%>" name="chkPL" <%=(bean.getPreseleccionado().equals("S"))?"checked":"" %> >
+								<input type="checkbox" value="<%=bean.getIdTipoEnvio()%>" id="<%=bean.getIdPlantilla()%>" name="chkPL" <%=(bean.getPreseleccionado().equals("S"))?"checked":"" %> onclick="onClickCheckInforme(this);">
 							</td>
+							
 							<td>
+							
+							
 								<%=UtilidadesString.mostrarDatoJSP(bean.getDescripcion()) %>
 							</td>
 			  			</siga:FilaConIconos>
@@ -123,33 +127,166 @@
 		<!-- INICIO: SCRIPTS BOTONES -->
 		<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 		<script language="JavaScript">
+		function onClickCheckInforme(checkSeleccionado){
+			checkIdTipoEnvioInforme(checkSeleccionado,checkSeleccionado.value);
+
 			
+		}
+		
+		function checkIdTipoEnvioInforme(checkSeleccionado,valor){
+			if(checkSeleccionado.value==valor){
+				if(checkSeleccionado.checked){
+					checks = document.getElementsByName("chkPL");
+					
+					for(var i = 0 ; i <checks.length ; i++) {
+						check = checks[i];
+						if(check.value==valor){
+							check.disabled =  "";
+						}else{
+							check.disabled =  "disabled";
+							
+						}
+						
+					}
+				}else{
+					checks = document.getElementsByName("chkPL");
+					var atributoDisabled = "";
+					for(var i = 0 ; i <checks.length ; i++) {
+						check = checks[i];
+						if(check.checked && (check.value==valor )){
+							atributoDisabled = "disabled";
+							break;
+						}
+						
+					}
+					
+					
+					
+					
+					
+					for(var j = 0 ; j <checks.length ; j++) {
+						check = checks[j];
+						if(check.value!=valor ){
+							check.disabled =  atributoDisabled;
+						}
+						
+					}
+					
+				}
+			}else{
+				if(checkSeleccionado.checked){
+					checks = document.getElementsByName("chkPL");
+					for(var i = 0 ; i <checks.length ; i++) {
+						check = checks[i];
+						if(check.value==valor){
+							check.disabled =  "disabled";
+						}else{
+							check.disabled =  "";
+							
+						}
+						
+					}
+				}else{
+					checks = document.getElementsByName("chkPL");
+					
+					var atributoDisabled2 = "";
+					for(var i = 0 ; i <checks.length ; i++) {
+						check = checks[i];
+						
+						if(check.value!=valor && check.checked){
+							atributoDisabled2 = "disabled";
+							break;
+						}
+						
+					}
+					
+					
+					
+					
+					for(var j = 0 ; j <checks.length ; j++) {
+						check = checks[j];
+						if(check.value==valor ){
+							check.disabled =  atributoDisabled2;
+						}
+						
+					}
+					
+				}
+				
+				
+				
+			}
+			
+			
+			
+		}	
+		function inicioCheckInforme() {
+			checks = document.getElementsByName("chkPL");
+			var isAlgunoChecked = false;
+			for(var i = 0 ; i <checks.length ; i++) {
+				check = checks[i];
+				if(check.checked){
+					isAlgunoChecked = true;
+					break;
+				}
+				
+			}
+			if(isAlgunoChecked){
+				for(var j = 0 ; j <checks.length ; j++) {
+					check = checks[j];
+					if(check.value=="4" || check.value=="5"){
+						check.disabled =  "disabled";
+					}
+					
+				}
+				
+			}
+		}
+		
+		
 			function accionGenerarCerrar() 
 			{
 					 
 				var aDatos = new Array();
 				var oCheck = document.getElementsByName("chkPL");
-				sub();	
+				sub();
+				var idTipoEnvio = "";
 				for(i=0; i<oCheck.length; i++)
 				{
+					
 					if (oCheck[i].checked)
 					{
+						if(idTipoEnvio=="" && (oCheck[i].value=="4"||oCheck[i].value=="5")){
+							idTipoEnvio= oCheck[i].value;
+						}
 						var indice=aDatos.length;
 						for (j=0; j<aDatos.length; j++)
 						{
 							var dato1 = aDatos[j];
-							var dato2 = oCheck[i].value;
+							var dato2 = oCheck[i].id;
 						}
-						aDatos[j] = oCheck[i].value;
+						aDatos[j] = oCheck[i].id;
 					}
 				}
 				var auxi = "";
 				for (i=0; i<aDatos.length; i++)
 				{
+					
 					auxi += aDatos[i] + "##";
 				}
-				if (auxi.length>2) auxi=auxi.substring(0,auxi.length-2);
-		    	window.returnValue=auxi;
+				
+				if (auxi.length>2){
+					auxi=auxi.substring(0,auxi.length-2);
+					var array =new Array(2);
+					array[0]=auxi;
+					
+					array[1]=idTipoEnvio;
+					
+					window.returnValue=array;
+				}else{
+					window.returnValue=new Array(0);
+				}	
+		    	
 				window.close();
 			}
 	
