@@ -3574,12 +3574,27 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			
 			sql.append("_");
 			sql.append(aliasSalida);
-			sql.append(" ,substr(COLDES.NOMBRE || ' ' || COLDES.APELLIDOS1,1,21)  AS SMS_NOMBRE");
+			sql.append(" ,substr(COLDES.NOMBRE || ' ' || COLDES.APELLIDOS1,1,31)  AS SMS_NOMBRE_APELLI_1");
 			
 			sql.append("_");
 			
 			
 			sql.append(aliasSalida);
+			
+			sql.append(" ,substr(COLDES.NOMBRE || ' ' || COLDES.APELLIDOS1|| ' ' || COLDES.APELLIDOS2,1,31)  AS SMS_NOMBRE_APEL_1_2");
+			
+			sql.append("_");
+			
+			
+			sql.append(aliasSalida);
+			
+			sql.append(" ,substr(COLDES.APELLIDOS1|| ' ' || COLDES.APELLIDOS2 || ', ' ||COLDES.NOMBRE  ,1,31)  AS SMS_APEL_1_2_NOMBRE");
+			
+			sql.append("_");
+			
+			
+			sql.append(aliasSalida);
+			
 			sql.append(" ,DECODE(COLDES.SEXO, null, null,'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_ST");
 			sql.append("_");
 			sql.append(aliasSalida);
@@ -4774,6 +4789,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							}else{
 								registro.put("DESC_TIPODICTAMENEJG", " ");
 							}
+							
 							
 							idTipoRatificacionEjg = (String)registro.get("IDTIPORATIFICACIONEJG");
 							if(idTipoRatificacionEjg!=null && !idTipoRatificacionEjg.trim().equals("")){
