@@ -742,7 +742,7 @@ public class DefinirEnviosAction extends MasterAction {
 				//Vamos a permitir editar cuando sea solo a colegiados
 				
 				boolean isASolicitantes = false;
-				if(isDestinatarioUnico){
+				if(isDestinatarioUnico &&!isEnvioSMS){
 					
 					
 					Hashtable ht = (Hashtable) vCampos.get(0); 
@@ -776,7 +776,7 @@ public class DefinirEnviosAction extends MasterAction {
 				
 				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")&&!isEnvioSMS));
 				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
-				request.setAttribute("isEditarEnvio",Boolean.valueOf(isDestinatarioUnico));
+				request.setAttribute("isEditarEnvio",Boolean.valueOf(isDestinatarioUnico&&!isEnvioSMS));
 				
 				if(form.getIdTipoEnvio()!=null && !form.getIdTipoEnvio().equals("")){
 					ArrayList comboTipoEnvio = new ArrayList();

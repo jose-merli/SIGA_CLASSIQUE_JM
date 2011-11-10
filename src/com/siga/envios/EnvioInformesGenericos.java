@@ -4919,7 +4919,8 @@ public class EnvioInformesGenericos extends MasterReport {
 		
 		Hashtable destinatariosHashtable = getDestinatariosEjg(vCampos);
 		
-
+		String idTipoEnvio = form.getIdTipoEnvio();
+		boolean isEnvioSMS = Integer.parseInt(idTipoEnvio)==EnvEnviosAdm.TIPO_BUROSMS || Integer.parseInt(idTipoEnvio)==EnvEnviosAdm.TIPO_SMS;
 
 		String idInstitucion = userBean.getLocation();
 		
@@ -4931,7 +4932,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		boolean isDestinatarioUnico = destinatariosHashtable!=null && destinatariosHashtable.size()==1;
 		
 		boolean isASolicitantes = false;
-		if(isDestinatarioUnico){
+		if(isDestinatarioUnico &&!isEnvioSMS){
 			
 			
 			Hashtable ht = (Hashtable) vCampos.get(0); 
@@ -4959,7 +4960,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			
 		}
 
-		if(isDestinatarioUnico){
+		if(isDestinatarioUnico&&!isEnvioSMS){
 			//String claveIterante = this.getClaveIterante(vCampos);
 			//if(claveIterante!=null){
 			//vCampos = this.setCamposIterantes(vCampos,"idPersona");

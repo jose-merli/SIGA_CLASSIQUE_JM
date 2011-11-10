@@ -132,10 +132,14 @@
 				%>
 				<table>
 					<tr>
-						<td><siga:InformeSimple
-							idInstitucion="<%=usr.getLocation()%>"
-							recurso="gratuita.EJG.botonComunicaciones" idTipoInforme="EJG"
-							formularioDatos="DefinirEJGForm" /></td>
+						<td>
+						<input 	type="button" 
+				alt="UtilidadesString.getMensajeIdioma(usrbean,general.boton.cartaInteresados)"  
+		       	id="idButton"  
+		       	onclick="return generarCarta();" 
+		       	class="button" 
+		       	value='<%=UtilidadesString.getMensajeIdioma(usr,"gratuita.EJG.botonComunicaciones")%>' />
+					</td>
 					</tr>
 				</table>
 				<%
@@ -355,6 +359,36 @@
 			document.forms[0].submit();
 
 		}
+		function generarCarta() {
+			sub();
+			
+			//idInstitucion  = document.MaestroDesignasForm.idInstitucion;
+			var idInstitucion  = <%=usr.getLocation()%>;
+			
+			var anio  = <%=anio%>;
+			var idTipo  = <%=idTipoEJG%>;
+			var numero = <%=numero%>;
+			var datos = "idinstitucion=="+idInstitucion + "##idtipo==" +idTipo+"##anio=="+anio +"##numero==" +numero+"%%%";
+			
+			
+			var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='INF_InformesGenericos.do' target='submitArea'>");
+			formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=usr.getLocation() %>'>"));
+			formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
+			formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='EJG'>"));
+			formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
+			formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
+			formu.appendChild(document.createElement("<input type='hidden' name='enviar' value='1'>"));
+			
+				
+			formu.appendChild(document.createElement("<input type='hidden' name='descargar' value='1'>"));
+			
+			
+			document.appendChild(formu);
+			formu.datosInforme.value=datos;
+			formu.submit();
+			
+	
+} 	
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 
