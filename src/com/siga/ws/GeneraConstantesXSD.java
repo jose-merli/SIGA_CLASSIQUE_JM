@@ -22,8 +22,8 @@ public class GeneraConstantesXSD {
 		Class.forName("oracle.jdbc.driver.OracleDriver");
 		Connection conn = DriverManager.getConnection(url);
 
-		//PCAJG
-		String[] vistas = new String[]{"V_PCAJG_EJG", "V_PCAJG_ABOGADOSDESIGNADOS", "V_PCAJG_CONTRARIOS", "V_PCAJG_M_DOCUMENTACIONEXP"
+		//PCAJG 
+		String[] vistas = new String[]{"V_PCAJG_EJG", "V_PCAJG_ABOGADOSDESIGNADOS", "V_PCAJG_CONTRARIOS", "V_PCAJG_DOCUMENTACIONEXP_F", "V_PCAJG_DOCUMENTACIONEXP_DS"
 				, "V_PCAJG_FAMILIARES", "V_PCAJG_MARCASEXPEDIENTES", "V_PCAJG_DELITOS"};
 		
 		//PAMPLONA 2055
@@ -32,6 +32,9 @@ public class GeneraConstantesXSD {
 		//SANTIAGO 2064
 //		String[] vistas = new String[]{"V_WS_2064_EJG", "V_WS_2064_PERSONA", "V_WS_2064_CONTRARIOS", "V_WS_2064_DOCUMENTO"};
 //		String[] vistas = new String[]{"V_WS_JE_2064", "V_WS_JE_2064_ASIS", "V_WS_JE_2064_DESIGNA"};
+		
+		//PAIS VASCO GUIPUZKOA
+//		String[] vistas = new String[]{"V_WS_2032_EJG", "V_WS_2032_SOLICITANTES", "V_WS_2032_PROFDESIG"};
 		
 		List arrayCampos = new ArrayList(); 
 		
@@ -73,6 +76,8 @@ public class GeneraConstantesXSD {
 		
 		System.out.println("");			
 		System.out.println("     /***** CAMPOS DE LA VISTA " + vista + " ****/");
+		System.out.println("");
+		System.out.println("	public final String " + vista + " = \"" + vista + "\";");
 		System.out.println("");
 		for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
 			String column = rs.getMetaData().getColumnName(i);
