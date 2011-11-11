@@ -10,6 +10,12 @@ import com.atos.utils.RowsContainer;
 
 public class WSAdm {
 	
+	
+	protected static String SELECT = "SELECT ";
+	protected static String FROM = " FROM ";
+	protected static String WHERE = " WHERE ";
+	protected static String AND = " AND ";
+	
 	/**
 	 * 
 	 * @param sql

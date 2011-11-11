@@ -720,8 +720,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if (list != null && list.size() > 0) {
 			for (int i = 0; i < list.size(); i++) {
 				Hashtable htDoc = (Hashtable)list.get(i);				
-				crearDocumentacionExpediente(datosFamiliares.addNewDocumentacionExpediente(), htDoc, D_TIPODOCUMENTACION_CDA
-						, D_TIPODOCUMENTO_CDA, D_FECHAPRESENTACIONDO, D_DESCRIPCIONAMPLIADA, D_PROCEDENTE);
+				crearDocumentacionExpediente(datosFamiliares.addNewDocumentacionExpediente(), htDoc, F_F_DE_D_TIPODOCUMENTACION_CDA
+						, F_F_DE_D_DD_TIPODOCUMENTO_CDA, F_F_DE_D_DD_FECHAPRESENTACIDO, F_F_DE_D_DD_DESCRIPCIONAMPLIAD, F_F_DE_D_DD_PROCEDENTE);
 			}
 		}
 	}
@@ -812,8 +812,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if (list != null && list.size() > 0) {
 			for (int i = 0; i < list.size(); i++) {
 				Hashtable ht = (Hashtable)list.get(i);
-				crearDocumentacionExpediente(datosSolicitante.addNewDocumentacionExpediente(), ht, D_TIPODOCUMENTACION_CDA, 
-						D_TIPODOCUMENTO_CDA, D_FECHAPRESENTACIONDO, D_DESCRIPCIONAMPLIADA, D_PROCEDENTE);
+				crearDocumentacionExpediente(datosSolicitante.addNewDocumentacionExpediente(), ht, DS_DE_D_TIPODOCUMENTACION_CDA, 
+						DS_DE_D_DD_TIPODOCUMENTO_CDA, DS_DE_D_DD_FECHAPRESENTACIONDO, DS_DE_D_DD_DESCRIPCIONAMPLIADA, DS_DE_D_DD_PROCEDENTE);
 			}
 		}
 		

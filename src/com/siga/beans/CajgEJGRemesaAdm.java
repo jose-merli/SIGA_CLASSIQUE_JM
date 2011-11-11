@@ -415,7 +415,8 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 				" SELECT ER.IDINSTITUCION, ER.IDTIPOEJG, ER.ANIO, ER.NUMERO, '" + idEstado + "'" +
 				", TRUNC(SYSDATE), SYSDATE, " + usr.getUserName() + ", NULL, (" + sqlMaxIdEstadoPorEJG + "), 1" +
 				" FROM CAJG_EJGREMESA ER" +
-				" WHERE ER.IDINSTITUCION = " + idInstitucion +
+				" WHERE ER.IDEJGREMESA NOT IN (SELECT RER.IDEJGREMESA FROM CAJG_RESPUESTA_EJGREMESA RER)" +
+				" AND ER.IDINSTITUCION = " + idInstitucion +
 				" AND ER.IDREMESA = " + idRemesa;
 		
 		ScsEstadoEJGAdm beanEstado = new ScsEstadoEJGAdm(usr);

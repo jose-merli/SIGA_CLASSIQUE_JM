@@ -41,21 +41,6 @@ import com.siga.informes.MasterWords;
 import com.siga.ws.PCAJGConstantes;
 import com.siga.ws.SIGAWSClientAbstract;
 import com.siga.ws.SigaWSHelper;
-import com.siga.ws.i2083.DatosDomicilio;
-import com.siga.ws.i2083.IntercambioDocument;
-import com.siga.ws.i2083.TipoAbogadoDesignado;
-import com.siga.ws.i2083.TipoCodigoExpediente;
-import com.siga.ws.i2083.TipoDatosContacto;
-import com.siga.ws.i2083.TipoDatosPersona;
-import com.siga.ws.i2083.TipoDatosProcurador;
-import com.siga.ws.i2083.TipoDocumentacionExpediente;
-import com.siga.ws.i2083.TipoDomiciliosPersona;
-import com.siga.ws.i2083.TipoElementoTipificadoEstandar;
-import com.siga.ws.i2083.TipoElementoTipificadoIntercambio;
-import com.siga.ws.i2083.TipoExpediente;
-import com.siga.ws.i2083.TipoIdentificacionIntercambio;
-import com.siga.ws.i2083.TipoIdentificacionTramite;
-import com.siga.ws.i2083.TipoInformacion;
 import com.siga.ws.i2083.DatosDomicilio.Municipio;
 import com.siga.ws.i2083.DatosDomicilio.Municipio.Municipio2;
 import com.siga.ws.i2083.IntercambioDocument.Intercambio;
@@ -180,7 +165,7 @@ public class PCAJGAragon extends SIGAWSClientAbstract implements PCAJGConstantes
 			
 			if (!tipoIntercambio.equals(ht.get(TIPOINTERCAMBIO))) {								
 				if (intercambio != null && expedientes.sizeOfExpedienteArray() > 0) {
-					File file = creaFichero(dirFicheros, intercambioDocument, tipoInformacion);
+					File file = creaFichero(dirFicheros, tipoInformacion);
 					if (file != null) {
 						ficheros.add(file);
 					}
@@ -202,7 +187,7 @@ public class PCAJGAragon extends SIGAWSClientAbstract implements PCAJGConstantes
 			}
 		}
 		if (intercambio != null && expedientes.sizeOfExpedienteArray() > 0) {
-			File file = creaFichero(dirFicheros, intercambioDocument, tipoInformacion);
+			File file = creaFichero(dirFicheros, tipoInformacion);
 			if (file != null) {
 				ficheros.add(file);
 			}
@@ -211,14 +196,14 @@ public class PCAJGAragon extends SIGAWSClientAbstract implements PCAJGConstantes
 		return ficheros;
 	}
 	
-	private File creaFichero(String dirFicheros, IntercambioDocument intercambioDoc, TipoInformacion tipoInformacion) throws Exception {
+	private File creaFichero(String dirFicheros, TipoInformacion tipoInformacion) throws Exception {
 		
 		File file = new File(dirFicheros);
 		file.mkdirs();
 		
 		
-		TipoIdentificacionIntercambio tipoIdentificacionIntercambio = intercambioDoc.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio();
-		tipoIdentificacionIntercambio.setNumeroDetallesIntercambio(intercambioDoc.getIntercambio().getInformacionIntercambio().getInformacion().getExpedientes().sizeOfExpedienteArray());
+		TipoIdentificacionIntercambio tipoIdentificacionIntercambio = intercambioDocument.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio();
+		tipoIdentificacionIntercambio.setNumeroDetallesIntercambio(intercambioDocument.getIntercambio().getInformacionIntercambio().getInformacion().getExpedientes().sizeOfExpedienteArray());
 		
 		StringBuffer nombreFichero = new StringBuffer();
 		nombreFichero.append(tipoIdentificacionIntercambio.getTipoIntercambio());
@@ -234,21 +219,21 @@ public class PCAJGAragon extends SIGAWSClientAbstract implements PCAJGConstantes
 		
 		file = new File(file, nombreFichero.toString());		
 				
-		SigaWSHelper.deleteEmptyNode(intercambioDoc.getDomNode());
+		SigaWSHelper.deleteEmptyNode(intercambioDocument.getDomNode());
 		
 		XmlOptions xmlOptions = new XmlOptions();
 		xmlOptions.setSavePrettyPrintIndent(4);
 		xmlOptions.setSavePrettyPrint();
 		
 		//xmlOptions.setCharacterEncoding("ISO-8859-15");
-		Map<String, String> mapa = new HashMap<String, String>();
-		mapa.put(intercambioDoc.getDomNode().getNamespaceURI(), "");
+		Map<String, String> mapa = new HashMap<String, String>();		
+		mapa.put(intercambioDocument.getIntercambio().getDomNode().getNamespaceURI(), "");
 		xmlOptions.setSaveSuggestedPrefixes(mapa);
 		
-		ClsLogging.writeFileLog("Guardando fichero generado xml para la Generalitat en " + file.getAbsolutePath(), 3);
-		intercambioDoc.save(file, xmlOptions);
+		ClsLogging.writeFileLog("Guardando fichero generado xml para el colegio " + getIdInstitucion() + " en " + file.getAbsolutePath(), 3);
+		intercambioDocument.save(file, xmlOptions);
 		//comprobamos que el fichero generado sea correcto
-		StringBuffer sbErrores = SIGAWSClientAbstract.validateXML(intercambioDoc); 
+		StringBuffer sbErrores = SIGAWSClientAbstract.validateXML(intercambioDocument); 
 		
 		//si no es correcto lo genero y lo transformo para poder ver por qué no es correcto
 		if (sbErrores != null) {
@@ -907,8 +892,8 @@ public class PCAJGAragon extends SIGAWSClientAbstract implements PCAJGConstantes
 			for (int i = 0; i < list.size(); i++) {
 				Hashtable htDoc = (Hashtable)list.get(i);
 				
-				rellenaDocumentacionExpediente(tipoDocumentacionExpediente.addNewDocumentacion(), htDoc, D_TIPODOCUMENTACION_CDA
-						, D_TIPODOCUMENTO_CDA, D_FECHAPRESENTACIONDO, D_DESCRIPCIONAMPLIADA, D_PROCEDENTE);
+				rellenaDocumentacionExpediente(tipoDocumentacionExpediente.addNewDocumentacion(), htDoc, F_F_DE_D_TIPODOCUMENTACION_CDA
+						, F_F_DE_D_DD_TIPODOCUMENTO_CDA, F_F_DE_D_DD_FECHAPRESENTACIDO, F_F_DE_D_DD_DESCRIPCIONAMPLIAD, F_F_DE_D_DD_PROCEDENTE);
 			}
 		}
 	}
@@ -999,8 +984,8 @@ public class PCAJGAragon extends SIGAWSClientAbstract implements PCAJGConstantes
 			for (int i = 0; i < list.size(); i++) {
 				Hashtable ht = (Hashtable)list.get(i);
 				Documentacion documentacion = documentacionExpediente.addNewDocumentacion();
-				rellenaDocumentacionExpediente(documentacion, ht, D_TIPODOCUMENTACION_CDA, 
-						D_TIPODOCUMENTO_CDA, D_FECHAPRESENTACIONDO, D_DESCRIPCIONAMPLIADA, D_PROCEDENTE);
+				rellenaDocumentacionExpediente(documentacion, ht, DS_DE_D_TIPODOCUMENTACION_CDA, 
+						DS_DE_D_DD_TIPODOCUMENTO_CDA, DS_DE_D_DD_FECHAPRESENTACIONDO, DS_DE_D_DD_DESCRIPCIONAMPLIADA, DS_DE_D_DD_PROCEDENTE);
 			}
 			datosSolicitante.setDocumentacionExpediente(documentacionExpediente);
 		} 
@@ -1540,7 +1525,7 @@ public class PCAJGAragon extends SIGAWSClientAbstract implements PCAJGConstantes
 				identificacionIntercambio.setDestinoIntercambio(tipoElementoTipificadoIntercambio);
 			}
 			
-			Long valueLong = getLong((String)ht.get(IDENTIFICADORINTERCAMBIO));			
+			Long valueLong = getLong((String)ht.get(IDINTERCAMBIO_PCAJG));			
 			identificacionIntercambio.setIdentificadorIntercambio((valueLong.longValue() * 10) + sufijoIdIntercambio);		
 			identificacionIntercambio.setFechaIntercambio(Calendar.getInstance());			
 			identificacionIntercambio.setVersionPCAJG((String)ht.get(VERSION_PCAJG));
@@ -1568,6 +1553,7 @@ public class PCAJGAragon extends SIGAWSClientAbstract implements PCAJGConstantes
 			
 			CajgRespuestaEJGRemesaAdm cajgRespuestaEJGRemesaAdm = new CajgRespuestaEJGRemesaAdm(usr);
 			cajgRespuestaEJGRemesaAdm.eliminaAnterioresErrores(getIdInstitucion(), getIdRemesa());
+			cajgRespuestaEJGRemesaAdm.insertaErrorEJGnoEnviados(getIdInstitucion(), getIdRemesa(), getUsrBean(), V_PCAJG_EJG);
 			
 			List<File> files = generaFicherosXML(dirFicheros);	
 			tx.commit();//hacemos commit para setear los posibles errores de negocio
