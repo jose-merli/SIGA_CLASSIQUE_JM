@@ -321,8 +321,7 @@ public class HelperInformesAdm  {
 		       ""+
        
 		       " FROM SCS_JUZGADO JUZ2"+
-		       " WHERE JUZ2.FECHABAJA IS NULL"+
-      		   " and JUZ2.IDINSTITUCION= :1 AND  JUZ2.IDJUZGADO = :2 ";
+		       " WHERE JUZ2.IDINSTITUCION= :1 AND  JUZ2.IDJUZGADO = :2 ";
 			HelperInformesAdm helperInformes = new HelperInformesAdm();
 			return helperInformes.ejecutaConsultaBind(sql, h);
 		}
