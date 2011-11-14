@@ -1819,8 +1819,8 @@ public class EnvioInformesGenericos extends MasterReport {
 		if (enviosBean.getDescripcion().length()>200)  enviosBean.setDescripcion(enviosBean.getDescripcion().substring(0,99));
 		// Preferencia del tipo de envio si el usuario tiene uno:
 		enviosBean.setIdTipoEnvios(envioProgramadoBean.getIdTipoEnvios());
-		if(envioProgramadoBean!=null && envioProgramadoBean.getIdTipoEnvios()!=null &&!envioProgramadoBean.getIdTipoEnvios().toString().equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))			
-			envio.getEnviosBean().setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
+		//if(envioProgramadoBean!=null && envioProgramadoBean.getIdTipoEnvios()!=null &&!envioProgramadoBean.getIdTipoEnvios().toString().equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))			
+			envio.getEnviosBean().setIdEstado(new Integer(EnvEnviosAdm.ESTADO_PENDIENTE_AUTOMATICO));
 		
 		enviosBean.setFechaProgramada(envioProgramadoBean.getFechaProgramada());
 		enviosBean.setIdPlantillaEnvios(envioProgramadoBean
