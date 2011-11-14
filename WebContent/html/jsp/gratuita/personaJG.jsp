@@ -451,17 +451,55 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 			document.forms[0].poblacion.value = poblacionSeleccionada;
 		}
 
+		// Comprueba el tipo de persona que se elegi en el combo FISICA O JURIDICA 
+		function comprobarTipoPersona ()
+		{						
+			if(document.PersonaJGForm.tipos.value == 'F')
+			{
+				//alert("document.PersonaJGForm.tipos.value FISICA: "+document.PersonaJGForm.tipos.value);
+				document.getElementById("apelli2").style.display="block";
+				document.getElementById("perJuridica").style.display="none";
+				document.getElementById("perFisica").style.display="block";
+			}
+			else
+			{
+				//alert("document.PersonaJGForm.tipos.value JURIDICA: "+document.PersonaJGForm.tipos.value); 
+				document.getElementById("apelli2").style.display="none";
+				document.getElementById("perFisica").style.display="none";
+				document.getElementById("perJuridica").style.display="block";
+			}
+			document.getElementById("textoInformativo").style.display="none";				
+		}
+
+		function mostrarTextoInformativo ()
+		{			
+			document.getElementById("textoInformativo").style.display="none";
+		}
+		
+		function comprobarIdentificador ()
+		{
+			alert("ver identificación");
+			alert("document.PersonaJGForm.tipoId.value"+document.PersonaJGForm.tipoId.value);
+			//document.solicitudCompraForm.tipoId.value=='P'
+		}
+
+
+
+		
 		// Comprueba el tipo de ident y pinta el boton de generar letra nif si fuese necesario
 		 
-		 function comprobarTipoIdent(){
+		 function comprobarTipoIdent(){			 
 			<%if (!accion.equalsIgnoreCase("ver")) {%>
 			// Solo se genera el NIF o CIF de la persona
 			if((document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")||
-				(document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")){
+				(document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")
+				|| (document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>")){
 				//document.getElementById("idButtonNif").style.visibility="visible";
+				document.getElementById("textoInformativo").style.display="none";
 			}	else{
 				//document.getElementById("idButtonNif").style.visibility="hidden";
-			}
+				document.getElementById("textoInformativo").style.display="block";
+			}			
 			<%}%>
 		}	
 		
@@ -697,7 +735,7 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 	if (pantalla.equals("P")) {
 %>
 
-<body class="tablaCentralCampos" onload="recargar();comprobarTipoIdent();">
+<body class="tablaCentralCampos" onload="recargar();comprobarTipoIdent();mostrarTextoInformativo();comprobarTipoPersona();">
 
 <!-- capa principal -->
 <div id="camposRegistro"  align="center">
@@ -962,7 +1000,7 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 				} else {
 			%>
 			
-			<html:select styleId="tipos"   styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" property="idTipoPersona"  readOnly="false">				
+			<html:select styleId="tipos"   styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" property="idTipoPersona">				
 				<bean:define id="tipos" name="PersonaJGForm"
 						property="tipos" type="java.util.Collection" />
 				<html:optionsCollection name="tipos" value="idTipo"
@@ -983,7 +1021,7 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 			}
 		%>		
 		
-		<td colspan="3">
+		<td colspan="2">
 			<%if (obligatorioTipoIdentificador) { %>
 				<%=asterisco%> 
 			<%}%>
@@ -995,7 +1033,7 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 			if (accion.equalsIgnoreCase("ver")) {
 				String tipoIdent = (String) request.getAttribute("identificacion");
 		%>			
-				<siga:ComboBD nombre = "tipoId" tipo="cmbTipoIdentificacionConCIF" elementoSel="<%=tipoIdentificacionSel%>" clase="boxConsulta" obligatorio="true"  readonly="<%=sreadonly%>"/>
+				<siga:ComboBD nombre = "tipoId" tipo="cmbTipoIdentificacionConCIF" elementoSel="<%=tipoIdentificacionSel%>" clase="boxConsulta" obligatorio="true"  readonly="<%=sreadonly%>"  accion="comprobarTipoIdent();"/>
 	    <%
 		 	} else {
 		  %>
@@ -1011,27 +1049,39 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 		   <html:text name="PersonaJGForm" property="NIdentificacion" size="10" maxlength="20" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" onblur="rellenarFormulario()"></html:text>
 		  	
 		</td>
+		<td id="textoInformativo" colspan="3">
+			<p align="left">Se requiere NIF/NIE para solicitar Informe socio-económico</p>
+		</td>
+		<!--  
 		<td class="labelText" align="left" >
 			<siga:Idioma key="gratuita.personaJG.literal.nombreDeno"/>&nbsp;(*)					
 		</td>
 		<td align="left">
 			<html:text name="PersonaJGForm" property="nombre" maxlength="100" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" style="width:200"></html:text>
 		</td>
-		
+		-->
 	</tr>
 	
 	<tr>
-		<td class="labelText" colspan="3">
-			<siga:Idioma key="gratuita.personaJG.literal.apellido1Abre"/>&nbsp;(*)		
+		<td class="labelText" id="perFisica" colspan="3">
+			<siga:Idioma key="gratuita.personaJG.literal.nombreDenoApe1Ape2"/>		
+		</td>
+		<td  class="labelText" id="perJuridica" colspan="3">
+			<siga:Idioma key="gratuita.personaJG.literal.nombreDenoApe1"/>		
+		</td>
+		<td align="left">
+			<html:text name="PersonaJGForm" property="nombre" maxlength="100" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" style="width:190"></html:text>
 		</td>
 		<td colspan="2"> 
-			<html:text name="PersonaJGForm" property="apellido1" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:200"></html:text>
+			<html:text name="PersonaJGForm" property="apellido1" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:190"></html:text>
 		</td>
+		<!--  
 		<td class="labelText" colspan="1" >
 			<siga:Idioma key="gratuita.personaJG.literal.apellido2"/>		
 		</td>
-		<td  colspan="1">
-			<html:text name="PersonaJGForm" property="apellido2" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:200"></html:text>
+		-->
+		<td  colspan="1" id="apelli2">
+			<html:text name="PersonaJGForm" property="apellido2" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:190"></html:text>
 		</td>
 		<td >
 			<%
@@ -2105,7 +2155,7 @@ function limpiarPersonaContrario() {
 <ajax:select
 	baseUrl="/SIGA${path}.do?modo=getAjaxTipoIdentificacion"
 	source="tipos" target="identificadores"		
-	parameters="idTipoPersona={idTipoPersona}"
+	parameters="idTipoPersona={idTipoPersona}" postFunction="comprobarTipoPersona"
 	/>
 	
 </html:form>
