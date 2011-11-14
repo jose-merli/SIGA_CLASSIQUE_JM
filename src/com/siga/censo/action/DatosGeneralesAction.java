@@ -109,7 +109,7 @@ public class DatosGeneralesAction extends MasterAction {
 				mapDestino = modificarSociedad(mapping, miForm, request, response);
 			}else if ( accion.equalsIgnoreCase("getIdenHistorico")){
 				ClsLogging.writeFileLog("DATOS NO COLEGIALES:getIdenHistorico", 10);
-				mapDestino = getIdenHistorico(mapping, miForm, request, response);
+				mapDestino = getIdenHistorico(mapping, miForm, request, response,0,"");
 			}else if ( accion.equalsIgnoreCase("getAjaxTipo")){
 					ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxTipo", 10);
 					getAjaxTipo(mapping, miForm, request, response);
@@ -1028,6 +1028,13 @@ public class DatosGeneralesAction extends MasterAction {
  			
 			// Obtengo los datos del formulario
 			DatosGeneralesForm miForm = (DatosGeneralesForm)formulario;
+			if(miForm.getNumIdentificacion()==null || miForm.getNumIdentificacion().equals(""))
+			{				
+				String numIdent= (String)getIdenHistorico(mapping, miForm, request, response,1,usr.getLocation());
+				miForm.setNumIdentificacion(numIdent);
+				miForm.setTipoIdentificacion("50");
+				//request.getSession().setAttribute("MOSTRARMENSAJENOIDENTIFICADOR","El número de identificación sugerido ya existía. Se ha calculado uno nuevo y a continuación podrá consultarlo");
+			}
 			Hashtable hash = miForm.getDatos();
 
 			//CenPersonaAdm adminPer=new CenPersonaAdm(this.getUserName(request));
@@ -1115,9 +1122,18 @@ public class DatosGeneralesAction extends MasterAction {
 				personas = perAdm.select("WHERE UPPER(" + CenPersonaBean.C_NIFCIF + ") = '" + numIdentificacion.toUpperCase() + "'");
 				// insert de la parte de cliente paso un solo hash con los datos de cliente y de persona
 				// CenClienteBean beanCli = adminCli.insertNoColegiado(hash, request);
-				if ((personas != null) && personas.size() == 1) {
-					perBean = (CenPersonaBean) personas.get(0);
-					idPersonaValor = new Long(perBean.getIdPersona()).longValue();
+				if ((personas != null) && personas.size() == 1) {					
+					String subNumIdentificacion = numIdentificacion.substring(0, 8);
+					int num = new Integer(numIdentificacion.substring(8)).intValue();					
+					num++;
+					String numfinal=new Integer(num).toString();
+					while(numfinal.length()<4){
+						numfinal="0"+numfinal;
+					}
+					subNumIdentificacion= subNumIdentificacion + numfinal;
+					miForm.setNumIdentificacion(subNumIdentificacion);
+					hash.put(CenPersonaBean.C_NIFCIF, subNumIdentificacion);
+					request.getSession().setAttribute("MOSTRARMENSAJE","mostrarMensaje");
 				}
 			}
 
@@ -1890,12 +1906,14 @@ public class DatosGeneralesAction extends MasterAction {
 	protected String getIdenHistorico (ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
+			HttpServletResponse response, int bandera,String institucion) throws ClsExceptions, SIGAException ,Exception
 			{
 		DatosGeneralesForm miForm = (DatosGeneralesForm)formulario;
 		//Sacamos las guardias si hay algo selccionado en el turno
 		String numero= null;
 		String insti= miForm.getIdInstitucion();
+		if(insti == null || insti.equals(""))
+			insti = institucion;
 		CenPersonaAdm admCli = new CenPersonaAdm(this.getUserBean(request) );
 		numero = admCli.obtenerUltiIdenHistorico(insti);
 		JSONObject json = new JSONObject();
@@ -1910,6 +1928,8 @@ public class DatosGeneralesAction extends MasterAction {
 			}
 			numero="NIHN" + insti + numfinal;
 		}
+		if(bandera==0)
+		{
 		json.put("numHistorico", numero);
 		 //response.setContentType("text/x-json;charset=UTF-8");
 		 response.setHeader("Cache-Control", "no-cache");
@@ -1917,6 +1937,9 @@ public class DatosGeneralesAction extends MasterAction {
 	     response.setHeader("X-JSON", json.toString());
 		 response.getWriter().write(json.toString()); 
 		return null;//"completado";
+		}
+		else
+			return numero;
 	}
 	// NO se utiliza. Por si se quiesiera emplear Ajax.
 	protected void getAjaxTipo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)

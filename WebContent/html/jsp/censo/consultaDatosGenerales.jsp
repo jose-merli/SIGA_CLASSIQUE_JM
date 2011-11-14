@@ -41,6 +41,8 @@
 		busquedaVolver = "volverNo";
 	}
 
+	String mostrarMensaje = (String) request.getSession().getAttribute("MOSTRARMENSAJE");
+
 	// variables
 	ArrayList gruposSel = new ArrayList();	
 	String cliente = "";
@@ -739,7 +741,14 @@ function str_replace(search, replace, subject) {
     };
  
     return sa ? s : s[0];
-} 			  		
+} 		
+
+	function mostrarMensaje()
+	{		
+		<% if (mostrarMensaje!=null && !(mostrarMensaje.equals(""))) { %>			
+			alert ("<siga:Idioma key="messages.tipoIdenti.comprobacion.existeEnBBDD"/>");
+		<% } %>			
+	}
 		
 		
 		
@@ -778,7 +787,7 @@ function str_replace(search, replace, subject) {
 <% } else { %>
 
 
-	<body class="tablaCentralCampos" onload="adaptaTamanoFoto();buscarGrupos();">
+	<body class="tablaCentralCampos" onload="adaptaTamanoFoto();buscarGrupos();mostrarMensaje();">
 
 <%		if (!formulario.getAccion().equalsIgnoreCase("NUEVO")) {
 			// cuando NO es nuevo
@@ -1429,6 +1438,7 @@ function str_replace(search, replace, subject) {
 		if (validateDatosGeneralesForm(document.forms[0])) {
 		var rc	= true;
 		var tipoIden = document.datosGeneralesForm.tipoIdentificacion.value;
+		
 		if ((tipoIden == <%=tipoIdenNIF%>)){
 			rc = validarNIFCIF(tipoIden, document.datosGeneralesForm.numIdentificacion.value);
 								
@@ -1436,16 +1446,17 @@ function str_replace(search, replace, subject) {
 			
 			rc=validaNIE(document.datosGeneralesForm.numIdentificacion.value);
 			
-		}
-
+		}			
 			return rc;	
-		}else{
+		}else{			
 		  return false;
 		}
 	}
 		<!-- Asociada al boton Guardar -->
 		function accionGuardar() {		
 			sub();
+			if((document.forms[0].tipoIdentificacion.value== "") && (document.forms[0].numIdentificacion.value==""))
+				alert ("<siga:Idioma key="messages.tipoIdenti.comprobacion.aviso"/>");
 				
 				if (validarFormulario()	&&	TestFileType(document.forms[0].foto.value, ['GIF', 'JPG', 'PNG', 'JPEG'])) {
 				<%	if (!formulario.getAccion().equals("nuevo")) { %>

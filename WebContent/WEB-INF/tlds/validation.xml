@@ -4049,6 +4049,7 @@
 							<var-value>100</var-value>
 						</var>
 				</field>
+				<!--  
 				<field 	property = "numIdentificacion" 		
 						depends = "maxlength,required"> 			
 						<arg0 key="censo.consultaDatosGenerales.literal.nIdentificacion"/>	
@@ -4062,6 +4063,7 @@
 						depends = "required"> 			
 						<arg0 key="censo.consultaDatosGenerales.literal.tipoIdentificacion"/>	
 				</field>
+				-->
 				<field 	property = "lugarNacimiento" 			
 						depends = "maxlength"> 			
 						<arg0 key="censo.consultaDatosGenerales.literal.nacido"/>							
