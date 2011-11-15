@@ -157,7 +157,7 @@ public class GestionInformesAction extends MasterAction {
 		List<CenInstitucionBean> institucionesList = informeService.getInstitucionesInformes(new Integer(usrBean.getLocation()),usrBean);
 		informeForm.setInstituciones(institucionesList);
 		informeForm.setLenguajes(informeService.getLenguajes(usrBean));
-		try {
+		
 			GenParametrosAdm param = new GenParametrosAdm(usrBean);
 			boolean isEnvioSmsConfigurado = UtilidadesString.stringToBoolean(param.getValor(usrBean.getLocation(), "ENV", "HABILITAR_SMS_BUROSMS", "N"));
 			String comboTipoEnvio = "cmbTipoEnviosInst";
@@ -177,7 +177,7 @@ public class GestionInformesAction extends MasterAction {
 			request.setAttribute("idPlantillaGeneracionSeleccionado",new ArrayList());
 			
 			
-		} catch (Exception e) {}
+		
 		
 		return "inicio";
 	}
@@ -229,7 +229,7 @@ public class GestionInformesAction extends MasterAction {
 		informeForm.setLenguajes(informeService.getLenguajes(usrBean));
 		
 		
-		try {
+		
 			GenParametrosAdm param = new GenParametrosAdm(usrBean);
 			boolean isEnvioSmsConfigurado = UtilidadesString.stringToBoolean(param.getValor(usrBean.getLocation(), "ENV", "HABILITAR_SMS_BUROSMS", "N"));
 			String comboTipoEnvio = "cmbTipoEnviosInst";
@@ -246,7 +246,7 @@ public class GestionInformesAction extends MasterAction {
 			request.setAttribute("idPlantillaEnvioSeleccionado",new ArrayList());
 			
 			request.setAttribute("idPlantillaGeneracionSeleccionado",new ArrayList());
-		} catch (Exception e) {}
+		
 		
 		InformeForm informeFormEdicion = new InformeForm();
 		informeFormEdicion.setUsrBean(this.getUserBean(request));
@@ -285,7 +285,7 @@ public class GestionInformesAction extends MasterAction {
 		informeFormEdicion.setIdInstitucion(informeFormEdicion.getUsrBean().getLocation());
 		informeFormEdicion.setLenguajes(informeForm.getLenguajes());
 		
-		try {
+		
 			GenParametrosAdm param = new GenParametrosAdm(usrBean);
 			boolean isEnvioSmsConfigurado = UtilidadesString.stringToBoolean(param.getValor(usrBean.getLocation(), "ENV", "HABILITAR_SMS_BUROSMS", "N"));
 			String comboTipoEnvio = "cmbTipoEnviosInst";
@@ -302,7 +302,7 @@ public class GestionInformesAction extends MasterAction {
 			request.setAttribute("idPlantillaEnvioSeleccionado",new ArrayList());
 			
 			request.setAttribute("idPlantillaGeneracionSeleccionado",new ArrayList());
-		} catch (Exception e) {}
+		
 		
 		request.setAttribute("InformeFormEdicion", informeFormEdicion);
 		
@@ -326,7 +326,7 @@ public class GestionInformesAction extends MasterAction {
 			informeFormEdicion.setClaseTipoInforme(informeForm.getClaseTipoInforme());
 			
 			request.setAttribute("InformeFormEdicion", informeFormEdicion);
-			try {
+			
 				GenParametrosAdm param = new GenParametrosAdm(usrBean);
 				boolean isEnvioSmsConfigurado = UtilidadesString.stringToBoolean(param.getValor(usrBean.getLocation(), "ENV", "HABILITAR_SMS_BUROSMS", "N"));
 				String comboTipoEnvio = "cmbTipoEnviosInst";
@@ -361,7 +361,7 @@ public class GestionInformesAction extends MasterAction {
 				
 				
 				
-			} catch (Exception e) {}
+			
 			informeForm.setModo("modificar");
 		}catch (Exception e){
 			throwExcp("messages.general.errorExcepcion", e, null); 			
@@ -397,7 +397,7 @@ public class GestionInformesAction extends MasterAction {
 			informeFormEdicion.setClaseTipoInforme(informeForm.getClaseTipoInforme());
 			
 			request.setAttribute("InformeFormEdicion", informeFormEdicion);
-			try {
+			
 				GenParametrosAdm param = new GenParametrosAdm(usrBean);
 				boolean isEnvioSmsConfigurado = UtilidadesString.stringToBoolean(param.getValor(usrBean.getLocation(), "ENV", "HABILITAR_SMS_BUROSMS", "N"));
 				String comboTipoEnvio = "cmbTipoEnviosInst";
@@ -425,7 +425,7 @@ public class GestionInformesAction extends MasterAction {
 					alIdsPlantillaGeneracion.add(informeFormEdicion.getIdPlantillaGeneracion());
 				}
 				request.setAttribute("idPlantillaGeneracionSeleccionado",alIdsPlantillaEnvio);
-			} catch (Exception e) {}
+			
 			
 			informeForm.setModo("modificar");
 		}catch (Exception e){
