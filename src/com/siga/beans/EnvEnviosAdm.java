@@ -941,7 +941,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    			if(dictamenEJG.length()>10)
 	    	    				dictamenEJG = dictamenEJG.substring(0,10);
 	    	    				
-	    	    			htDatosEnvio.put("EJG_DICTA",dictamenEJG);
+	    	    			htDatosEnvio.put("EJG_DICTAM",dictamenEJG);
 	    	    			
 	    	    			
 	    	    		}
