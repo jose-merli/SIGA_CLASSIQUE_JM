@@ -1,6 +1,7 @@
 <!-- edicionInforme.jsp -->
 
 <!-- CABECERA JSP -->
+<%@page import="java.util.ArrayList"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
 <%@ page pageEncoding="ISO-8859-15"%>
@@ -72,10 +73,14 @@
 	<bean:define id="location" name="InformeFormEdicion" property="usrBean.location"  />
 	<bean:define id="comboTipoEnvio" name="comboTipoEnvio"  scope="request"/>
 	<input type="hidden" id="comboTipoEnvioHidden" value="${comboTipoEnvio}" />
-	<bean:define id="parametrosComboEnvios" name="parametrosComboEnvios" type="String[]" scope="request" />
-	<bean:define id="idTipoEnvioSeleccionado" name="idTipoEnvioSeleccionado" type="java.util.ArrayList" scope="request"  />
-	<bean:define id="idPlantillaGeneracionSeleccionado" name="idPlantillaGeneracionSeleccionado" type="java.util.ArrayList" scope="request"  />
-	<bean:define id="idPlantillaEnvioSeleccionado" name="idPlantillaEnvioSeleccionado" type="java.util.ArrayList" scope="request"  />
+	<% String[] parametrosComboEnvios = (String[])request.getAttribute("parametrosComboEnvios"); 
+		ArrayList idTipoEnvioSeleccionado = (ArrayList)request.getAttribute("idTipoEnvioSeleccionado");
+		ArrayList idPlantillaGeneracionSeleccionado = (ArrayList)request.getAttribute("idPlantillaGeneracionSeleccionado");
+		ArrayList idPlantillaEnvioSeleccionado = (ArrayList)request.getAttribute("idPlantillaEnvioSeleccionado");
+	
+	%>
+	
+	
 	
 	
 	
@@ -264,7 +269,7 @@
 							<td ><siga:ComboBD nombre="comboTipoEnvio"
 									tipo="${comboTipoEnvio}" clase="boxCombo" obligatorio="false"
 									parametro="${parametrosComboEnvios}"
-									elementoSel="${idTipoEnvioSeleccionado}"
+									elementoSel="<%=idTipoEnvioSeleccionado%>"
 									accion="Hijo:comboPlantillaEnvio;accionComboTipoEnvio();" /></td>
 
 
@@ -274,13 +279,13 @@
 							<td ><siga:ComboBD
 									nombre="comboPlantillaEnvio" tipo="cmbPlantillaEnvios2"
 									clase="boxCombo" obligatorio="FALSE" hijo="t"
-									elementoSel="${idPlantillaEnvioSeleccionado}"
+									elementoSel="<%=idPlantillaEnvioSeleccionado%>"
 									accion="Hijo:idPlantillaGeneracion" /></td>
 							<td class="labelText" style="display: none"><siga:Idioma
 									key="envios.definir.literal.plantillageneracion" /></td>
 							<td style="display: none"><siga:ComboBD
 									nombre="idPlantillaGeneracion" tipo="cmbPlantillaGeneracion"
-									elementoSel="${idPlantillaGeneracionSeleccionado}"
+									elementoSel="<%=idPlantillaGeneracionSeleccionado%>"
 									clase="boxCombo" obligatorio="false" hijo="t"  />
 							</td>
 						</tr>
