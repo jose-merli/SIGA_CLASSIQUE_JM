@@ -562,7 +562,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 	 * @return  Vector - Fila seleccionada  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	public PaginadorBind getAbonosClientePaginador (String institucion, String idPersona, Integer anyosAbono ) throws ClsExceptions,SIGAException {
+	public PaginadorBind getAbonosClientePaginador (String institucion, String idPersona, Integer anyosAbono,Boolean isAbonoSJCS ) throws ClsExceptions,SIGAException {
 		try {
 			String sql ="SELECT " +
 			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + "," +
@@ -584,11 +584,37 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 			"PKG_SIGA_TOTALESABONO.TOTAL("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") AS TOTAL" +
 			" FROM " + FacAbonoBean.T_NOMBRETABLA + 
 			" WHERE " +
-			FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION + "=" + institucion +
-			" AND " +
-			FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDPERSONA + "=" + idPersona;
+			FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION + "=" + institucion ;
+			
 			if (anyosAbono!=null){		 
 				  sql+=" AND SYSDATE - " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_FECHA + " < "+anyosAbono.toString();
+			}
+			if(isAbonoSJCS!=null){
+				if(isAbonoSJCS.booleanValue()){
+					sql+=" AND " +FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDPERSONA + " IN ";
+					
+					sql+="( (select idperdestino   from FCS_PAGO_COLEGIADO pc  where pc.IDINSTITUCION = FAC_ABONO.IDINSTITUCION ";
+					sql+=" and pc.IDPAGOSJG = nvl(FAC_ABONO.IDPAGOSJG, pc.IDPAGOSJG)";
+					sql+=" AND idperorigen = " + idPersona+") , " + idPersona+"  )"; 
+					
+					
+					
+					sql+=" AND "+ FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDPAGOSJG + " is not null";
+				}else{
+					sql+=" AND " +FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDPERSONA + " IN ";
+					
+					sql+="( (select idperdestino   from FCS_PAGO_COLEGIADO pc  where pc.IDINSTITUCION = FAC_ABONO.IDINSTITUCION ";
+					sql+=" and pc.IDPAGOSJG is null ";
+					sql+=" AND idperorigen = " + idPersona+") , " + idPersona+"  )";
+					
+					
+					sql+=" AND "+ FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDPAGOSJG + " is null";
+					
+				}
+				
+			}else{
+				sql+=" AND " +FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDPERSONA + "=" + idPersona;
+				
 			}
 			sql+=" ORDER BY "+ 
 			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_FECHA + " DESC";

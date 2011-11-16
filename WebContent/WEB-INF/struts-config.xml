@@ -868,21 +868,44 @@
 			<forward name="ver" path="/html/jsp/facturacion/administracionAbonos.jsp"/>
 		</action>
 		
+		<action path="/JGR_AbonosClienteSJCS" type="com.siga.censo.action.AbonosClienteAction" name="AbonosClienteForm" scope="request">
+			<forward name="abrir" path="/html/jsp/censo/consultaAbonos.jsp"/>
+			<forward name="ver" path="/html/jsp/facturacion/administracionAbonos.jsp"/>
+		</action>
+		
+		
 		<action path="/CEN_DatosGeneralesAbonosCliente" type="com.siga.facturacion.action.AbonosDatosGeneralesAction" name="AbonosDatosGeneralesForm" scope="request">
 			<forward name="abrir" path="/html/jsp/facturacion/consultaDatosGeneralesAbonos.jsp"/>
 		</action>
+		
 
 		<action path="/CEN_LineasFacturaAbonosCliente" type="com.siga.facturacion.action.AbonosLineasAction" name="AbonosLineasForm" scope="request">
 			<forward name="abrir" path="/html/jsp/facturacion/consultaAbonosLineas.jsp"/>
 			<forward name="editar" path="/html/jsp/facturacion/datosLineaAbono.jsp"/>
 			<forward name="nuevo" path="/html/jsp/facturacion/datosLineaAbono.jsp"/>
 		</action>
+		
+		
 
 		<action path="/CEN_PagosFacturaAbonosCliente" type="com.siga.facturacion.action.AbonosPagosAction" name="AbonosPagosForm" scope="request">
 			<forward name="abrir" path="/html/jsp/facturacion/consultaPagosAbonos.jsp"/>
 			<forward name="datosImpresion" path="/html/jsp/facturacion/datosImpresionAbono.jsp"/>
 			<forward name="mostrarDatosFactura" path="/html/jsp/facturacion/mostrarDatosFacturaCompensadora.jsp" />
 		</action>
+		<!-- Mirar todas esta jspssssssss -->
+		<action path="/JGR_AbonosSJCSDatosGenerales" type="com.siga.facturacion.action.AbonosDatosGeneralesAction" name="AbonosDatosGeneralesForm" scope="request">
+			<forward name="abrir" path="/html/jsp/facturacion/consultaDatosGeneralesAbonos.jsp"/>
+		</action>
+		
+		<action path="/JGR_AbonosSJCSLineas" type="com.siga.facturacion.action.AbonosLineasAction" name="AbonosLineasForm" scope="request">
+			<forward name="abrir" path="/html/jsp/facturacion/consultaAbonosLineas.jsp"/>
+			<forward name="editar" path="/html/jsp/facturacion/datosLineaAbono.jsp"/>
+		</action>
+		
+		<action path="/JGR_AbonosSJCSPago" type="com.siga.facturacion.action.AbonosPagosAction" name="AbonosPagosForm" scope="request">
+			<forward name="abrir" path="/html/jsp/facturacion/consultaPagosAbonos.jsp"/>
+		</action>
+		<!-- Mirar todas esta jspssssssss -->
 		
 		<action path="/CEN_MantenimientoDuplicados" type="com.siga.censo.action.MantenimientoDuplicadosAction" name="MantenimientoDuplicadosForm" scope="request">
 			<forward name="inicio" path="/html/jsp/censo/busquedaDuplicados.jsp"/>

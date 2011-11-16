@@ -38,6 +38,7 @@ import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.form.InformeForm;
 import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.AdmInformeBean;
+import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
@@ -270,11 +271,6 @@ public class AbonosClienteAction extends MasterAction {
 			}
 			
 			
-			Hashtable criterios = new Hashtable();
-			criterios.put(PysProductosSolicitadosBean.C_IDPERSONA, miform
-					.getIdPersona());
-			criterios.put(PysPeticionCompraSuscripcionBean.C_TIPOPETICION,
-					ClsConstants.TIPO_PETICION_COMPRA_ALTA);
 			if(!bIncluirRegistrosConBajaLogica){
 			anyosAbono= new Integer(730);
 			}
@@ -291,7 +287,8 @@ public class AbonosClienteAction extends MasterAction {
 			// DCG Nuevo ////////////////////
 			CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));
 			CenColegiadoBean datosColegiales = colegiadoAdm.getDatosColegiales(idPersona, new Integer(idInstitucionPersona));
-			numero = colegiadoAdm.getIdentificadorColegiado(datosColegiales);
+			if(datosColegiales!=null)
+				numero = colegiadoAdm.getIdentificadorColegiado(datosColegiales);
 			//////////////////////
 
 			HashMap databackup = getPaginador(request, paginadorPenstania);
@@ -323,7 +320,12 @@ public class AbonosClienteAction extends MasterAction {
 				//obtengo datos de la consulta 			
 				PaginadorBind resultado = null;
 				FacAbonoAdm abonoAdm = new FacAbonoAdm(user);
-				resultado = abonoAdm.getAbonosClientePaginador(user.getLocation(),idPersona.toString(),anyosAbono);
+				Boolean isAbonosClientes = null;
+				if(datosColegiales!=null){
+					isAbonosClientes = new Boolean(mapping.getPath().equals("/JGR_AbonosClienteSJCS"));
+				}
+				 
+				resultado = abonoAdm.getAbonosClientePaginador(user.getLocation(),idPersona.toString(),anyosAbono,isAbonosClientes);
 				Vector datos = null;
 				
 
@@ -412,8 +414,10 @@ public class AbonosClienteAction extends MasterAction {
 			datosAbonos.put("idAbono",ocultos.get(0));
 			datosAbonos.put("idInstitucion",ocultos.get(1));
 			
-			
-			request.setAttribute("pestanaId", "ABNCEN");
+			if(mapping.getPath().equals("/CEN_AbonosCliente"))
+				request.setAttribute("pestanaId", "ABNCEN");
+			else
+				request.setAttribute("pestanaId", "PGOCEN");
 			// Paso de parametros a las pestanhas
 			request.setAttribute("datosAbonos", datosAbonos);
 		} 

@@ -34,67 +34,82 @@
 <%@ page import="java.util.Vector"%>
 <%@ page import="java.util.Enumeration"%>
 <!-- JSP -->
-<% 
-	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
-	String botonesAccion="N";
-	UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+
+<html>
+
+	<!-- HEAD -->
+	
+	
+
+	
+<bean:define id="path" name="org.apache.struts.action.mapping.instance"
+	property="path" scope="request" />
+<%
+	String app = request.getContextPath();
+	HttpSession ses = request.getSession();
+	Properties src = (Properties) ses
+			.getAttribute(SIGAConstants.STYLESHEET_REF);
+	String botonesAccion = "N";
+	UsrBean usr = (UsrBean) request.getSession()
+			.getAttribute("USRBEAN");
 
 	// Datos del cliente a visualizar
-	Long idPersona=(Long)request.getAttribute("IDPERSONA"); // Obtengo el identificador de la persona
-	String accion=(String)request.getAttribute("ACCION"); // Obtengo la accion anterior
-	String nombre=(String)request.getAttribute("NOMBRE"); // Obtengo el nombre completo de la persona
-	String numero=(String)request.getAttribute("NUMERO"); // Obtengo el numero de colegiado de la persona	
-	String idInstitucion=(String)request.getAttribute("IDINSTITUCIONPERSONA"); // Obtengo el identificador de la institucion
-	String idInstitucionPersona = Integer.valueOf(request.getParameter("idInstitucion")).toString();
-	
-	
+	Long idPersona = (Long) request.getAttribute("IDPERSONA"); // Obtengo el identificador de la persona
+	String accion = (String) request.getAttribute("ACCION"); // Obtengo la accion anterior
+	String nombre = (String) request.getAttribute("NOMBRE"); // Obtengo el nombre completo de la persona
+	String numero = (String) request.getAttribute("NUMERO"); // Obtengo el numero de colegiado de la persona	
+	String idInstitucion = (String) request
+			.getAttribute("IDINSTITUCIONPERSONA"); // Obtengo el identificador de la institucion
+	String idInstitucionPersona = Integer.valueOf(
+			request.getParameter("idInstitucion")).toString();
+
 	Long SidPersona = (Long) request.getAttribute("idPersona");
-	if (SidPersona == null){
-		SidPersona = (Long) request.getSession().getAttribute("idPersona");
-		if (SidPersona == null){
-			SidPersona = new Long (request.getParameter("idPersona"));
+	if (SidPersona == null) {
+		SidPersona = (Long) request.getSession().getAttribute(
+				"idPersona");
+		if (SidPersona == null) {
+			SidPersona = new Long(request.getParameter("idPersona"));
 		}
 	}
-	Integer SidInstitucion = (Integer) request.getAttribute("idInstitucion");
-	if(SidInstitucion == null){
-		SidInstitucion = (Integer) request.getSession().getAttribute("idInstitucion");
-		if(SidInstitucion == null){
-			SidInstitucion = new Integer(request.getParameter("idInstitucion"));	
-		
+	Integer SidInstitucion = (Integer) request
+			.getAttribute("idInstitucion");
+	if (SidInstitucion == null) {
+		SidInstitucion = (Integer) request.getSession().getAttribute(
+				"idInstitucion");
+		if (SidInstitucion == null) {
+			SidInstitucion = new Integer(
+					request.getParameter("idInstitucion"));
+
 		}
-	
+
 	}
-		
-	
-	Vector abonos=new Vector();
+
+	Vector abonos = new Vector();
 
 	// Institucion del usuario de la aplicacion
-	String idInstUsuario=(String)request.getAttribute("IDINSTITUCION"); // Obtengo el identificador de la institucion
+	String idInstUsuario = (String) request
+			.getAttribute("IDINSTITUCION"); // Obtengo el identificador de la institucion
 
 	// Obtencion de la informacon relacionada con el abono
-	if (request.getAttribute("container") != null){	
-		abonos = (Vector)request.getAttribute("container");	
+	if (request.getAttribute("container") != null) {
+		abonos = (Vector) request.getAttribute("container");
 	}
 
 	// Gestion de Volver
-	String busquedaVolver = (String)
-	request.getSession().getAttribute("CenBusquedaClientesTipo");
-	if ((busquedaVolver==null)||(usr.isLetrado())) {
+	String busquedaVolver = (String) request.getSession().getAttribute(
+			"CenBusquedaClientesTipo");
+	if ((busquedaVolver == null) || (usr.isLetrado())) {
 		busquedaVolver = "volverNo";
 	}
-	
-	if (!busquedaVolver.equals("volverNo")) { 
-		botonesAccion="V,i";
+
+	if (!busquedaVolver.equals("volverNo")) {
+		botonesAccion = "V,i";
 	}
-	 String sTipo = request.getParameter("tipoCliente");		
-	 
-	 
-	 
+	String sTipo = request.getParameter("tipoCliente");
+
 	/** PAGINADOR ***/
 	String idioma = usr.getLanguage().toUpperCase();
-	
+
 	Vector resultado = null;
 	String paginaSeleccionada = "";
 
@@ -102,16 +117,21 @@
 
 	String registrosPorPagina = "";
 	HashMap hm = new HashMap();
-	String atributoPaginador = (String) request.getAttribute(ClsConstants.PARAM_PAGINACION);
+	String atributoPaginador = (String) request
+			.getAttribute(ClsConstants.PARAM_PAGINACION);
 	if (ses.getAttribute(atributoPaginador) != null) {
 		hm = (HashMap) ses.getAttribute(atributoPaginador);
 
 		if (hm.get("datos") != null && !hm.get("datos").equals("")) {
 			resultado = (Vector) hm.get("datos");
-			PaginadorBind paginador = (PaginadorBind) hm.get("paginador");
-			paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
-			totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());
-			registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina());
+			PaginadorBind paginador = (PaginadorBind) hm
+					.get("paginador");
+			paginaSeleccionada = String.valueOf(paginador
+					.getPaginaActual());
+			totalRegistros = String.valueOf(paginador
+					.getNumeroTotalRegistros());
+			registrosPorPagina = String.valueOf(paginador
+					.getNumeroRegistrosPorPagina());
 		} else {
 			resultado = new Vector();
 			paginaSeleccionada = "0";
@@ -124,107 +144,90 @@
 		totalRegistros = "0";
 		registrosPorPagina = "0";
 	}
-	/** FIN PAGINADOR ***/	 
-	
-	boolean bIncluirBajaLogica = UtilidadesString.stringToBoolean((String)request.getAttribute("bIncluirRegistrosConBajaLogica")); 
-	String action=app+"/CEN_AbonosCliente.do?noReset=true&bIncluirRegistrosConBajaLogica="+(String)request.getAttribute("bIncluirRegistrosConBajaLogica") +
-		 "&nombre="+nombre+"&idInstitucion="+idInstitucion+"&idPersona="+idPersona.toString()+"&numero="+numero+
-		 "&idInstitucion="+idInstitucion+"&idInstUsuario="+idInstUsuario+"&accion="+accion;
+	/** FIN PAGINADOR ***/
+
+	boolean bIncluirBajaLogica = UtilidadesString
+			.stringToBoolean((String) request
+					.getAttribute("bIncluirRegistrosConBajaLogica"));
+	String action = app
+			+ path
+			+ ".do?noReset=true&bIncluirRegistrosConBajaLogica="
+			+ (String) request
+					.getAttribute("bIncluirRegistrosConBajaLogica")
+			+ "&nombre=" + nombre + "&idInstitucion=" + idInstitucion
+			+ "&idPersona=" + idPersona.toString() + "&numero="
+			+ numero + "&idInstitucion=" + idInstitucion
+			+ "&idInstUsuario=" + idInstUsuario + "&accion=" + accion;
 %>	
-
-<html>
-	<!-- HEAD -->
-	<head>
-
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
+<head>
+<link id="default" rel="stylesheet" type="text/css"
+	href='<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>'>
+<script src="<html:rewrite page='/html/js/SIGA.js'/>"
+	type="text/javascript"></script>
+<script
+	src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"
+	type="text/javascript"></script>
+<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"
+	type="text/javascript"></script>
+	
+		<script src="<html:rewrite page='/html/js/validacionStruts.js'/>" type="text/javascript"></script>	
+	
+	
+	
 		
 
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		<!-- Validaciones en Cliente -->
 		<!-- El nombre del formulario se obtiene del struts-config -->
 		<html:javascript formName="AbonosClienteForm" staticJavascript="false" />  
-		<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
+
 		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
-		<script>
-	function incluirRegBajaLogica(o) {
-			if (o.checked) {
-			document.AbonosClienteForm.incluirRegistrosConBajaLogica.value = "s";
-			} else {
-				document.AbonosClienteForm.incluirRegistrosConBajaLogica.value = "n";
-			}
-			document.AbonosClienteForm.modo.value = "abrir";
-			
-			document.AbonosClienteForm.submit();
-		}
-	function accionImprimir() 
-	{		
-
-		document.AbonosClienteForm.modo.value = 'imprimir';
-		document.AbonosClienteForm.target = "submitArea";
-		document.AbonosClienteForm.submit();
-	}
-	function download(fila)
-	{
-		sub();
-	var idPers = "idPersona"+fila;
-	var idPago = "idPago"+fila;
-	var idInst = "oculto"+fila+"_2";
-	idPersona = document.getElementById(idPers).value;
-	idPago = document.getElementById(idPago).value;
-	idInstitucion =  document.getElementById(idInst).value;
-	datos = +idInstitucion +","+idPago+","+idPersona +"#";
-	
-	var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
-	formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucion%>'>"));
-	   formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
-	   formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='CPAGO'>"));
-	   formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
-	   formu.appendChild(document.createElement("<input type='hidden' name='tablaDatosDinamicosD' value=''>"));
-	   formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
-	   document.appendChild(formu);
-	   formu.tablaDatosDinamicosD.value = datos;
-	   formu.submit();
- 
-
-}
-
-						
-		</script>
-	
+		
 		<!-- INICIO: TITULO Y LOCALIZACION -->
 		<!-- Escribe el título y localización en la barra de título del frame principal -->
 		
 			
-		<% if (sTipo!=null && sTipo.equals("LETRADO")){%>
+		<%
+								if (sTipo != null && sTipo.equals("LETRADO")) {
+							%>
 		 <siga:Titulo 
 			titulo="censo.fichaCliente.facturacion.abonos.cabecera"
 			localizacion="censo.fichaLetrado.facturacion.localizacion"/>
-		<%}else{%>
+		<%
+			} else if (path.equals("/JGR_AbonosClienteSJCS")) {
+		%>
+		<siga:Titulo titulo="pestana.fichaCliente.justiciagratuita.pagos"  localizacion="censo.fichaCliente.sjcs.to.facturacion.localizacion"/>
+		<%
+			} else {
+		%>
 		<siga:TituloExt 
 			titulo="censo.fichaCliente.facturacion.abonos.cabecera" 
 			localizacion="censo.fichaCliente.facturacion.abonos.localizacion"/>
-		<%}%>
+		<%
+			}
+		%>
 		<!-- FIN: TITULO Y LOCALIZACION -->
 			
 	</head>
 
-	<body class="tablaCentralCampos">
-
+<body class="tablaCentralCampos">
 		<!-- ******* INFORMACION GENERAL CLIENTE ****** -->
 
 	    <table class="tablaTitulo" align="center" cellspacing=0>
 		<tr>
 		<td class="titulitosDatos">
 			<siga:Idioma key="facturacion.abonosClientes.literal.cabecera"/> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombre)%> &nbsp;&nbsp;
-		    <%if(!numero.equalsIgnoreCase("")){%>
+		    <%
+		    	if (!numero.equalsIgnoreCase("")) {
+		    %>
 					<siga:Idioma key="facturacion.abonosClientes.literal.nColegiado"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(numero)%>
-			<%} 
-			else {%>
+			<%
+				} else {
+			%>
 				   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
-			<%}%>
+			<%
+				}
+			%>
 		</td>
 		</tr>
 		</table>
@@ -235,9 +238,10 @@
 		<!-- INICIO: CAMPOS DE BUSQUEDA-->
 		<!-- Zona de campos de busqueda o filtro -->
 
+	
 	<table cellspacing="0" cellpadding="0" width="100%">
 
-			<html:form action="/CEN_AbonosCliente.do" method="POST" target="_self">
+			<html:form action="${path}" method="POST" target="_self">
 				<html:hidden property = "modo" value = ""/>
 				<html:hidden property="idPersona" value="<%=idPersona.toString()%>"/>
 				<html:hidden property="idInstitucion" value="<%=idInstitucion%>"/>
@@ -256,35 +260,34 @@
 						   nombreCol="facturacion.busquedaAbonos.literal.fecha,facturacion.busquedaAbonos.literal.numeroAbono,
 						   			  facturacion.datosGenerales.literal.observaciones,facturacion.datosGeneralesAbonos.literal.importeNeto,
 						   			  facturacion.datosGeneralesAbonos.literal.importeIva,facturacion.abonosPagos.literal.importeTotalAbono,
-						   			  facturacion.abonosPagos.literal.totalAbonado,"
-						   tamanoCol="10,10,30,10,10,10,10,10"
+						   			  facturacion.abonosPagos.literal.totalAbonado,Destino,"
+						   tamanoCol="8,10,30,9,9,9,9,9,7"
 						   alto="350"
 						   ajuste="50"
 						   ajusteBotonera="true">
 						<%
-				    	if (resultado == null || resultado.size() < 1 )
-					    {
+							if (resultado == null || resultado.size() < 1) {
 						%>
 						 		<br>
 						   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
 						 		<br>						<%
-				    	}	    
-					    else
-					    { %>
-				    		<%Enumeration en = resultado.elements();
-							int recordNumber=1;
-							while (en.hasMoreElements())
-							{
+							} else {
+						%>
+				    		<%
+				    			Enumeration en = resultado.elements();
+				    					int recordNumber = 1;
+				    					while (en.hasMoreElements()) {
 
-								Row row = (Row) en.nextElement();
-				            	String s = row.getString(FacAbonoBean.C_IDPAGOSJG);
-				            	FilaExtElement[] elemento= null;
-				            	if(s!=null && !s.trim().equals("")){
-				            		elemento = new FilaExtElement[1];
-									elemento[0] = new FilaExtElement("download", "download", SIGAConstants.ACCESS_READ);
-				            	}
-								
-								%>
+				    						Row row = (Row) en.nextElement();
+				    						String s = row.getString(FacAbonoBean.C_IDPAGOSJG);
+				    						String abono = row.getString(FacAbonoBean.C_IDABONO);
+				    						FilaExtElement[] elemento = null;
+				    						if ((s != null && !s.trim().equals("") )||( abono != null && !abono.trim().equals(""))) {
+				    							elemento = new FilaExtElement[1];
+				    							elemento[0] = new FilaExtElement("download",
+				    									"download", SIGAConstants.ACCESS_READ);
+				    						}
+				    		%>
 
 						        
 								<siga:FilaConIconos
@@ -305,33 +308,84 @@
 									<td>
 										<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=row.getString(FacAbonoBean.C_IDABONO)%>">
 										<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=idInstitucion%>">
-										<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("",row.getString(FacAbonoBean.C_FECHA)))%>
+										<%=UtilidadesString.mostrarDatoJSP(GstDate
+									.getFormatedDateShort("",
+											row.getString(FacAbonoBean.C_FECHA)))%>
 									</td>
 									<td>
-										<%=UtilidadesString.mostrarDatoJSP(row.getString(FacAbonoBean.C_NUMEROABONO))%>
+										<%=UtilidadesString.mostrarDatoJSP(row
+									.getString(FacAbonoBean.C_NUMEROABONO))%>
 									</td>
 									<td>
-										<%=UtilidadesString.mostrarDatoJSP(row.getString(FacAbonoBean.C_OBSERVACIONES))%>
+										<%=UtilidadesString.mostrarDatoJSP(row
+									.getString(FacAbonoBean.C_OBSERVACIONES))%>
 									</td>
 									<td>
-										<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea (new Double(row.getString("TOTALNETO")).doubleValue(), 2)).toString())%>&nbsp;&euro;
+										<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero
+									.formatoCampo(
+											UtilidadesNumero.redondea(
+													new Double(
+															row.getString("TOTALNETO"))
+															.doubleValue(), 2))
+									.toString())%>&nbsp;&euro;
 									</td>
 									<td>
-										<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea (new Double(row.getString("TOTALIVA")).doubleValue(), 2)).toString())%>&nbsp;&euro;
+										<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero
+									.formatoCampo(
+											UtilidadesNumero.redondea(
+													new Double(
+															row.getString("TOTALIVA"))
+															.doubleValue(), 2))
+									.toString())%>&nbsp;&euro;
 									</td>
 									<td>
-										<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea (new Double(row.getString("TOTAL")).doubleValue(), 2)).toString())%>&nbsp;&euro;
+										<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero
+									.formatoCampo(
+											UtilidadesNumero.redondea(
+													new Double(row
+															.getString("TOTAL"))
+															.doubleValue(), 2))
+									.toString())%>&nbsp;&euro;
 									</td>
 									<td>
-										<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea (new Double(row.getString("TOTALABONADO")).doubleValue(), 2)).toString())%>&nbsp;&euro;
+										<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero
+									.formatoCampo(
+											UtilidadesNumero.redondea(
+													new Double(
+															row.getString("TOTALABONADO"))
+															.doubleValue(), 2))
+									.toString())%>&nbsp;&euro;
+									</td>
+									<td>
+										<%
+											if (idPersona.toString().equals(
+																	row.getString("IDPERSONA"))) {
+										%>
+											<siga:Idioma key="facturacion.abonos.destino.letrado"/>
+										<%
+											} else {
+										%>
+											<siga:Idioma key="facturacion.abonos.destino.sociedad"/>
+											
+										<%
+																						}
+																					%>
 									</td>
 								</siga:FilaConIconos>
-								<% recordNumber++;%>
-							<%	} %>
-						<%	} %>
+								<%
+									recordNumber++;
+								%>
+							<%
+								}
+							%>
+						<%
+							}
+						%>
 						</siga:TablaCabecerasFijas>
 
-		<%if ( hm.get("datos")!=null && !hm.get("datos").equals("")){%>
+		<%
+			if (hm.get("datos") != null && !hm.get("datos").equals("")) {
+		%>
 			<siga:Paginador totalRegistros="<%=totalRegistros%>" 
 							registrosPorPagina="<%=registrosPorPagina%>" 
 							paginaSeleccionada="<%=paginaSeleccionada%>" 
@@ -341,7 +395,9 @@
 							divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:30px; left: 0px"
 							distanciaPaginas=""
 							action="<%=action%>" />
-		 <%}%>
+		 <%
+		 	}
+		 %>
 								
 				</tr>
 				
@@ -351,11 +407,17 @@
 					<td class="labelText">
 						<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal"/>
 						
-						<% if (bIncluirBajaLogica) { %>
+						<%
+													if (bIncluirBajaLogica) {
+												%>
 							<input type="checkbox" name="incluirRegistrosConBajaLogica" onclick="incluirRegBajaLogica(this);" checked>
-						<% } else { %>
+						<%
+							} else {
+						%>
 							<input type="checkbox" name="incluirRegistrosConBajaLogica" onclick="incluirRegBajaLogica(this);">
-						<% } %>
+						<%
+							}
+						%>
 					</td>
 				</tr>
 			</table>
@@ -388,6 +450,77 @@
 		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 		<!-- FIN: SUBMIT AREA -->
 
-			</table>		
+			</table>
+			
+			<script>
+	function incluirRegBajaLogica(o) {
+			if (o.checked) {
+			document.AbonosClienteForm.incluirRegistrosConBajaLogica.value = "s";
+			} else {
+				document.AbonosClienteForm.incluirRegistrosConBajaLogica.value = "n";
+			}
+			document.AbonosClienteForm.modo.value = "abrir";
+			
+			document.AbonosClienteForm.submit();
+		}
+	function accionImprimir() 
+	{		
+
+		document.AbonosClienteForm.modo.value = 'imprimir';
+		document.AbonosClienteForm.target = "submitArea";
+		document.AbonosClienteForm.submit();
+	}
+	
+	 
+	function creaFormInformeFacturaRectificativa() {
+		
+	}
+	 
+	
+	
+	function download(fila)
+	{
+		sub();
+		var idPago = "idPago"+fila;
+		
+		if(document.getElementById(idPago).value!=''){
+			var idPers = "idPersona"+fila;
+		
+			var idInst = "oculto"+fila+"_2";
+			idPersona = document.getElementById(idPers).value;
+			idPago = document.getElementById(idPago).value;
+			idInstitucion =  document.getElementById(idInst).value;
+			datos = +idInstitucion +","+idPago+","+idPersona +"#";
+			var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
+			formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucion%>'>"));
+		   	formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
+		   	formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='CPAGO'>"));
+		   	formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
+		   	formu.appendChild(document.createElement("<input type='hidden' name='tablaDatosDinamicosD' value=''>"));
+		   	formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
+		   	document.appendChild(formu);
+		   	formu.tablaDatosDinamicosD.value = datos;
+		   	formu.submit();
+		}else{
+			// EJEMPLO: var dat="idAbono==25##idinstitucion==2040%%%idAbono==26##idinstitucion==2040%%%idAbono==27##idinstitucion==2040%%%idAbono==28##idinstitucion==2040";
+			var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
+			formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucion%>' >"));
+			formu.appendChild(document.createElement("<input type='hidden' name='idInforme' >"));
+			formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='ABONO'>"));
+			formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
+			formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
+
+			var idInst = "oculto" + fila + "_2";
+			var idAbono = "oculto" + fila + "_1";
+			datos = 'idAbono=='+ document.getElementById(idAbono).value+ "##idinstitucion=="+ document.getElementById(idInst).value + "%%%";
+			
+			formu.datosInforme.value = datos;
+			document.appendChild(formu);
+			formu.submit();
+		}
+
+	}
+			</script>
+			
 	</body>
 </html>

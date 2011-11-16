@@ -1,5 +1,6 @@
-<!-- pestanasRetencionesCenso.jsp -->
+<!-- pestanaRetencionesCenso.jsp -->
 <!-- CABECERA JSP -->
+<%@page import="java.util.Hashtable"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -21,7 +22,10 @@
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
-	
+	Hashtable parametros = new Hashtable();
+	parametros.put("idPersona",request.getParameter("idPersonaPestanha"));
+	parametros.put("idInstitucion",request.getParameter("idInstitucionPestanha"));
+	request.setAttribute("parametros",parametros);
 	ses.setAttribute("idPersonaPestanha",request.getParameter("idPersonaPestanha"));
 	ses.setAttribute("idInstitucionPestanha",request.getParameter("idInstitucionPestanha"));
 
@@ -84,6 +88,7 @@
 	<siga:PestanasExt 
 			pestanaId="LETTURRET" 
 			target="mainPestanas"
+			parametros="parametros"
 			elementoactivo="1"
 	/>
 
