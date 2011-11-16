@@ -382,7 +382,7 @@
 			    return false;
 			   
 			}
-			if(document.getElementById("idActaComp").value!=""){
+			if(document.getElementById("idActaComp")&&document.getElementById("idActaComp").value!=""){
 				var actaComp= document.getElementById("idActaComp").value.split(',');
 				document.forms[0].idInstitucionActa.value=actaComp[0];
 				document.forms[0].anioActa.value=actaComp[1];
