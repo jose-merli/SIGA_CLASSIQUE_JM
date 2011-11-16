@@ -1,4 +1,4 @@
-<!-- listadoEJG.jsp -->
+<!-- listadoActasComision.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -453,36 +453,7 @@
 		//}
 	}
 		
-   	function accionEditarSeleccionados(){
 	
-		sub();
-		seleccionados =  getDatosSeleccionados();
-		if (seleccionados == '') {
-			alert ('<siga:Idioma key="general.message.seleccionar"/>');
-			fin();
-			return;
-		}
-		/*
-		numElementosSeleccionados =  ObjArray.length; 
-		
-		confirmar = '';
-		confirmar += "<siga:Idioma key='general.confirmar.demora' arg0='"+numElementosSeleccionados+"'/>";
-	*/
-		var formu=document.createElement("<form name='ActaComisionForm' method='POST' action='/SIGA/JGR_ActasComision.do' target='submitArea'>");
-		formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=usr.getLocation() %>'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='modo' value=''>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='accion' value=''>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value=''>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='actionModal' value=''>"));
-		formu.appendChild(document.createElement("<'/form>"));
-		document.appendChild(formu);
-		formu.seleccionados.value=seleccionados;
-		formu.modo.value='edicionMasiva';
-		var resultado = ventaModalGeneral("ActaComisionForm","M");	
-		fin();
-		//formu.submit();
-	}
-   	
 	</script>
 </body>	
 </html>

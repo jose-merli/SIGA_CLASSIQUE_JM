@@ -565,9 +565,9 @@
 		<%} %>
 	<%}else{ %>
 		<%if(permisoEejg){ %>
-			<siga:ConjBotonesBusqueda botones="C,B,DEE"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+			<siga:ConjBotonesBusqueda botones="C,B,DEE,ES"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
 		<%}else{ %>
-			<siga:ConjBotonesBusqueda botones="C,B"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+			<siga:ConjBotonesBusqueda botones="C,B,ES"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
 		<%} %>
 	<%} %>
 	<%}else if(ventanaCajg.equalsIgnoreCase("1")){%> <!-- Antiguo busquedaEJG_Cajg -->
@@ -734,6 +734,13 @@
 			}
 
 		} 	
+		
+		function accionEditarSel() {
+   			if(window.frames.resultado.ObjArray){
+ 				window.frames.resultado.accionEditarSeleccionados();
+			}
+		} 
+		
 		function descargaEejg(){
 			<%if(ventanaCajg.equalsIgnoreCase("0")){%>
 				if(window.frames.resultado.ObjArray){

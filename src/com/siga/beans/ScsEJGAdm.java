@@ -393,7 +393,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							ScsEJGBean.C_IDPONENTE,					ScsEJGBean.C_IDORIGENCAJG,
 							ScsEJGBean.C_OBSERVACIONIMPUGNACION,	ScsEJGBean.C_FECHAPUBLICACION,
 							ScsEJGBean.C_NUMERORESOLUCION,			ScsEJGBean.C_ANIORESOLUCION,
-							ScsEJGBean.C_BISRESOLUCION};
+							ScsEJGBean.C_BISRESOLUCION,				ScsEJGBean.C_IDACTA,
+							ScsEJGBean.C_IDINSTITUCIONACTA,			ScsEJGBean.C_ANIOACTA};
 		return campos;
 	}
 	
@@ -495,6 +496,10 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			bean.setNumeroResolucion(UtilidadesHash.getString(hash,ScsEJGBean.C_NUMERORESOLUCION));
 			bean.setAnioResolucion(UtilidadesHash.getString(hash,ScsEJGBean.C_ANIORESOLUCION));
 			bean.setBisResolucion(UtilidadesHash.getString(hash,ScsEJGBean.C_BISRESOLUCION));
+			
+			bean.setIdActa(UtilidadesHash.getString(hash,ScsEJGBean.C_IDACTA));
+			bean.setIdInstitucionActa(UtilidadesHash.getString(hash,ScsEJGBean.C_IDINSTITUCIONACTA));
+			bean.setAnioActa(UtilidadesHash.getString(hash,ScsEJGBean.C_ANIOACTA));
 		}
 		catch (Exception e){
 			throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR HASHTABLE A BEAN");
@@ -590,7 +595,11 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,ScsEJGBean.C_FECHAPUBLICACION, b.getFechaPublicacion());
 			UtilidadesHash.set(htData,ScsEJGBean.C_NUMERORESOLUCION, b.getNumeroResolucion());
 			UtilidadesHash.set(htData,ScsEJGBean.C_ANIORESOLUCION, b.getAnioResolucion());
-			UtilidadesHash.set(htData,ScsEJGBean.C_BISRESOLUCION, b.getBisResolucion());						
+			UtilidadesHash.set(htData,ScsEJGBean.C_BISRESOLUCION, b.getBisResolucion());
+			
+			UtilidadesHash.set(htData,ScsEJGBean.C_IDACTA, b.getIdActa());
+			UtilidadesHash.set(htData,ScsEJGBean.C_IDINSTITUCIONACTA, b.getIdInstitucionActa());			
+			UtilidadesHash.set(htData,ScsEJGBean.C_ANIOACTA, b.getAnioActa());			
 		}
 		catch (Exception e){
 			 throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR EL BEAN A HASHTABLE");

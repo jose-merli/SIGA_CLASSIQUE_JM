@@ -5,6 +5,7 @@ import java.util.List;
 
 public enum SearchButtonsConstants {
 
+	EDITAR_SEL ("es","general.boton.editarSel","accionEditarSel()",0),
 	BUSCAR ("b","general.search","buscar()",1),
 	AVANZADA ("a","general.searchAvanzada","buscarAvanzada()",2),
 	SIMPLE ("s","general.boton.searchSimple","buscarSimple()",3),

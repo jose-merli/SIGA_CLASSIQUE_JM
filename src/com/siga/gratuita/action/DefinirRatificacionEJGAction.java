@@ -20,6 +20,10 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesBDAdm;
+import com.siga.Utilidades.UtilidadesString;
+import com.siga.administracion.SIGAConstants;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
 import com.siga.general.MasterAction;
@@ -106,7 +110,23 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 		miHash.put("ANIO",request.getParameter("ANIO").toString());
 		miHash.put("NUMERO",request.getParameter("NUMERO").toString());
 		miHash.put("IDTIPOEJG",request.getParameter("IDTIPOEJG").toString());
-		miHash.put("IDINSTITUCION",usr.getLocation().toString());	
+		miHash.put("IDINSTITUCION",usr.getLocation().toString());
+		
+		// Comprobamos que el usuario tenga acceso a las actas de la comision
+		// Si no lo tiene habra que mostrar la fechaResolucionCAJG
+		// Si lo tiene podrá seleccionar el acta
+		/*
+		String accesoActaSt=usr.getPermisoProceso("JGR_ActasComision");
+		boolean accesoActa = accesoActaSt!=null && (accesoActaSt.equalsIgnoreCase(SIGAConstants.ACCESS_FULL));
+		request.setAttribute("accesoActa", accesoActa?"true":"false");
+		*/
+		GenParametrosAdm paramAdm = new GenParametrosAdm(usr); 
+		try {
+			String accesoActaSt = paramAdm.getValor(usr.getLocation(), "SCS", "HABILITA_ACTAS_COMISION", "N");
+			request.setAttribute("accesoActa", accesoActaSt.equalsIgnoreCase("S")?"true":"false");
+		} catch (Exception e) {
+			throwExcp("Error al recuperar el parametro HABILITA_ACTAS_COMISION",e,null);
+		}
 		
 		ScsEJGAdm admEJG = new ScsEJGAdm(this.getUserBean(request));
 		

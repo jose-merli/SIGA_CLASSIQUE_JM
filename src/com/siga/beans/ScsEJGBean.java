@@ -111,6 +111,9 @@ public class ScsEJGBean extends MasterBean{
 	private String descripcionComisaria;
     private String descripcionOrigen;
 	private String descripcionPretension;
+	private String anioActa;
+	private String idActa;
+	private String idInstitucionActa;
     
     public String getDescripcionOrigen() {
 		return descripcionOrigen;
@@ -240,6 +243,10 @@ public class ScsEJGBean extends MasterBean{
     static public final String C_NUMERORESOLUCION = "NUMERORESOLUCION";
     static public final String C_ANIORESOLUCION = "ANIORESOLUCION";
     static public final String C_BISRESOLUCION = "BISRESOLUCION";
+    
+    static public final String C_IDACTA = "IDACTA";
+    static public final String C_ANIOACTA = "ANIOACTA";
+    static public final String C_IDINSTITUCIONACTA = "IDINSTITUCIONACTA";
 	
     public String getDeTipoEjg() {
 		return deTipoEjg;
@@ -1001,5 +1008,25 @@ public class ScsEJGBean extends MasterBean{
 	public void setBisResolucion(String bisResolucion) {
 		this.bisResolucion = bisResolucion;
 	}
+	public String getAnioActa() {
+		return anioActa;
+	}
+	public String getIdActa() {
+		return idActa;
+	}
+	public String getIdInstitucionActa() {
+		return idInstitucionActa;
+	}
+	public void setAnioActa(String anioActa) {
+		this.anioActa = anioActa;
+	}
+	public void setIdActa(String idActa) {
+		this.idActa = idActa;
+	}
+	public void setIdInstitucionActa(String idInstitucionActa) {
+		this.idInstitucionActa = idInstitucionActa;
+	}
+	
+	
 	
 }

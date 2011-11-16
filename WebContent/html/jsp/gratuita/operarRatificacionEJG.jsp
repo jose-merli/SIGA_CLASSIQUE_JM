@@ -36,10 +36,15 @@
 	String fechaRatificacion = "", fechaResolucionCAJG= "", fechaNotificacion= "";
 	String numeroCAJG="", anioCAJG="";
 	boolean requiereTurnado= false;
-	ArrayList vFundamentoJuridico= new ArrayList(), vTipoRatificacion= new ArrayList(), vPonente = new ArrayList();
+	ArrayList vFundamentoJuridico= new ArrayList(), vTipoRatificacion= new ArrayList(), vPonente = new ArrayList(), vActa = new ArrayList();
 	
 	ArrayList vOrigenCAJGSel = new ArrayList();
 	
+	boolean accesoActas=false;
+	if(request.getAttribute("accesoActa")!=null){
+		String accesoActasST = (String)request.getAttribute("accesoActa");
+		accesoActas = accesoActasST.equalsIgnoreCase("true")?true:false; 
+	}	
 	
 	try {
 		anio = miHash.get("ANIO").toString();
@@ -73,6 +78,12 @@
 		String vOrigenCAJG = (String) miHash.get("IDORIGENCAJG");
 		if (vOrigenCAJG != null && vOrigenCAJG != null){
 			vOrigenCAJGSel.add(0, vOrigenCAJG);
+		}
+		
+		if (miHash.containsKey(ScsEJGBean.C_IDACTA) && miHash.get(ScsEJGBean.C_IDACTA) != null && 
+			miHash.containsKey(ScsEJGBean.C_IDINSTITUCIONACTA) && miHash.get(ScsEJGBean.C_IDINSTITUCIONACTA) != null && 
+			miHash.containsKey(ScsEJGBean.C_ANIOACTA) && miHash.get(ScsEJGBean.C_ANIOACTA) != null) {
+			vActa.add(miHash.get(ScsEJGBean.C_IDINSTITUCIONACTA).toString()+","+miHash.get(ScsEJGBean.C_ANIOACTA)+","+miHash.get(ScsEJGBean.C_IDACTA));
 		}
 		
 	}catch(Exception e){e.printStackTrace();};
@@ -162,12 +173,16 @@
 	<html:hidden property = "numero" value ="<%=numero%>"/>
 	<html:hidden property = "docResolucion" value ="<%=docResolucion%>"/>
 	
+	<html:hidden property = "anioActa" value =""/>
+	<html:hidden property = "idActa" value =""/>
+	<html:hidden property = "idInstitucionActa" value =""/>
+	
 	<!-- FILA -->
 	<tr>
 		<td class="labelText"  width="300">	
 			<siga:Idioma key='gratuita.operarEJG.literal.CAJG'/> <siga:Idioma key='gratuita.operarEJG.literal.anio'/> / <siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/>
 		</td>
-	   	<td >	
+	   	<td width="200">	
 			<% if (accion.equalsIgnoreCase("ver")) {%>
 			  	<html:text name="DefinirEJGForm"  onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);"  onblur="filterCharsNaN(this);" property="anioCAJG" size="4" maxlength="4" styleClass="boxConsulta"  value="<%=anioCAJG%>" readonly="true"></html:text> / 
                 <html:text name="DefinirEJGForm" property="numeroCAJG" size="6" maxlength="20" onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);"  onblur="filterCharsNaN(this);"  styleClass="boxConsulta" value="<%=numeroCAJG%>" readonly="true"></html:text>
@@ -178,8 +193,8 @@
 	  	</td>
 		<td class="labelText">	
 			<siga:Idioma key='gratuita.operarEJG.literal.origen'/>
-			&nbsp;&nbsp;&nbsp;
-			
+		</td>
+		<td>
 			<% if (accion.equalsIgnoreCase("ver")) {%> 
 				<siga:ComboBD nombre="idOrigenCAJG" tipo="origenCAJG" clase="boxConsulta" ancho="230"  filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vOrigenCAJGSel%>" readOnly="true"/>
 			<%}else{ %>
@@ -188,10 +203,18 @@
 		</td>
 	  </tr>
 	  <tr>
-		<td class="labelText">
-			<siga:Idioma key="gratuita.operarRatificacion.literal.fechaResolucionCAJG"/>
-		</td>
-		<td>
+		<%if(accesoActas){%>
+			<td class="labelText">
+				<siga:Idioma key="sjcs.actas.numeroActa" />/<siga:Idioma key="sjcs.actas.anio" /> - <siga:Idioma key="sjcs.actas.fechaResolucion" />
+			</td>
+			<td>
+				<siga:ComboBD nombre="idActaComp"  tipo="cmbActaComision" clase="boxCombo" ancho="160" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vActa %>"/>
+			</td>
+		<%}else{%>
+			<td class="labelText">
+				<siga:Idioma key="gratuita.operarRatificacion.literal.fechaResolucionCAJG"/>
+			</td>
+			<td>
 			<%if (accion.equalsIgnoreCase("ver")){%>
 				<html:text name="DefinirEJGForm" property="fechaResolucionCAJG" size="10" styleClass="boxConsulta" value="<%=fechaResolucionCAJG%>" disabled="false" readonly="true"></html:text>
 			<%} else {%>
@@ -201,11 +224,12 @@
 				<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
 				</a>
 			<%}%>
-		</td>
+			</td>
+		<%}%>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.operarRatificacion.literal.ponente"/>
-			&nbsp;&nbsp;&nbsp;
-		
+		</td>
+		<td>
 			<%if (accion.equalsIgnoreCase("ver")){%>
 				<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" ancho="400" readOnly="true"/>
 			<%} else {%>
@@ -219,7 +243,7 @@
 		<td class="labelText">
 		  <siga:Idioma key="gratuita.operarRatificacion.literal.tipoRatificacion"/>
 		</td>
-		<td  colspan="4">
+		<td  colspan="5">
 			<%if (accion.equalsIgnoreCase("ver")){%>
 				<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucion" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vTipoRatificacion%>" readOnly="true"/>
 			<%} else {%>
@@ -232,7 +256,7 @@
 		<td class="labelText">
 			<siga:Idioma key="gratuita.operarRatificacion.literal.fundamentoJuridico"/>
 		</td>
-		<td colspan="4">
+		<td colspan="5">
 			<%if (accion.equalsIgnoreCase("ver")){%>
 				<siga:ComboBD nombre="idFundamentoJuridico" ancho="700" tipo="tipoFundamentos" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vFundamentoJuridico%>" readOnly="true"/>
 			<%} else {%>
@@ -256,8 +280,10 @@
 				</a>
 			<%}%>
 		</td>
-		<td class="labelText" colspan="3">
+		<td class="labelText">
 			<siga:Idioma key="gratuita.EJG.resolucion.refAuto"/>&nbsp;&nbsp;&nbsp;
+		</td>
+		<td colspan="2">
 			<%if (accion.equalsIgnoreCase("ver")){%>
 				<html:text name="DefinirEJGForm" property="refAuto" size="10" styleClass="boxConsulta" value="<%=refA%>" readonly="false" disabled="false"></html:text>
 			<%} else {%>
@@ -307,7 +333,7 @@
 		<td class="labelText" colspan="1">
 			<siga:Idioma key="gratuita.operarRatificacion.literal.observacionRatificacion"/>
 		</td>
-		<td class="labelText" colspan="4">	
+		<td colspan="5">	
 			<%if (accion.equalsIgnoreCase("ver")) {%>	
 				<textarea name="ratificacionDictamen" class="boxConsulta" style="width:770px" rows="18" readOnly="true"><%=observaciones%></textarea>
 			<%} else {%>
@@ -355,6 +381,12 @@
 			    alert('<siga:Idioma key="gratuita.operarEJG.message.anioNumeroOrigen.obligatorios"/>');
 			    return false;
 			   
+			}
+			if(document.getElementById("idActaComp").value!=""){
+				var actaComp= document.getElementById("idActaComp").value.split(',');
+				document.forms[0].idInstitucionActa.value=actaComp[0];
+				document.forms[0].anioActa.value=actaComp[1];
+				document.forms[0].idActa.value=actaComp[2];
 			}
 			document.forms[0].submit();
 

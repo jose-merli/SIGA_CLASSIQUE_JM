@@ -1281,7 +1281,16 @@ public class DefinirEnviosAction extends MasterAction {
 					envioInformesGenericos.gestionarComunicacionListadoGuardias(form,  request.getLocale(), userBean);
 					idEnvio = form.getIdEnvio();
 					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
+
+					
+			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesActaComision)){
 				
+				
+					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
+					envioInformesGenericos.gestionarComunicacionJustificaciones(form,  request.getLocale(), userBean);
+					idEnvio = form.getIdEnvio();
+					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
+					
 
 			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesJustificacion)){
 				

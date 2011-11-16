@@ -16,6 +16,7 @@ public enum ActionButtonsConstants {
 	RELACIONAR_DESIGNACION ("rd","general.boton.relacionarDesigna","relacionarConDesigna()",9),
 	SOLICITAR_NUEVO ("sn","general.boton.solicitarNuevo","accionSolicitarNuevo()",10),
 	ANYADIR_EXPEDIENTES ("ae","general.boton.aniadirExpedientes","aniadirExpedientes(true)", "idButtonAniadirExpedientes",11),
+	GENERARACTA ("ga","general.boton.generarActa","generarActa()",11),
 	NUEVO ("n","general.boton.new","accionNuevo()",12),
 	REALIZAR_PAGO ("rp","facturacion.abonosPagos.boton.realizarPago","accionRealizarPago()",13),
 	GENERAR_INFORME ("gm","general.boton.generarInforme","accionGenerarInforme()",14),

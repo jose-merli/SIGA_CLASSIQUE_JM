@@ -979,5 +979,14 @@ import com.siga.general.MasterForm;
 		public void setAnioResolucion(String anioResolucion){UtilidadesHash.set(this.datos, ScsEJGBean.C_ANIORESOLUCION, anioResolucion);}
 								
 		public boolean getBisResolucion() 	{return UtilidadesHash.getBoolean(this.datos, ScsEJGBean.C_BISRESOLUCION).booleanValue();}
-		public void setBisResolucion(boolean bisResolucion)	{this.datos.put(ScsEJGBean.C_BISRESOLUCION, (bisResolucion?ClsConstants.DB_TRUE:ClsConstants.DB_FALSE));}						
+		public void setBisResolucion(boolean bisResolucion)	{this.datos.put(ScsEJGBean.C_BISRESOLUCION, (bisResolucion?ClsConstants.DB_TRUE:ClsConstants.DB_FALSE));}
+		
+		public String getIdActa() 	{return UtilidadesHash.getString(this.datos, ScsEJGBean.C_IDACTA);}
+		public void setIdActa(String valor)	{this.datos.put(ScsEJGBean.C_IDACTA, valor);}
+		
+		public String getAnioActa() 	{return UtilidadesHash.getString(this.datos, ScsEJGBean.C_ANIOACTA);}
+		public void setAnioActa(String valor)	{this.datos.put(ScsEJGBean.C_ANIOACTA, valor);}
+		
+		public String getIdInstitucionActa() 	{return UtilidadesHash.getString(this.datos, ScsEJGBean.C_IDINSTITUCIONACTA);}
+		public void setIdInstitucionActa(String valor)	{this.datos.put(ScsEJGBean.C_IDINSTITUCIONACTA, valor);}
 }

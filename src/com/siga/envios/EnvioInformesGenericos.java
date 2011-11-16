@@ -71,6 +71,7 @@ import com.siga.beans.ExpTipoExpedienteBean;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.HelperInformesAdm;
+import com.siga.beans.ScsActaComisionAdm;
 import com.siga.beans.ScsDefendidosDesignaAdm;
 import com.siga.beans.ScsDefendidosDesignaBean;
 import com.siga.beans.ScsDesignaAdm;
@@ -130,6 +131,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	public static final String comunicacionesFacturacionesColegiados = "CFACT";
 	public static final String comunicacionesListadoGuardias = "LIGUA";
 	public static final String comunicacionesJustificacion = "JUSDE";
+	public static final String comunicacionesActaComision = "ACTAC";
 	public static final String comunicacionesAvisoExpedientes = "EXPAV";
 	public static final int tipoPlantillaWord= 1;
 	public static final int tipoPlantillaFo = 2;
@@ -494,6 +496,21 @@ public class EnvioInformesGenericos extends MasterReport {
 					idTipoExp, anio, numero, idPersona, true, isSolicitantes);
 
 			htDatosInforme.put("row", vDatosInformeFinal);
+		}else if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesActaComision)) {
+			
+			String idInstitucion = (String)datosInforme.get("idInstitucion");
+			String idActa = (String)datosInforme.get("idActa");
+			String anioActa = (String)datosInforme.get("anioActa");
+			String numeroActa = (String)datosInforme.get("numeroActa");
+			
+			ScsActaComisionAdm actaAdm = new ScsActaComisionAdm(usrBean);
+			Vector vDatosInformeFinal = actaAdm.getDatosInforme(idInstitucion, idActa, anioActa);
+			Vector vDatosEJGs = actaAdm.getEJGsInforme(idInstitucion, idActa, anioActa);
+			Vector vDatosEJGPendientes = actaAdm.getEJGsPendientes(idInstitucion, idActa, anioActa);
+
+			htDatosInforme.put("row", vDatosInformeFinal);
+			htDatosInforme.put("ejgs", vDatosEJGs);
+			htDatosInforme.put("ejgspendientes", vDatosEJGPendientes);
 		}else if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesJustificacion)) {
 			ScsDesignasLetradoAdm admDesignas = new ScsDesignasLetradoAdm(usrBean);
 			InformeJustificacionMasivaForm informeJustificacionMasivaForm = new InformeJustificacionMasivaForm();
@@ -1434,9 +1451,19 @@ public class EnvioInformesGenericos extends MasterReport {
 						identificador.append(hoy);
 						fileDocumento = getInformeGenerico(beanInforme,
 								htDatosInformeFinal, idiomaExt, identificador.toString(), usrBean,tipoPlantillaFo);
-					
-					
-					
+						
+					}else if(tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesActaComision)){
+						String numeroActa = (String)datosInforme.get("numeroActa");
+						String anioActa = (String)datosInforme.get("anioActa");
+						identificador = new StringBuffer();
+						identificador.append(anioActa);
+						identificador.append("_");
+						identificador.append(numeroActa);
+						identificador.append("_");
+						String hoy = UtilidadesString.formatoFecha(new Date(),"yyyyMMddhhmmssSSS");
+						identificador.append(hoy);
+						fileDocumento = getInformeGenerico(beanInforme,	htDatosInformeFinal, idiomaExt, identificador.toString(), usrBean,tipoPlantillaWord);
+
 					}else {
 						if(tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesMorosos)){
 							if(htDatosInformeFinal.get("region")!=null){

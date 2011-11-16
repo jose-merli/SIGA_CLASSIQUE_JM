@@ -230,6 +230,17 @@ legend {
 
 }
 
+.labelTextArea{
+	text-align: left;
+	font-family: <%=src.get("font.style")%>;
+	color:#<%=src.get("color.labelText")%>;
+	font-size: <%=fontSize%>;
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-top: 2px;
+	padding-bottom: 1px;
+	vertical-align: top;
+} 
 
 .labelTextCentro {
 	text-align: center;

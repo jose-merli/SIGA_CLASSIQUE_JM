@@ -390,9 +390,10 @@ public class InformesGenericosAction extends MasterAction {
 								mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesListadoGuardias);
 							} else if (idTipoInforme.equals("JUSDE")) {
 								mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesJustificacion);
-							}  
-							else if (idTipoInforme.equals("DEJG")) {
+							} else if (idTipoInforme.equals("DEJG")) {
 								mapDestino = dejg(mapping, miForm, request, response);
+							} else if (idTipoInforme.equals("ACTAC")) {
+								mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesEjg);
 							} else {
 								throw new ClsExceptions("ERROR: El tipo de informe seleccionado no está configurado.");
 							}

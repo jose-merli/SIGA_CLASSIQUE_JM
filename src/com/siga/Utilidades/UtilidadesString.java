@@ -1027,12 +1027,12 @@ public class UtilidadesString {
 
 		public static String formatoFecha(String fechain, String formatin, String formatout) throws Exception {
 			String fechaout ="";
-			
-			SimpleDateFormat sdf = new SimpleDateFormat(formatin);
-			Date fe = sdf.parse(fechain);
-			sdf = new SimpleDateFormat(formatout);
-			fechaout = sdf.format(fe);
-			
+			if(fechain!=null && !fechain.equalsIgnoreCase("")){
+				SimpleDateFormat sdf = new SimpleDateFormat(formatin);
+				Date fe = sdf.parse(fechain);
+				sdf = new SimpleDateFormat(formatout);
+				fechaout = sdf.format(fe);
+			}
 			return fechaout;
 		}
 		
@@ -1167,13 +1167,17 @@ public class UtilidadesString {
 
     public static String replaceFirstIgnoreCase (String texto, String clave, String valor)
     {
-    	String t = texto.toUpperCase();
-    	int ini = t.indexOf(clave.toUpperCase());
-    	if (ini < 0) 
+    	if(texto!=null){
+	    	String t = texto.toUpperCase();
+	    	int ini = t.indexOf(clave.toUpperCase());
+	    	if (ini < 0) 
+	    		return texto;
+	    	
+	    	t = texto.substring(0, ini) + valor + texto.substring(ini + clave.length());
+	    	return t;
+    	}else{
     		return texto;
-    	
-    	t = texto.substring(0, ini) + valor + texto.substring(ini + clave.length());
-    	return t;
+    	}
     }
     
     private static int replaceFirstIgnoreCase (String texto[], String clave, String valor, int posIni)
