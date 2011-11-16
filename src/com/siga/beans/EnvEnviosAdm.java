@@ -945,10 +945,13 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    				htDatosEnvio.put("EJG_LETRADODES_APEL_1_2_NOMBRE",(String) ejgHashtable.get("APEL_1_2_N_LETRADO_DESIGNADO"));
 	    	    			else
 	    	    				htDatosEnvio.put("EJG_LETRADODES_APEL_1_2_NOMBRE","");
-	    	    			if(ejgHashtable.get("TELEFONODESPACHO_LET_DESIGNADO")!=null)
-	    	    				htDatosEnvio.put("EJG_TLFN", (String) ejgHashtable.get("TELEFONODESPACHO_LET_DESIGNADO"));
-	    	    			else
-	    	    				htDatosEnvio.put("EJG_TLFN", "");
+	    	    			if(ejgHashtable.get("TELEFONODESPACHO_LET_DESIGNADO")!=null){
+	    	    				String telefonoDespacho =  (String) ejgHashtable.get("TELEFONODESPACHO_LET_DESIGNADO");
+	    	    				if(telefonoDespacho.length()>13)
+	    	    					telefonoDespacho = telefonoDespacho.substring(0,13);
+	    	    				htDatosEnvio.put("EJG_TLFNO", telefonoDespacho);
+	    	    			}else
+	    	    				htDatosEnvio.put("EJG_TLFNO", "");
 	    	    			if(ejgHashtable.get("DESC_TIPODICTAMENEJG")!=null){
 	    	    				String dictamenEJG =  (String) ejgHashtable.get("DESC_TIPODICTAMENEJG");
 	    	    				if(dictamenEJG.length()>10)
