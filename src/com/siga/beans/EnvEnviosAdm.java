@@ -933,15 +933,33 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    			ScsEJGBean ejgBean = (ScsEJGBean)bean;
 	    	    			Hashtable ejgHashtable =  ejgBean.getOriginalHash();
 	    	    			htDatosEnvio.put("EJG_NU",(String) ejgHashtable.get("NUMERO_EJG"));
-	    	    			htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APELLI_1",(String) ejgHashtable.get("N_APELLI_1_LETRADO_DESIGNADO"));
-	    	    			htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APEL_1_2",(String) ejgHashtable.get("N_APEL_1_2_LETRADO_DESIGNADO"));
-	    	    			htDatosEnvio.put("EJG_LETRADODES_APEL_1_2_NOMBRE",(String) ejgHashtable.get("APEL_1_2_N_LETRADO_DESIGNADO"));
-	    	    			htDatosEnvio.put("EJG_TLFN", (String) ejgHashtable.get("TELEFONODESPACHO_LET_DESIGNADO"));
-	    	    			String dictamenEJG =  (String) ejgHashtable.get("DESC_TIPODICTAMENEJG");
-	    	    			if(dictamenEJG.length()>10)
-	    	    				dictamenEJG = dictamenEJG.substring(0,10);
+	    	    			if(ejgHashtable.get("N_APELLI_1_LETRADO_DESIGNADO")!=null)
+	    	    				htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APELLI_1",(String) ejgHashtable.get("N_APELLI_1_LETRADO_DESIGNADO"));
+	    	    			else
+	    	    				htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APELLI_1","");
+	    	    			if(ejgHashtable.get("N_APEL_1_2_LETRADO_DESIGNADO")!=null)
+	    	    				htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APEL_1_2",(String) ejgHashtable.get("N_APEL_1_2_LETRADO_DESIGNADO"));
+	    	    			else
+	    	    				htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APEL_1_2","");
+	    	    			if(ejgHashtable.get("APEL_1_2_N_LETRADO_DESIGNADO")!=null)
+	    	    				htDatosEnvio.put("EJG_LETRADODES_APEL_1_2_NOMBRE",(String) ejgHashtable.get("APEL_1_2_N_LETRADO_DESIGNADO"));
+	    	    			else
+	    	    				htDatosEnvio.put("EJG_LETRADODES_APEL_1_2_NOMBRE","");
+	    	    			if(ejgHashtable.get("TELEFONODESPACHO_LET_DESIGNADO")!=null)
+	    	    				htDatosEnvio.put("EJG_TLFN", (String) ejgHashtable.get("TELEFONODESPACHO_LET_DESIGNADO"));
+	    	    			else
+	    	    				htDatosEnvio.put("EJG_TLFN", "");
+	    	    			if(ejgHashtable.get("DESC_TIPODICTAMENEJG")!=null){
+	    	    				String dictamenEJG =  (String) ejgHashtable.get("DESC_TIPODICTAMENEJG");
+	    	    				if(dictamenEJG.length()>10)
+	    	    					dictamenEJG = dictamenEJG.substring(0,10);
 	    	    				
-	    	    			htDatosEnvio.put("EJG_DICTAM",dictamenEJG);
+	    	    				htDatosEnvio.put("EJG_DICTAM",dictamenEJG);
+	    	    			}else{
+	    	    				htDatosEnvio.put("EJG_DICTAM","");
+	    	    				
+	    	    				
+	    	    			}
 	    	    			
 	    	    			
 	    	    		}
