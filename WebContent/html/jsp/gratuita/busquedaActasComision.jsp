@@ -102,7 +102,9 @@
 		function nuevo(){		
 			document.ActaComisionForm.modo.value = "nuevo";
 			var resultado = ventaModalGeneral(document.ActaComisionForm.name,"M");
-			window.close();
+			if(resultado=='MODIFICADO'){
+				buscar();
+			}
 
 		}
 	</script>
