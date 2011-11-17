@@ -1610,7 +1610,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			" where dir.idinstitucion = tip.idinstitucion " +
 			" and dir.idpersona = tip.idpersona  " +
 			" and dir.iddireccion = tip.iddireccion " +
-			" and dir.preferente = 'C' "+
+			" and dir.preferente like '%C%' "+
 			" and tip.idtipodireccion = 2 " +
 			" and dir.fechabaja is null "+
 			" and dir.idinstitucion = :1 "+

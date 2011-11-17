@@ -3723,7 +3723,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" where dir.idinstitucion = tip.idinstitucion ");
 			sql.append(" and dir.idpersona = tip.idpersona  " );
 			sql.append(" and dir.iddireccion = tip.iddireccion " );
-			sql.append(" and dir.preferente = 'C' ");
+			sql.append(" and dir.preferente like '%C%' ");
 			sql.append(" and tip.idtipodireccion = 2 " );
 			sql.append(" and dir.fechabaja is null ");
 			sql.append(" and dir.idinstitucion = :1 ");
