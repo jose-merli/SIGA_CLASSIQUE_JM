@@ -34,6 +34,7 @@ import com.siga.beans.AdmTipoInformeAdm;
 import com.siga.beans.AdmTipoInformeBean;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
+import com.siga.beans.CenDatosCVAdm;
 import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenNoColegiadoAdm;
@@ -156,7 +157,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 	/**
 	 * En este metodo vamos ha invocar el acceso a datos de cada uno de los informes que
-	 * se van a generar. El hashtabel que devuleve tendra dos elemento (row y region).
+	 * se van a generar. El hashtable que devuleve tendra dos elemento (row y region).
 	 * region( masterWord.sustituyeRegionDocumento)-->El elemento es un vector de hastable cuyas 
 	 * 		claves seran los nombres de la region.
 	 * row (masterWord.sustituyeRegionDocumento) --> Sera el vector de datos
@@ -172,49 +173,38 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		Hashtable htDatosInforme = new Hashtable();
 
-
 		//Velores comunes para la obttencion de los datos del informe
 		String idTipoInforme = (String) datosInforme.get("idTipoInforme");
-		
-	
-		
-
 		String idioma = (String) datosInforme.get("idioma");
 
 		if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesCenso)) {
 
+			CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(usrBean);
+			CenNoColegiadoAdm noColegiadoAdm = new CenNoColegiadoAdm(usrBean);
+			CenDatosCVAdm datosCVAdm = new CenDatosCVAdm(usrBean);
 			String idTipoPersonas = (String) datosInforme.get("idTipoPersonas");
 			String idPersona = (String) datosInforme.get("idPersona");
 			String idInstitucion = (String) datosInforme.get("idInstitucion");
 
 			Vector vDatosInformeFinal = null;
-			CenColegiadoAdm colegiadoAdm = null;
 			switch (Integer.parseInt(idTipoPersonas)) {
-			//Caso de No Colegiados
-			case 0:
-				CenNoColegiadoAdm noColegiadoAdm = new CenNoColegiadoAdm(
-						usrBean);
-				vDatosInformeFinal = noColegiadoAdm.getInformeNoColegiado(
-						idInstitucion, idPersona, idioma, true);
-
+			
+			case 0: // Caso de No Colegiados
+				vDatosInformeFinal = noColegiadoAdm.getInformeNoColegiado(idInstitucion, idPersona, idioma, true);
 				break;
-				//Caso de colegiados
-			case 1:
-
-				colegiadoAdm = new CenColegiadoAdm(usrBean);
+			
+			case 1: // Caso de colegiados
 				vDatosInformeFinal = colegiadoAdm.getInformeColegiado(idInstitucion, idPersona, idioma, true);
-				colegiadoAdm.updateInformeDatosCV(usrBean,Integer.parseInt(idInstitucion),Long.parseLong(idPersona),htDatosInforme);	
-				
 				break;
-				//Caso de letrados
-			case 2:
-
-				colegiadoAdm = new CenColegiadoAdm(usrBean);
-				vDatosInformeFinal = colegiadoAdm.getInformeLetrado(
-						idInstitucion, idPersona, idioma, true);
+			
+			case 2: // Caso de letrados
+				vDatosInformeFinal = colegiadoAdm.getInformeLetrado(idInstitucion, idPersona, idioma, true);
 				break;
-
+			
 			}
+			
+			datosCVAdm.updateInformeDatosCV(usrBean, Integer.parseInt(idInstitucion), Long.parseLong(idPersona),
+					htDatosInforme);
 
 			htDatosInforme.put("row", vDatosInformeFinal);
 
