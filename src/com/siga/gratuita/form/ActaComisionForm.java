@@ -26,6 +26,11 @@ public class ActaComisionForm extends MasterForm {
 	private String idPonente;
 	private String idTipoRatificacionEJG;
 	private String idFundamentoJuridico;
+	
+	private boolean guardaActa = false;
+	private boolean guardaPonente = false;
+	private boolean guardaFundamento = false;
+	private boolean guardaRatificacion = false;
 
 	public void setNumeroActa(String valor) 	{this.numeroActa = valor;}
 	public void setAnioActa(String valor) 		{this.anioActa = valor;}
@@ -45,7 +50,11 @@ public class ActaComisionForm extends MasterForm {
 	public void setIdPonente(String valor) 		{this.idPonente = valor;}
 	public void setIdTipoRatificacionEJG(String valor) 	{this.idTipoRatificacionEJG = valor;}
 	public void setIdFundamentoJuridico(String valor) 	{this.idFundamentoJuridico = valor;}
-
+	public void setGuardaActa(boolean valor) 	{this.guardaActa = valor;}
+	public void setGuardaPonente(boolean valor) {this.guardaPonente = valor;}
+	public void setGuardaFundamento(boolean valor) 		{this.guardaFundamento = valor;}
+	public void setGuardaRatificacion(boolean valor)	{this.guardaRatificacion = valor;}
+	
 	public String getNumeroActa() 		{return numeroActa;}
 	public String getAnioActa() 		{return anioActa;}
 	public String getFechaResolucion() 	{return fechaResolucion;}
@@ -64,6 +73,10 @@ public class ActaComisionForm extends MasterForm {
 	public String getIdPonente() 		{return idPonente;}
 	public String getIdTipoRatificacionEJG() 	{return idTipoRatificacionEJG;}
 	public String getIdFundamentoJuridico() 	{return idFundamentoJuridico;}
+	public boolean getGuardaActa() 		{return guardaActa;}
+	public boolean getGuardaPonente() 	{return guardaPonente;}
+	public boolean getGuardaFundamento() 	{return guardaFundamento;}
+	public boolean getGuardaRatificacion() 	{return guardaRatificacion;}
 	
 	public void reset(){
 		numeroActa		= null;
@@ -84,5 +97,9 @@ public class ActaComisionForm extends MasterForm {
 		idPonente 		= null;
 		idTipoRatificacionEJG 	= null;
 		idFundamentoJuridico 	= null;
+		guardaActa 		= false;
+		guardaPonente 	= false;
+		guardaFundamento 	= false;
+		guardaRatificacion 	= false;
 	}
 }

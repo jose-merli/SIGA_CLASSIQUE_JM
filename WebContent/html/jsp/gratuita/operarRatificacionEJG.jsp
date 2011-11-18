@@ -208,7 +208,11 @@
 				<siga:Idioma key="sjcs.actas.numeroActa" />/<siga:Idioma key="sjcs.actas.anio" /> - <siga:Idioma key="sjcs.actas.fechaResolucion" />
 			</td>
 			<td>
+			<%if (accion.equalsIgnoreCase("ver")){%>
+				<siga:ComboBD nombre="idActaComp"  tipo="cmbActaComision" clase="boxConsulta" ancho="160" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vActa %>" readonly="true"/>
+			<%}else{%>
 				<siga:ComboBD nombre="idActaComp"  tipo="cmbActaComision" clase="boxCombo" ancho="160" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vActa %>"/>
+			<%}%>
 			</td>
 		<%}else{%>
 			<td class="labelText">

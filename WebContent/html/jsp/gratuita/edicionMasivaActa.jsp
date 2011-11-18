@@ -39,10 +39,14 @@
 		<siga:ConjCampos leyenda="general.criterios">	
 			<table class="tablaCampos" border="0" align="left">
 			<tr>
-				<td class="labelText" width="18%"><siga:Idioma key="sjcs.actas.numeroActa" />/<siga:Idioma key="sjcs.actas.anio" /> - <siga:Idioma key="sjcs.actas.fechaResolucion" /></td>
+				<td><html:checkbox property="guardaActa" /></td>
+				<td class="labelText" width="20%"><siga:Idioma key="sjcs.actas.numeroActa" />/<siga:Idioma key="sjcs.actas.anio" /> - <siga:Idioma key="sjcs.actas.fechaResolucion" /></td>
 				<td>
-					<siga:ComboBD nombre="idActaComp"  tipo="cmbActaComision" clase="boxCombo" ancho="160" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>"/>
+					<siga:ComboBD nombre="idActaComp"  tipo="cmbActaComision" clase="boxCombo" ancho="160" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" />
 				</td>
+			</tr>
+			<tr>
+				<td><html:checkbox property="guardaPonente"/></td>
 				<td class="labelText">
 					<siga:Idioma key="gratuita.operarRatificacion.literal.ponente"/>
 				</td>
@@ -51,6 +55,7 @@
 				</td>
 			</tr>
 			<tr>
+				<td><html:checkbox property="guardaRatificacion"/></td>
 				<td class="labelText">
 				  <siga:Idioma key="gratuita.operarRatificacion.literal.tipoRatificacion"/>
 				</td>
@@ -59,6 +64,7 @@
 				</td>
 			</tr>
 			<tr>
+				<td><html:checkbox property="guardaFundamento" /></td>
 				<td class="labelText">
 					<siga:Idioma key="gratuita.operarRatificacion.literal.fundamentoJuridico"/>
 				</td>
@@ -78,17 +84,26 @@
 		function accionCerrar(){
 			window.close();
 		}
-		
+
 		function accionGuardarCerrar(){
 			sub();
-			if(document.getElementById("idActaComp").value!=""){
-				var actaComp= document.getElementById("idActaComp").value.split(',');
-				document.ActaComisionForm.idInstitucion.value=actaComp[0];
-				document.ActaComisionForm.anioActa.value=actaComp[1];
-				document.ActaComisionForm.idActa.value=actaComp[2];
+
+			if(document.ActaComisionForm.guardaActa.checked ||
+				document.ActaComisionForm.guardaPonente.checked ||
+				document.ActaComisionForm.guardaFundamento.checked ||
+				document.ActaComisionForm.guardaRatificacion.checked){
+
+				if(document.getElementById("idActaComp").value!=""){
+					var actaComp= document.getElementById("idActaComp").value.split(',');
+					document.ActaComisionForm.idInstitucion.value=actaComp[0];
+					document.ActaComisionForm.anioActa.value=actaComp[1];
+					document.ActaComisionForm.idActa.value=actaComp[2];
+				}
+				document.ActaComisionForm.submit();
+			}else{
+				alert("<siga:Idioma key="sjcs.actas.seleccioneCampos"/>");
+				fin();
 			}
-		
-			document.ActaComisionForm.submit();
 		}
 	</script>
 </body>

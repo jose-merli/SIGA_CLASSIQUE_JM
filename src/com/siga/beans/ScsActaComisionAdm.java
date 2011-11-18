@@ -590,4 +590,54 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		return salida;
 
 	}
+	
+	/**
+	 * 
+	 * @param idInstitucion
+	 * @param idActa
+	 * @param anioActa
+	 * @return
+	 * @throws ClsExceptions 
+	 */
+	public Vector getEJGsPendientesPonentes(String idInstitucion, String idActa, String anioActa) throws ClsExceptions {
+		
+		Vector salida = new Vector();
+		
+		StringBuffer consulta = new StringBuffer();
+		RowsContainer rc = new RowsContainer(); 
+		Vector resultado = new Vector();
+		consulta.append("select f_siga_getrecurso(pon.nombre, 1) as PONENTE, replace(wm_concat(ejg.anio || '/' || ejg.numejg) ,',',', ') as LISTAEJG");
+
+		consulta.append(" from " + ScsEJGBean.T_NOMBRETABLA +" ejg");
+		consulta.append(" , " + ScsPonenteBean.T_NOMBRETABLA +" pon");
+
+		consulta.append(" where ");
+		consulta.append(" pon." + ScsPonenteBean.C_IDPONENTE+ "(+) = ejg." + ScsEJGBean.C_IDPONENTE);
+		consulta.append(" and pon." + ScsPonenteBean.C_IDINSTITUCION+ "(+) = ejg." + ScsEJGBean.C_IDINSTITUCION);
+		consulta.append(" and ejg." + ScsEJGBean.C_IDTIPORATIFICACIONEJG+ " = 0");
+		
+		Hashtable htCodigos = new Hashtable();
+		int keyContador = 0;
+		keyContador++;
+		htCodigos.put(new Integer(keyContador), idInstitucion);
+		consulta.append(" and ejg." + ScsEJGBean.C_IDINSTITUCIONACTA + " =:");
+		consulta.append(keyContador);
+
+		keyContador++;
+		htCodigos.put(new Integer(keyContador), anioActa);
+		consulta.append(" and ejg." + ScsEJGBean.C_ANIOACTA + "=:");
+		consulta.append(keyContador);
+
+		keyContador++;
+		htCodigos.put(new Integer(keyContador), idActa);
+		consulta.append("  and ejg." + ScsEJGBean.C_IDACTA+ " = :");
+		consulta.append(keyContador);
+		
+		consulta.append(" group by pon." + ScsPonenteBean.C_NOMBRE);
+
+		HelperInformesAdm helperInformes = new HelperInformesAdm();
+		salida = helperInformes.ejecutaConsultaBind(consulta.toString(), htCodigos);
+		return salida;
+
+	}
 }

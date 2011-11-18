@@ -497,10 +497,13 @@ public class EnvioInformesGenericos extends MasterReport {
 			Vector vDatosInformeFinal = actaAdm.getDatosInforme(idInstitucion, idActa, anioActa);
 			Vector vDatosEJGs = actaAdm.getEJGsInforme(idInstitucion, idActa, anioActa);
 			Vector vDatosEJGPendientes = actaAdm.getEJGsPendientes(idInstitucion, idActa, anioActa);
+			Vector vDatosEJGPendientesPonentes = actaAdm.getEJGsPendientesPonentes(idInstitucion, idActa, anioActa);
 
 			htDatosInforme.put("row", vDatosInformeFinal);
 			htDatosInforme.put("ejgs", vDatosEJGs);
 			htDatosInforme.put("ejgspendientes", vDatosEJGPendientes);
+			htDatosInforme.put("ejgspendientesponentes", vDatosEJGPendientesPonentes);
+			
 		}else if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesJustificacion)) {
 			ScsDesignasLetradoAdm admDesignas = new ScsDesignasLetradoAdm(usrBean);
 			InformeJustificacionMasivaForm informeJustificacionMasivaForm = new InformeJustificacionMasivaForm();

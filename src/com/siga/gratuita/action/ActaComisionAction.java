@@ -514,21 +514,33 @@ public class ActaComisionAction extends MasterAction{
 		String idTipoRatificacionEJG 	= actaForm.getIdTipoRatificacionEJG().equalsIgnoreCase("")?"null":actaForm.getIdTipoRatificacionEJG();
 		String[] seleccionados = actaForm.getSeleccionados().split("%%%");
 		
+		StringBuffer consulta = new StringBuffer();
 		StringBuffer update = new StringBuffer();
 		StringBuffer where = new StringBuffer();
 		
 		// Creamos la sentencia del update con todos los campos a actualizar
-		update.append("update " + ScsEJGBean.T_NOMBRETABLA);
-		update.append(" set " + ScsEJGBean.C_IDACTA + "=" + idActa);
-		update.append(" , " + ScsEJGBean.C_IDINSTITUCIONACTA + "=" + idInstitucion);
-		update.append(" , " + ScsEJGBean.C_ANIOACTA + "=" + anioActa);
-		update.append(" , " + ScsEJGBean.C_FECHARESOLUCIONCAJG + "= (select " + ScsActaComisionBean.C_FECHARESOLUCION + " from " + ScsActaComisionBean.T_NOMBRETABLA );
-		update.append(" where " + ScsActaComisionBean.C_IDACTA + "=" + idActa);
-		update.append(" and " + ScsActaComisionBean.C_IDINSTITUCION + "=" + idInstitucion);
-		update.append(" and " + ScsActaComisionBean.C_ANIOACTA + "=" + anioActa + ")");
-		update.append(" , " + ScsEJGBean.C_IDPONENTE + "=" + idPonente);
-		update.append(" , " + ScsEJGBean.C_IDTIPORATIFICACIONEJG + "=" + idTipoRatificacionEJG);
-		update.append(" , " + ScsEJGBean.C_IDFUNDAMENTOJURIDICO + "=" + idFundamentoJuridico);
+		consulta.append("update " + ScsEJGBean.T_NOMBRETABLA);
+		consulta.append(" set ");
+		
+		if(actaForm.getGuardaActa()){
+			update.append(" " + ScsEJGBean.C_IDACTA + "=" + idActa);
+			update.append(" , " + ScsEJGBean.C_IDINSTITUCIONACTA + "=" + idInstitucion);
+			update.append(" , " + ScsEJGBean.C_ANIOACTA + "=" + anioActa);
+			update.append(" , " + ScsEJGBean.C_FECHARESOLUCIONCAJG + "= (select " + ScsActaComisionBean.C_FECHARESOLUCION + " from " + ScsActaComisionBean.T_NOMBRETABLA );
+			update.append(" where " + ScsActaComisionBean.C_IDACTA + "=" + idActa);
+			update.append(" and " + ScsActaComisionBean.C_IDINSTITUCION + "=" + idInstitucion);
+			update.append(" and " + ScsActaComisionBean.C_ANIOACTA + "=" + anioActa + ") , ");
+		}
+		if(actaForm.getGuardaPonente()){
+			update.append(ScsEJGBean.C_IDPONENTE + "=" + idPonente + " , ");
+		}
+		if(actaForm.getGuardaRatificacion()){
+			update.append(ScsEJGBean.C_IDTIPORATIFICACIONEJG + "=" + idTipoRatificacionEJG + " , ");
+		}
+		if(actaForm.getGuardaFundamento()){
+			update.append(ScsEJGBean.C_IDFUNDAMENTOJURIDICO + "=" + idFundamentoJuridico + " , ");
+		}
+		update.deleteCharAt(update.lastIndexOf(","));
 		
 		// Creamos el where, con la clave de los ejg que se van a modificar
 		where.append(" where ");
@@ -550,7 +562,7 @@ public class ActaComisionAction extends MasterAction{
 
 		}
 		try {
-			ejgAdm.updateSQL(update.toString()+where.toString());
+			ejgAdm.updateSQL(consulta.toString()+update.toString()+where.toString());
 		} catch (ClsExceptions e) {
 			throw new SIGAException("Error al realizar la actualización masiva de datos.",e);
 		}
