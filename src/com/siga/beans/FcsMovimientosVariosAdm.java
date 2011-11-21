@@ -447,7 +447,12 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 
 		String idPago = (String)datos.get("PAGOASOCIADO");
 		if (idPago != null && !idPago.equals("")) {
-			where += " and " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDPAGOSJG + "=" + idPago + " ";
+			where += " and " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " in" + 
+			" (SELECT APLICA." + FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO +
+			" FROM " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + " APLICA " +
+			" WHERE " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDINSTITUCION + " = " +
+			" APLICA." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION +
+			" AND aplica." + FcsAplicaMovimientosVariosBean.C_IDPAGOSJG + "=" + idPago + ") "; 	
 		}
 
 		String idPersona = (String)datos.get("IDPERSONA");
@@ -577,7 +582,12 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 			}
 
 			if (idPago != null && !idPago.equals("")) {
-				where += " and " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDPAGOSJG + "=" + idPago + " ";
+				where += " and " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " in" + 
+				" (SELECT APLICA." + FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO +
+				" FROM " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + " APLICA " +
+				" WHERE " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDINSTITUCION + " = " +
+				" APLICA." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION +
+				" AND aplica." + FcsAplicaMovimientosVariosBean.C_IDPAGOSJG + "=" + idPago + ") "; 	
 			}
 
 			if (idPersona != null && !idPersona.equals("")) {
