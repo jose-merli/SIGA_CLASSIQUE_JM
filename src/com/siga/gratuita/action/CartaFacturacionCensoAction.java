@@ -96,27 +96,30 @@ public class CartaFacturacionCensoAction extends MasterAction {
 
 		String destino = "inicio";
 		try {
-			// obtener institucion
+			CartaFacturacionCensoForm miFormulario = (CartaFacturacionCensoForm) formulario;
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			String idInstitucion = user.getLocation();
 			String facturaciones = "";
-			String idPersona = request.getSession().getAttribute("IDPERSONA").toString();
-
-			// casting del formulario
-			CartaFacturacionCensoForm miFormulario = (CartaFacturacionCensoForm) formulario;
-			miFormulario.setIdInstitucion(user.getLocation());
-
+			String idPersona = "";
 			HashMap databackup = new HashMap();
-
-			Vector datos = null;
 			FcsFacturacionJGAdm factAdm = new FcsFacturacionJGAdm(user);
-			datos = factAdm.getVectorDetalleFacturacionPorColegiado(idInstitucion, idPersona);
+			miFormulario.setIdInstitucion(user.getLocation());
+			Vector datos = null;
+			
+			if(request.getSession().getAttribute("IDPERSONA")!=null){
+				idPersona = request.getSession().getAttribute("IDPERSONA").toString();
+				datos = factAdm.getVectorDetalleFacturacionPorColegiado(idInstitucion, idPersona);
 
-			if (datos != null) {
-				databackup.put("datos", datos);
-			} else {
+				if (datos != null) {
+					databackup.put("datos", datos);
+				} else {
+					miFormulario.setRegistrosSeleccionados(new ArrayList());
+				}
+
+			}else{
 				miFormulario.setRegistrosSeleccionados(new ArrayList());
 			}
+
 			miFormulario.setDatosPaginador(databackup);
 
 		} catch (Exception e) {
