@@ -192,6 +192,9 @@
 			}if (document.ActaComisionForm.fechaResolucion.value==""){
 				error = true;
 				errores += "<siga:Idioma key='errors.required' arg0='sjcs.actas.fechaResolucion'/>"+ '\n';
+			}if (document.ActaComisionForm.fechaResolucion.value!=""&&document.ActaComisionForm.fechaReunion.value!=""&&document.ActaComisionForm.fechaReunion.value>document.ActaComisionForm.fechaResolucion.value){
+				error = true;
+				errores += "<siga:Idioma key='sjcs.actas.fechasErroneas'/>"+ '\n';
 			}
 			if(error==false){
 				document.ActaComisionForm.target.value="submitArea";
