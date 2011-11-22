@@ -210,16 +210,26 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 							" M." + FcsMovimientosVariosBean.C_DESCRIPCION + " " + FcsMovimientosVariosBean.C_DESCRIPCION + ","+
 							" M." + FcsMovimientosVariosBean.C_IDINSTITUCION + " " + FcsMovimientosVariosBean.C_IDINSTITUCION + ","+
 							" M." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " " + FcsMovimientosVariosBean.C_IDMOVIMIENTO + ","+
-							" M." + FcsMovimientosVariosBean.C_CANTIDAD + " " + FcsMovimientosVariosBean.C_CANTIDAD + ", "+
-							" M." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " " + FcsMovimientosVariosBean.C_IDMOVIMIENTO + ", "+
+							" M." + FcsMovimientosVariosBean.C_CANTIDAD + " " +
+			/*				" - nvl((select (sum (aplica." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + "))" + 
+							" from " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "aplica" +
+							" where m." + FcsMovimientosVariosBean.C_IDINSTITUCION + " = aplica." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION + 
+							" and m." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " = aplica." + FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO +
+							"),0) " + */ 
+							FcsMovimientosVariosBean.C_CANTIDAD + ", " +
 							" M." + FcsMovimientosVariosBean.C_FECHAMODIFICACION + " " + FcsMovimientosVariosBean.C_FECHAMODIFICACION + ", "+
 							" M." + FcsMovimientosVariosBean.C_USUMODIFICACION + " " + FcsMovimientosVariosBean.C_USUMODIFICACION + " "+
-							" FROM " + FcsMovimientosVariosBean.T_NOMBRETABLA + " M, " +
-							FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + " A " + 
-							" WHERE M." + FcsMovimientosVariosBean.C_IDINSTITUCION + "=A." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION + "(+)" +
-							" AND M." + FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO + "=A." + FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO + "(+)" +
-							" AND M." + FcsMovimientosVariosBean.C_IDINSTITUCION + "=" + idInstitucion +
+							" FROM " + FcsMovimientosVariosBean.T_NOMBRETABLA + " M " +
+							" WHERE M." + FcsMovimientosVariosBean.C_IDINSTITUCION + "=" + idInstitucion +
 							" AND M." + FcsMovimientosVariosBean.C_IDPERSONA + "=" + idPersona +" " +
+							" group by m." + FcsMovimientosVariosBean.C_MOTIVO + ", m." + FcsMovimientosVariosBean.C_DESCRIPCION +
+							", m." + FcsMovimientosVariosBean.C_IDINSTITUCION + ", m." + FcsMovimientosVariosBean.C_IDMOVIMIENTO +
+							", m." + FcsMovimientosVariosBean.C_CANTIDAD + ", m." + FcsMovimientosVariosBean.C_FECHAMODIFICACION +
+							", m." + FcsMovimientosVariosBean.C_USUMODIFICACION + ", m." + FcsMovimientosVariosBean.C_FECHAALTA +
+							" having abs(m." + FcsMovimientosVariosBean.C_CANTIDAD + ") > nvl((select abs (sum (aplica." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO +
+							")) from " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + " aplica" +
+							" where m." + FcsMovimientosVariosBean.C_IDINSTITUCION + " = aplica." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION + 
+							" and m." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " = aplica." + FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO + "),0)" +						
 							" ORDER BY  M." + FcsMovimientosVariosBean.C_FECHAALTA ;		
 							
 		try{
@@ -363,35 +373,15 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 						" " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDINSTITUCION + " IDINSTITUCION," +
 						" " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDPERSONA + " IDPERSONA," +
 						" " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_CANTIDAD + " CANTIDAD," +
-						" (CASE " +
-						" WHEN (" + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_CANTIDAD + ") >=   " +
-						" (select decode( sum("+
-						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + "), null, 0, sum( " +
+						" (" + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_CANTIDAD + " - " +
+						" (nvl ((select (sum("+
 						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + "))" +
 						" from " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA +
 						" where " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDINSTITUCION + "=" +
 						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION + " and" +
 						" " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + "=" +
-						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO + ") " +
-						" THEN (" + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_CANTIDAD + " - " +
-						" (select decode( sum("+
-						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + "), null, 0, sum( " +
-						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + "))" +
-						" from " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA +
-						" where " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDINSTITUCION + "=" +
-						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION + " and" +
-						" " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + "=" +
-						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO + ")) " +
-						" ELSE (" + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_CANTIDAD + " + " +
-						" (select decode( sum("+
-						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + "), null, 0, sum( " +
-						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + "))" +
-						" from " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA +
-						" where " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDINSTITUCION + "=" +
-						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION + " and" +
-						" " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + "=" +
-						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO + ")) " +						
-						" END) cantidadRestante," + 
+						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO + "),0)) " +
+						") cantidadRestante," + 
 						" " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_FECHAALTA + " FECHAALTA," +
 						" " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_DESCRIPCION + " MOVIMIENTO," +
 						" " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " IDMOVIMIENTO," +
@@ -499,35 +489,15 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 						" " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDINSTITUCION + " IDINSTITUCION," +
 						" " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDPERSONA + " IDPERSONA," +
 						" " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_CANTIDAD + " CANTIDAD," +
-						" (CASE " +
-						" WHEN (" + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_CANTIDAD + ") >=   " +
-						" (select decode( sum("+
-						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + "), null, 0, sum( " +
+						" (" + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_CANTIDAD + " - " +
+						" (nvl ((select (sum("+
 						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + "))" +
 						" from " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA +
 						" where " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDINSTITUCION + "=" +
 						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION + " and" +
 						" " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + "=" +
-						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO + ") " +
-						" THEN (" + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_CANTIDAD + " - " +
-						" (select decode( sum("+
-						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + "), null, 0, sum( " +
-						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + "))" +
-						" from " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA +
-						" where " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDINSTITUCION + "=" +
-						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION + " and" +
-						" " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + "=" +
-						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO + ")) " +
-						" ELSE (" + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_CANTIDAD + " + " +
-						" (select decode( sum("+
-						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + "), null, 0, sum( " +
-						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + "))" +
-						" from " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA +
-						" where " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDINSTITUCION + "=" +
-						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION + " and" +
-						" " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + "=" +
-						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO + ")) " +						
-						" END) cantidadRestante," + 					
+						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO + "),0)) " +
+						") cantidadRestante," + 				
 						" " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_FECHAALTA + " FECHAALTA," +
 						" " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_DESCRIPCION + " MOVIMIENTO," +
 						" " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " IDMOVIMIENTO," +
@@ -564,8 +534,8 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 						" and " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDINSTITUCION + "=" + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_IDINSTITUCION + " (+) " +
 						" and " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDPERSONA + "=" + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_IDPERSONA + " (+) " +
 						" and " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_CANTIDAD + " = (select sum(aplica." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + ")  " +
-						" from " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + " aplica, " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + " APLICA2 where aplica." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION + "= APLICA2." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION +
-						" and aplica." + FcsAplicaMovimientosVariosBean.C_IDAPLICACION + " = APLICA2." + FcsAplicaMovimientosVariosBean.C_IDAPLICACION + ")" +
+						" from " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + " aplica" + " where " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDINSTITUCION + "= APLICA." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION +
+						" and " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " = APLICA." + FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO + ")" +
 						" and " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDINSTITUCION + "=" + (String)datos.get("IDINSTITUCION");
 		
 		//con estos datos construir en trozo de sentencia sql correspondiente
