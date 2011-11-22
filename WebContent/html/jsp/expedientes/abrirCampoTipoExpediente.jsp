@@ -408,7 +408,14 @@
 										<html:checkbox name="camposForm" property="resultadoInforme" value="true" disabled="<%=bLectura%>"/>
 									</td>
 								</tr>
-
+							<tr>
+									<td id="titulo" class="labelText">
+										<siga:Idioma key="expedientes.auditoria.literal.solicitanteEJG"/> :
+									</td>
+									<td>
+										<html:checkbox name="camposForm" property="solicitanteEJG" value="true" disabled="<%=bLectura%>"/>
+									</td>
+								</tr>
 							</table>
 							</siga:ConjCampos>
 						</td>					

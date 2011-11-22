@@ -872,9 +872,11 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    		StringBuffer asunto = new StringBuffer();
 	    	    		if(bean instanceof ExpAlertaBean){
 	    	    			ExpAlertaBean expAlertaBean = (ExpAlertaBean)bean;
+	    	    			asunto.append(expAlertaBean.getAnioExpediente());
+	    	    			asunto.append(" / ");
 	    	    			asunto.append(expAlertaBean.getNumeroExpediente());
-		    	    		asunto.append(" / ");
-		    	    		asunto.append(expAlertaBean.getAnioExpediente());
+		    	    		
+		    	    		
 	    	    			htDatosEnvio.put("EXP_MENSAJE_ALERTA", expAlertaBean.getTexto());
 	    	    			htDatosEnvio.put("EXP_NUMERO", asunto.toString());
 	    	    			try {
@@ -898,10 +900,10 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    		//asunto.append(cpBean.getValor());
 	    	    		if(bean instanceof ExpAlertaBean){
 	    	    			ExpAlertaBean expAlertaBean = (ExpAlertaBean)bean;
-	    	    			
-	    	    			asunto.append(expAlertaBean.getNumeroExpediente());
-		    	    		asunto.append(" / ");
 		    	    		asunto.append(expAlertaBean.getAnioExpediente());
+		    	    		asunto.append(" / ");
+	    	    			asunto.append(expAlertaBean.getNumeroExpediente());
+		    	    		
 		    	    		htDatosEnvio.put("EXP_MENSAJE_ALERTA", expAlertaBean.getTexto());
 	    	    			htDatosEnvio.put("EXP_NUMERO", asunto.toString());
 	    	    			try {

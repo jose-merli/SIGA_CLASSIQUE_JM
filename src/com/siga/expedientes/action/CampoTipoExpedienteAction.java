@@ -53,7 +53,7 @@ public class CampoTipoExpedienteAction extends MasterAction {
         
         // Eliminamos el backup de la sesión
         HttpSession ses=request.getSession();
-        ses.removeAttribute("DATABACKUP");
+        ses.removeAttribute("DATABACKUPTIPOEXPEDIENTE");
         //Aplicar acceso
         if(request.getParameter("acceso") !=null && request.getParameter("acceso").equalsIgnoreCase("Ver")) {
             UsrBean user=(UsrBean)ses.getAttribute("USRBEAN");
@@ -119,7 +119,7 @@ public class CampoTipoExpedienteAction extends MasterAction {
         Vector backup=new Vector();
         backup.add(0,beantipoexp);
         backup.add(1,camposExp);
-        ses.setAttribute("DATABACKUP",backup);       
+        ses.setAttribute("DATABACKUPTIPOEXPEDIENTE",backup);       
         
         // RGG: Obtengo los valores de pestanas configuradas
         ExpPestanaConfAdm admPestana= new ExpPestanaConfAdm(this.getUserBean(request));
@@ -146,7 +146,7 @@ public class CampoTipoExpedienteAction extends MasterAction {
 	    
 	    // Recuperamos los datos anteriores de la sesión
 	    HttpSession ses=request.getSession();
-	    Vector backup=(Vector)ses.getAttribute("DATABACKUP");
+	    Vector backup=(Vector)ses.getAttribute("DATABACKUPTIPOEXPEDIENTE");
 	        
 	    CampoTipoExpedienteForm form = (CampoTipoExpedienteForm)formulario;
         UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
@@ -161,7 +161,7 @@ public class CampoTipoExpedienteAction extends MasterAction {
         }
         
         //Iniciamos la transacción
-        UserTransaction tx = userBean.getTransaction();
+        UserTransaction tx = userBean.getTransactionPesada();
 	    try {
 	        tx.begin();     
 
@@ -279,6 +279,11 @@ public class CampoTipoExpedienteAction extends MasterAction {
 	        //  Modificamos el bean antiguo
 	        beanDerechos.setVisible(form.getDerechos()?ExpCampoTipoExpedienteBean.si:ExpCampoTipoExpedienteBean.no);
 	        campoTipoExpedienteAdm.update(beanDerechos);	        
+	        
+	        ExpCampoTipoExpedienteBean beanSolicitanteEJG = (ExpCampoTipoExpedienteBean)camposExp.elementAt(17);
+	        //  Modificamos el bean antiguo
+	        beanSolicitanteEJG.setVisible(form.getSolicitanteEJG()?ExpCampoTipoExpedienteBean.si:ExpCampoTipoExpedienteBean.no);
+	        campoTipoExpedienteAdm.update(beanSolicitanteEJG);
 
 	        ExpCampoTipoExpedienteBean beanResolucionInforme = (ExpCampoTipoExpedienteBean)camposExp.elementAt(11);
 	        //  Modificamos el bean antiguo
@@ -381,6 +386,9 @@ public class CampoTipoExpedienteAction extends MasterAction {
 		    		nombre = ExpCampoTipoExpedienteBean.DENUNCIADO;
 		    	form.setNombreCampoDenunciado(nombre);
 		        form.setDenunciados(visible.equals("S"));
+		        break;
+			case ClsConstants.IDCAMPO_TIPOEXPEDIENTE_SOLICITANTEEJG:
+		        form.setSolicitanteEJG(visible.equals("S"));
 		        break;
 	    }
 	}

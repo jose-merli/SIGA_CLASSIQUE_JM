@@ -26,172 +26,193 @@
 <%@ page import="com.siga.beans.ScsEJGAdm"%>
 
 <!-- JSP -->
-<%  
+<%
 	//Se pasa por defectola fecha de sistema al campo Fecha de Apertura
-	String fechaApertura = (String)request.getAttribute("fechaApertura");
-	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
-	UsrBean userBean = ((UsrBean)ses.getAttribute(("USRBEAN")));
+	String fechaApertura = (String) request
+			.getAttribute("fechaApertura");
+	String app = request.getContextPath();
+	HttpSession ses = request.getSession();
+	Properties src = (Properties) ses
+			.getAttribute(SIGAConstants.STYLESHEET_REF);
+	UsrBean userBean = ((UsrBean) ses.getAttribute(("USRBEAN")));
 
-	String mostrarMinuta = (String)request.getAttribute("mostarMinuta");
-	String mostrarMinutaFinal = (String)request.getAttribute("mostarMinutaFinal");
-	String derechosColegiales = (String)request.getAttribute("derechosColegiales");
-	String mostrarDenunciante = (String)request.getAttribute("mostrarDenunciante");
-	Boolean tieneEjgRelacionado =false;
-	if(request.getAttribute("tipoExpedienteEjg")!=null)
-		tieneEjgRelacionado = ((Boolean) request.getAttribute("tipoExpedienteEjg")).booleanValue();
+	String mostrarMinuta = (String) request
+			.getAttribute("mostarMinuta");
+	String mostrarMinutaFinal = (String) request
+			.getAttribute("mostarMinutaFinal");
+	String derechosColegiales = (String) request
+			.getAttribute("derechosColegiales");
+	String mostrarSolicitanteEJG = (String) request
+	.getAttribute("mostrarSolicitanteEJG");
+	String mostrarDenunciante = (String) request
+			.getAttribute("mostrarDenunciante");
+	Boolean tieneEjgRelacionado = false;
+	if (request.getAttribute("tipoExpedienteEjg") != null)
+		tieneEjgRelacionado = ((Boolean) request
+				.getAttribute("tipoExpedienteEjg")).booleanValue();
 	String totalMinuta = (String) request.getAttribute("totalMinuta");
-	if (totalMinuta == null) totalMinuta = new String("");
-	
-	ArrayList juzgadoSel   = new ArrayList();
-	ArrayList materiaSel   = new ArrayList();
-	ArrayList pretensionSel   = new ArrayList();
-	String idJuzgado="", idInstitucionJuzgado="", idArea="", idMateria="", idPretension="" ,codigoEjg="", tipoExpD="",anioExpD = "", numExpD="",CODIGO= "",SUFIJO="";
+	if (totalMinuta == null)
+		totalMinuta = new String("");
+
+	ArrayList juzgadoSel = new ArrayList();
+	ArrayList materiaSel = new ArrayList();
+	ArrayList pretensionSel = new ArrayList();
+	String idJuzgado = "", idInstitucionJuzgado = "", idArea = "", idMateria = "", idPretension = "", codigoEjg = "", tipoExpD = "", anioExpD = "", numExpD = "", CODIGO = "", SUFIJO = "";
 	// Datos del Juzgado seleccionado:
-	ExpDatosGeneralesForm form = (ExpDatosGeneralesForm) request.getAttribute("ExpDatosGeneralesForm");
-	if (form.getJuzgado()!=null) idJuzgado = form.getJuzgado();
-	if (form.getIdInstitucionJuzgado()!=null) idInstitucionJuzgado	=  form.getIdInstitucionJuzgado();
-	if (form.getIdPretension()!=null) idPretension	=  form.getIdPretension();
-	if (form.getIdArea()!=null) idArea		=  form.getIdArea();
-	if (form.getIdMateria()!=null) idMateria =  form.getIdMateria();
-
-	if (form.getTipoExpDisciplinario()!=null) tipoExpD	=  form.getTipoExpDisciplinario();
-	if (form.getAnioExpDisciplinario()!=null) anioExpD		=  form.getAnioExpDisciplinario();
-	if (form.getNumExpDisciplinario()!=null) numExpD =  form.getNumExpDisciplinario();
-
-	String[] datosJuzgado={userBean.getLocation(),idArea, idMateria,"-1"};	
-	String[] datosMateria={"-1",userBean.getLocation()};
 	
-	if (idJuzgado!=null && idInstitucionJuzgado!=null) {
-		juzgadoSel.add(0,idJuzgado+","+idInstitucionJuzgado);	
-		if(!idJuzgado.equals("")){
+	ExpDatosGeneralesForm form = (ExpDatosGeneralesForm) request
+			.getAttribute("ExpDatosGeneralesForm");
+	if (form.getJuzgado() != null)
+		idJuzgado = form.getJuzgado();
+	if (form.getIdInstitucionJuzgado() != null)
+		idInstitucionJuzgado = form.getIdInstitucionJuzgado();
+	if (form.getIdPretension() != null)
+		idPretension = form.getIdPretension();
+	if (form.getIdArea() != null)
+		idArea = form.getIdArea();
+	if (form.getIdMateria() != null)
+		idMateria = form.getIdMateria();
+
+	if (form.getTipoExpDisciplinario() != null)
+		tipoExpD = form.getTipoExpDisciplinario();
+	if (form.getAnioExpDisciplinario() != null)
+		anioExpD = form.getAnioExpDisciplinario();
+	if (form.getNumExpDisciplinario() != null)
+		numExpD = form.getNumExpDisciplinario();
+	codigoEjg = form.getNumExpDisciplinarioCalc();
+	
+	String[] datosJuzgado = { userBean.getLocation(), idArea,
+			idMateria, "-1" };
+	String[] datosMateria = { "-1", userBean.getLocation() };
+
+	if (idJuzgado != null && idInstitucionJuzgado != null) {
+		juzgadoSel.add(0, idJuzgado + "," + idInstitucionJuzgado);
+		if (!idJuzgado.equals("")) {
 			datosJuzgado[3] = idJuzgado;
 			datosMateria[0] = idJuzgado;
 		}
 	}
-	if (idPretension!=null) {
-		pretensionSel.add(0,idPretension);	
+	if (idPretension != null) {
+		pretensionSel.add(0, idPretension);
 	}
-	
-	if (idMateria!=null) {
-		materiaSel.add(0,userBean.getLocation()+","+idArea+","+idMateria+","+datosJuzgado[3]);	
+
+	if (idMateria != null) {
+		materiaSel.add(0, userBean.getLocation() + "," + idArea + ","
+				+ idMateria + "," + datosJuzgado[3]);
 	}
-	
+
 	//recupero los campos visibles para mostrar o no ciertas leyendas
-	Hashtable camposVisibles = (Hashtable)request.getAttribute("camposVisibles");
-	String sNumExpDisc = (String)camposVisibles.get("2");
-	String sEstado = (String)camposVisibles.get("3");
-	String sInstitucion = (String)camposVisibles.get("4");
-	String sAsuntoJud = (String)camposVisibles.get("5");	
-	boolean bNumExpDisc = (sNumExpDisc!=null && sNumExpDisc.equals("S"));
-	boolean bEstado = (sEstado!=null && sEstado.equals("S"));
-	String recargarCombos = bEstado?"recargarCombos()":"";
-	boolean bInstitucion = (sInstitucion!=null && sInstitucion.equals("S"));
-	boolean bAsuntoJud = (sAsuntoJud!=null && sAsuntoJud.equals("S"));	
-	
+	Hashtable camposVisibles = (Hashtable) request
+			.getAttribute("camposVisibles");
+	String sNumExpDisc = (String) camposVisibles.get("2");
+	String sEstado = (String) camposVisibles.get("3");
+	String sInstitucion = (String) camposVisibles.get("4");
+	String sAsuntoJud = (String) camposVisibles.get("5");
+	boolean bNumExpDisc = (sNumExpDisc != null && sNumExpDisc
+			.equals("S"));
+	boolean bEstado = (sEstado != null && sEstado.equals("S"));
+	String recargarCombos = bEstado ? "recargarCombos()" : "";
+	boolean bInstitucion = (sInstitucion != null && sInstitucion
+			.equals("S"));
+	boolean bAsuntoJud = (sAsuntoJud != null && sAsuntoJud.equals("S"));
+
 	String idinst_idtipo_idfase = "";
 	String idinst_idtipo_idfase_idestado = "";
 	String idclasificacion = "";
 	ArrayList vFase = new ArrayList();
 	ArrayList vEstado = new ArrayList();
 	ArrayList vClasif = new ArrayList();
-	
-	
-	ScsEJGAdm admEjg = new ScsEJGAdm(userBean);
-	if (tipoExpD != null && !tipoExpD.equals("")) {
-		Hashtable haste = admEjg
-				.getCalculoNumEjg(userBean.getLocation(),
-						anioExpD, numExpD, tipoExpD);
-		SUFIJO = (String) haste.get("SUFIJO");
-		CODIGO = (String) haste.get("CODIGO");
-		  if (SUFIJO!=null && !SUFIJO.equals("")){ 
-		    codigoEjg= CODIGO+"-"+SUFIJO; 
-		    form.setNumExpDisciplinarioCalc(codigoEjg);
-		  }else{
-			  codigoEjg= CODIGO; 
-			  form.setNumExpDisciplinarioCalc(codigoEjg);
-		  }
-	}
 
-	String accion = (String)request.getAttribute("accion");
-	if (!accion.equals("nuevo")){	//pestanhas:edicion o consulta
-		idinst_idtipo_idfase = (String)request.getAttribute("idinst_idtipo_idfase");
-		idinst_idtipo_idfase_idestado = (String)request.getAttribute("idinst_idtipo_idfase_idestado");
-		idclasificacion = (String)request.getAttribute("idclasificacion");
+	
+
+	String accion = (String) request.getAttribute("accion");
+	if (!accion.equals("nuevo")) { //pestanhas:edicion o consulta
+		idinst_idtipo_idfase = (String) request
+				.getAttribute("idinst_idtipo_idfase");
+		idinst_idtipo_idfase_idestado = (String) request
+				.getAttribute("idinst_idtipo_idfase_idestado");
+		idclasificacion = (String) request
+				.getAttribute("idclasificacion");
 		vFase.add(idinst_idtipo_idfase);
 		vEstado.add(idinst_idtipo_idfase_idestado);
 		vClasif.add(idclasificacion);
 	}
-	
-	String idinstitucion_tipoexpediente = (String)request.getParameter("idInstitucion_TipoExpediente");
-	String tipoExp = (String)request.getParameter("idTipoExpediente");
-	String editable = (String)request.getParameter("editable");		
-	String soloSeguimiento = (String)request.getParameter("soloSeguimiento");	
-	boolean bEditable=false;
-	if (soloSeguimiento.equals("true")){
-		bEditable=false;
-	}else{
-		bEditable = editable.equals("1")? true : false;
+
+	String idinstitucion_tipoexpediente = (String) request
+			.getParameter("idInstitucion_TipoExpediente");
+	String tipoExp = (String) request.getParameter("idTipoExpediente");
+	String editable = (String) request.getParameter("editable");
+	String soloSeguimiento = (String) request
+			.getParameter("soloSeguimiento");
+	boolean bEditable = false;
+	if (soloSeguimiento.equals("true")) {
+		bEditable = false;
+	} else {
+		bEditable = editable.equals("1") ? true : false;
 	}
 	//boolean bEditable = editable.equals("1")? true : false;
-	String boxStyle = bEditable? "box" : "boxConsulta";
-	String boxNumero = bEditable? "boxNumber" : "boxConsultaNumber"; 
+	String boxStyle = bEditable ? "box" : "boxConsulta";
+	String boxNumero = bEditable ? "boxNumber" : "boxConsultaNumber";
 	// Estilo de los combos:
-	
-	String estiloCombo=null, readOnlyCombo=null;
 
-	if (!bEditable){
+	String estiloCombo = null, readOnlyCombo = null;
+
+	if (!bEditable) {
 		estiloCombo = "boxConsulta";
 		readOnlyCombo = "true";
 	} else {
 		estiloCombo = "boxCombo";
 		readOnlyCombo = "false";
 	}
-	
-	String dato[] = {idinstitucion_tipoexpediente,tipoExp};
-	
+
+	String dato[] = { idinstitucion_tipoexpediente, tipoExp };
+
 	// para saber hacia donde volver
-	String busquedaVolver = (String) request.getSession().getAttribute("volverAuditoriaExpedientes");
-	
-	String seleccionarPersona = UtilidadesString.getMensajeIdioma(userBean, "general.boton.seleccionar");
-	String nuevoNoCol = UtilidadesString.getMensajeIdioma(userBean, "general.new");
-	String plazo = UtilidadesString.getMensajeIdioma(userBean, "general.boton.consultarplazo");
-	
+	String busquedaVolver = (String) request.getSession().getAttribute(
+			"volverAuditoriaExpedientes");
+
+	String seleccionarPersona = UtilidadesString.getMensajeIdioma(
+			userBean, "general.boton.seleccionar");
+	String nuevoNoCol = UtilidadesString.getMensajeIdioma(userBean,
+			"general.new");
+	String plazo = UtilidadesString.getMensajeIdioma(userBean,
+			"general.boton.consultarplazo");
+
 	ArrayList tipoIVASel = new ArrayList();
 	ArrayList procedimientoSel = new ArrayList();
-	String[] paramJuz = {userBean.getLocation()};
-	
-	String idTipoIVA = (String)request.getAttribute("idTipoIVA");
-	String idProcedimiento=(String)request.getAttribute("idProcedimiento");
-	String idInstitucionProcedimiento=(String)request.getAttribute("idInstitucionProcedimiento");
+	String[] paramJuz = { userBean.getLocation() };
+
+	String idTipoIVA = (String) request.getAttribute("idTipoIVA");
+	String idProcedimiento = (String) request
+			.getAttribute("idProcedimiento");
+	String idInstitucionProcedimiento = (String) request
+			.getAttribute("idInstitucionProcedimiento");
 
 	String[] paramPro = new String[2];
-	paramPro[0]=idJuzgado;
-	paramPro[1]=idInstitucionJuzgado;
+	paramPro[0] = idJuzgado;
+	paramPro[1] = idInstitucionJuzgado;
 
-	String[] paramPretension = {userBean.getLocation(), "-1"};
-	if(form.getIdPretension()!=null && (!form.getIdPretension().equals("")))
-		paramPretension[1]= form.getIdPretension();
+	String[] paramPretension = { userBean.getLocation(), "-1" };
+	if (form.getIdPretension() != null
+			&& (!form.getIdPretension().equals("")))
+		paramPretension[1] = form.getIdPretension();
 
-
-	if (idProcedimiento!=null && idInstitucionProcedimiento!=null)
-	{
-		procedimientoSel.add(0,idProcedimiento+","+idInstitucionProcedimiento);
+	if (idProcedimiento != null && idInstitucionProcedimiento != null) {
+		procedimientoSel.add(0, idProcedimiento + ","
+				+ idInstitucionProcedimiento);
 	}
-	
-	if (idTipoIVA != null)
-	{
+
+	if (idTipoIVA != null) {
 		tipoIVASel.add(idTipoIVA);
 	}
-	String tituloDenunciado = (String)request.getAttribute("tituloDenunciado");
-	
-	String tituloDenunciante = (String)request.getAttribute("tituloDenunciante");
-	
-	String nombreExpDisciplinario = (String)request.getAttribute("tituloExpDisciplinario");
+	String tituloDenunciado = (String) request
+			.getAttribute("tituloDenunciado");
 
-	
-	
+	String tituloDenunciante = (String) request
+			.getAttribute("tituloDenunciante");
+
+	String nombreExpDisciplinario = (String) request
+			.getAttribute("tituloExpDisciplinario");
 %>	
 
 <html>
@@ -211,12 +232,18 @@
 	
 	<!-- Validaciones en Cliente -->
 	<html:javascript formName="ExpDatosGeneralesForm" staticJavascript="false" />  
-<% if (bEstado) { %>
+<%
+  	if (bEstado) {
+  %>
 	<script src="<%=app%>/html/js/validacionStrutsWithHidden.js" type="text/javascript"></script>
 	
-<% } else { %>
+<%
+		} else {
+	%>
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-<% } %>
+<%
+	}
+%>
 	
 	<!-- Calendario -->
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
@@ -236,28 +263,28 @@
 		<!-- Asociada al boton Volver -->
 		function accionVolver() 
 		{
-			<% if (busquedaVolver== null) { %>
+			<%if (busquedaVolver == null) {%>
 				document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true&buscar=true";
 				document.forms[1].modo.value="abrir";
-			<% } else if (busquedaVolver== null || busquedaVolver.equals("AB")) { %>
+			<%} else if (busquedaVolver == null || busquedaVolver.equals("AB")) {%>
 				document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true";
 				document.forms[1].modo.value="buscarPor";
-				document.forms[1].avanzada.value="<%=ClsConstants.DB_TRUE %>";
-			<% } else if(busquedaVolver.equals("NB")) { %>
+				document.forms[1].avanzada.value="<%=ClsConstants.DB_TRUE%>";
+			<%} else if (busquedaVolver.equals("NB")) {%>
 				document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true&buscar=true";
 				document.forms[1].modo.value="abrir";
-			<% } else if(busquedaVolver.equals("AV")) { %>
+			<%} else if (busquedaVolver.equals("AV")) {%>
 				document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true";
 				document.forms[1].modo.value="buscarPor";
-				document.forms[1].avanzada.value="<%=ClsConstants.DB_TRUE %>";
-			<% } else if(busquedaVolver.equals("N")) { %>
+				document.forms[1].avanzada.value="<%=ClsConstants.DB_TRUE%>";
+			<%} else if (busquedaVolver.equals("N")) {%>
 				document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true";
 				document.forms[1].modo.value="abrir";	
-			<% } else if(busquedaVolver.equals("A")) { %>
+			<%} else if (busquedaVolver.equals("A")) {%>
 				document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true";
 				document.forms[1].modo.value="abrirAvanzada";	 
-				document.forms[1].avanzada.value="<%=ClsConstants.DB_TRUE %>";
-			<% }  else if (busquedaVolver.equals("Al")){%>
+				document.forms[1].avanzada.value="<%=ClsConstants.DB_TRUE%>";
+			<%} else if (busquedaVolver.equals("Al")) {%>
 				document.forms[1].action = "<%=app%>/EXP_Consultas.do?noReset=true&buscar=true";
 				document.forms[1].modo.value="abrir";
 			<%}%>
@@ -323,6 +350,9 @@
 						if (document.forms[0].importeTotalFinal){
 							  document.forms[0].importeTotalFinal.value = document.forms[0].importeTotalFinal.value.replace(/,/,".");
 						}
+						if (document.forms[0].solicitanteEJG){
+							  document.forms[0].solicitanteEJG.value = document.forms[0].solicitanteEJG.value.replace(/,/,".");
+						}
 						if (document.forms[0].importeIVAFinal){
 							  document.forms[0].importeIVAFinal.value = document.forms[0].importeIVAFinal.value.replace(/,/,".");
 						}
@@ -337,9 +367,9 @@
 							  document.forms[0].derechosColegiales.value = document.forms[0].derechosColegiales.value.replace(/,/,".");
 						}
 										
-						<%if (accion.equals("nuevo")){%>
+						<%if (accion.equals("nuevo")) {%>
 							document.forms[0].modo.value="insertar";
-						<%}else{%>
+						<%} else {%>
 							document.forms[0].modo.value="modificar";
 						<%}%>
 
@@ -371,18 +401,19 @@
 		
 		function recargarComboJuzgado()
 		{
-			<% if (bEditable){%> 
-				<%if (bAsuntoJud){%>
-				document.getElementById("juzgado").value='<%=idJuzgado+","+idInstitucionJuzgado %>';
+			<%if (bEditable) {%> 
+				<%if (bAsuntoJud) {%>
+				document.getElementById("juzgado").value='<%=idJuzgado + "," + idInstitucionJuzgado%>';
 				<%}%>
 			<%}%>
 		}		
 		
 		function recargarCombos()
 		{
-			<%if (bEditable){%> 
-				<%if (bAsuntoJud){%>
-					document.getElementById("idMateria").value='<%=userBean.getLocation()+","+idArea+","+idMateria+","+datosJuzgado[3] %>';
+			<%if (bEditable) {%> 
+				<%if (bAsuntoJud) {%>
+					document.getElementById("idMateria").value='<%=userBean.getLocation() + "," + idArea + ","
+							+ idMateria + "," + datosJuzgado[3]%>';
 					document.getElementById("idMateria").onchange();
 					window.setTimeout('recargarComboJuzgado()',1000,"JavaScript");
 					
@@ -399,11 +430,11 @@
 		
 		function refrescarLocal()
 		{	
-			<%if (accion.equals("nuevo")){%>
+			<%if (accion.equals("nuevo")) {%>
 				document.forms[0].modo.value="abrirAvanzada";
 				document.forms[0].target="mainWorkArea";	
 				document.forms[0].submit();
-			<%}else{%>
+			<%} else {%>
 				document.location.reload();
 			<%}%>
 		
@@ -703,168 +734,259 @@
 
 	<siga:ConjCampos leyenda="expedientes.auditoria.literal.datosgenerales">
 
-	<table class="tablaCampos" align="left" border="0">
+							<table class="tablaCampos" align="left" border="0">
 
-	<!-- FILA -->
-	
-		<tr>				
-	
-			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.nexpediente"/>
-			</td>
-			
-			<td class="labelTextValue">
-			<!-- Se comenta por que no se quiere mostrar el número de Expediente  al usuario -->
-				
-			<!-- En caso de ser nuevo no se muestran ni el numExpediente ni el anioExpediente -->	
-				<bean:write name="ExpDatosGeneralesForm" property="numExpediente"/>				
-				/
-				<bean:write name="ExpDatosGeneralesForm" property="anioExpediente"/>
-						
-				<html:hidden name="ExpDatosGeneralesForm" property = "numExpediente"/>
-				<html:hidden name="ExpDatosGeneralesForm" property = "anioExpediente"/>
-					
-			</td>
-<% if (bNumExpDisc){%>								
-			<td class="labelText">
-				<siga:Idioma key="<%=nombreExpDisciplinario%>"/>
-			</td>		
-			<%if (!bEditable){%>
-			<td class="labelTextValue" styleClass="box" style= "text-align:right" >
-				<bean:write name="ExpDatosGeneralesForm" property="anioExpDisciplinario"></bean:write>
-				/
-			<%	if(codigoEjg!=null && !codigoEjg.trim().equals("") ){%>
-				<bean:write name="ExpDatosGeneralesForm" property="numExpDisciplinarioCalc"></bean:write>			
-			<%}else{%>
-				<bean:write name="ExpDatosGeneralesForm" property="numExpDisciplinario"></bean:write>
-			<%}%>
-			<%	if(codigoEjg!=null && !codigoEjg.trim().equals("") ){%>
-						<td>
-						<img id="iconoboton_consultar1" src="/SIGA/html/imagenes/bconsultar_off.gif" style="cursor:hand;" alt="Consultar" name="consultar_1" border="0" onClick="consultarEjg();">
-					</td>
-			<%}%>
-			</td>
-			<%}else{%>	
-			<%if (!tieneEjgRelacionado){%>
-			<td class="labelTextValue">			
-				<html:text name="ExpDatosGeneralesForm" property="anioExpDisciplinario" size="4" maxlength="4" styleClass="box" style="text-align:right;"></html:text>
-				/
-				<html:text name="ExpDatosGeneralesForm" property="numExpDisciplinario" size="6" maxlength="6" styleClass="box" style="text-align:right;"></html:text>
-				
-			</td>
-			<%}else{%>
-				<td>
-					<table>
-					<tr>
-					<td class="labelTextValue">			
-					<html:text name="ExpDatosGeneralesForm" property="anioExpDisciplinario" size="4" maxlength="4" style="text-align:right;" styleClass="boxConsulta"></html:text>
-					/
-					<html:text name="ExpDatosGeneralesForm" property="numExpDisciplinarioCalc" size="6" maxlength="6"   styleClass="boxConsulta"  ></html:text>
-					<html:hidden name="ExpDatosGeneralesForm" property="numExpDisciplinario"/>
-					</td>
-					<%	if(codigoEjg!=null && !codigoEjg.trim().equals("") ){%>
-						<td>
-						<img id="iconoboton_consultar1" src="/SIGA/html/imagenes/bconsultar_off.gif" style="cursor:hand;" alt="Consultar" name="consultar_1" border="0" onClick="consultarEjg();">
-						<img id="iconoboton_editar1" src="/SIGA/html/imagenes/beditar_off.gif" style="cursor:hand;" alt="Editar" name="editar_1" border="0" onClick="relacionarConEJG();">
-					</td>
-					<%}%>
-					</tr>
-					</table>
-				</td>
-			
-			<%}	}%>
-<%}else{%>						
-			<html:hidden name="ExpDatosGeneralesForm" property="numExpDisciplinario"/>
-			<html:hidden name="ExpDatosGeneralesForm" property="anioExpDisciplinario"/>			
+								<!-- FILA -->
+								
 
-<%}%>		
-			
-			<td class="labelText">
-				<siga:Idioma key="expedientes.gestionarExpedientes.fechaApertura"/>
-			</td>
-			<td>
-				<%if (accion.equals("nuevo")){%>
-					<html:text name="ExpDatosGeneralesForm" property="fecha" styleClass="box" readonly="true" size="10" value="<%=fechaApertura%>"></html:text>
-					<a href='javascript://'onClick="return showCalendarGeneral(fecha);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
-				<%}else{%>
-					<html:text name="ExpDatosGeneralesForm" property="fecha" styleClass="boxConsulta" readonly="true"></html:text>
-				<%}%>
-			</td>
+								<tr>
+									<%
+										if (!accion.equals("nuevo")) {
+									%>
+									<td class="labelText"><siga:Idioma
+											key="expedientes.auditoria.literal.nexpediente" /></td>
 
-		</tr>						
-	
-		<tr>
-			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.tipo"/>
-			</td>
-			<td>				
-				<html:text name="ExpDatosGeneralesForm" property="tipoExpediente" size="25" styleClass="boxConsulta" readonly="true"></html:text>
-			</td>
-<% if (bEstado){%>
-			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.clasificacion"/>&nbsp(*)
-			</td>	
-			<td colspan="3">	
-				<%if (bEditable){%>		
-				<siga:ComboBD nombre = "clasificacion" tipo="cmbClasificacion" clase="boxCombo" obligatorio="false" ElementoSel="<%=vClasif%>" parametro="<%=dato%>"/>
-				<%}else{%>
-				<html:text name="ExpDatosGeneralesForm" property="clasificacionSel"  styleClass="boxConsulta" readonly="true"></html:text>
-				<%}%>
-			</td>
-<% } else { %>
-			<html:hidden name="ExpDatosGeneralesForm" property="clasificacion"  ></html:hidden>
+									<td class="labelTextValue">
+										<!-- Se comenta por que no se quiere mostrar el número de Expediente  al usuario -->
 
-<% } %>
-			
-			
-<% if (bInstitucion){%>
-			<td class="labelText"  style="display:none">
-				<siga:Idioma key="expedientes.auditoria.literal.institucion"/>
-			</td>
-			<td colspan="5" align="left" class="labelTextValue" style="display:none">
-				<!--<html:text name="ExpDatosGeneralesForm" property="institucion" styleClass="boxConsulta" readonly="true"></html:text>-->
-				<bean:write name="ExpDatosGeneralesForm" property="institucion"/>
-			</td>
-<%}else{%>
-			<td colspan="6" style="display:none"></td>
-<%}%>	
-		</tr>
-		<tr>
-		<td class="labelText">
-					<siga:Idioma key="expedientes.auditoria.literal.fechaCaducidad"/>
-			</td>
-			<td  valign="top">
-					
-					<%if (bEditable){%>	
-						<siga:Fecha nombreCampo="fechaCaducidad" valorInicial="<%=form.getFechaCaducidad()%>"/>
-						<a href='javascript://'onClick="return showCalendarGeneral(fechaCaducidad);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
-					<% }else{ %>
-						<html:text name="ExpDatosGeneralesForm" property="fechaCaducidad" size="10" maxlength="10" styleClass="<%=boxStyle%>" readonly="true"></html:text>							
-					<%}%>
-				</td>
-				<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.asunto"/>&nbsp(*)
-			</td>
-			<td colspan="3">
-				<html:text name="ExpDatosGeneralesForm" property="asunto" size="78" maxlength="100" styleClass="<%=boxStyle%>" readonly="<%=!bEditable%>"></html:text>
-			</td>
-			</tr>
+										<!-- En caso de ser nuevo no se muestran ni el numExpediente ni el anioExpediente -->
 
-			<tr>
-				<td class="labelText">
-					<siga:Idioma key="expedientes.auditoria.literal.observaciones"/>
-				</td>				
-				<td colspan="5">
-					<html:textarea cols="60" rows="4" property="observaciones" style="width: 815px" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)"  styleclass="<%=boxStyle%>" ></html:textarea> 
-				</td>	
-			</tr>
 
-	</table>
+										<bean:write name="ExpDatosGeneralesForm"
+											property="anioExpediente" />&nbsp;/&nbsp;<bean:write
+											name="ExpDatosGeneralesForm" property="numExpediente" /> <html:hidden
+											name="ExpDatosGeneralesForm" property="numExpediente" /> <html:hidden
+											name="ExpDatosGeneralesForm" property="anioExpediente" /></td>
+									<%
+										} else {
+									%>
+									<html:hidden name="ExpDatosGeneralesForm"
+										property="numExpediente" />
+									<html:hidden name="ExpDatosGeneralesForm"
+										property="anioExpediente" />
 
-	</siga:ConjCampos>
+									<%
+										}
+												if (bNumExpDisc && !accion.equals("nuevo")) {
+									%>
+									<td class="labelText"><siga:Idioma
+											key="<%=nombreExpDisciplinario%>" /></td>
+									<%
+										if (!bEditable) {
+									%>
+									<td class="labelTextValue" styleClass="box"
+										style="text-align: right"><bean:write
+											name="ExpDatosGeneralesForm" property="anioExpDisciplinario"></bean:write>&nbsp;/&nbsp;
+										<%
+											if (codigoEjg != null
+																	&& !codigoEjg.trim().equals("")) {
+										%> <bean:write
+											name="ExpDatosGeneralesForm"
+											property="numExpDisciplinarioCalc"></bean:write> <%
+ 	} else {
+ %> <bean:write
+											name="ExpDatosGeneralesForm" property="numExpDisciplinario"></bean:write>
+										<%
+											}
+										%> <%
+ 	if (codigoEjg != null
+ 							&& !codigoEjg.trim().equals("")) {
+ %>
+									
+									<img id="iconoboton_consultar1"
+										src="/SIGA/html/imagenes/bconsultar_off.gif"
+										style="cursor: hand;" alt="Consultar" name="consultar_1"
+										border="0" onClick="consultarEjg();">
+									<%
+										}
+									%>
+									</td>
+									<%
+										} else {
+									%>
+									<%
+										if (!tieneEjgRelacionado) {
+									%>
+									<td class="labelTextValue"><html:text
+											name="ExpDatosGeneralesForm" property="anioExpDisciplinario"
+											maxlength="4" styleClass="box"
+											style="text-align:right;width:40px;"></html:text>&nbsp;/&nbsp;<html:text
+											name="ExpDatosGeneralesForm" property="numExpDisciplinario"
+											maxlength="6" styleClass="box"
+											style="text-align:right;width:60px;"></html:text></td>
+									<%
+										} else {
+									%>
+									<td>
+										<table>
+											<tr>
+												<td class="labelTextValue"><html:text
+														name="ExpDatosGeneralesForm"
+														property="anioExpDisciplinario" maxlength="4"
+														style="text-align:right;width:40px;"
+														styleClass="boxConsulta"></html:text>&nbsp;/&nbsp;<html:text
+														name="ExpDatosGeneralesForm"
+														property="numExpDisciplinarioCalc" style="width:60px;"
+														maxlength="6" styleClass="boxConsulta"></html:text> <html:hidden
+														name="ExpDatosGeneralesForm"
+														property="numExpDisciplinario" /></td>
+												<%
+													if (codigoEjg != null
+																				&& !codigoEjg.trim().equals("")) {
+												%>
+												<td><img id="iconoboton_consultar1"
+													src="/SIGA/html/imagenes/bconsultar_off.gif"
+													style="cursor: hand;" alt="Consultar" name="consultar_1"
+													border="0" onClick="consultarEjg();"> <img
+													id="iconoboton_editar1"
+													src="/SIGA/html/imagenes/beditar_off.gif"
+													style="cursor: hand;" alt="Editar" name="editar_1"
+													border="0" onClick="relacionarConEJG();"></td>
+												<%
+													}
+												%>
+											</tr>
+										</table></td>
+
+									<%
+										}
+													}
+									%>
+									<%
+										} else {
+									%>
+									<html:hidden name="ExpDatosGeneralesForm"
+										property="numExpDisciplinario" />
+									<html:hidden name="ExpDatosGeneralesForm"
+										property="anioExpDisciplinario" />
+
+									<%
+										}
+									%>
+
+									<td class="labelText"><siga:Idioma
+											key="expedientes.gestionarExpedientes.fechaApertura" /></td>
+									<td>
+										<%
+											if (accion.equals("nuevo")) {
+										%> <html:text
+											name="ExpDatosGeneralesForm" property="fecha"
+											styleClass="box" readonly="true" size="10"
+											value="<%=fechaApertura%>"></html:text> <a
+										href='javascript://'
+										onClick="return showCalendarGeneral(fecha);"><img
+											src="<%=app%>/html/imagenes/calendar.gif" border="0">
+									</a> <%
+ 	} else {
+ %> <html:text name="ExpDatosGeneralesForm"
+											property="fecha" styleClass="boxConsulta" readonly="true"></html:text>
+										<%
+											}
+										%>
+									</td>
+
+								</tr>
+
+								<tr>
+									<td class="labelText"><siga:Idioma
+											key="expedientes.auditoria.literal.tipo" /></td>
+									<td colspan="2"><html:text name="ExpDatosGeneralesForm"
+											property="tipoExpediente" style="width:200" styleClass="boxConsulta"
+											readonly="true"></html:text></td>
+									<%
+										if (bEstado) {
+									%>
+									<td class="labelText"><siga:Idioma
+											key="expedientes.auditoria.literal.clasificacion" />&nbsp;(*)
+									</td>
+									<td colspan="2">
+										<%
+											if (bEditable) {
+										%> <siga:ComboBD nombre="clasificacion"
+											tipo="cmbClasificacion"  clase="boxCombo" obligatorio="false"
+											ElementoSel="<%=vClasif%>" parametro="<%=dato%>" /> <%
+ 	} else {
+ %>
+										<html:text name="ExpDatosGeneralesForm"
+											property="clasificacionSel" styleClass="boxConsulta"
+											readonly="true"></html:text> <%
+ 	}
+ %>
+									</td>
+									<%
+										} else {
+									%>
+									<td colspan="3"><html:hidden name="ExpDatosGeneralesForm"
+											property="clasificacion"></html:hidden></td>
+
+									<%
+										}
+									%>
+
+								</tr>
+								<tr>
+									<%
+										if (bInstitucion) {
+									%>
+									<td class="labelText" style="display: none"><siga:Idioma
+											key="expedientes.auditoria.literal.institucion" /></td>
+									<td colspan="5" align="left" class="labelTextValue"
+										style="display: none">
+										<!--<html:text name="ExpDatosGeneralesForm" property="institucion" styleClass="boxConsulta" readonly="true"></html:text>-->
+										<bean:write name="ExpDatosGeneralesForm"
+											property="institucion" /></td>
+									<%
+										} else {
+									%>
+									<td colspan="6" style="display: none"></td>
+									<%
+										}
+									%>
+								</tr>
+								<tr>
+									<td class="labelText"><siga:Idioma
+											key="expedientes.auditoria.literal.fechaCaducidad" /></td>
+									<td valign="top">
+										<%
+											if (bEditable) {
+										%> <siga:Fecha nombreCampo="fechaCaducidad"
+											valorInicial="<%=form.getFechaCaducidad()%>" /> <a
+										href='javascript://'
+										onClick="return showCalendarGeneral(fechaCaducidad);"><img
+											src="<%=app%>/html/imagenes/calendar.gif" border="0">
+									</a> <%
+ 	} else {
+ %> <html:text name="ExpDatosGeneralesForm"
+											property="fechaCaducidad" size="10" maxlength="10"
+											styleClass="<%=boxStyle%>" readonly="true"></html:text> <%
+ 	}
+ %>
+									</td>
+									<td class="labelText"><siga:Idioma
+											key="expedientes.auditoria.literal.asunto" />&nbsp(*)</td>
+									<td colspan="3"><html:text name="ExpDatosGeneralesForm"
+											property="asunto" size="78" maxlength="100"
+											styleClass="<%=boxStyle%>" readonly="<%=!bEditable%>"></html:text>
+									</td>
+								</tr>
+
+								<tr>
+									<td class="labelText"><siga:Idioma
+											key="expedientes.auditoria.literal.observaciones" /></td>
+									<td colspan="5"><html:textarea cols="60" rows="4"
+											property="observaciones" style="width: 815px"
+											onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)"
+											styleclass="<%=boxStyle%>"></html:textarea></td>
+								</tr>
+
+							</table>
+
+						</siga:ConjCampos>
 	
 	<!-- Esto antes estaba abajo del todo (INICIO)-->
-<% if (bEstado){%>
+<%
+	if (bEstado) {
+%>
 	<siga:ConjCampos leyenda="expedientes.auditoria.literal.estado">
 	<table class="tablaCampos" align="center">
 	<!-- FILA -->
@@ -873,15 +995,20 @@
 				<siga:Idioma key="expedientes.auditoria.literal.fase"/>&nbsp(*)
 			</td>				
 			<td>
-				<% if (bEditable) {
-					String comboHijo = "";
-					if (bEstado)
-						comboHijo = "Hijo:comboEstados";
+				<%
+					if (bEditable) {
+									String comboHijo = "";
+									if (bEstado)
+										comboHijo = "Hijo:comboEstados";
 				%>
 				<siga:ComboBD nombre = "comboFases" tipo="cmbFases"  clase="boxCombo" obligatorio="true" ElementoSel="<%=vFase%>" parametro="<%=dato%>" accion="<%=comboHijo%>" pestana="t"/>
-				<% } else { %>
+				<%
+					} else {
+				%>
 				<html:text name="ExpDatosGeneralesForm" property="faseSel"  styleClass="boxConsulta" readonly="true"></html:text>
-				<% } %>
+				<%
+					}
+				%>
 			</td>
 
 			<td class="labelText">
@@ -889,56 +1016,86 @@
 			</td>
 			
 			<td colspan="2">
-				<%if (bEditable){%>		
+				<%
+					if (bEditable) {
+				%>		
 				<siga:ComboBD  nombre = "comboEstados" tipo="cmbEstados" ancho="400" clase="boxCombo" obligatorio="true" accion="parent.limpiarFechas();" ElementoSel="<%=vEstado%>" hijo="t" pestana="t"/>						
-				<%}else{%>
+				<%
+											} else {
+										%>
 				<html:text name="ExpDatosGeneralesForm" property="estadoSel"  styleClass="boxConsulta" readonly="true"></html:text>
-				<%}%>
+				<%
+					}
+				%>
  			</td>			
 			
 			<td>
-				<% if (bEditable){%>
+				<%
+					if (bEditable) {
+				%>
 					<siga:Fecha nombreCampo="fechaInicial" valorInicial="<%=form.getFechaInicial()%>"/>
 					<a href='javascript://'onClick="return showCalendarGeneral(fechaInicial);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
-				<%}else{%>
+				<%
+					} else {
+				%>
 					<html:text name="ExpDatosGeneralesForm" property="fechaInicial" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true">
 					</html:text>
-				<%}%>
+				<%
+					}
+				%>
 			</td>			
 		</tr>
 
 		<tr>					
 				
-		<% if (bEditable){%>
+		<%
+												if (bEditable) {
+											%>
 			<td class="labelText" colspan="2">
 				<input type="button" class="button" alt="<%=plazo%>" id="searchDeadline"  name = "idButton" onclick="return getPlazo();" value="<%=plazo%>"/>&nbsp;
 			</td>	
-		<%}else{%>
+		<%
+				} else {
+			%>
 			<td colspan="2">&nbsp;</td>
-		<%}%>	
+		<%
+			}
+		%>	
 			<td class="labelText">
 				<siga:Idioma key="expedientes.auditoria.literal.fechafinal"/>
 			</td>
 			<td>
-				<% if (bEditable){%>
+				<%
+					if (bEditable) {
+				%>
 					<siga:Fecha nombreCampo="fechaFinal" valorInicial="<%=form.getFechaFinal()%>"/>
 					<a href='javascript://'onClick="return showCalendarGeneral(fechaFinal);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
-				<%}else {%>	
+				<%
+					} else {
+				%>	
 					<html:text name="ExpDatosGeneralesForm" property="fechaFinal" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true">
 					</html:text>
-				<%}%>
+				<%
+					}
+				%>
 			</td>		
 			
 			<td class="labelText" style="text-align: right; width: 180"'>
 				<siga:Idioma key="expedientes.auditoria.literal.fechaprorroga"/>
 			</td>
 			<td>
-				<% if (bEditable){%>
+				<%
+					if (bEditable) {
+				%>
 					<siga:Fecha nombreCampo="fechaProrroga" valorInicial="<%=form.getFechaProrroga()%>"/>
 					<a href="javascript://" onClick="return showCalendarGeneral(fechaProrroga);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
-				<%}else{%>
+				<%
+					} else {
+				%>
 					<html:text name="ExpDatosGeneralesForm" property="fechaProrroga" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true"></html:text>
-				<%} %>
+				<%
+					}
+				%>
 			</td>	
 			<td>&nbsp;</td> <!-- Vacio para cuadrar el interfaz -->		
 		</tr>
@@ -946,7 +1103,9 @@
 	</table>
 		
 	</siga:ConjCampos>
-<%}else{%>	
+<%
+	} else {
+%>	
 	<html:hidden name="ExpDatosGeneralesForm" property="comboEstados"/>
 	<html:hidden name="ExpDatosGeneralesForm" property="comboFases"/>
 	<html:hidden name="ExpDatosGeneralesForm" property="estadoSel"/>
@@ -954,10 +1113,15 @@
 	<html:hidden name="ExpDatosGeneralesForm" property="fechaInicial"/>
 	<html:hidden name="ExpDatosGeneralesForm" property="fechaFinal"/>
 	<html:hidden name="ExpDatosGeneralesForm" property="fechaProrroga"/>
-<%}%>
+<%
+	}
+%>
 <!-- Esto antes estaba abajo del todo (FIN)-->
 	
-<% if (mostrarMinuta != null && mostrarMinuta.equalsIgnoreCase("S")) {%>
+<%
+		if (mostrarMinuta != null
+					&& mostrarMinuta.equalsIgnoreCase("S")) {
+	%>
 
 	<siga:ConjCampos leyenda="expedientes.auditoria.literal.minuta">
 		<table class="tablaCampos" border="0">
@@ -993,9 +1157,14 @@
 		</table>
 	</siga:ConjCampos>
 	
-<% } %>
+<%
+		}
+	%>
 
-<% if (mostrarMinutaFinal != null && mostrarMinutaFinal.equalsIgnoreCase("S")) {%>
+<%
+	if (mostrarMinutaFinal != null
+				&& mostrarMinutaFinal.equalsIgnoreCase("S")) {
+%>
 
 	<siga:ConjCampos leyenda="expedientes.auditoria.literal.minutafinal">
 		<table class="tablaCampos" border="0">
@@ -1029,7 +1198,10 @@
 				</td>
 			</tr>
 			</table>
-			<% if (derechosColegiales != null && derechosColegiales.equalsIgnoreCase("S")) {%>			
+			<%
+				if (derechosColegiales != null
+									&& derechosColegiales.equalsIgnoreCase("S")) {
+			%>			
 				<table>
 					<td class="labelText" width="150">
 						<siga:Idioma key="expedientes.auditoria.literal.derechoscolegiales"/>
@@ -1038,11 +1210,15 @@
 						<html:text name="ExpDatosGeneralesForm" property="derechosColegiales" size="10" maxlength="10" styleClass="<%=boxNumero%>" readonly="<%=!bEditable%>" onkeypress="filterCharsNumberEs(this,false,true);" onkeyup="filterCharsUp(this);" onblur="formateoDerechos();"></html:text> &euro;
 					</td>
 				</table>
-			<% } %>
+			<%
+				}
+			%>
 		
 	</siga:ConjCampos>
 	
-<% } %>
+<%
+		}
+	%>
 
 	<siga:ConjCampos leyenda="<%=tituloDenunciado%>">
 
@@ -1090,23 +1266,60 @@
 			<td>
 				<html:text name="ExpDatosGeneralesForm" property="numColegiado" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
-<% if (bEditable){%>			
+<%
+	if (bEditable) {
+%>			
 			<td colspan="2" align="right">
 				
 				<input type="button" class="button" alt="<%=seleccionarPersona%>" id="newPerson" name = "idButton"  onclick="return seleccionarPersona();" value="<%=seleccionarPersona%>"/>
 				&nbsp;
 				<input type="button" class="button" alt="<%=nuevoNoCol%>" id="newPerson" name = "idButton"  onclick="return altaPersona();" value="<%=nuevoNoCol%>"/>
 			</td>	
-<%}else{%>
+<%
+		} else {
+	%>
 			<td colspan="2"></td>
-<%}%>			
+<%
+	}
+%>			
 		</tr>
 	
 	</table>
 		
 	</siga:ConjCampos>
 	
-<% if (mostrarDenunciante != null && mostrarDenunciante.equalsIgnoreCase("S")) {%>
+	<%
+	if (!accion.equals("nuevo")&& mostrarSolicitanteEJG != null
+				&& mostrarSolicitanteEJG.equalsIgnoreCase("S")) {
+%>
+
+<siga:ConjCampos leyenda="expedientes.auditoria.literal.solicitanteEJG">
+<table class="tablaCampos" align="center">
+	<tr>					
+		<td width="15%">
+		</td>
+		<td width="85%"></td>
+	</tr>
+	<tr>					
+		<td class="labelText">
+			<siga:Idioma key="expedientes.auditoria.literal.solicitanteEJG"/>
+		</td>
+		<td class="labelTextValor"><html:text
+			 name="ExpDatosGeneralesForm" property="solicitanteEjgDescripcion" styleClass="boxConsulta" style="width:500" readonly="true"/>	
+		</td>
+		
+						
+	</tr>
+</table>
+
+</siga:ConjCampos>
+
+<%} %>
+	
+<%
+		if (mostrarDenunciante != null
+					&& mostrarDenunciante.equalsIgnoreCase("S")) {
+	%>
 
 	<siga:ConjCampos leyenda="<%=tituloDenunciante%>">
 
@@ -1145,9 +1358,13 @@
 		</tr>
 	</table>
 	</siga:ConjCampos>
-<% } %>
+<%
+	}
+%>
 
-<%if (bAsuntoJud){%>
+<%
+	if (bAsuntoJud) {
+%>
 	<siga:ConjCampos leyenda="expedientes.auditoria.literal.asuntojudicial">
 
 	<table class="tablaCampos" align="center">
@@ -1158,23 +1375,35 @@
 				<siga:Idioma key="expedientes.auditoria.literal.materia"/>
 			</td>				
 			<td>
-				<%if(bEditable){%>
+				<%
+					if (bEditable) {
+				%>
 				 	  <siga:ComboBD nombre="idMateria" tipo="materiaareaExp" ancho="250" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosMateria%>" elementoSel="<%=materiaSel%>" accion="Hijo:juzgado" readonly="false"/>           	   
-				<%}else{%>
+				<%
+           	   					} else {
+           	   				%>
 					  <siga:ComboBD nombre="idMateria" tipo="materiaareaExp" ancho="250" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosMateria%>" elementoSel="<%=materiaSel%>"  accion="Hijo:juzgado" readonly="true"/>           	   
-				<%}%>							
+				<%
+           	   					}
+           	   				%>							
 				
 			</td>
 			<td class="labelText">
 				<siga:Idioma key="expedientes.auditoria.literal.juzgado"/>
 			</td>				
 			<td COLSPAN="3">
-				<%if(bEditable){%>
+				<%
+					if (bEditable) {
+				%>
 				 	  <input type="text" name="codigoExtJuzgado" class="box" size="3"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />
 				 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateriaExp" ancho="330" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" elementoSel="<%=juzgadoSel%>" hijo="t" accion="Hijo:procedimiento" readonly="false"/>           	   
-				<%}else{%>
+				<%
+           	   					} else {
+           	   				%>
 						<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateriaExp" ancho="330" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" elementoSel="<%=juzgadoSel%>" hijo="t" accion="Hijo:procedimiento" readonly="true"/>           	   
-				<%}%>							
+				<%
+           	   					}
+           	   				%>							
 				
 			</td>
 		</tr>					
@@ -1216,12 +1445,16 @@
 	</table>
 		
 	</siga:ConjCampos>
-<%}else{%>	
+<%
+	} else {
+%>	
 	<html:hidden name="ExpDatosGeneralesForm" property="idMateria"/>
 	<html:hidden name="ExpDatosGeneralesForm" property="juzgado"/>
 	<html:hidden name="ExpDatosGeneralesForm" property="procedimiento"/>
 	<html:hidden name="ExpDatosGeneralesForm" property="numAsunto"/>
-<%}%>
+<%
+	}
+%>
 	
 
 	
@@ -1235,17 +1468,30 @@
 	<!-- FIN: CAMPOS DE BUSQUEDA-->
 
 	<!-- G Guardar, Y GuardaryCerrar, R Reestablecer, C Cerrar, X Cancelar -->
-	<%if (accion.equals("nuevo")){%>
+	<%
+		if (accion.equals("nuevo")) {
+	%>
 		<siga:ConjBotonesAccion botones="V,G" clase="botonesDetalle" />
-	<% } else if (bEditable){%>
-	<% if (tieneEjgRelacionado){%>
+	<%
+		} else if (bEditable) {
+	%>
+	<%
+		if (tieneEjgRelacionado) {
+	%>
 		<siga:ConjBotonesAccion botones="V,R,G,COM,re" clase="botonesDetalle" />
 		
-	<%} else{%>
+	<%
+				} else {
+			%>
 		<siga:ConjBotonesAccion botones="V,R,G,COM" clase="botonesDetalle" />
-	<%} } else{%>
+	<%
+		}
+		} else {
+	%>
 		<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
-	<% } %>	
+	<%
+		}
+	%>	
 	
 </div>	
 

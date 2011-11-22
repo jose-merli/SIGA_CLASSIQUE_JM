@@ -69,16 +69,16 @@ public class ExpResolucionAction extends MasterAction {
 			ExpExpedienteBean bean = (ExpExpedienteBean)datosExp.elementAt(0);
 			
 			//Si estamos en edición, recuperamos el bean para poner en backup
-			HashMap datosExpediente=new HashMap();
-			
-			if (edit){			
-				if (ses.getAttribute("DATABACKUP")!=null){
-					 datosExpediente = (HashMap)ses.getAttribute("DATABACKUP");
-				}
-				datosExpediente.put("datosParticulares",bean);
-				ses.setAttribute("DATABACKUP",datosExpediente);
-			}		
-			
+//			HashMap datosExpediente=new HashMap();
+//			
+//			if (edit){			
+//				if (ses.getAttribute("DATABACKUP")!=null){
+//					 datosExpediente = (HashMap)ses.getAttribute("DATABACKUP");
+//				}
+//				datosExpediente.put("datosParticulares",bean);
+//				ses.setAttribute("DATABACKUP",datosExpediente);
+//			}		
+//			
 			//Recuperamos el nombre del denunciado        
 	        CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));
 	        Hashtable hashIdPers = new Hashtable();		
@@ -135,7 +135,7 @@ public class ExpResolucionAction extends MasterAction {
 	        			 .append(UtilidadesString.getMensajeIdioma(this.getLenguaje(request), "expedientes.auditoria.literal.tipo"))
 	        			 .append(": ").append((String)request.getParameter("nombreTipoExpediente")).append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
 	        			 .append(UtilidadesString.getMensajeIdioma(this.getLenguaje(request), "expedientes.auditoria.literal.nexpediente"))
-	        			 .append(": ").append((String)request.getParameter("numeroExpediente")).append(" / ").append((String)request.getParameter("anioExpediente"));
+	        			 .append(": ").append((String)request.getParameter("anioExpediente")).append(" / ").append((String)request.getParameter("numeroExpediente"));
 
 	        form.setTituloVentana(tituloVentana.toString());
 		} catch(Exception e){

@@ -39,6 +39,8 @@
 	String mostrarMinutaFinal = (String)request.getAttribute("mostarMinutaFinal");
 	String derechosColegiales = (String)request.getAttribute("derechosColegiales");
 	String mostrarDenunciante = (String)request.getAttribute("mostrarDenunciante");
+	String mostrarSolicitanteEJG = (String)request.getAttribute("mostrarSolicitanteEJG");
+	//String mostrarMinutaFinal = (String)request.getAttribute("mostarMinutaFinal");
 	
 	String totalMinuta = (String) request.getAttribute("totalMinuta");
 	if (totalMinuta == null) totalMinuta = new String("");
@@ -63,21 +65,7 @@
 	
 	//////
 	
-	ScsEJGAdm admEjg = new ScsEJGAdm(userBean);
-	if (tipoExpD != null && !tipoExpD.equals("")) {
-		Hashtable haste = admEjg
-				.getCalculoNumEjg(userBean.getLocation(),
-						anioExpD, numExpD, tipoExpD);
-		SUFIJO = (String) haste.get("SUFIJO");
-		CODIGO = (String) haste.get("CODIGO");
-		  if (SUFIJO!=null && !SUFIJO.equals("")){ 
-		    codigoEjg= CODIGO+"-"+SUFIJO; 
-		    
-		  }else{
-			  codigoEjg= CODIGO;  
-		  }
-	}
-
+	codigoEjg = form.getNumExpDisciplinarioCalc();
 
 		
 	////	
@@ -327,6 +315,7 @@
 						if (document.forms[0].importeIVAFinal){
 							  document.forms[0].importeIVAFinal.value = document.forms[0].importeIVAFinal.value.replace(/,/,".");
 						}
+						
 						if (document.forms[0].porcentajeIVA){							
 							 document.forms[0].porcentajeIVA.value = document.forms[0].porcentajeIVA.value.replace(/,/,".");	
 							if (document.forms[0].porcentajeIVAFinal){	
@@ -701,9 +690,7 @@
 <td class="labelTextValue">			
 				
 				
-				<bean:write name="ExpDatosGeneralesForm" property="anioExpDisciplinario"></bean:write>
-				/
-				<%=codigoEjg %>
+				<bean:write name="ExpDatosGeneralesForm"  property="anioExpDisciplinario"></bean:write>&nbsp;/&nbsp;<%=codigoEjg %>
 			</td>
 <%}else{%>						
 			<html:hidden name="ExpDatosGeneralesForm" property="numExpDisciplinario"/>
@@ -1038,6 +1025,35 @@
 		
 	</siga:ConjCampos>
 	
+	<%
+	if (mostrarSolicitanteEJG != null&& mostrarSolicitanteEJG.equalsIgnoreCase("S")) {
+%>
+
+<siga:ConjCampos leyenda="expedientes.auditoria.literal.solicitanteEJG">
+<table class="tablaCampos" align="center">
+	<tr>					
+		<td width="15%">
+		</td>
+		<td width="85%"></td>
+	</tr>
+	<tr>					
+		<td class="labelText">
+			<siga:Idioma key="expedientes.auditoria.literal.solicitanteEJG"/>
+		</td>
+		<td class="labelText">
+			<html:text
+			 name="ExpDatosGeneralesForm" property="solicitanteEjgDescripcion" styleClass="boxConsulta" style="width:500" readonly="true"/>	
+		</td>
+		
+						
+	</tr>
+</table>
+
+</siga:ConjCampos>
+
+<%} %>
+	
+
 <% if (mostrarDenunciante != null && mostrarDenunciante.equalsIgnoreCase("S")) {%>
 
 	<siga:ConjCampos leyenda="<%=tituloDenunciante%>">

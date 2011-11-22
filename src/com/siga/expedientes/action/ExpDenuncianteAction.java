@@ -122,7 +122,7 @@ public class ExpDenuncianteAction extends MasterAction {
 			  UtilidadesString.getMensajeIdioma(this.getLenguaje(request), "expedientes.auditoria.literal.tipo") +
 			  ": " + (String)request.getParameter("nombreTipoExpediente") + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
 			  UtilidadesString.getMensajeIdioma(this.getLenguaje(request), "expedientes.auditoria.literal.nexpediente") +
-			  ": " + (String)request.getParameter("numeroExpediente") + " / " + (String)request.getParameter("anioExpediente");
+			  ": " + (String)request.getParameter("anioExpediente") + " / " + (String)request.getParameter("numeroExpediente");
 
 	        form.setTituloVentana(tituloVentana);
 

@@ -125,7 +125,7 @@
 							<siga:Idioma key="expedientes.auditoria.literal.nexpediente" />
 						</td>
 						<td>
-							<html:text name="busquedaAlertaForm" property="numeroExpediente" size="6" maxlength="6" styleClass="box"></html:text> / <html:text name="busquedaAlertaForm" property="anioExpediente" size="4" maxlength="4" styleClass="box"></html:text>
+							<html:text name="busquedaAlertaForm" property="anioExpediente" style="width:40px;" maxlength="4" styleClass="box"></html:text>&nbsp;/&nbsp;<html:text name="busquedaAlertaForm" property="numeroExpediente" style="width:60px;" maxlength="6" styleClass="box"></html:text>
 						</td>
 					</tr>
 					<tr>

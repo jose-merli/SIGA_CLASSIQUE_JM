@@ -53,6 +53,7 @@ import com.siga.beans.ExpPlazoEstadoClasificacionAdm;
 import com.siga.beans.ExpTipoExpedienteAdm;
 import com.siga.beans.ExpTipoExpedienteBean;
 import com.siga.beans.GenParametrosAdm;
+import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.beans.ScsTurnoBean;
 import com.siga.expedientes.form.ExpDatosGeneralesForm;
@@ -115,12 +116,21 @@ public class ExpDatosGeneralesAction extends MasterAction
 			if (v != null && v.size() > 0) {
 				request.setAttribute("mostarMinutaFinal", ((ExpCampoTipoExpedienteBean) v.get(0)).getVisible());
 			}
-
+			
 			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_DERECHOS_COLEGIALES));
 			v = adm.select(h);
 			if (v != null && v.size() > 0) {
 				request.setAttribute("derechosColegiales", ((ExpCampoTipoExpedienteBean) v.get(0)).getVisible());
 			}
+			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_SOLICITANTEEJG));
+			v = adm.select(h);
+			boolean mostrarSolicitanteEJG = false;
+			if (v != null && v.size() > 0) {
+				mostrarSolicitanteEJG = UtilidadesString.stringToBoolean(((ExpCampoTipoExpedienteBean) v.get(0)).getVisible());
+				request.setAttribute("mostrarSolicitanteEJG", ((ExpCampoTipoExpedienteBean) v.get(0)).getVisible());
+			}
+			
+			
 
 			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_DENUNCIANTE));
 			v = adm.select(h);
@@ -406,7 +416,6 @@ public class ExpDatosGeneralesAction extends MasterAction
 	protected String abrirExistente(ActionMapping mapping,
 			MasterForm formulario, HttpServletRequest request,
 			HttpServletResponse response) throws SIGAException {
-		boolean ejg=false;
 		try{
 			ExpDatosGeneralesForm form = (ExpDatosGeneralesForm)formulario;
 			ExpTipoExpedienteAdm tipoAdm = new ExpTipoExpedienteAdm(this.getUserBean(request));
@@ -543,11 +552,33 @@ public class ExpDatosGeneralesAction extends MasterAction
 			form.setTipoExpediente(fila.getString(C_NOMBRETIPOEXPEDIENTE));
 			form.setNumExpediente(fila.getString(ExpExpedienteBean.C_NUMEROEXPEDIENTE));
 			form.setAnioExpediente(fila.getString(ExpExpedienteBean.C_ANIOEXPEDIENTE));
-			if(fila.getString(ExpExpedienteBean.C_IDTIPOEJG)!=null){
-				ejg=true;
+			if(fila.getString(ExpExpedienteBean.C_IDTIPOEJG)!=null&&!fila.getString(ExpExpedienteBean.C_IDTIPOEJG).equals("")){
 				form.setNumExpDisciplinario(fila.getString(ExpExpedienteBean.C_NUMEROEJG));
 				form.setAnioExpDisciplinario(fila.getString(ExpExpedienteBean.C_ANIOEJG));
 				form.setTipoExpDisciplinario(fila.getString(ExpExpedienteBean.C_IDTIPOEJG));
+				UsrBean userBean = this.getUserBean(request);
+				ScsEJGAdm admEjg = new ScsEJGAdm(userBean);
+				Hashtable haste = admEjg.getDatosEjg(userBean.getLocation(), form.getAnioExpDisciplinario(), form.getNumExpDisciplinario(), form.getTipoExpDisciplinario());
+					String SUFIJO = (String) haste.get("SUFIJO");
+					String CODIGO = (String) haste.get("CODIGO");
+					String codigoEjg = null;
+					if (SUFIJO != null && !SUFIJO.equals("")) {
+						codigoEjg = CODIGO + "-" + SUFIJO;
+						
+					} else {
+						codigoEjg = CODIGO;
+					}
+					form.setNumExpDisciplinarioCalc(codigoEjg);
+					form.setSolicitanteEjgNif(UtilidadesHash.getString(haste, "NIF"));
+					form.setSolicitanteEjgNombre(UtilidadesHash.getString(haste, "NOMBRE"));
+					form.setSolicitanteEjgApellido1(UtilidadesHash.getString(haste, "APELLIDO1"));
+					form.setSolicitanteEjgApellido2(UtilidadesHash.getString(haste, "APELLIDO2"));
+					
+//					request.setAttribute("codigoEjg", codigoEjg);
+				
+				
+				
+				
 			}else{
 				form.setNumExpDisciplinario(fila.getString(ExpExpedienteBean.C_NUMEXPDISCIPLINARIO));
 				form.setAnioExpDisciplinario(fila.getString(ExpExpedienteBean.C_ANIOEXPDISCIPLINARIO));
@@ -653,6 +684,8 @@ public class ExpDatosGeneralesAction extends MasterAction
 				form.setDerechosColegiales("" + UtilidadesNumero.formatoCampo(derechos));
 			}
 			
+			
+			
 			form.setObservaciones(fila.getString(ExpExpedienteBean.C_OBSERVACIONES));
 			if (fila.getString(ExpExpedienteBean.C_FECHACADUCIDAD)!=null && !fila.getString(ExpExpedienteBean.C_FECHACADUCIDAD).equals("")){
 				form.setFechaCaducidad(GstDate.getFormatedDateShort("",fila.getString(ExpExpedienteBean.C_FECHACADUCIDAD)));
@@ -664,64 +697,89 @@ public class ExpDatosGeneralesAction extends MasterAction
 			//Modificado para que en consulta obtenga la fase siempre.
 			if (!edit){
 					//SEGUNDA SELECT: EXP_FASES---------------------------------------------
-			
-					ExpFasesAdm faseAdm = new ExpFasesAdm (this.getUserBean(request));		
-					Hashtable hashFase = new Hashtable();
-					
-					hashFase.put(ExpFasesBean.C_IDINSTITUCION,idInstitucion_TipoExpediente);
-					hashFase.put(ExpFasesBean.C_IDTIPOEXPEDIENTE,idTipoExpediente);
-					hashFase.put(ExpFasesBean.C_IDFASE,form.getFase());
-					datosFase = faseAdm.select(hashFase);
-					ExpFasesBean faseBean = (ExpFasesBean)datosFase.elementAt(0);
-					
-					form.setFaseSel(faseBean.getNombre());
+					if(form.getFase()!=null && !form.getFase().equals("")){
+						ExpFasesAdm faseAdm = new ExpFasesAdm (this.getUserBean(request));		
+						Hashtable hashFase = new Hashtable();
+						
+						hashFase.put(ExpFasesBean.C_IDINSTITUCION,idInstitucion_TipoExpediente);
+						hashFase.put(ExpFasesBean.C_IDTIPOEXPEDIENTE,idTipoExpediente);
+						hashFase.put(ExpFasesBean.C_IDFASE,form.getFase());
+						datosFase = faseAdm.select(hashFase);
+						if(datosFase!=null && datosFase.size()>0){
+							ExpFasesBean faseBean = (ExpFasesBean)datosFase.elementAt(0);
+						
+							form.setFaseSel(faseBean.getNombre());
+						}else{
+							form.setFaseSel("");
+						}
+					}else{
+						form.setFaseSel("");
+						
+					}
 					
 					//TERCERA SELECT: EXP_ESTADOS
 				if (bEstado){
-			
-					ExpEstadosAdm estadoAdm = new ExpEstadosAdm (this.getUserBean(request));		
-					Hashtable hashEstado = new Hashtable();
-					
-					hashEstado.put(ExpEstadosBean.C_IDINSTITUCION,idInstitucion_TipoExpediente);
-					hashEstado.put(ExpEstadosBean.C_IDTIPOEXPEDIENTE,idTipoExpediente);
-					hashEstado.put(ExpEstadosBean.C_IDFASE,form.getFase());
-					hashEstado.put(ExpEstadosBean.C_IDESTADO,form.getEstado());
-					datosEstado = estadoAdm.select(hashEstado);
-					ExpEstadosBean estadoBean = (ExpEstadosBean)datosEstado.elementAt(0);
-					
-					form.setEstadoSel(estadoBean.getNombre());
+					if(form.getEstado()!=null && !form.getEstado().equals("")){
+						ExpEstadosAdm estadoAdm = new ExpEstadosAdm (this.getUserBean(request));		
+						Hashtable hashEstado = new Hashtable();
+						hashEstado.put(ExpEstadosBean.C_IDINSTITUCION,idInstitucion_TipoExpediente);
+						hashEstado.put(ExpEstadosBean.C_IDTIPOEXPEDIENTE,idTipoExpediente);
+						hashEstado.put(ExpEstadosBean.C_IDFASE,form.getFase());
+						hashEstado.put(ExpEstadosBean.C_IDESTADO,form.getEstado());
+						datosEstado = estadoAdm.select(hashEstado);
+						if(datosEstado!=null && datosEstado.size()>0){
+							ExpEstadosBean estadoBean = (ExpEstadosBean)datosEstado.elementAt(0);
+							
+							
+							form.setEstadoSel(estadoBean.getNombre());
+						}else{
+							form.setEstadoSel("");
+							
+						}
+					}else{
+						form.setEstadoSel("");
+						
+					}
 				}
 				
 				
 				//CUARTA SELECT: EXP_CLASIFICACION
-		
-				ExpClasificacionesAdm clasifAdm = new ExpClasificacionesAdm (this.getUserBean(request));		
-				Hashtable hashClasif = new Hashtable();
-				
-				hashClasif.put(ExpClasificacionesBean.C_IDINSTITUCION,idInstitucion_TipoExpediente);
-				hashClasif.put(ExpClasificacionesBean.C_IDTIPOEXPEDIENTE,idTipoExpediente);
-				hashClasif.put(ExpClasificacionesBean.C_IDCLASIFICACION,form.getClasificacion());
-				datosClasif = clasifAdm.select(hashClasif);
-				ExpClasificacionesBean clasifBean = (ExpClasificacionesBean)datosClasif.elementAt(0);
-				
-				form.setClasificacionSel(clasifBean.getNombre());
-				
-				request.setAttribute("accion","consulta");
-				request.setAttribute("tipoExpedienteEjg", Boolean.FALSE);
-			}else{
-				ExpExpedienteAdm exp = new ExpExpedienteAdm (this.getUserBean(request));
-				Integer idTipoExpe = exp.selectTipoExpedienteEJG(this.getUserBean(request).getLocation());
-							
-				if(idTipoExpe != null && idTipoExpe.toString().equals(idTipoExpediente)){
-					//if(form.getNumExpDisciplinario()!=null && !form.getNumExpDisciplinario().trim().equals(""))
-						request.setAttribute("tipoExpedienteEjg", Boolean.TRUE);
-				//	else
-					//	request.setAttribute("tipoExpedienteEjg", Boolean.FALSE);
+				if(form.getClasificacion()!=null && !form.getClasificacion().equals("")){
+					ExpClasificacionesAdm clasifAdm = new ExpClasificacionesAdm (this.getUserBean(request));		
+					Hashtable hashClasif = new Hashtable();
+					
+					hashClasif.put(ExpClasificacionesBean.C_IDINSTITUCION,idInstitucion_TipoExpediente);
+					hashClasif.put(ExpClasificacionesBean.C_IDTIPOEXPEDIENTE,idTipoExpediente);
+					hashClasif.put(ExpClasificacionesBean.C_IDCLASIFICACION,form.getClasificacion());
+					
+					datosClasif = clasifAdm.select(hashClasif);
+					if(datosClasif!=null && datosClasif.size()>0){
+						ExpClasificacionesBean clasifBean = (ExpClasificacionesBean)datosClasif.elementAt(0);
+						
+						form.setClasificacionSel(clasifBean.getNombre());
+					}else{
+						form.setClasificacionSel("");
+						
+					}
 				}else{
-					request.setAttribute("tipoExpedienteEjg", Boolean.FALSE);
+					form.setClasificacionSel("");
 				}
 				
+				request.setAttribute("accion","consulta");
+				
+			}else{
 				request.setAttribute("accion","edicion");
+			}
+			ExpExpedienteAdm exp = new ExpExpedienteAdm (this.getUserBean(request));
+			Integer idTipoExpe = exp.selectTipoExpedienteEJG(this.getUserBean(request).getLocation());
+						
+			if(idTipoExpe != null && idTipoExpe.toString().equals(idTipoExpediente)){
+				//if(form.getNumExpDisciplinario()!=null && !form.getNumExpDisciplinario().trim().equals(""))
+					request.setAttribute("tipoExpedienteEjg", Boolean.TRUE);
+			//	else
+				//	request.setAttribute("tipoExpedienteEjg", Boolean.FALSE);
+			}else{
+				request.setAttribute("tipoExpedienteEjg", Boolean.FALSE);
 			}
 		
 		}catch(Exception e){
@@ -1200,7 +1258,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			request.getSession().setAttribute("numeroExpedienteSession", numExp.toString());
 			request.getSession().setAttribute("anioExpedienteSession", anioExpAGuardar.toString());
 																			
-			String collectionTitle = form.getTipoExpediente() + " " + numExpAGuardar + "/" + anioExpAGuardar;
+			String collectionTitle = form.getTipoExpediente() + " " + anioExpAGuardar + "/" +numExpAGuardar ;
 			
 			/* Sólo se intentará la Conexion al DocuShare si el parámetro general para la institucion=1*/	
 			GenParametrosAdm parametrosAdm = new GenParametrosAdm(user);
@@ -1211,7 +1269,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			
 			//Comprobamos que coincide con los propuestos al presionar en 'nuevo', si no, informamos de los nuevos valores
 			if (!form.getNumExpediente().equals(String.valueOf(numExpAGuardar)) && !form.getAnioExpediente().equals(String.valueOf(anioExpAGuardar))){
-				request.setAttribute("sufijo",numExpAGuardar+"/"+anioExpAGuardar);
+				request.setAttribute("sufijo",anioExpAGuardar+" / "+numExpAGuardar);
 			}
 			
 			//Iniciamos la transacción

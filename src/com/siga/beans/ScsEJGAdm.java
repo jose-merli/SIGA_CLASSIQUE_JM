@@ -136,18 +136,27 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	
 	
 	
-	public Hashtable getCalculoNumEjg (String idInstitucion, String anio, String numero, String idTipoEJG) 
+	public Hashtable getDatosEjg (String idInstitucion, String anio, String numero, String idTipoEJG) 
 	{
 		try {
-			String sql = 	"select " + ScsEJGBean.C_SUFIJO+","+
-								ScsEJGBean.C_NUMEJG+ " AS CODIGO "	+					
-							" from " + ScsEJGBean.T_NOMBRETABLA + " a " + 
-							" where a." + ScsEJGBean.C_IDINSTITUCION + " = " + idInstitucion +  
-							  " and a." + ScsEJGBean.C_ANIO + " = " + anio +
-							  " and a." + ScsEJGBean.C_NUMERO  + " = " + numero +
-							  " and a." + ScsEJGBean.C_IDTIPOEJG  + " = " + idTipoEJG;
+			StringBuffer sql = new StringBuffer();
+			
+			sql.append("SELECT SUFIJO, NUMEJG AS CODIGO, ");
+			sql.append("PJG.NIF,PJG.NOMBRE,PJG.APELLIDO1,PJG.APELLIDO2 ");
+			sql.append("FROM SCS_EJG EJG,SCS_PERSONAJG PJG ");
+			sql.append("WHERE "); 
+			sql.append("EJG.IDPERSONAJG = PJG.IDPERSONA(+) ");
+			sql.append(" AND EJG.IDINSTITUCION = PJG.IDINSTITUCION(+) ");
+			sql.append(" AND EJG.IDINSTITUCION = ");
+			sql.append(idInstitucion);
+			sql.append(" AND EJG.ANIO = ");
+			sql.append(anio);
+			sql.append(" AND EJG.NUMERO = ");
+			sql.append(numero);
+			sql.append(" AND EJG.IDTIPOEJG = ");
+			sql.append(idTipoEJG);
 
-			Vector v = this.selectGenerico(sql);
+			Vector v = this.selectGenerico(sql.toString());
 			if (v!=null && v.size()>0) {
 				return (Hashtable) v.get(0);
 			}

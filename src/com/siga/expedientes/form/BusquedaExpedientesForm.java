@@ -461,7 +461,44 @@ public class BusquedaExpedientesForm extends MasterForm {
 	public void setIdMateria(String idMateria) {
 		UtilidadesHash.set(this.datos,"idMateria", idMateria);
 	}
-	
+	private String otrasPretensiones="";
 	// OTRAS FUNCIONES 
+	String idPretension;
+	String idProcedimiento;
+	String idInstProcedimiento;
+	String idInstJuzgado;
+
+
+	public String getOtrasPretensiones() {
+		return otrasPretensiones;
+	}
+	public void setOtrasPretensiones(String otrasPretensiones) {
+		this.otrasPretensiones = otrasPretensiones;
+	}
+	public String getIdPretension() {
+		return idPretension;
+	}
+	public void setIdPretension(String idPretension) {
+		this.idPretension = idPretension;
+	}
+	public String getIdProcedimiento() {
+		return idProcedimiento;
+	}
+	public void setIdProcedimiento(String idProcedimiento) {
+		this.idProcedimiento = idProcedimiento;
+	}
+	public String getIdInstProcedimiento() {
+		return idInstProcedimiento;
+	}
+	public void setIdInstProcedimiento(String idInstProcedimiento) {
+		this.idInstProcedimiento = idInstProcedimiento;
+	}
+	public String getIdInstJuzgado() {
+		return idInstJuzgado;
+	}
+	public void setIdInstJuzgado(String idInstJuzgado) {
+		this.idInstJuzgado = idInstJuzgado;
+	}
+	
 
 }

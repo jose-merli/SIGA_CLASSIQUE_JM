@@ -255,6 +255,35 @@ public class BusquedaExpedientesAction extends MasterAction {
 				Paginador resultado = null;
 				Vector datos = null;
 				
+				String idMateria = null; 
+				String idArea = null;
+				if(miFormulario.getIdMateria()!=null && !miFormulario.getIdMateria().equals("")){
+					String[] materia= miFormulario.getIdMateria().split(",");
+					idMateria = materia[2];
+					idArea = materia[1];
+					miFormulario.setIdMateria(idMateria);
+					miFormulario.setIdArea(idArea);
+					
+
+				}
+			
+				if(miFormulario.getJuzgado()!=null && !miFormulario.getJuzgado().equals("")){
+					String[] juzgado = miFormulario.getJuzgado().split(",");
+					miFormulario.setJuzgado(juzgado[0]);
+					miFormulario.setIdInstJuzgado(juzgado[1]);
+				}
+				
+				
+//				String idPretension = miFormulario.getIdPretension();
+//				String idProcedimiento = null;
+				if(miFormulario.getIdProcedimiento()!=null && !miFormulario.getIdProcedimiento().equals("")){
+					String[] procedimiento = miFormulario.getIdProcedimiento().split(",");
+					miFormulario.setIdProcedimiento(procedimiento[0]);
+					miFormulario.setIdInstProcedimiento(procedimiento[1]);
+					
+				}
+				
+				
 				resultado = expedienteAdm.getPaginadorAvanzadoExpedientes(miFormulario,user);
 				// Paso de parametros empleando la sesion
 				databackup.put("paginador",resultado);
@@ -832,3 +861,4 @@ public class BusquedaExpedientesAction extends MasterAction {
 	
 	
 }
+

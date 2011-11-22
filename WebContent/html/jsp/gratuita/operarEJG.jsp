@@ -195,7 +195,7 @@
 		TIPOEJGCOLEGIOSEL.add("");
 
 	NOMBRELETRADO += " " + APELLIDO1LETRADO + " " + APELLIDO2LETRADO;
-	NOMBREASISTIDO += " " + APELLIDO1ASISTIDO + " " + APELLIDO2ASISTIDO;
+	String NOMBRECOMPLETOASISTIDO = NOMBREASISTIDO+ " " + APELLIDO1ASISTIDO + " " + APELLIDO2ASISTIDO;
 
 	// RGG 17-03-2006
 
@@ -573,7 +573,7 @@
 			</td>
 			<td colspan="3" class="labelTextValue">	
 				<input type="text" style="width:100px" class="boxConsulta" value="<%=NIFASISTIDO%>"    readOnly="true">
-				<input type="text" style="width:300px" class="boxConsulta" value="<%=NOMBREASISTIDO%>" readOnly="true">
+				<input type="text" style="width:300px" class="boxConsulta" value="<%=NOMBRECOMPLETOASISTIDO%>" readOnly="true">
 			</td>
 			
 		</tr>
@@ -997,7 +997,7 @@
 		<html:hidden property ="idTipoEjg"   value = "<%=IDTIPOEJG%>"/>
 		<html:hidden property ="anioEjg"     value = "<%=ANIO%>"/>
 		<html:hidden property ="nifSolicitante"     value = "<%=NIFASISTIDO%>" />
-		<html:hidden property ="nombreSolicitante"     value = "<%=NOMBREASISTIDO%>" />
+		<html:hidden property ="nombreSolicitante"     value = "<%=NOMBRECOMPLETOASISTIDO%>" />
 		<html:hidden property ="idInstitucion_TipoExpediente" value= "<%=usr.getLocation()%>"/>	
 		<html:hidden property ="numeroProcedimiento"   value = "<%=numeroProcedimientoAsi%>"/>
 		<html:hidden property ="asunto"     value = "<%=OBSERVACIONES%>"/>
@@ -1009,6 +1009,11 @@
 		<html:hidden property ="nombreDesignado" value= "<%=t_idpersonaD%>"/>	
 		<html:hidden property ="numColDesignado" value= "<%=numtramidesig%>"/>
 		<html:hidden property ="idclasificacion" value= "1"/>
+		<html:hidden property ="solicitanteEjgNif"     value = "<%=NIFASISTIDO%>" />
+		<html:hidden property ="solicitanteEjgNombre"     value = "<%=NOMBREASISTIDO%>" />
+		<html:hidden property ="solicitanteEjgApellido1"     value = "<%=APELLIDO1ASISTIDO%>" />
+		<html:hidden property ="solicitanteEjgApellido2"     value = "<%=APELLIDO2ASISTIDO%>" />
+		
 		
 	
 	

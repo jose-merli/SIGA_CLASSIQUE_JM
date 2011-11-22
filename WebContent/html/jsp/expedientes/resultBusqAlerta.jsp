@@ -169,7 +169,7 @@
 					<td><%=fila.getString("NOMBRETIPOEXPEDIENTE")%></td>
 					<td><%=fila.getString("FAS_NOMBRE")%></td>
 					<td><%=fila.getString("EST_NOMBRE")%></td>
-					<td><%=fila.getString("NUMEROEXPEDIENTE")%>/<%=fila.getString("ANIOEXPEDIENTE")%></td>
+					<td><%=fila.getString("ANIOEXPEDIENTE")%>&nbsp;/&nbsp;<%=fila.getString("NUMEROEXPEDIENTE")%></td>
 					<td><%=fila.getString("TEXTO")%></td>
 				</siga:FilaConIconos>
 <%

@@ -33,6 +33,7 @@ public class CampoTipoExpedienteForm extends MasterForm {
     private boolean minutaInicial;
     private boolean minutaFinal;
     private boolean derechos;
+    private boolean solicitanteEJG;
     private boolean resultadoInforme;
     private boolean relacionEJG;  
     
@@ -265,6 +266,12 @@ public class CampoTipoExpedienteForm extends MasterForm {
 	}
 	public void setIdPlantilla(String idPlantilla) {
 		this.idPlantilla = idPlantilla;
+	}
+	public boolean getSolicitanteEJG() {
+		return solicitanteEJG;
+	}
+	public void setSolicitanteEJG(boolean solicitanteEJG) {
+		this.solicitanteEJG = solicitanteEJG;
 	}
 
 }

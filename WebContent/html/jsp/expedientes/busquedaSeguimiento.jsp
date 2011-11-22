@@ -85,7 +85,7 @@
 							<siga:Idioma key="expedientes.auditoria.literal.estado" />
 						</td>
 						<td>
-							<siga:ComboBD nombre="comboEstados" tipo="cmbEstados" clase="boxCombo" obligatorio="true" accion="Hijo:idTipoAnotacion" hijo="t" pestana="t" />
+							<siga:ComboBD nombre="comboEstados" tipo="cmbEstados" clase="boxCombo" obligatorio="true" hijo="t" pestana="t" />
 						</td>
 					</tr>
 					<tr>
@@ -93,7 +93,7 @@
 							<siga:Idioma key="expedientes.auditoria.literal.tipoanotacion" />
 						</td>
 						<td>
-							<siga:ComboBD nombre="idTipoAnotacion" tipo="cmbTipoAnotacionSinNull" clase="boxCombo" obligatorio="false" hijo="t" pestana="t" />
+							<siga:ComboBD nombre="idTipoAnotacion" tipo="cmbTipoAnotacion" clase="boxCombo" parametro="<%=parametro%>" obligatorio="false" />
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="expedientes.auditoria.literal.usuario" />
@@ -181,6 +181,8 @@
 					refrescarLocal();
 				}
 			}
+			
+			
 		</script>
 		<!-- FIN: SCRIPTS BOTONES -->
 

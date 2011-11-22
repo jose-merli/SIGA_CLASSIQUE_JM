@@ -72,6 +72,12 @@ public class ExpDatosGeneralesForm extends MasterForm {
     private String importeIVAFinal="";
     private String importeTotalFinal="";
     private String derechosColegiales="";
+    private String solicitanteEjgNif;
+    private String solicitanteEjgApellido1;
+    private String solicitanteEjgApellido2;
+    private String solicitanteEjgNombre;
+   
+    
     
 	public String getIdturnoDesignado() {
 		return idturnoDesignado;
@@ -527,6 +533,49 @@ public class ExpDatosGeneralesForm extends MasterForm {
 	}
 	public void setNifDenunciante(String nifDenunciante) {
 		this.nifDenunciante = nifDenunciante;
-	}	 
+	}
+	public String getSolicitanteEjgNif() {
+		return solicitanteEjgNif;
+	}
+	public void setSolicitanteEjgNif(String solicitanteEjgNif) {
+		this.solicitanteEjgNif = solicitanteEjgNif;
+	}
+	public String getSolicitanteEjgApellido1() {
+		return solicitanteEjgApellido1;
+	}
+	public void setSolicitanteEjgApellido1(String solicitanteEjgApellido1) {
+		this.solicitanteEjgApellido1 = solicitanteEjgApellido1;
+	}
+	public String getSolicitanteEjgApellido2() {
+		return solicitanteEjgApellido2;
+	}
+	public void setSolicitanteEjgApellido2(String solicitanteEjgApellido2) {
+		this.solicitanteEjgApellido2 = solicitanteEjgApellido2;
+	}
+	public String getSolicitanteEjgNombre() {
+		return solicitanteEjgNombre;
+	}
+	public void setSolicitanteEjgNombre(String solicitanteEjgNombre) {
+		this.solicitanteEjgNombre = solicitanteEjgNombre;
+	}
+	public String getSolicitanteEjgDescripcion() {
+		StringBuffer solicitanteEjgDescripcion =  new StringBuffer("");
+		if(solicitanteEjgNombre!=null && !solicitanteEjgNombre.equals("")){
+			if(solicitanteEjgNif!=null){
+				solicitanteEjgDescripcion.append(solicitanteEjgNif);
+				solicitanteEjgDescripcion.append(" ");
+			}
+			solicitanteEjgDescripcion.append(solicitanteEjgNombre);
+			solicitanteEjgDescripcion.append(" ");
+			solicitanteEjgDescripcion.append(solicitanteEjgApellido1);
+			if(solicitanteEjgApellido2!=null){
+				solicitanteEjgDescripcion.append(" ");
+				solicitanteEjgDescripcion.append(solicitanteEjgApellido2);
+			}
+			
+		}
+		return solicitanteEjgDescripcion.toString();
+	}
+		 
 	
 }

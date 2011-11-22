@@ -248,7 +248,7 @@
 							<%=fila.getString("NOMBRETIPOEXPEDIENTE")%>
 						</td>
 					
-					<td><%=fila.getString("NUMEROEXPEDIENTE")+"/"+fila.getString("ANIOEXPEDIENTE")%></td>
+					<td><%=fila.getString("ANIOEXPEDIENTE")+" / "+fila.getString("NUMEROEXPEDIENTE")%></td>
 					<td><%=fila.getString("NOMBREESTADO").equals("")?"&nbsp;":fila.getString("NOMBREESTADO") %></td>
 					<td><%=GstDate.getFormatedDateShort("",fila.getString("FECHA"))%></td>
 					<td><%=fila.getString("DENUNCIADO")%></td>

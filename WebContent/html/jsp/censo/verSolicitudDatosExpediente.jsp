@@ -174,10 +174,10 @@
 								<table class="tablaCampos" align="center">
 									<!-- FILA -->
 									<tr>		
-										<td width="15%"class="labelText">
+										<td width="20%"class="labelText">
 											<siga:Idioma key="censo.consultaExpedientes.literal.nombre"/>&nbsp;
 										</td>
-										<td width="85%">
+										<td width="80%">
 											<html:text property="domicilioO" value='<%=String.valueOf(original.get("NOMBRE"))+" "+String.valueOf(original.get("APELLIDOS1"))+" "+String.valueOf(original.get("APELLIDOS2"))%>' styleClass="boxConsulta" readOnly="true" size="60"></html:text>
 										</td>						
 									</tr>	
@@ -205,7 +205,7 @@
 											<siga:Idioma key="censo.consultaExpedientes.literal.nExpediente"/>&nbsp;
 										</td>
 										<td>
-											<html:text property="domicilioO" value='<%=String.valueOf(original.get("NUMEROEXPEDIENTE"))+" / "+String.valueOf(original.get("ANIOEXPEDIENTE"))%>' styleClass="boxConsulta" readOnly="true" size="60">&nbsp;/&nbsp;</html:text>
+											<html:text property="domicilioO" value='<%=String.valueOf(original.get("ANIOEXPEDIENTE"))+" / "+String.valueOf(original.get("NUMEROEXPEDIENTE"))%>' styleClass="boxConsulta" readOnly="true" size="60">&nbsp;/&nbsp;</html:text>
 										</td>
 									</tr>
 				   				</table>

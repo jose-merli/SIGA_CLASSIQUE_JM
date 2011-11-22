@@ -137,14 +137,14 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		try
 		{
 			bean = new ExpExpedienteBean();
-			 if(hash.get(ExpExpedienteBean.C_IDTIPOEJG)==null || hash.get(ExpExpedienteBean.C_IDTIPOEJG).toString().equals("")){
+			 if(hash.get(ExpExpedienteBean.C_IDTIPOEJG)!=null && !hash.get(ExpExpedienteBean.C_IDTIPOEJG).toString().equals("")){
+				 bean.setTipoExpDisciplinario(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_IDTIPOEJG));
+				 bean.setNumExpDisciplinario(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_NUMEROEJG));
+				 bean.setAnioExpDisciplinario(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_ANIOEJG));
+				 
+			 }else{
 				 bean.setAnioExpDisciplinario(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_ANIOEXPDISCIPLINARIO));
 				 bean.setNumExpDisciplinario(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_NUMEXPDISCIPLINARIO));
-			 }else{
-				 
-				 	bean.setTipoExpDisciplinario(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_IDTIPOEJG));
-					bean.setNumExpDisciplinario(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_NUMEROEJG));
-					bean.setAnioExpDisciplinario(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_ANIOEJG));
 					
 			 }
 			bean.setNumeroExpediente(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_NUMEROEXPEDIENTE));
@@ -305,190 +305,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 	
 	
 	
-	public Paginador getPaginadorExpedientes(BusquedaExpedientesForm form,UsrBean userBean) throws ClsExceptions 
-	{
-		//Hashtable codigosBind = new Hashtable();
-		//int contador=0;
-		//NOMBRES COLUMNAS PARA LA JOIN
-		//Tabla cen_persona
-		String P_APELLIDOS1="P."+CenPersonaBean.C_APELLIDOS1;
-		String P_APELLIDOS2="P."+CenPersonaBean.C_APELLIDOS2;
-		String P_IDPERSONA="P."+CenPersonaBean.C_IDPERSONA;
-		String P_NOMBRE="P."+CenPersonaBean.C_NOMBRE;
-
-		//Tabla exp_tipoexpediente
-		String T_IDINSTITUCION="T."+ExpTipoExpedienteBean.C_IDINSTITUCION;
-		String T_IDTIPOEXPEDIENTE="T."+ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE;
-
-		//Tabla cen_institucion
-		String I_IDINSTITUCION="I."+CenInstitucionBean.C_IDINSTITUCION;
-
-		//LMS 08/08/2006
-		//Se añade la relación con la tabla de permisos de expedientes.
-		//Tabla EXP_PERMISOSTIPOSEXPEDIENTES
-		String E_IDINSTITUCION="X."+ExpPermisosTiposExpedientesBean.C_IDINSTITUCION;
-		String E_IDPERFIL="X."+ExpPermisosTiposExpedientesBean.C_IDPERFIL;
-		String E_IDINSTITUCIONTIPOEXPEDIENTE="X."+ExpPermisosTiposExpedientesBean.C_IDINSTITUCIONTIPOEXPEDIENTE;
-		String E_IDTIPOEXPEDIENTE="X."+ExpPermisosTiposExpedientesBean.C_IDTIPOEXPEDIENTE;
-
-		//Valores recogidos del formulario para la búsqueda
-		String comboTipoExp = form.getComboTipoExpediente();
-
-		//getComboTipoExpediente nos está devolviendo (idinstitucion,idtipoexpediente)
-		String idinstitucion_tipoexpediente = "";
-		if (comboTipoExp!=null && !comboTipoExp.equals("")){
-			StringTokenizer st = new StringTokenizer(comboTipoExp,",");
-			idinstitucion_tipoexpediente=st.nextToken();
-			form.setTipoExpediente(st.nextToken());        	
-		}else{
-			idinstitucion_tipoexpediente="";
-			form.setTipoExpediente("");  
-		}
-		String idInstitucion = userBean.getLocation();
-		String tipoExpediente = form.getTipoExpediente();
-		String institucion = form.getInstitucion();
-		String numeroExpediente = form.getNumeroExpediente();
-		String anioExpediente = form.getAnioExpediente();
-		String numeroExpDisciplinario = form.getNumeroExpDisciplinario();
-		String anioExpDisciplinario = form.getAnioExpDisciplinario();
-		String fecha = form.getFecha();
-		String nombre = form.getNombre();
-		String apellido1 = form.getPrimerApellido();
-		String apellido2 = form.getSegundoApellido();
-		boolean esGeneral=false;
-		if (form.getEsGeneral()!=null){
-			esGeneral = form.getEsGeneral().equals("S")?true:false;
-		}  
-
-		//POR SI SE NECESITA:
-		String instMenorRango = "SELECT "+CenInstitucionBean.C_IDINSTITUCION+" FROM "+CenInstitucionBean.T_NOMBRETABLA+" CONNECT BY PRIOR "+CenInstitucionBean.C_IDINSTITUCION+" = "+CenInstitucionBean.C_CEN_INST_IDINSTITUCION+" START WITH "+CenInstitucionBean.C_IDINSTITUCION+" = "+idInstitucion;
-
-		String where = "WHERE ";
-
-		//join de las tablas EXPEDIENTE E, TIPOEXPEDIENTE T, PERSONA P
-		where += (institucion!=null && !institucion.equals("")) ? " E." + ExpExpedienteBean.C_IDINSTITUCION + " = " + institucion : " E." + ExpExpedienteBean.C_IDINSTITUCION + " IN (" +instMenorRango+ ")";
-		where += " AND E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE+" = "+T_IDINSTITUCION;
-		where += " AND E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE+" = "+T_IDTIPOEXPEDIENTE;
-
-		if (esGeneral){
-			where += " AND T."+ExpTipoExpedienteBean.C_ESGENERAL+"='S'";
-		}
-
-		where += " AND E."+ExpExpedienteBean.C_IDPERSONA+" = "+P_IDPERSONA;
-		where += " AND E."+ExpExpedienteBean.C_IDINSTITUCION+" = "+I_IDINSTITUCION;
-
-		//campos de búsqueda
-		where += (idinstitucion_tipoexpediente!=null && !idinstitucion_tipoexpediente.equals("")) ? " AND E." + ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE + " = " + idinstitucion_tipoexpediente : "";
-		where += (tipoExpediente!=null && !tipoExpediente.equals("")) ? " AND E." + ExpExpedienteBean.C_IDTIPOEXPEDIENTE + " = " + tipoExpediente : "";
-
-
-		where += (numeroExpediente!=null && !numeroExpediente.equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(numeroExpediente.trim(),"E." + ExpExpedienteBean.C_NUMEROEXPEDIENTE ): ""; 
-
-
-		where += (anioExpediente!=null && !anioExpediente.equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(anioExpediente.trim(),"E." + ExpExpedienteBean.C_ANIOEXPEDIENTE ): "";
-
-		where += (numeroExpDisciplinario!=null && !numeroExpDisciplinario.equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(numeroExpDisciplinario.trim(),"E." + ExpExpedienteBean.C_NUMEXPDISCIPLINARIO ): "";
-
-		where += (anioExpDisciplinario!=null && !anioExpDisciplinario.equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(anioExpDisciplinario.trim(),"E." + ExpExpedienteBean.C_ANIOEXPDISCIPLINARIO ): "";
-		where += (fecha!=null && !fecha.equals("")) ? " AND " + GstDate.dateBetween0and24h(ExpExpedienteBean.C_FECHA,fecha) : "";
-
-		where += (nombre!=null && !nombre.equals("")) ? " AND  "+ComodinBusquedas.prepararSentenciaCompleta(nombre.trim(),P_NOMBRE ): "";
-
-		where += (apellido1!=null && !apellido1.equals("")) ? " AND  "+ComodinBusquedas.prepararSentenciaCompleta(apellido1.trim(),P_APELLIDOS1 ): "";
-
-		where += (apellido2!=null && !apellido2.equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(apellido2.trim(),P_APELLIDOS2 ): "";
-
-		if (esGeneral){
-			where += " AND DECODE (E."+ExpExpedienteBean.C_IDINSTITUCION+",'"+userBean.getLocation()+"','S',E."+ExpExpedienteBean.C_ESVISIBLE+")='S'";
-		}
-
-		//LMS 08/08/2006
-		//Se añade el control de permisos sobre el tipo de expediente.
-		//where += " AND " + E_IDINSTITUCIONTIPOEXPEDIENTE + " = " + " E." + ExpExpedienteBean.C_IDINSTITUCION;
-		where += " AND " + E_IDINSTITUCIONTIPOEXPEDIENTE + " = " + " E." + ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE;
-		where += " AND " + E_IDTIPOEXPEDIENTE + " = " + " E." + ExpExpedienteBean.C_IDTIPOEXPEDIENTE;
-		where += " AND "+  E_IDINSTITUCION+" = "+"E."+ExpExpedienteBean.C_IDINSTITUCION;
-		where += " AND " + E_IDPERFIL + " IN (";
-
-		String[] aPerfiles = userBean.getProfile();
-
-		for (int i=0; i<aPerfiles.length; i++, where+=",")
-		{
-			where += "'" + aPerfiles[i] + "'";
-		}
-
-		where = where.substring(0,where.length()-1);
-		where += ")";
-		
-		
-		
-		
-		
-		//NOMBRES COLUMNAS PARA LA JOIN
-		//Tabla cen_persona
-		String P_NOMBREPERSONA="P."+CenPersonaBean.C_NOMBRE+" AS NOMBREPERSONA";
-		
-		
-		//Tabla exp_tipoexpediente
-		
-		String T_NOMBRETIPOEXPEDIENTE="T."+ExpTipoExpedienteBean.C_NOMBRE+" AS NOMBRETIPOEXPEDIENTE";
-		
-		//Tabla cen_institucion
-		String I_ABREVIATURA = "I."+CenInstitucionBean.C_ABREVIATURA;
-		
-		
-		// Acceso a BBDD
-		try { 
-			
-			String [] fields = this.getCamposBean();
-	        
-	        String sql = "SELECT  ";
-	        //todos los campos de la tabla exp_expediente separados por coma
-		    for(int i=0;i<fields.length; i++){
-			  sql += "E."+fields[i]+", ";
-			}
-		    
-		    sql += P_NOMBREPERSONA+", ";	
-		    sql += P_APELLIDOS1+", ";	
-		    sql += P_APELLIDOS2+", ";	
-		   // sql += P_IDPERSONA+", ";	
-		   // sql += T_IDINSTITUCION+", ";	
-		   // sql += T_IDTIPOEXPEDIENTE+", ";	
-		    sql += T_NOMBRETIPOEXPEDIENTE+", ";	
-		    sql += I_ABREVIATURA+", ";
-		  //PDM INC-3319: Se añade como campo de salida el nombre del estado de expediente
-		    sql += "(select ex.nombre "+
-		    	   " from "+ExpEstadosBean.T_NOMBRETABLA+" ex "+
-				   " where "+ ExpEstadosBean.C_IDINSTITUCION+" = E.idinstitucion"+
-				   "  and "+ExpEstadosBean.C_IDFASE+" = E.idfase"+
-				   "  and "+ExpEstadosBean.C_IDESTADO+" = E.idestado"+
-				   "  and "+ExpEstadosBean.C_IDTIPOEXPEDIENTE+" = T.idtipoexpediente) NOMBREESTADO";
-		    
-		    
-			//LMS 08/08/2006
-			//Se añade la relación con la tabla de permisos de expedientes.
-			sql += " FROM ";
-		    sql += ExpExpedienteBean.T_NOMBRETABLA+" E, "+CenPersonaBean.T_NOMBRETABLA+" P, "+ExpTipoExpedienteBean.T_NOMBRETABLA+" T, "+CenInstitucionBean.T_NOMBRETABLA+" I, "+ExpPermisosTiposExpedientesBean.T_NOMBRETABLA+" X";
-		    		    		
-			sql += " " + where;
-			sql += " ORDER BY "+I_ABREVIATURA+", E."+ExpExpedienteBean.C_IDINSTITUCION+", E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE+", E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE+", E."+ExpExpedienteBean.C_ANIOEXPEDIENTE+" DESC, E."+ExpExpedienteBean.C_NUMEROEXPEDIENTE;		
-			
-			Paginador paginador = new Paginador(sql);				
-			int totalRegistros = paginador.getNumeroTotalRegistros();
-			
-			if (totalRegistros==0){					
-				paginador =null;
-			}
-	       	
-			
-			
-			return paginador;
-		} 
-		catch (Exception e) { 	
-			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
-		}
-		
-	}
+	
 	public Paginador getPaginadorAvanzadoExpedientes(BusquedaExpedientesForm form,UsrBean userBean) throws ClsExceptions 
 	{
 		//Hashtable codigosBind = new Hashtable();
@@ -589,14 +406,32 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		String asunto = form.getAsunto();
 		String fase = form.getFase();
 		String estado = form.getEstado();
-		String materia = form.getMateriaSel();
-		String juzgado = form.getComboJuzgados();
+		
 		String nombreParte = form.getNombreParte();
 		String ap1Parte = form.getPrimerApellidoParte();
 		String ap2Parte = form.getSegundoApellidoParte();
 		String observaciones = form.getObservaciones();
 		String rol = form.getRol();
-		String numAsunto = form.getNumAsunto();
+//		String numAsunto = form.getNumAsunto();
+//		String idMateria = null; 
+//		String idArea = null;
+//		if(form.getIdMateria()!=null && !form.getIdMateria().equals("")){
+//			
+//			idMateria = form.getIdMateria();
+//			idArea =form.getIdArea();
+//		}
+//		String idJuzgado = null;
+//		String idInstJuzgado = null;
+//		if(form.getJuzgado()!=null && !form.getJuzgado().equals("")){
+//			idJuzgado = form.getJuzgado();
+//			idInstJuzgado = form.getIdInstJuzgado();
+//		}
+//		
+//		String otrasPretensiones = form.getOtrasPretensiones();
+//		String idPretension = form.getIdPretension();
+//		String idProcedimiento = form.getIdProcedimiento();
+//		String idInstProcedimiento = form.getIdInstProcedimiento();
+		
 		boolean hayPartes = ((nombreParte!=null &&!nombreParte.equals("")) || (ap1Parte!=null && !ap1Parte.equals(""))
 				|| (ap2Parte!=null && !ap2Parte.equals("")) || (rol!=null && !rol.equals("")));
 		boolean esGeneral = form.getEsGeneral()!=null && form.getEsGeneral().equals("S")?true:false;
@@ -625,7 +460,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			where += " AND E."+ExpExpedienteBean.C_ANIOEXPEDIENTE+" = "+PA_ANIOEXPEDIENTE+"(+)";
 		}
 		
-		where += (juzgado!=null && !juzgado.equals("")) ? " AND E."+ExpExpedienteBean.C_IDINSTITUCION+" = juz." + ScsJuzgadoBean.C_IDINSTITUCION+"(+)": "";
+		where += (form.getJuzgado()!=null && !form.getJuzgado().equals("")) ? " AND E."+ExpExpedienteBean.C_IDINSTITUCION_JUZGADO+" = juz." + ScsJuzgadoBean.C_IDINSTITUCION+"(+)": "";
 
 		//campos de búsqueda
 		where += (idinstitucion_tipoexpediente!=null && !idinstitucion_tipoexpediente.equals("")) ? " AND E." + ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE + " = " + idinstitucion_tipoexpediente : "";
@@ -636,20 +471,34 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 
 
 		where += (anioExpediente!=null && !anioExpediente.equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(anioExpediente.trim(),"E." + ExpExpedienteBean.C_ANIOEXPEDIENTE): "";
-
-		where += (numeroExpDisciplinario!=null && !numeroExpDisciplinario.equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(numeroExpDisciplinario.trim(),"E." + ExpExpedienteBean.C_NUMEXPDISCIPLINARIO): "";
-
-		where += (anioExpDisciplinario!=null && !anioExpDisciplinario.equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(anioExpDisciplinario.trim(),"E." + ExpExpedienteBean.C_ANIOEXPDISCIPLINARIO): "";
+		if(numeroExpDisciplinario!=null && !numeroExpDisciplinario.equals("")){
+			where += " AND (";
+			where +=ComodinBusquedas.prepararSentenciaCompleta(numeroExpDisciplinario.trim(),"E." + ExpExpedienteBean.C_NUMEXPDISCIPLINARIO);
+			where += " OR ";
+			where +=ComodinBusquedas.prepararSentenciaCompleta(numeroExpDisciplinario.trim(),"E." + ExpExpedienteBean.C_NUMEROEJG);
+			where += " ) ";
+		}
+		if(anioExpDisciplinario!=null && !anioExpDisciplinario.equals("")){
+			where += " AND (";
+			where +=ComodinBusquedas.prepararSentenciaCompleta(anioExpDisciplinario.trim(),"E." + ExpExpedienteBean.C_ANIOEXPDISCIPLINARIO);
+			where += " OR ";
+			where +=ComodinBusquedas.prepararSentenciaCompleta(anioExpDisciplinario.trim(),"E." + ExpExpedienteBean.C_ANIOEJG);
+			where += " ) ";
+		}
+		
 		//confirmar que el formato de la fecha es correcto cuando se hagan inserts        
 		where += (fecha!=null && !fecha.equals("")) ? " AND " + GstDate.dateBetween0and24h(ExpExpedienteBean.C_FECHA,fecha) : "";
 		where += (fase!=null && !fase.equals("")) ? " AND E." + ExpExpedienteBean.C_IDFASE + " = " + fase : "";
 		where += (asunto!=null && !asunto.equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(asunto.trim(),"E." + ExpExpedienteBean.C_ASUNTO): "";
 		where += (observaciones!=null && !observaciones.equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(observaciones.trim(),"E." + ExpExpedienteBean.C_OBSERVACIONES): "";
 		where += (estado!=null && !estado.equals("")) ? " AND E." + ExpExpedienteBean.C_IDESTADO + " = " + estado : "";
-		where += (materia!=null && !materia.equals("")) ? " AND E." + ExpExpedienteBean.C_IDMATERIA + " = " + materia : "";
-		where += (juzgado!=null && !juzgado.equals("")) ? " AND juz." + ScsJuzgadoBean.C_IDJUZGADO + " = " + juzgado : "";
-		where += (numAsunto!=null && !numAsunto.equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(numAsunto.trim(),"E." + ExpExpedienteBean.C_NUMASUNTO): "";
-		
+		where += (form.getIdMateria()!=null && !form.getIdMateria().equals("")) ? " AND E." + ExpExpedienteBean.C_IDMATERIA + " = " + form.getIdMateria() : "";
+		where += (form.getIdArea()!=null && !form.getIdArea().equals("")) ? " AND E." + ExpExpedienteBean.C_IDAREA + " = " + form.getIdArea() : "";
+		where += (form.getJuzgado()!=null && !form.getJuzgado().equals("")) ? " AND juz." + ScsJuzgadoBean.C_IDJUZGADO + " = " + form.getJuzgado()+" AND juz." + ScsJuzgadoBean.C_IDINSTITUCION + " = " + form.getIdInstJuzgado() : "";
+		where += (form.getNumAsunto()!=null && !form.getNumAsunto().equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(form.getNumAsunto().trim(),"E." + ExpExpedienteBean.C_NUMASUNTO): "";
+		where += (form.getOtrasPretensiones()!=null && !form.getOtrasPretensiones().equals("")) ? " AND E." + ExpExpedienteBean.C_OTRASPRETENSIONES + " = '" + form.getOtrasPretensiones()+"'" : "";
+		where += (form.getIdPretension()!=null && !form.getIdPretension().equals("")) ? " AND E." + ExpExpedienteBean.C_IDPRETENSION + " = " + form.getIdPretension() : "";
+		where += (form.getIdProcedimiento()!=null && !form.getIdProcedimiento().equals("")) ? " AND E." + ExpExpedienteBean.C_PROCEDIMIENTO + " = " + form.getIdProcedimiento()+ " AND E." + ExpExpedienteBean.C_IDINSTITUCION_PROCEDIMIENTO + " = " + form.getIdInstProcedimiento() : "";
 
 		if((nombreDenunciado!=null && !nombreDenunciado.equals(""))||(ap1Denunciado!=null && !ap1Denunciado.equals(""))||(ap2Denunciado!=null && !ap2Denunciado.equals(""))){
 			StringBuffer sqlDenunciado = new StringBuffer();
@@ -812,7 +661,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			//Se añade la relación con la tabla de permisos de expedientes.
 			sql += " FROM ";
 		    sql += ExpExpedienteBean.T_NOMBRETABLA+" E, "+CenInstitucionBean.T_NOMBRETABLA+" I, "+ExpTipoExpedienteBean.T_NOMBRETABLA+" T " ;//+ExpPermisosTiposExpedientesBean.T_NOMBRETABLA+" X";
-		    sql += (juzgado!=null && !juzgado.equals("")) ? ", " + ScsJuzgadoBean.T_NOMBRETABLA + " juz" : "";
+		    sql += (form.getJuzgado()!=null && !form.getJuzgado().equals("")) ? ", " + ScsJuzgadoBean.T_NOMBRETABLA + " juz" : "";
 		    
 		    if (hayPartes){
 		    	sql +=", "+ExpPartesBean.T_NOMBRETABLA+" PA";
@@ -2245,9 +2094,11 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			sql.append(" EXP.ACTUACIONESPRESCRITAS, ");
 			sql.append(" EXP.SANCIONFINALIZADA, ");
 			sql.append(" EXP.ANOTACIONESCANCELADAS, ");
-			sql.append("        EXP.ANIOEXPDISCIPLINARIO, ");
+			sql.append(" EXP.ANIOEXPDISCIPLINARIO, ");
 			sql.append(" EXP.NUMEXPDISCIPLINARIO, ");
-			sql.append("        EXP.NUMASUNTO, ");
+			sql.append(" EXP.ANIOEJG,EXP.NUMEROEJG, EXP.IDTIPOEJG, ");
+		       
+			sql.append(" EXP.NUMASUNTO, ");
 			sql.append(" TO_CHAR(EXP.FECHAINICIALESTADO, 'dd-mm-yyyy') AS FECHAINICIALESTADO, ");
 			sql.append(" TO_CHAR(EXP.FECHAFINALESTADO, 'dd-mm-yyyy') AS FECHAFINALESTADO, ");
 			sql.append(" TO_CHAR(EXP.FECHAPRORROGAESTADO, 'dd-mm-yyyy') AS FECHAPRORROGAESTADO, ");
@@ -2338,6 +2189,42 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 					}
 					
 				}
+			}
+			
+			if(datos!=null && datos.size()>0){
+				 Hashtable expedienteHashtable = (Hashtable) datos.get(0);
+				 if(!UtilidadesHash.getString(expedienteHashtable, ExpExpedienteBean.C_IDTIPOEJG).equals("")){
+					 ScsEJGAdm ejgAdm = new ScsEJGAdm(usrbean);
+					 Hashtable haste = ejgAdm.getDatosEjg(UtilidadesHash.getString(expedienteHashtable, ExpExpedienteBean.C_IDINSTITUCION), UtilidadesHash.getString(expedienteHashtable, ExpExpedienteBean.C_ANIOEJG), UtilidadesHash.getString(expedienteHashtable, ExpExpedienteBean.C_NUMEROEJG), UtilidadesHash.getString(expedienteHashtable, ExpExpedienteBean.C_IDTIPOEJG));
+					 String SUFIJO = (String) haste.get("SUFIJO");
+					 String CODIGO = (String) haste.get("CODIGO");
+					 String codigoEjg = null;
+					 if (SUFIJO != null && !SUFIJO.equals("")) {
+							codigoEjg = CODIGO + "-" + SUFIJO;
+							
+						} else {
+							codigoEjg = CODIGO;
+						}
+					 expedienteHashtable.put("EJG_ANIO", UtilidadesHash.getString(expedienteHashtable, ExpExpedienteBean.C_ANIOEJG));
+					 expedienteHashtable.put("EJG_NUMEJG", UtilidadesHash.getString(expedienteHashtable, ExpExpedienteBean.C_ANIOEJG)+" / "+codigoEjg);
+					 expedienteHashtable.put("EJG_CODIGO", codigoEjg);
+					 expedienteHashtable.put("EJG_SOLICITANTE_NIF", UtilidadesHash.getString(haste, "NIF"));
+					 expedienteHashtable.put("EJG_SOLICITANTE_NOMBRE", UtilidadesHash.getString(haste, "NOMBRE"));
+					 expedienteHashtable.put("EJG_SOLICITANTE_APELLIDO1", UtilidadesHash.getString(haste, "APELLIDO1"));
+					 expedienteHashtable.put("EJG_SOLICITANTE_APELLIDO2", UtilidadesHash.getString(haste, "APELLIDO2"));
+					 
+					 
+				 }else{
+					 expedienteHashtable.put("EJG_ANIO", "");
+					 expedienteHashtable.put("EJG_NUMEJG", "");
+					 expedienteHashtable.put("EJG_CODIGO", "");
+					 expedienteHashtable.put("EJG_SOLICITANTE_NIF", "");
+					 expedienteHashtable.put("EJG_SOLICITANTE_NOMBRE", "");
+					 expedienteHashtable.put("EJG_SOLICITANTE_APELLIDO1", "");
+					 expedienteHashtable.put("EJG_SOLICITANTE_APELLIDO2", "");
+					 
+				 }
+				
 			}
 			
 			// RGG 19/10/2009 PROCESO DE CARGA DE DATOS EN UN SEGUNDO RECORRIDO
