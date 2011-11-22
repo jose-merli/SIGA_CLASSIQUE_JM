@@ -233,8 +233,14 @@ legend {
 .labelTextArea{
 	text-align: left;
 	font-family: <%=src.get("font.style")%>;
-	color:#<%=src.get("color.labelText")%>;
 	font-size: <%=fontSize%>;
+	left: 25px;
+	vertical-align: top;
+	margin-top: 0px;
+	margin-left: 0px;
+	color:#<%=src.get("color.labelText")%>;
+	background-color: #<%=src.get("color.button.BG")%>;
+	border: 1px solid #<%=src.get("color.button.border")%>;
 	padding-left: 2px;
 	padding-right: 2px;
 	padding-top: 2px;
