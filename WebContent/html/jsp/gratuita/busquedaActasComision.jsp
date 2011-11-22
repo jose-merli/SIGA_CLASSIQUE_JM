@@ -43,11 +43,11 @@
 					<siga:ConjCampos leyenda="general.criterios">	
 						<table class="tablaCampos" border="0" align="left">
 						<tr>
-							<td class="labelText"><siga:Idioma key="sjcs.actas.numeroActa" />/<siga:Idioma key="sjcs.actas.anio" /></td>
-							<td>
-								<html:text name="ActaComisionForm" property="numeroActa" size="8" maxlength="8" styleClass="boxNumber"></html:text>
-								&nbsp;/&nbsp;
+							<td class="labelText"><siga:Idioma key="sjcs.actas.anio" />/<siga:Idioma key="sjcs.actas.numeroActa" /></td>
+							<td class="labelText">
 								<html:text name="ActaComisionForm" property="anioActa" size="4" maxlength="4" styleClass="box"  onkeypress="return soloDigitos(event)"></html:text>
+								&nbsp;/&nbsp;
+								<html:text name="ActaComisionForm" property="numeroActa" size="8" maxlength="8" styleClass="boxNumber"></html:text>
 							</td>
 							<td class="labelText"><siga:Idioma key="sjcs.actas.fechaResolucion" /></td>
 							<td>
@@ -66,11 +66,11 @@
 						</tr>
 						<tr>
 							<td class="labelText"><siga:Idioma key="sjcs.actas.presidente"/></td>
-							<td colspan="5"><siga:ComboBD nombre="idPresidente"  tipo="tipoPonente" parametro="<%=dato%>" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="500"/></td>
+							<td class="labelText" colspan="5"><siga:ComboBD nombre="idPresidente"  tipo="tipoPonente" parametro="<%=dato%>" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="500"/></td>
 						</tr>
 						<tr>
 							<td class="labelText"><siga:Idioma key="sjcs.actas.secretario"/></td>
-							<td colspan="5"><siga:ComboBD nombre="idSecretario"  tipo="tipoPonente" parametro="<%=dato%>" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="500"/></td>
+							<td class="labelText" colspan="5"><siga:ComboBD nombre="idSecretario"  tipo="tipoPonente" parametro="<%=dato%>" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="500"/></td>
 						</tr>
 						</table>
 					</siga:ConjCampos>	

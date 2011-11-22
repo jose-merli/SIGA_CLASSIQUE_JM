@@ -89,10 +89,10 @@
 			<table class="tablaCampos" border="0" align="left">
 			<tr>
 				<td class="labelText" width="18%"><siga:Idioma key="sjcs.actas.numeroActa" />/<siga:Idioma key="sjcs.actas.anio" /> (*)</td>
-				<td>
-					<html:text name="ActaComisionForm" property="numeroActa" size="4" maxlength="8" styleClass="<%=estiloNumber%>" readonly="<%=readOnly%>" value="<%=numeroActa%>"></html:text>
+				<td class="labelText">
+					<html:text name="ActaComisionForm" property="anioActa" size="2" maxlength="4" styleClass="boxConsulta" readonly="true" onkeypress="return soloDigitos(event)" value="<%=anioActa%>"></html:text>
 					&nbsp;/&nbsp;
-					<html:text name="ActaComisionForm" property="anioActa" size="2" maxlength="4" styleClass="<%=estiloNumber%>" readonly="<%=readOnly%>" onkeypress="return soloDigitos(event)" value="<%=anioActa%>"></html:text>
+					<html:text name="ActaComisionForm" property="numeroActa" size="4" maxlength="8" styleClass="boxConsulta" readonly="true" value="<%=numeroActa%>"></html:text>
 				</td>
 				<td class="labelText"><siga:Idioma key="sjcs.actas.fechaResolucion" /> (*)</td>
 				<td>
@@ -119,9 +119,9 @@
 				<%}%>
 				</td>
 				<td class="labelText"><siga:Idioma key="sjcs.actas.horaInicio" /></td>
-				<td><html:text name="ActaComisionForm" property="horaIni" value="<%=horaInicioReunion %>" readonly="<%=readOnly%>" maxlength="2" styleClass="<%=estilo%>" style="text-align:right; width:25px" onkeypress="return soloDigitos(event)"></html:text> : <html:text name="ActaComisionForm" property="minuIni" value="<%=minInicioReunion %>" readonly="<%=readOnly%>" maxlength="2" styleClass="<%=estilo%>" style="text-align:left; width:25px"  onkeypress="return soloDigitos(event)"></html:text></td>
+				<td class="labelText"><html:text name="ActaComisionForm" property="horaIni" value="<%=horaInicioReunion %>" readonly="<%=readOnly%>" maxlength="2" styleClass="<%=estilo%>" style="text-align:right; width:25px" onkeypress="return soloDigitos(event)"></html:text> : <html:text name="ActaComisionForm" property="minuIni" value="<%=minInicioReunion %>" readonly="<%=readOnly%>" maxlength="2" styleClass="<%=estilo%>" style="text-align:left; width:25px"  onkeypress="return soloDigitos(event)"></html:text></td>
 				<td class="labelText"><siga:Idioma key="sjcs.actas.horaFin" /></td>
-				<td><html:text name="ActaComisionForm" property="horaFin" value="<%=horaFinReunion %>" readonly="<%=readOnly%>" maxlength="2" styleClass="<%=estilo%>" style="text-align:right; width:25px" onkeypress="return soloDigitos(event)"></html:text> : <html:text name="ActaComisionForm" property="minuFin"  value="<%=minFinReunion %>" readonly="<%=readOnly%>" maxlength="2" styleClass="<%=estilo%>" style="text-align:left; width:25px"  onkeypress="return soloDigitos(event)"></html:text></td>
+				<td class="labelText"><html:text name="ActaComisionForm" property="horaFin" value="<%=horaFinReunion %>" readonly="<%=readOnly%>" maxlength="2" styleClass="<%=estilo%>" style="text-align:right; width:25px" onkeypress="return soloDigitos(event)"></html:text> : <html:text name="ActaComisionForm" property="minuFin"  value="<%=minFinReunion %>" readonly="<%=readOnly%>" maxlength="2" styleClass="<%=estilo%>" style="text-align:left; width:25px"  onkeypress="return soloDigitos(event)"></html:text></td>
 			</tr>
 			<tr>
 				<td class="labelText"><siga:Idioma key="sjcs.actas.presidente"/></td>
