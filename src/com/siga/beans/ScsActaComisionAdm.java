@@ -431,8 +431,9 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 	 * @param anioActa
 	 * @return
 	 * @throws ClsExceptions 
+	 * @throws SIGAException 
 	 */
-	public Vector getEJGsInforme(String idInstitucion, String idActa, String anioActa) throws ClsExceptions {
+	public Vector getEJGsInforme(String idInstitucion, String idActa, String anioActa) throws ClsExceptions, SIGAException {
 		
 		Vector salida = new Vector();
 		
@@ -501,9 +502,9 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		
 		consulta.append(" order by ejg." + ScsEJGBean.C_ANIO + " desc , ejg." + ScsEJGBean.C_NUMERO + " desc");
 
-		HelperInformesAdm helperInformes = new HelperInformesAdm();
-		salida = helperInformes.ejecutaConsultaBind(consulta.toString(), htCodigos);
-		//salida.add(helperInformes.ejecutaConsultaBind(consulta.toString(), htCodigos));
+		//HelperInformesAdm helperInformes = new HelperInformesAdm();
+		//salida = helperInformes.ejecutaConsultaBind(consulta.toString(), htCodigos);
+		salida = this.selectGenericoBind(consulta.toString(), htCodigos);
 		return salida;
 
 	}
@@ -515,8 +516,9 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 	 * @param anioActa
 	 * @return
 	 * @throws ClsExceptions 
+	 * @throws SIGAException 
 	 */
-	public Vector getEJGsPendientes(String idInstitucion, String idActa, String anioActa) throws ClsExceptions {
+	public Vector getEJGsPendientes(String idInstitucion, String idActa, String anioActa) throws ClsExceptions, SIGAException {
 		
 		Vector salida = new Vector();
 		
@@ -584,9 +586,9 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		
 		consulta.append(" order by ejg." + ScsEJGBean.C_ANIO + " desc , ejg." + ScsEJGBean.C_NUMERO + " desc");
 
-		HelperInformesAdm helperInformes = new HelperInformesAdm();
-		salida = helperInformes.ejecutaConsultaBind(consulta.toString(), htCodigos);
-		//salida.add(helperInformes.ejecutaConsultaBind(consulta.toString(), htCodigos));
+		//HelperInformesAdm helperInformes = new HelperInformesAdm();
+		//salida = helperInformes.ejecutaConsultaBind(consulta.toString(), htCodigos);
+		salida = this.selectGenericoBind(consulta.toString(), htCodigos);
 		return salida;
 
 	}
@@ -598,8 +600,9 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 	 * @param anioActa
 	 * @return
 	 * @throws ClsExceptions 
+	 * @throws SIGAException 
 	 */
-	public Vector getEJGsPendientesPonentes(String idInstitucion, String idActa, String anioActa) throws ClsExceptions {
+	public Vector getEJGsPendientesPonentes(String idInstitucion, String idActa, String anioActa) throws ClsExceptions, SIGAException {
 		
 		Vector salida = new Vector();
 		
@@ -635,8 +638,9 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		
 		consulta.append(" group by pon." + ScsPonenteBean.C_NOMBRE);
 
-		HelperInformesAdm helperInformes = new HelperInformesAdm();
-		salida = helperInformes.ejecutaConsultaBind(consulta.toString(), htCodigos);
+		//HelperInformesAdm helperInformes = new HelperInformesAdm();
+		//salida = helperInformes.ejecutaConsultaBind(consulta.toString(), htCodigos);
+		salida = this.selectGenericoBind(consulta.toString(), htCodigos);
 		return salida;
 
 	}
