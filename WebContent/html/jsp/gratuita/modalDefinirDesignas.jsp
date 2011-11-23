@@ -153,7 +153,6 @@
 			{
 				colegiado.value=resultado[2];
 				idPersona.value=resultado[0];
-				alert("idPersona:"+idPersona);
 			}
 		}
 		
@@ -311,7 +310,7 @@
 			<td colspan="5">
 				<html:hidden property="flagSalto" value=""></html:hidden>
 				<html:hidden property="flagCompensacion" value=""></html:hidden>
-					<siga:BusquedaSJCS	propiedad="seleccionLetrado" botones="M"
+					<siga:BusquedaSJCS	propiedad="seleccionLetrado" botones="M,D"
 						concepto="Designacion" operacion="Asignacion" nombre="BuscarDesignasForm" campoTurno="idTurno" campoFecha="fechaAperturaInicio"
 						campoPersona="idPersona" campoColegiado="ncolegiado" campoNombreColegiado="nomColegiado" mostrarNColegiado="true"
 						mostrarNombreColegiado="true" campoFlagSalto="flagSalto" campoFlagCompensacion="flagCompensacion" campoSalto="checkSalto" modo="nuevo"

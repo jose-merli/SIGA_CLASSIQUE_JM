@@ -1,7 +1,9 @@
 
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
@@ -193,11 +195,13 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 	 * @author nuria.rgonzalez 13-12-04	 
 	 */
 	protected String[] getCamposDirecciones() throws ClsExceptions {
-		String tipoDireccion = "";
+		String tipoDireccion = "", idTipoDireccion = "";
 		if (this.usrbean!=null && !this.compruebaVisibilidadCampo(CenDireccionTipoDireccionBean.T_NOMBRETABLA,CenDireccionTipoDireccionBean.C_IDTIPODIRECCION)) {
 			tipoDireccion = "' ' as \"" + CenTipoDireccionBean.T_NOMBRETABLA +"."+CenTipoDireccionBean.C_DESCRIPCION+"\"";
+			idTipoDireccion = "' ' as \"" + CenTipoDireccionBean.T_NOMBRETABLA +"."+CenTipoDireccionBean.C_IDTIPODIRECCION+"\"";
 		} else {
 			tipoDireccion = "f_siga_gettiposdireccion(" + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDINSTITUCION + "," + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPERSONA + "," + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDDIRECCION + ", " + this.usrbean.getLanguage() + ") as \"" + CenTipoDireccionBean.T_NOMBRETABLA +"."+CenTipoDireccionBean.C_DESCRIPCION+"\"";
+			idTipoDireccion = "F_SIGA_GET_IDTIPOSDIRECCION(" + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDINSTITUCION + "," + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPERSONA + "," + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDDIRECCION + ") as \"" + CenTipoDireccionBean.C_IDTIPODIRECCION+"\"";
 		}
 		String[] campos = {	
 				CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDINSTITUCION,	
@@ -229,7 +233,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 				CenProvinciaBean.T_NOMBRETABLA + "." + CenProvinciaBean.C_NOMBRE +" AS PROVINCIA ",
 				UtilidadesMultidioma.getCampoMultidiomaSimple(CenPaisBean.T_NOMBRETABLA + "." + CenPaisBean.C_NOMBRE, this.usrbean.getLanguage()) + " AS PAIS", 
 				CenPaisBean.T_NOMBRETABLA + "." + CenPaisBean.C_IDPAIS + " AS IDPAIS", 
-				tipoDireccion
+				tipoDireccion, idTipoDireccion
 		};
 		return campos;
 	}
@@ -1851,5 +1855,46 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 			}
 		}
 	}
+	
+	public List<DireccionesForm> geDireccionesLetrado (String idPersona, String idInstitucion) throws ClsExceptions, SIGAException {
+
+		List<DireccionesForm> alDirecciones = null;
+		
+		try {
+			RowsContainer rc = null;
+			String sql = " SELECT CEN_DIRECCIONES.IDDIRECCION, ROW_NUMBER()OVER(ORDER BY IDINSTITUCION, IDPERSONA, IDDIRECCION)  || '. ' || f_siga_gettiposdireccion(CEN_DIRECCIONES.IDINSTITUCION, CEN_DIRECCIONES.IDPERSONA, CEN_DIRECCIONES.IDDIRECCION,1) AS nombre "+
+						 " FROM CEN_DIRECCIONES "+
+						 " LEFT JOIN CEN_POBLACIONES ON CEN_DIRECCIONES.IDPOBLACION = CEN_POBLACIONES.IDPOBLACION "+
+						 " LEFT JOIN CEN_PROVINCIAS ON CEN_DIRECCIONES.IDPROVINCIA = CEN_PROVINCIAS.IDPROVINCIA "+
+						 " LEFT JOIN CEN_PAIS ON CEN_DIRECCIONES.IDPAIS = CEN_PAIS.IDPAIS "+
+						 " WHERE CEN_DIRECCIONES.IDPERSONA = "+idPersona+" AND CEN_DIRECCIONES.IDINSTITUCION = "+idInstitucion+" AND CEN_DIRECCIONES.FECHABAJA IS NULL"+
+				" UNION "+
+				
+						" Select -1, '-- ' || f_siga_getrecurso_etiqueta('consultas.recuperarconsulta.literal.nueva', "+usrbean.getLanguage()+") as nombre "+
+						" from dual "+
+				" ORDER BY nombre ";
+			rc = this.find(sql);
+			if (rc!=null) {
+				alDirecciones = new ArrayList<DireccionesForm>();
+				DireccionesForm dirForm = null;
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila = fila.getRow();
+					dirForm = new DireccionesForm();
+					dirForm.setNombre(UtilidadesHash.getString(htFila,"NOMBRE"));
+					dirForm.setIdDireccion(UtilidadesHash.getLong(htFila,CenDireccionesBean.C_IDDIRECCION));
+					alDirecciones.add(dirForm);
+				}
+			}
+		}
+		catch(Exception e){
+			throw new ClsExceptions (e, "Error en selectDirecciones");
+		}
+		return alDirecciones;
+	}
+
+
+	
+/**/	
 	
 }

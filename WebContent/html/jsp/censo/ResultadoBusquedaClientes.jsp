@@ -462,9 +462,10 @@
 			String valorCheck = idInstitucion + "||" + idPersona;
 
 					if (!ParametrolopdActivo && isAplicarLOPD) {
-									valorCheck += "||" + ClsConstants.DB_TRUE;
-		%> <input type="checkbox" value="<%=valorCheck%>" name="chkPersona"
-			disabled> <%
+							valorCheck += "||" + ClsConstants.DB_TRUE;
+		%>
+				 <input type="checkbox" value="<%=valorCheck%>" name="chkPersona" disabled> 
+		<%
  					} else {
  							if (!ParametrolopdActivo) {
  								valorCheck += "||" + ClsConstants.DB_FALSE;

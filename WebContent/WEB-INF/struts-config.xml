@@ -546,7 +546,7 @@
 			<forward name="seleccionCenso" path="/html/jsp/censo/seleccionCensoModal.jsp"/>
 			<forward name="validarNoColegiado" path="/html/jsp/censo/validarNoColegiadoCenso.jsp"/>
 			<forward name="exitoInsercionNoColegiado" path="/html/jsp/censo/exitoInsercionNoColegiadoCenso.jsp"/>
-			
+			<forward name="exitoInsercionNoColegiadoArt27" path="/html/jsp/censo/exitoInsercionNoColegiadoArt27Censo.jsp"/>
 		</action>
 
 		
@@ -790,6 +790,7 @@
 			<forward name="validarNoColegiado" path="/html/jsp/censo/validarNoColegiado.jsp"/>
 			<forward name="continuarAprobacionNoColegiado" path="/html/jsp/censo/continuarAprobacionNoColegiado.jsp"/>
 			<forward name="continuarAprobacion" path="/html/jsp/censo/continuarAprobacion.jsp"/>
+			<forward name="designarArt27" path="/html/jsp/gratuita/designarArticulo27.jsp"/>
 		</action>
 		
 		<action path="/EXP_AltaNoColegiado" forward="/CEN_DatosGenerales.do" >
@@ -2464,6 +2465,7 @@
 			<forward name="seleccion" path="/html/jsp/gratuita/seleccionClientesFiltros.jsp"/>
 			<forward name="editarTelefono" path="/html/jsp/gratuita/editarTelefonoClientesFiltros.jsp"/>
 			<forward name="cargarCombo" path="/html/jsp/gratuita/exitoCargarCombo.jsp"/>
+			<forward name="resultadoCenso" path="/html/jsp/censo/resultadosBusquedaCensoModal.jsp"/>	
 		</action>
 
 		<action path="/JGR_PersonaJG" type="com.siga.gratuita.action.PersonaJGAction" name="PersonaJGForm" scope="request">

@@ -1306,9 +1306,14 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			if (informePersonalizable.isEliminarFichero()) {
 				request.setAttribute("borrarFichero", "true");
 			}
-			request.setAttribute("nombreFichero", fichero.getName());
-			request.setAttribute("rutaFichero", fichero.getPath());
-		
+			
+			if (fichero == null || !fichero.exists()) {
+				throw new SIGAException("messages.general.error.ficheroNoExiste");
+			}else{
+				request.setAttribute("nombreFichero", fichero.getName());
+				request.setAttribute("rutaFichero", fichero.getPath());
+			}
+			
 		} catch (SIGAException e) {
 			throwExcp(e.getLiteral(),e, null);
 		

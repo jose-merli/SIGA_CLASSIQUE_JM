@@ -12,6 +12,7 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.general.SIGAException;
 
 /**
  * @author daniel.campos
@@ -292,5 +293,27 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 	return vInforme;
 					
 }
+	
+		/**
+	 * Comprueba si existe un colegiado
+	 * 
+	 * @param idPersona Long
+	 * @param idInstitucion Integer
+	 * @return CenColegiadoBean o null
+	 */
+	public CenNoColegiadoBean existeNoColegiado (Long idPersona) throws ClsExceptions, SIGAException {
+		try	{
+			
+			CenNoColegiadoBean salida = null;
+			Hashtable codigos = new Hashtable();
+            codigos.put(new Integer(1),idPersona.toString());
+            Vector v = this.selectBind(" WHERE IDPERSONA = :1 ",codigos);
+			if (v != null && v.size () > 0)
+				salida = (CenNoColegiadoBean) v.get(0);
+			return salida;
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al consultar datos en B.D.");
+		}
+	} //existeNoColegiado ()
 	
 }

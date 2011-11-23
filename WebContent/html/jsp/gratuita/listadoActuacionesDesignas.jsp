@@ -36,6 +36,7 @@
 	String idTurno=(String)request.getSession().getAttribute("DESIGNA_IDTURNO");
 	String anio=(String)request.getSession().getAttribute("DESIGNA_ANIO");
 	String numero=(String)request.getSession().getAttribute("DESIGNA_NUMERO");
+	boolean botonNuevo = (Boolean)request.getSession().getAttribute("botonNuevo");
 	
 	
 	
@@ -203,6 +204,17 @@
 		<%}%>
 
 		</siga:TablaCabecerasFijas>
+	<div style="position:absolute; left:150px;bottom:50px;z-index:2;">
+			<table align="center" border="0">
+				<tr>
+					<td class="labelText">
+						<%if(!botonNuevo){%>
+							<siga:Idioma key="gratuita.actuacionDesigna.art27.texto1"/>
+						<%}%>
+					</td>
+				</tr>
+			</table>
+		</div>		
 
 	</body>
 </html>

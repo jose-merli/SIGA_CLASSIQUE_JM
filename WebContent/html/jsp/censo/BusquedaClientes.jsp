@@ -356,7 +356,7 @@
 				   document.forms[0].valorCheck.value="1";
 		        }else{
 				   document.forms[0].chkBusqueda.value="0";
-				    document.forms[0].valorCheck.value="0";
+				   document.forms[0].valorCheck.value="0";
 				}
 				if(modo)
 					document.forms[0].modo.value = modo;

@@ -131,6 +131,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		try{
 			String consulta="select p." + CenPersonaBean.C_IDPERSONA + " idpersona,"+
 									" f_siga_calculoncolegiado(des." + ScsDesignasLetradoBean.C_IDINSTITUCION + ", des." + ScsDesignasLetradoBean.C_IDPERSONA +") as ncolegiado,"+
+									" f_siga_gettipocliente(des." + ScsDesignasLetradoBean.C_IDPERSONA + ", des." + ScsDesignasLetradoBean.C_IDINSTITUCION +",sysdate) as datoscolegiales,"+
 									" p." + CenPersonaBean.C_NOMBRE + " || ' ' || p." + CenPersonaBean.C_APELLIDOS1 + " || ' ' ||  p." + CenPersonaBean.C_APELLIDOS2 + " as nombre"+
 							" from " + ScsDesignasLetradoBean.T_NOMBRETABLA + " des, " + CenPersonaBean.T_NOMBRETABLA + " p"+
 							" where  p." + CenPersonaBean.C_IDPERSONA + " = des." + ScsDesignasLetradoBean.C_IDPERSONA +
@@ -1570,6 +1571,33 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al obtener la informacion sobre getLetrado");
 		}
 	}
+	
+	public Vector getLetradoSalidaOficioArt27(Hashtable htCodigo) throws ClsExceptions 	{
+		
+		try {
+			 String sql= " Select TO_CHAR(Dp.Fechadesigna,'dd/mm/yyyy') as FECHALETRADO_ACTUAL, "+           
+			 			  " P.NOMBRE || ' ' || P.APELLIDOS1 || ' ' ||P.APELLIDOS2 AS NOMBRE_LETRADO, "+
+			 			  " P.NIFCIF AS NIF_LETRADO, DECODE(P.SEXO, null, null,'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_LETRADO_SINTRADUCIR "+
+			 			  " , DECODE(P.SEXO,'H','o','a') AS O_A_LETRADO "+
+			 			  " , DECODE(P.SEXO,'H','el','la') AS EL_LA_LETRADO "+
+			 			  " From Scs_Designasletrado Dp, Cen_Persona p, Cen_NoColegiado c "+
+			 			  " Where Dp.Idinstitucion= :1 "+
+			 			  " And Dp.Idinstitucion = c.Idinstitucion "+
+			 			  " And Dp.Idpersona = c.Idpersona "+
+			 			  " And Dp.Idpersona = p.Idpersona " +
+			 			  " And Dp.Idturno = :2 "+
+			 			  " And Dp.Anio= :3 "+
+			 			  " And Dp.Numero =:4 "+			 			  
+			 			  " and Dp.Idpersona =:5"+
+			 			  " and Dp.Fecharenuncia is null";		
+			HelperInformesAdm helperInformes = new HelperInformesAdm();	
+			return helperInformes.ejecutaConsultaBind(sql, htCodigo);
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion sobre getLetrado");
+		}
+	}
+	
 	public Vector getDireccionLetradoSalidaOficio(String idPersona,String idInstitucion) throws ClsExceptions  
 	{
 		try {
@@ -2852,7 +2880,13 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					htCodigo.put(new Integer(3), anioDesigna);
 					htCodigo.put(new Integer(4), numeroDesigna);
 					htCodigo.put(new Integer(5), idPersona);
-				helperInformes.completarHashSalida(registro,getLetradoSalidaOficio(htCodigo));
+				
+				//Si no se encuentra info en cen_colegiado (Art.27) se busca en cen_nocolegiado
+				if(registro.get("NCOLEGIADO_LETRADO") != null && !((String)registro.get("NCOLEGIADO_LETRADO")).equals("")){
+					helperInformes.completarHashSalida(registro,getLetradoSalidaOficio(htCodigo));
+				}else{
+					helperInformes.completarHashSalida(registro,getLetradoSalidaOficioArt27(htCodigo));
+				}
 				String sexoLetrado  = (String)registro.get("SEXO_LETRADO_SINTRADUCIR");				
 				if (sexoLetrado!=null && !sexoLetrado.trim().equals("")){
 							htCodigo = new Hashtable();

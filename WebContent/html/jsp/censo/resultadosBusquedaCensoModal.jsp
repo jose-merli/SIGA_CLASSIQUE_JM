@@ -259,8 +259,11 @@
 
 					ncolegiado = (String)registro.get("NUM_COLEGIADO");
 					estadoColegial = si;
-					if(UtilidadesHash.getString(registro,"EJERCIENTE").equals("n"))
+					if(UtilidadesHash.getString(registro,"EJERCIENTE").equals("n")){
 						estadoColegial = no;
+					}else if(UtilidadesHash.getString(registro,"EJERCIENTE").equalsIgnoreCase("No Colegiado")){
+						estadoColegial = "No Colegiado";
+					}
 					
 					String institucion = (String)registro.get("ID_COLEGIO");
 					String mail = UtilidadesString.mostrarDatoJSP(registro.get("MAIL"));
@@ -279,6 +282,9 @@
 					String residente = si;
 					if(UtilidadesHash.getString(registro,"RESIDENCIA").equals("n"))
 						residente = no;
+					else if(UtilidadesHash.getString(registro,"RESIDENCIA").equalsIgnoreCase("No Colegiado")){
+						residente = "-";
+					}
 					
 					
 					String telefono = UtilidadesString.mostrarDatoJSP(registro.get("TELEFONO"));

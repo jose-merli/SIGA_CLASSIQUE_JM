@@ -30,7 +30,7 @@
 	Vector obj = (Vector)request.getSession().getAttribute("resultado");
 	request.getSession().removeAttribute("resultado");
 	String boton="";
-
+	boolean botonNuevo = (Boolean)request.getSession().getAttribute("botonNuevo");
 	
 	Hashtable designaActual = (Hashtable)ses.getAttribute("designaActual");
 	String modo = (String) ses.getAttribute("Modo");
@@ -117,6 +117,7 @@
 		<%	int recordNumber=1;
 				while ((recordNumber) <= obj.size()){	 
 					Hashtable hash = (Hashtable)obj.get(recordNumber-1);
+
 				String fDesigna=(String)hash.get("FECHADESIGNA");
 				String fRenuncia=(String)hash.get("FECHARENUNCIA");
 				String rn=String.valueOf(recordNumber);
@@ -144,7 +145,19 @@
 			}%>	
 		</siga:TablaCabecerasFijas>
 		</td></tr></table>
-
+	<div style="position:absolute; left:150px;bottom:5px;z-index:2;">
+			<table align="center" border="0">
+				<tr>
+					<td class="labelText">
+						<%if(botonNuevo){%>
+							<siga:Idioma key="gratuita.cambiosLetradoDesigna.art27.texto1"/>
+						<%}else{%>
+							<siga:Idioma key="gratuita.cambiosLetradoDesigna.art27.texto2"/>
+						<%}%>
+					</td>
+				</tr>
+			</table>
+		</div>
 
 <!-- FIN: LISTA DE VALORES -->
 		

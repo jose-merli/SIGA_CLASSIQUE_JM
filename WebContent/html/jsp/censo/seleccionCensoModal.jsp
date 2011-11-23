@@ -17,6 +17,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
+<%@ page import="com.atos.utils.GstDate"%>
 <%@ page import="com.siga.beans.CenDireccionesBean"%>
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.util.Hashtable"%>
@@ -53,7 +54,7 @@
 		if (apellido2==null) apellido2="";
 	}	
 
-	String  dni="", mail="", numcolegiado="", telefono="", descripcion= "";
+	String  dni="", mail="", numcolegiado="", telefono="", descripcion= "", nacido = "", fechaNac = "";
  	String  codPostal= "", direcion="",provincia="", poblacion= "", residencia="", ejerciente="", sexo = "", tratamiento= "";
 	String pais = "",  cPostal = "", telefono1 = "", movil = "", idDireccion = "", direccion = "", idPais = "", poblacionExtranjera = "", fax="";
 	Hashtable h = (Hashtable) request.getAttribute("unicaDireccion");
@@ -66,10 +67,12 @@
 		telefono1   = (String) datosCliente.get("telefono");     	     if (telefono1   == null) telefono1   = new String("");
 		idDireccion = (String) datosCliente.get("idDireccion");     	 if (idDireccion == null) idDireccion = new String("");
 		idPais      = (String) datosCliente.get("idPais");               if (idPais      == null) idPais      = new String("");
-		mail         = (String) datosCliente.get("mail");                if (mail      == null) mail      = new String("");
-		sexo         = (String) datosCliente.get("sexo");                if (sexo      == null) sexo      = new String("");
-		tratamiento  = (String) datosCliente.get("tratamiento");                if (tratamiento      == null) tratamiento      = new String("");
-		fax         = (String) datosCliente.get("fax1");                if (fax      == null) fax      = new String("");
+		mail        = (String) datosCliente.get("mail");                 if (mail      	 == null) mail        = new String("");
+		sexo        = (String) datosCliente.get("sexo");                 if (sexo      	 == null) sexo        = new String("");
+		tratamiento = (String) datosCliente.get("tratamiento");          if (tratamiento == null) tratamiento = new String("");
+		fax         = (String) datosCliente.get("fax1");                 if (fax      	 == null) fax      	  = new String("");
+		nacido      = (String) datosCliente.get("LugarNacimiento");      if (nacido    	 == null) nacido      = new String("");
+		fechaNac    = (String) datosCliente.get("FechaNacimiento");      if (fechaNac  	 == null) fechaNac    = new String("");
 		poblacionExtranjera = null; /*(String) h.get(CenDireccionesBean.C_POBLACIONEXTRANJERA);*/	  if (poblacionExtranjera == null) poblacionExtranjera = new String("");
 	
 	
@@ -108,6 +111,8 @@
 					aux[15] = "<%=tratamiento%>";
 					aux[16] = "<%=fax%>";
 					aux[17] = "<%=pais%>";
+					aux[18] = "<%=nacido%>";
+					aux[19] = "<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(user.getLanguage(),fechaNac))%>";
 
 				
 				top.cierraConParametros(aux);

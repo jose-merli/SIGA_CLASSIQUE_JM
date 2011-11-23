@@ -414,16 +414,17 @@
 		<%
 		String valorCheck = idInstitucion+"||"+idPersona;
 			
-							if(isAplicarLOPD){
+						if(isAplicarLOPD){
 								valorCheck+="||"+ClsConstants.DB_TRUE;
-							%>
+						%>
 								<input type="checkbox" value="<%=valorCheck%>"  name="chkPersona"  disabled >
-							<% }else{
-								valorCheck+="||"+ClsConstants.DB_FALSE;
+						<% }else{
+	 							//if (!ParametrolopdActivo) {
+	 								valorCheck += "||" + ClsConstants.DB_FALSE;
+	 							//}
 								boolean isChecked = false;
 								for (int z = 0; z < registrosSeleccionados.size(); z++) {
-									Hashtable clavesRegistro = (Hashtable) registrosSeleccionados
-											.get(z);
+									Hashtable clavesRegistro = (Hashtable) registrosSeleccionados.get(z);
 
 									String clave = (String)clavesRegistro.get("CLAVE");
 									
@@ -431,12 +432,9 @@
 										isChecked = true;
 										break;
 									}
-									
-
 								}
 								if (isChecked) {
-			%>
-								
+			%>								
 									<input type="checkbox" value="<%=valorCheck%>"  name="chkPersona" checked onclick="pulsarCheck(this)">
 								<%
 									} else {

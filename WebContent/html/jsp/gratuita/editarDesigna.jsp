@@ -56,18 +56,29 @@
 
 	String nombre_letrado;
 	String nume_colegiado;
+	String datosColegiales;
 	Hashtable letrado = clase.obtenerLetradoDesigna((String) resultado.get("IDINSTITUCION"), 
 													(String) resultado.get("IDTURNO"),
 													(String) resultado.get("ANIO"), 
 													(String) resultado.get("NUMERO"));
 
 	nombre_letrado = (String) letrado.get("NOMBRE");
+	
 	if (nombre_letrado==null || nombre_letrado.equals("")){
 	   nombre_letrado=" ";
 	}
-	nume_colegiado = (String) letrado.get("NCOLEGIADO");
-	if (nume_colegiado==null || nume_colegiado.equals("")){
-	   nume_colegiado=" ";
+	
+	nume_colegiado  = (String) letrado.get("NCOLEGIADO");
+	datosColegiales = (String) letrado.get("DATOSCOLEGIALES");
+	if (nume_colegiado==null || nume_colegiado.equals("")){ // No colegiado 
+	    nume_colegiado=" ";
+		ses.setAttribute("botonNuevo",false);
+		
+	}else if( !datosColegiales.equals("20")){ // No ejerciente
+	   ses.setAttribute("botonNuevo",false);		
+	
+	}else{
+		ses.setAttribute("botonNuevo",true);
 	}
 
 	// Procurador seleccionado:

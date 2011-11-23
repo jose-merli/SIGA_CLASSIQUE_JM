@@ -11,11 +11,14 @@ package com.siga.censo.action;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
+
+import net.sourceforge.ajaxtags.xml.AjaxXmlBuilder;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -23,13 +26,17 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.Row;
+import com.atos.utils.ClsLogging;
+import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.AjaxCollectionXmlBuilder;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.PaginadorBind;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenClienteBean;
 import com.siga.beans.CenColaCambioLetradoAdm;
+import com.siga.beans.CenColegiadoAdm;
+import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenDireccionTipoDireccionBean;
 import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
@@ -38,15 +45,15 @@ import com.siga.beans.CenNoColegiadoAdm;
 import com.siga.beans.CenNoColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
-import com.siga.beans.EnvEnviosAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.VleLetradosSigaAdm;
 import com.siga.censo.form.BusquedaCensoForm;
+import com.siga.censo.form.DireccionesForm;
 import com.siga.general.CenVisibilidad;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.gratuita.form.DesignaForm;
+
 
 /**
  * Clase action del caso de uso BUSCAR CLIENTE
@@ -103,10 +110,28 @@ public class BusquedaCensoAction extends MasterAction {
 						borrarPaginador(request, paginadorModal);
 												
 						mapDestino = buscarTodosModal(mapping, miForm, request, response);
+					}else if (accion.equalsIgnoreCase("buscarTodosArt27Modal")){
+						borrarPaginador(request, paginadorModal);
+												
+						mapDestino = buscarTodosArt27Modal(mapping, miForm, request, response);						
 					}else if (accion.equalsIgnoreCase("buscarTodosModal")){
 						mapDestino = buscarTodosModal(mapping, miForm, request, response);
+					
+					} else if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("getAjaxComboDirecciones")){
+						ClsLogging.writeFileLog("BUSQUEDA CENSO:getAjaxComboDirecciones", 10);
+						getAjaxComboDirecciones(mapping, miForm, request, response);
+						return null;
+						
+					} else if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("getAjaxDirecciones")){
+						ClsLogging.writeFileLog("BUSQUEDA CENSO:getAjaxDirecciones", 10);
+						getAjaxDirecciones(mapping, miForm, request, response);
+						return null;
+					} else if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("getAjaxBusquedaNIF")){
+						ClsLogging.writeFileLog("BUSQUEDA CENSO:getAjaxBusquedaNIF", 10);
+						getAjaxBusquedaNIF(mapping, miForm, request, response);
+						return null;
 					}
-
+					
 					else if (accion.equalsIgnoreCase("buscarPersonaInit")){
 						// buscarPersona
 						//borrarPaginador(mapping, miForm, request, response);
@@ -125,6 +150,8 @@ public class BusquedaCensoAction extends MasterAction {
 						mapDestino = buscarPor(mapping, miForm, request, response); 
 					}else if (accion.equalsIgnoreCase("insertarNoColegiado")){
 						mapDestino = insertarNoColegiado(mapping, miForm, request, response);
+					}else if (accion.equalsIgnoreCase("insertarNoColegiadoArticulo27")){
+						mapDestino = insertarNoColegiadoArt27(mapping, miForm, request, response);						
 					}else {
 						return super.executeInternal(mapping,formulario,request,response);
 					}
@@ -192,6 +219,232 @@ public class BusquedaCensoAction extends MasterAction {
 		return forward;
 	}
 	
+	protected String insertarNoColegiadoArt27 (ActionMapping mapping, ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
+	{
+    	String forward ="exception";
+		try {
+			// Obtengo los datos del formulario
+	     	BusquedaCensoForm miForm = (BusquedaCensoForm)formulario;
+			UsrBean usr = this.getUserBean(request);
+			CenPersonaAdm adminPer=new CenPersonaAdm(usr);
+   			CenClienteAdm clienteAdm = new CenClienteAdm(usr);   			
+   			CenClienteBean cli = null;
+   			
+   			if(miForm.getIdPersona()!=null && !miForm.getIdPersona().equals("")){
+   				cli = clienteAdm.existeCliente(new Long(miForm.getIdPersona()),new Integer(usr.getLocation()));
+   			}
+   			
+   			//Se mira si existe ya en el sistema o no
+			if (cli==null) {
+				forward =  insertarNoColArticulo27(mapping, miForm, request, response, new Long(miForm.getIdPersona()));
+
+			}else{				
+				CenDireccionesBean beanDir = new CenDireccionesBean ();
+				beanDir.setCodigoPostal (miForm.getCodPostal());
+				beanDir.setCorreoElectronico (miForm.getMail());
+				beanDir.setDomicilio (miForm.getDireccion());
+				beanDir.setFax1 (miForm.getFax1 ());
+				beanDir.setFax2 (miForm.getFax2 ());
+				beanDir.setIdInstitucion(new Integer(usr.getLocation()));
+				beanDir.setIdPais (miForm.getPais ());
+				if (miForm.getPais ().equals ("")) {
+					miForm.setPais (ClsConstants.ID_PAIS_ESPANA);
+				}
+				if (miForm.getPais().equals (ClsConstants.ID_PAIS_ESPANA)) {
+					beanDir.setIdPoblacion (miForm.getPoblacion ());
+					beanDir.setIdProvincia (miForm.getProvincia ());
+					beanDir.setPoblacionExtranjera ("");
+				} else {
+					beanDir.setPoblacionExtranjera (miForm.getPoblacionExt ());
+					beanDir.setIdPoblacion ("");
+					beanDir.setIdProvincia ("");
+				}
+				
+				beanDir.setIdPersona (new Long(miForm.getIdPersona()));
+				beanDir.setMovil (miForm.getMovil ());
+				beanDir.setPaginaweb (miForm.getPaginaWeb ());
+				beanDir.setTelefono1 (miForm.getTelefono ());
+				beanDir.setTelefono2 (miForm.getTelefono2 ());
+				beanDir.setPreferente(miForm.getPreferente());
+				beanDir.setIdDireccion(new Long(miForm.getIdDireccion()));
+				
+				
+				//estableciendo los datos del tipo de direccion
+				CenDireccionTipoDireccionBean vBeanTipoDir [] = null;
+				CenDireccionTipoDireccionBean b = null;
+				String [] tipoDir = null;
+				if(miForm.getTipoDireccion()!= null && !miForm.getTipoDireccion().equals("")){
+					tipoDir = miForm.getTipoDireccion().split(",");
+					vBeanTipoDir = new CenDireccionTipoDireccionBean [tipoDir.length];
+					for(int i = 0; i < tipoDir.length; i++){
+						b = new CenDireccionTipoDireccionBean ();
+						b.setIdTipoDireccion (new Integer(tipoDir[i]));
+						vBeanTipoDir[i] = b;
+					}
+				}			
+				
+				//estableciendo los datos del Historico
+				CenHistoricoBean beanHis = new CenHistoricoBean ();
+				beanHis.setMotivo ("");
+				
+				//obteniendo adm de BD de direcciones
+				CenDireccionesAdm direccionesAdm = new CenDireccionesAdm (this.getUserBean (request));
+				
+				//Si la dirección es nueva se añade para este no colegiado se inserta en el sistema
+				if(miForm.getDirecciones()!= null && miForm.getDirecciones().equals("-1")){
+					// insertando la direccion
+					if (! direccionesAdm.insertarConHistorico (beanDir, vBeanTipoDir, beanHis, this.getLenguaje (request)))
+						throw new SIGAException (direccionesAdm.getError());
+				}else{					
+					// actualizando la direccion
+					beanDir.setOriginalHash ((Hashtable) request.getSession ().getAttribute ("ORIGINALDIR"));
+					if (! direccionesAdm.updateConHistorico(beanDir, vBeanTipoDir, beanHis, this.getLenguaje (request)))
+						throw new SIGAException (direccionesAdm.getError());
+				}
+				
+				//Mandamos los datos para el refresco:
+				request.setAttribute("idPersona",miForm.getIdPersona());
+				request.setAttribute("nombre",miForm.getNombre());
+				request.setAttribute("apellido1",miForm.getApellido1());
+				request.setAttribute("apellido2",miForm.getApellido2());
+				String ncol = "No Colegiado";
+				if(miForm.getIdInstitucion().equals(usr.getLocation())){
+					ncol = miForm.getNumeroColegiado();
+				}
+				
+				request.setAttribute("nColegiado",ncol);
+				forward = "exitoInsercionNoColegiadoArt27";
+			}	
+
+	   } catch (Exception e) {
+		   throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
+   	   }
+		return forward;
+	}	
+	
+	protected String insertarNoColArticulo27 (ActionMapping mapping,	BusquedaCensoForm miForm,	HttpServletRequest request,	HttpServletResponse response, Long idpersona) throws SIGAException 
+	{
+		UserTransaction tx = null;
+		
+		try {		
+			
+			// Obtengo usuario y creo manejadores para acceder a las BBDD
+			UsrBean usr = this.getUserBean(request);
+
+			CenClienteAdm adminCli=new CenClienteAdm(usr);
+			CenClienteBean beanCli = new  CenClienteBean();
+			String institucion =  miForm.getIdInstitucion();
+			beanCli =  adminCli.insertNoColegiadoCenso ( request, new Long(miForm.getIdPersona()),institucion);
+			String mensInformacion = "messages.inserted.success"; 
+			if (!adminCli.getError().equals("")) {
+				mensInformacion = adminCli.getError();
+			}
+
+			tx = usr.getTransaction();			
+			tx.begin();
+						
+			// Inserto los datos del no colegiado en CenNoColegiado:
+			CenNoColegiadoAdm admNoColegiado = new CenNoColegiadoAdm(this.getUserBean(request));
+			Hashtable hashNoColegiado = new Hashtable();
+			hashNoColegiado.put(CenNoColegiadoBean.C_IDINSTITUCION,beanCli.getIdInstitucion());
+			hashNoColegiado.put(CenNoColegiadoBean.C_IDPERSONA,beanCli.getIdPersona());
+			//El tipo sera siempre Personal:
+			hashNoColegiado.put(CenNoColegiadoBean.C_TIPO,ClsConstants.COMBO_TIPO_PERSONAL);
+			//No es sociedad SJ:
+			hashNoColegiado.put(CenNoColegiadoBean.C_SOCIEDADSJ,ClsConstants.DB_FALSE);
+			hashNoColegiado.put(CenNoColegiadoBean.C_USUMODIFICACION,usr.getUserName());
+			hashNoColegiado.put(CenNoColegiadoBean.C_FECHAMODIFICACION,"SYSDATE");
+			
+   		    admNoColegiado.insert(hashNoColegiado);
+   		    
+   		    ///////////////////////////////////////////////////////////////////////////
+   		 
+
+	   		    CenDireccionesBean beanDir = new CenDireccionesBean ();
+				beanDir.setCodigoPostal (miForm.getCodPostal());
+				beanDir.setCorreoElectronico (miForm.getMail());
+				beanDir.setDomicilio (miForm.getDireccion());
+				beanDir.setFax1 (miForm.getFax1 ());
+				beanDir.setFax2 (miForm.getFax2 ());
+				beanDir.setIdInstitucion(new Integer(usr.getLocation()));
+				beanDir.setIdPais (miForm.getPais ());
+				if (miForm.getPais ().equals ("")) {
+					miForm.setPais (ClsConstants.ID_PAIS_ESPANA);
+				}
+				if (miForm.getPais().equals (ClsConstants.ID_PAIS_ESPANA)) {
+					beanDir.setIdPoblacion (miForm.getPoblacion ());
+					beanDir.setIdProvincia (miForm.getProvincia ());
+					beanDir.setPoblacionExtranjera ("");
+				} else {
+					beanDir.setPoblacionExtranjera (miForm.getPoblacionExt ());
+					beanDir.setIdPoblacion ("");
+					beanDir.setIdProvincia ("");
+				}
+				beanDir.setIdPersona (beanCli.getIdPersona());
+				beanDir.setMovil (miForm.getMovil ());
+				beanDir.setPaginaweb (miForm.getPaginaWeb ());
+				beanDir.setTelefono1 (miForm.getTelefono ());
+				beanDir.setTelefono2 (miForm.getTelefono2 ());
+				beanDir.setPreferente(miForm.getPreferente());
+				
+				//estableciendo los datos del tipo de direccion
+				
+				CenDireccionTipoDireccionBean vBeanTipoDir [] = null;
+				CenDireccionTipoDireccionBean b = null;
+				String [] tipoDir = null;
+				if(miForm.getTipoDireccion()!= null && !miForm.getTipoDireccion().equals("")){
+					tipoDir = miForm.getTipoDireccion().split(",");
+					vBeanTipoDir = new CenDireccionTipoDireccionBean [tipoDir.length];
+					for(int i = 0; i < tipoDir.length; i++){
+						b = new CenDireccionTipoDireccionBean ();
+						b.setIdTipoDireccion (new Integer(tipoDir[i]));
+						vBeanTipoDir[i] = b;
+					}
+				}			
+				
+				//estableciendo los datos del Historico
+				CenHistoricoBean beanHis = new CenHistoricoBean ();
+				beanHis.setMotivo ("");
+				
+			//obteniendo adm de BD de direcciones
+				CenDireccionesAdm direccionesAdm = new CenDireccionesAdm (this.getUserBean (request));
+				
+				//insertando la direccion
+				if (! direccionesAdm.insertarConHistorico (beanDir, vBeanTipoDir, beanHis, this.getLenguaje (request)))
+					throw new SIGAException (direccionesAdm.getError());
+				
+				
+				//insertando en la cola de modificacion de datos para Consejos
+				CenColaCambioLetradoAdm colaAdm = new CenColaCambioLetradoAdm (this.getUserBean (request));
+				if (! colaAdm.insertarCambioEnCola (ClsConstants.COLA_CAMBIO_LETRADO_MODIFICACION_DIRECCION, 
+						beanDir.getIdInstitucion (), beanDir.getIdPersona (), beanDir.getIdDireccion ()))
+					throw new SIGAException (colaAdm.getError ());
+				request.setAttribute("idDireccion",beanDir.getIdDireccion().toString());
+
+   		    
+////////////////////////////////////////////////////////////////////////////////////////
+			tx.commit();
+
+			//Mandamos los datos para el refresco:
+			request.setAttribute("idPersona",miForm.getIdPersona());
+			request.setAttribute("nombre",miForm.getNombre());
+			request.setAttribute("apellido1",miForm.getApellido1());
+			request.setAttribute("apellido2",miForm.getApellido2());
+			String ncol = "No Colegiado";
+			if(miForm.getIdInstitucion().equals(usr.getLocation())){
+				ncol = miForm.getNumeroColegiado();
+			}
+			
+			request.setAttribute("nColegiado",ncol);
+			
+	   } 	
+	   catch (Exception e) {
+		   throw new SIGAException (e);
+		   //throwExcp("messages.general.error",new String[] {"modulo.censo"},e,tx);
+   	   }
+	   return "exitoInsercionNoColegiadoArt27";			
+	}
+		
 	protected String insertarNoCol (ActionMapping mapping,	BusquedaCensoForm miForm,	HttpServletRequest request,	HttpServletResponse response, Long idpersona) throws SIGAException 
 	{
 		UserTransaction tx = null;
@@ -671,7 +924,7 @@ public class BusquedaCensoAction extends MasterAction {
 	}
 	} 	
 	catch (Exception e) {
-	throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
+		throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
 	}
 	
 	// COMUN
@@ -689,7 +942,7 @@ public class BusquedaCensoAction extends MasterAction {
 		try {
 		
 			BusquedaCensoForm miform = (BusquedaCensoForm)formulario;
-			
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			// OBTENGO VALORES DEL FORM
 			// solamente el 0 porque es el unico que he pulsado
 			//Vector vOcultos = miform.getDatosTablaOcultos(0);
@@ -699,6 +952,10 @@ public class BusquedaCensoAction extends MasterAction {
 			String idPersona = miform.getIdPersona();
 			// obtener idinstitucion
 			String idInstitucion = miform.getIdInstitucion();
+			
+			CenPersonaAdm perAdm = new CenPersonaAdm(user);
+			CenPersonaBean perBean = new CenPersonaBean();
+			perBean = perAdm.getPersonaPorId(idPersona);
 			
 			// obtener nColegiado
 			//String nColegiado = (String)vOcultos.get(2);
@@ -721,7 +978,6 @@ public class BusquedaCensoAction extends MasterAction {
 			String tratamiento = miform.getTratamiento().trim();			
 			String fax = miform.getFax1().trim();		
 			String pais = miform.getPais().trim();		
-			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			
 			Hashtable datosCliente = new Hashtable();
 			
@@ -742,7 +998,9 @@ public class BusquedaCensoAction extends MasterAction {
 			datosCliente.put("mail",mail);
 			datosCliente.put("sexo",sexo);
 			datosCliente.put("tratamiento",tratamiento);
-			datosCliente.put("fax1",fax);			
+			datosCliente.put("fax1",fax);
+			datosCliente.put("FechaNacimiento",perBean.getFechaNacimiento());
+			datosCliente.put("LugarNacimiento",perBean.getNaturalDe());
 			
 			request.setAttribute("datosCensoModal", datosCliente);	
 
@@ -751,7 +1009,7 @@ public class BusquedaCensoAction extends MasterAction {
 			destino="seleccionCenso";
 			} 	
 		catch (Exception e) {
-		throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
+			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
 		}
 		return destino;
 	}
@@ -771,8 +1029,7 @@ public class BusquedaCensoAction extends MasterAction {
 		VleLetradosSigaAdm cliente = new VleLetradosSigaAdm(this.getUserBean(request));
 		
 		if (request.getParameter("busquedaSancion")!=null && request.getParameter("busquedaSancion").equals("1")){
-			request.setAttribute("busquedaSancion","1");
-			
+			request.setAttribute("busquedaSancion","1");			
 		}
 		
 		request.setAttribute(ClsConstants.PARAM_PAGINACION,paginadorModal);
@@ -855,8 +1112,372 @@ public class BusquedaCensoAction extends MasterAction {
 		return "resultadoCenso";
 	}
 	
-
+	protected String buscarTodosArt27Modal(ActionMapping mapping, MasterForm formulario,
+			HttpServletRequest request, HttpServletResponse response)
+			throws ClsExceptions, SIGAException {
+		
+		
+		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		
+		// casting del formulario
+		BusquedaCensoForm miFormulario = (BusquedaCensoForm)formulario;
+		String idInstitucion = miFormulario.getColegiadoen();	
+		// busqueda de clientes
+		VleLetradosSigaAdm cliente = new VleLetradosSigaAdm(this.getUserBean(request));
+		
+		if (request.getParameter("busquedaSancion")!=null && request.getParameter("busquedaSancion").equals("1")){
+			request.setAttribute("busquedaSancion","1");
+			
+		}
+		
+		request.setAttribute(ClsConstants.PARAM_PAGINACION,paginadorModal);
+		request.setAttribute("si",UtilidadesString.getMensajeIdioma(user, "general.yes"));
+		request.setAttribute("no",UtilidadesString.getMensajeIdioma(user, "general.no"));
 	
+		
+		
+		try {
+			HashMap databackup=getPaginador(request, paginadorModal);
+			if (databackup!=null){ 
 
+				PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
+				
+				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
+				String pagina = (String)request.getParameter("pagina");
+				if (paginador!=null){	
+					Vector datos=new Vector();
+					if (pagina!=null){
+						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
+					}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
+						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
+					}
+					 
+					request.setAttribute("letradoList", datos);
+					request.setAttribute("paginaSeleccionada", paginador.getPaginaActual());
+					request.setAttribute("totalRegistros", paginador.getNumeroTotalRegistros());
+					request.setAttribute("registrosPorPagina", paginador.getNumeroRegistrosPorPagina());
+					databackup.put("paginador",paginador);
+					databackup.put("datos",datos);
+				}else{
+					request.setAttribute("letradoList", new Vector());
+					databackup.put("datos",new Vector());
+					
+					request.setAttribute("paginaSeleccionada", 1);
+					request.setAttribute("totalRegistros", 0);
+					request.setAttribute("registrosPorPagina",1);
+					setPaginador(request, paginadorModal, databackup);
+					
+				}	
+				
 
+			}else{	
+				databackup=new HashMap();
+				//Haria falta meter los parametros en con ClsConstants
+
+				PaginadorBind paginador = cliente.getClientesCensoArticulo27(idInstitucion,user.getLocation(),miFormulario, user.getLanguage());
+				
+				if (paginador!=null&& paginador.getNumeroTotalRegistros()>0){
+					int totalRegistros = paginador.getNumeroTotalRegistros();
+					databackup.put("paginador",paginador);
+					Vector datos = paginador.obtenerPagina(1);
+					request.setAttribute("paginaSeleccionada", paginador.getPaginaActual());
+					request.setAttribute("totalRegistros", paginador.getNumeroTotalRegistros());
+					request.setAttribute("registrosPorPagina", paginador.getNumeroRegistrosPorPagina());
+					request.setAttribute("letradoList", datos);
+					databackup.put("datos",datos);
+					
+					setPaginador(request, paginadorModal, databackup);
+				}else{
+					databackup.put("datos",new Vector());
+					request.setAttribute("paginaSeleccionada", 1);
+					request.setAttribute("totalRegistros", 0);
+					request.setAttribute("registrosPorPagina",1);
+					request.setAttribute("letradoList", new Vector());
+					setPaginador(request, paginadorModal, databackup);
+				} 	
+			}
+		}catch (SIGAException e1) {
+			// Excepcion procedente de obtenerPagina cuando se han borrado datos
+			 return exitoRefresco("error.messages.obtenerPagina",request);
+		}catch (Exception e) 
+		{
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
+		} 
+		return "resultadoCenso";
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected void getAjaxDirecciones (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
+			{
+		BusquedaCensoForm miForm = (BusquedaCensoForm)formulario;
+		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		
+		//Recogemos el parametro enviado por ajax
+		String idInstitucion = request.getParameter("idInstitucion");
+		String idPersona = request.getParameter("idPersona");
+		String idDireccion = request.getParameter("idDireccion");
+		
+		if(idDireccion.equals("-1")){
+			miForm.setFax1("");
+			miForm.setFax2("");
+			miForm.setMail("");
+			miForm.setPaginaWeb("");
+			miForm.setMovil("");
+			miForm.setTelefono("");
+			miForm.setTelefono2("");
+			miForm.setPoblacion("");
+			miForm.setProvincia("");
+			miForm.setPais("");
+			miForm.setDireccion("");
+			miForm.setCodPostal("");
+			miForm.setPreferente ("");
+			miForm.setTipoDireccion("");
+			miForm.setPoblacionExt("");
+			
+		}else{
+			CenDireccionesAdm dirAdm = new CenDireccionesAdm(user);
+			Hashtable direccion = dirAdm.selectDirecciones(new Long(idPersona), new Integer(idInstitucion), new Long(idDireccion));
+			
+			miForm.setFax1((String)direccion.get("FAX1"));
+			miForm.setFax2((String)direccion.get("FAX2"));
+			miForm.setMail((String)direccion.get("CORREOELECTRONICO"));
+			miForm.setPaginaWeb((String)direccion.get("PAGINAWEB"));
+			miForm.setMovil((String)direccion.get("MOVIL"));
+			miForm.setTelefono((String)direccion.get("TELEFONO1"));
+			miForm.setTelefono2((String)direccion.get("TELEFONO2"));
+			miForm.setPoblacion((String)direccion.get("IDPOBLACION"));
+			miForm.setProvincia((String)direccion.get("IDPROVINCIA"));
+			miForm.setPais((String)direccion.get("IDPAIS"));
+			miForm.setDireccion((String)direccion.get("DOMICILIO"));
+			miForm.setCodPostal((String)direccion.get("CODIGOPOSTAL"));
+			miForm.setPreferente ((String)direccion.get("PREFERENTE"));
+			miForm.setTipoDireccion ((String)direccion.get("IDTIPODIRECCION"));
+			miForm.setPoblacionExt((String)direccion.get("POBLACIONEXTRANJERA"));
+			miForm.setIdDireccion((String)direccion.get("IDDIRECCION"));
+			request.getSession().setAttribute("ORIGINALDIR", direccion);
+		}
+
+		List listaParametros = new ArrayList();
+		listaParametros.add(miForm.getFax1());
+		listaParametros.add(miForm.getFax2());
+		listaParametros.add(miForm.getMail());
+		listaParametros.add(miForm.getPaginaWeb());
+		listaParametros.add(miForm.getMovil());
+		listaParametros.add(miForm.getTelefono());
+		listaParametros.add(miForm.getTelefono2());
+		listaParametros.add(miForm.getPoblacion());
+		listaParametros.add(miForm.getProvincia());
+		listaParametros.add(miForm.getPais());
+		listaParametros.add(miForm.getDireccion());
+		listaParametros.add(miForm.getPreferente());
+		listaParametros.add(miForm.getTipoDireccion());
+		listaParametros.add(miForm.getCodPostal());
+		listaParametros.add(miForm.getPoblacionExt());
+		listaParametros.add(miForm.getIdDireccion());
+
+		respuestaAjax(new AjaxXmlBuilder(), listaParametros,response);
+	}	
+	
+	@SuppressWarnings("unchecked")
+	protected void getAjaxComboDirecciones (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
+			{
+		BusquedaCensoForm miForm = (BusquedaCensoForm)formulario;
+		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		
+		//Recogemos el parametro enviado por ajax
+		String idInstitucion = request.getParameter("idInstitucion");
+		String idPersona = request.getParameter("idPersona");		
+		List alDirecciones = null;
+		
+		if((idPersona!= null && !idPersona.equals("")) && (idInstitucion != null && !idInstitucion.equals(""))){
+			CenDireccionesAdm dirAdm = new CenDireccionesAdm(user);
+			alDirecciones = dirAdm.geDireccionesLetrado(idPersona, idInstitucion);
+		}else{
+			alDirecciones = new ArrayList<DireccionesForm>();
+			DireccionesForm dirForm = new DireccionesForm();
+			dirForm.setNombre("-- Nueva");
+			dirForm.setIdDireccion(new Long(-1));
+			alDirecciones.add(dirForm);		
+		}
+		
+		respuestaAjax(new AjaxCollectionXmlBuilder(), alDirecciones,response);
+
+	}	
+	
+	@SuppressWarnings("unchecked")
+	protected void getAjaxBusquedaNIF (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception {
+		BusquedaCensoForm miForm = (BusquedaCensoForm)formulario;
+		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		
+		//Recogemos el parametro enviado por ajax
+		String tipoIden = request.getParameter("tipoIdentificacion").trim();
+		String nif = request.getParameter("numIdentificacion").trim();
+		String nombre = request.getParameter("nombre").trim();
+		String ape1 = request.getParameter("apellido1").trim();
+		String ape2 = request.getParameter("apellido2");
+		String colegiadoen = request.getParameter("colegiadoen").trim();
+		String ncol = request.getParameter("nColegiado").trim();
+		String idInstitucion = user.getLocation();
+		miForm.setTextoAlerta("");
+		List listaParametros = new ArrayList();
+	
+		if(nif!=null && !nif.equals("")){
+			VleLetradosSigaAdm cliente = new VleLetradosSigaAdm(this.getUserBean(request));
+			Hashtable infoCliente = cliente.getBusquedPorNIF(nif, idInstitucion);
+			CenPersonaAdm perAdm = new CenPersonaAdm(user);
+			CenPersonaBean perBean = new CenPersonaBean();
+			
+			if(infoCliente != null){
+				perBean = perAdm.getPersona(nif);
+				miForm.setIdPersona((String)infoCliente.get("ID_LETRADO"));
+				miForm.setColegiadoen((String)infoCliente.get("ID_COLEGIO"));
+				miForm.setNumeroColegiado((String)infoCliente.get("NUM_COLEGIADO"));
+				miForm.setApellido2((String)infoCliente.get("APELLIDO2"));
+				miForm.setApellido1((String)infoCliente.get("APELLIDO1"));
+				miForm.setNombre((String)infoCliente.get("NOMBRE"));
+				miForm.setNif(nif);
+				miForm.setIdInstitucion((String)infoCliente.get("ID_COLEGIO"));
+				miForm.setFax1((String)infoCliente.get("FAX"));
+				miForm.setMail((String)infoCliente.get("MAIL"));
+				miForm.setTelefono((String)infoCliente.get("TELEFONO"));
+				miForm.setPoblacion((String)infoCliente.get("IDPOBLACION"));
+				miForm.setProvincia((String)infoCliente.get("IDPROVINCIA"));
+				miForm.setPais((String)infoCliente.get("IDPAIS"));
+				miForm.setDireccion((String)infoCliente.get("DIR_PROFESIONAL"));
+				miForm.setCodPostal((String)infoCliente.get("COD_POSTAL"));
+				miForm.setSexo((String)infoCliente.get("SEXO"));
+				miForm.setFechaNacimiento(UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(user.getLanguage(),perBean.getFechaNacimiento())));
+				miForm.setLugarNacimiento(perBean.getNaturalDe());
+				miForm.setTratamiento((String)infoCliente.get("TRATAMIENTO"));
+				miForm.setTextoAlerta("");
+
+			}else{
+				miForm.setIdPersona("");
+				miForm.setColegiadoen("");
+				miForm.setNumeroColegiado("");
+				miForm.setApellido2("");
+				miForm.setApellido1("");
+				miForm.setNombre("");
+				miForm.setNif("");
+				miForm.setIdInstitucion("");
+				miForm.setFax1("");
+				miForm.setMail("");
+				miForm.setTelefono("");
+				miForm.setPoblacion("");
+				miForm.setProvincia("");
+				miForm.setPais("");
+				miForm.setDireccion("");
+				miForm.setCodPostal("");
+				miForm.setSexo("");
+				miForm.setFechaNacimiento("");
+				miForm.setLugarNacimiento("");
+				miForm.setTratamiento("");
+				perBean = perAdm.getPersona(nif);
+				if(perBean != null){
+					Long idPersona = perBean.getIdPersona();
+					CenColegiadoAdm colAdm = new CenColegiadoAdm(user);
+					CenColegiadoBean col = null;
+					col = colAdm.existeColegiado(idPersona, new Integer(idInstitucion));
+					
+					if(col != null){
+						Hashtable estadoColegial = colAdm.getEstadoColegial(idPersona, new Integer(idInstitucion));						
+						if(((String)estadoColegial.get("IDESTADO")).equals(""+ClsConstants.ESTADO_COLEGIAL_EJERCIENTE)){//COLEGIADOS EJERCIENTES
+							miForm.setTextoAlerta("Esta identificación pertenece a un colegiado ("+perBean.getNombre() + " " + perBean.getApellido1() +") ejerciente en este colegio. Realice la búsqueda pulsando en Búsq. Manual");
+							miForm.setNif("");
+							
+						}else if(((String)estadoColegial.get("IDESTADO")).equals(""+ClsConstants.ESTADO_COLEGIAL_BAJACOLEGIAL) ||
+								 ((String)estadoColegial.get("IDESTADO")).equals(""+ClsConstants.ESTADO_COLEGIAL_SUSPENSION)   ||
+								 ((String)estadoColegial.get("IDESTADO")).equals(""+ClsConstants.ESTADO_COLEGIAL_INHABILITACION)){//COLEGIADOS DADOS DE BAJA
+							if(idInstitucion.equals(""+col.getIdInstitucion())){
+								//COLEGIADO DE NUESTRO COLEGIO
+								miForm.setIdPersona(""+perBean.getIdPersona());
+								miForm.setNumeroColegiado(col.getNColegiado());
+								miForm.setColegiadoen(""+col.getIdInstitucion());
+								miForm.setApellido2(perBean.getApellido2());
+								miForm.setApellido1(perBean.getApellido1());
+								miForm.setNombre(perBean.getNombre());
+								miForm.setNif(nif);	
+								miForm.setIdInstitucion(""+col.getIdInstitucion());
+								miForm.setSexo(perBean.getSexo());
+								miForm.setFechaNacimiento(UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(user.getLanguage(),perBean.getFechaNacimiento())));
+								miForm.setLugarNacimiento(perBean.getNaturalDe());
+								
+							}else{
+								//COLEGIADO DE OTRO COLEGIO
+								miForm.setIdPersona(""+perBean.getIdPersona());
+								miForm.setNumeroColegiado(col.getNColegiado());
+								miForm.setColegiadoen(""+col.getIdInstitucion());
+								miForm.setApellido2(perBean.getApellido2());
+								miForm.setApellido1(perBean.getApellido1());
+								miForm.setNombre(perBean.getNombre());
+								miForm.setNif(nif);									
+								miForm.setIdInstitucion(""+col.getIdInstitucion());
+							}
+							miForm.setTextoAlerta("Esta identificación pertenece a un colegiado ejerciente ("+perBean.getNombre() + " " + perBean.getApellido1() +") dado de baja en su colegio.");
+						}						
+					}else{
+						CenNoColegiadoAdm nColAdm = new CenNoColegiadoAdm(user);
+						CenNoColegiadoBean nCol = null;
+						nCol = nColAdm.existeNoColegiado(idPersona);
+						
+						if(nCol!=null){						
+							if(!nCol.getTipo().equals("1")){	//NO COLEGIADOS TIPO SOCIEDADES
+								miForm.setTextoAlerta("Esta identificación pertenece a una Sociedad. No se puede designar.");
+								miForm.setNif("");
+								
+							}else{	//NO COLEGIADOS DE OTROS COLEGIOS
+								miForm.setTextoAlerta("Esta persona ya existe en el sistema. Se reuperarán sus datos de identificación.");
+								miForm.setIdPersona(""+perBean.getIdPersona());
+								miForm.setNumeroColegiado("No Colegiado");
+								miForm.setApellido2(perBean.getApellido2());
+								miForm.setApellido1(perBean.getApellido1());
+								miForm.setNombre(perBean.getNombre());
+								miForm.setNif(nif);
+								miForm.setIdInstitucion(""+nCol.getIdInstitucion());
+							}
+						}
+					}					
+				}else{
+					miForm.setNumeroColegiado(ncol);
+					miForm.setApellido2(ape2);
+					miForm.setApellido1(ape1);
+					miForm.setNombre(nombre);
+					miForm.setNif("");
+					miForm.setColegiadoen(colegiadoen);					
+				}
+			}
+			
+			listaParametros.add(miForm.getTextoAlerta());
+			listaParametros.add(miForm.getIdPersona());
+			listaParametros.add(miForm.getColegiadoen());
+			listaParametros.add(miForm.getNumeroColegiado());
+			listaParametros.add(miForm.getApellido1());
+			listaParametros.add(miForm.getApellido2());
+			listaParametros.add(miForm.getNombre());
+			listaParametros.add(miForm.getNif());
+			listaParametros.add(miForm.getIdInstitucion());
+			listaParametros.add(miForm.getFax1());
+			listaParametros.add(miForm.getMail());
+			listaParametros.add(miForm.getTelefono());
+			listaParametros.add(miForm.getPoblacion());
+			listaParametros.add(miForm.getProvincia());
+			listaParametros.add(miForm.getPais());
+			listaParametros.add(miForm.getDireccion());
+			listaParametros.add(miForm.getCodPostal());
+			listaParametros.add(miForm.getSexo());
+			listaParametros.add(miForm.getFechaNacimiento());
+			listaParametros.add(miForm.getLugarNacimiento());
+			listaParametros.add(miForm.getTratamiento());
+			respuestaAjax(new AjaxXmlBuilder(), listaParametros,response);
+		}
+	}	
 }

@@ -46,9 +46,18 @@ import com.siga.general.MasterForm;
 	 	String pais;
 	 	String telefono2;
 	 	String tratamiento;
+	 	String colegiadoen;
 	 	String verFichaLetrado;
 	 	String chkBusqueda;
-	 	
+		
+		String preferente;
+		String tipoDireccion;
+		String direcciones;
+		String idDireccion;
+		String fechaNacimiento;
+		String lugarNacimiento;
+		String textoAlerta;
+		
 		public String getAccion() {
 			return accion;
 		}
@@ -199,6 +208,59 @@ import com.siga.general.MasterForm;
 		}
 		public void setNif(String nif) {
 			this.nif = nif;
+		}
+		
+		public String getColegiadoen() {
+			return colegiadoen;
+		}
+		public void setColegiadoen(String colegiadoen) {
+			this.colegiadoen = colegiadoen;
+		}
+			
+		public String getPreferente() {
+			return preferente;
+		}
+		public void setPreferente(String preferente) {
+			this.preferente = preferente;
+		}
+		
+		public String getTipoDireccion() {
+			return tipoDireccion;
+		}
+		public void setTipoDireccion(String tipoDireccion) {
+			this.tipoDireccion = tipoDireccion;
+		}
+		
+		public String getDirecciones() {
+			return direcciones;
+		}
+		public void setDirecciones(String direcciones) {
+			this.direcciones = direcciones;
+		}
+		
+		public String getIdDireccion() {
+			return idDireccion;
+		}
+		public void setIdDireccion(String idDireccion) {
+			this.idDireccion = idDireccion;
+		}
+		public String getFechaNacimiento() {
+			return fechaNacimiento;
+		}
+		public void setFechaNacimiento(String fechaNacimiento) {
+			this.fechaNacimiento = fechaNacimiento;
+		}
+		public String getLugarNacimiento() {
+			return lugarNacimiento;
+		}
+		public void setLugarNacimiento(String lugarNacimiento) {
+			this.lugarNacimiento = lugarNacimiento;
+		}
+		public String getTextoAlerta() {
+			return textoAlerta;
+		}
+		public void setTextoAlerta(String textoAlerta) {
+			this.textoAlerta = textoAlerta;
 		}
 		public void reset(){
 			

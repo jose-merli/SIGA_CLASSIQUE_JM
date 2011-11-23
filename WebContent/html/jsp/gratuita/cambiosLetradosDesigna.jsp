@@ -26,7 +26,8 @@
 	String accion = (String)request.getAttribute("accion");
 	String boton="";
 	String modo = (String) ses.getAttribute("Modo");
-	
+	boolean botonNuevo = (Boolean)request.getSession().getAttribute("botonNuevo");
+
 %>	
 
 <html>
@@ -63,8 +64,12 @@
 					class="frameGeneral">
 	</iframe>
 	
-	
+	<%if(botonNuevo){%>
 		<siga:ConjBotonesAccion botones="N,V" clase="botonesDetalle" modo="<%=modo%>" />
+	<%}else{%>
+		<siga:ConjBotonesAccion botones="V" clase="botonesDetalle" modo="<%=modo%>" />
+	<%}%>	
+	
 <!-- INICIO: SUBMIT AREA -->
 
 <script language="JavaScript">

@@ -23,7 +23,9 @@ import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.BusquedaClientesFiltrosAdm;
 import com.siga.beans.CenBajasTemporalesAdm;
 import com.siga.beans.CenBajasTemporalesBean;
+import com.siga.beans.CenClienteBean;
 import com.siga.beans.CenColegiadoBean;
+import com.siga.beans.CenNoColegiadoBean;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.ScsDesignaBean;
 import com.siga.beans.ScsDesignasLetradoAdm;
@@ -123,6 +125,36 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 				" order by dp."+ScsDesignasLetradoBean.C_FECHADESIGNA+" DESC";
 			
 			Vector resultado = (Vector)adm.selectGenerico(consultaContrarios);
+			
+			if(resultado.size()==0){
+				consultaContrarios = " select "+
+								" p."+CenPersonaBean.C_NOMBRE+","+
+								" p."+CenPersonaBean.C_APELLIDOS1+","+
+								" p."+CenPersonaBean.C_APELLIDOS2+","+
+								" 'No Colegiado' "+CenColegiadoBean.C_NCOLEGIADO+","+
+								" dp."+ScsDesignasLetradoBean.C_IDINSTITUCION+","+
+								" dp."+ScsDesignasLetradoBean.C_IDTURNO+","+
+								" dp."+ScsDesignasLetradoBean.C_NUMERO+","+
+								" dp."+ScsDesignasLetradoBean.C_ANIO+","+
+								" dp."+ScsDesignasLetradoBean.C_IDPERSONA+","+
+								" dp."+ScsDesignasLetradoBean.C_FECHADESIGNA+","+
+								" dp."+ScsDesignasLetradoBean.C_FECHARENUNCIA+
+								" from "+ 
+								ScsDesignasLetradoBean.T_NOMBRETABLA+" dp,"+
+								CenPersonaBean.T_NOMBRETABLA+" p,"+
+								CenNoColegiadoBean.T_NOMBRETABLA+" nc "+
+								" where dp."+ScsDesignasLetradoBean.C_IDINSTITUCION+"=" +(String)usr.getLocation()+
+								" and dp."+ScsDesignasLetradoBean.C_IDINSTITUCION+" = nc."+CenColegiadoBean.C_IDINSTITUCION+
+								" and dp."+ScsDesignasLetradoBean.C_IDPERSONA+" = nc."+CenColegiadoBean.C_IDPERSONA+
+								" and dp."+ScsDesignasLetradoBean.C_IDPERSONA+" = p."+CenPersonaBean.C_IDPERSONA+
+								" and dp."+ScsDesignasLetradoBean.C_ANIO+"="+(String)designaActual.get("ANIO")+
+								" and dp."+ScsDesignasLetradoBean.C_NUMERO+"=" +(String)designaActual.get("NUMERO")+
+								" and dp."+ScsDesignasLetradoBean.C_IDTURNO+"=" +(String)designaActual.get("IDTURNO")+
+								" order by dp."+ScsDesignasLetradoBean.C_FECHADESIGNA+" DESC";
+				
+				resultado = (Vector)adm.selectGenerico(consultaContrarios);
+			}
+		
 			request.setAttribute("resultado",resultado);
 			ses.setAttribute("designaActual",designaActual);
 			request.setAttribute("modo",(String)request.getParameter("modo"));
@@ -183,7 +215,7 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 				" p."+CenPersonaBean.C_NOMBRE+","+
 				" p."+CenPersonaBean.C_APELLIDOS1+","+
 				" p."+CenPersonaBean.C_APELLIDOS2+","+
-				" F_SIGA_CALCULONCOLEGIADO (c."+CenColegiadoBean.C_IDINSTITUCION+",c."+CenColegiadoBean.C_IDPERSONA+") "+CenColegiadoBean.C_NCOLEGIADO+","+
+				" F_SIGA_CALCULONCOLEGIADO (c."+CenClienteBean.C_IDINSTITUCION+",c."+CenClienteBean.C_IDPERSONA+") "+CenColegiadoBean.C_NCOLEGIADO+","+
 				" dp."+ ScsDesignasLetradoBean.C_IDINSTITUCION+","+
 				" dp."+ ScsDesignasLetradoBean.C_IDTURNO+","+
 				" dp."+ ScsDesignasLetradoBean.C_ANIO+","+
@@ -199,11 +231,11 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 				" from "+ 
 				ScsDesignasLetradoBean.T_NOMBRETABLA+" dp,"+
 				CenPersonaBean.T_NOMBRETABLA+" p,"+
-				CenColegiadoBean.T_NOMBRETABLA+" c "+
+				CenClienteBean.T_NOMBRETABLA+" c "+
 				" where dp."+ScsDesignasLetradoBean.C_IDINSTITUCION+"="+instit+
-				" and dp."+ScsDesignasLetradoBean.C_IDINSTITUCION+" = c."+CenColegiadoBean.C_IDINSTITUCION+
+				" and dp."+ScsDesignasLetradoBean.C_IDINSTITUCION+" = c."+CenClienteBean.C_IDINSTITUCION+
 				" and dp."+ScsDesignasLetradoBean.C_IDPERSONA+" ="+idPersona+
-				" and dp."+ScsDesignasLetradoBean.C_IDPERSONA+" =c."+CenColegiadoBean.C_IDPERSONA+
+				" and dp."+ScsDesignasLetradoBean.C_IDPERSONA+" =c."+CenClienteBean.C_IDPERSONA+
 				" and dp."+ScsDesignasLetradoBean.C_IDPERSONA+" =p."+CenPersonaBean.C_IDPERSONA+
 				" and dp."+ScsDesignasLetradoBean.C_ANIO+"="+anio+
 				" and dp."+ScsDesignasLetradoBean.C_NUMERO+"="+numero+

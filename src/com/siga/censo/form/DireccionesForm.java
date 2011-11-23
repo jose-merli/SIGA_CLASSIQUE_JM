@@ -7,6 +7,9 @@
 package com.siga.censo.form;
 
 import com.atos.utils.GstDate;
+import com.siga.Utilidades.AjaxXMLBuilderAnnotation;
+import com.siga.Utilidades.AjaxXMLBuilderNameAnnotation;
+import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenSoliModiDireccionesBean;
@@ -19,10 +22,12 @@ import com.siga.general.MasterForm;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
+@AjaxXMLBuilderAnnotation 
 public class DireccionesForm extends MasterForm{
 
 	String incluirRegistrosConBajaLogica;
 	String vieneDe;
+	String nombre;
 	
 	//	metodos set de los campos del formulario
 	public void setCodigoPostal(String codigoPostal) {
@@ -154,7 +159,7 @@ public class DireccionesForm extends MasterForm{
 	public String getFechaBaja() {
 		return (String)this.datos.get(CenDireccionesBean.C_FECHABAJA);
 	}
-	
+@AjaxXMLBuilderValueAnnotation(isCData=false)
 	public Long getIdDireccion() {
 		return UtilidadesHash.getLong(this.datos, CenDireccionesBean.C_IDDIRECCION);
 	}
@@ -245,4 +250,13 @@ public class DireccionesForm extends MasterForm{
 	public void setVieneDe(String vieneDe) {
 		this.vieneDe = vieneDe;
 	}
+	@AjaxXMLBuilderNameAnnotation
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+	
 }

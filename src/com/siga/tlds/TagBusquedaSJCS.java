@@ -30,6 +30,7 @@ public class TagBusquedaSJCS extends TagSupport {
 	 */
 	private boolean automatica=true;
 	private boolean manual=true;
+	private boolean art27=false;
 	
 	/**
 	 * Para que concepto se implementan las busquedas:<br>
@@ -147,6 +148,7 @@ public class TagBusquedaSJCS extends TagSupport {
 		try {
 			automatica=false;
 			manual=false;
+			art27=false;
 			
 			if (dato != null){
 				dato += ",";
@@ -158,7 +160,9 @@ public class TagBusquedaSJCS extends TagSupport {
 						automatica=true;
 					}else if (tipo.equalsIgnoreCase("m")) {
 						manual=true;
-					} 
+					}else if (tipo.equalsIgnoreCase("d")) {
+						art27=true;
+					}  
 				}
 			}
 		}catch (Exception e) {
@@ -463,6 +467,15 @@ public class TagBusquedaSJCS extends TagSupport {
 					out.println("</td>");
 				}
 				
+				if (art27) {
+					String msg=UtilidadesString.getMensajeIdioma(usrbean, "gratuita.busquedaSJCS.literal.art27");
+					out.println("<td align=\"center\">");
+					out.print("<input");
+					out.print(" type=\"button\" id =\"idButton\" name =\"idButton\" class=\"button\" value=\""+msg+"\"");
+					out.print(" onclick=\"buscarDesig27();\">");
+					out.println("</td>");
+				}				
+				
 				if (automatica  && !diaGuardia) {
 					String msg=UtilidadesString.getMensajeIdioma(usrbean, "gratuita.busquedaSJCS.literal.automatico");
 					out.println("<td align=\"right\">");
@@ -473,7 +486,7 @@ public class TagBusquedaSJCS extends TagSupport {
 				}
 				
 				if (eliminarSeleccionado ) {
-					String msg=UtilidadesString.getMensajeIdioma(usrbean, "gratuita.busquedaSJCS.literal.eliminarSeleccionado");
+					String msg=UtilidadesString.getMensajeIdioma(usrbean, "gratuita.busquedaSJCS.literal.limpiar");
 					out.println("<td align=\"right\">");
 					out.print("<input");
 					out.print(" type=\"button\" name =\"idButton\" class=\"button\" id =\"idButton\" value=\""+msg+"\"");
@@ -578,6 +591,27 @@ public class TagBusquedaSJCS extends TagSupport {
 		out.println("	}");
 		out.println("	return vForm;");
 		out.println("}");
+		
+		//Busca el formulario que se va a enviar y si no existe lo crea
+		out.println("");
+		out.println("function creaFormArticulo27() {");
+		out.println("	var vForm=document.forms['DatosGeneralesForm'];");
+		out.println("	if(vForm==null){");
+		out.println("		var app="+nombre+".action;");
+		out.println("		app=app.substring(0,app.substr(1).indexOf('/')+1);");
+		out.println("		var formu=document.createElement(\"<form name='DatosGeneralesForm' action='\"+app+\"/CEN_DatosGenerales.do'>\");");
+		out.println("		formu.appendChild(document.createElement(\"<input type='hidden' name='modo' value=''>\"));");
+		out.println("		formu.appendChild(document.createElement(\"<input type='hidden' name='actionModal' value='\"+app+\"/CEN_DatosGenerales.do'>\"));");
+		out.println("		formu.appendChild(document.createElement(\"<input type='hidden' name='concepto' value=''>\"));");
+		out.println("		formu.appendChild(document.createElement(\"<input type='hidden' name='operacion' value=''>\"));");
+		out.println("		formu.appendChild(document.createElement(\"<input type='hidden' name='idTurno' value=''>\"));");
+		out.println("		formu.appendChild(document.createElement(\"<input type='hidden' name='idGuardia' value=''>\"));");
+		out.println("		formu.appendChild(document.createElement(\"<input type='hidden' name='fecha' value=''>\"));");
+		out.println("		document.appendChild(formu);");
+		out.println("		vForm=formu;");
+		out.println("	}");
+		out.println("	return vForm;");
+		out.println("}");		
 
 		//Valida que se han introducido valores en los campos obligatorios
 		out.println("");
@@ -599,6 +633,20 @@ public class TagBusquedaSJCS extends TagSupport {
 		}
 		out.println("	return true;");
 		out.println("}");
+		
+		out.println("function validaArt27Form() {");
+		if(!concepto.equalsIgnoreCase("DESIGNACION")&&!concepto.equalsIgnoreCase("SALTOSCOMP")){
+			msg1=UtilidadesString.getMensajeIdioma(usrbean, "gratuita.busquedaEJG.literal.guardia");
+			out.println("	if("+nombre+"."+campoGuardia+".value==null || "+nombre+"."+campoGuardia+".value==''){ alert('"+msg1+" "+msg2+"'); return false;}");
+			msg1=UtilidadesString.getMensajeIdioma(usrbean, "gratuita.busquedaEJG.literal.fechaApertura");
+			out.println("	if("+nombre+"."+campoFecha+".value==null || "+nombre+"."+campoFecha+".value==''){ alert('"+msg1+" "+msg2+"'); return false;}");
+		}else if(concepto.equalsIgnoreCase("DESIGNACION")){
+			msg1=UtilidadesString.getMensajeIdioma(usrbean, "gratuita.busquedaEJG.literal.fechaApertura");
+			out.println("	if("+nombre+"."+campoFecha+".value==null || "+nombre+"."+campoFecha+".value==''){ alert('"+msg1+" "+msg2+"'); return false;}");
+			
+		}
+		out.println("	return true;");
+		out.println("}");		
 
 		//Reparte los resultados en los campos correspondientes
 		out.println("");
@@ -741,6 +789,29 @@ public class TagBusquedaSJCS extends TagSupport {
 			out.println("	}");
 			out.println("}");
 		}
+		
+		if(art27){
+			//Se implementa la busqueda manual
+			out.println(""); 
+			out.println("function buscarDesig27() {");
+			out.println("	if(validaArt27Form()){");
+			out.println("		var vForm=creaFormArticulo27();");
+			out.println("		vForm.modo.value='designarArt27';");
+			out.println("		vForm.concepto.value='"+concepto+"';");
+			out.println("		vForm.operacion.value='"+operacion+"';");
+			out.println("		vForm.idTurno.value="+nombre+"."+campoTurno+".value;");
+			if(!concepto.equalsIgnoreCase("DESIGNACION")){
+				out.println("		vForm.idGuardia.value="+nombre+"."+campoGuardia+".value;");
+				out.println("		vForm.fecha.value="+nombre+"."+campoFecha+".value;");
+			}else if(concepto.equalsIgnoreCase("DESIGNACION")){
+				out.println("		vForm.fecha.value="+nombre+"."+campoFecha+".value;");
+			}
+			out.println("		var res = ventaModalGeneral(vForm.name,\"G\");");
+			out.println("		manejaRespuestaForm(res);");
+			out.println("	}");
+			out.println("}");
+		}
+		
 	
 		if(automatica && !diaGuardia){
 			//Se implementa la busqueda automatica

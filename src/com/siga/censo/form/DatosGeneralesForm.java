@@ -22,6 +22,7 @@ import com.siga.comun.vos.Vo;
  * Clase action form del caso de uso DATOS GENERALES
  * @author AtosOrigin 11-01-2005
  */
+
  public class DatosGeneralesForm extends MasterForm {
  	
 	// Metodos Set (Formulario (*.jsp))
@@ -35,6 +36,7 @@ import com.siga.comun.vos.Vo;
     
 	// BLOQUE PARA EL FORMULARIO DE DATOS GENEREALES 
 
+    
  	public List<CenTipoSociedadBean> getTipos() {
 		return tipos;
 	}
@@ -628,7 +630,8 @@ import com.siga.comun.vos.Vo;
 	
 	
 	
-	
+	String idDireccion;
+	String colegiadoen;
 	String idTipoDireccion;
 	String pais;
 	String poblacion;
@@ -651,6 +654,8 @@ import com.siga.comun.vos.Vo;
 	String fax2;
 	String continuarAprobacion;
 	String numColegiado="";
+	List<DireccionesForm> direcciones;
+	String textoAlerta;
 
 	public String getIdTipoDireccion() {
 		return idTipoDireccion;
@@ -733,8 +738,7 @@ import com.siga.comun.vos.Vo;
 		this.telefono2 = telefono2;
 	}
 
-	
-	public Boolean getPreferenteFax() {
+		public Boolean getPreferenteFax() {
 		return preferenteFax;
 	}
 
@@ -766,6 +770,7 @@ import com.siga.comun.vos.Vo;
 		this.preferenteSms = preferenteSms;
 	}
 
+	
 	public String getCodigoPostal() {
 		return codigoPostal;
 	}
@@ -828,8 +833,36 @@ import com.siga.comun.vos.Vo;
 		colegiado.setIdPersona(getIdPersona());
 		return colegiado.getId();
 	}
+
+	public String getIdDireccion() {
+		return idDireccion;
+	}
+
+	public void setIdDireccion(String idDireccion) {
+		this.idDireccion = idDireccion;
+	}
+
+	public List<DireccionesForm> getDirecciones() {
+		return direcciones;
+	}
+
+	public void setDirecciones(List<DireccionesForm> direcciones) {
+		this.direcciones = direcciones;
+	}
 	
-	
-		
+	public String getColegiadoen() {
+		return colegiadoen;
+	}
+	public void setColegiadoen(String colegiadoen) {
+		this.colegiadoen = colegiadoen;
+	}
+
+	public String getTextoAlerta() {
+		return textoAlerta;
+	}
+
+	public void setTextoAlerta(String textoAlerta) {
+		this.textoAlerta = textoAlerta;
+	}	
 	
 }

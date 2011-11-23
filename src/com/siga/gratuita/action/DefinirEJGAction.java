@@ -491,16 +491,15 @@ public class DefinirEJGAction extends MasterAction
 			Vector ocultos = formulario.getDatosTablaOcultos(0);
 			Vector visibles = formulario.getDatosTablaVisibles(0);
 			Hashtable miHash = new Hashtable();
-			if ((ocultos != null && visibles != null) || 
-				((miForm.getDesdeDesigna() != null) && (miForm.getDesdeDesigna().equalsIgnoreCase("si")))) {
+			
+			if ((ocultos != null && visibles != null) || ((ocultos != null && miForm.getDesdeDesigna() != null) && (miForm.getDesdeDesigna().equalsIgnoreCase("si")))) {
 				miHash.put(ScsEJGBean.C_IDTIPOEJG,ocultos.get(0));
 				miHash.put(ScsEJGBean.C_IDINSTITUCION,ocultos.get(1));
 				miHash.put(ScsEJGBean.C_ANIO,ocultos.get(2));
 				miHash.put(ScsEJGBean.C_NUMERO,ocultos.get(3));
 				session.removeAttribute("origenEJG");
-			}	
-			else {
-				session.removeAttribute("DATAPAGINADOR"); 
+			} else {
+				session.removeAttribute("DATAPAGINADOR");
 				miHash.put(ScsEJGBean.C_IDTIPOEJG,miForm.getIdTipoEJG());
 				miHash.put(ScsEJGBean.C_IDINSTITUCION,miForm.getIdInstitucion());
 				miHash.put(ScsEJGBean.C_ANIO,miForm.getAnio());
