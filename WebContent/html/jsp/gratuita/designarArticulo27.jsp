@@ -330,7 +330,7 @@ caracterParam[0] = tipoCliente;
 			} else{
 			   if (valorX.length > longitud) {
 					// mayor
-					alert ("<siga:Idioma key="messages.nif.comprobacion.digitos.erroneo"/>");
+					alert ("<siga:Idioma key="messages.nif.comprobacion.digitos.error"/>");
 					return valorX;
 					
 			   }else{
@@ -370,7 +370,7 @@ caracterParam[0] = tipoCliente;
 				} else{
 				   if (valorX.length > longitud) {
 					// mayor
-					alert ("<siga:Idioma key="messages.nie.comprobacion.digitos.erroneo"/>");
+					alert ("<siga:Idioma key="messages.nie.comprobacion.digitos.error"/>");
 					return valorX;
 				   }else{
 				     if (valorX.length < longitud) {//menor
@@ -1301,7 +1301,7 @@ var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
 					rc = true;
 
 				}else{//Letrado escrito manualmente
-					alert ("<siga:Idioma key="messages.nif.comprobacion.digitos.erroneo"/>");
+					alert ("<siga:Idioma key="messages.nif.comprobacion.digitos.error"/>");
 					rc = false;
 				}
 			}

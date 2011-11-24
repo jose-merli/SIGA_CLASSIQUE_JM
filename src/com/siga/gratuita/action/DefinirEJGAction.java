@@ -530,9 +530,7 @@ public class DefinirEJGAction extends MasterAction
 
 			
 			
-			if ((ocultos != null && visibles != null) || 
-					((miForm.getDesdeDesigna() != null) && (miForm.getDesdeDesigna().equalsIgnoreCase("si")))) {			
-			
+			if ((ocultos != null && visibles != null) || ((ocultos != null && miForm.getDesdeDesigna() != null) && (miForm.getDesdeDesigna().equalsIgnoreCase("si")))) {			
 				miHash.put("idInstitucionJG",ocultos.get(1));
 				// clave EJG
 				miHash.put("idTipoEJG",ocultos.get(0));
