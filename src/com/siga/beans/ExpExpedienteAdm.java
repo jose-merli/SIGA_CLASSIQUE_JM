@@ -460,7 +460,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			where += " AND E."+ExpExpedienteBean.C_ANIOEXPEDIENTE+" = "+PA_ANIOEXPEDIENTE+"(+)";
 		}
 		
-		where += (form.getJuzgado()!=null && !form.getJuzgado().equals("")) ? " AND E."+ExpExpedienteBean.C_IDINSTITUCION_JUZGADO+" = juz." + ScsJuzgadoBean.C_IDINSTITUCION+"(+)": "";
+		//where += (form.getJuzgado()!=null && !form.getJuzgado().equals("")) ? " AND E."+ExpExpedienteBean.C_IDINSTITUCION_JUZGADO+" = juz." + ScsJuzgadoBean.C_IDINSTITUCION+"(+)": "";
 
 		//campos de búsqueda
 		where += (idinstitucion_tipoexpediente!=null && !idinstitucion_tipoexpediente.equals("")) ? " AND E." + ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE + " = " + idinstitucion_tipoexpediente : "";
@@ -494,7 +494,8 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		where += (estado!=null && !estado.equals("")) ? " AND E." + ExpExpedienteBean.C_IDESTADO + " = " + estado : "";
 		where += (form.getIdMateria()!=null && !form.getIdMateria().equals("")) ? " AND E." + ExpExpedienteBean.C_IDMATERIA + " = " + form.getIdMateria() : "";
 		where += (form.getIdArea()!=null && !form.getIdArea().equals("")) ? " AND E." + ExpExpedienteBean.C_IDAREA + " = " + form.getIdArea() : "";
-		where += (form.getJuzgado()!=null && !form.getJuzgado().equals("")) ? " AND juz." + ScsJuzgadoBean.C_IDJUZGADO + " = " + form.getJuzgado()+" AND juz." + ScsJuzgadoBean.C_IDINSTITUCION + " = " + form.getIdInstJuzgado() : "";
+		//where += (form.getJuzgado()!=null && !form.getJuzgado().equals("")) ? " AND juz." + ScsJuzgadoBean.C_IDJUZGADO + " = " + form.getJuzgado()+" AND juz." + ScsJuzgadoBean.C_IDINSTITUCION + " = " + form.getIdInstJuzgado() : "";
+		where += (form.getJuzgado()!=null && !form.getJuzgado().equals("")) ? " AND e." + ExpExpedienteBean.C_JUZGADO + " = " + form.getJuzgado()+" AND e." + ExpExpedienteBean.C_IDINSTITUCION_JUZGADO + " = " + form.getIdInstJuzgado() : "";
 		where += (form.getNumAsunto()!=null && !form.getNumAsunto().equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(form.getNumAsunto().trim(),"E." + ExpExpedienteBean.C_NUMASUNTO): "";
 		where += (form.getOtrasPretensiones()!=null && !form.getOtrasPretensiones().equals("")) ? " AND E." + ExpExpedienteBean.C_OTRASPRETENSIONES + " = '" + form.getOtrasPretensiones()+"'" : "";
 		where += (form.getIdPretension()!=null && !form.getIdPretension().equals("")) ? " AND E." + ExpExpedienteBean.C_IDPRETENSION + " = " + form.getIdPretension() : "";
@@ -661,7 +662,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			//Se añade la relación con la tabla de permisos de expedientes.
 			sql += " FROM ";
 		    sql += ExpExpedienteBean.T_NOMBRETABLA+" E, "+CenInstitucionBean.T_NOMBRETABLA+" I, "+ExpTipoExpedienteBean.T_NOMBRETABLA+" T " ;//+ExpPermisosTiposExpedientesBean.T_NOMBRETABLA+" X";
-		    sql += (form.getJuzgado()!=null && !form.getJuzgado().equals("")) ? ", " + ScsJuzgadoBean.T_NOMBRETABLA + " juz" : "";
+		    //sql += (form.getJuzgado()!=null && !form.getJuzgado().equals("")) ? ", " + ScsJuzgadoBean.T_NOMBRETABLA + " juz" : "";
 		    
 		    if (hayPartes){
 		    	sql +=", "+ExpPartesBean.T_NOMBRETABLA+" PA";
