@@ -1355,7 +1355,11 @@ public class BusquedaCensoAction extends MasterAction {
 				miForm.setDireccion((String)infoCliente.get("DIR_PROFESIONAL"));
 				miForm.setCodPostal((String)infoCliente.get("COD_POSTAL"));
 				miForm.setSexo((String)infoCliente.get("SEXO"));
-				miForm.setFechaNacimiento(UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(user.getLanguage(),perBean.getFechaNacimiento())));
+				if(!perBean.getFechaNacimiento().equals("")){
+					miForm.setFechaNacimiento(UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(user.getLanguage(),perBean.getFechaNacimiento())));
+				}else{
+					miForm.setFechaNacimiento("");
+				}
 				miForm.setLugarNacimiento(perBean.getNaturalDe());
 				miForm.setTratamiento((String)infoCliente.get("TRATAMIENTO"));
 				miForm.setTextoAlerta("");
@@ -1408,7 +1412,11 @@ public class BusquedaCensoAction extends MasterAction {
 								miForm.setNif(nif);	
 								miForm.setIdInstitucion(""+col.getIdInstitucion());
 								miForm.setSexo(perBean.getSexo());
-								miForm.setFechaNacimiento(UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(user.getLanguage(),perBean.getFechaNacimiento())));
+								if(!perBean.getFechaNacimiento().equals("")){
+									miForm.setFechaNacimiento(UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(user.getLanguage(),perBean.getFechaNacimiento())));
+								}else{
+									miForm.setFechaNacimiento("");
+								}
 								miForm.setLugarNacimiento(perBean.getNaturalDe());
 								
 							}else{
@@ -1451,7 +1459,7 @@ public class BusquedaCensoAction extends MasterAction {
 					miForm.setApellido2(ape2);
 					miForm.setApellido1(ape1);
 					miForm.setNombre(nombre);
-					miForm.setNif("");
+					miForm.setNif(nif);
 					miForm.setColegiadoen(colegiadoen);					
 				}
 			}

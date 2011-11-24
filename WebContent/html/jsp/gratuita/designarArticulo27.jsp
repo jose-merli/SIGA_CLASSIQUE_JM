@@ -153,8 +153,7 @@ caracterParam[0] = tipoCliente;
 		
 		function buscarDesignados (){
 
-			if ((document.datosGeneralesForm.numIdentificacion.value 	== null || document.datosGeneralesForm.numIdentificacion.value == "") &&
-				(document.getElementById('colegiadoen').value 			== null || document.getElementById('colegiadoen').value == "") &&
+			if ((document.getElementById('colegiadoen').value 			== null || document.getElementById('colegiadoen').value == "") &&
 				(document.datosGeneralesForm.nombre.value 				== null || document.datosGeneralesForm.nombre.value == "") &&
 				(document.datosGeneralesForm.nColegiado.value 			== null || document.datosGeneralesForm.nColegiado.value == "") &&
 				(document.datosGeneralesForm.apellido2.value 			== null || document.datosGeneralesForm.apellido2.value == "") &&
@@ -1562,7 +1561,6 @@ var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
 			document.datosGeneralesForm.apellido1.onkeypress = submitConTeclaEnter;
 			document.datosGeneralesForm.nombre.onkeypress = submitConTeclaEnter;
 			document.datosGeneralesForm.idInstitucion.onkeypress = submitConTeclaEnter;
-			document.datosGeneralesForm.numIdentificacion.onkeypress = submitConTeclaEnter;			
 		}
 		
 		function submitConTeclaEnter(){			
