@@ -6,6 +6,7 @@
 -->
 
 <!-- CABECERA JSP -->
+<%@page import="com.siga.Utilidades.UtilidadesHash"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -63,6 +64,7 @@
 	String idInstitucionPersona = Integer.valueOf(
 			request.getParameter("idInstitucion")).toString();
 
+	int destinatarioAbono = ((Integer)request.getAttribute("destinatarioAbono")).intValue();
 	Long SidPersona = (Long) request.getAttribute("idPersona");
 	if (SidPersona == null) {
 		SidPersona = (Long) request.getSession().getAttribute(
@@ -300,8 +302,12 @@
 									  modo='<%=accion%>'
 									  clase="listaNonEdit"
 									  >
+									  
+									  
 									 <input type="hidden" name="idPersona<%="" + String.valueOf(recordNumber)%>"	
 									 		value="<%=row.getString(FacAbonoBean.C_IDPERSONA)%>">
+									 <input type="hidden" name="idPersonaOrigen<%="" + String.valueOf(recordNumber)%>"	
+									 		value="<%=row.getString("IDPERORIGEN")%>">
 			
 									<input type="hidden" name="idPago<%="" + String.valueOf(recordNumber)%>"
 										value="<%=row.getString(FacAbonoBean.C_IDPAGOSJG)%>"> 
@@ -358,18 +364,24 @@
 									</td>
 									<td>
 										<%
-											if (idPersona.toString().equals(
-																	row.getString("IDPERSONA"))) {
-										%>
-											<siga:Idioma key="facturacion.abonos.destino.letrado"/>
-										<%
-											} else {
-										%>
-											<siga:Idioma key="facturacion.abonos.destino.sociedad"/>
+											if (UtilidadesHash.getString(row.getRow(),"IDPERORIGEN").equals(UtilidadesHash.getString(row.getRow(),"IDPERDESTINO"))) {
+												if(destinatarioAbono==0){%>
+													<siga:Idioma key="facturacion.abonos.destino.sociedad"/>
+													<%}else{%>
+														<siga:Idioma key="facturacion.abonos.destino.letrado"/>		
+												<%
+												}										
 											
-										<%
-																						}
-																					%>
+										
+											} else {
+										if(destinatarioAbono==0){%>
+													<siga:Idioma key="facturacion.abonos.destino.letrado"/>
+													<%}else{%>
+														<siga:Idioma key="facturacion.abonos.destino.sociedad"/>		
+												<%
+												}	
+											}
+										%>
 									</td>
 								</siga:FilaConIconos>
 								<%
@@ -484,7 +496,7 @@
 		var idPago = "idPago"+fila;
 		
 		if(document.getElementById(idPago).value!=''){
-			var idPers = "idPersona"+fila;
+			var idPers = "idPersonaOrigen"+fila;
 		
 			var idInst = "oculto"+fila+"_2";
 			idPersona = document.getElementById(idPers).value;

@@ -19,6 +19,9 @@ import com.siga.general.SIGAException;
 */
 public class FacAbonoAdm extends MasterBeanAdministrador {
 
+	public static int DESTINATARIOABONO_SOCIEDAD = 0;
+	public static int DESTINATARIOABONO_SJCS = 1;
+	public static int DESTINATARIOABONO_NORMAL = 2;
 	/** 
 	 *  Constructor
 	 * @param  usu - Usuario
@@ -562,64 +565,83 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 	 * @return  Vector - Fila seleccionada  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	public PaginadorBind getAbonosClientePaginador (String institucion, String idPersona, Integer anyosAbono,Boolean isAbonoSJCS ) throws ClsExceptions,SIGAException {
+	public PaginadorBind getAbonosClientePaginador (String institucion, String idPersona, Integer anyosAbono,int destinatarioAbono ) throws ClsExceptions,SIGAException {
 		try {
-			String sql ="SELECT " +
-			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + "," +
-			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_NUMEROABONO + "," +
-			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION + "," +
-			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_OBSERVACIONES + "," +
-			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_MOTIVOS + "," +
-			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_FECHA + "," +
-			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_CONTABILIZADA + "," +
-			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDFACTURA + "," +
-			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPEXCESIVO + "," +
-			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERSONA + "," +
-			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + "," +
-			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPAGOSJG + "," +
-			"F_SIGA_ESTADOSABONO("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") AS ESTADO" + "," +
-			"PKG_SIGA_TOTALESABONO.TOTALNETO("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") AS TOTALNETO" + "," +
-			"PKG_SIGA_TOTALESABONO.TOTALIVA("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") AS TOTALIVA" + "," +
-			"PKG_SIGA_TOTALESABONO.TOTALABONADO("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") AS TOTALABONADO" + "," +
-			"PKG_SIGA_TOTALESABONO.TOTAL("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") AS TOTAL" +
-			" FROM " + FacAbonoBean.T_NOMBRETABLA + 
-			" WHERE " +
-			FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION + "=" + institucion ;
-			
-			if (anyosAbono!=null){		 
-				  sql+=" AND SYSDATE - " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_FECHA + " < "+anyosAbono.toString();
+			StringBuffer sql = new StringBuffer();
+			sql.append(" ( ");
+			if(destinatarioAbono==DESTINATARIOABONO_SOCIEDAD || destinatarioAbono==DESTINATARIOABONO_SJCS){
+				
+				sql.append(" (SELECT A.IDABONO, A.NUMEROABONO, A.IDINSTITUCION, ");
+				sql.append(" A.OBSERVACIONES,A.MOTIVOS,  A.FECHA, ");
+				sql.append(" A.CONTABILIZADA, A.IDFACTURA, A.IMPEXCESIVO, ");
+				sql.append(" A.IDPERSONA, A.IDCUENTA, A.IDPAGOSJG, ");
+				sql.append(" F_SIGA_ESTADOSABONO(A.IDINSTITUCION, A.IDABONO) AS ESTADO, ");
+				sql.append(" PKG_SIGA_TOTALESABONO.TOTALNETO(A.IDINSTITUCION, A.IDABONO) AS TOTALNETO, ");
+				sql.append(" PKG_SIGA_TOTALESABONO.TOTALIVA(A.IDINSTITUCION, A.IDABONO) AS TOTALIVA, ");
+				sql.append(" PKG_SIGA_TOTALESABONO.TOTALABONADO(A.IDINSTITUCION, A.IDABONO) AS TOTALABONADO, ");
+				sql.append(" PKG_SIGA_TOTALESABONO.TOTAL(A.IDINSTITUCION, A.IDABONO) AS TOTAL, ");
+				sql.append(" PC.IDPERORIGEN,PC.IDPERDESTINO ");
+				
+				sql.append(" FROM FAC_ABONO A, FCS_PAGO_COLEGIADO PC ");
+				sql.append(" WHERE A.IDINSTITUCION = PC.IDINSTITUCION ");
+				sql.append(" AND A.IDPAGOSJG = PC.IDPAGOSJG ");
+				sql.append(" AND ");
+				sql.append(idPersona);
+				sql.append(" in (PC.IDPERORIGEN, pc.idperdestino) ");
+				sql.append(" AND PC.IDINSTITUCION = ");
+				sql.append(institucion);
+				sql.append(" AND A.IDPERSONA in (PC.IDPERORIGEN, pc.idperdestino) ");
+				if (anyosAbono!=null){		 
+					sql.append("  AND SYSDATE - A.FECHA < ");
+					sql.append(anyosAbono);
+				}
+				sql.append(" ) ");
 			}
-			if(isAbonoSJCS!=null){
-				if(isAbonoSJCS.booleanValue()){
-					sql+=" AND " +FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDPERSONA + " IN ";
-					
-					sql+="( (select idperdestino   from FCS_PAGO_COLEGIADO pc  where pc.IDINSTITUCION = FAC_ABONO.IDINSTITUCION ";
-					sql+=" and pc.IDPAGOSJG = nvl(FAC_ABONO.IDPAGOSJG, pc.IDPAGOSJG)";
-					sql+=" AND idperorigen = " + idPersona+") , " + idPersona+"  )"; 
-					
-					
-					
-					sql+=" AND "+ FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDPAGOSJG + " is not null";
-				}else{
-					sql+=" AND " +FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDPERSONA + " IN ";
-					
-					sql+="( (select idperdestino   from FCS_PAGO_COLEGIADO pc  where pc.IDINSTITUCION = FAC_ABONO.IDINSTITUCION ";
-					sql+=" and pc.IDPAGOSJG is null ";
-					sql+=" AND idperorigen = " + idPersona+") , " + idPersona+"  )";
-					
-					
-					sql+=" AND "+ FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDPAGOSJG + " is null";
-					
+			
+			if(destinatarioAbono==DESTINATARIOABONO_SOCIEDAD)
+				sql.append(" UNION ");
+			
+			if(destinatarioAbono==DESTINATARIOABONO_SOCIEDAD || destinatarioAbono==DESTINATARIOABONO_NORMAL){
+			
+				sql.append(" (SELECT A.IDABONO, A.NUMEROABONO, A.IDINSTITUCION, "); 
+				sql.append(" A.OBSERVACIONES,A.MOTIVOS,  A.FECHA, ");
+				sql.append(" A.CONTABILIZADA, A.IDFACTURA, A.IMPEXCESIVO, ");
+				sql.append(" A.IDPERSONA, A.IDCUENTA, A.IDPAGOSJG, ");
+				sql.append(" F_SIGA_ESTADOSABONO(A.IDINSTITUCION, A.IDABONO) AS ESTADO, ");
+				sql.append(" PKG_SIGA_TOTALESABONO.TOTALNETO(A.IDINSTITUCION, A.IDABONO) AS TOTALNETO, ");
+				sql.append(" PKG_SIGA_TOTALESABONO.TOTALIVA(A.IDINSTITUCION, A.IDABONO) AS TOTALIVA, ");
+				sql.append(" PKG_SIGA_TOTALESABONO.TOTALABONADO(A.IDINSTITUCION, A.IDABONO) AS TOTALABONADO, ");
+				sql.append(" PKG_SIGA_TOTALESABONO.TOTAL(A.IDINSTITUCION, A.IDABONO) AS TOTAL, ");
+				sql.append(" A.IDPERSONA IDPERORIGEN,A.IDPERSONA IDPERDESTINO ");
+				
+				sql.append(" FROM FAC_ABONO A ");
+				sql.append(" WHERE A.IDINSTITUCION = ");
+				sql.append(institucion);
+				
+				sql.append(" AND A.IDPERSONA = ");
+				sql.append(idPersona);
+				sql.append(" AND A.IDPAGOSJG IS NULL ");
+				if (anyosAbono!=null){		 
+					sql.append("  AND SYSDATE - A.FECHA < ");
+					sql.append(anyosAbono);
 				}
 				
-			}else{
-				sql+=" AND " +FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDPERSONA + "=" + idPersona;
-				
+				sql.append(" ) ");
+			
 			}
-			sql+=" ORDER BY "+ 
-			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_FECHA + " DESC";
+			
+			sql.append(" ) ");
+			
+			sql.append(" ORDER BY FECHA DESC"); 
+			
+			
+			
+			
+			
+			
+			
 	
-			PaginadorBind paginador = new PaginadorBind(sql, new Hashtable());
+			PaginadorBind paginador = new PaginadorBind(sql.toString(), new Hashtable());
 			int totalRegistros = paginador.getNumeroTotalRegistros();
 
 			if (totalRegistros==0){					

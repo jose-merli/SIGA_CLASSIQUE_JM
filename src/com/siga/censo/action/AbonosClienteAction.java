@@ -290,7 +290,10 @@ public class AbonosClienteAction extends MasterAction {
 			if(datosColegiales!=null)
 				numero = colegiadoAdm.getIdentificadorColegiado(datosColegiales);
 			//////////////////////
-
+			int destinatarioAbono = 0;
+			if(datosColegiales!=null){
+				destinatarioAbono = mapping.getPath().equals("/JGR_AbonosClienteSJCS")?1:2;
+			}
 			HashMap databackup = getPaginador(request, paginadorPenstania);
 						
 			if (databackup != null) {
@@ -320,12 +323,10 @@ public class AbonosClienteAction extends MasterAction {
 				//obtengo datos de la consulta 			
 				PaginadorBind resultado = null;
 				FacAbonoAdm abonoAdm = new FacAbonoAdm(user);
-				Boolean isAbonosClientes = null;
-				if(datosColegiales!=null){
-					isAbonosClientes = new Boolean(mapping.getPath().equals("/JGR_AbonosClienteSJCS"));
-				}
+				
 				 
-				resultado = abonoAdm.getAbonosClientePaginador(user.getLocation(),idPersona.toString(),anyosAbono,isAbonosClientes);
+				resultado = abonoAdm.getAbonosClientePaginador(user.getLocation(),idPersona.toString(),anyosAbono,destinatarioAbono);
+				
 				Vector datos = null;
 				
 
@@ -345,7 +346,7 @@ public class AbonosClienteAction extends MasterAction {
 			request.setAttribute("NUMERO", numero);
 			request.setAttribute("container", abonos);
 			request.setAttribute("bIncluirRegistrosConBajaLogica",new Boolean(bIncluirRegistrosConBajaLogica).toString());
-			
+			request.setAttribute("destinatarioAbono", (Integer)destinatarioAbono);
 
 			
 		}catch (SIGAException e1) {
