@@ -283,7 +283,7 @@
 			UsrBean user = (UsrBean) ses.getAttribute("USRBEAN");
 			String valor="";
 			String idPersona = (registro.get(CenColegiadoBean.C_IDPERSONA)==null||((String)registro.get(CenColegiadoBean.C_IDPERSONA)).equals(""))?"&nbsp;":(String)registro.get(CenColegiadoBean.C_IDPERSONA);
-
+			String noApareceRed = (registro.get(CenClienteBean.C_NOAPARECERREDABOGACIA)==null||((String)registro.get(CenClienteBean.C_NOAPARECERREDABOGACIA)).equals(""))?"&nbsp;":(String)registro.get(CenClienteBean.C_NOAPARECERREDABOGACIA);
 			// permisos de acceso
 			String permisos = "C,E";
 			FilaExtElement[] elems = new FilaExtElement[1];
@@ -412,16 +412,16 @@
   			<siga:FilaConIconos fila="<%=cont %>" botones="<%=permisos %>" modo="<%=modo %>" elementos="<%=elems%>" visibleBorrado="no" clase="listaNonEdit"  pintarEspacio="no">
 			<td>
 		<%
-		String valorCheck = idInstitucion+"||"+idPersona;
+		String valorCheck = idInstitucion+"||"+idPersona+"||"+noApareceRed;
 			
 						if(isAplicarLOPD){
 								valorCheck+="||"+ClsConstants.DB_TRUE;
 						%>
 								<input type="checkbox" value="<%=valorCheck%>"  name="chkPersona"  disabled >
 						<% }else{
-	 							//if (!ParametrolopdActivo) {
+	 							/*if (!ParametrolopdActivo) {
 	 								valorCheck += "||" + ClsConstants.DB_FALSE;
-	 							//}
+	 							}*/
 								boolean isChecked = false;
 								for (int z = 0; z < registrosSeleccionados.size(); z++) {
 									Hashtable clavesRegistro = (Hashtable) registrosSeleccionados.get(z);
@@ -523,19 +523,18 @@
 		
 		<!-- Pintamos la paginacion-->	
 		<%if (  datosPaginador!=null && datosPaginador.get("datos")!=null && !datosPaginador.get("datos").equals("")){
-			String regSeleccionados = ("" + ((registrosSeleccionados == null) ? 0
-					: registrosSeleccionados.size()));
+			String regSeleccionados = ("" + ((registrosSeleccionados == null) ? 0: registrosSeleccionados.size()));
 		%>
 		<siga:Paginador totalRegistros="<%=totalRegistros%>" 
-								registrosPorPagina="<%=registrosPorPagina%>" 
-								paginaSeleccionada="<%=paginaSeleccionada%>" 
-								registrosSeleccionados="<%=regSeleccionados%>"
-								idioma="<%=idioma%>"
-								modo="buscarPor"								
-								clase="paginator" 
-								divStyle="position:absolute; width:100%; height:20; z-index:3; bottom: 32px; left:0px"
-								distanciaPaginas=""
-								action="<%=action%>" />
+						registrosPorPagina="<%=registrosPorPagina%>" 
+						paginaSeleccionada="<%=paginaSeleccionada%>" 
+						registrosSeleccionados="<%=regSeleccionados%>"
+						idioma="<%=idioma%>"
+						modo="buscarPor"								
+						clase="paginator" 
+						divStyle="position:absolute; width:100%; height:20; z-index:3; bottom: 32px; left:0px"
+						distanciaPaginas=""
+						action="<%=action%>" />
 	 <%}%>			
    <!------------------------------------------->
 
@@ -586,23 +585,22 @@
 		   
 	}
 	function cargarChecks(){
-	   		
-	   	 	
-		<%if (registrosSeleccionados!=null){
-	   		for (int p=0;p<registrosSeleccionados.size();p++){
-	   		 	
-		   		Hashtable clavesEJG= (Hashtable) registrosSeleccionados.get(p);
-		   		
-				valorCheckPersona=(String)clavesEJG.get("CLAVE");
-				String noApareceEnRedAbogacia =  (String)clavesEJG.get(CenClienteBean.C_NOAPARECERREDABOGACIA);
-				if(noApareceEnRedAbogacia==null || noApareceEnRedAbogacia.equals("")|| noApareceEnRedAbogacia.equals(ClsConstants.DB_FALSE)){	
-				%>
-					var aux='<%=valorCheckPersona%>';
-					ObjArray.push(aux);
-				<%
-				}
-			} 
-	   	}%>
+		<%if (registrosSeleccionados != null) {
+			for (int p = 0; p < registrosSeleccionados.size(); p++) {
+				Hashtable clavesEJG = (Hashtable) registrosSeleccionados.get(p);
+				valorCheckPersona = (String) clavesEJG.get("CLAVE");
+				if (!ParametrolopdActivo) {
+					String noApareceEnRedAbogacia = (String) clavesEJG.get(CenClienteBean.C_NOAPARECERREDABOGACIA);
+					if (noApareceEnRedAbogacia == null || noApareceEnRedAbogacia.equals("")
+							|| noApareceEnRedAbogacia.equals(ClsConstants.DB_FALSE)) {%>
+				ObjArray.push('<%=valorCheckPersona%>');
+			<%}
+				} else {%>
+				ObjArray.push('<%=valorCheckPersona%>');
+			<%}
+			}
+
+		}%>
 	   	
 		ObjArray.toString();
 		seleccionados1=ObjArray;
