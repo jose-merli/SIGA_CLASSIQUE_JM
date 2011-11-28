@@ -287,22 +287,23 @@ caracterParam[0] = tipoCliente;
 			
 	function formatearDocumento()
 	{
-
 	   if((document.forms[0].tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")&&(document.forms[0].numIdentificacion.value!="")) {
 			var sNIF = document.forms[0].numIdentificacion.value;
 			document.forms[0].numIdentificacion.value = formateaNIF(sNIF);
-	   }else if((document.forms[0].tipoIdentificacion.value == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") ){
-	   
+	   }else if((document.forms[0].tipoIdentificacion.value == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") ){		   
 	   		var sNIE = document.forms[0].numIdentificacion.value;
 			document.forms[0].numIdentificacion.value = formateaNIE(sNIE);
 	   }
-	   	
 	}
 	
 	function generaNumOtro()
 	{
+		//Ejerciente - Letrado
+		
 	   if((document.forms[0].tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>") && (document.forms[0].numIdentificacion.value=="")) {
-			generarIdenHistorico();
+		   <%if (cliente.equals("") || cliente.equals("No Colegiado")){%>
+				generarIdenHistorico();
+			<%}%>
 			//NIHN (Número de Identificación Histórico para No colegiados) = 'NIHN' + idinstitucion + [0-9]{4}, donde el ultimo numero sera un max+1. Ej. NIHN20400011
 		}
 	   	
@@ -1435,29 +1436,53 @@ function str_replace(search, replace, subject) {
 			alert ('<siga:Idioma key="censo.fichaCliente.literal.sexo"/>');
 		   	return false;
 		}
-		if (validateDatosGeneralesForm(document.forms[0])) {
-		var rc	= true;
-		var tipoIden = document.datosGeneralesForm.tipoIdentificacion.value;
-		
-		if ((tipoIden == <%=tipoIdenNIF%>)){
-			rc = validarNIFCIF(tipoIden, document.datosGeneralesForm.numIdentificacion.value);
-								
-		}else if((tipoIden == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") ){
+		if (validateDatosGeneralesForm(document.forms[0]))
+		{
+			var rc	= true;
+			var tipoIden = document.datosGeneralesForm.tipoIdentificacion.value;
 			
-			rc=validaNIE(document.datosGeneralesForm.numIdentificacion.value);
-			
-		}			
+			if ((tipoIden == <%=tipoIdenNIF%>))
+			{
+				rc = validarNIFCIF(tipoIden, document.datosGeneralesForm.numIdentificacion.value);
+			}
+			else if((tipoIden == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") )
+			{
+				rc=validaNIE(document.datosGeneralesForm.numIdentificacion.value);
+			}
+			else if((tipoIden == "<%=ClsConstants.TIPO_IDENTIFICACION_PASAPORTE%>") && (document.forms[0].numIdentificacion.value=="") )
+			{
+				alert ('<siga:Idioma key="messages.pasaporte.comprobacion.error"/>');
+				rc=false;
+			}
+			else if((tipoIden == "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>") && (document.forms[0].numIdentificacion.value=="") )
+			{	
+				alert ('<siga:Idioma key="messages.otro.comprobacion.error"/>');
+				rc=false;
+			}
+			else if((document.forms[0].tipoIdentificacion.value== "") && (document.forms[0].numIdentificacion.value==""))
+			{
+				if((document.forms[0].cliente.valyue== "Letrado") || (document.forms[0].cliente.value=="Ejerciente"))
+				{
+					alert('<siga:Idioma key="messages.tipoIdenNumIden.comprobacion.error"/>');
+					rc=false;
+				}
+			}
 			return rc;	
-		}else{			
+		}
+		else
+		{			
 		  return false;
 		}
 	}
 		<!-- Asociada al boton Guardar -->
 		function accionGuardar() {		
 			sub();
-			if((document.forms[0].tipoIdentificacion.value== "") && (document.forms[0].numIdentificacion.value==""))
-				alert ("<siga:Idioma key="messages.tipoIdenti.comprobacion.aviso"/>");
-				
+
+			<%if (cliente.equals("") || cliente.equals("No Colegiado")){%>
+				if((document.forms[0].tipoIdentificacion.value== "") && (document.forms[0].numIdentificacion.value==""))
+					alert ("<siga:Idioma key="messages.tipoIdenti.comprobacion.aviso"/>");
+			<%}%>
+
 				if (validarFormulario()	&&	TestFileType(document.forms[0].foto.value, ['GIF', 'JPG', 'PNG', 'JPEG'])) {
 				<%	if (!formulario.getAccion().equals("nuevo")) { %>
 					<% if (!bOcultarHistorico) { %>
