@@ -326,31 +326,28 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 
 	<script type="text/javascript">
 
-			function retarda(tipoId){				
+			function retarda(tipoId){
 				document.PersonaJGForm.tipoId.value = tipoId;
+				comprobarTipoIdent();
 			}
 
 				function traspasoDatos(resultado,bNuevo) 
 				{
-					
 					document.forms[0].nuevo.value = bNuevo;					
-				  if (bNuevo=="1"){// sólo cargamos los datos de la persona si esta ya estaba dada de alta en personaJG
-					 
-					if (resultado[1]!="null" && trim(resultado[1])!="") {			
+				  if (bNuevo=="1"){// sólo cargamos los datos de la persona si esta ya estaba dada de alta en personaJG					  
+					if (resultado[1]!="null" && trim(resultado[1])!="") {								
 						document.forms[0].idTipoPersona.value=resultado[22];						
 						document.getElementById('idTipoPersona').onchange();
 						//recuperamos el valor del tipoIdentificacion.											
 						var funcionRetardo = 'retarda('+resultado[0]+')';
 						window.setTimeout(funcionRetardo,150,"Javascript");						 															
 					}else
-					if(resultado[0]!=null && resultado[2]!=null  && trim(resultado[0])!=""  && trim(resultado[2])!=""){
-						
+					if(resultado[0]!=null && resultado[2]!=null  && trim(resultado[0])!=""  && trim(resultado[2])!=""){						
 						document.forms[0].tipoId.value = resultado[0];
 						document.forms[0].NIdentificacion.value = resultado[2]; 
 						
 						//document.forms[0].tipoId.value=	resultado[0];
-					}						
-
+					}
 					document.forms[0].idPersonaJG.value = resultado[1]; 
 					// RGG 15-03-2006 para no pisar el dni
 					if (trim(resultado[1])!="") {
@@ -453,61 +450,62 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 
 		// Comprueba el tipo de persona que se elegi en el combo FISICA O JURIDICA 
 		function comprobarTipoPersona ()
-		{						
+		{
 			if(document.PersonaJGForm.tipos.value == 'F')
 			{
 				//alert("document.PersonaJGForm.tipos.value FISICA: "+document.PersonaJGForm.tipos.value);
 				document.getElementById("apelli2").style.display="block";
 				document.getElementById("perJuridica").style.display="none";
+				document.getElementById("perJuridica1").style.display="none";
 				document.getElementById("perFisica").style.display="block";
+				document.getElementById("perFisica1").style.display="block";					
 			}
 			else
 			{
-				//alert("document.PersonaJGForm.tipos.value JURIDICA: "+document.PersonaJGForm.tipos.value); 
-				document.getElementById("apelli2").style.display="none";
+				//alert("document.PersonaJGForm.tipos.value JURIDICA: "+document.PersonaJGForm.tipos.value);
 				document.getElementById("perFisica").style.display="none";
+				document.getElementById("perFisica1").style.display="none"; 
+				document.getElementById("apelli2").style.display="none";				
 				document.getElementById("perJuridica").style.display="block";
+				document.getElementById("perJuridica1").style.display="block";					
 			}
-			document.getElementById("textoInformativo").style.display="none";				
+			//document.getElementById("textoInformativo").style.display="none";				
 		}
-
-		function mostrarTextoInformativo ()
-		{			
-			document.getElementById("textoInformativo").style.display="none";
-		}
-		
+				
 		function comprobarIdentificador ()
 		{
 			alert("ver identificación");
 			alert("document.PersonaJGForm.tipoId.value"+document.PersonaJGForm.tipoId.value);
 			//document.solicitudCompraForm.tipoId.value=='P'
 		}
-
-
-
 		
 		// Comprueba el tipo de ident y pinta el boton de generar letra nif si fuese necesario
 		 
-		 function comprobarTipoIdent(){			 
-			<%if (!accion.equalsIgnoreCase("ver")) {%>
+		 function comprobarTipoIdent(){
+			<%if (!accion.equalsIgnoreCase("ver")) {%>			
 			// Solo se genera el NIF o CIF de la persona
 			if((document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")||
 				(document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")
 				|| (document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>")){
 				//document.getElementById("idButtonNif").style.visibility="visible";
 				document.getElementById("textoInformativo").style.display="none";
+				//document.getElementById("textoInformativoEnBlanco").style.display="block";								
 			}	else{
 				//document.getElementById("idButtonNif").style.visibility="hidden";
 				document.getElementById("textoInformativo").style.display="block";
+				//document.getElementById("textoInformativoEnBlanco").style.display="none";											
 			}			
 			<%}%>
 		}	
 		
 		
 		function rellenarFormulario(){
-			document.forms[0].modo.value="buscarNIF";
-			document.forms[0].target="submitArea2";
-			document.forms[0].submit();
+			if(document.forms[0].NIdentificacion.value!="")
+			{
+				document.forms[0].modo.value="buscarNIF";
+				document.forms[0].target="submitArea2";
+				document.forms[0].submit();
+			}
 		}
 
 		function obtenerNif(){
@@ -735,7 +733,7 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 	if (pantalla.equals("P")) {
 %>
 
-<body class="tablaCentralCampos" onload="recargar();comprobarTipoIdent();mostrarTextoInformativo();comprobarTipoPersona();">
+<body class="tablaCentralCampos" onload="recargar();comprobarTipoPersona();comprobarTipoIdent();">
 
 <!-- capa principal -->
 <div id="camposRegistro"  align="center">
@@ -748,7 +746,7 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 
 
 
-<body class="tablaCentralCampos" onload="ajusteAlto('resultado');recargar();">
+<body class="tablaCentralCampos" onload="ajusteAlto('resultado');recargar();comprobarTipoPersona();">
 
 	<!-- TITULO -->
 	<table class="tablaTitulo" cellspacing="0" heigth="38">
@@ -964,19 +962,22 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 	<!-- SUBCONJUNTO DE DATOS -->
 	<siga:ConjCampos leyenda="gratuita.personaJG.literal.datosGenerales">
 
-	<table  align="center" width="100%" border="0" >
+	<table  border="0" width="100%">
 	<tr >
 	
+        <td class="labelText">
 	<%
 			if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
 		%> 
-        <td class="labelText">
 			<siga:Idioma key="gratuita.busquedaSOJ.literal.solicitante"/>&nbsp;	
 		 	<html:checkbox  name="PersonaJGForm" property="solicitante" disabled="<%=scheck%>" />
-		</td>
 	<%
-		}
+		}else{
 	%>
+	&nbsp;
+	<%}%>
+		</td>
+	
 		<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.tipo"/>		
 		</td>
@@ -1013,18 +1014,7 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 			%>
 		</td>
 
-		<%
-			if (!conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
-		%> 
-		<td></td>
-		<%
-			}
-		%>		
-		
-		<td colspan="2">
-			<%if (obligatorioTipoIdentificador) { %>
-				<%=asterisco%> 
-			<%}%>
+		<td>			
 		<%
 			ArrayList tipoIdentificacionSel = new ArrayList();
 					if (miform.getNIdentificacion() != null) {
@@ -1046,51 +1036,51 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 		   <%
 		   	}
 		   %>
-		   <html:text name="PersonaJGForm" property="NIdentificacion" size="10" maxlength="20" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" onblur="rellenarFormulario()"></html:text>
-		  	
 		</td>
-		<td id="textoInformativo" colspan="3">
-			<p align="left">Se requiere NIF/NIE para solicitar Informe socio-económico</p>
+		<td class="labelText">
+			<html:text name="PersonaJGForm" property="NIdentificacion" size="10" maxlength="20" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" onblur="rellenarFormulario()"></html:text>
 		</td>
-		<!--  
-		<td class="labelText" align="left" >
-			<siga:Idioma key="gratuita.personaJG.literal.nombreDeno"/>&nbsp;(*)					
+
+		<td class="labelText" colspan="3">
+			<div class="labelText" id="textoInformativo">
+				<siga:Idioma key="gratuita.personaJG.literal.requiereNifCif"/>
+			</div>
 		</td>
-		<td align="left">
-			<html:text name="PersonaJGForm" property="nombre" maxlength="100" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" style="width:200"></html:text>
-		</td>
-		-->
 	</tr>
-	
+
 	<tr>
-		<td class="labelText" id="perFisica" colspan="3">
-			<siga:Idioma key="gratuita.personaJG.literal.nombreDenoApe1Ape2"/>		
+		<td  align="left" colspan="2">
+			<div class="labelText" id="perFisica"><siga:Idioma key="gratuita.personaJG.literal.nombre(*)"/></div>		
+			<div class="labelText" id="perJuridica"><siga:Idioma key="gratuita.personaJG.literal.nombreDenoApe1"/></div>		
 		</td>
-		<td  class="labelText" id="perJuridica" colspan="3">
-			<siga:Idioma key="gratuita.personaJG.literal.nombreDenoApe1"/>		
+
+		<td  colspan=2>
+			<html:text name="PersonaJGForm" property="nombre" maxlength="100" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" style="width:160"></html:text>
 		</td>
-		<td align="left">
-			<html:text name="PersonaJGForm" property="nombre" maxlength="100" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" style="width:190"></html:text>
+
+		<td class="labelText" colspan="1">
+			<div class="labelText" id="perFisica1"><siga:Idioma key="gratuita.personaJG.literal.apellidos(*)"/></div>
+			<div class="labelText" id="perJuridica1"><siga:Idioma key="gratuita.personaJG.literal.abreviatura(*)"/></div>										
 		</td>
-		<td colspan="2"> 
-			<html:text name="PersonaJGForm" property="apellido1" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:190"></html:text>
+
+
+		<td  colspan="1" >
+			<div class="labelText"><html:text name="PersonaJGForm" property="apellido1" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:150"></html:text></div>
 		</td>
-		<!--  
-		<td class="labelText" colspan="1" >
-			<siga:Idioma key="gratuita.personaJG.literal.apellido2"/>		
+		
+		<td>
+			
+			<div class="labelText" id="apelli2"><html:text name="PersonaJGForm" property="apellido2" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:150"></html:text></div>
 		</td>
-		-->
-		<td  colspan="1" id="apelli2">
-			<html:text name="PersonaJGForm" property="apellido2" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:190"></html:text>
-		</td>
-		<td >
+				
+		<td>
 			<%
 				if (!accion.equalsIgnoreCase("ver")) {
 			%>
 				<input type="button" alt="<siga:Idioma key="gratuita.personaJG.literal.buscar"/>" name="idButton"  onclick="return buscar();" class="button" value="<siga:Idioma key="gratuita.personaJG.literal.buscar"/>">
-			<%
-				}
-			%> 
+			<%}else{%> 
+			&nbsp;
+			<%}%>
 		</td>
 	</tr>
 	</table>
