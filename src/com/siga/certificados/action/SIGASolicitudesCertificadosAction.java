@@ -632,6 +632,85 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		return "mostrar";
 	}
 	
+	private void almacenarCertificado(String idInstitucion, String idSolicitud, HttpServletRequest request,PysProductosInstitucionBean beanProd,String idTipoProducto,String idProducto,String idProductoInstitucion,
+		String idPlantilla,String idPersona,File fIn,File fOut,String sRutaPlantillas,String idInstitucionOrigen,boolean usarIdInstitucion)throws ClsExceptions, SIGAException {
+	    
+    	// OBTENEMOS LA SOLICITUD
+    	Hashtable htSolicitud = new Hashtable();
+	    htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
+	    htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
+	    CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
+	    Vector vDatos = admSolicitud.selectByPK(htSolicitud);
+	    CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean)vDatos.elementAt(0);
+	    CerSolicitudCertificadosAdm admCert = new CerSolicitudCertificadosAdm(this.getUserBean(request));
+	    
+    	// HACEMOS UNO NUEVO PARA ACTUALIZAR EL ESTADO
+        //Hashtable htOld = beanSolicitud.getOriginalHash();
+	    Hashtable htNew = beanSolicitud.getOriginalHash();
+	    
+	    /// RGG 05/03/2007 CAMBIO DE CONTADORES /////////////////////
+        boolean tieneContador=admSolicitud.tieneContador(idInstitucion,idSolicitud);
+		GestorContadores gc = new GestorContadores(this.getUserBean(request));
+		//Obtenemos los datos de la tabla de contadores sin pasarle el prefijo y el sufijo del formulario (datos originales)	
+		//String idContador="PYS_"+idTipoProducto+"_"+idProducto+"_"+idProductoInstitucion;
+		// obtenemos el contador de la FK del producto
+		String idContador=beanProd.getIdContador();
+		
+		// INICIO BLOQUE SINCRONIZADO 
+		//obtenerContadorSinronizado(gc, idInstitucionOrigen, idContador, idTipoProducto, idProducto, idProductoInstitucion, tieneContador, htNew);
+		obtenerContadorSinronizado(gc, idInstitucion, idContador, idTipoProducto, idProducto, idProductoInstitucion, tieneContador, htNew);
+		//FIN BLOQUE SINCRONIZADO 				
+
+		///////////////////////////////////////////////
+        if (!htNew.get(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO).equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO)){
+	      htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO);    
+	      htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
+        }
+
+	    String[] claves = {CerSolicitudCertificadosBean.C_IDINSTITUCION, CerSolicitudCertificadosBean.C_IDSOLICITUD};
+        
+        //pdm es necesario actualizar estas fechas cuando se aprueba la solicitud del certificado
+        String[] campos = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO,CerSolicitudCertificadosBean.C_PREFIJO_CER,CerSolicitudCertificadosBean.C_SUFIJO_CER, CerSolicitudCertificadosBean.C_CONTADOR_CER,CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO,CerSolicitudCertificadosBean.C_FECHAMODIFICACION,CerSolicitudCertificadosBean.C_FECHAESTADO};
+        // RGG 15/10/2007 CAMBIO PARA ACTUALIZAR LA FECHA DE EMISION SOLAMENTE SI ESTA A NULA 
+        if (beanSolicitud.getFechaEmisionCertificado() == null || beanSolicitud.getFechaEmisionCertificado().equals("")) {
+            htNew.put(CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO,"sysdate");
+        }
+        
+	  	htNew.put(CerSolicitudCertificadosBean.C_FECHAMODIFICACION,"sysdate");
+	    
+        if (!admSolicitud.updateDirect(htNew, claves, campos ))
+	    {
+	        throw new ClsExceptions("Error al GENERAR el/los PDF/s");
+	    }
+	    
+        ////////////////////////////////////////////////////////
+	    // GENERAR CERTIFICADO
+        ////////////////////////////////////////////////////////
+    	Certificado.generarCertificadoPDF(idTipoProducto, idProducto, idProductoInstitucion, 
+                						  idInstitucion, idPlantilla, idPersona, fIn, fOut, 
+                						  sRutaPlantillas, idSolicitud, idInstitucionOrigen,usarIdInstitucion, this.getUserBean(request),request);
+	
+    	admCert.guardarCertificado(beanSolicitud, fOut);
+
+    	fOut.delete();
+        
+	    htNew.put(CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_CER_GENERADO);
+
+        // FIRMAR CERTIFICADO
+        if (!admCert.firmarPDF(idSolicitud, idInstitucion)) {
+	        ClsLogging.writeFileLog("Error al FIRMAR el PDF de la Solicitud: " + idSolicitud, 3);
+	    } else {
+	        htNew.put(CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_CER_FIRMADO);
+	    }
+        ////////////////////////////////////////////////////////
+	    
+        String[] campos2 = {CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO};
+	    
+        if (!admSolicitud.updateDirect(htNew, claves, campos2 ))
+	    {
+	        throw new ClsExceptions("Error al GENERAR el/los PDF/s");
+	    }
+	}
 	
 
 	/**
@@ -657,7 +736,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			tx = usr.getTransactionPesada();
 			
 		    SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm)formulario;
-		    CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
+		    
 		    CerPlantillasAdm admPlantillas = new CerPlantillasAdm(this.getUserBean(request));
 		    UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 		    
@@ -776,83 +855,9 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			        try {
 			        	tx.begin();
 			        	
-			        	CerSolicitudCertificadosAdm admCert = new CerSolicitudCertificadosAdm(userBean);
-					    
-			        	// OBTENEMOS LA SOLICITUD
-			        	Hashtable htSolicitud = new Hashtable();
-					    htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
-					    htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
-					    Vector vDatos = admSolicitud.selectByPK(htSolicitud);
-					    CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean)vDatos.elementAt(0);
-					    
-			        	// HACEMOS UNO NUEVO PARA ACTUALIZAR EL ESTADO
-				        //Hashtable htOld = beanSolicitud.getOriginalHash();
-					    Hashtable htNew = beanSolicitud.getOriginalHash();;
-					    
-					    /// RGG 05/03/2007 CAMBIO DE CONTADORES /////////////////////
-				        boolean tieneContador=admSolicitud.tieneContador(idInstitucion,idSolicitud);
-						GestorContadores gc = new GestorContadores(this.getUserBean(request));
-						//Obtenemos los datos de la tabla de contadores sin pasarle el prefijo y el sufijo del formulario (datos originales)	
-						//String idContador="PYS_"+idTipoProducto+"_"+idProducto+"_"+idProductoInstitucion;
-						// obtenemos el contador de la FK del producto
-						String idContador=beanProd.getIdContador();
-						
-						// INICIO BLOQUE SINCRONIZADO 
-						//obtenerContadorSinronizado(gc, idInstitucionOrigen, idContador, idTipoProducto, idProducto, idProductoInstitucion, tieneContador, htNew);
-						obtenerContadorSinronizado(gc, idInstitucion, idContador, idTipoProducto, idProducto, idProductoInstitucion, tieneContador, htNew);
-						//FIN BLOQUE SINCRONIZADO 				
-
-						///////////////////////////////////////////////
-                        if (!htNew.get(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO).equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO)){
-					      htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO);    
-					      htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
-                        }
-
-					    String[] claves = {CerSolicitudCertificadosBean.C_IDINSTITUCION, CerSolicitudCertificadosBean.C_IDSOLICITUD};
-				        
-				        //pdm es necesario actualizar estas fechas cuando se aprueba la solicitud del certificado
-				        String[] campos = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO,CerSolicitudCertificadosBean.C_PREFIJO_CER,CerSolicitudCertificadosBean.C_SUFIJO_CER, CerSolicitudCertificadosBean.C_CONTADOR_CER,CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO,CerSolicitudCertificadosBean.C_FECHAMODIFICACION,CerSolicitudCertificadosBean.C_FECHAESTADO};
-				        // RGG 15/10/2007 CAMBIO PARA ACTUALIZAR LA FECHA DE EMISION SOLAMENTE SI ESTA A NULA 
-				        if (beanSolicitud.getFechaEmisionCertificado() == null || beanSolicitud.getFechaEmisionCertificado().equals("")) {
-				            htNew.put(CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO,"sysdate");
-				        }
-				        
-					  	htNew.put(CerSolicitudCertificadosBean.C_FECHAMODIFICACION,"sysdate");
-					  	htNew.put(CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO,"sysdate");
-					  	
-					    
-				        if (!admSolicitud.updateDirect(htNew, claves, campos ))
-					    {
-					        throw new ClsExceptions("Error al GENERAR el/los PDF/s");
-					    }
-					    
-				        ////////////////////////////////////////////////////////
-					    // GENERAR CERTIFICADO
-				        ////////////////////////////////////////////////////////
-			        	Certificado.generarCertificadoPDF(idTipoProducto, idProducto, idProductoInstitucion, 
-		                        						  idInstitucion, idPlantilla, idPersona, fIn, fOut, 
-		                        						  sRutaPlantillas, idSolicitud, idInstitucionOrigen,usarIdInstitucion, this.getUserBean(request),request);
-					
-			        	admCert.guardarCertificado(beanSolicitud, fOut);
-
-			        	fOut.delete();
-                        
-					    htNew.put(CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_CER_GENERADO);
-
-				        // FIRMAR CERTIFICADO
-				        if (!admCert.firmarPDF(idSolicitud, idInstitucion)) {
-					        ClsLogging.writeFileLog("Error al FIRMAR el PDF de la Solicitud: " + idSolicitud, 3);
-					    } else {
-					        htNew.put(CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_CER_FIRMADO);
-					    }
-				        ////////////////////////////////////////////////////////
-					    
-				        String[] campos2 = {CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO};
-					    
-				        if (!admSolicitud.updateDirect(htNew, claves, campos2 ))
-					    {
-					        throw new ClsExceptions("Error al GENERAR el/los PDF/s");
-					    }
+			        	//////  UNIFICACION PARA LOS 3 METODOS DE GENERAR PDF //////////
+			        	almacenarCertificado(idInstitucion, idSolicitud, request, beanProd, idTipoProducto, idProducto, idProductoInstitucion, idPlantilla, idPersona, fIn, fOut, 
+                						  sRutaPlantillas, idInstitucionOrigen,usarIdInstitucion);
 					    
 				        contador++;
 				        
@@ -1091,81 +1096,9 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			        	
 					    tx.begin();
 					    
-			        	// OBTENEMOS LA SOLICITUD
-			        	Hashtable htSolicitud = new Hashtable();
-					    htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
-					    htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
-					    Vector vDatos = admSolicitud.selectByPK(htSolicitud);
-					    CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean)vDatos.elementAt(0);
-					    
-			        	// HACEMOS UNO NUEVO PARA ACTUALIZAR EL ESTADO
-				        //Hashtable htOld = beanSolicitud.getOriginalHash();
-					    Hashtable htNew = beanSolicitud.getOriginalHash();
-					    
-					    /// RGG 05/03/2007 CAMBIO DE CONTADORES /////////////////////
-				        
-					    boolean tieneContador=admSolicitud.tieneContador(idInstitucion,idSolicitud);
-						GestorContadores gc = new GestorContadores(this.getUserBean(request));
-						//Obtenemos los datos de la tabla de contadores sin pasarle el prefijo y el sufijo del formulario (datos originales)	
-//						String idContador="PYS_"+idTipoProducto+"_"+idProducto+"_"+idProductoInstitucion;
-						String idContador="";
-						idContador=beanProd.getIdContador();
-						
-						// INICIO BLOQUE SINCRONIZADO 
-						//obtenerContadorSinronizado(gc, idInstitucionOrigen, idContador, idTipoProducto, idProducto, idProductoInstitucion, tieneContador, htNew);
-						obtenerContadorSinronizado(gc, idInstitucion, idContador, idTipoProducto, idProducto, idProductoInstitucion, tieneContador, htNew);
-						//FIN BLOQUE SINCRONIZADO 				
-						
-						if (!htNew.get(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO).equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO)){
-							htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO);
-							htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
-                        }
-						
-						///////////////////////////////////////////////
-
-					    String[] claves = {CerSolicitudCertificadosBean.C_IDINSTITUCION, CerSolicitudCertificadosBean.C_IDSOLICITUD};
-				        
-				        //pdm es necesario actualizar estas fechas cuando se aprueba la solicitud del certificado
-				        String[] campos = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO,CerSolicitudCertificadosBean.C_PREFIJO_CER,CerSolicitudCertificadosBean.C_SUFIJO_CER, CerSolicitudCertificadosBean.C_CONTADOR_CER,CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO,CerSolicitudCertificadosBean.C_FECHAMODIFICACION,CerSolicitudCertificadosBean.C_FECHAESTADO};
-				        
-				        // RGG 15/10/2007 CAMBIO PARA ACTUALIZAR LA FECHA DE EMISION SOLAMENTE SI ESTA A NULA 
-				        if ((beanSolicitud.getFechaEmisionCertificado() == null) || beanSolicitud.getFechaEmisionCertificado().equals("")) {
-				        	String sysdate = UtilidadesBDAdm.getFechaCompletaBD(usr.getLanguage());
-				        	beanSolicitud.setFechaEmisionCertificado(sysdate);
-				            htNew.put(CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO, "sysdate");
-				        }
-					  	htNew.put(CerSolicitudCertificadosBean.C_FECHAMODIFICACION,"sysdate");
-					  	
-
-					    if (!admSolicitud.updateDirect(htNew,claves,campos))  {
-					        throw new ClsExceptions("Error al APROBAR el/los PDF/s");
-					    }
-
-					    // GENERAR CERTIFICADO
-			        	Certificado.generarCertificadoPDF(idTipoProducto, idProducto, idProductoInstitucion, 
-		                        						  idInstitucion, idPlantilla, idPersona, fIn, fOut, 
-		                        						  sRutaPlantillas, idSolicitud, idInstitucionOrigen,usarIdInstitucion, this.getUserBean(request),request);
-					    admCer.guardarCertificado(beanSolicitud, fOut);
-				        fOut.delete();
-
-					    htNew.put(CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_CER_GENERADO);
-					    
-
-				        // FIRMAR CERTIFICADO
-				        if (!admCer.firmarPDF(idSolicitud, idInstitucion)) {
-					        ClsLogging.writeFileLog("Error al FIRMAR el PDF de la Solicitud: " + idSolicitud, 3);
-					    } 
-				        else {
-					        htNew.put(CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_CER_FIRMADO);
-					    }
-					    
-				        String[] campos2 = {CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO};
-					    
-				        if (!admSolicitud.updateDirect(htNew, claves, campos2 ))
-					    {
-					        throw new ClsExceptions("Error al GENERAR el/los PDF/s:" + admSolicitud.getError());
-					    }
-					    
+			        	//////  UNIFICACION PARA LOS 3 METODOS DE GENERAR PDF //////////
+			        	almacenarCertificado(idInstitucion, idSolicitud, request, beanProd, idTipoProducto, idProducto, idProductoInstitucion, idPlantilla, idPersona, fIn, fOut, 
+                						  sRutaPlantillas, idInstitucionOrigen,usarIdInstitucion);					    
 				        
 				        contador++;
 			        
@@ -1399,83 +1332,9 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			        	
 					    tx.begin();
 					    
-			        	// OBTENEMOS LA SOLICITUD
-			        	Hashtable htSolicitud = new Hashtable();
-					    htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
-					    htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
-					    Vector vDatos = admSolicitud.selectByPK(htSolicitud);
-					    CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean)vDatos.elementAt(0);
-					    
-			        	// HACEMOS UNO NUEVO PARA ACTUALIZAR EL ESTADO
-				        //Hashtable htOld = beanSolicitud.getOriginalHash();
-					    Hashtable htNew = beanSolicitud.getOriginalHash();
-					    
-					    /// RGG 05/03/2007 CAMBIO DE CONTADORES /////////////////////
-				        
-					    boolean tieneContador=admSolicitud.tieneContador(idInstitucion,idSolicitud);
-						GestorContadores gc = new GestorContadores(this.getUserBean(request));
-						//Obtenemos los datos de la tabla de contadores sin pasarle el prefijo y el sufijo del formulario (datos originales)	
-//						String idContador="PYS_"+idTipoProducto+"_"+idProducto+"_"+idProductoInstitucion;
-						String idContador="";
-						idContador=beanProd.getIdContador();
-						
-						// INICIO BLOQUE SINCRONIZADO 
-						//obtenerContadorSinronizado(gc, idInstitucionOrigen, idContador, idTipoProducto, idProducto, idProductoInstitucion, tieneContador, htNew);
-						obtenerContadorSinronizado(gc, idInstitucion, idContador, idTipoProducto, idProducto, idProductoInstitucion, tieneContador, htNew);
-						//FIN BLOQUE SINCRONIZADO 				
-						
-						
-				    // Si el estado de la solicitud es finalizado, cuando volvemos a generar el certificado, NO cambiamos el estado de la solicitu a aprobado
-                        if (!htNew.get(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO).equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO)){
-                        	htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO);
-                        	htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
-                        }
-						
-						///////////////////////////////////////////////
-
-					    String[] claves = {CerSolicitudCertificadosBean.C_IDINSTITUCION, CerSolicitudCertificadosBean.C_IDSOLICITUD};
-					    //pdm es necesario actualizar estas fechas cuando se aprueba la solicitud del certificado
-				        String[] campos = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO,CerSolicitudCertificadosBean.C_PREFIJO_CER,CerSolicitudCertificadosBean.C_SUFIJO_CER, CerSolicitudCertificadosBean.C_CONTADOR_CER,CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO,CerSolicitudCertificadosBean.C_FECHAMODIFICACION,CerSolicitudCertificadosBean.C_FECHAESTADO};
-				        // RGG 15/10/2007 CAMBIO PARA ACTUALIZAR LA FECHA DE EMISION SOLAMENTE SI ESTA A NULA 
-				        if (beanSolicitud.getFechaEmisionCertificado() == null || beanSolicitud.getFechaEmisionCertificado().equals("")) {
-				            htNew.put(CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO,"sysdate");
-				        }
-				        
-				        htNew.put(CerSolicitudCertificadosBean.C_FECHAMODIFICACION,"sysdate");
-				        htNew.put(CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO,"sysdate");
-					  	 
-
-					    if (!admSolicitud.updateDirect(htNew,claves,campos))
-					    {
-					        throw new ClsExceptions("Error al APROBAR el/los PDF/s");
-					    }
-
-					    // GENERAR CERTIFICADO
-			        	Certificado.generarCertificadoPDF(idTipoProducto, idProducto, idProductoInstitucion, 
-		                        						  idInstitucion, idPlantilla, idPersona, fIn, fOut, 
-		                        						  sRutaPlantillas, idSolicitud, idInstitucionOrigen,usarIdInstitucion, this.getUserBean(request),request);
-					    admCer.guardarCertificado(beanSolicitud, fOut);
-					    if (fOut.exists()){
-					    	fOut.delete();
-					    }
-
-					    htNew.put(CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_CER_GENERADO);
-
-
-				        // FIRMAR CERTIFICADO
-				        if (!admCer.firmarPDF(idSolicitud, idInstitucion)) {
-					        ClsLogging.writeFileLog("Error al FIRMAR el PDF de la Solicitud: " + idSolicitud, 3);
-					    } else {
-					        htNew.put(CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_CER_FIRMADO);
-					    }
-					    
-				        String[] campos2 = {CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO};
-					    
-				        if (!admSolicitud.updateDirect(htNew, claves, campos2 ))
-					    {
-					        throw new ClsExceptions("Error al GENERAR el/los PDF/s:" + admSolicitud.getError());
-					    }
-					    
+			        	//////  UNIFICACION PARA LOS 3 METODOS DE GENERAR PDF //////////
+			        	almacenarCertificado(idInstitucion, idSolicitud, request, beanProd, idTipoProducto, idProducto, idProductoInstitucion, idPlantilla, idPersona, fIn, fOut, 
+                						  sRutaPlantillas, idInstitucionOrigen,usarIdInstitucion);					    
 				        
 				        contador++;
 			        
