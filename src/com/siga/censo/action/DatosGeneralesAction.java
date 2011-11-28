@@ -733,6 +733,13 @@ public class DatosGeneralesAction extends MasterAction {
 			// Obtengo los datos del formulario
 			DatosGeneralesForm miForm = (DatosGeneralesForm)formulario;
 			
+			if(miForm.getNumIdentificacion()==null || miForm.getNumIdentificacion().equals(""))
+			{				
+				String numIdent= (String)getIdenHistorico(mapping, miForm, request, response,1,usr.getLocation());
+				miForm.setNumIdentificacion(numIdent);
+				miForm.setTipoIdentificacion("50");				
+			}
+			
 			// tratamiento del fichero de fotografia
 		    String pathImagenes = "";
 		    String nombreFoto = "";
