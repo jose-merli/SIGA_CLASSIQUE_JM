@@ -1833,11 +1833,11 @@ public class CalendarioSJCS
 					"INICIO generacion",
 					beanGuardia.getNombre() + " (" + fechaInicio + " - "
 							+ fechaFin + ")" });
-			if (porGrupos.equals("1")) {
-				calendarioSJCS.calcularMatrizLetradosGuardiaPorGrupos(
-						lDiasASeparar, rotacion);
+			if (this.arrayPeriodosDiasGuardiaSJCS == null || this.arrayPeriodosDiasGuardiaSJCS.isEmpty()) {
+				log.addLog(new String[] { " ", "Sin periodos" } );
 			} else {
-				calendarioSJCS.calcularMatrizLetradosGuardia(lDiasASeparar);
+				if (porGrupos.equals("1"))	calendarioSJCS.calcularMatrizLetradosGuardiaPorGrupos(lDiasASeparar, rotacion);
+				else						calendarioSJCS.calcularMatrizLetradosGuardia(lDiasASeparar);
 			}
 			log.addLog(new String[] { "FIN generacion" });
 
