@@ -4,7 +4,6 @@
 package com.siga.ws.mutualidad;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -20,9 +19,6 @@ import org.apache.axis.message.addressing.Constants;
 import org.apache.axis.message.addressing.handler.AddressingHandler;
 import org.apache.axis.transport.http.HTTPSender;
 import org.apache.axis.transport.http.HTTPTransport;
-import org.apache.axis.types.PositiveInteger;
-
-import weblogic.wsee.wsa.wsaddressing.WSAddressingConstants;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
@@ -30,7 +26,6 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.LogBDDHandler;
 import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.beans.CenCuentasBancariasBean;
-import com.siga.censo.form.AltaMutualidadAbogaciaForm;
 import com.siga.ws.mutualidad.xmlbeans.ObtenerCuotaYCapObjetivoDocument.ObtenerCuotaYCapObjetivo;
 
 /**
@@ -83,7 +78,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 			respuesta.setCorrecto(true);
 			
 		} catch (Exception e) {
-			//escribeLog("Error en llamada a getPosibilidadSolicitudAlta");
+			escribeLog("Error en llamada a getPosibilidadSolicitudAlta");
 			e.printStackTrace();
 			respuesta.setCorrecto(false);
 			respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos \n" + e.toString());
@@ -111,8 +106,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 			fechaNacimientoCal = UtilidadesFecha.stringToCalendar(fechaNacimiento);
 			Integer sexoInt = 1;
 			if(!sexo.equalsIgnoreCase("H"))sexoInt=2;
-			Integracion_CuotaYCapitalObjetivoJubilacion response = 
-				stub.obtenerCuotaYCapObjetivo(Integer.parseInt(cobertura), sexoInt, fechaNacimientoCal);
+			Integracion_CuotaYCapitalObjetivoJubilacion response = stub.obtenerCuotaYCapObjetivo(Integer.parseInt(cobertura), sexoInt, fechaNacimientoCal);
 
 			respuesta.setCorrecto(true);
 			respuesta.setCapital(response.getCapitalObjetivo());
@@ -152,14 +146,14 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 			respuesta.setAsistencia(transformaCombo(enumCombos.getAsistenciaSanitaria()));
 
 		}catch (Exception e) {
-			//escribeLog("Error en llamada al recuperar enumerados");
+			escribeLog("Error en llamada al recuperar enumerados");
 			respuesta.setCorrecto(false);
 			respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos " + e.toString());
 		}
 		return respuesta;
 		
 	}
-
+/*
 	public RespuestaMutualidad altaAccidentesUniversal(AltaMutualidadAbogaciaForm form) throws Exception {
 		
 		RespuestaMutualidad respuesta = new RespuestaMutualidad();
@@ -189,7 +183,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		return respuesta;
 		
 	}
-	
+	*/
 	private Integracion_DatosBancarios rellenarDatosBancarios(CenCuentasBancariasBean cuentaBean) {
 		Integracion_DatosBancarios datosBancarios = new Integracion_DatosBancarios();
 		datosBancarios.setDC(cuentaBean.getDigitoControl());
@@ -284,12 +278,6 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		SimpleProvider clientConfig = new SimpleProvider();		
 		Handler logSIGAasignaHandler = (Handler) new LogBDDHandler(usrBean, idInstitucion, logDescripcion);		
 		Handler ah = (Handler) new AddressingHandler();
-		//ah.isWSANamespace(ah.WSA_NAMESPACE_200508 );
-		//ah.isWSANamespace();
-		//ah.isWSANamespace();
-		//ah.isWSANamespace();
-		
-		//ah.canHandleBlock(new QName("http://www.w3.org/2005/08/addressing", "reply"));
 		
 		System.setProperty(Constants.ENV_ADDRESSING_NAMESPACE_URI, "http://www.w3.org/2005/08/addressing"); 
 		
@@ -315,51 +303,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 	 * @param st
 	 * @return
 	 */
-	private Boolean getBoolean(String st) {
-		Boolean b = null;
-		if (st != null){
-			if (st.trim().equals("1")) {
-				b = true;
-			} else {
-				b = false;
-			}			
-		}
-		return b;
-	}
 
-
-	/**
-	 * 
-	 * @param st
-	 * @return
-	 */
-	private boolean isNull(String st) {
-		return st == null || st.trim().equals("");
-	}
-
-	private BigInteger getBigInteger(String st) {
-		BigInteger bigInteger = null;
-		if (st != null && !st.trim().equals("")) {
-			bigInteger = new BigInteger(st);
-		}
-		return bigInteger;
-	}
-
-	private Integer getInteger(String st) {		
-		Integer in = null;
-		if (st != null && !st.trim().equals("")) {
-			in = Integer.valueOf(st);
-		}
-		return in;
-	}
-
-	private PositiveInteger getPositiveInteger(String st) {
-		PositiveInteger posInt = null;
-		if (st != null && !st.trim().equals("")) {
-			posInt = new PositiveInteger(st);
-		}
-		return posInt;
-	}
 
 	private WSHttpBinding_IIntegracion_MetodosStub getStub() throws AxisFault, MalformedURLException {
 
@@ -369,6 +313,12 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		return stub;
 	}
 
+	/**
+	 * Transforma la respuesta de integracion en una respuesta válida para integrarse con SIGA
+	 * @param resWs Integracion_Solicitud_Respuesta
+	 * @return RespuestaMutualidad
+	 * @throws IOException
+	 */
 	private RespuestaMutualidad transformaRespuesta(Integracion_Solicitud_Respuesta resWs) throws IOException{
 		RespuestaMutualidad respuesta = new RespuestaMutualidad();
 		try{
@@ -405,13 +355,59 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		return respuesta;
 	}
 	
+	
 	private Map<String, String> transformaCombo(Integracion_TextoValor[] combo){
 		Map<String, String> map= new HashMap<String, String>();
 		for (Integracion_TextoValor elemento:combo){
 			map.put(String.valueOf(elemento.getValor()), elemento.getOpcion());
 		}
 		return map;
-
+		
 	}
+	
+	/** ***********************
+	 * Metodos de conversion no utilizados
+	 * ************************
+	
+	private boolean isNull(String st) {
+		return st == null || st.trim().equals("");
+	}
+	
+	private BigInteger getBigInteger(String st) {
+		BigInteger bigInteger = null;
+		if (st != null && !st.trim().equals("")) {
+			bigInteger = new BigInteger(st);
+		}
+		return bigInteger;
+	}
+	
+	private Integer getInteger(String st) {		
+		Integer in = null;
+		if (st != null && !st.trim().equals("")) {
+			in = Integer.valueOf(st);
+		}
+		return in;
+	}
+	
+	private PositiveInteger getPositiveInteger(String st) {
+		PositiveInteger posInt = null;
+		if (st != null && !st.trim().equals("")) {
+			posInt = new PositiveInteger(st);
+		}
+		return posInt;
+	}
+	
+	private Boolean getBoolean(String st) {
+		Boolean b = null;
+		if (st != null){
+			if (st.trim().equals("1")) {
+				b = true;
+			} else {
+				b = false;
+			}			
+		}
+		return b;
+	}
+	 */
 
 }
