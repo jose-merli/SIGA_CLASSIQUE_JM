@@ -166,6 +166,7 @@ public class InformeCertificadosEspeciales extends MasterReport
 		UtilidadesHash.set(hDatosFijos, "VALOR6", valor6);
 		
 		UtilidadesHash.set(hDatosFijos, "FECHAACTUAL", UtilidadesHash.getString(registro,"FECHAACTUAL"));
+		UtilidadesHash.set(hDatosFijos, "FECHAALTACLIENTE", UtilidadesHash.getString(registro,"FECHAALTACLIENTE"));
 		UtilidadesHash.set(hDatosFijos, "TRATAMIENTO", UtilidadesHash.getString(registro,"TRATAMIENTO"));
 		UtilidadesHash.set(hDatosFijos, "INSTITUCIONORIGEN", UtilidadesHash.getString(registro,"INSTITUCIONORIGEN"));
 		UtilidadesHash.set(hDatosFijos, "INSTITUCIONDESTINO", UtilidadesHash.getString(registro,"INSTITUCIONDESTINO"));
@@ -474,11 +475,12 @@ public class InformeCertificadosEspeciales extends MasterReport
 	public String getSqlCamposGeneral(String tipoCert){
 		StringBuffer sql= new StringBuffer();
 		sql.append(" SELECT SYSDATE AS FECHAACTUAL, ");
+		sql.append(" c.fechaalta AS FECHAALTACLIENTE, ");
 		sql.append(" p.fechanacimiento FECHACONSTITUCION, ");  
 		sql.append(" no.OBJETOSOCIAL as OBJETOSOCIAL, ");
 		sql.append(" no.RESENA as RESENA_SOCIEDAD, ");
 		sql.append(" no.fechafin as FECHAFIN_SOCIEDAD, ");		
-		sql.append(" decode(no.prefijo_numsspp,null,no.prefijo_numreg)|| decode(no.CONTADOR_NUMSSPP,null,no.CONTADOR_NUMREG) || decode(no.SUFIJO_NUMSSPP,null,no.SUFIJO_NUMREG) as NUMEROREGISTRO, ");    
+		sql.append(" nvl(no.prefijo_numsspp,no.prefijo_numreg)|| nvl(no.CONTADOR_NUMSSPP,no.CONTADOR_NUMREG) || nvl(no.SUFIJO_NUMSSPP,no.SUFIJO_NUMREG) as NUMEROREGISTRO, ");    
 		sql.append(" (select pe.nombre from cen_persona pe where pe.idpersona= no.idpersonanotario) AS NOMBRENOTARIO, ");
 		sql.append(" (select pe.apellidos1 from cen_persona pe where pe.idpersona= no.idpersonanotario) AS APELLIDOS1_NOTARIO, ");
 		sql.append(" (select pe.apellidos2 from cen_persona pe where pe.idpersona= no.idpersonanotario) AS APELLIDOS2_NOTARIO, ");
