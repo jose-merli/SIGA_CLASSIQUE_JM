@@ -87,5 +87,22 @@ public class UtilidadesFecha {
 
 		return salida;
 	}
+	/**
+	 * Convierte un string con formato dd/MM/yyyy a calendar
+	 * @param strDate dd/MM/yyyy
+	 * @return
+	 */
+	public static Calendar stringToCalendar(String strDate){
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		Calendar cal = Calendar.getInstance();
+		try {
+			Date date;
+			date = sdf.parse(strDate);
+			cal.setTime(date);
+		} catch (ParseException e) {
+			cal = null;
+		}
+		return cal;
+	}
 
 }
