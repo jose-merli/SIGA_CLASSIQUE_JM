@@ -117,6 +117,8 @@
 				buttons+=",ws";//envio WebService
 			} else if (cajgConfig == 6) {
 				buttons+=",gxml";//generar XML			
+			} else if (cajgConfig == 7) {
+				buttons+=",val,ws";//envio WebService
 			}
 		}
 	} else if (idEstado == 1) {//GENERADA
