@@ -449,7 +449,9 @@ public abstract class SIGAWSClientAbstract {
 		if (v != null && v.size() == 1) {
 			CajgRemesaBean cajgRemesaBean = (CajgRemesaBean)v.get(0);			
 			cajgRemesaBean.setIdIntercambio(idIntercambio);
-			cajgRemesaAdm.updateDirect(cajgRemesaBean);
+			if (!cajgRemesaAdm.update(cajgRemesaBean)) {
+				throw new Exception("No se ha podido actualizar la remesa = \"" + getIdRemesa() + "\" de la idinstitucion \"" + getIdInstitucion() + "\" con el idIntercambio = \"" + idIntercambio + "\"");
+			}
 		} else {
 			throw new Exception("No se ha recuperado la remesa con idinstitucion " + getIdInstitucion() + " e idremesa = " + getIdRemesa());
 		}		
