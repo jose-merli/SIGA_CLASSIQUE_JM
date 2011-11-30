@@ -39,6 +39,7 @@
 	//campos a mostrar en la tabla
 	String nif ="", nombre ="", pagoAsociado="", movimiento="", cantidad="", idMovimiento="", ncolegiado="";
 	String cantidadRestante="";
+	String cantidadAplicada="";
 
 	//botones a mostrar
 	String botones="";
@@ -124,8 +125,8 @@
 		   nombre="tablaDatos"
 		   borde="1"
 		   clase="tableTitle"
-		   nombreCol="factSJCS.datosMovimientos.literal.nifCif,factSJCS.busquedaRetAplicadas.literal.colegiado,factSJCS.datosMovimientos.literal.nColegiado,factSJCS.datosMovimientos.literal.pago,factSJCS.datosMovimientos.literal.descripcion,factSJCS.datosMovimientos.literal.cantidad,factSJCS.datosMovimientos.literal.cantidadrestante,"
-		   tamanoCol="10,20,10,15,15,10,10"
+		   nombreCol="factSJCS.datosMovimientos.literal.nifCif,factSJCS.busquedaRetAplicadas.literal.colegiado,factSJCS.datosMovimientos.literal.nColegiado,factSJCS.datosMovimientos.literal.pago,factSJCS.datosMovimientos.literal.descripcion,factSJCS.datosMovimientos.literal.cantidad,factSJCS.movimiento.literal.aplica,factSJCS.datosMovimientos.literal.cantidadrestante,"
+		   tamanoCol="10,15,8,15,15,8,8,8"
 		   alto="310"
 		   modal="M" 
 		   activarFilaSel="true" >
@@ -150,6 +151,7 @@
 			pagoAsociado = UtilidadesString.mostrarDatoJSP(fila.get("PAGOASOCIADO"));
 			movimiento = UtilidadesString.mostrarDatoJSP(fila.get("MOVIMIENTO"));
 			cantidad = UtilidadesString.mostrarDatoJSP(fila.get("CANTIDAD"));
+			cantidadAplicada = UtilidadesString.mostrarDatoJSP(fila.get("CANTIDADAPLICADA"));
 			cantidadRestante = UtilidadesString.mostrarDatoJSP(fila.get("CANTIDADRESTANTE"));
 			idMovimiento = UtilidadesString.mostrarDatoJSP(fila.get("IDMOVIMIENTO"));
 
@@ -169,6 +171,7 @@
 				<td><%=pagoAsociado %></td>
 				<td><%=movimiento %></td>
 				<td><%=UtilidadesNumero.formatoCampo(cantidad)%></td>
+				<td><%=UtilidadesNumero.formatoCampo(cantidadAplicada)%></td>
 				<td><%=UtilidadesNumero.formatoCampo(cantidadRestante)%></td>
 
 			</siga:FilaConIconos>	
@@ -186,8 +189,8 @@
 		   nombre="tablaDatos"
 		   borde="1"
 		   clase="tableTitle"
-		   nombreCol="factSJCS.datosMovimientos.literal.nifCif,factSJCS.busquedaRetAplicadas.literal.colegiado,factSJCS.datosMovimientos.literal.nColegiado,factSJCS.datosMovimientos.literal.pago,factSJCS.datosMovimientos.literal.descripcion,factSJCS.datosMovimientos.literal.cantidad,factSJCS.datosMovimientos.literal.cantidadrestante,"
-		   tamanoCol="10,20,10,15,15,10,10,10"
+		   nombreCol="factSJCS.datosMovimientos.literal.nifCif,factSJCS.busquedaRetAplicadas.literal.colegiado,factSJCS.datosMovimientos.literal.nColegiado,factSJCS.datosMovimientos.literal.pago,factSJCS.datosMovimientos.literal.descripcion,factSJCS.datosMovimientos.literal.cantidad,factSJCS.movimiento.literal.aplica,factSJCS.datosMovimientos.literal.cantidadrestante,"
+		   tamanoCol="10,15,8,15,15,8,8,8"
 		   alto="310"
 		   modal="M" 
 		   activarFilaSel="true" >
@@ -212,6 +215,7 @@
 			pagoAsociado = UtilidadesString.mostrarDatoJSP(fila.get("PAGOASOCIADO"));
 			movimiento = UtilidadesString.mostrarDatoJSP(fila.get("MOVIMIENTO"));
 			cantidad = UtilidadesString.mostrarDatoJSP(fila.get("CANTIDAD"));
+			cantidadAplicada = UtilidadesString.mostrarDatoJSP(fila.get("CANTIDADAPLICADA"));
 			cantidadRestante = UtilidadesString.mostrarDatoJSP(fila.get("CANTIDADRESTANTE"));
 			idMovimiento = UtilidadesString.mostrarDatoJSP(fila.get("IDMOVIMIENTO"));
 			botones = (String)fila.get("IDESTADOPAGOSJG");
@@ -230,6 +234,7 @@
 				<td><%=pagoAsociado %></td>
 				<td><%=movimiento %></td>
 				<td><%=UtilidadesNumero.formatoCampo(cantidad)%></td>
+				<td><%=UtilidadesNumero.formatoCampo(cantidadAplicada)%></td>
 				<td><%=UtilidadesNumero.formatoCampo(cantidadRestante)%></td>
 
 			</siga:FilaConIconos>		

@@ -175,7 +175,7 @@
 
 	<!-- INICIO: CAMPOS -->
 	
-	<table class="tablaCentralCamposMedia" align="center">
+	<table class="tablaCentralCamposMedia">
 
 	<html:form action="/CEN_MantenimientoMovimientos.do" method="POST" target="submitArea">
 	<html:hidden property = "modo" value = "insertar"/>
@@ -259,29 +259,7 @@
 				<td class="labelText" colspan="3">
 					<html:textarea name="MantenimientoMovimientosForm" property="motivo" cols="60" rows="4" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" styleClass="<%=clase%>" value="<%=motivo%>"/>
 				</td>
-			</tr>
-			<tr>
-				<td colspan="4">
-					&nbsp;
-				</td>
 			</tr>			
-			<tr>
-			<td colspan="4">
-				<siga:ConjCampos leyenda="factSJCS.datosMovimientos.leyendaMovimiento">
-				<table>
-					<tr>
-						<td rowspan=2>
-								<iframe align="top"
-								src="<%=app%>/CEN_MantenimientoMovimientos.do?modo=<%=accionAplicacion%>&idPersona=<%=idPersona%>&idInstitucion=<%=usr.getLocation()%>&idMovimiento=<%=idMovimiento%>"
-								id="resultadoAplica" name="resultadoAplica" scrolling="no" frameborder="0"
-								marginheight="0" marginwidth="0"
-								style="width: 380px; height:80px;"> </iframe>
-						</td>
-					</tr>
-				</table>
-				</siga:ConjCampos>
-			</td>
-			</tr>					
 		</table>
 		</siga:ConjCampos>
 	</td>

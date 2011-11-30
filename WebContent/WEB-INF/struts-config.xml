@@ -2894,7 +2894,6 @@
 			<forward name="inicio" path="/html/jsp/facturacionSJCS/busquedaMovimientos.jsp"/>
 			<forward name="resultado" path="/html/jsp/facturacionSJCS/busquedaMovimientosResultados.jsp"/>
 			<forward name="nuevo" path="/html/jsp/facturacionSJCS/datosMovimientos.jsp"/>
-			<forward name="resultadoAplicacion" path="/html/jsp/facturacionSJCS/aplicacionMovimiento.jsp"/>
 		</action>
 
 		<action path="/FCS_DetalleFacturacion" type="com.siga.facturacionSJCS.action.DatosDetalleFacturacionAction" name="DatosDetalleFacturacionForm" scope="request">
