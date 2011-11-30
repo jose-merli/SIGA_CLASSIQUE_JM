@@ -594,7 +594,7 @@
 										
 									</td>
 									<td>
-										<siga:ComboBD nombre = "comboPlantillaEnvio"   tipo="cmbPlantillaEnvios2" clase="boxCombo" elementoSel="<%=plantillaEnviosSeleccionada%>" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios2%>"  accion="Hijo:idPlantillaGeneracion"/>
+										<siga:ComboBD nombre = "comboPlantillaEnvio"   tipo="cmbPlantillaEnvios2" clase="boxCombo" elementoSel="<%=plantillaEnviosSeleccionada%>" ancho="350" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios2%>"  accion="Hijo:idPlantillaGeneracion"/>
 										
 									</td>
 								</tr>
@@ -603,7 +603,7 @@
 										<siga:Idioma key="envios.definir.literal.plantillageneracion"/>
 									</td>
 									<td>
-										<siga:ComboBD nombre="idPlantillaGeneracion" tipo="cmbPlantillaGeneracion" clase="boxCombo" elementoSel="<%=plantillaSeleccionada%>" obligatorio="false" hijo="t" pestana="true"/>
+										<siga:ComboBD nombre="idPlantillaGeneracion" tipo="cmbPlantillaGeneracion" clase="boxCombo" elementoSel="<%=plantillaSeleccionada%>" ancho="350" obligatorio="false" hijo="t" pestana="true"/>
 										
 									</td>
 								</tr>
