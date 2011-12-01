@@ -974,7 +974,7 @@ public class CalendarioSJCS
 	 * Nota: cada periodo es un arraylist de fechas (String en formato de fecha corto DD/MM/YYYY).
 	 * @throws ClsExceptions
 	 */
-	public void calcularMatrizPeriodosDiasGuardiaAutomatico() throws ClsExceptions
+	public void calcularMatrizPeriodosDiasGuardiaAutomatico() throws SIGAException, ClsExceptions
 	{
 		// generando calendario normal
 		this.arrayPeriodosDiasGuardiaSJCS = new ArrayList();
@@ -982,7 +982,7 @@ public class CalendarioSJCS
 		if (listaDiasPeriodos != null && !listaDiasPeriodos.isEmpty())
 			this.arrayPeriodosDiasGuardiaSJCS.addAll(listaDiasPeriodos);
 		else
-			return;
+			throw new SIGAException("periodoSinDias");
 		
 		// En el caso de que existan guardias vinculadas, se ha de generar un periodo mas:
 		// Pero no sirve generar un calendario ampliado (que termine mas tarde), 
@@ -1823,23 +1823,37 @@ public class CalendarioSJCS
 					calendariosVinculados, this.usrBean, log);
 
 			// obteniendo los periodos
-			calendarioSJCS.calcularMatrizPeriodosDiasGuardiaAutomatico();
-			List lDiasASeparar = calendarioSJCS.getDiasASeparar(new Integer(
-					idInstitucion), new Integer(idTurno),
-					new Integer(idGuardia), this.usrBean);
+			try {
+				calendarioSJCS.calcularMatrizPeriodosDiasGuardiaAutomatico();
+				List lDiasASeparar = calendarioSJCS.getDiasASeparar(new Integer(
+						idInstitucion), new Integer(idTurno),
+						new Integer(idGuardia), this.usrBean);
 
-			// obteniendo la matriz de letrados de guardia
-			log.addLog(new String[] {
-					"INICIO generacion",
-					beanGuardia.getNombre() + " (" + fechaInicio + " - "
-							+ fechaFin + ")" });
-			if (this.arrayPeriodosDiasGuardiaSJCS == null || this.arrayPeriodosDiasGuardiaSJCS.isEmpty()) {
-				log.addLog(new String[] { " ", "Sin periodos" } );
-			} else {
-				if (porGrupos.equals("1"))	calendarioSJCS.calcularMatrizLetradosGuardiaPorGrupos(lDiasASeparar, rotacion);
-				else						calendarioSJCS.calcularMatrizLetradosGuardia(lDiasASeparar);
+				// obteniendo la matriz de letrados de guardia
+				log.addLog(new String[] {
+						"INICIO generacion",
+						beanGuardia.getNombre() + " (" + fechaInicio + " - "
+								+ fechaFin + ")" });
+				
+				if (porGrupos.equals("1")) {
+					calendarioSJCS.calcularMatrizLetradosGuardiaPorGrupos(
+							lDiasASeparar, rotacion);
+				} else {
+					calendarioSJCS.calcularMatrizLetradosGuardia(lDiasASeparar);
+				}
+				
+				log.addLog(new String[] { "FIN generacion" });
+				
+			} catch (SIGAException e) {
+				if(e.getLiteral().equals("periodoSinDias")){
+					log.addLog(new String[] { " ", "Sin periodos" } );
+				}else{
+					throw e;
+				}
+
 			}
-			log.addLog(new String[] { "FIN generacion" });
+
+			
 
 			tx.commit();
 		} catch (SIGAException e) {
