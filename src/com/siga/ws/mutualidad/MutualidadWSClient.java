@@ -6,6 +6,7 @@ package com.siga.ws.mutualidad;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -164,6 +165,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 	public RespuestaMutualidad altaAccidentesUniversal(Hashtable<String, Hashtable> ht) throws Exception {
 		
 		RespuestaMutualidad respuesta = new RespuestaMutualidad();
+		RespuestaMutualidad combos = new RespuestaMutualidad();
 		try{
 			WSHttpBinding_IIntegracion_MetodosStub stub = getStub();
 			Calendar cal = Calendar.getInstance();
@@ -178,12 +180,16 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 			Integracion_Beneficiarios		datosBeneficiarios = null;
 			Integracion_Domicilio[]			datosDirecciones = new Integracion_Domicilio[2];
 			
+			// Usamos el getCombos para sacar el catalogo de valores que usa la mutualidad y poder traducir los del SIGA
+			combos = this.getCombos();
+//			combos.get
+			
 			// Rellenar estos datos con los que lleguen del formulario
 			datosBancarios = rellenarDatosBancarios(ht.get("datosBancarios"));
 			datosPoliza = rellenarDatosPoliza(ht.get("datosPoliza"));
 			datosDireccionDomicilio = rellenarDatosDireccion(ht.get("datosDireccionDomicilio"));
 			datosDireccionDespacho = rellenarDatosDireccion(ht.get("datosDireccionDespacho"));
-			datosPersona = rellenarDatosPersona(ht.get("datosPersona"));
+			datosPersona = rellenarDatosPersona(combos, ht.get("datosPersona"));
 			datosBeneficiarios = rellenarDatosBeneficiarios(ht.get("datosBeneficiarios"));
 			datosSolicitud = rellenarDatosSolicitudEstados(ht.get("datosSolicitudEstados"));
 			datosSolicitud.setIdTipoSolicitud(ACCIDENTES_GRATUITO);
@@ -230,27 +236,31 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		return ds;
 	}
 
-	private Integracion_Persona rellenarDatosPersona(Hashtable<String, String> ht) {
+	private Integracion_Persona rellenarDatosPersona(RespuestaMutualidad combos, Hashtable<String, String> ht) {
 		Integracion_Persona dp = new Integracion_Persona();
 		
+		Map<String, String> sexoMap = combos.getSexos();
 		dp.setApellido1(ht.get("apellido1"));
 		dp.setApellido2(ht.get("apellido2"));
 		dp.setNIF(ht.get("numeroIdentificacion"));
 		dp.setNacionalidad(ht.get("nacionalidad")); // natural de?
 		dp.setNombre(ht.get("nombre"));
 		Integer sexoInt=1;
-		if(ht.get("nombre")!=null && !ht.get("nombre").equalsIgnoreCase("H"))sexoInt=2;
+		sexoMap.get("");
+		Collection col = sexoMap.values();
+		//col.
+		if(ht.get("idSexo")!=null && !ht.get("idSexo").equalsIgnoreCase("H"))sexoInt=1;
 		dp.setSexo(sexoInt);
 
 		dp.setNumHijos(Integer.parseInt(ht.get("numHijos")));
 //		dp.setEdadesHijos(ht.get("edadesHijos[]")));
 		
-		dp.setProfesion(ht.get("profesion")); // Abogado?
+		dp.setProfesion("Abogado"); // Abogado?
 		
 		dp.setNumColegiado(ht.get("numColegiado"));
 		dp.setColegio(ht.get("colegio"));
 		
-		dp.setEjerciente(Integer.parseInt(ht.get("ejerciente")));
+		dp.setEjerciente(Integer.parseInt(ht.get("ejerciente")));	// Parsear
 		dp.setEstadoCivil(Integer.parseInt(ht.get("estadoCivil"))); // Parsear
 //		dp.setIdMutualista(Integer.parseInt(ht.get("idMutualista")));
 		dp.setIdSolicitud(Integer.parseInt(ht.get("idSolicitud")));
@@ -273,7 +283,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		// dp.setFEfecto(FEfecto)
 		// dp.setIdMutualista(idMutualista)
 		dp.setFormaPago(Integer.parseInt( ht.get("idPeriodicidadPago").toString())); 
-		dp.setOpcionesCobertura(Integer.parseInt( ht.get("idCobertura").toString()));
+		dp.setOpcionesCobertura(Integer.parseInt(ht.get("idCobertura").toString()));
 		dp.setTextoOtros(ht.get("otrosBeneficiarios"));
 		
 		return dp;
@@ -292,18 +302,20 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		dd.setPoblacion(ht.get("poblacion"));
 		dd.setProvincia(ht.get("provincia"));
 		
-		dd.setIdDireccion(Integer.parseInt( ht.get(ht.get("idDireccion"))));
-		dd.setIdMutualista(Integer.parseInt( ht.get(ht.get("idMutualista"))));
-		dd.setTipoDireccion(Integer.parseInt( ht.get(ht.get("tipoDireccion"))));
-		dd.setTipoDomicilio(Integer.parseInt( ht.get(ht.get("tipoDomicilio"))));
-		dd.setDireccionContacto(Integer.parseInt( ht.get(ht.get("direccionContacto"))));
+//		dd.setIdDireccion(Integer.parseInt( ht.get("idDireccion")));
+//		dd.setIdMutualista(Integer.parseInt( ht.get("idMutualista")));
+
+//		dd.setTipoDireccion(Integer.parseInt( ht.get("tipoDireccion")));
+//		dd.setTipoDomicilio(Integer.parseInt( ht.get("tipoDomicilio")));
+//		dd.setDireccionContacto(Integer.parseInt( ht.get("direccionContacto")));
 		
-//		dd.setBloque(ht.get("bloque"));
-//		dd.setEsc(ht.get("esc"));
-//		dd.setLetra(ht.get("letra"));
-//		dd.setNum(ht.get("num"));
-//		dd.setPiso(ht.get("piso"));
-//		dd.setTipoVia(ht.get("tipoVia"));
+		// Estos valores no aplican porque en SIGA no se usan
+		dd.setTipoVia(ht.get(""));
+		dd.setBloque(ht.get(""));
+		dd.setEsc(ht.get(""));
+		dd.setLetra(ht.get(""));
+		dd.setNum(ht.get(""));
+		dd.setPiso(ht.get(""));
 		
 		return dd;
 	}
@@ -321,7 +333,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 			db.setEntidad(ht.get("cboCodigo"));
 			db.setOficina(ht.get("codigoSucursal"));
 			db.setDC(ht.get("digitoControl"));
-			db.setEntidad(ht.get("numeroCuenta"));
+			db.setNCuenta(ht.get("numeroCuenta"));
 		}
 		
 		return db;
@@ -330,6 +342,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 	public RespuestaMutualidad altaPlanProfesional(Hashtable<String, Hashtable> ht) throws Exception {
 		
 		RespuestaMutualidad respuesta = new RespuestaMutualidad();
+		RespuestaMutualidad combos = new RespuestaMutualidad();
 		try{
 			WSHttpBinding_IIntegracion_MetodosStub stub = getStub();
 			Calendar cal = Calendar.getInstance();
@@ -343,12 +356,16 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 			Integracion_Solicitud_Estados	datosSolicitudEstados = null;
 			Integracion_Beneficiarios		datosBeneficiarios = null;
 			Integracion_Domicilio[]			datosDirecciones = new Integracion_Domicilio[2];
+			
+			// Usamos el getCombos para sacar el catalogo de valores que usa la mutualidad y poder traducir los del SIGA
+			combos = this.getCombos();
+//			combos.get
 
 			datosBancarios = rellenarDatosBancarios(ht.get("datosBancarios"));
 			datosPoliza = rellenarDatosPoliza(ht.get("datosPoliza"));
 			datosDireccionDomicilio = rellenarDatosDireccion(ht.get("datosDireccionDomicilio"));
 			datosDireccionDespacho = rellenarDatosDireccion(ht.get("datosDireccionDespacho"));
-			datosPersona = rellenarDatosPersona(ht.get("datosPersona"));
+			datosPersona = rellenarDatosPersona(combos, ht.get("datosPersona"));
 			datosBeneficiarios = rellenarDatosBeneficiarios(ht.get("datosBeneficiarios"));
 			datosSolicitud = rellenarDatosSolicitudEstados(ht.get("datosSolicitudEstados"));
 			datosSolicitud.setIdTipoSolicitud(PLAN_PROFESIONAL);
