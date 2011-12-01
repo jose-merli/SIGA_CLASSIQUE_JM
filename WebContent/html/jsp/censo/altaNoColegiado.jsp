@@ -1288,6 +1288,9 @@ var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
 					if (validarFormulario()){ 
 						document.datosGeneralesForm.modo.value = "validarNoColegiado";
 						document.datosGeneralesForm.submit();
+					}else{
+						fin();
+						return false;
 					}
 				}
 				
