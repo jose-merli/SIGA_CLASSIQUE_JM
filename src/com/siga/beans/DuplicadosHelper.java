@@ -57,9 +57,6 @@ public class DuplicadosHelper{
 			StringBuffer sqlPersona = new StringBuffer();
 			sqlPersona.append(" select distinct per.idpersona, per.nifcif, per.nombre, per.apellidos1, per.apellidos2, col.ncolegiado ");
 			sqlPersona.append(" from cen_persona per, cen_cliente cli, cen_colegiado col ");
-			if(nColegiado!=null && !nColegiado.equalsIgnoreCase("")){
-				sqlPersona.append(" , cen_colegiado col ");	
-			}
 			sqlPersona.append(" where per.idpersona = cli.idpersona ");
 			sqlPersona.append(" and per.idpersona > 100 ");
 			sqlPersona.append(" and cli.idinstitucion = 2000 ");
