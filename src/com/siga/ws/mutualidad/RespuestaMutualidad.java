@@ -19,6 +19,7 @@ public class RespuestaMutualidad {
 	private Map<String, String> periodicidades;
 	private Map<String, String> estadosCiviles;
 	private Map<String, String> coberturas;
+	private String valorRespuesta;
 
 
 	public void setCorrecto(boolean b) { 
@@ -52,7 +53,11 @@ public class RespuestaMutualidad {
 	public Double getCapital() {
 		return capital;
 	}
-
+	
+	public String getValorRespuesta() {
+		return valorRespuesta;
+	}
+	
 	public void setCuota(Double cuota) {
 		this.cuota = cuota;
 	}
@@ -139,6 +144,10 @@ public class RespuestaMutualidad {
 
 	public void setCoberturas(Map<String, String> map) {
 		this.coberturas = map;
+	}
+
+	public void setValorRespuesta(String valorRespuesta) {
+		this.valorRespuesta = valorRespuesta;
 	}
 
 	

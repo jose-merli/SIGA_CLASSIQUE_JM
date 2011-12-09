@@ -43,7 +43,7 @@ public abstract class MutualidadWSClientAbstract {
 	private boolean firmarXML;
 	private boolean simular;
 
-	public abstract void execute() throws Exception;
+	//public abstract void execute() throws Exception;
 	
 		
 	/**
@@ -69,7 +69,7 @@ public abstract class MutualidadWSClientAbstract {
 	 */
 	public static File getErrorFile(int idInstitucion) {
 		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		String rutaAlmacen = rp.returnProperty("cajg.directorioFisicoCAJG") + rp.returnProperty("cajg.directorioCAJGJava");
+		String rutaAlmacen = rp.returnProperty("wsMutualidad.directorioFicheros") + rp.returnProperty("wsMutualidad.directorioLog");
 			
 		rutaAlmacen += File.separator + idInstitucion;
 		
@@ -124,15 +124,6 @@ public abstract class MutualidadWSClientAbstract {
 		this.urlWS = urlWS;
 	}
 
-	/**
-	 * 
-	 * @param idInstitucion
-	 * @param idRemesa
-	 * @return
-	 */
-	protected static String getKeyMap (String idInstitucion, String idRemesa) {
-		return idInstitucion + "-" + idRemesa;
-	}
 	
 	/**
 	 * 
@@ -207,46 +198,6 @@ public abstract class MutualidadWSClientAbstract {
 	 */
 	public void setFirmarXML(boolean firmarXML) {
 		this.firmarXML = firmarXML;
-	}
-
-	protected static String getNombreRutaZIPconXMLs(int idInstitucion, int idRemesa) {
-		return getDirXML(idInstitucion, idRemesa) + File.separator + idInstitucion + "_" + idRemesa;
-	}
-	
-	public static String getRutaFicheroZIP(int idInstitucion, int idRemesa) {
-		return getNombreRutaZIPconXMLs(idInstitucion, idRemesa) + ".zip";
-	}
-
-	protected static String getDirXML(int idInstitucion, int idRemesa) {
-		String keyPathFicheros = "cajg.directorioFisicoCAJG";		
-		String keyPath2 = "cajg.directorioCAJGJava";				
-	    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		String pathFichero = p.returnProperty(keyPathFicheros) + p.returnProperty(keyPath2);
-		return pathFichero + File.separator + idInstitucion  + File.separator + idRemesa + File.separator + "xml";
-	}
-	
-	protected String getNombreFichero(TipoIdentificacionIntercambio tipoIdentificacionIntercambio) {
-		StringBuffer nombreFichero = new StringBuffer();
-		nombreFichero.append(tipoIdentificacionIntercambio.getTipoIntercambio());
-		nombreFichero.append("_" + tipoIdentificacionIntercambio.getCodOrigenIntercambio());
-		nombreFichero.append("_" + tipoIdentificacionIntercambio.getCodDestinoIntercambio());
-		nombreFichero.append("_" + tipoIdentificacionIntercambio.getIdentificadorIntercambio());
-		
-		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		String fechaIntercambio = sdf.format(tipoIdentificacionIntercambio.getFechaIntercambio().getTime());
-		nombreFichero.append("_" + fechaIntercambio);
-		nombreFichero.append("_" + tipoIdentificacionIntercambio.getNumeroDetallesIntercambio());
-		nombreFichero.append(".xml");
-		return nombreFichero.toString();
-	}
-	
-	public boolean isSimular() {
-		return simular;
-	}
-	
-	public void setSimular(boolean simular) {
-		this.simular = simular;
 	}
 
 }

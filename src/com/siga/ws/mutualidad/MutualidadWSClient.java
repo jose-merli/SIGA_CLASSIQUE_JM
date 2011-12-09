@@ -3,13 +3,20 @@
  */
 package com.siga.ws.mutualidad;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -33,6 +40,8 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.LogBDDHandler;
 import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.beans.CenCuentasBancariasBean;
+import com.siga.beans.GenParametrosAdm;
+import com.siga.general.SIGAException;
 import com.siga.ws.mutualidad.xmlbeans.ObtenerCuotaYCapObjetivoDocument.ObtenerCuotaYCapObjetivo;
 
 /**
@@ -41,7 +50,7 @@ import com.siga.ws.mutualidad.xmlbeans.ObtenerCuotaYCapObjetivoDocument.ObtenerC
  */
 public class MutualidadWSClient extends MutualidadWSClientAbstract {
 	
-	private static final String URLMUTUALIDADABOGACIA = "http://www.mutualidadabogacia.com/IntegracionColegiosDesarrollo/Integracion_Metodos.svc";
+	private static final String URLMUTUALIDADABOGACIA = "URL_WS_MUTUALIDAD";
 	
 	// Constantes de vup
 	private static final int  TIPO_CUENTA_ESPAÑOLA = 1;
@@ -57,10 +66,9 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 	private static final int  PLAN_PROFESIONAL = 2;
 
 	
-	@Override
-	public void execute() throws Exception {
-		// TODO Auto-generated method stub
-		
+	public MutualidadWSClient(UsrBean user) {
+		this.setUsrBean(user);
+		this.setIdInstitucion(Integer.parseInt(user.getLocation()));
 	}
 	
 	/**
@@ -72,26 +80,33 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 	 */
 	public RespuestaMutualidad getPosibilidadSolicitudAlta(String nif, String fechaNacimiento) throws Exception {
 
-		RespuestaMutualidad respuesta = new RespuestaMutualidad();
-		try{
-			WSHttpBinding_IIntegracion_MetodosStub stub = getStub();
-			
-			Calendar fechaNacimientoCal = Calendar.getInstance();
-			fechaNacimientoCal = UtilidadesFecha.stringToCalendar(fechaNacimiento);
+        RespuestaMutualidad respuesta = new RespuestaMutualidad();
+        try{
+            WSHttpBinding_IIntegracion_MetodosStub stub = getStub();
+           
+            Calendar fechaNacimientoCal = Calendar.getInstance();
+            fechaNacimientoCal = UtilidadesFecha.stringToCalendar(fechaNacimiento);
 
-			Integracion_Solicitud_Respuesta response = stub.estadoMutualista(nif, fechaNacimientoCal);
-			
-			respuesta.setCorrecto(true);
-			
-		} catch (Exception e) {
-			escribeLog("Error en llamada a getPosibilidadSolicitudAlta");
-			e.printStackTrace();
-			respuesta.setCorrecto(false);
-			respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos.");
-		}
-		return respuesta;
+            Integracion_Solicitud_Respuesta response = stub.estadoMutualista(nif, fechaNacimientoCal);
+            if(!response.getValorRespuesta().equals("1"))
+                throw new SIGAException("error.inesperado.estadoMutualista");
+           
+            respuesta.setCorrecto(true);
+           
+        } catch (SIGAException e) {
+            escribeLog(e.getMessage());
+            e.printStackTrace();
+            respuesta.setCorrecto(false);
+            respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos.");
+        } catch (Exception e) {
+            escribeLog("Error en llamada a getPosibilidadSolicitudAlta");
+            e.printStackTrace();
+            respuesta.setCorrecto(false);
+            respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos.");
+        }
+        return respuesta;
 
-	}
+    }
 		
 	/**
 	 * 
@@ -127,6 +142,24 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		return respuesta;
 
 	}
+	
+	public RespuestaMutualidad getEstadoSolicitud(Long idSolicitud) throws Exception {
+
+        RespuestaMutualidad respuesta = new RespuestaMutualidad();
+        try{
+            WSHttpBinding_IIntegracion_MetodosStub stub = getStub();
+           
+            Integracion_Solicitud_Respuesta response = stub.estadoSolicitud(idSolicitud,Boolean.TRUE );
+            respuesta.setValorRespuesta(response.getValorRespuesta());
+            respuesta.setCorrecto(true);
+        } catch (Exception e) {
+            escribeLog("Error en llamada a getEstadoSolicitud");
+            respuesta.setCorrecto(false);
+            respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos.");
+        }
+        return respuesta;
+
+    }
 
 	/**
 	 * Devuelve los combos para mostrar las opciones con las que se puede solicitar el alta
@@ -154,7 +187,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 			respuesta.setAsistencia(transformaCombo(enumCombos.getAsistenciaSanitaria()));
 			
 		}catch (Exception e) {
-			escribeLog("Error en llamada al recuperar enumerados");
+			escribeLog("Error en llamada al recuperar enumerados: " + e );
 			respuesta.setCorrecto(false);
 			respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos.");
 		}
@@ -180,16 +213,12 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 			Integracion_Beneficiarios		datosBeneficiarios = null;
 			Integracion_Domicilio[]			datosDirecciones = new Integracion_Domicilio[2];
 			
-			// Usamos el getCombos para sacar el catalogo de valores que usa la mutualidad y poder traducir los del SIGA
-			combos = this.getCombos();
-//			combos.get
-			
 			// Rellenar estos datos con los que lleguen del formulario
 			datosBancarios = rellenarDatosBancarios(ht.get("datosBancarios"));
 			datosPoliza = rellenarDatosPoliza(ht.get("datosPoliza"));
 			datosDireccionDomicilio = rellenarDatosDireccion(ht.get("datosDireccionDomicilio"));
 			datosDireccionDespacho = rellenarDatosDireccion(ht.get("datosDireccionDespacho"));
-			datosPersona = rellenarDatosPersona(combos, ht.get("datosPersona"));
+			datosPersona = rellenarDatosPersona(ht.get("datosPersona"));
 			datosBeneficiarios = rellenarDatosBeneficiarios(ht.get("datosBeneficiarios"));
 			datosSolicitud = rellenarDatosSolicitudEstados(ht.get("datosSolicitudEstados"));
 			datosSolicitud.setIdTipoSolicitud(ACCIDENTES_GRATUITO);
@@ -203,6 +232,46 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 
 		}catch (Exception e) {
 			//escribeLog("Error en llamada al solicitar el alta en el seguro gratuito");
+			respuesta.setCorrecto(false);
+			respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos");
+		}
+		return respuesta;
+		
+	}
+
+	public RespuestaMutualidad altaPlanProfesional(Hashtable<String, Hashtable> ht) throws Exception {
+		
+		RespuestaMutualidad respuesta = new RespuestaMutualidad();
+		RespuestaMutualidad combos = new RespuestaMutualidad();
+		try{
+			WSHttpBinding_IIntegracion_MetodosStub stub = getStub();
+			Calendar cal = Calendar.getInstance();
+			
+			Integracion_DatosBancarios		datosBancarios = null;
+			Integracion_DatosPoliza			datosPoliza = null;
+			Integracion_Domicilio			datosDireccionDomicilio = null;
+			Integracion_Domicilio			datosDireccionDespacho = null;
+			Integracion_Persona				datosPersona = null;
+			Integracion_Solicitud			datosSolicitud = null;
+			Integracion_Solicitud_Estados	datosSolicitudEstados = null;
+			Integracion_Beneficiarios		datosBeneficiarios = null;
+			Integracion_Domicilio[]			datosDirecciones = new Integracion_Domicilio[2];
+
+			datosBancarios = rellenarDatosBancarios(ht.get("datosBancarios"));
+			datosPoliza = rellenarDatosPoliza(ht.get("datosPoliza"));
+			datosDireccionDomicilio = rellenarDatosDireccion(ht.get("datosDireccionDomicilio"));
+			datosDireccionDespacho = rellenarDatosDireccion(ht.get("datosDireccionDespacho"));
+			datosPersona = rellenarDatosPersona(ht.get("datosPersona"));
+			datosBeneficiarios = rellenarDatosBeneficiarios(ht.get("datosBeneficiarios"));
+			datosSolicitud = rellenarDatosSolicitudEstados(ht.get("datosSolicitudEstados"));
+			datosSolicitud.setIdTipoSolicitud(PLAN_PROFESIONAL);
+			
+			Integracion_Solicitud_Respuesta response = stub.MGASolicitudPolizaProfesional(datosBancarios, datosPoliza, datosDirecciones, datosPersona, datosSolicitud, datosSolicitudEstados, datosBeneficiarios);
+			
+			respuesta.setCorrecto(true);
+
+		}catch (Exception e) {
+			escribeLog("Error en llamada al solicitar alta en el plan profesional");
 			respuesta.setCorrecto(false);
 			respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos");
 		}
@@ -236,35 +305,33 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		return ds;
 	}
 
-	private Integracion_Persona rellenarDatosPersona(RespuestaMutualidad combos, Hashtable<String, String> ht) {
+	private Integracion_Persona rellenarDatosPersona(Hashtable<String, String> ht) {
 		Integracion_Persona dp = new Integracion_Persona();
 		
-		Map<String, String> sexoMap = combos.getSexos();
 		dp.setApellido1(ht.get("apellido1"));
 		dp.setApellido2(ht.get("apellido2"));
 		dp.setNIF(ht.get("numeroIdentificacion"));
 		dp.setNacionalidad(ht.get("nacionalidad")); // natural de?
 		dp.setNombre(ht.get("nombre"));
 		Integer sexoInt=1;
-		sexoMap.get("");
-		Collection col = sexoMap.values();
-		//col.
-		if(ht.get("idSexo")!=null && !ht.get("idSexo").equalsIgnoreCase("H"))sexoInt=1;
+		if(ht.get("idSexo")!=null && !ht.get("idSexo").equalsIgnoreCase("H"))sexoInt=2;
 		dp.setSexo(sexoInt);
 
 		dp.setNumHijos(Integer.parseInt(ht.get("numHijos")));
+		// TODO // jbd // Recorrer las edades para meterlas en el los datos personales
 //		dp.setEdadesHijos(ht.get("edadesHijos[]")));
 		
-		dp.setProfesion("Abogado"); // Abogado?
+		dp.setProfesion("Abogado"); // Ponemos fijo Abogado porque nadie mas lo va a usar
 		
-		dp.setNumColegiado(ht.get("numColegiado"));
+//		dp.setNumColegiado(ht.get("numColegiado")); // No se puede pasar si aun no es colegiado
 		dp.setColegio(ht.get("colegio"));
+		
+		dp.setAsistenciaSanitaria(Integer.parseInt(ht.get("asistenciaSanitaria")));
 		
 		dp.setEjerciente(Integer.parseInt(ht.get("ejerciente")));	// Parsear
 		dp.setEstadoCivil(Integer.parseInt(ht.get("estadoCivil"))); // Parsear
-//		dp.setIdMutualista(Integer.parseInt(ht.get("idMutualista")));
 		dp.setIdSolicitud(Integer.parseInt(ht.get("idSolicitud")));
-//		dp.setAsistenciaSanitaria(Integer.parseInt(ht.get("asistenciaSanitaria")));
+//		dp.setIdMutualista(Integer.parseInt(ht.get("idMutualista")));
 		
 		Calendar fechaNacimientoCal = Calendar.getInstance();
 		fechaNacimientoCal = UtilidadesFecha.stringToCalendar(ht.get("fechaNacimiento"));
@@ -338,75 +405,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		
 		return db;
 	}
-
-	public RespuestaMutualidad altaPlanProfesional(Hashtable<String, Hashtable> ht) throws Exception {
-		
-		RespuestaMutualidad respuesta = new RespuestaMutualidad();
-		RespuestaMutualidad combos = new RespuestaMutualidad();
-		try{
-			WSHttpBinding_IIntegracion_MetodosStub stub = getStub();
-			Calendar cal = Calendar.getInstance();
-			
-			Integracion_DatosBancarios		datosBancarios = null;
-			Integracion_DatosPoliza			datosPoliza = null;
-			Integracion_Domicilio			datosDireccionDomicilio = null;
-			Integracion_Domicilio			datosDireccionDespacho = null;
-			Integracion_Persona				datosPersona = null;
-			Integracion_Solicitud			datosSolicitud = null;
-			Integracion_Solicitud_Estados	datosSolicitudEstados = null;
-			Integracion_Beneficiarios		datosBeneficiarios = null;
-			Integracion_Domicilio[]			datosDirecciones = new Integracion_Domicilio[2];
-			
-			// Usamos el getCombos para sacar el catalogo de valores que usa la mutualidad y poder traducir los del SIGA
-			combos = this.getCombos();
-//			combos.get
-
-			datosBancarios = rellenarDatosBancarios(ht.get("datosBancarios"));
-			datosPoliza = rellenarDatosPoliza(ht.get("datosPoliza"));
-			datosDireccionDomicilio = rellenarDatosDireccion(ht.get("datosDireccionDomicilio"));
-			datosDireccionDespacho = rellenarDatosDireccion(ht.get("datosDireccionDespacho"));
-			datosPersona = rellenarDatosPersona(combos, ht.get("datosPersona"));
-			datosBeneficiarios = rellenarDatosBeneficiarios(ht.get("datosBeneficiarios"));
-			datosSolicitud = rellenarDatosSolicitudEstados(ht.get("datosSolicitudEstados"));
-			datosSolicitud.setIdTipoSolicitud(PLAN_PROFESIONAL);
-			
-			Integracion_Solicitud_Respuesta response = stub.MGASolicitudPolizaProfesional(datosBancarios, datosPoliza, datosDirecciones, datosPersona, datosSolicitud, datosSolicitudEstados, datosBeneficiarios);
-			
-			respuesta.setCorrecto(true);
-
-		}catch (Exception e) {
-			escribeLog("Error en llamada al solicitar alta en el plan profesional");
-			respuesta.setCorrecto(false);
-			respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos");
-		}
-		return respuesta;
-		
-	}
 	
-/*
-	private void saveXML(SIGAAsignaDocument sigaAsignaDocument) throws IOException {
-		
-		String keyPathFicheros = "cajg.directorioFisicoCAJG";		
-		String keyPath2 = "cajg.directorioCAJGJava";				
-	    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		String pathFichero = p.returnProperty(keyPathFicheros) + p.returnProperty(keyPath2);
-		pathFichero += File.separator + getIdInstitucion() + File.separator + "xml";
-		
-		XmlOptions xmlOptions = new XmlOptions();
-		xmlOptions.setSavePrettyPrintIndent(4);
-		xmlOptions.setSavePrettyPrint();		
-		
-		File file = new File(pathFichero);
-		file.mkdirs();
-		file = new File(file, sigaAsignaDocument.getSIGAAsigna().getDtExpedientes().getIDExpedienteSIGA()+".xml");
-		
-		ClsLogging.writeFileLog("Guardando fichero de envío webservice del colegio " + getIdInstitucion(), 3);
-		ClsLogging.writeFileLog("Ruta del fichero: " + file.getAbsolutePath(), 3);
-		sigaAsignaDocument.save(file, xmlOptions);
-		
-	}
-*/
-
 
 	private void trataError(Exception e) throws ClsExceptions, IOException {
 		String descripcionError = "Error al enviar la solicitud. ";
@@ -457,13 +456,21 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 	 * 
 	 * @param st
 	 * @return
+	 * @throws ClsExceptions 
 	 */
 
 
-	private WSHttpBinding_IIntegracion_MetodosStub getStub() throws AxisFault, MalformedURLException {
+	private WSHttpBinding_IIntegracion_MetodosStub getStub() throws ClsExceptions {
 
-		Integracion_MetodosLocator locator = new Integracion_MetodosLocator(createClientConfig(getUsrBean(), String.valueOf(getIdInstitucion()), "Envío y recepción webservice del colegio " + getIdInstitucion()));
-		WSHttpBinding_IIntegracion_MetodosStub stub = new WSHttpBinding_IIntegracion_MetodosStub(new java.net.URL(URLMUTUALIDADABOGACIA), locator);
+		String urlWS = getUrlWS(URLMUTUALIDADABOGACIA);
+
+		WSHttpBinding_IIntegracion_MetodosStub stub;
+		try {
+			Integracion_MetodosLocator locator = new Integracion_MetodosLocator(createClientConfig(getUsrBean(), String.valueOf(getIdInstitucion()), "Solicitud WSMutualidad desde " + getIdInstitucion()));
+			stub = new WSHttpBinding_IIntegracion_MetodosStub(new java.net.URL(urlWS), locator);
+		} catch (Exception e) {
+			throw new ClsExceptions("error.inesperado.estadoMutualista");
+		}
 
 		return stub;
 	}
@@ -503,6 +510,10 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 //				respuesta.setDocumento(strBuff.toString());
 //
 //			}
+			byte[] pdf=resWs.getPDF();
+			FileOutputStream out = new FileOutputStream("C:/ABC_XYZ/1.pdf");
+			out.write(pdf, 0, pdf.length);
+			out.close();
 
 		} catch (Exception e) {
 			escribeLog("Error al transformar la respuesta");
@@ -520,6 +531,19 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		
 	}
 	
+	private Map<String, String> invertirMap(Map<String, String> map){
+		Map<String, String> resul = null;
+		
+		Set<String> keys = map.keySet();
+		Iterator it = keys.iterator();
+		String clave,valor;
+		while (it.hasNext()) {
+	      clave=(String) it.next();
+	      valor=map.get(clave);
+	      resul.put(valor, clave);
+	    }
+		return resul;
+	}
 	
 	/** ***********************
 	 * Metodos de conversion no utilizados
