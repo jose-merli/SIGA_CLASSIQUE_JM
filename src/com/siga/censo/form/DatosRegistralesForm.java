@@ -56,24 +56,12 @@ public class DatosRegistralesForm extends MasterForm{
 		UtilidadesHash.set(this.datos, CenNoColegiadoBean.C_OBJETOSOCIAL, objetoSocial);
 	}
 	public void setNombre (String dato) { 
- 		try {
- 			// lo meto en una clave auxiliar para luego tratarlo
- 			// puesto que va a ir a un bean o a otro en funcion de otro valor
- 			UtilidadesHash.set(this.datos,CenPersonaBean.C_NOMBRE, dato);
- 		} catch (Exception e) {
- 			// escribimos la traza de momento
- 			e.printStackTrace();
- 		}
+		UtilidadesHash.set(this.datos,CenPersonaBean.C_NOMBRE, dato);
  	}
 
  	public void setApellido1 (String dato) { 
- 		try {
- 			UtilidadesHash.set(this.datos,CenPersonaBean.C_APELLIDOS1, dato);
- 		} catch (Exception e) {
- 			// escribimos la traza de momento
- 			e.printStackTrace();
- 		}
- 	}
+		UtilidadesHash.set(this.datos,CenPersonaBean.C_APELLIDOS1, dato);
+	}
 
  	public void setApellido2 (String dato) { 
  		try {

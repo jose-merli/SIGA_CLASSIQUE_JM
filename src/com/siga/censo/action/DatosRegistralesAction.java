@@ -6,12 +6,17 @@
  */
 package com.siga.censo.action;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
+
+import net.sourceforge.ajaxtags.xml.AjaxXmlBuilder;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -19,9 +24,13 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
+import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
+import com.siga.Utilidades.paginadores.PaginadorBind;
 import com.siga.beans.*;
 import com.siga.censo.form.DatosRegistralesForm;
 import com.siga.general.MasterAction;
@@ -57,8 +66,19 @@ public class DatosRegistralesAction extends MasterAction{
 					mapDestino = modificarRegistrales(mapping, miForm, request, response);
 				} else if (accion.equalsIgnoreCase("buscarNIF")){
 					mapDestino = buscarNIF(mapping, miForm, request, response);
-					} else {
-						return super.executeInternal(mapping, formulario, request, response);
+				}else if (accion.equalsIgnoreCase("buscarNotarioInit")){
+					borrarPaginador(request, paginadorModal);
+					mapDestino = buscarNotario(mapping, miForm, request, response);		
+				}else if (accion.equalsIgnoreCase("buscarNotario")){
+					mapDestino = buscarNotario(mapping, miForm, request, response);	
+				} else if (accion.equalsIgnoreCase("validarNoColegiado")){
+					mapDestino = validarNoColegiado(mapping, miForm, request, response);					
+				} else if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("getAjaxBusquedaNIF")){
+					ClsLogging.writeFileLog("BUSQUEDA CENSO:getAjaxBusquedaNIF", 10);
+					getAjaxBusquedaNIF(mapping, miForm, request, response);
+					return null;
+				} else {
+					return super.executeInternal(mapping, formulario, request, response);
 				}
 
 			// Redireccionamos el flujo a la JSP correspondiente
@@ -201,6 +221,56 @@ public class DatosRegistralesAction extends MasterAction{
 		return rc;
 	}
 	
+	protected String validarNoColegiado (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
+	{
+		String forward ="exception";
+		try {
+			// Obtengo los datos del formulario
+			DatosRegistralesForm miForm = (DatosRegistralesForm)formulario;
+			UsrBean usr = this.getUserBean(request);
+			
+			CenPersonaAdm adminPer=new CenPersonaAdm(usr);
+    		CenPersonaBean cenPersona = adminPer.getPersona(miForm.getNumIdentificacion());
+    		if(cenPersona!=null){
+    			boolean isNombre = ComodinBusquedas.sustituirVocales(cenPersona.getNombre().toUpperCase().trim()).equalsIgnoreCase(ComodinBusquedas.sustituirVocales(miForm.getNombre().toUpperCase().trim())); 
+    			boolean isApellido1 =ComodinBusquedas.sustituirVocales(cenPersona.getApellido1().toUpperCase().trim()).equalsIgnoreCase(ComodinBusquedas.sustituirVocales(miForm.getApellido1().toUpperCase().trim()));
+    			boolean isApellido2 =ComodinBusquedas.sustituirVocales(cenPersona.getApellido2().toUpperCase().trim()).equalsIgnoreCase(ComodinBusquedas.sustituirVocales(miForm.getApellido2().toUpperCase().trim()));
+    			if (!isNombre || ! isApellido1 ||!isApellido2){
+    				miForm.setAccion("messages.fichaCliente.mostrarPersonaExistente");
+    				forward = "validarNoColegiado";
+   				}else{
+   					CenClienteAdm clienteAdm = new CenClienteAdm(usr);
+   					CenClienteBean cli = clienteAdm.existeCliente(cenPersona.getIdPersona(),new Integer(usr.getLocation()));
+   					if (cli==null) {
+   						forward =  modificarRegistrales(mapping, formulario, request, response);
+   					}else{
+  							  						
+   						miForm.setAccion("messages.fichaCliente.clienteExiste");
+   						miForm.setIdInstitucion(cli.getIdInstitucion().toString());
+
+   						forward = "validarNoColegiado";
+   					}	
+   					
+   				}
+    			
+    			miForm.setIdPersona(cenPersona.getIdPersona().toString());
+    			miForm.setNombre(cenPersona.getNombre());
+				miForm.setApellido1(cenPersona.getApellido1());
+				miForm.setApellido2(cenPersona.getApellido2());
+    			
+    		}else{
+    			forward =  modificarRegistrales(mapping, formulario, request, response);
+    			
+    		}
+			
+			
+
+	   } catch (Exception e) {
+		   throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
+   	   }
+		return forward;
+	}
+	
 	protected String modificarRegistrales (ActionMapping mapping,	MasterForm formulario,	HttpServletRequest request,	HttpServletResponse response) throws SIGAException 
 	{
 		Hashtable hashOriginal = new Hashtable();
@@ -215,9 +285,26 @@ public class DatosRegistralesAction extends MasterAction{
 			
 		
 			CenPersonaAdm adminPer=new CenPersonaAdm(this.getUserBean(request));
- 			
+
+			
 			// Obtengo los datos del formulario
 			DatosRegistralesForm miForm = (DatosRegistralesForm)formulario;
+			
+			if(!adminPer.existeNif(miForm.getNumIdentificacion(), miForm.getNombre(), miForm.getApellido1(), miForm.getApellido2())){
+				// insert de la parte de cliente paso un solo hash con los datos de cliente y de persona
+				CenClienteAdm adminCli=new CenClienteAdm(usr);
+				Hashtable hashPer = new Hashtable();
+				hashPer = miForm.getDatos();
+				hashPer.put(CenPersonaBean.C_NOMBRE, miForm.getNombre());
+				hashPer.put(CenPersonaBean.C_APELLIDOS1, miForm.getApellido1());
+				hashPer.put(CenPersonaBean.C_APELLIDOS2, miForm.getApellido2());
+				hashPer.put(CenClienteBean.C_IDLENGUAJE,usr.getLanguage());
+				
+				// Adecuo formatos
+				hashPer = this.prepararFormatosFechas(hashPer);
+				hashPer = this.controlFormatosCheck(hashPer);
+				CenClienteBean beanCli = adminCli.insertNoColegiado(hashPer, request);
+			}
 			
 			// Cargo la tabla hash con los valores del formulario para insertar en la BBDD
 			Hashtable hash = new Hashtable();
@@ -243,8 +330,6 @@ public class DatosRegistralesAction extends MasterAction{
 			
 			//**************************************************************
 			// SI EL UPDATE DEVUELVE FALSE ES QUE NO EXISTE REGISTRO EN BBDD
-			
-			
 			// update de la parte de persona
 			if (!adminPer.update(hash,hashOriginal)) {
 				//LMS 21/08/2006
@@ -370,11 +455,12 @@ public class DatosRegistralesAction extends MasterAction{
 		
 		return entrada;
 	}
+	
 	protected String buscarNIF (ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
-			HttpServletResponse response) throws SIGAException 
-	{
+			HttpServletResponse response) throws SIGAException {
+		
 		try {
 			
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
@@ -410,6 +496,177 @@ public class DatosRegistralesAction extends MasterAction{
 		}
 		return "buscarNIF";
 	}
+	
+	protected String buscarNotario(ActionMapping mapping, MasterForm formulario,
+			HttpServletRequest request, HttpServletResponse response)
+			throws ClsExceptions, SIGAException {
+		
+		
+		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		
+		// casting del formulario
+		DatosRegistralesForm miFormulario = (DatosRegistralesForm)formulario;
+		String idInstitucion = miFormulario.getIdInstitucion();	
+		
+		// busqueda de clientes
+		CenPersonaAdm cliente = new CenPersonaAdm(this.getUserBean(request));
+		
+		request.setAttribute(ClsConstants.PARAM_PAGINACION,paginadorModal);
+		request.setAttribute("si",UtilidadesString.getMensajeIdioma(user, "general.yes"));
+		request.setAttribute("no",UtilidadesString.getMensajeIdioma(user, "general.no"));
+		
+		try {
+			HashMap databackup=getPaginador(request, paginadorModal);
+			if (databackup!=null){ 
 
+				PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
+				
+				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
+				String pagina = (String)request.getParameter("pagina");
+				if (paginador!=null){	
+					Vector datos=new Vector();
+					if (pagina!=null){
+						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
+					}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
+						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
+					}
+					 
+					request.setAttribute("letradoList", datos);
+					request.setAttribute("paginaSeleccionada", paginador.getPaginaActual());
+					request.setAttribute("totalRegistros", paginador.getNumeroTotalRegistros());
+					request.setAttribute("registrosPorPagina", paginador.getNumeroRegistrosPorPagina());
+					databackup.put("paginador",paginador);
+					databackup.put("datos",datos);
+				}else{
+					request.setAttribute("letradoList", new Vector());
+					databackup.put("datos",new Vector());
+					
+					request.setAttribute("paginaSeleccionada", 1);
+					request.setAttribute("totalRegistros", 0);
+					request.setAttribute("registrosPorPagina",1);
+					setPaginador(request, paginadorModal, databackup);
+					
+				}	
+				
 
+			}else{	
+				databackup=new HashMap();
+				//Haria falta meter los parametros en con ClsConstants
+
+				PaginadorBind paginador = cliente.getDatosPersonas(miFormulario, user.getLocation());
+				
+				if (paginador!=null&& paginador.getNumeroTotalRegistros()>0){
+					int totalRegistros = paginador.getNumeroTotalRegistros();
+					databackup.put("paginador",paginador);
+					Vector datos = paginador.obtenerPagina(1);
+					request.setAttribute("paginaSeleccionada", paginador.getPaginaActual());
+					request.setAttribute("totalRegistros", paginador.getNumeroTotalRegistros());
+					request.setAttribute("registrosPorPagina", paginador.getNumeroRegistrosPorPagina());
+					request.setAttribute("letradoList", datos);
+					databackup.put("datos",datos);
+					
+					setPaginador(request, paginadorModal, databackup);
+				}else{
+					databackup.put("datos",new Vector());
+					request.setAttribute("paginaSeleccionada", 1);
+					request.setAttribute("totalRegistros", 0);
+					request.setAttribute("registrosPorPagina",1);
+					request.setAttribute("letradoList", new Vector());
+					setPaginador(request, paginadorModal, databackup);
+				} 	
+			}
+		}catch (SIGAException e1) {
+			// Excepcion procedente de obtenerPagina cuando se han borrado datos
+			 return exitoRefresco("error.messages.obtenerPagina",request);
+		}catch (Exception e) 
+		{
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
+		} 
+		return "resultadoNotarios";
+	}
+
+	@SuppressWarnings("unchecked")
+	protected void getAjaxBusquedaNIF (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception {
+		DatosRegistralesForm miForm = (DatosRegistralesForm)formulario;
+		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		
+		//Recogemos el parametro enviado por ajax
+		String tipoIden = request.getParameter("tipoIdentificacion").trim();
+		String nif = request.getParameter("numIdentificacion").trim();
+		String nombre = request.getParameter("nombre").trim();
+		String ape1 = request.getParameter("apellido1").trim();
+		String ape2 = request.getParameter("apellido2");
+		List listaParametros = new ArrayList();
+	
+		if(nif!=null && !nif.equals("")){
+			CenPersonaAdm perAdm = new CenPersonaAdm(user);
+			CenPersonaBean perBean = new CenPersonaBean();			
+			perBean = perAdm.getPersona(nif);
+			if(perBean != null){
+				miForm.setIdPersonaNotario(""+perBean.getIdPersona());
+				miForm.setApellido2(perBean.getApellido2());
+				miForm.setApellido1(perBean.getApellido1());
+				miForm.setNombre(perBean.getNombre());
+				miForm.setNumIdentificacion(nif);
+			}else{
+				miForm.setIdPersonaNotario(null);
+				miForm.setApellido2(ape2);
+				miForm.setApellido1(ape1);
+				miForm.setNombre(nombre);
+				miForm.setNumIdentificacion(nif);
+			}
+		}else{
+			miForm.setIdPersonaNotario(null);
+			miForm.setApellido2(ape2);
+			miForm.setApellido1(ape1);
+			miForm.setNombre(nombre);
+			miForm.setNumIdentificacion(nif);
+		}
+			
+		listaParametros.add(miForm.getIdPersonaNotario());
+		listaParametros.add(miForm.getApellido1());
+		listaParametros.add(miForm.getApellido2());
+		listaParametros.add(miForm.getNombre());
+		listaParametros.add(miForm.getNumIdentificacion());
+		respuestaAjax(new AjaxXmlBuilder(), listaParametros,response);
+	}	
+
+	/** 
+	 * Prepara los campos de check para insertar en tabla. <br/>
+	 * @param  entrada - tabla hash con los valores del formulario 
+	 * @return  Hashtable - Tabla ya preparada  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */	
+	private Hashtable controlFormatosCheck (Hashtable entrada)throws SIGAException 
+	{
+		try {
+			if (!entrada.containsKey(CenClienteBean.C_COMISIONES)) {
+				entrada.put(CenClienteBean.C_COMISIONES,"0");
+			}
+				
+			if (!entrada.containsKey(CenClienteBean.C_PUBLICIDAD)) {
+				entrada.put(CenClienteBean.C_PUBLICIDAD,"0");
+			}							
+	
+			if (!entrada.containsKey(CenClienteBean.C_GUIAJUDICIAL)) {
+				entrada.put(CenClienteBean.C_GUIAJUDICIAL,"0");
+			}
+			if (!entrada.containsKey(CenClienteBean.C_NOENVIARREVISTA)) {
+				entrada.put(CenClienteBean.C_NOENVIARREVISTA,"0");
+			}
+				
+			if (!entrada.containsKey(CenClienteBean.C_NOAPARECERREDABOGACIA)) {
+				entrada.put(CenClienteBean.C_NOAPARECERREDABOGACIA,"0");
+			}
+				
+		}
+		catch (Exception e) {
+			throw new SIGAException (e);
+		}
+		return entrada;
+	}		
+	
 }

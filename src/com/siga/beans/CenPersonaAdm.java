@@ -21,7 +21,9 @@ import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.Utilidades.paginadores.PaginadorBind;
 import com.siga.censo.form.BusquedaClientesForm;
+import com.siga.censo.form.DatosRegistralesForm;
 import com.siga.censo.form.MantenimientoDuplicadosForm;
 import com.siga.general.SIGAException;
 
@@ -1402,6 +1404,62 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 		}
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al recuperar los datos");
+		}
+	}
+	
+	public PaginadorBind getDatosPersonas (DatosRegistralesForm formulario, String idInstitucion) throws ClsExceptions, SIGAException {
+		Vector clientes = new Vector();
+		String sqlClientes = "";
+		int contador = 0;
+		Hashtable codigos = new Hashtable();
+
+		try {
+			sqlClientes = " SELECT p.idpersona, p.nombre, p.apellidos1, p.apellidos2, p.nifcif "+ 
+						  " FROM cen_persona p, cen_nocolegiado nc "+
+						  " WHERE p.idpersona = nc.idpersona "+
+						  " AND nc.idinstitucion = "+idInstitucion;   
+			
+  	       if (formulario.getNombre()!=null && !formulario.getNombre().trim().equals("")) {
+  		       	contador++;
+  		       	sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getNombre().trim(),"p.nombre",contador,codigos )+") ";
+  	       }
+				  	       
+			  	       
+  	       if ((formulario.getApellido1()!= null && !formulario.getApellido1().trim().equals("")) && (formulario.getApellido2()!= null && !formulario.getApellido2().trim().equals(""))) {// Los dos campos rellenos
+	    	  	contador++;
+	       		sqlClientes += " AND ((("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim(),"p.apellidos1",contador,codigos )+")";
+	       		
+	  	       	contador++;
+	       		sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido2().trim(),"p.apellidos2",contador,codigos)+"))";
+	       	    contador++;
+	       		sqlClientes += " OR ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim()+"% %"+formulario.getApellido2().trim() ,"p.apellidos1",contador,codigos )+"))";
+		  	      
+
+  	       }else if (formulario.getApellido1()!= null && !formulario.getApellido1().trim().equals("")) {//Apellido1 relleno
+  	       		contador++;	
+  	       		sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim(),"p.apellidos1",contador,codigos )+" OR (p.apellidos1||' '||p.apellidos2 LIKE '%"+UtilidadesBDAdm.validateChars(formulario.getApellido1().trim())+"%')) ";
+	  	       	
+  	       }else if (formulario.getApellido2()!= null && !formulario.getApellido2().trim().equals("")) {//Apellido2 relleno
+  	       		contador++;
+  	       		sqlClientes += " AND (("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido2().trim(),"p.apellidos2",contador,codigos)+") ";
+  	       		contador++;	
+  	       	    sqlClientes += " OR ("+ComodinBusquedas.prepararSentenciaCompletaBind(" "+formulario.getApellido2().trim(),"p.apellidos1",contador,codigos)+ ")  )";
+	  	       	
+  	       }       	  	       
+
+		    sqlClientes+= " ORDER BY p.apellidos1||' '||p.apellidos2, p.nombre";	       
+			PaginadorBind paginado = new PaginadorBind(sqlClientes, codigos);
+
+			int totalRegistros = paginado.getNumeroTotalRegistros();
+			if (totalRegistros == 0) {
+				paginado = null;
+			}
+
+			return paginado;
+		}
+		
+		catch (Exception e) {
+			throw new ClsExceptions(e, "Error obteniendo clientes ");
 		}
 	}
 	
