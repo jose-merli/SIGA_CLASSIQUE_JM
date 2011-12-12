@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import net.sf.antcontrib.logic.Switch.Case;
+
 import org.apache.axis.EngineConfiguration;
 import org.apache.axis.Handler;
 import org.apache.axis.SimpleChain;
@@ -89,6 +91,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
             e.printStackTrace();
             respuesta.setCorrecto(false);
             respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos.");
+            throw new SIGAException("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos");
         }
         return respuesta;
 
@@ -124,6 +127,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 			escribeLog("Error en llamada a getCuotaYCapital: " + e.getMessage());
 			respuesta.setCorrecto(false);
 			respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos.");
+			throw new SIGAException("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos");
 		}
 		return respuesta;
 
@@ -149,6 +153,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
             escribeLog("Error en llamada a getEstadoSolicitud: " + e.getMessage());
             respuesta.setCorrecto(false);
             respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos.");
+            throw new SIGAException("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos");
         }
         return respuesta;
 
@@ -183,6 +188,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 			escribeLog("Error en llamada al recuperar enumerados: " + e.getMessage());
 			respuesta.setCorrecto(false);
 			respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos.");
+			throw new SIGAException("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos");
 		}
 		return respuesta;
 		
@@ -224,6 +230,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		}catch (Exception e) {
 			escribeLog("Error en llamada al solicitar el alta en el seguro gratuito: " + e.getMessage());
 			respuesta.setCorrecto(false);
+			respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos.");
 			throw new SIGAException("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos");
 		}
 		return respuesta;
@@ -265,6 +272,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		}catch (Exception e) {
 			escribeLog("Error en llamada al solicitar alta en el plan profesional: " + e.getMessage());
 			respuesta.setCorrecto(false);
+			respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos.");
 			throw new SIGAException("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos");
 		}
 		return respuesta;
@@ -292,7 +300,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		ds.setFecha(cal);
 		ds.setValorEntrada(ht.get("numeroIdentificacion"));
 		ds.setIdTipoIdentificador(TIPO_IDENT_NIF);
-		// ds.setIdTipoSolicitud(idTipoSolicitud) // Se setea en cada alta
+		// ds.setIdTipoSolicitud(idTipoSolicitud) // Se setea en el metodo que crea alta
 		
 		return ds;
 	}
@@ -320,9 +328,10 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		
 		dp.setAsistenciaSanitaria(Integer.parseInt(ht.get("asistenciaSanitaria")));
 		
-		dp.setEjerciente(Integer.parseInt(ht.get("ejerciente")));	// Parsear
-		dp.setEstadoCivil(Integer.parseInt(ht.get("estadoCivil"))); // Parsear
-		dp.setIdSolicitud(Integer.parseInt(ht.get("idSolicitud")));
+		dp.setEjerciente(parseaEjerciente(ht.get("ejerciente")));
+		dp.setEstadoCivil(parseaEstadoCivil(ht.get("estadoCivil")));
+		
+//		dp.setIdSolicitud(Integer.parseInt(ht.get("idSolicitud"))); // Esto se supone que lo da el WS
 //		dp.setIdMutualista(Integer.parseInt(ht.get("idMutualista")));
 		
 		Calendar fechaNacimientoCal = Calendar.getInstance();
@@ -335,6 +344,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		
 		return dp;
 	}
+
 
 	private Integracion_DatosPoliza rellenarDatosPoliza(Hashtable<String, String> ht) {
 		Integracion_DatosPoliza dp = new Integracion_DatosPoliza();
@@ -398,23 +408,6 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		return db;
 	}
 	
-
-	private void trataError(Exception e) throws ClsExceptions, IOException {
-		String descripcionError = "Error al enviar la solicitud. ";
-		if (e.getMessage().indexOf("Non nillable element") > -1) {
-			String campo = e.getMessage().substring(e.getMessage().indexOf("'"), e.getMessage().lastIndexOf("'"));
-			descripcionError += "El campo '" + campo + "' no puede estar vacío."; 
-		} else {
-			 descripcionError += e.getMessage();
-		}
-		
-		escribeLog(descripcionError);
-		escribeLog("Se ha producido un error al enviar la solicitud");					
-		ClsLogging.writeFileLogError(descripcionError, e, 3);		
-	}
-
-
-
 	/**
 	 * 
 	 * @return
@@ -467,51 +460,6 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		return stub;
 	}
 
-	/**
-	 * Transforma la respuesta de integracion en una respuesta válida para integrarse con SIGA
-	 * @param resWs Integracion_Solicitud_Respuesta
-	 * @return RespuestaMutualidad
-	 * @throws IOException
-	 */
-	private RespuestaMutualidad transformaRespuesta(Integracion_Solicitud_Respuesta resWs) throws IOException{
-		RespuestaMutualidad respuesta = new RespuestaMutualidad();
-		try{
-			if (resWs.getValorRespuesta()!=null && (resWs.getValorRespuesta().equals("1") || resWs.getValorRespuesta().equals("NIF no encontrado."))) {
-				respuesta.setCorrecto(true);
-			}else {
-				respuesta.setCorrecto(false);
-				respuesta.setMensajeError(resWs.getValorRespuesta());
-			}
-			respuesta.setIdSolicitud(resWs.getIdSolicitud());
-			
-//			if (resWs.getPDF()!=null){
-//				DataHandler pdf=resWs.getPDF();
-//				HttpSession session = (HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false) ;
-//				StringBuffer strBuff = new StringBuffer();
-//		        strBuff.append(session.getServletContext().getRealPath("/")).append(AppConstants.UPLOAD_TEMP_DIRECTORY).append(session.getId());
-//
-//		        File dir = new File(strBuff.toString());
-//		        dir.mkdirs();
-//
-//		        strBuff.append(File.separator).append("Mutualidad_").append(System.currentTimeMillis()).append(".pdf");
-//		        File file = new File(strBuff.toString());
-//		        file.createNewFile();
-//				FileOutputStream out = new FileOutputStream(file);
-//				pdf.writeTo(out);
-//				out.close();
-//				respuesta.setDocumento(strBuff.toString());
-//
-//			}
-			byte[] pdf=resWs.getPDF();
-			FileOutputStream out = new FileOutputStream("C:/ABC_XYZ/1.pdf");
-			out.write(pdf, 0, pdf.length);
-			out.close();
-
-		} catch (Exception e) {
-			escribeLog("Error al transformar la respuesta");
-		}
-		return respuesta;
-	}
 	
 	
 	private TreeMap<String, String> transformaCombo(Integracion_TextoValor[] combo){
@@ -521,6 +469,47 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		}
 		return map;
 		
+	}
+	
+	/**
+	 * Parsea el modo de ejercicio de los valores del SIGA a los de la Mutualidad
+	 * @param ejerciente
+	 * @return
+	 */
+	private Integer parseaEjerciente(String ejerciente) {
+		int ejercienteWS = 0;
+		int ejercienteSIGA = Integer.parseInt(ejerciente);
+		
+		switch (ejercienteSIGA){
+		case 10:	ejercienteWS = 1; break; // Reincorporación Ejerciente
+		case 20:	ejercienteWS = 1; break; // Reincorporación No Ejerciente
+		case 30:	ejercienteWS = 1; break; // Incorporación Ejerciente
+		case 40:	ejercienteWS = 1; break; // Incorporación No Ejerciente
+		default:	ejercienteWS = 1; break; // No se debe dar el caso
+		// De momento ponemos todo como cuenta propia en vez de ajena
+		}
+		return ejercienteWS;
+	}
+
+	/**
+	 * Parsea el estado civil de los valores del SIGA a los de la Mutualidad
+	 * @param eCivil
+	 * @return
+	 */
+	private Integer parseaEstadoCivil(String eCivil) {
+		
+		int eCivilWS = 0;
+		int eCivilSIGA = Integer.parseInt(eCivil);
+		
+		switch (eCivilSIGA){
+		case 1:	eCivilWS = 1; break; // Casado
+		case 2:	eCivilWS = 0; break; // Soltero
+		case 3:	eCivilWS = 2; break; // Viudo
+		case 4:	eCivilWS = 3; break; // Separado
+		case 5:	eCivilWS = 4; break; // Divorciado
+		default:eCivilWS = 5; break; // Desconocido
+		}
+		return eCivilWS;
 	}
 	
 	
