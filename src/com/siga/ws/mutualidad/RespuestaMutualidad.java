@@ -5,6 +5,7 @@ import java.util.Map;
 public class RespuestaMutualidad {
 	
 	private boolean correcto = false;
+	private boolean posibleAlta;
 	private String mensajeError = "";
 	private Integer idSolicitud;
 	private Double cuota=0.0;
@@ -20,6 +21,8 @@ public class RespuestaMutualidad {
 	private Map<String, String> estadosCiviles;
 	private Map<String, String> coberturas;
 	private String valorRespuesta;
+	
+	private byte[] pdf;
 
 
 	public void setCorrecto(boolean b) { 
@@ -36,6 +39,10 @@ public class RespuestaMutualidad {
 
 	public boolean isCorrecto() {
 		return correcto;
+	}
+	
+	public boolean isPosibleAlta() {
+		return posibleAlta;
 	}
 
 	public String getMensajeError() {
@@ -105,6 +112,10 @@ public class RespuestaMutualidad {
 	public Map<String, String> getCoberturas() {
 		return coberturas;
 	}
+	
+	public byte[] getPDF() {
+		return pdf;
+	}
 
 	public void setBeneficiarios(Map<String, String> map) {
 		this.beneficiarios = map;
@@ -148,6 +159,15 @@ public class RespuestaMutualidad {
 
 	public void setValorRespuesta(String valorRespuesta) {
 		this.valorRespuesta = valorRespuesta;
+	}
+
+	public void setPDF(byte[] pdf) {
+		this.pdf = pdf;
+		
+	}
+
+	public void setPosibleAlta(boolean b) {
+		this.posibleAlta=b;
 	}
 
 	

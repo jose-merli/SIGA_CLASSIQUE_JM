@@ -3,27 +3,16 @@
  */
 package com.siga.ws.mutualidad;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import javax.servlet.http.HttpSession;
-
-import org.apache.axis.AxisFault;
 import org.apache.axis.EngineConfiguration;
 import org.apache.axis.Handler;
 import org.apache.axis.SimpleChain;
@@ -39,8 +28,6 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.LogBDDHandler;
 import com.siga.Utilidades.UtilidadesFecha;
-import com.siga.beans.CenCuentasBancariasBean;
-import com.siga.beans.GenParametrosAdm;
 import com.siga.general.SIGAException;
 import com.siga.ws.mutualidad.xmlbeans.ObtenerCuotaYCapObjetivoDocument.ObtenerCuotaYCapObjetivo;
 
@@ -67,8 +54,8 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 
 	
 	public MutualidadWSClient(UsrBean user) {
-		this.setUsrBean(user);
-		this.setIdInstitucion(Integer.parseInt(user.getLocation()));
+		super.setUsrBean(user);
+		super.setIdInstitucion(Integer.parseInt(user.getLocation()));
 	}
 	
 	/**
@@ -88,18 +75,17 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
             fechaNacimientoCal = UtilidadesFecha.stringToCalendar(fechaNacimiento);
 
             Integracion_Solicitud_Respuesta response = stub.estadoMutualista(nif, fechaNacimientoCal);
-            if(!response.getValorRespuesta().equals("1"))
-                throw new SIGAException("error.inesperado.estadoMutualista");
-           
             respuesta.setCorrecto(true);
+            respuesta.setValorRespuesta(response.getValorRespuesta());
+            respuesta.setPDF(response.getPDF());          	
+            if(respuesta.getValorRespuesta().equalsIgnoreCase("1")){
+            	respuesta.setPosibleAlta(true);
+            }else{
+            	respuesta.setPosibleAlta(false);
+            }
            
-        } catch (SIGAException e) {
-            escribeLog(e.getMessage());
-            e.printStackTrace();
-            respuesta.setCorrecto(false);
-            respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos.");
         } catch (Exception e) {
-            escribeLog("Error en llamada a getPosibilidadSolicitudAlta");
+            escribeLog("Error en llamada a getPosibilidadSolicitudAlta: " + e.getMessage());
             e.printStackTrace();
             respuesta.setCorrecto(false);
             respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos.");
@@ -109,7 +95,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
     }
 		
 	/**
-	 * 
+	 * En funcion de los parametros de entrada nos da la cuota y capital para la cobertura elegida
 	 * @param fechaNacimiento en formato dd/MM/yyyy
 	 * @param sexo 'H'/'M'
 	 * @param cobertura
@@ -135,7 +121,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 			respuesta.setCuota(response.getCuota());
 
 		}catch (Exception e) {
-			escribeLog("Error en llamada a getCuotaYCapital");
+			escribeLog("Error en llamada a getCuotaYCapital: " + e.getMessage());
 			respuesta.setCorrecto(false);
 			respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos.");
 		}
@@ -143,6 +129,12 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 
 	}
 	
+	/**
+	 * Devuelve el estado de una solicitud
+	 * @param idSolicitud
+	 * @return RespuestaMutualidad - La respuesta del sistema en ValorRespues y el PDF de la solicitud
+	 * @throws Exception
+	 */
 	public RespuestaMutualidad getEstadoSolicitud(Long idSolicitud) throws Exception {
 
         RespuestaMutualidad respuesta = new RespuestaMutualidad();
@@ -152,8 +144,9 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
             Integracion_Solicitud_Respuesta response = stub.estadoSolicitud(idSolicitud,Boolean.TRUE );
             respuesta.setValorRespuesta(response.getValorRespuesta());
             respuesta.setCorrecto(true);
+            respuesta.setPDF(response.getPDF());
         } catch (Exception e) {
-            escribeLog("Error en llamada a getEstadoSolicitud");
+            escribeLog("Error en llamada a getEstadoSolicitud: " + e.getMessage());
             respuesta.setCorrecto(false);
             respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos.");
         }
@@ -174,7 +167,6 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 			
 			IntegracionEnumsCombos enumCombos=stub.getEnums();
 			
-			respuesta.setCorrecto(true);
 			respuesta.setBeneficiarios(transformaCombo(enumCombos.getDesignacionBeneficiarios()));
 			respuesta.setCoberturas(transformaCombo(enumCombos.getOpcionesCoberturas()));
 			respuesta.setEstadosCiviles(transformaCombo(enumCombos.getEstadosCiviles()));
@@ -185,9 +177,10 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 			respuesta.setTiposDomicilio(transformaCombo(enumCombos.getTiposDomicilio()));
 			respuesta.setTiposIdentificador(transformaCombo(enumCombos.getTiposIdentificador()));
 			respuesta.setAsistencia(transformaCombo(enumCombos.getAsistenciaSanitaria()));
+			respuesta.setCorrecto(true);
 			
 		}catch (Exception e) {
-			escribeLog("Error en llamada al recuperar enumerados: " + e );
+			escribeLog("Error en llamada al recuperar enumerados: " + e.getMessage());
 			respuesta.setCorrecto(false);
 			respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos.");
 		}
@@ -198,10 +191,8 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 	public RespuestaMutualidad altaAccidentesUniversal(Hashtable<String, Hashtable> ht) throws Exception {
 		
 		RespuestaMutualidad respuesta = new RespuestaMutualidad();
-		RespuestaMutualidad combos = new RespuestaMutualidad();
 		try{
 			WSHttpBinding_IIntegracion_MetodosStub stub = getStub();
-			Calendar cal = Calendar.getInstance();
 			
 			Integracion_DatosBancarios		datosBancarios = null;
 			Integracion_DatosPoliza			datosPoliza = null;
@@ -231,9 +222,9 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 			respuesta.setCorrecto(true);
 
 		}catch (Exception e) {
-			//escribeLog("Error en llamada al solicitar el alta en el seguro gratuito");
+			escribeLog("Error en llamada al solicitar el alta en el seguro gratuito: " + e.getMessage());
 			respuesta.setCorrecto(false);
-			respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos");
+			throw new SIGAException("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos");
 		}
 		return respuesta;
 		
@@ -242,10 +233,8 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 	public RespuestaMutualidad altaPlanProfesional(Hashtable<String, Hashtable> ht) throws Exception {
 		
 		RespuestaMutualidad respuesta = new RespuestaMutualidad();
-		RespuestaMutualidad combos = new RespuestaMutualidad();
 		try{
 			WSHttpBinding_IIntegracion_MetodosStub stub = getStub();
-			Calendar cal = Calendar.getInstance();
 			
 			Integracion_DatosBancarios		datosBancarios = null;
 			Integracion_DatosPoliza			datosPoliza = null;
@@ -256,6 +245,9 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 			Integracion_Solicitud_Estados	datosSolicitudEstados = null;
 			Integracion_Beneficiarios		datosBeneficiarios = null;
 			Integracion_Domicilio[]			datosDirecciones = new Integracion_Domicilio[2];
+			
+			datosDirecciones[0]=datosDireccionDomicilio;
+			datosDirecciones[1]=datosDireccionDespacho;
 
 			datosBancarios = rellenarDatosBancarios(ht.get("datosBancarios"));
 			datosPoliza = rellenarDatosPoliza(ht.get("datosPoliza"));
@@ -271,9 +263,9 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 			respuesta.setCorrecto(true);
 
 		}catch (Exception e) {
-			escribeLog("Error en llamada al solicitar alta en el plan profesional");
+			escribeLog("Error en llamada al solicitar alta en el plan profesional: " + e.getMessage());
 			respuesta.setCorrecto(false);
-			respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos");
+			throw new SIGAException("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos");
 		}
 		return respuesta;
 		
@@ -531,19 +523,6 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		
 	}
 	
-	private Map<String, String> invertirMap(Map<String, String> map){
-		Map<String, String> resul = null;
-		
-		Set<String> keys = map.keySet();
-		Iterator it = keys.iterator();
-		String clave,valor;
-		while (it.hasNext()) {
-	      clave=(String) it.next();
-	      valor=map.get(clave);
-	      resul.put(valor, clave);
-	    }
-		return resul;
-	}
 	
 	/** ***********************
 	 * Metodos de conversion no utilizados

@@ -37,11 +37,6 @@ public abstract class MutualidadWSClientAbstract {
 	
 	private UsrBean usrBean;
 	private int idInstitucion;
-	private int idRemesa;	
-	private String urlWS;
-	private boolean generaTXT;
-	private boolean firmarXML;
-	private boolean simular;
 
 	//public abstract void execute() throws Exception;
 	
@@ -64,7 +59,6 @@ public abstract class MutualidadWSClientAbstract {
 	/**
 	 * 
 	 * @param idInstitucion
-	 * @param idRemesa
 	 * @return
 	 */
 	public static File getErrorFile(int idInstitucion) {
@@ -115,13 +109,6 @@ public abstract class MutualidadWSClientAbstract {
 	public String getUrlWS(String parametro) throws ClsExceptions {
 		GenParametrosAdm paramAdm = new GenParametrosAdm(usrBean);
 		return paramAdm.getValor(usrBean.getLocation(),"CEN", parametro, "");
-	}
-
-	/**
-	 * @param urlWS the urlWS to set
-	 */
-	public void setUrlWS(String urlWS) {
-		this.urlWS = urlWS;
 	}
 
 	
@@ -183,21 +170,6 @@ public abstract class MutualidadWSClientAbstract {
 			}
 		}
 		return sb;
-	}
-	
-	/**
-	 * @return the firmarXML
-	 */
-	public boolean isFirmarXML() {
-		return firmarXML;
-	}
-
-
-	/**
-	 * @param firmarXML the firmarXML to set
-	 */
-	public void setFirmarXML(boolean firmarXML) {
-		this.firmarXML = firmarXML;
 	}
 
 }
