@@ -1151,18 +1151,31 @@ public class DatosGeneralesAction extends MasterAction {
 				personas = perAdm.select("WHERE UPPER(" + CenPersonaBean.C_NIFCIF + ") = '" + numIdentificacion.toUpperCase() + "'");
 				// insert de la parte de cliente paso un solo hash con los datos de cliente y de persona
 				// CenClienteBean beanCli = adminCli.insertNoColegiado(hash, request);
-				if ((personas != null) && personas.size() == 1) {					
-					String subNumIdentificacion = numIdentificacion.substring(0, 8);
-					int num = new Integer(numIdentificacion.substring(8)).intValue();					
-					num++;
-					String numfinal=new Integer(num).toString();
-					while(numfinal.length()<4){
-						numfinal="0"+numfinal;
+				String stipoIdenti= (String)miForm.getTipoIdentificacion();
+				if ((personas != null) && personas.size() == 1) {
+					if(stipoIdenti.equals(ClsConstants.TIPO_IDENTIFICACION_OTRO))
+					{
+						String subNumIdentificacion = numIdentificacion.substring(0, 8);
+						String p = numIdentificacion.substring(8);
+						int num = new Integer(numIdentificacion.substring(8)).intValue();					
+						num++;
+						String numfinal=new Integer(num).toString();
+						while(numfinal.length()<4){
+							numfinal="0"+numfinal;
+						}
+						subNumIdentificacion= subNumIdentificacion + numfinal;
+						miForm.setNumIdentificacion(subNumIdentificacion);
+						hash.put(CenPersonaBean.C_NIFCIF, subNumIdentificacion);
+						request.getSession().setAttribute("MOSTRARMENSAJE","mostrarMensaje");
 					}
-					subNumIdentificacion= subNumIdentificacion + numfinal;
-					miForm.setNumIdentificacion(subNumIdentificacion);
-					hash.put(CenPersonaBean.C_NIFCIF, subNumIdentificacion);
-					request.getSession().setAttribute("MOSTRARMENSAJE","mostrarMensaje");
+					perBean = (CenPersonaBean) personas.get(0);
+					idPersonaValor = new Long(perBean.getIdPersona()).longValue();
+					/*
+					else
+					{
+						request.getSession().setAttribute("MOSTRARMENSAJECIFNIF","mostrarMensajeRepetidoCIFNIF");
+					}
+					*/
 				}
 			}
 
@@ -1178,6 +1191,7 @@ public class DatosGeneralesAction extends MasterAction {
 					beanCli = adminCli.existeCliente(idPersonaValor, new Integer(idInstitucion));
 					if (beanCli != null) {
 						existenDatos = false;
+						adminCli.setError("messages.error.ora.00001");
 					} else {
 						beanCli = adminCli.existeClienteOtraInstitucion(idPersonaValor, new Integer(idInstitucion));
 						if (beanCli != null) {
@@ -1223,7 +1237,7 @@ public class DatosGeneralesAction extends MasterAction {
 		            	  resultado = clienteAdm.getDatosPersonalesOtraInstitucion(idPersonaValor);
 		            	  if (beanCli!=null){
 		            		   msj = UtilidadesString.getMensajeIdioma (usr, "messages.censo.nifcifNombreApellidoExiste");	
-		                       msj += ":"+" "+nifcif+" "+nombrePersona+" "+apellido1Persona+" "+apellido2Persona+". "+ "\u00BFDesea"+"Continuar\u003F";
+		                       msj += ".Pulsando Aceptar se actualizará ese registro con: "+" "+nifcif+" "+nombrePersona+" "+apellido1Persona+" "+apellido2Persona+"." + "\u00BFDesea " + "Continuar\u003F";
 		            	  }else{
 		            		  msj = UtilidadesString.getMensajeIdioma (usr, "messages.censo.nifcifExiste3");	
 		            		  msj += "-"+nombrePersona+" "+apellido1Persona+" "+apellido2Persona+". "+ "\u00BFDesea"+"Continuar\u003F";

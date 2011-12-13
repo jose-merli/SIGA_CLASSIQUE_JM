@@ -42,6 +42,7 @@
 	}
 
 	String mostrarMensaje = (String) request.getSession().getAttribute("MOSTRARMENSAJE");
+	String mostrarMensajeNifCif = (String) request.getSession().getAttribute("MOSTRARMENSAJECIFNIF");
 
 	// variables
 	ArrayList gruposSel = new ArrayList();	
@@ -744,11 +745,13 @@ function str_replace(search, replace, subject) {
     return sa ? s : s[0];
 } 		
 
-	function mostrarMensaje()
+	function mostrarMensaje() 
 	{		
 		<% if (mostrarMensaje!=null && !(mostrarMensaje.equals(""))) { %>			
 			alert ("<siga:Idioma key="messages.tipoIdenti.comprobacion.existeEnBBDD"/>");
-		<% } %>			
+		<% }else if(mostrarMensajeNifCif!=null && !(mostrarMensajeNifCif.equals(""))){ %>
+			alert ("<siga:Idioma key="messages.tipoIdenti.comprobacion.existeEnBBDDNIFCIF"/>");
+		<%}%>			
 	}
 		
 		
@@ -981,7 +984,7 @@ function str_replace(search, replace, subject) {
 				<tr>
 					<!-- CLIENTE -->
 					<td class="labelText" style="width:170px">
-						<siga:Idioma key="censo.consultaDatosGenerales.literal.situacion"/>&nbsp;(*)
+						<siga:Idioma key="censo.consultaDatosGenerales.literal.situacion"/>&nbsp;
 					</td>				
 					<td  style="width:200px">
 						<html:text name="datosGeneralesForm" property="cliente" size="40" styleClass="boxConsulta" readonly="true" value="<%=cliente %>" ></html:text>
@@ -1022,7 +1025,7 @@ function str_replace(search, replace, subject) {
 					<% } %>
 					&nbsp;
 				 <% if ( formulario.getAccion().equalsIgnoreCase("nuevo")) { %>
-				      <html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="<%=estiloCajaNif%>" value="<%=nIdentificacion %>" onfocus="generaNumOtro();" onBlur="formatearDocumento();"></html:text>&nbsp;
+				      <html:text name="datosGeneralesForm" property="numIdentificacion" size="15" styleClass="<%=estiloCajaNif%>" value="<%=nIdentificacion %>" onfocus="generaNumOtro();" onBlur="formatearDocumento();"></html:text>&nbsp;
 				      <input type="button" name="idButton" value='<siga:Idioma key="censo.nif.letra.letranif" />' onclick="generarLetra();" style="align:right" class="button">
 				 <% }else{ %>
 				     <% if(formulario.getAccion().equalsIgnoreCase("editar")){ %> 
