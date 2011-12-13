@@ -732,7 +732,9 @@
 		<action path="/CEN_DatosRegistrales" type="com.siga.censo.action.DatosRegistralesAction" name="DatosRegistralesForm" scope="request">
 			<forward name="inicio" path="/html/jsp/censo/consultaDatosRegistrales.jsp"/>
 			<forward name="buscarNIF" path="/html/jsp/censo/NotariosOculta.jsp"/>
+			<forward name="resultadoNotarios" path="/html/jsp/censo/resultadosBusquedaNotarioModal.jsp"/>
 		</action>
+		
 		<action path="/CEN_ActividadProfesional" type="com.siga.censo.action.ActividadProfesionalAction" name="ActividadProfesionalForm" scope="request">
 			<forward name="listado" path="/html/jsp/censo/listadoActividadProfesional.jsp"/>
 			<forward name="abrirModal" path="/html/jsp/censo/nuevoActividadProfesional.jsp"/>
