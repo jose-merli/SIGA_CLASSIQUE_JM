@@ -236,6 +236,7 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 			actuacionAsistenciaFormEdicion.setNumeroDiligenciaAsistencia(asistenciaForm.getNumeroDiligencia());
 			actuacionAsistenciaFormEdicion.setComisariaAsistencia(asistenciaForm.getComisaria());
 			actuacionAsistenciaFormEdicion.setJuzgadoAsistencia(asistenciaForm.getJuzgado());
+			actuacionAsistenciaForm.setIdCosteFijoActuacion(null);
 			
 			String idPrision = actuacionAsistenciaFormEdicion.getIdPrision();
 			String idInstitucionPrision = actuacionAsistenciaFormEdicion.getIdInstitucionPris();
@@ -387,6 +388,7 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 			actuacionAsistenciaFormEdicion.setIdTipoAsistencia(asistenciaForm.getIdTipoAsistenciaColegio());
 			actuacionAsistenciaFormEdicion.setFacturado("0");
 			actuacionAsistenciaFormEdicion.setValidada("0");
+			actuacionAsistenciaForm.setIdCosteFijoActuacion(null);
 			if(asistenciaForm.getJuzgado()!=null&&!asistenciaForm.getJuzgado().equals("")&&(asistenciaForm.getComisaria()==null||asistenciaForm.getComisaria().equals(""))){
 				actuacionAsistenciaFormEdicion.setIdJuzgado(asistenciaForm.getJuzgado());
 				actuacionAsistenciaFormEdicion.setIdInstitucionJuzg(asistenciaForm.getIdInstitucion());
