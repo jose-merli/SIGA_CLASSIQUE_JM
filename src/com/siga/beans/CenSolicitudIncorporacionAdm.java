@@ -6,8 +6,13 @@
  */
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
+
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 
@@ -43,7 +48,7 @@ public class CenSolicitudIncorporacionAdm extends MasterBeanAdministrador {
 							CenSolicitudIncorporacionBean.C_ABONOSJCS,				CenSolicitudIncorporacionBean.C_CBO_CODIGO,
 							CenSolicitudIncorporacionBean.C_CODIGOSUCURSAL,			CenSolicitudIncorporacionBean.C_DIGITOCONTROL,
 							CenSolicitudIncorporacionBean.C_NUMEROCUENTA,			CenSolicitudIncorporacionBean.C_TITULAR,
-							CenSolicitudIncorporacionBean.C_RESIDENTE};
+							CenSolicitudIncorporacionBean.C_RESIDENTE,CenSolicitudIncorporacionBean.C_IDPERSONA,CenSolicitudIncorporacionBean.C_FECHAALTA};
 		return campos;
 	}
 
@@ -102,6 +107,8 @@ public class CenSolicitudIncorporacionAdm extends MasterBeanAdministrador {
 			bean.setNumeroCuenta(UtilidadesHash.getString(hash, CenSolicitudIncorporacionBean.C_NUMEROCUENTA));
 			bean.setTitular(UtilidadesHash.getString(hash, CenSolicitudIncorporacionBean.C_TITULAR));
 			bean.setResidente(UtilidadesHash.getString(hash, CenSolicitudIncorporacionBean.C_RESIDENTE).equalsIgnoreCase("1"));
+			bean.setIdPersona(UtilidadesHash.getInteger(hash, CenSolicitudIncorporacionBean.C_IDPERSONA));
+			bean.setFechaAlta(UtilidadesHash.getString(hash, CenSolicitudIncorporacionBean.C_FECHAALTA));
 		}
 		catch (Exception e) { 
 			bean = null;
@@ -160,6 +167,8 @@ public class CenSolicitudIncorporacionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, CenSolicitudIncorporacionBean.C_NUMEROCUENTA, String.valueOf(b.getNumeroCuenta()));   
 			UtilidadesHash.set(htData, CenSolicitudIncorporacionBean.C_TITULAR, String.valueOf(b.getTitular())); 
 			UtilidadesHash.set(htData, CenSolicitudIncorporacionBean.C_RESIDENTE, b.getResidente()?"1":"0");
+			UtilidadesHash.set(htData, CenSolicitudIncorporacionBean.C_IDPERSONA, String.valueOf(b.getIdPersona()));
+			UtilidadesHash.set(htData, CenSolicitudIncorporacionBean.C_FECHAALTA, String.valueOf(b.getFechaAlta()));
 		}
 		catch (Exception e) {
 			htData = null;
@@ -171,4 +180,5 @@ public class CenSolicitudIncorporacionAdm extends MasterBeanAdministrador {
 	protected String[] getOrdenCampos() {
 		return this.getClavesBean();
 	}
+	
 }

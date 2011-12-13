@@ -6,7 +6,9 @@
  */
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
@@ -14,6 +16,7 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
 
 /**
@@ -149,4 +152,43 @@ public class CenPoblacionesAdm extends MasterBeanAdministrador {
 		}
 		return salida;	
 	}
+	public List<CenPoblacionesBean> getPoblaciones(String idProvincia)throws ClsExceptions{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		
+		sql.append(" SELECT IDPOBLACION, NOMBRE ");
+		sql.append(" FROM CEN_POBLACIONES  ");
+		sql.append(" WHERE IDPROVINCIA = :");
+	    contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),idProvincia);
+		sql.append(" ORDER BY NOMBRE ");
+		
+		List<CenPoblacionesBean> alPoblaciones = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.findBind(sql.toString(),htCodigos)) {
+            	alPoblaciones = new ArrayList<CenPoblacionesBean>();
+            	CenPoblacionesBean poblacionesBean = null;
+            	
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		
+            		
+            		poblacionesBean = new CenPoblacionesBean();
+            		poblacionesBean.setIdPoblacion(UtilidadesHash.getString(htFila,CenPoblacionesBean.C_IDPOBLACION));
+            		poblacionesBean.setNombre(UtilidadesHash.getString(htFila,CenPoblacionesBean.C_NOMBRE));
+            		alPoblaciones.add(poblacionesBean);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta getPoblaciones.");
+       }
+       return alPoblaciones;
+		
+	}	
 }

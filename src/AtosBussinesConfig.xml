@@ -10,6 +10,7 @@
 		<service interface="com.siga.administracion.service.InformesService" implementation="com.siga.administracion.service.impl.AtosInformesService"/>
 		<service interface="com.siga.gratuita.service.ProgramacionCalendariosService" implementation="com.siga.gratuita.service.impl.AtosProgramacionCalendariosService"/>
 		<service interface="com.siga.gratuita.service.AsistenciasService" implementation="com.siga.gratuita.service.impl.AtosAsistenciasService"/>
+		<service interface="com.siga.censo.service.MutualidadService" implementation="com.siga.censo.service.impl.AtosMutualidadService"/>
 	</context>
 	
 	<context id="letrados">

@@ -266,10 +266,13 @@ function ventaModalGeneral(nombreFormulario,tamano){
 	} else 
 	if (tamano=="M") {
 		return showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp",formulario,"dialogHeight:440px;dialogWidth:700px;help:no;scroll:no;status:no;");
-	} else 
-	if (tamano=="P") {
+	} else if (tamano=="P") {
 	  
 		return showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp",formulario,"dialogHeight:340px;dialogWidth:500px;help:no;scroll:no;status:no;");
+		
+	}else if (tamano=="0") {
+	  
+		return showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp",formulario,"dialogHide:yes;dialogHeight:120px;dialogWidth:70px;help:no;scroll:no;status:no;dialogLeft:500;dialogTop:450");
 		
 	} else {
 		return showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp",formulario,"dialogHeight:590px;dialogWidth:1000px;help:no;scroll:no;status:no;");

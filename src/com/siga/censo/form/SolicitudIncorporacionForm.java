@@ -18,6 +18,17 @@ import com.atos.utils.*;
  */
  public class SolicitudIncorporacionForm extends MasterForm {
  	
+	private String idSolicitudPlanProfesional;
+	private String idSolicitudAceptadaSeguroUniversal;
+	private String idSolicitudAceptadaPlanProfesional;
+	private String idSolicitudSeguroUniversal;
+	private String estadoSolicitudPlanProfesional;
+	private String estadoMutualistaPlanProfesional;
+	private String estadoSolicitudSeguroUniversal;
+	private String idEstadoSolicitudPlanProfesional;
+	private String idEstadoSolicitudSeguroUniversal;
+	
+	
 	// Metodos Set (Formulario (*.jsp))
  	public void setSexo (String dato) { 
  		this.datos.put(CenSolicitudIncorporacionBean.C_SEXO, dato);
@@ -412,6 +423,65 @@ import com.atos.utils.*;
 	
 	public String getNumeroCuenta() {
 		return (String)this.datos.get(CenCuentasBancariasBean.C_NUMEROCUENTA);
+	}
+	public String getIdSolicitudPlanProfesional() {
+		return idSolicitudPlanProfesional;
+	}
+	public void setIdSolicitudPlanProfesional(String idSolicitudPlanProfesional) {
+		this.idSolicitudPlanProfesional = idSolicitudPlanProfesional;
+	}
+	public String getIdSolicitudSeguroUniversal() {
+		return idSolicitudSeguroUniversal;
+	}
+	public void setIdSolicitudSeguroUniversal(String idSolicitudSeguroUniversal) {
+		this.idSolicitudSeguroUniversal = idSolicitudSeguroUniversal;
+	}
+	public String getEstadoSolicitudPlanProfesional() {
+		return estadoSolicitudPlanProfesional;
+	}
+	public void setEstadoSolicitudPlanProfesional(String estadoSolicitudPlanProfesional) {
+		this.estadoSolicitudPlanProfesional = estadoSolicitudPlanProfesional;
+	}
+	public String getEstadoSolicitudSeguroUniversal() {
+		return estadoSolicitudSeguroUniversal;
+	}
+	public void setEstadoSolicitudSeguroUniversal(
+			String estadoSolicitudSeguroUniversal) {
+		this.estadoSolicitudSeguroUniversal = estadoSolicitudSeguroUniversal;
+	}
+	public String getIdEstadoSolicitudPlanProfesional() {
+		return idEstadoSolicitudPlanProfesional;
+	}
+	public void setIdEstadoSolicitudPlanProfesional(String idEstadoSolicitudPlanProfesional) {
+		this.idEstadoSolicitudPlanProfesional = idEstadoSolicitudPlanProfesional;
+	}
+	public String getIdEstadoSolicitudSeguroUniversal() {
+		return idEstadoSolicitudSeguroUniversal;
+	}
+	public void setIdEstadoSolicitudSeguroUniversal(
+			String idEstadoSolicitudSeguroUniversal) {
+		this.idEstadoSolicitudSeguroUniversal = idEstadoSolicitudSeguroUniversal;
+	}
+	public String getIdSolicitudAceptadaSeguroUniversal() {
+		return idSolicitudAceptadaSeguroUniversal;
+	}
+	public void setIdSolicitudAceptadaSeguroUniversal(
+			String idSolicitudAceptadaSeguroUniversal) {
+		this.idSolicitudAceptadaSeguroUniversal = idSolicitudAceptadaSeguroUniversal;
+	}
+	public String getIdSolicitudAceptadaPlanProfesional() {
+		return idSolicitudAceptadaPlanProfesional;
+	}
+	public void setIdSolicitudAceptadaPlanProfesional(
+			String idSolicitudAceptadaPlanProfesional) {
+		this.idSolicitudAceptadaPlanProfesional = idSolicitudAceptadaPlanProfesional;
+	}
+	public String getEstadoMutualistaPlanProfesional() {
+		return estadoMutualistaPlanProfesional;
+	}
+	public void setEstadoMutualistaPlanProfesional(
+			String estadoMutualistaPlanProfesional) {
+		this.estadoMutualistaPlanProfesional = estadoMutualistaPlanProfesional;
 	}
 
 	

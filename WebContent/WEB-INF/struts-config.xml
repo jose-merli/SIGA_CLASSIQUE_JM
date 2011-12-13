@@ -13,6 +13,7 @@
 		<form-bean name="busquedaClientesForm" type="com.siga.censo.form.BusquedaClientesForm"/>
 		<form-bean name="busquedaClientesAvanzadaForm" type="com.siga.censo.form.BusquedaClientesForm"/>
 		<form-bean name="SolicitudIncorporacionForm" type="com.siga.censo.form.SolicitudIncorporacionForm"/>
+		<form-bean name="MutualidadForm" type="com.siga.censo.form.MutualidadForm"/>
 		<form-bean name="consultaDireccionesForm" type="com.siga.censo.form.DireccionesForm"/>
 		<form-bean name="consultaDireccionesSolicForm" type="com.siga.censo.form.DireccionesForm"/>
 		<form-bean name="cuentasBancariasForm" type="com.siga.censo.form.CuentasBancariasForm"/>
@@ -319,6 +320,8 @@
 		<form-bean name="ConfConjuntoGuardiasForm" type="com.siga.gratuita.form.ConfConjuntoGuardiasForm"/>
 		<form-bean name="ActaComisionForm" type="com.siga.gratuita.form.ActaComisionForm"/>
 		
+		
+		
 	</form-beans>
 
 
@@ -328,6 +331,7 @@
 		<forward name="notImplemented" path="/notImplemented.do"/>
 		<forward name="exito" path="/html/jsp/general/exito.jsp"/>
 		<forward name="exitoConString" path="/html/jsp/general/exitoConString.jsp"/>
+		<forward name="exitoParametros" path="/html/jsp/general/exitoParametros.jsp"/>
 		<forward name="errorConAviso" path="/html/jsp/general/errorConAviso.jsp"/>
 		<forward name="accesodenegado" path="/html/jsp/general/accesoDenegado.jsp"/>
 		<forward name="clienteNoExiste" path="/html/jsp/censo/clienteNoExiste.jsp"/>
@@ -562,7 +566,20 @@
 			<forward name="continuarInsercionColegiado" path="/html/jsp/censo/continuarInsercionColegiado.jsp"/>
 			<forward name="exitoGuardar" path="/html/jsp/censo/exitoSolicitudIncorporacionDatos.jsp"/>
 		</action>
-
+		
+		<action path="/CEN_Mutualidad" type="com.siga.censo.action.GestionMutualidadAction" name="MutualidadForm" scope="request"  >
+			<forward name="edicion" path="/html/jsp/censo/mutualidad.jsp"/>
+		</action>
+		
+		<action path="/CEN_MutualidadFicha" type="com.siga.censo.action.GestionMutualidadAction" name="MutualidadForm" scope="request"  >
+			<forward name="inicioFicha" path="/html/jsp/censo/inicioFichaMutualidad.jsp"/>
+		</action>
+		<action path="/CEN_MutualidadFichaPlan" type="com.siga.censo.action.GestionMutualidadAction" name="MutualidadForm" scope="request"  >
+			<forward name="consulta" path="/html/jsp/censo/mutualidad.jsp"/>
+		</action>
+		<action path="/CEN_MutualidadFichaSeguro" type="com.siga.censo.action.GestionMutualidadAction" name="MutualidadForm" scope="request"  >
+			<forward name="consulta" path="/html/jsp/censo/mutualidad.jsp"/>
+		</action>
 		<!-- ***** Censo / Ver Solicitudes Modificación / Solicitudes Genéricas *****
 -->
 		<action path="/CEN_SolicitudesModificacionGenericas" type="com.siga.censo.action.SolicitudesModificacionAction" name="SolicitudesModificacionForm" scope="session">
@@ -2896,6 +2913,7 @@
 			<forward name="inicio" path="/html/jsp/facturacionSJCS/busquedaMovimientos.jsp"/>
 			<forward name="resultado" path="/html/jsp/facturacionSJCS/busquedaMovimientosResultados.jsp"/>
 			<forward name="nuevo" path="/html/jsp/facturacionSJCS/datosMovimientos.jsp"/>
+			<forward name="resultadoAplicacion" path="/html/jsp/facturacionSJCS/aplicacionMovimiento.jsp"/>
 		</action>
 
 		<action path="/FCS_DetalleFacturacion" type="com.siga.facturacionSJCS.action.DatosDetalleFacturacionAction" name="DatosDetalleFacturacionForm" scope="request">

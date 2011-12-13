@@ -6,10 +6,14 @@
  */
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.SIGAException;
@@ -98,5 +102,44 @@ public class CenProvinciaAdm extends MasterBeanAdministrador{
 		}
 		return salida;	
 	}
+	public List<CenProvinciaBean> getProvincias(String idPais)throws ClsExceptions{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		
+		sql.append(" SELECT IDPROVINCIA, NOMBRE ");
+		sql.append(" FROM CEN_PROVINCIAS  ");
+		sql.append(" WHERE IDPAIS = :");
+	    contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),idPais);
+		sql.append(" ORDER BY NOMBRE ");
+		
+		List<CenProvinciaBean> provinciasList = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.findBind(sql.toString(),htCodigos)) {
+            	provinciasList = new ArrayList<CenProvinciaBean>();
+            	CenProvinciaBean provinciasBean = null;
+            	
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		
+            		
+            		provinciasBean = new CenProvinciaBean();
+            		provinciasBean.setidProvincia(UtilidadesHash.getString(htFila,CenProvinciaBean.C_IDPROVINCIA));
+            		provinciasBean.setNombre(UtilidadesHash.getString(htFila,CenProvinciaBean.C_NOMBRE));
+            		provinciasList.add(provinciasBean);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta getProvincias.");
+       }
+       return provinciasList;
+		
+	}	
 	
 }

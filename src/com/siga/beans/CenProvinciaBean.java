@@ -6,12 +6,17 @@
  */
 package com.siga.beans;
 
+import com.siga.Utilidades.AjaxXMLBuilderAnnotation;
+import com.siga.Utilidades.AjaxXMLBuilderNameAnnotation;
+import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
+
 /**
  * @author daniel.campos
  *
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
+@AjaxXMLBuilderAnnotation 
 public class CenProvinciaBean extends MasterBean{
 
 	/* Variables */
@@ -41,6 +46,8 @@ public class CenProvinciaBean extends MasterBean{
 	public void setNombre (String s)		{ this.nombre = s; }
 
 	// Metodos GET
+	@AjaxXMLBuilderValueAnnotation(isCData=false)
 	public String getIdProvincia 		()	{ return this.idProvincia; }
+	@AjaxXMLBuilderNameAnnotation
 	public String getNombre 			()	{ return this.nombre; }
 }

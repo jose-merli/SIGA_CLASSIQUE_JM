@@ -12,7 +12,7 @@
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
-
+<%@ taglib uri="c.tld" prefix="c"%>
 <!-- IMPORTS -->
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.beans.CenDocumentacionSolicitudInstituBean" %>
@@ -558,8 +558,18 @@
 </head>
 
 <body  class="tablaCentralCampos" onLoad="cargaPais(<%=datosPersonales.getIdPais() %>);cargarChecksCuenta();ajusteAlto('documentos');comprobarTipoIdent();">
-
+<bean:define id="isPosibilidadSolicitudAlta" name="isPosibilidadSolicitudAlta"  scope="request" />
 	<html:form action="/CEN_SolicitudesIncorporacion.do" method="POST">
+	<html:hidden property="idSolicitudPlanProfesional"/>
+	<html:hidden property="idSolicitudAceptadaSeguroUniversal"/>
+	<html:hidden property="idSolicitudAceptadaPlanProfesional"/>
+	<html:hidden property="idSolicitudSeguroUniversal"/>
+	
+	
+	
+	
+	
+	
 	
 	<table align="center" width="100%">
 	<tr>
@@ -864,9 +874,138 @@
 			</tr>
 		</table>
 	</siga:ConjCampos>
-	
-	
-	<siga:TablaCabecerasFijas nombre="documentoAPresentar" 
+	<siga:ConjCampos>
+	<c:choose >
+		<c:when test="${isPosibilidadSolicitudAlta==true}">
+		<table class="tablaCampos" align="left" >
+		<tr>
+				<td width="50%"></td>
+				<td width="5%"></td>
+				<td width="15%"></td>
+				<td width="5%"></td>
+				<td width="15%"></td>
+				<td width="10%"></td>
+				
+			</tr>
+			<tr>
+				<td class="labelText" >Alta en el Plan Profesional de la Mutualidad de la Abogacía
+				</td>
+				<c:choose>
+					<c:when test="${SolicitudIncorporacionForm.idSolicitudPlanProfesional==null||SolicitudIncorporacionForm.idSolicitudPlanProfesional==''}">
+						<td id="tdBotonSolicitudPlanProfesional"><html:button property="idButton"
+							onclick="return accionSolicitarAltaMutualidad('P');" styleClass="button">
+							<siga:Idioma key="general.boton.solicitarCompra" />
+							</html:button>
+					
+						</td>
+						<td id="tdIdSolicitudPlanProfesional" class="labelTextValor">&nbsp;</td>
+						<td id="tdEstadoSolicitudPlanProfesional" class="labelTextValor">&nbsp;</td>
+						<td id="tdBotonEstadoSolicitudPlanProfesional" style="display:none" > <html:button property="idButton"
+							onclick="return accionComprobarEstadoMutualidad('P');" styleClass="button">
+							Estado
+							</html:button></td>
+						
+						<td id="tdEstadoMutualistaPlanProfesional" class="labelTextValor">&nbsp;</td>
+						<td id="tdBotonEstadoMutualistaPlanProfesional" style="display:none" > <html:button property="idButton"
+							onclick="return accionComprobarEstadoMutualista();" styleClass="button">
+							Estado Mutualista
+							</html:button></td>
+						
+						
+					</c:when>
+					<c:otherwise>
+						<td>&nbsp;</td>
+						<td class="labelTextValor"><c:out value="${SolicitudIncorporacionForm.idSolicitudPlanProfesional}" /></td>
+						<td id="tdEstadoSolicitudPlanProfesional" class="labelTextValor" style="color:blue;"><c:out value="${SolicitudIncorporacionForm.estadoSolicitudPlanProfesional}" /></td>
+						<td id="tdBotonEstadoSolicitudPlanProfesional">
+								<html:button property="idButton"
+							onclick="return accionComprobarEstadoMutualidad('P');" styleClass="button">
+							Estado
+							</html:button>
+
+						</td>
+						<c:choose>
+						<c:when test="${SolicitudIncorporacionForm.idEstadoSolicitudPlanProfesional!='0'}">
+						<td id="tdEstadoMutualistaPlanProfesional" class="labelTextValor" style="color:blue;"><c:out value="${SolicitudIncorporacionForm.estadoMutualistaPlanProfesional}" /></td>
+						<td id="tdBotonEstadoMutualistaPlanProfesional">
+								<html:button property="idButton"
+							onclick="return accionComprobarEstadoMutualista();" styleClass="button">
+							Estado Mutualista
+							</html:button>
+
+						</td>
+						</c:when>
+						<c:otherwise>
+						<td colspan="2"></td>
+						</c:otherwise>
+						</c:choose>
+						
+						
+						
+					</c:otherwise>
+				</c:choose>
+				
+				
+			</tr>
+				<tr>
+				<td class="labelText" >Alta en el seguro de accidentes universal</td>
+				<c:choose>
+					<c:when test="${SolicitudIncorporacionForm.idSolicitudSeguroUniversal==null||SolicitudIncorporacionForm.idSolicitudSeguroUniversal==''}">
+						<td id="tdBotonSolicitudSeguroUniversal"><html:button property="idButton"
+							onclick="return accionSolicitarAltaMutualidad('S');" styleClass="button">
+							<siga:Idioma key="general.boton.solicitarCompra" />
+							</html:button>
+					
+						</td>
+						<td id="tdIdSolicitudSeguroUniversal" class="labelTextValor">&nbsp;</td>
+						<td id="tdEstadoSolicitudSeguroUniversal" class="labelTextValor">&nbsp;</td>
+						<td id="tdBotonEstadoSolicitudSeguroUniversal" style="display:none">
+							<html:button property="idButton"
+							onclick="return accionComprobarEstadoMutualidad('S');" styleClass="button">
+							Estado
+							</html:button>
+						</td>
+						<td colspan="2"></td>
+					</c:when>
+					<c:otherwise>
+						<td>&nbsp;</td>
+						<td class="labelTextValor" ><c:out value="${SolicitudIncorporacionForm.idSolicitudSeguroUniversal}" /></td>
+						<td id="tdEstadoSolicitudSeguroUniversal" class="labelTextValor" style="color:blue;"><c:out value="${SolicitudIncorporacionForm.estadoSolicitudSeguroUniversal}" /></td>
+						<td id="tdBotonEstadoSolicitudSeguroUniversal">
+								<html:button property="idButton"
+							onclick="return accionComprobarEstadoMutualidad('S');" styleClass="button">
+							Estado
+							</html:button>
+
+						</td>
+						<td colspan="2"></td>
+					</c:otherwise>
+				</c:choose>
+			</tr>
+		</table>
+		</c:when>
+		<c:otherwise>
+		
+		<table>
+		
+			<tr>
+				<td class="labelText" >Alta en el Plan Profesional de la Mutualidad de la Abogacía
+				</td>
+				<td class="labelTextValor" style="color:red;"> NO PERMITIDO</td>
+				
+			</tr>
+				<tr>
+				<td class="labelText" >Alta en el seguro de accidentes universal</td>
+				<td class="labelTextValor" style="color:red;">NO PERMITIDO</td>
+			</tr>
+		</table>
+		
+		
+		</c:otherwise>
+	</c:choose>
+	</siga:ConjCampos>	
+
+		<siga:TablaCabecerasFijas nombre="documentoAPresentar" 
 			borde="1" 
 			estilo="" 
 			clase="tableTitle" 
@@ -874,6 +1013,7 @@
 			tamanoCol="10,90"
 			ajusteBotonera="true"
 			ajuste="20"
+			alto="50"
 			>
 			
 		<% if (documentos != null) {
@@ -916,7 +1056,58 @@
 	<!-- FIN: BOTONES REGISTRO -->
 
 	</html:form>
-
+	<html:form action="/CEN_Mutualidad"   >
+		<html:hidden property="modo" />
+		<html:hidden property="idTipoSolicitud"/>
+		<html:hidden property="idTipoIdentificacion"/>			
+		<html:hidden property="tipoIdentificacion"/>
+		<html:hidden property="numeroIdentificacion"/>
+		<html:hidden property="idSexo"/>
+		<html:hidden property="sexo"/>
+		<html:hidden property="idTratamiento"/>
+		<html:hidden property="tratamiento"/>
+		<html:hidden property="nombre"/>
+		<html:hidden property="apellido1"/>
+		<html:hidden property="apellido2"/>
+		<html:hidden property="naturalDe"/>
+		<html:hidden property="fechaNacimiento"/>
+		<html:hidden property="idEstadoCivil"/>
+		<html:hidden property="estadoCivil"/>
+		
+		
+		<html:hidden property="idPais"/>
+		<html:hidden property="idProvincia"/>
+		<html:hidden property="idPoblacion"/>
+		<html:hidden property="poblacionExtranjera"/>
+		<html:hidden property="domicilio"/>
+		<html:hidden property="codigoPostal"/>
+		<html:hidden property="telef1"/>
+		<html:hidden property="telef2"/>
+		<html:hidden property="movil"/>
+		<html:hidden property="fax1"/>
+		<html:hidden property="fax2"/>
+		<html:hidden property="correoElectronico"/>
+		
+		<html:hidden property="titular"/>
+		<html:hidden property="idBanco"/>
+		
+		<html:hidden property="cboCodigo"/>
+		<html:hidden property="codigoSucursal"/>
+		<html:hidden property="digitoControl"/>
+		<html:hidden property="numeroCuenta"/>
+		<html:hidden property="iban" value=""/> 
+		<html:hidden property="idSolicitud"/>
+		<html:hidden property="idSolicitudAceptada"/>
+		<html:hidden property="idSolicitudIncorporacion"/>
+		<html:hidden property="idEstado"/>
+		<html:hidden property="estado"/>
+		<html:hidden property="estadoMutualista"/>
+		
+			
+			
+			<input type="hidden" name="actionModal" />
+	</html:form>
+	
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
@@ -986,7 +1177,130 @@
 		//window.close();
 		top.cierraConParametros("MODIFICADO");
 	}
+	function accionSolicitarAltaMutualidad(idTipoSolicitud)
+	{
+		
+		document.MutualidadForm.modo.value="nuevo";
+		document.MutualidadForm.tipoIdentificacion.value = document.SolicitudIncorporacionForm.tipoIdentificacion.options[document.SolicitudIncorporacionForm.tipoIdentificacion.selectedIndex].text;
+		document.MutualidadForm.idTipoIdentificacion.value = document.SolicitudIncorporacionForm.tipoIdentificacion.options[document.SolicitudIncorporacionForm.tipoIdentificacion.selectedIndex].value;
+
+		document.MutualidadForm.numeroIdentificacion.value = document.SolicitudIncorporacionForm.NIFCIF.value;
+		
+		document.MutualidadForm.sexo.value = document.SolicitudIncorporacionForm.sexo.options[document.SolicitudIncorporacionForm.sexo.selectedIndex].text;
+		document.MutualidadForm.idSexo.value = document.SolicitudIncorporacionForm.sexo.options[document.SolicitudIncorporacionForm.sexo.selectedIndex].value;
+		
+		document.MutualidadForm.tratamiento.value = document.SolicitudIncorporacionForm.tipoDon.options[document.SolicitudIncorporacionForm.tipoDon.selectedIndex].text;
+		document.MutualidadForm.idTratamiento.value = document.SolicitudIncorporacionForm.tipoDon.options[document.SolicitudIncorporacionForm.tipoDon.selectedIndex].value;
+		
+		document.MutualidadForm.nombre.value = document.SolicitudIncorporacionForm.nombre.value;
+		document.MutualidadForm.apellido1.value = document.SolicitudIncorporacionForm.apellido1.value;
+		document.MutualidadForm.apellido2.value = document.SolicitudIncorporacionForm.apellido2.value;
+		document.MutualidadForm.naturalDe.value  = document.SolicitudIncorporacionForm.natural.value;
+		document.MutualidadForm.fechaNacimiento.value  = document.SolicitudIncorporacionForm.fechaNacimiento.value;
+		document.MutualidadForm.estadoCivil.value  =  document.SolicitudIncorporacionForm.estadoCivil.options[document.SolicitudIncorporacionForm.estadoCivil.selectedIndex].text;
+		document.MutualidadForm.idEstadoCivil.value  =  document.SolicitudIncorporacionForm.estadoCivil.options[document.SolicitudIncorporacionForm.estadoCivil.selectedIndex].value;
+		
+		
+		document.MutualidadForm.idPais.value  = document.SolicitudIncorporacionForm.pais.value;
+		document.MutualidadForm.idProvincia.value  = document.SolicitudIncorporacionForm.provincia.value;
+		document.MutualidadForm.idPoblacion.value  = document.SolicitudIncorporacionForm.poblacion.value;
+		document.MutualidadForm.poblacionExtranjera.value  = document.SolicitudIncorporacionForm.poblacionExt.value;
+		document.MutualidadForm.domicilio.value  = document.SolicitudIncorporacionForm.domicilio.value;
+		document.MutualidadForm.codigoPostal.value  = document.SolicitudIncorporacionForm.CP.value;
+		document.MutualidadForm.telef1.value  = document.SolicitudIncorporacionForm.telefono1.value;
+		document.MutualidadForm.telef2.value  = document.SolicitudIncorporacionForm.telefono2.value;
+		document.MutualidadForm.movil.value  = document.SolicitudIncorporacionForm.telefono3.value;
+		document.MutualidadForm.fax1.value  = document.SolicitudIncorporacionForm.fax1.value;
+		document.MutualidadForm.fax2.value  = document.SolicitudIncorporacionForm.fax2.value;
+		document.MutualidadForm.correoElectronico.value  = document.SolicitudIncorporacionForm.mail.value;
+		
+		document.MutualidadForm.titular.value  = document.SolicitudIncorporacionForm.titular.value;
+		document.MutualidadForm.idBanco.value  = document.SolicitudIncorporacionForm.banco.value;
+		document.MutualidadForm.cboCodigo.value  = document.SolicitudIncorporacionForm.banco.value;
+		document.MutualidadForm.codigoSucursal.value  = document.SolicitudIncorporacionForm.codigoSucursal.value;
+		document.MutualidadForm.digitoControl.value  = document.SolicitudIncorporacionForm.digitoControl.value;
+		document.MutualidadForm.numeroCuenta.value  = document.SolicitudIncorporacionForm.numeroCuenta.value;
+		
+		document.MutualidadForm.idTipoSolicitud.value  = idTipoSolicitud;
+		
+		document.MutualidadForm.idSolicitudIncorporacion.value  = document.SolicitudIncorporacionForm.editarIdSolicitud.value;
+		
+   		var resultado = ventaModalGeneral(document.MutualidadForm.name,"G");
+   		
+   		
+	    if(resultado && resultado.length){
+	    	
+	    	actualizaDatosMutualidad(idTipoSolicitud,resultado);
+	    }
+	}
+	function actualizaDatosMutualidad(idTipoSolicitud,resultado)
+	{
+		document.MutualidadForm.idSolicitud.value = resultado[0];
+		document.MutualidadForm.idSolicitudAceptada.value = resultado[1];
+		document.MutualidadForm.idEstado.value = resultado[3];
+		if(idTipoSolicitud=='P'){
+			
+			document.getElementById("tdIdSolicitudPlanProfesional").innerText = resultado[0];
+	    	document.getElementById("tdEstadoSolicitudPlanProfesional").innerText = resultado[2];
+	    	document.getElementById("tdBotonSolicitudPlanProfesional").style.display="none";
+	    	document.getElementById("tdBotonEstadoSolicitudPlanProfesional").style.display="";
+	    	
+	    	document.getElementById("tdEstadoMutualistaPlanProfesional").innerText = "Pte. Estado Mutualista";
+	    	document.getElementById("tdBotonEstadoMutualistaPlanProfesional").style.display="";
+	    	
+	    	
+	    	
+		}else{
+			
+			document.getElementById("tdIdSolicitudSeguroUniversal").innerText = resultado[0];
+	    	document.getElementById("tdEstadoSolicitudSeguroUniversal").innerText = resultado[2];
+	    	document.getElementById("tdBotonSolicitudSeguroUniversal").style.display="none";
+	    	document.getElementById("tdBotonEstadoSolicitudSeguroUniversal").style.display="";
+		}
+	}
 	
+	
+	function accionComprobarEstadoMutualidad(idTipoSolicitud)
+	{
+		 if(idTipoSolicitud=='P'){
+			 if(document.MutualidadForm.idSolicitud.value==''){
+				document.MutualidadForm.idSolicitud.value = document.SolicitudIncorporacionForm.idSolicitudPlanProfesional.value;
+				document.MutualidadForm.idSolicitudAceptada.value =document.SolicitudIncorporacionForm.idSolicitudAceptadaPlanProfesional.value;
+			 }
+		}else{
+			if(document.MutualidadForm.idSolicitud.value==''){
+				document.MutualidadForm.idSolicitud.value = document.SolicitudIncorporacionForm.idSolicitudSeguroUniversal.value;
+				document.MutualidadForm.idSolicitudAceptada.value =document.SolicitudIncorporacionForm.idSolicitudAceptadaSeguroUniversal.value;
+			}
+			
+		} 
+		 
+		document.MutualidadForm.modo.value = "actualizaEstado";
+		var resultado = ventaModalGeneral(document.MutualidadForm.name,"0");
+		if(resultado){
+			document.MutualidadForm.idEstado.value = resultado[0];
+			document.MutualidadForm.estado.value = resultado[1];	
+			if(idTipoSolicitud=='P'){
+		    	document.getElementById("tdEstadoSolicitudPlanProfesional").innerText = resultado[1];
+			}else{
+		    	document.getElementById("tdEstadoSolicitudSeguroUniversal").innerText = resultado[1];
+		    	
+			}
+			
+		}
+		
+	}
+	function accionComprobarEstadoMutualista()
+	{
+		document.MutualidadForm.idSolicitudAceptada.value =document.SolicitudIncorporacionForm.idSolicitudAceptadaPlanProfesional.value;
+		document.MutualidadForm.modo.value = "actualizaEstadoMutualista";
+		var resultado = ventaModalGeneral(document.MutualidadForm.name,"0");
+		if(resultado){
+			document.MutualidadForm.estadoMutualista.value = resultado[0];	
+	    	document.getElementById("tdEstadoMutualistaPlanProfesional").innerText = resultado[0];
+		}
+	
+	}
 
 	</script>
 	

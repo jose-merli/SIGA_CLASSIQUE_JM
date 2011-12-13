@@ -34,7 +34,8 @@ public class CenSolicitudIncorporacionBean extends MasterBean {
 	private String 	abonoCargo, abonoSJCS, cbo_Codigo, codigoSucursal, digitoControl, numeroCuenta,
 					titular, cuentaContable, residente;	
 
-
+	Integer idPersona;
+	String fechaAlta;
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "CEN_SOLICITUDINCORPORACION";
 
@@ -82,6 +83,8 @@ public class CenSolicitudIncorporacionBean extends MasterBean {
 	static public final String C_DIGITOCONTROL		= "DIGITOCONTROL";
 	static public final String C_NUMEROCUENTA		= "NUMEROCUENTA";
 	static public final String C_TITULAR			= "TITULAR";	
+	static public final String C_IDPERSONA			= "IDPERSONA";
+	static public final String C_FECHAALTA			= "FECHAALTA";
 	
 	// Metodos SET
 	public void setIdSolicitud (Long id) 				{ this.idSolicitud = id; }
@@ -125,7 +128,8 @@ public class CenSolicitudIncorporacionBean extends MasterBean {
 	public void setSexo(String sexo) 					{ this.sexo = sexo;}
 	public void setIdModalidadDocumentacion(Integer idModalidadDocumentacion) {this.idModalidadDocumentacion = idModalidadDocumentacion;}
 	public void setResidente(boolean residente) 		{ this.residente = residente?"1":"0";}
-
+	
+	
 	// Metodos GET
 	public Long getIdSolicitud 				() 	{ return this.idSolicitud; }
 	public Integer getIdTratamiento 		()	{ return this.idTratamiento; }
@@ -168,4 +172,16 @@ public class CenSolicitudIncorporacionBean extends MasterBean {
 	public String getSexo					()  { return sexo; }
 	public Integer getIdModalidadDocumentacion(){return this.idModalidadDocumentacion;	}
 	public boolean getResidente				()  { return residente.equalsIgnoreCase("1")?true:false; }
+	public Integer getIdPersona() {
+		return idPersona;
+	}
+	public void setIdPersona(Integer idPersona) {
+		this.idPersona = idPersona;
+	}
+	public String getFechaAlta() {
+		return fechaAlta;
+	}
+	public void setFechaAlta(String fechaAlta) {
+		this.fechaAlta = fechaAlta;
+	}
 }

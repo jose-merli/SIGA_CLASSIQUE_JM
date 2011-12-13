@@ -2,6 +2,7 @@
 package com.siga.censo.action;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Random;
 import java.util.Vector;
 
@@ -49,6 +50,7 @@ import com.siga.beans.CenProvinciaAdm;
 import com.siga.beans.CenProvinciaBean;
 import com.siga.beans.CenSolicitudIncorporacionAdm;
 import com.siga.beans.CenSolicitudIncorporacionBean;
+import com.siga.beans.CenSolicitudMutualidadBean;
 import com.siga.beans.CenTipoColegiacionAdm;
 import com.siga.beans.CenTipoColegiacionBean;
 import com.siga.beans.CenTipoSolicitudAdm;
@@ -59,11 +61,14 @@ import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsRetencionesAdm;
 import com.siga.beans.ScsRetencionesBean;
 import com.siga.censo.form.SolicitudIncorporacionForm;
+import com.siga.censo.service.MutualidadService;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.action.RetencionesIRPFAction;
+
+import es.satec.businessManager.BusinessManager;
 
 
 /**
@@ -113,7 +118,7 @@ public class SolicitudIncorporacionAction extends MasterAction
 				bean = (CenSolicitudIncorporacionBean) datosSelect.get(0);
 			}
 			
-			forward = this.mostrarDatosSolicitud(request, bean, miFormulario.getModo()); 
+			forward = this.mostrarDatosSolicitud(request, bean, miFormulario); 
 			request.setAttribute("Editar", "true");
 		} 	
 		catch (Exception e) {
@@ -151,7 +156,7 @@ public class SolicitudIncorporacionAction extends MasterAction
 			if ((datosSelect != null) && (datosSelect.size() > 0)) {
 				bean = (CenSolicitudIncorporacionBean) datosSelect.get(0);
 			}
-			forward = this.mostrarDatosSolicitud(request, bean, miFormulario.getModo());
+			forward = this.mostrarDatosSolicitud(request, bean, miFormulario);
 			
 			//Vemos si vamos a una modal o no:
 			String esmodal = miFormulario.getEsModal();
@@ -594,7 +599,11 @@ public class SolicitudIncorporacionAction extends MasterAction
 						t.rollback();
 						throw e;
 					}
-				
+					String [] claves = {CenSolicitudIncorporacionBean.C_IDSOLICITUD};
+					String [] campos = {CenSolicitudIncorporacionBean.C_IDPERSONA,CenSolicitudIncorporacionBean.C_FECHAALTA};
+					hashModificado.put(CenSolicitudIncorporacionBean.C_IDPERSONA, beanCli.getIdPersona());
+					hashModificado.put(CenSolicitudIncorporacionBean.C_FECHAALTA,"SYSDATE");
+					admSol.updateDirect(hashModificado, claves, campos) ;
 			} //si se aprueba la solicitud
 			
 			//confirmando los cambios en BD
@@ -859,10 +868,11 @@ public class SolicitudIncorporacionAction extends MasterAction
 	 */
 	private String mostrarDatosSolicitud(HttpServletRequest request, 
 										 CenSolicitudIncorporacionBean bean, 
-										 String modoAnterior)
+										 SolicitudIncorporacionForm miFormulario)
 			throws SIGAException
 	{
 		try {
+			String modoAnterior = miFormulario.getModo();
 			if (bean == null) {
 				return "SolicitudIncorporacionError";
 			}
@@ -975,9 +985,46 @@ public class SolicitudIncorporacionAction extends MasterAction
 			UtilidadesHash.set(hash, CenDocumentacionModalidadBean.C_IDINSTITUCION, bean.getIdInstitucion());
 			UtilidadesHash.set(hash, CenDocumentacionModalidadBean.C_IDMODALIDAD, bean.getIdModalidadDocumentacion());
 			request.setAttribute("ModalidadDocumentacion", ((CenDocumentacionModalidadBean)((admDocModalidad.select(hash)).get(0))).getDescripcion());
-
+			
 			
 			request.setAttribute("ModoAnterior", modoAnterior);
+			try {
+				
+			
+				BusinessManager bm = getBusinessManager();
+				MutualidadService mutualidadService = (MutualidadService)bm.getService(MutualidadService.class);
+				boolean isPosibilidadSolicitudAlta = mutualidadService.isPosibilidadSolicitudAlta(bean.getNumeroIdentificador(),bean.getFechaNacimiento(),this.getUserBean(request));
+				request.setAttribute("isPosibilidadSolicitudAlta", isPosibilidadSolicitudAlta);
+				if(isPosibilidadSolicitudAlta){
+					List<CenSolicitudMutualidadBean> solicitudMutualidadBeans=mutualidadService.getSolicitudesMutualidad(bean, this.getUserBean(request));
+				
+					if(solicitudMutualidadBeans!=null && solicitudMutualidadBeans.size()>0){
+						for(CenSolicitudMutualidadBean solicitudMutualidadBean:solicitudMutualidadBeans){
+							if(solicitudMutualidadBean.getIdTipoSolicitud().equals(CenSolicitudMutualidadBean.TIPOSOLICITUD_PLANPROFESIONAL)){
+								miFormulario.setIdSolicitudPlanProfesional(""+solicitudMutualidadBean.getIdSolicitud().toString());
+								if(solicitudMutualidadBean.getIdSolicitudAceptada()!=null)
+									miFormulario.setIdSolicitudAceptadaPlanProfesional(""+solicitudMutualidadBean.getIdSolicitudAceptada().toString());
+								miFormulario.setEstadoSolicitudPlanProfesional(solicitudMutualidadBean.getEstado());
+								miFormulario.setEstadoMutualistaPlanProfesional(solicitudMutualidadBean.getEstadoMutualista());
+								
+							}else if(solicitudMutualidadBean.getIdTipoSolicitud().equals(CenSolicitudMutualidadBean.TIPOSOLICITUD_SEGUROUNIVERSAL)){
+								miFormulario.setIdSolicitudSeguroUniversal(""+solicitudMutualidadBean.getIdSolicitud().toString());
+								if(solicitudMutualidadBean.getIdSolicitudAceptada()!=null)
+									miFormulario.setIdSolicitudAceptadaSeguroUniversal(""+solicitudMutualidadBean.getIdSolicitudAceptada().toString());
+								miFormulario.setEstadoSolicitudSeguroUniversal(solicitudMutualidadBean.getEstado());
+								
+							}
+							
+						}
+						
+					}
+				
+				}
+			} catch (SIGAException e) {
+				//Que hacemos si falla!! aHORA MISMO NO SE MOSTRARIA LA PARTE DEL FORMULARIO DONDE ESTAN LOS BOTONES
+				//Y EL ESTADO DEL ALTA EN LA MUTUALIDAD
+			}
+			
 	   } 
 	   catch (Exception e) {
 		 throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
@@ -1164,7 +1211,7 @@ public class SolicitudIncorporacionAction extends MasterAction
 				UtilidadesHash.set(hash, CenSolicitudIncorporacionBean.C_IDSOLICITUD, idSolicitud);
 				Vector vDatos = solicitudAdm.selectByPK(hash);
 				forward =  this.mostrarDatosSolicitud(request, 
-						(CenSolicitudIncorporacionBean)vDatos.get(0), miFormulario.getModo());
+						(CenSolicitudIncorporacionBean)vDatos.get(0), miFormulario);
 			} else
 				return exito("messages.general.error",request);
 		} catch (Exception e){
