@@ -30,6 +30,8 @@ public class ScsProcedimientosBean extends MasterBean
 	static public final String C_COMPLEMENTO		= "COMPLEMENTO";
 	static public final String C_VIGENTE			= "VIGENTE";
 	static public final String C_ORDEN				= "ORDEN";
+	static public final String C_FECHADESDEVIGOR	= "FECHADESDEVIGOR";
+	static public final String C_FECHAHASTAVIGOR	= "FECHAHASTAVIGOR";
 	static public final String C_PERMITIRANIADIRLETRADO				= "PERMITIRANIADIRLETRADO";
 	
 	
@@ -46,6 +48,8 @@ public class ScsProcedimientosBean extends MasterBean
 	private String	vigente;
 	private String	permitirAniadirLetrado;
 	private Integer	orden;
+	private String fechaDesdeVigor;
+	private String fechaHastaVigor;
 	
 	
 	//
@@ -78,5 +82,17 @@ public class ScsProcedimientosBean extends MasterBean
 	public void setVigente			(String		vigente)			{this.vigente			= vigente;}
 	public void setOrden			(Integer	orden)				{this.orden				= orden;}
 	public void setPermitirAniadirLetrado			(String		permitirAniadirLetrado)			{this.permitirAniadirLetrado			= permitirAniadirLetrado;}
+	public String getFechaDesdeVigor() {
+		return fechaDesdeVigor;
+	}
+	public void setFechaDesdeVigor(String fechaDesdeVigor) {
+		this.fechaDesdeVigor = fechaDesdeVigor;
+	}
+	public String getFechaHastaVigor() {
+		return fechaHastaVigor;
+	}
+	public void setFechaHastaVigor(String fechaHastaVigor) {
+		this.fechaHastaVigor = fechaHastaVigor;
+	}
 
 }

@@ -23,7 +23,7 @@
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
-
+<%@ page import="com.atos.utils.GstDate"%>
 
 <!-- JSP -->
 <%
@@ -39,23 +39,23 @@
 
 	//variables quese van a mostrar en la jsp
 	String nombre = "", importe = "", idProc = "", idJurisdiccion = "", codigo = "", complemento = "", vigente = "",permitirAniadirLetrado="";
+	String fechaInicio="", fechaFin="";
 
 	//inicializamos los valores
 	try {
 		nombre = (String) resultado.get(ScsProcedimientosBean.C_NOMBRE);
-		importe = (String) resultado
-				.get(ScsProcedimientosBean.C_PRECIO);
-		idProc = (String) resultado
-				.get(ScsProcedimientosBean.C_IDPROCEDIMIENTO);
-		idJurisdiccion = (String) resultado
-				.get(ScsProcedimientosBean.C_IDJURISDICCION);
+		importe = (String) resultado.get(ScsProcedimientosBean.C_PRECIO);
+		idProc = (String) resultado.get(ScsProcedimientosBean.C_IDPROCEDIMIENTO);
+		idJurisdiccion = (String) resultado.get(ScsProcedimientosBean.C_IDJURISDICCION);
 		codigo = (String) resultado.get(ScsProcedimientosBean.C_CODIGO);
-		complemento = (String) resultado
-				.get(ScsProcedimientosBean.C_COMPLEMENTO);
-		vigente = (String) resultado
-				.get(ScsProcedimientosBean.C_VIGENTE);
-		permitirAniadirLetrado = (String) resultado
-		.get(ScsProcedimientosBean.C_PERMITIRANIADIRLETRADO);
+		complemento = (String) resultado.get(ScsProcedimientosBean.C_COMPLEMENTO);
+		vigente = (String) resultado.get(ScsProcedimientosBean.C_VIGENTE);
+		permitirAniadirLetrado = (String) resultado.get(ScsProcedimientosBean.C_PERMITIRANIADIRLETRADO);
+		fechaInicio = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usr.getLanguage(),(String)resultado.get(ScsProcedimientosBean.C_FECHADESDEVIGOR)));
+		fechaFin = (String)resultado.get(ScsProcedimientosBean.C_FECHAHASTAVIGOR);
+		if(!fechaFin.equals("")){
+			fechaFin = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usr.getLanguage(),(String)resultado.get(ScsProcedimientosBean.C_FECHAHASTAVIGOR)));
+		}
 		
 		
 	} catch (Exception e) {
@@ -75,7 +75,9 @@
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 	<html:javascript formName="MantenimientoProcedimientosForm" staticJavascript="false" />
+	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
  	
 	
 </head>
@@ -147,11 +149,22 @@
 							maxlength="11" styleClass="boxNumber" readonly="false"
 							value="<%=UtilidadesNumero.formatoCampo(importe)%>" />&nbsp;&euro;
 						</td>
+					</tr>
+					<tr>
 						<td class="labelText"><siga:Idioma
-							key="gratuita.procedimientos.literal.vigente" />&nbsp;</td>
-						<td class="labelText"><input type="checkbox" name="vigente"
-							value="<%=ClsConstants.DB_TRUE%>"
-							<%if(vigente.equals(ClsConstants.DB_TRUE)){%> checked <%}%> /></td>
+							key="gratuita.procedimientos.literal.fechainicio" />&nbsp;(*)</td>
+						<td class="labelText">
+							<html:text name="MantenimientoProcedimientosForm" property="fechaDesdeVigor" styleClass="box" readonly="true" style='width:70px;' value="<%=fechaInicio%>"></html:text>
+							<a href='javascript://'onClick="return showCalendarGeneral(fechaDesdeVigor);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+						</td>
+						
+						<td class="labelText"><siga:Idioma
+							key="gratuita.procedimientos.literal.fechafin" /></td>
+						<td class="labelText">
+							<html:text name="MantenimientoProcedimientosForm" property="fechaHastaVigor" styleClass="box" readonly="true" style='width:70px;' value="<%=fechaFin%>"></html:text>
+							<a href='javascript://'onClick="return showCalendarGeneral(fechaHastaVigor);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+						</td>
+
 					</tr>
 					<tr>
 						<td class="labelText"><siga:Idioma
@@ -160,9 +173,9 @@
 						<%
 							ArrayList juris = new ArrayList();
 									juris.add(idJurisdiccion);
-						%> <siga:ComboBD nombre="jurisdiccion"
+						%> <siga:ComboBD nombre="jurisdiccion" ancho="200"
 							tipo="jurisdiccionSCJS" clase="boxCombo" obligatorio="true"
-							elementoSel="<%=juris%>" /></td>
+							elementoSel="<%=juris%>"/></td>
 							
 							<td class="labelText"><siga:Idioma
 							key="gratuita.procedimientos.literal.permitirAniadirLetrado" />&nbsp;</td>
@@ -274,10 +287,16 @@
 		{
 			sub();		
 			if (validateMantenimientoProcedimientosForm(document.MantenimientoProcedimientosForm)){
+				if(validarFecha()){
 					document.forms[0].importe.value=document.forms[0].importe.value.replace(/,/,".");
 					document.forms[0].modo.value="<%=modo%>";
 					document.forms[0].submit();
 					window.returnValue="MODIFICADO";
+				}else{					
+					fin();
+					return false;
+				}
+				
 			}else{
 			
 				fin();
@@ -285,6 +304,24 @@
 			
 			}
 		}
+
+		function validarFecha() {
+
+			var fechaIni = trim(document.getElementById("fechaDesdeVigor").value);
+			var fechaFin = trim(document.getElementById("fechaHastaVigor").value);
+
+			if (trim(document.getElementById("fechaDesdeVigor").value)=="") {
+				alert ('<siga:Idioma key="messages.campos.required"/> <siga:Idioma key="gratuita.procedimientos.literal.fechainicio"/>');
+			   	return false;
+			}
+			
+			if (compararFecha (fechaIni, fechaFin) == 1) {
+				mensaje='<siga:Idioma key="messages.fechas.rangoFechas"/>';
+				alert(mensaje);
+				return false;
+			}		
+			return true;	
+		}		
 		
 		<!-- Asociada al boton Cerrar -->
 		function accionCerrar() 

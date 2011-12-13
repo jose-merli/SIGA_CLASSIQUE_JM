@@ -64,7 +64,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 							ScsDesignaBean.C_CODIGO, 				ScsDesignaBean.C_NUMPROCEDIMIENTO,
 							ScsDesignaBean.C_IDPROCEDIMIENTO,       ScsDesignaBean.C_FECHAESTADO,
 							ScsDesignaBean.C_SUFIJO,				ScsDesignaBean.C_FECHAOFICIOJUZGADO,
-							ScsDesignaBean.C_FECHARECEPCIONCOLEGIO,
+							ScsDesignaBean.C_FECHARECEPCIONCOLEGIO, ScsDesignaBean.C_ART27,
 							ScsDesignaBean.C_FECHAALTA};
 		return campos;
 	}
@@ -117,6 +117,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			bean.setFechaRecepcionColegio(UtilidadesHash.getString(hash,ScsDesignaBean.C_FECHARECEPCIONCOLEGIO));
 			bean.setFechaOficioJuzgado(UtilidadesHash.getString(hash,ScsDesignaBean.C_FECHAOFICIOJUZGADO));
 			bean.setFechaAlta(UtilidadesHash.getString(hash,ScsDesignaBean.C_FECHAALTA));
+			bean.setArt27(UtilidadesHash.getString(hash,ScsDesignaBean.C_ART27));
 		}
 		catch(Exception e){
 			bean = null;
@@ -220,6 +221,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsDesignaBean.C_FECHAOFICIOJUZGADO,b.getFechaOficioJuzgado());
 			UtilidadesHash.set(hash, ScsDesignaBean.C_FECHARECEPCIONCOLEGIO,b.getFechaRecepcionColegio());
 			UtilidadesHash.set(hash, ScsDesignaBean.C_FECHAALTA,b.getFechaAlta());
+			UtilidadesHash.set(hash, ScsDesignaBean.C_ART27,b.getArt27());
 			return hash;
 		}
 		catch (Exception e){

@@ -22,6 +22,7 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.FcsFacturacionJGBean;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsAcreditacionAdm;
 import com.siga.beans.ScsAcreditacionBean;
 import com.siga.beans.ScsAcreditacionProcedimientoBean;
@@ -451,6 +452,10 @@ public class ActuacionesDesignasAction extends MasterAction {
 		    
 		    //Mostrar Las Actuaciones antiguas.
 		   Hashtable actuacionAntigua =(Hashtable)(designaAdm.getDesignaActuaciones(hashDatosDesigna, request)).get(0);
+		   
+		   	GenParametrosAdm adm = new GenParametrosAdm (this.getUserBean(request));
+			String filtrarModulos = adm.getValor(idInstitucion,"SCS","FILTRAR_MODULOS_PORFECHA_DESIGNACION", "");
+			request.setAttribute("filtrarModulos", filtrarModulos);
 		    
 		   	int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
@@ -566,6 +571,10 @@ public class ActuacionesDesignasAction extends MasterAction {
 		    }
 			designaActual = actuacionDesignaAdm.prepararInsert(designaActual);
 			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
+			GenParametrosAdm adm = new GenParametrosAdm (this.getUserBean(request));
+			String filtrarModulos = adm.getValor((String)designaActual.get("IDINSTITUCION"),"SCS","FILTRAR_MODULOS_PORFECHA_DESIGNACION", "");
+			
+			request.setAttribute("filtrarModulos", filtrarModulos);
 			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 			request.setAttribute("hashDesigna",designaActual);
 			request.setAttribute("MODO_ANTERIOR","NUEVO");
@@ -968,10 +977,10 @@ public class ActuacionesDesignasAction extends MasterAction {
 			// Obtengo el idJuzgado y la idInstitucion del Juzgado:
 			Long idJuzgado=null;
 			Integer idInstitucionJuzgado=null;
-			String juzgado = miform.getJuzgado();
+			String[] juzgado = miform.getJuzgado().split(",");
 			if (juzgado!=null && !juzgado.equals("")){
-				idJuzgado = new Long(juzgado.substring(0,juzgado.indexOf(",")));
-				idInstitucionJuzgado = new Integer(juzgado.substring(juzgado.indexOf(",")+1));
+				idJuzgado = new Long(juzgado[0]);
+				idInstitucionJuzgado = new Integer(juzgado[1]);
 				actuacionModificada.put(ScsActuacionDesignaBean.C_IDJUZGADO, idJuzgado);
 				actuacionModificada.put(ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO, idInstitucionJuzgado);
 			} else {

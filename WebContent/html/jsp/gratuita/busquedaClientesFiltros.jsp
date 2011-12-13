@@ -43,6 +43,7 @@
 	ArrayList elementoSel = new ArrayList();
 	String aaaaaqaq = "" + institucion + "," + idguardia;
 	elementoSel.add(aaaaaqaq);
+	ses.setAttribute("art27","0");
 %>
    
 <html>

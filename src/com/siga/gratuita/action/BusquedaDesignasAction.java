@@ -703,6 +703,11 @@ public class BusquedaDesignasAction extends MasterAction {
 			ejg       = (String)request.getSession().getAttribute("ejg");
 			numeroEjg = (String)request.getSession().getAttribute("numeroEjg");
 			idTipoEjg = (String)request.getSession().getAttribute("idTipoEjg");
+			String art27 = "0";
+			if(request.getSession().getAttribute("art27") != null){
+				art27 = (String)request.getSession().getAttribute("art27");
+			}
+			formDesignaHash.put("ART27",art27);
 
 			request.getSession().removeAttribute("asistencia");
 			request.getSession().removeAttribute("numeroAsistencia");
@@ -710,6 +715,7 @@ public class BusquedaDesignasAction extends MasterAction {
 			request.getSession().removeAttribute("ejg");
 			request.getSession().removeAttribute("numeroEjg");
 			request.getSession().removeAttribute("idTipoEjg");
+			request.getSession().removeAttribute("art27");
 
 			// 1. Creamos la Designa
 
@@ -887,6 +893,7 @@ public class BusquedaDesignasAction extends MasterAction {
 			designaBean.setIdTurno(UtilidadesHash.getInteger(datosDesigna, ScsDesignaBean.C_IDTURNO));
 			designaBean.setNumero(new Long(UtilidadesHash.getString(datosDesigna, ScsDesignaBean.C_NUMERO)));
 			designaBean.setCodigo(UtilidadesHash.getString(datosDesigna, ScsDesignaBean.C_CODIGO));
+			designaBean.setArt27(UtilidadesHash.getString(datosDesigna, ScsDesignaBean.C_ART27));
 
 			if (datosDesigna.get(ScsDesignaBean.C_IDJUZGADO)!=null && !((String)datosDesigna.get(ScsDesignaBean.C_IDJUZGADO)).equals(""))
 				designaBean.setIdJuzgado(new Long(UtilidadesHash.getString(datosDesigna, ScsDesignaBean.C_IDJUZGADO)));

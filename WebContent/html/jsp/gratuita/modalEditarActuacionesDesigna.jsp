@@ -66,7 +66,12 @@
 	String modoAnterior = (String) request.getAttribute("MODO_ANTERIOR");
 	String facturada="";
 	String validarActuacion = (String) request.getAttribute("validarActuacion");
-	
+	String filtrarModulos = "N";
+	String comboJuzgados ="", comboModulos="";
+	String[] datoJuzg = null;
+	if (request.getAttribute("filtrarModulos") != null) {
+		filtrarModulos = (String)request.getAttribute("filtrarModulos");
+	}
 
 	// Estilo de los combos:
 	if (modoAnterior!=null && modoAnterior.equalsIgnoreCase("VER")) {
@@ -103,7 +108,23 @@
 	}
 	String fechaAnulacion = hashDesigna.get("FECHAANULACION") == null?"":(String)hashDesigna.get("FECHAANULACION");	
     String param[] = {usr.getLocation(),idTurno};
-    String[] datoJuzg 	= {usr.getLocation(),"-1"};
+    
+    if(filtrarModulos.equals("S")){
+    	datoJuzg = new String[5];
+    	datoJuzg [0] = "-1";
+    	datoJuzg [1] = fecha;
+    	datoJuzg [2] = fecha;
+    	datoJuzg [3] = usr.getLocation();
+    	datoJuzg [4] = "-1";
+    	comboJuzgados = "comboJuzgadosTurnosModulos";
+    	comboModulos = "comboProcedimientosVigencia";
+    }else{
+    	datoJuzg = new String[2];
+    	datoJuzg [0] = usr.getLocation();
+		datoJuzg [1] = "-1";
+		comboJuzgados = "comboJuzgadosTurno";
+    	comboModulos = "comboProcedimientos";
+    }
 	// Caso de estar en Edicion o Consulta:
 	
 	idInstitucionProcedimiento =  usr.getLocation();
@@ -192,16 +213,30 @@
 	validarJustificaciones = (String) hashDesigna.get("VALIDARJUSTIFICACIONES");
 	actuacionValidada = actuacionValidada ==null ? "0":actuacionValidada;
 	//Actualizo el combo de juzgados:
-	if (idJuzgado!=null && idInstitucionJuzgado!=null)
-		juzgadoSel.add(0,idJuzgado+","+idInstitucionJuzgado);
+	if(filtrarModulos.equals("S")){
+		if ((idJuzgado!=null && idInstitucionJuzgado!=null) && (idProcedimiento!=null && idInstitucionProcedimiento!=null))
+			juzgadoSel.add(0,idJuzgado+","+idInstitucionJuzgado+","+idProcedimiento+","+fecha+","+fecha);
 		
+		if(idJuzgado!=null && !idJuzgado.equals(""))
+			datoJuzg[4]=idJuzgado;
+		
+		if(idProcedimiento!=null && !idProcedimiento.equals(""))
+			datoJuzg[0]=idProcedimiento;
+	}else{
+		
+		//Actualizo el combo de juzgados:
+		if (idJuzgado!=null && idInstitucionJuzgado!=null)
+			juzgadoSel.add(0,idJuzgado+","+idInstitucionJuzgado);
+				
+		if(idJuzgado!=null && !idJuzgado.equals(""))
+			datoJuzg[1]=idJuzgado;
+	}
+
 	if (idProcedimiento!=null && idInstitucionProcedimiento!=null)
-			procedimientoSel.add(0,idProcedimiento+","+idInstitucionProcedimiento);	
-			
+		procedimientoSel.add(0,idProcedimiento+","+idInstitucionProcedimiento);	
+	
 	String paramAcreditacion[] = {idProcedimiento,usr.getLocation()};	
 
-	if(idJuzgado!=null && !idJuzgado.equals(""))
-		datoJuzg[1]=idJuzgado;
 	
 	int pcajgActivo = 0;
 	if (request.getAttribute("PCAJG_ACTIVO")!=null){
@@ -429,12 +464,12 @@
 		
 			<% if (esLetrado||modoAnterior.equalsIgnoreCase("VER")){%>
 					<td colspan="6" >
-							<siga:ComboBD nombre="juzgado" ancho="530" tipo="comboJuzgadosTurno" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>" accion="Hijo:procedimiento" />
+							<siga:ComboBD nombre="juzgado" ancho="530" tipo="<%=comboJuzgados%>"estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>" accion="Hijo:procedimiento" />
 					</td>
 					<%}else{%>
 					  <td colspan="5" >
 							<input type="text" name="codigoExtJuzgado" class="box" size="8"  style="margin-top:0px;" maxlength="10" onBlur="obtenerJuzgado();" />
-							<siga:ComboBD nombre="juzgado" ancho="430" tipo="comboJuzgadosTurno" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>"  accion="Hijo:procedimiento" />
+							<siga:ComboBD nombre="juzgado" ancho="430" tipo="<%=comboJuzgados%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>"  accion="Hijo:procedimiento" />
 					</td>
 			<%}%>
 				
@@ -450,7 +485,7 @@
 							<html:text name="ActuacionesDesignasForm"  style="width:600px" property="procedimiento1" styleClass="boxConsulta" readOnly="true" value="<%=nombreProcedimiento%>"/>
 					</td>
 					<td  style="display:none">
-                            <siga:ComboBD ancho="600" nombre="procedimiento" tipo="comboProcedimientos" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
+                            <siga:ComboBD ancho="600" nombre="procedimiento" tipo="<%=comboJuzgados%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
 					</td>
 					<%} else if (modoJustificacion!=null && modoJustificacion.equals("nuevoJustificacion")){%>
 						<td  colspan="7">
@@ -463,13 +498,13 @@
 							<html:text name="ActuacionesDesignasForm"  style="width:600px" property="procedimiento1" styleClass="boxConsulta" readOnly="true" value="<%=nombreProcedimiento%>"/>
 					</td>
 					<td  style="display:none">
-                            <siga:ComboBD ancho="600" nombre="procedimiento" tipo="comboProcedimientos" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>"  />
+                            <siga:ComboBD ancho="600" nombre="procedimiento" tipo="<%=comboModulos%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>"  />
 					</td>
 					
 					
 					<%}else { %>
 					<td  colspan="7">
-                            <siga:ComboBD ancho="600" nombre="procedimiento" tipo="comboProcedimientos" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
+                            <siga:ComboBD ancho="600" nombre="procedimiento" tipo="<%=comboModulos%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
 					</td>
 					<%}%>
 					

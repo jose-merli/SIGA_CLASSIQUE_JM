@@ -27,6 +27,7 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.PaginadorBind;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsActuacionDesignaAdm;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
@@ -157,6 +158,10 @@ public class MaestroDesignasAction extends MasterAction {
 			// jbd 01/02/2010 Pasamos el valor del pcajg del colegio
 			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
+			
+			GenParametrosAdm adm = new GenParametrosAdm (this.getUserBean(request));
+			String filtrarModulos = adm.getValor((String)usr.getLocation(),"SCS","FILTRAR_MODULOS_PORFECHA_DESIGNACION", "");
+			request.setAttribute("filtrarModulos", filtrarModulos);
 			
 			// Consulto la designa:					
 			Vector vDesignas = admDesigna.select(resultado);
@@ -642,10 +647,10 @@ public class MaestroDesignasAction extends MasterAction {
 						Integer idJuzgado, idInstitucionJuzgado;
 						idJuzgado = null;
 						idInstitucionJuzgado = null;			
-						String juzgado = (String)datosEntrada.get("JUZGADO");
+						String[] juzgado = ((String)datosEntrada.get("JUZGADO")).split(",");
 						if (juzgado!=null && !juzgado.equals("")){
-							idJuzgado = new Integer(juzgado.substring(0,juzgado.indexOf(",")));
-							idInstitucionJuzgado = new Integer(juzgado.substring(juzgado.indexOf(",")+1));
+							idJuzgado = new Integer(juzgado[0]);
+							idInstitucionJuzgado = new Integer(juzgado[1]);
 							designaNueva.put(ScsDesignaBean.C_IDJUZGADO, idJuzgado);
 							designaNueva.put(ScsDesignaBean.C_IDINSTITUCIONJUZGADO, idInstitucionJuzgado);
 						} else {

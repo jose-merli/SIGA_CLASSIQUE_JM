@@ -21,6 +21,8 @@ public class MantenimientoProcedimientosForm extends MasterForm {
 	private String complemento = 		ScsProcedimientosBean.C_COMPLEMENTO;
 	private String vigente = 		    ScsProcedimientosBean.C_VIGENTE;
 	private String permitirAniadirLetrado;
+	private String fechaDesdeVigor;
+	private String fechaHastaVigor;
 	
 
 	public String getPermitirAniadirLetrado() {
@@ -141,5 +143,19 @@ public class MantenimientoProcedimientosForm extends MasterForm {
 	}
 	public void setVigente(String valor) {
 		UtilidadesHash.set(this.datos, vigente, valor);
+	}
+	public String getFechaDesdeVigor() {
+		return fechaDesdeVigor;
+	}
+	public void setFechaDesdeVigor(String fechaDesdeVigor) {
+		this.fechaDesdeVigor = fechaDesdeVigor;
+	}
+	public String getFechaHastaVigor() {
+		return fechaHastaVigor;
+	}
+	public void setFechaHastaVigor(String fechaHastaVigor) {
+		this.fechaHastaVigor = fechaHastaVigor;
 	}	
+	
+	
 }

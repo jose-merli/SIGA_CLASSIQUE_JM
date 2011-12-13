@@ -91,19 +91,20 @@
 	if (sTipo == null)
 		sTipo = "";	
 	
-// CONTROL DE TIPO	
-String tipoCliente="";
-if (bColegiado) { 
-	tipoCliente=ClsConstants.TIPO_CLIENTE_COLEGIADO;
-} else {
-	if (sTipo.equalsIgnoreCase("LETRADO")) {
-		tipoCliente=ClsConstants.TIPO_CLIENTE_LETRADO;
-	} else { 
-		tipoCliente=ClsConstants.TIPO_CLIENTE_NOCOLEGIADO;
+	// CONTROL DE TIPO	
+	String tipoCliente="";
+	if (bColegiado) { 
+		tipoCliente=ClsConstants.TIPO_CLIENTE_COLEGIADO;
+	} else {
+		if (sTipo.equalsIgnoreCase("LETRADO")) {
+			tipoCliente=ClsConstants.TIPO_CLIENTE_LETRADO;
+		} else { 
+			tipoCliente=ClsConstants.TIPO_CLIENTE_NOCOLEGIADO;
+		}  
 	}  
-}  
-String [] caracterParam = new String[1];
-caracterParam[0] = tipoCliente;
+	String [] caracterParam = new String[1];
+	caracterParam[0] = tipoCliente;
+	ses.setAttribute("art27","1");
 	
 %>
 	   	
@@ -1399,6 +1400,7 @@ var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
 				return false;
 			}
 		}
+		
 		function traspasaDatos(resultado){			
 			document.datosGeneralesForm.nombre.value=resultado[4];
 			document.datosGeneralesForm.apellido1.value=resultado[5];
@@ -1560,7 +1562,6 @@ var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
 			document.datosGeneralesForm.apellido2.onkeypress = submitConTeclaEnter;
 			document.datosGeneralesForm.apellido1.onkeypress = submitConTeclaEnter;
 			document.datosGeneralesForm.nombre.onkeypress = submitConTeclaEnter;
-			document.datosGeneralesForm.idInstitucion.onkeypress = submitConTeclaEnter;
 		}
 		
 		function submitConTeclaEnter(){			

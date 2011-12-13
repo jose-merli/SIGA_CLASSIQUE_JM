@@ -4,8 +4,6 @@
 
 package com.siga.gratuita.action;
 
-
-
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -19,6 +17,7 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ComodinBusquedas;
+import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 
 import com.siga.Utilidades.UtilidadesHash;
@@ -299,6 +298,13 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 			tramoNew.put(ScsProcedimientosBean.C_PRECIO, (String)miform.getPrecio());
 			tramoNew.put(ScsProcedimientosBean.C_CODIGO, (String)miform.getCodigo());
 			tramoNew.put(ScsProcedimientosBean.C_IDJURISDICCION, miform.getJurisdiccion());
+			tramoNew.put(ScsProcedimientosBean.C_FECHADESDEVIGOR, GstDate.getApplicationFormatDate(usr.getLanguage(), miform.getFechaDesdeVigor()));
+			
+			if (miform.getFechaHastaVigor()!=null && !miform.getFechaHastaVigor().equals(""))
+			    tramoNew.put(ScsProcedimientosBean.C_FECHAHASTAVIGOR, GstDate.getApplicationFormatDate(usr.getLanguage(), miform.getFechaHastaVigor()));
+			else
+			    tramoNew.put(ScsProcedimientosBean.C_FECHAHASTAVIGOR, "");
+			
 
 			if (miform.getComplemento()!=null && miform.getComplemento().equals("1"))
 			    UtilidadesHash.set(tramoNew, ScsProcedimientosBean.C_COMPLEMENTO, ClsConstants.DB_TRUE);
@@ -365,7 +371,8 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 		try {
 			//hacemos la consulta de los procediminetos de la institucion 
 			ScsProcedimientosAdm procedimientosAdm = new ScsProcedimientosAdm(this.getUserBean(request));
-			String condicion = " select " + ScsProcedimientosBean.C_NOMBRE + "," + ScsProcedimientosBean.C_PRECIO + "," + ScsProcedimientosBean.C_CODIGO + "," + ScsProcedimientosBean.C_IDPROCEDIMIENTO + " " +
+			String condicion = " select " + ScsProcedimientosBean.C_NOMBRE + "," + ScsProcedimientosBean.C_PRECIO + "," + ScsProcedimientosBean.C_CODIGO +
+								"," + ScsProcedimientosBean.C_IDPROCEDIMIENTO + "," + ScsProcedimientosBean.C_FECHADESDEVIGOR+ "," + ScsProcedimientosBean.C_FECHAHASTAVIGOR+ " " +
 								" from " + ScsProcedimientosBean.T_NOMBRETABLA + " " +
 								" where " + ScsProcedimientosBean.C_IDINSTITUCION + "=" + (String)usr.getLocation(); 
 

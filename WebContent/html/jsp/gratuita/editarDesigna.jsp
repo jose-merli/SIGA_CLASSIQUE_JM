@@ -40,9 +40,7 @@
 	String modoAction=(String) ses.getAttribute("ModoAction");
 	String idInstitucionLocation = usr.getLocation();
 	String[] dato = { usr.getLocation() };
-	String[] datoJuzgado = new String[2];
-	datoJuzgado[0] = usr.getLocation();
-	datoJuzgado[1] = "-1";
+
 	String tipo = "", estado = "", fecha = "", procurador = "", asunto = "", observaciones = "", delitos = "", fechaAnulacion = "", fechaEstado = "";
 	String fechaApertura = "";
 	String fechaOficioJuzgado = "";
@@ -72,11 +70,14 @@
 	datosColegiales = (String) letrado.get("DATOSCOLEGIALES");
 	if (nume_colegiado==null || nume_colegiado.equals("")){ // No colegiado 
 	    nume_colegiado=" ";
-		ses.setAttribute("botonNuevo",false);
-		
-	}else if( !datosColegiales.equals("20")){ // No ejerciente
-	   ses.setAttribute("botonNuevo",false);		
+	}
 	
+	if (resultado.get("ART27") != null){
+		if(resultado.get("ART27").equals("1")){//Designacion Articulo 27-28
+	   		ses.setAttribute("botonNuevo",false);		
+		}else{// Designacion Normal
+			ses.setAttribute("botonNuevo",true);
+		}
 	}else{
 		ses.setAttribute("botonNuevo",true);
 	}
@@ -108,13 +109,41 @@
 	String estilo = "box", readOnly="false", estiloCombo="boxCombo";
 	String idPretension = "",pretension="";
 	String turno = "";
-	
+	String[] datoJuzgado 	= null;
+	String filtrarModulos = "N";
+	String comboJuzgados ="", comboModulos="";
 	 
 	try {
 
 		// Designa seleccionada:
 		beanDesigna = (ScsDesignaBean) request.getAttribute("beanDesigna");
 		asistenciaBean = (ScsAsistenciasBean) request.getAttribute("asistenciaBean");
+		
+		// FECHA DE APERTURA
+		fechaApertura = GstDate.getFormatedDateShort("",beanDesigna.getFechaEntrada());		
+		fechaOficioJuzgado = GstDate.getFormatedDateShort("",beanDesigna.getFechaOficioJuzgado());
+		fechaRecepcionColegio = GstDate.getFormatedDateShort("",beanDesigna.getFechaRecepcionColegio());
+		
+		if (request.getAttribute("filtrarModulos") != null) {
+			filtrarModulos = (String)request.getAttribute("filtrarModulos");
+		}
+		
+		if(filtrarModulos.equals("S")){
+	    	datoJuzgado = new String[5];
+	    	datoJuzgado [0] = "-1";
+			datoJuzgado [1] = fechaApertura;
+			datoJuzgado [2] = fechaApertura;
+	    	datoJuzgado [3] = usr.getLocation();
+	    	datoJuzgado [4] = "-1";
+	    	comboJuzgados = "comboJuzgadosTurnosModulos";
+	    	comboModulos = "comboProcedimientosVigencia";
+	    }else{
+	    	datoJuzgado = new String[2];
+	    	datoJuzgado [0] = usr.getLocation();
+			datoJuzgado [1] = "-1";
+			comboJuzgados = "comboJuzgadosTurno";
+	    	comboModulos = "comboProcedimientos";
+	    }
 
 		tipo = (String) resultado.get("IDTIPODESIGNACOLEGIO");
 		turno = (String)resultado.get("TURNO");
@@ -164,28 +193,7 @@
 			idInstitucionProcurador = beanDesigna.getIdInstitucionProcurador().toString();
 			procuradorSel.add(0, idProcurador + "," + idInstitucionProcurador);
 		}
-
-		// Datos del juzgado seleccionado:
-		if (beanDesigna.getIdJuzgado() != null && 
-			!beanDesigna.getIdJuzgado().equals("") && 
-			beanDesigna.getIdInstitucionJuzgado() != null && 
-			!beanDesigna.getIdInstitucionJuzgado().equals("")) {
-				idJuzgado = beanDesigna.getIdJuzgado().toString();
-				idInstitucionJuzgado = beanDesigna.getIdInstitucionJuzgado().toString();
-				juzgadoSel.add(0, idJuzgado + "," + idInstitucionJuzgado);
-				datoJuzgado[1]=beanDesigna.getIdJuzgado().toString();
-
-		} else {
-			if (request.getAttribute("idDesigna") != null) {
-				Hashtable datosDesigna = (Hashtable) request.getAttribute("idDesigna");
-				idJuzgado = (String) datosDesigna.get(ScsDesignaBean.C_IDJUZGADO);
-				idInstitucionJuzgado = (String) datosDesigna.get(ScsDesignaBean.C_IDINSTITUCIONJUZGADO);
-				numero = (String) datosDesigna.get(ScsDesignaBean.C_NUMERO);
-				juzgadoSel.add(0, idJuzgado + "," + idInstitucionJuzgado);
-
-			}
-		}
-
+		
 		//Otros datos:
 		if (beanDesigna != null) {
 			idTurno = beanDesigna.getIdTurno().toString();
@@ -196,19 +204,47 @@
 			if (numeroProcedimiento == null)
 				numeroProcedimiento = new String("");
 			idProcedimiento = beanDesigna.getProcedimiento().toString();
+			
+			if(filtrarModulos.equals("S")){
+				if(!idProcedimiento.equals(""))
+					datoJuzgado[0]=idProcedimiento;
+			}
+
 			procedimientoSel.add(0, idProcedimiento + "," + usr.getLocation());
 		}
 
-		
+		// Datos del juzgado seleccionado:
+		if (beanDesigna.getIdJuzgado() != null && !beanDesigna.getIdJuzgado().equals("") && 
+			beanDesigna.getIdInstitucionJuzgado() != null &&!beanDesigna.getIdInstitucionJuzgado().equals("")) {
+				idJuzgado = beanDesigna.getIdJuzgado().toString();
+				idInstitucionJuzgado = beanDesigna.getIdInstitucionJuzgado().toString();
+				if(filtrarModulos.equals("S")){
+					juzgadoSel.add(0,idJuzgado+","+idInstitucionJuzgado+","+idProcedimiento+","+fechaApertura+","+fechaApertura);
+					datoJuzgado[4]=beanDesigna.getIdJuzgado().toString();
+				}else{
+					juzgadoSel.add(0, idJuzgado + "," + idInstitucionJuzgado);
+					datoJuzgado[1]=beanDesigna.getIdJuzgado().toString();
+				}
+
+		} else {
+			if (request.getAttribute("idDesigna") != null) {
+				Hashtable datosDesigna = (Hashtable) request.getAttribute("idDesigna");
+				idJuzgado = (String) datosDesigna.get(ScsDesignaBean.C_IDJUZGADO);
+				idInstitucionJuzgado = (String) datosDesigna.get(ScsDesignaBean.C_IDINSTITUCIONJUZGADO);
+				numero = (String) datosDesigna.get(ScsDesignaBean.C_NUMERO);
+				if(filtrarModulos.equals("S")){
+					juzgadoSel.add(0,idJuzgado+","+idInstitucionJuzgado+","+idProcedimiento+","+fechaApertura+","+fechaApertura);
+				}else{
+					juzgadoSel.add(0, idJuzgado + "," + idInstitucionJuzgado);
+				}
+			}
+		}
+
 		if ((beanDesigna != null) &&  (beanDesigna.getIdPretension()!= null)){
 			idPretension = beanDesigna.getIdPretension().toString();
 			pretensionesSel.add(0,idPretension);
 		}
 		
-		// FECHA DE APERTURA
-		fechaApertura = GstDate.getFormatedDateShort("",beanDesigna.getFechaEntrada());		
-		fechaOficioJuzgado = GstDate.getFormatedDateShort("",beanDesigna.getFechaOficioJuzgado());
-		fechaRecepcionColegio = GstDate.getFormatedDateShort("",beanDesigna.getFechaRecepcionColegio());
 
 		// TRATAMIENTO DE LA FECHA DE ANULACIÓN
 
@@ -237,9 +273,6 @@
 
 	String nombreTurnoAsistencia = (String) request.getAttribute("nombreTurnoAsistencia");
 	String nombreGuardiaAsistencia = (String) request.getAttribute("nombreGuardiaAsistencia");
-	String[] datoProcedimiento = new String[2];
-	datoProcedimiento[0] = idJuzgado;
-	datoProcedimiento[1] = idInstitucionJuzgado;
 	
 	// datos2 es para idPresentacion
 	String[] datos2={usr.getLocation(),usr.getLanguage(),"-1"};
@@ -498,13 +531,15 @@
 				   document.MantenimientoJuzgadoForm.submit();	
 				}
 			 }
-			}
+		}
+	
 		function traspasoDatos(resultado){
 		 //seleccionComboSiga("juzgado",resultado[0]);
 		 document.forms[0].juzgado.value=resultado[0];
 		 
 		
 		}
+		
 		function generarCarta() {
 			sub();
 			
@@ -531,22 +566,23 @@
 			document.appendChild(formu);
 			formu.datosInforme.value=datos;
 			formu.submit();
-			
-			
-			
-      	    					
-					
 	
-} 	
-function accionCerrar() {
-		
 	}
-		
+		 	
+	function accionCerrar() {
+			
+	}
+
+	function cargarComboModulo() {
+		<% if (!modo.equalsIgnoreCase("ver")) { %>
+			document.getElementById("juzgado").onchange();	
+		<% } %>	
+	}
 	</script>
 	 
 </head>
 
-<body>
+<body onload ="cargarComboModulo();">
 
 <table class="tablaTitulo" cellspacing="0" heigth="38" width="100%"
 	border="0">
@@ -757,7 +793,7 @@ function accionCerrar() {
 						</td>
 						<td colspan="5"><!-- Busqueda automatica de juzgados--> 						
 						<siga:ConjCampos leyenda="gratuita.mantenimientoTablasMaestra.literal.juzgado">
-							<table >
+							<table>
 								<tr>
 									<% if (!modo.equalsIgnoreCase("ver")) { %>
 										<td class="labelText" width="16%"><siga:Idioma
@@ -773,11 +809,11 @@ function accionCerrar() {
 
 									<% if (!modo.equalsIgnoreCase("ver")) { %> 
 										<td width="80%">
-											<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="500" pestana="t" accion="Hijo:idProcedimiento" />
+											<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="500" pestana="t" accion="Hijo:idProcedimiento" />
 										</td> 
 									<% } else { %> 
 										<td width="100%">
-									 		<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" estilo="" clase="boxComboConsulta" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="700" pestana="t" accion="Hijo:idProcedimiento" readonly="true" />
+									 		<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="" clase="boxComboConsulta" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="700" pestana="t" accion="Hijo:idProcedimiento" readonly="true" />
 										</td> 
 									<% } %>
 								</tr>
@@ -797,9 +833,9 @@ function accionCerrar() {
 						<td colspan="7">
 						<%-- Procedimiento --%> 
 						<% if (!modo.equalsIgnoreCase("ver")) { %>
-							<siga:ComboBD nombre="idProcedimiento" tipo="comboProcedimientos" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" ancho="750" obligatorio="false" parametro="<%=datoProcedimiento%>" elementoSel="<%=procedimientoSel%>" hijo="t" pestana="t" /> 
+							<siga:ComboBD nombre="idProcedimiento" tipo="<%=comboModulos%>" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" ancho="750" obligatorio="false" elementoSel="<%=procedimientoSel%>" hijo="t" pestana="t" /> 
 						<% } else { %>
-							<siga:ComboBD nombre="idProcedimiento" tipo="comboProcedimientos" estilo="true" clase="boxComboConsulta" filasMostrar="1" seleccionMultiple="false" ancho="750" obligatorio="false" readonly="true" parametro="<%=datoProcedimiento%>" elementoSel="<%=procedimientoSel%>" hijo="t" pestana="t" /> 
+							<siga:ComboBD nombre="idProcedimiento" tipo="<%=comboModulos%>" estilo="true" clase="boxComboConsulta" filasMostrar="1" seleccionMultiple="false" ancho="750" obligatorio="false" readonly="true"  elementoSel="<%=procedimientoSel%>" hijo="t" pestana="t" /> 
 						<% } %>
 						</td>
 					</tr>

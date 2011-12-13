@@ -37,7 +37,7 @@
 	String nombre ="", codigo ="", precio="";
 
 	//campos ocultos
-	String idProc="";
+	String idProc="", fechaInicio="", fechaFin="";
 
 %>
 
@@ -87,8 +87,8 @@
 		   nombre="tablaDatos"
 		   borde="1"
 		   clase="tableTitle"
-		   nombreCol="gratuita.mantenimientoTablasMaestra.literal.codigoext,gratuita.procedimientos.literal.nombre,gratuita.procedimientos.literal.importe,"
-		   tamanoCol="10,65,15,10"
+		   nombreCol="gratuita.mantenimientoTablasMaestra.literal.codigoext,gratuita.procedimientos.literal.nombre,gratuita.procedimientos.literal.fechainicio,gratuita.procedimientos.literal.fechafin,gratuita.procedimientos.literal.importe,"
+		   tamanoCol="10,45,10,10,15,10"
 		   modal="M"
 		   alto="100%" 
 		   activarFilaSel="true" >
@@ -109,11 +109,15 @@
 			codigo = UtilidadesString.mostrarDatoJSP((String)fila.get(ScsProcedimientosBean.C_CODIGO));
 			precio = (String)fila.get(ScsProcedimientosBean.C_PRECIO);
 			idProc = UtilidadesString.mostrarDatoJSP(((String)fila.get(ScsProcedimientosBean.C_IDPROCEDIMIENTO)));
+			fechaInicio = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usrbean.getLanguage(),(String)fila.get(ScsProcedimientosBean.C_FECHADESDEVIGOR)));
+			fechaFin = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usrbean.getLanguage(),(String)fila.get(ScsProcedimientosBean.C_FECHAHASTAVIGOR)));
 %>
   			<siga:FilaConIconos fila="<%=String.valueOf(cont)%>" visibleConsulta="no" pintarEspacio="no" botones="E,B" clase="listaNonEdit">
 			
 				<td><input type="hidden" name="oculto<%=cont%>_1" value="<%=idProc%>"><%=codigo%></td>
 				<td><%=nombre%></td>
+				<td align="center"><%=fechaInicio%></td>
+				<td align="center"><%=fechaFin%></td>
 				<td align="right"><%=UtilidadesNumero.formatoCampo(precio)+ " &euro;"%></td>
 				
 
