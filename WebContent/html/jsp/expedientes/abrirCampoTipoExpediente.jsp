@@ -343,6 +343,7 @@
 										<html:select  name="camposForm" property="nombreCampoNumExp" styleClass="boxCombo">
 												<html:option value="<%=ExpCampoTipoExpedienteBean.NUMEXPEDIENTE%>" key="<%=ExpCampoTipoExpedienteBean.NUMEXPEDIENTE%>"></html:option>
 												<html:option value="<%=ExpCampoTipoExpedienteBean.NUMEJG%>" key="<%=ExpCampoTipoExpedienteBean.NUMEJG%>"></html:option>
+												<html:option value="<%=ExpCampoTipoExpedienteBean.NUMPREVIAS%>" key="<%=ExpCampoTipoExpedienteBean.NUMPREVIAS%>"></html:option>
 										</html:select>
 									</td>
 									<td>

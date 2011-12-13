@@ -21,6 +21,7 @@ public class ExpCampoTipoExpedienteBean extends MasterBean {
 	public static final String  IMPUGNADO = "pestana.auditoriaexp.impugnado";
 	public static final String NUMEXPEDIENTE = "expedientes.auditoria.literal.nexpdisciplinario";
 	public static final String  NUMEJG = "expedientes.auditoria.literal.numejg";
+	public static final String NUMPREVIAS = "expedientes.auditoria.literal.nexpprevias";
 	//Variables
     private Integer idInstitucion;
 	private Integer idTipoExpediente;
