@@ -184,10 +184,9 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		datosPersona.put("numColegiado", "");
 		//No pasamos el colegio
 //		datosSolicitud.put("colegio", mutualidadForm);
-		//en ejerciente Pasamos el id del tipo de solicitud de incorporacion
-//		datosSolicitud.put("ejerciente", mutualidadForm);
+		//en ejerciente Pasamos el id del tipo de solicitud de incorporacion. hay dudas pasamos 0
+		datosPersona.put("ejerciente", "");
 		datosPersona.put("estadoCivil", mutualidadForm.getIdEstadoCivil());
-//		datosBeneficiarios.put("idSolicitud", mutualidadForm);
 		datosPersona.put("fechaNacimiento", mutualidadForm.getFechaNacimiento());
 		datosPersona.put("fechaNacimientoConyuge", mutualidadForm.getFechaNacimientoConyuge());
 		

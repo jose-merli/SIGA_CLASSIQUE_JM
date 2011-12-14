@@ -31,6 +31,7 @@ public class TagFecha extends TagSupport {
     private String necesario = ""; // Si fuese necesario no puede llevar el valor ""
     private String styleId;
     private String campoCargarFechaDesde;
+    private String disabled;
     
 	public void setValorInicial(String valorInicial) {
 		this.valorInicial = valorInicial;
@@ -149,9 +150,9 @@ public class TagFecha extends TagSupport {
 			out.println("<input type=\"text\" name=\"" + this.nombreCampo + "\" ");
 			// out.println("	property=\"" + this.nombreCampo + "\" ");
 			if(anchoTextField!=null && !anchoTextField.equals("")){
-				out.println("	size=\""+anchoTextField+"\""+" maxlength=\"10\" class=\"box\" ");
+				out.println("	size=\""+anchoTextField+"\""+" maxlength=\"10\" ");
 			}else{
-				out.println("	size=\"10\" maxlength=\"10\" class=\"box\" ");
+				out.println("	size=\"10\" maxlength=\"10\" ");
 			}
 			if ((this.valorInicial != "")&&(this.valorInicial != null)){
 				out.println("		alert(this.valorInicial); ");
@@ -166,6 +167,15 @@ public class TagFecha extends TagSupport {
 			}
 			if ((this.styleId != null)&&(this.styleId.equals(""))){
 				out.println("		styleId = =\"" + this.styleId + "\" ");
+			}
+			if ((this.disabled != null)){
+				if(this.disabled.equals("true"))
+					out.println("		class = 'boxConsulta' ");
+				else
+					out.println("		class = 'box' ");
+			}else{
+				out.println("		class = 'box' ");
+				
 			}
 			
 			out.println("	onblur=\"return validaFecha"+ this.nombreCampo +"(" + this.nombreCampo + ");\"/> ");
@@ -186,5 +196,11 @@ public class TagFecha extends TagSupport {
 	}
 	public void setStyleId(String styleId) {
 		this.styleId = styleId;
+	}
+	public String getDisabled() {
+		return disabled;
+	}
+	public void setDisabled(String disabled) {
+		this.disabled = disabled;
 	}
 }

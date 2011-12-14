@@ -67,6 +67,7 @@ public class GestionMutualidadAction extends MasterAction {
 						
 					}else if ( accion.equalsIgnoreCase("getAjaxPoblaciones")){
 						getAjaxPoblaciones (mapping, miForm, request, response);
+						return null;
 					}else if ( accion.equalsIgnoreCase("consultaPlanMutualidad")){
 						mapDestino = consultaPlanMutualidad (mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("consultaSeguroUniversal")){
@@ -131,13 +132,13 @@ public class GestionMutualidadAction extends MasterAction {
 			}
 			request.setAttribute("idPaisSeleccionado",alIdsPais);
 			List<CenProvinciaBean> provinciaBeans = null;
-			if(mutualidadForm.getIdPais()!= null && mutualidadForm.getIdPais().equals("191")){
+//			if(mutualidadForm.getIdPais()!= null && mutualidadForm.getIdPais().equals("191")){
 				CenProvinciaAdm provinciaAdm = new CenProvinciaAdm(this.getUserBean(request));
-				provinciaBeans = provinciaAdm.getProvincias(mutualidadForm.getIdPais());
+				provinciaBeans = provinciaAdm.getProvincias("191");
 				mutualidadForm.setProvincias(provinciaBeans);
-			}else{
-				mutualidadForm.setProvincias(new ArrayList<CenProvinciaBean>());
-			}
+//			}else{
+//				mutualidadForm.setProvincias(new ArrayList<CenProvinciaBean>());
+//			}
 			List<CenPoblacionesBean> alPoblaciones = null;
 			if(mutualidadForm.getIdProvincia()!= null && !mutualidadForm.getIdProvincia().equals("")){
 				CenPoblacionesAdm poblacionesAdm = new CenPoblacionesAdm(this.getUserBean(request));
@@ -286,13 +287,13 @@ public class GestionMutualidadAction extends MasterAction {
 			}
 			request.setAttribute("idPaisSeleccionado",alIdsPais);
 			List<CenProvinciaBean> provinciaBeans = null;
-			if(mutualidadForm.getIdPais()!= null && mutualidadForm.getIdPais().equals("191")){
+//			if(mutualidadForm.getIdPais()!= null && mutualidadForm.getIdPais().equals("191")){
 				CenProvinciaAdm provinciaAdm = new CenProvinciaAdm(this.getUserBean(request));
-				provinciaBeans = provinciaAdm.getProvincias(mutualidadForm.getIdPais());
+				provinciaBeans = provinciaAdm.getProvincias("191");
 				mutualidadForm.setProvincias(provinciaBeans);
-			}else{
-				mutualidadForm.setProvincias(new ArrayList<CenProvinciaBean>());
-			}
+//			}else{
+//				mutualidadForm.setProvincias(new ArrayList<CenProvinciaBean>());
+//			}
 			List<CenPoblacionesBean> alPoblaciones = null;
 			if(mutualidadForm.getIdProvincia()!= null && !mutualidadForm.getIdProvincia().equals("")){
 				CenPoblacionesAdm poblacionesAdm = new CenPoblacionesAdm(this.getUserBean(request));
