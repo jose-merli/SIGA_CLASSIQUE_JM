@@ -146,8 +146,8 @@ public class DatosRegistralesAction extends MasterAction{
 				CenNoColegiadoBean beanNoColegiado = null;
 				//String where1 = " WHERE "+CenNoColegiadoBean.C_IDINSTITUCION+"="+idInstitucion+
 				//	" AND "+CenNoColegiadoBean.C_IDPERSONA+"="+idPersona;
-				String where1 = " WHERE ("+CenNoColegiadoBean.C_IDINSTITUCION+"="+idInstitucion+
-					"OR IDINSTITUCION IN (SELECT IDINSTITUCION FROM CEN_INSTITUCION WHERE CEN_INSTITUCION.CEN_INST_IDINSTITUCION = " + idInstitucion +"))"+
+				String where1 = " WHERE ("+CenNoColegiadoBean.C_IDINSTITUCION+"="+idInstitucionPersona+
+					"OR IDINSTITUCION IN (SELECT IDINSTITUCION FROM CEN_INSTITUCION WHERE CEN_INSTITUCION.CEN_INST_IDINSTITUCION = " + idInstitucionPersona +"))"+
 					" AND "+CenNoColegiadoBean.C_IDPERSONA+"="+idPersona;
 				Vector vNoColegiados = admNoColegiado.select(where);
 				
@@ -304,6 +304,9 @@ public class DatosRegistralesAction extends MasterAction{
 				hashPer = this.prepararFormatosFechas(hashPer);
 				hashPer = this.controlFormatosCheck(hashPer);
 				CenClienteBean beanCli = adminCli.insertNoColegiado(hashPer, request);
+				if(beanCli != null){
+					miForm.setIdPersonaNotario(beanCli.getIdPersona().toString());
+				}
 			}
 			
 			// Cargo la tabla hash con los valores del formulario para insertar en la BBDD
@@ -499,8 +502,7 @@ public class DatosRegistralesAction extends MasterAction{
 	
 	protected String buscarNotario(ActionMapping mapping, MasterForm formulario,
 			HttpServletRequest request, HttpServletResponse response)
-			throws ClsExceptions, SIGAException {
-		
+			throws ClsExceptions, SIGAException {		
 		
 		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 		
@@ -600,7 +602,7 @@ public class DatosRegistralesAction extends MasterAction{
 		String ape1 = request.getParameter("apellido1").trim();
 		String ape2 = request.getParameter("apellido2");
 		List listaParametros = new ArrayList();
-	
+	 
 		if(nif!=null && !nif.equals("")){
 			CenPersonaAdm perAdm = new CenPersonaAdm(user);
 			CenPersonaBean perBean = new CenPersonaBean();			

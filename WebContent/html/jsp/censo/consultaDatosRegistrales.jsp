@@ -841,9 +841,6 @@
 		function accionGuardar() {
 			sub();
 			if(validaNumeroIdentificacion()){
-
-
-
 				if (<%=SSPP%>=="1" && document.forms[0].resena.value!="" && document.forms[0].fechaConstitucion.value!="" && document.forms[0].objetoSocial.value!="") {
 					if (document.forms[0].tipoIdentificacion.value=="" || document.forms[0].numIdentificacion.value=="" || document.forms[0].nombre.value=="" || document.forms[0].apellido1.value==""){ 
 						alert ("Introduzca los campos obligatorios ");
@@ -886,9 +883,10 @@
 						return false;	
 					}
 				}
+			} else {
+				fin();
+				return false;
 			}
-			fin();
-			return;
 		}
 		
 		function refrescarLocal() {
