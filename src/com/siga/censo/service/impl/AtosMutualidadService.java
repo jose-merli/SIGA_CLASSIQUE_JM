@@ -73,20 +73,33 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		
 		
 	}
+
+	/**
+	 * Actualiza el estado de una solicitud. 
+	 * Se usa tanto para el plan profesional como el seguro gratuito, ya que se basa unicamente en el idSolicitud
+	 * @param mutualidadForm - Requiere tener dentro el mutualidadBean con el idSolicitudAceptada relleno
+	 * @param usrBean - El usuario que hace la solicitud de estado
+	 * @throws Exception
+	 */
 	private void actualizaEstado(MutualidadForm mutualidadForm, UsrBean usrBean)throws Exception{
 		CenSolicitudMutualidadBean solicitudMutualidadBean = mutualidadForm.getMutualidadBean();
-		MutualidadWSClient mutualidadWSClient =  new MutualidadWSClient(usrBean);
-		//RespuestaMutualidad respuestaSolicitud = mutualidadWSClient.getEstadoSolicitud(solicitudMutualidadBean.getIdSolicitudAceptada());
-		//solicitudMutualidadBean.setEstado(respuestaSolicitud.getValorRespuesta());
-		solicitudMutualidadBean.setIdEstado(CenSolicitudMutualidadBean.ESTADO_SOLICITADO);
-		solicitudMutualidadBean.setEstado("Estado OK");
 		
+		// Realizamos la llamada al WS de la mutualidad para obtener el estado de la solicitud
+		MutualidadWSClient mutualidadWSClient =  new MutualidadWSClient(usrBean);
+		RespuestaMutualidad respuestaSolicitud = mutualidadWSClient.getEstadoSolicitud(solicitudMutualidadBean.getIdSolicitudAceptada());
+		
+		// Seteamos el estado que nos haya devuelto la llamada
+		solicitudMutualidadBean.setEstado(respuestaSolicitud.getValorRespuesta());
+		solicitudMutualidadBean.setIdEstado(CenSolicitudMutualidadBean.ESTADO_SOLICITADO);
+		
+		// Actualizamos la solicitud en base de datos
 		CenSolicitudMutualidadAdm solicitudMutualidadAdm = new CenSolicitudMutualidadAdm(usrBean);
 		solicitudMutualidadAdm.actualizaSolicitudAceptada(solicitudMutualidadBean);
+		
+		// Por último actualizamos el formulario
 		mutualidadForm = solicitudMutualidadBean.getMutualidadForm(mutualidadForm);
-		
-		
 	}
+	
 	public void actualizaEstadoSolicitud(MutualidadForm mutualidadForm, UsrBean usrBean)throws Exception{
 		if(mutualidadForm.getIdSolicitudAceptada()!=null && !mutualidadForm.getIdSolicitudAceptada().equals("")){
 			actualizaEstado(mutualidadForm,usrBean);
@@ -206,6 +219,9 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		
 	}
 
+	/**
+	 * 
+	 */
 	public boolean isPosibilidadSolicitudAlta(String numeroIdentificacion,String fechaNacimiento,UsrBean usrBean) throws SIGAException,Exception{
 		MutualidadWSClient mutualidadWSClient =  new MutualidadWSClient(usrBean);
 		RespuestaMutualidad posibilidadSolicitudAlta = mutualidadWSClient.getPosibilidadSolicitudAlta(numeroIdentificacion,fechaNacimiento);
@@ -215,6 +231,7 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		return posibilidadSolicitudAlta.isPosibleAlta();
 		
 	}
+	
 	public MutualidadForm setCobertura(MutualidadForm mutualidadForm, UsrBean usrBean) throws Exception{
 		MutualidadWSClient mutualidadWSClient =  new MutualidadWSClient(usrBean);
 		RespuestaMutualidad cuotaCapitalCobertura =  mutualidadWSClient.getCuotaYCapital(mutualidadForm.getFechaNacimiento(),mutualidadForm.getIdSexo(),mutualidadForm.getIdCobertura());
