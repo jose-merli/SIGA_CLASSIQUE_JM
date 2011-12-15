@@ -2,25 +2,23 @@
 <%@ page contentType="text/html" language="java"%>
 <!-- TAGLIBS -->
 <%@ taglib uri = "libreria_SIGA.tld" 	prefix = "siga"%>
-<%@ taglib uri = "struts-bean.tld"  	prefix = "bean"%>
 <%@ taglib uri = "struts-html.tld" 		prefix = "html"%>
-<%@ taglib uri = "struts-logic.tld" 	prefix = "logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 <html>
 <head>
-<% String app = request.getContextPath();
-  // String msg="messages.wait";
-  String msg="messages.loadingpage";   
-%>
-<title><siga:Idioma key="<%=msg%>"/></title>
-<% if (request.getParameter("msg") != null) {
-        msg=request.getParameter("msg");
-   }%>
-<link rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+<link rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>">
 </head>
+
+
 <body style="cursor:wait" onBlur="window.focus();">
+<c:set var="msg" value="messages.loadingpage" />
+<c:if test="${!empty param.msg && param.msg!='null'}">
+	<c:set var="msg" value="${param.msg}" />
+</c:if>
+
 <table align="center" border="0" height="100%" width="100%">
-<tr><td align="center" class="labelText"><siga:Idioma key="<%=msg%>"/></td></tr>
-<tr><td align="center"><img src="<%=app%>/html/imagenes/loading.gif"></td></tr>
+<tr><td align="center" class="labelText"><siga:Idioma key="${msg}"/></td></tr>
+<tr><td align="center"><img src="<html:rewrite page='/html/imagenes/loading.gif'/>"></td></tr>
 </table>
 </body>
 </html>

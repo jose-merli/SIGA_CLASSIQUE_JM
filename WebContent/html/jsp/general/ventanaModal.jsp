@@ -20,6 +20,8 @@
 	HttpSession ses=request.getSession();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
 	
+	String msg = request.getParameter("msg");
+	
 	String tScroll="no";
 	//String scroll = (String)ses.getAttribute("ScrollModal");
 	String scroll = request.getParameter("scroll");
@@ -68,9 +70,14 @@
 	</head>
 
 	<body class="tablaCentralCampos" onLoad="cargaContenidoModal();">
-
+	<table>
+	<tr>
+		<td class="labelTextValor"><c:out value="Conectando con la Mutua de la Abogacía..." /> </td>
+	</tr>
+</table>
+	
 	<!-- IFRAME GENERAL -->
-	<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
+	<iframe align="center" src="<%=app%>/html/jsp/general/loadingWindow.jsp?msg=<%=msg%>"
 					id="modal"
 					name="modal" 
 					scrolling="<%=tScroll %>"

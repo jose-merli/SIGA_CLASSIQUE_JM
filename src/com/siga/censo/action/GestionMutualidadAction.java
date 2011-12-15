@@ -181,7 +181,7 @@ public class GestionMutualidadAction extends MasterAction {
 			request.setAttribute("parametrosArray", parametros);
 			
 		
-		request.setAttribute("mensaje","messages.updated.success");
+		//request.setAttribute("mensaje","messages.updated.success");
 		request.setAttribute("modal","");
 		 
 		forward = "exitoParametros";

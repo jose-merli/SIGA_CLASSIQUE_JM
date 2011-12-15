@@ -256,26 +256,29 @@ function setLocalizacion(localizacion) {
 //	 ESTE PROCEDIMIENTO ES NECESARIO PARA EL CORRECTO FUNCIONAMIENTO
 //	 DE AQUELLO QUE SE ABRE DENTRO DE UNA VENTANA MODAL.
 
-function ventaModalGeneral(nombreFormulario,tamano){
+function ventaModalGeneral(nombreFormulario,tamano,recursoMsg){
 	var formulario = document.getElementById(nombreFormulario);
+	var msg='';
+	if(recursoMsg)
+		msg = '?msg='+recursoMsg;
 	// cargo el action en un campo que se llama siempre actionModal
 	formulario.actionModal.value=formulario.action;
 	// envio los campos del formulario como parametro con el action incluido en ellos
 	if (tamano=="G") {
-		return showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp",formulario,"dialogHeight:650px;dialogWidth:1000px;help:no;scroll:no;status:no;");
+		return showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp"+msg,formulario,"dialogHeight:650px;dialogWidth:1000px;help:no;scroll:no;status:no;");
 	} else 
 	if (tamano=="M") {
-		return showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp",formulario,"dialogHeight:440px;dialogWidth:700px;help:no;scroll:no;status:no;");
+		return showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp"+msg,formulario,"dialogHeight:440px;dialogWidth:700px;help:no;scroll:no;status:no;");
 	} else if (tamano=="P") {
 	  
-		return showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp",formulario,"dialogHeight:340px;dialogWidth:500px;help:no;scroll:no;status:no;");
+		return showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp"+msg,formulario,"dialogHeight:340px;dialogWidth:500px;help:no;scroll:no;status:no;");
 		
 	}else if (tamano=="0") {
 	  
-		return showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp",formulario,"dialogHide:yes;dialogHeight:120px;dialogWidth:70px;help:no;scroll:no;status:no;dialogLeft:500;dialogTop:450");
+		return showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp"+msg,formulario,"dialogHide:yes;dialogHeight:120px;dialogWidth:70px;help:no;scroll:no;status:no;dialogLeft:500;dialogTop:450");
 		
 	} else {
-		return showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp",formulario,"dialogHeight:590px;dialogWidth:1000px;help:no;scroll:no;status:no;");
+		return showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp"+msg,formulario,"dialogHeight:590px;dialogWidth:1000px;help:no;scroll:no;status:no;");
 	}
 }	
 

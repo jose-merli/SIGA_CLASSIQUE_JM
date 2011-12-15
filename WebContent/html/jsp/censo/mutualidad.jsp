@@ -694,7 +694,7 @@
 	function accionComprobarEstadoMutualidad()
 	{
 		document.MutualidadForm.modo.value = "actualizaEstado";
-		var resultado = ventaModalGeneral(document.MutualidadForm.name,"0");
+		var resultado = ventaModalGeneral(document.MutualidadForm.name,"0",'Esperando respuesta de la mutualidad. Espere por favor...');
 		if(resultado){
 			document.MutualidadForm.idEstado.value = resultado[0];
 			document.MutualidadForm.estado.value = resultado[1];	
@@ -707,7 +707,7 @@
 	function accionComprobarEstadoMutualista()
 	{
 		document.MutualidadForm.modo.value = "actualizaEstadoMutualista";
-		var resultado = ventaModalGeneral(document.MutualidadForm.name,"0");
+		var resultado = ventaModalGeneral(document.MutualidadForm.name,"0",'Esperando respuesta de la mutualidad. Espere por favor...');
 		if(resultado){
 			document.MutualidadForm.estadoMutualista.value = resultado[0];	
 	    	document.getElementById("tdEstadoMutualista").innerText = resultado[0];
