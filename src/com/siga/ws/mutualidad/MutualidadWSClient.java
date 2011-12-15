@@ -80,7 +80,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
             respuesta.setCorrecto(true);
             respuesta.setValorRespuesta(response.getValorRespuesta());
             respuesta.setPDF(response.getPDF());          	
-            if(respuesta.getValorRespuesta().equalsIgnoreCase("1")){
+            if(!respuesta.getValorRespuesta().trim().equalsIgnoreCase("")){
             	respuesta.setPosibleAlta(true);
             }else{
             	respuesta.setPosibleAlta(false);

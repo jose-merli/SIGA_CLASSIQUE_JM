@@ -47,6 +47,7 @@
 	String  estadoSolicitud = (String) request.getAttribute("EstadoSolicitud");
 	String  editar			= (String) request.getAttribute("Editar");
 	String  modoAnterior	= (String) request.getAttribute("ModoAnterior");
+	System.out.println("modoAnterior"+modoAnterior);
 	String  modalidadDocumentacion = (String) request.getAttribute("ModalidadDocumentacion");
 	
 	ArrayList modalidadSel = new ArrayList();
@@ -564,6 +565,10 @@
 	<html:hidden property="idSolicitudAceptadaSeguroUniversal"/>
 	<html:hidden property="idSolicitudAceptadaPlanProfesional"/>
 	<html:hidden property="idSolicitudSeguroUniversal"/>
+	<input type="hidden" id="numeroIdentificacionBBDD" value ="<%=datosPersonales.getNumeroIdentificador()%>" /> 
+	<input type="hidden" id="fechaNacimientoBBDD" value ="<%=datosPersonales.getFechaNacimiento()%>" />
+	
+	
 	
 	
 	
@@ -874,7 +879,7 @@
 			</tr>
 		</table>
 	</siga:ConjCampos>
-	<c:if test="${ModoAnterior=='Editar'||ModoAnterior=='VER' }">
+	<c:if test="${ModoAnterior=='Editar'||ModoAnterior=='VER'||ModoAnterior=='editar' }">
 	<siga:ConjCampos>
 	
 	
@@ -1199,7 +1204,10 @@
 		document.MutualidadForm.tipoIdentificacion.value = document.SolicitudIncorporacionForm.tipoIdentificacion.options[document.SolicitudIncorporacionForm.tipoIdentificacion.selectedIndex].text;
 		document.MutualidadForm.idTipoIdentificacion.value = document.SolicitudIncorporacionForm.tipoIdentificacion.options[document.SolicitudIncorporacionForm.tipoIdentificacion.selectedIndex].value;
 
-		document.MutualidadForm.numeroIdentificacion.value = document.SolicitudIncorporacionForm.NIFCIF.value;
+		//document.MutualidadForm.numeroIdentificacion.value = document.SolicitudIncorporacionForm.NIFCIF.value;
+		document.MutualidadForm.numeroIdentificacion.value = document.getElementById('numeroIdentificacionBBDD').value;
+		 
+	
 		
 		document.MutualidadForm.sexo.value = document.SolicitudIncorporacionForm.sexo.options[document.SolicitudIncorporacionForm.sexo.selectedIndex].text;
 		document.MutualidadForm.idSexo.value = document.SolicitudIncorporacionForm.sexo.options[document.SolicitudIncorporacionForm.sexo.selectedIndex].value;
@@ -1211,7 +1219,10 @@
 		document.MutualidadForm.apellido1.value = document.SolicitudIncorporacionForm.apellido1.value;
 		document.MutualidadForm.apellido2.value = document.SolicitudIncorporacionForm.apellido2.value;
 		document.MutualidadForm.naturalDe.value  = document.SolicitudIncorporacionForm.natural.value;
-		document.MutualidadForm.fechaNacimiento.value  = document.SolicitudIncorporacionForm.fechaNacimiento.value;
+		//document.MutualidadForm.fechaNacimiento.value  = document.SolicitudIncorporacionForm.fechaNacimiento.value;
+		document.MutualidadForm.fechaNacimiento.value  = document.getElementById('fechaNacimientoBBDD').value;
+		
+		
 		document.MutualidadForm.estadoCivil.value  =  document.SolicitudIncorporacionForm.estadoCivil.options[document.SolicitudIncorporacionForm.estadoCivil.selectedIndex].text;
 		document.MutualidadForm.idEstadoCivil.value  =  document.SolicitudIncorporacionForm.estadoCivil.options[document.SolicitudIncorporacionForm.estadoCivil.selectedIndex].value;
 		
@@ -1309,6 +1320,8 @@
 	{
 		document.MutualidadForm.idSolicitudAceptada.value =document.SolicitudIncorporacionForm.idSolicitudAceptadaPlanProfesional.value;
 		document.MutualidadForm.modo.value = "actualizaEstadoMutualista";
+		document.MutualidadForm.numeroIdentificacion.value = document.getElementById('numeroIdentificacionBBDD').value;
+		document.MutualidadForm.fechaNacimiento.value  = document.getElementById('fechaNacimientoBBDD').value;
 		var resultado = ventaModalGeneral(document.MutualidadForm.name,"0",'Esperando respuesta de la mutualidad. Espere por favor...');
 		if(resultado){
 			document.MutualidadForm.estadoMutualista.value = resultado[0];	
