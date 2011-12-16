@@ -190,10 +190,12 @@ public class SolicitudesEEJG {
 		boolean pendiente = false;
 		if (datosInfoAAPP != null) {
 			Administracion[] administracions = datosInfoAAPP.getAdministracion();
-			for (Administracion administracion : administracions) {
-				if (administracion.getFecha_Respuesta() == null || administracion.getFecha_Respuesta().trim().equals("")) {
-					pendiente = true;
-					break;
+			if (administracions != null) {
+				for (Administracion administracion : administracions) {
+					if (administracion.getFecha_Respuesta() == null || administracion.getFecha_Respuesta().trim().equals("")) {
+						pendiente = true;
+						break;
+					}
 				}
 			}
 		}
