@@ -556,11 +556,16 @@ public class ActuacionesDesignasAction extends MasterAction {
 								" and ejgdesigna.numerodesigna(+)=des.numero"+
 								" and deslet."+ ScsDesignasLetradoBean.C_FECHARENUNCIA+" IS NULL";
 
-			designaActual = (Hashtable)((Vector)designaAdm.ejecutaSelect(consultaDesigna)).get(0);
-			UtilidadesHash.set(hashEJG,ScsEJGBean.C_IDINSTITUCION,(String)designaActual.get("IDINSTITUCION"));
-			UtilidadesHash.set(hashEJG,ScsEJGBean.C_NUMERO,(String)designaActual.get("NUMEROEJG"));
-			UtilidadesHash.set(hashEJG,ScsEJGBean.C_ANIO,(String)designaActual.get("ANIOEJG"));
-			UtilidadesHash.set(hashEJG,ScsEJGBean.C_IDTIPOEJG,(String)designaActual.get("IDTIPOEJG"));
+			Vector vDes = ((Vector)designaAdm.ejecutaSelect(consultaDesigna));
+			
+			if(vDes.size() > 0){
+				designaActual = (Hashtable)vDes.get(0);
+				UtilidadesHash.set(hashEJG,ScsEJGBean.C_IDINSTITUCION,(String)designaActual.get("IDINSTITUCION"));
+				UtilidadesHash.set(hashEJG,ScsEJGBean.C_NUMERO,(String)designaActual.get("NUMEROEJG"));
+				UtilidadesHash.set(hashEJG,ScsEJGBean.C_ANIO,(String)designaActual.get("ANIOEJG"));
+				UtilidadesHash.set(hashEJG,ScsEJGBean.C_IDTIPOEJG,(String)designaActual.get("IDTIPOEJG"));
+			}
+
 			Vector vEjgRelacionado=(Vector)ejgAdm.selectByPK(hashEJG);
 			
 		    if ((vEjgRelacionado != null) && (vEjgRelacionado.size() == 1)) {
@@ -679,22 +684,21 @@ public class ActuacionesDesignasAction extends MasterAction {
 			}else{
 				hash.put(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, "");
 			}
-
+			
 			// Obtengo el idJuzgado y la idInstitucion del Juzgado:
 			Long idJuzgado=null;
-			Integer idInstitucionJuzgado;
-			String juzgado = miform.getJuzgado();
-			
+			Integer idInstitucionJuzgado=null;
+			String[] juzgado = miform.getJuzgado().split(",");
 			if (juzgado!=null && !juzgado.equals("")){
-				idJuzgado = new Long(juzgado.substring(0,juzgado.indexOf(",")));
-				idInstitucionJuzgado = new Integer(juzgado.substring(juzgado.indexOf(",")+1));
+				idJuzgado = new Long(juzgado[0]);
+				idInstitucionJuzgado = new Integer(juzgado[1]);
 				hash.put(ScsActuacionDesignaBean.C_IDJUZGADO, idJuzgado);
 				hash.put(ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO, idInstitucionJuzgado);
 			} else {
 				hash.put(ScsActuacionDesignaBean.C_IDJUZGADO, "");
 				hash.put(ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO, "");
 			}
-		
+				
 			
 			// Obtengo el idProcedimiento y la idInstitucion del Procedimiento:
 			Integer idProcedimiento = null, idInstitucionProcedimiento = null;
