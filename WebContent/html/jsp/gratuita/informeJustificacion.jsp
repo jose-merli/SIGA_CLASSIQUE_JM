@@ -58,7 +58,6 @@
 		<html:hidden property="fichaColegial" />
 		<html:hidden property="idInstitucion" />
 		<html:hidden property="anio" />
-		<html:hidden property="actuacionesPendientes" />
 		
 		<html:hidden property="incluirEjgNoFavorable" />
 		<html:hidden property="incluirEjgSinResolucion" />
