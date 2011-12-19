@@ -280,7 +280,6 @@ public class MantenimientoPagoAction extends MasterAction {
 	 */	
 	protected String borrar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		FcsPagosJGAdm pagosJGAdm = new FcsPagosJGAdm(this.getUserBean(request));
-		FcsMovimientosVariosAdm fcsMovimientosVariosAdm = new FcsMovimientosVariosAdm(this.getUserBean(request));
 		FcsCobrosRetencionJudicialAdm cobrosRetencionJudicialAdm = new FcsCobrosRetencionJudicialAdm(this.getUserBean(request));
 		FcsPagoGrupoFactHitoAdm pagoGrupoFactHitoAdm = new FcsPagoGrupoFactHitoAdm(this.getUserBean(request));
 		FcsPagoColegiadoAdm pagoColegiadoAdm = new FcsPagoColegiadoAdm(this.getUserBean(request));
@@ -321,7 +320,11 @@ public class MantenimientoPagoAction extends MasterAction {
 			
 			Vector vAuxCobrosRetencionJudicial = cobrosRetencionJudicialAdm.selectCobroRetencionJudicial(idInstitucion.toString(), idPago.toString());
 			
+			
+			
 			if ((vAuxCobrosRetencionJudicial != null) && (vAuxCobrosRetencionJudicial.size() > 0)) {
+				cobrosRetencionJudicialAdm.deleteCobroRetLEC(idInstitucion.toString(), idPago.toString());
+				
 				cobrosRetencionJudicialAdm.deleteCobroRetencionJudicial(idInstitucion.toString(), idPago.toString());
 			}
 			
@@ -337,6 +340,7 @@ public class MantenimientoPagoAction extends MasterAction {
 			if ((vAuxMovimientosAplicados != null) && (vAuxMovimientosAplicados.size() > 0)) {
 				aplicacionAdm.deleteMovimientoaplicado(idInstitucion.toString(), idPago.toString());
 			}	
+			
 			
 			Vector vAuxPagoColegiado = pagoColegiadoAdm.selectPagoColegiado(idInstitucion.toString(), idPago.toString());
 			

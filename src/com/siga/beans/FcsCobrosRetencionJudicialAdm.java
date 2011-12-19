@@ -590,7 +590,29 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
    		} catch (Exception e) {
    			throw new ClsExceptions (e, "Excepcion en FcsCobrosRetencionJudicialAdm.deleteCobroRetencionJudicial(). Consulta SQL:" + consulta);
    		}
-   	} //deleteCobroRetencionJudicial ()	
+   	} //deleteCobroRetencionJudicial ()
+   	public void deleteCobroRetLEC (String idinstitucion,
+			  String idPago)
+ 		throws ClsExceptions {
+ 		
+ 		StringBuffer consulta = new StringBuffer("");
+ 		try {
+ 			consulta.append(" ");
+ 			consulta.append(" Delete From Fcs_Retleccobros");
+ 			consulta.append(" Where (Idinstitucion, Idretencion, Idpersona, Idcobro) In");
+ 			consulta.append(" (Select Idinstitucion, Idretencion, Idpersona, Idcobro");
+ 			consulta.append(" From Fcs_Cobros_Retencionjudicial");
+ 			consulta.append(" Where Idinstitucion = ");
+ 			consulta.append(idinstitucion);
+ 			consulta.append(" And Idpagosjg =");
+ 			consulta.append(idPago);
+ 			consulta.append(" )");
+
+ 			ClsMngBBDD.executeUpdate (consulta.toString());
+ 		} catch (Exception e) {
+ 			throw new ClsExceptions (e, "Excepcion en FcsCobrosRetencionJudicialAdm.deleteCobroRetLEC(). Consulta SQL:" + consulta);
+ 		}
+ 	} //deleteCobroRetencionJudicial ()	
 	
 }
 
