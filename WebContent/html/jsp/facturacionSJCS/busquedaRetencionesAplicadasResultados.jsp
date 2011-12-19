@@ -125,7 +125,16 @@
 					</c:choose>
 					
 				</td>
-				<td><bean:write name="retencionAplicada" property="abonoRelacionado" /></td>
+				<td>
+				<c:choose>
+				<c:when test="${retencionAplicada.abonoRelacionado!=''}">
+					<bean:write name="retencionAplicada" property="abonoRelacionado" /></td>
+				</c:when>
+				<c:otherwise>
+					&nbsp;
+				</c:otherwise>
+				</c:choose>
+				
 				<td><bean:write name="retencionAplicada" property="pagoRelacionado" /></td>
 				<td name='celda' align="left">
 					<c:if test="${retencionAplicada.mes!=''}">
