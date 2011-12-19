@@ -23,7 +23,6 @@ import org.apache.axis.SimpleTargetedChain;
 import org.apache.axis.configuration.SimpleProvider;
 import org.apache.axis.transport.http.HTTPSender;
 import org.apache.axis.transport.http.HTTPTransport;
-import org.apache.axis.types.PositiveInteger;
 import org.apache.xmlbeans.XmlOptions;
 
 import com.atos.utils.ClsConstants;
@@ -40,12 +39,14 @@ import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaBean;
 import com.siga.ws.SIGAWSClientAbstract;
 import com.siga.ws.SigaWSHelper;
+import com.siga.ws.i2055.xmlbeans.SCalificacion;
 import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument;
 import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes;
 import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.DtArchivos;
 import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.DtIntervinientes;
 import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.DtPretensionesDefender;
 import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.DtSolicitante;
+import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.TurnadoAbogado;
 import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.DtPretensionesDefender.Procedimiento;
 import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.DtSolicitante.DtDirecciones;
 
@@ -70,7 +71,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		
 //		Registrar_SolicitudXML_Solicitud registrar_SolicitudXML_Solicitud = new Registrar_SolicitudXML_Solicitud();
 					
-		ServiceLocator locator = new ServiceLocator(createClientConfig(getUsrBean(), String.valueOf(getIdInstitucion()), "Envío y recepción webservice del colegio " + getIdInstitucion() + " de la remesa " + getIdRemesa()));
+		IntegracionSigaAsignaLocator locator = new IntegracionSigaAsignaLocator(createClientConfig(getUsrBean(), String.valueOf(getIdInstitucion()), "Envío y recepción webservice del colegio " + getIdInstitucion() + " de la remesa " + getIdRemesa()));
 
 		ServiceSoap_BindingStub stub = new ServiceSoap_BindingStub(new java.net.URL(getUrlWS()), locator);
 		
@@ -92,7 +93,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 			tx.begin();
 			//elimino primero las posibles respuestas que ya tenga por si se ha relanzado
 			cajgRespuestaEJGRemesaAdm.eliminaAnterioresErrores(getIdInstitucion(), getIdRemesa());
-			cajgRespuestaEJGRemesaAdm.insertaErrorEJGnoEnviados(getIdInstitucion(), getIdRemesa(), getUsrBean(), "V_WS_2055_EJG");	
+			cajgRespuestaEJGRemesaAdm.insertaErrorEJGnoEnviados(getIdInstitucion(), getIdRemesa(), getUsrBean(), v_ws_2055_ejg);	
 				
 			
 			for (int i = 0; i < listDtExpedientes.size(); i++) {
@@ -273,8 +274,54 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		
 		addDtPersonas(dtExpedientes, getKey(map));
 		addDtArchivos(dtExpedientes, getKey(map));
+		addTurnadoAbogado(dtExpedientes.addNewTurnadoAbogado(), map);
+		addCalificacionRegistro(dtExpedientes.addNewCalificacionRegistro(), map);
 		return sigaAsignaDocument;
 		
+	}
+
+	private void addCalificacionRegistro(SCalificacion calificacionRegistro, Map<String, String> map) throws Exception {
+		String st = map.get(C_CALIFICACION);
+		if (st != null && !st.trim().equals("")) {
+			try {				
+				calificacionRegistro.setCalificacion(com.siga.ws.i2055.xmlbeans.ECalificaciones.Enum.forString(st));
+			} catch (IllegalArgumentException e) {
+				throw new IllegalArgumentException("El código del tipo de dictamen no es correcto.");
+			}
+		}
+		com.siga.ws.i2055.xmlbeans.ArrayOfMotivosRechazo motivoRechazo = calificacionRegistro.addNewMotivoRechazo();
+		
+		st = map.get(C_MR_CODIGO);
+		if (st != null && !st.trim().equals("")) {
+			try {				
+				motivoRechazo.setCodigo(com.siga.ws.i2055.xmlbeans.EMotivosDeNegacion.Enum.forString(st));
+			} catch (IllegalArgumentException e) {
+				throw new IllegalArgumentException("El código del motivo del dictamen no es correcto.");
+			}
+		}
+		
+		motivoRechazo.setDescripcion(map.get(C_MR_DESCRIPCION));
+		motivoRechazo.setParam1(map.get(C_MR_PARAM1));
+		motivoRechazo.setParam2(map.get(C_MR_PARAM2));
+		motivoRechazo.setParam3(map.get(C_MR_PARAM3));
+		
+		st = map.get(C_OBSERVACIONES);
+		if (st != null && !st.trim().equals("")) {
+			try {				
+				calificacionRegistro.setObservaciones(com.siga.ws.i2055.xmlbeans.EObservaciones.Enum.forString(st));
+			} catch (IllegalArgumentException e) {
+				throw new IllegalArgumentException("El campo observaciones del dictamen no es correcto.");
+			}
+		}
+		calificacionRegistro.setFecha(SigaWSHelper.getCalendar(map.get(C_FECHA)));
+		
+	}
+
+
+
+	private void addTurnadoAbogado(TurnadoAbogado turnadoAbogado,	Map<String, String> map) throws Exception {
+		turnadoAbogado.setIdentificacion(map.get(TA_IDENTIFICACION));		
+		turnadoAbogado.setFechaTurnado(SigaWSHelper.getCalendar(map.get(TA_FECHATURNADO)));
 	}
 
 
@@ -365,14 +412,6 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		return in;
 	}
 	
-	private PositiveInteger getPositiveInteger(String st) {
-		PositiveInteger posInt = null;
-		if (st != null && !st.trim().equals("")) {
-			posInt = new PositiveInteger(st);
-		}
-		return posInt;
-	}
-
 	
 	
 	/**
@@ -387,10 +426,9 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		
 		if (list != null && list.size() > 0) {					
 			for (int i = 0; i < list.size(); i++) {
-				Map<String, String> map = list.get(i);
-				DtArchivos dtArchivos = dtExpedientes.addNewDtArchivos();
+				Map<String, String> map = list.get(i);				
 				if (map.get(IDARCHIVO) != null && !map.get(IDARCHIVO).trim().equals("")) {
-					SIGAAsignaDtExpedientesDtArchivos dtArchivo = new SIGAAsignaDtExpedientesDtArchivos();
+					DtArchivos dtArchivo = dtExpedientes.addNewDtArchivos();
 					Integer in = getInteger(map.get(IDARCHIVO));
 					if (in != null) dtArchivo.setIDArchivo(in);
 					String st = map.get(NOMBREARCHIVO);
@@ -608,11 +646,18 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		
 		Boolean b = getBoolean(map.get(PRE_PRECISAABOGADO));
 		if (b != null) dtPretensionesDefender.setPrecisaAbogado(b);
-		Integer in = getInteger(map.get(PRE_IDTIPOPROCEDIMIENTO));
-		if (in != null) dtPretensionesDefender.setIDTipoProcedimiento(in);
-		String st = map.get(PRE_OTROSASPECTOS);
+		String st = map.get(PRE_CODIGOTIPOPROCEDIMIENTO);
+		if (st != null && !st.trim().equals("")) {
+			try {				
+				dtPretensionesDefender.setCodigoTipoProcedimiento(com.siga.ws.i2055.xmlbeans.ClaseProcedimiento.Enum.forString(st));
+			} catch (IllegalArgumentException e) {
+				throw new IllegalArgumentException("El código de procedimiento debe pertenecer al Test de Compatibilidad del CGPJ.");
+			}
+		}
+		
+		st = map.get(PRE_OTROSASPECTOS);
 		if (st != null) dtPretensionesDefender.setOtrosAspectos(st);
-		in = getInteger(map.get(PRE_IDPARTIDOJUDICIAL));
+		Integer in = getInteger(map.get(PRE_IDPARTIDOJUDICIAL));
 		if (in != null) dtPretensionesDefender.setIDPartidoJudicial(in);
 		in = getInteger(map.get(PRE_IDSITUACIONPROCESO));
 		if (in != null) dtPretensionesDefender.setIDSituacionProceso(in);
@@ -625,15 +670,17 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 			procedimiento.setAnoProcedimiento(bi);			
 		}		
 		
-		in = getInteger(map.get(PRE_IDORGANOJUDICIAL));
-		if (in != null) dtPretensionesDefender.setIDOrganoJudicial(in);
+		st = map.get(PRE_CODUNIDADFUNCIONAL);
+		if (st != null) dtPretensionesDefender.setCodUnidadFuncional(st);
+		in = getInteger(map.get(PRE_IDORDENJURISDICCIONAL));
+		if (in != null) dtPretensionesDefender.setIDOrdenJurisdiccional(in);				
 		b = getBoolean(map.get(PRE_PRECISAPROCURADOR));
 		if (b != null) dtPretensionesDefender.setPrecisaProcurador(b);
 		in = getInteger(map.get(PRE_IDLISTATURNADOABOGADOS));
 		if (in != null) dtPretensionesDefender.setIDListaTurnadoAbogados(in);
-		PositiveInteger posInt = getPositiveInteger(map.get(PRE_IDTARIFAABOGADOS));
+		BigInteger posInt = getBigInteger(map.get(PRE_IDTARIFAABOGADOS));
 		if (posInt != null) dtPretensionesDefender.setIDTarifaAbogados(posInt);
-		posInt = getPositiveInteger(map.get(PRE_IDTARIFAPROCURADORES));
+		posInt = getBigInteger(map.get(PRE_IDTARIFAPROCURADORES));
 		if (posInt != null) dtPretensionesDefender.setIDTarifaProcuradores(posInt);
 		BigDecimal bd = getBigDecimal(map.get(PRE_PORCENTAJETARIFAABOGADO));
 		if (bd != null) dtPretensionesDefender.setPorcentajeTarifaAbogado(bd);
@@ -646,6 +693,5 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		b = getBoolean(map.get(PRE_SAM));
 		if (b != null) dtPretensionesDefender.setSAM(b);		
 	}
-
 
 }

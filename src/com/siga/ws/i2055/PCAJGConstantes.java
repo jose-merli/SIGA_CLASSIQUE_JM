@@ -12,6 +12,8 @@ public interface PCAJGConstantes {
 
      /***** CAMPOS DE LA VISTA v_ws_2055_archivo ****/
 
+	public final String v_ws_2055_archivo = "v_ws_2055_archivo";
+
 	public final String IDREMESA = "IDREMESA";
 	public final String IDINSTITUCION = "IDINSTITUCION";
 	public final String IDTIPOEJG = "IDTIPOEJG";
@@ -24,6 +26,8 @@ public interface PCAJGConstantes {
 
 
      /***** CAMPOS DE LA VISTA v_ws_2055_ejg ****/
+
+	public final String v_ws_2055_ejg = "v_ws_2055_ejg";
 
 	public final String IDEJGREMESA = "IDEJGREMESA";
 	public final String NUMEJG = "NUMEJG";
@@ -38,13 +42,14 @@ public interface PCAJGConstantes {
 	public final String IDUSUARIOREGISTRO = "IDUSUARIOREGISTRO";
 	public final String IDORGANISMOREGISTRA = "IDORGANISMOREGISTRA";
 	public final String PRE_PRECISAABOGADO = "PRE_PRECISAABOGADO";
-	public final String PRE_IDTIPOPROCEDIMIENTO = "PRE_IDTIPOPROCEDIMIENTO";
+	public final String PRE_CODIGOTIPOPROCEDIMIENTO = "PRE_CODIGOTIPOPROCEDIMIENTO";
 	public final String PRE_OTROSASPECTOS = "PRE_OTROSASPECTOS";
 	public final String PRE_IDPARTIDOJUDICIAL = "PRE_IDPARTIDOJUDICIAL";
 	public final String PRE_IDSITUACIONPROCESO = "PRE_IDSITUACIONPROCESO";
 	public final String PRE_NUMEROPROCEDIMIENTO = "PRE_NUMEROPROCEDIMIENTO";
 	public final String PRE_ANOPROCEDIMIENTO = "PRE_ANOPROCEDIMIENTO";
-	public final String PRE_IDORGANOJUDICIAL = "PRE_IDORGANOJUDICIAL";
+	public final String PRE_CODUNIDADFUNCIONAL = "PRE_CODUNIDADFUNCIONAL";
+	public final String PRE_IDORDENJURISDICCIONAL = "PRE_IDORDENJURISDICCIONAL";
 	public final String PRE_PRECISAPROCURADOR = "PRE_PRECISAPROCURADOR";
 	public final String PRE_IDLISTATURNADOABOGADOS = "PRE_IDLISTATURNADOABOGADOS";
 	public final String PRE_IDTARIFAABOGADOS = "PRE_IDTARIFAABOGADOS";
@@ -54,9 +59,21 @@ public interface PCAJGConstantes {
 	public final String PRE_IDTIPOFACTURACION = "PRE_IDTIPOFACTURACION";
 	public final String PRE_PRETENSIONDEFENDER = "PRE_PRETENSIONDEFENDER";
 	public final String PRE_SAM = "PRE_SAM";
+	public final String TA_IDENTIFICACION = "TA_IDENTIFICACION";
+	public final String TA_FECHATURNADO = "TA_FECHATURNADO";
+	public final String C_CALIFICACION = "C_CALIFICACION";
+	public final String C_MR_CODIGO = "C_MR_CODIGO";
+	public final String C_MR_DESCRIPCION = "C_MR_DESCRIPCION";
+	public final String C_MR_PARAM1 = "C_MR_PARAM1";
+	public final String C_MR_PARAM2 = "C_MR_PARAM2";
+	public final String C_MR_PARAM3 = "C_MR_PARAM3";
+	public final String C_OBSERVACIONES = "C_OBSERVACIONES";
+	public final String C_FECHA = "C_FECHA";
 
 
      /***** CAMPOS DE LA VISTA v_ws_2055_persona ****/
+
+	public final String v_ws_2055_persona = "v_ws_2055_persona";
 
 	public final String IDPERSONA = "IDPERSONA";
 	public final String IDTIPOPERSONA = "IDTIPOPERSONA";
