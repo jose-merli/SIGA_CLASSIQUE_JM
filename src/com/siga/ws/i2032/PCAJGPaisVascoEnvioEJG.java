@@ -7,23 +7,12 @@ import java.util.Map;
 
 import javax.transaction.UserTransaction;
 
-import org.apache.axis.EngineConfiguration;
-import org.apache.axis.Handler;
-import org.apache.axis.SimpleChain;
-import org.apache.axis.SimpleTargetedChain;
-import org.apache.axis.configuration.SimpleProvider;
-import org.apache.axis.transport.http.HTTPSender;
-import org.apache.axis.transport.http.HTTPTransport;
-
 import com.atos.utils.ClsConstants;
-import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AxisObjectSerializerDeserializer;
-import com.siga.Utilidades.LogBDDHandler;
 import com.siga.beans.CajgEJGRemesaAdm;
 import com.siga.beans.CajgRemesaEstadosAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaBean;
-import com.siga.ws.SIGAWSClientAbstract;
 import com.siga.ws.i2032.axis.ejg.EnvioSolicitudesImplPortBindingStub;
 import com.siga.ws.i2032.axis.ejg.EnvioSolicitudesImplServiceLocator;
 import com.siga.ws.i2032.axis.ejg.RemSolicitudesEnt;
