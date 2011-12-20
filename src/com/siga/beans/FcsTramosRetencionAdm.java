@@ -212,7 +212,7 @@ public class FcsTramosRetencionAdm extends MasterBeanAdministrador {
 		
 		
 	}
-	public Double getImporteRetenido(String importe,String anio,String idInstitucion,String numMeses)throws ClsExceptions, SIGAException{
+	public Double getImporteRetenido(String importe,String importeSMI,String idInstitucion,String numMeses)throws ClsExceptions, SIGAException{
 
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;
@@ -228,7 +228,7 @@ public class FcsTramosRetencionAdm extends MasterBeanAdministrador {
 		contador ++;
 		sql.append(contador);
 		sql.append(",:");
-		htCodigos.put(new Integer(contador),anio);
+		htCodigos.put(new Integer(contador),importeSMI);
 		contador ++;
 		sql.append(contador);
 //		sql.append(",:");
