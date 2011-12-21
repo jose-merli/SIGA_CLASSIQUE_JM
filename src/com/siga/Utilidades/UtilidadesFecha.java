@@ -88,12 +88,17 @@ public class UtilidadesFecha {
 		return salida;
 	}
 	/**
-	 * Convierte un string con formato dd/MM/yyyy a calendar
-	 * @param strDate dd/MM/yyyy
+	 * Convierte un string con formato dd/MM/yyyy o yyyy/MM/dd HH:mm:ss a calendar
+	 * @param strDate dd/MM/yyyy o yyyy/MM/dd HH:mm:ss
 	 * @return
 	 */
 	public static Calendar stringToCalendar(String strDate){
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat sdf;
+		if(strDate.length()<=10){
+			sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+		}else{
+			sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+		}
 		Calendar cal = Calendar.getInstance();
 		try {
 			Date date;

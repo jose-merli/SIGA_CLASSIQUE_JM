@@ -46,7 +46,7 @@
 	
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
-	<!-- Escribe el título y localización en la barra de título del frame principal -->
+	<!-- Escribe el tÃ­tulo y localizaciÃ³n en la barra de tÃ­tulo del frame principal -->
 	<siga:Titulo titulo="Alta de Mutalidad de Abogacia" />
 	<!-- FIN: TITULO Y LOCALIZACION -->
 	
@@ -462,15 +462,12 @@
 				<tr>
 				<td colspan="5">
 					<table>
-					
 					<tr>
-						<td width="20%"></td>
 						<td class="labelText" style="vertical-align: right">Cuota Mensual</td>
-						<td class="labelTextValor"><html:text
-								property="cuotaCobertura" styleClass="boxConsulta" /></td>
+						<td class="labelTextValor"><html:text property="cuotaCobertura" styleClass="boxConsulta" style="text-align:right"/>&euro;</td>
+						<td width="10%"></td>
 						<td class="labelText">Capital objetivo estimado a los 65 años</td>
-						<td class="labelTextValor"><html:text
-								property="capitalCobertura" styleClass="boxConsulta" /></td>
+						<td class="labelTextValor"><html:text property="capitalCobertura" styleClass="boxConsulta" style="text-align:right"/>&euro;</td>
 					</tr>
 					</table>
 				</td>
@@ -645,7 +642,7 @@
 
 	function accionGuardar(){
 		
-		
+		sub();
 		
 		document.MutualidadForm.periodicidadPago.value = document.MutualidadForm.idPeriodicidadPago.options[document.MutualidadForm.idPeriodicidadPago.selectedIndex].text;
 		document.MutualidadForm.cobertura.value = document.MutualidadForm.idCobertura.options[document.MutualidadForm.idCobertura.selectedIndex].text;
@@ -659,6 +656,7 @@
 		document.MutualidadForm.poblacion.value = document.MutualidadForm.idPoblacion.options[document.MutualidadForm.idPoblacion.selectedIndex].text;
 		
 		document.MutualidadForm.submit();
+		//var resultado = ventaModalGeneral(document.MutualidadForm.name,"0",'Esperando respuesta de la mutualidad. Espere por favor...');
 		
 	}
 	function cargaCombos() {      

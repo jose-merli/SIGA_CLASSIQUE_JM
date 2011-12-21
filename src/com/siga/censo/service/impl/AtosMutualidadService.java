@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.beans.CenSolicitudIncorporacionBean;
 import com.siga.beans.CenSolicitudMutualidadAdm;
 import com.siga.beans.CenSolicitudMutualidadBean;
@@ -30,26 +31,21 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		CenSolicitudMutualidadBean solicitudMutualidadBean = mutualidadForm.getMutualidadBean();
 		CenSolicitudMutualidadAdm solicitudMutualidadAdm = new CenSolicitudMutualidadAdm(usrBean);
 		solicitudMutualidadBean.setIdEstado(CenSolicitudMutualidadBean.ESTADO_INICIAL);
+		solicitudMutualidadBean.setEstado(CenSolicitudMutualidadBean.ESTADO_PTERESPUESTA);
 		solicitudMutualidadBean.setIdSolicitud(solicitudMutualidadAdm.getNewIdSolicitud());
 		mutualidadForm.setIdSolicitud(solicitudMutualidadBean.getIdSolicitud().toString());
 		solicitudMutualidadBean.setFechaEstado("SYSDATE");
 		solicitudMutualidadBean.setFechaSolicitud("SYSDATE");
 		solicitudMutualidadBean.setIdInstitucion(new Integer(usrBean.getLocation()));
 		solicitudMutualidadAdm.insert(solicitudMutualidadBean);
-//		MutualidadWSClient mutualidadWSClient =  new MutualidadWSClient(usrBean);
-		//altaMutualidad(mutualidadForm,usrBean);
+		RespuestaMutualidad respuestaSolicitud = altaMutualidad(mutualidadForm,usrBean);
 		
-		//solicitudMutualidadBean.setIdSolicitudAceptada(new Long(mutualidadForm.getIdSolicitudAceptada()));
-		solicitudMutualidadBean.setIdSolicitudAceptada(new Long(99999));
+		solicitudMutualidadBean.setIdSolicitudAceptada(new Long(mutualidadForm.getIdSolicitudAceptada()));
 		
-		
-		
-//		RespuestaMutualidad respuestaSolicitud = mutualidadWSClient.getEstadoSolicitud(solicitudMutualidadBean.getIdSolicitudAceptada());
-		//solicitudMutualidadBean.setEstado(respuestaSolicitud.getValorRespuesta());
-		solicitudMutualidadBean.setEstado("Solicitud Formalizada");
+		solicitudMutualidadBean.setEstado(CenSolicitudMutualidadBean.ESTADO_PTERESPUESTA);
 		solicitudMutualidadBean.setIdEstado(CenSolicitudMutualidadBean.ESTADO_SOLICITADO);
 		if(mutualidadForm.getIdTipoSolicitud().equals(CenSolicitudMutualidadBean.TIPOSOLICITUD_PLANPROFESIONAL));
-			solicitudMutualidadBean.setEstadoMutualista("Pte. Estado Mutualista");
+			solicitudMutualidadBean.setEstadoMutualista(CenSolicitudMutualidadBean.ESTADO_PTERESPUESTA);
 		mutualidadForm = solicitudMutualidadBean.getMutualidadForm(mutualidadForm);
 		solicitudMutualidadAdm.actualizaSolicitudAceptada(solicitudMutualidadBean);
 		if(mutualidadForm.getIdTipoSolicitud().equals(CenSolicitudMutualidadBean.TIPOSOLICITUD_PLANPROFESIONAL))
@@ -60,7 +56,7 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		
 		
 	}
-	private void altaMutualidad(MutualidadForm mutualidadForm, UsrBean usrBean) throws Exception{
+	private RespuestaMutualidad altaMutualidad(MutualidadForm mutualidadForm, UsrBean usrBean) throws Exception{
 		MutualidadWSClient mutualidadWSClient =  new MutualidadWSClient(usrBean);
 		RespuestaMutualidad respuestaAlta = null; 
 		if(mutualidadForm.getIdTipoSolicitud().equals(CenSolicitudMutualidadBean.TIPOSOLICITUD_PLANPROFESIONAL))
@@ -70,7 +66,7 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		else 
 			throw new SIGAException("El tipo de solicitud no esta implementado");
 		mutualidadForm.setIdSolicitudAceptada(respuestaAlta.getIdSolicitud().toString());
-		
+		return respuestaAlta;
 		
 	}
 
@@ -116,9 +112,8 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 	public void actualizaEstadoMutualista(MutualidadForm mutualidadForm, UsrBean usrBean)throws Exception{
 		CenSolicitudMutualidadBean solicitudMutualidadBean = mutualidadForm.getMutualidadBean();
 		MutualidadWSClient mutualidadWSClient =  new MutualidadWSClient(usrBean);
-		//RespuestaMutualidad respuestaSolicitud = mutualidadWSClient.getEstadoMutualista(solicitudMutualidadBean.getIdSolicitudAceptada());
-		//solicitudMutualidadBean.setEstadoMutualista(respuestaSolicitud.getValorRespuesta());
-		solicitudMutualidadBean.setEstadoMutualista("Mesualidad conforme");
+		RespuestaMutualidad respuestaSolicitud = mutualidadWSClient.getEstadoMutualista(solicitudMutualidadBean.getNumeroIdentificacion(), solicitudMutualidadBean.getFechaNacimiento());
+		solicitudMutualidadBean.setEstadoMutualista(respuestaSolicitud.getValorRespuesta());
 		CenSolicitudMutualidadAdm solicitudMutualidadAdm = new CenSolicitudMutualidadAdm(usrBean);
 		solicitudMutualidadAdm.actualizaEstadoMutualista(solicitudMutualidadBean);
 		mutualidadForm = solicitudMutualidadBean.getMutualidadForm(mutualidadForm);
@@ -202,6 +197,7 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		datosPersona.put("estadoCivil", mutualidadForm.getIdEstadoCivil());
 		datosPersona.put("fechaNacimiento", mutualidadForm.getFechaNacimiento());
 		datosPersona.put("fechaNacimientoConyuge", mutualidadForm.getFechaNacimientoConyuge());
+		datosPersona.put("asistenciaSanitaria", mutualidadForm.getIdAsistenciaSanitaria());
 		
 		return datosPersona;
 	}
@@ -235,8 +231,8 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 	public MutualidadForm setCobertura(MutualidadForm mutualidadForm, UsrBean usrBean) throws Exception{
 		MutualidadWSClient mutualidadWSClient =  new MutualidadWSClient(usrBean);
 		RespuestaMutualidad cuotaCapitalCobertura =  mutualidadWSClient.getCuotaYCapital(mutualidadForm.getFechaNacimiento(),mutualidadForm.getIdSexo(),mutualidadForm.getIdCobertura());
-		mutualidadForm.setCuotaCobertura(cuotaCapitalCobertura.getCuota().toString());
-		mutualidadForm.setCapitalCobertura(cuotaCapitalCobertura.getCapital().toString());
+		mutualidadForm.setCuotaCobertura(UtilidadesNumero.formato(cuotaCapitalCobertura.getCuota()));
+		mutualidadForm.setCapitalCobertura(UtilidadesNumero.formato(cuotaCapitalCobertura.getCapital()));
 		return mutualidadForm;
 		
 	}

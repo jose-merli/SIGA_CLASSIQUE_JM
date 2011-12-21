@@ -34,7 +34,8 @@ import com.siga.general.SIGAException;
 import com.siga.ws.mutualidad.xmlbeans.ObtenerCuotaYCapObjetivoDocument.ObtenerCuotaYCapObjetivo;
 
 /**
- * @author angelcpe
+ * 
+ * @author josebd
  *
  */
 public class MutualidadWSClient extends MutualidadWSClientAbstract {
@@ -96,6 +97,35 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
         return respuesta;
 
     }
+		
+	
+	public RespuestaMutualidad getEstadoMutualista(String nif, String fechaNacimiento) throws Exception {
+		RespuestaMutualidad respuesta = new RespuestaMutualidad();
+        try{
+            WSHttpBinding_IIntegracion_MetodosStub stub = getStub();
+           
+            Calendar fechaNacimientoCal = Calendar.getInstance();
+            fechaNacimientoCal = UtilidadesFecha.stringToCalendar(fechaNacimiento);
+
+            Integracion_Solicitud_Respuesta response = stub.estadoMutualista(nif, fechaNacimientoCal);
+            respuesta.setCorrecto(true);
+            respuesta.setValorRespuesta(response.getValorRespuesta());
+            respuesta.setPDF(response.getPDF());          	
+            if(respuesta.getValorRespuesta().equalsIgnoreCase("1")){
+            	respuesta.setPosibleAlta(true);
+            }else{
+            	respuesta.setPosibleAlta(false);
+            }
+           
+        } catch (Exception e) {
+            escribeLog("Error en llamada a getPosibilidadSolicitudAlta: " + e.getMessage());
+            e.printStackTrace();
+            respuesta.setCorrecto(false);
+            respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos.");
+            throw new SIGAException("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos");
+        }
+        return respuesta;
+	}
 		
 	/**
 	 * En funcion de los parametros de entrada nos da la cuota y capital para la cobertura elegida
@@ -208,25 +238,26 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 			Integracion_Solicitud			datosSolicitud = null;
 			Integracion_Solicitud_Estados	datosSolicitudEstados = null;
 			Integracion_Beneficiarios		datosBeneficiarios = null;
-			Integracion_Domicilio[]			datosDirecciones = new Integracion_Domicilio[2];
+			Integracion_Domicilio[]			datosDirecciones = new Integracion_Domicilio[1];
 			
-			// Rellenar estos datos con los que lleguen del formulario
-			datosBancarios = rellenarDatosBancarios(ht.get("datosBancarios"));
-			datosPoliza = rellenarDatosPoliza(ht.get("datosPoliza"));
 			datosDireccionDomicilio = rellenarDatosDireccion(ht.get("datosDireccionDomicilio"));
-			datosDireccionDespacho = rellenarDatosDireccion(ht.get("datosDireccionDespacho"));
+			datosDirecciones[0]=datosDireccionDomicilio;
 			datosPersona = rellenarDatosPersona(ht.get("datosPersona"));
-			datosBeneficiarios = rellenarDatosBeneficiarios(ht.get("datosBeneficiarios"));
-			datosSolicitud = rellenarDatosSolicitudEstados(ht.get("datosSolicitudEstados"));
+			datosSolicitud = rellenarDatosSolicitud(ht.get("datosSolicitudEstados"));
+			datosBancarios = new Integracion_DatosBancarios();
+			datosPoliza = new Integracion_DatosPoliza();
+			datosBeneficiarios = new Integracion_Beneficiarios();
+			datosSolicitudEstados = new Integracion_Solicitud_Estados();
 			datosSolicitud.setIdTipoSolicitud(ACCIDENTES_GRATUITO);
 			
 			datosDirecciones[0]=datosDireccionDomicilio;
-			datosDirecciones[1]=datosDireccionDespacho;
 			
 			Integracion_Solicitud_Respuesta response = stub.MGASolicitudPolizaAccuGratuitos(datosBancarios, datosPoliza, datosDirecciones, datosPersona, datosSolicitud, datosSolicitudEstados, datosBeneficiarios);
 			
 			respuesta.setCorrecto(true);
-
+			respuesta.setIdSolicitud(response.getIdSolicitud());
+			respuesta.setPDF(response.getPDF());
+			
 		}catch (Exception e) {
 			escribeLog("Error en llamada al solicitar el alta en el seguro gratuito: " + e.getMessage());
 			respuesta.setCorrecto(false);
@@ -253,21 +284,28 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 			Integracion_Beneficiarios		datosBeneficiarios = null;
 			Integracion_Domicilio[]			datosDirecciones = new Integracion_Domicilio[2];
 			
-			datosDirecciones[0]=datosDireccionDomicilio;
-			datosDirecciones[1]=datosDireccionDespacho;
 
 			datosBancarios = rellenarDatosBancarios(ht.get("datosBancarios"));
 			datosPoliza = rellenarDatosPoliza(ht.get("datosPoliza"));
 			datosDireccionDomicilio = rellenarDatosDireccion(ht.get("datosDireccionDomicilio"));
+			datosDireccionDomicilio.setTipoDomicilio(1);
+			datosDireccionDomicilio.setDireccionContacto(1);
 			datosDireccionDespacho = rellenarDatosDireccion(ht.get("datosDireccionDespacho"));
+			datosDireccionDespacho.setTipoDomicilio(2);
+			datosDireccionDespacho.setDireccionContacto(2);
+			datosDirecciones[0]=datosDireccionDomicilio;
+			datosDirecciones[1]=datosDireccionDespacho;
 			datosPersona = rellenarDatosPersona(ht.get("datosPersona"));
 			datosBeneficiarios = rellenarDatosBeneficiarios(ht.get("datosBeneficiarios"));
-			datosSolicitud = rellenarDatosSolicitudEstados(ht.get("datosSolicitudEstados"));
+			datosSolicitud = rellenarDatosSolicitud(ht.get("datosSolicitudEstados"));
+			datosSolicitudEstados = rellenarDatosSolicitudEstados(ht.get("datosSolicitudEstados"));
 			datosSolicitud.setIdTipoSolicitud(PLAN_PROFESIONAL);
 			
 			Integracion_Solicitud_Respuesta response = stub.MGASolicitudPolizaProfesional(datosBancarios, datosPoliza, datosDirecciones, datosPersona, datosSolicitud, datosSolicitudEstados, datosBeneficiarios);
 			
 			respuesta.setCorrecto(true);
+			respuesta.setIdSolicitud(response.getIdSolicitud());
+			respuesta.setPDF(response.getPDF());
 
 		}catch (Exception e) {
 			escribeLog("Error en llamada al solicitar alta en el plan profesional: " + e.getMessage());
@@ -292,11 +330,10 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		return db;
 	}
 
-	private Integracion_Solicitud rellenarDatosSolicitudEstados(Hashtable<String, String> ht) {
+	private Integracion_Solicitud rellenarDatosSolicitud(Hashtable<String, String> ht) {
 		Integracion_Solicitud ds = new Integracion_Solicitud();
 		
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(new Date());
 		ds.setFecha(cal);
 		ds.setValorEntrada(ht.get("numeroIdentificacion"));
 		ds.setIdTipoIdentificador(TIPO_IDENT_NIF);
@@ -305,6 +342,11 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		return ds;
 	}
 
+	private Integracion_Solicitud_Estados rellenarDatosSolicitudEstados(Hashtable<String, String> ht) {
+		Integracion_Solicitud_Estados ds = new Integracion_Solicitud_Estados();
+		return ds;
+	}
+		
 	private Integracion_Persona rellenarDatosPersona(Hashtable<String, String> ht) {
 		Integracion_Persona dp = new Integracion_Persona();
 		
@@ -317,31 +359,35 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		if(ht.get("idSexo")!=null && !ht.get("idSexo").equalsIgnoreCase("H"))sexoInt=2;
 		dp.setSexo(sexoInt);
 
-		dp.setNumHijos(Integer.parseInt(ht.get("numHijos")));
+		if(ht.get("numHijos")!=null && !ht.get("numHijos").equalsIgnoreCase("")){
+			dp.setNumHijos(Integer.parseInt(ht.get("numHijos")));
+		}else{
+			dp.setNumHijos(0);
+		}
 		// TODO // jbd // Recorrer las edades para meterlas en el los datos personales
 //		dp.setEdadesHijos(ht.get("edadesHijos[]")));
 		
 		dp.setProfesion("Abogado"); // Ponemos fijo Abogado porque nadie mas lo va a usar
 		
 //		dp.setNumColegiado(ht.get("numColegiado")); // No se puede pasar si aun no es colegiado
-		dp.setColegio(ht.get("colegio"));
+		dp.setColegio("");
 		
 		dp.setAsistenciaSanitaria(Integer.parseInt(ht.get("asistenciaSanitaria")));
 		
 		dp.setEjerciente(parseaEjerciente(ht.get("ejerciente")));
 		dp.setEstadoCivil(parseaEstadoCivil(ht.get("estadoCivil")));
 		
-//		dp.setIdSolicitud(Integer.parseInt(ht.get("idSolicitud"))); // Esto se supone que lo da el WS
-//		dp.setIdMutualista(Integer.parseInt(ht.get("idMutualista")));
+		if(ht.get("fechaNacimiento")!=null && !ht.get("fechaNacimiento").equalsIgnoreCase("")){
+			Calendar fechaNacimientoCal = Calendar.getInstance();
+			fechaNacimientoCal.setTime(UtilidadesFecha.stringToCalendar(ht.get("fechaNacimiento")).getTime());
+			dp.setFNacimiento(fechaNacimientoCal);
+		}
 		
-		Calendar fechaNacimientoCal = Calendar.getInstance();
-		fechaNacimientoCal = UtilidadesFecha.stringToCalendar(ht.get("fechaNacimiento"));
-		dp.setFNacimiento(fechaNacimientoCal);
-		
-		Calendar fechaNacimientoConyugeCal = Calendar.getInstance();
-		fechaNacimientoConyugeCal = UtilidadesFecha.stringToCalendar(ht.get("fechaNacimientoConyuge"));
-		dp.setFNacimientoConyuge(fechaNacimientoConyugeCal);
-		
+		if(ht.get("fechaNacimientoConyuge")!=null && !ht.get("fechaNacimientoConyuge").equalsIgnoreCase("")){
+			Calendar fechaNacimientoConyugeCal = Calendar.getInstance();
+			fechaNacimientoConyugeCal.setTime(UtilidadesFecha.stringToCalendar(ht.get("fechaNacimientoConyuge")).getTime());
+			dp.setFNacimientoConyuge(fechaNacimientoConyugeCal);
+		}
 		return dp;
 	}
 
@@ -349,8 +395,6 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 	private Integracion_DatosPoliza rellenarDatosPoliza(Hashtable<String, String> ht) {
 		Integracion_DatosPoliza dp = new Integracion_DatosPoliza();
 		
-		// dp.setFEfecto(FEfecto)
-		// dp.setIdMutualista(idMutualista)
 		dp.setFormaPago(Integer.parseInt( ht.get("idPeriodicidadPago").toString())); 
 		dp.setOpcionesCobertura(Integer.parseInt(ht.get("idCobertura").toString()));
 		dp.setTextoOtros(ht.get("otrosBeneficiarios"));
@@ -370,16 +414,9 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		dd.setPais(ht.get("pais"));
 		dd.setPoblacion(ht.get("poblacion"));
 		dd.setProvincia(ht.get("provincia"));
-		
-//		dd.setIdDireccion(Integer.parseInt( ht.get("idDireccion")));
-//		dd.setIdMutualista(Integer.parseInt( ht.get("idMutualista")));
-
-//		dd.setTipoDireccion(Integer.parseInt( ht.get("tipoDireccion")));
-//		dd.setTipoDomicilio(Integer.parseInt( ht.get("tipoDomicilio")));
-//		dd.setDireccionContacto(Integer.parseInt( ht.get("direccionContacto")));
-		
+			
 		// Estos valores no aplican porque en SIGA no se usan
-		dd.setTipoVia(ht.get(""));
+		dd.setTipoVia("");
 		dd.setBloque(ht.get(""));
 		dd.setEsc(ht.get(""));
 		dd.setLetra(ht.get(""));
@@ -478,7 +515,10 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 	 */
 	private Integer parseaEjerciente(String ejerciente) {
 		int ejercienteWS = 0;
-		int ejercienteSIGA = Integer.parseInt(ejerciente);
+		int ejercienteSIGA = 0;
+		if(!ejerciente.equalsIgnoreCase("")){
+			ejercienteSIGA = Integer.parseInt(ejerciente);
+		}
 		
 		switch (ejercienteSIGA){
 		case 10:	ejercienteWS = 1; break; // Reincorporación Ejerciente
@@ -511,51 +551,5 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		}
 		return eCivilWS;
 	}
-	
-	
-	/** ***********************
-	 * Metodos de conversion no utilizados
-	 * ************************
-	
-	private boolean isNull(String st) {
-		return st == null || st.trim().equals("");
-	}
-	
-	private BigInteger getBigInteger(String st) {
-		BigInteger bigInteger = null;
-		if (st != null && !st.trim().equals("")) {
-			bigInteger = new BigInteger(st);
-		}
-		return bigInteger;
-	}
-	
-	private Integer getInteger(String st) {		
-		Integer in = null;
-		if (st != null && !st.trim().equals("")) {
-			in = Integer.valueOf(st);
-		}
-		return in;
-	}
-	
-	private PositiveInteger getPositiveInteger(String st) {
-		PositiveInteger posInt = null;
-		if (st != null && !st.trim().equals("")) {
-			posInt = new PositiveInteger(st);
-		}
-		return posInt;
-	}
-	
-	private Boolean getBoolean(String st) {
-		Boolean b = null;
-		if (st != null){
-			if (st.trim().equals("1")) {
-				b = true;
-			} else {
-				b = false;
-			}			
-		}
-		return b;
-	}
-	 */
 
 }
