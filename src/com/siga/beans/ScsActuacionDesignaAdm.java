@@ -61,7 +61,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 							ScsActuacionDesignaBean.C_IDACREDITACION,				ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO,
 							ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO,			ScsActuacionDesignaBean.C_IDPRETENSION,
 		    				ScsActuacionDesignaBean.C_TALONARIO,					ScsActuacionDesignaBean.C_TALON,
-		    				ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO};
+		    				ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO,			ScsActuacionDesignaBean.C_NIG};
 		return campos;
 	}
 	/** Funcion getClavesBean ()
@@ -115,6 +115,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		    bean.setTalonario(UtilidadesHash.getString(hash, ScsActuacionDesignaBean.C_TALONARIO));
 		    bean.setTalon(UtilidadesHash.getString(hash, ScsActuacionDesignaBean.C_TALON));
 		    bean.setNumeroProcedimiento(UtilidadesHash.getString(hash, ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO));
+		    bean.setNig(UtilidadesHash.getString(hash, ScsActuacionDesignaBean.C_NIG));
 		}
 		catch(Exception e){
 			bean = null;
@@ -166,6 +167,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_TALONARIO,b.getTalonario());
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_TALON,b.getTalon());
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO,b.getNumeroProcedimiento());
+			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_NIG,b.getNig());
 		}
 		catch (Exception e){
 			hash = null;
@@ -552,6 +554,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 									" act."+ScsActuacionDesignaBean.C_TALONARIO+
 									" ,act."+ScsActuacionDesignaBean.C_TALON+		
 									" ,act."+ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO+
+									" ,act."+ScsActuacionDesignaBean.C_NIG+
 									",(select "+FcsFacturacionJGBean.C_NOMBRE+"||' ('||TO_CHAR("+FcsFacturacionJGBean.C_FECHADESDE+",'DD/MM/YYYY')||'-'||TO_CHAR("+FcsFacturacionJGBean.C_FECHAHASTA+",'DD/MM/YYYY')||')'"+
 									" from "+FcsFacturacionJGBean.T_NOMBRETABLA+
 								    " where "+FcsFacturacionJGBean.C_IDINSTITUCION+" = "+entrada.get("IDINSTITUCION")+
@@ -779,10 +782,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 				}
 				tmAcreditaciones.put(designa.getIdProcedimiento(), acreditacionesPendientesList);
 			}
-		}
-		
-		
-		
+		}		
 	}
 
 	

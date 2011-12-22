@@ -149,6 +149,11 @@
 
 	String numeroDiligenciaAsi    = (String) hash.get(ScsAsistenciasBean.C_NUMERODILIGENCIA);
 	String numeroProcedimientoAsi = (String) hash.get(ScsAsistenciasBean.C_NUMEROPROCEDIMIENTO);
+	String nig = "";
+	
+	if(hash.get(ScsAsistenciasBean.C_NIG)!=null){
+		nig = (String) hash.get(ScsAsistenciasBean.C_NIG);
+	}
 	
 	// Datos del Juzgado seleccionado:
 	String juzgadoAsi            = (String) hash.get(ScsAsistenciasBean.C_JUZGADO);
@@ -301,61 +306,105 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 <tr>
 <td valign="top">	
 	<siga:ConjCampos leyenda="gratuita.mantAsistencias.literal.titulo">
-	<table width="100%" border="0" style="table-layout:fixed">
-		<tr>
-		    <td class="labelText" width="12%">	
-				<siga:Idioma key='gratuita.mantAsistencias.literal.anio'/> / <siga:Idioma key='gratuita.mantAsistencias.literal.numero'/>
-			</td>
-			<td class="labelTextValor" width="17%">	
-				<%=ANIO%> / <%=NUMERO%>
-			</td>
-			<td class="labelText" style="width:70px">	
-				<siga:Idioma key='gratuita.mantAsistencias.literal.turno'/>
-			</td>
-			<td class="labelTextValor"  style="width:200px">	
-				<%=NOMBRETURNO%>
-			</td>
-			<td class="labelText"  style="width:70px">	
-				<siga:Idioma key='gratuita.mantAsistencias.literal.guardia'/>
-			</td>
-			<td class="labelTextValor"  style="width:200px">	
-				<%=GUARDIA%>
-			</td>
+		<table width="100%" border="0" style="table-layout:fixed">
+			<tr>
+			    <td class="labelText" width="12%">	
+					<siga:Idioma key='gratuita.mantAsistencias.literal.anio'/> / <siga:Idioma key='gratuita.mantAsistencias.literal.numero'/>
+				</td>
+				<td class="labelTextValor" width="17%">	
+					<%=ANIO%> / <%=NUMERO%>
+				</td>
+				<td class="labelText" style="width:70px">	
+					<siga:Idioma key='gratuita.mantAsistencias.literal.turno'/>
+				</td>
+				<td class="labelTextValor"  style="width:200px">	
+					<%=NOMBRETURNO%>
+				</td>
+				<td class="labelText"  style="width:70px">	
+					<siga:Idioma key='gratuita.mantAsistencias.literal.guardia'/>
+				</td>
+				<td class="labelTextValor"  style="width:200px">	
+					<%=GUARDIA%>
+				</td>
+				
+			</tr>
+		</table>
+		<table width="100%" border="0" style="table-layout:fixed">
+			<tr style="display:none">
+				<td class="labelText" width="20%">
+					<siga:Idioma key='gratuita.mantAsistencias.literal.tipo'/>
+				</td>			
+				
+				<td class="labelTextValor" width="80%">	
+				<% if(modo.equals("ver")){%>
+					<%=TIPOASISTENCIASELDESC%>
+				<%}else{%>
+					<siga:ComboBD ancho="600" nombre="idTipoAsistencia" tipo="scstipoasistencia" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorioSinTextoSeleccionar="true"  elementoSel="<%=TIPOASISTENCIASEL%>"/>
+				<%}%>
+				</td>	
+			</tr>
+	
+			<tr>
+				
 			
-		</tr>
-	</table>
-	<table width="100%" border="0" style="table-layout:fixed">
-		<tr style="display:none">
-			<td class="labelText" width="20%">
-				<siga:Idioma key='gratuita.mantAsistencias.literal.tipo'/>
-			</td>			
-			
-			<td class="labelTextValor" width="80%">	
-			<% if(modo.equals("ver")){%>
-				<%=TIPOASISTENCIASELDESC%>
-			<%}else{%>
-				<siga:ComboBD ancho="600" nombre="idTipoAsistencia" tipo="scstipoasistencia" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorioSinTextoSeleccionar="true"  elementoSel="<%=TIPOASISTENCIASEL%>"/>
-			<%}%>
-			</td>	
-		</tr>
-
-		<tr>
-			
-		
-			<td class="labelText" width="20%">
-				<siga:Idioma key='gratuita.mantAsistencias.literal.tasiscolegio'/>&nbsp;(*)
-			</td>
-			
-			<td class="labelTextValor" width="80%">	
-			<% if((modo.equals("ver"))||(!idfacturacion.equals(""))){%>
-				<siga:ComboBD  readonly="true" ancho="700" nombre="idTipoAsistenciaColegio" tipo="scstipoasistenciacolegio" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorioSinTextoSeleccionar="true" obligatorio="false" elementoSel="<%=TIPOASISTENCIACOLEGIOSEL%>"/>
-			<%}else{%>
-				<siga:ComboBD  ancho="700" nombre="idTipoAsistenciaColegio" tipo="scstipoasistenciacolegio" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorioSinTextoSeleccionar="true" obligatorio="false" elementoSel="<%=TIPOASISTENCIACOLEGIOSEL%>" />
-			<%}%>
-			</td>	
-			
-		</tr>
-	</table>
+				<td class="labelText" width="20%">
+					<siga:Idioma key='gratuita.mantAsistencias.literal.tasiscolegio'/>&nbsp;(*)
+				</td>
+				
+				<td class="labelTextValor" width="80%">	
+				<% if((modo.equals("ver"))||(!idfacturacion.equals(""))){%>
+					<siga:ComboBD  readonly="true" ancho="700" nombre="idTipoAsistenciaColegio" tipo="scstipoasistenciacolegio" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorioSinTextoSeleccionar="true" obligatorio="false" elementoSel="<%=TIPOASISTENCIACOLEGIOSEL%>"/>
+				<%}else{%>
+					<siga:ComboBD  ancho="700" nombre="idTipoAsistenciaColegio" tipo="scstipoasistenciacolegio" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorioSinTextoSeleccionar="true" obligatorio="false" elementoSel="<%=TIPOASISTENCIACOLEGIOSEL%>" />
+				<%}%>
+				</td>	
+				
+			</tr>
+		</table>
+		<table width="100%" border="0" style="table-layout:fixed">
+			<tr>
+				<td class="labelText" >	
+					<siga:Idioma key='gratuita.busquedaAsistencias.literal.fechaAsistencia'/>
+				</td>
+				<td class="labelTextValor">	
+					<%=FECHAHORA%>
+				</td>
+	
+				<td class="labelText" >	
+					<siga:Idioma key='gratuita.mantAsistencias.literal.fcierre'/>
+				</td>
+				<td class="labelTextValor" >	
+					<% if(modo.equals("editar")){%>
+						<html:text name="AsistenciasForm" property="fechaCierre" size="8" maxlength="10" styleClass="box" value="<%=FECHACIERRE%>" readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaCierre);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+					<%}else{%>
+						<%=FECHACIERRE%>
+					<%}%>
+				</td>
+				
+				<td class="labelText"  >
+					<siga:Idioma key="gratuita.mantAsistencias.literal.estado"/>
+				</td>
+				
+				
+					<%if(usr.isLetrado()){%>
+						<td class="labelText">
+						<siga:ComboBD nombre="estadoAsintecia" tipo="cmbEstadosAsistencia" obligatorio="false" accion="" elementoSel="<%=estadoSel%>" clase="boxConsulta" readonly="true" obligatorioSinTextoSeleccionar="si"/>
+							<% 	}else{%>
+							<td class="labelTextValor">
+							<siga:ComboBD nombre="estadoAsintecia" tipo="cmbEstadosAsistencia" obligatorio="false" accion="" elementoSel="<%=estadoSel%>" clase="<%=estilo%>" readonly="<%=readOnly%>" obligatorioSinTextoSeleccionar="si"/>									
+						<% }%>
+					
+				</td>
+				<td class="labelText" >
+					<siga:Idioma key="gratuita.mantAsistencias.literal.fechaEstado"/>
+				</td>
+				<td class="labelTextValor" >
+					<html:textarea name="AsistenciasForm" property="fechaEstadoAsistencia" styleClass="boxConsulta" value="<%=fechaEstado%>" readOnly="true"></html:textarea>
+				</td>
+				
+			</tr>
+		</table>
+	</siga:ConjCampos>
 	<table width="100%" border="0" style="table-layout:fixed">
 		<tr>
 			<td width="50%">	
@@ -440,21 +489,32 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 
 		   <table width="100%">
 		   	<tr>
-		   	<td class="labelText" style="vertical-align:text-top;width:200" id="tdNumeroProcedimiento" ><siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/>(*)
-		   	</td>
-		   	<td><input name="numeroProcedimiento" maxLength="<%=maxLenghtProc%>" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>"/>
-			</td>
-			<% if(!modo.equals("ver")){%>	
-			<td class="labelText" style="vertical-align:text-top;text-align: right">	
-			   <siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext"/>
-			   &nbsp;
-			   <input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();"/>
-			<%}%>
-			<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="420" obligatorio="false" parametro="<%=parametroJuzgado%>" elementoSel="<%=juzgadoSel%>" clase="<%=estilo%>" readonly="<%=readOnly%>" accion="actualizarTdNumeroProcedimiento()"/>
-			</td>   
-				
-				</tr>
-				</table>
+			   	<td class="labelText" style="vertical-align:text-top;width:200" id="tdNumeroProcedimiento" ><siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/>(*)
+			   	</td>
+			   	<td><input name="numeroProcedimiento" maxLength="<%=maxLenghtProc%>" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>"/>
+				</td>
+				<% if(!modo.equals("ver")){%>	
+				<td class="labelText" style="vertical-align:text-top;text-align: right">	
+				   <siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext"/>
+				   &nbsp;
+				   <input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();"/>
+				<%}%>
+				<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="420" obligatorio="false" parametro="<%=parametroJuzgado%>" elementoSel="<%=juzgadoSel%>" clase="<%=estilo%>" readonly="<%=readOnly%>" accion="actualizarTdNumeroProcedimiento()"/>
+				</td>   
+					
+			</tr>
+			<tr>
+				<td class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/>
+				</td>
+				<td > 
+					<% if (!modo.equalsIgnoreCase("ver")) { %>
+					 	<input name="nig" type="text" value="<%=nig%>" class="<%=estilo%>" maxlength="50"/>
+					<%}else{%>
+						<input name="nig" type="text" value="<%=nig%>" class="boxConsulta"/>
+					<%}%>						
+				</td>
+			</tr>	
+		  </table>
 		</siga:ConjCampos> 
 		</td>
 <!------------------>
@@ -462,72 +522,32 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			
 		</tr>
 	</table>
+	<siga:ConjCampos leyenda="Otros datos"> 
+		<table width="100%" border="0" style="table-layout:fixed">
 	
-	<table width="100%" border="0" style="table-layout:fixed">
-		<tr>
-			<td class="labelText" >	
-				<siga:Idioma key='gratuita.busquedaAsistencias.literal.fechaAsistencia'/>
-			</td>
-			<td class="labelTextValor">	
-				<%=FECHAHORA%>
-			</td>
-
-			<td class="labelText" >	
-				<siga:Idioma key='gratuita.mantAsistencias.literal.fcierre'/>
-			</td>
-			<td class="labelTextValor" >	
-			<% if(modo.equals("editar")){%>
-				<html:text name="AsistenciasForm" property="fechaCierre" size="8" maxlength="10" styleClass="box" value="<%=FECHACIERRE%>" readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaCierre);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-			<%}else{%>
-				<%=FECHACIERRE%>
-			<%}%>
-			</td>
-			
-			<td class="labelText"  >
-				<siga:Idioma key="gratuita.mantAsistencias.literal.estado"/>
-			</td>
-			
-			
-				<%if(usr.isLetrado()){%>
-					<td class="labelText">
-					<siga:ComboBD nombre="estadoAsintecia" tipo="cmbEstadosAsistencia" obligatorio="false" accion="" elementoSel="<%=estadoSel%>" clase="boxConsulta" readonly="true" obligatorioSinTextoSeleccionar="si"/>
-						<% 	}else{%>
-						<td class="labelTextValor">
-						<siga:ComboBD nombre="estadoAsintecia" tipo="cmbEstadosAsistencia" obligatorio="false" accion="" elementoSel="<%=estadoSel%>" clase="<%=estilo%>" readonly="<%=readOnly%>" obligatorioSinTextoSeleccionar="si"/>									
-					<% }%>
-				
-			</td>
-			<td class="labelText" >
-				<siga:Idioma key="gratuita.mantAsistencias.literal.fechaEstado"/>
-			</td>
-			<td class="labelTextValor" >
-				<html:textarea name="AsistenciasForm" property="fechaEstadoAsistencia" styleClass="boxConsulta" value="<%=fechaEstado%>" readOnly="true"></html:textarea>
-			</td>
-			
-		</tr>
-		<tr align="center">
-			<td class="labelText" >	
-				<siga:Idioma key='gratuita.mantAsistencias.literal.observaciones'/>
-			</td>
-			<td class="labelTextValor" colspan="3">
-			<% if(modo.equals("ver")){%>
-				<html:textarea name="DefinirPermutaGuardiasForm" property="observaciones" cols="70" rows="3" style="overflow:auto" styleClass="boxComboConsulta" value="<%=OBSERVACIONES%>" readonly="true"></html:textarea>
-			<%}else{%>
-				<html:textarea name="DefinirPermutaGuardiasForm" property="observaciones" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" cols="70" rows="3" style="overflow:auto" styleClass="boxCombo" value="<%=OBSERVACIONES%>" readOnly="false"></html:textarea>
-			<%}%>
-			</td>
-			<td class="labelText" >	
-				<siga:Idioma key='gratuita.mantAsistencias.literal.incidencias'/>
-			</td>
-			<td class="labelTextValor" colspan="3">
-			<% if(modo.equals("ver")){%>
-				<html:textarea name="DefinirPermutaGuardiasForm" property="incidencias" cols="70" rows="3" style="overflow:auto" styleClass="boxComboConsulta" value="<%=INCIDENCIAS%>" readOnly="true"></html:textarea>
-			<%}else{%>
-				<html:textarea name="DefinirPermutaGuardiasForm" property="incidencias" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" cols="70" rows="3" style="overflow:auto" styleClass="boxCombo" value="<%=INCIDENCIAS%>" readOnly="false"></html:textarea>
-			<%}%>
-			</td>
-		</tr>
-	</table>
+			<tr align="center">
+				<td class="labelText" >	
+					<siga:Idioma key='gratuita.mantAsistencias.literal.observaciones'/>
+				</td>
+				<td class="labelTextValor" colspan="3">
+				<% if(modo.equals("ver")){%>
+					<html:textarea name="DefinirPermutaGuardiasForm" property="observaciones" cols="70" rows="3" style="overflow:auto" styleClass="boxComboConsulta" value="<%=OBSERVACIONES%>" readonly="true"></html:textarea>
+				<%}else{%>
+					<html:textarea name="DefinirPermutaGuardiasForm" property="observaciones" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" cols="70" rows="3" style="overflow:auto" styleClass="boxCombo" value="<%=OBSERVACIONES%>" readOnly="false"></html:textarea>
+				<%}%>
+				</td>
+				<td class="labelText" >	
+					<siga:Idioma key='gratuita.mantAsistencias.literal.incidencias'/>
+				</td>
+				<td class="labelTextValor" colspan="3">
+				<% if(modo.equals("ver")){%>
+					<html:textarea name="DefinirPermutaGuardiasForm" property="incidencias" cols="70" rows="3" style="overflow:auto" styleClass="boxComboConsulta" value="<%=INCIDENCIAS%>" readOnly="true"></html:textarea>
+				<%}else{%>
+					<html:textarea name="DefinirPermutaGuardiasForm" property="incidencias" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" cols="70" rows="3" style="overflow:auto" styleClass="boxCombo" value="<%=INCIDENCIAS%>" readOnly="false"></html:textarea>
+				<%}%>
+				</td>
+			</tr>
+		</table>
 	</siga:ConjCampos>
 <%			
 	/////////////////////////

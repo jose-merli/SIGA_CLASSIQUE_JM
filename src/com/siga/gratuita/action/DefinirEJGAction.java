@@ -998,6 +998,7 @@ public class DefinirEJGAction extends MasterAction
 					UtilidadesHash.set(miHash, ScsEJGBean.C_COMISARIAIDINSTITUCION,asistenciaBean.getComisariaIdInstitucion());
 					UtilidadesHash.set(miHash, ScsEJGBean.C_JUZGADOIDINSTITUCION, asistenciaBean.getJuzgadoIdInstitucion());
 					UtilidadesHash.set(miHash, ScsEJGBean.C_JUZGADO,     		  asistenciaBean.getJuzgado());	
+					UtilidadesHash.set(miHash, ScsEJGBean.C_NIG,     		  	  asistenciaBean.getNIG());	
 					
 					/**INC_05960_SIGA, se introduce el campo idtipoencalidad a cero ya que cuando se crea por primera
                       vez el campo calidad por defecto sera "Demandado"**/

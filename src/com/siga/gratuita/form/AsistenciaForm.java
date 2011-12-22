@@ -59,6 +59,7 @@ public class AsistenciaForm extends MasterForm
 	  PersonaJGForm personaJG;
 	  CenPersonaBean personaColegiado;
 	  private String modoPestanha=null;
+	  	private String nig;
 	  
 	  
 	
@@ -378,6 +379,13 @@ public class AsistenciaForm extends MasterForm
 	}
 	public void setModoPestanha(String modoPestanha) {
 		this.modoPestanha = modoPestanha;
+	}
+
+	public String getNig() {
+		return nig;
+	}
+	public void setNig(String nig) {
+		this.nig = nig;
 	}
 	
 }

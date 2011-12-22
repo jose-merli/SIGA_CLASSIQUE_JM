@@ -408,6 +408,7 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 			actuacionAsistenciaFormEdicion.setNumeroDiligenciaAsistencia(asistenciaForm.getNumeroDiligencia());
 			actuacionAsistenciaFormEdicion.setComisariaAsistencia(asistenciaForm.getComisaria());
 			actuacionAsistenciaFormEdicion.setJuzgadoAsistencia(asistenciaForm.getJuzgado());
+			actuacionAsistenciaFormEdicion.setNig(asistenciaForm.getNig());
 			
 			if(actuacionAsistenciaForm.getModo().equals("nuevoDesdeVolanteExpress")){
 				actuacionAsistenciaForm.setTiposActuacion(asistenciasService.getTiposActuacion(asistenciaForm, usrBean));

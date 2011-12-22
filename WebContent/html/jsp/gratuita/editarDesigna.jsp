@@ -104,7 +104,8 @@
 	String sHorasJuicio = "";
 	String sMinutosJuicio = "";
 	String calidad ="";
-
+	String nig = "";	
+	
 	String maxLenghtProc = "20";
 	String estilo = "box", readOnly="false", estiloCombo="boxCombo";
 	String idPretension = "",pretension="";
@@ -203,6 +204,11 @@
 			numeroProcedimiento = beanDesigna.getNumProcedimiento().toString();
 			if (numeroProcedimiento == null)
 				numeroProcedimiento = new String("");
+			
+			if(beanDesigna.getNIG() != null){
+				nig = beanDesigna.getNIG();
+			}
+			
 			idProcedimiento = beanDesigna.getProcedimiento().toString();
 			
 			if(filtrarModulos.equals("S")){
@@ -823,6 +829,19 @@
 						</td>
 
 					</tr>
+					
+					<tr>
+						<td class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/>
+						</td>
+						<td > 
+							<% if (!modo.equalsIgnoreCase("ver")) { %>
+							 	<input name="nig" size="15" type="text" value="<%=nig%>" class="<%=estilo%>" maxlength="50"/>
+							<%}else{%>
+								<input name="nig" size="15" type="text" value="<%=nig%>" class="boxConsulta"/>
+							<%}%>						
+						</td>
+					</tr>					
+					
 					<tr>
 						<td class="labelText"><siga:Idioma
 							key="gratuita.actuacionesDesigna.literal.modulo" /> 

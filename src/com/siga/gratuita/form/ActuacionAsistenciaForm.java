@@ -68,6 +68,7 @@ public class ActuacionAsistenciaForm extends MasterForm
 	   List<ScsJuzgadoBean> juzgados;	  
 	   List<ScsPrisionBean> prisiones;
 	private String modoPestanha=null;
+		private String nig;
 	
 	/**
 	 * @return Returns the modoPestanha.
@@ -323,6 +324,10 @@ public class ActuacionAsistenciaForm extends MasterForm
 				actuacionAsistenciaBean.setIdJuzgado(new Integer(idJuzgado));
 				actuacionAsistenciaBean.setIdInstitucionJuzgado(new Long(idInstitucion));
 			}
+			
+			if(nig!=null && !nig.equals("")){
+				actuacionAsistenciaBean.setNIG(nig);
+			}
 			actuacionAsistenciaBean.setValidada(validada);
 		return actuacionAsistenciaBean;
 	}
@@ -470,6 +475,12 @@ public class ActuacionAsistenciaForm extends MasterForm
 		this.isLetrado = isLetrado;
 	}
 	
+	public String getNig() {
+		return nig;
+	}
+	public void setNig(String nig) {
+		this.nig = nig;
+	}
 	
 	
 	

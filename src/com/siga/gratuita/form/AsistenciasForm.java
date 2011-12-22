@@ -145,6 +145,7 @@ public class AsistenciasForm extends MasterForm
 	private String acIdInstitucionPrision = "acIdInstitucionPrision";
 	private ScsAsistenciasBean asistenciaBean;
 	private String botonesDetalle;
+	private String nig;
 	String letradoActuaciones;
 	/*
 	 * Metodos SET y GET 
@@ -572,5 +573,11 @@ public class AsistenciasForm extends MasterForm
 	public void setLetradoActuaciones(String letradoActuaciones) {
 		this.letradoActuaciones = letradoActuaciones;
 	}
-	
+
+	public String getNig() {
+		return nig;
+	}
+	public void setNig(String nig) {
+		this.nig = nig;
+	}
 }

@@ -523,6 +523,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 								" des."+ScsDesignaBean.C_IDJUZGADO+","+
 								" des."+ScsDesignaBean.C_IDPROCEDIMIENTO+","+
 								" des."+ScsDesignaBean.C_NUMPROCEDIMIENTO+","+
+								" des."+ScsDesignaBean.C_NIG+","+
 								" des."+ScsDesignaBean.C_IDPRETENSION+","+
 								" per."+CenPersonaBean.C_IDPERSONA+" AS IDPERSONA, "+
 								" (select nombre "+
@@ -623,6 +624,13 @@ public class ActuacionesDesignasAction extends MasterAction {
 			hash.put(ScsActuacionAsistenciaBean.C_USUMODIFICACION,usr.getUserName());
 			hash.put(ScsActuacionAsistenciaBean.C_IDINSTITUCION,(String)usr.getLocation());
 			
+			String nig= miform.getNig();
+			if (nig!=null && !nig.equals("")){
+				hash.put(ScsActuacionDesignaBean.C_NIG, nig);
+			}else{
+				hash.put(ScsActuacionDesignaBean.C_NIG, "");
+			}				
+			
 		    // Comprobamos si la fecha de la actuacion es posterior a la de la designa
 	        SimpleDateFormat sd2 = new SimpleDateFormat (ClsConstants.DATE_FORMAT_SHORT_SPANISH);
 	        Date dActuacion = sd2.parse(miform.getFechaActuacion());			            ;
@@ -638,7 +646,15 @@ public class ActuacionesDesignasAction extends MasterAction {
 			        if (dActuacion.compareTo(dDesgina) < 0) {
 			            return exito("messages.error.acreditacionFechaNoValida",request);			            
 			        }
-		        }
+			        
+			        //Se rellena el NIG si no estuviera completo en datos generales
+			        if(sdb.getNIG() == null || sdb.getNIG().equals("")){     				
+			        	if (nig!=null && !nig.equals("")){
+			        		sdb.setNIG(nig);
+			        		designaAdm.updateDirect(sdb);
+			        	}
+			        }
+			    }
 		    }			    
 	        catch (Exception e) { }
 
@@ -889,7 +905,8 @@ public class ActuacionesDesignasAction extends MasterAction {
 							ScsActuacionDesignaBean.C_IDPRISION,				    ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION,
 							ScsActuacionDesignaBean.C_IDACREDITACION,				ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO,
 							ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO,			ScsActuacionDesignaBean.C_IDPRETENSION,
-		    				ScsActuacionDesignaBean.C_TALONARIO,					ScsActuacionDesignaBean.C_TALON,ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO};
+		    				ScsActuacionDesignaBean.C_TALONARIO,					ScsActuacionDesignaBean.C_TALON,
+		    				ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO,			ScsActuacionDesignaBean.C_NIG};
 		
 		ScsActuacionDesignaAdm actuacionDesignaAdm = new ScsActuacionDesignaAdm(this.getUserBean(request));
 		boolean ok = false;
@@ -977,6 +994,13 @@ public class ActuacionesDesignasAction extends MasterAction {
 			}else{
 				actuacionModificada.put(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, "");
 			}
+			
+			String nig= miform.getNig();
+			if (nig!=null && !nig.equals("")){
+				actuacionModificada.put(ScsActuacionDesignaBean.C_NIG, nig);
+			}else{
+				actuacionModificada.put(ScsActuacionDesignaBean.C_NIG, "");
+			}				
 
 			// Obtengo el idJuzgado y la idInstitucion del Juzgado:
 			Long idJuzgado=null;

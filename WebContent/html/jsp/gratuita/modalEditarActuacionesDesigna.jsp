@@ -39,6 +39,7 @@
 	String anulacion = "", observaciones = "", fechaJustificacion ="", observacionesJustificacion ="", modo="";
 	String idPersona=null;
 	String numeroProcedimiento="";
+	String nig="";
 	String maxLenghtProc = "20";
 	
 	String estiloCombo=null, readOnlyCombo=null;
@@ -184,6 +185,7 @@
 
 		actuacionValidada = (String) hashActuacion.get("ACTUACIONVALIDADA");
 		numeroProcedimiento = (String) hashActuacion.get("NUMEROPROCEDIMIENTO");
+		nig = (String) hashActuacion.get("NIG");
 	} else { //Para el caso de estar en NUEVO:
 	 	// Datos del Juzgado seleccionado:
 	 	idJuzgado =  (String)hashDesigna.get(ScsDesignaBean.C_IDJUZGADO);
@@ -201,6 +203,7 @@
 		 nombreJuzgado = (String)hashDesigna.get("NOMBREJUZGADO");
 	    nombreProcedimiento = (String)hashDesigna.get("NOMBREPROCEDIMIENTO");
 	    numeroProcedimiento = (String) hashDesigna.get("NUMPROCEDIMIENTO");
+	    nig = (String) hashDesigna.get("NIG");
 	    if(validarActuacion!=null)
 	    	actuacionValidada = validarActuacion!=null&&validarActuacion.equals("S")?"0":"1";
 	}
@@ -474,6 +477,17 @@
 			<%}%>
 				
 			 </tr>	
+			 <tr>
+				<td class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/>
+				</td>
+				<td > 
+					<% if (!modoAnterior.equalsIgnoreCase("VER")) { %> 
+					 	<html:text name="ActuacionesDesignasForm" property="nig"  value="<%=nig%>" styleClass="<%=estiloCombo%>" maxlength="50"/>
+					<%}else{%>
+						<html:text name="ActuacionesDesignasForm" property="nig"  value="<%=nig%>" styleClass="boxConsulta"/>
+					<%}%>						
+				</td>
+			 </tr>	
 				<tr>
 				
 					<td class="labelText">
@@ -590,12 +604,6 @@
 				</siga:ConjCampos>			
 			</td>
 		</tr>
-		
-		
-		
-		
-		
-		
 		
 		<tr>
 			<td>

@@ -89,6 +89,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 				ScsAsistenciasBean.C_EJGIDTIPOEJG,
 				ScsAsistenciasBean.C_EJGANIO,
 				ScsAsistenciasBean.C_EJGNUMERO,
+				ScsAsistenciasBean.C_NIG,
 				ScsAsistenciasBean.C_FECHAESTADOASISTENCIA
 				};
 		
@@ -155,6 +156,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 			bean.setEjgIdTipoEjg(UtilidadesHash.getInteger(hash,ScsAsistenciasBean.C_EJGIDTIPOEJG));
 			bean.setEjgAnio(UtilidadesHash.getInteger(hash,ScsAsistenciasBean.C_EJGANIO));
 			bean.setEjgNumero(UtilidadesHash.getLong(hash,ScsAsistenciasBean.C_EJGNUMERO));
+			bean.setNIG(UtilidadesHash.getString(hash,ScsAsistenciasBean.C_NIG));
 		}
 		catch(Exception e){
 			bean = null;
@@ -209,6 +211,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_EJGIDTIPOEJG, b.getEjgIdTipoEjg());
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_EJGANIO, b.getEjgAnio());
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_EJGNUMERO, b.getEjgNumero());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_NIG, b.getNIG());
 		
 		}
 		catch (Exception e){
@@ -2053,6 +2056,19 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 			
 			
 		}
+		
+		if(asistencia.getNIG()!=null){
+			alCampos.add(ScsAsistenciasBean.C_NIG);
+			//Se comprueba que no este ya relleno para no sobreescribirlo
+			Vector v = this.select(this.beanToHashTable(asistencia));
+			ScsAsistenciasBean bean = (ScsAsistenciasBean) v.get(0);
+			if(bean != null){
+				if(bean.getNIG() != null && !bean.getNIG().equals("")){
+					asistencia.setNIG(bean.getNIG());
+				}
+			}
+		}
+
 		this.updateDirect(asistencia,claves,alCampos.toArray(new String[alCampos.size()]));
 	}
 	
@@ -2065,7 +2081,7 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 		sql.append(" SELECT AA.ANIO||'/'||AA.NUMERO||DECODE(AA.IDPERSONAJG,null,null,' - '||PJG.NOMBRE ||' '||PJG.APELLIDO1||' '||PJG.APELLIDO2) DESCRIPCIONASISTENCIA ");
 		sql.append(" ,AA.FECHAANULACION, AA.IDTIPOASISTENCIACOLEGIO,AA.IDTURNO,AA.FECHAHORA ");
 		sql.append(" ,AA.NUMERODILIGENCIA, AA.NUMEROPROCEDIMIENTO ");
-		sql.append(" ,AA.COMISARIA, AA.JUZGADO ");
+		sql.append(" ,AA.COMISARIA, AA.JUZGADO, AA.NIG ");
 		
 		sql.append(",TU.LETRADOACTUACIONES,TU.VALIDARJUSTIFICACIONES ");
 		sql.append(",TU.NOMBRE NOMBRETURNO, ");
@@ -2140,7 +2156,7 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 					asistenciaForm.setNumeroProcedimiento(UtilidadesHash.getString(htFila, "NUMEROPROCEDIMIENTO"));
 					asistenciaForm.setComisaria(UtilidadesHash.getString(htFila, "COMISARIA"));
 					asistenciaForm.setJuzgado(UtilidadesHash.getString(htFila, "JUZGADO"));
-
+					asistenciaForm.setNig(UtilidadesHash.getString(htFila, "NIG"));
 					asistenciaForm.setValidarJustificaciones(UtilidadesHash.getString(htFila, "VALIDARJUSTIFICACIONES"));
 					turno.setNombre(UtilidadesHash.getString(htFila, "NOMBRETURNO"));
 					turno.setActivarActuacionesLetrado(UtilidadesHash.getString(htFila, "LETRADOACTUACIONES"));

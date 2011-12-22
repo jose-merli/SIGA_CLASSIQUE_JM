@@ -41,6 +41,7 @@ public class MaestroDesignasForm extends MasterForm {
 	private String FECHAOFICIOJUZGADO 	= 	"FECHAOFICIOJUZGADO";	
 	private String procedimiento;
 	private String letrado;
+	private String nig;
 	private List<ScsJuzgadoBean> juzgados;  
 	private String idJuzgado;
 	private List<ScsProcedimientosBean> modulos;
@@ -491,6 +492,11 @@ public class MaestroDesignasForm extends MasterForm {
 	public void setProcedimiento(String procedimiento) {
 		this.procedimiento = procedimiento;
 	}
-	
+	public String getNig() {
+		return nig;
+	}
+	public void setNig(String nig) {
+		this.nig = nig;
+	}
 	
 }

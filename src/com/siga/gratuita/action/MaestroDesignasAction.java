@@ -664,6 +664,12 @@ public class MaestroDesignasAction extends MasterAction {
 							 UtilidadesHash.set(designaNueva, ScsDesignaBean.C_NUMPROCEDIMIENTO, "");
 						}	
 						
+						if (miform.getNig() != null) {
+						    UtilidadesHash.set(designaNueva, ScsDesignaBean.C_NIG, miform.getNig());
+						}else{
+							 UtilidadesHash.set(designaNueva, ScsDesignaBean.C_NIG, "");
+						}
+						
 						String procedimientoSel=(String)datosEntrada.get("IDPROCEDIMIENTO");
 						if (procedimientoSel!=null){
 							if(procedimientoSel.equals("")&& designaAntigua.getEstado().equals("F")){

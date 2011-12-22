@@ -111,6 +111,7 @@ public class ScsActuacionAsistenciaAdm extends MasterBeanAdministrador {
 							ScsActuacionAsistenciaBean.C_IDPRISION,
 							ScsActuacionAsistenciaBean.C_IDINSTITUCIONPRISION,
 							ScsActuacionAsistenciaBean.C_IDTIPOACTUACION,
+							ScsActuacionAsistenciaBean.C_NIG,
 							ScsActuacionAsistenciaBean.C_IDTIPOASISTENCIA
 							};
 		return campos;
@@ -164,6 +165,7 @@ public class ScsActuacionAsistenciaAdm extends MasterBeanAdministrador {
 			bean.setIdTipoAsistencia(UtilidadesHash.getInteger(hash,ScsActuacionAsistenciaBean.C_IDTIPOASISTENCIA));
 			bean.setPagado(UtilidadesHash.getString(hash,ScsActuacionAsistenciaBean.C_PAGADO));
 			bean.setFacturado(UtilidadesHash.getString(hash,ScsActuacionAsistenciaBean.C_FACTURADO));
+			bean.setNIG(UtilidadesHash.getString(hash,ScsActuacionAsistenciaBean.C_NIG));
 		} catch (Exception e){
 			 throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR HASHTABLE A BEAN");
 		}		
@@ -208,6 +210,7 @@ public class ScsActuacionAsistenciaAdm extends MasterBeanAdministrador {
 			htData.put(ScsActuacionAsistenciaBean.C_IDINSTITUCIONPRISION	  , String.valueOf(b.getIdInstitucionPrision()));
 			htData.put(ScsActuacionAsistenciaBean.C_USUMODIFICACION	  		  , String.valueOf(b.getUsuMod()));
 			htData.put(ScsActuacionAsistenciaBean.C_FECHAMODIFICACION		  , String.valueOf(b.getFechaMod()));
+			htData.put(ScsActuacionAsistenciaBean.C_NIG						  , String.valueOf(b.getNIG()));
 		}
 		catch (Exception e){
 			 throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR EL BEAN A HASHTABLE");

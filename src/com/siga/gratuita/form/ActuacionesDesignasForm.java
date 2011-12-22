@@ -40,6 +40,7 @@ public class ActuacionesDesignasForm extends MasterForm {
 	protected String talonario = "TALONARIO";
 	protected String talon = "TALON";
 	protected String numeroProcedimiento = "NUMEROPROCEDIMIENTO";
+	protected String nig = "NIG";
 	private boolean fichaColegial = false;
 	public boolean getFichaColegial() {
 		return fichaColegial;
@@ -471,5 +472,12 @@ public class ActuacionesDesignasForm extends MasterForm {
 		public void setNumeroProcedimiento(String numeroProcedimiento) {
 			this.datos.put(this.numeroProcedimiento, numeroProcedimiento);
 		}
+		
+		public String getNig() {
+			return UtilidadesHash.getString(this.datos, this.nig);
+		}
+		public void setNig(String nig) {
+			this.datos.put(this.nig, nig);
+		}		
 
 }

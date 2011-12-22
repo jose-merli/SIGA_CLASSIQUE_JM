@@ -52,6 +52,7 @@ public class ScsActuacionDesignaBean extends MasterBean{
 	static public final String  C_TALONARIO  	     		  = "TALONARIO";
 	static public final String  C_TALON      	     		  = "TALON";
 	static public final String  C_NUMEROPROCEDIMIENTO      	  = "NUMEROPROCEDIMIENTO";
+	static public final String  C_NIG     	  				  = "NIG";
 	
 	
 	/*
@@ -87,6 +88,7 @@ public class ScsActuacionDesignaBean extends MasterBean{
 	private String   talonario;
     private String   talon;
     private String   numeroProcedimiento;
+    private String   nig;
 	
     /**
 	 * @return Returns the getTalonario.
@@ -453,7 +455,12 @@ public class ScsActuacionDesignaBean extends MasterBean{
 		this.numeroProcedimiento = numeroProcedimiento;
 	}
 
-	
+	public String getNig() {
+		return nig;
+	}
 
+	public void setNig(String nig) {
+		this.nig = nig;
+	}
 	
 }

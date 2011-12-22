@@ -71,7 +71,7 @@ public class ScsAsistenciasBean extends MasterBean{
 	private String asistidoApellido1;
 	private String asistidoApellido2;
 	private Integer idDelito;
-
+	private String NIG;
 	
 	/*
 	 *  Nombre de Tabla*/
@@ -119,6 +119,7 @@ public class ScsAsistenciasBean extends MasterBean{
 	static public final String	C_EJGIDTIPOEJG       	=	"EJGIDTIPOEJG";
 	static public final String	C_EJGANIO       		=	"EJGANIO";
 	static public final String	C_EJGNUMERO       		=	"EJGNUMERO";
+	static public final String  C_NIG   				= 	"NIG";	
 
 	/* Metodos SET*/
 	public void    setIdInstitucion          (Integer valor)	{ this.idInstitucion           = 	valor;}
@@ -414,6 +415,11 @@ public class ScsAsistenciasBean extends MasterBean{
 	public void setFichaColegial(String fichaColegial) {
 		this.fichaColegial = fichaColegial;
 	}
-	
+	public String getNIG() {
+		return NIG;
+	}
+	public void setNIG(String nIG) {
+		NIG = nIG;
+	}
 	
 }

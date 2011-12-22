@@ -444,6 +444,13 @@ function postAccionTipoActuacion()
 				</table>
 				</td>
 				<tr>
+					<td class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/>
+					</td>
+					<td colspan="5"> 
+						<html:text name="ActuacionAsistenciaFormEdicion" property="nig" size="30" maxlength="50" styleClass="box"></html:text>
+					</td>
+				</tr>	
+				<tr>
 					<td class="labelText"><siga:Idioma
 							key="gratuita.mantenimientoTablasMaestra.literal.prision" /></td>
 					<td colspan ="2"><html:select styleClass="boxCombo" style="width:300px;"
@@ -516,8 +523,7 @@ function postAccionTipoActuacion()
 					<td width="15%"></td>
 					<td width="30%"></td>
 
-				</tr>
-	
+				</tr>	
 		<tr>
 
 			<td class="labelText" valign="top">	

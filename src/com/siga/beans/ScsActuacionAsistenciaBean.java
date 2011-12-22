@@ -28,6 +28,7 @@ public class ScsActuacionAsistenciaBean extends MasterBean {
 
 	private Long idInstitucionJuzgado, idInstitucionComisaria, idInstitucionPrision;
 	private Long numero, idActuacion;
+	private String NIG;
 
 	ActuacionAsistenciaForm actuacionAsistenciaForm;
 	
@@ -64,6 +65,7 @@ public class ScsActuacionAsistenciaBean extends MasterBean {
 	static public final String  C_VALIDADA = "VALIDADA";
 	static public final String  C_IDTIPOASISTENCIA = "IDTIPOASISTENCIA";
 	static public final String  C_IDTIPOACTUACION = "IDTIPOACTUACION";
+	static public final String  C_NIG   				= 	"NIG";	
 	
 	
 	
@@ -293,6 +295,11 @@ public class ScsActuacionAsistenciaBean extends MasterBean {
 			actuacionAsistenciaForm.setIdJuzgado(idJuzgado.toString());
 			actuacionAsistenciaForm.setIdInstitucionJuzg(idInstitucionJuzgado.toString());
 		}
+		
+		if(NIG!=null && !NIG.equals("")){
+			actuacionAsistenciaForm.setNig(NIG);
+		}
+		
 		if(validada!=null)
 			actuacionAsistenciaForm.setValidada(validada);
 		else
@@ -301,7 +308,12 @@ public class ScsActuacionAsistenciaBean extends MasterBean {
 		return actuacionAsistenciaForm;
 	}
 
-	
+	public String getNIG() {
+		return NIG;
+	}
+	public void setNIG(String nIG) {
+		NIG = nIG;
+	}
 	
 	
 

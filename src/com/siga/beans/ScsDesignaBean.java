@@ -41,6 +41,7 @@ public class ScsDesignaBean extends MasterBean {
 	private String  fechaOficioJuzgado;
 	private String  fechaAlta;
 	private String art27;
+	private String NIG;
 	
 	// Nombre de Tabla
 	static public String T_NOMBRETABLA = "SCS_DESIGNA";
@@ -75,6 +76,7 @@ public class ScsDesignaBean extends MasterBean {
 	static public final String	C_FECHAOFICIOJUZGADO 	= 	"FECHAOFICIOJUZGADO";
 	static public final String	C_FECHAALTA 			= 	"FECHAALTA";
 	static public final String	C_ART27 				= 	"ART27";
+	static public final String  C_NIG   				= 	"NIG";
 	
 	
 
@@ -416,6 +418,12 @@ public void setIdTipoDesignaColegio(Integer idTipoDesignaColegio) {
 	}
 	public void setArt27(String art27) {
 		this.art27 = art27;
+	}
+	public String getNIG() {
+		return NIG;
+	}
+	public void setNIG(String nIG) {
+		NIG = nIG;
 	}
 	
 }

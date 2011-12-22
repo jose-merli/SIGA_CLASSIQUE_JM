@@ -278,6 +278,17 @@ public class AtosAsistenciasService extends JtaBusinessServiceTemplate
 			}
 			
 		}
+		
+		if(actuacionAsistenciaForm.getNig()!=null && !actuacionAsistenciaForm.getNig().equals("")){
+			ScsAsistenciasAdm admAsistencias = new ScsAsistenciasAdm(usrBean);
+			ScsAsistenciasBean asistencia = new ScsAsistenciasBean();
+			asistencia.setIdInstitucion(actuaAsistenciaBean.getIdInstitucion());
+			asistencia.setAnio(actuaAsistenciaBean.getAnio());
+			asistencia.setNumero(actuaAsistenciaBean.getNumero().intValue());
+			asistencia.setNIG(actuaAsistenciaBean.getNIG());
+
+			admAsistencias.updateAsistenciaDesdeActuacion(asistencia);
+		}
 			
 
 		if(actuacionAsistenciaForm.getIdCosteFijoActuacion()!=null &&!actuacionAsistenciaForm.getIdCosteFijoActuacion().equals(""))
