@@ -139,7 +139,7 @@
 						<tr>
 							<td class="labelText" colspan="2">
 								<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" checked="checked" value="noRenegociarAutomaticamente" >
-									No renegociar automáticamente.
+									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.noRenegociar"/>
 								<br>
 								<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" >
 									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
