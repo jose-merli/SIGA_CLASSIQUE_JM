@@ -1006,7 +1006,7 @@ public class DefinirEnviosAction extends MasterAction {
 			// obtener tipoEnvio
 			String idTipoEnvio = form.getIdTipoEnvio();
 			boolean isEnvioSMS = Integer.parseInt(idTipoEnvio)==EnvEnviosAdm.TIPO_BUROSMS || Integer.parseInt(idTipoEnvio)==EnvEnviosAdm.TIPO_SMS;
-			
+			String acuseRecibo = form.getAcuseRecibo();
 			// obtener plantilla
 			
 			if(form.getIdPlantillaEnvios().equals("predefinida"))
@@ -1070,6 +1070,9 @@ public class DefinirEnviosAction extends MasterAction {
 			GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
 
 			enviosBean.setIdInstitucion(Integer.valueOf(idInstitucion));
+			enviosBean.setAcuseRecibo(acuseRecibo);
+			
+			
 			if(idEnvio!=null)
 				enviosBean.setIdEnvio(Integer.valueOf(idEnvio));
 			enviosBean.setDescripcion(nombreEnvio);
@@ -1503,7 +1506,7 @@ public class DefinirEnviosAction extends MasterAction {
 			String idPlantilla = form.getIdPlantillaEnvios();
 			//obtener plantilla de generacion
 			String idPlantillaGeneracion = form.getIdPlantillaGeneracion();
-
+			String acuseRecibo = form.getAcuseRecibo();
 			// Obtenemos el coegio destino
 			String colegio = form.getColegio();
 
@@ -1576,6 +1579,7 @@ public class DefinirEnviosAction extends MasterAction {
 
 					// ***** Creamos bean de envio *****
 					EnvEnviosBean enviosBean = new EnvEnviosBean();
+					enviosBean.setAcuseRecibo(acuseRecibo);
 										contador++;
 					codigos.put(new Integer(contador), idInstitucion);
 					String where = " WHERE "

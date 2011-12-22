@@ -2,6 +2,7 @@ package com.siga.envios.action;
 
 import java.util.*;
 import com.atos.utils.*;
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.*;
 import com.siga.general.*;
 import javax.servlet.http.*;
@@ -154,6 +155,40 @@ public class SIGAPlantillasEnviosAction extends MasterAction
 	
 		    request.setAttribute("modal", "1");
 		    return "refresh";
+	    }
+	    
+	    catch(ClsExceptions e)
+	    {
+	        throw e;
+	    }
+	    
+	    catch(Exception e)
+	    {
+	        throw new SIGAException("Error en insert");
+	    }
+	}
+	protected String modificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
+	{
+	    try
+	    {
+		    SIGAPlantillasEnviosForm form = (SIGAPlantillasEnviosForm)formulario;
+		    UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
+		    EnvPlantillasEnviosAdm admPlantilla = new EnvPlantillasEnviosAdm(this.getUserBean(request));
+		    String idInstitucion = userBean.getLocation();
+		    String[] campos = {EnvPlantillasEnviosBean.C_ACUSERECIBO,EnvPlantillasEnviosBean.C_FECHAMODIFICACION,EnvPlantillasEnviosBean.C_USUMODIFICACION};
+		    String[] claves = {EnvPlantillasEnviosBean.C_IDINSTITUCION, EnvPlantillasEnviosBean.C_IDTIPOENVIOS, EnvPlantillasEnviosBean.C_IDPLANTILLAENVIOS};
+		    Hashtable plantillaEnvioHashtable = new Hashtable();
+		    UtilidadesHash.set(plantillaEnvioHashtable, EnvPlantillasEnviosBean.C_IDINSTITUCION, idInstitucion);
+			UtilidadesHash.set(plantillaEnvioHashtable, EnvPlantillasEnviosBean.C_IDTIPOENVIOS, form.getIdTipoEnvios());
+			UtilidadesHash.set(plantillaEnvioHashtable, EnvPlantillasEnviosBean.C_IDPLANTILLAENVIOS, form.getIdPlantillaEnvios());
+			UtilidadesHash.set(plantillaEnvioHashtable, EnvPlantillasEnviosBean.C_ACUSERECIBO, form.getAcuseRecibo());
+
+		    admPlantilla.updateDirect(plantillaEnvioHashtable, claves, campos);
+		    
+		    
+		    
+	
+		    return exito("messages.updated.success",request);
 	    }
 	    
 	    catch(ClsExceptions e)

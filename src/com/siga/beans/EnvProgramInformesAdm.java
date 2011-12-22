@@ -167,7 +167,7 @@ public class EnvProgramInformesAdm extends MasterBeanAdministrador {
 		sql.append(" SELECT EPI.IDPROGRAM,EPI.IDENVIO,EPI.IDINSTITUCION, ");
 		sql.append(" EPI.IDIOMA,EPI.ESTADO,EPI.PLANTILLAS, ");
 		sql.append(" EPI.IDTIPOINFORME,EPI.CLAVES, ");
-		sql.append(" EP.IDTIPOENVIOS,EP.IDPLANTILLAENVIOS,EP.IDPLANTILLA,EP.NOMBRE,EP.FECHAPROGRAMADA, ");
+		sql.append(" EP.IDTIPOENVIOS,EP.IDPLANTILLAENVIOS,EP.IDPLANTILLA,EP.NOMBRE,EP.FECHAPROGRAMADA, EP.ACUSERECIBO, ");
 		sql.append(" L.CODIGOEXT ");
 
 		sql.append(" FROM ENV_PROGRAMINFORMES EPI ,ENV_ENVIOPROGRAMADO EP, ADM_LENGUAJES L ");
@@ -222,6 +222,7 @@ public class EnvProgramInformesAdm extends MasterBeanAdministrador {
 					envioProgramado.setIdPlantilla(UtilidadesHash.getInteger(htFila, EnvEnvioProgramadoBean.C_IDPLANTILLA));
 					envioProgramado.setNombre(UtilidadesHash.getString(htFila, EnvEnvioProgramadoBean.C_NOMBRE));
 					envioProgramado.setFechaProgramada(UtilidadesHash.getString(htFila, EnvEnvioProgramadoBean.C_FECHAPROGRAMADA));
+					envioProgramado.setAcuseRecibo(UtilidadesHash.getString(htFila, EnvEnvioProgramadoBean.C_ACUSERECIBO));
 					
 					datos.add(programPagos);
 				}

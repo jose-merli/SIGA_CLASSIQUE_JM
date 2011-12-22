@@ -21,6 +21,7 @@ public class EnvEnviosBean extends MasterBean {
 	private Integer idImpresora;
 	private Integer idTipoEnvios;
 	private String consulta;
+	private String acuseRecibo;
 	
 	// Nombre campos de la tabla 
 	static public final String C_IDINSTITUCION = "IDINSTITUCION";
@@ -36,6 +37,7 @@ public class EnvEnviosBean extends MasterBean {
 	static public final String C_IDIMPRESORA = "IDIMPRESORA";
 	static public final String C_IDTIPOENVIOS = "IDTIPOENVIOS";
 	static public final String C_CONSULTA = "CONSULTA";
+	static public final String C_ACUSERECIBO = "ACUSERECIBO";
 	
 	static public final String SEQ_ENV_ENVIOS = "SEQ_ENV_ENVIOS";
 	
@@ -119,4 +121,10 @@ public class EnvEnviosBean extends MasterBean {
     public void setConsulta(String consulta) {
         this.consulta = consulta;
     }
+	public String getAcuseRecibo() {
+		return acuseRecibo;
+	}
+	public void setAcuseRecibo(String acuseRecibo) {
+		this.acuseRecibo = acuseRecibo;
+	}
 }

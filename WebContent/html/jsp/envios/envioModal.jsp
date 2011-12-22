@@ -27,63 +27,74 @@
 <%@ page import="com.siga.Utilidades.*"%>
 
 <!-- JSP -->
-<%  
-	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
-	UsrBean user=(UsrBean) ses.getAttribute("USRBEAN");
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
-	String idInstitucion[] = {user.getLocation()};	
+<%
+	String app = request.getContextPath();
+	HttpSession ses = request.getSession();
+	UsrBean user = (UsrBean) ses.getAttribute("USRBEAN");
+	Properties src = (Properties) ses
+			.getAttribute(SIGAConstants.STYLESHEET_REF);
+	String idInstitucion[] = { user.getLocation() };
 
-	String idSolicitud = (String)request.getAttribute(CerSolicitudCertificadosBean.C_IDSOLICITUD);
-	String idPersona = (String)request.getAttribute(CerSolicitudCertificadosBean.C_IDPERSONA_DES);
-	String idFactura = (String)request.getAttribute(FacFacturaBean.C_IDFACTURA);
-	String idEnvio = (String)request.getAttribute(EnvEnviosBean.C_IDENVIO);
-	String subModo = (String)request.getAttribute("subModo");
-	String datosEnvios = (String)request.getAttribute("datosEnvios");
-	String clavesIteracion = (String)request.getAttribute("clavesIteracion");
-	String envioSms = (String)request.getAttribute("smsHabilitado");
-	String Datos = (String)request.getAttribute("exitenDatos");	
-	String noExistDatos="";		
-	if (subModo!= null && subModo.equals("LIGUA") && Datos!="")  {
-		noExistDatos="noExisteDatos('"+Datos+"');";
+	String idSolicitud = (String) request
+			.getAttribute(CerSolicitudCertificadosBean.C_IDSOLICITUD);
+	String idPersona = (String) request
+			.getAttribute(CerSolicitudCertificadosBean.C_IDPERSONA_DES);
+	String idFactura = (String) request
+			.getAttribute(FacFacturaBean.C_IDFACTURA);
+	String idEnvio = (String) request
+			.getAttribute(EnvEnviosBean.C_IDENVIO);
+	String subModo = (String) request.getAttribute("subModo");
+	String datosEnvios = (String) request.getAttribute("datosEnvios");
+	String clavesIteracion = (String) request
+			.getAttribute("clavesIteracion");
+	String envioSms = (String) request.getAttribute("smsHabilitado");
+	String Datos = (String) request.getAttribute("exitenDatos");
+	String noExistDatos = "";
+	if (subModo != null && subModo.equals("LIGUA") && Datos != "") {
+		noExistDatos = "noExisteDatos('" + Datos + "');";
 	} else {
 		noExistDatos = "";
 	}
-	
-	ArrayList comboTipoEnvio = (ArrayList) request.getAttribute("comboTipoEnvio");
-	String recargarCombos="";	
-	if (comboTipoEnvio!=null)  {
-		recargarCombos="recargarCombos()";
+
+	ArrayList comboTipoEnvio = (ArrayList) request
+			.getAttribute("comboTipoEnvio");
+	String recargarCombos = "";
+	if (comboTipoEnvio != null) {
+		recargarCombos = "recargarCombos()";
 	} else {
 		comboTipoEnvio = new ArrayList();
 	}
-	String sComDil = (String)request.getAttribute("ComDil");
-	boolean bComDil = (sComDil!=null) && (sComDil.equals("true"));
-	String fecha = UtilidadesString.getMensajeIdioma(user,"envios.definir.literal.fechaprogramada");
+	String sComDil = (String) request.getAttribute("ComDil");
+	boolean bComDil = (sComDil != null) && (sComDil.equals("true"));
+	String fecha = UtilidadesString.getMensajeIdioma(user,
+			"envios.definir.literal.fechaprogramada");
 	//ATENCION Nueva funcionalidad añadida. Si trae el atributo isEditarEnvio 
 	//se vera si se quiere que el check de editar envio esta habilitado o no. 
 	//Si no viene este atributo lo dejamos como estaba antes de meterlo, esto es habilitado
-	Boolean editarEnvio = (Boolean)request.getAttribute("isEditarEnvio");
-	boolean  isEditarEnvio = editarEnvio==null || editarEnvio.booleanValue();
-	
-	Boolean descargar = (Boolean)request.getAttribute("isDescargar");
-	boolean  isDescargar = descargar!=null && descargar.booleanValue();
-	
-	String consultaPlantillas="";
-	if (envioSms!=null && envioSms.equalsIgnoreCase("S")){
+	Boolean editarEnvio = (Boolean) request
+			.getAttribute("isEditarEnvio");
+	boolean isEditarEnvio = editarEnvio == null
+			|| editarEnvio.booleanValue();
+
+	Boolean descargar = (Boolean) request.getAttribute("isDescargar");
+	boolean isDescargar = descargar != null && descargar.booleanValue();
+
+	String consultaPlantillas = "";
+	if (envioSms != null && envioSms.equalsIgnoreCase("S")) {
 		consultaPlantillas = "cmbTipoEnviosInstSms";
-	}else{
+	} else {
 		consultaPlantillas = "cmbTipoEnviosInst";
 	}
-	
-	
-	String obligatorio = UtilidadesString.getMensajeIdioma(user,"messages.campoObligatorio.error");
-	
+
+	String obligatorio = UtilidadesString.getMensajeIdioma(user,
+			"messages.campoObligatorio.error");
 %>	
 <%@page import="java.util.Properties"%>
 <%@page import="java.util.Vector"%>
 <html>
-
+	<style>
+		.ocultar {display:none}
+	</style>	
 <!-- HEAD -->
 <head>
 
@@ -99,7 +110,7 @@
 
 </head>
 
-<body onload="recargarCombos();inicio();<%=noExistDatos %>">
+<body onload="recargarCombos();inicio();<%=noExistDatos%>">
 
 <!-- INICIO ******* CAPA DE PRESENTACION ****** -->
 <!-- dentro de esta capa se tienen que situar los diferentes componentes 
@@ -138,6 +149,7 @@
 		<html:hidden property = "descargar"/>
 		<html:hidden property="clavesIteracion" value="<%=clavesIteracion%>"/>
 		<html:hidden property = "idTipoEnvio"/>
+		<html:hidden property = "acuseRecibo" value="0"/>
 		
 		
 			
@@ -145,11 +157,19 @@
 	<td>
 
 		<table class="tablaCampos" align="center" border="0">
+		<tr>	
+				<td width="25%"></td>
+				<td width="40%"></td>
+				<td width="30%"></td>
+				<td width="10%"></td>
+				
+						
+		</tr>	
 			<tr>	
 				<td class="labelText">
 					<siga:Idioma key="envios.definir.literal.nombre"/>&nbsp;(*)
 				</td>
-				<td class="labelText">
+				<td class="labelText" colspan="3"> 
 					<html:text name="DefinirEnviosForm" property="nombre" size="50" maxlength="100" styleClass="box"></html:text>
 				</td>		
 			</tr>	
@@ -158,51 +178,71 @@
 				<td class="labelText">
 						<siga:Idioma key="envios.definir.literal.tipoenvio"/>&nbsp;(*)
 				</td>
-				<td class="labelText">
-						<siga:ComboBD nombre = "comboTipoEnvio" tipo="<%=consultaPlantillas %>" clase="boxCombo" obligatorio="true" parametro="<%=idInstitucion%>" elementoSel="<%=comboTipoEnvio%>" accion="Hijo:comboPlantillaEnvio"/>
+				<td class="labelText" colspan="3">
+						<siga:ComboBD nombre = "comboTipoEnvio" tipo="<%=consultaPlantillas %>" clase="boxCombo" obligatorio="true" parametro="<%=idInstitucion%>" elementoSel="<%=comboTipoEnvio%>" accion="Hijo:comboPlantillaEnvio;onChangeTipoEnvio()"/>
 				</td>				
 			</tr>
 			<c:choose>
+			
 				<c:when test="${DefinirEnviosForm.idTipoEnvio!='4'&&DefinirEnviosForm.idTipoEnvio!='5'}">
-				<tr >	
-					<td class="labelText">
-							<siga:Idioma key="envios.plantillas.literal.plantilla"/>&nbsp;(*)
-					</td>
-					<td class="labelText">
-							<siga:ComboBD nombre = "comboPlantillaEnvio" tipo="cmbPlantillaEnvios2" clase="boxCombo" obligatorio="true" hijo="t" accion="Hijo:idPlantillaGeneracion"/>
-					</td>				
-				</tr>
-				
-				<tr>
+									<tr>
+										<td class="labelText"><siga:Idioma
+												key="envios.plantillas.literal.plantilla" />&nbsp;(*)</td>
+										<td class="labelText"><siga:ComboBD
+												nombre="comboPlantillaEnvio" tipo="cmbPlantillaEnvios2"
+												clase="boxCombo" obligatorio="true" hijo="t"
+												accion="Hijo:idPlantillaGeneracion;parent.onChangePlantillaEnvio()" />
+										</td>
+										<td  class="labelText"  ><siga:Idioma
+												key="envios.definir.literal.acuseRecibo" />
+										</td>
+										<td> <input
+											type="checkbox" id="idCheckAcuseRecibo" disabled="disabled"></td>
+
+
+									</tr>
+
+									<tr>
 					<td class="labelText" >
 						<siga:Idioma key="envios.definir.literal.plantillageneracion"/>
 					</td>
-					<td class="labelText">
+					<td class="labelText" colspan="3">
 						<siga:ComboBD nombre="idPlantillaGeneracion" tipo="cmbPlantillaGeneracion" clase="boxCombo" obligatorio="false" hijo="t" pestana="true"/>
 							
 					</td>				
 				</tr>
 			</c:when>
 			<c:otherwise>
+				<input	type="hidden" id="idCheckAcuseRecibo">
 				<html:hidden property="comboPlantillaEnvio" value="predefinida"/>
 				</c:otherwise>
 			</c:choose>
-			<tr>	
-				<td class="labelText" colspan="2">
-						<siga:Idioma key="envios.definir.literal.fechaprogramada"/>
-						&nbsp;&nbsp;&nbsp;&nbsp;
-						<html:text name="DefinirEnviosForm" property="fechaProgramada" size="10" maxlength="10" styleClass="box" readonly="true"/>					
-						<a href='javascript://' onClick="return showCalendarGeneral(fechaProgramada);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
-					<siga:Idioma key="envios.definir.literal.editarenvio"/>	
-									
-						<% if(isEditarEnvio){%>									
-						<html:checkbox name="DefinirEnviosForm" property="editarEnvio" value="true" />
-						<%}else{%>
-						<html:checkbox name="DefinirEnviosForm" property="editarEnvio" value="true" disabled="true"/>
-						<%}%>
-					</td>
-			</tr>
-		</table>
+							<tr>
+								<td class="labelText" colspan="2"><siga:Idioma
+										key="envios.definir.literal.fechaprogramada" />
+									&nbsp;&nbsp;&nbsp;&nbsp; <html:text name="DefinirEnviosForm"
+										property="fechaProgramada" size="10" maxlength="10"
+										styleClass="box" readonly="true" /> <a href='javascript://'
+									onClick="return showCalendarGeneral(fechaProgramada);"><img
+										src="<%=app%>/html/imagenes/calendar.gif" border="0">
+								</a></td>
+								<td class="labelText"><siga:Idioma
+										key="envios.definir.literal.editarenvio" /></td>
+										<td>
+										 <%
+ 	if (isEditarEnvio) {
+ %>
+									<html:checkbox name="DefinirEnviosForm" property="editarEnvio"
+										value="true" /> <%
+ 	} else {
+ %> <html:checkbox
+										name="DefinirEnviosForm" property="editarEnvio" value="true"
+										disabled="true" /> <%
+ 	}
+ %>
+								</td>
+							</tr>
+						</table>
 
 	</td>
 	</tr>
@@ -231,11 +271,17 @@
 		 PARA POSICIONARLA EN SU SITIO NATURAL, SI NO SE POSICIONA A MANO
 		 La propiedad modal dice el tamanho de la ventana (M,P,G)
 	-->
-<% if(isDescargar){%>									
+<%
+	if (isDescargar) {
+%>									
 		<siga:ConjBotonesAccion botones="D,Y,C" modal="P" />
-<%}else{%>
+<%
+	} else {
+%>
 	<siga:ConjBotonesAccion botones="Y,C" modal="P" />
-<%}%>
+<%
+	}
+%>
 
 		
 
@@ -254,7 +300,10 @@
 				var insTipoEnvio = document.forms[0].comboTipoEnvio.value;
 				var opcion_array=insTipoEnvio.split(",");
 				document.DefinirEnviosForm.idTipoEnvio.value = opcion_array[1]; 
-				
+				if(document.getElementById("idCheckAcuseRecibo").checked)
+					document.DefinirEnviosForm.acuseRecibo.value = "1";
+				else
+					document.DefinirEnviosForm.acuseRecibo.value = "0";
 				
 				DefinirEnviosForm.submit();
 			} else {
@@ -297,7 +346,46 @@
 			}
 			
 		}
+		function onChangePlantillaEnvio(){
+			var cmbPlantillaEnvio = document.getElementsByName("comboPlantillaEnvio")[0];
+			var opcionArray=cmbPlantillaEnvio.value.split(",");
+			var idTipoEnvio = opcionArray[2]; 
+			if(idTipoEnvio=='1'){
+				var acuseRecibo = opcionArray[3];
+				if(acuseRecibo=='1')
+					document.getElementById("idCheckAcuseRecibo").checked = "checked";
+				else
+					document.getElementById("idCheckAcuseRecibo").checked = "";
+					
+			}else{
+				//document.getElementById("tdAcuseRecibo").style.display="none";
+				document.getElementById("idCheckAcuseRecibo").checked = "";
+			}
+			
+				
+			
+		}
+		function onChangeTipoEnvio(){
+			
+			var cmbTipoEnvio = document.getElementsByName("comboTipoEnvio")[0];
+			var opcionArray=cmbTipoEnvio.value.split(",");
+			idTipoEnvio = opcionArray[1];
+			
+			
+			//alert("i "+idTipoEnvio);
+			if(idTipoEnvio!='1'){
+				document.getElementById("idCheckAcuseRecibo").disabled="disabled";
+					
+		      	
+				
+			}else{
+				document.getElementById("idCheckAcuseRecibo").disabled="";
+			}
+			
+		} 
+		
 		recargarCombos();
+		
 	</script>
 	
 	<!-- FIN: SCRIPTS BOTONES -->

@@ -43,6 +43,7 @@ public class EnvEnvioProgramadoAdm extends MasterBeanAdministrador {
                 EnvEnvioProgramadoBean.C_ESTADO,
                 EnvEnvioProgramadoBean.C_NOMBRE,
                 EnvEnvioProgramadoBean.C_FECHAPROGRAMADA,
+                EnvEnvioProgramadoBean.C_ACUSERECIBO,
             	EnvEnvioProgramadoBean.C_FECHAMODIFICACION,
             	EnvEnvioProgramadoBean.C_USUMODIFICACION
 				};
@@ -86,6 +87,7 @@ public class EnvEnvioProgramadoAdm extends MasterBeanAdministrador {
 			bean.setEstado(UtilidadesHash.getString(hash, EnvEnvioProgramadoBean.C_ESTADO));
 			bean.setNombre(UtilidadesHash.getString(hash, EnvEnvioProgramadoBean.C_NOMBRE));
 			bean.setFechaProgramada(UtilidadesHash.getString(hash, EnvEnvioProgramadoBean.C_FECHAPROGRAMADA));
+			bean.setAcuseRecibo(UtilidadesHash.getString(hash, EnvEnvioProgramadoBean.C_ACUSERECIBO));
 			
 			
 			
@@ -121,6 +123,7 @@ public class EnvEnvioProgramadoAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, EnvEnvioProgramadoBean.C_ESTADO, b.getEstado());
 			UtilidadesHash.set(htData, EnvEnvioProgramadoBean.C_NOMBRE, b.getNombre());
 			UtilidadesHash.set(htData, EnvEnvioProgramadoBean.C_FECHAPROGRAMADA, b.getFechaProgramada());
+			UtilidadesHash.set(htData, EnvEnvioProgramadoBean.C_ACUSERECIBO, b.getAcuseRecibo());
 			
 
 		}

@@ -27,6 +27,7 @@ import com.siga.beans.EnvEnviosBean;
 import com.siga.beans.EnvPlantillaRemitentesAdm;
 import com.siga.beans.EnvPlantillaRemitentesBean;
 import com.siga.beans.EnvPlantillasEnviosAdm;
+import com.siga.beans.EnvPlantillasEnviosBean;
 import com.siga.beans.EnvTipoEnviosAdm;
 import com.siga.beans.EnvTipoEnviosBean;
 import com.siga.envios.form.RemitentesPlantillasForm;
@@ -123,10 +124,21 @@ public class RemitentesPlantillasAction extends MasterAction {
 	        request.setAttribute("tipo", tipoBean.getNombre());
 	        
 	        EnvPlantillasEnviosAdm plantillasEnvioAdm = new EnvPlantillasEnviosAdm (this.getUserBean(request));
+	        htTipo.put(EnvPlantillasEnviosBean.C_IDINSTITUCION,idInstitucion);
+	        htTipo.put(EnvPlantillasEnviosBean.C_IDPLANTILLAENVIOS,idPlantillaEnvios);
+	        htTipo.put(EnvPlantillasEnviosBean.C_IDTIPOENVIOS,idTipoEnvios);
+	        
+	        EnvPlantillasEnviosBean plantillasEnvioBean = (EnvPlantillasEnviosBean) plantillasEnvioAdm.selectByPK(htTipo).get(0);
+	        
+	        
+	        
+	        
+	        
 	        datos = plantillasEnvioAdm.getRemitentes(idInstitucion,idTipoEnvios,idPlantillaEnvios);
 	        request.setAttribute("datos", datos); 
 
 	        request.setAttribute("nombrePlantilla", nombrePlantilla);
+	        request.setAttribute("acuseRecibo", plantillasEnvioBean.getAcuseRecibo());
 	        request.setAttribute("idTipoEnvio", idTipoEnvios);
 	        request.setAttribute("idPlantillaEnvios", idPlantillaEnvios);
 	        request.setAttribute("editable", request.getParameter("editable"));

@@ -130,6 +130,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
             	EnvEnviosBean.C_IDIMPRESORA,
             	EnvEnviosBean.C_IDTIPOENVIOS,
             	EnvEnviosBean.C_CONSULTA,
+            	EnvEnviosBean.C_ACUSERECIBO,
             	EnvEnviosBean.C_FECHAMODIFICACION,
             	EnvEnviosBean.C_USUMODIFICACION
 				};
@@ -178,6 +179,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			bean.setIdImpresora(UtilidadesHash.getInteger(hash, EnvEnviosBean.C_IDIMPRESORA));
 			bean.setIdTipoEnvios(UtilidadesHash.getInteger(hash, EnvEnviosBean.C_IDTIPOENVIOS));
 			bean.setConsulta(UtilidadesHash.getString(hash, EnvEnviosBean.C_CONSULTA));
+			bean.setAcuseRecibo(UtilidadesHash.getString(hash, EnvEnviosBean.C_ACUSERECIBO));
 
 		}
 
@@ -215,6 +217,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, EnvEnviosBean.C_IDIMPRESORA, b.getIdImpresora());
 			UtilidadesHash.set(htData, EnvEnviosBean.C_IDTIPOENVIOS, b.getIdTipoEnvios());
 			UtilidadesHash.set(htData, EnvEnviosBean.C_CONSULTA, b.getConsulta());
+			UtilidadesHash.set(htData, EnvEnviosBean.C_ACUSERECIBO, b.getAcuseRecibo());
 
 		}
 
@@ -5014,10 +5017,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		    	    //Se especifica la dirección de origen.
 		    	    mensaje.setFrom(new InternetAddress(sFrom));
 			    	 // Acuse de recibo
-		    	    if(false)
+		    	    if(envBean.getAcuseRecibo()!=null && envBean.getAcuseRecibo().equals(ClsConstants.DB_TRUE))
 		    	    	mensaje.addHeader("Disposition-Notification-To",sFrom);
-
-		    	    
 		    	    InternetAddress toInternetAddress = new InternetAddress(sTo);
 		    	    //Se especifica la dirección de destino.
 		    	    mensaje.addRecipient(MimeMessage.RecipientType.TO,toInternetAddress );

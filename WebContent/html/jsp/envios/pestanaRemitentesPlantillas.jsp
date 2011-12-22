@@ -27,6 +27,7 @@
 	String tipo              = (String)request.getAttribute("tipo");
 	String idTipoEnvio       = (String)request.getAttribute("idTipoEnvio");
 	String idPlantillaEnvios = (String)request.getAttribute("idPlantillaEnvios");
+	String acuseRecibo = (String)request.getAttribute("acuseRecibo");
 	boolean bEditable = ((String)request.getAttribute("editable")).equals("1");
 	
 	
@@ -64,6 +65,23 @@
 						}
 					}	
 			}
+			function accionGuardar() 
+			{		
+				if(document.getElementById("idCheckAcuseRecibo").checked)
+					document.DefinirPlantillasEdicion.acuseRecibo.value = "1";
+				else
+					document.DefinirPlantillasEdicion.acuseRecibo.value = "0";
+						
+				document.DefinirPlantillasEdicion.submit();
+	
+			}
+			function inicio(){
+				if(document.getElementById("valorAcuseRecibo").value=="1")
+					document.getElementById("idCheckAcuseRecibo").checked = "checked";
+				else
+					document.getElementById("idCheckAcuseRecibo").checked = "";
+					
+			}
 	
 
 			function refrescarLocal()
@@ -79,7 +97,7 @@
 		
 	</head>
 	
-	<body>
+	<body onload="inicio();">
 	
 	<table class="tablaTitulo" align="center" cellspacing="0">
 			<html:form  action="/ENV_RemitentesPlantilla.do" method="POST" target="submitArea">
@@ -116,6 +134,18 @@
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 				<siga:Idioma key="envios.plantillas.literal.plantilla"/> :&nbsp;<%=nombrePlantilla%> 				    
+			</td>
+		</tr>
+		
+		
+	</table>
+	<table>
+	
+	<tr>
+			<td class="labelText"><siga:Idioma key="envios.definir.literal.acuseRecibo"/></td>
+			<td >
+				 <input type="checkbox" id="idCheckAcuseRecibo">				    
+				 <input type="hidden" id="valorAcuseRecibo" value=<%=acuseRecibo%>>
 			</td>
 		</tr>
 	</table>
@@ -168,12 +198,20 @@
 
 
 		<!-- G Guardar, Y GuardaryCerrar, R Reestablecer, C Cerrar, X Cancelar -->
-			<siga:ConjBotonesAccion botones="V,N" clase="botonesDetalle"  />
+			<siga:ConjBotonesAccion botones="G,V,N" clase="botonesDetalle"  />
 		
 	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
 		<input type="hidden" name="actionModal" value="">
 		<input type="hidden" name="modo" value="abrirBusquedaModal">
 		<input type="hidden" name="clientes" value="1">
+	</html:form>
+	<html:form action="/ENV_DefinirPlantillas" name="DefinirPlantillasEdicion" type="com.siga.envios.form.SIGAPlantillasEnviosForm" method="POST" target="submitArea">
+		<html:hidden property="modo" value="modificar"/>
+		<html:hidden property="idPlantillaEnvios" value = "<%=idPlantillaEnvios%>"/>
+		<html:hidden property="idTipoEnvios" value = "<%=idTipoEnvio%>"/>
+		<html:hidden property="acuseRecibo" value=""/>
+		
+		
 	</html:form>
 	
 	<%@ include file="/html/jsp/envios/includeVolver.jspf" %>

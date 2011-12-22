@@ -25,6 +25,7 @@ public class EnvPlantillasEnviosAdm extends MasterBeanAdministrador
 		        		   EnvPlantillasEnviosBean.C_IDTIPOENVIOS,
 		        		   EnvPlantillasEnviosBean.C_IDPLANTILLAENVIOS,
 		        		   EnvPlantillasEnviosBean.C_NOMBRE,
+		        		   EnvPlantillasEnviosBean.C_ACUSERECIBO,
 		        		   EnvPlantillasEnviosBean.C_FECHAMODIFICACION, 
 						   EnvPlantillasEnviosBean.C_USUMODIFICACION};
 
@@ -50,6 +51,7 @@ public class EnvPlantillasEnviosAdm extends MasterBeanAdministrador
 			bean.setIdTipoEnvios(UtilidadesHash.getInteger(hash, EnvPlantillasEnviosBean.C_IDTIPOENVIOS));
 			bean.setIdPlantillaEnvios(UtilidadesHash.getInteger(hash, EnvPlantillasEnviosBean.C_IDPLANTILLAENVIOS));
 			bean.setNombre(UtilidadesHash.getString(hash, EnvPlantillasEnviosBean.C_NOMBRE));
+			bean.setAcuseRecibo(UtilidadesHash.getString(hash, EnvPlantillasEnviosBean.C_ACUSERECIBO));
 		}
 
 		catch (Exception e)
@@ -76,6 +78,7 @@ public class EnvPlantillasEnviosAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(htData, EnvPlantillasEnviosBean.C_IDTIPOENVIOS, b.getIdTipoEnvios());
 			UtilidadesHash.set(htData, EnvPlantillasEnviosBean.C_IDPLANTILLAENVIOS, b.getIdPlantillaEnvios());
 			UtilidadesHash.set(htData, EnvPlantillasEnviosBean.C_NOMBRE, b.getNombre());
+			UtilidadesHash.set(htData, EnvPlantillasEnviosBean.C_ACUSERECIBO, b.getAcuseRecibo());
 		}
 
 		catch (Exception e)
@@ -113,6 +116,7 @@ public class EnvPlantillasEnviosAdm extends MasterBeanAdministrador
             String sSQL = " SELECT P." + EnvPlantillasEnviosBean.C_IDINSTITUCION + ", " +
             					  "P." + EnvPlantillasEnviosBean.C_IDPLANTILLAENVIOS + ", " +
             					  "P." + EnvPlantillasEnviosBean.C_NOMBRE + " AS NOMBREPLANTILLA, " +
+            					  "P." + EnvPlantillasEnviosBean.C_ACUSERECIBO + " , " +
                                   "T." + EnvTipoEnviosBean.C_IDTIPOENVIOS + ", " +
                                   " (select DESCRIPCION from GEN_RECURSOS_CATALOGOS WHERE IDRECURSO = T.NOMBRE AND IDLENGUAJE =:1) AS NOMBRETIPO " +
                                   // RGG 05/06/2009: SE QUITA LA FUNCION Y SE PONE LA SUBSELECT QUE EN ESTE CASO DA MEJOR RENDIMIENTO 

@@ -14,6 +14,7 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.EnvCamposAdm;
 import com.siga.beans.EnvCamposBean;
 import com.siga.beans.EnvCamposEnviosAdm;
@@ -23,9 +24,12 @@ import com.siga.beans.EnvEnviosAdm;
 import com.siga.beans.EnvEnviosBean;
 import com.siga.beans.EnvPlantillaGeneracionAdm;
 import com.siga.beans.EnvPlantillaGeneracionBean;
+import com.siga.beans.EnvPlantillasEnviosAdm;
+import com.siga.beans.EnvPlantillasEnviosBean;
 import com.siga.beans.EnvTipoEnviosAdm;
 import com.siga.beans.EnvTipoEnviosBean;
 import com.siga.envios.form.SIGAEnviosDatosGeneralesForm;
+import com.siga.envios.form.SIGAPlantillasEnviosForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -54,8 +58,11 @@ public class SIGAEnviosDatosGeneralesAction extends MasterAction
 				else if (accion.equalsIgnoreCase("grabar"))
 				{
 					mapDestino = grabar(mapping, miForm, request, response);
+				}else if (accion.equalsIgnoreCase("modificarAcuseRecibo"))
+				{
+					mapDestino = modificarAcuseRecibo(mapping, miForm, request, response);
 				}
-
+				
 				else if (accion.equalsIgnoreCase("borrarCampos"))
 				{
 					mapDestino = borrarCampos(mapping, miForm, request, response);
@@ -432,5 +439,39 @@ public class SIGAEnviosDatosGeneralesAction extends MasterAction
 		request.setAttribute("generacionOK","OK");
 		return "descarga";
 	}
+	protected String modificarAcuseRecibo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
+	{
+	    try
+	    {
+	    	SIGAEnviosDatosGeneralesForm form = (SIGAEnviosDatosGeneralesForm)formulario;
+		    UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
+		    EnvEnviosAdm enviosAdm = new EnvEnviosAdm(this.getUserBean(request));
+		    String idInstitucion = userBean.getLocation();
+		    String[] campos = {EnvEnviosBean.C_ACUSERECIBO,EnvEnviosBean.C_FECHAMODIFICACION,EnvEnviosBean.C_USUMODIFICACION};
+		    String[] claves = {EnvEnviosBean.C_IDINSTITUCION, EnvEnviosBean.C_IDENVIO};
+		    Hashtable plantillaEnvioHashtable = new Hashtable();
+		    UtilidadesHash.set(plantillaEnvioHashtable, EnvEnviosBean.C_IDINSTITUCION, idInstitucion);
+			UtilidadesHash.set(plantillaEnvioHashtable, EnvEnviosBean.C_IDENVIO, form.getIdEnvio());
+			UtilidadesHash.set(plantillaEnvioHashtable, EnvEnviosBean.C_ACUSERECIBO, form.getAcuseRecibo());
+
+			enviosAdm.updateDirect(plantillaEnvioHashtable, claves, campos);
+		    
+		    
+		    
+	
+		    return exito("messages.updated.success",request);
+	    }
+	    
+	    catch(ClsExceptions e)
+	    {
+	        throw e;
+	    }
+	    
+	    catch(Exception e)
+	    {
+	        throw new SIGAException("Error en insert");
+	    }
+	}
+	
 	
 }

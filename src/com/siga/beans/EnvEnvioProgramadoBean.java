@@ -19,6 +19,7 @@ public class EnvEnvioProgramadoBean extends MasterBean {
 	
 	
 	private String nombre;
+	private String acuseRecibo;
 	
 	private String fechaProgramada;
 	
@@ -30,6 +31,7 @@ public class EnvEnvioProgramadoBean extends MasterBean {
 	static public final String C_IDTIPOENVIOS = "IDTIPOENVIOS";
 	static public final String C_IDPLANTILLAENVIOS = "IDPLANTILLAENVIOS";
 	static public final String C_IDPLANTILLA = "IDPLANTILLA";
+	static public final String C_ACUSERECIBO = "ACUSERECIBO";
 	
 	static public final String C_NOMBRE = "NOMBRE";	
 	static public final String C_FECHAPROGRAMADA = "FECHAPROGRAMADA";	
@@ -126,6 +128,16 @@ public class EnvEnvioProgramadoBean extends MasterBean {
 
 	public void setProgramInformes(EnvProgramInformesBean programInformes) {
 		this.programInformes = programInformes;
+	}
+
+
+	public String getAcuseRecibo() {
+		return acuseRecibo;
+	}
+
+
+	public void setAcuseRecibo(String acuseRecibo) {
+		this.acuseRecibo = acuseRecibo;
 	}	
 
 

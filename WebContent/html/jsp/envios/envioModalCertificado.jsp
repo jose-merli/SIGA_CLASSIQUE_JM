@@ -88,96 +88,107 @@
 	<!-- INICIO: CAMPOS -->
 	<!-- Zona de campos de busqueda o filtro -->
 
-	<table  class="tablaCentralCamposPeque"  align="center">
+		<table class="tablaCentralCamposPeque" align="center">
 
-	<html:form action="/ENV_DefinirEnvios.do" method="POST" target="submitArea">
-		<html:hidden property = "hiddenFrame" value = "1"/>
-		<html:hidden property = "modo" value = "insertarEnvioModalCertificado"/>
-		<html:hidden property = "subModo" value=""/>
-		<html:hidden property = "idPersona" value=""/>
-		<html:hidden property = "idFactura" value=""/>
-		<html:hidden property = "idSolicitud" value = ""/>
-		<html:hidden property = "idEnvio" value = ""/>
-		<html:hidden property = "nombre" value = "kk"/>
+			<html:form action="/ENV_DefinirEnvios.do" method="POST"
+				target="submitArea">
+				<html:hidden property="hiddenFrame" value="1" />
+				<html:hidden property="modo" value="insertarEnvioModalCertificado" />
+				<html:hidden property="subModo" value="" />
+				<html:hidden property="idPersona" value="" />
+				<html:hidden property="idFactura" value="" />
+				<html:hidden property="idSolicitud" value="" />
+				<html:hidden property="idEnvio" value="" />
+				<html:hidden property="nombre" value="kk" />
 
-		<html:hidden property = "idEnvioBuscar" value=""/>
+				<html:hidden property="idEnvioBuscar" value="" />
 
-		<html:hidden property = "idsParaEnviar"/>
+				<html:hidden property="idsParaEnviar" />
+				<html:hidden property="acuseRecibo" value="0" />
 
-	<tr>				
-	<td>
-	<siga:ConjCampos leyenda="envios.certificados.literal.destinatario">
-		<table class="tablaCampos" align="center" border="0">
-			<tr>	
-				<td class="labelText" width="180">
-					<siga:Idioma key="envios.definir.literal.institucionOrigen"/>
-				</td>
-				<td align="left">
-						<input type="radio" name="colegio" value="o" checked>
-				</td>		
-			</tr>	
-			<tr>	
-				<td class="labelText">
-						<siga:Idioma key="envios.definir.literal.institucionDestino"/>
-				</td>
-				<td align="left">
-						<input type="radio" name="colegio" value="d">
-				</td>				
-			</tr>
+				<tr>
+					<td><siga:ConjCampos
+							leyenda="envios.certificados.literal.destinatario">
+							<table class="tablaCampos" align="center" border="0">
+								<tr>
+									<td class="labelText" width="180"><siga:Idioma
+											key="envios.definir.literal.institucionOrigen" /></td>
+									<td align="left"><input type="radio" name="colegio"
+										value="o" checked></td>
+								</tr>
+								<tr>
+									<td class="labelText"><siga:Idioma
+											key="envios.definir.literal.institucionDestino" /></td>
+									<td align="left"><input type="radio" name="colegio"
+										value="d"></td>
+								</tr>
+							</table>
+						</siga:ConjCampos> <siga:ConjCampos leyenda="envios.certificados.literal.confEnvio">
+						
+							<table class="tablaCampos" align="center" border="0">
+							<tr>	
+				<td width="25%"></td>
+				<td width="40%"></td>
+				<td width="30%"></td>
+				<td width="10%"></td>
+				
+						
+		</tr>	
+								<tr>
+									<td class="labelText"><siga:Idioma
+											key="envios.definir.literal.tipoenvio" />&nbsp;(*)</td>
+									<td colspan="3"><siga:ComboBD nombre="comboTipoEnvio"
+											tipo="<%=consultaPlantillas%>" clase="boxCombo"
+											obligatorio="true" parametro="<%=idInstitucion%>"
+											accion="Hijo:comboPlantillaEnvio;onChangeTipoEnvio()" /></td>
+								</tr>
+
+								<tr>
+									<td class="labelText"><siga:Idioma
+											key="envios.plantillas.literal.plantilla" />&nbsp;(*)</td>
+									<td><siga:ComboBD nombre="comboPlantillaEnvio"
+											tipo="cmbPlantillaEnvios2" clase="boxCombo"
+											obligatorio="true" hijo="t"
+											accion="Hijo:idPlantillaGeneracion;parent.onChangePlantillaEnvio()" />
+									</td>
+									<td class="labelText"><siga:Idioma
+											key="envios.definir.literal.acuseRecibo" /></td>
+									<td><input type="checkbox" id="idCheckAcuseRecibo"
+										disabled="disabled">
+									</td>
+								</tr>
+
+								<tr>
+									<td class="labelText"><siga:Idioma
+											key="envios.definir.literal.plantillageneracion" /></td>
+									<td colspan="3"><siga:ComboBD
+											nombre="idPlantillaGeneracion" tipo="cmbPlantillaGeneracion"
+											clase="boxCombo" obligatorio="false" hijo="t" pestana="true" />
+									</td>
+
+								</tr>
+
+								<tr>
+									<td class="labelText"><siga:Idioma
+											key="envios.definir.literal.fechaprogramada" /></td>
+									<td colspan="3"><html:text name="DefinirEnviosForm"
+											property="fechaProgramada" size="10" maxlength="10"
+											styleClass="box" readonly="true" /> <a href='javascript://'
+										onClick="return showCalendarGeneral(fechaProgramada);"><img
+											src="<%=app%>/html/imagenes/calendar.gif" border="0">
+									</a></td>
+								</tr>
+							</table>
+						</siga:ConjCampos></td>
+				</tr>
+
+			</html:form>
+
 		</table>
-	</siga:ConjCampos>
-
-	<siga:ConjCampos leyenda="envios.certificados.literal.confEnvio">
-		<table class="tablaCampos" align="center" border="0">
-			<tr>	
-				<td class="labelText">
-						<siga:Idioma key="envios.definir.literal.tipoenvio"/>&nbsp;(*)
-				</td>
-				<td>
-						<siga:ComboBD nombre = "comboTipoEnvio" tipo="<%=consultaPlantillas%>" clase="boxCombo" obligatorio="true" parametro="<%=idInstitucion%>"  accion="Hijo:comboPlantillaEnvio"/>
-				</td>				
-			</tr>
-			
-			<tr>	
-				<td class="labelText">
-						<siga:Idioma key="envios.plantillas.literal.plantilla"/>&nbsp;(*)
-				</td>
-				<td>
-						<siga:ComboBD nombre = "comboPlantillaEnvio" tipo="cmbPlantillaEnvios2" clase="boxCombo" obligatorio="true" hijo="t" accion="Hijo:idPlantillaGeneracion"/>
-				</td>				
-			</tr>
-			
-			<tr>
-				<td class="labelText">
-					<siga:Idioma key="envios.definir.literal.plantillageneracion"/>
-				</td>
-				<td>
-					<siga:ComboBD nombre="idPlantillaGeneracion" tipo="cmbPlantillaGeneracion" clase="boxCombo" obligatorio="false" hijo="t" pestana="true"/>
-				</td>				
-			</tr>
-
-			<tr>	
-				<td class="labelText">
-					<siga:Idioma key="envios.definir.literal.fechaprogramada"/>
-				</td>
-				<td>
-					<html:text name="DefinirEnviosForm" property="fechaProgramada" size="10" maxlength="10" styleClass="box" readonly="true"/>					
-					<a href='javascript://' onClick="return showCalendarGeneral(fechaProgramada);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
-				</td>
-			</tr>
-		</table>
-	</siga:ConjCampos>
-
-	</td>
-	</tr>
-
-	</html:form>
-	
-	</table>
 
 
 
-	<!-- FIN: CAMPOS -->
+		<!-- FIN: CAMPOS -->
 
 	<!-- INICIO: BOTONES REGISTRO -->
 	<!-- Esto pinta los botones que le digamos. Ademas, tienen asociado cada
@@ -203,6 +214,11 @@
 			if (validateDefinirEnviosForm(document.DefinirEnviosForm)){
 				var insTipoEnvio = document.forms[0].comboTipoEnvio.value;
 				var opcion_array=insTipoEnvio.split(",");
+				if(document.getElementById("idCheckAcuseRecibo").checked)
+					document.DefinirEnviosForm.acuseRecibo.value = "1";
+				else
+					document.DefinirEnviosForm.acuseRecibo.value = "0";
+				
 				var f = document.DefinirEnviosForm.name;
 				document.frames.submitArea.location = '<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=messages.wait';
 			} else {
@@ -215,6 +231,43 @@
 		{		
 			window.close();
 		}
+		function onChangePlantillaEnvio(){
+			var cmbPlantillaEnvio = document.getElementsByName("comboPlantillaEnvio")[0];
+			var opcionArray=cmbPlantillaEnvio.value.split(",");
+			var idTipoEnvio = opcionArray[2]; 
+			if(idTipoEnvio=='1'){
+				var acuseRecibo = opcionArray[3];
+				if(acuseRecibo=='1')
+					document.getElementById("idCheckAcuseRecibo").checked = "checked";
+				else
+					document.getElementById("idCheckAcuseRecibo").checked = "";
+					
+			}else{
+				//document.getElementById("tdAcuseRecibo").style.display="none";
+				document.getElementById("idCheckAcuseRecibo").checked = "";
+			}
+			
+				
+			
+		}
+		function onChangeTipoEnvio(){
+			
+			var cmbTipoEnvio = document.getElementsByName("comboTipoEnvio")[0];
+			var opcionArray=cmbTipoEnvio.value.split(",");
+			idTipoEnvio = opcionArray[1];
+			
+			
+			//alert("i "+idTipoEnvio);
+			if(idTipoEnvio!='1'){
+				document.getElementById("idCheckAcuseRecibo").disabled="disabled";
+					
+		      	
+				
+			}else{
+				document.getElementById("idCheckAcuseRecibo").disabled="";
+			}
+			
+		} 
 	
 
 	</script>

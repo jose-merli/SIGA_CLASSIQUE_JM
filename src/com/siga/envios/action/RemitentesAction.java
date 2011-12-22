@@ -140,10 +140,12 @@ public class RemitentesAction extends MasterAction {
 	        EnvTipoEnviosBean tipoBean = (EnvTipoEnviosBean)tipo.firstElement();	        
 	        request.setAttribute("tipo", tipoBean.getNombre());
 	        request.setAttribute("idTipoEnvio", tipoBean.getIdTipoEnvios());
+	        request.setAttribute("acuseRecibo", envioBean.getAcuseRecibo());
 	        
 	        //recupero los remitentes y los paso a la jsp
 	        datos = envioAdm.getRemitentes(idInstitucion,idEnvio);
 	        request.setAttribute("datos", datos); 
+	        
 	        
         } catch (Exception e) {
             throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);

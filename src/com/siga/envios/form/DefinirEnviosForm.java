@@ -43,6 +43,7 @@ public class DefinirEnviosForm extends MasterForm
 	public String getDatosEnvios() { return (String) this.datos.get("datosEnvios"); }
 	public String getDescargar() { return (String) this.datos.get("descargar"); }
 	public String getClavesIteracion() { return (String) this.datos.get("clavesIteracion"); }
+	public String getAcuseRecibo() { return (String) this.datos.get("acuseRecibo"); }
 	
 	
 	// SETTERS
@@ -68,6 +69,8 @@ public class DefinirEnviosForm extends MasterForm
 	public void setIdPlantillaEnvios(String idPlantillaEnvios) { try { this.datos.put("idPlantillaEnvios", idPlantillaEnvios); } catch (Exception e) {} }
 	public void setFechaProgramada(String fechaProgramada) { try { this.datos.put("fechaProgramada", fechaProgramada); } catch (Exception e) {} }
 	public void setIdPersona(String idPersona) { try { this.datos.put("idPersona", idPersona); } catch (Exception e) {} }
+	public void setAcuseRecibo(String acuseRecibo) { try { this.datos.put("acuseRecibo", acuseRecibo); } catch (Exception e) {} }
+	
 	public void setIdSolicitud(String idSolicitud) { try { this.datos.put("idSolicitud", idSolicitud); } catch (Exception e) {} }
 	public void setComboPlantillaEnvio(String comboPlantillaEnvio) {
 		this.datos.put("comboPlantillaEnvio", comboPlantillaEnvio);

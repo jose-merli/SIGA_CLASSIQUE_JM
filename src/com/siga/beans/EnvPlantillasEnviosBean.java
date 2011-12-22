@@ -7,12 +7,14 @@ public class EnvPlantillasEnviosBean extends MasterBean
 	private Integer idTipoEnvios;
 	private Integer idPlantillaEnvios;
 	private String nombre;
+	private String acuseRecibo;
 
 	/* Nombre campos de la tabla */
 	static public final String C_IDINSTITUCION = "IDINSTITUCION";
 	static public final String C_IDTIPOENVIOS = "IDTIPOENVIOS";
 	static public final String C_IDPLANTILLAENVIOS = "IDPLANTILLAENVIOS";
 	static public final String C_NOMBRE = "NOMBRE";
+	static public final String C_ACUSERECIBO = "ACUSERECIBO";
 	
 	static public final String T_NOMBRETABLA = "ENV_PLANTILLASENVIOS";
 	
@@ -56,4 +58,12 @@ public class EnvPlantillasEnviosBean extends MasterBean
     {
         this.nombre = nombre;
     }
+
+	public String getAcuseRecibo() {
+		return acuseRecibo;
+	}
+
+	public void setAcuseRecibo(String acuseRecibo) {
+		this.acuseRecibo = acuseRecibo;
+	}
 }

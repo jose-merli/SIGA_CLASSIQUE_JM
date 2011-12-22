@@ -29,6 +29,7 @@
 	String nombreEnv = (String)request.getAttribute("nombreEnv");
 	String tipo = UtilidadesMultidioma.getDatoMaestroIdioma((String)request.getAttribute("tipo"),user);
 	String idTipoEnvio =((Integer)request.getAttribute("idTipoEnvio")).toString();
+	String acuseRecibo = (String)request.getAttribute("acuseRecibo");
 	String idEnvio = (String)request.getParameter("idEnvio");
 	
 	request.removeAttribute("datos");	
@@ -77,6 +78,24 @@
 			{			
 				document.location.reload();			
 			}
+			function accionGuardar() 
+			{		
+				if(document.getElementById("idCheckAcuseRecibo").checked)
+					document.EnviosDatosGeneralesFormEdicion.acuseRecibo.value = "1";
+				else
+					document.EnviosDatosGeneralesFormEdicion.acuseRecibo.value = "0";
+						
+				document.EnviosDatosGeneralesFormEdicion.submit();
+	
+			}
+			function inicio(){
+				if(document.getElementById("valorAcuseRecibo").value=="1")
+					document.getElementById("idCheckAcuseRecibo").checked = "checked";
+				else
+					document.getElementById("idCheckAcuseRecibo").checked = "";
+					
+			}
+	
 		</script>
 		
 		
@@ -89,7 +108,7 @@
 		
 	</head>
 	
-	<body>
+	<body onload="inicio();">
 	
 	<table class="tablaTitulo" align="center" cellspacing="0">
 			<html:form  action="/ENV_Remitentes.do" method="POST" target="submitArea">
@@ -131,7 +150,14 @@
 			</td>
 		</tr>
 	</table>
-				
+	<table>
+		<tr>
+			<td class="labelText"><siga:Idioma key="envios.definir.literal.acuseRecibo"/></td>
+			<td ><input type="checkbox" id="idCheckAcuseRecibo">				    
+				 <input type="hidden" id="valorAcuseRecibo" value=<%=acuseRecibo%>>
+			</td>
+		</tr>
+	</table>
 			<siga:TablaCabecerasFijas 
 		   	      nombre="tablaDatos"
 		   		  borde="1"
@@ -180,13 +206,24 @@
 
 
 		<!-- G Guardar, Y GuardaryCerrar, R Reestablecer, C Cerrar, X Cancelar -->
-			<siga:ConjBotonesAccion botones="V,N" clase="botonesDetalle"  />
+			<siga:ConjBotonesAccion botones="V,N,G" clase="botonesDetalle"  />
 		
 	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
 		<input type="hidden" name="actionModal" value="">
 		<input type="hidden" name="modo" value="abrirBusquedaModal">
 		<input type="hidden" name="clientes" value="1">
 	</html:form>
+	
+	<html:form action="/ENV_Datos_Generales" name="EnviosDatosGeneralesFormEdicion" type="com.siga.envios.form.SIGAEnviosDatosGeneralesForm" method="POST" target="submitArea">
+		<html:hidden property="modo" value="modificarAcuseRecibo"/>
+		<html:hidden property="idEnvio" value = "<%=idEnvio%>"/>
+		<html:hidden property="idTipoEnvio" value = "<%=idTipoEnvio%>"/>
+		<html:hidden property="acuseRecibo" value=""/>
+		
+		
+	</html:form>
+	
+	
 	
 	<%@ include file="/html/jsp/envios/includeVolver.jspf" %>
 	

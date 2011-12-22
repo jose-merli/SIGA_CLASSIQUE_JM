@@ -8,7 +8,11 @@ public class SIGAPlantillasEnviosForm extends MasterForm
     private String descripcionPlantilla="";
     private String idTipoEnvios="";
     private String plantilla="";
+    
     private String idTipoEnvio="";
+    private String idPlantillaEnvios;
+    private String acuseRecibo;
+    
 
 //    public String getModo() 
 //    {
@@ -59,4 +63,20 @@ public class SIGAPlantillasEnviosForm extends MasterForm
     {
     	this.idTipoEnvio=idTipoEnvio;
     }
+
+	public String getIdPlantillaEnvios() {
+		return idPlantillaEnvios;
+	}
+
+	public void setIdPlantillaEnvios(String idPlantillaEnvios) {
+		this.idPlantillaEnvios = idPlantillaEnvios;
+	}
+
+	public String getAcuseRecibo() {
+		return acuseRecibo;
+	}
+
+	public void setAcuseRecibo(String acuseRecibo) {
+		this.acuseRecibo = acuseRecibo;
+	}
 }

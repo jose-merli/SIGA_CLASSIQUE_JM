@@ -1947,6 +1947,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		
 		// Bean envio
 		EnvEnviosBean enviosBean = envio.getEnviosBean();
+		enviosBean.setAcuseRecibo(envioProgramadoBean.getAcuseRecibo());
 		//pdm
 		
 		
@@ -2994,7 +2995,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		String idPlantilla = form.getIdPlantillaEnvios();
 		//obtener plantilla de generacion
 		String idPlantillaGeneracion = form.getIdPlantillaGeneracion();
-
+		String acuseRecibo = form.getAcuseRecibo();
 		// obtener fechaProgramada
 		String fechaProgramada = getFechaProgramada(form.getFechaProgramada(), locale, userBean);
 		EnvEnviosAdm envioAdm = new EnvEnviosAdm(userBean);
@@ -3008,7 +3009,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			enviosBean.setIdEnvio(idEnvio);
 			form.setIdEnvio(idEnvio.toString());
 		}
-
+		enviosBean.setAcuseRecibo(acuseRecibo);
 
 		enviosBean.setDescripcion(nombreEnvio);
 		// trunco la descripción
@@ -3117,7 +3118,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			} else {
 				envioProgramado.setIdPlantilla(null);
 			}
-
+			envioProgramado.setAcuseRecibo(form.getAcuseRecibo());
 			envioProgramado.setNombre(form.getNombre());
 			envioProgramado.setEstado(ClsConstants.DB_FALSE);
 			envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(), locale, userBean));
@@ -3359,6 +3360,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		} else {
 			envioProgramado.setIdPlantilla(null);
 		}
+		envioProgramado.setAcuseRecibo(form.getAcuseRecibo());
 
 		envioProgramado.setNombre(form.getNombre());
 		envioProgramado.setEstado(ClsConstants.DB_FALSE);
@@ -3555,6 +3557,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			} else {
 				envioProgramado.setIdPlantilla(null);
 			}
+			envioProgramado.setAcuseRecibo(form.getAcuseRecibo());
 
 			envioProgramado.setNombre(form.getNombre());
 			envioProgramado.setEstado(ClsConstants.DB_FALSE);
@@ -3711,6 +3714,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			} else {
 				envioProgramado.setIdPlantilla(null);
 			}
+			envioProgramado.setAcuseRecibo(form.getAcuseRecibo());
 
 			envioProgramado.setNombre(form.getNombre());
 			envioProgramado.setEstado(ClsConstants.DB_FALSE);
@@ -3898,6 +3902,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			} else {
 				envioProgramado.setIdPlantilla(null);
 			}
+			envioProgramado.setAcuseRecibo(form.getAcuseRecibo());
 
 			envioProgramado.setNombre(form.getNombre());
 			envioProgramado.setEstado(ClsConstants.DB_FALSE);
@@ -4687,6 +4692,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			} else {
 				envioProgramado.setIdPlantilla(null);
 			}
+			envioProgramado.setAcuseRecibo(form.getAcuseRecibo());
 	
 			envioProgramado.setNombre(form.getNombre());
 			envioProgramado.setEstado(ClsConstants.DB_FALSE);
@@ -5045,6 +5051,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				} else {
 					envioProgramado.setIdPlantilla(null);
 				}
+				envioProgramado.setAcuseRecibo(form.getAcuseRecibo());
 		
 				envioProgramado.setNombre(form.getNombre());
 				envioProgramado.setEstado(ClsConstants.DB_FALSE);
@@ -5653,7 +5660,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				} else {
 					envioProgramado.setIdPlantilla(null);
 				}
-		
+				envioProgramado.setAcuseRecibo(form.getAcuseRecibo());
 				envioProgramado.setNombre(form.getNombre());
 				envioProgramado.setEstado(ClsConstants.DB_FALSE);
 				envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(), locale, userBean));
@@ -5962,7 +5969,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			} else {
 				envioProgramado.setIdPlantilla(null);
 			}
-
+			envioProgramado.setAcuseRecibo(form.getAcuseRecibo());
 			envioProgramado.setNombre(form.getNombre());
 			envioProgramado.setEstado(ClsConstants.DB_FALSE);
 			envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(), locale, userBean));

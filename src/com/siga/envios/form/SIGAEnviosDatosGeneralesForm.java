@@ -24,7 +24,8 @@ public class SIGAEnviosDatosGeneralesForm extends MasterForm {
 	private String idFormato="";
 	private String valor="";
 	private String descripcionEnvio="";
-    
+	private String acuseRecibo;
+	
     public String getIdEnvio()
     {
         return idEnvio;
@@ -166,4 +167,12 @@ public class SIGAEnviosDatosGeneralesForm extends MasterForm {
     {
         this.descripcionEnvio=descripcionEnvio;
     }
+
+	public String getAcuseRecibo() {
+		return acuseRecibo;
+	}
+
+	public void setAcuseRecibo(String acuseRecibo) {
+		this.acuseRecibo = acuseRecibo;
+	}
 }
