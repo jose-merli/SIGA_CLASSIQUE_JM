@@ -23,24 +23,52 @@
 <%@ page import="java.util.*"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.siga.censo.form.DatosColegialesForm"%>
+<%@ page import="com.siga.tlds.FilaExtElement"%>
+<%@ page import="com.siga.Utilidades.paginadores.PaginadorVector"%>
+
+
 
 <!-- JSP -->
-<% 
-	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
+<%
+	String app = request.getContextPath();
+	HttpSession ses = request.getSession();
 	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
-	DatosColegialesForm f = (DatosColegialesForm)request.getAttribute("DatosColegialesForm");	
-	String nombre=(String)request.getAttribute("NOMBRE"); // Obtengo el nombre completo de la persona
-	String numero=(String)request.getAttribute("NUMERO"); // Obtengo el numero de colegiado de la persona		
+	DatosColegialesForm form = (DatosColegialesForm) request.getAttribute("DatosColegialesForm");
+	String nombre = (String) request.getAttribute("NOMBRE"); // Obtengo el nombre completo de la persona
+	String numero = (String) request.getAttribute("NUMERO"); // Obtengo el numero de colegiado de la persona	
+	
+	String identificadorDS = (String) request.getAttribute("IDENTIFICADORDS");
 
 	// para saber hacia donde volver
 	String busquedaVolver = (String) request.getSession().getAttribute("CenBusquedaClientesTipo");
-	if (busquedaVolver==null) {
+	if (busquedaVolver == null) {
 		busquedaVolver = "volverNo";
 	}
+
+	
+
+	String idioma=usr.getLanguage().toUpperCase();
+	/** PAGINADOR ***/
+	List<DocuShareObjectVO> resultado= new ArrayList<DocuShareObjectVO>();
+	String paginaSeleccionada ="";
+	
+	
+	
+	String registrosPorPagina = "";
+	HashMap hm=new HashMap();
+	
+
+	
+	String action=app+"/CEN_Censo_DocumentacionRegTel.do?noReset=true";
+	String modo=(String)request.getSession().getAttribute("accion");
+	
+	String botones = "C";
+	
+	
 %>	
 
-<html>
+
+<%@page import="com.siga.censo.vos.DocuShareObjectVO"%><html>
 
 <!-- HEAD -->
 	<head>
@@ -56,30 +84,84 @@
 		<!-- FIN: TITULO Y LOCALIZACION -->
 	
 	</head>
+	
+	<script type="text/javascript">
+		function cargarCollection() {			
+			document.forms[0].modo.value="buscarPor";
+			document.forms[0].target="resultado1";	
+			document.forms[0].submit();	
+		}
 
-	<body>
+
+		function accionDownload(idDoc) {			
+			document.forms[0].modo.value="download";				
+			document.forms[0].target="submitArea";
+			document.forms[0].identificadorDs.value=idDoc;
+			document.forms[0].submit();
+		}
+
+		function accionConsultaCollection(posicion, identificador, title) {
+			document.forms[0].modo.value="ver";
+			document.forms[0].target="resultado1";
+			document.forms[0].identificadorDs.value=identificador;
+			document.forms[0].posicionDs.value=posicion;
+			
+			document.forms[0].titleDs.value=title;
+			document.forms[0].submit();
+		}
+	</script>
+
+	<body onload="cargarCollection()">
+	
+		<html:form action="/CEN_Censo_DocumentacionRegTel.do?noReset=true" method="post" target="mainWorkArea" style="display:none">
+			<input type="hidden" name="modo" value="<%=modo%>">			
+			<input type="hidden" name="tablaDatosDinamicosD">				
+			<input type="hidden" name="identificadorDs" value="<%=identificadorDS%>">
+			<input type="hidden" name="titleDs" value="">
+			<input type="hidden" name="posicionDs" value="">
+			
+			
+		</html:form>
+		
 		<!-- TITULO -->
 		<!-- Barra de titulo actualizable desde los mantenimientos -->
 		<table class="titulitosDatos" cellspacing="0" height="32">
 			<tr>
 				<td id="titulitos" class="titulosPeq">
 					<siga:Idioma key="censo.docushare.literal.titulo1"/> &nbsp;<%=UtilidadesString.mostrarDatoJSP(nombre)%>&nbsp;
-				    <%if(!numero.equalsIgnoreCase("")){%>
+				    <%
+				    	if (!numero.equalsIgnoreCase("")) {
+				    %>
 						<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;<%=UtilidadesString.mostrarDatoJSP(numero)%>
-					<%} 
-					else {%>
+					<%
+						} else {
+					%>
 					   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
-					<%}%>
+					<%
+						}
+					%>
 				</td>
 			</tr>
 		</table>
+					
+	
+	<!-- INICIO: IFRAME LISTA RESULTADOS -->
+			<iframe align="left" src="<%=app%>/html/jsp/general/blank.jsp"
+							id="resultado1"
+							name="resultado1"
+							scrolling="no"
+							frameborder="0"
+							marginheight="0"
+							marginwidth="0";					 
+							style="width:100%; height:100%;">
+			</iframe>
+			<!-- FIN: IFRAME LISTA RESULTADOS -->
 			
-		<iframe src="<%=f.getUrlDocumentacionDS()%>" name="docuShareIFrame" style="width:100%;height:100%;" frameborder="0"></iframe>
-
-		<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"/>
+			<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"/>
 
 		<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
-	
+		
 		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+		
 	</body>
 </html>

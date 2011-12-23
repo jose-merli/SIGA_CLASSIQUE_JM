@@ -1511,7 +1511,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 	 */
 	private String obtenerIdentificadorDS(UsrBean usrBean, String collectionTitle) throws SIGAException, ClsExceptions, DSException {
 		DocuShareHelper docuShareHelper = new DocuShareHelper(usrBean);
-		return docuShareHelper.createCollection(collectionTitle);		
+		return docuShareHelper.createCollectionExpedientes(collectionTitle);		
 	}
 	
 	/**

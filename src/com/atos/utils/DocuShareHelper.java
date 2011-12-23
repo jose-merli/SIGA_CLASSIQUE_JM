@@ -3,17 +3,31 @@
  */
 package com.atos.utils;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.beans.GenParametrosAdm;
+import com.siga.censo.vos.DocuShareObjectVO;
 import com.siga.general.SIGAException;
 import com.xerox.docushare.DSClass;
+import com.xerox.docushare.DSContentElement;
 import com.xerox.docushare.DSException;
 import com.xerox.docushare.DSFactory;
 import com.xerox.docushare.DSHandle;
+import com.xerox.docushare.DSInvalidLicenseException;
 import com.xerox.docushare.DSObject;
+import com.xerox.docushare.DSObjectIterator;
 import com.xerox.docushare.DSSelectSet;
 import com.xerox.docushare.DSServer;
 import com.xerox.docushare.DSSession;
+import com.xerox.docushare.db.DbNoSuchObjectException;
 import com.xerox.docushare.object.DSCollection;
+import com.xerox.docushare.object.DSDocument;
 import com.xerox.docushare.property.DSLinkDesc;
 import com.xerox.docushare.property.DSProperties;
 
@@ -22,6 +36,8 @@ import com.xerox.docushare.property.DSProperties;
  *
  */
 public class DocuShareHelper {
+	
+	private static boolean MODO_DEBUG_LOCAL = false;
 
 	private static String idModulo = "GEN";
 
@@ -41,6 +57,8 @@ public class DocuShareHelper {
 	private static String PATH_DOCUSHARE_CENSO = "PATH_DOCUSHARE_CENSO";
 	
 	private static String ID_DOCUSHARE_EXPEDIENTES = "ID_DOCUSHARE_EXPEDIENTES";
+	private static String ID_DOCUSHARE_EJG = "ID_DOCUSHARE_EJG";
+	
 	private static String PATH_DOCUSHARE = "PATH_DOCUSHARE";
 
 	private UsrBean usrBean;
@@ -93,9 +111,11 @@ public class DocuShareHelper {
 			defaultPort = Integer.parseInt(port);
 		}
 
-		try {			
+		try {
 			server = DSFactory.createServer(host, defaultPort);
-			dssession = server.createSession(domain, user, password);			
+			ClsLogging.writeFileLog("Creado server con Docushare correctamente", 3);
+			dssession = server.createSession(domain, user, password);
+			ClsLogging.writeFileLog("Creada session con Docushare correctamente", 3);
 
 		} catch (Exception e) {
 			//Se ha producido un error. No se ha podido conectar con el servidor DocuShare.
@@ -111,17 +131,25 @@ public class DocuShareHelper {
 	public String getURLCollection(String handle) throws SIGAException, ClsExceptions {
 
 		String url = null;
-//		return "https://documentacion.redabogacia.org/docushare/dsweb/LoginObj/wmke/wmke/Collection-3918";
+		ClsLogging.writeFileLog("Buscando la url de la collection " + handle, 3);
+		if (MODO_DEBUG_LOCAL) {
+			return "https://documentacion.redabogacia.org/docushare/dsweb/LoginObj/wmke/wmke/Collection-3918";
+		}
 		createSession();
 		
 		try {		
 			String idInstitucion = usrBean.getLocation();
 			DSCollection dsCollection = (DSCollection) dssession.getObject(new DSHandle(handle));
+			ClsLogging.writeFileLog("Collection encontrada " + dsCollection.getHandle(), 3);
 			GenParametrosAdm genParametrosAdm = new GenParametrosAdm(usrBean);
 			String pathDS = genParametrosAdm.getValor(idInstitucion, idModulo, PATH_DOCUSHARE, null);
 			String userEncrypted = genParametrosAdm.getValor(idInstitucion, idModulo, DOCUSHARE_USER_ENCRYP, null);
 			String passwordEncrypted = genParametrosAdm.getValor(idInstitucion, idModulo, DOCUSHARE_PASSWORD_ENCRYP, null);
 
+			ClsLogging.writeFileLog("PATH_DOCUSHARE=" + pathDS, 3);
+			ClsLogging.writeFileLog("DOCUSHARE_USER_ENCRYP=" + userEncrypted, 3);
+			ClsLogging.writeFileLog("DOCUSHARE_PASSWORD_ENCRYP=" + passwordEncrypted, 3);
+			
 			if (!pathDS.endsWith("/")) {
 				pathDS += "/";
 			}
@@ -135,6 +163,17 @@ public class DocuShareHelper {
 		}
 		return url;
 	}
+	
+	/**
+	 * 
+	 * @param collectionTitle Nombre de la carpeta o collecion que se quiere crear
+	 * @return
+	 * @throws SIGAException
+	 * @throws ClsExceptions
+	 */
+	public String createCollectionEJG(String collectionTitle) throws SIGAException, ClsExceptions, DSException {
+		return createCollection(ID_DOCUSHARE_EJG, collectionTitle);
+	}	
 
 	/**
 	 * 
@@ -143,27 +182,43 @@ public class DocuShareHelper {
 	 * @throws SIGAException
 	 * @throws ClsExceptions
 	 */
-	public String createCollection(String collectionTitle) throws SIGAException, ClsExceptions, DSException {
+	public String createCollectionExpedientes(String collectionTitle) throws SIGAException, ClsExceptions, DSException {
+		return createCollection(ID_DOCUSHARE_EXPEDIENTES, collectionTitle);
+	}
+	
+	/**
+	 * 
+	 * @param collectionTitle Nombre de la carpeta o collecion que se quiere crear
+	 * @return
+	 * @throws SIGAException
+	 * @throws ClsExceptions
+	 */
+	private String createCollection(String ID_DOCUSHARE, String collectionTitle) throws SIGAException, ClsExceptions, DSException {
 
+		if (MODO_DEBUG_LOCAL) {
+			return createCollectionMODO_DEBUG_LOCAL();
+		}
+		
 		String identificadorDS = null;				
 		createSession();
 		
 		try {
 
 			GenParametrosAdm genParametrosAdm = new GenParametrosAdm(usrBean);
-			String idExpedientes = genParametrosAdm.getValor(usrBean.getLocation(), idModulo, ID_DOCUSHARE_EXPEDIENTES, null);			
-
-			DSCollection dsCollectionParent = (DSCollection) dssession.getObject(new DSHandle(idExpedientes));
+			String idExpedientes = genParametrosAdm.getValor(usrBean.getLocation(), idModulo, ID_DOCUSHARE, null);			
+			ClsLogging.writeFileLog("ID_DOCUSHARE=" + idExpedientes, 3);
+			
+			DSCollection dsCollectionParent = (DSCollection) dssession.getObject(new DSHandle(idExpedientes));			
 
 			DSClass collectionClass = dssession.getDSClass(DSCollection.classname);
 			DSProperties collectionPrototype = collectionClass.createPrototype();
-			collectionPrototype.setPropValue(DSCollection.title, collectionTitle);
+			collectionPrototype.setPropValue(DSCollection.title, collectionTitle);			
 
 			DSHandle dsHandle = dssession.createObject(collectionPrototype, DSLinkDesc.containment, dsCollectionParent, null, null);
-			identificadorDS = dsHandle.toString();
-
+			identificadorDS = dsHandle.toString();			
 			
-			
+		} catch (DbNoSuchObjectException e) {
+			throw new SIGAException("messages.censo.regtel.coleccionNoEncontrada", e);
 		} catch (Exception e) {
 			throw new SIGAException("expedientes.docushare.error.crearColeccion",e);
 		} finally {
@@ -171,6 +226,10 @@ public class DocuShareHelper {
 		}
 
 		return identificadorDS;
+	}
+	
+	private String createCollectionMODO_DEBUG_LOCAL() {
+		return "Collection-11";
 	}
 	
 	/**
@@ -222,9 +281,11 @@ public class DocuShareHelper {
 	 * Cerramos la session y la conexion con el servidor DocuShare
 	 * @throws DSException
 	 */
-	private void close() throws DSException {		
+	private void close() throws DSException {	
+		ClsLogging.writeFileLog("Cerrando conexión con Docushare...", 3);
 		if (server != null) {
 			server.close();
+			ClsLogging.writeFileLog("Conexión cerrada con Docushare", 3);
 		}
 	}
 
@@ -235,6 +296,214 @@ public class DocuShareHelper {
 	public String buscaCollectionCenso(String title) throws ClsExceptions, DSException, SIGAException {
 		return buscaCollection(PATH_DOCUSHARE_CENSO, title);
 	}
+	
+	
+	/**
+	 * Método para pruebas en local
+	 * @param identificadorDS
+	 * @return
+	 */
+	private List<DocuShareObjectVO> getContenidoCollectionMODO_DEBUG_LOCAL(String identificadorDS) throws SIGAException {
+		List<DocuShareObjectVO> datos = new ArrayList<DocuShareObjectVO>();
+		try {
+			File file = new File(identificadorDS);
+			
+			if (file != null) {				
+				List<DocuShareObjectVO> listDir = new ArrayList<DocuShareObjectVO>();
+				List<DocuShareObjectVO> listArch = new ArrayList<DocuShareObjectVO>();
+				File[] filesHijos = file.listFiles();
+					if (filesHijos != null) {
+						for (File fileHijo : filesHijos) {
+							DocuShareObjectVO dsObj = null;
+							if (fileHijo.isDirectory()) {
+								dsObj = new DocuShareObjectVO(DocuShareObjectVO.DocuShareTipo.COLLECTION);
+								dsObj.setId(fileHijo.getAbsolutePath());
+								dsObj.setTitle(fileHijo.getName());
+								dsObj.setFechaModificacion(new Date(fileHijo.lastModified()));
+								listDir.add(dsObj);
+							} else {
+								dsObj = new DocuShareObjectVO(DocuShareObjectVO.DocuShareTipo.DOCUMENT);
+								dsObj.setId(fileHijo.getAbsolutePath());
+								dsObj.setTitle(fileHijo.getName());
+								dsObj.setFechaModificacion(new Date(fileHijo.lastModified()));
+								dsObj.setSizeKB(fileHijo.length()/1024);
+								if (dsObj.getSizeKB() == 0) {
+									dsObj.setSizeKB(1);
+								}
+								listArch.add(dsObj);
+							}								
+						}
+					}
+				datos.addAll(listDir);
+				datos.addAll(listArch);
+				if (false)
+					throw new DbNoSuchObjectException("nunca se va a lanzar");
+				
+			}
+		} catch (DbNoSuchObjectException e) {
+			throw new SIGAException("messages.censo.regtel.coleccionNoEncontrada", e, null);	
+		} catch (Exception e) {
+			throw new SIGAException("message.docushare.error.contenidoCollection",e);
+		}
+		return datos;
+		
+	}
+	
+	/**
+	 * Recupera lista de colleccion y de documents de una collection
+	 * @param collection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<DocuShareObjectVO> getContenidoCollection(String collection) throws Exception {
+		
+		if (MODO_DEBUG_LOCAL) {
+			return getContenidoCollectionMODO_DEBUG_LOCAL(collection);
+		}
+		
+		List<DocuShareObjectVO> list = new ArrayList<DocuShareObjectVO>();
+		
+		try {
+			createSession();		
+			ClsLogging.writeFileLog("Recuperando contenido collection " + collection, 3);
+			
+			DSHandle dsHandle = new DSHandle(collection);
+			DSCollection dsCollectionParent = (DSCollection) dssession.getObject(dsHandle);
+			
+			if (dsCollectionParent != null) {	
+				ClsLogging.writeFileLog("Se ha encontrado la collection " + dsCollectionParent.getHandle(), 3);	
+			    DSObjectIterator it = dsCollectionParent.children(null);			    
+			    if (it != null) {
+			    	ClsLogging.writeFileLog("Número de hijos de la collection " + collection + ": " + dsCollectionParent.getChildCount(), 3);
+			    	List<DocuShareObjectVO> listDir = new ArrayList<DocuShareObjectVO>();
+			    	List<DocuShareObjectVO> listArch = new ArrayList<DocuShareObjectVO>();			    	
+			    	
+			    	DSObject dsObject = null;
+			    	
+			    	while (it.hasNext()) {
+			    		dsObject = it.nextObject();
+			    		ClsLogging.writeFileLog("Encontrado hijo \"" + dsObject.getHandle() + "\" dentro de la collection " + collection, 3);
+			    		if (dsObject instanceof  DSCollection) {			    			
+			    			DocuShareObjectVO dsObj = new DocuShareObjectVO(DocuShareObjectVO.DocuShareTipo.COLLECTION);
+			    			dsObj.setId(dsObject.getHandle().toString());
+			    			dsObj.setTitle(dsObject.getTitle());
+			    			dsObj.setFechaModificacion(dsObject.getModifiedDate());
+			    			listDir.add(dsObj);
+			    		} else if (dsObject instanceof  DSDocument) {			    			
+			    			DocuShareObjectVO dsObj = new DocuShareObjectVO(DocuShareObjectVO.DocuShareTipo.DOCUMENT);
+			    			dsObj.setId(dsObject.getHandle().toString());
+			    			dsObj.setTitle(dsObject.getTitle());
+			    			dsObj.setFechaModificacion(dsObject.getModifiedDate());	
+			    			int size = ((DSDocument) dsObject).getSize();
+			    			if (size > 0) {
+			    				dsObj.setSizeKB(size / 1024);
+			    			}
+			    			listArch.add(dsObj);
+			    		}	    		
+			    	}
+			    	
+			    	Collections.sort(listDir);
+			    	Collections.sort(listArch);
+			    	
+			    	list.addAll(listDir);
+			    	list.addAll(listArch);
+			    }
+			}
+		} catch (DbNoSuchObjectException e) {
+			throw new SIGAException("messages.censo.regtel.coleccionNoEncontrada", e);
+		} catch (Exception e) {
+			throw new SIGAException("message.docushare.error.contenidoCollection",e);		
+		} finally {			
+			close();
+		}
+	    
+		return list;
+	}
+	
+		
+	/**
+	 * Método para pruebas en local
+	 * @param title
+	 * @return
+	 * @throws Exception
+	 */
+	public File getDocumentMODO_DEBUG_LOCAL(String title) throws Exception {
+		File file = new File(title);		
+		return file;
+	}
+	
+	/**
+	 * Recupera un documento copiandolo en un fichero local
+	 * @param title
+	 * @return
+	 * @throws Exception
+	 */
+	public File getDocument(String title) throws Exception {
+		
+		if (MODO_DEBUG_LOCAL) {
+			return getDocumentMODO_DEBUG_LOCAL(title);
+		}
+		
+		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String rutaDirectorioTemp = rp.returnProperty("sjcs.directorioFisicoTemporalSJCSJava");
+		File fileParent = new File(rutaDirectorioTemp);		
+		
+		File file = null;
+		
+		try {
+		    createSession();	 
+		    		    
+		    DSDocument dsDocument = (DSDocument) dssession.getObject(new DSHandle(title));	   
+		    
+		    DSContentElement[] dsContentElements = dsDocument.getContentElements();
+			for (int j = 0; j < dsContentElements.length; j++) {
+	
+				DSContentElement dsContentElement = dsContentElements[j];				
+				
+				fileParent.mkdirs();
+				file = new File(fileParent, dsDocument.getOriginalFileName());
+	
+				FileWriter fileWriter = new FileWriter(file);
+				dsContentElement.open();
+	
+				int b = dsContentElement.read();
+				while (b > -1) {
+					fileWriter.write(b);
+					b = dsContentElement.read();
+				}
+				dsContentElement.close();
+				fileWriter.close();				
+			}
+			
+			return file;
+		} catch (Exception e) {
+			throw new SIGAException("message.docushare.error.obtenerDocumento",e);    
+		} finally {
+			close();	
+		}
+		
+	}
 
+	public static void main2(String[] args) throws DSInvalidLicenseException, DSException {
+		//ncolegiado=80010
+		DSServer dsServer = DSFactory.createServer("192.168.11.129");
+				
+		DSSession dssession = dsServer.createSession("docushare", "admin", "1234");
+		String idExpedientes = "Collection-10";
+		DSCollection dsCollectionParent = (DSCollection) dssession.getObject(new DSHandle(idExpedientes));
+		System.out.println(dsCollectionParent.getChildCount());
+		
+		DSClass collectionClass = dssession.getDSClass(DSCollection.classname);
+		DSProperties collectionPrototype = collectionClass.createPrototype();
+		collectionPrototype.setPropValue(DSCollection.title, "PruebaSIGA");			
+
+		DSHandle dsHandle = dssession.createObject(collectionPrototype, DSLinkDesc.containment, dsCollectionParent, null, null);
+		String identificadorDS = dsHandle.toString();
+		
+		if (dsServer != null) {
+			dsServer.close();
+		}
+
+	}
 	
 }

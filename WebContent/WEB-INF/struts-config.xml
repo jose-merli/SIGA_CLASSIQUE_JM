@@ -1518,7 +1518,8 @@
 		</action>
 		
 		<action path="/CEN_Censo_DocumentacionRegTel" type="com.siga.censo.action.CensoDocumentacionRegTelAction" name="DatosColegialesForm" scope="request">
-			<forward name="inicioDS" path="/html/jsp/censo/abrirDocumentacionDS.jsp"/>			
+			<forward name="inicioDS" path="/html/jsp/censo/abrirDocumentacionDS.jsp"/>	
+			<forward name="listadoCollection" path="/html/jsp/censo/listadoCollectionDS.jsp"/>		
 		</action>
 
 		<action path="/EXP_Auditoria_Seguimiento" type="com.siga.expedientes.action.ExpSeguimientoAction" name="ExpSeguimientoForm" scope="request">

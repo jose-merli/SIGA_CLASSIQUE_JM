@@ -25,6 +25,9 @@ public class DatosColegialesForm extends MasterForm{
 	private String idInstitucion="";	// Identificador institucion
 	private String motivo="";			// Motivo (para el historico)
 	private String urlDocumentacionDS="";
+	private String identificadorDs;
+	private String titleDs;
+	private String posicionDs;
 	
 	// Metodos set
 	
@@ -221,6 +224,30 @@ public class DatosColegialesForm extends MasterForm{
 	
 	public String getId() {
 		return getIdPersona() + Vo.PK_SEPARATOR + getIdInstitucion();
+	}
+
+	public String getIdentificadorDs() {
+		return identificadorDs;
+	}
+
+	public void setIdentificadorDs(String identificadorDs) {
+		this.identificadorDs = identificadorDs;
+	}
+
+	public String getTitleDs() {
+		return titleDs;
+	}
+
+	public void setTitleDs(String titleDs) {
+		this.titleDs = titleDs;
+	}
+
+	public String getPosicionDs() {
+		return posicionDs;
+	}
+
+	public void setPosicionDs(String posicionDs) {
+		this.posicionDs = posicionDs;
 	}
 
 }
