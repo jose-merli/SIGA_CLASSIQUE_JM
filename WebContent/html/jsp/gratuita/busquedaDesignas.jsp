@@ -33,7 +33,7 @@
 	Hashtable datos = (Hashtable)request.getSession().getAttribute("DATOSFORMULARIO");
 	String anio="", codigo="", fechaAperturaInicio="", fechaAperturaFin="", idTurno ="", tipoDesigna="", sufijo="";
 	String nif="", nombre="", apellido1="", apellido2="", nombreMostrado="";
-	String estado="",calidad="",procedimiento="",asunto="",actuacionesPendientes="";
+	String estado="",calidad="",procedimiento="",asunto="",actuacionesPendientes="", nig="";
 	ArrayList juzgadoSel   = new ArrayList();
 	ArrayList juzgado   = new ArrayList();
 	ArrayList juzgadoActu   = new ArrayList();
@@ -64,7 +64,8 @@ String[] getdatos = { usr.getLocation() };
 			calidad =(String)datos.get("CALIDAD");		
 			juzgado.add((String)datos.get("JUZGADO"));
 			procedimiento =(String)datos.get("PROCEDIMIENTO");						
-			asunto =(String)datos.get("ASUNTO");			
+			asunto =(String)datos.get("ASUNTO");		
+			nig =(String)datos.get("NIG");		
 			modulo.add((String)datos.get("MODULO"));			
 			juzgadoActu.add((String)datos.get("JUZGADOACTU"));
 			acreditacion.add((String)datos.get("ACREDITACION"));						
@@ -315,25 +316,30 @@ String[] getdatos = { usr.getLocation() };
 				<td class="labelText">
 					<input type="text" name="codigoExtJuzgado" class="box" size="7" style="margin-top: 3px;" maxlength="10" onBlur="obtenerJuzgado();" />
 				</td>
-				<td class="labelText">
+				<td class="labelText" colspan="3">
 					<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="450" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" hijo="t" elementoSel="<%=juzgado%>" parametro="<%=dato%>" />
 				</td>
 		</tr>
 		<tr>
-			<td class="labelText" >
-				<siga:Idioma key="informes.cartaAsistencia.procedimiento"/>
-			</td>
-			<td class="labelText" >
-				<html:text name="BuscarDesignasForm" property="procedimiento" size="17" maxlength="100" styleClass="box"  value="<%=procedimiento%>"></html:text>
-			</td>
-			<td class="labelText">	
-				<siga:Idioma key="informes.cartaAsistencia.asunto"/>
-			</td>	
-			<td class="labelText">
-				<html:text name="BuscarDesignasForm" property="asunto" size="15" maxlength="100" styleClass="box"  value="<%=asunto%>"></html:text>
-			</td>
+				<td class="labelText" >
+					<siga:Idioma key="informes.cartaAsistencia.procedimiento"/>
+				</td>
+				<td class="labelText" >
+					<html:text name="BuscarDesignasForm" property="procedimiento" size="17" maxlength="100" styleClass="box"  value="<%=procedimiento%>"></html:text>
+				</td>
+				<td class="labelText">	
+					<siga:Idioma key="informes.cartaAsistencia.asunto"/>
+				</td>	
+				<td class="labelText">
+					<html:text name="BuscarDesignasForm" property="asunto" size="15" maxlength="100" styleClass="box"  value="<%=asunto%>"></html:text>
+				</td>
+				<td class="labelText">	
+					<siga:Idioma key="gratuita.mantAsistencias.literal.NIG"/>
+				</td>	
+				<td class="labelText" >
+					<html:text name="BuscarDesignasForm" property="nig2" size="15" maxlength="50" styleClass="box" value="<%=nig%>"></html:text>
+				</td>
 		</tr>
-		
 		</table>
 	</siga:ConjCampos>
 

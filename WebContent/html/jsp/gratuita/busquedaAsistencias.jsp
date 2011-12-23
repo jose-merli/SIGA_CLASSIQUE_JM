@@ -53,6 +53,8 @@
 	String apellido2 =        "";
 	String actuacionValidada =        "";	
 	String asunto	=		  "";
+	String procedimiento =	  "";
+	String nig	=		  	"";
 	String juzgado=			  "";
 	String comisariaAsi="";
 	String tipoActuacion =	  "";
@@ -105,6 +107,8 @@
 		estado =		   (String) datosBusqueda.get("ESTADO");
 		actuacionesPendientes = (String) datosBusqueda.get("actuacionesPendientes");   
 		asunto=				(String) datosBusqueda.get("asunto");
+		procedimiento=		(String) datosBusqueda.get("procedimiento");
+		nig=				(String) datosBusqueda.get("nig");
 		juzgado=			(String) datosBusqueda.get("JUZGADO");
 		comisariaAsi=		(String) datosBusqueda.get(ScsAsistenciasBean.C_COMISARIA);
 		comisariaInstitucionAsi=		(String) datosBusqueda.get(ScsAsistenciasBean.C_COMISARIA_IDINSTITUCION);
@@ -389,12 +393,26 @@
 				</td>
 			</tr>
 			<tr>
-				<td class="labelText" colspan="1">	
-					<siga:Idioma key="informes.cartaAsistencia.asunto"/>
-				</td>	
-				<td class="labelText" colspan="3">
-					<html:text name="AsistenciasForm" property="asunto" size="100" maxlength="40" styleClass="box" value="<%=asunto%>"></html:text>					
-				</td>
+				<table border="0" align="center" width="100%">
+					<td class="labelText" width="125">
+						<siga:Idioma key="informes.cartaAsistencia.procedimiento" />
+					</td>
+					<td class="labelText">
+						<html:text name="AsistenciasForm" property="procedimiento" size="14" maxlength="100" styleClass="box" value="<%=procedimiento%>"></html:text>
+					</td>
+					<td class="labelText">
+						<siga:Idioma key="informes.cartaAsistencia.asunto" />
+					</td>
+					<td class="labelText">
+						<html:text name="AsistenciasForm" property="asunto" size="20" maxlength="40" styleClass="box" value="<%=asunto%>"></html:text>
+					</td>
+					<td class="labelText" >	
+						<siga:Idioma key="gratuita.mantAsistencias.literal.NIG"/>
+					</td>	
+					<td class="labelText" >
+						<html:text name="AsistenciasForm" property="nig2" size="15" maxlength="50" styleClass="box" value="<%=nig%>"></html:text>
+					</td>	
+				</table>			
 			</tr>
 		</table>
 	</siga:ConjCampos>	

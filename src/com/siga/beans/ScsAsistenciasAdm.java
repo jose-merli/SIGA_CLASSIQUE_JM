@@ -1165,6 +1165,8 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 			String comisaria			= miForm.getComisaria();
 			String tipoActuacion		= miForm.getTipoActuacion();
 			String comisariaInstitucionAsi = "";
+			String procedimiento		= miForm.getProcedimiento();
+			String nig					= miForm.getNig2();
 			
 			if(!String.valueOf(comisaria).equals("")){
 				String a[]=comisaria.split(",");
@@ -1232,6 +1234,18 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 	                    " and ac.numeroasunto=:"+contador+")>0";
 			}
 			
+			if(!String.valueOf(procedimiento).equals("")){
+			    contador ++;
+			    codigos.put(new Integer(contador),procedimiento);
+			    sql+=" AND A.numeroprocedimiento = :"+contador;
+			}
+			
+			if(!String.valueOf(nig).equals("")){
+			    contador ++;
+			    codigos.put(new Integer(contador),nig);
+			    sql+=" AND A.NIG = :"+contador;
+			}			
+					
 			if(!String.valueOf(comisaria).equals("")){
 			    contador ++;
 			    codigos.put(new Integer(contador),this.usrbean.getLocation());

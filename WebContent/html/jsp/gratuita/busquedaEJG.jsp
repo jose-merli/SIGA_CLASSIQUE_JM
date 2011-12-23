@@ -512,9 +512,14 @@
 				<td class="labelText">
 					<siga:Idioma key="informes.cartaAsistencia.asunto" />
 				</td>
-				<td class="labelText" colspan="2">
-					<html:text name="<%=formulario%>" property="asunto" size="100" maxlength="100" styleClass="box" value="<%=asunto%>"></html:text>
+				<td class="labelText">
+					<html:text name="<%=formulario%>" property="asunto" size="20" maxlength="100" styleClass="box" value="<%=asunto%>"></html:text>
 				</td>
+				<td class="labelText">	
+					<siga:Idioma key="gratuita.mantAsistencias.literal.NIG"/>
+					&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+					<html:text name="<%=formulario%>" property="nig" size="15" maxlength="50" styleClass="box"></html:text>
+				</td>	
 			</tr>
 		</table>
 	</siga:ConjCampos>

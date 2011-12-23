@@ -500,7 +500,7 @@ public class BuscarDesignasForm extends MasterForm {
 	private String idTipoTurno = "";
 	List<ScsTurnoBean> turnos;
 	private String idTurno = "";
-	
+
 	public void setCabeceraCarta(String id){
 		this.cabeceraCarta=id;
 	}
@@ -599,5 +599,12 @@ public class BuscarDesignasForm extends MasterForm {
 	public String getNombreMostrado()	{
 		return UtilidadesHash.getString(datos,"NombreMostrado");
 	}
+	
+	public void setNig2	(String a)	{
+		UtilidadesHash.set(datos, "NIG2", a);
+	}	
+	public String getNig2()	{
+		return UtilidadesHash.getString(datos,"NIG2");
+	}	
 	
 }

@@ -711,6 +711,7 @@ import com.siga.general.MasterForm;
 	String rutaFicheroDownload, ficheroDownload, borrarFicheroDownload, idTipoTurno, idTurno, idGuardia;
 	String fechaAperturaDesde, fechaAperturaHasta, fechaLimitePresentacionDesde, fechaLimitePresentacionHasta, fechaEstadoDesde, fechaEstadoHasta, fechaDictamenDesde, fechaDictamenHasta;
 	String idRenuncia="";
+	String nig;
 	List<ScsTurnoBean> turnos;
 	List<ScsGuardiasTurnoBean> guardias;
 	
@@ -849,6 +850,11 @@ import com.siga.general.MasterForm;
 		public void setProcedimiento	(String procedimiento)	{
 			this.datos.put("PROCEDIMIENTO", procedimiento);
 		}
+		
+		public void setNig(String nig)	{
+			this.datos.put("NIG", nig);
+		}		
+		
 		/**
 		 * Almacena en la Hashtable el asunto de la defensa
 		 * 
@@ -886,6 +892,13 @@ import com.siga.general.MasterForm;
 		public String getProcedimiento	()	{
 			return (String)this.datos.get("PROCEDIMIENTO");
 		}
+		
+		
+		public String getNig	()	{
+			return (String)this.datos.get("NIG");
+		}
+		
+		
 		/**
 		 * Recupera en la Hashtable el numero de comisaria de la designa que se quiere buscar 
 		 * 
@@ -989,4 +1002,5 @@ import com.siga.general.MasterForm;
 		
 		public String getIdInstitucionActa() 	{return UtilidadesHash.getString(this.datos, ScsEJGBean.C_IDINSTITUCIONACTA);}
 		public void setIdInstitucionActa(String valor)	{this.datos.put(ScsEJGBean.C_IDINSTITUCIONACTA, valor);}
+
 }

@@ -1343,6 +1343,11 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				codigosBind.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"PROCEDIMIENTO").trim());
 				consulta += " AND des.numprocedimiento = :" + contador;
 			}
+			if (UtilidadesHash.getString(miHash,"NIG2") != null && !UtilidadesHash.getString(miHash,"NIG2").equalsIgnoreCase("")) {
+				contador++;
+				codigosBind.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"NIG2").trim());
+				consulta += " AND des.nig = :" + contador;
+			}			
 			String actuacionesPendientes = UtilidadesHash.getString(miHash,"ACTUACIONES_PENDIENTES") ;
 			if (actuacionesPendientes!= null && !actuacionesPendientes.equalsIgnoreCase("")&& (actuacionesPendientes.equalsIgnoreCase("NO")||actuacionesPendientes.equalsIgnoreCase("SI")||actuacionesPendientes.equalsIgnoreCase("SINACTUACIONES"))) {
 				if(actuacionesPendientes.equalsIgnoreCase("SINACTUACIONES")){
@@ -1902,6 +1907,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				"       Des.Codigo As Codigo, " +
 				"       Des.Resumenasunto As Asunto, " +
 				"       Des.Idprocedimiento As Idprocedimiento, " +
+				"       Des.NIG, " +
 				"       Des.Anio || '/' || Des.Codigo As Noficio, " +
 				"       To_Char(Des.Fechaentrada, 'dd-mm-yyyy') As Fecha_Designa, " +
 				"       To_Char(Sysdate, 'dd') As Dia_Actual, " +

@@ -2136,6 +2136,11 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			contador++;
 			consulta += " and "+ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("PROCEDIMIENTO")).trim(),"ejg.numeroprocedimiento", contador, codigos);
 		}
+		
+		if ((miHash.containsKey("NIG")) && (!miHash.get("NIG").toString().equals(""))) {
+			contador++;
+			consulta += " and "+ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("NIG")).trim(),"ejg.NIG", contador, codigos);
+		}		
 
 		if (miForm.getCalidad()!=null && !miForm.getCalidad().trim().equalsIgnoreCase("")) {
 			contador++;
@@ -3152,7 +3157,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" EJG.NUMERO_CAJG AS NUMERO_CAJG_DEFENSA_JURIDICA, ");
 			sql.append(" EJG.ANIOCAJG AS ANIO_CAJG_DEFENSA_JURIDICA, ");
 			sql.append(" EJG.NUMERODILIGENCIA AS NUMDILIGENCIA_DEFENSA_JURIDICA, ");
-			sql.append(" EJG.NUMEROPROCEDIMIENTO AS NUMPROCED_DEFENSA_JURIDICA ");
+			sql.append(" EJG.NUMEROPROCEDIMIENTO AS NUMPROCED_DEFENSA_JURIDICA, ");
+			sql.append(" EJG.NIG ");
 			sql.append(" ,TO_CHAR(EJG.FECHA_DES_PROC,'dd-mm-yyyy') AS  FECHAEJG_PROCURADOR ");
 			sql.append(" ,EJG.NUMERODESIGNAPROC AS  NUMDESIGNA_PROCURADOR ");
 			sql.append(" ,EJG.idtipodictamenejg, ");

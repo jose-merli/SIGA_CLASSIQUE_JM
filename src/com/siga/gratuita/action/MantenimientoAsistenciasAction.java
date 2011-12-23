@@ -616,8 +616,8 @@ public class MantenimientoAsistenciasAction extends MasterAction
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_NUMERODILIGENCIA,    miForm.getNumeroDilegencia());
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_NUMEROPROCEDIMIENTO, miForm.getNumeroProcedimiento());
 			
-			if (miForm.getNig() != null) {
-			    UtilidadesHash.set(hash, ScsAsistenciasBean.C_NIG, miForm.getNig());
+			if (miForm.getNig2() != null) {
+			    UtilidadesHash.set(hash, ScsAsistenciasBean.C_NIG, miForm.getNig2());
 			}else{
 				 UtilidadesHash.set(hash, ScsAsistenciasBean.C_NIG, "");
 			}

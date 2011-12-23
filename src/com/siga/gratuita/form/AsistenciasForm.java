@@ -574,10 +574,18 @@ public class AsistenciasForm extends MasterForm
 		this.letradoActuaciones = letradoActuaciones;
 	}
 
-	public String getNig() {
-		return nig;
+	public void setNig2	(String a)	{
+		this.datos.put("NIG2", a);
+	}	
+	public String getNig2()	{
+		return (String)this.datos.get("NIG2");
 	}
-	public void setNig(String nig) {
-		this.nig = nig;
+	
+	public void setProcedimiento	(String procedimiento)	{
+		this.datos.put("PROCEDIMIENTO", procedimiento);
 	}
+	
+	public String getProcedimiento	()	{
+		return (String)this.datos.get("PROCEDIMIENTO");
+	}	
 }
