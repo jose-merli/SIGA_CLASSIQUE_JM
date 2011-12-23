@@ -347,9 +347,7 @@
 	
 	</siga:ConjCampos>
 
-<div class="labelText">
-	Informacion Varia
-</div>
+
 
 	<c:choose>
 	<c:when test="${MutualidadForm.idTipoSolicitud=='P'}"> <!-- Plan profesional -->
@@ -407,9 +405,7 @@
 			</table>
 		</siga:ConjCampos>
 
-<div class="labelText">
-	Informacion Varia
-</div>
+
 
 		<siga:ConjCampos leyenda="Poliza">
 			<table class="tablaCampos">
@@ -491,9 +487,7 @@
 			</table>
 		</siga:ConjCampos>
 
-<div class="labelText">
-	Informacion Varia
-</div>
+
 
 		<siga:ConjCampos leyenda="Unidad Familiar">
 		<table>
