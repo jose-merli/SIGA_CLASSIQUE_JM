@@ -22,10 +22,10 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import com.siga.beans.ExpExpedienteAdm;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.DocuShareHelper;
 import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
@@ -90,6 +90,7 @@ import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirEJGForm;
 import com.siga.informes.InformeDefinirEJG;
+import com.xerox.docushare.DSException;
 
 
 
@@ -733,6 +734,13 @@ public class DefinirEJGAction extends MasterAction
 				miHash.put(ScsEJGBean.C_USUCREACION,new Integer (usr.getUserName()));
 				miHash.put(ScsEJGBean.C_FECHACREACION,"sysdate");
 				
+				if (miHash.get(ScsEJGBean.C_ANIO) != null && miHash.get(ScsEJGBean.C_NUMEJG) != null) {
+					String identificadorDS = getIdentificadorDocuShare(getUserBean(request), miHash.get(ScsEJGBean.C_ANIO).toString(), miHash.get(ScsEJGBean.C_NUMEJG).toString());
+					if (identificadorDS != null) {
+						miHash.put(ScsEJGBean.C_IDENTIFICADORDS, identificadorDS);
+					}
+				}
+				
 				// 1. Insertamos el EJG
 				if (!ejgAdm.insert(miHash)) {
 					throw new ClsExceptions ("Error al crear el EJG desde la designa");
@@ -1235,6 +1243,30 @@ public class DefinirEJGAction extends MasterAction
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
 		}
 		return exitoModal("messages.inserted.success",request);
+	}
+
+	/**
+	 * Crea una nueva collection en docushare y devuelve su identificador
+	 * @param usrBean
+	 * @param anio
+	 * @param numejg
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 * @throws DSException
+	 */
+	private String getIdentificadorDocuShare(UsrBean usrBean, String anio, String numejg) throws ClsExceptions, SIGAException, DSException {
+		String identificadorDS = null;
+		String collectionTitle = anio + "/" +numejg ;
+		
+		/* Sólo se intentará la Conexion al DocuShare si el parámetro general para la institucion=1*/	
+		GenParametrosAdm parametrosAdm = new GenParametrosAdm(usrBean);
+		String valor = parametrosAdm.getValor(usrBean.getLocation(), ClsConstants.MODULO_GENERAL, "REGTEL", "0");
+		if (valor!=null && valor.equals("1")){
+			DocuShareHelper docuShareHelper = new DocuShareHelper(usrBean);
+			identificadorDS = docuShareHelper.createCollectionEJG(collectionTitle);			
+		}
+		return identificadorDS;
 	}
 
 	protected String exitoModal(String mensaje, HttpServletRequest request) 
