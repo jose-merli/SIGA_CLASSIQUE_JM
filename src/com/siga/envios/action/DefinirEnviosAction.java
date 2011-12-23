@@ -61,6 +61,7 @@ import com.siga.beans.EnvEstatEnvioAdm;
 import com.siga.beans.EnvProgramIRPFAdm;
 import com.siga.beans.EnvProgramIRPFBean;
 import com.siga.beans.EnvTipoEnviosAdm;
+import com.siga.beans.EnvTipoEnviosBean;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.beans.GenParametrosAdm;
@@ -284,6 +285,8 @@ public class DefinirEnviosAction extends MasterAction {
 			envioBean.setIdInstitucion(Integer.valueOf(userBean.getLocation()));
 			envioBean.setDescripcion(form.getNombre());
 			envioBean.setIdTipoEnvios(Integer.valueOf(form.getIdTipoEnvio()));
+			if(form.getIdTipoEnvio().equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))
+				envioBean.setAcuseRecibo(form.getAcuseRecibo());
 			envioBean.setIdPlantillaEnvios(Integer.valueOf(form.getIdPlantillaEnvios()));
 			if (!form.getIdPlantillaGeneracion().trim().equals("")){
 				envioBean.setIdPlantilla(Integer.valueOf(form.getIdPlantillaGeneracion()));

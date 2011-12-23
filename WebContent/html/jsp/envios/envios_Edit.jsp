@@ -70,6 +70,8 @@
 	<html:form action="/ENV_DefinirEnvios" method="POST" target="submitArea">
 	<html:hidden property = "hiddenFrame" value = "1"/>
 	<html:hidden property = "modo" value = "Insertar"/>
+	<html:hidden property = "acuseRecibo" value = "Insertar"/>
+	
 
 
 		<fieldset>
@@ -155,6 +157,12 @@
 						//return false;					
 					//} 
 				//}
+				var cmbPlantillaEnvio = document.getElementsByName("comboPlantillaEnvio")[0];
+				var opcionArray=cmbPlantillaEnvio.value.split(",");
+				var idTipoEnvio = opcionArray[2]; 
+				if(idTipoEnvio=='1'){
+					DefinirEnviosForm.acuseRecibo.value = opcionArray[3] 
+				}
 				DefinirEnviosForm.submit();
 			}else{
 				fin();
