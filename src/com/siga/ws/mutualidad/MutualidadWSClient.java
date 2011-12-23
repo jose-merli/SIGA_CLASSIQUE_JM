@@ -81,7 +81,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
             respuesta.setCorrecto(true);
             respuesta.setValorRespuesta(response.getValorRespuesta());
             respuesta.setPDF(response.getPDF());          	
-            if(!respuesta.getValorRespuesta().trim().equalsIgnoreCase("")){
+            if(respuesta.getValorRespuesta().trim().equalsIgnoreCase("1")){
             	respuesta.setPosibleAlta(true);
             }else{
             	respuesta.setPosibleAlta(false);
@@ -175,7 +175,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
         try{
             WSHttpBinding_IIntegracion_MetodosStub stub = getStub();
            
-            Integracion_Solicitud_Respuesta response = stub.estadoSolicitud(idSolicitud,Boolean.TRUE );
+            Integracion_Solicitud_Respuesta response = stub.estadoSolicitud(idSolicitud,Boolean.FALSE );
             respuesta.setValorRespuesta(response.getValorRespuesta());
             respuesta.setCorrecto(true);
             respuesta.setPDF(response.getPDF());
@@ -240,8 +240,8 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 			Integracion_Beneficiarios		datosBeneficiarios = null;
 			Integracion_Domicilio[]			datosDirecciones = new Integracion_Domicilio[1];
 			
-			datosDireccionDomicilio = rellenarDatosDireccion(ht.get("datosDireccionDomicilio"));
-			datosDirecciones[0]=datosDireccionDomicilio;
+			datosDireccionDespacho = rellenarDatosDireccion(ht.get("datosDireccionDespacho"));
+			datosDirecciones[0]=datosDireccionDespacho;
 			datosPersona = rellenarDatosPersona(ht.get("datosPersona"));
 			datosSolicitud = rellenarDatosSolicitud(ht.get("datosSolicitudEstados"));
 			datosBancarios = new Integracion_DatosBancarios();
@@ -249,8 +249,6 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 			datosBeneficiarios = new Integracion_Beneficiarios();
 			datosSolicitudEstados = new Integracion_Solicitud_Estados();
 			datosSolicitud.setIdTipoSolicitud(ACCIDENTES_GRATUITO);
-			
-			datosDirecciones[0]=datosDireccionDomicilio;
 			
 			Integracion_Solicitud_Respuesta response = stub.MGASolicitudPolizaAccuGratuitos(datosBancarios, datosPoliza, datosDirecciones, datosPersona, datosSolicitud, datosSolicitudEstados, datosBeneficiarios);
 			
@@ -369,7 +367,6 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		
 		dp.setProfesion("Abogado"); // Ponemos fijo Abogado porque nadie mas lo va a usar
 		
-//		dp.setNumColegiado(ht.get("numColegiado")); // No se puede pasar si aun no es colegiado
 		dp.setColegio("");
 		
 		dp.setAsistenciaSanitaria(Integer.parseInt(ht.get("asistenciaSanitaria")));
@@ -539,8 +536,10 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 	private Integer parseaEstadoCivil(String eCivil) {
 		
 		int eCivilWS = 0;
-		int eCivilSIGA = Integer.parseInt(eCivil);
-		
+		int eCivilSIGA = 0;
+		if(!eCivil.equalsIgnoreCase("")){
+			eCivilSIGA = Integer.parseInt(eCivil);
+		}
 		switch (eCivilSIGA){
 		case 1:	eCivilWS = 1; break; // Casado
 		case 2:	eCivilWS = 0; break; // Soltero

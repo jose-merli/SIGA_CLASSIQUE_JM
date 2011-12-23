@@ -560,6 +560,7 @@
 
 <body  class="tablaCentralCampos" onLoad="cargaPais(<%=datosPersonales.getIdPais() %>);cargarChecksCuenta();ajusteAlto('documentos');comprobarTipoIdent();">
 <bean:define id="isPosibilidadSolicitudAlta" name="isPosibilidadSolicitudAlta"  scope="request" />
+<bean:define id="motivoSolicitudAlta" name="motivoSolicitudAlta"  scope="request" />
 	<html:form action="/CEN_SolicitudesIncorporacion.do" method="POST">
 	<html:hidden property="idSolicitudPlanProfesional"/>
 	<html:hidden property="idSolicitudAceptadaSeguroUniversal"/>
@@ -1011,12 +1012,12 @@
 			<tr>
 				<td class="labelText" >Alta en el Plan Profesional de la Mutualidad de la Abogacía
 				</td>
-				<td class="labelTextValor" style="color:red;"> NO PERMITIDO</td>
+				<td class="labelTextValor" style="color:red;"><c:out value="${motivoSolicitudAlta}" /></td>
 				
 			</tr>
 				<tr>
 				<td class="labelText" >Alta en el seguro de accidentes universal</td>
-				<td class="labelTextValor" style="color:red;">NO PERMITIDO</td>
+				<td class="labelTextValor" style="color:red;"><c:out value="${motivoSolicitudAlta}" /></td>
 			</tr>
 		</table>
 		

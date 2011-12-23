@@ -67,6 +67,7 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.action.RetencionesIRPFAction;
+import com.siga.ws.mutualidad.RespuestaMutualidad;
 
 import es.satec.businessManager.BusinessManager;
 
@@ -990,38 +991,43 @@ public class SolicitudIncorporacionAction extends MasterAction
 			request.setAttribute("ModoAnterior", modoAnterior);
 			if(!miFormulario.getModo().equalsIgnoreCase("Editar")&&!miFormulario.getModo().equalsIgnoreCase("Ver")){
 				request.setAttribute("isPosibilidadSolicitudAlta", Boolean.FALSE);
+				request.setAttribute("motivoSolicitudAlta", "");
 			}else{
 				try {
 					
-				
-					BusinessManager bm = getBusinessManager();
-					MutualidadService mutualidadService = (MutualidadService)bm.getService(MutualidadService.class);
-					boolean isPosibilidadSolicitudAlta = mutualidadService.isPosibilidadSolicitudAlta(bean.getNumeroIdentificador(),bean.getFechaNacimiento(),this.getUserBean(request));
-					request.setAttribute("isPosibilidadSolicitudAlta", isPosibilidadSolicitudAlta);
-					if(isPosibilidadSolicitudAlta){
-						List<CenSolicitudMutualidadBean> solicitudMutualidadBeans=mutualidadService.getSolicitudesMutualidad(bean, this.getUserBean(request));
-					
-						if(solicitudMutualidadBeans!=null && solicitudMutualidadBeans.size()>0){
-							for(CenSolicitudMutualidadBean solicitudMutualidadBean:solicitudMutualidadBeans){
-								if(solicitudMutualidadBean.getIdTipoSolicitud().equals(CenSolicitudMutualidadBean.TIPOSOLICITUD_PLANPROFESIONAL)){
-									miFormulario.setIdSolicitudPlanProfesional(""+solicitudMutualidadBean.getIdSolicitud().toString());
-									if(solicitudMutualidadBean.getIdSolicitudAceptada()!=null)
-										miFormulario.setIdSolicitudAceptadaPlanProfesional(""+solicitudMutualidadBean.getIdSolicitudAceptada().toString());
-									miFormulario.setEstadoSolicitudPlanProfesional(solicitudMutualidadBean.getEstado());
-									miFormulario.setEstadoMutualistaPlanProfesional(solicitudMutualidadBean.getEstadoMutualista());
-									
-								}else if(solicitudMutualidadBean.getIdTipoSolicitud().equals(CenSolicitudMutualidadBean.TIPOSOLICITUD_SEGUROUNIVERSAL)){
-									miFormulario.setIdSolicitudSeguroUniversal(""+solicitudMutualidadBean.getIdSolicitud().toString());
-									if(solicitudMutualidadBean.getIdSolicitudAceptada()!=null)
-										miFormulario.setIdSolicitudAceptadaSeguroUniversal(""+solicitudMutualidadBean.getIdSolicitudAceptada().toString());
-									miFormulario.setEstadoSolicitudSeguroUniversal(solicitudMutualidadBean.getEstado());
-									
+
+					if(bean.getIdTipoIdentificacion()==ClsConstants.TIPO_IDENTIFICACION_NIF || 
+					   bean.getIdTipoIdentificacion()==ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE){
+						BusinessManager bm = getBusinessManager();
+						MutualidadService mutualidadService = (MutualidadService)bm.getService(MutualidadService.class);
+						RespuestaMutualidad respuestaSolicitudAlta = mutualidadService.isPosibilidadSolicitudAlta(bean.getNumeroIdentificador(),bean.getFechaNacimiento(),this.getUserBean(request));
+						request.setAttribute("isPosibilidadSolicitudAlta", respuestaSolicitudAlta.isPosibleAlta());
+						request.setAttribute("motivoSolicitudAlta", respuestaSolicitudAlta.getValorRespuesta());
+						if(respuestaSolicitudAlta.isPosibleAlta()){
+							List<CenSolicitudMutualidadBean> solicitudMutualidadBeans=mutualidadService.getSolicitudesMutualidad(bean, this.getUserBean(request));
+						
+							if(solicitudMutualidadBeans!=null && solicitudMutualidadBeans.size()>0){
+								for(CenSolicitudMutualidadBean solicitudMutualidadBean:solicitudMutualidadBeans){
+									if(solicitudMutualidadBean.getIdTipoSolicitud().equals(CenSolicitudMutualidadBean.TIPOSOLICITUD_PLANPROFESIONAL)){
+										miFormulario.setIdSolicitudPlanProfesional(""+solicitudMutualidadBean.getIdSolicitud().toString());
+										if(solicitudMutualidadBean.getIdSolicitudAceptada()!=null)
+											miFormulario.setIdSolicitudAceptadaPlanProfesional(""+solicitudMutualidadBean.getIdSolicitudAceptada().toString());
+										miFormulario.setEstadoSolicitudPlanProfesional(solicitudMutualidadBean.getEstado());
+										miFormulario.setEstadoMutualistaPlanProfesional(solicitudMutualidadBean.getEstadoMutualista());
+										
+									}else if(solicitudMutualidadBean.getIdTipoSolicitud().equals(CenSolicitudMutualidadBean.TIPOSOLICITUD_SEGUROUNIVERSAL)){
+										miFormulario.setIdSolicitudSeguroUniversal(""+solicitudMutualidadBean.getIdSolicitud().toString());
+										if(solicitudMutualidadBean.getIdSolicitudAceptada()!=null)
+											miFormulario.setIdSolicitudAceptadaSeguroUniversal(""+solicitudMutualidadBean.getIdSolicitudAceptada().toString());
+										miFormulario.setEstadoSolicitudSeguroUniversal(solicitudMutualidadBean.getEstado());
+										
+									}
 								}
-								
 							}
-							
 						}
-					
+					}else{
+						request.setAttribute("isPosibilidadSolicitudAlta", false);
+						request.setAttribute("motivoSolicitudAlta", "Solo se puede solicitar el alta con NIF o NIE");
 					}
 				} catch (SIGAException e) {
 					//Que hacemos si falla!! aHORA MISMO NO SE MOSTRARIA LA PARTE DEL FORMULARIO DONDE ESTAN LOS BOTONES

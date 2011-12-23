@@ -218,13 +218,13 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 	/**
 	 * 
 	 */
-	public boolean isPosibilidadSolicitudAlta(String numeroIdentificacion,String fechaNacimiento,UsrBean usrBean) throws SIGAException,Exception{
+	public RespuestaMutualidad isPosibilidadSolicitudAlta(String numeroIdentificacion,String fechaNacimiento,UsrBean usrBean) throws SIGAException,Exception{
 		MutualidadWSClient mutualidadWSClient =  new MutualidadWSClient(usrBean);
 		RespuestaMutualidad posibilidadSolicitudAlta = mutualidadWSClient.getPosibilidadSolicitudAlta(numeroIdentificacion,fechaNacimiento);
 		if(posibilidadSolicitudAlta.getValorRespuesta()==null || posibilidadSolicitudAlta.getValorRespuesta().equals(""))
 			throw new SIGAException("No es posible Realizar el alta. Revise los datos del formulario");
 		
-		return posibilidadSolicitudAlta.isPosibleAlta();
+		return posibilidadSolicitudAlta;
 		
 	}
 	

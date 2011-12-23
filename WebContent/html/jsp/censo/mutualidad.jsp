@@ -318,9 +318,6 @@
 				</c:otherwise>
 				
 			</c:choose>
-			
-								
-				
 			</td> 
 			
 			<td class="ocultar" colspan="2" id="tdPoblacionExtranjera">
@@ -337,115 +334,93 @@
 			
 		</tr>
 		<tr>
-			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono1"/>&nbsp;(*)</td>
+			<td class="labelText" ><siga:Idioma key="censo.fusionDuplicados.direcciones.telefono"/>&nbsp;(*)</td>
 			<td><html:text property="telef1" maxlength="20" styleClass="${estiloText}" ></html:text></td>
-			
-			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono2"/></td>
-			<td><html:text property="telef2" maxlength="20" styleClass="${estiloText}" ></html:text></td>
 			
 			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono3"/></td>
 			<td><html:text property="movil" maxlength="20" styleClass="${estiloText}"  ></html:text></td>
 			
-		</tr>
-		<tr>
-			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.fax1"/></td>
-			<td><html:text property="fax1" maxlength="20" styleClass="${estiloText}" ></html:text></td>
-			
-			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.fax2"/></td>
-			<td><html:text property="fax2" maxlength="20" styleClass="${estiloText}" ></html:text></td>
-					
 			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.email"/>&nbsp;(*)</td>
 			<td><html:text property="correoElectronico" maxlength="100" styleClass="${estiloText}" ></html:text></td>
 		</tr>
-		
-		
-			
-			
-
 	</table>
 	
 	</siga:ConjCampos>
-		
-	<siga:ConjCampos leyenda="censo.consultaDatosBancarios.cabecera">
-		<table class="tablaCampos" align="left" border="0" style="width:80%">	
-			<tr align="left">		
-				<td class="labelText"><siga:Idioma key="censo.datosCuentaBancaria.literal.titular"/></td>
-				<td class="labelText">
-					<html:text property="titular"  size="50" styleClass="${estiloText}" maxlength="100"/>
-				</td>
-				<td class="labelText">IBAN</td>
-				<td class="labelText">
-					<html:text property="iban"  size="20" styleClass="${estiloText}" maxlength="24"/>
-				</td>
-				<td class="labelText">SWIFT</td>
-				<td class="labelText">
-					<html:text property="swift"  size="15" styleClass="${estiloText}" maxlength="12"/>
-				</td>
-			<tr>
 
-		
-			<!-- FILA -->
-			<tr>					
-				<td class="labelText" nowrap>Cuenta</td>	
-				<td class="labelText">
-				      <html:text size="4"  maxlength="4" property="cboCodigo"  styleClass="${estiloText}"  onChange="document.MutualidadForm.idBanco.value=document.MutualidadForm.cboCodigo.value"></html:text>
-					- <html:text size="4"  maxlength="4" property="codigoSucursal" 	styleClass="${estiloText}" ></html:text>
-					- <html:text size="2"  maxlength="2" property="digitoControl"  	styleClass="${estiloText}" ></html:text>
-					- <html:text size="10" maxlength="10" property="numeroCuenta"  styleClass="${estiloText}" ></html:text></td>
-				
-				<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.banco"/></td>
-				<td class="labelText" colspan="3">
-					<siga:ComboBD nombre="idBanco" ancho="450" tipo="cmbBancos" clase="${estiloCombo}" readonly="${MutualidadForm.modo=='consulta'}" elementoSel='${idBancoSeleccionado}' accion="document.MutualidadForm.cboCodigo.value=document.MutualidadForm.idBanco.value"/>
-				</td>
-			</tr>
-			<tr align="left">		
-				<td class="labelText">Periodicidad de Pago</td>
-				<td class="labelTextValor">
-					<c:choose>
-						<c:when test="${MutualidadForm.modo=='insertar'}">
-							<html:select styleClass="${estiloCombo}" style="width:200px;" name="MutualidadForm" property="idPeriodicidadPago"  >
-								<bean:define id="periodicidadesPago" name="MutualidadForm" property="periodicidadesPago" type="java.util.Map" />
-								<html:optionsCollection name="periodicidadesPago" value="key" label="value" />
-							</html:select>	
-							<html:hidden property="periodicidadPago"/>
+<div class="labelText">
+	Informacion Varia
+</div>
 
-						</c:when>
-						<c:otherwise>
-							<c:out value="${MutualidadForm.periodicidadPago}"></c:out>
-						</c:otherwise>
-					</c:choose>
-										
-					
-				</td>
-				<td colspan="4"></td>
-				
-			</tr>
-			
-			
-		</table>
-	</siga:ConjCampos>
-		<siga:ConjCampos>
-			<table class="tablaCampos" align="left" border="0">
-					<tr>
-					<td width="20%"></td>
-					<td width="20%"></td>
-					<td width="5%"></td>
-					<td width="35%"></td>
-					<td width="20%"></td>
-					</tr>
-
+	<c:choose>
+	<c:when test="${MutualidadForm.idTipoSolicitud=='P'}"> <!-- Plan profesional -->
+		<div>
+	</c:when>
+	<c:otherwise> <!-- Seguro Gratuito -->
+		<div style="display:none">
+	</c:otherwise>
+	</c:choose>
+		<siga:ConjCampos leyenda="censo.consultaDatosBancarios.cabecera">
+			<table class="tablaCampos" align="left" border="0" style="width:100%">	
+				<tr align="left">		
+					<td class="labelText">Cuenta</td>	
+					<td class="labelText" width="300px">
+					      <html:text size="4"  maxlength="4" property="cboCodigo"  styleClass="${estiloText}"  onChange="document.MutualidadForm.idBanco.value=document.MutualidadForm.cboCodigo.value"></html:text>
+						- <html:text size="4"  maxlength="4" property="codigoSucursal" 	styleClass="${estiloText}" ></html:text>
+						- <html:text size="2"  maxlength="2" property="digitoControl"  	styleClass="${estiloText}" ></html:text>
+						- <html:text size="10" maxlength="10" property="numeroCuenta"  styleClass="${estiloText}" ></html:text></td>
+					<td class="labelText">IBAN</td>
+					<td class="labelText">
+						<html:text property="iban"  size="20" styleClass="${estiloText}" maxlength="24"/>
+					</td>
+					<td class="labelText">SWIFT</td>
+					<td class="labelText">
+						<html:text property="swift"  size="15" styleClass="${estiloText}" maxlength="12"/>
+					</td>
 				<tr>
-					<td class="labelText">Opcion de Cobertura</td>
-					<td colspan="2" class="labelTextValor">
+	
+			
+				<!-- FILA -->
+				<tr style="display:none">					
+					<td class="labelText" colspan="3"><siga:Idioma key="censo.datosCuentaBancaria.literal.banco"/></td>
+					<td class="labelText" colspan="3">
+						<siga:ComboBD nombre="idBanco" ancho="450" tipo="cmbBancos" clase="${estiloCombo}" readonly="${MutualidadForm.modo=='consulta'}" elementoSel='${idBancoSeleccionado}' accion="document.MutualidadForm.cboCodigo.value=document.MutualidadForm.idBanco.value"/>
+					</td>
+				</tr>
+				<tr align="left">		
+					<td class="labelText">Periodicidad de Pago</td>
+					<td class="labelTextValor" colspan="5">
+						<c:choose>
+							<c:when test="${MutualidadForm.modo=='insertar'}">
+								<html:select styleClass="${estiloCombo}" style="width:200px;" name="MutualidadForm" property="idPeriodicidadPago"  >
+									<bean:define id="periodicidadesPago" name="MutualidadForm" property="periodicidadesPago" type="java.util.Map" />
+									<html:optionsCollection name="periodicidadesPago" value="key" label="value" />
+								</html:select>	
+								<html:hidden property="periodicidadPago"/>
+	
+							</c:when>
+							<c:otherwise>
+								<c:out value="${MutualidadForm.periodicidadPago}"></c:out>
+							</c:otherwise>
+						</c:choose>
+					</td>
+				</tr>
+			</table>
+		</siga:ConjCampos>
+
+<div class="labelText">
+	Informacion Varia
+</div>
+
+		<siga:ConjCampos leyenda="Poliza">
+			<table class="tablaCampos">
+				<tr>
+					<td class="labelText" width="150px">Opcion de Cobertura</td>
+					<td class="labelTextValor">
 					<c:choose>
 						<c:when test="${MutualidadForm.modo=='insertar'}">
-					<html:select styleClass="${estiloCombo}"
-							styleId="opcionesCobertura" name="MutualidadForm"
-							property="idCobertura" style="width:200px;">
-							<bean:define id="opcionesCobertura" name="MutualidadForm"
-								property="opcionesCobertura" type="java.util.Map" />
-							<html:optionsCollection name="opcionesCobertura" value="key"
-								label="value" />
+							<html:select styleClass="${estiloCombo}" styleId="opcionesCobertura" name="MutualidadForm" property="idCobertura" style="width:200px;">
+							<bean:define id="opcionesCobertura" name="MutualidadForm" property="opcionesCobertura" type="java.util.Map" />
+							<html:optionsCollection name="opcionesCobertura" value="key" label="value" />
 						</html:select>
 						<html:hidden property="cobertura"/>
 						</c:when>
@@ -455,59 +430,44 @@
 					</c:choose>
 
 					</td>
-					
-					<td></td>
-					<td></td>
+					<td class="labelText"  >Cuota Mensual</td>
+					<td class="labelTextValor"><html:text property="cuotaCobertura" size="6" styleClass="boxConsulta" style="text-align:right"/>&euro;</td>
+					<td class="labelText"  >Capital objetivo estimado a los 65 años</td>
+					<td class="labelTextValor"><html:text property="capitalCobertura" size="8" styleClass="boxConsulta" style="text-align:right"/>&euro;</td>
 				</tr>
-				<tr>
-				<td colspan="5">
-					<table>
-					<tr>
-						<td class="labelText" style="vertical-align: right">Cuota Mensual</td>
-						<td class="labelTextValor"><html:text property="cuotaCobertura" styleClass="boxConsulta" style="text-align:right"/>&euro;</td>
-						<td width="10%"></td>
-						<td class="labelText">Capital objetivo estimado a los 65 años</td>
-						<td class="labelTextValor"><html:text property="capitalCobertura" styleClass="boxConsulta" style="text-align:right"/>&euro;</td>
-					</tr>
-					</table>
-				</td>
-				
+			</table>
+			<table class="tablaCampos">
 				<tr align="left">
 
-					<td class="labelText">Beneficiarios</td>
+					<td class="labelText" width="150px">Beneficiarios</td>
 					
 					<c:choose>
 						<c:when test="${MutualidadForm.modo=='insertar'}">
-					<td colspan = "2" class="labelTextValor">
-					<html:select styleClass="${estiloCombo}" 
-							name="MutualidadForm" property="idBeneficiario" style="width:500px;" onchange="onchangeBeneficiario();">
-							<bean:define id="beneficiarios" name="MutualidadForm"
-								property="beneficiarios" type="java.util.Map" />
-							<html:optionsCollection name="beneficiarios" value="key"
-								label="value" />
+						<td colspan = "4" class="labelTextValor">
+						<html:select styleClass="${estiloCombo}" name="MutualidadForm" property="idBeneficiario" style="width:500px;" onchange="onchangeBeneficiario();">
+							<bean:define id="beneficiarios" name="MutualidadForm" property="beneficiarios" type="java.util.Map" />
+							<html:optionsCollection name="beneficiarios" value="key" label="value" />
 						</html:select>
 						<html:hidden property="beneficiario"/>
 						</td>
-						<td colspan = "2" class="labelText" >
-						<html:text property="otrosBeneficiarios"  size="40" styleClass="${estiloText}" style="display:none" />
+						<td colspan = "1" class="labelText" >
+							<html:text property="otrosBeneficiarios"  size="40" styleClass="${estiloText}" style="display:none" />
 						</td>
 						</c:when>
 						<c:otherwise>
-						<td colspan = "2" class="labelTextValor">
+						<td colspan = "4" class="labelTextValor">
 							<c:out value="${MutualidadForm.beneficiario}"></c:out>
 						</td>
-						<td colspan = "2" class="labelTextValor">
+						<td colspan = "1" class="labelTextValor">
 							<c:out value="${MutualidadForm.otrosBeneficiarios}"></c:out>
 						</td>
 						</c:otherwise>
 					</c:choose>
-
 					
-					
-					</tr>
-					<tr align="left">
+				</tr>
+				<tr align="left">
 					<td class="labelText">Asistencia Sanitaria</td>
-					<td colspan= "4" class="labelTextValor">
+					<td colspan= "5" class="labelTextValor">
 					<c:choose>
 						<c:when test="${MutualidadForm.modo=='insertar'}">
 					<html:select styleClass="${estiloCombo}" 
@@ -531,69 +491,72 @@
 			</table>
 		</siga:ConjCampos>
 
+<div class="labelText">
+	Informacion Varia
+</div>
+
 		<siga:ConjCampos leyenda="Unidad Familiar">
 		<table>
 		<tr>
 			<td class="labelText" >Fecha Nacimiento conyuge</td>
 			<td>
-				
-				
 				<siga:Fecha nombreCampo="fechaNacimientoConyuge" disabled="${MutualidadForm.modo=='consulta'}"></siga:Fecha>
 				<c:if test="${MutualidadForm.modo=='insertar'}">
 					<a href='javascript://'onClick="return showCalendarGeneral(fechaNacimientoConyuge);"><img src="<html:rewrite page='/html/imagenes/calendar.gif'/>" border="0"> </a>
 				</c:if>
 			</td>
-			<td class="labelText" >Numero de hijos</td>
+			<td class="labelText" >Número de hijos</td>
 			<td><html:text
-				 size="4"  maxlength="2" property="numeroHijos" 	styleClass="${estiloText}"/>
+				 size="4"  maxlength="2" property="numeroHijos" styleClass="${estiloText}" onchange="consultarNHijos(this.value);"/>
 			</td>
 			</tr>
 			</table>
-			<siga:ConjCampos leyenda="Fecha Naciemineto Hijos">
+		<siga:ConjCampos leyenda="Edades de los Hijos">
 		<table width="100%">
 		
 			<tr>
-			<td class="labelText" >Edad Hijo 1</td>
+			<td class="labelText" >Hijo 1</td>
 			<td >
 				<html:text property="edadHijo1"  size="4" styleClass="${estiloText}" maxlength="2"/>
 				
 			</td>
-			<td class="labelText" >Edad Hijo 2</td>
+			<td class="labelText" >Hijo 2</td>
 			<td >
 				<html:text property="edadHijo2"  size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
-			<td class="labelText" >Edad Hijo 3</td>
+			<td class="labelText" >Hijo 3</td>
 			<td >
 				<html:text property="edadHijo3"  size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
-			<td class="labelText" >Edad Hijo 4</td>
+			<td class="labelText" >Hijo 4</td>
 			<td >
 				<html:text property="edadHijo4"  size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
-			<td class="labelText" >Edad Hijo 5</td>
+			<td class="labelText" >Hijo 5</td>
 			<td >
 				<html:text property="edadHijo5"  size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
 			
 			</tr>
-			<tr>
-			<td class="labelText" >Edad Hijo 6</td>
+			
+			<tr style="display:none" id="masHijos">
+			<td class="labelText" >Hijo 6</td>
 			<td>
 				<html:text property="edadHijo6"  size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
-			<td class="labelText" >Edad Hijo 7</td>
+			<td class="labelText" >Hijo 7</td>
 			<td>
 				<html:text property="edadHijo7"  size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
-			<td class="labelText" >Edad Hijo 8</td>
+			<td class="labelText" >Hijo 8</td>
 			<td>
 				<html:text property="edadHijo8"  size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
-			<td class="labelText" >Edad Hijo 9</td>
+			<td class="labelText" >Hijo 9</td>
 			<td>
 				<html:text property="edadHijo9"  size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
-			<td class="labelText" >Edad Hijo 10</td>
+			<td class="labelText" >Hijo 10</td>
 			<td>
 				<html:text property="edadHijo10"  size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
@@ -602,6 +565,8 @@
 			</table>
 			</siga:ConjCampos>
 	</siga:ConjCampos>
+	</div>
+	
 <ajax:updateFieldFromSelect  
 	baseUrl="/SIGA${path}.do?modo=getAjaxCuotaCapitalCobertura"
 	source="opcionesCobertura" target="cuotaCobertura,capitalCobertura" parameters="idCobertura={idCobertura},idSexo={idSexo},fechaNacimiento={fechaNacimiento}"
@@ -639,6 +604,14 @@
 	function accionRestablecer(){
 	
 	}
+	
+	function consultarNHijos(hijos){
+		if (hijos>5){
+			document.getElementById("masHijos").style.display="inline";
+		}else{
+			document.getElementById("masHijos").style.display="none";
+		}
+	}
 
 	function accionGuardar(){
 		
@@ -656,7 +629,6 @@
 		document.MutualidadForm.poblacion.value = document.MutualidadForm.idPoblacion.options[document.MutualidadForm.idPoblacion.selectedIndex].text;
 		
 		document.MutualidadForm.submit();
-		//var resultado = ventaModalGeneral(document.MutualidadForm.name,"0",'Esperando respuesta de la mutualidad. Espere por favor...');
 		
 	}
 	function cargaCombos() {      
