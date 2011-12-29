@@ -19,34 +19,21 @@
 	HttpSession ses=request.getSession();
 	UsrBean userBean = (UsrBean)request.getSession().getAttribute("USRBEAN");	
 	String mensaje=(String)request.getAttribute("msj");
-	
-	
-
 %>
-
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 	<script type="text/jscript" language="JavaScript1.2">
 		function reloadPage() {
 		    var type = '<%=mensaje%>';
-			if (confirm(type)) {
-			    parent.document.forms[0].continuarInsercionColegiado.value="1";
-				parent.document.forms[0].submit();
-			}
+		    alert(""+type);
 		}
 	</script>
 </head>
 
 <body onload="reloadPage();">
-
 		<html:form action="/CEN_SolicitudesIncorporacion.do" method="POST" target="_self">
 			<html:hidden property = "modo" value = "Modificar"/>
-			<html:hidden property = "continuarInsercionColegiado" value = ""/>
-		
-			
-			
-			
+			<html:hidden property = "continuarInsercionColegiado" value = ""/>									
 		</html:form>
-
 </body>
 </html:html>

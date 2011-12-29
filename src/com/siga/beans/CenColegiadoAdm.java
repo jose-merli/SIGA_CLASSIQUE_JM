@@ -950,8 +950,8 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 	} //existeColegiado ()
 	
 	/**
-	 * Comprueba si existe un colegiado
-	 * 
+	 * Comprueba si existe un colegiado para una institución concreta
+	 * @param nColegiado String
 	 * @param idPersona Long
 	 * @param idInstitucion Integer
 	 * @return CenColegiadoBean o null
@@ -973,6 +973,8 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
             }else{
             	v = this.selectBind(" WHERE NCOMUNITARIO = :1 AND IDINSTITUCION = :2" ,codigos);
             }
+            // En caso de que v tenga un elemento o mas
+            //significa que ya existe un letrado con ese nº de colegiado para esa institución.
 			if (v != null && v.size () > 0)
 				return true;
 			else
@@ -981,7 +983,7 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al consultar datos en B.D.");
 		}
-	} //existeColegiado ()
+	}
 	
 	/**
 	 * Comprueba si existe un colegiado a traves de idpersona para una

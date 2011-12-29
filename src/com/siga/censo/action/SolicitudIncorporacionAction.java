@@ -510,11 +510,13 @@ public class SolicitudIncorporacionAction extends MasterAction
 				// para ver si la pregunta ya se ha hecho 
 				String continuar = request.getParameter ("continuarInsercionColegiado");
 				if(!(continuar!=null && continuar.equalsIgnoreCase("1"))){
+					//En caso de que ya exista el nº de colegiado se le mostrará un mensaje de advertencia
+					// y no se seguirá con el alta del colegiado.
 					CenColegiadoAdm admCol = new CenColegiadoAdm (user);
 					if( admCol.existeNColegiado(beanSolic.getNColegiado(), 
 												beanSolic.getIdInstitucion(),
 												beanSolic.getIdTipoColegiacion())){
-						String msj = UtilidadesString.getMensajeIdioma (user, "messages.censo.errorColegiadoDuplicado");
+						String msj = UtilidadesString.getMensajeIdioma (user, "messages.censo.errorColegiadoExiste");
 						request.setAttribute ("msj", msj);
 						forward = "continuarInsercionColegiado";
 						t.rollback ();
