@@ -17,6 +17,7 @@ public interface MutualidadService extends BusinessService{
 	public List<CenSolicitudMutualidadBean> getSolicitudesMutualidad(CenSolicitudIncorporacionBean solicitudIncorporacionBean, UsrBean usrBean)throws ClsExceptions ;
 	public MutualidadForm getSolicitudMutualidad(MutualidadForm mutualidadForm, String idPersona,String idTipoSolicitud,UsrBean usrBean) throws ClsExceptions, SIGAException ;
 	public MutualidadForm setMutualidadForm(MutualidadForm mutualidadForm, UsrBean usrBean) throws Exception;
+	public MutualidadForm setMutualidadFormDefecto(MutualidadForm mutualidadForm) throws Exception;
 	public MutualidadForm setCobertura(MutualidadForm mutualidadForm, UsrBean usrBean) throws Exception;
 	public RespuestaMutualidad isPosibilidadSolicitudAlta(String numeroIdentificacion,String fechaNacimiento, UsrBean usrBean) throws SIGAException, Exception;
 	public void actualizaEstadoSolicitud(MutualidadForm mutualidadForm, UsrBean usrBean)throws Exception;

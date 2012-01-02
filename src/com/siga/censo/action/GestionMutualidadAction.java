@@ -158,6 +158,9 @@ public class GestionMutualidadAction extends MasterAction {
 			MutualidadService mutualidadService = (MutualidadService)bm.getService(MutualidadService.class);
 
 			mutualidadService.setMutualidadForm(mutualidadForm, this.getUserBean(request));
+			mutualidadService.setMutualidadFormDefecto(mutualidadForm);
+			
+			
 
 			mutualidadForm.setModo("insertar");
 		} catch (Exception e) {

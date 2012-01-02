@@ -2,6 +2,7 @@ package com.siga.censo.service.impl;
 
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 
 import com.atos.utils.ClsExceptions;
@@ -270,6 +271,37 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		return mutualidadForm;
 		
 	}
+	public MutualidadForm setMutualidadFormDefecto(MutualidadForm mutualidadForm) throws Exception{
+		Iterator itePeriodicidad =  mutualidadForm.getPeriodicidadesPago().keySet().iterator();
+		while(itePeriodicidad.hasNext())	{
+			String idPeriodicidad = (String) itePeriodicidad.next();
+			String descripcionPeriodicidad = mutualidadForm.getPeriodicidadesPago().get(idPeriodicidad);
+			if(descripcionPeriodicidad.equalsIgnoreCase("mensual")){
+				mutualidadForm.setIdPeriodicidadPago(idPeriodicidad);
+			break;
+			}
+			
+		}
+		Iterator iteOpciones =  mutualidadForm.getOpcionesCobertura().keySet().iterator();
+		while(iteOpciones.hasNext())	{
+			String idCobertura = (String) iteOpciones.next();
+			String descripcionCobertuta = mutualidadForm.getOpcionesCobertura().get(idCobertura);
+			if(descripcionCobertuta.equalsIgnoreCase("recomendada")){
+				mutualidadForm.setIdCobertura(idCobertura);
+				break;
+			}
+			
+		}
+		
+		
+//		mutualidadForm.setAsistenciasSanitarias(combosMutualidad.getAsistencia());
+//		mutualidadForm.setBeneficiarios(combosMutualidad.getBeneficiarios());
+		
+		
+		return mutualidadForm;
+		
+	}
+	
 	
 	public MutualidadForm getSolicitudMutualidad(MutualidadForm mutualidadForm,String idPersona,String idTipoSolicitud,UsrBean usrBean) throws ClsExceptions, SIGAException{
 		CenSolicitudMutualidadAdm  solicitudMutualidadAdm = new CenSolicitudMutualidadAdm(usrBean);

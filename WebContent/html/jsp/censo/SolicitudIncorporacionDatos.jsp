@@ -889,7 +889,8 @@
 		<table class="tablaCampos" align="left" >
 		
 			<tr>
-				<td class="labelText" >Plan Profesional de la Mutualidad
+				<td class="labelText" >
+				<siga:Idioma key="censo.SolicitudIncorporacionDatos.mutualidad.literal.planProfesional"/>
 				</td>
 				<c:choose>
 					<c:when test="${SolicitudIncorporacionForm.idSolicitudPlanProfesional==null||SolicitudIncorporacionForm.idSolicitudPlanProfesional==''}">
@@ -959,7 +960,8 @@
 				
 			</tr>
 				<tr>
-				<td class="labelText" >Seguro de accidentes universal</td>
+				<td class="labelText" ><siga:Idioma
+				 key="censo.SolicitudIncorporacionDatos.mutualidad.literal.seguroAccidentes"/></td>
 				<c:choose>
 					<c:when test="${SolicitudIncorporacionForm.idSolicitudSeguroUniversal==null||SolicitudIncorporacionForm.idSolicitudSeguroUniversal==''}">
 						<td id="tdBotonSolicitudSeguroUniversal"><html:button property="idButton"
@@ -1010,13 +1012,15 @@
 		<table>
 		
 			<tr>
-				<td class="labelText" >Alta en el Plan Profesional de la Mutualidad de la Abogacía
+				<td class="labelText" ><siga:Idioma
+				 key="censo.SolicitudIncorporacionDatos.mutualidad.literal.planProfesional"/>
 				</td>
 				<td class="labelTextValor" style="color:red;"><c:out value="${motivoSolicitudAlta}" /></td>
 				
 			</tr>
 				<tr>
-				<td class="labelText" >Alta en el seguro de accidentes universal</td>
+				<td class="labelText" ><siga:Idioma
+				 key="censo.SolicitudIncorporacionDatos.mutualidad.literal.seguroAccidentes"/></td>
 				<td class="labelTextValor" style="color:red;"><c:out value="${motivoSolicitudAlta}" /></td>
 			</tr>
 		</table>

@@ -1,9 +1,9 @@
 <!-- mutualidad.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
-<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
+<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-15"%>
 <meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15">
 
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
@@ -42,12 +42,9 @@
   <link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
   
 	
-<title><siga:Idioma key="censo.SolicitudIncorporacionDatos.titulo"/></title>
-	
-	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo titulo="Alta de Mutalidad de Abogacia" />
+	<siga:Titulo titulo="censo.mutualidad.titulo" />
 	<!-- FIN: TITULO Y LOCALIZACION -->
 	
 		
@@ -261,6 +258,16 @@
 
 			</table>
 		</siga:ConjCampos>
+		<c:if test="${MutualidadForm.idTipoSolicitud=='S'}"> <!-- Seguro Accidentes -->
+		<table>
+			<tr>
+				<td class="labelText" >
+					<siga:Idioma key="censo.mutualidad.seguroAccidentes.descripcion"/>
+				</td>
+		</tr>
+		</table>
+	</c:if>
+		
 		<siga:ConjCampos>
 	<table>
 		<tr>
@@ -391,7 +398,7 @@
 							<c:when test="${MutualidadForm.modo=='insertar'}">
 								<html:select styleClass="${estiloCombo}" style="width:200px;" name="MutualidadForm" property="idPeriodicidadPago"  >
 									<bean:define id="periodicidadesPago" name="MutualidadForm" property="periodicidadesPago" type="java.util.Map" />
-									<html:optionsCollection name="periodicidadesPago" value="key" label="value" />
+									<html:optionsCollection name="periodicidadesPago" value="key" label="value"  />
 								</html:select>	
 								<html:hidden property="periodicidadPago"/>
 	
@@ -561,6 +568,8 @@
 	</siga:ConjCampos>
 	</div>
 	
+	
+	
 <ajax:updateFieldFromSelect  
 	baseUrl="/SIGA${path}.do?modo=getAjaxCuotaCapitalCobertura"
 	source="opcionesCobertura" target="cuotaCobertura,capitalCobertura" parameters="idCobertura={idCobertura},idSexo={idSexo},fechaNacimiento={fechaNacimiento}"
@@ -574,6 +583,15 @@
 
 
 <c:if test="${MutualidadForm.modo=='insertar'}">
+	<table>
+		<tr>
+			<td class="labelText" >
+				<input type="checkbox" id="checkCesionDatos">
+				<siga:Idioma key="censo.mutualidad.cesionDatos"/>
+			</td>
+	</tr>
+	</table>
+
 		<siga:ConjBotonesAccion botones="G,R,C" clase="botonesDetalle" />
 </c:if>
 </html:form>
@@ -608,8 +626,16 @@
 	}
 
 	function accionGuardar(){
-		
 		sub();
+		if(!document.getElementById("checkCesionDatos").checked){
+			
+			msg = "<siga:Idioma key='errors.checkRequired' arg0='censo.mutualidad.cesionDatos'/>";
+			alert(msg);
+			fin();
+			return false;
+			
+		}
+		
 		
 		document.MutualidadForm.periodicidadPago.value = document.MutualidadForm.idPeriodicidadPago.options[document.MutualidadForm.idPeriodicidadPago.selectedIndex].text;
 		document.MutualidadForm.cobertura.value = document.MutualidadForm.idCobertura.options[document.MutualidadForm.idCobertura.selectedIndex].text;
@@ -646,6 +672,12 @@
 				
 	       }
 		}
+	}
+	function cargaCombosDefecto() {
+		// document.MutualidadForm.periodicidadPago.value = document.MutualidadForm.idPeriodicidadPago.options[document.MutualidadForm.idPeriodicidadPago.selectedIndex].text;
+		
+		// idPeriodicidadPago
+		
 	}
 	
 	
