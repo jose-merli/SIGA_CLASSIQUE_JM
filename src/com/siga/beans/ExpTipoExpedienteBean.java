@@ -25,7 +25,7 @@ public class ExpTipoExpedienteBean extends MasterBean {
 	private Integer idTipoEnvios;
 	private Integer idPlantillaEnvios;
 	private Integer idPlantilla;
-	
+	private Integer relacionExpediente;	
 	
 	
 	// Nombre campos de la tabla 
@@ -42,12 +42,19 @@ public class ExpTipoExpedienteBean extends MasterBean {
 	static public final String C_IDTIPOENVIOS = "IDTIPOENVIOS";
 	static public final String C_IDPLANTILLAENVIOS = "IDPLANTILLAENVIOS";
 	static public final String C_IDPLANTILLA = "IDPLANTILLA";
+	static public final String C_RELACIONEXPEDIENTE = "RELACIONEXPEDIENTE";
 	
 	
 	static public final String T_NOMBRETABLA = "EXP_TIPOEXPEDIENTE";
 	
 	
-	
+	public Integer getRelacionExpediente() {
+		return relacionExpediente;
+	}
+	public void setRelacionExpediente(Integer relacionExpediente) {
+		this.relacionExpediente = relacionExpediente;
+	}
+
 
 	/**
 	 * @return Returns the esGeneral.

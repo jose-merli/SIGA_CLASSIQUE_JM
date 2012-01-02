@@ -198,5 +198,31 @@ public class CenTiposCVAdm extends MasterBeanAdministrador
 		}
 		return datos;
 	}
+	public int getNumCargos(int idInstitucion) throws ClsExceptions {
+		int datos=0;
+		String sql = " SELECT   count(*) "+
+					 " from cen_tiposcvsubtipo2 t "+
+					 " WHERE   t.idtipocv = 4 "+
+					 " 	idinstitucion in (2000, 2040) ";
+		// Acceso a BBDD
+		RowsContainer rc = null;
+		try { 
+			rc = new RowsContainer(); 
+			if (rc.query(sql)) {
+				if (rc != null) {
+					if(rc.size()==1) {
+						Row fila = (Row) rc.get(0);
+						Hashtable registro = (Hashtable) fila.getRow();
+						if (registro != null)
+							datos=5;
+					}
+				}
+			}
+		} 
+		catch (Exception e) { 	
+			throw new ClsExceptions (e, "Error al ejecutar el \"select\" en B.D."); 
+		}
+		return datos;
+	}
 	
 }

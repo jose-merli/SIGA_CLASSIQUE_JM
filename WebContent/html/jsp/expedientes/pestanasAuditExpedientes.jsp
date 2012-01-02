@@ -31,6 +31,10 @@
 	String[] pestanasOcultas = (String[])request.getAttribute("pestanasOcultas");
 	String idTipoExpediente = (String)request.getAttribute("idTipoExpediente");
 	String idInstitucionTipoExpediente = (String)request.getAttribute("idInstitucionTipoExpediente");
+	
+	String accion="edicion";
+	if(request.getAttribute("nuevo").equals("true"))
+		accion="nuevo";
 %>	
 	
 <html>
@@ -65,7 +69,8 @@
 
 	<!-- Formulario de la lista de detalle multiregistro -->
 	<html:form action="/EXP_AuditoriaExpedientes.do" method="POST">
-
+	<input type="hidden" name="accion"	value="<%=accion%>">		
+	
 	<!-- Campo obligatorio -->
 	<html:hidden property = "modo" value = ""/>	
 	

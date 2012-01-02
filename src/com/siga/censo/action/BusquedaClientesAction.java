@@ -24,6 +24,7 @@ import org.apache.struts.action.ActionMapping;
 import net.sourceforge.ajaxtags.xml.AjaxXmlBuilder;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.PaginadorBind;
@@ -98,7 +99,12 @@ public class BusquedaClientesAction extends MasterAction {
 						// buscarModal
 						//borrarPaginador(mapping, miForm, request, response);
 						mapDestino = buscarModal(mapping, miForm, request, response);
-					} else if (accion.equalsIgnoreCase("buscarModalInit")){
+					} else if (accion.equalsIgnoreCase("buscarModalResultado")){
+						// buscarModal
+						//borrarPaginador(mapping, miForm, request, response);
+						mapDestino = buscarModalResultado(mapping, miForm, request, response);
+					}
+					else if (accion.equalsIgnoreCase("buscarModalInit")){
 						String idPaginador = getIdPaginador(super.paginadorModal,getClass().getName());
 						borrarPaginador(request, idPaginador);
  						//borrarPaginadorModal(mapping, miForm, request, response);
@@ -247,6 +253,16 @@ public class BusquedaClientesAction extends MasterAction {
 			UsrBean user = (UsrBean) req.getSession().getAttribute("USRBEAN");
 			String idInstitucion=user.getLocation();
 			return CenVisibilidad.getVisibilidadInstitucion(idInstitucion);
+		}
+		catch (Exception e) {
+			throw new SIGAException (e);
+		}
+	}
+
+	private String obtenerVisibilidadUsuarioPorInstitucion(String institucion) throws SIGAException {
+		try {
+
+			return CenVisibilidad.getVisibilidadInstitucion(institucion);
 		}
 		catch (Exception e) {
 			throw new SIGAException (e);
@@ -1182,9 +1198,15 @@ public class BusquedaClientesAction extends MasterAction {
 			String obtenerColegiados = (String)miform.getObtenerColegiados();	        
 			
 			miform.reset(mapping,request);
-			
+			String idInstitucionCargo = (String)miform.getIdInstitucionCargo();
+			String visibilidad ="";
 			// obtengo la visibilidad para el user
-			String visibilidad = obtenerVisibilidadUsuario(request);
+			if(idInstitucionCargo!=null && !idInstitucionCargo.equals(""))
+				visibilidad = obtenerVisibilidadUsuarioPorInstitucion(idInstitucionCargo); 
+			else
+				visibilidad =obtenerVisibilidadUsuario(request);
+			
+				 
 			request.setAttribute("CenInstitucionesVisibles",visibilidad);
 			request.setAttribute("clientes",request.getParameter("clientes"));
 			request.setAttribute("deudor",request.getParameter("deudor"));
@@ -1287,16 +1309,70 @@ public class BusquedaClientesAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
+	 protected String buscarModalResultado(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions,SIGAException {
+			
+			String destino = "";
+			try {
+				// obtener institucion
+				UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+
+				String idInstitucion=user.getLocation();
+				// casting del formulario
+				BusquedaClientesForm miFormulario = (BusquedaClientesForm)formulario;
+				String idInstitucionCargo=miFormulario.getIdInstitucionCargo();
+				String numeroColegiadoN= miFormulario.getNumeroColegiado();
+				String nombreColegiadoN = miFormulario.getNombrePersona();
+				String apellidosColegiadoN = miFormulario.getApellido1();
+				Hashtable<String, Object> htCliente = null;
+				HashMap databackup=new HashMap();
+				//obtengo datos de la consulta 			
+				PaginadorBind resultado = null;
+				Vector datos = null;
+				CenClienteAdm admCli = new CenClienteAdm(this.getUserBean(request) );
+				
+				ClsLogging.writeFileLog("BUSQUEDA COMISIONES:getAjaxColegiadoIndividual.numeroColegiado:"+numeroColegiadoN+"/", 10);
+				String insti= miFormulario.getIdInstitucionCargo();//idInstitucionCargo
+				if(numeroColegiadoN!= null && !numeroColegiadoN.equals("")){
+					resultado = admCli.getClientePorNColegiadoResultado(insti,numeroColegiadoN);
+						
+				}else 		if(apellidosColegiadoN!= null && !apellidosColegiadoN.equals("")){
+					resultado = admCli.getClientePorNombreColegiadoResultado(insti,nombreColegiadoN, apellidosColegiadoN);
+						
+				}
+				String idPaginador = getIdPaginador(super.paginadorModal,getClass().getName());
+				request.setAttribute(ClsConstants.PARAM_PAGINACION,idPaginador);
+				
+				if (resultado!=null){
+					   databackup.put("paginador",resultado);
+					   datos = resultado.obtenerPagina(1);
+					   databackup.put("datos",datos);
+					   setPaginador(request, idPaginador, databackup);
+				}   
+							
+				destino="resultado";
+					
+			}catch (SIGAException e1) {
+				// Excepcion procedente de obtenerPagina cuando se han borrado datos
+				 return exitoRefresco("error.messages.obtenerPagina",request);
+			}catch (Exception e) {
+				throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
+			 	
+		   	 }
+			 return destino;
+		}
+		
 	protected String buscarModal(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions,SIGAException {
 		
 		String destino = "";
 		try {
 			// obtener institucion
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+
 			String idInstitucion=user.getLocation();
-	
 			// casting del formulario
 			BusquedaClientesForm miFormulario = (BusquedaClientesForm)formulario;
+			if(miFormulario.getIdInstitucion()!=null && !miFormulario.getIdInstitucion().trim().equals(""))
+				idInstitucion=miFormulario.getIdInstitucion();
 			
 			// busqueda de clientes
 			CenClienteAdm cliente = new CenClienteAdm(this.getUserBean(request));

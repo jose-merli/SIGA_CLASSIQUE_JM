@@ -384,6 +384,24 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 		}
 		return hash;
 	}
+	public Hashtable getDatosCVJunta(Long idPersona, Integer idInstitucion, Integer idInstitucionCargo, Integer idCV) throws ClsExceptions, SIGAException{
+		//Hashtable hash = new Hashtable();
+		Hashtable hash = null;
+		try{
+			CenDatosCVAdm datosCVAdm = null;
+			if (this.usrbean!=null) {
+				datosCVAdm = new CenDatosCVAdm(this.usuModificacion,this.usrbean,this.idInstitucionCliente, this.idPersonaCliente);
+			} else {
+				datosCVAdm = new CenDatosCVAdm(this.usrbean); 
+			}
+			hash=datosCVAdm.selectDatosCVJunta(idPersona,idInstitucion,idInstitucionCargo, idCV);			
+		}
+		catch(Exception e) {
+			throw new ClsExceptions (e, "Error al obtener DatosCV");
+		}
+		return hash;
+	}
+
 	
 	/**
 	 * Devuelve el numero de colegios del que es cliente un determinado usuario . 
@@ -2056,7 +2074,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	  	// Acceso a BBDD
 		try { 
 			// consulta de todos los colegiados de una institucion y si estamos en CGAE o en Consejos tambien nos devuelven los que son letrados. 
-			sqlClientes = "(SELECT "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+", " + 
+			sqlClientes = "(SELECT "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+", " + CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+"  AS  IDINSTITUCION , "+
 				" ( CASE "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_COMUNITARIO+" WHEN '" + ClsConstants.DB_TRUE + "' THEN "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOMUNITARIO+" ELSE "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOLEGIADO+" END) AS "+CenColegiadoBean.C_NCOLEGIADO+"," +
 				" "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+",  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" ,  "+
 
@@ -2205,7 +2223,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	       	
 	       }
 	       sqlClientes+=" UNION "+
-			" SELECT "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+","+
+			" SELECT "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+","+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+"  AS  IDINSTITUCION , "+
                     "'' AS NCOLEGIADO ,"+
                     CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+","+
                     CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+","+
@@ -4260,11 +4278,56 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 		return salida;
 	}
 	
-	public Vector getClientePorNColegiado(String idInstitucion, String nColegiado)  throws ClsExceptions,SIGAException {
+	public Vector getClientePorNombreColegiado(String idInstitucion, String nombreColegiado, String apellidosColegiado)  throws ClsExceptions,SIGAException {
 		    
 	    Vector salida = new Vector();
+	    Hashtable aux = new Hashtable();
 		try {
-		    String sql = "SELECT P.IDPERSONA, P.NOMBRE || ' ' || P.APELLIDOS1 || ' ' || P.APELLIDOS2 as NOMCOLEGIADO FROM CEN_PERSONA P, CEN_CLIENTE C, CEN_COLEGIADO COL" +
+		    Hashtable codigos = new Hashtable();
+		    String sql = "SELECT P.IDPERSONA, P.NOMBRE as NOMCOLEGIADO, P.APELLIDOS1 || ' ' || P.APELLIDOS2 as APECOLEGIADO, COL.NCOLEGIADO FROM CEN_PERSONA P, CEN_CLIENTE C, CEN_COLEGIADO COL" +
+		        	" WHERE P.IDPERSONA=C.IDPERSONA" +
+		        	" AND C.IDPERSONA=COL.IDPERSONA" +
+		        	" AND C.IDINSTITUCION=COL.IDINSTITUCION" +
+		            " AND (select idestado " +
+		        	"       from cen_datoscolegialesestado e2 " +
+		        	"        where e2.idinstitucion = C.IDINSTITUCION " +
+		        	"          and e2.idpersona = C.IDPERSONA " +
+		        	"          and e2.fechaestado = (select max(e.fechaestado) from cen_datoscolegialesestado e where e.idinstitucion=e2.idinstitucion and e.idpersona=e2.idpersona) " +
+		        	"          ) not in ('30', '40') " +
+		        	" AND C.IDINSTITUCION=:1";
+		    		codigos.put(new Integer(1),idInstitucion);
+		    		if(nombreColegiado!=null && !nombreColegiado.trim().equals("")){
+		    			sql +=" AND UPPER(TRIM(P.nombre)) LIKE UPPER(TRIM(:2))";
+		    			codigos.put(new Integer(2),"%"+nombreColegiado+"%");
+		    			if(apellidosColegiado!=null && !apellidosColegiado.trim().equals("")){
+			        		sql +=" AND UPPER(TRIM(P.APELLIDOS1 || ' ' || P.APELLIDOS2)) LIKE UPPER(TRIM(:3))";
+			        		codigos.put(new Integer(3),"%"+apellidosColegiado+"%");
+		    			}
+		        	}else	if(apellidosColegiado!=null && !apellidosColegiado.trim().equals("")){
+		        	
+		        		sql +=" AND UPPER(TRIM(P.APELLIDOS1 || ' ' || P.APELLIDOS2)) LIKE UPPER(TRIM(:2))";
+		        		codigos.put(new Integer(2),"%"+apellidosColegiado+"%");
+		        	}
+
+			RowsContainer rc = new RowsContainer(); 
+			if (rc.queryBind(sql,codigos)) {
+				for (int i=0 ;i<rc.size();i++){
+					aux = (Hashtable)((Row) rc.get(i)).getRow();
+					salida.add(aux);
+				}
+			}
+		}
+	    catch (Exception e) {
+	        throw new ClsExceptions(e,"Error al buscar al cliente por numero de colegiado");
+	    }
+	    return salida;
+	}
+	public Vector getClientePorNColegiado(String idInstitucion, String nColegiado)  throws ClsExceptions,SIGAException {
+	    
+	    Vector salida = new Vector();
+	    Hashtable aux = new Hashtable();
+	    try {
+		    String sql = "SELECT distinct P.IDPERSONA, P.NOMBRE as NOMCOLEGIADO,P.APELLIDOS1 || ' ' || P.APELLIDOS2 as APECOLEGIADO, COL.NCOLEGIADO FROM CEN_PERSONA P, CEN_CLIENTE C, CEN_COLEGIADO COL" +
 		        	" WHERE P.IDPERSONA=C.IDPERSONA" +
 		        	" AND C.IDPERSONA=COL.IDPERSONA" +
 		        	" AND C.IDINSTITUCION=COL.IDINSTITUCION" +
@@ -4281,20 +4344,102 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 		    codigos.put(new Integer(2),nColegiado);
 		    
 			RowsContainer rc = new RowsContainer(); 
-			if (rc.queryBind(sql,codigos)) {
-				if (rc.size() < 1) throw new SIGAException("messages.validarVolantesGuardias.noencuentracolegiado");
-				Hashtable aux = (Hashtable)((Row) rc.get(0)).getRow();
-				salida.add(aux);
-			}
+				if (rc.queryBind(sql,codigos)) {
+
+					for (int i=0 ;i<rc.size();i++){
+						aux = (Hashtable)((Row) rc.get(i)).getRow();
+						salida.add(aux);
+					}
+				}
+			
 		}
-	    catch (SIGAException e) {
-	        throw e;
-	    }
+
 	    catch (Exception e) {
 	        throw new ClsExceptions(e,"Error al buscar al cliente por numero de colegiado");
 	    }
 	    return salida;
 	}
+	public PaginadorBind getClientePorNColegiadoResultado(String idInstitucion, String nColegiado)  throws ClsExceptions,SIGAException {
+	    
+	    Vector salida = new Vector();
+	    Hashtable aux = new Hashtable();
+	    try {
+		    String sql = "SELECT distinct P.IDPERSONA, P.NOMBRE as NOMBRE, P.APELLIDOS1 AS APELLIDOS1,  P.APELLIDOS2 as APELLIDOS2, COL.NCOLEGIADO as NCOLEGIADO, C.IDINSTITUCION as IDINSTITUCION, f_siga_gettipocliente(C.IDPERSONA,2040,sysdate) AS ESTADOCOLEGIAL  FROM CEN_PERSONA P, CEN_CLIENTE C, CEN_COLEGIADO COL" +
+		        	" WHERE P.IDPERSONA=C.IDPERSONA" +
+		        	" AND C.IDPERSONA=COL.IDPERSONA" +
+		        	" AND C.IDINSTITUCION=COL.IDINSTITUCION" +
+		            " AND (select idestado " +
+		        	"       from cen_datoscolegialesestado e2 " +
+		        	"        where e2.idinstitucion = C.IDINSTITUCION " +
+		        	"          and e2.idpersona = C.IDPERSONA " +
+		        	"          and e2.fechaestado = (select max(e.fechaestado) from cen_datoscolegialesestado e where e.idinstitucion=e2.idinstitucion and e.idpersona=e2.idpersona) " +
+		        	"          ) not in ('30', '40') " +
+		        	" AND C.IDINSTITUCION=:1"+
+		        	" AND f_siga_calculoncolegiado(C.IDINSTITUCION,C.IDPERSONA)=:2";
+		    
+		    Hashtable codigos = new Hashtable();
+		    codigos.put(new Integer(1),idInstitucion);
+		    codigos.put(new Integer(2),nColegiado);
+		    
+		    PaginadorBind paginador = new PaginadorBind(sql,codigos);				
+			int totalRegistros = paginador.getNumeroTotalRegistros();
+			
+			if (totalRegistros==0){					
+				paginador =null;
+			}
+		    return paginador;
+	    }
+
+	    catch (Exception e) {
+	        throw new ClsExceptions(e,"Error al buscar al cliente por numero de colegiado");
+	    }
+
+	}
+	public PaginadorBind getClientePorNombreColegiadoResultado(String idInstitucion, String nombreColegiado, String apellidosColegiado)  throws ClsExceptions,SIGAException {
+	    
+	    Vector salida = new Vector();
+	    Hashtable aux = new Hashtable();
+		try {
+		    Hashtable codigos = new Hashtable();
+		    String sql = "SELECT distinct P.IDPERSONA, P.NOMBRE as NOMBRE, P.APELLIDOS1 AS APELLIDOS1,  P.APELLIDOS2 as APELLIDOS2, COL.NCOLEGIADO as NCOLEGIADO, C.IDINSTITUCION as IDINSTITUCION, f_siga_gettipocliente(C.IDPERSONA,2040,sysdate) AS ESTADOCOLEGIAL  FROM CEN_PERSONA P, CEN_CLIENTE C, CEN_COLEGIADO COL" +
+		        	" WHERE P.IDPERSONA=C.IDPERSONA" +
+		        	" AND C.IDPERSONA=COL.IDPERSONA" +
+		        	" AND C.IDINSTITUCION=COL.IDINSTITUCION" +
+		            " AND (select idestado " +
+		        	"       from cen_datoscolegialesestado e2 " +
+		        	"        where e2.idinstitucion = C.IDINSTITUCION " +
+		        	"          and e2.idpersona = C.IDPERSONA " +
+		        	"          and e2.fechaestado = (select max(e.fechaestado) from cen_datoscolegialesestado e where e.idinstitucion=e2.idinstitucion and e.idpersona=e2.idpersona) " +
+		        	"          ) not in ('30', '40') " +
+		        	" AND C.IDINSTITUCION=:1";
+		    		codigos.put(new Integer(1),idInstitucion);
+		    		if(nombreColegiado!=null && !nombreColegiado.trim().equals("")){
+		    			sql +=" AND UPPER(TRIM(P.nombre)) LIKE UPPER(TRIM(:2))";
+		    			codigos.put(new Integer(2),"%"+nombreColegiado+"%");
+		    			if(apellidosColegiado!=null && !apellidosColegiado.trim().equals("")){
+			        		sql +=" AND UPPER(TRIM(P.APELLIDOS1 || ' ' || P.APELLIDOS2)) LIKE UPPER(TRIM(:3))";
+			        		codigos.put(new Integer(3),"%"+apellidosColegiado+"%");
+		    			}
+		        	}else	if(apellidosColegiado!=null && !apellidosColegiado.trim().equals("")){
+		        	
+		        		sql +=" AND UPPER(TRIM(P.APELLIDOS1 || ' ' || P.APELLIDOS2)) LIKE UPPER(TRIM(:2))";
+		        		codigos.put(new Integer(2),"%"+apellidosColegiado+"%");
+		        	}
+		    PaginadorBind paginador = new PaginadorBind(sql,codigos);				
+			int totalRegistros = paginador.getNumeroTotalRegistros();
+			
+			if (totalRegistros==0){					
+				paginador =null;
+			}
+		    return paginador;
+		}
+	    catch (Exception e) {
+	        throw new ClsExceptions(e,"Error al buscar al cliente por numero de colegiado");
+	    }
+	}
+
+
+
 	public Vector selectComponentes(String nifcif) throws ClsExceptions, SIGAException {
 		Vector v = new Vector();
 		RowsContainer rc = null;

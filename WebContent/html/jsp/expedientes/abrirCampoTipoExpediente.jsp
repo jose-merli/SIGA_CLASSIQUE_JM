@@ -39,6 +39,20 @@
 		}
 		
 	}
+	String idinstitucion = user.getLocation();
+	
+    String datoTipoExp[] = new String[2];
+	
+	
+    Object[] aPerfiles = new Object[2];
+	aPerfiles[0] = user.getProfile();
+	aPerfiles[1] = user.getProfile();
+	datoTipoExp[0] = idinstitucion;
+	datoTipoExp[1] = idinstitucion;
+	ArrayList comboRelacionExpe = new ArrayList();
+	comboRelacionExpe.add(form1.getComboTipoExpediente());
+	
+
 	
 	
 	
@@ -139,9 +153,12 @@
 					
 				}
 				
-				
-				
-				
+				if(document.getElementById("relacionExpediente").checked && document.getElementById("comboTipoExpediente").value == ''){
+					alert('<siga:Idioma key="pestana.tiposexpedientes.campos.avisoRelacionExpe"/>');
+					fin();
+					inicioPestana();
+					return false;
+				}
 				
 				if (validateCamposForm(document.camposForm)) {
 					if (document.getElementById("estado").checked!=false) {
@@ -271,6 +288,17 @@
 				 } else {
 					 document.getElementById("aviso").style.display="none";
 				}
+			}
+			function onclickCheckAbrirExp() {
+				
+				if(document.getElementById("relacionExpediente").checked){
+					document.getElementById("comboTipoExpediente").disabled = "";
+					document.getElementById("comboTipoExpediente").value = "";
+				}else{
+					document.getElementById("comboTipoExpediente").disabled  = "disabled";
+					document.getElementById("comboTipoExpediente").value = "";	
+				}					
+
 			}			
 
 		</script>
@@ -565,6 +593,21 @@
 							</table>
 						</td>
 							<td>
+							<table cellspacing="0">
+									<tr>
+										<td>
+										<html:checkbox name="camposForm" property="relacionExpediente" disabled="<%=bLectura%>" onchange="onclickCheckAbrirExp();"/>
+										</td>
+										<td id="titulo" class="labelText">
+											<siga:Idioma key="general.expediente.boton.crearnuevo"/> 
+										</td>
+
+										
+										<td id="titulo" class="labelText">
+											<siga:ComboBD nombre = "comboTipoExpediente" tipo="cmbTipoExpedienteLocaloGeneralPermisos"  elementoSel="<%=comboRelacionExpe%>" clase="boxCombo" obligatorio="false" parametro="<%=datoTipoExp%>" parametrosIn="<%=aPerfiles%>"/>
+										</td>
+									</tr>
+							</table>
 							</td>	
 					</tr>			
 					<tr>
@@ -605,7 +648,6 @@
 									</td>
 									<td>
 										<siga:ComboBD nombre="idPlantillaGeneracion" tipo="cmbPlantillaGeneracion" clase="boxCombo" elementoSel="<%=plantillaSeleccionada%>" ancho="350" obligatorio="false" hijo="t" pestana="true"/>
-										
 									</td>
 								</tr>
 							</table>

@@ -50,6 +50,8 @@
 	if (request.getAttribute("tipoExpedienteEjg") != null)
 		tieneEjgRelacionado = ((Boolean) request
 				.getAttribute("tipoExpedienteEjg")).booleanValue();
+
+	
 	String totalMinuta = (String) request.getAttribute("totalMinuta");
 	if (totalMinuta == null)
 		totalMinuta = new String("");
@@ -62,6 +64,13 @@
 	
 	ExpDatosGeneralesForm form = (ExpDatosGeneralesForm) request
 			.getAttribute("ExpDatosGeneralesForm");
+	String nombreRelacion ="";
+	Boolean tieneExpeRelacionado= false;
+	if (form.getRelacionExpediente() != null && !form.getRelacionExpediente().equalsIgnoreCase("")){
+		tieneExpeRelacionado= true;
+		nombreRelacion =form.getNombreRelacionExpediente();
+	}
+	
 	if (form.getJuzgado() != null)
 		idJuzgado = form.getJuzgado();
 	if (form.getIdInstitucionJuzgado() != null)
@@ -126,6 +135,9 @@
 	
 
 	String accion = (String) request.getAttribute("accion");
+	String copia = (String) request.getParameter("copia");
+	if(copia==null)
+		copia="";
 	if (!accion.equals("nuevo")) { //pestanhas:edicion o consulta
 		idinst_idtipo_idfase = (String) request
 				.getAttribute("idinst_idtipo_idfase");
@@ -136,11 +148,24 @@
 		vFase.add(idinst_idtipo_idfase);
 		vEstado.add(idinst_idtipo_idfase_idestado);
 		vClasif.add(idclasificacion);
+	}else{
+		if (!copia.equals("s")) { //pestanhas:edicion o consulta
+			idinst_idtipo_idfase = (String) request
+					.getAttribute("idinst_idtipo_idfase");
+			idinst_idtipo_idfase_idestado = (String) request
+					.getAttribute("idinst_idtipo_idfase_idestado");
+			idclasificacion = (String) request
+					.getAttribute("idclasificacion");
+			vFase.add(idinst_idtipo_idfase);
+			vEstado.add(idinst_idtipo_idfase_idestado);
+			vClasif.add(idclasificacion);
+		}
 	}
-
 	String idinstitucion_tipoexpediente = (String) request
 			.getParameter("idInstitucion_TipoExpediente");
 	String tipoExp = (String) request.getParameter("idTipoExpediente");
+	if(form.getIdTipoExpediente()!=null && !form.getIdTipoExpediente().trim().equalsIgnoreCase(""))
+		tipoExp=form.getIdTipoExpediente();
 	String editable = (String) request.getParameter("editable");
 	String soloSeguimiento = (String) request
 			.getParameter("soloSeguimiento");
@@ -367,12 +392,16 @@
 							  document.forms[0].derechosColegiales.value = document.forms[0].derechosColegiales.value.replace(/,/,".");
 						}
 										
-						<%if (accion.equals("nuevo")) {%>
+						<% 
+						if (accion.equals("nuevo") || copia.equals("s")) { %>
+							document.ExpDatosGeneralesForm.accion.value="nuevo";
 							document.forms[0].modo.value="insertar";
+							
 						<%} else {%>
+						document.ExpDatosGeneralesForm.accion.value="edicion";
 							document.forms[0].modo.value="modificar";
 						<%}%>
-
+						
 						document.forms[0].target="submitArea";	
 						document.forms[0].submit();	
 				}
@@ -381,6 +410,7 @@
 				return false;
 			}
 		}
+		
 		function relacionarConEJG() 
 		{
 			document.BusquedaPorTipoSJCSForm.tipo.value="EJG";
@@ -430,13 +460,10 @@
 		
 		function refrescarLocal()
 		{	
-			<%if (accion.equals("nuevo")) {%>
 				document.forms[0].modo.value="abrirAvanzada";
 				document.forms[0].target="mainWorkArea";	
 				document.forms[0].submit();
-			<%} else {%>
-				document.location.reload();
-			<%}%>
+			
 		
 		}
 		function altaPersona()
@@ -699,6 +726,29 @@
 			 	
 		  }
 
+			function accionAbrir() 
+			{	
+				sub();	
+				var rel =document.ExpDatosGeneralesForm.relacionExpediente.value;
+				var nombrerel =document.ExpDatosGeneralesForm.nombreRelacionExpediente.value;
+				var numExpediente =document.ExpDatosGeneralesForm.numExpediente.value;
+				var anioExpediente =document.ExpDatosGeneralesForm.anioExpediente.value;
+				var tioExpedienteAnt ='<%=tipoExp%>';
+						
+				document.ExpDatosGeneralesForm.copia.value="s";	
+				document.ExpDatosGeneralesForm.accion.value="nuevo";
+				
+				if (document.ExpDatosGeneralesForm.relacionExpediente.value != ""){
+					document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true&idInst=<%=idinstitucion_tipoexpediente%>"+"&idTipo="+rel+"&idNombreTipo="+nombrerel+"&numExp="+numExpediente+"&anioExp="+anioExpediente+"&tipoExpAnt="+tioExpedienteAnt+"&nombreTipo="+'<%=form.getTipoExpediente()%>';
+					document.forms[1].modo.value="nuevoCopia";
+					document.forms[1].copia.value="s";					
+					document.forms[1].avanzada.value="<%=ClsConstants.DB_FALSE%>";
+					document.forms[1].target="mainWorkArea";	
+					document.forms[1].submit();			
+					
+				}
+				
+			}
 
 			
 				
@@ -727,6 +777,13 @@
 	<html:hidden property = "modo" value = ""/>
 	<html:hidden property = "hiddenFrame" value = "1"/>
 	<html:hidden property = "tipoExpDisciplinario"/>
+	<html:hidden property = "relacionExpediente"/>
+	<html:hidden property = "nombreRelacionExpediente"/>
+	<html:hidden property = "copia"/>
+	<input type="hidden" name="accion"	value="<%=accion%>">		
+
+
+
 
 
 <tr>				
@@ -741,7 +798,7 @@
 
 								<tr>
 									<%
-										if (!accion.equals("nuevo")) {
+										if (!accion.equals("nuevo") && !copia.equals("s")) {
 									%>
 									<td class="labelText"><siga:Idioma
 											key="expedientes.auditoria.literal.nexpediente" /></td>
@@ -868,7 +925,7 @@
 											key="expedientes.gestionarExpedientes.fechaApertura" /></td>
 									<td>
 										<%
-											if (accion.equals("nuevo")) {
+											if (accion.equals("nuevo") || copia.equals("s")) {
 										%> <html:text
 											name="ExpDatosGeneralesForm" property="fecha"
 											styleClass="box" readonly="true" size="10"
@@ -1289,7 +1346,7 @@
 	</siga:ConjCampos>
 	
 	<%
-	if (!accion.equals("nuevo")&& mostrarSolicitanteEJG != null
+	if ((!accion.equals("nuevo")) && mostrarSolicitanteEJG != null
 				&& mostrarSolicitanteEJG.equalsIgnoreCase("S")) {
 %>
 
@@ -1469,7 +1526,7 @@
 
 	<!-- G Guardar, Y GuardaryCerrar, R Reestablecer, C Cerrar, X Cancelar -->
 	<%
-		if (accion.equals("nuevo")) {
+		if (accion.equals("nuevo")  || copia.equals("s")) {
 	%>
 		<siga:ConjBotonesAccion botones="V,G" clase="botonesDetalle" />
 	<%
@@ -1478,12 +1535,75 @@
 	<%
 		if (tieneEjgRelacionado) {
 	%>
-		<siga:ConjBotonesAccion botones="V,R,G,COM,re" clase="botonesDetalle" />
+			<!-- INICIO: BOTONES ACCIONES -->
+
+<table class="botonesDetalle" align="center">
+<tr>
+	
+<td class="tdBotones">
+<input type="button" alt="<siga:Idioma key="general.boton.volver"/>"  id="idButton" onclick="return accionVolver();" class="button" name="idButton" value="<siga:Idioma key="general.boton.volver"/>">
+</td>
+<td  style="width:900px;">
+&nbsp;
+</td>
+<%
+		if (tieneExpeRelacionado) {
+	%>
+		<td class="tdBotones">
+		<input type="button" alt="<%=nombreRelacion %>"  id="idButton" onclick="return accionAbrir();" class="button" name="idButton" value="Abrir <%=nombreRelacion %>">
+		</td>
+	<%
+		}
+	%>
+<td class="tdBotones">
+<input type="button" alt="<siga:Idioma key="general.boton.guardar"/>"  id="idButton" onclick="return accionGuardar();" class="button" name="idButton" value="<siga:Idioma key="general.boton.guardar"/>">
+</td>
+<td class="tdBotones">
+<input type="button"  alt="<siga:Idioma key="general.boton.restablecer"/>"  id="idButton" onclick="return accionRestablecer();" class="button" name="idButton" value="<siga:Idioma key="general.boton.restablecer"/>">
+</td>
+<td class="tdBotones">
+<input type="button" alt="<siga:Idioma key="general.boton.relacionarEJG"/>"  id="idButton" onclick="return accionComunicar();" class="button" name="idButton" value="<siga:Idioma key="general.boton.comunicar"/>">
+</td>
+<td class="tdBotones">
+<input type="button" alt="<siga:Idioma key="general.boton.relacionarEJG"/>"  id="idButton" onclick="return relacionarConEJG();" class="button" name="idButton" value="<siga:Idioma key="general.boton.relacionarEJG"/>">
+</td>
+</tr>
+</table>
+
 		
 	<%
 				} else {
 			%>
-		<siga:ConjBotonesAccion botones="V,R,G,COM" clase="botonesDetalle" />
+<table class="botonesDetalle" align="center">
+<tr>
+<td class="tdBotones">
+<input type="button" alt="<siga:Idioma key="general.boton.volver"/>"  id="idButton" onclick="return accionVolver();" class="button" name="idButton" value="<siga:Idioma key="general.boton.volver"/>">
+</td>
+<td  style="width:900px;">
+&nbsp;
+</td>
+	<%
+		if (tieneExpeRelacionado) {
+	%>
+			<td class="tdBotones">
+			<input type="button" alt="<%=nombreRelacion %>"  id="idButton" onclick="return accionAbrir();" class="button" name="idButton" value="Abrir <%= nombreRelacion%>">
+			</td>
+	<%
+		}
+	%>
+
+<td class="tdBotones">
+<input type="button" alt="<siga:Idioma key="general.boton.guardar"/>" id="idButton" onclick="return accionGuardar();" class="button" name="idButton" value="<siga:Idioma key="general.boton.guardar"/>">
+</td>
+<td class="tdBotones">
+<input type="button"  alt="<siga:Idioma key="general.boton.restablecer"/>"  id="idButton" onclick="return accionRestablecer();" class="button" name="idButton" value="<siga:Idioma key="general.boton.restablecer"/>">
+</td>
+<td class="tdBotones">
+<input type="button" alt="<siga:Idioma key="general.boton.comunicar"/>"  id="idButton" onclick="return accionComunicar();" class="button" name="idButton" value="<siga:Idioma key="general.boton.comunicar"/>">
+</td>
+</tr>
+</table>
+
 	<%
 		}
 		} else {
@@ -1499,8 +1619,8 @@
 		<html:hidden property = "modo" value = ""/>
 		<html:hidden property = "avanzada" value = ""/>	
 		<html:hidden property = "numeroExpediente" value = ""/>
-		<html:hidden property = "anioExpediente" value = ""/>			
-
+		<html:hidden property = "anioExpediente" value = ""/>	
+		<input type="hidden" name="copia"	value="">		
 	</html:form>
 
 	<html:form action="/CEN_BusquedaClientesModal" method="POST" target="mainWorkArea" type="">
@@ -1544,6 +1664,12 @@
 		<input type="hidden" name="tipo"        value="">
 		
 	</html:form>
+		<html:form action="/EXP_NuevoExpediente.do" method="POST" target="submitArea">
+			<html:hidden property = "hiddenFrame" value = "1"/>
+			<html:hidden property = "modo" value = ""/>
+			<html:hidden property = "idTipoExpediente"/>			
+		</html:form>
+	
 
 
 <!-- INICIO: SUBMIT AREA -->

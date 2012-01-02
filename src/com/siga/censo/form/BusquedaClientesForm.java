@@ -25,7 +25,9 @@ import com.siga.general.MasterForm;
  	String permitirAniadirNuevo= "N";
  	String idPersona=  null;
  	String idInstitucion;
- 	private String verFichaLetrado;
+ 	String idInstitucionCargo;
+
+	private String verFichaLetrado;
  	
  	public String obtenerColegiados;
 
@@ -38,6 +40,13 @@ import com.siga.general.MasterForm;
 	 * @param  
 	 * @return void 
 	 */
+
+ 	public String getIdInstitucionCargo() {
+		return idInstitucionCargo;
+	}
+	public void setIdInstitucionCargo(String idInstitucionCargo) {
+		this.idInstitucionCargo = idInstitucionCargo;
+	}
 	public void setTipoBus				(String tipoBus)				{ this.datos.put("TIPOBUS", tipoBus);						}
  	/**
 	 * Almacena en la Hashtable el numeronif para el tagBusquedaPersona 

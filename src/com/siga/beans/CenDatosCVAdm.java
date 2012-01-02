@@ -6,7 +6,11 @@
  */
 package com.siga.beans;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
@@ -52,7 +56,7 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 	 * @author nuria.rgonzalez 22-12-04	 
 	 */
 	protected String[] getCamposBean() {
-		String[] campos = {	CenDatosCVBean.C_IDINSTITUCION,	
+		String[] campos = {	CenDatosCVBean.C_IDINSTITUCION,	 CenDatosCVBean.C_IDINSTITUCIONCARGO,
 				CenDatosCVBean.C_IDPERSONA,			 CenDatosCVBean.C_IDCV,
 				CenDatosCVBean.C_FECHAINICIO,		 CenDatosCVBean.C_FECHAFIN,	
 				CenDatosCVBean.C_DESCRIPCION,		 CenDatosCVBean.C_CERTIFICADO,	
@@ -69,7 +73,7 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 	 * @author nuria.rgonzalez  22-12-04	  
 	 */
 	protected String[] getClavesBean() {
-		String[] campos = {	CenDatosCVBean.C_IDINSTITUCION,
+		String[] campos = {	CenDatosCVBean.C_IDINSTITUCION,CenDatosCVBean.C_IDINSTITUCIONCARGO,
 				CenDatosCVBean.C_IDPERSONA,			CenDatosCVBean.C_IDCV};
 		return campos;
 	}	
@@ -91,6 +95,7 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 		try{
 			bean = new CenDatosCVBean();
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash,CenDatosCVBean.C_IDINSTITUCION));
+			bean.setIdInstitucionCargo(UtilidadesHash.getInteger(hash,CenDatosCVBean.C_IDINSTITUCIONCARGO));			
 			bean.setIdPersona(UtilidadesHash.getLong(hash,CenDatosCVBean.C_IDPERSONA));
 			bean.setIdCV(UtilidadesHash.getInteger(hash,CenDatosCVBean.C_IDCV));
 			bean.setFechaInicio(UtilidadesHash.getString(hash,CenDatosCVBean.C_FECHAINICIO));
@@ -107,6 +112,11 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 			bean.setFechaBaja(UtilidadesHash.getString(hash,CenDatosCVBean.C_FECHABAJA));
 			bean.setFechaMod(UtilidadesHash.getString(hash,CenDatosCVBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,CenDatosCVBean.C_USUMODIFICACION));
+			bean.setNombre(UtilidadesHash.getString(hash,"NOMBRE"));
+			bean.setNumcolegiado(UtilidadesHash.getString(hash,"NCOLEGIADO"));
+			bean.setCargo(UtilidadesHash.getString(hash,"CARGO"));
+			bean.setApellidos(UtilidadesHash.getString(hash,"APELLIDOS"));
+			
 		}
 		catch(Exception e){
 			bean = null;
@@ -126,6 +136,7 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 			hash = new Hashtable();
 			CenDatosCVBean b = (CenDatosCVBean) bean;
 			UtilidadesHash.set(hash, CenDatosCVBean.C_IDINSTITUCION, String.valueOf(b.getIdInstitucion()));
+			UtilidadesHash.set(hash, CenDatosCVBean.C_IDINSTITUCIONCARGO, String.valueOf(b.getIdInstitucionCargo()));			
 			UtilidadesHash.set(hash, CenDatosCVBean.C_IDPERSONA, String.valueOf(b.getIdPersona()));
 			UtilidadesHash.set(hash, CenDatosCVBean.C_IDCV, String.valueOf(b.getIdCV()));			
 			UtilidadesHash.set(hash, CenDatosCVBean.C_FECHAINICIO, b.getFechaInicio());
@@ -172,6 +183,7 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 				CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDINSTITUCION_SUBT2,
 				CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_FECHAMOVIMIENTO,
 				CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_FECHABAJA,
+				CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDINSTITUCIONCARGO,
 				"(select " + UtilidadesMultidioma.getCampoMultidioma(CenTiposCVSubtipo1Bean.C_DESCRIPCION, this.usrbean.getLanguage())+
 				" from "+CenTiposCVSubtipo1Bean.T_NOMBRETABLA+
 				" where "+CenTiposCVSubtipo1Bean.C_IDTIPOCV+"="+CenDatosCVBean.T_NOMBRETABLA + "." +CenDatosCVBean.C_IDTIPOCV+
@@ -342,6 +354,37 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 		}
 		return registro;
 	}
+	public Hashtable selectDatosCVJunta(Long idPersona, Integer idInstitucion,Integer idInstitucionCargo, Integer idCV) throws ClsExceptions, SIGAException{
+		//Hashtable registro = new Hashtable();
+		Hashtable registro = null;
+		RowsContainer rc = null;
+		String where =" WHERE " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDPERSONA + " = " + idPersona +
+		  " AND " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDINSTITUCION + " = " + idInstitucion +
+		  " AND " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDINSTITUCIONCARGO + " = " + idInstitucionCargo +
+		  " AND " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDCV + " = " + idCV;
+		try{
+			rc = new RowsContainer(); 
+			String sql = UtilidadesBDAdm.sqlSelect(this.getTablasDatosCV(), this.getCamposDatosCV());
+			sql += where;
+			sql += UtilidadesBDAdm.sqlOrderBy(this.getOrdenDatosCV());
+            // RGG cambio visibilidad
+            rc = this.find(sql);
+            if (rc!=null) {
+				if(rc.size()>0){
+					Row fila = (Row) rc.get(0);
+					registro = (Hashtable)fila.getRow(); 					
+				}
+			}
+		}
+//		catch (SIGAException e) {
+//			throw e;
+//		}
+		catch(Exception e) {
+			throw new ClsExceptions (e, "Error en selectDatosCV");
+		}
+		return registro;
+	}
+
 
 	/**
 	 * Inserta los datos de un C.V. y rellena la tabla de historicos (CEN_HISTORICO)
@@ -364,6 +407,33 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 		}
 		catch (SIGAException e) {
 			throw e;
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al insertar datos en B.D.");
+		}
+	}
+	public boolean insertar (CenDatosCVBean beanCV, CenHistoricoBean beanHis, String idioma) throws ClsExceptions, SIGAException 
+	{
+		try {
+			beanCV.setIdCV(this.getNuevoID(beanCV));
+			if (insert(beanCV)) {
+				return true;
+			}
+			return false;
+		}
+		catch (SIGAException e) {
+			throw e;
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al insertar datos en B.D.");
+		}
+	}
+	public boolean updatefecha (CenDatosCVBean beanCV) throws ClsExceptions, SIGAException 
+	{
+		try {
+			String sql ="UPDATE CEN_DATOSCV SET  FECHAFIN =  TO_DATE('" + beanCV.getFechaFin() + "', '"	+ ClsConstants.DATE_FORMAT_SQL + "') WHERE IDINSTITUCION = "+beanCV.getIdInstitucion()+"  AND IDINSTITUCIONCARGO = "+beanCV.getIdInstitucionCargo()+"  AND IDPERSONA = "+beanCV.getIdPersona()+"  AND IDCV = "+beanCV.getIdCV();  
+			updateDirectSQL(sql);
+			return true;
 		}
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al insertar datos en B.D.");
@@ -439,6 +509,7 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 			  			 " FROM " + CenDatosCVBean.T_NOMBRETABLA +  
 						 " WHERE " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDPERSONA+ " = " + bean.getIdPersona() +
 						 " AND " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDINSTITUCION + " = " + bean.getIdInstitucion();
+						 //" AND " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDINSTITUCIONCARGO + " = " + bean.getIdInstitucionCargo();
 
             // RGG cambio visibilidad
             rc = this.findForUpdate(sql);
@@ -460,8 +531,37 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 		}
 		return null;
 	}	
-
 	
+	public Integer getNuevoIDtipocvJunta ()throws SIGAException,ClsExceptions 
+	{
+		RowsContainer rc = null;
+		
+		try { rc = new RowsContainer(); }
+		catch(Exception e) { e.printStackTrace(); }
+		
+		try {		
+			String sql = " select valor from gen_parametros where modulo = 'CEN' and parametro = 'IDTIPOCV_JUNTASGOBIERNO' ";
+
+            // RGG cambio visibilidad
+            rc = this.findForUpdate(sql);
+            if (rc!=null) {
+				Row fila = (Row) rc.get(0);
+				Hashtable prueba = fila.getRow();
+				Integer idCV = UtilidadesHash.getInteger(prueba,"VALOR");
+				if (idCV == null) {
+					return new Integer(1);
+				}
+				else return idCV;								
+			}
+		}	
+//		catch (SIGAException e) {
+//			throw e;
+//		}
+		catch (Exception e) {		
+			throw new ClsExceptions (e, "Error al ejecutar el 'getSecuenciaIDTIPOCV' en B.D.");		
+		}
+		return null;
+	}
 	/** 
 	 * Recoge la informacion del registro seleccionado a partir de sus claves para <br/>
 	 * transacciones (for update)
@@ -478,6 +578,7 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 	            String sql ="SELECT " +
 							CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDPERSONA + "," +
 							CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDINSTITUCION + "," +
+							CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDINSTITUCIONCARGO + "," +
 							CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDCV + "," +
 							CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_FECHAINICIO + "," +
 							CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_FECHAFIN + "," +
@@ -557,9 +658,15 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 				       "         (select per."+CenPersonaBean.C_APELLIDOS1+"||' '||"+CenPersonaBean.C_APELLIDOS2+
 				       "          from "+CenPersonaBean.T_NOMBRETABLA+" per"+
 				       "          where  per."+CenPersonaBean.C_IDPERSONA+" = t."+CenDatosCVBean.C_IDPERSONA+
-				       "          ) APELLIDOS,"+
-				       " f_siga_calculoncolegiado(t."+CenDatosCVBean.C_IDINSTITUCION+",t."+CenDatosCVBean.C_IDPERSONA+") NCOLEGIADO,"+
-				       " (select " + UtilidadesMultidioma.getCampoMultidioma("p."+CenTiposCVSubtipo1Bean.C_DESCRIPCION, this.usrbean.getLanguage()) + " " + 
+				       "          ) APELLIDOS,";
+			    
+			    if((formulario.getIdInstitucionCargo()!=null)&&(!formulario.getIdInstitucionCargo().trim().equals(""))){
+				    select+=" f_siga_calculoncolegiado(t."+CenDatosCVBean.C_IDINSTITUCIONCARGO+",t."+CenDatosCVBean.C_IDPERSONA+") NCOLEGIADO,";
+			    }else  {
+				    select+=" f_siga_calculoncolegiado(t."+CenDatosCVBean.C_IDINSTITUCION+",t."+CenDatosCVBean.C_IDPERSONA+") NCOLEGIADO,";
+			    }    
+			    
+			    select+=" (select " + UtilidadesMultidioma.getCampoMultidioma("p."+CenTiposCVSubtipo1Bean.C_DESCRIPCION, this.usrbean.getLanguage()) + " " + 
 				       "  from "+CenTiposCVSubtipo1Bean.T_NOMBRETABLA+" p"+
 				       "  where p."+CenTiposCVSubtipo1Bean.C_IDTIPOCV+"=t."+CenDatosCVBean.C_IDTIPOCV+
 				       "    and p."+CenTiposCVSubtipo1Bean.C_IDINSTITUCION+"=t."+CenDatosCVBean.C_IDINSTITUCION_SUBT1+
@@ -575,6 +682,7 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 				       "    t."+CenDatosCVBean.C_IDCV+","+
 				       "    t."+CenDatosCVBean.C_IDPERSONA+","+
 				       "    t."+CenDatosCVBean.C_IDINSTITUCION+","+
+				       "    t."+CenDatosCVBean.C_IDINSTITUCIONCARGO+","+
 				       "    t."+CenDatosCVBean.C_IDTIPOCV+","+
 				       "    t."+CenDatosCVBean.C_FECHAINICIO+","+
 				       "    t."+CenDatosCVBean.C_FECHAFIN+
@@ -584,8 +692,13 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 			           // Aqui metemos el if institucion no vacio
 			           if((formulario.getIdInstitucion()!=null)&&(!formulario.getIdInstitucion().trim().equals(""))){
 			        	    select+= "  and T."+CenDatosCVBean.C_IDINSTITUCION+"="+formulario.getIdInstitucion();
-			           }   
-			 
+			           }  
+			           if((formulario.getIdInstitucionCargo()!=null)&&(!formulario.getIdInstitucionCargo().trim().equals(""))){
+			        	    select+= "  and T."+CenDatosCVBean.C_IDINSTITUCIONCARGO+"="+formulario.getIdInstitucionCargo();
+			           } 			           
+			           if((formulario.getIdPersona()!=null)&&(!formulario.getIdPersona().trim().equals(""))){
+			        	    select+= "  and T."+CenDatosCVBean.C_IDPERSONA+"="+formulario.getIdPersona();
+			           } 
 			 
 			    if (formulario.getComision()!=null && !formulario.getComision().equals("")){
 			    	String[] datosCVSubtipo1;
@@ -618,11 +731,145 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 				Hashtable datosCV= new Hashtable();
 			
 				registros = admCV.selectGenerico(select);
-				
+						
 	    } catch (Exception e) {
 	    	throw new ClsExceptions(e,"Error obteniendo la comisiones y los cargos."); 
    	    }
 		return registros;
+	}
+
+	public List<CenDatosCVBean> buscarComisionesJunta (BusquedaComisionesForm formulario/* , String language*/) throws ClsExceptions , SIGAException 
+	{
+			
+				
+		List<CenDatosCVBean> registros = null;
+		
+		String select="";
+		Integer idTipoCVSubtipo1 = null;
+		Integer idTipoCVSubtipo2 = null;
+		Integer idInstitucionSubtipo1=null;
+		Integer idInstitucionSubtipo2=null;
+		try 
+		{
+			    select=" select (select per.nombre"+
+			           "          from "+CenPersonaBean.T_NOMBRETABLA+" per"+
+				       "          where  per."+CenPersonaBean.C_IDPERSONA+" = t."+CenDatosCVBean.C_IDPERSONA+
+				       "         ) NOMBRE,"+
+				       "         (select per."+CenPersonaBean.C_APELLIDOS1+"||' '||"+CenPersonaBean.C_APELLIDOS2+
+				       "          from "+CenPersonaBean.T_NOMBRETABLA+" per"+
+				       "          where  per."+CenPersonaBean.C_IDPERSONA+" = t."+CenDatosCVBean.C_IDPERSONA+
+				       "          ) APELLIDOS,";
+					    if((formulario.getIdInstitucionCargo()!=null)&&(!formulario.getIdInstitucionCargo().trim().equals(""))){
+						    select+=" f_siga_calculoncolegiado(t."+CenDatosCVBean.C_IDINSTITUCIONCARGO+",t."+CenDatosCVBean.C_IDPERSONA+") NCOLEGIADO,";
+					    }else  {
+						    select+=" f_siga_calculoncolegiado(t."+CenDatosCVBean.C_IDINSTITUCION+",t."+CenDatosCVBean.C_IDPERSONA+") NCOLEGIADO,";
+					    }   
+
+			  select+= " (select " + UtilidadesMultidioma.getCampoMultidioma("p."+CenTiposCVSubtipo1Bean.C_DESCRIPCION, this.usrbean.getLanguage()) + " " + 
+				       "  from "+CenTiposCVSubtipo1Bean.T_NOMBRETABLA+" p"+
+				       "  where p."+CenTiposCVSubtipo1Bean.C_IDTIPOCV+"=t."+CenDatosCVBean.C_IDTIPOCV+
+				       "    and p."+CenTiposCVSubtipo1Bean.C_IDINSTITUCION+"=t."+CenDatosCVBean.C_IDINSTITUCION_SUBT1+
+				       "    and p."+CenTiposCVSubtipo1Bean.C_IDTIPOCVSUBTIPO1+"=t."+CenDatosCVBean.C_IDTIPOCVSUBTIPO1+") CARGO,"+
+				       "    t."+CenDatosCVBean.C_IDTIPOCVSUBTIPO1+" AS IDTIPOCVSUBTIPO1,"+
+				       "    t."+CenDatosCVBean.C_IDTIPOCVSUBTIPO2+"  AS IDTIPOCVSUBTIPO2,"+
+				       "    t."+CenDatosCVBean.C_IDCV+" AS IDCV,"+
+				       "    t."+CenDatosCVBean.C_IDPERSONA+" AS IDPERSONA,"+
+				       "    t."+CenDatosCVBean.C_IDINSTITUCION+","+
+				       "    t."+CenDatosCVBean.C_IDINSTITUCIONCARGO+","+
+				       "    t."+CenDatosCVBean.C_IDTIPOCV+","+
+				       "    TO_CHAR(T."+CenDatosCVBean.C_FECHAINICIO+",'DD/MM/YYYY') AS FECHAINICIO, "+
+				       "    TO_CHAR(T."+CenDatosCVBean.C_FECHAFIN+",'DD/MM/YYYY')  AS FECHAFIN "+
+				       "  from "+CenDatosCVBean.T_NOMBRETABLA+" t "+
+			           " where T."+CenDatosCVBean.C_IDTIPOCV+"="+ClsConstants.TIPOCV_COMISIONES+ "" +
+			           "   AND T."+CenDatosCVBean.C_FECHABAJA+" IS NULL ";
+			          // "   AND T."+CenDatosCVBean.C_FECHAFIN+" IS NULL ";//+
+			    	   //"   AND T."+CenDatosCVBean.C_FECHAINICIO+" = "+" TO_DATE('" + formulario.getFechaCargo() + "', '"
+					//	+ ClsConstants.DATE_FORMAT_SQL + "') "; 
+			           // Aqui metemos el if institucion no vacio
+			           if((formulario.getIdInstitucion()!=null)&&(!formulario.getIdInstitucion().trim().equals(""))){
+			        	    select+= "  and T."+CenDatosCVBean.C_IDINSTITUCION+"="+formulario.getIdInstitucion();
+			           }   
+			           if((formulario.getIdInstitucionCargo()!=null)&&(!formulario.getIdInstitucionCargo().trim().equals(""))){
+			        	    select+= "  and T."+CenDatosCVBean.C_IDINSTITUCIONCARGO+"="+formulario.getIdInstitucionCargo();
+			           }
+					   if (formulario.getFechaCargo()!=null && !formulario.getFechaCargo().equals("")){
+					    	String fechaCargo="to_date('"+formulario.getFechaCargo()+"','DD/MM/YYYY')";
+					    	select+=" AND (T."+CenDatosCVBean.C_FECHAFIN+" IS NULL OR TO_DATE(TO_CHAR(T."+CenDatosCVBean.C_FECHAFIN+",'DD/MM/YYYY'),'DD/MM/YYYY') >= "+fechaCargo+")";
+					   }
+					   if (formulario.getIdPersona()!=null && !formulario.getIdPersona().equals("")){
+						   select+= "  and T."+CenDatosCVBean.C_IDPERSONA+"="+formulario.getIdPersona();
+					   }
+			 
+			    if (formulario.getCargos()!=null && !formulario.getCargos().equals("")){
+			    	String[] datosCVSubtipo1;
+					  datosCVSubtipo1=formulario.getCargos().toString().split("@");
+					  idTipoCVSubtipo1=new Integer(datosCVSubtipo1[0]);
+					  idInstitucionSubtipo1=new Integer(datosCVSubtipo1[1]);
+
+					  select+=" AND T."+CenDatosCVBean.C_IDTIPOCVSUBTIPO1+" = "+idTipoCVSubtipo1+
+					        " AND T."+CenDatosCVBean.C_IDINSTITUCION_SUBT1+" = "+idInstitucionSubtipo1;
+			    	
+			    }
+			    //if (formulario.getIdInstitucionCargo()!=null && !formulario.getIdInstitucionCargo().equals("")){
+			   // 	 select+= "  and T."+CenDatosCVBean.C_IDINSTITUCIONCARGO+"="+formulario.getIdInstitucionCargo();
+			    //}
+
+			    select+= " ORDER BY APELLIDOS ASC";
+			
+				registros = selectGenericoList(select);
+			
+	    } catch (Exception e) {
+	    	throw new ClsExceptions(e,"Error obteniendo la comisiones y los cargos."); 
+   	    }
+		return registros;
+	}
+	public boolean eliminarCargo(Hashtable hash)throws ClsExceptions, SIGAException {
+		
+	
+		boolean eliminada;
+		try{ 
+			
+			Hashtable h = new Hashtable();
+			String [] claves = this.getClavesBean();
+			for (int i = 0; i < claves.length; i++) {
+				h.put (claves[i], hash.get(claves[i]));
+			}
+			// Procedo a borrar en la tabla -> conlleva borrado en cascada				
+			eliminada=this.delete(h);
+		
+			
+		}catch (Exception e){
+			
+			throw new ClsExceptions(e,"Error al borrar el cargo."); 				
+		}
+		return eliminada;
+	}
+	
+
+
+	public List<CenDatosCVBean> selectGenericoList(String sql) throws ClsExceptions, SIGAException 
+	{
+		Vector datos = new Vector();
+		List<CenDatosCVBean> lisComisiones = new ArrayList<CenDatosCVBean>();
+		RowsContainer rc = new RowsContainer();
+		try { 
+			if (rc.findForUpdate(sql)) {
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+	           		Hashtable<String, Object> htFila=fila.getRow();
+	           		
+					CenDatosCVBean comisionesBean= new CenDatosCVBean();
+					
+					comisionesBean = (CenDatosCVBean)this.hashTableToBean(htFila);
+					lisComisiones.add(comisionesBean);
+
+				}
+			}
+		} 
+		catch (Exception e) {
+			throw new ClsExceptions (e,  e.getMessage() + "Consulta SQL:"+sql);
+		}
+		return lisComisiones;	
 	}
 
 	public void updateInformeDatosCV(UsrBean usrBean, int idInstitucion, Long idPersona, Hashtable htDatosInforme) throws ClsExceptions {
@@ -701,5 +948,4 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 			}
 		}
 	}
-	
 }

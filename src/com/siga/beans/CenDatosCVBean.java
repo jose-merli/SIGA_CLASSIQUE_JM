@@ -9,15 +9,42 @@
  */
 package com.siga.beans;
 
+import java.util.Hashtable;
+
 /**
  * @author nuria.rgonzalez 
  */
 public class CenDatosCVBean extends MasterBean{
 	/* Variables */
-	private Integer idInstitucion, idCV, idTipoCV,idInstitucion_subt1,idInstitucion_subt2;
+	private Integer idInstitucion, idCV, idTipoCV,idInstitucion_subt1,idInstitucion_subt2,idInstitucionCargo;
 	private Long 	idPersona, creditos;
-	private String 	fechaInicio, fechaFin, descripcion, certificado, fechaMovimiento, fechabaja,idTipoCVSubtipo1,idTipoCVSubtipo2;	
+	private String 	fechaInicio, fechaFin, descripcion, certificado, fechaMovimiento, fechabaja,idTipoCVSubtipo1,idTipoCVSubtipo2, nombre, apellidos, numcolegiado, cargo;	
 	
+	public String getNombre() {
+		return nombre;
+	}
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+	public String getApellidos() {
+		return apellidos;
+	}
+	public void setApellidos(String apellidos) {
+		this.apellidos = apellidos;
+	}
+	public String getNumcolegiado() {
+		return numcolegiado;
+	}
+	public void setNumcolegiado(String numcolegiado) {
+		this.numcolegiado = numcolegiado;
+	}
+	public String getCargo() {
+		return cargo;
+	}
+	public void setCargo(String cargo) {
+		this.cargo = cargo;
+	}
+
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "CEN_DATOSCV";
 	
@@ -37,6 +64,7 @@ public class CenDatosCVBean extends MasterBean{
 	static public final String C_IDTIPOCVSUBTIPO2	= "IDTIPOCVSUBTIPO2";
 	static public final String C_IDINSTITUCION_SUBT1= "IDINSTITUCION_SUBT1";
 	static public final String C_IDINSTITUCION_SUBT2= "IDINSTITUCION_SUBT2";
+	static public final String C_IDINSTITUCIONCARGO = "IDINSTITUCIONCARGO";	
 
 	
 	//	 Metodos SET
@@ -99,6 +127,10 @@ public class CenDatosCVBean extends MasterBean{
 	 */
 	public void setIdTipoCV(Integer idTipoCV) {
 		this.idTipoCV = idTipoCV;
+	}
+	
+	public void setIdInstitucionCargo(Integer idInstitucionCargo) {
+		this.idInstitucionCargo = idInstitucionCargo;
 	}
 	
 	//	 Metodos GET
@@ -223,4 +255,9 @@ public class CenDatosCVBean extends MasterBean{
 	public void setIdTipoCVSubtipo2(String idTipoCVSubtipo2) {
 		this.idTipoCVSubtipo2 = idTipoCVSubtipo2;
 	}
+	
+	public Integer getIdInstitucionCargo() {
+		return idInstitucionCargo;
+	}
+
 }

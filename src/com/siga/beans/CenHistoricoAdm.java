@@ -110,7 +110,8 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 			htData = new Hashtable();
 			CenHistoricoBean b = (CenHistoricoBean) bean;
 			UtilidadesHash.set(htData,CenHistoricoBean.C_IDPERSONA,b.getIdPersona ());
-			UtilidadesHash.set(htData,CenHistoricoBean.C_IDINSTITUCION,b.getIdInstitucion ()); 
+			UtilidadesHash.set(htData,CenHistoricoBean.C_IDINSTITUCION,b.getIdInstitucion ());
+			UtilidadesHash.set(htData,CenHistoricoBean.C_IDINSTITUCIONCARGO,b.getIdInstitucionCargo()); 			
 			UtilidadesHash.set(htData,CenHistoricoBean.C_IDHISTORICO, b.getIdHistorico());
 			UtilidadesHash.set(htData,CenHistoricoBean.C_FECHAENTRADA,b.getFechaEntrada());
 			UtilidadesHash.set(htData,CenHistoricoBean.C_FECHAEFECTIVA,b.getFechaEfectiva());
@@ -695,6 +696,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 					hBeanAsociadoAnterior = adm.beanToHashTable(adm.hashTableToBean(beanCV.getOriginalHash()));
 
 					beanHistorico.setIdInstitucion(beanCV.getIdInstitucion());
+					beanHistorico.setIdInstitucionCargo(beanCV.getIdInstitucionCargo());
 					beanHistorico.setIdPersona(beanCV.getIdPersona());
 					beanHistorico.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_DATOS_CV));			
 
@@ -949,7 +951,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 				beanHistorico.setFechaEfectiva("SYSDATE");
 			if ((beanHistorico.getFechaEntrada()  == null) || (beanHistorico.getFechaEntrada().equals(""))) 
 				beanHistorico.setFechaEntrada ("SYSDATE");
-		
+			//beanHistorico.setIdInstitucionCargo("");
 			// Insertamos el historico
 			if (this.insert(beanHistorico)) {
 				return true;

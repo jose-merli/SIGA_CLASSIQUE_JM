@@ -17,7 +17,7 @@
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-
+<%@ page import="com.siga.general.*"%>
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
@@ -186,8 +186,8 @@
 		   	borde="1"
    			estilo=""
 		   	clase="tableTitle"
-		  	nombreCol=",censo.consultaDatosCV.literal.tipo,,,censo.consultaDatosCV.literal.fechaInicio,censo.consultaDatosCV.literal.fechaFin,censo.consultaDatosCV.literal.descripcion,censo.consultaDatosCV.literal.verificado,"
-		  	tamanoCol="10,15,10,10,10,25,10,10"
+		  	nombreCol=",censo.busquedaClientes.literal.institucion,censo.consultaDatosCV.literal.tipo,,,censo.consultaDatosCV.literal.fechaInicio,censo.consultaDatosCV.literal.fechaFin,censo.consultaDatosCV.literal.descripcion,censo.consultaDatosCV.literal.verificado,"
+		  	tamanoCol="10,10,10,10,10,10,20,10,10"
 		    alto="100%"
 		    ajuste = "70"		
 		    modal="M">  
@@ -234,9 +234,16 @@
 				if ((f == null) || (f.equals(""))) {
 					iconos += ",E,B";
 				}
+				String idInstitucion = usr.getLocation();
+				String institucion = CenVisibilidad.getAbreviaturaInstitucion(idInstitucion);
+				if(htData.get("IDINSTITUCIONCARGO")!=null && !htData.get("IDINSTITUCIONCARGO").toString().trim().equals(""))
+					institucion = CenVisibilidad.getAbreviaturaInstitucion(htData.get("IDINSTITUCIONCARGO").toString());
+
 	%> 				
 				<siga:FilaConIconos fila='<%=String.valueOf(i)%>' botones='<%=iconos%>' elementos='<%=elems%>' modo='<%=accion%>' clase="listaNonEdit">
+				<td><%=UtilidadesString.mostrarDatoJSP(institucion)%></td>
 					<td><input type='hidden' name='oculto<%=String.valueOf(i)%>_1' value='<%=htData.get(CenDatosCVBean.C_IDCV)%>'>	
+					<input type='hidden' name='oculto<%=String.valueOf(i)%>_2' value='<%=htData.get(CenDatosCVBean.C_IDINSTITUCIONCARGO)%>'>
   						<%=UtilidadesString.mostrarDatoJSP(htData.get("TIPOAPUNTE"))%>
   				</td>
   				<td><%=UtilidadesString.mostrarDatoJSP(htData.get("DESCSUBTIPO1"))%></td>

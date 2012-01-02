@@ -226,6 +226,10 @@
 		
 					// el id del user.getlocation
 					String idInstitucion = usrbean.getLocation();
+					String institucion = CenVisibilidad.getAbreviaturaInstitucion(idInstitucion);
+					if(registro.get("IDINSTITUCION")!=null && !registro.get("IDINSTITUCION").toString().trim().equals(""))
+						institucion = CenVisibilidad.getAbreviaturaInstitucion(registro.get("IDINSTITUCION").toString());
+			
 		
 					String idPersona = (registro.get(CenColegiadoBean.C_IDPERSONA) == null 
 							|| ((String) registro.get(CenColegiadoBean.C_IDPERSONA)).equals("")) ? "&nbsp;" : (String) registro.get(CenColegiadoBean.C_IDPERSONA);
@@ -257,7 +261,7 @@
 					estadoColegial = UtilidadesString.mostrarDatoJSP(UtilidadesMultidioma.getDatoMaestroIdioma((String) registro.get("ESTADOCOLEGIAL"), 
 																												usrbean));
 		
-					String institucion = CenVisibilidad.getAbreviaturaInstitucion(idInstitucion);
+					
 					
 			 		%>
 						<!-- REGISTRO  -->

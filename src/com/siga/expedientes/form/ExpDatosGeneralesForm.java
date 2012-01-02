@@ -76,9 +76,29 @@ public class ExpDatosGeneralesForm extends MasterForm {
     private String solicitanteEjgApellido1;
     private String solicitanteEjgApellido2;
     private String solicitanteEjgNombre;
-   
+    private String relacionExpediente;
+    private String nombreRelacionExpediente;    
+    private String copia;    
     
     
+	public String getCopia() {
+		return copia;
+	}
+	public void setCopia(String copia) {
+		this.copia = copia;
+	}
+	public String getRelacionExpediente() {
+		return relacionExpediente;
+	}
+	public void setRelacionExpediente(String relacionExpediente) {
+		this.relacionExpediente = relacionExpediente;
+	}
+	public String getNombreRelacionExpediente() {
+		return nombreRelacionExpediente;
+	}
+	public void setNombreRelacionExpediente(String nombreRelacionExpediente) {
+		this.nombreRelacionExpediente = nombreRelacionExpediente;
+	}
 	public String getIdturnoDesignado() {
 		return idturnoDesignado;
 	}

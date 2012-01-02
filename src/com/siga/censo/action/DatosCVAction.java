@@ -6,9 +6,10 @@
  */
 package com.siga.censo.action;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Vector;
-
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
@@ -16,16 +17,18 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import net.sourceforge.ajaxtags.xml.AjaxXmlBuilder;
 
 import com.atos.utils.*;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.*;
 import com.siga.censo.form.DatosCVForm;
+import com.siga.general.CenVisibilidad;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-
+import com.businessobjects.report.web.json.JSONObject;
 /**
  * @author nuria.rgonzalez
  */
@@ -61,12 +64,24 @@ public class DatosCVAction extends MasterAction{
 				// Abrir
 				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
 					mapDestino = abrir(mapping, miForm, request, response);						
-				}else if (accion.equalsIgnoreCase("solicitarModificacion")){
+				} else if (accion.equalsIgnoreCase("solicitarModificacion")){
 					mapDestino = solicitarModificacion(mapping, miForm, request, response);
 				} else if(accion.equalsIgnoreCase("insertarModificacion")){
 					mapDestino = insertarModificacion(mapping, miForm, request, response);
 				} else if(accion.equalsIgnoreCase("solicitarNuevo")){
 					mapDestino = solicitarNuevo(mapping, miForm, request, response);
+				} else if(accion.equalsIgnoreCase("verModal")){
+					mapDestino = verModal(mapping, miForm, request, response);
+				} else if ( accion.equalsIgnoreCase("getAjaxBorrarCargo")){
+					ClsLogging.writeFileLog("DatosCVAction:getAjaxBorrarCargo", 10);
+					mapDestino = borrarRegistro(mapping, miForm, request, response);
+					return null;
+				}else if ( accion.equalsIgnoreCase("obtenerColegiado")){
+					ClsLogging.writeFileLog("DatosCVAction:obtenerColegiado", 10);
+					mapDestino = obtenerColegiado(mapping, miForm, request, response);
+					return null;
+				 }else if(accion.equalsIgnoreCase("editarModal")){
+					mapDestino = editarModal(mapping, miForm, request, response);
 				} else {
 					return super.executeInternal(mapping, formulario, request, response);
 				}
@@ -154,6 +169,15 @@ public class DatosCVAction extends MasterAction{
 			request.setAttribute("numero", numero);
 			request.setAttribute("vDatos", v);
 			request.setAttribute("estadoColegial", estadoColegial);
+			int idInstitu= new Integer(idInstitucion).intValue();
+			if(idInstitu!=2000)
+				request.setAttribute("esJunta", "N");
+			else
+				request.setAttribute("esJunta", "S");
+			
+			
+			request.setAttribute("idInstitucionCargo","");
+
 		}
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);
@@ -171,7 +195,7 @@ public class DatosCVAction extends MasterAction{
 			Vector ocultos = new Vector();
 			DatosCVForm form= (DatosCVForm) formulario;
 			ocultos = (Vector)form.getDatosTablaOcultos(0);	
-			Long idPersona = form.getIDPersona();
+			Long idPersona = form.getIdPersona();
 			Integer idInstitucionPersona = form.getIDInstitucion();
 			String accion = (String)request.getParameter("accion");		
 			Integer idCV = Integer.valueOf((String)ocultos.elementAt(0));
@@ -186,7 +210,52 @@ public class DatosCVAction extends MasterAction{
 			request.setAttribute("nombrePersona", request.getParameter("nombreUsuario"));
 			request.setAttribute("numero", request.getParameter("numeroUsuario"));
 			request.setAttribute("idPersona", idPersona);
-			request.setAttribute("modoConsulta", modo);			
+			request.setAttribute("modoConsulta", modo);	
+			String idInstitucion=user.getLocation();
+			int idInstitu= new Integer(idInstitucion).intValue();
+			if(idInstitu!=2000){
+				request.setAttribute("esJunta", "N");
+				request.setAttribute("idInstitucionCargo", "");
+			}else{
+				request.setAttribute("esJunta", "S");
+				request.setAttribute("idInstitucionCargo", (String)hash.get("IDINSTITUCIONCARGO"));
+			}
+			request.setAttribute("mantenimiento", "");
+			
+		}
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);
+		}
+		return modo;
+	}
+	protected String editarModal(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		String modo = "editar";
+		try{
+			
+			DatosCVForm form= (DatosCVForm) formulario;
+			Long idPersona = form.getIdPersona();
+			
+			Integer idInstitucionCargo = form.getIDInstitucionCargo();
+			Integer idInstitucionPersona = form.getIDInstitucion();
+			String accion = (String)request.getParameter("accion");		
+			Integer idCV =form.getIDCV();
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			String mantenimiento= (String)request.getParameter("mantenimiento");
+			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserName(request),user,idInstitucionPersona.intValue(),idPersona.longValue());
+			Hashtable hash = clienteAdm.getDatosCVJunta(idPersona,idInstitucionPersona,idInstitucionCargo, idCV);
+	
+//			request.setAttribute("hDatos", hash);			
+			request.getSession().setAttribute("DATABACKUP", hash);
+			request.setAttribute("accion", accion);	
+			request.setAttribute("nombrePersona",  request.getParameter("nombreUsuario"));
+			request.setAttribute("numero", request.getParameter("numeroUsuario"));
+			request.setAttribute("idPersona", idPersona);
+			request.setAttribute("modoConsulta", modo);	
+			request.setAttribute("esJunta", "S");
+			request.setAttribute("idInstitucionCargo", idInstitucionCargo);
+			request.setAttribute("mantenimiento", mantenimiento);
+			
+
 		}
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);
@@ -203,27 +272,31 @@ public class DatosCVAction extends MasterAction{
 			Vector ocultos = new Vector();
 			DatosCVForm form= (DatosCVForm) formulario;
 			ocultos = (Vector)form.getDatosTablaOcultos(0);	
-			Long idPersona = form.getIDPersona(); 
+			Long idPersona = form.getIdPersona(); 
 			Integer idInstitucionPersona = form.getIDInstitucion();
-			String accion = (String)request.getParameter("accion");		
+			String accion = (String)request.getParameter("accion");	
 			Integer idCV = Integer.valueOf((String)ocultos.elementAt(0));
-			
 
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			
 			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserName(request),user,idInstitucionPersona.intValue(),idPersona.longValue());
 			Hashtable hash = clienteAdm.getDatosCV(idPersona,idInstitucionPersona,idCV);
 			
-			
-			
-			
-	
+
 			request.getSession().setAttribute("DATABACKUP", hash);
 			request.setAttribute("accion", accion);	
 			request.setAttribute("nombrePersona", request.getParameter("nombreUsuario"));
 			request.setAttribute("numero", request.getParameter("numeroUsuario"));
 			request.setAttribute("idPersona", idPersona);
-			request.setAttribute("modoConsulta", modo);			
+			request.setAttribute("modoConsulta", modo);		
+			String idInstitucion=user.getLocation();
+			int idInstitu= new Integer(idInstitucion).intValue();
+			if(idInstitu!=2000)
+				request.setAttribute("esJunta", "N");
+			else
+				request.setAttribute("esJunta", "S");
+			request.setAttribute("idInstitucionCargo", "");		
+			request.setAttribute("mantenimiento", "");
 		}
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);
@@ -231,16 +304,65 @@ public class DatosCVAction extends MasterAction{
 		return modo;
 	}
 
+	
+	protected String verModal(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		String modo = "ver";
+		try{
+			Vector ocultos = new Vector();
+			DatosCVForm form= (DatosCVForm) formulario;
+			
+			Long idPersona = form.getIdPersona(); 
+			Integer idInstitucionPersona = form.getIDInstitucion();
+			Integer idInstitucionCargo = form.getIDInstitucionCargo();
+			String accion = (String)request.getParameter("accion");	
+			Integer idCV = Integer.valueOf(form.getIDCV());
+			String mantenimiento= (String)request.getParameter("mantenimiento");
+			
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			
+			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserName(request),user,idInstitucionPersona.intValue(),idPersona.longValue());
+			Hashtable hash = clienteAdm.getDatosCVJunta(idPersona,idInstitucionPersona, idInstitucionCargo,idCV);
+			
+
+			request.getSession().setAttribute("DATABACKUP", hash);
+			request.setAttribute("accion", accion);	
+			request.setAttribute("nombrePersona", request.getParameter("nombreUsuario"));
+			request.setAttribute("numero", request.getParameter("numeroUsuario"));
+			request.setAttribute("idPersona", idPersona);
+			request.setAttribute("modoConsulta", modo);		
+			request.setAttribute("esJunta", "S");
+			request.setAttribute("idInstitucionCargo", idInstitucionCargo);
+			request.setAttribute("mantenimiento", mantenimiento);			
+			
+			}
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);
+		}
+		return modo;
+	}
+
+	
 	protected String nuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String modo = "nuevo";
  		try
 		{
+ 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
  			DatosCVForm miForm = (DatosCVForm) formulario;
 			request.setAttribute("modoConsulta", modo);			
 			request.setAttribute("nombrePersona", request.getParameter("nombreUsuario"));
-			request.setAttribute("idPersona", miForm.getIDPersona());
+			request.setAttribute("idPersona", miForm.getIdPersona());
 			request.setAttribute("idInstitucion", miForm.getIDInstitucion());
-			request.setAttribute("numero", request.getParameter("numeroUsuario"));
+			String idInstitucion=user.getLocation();
+			int idInstitu= new Integer(idInstitucion).intValue();
+			if(idInstitu!=2000){
+				request.setAttribute("esJunta", "N");
+				request.setAttribute("numero", request.getParameter("numeroUsuario"));
+			}else{
+				request.setAttribute("esJunta", "S");
+				request.setAttribute("numero", "");
+			}
+			request.setAttribute("idInstitucionCargo", "");
+			request.setAttribute("mantenimiento", "");
 		}
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);
@@ -291,7 +413,7 @@ public class DatosCVAction extends MasterAction{
 			beanCV.setFechaInicio(miForm.getFechaInicio());
 			beanCV.setFechaMovimiento(miForm.getFechaMovimiento());
 			beanCV.setIdInstitucion(miForm.getIDInstitucion());
-			beanCV.setIdPersona(miForm.getIDPersona());
+			beanCV.setIdPersona(miForm.getIdPersona());
 			beanCV.setIdTipoCV(miForm.getTipoApunte());
 			if (idTipoCVSubtipo1!=null && !idTipoCVSubtipo1.equals("")){
 				  beanCV.setIdTipoCVSubtipo1(idTipoCVSubtipo1.toString());
@@ -307,6 +429,7 @@ public class DatosCVAction extends MasterAction{
 					beanCV.setIdTipoCVSubtipo2("");
 					beanCV.setIdInstitucion_subt2(null);
 			}
+			beanCV.setIdInstitucionCargo(miForm.getIDInstitucionCargo());
 			// Fijamos los datos del Historico
 			CenHistoricoBean beanHis = new CenHistoricoBean();
 			beanHis.setMotivo(miForm.getMotivo());
@@ -380,9 +503,11 @@ public class DatosCVAction extends MasterAction{
 				beanCV.setFechaMovimiento("");
 			}
 			//beanCV.setFechaMovimiento(miForm.getFechaMovimiento());
+			
 			beanCV.setIdCV(miForm.getIDCV());
 			beanCV.setIdInstitucion(miForm.getIDInstitucion());
-			beanCV.setIdPersona(miForm.getIDPersona());
+			beanCV.setIdInstitucionCargo(miForm.getIDInstitucionCargo());
+			beanCV.setIdPersona(miForm.getIdPersona());
 			beanCV.setIdTipoCV(miForm.getTipoApunte());
 			if (idTipoCVSubtipo1!=null && !idTipoCVSubtipo1.equals("")){
 			  beanCV.setIdTipoCVSubtipo1(idTipoCVSubtipo1.toString());
@@ -430,11 +555,13 @@ public class DatosCVAction extends MasterAction{
 			DatosCVForm miForm = (DatosCVForm) formulario;
 
 			Integer idCV = new Integer((String) miForm.getDatosTablaOcultos(0).get(0));
+			String idInstitucionCargo = (String) miForm.getDatosTablaOcultos(0).get(1);			
 
 			CenDatosCVAdm admDatosCV = new CenDatosCVAdm (this.getUserBean(request));
 			Hashtable clavesCV = new Hashtable();
-			UtilidadesHash.set (clavesCV, CenDatosCVBean.C_IDPERSONA, miForm.getIDPersona());
+			UtilidadesHash.set (clavesCV, CenDatosCVBean.C_IDPERSONA, miForm.getIdPersona());
 			UtilidadesHash.set (clavesCV, CenDatosCVBean.C_IDINSTITUCION, miForm.getIDInstitucion());
+			UtilidadesHash.set (clavesCV, CenDatosCVBean.C_IDINSTITUCIONCARGO,idInstitucionCargo);
 			UtilidadesHash.set (clavesCV, CenDatosCVBean.C_IDCV, idCV);
 
 			// Fijamos los datos del Historico
@@ -469,7 +596,7 @@ public class DatosCVAction extends MasterAction{
 			Vector ocultos = new Vector();
 			DatosCVForm form= (DatosCVForm) formulario;
 			ocultos = (Vector)form.getDatosTablaOcultos(0);	
-			Long idPersona = form.getIDPersona();
+			Long idPersona = form.getIdPersona();
 			Integer idInstitucionPersona = form.getIDInstitucion();
 			String accion = (String)request.getParameter("accion");		
 			Integer idCV = Integer.valueOf((String)ocultos.elementAt(0));
@@ -528,7 +655,7 @@ public class DatosCVAction extends MasterAction{
 			request.setAttribute("accion", accion);	
 			request.setAttribute("nombrePersona", request.getParameter("nombreUsuario"));
 			request.setAttribute("numero", request.getParameter("numeroUsuario"));
-			request.setAttribute("idPersona",  form.getIDPersona());	
+			request.setAttribute("idPersona",  form.getIdPersona());	
 			request.setAttribute("idInstitucion", form.getIDInstitucion());
 			request.setAttribute("modoConsulta", modo);	
 		}
@@ -600,4 +727,81 @@ public class DatosCVAction extends MasterAction{
 		}
 		return bean;
 	}
+	@SuppressWarnings("unchecked")
+	protected String borrarRegistro (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException 
+			{
+		UserTransaction t = null;
+		try {
+			t = this.getUserBean(request).getTransaction();
+			DatosCVForm form= (DatosCVForm) formulario;
+			
+			String idPersona =form.getIdPerson(); 
+			Integer idInstitucionPersona = form.getIDInstitucionCargo();
+			Integer idInstitucion = form.getIDInstitucion();
+			Integer idCV = Integer.valueOf(form.getIDCV());
+			ClsLogging.writeFileLog("BUSQUEDA COMISIONES:getAjaxBorrarCargo.idPersona:"+idPersona+"/", 10);
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			
+			CenDatosCVAdm admDatosCV = new CenDatosCVAdm (this.getUserBean(request));
+			Hashtable clavesCV = new Hashtable();
+			UtilidadesHash.set (clavesCV, CenDatosCVBean.C_IDPERSONA, new Long(idPersona));
+			UtilidadesHash.set (clavesCV, CenDatosCVBean.C_IDINSTITUCION, idInstitucion);
+			UtilidadesHash.set (clavesCV, CenDatosCVBean.C_IDCV, idCV);
+			UtilidadesHash.set (clavesCV, CenDatosCVBean.C_IDINSTITUCIONCARGO, idInstitucionPersona);
+			JSONObject json = new JSONObject();
+			t.begin();
+			if (!admDatosCV.eliminarCargo(clavesCV)) {
+				throw new SIGAException (admDatosCV.getError());
+			}
+			t.commit();
+			
+
+			json.put("existe", "false");
+			
+			List listaParametros = new ArrayList();
+			
+			respuestaAjax(new AjaxXmlBuilder(), listaParametros,response );
+
+
+		}
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, t);
+		}
+		return "completado";
+	}
+
+	@SuppressWarnings("unchecked")
+	protected String obtenerColegiado (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException 
+			{
+		UserTransaction t = null;
+		try {
+			t = this.getUserBean(request).getTransaction();
+			DatosCVForm form= (DatosCVForm) formulario;
+			
+			Long idPersona = form.getIdPersona(); 
+			Integer idInstitucionPersona = form.getIDInstitucionCargo();
+			ClsLogging.writeFileLog("BUSQUEDA COMISIONES:getAjaxBorrarCargo.idPersona:"+idPersona+"/", 10);
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			CenColegiadoAdm admCol =  new CenColegiadoAdm(this.getUserBean(request));
+			String numcol=admCol.getIdentificadorColegiado(admCol.getDatosColegiales(new Long(idPersona),new Integer(idInstitucionPersona)));
+			
+			List listaParametros = new ArrayList();
+			listaParametros.add(numcol);
+		
+			respuestaAjax(new AjaxXmlBuilder(), listaParametros,response );
+
+
+		}
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, t);
+		}
+		return "completado";
+	}
+	
 }

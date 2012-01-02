@@ -11,11 +11,18 @@
  */
 package com.siga.beans;
 
+import java.util.Hashtable;
+
 public class CenHistoricoBean extends MasterBean{
 
 	/* Variables */
 	private Long idPersona;
 	private Integer idInstitucion;
+	private Integer idInstitucionCargo;	
+
+
+
+
 	private Integer idHistorico;	
 	private String 	fechaEntrada;
 	private String 	fechaEfectiva;
@@ -29,6 +36,7 @@ public class CenHistoricoBean extends MasterBean{
 	/* Nombre campos de la tabla */
 	static public final String C_IDPERSONA		= "IDPERSONA";
 	static public final String C_IDINSTITUCION	= "IDINSTITUCION";
+	static public final String C_IDINSTITUCIONCARGO	= "IDINSTITUCIONCARGO";	
 	static public final String C_IDHISTORICO	= "IDHISTORICO";
 	static public final String C_FECHAENTRADA	= "FECHAENTRADA";
 	static public final String C_FECHAEFECTIVA	= "FECHAEFECTIVA";
@@ -44,6 +52,9 @@ public class CenHistoricoBean extends MasterBean{
 	public void setFechaEfectiva (String s) 	{ this.fechaEfectiva = s; }
 	public void setMotivo (String s)	{ this.motivo = s; }
 	public void setIdTipoCambio (Integer id) 	{ this.idTipoCambio = id; }	
+	public void setIdInstitucionCargo(Integer idInstitucionCargo) {
+		this.idInstitucionCargo = idInstitucionCargo;
+	}
 
 	// Metodos GET
 	public Long getIdPersona () 	{ return this.idPersona; }
@@ -53,7 +64,9 @@ public class CenHistoricoBean extends MasterBean{
 	public String getFechaEfectiva () 	{ return this.fechaEfectiva; }
 	public String getMotivo ()	{ return this.motivo; }
 	public Integer getIdTipoCambio () 	{ return this.idTipoCambio; }
-	
+	public Integer getIdInstitucionCargo() {
+		return this.idInstitucionCargo;
+	}
 	/**
 	 * @return Returns the descripcion.
 	 */
@@ -65,5 +78,18 @@ public class CenHistoricoBean extends MasterBean{
 	 */
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+	
+	public void  setHash(Hashtable beanHist){
+		
+		setIdPersona ((Long)beanHist.get(C_IDPERSONA));
+		setIdInstitucion((Integer)beanHist.get(C_IDINSTITUCION)); 
+		setIdHistorico ((Integer)beanHist.get(C_IDHISTORICO));
+		setFechaEntrada ((String)beanHist.get(C_FECHAENTRADA));
+		setFechaEfectiva ((String)beanHist.get(C_FECHAEFECTIVA));
+		setMotivo ((String)beanHist.get(C_MOTIVO));
+		setIdTipoCambio ((Integer)beanHist.get(C_IDTIPOCAMBIO));
+		setIdInstitucionCargo((Integer)beanHist.get(C_IDINSTITUCIONCARGO));
+		
 	}
 }

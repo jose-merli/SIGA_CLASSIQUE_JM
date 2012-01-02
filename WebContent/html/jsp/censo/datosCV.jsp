@@ -17,12 +17,16 @@
 <%@ taglib uri = "struts-html.tld" 		prefix = "html"%>
 <%@ taglib uri = "struts-logic.tld" 	prefix = "logic"%>
 
+<!-- AJAX -->
+<%@ taglib uri="ajaxtags.tld" prefix="ajax" %>
+
 <!-- IMPORTS -->
 <%@ page import = "com.siga.administracion.SIGAConstants"%>
 <%@ page import = "com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import = "com.siga.beans.CenDatosCVBean"%>
 <%@ page import = "com.siga.Utilidades.UtilidadesString"%>
 <%@ page import = "com.atos.utils.*"%>
+<%@ page import="com.siga.beans.CenInstitucionAdm"%>
 
 <!-- JSP -->
 <% 
@@ -49,7 +53,8 @@
 	String nombreUsu =(String)request.getAttribute("nombrePersona");
 	String idPersona = String.valueOf((Long)request.getAttribute("idPersona"));
 	String numero = (String)request.getAttribute("numero");
-	
+	if(numero==null)
+		numero="";
 	Hashtable htData=null;
 	String fechaInicio = "";
 	String fechaFin = "";
@@ -110,12 +115,35 @@
 			idInstitucion = String.valueOf((Integer)request.getAttribute("idInstitucion"));
 		}
 	}
-	
+	ArrayList modoSel = new ArrayList();
 	String parametro[] = new String[1];
-   
-	
-	
 	parametro[0] = (String)usr.getLocation();
+	String nombreInstitucionAcceso="";
+	boolean junta = false;
+	String parametroJunta[] = new String[1];
+	String institucionAcceso="";
+	String esJunta =(String)request.getAttribute("esJunta");
+	String mantenimiento =(String)request.getAttribute("mantenimiento");
+	boolean esMantenimiento=false;
+	if(mantenimiento!=null && mantenimiento=="S")
+		esMantenimiento=true;
+	if(esJunta!=null && esJunta=="S"){
+		junta = true;
+		if(request.getAttribute("idInstitucionCargo")!=null && request.getAttribute("idInstitucionCargo").toString()!=""){
+			try{
+				institucionAcceso=(String)request.getAttribute("idInstitucionCargo");
+			}catch(Exception e){ 
+				institucionAcceso=String.valueOf((Integer)request.getAttribute("idInstitucionCargo"));
+			}	
+			CenInstitucionAdm institucionAdm = new CenInstitucionAdm(usr);
+			nombreInstitucionAcceso=institucionAdm.getNombreInstitucion(institucionAcceso);
+		}	
+		modoSel.add( institucionAcceso);
+		parametroJunta[0] = institucionAcceso;
+		
+		
+	}
+
 	
 %>	
 <%@page import="java.util.Hashtable"%>
@@ -128,6 +156,17 @@
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 	
+	<!--Step 2 -->
+<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
+<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
+<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
+<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
+
+
+<!--Step 3 -->
+  <!-- defaults for Autocomplete and displaytag -->
+  <link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />
+  <link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
 	<!-- Calendario -->
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 	
@@ -164,7 +203,7 @@
 			}
 			
 			
-		 if ((!v_subTipo1.disabled && !v_subTipo2.disabled) && (document.datosCVForm.tipoApunte.value=="" || document.datosCVForm.idTipoCVSubtipo1.value=="" || document.datosCVForm.idTipoCVSubtipo2.value=="")){	
+		 if ((!v_subTipo1.disabled) && (document.datosCVForm.tipoApunte.value=="" || document.datosCVForm.idTipoCVSubtipo1.value=="")){	
 		        aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte"/>'
 				alert(aux);
 				fin();
@@ -172,14 +211,14 @@
 	    	 
 		   }else{ 
 		   
-		    	 if((!v_subTipo1.disabled && v_subTipo2.disabled) && (document.datosCVForm.tipoApunte.value=="" || document.datosCVForm.idTipoCVSubtipo1.value=="")){
+		    	 if((!v_subTipo1.disabled) && (document.datosCVForm.tipoApunte.value=="" || document.datosCVForm.idTipoCVSubtipo1.value=="")){
       			     aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte"/>'
    		     		 alert(aux);
    		     		 fin();
 				     return false;
 
 			    }else{
-				   if ((!v_subTipo2.disabled && v_subTipo1.disabled) && (document.datosCVForm.tipoApunte.value=="" || document.datosCVForm.idTipoCVSubtipo2.value=="")){
+				   if ((v_subTipo1.disabled) && (document.datosCVForm.tipoApunte.value=="")){
      			       aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte"/>'
 		     		   alert(aux);
 		     		   fin();
@@ -265,22 +304,22 @@
 		 
 		}
 		var tipoCurriculum;
-		
 		function init(){
-		 <%if (!modo.equals("ver")){%>
-		  var cmb1 = document.getElementsByName("tipoApunte");
-		  var cmb2 = cmb1[0]; 
-		  
-		 
-		  tipoCurriculum=<%=idTipoCV%>;
-		 
-		
-		  cmb2.onchange();
-		 <%}%>
-		
-		  
-		}
-		
+			 <%if (!modo.equals("ver")){%>
+			  var cmb1 = document.getElementsByName("tipoApunte");
+
+			  var cmb2 = cmb1[0]; 
+			  
+			 
+			  tipoCurriculum=<%=idTipoCV%>;
+			 
+			
+			  cmb2.onchange();
+			 <%}%>
+			
+			  
+			}
+
 		function recargarCombos(tipo){
 		 
 		 <%if (!modo.equals("ver")){%>
@@ -314,6 +353,19 @@
 
 				iframeCombo.src = cadenaFinal;
 		}
+
+		function rellenaNumCol(){
+
+			//var cmb1 = document.getElementsByName("idInstitucionCargo");
+			//cmb1.onchange();
+			}
+
+		function  preAccionColegiado(){
+
+			}
+		function  postAccionColegiado(){
+
+			}
 		
 		
 	</script>	
@@ -325,12 +377,13 @@
 		<tr>
 			<td id="titulo" class="titulosPeq">
 				<siga:Idioma key="censo.consultaDatosCV.literal.titulo1"/> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombreUsu)%> &nbsp;&nbsp;
+			  <%if (!junta) { %>
 			  <%if ((numero != null) && (!numero.equalsIgnoreCase(""))){%>
 					<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(numero)%>
 				<%} 
 				else {%>
 				   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
-				<%}%>
+				<%} }%>
 			</td>
 		</tr>
 	</table>
@@ -358,6 +411,28 @@
 						<siga:ConjCampos leyenda="censo.consultaDatosCV.cabecera">
 					
 						<table class="tablaCampos" align="center" border="0">
+						<%if (junta) { %>
+								<tr>				
+							
+								<td class="labelText">
+									<siga:Idioma key="censo.busquedaClientes.literal.colegio"/>
+									
+								</td>				
+								<td width="20px">
+								<%if (editarCampos) { %>
+									<!-- MAV 14/7/05 Mostrar combo solo para aquellos colegios que permitan busquedas en más de una institucion -->
+									 <siga:ComboBD nombre = "idInstitucionCargo" id="idInstitucionCargo" parametro="<%=parametro %>" elementoSel="<%=modoSel %>"  tipo="cmbNombreColegiosTodos" obligatorio="true" readonly="true" clase="boxCombo" />
+								<%} else {%>
+									<html:text property=""  styleClass="boxConsulta" size="50" value='<%=nombreInstitucionAcceso%>' readOnly="true"></html:text>
+								<%}%>
+								</td >
+									<td  class="labelText"><siga:Idioma
+										key="censo.fichaCliente.literal.colegiado" /> &nbsp;&nbsp;&nbsp;
+									<%=numero%>
+									</td>
+									<td>&nbsp;</td>
+								<tr>			
+						<% } %>
 						
 							<% if (!fechaBaja.equals("")) { %>
 				   			    <tr>
@@ -372,11 +447,22 @@
 								<td class="labelText" ><siga:Idioma key="censo.datosCV.literal.tipo"/>&nbsp(*)</td>
 								<td >
 									<%if (editarCampos) { %>
+										<%if (esMantenimiento) { %>
+											<siga:ComboBD nombre="tipoApunte" tipo="curriculum" clase="boxCombo" obligatorio="true" elementoSel = "<%=idTipoCV%>" readonly="true"  accion="Hijo:idTipoCVSubtipo1,Hijo:idTipoCVSubtipo2;recargarCombos(this);" />
+											<%} else {%>
 											<siga:ComboBD nombre="tipoApunte" tipo="curriculum" clase="boxCombo" obligatorio="true" elementoSel = "<%=idTipoCV%>" accion="Hijo:idTipoCVSubtipo1,Hijo:idTipoCVSubtipo2;recargarCombos(this);" />
+											
+										<%}%>
 									<%} else {%>
-										<html:text name="datosCVForm" property="tipoApunte" value='<%=tipoApunte%>'  styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text>
+											<%if (esMantenimiento) { %>
+											<html:text name="datosCVForm" property="tipoApunte" value='<%=tipoApunte%>'  styleClass="<%=clase%>" readOnly="true"></html:text>
+											<%} else {%>
+											<html:text name="datosCVForm" property="tipoApunte" value='<%=tipoApunte%>'  styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text>
+											<%}%>
+										
 									<%}%>	
 								</td>		
+								
 								<td >
 									<%if (editarCampos) { 
 									 
@@ -448,6 +534,13 @@
 			<script>
 				rellenarCampos();
 			</script>
+	<ajax:updateFieldFromField 
+	baseUrl="/SIGA/CEN_DatosCV.do?modo=obtenerColegiado"
+    source="idInstitucionCargo" 
+    target="numcolegiado"
+	parameters="idPersona={idPersona},idInstitucionCargo={idInstitucionCargo}" 
+	preFunction="preAccionColegiado" 
+	postFunction="postAccionColegiado"  />
 		</html:form>
 	<!-- FIN: CAMPOS -->
 

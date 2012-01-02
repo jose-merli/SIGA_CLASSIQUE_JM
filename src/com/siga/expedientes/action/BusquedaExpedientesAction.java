@@ -96,6 +96,9 @@ public class BusquedaExpedientesAction extends MasterAction {
 				mapDestino = editarDesdeEjg(mapping, miForm, request, response);
 			}else if (accion.equalsIgnoreCase("verDesdeEjg")){
 				mapDestino = verDesdeEjg(mapping, miForm, request, response);
+			
+			}else if (accion.equalsIgnoreCase("nuevoCopia")){
+				mapDestino = nuevoCopia(mapping, miForm, request, response);
 			}
 			else if (accion.equalsIgnoreCase("generaExcel")){
 				mapDestino = generaExcel(mapping, miForm, request, response);
@@ -612,6 +615,64 @@ public class BusquedaExpedientesAction extends MasterAction {
 
 			String nuevo = bNuevo?"true":"false";
 			request.setAttribute("nuevo", nuevo);	
+		}catch(Exception e){
+			throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,null); 
+		}
+
+
+		return "editar";
+	}
+
+	protected String nuevoCopia(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException{
+
+		try{
+			BusquedaExpedientesForm form = (BusquedaExpedientesForm)formulario;	
+			UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));   						
+
+			
+			ExpCampoTipoExpedienteAdm campoAdm = new ExpCampoTipoExpedienteAdm(this.getUserBean(request));
+
+
+			String idInstitucion_TipoExpediente = request.getParameter("idInst");
+			String idTipoExpediente = request.getParameter("idTipo");
+			String idNombreTipoExpediente = request.getParameter("idNombreTipo");
+			String numExp = request.getParameter("numExp");
+			String AnioExp = request.getParameter("anioExp");	
+			String idTipoExpedienteAnt = request.getParameter("tipoExpAnt");
+
+			String nombreTipoExpediente = request.getParameter("nombreTipo");
+			Hashtable htParametros=new Hashtable();
+			
+			htParametros.put("idInstitucion",idInstitucion_TipoExpediente);
+			htParametros.put("idInstitucion_TipoExpediente",idInstitucion_TipoExpediente);
+			htParametros.put("idTipoExpediente",idTipoExpedienteAnt);
+			htParametros.put("numeroExpediente",numExp);
+			htParametros.put("anioExpediente",AnioExp);
+			htParametros.put("nombreTipoExpediente",nombreTipoExpediente);
+			htParametros.put("idTipoExpedienteNew",idTipoExpediente);			
+			htParametros.put("nombreTipoExpedienteNew",idNombreTipoExpediente);
+			htParametros.put("editable", "1");	
+			htParametros.put("accion", "edicion");
+			htParametros.put("copia", "s");
+			htParametros.put("soloSeguimiento", "false");
+			request.setAttribute("expediente", htParametros);
+			String[] pestanasOcultas = campoAdm.obtenerPestanasOcultas(idInstitucion_TipoExpediente,idTipoExpediente);
+
+			request.setAttribute("pestanasOcultas",pestanasOcultas);
+			request.setAttribute("idInstitucionTipoExpediente",idInstitucion_TipoExpediente);
+			HashMap datosExpediente = new HashMap();
+			Hashtable datosGenerales = new Hashtable();
+			datosGenerales.put(ExpExpedienteBean.C_IDINSTITUCION,idInstitucion_TipoExpediente);
+			datosGenerales.put(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE,idInstitucion_TipoExpediente);
+			datosGenerales.put(ExpExpedienteBean.C_IDTIPOEXPEDIENTE,idTipoExpedienteAnt);
+			datosGenerales.put(ExpExpedienteBean.C_NUMEROEXPEDIENTE,numExp);
+			datosGenerales.put(ExpExpedienteBean.C_ANIOEXPEDIENTE,AnioExp);
+			datosGenerales.put("idTipoExpedienteNew",idTipoExpediente);
+			datosGenerales.put("nombreTipoExpedienteNew",idNombreTipoExpediente);
+			datosExpediente.put("datosGenerales",datosGenerales);
+			request.getSession().setAttribute("DATABACKUP",datosExpediente);
+			
+			request.setAttribute("nuevo", "true");	
 		}catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,null); 
 		}

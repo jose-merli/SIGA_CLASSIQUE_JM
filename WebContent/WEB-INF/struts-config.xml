@@ -322,6 +322,7 @@
 		
 		
 		
+		
 	</form-beans>
 
 
@@ -729,6 +730,9 @@
 			<forward name="editar" path="/html/jsp/censo/datosCV.jsp"/>
 			<forward name="borrar" path="/html/jsp/censo/datosCV.jsp"/>
 			<forward name="nuevo" path="/html/jsp/censo/datosCV.jsp"/>
+			<forward name="editarJunta" path="/html/jsp/censo/datosCVJunta.jsp"/>
+			<forward name="verJunta" path="/html/jsp/censo/datosCVJunta.jsp"/>
+			<forward name="nuevoJunta" path="/html/jsp/censo/datosCVJunta.jsp"/>
 			<forward name="solicitarNuevo" path="/CEN_SolicitudCV.do"/>
 			<forward name="solicitarModificacion" path="/CEN_SolicitudCV.do"/>
 		</action>
@@ -926,7 +930,7 @@
 			<forward name="abrir" path="/html/jsp/facturacion/consultaPagosAbonos.jsp"/>
 		</action>
 		<!-- Mirar todas esta jspssssssss -->
-		
+			
 		<action path="/CEN_MantenimientoDuplicados" type="com.siga.censo.action.MantenimientoDuplicadosAction" name="MantenimientoDuplicadosForm" scope="request">
 			<forward name="inicio" path="/html/jsp/censo/busquedaDuplicados.jsp"/>
 			<forward name="resultado" path="/html/jsp/censo/resultadoBusquedaDuplicados.jsp"/>
@@ -3146,12 +3150,15 @@
 		</action>
 		
 		<!-- ***** CENSO / Gestionar Comisiones ***** -->
-		<action path="/CEN_GestionarComisiones" type="com.siga.censo.action.BusquedaComisionesAction" name="BusquedaComisionesForm" scope="request">
+		<action path="/CEN_GestionarComisiones" type="com.siga.censo.action.BusquedaComisionesAction" name="BusquedaComisionesForm">
 			<forward name="inicio" path="/html/jsp/censo/busquedaComisiones.jsp"/>
 			<forward name="busqueda" path="/html/jsp/censo/resultadoBusquedaComisiones.jsp"/>
-			<forward name="modificar" path="/html/jsp/censo/resultadoBusquedaComisiones.jsp"/>			
 			<forward name="ver" path="/html/jsp/censo/datosCVComision.jsp"/>
-			<forward name="editar" path="/html/jsp/censo/datosCV.jsp"/>
+			<forward name="editar" path="/html/jsp/censo/datosCVJunta.jsp"/>
+			<forward name="modificarCargoJunta" path="/html/jsp/censo/modificacionCargoJunta.jsp"/>			
+			<forward name="inicioJunta" path="/html/jsp/censo/busquedaComisionesJunta.jsp"/>
+			<forward name="busquedaJunta" path="/html/jsp/censo/modificacionCargoJunta.jsp"/>
+			<forward name="modificarJunta" path="/html/jsp/censo/modificacionBusquedaComisionesJunta.jsp"/>
 		</action>
 		
 		<!-- ***** CENSO / Gestionar Comisiones ***** -->

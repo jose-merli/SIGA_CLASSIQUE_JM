@@ -49,10 +49,12 @@ public class PestanaConfigurableAction extends MasterAction {
         
         PestanaConfigurableForm form = (PestanaConfigurableForm)formulario;
         ExpPestanaConfAdm admPest = new ExpPestanaConfAdm(this.getUserBean(request));
-        form.setNombrePestana(admPest.getPestana(new Integer(form.getIdPestanaConf()).intValue(),userBean.getLocation(),form.getIdTipoExpediente(),form.getIdCampo()).getNombre());        String accion = (String)request.getParameter("accion"); // nuevo, consulta, edicion
+        form.setNombrePestana(admPest.getPestana(new Integer(form.getIdPestanaConf()).intValue(),userBean.getLocation(),form.getIdTipoExpediente(),form.getIdCampo()).getNombre());       
+        String accion = (String)request.getParameter("accion"); // nuevo, consulta, edicion
         form.setAccion(accion);
-        if (accion.equals("edicion")) {
+        if (accion==null || accion.equals("edicion")) {
             form.setModo("modificar");
+            form.setAccion("edicion");
         }
 
         //Datos generales para todas las pestanhas

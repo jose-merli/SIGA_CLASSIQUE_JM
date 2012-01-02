@@ -28,7 +28,8 @@ public class NuevoExpedienteAction extends MasterAction {
 	protected String abrirAvanzada(ActionMapping mapping, MasterForm formulario,
 			HttpServletRequest request, HttpServletResponse response)
 			throws SIGAException {
-	    
+
+		request.getSession().setAttribute("copiaSession", "");	
 	    return "avanzada";
 	}
 	
@@ -44,10 +45,12 @@ public class NuevoExpedienteAction extends MasterAction {
 		    NuevoExpedienteForm form = (NuevoExpedienteForm)formulario;
 		    
 		    Hashtable datosTipoExpediente = new Hashtable();
-			
+			request.getSession().setAttribute("copiaSession", "");	
+
 			datosTipoExpediente.put("idInstitucion_TipoExpediente",form.getIdInstitucion());
 			datosTipoExpediente.put("idTipoExpediente",form.getIdTipoExpediente());
-			
+			datosTipoExpediente.put("modal",form.getModal());
+
 			request.setAttribute("datosTipoExpediente", datosTipoExpediente);
 			
 		}catch(Exception e){

@@ -8,6 +8,7 @@
 package com.siga.expedientes.action;
 
 import java.util.Hashtable;
+import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -103,7 +104,15 @@ public class CampoTipoExpedienteAction extends MasterAction {
         
         
         
-        //Seteo el nombre del expediente 
+        //Seteo el nombre del expediente
+
+        if(beantipoexp.getRelacionExpediente()==null)
+          	 form.setRelacionExpediente(false);
+          else {
+          	form.setRelacionExpediente(true);
+          	form.setComboTipoExpediente(beantipoexp.getIdInstitucion().toString()+","+ beantipoexp.getRelacionExpediente());
+          }
+        
         form.setNombre(beantipoexp.getNombre());
         if (beantipoexp.getTiempoCaducidad()!=null) {
             form.setTiempoCaducidad(beantipoexp.getTiempoCaducidad().toString());        
@@ -187,7 +196,14 @@ public class CampoTipoExpedienteAction extends MasterAction {
 	        tipoExp.setRelacionEjg(form.isRelacionEJG()?new Integer(1):new Integer(0));
 	  	  	if (form.isRelacionEJG())
 	  	  		tipoExpAdm.updateRelacion(userBean);
-	        
+	        if(form.getComboTipoExpediente()!=null && !form.getComboTipoExpediente().trim().equalsIgnoreCase("")){
+	        	StringTokenizer subelementos = new StringTokenizer(form.getComboTipoExpediente(),",");
+	        	Integer institucion = new Integer((String)subelementos.nextToken());
+	        	Integer idtipoex = new Integer((String)subelementos.nextToken());
+	  	  		tipoExp.setRelacionExpediente(idtipoex);
+	        }else{
+	        	tipoExp.setRelacionExpediente(null);
+	        }
 	        if(form.getEnviarAvisos().equalsIgnoreCase("1")){
 	        	tipoExp.setEnviarAvisos(Integer.valueOf(ClsConstants.DB_TRUE));
 	        	tipoExp.setIdTipoEnvios(new Integer(form.getIdTipoEnvios()));
@@ -319,6 +335,7 @@ public class CampoTipoExpedienteAction extends MasterAction {
 	        	destinatariosAvisosAdm.deleteDirect(destinatariosHashtable, claves);
 	        	
 	        }
+	        
 	        tx.commit();
 	        ClsLogging.writeFileLog("Transacción de Campos realizada.",10);        
 	        request.setAttribute("mensaje","messages.updated.success");

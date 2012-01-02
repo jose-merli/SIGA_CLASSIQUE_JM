@@ -36,7 +36,7 @@ public class CampoTipoExpedienteForm extends MasterForm {
     private boolean solicitanteEJG;
     private boolean resultadoInforme;
     private boolean relacionEJG;  
-    
+    private boolean relacionExpediente;  
     private String chkPestanaConf1;
     private String pestanaConf1;
     private String chkPestanaConf2;
@@ -54,9 +54,21 @@ public class CampoTipoExpedienteForm extends MasterForm {
 	private String idTipoEnvios;
 	private String idPlantillaEnvios;
 	private String idPlantilla;
+	private String comboTipoExpediente;
 
-
-    public boolean isRelacionEJG() {
+    public boolean isRelacionExpediente() {
+		return relacionExpediente;
+	}
+	public void setRelacionExpediente(boolean relacionExpediente) {
+		this.relacionExpediente = relacionExpediente;
+	}
+	public String getComboTipoExpediente() {
+		return comboTipoExpediente;
+	}
+	public void setComboTipoExpediente(String comboTipoExpediente) {
+		this.comboTipoExpediente = comboTipoExpediente;
+	}
+	public boolean isRelacionEJG() {
 		return relacionEJG;
 	}
 	public void setRelacionEJG(boolean relacionEJG) {

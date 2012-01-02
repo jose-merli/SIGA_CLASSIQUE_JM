@@ -20,7 +20,25 @@ import com.siga.general.MasterForm;
 public class DatosCVForm extends MasterForm
 {
 	String incluirRegistrosConBajaLogica;
+	String numcolegiado;
+	String idPerson;
 	
+	public String getIdPerson() {
+		return idPerson;
+	}
+
+	public void setIdPerson(String idPerson) {
+		this.idPerson = idPerson;
+	}
+
+	public String getNumcolegiado() {
+		return numcolegiado;
+	}
+
+	public void setNumcolegiado(String numcolegiado) {
+		this.numcolegiado = numcolegiado;
+	}
+
 	public void setTipoApunte(Integer dato) {
 		UtilidadesHash.set(this.datos, "TIPOAPUNTE", dato);
 	}
@@ -100,6 +118,9 @@ public class DatosCVForm extends MasterForm
 	public void setIdInstitucion_Subtipo2(Integer dato) {
 		UtilidadesHash.set(this.datos, CenDatosCVBean.C_IDINSTITUCION_SUBT2, dato);
 	}
+	public void setIdInstitucionCargo(Integer dato) {
+		UtilidadesHash.set(this.datos, CenDatosCVBean.C_IDINSTITUCIONCARGO, dato);
+	}
 	
 	//	metodos get de los campos del formulario
 	public Integer getTipoApunte() {
@@ -134,7 +155,7 @@ public class DatosCVForm extends MasterForm
 		return UtilidadesHash.getString(this.datos, CenHistoricoBean.C_MOTIVO);
 	}
 
-	public Long getIDPersona() {
+	public Long getIdPersona() {
 		return UtilidadesHash.getLong(this.datos, CenDatosCVBean.C_IDPERSONA);
 	}
 
@@ -162,6 +183,9 @@ public class DatosCVForm extends MasterForm
 	}
 	public Integer getIdInstitucion_Subtipo2() {
 		return UtilidadesHash.getInteger(this.datos, CenDatosCVBean.C_IDINSTITUCION_SUBT2);
+	}
+	public Integer getIDInstitucionCargo() {
+		return UtilidadesHash.getInteger(this.datos, CenDatosCVBean.C_IDINSTITUCIONCARGO);
 	}
 
 }
