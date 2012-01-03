@@ -648,7 +648,7 @@ public class MaestroDesignasAction extends MasterAction {
 						idJuzgado = null;
 						idInstitucionJuzgado = null;			
 						String[] juzgado = ((String)datosEntrada.get("JUZGADO")).split(",");
-						if (juzgado!=null && !juzgado.equals("")){
+						if (juzgado[0]!=null && !juzgado[0].equals("")){
 							idJuzgado = new Integer(juzgado[0]);
 							idInstitucionJuzgado = new Integer(juzgado[1]);
 							designaNueva.put(ScsDesignaBean.C_IDJUZGADO, idJuzgado);

@@ -20,7 +20,8 @@ public class AsistenciasForm extends MasterForm
 			designa_anio= "", 
 			designa_numero = "", 
 			designa_turno = "", 
-			designa_idInstitucion = "";
+			designa_idInstitucion = "",
+			nig="";
 	String numeroDilegenciaAsistencia; 
 	String numeroProcedimientoAsistencia;
 	String comisariaAsistencia;
@@ -145,7 +146,6 @@ public class AsistenciasForm extends MasterForm
 	private String acIdInstitucionPrision = "acIdInstitucionPrision";
 	private ScsAsistenciasBean asistenciaBean;
 	private String botonesDetalle;
-	private String nig;
 	String letradoActuaciones;
 	/*
 	 * Metodos SET y GET 
@@ -434,6 +434,12 @@ public class AsistenciasForm extends MasterForm
 	}
 	public void setNumeroProcedimiento(String numeroProcedimiento) {
 		this.numeroProcedimiento = numeroProcedimiento;
+	}
+	public String getNig() {
+		return nig;
+	}
+	public void setNig(String nig) {
+		this.nig = nig;
 	}
 	public String getEstadoAsintecia() {
 		return estadoAsintecia;

@@ -90,7 +90,7 @@
 	ArrayList juzgadoSel = new ArrayList();
 	ArrayList procedimientoSel = new ArrayList();
 	ArrayList pretensionesSel = new ArrayList();
-	String idJuzgado = null, idInstitucionJuzgado = null, idProcedimiento = null;
+	String idJuzgado = null, idInstitucionJuzgado = null, idProcedimiento = "-1";
 
 	String idTurno = "", anio = "", numero = "", codigo = "", numeroProcedimiento = "", sufijo="";
 	boolean anulada = false;
@@ -209,7 +209,9 @@
 				nig = beanDesigna.getNIG();
 			}
 			
-			idProcedimiento = beanDesigna.getProcedimiento().toString();
+			if(beanDesigna.getProcedimiento() != null && !beanDesigna.getProcedimiento().toString().equals("")){
+				idProcedimiento = beanDesigna.getProcedimiento().toString();
+			}
 			
 			if(filtrarModulos.equals("S")){
 				if(!idProcedimiento.equals(""))
