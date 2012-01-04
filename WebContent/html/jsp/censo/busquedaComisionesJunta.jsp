@@ -84,6 +84,14 @@
 		var indice = 0;
 		
 		function preAccionBuscarCargos(){
+			document.getElementById("idButtonL").disabled=false;
+			document.getElementById("idButtonB").disabled=false;
+			document.getElementById("numeroColegiado").disabled=false;
+			document.getElementById("nombreColegiado").disabled=false;
+			document.getElementById("cargos").disabled=false;
+			document.getElementById("idInstitucionCargo").disabled=false;
+			document.getElementById("fechaCargo").disabled=false;
+				
 			if(document.getElementById("idInstitucionCargo").value==null || document.getElementById("idInstitucionCargo").value==""){
 				alert("<siga:Idioma key='censo.comisiones.colObligatorio'/>");
 				return false;
@@ -143,7 +151,13 @@
 		if(!validado){
 			return;
 		}
-		
+		document.getElementById("idButtonL").disabled=true;
+		document.getElementById("idButtonB").disabled=true;
+		document.getElementById("numeroColegiado").disabled=true;
+		document.getElementById("nombreColegiado").disabled=true;
+		document.getElementById("cargos").disabled=true;
+		document.getElementById("idInstitucionCargo").disabled=true;
+		document.getElementById("fechaCargo").disabled=true;
 		crearFila();
 		document.getElementById ("idInsertarCargo").disabled="disabled";
 	}
@@ -358,40 +372,40 @@
 
 
 	function preAccionBorrarCargo(){
-		sub();
+
 		
 		
 	}
 	function postAccionBorrarCargo(){
-		fin();
+
 
 		
 	}
 	function  borrarFila (numFil, idFila) 
 	{ 
-		numFila = table.rows.length;
-		t = document.getElementById("cargostabla");
-		ulti = t.rows.length;
-		for (i = 0; i < t.rows.length; i++) {
-			if(ulti==1 || i==(ulti-1)){
-				j= table.rows[i].id.split("_")[1]; 
-				if(document.getElementById("idPersona_" + j)!=null){
+		if (!confirm("<siga:Idioma key='messages.deleteConfirmation'/>")){
+			return false;
+		}else{
+			numFila = table.rows.length;
+			t = document.getElementById("cargostabla");
+			ulti = t.rows.length;
+			for (i = 0; i < t.rows.length; i++) {
+				if(ulti==1 || i==(ulti-1)){
+					j= table.rows[i].id.split("_")[1]; 
+					if(document.getElementById("idPersona_" + j)!=null){
+						t.deleteRow (i);
+						 return true;
+					}else return false;
+				}	
+				if (t.rows[i].id == idFila) 
+				{
+					// Guardamos los datos a borrar
+					fila = idFila.split("_")[1]
 					t.deleteRow (i);
-					 return true;
-				}else return false;
-			}	
-			if (t.rows[i].id == idFila) 
-			{
-				// Guardamos los datos a borrar
-				fila = idFila.split("_")[1]
-				if (!confirm("<siga:Idioma key='messages.deleteConfirmation'/>")){
-					return false;
+					return true; 
 				}
-				t.deleteRow (i);
-				return true; 
 			}
 		}
-		
 	} 
 	function finalizar(){
 		t = document.getElementById("cargostabla");
@@ -601,7 +615,7 @@
 									value="<siga:Idioma
 											key="general.boton.search" />"
 									onClick="buscarColegiado();"> <!-- Boton limpiar -->
-								&nbsp;<input type="button" class="button" id="idButton"
+								&nbsp;<input type="button" class="button" id="idButtonL"
 									name="Limpia"
 									value="<siga:Idioma
 											key="general.boton.clear" />"
@@ -789,6 +803,7 @@
 
 		function  editar (idFila) 
 		{ 
+
 			document.datosCVForm.mantenimiento.value="S";
 			document.datosCVForm.nombreUsuario.value=document.getElementById("namecolegiado_" + idFila).value;
 			document.datosCVForm.numeroUsuario.value=document.getElementById("ncolegiado_" + idFila).value;
@@ -798,7 +813,7 @@
 			document.datosCVForm.idCV.value=document.getElementById("IDCV_" + idFila).value; 	
 			document.datosCVForm.modo.value = "editarModal";
 			  var rc = ventaModalGeneral(document.datosCVForm.name, "M");
-				document.getElementById('idBuscarCargos').onclick();
+			  postAccionGuardarCargos();
 
 			  
 		}
@@ -820,6 +835,7 @@
 		//Funcion asociada a boton Nuevo -->
 		function nuevo() 
 		{		
+		
 			document.forms[0].target="mainWorkArea";
 			document.forms[0].modo.value = "nuevo";
 			document.forms[0].submit();

@@ -4364,18 +4364,28 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	    Vector salida = new Vector();
 	    Hashtable aux = new Hashtable();
 	    try {
-		    String sql = "SELECT distinct P.IDPERSONA, P.NOMBRE as NOMBRE, P.APELLIDOS1 AS APELLIDOS1,  P.APELLIDOS2 as APELLIDOS2, COL.NCOLEGIADO as NCOLEGIADO, C.IDINSTITUCION as IDINSTITUCION, f_siga_gettipocliente(C.IDPERSONA,2040,sysdate) AS ESTADOCOLEGIAL  FROM CEN_PERSONA P, CEN_CLIENTE C, CEN_COLEGIADO COL" +
-		        	" WHERE P.IDPERSONA=C.IDPERSONA" +
-		        	" AND C.IDPERSONA=COL.IDPERSONA" +
-		        	" AND C.IDINSTITUCION=COL.IDINSTITUCION" +
+		    String sql = "SELECT distinct p.nifcif as NIFCIF, P.IDPERSONA, P.NOMBRE as NOMBRE, P.APELLIDOS1 AS APELLIDOS1,  P.APELLIDOS2 as APELLIDOS2, COL.NCOLEGIADO as NCOLEGIADO, CEN_CLIENTE.IDINSTITUCION as IDINSTITUCION," +
+		    " DECODE("+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_LETRADO+",'1','Letrado',NVL((SELECT " + CenEstadoColegialBean.T_NOMBRETABLA+"."+CenEstadoColegialBean.C_DESCRIPCION +
+			" FROM "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+", "+CenEstadoColegialBean.T_NOMBRETABLA+" " + 
+			" WHERE "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDESTADO+" = "+CenEstadoColegialBean.T_NOMBRETABLA+"."+CenEstadoColegialBean.C_IDESTADO+"  " +
+			" AND "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+"  " +
+			" AND "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" " +
+			" AND "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_FECHAESTADO+" = (SELECT MAX("+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_FECHAESTADO+") " + 
+			" FROM "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"  " +
+			" WHERE "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDPERSONA+"= "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" " +
+			" AND "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+"  AND CEN_DATOSCOLEGIALESESTADO.FECHAESTADO <= SYSDATE)),'No Colegiado')) AS ESTADOCOLEGIAL " +
+		    		"FROM CEN_PERSONA P, CEN_CLIENTE , CEN_COLEGIADO COL" +
+		        	" WHERE P.IDPERSONA=CEN_CLIENTE.IDPERSONA" +
+		        	" AND CEN_CLIENTE.IDPERSONA=COL.IDPERSONA" +
+		        	" AND CEN_CLIENTE.IDINSTITUCION=COL.IDINSTITUCION" +
 		            " AND (select idestado " +
 		        	"       from cen_datoscolegialesestado e2 " +
-		        	"        where e2.idinstitucion = C.IDINSTITUCION " +
-		        	"          and e2.idpersona = C.IDPERSONA " +
+		        	"        where e2.idinstitucion = CEN_CLIENTE.IDINSTITUCION " +
+		        	"          and e2.idpersona = CEN_CLIENTE.IDPERSONA " +
 		        	"          and e2.fechaestado = (select max(e.fechaestado) from cen_datoscolegialesestado e where e.idinstitucion=e2.idinstitucion and e.idpersona=e2.idpersona) " +
 		        	"          ) not in ('30', '40') " +
-		        	" AND C.IDINSTITUCION=:1"+
-		        	" AND f_siga_calculoncolegiado(C.IDINSTITUCION,C.IDPERSONA)=:2";
+		        	" AND CEN_CLIENTE.IDINSTITUCION=:1"+
+		        	" AND f_siga_calculoncolegiado(CEN_CLIENTE.IDINSTITUCION,CEN_CLIENTE.IDPERSONA)=:2";
 		    
 		    Hashtable codigos = new Hashtable();
 		    codigos.put(new Integer(1),idInstitucion);
@@ -4401,17 +4411,27 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	    Hashtable aux = new Hashtable();
 		try {
 		    Hashtable codigos = new Hashtable();
-		    String sql = "SELECT distinct P.IDPERSONA, P.NOMBRE as NOMBRE, P.APELLIDOS1 AS APELLIDOS1,  P.APELLIDOS2 as APELLIDOS2, COL.NCOLEGIADO as NCOLEGIADO, C.IDINSTITUCION as IDINSTITUCION, f_siga_gettipocliente(C.IDPERSONA,2040,sysdate) AS ESTADOCOLEGIAL  FROM CEN_PERSONA P, CEN_CLIENTE C, CEN_COLEGIADO COL" +
-		        	" WHERE P.IDPERSONA=C.IDPERSONA" +
-		        	" AND C.IDPERSONA=COL.IDPERSONA" +
-		        	" AND C.IDINSTITUCION=COL.IDINSTITUCION" +
+		    String sql = "SELECT distinct p.nifcif as NIFCIF, P.IDPERSONA, P.NOMBRE as NOMBRE, P.APELLIDOS1 AS APELLIDOS1,  P.APELLIDOS2 as APELLIDOS2, COL.NCOLEGIADO as NCOLEGIADO, CEN_CLIENTE.IDINSTITUCION as IDINSTITUCION, " +
+			" DECODE("+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_LETRADO+",'1','Letrado',NVL((SELECT " + CenEstadoColegialBean.T_NOMBRETABLA+"."+CenEstadoColegialBean.C_DESCRIPCION +
+			" FROM "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+", "+CenEstadoColegialBean.T_NOMBRETABLA+" " + 
+			" WHERE "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDESTADO+" = "+CenEstadoColegialBean.T_NOMBRETABLA+"."+CenEstadoColegialBean.C_IDESTADO+"  " +
+			" AND "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+"  " +
+			" AND "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" " +
+			" AND "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_FECHAESTADO+" = (SELECT MAX("+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_FECHAESTADO+") " + 
+			" FROM "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"  " +
+			" WHERE "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDPERSONA+"= "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" " +
+			" AND "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+"  AND CEN_DATOSCOLEGIALESESTADO.FECHAESTADO <= SYSDATE)),'No Colegiado')) AS ESTADOCOLEGIAL " +
+		    		"FROM CEN_PERSONA P, CEN_CLIENTE, CEN_COLEGIADO COL" +
+		        	" WHERE P.IDPERSONA=CEN_CLIENTE.IDPERSONA" +
+		        	" AND CEN_CLIENTE.IDPERSONA=COL.IDPERSONA" +
+		        	" AND CEN_CLIENTE.IDINSTITUCION=COL.IDINSTITUCION" +
 		            " AND (select idestado " +
 		        	"       from cen_datoscolegialesestado e2 " +
-		        	"        where e2.idinstitucion = C.IDINSTITUCION " +
-		        	"          and e2.idpersona = C.IDPERSONA " +
+		        	"        where e2.idinstitucion = CEN_CLIENTE.IDINSTITUCION " +
+		        	"          and e2.idpersona = CEN_CLIENTE.IDPERSONA " +
 		        	"          and e2.fechaestado = (select max(e.fechaestado) from cen_datoscolegialesestado e where e.idinstitucion=e2.idinstitucion and e.idpersona=e2.idpersona) " +
 		        	"          ) not in ('30', '40') " +
-		        	" AND C.IDINSTITUCION=:1";
+		        	" AND CEN_CLIENTE.IDINSTITUCION=:1";
 		    		codigos.put(new Integer(1),idInstitucion);
 		    		if(nombreColegiado!=null && !nombreColegiado.trim().equals("")){
 		    			sql +=" AND UPPER(TRIM(P.nombre)) LIKE UPPER(TRIM(:2))";
