@@ -593,7 +593,8 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 							  ",ejg."+ScsEJGBean.C_COMISARIAIDINSTITUCION + " " + ScsEJGBean.C_COMISARIAIDINSTITUCION +
 							  ",ejg."+ScsEJGBean.C_GUARDIATURNO_IDTURNO + " IDTURNO " +
 							  ",ejg."+ScsEJGBean.C_SUFIJO + " SUFIJO " + 
-							  ",ejg."+ScsEJGBean.C_IDORIGENCAJG + " IDORIGENCAJG " + 
+							  ",ejg."+ScsEJGBean.C_IDORIGENCAJG + " IDORIGENCAJG " +
+							  ",ejg."+ScsEJGBean.C_NIG + " NIG " +
 							  ",designa.codigo codigo";
 			// Ahora las tablas de donde se sacan los campos
 			consulta += " from scs_ejg ejg, scs_personajg personajg, cen_colegiado colegiado, scs_turno turno, scs_guardiasturno guardia, " +

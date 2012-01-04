@@ -45,7 +45,7 @@
 	boolean designaExiste = false;
 	// Obtenemos el resultado
 	String ANIO = "", CODIGO = "", NUMERO = "", TIPOEJG = "", IDTIPOEJG = "", IDTIPOEJGCOLEGIO = "", TURNO = "", GUARDIA = "", NIFASISTIDO = "", NOMBREASISTIDO = "", APELLIDO1ASISTIDO = "", APELLIDO2ASISTIDO = "", NUMEROCOLEGIADO = "", NOMBRELETRADO = "", APELLIDO1LETRADO = "", APELLIDO2LETRADO = "", ANIOSOJ = "", NUMEROSOJ = "", TIPOSOJ = "", IDTIPOSOJ = "", FECHAAPERTURA = "", DESIGNA_ANIO = "", DESIGNA_NUMERO = "", DESIGNA_TURNO_NOMBRE = "", NOMBRETURNO = "", FECHAAPERTURASOJ = "", TIPOASISTENCIA = "", NUMEROASISTENCIA = "", FECHAPRESENTACION = "", FECHALIMITEPRESENTACION = "", OBSERVACIONES = "", DELITOS = "", TIPOEJGCOLEGIO = "", PROCURADOR = "", IDGUARDIA = "", CREADODESDE = "", ASISTENCIA_ANIO = "", ASISTENCIA_NUMERO = "", ASISTENCIAFECHA = "", FECHAENTRADADESIGNA = "", FECHARATIFICACION = "", PROCURADORNECESARIO = "", idProcurador = "", idInstitucionProcurador = "", numeroCAJG = "", anioCAJG = "", calidad = "", DESIGNA_CODIGO = "", CODIGOSOJ = "", IDPERSONA = "", procuradorNombreCompleto = "";
-    String procuradorNumColegiado = "", procuradorSel = "", nombreCompleto = "", ESTADO="", SUFIJO="";
+    String procuradorNumColegiado = "", procuradorSel = "", nombreCompleto = "", ESTADO="", SUFIJO="", NIG="";
 	String idPretension = "", idPretensionInstitucion = "", pretension = "";
 
 	ArrayList TIPOEJGCOLEGIOSEL = new ArrayList();
@@ -71,6 +71,7 @@
 		PROCURADORNECESARIO = hash.get("PROCURADORNECESARIO")
 				.toString();
 		IDGUARDIA = hash.get("IDGUARDIA").toString();
+		NIG = hash.get("NIG").toString();
 		
 		calidad = hash.get("CALIDAD").toString();	
 		if (hash.containsKey("IDTIPOEJGCOLEGIO"))
@@ -758,6 +759,15 @@
 				<td colspan="3">
 					<siga:ComboBD nombre="pretensiones2" tipo="comboPretensiones" ancho="500" clase="boxComboConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="true"/>           	   
 				</td>
+			</tr>
+			<tr>
+				<td class="labelText">	
+					<siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/>
+				</td>		
+				
+				<td class="labelText">					
+					<input type="text" style="width:500px" class="boxConsulta" value="<%=NIG%>" readOnly="true">										
+				</td>	
 			</tr>
 			<tr>
 				<td colspan="6">
