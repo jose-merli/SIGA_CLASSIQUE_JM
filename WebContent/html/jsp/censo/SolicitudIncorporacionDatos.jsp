@@ -1256,7 +1256,7 @@
 		
 		document.MutualidadForm.idSolicitudIncorporacion.value  = document.SolicitudIncorporacionForm.editarIdSolicitud.value;
 		
-   		var resultado = ventaModalGeneral(document.MutualidadForm.name,"G");
+   		var resultado = ventaModalGeneral(document.MutualidadForm.name,"G",'<siga:Idioma	key="censo.mutualidad.aviso.espera" />');
    		
    		
 	    if(resultado && resultado.length){
@@ -1307,7 +1307,7 @@
 		} 
 		 
 		document.MutualidadForm.modo.value = "actualizaEstado";
-		var resultado = ventaModalGeneral(document.MutualidadForm.name,"0",'Esperando respuesta de la mutualidad. Espere por favor...');
+		var resultado = ventaModalGeneral(document.MutualidadForm.name,"0",'<siga:Idioma	key="censo.mutualidad.aviso.espera" />');
 		if(resultado){
 			document.MutualidadForm.idEstado.value = resultado[0];
 			document.MutualidadForm.estado.value = resultado[1];	
@@ -1327,7 +1327,7 @@
 		document.MutualidadForm.modo.value = "actualizaEstadoMutualista";
 		document.MutualidadForm.numeroIdentificacion.value = document.getElementById('numeroIdentificacionBBDD').value;
 		document.MutualidadForm.fechaNacimiento.value  = document.getElementById('fechaNacimientoBBDD').value;
-		var resultado = ventaModalGeneral(document.MutualidadForm.name,"0",'Esperando respuesta de la mutualidad. Espere por favor...');
+		var resultado = ventaModalGeneral(document.MutualidadForm.name,"0",'<siga:Idioma	key="censo.mutualidad.aviso.espera" />');
 		if(resultado){
 			document.MutualidadForm.estadoMutualista.value = resultado[0];	
 	    	document.getElementById("tdEstadoMutualistaPlanProfesional").innerText = resultado[0];

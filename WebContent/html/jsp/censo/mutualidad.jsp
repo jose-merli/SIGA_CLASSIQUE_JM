@@ -24,11 +24,17 @@
 <head>
 
 
-<link id="default" rel="stylesheet" type="text/css" href='<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>'>
-<script src="<html:rewrite page='/html/js/SIGA.js'/>"type="text/javascript"></script>
-<script	src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
-<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"type="text/javascript"></script>
-<script src="<html:rewrite page='/html/js/validacionStruts.js'/>"type="text/javascript"></script>
+<link id="default" rel="stylesheet" type="text/css"
+		href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
+	<script src="<html:rewrite page='/html/js/SIGA.js'/>"
+		type="text/javascript"></script>
+	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"
+		type="text/javascript"></script>
+	<script
+		src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
+	
+	<script src="<html:rewrite page='/html/js/validacionStruts.js'/>" type="text/javascript"></script>
+	<script src="<html:rewrite page='/html/js/validation.js'/>" type="text/javascript"></script>
 
 <script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
 <script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
@@ -67,7 +73,7 @@
 
 
 
-
+<html:javascript formName="MutualidadForm" staticJavascript="true" />
 <html:form action="${path}"  method="POST" >
 <html:hidden property="modo"/>
 <html:hidden property="idTipoIdentificacion"/>
@@ -140,7 +146,8 @@
 									<html:button property="idButton"
 											onclick="return accionComprobarEstadoMutualidad();"
 											styleClass="button">
-										Estado
+										<siga:Idioma
+							key="censo.mutualidad.literal.estado" />
 											</html:button>
 									
 								</td>
@@ -153,7 +160,8 @@
 											<html:button property="idButton"
 												onclick="return accionComprobarEstadoMutualista();"
 												styleClass="button">
-											Estado Mutualista
+											<siga:Idioma
+							key="censo.mutualidad.literal.estadoMutualista" />
 												</html:button>
 									
 											</td>
@@ -271,7 +279,8 @@
 		<siga:ConjCampos>
 	<table>
 		<tr>
-			<td class="labelText" ><siga:Idioma key="censo.datosDireccion.literal.pais2"/></td>
+			<td class="labelText" ><siga:Idioma
+							key="censo.mutualidad.literal.pais" /></td>
 			<td colspan="2">
 			<c:choose>
 						<c:when test="${MutualidadForm.modo=='insertar'}">
@@ -285,7 +294,8 @@
 			
 				
 			</td>
-			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.provincia"/>&nbsp;(*)</td>
+			<td class="labelText" ><siga:Idioma
+							key="censo.mutualidad.literal.provincia" />&nbsp;(*)</td>
 			<td colspan="2">
 			<c:choose>
 					<c:when test="${MutualidadForm.modo=='insertar'}">
@@ -307,7 +317,8 @@
 		</tr>
 		<tr>
 
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.poblacion"/>&nbsp;(*)</td>
+			<td class="labelText"><siga:Idioma
+							key="censo.mutualidad.literal.poblacion" />&nbsp;(*)</td>
 			<td id="tdPoblacionEspanola" colspan="2">
 			<c:choose>
 					<c:when test="${MutualidadForm.modo=='insertar'}">
@@ -331,23 +342,28 @@
 				<html:text property="poblacionExtranjera" style="width:300" maxlength="100" styleClass="${estiloText}" ></html:text>
 			</td>
 				
-			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.domicilio"/>&nbsp;(*)</td>
+			<td class="labelText" ><siga:Idioma
+							key="censo.mutualidad.literal.domicilio" />&nbsp;(*)</td>
 			<td><html:text property="domicilio" size="30" maxlength="100" styleClass="${estiloText}" ></html:text></td>
 			
-			<td class="labelText" >CP&nbsp;(*)
+			<td class="labelText" ><siga:Idioma
+							key="censo.mutualidad.literal.codigoPostal" />&nbsp;(*)
 				<html:text property="codigoPostal" styleClass="${estiloText}" size="5" maxlength="5"  ></html:text></td>
 		</tr>
 		<tr>
 			
 		</tr>
 		<tr>
-			<td class="labelText" ><siga:Idioma key="censo.fusionDuplicados.direcciones.telefono"/>&nbsp;(*)</td>
+			<td class="labelText" ><siga:Idioma
+							key="censo.mutualidad.literal.telefono" />&nbsp;(*)</td>
 			<td><html:text property="telef1" maxlength="20" styleClass="${estiloText}" ></html:text></td>
 			
-			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono3"/></td>
+			<td class="labelText" ><siga:Idioma
+							key="censo.mutualidad.literal.movil" /></td>
 			<td><html:text property="movil" maxlength="20" styleClass="${estiloText}"  ></html:text></td>
 			
-			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.email"/>&nbsp;(*)</td>
+			<td class="labelText" ><siga:Idioma
+							key="censo.mutualidad.literal.email" />&nbsp;(*)</td>
 			<td><html:text property="correoElectronico" maxlength="100" styleClass="${estiloText}" ></html:text></td>
 		</tr>
 	</table>
@@ -367,17 +383,20 @@
 		<siga:ConjCampos leyenda="censo.consultaDatosBancarios.cabecera">
 			<table class="tablaCampos" align="left" border="0" style="width:100%">	
 				<tr align="left">		
-					<td class="labelText">Cuenta</td>	
+					<td class="labelText"><siga:Idioma
+							key="censo.mutualidad.literal.cuenta" /></td>	
 					<td class="labelText" width="300px">
 					      <html:text size="4"  maxlength="4" property="cboCodigo"  styleClass="${estiloText}"  onChange="document.MutualidadForm.idBanco.value=document.MutualidadForm.cboCodigo.value"></html:text>
 						- <html:text size="4"  maxlength="4" property="codigoSucursal" 	styleClass="${estiloText}" ></html:text>
 						- <html:text size="2"  maxlength="2" property="digitoControl"  	styleClass="${estiloText}" ></html:text>
 						- <html:text size="10" maxlength="10" property="numeroCuenta"  styleClass="${estiloText}" ></html:text></td>
-					<td class="labelText">IBAN</td>
+					<td class="labelText"><siga:Idioma
+							key="censo.mutualidad.literal.iban" /></td>
 					<td class="labelText">
 						<html:text property="iban"  size="20" styleClass="${estiloText}" maxlength="24"/>
 					</td>
-					<td class="labelText">SWIFT</td>
+					<td class="labelText"><siga:Idioma
+							key="censo.mutualidad.literal.swift" /></td>
 					<td class="labelText">
 						<html:text property="swift"  size="15" styleClass="${estiloText}" maxlength="12"/>
 					</td>
@@ -392,7 +411,8 @@
 					</td>
 				</tr>
 				<tr align="left">		
-					<td class="labelText">Periodicidad de Pago</td>
+					<td class="labelText"><siga:Idioma
+							key="censo.mutualidad.literal.periodicidadPago" /></td>
 					<td class="labelTextValor" colspan="5">
 						<c:choose>
 							<c:when test="${MutualidadForm.modo=='insertar'}">
@@ -414,10 +434,11 @@
 
 
 
-		<siga:ConjCampos leyenda="Poliza">
+		<siga:ConjCampos leyenda="censo.mutualidad.leyenda.poliza">
 			<table class="tablaCampos">
 				<tr>
-					<td class="labelText" width="150px">Opcion de Cobertura</td>
+					<td class="labelText" width="150px"><siga:Idioma
+							key="censo.mutualidad.literal.opcionCobertura" /></td>
 					<td class="labelTextValor">
 					<c:choose>
 						<c:when test="${MutualidadForm.modo=='insertar'}">
@@ -433,16 +454,19 @@
 					</c:choose>
 
 					</td>
-					<td class="labelText"  >Cuota Mensual</td>
+					<td class="labelText"  ><siga:Idioma
+							key="censo.mutualidad.literal.cuotaMensual" /></td>
 					<td class="labelTextValor"><html:text property="cuotaCobertura" size="6" styleClass="boxConsulta" style="text-align:right"/>&euro;</td>
-					<td class="labelText"  >Capital objetivo estimado a los 65 años</td>
+					<td class="labelText"  ><siga:Idioma
+							key="censo.mutualidad.literal.capitalObjetivo" /></td>
 					<td class="labelTextValor"><html:text property="capitalCobertura" size="8" styleClass="boxConsulta" style="text-align:right"/>&euro;</td>
 				</tr>
 			</table>
 			<table class="tablaCampos">
 				<tr align="left">
 
-					<td class="labelText" width="150px">Beneficiarios</td>
+					<td class="labelText" width="150px"><siga:Idioma
+							key="censo.mutualidad.literal.beneficiarios" /></td>
 					
 					<c:choose>
 						<c:when test="${MutualidadForm.modo=='insertar'}">
@@ -469,7 +493,8 @@
 					
 				</tr>
 				<tr align="left">
-					<td class="labelText">Asistencia Sanitaria</td>
+					<td class="labelText"><siga:Idioma
+							key="censo.mutualidad.literal.asistenciaSanitaria" /></td>
 					<td colspan= "5" class="labelTextValor">
 					<c:choose>
 						<c:when test="${MutualidadForm.modo=='insertar'}">
@@ -496,44 +521,51 @@
 
 
 
-		<siga:ConjCampos leyenda="Unidad Familiar">
+		<siga:ConjCampos leyenda="censo.mutualidad.leyenda.unidadFamiliar">
 		<table>
 		<tr>
-			<td class="labelText" >Fecha Nacimiento conyuge</td>
+			<td class="labelText" ><siga:Idioma
+							key="censo.mutualidad.literal.fechaNacimientoConyuge" /></td>
 			<td>
 				<siga:Fecha nombreCampo="fechaNacimientoConyuge" disabled="${MutualidadForm.modo=='consulta'}"></siga:Fecha>
 				<c:if test="${MutualidadForm.modo=='insertar'}">
 					<a href='javascript://'onClick="return showCalendarGeneral(fechaNacimientoConyuge);"><img src="<html:rewrite page='/html/imagenes/calendar.gif'/>" border="0"> </a>
 				</c:if>
 			</td>
-			<td class="labelText" >Número de hijos</td>
+			<td class="labelText" ><siga:Idioma
+							key="censo.mutualidad.literal.numeroHijos" /></td>
 			<td><html:text
 				 size="4"  maxlength="2" property="numeroHijos" styleClass="${estiloText}" onchange="consultarNHijos(this.value);"/>
 			</td>
 			</tr>
 			</table>
-		<siga:ConjCampos leyenda="Edades de los Hijos">
+		<siga:ConjCampos leyenda="censo.mutualidad.leyenda.edadHijos">
 		<table width="100%">
 		
 			<tr>
-			<td class="labelText" >Hijo 1</td>
+			<td class="labelText" ><siga:Idioma
+							key="censo.mutualidad.literal.hijo" />&nbsp;1</td>
 			<td >
 				<html:text property="edadHijo1"  size="4" styleClass="${estiloText}" maxlength="2"/>
 				
 			</td>
-			<td class="labelText" >Hijo 2</td>
+			<td class="labelText" ><siga:Idioma
+							key="censo.mutualidad.literal.hijo" />&nbsp;2</td>
 			<td >
 				<html:text property="edadHijo2"  size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
-			<td class="labelText" >Hijo 3</td>
+			<td class="labelText" ><siga:Idioma
+							key="censo.mutualidad.literal.hijo" />&nbsp;3</td>
 			<td >
 				<html:text property="edadHijo3"  size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
-			<td class="labelText" >Hijo 4</td>
+			<td class="labelText" ><siga:Idioma
+							key="censo.mutualidad.literal.hijo" />&nbsp;4</td>
 			<td >
 				<html:text property="edadHijo4"  size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
-			<td class="labelText" >Hijo 5</td>
+			<td class="labelText" ><siga:Idioma
+							key="censo.mutualidad.literal.hijo" />&nbsp;5</td>
 			<td >
 				<html:text property="edadHijo5"  size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
@@ -541,23 +573,28 @@
 			</tr>
 			
 			<tr style="display:none" id="masHijos">
-			<td class="labelText" >Hijo 6</td>
+			<td class="labelText" ><siga:Idioma
+							key="censo.mutualidad.literal.hijo" />&nbsp;6</td>
 			<td>
 				<html:text property="edadHijo6"  size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
-			<td class="labelText" >Hijo 7</td>
+			<td class="labelText" ><siga:Idioma
+							key="censo.mutualidad.literal.hijo" />&nbsp;7</td>
 			<td>
 				<html:text property="edadHijo7"  size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
-			<td class="labelText" >Hijo 8</td>
+			<td class="labelText" ><siga:Idioma
+							key="censo.mutualidad.literal.hijo" />&nbsp;8</td>
 			<td>
 				<html:text property="edadHijo8"  size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
-			<td class="labelText" >Hijo 9</td>
+			<td class="labelText" ><siga:Idioma
+							key="censo.mutualidad.literal.hijo" />&nbsp;9</td>
 			<td>
 				<html:text property="edadHijo9"  size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
-			<td class="labelText" >Hijo 10</td>
+			<td class="labelText" ><siga:Idioma
+							key="censo.mutualidad.literal.hijo" />&nbsp;10</td>
 			<td>
 				<html:text property="edadHijo10"  size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
@@ -648,7 +685,11 @@
 		document.MutualidadForm.provincia.value = document.MutualidadForm.idProvincia.options[document.MutualidadForm.idProvincia.selectedIndex].text;
 		document.MutualidadForm.poblacion.value = document.MutualidadForm.idPoblacion.options[document.MutualidadForm.idPoblacion.selectedIndex].text;
 		
-		document.MutualidadForm.submit();
+		if (validateMutualidadForm(document.MutualidadForm)){
+			//document.MutualidadForm.submit();
+		}else{
+			fin();
+		}
 		
 	}
 	function cargaCombos() {      
@@ -690,7 +731,7 @@
 	function accionComprobarEstadoMutualidad()
 	{
 		document.MutualidadForm.modo.value = "actualizaEstado";
-		var resultado = ventaModalGeneral(document.MutualidadForm.name,"0",'Esperando respuesta de la mutualidad. Espere por favor...');
+		var resultado = ventaModalGeneral(document.MutualidadForm.name,"0",'<siga:Idioma	key="censo.mutualidad.aviso.espera" />');
 		if(resultado){
 			document.MutualidadForm.idEstado.value = resultado[0];
 			document.MutualidadForm.estado.value = resultado[1];	
@@ -703,7 +744,8 @@
 	function accionComprobarEstadoMutualista()
 	{
 		document.MutualidadForm.modo.value = "actualizaEstadoMutualista";
-		var resultado = ventaModalGeneral(document.MutualidadForm.name,"0",'Esperando respuesta de la mutualidad. Espere por favor...');
+		censo.mutualidad.aviso.espera
+		var resultado = ventaModalGeneral(document.MutualidadForm.name,"0",'<siga:Idioma	key="censo.mutualidad.aviso.espera" />');
 		if(resultado){
 			document.MutualidadForm.estadoMutualista.value = resultado[0];	
 	    	document.getElementById("tdEstadoMutualista").innerText = resultado[0];
