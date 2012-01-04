@@ -686,7 +686,7 @@
 		document.MutualidadForm.poblacion.value = document.MutualidadForm.idPoblacion.options[document.MutualidadForm.idPoblacion.selectedIndex].text;
 		
 		if (validateMutualidadForm(document.MutualidadForm)){
-			//document.MutualidadForm.submit();
+			document.MutualidadForm.submit();
 		}else{
 			fin();
 		}
