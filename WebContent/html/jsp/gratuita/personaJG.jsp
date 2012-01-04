@@ -451,6 +451,8 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 		// Comprueba el tipo de persona que se elegi en el combo FISICA O JURIDICA 
 		function comprobarTipoPersona ()
 		{
+			//Falla al dar el boton ver, yo pondría esto 			
+			<%if (!accion.equalsIgnoreCase("ver")) {%>	
 			if(document.PersonaJGForm.tipos.value == 'F')
 			{
 				//alert("document.PersonaJGForm.tipos.value FISICA: "+document.PersonaJGForm.tipos.value);
@@ -469,7 +471,8 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 				document.getElementById("perJuridica").style.display="block";
 				document.getElementById("perJuridica1").style.display="block";					
 			}
-			//document.getElementById("textoInformativo").style.display="none";				
+			//document.getElementById("textoInformativo").style.display="none";		
+			<%}%>		
 		}
 				
 		function comprobarIdentificador ()
