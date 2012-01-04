@@ -217,6 +217,12 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 			procedimientoNuevo = (Hashtable)procedimientoAdm.prepararInsert(procedimientoNuevo, idInstitucionP);
 			procedimientoNuevo.put(ScsProcedimientosBean.C_IDINSTITUCION,(String)usr.getLocation());
 			procedimientoNuevo.put(ScsProcedimientosBean.C_IDJURISDICCION,miform.getJurisdiccion());
+			procedimientoNuevo.put(ScsProcedimientosBean.C_FECHADESDEVIGOR, GstDate.getApplicationFormatDate(usr.getLanguage(), miform.getFechaDesdeVigor()));
+			
+			if (miform.getFechaHastaVigor()!=null && !miform.getFechaHastaVigor().equals(""))
+			    procedimientoNuevo.put(ScsProcedimientosBean.C_FECHAHASTAVIGOR, GstDate.getApplicationFormatDate(usr.getLanguage(), miform.getFechaHastaVigor()));
+			else
+			    procedimientoNuevo.put(ScsProcedimientosBean.C_FECHAHASTAVIGOR, "");
 
 			if (miform.getComplemento()!=null && miform.getComplemento().equals("1"))
 			    UtilidadesHash.set(procedimientoNuevo, ScsProcedimientosBean.C_COMPLEMENTO, ClsConstants.DB_TRUE);
