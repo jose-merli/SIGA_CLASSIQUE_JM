@@ -1,5 +1,6 @@
 <!-- mutualidad.jsp -->
 <!-- CABECERA JSP -->
+<%@page import="java.util.ArrayList"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-15"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -68,10 +69,11 @@
 <body  class="tablaCentralCampos" onload="cargaCombos();">
 <bean:define id="path" name="org.apache.struts.action.mapping.instance"
 	property="path" scope="request" />
-<bean:define id="idPaisSeleccionado" name="idPaisSeleccionado"  scope="request" type="java.util.ArrayList"/>
-<bean:define id="idBancoSeleccionado" name="idBancoSeleccionado"  scope="request" type="java.util.ArrayList"/>
-
-
+<%  
+		ArrayList idPaisSeleccionado = (ArrayList)request.getAttribute("idPaisSeleccionado");
+		ArrayList idBancoSeleccionado = (ArrayList)request.getAttribute("idBancoSeleccionado");
+	%>
+	
 
 <html:javascript formName="MutualidadForm" staticJavascript="true" />
 <html:form action="${path}"  method="POST" >
@@ -284,11 +286,11 @@
 			<td colspan="2">
 			<c:choose>
 						<c:when test="${MutualidadForm.modo=='insertar'}">
-							<siga:ComboBD nombre="idPais" tipo="pais" ancho="300" clase="${estiloCombo}" readonly="${MutualidadForm.modo=='consulta'}" obligatorio="false" elementoSel='${idPaisSeleccionado}' accion="cargaCombos(this.value);" />
+							<siga:ComboBD nombre="idPais" tipo="pais" ancho="300" clase="${estiloCombo}" readonly="${MutualidadForm.modo=='consulta'}" obligatorio="false" elementoSel='<%=idPaisSeleccionado%>' accion="cargaCombos(this.value);" />
 
 						</c:when>
 						<c:otherwise>
-							<siga:ComboBD  nombre="idPais" tipo="pais" ancho="300" clase="${estiloCombo}" readonly="${MutualidadForm.modo=='consulta'}" obligatorio="false"  elementoSel='${idPaisSeleccionado}' pestana='2' accion="cargaCombos(this.value);" />
+							<siga:ComboBD  nombre="idPais" tipo="pais" ancho="300" clase="${estiloCombo}" readonly="${MutualidadForm.modo=='consulta'}" obligatorio="false"  elementoSel='<%=idPaisSeleccionado%>' pestana='2' accion="cargaCombos(this.value);" />
 						</c:otherwise>
 					</c:choose>
 			
@@ -407,7 +409,7 @@
 				<tr style="display:none">					
 					<td class="labelText" colspan="3"><siga:Idioma key="censo.datosCuentaBancaria.literal.banco"/></td>
 					<td class="labelText" colspan="3">
-						<siga:ComboBD nombre="idBanco" ancho="450" tipo="cmbBancos" clase="${estiloCombo}" readonly="${MutualidadForm.modo=='consulta'}" elementoSel='${idBancoSeleccionado}' accion="document.MutualidadForm.cboCodigo.value=document.MutualidadForm.idBanco.value"/>
+						<siga:ComboBD nombre="idBanco" ancho="450" tipo="cmbBancos" clase="${estiloCombo}" readonly="${MutualidadForm.modo=='consulta'}" elementoSel='<%=idBancoSeleccionado%>' accion="document.MutualidadForm.cboCodigo.value=document.MutualidadForm.idBanco.value"/>
 					</td>
 				</tr>
 				<tr align="left">		
@@ -535,7 +537,7 @@
 			<td class="labelText" ><siga:Idioma
 							key="censo.mutualidad.literal.numeroHijos" /></td>
 			<td><html:text
-				 size="4"  maxlength="2" property="numeroHijos" styleClass="${estiloText}" onchange="consultarNHijos(this.value);"/>
+				 size="4"  maxlength="2" property="numeroHijos" styleId="numeroHijos" styleClass="${estiloText}" onchange="consultarNHijos(this.value);"/>
 			</td>
 			</tr>
 			</table>
@@ -546,28 +548,28 @@
 			<td class="labelText" ><siga:Idioma
 							key="censo.mutualidad.literal.hijo" />&nbsp;1</td>
 			<td >
-				<html:text property="edadHijo1"  size="4" styleClass="${estiloText}" maxlength="2"/>
+				<html:text property="edadHijo1" styleId="edadHijo1" size="4" styleClass="${estiloText}" maxlength="2"/>
 				
 			</td>
 			<td class="labelText" ><siga:Idioma
 							key="censo.mutualidad.literal.hijo" />&nbsp;2</td>
 			<td >
-				<html:text property="edadHijo2"  size="4" styleClass="${estiloText}" maxlength="2"/>
+				<html:text property="edadHijo2" styleId="edadHijo2" size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
 			<td class="labelText" ><siga:Idioma
 							key="censo.mutualidad.literal.hijo" />&nbsp;3</td>
 			<td >
-				<html:text property="edadHijo3"  size="4" styleClass="${estiloText}" maxlength="2"/>
+				<html:text property="edadHijo3" styleId="edadHijo3" size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
 			<td class="labelText" ><siga:Idioma
 							key="censo.mutualidad.literal.hijo" />&nbsp;4</td>
 			<td >
-				<html:text property="edadHijo4"  size="4" styleClass="${estiloText}" maxlength="2"/>
+				<html:text property="edadHijo4" styleId="edadHijo4" size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
 			<td class="labelText" ><siga:Idioma
 							key="censo.mutualidad.literal.hijo" />&nbsp;5</td>
 			<td >
-				<html:text property="edadHijo5"  size="4" styleClass="${estiloText}" maxlength="2"/>
+				<html:text property="edadHijo5" styleId="edadHijo5" size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
 			
 			</tr>
@@ -576,27 +578,27 @@
 			<td class="labelText" ><siga:Idioma
 							key="censo.mutualidad.literal.hijo" />&nbsp;6</td>
 			<td>
-				<html:text property="edadHijo6"  size="4" styleClass="${estiloText}" maxlength="2"/>
+				<html:text property="edadHijo6" styleId="edadHijo6" size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
 			<td class="labelText" ><siga:Idioma
 							key="censo.mutualidad.literal.hijo" />&nbsp;7</td>
 			<td>
-				<html:text property="edadHijo7"  size="4" styleClass="${estiloText}" maxlength="2"/>
+				<html:text property="edadHijo7" styleId="edadHijo7" size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
 			<td class="labelText" ><siga:Idioma
 							key="censo.mutualidad.literal.hijo" />&nbsp;8</td>
 			<td>
-				<html:text property="edadHijo8"  size="4" styleClass="${estiloText}" maxlength="2"/>
+				<html:text property="edadHijo8" styleId="edadHijo8" size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
 			<td class="labelText" ><siga:Idioma
 							key="censo.mutualidad.literal.hijo" />&nbsp;9</td>
 			<td>
-				<html:text property="edadHijo9"  size="4" styleClass="${estiloText}" maxlength="2"/>
+				<html:text property="edadHijo9" styleId="edadHijo9" size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
 			<td class="labelText" ><siga:Idioma
 							key="censo.mutualidad.literal.hijo" />&nbsp;10</td>
 			<td>
-				<html:text property="edadHijo10"  size="4" styleClass="${estiloText}" maxlength="2"/>
+				<html:text property="edadHijo10" styleId="edadHijo10" size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
 			
 			</tr>
@@ -686,6 +688,40 @@
 		document.MutualidadForm.poblacion.value = document.MutualidadForm.idPoblacion.options[document.MutualidadForm.idPoblacion.selectedIndex].text;
 		
 		if (validateMutualidadForm(document.MutualidadForm)){
+			var numHijosGrabados = 0;
+			if(document.MutualidadForm.numeroHijos.value!=''&&document.MutualidadForm.numeroHijos.value>0){
+				if(document.getElementById('edadHijo1') && document.getElementById('edadHijo1').value!='')
+					numHijosGrabados = numHijosGrabados+1;
+				if(document.getElementById('edadHijo2') && document.getElementById('edadHijo2').value!='')
+					numHijosGrabados = numHijosGrabados+1;
+				if(document.getElementById('edadHijo3') && document.getElementById('edadHijo3').value!='')
+					numHijosGrabados = numHijosGrabados+1;
+				if(document.getElementById('edadHijo4') && document.getElementById('edadHijo4').value!='')
+					numHijosGrabados = numHijosGrabados+1;
+				if(document.getElementById('edadHijo5') && document.getElementById('edadHijo5').value!='')
+					numHijosGrabados = numHijosGrabados+1;
+				if(document.getElementById('edadHijo6') && document.getElementById('edadHijo6').value!='')
+					numHijosGrabados = numHijosGrabados+1;
+				if(document.getElementById('edadHijo7') && document.getElementById('edadHijo7').value!='')
+					numHijosGrabados = numHijosGrabados+1;
+				if(document.getElementById('edadHijo8') && document.getElementById('edadHijo8').value!='')
+					numHijosGrabados = numHijosGrabados+1;
+				if(document.getElementById('edadHijo9') && document.getElementById('edadHijo9').value!='')
+					numHijosGrabados = numHijosGrabados+1;
+				if(document.getElementById('edadHijo10') && document.getElementById('edadHijo10').value!='')
+					numHijosGrabados = numHijosGrabados+1;
+				
+				if(numHijosGrabados!=document.MutualidadForm.numeroHijos.value){
+					
+					msg = "<siga:Idioma key='censo.mutualidad.aviso.edadHijos' />";
+					alert(msg);
+					fin();
+					return false;
+				}
+				
+			}
+			
+			
 			document.MutualidadForm.submit();
 		}else{
 			fin();
@@ -714,13 +750,6 @@
 	       }
 		}
 	}
-	function cargaCombosDefecto() {
-		// document.MutualidadForm.periodicidadPago.value = document.MutualidadForm.idPeriodicidadPago.options[document.MutualidadForm.idPeriodicidadPago.selectedIndex].text;
-		
-		// idPeriodicidadPago
-		
-	}
-	
 	
 	
 	function accionCerrar(){	
@@ -765,7 +794,7 @@
 		}
 		
 	}
-	
+	//a.a();
 	
 </script>
 	
