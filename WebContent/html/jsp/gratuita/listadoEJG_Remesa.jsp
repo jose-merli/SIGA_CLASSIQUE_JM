@@ -113,8 +113,8 @@
 				} else {
 					buttons+=",val,gxml";//generar XML	
 				}
-			} else if (cajgConfig == 4) {
-				buttons+=",ws";//envio WebService
+			} else if (cajgConfig == 4) {//PAMPLONA
+				buttons+=",val,ws";//envio WebService
 			} else if (cajgConfig == 6) {
 				buttons+=",gxml";//generar XML			
 			} else if (cajgConfig == 7) {

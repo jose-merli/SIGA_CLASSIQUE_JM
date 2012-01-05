@@ -71,9 +71,11 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		
 //		Registrar_SolicitudXML_Solicitud registrar_SolicitudXML_Solicitud = new Registrar_SolicitudXML_Solicitud();
 					
-		IntegracionSigaAsignaLocator locator = new IntegracionSigaAsignaLocator(createClientConfig(getUsrBean(), String.valueOf(getIdInstitucion()), "Envío y recepción webservice del colegio " + getIdInstitucion() + " de la remesa " + getIdRemesa()));
-
-		ServiceSoap_BindingStub stub = new ServiceSoap_BindingStub(new java.net.URL(getUrlWS()), locator);
+		ServiceSoap_BindingStub stub = null;
+		if (!isSimular()) {
+			IntegracionSigaAsignaLocator locator = new IntegracionSigaAsignaLocator(createClientConfig(getUsrBean(), String.valueOf(getIdInstitucion()), "Envío y recepción webservice del colegio " + getIdInstitucion() + " de la remesa " + getIdRemesa()));
+			stub = new ServiceSoap_BindingStub(new java.net.URL(getUrlWS()), locator);
+		}
 		
 		List<Hashtable<String, String>> listDtExpedientes = wsPamplonaAdm.getDtExpedientes(getIdInstitucion(), getIdRemesa());
 		construyeHTxEJG(wsPamplonaAdm.getDtPersonas(getIdInstitucion(), getIdRemesa()), htCargaDtPersonas);
@@ -112,7 +114,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 					//guardamos el xml que vamos a enviar
 					saveXML(sigaAsignaDocument);
 					
-					if(validateXML_EJG(sigaAsignaDocument, anio, numejg, numero, idTipoEJG)){												
+					if(validateXML_EJG(sigaAsignaDocument, anio, numejg, numero, idTipoEJG) && !isSimular() && stub != null){												
 						String xml = sigaAsignaDocument.xmlText();
 						SIGAAsigna sigaAsigna = (SIGAAsigna) AxisObjectSerializerDeserializer.deserializeAxisObject(xml, SIGAAsigna.class);
 					
@@ -249,13 +251,13 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		SIGAAsignaDocument sigaAsignaDocument = SIGAAsignaDocument.Factory.newInstance();
 		DtExpedientes dtExpedientes = sigaAsignaDocument.addNewSIGAAsigna().addNewDtExpedientes();
 		
-		BigInteger bi = getBigInteger(map.get(IDEXPEDIENTESIGA));
+		BigInteger bi = SigaWSHelper.getBigInteger("identificador expediente SIGA", map.get(IDEXPEDIENTESIGA));
 		if (bi != null)	dtExpedientes.setIDExpedienteSIGA(bi);
-		bi = getBigInteger(map.get(NUMEROEXPEDIENTESIGA));
+		bi = SigaWSHelper.getBigInteger("número expediente SIGA", map.get(NUMEROEXPEDIENTESIGA));
 		if (bi != null) dtExpedientes.setNumeroExpedienteSIGA(bi);
-		bi = getBigInteger(map.get(ANOEXPEDIENTESIGA));
+		bi = SigaWSHelper.getBigInteger("año expediente SIGA", map.get(ANOEXPEDIENTESIGA));
 		if (bi != null) dtExpedientes.setAnoExpedienteSIGA(bi);
-		Integer in = getInteger(map.get(IDORGANISMOCOLEGIOABOGADOS));
+		Integer in = SigaWSHelper.getInteger("colegio de abogados", map.get(IDORGANISMOCOLEGIOABOGADOS));
 		if (in != null) dtExpedientes.setIDOrganismoColegioAbogados(in);
 		Calendar date = SigaWSHelper.getCalendar(map.get(FECHAREGISTRO));
 		if (date != null) dtExpedientes.setFechaRegistro(date);	
@@ -265,9 +267,9 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		if (st != null) dtExpedientes.setOtrosDatosDeInteres(st);
 		date = SigaWSHelper.getCalendar(map.get(FECHAPRESENTACION));
 		if (date != null) dtExpedientes.setFechaPresentacion(date);
-		in = getInteger(map.get(IDUSUARIOREGISTRO));
+		in = SigaWSHelper.getInteger("código de usuario", map.get(IDUSUARIOREGISTRO));
 		if (in != null) dtExpedientes.setIDUsuarioRegistro(in);
-		in = getInteger(map.get(IDORGANISMOREGISTRA));
+		in = SigaWSHelper.getInteger("código de colegio", map.get(IDORGANISMOREGISTRA));
 		if (in != null) dtExpedientes.setIDOrganismoRegistra(in);
 		
 		addDtPretensionesDefender(dtExpedientes.addNewDtPretensionesDefender(), map);
@@ -390,29 +392,6 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		return st == null || st.trim().equals("");
 	}
 
-
-	/**
-	 * 
-	 * @param st
-	 * @return
-	 */
-	private BigInteger getBigInteger(String st) {
-		BigInteger bigInteger = null;
-		if (st != null && !st.trim().equals("")) {
-			bigInteger = new BigInteger(st);
-		}
-		return bigInteger;
-	}
-	
-	private Integer getInteger(String st) {		
-		Integer in = null;
-		if (st != null && !st.trim().equals("")) {
-			in = Integer.valueOf(st);
-		}
-		return in;
-	}
-	
-	
 	
 	/**
 	 * 
@@ -429,11 +408,11 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 				Map<String, String> map = list.get(i);				
 				if (map.get(IDARCHIVO) != null && !map.get(IDARCHIVO).trim().equals("")) {
 					DtArchivos dtArchivo = dtExpedientes.addNewDtArchivos();
-					Integer in = getInteger(map.get(IDARCHIVO));
+					Integer in = SigaWSHelper.getInteger("identificador de archivo", map.get(IDARCHIVO));
 					if (in != null) dtArchivo.setIDArchivo(in);
 					String st = map.get(NOMBREARCHIVO);
 					if (st != null) dtArchivo.setNombreArchivo(st);
-					in = getInteger(map.get(IDTIPOARCHIVO));
+					in = SigaWSHelper.getInteger("tipo de archivo", map.get(IDTIPOARCHIVO));
 					if (in != null) dtArchivo.setIDTipoArchivo(in);
 					Boolean b = getBoolean(map.get(PRINCIPAL));
 					if (b != null) dtArchivo.setPrincipal(b);										
@@ -458,12 +437,12 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 			for (int i = 0; i < list.size(); i++) {
 				Map<String, String> map = list.get(i);				
 				
-				Integer in = getInteger(map.get(IDTIPOTERCERO));
+				Integer in = SigaWSHelper.getInteger("tipo solicitante/contrario", map.get(IDTIPOTERCERO));
 				
 				if (in != null && in.intValue() == TIPO_TERCERO_SOLICITANTE) {
 					DtSolicitante datosPersona = dtExpedientes.addNewDtSolicitante();					
 					if (in != null) datosPersona.setIDTipoTercero(in);
-					in = getInteger(map.get(IDTIPOPERSONA));
+					in = SigaWSHelper.getInteger("tipo persona", map.get(IDTIPOPERSONA));
 					if (in != null) datosPersona.setIDTipoPersona(in);
 					String st = map.get(NOMBRE);
 					if (st != null) datosPersona.setNombre(st);
@@ -471,14 +450,14 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 					if (st != null) datosPersona.setApellido1(st);
 					st = map.get(APELLIDO2);
 					if (st != null) datosPersona.setApellido2(st);
-					in = getInteger(map.get(IDTIPOIDENTIFICACION));
+					in = SigaWSHelper.getInteger("tipo identificador", map.get(IDTIPOIDENTIFICACION));
 					if (in != null) datosPersona.setIDTipoIdentificacion(in);
 					st = map.get(NUMEROIDENTIFICACION);
 					if (st != null) datosPersona.setNumeroIdentificacion(st);
 					
 					//DIRECCION
 					DtDirecciones dtDirecciones = datosPersona.addNewDtDirecciones();
-					in = getInteger(map.get(DIR_IDTIPOVIA));
+					in = SigaWSHelper.getInteger("tipo de vía", map.get(DIR_IDTIPOVIA));
 					if (in != null) dtDirecciones.setIDTipoVia(in);
 					st = map.get(DIR_NOMBREVIA);
 					if (st != null) dtDirecciones.setNombreVia(st);
@@ -486,7 +465,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 					if (st != null) dtDirecciones.setNumero(st);
 					st = map.get(DIR_PISO);
 					if (st != null) dtDirecciones.setPiso(st);
-					in = getInteger(map.get(DIR_IDPOBLACION));
+					in = SigaWSHelper.getInteger("población", map.get(DIR_IDPOBLACION));
 					if (in != null) dtDirecciones.setIDPoblacion(in);
 					st = map.get(DIR_CODIGOPOSTAL);
 					if (st != null) dtDirecciones.setCodigoPostal(st);
@@ -498,19 +477,19 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 					if (st != null) dtDirecciones.setFax(st);
 					st = map.get(DIR_EMAIL);
 					if (st != null) dtDirecciones.setEmail(st);
-					in = getInteger(map.get(DIR_IDPAIS));
+					in = SigaWSHelper.getInteger("país", map.get(DIR_IDPAIS));
 					if (in != null) dtDirecciones.setIDPais(in);					
 					if (dtDirecciones.getIDPoblacion() > 0) {
 						dtDirecciones = null;
 					}
 					
-					in = getInteger(map.get(IDESTADOCIVIL));
+					in = SigaWSHelper.getInteger("código estado civil", map.get(IDESTADOCIVIL));
 					if (in != null)	datosPersona.setIDEstadoCivil(in);
-					in = getInteger(map.get(SEXO));
+					in = SigaWSHelper.getInteger("sexo", map.get(SEXO));
 					if (in != null) datosPersona.setSexo(in);					
-					BigInteger bi = getBigInteger(map.get(RAZONSOCIAL));
-					if (bi != null)	datosPersona.setRazonSocial(bi);
-					BigDecimal bd = getBigDecimal(map.get(INGRESOSANUALES));
+					st = map.get(RAZONSOCIAL);
+					if (st != null)	datosPersona.setRazonSocial(st);
+					BigDecimal bd = SigaWSHelper.getBigDecimal("ingresos anuales", map.get(INGRESOSANUALES));
 					if (bd != null) datosPersona.setIngresosAnuales(bd);
 					Calendar cal = SigaWSHelper.getCalendar(map.get(FECHANACIMIENTO));
 					if (cal != null) datosPersona.setFechaNacimiento(cal);
@@ -518,20 +497,20 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 					if (st != null) datosPersona.setObservaciones(st);
 					st = map.get(PROFESION);
 					if (st != null) datosPersona.setProfesion(st);
-					in = getInteger(map.get(IDREGIMENECONOMICOMATRIMONIAL));
+					in = SigaWSHelper.getInteger("régimen económico matrimonial", map.get(IDREGIMENECONOMICOMATRIMONIAL));
 					if (in != null) datosPersona.setIDRegimenEconomicoMatrimonial(in);
-					in = getInteger(map.get(IDOTRAPRESTACION));
+					in = SigaWSHelper.getInteger("otra prestación", map.get(IDOTRAPRESTACION));
 					if (in != null) datosPersona.setIDOtraPrestacion(in);
-					bd = getBigDecimal(map.get(IMPORTEOTRAPRESTACION));
+					bd = SigaWSHelper.getBigDecimal("importe otra prestación", map.get(IMPORTEOTRAPRESTACION));
 					if (bd != null) datosPersona.setImporteOtraPrestacion(bd);
-					in = getInteger(map.get(IDNACIONALIDAD));
+					in = SigaWSHelper.getInteger("nacionalidad", map.get(IDNACIONALIDAD));
 					if (in != null) datosPersona.setIDNacionalidad(in);
 					addDtOtrosIngresosBienesPorPersona(datosPersona, map);
 										
 				} else {
 					DtIntervinientes datosPersona = dtExpedientes.addNewDtIntervinientes();
 					if (in != null) datosPersona.setIDTipoTercero(in);
-					in = getInteger(map.get(IDTIPOPERSONA));
+					in = SigaWSHelper.getInteger("tipo persona", map.get(IDTIPOPERSONA));
 					if (in != null) datosPersona.setIDTipoPersona(in);
 					String st = map.get(NOMBRE);
 					if (st != null) datosPersona.setNombre(st);
@@ -539,13 +518,13 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 					if (st != null) datosPersona.setApellido1(st);
 					st = map.get(APELLIDO2);
 					if (st != null) datosPersona.setApellido2(st);
-					in = getInteger(map.get(IDTIPOIDENTIFICACION));
+					in = SigaWSHelper.getInteger("tipo identificación", map.get(IDTIPOIDENTIFICACION));
 					if (in != null) datosPersona.setIDTipoIdentificacion(in);
 					st = map.get(NUMEROIDENTIFICACION);
 					if (st != null) datosPersona.setNumeroIdentificacion(st);
 					//DIRECCION
 					com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.DtIntervinientes.DtDirecciones dtDirecciones = datosPersona.addNewDtDirecciones();
-					in = getInteger(map.get(DIR_IDTIPOVIA));
+					in = SigaWSHelper.getInteger("tipo vía", map.get(DIR_IDTIPOVIA));
 					if (in != null) dtDirecciones.setIDTipoVia(in);
 					st = map.get(DIR_NOMBREVIA);
 					if (st != null) dtDirecciones.setNombreVia(st);
@@ -553,7 +532,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 					if (st != null) dtDirecciones.setNumero(st);
 					st = map.get(DIR_PISO);
 					if (st != null) dtDirecciones.setPiso(st);
-					in = getInteger(map.get(DIR_IDPOBLACION));
+					in = SigaWSHelper.getInteger("población", map.get(DIR_IDPOBLACION));
 					if (in != null) dtDirecciones.setIDPoblacion(in);
 					st = map.get(DIR_CODIGOPOSTAL);
 					if (st != null) dtDirecciones.setCodigoPostal(st);
@@ -565,19 +544,19 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 					if (st != null) dtDirecciones.setFax(st);
 					st = map.get(DIR_EMAIL);
 					if (st != null) dtDirecciones.setEmail(st);
-					in = getInteger(map.get(DIR_IDPAIS));
+					in = SigaWSHelper.getInteger("país", map.get(DIR_IDPAIS));
 					if (in != null) dtDirecciones.setIDPais(in);					
 					if (dtDirecciones.getIDPoblacion() > 0) {
 						dtDirecciones = null;
 					}
 					
-					in = getInteger(map.get(IDESTADOCIVIL));
+					in = SigaWSHelper.getInteger("estado civil", map.get(IDESTADOCIVIL));
 					if (in != null)	datosPersona.setIDEstadoCivil(in);
-					in = getInteger(map.get(SEXO));
+					in = SigaWSHelper.getInteger("sexo", map.get(SEXO));
 					if (in != null) datosPersona.setSexo(in);
-					BigInteger bi = getBigInteger(map.get(RAZONSOCIAL));
-					if (bi != null)	datosPersona.setRazonSocial(bi);
-					BigDecimal bd = getBigDecimal(map.get(INGRESOSANUALES));
+					st = map.get(RAZONSOCIAL);
+					if (st != null)	datosPersona.setRazonSocial(st);
+					BigDecimal bd = SigaWSHelper.getBigDecimal("ingresos anuales", map.get(INGRESOSANUALES));
 					if (bd != null) datosPersona.setIngresosAnuales(bd);
 					Calendar cal = SigaWSHelper.getCalendar(map.get(FECHANACIMIENTO));
 					if (cal != null) datosPersona.setFechaNacimiento(cal);
@@ -585,16 +564,16 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 					if (st != null) datosPersona.setObservaciones(st);
 					st = map.get(PROFESION);
 					if (st != null) datosPersona.setProfesion(st);
-					in = getInteger(map.get(IDREGIMENECONOMICOMATRIMONIAL));
+					in = SigaWSHelper.getInteger("régimen económico matrimonial", map.get(IDREGIMENECONOMICOMATRIMONIAL));
 					if (in != null) datosPersona.setIDRegimenEconomicoMatrimonial(in);
-					in = getInteger(map.get(IDOTRAPRESTACION));
+					in = SigaWSHelper.getInteger("otra prestación", map.get(IDOTRAPRESTACION));
 					if (in != null) datosPersona.setIDOtraPrestacion(in);
-					bd = getBigDecimal(map.get(IMPORTEOTRAPRESTACION));
+					bd = SigaWSHelper.getBigDecimal("importe otra prestación", map.get(IMPORTEOTRAPRESTACION));
 					if (bd != null) datosPersona.setImporteOtraPrestacion(bd);
-					in = getInteger(map.get(IDNACIONALIDAD));
+					in = SigaWSHelper.getInteger("nacionalidad", map.get(IDNACIONALIDAD));
 					if (in != null) datosPersona.setIDNacionalidad(in);
 					
-					BigInteger idOtroIngresoBien = getBigInteger(map.get(IDOTROINGRESOBIEN));
+					BigInteger idOtroIngresoBien = SigaWSHelper.getBigInteger("otro ingreso bien", map.get(IDOTROINGRESOBIEN));
 					if (idOtroIngresoBien != null) {
 						datosPersona.addNewDtOtrosIngresosBienesPorPersona().addIdOtroIngresoBien(idOtroIngresoBien);
 					}
@@ -614,24 +593,11 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 	 * @return
 	 */
 	private void addDtOtrosIngresosBienesPorPersona(DtSolicitante dtPersona, Map<String, String> map) {			
-		BigInteger idOtroIngresoBien = getBigInteger(map.get(IDOTROINGRESOBIEN));
+		BigInteger idOtroIngresoBien = SigaWSHelper.getBigInteger("otro ingreso bien", map.get(IDOTROINGRESOBIEN));
 		if (idOtroIngresoBien != null) {			
 			dtPersona.addNewDtOtrosIngresosBienesPorPersona().setIdOtroIngresoBienArray((new BigInteger[]{idOtroIngresoBien}));
 		}
 		
-	}
-
-	/**
-	 * 
-	 * @param st
-	 * @return
-	 */
-	private BigDecimal getBigDecimal(String st) {
-		BigDecimal bigDecimal = null;
-		if (st != null && !st.trim().equals("")) {
-			bigDecimal = new BigDecimal(st);
-		}
-		return bigDecimal;
 	}
 
 
@@ -649,21 +615,24 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		String st = map.get(PRE_CODIGOTIPOPROCEDIMIENTO);
 		if (st != null && !st.trim().equals("")) {
 			try {				
-				dtPretensionesDefender.setCodigoTipoProcedimiento(com.siga.ws.i2055.xmlbeans.ClaseProcedimiento.Enum.forString(st));
+				dtPretensionesDefender.setCodigoTipoProcedimiento(com.siga.ws.i2055.xmlbeans.ClaseProcedimiento.Enum.forString(st));				
 			} catch (IllegalArgumentException e) {
+				throw new IllegalArgumentException("El código de procedimiento debe pertenecer al Test de Compatibilidad del CGPJ.");
+			}
+			if (dtPretensionesDefender.getCodigoTipoProcedimiento() == null) {
 				throw new IllegalArgumentException("El código de procedimiento debe pertenecer al Test de Compatibilidad del CGPJ.");
 			}
 		}
 		
 		st = map.get(PRE_OTROSASPECTOS);
 		if (st != null) dtPretensionesDefender.setOtrosAspectos(st);
-		Integer in = getInteger(map.get(PRE_IDPARTIDOJUDICIAL));
+		Integer in = SigaWSHelper.getInteger("partido judicial", map.get(PRE_IDPARTIDOJUDICIAL));
 		if (in != null) dtPretensionesDefender.setIDPartidoJudicial(in);
-		in = getInteger(map.get(PRE_IDSITUACIONPROCESO));
+		in = SigaWSHelper.getInteger("situación proceso", map.get(PRE_IDSITUACIONPROCESO));
 		if (in != null) dtPretensionesDefender.setIDSituacionProceso(in);
 		
 		st = map.get(PRE_NUMEROPROCEDIMIENTO);
-		BigInteger bi = getBigInteger(map.get(PRE_ANOPROCEDIMIENTO));
+		BigInteger bi = SigaWSHelper.getBigInteger("año del procedimiento", map.get(PRE_ANOPROCEDIMIENTO));
 		if ((st != null && !st.trim().equals("")) || bi != null) {
 			Procedimiento procedimiento =  dtPretensionesDefender.addNewProcedimiento();						
 			procedimiento.setNumeroProcedimiento(st);
@@ -672,21 +641,21 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		
 		st = map.get(PRE_CODUNIDADFUNCIONAL);
 		if (st != null) dtPretensionesDefender.setCodUnidadFuncional(st);
-		in = getInteger(map.get(PRE_IDORDENJURISDICCIONAL));
+		in = SigaWSHelper.getInteger("orden jurisdiccional", map.get(PRE_IDORDENJURISDICCIONAL));
 		if (in != null) dtPretensionesDefender.setIDOrdenJurisdiccional(in);				
 		b = getBoolean(map.get(PRE_PRECISAPROCURADOR));
 		if (b != null) dtPretensionesDefender.setPrecisaProcurador(b);
-		in = getInteger(map.get(PRE_IDLISTATURNADOABOGADOS));
+		in = SigaWSHelper.getInteger("código del turno", map.get(PRE_IDLISTATURNADOABOGADOS));
 		if (in != null) dtPretensionesDefender.setIDListaTurnadoAbogados(in);
-		BigInteger posInt = getBigInteger(map.get(PRE_IDTARIFAABOGADOS));
+		BigInteger posInt = SigaWSHelper.getBigInteger("código del procedimiento", map.get(PRE_IDTARIFAABOGADOS));
 		if (posInt != null) dtPretensionesDefender.setIDTarifaAbogados(posInt);
-		posInt = getBigInteger(map.get(PRE_IDTARIFAPROCURADORES));
+		posInt = SigaWSHelper.getBigInteger("tarifa de procuradores", map.get(PRE_IDTARIFAPROCURADORES));
 		if (posInt != null) dtPretensionesDefender.setIDTarifaProcuradores(posInt);
-		BigDecimal bd = getBigDecimal(map.get(PRE_PORCENTAJETARIFAABOGADO));
+		BigDecimal bd = SigaWSHelper.getBigDecimal("porcentaje tarifa abogado", map.get(PRE_PORCENTAJETARIFAABOGADO));
 		if (bd != null) dtPretensionesDefender.setPorcentajeTarifaAbogado(bd);
-		bd = getBigDecimal(map.get(PRE_PORCENTAJETARIFAPROCURADOR));
+		bd = SigaWSHelper.getBigDecimal("porcentaje tarifa procurador", map.get(PRE_PORCENTAJETARIFAPROCURADOR));
 		if (bd != null) dtPretensionesDefender.setPorcentajeTarifaProcurador(bd);
-		in = getInteger(map.get(PRE_IDTIPOFACTURACION));
+		in = SigaWSHelper.getInteger("tipo de facturación", map.get(PRE_IDTIPOFACTURACION));
 		if (in != null) dtPretensionesDefender.setIDTipoFacturacion(in);
 		st = map.get(PRE_PRETENSIONDEFENDER);
 		if (st != null) dtPretensionesDefender.setPretensionDefender(st);
