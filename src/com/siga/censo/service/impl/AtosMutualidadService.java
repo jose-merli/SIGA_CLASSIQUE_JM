@@ -40,22 +40,18 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		solicitudMutualidadBean.setIdInstitucion(new Integer(usrBean.getLocation()));
 		solicitudMutualidadAdm.insert(solicitudMutualidadBean);
 		RespuestaMutualidad respuestaSolicitud = altaMutualidad(mutualidadForm,usrBean);
-		
-		solicitudMutualidadBean.setIdSolicitudAceptada(new Long(mutualidadForm.getIdSolicitudAceptada()));
-		
-		solicitudMutualidadBean.setEstado(CenSolicitudMutualidadBean.ESTADO_PTERESPUESTA);
-		solicitudMutualidadBean.setIdEstado(CenSolicitudMutualidadBean.ESTADO_SOLICITADO);
-		if(mutualidadForm.getIdTipoSolicitud().equals(CenSolicitudMutualidadBean.TIPOSOLICITUD_PLANPROFESIONAL));
-			solicitudMutualidadBean.setEstadoMutualista(CenSolicitudMutualidadBean.ESTADO_PTERESPUESTA);
-		mutualidadForm = solicitudMutualidadBean.getMutualidadForm(mutualidadForm);
-		solicitudMutualidadAdm.actualizaSolicitudAceptada(solicitudMutualidadBean);
-		if(mutualidadForm.getIdTipoSolicitud().equals(CenSolicitudMutualidadBean.TIPOSOLICITUD_PLANPROFESIONAL))
-			solicitudMutualidadAdm.actualizaEstadoMutualista(solicitudMutualidadBean);
-		
-		
-		
-		
-		
+		if(mutualidadForm.getIdSolicitudAceptada()!=null && !mutualidadForm.getIdSolicitudAceptada().equals("0")){
+			solicitudMutualidadBean.setIdSolicitudAceptada(new Long(mutualidadForm.getIdSolicitudAceptada()));
+			
+			solicitudMutualidadBean.setEstado(CenSolicitudMutualidadBean.ESTADO_PTERESPUESTA);
+			solicitudMutualidadBean.setIdEstado(CenSolicitudMutualidadBean.ESTADO_SOLICITADO);
+			if(mutualidadForm.getIdTipoSolicitud().equals(CenSolicitudMutualidadBean.TIPOSOLICITUD_PLANPROFESIONAL));
+				solicitudMutualidadBean.setEstadoMutualista(CenSolicitudMutualidadBean.ESTADO_PTERESPUESTA);
+			mutualidadForm = solicitudMutualidadBean.getMutualidadForm(mutualidadForm);
+			solicitudMutualidadAdm.actualizaSolicitudAceptada(solicitudMutualidadBean);
+			if(mutualidadForm.getIdTipoSolicitud().equals(CenSolicitudMutualidadBean.TIPOSOLICITUD_PLANPROFESIONAL))
+				solicitudMutualidadAdm.actualizaEstadoMutualista(solicitudMutualidadBean);
+		}
 	}
 	private RespuestaMutualidad altaMutualidad(MutualidadForm mutualidadForm, UsrBean usrBean) throws Exception{
 		MutualidadWSClient mutualidadWSClient =  new MutualidadWSClient(usrBean);
