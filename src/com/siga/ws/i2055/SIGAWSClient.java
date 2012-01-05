@@ -156,7 +156,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 				}
 			}
 			
-			if (correctos > 0) {				
+			if (!isSimular() && correctos > 0) {				
 				CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(getUsrBean());
 				// Marcar como generada
 				cajgRemesaEstadosAdm.nuevoEstadoRemesa(getUsrBean(), getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_GENERADA);				
