@@ -117,6 +117,7 @@
 			document.getElementById("idPersona").value = '';
 				document.BusquedaComisionesForm.numeroColegiado.value = '';
 				document.BusquedaComisionesForm.nombreColegiado.value = '';
+				document.getElementById('idBuscarCargos').onclick();
 		}
 		
 		function buscarColegiado()
