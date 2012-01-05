@@ -108,7 +108,7 @@
 					      onClick="selectRow(<bean:write name='index'/>);consultar(<bean:write name='index'/>);">
 					<img name="editaCargo_<bean:write name='index'/>" id="edita_<bean:write name='index'/>" 
 					src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>" style="cursor:hand;" alt="Editar" border="0" 
-					onClick="selectRow(<bean:write name='index'/>);editar(<bean:write name='index'/>);">
+					onClick="selectRow(<bean:write name='index'/>);editarCargo(<bean:write name='index'/>);">
 					<img src="<html:rewrite page='/html/imagenes/bborrar_off.gif'/>" style="cursor:hand;" alt="<siga:Idioma key='general.boton.borrar'/>" 
 					name="borradoLogico_<bean:write name='index'/>"   border="0" id="borradoLogico_<bean:write name='index'/>" border="0" 
 					onclick="borradoLogicoFila(<bean:write name='index'/>,1)">

@@ -312,6 +312,8 @@
 			document.getElementById("numeroColegiado_"+num).value = '';
 			document.getElementById("nombreColegiado_"+num).value = '';
 			document.getElementById("apellidosColegiado_"+num).value = '';
+			document.getElementById("info_existe_" + num).src = "/SIGA/html/imagenes/nuevo.gif";
+			document.getElementById("info_existe_" + num).alt = "<siga:Idioma key='gratuita.volantesExpres.mensaje.esNuevaPersonaJG'/>";
 
 	}
 	function preAccionColegiadoN()
@@ -801,9 +803,8 @@
 			  }
 		}
 
-		function  editar (idFila) 
+		function  editarCargo (idFila) 
 		{ 
-
 			document.datosCVForm.mantenimiento.value="S";
 			document.datosCVForm.nombreUsuario.value=document.getElementById("namecolegiado_" + idFila).value;
 			document.datosCVForm.numeroUsuario.value=document.getElementById("ncolegiado_" + idFila).value;
@@ -813,7 +814,7 @@
 			document.datosCVForm.idCV.value=document.getElementById("IDCV_" + idFila).value; 	
 			document.datosCVForm.modo.value = "editarModal";
 			  var rc = ventaModalGeneral(document.datosCVForm.name, "M");
-			  postAccionGuardarCargos();
+				document.getElementById('idBuscarCargos').onclick();
 
 			  
 		}
