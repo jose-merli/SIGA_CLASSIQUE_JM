@@ -560,6 +560,7 @@
 
 <body  class="tablaCentralCampos" onLoad="cargaPais(<%=datosPersonales.getIdPais() %>);cargarChecksCuenta();ajusteAlto('documentos');comprobarTipoIdent();">
 <bean:define id="isPosibilidadSolicitudAlta" name="isPosibilidadSolicitudAlta"  scope="request" />
+<bean:define id="mostrarSolicitudAlta" name="mostrarSolicitudAlta"  scope="request" />
 <bean:define id="motivoSolicitudAlta" name="motivoSolicitudAlta"  scope="request" />
 	<html:form action="/CEN_SolicitudesIncorporacion.do" method="POST">
 	<html:hidden property="idSolicitudPlanProfesional"/>
@@ -881,10 +882,13 @@
 		</table>
 	</siga:ConjCampos>
 	<c:if test="${ModoAnterior=='Editar'||ModoAnterior=='VER'||ModoAnterior=='editar' }">
-	<siga:ConjCampos>
 	
 	
 	<c:choose >
+		<c:when test="${mostrarSolicitudAlta==true}">
+		<siga:ConjCampos>
+		<c:choose >
+
 		<c:when test="${isPosibilidadSolicitudAlta==true}">
 		<table class="tablaCampos" align="left" >
 		
@@ -1027,8 +1031,12 @@
 		
 		
 		</c:otherwise>
+		</c:choose>
+		</siga:ConjCampos>	
+		</c:when>
+		<c:otherwise>
+		</c:otherwise>
 	</c:choose>
-	</siga:ConjCampos>	
 </c:if>
 		<siga:TablaCabecerasFijas nombre="documentoAPresentar" 
 			borde="1" 
