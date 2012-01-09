@@ -765,7 +765,7 @@
 					<siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/>
 				</td>		
 				
-				<td class="labelText">					
+				<td class="labelText" colspan="3">					
 					<input type="text" style="width:500px" class="boxConsulta" value="<%=NIG%>" readOnly="true">										
 				</td>	
 			</tr>
