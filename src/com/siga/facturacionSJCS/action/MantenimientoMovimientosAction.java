@@ -319,11 +319,17 @@ public class MantenimientoMovimientosAction extends MasterAction {
 			//falta la institucion
 			datos.put("IDINSTITUCION",(String)usr.getLocation());
 			
-			String checkHistoricoMovimiento = (String)request.getParameter("checkHistoricoMovimiento");
+			/*String checkHistoricoMovimiento = (String)request.getParameter("checkHistoricoMovimiento");
 			
 			if (checkHistoricoMovimiento != null) {
 			
 				datos.put("CHECKHISTORICO",(String)request.getParameter("checkHistoricoMovimiento"));
+			}*/
+			
+			String checkHistoricoMovimiento = miform.getCheckHistorico();
+			
+			if (checkHistoricoMovimiento != null) {
+				datos.put("CHECKHISTORICO",checkHistoricoMovimiento.toString());
 			}
 
 			// Si vengo desde la ficha colegial
