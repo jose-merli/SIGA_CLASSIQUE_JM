@@ -1,4 +1,4 @@
-<!-- informeJustificacionMasiva.jsp -->
+<!-- informeJustificacion.jsp -->
 
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -310,6 +310,8 @@ function refrescarLocal(){
 	function informeJustificacion(){
 		sub();
 		datos = "";
+		
+		
 		var mostrarTodas = document.getElementById("mostrarSoloPendientes").checked;
 		var idInstitucion  =document.InformeJustificacionMasivaForm.idInstitucion.value
 		var idPersona = document.InformeJustificacionMasivaForm.idPersona.value;
@@ -331,8 +333,9 @@ function refrescarLocal(){
 		var incluirSinEJG = document.InformeJustificacionMasivaForm.incluirSinEJG.value;
 		var incluirEjgPteCAJG = document.InformeJustificacionMasivaForm.incluirEjgPteCAJG.value;
 		var activarRestriccionesFicha = document.getElementById("activarRestricciones").checked;
-		var fichaColegial = document.InformeJustificacionMasivaForm.fichaColegial.value; 
-		datos = "fichaColegial=="+fichaColegial+"##mostrarTodas=="+mostrarTodas+ "##idInstitucion==" +idInstitucion+ "##idPersona==" +idPersona+ "##anio==" +anio+ "##estado==" +estado+ "##fechaJustificacionDesde==" +fechaJustificacionDesde+ "##fechaJustificacionHasta==" +fechaJustificacionHasta+ "##fechaDesde==" +fechaDesde+ "##fechaHasta==" +fechaHasta+ "##interesadoApellidos==" +interesadoApellidos+ "##interesadoNombre==" +interesadoNombre+ "##incluirEjgNoFavorable==" +incluirEjgNoFavorable+ "##incluirEjgSinResolucion==" +incluirEjgSinResolucion+ "##incluirSinEJG==" +incluirSinEJG+ "##incluirEjgPteCAJG==" +incluirEjgPteCAJG+ "##activarRestriccionesFicha==" +activarRestriccionesFicha+"%%%";
+		var fichaColegial = document.InformeJustificacionMasivaForm.fichaColegial.value;
+		var actuacionesPendientes = document.getElementById("actuacionesPendientes").value;
+		datos = "fichaColegial=="+fichaColegial+"##mostrarTodas=="+mostrarTodas+ "##idInstitucion==" +idInstitucion+ "##idPersona==" +idPersona+ "##anio==" +anio+ "##estado==" +estado+ "##fechaJustificacionDesde==" +fechaJustificacionDesde+ "##fechaJustificacionHasta==" +fechaJustificacionHasta+ "##fechaDesde==" +fechaDesde+ "##fechaHasta==" +fechaHasta+ "##interesadoApellidos==" +interesadoApellidos+ "##interesadoNombre==" +interesadoNombre+ "##incluirEjgNoFavorable==" +incluirEjgNoFavorable+ "##incluirEjgSinResolucion==" +incluirEjgSinResolucion+ "##incluirSinEJG==" +incluirSinEJG+ "##incluirEjgPteCAJG==" +incluirEjgPteCAJG+ "##activarRestriccionesFicha==" +activarRestriccionesFicha+"##actuacionesPendientes==" +actuacionesPendientes+"%%%";
 		document.InformesGenericosForm.idInstitucion.value = document.InformeJustificacionMasivaForm.idInstitucion.value;
 		document.InformesGenericosForm.datosInforme.value=datos;
 		document.InformesGenericosForm.submit();

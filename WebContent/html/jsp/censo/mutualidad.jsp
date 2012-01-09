@@ -57,8 +57,15 @@
 		
 	<script>
 	function preAccionPoblacion(){
+		//document.getElementById("idPoblacion").value=document.MutualidadForm.idPoblacion.value;
+		//alert("document.MutualidadForm.idPoblacion.value"+document.MutualidadForm.idPoblacion.value);
 	}
 	function postAccionPoblacion(){
+		//alert("document.MutualidadForm.idPoblacion.value"+document.MutualidadForm.idPoblacion.value);
+		//alert("idpoblacion"+document.getElementById("idPoblacion").value);
+		//if(document.MutualidadForm.idPoblacion.value!=''){
+		//	 document.getElementById("idPoblacion").value=document.MutualidadForm.idPoblacion.value;
+		//}
 	}	
 
 	</script>	
@@ -615,7 +622,7 @@
 	/>
 <ajax:select
 	baseUrl="/SIGA${path}.do?modo=getAjaxPoblaciones"
-	source="provincias" target="poblaciones" parameters="idPais={idPais},idProvincia={idProvincia}"
+	source="provincias" target="poblaciones" parameters="idProvincia={idProvincia}"
 	preFunction="preAccionPoblacion"
 	postFunction="postAccionPoblacion" />
 </c:if>
@@ -743,12 +750,15 @@
 				document.getElementById("idProvincia").disabled=false;
 				document.getElementById("tdPoblacionEspanola").className="";
 				document.getElementById("tdPoblacionExtranjera").className="ocultar";
-				if(document.getElementById("idProvincia").onchange)
-					var cmbProvincia = document.getElementById("idProvincia").onchange();
+				//if(document.getElementById("idProvincia").onchange)
+					//var cmbProvincia = document.getElementById("idProvincia").onchange();
 				
 				
 	       }
 		}
+		
+
+		
 	}
 	
 	
@@ -773,7 +783,6 @@
 	function accionComprobarEstadoMutualista()
 	{
 		document.MutualidadForm.modo.value = "actualizaEstadoMutualista";
-		censo.mutualidad.aviso.espera
 		var resultado = ventaModalGeneral(document.MutualidadForm.name,"0",'<siga:Idioma	key="censo.mutualidad.aviso.espera" />');
 		if(resultado){
 			document.MutualidadForm.estadoMutualista.value = resultado[0];	
