@@ -930,7 +930,7 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 	 * @return CenColegiadoBean o null
 	 */
 	public CenColegiadoBean existeColegiado (Long idPersona, 
-											 Integer idInstitucion)
+											 Integer idInstitucion,String numeroColegiado)
 			throws ClsExceptions, SIGAException
 	{
 		try
@@ -939,7 +939,8 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			Hashtable codigos = new Hashtable();
             codigos.put(new Integer(1),idPersona.toString());
             codigos.put(new Integer(2),idInstitucion.toString());
-            Vector v = this.selectBind(" WHERE IDPERSONA = :1 AND IDINSTITUCION = :2" ,codigos);
+            codigos.put(new Integer(3),numeroColegiado);
+            Vector v = this.selectBind(" WHERE IDPERSONA = :1 AND IDINSTITUCION = :2 AND NCOLEGIADO = :3" ,codigos);
 			if (v != null && v.size () > 0)
 				salida = (CenColegiadoBean) v.get(0);
 			return salida;

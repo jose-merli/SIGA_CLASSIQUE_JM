@@ -807,7 +807,7 @@ public class DatosGeneralesAction extends MasterAction {
 			hash.put(CenHistoricoBean.C_IDINSTITUCION, miForm.getIdInstitucion());
 			boolean isColegiado = false;
 			try {
-					isColegiado = admColegiado.existeColegiado(new Long(miForm.getIdPersona()), new Integer(miForm.getIdInstitucion()))!=null;	
+					isColegiado = admColegiado.existeColegiado(new Long(miForm.getIdPersona()), new Integer(miForm.getIdInstitucion()),miForm.getNumColegiado())!=null;	
 			} catch (Exception e) {
 				isColegiado = false;
 			}
@@ -1181,6 +1181,7 @@ public class DatosGeneralesAction extends MasterAction {
 
 			CenClienteBean beanCli = null;
 			boolean existenDatos = false;
+			boolean existenDatosEnColegio = false;
 			
 			if (miForm.getContinuarAprobacion().equals("1")) {
 				beanCli = adminCli.insertNoColegiado(hash, request);
@@ -1191,6 +1192,7 @@ public class DatosGeneralesAction extends MasterAction {
 					beanCli = adminCli.existeCliente(idPersonaValor, new Integer(idInstitucion));
 					if (beanCli != null) {
 						existenDatos = false;
+						existenDatosEnColegio = true;
 						adminCli.setError("messages.error.ora.00001");
 					} else {
 						beanCli = adminCli.existeClienteOtraInstitucion(idPersonaValor, new Integer(idInstitucion));
@@ -1267,7 +1269,7 @@ public class DatosGeneralesAction extends MasterAction {
 				mensInformacion = adminCli.getError();
 			}
 			/** Si viene a vacio despues de recuperar los datos de beanCli = adminCli.insertNoColegiado pues no debe de entrar solo si el valor beanCli tiene datos. **/
-			if (beanCli!=null){			
+			if (beanCli!=null && existenDatosEnColegio == false){			
 			// Inserto los datos del no colegiado en CenNoColegiado:
 			CenNoColegiadoAdm admNoColegiado = new CenNoColegiadoAdm(this.getUserBean(request));
 			Hashtable hashNoColegiado = new Hashtable();
@@ -1299,6 +1301,10 @@ public class DatosGeneralesAction extends MasterAction {
 			request.setAttribute("idInstitucion",beanCli.getIdInstitucion().toString());
 			request.setAttribute("tipo",ClsConstants.COMBO_TIPO_PERSONAL);
 			}//fin beanCli
+			else
+			{
+				request.setAttribute("mensaje",mensInformacion);
+			}
 
 	   } 	
 	   catch (Exception e) {

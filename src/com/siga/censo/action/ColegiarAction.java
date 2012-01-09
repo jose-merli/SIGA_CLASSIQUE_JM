@@ -205,7 +205,7 @@ public class ColegiarAction extends MasterAction
 			//comprobando que la persona no esta ya dada de alta 
 			//  como colegiado en el colegio seleccionado
 			if (admCol.existeColegiado 
-					(new Long (idPersona), new Integer (colegio)) != null)
+					(new Long (idPersona), new Integer (colegio),numero) != null)
 				throw new SIGAException ("botonAccion.message.error1");
 			
 			//borrando registro de no colegiado en colegio (si existe)
