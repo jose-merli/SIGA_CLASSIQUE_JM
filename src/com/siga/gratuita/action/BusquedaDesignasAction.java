@@ -967,6 +967,7 @@ public class BusquedaDesignasAction extends MasterAction {
 			designaBean.setNumero(new Long(UtilidadesHash.getString(datosDesigna, ScsDesignaBean.C_NUMERO)));
 			designaBean.setObservaciones(asistenciaBean.getObservaciones());
 			designaBean.setNIG(asistenciaBean.getNIG());
+			designaBean.setArt27(UtilidadesHash.getString(datosDesigna, ScsDesignaBean.C_ART27));
 			designaBean.setCodigo(UtilidadesHash.getString(datosDesigna, ScsDesignaBean.C_CODIGO));
 
 			if (datosDesigna.get(ScsDesignaBean.C_IDJUZGADO)!=null && !((String)datosDesigna.get(ScsDesignaBean.C_IDJUZGADO)).equals(""))
@@ -1153,6 +1154,7 @@ public class BusquedaDesignasAction extends MasterAction {
 			designaBean.setResumenAsunto(ejgBean.getObservaciones());
 			designaBean.setObservaciones(ejgBean.getObservaciones());
 			designaBean.setNIG(ejgBean.getNIG());
+			designaBean.setArt27(UtilidadesHash.getString(datosHash, ScsDesignaBean.C_ART27));
 			designaBean.setNumProcedimiento(UtilidadesHash.getString(datosHash, ScsDesignaBean.C_NUMPROCEDIMIENTO));
 			//designaBean.setFechaEntrada(UtilidadesHash.getString(datosHash, ScsDesignaBean.C_FECHAENTRADA));
 			String idPretension =  ejgBean.getIdPretension();
