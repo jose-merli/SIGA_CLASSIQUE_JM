@@ -734,7 +734,7 @@
 				
 				if (document.MutualidadForm.cboCodigo.value    == ""  || document.MutualidadForm.codigoSucursal.value == "" || document.MutualidadForm.digitoControl.value == ""  || document.MutualidadForm.numeroCuenta.value   == "" ){ 
 					if(document.MutualidadForm.iban.value=="" ||document.MutualidadForm.swift.value==""){
-						mensaje = "censo.mutualidad.aviso.cuentaBancaria"; 
+						mensaje = "<siga:Idioma key="censo.mutualidad.aviso.cuentaBancaria"/>"; 
 						alert(mensaje);
 						fin();
 						return false;
