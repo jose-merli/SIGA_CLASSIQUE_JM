@@ -75,7 +75,9 @@
 		fechaNac    = (String) datosCliente.get("FechaNacimiento");      if (fechaNac  	 == null) fechaNac    = new String("");
 		poblacionExtranjera = null; /*(String) h.get(CenDireccionesBean.C_POBLACIONEXTRANJERA);*/	  if (poblacionExtranjera == null) poblacionExtranjera = new String("");
 	
-	
+		if (!fechaNac.equals("")){
+			fechaNac = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(user.getLanguage(),fechaNac));
+		}
 
 %>	
 
@@ -112,7 +114,7 @@
 					aux[16] = "<%=fax%>";
 					aux[17] = "<%=pais%>";
 					aux[18] = "<%=nacido%>";
-					aux[19] = "<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(user.getLanguage(),fechaNac))%>";
+					aux[19] = "<%=fechaNac%>";
 
 				
 				top.cierraConParametros(aux);

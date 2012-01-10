@@ -965,19 +965,19 @@ public class BusquedaCensoAction extends MasterAction {
 			String nifCif = miform.getNif();
 			// obtener nombre
 			//String nombre = (String)vOcultos.get(4);
-			String nombre = miform.getNombre().trim();
-			String apellido1 = miform.getApellido1().trim();
-			String apellido2 = miform.getApellido2().trim();
-			String poblacion = miform.getPoblacion().trim();
-			String provincia = miform.getProvincia().trim();
-			String direcion = miform.getDireccion().trim();
-			String codPostal = miform.getCodPostal().trim();
-			String telefono = miform.getTelefono().trim();
-			String mail = miform.getMail().trim();
-			String sexo = miform.getSexo().trim();
-			String tratamiento = miform.getTratamiento().trim();			
-			String fax = miform.getFax1().trim();		
-			String pais = miform.getPais().trim();		
+			String nombre = miform.getNombre().replace("\u00a0"," ").trim();
+			String apellido1 = miform.getApellido1().replace("\u00a0"," ").trim();
+			String apellido2 = miform.getApellido2().replace("\u00a0"," ").trim();
+			String poblacion = miform.getPoblacion().replace("\u00a0"," ").trim();
+			String provincia = miform.getProvincia().replace("\u00a0"," ").trim();
+			String direcion = miform.getDireccion().replace("\u00a0"," ").trim();
+			String codPostal = miform.getCodPostal().replace("\u00a0"," ").trim();
+			String telefono = miform.getTelefono().replace("\u00a0"," ").trim();
+			String mail = miform.getMail().replace("\u00a0"," ").trim();
+			String sexo = miform.getSexo().replace("\u00a0"," ").trim();
+			String tratamiento = miform.getTratamiento().replace("\u00a0"," ").trim();			
+			String fax = miform.getFax1().replace("\u00a0"," ").trim();		
+			String pais = miform.getPais().replace("\u00a0"," ").trim();		
 			
 			Hashtable datosCliente = new Hashtable();
 			
@@ -999,8 +999,8 @@ public class BusquedaCensoAction extends MasterAction {
 			datosCliente.put("sexo",sexo);
 			datosCliente.put("tratamiento",tratamiento);
 			datosCliente.put("fax1",fax);
-			datosCliente.put("FechaNacimiento",perBean.getFechaNacimiento());
-			datosCliente.put("LugarNacimiento",perBean.getNaturalDe());
+			datosCliente.put("FechaNacimiento",perBean.getFechaNacimiento().trim());
+			datosCliente.put("LugarNacimiento",perBean.getNaturalDe().trim());
 			
 			request.setAttribute("datosCensoModal", datosCliente);	
 
