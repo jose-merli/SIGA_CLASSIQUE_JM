@@ -2091,10 +2091,10 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			sql.append(" EXP.ESVISIBLE, ");
 			sql.append(" EXP.ESVISIBLEENFICHA, ");
 			sql.append(" EXP.SANCIONADO, ");
-			sql.append(" EXP.SANCIONPRESCRITA, ");
-			sql.append(" EXP.ACTUACIONESPRESCRITAS, ");
-			sql.append(" EXP.SANCIONFINALIZADA, ");
-			sql.append(" EXP.ANOTACIONESCANCELADAS, ");
+			sql.append(" to_char(EXP.SANCIONPRESCRITA, 'dd-mm-yyyy') as SANCIONPRESCRITA, ");
+			sql.append(" to_char(EXP.ACTUACIONESPRESCRITAS, 'dd-mm-yyyy') as ACTUACIONESPRESCRITAS, ");
+			sql.append(" to_char(EXP.SANCIONFINALIZADA, 'dd-mm-yyyy') as SANCIONFINALIZADA, ");
+			sql.append(" to_char(EXP.ANOTACIONESCANCELADAS, 'dd-mm-yyyy') as ANOTACIONESCANCELADAS, ");
 			sql.append(" EXP.ANIOEXPDISCIPLINARIO, ");
 			sql.append(" EXP.NUMEXPDISCIPLINARIO, ");
 			sql.append(" EXP.ANIOEJG,EXP.NUMEROEJG, EXP.IDTIPOEJG, ");
