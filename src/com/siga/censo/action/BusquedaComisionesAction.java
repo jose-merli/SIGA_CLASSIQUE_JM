@@ -478,8 +478,10 @@ public class BusquedaComisionesAction extends MasterAction {
 						beanCV.setIdInstitucionCargo(new Integer(form.getIdInstitucionCargo()));
 						beanCV.setCertificado(ClsConstants.DB_FALSE);
 						beanCV.setFechaFin("");
-						beanCV.setFechaInicio(sdf.format(new Date()));//miForm.getFechaInicio());
-						beanCV.setFechaMovimiento(sdf.format(new Date()));
+						Calendar fecha = Calendar.getInstance();
+						fecha.setTime(dateFormat.parse(form.getFechaCargo()));
+						beanCV.setFechaInicio(sdf.format(fecha.getTime()));//miForm.getFechaInicio());
+						beanCV.setFechaMovimiento(sdf.format(fecha.getTime()));
 						beanCV.setIdTipoCV(adm.getNuevoIDtipocvJunta());						
 						CenColegiadoAdm admCol = new CenColegiadoAdm(this.getUserBean(request));
 						beanCV.setIdPersona(new Long(idPersona));
