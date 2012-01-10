@@ -1278,8 +1278,10 @@
 		document.MutualidadForm.idSolicitudAceptada.value = resultado[1];
 		document.MutualidadForm.idEstado.value = resultado[3];
 		if(idTipoSolicitud=='P'){
-			
-			document.getElementById("tdIdSolicitudPlanProfesional").innerText = resultado[0];
+			if(resultado[1]!='0'&&resultado[1]!='')
+				document.getElementById("tdIdSolicitudPlanProfesional").innerText = resultado[1];
+			else
+				document.getElementById("tdIdSolicitudPlanProfesional").innerText = resultado[0];
 	    	document.getElementById("tdEstadoSolicitudPlanProfesional").innerText = resultado[2];
 	    	document.getElementById("tdBotonSolicitudPlanProfesional").style.display="none";
 	    	document.getElementById("tdBotonEstadoSolicitudPlanProfesional").style.display="";
@@ -1290,8 +1292,10 @@
 	    	
 	    	
 		}else{
-			
-			document.getElementById("tdIdSolicitudSeguroUniversal").innerText = resultado[0];
+			if(resultado[1]!='0'&&resultado[1]!='')
+				document.getElementById("tdIdSolicitudSeguroUniversal").innerText = resultado[1];
+			else
+				document.getElementById("tdIdSolicitudSeguroUniversal").innerText = resultado[0];
 	    	document.getElementById("tdEstadoSolicitudSeguroUniversal").innerText = resultado[2];
 	    	document.getElementById("tdBotonSolicitudSeguroUniversal").style.display="none";
 	    	document.getElementById("tdBotonEstadoSolicitudSeguroUniversal").style.display="";
