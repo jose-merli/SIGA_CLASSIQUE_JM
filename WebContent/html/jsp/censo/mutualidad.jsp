@@ -536,7 +536,7 @@
 			<td class="labelText" ><siga:Idioma
 							key="censo.mutualidad.literal.fechaNacimientoConyuge" /></td>
 			<td>
-				<siga:Fecha nombreCampo="fechaNacimientoConyuge" disabled="${MutualidadForm.modo=='consulta'}"></siga:Fecha>
+				<siga:Fecha nombreCampo="fechaNacimientoConyuge" valorInicial="${MutualidadForm.fechaNacimientoConyuge}" disabled="${MutualidadForm.modo=='consulta'}"></siga:Fecha>
 				<c:if test="${MutualidadForm.modo=='insertar'}">
 					<a href='javascript://'onClick="return showCalendarGeneral(fechaNacimientoConyuge);"><img src="<html:rewrite page='/html/imagenes/calendar.gif'/>" border="0"> </a>
 				</c:if>
@@ -696,7 +696,7 @@
 		
 		if (validateMutualidadForm(document.MutualidadForm)){
 			//validamos los hijos grabados
-			var numHijosGrabados = 0;
+			var numHijosGrabados = 0; 
 			if(document.MutualidadForm.numeroHijos.value!=''&&document.MutualidadForm.numeroHijos.value>0){
 				if(document.getElementById('edadHijo1') && document.getElementById('edadHijo1').value!='')
 					numHijosGrabados = numHijosGrabados+1;
@@ -826,6 +826,7 @@
 		
 	}
 	
+	consultarNHijos(document.MutualidadForm.numeroHijos.value);
 	
 </script>
 	

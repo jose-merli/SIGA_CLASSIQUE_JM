@@ -185,8 +185,19 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		datosPersona.put("nacionalidad", mutualidadForm.getNaturalDe());
 		datosPersona.put("nombre", mutualidadForm.getNombre());
 		datosPersona.put("idSexo", mutualidadForm.getIdSexo());
-		datosPersona.put("numHijos", mutualidadForm.getNumeroHijos());
+		datosPersona.put("numHijos", mutualidadForm.getNumeroHijos()==null?"0":mutualidadForm.getNumeroHijos());
 		datosPersona.put("numColegiado", "");
+		String edadeshijos=mutualidadForm.getEdadHijo1()+","+
+				mutualidadForm.getEdadHijo2()+","+
+				mutualidadForm.getEdadHijo3()+","+
+				mutualidadForm.getEdadHijo4()+","+
+				mutualidadForm.getEdadHijo5()+","+ 
+				mutualidadForm.getEdadHijo6()+","+
+				mutualidadForm.getEdadHijo7()+","+
+				mutualidadForm.getEdadHijo8()+","+
+				mutualidadForm.getEdadHijo9()+","+
+				mutualidadForm.getEdadHijo10();
+		datosPersona.put("edadesHijos", edadeshijos);
 		//No pasamos el colegio
 //		datosSolicitud.put("colegio", mutualidadForm);
 		//en ejerciente Pasamos el id del tipo de solicitud de incorporacion. hay dudas pasamos 0

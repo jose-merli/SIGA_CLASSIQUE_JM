@@ -543,16 +543,16 @@ import com.siga.general.MasterForm;
 			if(this.fechaSolicitud!=null && !this.fechaSolicitud.equals("SYSDATE"))
 				solicitudMutualidadBean.setFechaSolicitud(GstDate.getApplicationFormatDate("",this.fechaSolicitud));
 			solicitudMutualidadBean.setFechaNacimientoConyuge(GstDate.getApplicationFormatDate("",this.fechaNacimientoConyuge));
-			solicitudMutualidadBean.setEdadHijo1(GstDate.getApplicationFormatDate("",this.edadHijo1));
-			solicitudMutualidadBean.setEdadHijo2(GstDate.getApplicationFormatDate("",this.edadHijo2));
-			solicitudMutualidadBean.setEdadHijo3(GstDate.getApplicationFormatDate("",this.edadHijo3));
-			solicitudMutualidadBean.setEdadHijo4(GstDate.getApplicationFormatDate("",this.edadHijo4));
-			solicitudMutualidadBean.setEdadHijo5(GstDate.getApplicationFormatDate("",this.edadHijo5));
-			solicitudMutualidadBean.setEdadHijo6(GstDate.getApplicationFormatDate("",this.edadHijo6));
-			solicitudMutualidadBean.setEdadHijo7(GstDate.getApplicationFormatDate("",this.edadHijo7));
-			solicitudMutualidadBean.setEdadHijo8(GstDate.getApplicationFormatDate("",this.edadHijo8));
-			solicitudMutualidadBean.setEdadHijo9(GstDate.getApplicationFormatDate("",this.edadHijo9));
-			solicitudMutualidadBean.setEdadHijo10(GstDate.getApplicationFormatDate("",this.edadHijo10));
+			solicitudMutualidadBean.setEdadHijo1(this.edadHijo1);
+			solicitudMutualidadBean.setEdadHijo2(this.edadHijo2);
+			solicitudMutualidadBean.setEdadHijo3(this.edadHijo3);
+			solicitudMutualidadBean.setEdadHijo4(this.edadHijo4);
+			solicitudMutualidadBean.setEdadHijo5(this.edadHijo5);
+			solicitudMutualidadBean.setEdadHijo6(this.edadHijo6);
+			solicitudMutualidadBean.setEdadHijo7(this.edadHijo7);
+			solicitudMutualidadBean.setEdadHijo8(this.edadHijo8);
+			solicitudMutualidadBean.setEdadHijo9(this.edadHijo9);
+			solicitudMutualidadBean.setEdadHijo10(this.edadHijo10);
 
 		} catch (Exception e) {
 		}
