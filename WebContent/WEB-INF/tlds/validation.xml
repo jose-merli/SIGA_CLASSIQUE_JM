@@ -4753,7 +4753,42 @@
 						<var-value>^[0-9]*$</var-value>
 		            </var>
 			</field>
+			<field property = "cboCodigo" depends = "minlength,maxlength, mask">
+                 <arg0 key="censo.datosCuentaBancaria.literal.banco"/>
+                  <var><var-name>mask</var-name> <var-value>^[0-9]{4}</var-value></var>
+          <arg1 key="${var:minlength}" name="minlength" resource="false" />
+          <var><var-name>minlength</var-name> <var-value>4</var-value></var>
+          <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+          <var><var-name>maxlength</var-name> <var-value>4</var-value></var>
+         </field>
           
+
+        <field property = "codigoSucursal" depends ="minlength,maxlength, mask">
+          <arg0 key="censo.datosCuentaBancaria.literal.codigoSucursal"/>
+          <var><var-name>mask</var-name> <var-value>^[0-9]{4}</var-value></var>
+          <arg1 key="${var:minlength}" name="minlength" resource="false" />
+          <var><var-name>minlength</var-name> <var-value>4</var-value></var>
+          <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+          <var><var-name>maxlength</var-name> <var-value>4</var-value></var>
+        </field>
+
+        <field property = "digitoControl" depends ="minlength,maxlength, mask">
+          <arg0 key="censo.datosCuentaBancaria.literal.digitoControl"/>
+          <var><var-name>mask</var-name> <var-value>^[0-9]{2}</var-value></var>
+          <arg1 key="${var:minlength}" name="minlength" resource="false" />
+          <var><var-name>minlength</var-name> <var-value>2</var-value></var>
+          <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+          <var><var-name>maxlength</var-name> <var-value>2</var-value></var>
+        </field>
+
+        <field property = "numeroCuenta" depends =" minlength,maxlength, mask">
+          <arg0 key="censo.datosCuentaBancaria.literal.cuenta"/>
+          <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+          <arg1 key="${var:minlength}" name="minlength" resource="false" />
+          <var><var-name>mask</var-name> <var-value>^[0-9]{10}</var-value></var>
+          <var> <var-name>maxlength</var-name> <var-value>10</var-value></var>
+          <var> <var-name>minlength</var-name> <var-value>10</var-value></var>
+        </field>
           
           
          

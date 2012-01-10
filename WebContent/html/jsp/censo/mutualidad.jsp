@@ -695,6 +695,7 @@
 		document.MutualidadForm.poblacion.value = document.MutualidadForm.idPoblacion.options[document.MutualidadForm.idPoblacion.selectedIndex].text;
 		
 		if (validateMutualidadForm(document.MutualidadForm)){
+			//validamos los hijos grabados
 			var numHijosGrabados = 0;
 			if(document.MutualidadForm.numeroHijos.value!=''&&document.MutualidadForm.numeroHijos.value>0){
 				if(document.getElementById('edadHijo1') && document.getElementById('edadHijo1').value!='')
@@ -727,8 +728,29 @@
 				}
 				
 			}
-			
-			
+			//validamos el numero de cuenta
+			if(document.MutualidadForm.idTipoSolicitud.value=='P'){
+				
+				
+				if (document.MutualidadForm.cboCodigo.value    == ""  || document.MutualidadForm.codigoSucursal.value == "" || document.MutualidadForm.digitoControl.value == ""  || document.MutualidadForm.numeroCuenta.value   == "" ){ 
+					if(document.MutualidadForm.iban.value=="" ||document.MutualidadForm.swift.value==""){
+						mensaje = "censo.mutualidad.aviso.cuentaBancaria"; 
+						alert(mensaje);
+						fin();
+						return false;
+					}
+				}
+				else{
+					
+					if(document.MutualidadForm.digitoControl.value != obtenerDigitoControl("00" + document.MutualidadForm.cboCodigo.value + document.MutualidadForm.codigoSucursal.value) + "" + obtenerDigitoControl(document.MutualidadForm.numeroCuenta.value)){
+						mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.errorCuentaBancaria"/>";
+						alert(mensaje);
+						fin();
+						return false;
+					}
+					
+				}
+			}
 			document.MutualidadForm.submit();
 		}else{
 			fin();
@@ -803,7 +825,7 @@
 		}
 		
 	}
-	//a.a();
+	
 	
 </script>
 	

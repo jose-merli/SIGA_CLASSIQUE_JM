@@ -1252,3 +1252,13 @@ function findPosY(obj)
         curleft += obj.x;
     return curleft;
   }
+  function obtenerDigitoControl(valor){	
+	  valores = new Array(1, 2, 4, 8, 5, 10, 9, 7, 3, 6);
+	  control = 0;
+	  for (i=0; i<=9; i++)
+	    control += parseInt(valor.charAt(i)) * valores[i];		  
+	  control = 11 - (control % 11);
+	  if (control == 11) control = 0;
+	  else if (control == 10) control = 1;
+	  return control;
+	}
