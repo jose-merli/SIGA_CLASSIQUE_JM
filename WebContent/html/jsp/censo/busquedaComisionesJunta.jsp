@@ -45,7 +45,7 @@
 	parametro[0] = (String)usr.getLocation();
 	parametro[1] = (String)usr.getLanguage().toUpperCase();
 	ArrayList modoSel = new ArrayList();
-	modoSel.add( "2040");
+	modoSel.add("-1");
 		
 	
 
@@ -111,6 +111,17 @@
 			
 		}
 
+		function showCalendarGeneral(inputElement){
+
+			var resultado = showModalDialog("<%=app%>/html/jsp/general/calendarGeneral.jsp?valor="+inputElement.value,inputElement,"dialogHeight:275px;dialogWidth:400px;help:no;scroll:no;status:no;");	
+			if (resultado) {
+				inputElement.value = resultado;
+			} 
+
+			document.getElementById('idBuscarCargos').onclick();
+			
+			return false;
+		}
 		
 		function limpiarColegiado()
 		{
