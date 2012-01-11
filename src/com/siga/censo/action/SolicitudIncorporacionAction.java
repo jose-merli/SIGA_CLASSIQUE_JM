@@ -994,6 +994,7 @@ public class SolicitudIncorporacionAction extends MasterAction
 			if(!miFormulario.getModo().equalsIgnoreCase("Editar")&&!miFormulario.getModo().equalsIgnoreCase("Ver")){
 				request.setAttribute("isPosibilidadSolicitudAlta", Boolean.FALSE);
 				request.setAttribute("motivoSolicitudAlta", "");
+				request.setAttribute("mostrarSolicitudAlta", false);
 			}else{
 				try {
 					
@@ -1044,6 +1045,9 @@ public class SolicitudIncorporacionAction extends MasterAction
 				} catch (SIGAException e) {
 					//Que hacemos si falla!! aHORA MISMO NO SE MOSTRARIA LA PARTE DEL FORMULARIO DONDE ESTAN LOS BOTONES
 					//Y EL ESTADO DEL ALTA EN LA MUTUALIDAD
+					request.setAttribute("isPosibilidadSolicitudAlta", false);
+					request.setAttribute("mostrarSolicitudAlta", false);
+					request.setAttribute("motivoSolicitudAlta", "WebService de la Mutualidad de la Abogacia no activo");
 				}
 			}
 			

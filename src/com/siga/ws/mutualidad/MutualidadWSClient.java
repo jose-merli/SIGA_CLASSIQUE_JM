@@ -91,8 +91,9 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
             escribeLog("Error en llamada a getPosibilidadSolicitudAlta: " + e.getMessage());
             e.printStackTrace();
             respuesta.setCorrecto(false);
+            respuesta.setPosibleAlta(false);
             respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos.");
-            throw new SIGAException("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos");
+            //throw new SIGAException("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos");
         }
         return respuesta;
 
