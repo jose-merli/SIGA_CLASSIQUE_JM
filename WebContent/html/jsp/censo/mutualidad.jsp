@@ -633,7 +633,7 @@
 		<tr>
 			<td class="labelText" >
 				<input type="checkbox" id="checkCesionDatos">
-				<siga:Idioma key="censo.mutualidad.cesionDatos"/>
+				<label for="checkCesionDatos"><siga:Idioma key="censo.mutualidad.cesionDatos"/></label>
 			</td>
 	</tr>
 	</table>

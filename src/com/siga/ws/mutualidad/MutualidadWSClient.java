@@ -363,7 +363,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 			dp.setNumHijos(0);
 		}
 		String edades = ht.get("edadesHijos");
-		if(!edades.equalsIgnoreCase(""))
+		if(edades.split(",").length>0)
 			dp.setEdadesHijos(edades.split(","));
 		
 		dp.setProfesion("Abogado"); // Ponemos fijo Abogado porque nadie mas lo va a usar
