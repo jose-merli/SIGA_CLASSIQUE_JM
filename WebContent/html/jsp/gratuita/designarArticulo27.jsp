@@ -245,17 +245,18 @@
 					limpiarDireccion();
 					datosGeneralesForm.direcciones.disabled="disabled";   
 					document.getElementById("correoElectronico").value 	= resultado[13];
+					document.getElementById("fax1").value 	= resultado[16];
 					document.getElementById("telefono1").value 			= resultado[12];
 					document.getElementById("domicilio").value 			= resultado[7];
 					document.getElementById("codigoPostal").value 		= resultado[11];
-					document.getElementById("provincia").value 			= resultado[9];
 					document.getElementById("pais").value 				= resultado[10];
 					selPais(resultado[10]);
 			
 					if (resultado[10] != "" && resultado[10] != idEspana) {
-						datosGeneralesForm.poblacionExt.value=document.datosGeneralesForm.poblacionExt.value;
+						datosGeneralesForm.poblacionExt.value=resultado[8];
 					}else{
-						poblacionSeleccionada = document.getElementById("poblacion").value;
+						document.getElementById("provincia").value = resultado[9];
+						poblacionSeleccionada = resultado[8];
 						document.getElementById("provincia").onchange();
 						window.setTimeout("recargarComboHijo()",100,"Javascript");	
 						document.getElementById("poblacion").value = resultado[8];		
@@ -678,6 +679,10 @@
 			document.getElementById("textomod").style.display="block";
 		}			
 	}
+
+	function preAccionBusquedaNIF(){
+		limpiarDireccion();
+	}
 	
 	function postAccionBusquedaNIF(){
 
@@ -688,7 +693,6 @@
 			
 				//Datos direcciones
 				if(datosGeneralesForm.idInstitucion.value != "<%=idInstitucionActual%>"){
-					limpiarDireccion();
 					datosGeneralesForm.direcciones.disabled="disabled";   
 					document.getElementById("correoElectronico").value 	= document.busquedaCensoModalForm.mail.value;
 					document.getElementById("telefono1").value 			= document.busquedaCensoModalForm.telefono.value;
@@ -696,7 +700,7 @@
 					document.getElementById("codigoPostal").value 		= document.busquedaCensoModalForm.codPostal.value;
 					selPais(datosGeneralesForm.pais.value);	
 					if (datosGeneralesForm.pais.value != "" && datosGeneralesForm.pais.value != idEspana) {
-						datosGeneralesForm.poblacionExt.value=document.datosGeneralesForm.poblacionExt.value;
+						datosGeneralesForm.poblacionExt.value=datosGeneralesForm.poblacionExt.value;
 					}else{
 						poblacionSeleccionada = document.getElementById("poblacion").value;
 						document.getElementById("provincia").onchange();
@@ -1191,9 +1195,10 @@
 
 <ajax:updateFieldFromSelect
 	baseUrl="/SIGA/CEN_BusquedaCensoModal.do?modo=getAjaxBusquedaNIF"
-	source="numIdentificacion" target="textoAlerta,idPersona,colegiadoen,nColegiado,apellido1,apellido2,nombre,numIdentificacion,idInstitucion,fax1,mail,telefono,poblacion,provincia,pais,direccion,codPostal,sexo,fechaNacimiento,lugarNacimiento,tratamiento"
+	source="numIdentificacion" target="textoAlerta,idPersona,colegiadoen,nColegiado,apellido1,apellido2,nombre,numIdentificacion,idInstitucion,fax1,mail,telefono,poblacion,poblacionExt,provincia,pais,direccion,codPostal,sexo,fechaNacimiento,lugarNacimiento,tratamiento"
 	parameters="tipoIdentificacion={tipoIdentificacion},numIdentificacion={numIdentificacion},colegiadoen={colegiadoen},nColegiado={nColegiado},apellido1={apellido1},apellido2={apellido2},nombre={nombre}"
-	postFunction="postAccionBusquedaNIF" 
+	postFunction="postAccionBusquedaNIF"
+	preFunction="preAccionBusquedaNIF" 
 />
 
 <!-- FIN: CAMPOS -->
