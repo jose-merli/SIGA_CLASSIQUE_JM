@@ -471,7 +471,10 @@ public class DocuShareHelper {
 					fileWriter.write(b);
 					b = dsContentElement.read();
 				}
+				
 				dsContentElement.close();
+				
+				fileWriter.flush();
 				fileWriter.close();				
 			}
 			
