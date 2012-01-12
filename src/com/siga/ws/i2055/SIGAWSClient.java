@@ -39,6 +39,7 @@ import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaBean;
 import com.siga.ws.SIGAWSClientAbstract;
 import com.siga.ws.SigaWSHelper;
+import com.siga.ws.i2055.xmlbeans.Direccion;
 import com.siga.ws.i2055.xmlbeans.SCalificacion;
 import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument;
 import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes;
@@ -48,7 +49,6 @@ import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.Dt
 import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.DtSolicitante;
 import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.TurnadoAbogado;
 import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.DtPretensionesDefender.Procedimiento;
-import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.DtSolicitante.DtDirecciones;
 
 /**
  * @author angelcpe
@@ -111,6 +111,8 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 										
 					escribeLogRemesa("Enviando información del expediente " + anio + "/" + numejg);
 					SIGAAsignaDocument sigaAsignaDocument = getDtExpedientes(mapExp);
+					SigaWSHelper.deleteEmptyNode(sigaAsignaDocument.getSIGAAsigna().getDomNode());
+					
 					//guardamos el xml que vamos a enviar
 					saveXML(sigaAsignaDocument);
 					
@@ -450,13 +452,13 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 					if (st != null) datosPersona.setApellido1(st);
 					st = map.get(APELLIDO2);
 					if (st != null) datosPersona.setApellido2(st);
-					in = SigaWSHelper.getInteger("tipo identificador", map.get(IDTIPOIDENTIFICACION));
+					in = SigaWSHelper.getInteger("tipo identificación", map.get(IDTIPOIDENTIFICACION));
 					if (in != null) datosPersona.setIDTipoIdentificacion(in);
 					st = map.get(NUMEROIDENTIFICACION);
 					if (st != null) datosPersona.setNumeroIdentificacion(st);
 					
 					//DIRECCION
-					DtDirecciones dtDirecciones = datosPersona.addNewDtDirecciones();
+					Direccion dtDirecciones = datosPersona.addNewDtDirecciones();
 					in = SigaWSHelper.getInteger("tipo de vía", map.get(DIR_IDTIPOVIA));
 					if (in != null) dtDirecciones.setIDTipoVia(in);
 					st = map.get(DIR_NOMBREVIA);
@@ -522,9 +524,10 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 					if (in != null) datosPersona.setIDTipoIdentificacion(in);
 					st = map.get(NUMEROIDENTIFICACION);
 					if (st != null) datosPersona.setNumeroIdentificacion(st);
+					
 					//DIRECCION
-					com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.DtIntervinientes.DtDirecciones dtDirecciones = datosPersona.addNewDtDirecciones();
-					in = SigaWSHelper.getInteger("tipo vía", map.get(DIR_IDTIPOVIA));
+					Direccion dtDirecciones = datosPersona.addNewDtDirecciones();
+					in = SigaWSHelper.getInteger("tipo de vía", map.get(DIR_IDTIPOVIA));
 					if (in != null) dtDirecciones.setIDTipoVia(in);
 					st = map.get(DIR_NOMBREVIA);
 					if (st != null) dtDirecciones.setNombreVia(st);
