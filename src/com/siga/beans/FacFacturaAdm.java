@@ -550,7 +550,10 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_CTACLIENTE + "," +
 							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFORMAPAGO + "," +
 							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDCUENTA + "," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPERSONA +
+							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPERSONA +"," +
+							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDCUENTADEUDOR + "," +
+							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPERSONADEUDOR +
+							
 							" FROM " + FacFacturaBean.T_NOMBRETABLA + 
 							" WHERE ";
 	            contador++;
