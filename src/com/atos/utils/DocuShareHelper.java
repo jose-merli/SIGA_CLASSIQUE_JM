@@ -3,6 +3,7 @@
  */
 package com.atos.utils;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
@@ -458,24 +459,29 @@ public class DocuShareHelper {
 		    DSContentElement[] dsContentElements = dsDocument.getContentElements();
 			for (int j = 0; j < dsContentElements.length; j++) {
 	
-				DSContentElement dsContentElement = dsContentElements[j];				
+				DSContentElement dsContentElement = dsContentElements[j];			
 				
 				fileParent.mkdirs();
 				file = new File(fileParent, dsDocument.getOriginalFileName());
 	
 				FileWriter fileWriter = new FileWriter(file);
+				BufferedWriter bw = new BufferedWriter(fileWriter);
 				dsContentElement.open();
-	
-				int b = dsContentElement.read();
-				while (b > -1) {
-					fileWriter.write(b);
-					b = dsContentElement.read();
+				
+				int max = 99999;	
+				byte[] b = dsContentElement.read(max);
+				
+				while (b != null && b.length > 0) {
+					bw.write(new String(b));
+					b = dsContentElement.read(max);
 				}
 				
 				dsContentElement.close();
 				
+				bw.flush();				
 				fileWriter.flush();
-				fileWriter.close();				
+				bw.close();
+				fileWriter.close();					
 			}
 			
 			return file;
