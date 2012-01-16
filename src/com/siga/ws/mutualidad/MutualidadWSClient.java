@@ -3,17 +3,9 @@
  */
 package com.siga.ws.mutualidad;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
-
-import net.sf.antcontrib.logic.Switch.Case;
 
 import org.apache.axis.EngineConfiguration;
 import org.apache.axis.Handler;
@@ -26,12 +18,10 @@ import org.apache.axis.transport.http.HTTPSender;
 import org.apache.axis.transport.http.HTTPTransport;
 
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.LogBDDHandler;
 import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.general.SIGAException;
-import com.siga.ws.mutualidad.xmlbeans.ObtenerCuotaYCapObjetivoDocument.ObtenerCuotaYCapObjetivo;
 
 /**
  * 
@@ -141,7 +131,6 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		RespuestaMutualidad respuesta = new RespuestaMutualidad();
 		try{
 			WSHttpBinding_IIntegracion_MetodosStub stub = getStub();
-			ObtenerCuotaYCapObjetivo cuota;
 			
 			Calendar fechaNacimientoCal = Calendar.getInstance();
 			fechaNacimientoCal = UtilidadesFecha.stringToCalendar(fechaNacimiento);
