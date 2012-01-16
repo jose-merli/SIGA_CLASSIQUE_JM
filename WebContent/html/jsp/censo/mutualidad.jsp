@@ -544,7 +544,7 @@
 			<td class="labelText" ><siga:Idioma
 							key="censo.mutualidad.literal.numeroHijos" /></td>
 			<td><html:text
-				 size="4"  maxlength="2" property="numeroHijos" styleId="numeroHijos" styleClass="${estiloText}" onchange="consultarNHijos(this.value);"/>
+				 size="4"  maxlength="2" property="numeroHijos" styleId="numeroHijos" styleClass="${estiloText}" onchange="consultarNHijos();"/>
 			</td>
 			</tr>
 			</table>
@@ -663,11 +663,14 @@
 	
 	}
 	
-	function consultarNHijos(hijos){
-		if (hijos>5){
-			document.getElementById("masHijos").style.display="inline";
-		}else{
-			document.getElementById("masHijos").style.display="none";
+	function consultarNHijos(){
+		if(document.MutualidadForm.numeroHijos){
+			var hijos=document.MutualidadForm.numeroHijos.value;
+			if (hijos>5){
+				document.getElementById("masHijos").style.display="inline";
+			}else{
+				document.getElementById("masHijos").style.display="none";
+			}
 		}
 	}
 
@@ -826,7 +829,7 @@
 		
 	}
 	
-	consultarNHijos(document.MutualidadForm.numeroHijos.value);
+	consultarNHijos();
 	
 </script>
 	
