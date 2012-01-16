@@ -185,7 +185,7 @@ function accionGuardar (isLetrado)
 			var anio = document.getElementById("anio_"+index).value;
 			var numero = document.getElementById("numero_"+index).value;
 			var fechaDesigna = document.getElementById("fechaDesigna_"+index).value;
-						
+			var actuacionRestriccionesActiva = document.getElementById("actuacionRestriccionesActiva_"+index).value;
 			datosJustificacion = datosJustificacion + anio + "," + 
 								numero + "," + 
 								idInstitucion + "," + 
@@ -197,7 +197,8 @@ function accionGuardar (isLetrado)
 								justificado + "," +
 								idJurisdiccion + "," +
 								fechaDesigna + "," +
-								validado + "#";
+								validado + "," +
+								actuacionRestriccionesActiva + "#";
 		}
 	}
 	//Ahora miramos los check Validacion que a estuvieran acreditados anteriormente
@@ -229,7 +230,7 @@ function accionGuardar (isLetrado)
 				var anio = document.getElementById("anio_"+index).value;
 				var numero = document.getElementById("numero_"+index).value;
 				var fechaDesigna = document.getElementById("fechaDesigna_"+index).value;
-							
+				var actuacionRestriccionesActiva = document.getElementById("actuacionRestriccionesActiva_"+index).value;
 				datosJustificacion = datosJustificacion + anio + "," + 
 									numero + "," + 
 									idInstitucion + "," + 
@@ -241,7 +242,8 @@ function accionGuardar (isLetrado)
 									justificado + "," +
 									idJurisdiccion + "," +
 									fechaDesigna + "," +
-									validado + "#";
+									validado + "," +
+									actuacionRestriccionesActiva + "#";
 			}
 		}
 	}

@@ -10,6 +10,7 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -199,7 +200,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 	protected synchronized String justificar(ActionMapping mapping, MasterForm formulario,
 			HttpServletRequest request, HttpServletResponse response)
 	throws ClsExceptions, SIGAException {
-//		UserTransaction tx = null;
+		UserTransaction tx = null;
 		StringBuffer msgSinAcreditaciones = new StringBuffer();
 		StringBuffer msgAviso = new StringBuffer();
 		UsrBean user = (UsrBean) request.getSession().getAttribute(
@@ -208,6 +209,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		String obsActuacion = UtilidadesString.getMensajeIdioma(user, "gratuita.informeJustificacionMasiva.observaciones.actuacion");
 	    ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		final String idAcreditacionPenal = rp3.returnProperty("codigo.general.scsacreditacion.jurisdiccion.penal");
+		List<String> designasList = new ArrayList<String>();
 		try {
 			InformeJustificacionMasivaForm miForm = (InformeJustificacionMasivaForm) formulario;
 
@@ -231,7 +233,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			
 			if(datosJustificacion.length()>0){
 				String[] arrayDatosJustificacion = datosJustificacion.split("#");
-				
+				tx = user.getTransactionPesada();
+				tx.begin();
 				for (int i = 0; i < arrayDatosJustificacion.length; i++) {
 					String rowJustificacion = arrayDatosJustificacion[i];
 					String[] arrayRowsJustificacion = rowJustificacion.split(",");
@@ -239,6 +242,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 					String numero  =  arrayRowsJustificacion[1]; 
 					String idInstitucion  =  arrayRowsJustificacion[2];
 					String idTurno  =  arrayRowsJustificacion[3];
+					
+					
 					String idJuzgado  =  arrayRowsJustificacion[4];
 					String idProcedimiento  =  arrayRowsJustificacion[5];
 					String numActuacion  =  arrayRowsJustificacion[6];
@@ -247,7 +252,13 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 					String idJurisdiccion   =  arrayRowsJustificacion[9];
 					String fechaDesigna   =  arrayRowsJustificacion[10];
 					String validado   =  arrayRowsJustificacion[11];
-					
+					String actuacionRestriccionesActiva   =  arrayRowsJustificacion[12];
+					if(actuacionRestriccionesActiva.equals(ClsConstants.DB_TRUE)){
+						
+						String pkDesigna = anio+","+numero+","+idInstitucion+","+idTurno+","+idProcedimiento;
+						if(!designasList.contains(pkDesigna))
+							designasList.add(pkDesigna);
+					}
 					
 					
 					//si la actuacion es x es que es nueva, sino es modificacion(justificacion, validacion o baja)
@@ -429,10 +440,29 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 					
 				}
 			}
+			for (String pkiDesigna:designasList) {
+				String[] pksDesigna = pkiDesigna.split(",");
+				String anioDesigna = pksDesigna[0];
+				String numeroDesigna = pksDesigna[1];
+				String idInstitucionDesigna = pksDesigna[2];
+				String idTurnoDesigna = pksDesigna[3];
+				String idProcedimientoDesigna = pksDesigna[4];
+				Hashtable designaHashtable = new Hashtable();
+				designaHashtable.put(ScsActuacionDesignaBean.C_ANIO, anioDesigna);
+				designaHashtable.put(ScsActuacionDesignaBean.C_NUMERO, numeroDesigna);
+				designaHashtable.put(ScsActuacionDesignaBean.C_IDINSTITUCION, idInstitucionDesigna);
+				designaHashtable.put(ScsActuacionDesignaBean.C_IDTURNO, idTurnoDesigna);
+				designaHashtable.put(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO, idProcedimientoDesigna);
+				Vector actuacionesDesigna =  actuacionDesginaAdm.select(designaHashtable);
+				compruebaRestriccionesAcreditacion(actuacionesDesigna);
+				
+				
+			}
+			
 
-//			tx.commit();
+			tx.commit();
 		} catch (Exception e) {
-			//throwExcp("messages.general.error",	new String[] { "modulo.gratuita" }, e, tx);
+			throwExcp("messages.general.error",	new String[] { "modulo.gratuita" }, e, tx);
 		}
 		StringBuffer txtADevolver = new StringBuffer("");
 		if(msgAviso.toString().equalsIgnoreCase("") && msgSinAcreditaciones.toString().equalsIgnoreCase("")){
@@ -454,7 +484,26 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		}
 		return exitoRefresco(txtADevolver.toString(), request);
 	}
-	
+	private void compruebaRestriccionesAcreditacion(Vector actuacionesDesigna)throws SIGAException{
+		int numAcreditInicio = 0;
+		int numAcreditFin = 0;
+		
+		for (int i = 0; i < actuacionesDesigna.size(); i++) {
+			ScsActuacionDesignaBean actuacionDesignaBean = (ScsActuacionDesignaBean)actuacionesDesigna.get(i);
+			if(actuacionDesignaBean.getIdAcreditacion().intValue()==2){
+				numAcreditInicio++;
+			}
+			if(actuacionDesignaBean.getIdAcreditacion().intValue()==3){
+				numAcreditFin++;
+			}
+				
+			
+		}
+		if(numAcreditFin>numAcreditInicio)
+			throw new SIGAException("messages.error.acreditacionNoValida");
+		
+		
+	}
 	protected String getIdAcreditacion(String idAcreditacion,String fecha,UsrBean usrBean) throws Exception {
 		//		Si la fecha es anterior a 01/01/2005 cogera un tipo de
 		// acreditacion(2 si es inuicio y 3 si es final)
