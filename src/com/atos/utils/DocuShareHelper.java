@@ -3,9 +3,10 @@
  */
 package com.atos.utils;
 
-import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -26,6 +27,7 @@ import com.xerox.docushare.DSObjectIterator;
 import com.xerox.docushare.DSSelectSet;
 import com.xerox.docushare.DSServer;
 import com.xerox.docushare.DSSession;
+import com.xerox.docushare.FileContentElement;
 import com.xerox.docushare.db.DbNoSuchObjectException;
 import com.xerox.docushare.object.DSCollection;
 import com.xerox.docushare.object.DSDocument;
@@ -457,31 +459,26 @@ public class DocuShareHelper {
 		    DSDocument dsDocument = (DSDocument) dssession.getObject(new DSHandle(title));	   
 		    
 		    DSContentElement[] dsContentElements = dsDocument.getContentElements();
-			for (int j = 0; j < dsContentElements.length; j++) {
-	
-				DSContentElement dsContentElement = dsContentElements[j];			
-				
-				fileParent.mkdirs();
-				file = new File(fileParent, dsDocument.getOriginalFileName());
-	
-				FileWriter fileWriter = new FileWriter(file);
-				BufferedWriter bw = new BufferedWriter(fileWriter);
-				dsContentElement.open();
-				
-				int max = 99999;	
-				byte[] b = dsContentElement.read(max);
-				
-				while (b != null && b.length > 0) {
-					bw.write(new String(b));
-					b = dsContentElement.read(max);
-				}
-				
-				dsContentElement.close();
-				
-				bw.flush();				
-				fileWriter.flush();
-				bw.close();
-				fileWriter.close();					
+		    for (int j = 0; j < dsContentElements.length; j++) {
+				if (dsContentElements[j] instanceof FileContentElement) {
+					FileContentElement dsContentElement = (FileContentElement) dsContentElements[j];					
+					fileParent.mkdirs();
+					file = new File(fileParent, dsDocument.getOriginalFileName());
+					
+					dsContentElement.open();					
+					int max = dsContentElement.available();
+					ByteArrayOutputStream baos = new ByteArrayOutputStream(max);
+					
+					baos.write(dsContentElement.read(max));
+					baos.flush();
+					
+					OutputStream outputStream = new FileOutputStream (file);					
+					baos.writeTo(outputStream);
+					
+					baos.close();
+					outputStream.close();					
+					dsContentElement.close();
+				}				
 			}
 			
 			return file;
