@@ -212,7 +212,7 @@ public class ScsJuzgadoProcedimientoAdm extends MasterBeanAdministrador {
 		}
 		return datos;
 	}	
-	public List<ScsProcedimientosBean> getModulos(Integer idJuzgado,Integer idInstitucion,boolean isCombo)throws ClsExceptions{
+	public List<ScsProcedimientosBean> getModulos(Integer idJuzgado,Integer idProcedimiento,Integer idInstitucion,boolean isCombo, String fecha)throws ClsExceptions{
 
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;
@@ -227,8 +227,13 @@ public class ScsJuzgadoProcedimientoAdm extends MasterBeanAdministrador {
 		contador ++;
 		sql.append(contador);
 		htCodigos.put(new Integer(contador),idInstitucion);
-		sql.append(" AND PROC.IDINSTITUCION = P.IDINSTITUCION "); 
-		sql.append(" AND PROC.IDPROCEDIMIENTO = P.IDPROCEDIMIENTO AND NVL(PROC.VIGENTE,'0')='1'  ");
+		sql.append(" AND PROC.IDINSTITUCION = P.IDINSTITUCION ");
+		sql.append(" AND PROC.IDPROCEDIMIENTO = P.IDPROCEDIMIENTO  ");
+		sql.append(" AND ((proc.idprocedimiento =:"); 
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),idProcedimiento); 
+		sql.append(" ) OR (proc.fechadesdevigor <= "+fecha+" AND(proc.fechahastavigor >= " +fecha+ " OR proc.fechahastavigor IS NULL)))");		
 		sql.append(" ORDER BY PROC.NOMBRE ");
 
 			
@@ -242,7 +247,7 @@ public class ScsJuzgadoProcedimientoAdm extends MasterBeanAdministrador {
             	moduloList = new ArrayList<ScsProcedimientosBean>();
             	ScsProcedimientosBean moduloBean = null;
             	if(isCombo){
-	            	if(rc.size()>1){
+	            	if(rc.size()>=1){
 	            		moduloBean = new ScsProcedimientosBean();
 	            		moduloBean.setIdProcedimiento(new Integer(-1));
 	            		moduloBean.setNombre(UtilidadesString.getMensajeIdioma(this.usrbean, "general.combo.seleccionar"));

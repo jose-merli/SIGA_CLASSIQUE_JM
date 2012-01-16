@@ -992,14 +992,32 @@ public class MaestroDesignasAction extends MasterAction {
 		MaestroDesignasForm miForm = (MaestroDesignasForm) formulario;
 		UsrBean usr = this.getUserBean(request);
 		//Recogemos el parametro enviado por ajax
-		String idJuzgado = request.getParameter("idJuzgado");
+		
+		String idJuzgado = "-1";
+		if(request.getParameter("idJuzgado")!=null && !request.getParameter("idJuzgado").equals("")){
+			idJuzgado = request.getParameter("idJuzgado");
+		}
+		
+		String idProcedimiento = "-1";
+		if(request.getParameter("procedimiento")!=null && !request.getParameter("procedimiento").equals("")){
+			idProcedimiento = request.getParameter("procedimiento");
+		}
+		String fecha = "SYSDATE";
+		
+		//Comprobamos el valor del parametro 
+		GenParametrosAdm adm = new GenParametrosAdm (usr);
+		String filtrarModulos = adm.getValor((String)usr.getLocation(),"SCS","FILTRAR_MODULOS_PORFECHA_DESIGNACION", "");
+		if(filtrarModulos.equalsIgnoreCase("S")){
+			fecha = "'" + request.getParameter("fecha") + "'";
+		}
+		
 		miForm.setIdJuzgado(idJuzgado);
 		
 		//Sacamos las guardias si hay algo selccionado en el turno
 		List<ScsProcedimientosBean> modulosList = null;
 		if(idJuzgado!= null && !idJuzgado.equals("-1")&& !idJuzgado.equals("")){
 			ScsJuzgadoProcedimientoAdm admModulos = new ScsJuzgadoProcedimientoAdm(usr);
-			modulosList = admModulos.getModulos(new Integer(idJuzgado),new Integer(usr.getLocation()),true);
+			modulosList = admModulos.getModulos(new Integer(idJuzgado),new Integer(idProcedimiento),new Integer(usr.getLocation()),true, fecha);
 		}
 		if(modulosList==null){
 			modulosList = new ArrayList<ScsProcedimientosBean>();

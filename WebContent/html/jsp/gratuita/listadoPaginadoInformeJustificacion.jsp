@@ -139,11 +139,12 @@ function accionConsultarActuacion(anio,idTurno,numero,idInstitucion,numeroActuac
 		parent.buscar();
 			
 }
-function accionEditarDesigna(anio,idTurno,numero,idInstitucion) 
+function accionEditarDesigna(anio,idTurno,numero,idInstitucion,fecha) 
 {	
 	document.MaestroDesignasForm.anio.value = anio;
 	document.MaestroDesignasForm.idTurno.value = idTurno;
 	document.MaestroDesignasForm.numero.value = numero;
+	document.MaestroDesignasForm.fecha.value = fecha;
 	document.MaestroDesignasForm.modo.value = "actualizarDesigna";
 	var resultado=ventaModalGeneral(document.MaestroDesignasForm.name,"G");
 	if(resultado=='MODIFICADO') {
@@ -961,7 +962,7 @@ function downloadDocumentoResolucion(docResolucion) {
 									<img id="iconoboton_editar1"
 										src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>"
 										style="cursor: hand;" alt="Editar" name="editar_1" border="0"
-										onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion});"
+										onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${designa.fecha}});"
 										onMouseOut="MM_swapImgRestore()"
 										onMouseOver="MM_swapImage('editar_1','','<html:rewrite page='/html/imagenes/beditar_on.gif'/>',1)">
 								</c:when>
@@ -1004,7 +1005,7 @@ function downloadDocumentoResolucion(docResolucion) {
 									<img id="iconoboton_editar1"
 										src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>"
 										style="cursor: hand;" alt="Editar" name="editar_1" border="0"
-										onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion});"
+										onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${designa.fecha});"
 										onMouseOut="MM_swapImgRestore()"
 										onMouseOver="MM_swapImage('editar_1','','<html:rewrite page='/html/imagenes/beditar_on.gif'/>',1)">
 								</c:when>
@@ -1063,7 +1064,7 @@ function downloadDocumentoResolucion(docResolucion) {
 														src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>"
 														style="cursor: hand;" alt="Editar" name="editar_1"
 														border="0"
-														onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion});"
+														onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${designa.fecha});"
 														onMouseOut="MM_swapImgRestore()"
 														onMouseOver="MM_swapImage('editar_1','','<html:rewrite page='/html/imagenes/beditar_on.gif'/>',1)">
 												</c:when>
@@ -1118,7 +1119,7 @@ function downloadDocumentoResolucion(docResolucion) {
 																	src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>"
 																	style="cursor: hand;" alt="Editar" name="editar_1"
 																	border="0"
-																	onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion});"
+																	onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${designa.fecha});"
 																	onMouseOut="MM_swapImgRestore()"
 																	onMouseOver="MM_swapImage('editar_1','','<html:rewrite page='/html/imagenes/beditar_on.gif'/>',1)">
 															</c:when>
@@ -1169,7 +1170,7 @@ function downloadDocumentoResolucion(docResolucion) {
 																				src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>"
 																				style="cursor: hand;" alt="Editar" name="editar_1"
 																				border="0"
-																				onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion});"
+																				onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${designa.fecha});"
 																				onMouseOut="MM_swapImgRestore()"
 																				onMouseOver="MM_swapImage('editar_1','','<html:rewrite page='/html/imagenes/beditar_on.gif'/>',1)">
 																		</c:when>
@@ -1600,7 +1601,7 @@ function downloadDocumentoResolucion(docResolucion) {
 	<html:hidden property="anio" />
 	<html:hidden property="idTurno" />
 	<html:hidden property="numero" />
-
+	<html:hidden property="fecha" />
 
 </html:form>
 

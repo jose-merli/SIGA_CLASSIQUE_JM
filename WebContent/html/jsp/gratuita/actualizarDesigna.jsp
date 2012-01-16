@@ -132,11 +132,9 @@
 	<html:hidden name="MaestroDesignasForm" property="modo" value="" />
 	<html:hidden name="MaestroDesignasForm" property="anio"  />
 	<html:hidden name="MaestroDesignasForm" property="numero" />
+	<html:hidden name="MaestroDesignasForm" property="fecha" />
 	<html:hidden name="MaestroDesignasForm" property="idTurno"/>
 	<html:hidden name="MaestroDesignasForm" property="procedimiento"/>
-	
-	
-	
 	
 	<table class="tablaCentralCampos" height="420" align="center">
 
@@ -423,7 +421,7 @@
 
 <ajax:select
 	baseUrl="/SIGA/JGR_MantenimientoDesignas.do?modo=getAjaxModulos"
-	source="juzgados" target="modulos" parameters="idJuzgado={idJuzgado}"
+	source="juzgados" target="modulos" parameters="idJuzgado={idJuzgado},procedimiento={procedimiento},fecha={fecha}"
 	postFunction="postAccionJuzgados"
 	/>
 <ajax:updateFieldFromField 
