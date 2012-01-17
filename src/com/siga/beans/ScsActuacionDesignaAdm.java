@@ -889,6 +889,18 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 			
 			
 		}
+		else{
+			if(actuacionesList!=null && actuacionesList.size()>0){
+				for (int x = 0; x < actuacionesList.size(); x++) {
+					ActuacionDesignaForm actuacion = (ActuacionDesignaForm) actuacionesList.get(x);
+					if(x==0){
+						idJuzgado = actuacion.getIdJuzgado();
+						break;
+					}
+					
+				}
+			}
+		}
 		sql.append(" ORDER BY AC.IDACREDITACION ");
 
 		Vector acreditacionesPtesVector = this.selectGenericoBind(sql.toString(), codigos);
