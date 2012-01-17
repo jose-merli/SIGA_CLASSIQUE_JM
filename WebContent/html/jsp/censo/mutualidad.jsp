@@ -694,8 +694,13 @@
 			document.getElementById("idPais").value = "191";
 		}
 		document.MutualidadForm.pais.value = document.MutualidadForm.idPais.options[document.MutualidadForm.idPais.selectedIndex].text;
-		document.MutualidadForm.provincia.value = document.MutualidadForm.idProvincia.options[document.MutualidadForm.idProvincia.selectedIndex].text;
-		document.MutualidadForm.poblacion.value = document.MutualidadForm.idPoblacion.options[document.MutualidadForm.idPoblacion.selectedIndex].text;
+
+		if(document.MutualidadForm.idProvincia&&document.MutualidadForm.idProvincia.selectedIndex!=-1){
+			document.MutualidadForm.provincia.value = document.MutualidadForm.idProvincia.options[document.MutualidadForm.idProvincia.selectedIndex].text;
+		}
+		if(document.MutualidadForm.idPoblacion&&document.MutualidadForm.idPoblacion.selectedIndex!=-1){
+			document.MutualidadForm.poblacion.value = document.MutualidadForm.idPoblacion.options[document.MutualidadForm.idPoblacion.selectedIndex].text;
+		}
 		
 		if (validateMutualidadForm(document.MutualidadForm)){
 			//validamos los hijos grabados
