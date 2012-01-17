@@ -1007,10 +1007,7 @@ public class SolicitudIncorporacionAction extends MasterAction
 						   bean.getIdTipoIdentificacion()==ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE){
 							BusinessManager bm = getBusinessManager();
 							MutualidadService mutualidadService = (MutualidadService)bm.getService(MutualidadService.class);
-							RespuestaMutualidad respuestaSolicitudAlta = mutualidadService.isPosibilidadSolicitudAlta(bean.getNumeroIdentificador(),bean.getFechaNacimiento(),this.getUserBean(request));
-							request.setAttribute("isPosibilidadSolicitudAlta", respuestaSolicitudAlta.isPosibleAlta());
-							request.setAttribute("motivoSolicitudAlta", respuestaSolicitudAlta.getValorRespuesta());
-							if(respuestaSolicitudAlta.isPosibleAlta()){
+							
 								List<CenSolicitudMutualidadBean> solicitudMutualidadBeans=mutualidadService.getSolicitudesMutualidad(bean, this.getUserBean(request));
 							
 								if(solicitudMutualidadBeans!=null && solicitudMutualidadBeans.size()>0){
@@ -1030,8 +1027,16 @@ public class SolicitudIncorporacionAction extends MasterAction
 											
 										}
 									}
+									request.setAttribute("isPosibilidadSolicitudAlta", true);
+									request.setAttribute("motivoSolicitudAlta", "");
+								}else{
+									RespuestaMutualidad respuestaSolicitudAlta = mutualidadService.isPosibilidadSolicitudAlta(bean.getNumeroIdentificador(),bean.getFechaNacimiento(),this.getUserBean(request));
+									request.setAttribute("isPosibilidadSolicitudAlta", respuestaSolicitudAlta.isPosibleAlta());
+									request.setAttribute("motivoSolicitudAlta", respuestaSolicitudAlta.getValorRespuesta());
+									
+									
 								}
-							}
+							
 						}else{
 							request.setAttribute("isPosibilidadSolicitudAlta", false);
 							request.setAttribute("motivoSolicitudAlta", "Solo se puede solicitar el alta con NIF o NIE");
