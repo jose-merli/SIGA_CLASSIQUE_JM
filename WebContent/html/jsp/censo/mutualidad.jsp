@@ -636,6 +636,16 @@
 				<label for="checkCesionDatos"><siga:Idioma key="censo.mutualidad.cesionDatos"/></label>
 			</td>
 	</tr>
+	<c:choose>
+	<c:when test="${MutualidadForm.idTipoSolicitud=='P'}"> <!-- Plan profesional -->
+	<tr>
+		<td class="labelText">
+			<a href="http://www.mutualidadabogacia.com/Home/Alternativa-al-RETA/Elige-el-nivel-de-cobertura-que-deseas.aspx" target="new">Conoce las distintas opciones de cobertura disponibles</a>
+		</td>
+	</tr>
+	</c:when>
+	<c:otherwise></c:otherwise>
+	</c:choose>
 	</table>
 
 		<siga:ConjBotonesAccion botones="G,R,C" clase="botonesDetalle" />

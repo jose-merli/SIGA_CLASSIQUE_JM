@@ -904,26 +904,20 @@
 							</html:button>
 					
 						</td>
-						<td id="tdIdSolicitudPlanProfesional" class="labelTextValor">&nbsp;</td>
+						<td id="tdTextoNSolicitudPlanProfesional" style="display:none" class="labelText" >Nº&nbsp;Solicitud:</td>
+						<td id="tdIdSolicitudPlanProfesional" class="labelTextValor">&nbsp;</td> 
 						<td id="tdEstadoSolicitudPlanProfesional" class="labelTextValor" style="color:blue;">&nbsp;</td>
-						<td id="tdBotonEstadoSolicitudPlanProfesional" style="display:none" > <html:button property="idButton"
-							onclick="return accionComprobarEstadoMutualidad('P');" styleClass="button">
-							Estado
-							</html:button></td>
-						
-						<td id="tdEstadoMutualistaPlanProfesional" class="labelTextValor" style="color:blue;">&nbsp;</td>
-						<td id="tdBotonEstadoMutualistaPlanProfesional" style="display:none" > <html:button property="idButton"
-							onclick="return accionComprobarEstadoMutualista();" styleClass="button">
-							Estado Mutualista
-							</html:button></td>
-						
+						<td id="tdBotonEstadoSolicitudPlanProfesional" style="display:none" > 
+							<html:button property="idButton" onclick="return accionComprobarEstadoMutualidad('P');" styleClass="button">Comprobar Estado</html:button>
+						</td>
 						
 					</c:when>
 					<c:otherwise>
-						<td>&nbsp;</td>
+						<td class="labelText" >Nº&nbsp;Solicitud:</td>
 						<td class="labelTextValor">
+						
 						<c:choose>
-							<c:when test="${SolicitudIncorporacionForm.idSolicitudAceptadaPlanProfesional!=null}">
+						<c:when test="${SolicitudIncorporacionForm.idSolicitudAceptadaPlanProfesional!=null}">
 							<c:out value="${SolicitudIncorporacionForm.idSolicitudAceptadaPlanProfesional}" />
 						</c:when>
 						<c:otherwise>
@@ -934,76 +928,47 @@
 						</td>
 						<td id="tdEstadoSolicitudPlanProfesional" class="labelTextValor" style="color:blue;"><c:out value="${SolicitudIncorporacionForm.estadoSolicitudPlanProfesional}" /></td>
 						<td id="tdBotonEstadoSolicitudPlanProfesional">
-								<html:button property="idButton"
-							onclick="return accionComprobarEstadoMutualidad('P');" styleClass="button">
-							Estado
-							</html:button>
-
+							<html:button property="idButton" onclick="return accionComprobarEstadoMutualidad('P');" styleClass="button"> Comprobar Estado</html:button>
 						</td>
-						<c:choose>
-						<c:when test="${SolicitudIncorporacionForm.idEstadoSolicitudPlanProfesional!='0'}">
-						<td id="tdEstadoMutualistaPlanProfesional" class="labelTextValor" style="color:blue;"><c:out value="${SolicitudIncorporacionForm.estadoMutualistaPlanProfesional}" /></td>
-						<td id="tdBotonEstadoMutualistaPlanProfesional">
-								<html:button property="idButton"
-							onclick="return accionComprobarEstadoMutualista();" styleClass="button">
-							Estado Mutualista
-							</html:button>
-
-						</td>
-						</c:when>
-						<c:otherwise>
-						<td colspan="2"></td>
-						</c:otherwise>
-						</c:choose>
-						
-						
-						
 					</c:otherwise>
 				</c:choose>
 				
 				
 			</tr>
 				<tr>
-				<td class="labelText" ><siga:Idioma
-				 key="censo.SolicitudIncorporacionDatos.mutualidad.literal.seguroAccidentes"/></td>
+				<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacionDatos.mutualidad.literal.seguroAccidentes"/></td>
+				
 				<c:choose>
 					<c:when test="${SolicitudIncorporacionForm.idSolicitudSeguroUniversal==null||SolicitudIncorporacionForm.idSolicitudSeguroUniversal==''}">
-						<td id="tdBotonSolicitudSeguroUniversal"><html:button property="idButton"
-							onclick="return accionSolicitarAltaMutualidad('S');" styleClass="button">
-							<siga:Idioma key="general.boton.solicitarCompra" />
+				
+						<td id="tdBotonSolicitudSeguroUniversal">
+							<html:button property="idButton"onclick="return accionSolicitarAltaMutualidad('S');" styleClass="button">
+								<siga:Idioma key="general.boton.solicitarCompra" />
 							</html:button>
-					
 						</td>
+						<td id="tdTextoNSolicitudSeguroUniversal"  style="display:none" class="labelText" >Nº&nbsp;Solicitud:</td>
 						<td id="tdIdSolicitudSeguroUniversal" class="labelTextValor">&nbsp;</td>
 						<td id="tdEstadoSolicitudSeguroUniversal" class="labelTextValor" style="color:blue;">&nbsp;</td>
 						<td id="tdBotonEstadoSolicitudSeguroUniversal" style="display:none">
-							<html:button property="idButton"
-							onclick="return accionComprobarEstadoMutualidad('S');" styleClass="button">
-							Estado
-							</html:button>
+							<html:button property="idButton" onclick="return accionComprobarEstadoMutualidad('S');" styleClass="button">Comprobar Estado</html:button>
 						</td>
 						<td colspan="2"></td>
 					</c:when>
 					<c:otherwise>
-						<td>&nbsp;</td>
+						<td class="labelText" >Nº&nbsp;Solicitud:</td>
 						<td class="labelTextValor" >
 						<c:choose>
-							<c:when test="${SolicitudIncorporacionForm.idSolicitudAceptadaSeguroUniversal!=null}">
+						<c:when test="${SolicitudIncorporacionForm.idSolicitudAceptadaSeguroUniversal!=null}">
 							<c:out value="${SolicitudIncorporacionForm.idSolicitudAceptadaSeguroUniversal}" />
 						</c:when>
 						<c:otherwise>
 							<c:out value="${SolicitudIncorporacionForm.idSolicitudSeguroUniversal}" />
 						</c:otherwise>
 						</c:choose>
-						
 						</td>
 						<td id="tdEstadoSolicitudSeguroUniversal" class="labelTextValor" style="color:blue;"><c:out value="${SolicitudIncorporacionForm.estadoSolicitudSeguroUniversal}" /></td>
 						<td id="tdBotonEstadoSolicitudSeguroUniversal">
-								<html:button property="idButton"
-							onclick="return accionComprobarEstadoMutualidad('S');" styleClass="button">
-							Estado
-							</html:button>
-
+							<html:button property="idButton" onclick="return accionComprobarEstadoMutualidad('S');" styleClass="button">Comprobar Estado</html:button>
 						</td>
 						<td colspan="2"></td>
 					</c:otherwise>
@@ -1285,11 +1250,7 @@
 	    	document.getElementById("tdEstadoSolicitudPlanProfesional").innerText = resultado[2];
 	    	document.getElementById("tdBotonSolicitudPlanProfesional").style.display="none";
 	    	document.getElementById("tdBotonEstadoSolicitudPlanProfesional").style.display="";
-	    	
-	    	document.getElementById("tdEstadoMutualistaPlanProfesional").innerText = "Pte. Estado Mutualista";
-	    	document.getElementById("tdBotonEstadoMutualistaPlanProfesional").style.display="";
-	    	
-	    	
+	    	document.getElementById("tdTextoNSolicitudPlanProfesional").style.display="";
 	    	
 		}else{
 			if(resultado[1]!='0'&&resultado[1]!='')
@@ -1299,6 +1260,7 @@
 	    	document.getElementById("tdEstadoSolicitudSeguroUniversal").innerText = resultado[2];
 	    	document.getElementById("tdBotonSolicitudSeguroUniversal").style.display="none";
 	    	document.getElementById("tdBotonEstadoSolicitudSeguroUniversal").style.display="";
+	    	document.getElementById("tdTextoNSolicitudSeguroUniversal").style.display="";
 		}
 	}
 	
@@ -1340,10 +1302,6 @@
 		document.MutualidadForm.numeroIdentificacion.value = document.getElementById('numeroIdentificacionBBDD').value;
 		document.MutualidadForm.fechaNacimiento.value  = document.getElementById('fechaNacimientoBBDD').value;
 		var resultado = ventaModalGeneral(document.MutualidadForm.name,"0",'<siga:Idioma	key="censo.mutualidad.aviso.espera" />');
-		if(resultado){
-			document.MutualidadForm.estadoMutualista.value = resultado[0];	
-	    	document.getElementById("tdEstadoMutualistaPlanProfesional").innerText = resultado[0];
-		}
 	
 	}
 
