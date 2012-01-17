@@ -158,7 +158,7 @@
 						preSeparador = separador;%>
 						<img src='<%=srcImage%>' width="70%" border="0"/>	
 					<% } else { %>
-						<%=docuShareObjectVO.getTitle()%>						
+						<%=UtilidadesString.mostrarDatoJSP(docuShareObjectVO.getTitle())%>						
 					<% } %>
 						</a>
 					  </td>
@@ -242,6 +242,19 @@
 																	
 			
 			 <%}%>	
+			 
+			 <script type="text/javascript">
+			 	//sobreescribimos la funcion consultar
+			 	function consultar(fila) {
+			 		var objHiddId = document.getElementById('oculto' + fila + '_1');
+			 		var objHiddDes = document.getElementById('oculto' + fila + '_2');
+			 		
+					if (objHiddId && objHiddDes) {
+						parent.accionConsultaCollection('', objHiddId.value, objHiddDes.value);
+					}
+					
+				}
+			 </script>
 		
 
 	</body>

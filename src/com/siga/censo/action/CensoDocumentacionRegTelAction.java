@@ -180,7 +180,7 @@ public class CensoDocumentacionRegTelAction extends MasterAction {
 				List<DocuShareObjectVO> migas = (List<DocuShareObjectVO>) request.getSession().getAttribute("MIGAS_DS");
 				
 				if (migas != null) {
-					if (miForm.getPosicionDs() != null) {
+					if (miForm.getPosicionDs() != null && !miForm.getPosicionDs().trim().equals("")) {
 						int posicion = Integer.parseInt(miForm.getPosicionDs());
 						while(posicion < migas.size()-1) {
 							migas.remove(migas.size()-1);
@@ -237,12 +237,6 @@ public class CensoDocumentacionRegTelAction extends MasterAction {
 		request.getSession().removeAttribute("DATAPAGINADOR");
 		
 		DatosColegialesForm miForm = (DatosColegialesForm) formulario;
-		
-		if (miForm.getIdentificadorDs() == null) {
-			Vector ocultos = miForm.getDatosTablaOcultos(0);
-			miForm.setIdentificadorDs((String) ocultos.get(0));
-			miForm.setTitleDs((String) ocultos.get(1));
-		}
 		
 		buscarPor(mapping, formulario, request, response);
 		
