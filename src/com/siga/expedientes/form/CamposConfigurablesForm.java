@@ -84,5 +84,11 @@ public class CamposConfigurablesForm extends MasterForm {
         UtilidadesHash.set(this.datos,"Seleccionado",valor);
     }
     
+    public String getGeneral() {
+        return UtilidadesHash.getString(this.datos,"General");
+    }
+    public void setGeneral(String valor) {
+        UtilidadesHash.set(this.datos,"General",valor);
+    }
 
 }

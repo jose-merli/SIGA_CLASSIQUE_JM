@@ -78,8 +78,8 @@ public class ExpDatosGeneralesForm extends MasterForm {
     private String solicitanteEjgNombre;
     private String relacionExpediente;
     private String nombreRelacionExpediente;    
-    private String copia;    
-    
+    private String copia;
+    private String campo;
     
 	public String getCopia() {
 		return copia;
@@ -596,6 +596,11 @@ public class ExpDatosGeneralesForm extends MasterForm {
 		}
 		return solicitanteEjgDescripcion.toString();
 	}
-		 
-	
+	public String getCampo() {
+		return campo;
+	}
+	public void setCampo(String campo) {
+		this.campo = campo;
+	}
+
 }

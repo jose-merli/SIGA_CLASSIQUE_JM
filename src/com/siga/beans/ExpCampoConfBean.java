@@ -20,6 +20,7 @@ public class ExpCampoConfBean extends MasterBean {
 	private String tipo;
 	private String nombre;
 	private Integer orden;
+	private Integer general;
 	
 	// Nombre campos de la tabla 
 	static public final String C_IDINSTITUCION = "IDINSTITUCION";
@@ -31,6 +32,7 @@ public class ExpCampoConfBean extends MasterBean {
 	static public final String C_NOMBRE = "NOMBRE";
 	static public final String C_ORDEN = "ORDEN";
 	static public final String C_IDCAMPO = "IDCAMPO";
+	static public final String C_GENERAL = "GENERAL";
 	
 	static public final String T_NOMBRETABLA = "EXP_CAMPOCONF";
 	
@@ -97,4 +99,11 @@ public class ExpCampoConfBean extends MasterBean {
     public void setNombre(String valor) {
         this.nombre = valor;
     }
+
+    public Integer getGeneral() {
+		return general;
+	}
+	public void setGeneral(Integer valor) {
+		this.general = valor;
+	}
 }

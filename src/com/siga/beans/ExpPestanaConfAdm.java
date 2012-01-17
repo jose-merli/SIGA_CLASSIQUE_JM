@@ -177,5 +177,37 @@ public class ExpPestanaConfAdm extends MasterBeanAdministrador {
 		}
 		return null;
 	}	
+   
+   
+   public String obtenerNombrePetanaGeneral (String idInstitucion,String idTipoExpediente)throws ClsExceptions, SIGAException 
+	{
+		RowsContainer rc = null;
+		Hashtable codigos = new Hashtable();
+		codigos.put(new Integer(1),idInstitucion);
+		codigos.put(new Integer(2),idTipoExpediente);		
 
+		try { rc = new RowsContainer(); }
+		catch(Exception e) { e.printStackTrace(); }
+		
+		try {		
+			String sql = " select p.NOMBRE from exp_pestanaconf p , exp_camposexpedientes c " +
+			    	" where p.idcampo = c.idcampo " +
+			    	" and p.idinstitucion=:1 " +
+			    	" and p.idtipoexpediente=:2 " +
+			    	" and p.idcampo = 14 ";
+
+			// RGG cambio visibilidad
+			rc = this.findBind(sql,codigos);
+			if (rc!=null) {
+				Row fila = (Row) rc.get(0);
+				Hashtable ht = fila.getRow();
+				String nombre = UtilidadesHash.getString(ht, "NOMBRE");
+				return nombre;								
+			}
+		}	
+		catch (Exception e) {		
+			throw new ClsExceptions (e, "Error al ejecutar el 'getNombrePestanaDesdeProceso' en B.D.");		
+		}
+		return null;
+	}	
 }

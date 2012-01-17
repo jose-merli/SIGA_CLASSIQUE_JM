@@ -119,6 +119,17 @@
 											<html:text  name="camposConfigurablesForm" property="orden" size="2" styleClass="<%=estiloCaja%>" maxlength="2" readonly="<%=bLectura%>" />
 										</td>
 									</tr>
+										<%if(form.getIdCampo().equals("14")){ %>
+										<tr>
+										<td class="labelText">
+											<siga:Idioma key="expedientes.tipoExpediente.ecicion.literal.general"/>
+										</td>
+										<td>
+											<html:checkbox name="camposConfigurablesForm" property="general" value="1" disabled="<%=bLectura%>"/>
+										</td>	
+									</tr>									
+										<%}%>
+									
 									
 								</table>
 							</siga:ConjCampos>

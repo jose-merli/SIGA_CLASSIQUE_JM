@@ -49,6 +49,7 @@ import com.siga.beans.ExpExpedienteAdm;
 import com.siga.beans.ExpExpedienteBean;
 import com.siga.beans.ExpFasesAdm;
 import com.siga.beans.ExpFasesBean;
+import com.siga.beans.ExpPestanaConfAdm;
 import com.siga.beans.ExpPlazoEstadoClasificacionAdm;
 import com.siga.beans.ExpTipoExpedienteAdm;
 import com.siga.beans.ExpTipoExpedienteBean;
@@ -105,6 +106,64 @@ public class ExpDatosGeneralesAction extends MasterAction
 			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDINSTITUCION, this.getIDInstitucion(request));
 			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDTIPOEXPEDIENTE, idTipoExpediente);
 
+			//Se buscan los nuevos campos configurados en tipo_expediente
+			ExpCampoConfAdm expCamConfAdm = new ExpCampoConfAdm(usr);			
+			Vector vecExpCamConfAdm= expCamConfAdm.obtenerCamposPestanaGeneral(this.getIDInstitucion(request).toString(),idTipoExpediente);
+			
+			ExpPestanaConfAdm expPestanaConfAdm = new ExpPestanaConfAdm(usr);
+			String nombreCampo = expPestanaConfAdm.obtenerNombrePetanaGeneral(this.getIDInstitucion(request).toString(), idTipoExpediente);
+			
+			String numExpediente = request.getParameter("numeroExpediente");
+			ExpCamposValorAdm expCamposValorAdm = new ExpCamposValorAdm(usr);
+			Vector vecExpCamposValorAdm = expCamposValorAdm.obtenerValorCamposPestanaGeneral(this.getIDInstitucion(request).toString(), idTipoExpediente, numExpediente);
+			
+			
+			Vector nombres = new Vector ();
+			Vector datosCamposPestanas= new Vector (vecExpCamConfAdm.size());
+			
+			for (int i =0; i<vecExpCamConfAdm.size();i++)
+			{
+				Hashtable auxHash = (Hashtable)vecExpCamConfAdm.get(i);
+				nombres.add(i,(String)auxHash.get("NOMBRE"));
+				//Inicializamos el vector de datos a "" para que aquellos campos que no tengan valor
+				//por lo menos tengan cadena vacia
+				datosCamposPestanas.add("");
+			}
+												
+			for (int j =0; (j<vecExpCamposValorAdm.size());j++)
+			{
+				Hashtable auxHash1 = (Hashtable)vecExpCamposValorAdm.get(j);
+				Integer orden= new Integer((String)auxHash1.get("IDCAMPOCONF"));
+				datosCamposPestanas.set((orden.intValue()-1),(String)auxHash1.get("VALOR"));
+				
+			}
+			
+			/*
+			for (int i =0; i<vecExpCamConfAdm.size();i++)
+			{
+				Hashtable auxHash = (Hashtable)vecExpCamConfAdm.get(i);
+				//ExpCampoConfBean aux =(ExpCampoConfBean)auxHash.get(i);
+				
+				boolean encontrado = false;
+				for (int j =0; (j<vecExpCamposValorAdm.size() && encontrado == false);j++)
+				{
+					Hashtable auxHash1 = (Hashtable)vecExpCamposValorAdm.get(j);
+					//ExpCamposValorBean aux1= (ExpCamposValorBean)auxHash1.get(j);
+					
+					//if(aux.getOrden().toString().equals( aux1.getIdCampoConf().toString()))
+					if(auxHash.get("ORDEN").toString().equals( auxHash1.get("IDCAMPOCONF").toString()))
+					{
+						nombres.add((String)auxHash.get("NOMBRE"));
+						datosCamposPestanas.add((String)auxHash1.get("VALOR"));
+						encontrado = true;
+					}
+				}				
+			}
+			*/
+			request.setAttribute("nombres", nombres);
+			request.setAttribute("datosCamposPestanas", datosCamposPestanas);
+			request.setAttribute("nombreCampo", nombreCampo);
+			
 			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_MINUTA_INICIAL));
 			v = adm.select(h);
 			if (v != null && v.size() > 0) {
@@ -1089,6 +1148,35 @@ public class ExpDatosGeneralesAction extends MasterAction
 	    	ExpEstadosBean estBeanNew = vEstadoNew.isEmpty()?
 	    			null:(ExpEstadosBean)vEstadoNew.elementAt(0);
 	    	
+	    		    		    	
+	    	//Inicio Guarda Datos Para Pestaña
+	    	String numExpediente = expBean.getNumeroExpediente().toString();
+			ExpCamposValorAdm expCamposValorAdm = new ExpCamposValorAdm(userBean);
+			Vector vecExpCamposValorAdm = expCamposValorAdm.obtenerValorCamposPestanaGeneral(this.getIDInstitucion(request).toString(), expBean.getIdTipoExpediente().toString(), numExpediente);
+	    	
+			//Iniciamos la transacción
+	        UserTransaction tra = userBean.getTransaction();
+		    try {
+		    	tra.begin();     
+		        		        
+		        for (int contador=0;vecExpCamposValorAdm!=null && contador<vecExpCamposValorAdm.size(); contador++) 
+		        {
+		            String idCampoConf = ""+(contador+1);		            
+		            //Procesamos el campo		            		            			            		
+		            String	valor = request.getParameter("campo"+(contador+1)+"");
+			        // lo guardamos
+		            this.guardarValor(expCamposValorAdm,(Hashtable)vecExpCamposValorAdm.get(contador), idCampoConf, valor);		            
+		        }
+		        tra.commit();		               
+		    } 
+		    catch (Exception e) 
+		    {        
+		        throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,tra);
+		    }
+	    	    	
+	    	//Fin Guarda Datos Para Pestaña
+	    	
+	    	
 	    	//Iniciamos la transacción
 	        
 	        
@@ -1677,5 +1765,60 @@ public class ExpDatosGeneralesAction extends MasterAction
 		}//fin del synchronized
 	}//fin del método
 	
+	
+	public void guardarValor(ExpCamposValorAdm expCamposValorAdm,Hashtable auxHash, String idCampoConf, String valor) throws ClsExceptions {
+        // comprobamos si existe. SI es asi modificamos, si no lo creamos.
+        Vector salida = new Vector();
+        Hashtable codigos = new  Hashtable();        
+        								
+		codigos.put(new Integer(1),auxHash.get("IDINSTITUCION").toString());
+		codigos.put(new Integer(2),auxHash.get("IDINSTITUCION_TIPOEXPEDIENTE").toString());		
+		codigos.put(new Integer(3),auxHash.get("IDTIPOEXPEDIENTE").toString());		
+		codigos.put(new Integer(4),auxHash.get("NUMEROEXPEDIENTE").toString());		
+		codigos.put(new Integer(5),auxHash.get("ANIOEXPEDIENTE").toString());		
+		codigos.put(new Integer(6),auxHash.get("IDCAMPO").toString());		
+		codigos.put(new Integer(7),auxHash.get("IDPESTANACONF").toString());
+		codigos.put(new Integer(8),idCampoConf);
+				
+		try {		
+			String sql = " where idinstitucion=:1 " + 
+			    "       and   idinstitucion_tipoexpediente=:2 " + 
+			    "       and   idtipoexpediente=:3 " + 
+			    "       and   numeroexpediente=:4 " + 
+			    "       and   anioexpediente=:5 " + 
+			    "       and   idcampo=:6 " + 
+			    "       and   idpestanaconf=:7 " + 
+			    "       and   idcampoconf=:8";
+
+			// RGG cambio visibilidad
+			Vector v = expCamposValorAdm.selectBind(sql,codigos);
+			if (v!=null && v.size()>0) {
+				ExpCamposValorBean bean = (ExpCamposValorBean) v.get(0);
+				bean.setValor(valor.trim());
+				if (!expCamposValorAdm.updateDirect(bean)) {
+				    throw new ClsExceptions("Error al actualizar campo valor. "+expCamposValorAdm.getError());
+				}
+				
+			} else {
+			    // hay que insertarlo.
+			    ExpCamposValorBean bean = new ExpCamposValorBean();
+			    bean.setIdInstitucion(new Integer(auxHash.get("IDINSTITUCION").toString()));
+			    bean.setIdInstitucion_TipoExpediente(new Integer(auxHash.get("IDINSTITUCION_TIPOEXPEDIENTE ").toString()));
+			    bean.setIdTipoExpediente(new Integer(auxHash.get("IDTIPOEXPEDIENTE").toString()));
+			    bean.setNumeroExpediente(new Integer(auxHash.get("NUMEROEXPEDIENTE").toString()));
+			    bean.setAnioExpediente(new Integer(auxHash.get("ANIOEXPEDIENTE").toString()));
+			    bean.setIdCampo(new Integer(auxHash.get("IDCAMPO").toString()));
+			    bean.setIdPestanaConf(new Integer(auxHash.get("IDPESTANACONF").toString()));
+			    bean.setIdCampoConf(new Integer(idCampoConf));
+			    bean.setValor(valor);
+				if (!expCamposValorAdm.insert(bean)) {
+				    throw new ClsExceptions("Error al insertar campo valor. "+expCamposValorAdm.getError());
+				}
+			}
+		}	
+		catch (Exception e) {		
+			throw new ClsExceptions (e, "Error al ejecutar el 'guardarValor' en B.D.");		
+		}		
+    }
 	
 }

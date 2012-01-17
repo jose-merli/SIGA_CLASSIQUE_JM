@@ -1221,22 +1221,27 @@
 <!-- INICIO: ExpDatosGeneralesForm emilio.grau 24-01-2005 -->
 
 <form name="ExpDatosGeneralesForm">
+<!--  
     <field property = "numExpDisciplinario" depends = "integer">
         <arg0 key="expedientes.auditoria.literal.nexpdisciplinario"/> 
-    </field> 
+    </field>
+
     <field property = "anioExpDisciplinario" depends = "integer,mask">
         <arg0 key="expedientes.auditoria.literal.nexpdisciplinario"/>
         <var><var-name>mask</var-name> <var-value>^[0-9]{4}</var-value></var>
     </field> 
+--> 
     <field property = "asunto" depends = "required">
         <arg0 key="expedientes.auditoria.literal.asunto"/>
     </field> 
     <field property = "fechaInicial" depends = "required">
         <arg0 key="expedientes.auditoria.literal.fechainicial"/>
     </field> 
+<!--  
     <field property = "clasificacion" depends = "required,integer">
         <arg0 key="expedientes.auditoria.literal.clasificacion"/>
-    </field> 
+    </field>
+--> 
     <field property = "comboEstados" depends = "required">
         <arg0 key="expedientes.auditoria.literal.estado"/>
     </field>

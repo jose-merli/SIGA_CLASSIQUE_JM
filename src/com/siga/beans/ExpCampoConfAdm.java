@@ -38,7 +38,8 @@ public class ExpCampoConfAdm extends MasterBeanAdministrador {
 				ExpCampoConfBean.C_TIPO,
 				ExpCampoConfBean.C_NOMBRE,
 				ExpCampoConfBean.C_FECHAMODIFICACION,
-            	ExpCampoConfBean.C_USUMODIFICACION          	
+            	ExpCampoConfBean.C_USUMODIFICACION,
+            	ExpCampoConfBean.C_GENERAL  
 				};
 
 		return campos;
@@ -84,6 +85,7 @@ public class ExpCampoConfAdm extends MasterBeanAdministrador {
 			bean.setOrden(UtilidadesHash.getInteger(hash, ExpCampoConfBean.C_ORDEN));
 			bean.setTipo(UtilidadesHash.getString(hash, ExpCampoConfBean.C_TIPO));
 			bean.setNombre(UtilidadesHash.getString(hash, ExpCampoConfBean.C_NOMBRE));
+			bean.setGeneral(UtilidadesHash.getInteger(hash, ExpCampoConfBean.C_GENERAL));
 			
 		}
 
@@ -118,6 +120,7 @@ public class ExpCampoConfAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ExpCampoConfBean.C_ORDEN, b.getOrden());
 			UtilidadesHash.set(htData, ExpCampoConfBean.C_TIPO, b.getTipo());
 			UtilidadesHash.set(htData, ExpCampoConfBean.C_NOMBRE, b.getNombre());
+			UtilidadesHash.set(htData, ExpCampoConfBean.C_GENERAL, b.getGeneral());
 		}
 
 		catch (Exception e)
@@ -264,6 +267,7 @@ public class ExpCampoConfAdm extends MasterBeanAdministrador {
 		codigos.put("IDTIPOEXPEDIENTE",idTipoExpediente);
 		codigos.put("IDPESTANACONF",idPestanaConf);
 		codigos.put("SELECCIONADO",new Integer(1));
+		codigos.put("GENERAL",new Integer(1));
 			
 		try {		
 
@@ -322,5 +326,41 @@ public class ExpCampoConfAdm extends MasterBeanAdministrador {
 		} catch (Exception e) {		
 			throw new ClsExceptions (e, "Error al ejecutar el 'nombreRepetido' en B.D.");		
 		}
-	}	
+	}
+
+
+	public Vector obtenerCamposPestanaGeneral (String idInstitucion,String idTipoExpediente)throws ClsExceptions, SIGAException 
+	{
+		RowsContainer rc = null;
+		Vector salida = new Vector();
+		Hashtable codigos = new  Hashtable();
+		codigos.put(new Integer(1),idInstitucion);
+		codigos.put(new Integer(2),idTipoExpediente);		
+		
+		try { rc = new RowsContainer(); }
+		catch(Exception e) { e.printStackTrace(); }
+		
+		try {		
+			String sql = " select * " +
+				" from exp_campoconf cc" +
+			    " where cc.idinstitucion = :1  " +
+			    " and   cc.idtipoexpediente = :2 " +
+			    " and   cc.general = 1 " +
+			    " order by cc.orden ";
+
+			// RGG cambio visibilidad
+			rc = this.findBind(sql,codigos);
+			if (rc!=null) {
+			    for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable ht = fila.getRow();
+					salida.add(ht);
+			    }
+			}
+		}	
+		catch (Exception e) {		
+			throw new ClsExceptions (e, "Error al ejecutar el 'obtenerCamposPestanaGeneral' en B.D.");		
+		}
+		return salida;
+	}
 }

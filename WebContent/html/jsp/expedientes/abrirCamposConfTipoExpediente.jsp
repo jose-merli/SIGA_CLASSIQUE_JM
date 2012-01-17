@@ -133,8 +133,8 @@
 		   	      nombre="tablaDatos"
 		   		  borde="1"
 		   		  clase="tableTitle"
-		   		  nombreCol="expedientes.literal.tipoExpediente.campoConf.seleccionado,expedientes.literal.tipoExpediente.campoConf.nombre,expedientes.literal.tipoExpediente.campoConf.orden,"
-		   		  tamanoCol="15,60,15,10"
+		   		  nombreCol="expedientes.literal.tipoExpediente.campoConf.seleccionado,expedientes.tipoExpediente.ecicion.literal.general,expedientes.literal.tipoExpediente.campoConf.nombre,expedientes.literal.tipoExpediente.campoConf.orden,"		   		  
+		   		  tamanoCol="15,15,50,10"
 		   			alto="100%"
 		   			ajusteBotonera="true"		
 		   		  modal="P"
@@ -161,7 +161,14 @@
 						<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=bean.getIdCampoConf()%>">						
 						
 						<%=(bean.getSeleccionado().intValue()==1)?UtilidadesString.getMensajeIdioma(user,"messages.si"):UtilidadesString.getMensajeIdioma(user,"messages.no") %>
-					</td>					
+					</td>
+
+					<td align="center">
+						<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=bean.getIdCampoConf()%>">						
+						
+						<%=(bean.getGeneral().intValue()==1)?UtilidadesString.getMensajeIdioma(user,"messages.si"):UtilidadesString.getMensajeIdioma(user,"messages.no") %>
+					</td>
+
 					<td>
 						<%=UtilidadesString.mostrarDatoJSP(bean.getNombre())%>
 					</td>					

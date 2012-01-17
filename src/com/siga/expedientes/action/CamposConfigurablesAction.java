@@ -75,6 +75,7 @@ public class CamposConfigurablesAction extends MasterAction {
             form.setOrden(bean.getOrden().toString());
             form.setSeleccionado(bean.getSeleccionado().toString());
             form.setIdCampoConf(idCampo);
+            form.setGeneral(bean.getGeneral().toString());
         }
         
         
@@ -118,6 +119,7 @@ public class CamposConfigurablesAction extends MasterAction {
 	            bean.setNombre(form.getNombre());
 	            bean.setSeleccionado((form.getSeleccionado()!=null && form.getSeleccionado().equals("1"))?new Integer(1):new Integer(0));
 	            bean.setOrden(new Integer(form.getOrden()));
+	            bean.setGeneral((form.getGeneral()!=null && form.getGeneral().equals("1"))?new Integer(1):new Integer(0));
 	            if (adm.ordenRepetido(bean)){
 	            	if (tx!=null)
 	            		tx.rollback();
@@ -170,6 +172,7 @@ public class CamposConfigurablesAction extends MasterAction {
 	        bean.setNombre(form.getNombre().trim());
             bean.setSeleccionado((form.getSeleccionado()!=null && form.getSeleccionado().equals("1"))?new Integer(1):new Integer(0));
             bean.setOrden(new Integer(form.getOrden()));
+            bean.setGeneral((form.getGeneral()!=null && form.getGeneral().equals("1"))?new Integer(1):new Integer(0));
             if (adm.ordenRepetido(bean)){
             	if (tx!=null)
             		tx.rollback();

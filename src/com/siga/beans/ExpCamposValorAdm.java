@@ -187,5 +187,40 @@ public class ExpCamposValorAdm extends MasterBeanAdministrador {
 		
     }
 
+    
+    public Vector obtenerValorCamposPestanaGeneral (String idInstitucion,String idTipoExpediente,String numeroExpediente)throws ClsExceptions, SIGAException 
+	{
+		RowsContainer rc = null;
+		Vector salida = new Vector();
+		Hashtable codigos = new  Hashtable();
+		codigos.put(new Integer(1),idInstitucion);
+		codigos.put(new Integer(2),idTipoExpediente);
+		codigos.put(new Integer(3),numeroExpediente);
+		
+		try { rc = new RowsContainer(); }
+		catch(Exception e) { e.printStackTrace(); }
+		
+		try {		
+			String sql = " select * " +
+				" from EXP_CAMPOSVALOR " +
+			    " where idinstitucion = :1  " +
+			    " and   idtipoexpediente = :2 " +
+			    " and   NUMEROEXPEDIENTE = :3 " +
+			    " order by IDCAMPOCONF ";
 
+			// RGG cambio visibilidad
+			rc = this.findBind(sql,codigos);
+			if (rc!=null) {
+			    for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable ht = fila.getRow();
+					salida.add(ht);
+			    }
+			}
+		}	
+		catch (Exception e) {		
+			throw new ClsExceptions (e, "Error al ejecutar el 'obtenerValorCamposPestanaGeneral' en B.D.");		
+		}
+		return salida;
+	}            
 }
