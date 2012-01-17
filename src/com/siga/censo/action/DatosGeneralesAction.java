@@ -1401,6 +1401,7 @@ public class DatosGeneralesAction extends MasterAction {
    		    ///////////////////////////////////////////////////////////////////////////
    		 
    		    if(miForm.getIdTipoDireccion()!=null && !miForm.getIdTipoDireccion().equals("")){
+   		    	Direccion direccion = new Direccion();
 	   		    CenDireccionesBean beanDir = new CenDireccionesBean ();
 				beanDir.setCodigoPostal (miForm.getCodigoPostal ());
 				beanDir.setCorreoElectronico (miForm.getCorreoElectronico ());
@@ -1433,66 +1434,25 @@ public class DatosGeneralesAction extends MasterAction {
 				beanDir.setTelefono2 (miForm.getTelefono2 ());
 				
 				//estableciendo los datos del tipo de direccion
-				
-				CenDireccionTipoDireccionBean vBeanTipoDir [] = new CenDireccionTipoDireccionBean [1];
-				CenDireccionTipoDireccionBean b = new CenDireccionTipoDireccionBean ();
-				
-				if(miForm.getIdTipoDireccion().length()>1){
-					String [] tipoDir = null;
-					tipoDir = miForm.getIdTipoDireccion().split(",");
-					vBeanTipoDir = new CenDireccionTipoDireccionBean [tipoDir.length];
-					for(int i = 0; i < tipoDir.length; i++){
-						b = new CenDireccionTipoDireccionBean ();
-						b.setIdTipoDireccion (new Integer(tipoDir[i]));
-						vBeanTipoDir[i] = b;
-					}
-				
-				}else{				
-					b.setIdTipoDireccion (new Integer (miForm.getIdTipoDireccion()));
-					vBeanTipoDir[0] = b;
+				String tiposDir = "";
+				if(miForm.getIdTipoDireccion()!= null && !miForm.getIdTipoDireccion().equals("")){
+					tiposDir = miForm.getIdTipoDireccion();
 				}
 				
 				//estableciendo los datos del Historico
 				CenHistoricoBean beanHis = new CenHistoricoBean ();
 				beanHis.setMotivo (miForm.getMotivo ());
 				
-			//obteniendo adm de BD de direcciones
-				CenDireccionesAdm direccionesAdm = new CenDireccionesAdm (this.getUserBean (request));
+				// Se llama a la interfaz Direccion para insertar una nueva direccion
+				Direccion dirAux = direccion.insertar(beanDir, tiposDir, beanHis, null, usr);
 				
-				//insertando la direccion
-				if (! direccionesAdm.insertarConHistorico (beanDir, vBeanTipoDir, beanHis, this.getLenguaje (request)))
-					throw new SIGAException (direccionesAdm.getError());
+				//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
+				if(dirAux.isFallo()){
+					tx.rollback();
+					return exito(dirAux.getMsgError(), request);
+				}
 				
-				
-				//insertando en la cola de modificacion de datos para Consejos
-				CenColaCambioLetradoAdm colaAdm = new CenColaCambioLetradoAdm (this.getUserBean (request));
-				if (! colaAdm.insertarCambioEnCola (ClsConstants.COLA_CAMBIO_LETRADO_MODIFICACION_DIRECCION, 
-						beanDir.getIdInstitucion (), beanDir.getIdPersona (), beanDir.getIdDireccion ()))
-					throw new SIGAException (colaAdm.getError ());
-				
-//				request.setAttribute("direccion",miForm.getDomicilio());
-//				if (miForm.getPais().equals (ClsConstants.ID_PAIS_ESPANA)) {
-//					//beanDir.setIdPoblacion (miForm.getPoblacion());
-//					//beanDir.setIdProvincia (miForm.getProvincia());
-//					//beanDir.setPoblacionExtranjera ("");
-//					request.setAttribute("poblacion",miForm.getPoblacion());
-//					request.setAttribute("provincia",miForm.getProvincia());
-//					request.setAttribute("pais",miForm.getPais());
-//				} else {
-//					//beanDir.setPoblacionExtranjera ();
-//					//beanDir.setIdPoblacion ("");
-//					//beanDir.setIdProvincia ("");
-//					request.setAttribute("poblacion",miForm.getPoblacionExt ());
-//					request.setAttribute("provincia","");
-//					request.setAttribute("pais",miForm.getPais());
-//				}
-//				
-//				request.setAttribute("cpostal",miForm.getCodigoPostal());
-				
-				request.setAttribute("idDireccion",beanDir.getIdDireccion().toString());
-//				request.setAttribute("telefono",miForm.getApellido2());
-//   		    
-   		    
+				request.setAttribute("idDireccion",beanDir.getIdDireccion().toString());   		    
    		    }
    		    
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -1507,27 +1467,13 @@ public class DatosGeneralesAction extends MasterAction {
 			request.setAttribute("nombre",miForm.getNombre());
 			request.setAttribute("apellido1",miForm.getApellido1());
 			request.setAttribute("apellido2",miForm.getApellido2());
-			
-			
-			
-			
-			
-			/*document.forms[0].direccion.value   = resultado[7];
-					document.forms[0].poblacion.value   = resultado[8];
-					document.forms[0].provincia.value   = resultado[9];
-					document.forms[0].pais.value        = resultado[10];
-					document.forms[0].cpostal.value     = resultado[11];
-					document.forms[0].idDireccion.value = resultado[12];
-
-					if (trim(resultado[13])=="") document.forms[0].telefono.value=resultado[14]; // el movil
-					else document.forms[0].telefono.value=resultado[13];
-*/
-			
-			
-	   } 	
-	   catch (Exception e) {
-		 throwExcp("messages.general.error",new String[] {"modulo.censo"},e,tx);
-   	   }
+	   
+		} catch (SIGAException es) {
+			throwExcp (es.getLiteral(), new String[] {"modulo.censo"}, es, tx);
+	    }  catch (Exception e) {
+	    	throwExcp("messages.general.error",new String[] {"modulo.censo"},e,tx);
+   	    }
+	    
 	   return "exitoInsercionNoColegiado";			
 	}
 	private String campoPreferenteBooleanToString (Boolean mail, 

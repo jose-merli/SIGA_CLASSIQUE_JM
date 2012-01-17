@@ -420,58 +420,16 @@ protected String insertar (ActionMapping mapping,
 		try
 		{
 			
-			
-			CenDireccionTipoDireccionAdm tipoDirAdm = new CenDireccionTipoDireccionAdm(this.getUserBean (request));			
-			CenDireccionTipoDireccionBean tipodirBean = new CenDireccionTipoDireccionBean();
-			//Recordar que ya existe un Trigger en BD que no permite insertar 
-			//  mas de una direccion de correo por colegiado
-			
 			//obteniendo datos del formulario
 			DireccionesForm miForm = (DireccionesForm) formulario;
-			Long idPersona = miForm.getIDPersona ();
-			String idDireccionesPreferentes="";
-			Integer idInstitucionPersona = miForm.getIDInstitucion ();
-			String preferente = this.campoPreferenteBooleanToString (miForm.getPreferenteMail (), 
-					miForm.getPreferenteCorreo(), miForm.getPreferenteFax (), miForm.getPreferenteSms ());
-			String preferenteModif=this.campoPreferenteBooleanToStringSeparados(miForm.getPreferenteMail (), 
-					miForm.getPreferenteCorreo (), miForm.getPreferenteFax (), miForm.getPreferenteSms ());
-			Long idDireccion = miForm.getIdDireccion ();
+			CenDireccionesBean beanDir = new CenDireccionesBean ();
+			Direccion direccion = new Direccion();
+			UsrBean usr = this.getUserBean (request);
 			
-			//obteniendo adm de BD de direcciones
-			CenDireccionesAdm direccionesAdm = new CenDireccionesAdm (this.getUserBean (request));
-			CenDireccionesBean direccionesBean = new CenDireccionesBean();
-		
-			
-			//comprobando que no existen dos direcciones con igual campo preferente
-			/*if (! direccionesAdm.comprobarPreferenteDirecciones (idPersona.toString (), 
-					idInstitucionPersona.toString (), preferente, idDireccion, request))
-				throw new SIGAException (direccionesAdm.getError ());*/
-			
-			
-			t = this.getUserBean (request).getTransactionPesada();
+			t = usr.getTransactionPesada();
 			t.begin ();
 			
-			//digito de control, para saber si viene de la jsp de  preguntapreferente.jsp o preguntacensoweb.jsp
-			String control=request.getParameter("control");
-			
-			if (request.getParameter("modificarPreferencias")!=null && request.getParameter("modificarPreferencias").equals("1")){
-				idDireccionesPreferentes=request.getParameter("idDireccionesPreferentes");
-			}else {
-			//comprobando que no existen dos direcciones con igual campo preferente
-			 idDireccionesPreferentes=direccionesAdm.obtenerPreferenteDirecciones (idPersona.toString (), 
-					idInstitucionPersona.toString (), preferente, idDireccion, request);
-			  if  (!idDireccionesPreferentes.equals("")){
-				request.setAttribute("idDireccionesPreferentes", idDireccionesPreferentes);
-				request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
-				request.setAttribute("control", "0");
-				request.setAttribute("modo", "insertar");
-				t.rollback();
-				 return "preguntaCambioPreferencia";
-			  } 	
-			}
-			
-			//comprobando que el cliente no tenga ya una direccion de tipo guardia
-			// si es asi no se permite anyadir la direccion
+			//Estableciendo los datos sobre el tipo de direccion
 			String tiposDir = "";
 			if (request.getParameter ("idTipoDireccionNew") != null && 
 					!request.getParameter ("idTipoDireccionNew").equals (""))
@@ -481,81 +439,8 @@ protected String insertar (ActionMapping mapping,
 					tiposDir = (String) request.getParameter ("idTipoDireccionNew").substring (0, posUltimaComa);
 			}
 			
-			String tipos[] = tiposDir.split (",");
-			
-				String tiposdireciones="";
-			for (int i=0; i < tipos.length; i++){
-				tiposdireciones+=tipos[i];				
-			}
-			if (request.getParameter("modificarDireccionesCensoWeb")!=null && request.getParameter("modificarDireccionesCensoWeb").equals("1")){
-				idDireccionesCensoWeb=request.getParameter("idDireccionesCensoWeb");
-			}else {		
-				idDireccionesCensoWeb=direccionesAdm.obtenerTipodireccionCensoWeb(idPersona.toString (), 
-					idInstitucionPersona.toString (), tiposdireciones, idDireccion, request);			  
-				if  (!idDireccionesCensoWeb.equals("")){			
-					request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
-					request.setAttribute("control", "1");
-					request.setAttribute("modo", "insertar");	
-					request.setAttribute("idDireccionesPreferentes", idDireccionesPreferentes);
-					t.rollback();
-				return "preguntaCambioTipoDireccion";
-			  }
-			}			
-			
-		
-			RowsContainer rc3 = new RowsContainer(); 
-			Hashtable result= new Hashtable();
-			
-			for (int i=0; i < tipos.length; i++)
-			{
-				String tipo=tipos[i].toString();
-				
-				if(new Integer(tipos[i]).intValue() == ClsConstants.TIPO_DIRECCION_GUARDIA)
-				{
-					String sql = direccionesAdm.comprobarTipoDireccion(tipo, miForm.getIDInstitucion().toString(), miForm.getIDPersona().toString());						
-					RowsContainer rc1 = new RowsContainer ();
-					if (rc1.query (sql))
-						if (rc1.size () >= 1){
-							t.rollback();
-							return exito("messages.inserted.error.ExisteYaGuardia", request);
-						}	
-				}else if (new Integer (tipos[i]).intValue () == ClsConstants.TIPO_DIRECCION_CENSOWEB){//dirección de tipo censoweb					
-					String sql1 = direccionesAdm.comprobarTipoDireccion(tipo, miForm.getIDInstitucion().toString(), miForm.getIDPersona().toString());
-					cambiodireccioncensoweb (miForm,i,sql1, tipo, idDireccionesCensoWeb, request);
-					if ((request.getParameter("modificarPreferencias")!=null && request.getParameter("modificarPreferencias").equals("1")) || (request.getParameter("modificarDireccionesCensoWeb")!=null && request.getParameter("modificarDireccionesCensoWeb").equals("1"))){
-						
-						if ( request.getParameter("control").equals("1")){
-						if (!preferenteModif.equals("")){
-								direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,request);	
-							}
-						}else cambiodireccioncensoweb (miForm,i,sql1, tipo, idDireccionesCensoWeb, request);
-					}
-				} else if (new Integer(tipos[i]).intValue() == ClsConstants.TIPO_DIRECCION_FACTURACION) {
-					boolean tieneDirFacturacion = tipoDirAdm.tieneDireccionFacturacion(miForm.getIDInstitucion().toString(), miForm.getIDPersona()
-							.toString(), null);
-					if (tieneDirFacturacion) {
-						t.rollback();
-						return exito("messages.directions.duplicatedFact", request);
-					}
-					
-				}else { if (!preferenteModif.equals("")){
-							 if (!idDireccionesCensoWeb.equals("") &&(!idDireccionesPreferentes.equals(""))){
-								 direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,request);
-							 }
-							 if (control.equals("0")){
-								  direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,request);
-								 
-							 }
-							 }
-						}
-						
-					
-				
-		} //for
-			
 			//estableciendo los datos de la direccion (desde el formulario 
 			// de la interfaz principalmente) para la posterior insercion
-			CenDireccionesBean beanDir = new CenDireccionesBean ();
 			beanDir.setCodigoPostal (miForm.getCodigoPostal ());
 			beanDir.setCorreoElectronico (miForm.getCorreoElectronico ());
 			beanDir.setDomicilio (miForm.getDomicilio ());
@@ -587,32 +472,25 @@ protected String insertar (ActionMapping mapping,
 			beanDir.setTelefono1 (miForm.getTelefono1 ());
 			beanDir.setTelefono2 (miForm.getTelefono2 ());
 			
-			//estableciendo los datos del tipo de direccion
-			int numTipos = tipos.length;
-			CenDireccionTipoDireccionBean vBeanTipoDir [] = new CenDireccionTipoDireccionBean [numTipos];
-			for (int i=0; i < numTipos; i++) {
-				CenDireccionTipoDireccionBean b = new CenDireccionTipoDireccionBean ();
-				b.setIdTipoDireccion (new Integer (tipos[i]));
-				vBeanTipoDir[i] = b;
-			}
-			
 			//estableciendo los datos del Historico
 			CenHistoricoBean beanHis = new CenHistoricoBean ();
 			beanHis.setMotivo (miForm.getMotivo ());
 			
-			//iniciando la transaccion para modificar en la BD
+			// Se llama a la interfaz Direccion para insertar una nueva direccion
+			Direccion dirAux = direccion.insertar(beanDir, tiposDir, beanHis, request, usr);
+
+			//Si se necesita confirmación por parte del usuario se realiza una peticion de pregunta
+			if(dirAux.isConfirmacionPregunta()){
+				request.setAttribute("modo", "insertar");
+				t.rollback();
+				return dirAux.getTipoPregunta();
+			}
 			
-			
-			//insertando la direccion
-			if (! direccionesAdm.insertarConHistorico (beanDir, vBeanTipoDir, beanHis, this.getLenguaje (request)))
-				throw new SIGAException (direccionesAdm.getError());
-			
-			
-			//insertando en la cola de modificacion de datos para Consejos
-			CenColaCambioLetradoAdm colaAdm = new CenColaCambioLetradoAdm (this.getUserBean (request));
-			if (! colaAdm.insertarCambioEnCola (ClsConstants.COLA_CAMBIO_LETRADO_MODIFICACION_DIRECCION, 
-					beanDir.getIdInstitucion (), beanDir.getIdPersona (), beanDir.getIdDireccion ()))
-				throw new SIGAException (colaAdm.getError ());
+			//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
+			if(dirAux.isFallo()){
+				t.rollback();
+				return exito(dirAux.getMsgError(), request);
+			}
 			
 			//confirmando las modificaciones de BD
 			t.commit();
@@ -621,7 +499,11 @@ protected String insertar (ActionMapping mapping,
 				miForm.setIdDireccion(beanDir.getIdDireccion());
 				return enviarNuevaDireccion(mapping, miForm, request, response);
 			}
+			
 			rc = exitoModal("messages.inserted.success", request);
+			
+		} catch (SIGAException es) {
+			throwExcp (es.getLiteral(), new String[] {"modulo.censo"}, es, t);
 		}
 		catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e, t);
@@ -653,165 +535,27 @@ protected String insertar (ActionMapping mapping,
 		String idDireccionesCensoWeb="";
 		
 
-		try
-		{
-			//Recordar que ya existe un Trigger en BD que no permite insertar 
-			//  mas de una direccion de correo por colegiado
+		try {
 			
 			//obteniendo datos del formulario
 			DireccionesForm miForm = (DireccionesForm) formulario;
-			//iniciando la transaccion para modificaciones en BD
-			t = this.getUserBean (request).getTransactionPesada();
+			CenDireccionesBean beanDir = new CenDireccionesBean ();
+			Direccion direccion = new Direccion();
+			UsrBean usr = this.getUserBean (request);
+			
+			t = usr.getTransactionPesada();
 			t.begin ();
-			
-			Long idPersona = miForm.getIDPersona ();
-			Integer idInstitucionPersona = miForm.getIDInstitucion ();
-			String preferente = this.campoPreferenteBooleanToString (miForm.getPreferenteMail (), 
-					miForm.getPreferenteCorreo (), miForm.getPreferenteFax (), miForm.getPreferenteSms ());
-			String preferenteModif=this.campoPreferenteBooleanToStringSeparados(miForm.getPreferenteMail (), 
-					miForm.getPreferenteCorreo (), miForm.getPreferenteFax (), miForm.getPreferenteSms ());
-			Long idDireccion = miForm.getIdDireccion ();
-			Long idDireccionAntes=miForm.getIdDireccion();
-			String idDireccionesPreferentes="";
-			
-			
-			CenDireccionTipoDireccionAdm tipoDirAdm = new CenDireccionTipoDireccionAdm(this.getUserBean (request));			
-			CenDireccionTipoDireccionBean tipodirBean = new CenDireccionTipoDireccionBean();
-			
-			
-			//obteniendo control de bd de direcciones
-			CenDireccionesAdm direccionesAdm = new CenDireccionesAdm (this.getUserBean (request));
-			CenDireccionesBean direccionesBean = new CenDireccionesBean();
-			//digito de control para saber si viene de la pagina de preferentes o de censoweb ya que son dos preguntas distintas.
-		    String control=request.getParameter("control");
-			if (request.getParameter("modificarPreferencias")!=null && request.getParameter("modificarPreferencias").equals("1")){
-				idDireccionesPreferentes=request.getParameter("idDireccionesPreferentes");
-			}else {			
-				//comprobando que no existen dos direcciones con igual campo preferente
-				idDireccionesPreferentes=direccionesAdm.obtenerPreferenteDirecciones (idPersona.toString (), 
-					idInstitucionPersona.toString (), preferente, idDireccion, request);
-			   if  (!idDireccionesPreferentes.equals("")){	
-				  
-				request.setAttribute("idDireccionesPreferentes", idDireccionesPreferentes);
-				request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
-				request.setAttribute("control", "0");
-				request.setAttribute("modo", "modificarDireccion");
-				t.rollback();
-				 return "preguntaCambioPreferencia";
-			     }  
-			
-			 
-			}
-			//comprobando que el cliente no tenga ya una direccion de tipo guardia
-			// si es asi no se permite anyadir la direccion
 			
 			//esta es la parte que comprobra si tiene una dirección de tipo censoweb.
 			String tiposDir = "";
-				if (request.getParameter ("idTipoDireccionNew") != null && 
-					!request.getParameter ("idTipoDireccionNew").equals (""))
-					{
-					int posUltimaComa = request.getParameter ("idTipoDireccionNew").lastIndexOf (",");				
-					if (posUltimaComa > -1)
+			if (request.getParameter ("idTipoDireccionNew") != null && !request.getParameter ("idTipoDireccionNew").equals ("")){
+				int posUltimaComa = request.getParameter ("idTipoDireccionNew").lastIndexOf (",");				
+				if (posUltimaComa > -1)
 					tiposDir = (String) request.getParameter ("idTipoDireccionNew").substring (0, posUltimaComa);				   
-					}
-					String tipos[] = tiposDir.split (",");
-			
-					String tiposdireciones="";
-					for (int i=0; i < tipos.length; i++){
-						tiposdireciones+=tipos[i];				
-					}					
-					
-			
-					if ((request.getParameter("modificarDireccionesCensoWeb")!=null && request.getParameter("modificarDireccionesCensoWeb").equals("1")) || (request.getParameter("modificarPreferencias")==null && request.getParameter("modificarPreferencias").equals("0"))){
-						idDireccionesCensoWeb=request.getParameter("idDireccionesCensoWeb");				
-					}else {		
-						idDireccionesCensoWeb=direccionesAdm.obtenerTipodireccionCensoWeb(idPersona.toString (), 
-								idInstitucionPersona.toString (), tiposdireciones, idDireccion, request);			  
-						if  (!idDireccionesCensoWeb.equals("")){			
-							request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
-							request.setAttribute("control", "1");
-							request.setAttribute("modo", "modificarDireccion");	
-							request.setAttribute("idDireccionesPreferentes", idDireccionesPreferentes);
-							t.rollback();
-							return "preguntaCambioTipoDireccion";
-						}
-					}
-						
-					
-				//fin de comprobación de censoweb
-			
-			RowsContainer rc2 = new RowsContainer(); 
-			RowsContainer rc3 = new RowsContainer(); 
-			Hashtable result= new Hashtable();
-			int j=0;
-			for (int i=0; i < tipos.length; i++)				
-			{	
-				String tipo=tipos[i].toString();
-				
-				if (new Integer (tipos[i]).intValue () == ClsConstants.TIPO_DIRECCION_GUARDIA)
-				{
-					String sql = direccionesAdm.comprobarTipoDireccion(tipo, miForm.getIDInstitucion().toString(), miForm.getIDPersona().toString());					
-					if (rc2.query(sql)) {
-						if (rc2.size()>=1) {
-							Row idDireccion1 = (Row) rc2.get (j);
-							int idDireccionAhora = Integer.parseInt ((String) idDireccion1.getValue
-									(CenDireccionTipoDireccionBean.C_IDDIRECCION));
-							j++;
-							if(idDireccionAntes.longValue () != new Integer (idDireccionAhora).longValue ()){
-								t.rollback();
-								return exito("messages.inserted.error.ExisteYaGuardia", request);
-							}	
-						}
-						
-						if (!idDireccionesPreferentes.equals("")) {
-							direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString(), idDireccionesPreferentes,
-									preferenteModif, request);
-						}
-					}  
-				}else if (new Integer (tipos[i]).intValue () == ClsConstants.TIPO_DIRECCION_CENSOWEB){						
-					String sql1 = direccionesAdm.comprobarTipoDireccion(tipo, miForm.getIDInstitucion().toString(), miForm.getIDPersona().toString());
-					cambiodireccioncensoweb(miForm, i, sql1, tipo, idDireccionesCensoWeb, request);
-					if ((request.getParameter("modificarPreferencias") != null && request.getParameter("modificarPreferencias").equals("1"))
-							|| (request.getParameter("modificarDireccionesCensoWeb") != null && request.getParameter("modificarDireccionesCensoWeb")
-									.equals("1"))) {
-
-						if (request.getParameter("control").equals("0")) {
-							if (!preferenteModif.equals("")) {
-								direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString(), idDireccionesPreferentes,
-										preferenteModif, request);
-							}
-						} else
-							cambiodireccioncensoweb(miForm, i, sql1, tipo, idDireccionesCensoWeb, request);
-					}
-				}else if (new Integer (tipos[i]).intValue () == ClsConstants.TIPO_DIRECCION_FACTURACION){	
-					boolean tieneDirFacturacion = tipoDirAdm.tieneDireccionFacturacion(miForm.getIDInstitucion().toString(), miForm.getIDPersona().toString(),miForm.getIdDireccion().toString());
-					if(tieneDirFacturacion){
-						t.rollback();
-						return exito("messages.directions.duplicatedFact", request);
-					}	
-				
-				} else {
-					if (!preferenteModif.equals("")) {
-						if (!idDireccionesCensoWeb.equals("") && (!idDireccionesPreferentes.equals(""))) {
-							direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString(), idDireccionesPreferentes,
-									preferenteModif, request);
-						}
-						if (control.equals("0")) {
-							direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString(), idDireccionesPreferentes,
-									preferenteModif, request);
-
-						}
-					}
-				}
-						
-					
-			
-				 
-			} //for
+			}
 			
 			//estableciendo los datos de la direccion (desde el formulario 
 			// de la interfaz principalmente) para la posterior insercion
-			CenDireccionesBean beanDir = new CenDireccionesBean ();
 			beanDir.setCodigoPostal (miForm.getCodigoPostal ());
 			beanDir.setCorreoElectronico (miForm.getCorreoElectronico ());
 			beanDir.setDomicilio (miForm.getDomicilio ());
@@ -845,50 +589,40 @@ protected String insertar (ActionMapping mapping,
 			beanDir.setIdDireccion (miForm.getIdDireccion ());
 			beanDir.setOriginalHash ((Hashtable) request.getSession ().getAttribute ("DATABACKUP"));
 			
-			//estableciendo los datos del tipo de direccion
-			int numTipos = tipos.length;
-			CenDireccionTipoDireccionBean vBeanTipoDir [] = new CenDireccionTipoDireccionBean [numTipos];
-			for (int i = 0; i < numTipos; i++) {
-				CenDireccionTipoDireccionBean b = new CenDireccionTipoDireccionBean ();
-				b.setIdTipoDireccion (new Integer (tipos[i]));				
-				vBeanTipoDir[i] = b;
-			}
-			
 			//estableciendo los datos del Historico
 			CenHistoricoBean beanHis = new CenHistoricoBean ();
 			beanHis.setMotivo (miForm.getMotivo ());
 			
+			// Se llama a la interfaz Direccion para insertar una nueva direccion
+			Direccion dirAux = direccion.actualizarDireccion(beanDir, tiposDir, beanHis, request, usr);
+
+			//Si se necesita confirmación por parte del usuario se realiza una peticion de pregunta
+			if(dirAux.isConfirmacionPregunta()){
+				request.setAttribute("modo", "modificarDireccion");
+				t.rollback();
+				return dirAux.getTipoPregunta();
+			}
 			
-			
-			//insertando la direccion en BD
-			if (!direccionesAdm.updateConHistorico 
-					(beanDir, vBeanTipoDir, beanHis, this.getLenguaje (request)))
-				throw new SIGAException (direccionesAdm.getError ());
-			
-			//insertando en la cola de modificacion de datos para Consejos
-			CenColaCambioLetradoAdm colaAdm = new CenColaCambioLetradoAdm (this.getUserBean (request));
-			if (! colaAdm.insertarCambioEnCola 
-					(ClsConstants.COLA_CAMBIO_LETRADO_MODIFICACION_DIRECCION,
-					beanDir.getIdInstitucion (), beanDir.getIdPersona (), beanDir.getIdDireccion ()))
-				throw new SIGAException (colaAdm.getError ());
+			//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
+			if(dirAux.isFallo()){
+				t.rollback();
+				return exito(dirAux.getMsgError(), request);
+			}
 			
 			//confirmando los cambios en BD
 			t.commit();
 			
 			//saliendo
 			rc = exitoModal("messages.updated.success", request);
+		} catch (SIGAException es) {
+			throwExcp (es.getLiteral(), new String[] {"modulo.censo"}, es, t);
+		
 		}
 		catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e, t);
 		}
 		return rc; 
 	} //modificar()
-
-	private String comprobarTipoDireccion(String tipo, String string,
-			String string2) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	/** 
 	 * Funcion que borra una direccion de cliente
@@ -904,59 +638,42 @@ protected String insertar (ActionMapping mapping,
 							 MasterForm formulario, 
 							 HttpServletRequest request, 
 							 HttpServletResponse response)
-			throws SIGAException
-	{
+			throws SIGAException {
+		
 		//Variables generales
 		String rc = "";
 		UserTransaction t = null;
 		
-		try
-		{
-			//Recordar que un trigger hace comprobaciones para no borrar 
-			// direccion de Correo ni de despacho o guia cuando sea necesario
-			
+		try {
+		
 			//obteniendo los datos del formulatio
 			DireccionesForm miForm = (DireccionesForm) formulario;
-			Long idPersona = miForm.getIDPersona ();
-			Long idDireccion;
+			CenDireccionesBean beanDir = new CenDireccionesBean ();
+			Direccion direccion = new Direccion();
+			UsrBean usr = this.getUserBean (request);
+			
+			t = usr.getTransactionPesada();
+			t.begin ();
+			
+			beanDir.setIdPersona (miForm.getIDPersona ());
+			beanDir.setIdInstitucion (miForm.getIDInstitucion ());
+			
 			// Se comprueba en el formulario porque se puede venir de sitios distintos
 			if (miForm.getIdDireccion()!=null)
-				idDireccion = miForm.getIdDireccion();
+				beanDir.setIdDireccion(miForm.getIdDireccion());
 			else
-				idDireccion = new Long ((String) miForm.getDatosTablaOcultos (0).get (0));
-			Integer idInstitucion = miForm.getIDInstitucion ();
-			
-			//estableciendo los datos clave para borrar direccion
-			CenDireccionesAdm admDir = new CenDireccionesAdm (this.getUserBean (request));
-			Hashtable claves = new Hashtable ();
-			UtilidadesHash.set (claves, CenDireccionTipoDireccionBean.C_IDDIRECCION, idDireccion);
-			UtilidadesHash.set (claves, CenDireccionTipoDireccionBean.C_IDINSTITUCION, idInstitucion);
-			UtilidadesHash.set (claves, CenDireccionTipoDireccionBean.C_IDPERSONA, idPersona);
-			
-			//estableciendo los datos del Historico
-			CenHistoricoBean beanHis = new CenHistoricoBean();
-			beanHis.setMotivo(ClsConstants.HISTORICO_REGISTRO_ELIMINADO);
-			 CenColaCambioLetradoAdm colaAdm = new CenColaCambioLetradoAdm(this.getUserBean(request));
-			
-			//iniciando la transaccion para modificar en BD
-			t = this.getUserBean (request).getTransaction ();
-			t.begin();
+				beanDir.setIdDireccion(new Long ((String) miForm.getDatosTablaOcultos (0).get (0)));
  			
-			//borrando la direccion en BD
-			if (!admDir.deleteConHistorico (claves, beanHis, this.getLenguaje (request), true))
-				throw new SIGAException (admDir.getError ());
-			
-			//insertando en la cola de modificacion de datos para Consejos
-			if (! colaAdm.insertarCambioEnCola 
-					(ClsConstants.COLA_CAMBIO_LETRADO_BORRADO_DIRECCION, 
-					idInstitucion, idPersona, idDireccion))
-				throw new SIGAException (colaAdm.getError ());
+			//Se llama a la interfaz Direccion para realizar el borrado
+			direccion.borrar(beanDir, request, usr);
 			
 			//confirmando los cambios en BD
 			t.commit();
 			
 			//saliendo
 			rc = exitoRefresco("messages.deleted.success", request);
+		} catch (SIGAException es) {
+			throwExcp (es.getLiteral(), new String[] {"modulo.censo"}, es, t);
 		}
 		catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e, t);
@@ -1022,8 +739,8 @@ protected String insertar (ActionMapping mapping,
 										   MasterForm formulario, 
 										   HttpServletRequest request, 
 										   HttpServletResponse response)
-			throws SIGAException
-	{
+			throws SIGAException {
+		
 		String modo = "";
 		UserTransaction t = null;
 		
@@ -1232,85 +949,41 @@ protected String insertar (ActionMapping mapping,
 		
 		try
 		{
-			//Recordar que un trigger hace comprobaciones para no borrar 
-			// direccion de Correo ni de despacho o guia cuando sea necesario
-			
 			//obteniendo los datos del formulatio
 			DireccionesForm miForm = (DireccionesForm) formulario;
-			Long idPersona = miForm.getIDPersona ();
-			Long idDireccion;
-			String idDireccionesPreferentes="";
-			CenDireccionTipoDireccionAdm tipoDirAdm = new CenDireccionTipoDireccionAdm(this.getUserBean (request));			
-			CenDireccionTipoDireccionBean tipodirBean = new CenDireccionTipoDireccionBean();
-			 CenColaCambioLetradoAdm colaAdm = new CenColaCambioLetradoAdm(this.getUserBean(request));
-			CenDireccionesBean direccionesBean = new CenDireccionesBean();
-			//obteniendo datos del formulario
-			Integer idInstitucionPersona = miForm.getIDInstitucion ();
-			String preferente = this.campoPreferenteBooleanToString (miForm.getPreferenteMail (), 
-					miForm.getPreferenteCorreo(), miForm.getPreferenteFax (), miForm.getPreferenteSms ());
-			String preferenteModif=this.campoPreferenteBooleanToStringSeparados(miForm.getPreferenteMail (), 
-					miForm.getPreferenteCorreo (), miForm.getPreferenteFax (), miForm.getPreferenteSms ());
+			CenDireccionesBean beanDir = new CenDireccionesBean ();
+			Direccion direccion = new Direccion();
+			UsrBean usr = this.getUserBean (request);
+			
+			t = usr.getTransactionPesada();
+			t.begin ();
+			
+			beanDir.setIdPersona (miForm.getIDPersona ());
+			beanDir.setIdInstitucion (miForm.getIDInstitucion ());
+			
+			/*  BORRADO CON HISTORICO  */
 			
 			// Se comprueba en el formulario porque se puede venir de sitios distintos
 			if (miForm.getIdDireccion()!=null)
-				idDireccion = miForm.getIdDireccion();
+				beanDir.setIdDireccion(miForm.getIdDireccion());
 			else
-				idDireccion = new Long ((String) miForm.getDatosTablaOcultos (0).get (0));
-			Integer idInstitucion = miForm.getIDInstitucion ();
-			
-			//estableciendo los datos clave para borrar direccion
-			CenDireccionesAdm admDir = new CenDireccionesAdm (this.getUserBean (request));
-			Hashtable claves = new Hashtable ();
-			UtilidadesHash.set (claves, CenDireccionTipoDireccionBean.C_IDDIRECCION, idDireccion);
-			UtilidadesHash.set (claves, CenDireccionTipoDireccionBean.C_IDINSTITUCION, idInstitucion);
-			UtilidadesHash.set (claves, CenDireccionTipoDireccionBean.C_IDPERSONA, idPersona);
+				beanDir.setIdDireccion(new Long ((String) miForm.getDatosTablaOcultos (0).get (0)));
 			
 			//estableciendo los datos del Historico
 			CenHistoricoBean beanHis = new CenHistoricoBean();
 			beanHis.setMotivo(ClsConstants.HISTORICO_REGISTRO_ELIMINADO);
 			
 			//iniciando la transaccion para modificar en BD
-			t = this.getUserBean (request).getTransactionPesada();
-			t.begin();
- 			
+			t = usr.getTransactionPesada();
+			t.begin(); 			
 			
-			//obteniendo adm de BD de direcciones
-			CenDireccionesAdm direccionesAdm = new CenDireccionesAdm (this.getUserBean (request));
-			//digito de control para saber si viene de la pagina de preferentes o de censoweb ya que son dos preguntas distintas.
-		    String control=request.getParameter("control");
+			//Se llama a la interfaz Direccion para realizar el borrado
+			direccion.borrar(beanDir, request, usr);
+
 			
-			if (request.getParameter("modificarPreferencias")!=null && request.getParameter("modificarPreferencias").equals("1")){
-				idDireccionesPreferentes=request.getParameter("idDireccionesPreferentes");
-			//	direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,request);
-			}else {
-			//comprobando que no existen dos direcciones con igual campo preferente
-			 idDireccionesPreferentes=direccionesAdm.obtenerPreferenteDirecciones (idPersona.toString (), 
-					idInstitucionPersona.toString (), preferente, idDireccion, request);
-			  if  (!idDireccionesPreferentes.equals("")){
-			    request.setAttribute("idDireccionesPreferentes", idDireccionesPreferentes);
-				request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
-				request.setAttribute("control", "0");
-				request.setAttribute("modo", "guardarInsertarHistorico");
-				t.rollback();
-				return "preguntaCambioPreferencia";
-			} 	
-			}
+			/*  AÑADIR CON HISTORICO  */
 			
-			//borrando la direccion en BD
-			if (!admDir.deleteConHistorico (claves, beanHis, this.getLenguaje (request), false))
-				throw new SIGAException (admDir.getError ());
-			
-			//insertando en la cola de modificacion de datos para Consejos
-			if (! colaAdm.insertarCambioEnCola 
-					(ClsConstants.COLA_CAMBIO_LETRADO_BORRADO_DIRECCION, 
-					idInstitucion, idPersona, idDireccion))
-				throw new SIGAException (colaAdm.getError ());
-			
-			//Recordar que ya existe un Trigger en BD que no permite insertar 
-			//  mas de una direccion de correo por colegiado
-			
-			//comprobando que el cliente no tenga ya una direccion de tipo guardia
-			// si es asi no se permite anyadir la direccion
+			//Estableciendo los datos sobre el tipo de direccion
 			String tiposDir = "";
 			if (request.getParameter ("idTipoDireccionNew") != null && 
 					!request.getParameter ("idTipoDireccionNew").equals (""))
@@ -1320,74 +993,9 @@ protected String insertar (ActionMapping mapping,
 					tiposDir = (String) request.getParameter ("idTipoDireccionNew").substring (0, posUltimaComa);
 			}
 			
-			String tipos[] = tiposDir.split (",");
-			
-			String tiposdireciones="";
-			for (int i=0; i < tipos.length; i++){
-				tiposdireciones+=tipos[i];				
-			}			
 		
-			
-			if (request.getParameter("modificarDireccionesCensoWeb")!=null && request.getParameter("modificarDireccionesCensoWeb").equals("1")){
-				idDireccionesCensoWeb=request.getParameter("idDireccionesCensoWeb");				
-			}else {		
-				idDireccionesCensoWeb=direccionesAdm.obtenerTipodireccionCensoWeb(idPersona.toString (), 
-					idInstitucionPersona.toString (), tiposdireciones, idDireccion, request);			  
-				if  (!idDireccionesCensoWeb.equals("")){	
-					
-						request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
-						request.setAttribute("control", "1");
-						request.setAttribute("modo", "guardarInsertarHistorico");	
-						request.setAttribute("idDireccionesPreferentes", idDireccionesPreferentes);
-						t.rollback();
-						return "preguntaCambioTipoDireccion";
-			 }
-			}			
-			
-			RowsContainer rc2 = new RowsContainer(); 
-			RowsContainer rc3 = new RowsContainer(); 
-			Hashtable result= new Hashtable();
-			int j=0;
-			for (int i=0; i < tipos.length; i++)
-			{
-				 String tipo=tipos[i].toString();
-				 
-				if(new Integer(tipos[i]).intValue() == ClsConstants.TIPO_DIRECCION_GUARDIA)
-				{
-					String sql = direccionesAdm.comprobarTipoDireccion(tipo, miForm.getIDInstitucion().toString(), miForm.getIDPersona().toString());						
-					RowsContainer rc1 = new RowsContainer ();
-					if (rc1.query (sql))
-						if (rc1.size () >= 1){
-							t.rollback();
-							return exito("messages.inserted.error.ExisteYaGuardia", request);
-						}	
-					}else if (new Integer (tipos[i]).intValue () == ClsConstants.TIPO_DIRECCION_CENSOWEB){						
-					String sql1 = direccionesAdm.comprobarTipoDireccion(tipo, miForm.getIDInstitucion().toString(), miForm.getIDPersona().toString());
-					cambiodireccioncensoweb (miForm,i,sql1, tipo, idDireccionesCensoWeb, request);
-					if ((request.getParameter("modificarPreferencias")!=null && request.getParameter("modificarPreferencias").equals("1")) || (request.getParameter("modificarDireccionesCensoWeb")!=null && request.getParameter("modificarDireccionesCensoWeb").equals("1"))){
-						
-						if ( request.getParameter("control").equals("0")){
-						if (!preferenteModif.equals("")){
-								direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,request);	
-							}
-						}else cambiodireccioncensoweb (miForm,i,sql1, tipo, idDireccionesCensoWeb, request);
-					}
-				}else { if (!preferenteModif.equals("")){
-							 if (!idDireccionesCensoWeb.equals("") &&(!idDireccionesPreferentes.equals(""))){
-								 direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,request);
-							 }
-							 if (control.equals("0")){
-								  direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,request);
-								 
-							 }
-							 }
-						}
-						
-			} //for
-			
 			//estableciendo los datos de la direccion (desde el formulario 
 			// de la interfaz principalmente) para la posterior insercion
-			CenDireccionesBean beanDir = new CenDireccionesBean ();
 			beanDir.setCodigoPostal (miForm.getCodigoPostal ());
 			beanDir.setCorreoElectronico (miForm.getCorreoElectronico ());
 			beanDir.setDomicilio (miForm.getDomicilio ());
@@ -1408,7 +1016,6 @@ protected String insertar (ActionMapping mapping,
 				beanDir.setIdPoblacion ("");
 				beanDir.setIdProvincia ("");
 			}
-			beanDir.setIdPersona (miForm.getIDPersona ());
 			beanDir.setMovil (miForm.getMovil ());
 			beanDir.setPaginaweb (miForm.getPaginaWeb ());
 			beanDir.setPreferente (this.campoPreferenteBooleanToString
@@ -1419,44 +1026,46 @@ protected String insertar (ActionMapping mapping,
 			beanDir.setTelefono1 (miForm.getTelefono1 ());
 			beanDir.setTelefono2 (miForm.getTelefono2 ());
 			
-			//estableciendo los datos del tipo de direccion
-			int numTipos = tipos.length;
-			CenDireccionTipoDireccionBean vBeanTipoDir [] = new CenDireccionTipoDireccionBean [numTipos];
-			for (int i=0; i < numTipos; i++) {
-				CenDireccionTipoDireccionBean b = new CenDireccionTipoDireccionBean ();
-				b.setIdTipoDireccion (new Integer (tipos[i]));
-				vBeanTipoDir[i] = b;
+			//estableciendo los datos del Historico
+			beanHis.setMotivo (miForm.getMotivo());
+			
+			// Se llama a la interfaz Direccion para insertar una nueva direccion
+			Direccion dirAux = direccion.insertar(beanDir, tiposDir, beanHis, request, usr);
+
+			//Si se necesita confirmación por parte del usuario se realiza una peticion de pregunta
+			if(dirAux.isConfirmacionPregunta()){
+				request.setAttribute("modo", "guardarInsertarHistorico");
+				t.rollback();
+				return dirAux.getTipoPregunta();
 			}
 			
-			//estableciendo los datos del Historico
-			beanHis.setMotivo (miForm.getMotivo ());
-			
-			//insertando la direccion
-			if (! direccionesAdm.insertarConHistorico (beanDir, vBeanTipoDir, beanHis, this.getLenguaje (request)))
-				throw new SIGAException (direccionesAdm.getError());
-			
-			
-			//insertando en la cola de modificacion de datos para Consejos
-			if (! colaAdm.insertarCambioEnCola (ClsConstants.COLA_CAMBIO_LETRADO_MODIFICACION_DIRECCION, 
-					beanDir.getIdInstitucion (), beanDir.getIdPersona (), beanDir.getIdDireccion ()))
-				throw new SIGAException (colaAdm.getError ());
+			//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
+			if(dirAux.isFallo()){
+				t.rollback();
+				return exito(dirAux.getMsgError(), request);
+			}
 			
 			//confirmando las modificaciones de BD
 			t.commit();
 			
 			//saliendo
 			rc = exitoModal("messages.updated.success", request);
+			
+		} catch (SIGAException es) {
+			throwExcp (es.getLiteral(), new String[] {"modulo.censo"}, es, t);
 		}
 		catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e, t);
 		}
 		return rc;
 	} //borrar()
+	
+	
 	protected String enviarNuevaDireccion (ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
-			HttpServletResponse response) throws SIGAException 
-			{
+			HttpServletResponse response) throws SIGAException {
+		
 		try {
 
 			DireccionesForm form = (DireccionesForm)formulario;

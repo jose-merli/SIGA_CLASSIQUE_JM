@@ -18,6 +18,7 @@ import com.ibatis.sqlmap.engine.mapping.sql.dynamic.elements.IsEmptyTagHandler;
 import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.*;
+import com.siga.censo.action.Direccion;
 import com.siga.general.*;
 import com.siga.gratuita.form.BusquedaClientesFiltrosForm;
 
@@ -408,7 +409,7 @@ public class BusquedaClientesFiltrosAction extends MasterAction
 			// ACTUALIZAMOS LA DIRECCIÓN DE GUARDIA DEL CLIENTE. EN CASO DE QUE NO EXISTIERA UNA DIRECCIÓN DE GUARDIA
 			// ENTONCES LA INSERTAMOS Y SI YA EXISTIA ACTUALIZAMOS LOS DATOS DE LA MISMA
 			CenDireccionesBean beanDir  = new CenDireccionesBean ();
-			CenDireccionesAdm direccionesAdm = new CenDireccionesAdm (this.getUserBean(request));
+			Direccion direccion = new Direccion();	
 			beanDir.setIdInstitucion(formulario.getIdInstitucion());
 			beanDir.setIdPersona(formulario.getIdPersona());
 			beanDir.setFax1(formulario.getFax1());
@@ -427,21 +428,20 @@ public class BusquedaClientesFiltrosAction extends MasterAction
 			beanDir.setIdProvincia("");
 			beanDir.setPaginaweb("");
 			beanDir.setPreferente("");
-			beanDir.setIdDireccion(direccionesAdm.getNuevoID(beanDir));
-			resultOk=direccionesAdm.insert(beanDir);
-			if (!resultOk){
-				throw new SIGAException (direccionesAdm.getError());
-			}
-			// insertamos el tipo de dirección
-			CenDireccionTipoDireccionAdm admTipoDir = new CenDireccionTipoDireccionAdm (this.getUserBean(request));
-			CenDireccionTipoDireccionBean beanTipoDir=new CenDireccionTipoDireccionBean();
-			beanTipoDir.setIdDireccion(beanDir.getIdDireccion());
-			beanTipoDir.setIdInstitucion(beanDir.getIdInstitucion());
-			beanTipoDir.setIdPersona(beanDir.getIdPersona());
-			beanTipoDir.setIdTipoDireccion(new Integer(ClsConstants.TIPO_DIRECCION_GUARDIA));
-			resultOk=admTipoDir.insert(beanTipoDir);
-			if (!resultOk){
-				throw new SIGAException (admTipoDir.getError());
+			
+			//estableciendo los datos del tipo de direccion
+			String tiposDir = ""+ClsConstants.TIPO_DIRECCION_GUARDIA;
+	
+			//estableciendo los datos del Historico
+			CenHistoricoBean beanHis = new CenHistoricoBean ();
+			beanHis.setMotivo ("");
+			
+			// Se llama a la interfaz Direccion para actualizar una nueva direccion
+			Direccion dirAux = direccion.insertar(beanDir, tiposDir, beanHis, null, usr);
+							
+			//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
+			if(dirAux.isFallo()){
+				throw new SIGAException (dirAux.getMsgError());
 			}
 			
 			request.setAttribute("mensaje","messages.inserted.success");
@@ -451,6 +451,8 @@ public class BusquedaClientesFiltrosAction extends MasterAction
 			request.setAttribute("modal","1");
 			forward = "exito";
 			
+		} catch (SIGAException es) {
+			throwExcp (es.getLiteral(), new String[] {"modulo.censo"}, es, tx);			
 		}catch (Exception e) {
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
 		} 
@@ -479,8 +481,8 @@ public class BusquedaClientesFiltrosAction extends MasterAction
 			
 			// ACTUALIZAMOS LA DIRECCIÓN DE GUARDIA DEL CLIENTE. EN CASO DE QUE NO EXISTIERA UNA DIRECCIÓN DE GUARDIA
 			// ENTONCES LA INSERTAMOS Y SI YA EXISTIA ACTUALIZAMOS LOS DATOS DE LA MISMA
+			Direccion direccion = new Direccion();	
 			CenDireccionesBean beanDir  = new CenDireccionesBean ();
-			CenDireccionesAdm direccionesAdm = new CenDireccionesAdm (this.getUserBean(request));
 			beanDir.setIdInstitucion(formulario.getIdInstitucion());
 			beanDir.setIdPersona(formulario.getIdPersona());
 			beanDir.setIdDireccion(formulario.getIdDireccion());
@@ -490,12 +492,23 @@ public class BusquedaClientesFiltrosAction extends MasterAction
 			beanDir.setTelefono1(formulario.getTelefono1());
 			beanDir.setTelefono2(formulario.getTelefono2());
 			
-			beanDir.setOriginalHash((Hashtable)request.getSession().getAttribute("DATABACKUP_CLIENTESFILTRO"));
 			// Actualizamos el registro de la dirección de guardia
 			beanDir.setIdDireccion(formulario.getIdDireccion());
-			resultOk=direccionesAdm.update(direccionesAdm.beanToHashTable(beanDir),beanDir.getOriginalHash());
-			if (!resultOk) {
-				throw new SIGAException (direccionesAdm.getError());
+			beanDir.setOriginalHash((Hashtable)request.getSession().getAttribute("DATABACKUP_CLIENTESFILTRO"));
+			
+			//estableciendo los datos del tipo de direccion guardia
+			String tiposDir = ""+ClsConstants.TIPO_DIRECCION_GUARDIA;
+	
+			//estableciendo los datos del Historico
+			CenHistoricoBean beanHis = new CenHistoricoBean ();
+			beanHis.setMotivo ("");
+			
+			// Se llama a la interfaz Direccion para actualizar una nueva direccion
+			Direccion dirAux = direccion.actualizarDireccion(beanDir, tiposDir, beanHis, null, usr);
+							
+			//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
+			if(dirAux.isFallo()){
+				throw new SIGAException (dirAux.getMsgError());
 			}
 			
 			request.setAttribute("mensaje","messages.inserted.success");
@@ -504,6 +517,7 @@ public class BusquedaClientesFiltrosAction extends MasterAction
 			request.setAttribute("hiddenFrame", "1");
 			request.setAttribute("modal","1");
 			forward = "exito";
+			
 			//ELIMINAMOS EL DATABUCKUP
 			if(request.getSession().getAttribute("DATABACKUP_CLIENTESFILTRO") != null)
 				request.getSession().removeAttribute("DATABACKUP_CLIENTESFILTRO");

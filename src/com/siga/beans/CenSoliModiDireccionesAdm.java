@@ -20,6 +20,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.censo.action.Direccion;
 import com.siga.general.SIGAException;
 
 /**
@@ -445,9 +446,11 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 				// Actualizo el estado de la solicitud a realizada				
 				if (!this.update(hash,hashOriginal)){
 					correcto=false;
-				}	
-				else{
+					
+				}else{
+				
 					// Obtengo el registro a modificar de la tabla cliente y preparo el bean correspondiente
+					Direccion direccion = new Direccion();	
 					CenDireccionesAdm adminDir = new CenDireccionesAdm(this.usrbean);					
 					dirOriginal=adminDir.getEntradaDireccionGeneral((String)hash.get(CenDireccionesBean.C_IDPERSONA),(String)hash.get(CenDireccionesBean.C_IDINSTITUCION),(String)hash.get(CenDireccionesBean.C_IDDIRECCION));
 					dirModificada.setIdPersona(new Long((String)dirOriginal.get(CenDireccionesBean.C_IDPERSONA)));
@@ -474,44 +477,54 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 					dirModificada.setPoblacionExtranjera((String)hash.get(CenSoliModiDireccionesBean.C_POBLACIONEXTRANJERA));
 					dirModificada.setOriginalHash(dirOriginal);					
 					// Fijamos los datos del Historico
-					beanHist.setMotivo((String)hash.get(CenSoliModiDireccionesBean.C_MOTIVO));			
-					// Actualizo el registro Direcciones con historico				
-					if (!adminDir.updateConHistorico(dirModificada,null,beanHist, idioma)){
+					beanHist.setMotivo((String)hash.get(CenSoliModiDireccionesBean.C_MOTIVO));		
+					
+					// Se llama a la interfaz Direccion para actualizar una nueva direccion
+					Direccion dirAux = direccion.actualizarDireccion(dirModificada, "", beanHist, null, this.usrbean);
+									
+					//Si existe algún fallo en la actualizacion se llama al metodo exito con el error correspondiente
+					if(dirAux.isFallo()){
 						correcto=false;
 					}
 					
-
-					// Nos quedamos con una copia de la direccion original (pedido por Jaen) 
-					// y la insertamos hacemos
+					// Nos quedamos con una copia de la direccion original (pedido por Jaen) y la insertamos hacemos
 					CenDireccionesBean beanDir = new CenDireccionesBean();
 					beanDir=(CenDireccionesBean) adminDir.hashTableToBean(dirOriginal);
 					String oldId = beanDir.getIdDireccion().toString();
 					beanDir.setIdDireccion( adminDir.getNuevoID(beanDir));
 					beanDir.setFechaBaja(GstDate.getHoyJava());
-					if (!adminDir.insert(beanDir)){
-						correcto=false;
-					}
 					
+					//estableciendo los datos del tipo de direccion
+					String tiposDir = "";
 					CenDireccionTipoDireccionAdm tipoDirAdm = new CenDireccionTipoDireccionAdm (this.usrbean);
 					CenTipoDireccionAdm cenTipoDirAdm = new CenTipoDireccionAdm (this.usrbean);
 					Vector vTipos = new Vector();
 					vTipos=tipoDirAdm.getTiposDireccion(beanDir.getIdInstitucion().toString(),beanDir.getIdPersona().toString(), oldId);
-					if ( (vTipos != null) && (vTipos.size() > 0) ){
+					if ((vTipos != null) && (vTipos.size() > 0)){
 						for (int i = 0; i <= vTipos.size()-1; i++) {
 							CenDireccionTipoDireccionBean tipoDir = (CenDireccionTipoDireccionBean) tipoDirAdm.hashTableToBean((Hashtable)vTipos.get(i));
-							tipoDir.setIdDireccion(beanDir.getIdDireccion());
-							tipoDirAdm.insert(tipoDir);
+							tiposDir = tipoDir.getIdTipoDireccion()+",";
 						}
 					}
+
+					// Se llama a la interfaz Direccion para actualizar una nueva direccion
+					dirAux = new Direccion(); 
+					dirAux = direccion.insertar(beanDir, tiposDir, beanHist, null, this.usrbean);
+									
+					//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
+					if(dirAux.isFallo()){
+						correcto=false;
+					}					
 				}
 			}
+		
+       } catch (SIGAException e) {
+    	   throw e;
+       
+       } catch (Exception e) {
+    	   throw new ClsExceptions (e, "Error al procesar solicitudes de modificaciones de direcciones");
        }
-		catch (SIGAException e) {
-			throw e;
-		}
-       catch (Exception e) {
-       	throw new ClsExceptions (e, "Error al procesar solicitudes de modificaciones de direcciones");
-       }
+       
        return correcto;                        
     }	
 	

@@ -29,6 +29,7 @@ import com.siga.beans.CenDireccionTipoDireccionAdm;
 import com.siga.beans.CenDireccionTipoDireccionBean;
 import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
+import com.siga.beans.CenHistoricoBean;
 import com.siga.beans.CenNoColegiadoAdm;
 import com.siga.beans.CenNoColegiadoBean;
 import com.siga.beans.ScsRetencionesAdm;
@@ -310,29 +311,22 @@ public class ColegiarAction extends MasterAction
 					new Integer (colegio), new Long (idPersona), null))
 				throw new SIGAException (colaAdm.getError ());
 			
-			//insertando las direcciones
+////////////////////////////////   INSERTANDO LA DIRECCION ///////////////////////////////////////////////
 			Hashtable hashDir = new Hashtable ();
 			hashDir.put (CenDireccionesBean.C_IDPERSONA, idPersona);
 			hashDir.put (CenDireccionesBean.C_IDINSTITUCION, idInstitucionOrigen);
 			Vector listaBeanDireccion = admDir.select (hashDir);
-			if ((listaBeanDireccion != null) && (listaBeanDireccion.size () > 0))
-			{
+			if ((listaBeanDireccion != null) && (listaBeanDireccion.size () > 0)) {
 				Long idDireccionDestino, idDireccionOrigen;
 				CenDireccionesBean beanDir;
-				for (int i=0; i < listaBeanDireccion.size (); i++)
-				{
+				Direccion direccion;
+				for (int i=0; i < listaBeanDireccion.size (); i++) {
+					
 					//obteniendo direccion de Consejo
 					beanDir = (CenDireccionesBean) listaBeanDireccion.get (i);
 					idDireccionOrigen = beanDir.getIdDireccion ();
-					
-					//insertando direccion colegio en BD
-					beanDir.setIdInstitucion (new Integer (colegio));
-					idDireccionDestino = admDir.getNuevoID (beanDir); //muy importante
-					if (idDireccionDestino == null)
-						idDireccionDestino = new Long (1);
-					beanDir.setIdDireccion (idDireccionDestino);
-					if (! admDir.insert (beanDir))
-						throw new ClsExceptions (admDir.getError ());
+					direccion = new Direccion();
+					String tiposDir ="";
 					
 					//buscando los tipos de la direccion del consejo
 					Hashtable hashDirTipoDir = new Hashtable ();
@@ -340,42 +334,47 @@ public class ColegiarAction extends MasterAction
 					hashDirTipoDir.put (CenDireccionTipoDireccionBean.C_IDINSTITUCION, idInstitucionOrigen);
 					hashDirTipoDir.put (CenDireccionTipoDireccionBean.C_IDDIRECCION, idDireccionOrigen);
 					Vector beanDireccionTipoDireccion = admTipoDir.select (hashDirTipoDir);
-					if ((beanDireccionTipoDireccion != null) && (beanDireccionTipoDireccion.size () >0))
-					{
+					if ((beanDireccionTipoDireccion != null) && (beanDireccionTipoDireccion.size () >0)) {
 						CenDireccionTipoDireccionBean beanTipoDir;
-						for (int j=0; j < beanDireccionTipoDireccion.size (); j++)
-						{
+						for (int j=0; j < beanDireccionTipoDireccion.size (); j++){
 							//insertando tipo direccion del consejo en colegio
 							beanTipoDir = (CenDireccionTipoDireccionBean) beanDireccionTipoDireccion.get (j); 
-							beanTipoDir.setIdInstitucion (new Integer (colegio));
-							beanTipoDir.setIdDireccion (idDireccionDestino);
-							if (! admTipoDir.insert (beanTipoDir))
-								throw new ClsExceptions (admTipoDir.getError ());
+							tiposDir = beanTipoDir.getIdTipoDireccion() + ",";
 						} //for
 					} //if
+					
+					//estableciendo los datos del Historico
+					CenHistoricoBean beanHis = new CenHistoricoBean ();
+					beanHis.setMotivo ("");
+					
+					Direccion dirAux = direccion.insertar(beanDir, tiposDir, beanHis, null, user);
+					
+					if(dirAux.isFallo()){
+						t.rollback();
+						throw new SIGAException (dirAux.getMsgError());
+					}
 					
 					//enlazando la direccion de Consejo con la del Colegio
 					beanDir = (CenDireccionesBean) listaBeanDireccion.get (i);
 					beanDir.setIdInstitucion (new Integer (idInstitucionOrigen));
+					beanDir.setIdDireccionAlta (beanDir.getIdDireccion());
 					beanDir.setIdDireccion (idDireccionOrigen);
 					beanDir.setIdInstitucionAlta (new Integer (colegio));
-					beanDir.setIdDireccionAlta (idDireccionDestino);
-					if (! admDir.update (beanDir))
-						throw new ClsExceptions (admDir.getError ());
 					
-					//insertando la direccion en cola para actualizacion en Consejos
-					if (!colaAdm.insertarCambioEnCola (ClsConstants.COLA_CAMBIO_LETRADO_MODIFICACION_DIRECCION, 
-							new Integer (colegio), beanDir.getIdPersona (), idDireccionDestino))
-						throw new SIGAException (colaAdm.getError ());
+					dirAux = direccion.actualizarDireccion(beanDir, tiposDir, beanHis, null, user);
+					
+					if(dirAux.isFallo()){
+						t.rollback();
+						throw new SIGAException (dirAux.getMsgError());
+					}
 				} //for
 			} //if
 			
 			if(estadoColegial.equalsIgnoreCase("20")){
-			try{
-				RetencionesIRPFAction irpf = new  RetencionesIRPFAction();
-				irpf.insertarNuevo(idPersona, "SYSDATE",request);
-				}
-				catch (Exception e) {
+				try{
+					RetencionesIRPFAction irpf = new  RetencionesIRPFAction();
+					irpf.insertarNuevo(idPersona, "SYSDATE",request);
+				} catch (Exception e) {
 					t.rollback();
 					throw e;
 				}
@@ -391,10 +390,11 @@ public class ColegiarAction extends MasterAction
 			
 			//realizando la devolucion
 			forward = this.exitoModal ("botonAccion.message.error2", request);
-		}
-		catch (Exception e) {
-			throwExcp ("messages.general.error", new String[] {"modulo.censo"},
-					e, t);
+		
+		} catch (SIGAException es) {
+			throwExcp (es.getLiteral(), new String[] {"modulo.censo"}, es, t);
+		}catch (Exception e) {
+			throwExcp ("messages.general.error", new String[] {"modulo.censo"}, e, t);
 		}
 		return forward;
 	} //insertarColegiado ()

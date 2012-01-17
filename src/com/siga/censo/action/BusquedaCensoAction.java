@@ -229,6 +229,7 @@ public class BusquedaCensoAction extends MasterAction {
 			CenPersonaAdm adminPer=new CenPersonaAdm(usr);
    			CenClienteAdm clienteAdm = new CenClienteAdm(usr);   			
    			CenClienteBean cli = null;
+   			UserTransaction t = null; 
    			
    			if(miForm.getIdPersona()!=null && !miForm.getIdPersona().equals("")){
    				cli = clienteAdm.existeCliente(new Long(miForm.getIdPersona()),new Integer(usr.getLocation()));
@@ -238,7 +239,12 @@ public class BusquedaCensoAction extends MasterAction {
 			if (cli==null) {
 				forward =  insertarNoColArticulo27(mapping, miForm, request, response, new Long(miForm.getIdPersona()));
 
-			}else{				
+			}else{	
+				
+				Direccion direccion = new Direccion();
+				t = usr.getTransactionPesada();
+				t.begin ();
+				
 				CenDireccionesBean beanDir = new CenDireccionesBean ();
 				beanDir.setCodigoPostal (miForm.getCodPostal());
 				beanDir.setCorreoElectronico (miForm.getMail());
@@ -266,41 +272,37 @@ public class BusquedaCensoAction extends MasterAction {
 				beanDir.setTelefono1 (miForm.getTelefono ());
 				beanDir.setTelefono2 (miForm.getTelefono2 ());
 				beanDir.setPreferente(miForm.getPreferente());
-				beanDir.setIdDireccion(new Long(miForm.getIdDireccion()));
-				
 				
 				//estableciendo los datos del tipo de direccion
-				CenDireccionTipoDireccionBean vBeanTipoDir [] = null;
-				CenDireccionTipoDireccionBean b = null;
-				String [] tipoDir = null;
+				String tiposDir = "";
 				if(miForm.getTipoDireccion()!= null && !miForm.getTipoDireccion().equals("")){
-					tipoDir = miForm.getTipoDireccion().split(",");
-					vBeanTipoDir = new CenDireccionTipoDireccionBean [tipoDir.length];
-					for(int i = 0; i < tipoDir.length; i++){
-						b = new CenDireccionTipoDireccionBean ();
-						b.setIdTipoDireccion (new Integer(tipoDir[i]));
-						vBeanTipoDir[i] = b;
-					}
-				}			
+					tiposDir = miForm.getTipoDireccion();
+				}
 				
 				//estableciendo los datos del Historico
 				CenHistoricoBean beanHis = new CenHistoricoBean ();
 				beanHis.setMotivo ("");
 				
-				//obteniendo adm de BD de direcciones
-				CenDireccionesAdm direccionesAdm = new CenDireccionesAdm (this.getUserBean (request));
-				
 				//Si la dirección es nueva se añade para este no colegiado se inserta en el sistema
+				Direccion dirAux;
 				if(miForm.getDirecciones()!= null && miForm.getDirecciones().equals("-1")){
-					// insertando la direccion
-					if (! direccionesAdm.insertarConHistorico (beanDir, vBeanTipoDir, beanHis, this.getLenguaje (request)))
-						throw new SIGAException (direccionesAdm.getError());
+					// Se llama a la interfaz Direccion para insertar una nueva direccion
+					dirAux = direccion.insertar(beanDir, tiposDir, beanHis, null, usr);
 				}else{					
-					// actualizando la direccion
+					// Se llama a la interfaz Direccion para insertar una nueva direccion
+					beanDir.setIdDireccion(new Long(miForm.getIdDireccion()));
 					beanDir.setOriginalHash ((Hashtable) request.getSession ().getAttribute ("ORIGINALDIR"));
-					if (! direccionesAdm.updateConHistorico(beanDir, vBeanTipoDir, beanHis, this.getLenguaje (request)))
-						throw new SIGAException (direccionesAdm.getError());
+					dirAux = direccion.actualizarDireccion(beanDir, tiposDir, beanHis, null, usr);
 				}
+				
+				//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
+				if(dirAux.isFallo()){
+					t.rollback();
+					return exito(dirAux.getMsgError(), request);
+				}
+				
+				//confirmando las modificaciones de BD
+				t.commit();				
 				
 				//Mandamos los datos para el refresco:
 				request.setAttribute("idPersona",miForm.getIdPersona());
@@ -315,14 +317,17 @@ public class BusquedaCensoAction extends MasterAction {
 				request.setAttribute("nColegiado",ncol);
 				forward = "exitoInsercionNoColegiadoArt27";
 			}	
-
-	   } catch (Exception e) {
+			
+		} catch (SIGAException es) {
+			throwExcp (es.getLiteral(), new String[] {"modulo.censo"}, es, null);	
+	   
+	    } catch (Exception e) {
 		   throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
-   	   }
+   	    }
 		return forward;
 	}	
 	
-	protected String insertarNoColArticulo27 (ActionMapping mapping,	BusquedaCensoForm miForm,	HttpServletRequest request,	HttpServletResponse response, Long idpersona) throws SIGAException 
+	protected String insertarNoColArticulo27 (ActionMapping mapping,BusquedaCensoForm miForm,HttpServletRequest request,HttpServletResponse response, Long idpersona) throws SIGAException 
 	{
 		UserTransaction tx = null;
 		
@@ -330,7 +335,7 @@ public class BusquedaCensoAction extends MasterAction {
 			
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = this.getUserBean(request);
-
+			Direccion direccion = new Direccion();
 			CenClienteAdm adminCli=new CenClienteAdm(usr);
 			CenClienteBean beanCli = new  CenClienteBean();
 			String institucion =  miForm.getIdInstitucion();
@@ -357,73 +362,56 @@ public class BusquedaCensoAction extends MasterAction {
 			
    		    admNoColegiado.insert(hashNoColegiado);
    		    
-   		    ///////////////////////////////////////////////////////////////////////////
-   		 
+   		    /////////  INSERTAMOS LA INFO DE LA DIRECCION //////////
 
-	   		    CenDireccionesBean beanDir = new CenDireccionesBean ();
-				beanDir.setCodigoPostal (miForm.getCodPostal());
-				beanDir.setCorreoElectronico (miForm.getMail());
-				beanDir.setDomicilio (miForm.getDireccion());
-				beanDir.setFax1 (miForm.getFax1 ());
-				beanDir.setFax2 (miForm.getFax2 ());
-				beanDir.setIdInstitucion(new Integer(usr.getLocation()));
-				beanDir.setIdPais (miForm.getPais ());
-				if (miForm.getPais ().equals ("")) {
-					miForm.setPais (ClsConstants.ID_PAIS_ESPANA);
-				}
-				if (miForm.getPais().equals (ClsConstants.ID_PAIS_ESPANA)) {
-					beanDir.setIdPoblacion (miForm.getPoblacion ());
-					beanDir.setIdProvincia (miForm.getProvincia ());
-					beanDir.setPoblacionExtranjera ("");
-				} else {
-					beanDir.setPoblacionExtranjera (miForm.getPoblacionExt ());
-					beanDir.setIdPoblacion ("");
-					beanDir.setIdProvincia ("");
-				}
-				beanDir.setIdPersona (beanCli.getIdPersona());
-				beanDir.setMovil (miForm.getMovil ());
-				beanDir.setPaginaweb (miForm.getPaginaWeb ());
-				beanDir.setTelefono1 (miForm.getTelefono ());
-				beanDir.setTelefono2 (miForm.getTelefono2 ());
-				beanDir.setPreferente(miForm.getPreferente());
+   		    CenDireccionesBean beanDir = new CenDireccionesBean ();
+			beanDir.setCodigoPostal (miForm.getCodPostal());
+			beanDir.setCorreoElectronico (miForm.getMail());
+			beanDir.setDomicilio (miForm.getDireccion());
+			beanDir.setFax1 (miForm.getFax1 ());
+			beanDir.setFax2 (miForm.getFax2 ());
+			beanDir.setIdInstitucion(new Integer(usr.getLocation()));
+			beanDir.setIdPais (miForm.getPais ());
+			if (miForm.getPais ().equals ("")) {
+				miForm.setPais (ClsConstants.ID_PAIS_ESPANA);
+			}
+			if (miForm.getPais().equals (ClsConstants.ID_PAIS_ESPANA)) {
+				beanDir.setIdPoblacion (miForm.getPoblacion ());
+				beanDir.setIdProvincia (miForm.getProvincia ());
+				beanDir.setPoblacionExtranjera ("");
+			} else {
+				beanDir.setPoblacionExtranjera (miForm.getPoblacionExt ());
+				beanDir.setIdPoblacion ("");
+				beanDir.setIdProvincia ("");
+			}
+			beanDir.setIdPersona (beanCli.getIdPersona());
+			beanDir.setMovil (miForm.getMovil ());
+			beanDir.setPaginaweb (miForm.getPaginaWeb ());
+			beanDir.setTelefono1 (miForm.getTelefono ());
+			beanDir.setTelefono2 (miForm.getTelefono2 ());
+			beanDir.setPreferente(miForm.getPreferente());
+			
+			//estableciendo los datos del tipo de direccion
+			String tiposDir = "";
+			if(miForm.getTipoDireccion()!= null && !miForm.getTipoDireccion().equals("")){
+				tiposDir = miForm.getTipoDireccion();
+			}
 				
-				//estableciendo los datos del tipo de direccion
+			//estableciendo los datos del Historico
+			CenHistoricoBean beanHis = new CenHistoricoBean ();
+			beanHis.setMotivo ("");
 				
-				CenDireccionTipoDireccionBean vBeanTipoDir [] = null;
-				CenDireccionTipoDireccionBean b = null;
-				String [] tipoDir = null;
-				if(miForm.getTipoDireccion()!= null && !miForm.getTipoDireccion().equals("")){
-					tipoDir = miForm.getTipoDireccion().split(",");
-					vBeanTipoDir = new CenDireccionTipoDireccionBean [tipoDir.length];
-					for(int i = 0; i < tipoDir.length; i++){
-						b = new CenDireccionTipoDireccionBean ();
-						b.setIdTipoDireccion (new Integer(tipoDir[i]));
-						vBeanTipoDir[i] = b;
-					}
-				}			
+			// Se llama a la interfaz Direccion para insertar una nueva direccion
+			Direccion dirAux = direccion.insertar(beanDir, tiposDir, beanHis, null, usr);
 				
-				//estableciendo los datos del Historico
-				CenHistoricoBean beanHis = new CenHistoricoBean ();
-				beanHis.setMotivo ("");
+			//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
+			if(dirAux.isFallo()){
+				tx.rollback();
+				return exito(dirAux.getMsgError(), request);
+			}
 				
-			//obteniendo adm de BD de direcciones
-				CenDireccionesAdm direccionesAdm = new CenDireccionesAdm (this.getUserBean (request));
-				
-				//insertando la direccion
-				if (! direccionesAdm.insertarConHistorico (beanDir, vBeanTipoDir, beanHis, this.getLenguaje (request)))
-					throw new SIGAException (direccionesAdm.getError());
-				
-				
-				//insertando en la cola de modificacion de datos para Consejos
-				CenColaCambioLetradoAdm colaAdm = new CenColaCambioLetradoAdm (this.getUserBean (request));
-				if (! colaAdm.insertarCambioEnCola (ClsConstants.COLA_CAMBIO_LETRADO_MODIFICACION_DIRECCION, 
-						beanDir.getIdInstitucion (), beanDir.getIdPersona (), beanDir.getIdDireccion ()))
-					throw new SIGAException (colaAdm.getError ());
-				request.setAttribute("idDireccion",beanDir.getIdDireccion().toString());
-
-   		    
-////////////////////////////////////////////////////////////////////////////////////////
-			tx.commit();
+			//confirmando las modificaciones de BD
+			tx.commit();	
 
 			//Mandamos los datos para el refresco:
 			request.setAttribute("idPersona",miForm.getIdPersona());
@@ -436,9 +424,10 @@ public class BusquedaCensoAction extends MasterAction {
 			}
 			
 			request.setAttribute("nColegiado",ncol);
-			
-	   } 	
-	   catch (Exception e) {
+		
+		} catch (SIGAException e) {
+			throw e;		
+	    } catch (Exception e) {
 		   throw new SIGAException (e);
 		   //throwExcp("messages.general.error",new String[] {"modulo.censo"},e,tx);
    	   }
@@ -453,7 +442,7 @@ public class BusquedaCensoAction extends MasterAction {
 			
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = this.getUserBean(request);
-
+			Direccion direccion = new Direccion();
 			CenClienteAdm adminCli=new CenClienteAdm(usr);
 			CenClienteBean beanCli = new  CenClienteBean();
 			String institucion =  miForm.getIdInstitucion();
@@ -480,65 +469,56 @@ public class BusquedaCensoAction extends MasterAction {
 			
    		    admNoColegiado.insert(hashNoColegiado);
    		    
-   		    ///////////////////////////////////////////////////////////////////////////
-   		 
+   		    /////////  INSERTAMOS LA INFO DE LA DIRECCION //////////
 
-	   		    CenDireccionesBean beanDir = new CenDireccionesBean ();
-				beanDir.setCodigoPostal (miForm.getCodPostal());
-				beanDir.setCorreoElectronico (miForm.getMail());
-				beanDir.setDomicilio (miForm.getDireccion());
-				beanDir.setFax1 (miForm.getFax1 ());
-				beanDir.setFax2 (miForm.getFax2 ());
-				beanDir.setIdInstitucion(new Integer(usr.getLocation()));
-				beanDir.setIdPais (miForm.getPais ());
-				if (miForm.getPais ().equals ("")) {
-					miForm.setPais (ClsConstants.ID_PAIS_ESPANA);
-				}
-				if (miForm.getPais().equals (ClsConstants.ID_PAIS_ESPANA)) {
-					beanDir.setIdPoblacion (miForm.getPoblacion ());
-					beanDir.setIdProvincia (miForm.getProvincia ());
-					beanDir.setPoblacionExtranjera ("");
-				} else {
-					beanDir.setPoblacionExtranjera (miForm.getPoblacionExt ());
-					beanDir.setIdPoblacion ("");
-					beanDir.setIdProvincia ("");
-				}
-				beanDir.setIdPersona (beanCli.getIdPersona());
-				beanDir.setMovil (miForm.getMovil ());
-				beanDir.setPaginaweb (miForm.getPaginaWeb ());
-				beanDir.setTelefono1 (miForm.getTelefono ());
-				beanDir.setTelefono2 (miForm.getTelefono2 ());
+   		    CenDireccionesBean beanDir = new CenDireccionesBean ();
+			beanDir.setCodigoPostal (miForm.getCodPostal());
+			beanDir.setCorreoElectronico (miForm.getMail());
+			beanDir.setDomicilio (miForm.getDireccion());
+			beanDir.setFax1 (miForm.getFax1 ());
+			beanDir.setFax2 (miForm.getFax2 ());
+			beanDir.setIdInstitucion(new Integer(usr.getLocation()));
+			beanDir.setIdPais (miForm.getPais ());
+			if (miForm.getPais ().equals ("")) {
+				miForm.setPais (ClsConstants.ID_PAIS_ESPANA);
+			}
+			if (miForm.getPais().equals (ClsConstants.ID_PAIS_ESPANA)) {
+				beanDir.setIdPoblacion (miForm.getPoblacion ());
+				beanDir.setIdProvincia (miForm.getProvincia ());
+				beanDir.setPoblacionExtranjera ("");
+			} else {
+				beanDir.setPoblacionExtranjera (miForm.getPoblacionExt ());
+				beanDir.setIdPoblacion ("");
+				beanDir.setIdProvincia ("");
+			}
+			beanDir.setIdPersona (beanCli.getIdPersona());
+			beanDir.setMovil (miForm.getMovil ());
+			beanDir.setPaginaweb (miForm.getPaginaWeb ());
+			beanDir.setTelefono1 (miForm.getTelefono ());
+			beanDir.setTelefono2 (miForm.getTelefono2 ());
 				
-				//estableciendo los datos del tipo de direccion
+			//estableciendo los datos del tipo de direccion
+			String tiposDir = "3";
 				
-				CenDireccionTipoDireccionBean vBeanTipoDir [] = new CenDireccionTipoDireccionBean [1];
-				CenDireccionTipoDireccionBean b = new CenDireccionTipoDireccionBean ();
-				b.setIdTipoDireccion (new Integer("3"));
-				vBeanTipoDir[0] = b;
+			//estableciendo los datos del Historico
+			CenHistoricoBean beanHis = new CenHistoricoBean ();
+			beanHis.setMotivo ("");
 				
+			// Se llama a la interfaz Direccion para insertar una nueva direccion
+			Direccion dirAux = direccion.insertar(beanDir, tiposDir, beanHis, request, usr);
 				
-				//estableciendo los datos del Historico
-				CenHistoricoBean beanHis = new CenHistoricoBean ();
-				beanHis.setMotivo ("");
-				
-			//obteniendo adm de BD de direcciones
-				CenDireccionesAdm direccionesAdm = new CenDireccionesAdm (this.getUserBean (request));
-				
-				//insertando la direccion
-				if (! direccionesAdm.insertarConHistorico (beanDir, vBeanTipoDir, beanHis, this.getLenguaje (request)))
-					throw new SIGAException (direccionesAdm.getError());
-				
-				
-				//insertando en la cola de modificacion de datos para Consejos
-				CenColaCambioLetradoAdm colaAdm = new CenColaCambioLetradoAdm (this.getUserBean (request));
-				if (! colaAdm.insertarCambioEnCola (ClsConstants.COLA_CAMBIO_LETRADO_MODIFICACION_DIRECCION, 
-						beanDir.getIdInstitucion (), beanDir.getIdPersona (), beanDir.getIdDireccion ()))
-					throw new SIGAException (colaAdm.getError ());
-				request.setAttribute("idDireccion",beanDir.getIdDireccion().toString());
-
+			//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
+			if(dirAux.isFallo()){
+				tx.rollback();
+				return exito(dirAux.getMsgError(), request);
+			}
+			
+			request.setAttribute("idDireccion",beanDir.getIdDireccion().toString());
+			
+			//confirmando las modificaciones de BD
+			tx.commit();	
    		    
 ////////////////////////////////////////////////////////////////////////////////////////
-			tx.commit();
 
 			//Mandamos los datos para el refresco:
 			request.setAttribute("mensaje",mensInformacion);
@@ -549,10 +529,11 @@ public class BusquedaCensoAction extends MasterAction {
 			request.setAttribute("nombre",miForm.getNombre());
 			request.setAttribute("apellido1",miForm.getApellido1());
 			request.setAttribute("apellido2",miForm.getApellido2());
-			
-			
-	   } 	
-	   catch (Exception e) {
+	       
+		} catch (SIGAException e) {
+			throw e;		
+	   
+		} catch (Exception e) {
 		   throw new SIGAException (e);
 		   //throwExcp("messages.general.error",new String[] {"modulo.censo"},e,tx);
    	   }
@@ -999,8 +980,8 @@ public class BusquedaCensoAction extends MasterAction {
 			datosCliente.put("sexo",sexo);
 			datosCliente.put("tratamiento",tratamiento);
 			datosCliente.put("fax1",fax);
-			datosCliente.put("FechaNacimiento",perBean.getFechaNacimiento().trim());
-			datosCliente.put("LugarNacimiento",perBean.getNaturalDe().trim());
+			datosCliente.put("FechaNacimiento",perBean.getFechaNacimiento());
+			datosCliente.put("LugarNacimiento",perBean.getNaturalDe());
 			
 			request.setAttribute("datosCensoModal", datosCliente);	
 

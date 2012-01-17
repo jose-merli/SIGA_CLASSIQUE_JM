@@ -27,6 +27,7 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.censo.action.Direccion;
 import com.siga.censo.form.BusquedaClientesForm;
 import com.siga.general.CenVisibilidad;
 import com.siga.general.EjecucionPLs;
@@ -3107,7 +3108,6 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 		CenClienteAdm admCliente;
 		CenColegiadoAdm admCol;
 		CenNoColegiadoAdm admNoCol;
-		CenDireccionesAdm admDir;
 		
 		//Beans utilizados
 		CenPersonaBean beanPer = null;
@@ -3126,7 +3126,6 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			admCliente = new CenClienteAdm(this.usrbean);
 			admCol = new CenColegiadoAdm(this.usrbean);
 			admNoCol = new CenNoColegiadoAdm(this.usrbean);
-			admDir = new CenDireccionesAdm(this.usrbean);
 			
 			//comprobando la existencia de la persona y el cliente
 			boolean existePersona = false;
@@ -3454,8 +3453,8 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 					beanCli.getIdInstitucion (), beanCli.getIdPersona (), null))
 				throw new SIGAException (colaAdm.getError());
 			
-			//Tratamiento de direcciones
-			//creando el bean de direcciones
+			//////   TRATAMIENTO DE DIRECCIONES   //////
+			Direccion direccion = new Direccion();
 			beanDir = new CenDireccionesBean ();
 			
 			//rellenando el bean de direcciones
@@ -3481,50 +3480,26 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 				beanDir.setIdPoblacion ("");
 			}
 			beanDir.setPoblacionExtranjera (beanSolic.getPoblacionExtranjera ());
-			//si es una nueva incorporacion y no existe como cliente ni como persona 
-			//debe tener como preferente el correo y el mail
+			
+			//si es una nueva incorporacion y no existe como cliente ni como persona debe tener como preferente el correo y el mail
 			if (esNuevo && !existePersona && !existeCliente)
-				beanDir.setPreferente (ClsConstants.TIPO_PREFERENTE_CORREO + 
-						ClsConstants.TIPO_PREFERENTE_CORREOELECTRONICO);
+				beanDir.setPreferente (ClsConstants.TIPO_PREFERENTE_CORREO + ClsConstants.TIPO_PREFERENTE_CORREOELECTRONICO);
 			
-			//obteniendo un nuevo id
-			Long idDireccionNuevo = admDir.getNuevoID (beanDir); 
-			beanDir.setIdDireccion (idDireccionNuevo);
+			//estableciendo los datos del tipo de direccion guardia
+			String tiposDir = ClsConstants.TIPO_DIRECCION_CENSOWEB + "," +ClsConstants.TIPO_DIRECCION_DESPACHO + "," + ClsConstants.TIPO_DIRECCION_GUIA;
 			
-			//insertando la nueva direccion
-			if (! admDir.insert (beanDir))
-				throw new ClsExceptions (admDir.getError ());
+			//estableciendo los datos del Historico
+			CenHistoricoBean beanHis = new CenHistoricoBean ();
+			beanHis.setMotivo ("");
 			
-			//insertando tipos obligatorios
-			CenDireccionTipoDireccionAdm admTipoDir = new CenDireccionTipoDireccionAdm (this.usrbean);
-			CenDireccionTipoDireccionBean beanTipoDir = new CenDireccionTipoDireccionBean ();
+			// Se llama a la interfaz Direccion para actualizar una nueva direccion
+			Direccion dirAux = direccion.insertar(beanDir, tiposDir, beanHis, null, this.usrbean);
+							
+			//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
+			if(dirAux.isFallo()){
+				throw new SIGAException (dirAux.getMsgError());
+			}
 			
-			//rellenando los campos comunes
-			beanTipoDir.setIdInstitucion (beanSolic.getIdInstitucion ());
-			beanTipoDir.setIdPersona (beanPer.getIdPersona ());
-			beanTipoDir.setIdDireccion (idDireccionNuevo);
-			beanTipoDir.setFechaMod ("SYSDATE");
-			beanTipoDir.setUsuMod (this.usuModificacion);
-			
-			//tipo direccion correo
-			beanTipoDir.setIdTipoDireccion (new Integer (ClsConstants.TIPO_DIRECCION_CENSOWEB));
-			if (! admTipoDir.insert (beanTipoDir))
-				throw new ClsExceptions (admTipoDir.getError ());
-			
-			//tipo direccion despacho
-			beanTipoDir.setIdTipoDireccion (new Integer (ClsConstants.TIPO_DIRECCION_DESPACHO));
-			if (! admTipoDir.insert (beanTipoDir))
-				throw new ClsExceptions (admTipoDir.getError ());
-			
-			//tipo direccion guia judicial
-			beanTipoDir.setIdTipoDireccion (new Integer (ClsConstants.TIPO_DIRECCION_GUIA));
-			if (! admTipoDir.insert (beanTipoDir))
-				throw new ClsExceptions (admTipoDir.getError ());
-			
-			//insertando la direccion en cola para actualizacion en Consejos
-			if (!colaAdm.insertarCambioEnCola (ClsConstants.COLA_CAMBIO_LETRADO_MODIFICACION_DIRECCION, 
-					beanDir.getIdInstitucion (), beanDir.getIdPersona (), beanDir.getIdDireccion ()))
-				throw new SIGAException (colaAdm.getError ());
 		}
 		catch (SIGAException se) {
 			throw se;

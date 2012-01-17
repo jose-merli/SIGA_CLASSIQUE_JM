@@ -45,7 +45,6 @@
 		<% 
 		 	if (mensaje!=null){
 		%>
-z			
 				var aux = new Array();
 				aux[0]="<%=idPersona %>";
 				aux[1]="<%=idInstitucion %>";

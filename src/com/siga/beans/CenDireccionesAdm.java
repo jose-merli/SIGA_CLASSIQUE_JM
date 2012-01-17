@@ -11,6 +11,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.censo.action.Direccion;
 import com.siga.censo.form.DireccionesForm;
 import com.siga.general.SIGAException;
 import javax.servlet.http.HttpServletRequest;
@@ -1130,13 +1131,11 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 		
 	}
 	
-	public boolean modificarDireccionesPreferentes (Long idPersona, String idInstitucion,  String idDireccion, String preferencia, HttpServletRequest request) throws SIGAException, ClsExceptions 
+	public boolean modificarDireccionesPreferentes (Long idPersona, String idInstitucion,  String idDireccion, String preferencia) throws SIGAException, ClsExceptions 
 	{
 		boolean salida = false;
 		
 		Hashtable hDireccion= new Hashtable();
-		
-		UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");		
 		String[] idDir;
 		String[] pref;
 		String modificarPreferencia="";
@@ -1173,7 +1172,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 				}	
 				
 				
-				if (!direccionesAdm.updateConHistorico(dirBean,null, beanHis,user.getLanguageInstitucion())){
+				if (!direccionesAdm.updateConHistorico(dirBean,null, beanHis,this.usrbean.getLanguageInstitucion())){
 					throw new SIGAException (direccionesAdm.getError ());
 				}
 				//insertando en la cola de modificacion de datos para Consejos
@@ -1773,8 +1772,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 		
 	}
 	
-	public String comprobarTipoDireccion(String tipo, String idInstitucion, String idpersona) 
-	{
+	public String comprobarTipoDireccion(String tipo, String idInstitucion, String idpersona){
 		
 		String sentencia="";
 		
@@ -1801,11 +1799,11 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 	}
 
 	public void insertarDireccionGuardia(Integer idInstitucion, Long idPersona, String idDireccion, String fax1, String fax2, String movil,
-			String telefono1, String telefono2) throws ClsExceptions, SIGAException {
+			String telefono1, String telefono2, Hashtable original) throws ClsExceptions, SIGAException {
 	
 		// ACTUALIZAMOS LA DIRECCIÓN DE GUARDIA DEL CLIENTE. EN CASO DE QUE NO EXISTIERA UNA DIRECCIÓN DE GUARDIA
 		// ENTONCES LA INSERTAMOS Y SI YA EXISTIA ACTUALIZAMOS LOS DATOS DE LA MISMA
-	
+		Direccion direccion = new Direccion();	
 		CenDireccionesBean beanDir  = new CenDireccionesBean ();
 		beanDir.setFax1(fax1);
 		beanDir.setFax2(fax2);
@@ -1815,14 +1813,27 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 		beanDir.setTelefono1(telefono1);
 		beanDir.setTelefono2(telefono2);
 		
-		if(idDireccion!=null&&!idDireccion.equals("")){
-			// Actualizamos el registro de la dirección de guardia
+		//estableciendo los datos del tipo de direccion guardia
+		String tiposDir = ""+ClsConstants.TIPO_DIRECCION_GUARDIA;
+
+		//estableciendo los datos del Historico
+		CenHistoricoBean beanHis = new CenHistoricoBean ();
+		beanHis.setMotivo ("");
+		
+		if(idDireccion!=null && !idDireccion.equals("")){
+			
+			// Actualizamos el registro de la dirección de guardia						
 			beanDir.setIdDireccion(new Long(idDireccion));
-			String[] claves ={CenDireccionesBean.C_IDDIRECCION,CenDireccionesBean.C_IDINSTITUCION,CenDireccionesBean.C_IDPERSONA}; 
-			String[] campos ={CenDireccionesBean.C_FAX1,CenDireccionesBean.C_FAX2,CenDireccionesBean.C_MOVIL,CenDireccionesBean.C_TELEFONO1,CenDireccionesBean.C_TELEFONO2};
-			if (!this.updateDirect(beanDir,claves,campos)) {
-				throw new ClsExceptions (this.getError());
+			beanDir.setOriginalHash(original);
+				
+			// Se llama a la interfaz Direccion para actualizar una nueva direccion
+			Direccion dirAux = direccion.actualizarDireccion(beanDir, tiposDir, beanHis, null, this.usrbean);
+							
+			//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
+			if(dirAux.isFallo()){
+				throw new SIGAException (dirAux.getMsgError());
 			}
+			
 		}else{
 
 			//Insertamos la nueva direccion de guardia
@@ -1835,23 +1846,13 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 			beanDir.setIdProvincia("");
 			beanDir.setPaginaweb("");
 			beanDir.setPreferente("");
-			try {
-				beanDir.setIdDireccion(this.getNuevoID(beanDir));
-			} catch (SIGAException e) {
-				throw new ClsExceptions (e.getMessage());
-			}
-			if (!this.insert(beanDir)) {
-				throw new ClsExceptions (this.getError());
-			}
-			// insertamos el tipo de dirección
-			CenDireccionTipoDireccionAdm admTipoDir = new CenDireccionTipoDireccionAdm (this.usrbean);
-			CenDireccionTipoDireccionBean beanTipoDir=new CenDireccionTipoDireccionBean();
-			beanTipoDir.setIdDireccion(beanDir.getIdDireccion());
-			beanTipoDir.setIdInstitucion(beanDir.getIdInstitucion());
-			beanTipoDir.setIdPersona(beanDir.getIdPersona());
-			beanTipoDir.setIdTipoDireccion(new Integer(ClsConstants.TIPO_DIRECCION_GUARDIA));
-			if (!admTipoDir.insert(beanTipoDir)){
-				throw new ClsExceptions (admTipoDir.getError());
+
+			// Se llama a la interfaz Direccion para actualizar una nueva direccion
+			Direccion dirAux = direccion.insertar(beanDir, tiposDir, beanHis, null, this.usrbean);
+							
+			//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
+			if(dirAux.isFallo()){
+				throw new SIGAException (dirAux.getMsgError());
 			}
 		}
 	}

@@ -456,6 +456,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 							miForm.setFax1((String)direccion.get(CenDireccionesBean.C_FAX1));
 							miForm.setFax2((String)direccion.get(CenDireccionesBean.C_FAX2));
 							miForm.setIdDireccion(indicadorDirec.toString());
+							request.getSession().setAttribute("ORIGINALDIR", direccion);
 						}
 					}
 				}
@@ -523,15 +524,17 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				miForm.setFechaSolicitud("sysdate");
 				InscripcionTurno inscripcion = new InscripcionTurno(new ScsInscripcionTurnoBean());
 				inscripcion.solicitarAlta(miForm, usr);
+				Hashtable original = (Hashtable) request.getSession ().getAttribute ("ORIGINALDIR");
 				CenDireccionesAdm dirAdm = new CenDireccionesAdm(usr);			
 				dirAdm.insertarDireccionGuardia(new Integer(miForm.getIdInstitucion()),new Long(miForm.getIdPersona()),
-				miForm.getIdDireccion(),miForm.getFax1(),miForm.getFax2(),miForm.getMovil(),miForm.getTelefono1(),miForm.getTelefono2());
-
+				miForm.getIdDireccion(),miForm.getFax1(),miForm.getFax2(),miForm.getMovil(),miForm.getTelefono1(),miForm.getTelefono2(),original);
+				
 			}
 			//miForm.re
 			request.setAttribute("mensaje","messages.updated.success");
 			forward = "exito";
 	        request.setAttribute("modal", "1");
+	        request.getSession().removeAttribute("ORIGINALDIR");
 		} 
 		catch (Exception e) 
 		{
@@ -904,9 +907,9 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			}
 			
 			CenDireccionesAdm dirAdm = new CenDireccionesAdm(usr);
-			
+			Hashtable original = (Hashtable) request.getSession ().getAttribute ("ORIGINALDIR");
 			dirAdm.insertarDireccionGuardia(new Integer(miForm.getIdInstitucion()),new Long(miForm.getIdPersona()),
-			miForm.getIdDireccion(),miForm.getFax1(),miForm.getFax2(),miForm.getMovil(),miForm.getTelefono1(),miForm.getTelefono2());
+			miForm.getIdDireccion(),miForm.getFax1(),miForm.getFax2(),miForm.getMovil(),miForm.getTelefono1(),miForm.getTelefono2(),original);
 		
 			if(existenErrores){
 				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.error.masivo.solapamiento"));
@@ -916,6 +919,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			
 			forward = "exito";
 			request.setAttribute("modal", "1");
+			request.getSession().removeAttribute("ORIGINALDIR");
 		} 
 		catch (Exception e) 
 		{
