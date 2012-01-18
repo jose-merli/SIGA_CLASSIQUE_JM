@@ -1147,7 +1147,7 @@
 
 	<siga:ConjCampos leyenda="<%=tituloDenunciado%>">
 
-	<table class="tablaCampos" align="center" border="1">
+	<table class="tablaCampos" align="center">
 
 	<!-- FILA -->
 		<tr>
@@ -1225,7 +1225,7 @@
 
 	<siga:ConjCampos leyenda="<%=tituloDenunciante%>">
 
-	<table class="tablaCampos" align="center" border="1">
+	<table class="tablaCampos" align="center">
 
 	<!-- FILA -->
 		<tr>
@@ -1352,7 +1352,7 @@
 			<tr>		
 				<td class="labelText">
 				<%
-					for(int k=0;k<4;k++)
+					for(int k=0;k<4 && k < vNombres.size();k++)
 					{
 				%>										
 					<%= vNombres.elementAt(k)%>

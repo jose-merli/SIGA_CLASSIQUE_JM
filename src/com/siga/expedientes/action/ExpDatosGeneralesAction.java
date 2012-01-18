@@ -133,8 +133,32 @@ public class ExpDatosGeneralesAction extends MasterAction
 			for (int j =0; (j<vecExpCamposValorAdm.size());j++)
 			{
 				Hashtable auxHash1 = (Hashtable)vecExpCamposValorAdm.get(j);
-				Integer orden= new Integer((String)auxHash1.get("IDCAMPOCONF"));
-				datosCamposPestanas.set((orden.intValue()-1),(String)auxHash1.get("VALOR"));
+				
+				boolean encontrado = false;
+				for (int k =0; k<vecExpCamConfAdm.size() && encontrado == false;k++)
+				{
+					Hashtable auxHash = (Hashtable)vecExpCamConfAdm.get(k);
+					
+					String ordenCampo=(String)auxHash.get("ORDEN");
+					String ordenValor=(String)auxHash1.get("IDCAMPOCONF");
+						
+					if(ordenCampo.equals(ordenValor))
+					{
+						Integer orden= new Integer((String)auxHash1.get("IDCAMPOCONF"));
+						datosCamposPestanas.set((orden.intValue()-1),(String)auxHash1.get("VALOR"));
+						encontrado = true; 
+					}
+					
+					//nombres.add(k,(String)auxHash.get("NOMBRE"));
+					//Inicializamos el vector de datos a "" para que aquellos campos que no tengan valor
+					//por lo menos tengan cadena vacia
+					
+				}
+				
+				
+				
+				
+				
 				
 			}
 			
