@@ -110,83 +110,65 @@ public class ExpDatosGeneralesAction extends MasterAction
 			ExpCampoConfAdm expCamConfAdm = new ExpCampoConfAdm(usr);			
 			Vector vecExpCamConfAdm= expCamConfAdm.obtenerCamposPestanaGeneral(this.getIDInstitucion(request).toString(),idTipoExpediente);
 			
-			ExpPestanaConfAdm expPestanaConfAdm = new ExpPestanaConfAdm(usr);
-			String nombreCampo = expPestanaConfAdm.obtenerNombrePetanaGeneral(this.getIDInstitucion(request).toString(), idTipoExpediente);
-			
-			String numExpediente = request.getParameter("numeroExpediente");
-			ExpCamposValorAdm expCamposValorAdm = new ExpCamposValorAdm(usr);
-			Vector vecExpCamposValorAdm = expCamposValorAdm.obtenerValorCamposPestanaGeneral(this.getIDInstitucion(request).toString(), idTipoExpediente, numExpediente);
-			
-			
-			Vector nombres = new Vector ();
-			Vector datosCamposPestanas= new Vector (vecExpCamConfAdm.size());
-			
-			for (int i =0; i<vecExpCamConfAdm.size();i++)
+			if(vecExpCamConfAdm!= null && vecExpCamConfAdm.size()>0)
 			{
-				Hashtable auxHash = (Hashtable)vecExpCamConfAdm.get(i);
-				nombres.add(i,(String)auxHash.get("NOMBRE"));
-				//Inicializamos el vector de datos a "" para que aquellos campos que no tengan valor
-				//por lo menos tengan cadena vacia
-				datosCamposPestanas.add("");
-			}
-												
-			for (int j =0; (j<vecExpCamposValorAdm.size());j++)
-			{
-				Hashtable auxHash1 = (Hashtable)vecExpCamposValorAdm.get(j);
-				
-				boolean encontrado = false;
-				for (int k =0; k<vecExpCamConfAdm.size() && encontrado == false;k++)
-				{
-					Hashtable auxHash = (Hashtable)vecExpCamConfAdm.get(k);
-					
-					String ordenCampo=(String)auxHash.get("ORDEN");
-					String ordenValor=(String)auxHash1.get("IDCAMPOCONF");
+				ExpPestanaConfAdm expPestanaConfAdm = new ExpPestanaConfAdm(usr);
+				String nombreCampo = expPestanaConfAdm.obtenerNombrePetanaGeneral(this.getIDInstitucion(request).toString(), idTipoExpediente);
+			
+				String numExpediente = request.getParameter("numeroExpediente");
+				ExpCamposValorAdm expCamposValorAdm = new ExpCamposValorAdm(usr);
+				Vector vecExpCamposValorAdm = expCamposValorAdm.obtenerValorCamposPestanaGeneral(this.getIDInstitucion(request).toString(), idTipoExpediente, numExpediente);
 						
-					if(ordenCampo.equals(ordenValor))
-					{
-						Integer orden= new Integer((String)auxHash1.get("IDCAMPOCONF"));
-						datosCamposPestanas.set((orden.intValue()-1),(String)auxHash1.get("VALOR"));
-						encontrado = true; 
-					}
-					
-					//nombres.add(k,(String)auxHash.get("NOMBRE"));
+				Vector nombres = new Vector ();
+				Vector datosCamposPestanas= new Vector ();
+			
+				for (int m =0; m<5;m++)
+				{
+					nombres.add("");
+					datosCamposPestanas.add("");
+				}
+			
+				for (int i =0; i<vecExpCamConfAdm.size();i++)
+				{
+					Hashtable auxHash = (Hashtable)vecExpCamConfAdm.get(i);
+					Integer orden= new Integer((String)auxHash.get("ORDEN"));
+					nombres.set((orden.intValue()-1),(String)auxHash.get("NOMBRE"));
 					//Inicializamos el vector de datos a "" para que aquellos campos que no tengan valor
 					//por lo menos tengan cadena vacia
-					
+					//datosCamposPestanas.add("");
 				}
-				
-				
-				
-				
-				
-				
-			}
-			
-			/*
-			for (int i =0; i<vecExpCamConfAdm.size();i++)
-			{
-				Hashtable auxHash = (Hashtable)vecExpCamConfAdm.get(i);
-				//ExpCampoConfBean aux =(ExpCampoConfBean)auxHash.get(i);
-				
-				boolean encontrado = false;
-				for (int j =0; (j<vecExpCamposValorAdm.size() && encontrado == false);j++)
+												
+				for (int j =0; (j<vecExpCamposValorAdm.size());j++)
 				{
 					Hashtable auxHash1 = (Hashtable)vecExpCamposValorAdm.get(j);
-					//ExpCamposValorBean aux1= (ExpCamposValorBean)auxHash1.get(j);
-					
-					//if(aux.getOrden().toString().equals( aux1.getIdCampoConf().toString()))
-					if(auxHash.get("ORDEN").toString().equals( auxHash1.get("IDCAMPOCONF").toString()))
+				
+					boolean encontrado = false;
+					for (int k =0; k<vecExpCamConfAdm.size() && encontrado == false;k++)
 					{
-						nombres.add((String)auxHash.get("NOMBRE"));
-						datosCamposPestanas.add((String)auxHash1.get("VALOR"));
-						encontrado = true;
-					}
-				}				
+						Hashtable auxHash = (Hashtable)vecExpCamConfAdm.get(k);
+					
+						String ordenCampo=(String)auxHash.get("ORDEN");
+						String ordenValor=(String)auxHash1.get("IDCAMPOCONF");
+						
+						if(ordenCampo.equals(ordenValor))
+						{
+							Integer orden= new Integer((String)auxHash1.get("IDCAMPOCONF"));
+							datosCamposPestanas.set((orden.intValue()-1),(String)auxHash1.get("VALOR"));
+							encontrado = true; 
+						}										
+					}																						
+				}
+						
+				request.setAttribute("nombres", nombres);
+				request.setAttribute("datosCamposPestanas", datosCamposPestanas);
+				request.setAttribute("nombreCampo", nombreCampo);
 			}
-			*/
-			request.setAttribute("nombres", nombres);
-			request.setAttribute("datosCamposPestanas", datosCamposPestanas);
-			request.setAttribute("nombreCampo", nombreCampo);
+			else
+			{
+				request.setAttribute("nombres", null);
+				request.setAttribute("datosCamposPestanas", null);
+				request.setAttribute("nombreCampo", null);
+			}
 			
 			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_MINUTA_INICIAL));
 			v = adm.select(h);
@@ -1174,6 +1156,10 @@ public class ExpDatosGeneralesAction extends MasterAction
 	    	
 	    		    		    	
 	    	//Inicio Guarda Datos Para Pestaña
+	    	
+	    	ExpCampoConfAdm expCamConfAdm = new ExpCampoConfAdm(userBean);			
+			Vector vecExpCamConfAdm= expCamConfAdm.obtenerCamposPestanaGeneral(this.getIDInstitucion(request).toString(),expBean.getIdTipoExpediente().toString());
+	    	
 	    	String numExpediente = expBean.getNumeroExpediente().toString();
 			ExpCamposValorAdm expCamposValorAdm = new ExpCamposValorAdm(userBean);
 			Vector vecExpCamposValorAdm = expCamposValorAdm.obtenerValorCamposPestanaGeneral(this.getIDInstitucion(request).toString(), expBean.getIdTipoExpediente().toString(), numExpediente);
@@ -1183,13 +1169,53 @@ public class ExpDatosGeneralesAction extends MasterAction
 		    try {
 		    	tra.begin();     
 		        		        
-		        for (int contador=0;vecExpCamposValorAdm!=null && contador<vecExpCamposValorAdm.size(); contador++) 
+		        for (int contador=0;vecExpCamConfAdm!=null && contador<vecExpCamConfAdm.size(); contador++) 
 		        {
+		        	Hashtable auxHash = (Hashtable)vecExpCamConfAdm.get(contador);
+										
+					boolean encontrado = false;
+					for (int k =0; k<vecExpCamposValorAdm.size() && encontrado == false;k++)
+					{
+						Hashtable auxHash1 = (Hashtable)vecExpCamposValorAdm.get(k);
+						
+						String ordenCampo=(String)auxHash.get("ORDEN");
+						String ordenValor=(String)auxHash1.get("IDCAMPOCONF");
+							
+						if(ordenCampo.equals(ordenValor))
+						{
+							Integer orden= new Integer(ordenCampo);
+							String idCampoConf = ""+(orden.intValue());		            
+				            //Procesamos el campo		            		            			            		
+				            String	valor = request.getParameter("campo"+(orden.intValue())+"");
+				            if(valor !=null)
+				            {
+				            	// lo guardamos
+				            	this.guardarValor(expCamposValorAdm,(Hashtable)vecExpCamposValorAdm.get(k), idCampoConf, valor);
+				            }																					
+							encontrado = true; 
+						}												
+						
+					}
+					
+					
+					
+								
+					
+					
+					
+					
+					
+		        	
+		        	/*
 		            String idCampoConf = ""+(contador+1);		            
 		            //Procesamos el campo		            		            			            		
 		            String	valor = request.getParameter("campo"+(contador+1)+"");
-			        // lo guardamos
-		            this.guardarValor(expCamposValorAdm,(Hashtable)vecExpCamposValorAdm.get(contador), idCampoConf, valor);		            
+		            if(valor !=null)
+		            {
+		            	// lo guardamos
+		            	this.guardarValor(expCamposValorAdm,(Hashtable)vecExpCamposValorAdm.get(contador), idCampoConf, valor);
+		            }
+		            */
 		        }
 		        tra.commit();		               
 		    } 
@@ -1199,12 +1225,9 @@ public class ExpDatosGeneralesAction extends MasterAction
 		    }
 	    	    	
 	    	//Fin Guarda Datos Para Pestaña
-	    	
-	    	
+	    		    	
 	    	//Iniciamos la transacción
-	        
-	        
-	        
+	        	        	        
 		        tx.begin();   
 	    	    	
 		        //Si cambia el estado, vamos a necesitar el anterior bean de estado
@@ -1495,9 +1518,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			//Iniciamos la transacción
 			tx = user.getTransaction();
 			tx.begin();   
-			
-			
-			
+								
 			//Ahora procedemos a insertarlo
 			if (expAdm.insert(expBean)){
 				

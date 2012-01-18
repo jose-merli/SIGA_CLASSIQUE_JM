@@ -165,8 +165,11 @@
 
 					<td align="center">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=bean.getIdCampoConf()%>">						
-						
+						<%if(bean.getGeneral()!=null){ %>
 						<%=(bean.getGeneral().intValue()==1)?UtilidadesString.getMensajeIdioma(user,"messages.si"):UtilidadesString.getMensajeIdioma(user,"messages.no") %>
+						<%}else{%>
+							<%=UtilidadesString.getMensajeIdioma(user,"messages.no") %>
+						<%} %>
 					</td>
 
 					<td>

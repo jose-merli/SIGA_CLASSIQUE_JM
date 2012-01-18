@@ -1354,11 +1354,13 @@
 				<%
 					for(int k=0;k<4 && k < vNombres.size();k++)
 					{
+						if(!vNombres.elementAt(k).equals("")){
 				%>										
 					<%= vNombres.elementAt(k)%>
 					&nbsp;
-					<input type="text" name="campo<%=""+(k+1)%>" value="<%=vDatosCamposPestanas.elementAt(k)%>"  style="width:150px;" ></input>																										
+					<input type="text" name="campo<%=""+(k+1)%>" value="<%=vDatosCamposPestanas.elementAt(k)%>"  style="width:150px;" class ="box"></input>																										
 				<%
+						}
     				}
 				%>									
 				</td>
@@ -1369,11 +1371,13 @@
 					 <%
 						for(int k=4;k<vNombres.size();k++)
 						{
+							if(!vNombres.elementAt(k).equals("")){
 					%>										
 					<%= vNombres.elementAt(k)%>
 					&nbsp;
-					<input type="text" name="campo<%=""+(k+1)%>" value="<%=vDatosCamposPestanas.elementAt(k)%>"  style="width:150px;" ></input>																										
+					<input type="text" name="campo<%=""+(k+1)%>" value="<%=vDatosCamposPestanas.elementAt(k)%>"  class ="box" style="width:150px;"></input>																										
 				<%
+						}
     				}
 				%>	
 				</td>
