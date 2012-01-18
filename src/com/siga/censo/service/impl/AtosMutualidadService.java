@@ -8,6 +8,8 @@ import java.util.List;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesNumero;
+import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.CenPersonaBean;
 import com.siga.beans.CenSolicitudIncorporacionBean;
 import com.siga.beans.CenSolicitudMutualidadAdm;
 import com.siga.beans.CenSolicitudMutualidadBean;
@@ -111,6 +113,20 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		MutualidadWSClient mutualidadWSClient =  new MutualidadWSClient(usrBean);
 		RespuestaMutualidad respuestaSolicitud = mutualidadWSClient.getEstadoMutualista(solicitudMutualidadBean.getNumeroIdentificacion(), solicitudMutualidadBean.getFechaNacimiento());
 		solicitudMutualidadBean.setEstadoMutualista(respuestaSolicitud.getValorRespuesta());
+		// Hay que devolver el pdf
+		/*
+		if (respuestaSolicitud.getPDF()!=null){
+			ResourceBundle rp=ResourceBundle.getBundle("SIGA");
+			String pathTemporal = rp.getString("wsMutualidad.directorioFicheros") + File.separator + rp.getString("wsMutualidad.directorioLog") + File.separator + usrBean.getLocation();
+			String archivoTemporal = "SolicitudMutualidad_" + solicitudMutualidadBean.getNumeroIdentificacion()+UtilidadesString.getTimeStamp()+".pdf";
+			File ficheroTemp = new File(pathTemporal+File.separator+archivoTemporal); 
+			FileOutputStream fos; 
+			fos = new FileOutputStream(ficheroTemp); 
+			fos.write(respuestaSolicitud.getPDF()); 
+			fos.flush(); 
+			fos.close(); 
+		}
+		*/
 		CenSolicitudMutualidadAdm solicitudMutualidadAdm = new CenSolicitudMutualidadAdm(usrBean);
 		solicitudMutualidadAdm.actualizaEstadoMutualista(solicitudMutualidadBean);
 		mutualidadForm = solicitudMutualidadBean.getMutualidadForm(mutualidadForm);
@@ -231,7 +247,19 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		RespuestaMutualidad posibilidadSolicitudAlta = mutualidadWSClient.getPosibilidadSolicitudAlta(numeroIdentificacion,fechaNacimiento);
 		if(posibilidadSolicitudAlta.getValorRespuesta()==null || posibilidadSolicitudAlta.getValorRespuesta().equals(""))
 			throw new SIGAException("No es posible Realizar el alta. Revise los datos del formulario");
-		
+		/*
+		if (posibilidadSolicitudAlta.getPDF()!=null){
+			ResourceBundle rp=ResourceBundle.getBundle("SIGA");
+			String pathTemporal = rp.getString("wsMutualidad.directorioFicheros") + File.separator + rp.getString("wsMutualidad.directorioLog") + File.separator + usrBean.getLocation();
+			String archivoTemporal = "SolicitudMutualidad_" + numeroIdentificacion+"_"+UtilidadesString.getTimeStamp()+".pdf";
+			File ficheroTemp = new File(pathTemporal+File.separator+archivoTemporal); 
+			FileOutputStream fos; 
+			fos = new FileOutputStream(ficheroTemp); 
+			fos.write(posibilidadSolicitudAlta.getPDF()); 
+			fos.flush(); 
+			fos.close(); 
+		}
+		*/
 		return posibilidadSolicitudAlta;
 		
 	}
@@ -315,8 +343,17 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		CenSolicitudMutualidadBean solicitudMutualidadBean =  solicitudMutualidadAdm.getSolicitudMutualidad(idPersona, idTipoSolicitud);
 		if(solicitudMutualidadBean!=null)
 			mutualidadForm = solicitudMutualidadBean.getMutualidadForm(mutualidadForm);
-		else
+		else{
 			mutualidadForm.setEstado(CenSolicitudMutualidadBean.SERVICIO_NOSOLICITADO);
+			if(idTipoSolicitud.equalsIgnoreCase("P")){
+				mutualidadForm.setIdTipoSolicitud(idTipoSolicitud);
+				CenPersonaAdm personaAdm = new CenPersonaAdm(usrBean);
+				CenPersonaBean personaBean = personaAdm.getPersonaPorId(idPersona);
+				mutualidadForm.setNumeroIdentificacion(personaBean.getNIFCIF());
+				mutualidadForm.setIdTipoIdentificacion(personaBean.getIdTipoIdentificacion().toString());
+				mutualidadForm.setFechaNacimiento(personaBean.getFechaNacimiento());
+			}
+		}
 		return mutualidadForm;
 		
 	}

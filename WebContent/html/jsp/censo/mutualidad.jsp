@@ -133,7 +133,7 @@
 					<c:choose>
 							
 						<c:when test="${MutualidadForm.idSolicitud==null}">
-								<td>No Solicitada</td>
+								<td>No Solicitada mediante SIGA</td>
 								<td colspan="6">&nbsp;</td>
 						</c:when>
 						<c:when test="${MutualidadForm.idSolicitud!=null}">
@@ -148,45 +148,39 @@
 										</c:otherwise>
 									</c:choose>
 								</td>
-								<td id="tdEstadoSolicitud" class="labelTextValor" style="color: blue;"><c:out
-										value="${MutualidadForm.estado}" />
-								</td>
 								<td>
 									<html:button property="idButton"
 											onclick="return accionComprobarEstadoMutualidad();"
 											styleClass="button">
-										<siga:Idioma
-							key="censo.mutualidad.literal.estado" />
-											</html:button>
+										<siga:Idioma key="censo.mutualidad.literal.estado" />
+									</html:button>
 									
 								</td>
-								<c:choose>
-										<c:when test="${MutualidadForm.idTipoSolicitud=='P'}">
-										<td id="tdEstadoMutualista" class="labelTextValor" style="color: blue;"><c:out
-											value="${MutualidadForm.estadoMutualista}" />
-										</td>
-										<td>
-											<html:button property="idButton"
-												onclick="return accionComprobarEstadoMutualista();"
-												styleClass="button">
-											<siga:Idioma
-							key="censo.mutualidad.literal.estadoMutualista" />
-												</html:button>
-									
-											</td>
-										
-										</c:when>
-										<c:otherwise>
-										<td colspan="2"></td>
-										</c:otherwise>
-									</c:choose>
-								
-								
+								<td id="tdEstadoSolicitud" class="labelTextValor" style="color: blue;"><c:out
+										value="${MutualidadForm.estado}" />
+								</td>
 							</c:when>
-						
-						
-						
 					</c:choose>
+					<c:choose>
+						<c:when test="${MutualidadForm.idTipoSolicitud=='P'}">
+						<td>
+							<html:button property="idButton"
+								onclick="return accionComprobarEstadoMutualista();"
+								styleClass="button">
+								<siga:Idioma key="censo.mutualidad.literal.estadoMutualista" />
+							</html:button>
+						</td>
+						<td id="tdEstadoMutualista" class="labelTextValor" style="color: blue;"><c:out
+							value="${MutualidadForm.estadoMutualista}" />
+						</td>
+						
+						</c:when>
+						<c:otherwise>
+						<td colspan="2"></td>
+						</c:otherwise>
+					</c:choose>
+								
+								
 					
 					
 					</tr>
@@ -470,6 +464,11 @@
 							key="censo.mutualidad.literal.capitalObjetivo" /></td>
 					<td class="labelTextValor"><html:text property="capitalCobertura" size="8" styleClass="boxConsulta" style="text-align:right"/>&euro;</td>
 				</tr>
+				<tr>
+					<td class="labelText" colspan="2">
+						<a href="http://www.mutualidadabogacia.com/Home/Alternativa-al-RETA/Elige-el-nivel-de-cobertura-que-deseas.aspx" target="new">Conoce las distintas opciones de cobertura disponibles</a>
+					</td>
+				</tr>
 			</table>
 			<table class="tablaCampos">
 				<tr align="left">
@@ -480,7 +479,7 @@
 					<c:choose>
 						<c:when test="${MutualidadForm.modo=='insertar'}">
 						<td colspan = "4" class="labelTextValor">
-						<html:select styleClass="${estiloCombo}" name="MutualidadForm" property="idBeneficiario" style="width:500px;" onchange="onchangeBeneficiario();">
+						<html:select styleClass="${estiloCombo}" name="MutualidadForm" property="idBeneficiario" style="width:700px;" onchange="onchangeBeneficiario();">
 							<bean:define id="beneficiarios" name="MutualidadForm" property="beneficiarios" type="java.util.Map" />
 							<html:optionsCollection name="beneficiarios" value="key" label="value" />
 						</html:select>
@@ -524,7 +523,11 @@
 
 				</tr>
 
-
+				<tr>
+					<td class="labelText" colspan="6">
+					Las cuotas aportadas durante los tres primeros años al Sistema de Previsión Profesional para las garantías de Ahorro-Jubilación, Fallecimiento, Incapacidad Permanente, Incapacidad Temporal Profesional y Dependencia, tendrán una reducción del 50% para los menores de 50 años.
+					</td>
+				</tr>
 			</table>
 		</siga:ConjCampos>
 
@@ -636,16 +639,7 @@
 				<label for="checkCesionDatos"><siga:Idioma key="censo.mutualidad.cesionDatos"/></label>
 			</td>
 	</tr>
-	<c:choose>
-	<c:when test="${MutualidadForm.idTipoSolicitud=='P'}"> <!-- Plan profesional -->
-	<tr>
-		<td class="labelText">
-			<a href="http://www.mutualidadabogacia.com/Home/Alternativa-al-RETA/Elige-el-nivel-de-cobertura-que-deseas.aspx" target="new">Conoce las distintas opciones de cobertura disponibles</a>
-		</td>
-	</tr>
-	</c:when>
-	<c:otherwise></c:otherwise>
-	</c:choose>
+	
 	</table>
 
 		<siga:ConjBotonesAccion botones="G,R,C" clase="botonesDetalle" />
@@ -815,18 +809,18 @@
 			document.MutualidadForm.idEstado.value = resultado[0];
 			document.MutualidadForm.estado.value = resultado[1];	
 	    	document.getElementById("tdEstadoSolicitud").innerText = resultado[1];
-
-			
 		}
 		
 	}
 	function accionComprobarEstadoMutualista()
 	{
 		document.MutualidadForm.modo.value = "actualizaEstadoMutualista";
-		var resultado = ventaModalGeneral(document.MutualidadForm.name,"0",'<siga:Idioma	key="censo.mutualidad.aviso.espera" />');
-		if(resultado){
+		var resultado = ventaModalGeneral(document.MutualidadForm.name,"0",'<siga:Idioma key="censo.mutualidad.aviso.espera" />');
+		if(resultado && resultado[0]!='1'){
 			document.MutualidadForm.estadoMutualista.value = resultado[0];	
 	    	document.getElementById("tdEstadoMutualista").innerText = resultado[0];
+		}else{
+			document.getElementById("tdEstadoMutualista").innerText = "No se han recibido datos.";
 		}
 	
 	}
