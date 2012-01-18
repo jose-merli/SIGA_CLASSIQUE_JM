@@ -5,9 +5,11 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesNumero;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.CenSolicitudIncorporacionBean;
@@ -351,7 +353,11 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 				CenPersonaBean personaBean = personaAdm.getPersonaPorId(idPersona);
 				mutualidadForm.setNumeroIdentificacion(personaBean.getNIFCIF());
 				mutualidadForm.setIdTipoIdentificacion(personaBean.getIdTipoIdentificacion().toString());
-				mutualidadForm.setFechaNacimiento(personaBean.getFechaNacimiento());
+				try {
+					mutualidadForm.setFechaNacimiento(UtilidadesString.formatoFecha(personaBean.getFechaNacimiento(), ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH ));
+				} catch (Exception e) {
+					mutualidadForm.setFechaNacimiento(personaBean.getFechaNacimiento());
+				}
 			}
 		}
 		return mutualidadForm;
