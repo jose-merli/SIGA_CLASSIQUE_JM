@@ -260,6 +260,7 @@ public class BusquedaPersonaJGAction extends MasterAction {
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_CODIGOPOSTAL,bean.getCodigoPostal());						
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_FECHANACIMIENTO,bean.getFechaNacimiento());			
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPROFESION,bean.getIdProfesion());
+				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDMINUSVALIA,bean.getIdMinusvalia());				
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPAIS,bean.getIdPais());
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPROVINCIA,bean.getIdProvincia());
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPOBLACION,bean.getIdPoblacion());
@@ -271,6 +272,7 @@ public class BusquedaPersonaJGAction extends MasterAction {
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_OBSERVACIONES,bean.getObservaciones());
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDREPRESENTANTEJG,bean.getIdRepresentanteJG());
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_HIJOS,bean.getHijos());
+				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_EDAD,bean.getEdad());				
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_FAX,bean.getFax());
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_CORREOELECTRONICO,bean.getCorreoElectronico().trim());
 				

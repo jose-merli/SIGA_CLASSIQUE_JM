@@ -33,6 +33,7 @@ public class ScsPersonaJGBean extends MasterBean{
 	private String	codigoPostal;
 	private String  fechaNacimiento;
 	private Integer	idProfesion;
+	private Integer	idMinusvalia;	
 	private String	regimenConyugal;
 	private Integer	idInstitucion;
 	private String	idPais;
@@ -47,6 +48,7 @@ public class ScsPersonaJGBean extends MasterBean{
 	private String sexo;
 	private String idioma;
 	private String hijos;
+	private String edad;	
 	private String fax;
 	private String correoElectronico;
 	
@@ -75,6 +77,7 @@ public class ScsPersonaJGBean extends MasterBean{
 	static public final String 	C_CODIGOPOSTAL		=				"CODIGOPOSTAL";
 	static public final String 	C_FECHANACIMIENTO	=				"FECHANACIMIENTO";
 	static public final String 	C_IDPROFESION		=				"IDPROFESION";
+	static public final String 	C_IDMINUSVALIA		=				"IDMINUSVALIA";	
 	static public final String 	C_REGIMENCONYUGAL	=				"REGIMEN_CONYUGAL";
 	static public final String 	C_IDPAIS			=				"IDPAIS";
 	static public final String 	C_IDPROVINCIA		=				"IDPROVINCIA";
@@ -92,6 +95,7 @@ public class ScsPersonaJGBean extends MasterBean{
 	static public final String  C_TIPOGRUPOLAB    =			        "IDTIPOGRUPOLAB";
 	static public final String  C_NUMVECES		  =			        "NUMVECES";
 	static public final String  C_HIJOS		      =			        "NUMEROHIJOS";
+	static public final String  C_EDAD		      =			        "EDAD";	
 	static public final String  C_FAX		      =			        "FAX";
 	static public final String  C_CORREOELECTRONICO     =	        "CORREOELECTRONICO";
 	
@@ -126,6 +130,9 @@ public class ScsPersonaJGBean extends MasterBean{
 	 */
 	public void setHijos(String hijos) {
 		this.hijos = hijos;
+	}
+	public void setEdad(String edad) {
+		this.edad = edad;
 	}
 	/**
 	 * Almacena en el Bean la institucion
@@ -231,6 +238,8 @@ public class ScsPersonaJGBean extends MasterBean{
 	 */
 	public void setIdProfesion					(Integer valor) { this.idProfesion = valor;}
 	
+	
+	public void setIdMinusvalia					(Integer valor) { this.idMinusvalia = valor;}
 	/**
 
 	
@@ -335,6 +344,10 @@ public class ScsPersonaJGBean extends MasterBean{
 		return hijos;
 	}
 	
+	public String getEdad() {
+		return edad;
+	}
+
 	/**
 	 * @return Returns the idioma.
 	 */
@@ -421,6 +434,7 @@ public class ScsPersonaJGBean extends MasterBean{
 	public Integer getIdProfesion			() { return this.idProfesion;					}
 	
 	
+	public Integer getIdMinusvalia			() { return this.idMinusvalia;					}
 	
 	/**
 	 * Recupera del Bean el régimen conyugal

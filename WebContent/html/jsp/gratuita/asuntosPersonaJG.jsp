@@ -56,7 +56,8 @@
 			<html:hidden property="tituloE"/>
 			<html:hidden property="localizacionE"/>
 			<html:hidden property="sexo"/> 
-			<html:hidden property="hijos"/> 
+			<html:hidden property="hijos"/>
+			<html:hidden property="edad"/> 			 
 			<html:hidden property="accionE"/>
 			<html:hidden property="pantallaE"/>
 			<html:hidden property="actionE"/>
@@ -94,6 +95,7 @@
 			<html:hidden property="estadoCivil"/>
 			<html:hidden property="regimenConyugal"/>
 			<html:hidden property="profesion"/>
+			<html:hidden property="minusvalia"/>			
 			<html:hidden property="parentesco"/>
 			<html:hidden property="observaciones"/>
 			<html:hidden property="unidadObservaciones"/>

@@ -66,6 +66,15 @@ public class PersonaJGForm extends MasterForm {
  			e.printStackTrace();
  		}
  	}
+ 	public void setEdad (String dato) { 
+ 		try {
+ 			UtilidadesHash.set(this.datos,"Edad", dato);
+ 		} catch (Exception e) {
+ 			// escribimos la traza de momento
+ 			e.printStackTrace();
+ 		}
+ 	}
+
  	public void setNumIdentificacion (String dato) { 
  		try {      
  			UtilidadesHash.set(this.datos,CenPersonaBean.C_NIFCIF, dato);
@@ -94,6 +103,9 @@ public class PersonaJGForm extends MasterForm {
  	}
  	public String getHijos() 	{ 
  		return UtilidadesHash.getString(this.datos, "Hijos");		
+ 	}
+ 	public String getEdad() 	{ 
+ 		return UtilidadesHash.getString(this.datos, "Edad");		
  	}
 	public String getLocalizacionE() {
 		return UtilidadesHash.getString(this.datos,"LocalizacionE");
@@ -329,6 +341,12 @@ public class PersonaJGForm extends MasterForm {
 	}
 	public String getProfesion() {
 		return UtilidadesHash.getString(this.datos,"Profesion");
+	}
+	public void setMinusvalia(String dato) {
+		UtilidadesHash.set(this.datos,"Minusvalia",dato);
+	}
+	public String getMinusvalia() {
+		return UtilidadesHash.getString(this.datos,"Minusvalia");
 	}
 	public String getParentesco() {
 		return UtilidadesHash.getString(this.datos,"Parentesco");

@@ -52,6 +52,7 @@
 	}
 
 	int pcajgActivo = 0;
+	String minusDefecto=null;
 	/*String sEsPcajgActivo = (String)request.getAttribute("pcajgActivo");
 	if ((sEsPcajgActivo!=null) && (!sEsPcajgActivo.equalsIgnoreCase(""))){
 		pcajgActivo = Integer.parseInt(sEsPcajgActivo);
@@ -59,7 +60,6 @@
 	if (request.getAttribute("pcajgActivo") != null) {
 		pcajgActivo = Integer.parseInt(request.getAttribute("pcajgActivo").toString());
 	}
-
 	// RGG 23-03-2006  cambios de personaJG
 
 	PersonaJGForm miform = (PersonaJGForm) request
@@ -108,6 +108,10 @@
 	String sexo = "";
 	String idioma = "";
 	String nHijos = "";
+	String edad = "";
+	if ((idPersona==null || idPersona.trim().equals("")) && request.getAttribute("minusvaliaDefecto") != null) {
+		minusDefecto = (String)request.getAttribute("minusvaliaDefecto");
+	}
 
 	String tipoConoce = "", tipoGrupoLaboral = "", numVecesSOJ = "";
 	/*idTipoConoce.add(miHash.get(ScsSOJBean.C_IDTIPOCONOCE).toString());
@@ -142,6 +146,7 @@
 	boolean obligatorioIngreso = false;
 	boolean obligatorioFechaNac = false;
 	boolean obligatorioSexo = false;
+	boolean obligatorioMinusvalia = false;
 	
 	if ((pcajgActivo == 1)
 			&& ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE
@@ -203,6 +208,9 @@
 		obligatorioParentesco = true;
 		obligatorioFechaNac = true;
 		
+	} else if (pcajgActivo == 7) {
+		obligatorioMinusvalia = true;
+	
 	}
 
 ArrayList calidadSel = new ArrayList();
@@ -387,6 +395,12 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 				document.forms[0].fax.value = resultado[20];
 				//correoElectronico	
 				document.forms[0].correoElectronico.value = resultado[21];
+
+				//minusvalia	
+				document.forms[0].minusvalia.value = resultado[23];
+
+				//edad	
+				document.forms[0].edad.value = resultado[24];
 				
 				
          <%if (conceptoE.equals(PersonaJGAction.ASISTENCIA_ASISTIDO)
@@ -723,6 +737,79 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 		function rellenarCampos(){
 			document.forms[0].provincia.onchange();
 	} 
+
+
+		function accionCalendario() 
+		{
+			// Abrimos el calendario 
+
+			var resultado = showModalDialog("<html:rewrite page='/html/jsp/general/calendarGeneral.jsp'/>?valor="+document.PersonaJGForm.fechaNac.value,document.PersonaJGForm.fechaNac,"dialogHeight:275px;dialogWidth:400px;help:no;scroll:no;status:no;");
+			if (resultado) {
+				 
+				 document.getElementById('fechaNac').value=resultado;
+				 rellenaEdad(resultado);
+		 	}else{
+				//Si da a reset no viene nada por lo que actualizamos. si viene con fecha
+				//es que ha cerrado desde el aspa, lo dejamos como estuviera(no hacemos nada) 		 		
+		 		 
+				 if( document.getElementById('fechaNac').value=='')
+					 document.getElementById('fechaNac').value='';
+			} 
+		}
+	
+		function rellenaEdad(fecha){
+			//calculo la fecha de hoy 
+		    hoy=new Date() 
+		    //alert(hoy) 
+
+		    //calculo la fecha que recibo 
+		    //La descompongo en un array 
+		    var array_fecha = fecha.split("/") 
+		    //si el array no tiene tres partes, la fecha es incorrecta 
+		    if (array_fecha.length!=3) 
+		       return false 
+
+		    //compruebo que los ano, mes, dia son correctos 
+		    var ano 
+		    ano = parseInt(array_fecha[2]); 
+		    if (isNaN(ano)) 
+		       return false 
+			var mes 
+		    mes = parseInt(array_fecha[1]); 
+		    if (isNaN(mes)) 
+		       return false 
+
+		    var dia 
+		    dia = parseInt(array_fecha[0]); 
+		    if (isNaN(dia)) 
+		       return false 
+
+		    //si el año de la fecha que recibo solo tiene 2 cifras hay que cambiarlo a 4 
+		    if (ano<=99) 
+		       ano +=1900 
+
+		    //resto los años de las dos fechas 
+		    edad=hoy.getYear()- ano - 1; //-1 porque no se si ha cumplido años ya este año 
+			var edadReal=edad;
+		    //si resto los meses y me da menor que 0 entonces no ha cumplido años. Si da mayor si ha cumplido 
+		    if (hoy.getMonth() + 1 - mes < 0) //+ 1 porque los meses empiezan en 0 
+		    	edadReal= edad 
+		    if (hoy.getMonth() + 1 - mes > 0) 
+		    	edadReal= edad+1 
+
+		    //entonces es que eran iguales. miro los dias 
+		    //si resto los dias y me da menor que 0 entonces no ha cumplido años. Si da mayor o igual si ha cumplido 
+		    if (hoy.getUTCDate() - dia >= 0) 
+		    	edadReal= edad + 1 
+
+		       
+			document.PersonaJGForm.edad.value=edadReal;
+	} 
+
+
+		function 	actualizarAnio(fechaNac){
+
+			}
                
 		</script>
 		
@@ -1231,16 +1318,32 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
  			%>		
 		</td>
 		<td >
-			<html:text name="PersonaJGForm" property="fechaNac" size="10" maxlength="10" styleClass="<%=estiloBox%>" readOnly="true"></html:text>
+			<html:text name="PersonaJGForm" property="fechaNac" size="10" maxlength="10" styleClass="<%=estiloBox%>"  readOnly="true"></html:text>
 			<%
 				if (!accion.equalsIgnoreCase("ver")) {
 			%>
-			<a href='javascript://' onClick="return showCalendarGeneral(fechaNac);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+			<a href='javascript://' onClick="accionCalendario();"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
 			<%
 				}
 			%>
 		</td>
 		<td class="labelText">
+			<siga:Idioma key="gratuita.busquedaSOJ.literal.edad"/>	
+		</td>
+				<%
+			if ((miform.getEdad() != null)
+								&& (!miform.getEdad().equalsIgnoreCase(""))) {
+					edad = miform.getEdad();
+						}
+		%>
+		<td>
+			<html:text name="PersonaJGForm" value ="<%=edad %>" property="edad" size="3" styleClass="<%=estiloBox %>"/>
+		</td>
+
+	</tr>
+	
+	<tr>
+			<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.estadoCivil"/>	
 			<%if (obligatorioEstadoCivil){%>
 					<%=asterisco%> 
@@ -1254,122 +1357,7 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 			%>
 			<siga:ComboBD nombre = "estadoCivil" tipo="estadoCivil" clase="<%=classCombo%>" elementoSel="<%=selEstadoCiv%>" readOnly="<%=sreadonly%>"/>
 		</td>
-	</tr>
-	
-	<tr>
-	<td class="labelText">
-			<siga:Idioma key="gratuita.personaJG.literal.sexo"/>	
-			<%if (obligatorioSexo){%>
-				<%=asterisco%> 
-			<%}%>		
-		</td>
-		<td >
-		<%
-			String ssexo = "";
-					if (miform.getSexo() != null) {
-						sexo = miform.getSexo();
-					} else {
-						sexo = "";
-					}
-					if (sexo.equals(ClsConstants.TIPO_SEXO_HOMBRE))
-						ssexo = UtilidadesString.getMensajeIdioma(usr,
-								"censo.sexo.hombre");
-					if (sexo.equals(ClsConstants.TIPO_SEXO_MUJER))
-						ssexo = UtilidadesString.getMensajeIdioma(usr,
-								"censo.sexo.mujer");
-
-					if (!accion.equalsIgnoreCase("ver")) {
-		%>
-		    <html:select name="PersonaJGForm" property="sexo"  styleClass = "<%=estiloBox %>" value="<%=sexo%>"   >
-			<html:option value="0" >&nbsp;</html:option>
-			<html:option value="<%=ClsConstants.TIPO_SEXO_HOMBRE %>" ><siga:Idioma key="censo.sexo.hombre"/></html:option>
-			<html:option value="<%=ClsConstants.TIPO_SEXO_MUJER %>" ><siga:Idioma key="censo.sexo.mujer"/></html:option>
-			</html:select>		
-		<%
-					} else {
-				%>
-			<html:hidden  name="PersonaJGForm" property="sexo" value="<%=sexo %>"/>
-			<html:text name="PersonaJGForm" property="ssexo" size="20" styleClass="<%=estiloBox %>" value="<%=ssexo %>"  ></html:text>				
-		<%
-							}
-						%>					
-
-			
-		</td>
-		<td class="labelText">
-			<siga:Idioma key="gratuita.personaJG.literal.idioma"/>		
-		</td>
-		<td>
-			<%
-				if (miform.getSexo() != null) {
-							idioma = miform.getIdioma();
-						} else {
-							idioma = "";
-						}
-						ArrayList selIdioma = new ArrayList();
-						selIdioma.add(idioma);
-			%>
-			<siga:ComboBD nombre = "idioma" tipo="cmbIdioma" clase="<%=classCombo%>"  elementoSel="<%=selIdioma%>" readOnly="<%=sreadonly%>"/>
-		</td>
-		<%
-			if (conceptoE.equals(PersonaJGAction.EJG)
-							|| conceptoE
-									.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
-		%>
-		 <td class="labelText">
-		 <siga:Idioma key="gratuita.busquedaSOJ.literal.grupoLaboral"/>
-	     </td>		
-	    <%
-			    	if (miform.getTipoGrupoLaboral() != null) {
-			    					tipoGrupoLaboral = miform.getTipoGrupoLaboral();
-			    				} else {
-			    					tipoGrupoLaboral = "";
-			    				}
-			    				ArrayList selTipoGrupoLaboral = new ArrayList();
-			    				selTipoGrupoLaboral.add(tipoGrupoLaboral);
-			    %>		
-	    <td>
-	       <%
-	       	if (!accion.equalsIgnoreCase("ver")) {
-	       %>
-		       <siga:ComboBD nombre = "tipoGrupoLaboral" tipo="cmbTipoGrupoLaboral"  ancho="150" clase="boxCombo"  parametro="<%=dato%>" elementoSel="<%=selTipoGrupoLaboral%>"   />	
-	       <%
-		       	} else {
-		       %>	
-	           <siga:ComboBD nombre = "tipoGrupoLaboral" tipo="cmbTipoGrupoLaboral" ancho="150" readonly="true" clase="boxComboConsulta"  parametro="<%=dato%>" elementoSel="<%=selTipoGrupoLaboral%>" />	
-  	       <%
-	  	       	}
-	  	       %>	
-     	</td>
-     	<html:hidden name="PersonaJGForm" value ="<%=nHijos %>" property="hijos"/>
-		<%
-			} else if (conceptoE
-							.equals(PersonaJGAction.ASISTENCIA_ASISTIDO)
-							|| conceptoE.equals(PersonaJGAction.SOJ)) {
-		%>
-		<%
-			if ((miform.getHijos() != null)
-								&& (!miform.getHijos().equalsIgnoreCase(""))) {
-							nHijos = miform.getHijos();
-						}
-		%>
-		<td class="labelText">
-			<siga:Idioma key="gratuita.busquedaSOJ.literal.nHijos"/>	
-		</td>
-		<td>
-			<html:text name="PersonaJGForm" value ="<%=nHijos %>" property="hijos" size="3" styleClass="<%=estiloBox %>"/>
-		</td>
-		<%
-			} else {
-		%>
-			<html:hidden name="PersonaJGForm" value ="<%=nHijos %>" property="hijos"/>
-		<%
-			}
-		%>
-	</tr>
-	
-	<tr>
-		<td class="labelText">
+				<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.regimenConyugal"/>	
 			<%if (obligatorioRegimenConyuge){%>
 					<%=asterisco%> 
@@ -1416,7 +1404,57 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 				}
 			%>
 		</td>
+		
+
+					<%
+			if (conceptoE.equals(PersonaJGAction.EJG)
+							|| conceptoE
+									.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
+		%>
+		 <td class="labelText">
+		 <siga:Idioma key="gratuita.busquedaSOJ.literal.grupoLaboral"/>
+	     </td>		
+	    <%
+			    	if (miform.getTipoGrupoLaboral() != null) {
+			    					tipoGrupoLaboral = miform.getTipoGrupoLaboral();
+			    				} else {
+			    					tipoGrupoLaboral = "";
+			    				}
+			    				ArrayList selTipoGrupoLaboral = new ArrayList();
+			    				selTipoGrupoLaboral.add(tipoGrupoLaboral);
+			    %>		
+	    <td>
+	       <%
+	       	if (!accion.equalsIgnoreCase("ver")) {
+	       %>
+		       <siga:ComboBD nombre = "tipoGrupoLaboral" tipo="cmbTipoGrupoLaboral"  ancho="150" clase="boxCombo"  parametro="<%=dato%>" elementoSel="<%=selTipoGrupoLaboral%>"   />	
+	       <%
+		       	} else {
+		       %>	
+	           <siga:ComboBD nombre = "tipoGrupoLaboral" tipo="cmbTipoGrupoLaboral" ancho="150" readonly="true" clase="boxComboConsulta"  parametro="<%=dato%>" elementoSel="<%=selTipoGrupoLaboral%>" />	
+  	       <%
+	  	       	}
+	  	       %>	
+     	</td>
+	</tr>
+	
+	<tr>
 		<td class="labelText">
+			<siga:Idioma key="gratuita.personaJG.literal.idioma"/>		
+		</td>
+		<td>
+			<%
+				if (miform.getSexo() != null) {
+							idioma = miform.getIdioma();
+						} else {
+							idioma = "";
+						}
+						ArrayList selIdioma = new ArrayList();
+						selIdioma.add(idioma);
+			%>
+			<siga:ComboBD nombre = "idioma" tipo="cmbIdioma" clase="<%=classCombo%>"  elementoSel="<%=selIdioma%>" readOnly="<%=sreadonly%>"/>
+		</td>
+			<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.profesion"/>		
 		</td>
 		<td>
@@ -1427,7 +1465,33 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 			%>
 			<siga:ComboBD nombre = "profesion" tipo="cmbProfesion" clase="<%=classCombo%>" elementoSel="<%=selProfe%>" readOnly="<%=sreadonly%>"/>
 		</td>
-	 
+
+     	<html:hidden name="PersonaJGForm" value ="<%=nHijos %>" property="hijos"/>
+		<%
+			} else if (conceptoE
+							.equals(PersonaJGAction.ASISTENCIA_ASISTIDO)
+							|| conceptoE.equals(PersonaJGAction.SOJ)) {
+		%>
+		<%
+			if ((miform.getHijos() != null)
+								&& (!miform.getHijos().equalsIgnoreCase(""))) {
+							nHijos = miform.getHijos();
+						}
+		%>
+		<td class="labelText">
+			<siga:Idioma key="gratuita.busquedaSOJ.literal.nHijos"/>	
+		</td>
+		<td>
+			<html:text name="PersonaJGForm" value ="<%=nHijos %>" property="hijos" size="3" styleClass="<%=estiloBox %>"/>
+		</td>
+		<%
+			} else {
+		%>
+			<html:hidden name="PersonaJGForm" value ="<%=nHijos %>" property="hijos"/>
+		<%
+			}
+		%>
+	
 <%
 	 	if (conceptoE
 	 					.equals(PersonaJGAction.ASISTENCIA_REPRESENTANTE)
@@ -1488,6 +1552,67 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 	}
 %>
 	</tr>
+	<tr>
+			<td class="labelText">
+			<siga:Idioma key="gratuita.personaJG.literal.sexo"/>	
+			<%if (obligatorioSexo){%>
+				<%=asterisco%> 
+			<%}%>		
+		</td>
+		<td >
+		<%
+			String ssexo = "";
+					if (miform.getSexo() != null) {
+						sexo = miform.getSexo();
+					} else {
+						sexo = "";
+					}
+					if (sexo.equals(ClsConstants.TIPO_SEXO_HOMBRE))
+						ssexo = UtilidadesString.getMensajeIdioma(usr,
+								"censo.sexo.hombre");
+					if (sexo.equals(ClsConstants.TIPO_SEXO_MUJER))
+						ssexo = UtilidadesString.getMensajeIdioma(usr,
+								"censo.sexo.mujer");
+
+					if (!accion.equalsIgnoreCase("ver")) {
+		%>
+		    <html:select name="PersonaJGForm" property="sexo"  styleClass = "<%=estiloBox %>" value="<%=sexo%>"   >
+			<html:option value="0" >&nbsp;</html:option>
+			<html:option value="<%=ClsConstants.TIPO_SEXO_HOMBRE %>" ><siga:Idioma key="censo.sexo.hombre"/></html:option>
+			<html:option value="<%=ClsConstants.TIPO_SEXO_MUJER %>" ><siga:Idioma key="censo.sexo.mujer"/></html:option>
+			</html:select>		
+		<%
+					} else {
+				%>
+			<html:hidden  name="PersonaJGForm" property="sexo" value="<%=sexo %>"/>
+			<html:text name="PersonaJGForm" property="ssexo" size="20" styleClass="<%=estiloBox %>" value="<%=ssexo %>"  ></html:text>				
+		<%
+							}
+						%>					
+
+			
+		</td>
+		 <td class="labelText">
+			<siga:Idioma key="gratuita.busquedaSOJ.literal.minusvalia"/>	
+			<%if (obligatorioMinusvalia){%>
+					<%=asterisco%> 
+				<%}%>	
+		</td>
+		<td>
+		<%
+				ArrayList selMinus = new ArrayList();
+						if (miform.getMinusvalia() != null){
+							selMinus.add(miform.getMinusvalia());
+						}else{
+							if(minusDefecto!=null)
+							selMinus.add(minusDefecto);
+						}	
+			%>
+			<siga:ComboBD nombre = "minusvalia" tipo="cmbMinusvalia" clase="<%=classCombo%>" elementoSel="<%=selMinus%>" readOnly="<%=sreadonly%>"/>
+			
+		</td>
+	
+	</tr>
 	</table>
 	</siga:ConjCampos>
 
@@ -1507,7 +1632,6 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 	
 	
 function buscarPersona() {		
-	
 		var resultado = ventaModalGeneral("busquedaClientesModalForm","G");			
 		if (resultado != null && resultado[0]!=null){		
 			document.PersonaJGForm.idPersonaRepresentante.value       = resultado[0];

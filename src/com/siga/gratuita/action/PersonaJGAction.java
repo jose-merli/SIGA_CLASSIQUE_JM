@@ -724,7 +724,13 @@ public class PersonaJGAction extends MasterAction {
 			//Obtener el tipo PCAJG
 			int tipoCAJG = CajgConfiguracion.getTipoCAJG(new Integer(idInstitucionJG));					
 			  request.setAttribute("pcajgActivo", tipoCAJG);
-			
+			ScsPersonaJGAdm perAdm = new ScsPersonaJGAdm(this.getUserBean(request));
+			if(idPersonaJG!=null && idPersonaJG.toString().trim().equals("")){
+				String minusvaliaDefecto = perAdm.getMinusvaliaDefecto(idInstitucionJG);					
+				  request.setAttribute("minusvaliaDefecto", minusvaliaDefecto);
+			}else
+				request.setAttribute("minusvaliaDefecto", null);
+			  
 			if (concepto==null) {
 				throw new ClsExceptions("Falta de parámetro obligatorio (concepto)");
 			} else {
@@ -1233,6 +1239,7 @@ public class PersonaJGAction extends MasterAction {
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_CODIGOPOSTAL,perBean.getCodigoPostal());						
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_FECHANACIMIENTO,perBean.getFechaNacimiento());			
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPROFESION,perBean.getIdProfesion());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDMINUSVALIA,perBean.getIdMinusvalia());					
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPAIS,perBean.getIdPais());
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPROVINCIA,perBean.getIdProvincia());
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPOBLACION,perBean.getIdPoblacion());
@@ -1246,6 +1253,7 @@ public class PersonaJGAction extends MasterAction {
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_SEXO,perBean.getSexo());
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDIOMA,perBean.getIdioma());
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_HIJOS,perBean.getHijos());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_EDAD,perBean.getEdad());					
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_FAX,perBean.getFax());
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_CORREOELECTRONICO,perBean.getCorreoElectronico());					
 					
@@ -1300,6 +1308,9 @@ public class PersonaJGAction extends MasterAction {
 					if (perBean.getHijos() != null){
 						miform.setHijos(perBean.getHijos());
 					}
+					if (perBean.getEdad() != null){
+						miform.setEdad(perBean.getEdad());
+					}
 					if (perBean.getFechaNacimiento()!=null) {
 						miform.setFechaNac(GstDate.getFormatedDateShort(user.getLanguage(),perBean.getFechaNacimiento()));
 					}
@@ -1310,7 +1321,9 @@ public class PersonaJGAction extends MasterAction {
 					if (perBean.getIdProfesion()!=null) {
 						miform.setProfesion(perBean.getIdProfesion().toString());
 					}
-					
+					if (perBean.getIdMinusvalia()!=null) {
+						miform.setMinusvalia(perBean.getIdMinusvalia().toString());
+					}					
 					if (!miform.getConceptoE().equals(PersonaJGAction.DESIGNACION_CONTRARIOS) && !miform.getConceptoE().equals(PersonaJGAction.PERSONAJG)) {
 						// para el caso de desgina contrarios, el nombre sale de la tabal contrarios designa
 						if (perBean.getIdRepresentanteJG()!=null) {
@@ -1726,6 +1739,9 @@ public class PersonaJGAction extends MasterAction {
 								if (perBean.getIdProfesion()!=null) {
 									miform.setProfesion(perBean.getIdProfesion().toString());
 								}
+								if (perBean.getIdMinusvalia()!=null) {
+									miform.setMinusvalia(perBean.getIdMinusvalia().toString());
+								}
 								miform.setObservaciones(perBean.getObservaciones());
 							}							
 							
@@ -1807,6 +1823,7 @@ public class PersonaJGAction extends MasterAction {
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_CODIGOPOSTAL,miform.getCp());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_FECHANACIMIENTO,GstDate.getApplicationFormatDate("",miform.getFechaNac()));
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPROFESION,miform.getProfesion());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDMINUSVALIA,miform.getMinusvalia());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPAIS,miform.getNacionalidad());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPROVINCIA,miform.getProvincia());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPOBLACION,miform.getPoblacion());
@@ -1820,7 +1837,8 @@ public class PersonaJGAction extends MasterAction {
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_SEXO,miform.getSexo());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDIOMA,miform.getIdioma());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_HIJOS,miform.getHijos());
-		    UtilidadesHash.set(persona,ScsPersonaJGBean.C_FAX,miform.getFax());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_EDAD,miform.getEdad());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_FAX,miform.getFax());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_CORREOELECTRONICO,miform.getCorreoElectronico());
 			
 	     	

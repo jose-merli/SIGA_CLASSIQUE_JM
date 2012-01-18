@@ -191,7 +191,8 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 							ScsPersonaJGBean.C_NOMBRE,				ScsPersonaJGBean.C_APELLIDO1,
 							ScsPersonaJGBean.C_APELLIDO2,			ScsPersonaJGBean.C_DIRECCION,
 							ScsPersonaJGBean.C_CODIGOPOSTAL,		ScsPersonaJGBean.C_FECHANACIMIENTO,
-							ScsPersonaJGBean.C_IDPROFESION,			ScsPersonaJGBean.C_IDPAIS,							
+							ScsPersonaJGBean.C_IDPROFESION,			ScsPersonaJGBean.C_IDMINUSVALIA,
+							ScsPersonaJGBean.C_IDPAIS,							
 							ScsPersonaJGBean.C_IDPROVINCIA,			ScsPersonaJGBean.C_IDPOBLACION,
 							ScsPersonaJGBean.C_ESTADOCIVIL,			ScsPersonaJGBean.C_REGIMENCONYUGAL,
 							ScsPersonaJGBean.C_FECHAMODIFICACION,	ScsPersonaJGBean.C_USUMODIFICACION,
@@ -199,8 +200,8 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 							ScsPersonaJGBean.C_ENCALIDADDE,	        ScsPersonaJGBean.C_OBSERVACIONES,
 							ScsPersonaJGBean.C_NIF,                 ScsPersonaJGBean.C_IDREPRESENTANTEJG,
 							ScsPersonaJGBean.C_SEXO,                ScsPersonaJGBean.C_IDIOMA,
-							ScsPersonaJGBean.C_HIJOS, 				ScsPersonaJGBean.C_FAX,
-							ScsPersonaJGBean.C_CORREOELECTRONICO
+							ScsPersonaJGBean.C_HIJOS, 				ScsPersonaJGBean.C_EDAD, 
+							ScsPersonaJGBean.C_FAX,					ScsPersonaJGBean.C_CORREOELECTRONICO
 							
 						};
 
@@ -235,6 +236,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			bean.setCodigoPostal(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_CODIGOPOSTAL));
 			bean.setFechaNacimiento(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_FECHANACIMIENTO));
 			bean.setIdProfesion(UtilidadesHash.getInteger(hash,ScsPersonaJGBean.C_IDPROFESION));
+			bean.setIdMinusvalia(UtilidadesHash.getInteger(hash,ScsPersonaJGBean.C_IDMINUSVALIA));			
 			bean.setIdPais(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_IDPAIS));
 			bean.setIdProvincia(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_IDPROVINCIA));
 			bean.setIdPoblacion(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_IDPOBLACION));
@@ -248,6 +250,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			bean.setSexo(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_SEXO));
 			bean.setIdioma(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_IDIOMA));
 			bean.setHijos(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_HIJOS));
+			bean.setEdad(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_EDAD));			
 			bean.setFax(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_FAX));
 			bean.setCorreoElectronico(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_CORREOELECTRONICO));
 			
@@ -283,6 +286,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_CODIGOPOSTAL,miBean.getCodigoPostal());						
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_FECHANACIMIENTO,miBean.getFechaNacimiento());			
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_IDPROFESION,miBean.getIdProfesion());
+			UtilidadesHash.set(hash,ScsPersonaJGBean.C_IDMINUSVALIA,miBean.getIdMinusvalia());			
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_IDPAIS,miBean.getIdPais());
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_IDPROVINCIA,miBean.getIdProvincia());
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_IDPOBLACION,miBean.getIdPoblacion());
@@ -297,6 +301,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_IDIOMA,miBean.getIdioma());
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_IDPROFESION,miBean.getIdProfesion());
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_HIJOS,miBean.getHijos());
+			UtilidadesHash.set(hash,ScsPersonaJGBean.C_EDAD,miBean.getEdad());			
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_FAX,miBean.getFax());
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_CORREOELECTRONICO,miBean.getCorreoElectronico());
 			
@@ -431,6 +436,26 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
        }
        return salida;                        
     }
+
+	public String getMinusvaliaDefecto (String institucion) throws ClsExceptions,SIGAException {
+		   String xdefecto = null;
+		   Vector datos=new Vector();
+	       try {
+	    	  
+		    	Hashtable criterios = new Hashtable();
+		    	criterios.put(ScsPersonaJGBean.C_IDINSTITUCION,institucion);
+		    	String sql = " Select IDMINUSVALIA as ID from scs_minusvalia WHERE PORDEFECTO=1 AND ROWNUM=1 AND IDINSTITUCION=" + institucion;
+				Vector v = new Vector();
+				v = this.ejecutaSelect(sql);			
+				if (v!=null && v.size()>0) 
+					 xdefecto = (String)((Hashtable)v.get(0)).get("ID");
+		    	
+	       }
+	       catch (Exception e) {
+	       	throw new ClsExceptions (e, "Error al obtener el valor por defecto de la minusvalia");
+	       }
+	       return xdefecto;                        
+	    }
 
 
 	/**
