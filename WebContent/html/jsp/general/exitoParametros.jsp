@@ -65,7 +65,7 @@
 								var array =new Array(<%=parametros.length%>);
 								<%
 								for (int i = 0; i < parametros.length; i++) {
-									String parametro = parametros[i];%>
+									String parametro = parametros[i].trim();%>
 									array[<%=i%>]="<%=parametro%>";	
 								<%}%>
 
