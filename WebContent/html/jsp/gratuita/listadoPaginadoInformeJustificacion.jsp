@@ -778,7 +778,7 @@ function downloadDocumentoResolucion(docResolucion) {
 					value="${designa.fecha}">
 				<c:set var="disabledPorCambioLetrado" value="" />
 				<c:if
-					test="${(designa.cambioLetrado=='S'&&InformeJustificacionMasivaForm.fichaColegial==true)}">
+					test="${designa.cambioLetrado=='S'}">
 					<c:set var="disabledPorCambioLetrado" value="disabled='disabled'" />
 				</c:if>
 				<c:set var="valiDisabled" value="" />
@@ -902,6 +902,30 @@ function downloadDocumentoResolucion(docResolucion) {
 						
 					<c:choose>
 					
+					<c:when
+									test="${disabledPorCambioLetrado!=''}">
+									<td align="center" rowspan="${designa.rowSpan}" colspan="3">
+									
+										<siga:Idioma
+										key="gratuita.informeJustificacionMasiva.cambioLetrado" />
+										
+									</td>
+									<td><input type="checkbox"
+										disabled="disabled" /></td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td><c:choose>
+										<c:when test="${designa.baja=='1'}">
+											<input type="checkbox" disabled="disabled" checked="checked" />
+										</c:when>
+										
+										<c:otherwise>
+											<input type="checkbox" disabled="disabled" />
+										</c:otherwise>
+									</c:choose>
+									</td>
+									</tr>
+								</c:when>
 					
 					<c:when test="${designa.permitidoJustificar==false}">
 							<td align="center" rowspan="${designa.rowSpan}" colspan="3">
@@ -942,7 +966,7 @@ function downloadDocumentoResolucion(docResolucion) {
 								</c:when>
 								<c:otherwise>
 									<input name="checkBaja" id="baja_${status.count}"
-										${disabledPorCambioLetrado} type="checkbox" />
+										 type="checkbox" />
 								</c:otherwise>
 							</c:choose></td>
 				</tr>
@@ -955,7 +979,9 @@ function downloadDocumentoResolucion(docResolucion) {
 						<c:when test="${designa.juzgado==''&&empty designa.actuaciones}">
 							<td align="center" rowspan="${designa.rowSpan}" colspan="3">
 							<siga:Idioma
-								key="gratuita.informeJustificacionMasiva.aviso.sinJuzgado" /></td>
+								key="gratuita.informeJustificacionMasiva.aviso.sinJuzgado" />
+							
+							</td>
 							<td rowspan="${designa.rowSpan}"><input type="checkbox"
 								disabled="disabled" /></td>
 							<td rowspan="${designa.rowSpan}"><c:choose>
@@ -964,7 +990,7 @@ function downloadDocumentoResolucion(docResolucion) {
 									<img id="iconoboton_editar1"
 										src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>"
 										style="cursor: hand;" alt="Editar" name="editar_1" border="0"
-										onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${designa.fecha}});"
+										onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${designa.fecha});"
 										onMouseOut="MM_swapImgRestore()"
 										onMouseOver="MM_swapImage('editar_1','','<html:rewrite page='/html/imagenes/beditar_on.gif'/>',1)">
 								</c:when>
@@ -985,7 +1011,7 @@ function downloadDocumentoResolucion(docResolucion) {
 								
 								<c:otherwise>
 									<input name="checkBaja" id="baja_${status.count}"
-										${disabledPorCambioLetrado} type="checkbox" />
+										 type="checkbox" />
 								</c:otherwise>
 							</c:choose></td>
 				</tr>
@@ -998,7 +1024,8 @@ function downloadDocumentoResolucion(docResolucion) {
 							test="${designa.idProcedimiento==''&&empty designa.actuaciones}">
 							<td align="center" rowspan="${designa.rowSpan}" colspan="3">
 							<siga:Idioma
-								key="gratuita.informeJustificacionMasiva.aviso.sinModulo" /></td>
+								key="gratuita.informeJustificacionMasiva.aviso.sinModulo" />
+							</td>
 							<td rowspan="${designa.rowSpan}"><input type="checkbox"
 								disabled="disabled" /></td>
 							<td rowspan="${designa.rowSpan}"><c:choose>
@@ -1028,14 +1055,18 @@ function downloadDocumentoResolucion(docResolucion) {
 								
 								<c:otherwise>
 									<input name="checkBaja" id="baja_${status.count}"
-										${disabledPorCambioLetrado} type="checkbox" />
+										 type="checkbox" />
 								</c:otherwise>
 							</c:choose></td>
 							</tr>
 						</c:when>
 						<c:otherwise>
 							<c:choose>
-								<c:when test="${empty designa.actuaciones}">
+								
+								<c:when test="${empty designa.actuaciones }">
+									
+								
+								
 									<c:choose>
 										<c:when
 											test="${designa.categoria!=null && designa.categoria!=''}">
@@ -1088,7 +1119,7 @@ function downloadDocumentoResolucion(docResolucion) {
 												
 												<c:otherwise>
 													<input name="checkBaja" id="baja_${status.count}"
-														${disabledPorCambioLetrado} type="checkbox" />
+														 type="checkbox" />
 												</c:otherwise>
 											</c:choose></td>
 											</tr>
@@ -1143,7 +1174,7 @@ function downloadDocumentoResolucion(docResolucion) {
 															
 															<c:otherwise>
 																<input name="checkBaja" id="baja_${status.count}"
-																	${disabledPorCambioLetrado} type="checkbox" />
+																	 type="checkbox" />
 															</c:otherwise>
 														</c:choose></td>
 														</tr>
@@ -1157,7 +1188,7 @@ function downloadDocumentoResolucion(docResolucion) {
 																	<td><input name="checkAcreditacion"
 																		id="acre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}"
 																		onclick="onCheckAcreditacion(this);"
-																		${disabledPorCambioLetrado} type="checkbox" /><c:out
+																		 type="checkbox" /><c:out
 																		value="${acreditacion.descripcion}" /> <input
 																		name="${status.count}_${acreditacion.idProcedimiento}_checkAcreditacion"
 																		id="checkacre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}"
@@ -1194,7 +1225,7 @@ function downloadDocumentoResolucion(docResolucion) {
 																		
 																		<c:otherwise>
 																			<input name="checkBaja" id="baja_${status.count}"
-																				${disabledPorCambioLetrado} type="checkbox" />
+																				 type="checkbox" />
 																		</c:otherwise>
 																	</c:choose></td>
 																	</tr>
@@ -1211,7 +1242,7 @@ function downloadDocumentoResolucion(docResolucion) {
 																		<td><input name="checkAcreditacion"
 																			id="acre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}"
 																			onclick="onCheckAcreditacion(this);"
-																			${disabledPorCambioLetrado} type="checkbox" /><c:out
+																			 type="checkbox" /><c:out
 																			value="${acreditacion.descripcion}" /> <input
 																			name="${status.count}_${acreditacion.idProcedimiento}_checkAcreditacion"
 																			id="checkacre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}"
@@ -1260,7 +1291,7 @@ function downloadDocumentoResolucion(docResolucion) {
 															<input name="checkAcreditacion"
 																id="acre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"
 																onclick="onCheckAcreditacion(this);"
-																${disabledPorCambioLetrado} type="checkbox" />
+																 type="checkbox" />
 															<input
 																name="${status.count}_${actuacion.acreditacion.idProcedimiento}_checkAcreditacion"
 																id="checkacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"
@@ -1365,7 +1396,7 @@ function downloadDocumentoResolucion(docResolucion) {
 														
 														<c:otherwise>
 															<input name="checkBaja" id="baja_${status.count}"
-																${disabledPorCambioLetrado} type="checkbox" />
+																 type="checkbox" />
 														</c:otherwise>
 													</c:choose></td>
 													</tr>
@@ -1401,7 +1432,7 @@ function downloadDocumentoResolucion(docResolucion) {
 																<input name="checkAcreditacion"
 																	id="acre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"
 																	onclick="onCheckAcreditacion(this);"
-																	${disabledPorCambioLetrado} type="checkbox" />
+																	 type="checkbox" />
 																<input
 																	name="${status.count}_${actuacion.acreditacion.idProcedimiento}_checkAcreditacion"
 																	id="checkacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"
@@ -1507,7 +1538,7 @@ function downloadDocumentoResolucion(docResolucion) {
 													<td><input name="checkAcreditacion"
 														id="acre_${status.count}_x_${acreditacionPte.idTipo}_${acreditacionPte.id}_${acreditacionPte.idProcedimiento}_${acreditacionPte.idJuzgado}_0_${acreditacionPte.idJurisdiccion}"
 														onclick="onCheckAcreditacion(this);"
-														${disabledPorCambioLetrado} type="checkbox" /><c:out
+														 type="checkbox" /><c:out
 														value="${acreditacionPte.descripcion}" /> <input
 														name="${status.count}_${acreditacionPte.idProcedimiento}_checkAcreditacion"
 														id="checkacre_${status.count}_x_${acreditacionPte.idTipo}_${acreditacionPte.id}_${acreditacionPte.idProcedimiento}_${acreditacionPte.idJuzgado}_0_${acreditacionPte.idJurisdiccion}"

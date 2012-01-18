@@ -83,20 +83,23 @@ public class DesignaForm extends MasterForm
 	}
 	
 	public void setRowSpan() {
+		
 		rowSpan = 0;
-		if(actuaciones!=null&&actuaciones.size()>0){
-			Iterator<String> itActuacion = actuaciones.keySet().iterator();
-			while (itActuacion.hasNext()) {
-				String codProcedimineto = (String) itActuacion.next();
-				rowSpan += ((List<ActuacionDesignaForm>)actuaciones.get(codProcedimineto)).size();
+		if(cambioLetrado==null || cambioLetrado.equals("N")){
+			if(actuaciones!=null&&actuaciones.size()>0){
+				Iterator<String> itActuacion = actuaciones.keySet().iterator();
+				while (itActuacion.hasNext()) {
+					String codProcedimineto = (String) itActuacion.next();
+					rowSpan += ((List<ActuacionDesignaForm>)actuaciones.get(codProcedimineto)).size();
+				}
+				
 			}
-			
-		}
-		if(acreditaciones!=null&&acreditaciones.size()>0){
-			Iterator<String> itAcreditacion = acreditaciones.keySet().iterator();
-			while (itAcreditacion.hasNext()) {
-				String codProcedimineto = (String) itAcreditacion.next();
-				rowSpan += ((List<AcreditacionForm>)acreditaciones.get(codProcedimineto)).size();
+			if(acreditaciones!=null&&acreditaciones.size()>0){
+				Iterator<String> itAcreditacion = acreditaciones.keySet().iterator();
+				while (itAcreditacion.hasNext()) {
+					String codProcedimineto = (String) itAcreditacion.next();
+					rowSpan += ((List<AcreditacionForm>)acreditaciones.get(codProcedimineto)).size();
+				}
 			}
 		}
 		
