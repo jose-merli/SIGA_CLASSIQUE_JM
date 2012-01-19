@@ -1439,18 +1439,8 @@ public class DatosGeneralesAction extends MasterAction {
 					tiposDir = miForm.getIdTipoDireccion();
 				}
 				
-				//estableciendo los datos del Historico
-				CenHistoricoBean beanHis = new CenHistoricoBean ();
-				beanHis.setMotivo (miForm.getMotivo ());
-				
 				// Se llama a la interfaz Direccion para insertar una nueva direccion
-				Direccion dirAux = direccion.insertar(beanDir, tiposDir, beanHis, null, usr);
-				
-				//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
-				if(dirAux.isFallo()){
-					tx.rollback();
-					return exito(dirAux.getMsgError(), request);
-				}
+				direccion.insertar(beanDir, tiposDir, miForm.getMotivo (), null, usr);
 				
 				request.setAttribute("idDireccion",beanDir.getIdDireccion().toString());   		    
    		    }

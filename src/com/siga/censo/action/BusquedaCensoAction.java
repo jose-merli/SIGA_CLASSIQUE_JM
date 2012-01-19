@@ -151,7 +151,7 @@ public class BusquedaCensoAction extends MasterAction {
 					}else if (accion.equalsIgnoreCase("insertarNoColegiado")){
 						mapDestino = insertarNoColegiado(mapping, miForm, request, response);
 					}else if (accion.equalsIgnoreCase("insertarNoColegiadoArticulo27")){
-						mapDestino = insertarNoColegiadoArt27(mapping, miForm, request, response);						
+						mapDestino = registrarInfoLetradoEnColegioArt27(mapping, miForm, request, response);						
 					}else {
 						return super.executeInternal(mapping,formulario,request,response);
 					}
@@ -219,7 +219,7 @@ public class BusquedaCensoAction extends MasterAction {
 		return forward;
 	}
 	
-	protected String insertarNoColegiadoArt27 (ActionMapping mapping, ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
+	protected String registrarInfoLetradoEnColegioArt27 (ActionMapping mapping, ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
 	{
     	String forward ="exception";
 		try {
@@ -278,27 +278,16 @@ public class BusquedaCensoAction extends MasterAction {
 				if(miForm.getTipoDireccion()!= null && !miForm.getTipoDireccion().equals("")){
 					tiposDir = miForm.getTipoDireccion();
 				}
-				
-				//estableciendo los datos del Historico
-				CenHistoricoBean beanHis = new CenHistoricoBean ();
-				beanHis.setMotivo ("");
-				
+
 				//Si la dirección es nueva se añade para este no colegiado se inserta en el sistema
-				Direccion dirAux;
 				if(miForm.getDirecciones()!= null && miForm.getDirecciones().equals("-1")){
 					// Se llama a la interfaz Direccion para insertar una nueva direccion
-					dirAux = direccion.insertar(beanDir, tiposDir, beanHis, null, usr);
+					direccion.insertar(beanDir, tiposDir, "", null, usr);
 				}else{					
 					// Se llama a la interfaz Direccion para insertar una nueva direccion
 					beanDir.setIdDireccion(new Long(miForm.getIdDireccion()));
 					beanDir.setOriginalHash ((Hashtable) request.getSession ().getAttribute ("ORIGINALDIR"));
-					dirAux = direccion.actualizarDireccion(beanDir, tiposDir, beanHis, null, usr);
-				}
-				
-				//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
-				if(dirAux.isFallo()){
-					t.rollback();
-					return exito(dirAux.getMsgError(), request);
+					direccion.actualizar(beanDir, tiposDir, "", null, usr);
 				}
 				
 				//confirmando las modificaciones de BD
@@ -397,18 +386,8 @@ public class BusquedaCensoAction extends MasterAction {
 				tiposDir = miForm.getTipoDireccion();
 			}
 				
-			//estableciendo los datos del Historico
-			CenHistoricoBean beanHis = new CenHistoricoBean ();
-			beanHis.setMotivo ("");
-				
 			// Se llama a la interfaz Direccion para insertar una nueva direccion
-			Direccion dirAux = direccion.insertar(beanDir, tiposDir, beanHis, null, usr);
-				
-			//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
-			if(dirAux.isFallo()){
-				tx.rollback();
-				return exito(dirAux.getMsgError(), request);
-			}
+			direccion.insertar(beanDir, tiposDir, "", null, usr);
 				
 			//confirmando las modificaciones de BD
 			tx.commit();	
@@ -500,18 +479,8 @@ public class BusquedaCensoAction extends MasterAction {
 			//estableciendo los datos del tipo de direccion
 			String tiposDir = "3";
 				
-			//estableciendo los datos del Historico
-			CenHistoricoBean beanHis = new CenHistoricoBean ();
-			beanHis.setMotivo ("");
-				
 			// Se llama a la interfaz Direccion para insertar una nueva direccion
-			Direccion dirAux = direccion.insertar(beanDir, tiposDir, beanHis, request, usr);
-				
-			//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
-			if(dirAux.isFallo()){
-				tx.rollback();
-				return exito(dirAux.getMsgError(), request);
-			}
+			direccion.insertar(beanDir, tiposDir, "", request, usr);
 			
 			request.setAttribute("idDireccion",beanDir.getIdDireccion().toString());
 			

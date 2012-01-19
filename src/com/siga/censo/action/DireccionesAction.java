@@ -471,13 +471,9 @@ protected String insertar (ActionMapping mapping,
 					miForm.getPreferenteSms ()));
 			beanDir.setTelefono1 (miForm.getTelefono1 ());
 			beanDir.setTelefono2 (miForm.getTelefono2 ());
-			
-			//estableciendo los datos del Historico
-			CenHistoricoBean beanHis = new CenHistoricoBean ();
-			beanHis.setMotivo (miForm.getMotivo ());
-			
+				
 			// Se llama a la interfaz Direccion para insertar una nueva direccion
-			Direccion dirAux = direccion.insertar(beanDir, tiposDir, beanHis, request, usr);
+			Direccion dirAux = direccion.insertar(beanDir, tiposDir, miForm.getMotivo (), request, usr);
 
 			//Si se necesita confirmación por parte del usuario se realiza una peticion de pregunta
 			if(dirAux.isConfirmacionPregunta()){
@@ -486,11 +482,13 @@ protected String insertar (ActionMapping mapping,
 				return dirAux.getTipoPregunta();
 			}
 			
-			//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
+			/*
+			 //Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
 			if(dirAux.isFallo()){
 				t.rollback();
 				return exito(dirAux.getMsgError(), request);
 			}
+			*/
 			
 			//confirmando las modificaciones de BD
 			t.commit();
@@ -589,12 +587,8 @@ protected String insertar (ActionMapping mapping,
 			beanDir.setIdDireccion (miForm.getIdDireccion ());
 			beanDir.setOriginalHash ((Hashtable) request.getSession ().getAttribute ("DATABACKUP"));
 			
-			//estableciendo los datos del Historico
-			CenHistoricoBean beanHis = new CenHistoricoBean ();
-			beanHis.setMotivo (miForm.getMotivo ());
-			
 			// Se llama a la interfaz Direccion para insertar una nueva direccion
-			Direccion dirAux = direccion.actualizarDireccion(beanDir, tiposDir, beanHis, request, usr);
+			Direccion dirAux = direccion.actualizar(beanDir, tiposDir, miForm.getMotivo (), request, usr);
 
 			//Si se necesita confirmación por parte del usuario se realiza una peticion de pregunta
 			if(dirAux.isConfirmacionPregunta()){
@@ -604,23 +598,23 @@ protected String insertar (ActionMapping mapping,
 			}
 			
 			//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
-			if(dirAux.isFallo()){
+			/*if(dirAux.isFallo()){
 				t.rollback();
 				return exito(dirAux.getMsgError(), request);
-			}
+			}*/
 			
 			//confirmando los cambios en BD
 			t.commit();
 			
 			//saliendo
 			rc = exitoModal("messages.updated.success", request);
+			
 		} catch (SIGAException es) {
-			throwExcp (es.getLiteral(), new String[] {"modulo.censo"}, es, t);
-		
-		}
-		catch(Exception e){
+			throwExcp (es.getLiteral(), new String[] {"modulo.censo"}, es, t);		
+		} catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e, t);
 		}
+		
 		return rc; 
 	} //modificar()
 
@@ -1026,23 +1020,14 @@ protected String insertar (ActionMapping mapping,
 			beanDir.setTelefono1 (miForm.getTelefono1 ());
 			beanDir.setTelefono2 (miForm.getTelefono2 ());
 			
-			//estableciendo los datos del Historico
-			beanHis.setMotivo (miForm.getMotivo());
-			
 			// Se llama a la interfaz Direccion para insertar una nueva direccion
-			Direccion dirAux = direccion.insertar(beanDir, tiposDir, beanHis, request, usr);
+			Direccion dirAux = direccion.insertar(beanDir, tiposDir, miForm.getMotivo (), request, usr);
 
 			//Si se necesita confirmación por parte del usuario se realiza una peticion de pregunta
 			if(dirAux.isConfirmacionPregunta()){
 				request.setAttribute("modo", "guardarInsertarHistorico");
 				t.rollback();
 				return dirAux.getTipoPregunta();
-			}
-			
-			//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
-			if(dirAux.isFallo()){
-				t.rollback();
-				return exito(dirAux.getMsgError(), request);
 			}
 			
 			//confirmando las modificaciones de BD

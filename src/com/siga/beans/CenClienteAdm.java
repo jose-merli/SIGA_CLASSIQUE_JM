@@ -3488,17 +3488,8 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			//estableciendo los datos del tipo de direccion guardia
 			String tiposDir = ClsConstants.TIPO_DIRECCION_CENSOWEB + "," +ClsConstants.TIPO_DIRECCION_DESPACHO + "," + ClsConstants.TIPO_DIRECCION_GUIA;
 			
-			//estableciendo los datos del Historico
-			CenHistoricoBean beanHis = new CenHistoricoBean ();
-			beanHis.setMotivo ("");
-			
 			// Se llama a la interfaz Direccion para actualizar una nueva direccion
-			Direccion dirAux = direccion.insertar(beanDir, tiposDir, beanHis, null, this.usrbean);
-							
-			//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
-			if(dirAux.isFallo()){
-				throw new SIGAException (dirAux.getMsgError());
-			}
+			direccion.insertar(beanDir, tiposDir, "", null, this.usrbean);
 			
 		}
 		catch (SIGAException se) {

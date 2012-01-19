@@ -535,9 +535,10 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			forward = "exito";
 	        request.setAttribute("modal", "1");
 	        request.getSession().removeAttribute("ORIGINALDIR");
-		} 
-		catch (Exception e) 
-		{
+	        
+		}catch (SIGAException e) {
+			throw new SIGAException(e.getLiteral(),e,new String[] {"modulo.gratuita"});			
+		}catch (Exception e){
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		} 
 		return forward;
@@ -920,9 +921,11 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			forward = "exito";
 			request.setAttribute("modal", "1");
 			request.getSession().removeAttribute("ORIGINALDIR");
-		} 
-		catch (Exception e) 
-		{
+		
+		}catch (SIGAException e) {
+			throw new SIGAException(e.getLiteral(),e,new String[] {"modulo.gratuita"});
+			
+		}catch (Exception e){
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		} 
 		return forward;

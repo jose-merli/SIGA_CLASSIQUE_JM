@@ -1816,10 +1816,6 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 		//estableciendo los datos del tipo de direccion guardia
 		String tiposDir = ""+ClsConstants.TIPO_DIRECCION_GUARDIA;
 
-		//estableciendo los datos del Historico
-		CenHistoricoBean beanHis = new CenHistoricoBean ();
-		beanHis.setMotivo ("");
-		
 		if(idDireccion!=null && !idDireccion.equals("")){
 			
 			// Actualizamos el registro de la dirección de guardia						
@@ -1827,12 +1823,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 			beanDir.setOriginalHash(original);
 				
 			// Se llama a la interfaz Direccion para actualizar una nueva direccion
-			Direccion dirAux = direccion.actualizarDireccion(beanDir, tiposDir, beanHis, null, this.usrbean);
-							
-			//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
-			if(dirAux.isFallo()){
-				throw new SIGAException (dirAux.getMsgError());
-			}
+			direccion.actualizar(beanDir, tiposDir, "", null, this.usrbean);
 			
 		}else{
 
@@ -1848,12 +1839,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 			beanDir.setPreferente("");
 
 			// Se llama a la interfaz Direccion para actualizar una nueva direccion
-			Direccion dirAux = direccion.insertar(beanDir, tiposDir, beanHis, null, this.usrbean);
-							
-			//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
-			if(dirAux.isFallo()){
-				throw new SIGAException (dirAux.getMsgError());
-			}
+			direccion.insertar(beanDir, tiposDir, "", null, this.usrbean);
 		}
 	}
 	

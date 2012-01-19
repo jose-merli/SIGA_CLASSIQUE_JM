@@ -343,16 +343,7 @@ public class ColegiarAction extends MasterAction
 						} //for
 					} //if
 					
-					//estableciendo los datos del Historico
-					CenHistoricoBean beanHis = new CenHistoricoBean ();
-					beanHis.setMotivo ("");
-					
-					Direccion dirAux = direccion.insertar(beanDir, tiposDir, beanHis, null, user);
-					
-					if(dirAux.isFallo()){
-						t.rollback();
-						throw new SIGAException (dirAux.getMsgError());
-					}
+					direccion.insertar(beanDir, tiposDir, "", null, user);
 					
 					//enlazando la direccion de Consejo con la del Colegio
 					beanDir = (CenDireccionesBean) listaBeanDireccion.get (i);
@@ -361,12 +352,8 @@ public class ColegiarAction extends MasterAction
 					beanDir.setIdDireccion (idDireccionOrigen);
 					beanDir.setIdInstitucionAlta (new Integer (colegio));
 					
-					dirAux = direccion.actualizarDireccion(beanDir, tiposDir, beanHis, null, user);
+					direccion.actualizar(beanDir, tiposDir, "", null, user);
 					
-					if(dirAux.isFallo()){
-						t.rollback();
-						throw new SIGAException (dirAux.getMsgError());
-					}
 				} //for
 			} //if
 			

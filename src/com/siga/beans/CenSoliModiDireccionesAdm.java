@@ -477,15 +477,10 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 					dirModificada.setPoblacionExtranjera((String)hash.get(CenSoliModiDireccionesBean.C_POBLACIONEXTRANJERA));
 					dirModificada.setOriginalHash(dirOriginal);					
 					// Fijamos los datos del Historico
-					beanHist.setMotivo((String)hash.get(CenSoliModiDireccionesBean.C_MOTIVO));		
+					String motivo = ((String)hash.get(CenSoliModiDireccionesBean.C_MOTIVO));		
 					
 					// Se llama a la interfaz Direccion para actualizar una nueva direccion
-					Direccion dirAux = direccion.actualizarDireccion(dirModificada, "", beanHist, null, this.usrbean);
-									
-					//Si existe algún fallo en la actualizacion se llama al metodo exito con el error correspondiente
-					if(dirAux.isFallo()){
-						correcto=false;
-					}
+					direccion.actualizar(dirModificada, "", motivo, null, this.usrbean);
 					
 					// Nos quedamos con una copia de la direccion original (pedido por Jaen) y la insertamos hacemos
 					CenDireccionesBean beanDir = new CenDireccionesBean();
@@ -507,14 +502,8 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 						}
 					}
 
-					// Se llama a la interfaz Direccion para actualizar una nueva direccion
-					dirAux = new Direccion(); 
-					dirAux = direccion.insertar(beanDir, tiposDir, beanHist, null, this.usrbean);
-									
-					//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
-					if(dirAux.isFallo()){
-						correcto=false;
-					}					
+					direccion.insertar(beanDir, tiposDir, motivo, null, this.usrbean);
+										
 				}
 			}
 		

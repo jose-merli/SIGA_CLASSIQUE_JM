@@ -432,17 +432,8 @@ public class BusquedaClientesFiltrosAction extends MasterAction
 			//estableciendo los datos del tipo de direccion
 			String tiposDir = ""+ClsConstants.TIPO_DIRECCION_GUARDIA;
 	
-			//estableciendo los datos del Historico
-			CenHistoricoBean beanHis = new CenHistoricoBean ();
-			beanHis.setMotivo ("");
-			
 			// Se llama a la interfaz Direccion para actualizar una nueva direccion
-			Direccion dirAux = direccion.insertar(beanDir, tiposDir, beanHis, null, usr);
-							
-			//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
-			if(dirAux.isFallo()){
-				throw new SIGAException (dirAux.getMsgError());
-			}
+			direccion.insertar(beanDir, tiposDir, "", null, usr);
 			
 			request.setAttribute("mensaje","messages.inserted.success");
 			tx.commit();
@@ -498,18 +489,9 @@ public class BusquedaClientesFiltrosAction extends MasterAction
 			
 			//estableciendo los datos del tipo de direccion guardia
 			String tiposDir = ""+ClsConstants.TIPO_DIRECCION_GUARDIA;
-	
-			//estableciendo los datos del Historico
-			CenHistoricoBean beanHis = new CenHistoricoBean ();
-			beanHis.setMotivo ("");
 			
 			// Se llama a la interfaz Direccion para actualizar una nueva direccion
-			Direccion dirAux = direccion.actualizarDireccion(beanDir, tiposDir, beanHis, null, usr);
-							
-			//Si existe algún fallo en la inserción se llama al metodo exito con el error correspondiente
-			if(dirAux.isFallo()){
-				throw new SIGAException (dirAux.getMsgError());
-			}
+			direccion.actualizar(beanDir, tiposDir, "", null, usr);
 			
 			request.setAttribute("mensaje","messages.inserted.success");
 			tx.commit();
