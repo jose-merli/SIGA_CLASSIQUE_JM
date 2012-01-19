@@ -55,7 +55,7 @@
 	ArrayList acreditacionSel = new ArrayList();
 	ArrayList pretensionSel = new ArrayList();
 
-	String idJuzgado=null, idInstitucionJuzgado=null, idPrision=null, idInstitucionPrision=null, idProcedimiento=null, idInstitucionProcedimiento=null, idAcreditacion=null;
+	String idJuzgado=null, idInstitucionJuzgado=null, idPrision=null, idInstitucionPrision=null, idProcedimiento="-1", idInstitucionProcedimiento=null, idAcreditacion=null;
 	String idTipoRatificacion=null,fechaRatificacion=null,fechaNotificacion=null,anioEJG=null;
 	String idPretension=null;
 	String nombreJuzgado="", nombreProcedimiento="", nombreAcreditacion="";
@@ -68,7 +68,7 @@
 	String facturada="";
 	String validarActuacion = (String) request.getAttribute("validarActuacion");
 	String filtrarModulos = "N";
-	String comboJuzgados ="", comboModulos="";
+	String comboJuzgados ="", comboModulos="", comboJuzgadosJustificacion="";
 	String[] datoJuzg = null;
 	if (request.getAttribute("filtrarModulos") != null) {
 		filtrarModulos = (String)request.getAttribute("filtrarModulos");
@@ -119,12 +119,14 @@
     	datoJuzg [4] = "-1";
     	comboJuzgados = "comboJuzgadosTurnosModulos";
     	comboModulos = "comboProcedimientosVigencia";
+    	comboJuzgadosJustificacion = "comboProcedimientosJustificacionVigencia";
     }else{
     	datoJuzg = new String[2];
     	datoJuzg [0] = usr.getLocation();
 		datoJuzg [1] = "-1";
 		comboJuzgados = "comboJuzgadosTurno";
     	comboModulos = "comboProcedimientos";
+    	comboJuzgadosJustificacion = "comboProcedimientosJustificacion";
     }
 	// Caso de estar en Edicion o Consulta:
 	
@@ -167,10 +169,10 @@
 		}	
 		
 	 	// Datos del Procedimiento seleccionado:
-	 	idProcedimiento =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO);
+	 	if(hashActuacion.get(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO)!=null && !((String)hashActuacion.get(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO)).equals("")){
+	 		idProcedimiento =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO);
+	 	}
 	 	
-		
-
 	 	// Datos de la Acreditacion seleccionada:
 	 	idAcreditacion =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDACREDITACION);
 		if (idAcreditacion!=null)
@@ -190,7 +192,10 @@
 	 	// Datos del Juzgado seleccionado:
 	 	idJuzgado =  (String)hashDesigna.get(ScsDesignaBean.C_IDJUZGADO);
 	 	idInstitucionJuzgado =  (String)hashDesigna.get(ScsDesignaBean.C_IDINSTITUCIONJUZGADO);
-	 	idProcedimiento =  (String)hashDesigna.get(ScsDesignaBean.C_IDPROCEDIMIENTO);
+	 	// Datos del Procedimiento seleccionado:
+	 	if(hashDesigna.get(ScsDesignaBean.C_IDPROCEDIMIENTO)!=null && !((String)hashDesigna.get(ScsDesignaBean.C_IDPROCEDIMIENTO)).equals("")){
+	 		idProcedimiento =  (String)hashDesigna.get(ScsDesignaBean.C_IDPROCEDIMIENTO);
+	 	}	 	
 		idPretension = (String)hashDesigna.get(ScsDesignaBean.C_IDPRETENSION);
 		if (idPretension!=null){
 			pretensionSel.add(0,idPretension);
@@ -503,7 +508,7 @@
 					</td>
 					<%} else if (modoJustificacion!=null && modoJustificacion.equals("nuevoJustificacion")){%>
 						<td  colspan="7">
-                            	<siga:ComboBD ancho="600" nombre="procedimiento" tipo="comboProcedimientosJustificacion" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
+                            	<siga:ComboBD ancho="600" nombre="procedimiento" tipo="<%=comboJuzgadosJustificacion%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
 						</td>
 					
 					<%} else if ((esLetrado||modoAnterior.equalsIgnoreCase("VER"))){%>
