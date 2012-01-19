@@ -1345,12 +1345,7 @@
 	</table>
 		
 	</siga:ConjCampos>
-		
-		
-		vDatosCamposPestanasLongitud	
-		vNombresLongitud
-		
-		
+							
 <%
 	if (vNombres!=null && vNombres.size()>0) 
 	{	
@@ -1366,7 +1361,7 @@
 				%>										
 					<%= vNombres.elementAt(k)%>
 					&nbsp;
-					<input type="text" name="campo<%=""+(k+1)%>" value="<%=vDatosCamposPestanas.elementAt(k)%>"  size=110 class ="box"></input>																										
+					<input type="text" name="campo<%=""+(k+1)%>" value="<%=vDatosCamposPestanas.elementAt(k)%>"  size="<%=vDatosCamposPestanasLongitud.elementAt(k)%>" class ="box"></input>																										
 				<%
 						}
     				}
