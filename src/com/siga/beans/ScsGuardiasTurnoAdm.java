@@ -768,12 +768,12 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					+ "."
 					+ ScsGuardiasTurnoBean.C_IDGUARDIA
 					+ ","
-					+ "guardias2.idpersona, guardias2.fechainicio, guardias2.idcalendarioguardias)) AS FECHA_FIN,  SCS_INCLUSIONGUARDIASENLISTAS.ORDEN, guardias2.posicion ";
-
+					+ "guardias2.idpersona, guardias2.fechainicio, guardias2.idcalendarioguardias)) AS FECHA_FIN,  SCS_INCLUSIONGUARDIASENLISTAS.ORDEN, guardias2.posicion, "
+					+ " Grg.NUMEROGRUPO As GRUPO ";
 			sql += " FROM " + ScsGuardiasTurnoBean.T_NOMBRETABLA + "," + CenPersonaBean.T_NOMBRETABLA + ","
 					+ ScsCabeceraGuardiasBean.T_NOMBRETABLA + " guardias2, " + ScsTurnoBean.T_NOMBRETABLA + ", "
-					+ CenColegiadoBean.T_NOMBRETABLA + "," + ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA +
-
+					+ CenColegiadoBean.T_NOMBRETABLA + "," + ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA + ", "
+					+ "       SCS_GRUPOGUARDIACOLEGIADO Gru,       SCS_GRUPOGUARDIA          Grg "+
 					" WHERE " + ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDINSTITUCION
 					+ "=guardias2." + ScsCabeceraGuardiasBean.C_IDINSTITUCION + " AND "
 					+ ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDTURNO + "=guardias2."
@@ -839,7 +839,13 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					+ ScsGuardiasTurnoBean.C_IDGUARDIA + "=" + ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA + "."
 					+ ScsInclusionGuardiasEnListasBean.C_IDGUARDIA + " AND SCS_INCLUSIONGUARDIASENLISTAS.IDLISTA ="
 					+ idlista;
-
+			sql += " And guardias2.Idinstitucion = Gru.Idinstitucion(+) "+
+			   " And guardias2.Idturno = Gru.Idturno(+) "+
+			   " And guardias2.Idguardia = Gru.Idguardia(+) "+
+			   " And guardias2.Idpersona = Gru.Idpersona(+) "+
+			   //And Ins.Fechasuscripcion = Gru.Fechasuscripcion(+)
+			   "And Gru.Idgrupoguardia = Grg.Idgrupoguardia(+) ";
+			
 			sql += " ORDER BY FECHA_INICIO,FECHA_FIN, SCS_INCLUSIONGUARDIASENLISTAS.ORDEN, GUARDIA, POSICION, LETRADO";
 			// jbd // inc7654
 			// Para evitar lo ocurrido en Murcia se cambia la forma de crear la lista de letrados de
@@ -1003,12 +1009,12 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					+ "."
 					+ ScsGuardiasTurnoBean.C_IDGUARDIA
 					+ ","
-					+ "guardias2.idpersona, guardias2.fechainicio, guardias2.idcalendarioguardias)) AS FECHA_FIN,  SCS_INCLUSIONGUARDIASENLISTAS.ORDEN, guardias2.posicion ";
-
+					+ "guardias2.idpersona, guardias2.fechainicio, guardias2.idcalendarioguardias)) AS FECHA_FIN,  SCS_INCLUSIONGUARDIASENLISTAS.ORDEN, guardias2.posicion, "
+					+ " Grg.NUMEROGRUPO As GRUPO ";
 			sql += " FROM " + ScsGuardiasTurnoBean.T_NOMBRETABLA + "," + CenPersonaBean.T_NOMBRETABLA + ","
 					+ ScsCabeceraGuardiasBean.T_NOMBRETABLA + " guardias2, " + ScsTurnoBean.T_NOMBRETABLA + ", "
-					+ CenColegiadoBean.T_NOMBRETABLA + "," + ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA +
-
+					+ CenColegiadoBean.T_NOMBRETABLA + "," + ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA + ", "
+					+ "       SCS_GRUPOGUARDIACOLEGIADO Gru,       SCS_GRUPOGUARDIA          Grg "+
 					" WHERE " + ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDINSTITUCION
 					+ "=guardias2." + ScsCabeceraGuardiasBean.C_IDINSTITUCION + " AND "
 					+ ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDTURNO + "=guardias2."
@@ -1076,6 +1082,12 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					+ idlista;
 			
 			sql += " AND guardias2.idpersona="+ idPersona;
+			sql += " And guardias2.Idinstitucion = Gru.Idinstitucion(+) "+
+			   " And guardias2.Idturno = Gru.Idturno(+) "+
+			   " And guardias2.Idguardia = Gru.Idguardia(+) "+
+			   " And guardias2.Idpersona = Gru.Idpersona(+) "+
+			   //And Ins.Fechasuscripcion = Gru.Fechasuscripcion(+)
+			   "And Gru.Idgrupoguardia = Grg.Idgrupoguardia(+) ";
 
 			sql += " ORDER BY FECHA_INICIO,FECHA_FIN, SCS_INCLUSIONGUARDIASENLISTAS.ORDEN, GUARDIA, POSICION, LETRADO";
 			// jbd // inc7654

@@ -4212,6 +4212,11 @@ public class EnvioInformesGenericos extends MasterReport {
 		                	   fila.put("POSICION", posicion);
 		                      else
 		                    	  fila.put("POSICION", " ");
+		                	  String grupo= (String)f.get("GRUPO");
+		                      if(grupo!=null)
+		                	   fila.put("GRUPO", grupo);
+		                      else
+		                    	  fila.put("GRUPO", " ");
 		                	  vDatosInforme.add(fila);
 		                	  tam++;
 		                  }
