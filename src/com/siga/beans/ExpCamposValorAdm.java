@@ -188,7 +188,7 @@ public class ExpCamposValorAdm extends MasterBeanAdministrador {
     }
 
     
-    public Vector obtenerValorCamposPestanaGeneral (String idInstitucion,String idTipoExpediente,String numeroExpediente)throws ClsExceptions, SIGAException 
+    public Vector obtenerValorCamposPestanaGeneral (String idInstitucion,String idTipoExpediente,String numeroExpediente,String anioExpediente)throws ClsExceptions, SIGAException 
 	{
 		RowsContainer rc = null;
 		Vector salida = new Vector();
@@ -196,6 +196,8 @@ public class ExpCamposValorAdm extends MasterBeanAdministrador {
 		codigos.put(new Integer(1),idInstitucion);
 		codigos.put(new Integer(2),idTipoExpediente);
 		codigos.put(new Integer(3),numeroExpediente);
+		codigos.put(new Integer(4),"14");
+		codigos.put(new Integer(5),anioExpediente);
 		
 		try { rc = new RowsContainer(); }
 		catch(Exception e) { e.printStackTrace(); }
@@ -206,6 +208,8 @@ public class ExpCamposValorAdm extends MasterBeanAdministrador {
 			    " where idinstitucion = :1  " +
 			    " and   idtipoexpediente = :2 " +
 			    " and   NUMEROEXPEDIENTE = :3 " +
+			    " and   IDCAMPO = :4 " +
+			    " and   ANIOEXPEDIENTE = :5 " +
 			    " order by IDCAMPOCONF ";
 
 			// RGG cambio visibilidad

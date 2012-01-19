@@ -242,6 +242,9 @@
 	Vector vNombres= (Vector) request.getAttribute("nombres");	
 	Vector vDatosCamposPestanas= (Vector) request.getAttribute("datosCamposPestanas");
 	String nombreCampo = (String) request.getAttribute("nombreCampo");
+	Vector vDatosCamposPestanasLongitud= (Vector) request.getAttribute("datosCamposPestanasLongitud");	
+	Vector vNombresLongitud= (Vector) request.getAttribute("nombresLongitud");
+		
 %>	
 
 <html>
@@ -1343,6 +1346,11 @@
 		
 	</siga:ConjCampos>
 		
+		
+		vDatosCamposPestanasLongitud	
+		vNombresLongitud
+		
+		
 <%
 	if (vNombres!=null && vNombres.size()>0) 
 	{	
@@ -1358,7 +1366,7 @@
 				%>										
 					<%= vNombres.elementAt(k)%>
 					&nbsp;
-					<input type="text" name="campo<%=""+(k+1)%>" value="<%=vDatosCamposPestanas.elementAt(k)%>"  style="width:150px;" class ="box"></input>																										
+					<input type="text" name="campo<%=""+(k+1)%>" value="<%=vDatosCamposPestanas.elementAt(k)%>"  size=110 class ="box"></input>																										
 				<%
 						}
     				}
@@ -1380,6 +1388,11 @@
 						}
     				}
 				%>	
+				</td>
+			</tr>
+			<tr>
+				<td>
+				<input type="text" name="toto" value=""  class ="box" size=158></input>
 				</td>
 			</tr>
 			<%
