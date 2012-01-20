@@ -244,6 +244,8 @@
 	String nombreCampo = (String) request.getAttribute("nombreCampo");
 	Vector vDatosCamposPestanasLongitud= (Vector) request.getAttribute("datosCamposPestanasLongitud");	
 	Vector vNombresLongitud= (Vector) request.getAttribute("nombresLongitud");
+	
+	Vector vSaltoLinea= (Vector) request.getAttribute("saltoLinea");
 		
 %>	
 
@@ -1175,10 +1177,10 @@
 				<siga:Idioma key="expedientes.auditoria.literal.nombre"/>
 			</td>				
 			
-			<td class="labelTextValue" width="35%">													
-					<%=form.getNombre()%>
-					<%=form.getPrimerApellido()%>
-					<%=form.getSegundoApellido()%>				
+			<td class="labelTextValue" width="35%">
+				<html:text name="ExpDatosGeneralesForm" property="nombre" styleClass="boxConsulta" readonly="true"></html:text>	
+				<html:text name="ExpDatosGeneralesForm" property="primerApellido" styleClass="boxConsulta" readonly="true"></html:text>
+				<html:text name="ExpDatosGeneralesForm" property="segundoApellido" styleClass="boxConsulta" readonly="true"></html:text>														 				 																										
 			</td>						 			
 			<% if (bEditable) { %>			
 			<td colspan="2" align="right">				
@@ -1351,54 +1353,38 @@
 	{	
 %>	
 	<siga:ConjCampos leyenda="<%=nombreCampo%>">
-		<table class="tablaCampos" border="0" >					
+		<table class="tablaCampos" border="0" >
+		<% 
+			int k=0;
+			for(;k < vNombres.size();)
+			{		
+		%>					
 			<tr>		
-				<td class="labelText">
-				<%
-					for(int k=0;k<4 && k < vNombres.size();k++)
+				<td class="labelText">				
+				<%					
+					for(;k < vNombres.size() && vSaltoLinea.elementAt(k).equals("");k++)
 					{
-						if(!vNombres.elementAt(k).equals("")){
-				%>										
-					<%= vNombres.elementAt(k)%>
-					&nbsp;
-					<input type="text" name="campo<%=""+(k+1)%>" value="<%=vDatosCamposPestanas.elementAt(k)%>"  size="<%=vDatosCamposPestanasLongitud.elementAt(k)%>" class ="box"></input>																										
-				<%
-						}
-    				}
-				%>									
-				</td>
-			</tr>
-			<% if (vNombres.size()>4){ %>
-			<tr>
-				<td class="labelText">
-					 <%
-						for(int k=4;k<vNombres.size();k++)
+						if(!vNombres.elementAt(k).equals(""))
 						{
-							if(!vNombres.elementAt(k).equals("")){
-					%>										
-					<%= vNombres.elementAt(k)%>
-					&nbsp;
-					<input type="text" name="campo<%=""+(k+1)%>" value="<%=vDatosCamposPestanas.elementAt(k)%>"  class ="box" style="width:150px;"></input>																										
+				%>										
+							<%= vNombres.elementAt(k)%>
+							&nbsp;	
+							<input type="text" name="campo<%=""+(k+1)%>" value="<%=vDatosCamposPestanas.elementAt(k)%>"  size="<%=vDatosCamposPestanasLongitud.elementAt(k)%>" class ="box"></input>
+							&nbsp;																										
 				<%
-						}
-    				}
-				%>	
+						}//fin if
+    				}//fin for interno
+    				if(k!=5)
+    					vSaltoLinea.set(k,"");
+				%>													
 				</td>
-			</tr>
-			<tr>
-				<td>
-				<input type="text" name="toto" value=""  class ="box" size=158></input>
-				</td>
-			</tr>
-			<%
-    				}
-				%>						
+			</tr>	
+			<%} %>															
 		</table>
 	</siga:ConjCampos>
 <%		
     }
 %>	
-
 <%
 	} else {
 %>	
