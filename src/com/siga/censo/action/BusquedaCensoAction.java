@@ -974,7 +974,7 @@ public class BusquedaCensoAction extends MasterAction {
 		
 		// casting del formulario
 		BusquedaCensoForm miFormulario = (BusquedaCensoForm)formulario;
-		String idInstitucion=	(String)request.getParameter("nombreInstitucion");	
+		String idInstitucion = miFormulario.getColegiadoen();
 		// busqueda de clientes
 		VleLetradosSigaAdm cliente = new VleLetradosSigaAdm(this.getUserBean(request));
 		

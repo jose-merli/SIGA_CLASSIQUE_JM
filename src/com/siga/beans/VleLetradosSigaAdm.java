@@ -224,98 +224,71 @@ public class VleLetradosSigaAdm extends MasterBeanAdmVisible
 				   	contador++;
 				   	codigos.put(new Integer(contador),idInstitucionActual.trim());
 					sqlClientes += "  C.id_colegio <> :"+contador;
-			       }
+			   }
 		       
 				boolean bBusqueda  = UtilidadesString.stringToBoolean(formulario.getChkBusqueda());	
 //				 2     
-						
 							
-				          if (formulario.getNumeroColegiado()!=null && !formulario.getNumeroColegiado().trim().equals("")) {
-				          	contador++;
-				          	codigos.put(new Integer(contador),formulario.getNumeroColegiado().trim());
-				          	sqlClientes += " AND LTRIM(C.num_colegiado,'0') = LTRIM(:"+contador+",'0') " ;	
-				   			//sqlClientes += " AND LTRIM(DECODE(CEN_COLEGIADO.COMUNITARIO,'1',CEN_COLEGIADO.NCOMUNITARIO, CEN_COLEGIADO.NCOLEGIADO),'0') = LTRIM(:"+contador+",'0') " ;
+	          if (formulario.getNumeroColegiado()!=null && !formulario.getNumeroColegiado().trim().equals("")) {
+	          	contador++;
+	          	codigos.put(new Integer(contador),formulario.getNumeroColegiado().trim());
+	          	sqlClientes += " AND LTRIM(C.num_colegiado,'0') = LTRIM(:"+contador+",'0') " ;	
 
-				          } 
+	          } 
 
 //				  	 3
-				  	       if (!formulario.getNombre().trim().equals("")) {
-				  		       	if (bBusqueda) {
-				  		       		contador++;
-				  		       	sqlClientes += " AND (UPPER(L.nombre) "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getNombre().trim(),contador,codigos)+") ";
-				  					  
-				  		       	}else{
-				  		       	contador++;
-				  		       	sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getNombre().trim(),"L.nombre",contador,codigos )+") ";
-				  		       	}
-				  	       }
-				  	       
+	  	       if (formulario.getNombre() != null && !formulario.getNombre().trim().equals("")) {
+	  		       	if (bBusqueda) {
+	  		       		contador++;
+	  		       	sqlClientes += " AND (UPPER(L.nombre) "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getNombre().trim(),contador,codigos)+") ";
+	  					  
+	  		       	}else{
+	  		       	contador++;
+	  		       	sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getNombre().trim(),"L.nombre",contador,codigos )+") ";
+	  		       	}
+	  	       }
+	  	       
 //				  	     4 y 5 Criterio de busqueda especial para los campos Apellido1 y Apellido2
-				  	       if (!formulario.getApellido1().trim().equals("")&&(!formulario.getApellido2().trim().equals(""))) {// Los dos campos rellenos
-				  	       	if (bBusqueda)  {
-				  	       		contador++;
-				  	       		sqlClientes += " AND (((L.apellido1 "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido1().trim(),contador,codigos )+")";
-				  	       	    contador++;
-			  	       		    sqlClientes += " AND (L.apellido2 "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido2().trim(),contador,codigos )+"))";
-			  	       		    contador++;
-				       		    sqlClientes += " OR (L.apellido1 "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido1().trim()+" "+formulario.getApellido2().trim(),contador,codigos )+"))";
-				  	       	}else{
-				  	       	contador++;
-				  	       		sqlClientes += " AND ((("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim(),"L.apellido1",contador,codigos )+")";
-				  	       		
-				  	       	contador++;
-			  	       		sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido2().trim(),"L.apellido2",contador,codigos)+"))";
-			  	       	    contador++;
-				       		sqlClientes += " OR ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim()+"% %"+formulario.getApellido2().trim() ,"L.apellido1",contador,codigos )+"))";
-				  	       		
-				  	       	}
-				  	       }else if (!formulario.getApellido1().trim().equals("")&&(formulario.getApellido2().trim().equals(""))) {//Apellido1 relleno
-				  	       	if (bBusqueda  ) {
-				  	       	contador++;
-				  	       		sqlClientes += " AND ((L.apellido1 "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido1(),contador,codigos)+") OR (L.apellido1 LIKE '"+UtilidadesBDAdm.validateChars(formulario.getApellido1().trim())+" %'))";
-				  	       	}else{
-				  	       	contador++;	
-				  	       		sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim(),"L.apellido1",contador,codigos )+" OR (L.apellido1||' '||L.apellido2 LIKE '%"+UtilidadesBDAdm.validateChars(formulario.getApellido1().trim())+"%')) ";
-				  	       		
-				  	       	}
-				  	       }else if (formulario.getApellido1().trim().equals("")&&(!formulario.getApellido2().trim().equals(""))) {//Apellido2 relleno
-				  	       	if (bBusqueda ) {
-				  	       		contador++;
-				  	       		sqlClientes += " AND ((L.apellido2 "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido2().trim(),contador,codigos )+")"+
-				  				               " OR (L.apellido1 LIKE '% "+UtilidadesBDAdm.validateChars(formulario.getApellido2().trim()) +"' )) ";
-				  	       		 
-				  	       	}else{
-				  	       	contador++;
-				  	       		sqlClientes += " AND (("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido2().trim(),"L.apellido2",contador,codigos)+") ";
-				  	       	contador++;	
-				  	       	    sqlClientes += " OR ("+ComodinBusquedas.prepararSentenciaCompletaBind(" "+formulario.getApellido2().trim(),"L.apellido1",contador,codigos)+ ")  )";
-				  	       	}
-				  	       	
-				  	       }       	  	       
-
+	  	       if ((formulario.getApellido1()!= null && !formulario.getApellido1().trim().equals(""))&&(formulario.getApellido2()!= null && !formulario.getApellido2().trim().equals(""))) {// Los dos campos rellenos
+		  	       	if (bBusqueda)  {
+		  	       		contador++;
+		  	       		sqlClientes += " AND (((L.apellido1 "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido1().trim(),contador,codigos )+")";
+		  	       	    contador++;
+	  	       		    sqlClientes += " AND (L.apellido2 "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido2().trim(),contador,codigos )+"))";
+	  	       		    contador++;
+		       		    sqlClientes += " OR (L.apellido1 "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido1().trim()+" "+formulario.getApellido2().trim(),contador,codigos )+"))";
+		  	       	}else{
+		  	       		contador++;
+		  	       		sqlClientes += " AND ((("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim(),"L.apellido1",contador,codigos )+")";
+			  	       	contador++;
+		  	       		sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido2().trim(),"L.apellido2",contador,codigos)+"))";
+		  	       	    contador++;
+			       		sqlClientes += " OR ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim()+"% %"+formulario.getApellido2().trim() ,"L.apellido1",contador,codigos )+"))";
+		  	       	}
+		  	       	
+	  	       }else if (formulario.getApellido1()!= null && !formulario.getApellido1().trim().equals("")) {//Apellido1 relleno
+		  	       	if (bBusqueda) {
+		  	       		contador++;
+		  	       		sqlClientes += " AND ((L.apellido1 "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido1(),contador,codigos)+") OR (L.apellido1 LIKE '"+UtilidadesBDAdm.validateChars(formulario.getApellido1().trim())+" %'))";
+		  	       	}else{
+		  	       		contador++;	
+		  	       		sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim(),"L.apellido1",contador,codigos )+" OR (L.apellido1||' '||L.apellido2 LIKE '%"+UtilidadesBDAdm.validateChars(formulario.getApellido1().trim())+"%')) ";
+		  	       	}
+		  	       	
+	  	       }else if (formulario.getApellido2()!= null && !formulario.getApellido2().trim().equals("")) {//Apellido2 relleno
+		  	       	if (bBusqueda ) {
+		  	       		contador++;
+		  	       		sqlClientes += " AND ((L.apellido2 "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido2().trim(),contador,codigos )+")"+
+		  				               " OR (L.apellido1 LIKE '% "+UtilidadesBDAdm.validateChars(formulario.getApellido2().trim()) +"' )) ";
+		  	       	}else{
+		  	       		contador++;
+		  	       		sqlClientes += " AND (("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido2().trim(),"L.apellido2",contador,codigos)+") ";
+		  	       		contador++;	
+		  	       	    sqlClientes += " OR ("+ComodinBusquedas.prepararSentenciaCompletaBind(" "+formulario.getApellido2().trim(),"L.apellido1",contador,codigos)+ ")  )";
+		  	       	}
+	  	       }      
 				  	   				       
-//				 6  //Consulta sobre el campo NIF/CIF, si el usuario mete comodines la búsqueda es como se hacía siempre, en el caso
-					// de no meter comodines se ha creado un nuevo metodo ComodinBusquedas.preparaCadenaNIFSinComodin para que monte 
-					// la consulta adecuada. 
-				       
-				       if (!formulario.getNif().trim().equals("")) {
-				    	   if ((bBusqueda ) ) {
-				    		   contador++;
-				    		   codigos.put(new Integer(contador), formulario.getNif().trim().toUpperCase());
-				    		   sqlClientes +=" AND UPPER(L.num_doc)= :"+contador;
-				       		}else{
-				     
-				       	if (ComodinBusquedas.hasComodin(formulario.getNif())){
-				       		contador++;
-				       		sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getNif().trim(),"L.num_doc",contador,codigos)+") ";
-				       	}else{
-				       		
-				       			contador++;
-				       		   sqlClientes +="AND "+ComodinBusquedas.prepararSentenciaNIFBind(formulario.getNif(),"L.num_doc",contador,codigos);
-				       		}
-				       	}
-				       	
-				       }
+
 		    sqlClientes+= " ORDER BY L.apellido1||' '||L.apellido2, L.nombre, C.descripcion";	       
 			PaginadorBind paginado = new PaginadorBind(sqlClientes, codigos);
 
@@ -398,22 +371,22 @@ public class VleLetradosSigaAdm extends MasterBeanAdmVisible
 	  	       }
 	  	       
 	  	       if ((formulario.getApellido1()!= null && !formulario.getApellido1().trim().equals("")) && (formulario.getApellido2()!= null && !formulario.getApellido2().trim().equals(""))) {// Los dos campos rellenos
-			  	       	if (bBusqueda)  {
-				  	       		contador++;
-				  	       		sqlClientes += " AND (((L.apellido1 "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido1().trim(),contador,codigos )+")";
-				  	       	    contador++;
-			  	       		    sqlClientes += " AND (L.apellido2 "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido2().trim(),contador,codigos )+"))";
-			  	       		    contador++;
-				       		    sqlClientes += " OR (L.apellido1 "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido1().trim()+" "+formulario.getApellido2().trim(),contador,codigos )+"))";
-				  	      }else{
-				  	    	  	contador++;
-				  	       		sqlClientes += " AND ((("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim(),"L.apellido1",contador,codigos )+")";
-				  	       		
-					  	       	contador++;
-				  	       		sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido2().trim(),"L.apellido2",contador,codigos)+"))";
-				  	       	    contador++;
-					       		sqlClientes += " OR ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim()+"% %"+formulario.getApellido2().trim() ,"L.apellido1",contador,codigos )+"))";
-			  	       	}
+		  	       	if (bBusqueda)  {
+		  	       		contador++;
+		  	       		sqlClientes += " AND (((L.apellido1 "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido1().trim(),contador,codigos )+")";
+		  	       	    contador++;
+	  	       		    sqlClientes += " AND (L.apellido2 "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido2().trim(),contador,codigos )+"))";
+	  	       		    contador++;
+		       		    sqlClientes += " OR (L.apellido1 "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido1().trim()+" "+formulario.getApellido2().trim(),contador,codigos )+"))";
+			  	     }else{
+		  	    	  	contador++;
+		  	       		sqlClientes += " AND ((("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim(),"L.apellido1",contador,codigos )+")";
+		  	       		
+			  	       	contador++;
+		  	       		sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido2().trim(),"L.apellido2",contador,codigos)+"))";
+		  	       	    contador++;
+			       		sqlClientes += " OR ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim()+"% %"+formulario.getApellido2().trim() ,"L.apellido1",contador,codigos )+"))";
+		  	       	}
 
 	  	       }else if (formulario.getApellido1()!= null && !formulario.getApellido1().trim().equals("")) {//Apellido1 relleno
 		  	       	if (bBusqueda  ) {

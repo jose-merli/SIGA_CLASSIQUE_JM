@@ -317,9 +317,20 @@ public class DatosGeneralesAction extends MasterAction {
 		UsrBean user = null;
 		
 		try {
-			DatosGeneralesForm miform = (DatosGeneralesForm)formulario;
-			
+			DatosGeneralesForm miform = (DatosGeneralesForm)formulario;			
 			miform.reset(mapping,request);
+			
+			CenTipoDireccionAdm cenTipoDirAdm = new CenTipoDireccionAdm (this.getUserBean(request));
+			Vector vTipos = new Vector();
+			vTipos=cenTipoDirAdm.select("");
+			Hashtable hTipoDir=new Hashtable();
+			Hashtable hTipoDirSel=new Hashtable();
+			if ( (vTipos != null) && (vTipos.size() > 0) )
+				for (int i = 1; i <= vTipos.size(); i++) {
+					CenTipoDireccionBean tipoDir = (CenTipoDireccionBean) vTipos.get(i-1);
+					hTipoDir.put(tipoDir.getIdTipoDireccion(),"N");
+				}
+			request.setAttribute("vTipos",vTipos);			
 
 			// cargo los valores recibidos por paramtros en el FORM
 			accionPestanha = "nuevo";
@@ -330,7 +341,13 @@ public class DatosGeneralesAction extends MasterAction {
 			//Para saber si debemos cargar en la pestanha el jsp de colegiados/personal o el de no colegiados de Sociedad SJ:
 			String tipo = request.getParameter("tipo");
 			request.setAttribute("modoPestanha",accionPestanha);
-
+			
+			ArrayList list = new ArrayList();
+			DireccionesForm dirForm = new DireccionesForm();
+			dirForm.setNombre("-- Nueva");
+			dirForm.setIdDireccion(new Long(-1));
+			list.add(dirForm);			
+			miform.setDirecciones(list);			
 
 			user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 
@@ -2346,46 +2363,6 @@ public class DatosGeneralesAction extends MasterAction {
 					hTipoDir.put(tipoDir.getIdTipoDireccion(),"N");
 				}
 			request.setAttribute("vTipos",vTipos);
-		    
-			/*
-			 
-			CenClienteAdm clienteAdm =  new CenClienteAdm(this.getUserName(request),
-					user,idInstitucionPersona.intValue(), idPersona.longValue());
-			Hashtable hash = clienteAdm.getDirecciones(idPersona, idInstitucionPersona, idDireccion);
-			
-			CenDireccionTipoDireccionAdm tipoDirAdm = new CenDireccionTipoDireccionAdm (this.getUserName(request),
-					this.getUserBean(request),idInstitucionPersona.intValue(),idPersona.longValue());			  
-			  
-			 Hashtable claves = new Hashtable();
-			
-			Vector v = new Vector();
-			// compruebo al visibilidad con CenClienteAdm que ha utilizado su constructor de visibilidad
-			if (clienteAdm.compruebaVisibilidadCampo(CenDireccionTipoDireccionBean.T_NOMBRETABLA, CenDireccionTipoDireccionBean.C_IDTIPODIRECCION)) {
-				UtilidadesHash.set(claves, CenDireccionTipoDireccionBean.C_IDINSTITUCION, idInstitucionPersona);
-				UtilidadesHash.set(claves, CenDireccionTipoDireccionBean.C_IDPERSONA, idPersona);
-				UtilidadesHash.set(claves, CenDireccionTipoDireccionBean.C_IDDIRECCION, idDireccion);
-				v = tipoDirAdm.select(claves);
-				if ( (v != null) && (v.size() > 0) ) {
-	   			    for (int i = 1; i <= v.size(); i++) {
-	   			    	CenDireccionTipoDireccionBean tipoDirSel = (CenDireccionTipoDireccionBean) v.get(i-1);
-				     	hTipoDirSel.put(tipoDirSel.getIdTipoDireccion(),"S");
-	   			    }
-				}    
-			}
-			hash.put(CenTipoDireccionBean.C_IDTIPODIRECCION, v);
-			Integer clave=null;
-			
-			Enumeration clavesDir = hTipoDirSel.keys();
-		    while (clavesDir.hasMoreElements()) {
-		    	clave = (Integer)clavesDir.nextElement();
-		    	if (hTipoDir.containsKey(clave))
-					hTipoDir.put(clave,"S");
-		    }
-			
-			request.setAttribute("TipoDirecciones",hTipoDir);*/
-			
-			
-			
 
 			// cargo los valores recibidos por paramtros en el FORM
 			accionPestanha = "nuevo";
