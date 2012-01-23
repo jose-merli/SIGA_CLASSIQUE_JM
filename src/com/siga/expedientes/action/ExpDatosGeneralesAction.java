@@ -1,5 +1,5 @@
 /*
- * Created on Jan 17, 2005
+ * Created on Jan 17, 2005 
  * @author emilio.grau
  *
  */
@@ -108,85 +108,108 @@ public class ExpDatosGeneralesAction extends MasterAction
 
 			if(!accion.equals("nuevo"))
 			{
-			//Se buscan los nuevos campos configurados en tipo_expediente
-			ExpCampoConfAdm expCamConfAdm = new ExpCampoConfAdm(usr);			
-			Vector vecExpCamConfAdm= expCamConfAdm.obtenerCamposPestanaGeneral(this.getIDInstitucion(request).toString(),idTipoExpediente);
+				//Se buscan los campos configurados en exp_campoconf para extraer sus nombres de campo
+				ExpCampoConfAdm expCamConfAdm = new ExpCampoConfAdm(usr);			
+				Vector vecExpCamConfAdm= expCamConfAdm.obtenerCamposPestanaGeneral(this.getIDInstitucion(request).toString(),idTipoExpediente);
 			
-			if(vecExpCamConfAdm!= null && vecExpCamConfAdm.size()>0)
-			{
-				ExpPestanaConfAdm expPestanaConfAdm = new ExpPestanaConfAdm(usr);
-				String nombreCampo = expPestanaConfAdm.obtenerNombrePetanaGeneral(this.getIDInstitucion(request).toString(), idTipoExpediente);
-			
-				String numExpediente = request.getParameter("numeroExpediente");
-				String anioExpediente = request.getParameter("anioExpediente");
-				ExpCamposValorAdm expCamposValorAdm = new ExpCamposValorAdm(usr);
-				Vector vecExpCamposValorAdm = expCamposValorAdm.obtenerValorCamposPestanaGeneral(this.getIDInstitucion(request).toString(), idTipoExpediente, numExpediente,anioExpediente);
-						
-				Vector nombres = new Vector ();
-				Vector datosCamposPestanas= new Vector ();
-				
-				Vector nombresLongitud = new Vector ();
-				Vector datosCamposPestanasLongitud= new Vector ();
-				
-			
-				for (int m =0; m<5;m++)
+				if(vecExpCamConfAdm!= null && vecExpCamConfAdm.size()>0)
 				{
-					nombres.add("");
-					datosCamposPestanas.add("");
-					nombresLongitud.add("");
-					datosCamposPestanasLongitud.add("");
-				}
-			
-				for (int i =0; i<vecExpCamConfAdm.size();i++)
-				{
-					Hashtable auxHash = (Hashtable)vecExpCamConfAdm.get(i);
-					Integer orden= new Integer((String)auxHash.get("ORDEN"));
-					String longitud = (String)auxHash.get("NOMBRE");
-					nombresLongitud.set((orden.intValue()-1),longitud.length());
-					nombres.set((orden.intValue()-1),(String)auxHash.get("NOMBRE"));
-					//Inicializamos el vector de datos a "" para que aquellos campos que no tengan valor
-					//por lo menos tengan cadena vacia
-					//datosCamposPestanas.add("");
-				}
-												
-				for (int j =0; (j<vecExpCamposValorAdm.size());j++)
-				{
-					Hashtable auxHash1 = (Hashtable)vecExpCamposValorAdm.get(j);
-				
-					boolean encontrado = false;
-					for (int k =0; k<vecExpCamConfAdm.size() && encontrado == false;k++)
-					{
-						Hashtable auxHash = (Hashtable)vecExpCamConfAdm.get(k);
+					//Declaración objetos
+					Vector nombres = new Vector ();
+					Vector datosCamposPestanas= new Vector ();					
+					Vector nombresLongitud = new Vector ();
+					Vector datosCamposPestanasLongitud= new Vector ();
 					
-						String ordenCampo=(String)auxHash.get("IDCAMPOCONF");
-						String ordenValor=(String)auxHash1.get("IDCAMPOCONF");
-						
-						if(ordenCampo.equals(ordenValor))
+					// Se busca el nombre de la etiqueta que tendra el recuadro en la jsp de Datos Generales
+					ExpPestanaConfAdm expPestanaConfAdm = new ExpPestanaConfAdm(usr);
+					String nombreCampo = expPestanaConfAdm.obtenerNombrePetanaGeneral(this.getIDInstitucion(request).toString(), idTipoExpediente);
+			
+					//Se buscan los valores configurados en exp_camposvalor para extraer sus valores de campo
+					String numExpediente = request.getParameter("numeroExpediente");
+					String anioExpediente = request.getParameter("anioExpediente");
+					ExpCamposValorAdm expCamposValorAdm = new ExpCamposValorAdm(usr);
+					Vector vecExpCamposValorAdm = expCamposValorAdm.obtenerValorCamposPestanaGeneral(this.getIDInstitucion(request).toString(), idTipoExpediente, numExpediente,anioExpediente);
+											
+				
+					//inicilizacion de los vectores
+					for (int m =0; m<5;m++)
+					{
+						//Inicializamos el vector de datos a "" para que aquellos campos que no tengan valor
+						//por lo menos tengan cadena vacia
+						nombres.add("");
+						datosCamposPestanas.add("");
+						nombresLongitud.add(new Integer(0));
+						//El tamaño de la caja de texto en la jsp por defecto será de 15
+						//si el campo valor esta vacio en BBDD
+						datosCamposPestanasLongitud.add(new Integer(15));
+					}
+				
+					//Se carga el el vector nombres los nombre de los campos que tiene la pestaña
+					//Se carga en el vector nombresLongitud la longitud del nombre de cada campo para luego mostrar
+					//de manera dinamica los campos y sus valores en la jsp
+					for (int i =0; i<vecExpCamConfAdm.size();i++)
+					{
+						Hashtable auxHash = (Hashtable)vecExpCamConfAdm.get(i);
+						Integer orden= new Integer((String)auxHash.get("ORDEN"));
+						String longitud = (String)auxHash.get("NOMBRE");
+						nombresLongitud.set((orden.intValue()-1),longitud.length());
+						nombres.set((orden.intValue()-1),(String)auxHash.get("NOMBRE"));										
+					}
+					
+					//Se carga en el vector datosCamposPestanas los valores q llevan asociados los campos de las pestañas
+					//Se carga en el vector datosCamposPestanasLongitud la longitud del valor de cada campo para luego mostrar
+					//de manera dinamica los campos y sus valores en la jsp
+					for (int j =0; (j<vecExpCamposValorAdm.size());j++)
+					{
+						Hashtable auxHash1 = (Hashtable)vecExpCamposValorAdm.get(j);
+					
+						boolean encontrado = false;
+						for (int k =0; k<vecExpCamConfAdm.size() && encontrado == false;k++)
 						{
-							Integer orden= new Integer((String)auxHash.get("ORDEN"));
-							String longitud = (String)auxHash1.get("VALOR");
-							datosCamposPestanasLongitud.set((orden.intValue()-1),longitud.length());
-							datosCamposPestanas.set((orden.intValue()-1),(String)auxHash1.get("VALOR"));
-							encontrado = true; 
-						}										
-					}																						
-				}
+							Hashtable auxHash = (Hashtable)vecExpCamConfAdm.get(k);
 						
-				request.setAttribute("nombres", nombres);
-				request.setAttribute("datosCamposPestanas", datosCamposPestanas);
-				request.setAttribute("nombreCampo", nombreCampo);
-				request.setAttribute("datosCamposPestanasLongitud", datosCamposPestanasLongitud);
-				request.setAttribute("nombresLongitud", nombresLongitud);
-			}
-			else
-			{
-				request.setAttribute("nombres", null);
-				request.setAttribute("datosCamposPestanas", null);
-				request.setAttribute("nombreCampo", null);
-				request.setAttribute("datosCamposPestanasLongitud", null);
-				request.setAttribute("nombresLongitud", null);
-			}
+							String ordenCampo=(String)auxHash.get("IDCAMPOCONF");
+							String ordenValor=(String)auxHash1.get("IDCAMPOCONF");
+							
+							if(ordenCampo.equals(ordenValor))
+							{
+								Integer orden= new Integer((String)auxHash.get("ORDEN"));
+								String longitud = (String)auxHash1.get("VALOR");
+								if(longitud.length()!=0)
+									datosCamposPestanasLongitud.set((orden.intValue()-1),longitud.length());
+								else
+									datosCamposPestanasLongitud.set((orden.intValue()-1),15);
+								datosCamposPestanas.set((orden.intValue()-1),(String)auxHash1.get("VALOR"));
+								encontrado = true; 
+							}										
+						}																						
+					}
+						
+					//envío de los objetos al jsp datosGenerales.jsp
+					request.setAttribute("nombres", nombres);
+					request.setAttribute("datosCamposPestanas", datosCamposPestanas);
+					request.setAttribute("nombreCampo", nombreCampo);								
+					request.setAttribute("nombresLongitud", nombresLongitud);
+					
+					//Se llama al método muestraCamposDinamicos para implementar el código neceasrio para
+					//mostrar de manera dinámica los campos de la etiqueta configurable.
+					Hashtable mostrarCampos = muestraCamposDinamicos(nombresLongitud,datosCamposPestanasLongitud);
+					datosCamposPestanasLongitud = (Vector)mostrarCampos.get("datosCamposPestanasLongitud");
+					request.setAttribute("datosCamposPestanasLongitud", datosCamposPestanasLongitud);					
+					request.setAttribute("saltoLinea", (Vector)mostrarCampos.get("saltoLinea"));
+				}
+				else
+				{
+					//envio de los objetos al jsp datosGenerales.jsp
+					request.setAttribute("nombres", null);
+					request.setAttribute("datosCamposPestanas", null);
+					request.setAttribute("nombreCampo", null);
+					request.setAttribute("datosCamposPestanasLongitud", null);
+					request.setAttribute("nombresLongitud", null);
+				}
 			}//fin if de accion!=nuevo
+			
+			
 			
 			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_MINUTA_INICIAL));
 			v = adm.select(h);
@@ -1750,7 +1773,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			
 			
 			//Recojo el valor de la fecha inicial del formulario, de la fase y del estado
-			expBean.setIdClasificacion(Integer.valueOf(form.getClasificacion()));
+			//expBean.setIdClasificacion(Integer.valueOf(form.getClasificacion()));
 			expBean.setIdFase(Integer.valueOf(form.getFase()));
 			expBean.setIdEstado(Integer.valueOf(form.getEstado()));
 			expBean.setFechaInicialEstado(GstDate.getApplicationFormatDate("",form.getFechaInicial()));
@@ -1892,5 +1915,83 @@ public class ExpDatosGeneralesAction extends MasterAction
 			throw new ClsExceptions (e, "Error al ejecutar el 'guardarValor' en B.D.");		
 		}		
     }
+	
+	/**
+	 * Método que crea las modificaciones necesarias para mostrar de manera dinámica las cajas de texto en la etiqueta de pestaña configurable
+	 * @param nombresLongitud
+	 * @param datosCamposPestanasLongitud
+	 * @return Hashtable	 
+	 */
+	public Hashtable muestraCamposDinamicos(Vector nombresLongitud,Vector datosCamposPestanasLongitud)	
+	{
+		Hashtable mostrarTexto = new  Hashtable();        
+		
+		Vector totales = new Vector();
+		Vector saltoLinea = new Vector();
+		
+		for (int m =0;m<5;m++)
+		{
+			totales.add("");
+			saltoLinea.add("");			
+		}
+		
+		int valor1=124,valor2=144;		
+		for (int i=0;i<5;i++)
+		{				
+			Integer iLongitudCampo = (Integer)nombresLongitud.get(i);
+			Integer iLongitudValor = (Integer)datosCamposPestanasLongitud.get(i);
+			if(iLongitudCampo!= null && iLongitudCampo.intValue()!=0)
+			{				
+				int total=iLongitudCampo.intValue();				
+				// totalRestanteSizeLinea guarda los espacios que le quedan a la caja de texto para
+				//llegar al final de la linea
+				int totalRestanteSizeLinea= valor1-iLongitudCampo.intValue();								
+				int totalRestanteSizeLineaTotal= valor2-iLongitudCampo.intValue();
+																								
+				// Si el contenido de la caja de texto es superior a totalRestanteSize entonces
+				// se sustituye el nº de caracteres q tiene el contenido por el maximo permitido
+				//para que no sobrepase la linea, que máximo sería de 149 espacios.
+				
+				if(iLongitudValor.intValue()>totalRestanteSizeLineaTotal)
+				{
+					datosCamposPestanasLongitud.set(i,iLongitudValor.valueOf(totalRestanteSizeLineaTotal));
+					total += totalRestanteSizeLinea;
+				}
+				else
+				{
+					if(iLongitudValor.intValue()>totalRestanteSizeLinea)
+					{
+						datosCamposPestanasLongitud.set(i,iLongitudValor.valueOf(totalRestanteSizeLinea));
+						total += totalRestanteSizeLinea;
+					}
+					else
+						total += iLongitudValor.intValue();
+				}																					
+				totales.set(i,""+total);
+			}
+		}
+		mostrarTexto.put("datosCamposPestanasLongitud",datosCamposPestanasLongitud);
+		
+		int totalCampos=0;
+		for (int i=0;i<5;i++)
+		{
+			String sTotales= (String)totales.get(i);
+			
+			if(sTotales!=null && !sTotales.equals(""))
+			{
+				Integer iTotales= new Integer(sTotales);
+				totalCampos += iTotales.intValue();
+												
+				if(totalCampos>valor1)
+				{
+					saltoLinea.set(i, ""+i);
+					totalCampos = iTotales.intValue();					
+				}								
+			}						
+		}
+		mostrarTexto.put("saltoLinea",saltoLinea);
+				
+		return mostrarTexto;
+	}
 	
 }

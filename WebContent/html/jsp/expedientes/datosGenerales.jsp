@@ -1356,6 +1356,7 @@
 		<table class="tablaCampos" border="0" >
 		<% 
 			int k=0;
+			vSaltoLinea.set(4,"4");
 			for(;k < vNombres.size();)
 			{		
 		%>					
