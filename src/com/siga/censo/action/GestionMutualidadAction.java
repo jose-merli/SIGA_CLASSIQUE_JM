@@ -180,7 +180,7 @@ public class GestionMutualidadAction extends MasterAction {
 			BusinessManager bm = getBusinessManager();
 			MutualidadService mutualidadService = (MutualidadService)bm.getService(MutualidadService.class);
 			mutualidadService.actualizaEstadoSolicitud(mutualidadForm, this.getUserBean(request));
-			String[] parametros = {mutualidadForm.getIdEstado(),mutualidadForm.getEstado()};
+			String[] parametros = {mutualidadForm.getIdEstado(),mutualidadForm.getEstado(), mutualidadForm.getPDF()};
 			request.setAttribute("parametrosArray", parametros);
 			
 		
@@ -207,7 +207,7 @@ public class GestionMutualidadAction extends MasterAction {
 			BusinessManager bm = getBusinessManager();
 			MutualidadService mutualidadService = (MutualidadService)bm.getService(MutualidadService.class);
 			mutualidadService.actualizaEstadoMutualista(mutualidadForm, this.getUserBean(request));
-			String[] parametros = {mutualidadForm.getEstadoMutualista()};
+			String[] parametros = {mutualidadForm.getEstadoMutualista(),mutualidadForm.getPDF()};
 			request.setAttribute("parametrosArray", parametros);
 			
 		

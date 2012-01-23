@@ -3,6 +3,11 @@
  */
 package com.siga.ws.mutualidad;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.TreeMap;
@@ -17,10 +22,14 @@ import org.apache.axis.message.addressing.handler.AddressingHandler;
 import org.apache.axis.transport.http.HTTPSender;
 import org.apache.axis.transport.http.HTTPTransport;
 
+import com.siga.Utilidades.SIGAReferences;
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.LogBDDHandler;
 import com.siga.Utilidades.UtilidadesFecha;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
 
 /**
@@ -70,7 +79,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
             Integracion_Solicitud_Respuesta response = stub.estadoMutualista(nif, fechaNacimientoCal);
             respuesta.setCorrecto(true);
             respuesta.setValorRespuesta(response.getValorRespuesta());
-            respuesta.setPDF(response.getPDF());          	
+            respuesta.setRutaPDF(this.getRutaPDF(response.getPDF(),nif, super.getUsrBean().getLocation()));        	
             if(respuesta.getValorRespuesta().trim().equalsIgnoreCase("1")){
             	respuesta.setPosibleAlta(true);
             }else{
@@ -101,7 +110,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
             Integracion_Solicitud_Respuesta response = stub.estadoMutualista(nif, fechaNacimientoCal);
             respuesta.setCorrecto(true);
             respuesta.setValorRespuesta(response.getValorRespuesta());
-            respuesta.setPDF(response.getPDF());          	
+            respuesta.setRutaPDF(this.getRutaPDF(response.getPDF(),nif, super.getUsrBean().getLocation()));          	
             if(respuesta.getValorRespuesta().equalsIgnoreCase("1")){
             	respuesta.setPosibleAlta(true);
             }else{
@@ -165,10 +174,10 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
         try{
             WSHttpBinding_IIntegracion_MetodosStub stub = getStub();
            
-            Integracion_Solicitud_Respuesta response = stub.estadoSolicitud(idSolicitud,Boolean.FALSE );
+            Integracion_Solicitud_Respuesta response = stub.estadoSolicitud(idSolicitud,Boolean.TRUE );
             respuesta.setValorRespuesta(response.getValorRespuesta());
+            respuesta.setRutaPDF(this.getRutaPDF(response.getPDF(),idSolicitud.toString(), super.getUsrBean().getLocation()));
             respuesta.setCorrecto(true);
-            respuesta.setPDF(response.getPDF());
         } catch (Exception e) {
             escribeLog("Error en llamada a getEstadoSolicitud: " + e.getMessage());
             respuesta.setCorrecto(false);
@@ -276,9 +285,11 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 			datosBancarios = rellenarDatosBancarios(ht.get("datosBancarios"));
 			datosPoliza = rellenarDatosPoliza(ht.get("datosPoliza"));
 			datosDireccionDomicilio = rellenarDatosDireccion(ht.get("datosDireccionDomicilio"));
+			datosDireccionDomicilio.setTipoDireccion(1);
 			datosDireccionDomicilio.setTipoDomicilio(1);
 			datosDireccionDomicilio.setDireccionContacto(1);
 			datosDireccionDespacho = rellenarDatosDireccion(ht.get("datosDireccionDespacho"));
+			datosDireccionDespacho.setTipoDireccion(2);
 			datosDireccionDespacho.setTipoDomicilio(2);
 			datosDireccionDespacho.setDireccionContacto(2);
 			datosDirecciones[0]=datosDireccionDomicilio;
@@ -540,6 +551,27 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 		default:eCivilWS = 5; break; // Desconocido
 		}
 		return eCivilWS;
+	}
+	
+	private String getRutaPDF(byte[] pdf, String NIF, String institucion) throws IOException{
+	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+	    StringBuffer rutaPDF = new StringBuffer();
+	    rutaPDF.append("");
+	    if(pdf!=null && pdf.length>0){
+		    try {
+			    rutaPDF.append( rp.returnProperty("wsMutualidad.directorioFicheros") );
+			    rutaPDF.append( rp.returnProperty("wsMutualidad.directorioLog") );
+			    rutaPDF.append( "/" + institucion + "/" +NIF + "_" +  UtilidadesString.getTimeStamp() + ".pdf" );
+				FileOutputStream fos;
+				File ficheroTemp = new File(rutaPDF.toString()); 
+				fos = new FileOutputStream(ficheroTemp);
+				fos.write(pdf);
+				fos.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	    }
+		return rutaPDF.toString();
 	}
 
 }

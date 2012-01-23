@@ -23,6 +23,7 @@ public class RespuestaMutualidad {
 	private String valorRespuesta;
 	
 	private byte[] pdf;
+	private String rutaPDF;
 
 
 	public void setCorrecto(boolean b) { 
@@ -116,6 +117,10 @@ public class RespuestaMutualidad {
 	public byte[] getPDF() {
 		return pdf;
 	}
+	
+	public String getRutaPDF() {
+		return rutaPDF;
+	}
 
 	public void setBeneficiarios(Map<String, String> map) {
 		this.beneficiarios = map;
@@ -163,11 +168,14 @@ public class RespuestaMutualidad {
 
 	public void setPDF(byte[] pdf) {
 		this.pdf = pdf;
-		
 	}
 
 	public void setPosibleAlta(boolean b) {
 		this.posibleAlta=b;
+	}
+
+	public void setRutaPDF(String ruta) {
+		this.rutaPDF=ruta;
 	}
 
 	

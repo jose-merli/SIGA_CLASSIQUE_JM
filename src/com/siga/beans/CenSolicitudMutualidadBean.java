@@ -167,6 +167,7 @@ public class CenSolicitudMutualidadBean extends MasterBean {
 	
 	private String estado;
 	private String estadoMutualista;
+	private String pdf;
 	
 	
 	public Integer getIdInstitucion() {
@@ -532,7 +533,7 @@ public class CenSolicitudMutualidadBean extends MasterBean {
 		mutualidadForm.setBeneficiario(this.beneficiario);
 		mutualidadForm.setCapitalCobertura(this.capitalCobertura);
 		mutualidadForm.setCuotaCobertura(this.cuotaCobertura);
-		
+		mutualidadForm.setPDF(this.pdf);
 		
 		if(edadHijo1!=null)
 			mutualidadForm.setEdadHijo1(this.edadHijo1);
@@ -672,6 +673,9 @@ public class CenSolicitudMutualidadBean extends MasterBean {
 	}
 	public void setEstadoMutualista(String estadoMutualista) {
 		this.estadoMutualista = estadoMutualista;
+	}
+	public void setPDF(String rutaPDF) {
+		this.pdf = rutaPDF;
 	}
 	
 	

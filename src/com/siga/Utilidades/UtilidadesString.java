@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
@@ -1074,6 +1075,30 @@ public class UtilidadesString {
 			e.printStackTrace();
 		}
 		return sFecha;
+	}
+	
+	/** 
+	 * Devuelve el timestamp de la hora actual yyyyMMddHHmmss
+	 *  
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	static public String getTimeStamp() throws ClsExceptions {
+		return getTimeStamp("");
+	}
+	static public String getTimeStamp(String formato) throws ClsExceptions {
+		String val = "";
+		if(formato==null || formato.equalsIgnoreCase("")){
+			formato="yyyyMMddHHmmss";
+		}
+		try {
+		    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(formato);
+		    java.util.Date d = new Date();
+			val = sdf.format(d);
+		} catch (Exception e) {
+			val="";
+		}
+		return val;
 	}
 		
 		// vector con el signo, la parte entera y la parte decimal para el impreso 190

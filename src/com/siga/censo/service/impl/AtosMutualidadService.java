@@ -88,6 +88,7 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		// Seteamos el estado que nos haya devuelto la llamada
 		solicitudMutualidadBean.setEstado(respuestaSolicitud.getValorRespuesta());
 		solicitudMutualidadBean.setIdEstado(CenSolicitudMutualidadBean.ESTADO_SOLICITADO);
+		solicitudMutualidadBean.setPDF(respuestaSolicitud.getRutaPDF());
 		
 		// Actualizamos la solicitud en base de datos
 		CenSolicitudMutualidadAdm solicitudMutualidadAdm = new CenSolicitudMutualidadAdm(usrBean);
@@ -115,20 +116,7 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		MutualidadWSClient mutualidadWSClient =  new MutualidadWSClient(usrBean);
 		RespuestaMutualidad respuestaSolicitud = mutualidadWSClient.getEstadoMutualista(solicitudMutualidadBean.getNumeroIdentificacion(), solicitudMutualidadBean.getFechaNacimiento());
 		solicitudMutualidadBean.setEstadoMutualista(respuestaSolicitud.getValorRespuesta());
-		// Hay que devolver el pdf
-		/*
-		if (respuestaSolicitud.getPDF()!=null){
-			ResourceBundle rp=ResourceBundle.getBundle("SIGA");
-			String pathTemporal = rp.getString("wsMutualidad.directorioFicheros") + File.separator + rp.getString("wsMutualidad.directorioLog") + File.separator + usrBean.getLocation();
-			String archivoTemporal = "SolicitudMutualidad_" + solicitudMutualidadBean.getNumeroIdentificacion()+UtilidadesString.getTimeStamp()+".pdf";
-			File ficheroTemp = new File(pathTemporal+File.separator+archivoTemporal); 
-			FileOutputStream fos; 
-			fos = new FileOutputStream(ficheroTemp); 
-			fos.write(respuestaSolicitud.getPDF()); 
-			fos.flush(); 
-			fos.close(); 
-		}
-		*/
+		solicitudMutualidadBean.setPDF(respuestaSolicitud.getRutaPDF());
 		CenSolicitudMutualidadAdm solicitudMutualidadAdm = new CenSolicitudMutualidadAdm(usrBean);
 		solicitudMutualidadAdm.actualizaEstadoMutualista(solicitudMutualidadBean);
 		mutualidadForm = solicitudMutualidadBean.getMutualidadForm(mutualidadForm);
@@ -249,19 +237,6 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		RespuestaMutualidad posibilidadSolicitudAlta = mutualidadWSClient.getPosibilidadSolicitudAlta(numeroIdentificacion,fechaNacimiento);
 		if(posibilidadSolicitudAlta.getValorRespuesta()==null || posibilidadSolicitudAlta.getValorRespuesta().equals(""))
 			throw new SIGAException("No es posible Realizar el alta. Revise los datos del formulario");
-		/*
-		if (posibilidadSolicitudAlta.getPDF()!=null){
-			ResourceBundle rp=ResourceBundle.getBundle("SIGA");
-			String pathTemporal = rp.getString("wsMutualidad.directorioFicheros") + File.separator + rp.getString("wsMutualidad.directorioLog") + File.separator + usrBean.getLocation();
-			String archivoTemporal = "SolicitudMutualidad_" + numeroIdentificacion+"_"+UtilidadesString.getTimeStamp()+".pdf";
-			File ficheroTemp = new File(pathTemporal+File.separator+archivoTemporal); 
-			FileOutputStream fos; 
-			fos = new FileOutputStream(ficheroTemp); 
-			fos.write(posibilidadSolicitudAlta.getPDF()); 
-			fos.flush(); 
-			fos.close(); 
-		}
-		*/
 		return posibilidadSolicitudAlta;
 		
 	}

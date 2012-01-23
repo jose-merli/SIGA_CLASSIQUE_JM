@@ -558,18 +558,22 @@
 
 </head>
 
-<body  class="tablaCentralCampos" onLoad="cargaPais(<%=datosPersonales.getIdPais() %>);cargarChecksCuenta();ajusteAlto('documentos');comprobarTipoIdent();">
+<body  class="tablaCentralCampos" onLoad="cargaPais(<%=datosPersonales.getIdPais() %>);cargarChecksCuenta();comprobarTipoIdent();">
+
+
 <bean:define id="isPosibilidadSolicitudAlta" name="isPosibilidadSolicitudAlta"  scope="request" />
 <bean:define id="mostrarSolicitudAlta" name="mostrarSolicitudAlta"  scope="request" />
 <bean:define id="motivoSolicitudAlta" name="motivoSolicitudAlta"  scope="request" />
+
 	<html:form action="/CEN_SolicitudesIncorporacion.do" method="POST">
+	
+	
 	<html:hidden property="idSolicitudPlanProfesional"/>
 	<html:hidden property="idSolicitudAceptadaSeguroUniversal"/>
 	<html:hidden property="idSolicitudAceptadaPlanProfesional"/>
 	<html:hidden property="idSolicitudSeguroUniversal"/>
 	<input type="hidden" id="numeroIdentificacionBBDD" value ="<%=datosPersonales.getNumeroIdentificador()%>" /> 
 	<input type="hidden" id="fechaNacimientoBBDD" value ="<%=datosPersonales.getFechaNacimiento()%>" />
-	
 	
 	
 	
@@ -594,7 +598,7 @@
 		</td>
 	</tr>
 	</table>
-
+<div style="height:600px; overflow-y: scroll">
 	<siga:ConjCampos>
 		<center>
 		<table>
@@ -1003,17 +1007,13 @@
 		</c:otherwise>
 	</c:choose>
 </c:if>
-		<siga:TablaCabecerasFijas nombre="documentoAPresentar" 
-			borde="1" 
-			estilo="" 
-			clase="tableTitle" 
-			nombreCol="censo.SolicitudIncorporacionDatos.literal.estado,censo.SolicitudIncorporacionDatos.literal.documento" 
-			tamanoCol="10,90"
-			ajusteBotonera="true"
-			ajuste="20"
-			alto="50"
-			>
-			
+
+<table id='documentoAPresentar' border='1' width='100%' cellspacing='0' cellpadding='0'>
+	<tr class = 'tableTitle'>
+		<td align='center' width='10%'><siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.estado"/></td>
+		<td align='center' width='90%'><siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.documento"/></td>
+	</tr>
+
 		<% if (documentos != null) {
 			 for (int i = 0; i < documentos.size(); i++){ 
 			 		Vector v = (Vector) documentos.get(i);
@@ -1040,8 +1040,9 @@
 	   		 </p>
 	 		<br>
 	  <%}%>
-	</siga:TablaCabecerasFijas>
-	
+	</tr>
+	</table>
+	</div>
 
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 	<%if (editar!=null && !editar.equalsIgnoreCase("false")) {%>
@@ -1052,7 +1053,6 @@
 		<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
 	<%}%>
 	<!-- FIN: BOTONES REGISTRO -->
-
 	</html:form>
 	<html:form action="/CEN_Mutualidad"   >
 		<html:hidden property="modo" />
@@ -1105,7 +1105,6 @@
 			
 			<input type="hidden" name="actionModal" />
 	</html:form>
-	
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
@@ -1277,7 +1276,6 @@
 				document.MutualidadForm.idSolicitud.value = document.SolicitudIncorporacionForm.idSolicitudSeguroUniversal.value;
 				document.MutualidadForm.idSolicitudAceptada.value =document.SolicitudIncorporacionForm.idSolicitudAceptadaSeguroUniversal.value;
 			}
-			
 		} 
 		 
 		document.MutualidadForm.modo.value = "actualizaEstado";
@@ -1290,6 +1288,20 @@
 			}else{
 		    	document.getElementById("tdEstadoSolicitudSeguroUniversal").innerText = resultado[1];
 		    	
+			}
+			var ruta = resultado[2];
+			if(ruta && ruta.length>0 && confirm('¿Desea descargar el documento asociado a la solicitud?')){
+				
+				var formu=document.createElement("<form method='POST' name='descargar'  action='/SIGA/ServletDescargaFichero.svrl' target='submitArea'>");
+				formu.appendChild(document.createElement("<input type='hidden' name='rutaFichero'   value=''/>"));
+				formu.appendChild(document.createElement("<input type='hidden' name='nombreFichero'   value=''/>"));
+				formu.appendChild(document.createElement("<input type='hidden' name='accion'   value=''/>"));
+				document.appendChild(formu);
+				formu.rutaFichero.value=ruta;
+				formu.nombreFichero.value='Solicitud.pdf';
+				formu.accion.value = "";
+				formu.submit();
+				
 			}
 			
 		}
@@ -1309,7 +1321,6 @@
 	
 	<!-- FIN: SCRIPTS BOTONES -->
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-
 </body>
 </html>
 

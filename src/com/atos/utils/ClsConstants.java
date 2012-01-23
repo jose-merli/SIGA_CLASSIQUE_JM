@@ -390,15 +390,15 @@ public class ClsConstants {
 	   * Standard intern date format :
 	   *    yyyy/MM/dd HH:mm:ss
 	   */
-	  public static final String DATE_FORMAT_JAVA=			 initProperties.getString("init.java.date.format");
-	  public static final String TIME_FORMAT_JAVA =			 initProperties.getString("init.java.time.format");
-	  public static final String TIMESTAMP_FORMAT_JAVA = 	 initProperties.getString("init.java.timestamp.format");
-	  public static final String DATE_FORMAT_SHORT_ENGLISH = initProperties.getString("init.java.date.format.short.english");
-	  public static final String DATE_FORMAT_SHORT_SPANISH = initProperties.getString("init.java.date.format.short.spanish");
-	  public static final String DATE_FORMAT_MEDIUM_ENGLISH= initProperties.getString("init.java.date.format.medium.english");
-	  public static final String DATE_FORMAT_MEDIUM_SPANISH= initProperties.getString("init.java.date.format.medium.spanish");
-	  public static final String DATE_FORMAT_LONG_ENGLISH =  initProperties.getString("init.java.date.format.long.english");
-	  public static final String DATE_FORMAT_LONG_SPANISH =  initProperties.getString("init.java.date.format.long.spanish");
+	  public static final String DATE_FORMAT_JAVA=			 initProperties.getString("init.java.date.format"); 				// HH:mm:ss
+	  public static final String TIME_FORMAT_JAVA =			 initProperties.getString("init.java.time.format"); 				// yyyy/MM/dd HH:mm:ss
+	  public static final String TIMESTAMP_FORMAT_JAVA = 	 initProperties.getString("init.java.timestamp.format"); 			// yyyy/MM/dd HH:mm:ss.SSS
+	  public static final String DATE_FORMAT_SHORT_ENGLISH = initProperties.getString("init.java.date.format.short.english"); 	// dd/MM/yyyy
+	  public static final String DATE_FORMAT_SHORT_SPANISH = initProperties.getString("init.java.date.format.short.spanish"); 	// dd/MM/yyyy
+	  public static final String DATE_FORMAT_MEDIUM_ENGLISH= initProperties.getString("init.java.date.format.medium.english"); 	// dd/MM/yyyy HH:mm
+	  public static final String DATE_FORMAT_MEDIUM_SPANISH= initProperties.getString("init.java.date.format.medium.spanish"); 	// dd/MM/yyyy HH:mm
+	  public static final String DATE_FORMAT_LONG_ENGLISH =  initProperties.getString("init.java.date.format.long.english"); 	// dd/MM/yyyy HH:mm:ss
+	  public static final String DATE_FORMAT_LONG_SPANISH =  initProperties.getString("init.java.date.format.long.spanish"); 	// dd/MM/yyyy HH:mm:ss
 
 
 /*

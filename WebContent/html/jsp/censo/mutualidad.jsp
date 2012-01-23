@@ -817,8 +817,22 @@
 		document.MutualidadForm.modo.value = "actualizaEstadoMutualista";
 		var resultado = ventaModalGeneral(document.MutualidadForm.name,"0",'<siga:Idioma key="censo.mutualidad.aviso.espera" />');
 		if(resultado && resultado[0]!='1'){
+			var ruta = resultado[1];
 			document.MutualidadForm.estadoMutualista.value = resultado[0];	
 	    	document.getElementById("tdEstadoMutualista").innerText = resultado[0];
+			if(ruta.length>0 && confirm('¿Desea descargar el documento asociado a la solicitud?')){
+				
+				var formu=document.createElement("<form method='POST' name='descargar'  action='/SIGA/ServletDescargaFichero.svrl' target='submitArea'>");
+				formu.appendChild(document.createElement("<input type='hidden' name='rutaFichero'   value=''/>"));
+				formu.appendChild(document.createElement("<input type='hidden' name='nombreFichero'   value=''/>"));
+				formu.appendChild(document.createElement("<input type='hidden' name='accion'   value=''/>"));
+				document.appendChild(formu);
+				formu.rutaFichero.value=ruta;
+				formu.nombreFichero.value='Solicitud.pdf';
+				formu.accion.value = "";
+				formu.submit();
+				
+			}
 		}else{
 			document.getElementById("tdEstadoMutualista").innerText = "No se han recibido datos.";
 		}

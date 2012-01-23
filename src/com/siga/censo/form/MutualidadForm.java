@@ -119,6 +119,7 @@ import com.siga.general.MasterForm;
 	
 	List<CenPoblacionesBean> poblaciones;
 	List<CenProvinciaBean> provincias;
+	private String pdf;
 	
 	public String getIdSolicitud() {
 		return idSolicitud;
@@ -678,6 +679,12 @@ import com.siga.general.MasterForm;
 	}
 	public void setEstadoMutualista(String estadoMutualista) {
 		this.estadoMutualista = estadoMutualista;
+	}
+	public String getPDF(){
+		return this.pdf;
+	}
+	public void setPDF(String pdf) {
+		this.pdf = pdf;
 	}
 	
 	
