@@ -152,7 +152,7 @@
 		</tr>
 		<tr id="ocultarOrden">
 			<td class="labelText">
-				<siga:Idioma key="administracion.informes.literal.orden"/>
+				<siga:Idioma key="administracion.informes.literal.orden"/>(*)
 			</td>
 			<td class="labelText">
 				<html:text name="InformeFormEdicion"  property="orden"  styleClass="box"></html:text>
@@ -204,8 +204,6 @@
 			</td>
 			<td class="labelText">
 					<html:select property="visible"  name="InformeFormEdicion"  styleClass="boxCombo" >
-						<html:option value=""><siga:Idioma key="general.combo.seleccionar"/>
-							</html:option>
 							<html:option value="S"><siga:Idioma key="general.yes"/>
 							</html:option>
 							<html:option value="N"><siga:Idioma key="general.no"/></html:option>
@@ -216,8 +214,6 @@
 			</td>
 			<td class="labelText" id="ocultarSelectPreseleccionado">
 					<html:select property="preseleccionado"  name="InformeFormEdicion"  styleClass="boxCombo" >
-						<html:option value=""><siga:Idioma key="general.combo.seleccionar"/>
-						</html:option>
 						<html:option value="S"><siga:Idioma key="general.yes"/>
 						</html:option>
 						<html:option value="N"><siga:Idioma key="general.no"/></html:option>
@@ -230,8 +226,6 @@
 			</td>
 			<td class="labelText">
 					<html:select name="InformeFormEdicion"  property="ASolicitantes"  styleClass="boxCombo" >
-						<html:option value=""><siga:Idioma key="general.combo.seleccionar"/>
-							</html:option>
 							<html:option value="S"><siga:Idioma key="general.yes"/>
 							</html:option>
 							<html:option value="N"><siga:Idioma key="general.no"/></html:option>
@@ -350,6 +344,10 @@ function onBlurAlias()
 {	
 	if(document.InformeFormEdicion.alias.value!=''&&document.InformeFormEdicion.nombreSalida.value==''){
 		document.InformeFormEdicion.nombreSalida.value=document.InformeFormEdicion.alias.value;
+		document.InformeFormEdicion.nombreFisico.value=document.InformeFormEdicion.alias.value;
+		if(formatearFormulario(document.InformeFormEdicion)){
+			alert("<siga:Idioma key='administracion.informes.mensaje.aviso.sustituyeEspacios'/>");
+		}		
 	}
 }
 //Cuando la clase del tipo de informe es Personalizable permitimos poner tipo de archivo
