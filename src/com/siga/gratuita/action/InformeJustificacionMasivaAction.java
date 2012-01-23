@@ -230,11 +230,11 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			
 			String idPersona   =  miForm.getIdPersona();
 			String datosJustificacion = miForm.getDatosJustificacion();
-			
+			tx = user.getTransactionPesada();
+			tx.begin();
 			if(datosJustificacion.length()>0){
 				String[] arrayDatosJustificacion = datosJustificacion.split("#");
-				tx = user.getTransactionPesada();
-				tx.begin();
+				
 				for (int i = 0; i < arrayDatosJustificacion.length; i++) {
 					String rowJustificacion = arrayDatosJustificacion[i];
 					String[] arrayRowsJustificacion = rowJustificacion.split(",");

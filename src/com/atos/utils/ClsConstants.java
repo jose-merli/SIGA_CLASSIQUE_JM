@@ -632,8 +632,12 @@ MDB Microsoft Access Database
 
 	 // proceso RegTel
 	  public static String IDPROCESO_DESTINATARIOSEXPEDIENTE="11P";
-
-	
+	  
+	  public static int IDTIPO_RESOLUCIONAUTO_MODYDENEGAR=3;
+	  public static int IDTIPO_RESOLUCIONAUTO_MODYCONCEDER=1;
+	  
+	  
+	  
   public ClsConstants() {
   }
   /**
