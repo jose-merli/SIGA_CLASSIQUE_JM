@@ -62,6 +62,15 @@ function postAccionTipoActuacion()
 	}else{
 		document.getElementById('idCosteFijoActuacion').disabled ="";
 	}
+	if(document.ActuacionAsistenciaForm.modo.value=='ver' ){
+		tdTiposCosteFijoAct = document.getElementById('tdSelectTiposCosteFijo');
+		index=document.ActuacionAsistenciaFormEdicion.idCosteFijoActuacion.selectedIndex;
+		if(index!=-1)
+			descripcionCosteFijo = document.ActuacionAsistenciaFormEdicion.idCosteFijoActuacion.options[index].text;
+		else
+			descripcionCosteFijo ="";
+		tdTiposCosteFijoAct.innerHTML = '<input type="text" readonly class="boxConsulta" value="'+descripcionCosteFijo+'" style="width:600px;" />';
+	}
 
 }
 
@@ -339,7 +348,7 @@ function postAccionTipoActuacion()
 				<tr>
 					<td class="labelText"><siga:Idioma
 							key="gratuita.mantActuacion.literal.tipoActuacion" />&nbsp;(*)</td>
-					<td colspan="4"><html:select styleClass="boxCombo"
+					<td colspan="4" id="tdSelectTiposActuacion"><html:select styleClass="boxCombo"
 							style="width:600px;" styleId="tiposActuacion" name="ActuacionAsistenciaFormEdicion"
 							property="idTipoActuacion" >
 							<bean:define id="tiposActuacion" name="ActuacionAsistenciaForm"
@@ -351,7 +360,7 @@ function postAccionTipoActuacion()
 				<tr>
 					<td class="labelText"><siga:Idioma
 							key="gratuita.mantActuacion.literal.Coste" /></td>
-					<td colspan="4"><html:select styleClass="boxCombo"
+					<td colspan="4"  id="tdSelectTiposCosteFijo"><html:select styleClass="boxCombo"
 							style="width:600px;" styleId="tiposCosteFijoActuaciones" name="ActuacionAsistenciaFormEdicion"
 							property="idCosteFijoActuacion">
 							<bean:define id="tipoCosteFijoActuaciones"
@@ -404,7 +413,7 @@ function postAccionTipoActuacion()
 						<td><input type="text" id="codComisaria" class="box" size="8"
 						style=" margin-top: 2px;" maxlength="10"
 						onBlur="obtenerComisaria();" /></td>
-						<td ><html:select styleClass="boxCombo"
+						<td id="tdSelectComisaria"><html:select styleClass="boxCombo"
 							style="width:680px;" name="ActuacionAsistenciaFormEdicion"
 							property="idComisaria" onchange="cambioComisaria();">
 							<bean:define id="comisarias" name="ActuacionAsistenciaForm"
@@ -432,7 +441,7 @@ function postAccionTipoActuacion()
 					<td><input type="text" id="codJuzgado" class="box" size="8"
 						style=" margin-top: 2px;" maxlength="10"
 						onBlur="obtenerJuzgado();" /></td>
-					<td ><html:select styleClass="boxCombo"
+					<td id="tdSelectJuzgado"><html:select styleClass="boxCombo"
 							style="width:680px;" name="ActuacionAsistenciaFormEdicion"
 							property="idJuzgado" onchange="cambioJuzgado();">
 							<bean:define id="juzgados" name="ActuacionAsistenciaForm"
@@ -453,7 +462,7 @@ function postAccionTipoActuacion()
 				<tr>
 					<td class="labelText"><siga:Idioma
 							key="gratuita.mantenimientoTablasMaestra.literal.prision" /></td>
-					<td colspan ="2"><html:select styleClass="boxCombo" style="width:300px;"
+					<td colspan ="2" id="tdSelectPrision"><html:select styleClass="boxCombo" style="width:300px;"
 							name="ActuacionAsistenciaFormEdicion" property="idPrision">
 							<bean:define id="prisiones" name="ActuacionAsistenciaForm"
 								property="prisiones" type="java.util.Collection" />
@@ -751,6 +760,40 @@ function habilitarCampos(isHabilitar) {
 	
 		
 	}else{
+		tdTiposActuacion = document.getElementById('tdSelectTiposActuacion');
+		index=document.ActuacionAsistenciaFormEdicion.idTipoActuacion.selectedIndex;
+		if(index!=-1)
+			descripcionTipoActuacion = document.ActuacionAsistenciaFormEdicion.idTipoActuacion.options[index].text;
+		else 
+			descripcionTipoActuacion ="";
+		tdTiposActuacion.innerHTML = '<input type="text" readonly class="boxConsulta" value="'+descripcionTipoActuacion+'" style="width:600px;" />';
+
+
+		tdComisaria = document.getElementById('tdSelectComisaria');
+		index=document.ActuacionAsistenciaFormEdicion.idComisaria.selectedIndex;
+		if(index!=-1)
+			descripcionComisaria = document.ActuacionAsistenciaFormEdicion.idComisaria.options[index].text;
+		else 
+			descripcionComisaria ="";
+		tdComisaria.innerHTML = '<input type="text" readonly class="boxConsulta" value="'+descripcionComisaria+'" style="width:680px;" />';
+
+		tdJuzgado = document.getElementById('tdSelectJuzgado');
+		index=document.ActuacionAsistenciaFormEdicion.idJuzgado.selectedIndex;
+		if(index!=-1)
+			descripcionJuzgado = document.ActuacionAsistenciaFormEdicion.idJuzgado.options[index].text;
+		else
+			descripcionJuzgado ="";
+		tdJuzgado.innerHTML = '<input type="text" readonly class="boxConsulta" value="'+descripcionJuzgado+'" style="width:680px;" />';
+
+		tdPrision = document.getElementById('tdSelectPrision');
+		index=document.ActuacionAsistenciaFormEdicion.idPrision.selectedIndex;
+		if(index!=-1)
+			descripcionPrision = document.ActuacionAsistenciaFormEdicion.idPrision.options[index].text;
+		else
+			descripcionPrision ="";
+		tdPrision.innerHTML = '<input type="text" readonly class="boxConsulta" value="'+descripcionPrision+'" style="width:300px;"/>';
+		
+		
 		inputs = document.getElementsByTagName("input");
 		for(var i = 0 ; i <inputs.length ; i++) {
 			input = inputs[i];
