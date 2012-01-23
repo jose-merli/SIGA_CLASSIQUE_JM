@@ -75,7 +75,10 @@ public class CamposConfigurablesAction extends MasterAction {
             form.setOrden(bean.getOrden().toString());
             form.setSeleccionado(bean.getSeleccionado().toString());
             form.setIdCampoConf(idCampo);
-            form.setGeneral(bean.getGeneral().toString());
+            if(bean.getGeneral()!=null)
+            	form.setGeneral(bean.getGeneral().toString());
+            else
+            	form.setGeneral("0");
         }
         
         
