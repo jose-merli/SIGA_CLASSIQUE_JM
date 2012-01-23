@@ -133,6 +133,12 @@ public class CamposConfigurablesAction extends MasterAction {
 	            		tx.rollback();
 	            	return this.exito("messages.expedientes.nombreRepetido.error", request);
 	            }
+	            Integer orden = new Integer (form.getOrden());
+	            if (orden.intValue()<1 || orden.intValue()>5){
+	            	if (tx!=null)
+	            		tx.rollback();
+	            	return this.exito("messages.expedientes.ordenFueraRango.error", request);
+	            }
 	            if (!adm.updateDirect(bean)) {
 	                throw new ClsExceptions("Error al actualizar el campo. "+adm.getError());
 	            }
@@ -185,6 +191,12 @@ public class CamposConfigurablesAction extends MasterAction {
             	if (tx!=null)
             		tx.rollback();
             	return this.exito("messages.expedientes.nombreRepetido.error", request);
+            }
+            Integer orden = new Integer (form.getOrden());
+            if (orden.intValue()<1 || orden.intValue()>5){
+            	if (tx!=null)
+            		tx.rollback();
+            	return this.exito("messages.expedientes.ordenFueraRango.error", request);
             }
             if (!adm.insert(bean)) {
                 throw new ClsExceptions("Error al insertar el campo. "+adm.getError());
