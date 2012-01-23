@@ -4206,7 +4206,14 @@ public class EnvioInformesGenericos extends MasterReport {
 		                	  fila.put("FAX1", (String) htCol.get("FAX1"));
 		                	  fila.put("NCOLEGIADO", (String) htCol.get("NCOLEGIADO_LETRADO"));
 		                      //ScsCabeceraGuardiasAdm admCab = new ScsCabeceraGuardiasAdm(usrBean);
-		                      //Integer posicion = admCab.getPosicion(idInstitucion,idLista, idturno, fecha_inicio,idPersona);   
+		                      //Integer posicion = admCab.getPosicion(idInstitucion,idLista, idturno, fecha_inicio,idPersona);
+		                	  
+		                	  String desguar= (String)f.get("DESCRIPCIONGUARDIA");
+		                      if(desguar!=null)
+		                    	  fila.put("DESCRIPCION_GUARDIA", desguar);
+		                      else
+		                    	  fila.put("DESCRIPCION_GUARDIA", " ");
+
 		                	  String posicion= (String)f.get("POSICION");
 		                      if(posicion!=null)
 		                	   fila.put("POSICION", posicion);

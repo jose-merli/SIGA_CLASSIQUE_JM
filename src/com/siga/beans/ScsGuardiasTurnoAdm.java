@@ -625,6 +625,10 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					+ "."
 					+ ScsGuardiasTurnoBean.C_IDGUARDIA
 					+ " AS IDGUARDIA, "
+					+ ScsGuardiasTurnoBean.T_NOMBRETABLA
+					+ "."
+					+ ScsGuardiasTurnoBean.C_DESCRIPCION
+					+ " AS DESCRIPCIONGUARDIA, "
 					+ "("
 					+ CenPersonaBean.T_NOMBRETABLA
 					+ "."
@@ -893,6 +897,10 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					+ "."
 					+ ScsGuardiasTurnoBean.C_IDGUARDIA
 					+ " AS IDGUARDIA, "
+					+ ScsGuardiasTurnoBean.T_NOMBRETABLA
+					+ "."
+					+ ScsGuardiasTurnoBean.C_DESCRIPCION
+					+ " AS DESCRIPCIONGUARDIA, "
 					+ "("
 					+ CenPersonaBean.T_NOMBRETABLA
 					+ "."
