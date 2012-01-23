@@ -628,24 +628,34 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			DefinicionRemesas_CAJG_Form miForm = (DefinicionRemesas_CAJG_Form) formulario;
 			Hashtable ocultos = miForm.getDatos();
+			String idRemesa = UtilidadesHash.getString(ocultos, "IDREMESA");
+			Integer idInstitucion = this.getIDInstitucion(request);
 
 			CajgRemesaAdm remesaAdm = new CajgRemesaAdm(this.getUserBean(request));
 
-			miHash.put(CajgRemesaBean.C_IDINSTITUCION, this.getIDInstitucion(request));
-			miHash.put(CajgRemesaBean.C_IDREMESA, UtilidadesHash.getString(ocultos, "IDREMESA"));
-			miHash.put(CajgRemesaBean.C_PREFIJO, UtilidadesHash.getString(ocultos, "PREFIJO"));
-			miHash.put(CajgRemesaBean.C_NUMERO, UtilidadesHash.getString(ocultos, "NUMERO"));
-			miHash.put(CajgRemesaBean.C_SUFIJO, UtilidadesHash.getString(ocultos, "SUFIJO"));
-			miHash.put(CajgRemesaBean.C_DESCRIPCION, miForm.getDescripcion());
-			tx = usr.getTransaction();
-			tx.begin();
-			remesaAdm.updateDirect(miHash, null, null);
-			tx.commit();
+			miHash.put(CajgRemesaBean.C_IDINSTITUCION, idInstitucion);
+			miHash.put(CajgRemesaBean.C_IDREMESA, idRemesa);
+			Vector v = remesaAdm.selectByPK(miHash);
+			
+			if (v != null && v.size() == 1) {
+				CajgRemesaBean cajgRemesaBean = (CajgRemesaBean)v.get(0);
+				
+				cajgRemesaBean.setDescripcion(miForm.getDescripcion());
+				
+				tx = usr.getTransaction();
+				tx.begin();
+				remesaAdm.updateDirect(cajgRemesaBean);
+				tx.commit();
 
-			session.setAttribute("accion", "editar");
-			request.setAttribute("IDREMESA", miHash.get(CajgRemesaBean.C_IDREMESA));
-			request.setAttribute("INSTITUCION", this.getIDInstitucion(request).toString());
+				session.setAttribute("accion", "editar");
+				request.setAttribute("IDREMESA", miHash.get(CajgRemesaBean.C_IDREMESA));
+				request.setAttribute("INSTITUCION", this.getIDInstitucion(request).toString());
 
+			} else {
+				throw new Exception("No se ha encontrado la remesa " + idRemesa + " de la institución " + idInstitucion);
+			}
+			
+			
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, tx);
 		}
