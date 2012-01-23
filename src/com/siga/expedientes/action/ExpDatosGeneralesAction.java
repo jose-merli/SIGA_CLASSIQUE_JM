@@ -127,6 +127,11 @@ public class ExpDatosGeneralesAction extends MasterAction
 					//Se buscan los valores configurados en exp_camposvalor para extraer sus valores de campo
 					String numExpediente = request.getParameter("numeroExpediente");
 					String anioExpediente = request.getParameter("anioExpediente");
+					if(numExpediente==null || numExpediente.equals(""))
+				           numExpediente = (String) request.getSession().getAttribute("numeroExpedienteSession");
+				   
+				    if(anioExpediente==null || anioExpediente.equals(""))
+				           anioExpediente = (String) request.getSession().getAttribute("anioExpedienteSession");
 					ExpCamposValorAdm expCamposValorAdm = new ExpCamposValorAdm(usr);
 					Vector vecExpCamposValorAdm = expCamposValorAdm.obtenerValorCamposPestanaGeneral(this.getIDInstitucion(request).toString(), idTipoExpediente, numExpediente,anioExpediente);
 											

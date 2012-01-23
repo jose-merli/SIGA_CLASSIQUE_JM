@@ -1347,7 +1347,16 @@
 	</table>
 		
 	</siga:ConjCampos>
-							
+<%
+	} else {
+%>	
+	<html:hidden name="ExpDatosGeneralesForm" property="idMateria"/>
+	<html:hidden name="ExpDatosGeneralesForm" property="juzgado"/>
+	<html:hidden name="ExpDatosGeneralesForm" property="procedimiento"/>
+	<html:hidden name="ExpDatosGeneralesForm" property="numAsunto"/>
+<%
+	}
+%>
 <%
 	if (vNombres!=null && vNombres.size()>0) 
 	{	
@@ -1385,18 +1394,7 @@
 	</siga:ConjCampos>
 <%		
     }
-%>	
-<%
-	} else {
-%>	
-	<html:hidden name="ExpDatosGeneralesForm" property="idMateria"/>
-	<html:hidden name="ExpDatosGeneralesForm" property="juzgado"/>
-	<html:hidden name="ExpDatosGeneralesForm" property="procedimiento"/>
-	<html:hidden name="ExpDatosGeneralesForm" property="numAsunto"/>
-<%
-	}
-%>
-	
+%>		
 
 	
 			

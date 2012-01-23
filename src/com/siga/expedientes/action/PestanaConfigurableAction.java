@@ -128,7 +128,9 @@ public class PestanaConfigurableAction extends MasterAction {
         			 .append(": ").append((String)request.getParameter("anioExpediente")).append(" / ").append((String)request.getParameter("numeroExpediente"));
 
         form.setTituloVentana(tituloVentana.toString());
-	    
+        request.setAttribute("numeroExpediente", numExpediente);
+		request.setAttribute("anioExpediente", anioExpediente);
+        
         return "inicio";
 	}
     
