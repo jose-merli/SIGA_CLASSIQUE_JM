@@ -1229,17 +1229,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			if (!isSimular()) {
 				if (files != null && files.size() > 0) {
 					tx.begin();				
-					ftpPcajgAbstract = FtpPcajgFactory.getInstance(usr, String.valueOf(getIdInstitucion()));
-					escribeLogRemesa("Conectando al servidor FTP");			
-					ftpPcajgAbstract.connect();				
-				
-					for (File file : files) {
-						FileInputStream fis = new FileInputStream(file);
-						escribeLogRemesa("Subiendo XML generado al servidor FTP");
-						ftpPcajgAbstract.upload(file.getName(), fis);				
-						fis.close();				
-						escribeLogRemesa("El archivo se ha subido correctamente al servidor FTP");
-					}
+					
 				
 					CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(usr);
 					CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(usr);						
@@ -1251,6 +1241,19 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 						//cuando se envía el intercambio se envía * 10
 						guardarIdIntercambioRemesa((int)intercambioDocument.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().getIdentificadorIntercambio()/10);						
 					}
+					//si todo ha ido bien subimos los ficheros
+					ftpPcajgAbstract = FtpPcajgFactory.getInstance(usr, String.valueOf(getIdInstitucion()));
+					escribeLogRemesa("Conectando al servidor FTP");			
+					ftpPcajgAbstract.connect();				
+				
+					for (File file : files) {
+						FileInputStream fis = new FileInputStream(file);
+						escribeLogRemesa("Subiendo XML generado al servidor FTP");
+						ftpPcajgAbstract.upload(file.getName(), fis);				
+						fis.close();				
+						escribeLogRemesa("El archivo se ha subido correctamente al servidor FTP");
+					}
+					
 					tx.commit();
 				}				
 			}
