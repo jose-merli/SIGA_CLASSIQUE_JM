@@ -65,11 +65,13 @@ function postAccionTipoActuacion()
 	if(document.ActuacionAsistenciaForm.modo.value=='ver' ){
 		tdTiposCosteFijoAct = document.getElementById('tdSelectTiposCosteFijo');
 		index=document.ActuacionAsistenciaFormEdicion.idCosteFijoActuacion.selectedIndex;
-		if(index!=-1)
+		idCosteFijoActuacion="";
+		if(index!=-1){
 			descripcionCosteFijo = document.ActuacionAsistenciaFormEdicion.idCosteFijoActuacion.options[index].text;
-		else
+			idCosteFijoActuacion=document.ActuacionAsistenciaFormEdicion.idCosteFijoActuacion.options[index].value;
+		}else
 			descripcionCosteFijo ="";
-		tdTiposCosteFijoAct.innerHTML = '<input type="text" readonly class="boxConsulta" value="'+descripcionCosteFijo+'" style="width:600px;" />';
+		tdTiposCosteFijoAct.innerHTML = '<input type="hidden" value="'+idCosteFijoActuacion+'" id="idCosteFijoActuacion"/><input type="text" readonly class="boxConsulta" value="'+descripcionCosteFijo+'" style="width:600px;" />';
 	}
 
 }
@@ -762,36 +764,44 @@ function habilitarCampos(isHabilitar) {
 	}else{
 		tdTiposActuacion = document.getElementById('tdSelectTiposActuacion');
 		index=document.ActuacionAsistenciaFormEdicion.idTipoActuacion.selectedIndex;
-		if(index!=-1)
+		idTipoActuacion ="";
+		if(index!=-1){
 			descripcionTipoActuacion = document.ActuacionAsistenciaFormEdicion.idTipoActuacion.options[index].text;
-		else 
+			idTipoActuacion = document.ActuacionAsistenciaFormEdicion.idTipoActuacion.options[index].value;
+		}else 
 			descripcionTipoActuacion ="";
-		tdTiposActuacion.innerHTML = '<input type="text" readonly class="boxConsulta" value="'+descripcionTipoActuacion+'" style="width:600px;" />';
+			tdTiposActuacion.innerHTML = '<input type="hidden" value="'+idTipoActuacion+'" id="idTipoActuacion"/><input type="text" readonly class="boxConsulta" value="'+descripcionTipoActuacion+'" style="width:600px;" />';
 
 
 		tdComisaria = document.getElementById('tdSelectComisaria');
 		index=document.ActuacionAsistenciaFormEdicion.idComisaria.selectedIndex;
-		if(index!=-1)
+		idComisaria="";
+		if(index!=-1){
 			descripcionComisaria = document.ActuacionAsistenciaFormEdicion.idComisaria.options[index].text;
-		else 
+			idComisaria = document.ActuacionAsistenciaFormEdicion.idComisaria.options[index].value;
+		}else 
 			descripcionComisaria ="";
-		tdComisaria.innerHTML = '<input type="text" readonly class="boxConsulta" value="'+descripcionComisaria+'" style="width:680px;" />';
+		tdComisaria.innerHTML = '<input type="hidden" value="'+idComisaria+'" id="idComisaria"/><input type="text" readonly class="boxConsulta" value="'+descripcionComisaria+'" style="width:680px;" />';
 
 		tdJuzgado = document.getElementById('tdSelectJuzgado');
 		index=document.ActuacionAsistenciaFormEdicion.idJuzgado.selectedIndex;
-		if(index!=-1)
+		idJuzgado = "";
+		if(index!=-1){
 			descripcionJuzgado = document.ActuacionAsistenciaFormEdicion.idJuzgado.options[index].text;
-		else
+			idJuzgado = document.ActuacionAsistenciaFormEdicion.idJuzgado.options[index].value;			
+		}else
 			descripcionJuzgado ="";
-		tdJuzgado.innerHTML = '<input type="text" readonly class="boxConsulta" value="'+descripcionJuzgado+'" style="width:680px;" />';
+		tdJuzgado.innerHTML = '<input type="hidden" value="'+idJuzgado+'" id="idJuzgado"/><input type="text" readonly class="boxConsulta" value="'+descripcionJuzgado+'" style="width:680px;" />';
 
 		tdPrision = document.getElementById('tdSelectPrision');
 		index=document.ActuacionAsistenciaFormEdicion.idPrision.selectedIndex;
-		if(index!=-1)
+		idPrision ="";
+		if(index!=-1){
 			descripcionPrision = document.ActuacionAsistenciaFormEdicion.idPrision.options[index].text;
-		else
+			idPrision = document.ActuacionAsistenciaFormEdicion.idPrision.options[index].value;
+		}else
 			descripcionPrision ="";
-		tdPrision.innerHTML = '<input type="text" readonly class="boxConsulta" value="'+descripcionPrision+'" style="width:300px;"/>';
+		tdPrision.innerHTML = '<input type="hidden" value="'+idPrision+'" id="idPrision"/><input type="text" readonly class="boxConsulta" value="'+descripcionPrision+'" style="width:300px;"/>';
 		
 		
 		inputs = document.getElementsByTagName("input");
