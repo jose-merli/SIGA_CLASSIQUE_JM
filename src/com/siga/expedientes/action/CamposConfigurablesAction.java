@@ -75,6 +75,9 @@ public class CamposConfigurablesAction extends MasterAction {
             form.setOrden(bean.getOrden().toString());
             form.setSeleccionado(bean.getSeleccionado().toString());
             form.setIdCampoConf(idCampo);
+            //El objeto "general" indica si se debe mostrar ese campo en la ventana de Datos Generales
+            //Si su valor es 1 si se muestra en Datos Generales
+            //Si su valor es 0 no se muestra en Datos Generales
             if(bean.getGeneral()!=null)
             	form.setGeneral(bean.getGeneral().toString());
             else
@@ -133,12 +136,6 @@ public class CamposConfigurablesAction extends MasterAction {
 	            		tx.rollback();
 	            	return this.exito("messages.expedientes.nombreRepetido.error", request);
 	            }
-	            Integer orden = new Integer (form.getOrden());
-	            if (orden.intValue()<1 || orden.intValue()>5){
-	            	if (tx!=null)
-	            		tx.rollback();
-	            	return this.exito("messages.expedientes.ordenFueraRango.error", request);
-	            }
 	            if (!adm.updateDirect(bean)) {
 	                throw new ClsExceptions("Error al actualizar el campo. "+adm.getError());
 	            }
@@ -191,12 +188,6 @@ public class CamposConfigurablesAction extends MasterAction {
             	if (tx!=null)
             		tx.rollback();
             	return this.exito("messages.expedientes.nombreRepetido.error", request);
-            }
-            Integer orden = new Integer (form.getOrden());
-            if (orden.intValue()<1 || orden.intValue()>5){
-            	if (tx!=null)
-            		tx.rollback();
-            	return this.exito("messages.expedientes.ordenFueraRango.error", request);
             }
             if (!adm.insert(bean)) {
                 throw new ClsExceptions("Error al insertar el campo. "+adm.getError());

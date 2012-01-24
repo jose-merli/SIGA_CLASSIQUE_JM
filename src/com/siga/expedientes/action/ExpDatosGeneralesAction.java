@@ -155,10 +155,10 @@ public class ExpDatosGeneralesAction extends MasterAction
 					for (int i =0; i<vecExpCamConfAdm.size();i++)
 					{
 						Hashtable auxHash = (Hashtable)vecExpCamConfAdm.get(i);
-						Integer orden= new Integer((String)auxHash.get("ORDEN"));
+						Integer orden= new Integer(i);
 						String longitud = (String)auxHash.get("NOMBRE");
-						nombresLongitud.set((orden.intValue()-1),longitud.length());
-						nombres.set((orden.intValue()-1),(String)auxHash.get("NOMBRE"));										
+						nombresLongitud.set((orden.intValue()),longitud.length());
+						nombres.set((orden.intValue()),(String)auxHash.get("NOMBRE"));										
 					}
 					
 					//Se carga en el vector datosCamposPestanas los valores q llevan asociados los campos de las pestañas
@@ -166,25 +166,28 @@ public class ExpDatosGeneralesAction extends MasterAction
 					//de manera dinamica los campos y sus valores en la jsp
 					for (int j =0; (j<vecExpCamposValorAdm.size());j++)
 					{
-						Hashtable auxHash1 = (Hashtable)vecExpCamposValorAdm.get(j);
+						Hashtable auxHashCamposValor = (Hashtable)vecExpCamposValorAdm.get(j);
 					
 						boolean encontrado = false;
 						for (int k =0; k<vecExpCamConfAdm.size() && encontrado == false;k++)
 						{
-							Hashtable auxHash = (Hashtable)vecExpCamConfAdm.get(k);
+							Hashtable auxHashCamposConfi = (Hashtable)vecExpCamConfAdm.get(k);
 						
-							String ordenCampo=(String)auxHash.get("IDCAMPOCONF");
-							String ordenValor=(String)auxHash1.get("IDCAMPOCONF");
+							String ordenCampo=(String)auxHashCamposConfi.get("IDCAMPOCONF");
+							String ordenValor=(String)auxHashCamposValor.get("IDCAMPOCONF");
 							
 							if(ordenCampo.equals(ordenValor))
-							{
-								Integer orden= new Integer((String)auxHash.get("ORDEN"));
-								String longitud = (String)auxHash1.get("VALOR");
+							{		
+								//El orde en que se tienen que guardar los valores en los vectores datosCamposPestanasLongitud y datosCamposPestanas
+								//viene dado por el indice del vector de los nombre de los campos a los que van asignados
+								//en este caso la variable k
+								Integer orden= new Integer(k);
+								String longitud = (String)auxHashCamposValor.get("VALOR");
 								if(longitud.length()!=0)
-									datosCamposPestanasLongitud.set((orden.intValue()-1),longitud.length());
+									datosCamposPestanasLongitud.set((orden.intValue()),longitud.length());
 								else
-									datosCamposPestanasLongitud.set((orden.intValue()-1),15);
-								datosCamposPestanas.set((orden.intValue()-1),(String)auxHash1.get("VALOR"));
+									datosCamposPestanasLongitud.set((orden.intValue()),15);
+								datosCamposPestanas.set((orden.intValue()),(String)auxHashCamposValor.get("VALOR"));
 								encontrado = true; 
 							}										
 						}																						
