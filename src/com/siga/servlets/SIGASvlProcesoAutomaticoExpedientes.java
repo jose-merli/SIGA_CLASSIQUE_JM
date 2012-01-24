@@ -5,6 +5,10 @@ import javax.servlet.*;
 import com.atos.utils.*;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.beans.*;
+import com.siga.expedientes.service.ExpedientesService;
+import com.siga.gratuita.service.ProgramacionCalendariosService;
+
+import es.satec.businessManager.BusinessManager;
 
 
 import javax.management.*;
@@ -100,9 +104,9 @@ public final class SIGASvlProcesoAutomaticoExpedientes extends SIGAContextListen
 
 		try
 		{
-			ExpExpedienteAdm admExpediente = new ExpExpedienteAdm(new UsrBean()); // Este usrbean esta controlado que no se necesita el valor
-
-		    admExpediente.chequearAlarmas();
+			BusinessManager businessManager = BusinessManager.getInstance()  ;
+   			ExpedientesService expedientesService = (ExpedientesService)businessManager.getService(ExpedientesService.class);
+   			expedientesService.procesarAutomaticamenteComprobacionAlarmas();
 
 		    ClsLogging.writeFileLogWithoutSession(" - OK.  >>>  Ejecutando Notificación: \"" + sNombreProceso + "\" ejecutada OK. " + sProximaEjecucion, 3);
 		}
