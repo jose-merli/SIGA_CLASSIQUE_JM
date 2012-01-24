@@ -41,6 +41,8 @@
 
 	// Datos a visualizar
 	String nombrePersona=(String)request.getAttribute("nombrePersona"); // Obtengo el nombre de la persona
+	String numeroAbono=(String)request.getAttribute("numeroAbono"); // Obtengo el numero
+	
 	String nombreInstitucion=(String)request.getAttribute("nombreInstitucion"); // Obtengo el nombre de la institucion
 	if (request.getAttribute("container") != null){	
 		datosPago = (Vector)request.getAttribute("container");	
@@ -155,7 +157,7 @@
 									<tr>
 										<td class="labelText">
 											<siga:Idioma key="facturacion.abonosPagos.impresionAbono.abonoN"/>&nbsp;&nbsp;
-											<%=UtilidadesString.mostrarDatoJSP(registro.getString(FacPagoAbonoEfectivoBean.C_IDABONO))%>
+											<%=UtilidadesString.mostrarDatoJSP(numeroAbono)%>
 										</td>	
 									</tr>
 										<td class="labelText">

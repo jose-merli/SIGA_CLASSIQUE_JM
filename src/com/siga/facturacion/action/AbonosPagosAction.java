@@ -383,7 +383,7 @@ public class AbonosPagosAction extends MasterAction {
 			String idPersona="";
 			String nombrePersona="";
 			String nombreInstitucion="";
-
+			String numeroAbono="";
 			result="datosImpresion";
 			AbonosPagosForm form = (AbonosPagosForm) formulario;
 			FacPagoAbonoEfectivoAdm admin=new FacPagoAbonoEfectivoAdm(this.getUserBean(request));
@@ -396,12 +396,14 @@ public class AbonosPagosAction extends MasterAction {
 			entrada=admin.getPagoAbonoEfectivo((String)ocultos.get(1),(String)ocultos.get(0),(String)ocultos.get(2));
 			entradaAbono=adminAbono.getAbono((String)ocultos.get(1),(String)ocultos.get(0));
 			idPersona=(String)((Row)entradaAbono.firstElement()).getRow().get(FacAbonoBean.C_IDPERSONA);
+			numeroAbono=(String)((Row)entradaAbono.firstElement()).getRow().get(FacAbonoBean.C_NUMEROABONO);			
 			nombrePersona=adminPersona.obtenerNombreApellidos(idPersona);
 			nombreInstitucion=adminInstitucion.getNombreInstitucion((String)ocultos.get(1));
 						
 			// Paso valores para dar valores iniciales al formulario			
 			request.setAttribute("container", entrada);
 			request.setAttribute("nombrePersona", nombrePersona);
+			request.setAttribute("numeroAbono", numeroAbono);			
 			request.setAttribute("nombreInstitucion", nombreInstitucion);
 		} 
 		catch (Exception e) { 
