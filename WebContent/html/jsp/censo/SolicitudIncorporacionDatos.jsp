@@ -534,11 +534,14 @@
 				 return true;
 			}
 			else{
+				if(f.banco.value==""){
+					alert(mensaje);
+					return false;
+				}
 				if(f.cbo_Codigo.value.length != 4 || f.codigoSucursal.value.length != 4 || f.digitoControl.value.length != 2 || f.numeroCuenta.value.length != 10){
 					alert(mensaje);
 					return false;
-				}	 		
-				else{
+				}else{
 					if(!numerico(f.cbo_Codigo.value) || !numerico(f.codigoSucursal.value) || !numerico(f.digitoControl.value) || !numerico(f.numeroCuenta.value)){
 						alert(mensaje);
 						return false;
