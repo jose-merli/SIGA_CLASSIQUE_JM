@@ -843,6 +843,10 @@ public class DefinirEJGAction extends MasterAction
 					UtilidadesHash.set(miHash, ScsEJGBean.C_JUZGADO,     				designaBean.getIdJuzgado());
 					UtilidadesHash.set(miHash, ScsEJGBean.C_JUZGADOIDINSTITUCION,     	designaBean.getIdInstitucionJuzgado());
 					UtilidadesHash.set(miHash, ScsEJGBean.C_NUMEROPROCEDIMIENTO,     	designaBean.getNumProcedimiento());
+					UtilidadesHash.set(miHash, ScsEJGBean.C_NIG,     					designaBean.getNIG());
+					UtilidadesHash.set(miHash, ScsEJGBean.C_OBSERVACIONES,     			designaBean.getResumenAsunto());
+					UtilidadesHash.set(miHash, ScsEJGBean.C_IDPRETENSION,     			designaBean.getIdPretension());
+					
 															
 					//obtengo la calidad del interesado (Del EJG) mediante la clave de designa y idPersonaJG en defendidos designa
 					Hashtable bus = new Hashtable();
