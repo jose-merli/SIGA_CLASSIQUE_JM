@@ -885,6 +885,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 				 " AND SCS_PARTIDAPRESUPUESTARIA.idpartidapresupuestaria (+)= SCS_TURNO.idpartidapresupuestaria   "+
 				 " AND  SCS_GRUPOFACTURACION.idinstitucion = SCS_TURNO.idinstitucion   "+
 				 " AND  SCS_GRUPOFACTURACION.idgrupofacturacion = SCS_TURNO.idgrupofacturacion   "+
+				 " AND SCS_TURNO.VISIBILIDAD  = 1 "+ 
 				 " AND  SCS_MATERIA.idinstitucion = SCS_TURNO.idinstitucion " +
 				 " AND  SCS_MATERIA.Idmateria = SCS_TURNO.Idmateria " +
 				 " AND SCS_Area.idarea = SCS_TURNO.idarea   "+
