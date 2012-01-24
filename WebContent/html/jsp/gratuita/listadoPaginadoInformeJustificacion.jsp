@@ -509,7 +509,8 @@ function onCheckAcreditacion(elementoPulsado){
 			if(isCheckAlgunafin&&idTipoAcreditacion=='1'){
 				alert('<siga:Idioma key="gratuita.informeJustificacionMasiva.aviso.acreditacionFinSinIncicio"/>');
 				elementoPulsado.checked = "true";
-				document.getElementById(idValidacion).checked ="true";
+				if(actuacionValidarJustificaciones=='N')
+					document.getElementById(idValidacion).checked ="true";
 				return false;
 			}
 		}
