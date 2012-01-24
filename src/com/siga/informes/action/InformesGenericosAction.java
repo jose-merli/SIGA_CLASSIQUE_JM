@@ -690,7 +690,11 @@ public class InformesGenericosAction extends MasterAction {
 							Hashtable datoscalificacion = (Hashtable) infosolicitante.get(0);
 							/**Lenguaje del Solcitante**/
 							ididioma = (String)datoscalificacion.get("IDLENGUAJE");
-							codigoext = (String)datoscalificacion.get("CODIGOLENGUAJE");							
+							if(ididioma==null || ididioma.trim().equals(""))
+								ididioma="1";
+							codigoext = (String)datoscalificacion.get("CODIGOLENGUAJE");		
+							if(codigoext==null || codigoext.trim().equals(""))
+								codigoext="ES";
 							/**Datos del informe Calificacion, que son necesarios para imprimir el informe
 							   y depende del idioma que tenga el solicitante,se imprimira en ese idioma el documento, si no tiene idioma
 							   se imprime en el idioma de la institucion**/
