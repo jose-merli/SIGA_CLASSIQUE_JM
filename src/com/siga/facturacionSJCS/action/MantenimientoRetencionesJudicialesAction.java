@@ -316,7 +316,9 @@ public class MantenimientoRetencionesJudicialesAction extends MasterAction {
 				consulta+=" AND RETENCIONES."+FcsRetencionesJudicialesBean.C_ESDETURNO+"="+ClsConstants.DB_TRUE;
 			}
 				if ((miHash.containsKey(CenColegiadoBean.C_NCOLEGIADO)) && (!miHash.get(CenColegiadoBean.C_NCOLEGIADO).toString().equals("")))
-					consulta += " AND (SELECT LTRIM(COL." + CenColegiadoBean.C_NCOLEGIADO +",'0') FROM " + CenColegiadoBean.T_NOMBRETABLA + " COL WHERE COL." + CenColegiadoBean.C_IDPERSONA + " = RETENCIONES." + FcsRetencionesJudicialesBean.C_IDPERSONA + " AND" + 
+					
+					
+					consulta += " AND (SELECT LTRIM(decode(COL.comunitario, 1, COL.nCOmunitario, COL.NCOLEGIADO), '0') FROM " + CenColegiadoBean.T_NOMBRETABLA + " COL WHERE COL." + CenColegiadoBean.C_IDPERSONA + " = RETENCIONES." + FcsRetencionesJudicialesBean.C_IDPERSONA + " AND" + 
 					  			" COL." + CenColegiadoBean.C_IDINSTITUCION + " = RETENCIONES." + FcsRetencionesJudicialesBean.C_IDINSTITUCION + ") = LTRIM('" +  miHash.get(CenColegiadoBean.C_NCOLEGIADO)+"','0')";	
 			
 			
