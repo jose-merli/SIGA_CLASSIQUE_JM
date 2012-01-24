@@ -1236,10 +1236,10 @@ public class ExpDatosGeneralesAction extends MasterAction
 						auxHash2.put("IDCAMPO", "14");
 						auxHash2.put("IDPESTANACONF", "1");
 						Integer ordenConf= new Integer((String)auxHash.get("IDCAMPOCONF"));
-						Integer orden= new Integer((String)auxHash.get("ORDEN"));
+						Integer orden= new Integer(contador);
 						String idCampoConf = ""+(ordenConf.intValue());		            
 			            //Procesamos el campo		            		            			            		
-			            String	valor = request.getParameter("campo"+(orden.intValue())+"");
+			            String	valor = request.getParameter("campo"+(orden.intValue()+1)+"");
 			            if(valor !=null)
 			            {
 			            	// lo guardamos
@@ -1257,11 +1257,11 @@ public class ExpDatosGeneralesAction extends MasterAction
 							
 							if(ordenCampo.equals(ordenValor))
 							{
-								Integer orden= new Integer((String)auxHash.get("ORDEN"));
+								Integer orden= new Integer(contador);
 								Integer ordenConf= new Integer((String)auxHash.get("IDCAMPOCONF"));
 								String idCampoConf = ""+(ordenConf.intValue());		            
 								//Procesamos el campo		            		            			            		
-								String	valor = request.getParameter("campo"+(orden.intValue())+"");
+								String	valor = request.getParameter("campo"+(orden.intValue()+1)+"");
 								if(valor !=null)
 								{
 									// lo guardamos
@@ -1269,9 +1269,31 @@ public class ExpDatosGeneralesAction extends MasterAction
 								}																					
 								encontrado = true; 
 							}																		
-						}					
-					}															        																						        			        	
-		        }
+						}//fin del for
+						
+						if(encontrado==false)
+						{
+							encontrado = true;
+							auxHash2.put("IDINSTITUCION", expBean.getIdInstitucion());
+							auxHash2.put("IDINSTITUCION_TIPOEXPEDIENTE", expBean.getIdInstitucion_tipoExpediente());
+							auxHash2.put("IDTIPOEXPEDIENTE", expBean.getIdTipoExpediente());
+							auxHash2.put("NUMEROEXPEDIENTE", expBean.getNumeroExpediente());
+							auxHash2.put("ANIOEXPEDIENTE", expBean.getAnioExpediente());
+							auxHash2.put("IDCAMPO", "14");
+							auxHash2.put("IDPESTANACONF", "1");
+							Integer ordenConf= new Integer((String)auxHash.get("IDCAMPOCONF"));
+							Integer orden= new Integer(contador);
+							String idCampoConf = ""+(ordenConf.intValue());		            
+				            //Procesamos el campo		            		            			            		
+				            String	valor = request.getParameter("campo"+(orden.intValue()+1)+"");
+				            if(valor !=null)
+				            {
+				            	// lo guardamos
+				            	this.guardarValor(expCamposValorAdm,auxHash2, idCampoConf, valor);
+				            }
+						}// fin del if encontrado==false
+					}// fin del else															        																						        			        	
+		        }// fin del for
 		        tra.commit();		               
 		    } 
 		    catch (Exception e) 
@@ -1781,7 +1803,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			
 			
 			//Recojo el valor de la fecha inicial del formulario, de la fase y del estado
-			//expBean.setIdClasificacion(Integer.valueOf(form.getClasificacion()));
+			expBean.setIdClasificacion(Integer.valueOf(form.getClasificacion()));
 			expBean.setIdFase(Integer.valueOf(form.getFase()));
 			expBean.setIdEstado(Integer.valueOf(form.getEstado()));
 			expBean.setFechaInicialEstado(GstDate.getApplicationFormatDate("",form.getFechaInicial()));

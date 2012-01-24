@@ -199,7 +199,7 @@ public class ExpPlazoEstadoClasificacionAdm extends MasterBeanAdministrador {
 			hash.put(ExpPlazoEstadoClasificacionBean.C_IDFASE,bean.getIdFase());
 			hash.put(ExpPlazoEstadoClasificacionBean.C_IDESTADO,bean.getIdEstado());
 			hash.put(ExpPlazoEstadoClasificacionBean.C_IDTIPOEXPEDIENTE,bean.getIdTipoExpediente());
-			//hash.put(ExpPlazoEstadoClasificacionBean.C_IDCLASIFICACION,bean.getIdClasificacion());
+			hash.put(ExpPlazoEstadoClasificacionBean.C_IDCLASIFICACION,bean.getIdClasificacion());
 			
 			Vector datosPlazo = select(hash);
 			int valorPlazo =  -1;

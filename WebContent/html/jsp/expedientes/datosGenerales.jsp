@@ -800,115 +800,243 @@
 
 	<siga:ConjCampos leyenda="expedientes.auditoria.literal.datosgenerales">
 
-							<table class="tablaCampos" align="left" border="0">
+		<table class="tablaCampos" align="left" border="0">
 
 								<!-- FILA -->
-								
+						
+			<tr>
+		<%
+			if (!accion.equals("nuevo") && !copia.equals("s")) 
+			{
+		%>
+				<td class="labelText"><siga:Idioma key="expedientes.auditoria.literal.nexpediente" /></td>
+				<td class="labelTextValue">
+				<!-- Se comenta por que no se quiere mostrar el número de Expediente  al usuario -->
+				<!-- En caso de ser nuevo no se muestran ni el numExpediente ni el anioExpediente -->
 
-								<tr>
-									<%
-										if (!accion.equals("nuevo") && !copia.equals("s")) {
-									%>
-									<td class="labelText"><siga:Idioma key="expedientes.auditoria.literal.nexpediente" />
-									</td>
-
-									<td class="labelTextValue">
-										<!-- Se comenta por que no se quiere mostrar el número de Expediente  al usuario -->
-
-										<!-- En caso de ser nuevo no se muestran ni el numExpediente ni el anioExpediente -->
-
-
-										<bean:write name="ExpDatosGeneralesForm"
+					<bean:write name="ExpDatosGeneralesForm"
 											property="anioExpediente" />&nbsp;/&nbsp;<bean:write
 											name="ExpDatosGeneralesForm" property="numExpediente" /> <html:hidden
 											name="ExpDatosGeneralesForm" property="numExpediente" /> <html:hidden
-											name="ExpDatosGeneralesForm" property="anioExpediente" />
-									</td>
-									
-									<td class="labelText"><siga:Idioma key="expedientes.auditoria.literal.tipo" /></td>
-									<td colspan="1"><html:text name="ExpDatosGeneralesForm"
-											property="tipoExpediente" style="width:100" styleClass="boxConsulta"
-											readonly="true"></html:text>
-									</td>
-									
-									
-									<%
-										}
-									%>
+											name="ExpDatosGeneralesForm" property="anioExpediente" /></td>
+				<td class="labelText"><siga:Idioma key="expedientes.auditoria.literal.tipo" /></td>
+				<td colspan="1"><html:text name="ExpDatosGeneralesForm" property="tipoExpediente" style="width:200" styleClass="boxConsulta" readonly="true"></html:text></td>
+		<%
+			} 
+			else 
+			{
+		%>
+				<html:hidden name="ExpDatosGeneralesForm" property="numExpediente" />
+				<html:hidden name="ExpDatosGeneralesForm" property="anioExpediente" />
 
-									<td class="labelText"><siga:Idioma key="expedientes.gestionarExpedientes.fechaApertura" /></td>
-									<td>
-										<%
-											if (accion.equals("nuevo") || copia.equals("s")) {
-										%> <html:text
-											name="ExpDatosGeneralesForm" property="fecha"
-											styleClass="box" readonly="true" size="10"
-											value="<%=fechaApertura%>"></html:text> 
-											<a href='javascript://' onClick="return showCalendarGeneral(fecha);"><img
-												src="<%=app%>/html/imagenes/calendar.gif" border="0">
-											</a>
-									<%} else { %>
- 										<html:text name="ExpDatosGeneralesForm" property="fecha" styleClass="boxConsulta" readonly="true"></html:text>
-									<%
-										}
-									%>
-									</td>
-
+		<%
+			}
+		%>
+				<td class="labelText"><siga:Idioma 	key="expedientes.gestionarExpedientes.fApert" /></td>
+				<td>
+		<%
+			if (accion.equals("nuevo") || copia.equals("s")) 
+			{
+		%> 		<html:text name="ExpDatosGeneralesForm" property="fecha"
+				styleClass="box" readonly="true" size="10"
+				value="<%=fechaApertura%>"></html:text> 
+				<a href='javascript://'onClick="return showCalendarGeneral(fecha);">
+				<img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a> 
+		<%
+			} 
+			else 
+			{
+		%> 
+				<html:text name="ExpDatosGeneralesForm" property="fecha" styleClass="boxConsulta" readonly="true"></html:text>
+		<%
+			}
+		%>
+				</td>
+			</tr>
+			<tr>		
+		<% 
+			if (bNumExpDisc && !accion.equals("nuevo")) 
+			{
+		%>
+				<td class="labelText"><siga:Idioma key="<%=nombreExpDisciplinario%>" /></td>
+		<%
+				if (!bEditable) 
+				{
+		%>
+					<td class="labelTextValue" styleClass="box" style="text-align: right"><bean:write name="ExpDatosGeneralesForm" property="anioExpDisciplinario"></bean:write>&nbsp;/&nbsp;
+		<%
+					if (codigoEjg != null && !codigoEjg.trim().equals("")) 
+					{
+		%> 
+						<bean:write name="ExpDatosGeneralesForm" property="numExpDisciplinarioCalc"></bean:write> 
+		<%
+					} 
+					else 
+					{
+		%> 
+						<bean:write name="ExpDatosGeneralesForm" property="numExpDisciplinario"></bean:write>
+		<%
+					}
+					if (codigoEjg != null && !codigoEjg.trim().equals("")) 
+					{
+		%>							
+						<img id="iconoboton_consultar1" src="/SIGA/html/imagenes/bconsultar_off.gif" style="cursor: hand;" alt="Consultar" name="consultar_1" border="0" onClick="consultarEjg();">
+		<%
+					}
+		%>
+					</td>
+		<%
+				} 
+				else 
+				{
+					if (!tieneEjgRelacionado) 
+					{
+		%>
+						<td class="labelTextValue"><html:text name="ExpDatosGeneralesForm" property="anioExpDisciplinario" maxlength="4" styleClass="box"
+											style="text-align:right;width:40px;"></html:text>&nbsp;/&nbsp;<html:text
+											name="ExpDatosGeneralesForm" property="numExpDisciplinario"
+											maxlength="6" styleClass="box"
+											style="text-align:right;width:60px;"></html:text></td>
+		<%
+					} 
+					else 
+					{
+		%>
+						<td>
+							<table>
+									<tr>
+										<td class="labelTextValue"><html:text name="ExpDatosGeneralesForm" property="anioExpDisciplinario" maxlength="4"
+														style="text-align:right;width:40px;"
+														styleClass="boxConsulta"></html:text>&nbsp;/&nbsp;<html:text
+														name="ExpDatosGeneralesForm"
+														property="numExpDisciplinarioCalc" style="width:60px;"
+														maxlength="6" styleClass="boxConsulta"></html:text> <html:hidden
+														name="ExpDatosGeneralesForm"
+														property="numExpDisciplinario" /></td>
+		<%
+								if (codigoEjg != null && !codigoEjg.trim().equals("")) 
+								{
+		%>
+										<td><img id="iconoboton_consultar1" src="/SIGA/html/imagenes/bconsultar_off.gif"
+													style="cursor: hand;" alt="Consultar" name="consultar_1"
+													border="0" onClick="consultarEjg();"> <img
+													id="iconoboton_editar1"
+													src="/SIGA/html/imagenes/beditar_off.gif"
+													style="cursor: hand;" alt="Editar" name="editar_1"
+													border="0" onClick="relacionarConEJG();"></td>
+		<%
+								}
+		%>
 								</tr>
+							</table>
+						</td>
+		<%
+					}
+				}
+			} 
+			else 
+			{
+		%>
+				<html:hidden name="ExpDatosGeneralesForm" property="numExpDisciplinario" /> <html:hidden name="ExpDatosGeneralesForm" property="anioExpDisciplinario" />
+		<%
+			}		
+			if (bEstado) 
+			{
+		%>
+				<td class="labelText"><siga:Idioma 	key="expedientes.auditoria.literal.clasificacion" />&nbsp;(*)</td>
+				<td colspan="2"> 
+		<%
+				if (bEditable) 
+				{
+		%> 
+					<siga:ComboBD nombre="clasificacion" tipo="cmbClasificacion"  clase="boxCombo" obligatorio="false" ElementoSel="<%=vClasif%>" parametro="<%=dato%>" /> 
+		<%
+				} 
+				else 
+				{
+		%>
+					<html:text name="ExpDatosGeneralesForm" property="clasificacionSel" styleClass="boxConsulta" readonly="true"></html:text> 
+		<%
+				}
+		%>
+				</td>
+		<%
+			} 
+			else 			
+			{
+		%>
+				<td colspan="3"><html:hidden name="ExpDatosGeneralesForm" property="clasificacion"></html:hidden></td>
+		<%
+			}
+		%>
+		
+		
+		
+		</tr>
+		<tr>
+		<!--  
+			<td class="labelText"><siga:Idioma key="expedientes.auditoria.literal.tipo" /></td>
+			<td colspan="2"><html:text name="ExpDatosGeneralesForm" property="tipoExpediente" style="width:200" styleClass="boxConsulta" readonly="true"></html:text></td>
+		-->
+		
 
-								<tr>
-									<td class="labelText"><siga:Idioma 	key="expedientes.auditoria.literal.fechaCaducidad" /></td>
-									<td valign="top">
-										<%
-											if (bEditable) {
-										%> <siga:Fecha nombreCampo="fechaCaducidad"
-											valorInicial="<%=form.getFechaCaducidad()%>" /> 
-											<a 	href='javascript://' onClick="return showCalendarGeneral(fechaCaducidad);"><img
+		</tr>
+		<tr>
+		<%
+			if (bInstitucion) 
+			{
+		%>
+				<td class="labelText" style="display: none"><siga:Idioma key="expedientes.auditoria.literal.institucion" /></td>
+				<td colspan="5" align="left" class="labelTextValue" style="display: none">
+				<!--<html:text name="ExpDatosGeneralesForm" property="institucion" styleClass="boxConsulta" readonly="true"></html:text>-->
+				<bean:write name="ExpDatosGeneralesForm" property="institucion" /></td>
+	<%
+			} 
+			else 
+			{
+	%>
+				<td colspan="6" style="display: none"></td>
+	<%
+			}
+	%>
+		</tr>
+		<tr>
+			<td class="labelText"><siga:Idioma key="expedientes.auditoria.literal.fechaCaducidad" /></td>
+			<td valign="top">
+	<%
+			if (bEditable) 
+			{
+	%> 
+				<siga:Fecha nombreCampo="fechaCaducidad" valorInicial="<%=form.getFechaCaducidad()%>" /> <a
+										href='javascript://'
+										onClick="return showCalendarGeneral(fechaCaducidad);"><img
 											src="<%=app%>/html/imagenes/calendar.gif" border="0">
-											</a> 
-									<% } else { %>
- 										<html:text name="ExpDatosGeneralesForm" property="fechaCaducidad" size="10" maxlength="10"
-											styleClass="<%=boxStyle%>" readonly="true">
-										</html:text>
-									<% } %>
-								   </td>
-								   <td class="labelText"><siga:Idioma
-											key="expedientes.auditoria.literal.asunto" />&nbsp(*)</td>
-									<td colspan="3"><html:text name="ExpDatosGeneralesForm"
+				</a> 
+	<%
+			} 
+			else 
+			{
+	%> 
+				<html:text name="ExpDatosGeneralesForm" property="fechaCaducidad" size="10" maxlength="10" styleClass="<%=boxStyle%>" readonly="true"></html:text> 
+	<%
+			}
+	%>
+			</td>
+			<td class="labelText"><siga:Idioma 	key="expedientes.auditoria.literal.asunto" />&nbsp(*)</td>
+			<td colspan="3"><html:text name="ExpDatosGeneralesForm"
 											property="asunto" size="78" maxlength="100"
 											styleClass="<%=boxStyle%>" readonly="<%=!bEditable%>"></html:text>
-									</td>
-								</tr>
-								
-								
-								<tr>
-									<%
-										if (bInstitucion) {
-									%>
-									<td class="labelText" style="display: none"><siga:Idioma
-											key="expedientes.auditoria.literal.institucion" /></td>
-									<td colspan="5" align="left" class="labelTextValue"
-										style="display: none">
-										<!--<html:text name="ExpDatosGeneralesForm" property="institucion" styleClass="boxConsulta" readonly="true"></html:text>-->
-										<bean:write name="ExpDatosGeneralesForm"
-											property="institucion" /></td>
-									<%
-										} else {
-									%>
-									<td colspan="6" style="display: none"></td>
-									<%
-										}
-									%>
-								</tr>
-								<tr>
-									<td class="labelText"><siga:Idioma
-											key="expedientes.auditoria.literal.observaciones" /></td>
-									<td colspan="5"><html:textarea cols="60" rows="4"
+			</td>
+		</tr>
+
+		<tr>
+			<td class="labelText"><siga:Idioma key="expedientes.auditoria.literal.observaciones" /></td>
+			<td colspan="5"><html:textarea cols="60" rows="4"
 											property="observaciones" style="width: 815px"
 											onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)"
 											styleclass="<%=boxStyle%>"></html:textarea></td>
-								</tr>
-
+		</tr>
+								
 							</table>
 
 						</siga:ConjCampos>
