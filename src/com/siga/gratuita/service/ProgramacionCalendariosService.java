@@ -4,34 +4,21 @@ import java.util.List;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
-import com.siga.administracion.form.InformeForm;
-import com.siga.beans.AdmConsultaInformeBean;
-import com.siga.beans.AdmInformeBean;
-import com.siga.beans.AdmLenguajesBean;
-import com.siga.beans.AdmTipoInformeBean;
-import com.siga.beans.CenInstitucionBean;
-import com.siga.beans.ConConsultaBean;
-import com.siga.beans.FileInforme;
-import com.siga.beans.ScsCalendarioGuardiasBean;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsTurnoBean;
 import com.siga.general.SIGAException;
-import com.siga.gratuita.adm.ScsHcoConfProgrCalendariosAdm;
-import com.siga.gratuita.adm.ScsProgrCalendariosAdm;
-import com.siga.gratuita.beans.ScsHcoConfProgCalendariosBean;
 import com.siga.gratuita.beans.ScsProgCalendariosBean;
 import com.siga.gratuita.form.ConfConjuntoGuardiasForm;
-import com.siga.gratuita.form.DefinirCalendarioGuardiaForm;
 import com.siga.gratuita.form.ConjuntoGuardiasForm;
+import com.siga.gratuita.form.DefinirCalendarioGuardiaForm;
 import com.siga.gratuita.form.HcoConfProgrCalendarioForm;
 import com.siga.gratuita.form.ProgrCalendariosForm;
-import com.siga.gratuita.vos.VolantesExpressVo;
 
+import es.satec.businessManager.BusinessException;
 import es.satec.businessManager.BusinessService;
 
 public interface ProgramacionCalendariosService extends BusinessService{
-	
-	public Object executeService(AdmInformeBean informeVO) throws SIGAException,ClsExceptions;
+	public Object executeService(Object... parameters) throws BusinessException;
 	public List<ConjuntoGuardiasForm> getConjuntosGuardia(String idInstitucion,UsrBean usrBean)throws ClsExceptions;
 	public ConjuntoGuardiasForm getUltimoConjuntoGuardiaInsertado(String idInstitucion,UsrBean usrBean)throws ClsExceptions;
 	public List<ConfConjuntoGuardiasForm> getConfiguracionConjuntoGuardias(ConfConjuntoGuardiasForm confConjuntoGuardiasForm,boolean isMostrarSoloGuardiasConfiguradas,UsrBean usrBean) throws ClsExceptions ;

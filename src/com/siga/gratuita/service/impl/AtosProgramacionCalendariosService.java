@@ -1,7 +1,6 @@
 package com.siga.gratuita.service.impl;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.atos.utils.ClsExceptions;
@@ -25,8 +24,8 @@ import com.siga.gratuita.beans.ScsConjuntoGuardiasBean;
 import com.siga.gratuita.beans.ScsHcoConfProgCalendariosBean;
 import com.siga.gratuita.beans.ScsProgCalendariosBean;
 import com.siga.gratuita.form.ConfConjuntoGuardiasForm;
-import com.siga.gratuita.form.DefinirCalendarioGuardiaForm;
 import com.siga.gratuita.form.ConjuntoGuardiasForm;
+import com.siga.gratuita.form.DefinirCalendarioGuardiaForm;
 import com.siga.gratuita.form.HcoConfProgrCalendarioForm;
 import com.siga.gratuita.form.ProgrCalendariosForm;
 import com.siga.gratuita.service.ProgramacionCalendariosService;
@@ -49,7 +48,7 @@ public class AtosProgramacionCalendariosService extends JtaBusinessServiceTempla
 	/**
 	 * Me inserta
 	 */
-	public Object executeService(AdmInformeBean informeVo)
+	public Object executeService()
 			throws SIGAException, ClsExceptions {
 		return null;
 	}
@@ -433,6 +432,7 @@ public class AtosProgramacionCalendariosService extends JtaBusinessServiceTempla
 		List<DefinirCalendarioGuardiaForm> calendarioGuardiaForms = calendarioGuardiasAdm.getCalendarios(calendarioGuardiaForm);
 		return calendarioGuardiaForms;		
 	}
+	
 	
 	
 
