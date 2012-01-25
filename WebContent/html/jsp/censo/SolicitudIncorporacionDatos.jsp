@@ -47,7 +47,6 @@
 	String  estadoSolicitud = (String) request.getAttribute("EstadoSolicitud");
 	String  editar			= (String) request.getAttribute("Editar");
 	String  modoAnterior	= (String) request.getAttribute("ModoAnterior");
-	System.out.println("modoAnterior"+modoAnterior);
 	String  modalidadDocumentacion = (String) request.getAttribute("ModalidadDocumentacion");
 	
 	ArrayList modalidadSel = new ArrayList();
