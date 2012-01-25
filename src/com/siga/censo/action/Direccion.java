@@ -191,7 +191,7 @@ public class Direccion {
 					modificarPreferencias = request.getParameter("modificarPreferencias");
 				}
 				if (request.getParameter("modificarDireccionesCensoWeb")!=null){
-					modificarPreferencias = request.getParameter("modificarDireccionesCensoWeb");
+					modificarDireccionesCensoWeb = request.getParameter("modificarDireccionesCensoWeb");
 				} // fin datos preguntas
 				if (request.getParameter("control")!=null){
 					control = request.getParameter("control");
@@ -316,7 +316,7 @@ public class Direccion {
 		String preferenteModif = "";
 		int j=0;
 		if(beanDir.getPreferente()!=null){
-			preferenteModif = beanDir.getPreferente().replaceAll(",", "#");
+			preferenteModif = parsearPreferenteModificado(beanDir.getPreferente());
 		}
 		
 		for (int i=0; i < tipos.length; i++){
@@ -330,10 +330,17 @@ public class Direccion {
 						Row row = (Row) rc1.get (j);
 						int idDireccionAhora = Integer.parseInt ((String) row.getValue(CenDireccionTipoDireccionBean.C_IDDIRECCION));
 						j++;
-						if(beanDir.getIdDireccion() != new Integer (idDireccionAhora).longValue ()){
+						if(beanDir.getIdDireccion()!= null){
+							if(beanDir.getIdDireccion() != new Integer (idDireccionAhora).longValue ())
+								throw new SIGAException ("messages.inserted.error.ExisteYaGuardia");
+						}else{
 							throw new SIGAException ("messages.inserted.error.ExisteYaGuardia");
 						}
 					}	
+					
+					if (!idDireccionesPreferentes.equals("")) {
+						direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif);
+					}
 				}
 				
 				/*
@@ -362,7 +369,7 @@ public class Direccion {
 				cambiodireccioncensoweb (beanDir,i,sql1, tipo, idDireccionesCensoWeb, tipoDirAdm, direccionesAdm);
 				if ((modificarPreferencias!=null && modificarPreferencias.equals("1")) || (modificarDireccionesCensoWeb!=null && modificarDireccionesCensoWeb.equals("1"))){
 					
-					if (control != null && control.equals("1")){
+					if (control != null && control.equals("0")){
 						if (!preferenteModif.equals("")){
 							direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif);	
 						}
@@ -382,7 +389,7 @@ public class Direccion {
 						 direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif);
 					 }
 				
-					 if (control != null && control.equals("1")){ // Igual vale 0.....
+					 if (control != null && control.equals("0")){ // Igual vale 0.....
 						  direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif);
 					 }
 				}
@@ -488,6 +495,18 @@ public class Direccion {
 		}
 		return valor;
 	} //campoPreferenteBooleanToString()
+	
+	private static String parsearPreferenteModificado (String preferente){
+		String valor = "";		
+		for(int j=0;j<preferente.length(); j++){
+			valor = preferente.charAt(j) + "#" + valor;		 
+		}
+		return valor;
+	} //parsearPreferenteModificado()
+		
+	
+	
+	
 	
 	protected static void cambiodireccioncensoweb (CenDireccionesBean beanDir,int i,String sql,String tipo,String idDireccionesCensoWeb, CenDireccionTipoDireccionAdm tipoDirAdm, CenDireccionesAdm direccionesAdm)	throws SIGAException
 	{
