@@ -654,13 +654,14 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 				" "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+"= "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" "+
 				" AND "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" = "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA+" "+
 				" AND "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" = "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION+" ";
-			contador++;
-			codigosBind.put(new Integer(contador),formulario.getNombreInstitucion().trim());
-			sqlClientesWhere+=" AND ("+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" = :" + contador ;
-			contador++;
-			codigosBind.put(new Integer(contador),ClsConstants.TIPO_CARACTER_PRIVADO);
-			sqlClientesWhere+=" OR "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_CARACTER+" <> :" +contador + ")";
-
+			if(ClsConstants.esConsejoColegio(idInstitucion) || ClsConstants.esConsejoColegio(idInstitucion)){
+				contador++;
+				codigosBind.put(new Integer(contador),formulario.getNombreInstitucion().trim());
+				sqlClientesWhere+=" AND ("+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" = :" + contador ;
+				contador++;
+				codigosBind.put(new Integer(contador),ClsConstants.TIPO_CARACTER_PRIVADO);
+				sqlClientesWhere+=" OR "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_CARACTER+" <> :" +contador + ")";
+			}	
 //	 1 
 	       if (!formulario.getNombreInstitucion().trim().equals("")) {
 	       	contador++;

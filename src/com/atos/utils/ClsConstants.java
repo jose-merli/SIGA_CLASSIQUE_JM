@@ -40,6 +40,8 @@ public class ClsConstants {
     //	 Institucion por defecto
 	public static final int INSTITUCION_POR_DEFECTO = 0;
 	public static final int INSTITUCION_CGAE = 2000;
+	public static final int INSTITUCION_CONSEJO = 3000;
+	public static final int INSTITUCION_CONSEJOGENERAL = 2000;
 	
 	//	Tipo de identificación
 	public static final int TIPO_IDENTIFICACION_NIF 		= 10;	
@@ -859,6 +861,48 @@ MDB Microsoft Access Database
     }
     v.add(new CodeDescHandler(code,desc));
   }
+  public static boolean esConsejoGeneral(Object idInstitucion){
+	  boolean esConsejoGeneral = false;	  
+	  String strInstitucion = idInstitucion.toString();
+	  if(strInstitucion.length()==6){
+		  strInstitucion = strInstitucion.substring(2);
+	  }
+	  int institucionNumber = Integer.parseInt(strInstitucion); 
+	  if (institucionNumber == INSTITUCION_CONSEJOGENERAL){ // General
+		  esConsejoGeneral = true;
+	  }
+	  
+	  return esConsejoGeneral;
+  }
+
+   public static  boolean esConsejoColegio(Object idInstitucion){
+	  boolean esConsejoColegio = false;
+	  String strInstitucion = idInstitucion.toString().substring(2);
+	  int institucionNumber = Integer.parseInt(strInstitucion); 
+	  
+	  if (institucionNumber > INSTITUCION_CONSEJO){ // Consejo de Colegio
+		  esConsejoColegio = true;
+	  }
+	  
+	  return esConsejoColegio;
+  }
+   
+   public static  boolean esColegio(Object idInstitucion){
+	  boolean esColegio = false;
+	  String strInstitucion = idInstitucion.toString().substring(2);
+	  int institucionNumber = Integer.parseInt(strInstitucion); 
+	  
+	  if (institucionNumber > INSTITUCION_CONSEJOGENERAL && institucionNumber < INSTITUCION_CONSEJO){ 
+		  esColegio = true;
+	  }
+	  
+	  return esColegio;
+  }
+   
+  	public static String getIdInstitucionGeneral(String idInstitucion){
+		String profesion = idInstitucion.substring(0,2);
+		return profesion + INSTITUCION_CONSEJOGENERAL;
+	}
 
 
 }

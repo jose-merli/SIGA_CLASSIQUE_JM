@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -444,4 +445,47 @@ public class CenInstitucionAdm extends MasterBeanAdministrador {
 		}
 		return fechaProduccion;
 	}
+	  public static boolean esConsejoGeneral(Object idInstitucion){
+		  boolean esConsejoGeneral = false;	  
+		  String strInstitucion = idInstitucion.toString();
+		  if(strInstitucion.length()==6){
+			  strInstitucion = strInstitucion.substring(2);
+		  }
+		  int institucionNumber = Integer.parseInt(strInstitucion); 
+		  if (institucionNumber == ClsConstants.INSTITUCION_CONSEJOGENERAL){ // General
+			  esConsejoGeneral = true;
+		  }
+		  
+		  return esConsejoGeneral;
+	  }
+
+	   public static  boolean esConsejoColegio(Object idInstitucion){
+		  boolean esConsejoColegio = false;
+		  String strInstitucion = idInstitucion.toString().substring(2);
+		  int institucionNumber = Integer.parseInt(strInstitucion); 
+		  
+		  if (institucionNumber > ClsConstants.INSTITUCION_CONSEJO){ // Consejo de Colegio
+			  esConsejoColegio = true;
+		  }
+		  
+		  return esConsejoColegio;
+	  }
+	   
+	   public static  boolean esColegio(Object idInstitucion){
+		  boolean esColegio = false;
+		  String strInstitucion = idInstitucion.toString().substring(2);
+		  int institucionNumber = Integer.parseInt(strInstitucion); 
+		  
+		  if (institucionNumber > ClsConstants.INSTITUCION_CONSEJOGENERAL && institucionNumber < ClsConstants.INSTITUCION_CONSEJO){ 
+			  esColegio = true;
+		  }
+		  
+		  return esColegio;
+	  }
+	   
+	  	public static String getIdInstitucionGeneral(String idInstitucion){
+			String profesion = idInstitucion.substring(0,2);
+			return profesion + ClsConstants.INSTITUCION_CONSEJOGENERAL;
+		}
+
 }
