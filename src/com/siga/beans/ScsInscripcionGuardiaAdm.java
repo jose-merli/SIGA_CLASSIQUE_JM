@@ -1284,10 +1284,10 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 			"       Decode(Col.Comunitario, '1', Col.Ncomunitario, Col.Ncolegiado) "+ScsOrdenacionColasBean.C_NUMEROCOLEGIADO+", " +
 			"       Per.Fechanacimiento "+ScsOrdenacionColasBean.C_FECHANACIMIENTO+", " +
 			"       Ins.Fechavalidacion AS "+ScsOrdenacionColasBean.C_ANTIGUEDADCOLA+", " +
-			"       Gru."+ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO+" As Idgrupoguardiacolegiado, " +
-			"       Gru."+ScsGrupoGuardiaColegiadoBean.C_IDGRUPO+" As Grupo, " +
-			"       Grg."+ScsGrupoGuardiaBean.C_NUMEROGRUPO+" As numeroGrupo, " +
-			"       Gru."+ScsGrupoGuardiaColegiadoBean.C_ORDEN+" As Ordengrupo " +
+			"       Decode(Gua.Porgrupos, '1', Gru."+ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO+", Null) As Idgrupoguardiacolegiado, " +
+			"       Decode(Gua.Porgrupos, '1', Gru."+ScsGrupoGuardiaColegiadoBean.C_IDGRUPO+", Null) As Grupo, " +
+			"       Decode(Gua.Porgrupos, '1', Grg."+ScsGrupoGuardiaBean.C_NUMEROGRUPO+", Null) As numeroGrupo, " +
+			"       Decode(Gua.Porgrupos, '1', Gru."+ScsGrupoGuardiaColegiadoBean.C_ORDEN+", Null) As Ordengrupo " +
 			"  From Scs_Guardiasturno         Gua, " +
 			"       Cen_Colegiado             Col, " +
 			"       Cen_Persona               Per, " +
