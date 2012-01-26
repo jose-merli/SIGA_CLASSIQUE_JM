@@ -151,11 +151,19 @@
 		
 
 	<table  class="tablaCentralCamposMedia"  align="center" border="0">
+	<tr>
+		<td width="30%"></td>
+		<td width="20%"></td>
+		<td width="10%"></td>
+		<td width="40%"></td>
+		
+	</tr>
+	
 		<tr>
 			<td class="labelText" width="220">
 				<siga:Idioma key="gratuita.nuevaAsistencia.literal.turno"/>&nbsp;(*)
 			</td>	
-			<td colspan="2" width="480">
+			<td colspan="3" width="480">
 				<%if (bEsFichaColegial) {%>
 					<siga:ComboBD nombre="turnos" tipo="turnosLetradoAsistencia" clase="boxCombo"  ancho="480"  obligatorio="false" accion="Hijo:guardias;"  parametro="<%=dato%>" ElementoSel="<%=idTurno%>" />
 				<%} else {%>
@@ -167,7 +175,7 @@
 			<td class="labelText">
 				<siga:Idioma key="gratuita.nuevaAsistencia.literal.guardia"/>&nbsp;(*)
 			</td>	
-			<td colspan="2">
+			<td colspan="3">
 				<siga:ComboBD nombre="guardias" tipo="guardias" clase="boxCombo" hijo="t" ancho="480"  accion="parent.rellenarComboLetrado();" parametro="<%=dato%>" elementoSel="<%=idGuardia%>" />
 			</td>	
 		</tr>
@@ -175,7 +183,7 @@
 			<td class="labelText">
 				<siga:Idioma key='gratuita.nuevaAsistencia.literal.tasistenciacolegio'/>&nbsp;(*)
 			</td>	
-			<td colspan="2">
+			<td colspan="3">
 				<siga:ComboBD nombre="idTipoAsistenciaColegio" tipo="scstipoasistenciacolegio" estilo="true"  clase="boxCombo" ancho="480" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=tAsistenciaColegio%>" />
 			</td>	
 		</tr>
@@ -186,7 +194,7 @@
 			<td class="labelText" style="vertical-align:text-top;text-align: left">
 				<siga:Idioma key="gratuita.mantAsistencias.literal.centroDetencion"/>
 			</td>
-			<td>
+			<td colspan="3">
 				<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" clase="boxCombo" ancho="480" obligatorio="false" parametro="<%=datoCom%>" elementoSel="<%=comisariaSel%>"/>
 			</td>
 		</tr>
@@ -194,7 +202,7 @@
 			<td class="labelText" style="vertical-align:text-top;text-align: left">
 				<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/>
 			</td>
-			<td>
+			<td colspan="3">
 				<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" clase="boxCombo" ancho="480" obligatorio="false" parametro="<%=datoJuzg%>" elementoSel="<%=juzgadoSel%>"/>
 			</td>
 		</tr>
@@ -204,8 +212,16 @@
 			<td class="labelText">	
 				<siga:Idioma key='gratuita.busquedaAsistencias.literal.fechaAsistencia'/>&nbsp;(*)
 			</td>	
-			<td colspan="2">
+			<td >
 				<html:text name="AsistenciasForm" property="fechaHora" size="10" maxlength="10" styleClass="box" value="<%=fecha%>"  readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="showCalendarGeneral(fechaHora);rellenarComboLetrado();fin();" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+			</td>
+			<td   class="labelText">
+				<siga:Idioma key='gratuita.nuevaAsistencia.literal.hora'/>&nbsp;
+			</td>
+			<td>
+				<html:text property="horaAsistencia" size="2" maxlength="2" styleClass="box" value="" style="text-align:center"></html:text>:<html:text 
+					property="minutoAsistencia"  size="2" maxlength="2" styleClass="box" value="" style="text-align:center"></html:text>
+				
 			</td>
 		</tr>
 		
@@ -213,7 +229,7 @@
 			<td class="labelText">
 				<siga:Idioma key='gratuita.nuevaAsistencia.literal.tasistencia'/>&nbsp;(*)
 			</td>	
-			<td colspan="2">
+			<td colspan="3">
 				<siga:ComboBD nombre="idTipoAsistencia" tipo="scstipoasistencia" estilo="true" clase="boxCombo" ancho="480" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  ElementoSel="<%=tAsistencia%>" />
 			</td>	
 		</tr>
@@ -222,14 +238,14 @@
 			<td class="labelText">	
 				<siga:Idioma key="gratuita.nuevaAsistencia.literal.ncolegiado"/>
 			</td>	
-			<td colspan="2">
+			<td colspan="3">
 				<html:text name="AsistenciasForm" property="colegiado" size="10" maxlength="10" styleClass="boxConsulta" value="<%=nColegiado%>" readOnly="true"></html:text>			
 			</td>
 		</tr>
 <%} else {%>
 		<tr>
 			<!--<html:hidden name="AsistenciasForm" property="colegiado" value="< %=nColegiado%>" ></html:hidden>			-->
-			<td colspan="3" width="700">
+			<td colspan="4" width="700">
 				<siga:ConjCampos
 					leyenda="gratuita.seleccionColegiadoJG.literal.titulo">
 					<table width="100%" border="0">
@@ -337,6 +353,45 @@
 				fin();
 				return false;
 			}
+			//Para la validacion no tengo en cuenta si empieza por 0 y tiene 2 digitos (tanto hora como minuto)
+			var horas = trim(document.forms[1].horaAsistencia.value);
+			var minutos = trim(document.forms[1].minutoAsistencia.value);
+			
+			
+
+			if (horas.length==1) {
+				document.forms[1].horaAsistencia.value = "0" + horas;
+			}
+			if (minutos.length==1) {
+				document.forms[1].minutoAsistencia.value = "0" + minutos;
+			}
+			if (horas!="" && (horas>23 || horas<0)) {
+				alert("<siga:Idioma key='messages.general.error.hora'/>");
+				fin();
+				return false;
+			}
+			if (minutos!="" && (minutos>59 || minutos<0)) {
+				alert("<siga:Idioma key='messages.general.error.hora'/>");
+				fin();
+				return false;
+			}
+			valor = trim(document.forms[1].horaAsistencia.value);
+            if (valor!="" && !isNumero(valor)) {
+            	alert ("<siga:Idioma key='messages.general.error.hora'/>");
+            	fin();
+            	return false;
+			}
+			valor = trim(document.forms[1].minutoAsistencia.value);
+            if (valor!="" && !isNumero(valor)) {
+            	alert ("<siga:Idioma key='messages.general.error.hora'/>");
+            	fin();
+            	return false;
+			}
+			
+			
+			
+			
+			
 			
 			if(document.forms[1].colegiado.value == "")
 			{

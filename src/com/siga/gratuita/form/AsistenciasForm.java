@@ -148,6 +148,9 @@ public class AsistenciasForm extends MasterForm
 	private ScsAsistenciasBean asistenciaBean;
 	private String botonesDetalle;
 	String letradoActuaciones;
+	private String horaAsistencia;
+	private String minutoAsistencia;
+	
 	/*
 	 * Metodos SET y GET 
 	 */
@@ -600,5 +603,17 @@ public class AsistenciasForm extends MasterForm
 	
 	public String getProcedimiento	()	{
 		return (String)this.datos.get("PROCEDIMIENTO");
+	}
+	public String getHoraAsistencia() {
+		return horaAsistencia;
+	}
+	public void setHoraAsistencia(String horaAsistencia) {
+		this.horaAsistencia = horaAsistencia;
+	}
+	public String getMinutoAsistencia() {
+		return minutoAsistencia;
+	}
+	public void setMinutoAsistencia(String minutoAsistencia) {
+		this.minutoAsistencia = minutoAsistencia;
 	}	
 }

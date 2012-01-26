@@ -78,6 +78,13 @@
 	String FECHAENTRADA 		= GstDate.getFormatedDateShort("",(String) hash.get("FECHAENTRADA"));
 	String TIPOASISTENCIA 		= (String) hash.get("TIPOASISTENCIA");
 	String FECHAHORA 			= GstDate.getFormatedDateShort("",(String) hash.get("FECHAHORA"));
+	SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+	Date fechaHoraDate = simpleDateFormat.parse((String) hash.get("FECHAHORA"));
+	simpleDateFormat.applyPattern(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+    simpleDateFormat.applyPattern("HH");
+    String horaAsistencia = simpleDateFormat.format(fechaHoraDate);
+    simpleDateFormat.applyPattern("mm");
+    String minutoAsistencia = simpleDateFormat.format(fechaHoraDate);
 	String FECHACIERRE 			= GstDate.getFormatedDateShort("",(String) hash.get("FECHACIERRE"));
 	String OBSERVACIONES		= (String) hash.get("OBSERVACIONES");
 	String INCIDENCIAS 			= (String) hash.get("INCIDENCIAS");
@@ -314,6 +321,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 <html:hidden property = "idPersona"  		value= "<%=IDPERSONACOLEGIADO%>"/>
 <html:hidden property = "fechaHora"  		value= "<%=FECHAHORA%>"/>
 
+
 <tr>
 <td valign="top">	
 	<siga:ConjCampos leyenda="gratuita.mantAsistencias.literal.titulo">
@@ -378,7 +386,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 					<siga:Idioma key='gratuita.busquedaAsistencias.literal.fechaAsistencia'/>
 				</td>
 				<td class="labelTextValor">	
-					<%=FECHAHORA%>
+					<%=FECHAHORA%>&nbsp;<%=horaAsistencia %>:<%=minutoAsistencia %>
 				</td>
 	
 				<td class="labelText" >	

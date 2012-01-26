@@ -1,6 +1,9 @@
 package com.siga.gratuita.action;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
@@ -438,7 +441,27 @@ public class MantenimientoAsistenciasAction extends MasterAction
 			//String idTipoAsistencia = miForm.getIdTipoAsistencia();
 			String idTipoAsistenciaColegio = miForm.getIdTipoAsistenciaColegio();
 			String anio = miForm.getFechaHora().substring(6);
-			String fecha = GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaHora());
+			
+			
+			Calendar myCalendar = Calendar.getInstance();
+			
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+			Date fechaProgramacionDate = simpleDateFormat.parse(miForm.getFechaHora());
+			myCalendar.setTime(fechaProgramacionDate);
+			if(miForm.getHoraAsistencia().equals(""))
+				miForm.setHoraAsistencia("00");
+			if(miForm.getMinutoAsistencia().equals(""))
+				miForm.setMinutoAsistencia("00");
+			myCalendar.set(Calendar.HOUR_OF_DAY,Integer.parseInt(miForm.getHoraAsistencia()));
+			myCalendar.set(Calendar.MINUTE,Integer.parseInt(miForm.getMinutoAsistencia()));
+			myCalendar.set(Calendar.SECOND,0);
+			myCalendar.set(Calendar.MILLISECOND,0);
+			simpleDateFormat = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+			String fecha = simpleDateFormat.format(myCalendar.getTime());
+			
+			
+			
+//			String fecha = GstDate.getApplicationFormatDate(usr.getLanguage(),);
 			boolean esFichaColegial  = UtilidadesString.stringToBoolean(request.getParameter("esFichaColegial").toString());
 
 
