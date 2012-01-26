@@ -132,13 +132,12 @@
 						<html:hidden property="titular" />
 					</td>
 					
+						<td width="42px"><html:text styleClass="boxConsulta" property="nombreTitular" size="37" readOnly="true"/></td>
+		
 					<% 	
 						int idInstitucion = Integer.parseInt(user.getLocation()); 
 					
 						if (idInstitucion == 2000 || idInstitucion >= 3000) { %>
-				
-							<td width="42px"><html:text styleClass="boxConsulta" property="nombreTitular" size="37" readOnly="true"/></td>
-		
 		
 							<td class="labelText" ><siga:Idioma key="facturacion.buscarFactura.literal.Deudor"/>&nbsp;&nbsp;&nbsp;&nbsp;
 							</td>
