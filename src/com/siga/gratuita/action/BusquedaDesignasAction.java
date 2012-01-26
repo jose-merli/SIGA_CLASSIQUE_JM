@@ -967,6 +967,7 @@ public class BusquedaDesignasAction extends MasterAction {
 			designaBean.setNumero(new Long(UtilidadesHash.getString(datosDesigna, ScsDesignaBean.C_NUMERO)));
 			designaBean.setObservaciones(asistenciaBean.getObservaciones());
 			designaBean.setNIG(asistenciaBean.getNIG());
+			designaBean.setIdPretension(asistenciaBean.getIdPretension());
 			designaBean.setArt27(UtilidadesHash.getString(datosDesigna, ScsDesignaBean.C_ART27));
 			designaBean.setCodigo(UtilidadesHash.getString(datosDesigna, ScsDesignaBean.C_CODIGO));
 

@@ -139,6 +139,7 @@ public class MantenimientoAsistenciasAction extends MasterAction
 							" A." + ScsAsistenciasBean.C_NUMERODILIGENCIA + " " + ScsAsistenciasBean.C_NUMERODILIGENCIA + ", " +
 							" A." + ScsAsistenciasBean.C_NUMEROPROCEDIMIENTO + " " + ScsAsistenciasBean.C_NUMEROPROCEDIMIENTO + ", " +
 							" A." + ScsAsistenciasBean.C_NIG + " " + ScsAsistenciasBean.C_NIG + ", " +
+							" A." + ScsAsistenciasBean.C_IDPRETENSION + " " + ScsAsistenciasBean.C_IDPRETENSION + ", " +
 							" A." + ScsAsistenciasBean.C_JUZGADO + " " + ScsAsistenciasBean.C_JUZGADO + ", " +
 							" A." + ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION + " " + ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION + ", " +
 							" A." + ScsAsistenciasBean.C_COMISARIA + " " + ScsAsistenciasBean.C_COMISARIA + ", " +
@@ -590,7 +591,7 @@ public class MantenimientoAsistenciasAction extends MasterAction
 								ScsAsistenciasBean.C_NUMEROPROCEDIMIENTO,		ScsAsistenciasBean.C_FECHAANULACION,
 								ScsAsistenciasBean.C_IDESTADOASISTENCIA,		ScsAsistenciasBean.C_FECHAESTADOASISTENCIA,
 								ScsAsistenciasBean.C_USUMODIFICACION,		    ScsAsistenciasBean.C_NIG,
-								ScsAsistenciasBean.C_FECHAMODIFICACION};
+								ScsAsistenciasBean.C_FECHAMODIFICACION,			ScsAsistenciasBean.C_IDPRETENSION};
 			
 			// Campos a modificar
 			hash.put(ScsAsistenciasBean.C_IDTIPOASISTENCIA,miForm.getIdTipoAsistencia());
@@ -615,6 +616,7 @@ public class MantenimientoAsistenciasAction extends MasterAction
 			}
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_NUMERODILIGENCIA,    miForm.getNumeroDilegencia());
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_NUMEROPROCEDIMIENTO, miForm.getNumeroProcedimiento());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_IDPRETENSION, miForm.getIdPretension());
 			
 			if (miForm.getNig() != null) {
 			    UtilidadesHash.set(hash, ScsAsistenciasBean.C_NIG, miForm.getNig());

@@ -90,6 +90,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 				ScsAsistenciasBean.C_EJGANIO,
 				ScsAsistenciasBean.C_EJGNUMERO,
 				ScsAsistenciasBean.C_NIG,
+				ScsAsistenciasBean.C_IDPRETENSION,
 				ScsAsistenciasBean.C_FECHAESTADOASISTENCIA
 				};
 		
@@ -157,6 +158,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 			bean.setEjgAnio(UtilidadesHash.getInteger(hash,ScsAsistenciasBean.C_EJGANIO));
 			bean.setEjgNumero(UtilidadesHash.getLong(hash,ScsAsistenciasBean.C_EJGNUMERO));
 			bean.setNIG(UtilidadesHash.getString(hash,ScsAsistenciasBean.C_NIG));
+			bean.setIdPretension(UtilidadesHash.getInteger(hash,ScsAsistenciasBean.C_IDPRETENSION));
 		}
 		catch(Exception e){
 			bean = null;
@@ -212,6 +214,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_EJGANIO, b.getEjgAnio());
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_EJGNUMERO, b.getEjgNumero());
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_NIG, b.getNIG());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_IDPRETENSION, b.getIdPretension());
 		
 		}
 		catch (Exception e){

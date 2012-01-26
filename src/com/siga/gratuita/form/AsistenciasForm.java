@@ -21,7 +21,8 @@ public class AsistenciasForm extends MasterForm
 			designa_numero = "", 
 			designa_turno = "", 
 			designa_idInstitucion = "",
-			nig="";
+			nig="",
+			idPretension="";
 	String numeroDilegenciaAsistencia; 
 	String numeroProcedimientoAsistencia;
 	String comisariaAsistencia;
@@ -587,6 +588,12 @@ public class AsistenciasForm extends MasterForm
 		return (String)this.datos.get("NIG2");
 	}
 	
+	public String getIdPretension() {
+		return idPretension;
+	}
+	public void setIdPretension(String idPretension) {
+		this.idPretension = idPretension;
+	}
 	public void setProcedimiento	(String procedimiento)	{
 		this.datos.put("PROCEDIMIENTO", procedimiento);
 	}

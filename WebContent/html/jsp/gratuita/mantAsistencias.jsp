@@ -136,6 +136,8 @@
 	String[] parametroJuzgado = {usr.getLocation(), "-1"};
 	String[] parametroComisaria = {usr.getLocation(), "-1"};
 	
+
+	
 	// Para cuando creamos la designacion
 	//idTurno = " ," + idTurno;
 	String nombreCompletoLetrado = NOMBRELETRADO + " " + APELLIDO1LETRADO + " " + APELLIDO2LETRADO;
@@ -146,10 +148,19 @@
 	ArrayList estadoSel    = new ArrayList();
 	ArrayList juzgadoSel   = new ArrayList();
 	ArrayList comisariaSel = new ArrayList();
+	ArrayList pretensionesSel = new ArrayList();
 
 	String numeroDiligenciaAsi    = (String) hash.get(ScsAsistenciasBean.C_NUMERODILIGENCIA);
 	String numeroProcedimientoAsi = (String) hash.get(ScsAsistenciasBean.C_NUMEROPROCEDIMIENTO);
 	String nig = "";
+	
+	//Combo procedimientos (pretensiones)
+	String[] datosPretension={usr.getLocation(),usr.getLanguage(),"-1"};
+	String idPretension = (String) hash.get(ScsAsistenciasBean.C_IDPRETENSION);
+	if(idPretension!=null && !idPretension.equals("")){
+		datosPretension[1]= idPretension;	
+		pretensionesSel.add(0,idPretension);
+	}
 	
 	if(hash.get(ScsAsistenciasBean.C_NIG)!=null){
 		nig = (String) hash.get(ScsAsistenciasBean.C_NIG);
@@ -489,10 +500,12 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 
 		   <table width="100%">
 		   	<tr>
-			   	<td class="labelText" style="vertical-align:text-top;width:200" id="tdNumeroProcedimiento" ><siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/>(*)
+			   	<td class="labelText" style="vertical-align:text-top;width:200" id="tdNumeroProcedimiento" ><siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/>&nbsp;(*)
 			   	</td>
+			   	
 			   	<td><input name="numeroProcedimiento" maxLength="<%=maxLenghtProc%>" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>"/>
 				</td>
+				
 				<% if(!modo.equals("ver")){%>	
 				<td class="labelText" style="vertical-align:text-top;text-align: right">	
 				   <siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext"/>
@@ -503,17 +516,32 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 				</td>   
 					
 			</tr>
-			<tr>
-				<td class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/>
-				</td>
-				<td > 
-					<% if (!modo.equalsIgnoreCase("ver")) { %>
-					 	<input name="nig" type="text" value="<%=nig%>" class="<%=estilo%>" maxlength="50"/>
-					<%}else{%>
-						<input name="nig" type="text" value="<%=nig%>" class="boxConsulta"/>
-					<%}%>						
-				</td>
-			</tr>	
+			</table>
+			<table>
+				<tr>
+					<td class="labelText" style="vertical-align:text-top;width:200"><siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/>
+					</td>
+					
+					<td> 
+						<% if (!modo.equalsIgnoreCase("ver")) { %>
+						 	<input name="nig" type="text" value="<%=nig%>" class="<%=estilo%>" maxlength="50"/>
+						<%}else{%>
+							<input name="nig" type="text" value="<%=nig%>" class="boxConsulta"/>
+						<%}%>						
+					</td>
+					
+					<td class="labelText" >	
+						<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/>&nbsp;&nbsp;&nbsp;
+					</td>
+					<td> 
+						<%if(!modo.equals("ver")){%>
+							<siga:ComboBD nombre="idPretension" tipo="comboPretensiones" ancho="420" clase="<%=estilo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false" parametro="<%=datosPretension%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="false"/>           	   
+						<%}else{%>
+							<siga:ComboBD nombre="idPretension" tipo="comboPretensiones" ancho="420" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosPretension%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="true"/>           	   
+						<%}%>
+					</td>				
+					
+				</tr>	
 		  </table>
 		</siga:ConjCampos> 
 		</td>
