@@ -223,7 +223,7 @@ String[] getdatos = { usr.getLocation() };
 			<siga:Idioma key="gratuita.busquedaSOJ.literal.turno"/>
 		</td>
 		<td colspan="3">	
-			<siga:ComboBD nombre="idTurno" tipo="turnosDesignacion" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="400"/>
+			<siga:ComboBD nombre="idTurno" tipo="turnosDesignacion" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="380"/>
 		</td>	
 		<td class="labelText">
 			<siga:Idioma key="gratuita.busquedaDesignas.literal.tipoDesigna"/>
@@ -237,7 +237,7 @@ String[] getdatos = { usr.getLocation() };
 		<td class="labelText">
 			<siga:Idioma key="gratuita.editarDesigna.literal.estado"/>
 		</td>
-		<td colspan="3">	
+		<td >	
 			<Select name="estado" class="boxCombo">
 			<%if(estado!=null && !estado.equals("")){%>
 				<%if(estado.equals("V")){%>			
@@ -269,7 +269,7 @@ String[] getdatos = { usr.getLocation() };
 		<td class="labelText">
 			<siga:Idioma key="gratuita.busquedaDesignas.literal.actuacionesValidadas"/>
 		</td>
-		<td colspan="3">	
+		<td>	
 			<Select name="actuacionesPendientes" class="boxCombo">
 				<option value='' selected></option>
 				<%if((actuacionesPendientes!=null)&&(actuacionesPendientes.equalsIgnoreCase("No"))){%>		
@@ -287,6 +287,16 @@ String[] getdatos = { usr.getLocation() };
 				<%}else{%>
 					<option value='SinActuaciones' ><siga:Idioma key="gratuita.busquedaDesignas.literal.sinActuaciones"/></option>
 				<% } %>
+			</Select>
+		</td>
+		<td class="labelText" >
+			<siga:Idioma key="gratuita.busquedaDesignas.literal.mostrarArt27"/>
+		</td>
+		<td>	
+			<Select name="mostrarArt27" class="boxCombo">
+				<option value='N'> <siga:Idioma key="general.no"/></option>
+				<option value='S'> <siga:Idioma key="general.yes"/></option>
+				<option value='T' selected> <siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.todas"/></option>
 			</Select>
 		</td>
 	</tr>

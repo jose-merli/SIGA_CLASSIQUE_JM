@@ -1359,7 +1359,17 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				contador++;
 				    codigosBind.put(new Integer(contador),actuacionesPendientes.trim());
 				    consulta += " and upper(F_SIGA_ACTUACIONESDESIG(des.idinstitucion,des.idturno,des.anio,des.numero))=upper(:" + contador + ")";
+				}
 			}
+			
+			//Mostrar ART 27
+			String mostarArt27 = UtilidadesHash.getString(miHash,"MOSTRAR_ART27") ;
+			if (mostarArt27!= null && !mostarArt27.equalsIgnoreCase("") && !mostarArt27.equalsIgnoreCase("T")) {
+				if(mostarArt27.equalsIgnoreCase("S")){
+					consulta += " AND des.art27 = 1";
+				}else if(mostarArt27.equalsIgnoreCase("N")){
+				    consulta += " AND des.art27 = 0";
+				}
 			}
 			
 			if (UtilidadesHash.getString(miHash,"CALIDAD") != null && !UtilidadesHash.getString(miHash,"CALIDAD").equalsIgnoreCase("")) {

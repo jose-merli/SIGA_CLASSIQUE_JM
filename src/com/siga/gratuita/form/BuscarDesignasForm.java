@@ -61,6 +61,12 @@ public class BuscarDesignasForm extends MasterForm {
 	public void setActuacionesPendientes	(String a)	{
 		UtilidadesHash.set(datos, "ACTUACIONES_PENDIENTES", a);
 	}
+	public String getMostrarArt27	()	{
+		return UtilidadesHash.getString(datos,"MOSTRAR_ART27");
+	}
+	public void setMostrarArt27	(String a)	{
+		UtilidadesHash.set(datos, "MOSTRAR_ART27", a);
+	}	
 	public String getCodigo	()	{
 		return UtilidadesHash.getString(datos,"CODIGO");
 	}
