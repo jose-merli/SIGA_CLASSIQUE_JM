@@ -249,7 +249,7 @@ public class DatosGeneralesAction extends MasterAction{
 		{
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");		
 			String idInstitucion = user.getLocation();
-				
+			 FacSerieFacturacionBean facSerieFacturacionBean = null;	
 			DatosGeneralesForm formDGen = (DatosGeneralesForm) formulario;
 			String nombreAbreviado = formDGen.getNombreAbreviado();
 			Long idSerieFac = formDGen.getIdSerieFacturacion();
@@ -258,29 +258,34 @@ public class DatosGeneralesAction extends MasterAction{
 			String where1 = " Where ";
 			where1 += FacSerieFacturacionBean.T_NOMBRETABLA+"."+ FacSerieFacturacionBean.C_IDINSTITUCION+"="+idInstitucion+
 				 	" and "+
-					FacSerieFacturacionBean.T_NOMBRETABLA+"."+ FacSerieFacturacionBean.C_NOMBREABREVIADO+"='"+nombreAbreviado+"'";
+					FacSerieFacturacionBean.T_NOMBRETABLA+"."+ FacSerieFacturacionBean.C_IDSERIEFACTURACION+"='"+idSerieFac+"'";
 			Vector datosNomAbr = admFac.select(where1);
 			
 			String nombreAbreviadoActual = "";
 			Long idSerieFacturacionActual = null;
 			if (datosNomAbr!=null && datosNomAbr.size()!=0){
-			  FacSerieFacturacionBean facSerieFacturacionBean = (FacSerieFacturacionBean) datosNomAbr.get(0);
+			   facSerieFacturacionBean = (FacSerieFacturacionBean) datosNomAbr.get(0);
 			  if (facSerieFacturacionBean!=null){
 				nombreAbreviadoActual = facSerieFacturacionBean.getNombreAbreviado();
 				idSerieFacturacionActual = facSerieFacturacionBean.getIdSerieFacturacion();
 			  }
 			}
 			
-			if (datosNomAbr==null || datosNomAbr.size()==0 || (nombreAbreviado.equals(nombreAbreviadoActual) && idSerieFac.equals(idSerieFacturacionActual)))
+			if (datosNomAbr==null || datosNomAbr.size()==0 ||  idSerieFac.equals(idSerieFacturacionActual))
 			{
 				String idSerieFacturacion=(String)request.getSession().getAttribute("idSerieFacturacion");
 				
 				UserTransaction tx = null;
 				tx = ((UsrBean)request.getSession().getAttribute("USRBEAN")).getTransaction();
 							
-				Hashtable hashOld = (Hashtable)request.getSession().getAttribute("DATABACKUP");
+				Hashtable hashOld =  new Hashtable();//=(Hashtable)request.getSession().getAttribute("DATABACKUP");
 				Hashtable hashNew = new Hashtable();
-				
+				hashOld.put(FacSerieFacturacionBean.C_IDSERIEFACTURACION, idSerieFacturacionActual);
+				hashOld.put(FacSerieFacturacionBean.C_IDPLANTILLA,facSerieFacturacionBean.getIdPlantilla());
+				hashOld.put(FacSerieFacturacionBean.C_DESCRIPCION, facSerieFacturacionBean.getDescripcion());
+				hashOld.put(FacSerieFacturacionBean.C_NOMBREABREVIADO, nombreAbreviadoActual);
+				hashOld.put(FacSerieFacturacionBean.C_IDINSTITUCION, idInstitucion);
+					
 				hashNew.put(FacSerieFacturacionBean.C_IDINSTITUCION, idInstitucion);
 				hashNew.put(FacSerieFacturacionBean.C_IDSERIEFACTURACION, idSerieFacturacion);
 				hashNew.put(FacSerieFacturacionBean.C_IDPLANTILLA, formDGen.getIdPlantilla());
