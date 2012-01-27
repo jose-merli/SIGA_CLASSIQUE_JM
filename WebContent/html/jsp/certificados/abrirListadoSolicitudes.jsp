@@ -326,13 +326,18 @@
 			  
 			 
 			}
+			function consultas() 
+			{		
+				document.RecuperarConsultasForm.submit();
+				
+			}
 		</script>
 		<!-- FIN: SCRIPTS BOTONES -->
 		
 	</head>
 
 	<body onload="ajusteAltoBotones('resultado');inicio();">
-			
+	<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />		
 			<fieldset>
 			<table class="tablaCentralCampos" align="center" border="0">
 				<html:form action="/CER_GestionSolicitudes.do?noReset=true" method="POST" target="resultado">
@@ -471,7 +476,7 @@
 
 
 			<!-- V Volver, B Buscar, A Avanzada, S Simple, N Nuevo registro, L Limpiar, R Borrar Log -->
-			<siga:ConjBotonesBusqueda botones="GPS,B" titulo=""/>
+			<siga:ConjBotonesBusqueda botones="GPS,B,CON" titulo=""/>
 
 			<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
 							id="resultado"
@@ -498,6 +503,13 @@
 			<html:hidden property = "descEnvio" value = ""/>
 			
 		</html:form>
+		<html:form action="/CON_RecuperarConsultas" method="POST" target="mainWorkArea">
+	<html:hidden property="idModulo" value="<%=ConModuloBean.IDMODULO_CERTIFICADOS%>"/>
+	<html:hidden property="modo" value="inicio"/>
+	<html:hidden property="accionAnterior" value="${path}"/>
+
+</html:form>
+		
 		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 		<iframe name="submitArea2" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	</body>

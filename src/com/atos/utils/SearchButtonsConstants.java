@@ -28,7 +28,8 @@ public enum SearchButtonsConstants {
 	DESCARGA_EJG ("dee","general.boton.descargaEejg","descargaEejg(true)",20),
 	RENEGOCIAR ("rn","general.boton.renegociar","renegociar(true)",21),
 	NUEVO_GRUPOS ("ng","general.boton.nuevoGrupos","nuevoGrupos()",22),
-	CERRAR ("ce","general.boton.close","cerrar()",23);	
+	CERRAR ("ce","general.boton.close","cerrar()",23),	
+	CONSULTAS ("con","general.boton.consultas","consultas()",24);
 	
 	
     private final String valor;   

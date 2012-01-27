@@ -7,6 +7,7 @@
 -->
 
 <!-- CABECERA JSP -->
+<%@page import="com.siga.beans.ConModuloBean"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -114,7 +115,7 @@
 
 
 <body onload="ajusteAlto('resultado');<%=buscar%>">
-
+<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 <table class="tablaCentralCampos" align="center">
 
 	<html:form action="/FAC_BusquedaFactura.do" method="POST" target="resultado">
@@ -228,7 +229,7 @@
 		 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
 	-->
 		
-		<siga:ConjBotonesBusqueda botones="B,L" titulo="facturacion.buscarFactura.cabecera"/>
+		<siga:ConjBotonesBusqueda botones="B,L,CON" titulo="facturacion.buscarFactura.cabecera"/>
 
 	<!-- FIN: BOTONES BUSQUEDA -->
 
@@ -240,7 +241,12 @@
   <input type="hidden" name="clientes" value="1">
  
  </html:form>
- 
+ <html:form action="/CON_RecuperarConsultas" method="POST" target="mainWorkArea">
+	<html:hidden property="idModulo" value="<%=com.siga.beans.ConModuloBean.IDMODULO_FACTURACION%>"/>
+	<html:hidden property="modo" value="inicio"/>
+	<html:hidden property="accionAnterior" value="${path}"/>
+
+</html:form>
 
 	
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
@@ -325,6 +331,11 @@
 				}
 				document.BusquedaFacturaForm.modo.value = "buscarPor";
 				document.BusquedaFacturaForm.submit();
+		}
+		function consultas() 
+		{		
+			document.RecuperarConsultasForm.submit();
+			
 		}
 	</script>
 	

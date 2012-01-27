@@ -79,7 +79,7 @@
 </head>
 
 <body onload="ajusteAltoBotones('resultado');<%=funcionBuscar%>">
-
+<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 
 
@@ -168,7 +168,12 @@
 	</tr>
 	</html:form>
 	</table>
+<html:form action="/CON_RecuperarConsultas" method="POST" target="mainWorkArea">
+	<html:hidden property="idModulo" value="<%=com.siga.beans.ConModuloBean.IDMODULO_ENVIOS%>"/>
+	<html:hidden property="modo" value="inicio"/>
+	<html:hidden property="accionAnterior" value="${path}"/>
 
+</html:form>
 
 	<!-- FIN: CAMPOS DE BUSQUEDA-->
 
@@ -179,7 +184,7 @@
 		 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
 	-->
 
-		<siga:ConjBotonesBusqueda botones="B,N"/>
+		<siga:ConjBotonesBusqueda botones="B,N,CON"/>
 
 	<!-- FIN: BOTONES BUSQUEDA -->
 
@@ -239,6 +244,11 @@
 				   	DefinirEnviosForm.target="mainWorkArea";*/
 				}
 			}	
+			function consultas() 
+			{		
+				document.RecuperarConsultasForm.submit();
+			
+			}
 			
 	</script>
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->

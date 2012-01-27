@@ -208,5 +208,13 @@ public class TagBotonesBusqueda extends TagSupport {
 		out.println("\">");
 		out.println("</td>");
 	}
+
+	public String getClase() {
+		return clase;
+	}
+
+	public void setClase(String clase) {
+		this.clase = clase;
+	}
 	
 }

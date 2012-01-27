@@ -1,5 +1,6 @@
 <!-- BusquedaClientes.jsp -->
 <!-- CABECERA JSP -->
+<%@page import="com.siga.beans.ConModuloAdm"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -18,15 +19,15 @@
 <%@ page import="com.siga.beans.CenInstitucionAdm"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
+<%@ page import="com.siga.beans.ConModuloBean"%>
+
  
 <!-- JSP -->
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
-%>	
-	
-<%  
+ 
 	// locales
 	BusquedaClientesForm formulario = (BusquedaClientesForm)request.getSession().getAttribute("busquedaClientesForm");
 	formulario.setChkBusqueda("on");
@@ -121,7 +122,7 @@
 </head>
 
 <body onLoad="inicio();ajusteAlto('resultado');">
-
+<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 
 <div id="camposRegistro" class="posicionBusquedaSolo" align="center">
@@ -307,6 +308,12 @@
 	</tr>
 	</table>
 
+<html:form action="/CON_RecuperarConsultas" method="POST" target="mainWorkArea">
+	<html:hidden property="idModulo" value="<%=ConModuloBean.IDMODULO_CENSO%>"/>
+	<html:hidden property="modo" value="inicio"/>
+	<html:hidden property="accionAnterior" value="${path}"/>
+
+</html:form>
 
 	<!-- FIN: CAMPOS DE BUSQUEDA-->
 
@@ -317,7 +324,7 @@
 		 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
 	-->
 <%  
-	String botones = "B";
+	String botones = "B,CON";
 	if (colegiado.equals(ClsConstants.DB_FALSE)) {
 		botones += ",A,N,NS";
 		//botones += ",N,NS";
@@ -412,6 +419,11 @@
 			document.forms[0].target="mainWorkArea";	
 			document.forms[0].submit();	
 		}		
+		function consultas() 
+		{		
+			document.RecuperarConsultasForm.submit();
+			
+		}
 		function inicio(){
 		  
 		  // Cuando venimos de las colegiaciones de letrados introducimos los siguientes criterios de busqueda por defecto:

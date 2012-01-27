@@ -15,7 +15,19 @@ import com.siga.Utilidades.UtilidadesHash;
  * Administrador del bean de la tabla de módulos
  */
 public class ConModuloAdm extends MasterBeanAdministrador {
+	static public final String IDMODULO_ADMINISTRACION="1";
+	static public final String IDMODULO_CENSO="3";
+	static public final String IDMODULO_CERTIFICADOS="2";
+	static public final String IDMODULO_ENVIOS="4";
+	static public final String IDMODULO_EXPEDIENTES="5";
+	static public final String IDMODULO_FACTURACION="6";
+	static public final String IDMODULO_FACTURACIONSJCS="7";
+	static public final String IDMODULO_GENERAL="8";
+	static public final String IDMODULO_PRODUCTOSYSERVICIOS="9";
+	static public final String IDMODULO_SJCS="10";
+	
 
+	
 	public ConModuloAdm(UsrBean usuario)
 	{
 	    super(ConModuloBean.T_NOMBRETABLA, usuario);

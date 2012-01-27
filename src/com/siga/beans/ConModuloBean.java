@@ -25,7 +25,16 @@ public class ConModuloBean extends MasterBean {
 	
 	static public final String T_NOMBRETABLA = "CON_MODULO";
 	
-	
+	static public final String IDMODULO_ADMINISTRACION="1";
+	static public final String IDMODULO_CENSO="3";
+	static public final String IDMODULO_CERTIFICADOS="2";
+	static public final String IDMODULO_ENVIOS="4";
+	static public final String IDMODULO_EXPEDIENTES="5";
+	static public final String IDMODULO_FACTURACION="6";
+	static public final String IDMODULO_FACTURACIONSJCS="7";
+	static public final String IDMODULO_GENERAL="8";
+	static public final String IDMODULO_PRODUCTOSYSERVICIOS="9";
+	static public final String IDMODULO_SJCS="10";
 
 	public String getFechaModificacion() {
 		return fechaModificacion;

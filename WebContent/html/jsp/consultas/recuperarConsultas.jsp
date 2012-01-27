@@ -33,7 +33,16 @@
 	// para ver si tengo que buscar tras mostrar la pantalla
 	String buscar = (String)request.getParameter("buscar");
 	String funcionBuscar = "";
-	if (buscar!=null) {
+	String claseTabla = "tablaCampos";
+	String claseBotonera = "";
+	String claseBotoneraAccion="hidden";
+	if(request.getAttribute("accionAnterior")!=null){
+		funcionBuscar = "buscar()";
+		claseTabla = "hidden";
+		claseBotonera = "hidden";
+		claseBotoneraAccion = "botonesDetalle";
+		
+	}else if (buscar!=null) {
 		funcionBuscar = "buscar()";
 	}
 	ArrayList idModulo = new ArrayList();
@@ -48,6 +57,8 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet2.jsp">
+	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 
 <logic:notEqual name="RecuperarConsultasForm" property="tipoConsulta" value="<%=ConConsultaAdm.TIPO_CONSULTA_GEN%>">	
@@ -82,6 +93,8 @@
 	
 	<html:form action="/CON_RecuperarConsultas.do" method="POST" target="resultado">
 		<html:hidden property = "modo" value = ""/>
+		<html:hidden property = "accionAnterior" />
+		
 		<input type="hidden" name="limpiarFilaSeleccionada" value="">
 		<logic:equal name="RecuperarConsultasForm" property="tipoConsulta" value="<%=ConConsultaAdm.TIPO_CONSULTA_GEN%>">	
 			<html:hidden property = "tipoConsulta"/>
@@ -91,7 +104,7 @@
 	<td>
 
 	
-	<table class="tablaCampos" align="center">
+	<table class="<%=claseTabla %>" align="center" >
 
 	<!-- FILA -->
 	<tr>	
@@ -164,9 +177,9 @@
 		 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
 	-->
 	<%	if (tipoacceso.equalsIgnoreCase(SIGAConstants.ACCESS_READ)){ %>
-			<siga:ConjBotonesBusqueda botones="B"/>
+			<siga:ConjBotonesBusqueda botones="B" clase="<%= claseBotonera%>"/>
 	<% } else{ %>
-			<siga:ConjBotonesBusqueda botones="N,B"/>
+			<siga:ConjBotonesBusqueda botones="N,B" clase="<%= claseBotonera%>"/>
 	<% } %>	
 
 	<!-- FIN: BOTONES BUSQUEDA -->
@@ -204,7 +217,13 @@
 		{					
 			document.forms[1].submit();
 		}
-			
+		function accionVolver() 
+		{
+			var formu=document.createElement("<form  method='POST'  action='<%=app%><%=request.getAttribute("accionAnterior")%>.do' target='mainWorkArea'>");
+			document.appendChild(formu);
+			formu.submit();
+		}
+		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 
@@ -218,6 +237,8 @@
 					marginwidth="0";					 
 					class="frameGeneral">
 	</iframe>
+	<siga:ConjBotonesAccion botones="V" clase="<%=claseBotoneraAccion%>"/>
+
 
 <!-- INICIO: SUBMIT AREA -->
 <!-- Obligatoria en todas las páginas-->

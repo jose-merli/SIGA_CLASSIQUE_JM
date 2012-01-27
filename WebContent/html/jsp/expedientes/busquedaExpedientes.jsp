@@ -6,6 +6,7 @@
 
 <!-- CABECERA JSP -->
 
+<%@page import="com.siga.beans.ConModuloBean"%>
 <%@ page contentType="text/html" language="java"
 	errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
@@ -143,7 +144,7 @@
 </head>
 
 <body onload="ajusteAlto('resultado');marked();<%=funcionBuscar%>">
-
+<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 <!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 
 
@@ -420,11 +421,11 @@
 <%
 	if (tipoacceso.equalsIgnoreCase(SIGAConstants.ACCESS_READ)) {
 %>
-<siga:ConjBotonesBusqueda botones="B,A" />
+<siga:ConjBotonesBusqueda botones="B,A,CON" />
 <%
 	} else {
 %>
-<siga:ConjBotonesBusqueda botones="N,B,A" />
+<siga:ConjBotonesBusqueda botones="N,B,A,CON" />
 <%
 	}
 %>
@@ -563,6 +564,11 @@
 				document.MantenimientoJuzgadoForm.submit();		
 		 	}
 		}
+		function consultas() 
+		{		
+			document.RecuperarConsultasForm.submit();
+		
+		}
 	</script>
 <!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 <html:form action="/CEN_BusquedaClientesModal.do" method="POST"
@@ -570,6 +576,12 @@
 	<input type="hidden" name="actionModal" value="">
 	<input type="hidden" name="modo" value="abrirBusquedaModal">
 	<input type="hidden" name="clientes" value="1">
+</html:form>
+<html:form action="/CON_RecuperarConsultas" method="POST" target="mainWorkArea">
+	<html:hidden property="idModulo" value="<%=com.siga.beans.ConModuloBean.IDMODULO_EXPEDIENTES%>"/>
+	<html:hidden property="modo" value="inicio"/>
+	<html:hidden property="accionAnterior" value="${path}"/>
+
 </html:form>
 <!-- INICIO: IFRAME LISTA RESULTADOS -->
 <iframe align="middle" src="<%=app%>/html/jsp/general/blank.jsp"

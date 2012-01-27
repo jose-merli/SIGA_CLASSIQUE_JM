@@ -92,6 +92,9 @@ public class RecuperarConsultasAction extends MasterAction {
 						mapDestino = abrir(mapping, miForm, request, response);
 						break;
 						
+					}else if (accion.equalsIgnoreCase("inicio")){
+						mapDestino = inicio(mapping, miForm, request, response);
+						
 					} else if (accion.equalsIgnoreCase("ejecutarConsulta")){
 						mapDestino = ejecutarConsulta(mapping, miForm, request, response);
 						
@@ -167,6 +170,22 @@ public class RecuperarConsultasAction extends MasterAction {
 	    			form.setTipoConsulta(ConConsultaAdm.TIPO_CONSULTA_GEN);
 	    		}
 	    	}
+    	}catch (Exception e){
+    		throwExcp("messages.general.error",new String[] {"modulo.consultas"},e,null); 
+    	}
+    	
+    	return "inicio";
+    	    	
+	}
+    protected String inicio(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
+	{	
+    	RecuperarConsultasForm form = (RecuperarConsultasForm)formulario;
+    	
+    	try{   		
+	    	form.setTipoConsulta(ConConsultaAdm.TIPO_CONSULTA_GEN);
+	    	request.setAttribute("accionAnterior",form.getAccionAnterior());
+	    	request.setAttribute("idModulo",form.getIdModulo());
+	    	
     	}catch (Exception e){
     		throwExcp("messages.general.error",new String[] {"modulo.consultas"},e,null); 
     	}

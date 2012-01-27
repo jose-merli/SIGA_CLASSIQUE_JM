@@ -82,7 +82,7 @@
 
 
 <body onLoad="ajusteAlto('resultado');inicio();">
-
+<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 
 <table class="tablaCentralCampos" align="center">
 
@@ -151,6 +151,12 @@
 	</html:form>
 	
 	</table>
+	<html:form action="/CON_RecuperarConsultas" method="POST" target="mainWorkArea">
+	<html:hidden property="idModulo" value="<%=com.siga.beans.ConModuloBean.IDMODULO_PRODUCTOSYSERVICIOS%>"/>
+	<html:hidden property="modo" value="inicio"/>
+	<html:hidden property="accionAnterior" value="${path}"/>
+
+</html:form>
 	<!-- FIN: CAMPOS DE BUSQUEDA-->
 
 	<!-- INICIO: BOTONES BUSQUEDA -->
@@ -159,7 +165,7 @@
 		 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
 	-->
 		
-		<siga:ConjBotonesBusqueda botones="B" titulo="pys.gestionSolicitudes.titulo"/>
+		<siga:ConjBotonesBusqueda botones="B,CON" titulo="pys.gestionSolicitudes.titulo"/>
 
 	<!-- FIN: BOTONES BUSQUEDA -->
 
@@ -209,6 +215,11 @@
 			  
 			 
 			}
+		function consultas() 
+		{		
+			document.RecuperarConsultasForm.submit();
+		
+		}
 	</script>
 	
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->

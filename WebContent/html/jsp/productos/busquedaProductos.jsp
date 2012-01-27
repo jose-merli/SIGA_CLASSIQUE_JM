@@ -35,7 +35,7 @@
 	String idInstitucion=(String)request.getAttribute("IDINSTITUCION"); // Obtengo el identificador de la institucion
 
     // Botones a mostrar
-	String botones = "B,N";
+	String botones = "B,N,CON";
 	String titulo = "productos.busquedaProductos.literal.busquedaProductos";
 	
    //Parametro para la busqueda:
@@ -69,7 +69,7 @@
 
 
 	<body onLoad="ajusteAlto('resultado');">
-	
+	<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 		<!-- INICIO: CAMPOS DE BUSQUEDA-->
 		<!-- Zona de campos de busqueda o filtro -->
 
@@ -132,6 +132,12 @@
 					</td>
 				</tr>
 			</table>
+<html:form action="/CON_RecuperarConsultas" method="POST" target="mainWorkArea">
+	<html:hidden property="idModulo" value="<%=com.siga.beans.ConModuloBean.IDMODULO_PRODUCTOSYSERVICIOS%>"/>
+	<html:hidden property="modo" value="inicio"/>
+	<html:hidden property="accionAnterior" value="${path}"/>
+
+</html:form>
 			<!-- FIN: CAMPOS DE BUSQUEDA-->									
 									
 			<!-- INICIO: BOTONES BUSQUEDA -->
@@ -166,6 +172,11 @@
 					document.forms[0].modo.value='buscarPor';
 					document.forms[0].target='resultado';				
 					document.forms[0].submit();
+				}
+				function consultas() 
+				{		
+					document.RecuperarConsultasForm.submit();
+				
 				}
 			
 			</script>

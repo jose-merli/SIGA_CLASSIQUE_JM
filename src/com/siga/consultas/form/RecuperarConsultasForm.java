@@ -23,7 +23,7 @@ public class RecuperarConsultasForm extends MasterForm {
 	private String tipoEnvio="";
 	private CriterioDinamico [] criteriosDinamicos = new CriterioDinamico[SIGAConstants.TAMANYO_ARRAY_CONSULTA];
 	
-	
+	private String accionAnterior;
 	
 	public String getTipoEnvio() {
 		return tipoEnvio;
@@ -85,5 +85,11 @@ public class RecuperarConsultasForm extends MasterForm {
 	/*	public void setCriteriosDinamicos(CriterioDinamico[] criteriosDinamicos) {
 		this.criteriosDinamicos = criteriosDinamicos;
 	}
-*/	
+*/
+	public String getAccionAnterior() {
+		return accionAnterior;
+	}
+	public void setAccionAnterior(String accionAnterior) {
+		this.accionAnterior = accionAnterior;
+	}	
 }
