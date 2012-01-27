@@ -94,14 +94,14 @@ public class UtilidadesFecha {
 	 */
 	public static Calendar stringToCalendar(String strDate){
 		SimpleDateFormat sdf;
-		if(strDate.length()<=10){
-			sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
-		}else{
-			sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
-		}
 		Calendar cal = Calendar.getInstance();
+		Date date;
 		try {
-			Date date;
+			if(strDate.length()<=10){
+				sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+			}else{
+				sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+			}
 			date = sdf.parse(strDate);
 			cal.setTime(date);
 		} catch (ParseException e) {
