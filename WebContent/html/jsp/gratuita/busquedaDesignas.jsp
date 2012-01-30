@@ -296,7 +296,7 @@ String[] getdatos = { usr.getLocation() };
 			<Select name="mostrarArt27" class="boxCombo">
 				<option value='N'> <siga:Idioma key="general.no"/></option>
 				<option value='S'> <siga:Idioma key="general.yes"/></option>
-				<option value='T' selected> <siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.todas"/></option>
+				<option value='T' selected> <siga:Idioma key="general.todas"/></option>
 			</Select>
 		</td>
 	</tr>
