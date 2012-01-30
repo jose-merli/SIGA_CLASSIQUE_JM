@@ -529,7 +529,14 @@
 		<!-- Asociada al boton Volver -->
 		function accionVolver() 
 		{		
-			document.forms[1].modo.value="abrir";
+			if(parent.document.getElementById("accionAnterior")&&parent.document.getElementById("accionAnterior").value!=""){
+
+				document.forms[1].accionAnterior.value=parent.document.getElementById("accionAnterior").value;
+				document.forms[1].idModulo.value=parent.document.getElementById("idModulo").value;
+				document.forms[1].modo.value="inicio";
+			}else{
+				document.forms[1].modo.value="abrir";
+			}
 			document.forms[1].action=document.forms[1].action+"<%=parametros%>";
 			document.forms[1].submit();				
 		}
@@ -1291,6 +1298,8 @@ if (!bEditable){
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 		<html:form action="/CON_RecuperarConsultas.do" method="POST" target="mainWorkArea">
 			<html:hidden property = "modo" value = ""/>
+			<html:hidden property = "accionAnterior"/>
+			<html:hidden property = "idModulo"/>
 		</html:form>
 	
 		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>

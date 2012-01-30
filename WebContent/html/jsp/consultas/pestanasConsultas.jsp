@@ -68,7 +68,9 @@
 	
 
 	<!-- Campo obligatorio -->
-	<html:hidden property = "modo" value = ""/>	
+		<html:hidden property = "modo" value = ""/>	
+		<html:hidden property = "accionAnterior"/>
+		<html:hidden property = "idModulo"/>
 
 	</html:form> 
 	

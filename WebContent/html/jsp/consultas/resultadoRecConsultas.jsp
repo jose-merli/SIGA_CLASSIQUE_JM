@@ -61,6 +61,8 @@
 			<html:hidden property = "idConsulta"/>
 			<html:hidden property = "tipoConsulta"/>
 			<html:hidden property = "tipoEnvio"/>
+			<html:hidden property = "accionAnterior"/>
+			<html:hidden property = "idModulo"/>
 			
 			<!-- RGG: cambio a formularios ligeros -->
 			<input type="hidden" name="filaSelD">
@@ -150,6 +152,7 @@
 			document.forms[0].idConsulta.value = document.getElementById(idconsulta).value;
 			document.forms[0].idInstitucion.value = document.getElementById(idinstitucion).value;
 			document.forms[0].tipoConsulta.value = document.getElementById(tipoconsulta).value;
+			
 		}
 
 		<!-- Funcion asociada al boton Ejecutar -->
