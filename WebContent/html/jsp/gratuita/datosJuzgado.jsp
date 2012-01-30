@@ -353,6 +353,16 @@
 									<html:text name="MantenimientoJuzgadoForm" property="movil" size="20" maxlength="20"  readonly="<%=desactivado %>" styleClass="<%=estilo%>"></html:text>
 								</td>
 							</tr>
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext"/>&nbsp;2
+								</td>
+								<td class="labelText">
+									<html:text name="MantenimientoJuzgadoForm" property="codigoExt2" size="10" maxlength="10"  readonly="<%=desactivado %>" styleClass="<%=estilo%>"></html:text>
+								</td>
+								<td></td>
+								<td></td>
+							</tr>
 					</table>
 				</siga:ConjCampos>	
 				</td>

@@ -39,6 +39,9 @@ public class MantenimientoJuzgadoForm extends MasterForm {
 	public void setCodigoExt(String dato) {
 		UtilidadesHash.set(this.datos, ScsJuzgadoBean.C_CODIGOEXT , dato);
 	}
+	public void setCodigoExt2(String dato) {
+		UtilidadesHash.set(this.datos, ScsJuzgadoBean.C_CODIGOEXT2 , dato);
+	}
 	public void setCodProcurador(String dato) {
 		UtilidadesHash.set(this.datos, ScsJuzgadoBean.C_CODPROCURADOR , dato);
 	}
@@ -101,6 +104,9 @@ public class MantenimientoJuzgadoForm extends MasterForm {
 	}
 	public String getCodigoExt() {
 		return UtilidadesHash.getString(this.datos, ScsJuzgadoBean.C_CODIGOEXT);
+	}
+	public String getCodigoExt2() {
+		return UtilidadesHash.getString(this.datos, ScsJuzgadoBean.C_CODIGOEXT2);
 	}
 	public String getCodProcurador() {
 		return UtilidadesHash.getString(this.datos, ScsJuzgadoBean.C_CODPROCURADOR);

@@ -297,11 +297,14 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 			String idPoblacion=miForm.getIdPoblacion();
 			String nombre=miForm.getNombre();
 			String codigoExt=miForm.getCodigoExt();
+			String codigoExt2=miForm.getCodigoExt2();
 			
 			beanJuzgado.setIdInstitucion(new Integer(idInstitucion));
 			beanJuzgado.setIdPoblacion(idPoblacion);
 			beanJuzgado.setNombre(nombre);
 			beanJuzgado.setCodigoExt(codigoExt);
+			beanJuzgado.setCodigoExt2(codigoExt2);
+			
 			beanJuzgado.setDireccion(miForm.getDireccion());
 			beanJuzgado.setCodigoPostal(miForm.getCodigoPostal());
 			beanJuzgado.setIdProvincia(miForm.getIdProvincia());

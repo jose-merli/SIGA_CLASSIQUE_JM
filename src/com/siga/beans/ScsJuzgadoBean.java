@@ -40,7 +40,9 @@ public class ScsJuzgadoBean extends MasterBean{
 	static public final String 	C_MOVIL =      			"MOVIL";
 	/* cambio para codigo ext */
 	private String codigoExt;
+	private String codigoExt2;
 	static public final String C_CODIGOEXT = "CODIGOEXT";
+	static public final String C_CODIGOEXT2 = "CODIGOEXT2";
 	public void setCodigoExt (String valor)
 	{
 		this.codigoExt = valor;
@@ -212,6 +214,12 @@ public class ScsJuzgadoBean extends MasterBean{
 
 	public void setFechabaja(String fechabaja) {
 		this.fechabaja = fechabaja;
+	}
+	public String getCodigoExt2() {
+		return codigoExt2;
+	}
+	public void setCodigoExt2(String codigoExt2) {
+		this.codigoExt2 = codigoExt2;
 	}
 	
 
