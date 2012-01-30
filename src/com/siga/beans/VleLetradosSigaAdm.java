@@ -215,12 +215,11 @@ public class VleLetradosSigaAdm extends MasterBeanAdmVisible
 					" L.nombre, L.fax as fax1, " +
 					"L.apellido1,L.apellido2,L.dir_profesional,L.num_doc, L.poblacion, L.idpoblacion, L.idprovincia as provincia, L.IDPAIS as pais, L.cod_postal,L.telefono,L.mail,  TO_CHAR(C.fecha_alta, 'dd/MM/yyyy') AS fecha_alta, C.tratamiento, L.sexo  "+
 			"from  V_CENSO_COLEGIACIONES C, V_CENSO_LETRADOS L where C.id_letrado=L.id_letrado  and  ";
-		       if (!idInstitucionBuscar.trim().equals("")) {
+		       if (idInstitucionBuscar!=null && !idInstitucionBuscar.trim().equals("")) {
 			       	contador++;
 					codigos.put(new Integer(contador),idInstitucionBuscar.trim());
 					sqlClientes += "  C.id_colegio = :"+contador;
 			   } else {
-			   	//String institucionesVisibles = CenVisibilidad.getVisibilidadCenso(idInstitucionActual);
 				   	contador++;
 				   	codigos.put(new Integer(contador),idInstitucionActual.trim());
 					sqlClientes += "  C.id_colegio <> :"+contador;
