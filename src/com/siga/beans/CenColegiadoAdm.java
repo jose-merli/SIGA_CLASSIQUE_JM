@@ -426,8 +426,20 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 					modificacion.put(CenColegiadoBean.C_NCOLEGIADO,nColegiadoNuevo);
 		        }
 			}  
-
-				
+		
+			//Se comprueba q el nº de clegiado no existe para ese colegio
+			String nColegiadoOri = (String) original.get(CenColegiadoBean.C_NCOLEGIADO);
+			String nColegiadoModi = (String) modificacion.get(CenColegiadoBean.C_NCOLEGIADO);
+			
+			if(nColegiadoOri==null)
+				nColegiadoOri ="";
+			
+			if(nColegiadoModi != null && !nColegiadoModi.equals(nColegiadoOri))
+			{
+				if (this.existeColegiado 
+					(new Integer ((String)original.get(CenColegiadoBean.C_IDINSTITUCION)),(String)modificacion.get(CenColegiadoBean.C_NCOLEGIADO),(String)modificacion.get(CenColegiadoBean.C_NCOMUNITARIO)) != null)
+						throw new SIGAException ("error.message.NumColegiadoRepetido");
+			}	
 			if (this.update(modificacion,original)) {
 				// Obtengo del formulario datos que me interesaran para la insercion
 				CenColegiadoBean beanColegiado = new CenColegiadoBean ();
@@ -438,6 +450,9 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 					resultado=true;
 				}	
 			}					
+		}
+		catch (SIGAException ex) {
+			throw ex;
 		}
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al insertar datos en B.D.");
@@ -929,18 +944,39 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 	 * @param idInstitucion Integer
 	 * @return CenColegiadoBean o null
 	 */
-	public CenColegiadoBean existeColegiado (Long idPersona, 
-											 Integer idInstitucion,String numeroColegiado)
+	public CenColegiadoBean existeColegiado (Integer idInstitucion,String numeroColegiado,String numeroComunitario)
 			throws ClsExceptions, SIGAException
 	{
 		try
 		{
 			CenColegiadoBean salida = null;
 			Hashtable codigos = new Hashtable();
-            codigos.put(new Integer(1),idPersona.toString());
-            codigos.put(new Integer(2),idInstitucion.toString());
-            codigos.put(new Integer(3),numeroColegiado);
-            Vector v = this.selectBind(" WHERE IDPERSONA = :1 AND IDINSTITUCION = :2 AND NCOLEGIADO = :3" ,codigos);
+			Vector v = new Vector();
+			if(numeroComunitario!=null && !numeroComunitario.equals(""))
+	        {
+				codigos.put(new Integer(1),idInstitucion.toString());
+				codigos.put(new Integer(2),numeroColegiado);
+				codigos.put(new Integer(3),numeroComunitario);
+				codigos.put(new Integer(4),numeroColegiado);
+				codigos.put(new Integer(5),numeroComunitario);
+           
+            	v = this.selectBind(" WHERE IDINSTITUCION = :1 AND  (NCOLEGIADO = :2 OR NCOMUNITARIO = :3 OR NCOLEGIADO = :5 OR NCOMUNITARIO = :4)" ,codigos);
+            }
+            else
+            {
+            	codigos.put(new Integer(1),idInstitucion.toString());
+				codigos.put(new Integer(2),numeroColegiado);
+				codigos.put(new Integer(3),numeroColegiado);				            	
+            	v = this.selectBind(" WHERE IDINSTITUCION = :1 AND  (NCOLEGIADO = :2 OR NCOMUNITARIO = :3)" ,codigos);
+            }
+            /*
+            Vector v;
+            if (comunitario.equals("0")){
+            	v = this.selectBind(" WHERE NCOLEGIADO = :1 AND IDINSTITUCION = :2" ,codigos);
+            }else{
+            	v = this.selectBind(" WHERE NCOMUNITARIO = :1 AND IDINSTITUCION = :2" ,codigos);
+            }
+            */
 			if (v != null && v.size () > 0)
 				salida = (CenColegiadoBean) v.get(0);
 			return salida;

@@ -150,7 +150,7 @@ public class ColegiarAction extends MasterAction
 		UserTransaction t = null;
 		String forward = "exitoInsercion";
 		
-		
+
 		try
 		{
 			////////// OBTENIENDO DATOS //////////
@@ -205,8 +205,11 @@ public class ColegiarAction extends MasterAction
 			
 			//comprobando que la persona no esta ya dada de alta 
 			//  como colegiado en el colegio seleccionado
+			String sComunitario = "0";
+			if(comunitario ==true)
+				sComunitario = "1";
 			if (admCol.existeColegiado 
-					(new Long (idPersona), new Integer (colegio),numero) != null)
+					(new Integer (colegio),numero,numero) != null)
 				throw new SIGAException ("botonAccion.message.error1");
 			
 			//borrando registro de no colegiado en colegio (si existe)

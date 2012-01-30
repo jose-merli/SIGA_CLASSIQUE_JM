@@ -824,7 +824,7 @@ public class DatosGeneralesAction extends MasterAction {
 			hash.put(CenHistoricoBean.C_IDINSTITUCION, miForm.getIdInstitucion());
 			boolean isColegiado = false;
 			try {
-					isColegiado = admColegiado.existeColegiado(new Long(miForm.getIdPersona()), new Integer(miForm.getIdInstitucion()),miForm.getNumColegiado())!=null;	
+					isColegiado = admColegiado.existeColegiado(new Integer(miForm.getIdInstitucion()),miForm.getNumColegiado(),miForm.getNumColegiado())!=null;	
 			} catch (Exception e) {
 				isColegiado = false;
 			}

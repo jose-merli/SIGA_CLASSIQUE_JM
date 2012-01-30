@@ -648,8 +648,10 @@ public class DatosColegialesAction extends MasterAction {
 			}
 			
 			result = exitoRefresco("messages.updated.success",request);
-		}
-		catch (Exception e) { 
+		} catch (SIGAException es) {
+			throwExcp (es.getLiteral(), new String[] {"modulo.censo"}, es, tx);
+		
+		}catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,tx);
 		}
 		return (result);
