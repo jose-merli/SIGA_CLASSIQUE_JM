@@ -966,11 +966,7 @@ protected String insertar (ActionMapping mapping,
 			//estableciendo los datos del Historico
 			CenHistoricoBean beanHis = new CenHistoricoBean();
 			beanHis.setMotivo(ClsConstants.HISTORICO_REGISTRO_ELIMINADO);
-			
-			//iniciando la transaccion para modificar en BD
-			t = usr.getTransactionPesada();
-			t.begin(); 			
-			
+
 			//Se llama a la interfaz Direccion para realizar el borrado
 			direccion.borrar(beanDir, request, usr);
 
