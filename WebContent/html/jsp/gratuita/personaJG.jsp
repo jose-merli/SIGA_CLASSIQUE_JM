@@ -747,7 +747,7 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 			if (resultado) {
 				 
 				 document.getElementById('fechaNac').value=resultado;
-				 rellenaEdad(resultado);
+				 rellenaEdad(resultado,'S');
 		 	}else{
 				//Si da a reset no viene nada por lo que actualizamos. si viene con fecha
 				//es que ha cerrado desde el aspa, lo dejamos como estuviera(no hacemos nada) 		 		
@@ -757,7 +757,7 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 			} 
 		}
 	
-		function rellenaEdad(fecha){
+		function rellenaEdad(fecha, Actualiza){
 			//calculo la fecha de hoy 
 		    hoy=new Date() 
 		    //alert(hoy) 
@@ -801,15 +801,27 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 		    //si resto los dias y me da menor que 0 entonces no ha cumplido años. Si da mayor o igual si ha cumplido 
 		    if (hoy.getUTCDate() - dia >= 0) 
 		    	edadReal= edad + 1 
-
-		       
-			document.PersonaJGForm.edad.value=edadReal;
+		    if(document.PersonaJGForm.edad.value==undefined)
+				document.PersonaJGForm.edad.value="";
+		    if(Actualiza=='S'){   
+				if(edadReal!=undefined){
+					document.PersonaJGForm.edad.value=edadReal;
+				}
+		    }else
+			    return edadReal;
 	} 
 
 
-		function 	actualizarAnio(fechaNac){
-
-			}
+		function 	validaEdad(){
+			if(document.PersonaJGForm.edad.value!=''){
+				var edad = rellenaEdad(document.getElementById('fechaNac').value,'N');
+				if(document.PersonaJGForm.edad.value==edad)
+					return true;
+				else 
+					return false;
+			}else 
+				return true;
+		}	
                
 		</script>
 		
@@ -2347,7 +2359,11 @@ function limpiarPersonaContrario() {
 				return false;
 			}
 			if(document.forms[0].NIdentificacion.value=="") document.forms[0].tipoId.value = "";
-							
+			if(!validaEdad()){
+				alert("<siga:Idioma key='gratuita.personaJG.messages.EdadErronea'/>");
+				fin();
+				return false;
+			}				
 			document.forms[0].importeIngresosAnuales.value=document.forms[0].importeIngresosAnuales.value.replace(/,/,".").trim();
 			document.forms[0].importeBienesInmuebles.value=document.forms[0].importeBienesInmuebles.value.replace(/,/,".").trim();
 			document.forms[0].importeBienesMuebles.value=document.forms[0].importeBienesMuebles.value.replace(/,/,".").trim();
