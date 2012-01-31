@@ -792,17 +792,23 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 		    edad=hoy.getYear()- ano - 1; //-1 porque no se si ha cumplido años ya este año 
 			var edadReal=edad;
 		    //si resto los meses y me da menor que 0 entonces no ha cumplido años. Si da mayor si ha cumplido 
-		    if (hoy.getMonth() + 1 - mes < 0) //+ 1 porque los meses empiezan en 0 
-		    	edadReal= edad 
-		    if (hoy.getMonth() + 1 - mes > 0) 
-		    	edadReal= edad+1 
-
+		    if (hoy.getMonth() + 1 - mes < 0){ //+ 1 porque los meses empiezan en 0 
+		    	edadReal= edad;
+		    }else	
+		    if (hoy.getMonth() + 1 - mes > 0){ 
+		    	edadReal= edad+1;
+			}else	
 		    //entonces es que eran iguales. miro los dias 
 		    //si resto los dias y me da menor que 0 entonces no ha cumplido años. Si da mayor o igual si ha cumplido 
-		    if (hoy.getUTCDate() - dia >= 0) 
-		    	edadReal= edad + 1 
+		    if (hoy.getMonth() + 1 - mes == 0){ 
+			    if (hoy.getUTCDate() - dia >= 0) {
+			    	edadReal= edad + 1;
+			    }else
+			    	edadReal= edad;
+		    }    		    	
 		    if(document.PersonaJGForm.edad.value==undefined)
 				document.PersonaJGForm.edad.value="";
+			
 		    if(Actualiza=='S'){   
 				if(edadReal!=undefined){
 					document.PersonaJGForm.edad.value=edadReal;
