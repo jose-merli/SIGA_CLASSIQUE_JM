@@ -116,7 +116,7 @@
 			} else if (cajgConfig == 4) {//PAMPLONA
 				buttons+=",val,ws";//envio WebService
 			} else if (cajgConfig == 6) {
-				buttons+=",gxml";//generar XML			
+				buttons+=",val,gxml";//generar XML			
 			} else if (cajgConfig == 7) {
 				buttons+=",val,ws";//envio WebService
 			}
