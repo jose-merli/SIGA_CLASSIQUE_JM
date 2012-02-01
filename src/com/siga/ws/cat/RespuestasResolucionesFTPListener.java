@@ -29,7 +29,7 @@ public class RespuestasResolucionesFTPListener extends SIGAContextListenerAdapte
 	private Timer timer = null;
 	private Integer idNotificacion;
 	private String nombreProceso = "RespuestasResolucionesFTPListener";
-	private long intervalo = 1;
+	private long intervalo = 3600000;	
 	
 	private final static String PCAJG_RESP_RESOL_FTP_TIMER_HORAS = "PCAJG_RESP_RESOL_FTP_TIMER_HORAS";
 	private final static String PCAJG_RESP_RESOL_FTP_ACTIVO = "PCAJG_RESP_RESOL_FTP_ACTIVO";
@@ -93,7 +93,15 @@ public class RespuestasResolucionesFTPListener extends SIGAContextListenerAdapte
 			UsrBean usrBean = new UsrBean();
 			usrBean.setUserName(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO));		
 			GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);
-			double horas = Double.parseDouble(admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, MODULO_SCS, PCAJG_RESP_RESOL_FTP_TIMER_HORAS, ""));
+			String valor = admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, MODULO_SCS, PCAJG_RESP_RESOL_FTP_TIMER_HORAS, "");
+			if (valor == null || valor.trim().equals("")) {
+				throw new Exception("El parámetro " + PCAJG_RESP_RESOL_FTP_TIMER_HORAS + " no existe o no es un número válido");
+			}
+			double horas = Double.parseDouble(valor);
+			if (!(horas > 0)) {
+				throw new Exception("El parámetro " + PCAJG_RESP_RESOL_FTP_TIMER_HORAS + " debe tener un valor mayor que cero.");
+			}
+			
 			long nuevoTimer = (long) (horas * 3600000);			
 			
 			if (nuevoTimer != intervalo) {
