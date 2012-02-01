@@ -134,60 +134,71 @@
 	String nombreFacturacion = "";
 	if (!modoAnterior.equalsIgnoreCase("NUEVO")) {
 		hashActuacion = (Hashtable) request.getAttribute("hashActuacionActual");
-		nombreFacturacion =	(String)hashActuacion.get("NOMBREFACTURACION");
-		//Nuevo numero de actuacion:
-		nactuacion = (String)hashActuacion.get("NUMEROASUNTO");
 		
-		//INC_3094_SIGA el colegiado se toma de la actuación, no de la designación
-		ncolegiado =(String)hashActuacion.get("NCOLEGIADO");
-		nombre = (String)hashActuacion.get("NOMBRE");
-		apellido1 = (String)hashActuacion.get("APELLIDO1");
-		apellido2 = (String)hashActuacion.get("APELLIDO2");
-
-		// Datos de la actuacion modificables:
-		fechaActuacion=GstDate.getFormatedDateShort("",(String)hashActuacion.get("FECHAACTUACION"));
-		acuerdoExtrajudicial= (String)hashActuacion.get("ACUERDOEXTRAJUDICIAL");
-		anulacion = (String)hashActuacion.get("ANULACION");
-		observaciones = (String)hashActuacion.get("OBSERVACIONES");
-		fechaJustificacion = GstDate.getFormatedDateShort("",(String)hashActuacion.get("FECHAJUSTIFICACION"));
-		observacionesJustificacion = (String)hashActuacion.get("OBSERVACIONESJUSTIFICACION");
-		
-		nombreAcreditacion = (String)hashActuacion.get("NOMBREACREDITACION");
-        nombreJuzgado = (String)hashActuacion.get("NOMBREJUZGADO");
-	    nombreProcedimiento = (String)hashActuacion.get("NOMBREPROCEDIMIENTO");
-	 	// Datos de la Prision seleccionada:
-	 	idPrision =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDPRISION);
-	 	facturada =  (String)hashActuacion.get("FACTURADO");
-	 	idInstitucionPrision =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION);
-		if (idPrision!=null && idInstitucionPrision!=null)
-			prisionSel.add(0,idPrision+","+idInstitucionPrision);
-			
-	    // Datos de la Pretension seleccionada:
-	 	idPretension =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDPRETENSION);
-	 	if (idPretension!=null){
-			pretensionSel.add(0,idPretension);
-		}	
-		
-	 	// Datos del Procedimiento seleccionado:
-	 	if(hashActuacion.get(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO)!=null && !((String)hashActuacion.get(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO)).equals("")){
-	 		idProcedimiento =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO);
-	 	}
-	 	
-	 	// Datos de la Acreditacion seleccionada:
-	 	idAcreditacion =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDACREDITACION);
-		if (idAcreditacion!=null)
-			acreditacionSel.add(0,idAcreditacion);
-			
-	 	// Datos del Juzgado seleccionado:
-	 	idJuzgado =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDJUZGADO);
+		if(hashActuacion!=null && hashActuacion.size() > 0){
+			nombreFacturacion =	(String)hashActuacion.get("NOMBREFACTURACION");
+			//Nuevo numero de actuacion:
+			nactuacion = (String)hashActuacion.get("NUMEROASUNTO");		
+			//INC_3094_SIGA el colegiado se toma de la actuación, no de la designación
+			ncolegiado =(String)hashActuacion.get("NCOLEGIADO");
+			nombre = (String)hashActuacion.get("NOMBRE");
+			apellido1 = (String)hashActuacion.get("APELLIDO1");
+			apellido2 = (String)hashActuacion.get("APELLIDO2");
 	
-		idInstitucionJuzgado =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO);
+			// Datos de la actuacion modificables:
+			fechaActuacion=GstDate.getFormatedDateShort("",(String)hashActuacion.get("FECHAACTUACION"));
+			acuerdoExtrajudicial= (String)hashActuacion.get("ACUERDOEXTRAJUDICIAL");
+			anulacion = (String)hashActuacion.get("ANULACION");
+			if(hashActuacion.get("OBSERVACIONES")!=null){
+				observaciones = (String)hashActuacion.get("OBSERVACIONES");
+			}
+			fechaJustificacion = GstDate.getFormatedDateShort("",(String)hashActuacion.get("FECHAJUSTIFICACION"));
+			
+			if(hashActuacion.get("OBSERVACIONESJUSTIFICACION")!=null){
+				observacionesJustificacion = (String)hashActuacion.get("OBSERVACIONESJUSTIFICACION");
+			}
+			
+			nombreAcreditacion = (String)hashActuacion.get("NOMBREACREDITACION");
+	        nombreJuzgado = (String)hashActuacion.get("NOMBREJUZGADO");
+	        if(hashActuacion.get("NOMBREPROCEDIMIENTO")!=null){
+		    	nombreProcedimiento = (String)hashActuacion.get("NOMBREPROCEDIMIENTO");
+	        }
+		 	// Datos de la Prision seleccionada:
+		 	idPrision =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDPRISION);
+		 	facturada =  (String)hashActuacion.get("FACTURADO");
+		 	idInstitucionPrision =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION);
+			if (idPrision!=null && idInstitucionPrision!=null)
+				prisionSel.add(0,idPrision+","+idInstitucionPrision);
+				
+		    // Datos de la Pretension seleccionada:
+		 	idPretension =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDPRETENSION);
+		 	if (idPretension!=null){
+				pretensionSel.add(0,idPretension);
+			}	
+			
+		 	// Datos del Procedimiento seleccionado:
+		 	if(hashActuacion.get(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO)!=null && !((String)hashActuacion.get(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO)).equals("")){
+		 		idProcedimiento =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO);
+		 	}
+		 	
+		 	// Datos de la Acreditacion seleccionada:
+		 	idAcreditacion =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDACREDITACION);
+			if (idAcreditacion!=null)
+				acreditacionSel.add(0,idAcreditacion);
+				
+		 	// Datos del Juzgado seleccionado:
+		 	idJuzgado =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDJUZGADO);
+		
+			idInstitucionJuzgado =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO);
+			
+			
+	
+			actuacionValidada = (String) hashActuacion.get("ACTUACIONVALIDADA");
+			numeroProcedimiento = (String) hashActuacion.get("NUMEROPROCEDIMIENTO");
+			nig = (String) hashActuacion.get("NIG");
+		}
 		
 		
-
-		actuacionValidada = (String) hashActuacion.get("ACTUACIONVALIDADA");
-		numeroProcedimiento = (String) hashActuacion.get("NUMEROPROCEDIMIENTO");
-		nig = (String) hashActuacion.get("NIG");
 	} else { //Para el caso de estar en NUEVO:
 	 	// Datos del Juzgado seleccionado:
 	 	idJuzgado =  (String)hashDesigna.get(ScsDesignaBean.C_IDJUZGADO);
@@ -206,7 +217,9 @@
 		nactuacion = (String)hashDesigna.get("NUMEROASUNTO");
 		idPersona = (String)hashDesigna.get("IDPERSONA");
 		 nombreJuzgado = (String)hashDesigna.get("NOMBREJUZGADO");
-	    nombreProcedimiento = (String)hashDesigna.get("NOMBREPROCEDIMIENTO");
+		if(hashDesigna.get("NOMBREPROCEDIMIENTO")!=null){
+	    	nombreProcedimiento = (String)hashDesigna.get("NOMBREPROCEDIMIENTO");
+        }
 	    numeroProcedimiento = (String) hashDesigna.get("NUMPROCEDIMIENTO");
 	    nig = (String) hashDesigna.get("NIG");
 	    if(validarActuacion!=null)
@@ -512,8 +525,7 @@
 						</td>
 					
 					<%} else if ((esLetrado||modoAnterior.equalsIgnoreCase("VER"))){%>
-					<td colspan="7">
-						
+					<td colspan="7">						
 							<html:text name="ActuacionesDesignasForm"  style="width:600px" property="procedimiento1" styleClass="boxConsulta" readOnly="true" value="<%=nombreProcedimiento%>"/>
 					</td>
 					<td  style="display:none">

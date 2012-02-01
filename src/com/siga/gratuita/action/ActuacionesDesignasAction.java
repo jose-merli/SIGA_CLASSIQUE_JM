@@ -447,8 +447,12 @@ public class ActuacionesDesignasAction extends MasterAction {
 			 UtilidadesHash.set(hashDesigna,ScsEJGBean.C_FECHARATIFICACION,((ScsEJGBean)vEjgRelacionado.get(0)).getFechaRatificacion());
 			 UtilidadesHash.set(hashDesigna,ScsEJGBean.C_FECHANOTIFICACION,((ScsEJGBean)vEjgRelacionado.get(0)).getFechaNotificacion());
 		    }
-			//Se muestra todas las Actuaciones de la designa.			
-		    Hashtable hashActuacion = (Hashtable)(designaAdm.getConsultaActuacion(hashDatosDesigna, request)).get(0);
+			//Se muestra todas las Actuaciones de la designa.
+		    Vector vAct = designaAdm.getConsultaActuacion(hashDatosDesigna, request);
+		    Hashtable hashActuacion = new Hashtable();
+		    if(vAct.size()>0){
+		    	hashActuacion = (Hashtable)(vAct).get(0);
+		    }
 		    
 		    //Mostrar Las Actuaciones antiguas.
 		   Hashtable actuacionAntigua =(Hashtable)(designaAdm.getDesignaActuaciones(hashDatosDesigna, request)).get(0);
@@ -463,10 +467,16 @@ public class ActuacionesDesignasAction extends MasterAction {
 			request.setAttribute("hashActuacionActual",hashActuacion);
 			ses.setAttribute("hashActuacionAntigua",actuacionAntigua);
 			
-			String talonario=((String)hashActuacion.get("TALONARIO"));
+			String talonario="";
+			if(hashActuacion.get("TALONARIO")!=null){
+				talonario = ((String)hashActuacion.get("TALONARIO"));
+			}
 		    miform.setTalonario(talonario);
 			
-		    String talon=((String)hashActuacion.get("TALON"));
+		    String talon = "";
+		    if(hashActuacion.get("TALON")!=null){
+		    	talon = ((String)hashActuacion.get("TALON"));
+		    }
 		    miform.setTalon(talon);
 			
 		} catch(Exception e){
