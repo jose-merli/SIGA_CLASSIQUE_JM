@@ -1076,7 +1076,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			sql.append(" AND (EJG.IDTIPORESOLAUTO IS NULL OR ");
 			sql.append(" EJG.IDTIPORESOLAUTO NOT IN (");
 			sql.append(ClsConstants.IDTIPO_RESOLUCIONAUTO_MODYCONCEDER);
-			sql.append(")))");
+			sql.append(")))))");
 			
 			
 			sql.append(" AND NOT EXISTS (SELECT * ");
@@ -1089,16 +1089,23 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			sql.append(" AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
 			sql.append(" AND EJGDES.ANIOEJG = EJG.ANIO ");
 			sql.append(" AND EJGDES.NUMEROEJG = EJG.NUMERO ");
-			
-			sql.append("AND EJG.IDTIPORATIFICACIONEJG IN (");
+
+			sql.append(" AND (( EJG.IDTIPORATIFICACIONEJG IN ( ");
+			sql.append(TIPO_RESOLUCION_DENEGADO);
+			sql.append(" , ");
+			sql.append(TIPO_RESOLUCION_ARCHIVO);
+			sql.append(" ) ");
+			sql.append(" AND EJG.IDTIPORESOLAUTO IS NOT NULL ");
+			sql.append(" AND EJG.IDTIPORESOLAUTO IN (");
+			sql.append(ClsConstants.IDTIPO_RESOLUCIONAUTO_MODYCONCEDER);
+			sql.append(	"))"); 
+			sql.append(" OR (EJG.IDTIPORATIFICACIONEJG IN (");
 			sql.append(TIPO_RESOLUCION_RECONOCIDO100);
-			sql.append(",");
+			sql.append(" , ");
 			sql.append(TIPO_RESOLUCION_RECONOCIDO80);
-			sql.append(",");
-			sql.append(TIPO_RESOLUCION_PTE_CAJG);
-			sql.append(")");
+			sql.append(" ) ");
 			sql.append(" AND (EJG.IDTIPORESOLAUTO IS NULL OR ");
-			sql.append("EJG.IDTIPORESOLAUTO NOT IN (");
+			sql.append(" EJG.IDTIPORESOLAUTO NOT IN (");
 			sql.append(ClsConstants.IDTIPO_RESOLUCIONAUTO_MODYDENEGAR);
 			sql.append(")))))");
 			
@@ -1116,6 +1123,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			sql.append(" AND D.NUMERO = EJGDES.NUMERODESIGNA ");
 			sql.append(" AND EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
 			sql.append(" AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
+			
 			sql.append(" AND EJGDES.ANIOEJG = EJG.ANIO ");
 			sql.append(" AND EJGDES.NUMEROEJG = EJG.NUMERO)=(SELECT COUNT(*) ");
 			sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
