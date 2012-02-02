@@ -49,6 +49,7 @@
 	<html:javascript formName="ValidarVolantesGuardiasForm" staticJavascript="false" />  
   	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
+	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 
 </head>
 
@@ -61,15 +62,15 @@
 		</td>
 	</tr>
 	</table>
-
+<html:form action="/JGR_ValidarVolantesGuardias.do" method="POST" target="resultadoModal">
+	<html:hidden name="ValidarVolantesGuardiasForm" property = "modo" value = ""/>
+	<html:hidden name="ValidarVolantesGuardiasForm" property = "datosValidar" value = ""/>
+	<html:hidden name="ValidarVolantesGuardiasForm" property = "datosBorrar" value = ""/>
 	<siga:ConjCampos leyenda="censo.busquedaVolantesGuardias.literal.titulo1">
 
 	<table class="tablaCampos" align="center">
 
-	<html:form action="/JGR_ValidarVolantesGuardias.do" method="POST" target="resultadoModal">
-	<html:hidden name="ValidarVolantesGuardiasForm" property = "modo" value = ""/>
-	<html:hidden name="ValidarVolantesGuardiasForm" property = "datosValidar" value = ""/>
-	<html:hidden name="ValidarVolantesGuardiasForm" property = "datosBorrar" value = ""/>
+	
 
 	<tr>
 		<td class="labelText">
@@ -108,14 +109,38 @@
 		<siga:Idioma key="censo.busquedaVolantesGuardias.literal.pendientevalidar"/> 
 	  </td>
       <td class="labelText">
-	    <input type="checkbox" name="pendienteValidar" class="box" checked>
+      <html:select property="pendienteValidar"  name="ValidarVolantesGuardiasForm" value="0" styleClass="boxCombo" style="width:60px;">
+							<html:option value="">&nbsp;</html:option>
+							<html:option  value="0" ><siga:Idioma key="general.yes"/></html:option>
+							<html:option value="1"><siga:Idioma key="general.no"/></html:option>
+						</html:select>	
+      
+	    
 	  </td>
-	</tr>				
-	</html:form>
+	</tr>	
 	</table>
 
 	</siga:ConjCampos>
-
+	<siga:ConjCampos leyenda="gratuita.busquedaAsistencias.leyenda.datosValidacion">
+	<table>
+	<tr>
+				
+				<td class="labelText" style="text-align: right"><siga:Idioma
+					key="gratuita.busquedaAsistencias.literal.fechaValidacion" /> <siga:Fecha
+					nombreCampo="fechaValidacion" valorInicial=""
+					 /> &nbsp;<a
+					onClick="return showCalendarGeneral(fechaValidacion);"
+					onMouseOut="MM_swapImgRestore();"
+					onMouseOver="MM_swapImage('Calendario','','<html:rewrite page="/html/imagenes/calendar_hi.gif"/>',1);"><img
+					src="<html:rewrite page='/html/imagenes/calendar.gif'/>"
+					alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"
+					border="0"></a></td>
+			</tr>
+			</table>
+		</siga:ConjCampos>		
+	
+	
+</html:form>
 
 	<!-- FIN: CAMPOS DE BUSQUEDA-->
 
@@ -155,7 +180,7 @@
 			if (trim(document.forms[0].numColegiado.value)=="" && 
 				trim(document.forms[0].idGuardia.value)=="" && 
 				trim(document.forms[0].idTurno.value)=="" &&
-				!document.forms[0].pendienteValidar.checked){
+				document.forms[0].pendienteValidar.value==''){
 				alert("<siga:Idioma key="gratuita.busquedaVolantesGuardias.literal.criteriosObligatorios"/> ");	
 				fin();
 				return false;
@@ -204,9 +229,17 @@
 				
 		function accionGuardar() 
 		{		
+			
+			
 			sub();
+			
+			
+			
+			
 			var datosvalidar="";
 			var datosborrar="";
+			
+			
 			var checks = document.resultadoModal.document.getElementsByName("chkVal");
 			var checksOld = document.resultadoModal.document.getElementsByName("chkValOld");
 			if (checks.type != 'checkbox') {
@@ -225,6 +258,23 @@
 			}
 			if (datosvalidar.length>2) datosvalidar=datosvalidar.substring(0,datosvalidar.length-2);
 			if (datosborrar.length>2) datosborrar=datosborrar.substring(0,datosborrar.length-2);
+			if(trim(datosvalidar)!=""){
+				if(document.ValidarVolantesGuardiasForm.fechaValidacion.value!=''){
+					var fechaActual = getFechaActualDDMMYYYY();
+					
+					var fechaValidacion = document.ValidarVolantesGuardiasForm.fechaValidacion.value; // Fecha de validacion
+					var comparaFecha = compararFecha(fechaValidacion,fechaActual);
+					if (comparaFecha==1) {
+						fin();
+						error = '<siga:Idioma key="gratuita.busquedaAsistencias.error.fechaValidacionMayorHoy"/>';
+						alert(error);
+						return false;
+					}
+					
+				}
+				
+			}
+				
 			if (trim(datosvalidar)!="" || trim(datosborrar)!="") {
 				document.forms[0].datosValidar.value=datosvalidar;
 				document.forms[0].datosBorrar.value=datosborrar;

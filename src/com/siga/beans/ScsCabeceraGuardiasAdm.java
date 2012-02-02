@@ -52,6 +52,7 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 				ScsCabeceraGuardiasBean.C_FECHASUSTITUCION,
 				ScsCabeceraGuardiasBean.C_COMENSUSTITUCION,
 				ScsCabeceraGuardiasBean.C_FECHAALTA,
+				ScsCabeceraGuardiasBean.C_FECHAVALIDACION,
 				ScsCabeceraGuardiasBean.C_USUALTA,
 				ScsCabeceraGuardiasBean.C_POSICION
 		};
@@ -88,6 +89,7 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 			bean.setComenSustitucion 	(UtilidadesHash.getString (hash, ScsCabeceraGuardiasBean.C_COMENSUSTITUCION));
 			bean.setLetradoSustituido	(UtilidadesHash.getLong(hash, ScsCabeceraGuardiasBean.C_LETRADOSUSTITUIDO));
 			bean.setFechaAlta(UtilidadesHash.getString (hash, ScsCabeceraGuardiasBean.C_FECHAALTA));
+			bean.setFechaValidacion(UtilidadesHash.getString (hash, ScsCabeceraGuardiasBean.C_FECHAVALIDACION));
 			bean.setUsuAlta(UtilidadesHash.getInteger (hash, ScsCabeceraGuardiasBean.C_USUALTA));
 			bean.setPosicion(UtilidadesHash.getInteger(hash, ScsCabeceraGuardiasBean.C_POSICION));
 			
@@ -124,6 +126,7 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsCabeceraGuardiasBean.C_FECHASUSTITUCION, b.getFechaSustitucion());
 			UtilidadesHash.set(hash, ScsCabeceraGuardiasBean.C_COMENSUSTITUCION, b.getComenSustitucion());
 			UtilidadesHash.set(hash, ScsCabeceraGuardiasBean.C_FECHAALTA, b.getFechaAlta());
+			UtilidadesHash.set(hash, ScsCabeceraGuardiasBean.C_FECHAVALIDACION, b.getFechaValidacion());
 			UtilidadesHash.set(hash, ScsCabeceraGuardiasBean.C_USUALTA, b.getUsuAlta());
 			UtilidadesHash.set(hash, ScsCabeceraGuardiasBean.C_POSICION, b.getPosicion());
 			UtilidadesHash.set(hash, ScsCabeceraGuardiasBean.C_FECHAMODIFICACION, "SYSDATE");

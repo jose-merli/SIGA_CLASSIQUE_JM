@@ -25,10 +25,6 @@
 	HttpSession ses=request.getSession(true);
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
-
-	// parametro
-	GenParametrosAdm admPar = new GenParametrosAdm(usr);
-	String validarVolantes = admPar.getValor(usr.getLocation(),"SCS","VALIDAR_VOLANTE","N");	
 	
 	String nColegiado =  request.getAttribute("nColegiado")==null?"":(String)request.getAttribute("nColegiado");
 	String nombreColegiado =  request.getAttribute("nombreColegiado")==null?"":(String)request.getAttribute("nombreColegiado");
@@ -421,13 +417,8 @@
 	</html:form>
 	
 	<!-- FIN: CAMPOS DE BUSQUEDA-->	
-
-	
-<% if (validarVolantes.equals("S")) { %>
 		<siga:ConjBotonesBusqueda botones="VOL,C,B,N"  titulo="gratuita.busquedaAsistencias.literal.titulo"/>
-<% } else { %>
-		<siga:ConjBotonesBusqueda botones="C,B,N"  titulo="gratuita.busquedaAsistencias.literal.titulo"/>
-<% } %>
+
 
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 	<!-- FIN  ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->

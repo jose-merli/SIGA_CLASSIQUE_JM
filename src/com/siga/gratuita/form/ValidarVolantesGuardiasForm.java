@@ -83,7 +83,13 @@ public class ValidarVolantesGuardiasForm extends MasterForm
 	public void setBuscarFechaHasta(String buscarFechaHasta) {
 		UtilidadesHash.set(this.datos, "buscarFechaHasta", buscarFechaHasta);
 	}
-	
+	String fechaValidacion;
+	public String getFechaValidacion() {
+		return fechaValidacion;
+	}
+	public void setFechaValidacion(String fechaValidacion) {
+		this.fechaValidacion = fechaValidacion;
+	}
 	
 	
 	

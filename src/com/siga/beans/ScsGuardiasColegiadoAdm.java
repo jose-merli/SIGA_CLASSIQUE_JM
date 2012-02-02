@@ -451,6 +451,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			consulta = " SELECT guard."+ScsCabeceraGuardiasBean.C_IDINSTITUCION;
 			consulta+= " ,guard.rowid AS ROWIND";
 			consulta+= " ,guard."+ScsCabeceraGuardiasBean.C_VALIDADO;
+			consulta+= " ,guard."+ScsCabeceraGuardiasBean.C_FECHAVALIDACION;
 			consulta+= " ,guard."+ScsCabeceraGuardiasBean.C_IDTURNO;
 			consulta+= " ,guard."+ScsCabeceraGuardiasBean.C_IDGUARDIA;
 			consulta+= " ,guard."+ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS;
@@ -519,7 +520,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 				 consulta += " AND guard."+ScsCabeceraGuardiasBean.C_FECHA_FIN+"<='"+(String)miHash.get("FECHA_FIN")+"'";
 			}
 			if (miHash.get("PENDIENTEVALIDAR")!=null && !((String)miHash.get("PENDIENTEVALIDAR")).trim().equals(""))
-			    consulta += " AND guard."+ScsCabeceraGuardiasBean.C_VALIDADO+"='0'";
+			    consulta += " AND guard."+ScsCabeceraGuardiasBean.C_VALIDADO+"='"+(String)miHash.get("PENDIENTEVALIDAR")+"'";
 
 			//ORDEN
 			consulta += " ORDER BY FECHA_INICIO_PK, POSICION"; 

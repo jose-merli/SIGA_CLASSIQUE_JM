@@ -168,6 +168,9 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 				    if (v!=null && v.size()>0) {
 				        ScsCabeceraGuardiasBean b = (ScsCabeceraGuardiasBean) v.get(0);
 				        b.setValidado(ClsConstants.DB_TRUE);
+				        if(miForm.getFechaValidacion()!=null&&!miForm.getFechaValidacion().equals("")){
+				        	b.setFechaValidacion(GstDate.getApplicationFormatDate("", miForm.getFechaValidacion()));
+				        }
 				        if (!adm.update(b)) {
 				            throw new ClsExceptions("Error al actualizar validado en cabecera de guardias: "+adm.getError());
 				        }
@@ -211,6 +214,7 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 				    ht.put(ScsCabeceraGuardiasBean.C_IDGUARDIA,idguardia);
 				    ht.put(ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS,idcalendarioguardias);
 				    ht.put(ScsCabeceraGuardiasBean.C_IDPERSONA,idpersona);
+				    
 				    //ht.put(ScsCabeceraGuardiasBean.C_FECHA_INICIO,fechainicio);
 				    if(fechainicioPK != null)
 				    	ht.put(ScsCabeceraGuardiasBean.C_FECHA_INICIO,fechainicioPK);
@@ -219,6 +223,7 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 				    Vector v = adm.selectByPK(ht);
 				    if (v!=null && v.size()>0) {
 				        ScsCabeceraGuardiasBean b = (ScsCabeceraGuardiasBean) v.get(0);
+				        b.setFechaValidacion("");
 				        b.setValidado(ClsConstants.DB_FALSE);
 				        if (!adm.update(b)) {
 				            throw new ClsExceptions("Error al actualizar validado a false en cabecera de guardias: "+adm.getError());
@@ -269,7 +274,7 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 			String numeroColegiadoParam = miForm.getNumColegiado();
 			String fechaDesde = miForm.getBuscarFechaDesde();
 			String fechaHasta = miForm.getBuscarFechaHasta();
-			String pedienteValidar = (miForm.getPendienteValidar()==null)?"":miForm.getPendienteValidar();
+			//String pedienteValidar = (miForm.getPendienteValidar()==null)?"":miForm.getPendienteValidar();
 			
 
 			miHash.put("IDINSTITUCION",idinstitucion);
@@ -279,7 +284,7 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 			miHash.put("NUMCOLEGIADO",numeroColegiadoParam);
 			miHash.put("BUSCARFECHADESDE",fechaDesde);
 			miHash.put("BUSCARFECHAHASTA",fechaHasta);
-			miHash.put("PENDIENTEVALIDAR",pedienteValidar);
+			miHash.put("PENDIENTEVALIDAR",miForm.getPendienteValidar());
 			
 			//Busqueda de colegiados. Obtengo el nombre, numero de colegiado, observaciones y las fechas de inicio y fin
 			v_guardias = admGuardiaColegiado.selectGenerico(admGuardiaColegiado.buscarColegiados(miHash));
@@ -299,6 +304,7 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 				String idguardia = (String)registro.get(ScsCabeceraGuardiasBean.C_IDGUARDIA);
 				String idpersona = (String)registro.get(ScsCabeceraGuardiasBean.C_IDPERSONA);
 				String idCalendarioGuardias = (String)registro.get(ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS);
+				String posicion = (String)registro.get(ScsCabeceraGuardiasBean.C_POSICION);
 				
 				String fechaInicioPKBind = GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioPK); 
 				
@@ -442,13 +448,15 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 				nueva.put("IDCALENDARIOGUARDIAS",(String)registro.get("IDCALENDARIOGUARDIAS"));
 				nueva.put("NOMTURNO",(String)registro.get("NOMTURNO"));
 				nueva.put("VALIDADO",(String)registro.get("VALIDADO"));
+				nueva.put("FECHAVALIDACION",UtilidadesHash.getString(registro,"FECHAVALIDACION"));
 				nueva.put("NOMGUARDIA",(String)registro.get("NOMGUARDIA"));
 				nueva.put("ESMODIFICABLE",(String)registro.get("ESMODIFICABLE"));
 				nueva.put("ACT_VALIDADAS",(String)registro.get("ACT_VALIDADAS"));
 				
 				
+				
 				nueva.put("PL",pl);
-				String key = fInicioPermuta+rowId;
+				String key = fInicioPermuta+posicion+rowId;
 				if(tmResultado.containsKey(key)) {
 					//System.out.println("key:"+key);
 				}
@@ -471,142 +479,7 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 		return forward;
 	}
 	
-	protected String buscarOld(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-
-		Hashtable miHash = new Hashtable();
-		UsrBean usr = null;
-		String forward = "buscar";
-	    ValidarVolantesGuardiasForm miForm = (ValidarVolantesGuardiasForm) formulario;
-		ScsGuardiasColegiadoAdm admGuardiaColegiado = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
-		ScsPermutaGuardiasAdm admPermutaguardias = new ScsPermutaGuardiasAdm(this.getUserBean(request));
-		try {
-		
-
-		String idcalendarioguardias="", idinstitucion="", idturno="", idguardia="";
-		String idpersona = "", fechaInicio="", fechaFin="", fechaPermuta="", numeroColegiado="";
-		String fechaInicioPermuta="", fechaFinPermuta="";
-		String fechaInicioPK="";
-		Vector v_resultado = new Vector ();
-		Vector v_guardias = new Vector ();
-		Vector v_solicitante = new Vector();
-		Vector v_confirmador = new Vector();
-		Hashtable hashSolicitante = new Hashtable();
-		Hashtable hashConfirmador = new Hashtable();
-		String numeroLetrados="", numeroSustitutos="", numero="";
-		String pl = ""; //Valor devuelto por el PL de Permutas
-		
-			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");			
-
-			//Datos necesarios para la consulta
-			idinstitucion = usr.getLocation();
-			String idpersonaParam = miForm.getIdPersona();
-			String idTurno = miForm.getIdTurno();
-			if (idTurno.indexOf(",")!=-1) {
-			    idTurno = idTurno.substring(idTurno.indexOf(",")+1,idTurno.length());
-			}
-			String idGuardia = miForm.getIdGuardia();
-			
-			String numeroColegiadoParam = miForm.getNumColegiado();
-			String fechaDesde = miForm.getBuscarFechaDesde();
-			String fechaHasta = miForm.getBuscarFechaHasta();
-			String pedienteValidar = (miForm.getPendienteValidar()==null)?"":miForm.getPendienteValidar();
-			
-
-			miHash.put("IDINSTITUCION",idinstitucion);
-			miHash.put("IDPERSONA",idpersonaParam);
-			miHash.put("IDTURNO",idTurno);
-			miHash.put("IDGUARDIA",idGuardia);
-			miHash.put("NUMCOLEGIADO",numeroColegiadoParam);
-			miHash.put("BUSCARFECHADESDE",fechaDesde);
-			miHash.put("BUSCARFECHAHASTA",fechaHasta);
-			miHash.put("PENDIENTEVALIDAR",pedienteValidar);
-			
-			/*
-			miHash.put("IDINSTITUCION",idinstitucion);
-			miHash.put("IDTURNO",idturno);
-			miHash.put("IDGUARDIA",idguardia);
-			miHash.put("IDCALENDARIOGUARDIAS",idcalendarioguardias);
-			*/
-			
-			//Busqueda de colegiados. Obtengo el nombre, numero de colegiado, observaciones y las fechas de inicio y fin
-			v_guardias = admGuardiaColegiado.selectGenerico(admGuardiaColegiado.buscarColegiadosOld(miHash));
-			
-			
-			int i = 0;
-			while (i < v_guardias.size()) {
-				String nombre = (String)((Hashtable)v_guardias.get(i)).get(CenPersonaBean.C_NOMBRE);
-				//fechaInicio = (String)((Hashtable)v_guardias.get(i)).get(ScsCabeceraGuardiasBean.C_FECHA_INICIO);
-				fechaInicio = (String)((Hashtable)v_guardias.get(i)).get("FECHAINICIO");
-				fechaInicioPK = (String)((Hashtable)v_guardias.get(i)).get("FECHA_INICIO_PK");
-				fechaFin = (String)((Hashtable)v_guardias.get(i)).get(ScsCabeceraGuardiasBean.C_FECHA_FIN);
-				
-				idturno = (String)((Hashtable)v_guardias.get(i)).get(ScsCabeceraGuardiasBean.C_IDTURNO);
-				idguardia = (String)((Hashtable)v_guardias.get(i)).get(ScsCabeceraGuardiasBean.C_IDGUARDIA);
-				idpersona = (String)((Hashtable)v_guardias.get(i)).get(ScsCabeceraGuardiasBean.C_IDPERSONA);
-				
-				numeroColegiado = (String)((Hashtable)v_guardias.get(i)).get(CenColegiadoBean.C_NCOLEGIADO);
-				
-				fechaInicioPermuta = (String)((Hashtable)v_guardias.get(i)).get("FECHAINICIOPERMUTA");
-				fechaFinPermuta = (String)((Hashtable)v_guardias.get(i)).get("FECHAFINPERMUTA");
-				numero = (String)((Hashtable)v_guardias.get(i)).get("NUMEROPERMUTA");
-				if (numero==null || numero.equals("")){
-					numero="NINGUNO";
-				}
-				
-				//Chequeo si existe una permuta de esa persona como solicitante o como confirmador
-				//Consulta como solicitante
-
-				//Ejecuto el PL de Permutas que me dice el tipo de Permuta posible:				
-				pl = admPermutaguardias.ejecutarFuncionPermutas(idinstitucion,idturno,idguardia,idpersona,GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio));
-				if (pl.equals("5")){//si buscando por la fecha de inicio (para el caso en el que todavia no se haya confirmado la solicitud de la permuta) devuelve el valor "5" (pendiente de permutar) volvemos a ejecutar
-					                // el procedimiento pasando la fecha de inicio de permuta (para el caso en el que ya se haya 
-					                // confirmado la permuta) por si sigue devolviendo "5" o devuelve otro
-					                // valor como "3" (guardia permutada), como "2" (Permuta solicitada) o "4" (Pendiente de confirmar).
-				
-				    pl = admPermutaguardias.ejecutarFuncionPermutas(idinstitucion,idturno,idguardia,idpersona,GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioPermuta));
-				} 
-				
-				//Inserto los datos a visualizar en el JSP
-				Hashtable nueva = new Hashtable();
-				nueva.put("FECHAINICIO",fechaInicio);
-				nueva.put("FECHA_INICIO_PK",fechaInicioPK);
-				nueva.put("FECHAFIN",fechaFin);			
-				nueva.put("FECHAINICIOPERMUTA",fechaInicioPermuta);
-				nueva.put("FECHAFINPERMUTA",fechaFinPermuta);				
-				nueva.put("FECHAPERMUTA",fechaPermuta);
-				nueva.put("NUMEROPERMUTA",numero);
-				nueva.put("NUMEROCOLEGIADO",numeroColegiado);
-				nueva.put("NOMBRE",nombre);
-				nueva.put("IDPERSONA",idpersona);
-				nueva.put("IDINSTITUCION",idinstitucion);
-				nueva.put("IDTURNO",idturno);
-				nueva.put("IDGUARDIA",idguardia);
-				nueva.put("IDCALENDARIOGUARDIAS",(String)((Hashtable)v_guardias.get(i)).get("IDCALENDARIOGUARDIAS"));
-				nueva.put("NOMTURNO",(String)((Hashtable)v_guardias.get(i)).get("NOMTURNO"));
-				nueva.put("VALIDADO",(String)((Hashtable)v_guardias.get(i)).get("VALIDADO"));
-				nueva.put("NOMGUARDIA",(String)((Hashtable)v_guardias.get(i)).get("NOMGUARDIA"));
-				nueva.put("ESMODIFICABLE",(String)((Hashtable)v_guardias.get(i)).get("ESMODIFICABLE"));
-				nueva.put("ACT_VALIDADAS",(String)((Hashtable)v_guardias.get(i)).get("ACT_VALIDADAS"));
-				
-				
-				nueva.put("PL",pl);
-				v_resultado.add(i,nueva);	
-				i++;	
-			}//Fin del while
-
-			request.setAttribute("resultado",v_resultado);
-
-			request.setAttribute("IDINSTITUCION",idinstitucion);
-			request.setAttribute("IDTURNO",idturno);
-			request.setAttribute("IDGUARDIA",idguardia);
-			request.setAttribute("IDCALENDARIOGUARDIAS",idcalendarioguardias);
-		} 
-		catch (Exception e){
-			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
-		}
-		
-		return forward;
-	}
+	
 
 	
 }

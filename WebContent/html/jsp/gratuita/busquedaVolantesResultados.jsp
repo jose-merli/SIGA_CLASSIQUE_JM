@@ -1,5 +1,6 @@
 <!-- busquedaVolantesResultados.jsp -->
 <!-- CABECERA JSP -->
+<%@page import="com.siga.Utilidades.UtilidadesHash"%>
 <%@page import="com.siga.Utilidades.UtilidadesNumero"%>
 <%@page import="com.siga.Utilidades.UtilidadesString"%>
 <meta http-equiv="Expires" content="0">
@@ -87,8 +88,8 @@
 			   nombre="listado"
 			   borde="2"
 			   clase="tableTitle"		   
-			   nombreCol="gratuita.busquedaVolantesGuardias.literal.val,gratuita.busquedaVolantesGuardias.literal.turno,gratuita.busquedaVolantesGuardias.literal.guardia,censo.busquedaVolantesGuardias.literal.ncol,gratuita.busquedaVolantesGuardias.literal.letrado,gratuita.busquedaVolantesGuardias.literal.FechaInicio,gratuita.busquedaVolantesGuardias.literal.FechaFin,"
-			   tamanoCol="5,15,20,10,20,10,10,10"
+			   nombreCol="gratuita.busquedaVolantesGuardias.literal.val,gratuita.busquedaAsistencias.literal.abrv.fechaValidacion,gratuita.busquedaVolantesGuardias.literal.turno,gratuita.busquedaVolantesGuardias.literal.guardia,censo.busquedaVolantesGuardias.literal.ncol,gratuita.busquedaVolantesGuardias.literal.letrado,gratuita.busquedaVolantesGuardias.literal.FechaInicio,gratuita.busquedaVolantesGuardias.literal.FechaFin,"
+			   tamanoCol="5,8,15,17,8,17,10,10,10"
 		   			alto="100%"
 
 			   modal="M"
@@ -96,12 +97,12 @@
 	<% if ((obj!=null) && !obj.isEmpty()) { %>
 				<%
 				int recordNumber=1;
-				System.out.println(recordNumber);
 				//String fechaInicio="", fechaFin="", fechaPermuta="", idcalendarioguardias="", idturno="", idguardia="", idinstitucion="";
 				String fechaInicio="", fechaFin="",  idcalendarioguardias="", idturno="", idguardia="", idinstitucion="";
 				String numerocolegiado="", nombre="", observaciones="", idpersona="", numero="", fechaInicioPermuta="", fechaFinPermuta="";
 				String pl = "";
 				String fechaInicioPK = "";
+				
 				while ((recordNumber) <= obj.size()) {	 	
 					Hashtable hash = (Hashtable)obj.get(recordNumber-1);
 				%>
@@ -142,6 +143,7 @@
 				String nomTurno = ((String)hash.get("NOMTURNO")).equals("")?"":(String)hash.get("NOMTURNO");
 				String nomGuardia = ((String)hash.get("NOMGUARDIA")).equals("")?"":(String)hash.get("NOMGUARDIA");
 				String validado = ((String)hash.get("VALIDADO")).equals("")?"":(String)hash.get("VALIDADO");
+				String fechaValidacion = UtilidadesHash.getString(hash,"FECHAVALIDACION").equals("")?"&nbsp;":GstDate.getFormatedDateShort("",(String)hash.get("FECHAVALIDACION"));
 				int numActuacionesValidadas = 0;
 				if (hash!=null && (String)hash.get("ACT_VALIDADAS")!=null &&
 					!hash.get("ACT_VALIDADAS").toString().trim().equals("")){
@@ -193,6 +195,7 @@
 					
 					
 				</td>
+				<td><%=fechaValidacion%></td>
 				<td><%=nomTurno%></td>								
 				<td><%=nomGuardia%></td>								
 				<td align="center"><%=numerocolegiado%></td>								

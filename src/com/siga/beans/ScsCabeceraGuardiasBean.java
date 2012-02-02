@@ -27,6 +27,7 @@ public class ScsCabeceraGuardiasBean extends MasterBean{
 	public String	fechaSustitucion;
 	public String  comenSustitucion;
 	public String  fechaAlta;
+	public String  fechaValidacion;
 	public Integer  usuAlta;
 	private Integer posicion; 
 	
@@ -52,6 +53,7 @@ public class ScsCabeceraGuardiasBean extends MasterBean{
 	static public final String  C_FECHASUSTITUCION = 		"FECHASUSTITUCION";
 	static public final String  C_COMENSUSTITUCION = 		"COMENSUSTITUCION";
 	static public final String  C_FECHAALTA = 		"FECHAALTA";
+	static public final String  C_FECHAVALIDACION = 		"FECHAVALIDACION";
 	static public final String  C_POSICION = 		"POSICION";
 	static public final String  C_USUALTA = 		"USUALTA";
 	
@@ -198,6 +200,12 @@ public class ScsCabeceraGuardiasBean extends MasterBean{
 	}
 	public void setPosicion(Integer posicion) {
 		this.posicion = posicion;
+	}
+	public String getFechaValidacion() {
+		return fechaValidacion;
+	}
+	public void setFechaValidacion(String fechaValidacion) {
+		this.fechaValidacion = fechaValidacion;
 	}
 	
 	
