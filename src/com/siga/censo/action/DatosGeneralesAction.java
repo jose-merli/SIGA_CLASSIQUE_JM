@@ -1185,6 +1185,7 @@ public class DatosGeneralesAction extends MasterAction {
 						hash.put(CenPersonaBean.C_NIFCIF, subNumIdentificacion);
 						request.getSession().setAttribute("MOSTRARMENSAJE","mostrarMensaje");
 					}
+					
 					perBean = (CenPersonaBean) personas.get(0);
 					idPersonaValor = new Long(perBean.getIdPersona()).longValue();
 					/*
@@ -1198,7 +1199,7 @@ public class DatosGeneralesAction extends MasterAction {
 
 			CenClienteBean beanCli = null;
 			boolean existenDatos = false;
-			boolean existenDatosEnColegio = false;
+			//boolean existenDatosEnColegio = false;
 			
 			if (miForm.getContinuarAprobacion().equals("1")) {
 				beanCli = adminCli.insertNoColegiado(hash, request);
@@ -1209,7 +1210,7 @@ public class DatosGeneralesAction extends MasterAction {
 					beanCli = adminCli.existeCliente(idPersonaValor, new Integer(idInstitucion));
 					if (beanCli != null) {
 						existenDatos = false;
-						existenDatosEnColegio = true;
+						//existenDatosEnColegio = true;
 						adminCli.setError("messages.error.ora.00001");
 					} else {
 						beanCli = adminCli.existeClienteOtraInstitucion(idPersonaValor, new Integer(idInstitucion));
@@ -1286,37 +1287,37 @@ public class DatosGeneralesAction extends MasterAction {
 				mensInformacion = adminCli.getError();
 			}
 			/** Si viene a vacio despues de recuperar los datos de beanCli = adminCli.insertNoColegiado pues no debe de entrar solo si el valor beanCli tiene datos. **/
-			if (beanCli!=null && existenDatosEnColegio == false){			
-			// Inserto los datos del no colegiado en CenNoColegiado:
-			CenNoColegiadoAdm admNoColegiado = new CenNoColegiadoAdm(this.getUserBean(request));
-			Hashtable hashNoColegiado = new Hashtable();
-			hashNoColegiado.put(CenNoColegiadoBean.C_IDINSTITUCION,beanCli.getIdInstitucion());
-			hashNoColegiado.put(CenNoColegiadoBean.C_IDPERSONA,beanCli.getIdPersona());
-			//El tipo sera siempre Personal:
-			hashNoColegiado.put(CenNoColegiadoBean.C_TIPO,ClsConstants.COMBO_TIPO_PERSONAL);
-			//No es sociedad SJ:
-			hashNoColegiado.put(CenNoColegiadoBean.C_SOCIEDADSJ,ClsConstants.DB_FALSE);
-			hashNoColegiado.put(CenNoColegiadoBean.C_USUMODIFICACION,usr.getUserName());
-			hashNoColegiado.put(CenNoColegiadoBean.C_FECHAMODIFICACION,"SYSDATE");
-			
-			  admNoColegiado.insert(hashNoColegiado);
-			  
-			
-			// Lanzamos el proceso de revision de suscripciones del letrado 
-			String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(beanCli.getIdInstitucion().toString(),
-																					  beanCli.getIdPersona().toString(),
-																					  "",
-																					  ""+this.getUserName(request));
-			if ((resultado == null) || (!resultado[0].equals("0")))
-				throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
-
-			tx.commit();
-
-			//Mandamos los datos para el refresco:
-			request.setAttribute("mensaje",mensInformacion);
-			request.setAttribute("idPersona",beanCli.getIdPersona().toString());
-			request.setAttribute("idInstitucion",beanCli.getIdInstitucion().toString());
-			request.setAttribute("tipo",ClsConstants.COMBO_TIPO_PERSONAL);
+			if (beanCli!=null){// && existenDatosEnColegio == true){			
+				// Inserto los datos del no colegiado en CenNoColegiado:
+				CenNoColegiadoAdm admNoColegiado = new CenNoColegiadoAdm(this.getUserBean(request));
+				Hashtable hashNoColegiado = new Hashtable();
+				hashNoColegiado.put(CenNoColegiadoBean.C_IDINSTITUCION,beanCli.getIdInstitucion());
+				hashNoColegiado.put(CenNoColegiadoBean.C_IDPERSONA,beanCli.getIdPersona());
+				//El tipo sera siempre Personal:
+				hashNoColegiado.put(CenNoColegiadoBean.C_TIPO,ClsConstants.COMBO_TIPO_PERSONAL);
+				//No es sociedad SJ:
+				hashNoColegiado.put(CenNoColegiadoBean.C_SOCIEDADSJ,ClsConstants.DB_FALSE);
+				hashNoColegiado.put(CenNoColegiadoBean.C_USUMODIFICACION,usr.getUserName());
+				hashNoColegiado.put(CenNoColegiadoBean.C_FECHAMODIFICACION,"SYSDATE");
+				
+				  admNoColegiado.insert(hashNoColegiado);
+				  
+				
+				// Lanzamos el proceso de revision de suscripciones del letrado 
+				String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(beanCli.getIdInstitucion().toString(),
+																						  beanCli.getIdPersona().toString(),
+																						  "",
+																						  ""+this.getUserName(request));
+				if ((resultado == null) || (!resultado[0].equals("0")))
+					throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
+	
+				tx.commit();
+	
+				//Mandamos los datos para el refresco:
+				request.setAttribute("mensaje",mensInformacion);
+				request.setAttribute("idPersona",beanCli.getIdPersona().toString());
+				request.setAttribute("idInstitucion",beanCli.getIdInstitucion().toString());
+				request.setAttribute("tipo",ClsConstants.COMBO_TIPO_PERSONAL);
 			}//fin beanCli
 			else
 			{
