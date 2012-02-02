@@ -221,6 +221,7 @@ if (idcalidad!=null&&!idcalidad.equals("")){
 calidadSel.add(0,idcalidad+","+usr.getLocation());
 }
 String calidadIdinstitucion=miform.getCalidadIdinstitucion();
+
 %>
 
 
@@ -1624,9 +1625,12 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 						}else{
 							if(minusDefecto!=null)
 							selMinus.add(minusDefecto);
-						}	
+						}
+						//Para el Combo de dictamen
+
+						
 			%>
-			<siga:ComboBD nombre = "minusvalia" tipo="cmbMinusvalia" clase="<%=classCombo%>" elementoSel="<%=selMinus%>" readOnly="<%=sreadonly%>"/>
+			<siga:ComboBD nombre = "minusvalia" tipo="cmbMinusvalia" clase="<%=classCombo%>"  parametro="<%=dato%>"  elementoSel="<%=selMinus%>" readOnly="<%=sreadonly%>"/>
 			
 		</td>
 	
