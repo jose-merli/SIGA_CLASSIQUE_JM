@@ -667,13 +667,13 @@
 			return false;
 		}
 	
-		//if(document.VolantesExpressForm.delito && document.VolantesExpressForm.delito.value=='true'){
-			//if (document.getElementById("idDelito_" + fila).value=='-1') {
-				//campo = "<siga:Idioma key='gratuita.volantesExpres.literal.delitos'/>";
-				//alert ("'"+ campo + "' " + obligatorio);
-				//return false;
-			//}
-		// }
+		if(document.getElementById("tipoPcajg").value=="2" && document.VolantesExpressForm.delito && document.VolantesExpressForm.delito.value=='true'){
+			if (document.getElementById("idDelito_" + fila).value=='-1' || document.getElementById("idDelito_" + fila).value=='') {
+				campo = "<siga:Idioma key='gratuita.volantesExpres.literal.delitos'/>";
+				alert ("'"+ campo + "' " + obligatorio);
+				return false;
+			}
+		 }
 
 		return isValidado;
 	}
