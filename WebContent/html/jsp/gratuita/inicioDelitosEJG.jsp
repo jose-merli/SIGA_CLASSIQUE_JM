@@ -189,7 +189,7 @@
 	}else if (pcajgActivo==4){
 		validarProcedimiento = true;
 		obligatorioPreceptivo = true;
-		obligatorioSituacion  = true;
+		
 		obligatorioPretension = true;
 	}else if (pcajgActivo==5){
 		validarProcedimiento = true;
