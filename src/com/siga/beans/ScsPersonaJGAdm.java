@@ -163,7 +163,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			String sql ="SELECT (MAX("+ ScsPersonaJGBean.C_IDPERSONA + ") + 1) AS IDPERSONA FROM " + nombreTabla;
 			sql += " WHERE " + ScsPersonaJGBean.C_IDINSTITUCION + " = " + entrada.getIdInstitucion(); 
 
-			Vector v = new Vector();
+			Vector v = new Vector();			
 			v = this.ejecutaSelect(sql);			
 			
 			String idpersona = (String)((Hashtable)v.get(0)).get("IDPERSONA");
@@ -192,7 +192,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 							ScsPersonaJGBean.C_APELLIDO2,			ScsPersonaJGBean.C_DIRECCION,
 							ScsPersonaJGBean.C_CODIGOPOSTAL,		ScsPersonaJGBean.C_FECHANACIMIENTO,
 							ScsPersonaJGBean.C_IDPROFESION,			ScsPersonaJGBean.C_IDMINUSVALIA,
-							ScsPersonaJGBean.C_IDPAIS,							
+							ScsPersonaJGBean.C_IDPAIS,				ScsPersonaJGBean.C_EXISTEDOMICILIO,						
 							ScsPersonaJGBean.C_IDPROVINCIA,			ScsPersonaJGBean.C_IDPOBLACION,
 							ScsPersonaJGBean.C_ESTADOCIVIL,			ScsPersonaJGBean.C_REGIMENCONYUGAL,
 							ScsPersonaJGBean.C_FECHAMODIFICACION,	ScsPersonaJGBean.C_USUMODIFICACION,
@@ -233,6 +233,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			bean.setApellido1(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_APELLIDO1));
 			bean.setApellido2(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_APELLIDO2));
 			bean.setDireccion(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_DIRECCION));
+			bean.setExisteDomicilio(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_EXISTEDOMICILIO));
 			bean.setCodigoPostal(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_CODIGOPOSTAL));
 			bean.setFechaNacimiento(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_FECHANACIMIENTO));
 			bean.setIdProfesion(UtilidadesHash.getInteger(hash,ScsPersonaJGBean.C_IDPROFESION));
@@ -283,6 +284,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_APELLIDO1,miBean.getApellido1());
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_APELLIDO2,miBean.getApellido2());
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_DIRECCION,miBean.getDireccion());
+			UtilidadesHash.set(hash,ScsPersonaJGBean.C_EXISTEDOMICILIO,miBean.getExisteDomicilio());
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_CODIGOPOSTAL,miBean.getCodigoPostal());						
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_FECHANACIMIENTO,miBean.getFechaNacimiento());			
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_IDPROFESION,miBean.getIdProfesion());
@@ -613,10 +615,10 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 	public ScsPersonaJGBean getPersonaJG(Long idPersonaJG, Integer idInstitucion)throws ClsExceptions{
 
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
-		int contador = 0;
+		int contador = 0;				
 		StringBuffer sql = new StringBuffer();
 		sql.append(" SELECT PER.NOMBRE, PER.APELLIDO1,  PER.APELLIDO2, ");
-		sql.append(" PER.DIRECCION, PER.CODIGOPOSTAL, PER.IDPAIS, PER.IDPROVINCIA, ");
+		sql.append(" PER.DIRECCION, PER.EXISTEDOMICILIO, PER.CODIGOPOSTAL, PER.IDPAIS, PER.IDPROVINCIA, ");
 		sql.append("  PER.NIF, PER.IDPOBLACION,PER.FAX,PER.CORREOELECTRONICO,");
 		sql.append("  POB.NOMBRE POBLACION,PRO.IDPROVINCIA, PRO.NOMBRE PROVINCIA ");
 		sql.append(" FROM SCS_PERSONAJG PER,CEN_POBLACIONES POB,CEN_PROVINCIAS PRO ");

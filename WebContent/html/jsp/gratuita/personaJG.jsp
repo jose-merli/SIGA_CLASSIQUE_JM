@@ -68,7 +68,7 @@
 	String importeOtrosBienes = miform.getImporteOtrosBienes();
 	String importeIngresosAnuales = miform.getImporteIngresosAnuales();
 	String importeBienesMuebles = miform.getImporteBienesMuebles();
-
+	
 	String estiloBox = "box";
 	String estiloBoxNumber = "boxNumber";
 	String classCombo = "box";
@@ -120,7 +120,7 @@
 	String pideJG = miform.getChkPideJG();
 	String solicitaInfoJG = miform.getChkSolicitaInfoJG();
 	String checkSolicitante = miform.getSolicitante();
-
+	String existeDomicilio = miform.getExisteDomicilio();
 	String asterisco = "&nbsp(*)&nbsp";
 
 	// Ponemos astericos en los campos obligatorios para el pcajg activo
@@ -221,7 +221,6 @@ if (idcalidad!=null&&!idcalidad.equals("")){
 calidadSel.add(0,idcalidad+","+usr.getLocation());
 }
 String calidadIdinstitucion=miform.getCalidadIdinstitucion();
-
 %>
 
 
@@ -311,19 +310,47 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 	   
 	 <%}%>
 	 
-	 
+	 <% 	if (existeDomicilio != null && existeDomicilio.equals("N")) {%>
+
+				document.forms[0].existeDom.checked=true;
+	 			document.PersonaJGForm.direccion.disabled = "disabled";
+	 			document.PersonaJGForm.cp.disabled = "disabled";
+				document.forms[0].provincia.disabled = "disabled";
+
+			<%}else{ %>
+			document.forms[0].existeDom.checked=false;
+			<%} %>
 	<%if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {%> 
 	<%if (checkSolicitante != null && checkSolicitante.equals("1")) {%>
 		 
 		    document.forms[0].solicitante.checked=true;
-		 
-		  
 	     
 	   <%} else {%>	    
 	        document.forms[0].solicitante.checked=false;
 	   <%}
 			}%>
 		}
+	
+		function desabilitarDomicilio (o) {
+ 			if (o.checked) {
+	 			document.forms[0].existeDom.checked = true;
+	 			document.PersonaJGForm.existeDomicilio.value = "N";
+	 			document.PersonaJGForm.direccion.value = "";
+	 			document.PersonaJGForm.cp.value = "";
+				document.forms[0].provincia.value = "";
+				document.forms[0].provincia.onchange();
+	 			document.PersonaJGForm.direccion.disabled = "disabled";
+	 			document.PersonaJGForm.cp.disabled = "disabled";
+				document.forms[0].provincia.disabled = "disabled";
+
+			}else {
+	 			document.PersonaJGForm.direccion.disabled = "";
+	 			document.PersonaJGForm.cp.disabled = "";
+				document.forms[0].provincia.disabled = "";
+	 			document.forms[0].existeDom.checked = false;
+	 			document.PersonaJGForm.existeDomicilio.value = "S";
+			}
+ 		}
 	</script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
@@ -886,7 +913,7 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 	<html:hidden name="PersonaJGForm" property = "localizacionE" />
 	<html:hidden name="PersonaJGForm" property = "tituloE" />
 	<html:hidden name="PersonaJGForm" property = "conceptoE" />
-	<html:hidden name="PersonaJGForm" property = "lNumerosTelefonos" />	
+	<html:hidden name="PersonaJGForm" property = "lNumerosTelefonos" />
 	<html:hidden property = "idTipoenCalidad" value="<%=idcalidad%>"/>
 	<html:hidden property = "calidadIdinstitucion" value="<%=calidadIdinstitucion%>"/>
 	
@@ -1209,7 +1236,7 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
  				}
  			%>
 		</td>
-		<td>
+		<td>		
 			<html:text name="PersonaJGForm" property="direccion" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:340" ></html:text>
 		</td>
 		<td class="labelText">
@@ -1298,7 +1325,25 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 		   %>
 		</td>
 	</tr>
-	</table>
+	<tr>
+		<td class="labelText" width="30%" colspan="5" >
+		<siga:Idioma key="gratuita.busquedaSOJ.literal.solicitaObligaDir"/>
+		<html:hidden name="PersonaJGForm" property = "existeDomicilio" />
+
+	 <%
+	 	if (!accion.equalsIgnoreCase("ver")) {
+	 %>
+	  <input type="checkbox" id="existeDom" onclick="desabilitarDomicilio(this);">
+		  <%
+		  	} else {
+		  %>
+	  <input type="checkbox" id="existeDom" onclick="desabilitarDomicilio(this);" disabled="disabled">		  
+	  <%
+		  	}
+		  %>	
+	</td>
+	</tr>
+		</table>
 	</siga:ConjCampos>
 
 	<siga:ConjCampos leyenda="gratuita.personaJG.literal.inforAdicional">
@@ -1625,10 +1670,7 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 						}else{
 							if(minusDefecto!=null)
 							selMinus.add(minusDefecto);
-						}
-						//Para el Combo de dictamen
-
-						
+						}	
 			%>
 			<siga:ComboBD nombre = "minusvalia" tipo="cmbMinusvalia" clase="<%=classCombo%>"  parametro="<%=dato%>"  elementoSel="<%=selMinus%>" readOnly="<%=sreadonly%>"/>
 			
@@ -2201,7 +2243,7 @@ function limpiarPersonaContrario() {
 	 <%
 	 	if (!accion.equalsIgnoreCase("ver")) {
 	 %>
-	  <html:checkbox  name="PersonaJGForm" property="chkSolicitaInfoJG"  />	
+	  <checkbox  name="PersonaJGForm" property="chkSolicitaInfoJG"  />	
 	  <%
 		  	} else {
 		  %>
@@ -2355,7 +2397,12 @@ function limpiarPersonaContrario() {
 		
 		//Asociada al boton Guardar -->
 		function accionGuardar(){	
-				
+
+			if (document.forms[0].existeDom.checked) {
+	 			document.PersonaJGForm.existeDomicilio.value = "N";
+			}else {
+	 			document.PersonaJGForm.existeDomicilio.value = "S";
+			}
 			var lNumerosTelefonos=getDatos();				
 			if (!lNumerosTelefonos){
                  fin();
@@ -2444,11 +2491,11 @@ function limpiarPersonaContrario() {
 								document.forms[0].NIdentificacion.value=="")
 								error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nIdentificacion'/>"+ '\n';
 						}
-						if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1)
+						if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1 && document.PersonaJGForm.existeDomicilio.value!= "N")
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
-						if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value=="")
+						if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
-						if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value=="")
+						if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
 						if (<%=obligatorioNacionalidad%> && document.forms[0].nacionalidad.value =="")
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';						

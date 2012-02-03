@@ -151,6 +151,7 @@ public class MantenimientoInformesAction extends MasterAction {
 		String idioma = null;
 		String idpagos = null;
 		String grupoFacturaciones = null;
+		String grupoFac = null;
 		
 		// obteniendo valores del formulario
 		try {
@@ -158,9 +159,14 @@ public class MantenimientoInformesAction extends MasterAction {
 			idpago = request.getParameter("idPago");
 			idioma = usr.getLanguage();
 			idpagoFinal = request.getParameter("idPagoFinal");
-			grupoFacturaciones = request.getParameter("grupoFacturacion");
+			grupoFac = (String)request.getParameter("grupoFacturacion");
+			String[] resul=grupoFac.split(",");
+			grupoFacturaciones = resul[0];
 			if(idpagoFinal != null && !idpagoFinal.equals("")){
-				idpagos = EjecucionPLs.ejecutarFuncPagosIntervaloGrupoFacturacion(idinstitucion, idpago,idpagoFinal,grupoFacturaciones);
+				if(grupoFacturaciones.equalsIgnoreCase("-1"))
+					idpagos = EjecucionPLs.ejecutarFuncPagosIntervalo(idinstitucion,idpago,idpagoFinal);
+				else
+					idpagos = EjecucionPLs.ejecutarFuncPagosIntervaloGrupoFacturacion(idinstitucion, idpago,idpagoFinal,grupoFacturaciones);
 			}else{
 				idpagos = idpago;
 			}

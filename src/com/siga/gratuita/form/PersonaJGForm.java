@@ -19,7 +19,8 @@ import com.siga.Utilidades.UtilidadesHash;
 
 public class PersonaJGForm extends MasterForm {
 	
-		
+	
+
 			
 	// Datos de entrada de la ventana
 	public void setNcolegiadoContrario(String dato) {
@@ -308,6 +309,12 @@ public class PersonaJGForm extends MasterForm {
 	}
 	public String getPoblacion() {
 		return UtilidadesHash.getString(this.datos,"Poblacion");
+	}
+	public void setExisteDomicilio(String dato) {
+		UtilidadesHash.set(this.datos,"ExisteDomicilio",dato);
+	}
+	public String getExisteDomicilio() {
+		return UtilidadesHash.getString(this.datos,"ExisteDomicilio");
 	}
 	public void setNacionalidad(String dato) {
 		UtilidadesHash.set(this.datos,"Nacionalidad",dato);

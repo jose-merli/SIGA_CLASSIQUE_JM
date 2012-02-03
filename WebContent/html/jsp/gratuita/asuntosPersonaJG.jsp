@@ -138,6 +138,7 @@
 			<html:hidden property="lNumerosTelefonos"/>
 			<html:hidden property="correoElectronico"/>
 			<html:hidden property="fax"/>			
+			<html:hidden property="existeDomicilio"/>
 			<input type="hidden" name="actionModal" value="">
 		</html:form>
 

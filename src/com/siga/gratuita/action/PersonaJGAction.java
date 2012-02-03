@@ -729,7 +729,7 @@ public class PersonaJGAction extends MasterAction {
 				String minusvaliaDefecto = perAdm.getMinusvaliaDefecto(idInstitucionJG);					
 				  request.setAttribute("minusvaliaDefecto", minusvaliaDefecto);
 			}else
-				request.setAttribute("minusvaliaDefecto", null);
+				request.setAttribute("valiaDefecto", null);
 			  
 			if (concepto==null) {
 				throw new ClsExceptions("Falta de parámetro obligatorio (concepto)");
@@ -816,7 +816,7 @@ public class PersonaJGAction extends MasterAction {
 								miform.setProvincia(personaBean.getIdProvincia());
 								miform.setPoblacion(personaBean.getIdPoblacion());
 								miform.setNacionalidad(personaBean.getIdPais());
-								
+								miform.setExisteDomicilio(personaBean.getExisteDomicilio());
 							}
 						}
 					} else
@@ -1017,6 +1017,7 @@ public class PersonaJGAction extends MasterAction {
 			person.setApellido1("");
 			person.setApellido2("");
 			person.setDireccion("");
+			person.setExisteDomicilio("S");
 			person.setCodigoPostal("");
 			person.setCorreoElectronico("");
 			person.setFax("");
@@ -1058,6 +1059,7 @@ public class PersonaJGAction extends MasterAction {
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_CODIGOPOSTAL,perBean.getCodigoPostal());						
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_FECHANACIMIENTO,perBean.getFechaNacimiento());			
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPROFESION,perBean.getIdProfesion());
+				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDMINUSVALIA,perBean.getIdMinusvalia());				
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPAIS,perBean.getIdPais());
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPROVINCIA,perBean.getIdProvincia());
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPOBLACION,perBean.getIdPoblacion());
@@ -1070,7 +1072,9 @@ public class PersonaJGAction extends MasterAction {
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDREPRESENTANTEJG,perBean.getIdRepresentanteJG());
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_SEXO,perBean.getSexo());
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_HIJOS,perBean.getHijos());
+				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_EDAD,perBean.getEdad());				
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_FAX,perBean.getFax());
+				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_EXISTEDOMICILIO,perBean.getExisteDomicilio());	
 				if(perBean.getCorreoElectronico()!=null)
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_CORREOELECTRONICO,perBean.getCorreoElectronico().trim());	
 				
@@ -1255,7 +1259,8 @@ public class PersonaJGAction extends MasterAction {
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_HIJOS,perBean.getHijos());
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_EDAD,perBean.getEdad());					
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_FAX,perBean.getFax());
-					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_CORREOELECTRONICO,perBean.getCorreoElectronico());					
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_CORREOELECTRONICO,perBean.getCorreoElectronico());	
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_EXISTEDOMICILIO,perBean.getExisteDomicilio());	
 					
 					idRepresentanteJG=perBean.getIdRepresentanteJG();
 					
@@ -1301,6 +1306,8 @@ public class PersonaJGAction extends MasterAction {
 					miform.setDireccion(perBean.getDireccion());
 					miform.setCp(perBean.getCodigoPostal());
 					miform.setProvincia(perBean.getIdProvincia());
+					miform.setPoblacion(perBean.getIdPoblacion());
+					miform.setExisteDomicilio(perBean.getExisteDomicilio());
 					miform.setPoblacion(perBean.getIdPoblacion());
 					miform.setNacionalidad(perBean.getIdPais());
 					miform.setSexo(perBean.getSexo());
@@ -1709,6 +1716,7 @@ public class PersonaJGAction extends MasterAction {
 								UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_OBSERVACIONES,perBean.getObservaciones());
 								UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDREPRESENTANTEJG,perBean.getIdRepresentanteJG());		
 								UtilidadesHash.setForCompare(hash,ScsPersonaJGBean. C_IDREPRESENTANTEJG,perBean.getIdRepresentanteJG());
+								UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_EXISTEDOMICILIO,perBean.getExisteDomicilio());	
 								
 								
 								idRepresentanteJG=perBean.getIdRepresentanteJG();
@@ -1725,6 +1733,7 @@ public class PersonaJGAction extends MasterAction {
 								miform.setApellido1(perBean.getApellido1());
 								miform.setApellido2(perBean.getApellido2());
 								miform.setDireccion(perBean.getDireccion());
+								miform.setExisteDomicilio(perBean.getExisteDomicilio());
 								miform.setCp(perBean.getCodigoPostal());
 								miform.setProvincia(perBean.getIdProvincia());
 								miform.setPoblacion(perBean.getIdPoblacion());
@@ -1840,6 +1849,7 @@ public class PersonaJGAction extends MasterAction {
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_EDAD,miform.getEdad());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_FAX,miform.getFax());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_CORREOELECTRONICO,miform.getCorreoElectronico());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_EXISTEDOMICILIO,miform.getExisteDomicilio());			
 			
 	     	
 			// recojo el databackup

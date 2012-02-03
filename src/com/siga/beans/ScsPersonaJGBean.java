@@ -30,17 +30,17 @@ public class ScsPersonaJGBean extends MasterBean{
 	private String	apellido1;
 	private String	apellido2;
 	private String	direccion;
+	private String	existeDomicilio;
 	private String	codigoPostal;
 	private String  fechaNacimiento;
 	private Integer	idProfesion;
-	private Integer	idMinusvalia;	
+	private Integer	idMinusvalia;
 	private String	regimenConyugal;
 	private Integer	idInstitucion;
 	private String	idPais;
 	private String	idProvincia;
 	private String  idPoblacion;
 	private Integer	idEstadoCivil;
-
 	private Integer	idProcurador;
 	private Integer	idRepresentanteJG;
 	private String	enCalidadDe;
@@ -51,12 +51,6 @@ public class ScsPersonaJGBean extends MasterBean{
 	private String edad;	
 	private String fax;
 	private String correoElectronico;
-	
-	
-	
-	
-	
-	
 	
 	/* Nombre de Tabla*/
 	
@@ -73,6 +67,7 @@ public class ScsPersonaJGBean extends MasterBean{
 	static public final String 	C_NOMBRE			=				"NOMBRE";
 	static public final String 	C_APELLIDO1			=				"APELLIDO1";
 	static public final String 	C_APELLIDO2			=				"APELLIDO2";
+	static public final String 	C_EXISTEDOMICILIO	=				"EXISTEDOMICILIO";
 	static public final String 	C_DIRECCION			=				"DIRECCION";
 	static public final String 	C_CODIGOPOSTAL		=				"CODIGOPOSTAL";
 	static public final String 	C_FECHANACIMIENTO	=				"FECHANACIMIENTO";
@@ -213,6 +208,15 @@ public class ScsPersonaJGBean extends MasterBean{
 	 * @return void 
 	 */
 	public void setDireccion					(String valor) { this.direccion = valor;}
+
+	/**
+	 * Almacena en el Bean la dirección de la persona
+	 * 
+	 * @param valor Dirección persona
+	 * @return void 
+	 */
+	public void setExisteDomicilio  			(String valor) { this.existeDomicilio = valor;}
+	
 	
 	/**
 	 * Almacena en el Bean código postal
@@ -419,6 +423,10 @@ public class ScsPersonaJGBean extends MasterBean{
 	 * Recupera del Bean código postal
 	 * @return String 
 	 */
+	public String getExisteDomicilio		() { return this.existeDomicilio;	        	}
+	
+	
+	
 	public String getCodigoPostal			() { return this.codigoPostal;					}
 	
 	/**

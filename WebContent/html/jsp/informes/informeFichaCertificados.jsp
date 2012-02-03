@@ -62,8 +62,7 @@
 			<tr>
 				<td class="labelText">
 					<siga:Idioma key="gratuita.definirTurnosIndex.literal.grupoFacturacion"/>&nbsp;&nbsp;&nbsp;&nbsp;
-					<siga:ComboBD estilo="true" obligatorio="false" nombre="grupoFacturacion" filasMostrar="1" ancho="700" accion="Hijo:idPago;Hijo:idPagoFinal" seleccionMultiple="false" tipo="grupoFacturacion" clase="boxCombo"  parametro="<%=dato%>"/>
-					<script> document.forms[0].grupoFacturacion[0].value=-1;</script>
+					<siga:ComboBD estilo="true" obligatorio="true" nombre="grupoFacturacion" filasMostrar="1" ancho="700" accion="Hijo:idPago;Hijo:idPagoFinal" seleccionMultiple="false" tipo="grupoFacturacion" clase="boxCombo"  parametro="<%=dato%>"/>
 				</td>
 			</tr>
 		
