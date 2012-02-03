@@ -91,6 +91,9 @@
 		aux[20]="<%=myBean.getFax()%>";	
 		aux[21]="<%=myBean.getCorreoElectronico()%>";
 		aux[22]="<%=myBean.getTipo()%>"; //Este es El tipo persona F o J 	
+		aux[23]="<%=myBean.getIdMinusvalia()%>";	
+		aux[24]="<%=myBean.getEdad()%>";
+		aux[25]="<%=myBean.getExisteDomicilio()%>";  			
 		<% 
 		String nom = (String) request.getAttribute("nombreRepresentante");
 		if (nom==null) nom="";

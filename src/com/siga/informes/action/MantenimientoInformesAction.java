@@ -163,10 +163,7 @@ public class MantenimientoInformesAction extends MasterAction {
 			String[] resul=grupoFac.split(",");
 			grupoFacturaciones = resul[0];
 			if(idpagoFinal != null && !idpagoFinal.equals("")){
-				if(grupoFacturaciones.equalsIgnoreCase("-1"))
-					idpagos = EjecucionPLs.ejecutarFuncPagosIntervalo(idinstitucion,idpago,idpagoFinal);
-				else
-					idpagos = EjecucionPLs.ejecutarFuncPagosIntervaloGrupoFacturacion(idinstitucion, idpago,idpagoFinal,grupoFacturaciones);
+				idpagos = EjecucionPLs.ejecutarFuncPagosIntervaloGrupoFacturacion(idinstitucion, idpago,idpagoFinal,grupoFacturaciones);
 			}else{
 				idpagos = idpago;
 			}

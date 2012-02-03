@@ -1021,6 +1021,7 @@ public class PersonaJGAction extends MasterAction {
 			person.setCodigoPostal("");
 			person.setCorreoElectronico("");
 			person.setFax("");
+			person.setEdad("");			
 			resultadoNIF1.add(person);
 			request.setAttribute("resultadoNIF", resultadoNIF1);
 			//Quitamos caracteres no alfanumericos, 

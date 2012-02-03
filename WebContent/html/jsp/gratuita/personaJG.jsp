@@ -429,7 +429,13 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 
 				//edad	
 				document.forms[0].edad.value = resultado[24];
-				
+
+				//existeDomicilio
+				document.forms[0].existeDomicilio.value = resultado[25];
+				if(resultado[25]!=null && resultado[25]=="N")
+					document.forms[0].existeDom.checked=true;
+				else
+					document.forms[0].existeDom.checked=false;
 				
          <%if (conceptoE.equals(PersonaJGAction.ASISTENCIA_ASISTIDO)
 					|| conceptoE.equals(PersonaJGAction.SOJ)) {%> 
