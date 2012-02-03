@@ -2943,8 +2943,9 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			
 		}
 			catch (SIGAException e) {
-				auxCli = null;
-				return auxCli;
+				//auxCli = null;
+				//return auxCli;
+				throw e;
 			}	
 			
 			// proceso
