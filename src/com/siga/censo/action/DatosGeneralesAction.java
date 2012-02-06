@@ -903,9 +903,17 @@ public class DatosGeneralesAction extends MasterAction {
 			Hashtable hashHist = new Hashtable();			
 			hashHist.put(CenHistoricoBean.C_MOTIVO, miForm.getMotivo());
 			CenHistoricoAdm admHis = new CenHistoricoAdm (this.getUserBean(request));
+			
+			//Se inserta el histórico de los datos de CenPersona
 			if (!admHis.insertCompleto (hashHist, hash, hashOriginal, "CenPersonaBean", CenHistoricoAdm.ACCION_UPDATE, this.getLenguaje(request))) {
 				throw new ClsExceptions(admHis.getError());
 			}	
+			
+			//Se inserta el histórico de los datos de CenCliente
+			if (!admHis.insertCompleto (hashHist, hash, hashOriginal, "CenClienteBean", CenHistoricoAdm.ACCION_UPDATE, this.getLenguaje(request))) {
+				throw new ClsExceptions(admHis.getError());
+			}		
+			
 			String apareceRedAbogacia = (String)hash.get(CenClienteBean.C_NOAPARECERREDABOGACIA);
 			String apareceRedAbogaciaOld = (String)hashOriginal.get(CenClienteBean.C_NOAPARECERREDABOGACIA);
 			//String is = CenClienteBean.c_t
