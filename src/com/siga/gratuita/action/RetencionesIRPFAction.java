@@ -166,6 +166,7 @@ public class RetencionesIRPFAction extends MasterAction {
 			// HACEMOS EL UPDATE DE CEN_COMPONENTES PONIENDO EL CAMPO SOCIEDAD = 0 PARA LA SOCIEDAD SELECCIONADA
 			if(sociedadesCliente==null){
 				
+				
 					update = "UPDATE " + CenComponentesBean.T_NOMBRETABLA        +
 							"   SET " + CenComponentesBean.C_SOCIEDAD    + "= 0, " + CenComponentesBean.C_IDCUENTA + "= '' " + 
 							" WHERE " + CenComponentesBean.C_IDINSTITUCION + "= " + usr.getLocation() + 
@@ -294,8 +295,6 @@ public class RetencionesIRPFAction extends MasterAction {
 			CenNoColegiadoAdm cenNoCol  = new CenNoColegiadoAdm(usr);
 			
 			String idInstitucion = usr.getLocation();
-			
-			insertarNuevo( idPersona,  "SYSDATE",  request);
 			
 			String where = " where CEN_CLIENTE_IDINSTITUCION ="+usr.getLocation()+
 						   "   and CEN_CLIENTE_IDPERSONA = "+request.getSession().getAttribute("idPersonaTurno")
