@@ -44,7 +44,7 @@
 		<script language="JavaScript">
 		
 			function accionGuardar() {
-
+				sub();
 				f= document.CargaProductosForm;
 				
 		    	f.modo.value = "guardarFich";
