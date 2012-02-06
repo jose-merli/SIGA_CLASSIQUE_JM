@@ -54,11 +54,7 @@ public class SIGASvlProcesoIndividualConfirmacionFacturacion extends HttpServlet
             factBean.setGenerarPDF("1");
             factBean.setEnvio("0");
             Facturacion facturacion = new Facturacion(UsrBean.UsrBeanAutomatico(idInstitucion));
-            facturacion.confirmarProgramacionFactura(factBean,request,false,null,true,true);
-            facturacion.generarZip(factBean.getIdInstitucion().toString(),
-                    factBean.getIdSerieFacturacion().toString(),
-                    factBean.getIdProgramacion().toString()); 
-   			
+            facturacion.confirmarProgramacionFactura(factBean,request,false,null,true,true); 			
    			
    	        response.setContentType("text/html");
    	        out.println("FIN PROCESO AUTOMATICO DE CONFIRMACION INDIVIDUAL DE FACTURACIÓN");

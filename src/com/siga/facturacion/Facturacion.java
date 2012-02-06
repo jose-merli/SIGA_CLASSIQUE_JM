@@ -922,14 +922,25 @@ public class Facturacion {
 		String[] ficheros = directorio.list();
 		if (ficheros == null||ficheros.length==0){
 			throw new SIGAException("messages.facturacion.descargaFacturas");
+		}else{
+			for (int x=0;x<ficheros.length;x++){
+				File fichero = new File(sRutaJava+File.separator+ficheros[x]);
+				lista.add(fichero);
+			}
+			
+			doZip(sRutaTemporal,idSerieFacturacion+"_"+idProgramacion,lista);
 		}
 
-		for (int x=0;x<ficheros.length;x++){
-			File fichero = new File(sRutaJava+File.separator+ficheros[x]);
-			lista.add(fichero);
+		
+		
+		//Se eliminen las facturas existentes
+		if(directorio.exists()){
+			for (int x=0;x<ficheros.length;x++){
+				File fichero = new File(sRutaJava+File.separator+ficheros[x]);
+				fichero.delete();
+			}
+			directorio.delete();
 		}
-
-		doZip(sRutaTemporal,idSerieFacturacion+"_"+idProgramacion,lista);
 		
 	}
 	
