@@ -93,7 +93,9 @@ public class ColegiarAction extends MasterAction
 			}
 			return mapping.findForward(mapDestino);
 		} catch (SIGAException es) {
+			es.setSubLiteral("");
 			throw es;
+//			throwExcp (es.getLiteral(), new String[] {"modulo.censo"}, es, tx);
 		} catch (Exception e) {
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.censo"});
 		}
@@ -210,7 +212,7 @@ public class ColegiarAction extends MasterAction
 				sComunitario = "1";
 			if (admCol.existeColegiado 
 					(new Integer (colegio),numero,numero) != null)
-				throw new SIGAException ("botonAccion.message.error1");
+				throw new SIGAException ("error.message.NumColegiadoRepetido");
 			
 			//borrando registro de no colegiado en colegio (si existe)
 			Hashtable hashNoCol = new Hashtable ();

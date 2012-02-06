@@ -516,7 +516,7 @@ public class SolicitudIncorporacionAction extends MasterAction
 					if( admCol.existeNColegiado(beanSolic.getNColegiado(), 
 												beanSolic.getIdInstitucion(),
 												beanSolic.getIdTipoColegiacion())){
-						String msj = UtilidadesString.getMensajeIdioma (user, "messages.censo.errorColegiadoExiste");
+						String msj = UtilidadesString.getMensajeIdioma (user, "error.message.NumColegiadoRepetido");
 						request.setAttribute ("msj", msj);
 						forward = "continuarInsercionColegiado";
 						t.rollback ();

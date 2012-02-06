@@ -428,18 +428,38 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			}  
 		
 			//Se comprueba q el nº de clegiado no existe para ese colegio
-			String nColegiadoOri = (String) original.get(CenColegiadoBean.C_NCOLEGIADO);
-			String nColegiadoModi = (String) modificacion.get(CenColegiadoBean.C_NCOLEGIADO);
 			
-			if(nColegiadoOri==null)
-				nColegiadoOri ="";
-			
-			if(nColegiadoModi != null && !nColegiadoModi.equals(nColegiadoOri))
+			if(comunitarioOriginal.equals(ClsConstants.DB_TRUE))
 			{
-				if (this.existeColegiado 
-					(new Integer ((String)original.get(CenColegiadoBean.C_IDINSTITUCION)),(String)modificacion.get(CenColegiadoBean.C_NCOLEGIADO),(String)modificacion.get(CenColegiadoBean.C_NCOMUNITARIO)) != null)
-						throw new SIGAException ("error.message.NumColegiadoRepetido");
-			}	
+				String nComunitarioOri = (String) original.get(CenColegiadoBean.C_NCOMUNITARIO);
+				String nComunitarioModi = (String) modificacion.get(CenColegiadoBean.C_NCOMUNITARIO);
+				
+				if(nComunitarioOri==null)
+					nComunitarioOri ="";
+				
+				if(nComunitarioModi != null && !nComunitarioModi.equals(nComunitarioOri))
+				{
+					if (this.existeColegiado 
+						(new Integer ((String)original.get(CenColegiadoBean.C_IDINSTITUCION)),(String)modificacion.get(CenColegiadoBean.C_NCOLEGIADO),(String)modificacion.get(CenColegiadoBean.C_NCOMUNITARIO)) != null)
+							throw new SIGAException ("error.message.NumColegiadoRepetido");
+				}	
+			}
+			else
+			{
+			
+				String nColegiadoOri = (String) original.get(CenColegiadoBean.C_NCOLEGIADO);
+				String nColegiadoModi = (String) modificacion.get(CenColegiadoBean.C_NCOLEGIADO);
+			
+				if(nColegiadoOri==null)
+					nColegiadoOri ="";
+			
+				if(nColegiadoModi != null && !nColegiadoModi.equals(nColegiadoOri))
+				{
+					if (this.existeColegiado 
+							(new Integer ((String)original.get(CenColegiadoBean.C_IDINSTITUCION)),(String)modificacion.get(CenColegiadoBean.C_NCOLEGIADO),(String)modificacion.get(CenColegiadoBean.C_NCOMUNITARIO)) != null)
+							throw new SIGAException ("error.message.NumColegiadoRepetido");
+				}
+			}
 			if (this.update(modificacion,original)) {
 				// Obtengo del formulario datos que me interesaran para la insercion
 				CenColegiadoBean beanColegiado = new CenColegiadoBean ();
@@ -955,19 +975,21 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			if(numeroComunitario!=null && !numeroComunitario.equals(""))
 	        {
 				codigos.put(new Integer(1),idInstitucion.toString());
-				codigos.put(new Integer(2),numeroColegiado);
-				codigos.put(new Integer(3),numeroComunitario);
-				codigos.put(new Integer(4),numeroColegiado);
-				codigos.put(new Integer(5),numeroComunitario);
+				//codigos.put(new Integer(2),numeroColegiado);
+				//codigos.put(new Integer(2),numeroComunitario);
+				//codigos.put(new Integer(4),numeroColegiado);
+				//codigos.put(new Integer(5),numeroComunitario);
            
-            	v = this.selectBind(" WHERE IDINSTITUCION = :1 AND  (NCOLEGIADO = :2 OR NCOMUNITARIO = :3 OR NCOLEGIADO = :5 OR NCOMUNITARIO = :4)" ,codigos);
+            	//v = this.selectBind(" WHERE IDINSTITUCION = :1 AND  (NCOLEGIADO = :2 OR NCOMUNITARIO = :3 OR NCOLEGIADO = :5 OR NCOMUNITARIO = :4)" ,codigos);
+				v = this.selectBind(" WHERE IDINSTITUCION = :1 AND "+numeroComunitario+" IN (NCOLEGIADO,NCOMUNITARIO)" ,codigos);
             }
             else
             {
             	codigos.put(new Integer(1),idInstitucion.toString());
-				codigos.put(new Integer(2),numeroColegiado);
-				codigos.put(new Integer(3),numeroColegiado);				            	
-            	v = this.selectBind(" WHERE IDINSTITUCION = :1 AND  (NCOLEGIADO = :2 OR NCOMUNITARIO = :3)" ,codigos);
+				//codigos.put(new Integer(2),numeroColegiado);
+				//codigos.put(new Integer(3),numeroColegiado);				            	
+				v = this.selectBind(" WHERE IDINSTITUCION = :1 AND "+numeroColegiado+" IN (NCOLEGIADO,NCOMUNITARIO)" ,codigos);
+            	//v = this.selectBind(" WHERE IDINSTITUCION = :1 AND  (NCOLEGIADO = :2 OR NCOMUNITARIO = :3)" ,codigos);
             }
             /*
             Vector v;
@@ -1030,13 +1052,15 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			CenColegiadoBean salida = null;
 			Hashtable codigos = new Hashtable();
             codigos.put(new Integer(1),nColegiado);
-            codigos.put(new Integer(2),idInstitucion);
+            codigos.put(new Integer(2),nColegiado);
+            codigos.put(new Integer(3),idInstitucion);
+            
             Vector v;
-            if (idTipoCol == ClsConstants.TIPO_COLEGIACION_ESPANHOL){
-            	v = this.selectBind(" WHERE NCOLEGIADO = :1 AND IDINSTITUCION = :2" ,codigos);
-            }else{
-            	v = this.selectBind(" WHERE NCOMUNITARIO = :1 AND IDINSTITUCION = :2" ,codigos);
-            }
+            //if (idTipoCol == ClsConstants.TIPO_COLEGIACION_ESPANHOL){
+            	v = this.selectBind(" WHERE (NCOLEGIADO = :1 OR NCOMUNITARIO = :2) AND IDINSTITUCION = :3" ,codigos);
+           // }else{
+            	//v = this.selectBind(" WHERE NCOMUNITARIO = :1 AND IDINSTITUCION = :2" ,codigos);
+            //}
             // En caso de que v tenga un elemento o mas
             //significa que ya existe un letrado con ese nº de colegiado para esa institución.
 			if (v != null && v.size () > 0)
