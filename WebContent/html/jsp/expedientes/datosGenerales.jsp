@@ -335,7 +335,8 @@
 		<!-- Asociada al boton Guardar -->
 		function accionGuardar() 
 		{	
-			sub();					
+			sub();	
+				
 			if (validateExpDatosGeneralesForm(document.ExpDatosGeneralesForm)){
 				if (document.ExpDatosGeneralesForm.idPersona.value == ""){
 						alert('<siga:Idioma key="expedientes.auditoria.literal.denunciado"/> <siga:Idioma key="messages.campoObligatorio.error"/>');
@@ -789,6 +790,7 @@
 	<html:hidden property = "relacionExpediente"/>
 	<html:hidden property = "nombreRelacionExpediente"/>
 	<html:hidden property = "copia"/>
+	<html:hidden property = "tipoExpediente"/>
 	<input type="hidden" name="accion"	value="<%=accion%>">		
 
 
