@@ -34,7 +34,8 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 							FacSerieFacturacionBean.C_OBSERVACIONES,
 							FacSerieFacturacionBean.C_TIPOSERIE,
 							FacSerieFacturacionBean.C_FECHAMODIFICACION,
-							FacSerieFacturacionBean.C_USUMODIFICACION};
+							FacSerieFacturacionBean.C_USUMODIFICACION,
+							FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL};
 		return campos;
 	}
 
@@ -65,6 +66,7 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 			bean.setTipoSerie			(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_TIPOSERIE));
 			bean.setFechaMod			(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_FECHAMODIFICACION));
 			bean.setUsuMod				(UtilidadesHash.getInteger(hash,FacSerieFacturacionBean.C_USUMODIFICACION));
+			bean.setIdTipoPlantillaMail	(UtilidadesHash.getInteger(hash,FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -98,6 +100,8 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_USUMODIFICACION, b.getUsuMod());
+			
+			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL, b.getIdTipoPlantillaMail());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -116,7 +120,8 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 	protected String[] getCamposSelect() {
 		String [] campos = {"DISTINCT "+FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_IDINSTITUCION+" IDINSTITUCION", 		
 							FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_IDSERIEFACTURACION+" IDSERIEFACTURACION",
-							FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_IDPLANTILLA+" IDPLANTILLA", 	
+							FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_IDPLANTILLA+" IDPLANTILLA",
+							FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL+" IDTIPOPLANTILLAMAIL", 	
 							FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_DESCRIPCION+" DESCRIPCION",
 							FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_NOMBREABREVIADO+" NOMBREABREVIADO",	
 							FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_TIPOSERIE+" TIPOSERIE",	

@@ -253,6 +253,7 @@ public class DatosGeneralesAction extends MasterAction{
 			DatosGeneralesForm formDGen = (DatosGeneralesForm) formulario;
 			String nombreAbreviado = formDGen.getNombreAbreviado();
 			Long idSerieFac = formDGen.getIdSerieFacturacion();
+			String idTipoPlantillaMail = "";
 		
 			FacSerieFacturacionAdm admFac =  new FacSerieFacturacionAdm(this.getUserBean(request));
 			String where1 = " Where ";
@@ -299,7 +300,14 @@ public class DatosGeneralesAction extends MasterAction{
 				String generarPDF = formDGen.getGenerarPDF(); 
 				hashNew.put(FacSerieFacturacionBean.C_GENERARPDF, (((generarPDF != null) && (!generarPDF.equals("")))?"1":"0"));
 				if (envio.equals("1")) hashNew.put(FacSerieFacturacionBean.C_GENERARPDF,"1");
-
+				
+				if(formDGen.getIdTipoPlantillaMail()!=null && !formDGen.getIdTipoPlantillaMail().equals("")){
+					idTipoPlantillaMail = formDGen.getIdTipoPlantillaMail().split(",")[0];
+					hashNew.put(FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL, idTipoPlantillaMail);
+				} else{
+					hashNew.put(FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL, "");
+				}
+				
 				boolean eliminarContador = false;
 				// RGG 10/09/2007 tratamiento del contador
 				if (formDGen.getConfigurarContador()!=null && formDGen.getConfigurarContador().equals("on")) {
@@ -334,7 +342,8 @@ public class DatosGeneralesAction extends MasterAction{
 						htContador.put(AdmContadorBean.C_FECHAMODIFICACION,"SYSDATE");
 				        htContador.put(AdmContadorBean.C_USUMODIFICACION,(new Integer(user.getUserName())));
 				        htContador.put(AdmContadorBean.C_FECHACREACION,"SYSDATE");
-				        htContador.put(AdmContadorBean.C_USUCREACION,(new Integer(user.getUserName())));					if (!admC.insert(htContador)){
+				        htContador.put(AdmContadorBean.C_USUCREACION,(new Integer(user.getUserName())));					
+				        if (!admC.insert(htContador)){
 							throw new ClsExceptions("Error al insertar el nuevo contador");
 						}
 						hashNew.put(FacSerieFacturacionBean.C_IDCONTADOR, nuevoIdContador);
@@ -396,6 +405,7 @@ public class DatosGeneralesAction extends MasterAction{
 				backupSerFac.put("IDINSTITUCION",idInstitucion);
 				backupSerFac.put("IDSERIEFACTURACION",idSerieFacturacion);
 				backupSerFac.put("IDPLANTILLA",formDGen.getIdPlantilla());
+				backupSerFac.put(FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL, idTipoPlantillaMail);
 				backupSerFac.put("DESCRIPCION",formDGen.getDescripcion());
 				backupSerFac.put("NOMBREABREVIADO",formDGen.getNombreAbreviado());
 				request.getSession().setAttribute("DATABACKUP",backupSerFac);

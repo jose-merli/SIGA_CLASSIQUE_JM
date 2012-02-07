@@ -14,6 +14,8 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.*;
 
 public class DatosGeneralesForm extends MasterForm {
+	
+	private String idPlantillaMail, idTipoPlantillaMail;
 
 	// Metodos Set (Formulario (*.jsp))
 	public void setIdInstitucion (Integer id) {
@@ -27,6 +29,14 @@ public class DatosGeneralesForm extends MasterForm {
 	public void setIdPlantilla (Integer id) { 
 		UtilidadesHash.set(datos, FacSerieFacturacionBean.C_IDPLANTILLA, id);
  	}
+
+	/*public void setIdTipoPlantillaMail (String id) { 
+		UtilidadesHash.set(datos, FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL, id);
+ 	}
+	
+	public void setIdPlantillaMail (String id) { 
+		UtilidadesHash.set(datos, FacSerieFacturacionBean.C_IDPLANTILLAMAIL, id);
+ 	}*/
 	
 	public void setPlantilla (String dato) {
  		UtilidadesHash.set(datos, FacPlantillaFacturacionBean.C_DESCRIPCION, dato);
@@ -93,6 +103,14 @@ public class DatosGeneralesForm extends MasterForm {
  	public Integer getIdPlantilla	() {
  		return UtilidadesHash.getInteger(datos, FacSerieFacturacionBean.C_IDPLANTILLA);	
  	}
+ 	
+ 	/* public String getIdTipoPlantillaMail	() {
+ 		return UtilidadesHash.getString(datos, FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL);	
+ 	}
+ 	 	
+ 	 public String getIdPlantillaMail	() {
+ 		return UtilidadesHash.getString(datos, FacSerieFacturacionBean.C_IDPLANTILLAMAIL);	
+ 	}*/
  	
  	public String getPlantilla	() 	{ 
  		return UtilidadesHash.getString(datos, FacPlantillaFacturacionBean.C_DESCRIPCION);
@@ -162,5 +180,21 @@ public class DatosGeneralesForm extends MasterForm {
  	public String getSufijo_nuevo () { 
  		return UtilidadesHash.getString(datos, "form_sufijo_nuevo");
  	}
+
+	public String getIdPlantillaMail() {
+		return idPlantillaMail;
+	}
+
+	public void setIdPlantillaMail(String idPlantillaMail) {
+		this.idPlantillaMail = idPlantillaMail;
+	}
+
+	public String getIdTipoPlantillaMail() {
+		return idTipoPlantillaMail;
+	}
+
+	public void setIdTipoPlantillaMail(String idTipoPlantillaMail) {
+		this.idTipoPlantillaMail = idTipoPlantillaMail;
+	}
  	
 }

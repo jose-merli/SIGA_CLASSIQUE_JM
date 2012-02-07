@@ -2267,34 +2267,36 @@ public class Facturacion {
 		    					 }
 		    					
 		    				}
-		    			
 		    				
-		    				// Recojo una plantilla valida cualquiera:
-		    				EnvPlantillasEnviosAdm plantillasEnviosAdm = new EnvPlantillasEnviosAdm(this.usrbean);
-		    				Vector plantillasValidas=plantillasEnviosAdm.getIdPlantillasValidos(institucion.toString(),enviosBean.getIdTipoEnvios().toString());
-		    				//Si no hay plantillas:
-		    				if (plantillasValidas.isEmpty()){
-		    					throw new SIGAException("messages.facturacion.almacenar.plantillasEnvioMal");					
-		    				} else {
-			    				ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> TENEMOS PLANTILLAS",10);
-
-		    					//Tenemos plantillas:
-		        				enviosBean.setIdPlantillaEnvios(new Integer((String)plantillasValidas.firstElement()));
-		        				
-		        				// Creacion documentos
-		        				/*String nombreDoc = rutaAlmacen+barraAlmacen+nColegiado+"-"+UtilidadesString.validarNombreFichero((String)facturaHash.get(FacFacturaBean.C_NUMEROFACTURA))+".pdf";
-		        				Documento documento = new Documento(nombreDoc,"Factura "+nombreDoc);*/
-		        				Documento documento = new Documento(rutaAlmacen+barraAlmacen+nColegiado+"-"+UtilidadesString.validarNombreFichero((String)facturaHash.get(FacFacturaBean.C_NUMEROFACTURA))+".pdf","Factura "+nColegiado+"-"+UtilidadesString.validarNombreFichero((String)facturaHash.get(FacFacturaBean.C_NUMEROFACTURA))+".pdf");
-		        				if(UtilidadesHash.getString(facturaHash,FacFacturaBean.C_NUMEROFACTURA)==null ||UtilidadesHash.getString(facturaHash,FacFacturaBean.C_NUMEROFACTURA).equals("")){
-		        					documento = new Documento(rutaAlmacen+barraAlmacen+nColegiado+"-"+(String)facturaHash.get(FacFacturaBean.C_IDFACTURA)+".pdf","Factura "+nColegiado+"-"+(String)facturaHash.get(FacFacturaBean.C_IDFACTURA)+".pdf");	
-		        				}
-		        				Vector documentos = new Vector(1);
-		        				documentos.add(documento);
-		        				
-		        				// Genera el envio:
-	        					envio.generarEnvio((String)facturaHash.get(FacFacturaBean.C_IDPERSONA), EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,documentos);
-	    	    				ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ENVIO GENERADO OK",10);
-
+		    				//SE SELECCIONA LA PLANTILLA MAIL
+		    				FacSerieFacturacionAdm facSerieAdm = new FacSerieFacturacionAdm(userbean);
+		    				Hashtable hashSerie = new Hashtable();
+		    				hashSerie.put(FacSerieFacturacionBean.C_IDINSTITUCION, institucion);
+		    				hashSerie.put(FacSerieFacturacionBean.C_IDSERIEFACTURACION, serieFacturacion);
+		    				Vector vFacSerie = facSerieAdm.select(hashSerie);
+		    				if(vFacSerie != null && vFacSerie.size()>0){
+		    					FacSerieFacturacionBean serieBean = (FacSerieFacturacionBean) vFacSerie.get(0);
+		    					if(serieBean.getIdTipoPlantillaMail() != null){
+		    						int plantillaMail = serieBean.getIdTipoPlantillaMail();
+		    						enviosBean.setIdPlantillaEnvios(plantillaMail);
+			        				// Creacion documentos
+			         				Documento documento = new Documento(rutaAlmacen+barraAlmacen+nColegiado+"-"+UtilidadesString.validarNombreFichero((String)facturaHash.get(FacFacturaBean.C_NUMEROFACTURA))+".pdf","Factura "+nColegiado+"-"+UtilidadesString.validarNombreFichero((String)facturaHash.get(FacFacturaBean.C_NUMEROFACTURA))+".pdf");
+			        				if(UtilidadesHash.getString(facturaHash,FacFacturaBean.C_NUMEROFACTURA)==null ||UtilidadesHash.getString(facturaHash,FacFacturaBean.C_NUMEROFACTURA).equals("")){
+			        					documento = new Documento(rutaAlmacen+barraAlmacen+nColegiado+"-"+(String)facturaHash.get(FacFacturaBean.C_IDFACTURA)+".pdf","Factura "+nColegiado+"-"+(String)facturaHash.get(FacFacturaBean.C_IDFACTURA)+".pdf");	
+			        				}
+			        				Vector documentos = new Vector(1);
+			        				documentos.add(documento);
+			        				
+			        				// Genera el envio:
+		        					envio.generarEnvio((String)facturaHash.get(FacFacturaBean.C_IDPERSONA), EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,documentos);
+		    	    				ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ENVIO GENERADO OK",10);
+	
+			    					}else{
+			    						throw new SIGAException("messages.facturacion.almacenar.plantillasEnvioMal");		
+			    					}
+			    					
+		    				}else{
+		    					throw new SIGAException("messages.facturacion.almacenar.plantillasEnvioMal");		
 		    				}
 	
 	    				} catch (SIGAException eee) {

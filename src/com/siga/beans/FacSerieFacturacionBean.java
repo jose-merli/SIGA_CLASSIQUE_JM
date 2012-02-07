@@ -9,7 +9,7 @@ package com.siga.beans;
 public class FacSerieFacturacionBean extends MasterBean {
 
 	/* Variables */
-	private Integer idInstitucion, idPlantilla;
+	private Integer idInstitucion, idPlantilla, idTipoPlantillaMail;
 	
 	private Long idSerieFacturacion;
 	
@@ -38,7 +38,7 @@ public class FacSerieFacturacionBean extends MasterBean {
 	static public final String C_CTACLIENTES		= "CTACLIENTES";
 	static public final String C_OBSERVACIONES 		= "OBSERVACIONES";
 	static public final String C_TIPOSERIE			= "TIPOSERIE";
-
+	static public final String C_IDTIPOPLANTILLAMAIL = "IDTIPOPLANTILLAMAIL";
 	
 	// Metodos SET
 	public void setIdInstitucion (Integer id)		{ this.idInstitucion = id; }
@@ -72,5 +72,12 @@ public class FacSerieFacturacionBean extends MasterBean {
 	public String getCuentaIngresos			()  { return cuentaIngresos;	}
 	public String  getObservaciones 	    ()	{ return this.observaciones; }
 	public String getTipoSerie			()  { return tipoSerie;	}
-
+	
+	public Integer getIdTipoPlantillaMail() {
+		return idTipoPlantillaMail;
+	}
+	public void setIdTipoPlantillaMail(Integer idTipoPlantillaMail) {
+		this.idTipoPlantillaMail = idTipoPlantillaMail;
+	}
+	
 }

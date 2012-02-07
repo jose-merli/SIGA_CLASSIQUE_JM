@@ -65,12 +65,15 @@
 	String observaciones="";
 	// Valores para combos setElement
 	ArrayList vPlantilla = new ArrayList(); // valor original Plantilla
-
+	String idTipoEnvioCorreoElectronico = ""+EnvEnviosAdm.TIPO_CORREO_ELECTRONICO;
+	String parametrosCmbPlantillaEnvios[] = {user.getLocation(),idTipoEnvioCorreoElectronico};
+	String parametrosPlantillasMail [] = {"-1",user.getLocation(),"1"};
+	ArrayList plantillaEnviosSeleccionada = new ArrayList();
+	ArrayList plantillaSeleccionada = new ArrayList();
 
 	FacSerieFacturacionBean beanSerie = null;
 
-	if (datosSerie!=null && datosSerie.size()>0)
-	{
+	if (datosSerie!=null && datosSerie.size()>0) {
 		beanSerie = (FacSerieFacturacionBean)datosSerie.elementAt(0);
 		sAbreviatura = beanSerie.getNombreAbreviado();
 		sDescripcion = beanSerie.getDescripcion();
@@ -89,6 +92,11 @@
 		Vector datosPlantilla = admPlantilla.select(sWhere);
 		FacPlantillaFacturacionBean beanPlantilla = (FacPlantillaFacturacionBean)datosPlantilla.elementAt(0);
 		sPlantilla = beanPlantilla.getDescripcion();
+		
+		if(beanSerie.getIdTipoPlantillaMail() != null && !beanSerie.getIdTipoPlantillaMail().equals("")){	
+			plantillaEnviosSeleccionada.add(beanSerie.getIdTipoPlantillaMail()+","+user.getLocation() +",1");
+		}	
+	
 	}
 
 	String idContador="";
@@ -149,7 +157,9 @@
 				if (document.forms[0].envioFacturas.checked==true) {
 					document.forms[0].generarPDF.checked=true;
 					document.forms[0].generarPDF.disabled=true;
+					document.forms[0].idTipoPlantillaMail.disabled=false;
 				} else {
+					document.forms[0].idTipoPlantillaMail.disabled=true;
 					document.forms[0].generarPDF.disabled=false;
 				}
 				return false;
@@ -187,7 +197,7 @@
 		</script>
 	</head>
 
-	<body  class="tablaCentralCampos" onLoad="configuraContador();">
+	<body  class="tablaCentralCampos" onLoad="configuraContador();actualiza();">
 	
 		<!-- INICIO: CAPA DE REGISTRO CON MEDIDAS EN EL ESTILO -->
 
@@ -251,26 +261,36 @@
 										<%}%>
 									</td>
 								</tr>
-								
-								<tr>
-									<td class="labelText" style="text-align:left" colspan="4">
-										<siga:Idioma key="facturacion.datosGenerales.literal.generaPDF"/>&nbsp;&nbsp;
-										<% if ((enviarFacturas != null) && (enviarFacturas.equals("1"))) { %>
-												<input type="checkbox" name="generarPDF" checked disabled>
-										<% } else if ((generarPDF != null) && (generarPDF.equals("1"))) { %>
-												<input type="checkbox" name="generarPDF" <%=(accion.equals("ver"))?"disabled":"" %> checked>
-										<% } else { %>
-												<input type="checkbox" name="generarPDF" <%=(accion.equals("ver"))?"disabled":"" %> >
-										<% } %>
-								&nbsp;&nbsp;&nbsp;
-										<siga:Idioma key="facturacion.datosGenerales.literal.envioFacturas"/>&nbsp;&nbsp;
-										<% if ((enviarFacturas != null) && (enviarFacturas.equals("1"))) { %>
-												<input type="checkbox" name="envioFacturas" onclick="actualiza();" <%=(accion.equals("ver"))?"disabled":"" %> checked>
-										<% } else { %>
-												<input type="checkbox" name="envioFacturas" onclick="actualiza();" <%=(accion.equals("ver"))?"disabled":"" %> >
-										<% } %>
-									</td>
-								</tr>
+								</table>
+								<table border="0">
+									<tr>
+										<td class="labelText" style="text-align:left" >
+											<siga:Idioma key="facturacion.datosGenerales.literal.generaPDF"/>&nbsp;&nbsp;
+											<% if ((enviarFacturas != null) && (enviarFacturas.equals("1"))) { %>
+													<input type="checkbox" name="generarPDF" checked disabled>
+											<% } else if ((generarPDF != null) && (generarPDF.equals("1"))) { %>
+													<input type="checkbox" name="generarPDF" <%=(accion.equals("ver"))?"disabled":"" %> checked>
+											<% } else { %>
+													<input type="checkbox" name="generarPDF" <%=(accion.equals("ver"))?"disabled":"" %> >
+											<% } %>
+													&nbsp;&nbsp;&nbsp;
+											<siga:Idioma key="facturacion.datosGenerales.literal.envioFacturas"/>&nbsp;&nbsp;
+											<% if ((enviarFacturas != null) && (enviarFacturas.equals("1"))) { %>
+													<input type="checkbox" name="envioFacturas" onclick="actualiza();" <%=(accion.equals("ver"))?"disabled":"" %> checked>
+											<% } else { %>
+													<input type="checkbox" name="envioFacturas" onclick="actualiza();" <%=(accion.equals("ver"))?"disabled":"" %> >
+											<% } %>
+										</td>
+										
+										<td id="titulo" class="labelText">
+											<siga:Idioma key="envios.plantillas.literal.plantilla"/> 
+										</td>
+										<td>
+											<siga:ComboBD nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxCombo" elementoSel="<%=plantillaEnviosSeleccionada%>" ancho="300" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>"/>
+										</td>									
+									</tr>
+								</table>
+								<table align="center" border="0">
 								<tr>
 								    <td class="labelText" width="10%" style="text-align:left" >
 										<siga:Idioma key="facturacion.datosGenerales.literal.observaciones"/>
@@ -455,9 +475,15 @@
 								return false;
 							}	
 						}
-						
-						document.forms[0].ids.value = datos;							
-												
+
+						if(document.DatosGeneralesForm.envioFacturas.checked){
+							if(document.DatosGeneralesForm.idTipoPlantillaMail.value == ""){
+							    alert('Debe rellenar el tipo de plantilla para el envío');
+								return false;
+							}
+						}
+
+						document.forms[0].ids.value = datos;
 						document.forms[0].submit();
 					 }
 				}
