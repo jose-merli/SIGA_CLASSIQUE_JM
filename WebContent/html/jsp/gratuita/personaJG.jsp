@@ -2409,6 +2409,7 @@ function limpiarPersonaContrario() {
 			}else {
 	 			document.PersonaJGForm.existeDomicilio.value = "S";
 			}
+
 			var lNumerosTelefonos=getDatos();				
 			if (!lNumerosTelefonos){
                  fin();
@@ -2536,6 +2537,15 @@ function limpiarPersonaContrario() {
 	
 		//Asociada al boton Guardar -->
 		function accionGuardarCerrar()	{
+
+
+			if (document.forms[0].existeDom.checked) {
+	 			document.PersonaJGForm.existeDomicilio.value = "N";
+			}else {
+	 			document.PersonaJGForm.existeDomicilio.value = "S";
+			}
+		
+			
 			var lNumerosTelefonos=getDatos();			
 			if (!lNumerosTelefonos){
                  fin();
@@ -2621,11 +2631,11 @@ function limpiarPersonaContrario() {
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nIdentificacion'/>"+ '\n';
 					}
 
-					if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1)
+					if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1  && document.PersonaJGForm.existeDomicilio.value!= "N")
 						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
-					if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value=="")
+					if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
 						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
-					if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value=="")
+					if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
 						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
 					if (<%=obligatorioNacionalidad%> && document.forms[0].nacionalidad.value =="")
 						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';						
@@ -2682,6 +2692,13 @@ function limpiarPersonaContrario() {
 		}
 		//Asociada al boton Guardar -->
 		function accionGuardar()	{
+
+
+			if (document.forms[0].existeDom.checked) {
+	 			document.PersonaJGForm.existeDomicilio.value = "N";
+			}else {
+	 			document.PersonaJGForm.existeDomicilio.value = "S";
+			}
 			var lNumerosTelefonos=getDatos();	
 			
 			if (!lNumerosTelefonos){
@@ -2750,6 +2767,12 @@ function limpiarPersonaContrario() {
 		//Asociada al boton Guardar -->
 		function accionGuardar()	{	
 
+
+			if (document.forms[0].existeDom.checked) {
+	 			document.PersonaJGForm.existeDomicilio.value = "N";
+			}else {
+	 			document.PersonaJGForm.existeDomicilio.value = "S";
+			}
 			var lNumerosTelefonos=getDatos();	
 					
 			if (!lNumerosTelefonos){
@@ -2806,6 +2829,13 @@ function limpiarPersonaContrario() {
 
 		//Asociada al boton Guardar -->
 		function accionGuardarCerrar()	{	
+
+
+			if (document.forms[0].existeDom.checked) {
+	 			document.PersonaJGForm.existeDomicilio.value = "N";
+			}else {
+	 			document.PersonaJGForm.existeDomicilio.value = "S";
+			}
 			
 			var lNumerosTelefonos=getDatos();						
 			if (!lNumerosTelefonos){
@@ -2864,7 +2894,14 @@ function limpiarPersonaContrario() {
 		}
 
 		//Asociada al boton Guardar -->
-		function accionGuardarCerrar()	{					
+		function accionGuardarCerrar()	{	
+
+
+			if (document.forms[0].existeDom.checked) {
+	 			document.PersonaJGForm.existeDomicilio.value = "N";
+			}else {
+	 			document.PersonaJGForm.existeDomicilio.value = "S";
+			}				
 
 			var lNumerosTelefonos=getDatos();						
 			if (!lNumerosTelefonos){
@@ -2929,6 +2966,13 @@ function limpiarPersonaContrario() {
 
 		//Asociada al boton Guardar -->
 		function accionGuardarCerrar()	{	
+
+
+			if (document.forms[0].existeDom.checked) {
+	 			document.PersonaJGForm.existeDomicilio.value = "N";
+			}else {
+	 			document.PersonaJGForm.existeDomicilio.value = "S";
+			}
 			
 			var lNumerosTelefonos=getDatos();					
 			if (!lNumerosTelefonos){
@@ -3012,6 +3056,12 @@ function limpiarPersonaContrario() {
 
 		//Asociada al boton Guardar -->
 		function accionGuardarCerrar()	{	
+
+			if (document.forms[0].existeDom.checked) {
+	 			document.PersonaJGForm.existeDomicilio.value = "N";
+			}else {
+	 			document.PersonaJGForm.existeDomicilio.value = "S";
+			}
 			
 			var lNumerosTelefonos=getDatos();					
 			if (!lNumerosTelefonos){
@@ -3093,7 +3143,13 @@ function accionCerrar()
 
 //Asociada al boton Guardar -->
 function accionGuardarCerrar()	{	
-	
+
+
+	if (document.forms[0].existeDom.checked) {
+			document.PersonaJGForm.existeDomicilio.value = "N";
+	}else {
+			document.PersonaJGForm.existeDomicilio.value = "S";
+	}
 	var lNumerosTelefonos=getDatos();					
 	if (!lNumerosTelefonos){
          fin();
