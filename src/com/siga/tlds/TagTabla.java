@@ -412,7 +412,7 @@ public class TagTabla extends TagSupport {
 			//out.println("<div id='" + this.nombre + "Div' style='height:" + this.alto + "px; position:absolute; width:100%; overflow-y:auto'>");
 			// LMS 15/02/2005 Con el position absolute había que estar haciendo filigranas en los JPS. Le elimino.
 			
-			if(estilo!=null){
+			if(estilo!=null && !estilo.equals("")){
 				out.println("<div id='" + this.nombre + "Div' style='" + this.estilo +"'>");				
 			}else{
 				out.println("<div id='" + this.nombre + "Div' style='height:" + this.alto + "; position:absolute; width:100%; overflow-y:auto'>");
