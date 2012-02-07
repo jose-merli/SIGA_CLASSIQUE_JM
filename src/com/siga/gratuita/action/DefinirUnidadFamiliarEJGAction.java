@@ -618,8 +618,12 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 				
 				miForm = admUnidadFamiliar.getUnidadFamiliar(miForm, usr);
 				
+				
 			}
-			
+			BusinessManager bm = getBusinessManager();
+			EejgService eEjgS = (EejgService)bm.getService(EejgService.class);
+			List<ScsEejgPeticionesBean> peticionesEejgBeans = eEjgS.getPeticionesEejg(ejg, usr);
+			miForm.setPeticionesEejg(peticionesEejgBeans);
 			request.setAttribute("EJG_UNIDADFAMILIAR", PersonaJGAction.EJG_UNIDADFAMILIAR);
 		} catch (Exception e) {
 			   throwExcp("messages.general.error",e,null);
@@ -862,7 +866,8 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 		StringBuffer languaje = new StringBuffer(usr.getLanguageExt().toLowerCase());
 		languaje.append("_ES");
 		peticionEejg.setIdioma(languaje.toString());
-		ScsEejgPeticionesAdm admPeticionEejg = new ScsEejgPeticionesAdm(usr);
+		
+		
 		
 		HttpSession session = (HttpSession) request.getSession();
 		UsrBean usrBean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
@@ -871,9 +876,11 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			ClsLogging.writeFileLog("Acceso denegado",request,3);
 			return exitoRefresco("messages.error.accesoDenegado", request);
 		}
+		BusinessManager bm = getBusinessManager();
+		EejgService eEjgS = (EejgService)bm.getService(EejgService.class);
 		
 		try {
-			admPeticionEejg.insertarPeticionEejg(peticionEejg);	
+			eEjgS.insertarPeticionEejg(peticionEejg,usr);	
 		} catch (Exception e) {
 			throwExcp("messages.general.error",e,null);
 		}

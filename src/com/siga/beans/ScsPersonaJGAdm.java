@@ -612,6 +612,15 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			existe=true;
 		return existe;
 	}
+	public ScsPersonaJGBean getPersonaJGSByPK(Long idPersonaJG, Integer idInstitucion)throws ClsExceptions{
+		Hashtable personaJGHashtable = new Hashtable();
+		personaJGHashtable.put(ScsPersonaJGBean.C_IDINSTITUCION,idInstitucion);
+		personaJGHashtable.put(ScsPersonaJGBean.C_IDPERSONA,idPersonaJG);
+		Vector personasJG = selectByPK(personaJGHashtable);
+		ScsPersonaJGBean personaJGBean = (ScsPersonaJGBean) personasJG.get(0);
+		return personaJGBean;
+	}
+	
 	public ScsPersonaJGBean getPersonaJG(Long idPersonaJG, Integer idInstitucion)throws ClsExceptions{
 
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();

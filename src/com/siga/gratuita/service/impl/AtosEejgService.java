@@ -26,6 +26,7 @@ import com.siga.beans.ScsPersonaJGBean;
 import com.siga.beans.ScsTelefonosPersonaJGBean;
 import com.siga.beans.ScsUnidadFamiliarEJGAdm;
 import com.siga.beans.ScsUnidadFamiliarEJGBean;
+import com.siga.beans.eejg.ScsEejgPeticionesAdm;
 import com.siga.beans.eejg.ScsEejgPeticionesBean;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirUnidadFamiliarEJGForm;
@@ -432,6 +433,26 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 		return mapParameters;
 		
 	}
+
+	public void insertarPeticionEejg(ScsEejgPeticionesBean peticionEejg,UsrBean usrBean) throws ClsExceptions
+			{
+		ScsEejgPeticionesAdm admPeticionEejg = new ScsEejgPeticionesAdm(usrBean);
+		ScsPersonaJGAdm personaJGAdm = new ScsPersonaJGAdm(usrBean);
+		ScsPersonaJGBean personaJGBean = personaJGAdm.getPersonaJGSByPK(peticionEejg.getIdPersona(),peticionEejg.getIdInstitucion());
+		peticionEejg.setNif(personaJGBean.getNif());
+		peticionEejg.setNombre(personaJGBean.getNombre());
+		peticionEejg.setApellido1(personaJGBean.getApellido1());
+		peticionEejg.setApellido2(personaJGBean.getApellido2());
+		admPeticionEejg.insertarPeticionEejg(peticionEejg);	
+		
+	}
+
+	public List<ScsEejgPeticionesBean> getPeticionesEejg(ScsEJGBean eejgBean,
+			UsrBean usrBean) throws ClsExceptions {
+		ScsEejgPeticionesAdm admPeticionEejg = new ScsEejgPeticionesAdm(usrBean);
+		return admPeticionEejg.getPeticionesEejg(eejgBean);
+	}
+
 	
 
 	

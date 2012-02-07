@@ -25,59 +25,10 @@
 		titulo="gratuita.busquedaEJG.unidadFamiliar" 
 		localizacion="gratuita.busquedaEJG.localizacion"/>
 
-<script>	
-	function actualizaTexto(fila,style,usuario,dni,fecha){
-		// document.getElementById(idFilaBotones).className = 'labelText';
-		td = document.getElementById("idFilaBotones_"+fila);
-		if(usuario!=''){
-			var textoUsuarioPeticion = "<siga:Idioma key='eejg.solicitado'/>";
-			textoUsuarioPeticion += '(';
-			textoUsuarioPeticion += fecha;
-			textoUsuarioPeticion += ') ';
-			textoUsuarioPeticion += "<siga:Idioma key='general.por'/>";
-			textoUsuarioPeticion += ' ';
-			textoUsuarioPeticion += dni;
-			textoUsuarioPeticion += '-';
-			textoUsuarioPeticion += usuario;
 
-			
-			var innerHTMLOld = td.innerHTML;
-			td.innerHTML = '';
-			tabla = document.createElement('table');
-			tabla.setAttribute("width","100%");
-			
-			tr1 = tabla.insertRow();
-			tr1.className = style;
-			td1 = tr1.insertCell();
-			td1.innerHTML = innerHTMLOld;
-
-			
-			tr2 = tabla.insertRow();
-			tr2.className = style;
-			
-			td2 = tr2.insertCell();
-			tablatd = document.createElement('table');
-			tablatd.setAttribute("width","100%");
-			tablatd.setAttribute("border","1");
-			tablatd.setAttribute("cellspacing","0");
-			tablatd.setAttribute("cellpadding","0");
-			tr1tablatd = tablatd.insertRow();
-			tr1tablatd.className = style;
-			td1tablatd = tr1tablatd.insertCell();
-			td1tablatd.innerHTML = textoUsuarioPeticion;
-			td2.appendChild(tablatd);
-			td.appendChild(tabla);
-
-
-			}
-		
-		
-		 
-	}
-	</script>
 </head>
 
-<body class="tablaCentralCampos" >	
+<body class="tablaCentralCampos" onload="ajustarCabeceraTabla();">	
 			
 
 <bean:define id="modo" name="DefinirUnidadFamiliarEJGForm" property="modo" type="java.lang.String"/>
@@ -130,18 +81,22 @@
 	</td>
 </tr>
 </table>
+<c:if test="${DefinirUnidadFamiliarEJGForm.permisoEejg==true}">
 
-
+	<table border="0" style="table-layout:fixed;width=100%" align="center">
+	<tr>
+ 		<td style="vertical-align: top; height:300px">
+</c:if>
 			<siga:TablaCabecerasFijas 		   
 		   nombre="listadoUnidadFamiliar"
 		   borde="2"
 		   clase="tableTitle"		   
 		   nombreCol="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='checkTodos()'/> ,gratuita.personaJG.literal.parentescoNormalizado,gratuita.busquedaEJG.literal.nif,gratuita.busquedaEJG.literal.nombre,gratuita.operarInteresado.literal.ingresosAnuales,gratuita.operarInteresado.literal.bienesMobiliarios,gratuita.operarInteresado.literal.bienesInmuebles,gratuita.operarInteresado.literal.otrosBienes,"
-		   tamanoCol="5,8,7,21,7,7,7,7,32"
-		   alto="100%"
-		   ajusteBotonera="true"		
-		   mensajeBorrado="gratuita.ejg.unidadFamiliar.borrado"
+		   tamanoCol="5,8,7,25,7,7,7,7,28"
+		   
+		   alto="500"
 		   modal="G"
+		   mensajeBorrado="gratuita.ejg.unidadFamiliar.borrado"
 		  >
 		  
 	<logic:empty name="DefinirUnidadFamiliarEJGForm" property="unidadFamiliar">
@@ -186,6 +141,7 @@
 						<input type="hidden" name="oculto<%=index%>_11" value="${solicitante.peticionEejg.idPeticion}">
 						<input type="hidden" name="oculto<%=index%>_12" value="${DefinirUnidadFamiliarEJGForm.esComision}">
 						<input type="hidden" name="oculto<%=index%>_13" value="${solicitante.solicitante}">
+						
 						
 						<c:out value="${solicitante.parentesco.descripcion}"></c:out>
 					
@@ -240,11 +196,10 @@
 					</td>
 
 					</siga:FilaConIconos>
-					<script> actualizaTexto('<%=String.valueOf(index.intValue())%>','<%=((index)%2==0?"filaTablaPar":"filaTablaImpar")%>','<%=(solicitante.getPeticionEejg()!=null&&solicitante.getPeticionEejg().getUsuarioPeticion()!=null)?solicitante.getPeticionEejg().getUsuarioPeticion().getDescripcion():""%>','<%=(solicitante.getPeticionEejg()!=null&&solicitante.getPeticionEejg().getUsuarioPeticion()!=null)?solicitante.getPeticionEejg().getUsuarioPeticion().getNIF():""%>','<%=(solicitante.getPeticionEejg()!=null&&solicitante.getPeticionEejg().getFechaPeticion()!=null)?solicitante.getPeticionEejg().getFechaPeticion():""%>');</script>
 				</c:if>
 				<c:if	test="${solicitante.idPersona==DefinirUnidadFamiliarEJGForm.personaJG.idPersona}">
 				<bean:define id="elementosFila" name="solicitante" property="elementosFila" type="com.siga.tlds.FilaExtElement[]"/>
-				<siga:FilaConIconos fila="<%=String.valueOf(index.intValue())%>" botones="" elementos="<%=elementosFila%>" clase="listaNonEdit" modo="<%=modo%>" visibleBorrado="false" visibleEdicion="false"	visibleConsulta="false">
+				<siga:FilaConIconos fila="<%=String.valueOf(index.intValue())%>" botones="" elementos="<%=elementosFila%>" clase="listaNonEdit" modo="<%=modo%>"  visibleBorrado="false" visibleEdicion="false"	visibleConsulta="false">
 					<td align="center" >
 						
 						<c:choose>
@@ -325,7 +280,6 @@
 					</td>
 
 					</siga:FilaConIconos>
-				<script> actualizaTexto('<%=String.valueOf(index.intValue())%>','<%=((index)%2==0?"filaTablaPar":"filaTablaImpar")%>','<%=(solicitante.getPeticionEejg()!=null&&solicitante.getPeticionEejg().getUsuarioPeticion()!=null)?solicitante.getPeticionEejg().getUsuarioPeticion().getDescripcion():""%>','<%=(solicitante.getPeticionEejg()!=null&&solicitante.getPeticionEejg().getUsuarioPeticion()!=null)?solicitante.getPeticionEejg().getUsuarioPeticion().getNIF():""%>','<%=(solicitante.getPeticionEejg()!=null&&solicitante.getPeticionEejg().getFechaPeticion()!=null)?solicitante.getPeticionEejg().getFechaPeticion():""%>');</script>
 				
 				
 				</c:if>
@@ -349,6 +303,89 @@
 	</logic:notEmpty>
 
 </siga:TablaCabecerasFijas>
+<c:if test="${DefinirUnidadFamiliarEJGForm.permisoEejg==true}">
+</td></tr>
+<tr >
+<td>
+<table class="tablaTitulo" cellspacing="0" heigth="38">
+<tr>
+	<td id="titulo" class="titulitosDatos">
+	
+		<siga:Idioma key="gratuita.eejg.peticiones.titulo"/>
+	</td>
+</tr>
+</table>
+</td></tr>
+<tr >
+	  <td style="vertical-align: top; height:300px">
+
+
+
+
+
+<siga:TablaCabecerasFijas 	
+	   
+		   nombre="listadoPeticiones"
+		   borde="2"
+		   clase="tableTitle"		   
+		   nombreCol="gratuita.busquedaEJG.literal.nif,gratuita.busquedaEJG.literal.nombre,gratuita.eejg.peticiones.usuarioPeticion,gratuita.eejg.peticiones.fechaPeticion,"
+		   tamanoCol="10,30,30,10,"
+		   alto="500"
+		   
+			 
+		  >
+		  
+	<logic:empty name="DefinirUnidadFamiliarEJGForm" property="peticionesEejg">
+	<br>
+   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
+ 		<br>
+	</logic:empty>
+	<logic:notEmpty name="DefinirUnidadFamiliarEJGForm"	property="peticionesEejg">
+		<logic:iterate name="DefinirUnidadFamiliarEJGForm"	property="peticionesEejg" id="peticion" indexId="indice" type="com.siga.beans.eejg.ScsEejgPeticionesBean">
+			<%indice = indice.intValue()+1; %>
+						
+			
+				<bean:define id="elementosFila" name="peticion" property="elementosFila" type="com.siga.tlds.FilaExtElement[]"/>
+				<siga:FilaConIconos fila="<%=String.valueOf(indice.intValue())%>" botones="" elementos="<%=elementosFila%>" clase="listaNonEdit" modo="<%=modo%>" visibleBorrado="false" visibleEdicion="false"	visibleConsulta="false">
+					<input type="hidden" name="oculto<%=indice%>_1" value="${peticion.idPeticion}">
+					<td><c:out value="${peticion.nif}"></c:out>&nbsp;</td>
+					<td><c:out value="${peticion.nombre}"></c:out>&nbsp;
+					<c:out value="${peticion.apellido1}"></c:out>&nbsp;
+					<c:out value="${peticion.apellido2}"></c:out>
+					</td>
+					<td>
+					<c:out value="${peticion.usuarioPeticion.NIF}"></c:out>&nbsp;-&nbsp;<c:out
+					 value="${peticion.usuarioPeticion.descripcion}"/>
+					</td>
+					<td>
+					<c:out value="${peticion.fechaPeticion}"/>
+					</td>
+
+					
+					</siga:FilaConIconos>
+
+				
+				
+
+			
+		</logic:iterate>
+		
+		
+	</logic:notEmpty>
+
+</siga:TablaCabecerasFijas>
+
+
+</td></tr></table>
+
+</c:if>
+
+
+
+
+
+
+
 <!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 <c:choose>
 	<c:when test="${DefinirUnidadFamiliarEJGForm.permisoEejg==true}">
@@ -460,6 +497,8 @@
 
 	}
 	function descargarEejg(fila) {
+		selectRowPeticiones(fila);
+
 		var idPersonaJG = document.getElementById( 'oculto' + fila + '_6');
 		var idInstitucionEJG = document.getElementById( 'oculto' + fila + '_7');
 		var idTipoEJG = document.getElementById( 'oculto' + fila + '_8');
@@ -530,29 +569,32 @@
    		}
    	}
    	
-   	function esperaEejg(){
+   	function esperaEejg(fila){
+   		selectRowPeticiones(fila);
    		alert("<siga:Idioma key="general.boton.esperaEejg"/>");
    	}
-   	function errorEejg(){
+   	function errorEejg(fila){
+   		selectRowPeticiones(fila);
    		alert("<siga:Idioma key="general.boton.errorEejg"/>");
    	}
    	
    	function esperaInfoEejg(fila){
+   		selectRowPeticiones(fila);
+   		
    		var confirmar = confirm("<siga:Idioma key='gratuita.eejg.message.avisoEsperaInfo'/>");
    		if(confirmar){
    			return descargarEejg(fila);
    		}
    		
    	}
-   	function avisoEsperaInfoEejg(){
-   		
+   	function avisoEsperaInfoEejg(fila){
+   		selectRowPeticiones(fila);
    		alert("<siga:Idioma key="general.boton.esperaInfoEejg"/>");
    		
    		
    	}
    	
-   	function esperaAdministracionesEejg(){
-   		
+   	function esperaAdministracionesEejg(fila){
    		alert("<siga:Idioma key="general.boton.esperaAdministracionesEejg"/>");
    		
    		
@@ -567,7 +609,175 @@
 		document.DefinirUnidadFamiliarEJGForm.submit();
 	
    	}
-   	
+	function ajustarCabeceraTabla(){
+		if(document.all.listadoPeticiones){
+			if (document.all.listadoUnidadFamiliar.clientHeight <= document.all.listadoUnidadFamiliarDiv.clientHeight) {
+				document.all.listadoUnidadFamiliarCabeceras.width='98.43%';
+		  } else {
+			  document.all.listadoUnidadFamiliarCabeceras.width='100%';
+			   
+			   
+			   
+		  }
+			
+				if (document.all.listadoPeticiones.clientHeight <= document.all.listadoPeticionesDiv.clientHeight) {
+					
+					document.all.listadoPeticionesCabeceras.width='98.43%'; 
+				  } else {
+					  document.all.listadoPeticionesCabeceras.width='100%';
+					  
+					   
+					   
+				  }
+				
+			
+			ajusteAlto("listadoUnidadFamiliarDiv");
+			ajusteAlto("listadoPeticionesDiv");
+		}
+}
+	
+	function selectRowPeticiones(fila) {
+		   document.getElementById('filaSelD').value = fila;
+		   var tabla;
+		   tabla = document.getElementById('listadoPeticiones');
+		   for (var i=0; i<tabla.rows.length; i++) {
+		     if (i%2 == 0) tabla.rows[i].className = 'filaTablaPar';
+		     else          tabla.rows[i].className = 'filaTablaImpar';
+		   }
+		   tabla.rows[fila].className = 'listaNonEditSelected';
+		   
+		   document.getElementById('filaSelD').value = fila;
+		   var tabla;
+		   tabla = document.getElementById('listadoUnidadFamiliar');
+		   for (var i=0; i<tabla.rows.length; i++) {
+		     if (i%2 == 0) tabla.rows[i].className = 'filaTablaPar';
+		     else          tabla.rows[i].className = 'filaTablaImpar';
+		   }
+		   
+		   
+		   
+		 }
+	
+	function selectRow(fila) {
+		   document.getElementById('filaSelD').value = fila;
+		   var tabla;
+		   tabla = document.getElementById('listadoUnidadFamiliar');
+		   for (var i=0; i<tabla.rows.length; i++) {
+		     if (i%2 == 0) tabla.rows[i].className = 'filaTablaPar';
+		     else          tabla.rows[i].className = 'filaTablaImpar';
+		   }
+		   if(tabla.rows[fila])
+		   	tabla.rows[fila].className = 'listaNonEditSelected';
+		 }
+		 
+		 function consultar(fila) {
+		   var datos;
+		   datos = document.getElementById('tablaDatosDinamicosD');
+		   datos.value = ""; 
+		   var i, j;
+		   for (i = 0; i < 8; i++) {
+		      var tabla;
+		      tabla = document.getElementById('listadoUnidadFamiliar');
+		      if (i == 0) {
+		        var flag = true;
+		        j = 1;
+		        while (flag) {
+		          var aux = 'oculto' + fila + '_' + j;
+		          var oculto = document.getElementById(aux);
+		          if (oculto == null)  { flag = false; }
+		          else { 
+		          if(oculto.value=='')       		oculto.value=' ';
+					datos.value = datos.value + oculto.value + ','; }
+		          j++;
+		        }
+		        datos.value = datos.value + "%"
+		      } else { j = 2; }
+		      if ((tabla.rows[fila].cells)[i].innerText == "")
+		        datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
+		      else
+		        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';
+		   }
+		   document.forms[0].modo.value = "Ver";
+		   ventaModalGeneral(document.forms[0].name,"G");
+		 }
+		 
+		 function editar(fila) {
+		   var datos;
+		   datos = document.getElementById('tablaDatosDinamicosD');
+		   datos.value = ""; 
+		   var i, j;
+		   for (i = 0; i < 8; i++) {
+		      var tabla;
+		      tabla = document.getElementById('listadoUnidadFamiliar');
+		      if (i == 0) {
+		        var flag = true;
+		        j = 1;
+		        while (flag) {
+		          var aux = 'oculto' + fila + '_' + j;
+		          var oculto = document.getElementById(aux);
+		          if (oculto == null)  { flag = false; }
+		          else { 
+		          if(oculto.value=='')       		oculto.value=' ';
+					datos.value = datos.value + oculto.value + ','; }
+		          j++;
+		        }
+		        datos.value = datos.value + "%"
+		      } else { j = 2; }
+		      if ((tabla.rows[fila].cells)[i].innerText == "") 
+		        datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
+		      else
+		        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';
+		   }
+		   document.forms[0].modo.value = "Editar";
+		   var resultado = ventaModalGeneral(document.forms[0].name,"G");
+		   if (resultado) {
+		  	 	if (resultado[0]) {
+		   		refrescarLocalArray(resultado);
+		   	} else 
+		   	if (resultado=="MODIFICADO")
+		   	{
+		      		refrescarLocal();
+		   	}
+		   }
+		 }
+		 
+		 function borrar(fila) {
+		   var datos;
+		   if (confirm('Si elimina una persona de la unidad familiar, su documentación también será eliminada.\r\n¿Desea continuar?')){
+		   	datos = document.getElementById('tablaDatosDinamicosD');
+		       datos.value = ""; 
+		   	var i, j;
+		   	for (i = 0; i < 8; i++) {
+		      		var tabla;
+		      		tabla = document.getElementById('listadoUnidadFamiliar');
+		      		if (i == 0) {
+		        		var flag = true;
+		        		j = 1;
+		        		while (flag) {
+		          			var aux = 'oculto' + fila + '_' + j;
+		          			var oculto = document.getElementById(aux);
+		          			if (oculto == null)  { flag = false; }
+		          else { 
+		          if(oculto.value=='')       		oculto.value=' ';
+					datos.value = datos.value + oculto.value + ','; }
+		          			j++;
+		        		}
+		        		datos.value = datos.value + "%"
+		      		} else { j = 2; }
+		      		if ((tabla.rows[fila].cells)[i].innerText == "")
+		        		datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
+		      		else
+		        		datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';
+		   	}
+		   	var auxTarget = document.forms[0].target;
+		   	document.forms[0].target="submitArea";
+		   	document.forms[0].modo.value = "Borrar";
+		   	document.forms[0].submit();
+		   	document.forms[0].target=auxTarget;
+		 	}
+		 }
+
+
 	
 	</script>
 </html>

@@ -14,9 +14,12 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.beans.AdmUsuariosBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.MasterBean;
 import com.siga.beans.MasterBeanAdministrador;
+import com.siga.beans.ScsEJGBean;
+import com.siga.beans.ScsPersonaJGBean;
 /**
  * 
  * @author jorgeta
@@ -61,7 +64,11 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 				ScsEejgPeticionesBean.C_IDXML,
 				ScsEejgPeticionesBean.C_IDIOMA,
 				ScsEejgPeticionesBean.C_USUMODIFICACION,
-				ScsEejgPeticionesBean.C_FECHAMODIFICACION
+				ScsEejgPeticionesBean.C_FECHAMODIFICACION,
+				ScsPersonaJGBean.C_NIF,
+				ScsPersonaJGBean.C_NOMBRE,	
+				ScsPersonaJGBean.C_APELLIDO1,
+				ScsPersonaJGBean.C_APELLIDO2
 				};
 		return campos;
 	}	
@@ -116,6 +123,11 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 			bean.setNumeroIntentosPendienteInfo(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_NUMEROINTENTOSPENDIENTEINFO));
 			bean.setIdioma(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_IDIOMA));
 			
+			bean.setNif(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_NIF));
+			bean.setNombre(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_NOMBRE));
+			bean.setApellido1(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_APELLIDO1));
+			bean.setApellido2(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_APELLIDO2));
+			
 			bean.setFechaMod(UtilidadesHash.getString(hash, ScsEejgPeticionesBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_USUMODIFICACION));
 			
@@ -155,6 +167,11 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_NUMEROINTENTOSPENDIENTEINFO, b.getNumeroIntentosPendienteInfo());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_IDIOMA, b.getIdioma());
 			
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_NIF, b.getNif());
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_NOMBRE, b.getNombre());
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_APELLIDO1, b.getApellido1());
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_APELLIDO2, b.getApellido2());
+			
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_USUMODIFICACION, String.valueOf(b.getUsuMod()));
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_FECHAMODIFICACION, b.getFechaMod());
 			
@@ -183,13 +200,13 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 	 * @throws SecurityException
 	 * @throws SystemException
 	 */
-	public void insertarPeticionEejg(ScsEejgPeticionesBean peticionEejg) throws ClsExceptions, IllegalStateException, SecurityException, SystemException{
+	public void insertarPeticionEejg(ScsEejgPeticionesBean peticionEejg) throws ClsExceptions{
 	
-		UserTransaction tx = null;
-		try {
-			tx = this.usrbean.getTransaction();
-			tx.begin();
-			
+//		UserTransaction tx = null;
+//		try {
+//			tx = this.usrbean.getTransaction();
+//			tx.begin();
+//			
 			Long idPeticion = getNuevoPeticionEejg(peticionEejg.getIdInstitucion());
 			peticionEejg.setIdPeticion(idPeticion);
 			peticionEejg.setIdUsuarioPeticion(Integer.parseInt(this.usrbean.getUserName()));
@@ -199,11 +216,11 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 			peticionEejg.setNumeroIntentosPendienteInfo(0);
 			peticionEejg.setEstado(ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL);
 			insert(peticionEejg);
-			tx.commit();
-		} catch (Exception e) {
-			tx.rollback();
-			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.insertarPeticionEejg");
-		} 
+//			tx.commit();
+//		} catch (Exception e) {
+//			tx.rollback();
+//			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.insertarPeticionEejg");
+//		} 
 		
 	}
 
@@ -236,6 +253,66 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		return nuevoId;
 	}
 
+	
+  
+	   public List<ScsEejgPeticionesBean> getPeticionesEejg(ScsEJGBean eejgBean)throws ClsExceptions{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT  EEJG.NIF,EEJG.NOMBRE, EEJG.APELLIDO1, EEJG.APELLIDO2, ");
+		sql.append(" EEJG.IDPETICION,EEJG.ESTADO, EEJG.IDXML,EEJG.IDPETICION, ");
+		sql.append(" EEJG.IDIOMA, EEJG.FECHACONSULTA,  TO_CHAR(EEJG.FECHAPETICION, 'DD/MM/YYYY') FECHAPETICION, ");
+		sql.append(" USU.DESCRIPCION DESCRIPCIONUSUARIO,  USU.NIF NIFUSUARIO ");
+		sql.append(" FROM SCS_EEJG_PETICIONES EEJG, ADM_USUARIOS USU ");
+		sql.append(" WHERE EEJG.IDUSUARIOPETICION = USU.IDUSUARIO(+) ");
+		sql.append(" AND EEJG.IDINSTITUCION = USU.IDINSTITUCION(+) ");
+		 
+		sql.append(" AND EEJG.IDINSTITUCION =:");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),eejgBean.getIdInstitucion());
+		sql.append(" AND EEJG.IDTIPOEJG=:");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),eejgBean.getIdTipoEJG());
+		sql.append(" AND EEJG.ANIO = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),eejgBean.getAnio());
+		sql.append(" AND EEJG.NUMERO =:");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),eejgBean.getNumero());
+		sql.append(" ORDER BY EEJG.FECHAPETICION ");
+		
+		List<ScsEejgPeticionesBean> lPeticionesEejg = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+           if (rc.findBind(sql.toString(),htCodigos)) {
+           	lPeticionesEejg = new ArrayList<ScsEejgPeticionesBean>();
+           	ScsEejgPeticionesBean peticionEejgOut = null;
+           	for (int i = 0; i < rc.size(); i++){
+           		Row fila = (Row) rc.get(i);
+           		Hashtable<String, Object> htFila=fila.getRow();
+           		peticionEejgOut = (ScsEejgPeticionesBean) this.hashTableToBean(htFila);
+           		AdmUsuariosBean usuarioPeticion = new AdmUsuariosBean();
+        		usuarioPeticion.setDescripcion(UtilidadesHash.getString(htFila,"DESCRIPCIONUSUARIO"));
+        		usuarioPeticion.setNIF(UtilidadesHash.getString(htFila,"NIFUSUARIO"));
+        		peticionEejgOut.setUsuarioPeticion(usuarioPeticion);
+           		
+           		lPeticionesEejg.add(peticionEejgOut);
+           		
+           	}
+           } 
+      } catch (Exception e) {
+      		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+      }
+      return lPeticionesEejg;
+		
+	} 
+	   
 	/**
 	 * 
 	 * @param peticionEejg
@@ -445,6 +522,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		boolean isUpdated = updateSQL(updateSql.toString());
 		
 	}
+	
 	
 	
 	

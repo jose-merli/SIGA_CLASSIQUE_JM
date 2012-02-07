@@ -28,6 +28,7 @@ import com.siga.tlds.FilaExtElement;
  public class DefinirUnidadFamiliarEJGForm extends MasterForm{	
 	
 	private List<DefinirUnidadFamiliarEJGForm> unidadFamiliar;
+	private List<ScsEejgPeticionesBean> peticionesEejg;
 	ScsParentescoBean parentesco;
 	ScsPersonaJGBean personaJG;
 	ScsEejgPeticionesBean peticionEejg;
@@ -714,31 +715,31 @@ import com.siga.tlds.FilaExtElement;
 						
 					switch (estado) {
 						case ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL:
-							elementosFila = new FilaExtElement[5];
-							elementosFila[3] = new FilaExtElement("espera", "esperaEejg","general.boton.esperaEejg",SIGAConstants.ACCESS_READ);
-							elementosFila[4] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+							elementosFila = new FilaExtElement[4];
+							//elementosFila[3] = new FilaExtElement("espera", "esperaEejg","general.boton.esperaEejg",SIGAConstants.ACCESS_READ);
+							elementosFila[3] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
 						break;
 						case ScsEejgPeticionesBean.EEJG_ESTADO_PENDIENTE_INFO:
-							elementosFila = new FilaExtElement[6];
-							elementosFila[3] = new FilaExtElement("espera", "avisoEsperaInfoEejg","general.boton.esperaInfoEejg",SIGAConstants.ACCESS_READ);
-							elementosFila[4] = new FilaExtElement("download", "esperaInfoEejg","general.boton.descargarEejg",	SIGAConstants.ACCESS_READ);
-							elementosFila[5] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+							elementosFila = new FilaExtElement[4];
+							//elementosFila[3] = new FilaExtElement("espera", "avisoEsperaInfoEejg","general.boton.esperaInfoEejg",SIGAConstants.ACCESS_READ);
+							//elementosFila[4] = new FilaExtElement("download", "esperaInfoEejg","general.boton.descargarEejg",	SIGAConstants.ACCESS_READ);
+							elementosFila[3] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
 						break;
 						case ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA:case ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA_ESPERANDO:case ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL_ESPERANDO:
-							elementosFila = new FilaExtElement[5];
-							elementosFila[3] = new FilaExtElement("espera", "esperaAdministracionesEejg","general.boton.esperaAdministracionesEejg",SIGAConstants.ACCESS_READ);
-							elementosFila[4] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+							elementosFila = new FilaExtElement[4];
+							//elementosFila[3] = new FilaExtElement("espera", "esperaAdministracionesEejg","general.boton.esperaAdministracionesEejg",SIGAConstants.ACCESS_READ);
+							elementosFila[3] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
 						break;
 						case ScsEejgPeticionesBean.EEJG_ESTADO_ERROR_SOLICITUD:case ScsEejgPeticionesBean.EEJG_ESTADO_ERROR_CONSULTA_INFO:
-							elementosFila = new FilaExtElement[6];
+							elementosFila = new FilaExtElement[5];
 							elementosFila[3] = new FilaExtElement(null, "solicitarEejg","general.boton.solicitarEejg",	SIGAConstants.ACCESS_READ,"general.boton.solicitudEejg","90");
-							elementosFila[4] = new FilaExtElement("descargaLog", "errorEejg","general.boton.errorEejg",SIGAConstants.ACCESS_READ);
-							elementosFila[5] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+							//elementosFila[4] = new FilaExtElement("descargaLog", "errorEejg","general.boton.errorEejg",SIGAConstants.ACCESS_READ);
+							elementosFila[4] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
 						break;
 						case ScsEejgPeticionesBean.EEJG_ESTADO_FINALIZADO:
-							elementosFila = new FilaExtElement[5];
-							elementosFila[3] = new FilaExtElement("download", "descargarEejg","general.boton.descargarEejg",	SIGAConstants.ACCESS_READ);
-							elementosFila[4] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+							elementosFila = new FilaExtElement[4];
+							//elementosFila[3] = new FilaExtElement("download", "descargarEejg","general.boton.descargarEejg",	SIGAConstants.ACCESS_READ);
+							elementosFila[3] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
 						break;
 					default:
 						elementosFila = new FilaExtElement[5];
@@ -815,6 +816,12 @@ import com.siga.tlds.FilaExtElement;
 	}
 	public void setIdioma(String idioma) {
 		this.idioma = idioma;
+	}
+	public List<ScsEejgPeticionesBean> getPeticionesEejg() {
+		return peticionesEejg;
+	}
+	public void setPeticionesEejg(List<ScsEejgPeticionesBean> peticionesEejg) {
+		this.peticionesEejg = peticionesEejg;
 	}
 	
 }
