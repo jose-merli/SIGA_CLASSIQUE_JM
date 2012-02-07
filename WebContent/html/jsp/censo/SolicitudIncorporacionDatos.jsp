@@ -556,6 +556,17 @@
 			
 			return true;  
 		}	
+		
+		function quitarBotonesAlta(){
+			<%if(!modoAnterior.equalsIgnoreCase("Editar")){%>
+				if(document.getElementById("tdBotonSolicitudPlanProfesional")){
+					document.getElementById("tdBotonSolicitudPlanProfesional").disabled=true;
+				}
+				if(document.getElementById("tdBotonSolicitudSeguroUniversal")){
+					document.getElementById("tdBotonSolicitudSeguroUniversal").disabled=true;
+				}
+			<%}%>
+		}
 	</script>
 
 </head>
@@ -895,7 +906,7 @@
 		<siga:ConjCampos>
 		<c:choose >
 
-		<c:when test="${isPosibilidadSolicitudAlta==true}">
+		<c:when test="${isPosibilidadSolicitudAlta==true }">
 		<table class="tablaCampos" align="left" >
 		
 			<tr>
@@ -904,11 +915,16 @@
 				</td>
 				<c:choose>
 					<c:when test="${SolicitudIncorporacionForm.idSolicitudPlanProfesional==null||SolicitudIncorporacionForm.idSolicitudPlanProfesional==''}">
-						<td id="tdBotonSolicitudPlanProfesional"><html:button property="idButton"
-							onclick="return accionSolicitarAltaMutualidad('P');" styleClass="button">
-							<siga:Idioma key="general.boton.solicitarCompra" />
+						<td id="tdBotonSolicitudPlanProfesional" >
+						<%if(modoAnterior.equalsIgnoreCase("Editar")){ %>
+							<html:button property="idButton" onclick="return accionSolicitarAltaMutualidad('P');" styleClass="button">
+								<siga:Idioma key="general.boton.solicitarCompra" />
 							</html:button>
-					
+						<%}else{ %>
+							<html:button property="idButton" styleClass="button">
+								<siga:Idioma key="general.boton.solicitarCompra" />
+							</html:button>
+						<%} %>
 						</td>
 						<td id="tdTextoNSolicitudPlanProfesional" style="display:none" class="labelText" >Nº&nbsp;Solicitud:</td>
 						<td id="tdIdSolicitudPlanProfesional" class="labelTextValor">&nbsp;</td> 
@@ -946,11 +962,16 @@
 				
 				<c:choose>
 					<c:when test="${SolicitudIncorporacionForm.idSolicitudSeguroUniversal==null||SolicitudIncorporacionForm.idSolicitudSeguroUniversal==''}">
-				
 						<td id="tdBotonSolicitudSeguroUniversal">
-							<html:button property="idButton"onclick="return accionSolicitarAltaMutualidad('S');" styleClass="button">
+						<%if(modoAnterior.equalsIgnoreCase("Editar")){ %>
+							<html:button id="botonSolicitarAltaSeguro" property="idButton"onclick="return accionSolicitarAltaMutualidad('S');" styleClass="button">
 								<siga:Idioma key="general.boton.solicitarCompra" />
 							</html:button>
+						<%}else{ %>
+							<html:button property="idButton" styleClass="button">
+								<siga:Idioma key="general.boton.solicitarCompra" />
+							</html:button>
+						<%} %>
 						</td>
 						<td id="tdTextoNSolicitudSeguroUniversal"  style="display:none" class="labelText" >Nº&nbsp;Solicitud:</td>
 						<td id="tdIdSolicitudSeguroUniversal" class="labelTextValor">&nbsp;</td>
@@ -1319,6 +1340,8 @@
 	
 	}
 
+	quitarBotonesAlta();
+	
 	</script>
 	
 	<!-- FIN: SCRIPTS BOTONES -->
