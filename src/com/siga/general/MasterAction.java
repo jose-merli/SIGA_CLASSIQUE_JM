@@ -651,6 +651,7 @@ public abstract class MasterAction extends SIGAAuxAction {
 				clave.append(separador);
 			
 		}
+		registro.clear();
 		registro.put("CLAVE",clave.toString());
 
 	}
