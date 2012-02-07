@@ -478,7 +478,7 @@
 
 						if(document.DatosGeneralesForm.envioFacturas.checked){
 							if(document.DatosGeneralesForm.idTipoPlantillaMail.value == ""){
-							    alert('Debe rellenar el tipo de plantilla para el envío');
+							    alert('<siga:Idioma key="Facturacion.mensajes.obligatorio.plantillaMail"/');
 								return false;
 							}
 						}
