@@ -102,7 +102,7 @@
 				
 				// Devolvemos la direccion si es unica
 
-					aux[7]  = "<%=direccion%>";
+					aux[7]  = "<%=UtilidadesString.cambiarDoblesComillas(direccion) %>";
 					aux[8]  = "<%=poblacion%>";
 					aux[9]  = "<%=provincia%>";
 					aux[10] = "<%=pais%>";
