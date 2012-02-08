@@ -932,7 +932,32 @@ public static String[] ejecutarF_SIGA_COMPROBAR_ANTICIPAR (
 	
 		return resultado;
 	}
+
 	
+	public static String ejecutarFuncFacturacionesIntervaloGrupos (String idInstitucion, String idFacturacionIni, String idFacturacionFin, String grupoFacturacion) throws ClsExceptions{
+		RowsContainer rc = null;
+		Hashtable miHash = new Hashtable();
+		Hashtable codigos = new Hashtable();
+		codigos.put(new Integer(1),idInstitucion);
+		codigos.put(new Integer(2),idFacturacionIni);
+		codigos.put(new Integer(3),idFacturacionFin);
+		String grupoFacturaciones = null;
+		String[] resul=grupoFacturacion.split(",");
+		grupoFacturaciones = resul[0];
+		codigos.put(new Integer(4),grupoFacturaciones);
+		String resultado = null;
+		//Func_Factura_Inter_Grupos
+		String consulta = "select PKG_SIGA_FACTURACION_SJCS.FUNC_FACTURA_INTER_GRUPOS(:1,:2,:3,:4) FACTURACIONES FROM DUAL ";
+		rc = new RowsContainer(); 
+		if (rc.queryBind(consulta,codigos)) {
+			Row fila = (Row) rc.get(0);
+			miHash = fila.getRow();            
+			resultado = (String)miHash.get("FACTURACIONES");            
+		}
+	
+		return resultado;
+	}
+
 		/**
 	 * Devuelve una lista de idPagos separada por "," de todas aquellas facturaciones cuyas fechas "desde/hasta" 
 	 * se encuentren en el intervalo que marcan la fecha "desde" menor y la fecha "hasta" mayor de las facturaciones

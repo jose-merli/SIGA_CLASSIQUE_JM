@@ -499,20 +499,12 @@ public class InformesGenericosAction extends MasterAction {
 		InformePersonalizable inf = new InformePersonalizable();
 		File ficheroSalida = inf.getFicheroGenerado(usr, InformePersonalizable.I_INFORMEFACTSJCS, filtrosInforme);
 		
-		
-
-		
 			request.setAttribute("nombreFichero", ficheroSalida.getName());
 			request.setAttribute("rutaFichero", ficheroSalida.getPath());
 			request.setAttribute("borrarFichero", "true");
 			request.setAttribute("generacionOK","OK");
 			return "descarga";
 		
-
-		
-
-		
-
 
 	}
 	
@@ -1156,9 +1148,9 @@ public class InformesGenericosAction extends MasterAction {
 		try {
 			idinstitucion = usr.getLocation();
 			Hashtable aux = (Hashtable) this.obtenerDatosFormulario((InformesGenericosForm) formulario).get(0);
-			if (aux.size()==2)
-				idfacturaciones = EjecucionPLs.ejecutarFuncFacturacionesIntervalo(idinstitucion, (String) aux
-						.get("idFacturacionIni"), (String) aux.get("idFacturacionFin"));
+			if (aux.size()==3)
+				idfacturaciones = EjecucionPLs.ejecutarFuncFacturacionesIntervaloGrupos(idinstitucion, (String) aux
+						.get("idFacturacionIni"), (String) aux.get("idFacturacionFin"), (String) aux.get("grupoFacturacion"));
 			else
 				idfacturaciones = (String) aux.get ("idFacturacion");
 				

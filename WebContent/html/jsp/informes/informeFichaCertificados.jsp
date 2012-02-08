@@ -62,21 +62,21 @@
 			<tr>
 				<td class="labelText">
 					<siga:Idioma key="gratuita.definirTurnosIndex.literal.grupoFacturacion"/>&nbsp;&nbsp;&nbsp;&nbsp;
-					<siga:ComboBD estilo="true" obligatorio="true" nombre="grupoFacturacion" filasMostrar="1" ancho="700" accion="Hijo:idPago;Hijo:idPagoFinal" seleccionMultiple="false" tipo="grupoFacturacion" clase="boxCombo"  parametro="<%=dato%>"/>
+					<siga:ComboBD estilo="true" obligatorio="true" nombre="grupoFacturacion" filasMostrar="1" ancho="700" accion="Hijo:idPago;Hijo:idPagoFinal" seleccionMultiple="false" tipo="grupoFacturacionTodos" clase="boxCombo"  parametro="<%=dato%>"/>
 				</td>
 			</tr>
 		
 			<tr>
 				<td class="labelText" width="10%">
 					<siga:Idioma key="informes.sjcs.pagos.literal.pago"/>&nbsp;(*)&nbsp;&nbsp;
-					<siga:ComboBD estilo="true" nombre="idPago" tipo="cmb_CertificadosPagos" ancho="700" parametro="<%=comboParams%>" clase="boxCombo" hijo="t" obligatorio="true" obligatorioSinTextoSeleccionar="true" />
+					<siga:ComboBD estilo="true" nombre="idPago" tipo="cmb_CertificadosPagosTodos" ancho="700" parametro="<%=comboParams%>" clase="boxCombo" hijo="t" obligatorio="true" obligatorioSinTextoSeleccionar="true" />
 				</td>
 			</tr>
 			
 			<tr>
 				<td class="labelText" width="10%">
 					<siga:Idioma key="informes.sjcs.pagos.literal.pagoFin"/>&nbsp;&nbsp;&nbsp;(*)&nbsp;&nbsp;
-					<siga:ComboBD estilo="true" nombre="idPagoFinal" tipo="cmb_CertificadosPagos" ancho="700" parametro="<%=comboParams%>" clase="boxCombo" hijo="t" obligatorio="false" />
+					<siga:ComboBD estilo="true" nombre="idPagoFinal" tipo="cmb_CertificadosPagosTodos" ancho="700" parametro="<%=comboParams%>" clase="boxCombo" hijo="t" obligatorio="false" />
 				</td>
 			</tr>
 

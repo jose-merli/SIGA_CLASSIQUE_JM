@@ -62,19 +62,25 @@
 <siga:ConjCampos leyenda="menu.justiciaGratuita.informes.informeMultipleNuevo">
 	<table class="tablaCampos" align="center">
 		<tr>
+			<td class="labelText" width="150">
+				<siga:Idioma key="gratuita.definirTurnosIndex.literal.grupoFacturacion"/>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			<td><siga:ComboBD estilo="true" obligatorio="true" nombre="grupoFacturacion" filasMostrar="1" ancho="700" accion="Hijo:idFacturacionInicio;Hijo:idFacturacionFin" seleccionMultiple="false" tipo="grupoFacturacionTodos" clase="boxCombo"  parametro="<%=comboParams%>"/>
+			</td>
+		</tr>
+		<tr>
 			<td class="labelText" width="150"><siga:Idioma
 				key="factSJCS.informes.informeMultiple.factInicial" />&nbsp;(*)</td>
 			<td><siga:ComboBD nombre="idFacturacionInicio"
-				tipo="cmb_FactInformes" parametro="<%=comboParams%>"
-				clase="boxCombo" obligatorio="true"
+				tipo="cmb_FactInformesTodos" parametro="<%=comboParams%>"
+				clase="boxCombo" obligatorio="true"  hijo="t"  ancho="700"
 				obligatorioSinTextoSeleccionar="true" /></td>
 		</tr>
 		<tr>
 			<td class="labelText" width="150"><siga:Idioma
 				key="factSJCS.informes.informeMultiple.factFinal" />&nbsp;(*)</td>
 			<td><siga:ComboBD nombre="idFacturacionFin"
-				tipo="cmb_FactInformes" parametro="<%=comboParams%>"
-				clase="boxCombo" obligatorio="true"
+				tipo="cmb_FactInformesTodos" parametro="<%=comboParams%>"
+				clase="boxCombo" obligatorio="true"  hijo="t"  ancho="700"
 				obligatorioSinTextoSeleccionar="true" /></td>
 		</tr>
 	</table>
@@ -99,14 +105,21 @@
 <script language="JavaScript">
 	// Funcion asociada a boton Generar Informe
 	function accionGenerarInforme() {
-		sub();
+			sub();
 		var f = document.getElementById("InformesGenericosForm");
 		idFactIni = document.getElementById("idFacturacionInicio").value;
 		idFactFin = document.getElementById("idFacturacionFin").value;
-		f.datosInforme.value = "idFacturacionIni" + "==" + idFactIni + "##"
-				+ "idFacturacionFin" + "==" + idFactFin;
-		f.seleccionados.value = "1";
-		f.submit();
+		if (idFactIni != "") {
+			grupoFact =  document.getElementById("grupoFacturacion").value;
+			f.datosInforme.value = "idFacturacionIni" + "==" + idFactIni + "##"
+					+ "idFacturacionFin" + "==" + idFactFin+ "##"+ "grupoFacturacion" + "==" + grupoFact;
+			f.seleccionados.value = "1";
+			f.submit();
+		} else {
+			alert("Seleccione una facturacion");
+			fin();
+			return false;
+		} 
 	}
 </script>
 
