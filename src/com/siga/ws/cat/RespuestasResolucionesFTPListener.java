@@ -3,6 +3,7 @@
  */
 package com.siga.ws.cat;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -15,8 +16,11 @@ import javax.servlet.ServletContextEvent;
 import weblogic.management.timer.Timer;
 
 import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.JhDate;
 import com.atos.utils.UsrBean;
+import com.ibm.icu.util.Calendar;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.eejg.ScsEejgPeticionesBean;
 import com.siga.servlets.SIGAContextListenerAdapter;
@@ -29,8 +33,10 @@ public class RespuestasResolucionesFTPListener extends SIGAContextListenerAdapte
 	private Timer timer = null;
 	private Integer idNotificacion;
 	private String nombreProceso = "RespuestasResolucionesFTPListener";
-	private long intervalo = 3600000;	
+	private long intervalo = 3600000;
+	private String horaMinuto = null;
 	
+	private final static String PCAJG_RESOL_FTP_TIMER_HORA = "PCAJG_RESOL_FTP_TIMER_HORA";
 	private final static String PCAJG_RESP_RESOL_FTP_TIMER_HORAS = "PCAJG_RESP_RESOL_FTP_TIMER_HORAS";
 	private final static String PCAJG_RESP_RESOL_FTP_ACTIVO = "PCAJG_RESP_RESOL_FTP_ACTIVO";
 	
@@ -41,22 +47,46 @@ public class RespuestasResolucionesFTPListener extends SIGAContextListenerAdapte
 	 */
 	public void contextInitialized(ServletContextEvent event) {
 		super.contextInitialized(event);
-		UsrBean usrBean = new UsrBean();
-		usrBean.setUserName(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO));		
-		GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);
-                
 		try {			
 			iniciaTimer();				
 		} catch (Exception e) {
-			ClsLogging.writeFileLogError("Se ha producido un error al inicializar el TIMER de EEJG", e, 3);
+			ClsLogging.writeFileLogError("Se ha producido un error al inicializar el TIMER de FTP Cat", e, 3);
 		}
     }
 	
 	
-	private void iniciaTimer() {
+	private void iniciaTimer() throws Exception {
 		timer = new Timer();
+		
+		UsrBean usrBean = new UsrBean();
+		usrBean.setUserName(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO));		
+		GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);
+		String[] horaMinutos = null;
+		String valor = "00:00";
+		try {
+			valor = admParametros.getValor(""+ClsConstants.INSTITUCION_POR_DEFECTO, MODULO_SCS, PCAJG_RESOL_FTP_TIMER_HORA, valor);
+			
+			if (valor != null && valor.length()==5 && !valor.equals("00:00")) {
+				JhDate valida = new JhDate();
+				horaMinutos = valor.split(":");
+				valida.validaHora(Integer.parseInt(horaMinutos[0]), Integer.parseInt(horaMinutos[1]));
+			}
+			
+		} catch (Exception e) {
+			ClsLogging.writeFileLogWithoutSession("Parametro "+PCAJG_RESOL_FTP_TIMER_HORA+" mal configurado. Se pone 00:00");
+			valor = "00:00";
+		}
+		this.horaMinuto = valor;
+		horaMinutos = valor.split(":");
+		
+		Calendar horaCal = Calendar.getInstance();
+        horaCal.set(Calendar.DAY_OF_YEAR, horaCal.get(Calendar.DAY_OF_YEAR)+1);
+        horaCal.set(Calendar.HOUR_OF_DAY,Integer.parseInt(horaMinutos[0]));
+        horaCal.set(Calendar.MINUTE,Integer.parseInt(horaMinutos[1]));
+        Date timerTriggerAt = horaCal.getTime();
+		
         timer.addNotificationListener(this, null, nombreProceso);        
-        idNotificacion = timer.addNotification(nombreProceso, nombreProceso, this, new Date(), intervalo);
+        idNotificacion = timer.addNotification(nombreProceso, nombreProceso, this, timerTriggerAt, intervalo);
         timer.start();
 	}
 	
@@ -103,8 +133,23 @@ public class RespuestasResolucionesFTPListener extends SIGAContextListenerAdapte
 			}
 			
 			long nuevoTimer = (long) (horas * 3600000);			
+			String[] horaMinutos = null;
+			String horaMinutoActual = "00:00";
+			try {
+				horaMinutoActual = admParametros.getValor(""+ClsConstants.INSTITUCION_POR_DEFECTO, MODULO_SCS, PCAJG_RESOL_FTP_TIMER_HORA, horaMinutoActual);
+				
+				if (horaMinutoActual != null && horaMinutoActual.length()==5 && !horaMinutoActual.equals("00:00")) {
+					JhDate valida = new JhDate();
+					horaMinutos = horaMinutoActual.split(":");
+					valida.validaHora(Integer.parseInt(horaMinutos[0]), Integer.parseInt(horaMinutos[1]));
+				}
+				
+			} catch (Exception e) {
+				ClsLogging.writeFileLogWithoutSession("Parametro "+PCAJG_RESOL_FTP_TIMER_HORA+" mal configurado. Se pone 00:00");
+				valor = "00:00";
+			}
 			
-			if (nuevoTimer != intervalo) {
+			if (nuevoTimer != intervalo||!horaMinutoActual.equals(this.horaMinuto)) {
 				intervalo = nuevoTimer;
 				pararTimer();
 				iniciaTimer();
