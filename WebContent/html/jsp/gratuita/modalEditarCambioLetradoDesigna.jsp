@@ -11,6 +11,7 @@
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<%@ taglib uri = "c.tld" prefix="c"%>
 
 <!-- IMPORTS -->
 <%@ page import="java.util.*"%>
@@ -76,7 +77,12 @@
 			<siga:Idioma key="gratuita.busquedaSOJ.literal.numeroColegidado"/>
 		</td>
 		<td colspan="3"class="boxConsulta">
-			<bean:write name="CambiosLetradosDesignasForm" property="NColegiadoActual"/>
+			<c:if test="${CambiosLetradosDesignasForm.nInstitucionOrigen==null || CambiosLetradosDesignasForm.nInstitucionOrigen == ''}"> 
+				    <bean:write name="CambiosLetradosDesignasForm" property="NColegiadoActual"/>
+			</c:if>
+			<c:if test="${CambiosLetradosDesignasForm.nInstitucionOrigen!=null && CambiosLetradosDesignasForm.nInstitucionOrigen != ''}"> 
+				    <bean:write name="CambiosLetradosDesignasForm" property="nColegiadoOrigen"/>
+			</c:if>
 		</td>
 	</tr>
 	<tr>
@@ -98,7 +104,7 @@
 			<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.literal.fechaDesigna"/>
 		</td>
 		<td>
-			<html:text name="CambiosLetradosDesignasForm" property="fechaDesigna" size="10" maxlength="10" styleClass="boxConsulta" readonly="true" readonly="true"></html:text>
+			<html:text name="CambiosLetradosDesignasForm" property="fechaDesigna" size="10" maxlength="10" styleClass="boxConsulta" readonly="true"></html:text>
 		</td>
 	</tr>
 	<tr>
@@ -107,7 +113,7 @@
 		</td>
 		<td>
 		<%if (accion.equalsIgnoreCase("ver")){%>
-			<html:text name="CambiosLetradosDesignasForm" property="fechaRenunciaSolicita" size="10" maxlength="10" styleClass="boxConsulta" readonly="true" readonly="true" ></html:text>
+			<html:text name="CambiosLetradosDesignasForm" property="fechaRenunciaSolicita" size="10" maxlength="10" styleClass="boxConsulta" readonly="true" ></html:text>
 		<%} else {%>
 			<html:text name="CambiosLetradosDesignasForm" property="fechaRenunciaSolicita" size="15" maxlength="15" styleClass="box" readonly="true"></html:text>
 			&nbsp;<a onClick="return showCalendarGeneral(fechaRenunciaSolicita);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
@@ -119,7 +125,7 @@
 			<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.literal.fechaRenuncia"/>
 		</td>
 		<td>
-			<html:text name="CambiosLetradosDesignasForm" property="fechaRenuncia" size="10" maxlength="10" styleClass="boxConsulta" readonly="true" readonly="true"></html:text>
+			<html:text name="CambiosLetradosDesignasForm" property="fechaRenuncia" size="10" maxlength="10" styleClass="boxConsulta" readonly="true"></html:text>
 		</td>
 	</tr>
 	<tr>

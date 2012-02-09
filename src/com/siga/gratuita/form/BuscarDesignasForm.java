@@ -272,6 +272,11 @@ public class BuscarDesignasForm extends MasterForm {
 		this.datos.put("NCOLEGIADO", nColegiado);
 	}
 	
+	
+	
+	public void setColegioOrigen	(String colegioOrigen)	{
+		this.datos.put("IDINSTITUCIONORIGEN", colegioOrigen);
+	}
 	/**
 	 * Almacena en la Hashtable el NIF del defendido de la designa que se quiere buscar 
 	 * 
@@ -437,6 +442,13 @@ public class BuscarDesignasForm extends MasterForm {
 	public String getNcolegiado	()	{
 		return (String)this.datos.get("NCOLEGIADO");
 	}
+	
+	
+	
+	public String getColegioOrigen	()	{
+		return (String)this.datos.get("IDINSTITUCIONORIGEN");
+	}
+
 	
 	/**
 	 * Recupera de la Hashtable el NIF del defendido de la designa que se quiere buscar 

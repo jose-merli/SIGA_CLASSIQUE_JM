@@ -927,7 +927,8 @@ public class BusquedaDesignasAction extends MasterAction {
 			designaLetradoBean.setLetradoDelTurno("S");
 			designaLetradoBean.setManual(new Integer(UtilidadesHash.getString(datosDesigna,"MANUAL")));
 			designaLetradoBean.setNumero(new Integer(designaBean.getNumero().intValue()));
-
+			designaLetradoBean.setIdInstitucionOrigen(UtilidadesHash.getInteger(datosDesigna, "IDINSTITUCIONORIGEN"));
+			
 			ScsDesignasLetradoAdm designaLetradoAdm = new ScsDesignasLetradoAdm (usuario);
 			if (!designaLetradoAdm.insert(designaLetradoBean)) {
 				return false;

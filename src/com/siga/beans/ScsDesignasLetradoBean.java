@@ -13,6 +13,7 @@ public class ScsDesignasLetradoBean extends MasterBean{
 	 *  Variables */ 
 	
 	private Integer	idInstitucion;
+	private Integer	idInstitucionOrigen;	
 	private Integer	idTurno;
 	private Integer	anio;
 	private Integer numero;
@@ -46,6 +47,7 @@ public class ScsDesignasLetradoBean extends MasterBean{
 	static public final String	C_FECHARENUNCIA =			"FECHARENUNCIA";
 	static public final String	C_FECHARENUNCIASOLICITA =	"FECHARENUNCIASOLICITA";
 	static public final String	C_IDTIPOMOTIVO =			"IDTIPOMOTIVO";
+	static public final String	C_IDINSTITUCIONORIGEN =		"IDINSTITUCIONORIGEN";	
 
 	
 	/*
@@ -58,6 +60,13 @@ public class ScsDesignasLetradoBean extends MasterBean{
 	 * @return void 
 	 */
 	public void setIdInstitucion (Integer valor)	{ this.idInstitucion = 	valor;}
+	
+	
+
+	
+	
+	public void setIdInstitucionOrigen (Integer valor)	{ this.idInstitucionOrigen = 	valor;}
+
 	/**
 	 * Almacena en el Bean el identificador del turno de la designa 
 	 * 
@@ -141,6 +150,11 @@ public class ScsDesignasLetradoBean extends MasterBean{
 	 * @return Identificador de la institucion
 	 */
 	public Integer getIdInstitucion ()	{return this.idInstitucion;}
+	
+	
+	
+	
+	public Integer getIdInstitucionOrigen ()	{return this.idInstitucionOrigen;}
 	/**
 	 * Recupera del Bean el identificador del turno de la designa
 	 * 

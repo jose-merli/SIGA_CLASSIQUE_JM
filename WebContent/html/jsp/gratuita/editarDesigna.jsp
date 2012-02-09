@@ -12,6 +12,7 @@
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
+<%@ page import="com.siga.general.*"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="java.util.*"%>
 <%@ page import="java.text.SimpleDateFormat"%>
@@ -54,7 +55,10 @@
 
 	String nombre_letrado;
 	String nume_colegiado;
+	String nume_colegiadoOrigen;
 	String datosColegiales;
+	String institucionOrigen;
+	String idInstitucionOrigen;
 	Hashtable letrado = clase.obtenerLetradoDesigna((String) resultado.get("IDINSTITUCION"), 
 													(String) resultado.get("IDTURNO"),
 													(String) resultado.get("ANIO"), 
@@ -62,14 +66,25 @@
 
 	nombre_letrado = (String) letrado.get("NOMBRE");
 	
-	if (nombre_letrado==null || nombre_letrado.equals("")){
-	   nombre_letrado=" ";
-	}
-	
+
 	nume_colegiado  = (String) letrado.get("NCOLEGIADO");
 	datosColegiales = (String) letrado.get("DATOSCOLEGIALES");
-	if (nume_colegiado==null || nume_colegiado.equals("")){ // No colegiado 
-	    nume_colegiado=" ";
+	nume_colegiadoOrigen  = (String) letrado.get("NCOLEGIADOORIGEN");
+	
+	idInstitucionOrigen  = (String)letrado.get("IDINSTITUCIONORIGEN");
+	if(idInstitucionOrigen!=null && !idInstitucionOrigen.equals("")){
+		institucionOrigen = CenVisibilidad.getAbreviaturaInstitucion(idInstitucionOrigen);
+		if (nume_colegiadoOrigen==null || nume_colegiadoOrigen.equals("")){ // No colegiado 
+			nume_colegiado=" ";
+		}else{
+			nume_colegiado=nume_colegiadoOrigen+ " ( "+institucionOrigen+" )    - ";
+		}	
+		
+	}else{
+		if (nume_colegiado==null || nume_colegiado.equals("")) // No colegiado 
+		    nume_colegiado=" ";
+		else
+			nume_colegiado+="   - ";
 	}
 	
 	if (resultado.get("ART27") != null){
@@ -664,7 +679,7 @@
 							<siga:Idioma key='sjcs.designa.general.letrado' />
 						</td>
 						<td>
-							<input type="text" class="boxConsulta" value="<%=nume_colegiado%> - <%=nombre_letrado%>" readOnly="true" style="width: 400">
+							<input type="text" class="boxConsulta" value="<%=nume_colegiado%>  <%=nombre_letrado%>" readOnly="true" style="width: 600">
 						</td>
 						<td colspan="4"></td>
 					</tr>

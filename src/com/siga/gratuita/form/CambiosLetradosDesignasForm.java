@@ -24,11 +24,15 @@ public class CambiosLetradosDesignasForm extends MasterForm {
 	protected String observaciones =ScsDesignasLetradoBean.C_OBSERVACIONES;
 	protected String codigo ="CODIGO";
 	protected String sufijo ="SUFIJO";
+	protected String nColegiadoOrigen ="NCOLEGIADOORIGEN";	
+	protected String nInstitucionOrigen =ScsDesignasLetradoBean.C_IDINSTITUCIONORIGEN;	
 	
 	
 	
 	
-	
+	public String getnInstitucionOrigen() {
+		return UtilidadesHash.getString(datos,nInstitucionOrigen);
+	}
 	//Metodos get de los campos del formulario
 	public String getsufijo() {
 		return UtilidadesHash.getString(datos,sufijo);
@@ -84,9 +88,18 @@ public class CambiosLetradosDesignasForm extends MasterForm {
 	public String getObservaciones() {
 		return UtilidadesHash.getString(datos,observaciones);
 	}
-	
+	public String getnColegiadoOrigen() {
+		return UtilidadesHash.getString(datos,nColegiadoOrigen);
+	}
 	
 	//Metodos set de los campos del formulario
+	
+	public void setnInstitucionOrigen(String nInstitucionOrigen) {
+		UtilidadesHash.set(datos,this.nInstitucionOrigen,nInstitucionOrigen);
+	}
+	public void setnColegiadoOrigen(String nColegiadoOrigen) {
+		UtilidadesHash.set(datos,this.nColegiadoOrigen,nColegiadoOrigen);		
+	}
 	public void setsufijo(String sufijo) {
 		UtilidadesHash.set(datos,this.sufijo,sufijo);
 	}	

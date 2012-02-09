@@ -104,12 +104,14 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 				" p."+CenPersonaBean.C_APELLIDOS1+","+
 				" p."+CenPersonaBean.C_APELLIDOS2+","+
 				" F_SIGA_CALCULONCOLEGIADO (c."+CenColegiadoBean.C_IDINSTITUCION+",c."+CenColegiadoBean.C_IDPERSONA+") "+CenColegiadoBean.C_NCOLEGIADO+","+
+				" F_SIGA_CALCULONCOLEGIADO (dp."+ScsDesignasLetradoBean.C_IDINSTITUCIONORIGEN+",dp."+CenColegiadoBean.C_IDPERSONA+") NCOLEGIADOORIGEN ,"+
 				" dp."+ScsDesignasLetradoBean.C_IDINSTITUCION+","+
 				" dp."+ScsDesignasLetradoBean.C_IDTURNO+","+
 				" dp."+ScsDesignasLetradoBean.C_NUMERO+","+
 				" dp."+ScsDesignasLetradoBean.C_ANIO+","+
 				" dp."+ScsDesignasLetradoBean.C_IDPERSONA+","+
 				" dp."+ScsDesignasLetradoBean.C_FECHADESIGNA+","+
+				" dp."+ScsDesignasLetradoBean.C_IDINSTITUCIONORIGEN+","+
 				" dp."+ScsDesignasLetradoBean.C_FECHARENUNCIA+
 				" from "+ 
 				ScsDesignasLetradoBean.T_NOMBRETABLA+" dp,"+
@@ -132,12 +134,14 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 								" p."+CenPersonaBean.C_APELLIDOS1+","+
 								" p."+CenPersonaBean.C_APELLIDOS2+","+
 								" 'No Colegiado' "+CenColegiadoBean.C_NCOLEGIADO+","+
+								" F_SIGA_CALCULONCOLEGIADO (dp."+ScsDesignasLetradoBean.C_IDINSTITUCIONORIGEN+",dp."+CenColegiadoBean.C_IDPERSONA+") NCOLEGIADOORIGEN ,"+
 								" dp."+ScsDesignasLetradoBean.C_IDINSTITUCION+","+
 								" dp."+ScsDesignasLetradoBean.C_IDTURNO+","+
 								" dp."+ScsDesignasLetradoBean.C_NUMERO+","+
 								" dp."+ScsDesignasLetradoBean.C_ANIO+","+
 								" dp."+ScsDesignasLetradoBean.C_IDPERSONA+","+
 								" dp."+ScsDesignasLetradoBean.C_FECHADESIGNA+","+
+								" dp."+ScsDesignasLetradoBean.C_IDINSTITUCIONORIGEN+","+
 								" dp."+ScsDesignasLetradoBean.C_FECHARENUNCIA+
 								" from "+ 
 								ScsDesignasLetradoBean.T_NOMBRETABLA+" dp,"+
@@ -216,6 +220,7 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 				" p."+CenPersonaBean.C_APELLIDOS1+","+
 				" p."+CenPersonaBean.C_APELLIDOS2+","+
 				" F_SIGA_CALCULONCOLEGIADO (c."+CenClienteBean.C_IDINSTITUCION+",c."+CenClienteBean.C_IDPERSONA+") "+CenColegiadoBean.C_NCOLEGIADO+","+
+				" F_SIGA_CALCULONCOLEGIADO (dp."+ScsDesignasLetradoBean.C_IDINSTITUCIONORIGEN+",dp."+CenColegiadoBean.C_IDPERSONA+") NCOLEGIADOORIGEN ,"+				
 				" dp."+ ScsDesignasLetradoBean.C_IDINSTITUCION+","+
 				" dp."+ ScsDesignasLetradoBean.C_IDTURNO+","+
 				" dp."+ ScsDesignasLetradoBean.C_ANIO+","+
@@ -226,6 +231,7 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 				" dp."+ ScsDesignasLetradoBean.C_FECHARENUNCIASOLICITA+", " +
 				" dp."+ ScsDesignasLetradoBean.C_MANUAL+", " +
 				" dp."+ ScsDesignasLetradoBean.C_LETRADODELTURNO+", " +
+				" dp."+ScsDesignasLetradoBean.C_IDINSTITUCIONORIGEN+","+				
 				" dp."+ ScsDesignasLetradoBean.C_IDTIPOMOTIVO+", " +
 				" dp."+ ScsDesignasLetradoBean.C_OBSERVACIONES+
 				" from "+ 

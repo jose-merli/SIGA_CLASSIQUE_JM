@@ -132,6 +132,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		Hashtable hashletrado=new Hashtable();
 		try{
 			String consulta="select p." + CenPersonaBean.C_IDPERSONA + " idpersona,"+
+									" des." + ScsDesignasLetradoBean.C_IDINSTITUCIONORIGEN +", "+
+									" f_siga_calculoncolegiado(des." + ScsDesignasLetradoBean.C_IDINSTITUCIONORIGEN + ", des." + ScsDesignasLetradoBean.C_IDPERSONA +") as ncolegiadoorigen,"+
 									" f_siga_calculoncolegiado(des." + ScsDesignasLetradoBean.C_IDINSTITUCION + ", des." + ScsDesignasLetradoBean.C_IDPERSONA +") as ncolegiado,"+
 									" f_siga_gettipocliente(des." + ScsDesignasLetradoBean.C_IDPERSONA + ", des." + ScsDesignasLetradoBean.C_IDINSTITUCION +",sysdate) as datoscolegiales,"+
 									" p." + CenPersonaBean.C_NOMBRE + " || ' ' || p." + CenPersonaBean.C_APELLIDOS1 + " || ' ' ||  p." + CenPersonaBean.C_APELLIDOS2 + " as nombre"+

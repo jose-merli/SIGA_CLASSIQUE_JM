@@ -61,7 +61,8 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 				ScsDesignasLetradoBean.C_IDPERSONA,			ScsDesignasLetradoBean.C_FECHADESIGNA,
 				ScsDesignasLetradoBean.C_FECHARENUNCIA,		ScsDesignasLetradoBean.C_FECHARENUNCIASOLICITA,
 				ScsDesignasLetradoBean.C_LETRADODELTURNO,	ScsDesignasLetradoBean.C_MANUAL,
-				ScsDesignasLetradoBean.C_IDTIPOMOTIVO,		ScsDesignasLetradoBean.C_OBSERVACIONES
+				ScsDesignasLetradoBean.C_IDTIPOMOTIVO,		ScsDesignasLetradoBean.C_OBSERVACIONES,
+				ScsDesignasLetradoBean.C_IDINSTITUCIONORIGEN
 		};
 		return campos;
 	}
@@ -72,7 +73,8 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 	public String[] getClavesBean() {
 		String[] campos = {	ScsDesignasLetradoBean.C_IDINSTITUCION,		ScsDesignasLetradoBean.C_IDTURNO,
 							ScsDesignasLetradoBean.C_ANIO,				ScsDesignasLetradoBean.C_NUMERO,
-							ScsDesignasLetradoBean.C_IDPERSONA,			ScsDesignasLetradoBean.C_FECHADESIGNA};
+							ScsDesignasLetradoBean.C_IDPERSONA,			ScsDesignasLetradoBean.C_FECHADESIGNA,
+							ScsDesignasLetradoBean.C_IDINSTITUCIONORIGEN};
 		return campos;
 	}
 
@@ -89,6 +91,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 			bean.setFechaMod(UtilidadesHash.getString(hash,ScsDesignasLetradoBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,ScsDesignasLetradoBean.C_USUMODIFICACION));
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash,ScsDesignasLetradoBean.C_IDINSTITUCION));
+			bean.setIdInstitucionOrigen(UtilidadesHash.getInteger(hash,ScsDesignasLetradoBean.C_IDINSTITUCIONORIGEN));			
 			bean.setAnio(UtilidadesHash.getInteger(hash,ScsDesignasLetradoBean.C_ANIO));
 			bean.setNumero(UtilidadesHash.getInteger(hash,ScsDesignasLetradoBean.C_NUMERO));
 			bean.setIdTurno(UtilidadesHash.getInteger(hash,ScsDesignasLetradoBean.C_IDTURNO));
@@ -121,6 +124,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsDesignasLetradoBean.C_USUMODIFICACION,String.valueOf(b.getUsuMod()));
 			UtilidadesHash.set(hash, ScsDesignasLetradoBean.C_FECHAMODIFICACION,b.getFechaMod());
 			UtilidadesHash.set(hash, ScsDesignasLetradoBean.C_IDINSTITUCION,String.valueOf(b.getIdInstitucion()));
+			UtilidadesHash.set(hash, ScsDesignasLetradoBean.C_IDINSTITUCIONORIGEN,String.valueOf(b.getIdInstitucionOrigen()));			
 			UtilidadesHash.set(hash, ScsDesignasLetradoBean.C_NUMERO,String.valueOf(b.getNumero()));
 			UtilidadesHash.set(hash, ScsDesignasLetradoBean.C_ANIO,String.valueOf(b.getAnio()));
 			UtilidadesHash.set(hash, ScsDesignasLetradoBean.C_IDTURNO,String.valueOf(b.getIdTurno()));

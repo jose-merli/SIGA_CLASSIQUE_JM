@@ -146,6 +146,7 @@
 		{
 			var resultado = ventaModalGeneral("busquedaClientesModalForm","G");
 			var colegiado = document.getElementById('ncolegiado');
+			var colegioOrigen = document.getElementById('colegioOrigen');			
 			var manual = document.getElementById('manual');
 			var idPersona = document.getElementById('idPersona');
 			manual.value="0";
@@ -153,6 +154,7 @@
 			{
 				colegiado.value=resultado[2];
 				idPersona.value=resultado[0];
+				colegioOrigen.value=resultado[4];
 			}
 		}
 		
@@ -312,7 +314,7 @@
 				<html:hidden property="flagCompensacion" value=""></html:hidden>
 					<siga:BusquedaSJCS	propiedad="seleccionLetrado" botones="M,D"
 						concepto="Designacion" operacion="Asignacion" nombre="BuscarDesignasForm" campoTurno="idTurno" campoFecha="fechaAperturaInicio"
-						campoPersona="idPersona" campoColegiado="ncolegiado" campoNombreColegiado="nomColegiado" mostrarNColegiado="true"
+						campoPersona="idPersona" campoColegiado="ncolegiado" campoNombreColegiado="nomColegiado" mostrarNColegiado="true" campoColegio="colegioOrigen" 
 						mostrarNombreColegiado="true" campoFlagSalto="flagSalto" campoFlagCompensacion="flagCompensacion" campoSalto="checkSalto" modo="nuevo"
 					/>
 			</td>
@@ -323,6 +325,8 @@
 			</td>		
 			<td>
 				<input type="text" name="ncolegiado" class="boxConsulta" readOnly value="" style="width:'100px';">
+				<html:hidden property="colegioOrigen" value=""></html:hidden>
+
 			</td>
 			<td class="labelText">
 				<siga:Idioma key='FactSJCS.listadoRetencionesJ.literal.nombreColegiado'/>

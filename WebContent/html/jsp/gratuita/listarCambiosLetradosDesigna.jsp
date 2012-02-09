@@ -15,6 +15,7 @@
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
+<%@ page import="com.siga.general.*"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.beans.*"%>
@@ -31,7 +32,6 @@
 	request.getSession().removeAttribute("resultado");
 	String boton="";
 	boolean botonNuevo = (Boolean)request.getSession().getAttribute("botonNuevo");
-	
 	Hashtable designaActual = (Hashtable)ses.getAttribute("designaActual");
 	String modo = (String) ses.getAttribute("Modo");
 	String anio="",numero="", idTurno="";
@@ -104,7 +104,7 @@
 			   borde="1"
 			   clase="tableTitle"
 			   nombreCol="censo.resultadosSolicitudesModificacion.literal.fecha,gratuita.busquedaSOJ.literal.nColegiado,gratuita.defendidosDesigna.literal.nombreApellidos,gratuita.cambiosProcuradoresDesigna.literal.fechaRenuncia,"
-			   tamanoCol="15,15,50,10,10"
+			   tamanoCol="15,20,45,10,10"
 		   			alto="100%"
 			   modal="M">
 			   
@@ -120,19 +120,37 @@
 
 				String fDesigna=(String)hash.get("FECHADESIGNA");
 				String fRenuncia=(String)hash.get("FECHARENUNCIA");
+				String idInstitucionOrigen=(String)hash.get("IDINSTITUCIONORIGEN");
+				String ncolegiado=(String)hash.get("NCOLEGIADO");
+				String ncolegiadoOrigen  = (String) hash.get("NCOLEGIADOORIGEN");
+				String institucionOrigen ="";
+				if(idInstitucionOrigen!=null && !idInstitucionOrigen.equals("")){
+					institucionOrigen = CenVisibilidad.getAbreviaturaInstitucion(idInstitucionOrigen);
+					if (ncolegiadoOrigen==null || ncolegiadoOrigen.equals("")){ // No colegiado 
+						ncolegiado=" ";
+					}else{
+						ncolegiado=ncolegiadoOrigen+ " ( "+institucionOrigen+" )";
+					}	
+					
+				}else{
+					if (ncolegiado==null || ncolegiado.equals("")) // No colegiado 
+						ncolegiado=" ";
+				}
+
+				
 				String rn=String.valueOf(recordNumber);
 				boton=(fRenuncia==null || fRenuncia.equals("")?"C,E":"C");
 			 	%>	
 				  	<siga:FilaConIconos fila='<%=rn%>' botones="<%=boton%>" visibleEdicion="no" visibleBorrado="no" clase="listaNonEdit"  modo="<%=modo%>">
 						<td>
 						    <input type='hidden' name='oculto<%=rn%>_1' value='<%=hash.get("IDPERSONA")%>'>
-						    <input type='hidden' name='oculto<%=rn%>_2' value='<%=hash.get("NCOLEGIADO")%>'>
+						    <input type='hidden' name='oculto<%=rn%>_2' value='<%=ncolegiado%>'>
 							<input type='hidden' name='oculto<%=rn%>_3' value='<%=fDesigna%>'>
 							<%if(fDesigna!=null && !fDesigna.equals("")){%>
 								<%=GstDate.getFormatedDateShort("",fDesigna)%>
 							<%}%>
 						</td>
-						<td>&nbsp;<%=hash.get("NCOLEGIADO")%></td>
+						<td>&nbsp;<%=ncolegiado%></td>
 						<td>&nbsp;<%=hash.get("NOMBRE")+" "+hash.get("APELLIDOS1")+" "+hash.get("APELLIDOS2")%></td>
 						<td>&nbsp;
 						<%if(fRenuncia!=null && !fRenuncia.equals("")){%>

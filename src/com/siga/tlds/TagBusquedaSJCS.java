@@ -86,6 +86,8 @@ public class TagBusquedaSJCS extends TagSupport {
 	 */
 	private String campoColegiado;
 	
+
+	private String campoColegio;
 	/**
 	 * Nombre del campo Persona en el formulario
 	 */
@@ -255,6 +257,9 @@ public class TagBusquedaSJCS extends TagSupport {
 		this.campoColegiado = dato;
 	}
 
+	public void setCampoColegio(String dato) {
+		this.campoColegio = dato;
+	}
 	/**
 	 * Da valor al atributo 
 	 * @author cristina.santos. 07-03-06
@@ -620,7 +625,7 @@ public class TagBusquedaSJCS extends TagSupport {
 		//gratuita.nuevaAsistencia.mensaje.alert4 guradia??
 		String msg2=UtilidadesString.getMensajeIdioma(usrbean, "messages.campoObligatorio.error");
 		String msg1=UtilidadesString.getMensajeIdioma(usrbean, "gratuita.busquedaEJG.literal.turno");
-		out.println("	if("+nombre+"."+campoTurno+".value==null || "+nombre+"."+campoTurno+".value==''|| "+nombre+"."+campoTurno+".value=='-1'){ alert('"+msg1+" "+msg2+"'); return false;}");
+		out.println("	if("+nombre+"."+campoTurno+".value==null || "+nombre+"."+campoTurno+".value==''|| "+nombre+"."+campoTurno+".value=='-1'){ ('"+msg1+" "+msg2+"'); return false;}");
 		if(!concepto.equalsIgnoreCase("DESIGNACION")&&!concepto.equalsIgnoreCase("SALTOSCOMP")){
 			msg1=UtilidadesString.getMensajeIdioma(usrbean, "gratuita.busquedaEJG.literal.guardia");
 			out.println("	if("+nombre+"."+campoGuardia+".value==null || "+nombre+"."+campoGuardia+".value==''){ alert('"+msg1+" "+msg2+"'); return false;}");
@@ -665,7 +670,9 @@ public class TagBusquedaSJCS extends TagSupport {
 		if(campoColegiado!=null){
 			out.println("		"+nombre+"."+campoColegiado+".value=res[1];");
 		}
-		
+		if(campoColegio!=null){
+			out.println("		"+nombre+"."+campoColegio+".value=res[5];");
+		}
 		out.println("		if ("+nombre+".sustituta) {");
 		out.println("	  	    "+nombre+".sustituta.value=res[9];");
 		out.println("	    } ");

@@ -298,12 +298,13 @@ public class BusquedaCensoAction extends MasterAction {
 				request.setAttribute("nombre",miForm.getNombre());
 				request.setAttribute("apellido1",miForm.getApellido1());
 				request.setAttribute("apellido2",miForm.getApellido2());
-				String ncol = "No Colegiado";
-				if(miForm.getIdInstitucion().equals(usr.getLocation())){
-					ncol = miForm.getNumeroColegiado();
-				}
-				
-				request.setAttribute("nColegiado",ncol);
+				//String ncol = "No Colegiado";
+				String colOrigen = "";
+				if(!miForm.getIdInstitucion().equals(usr.getLocation())){
+					 colOrigen = miForm.getIdInstitucion();
+				}	
+				request.setAttribute("colegioOrigen",colOrigen);
+				request.setAttribute("nColegiado",miForm.getNumeroColegiado());
 				forward = "exitoInsercionNoColegiadoArt27";
 			}	
 			
@@ -397,12 +398,12 @@ public class BusquedaCensoAction extends MasterAction {
 			request.setAttribute("nombre",miForm.getNombre());
 			request.setAttribute("apellido1",miForm.getApellido1());
 			request.setAttribute("apellido2",miForm.getApellido2());
-			String ncol = "No Colegiado";
-			if(miForm.getIdInstitucion().equals(usr.getLocation())){
-				ncol = miForm.getNumeroColegiado();
-			}
-			
-			request.setAttribute("nColegiado",ncol);
+			String colOrigen = "";
+			if(!miForm.getIdInstitucion().equals(usr.getLocation())){
+				 colOrigen = miForm.getIdInstitucion();
+			}	
+			request.setAttribute("colegioOrigen",colOrigen);
+			request.setAttribute("nColegiado",miForm.getNumeroColegiado());
 		
 		} catch (SIGAException e) {
 			throw e;		
