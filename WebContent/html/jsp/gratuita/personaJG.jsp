@@ -413,8 +413,10 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 				document.forms[0].provincia.onchange();
 
 				//Profesion:
-				document.forms[0].profesion.value = resultado[14];
-				document.forms[0].profesion.onchange();
+				if(document.forms[0].profesion){
+					document.forms[0].profesion.value = resultado[14];
+					document.forms[0].profesion.onchange();
+				}
 
 				//Sexo:
 				document.forms[0].sexo.value = resultado[19];
