@@ -5016,6 +5016,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		    	    
 		    	    //Se especifica la dirección de origen.
 		    	    mensaje.setFrom(new InternetAddress(sFrom));
+		    	    //ATTENCION INCIDENCIA. DESCOMENTAR ESTO
+//		    	    mensaje.setFrom(new InternetAddress(sFrom,"Descripcion o nombre del remitente"));
 			    	 // Acuse de recibo
 		    	    if(envBean.getAcuseRecibo()!=null && envBean.getAcuseRecibo().equals(ClsConstants.DB_TRUE))
 		    	    	mensaje.addHeader("Disposition-Notification-To",sFrom);
