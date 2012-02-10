@@ -1111,7 +1111,11 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		TipoCodigoExpediente tipoCodigoExpediente = getTipoCodigoExpediente(htEJGs);
 		TipoCodigoExpedienteServicio codigoExpedienteServicio = getTipoCodigoExpedienteServicio(htEJGs);		
 		
-		if (codigoExpedienteServicio.getAnyoExpedienteServicio() > 0 && codigoExpedienteServicio.getNumExpedienteServicio() != null && codigoExpedienteServicio.getOrigenExpedienteServicio() != null) {
+		String tipoIntercambio = (String) htEJGs.get(TIPOINTERCAMBIO);
+		
+		boolean isICD = INTERCAMBIO_CAMBIO_DESIGNACION.equalsIgnoreCase(tipoIntercambio);
+		
+		if (isICD && codigoExpedienteServicio.getAnyoExpedienteServicio() > 0 && codigoExpedienteServicio.getNumExpedienteServicio() != null && codigoExpedienteServicio.getOrigenExpedienteServicio() != null) {
 			datosExpediente.addNewCodigoExpedienteServicio().set(codigoExpedienteServicio);			
 		} else {
 			datosExpediente.addNewCodigoExpediente().set(tipoCodigoExpediente);			
