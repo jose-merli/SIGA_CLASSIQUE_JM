@@ -940,6 +940,7 @@ protected String insertar (ActionMapping mapping,
 		String rc = "";
 		UserTransaction t = null;
 		String idDireccionesCensoWeb="";
+		Long idDireccionAntigua;
 		
 		try
 		{
@@ -962,13 +963,13 @@ protected String insertar (ActionMapping mapping,
 				beanDir.setIdDireccion(miForm.getIdDireccion());
 			else
 				beanDir.setIdDireccion(new Long ((String) miForm.getDatosTablaOcultos (0).get (0)));
+			idDireccionAntigua = beanDir.getIdDireccion();
 			
 			//estableciendo los datos del Historico
 			CenHistoricoBean beanHis = new CenHistoricoBean();
 			beanHis.setMotivo(ClsConstants.HISTORICO_REGISTRO_ELIMINADO);
 
-			//Se llama a la interfaz Direccion para realizar el borrado
-			direccion.borrar(beanDir, request, usr);
+
 
 			
 			/*  AÑADIR CON HISTORICO  */
@@ -1018,6 +1019,10 @@ protected String insertar (ActionMapping mapping,
 			
 			// Se llama a la interfaz Direccion para insertar una nueva direccion
 			Direccion dirAux = direccion.insertar(beanDir, tiposDir, miForm.getMotivo (), request, usr);
+			
+			//Se llama a la interfaz Direccion para realizar el borrado de la direccion antigua
+			beanDir.setIdDireccion(idDireccionAntigua);
+			direccion.borrar(beanDir, request, usr);
 
 			//Si se necesita confirmación por parte del usuario se realiza una peticion de pregunta
 			if(dirAux.isConfirmacionPregunta()){

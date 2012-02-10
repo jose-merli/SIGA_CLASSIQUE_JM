@@ -342,28 +342,7 @@ public class Direccion {
 						direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif);
 					}
 				}
-				
-				/*
-					String sql = direccionesAdm.comprobarTipoDireccion(tipo, miForm.getIDInstitucion().toString(), miForm.getIDPersona().toString());					
-					if (rc2.query(sql)) {
-						if (rc2.size()>=1) {
-							Row idDireccion1 = (Row) rc2.get (j);
-							int idDireccionAhora = Integer.parseInt ((String) idDireccion1.getValue
-									(CenDireccionTipoDireccionBean.C_IDDIRECCION));
-							j++;
-							if(idDireccionAntes.longValue () != new Integer (idDireccionAhora).longValue ()){
-								t.rollback();
-								return exito("messages.inserted.error.ExisteYaGuardia", request);
-							}	
-						}
-						
-						if (!idDireccionesPreferentes.equals("")) {
-							direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString(), idDireccionesPreferentes,
-									preferenteModif, request);
-						}
-					}  
-				*/
-			
+
 			}else if (new Integer (tipos[i]).intValue () == ClsConstants.TIPO_DIRECCION_CENSOWEB){//dirección de tipo censoweb					
 				String sql1 = direccionesAdm.comprobarTipoDireccion(tipo, beanDir.getIdInstitucion().toString(), beanDir.getIdPersona().toString());
 				cambiodireccioncensoweb (beanDir,i,sql1, tipo, idDireccionesCensoWeb, tipoDirAdm, direccionesAdm);
@@ -378,7 +357,9 @@ public class Direccion {
 					}
 				}
 			} else if (new Integer(tipos[i]).intValue() == ClsConstants.TIPO_DIRECCION_FACTURACION) {
-				boolean tieneDirFacturacion = tipoDirAdm.tieneDireccionFacturacion(beanDir.getIdInstitucion().toString(), beanDir.getIdPersona().toString(), null);
+				// jbd 	// La solucion de Carlos estaba bien para inserciones, pero no para actualizaciones de la direccion de facturacion, decia que ya existia
+						// Lo que hago es pasar la direccion actual si es una edicion o null si es nueva y tieneDireccionFacturacion hace el resto
+				boolean tieneDirFacturacion = tipoDirAdm.tieneDireccionFacturacion(beanDir.getIdInstitucion().toString(), beanDir.getIdPersona().toString(), beanDir.getIdDireccion()==null?null:beanDir.getIdDireccion().toString());
 				if (tieneDirFacturacion) {
 					throw new SIGAException ("messages.directions.duplicatedFact");
 				}
