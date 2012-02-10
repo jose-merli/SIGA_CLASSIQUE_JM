@@ -274,7 +274,7 @@ public class InscripcionGuardia
 			Long idGrupoGuardia,
 			String saltoCompensacion,
 			String idSaltoCompensacionGrupo,
-			UsrBean usr) throws ClsExceptions
+			String fechaGuardia, UsrBean usr) throws ClsExceptions
 	{
 		// Controles
 		ScsGuardiasTurnoAdm guaadm = new ScsGuardiasTurnoAdm(usr);
@@ -296,7 +296,7 @@ public class InscripcionGuardia
 		ScsGuardiasTurnoBean beanGuardia = (ScsGuardiasTurnoBean) vGuardia.get(0);
 
 		// obteniendo lista de letrados
-		vectorLetrados = insadm.getLetradosGrupo(idInstitucion.toString(), idTurno.toString(), idGuardia.toString(), idGrupoGuardia.toString());
+		vectorLetrados = insadm.getLetradosGrupo(idInstitucion.toString(), idTurno.toString(), idGuardia.toString(), idGrupoGuardia.toString(),fechaGuardia);
 		if (vectorLetrados == null || vectorLetrados.size() == 0)
 			return null;
 

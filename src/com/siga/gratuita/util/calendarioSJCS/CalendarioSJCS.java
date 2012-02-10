@@ -1317,7 +1317,7 @@ public class CalendarioSJCS
 			hmBajasTemporales = bajasAdm.getLetradosDiasBajaTemporal(this.idInstitucion, this.idTurno, this.idGuardia, primerDia, ultimoDia);
 			
 			// obteniendo saltos
-			alSaltos = salComAdm.getSaltosCompensacionesPendientesGuardia(this.idInstitucion, this.idTurno, this.idGuardia, ClsConstants.SALTOS);
+			alSaltos = salComAdm.getSaltosCompensacionesPendientesGuardia(this.idInstitucion, this.idTurno, this.idGuardia,null, ClsConstants.SALTOS);
 			HashMap<Long, ArrayList<LetradoInscripcion>> hmGruposConSaltos = new HashMap<Long, ArrayList<LetradoInscripcion>>();
 			ArrayList<LetradoInscripcion> grupoConSaltos;
 			for (ScsSaltoCompensacionGrupoBean bean : alSaltos) {
@@ -1375,7 +1375,7 @@ public class CalendarioSJCS
 
 				// obteniendo las compensaciones. Se obtienen dentro de este
 				// bucle, ya que si hay incompatibilidades se añade una compensacion
-				alCompensaciones = salComAdm.getSaltosCompensacionesPendientesGuardia(this.idInstitucion, this.idTurno, this.idGuardia, ClsConstants.COMPENSACIONES);
+				alCompensaciones = salComAdm.getSaltosCompensacionesPendientesGuardia(this.idInstitucion, this.idTurno, this.idGuardia,(String) diasGuardia.get(0), ClsConstants.COMPENSACIONES);
 				log.addLog(new String[] {"Compensaciones", alCompensaciones.toString()});
 				log.addLog(new String[] {"Saltos", hmGruposConSaltos.toString()});
 

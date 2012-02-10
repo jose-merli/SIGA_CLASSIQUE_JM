@@ -1086,19 +1086,33 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 	public Vector<ScsInscripcionGuardiaBean> getLetradosGrupo(String idInstitucion,
 			String idTurno,
 			String idGuardia,
-			String idGrupoGuardia) throws ClsExceptions
+			String idGrupoGuardia, String fechaGuardia) throws ClsExceptions
 	{
 		if (idGrupoGuardia == null || idGrupoGuardia.equals(""))
 			return null;
 		
 		String consulta =
-			"Select " +
-			getBaseConsultaInscripciones() +
+			"Select " ;
+			if(fechaGuardia!=null && !fechaGuardia.equals("")){
+				consulta+=" (case "+
+			         " when Ins.Fechavalidacion Is Not Null And "+
+			              " Trunc(Ins.Fechavalidacion) <= "+
+			              " nvl('01/04/2012', Ins.Fechavalidacion) And "+
+			              " (Ins.Fechabaja Is Null Or "+
+			              " Trunc(Ins.Fechabaja) > nvl('"+fechaGuardia+"', '01/01/1900')) then "+
+			          " '1' "+
+			         " else "+
+			          " '0' "+
+			       " end) Activo, ";
+			}else{
+				consulta+="'1' Activo,";
+			}
+		consulta+=getBaseConsultaInscripciones() +
 			"   And Gru."+ScsGrupoGuardiaColegiadoBean.C_IDINSTITUCION+" = "+idInstitucion+" " +
 			"   And Gru."+ScsGrupoGuardiaColegiadoBean.C_IDTURNO+" = "+idTurno+" " +
 			"   And Gru."+ScsGrupoGuardiaColegiadoBean.C_IDGUARDIA+" = "+idGuardia+" " +
 			"   And Gru."+ScsGrupoGuardiaColegiadoBean.C_IDGRUPO+" = "+idGrupoGuardia+" ";
-		
+		consulta+=" ORDER BY ORDENGRUPO ";
 		Vector<ScsInscripcionGuardiaBean> datos = null;
 		Hashtable hashGrupo;
 		try {
@@ -1108,7 +1122,8 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 				for (int i = 0; i < rc.size(); i++) {
 					Row fila = (Row) rc.get(i);
 					Hashtable<String, Object> htFila = fila.getRow();
-					datos.add(getInscripcionDesdeHashCola(htFila));
+					if(((String)htFila.get("ACTIVO"))!=null && ((String)htFila.get("ACTIVO")).equals("1") )
+						datos.add(getInscripcionDesdeHashCola(htFila));
 				}
 			}
 		} catch (Exception e) {

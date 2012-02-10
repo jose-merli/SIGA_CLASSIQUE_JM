@@ -3,6 +3,7 @@ package com.siga.beans;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Vector;
 
@@ -16,6 +17,7 @@ import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.gratuita.InscripcionGuardia;
+import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 
 /**
  * Implementa las operaciones sobre la base de datos, es decir: select, insert, update... a la tabla SCS_SALTOCOMPENSACIONGRUPO
@@ -216,12 +218,14 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 	 * @param idTurno
 	 * @param idGuardia
 	 * @param saltoOcompensacion
+	 * @param compensaciones2 
 	 * @return
 	 * @throws ClsExceptions
 	 */
 	public ArrayList<ScsSaltoCompensacionGrupoBean> getSaltosCompensacionesPendientesGuardia(Integer idInstitucion,
 			Integer idTurno,
 			Integer idGuardia,
+			String fechaGuardia,
 			String saltoOcompensacion) throws ClsExceptions
 	{
 		// Variables
@@ -243,9 +247,13 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 		ListIterator iter = compensaciones.listIterator();
 		while (iter.hasNext()) {
 			compensacion = (ScsSaltoCompensacionGrupoBean) iter.next();
-			compensacion.setLetrados(InscripcionGuardia.getLetradosGrupo(idInstitucion, idTurno, idGuardia,
+			ArrayList<LetradoInscripcion> letradoInscripciones = InscripcionGuardia.getLetradosGrupo(idInstitucion, idTurno, idGuardia,
 					compensacion.getIdGrupoGuardia(), saltoOcompensacion, 
-					compensacion.getIdSaltoCompensacionGrupo().toString(), this.usrbean));
+					compensacion.getIdSaltoCompensacionGrupo().toString(), fechaGuardia, this.usrbean);
+			//Si no hay ningun letrado inscrito del grupo que hay que compensar continuamos
+			if(letradoInscripciones==null)
+				continue;
+			compensacion.setLetrados(letradoInscripciones);
 			resultado.add(compensacion);
 		}
 
