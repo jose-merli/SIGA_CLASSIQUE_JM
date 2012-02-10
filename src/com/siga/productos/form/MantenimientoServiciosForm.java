@@ -203,6 +203,10 @@ public class MantenimientoServiciosForm extends MasterForm{
 		datos.put(PysServiciosInstitucionBean.C_FECHABAJA,v);		
 	}	
 	
+	public void setDescripcion(String v){
+		datos.put(PysPreciosServiciosBean.C_DESCRIPCION,v);		
+	}		
+	
 	// Metodos get	
 	
 	// Formulario Busqueda Servicios
@@ -335,6 +339,10 @@ public class MantenimientoServiciosForm extends MasterForm{
 	public String getFechaBaja(){
 		return (String)datos.get(PysServiciosInstitucionBean.C_FECHABAJA);		
 	}	
+
+	public String getDescripcion(){
+		return (String)datos.get(PysPreciosServiciosBean.C_DESCRIPCION);		
+	}		
 	
 	/**
 	 * @return Returns the criterios.

@@ -49,7 +49,8 @@ public class PysPreciosServiciosAdm extends MasterBeanAdministrador {
 							PysPreciosServiciosBean.C_IDCONSULTA,
 							PysPreciosServiciosBean.C_PORDEFECTO,
 							PysPreciosServiciosBean.C_FECHAMODIFICACION,
-							PysPreciosServiciosBean.C_USUMODIFICACION};
+							PysPreciosServiciosBean.C_USUMODIFICACION,
+							PysPreciosServiciosBean.C_DESCRIPCION};
 		return campos;
 	}
 	
@@ -90,7 +91,8 @@ public class PysPreciosServiciosAdm extends MasterBeanAdministrador {
 			bean.setIdConsulta (UtilidadesHash.getLong(hash,PysPreciosServiciosBean.C_IDCONSULTA ));
 			bean.setPorDefecto (UtilidadesHash.getString(hash, PysPreciosServiciosBean.C_PORDEFECTO));
 			bean.setFechaMod(UtilidadesHash.getString(hash,PysPreciosServiciosBean.C_FECHAMODIFICACION));
-			bean.setUsuMod(UtilidadesHash.getInteger(hash,PysPreciosServiciosBean.C_USUMODIFICACION));			
+			bean.setUsuMod(UtilidadesHash.getInteger(hash,PysPreciosServiciosBean.C_USUMODIFICACION));	
+			bean.setDescripcion(UtilidadesHash.getString(hash, PysPreciosServiciosBean.C_DESCRIPCION));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -123,6 +125,7 @@ public class PysPreciosServiciosAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,PysPreciosServiciosBean.C_PORDEFECTO ,b.getPorDefecto());
 			UtilidadesHash.set(htData,PysPreciosServiciosBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(htData,PysPreciosServiciosBean.C_USUMODIFICACION, b.getUsuMod());
+			UtilidadesHash.set(htData,PysPreciosServiciosBean.C_DESCRIPCION ,b.getDescripcion());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -163,6 +166,7 @@ public class PysPreciosServiciosAdm extends MasterBeanAdministrador {
 	            			PysPreciosServiciosBean.T_NOMBRETABLA + "." + PysPreciosServiciosBean.C_CRITERIOS + "," +
 	            			PysPreciosServiciosBean.T_NOMBRETABLA + "." + PysPreciosServiciosBean.C_IDCONSULTA + "," +
 	            			PysPreciosServiciosBean.T_NOMBRETABLA + "." + PysPreciosServiciosBean.C_PORDEFECTO + "," +
+	            			PysPreciosServiciosBean.T_NOMBRETABLA + "." + PysPreciosServiciosBean.C_DESCRIPCION + "," +
 	            			UtilidadesMultidioma.getCampoMultidiomaSimple(PysPeriodicidadBean.T_NOMBRETABLA + "." + PysPeriodicidadBean.C_DESCRIPCION ,this.usrbean.getLanguage())+" AS PERIODICIDAD " +							
 							" FROM " + PysPreciosServiciosBean.T_NOMBRETABLA + 
 								" INNER JOIN " + PysPeriodicidadBean.T_NOMBRETABLA + 
@@ -211,6 +215,7 @@ public class PysPreciosServiciosAdm extends MasterBeanAdministrador {
 	            			PysPreciosServiciosBean.T_NOMBRETABLA + "." + PysPreciosServiciosBean.C_CRITERIOS + "," +
 	            			PysPreciosServiciosBean.T_NOMBRETABLA + "." + PysPreciosServiciosBean.C_IDCONSULTA + "," +
 	            			PysPreciosServiciosBean.T_NOMBRETABLA + "." + PysPreciosServiciosBean.C_PORDEFECTO + "," +
+	            			PysPreciosServiciosBean.T_NOMBRETABLA + "." + PysPreciosServiciosBean.C_DESCRIPCION + "," +
 	            			UtilidadesMultidioma.getCampoMultidiomaSimple(PysPeriodicidadBean.T_NOMBRETABLA + "." + PysPeriodicidadBean.C_DESCRIPCION ,this.usrbean.getLanguage())+" AS PERIODICIDAD " +							
 							" FROM " + PysPreciosServiciosBean.T_NOMBRETABLA + 
 								" INNER JOIN " + PysPeriodicidadBean.T_NOMBRETABLA + 

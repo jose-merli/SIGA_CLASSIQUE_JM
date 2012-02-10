@@ -49,6 +49,7 @@
 	String servicioInstitucion=request.getAttribute("servicioInstitucion").toString();
     String resultado = (String)request.getAttribute("resultado");
 	String porDefecto = (String)request.getAttribute("porDefecto");
+	String descripcion = (String)request.getAttribute("descripcion");
 	boolean queryPorDefecto = false;
 	String botonNuevo="N";
 	if ((porDefecto!=null)&&(porDefecto.equalsIgnoreCase("1"))){
@@ -61,6 +62,7 @@
    	//Precio
 	double precio = 0.00;
 	String sPrecio = null;
+	String sDescripcion = null;
 
 	// Obtener informacion para rellenar en caso de modificacion o consulta
 	if ((modo.equalsIgnoreCase("modificar"))||(modo.equalsIgnoreCase("consulta"))){
@@ -72,6 +74,8 @@
 		// periodicidad del servicio
         vPeriodicidad.add(beanPrecio.getIdPeriodicidad().toString());
         
+        sDescripcion = beanPrecio.getDescripcion().toString();
+		
        	//Precio
 		sPrecio = beanPrecio.getValor().toString();
 		try { 
@@ -239,6 +243,25 @@
 										  		<% } %>
 											</td>
 											<td class="labelText">
+												<siga:Idioma key="pys.mantenimientoCategorias.literal.descripcion"/>
+											</td>				
+											<td class="labelText">
+												<% if (modo.equalsIgnoreCase("insertar")){%>
+										  			<html:text property="descripcion" styleClass="box" maxlength="100" size="29" value=""></html:text>
+										  		<% } else { %>
+													<% if (modo.equalsIgnoreCase("modificar")){ 
+														 if ("&nbsp".equals(UtilidadesString.mostrarDatoJSP(sDescripcion))) {%>
+															<html:text property="descripcion" styleClass="box" size="29" maxlength="100" value=""></html:text>
+														<%}else{%>
+															<html:text property="descripcion" styleClass="box" size="29" maxlength="100" value="<%=UtilidadesString.mostrarDatoJSP(sDescripcion)%>"></html:text>
+														<% } %>	
+													<%}else{%>
+														<html:text property="descripcion" styleClass="boxConsulta" size="29" value="<%=UtilidadesString.mostrarDatoJSP(sDescripcion)%>" readOnly="true"></html:text>
+													<% } %>								  		
+										  		<% } %>
+											</td>	
+											
+											<td class="labelText">
 												<siga:Idioma key="productos.mantenimientoProductos.literal.precioDefecto"/>
 												<% if (modo.equalsIgnoreCase("insertar")) {	%>
 													<input type="checkbox" name="precioDefecto" value="1" onClick="revisarCheckPrecioDefecto();" >
@@ -248,11 +271,16 @@
 												<% } else { %>
 													<input type="checkbox" name="precioDefecto" value="1" disabled>
 												<% }} %>
-											</td>
+											</td>												
+																					
 										</tr>
 										<!-- FILA -->
 										<%if (!(modo.equalsIgnoreCase("consulta"))&&!(queryPorDefecto)){%>
-										<tr><td class="labelText" colspan="5"><table width="100%"><tr>
+
+									
+								 		
+								 		<table width="100%"> 
+										<tr>
 											<td class="labelText" valign="middle">
 												<siga:Idioma key="pys.mantenimientoServicios.literal.conector"/>&nbsp;
 												<select name = "conector" class="boxCombo" id="conector">

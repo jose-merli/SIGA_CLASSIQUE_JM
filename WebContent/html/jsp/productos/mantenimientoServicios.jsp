@@ -314,6 +314,7 @@
 					<html:hidden property="modo" value="<%=modo%>"/>
 					<html:hidden property="precio" value=""/>
 					<html:hidden property="periodicidad" value=""/>
+					<html:hidden property="descripcion" value=""/>
 					<html:hidden property="refresco" value=""/>
 					<html:hidden property="comprobarCondicion" value=""/>
 					<html:hidden property="comprobarCondicionBaja" value="<%=new Boolean(bFechaBaja).toString() %>"/>
@@ -738,8 +739,8 @@
 									   nombre="tablaResultados"
 									   borde="1"
 									   clase="tableTitle"				   
-									   nombreCol="pys.mantenimientoServicios.literal.precio,pys.mantenimientoServicios.literal.periodicidad,productos.mantenimientoProductos.literal.precioDefecto,"
-									   tamanoCol="30,30,20,20"
+									   nombreCol="pys.mantenimientoServicios.literal.precio,pys.mantenimientoServicios.literal.periodicidad,pys.mantenimientoCategorias.literal.descripcion,productos.mantenimientoProductos.literal.precioDefecto,"
+									   tamanoCol="20,20,20,20,20"
 									   alto="100%"
 									   ajusteBotonera="true"					   
 									   modal="G">
@@ -803,7 +804,7 @@
 												  fila='<%=String.valueOf(recordNumber)%>'
 												  botones='<%=iconosFila%>'
 												  modo='<%=modo%>'
-												  clase="listaNonEdit">
+												  clase="listaNonEdit">												  
 												<td align = "right">
 													<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDINSTITUCION)%>">
 													<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDTIPOSERVICIOS)%>">
@@ -815,7 +816,10 @@
 												</td>
 												<td align = "right">
 													<%=UtilidadesString.mostrarDatoJSP(rowPrecios.getString("PERIODICIDAD"))%>
-												</td>  								
+												</td>  	
+												<td align = "right">
+													<%=UtilidadesString.mostrarDatoJSP(rowPrecios.getString("DESCRIPCION"))%>
+												</td>  																				
 												<td align = "right">
 													<% if (rowPrecios.getString(PysPreciosServiciosBean.C_PORDEFECTO).equalsIgnoreCase(ClsConstants.DB_TRUE)){ %>
 														<siga:Idioma key="general.yes"/>
@@ -833,8 +837,8 @@
 									   nombre="tablaResultados"
 									   borde="1"
 									   clase="tableTitleEspec"				   
-									   nombreCol="pys.mantenimientoServicios.literal.precio,pys.mantenimientoServicios.literal.periodicidad,productos.mantenimientoProductos.literal.precioDefecto"
-									   tamanoCol="40,40,20"
+									   nombreCol="pys.mantenimientoServicios.literal.precio,pys.mantenimientoServicios.literal.periodicidad,pys.mantenimientoCategorias.literal.descripcion,productos.mantenimientoProductos.literal.precioDefecto"
+									   tamanoCol="30,20,30,20"
 									   alto="100%"
 									   ajusteBotonera="true"					   
 									   modal="G">
@@ -861,13 +865,16 @@
 												precio = 0.00;
 											}	
 											%>
-						            		<tr>						  
+						            		<tr>						            							  
 												<td align = "right" class="listaNonEdit" nowrap>
 													<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(precio))%>&nbsp;&euro;
 												</td>
 												<td class="listaNonEdit" nowrap>
 													<%=UtilidadesString.mostrarDatoJSP(rowPrecios.getString("PERIODICIDAD"))%>
 												</td>
+												<td class="listaNonEdit" nowrap>
+													<%=UtilidadesString.mostrarDatoJSP(rowPrecios.getString("DESCRIPCION"))%>
+												</td>													
 												<td class="listaNonEdit" nowrap>
 													<% if (rowPrecios.getString(PysPreciosServiciosBean.C_PORDEFECTO).equalsIgnoreCase(ClsConstants.DB_TRUE)){ %>
 														<siga:Idioma key="general.yes"/>
@@ -948,6 +955,7 @@
 									// Asigno el precio y la periodicidad obtenidos en la ventana modal
 									document.forms[0].precio.value=datos[1];
 									document.forms[0].periodicidad.value=datos[2];
+									document.forms[0].descripcion.value=datos[3];
 									
 									// Redirigimos al lugar adecuado
 									document.forms[0].modo.value="insertar";

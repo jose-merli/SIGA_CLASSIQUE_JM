@@ -22,6 +22,7 @@ public class PysPreciosServiciosBean extends MasterBean{
 	private String 	criterios;
 	private String 	porDefecto;
 	private Long idConsulta;	
+	private String descripcion;
 	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "PYS_PRECIOSSERVICIOS";
@@ -37,6 +38,7 @@ public class PysPreciosServiciosBean extends MasterBean{
 	static public final String C_CRITERIOS = "CRITERIOS";
 	static public final String C_IDCONSULTA	= "IDCONSULTA";
 	static public final String C_PORDEFECTO	= "PORDEFECTO";
+	static public final String C_DESCRIPCION = "DESCRIPCION";
 	
 
 	// Metodos SET
@@ -50,8 +52,8 @@ public class PysPreciosServiciosBean extends MasterBean{
 	public void setCriterios (String v)	{ this.criterios=v;}
 	public void setIdConsulta (Long id)	{ this.idConsulta=id;}
 	public void setPorDefecto (String id)	{ this.porDefecto=id;}
-		
-
+	public void setDescripcion(String descripcion) {this.descripcion = descripcion;}
+	
 	// Metodos GET
 	public Integer getIdInstitucion() {return this.idInstitucion;}
 	public Integer getIdTipoServicios()	{return this.idTipoServicios;}
@@ -63,5 +65,5 @@ public class PysPreciosServiciosBean extends MasterBean{
 	public String getCriterios() {return this.criterios;}
 	public Long getIdConsulta()	{return this.idConsulta;}
 	public String getPorDefecto()	{return this.porDefecto;}
-		
+	public String getDescripcion() {return descripcion;}		
 }

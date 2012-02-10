@@ -411,6 +411,8 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 						if (datosPrecio.length == 5) {
 							UtilidadesHash.set(a, "SERVICIO_DESCRIPCION_PERIODICIDAD", datosPrecio[4]);
 						}
+						
+						UtilidadesHash.set(a, "SERVICIO_DESCRIPCION_PRECIO", datosPrecio[5]);
 					}
 
 					//Consulto si la baja ha sido solicitada:
@@ -542,10 +544,12 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 						String aux = (String)((Hashtable) precioAux.get(0)).get("PRECIO_SERVICIO");
 						if (aux != null && !"-1".equals(precioAux)){
 							precio = new Double(aux.split("#")[0]);
-						}
+						}			
 					}
 					double importeAnticipadoTarjeta = new Double(""+servicioBean.getCantidad()).doubleValue() * (precio.doubleValue() + ( (precio.doubleValue()*iva.floatValue()) / 100 ));
 					suscripcionBean.setImporteAnticipado(new Double(importeAnticipadoTarjeta));	
+					
+					//suscripcionBean.setD
 				}
 				else {
 					if (servicioBean.getIdFormaPago().intValue() == ClsConstants.TIPO_FORMAPAGO_METALICO)
@@ -984,7 +988,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 	public PaginadorBind getServiciosSolicitadosPaginador (Hashtable datos, Integer idInstitucion) throws ClsExceptions, SIGAException {
 		PaginadorBind paginador=null;
 		try {
-			Hashtable codigos = new Hashtable();
+ 			Hashtable codigos = new Hashtable();
 			String select = getQueryServiciosSolicitadosBind(datos, idInstitucion, codigos);
 			paginador = new PaginadorBind(select,codigos);
 

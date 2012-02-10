@@ -17,6 +17,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.tools.ant.taskdefs.Concat;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -34,6 +35,7 @@ import com.siga.beans.CenHistoricoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenSolModiFacturacionServicioAdm;
 import com.siga.beans.CenSolModiFacturacionServicioBean;
+import com.siga.beans.ConCamposSalidaAdm;
 import com.siga.beans.PysCompraAdm;
 import com.siga.beans.PysCompraBean;
 import com.siga.beans.PysPeticionCompraSuscripcionAdm;
@@ -1010,7 +1012,7 @@ public class DatosFacturacionAction extends MasterAction {
 	private Vector actualizarServiciosPaginados(PysServiciosSolicitadosAdm serviciosAdm,PysProductosSolicitadosAdm productosAdm,
 			String idPersona,UsrBean usrBean,Vector datos) throws ClsExceptions{
 		
-		
+		String concepto;
 		
 		for (int i=0;i<datos.size();i++) 
 		{
@@ -1052,8 +1054,14 @@ public class DatosFacturacionAction extends MasterAction {
 
 				UtilidadesHash.set(registro, "SERVICIO_IDPRECIOSSERVICIOS", new Integer(datosPrecio[2]));
 				UtilidadesHash.set(registro, "SERVICIO_IDPERIODICIDAD", new Integer(datosPrecio[3]));
-				if (datosPrecio.length == 5) {
-					UtilidadesHash.set(registro, "SERVICIO_DESCRIPCION_PERIODICIDAD", datosPrecio[4]);
+				
+				UtilidadesHash.set(registro, "SERVICIO_DESCRIPCION_PERIODICIDAD", datosPrecio[4]);
+				
+				if (datosPrecio.length == 6) {
+					UtilidadesHash.set(registro, "SERVICIO_DESCRIPCION_PRECIO", datosPrecio[5]);
+					//Concatenación de la descripcion del servicio + descripcion del precio
+					UtilidadesHash.set(registro, "CONCEPTO",UtilidadesHash.getString(registro, "CONCEPTO") + ' ' + UtilidadesHash.getString(registro, "SERVICIO_DESCRIPCION_PRECIO")); 
+					
 				}
 			}
 			
@@ -1178,6 +1186,7 @@ public class DatosFacturacionAction extends MasterAction {
 		
 		PysServiciosSolicitadosAdm serviciosAdm = new PysServiciosSolicitadosAdm(
 				this.getUserBean(request));
+		
 		
 		try {
 			HashMap databackup = getPaginador(request, paginadorPenstania);
