@@ -41,6 +41,16 @@ public class DatosGeneralesAction extends MasterAction{
 		
 		try
 		{
+			String sAbreviatura="";
+			String sDescripcion="";
+			Integer iPlantilla=new Integer(-1);
+			String sPlantilla="";
+			String enviarFacturas = "";
+			String generarPDF = "";
+			String observaciones="";
+			FacSerieFacturacionBean beanSerie = null;
+			Vector datosPlantilla = null;
+			
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");		
 			String idInstitucion = user.getLocation();
 			String idSerieFacturacion=(String)request.getSession().getAttribute("idSerieFacturacion");
@@ -59,6 +69,29 @@ public class DatosGeneralesAction extends MasterAction{
 			request.setAttribute("datosSerie", datosSerie);
 			
 			
+			if (datosSerie!=null && datosSerie.size()>0) {
+				beanSerie = (FacSerieFacturacionBean)datosSerie.elementAt(0);
+				sAbreviatura = beanSerie.getNombreAbreviado();
+				sDescripcion = beanSerie.getDescripcion();
+				iPlantilla = beanSerie.getIdPlantilla();
+				idSerieFacturacion = String.valueOf(beanSerie.getIdSerieFacturacion());
+				enviarFacturas = beanSerie.getEnvioFactura();
+				generarPDF = beanSerie.getGenerarPDF();
+				observaciones = beanSerie.getObservaciones();
+				
+
+				String sWhere = " where ";
+				sWhere += FacPlantillaFacturacionBean.T_NOMBRETABLA+"."+ FacPlantillaFacturacionBean.C_IDINSTITUCION+"="+idInstitucion+
+					  " and "+
+					  FacPlantillaFacturacionBean.T_NOMBRETABLA+"."+ FacPlantillaFacturacionBean.C_IDPLANTILLA+"="+iPlantilla;
+				
+				FacPlantillaFacturacionAdm admPlantilla = new FacPlantillaFacturacionAdm(user);
+	
+				 datosPlantilla = admPlantilla.select(sWhere);
+
+
+			}
+			request.setAttribute("datosPlantilla", datosPlantilla);
 			AdmContadorAdm admCon = new AdmContadorAdm(this.getUserBean(request));
 			if (datosSerie!=null && datosSerie.size()>0) { 
 				FacSerieFacturacionBean b = (FacSerieFacturacionBean)datosSerie.get(0);

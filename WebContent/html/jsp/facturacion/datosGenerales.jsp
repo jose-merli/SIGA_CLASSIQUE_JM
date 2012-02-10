@@ -42,8 +42,9 @@
 	
 	Vector datosSerie = (Vector)request.getAttribute("datosSerie");
 	Vector datosContador = (Vector)request.getAttribute("datosContador"); 
-
+	Vector datosPlantilla = (Vector)request.getAttribute("datosPlantilla");
 	request.removeAttribute("datosSerie");
+	request.removeAttribute("datosPlantilla");	
 	
 	String editable = (String)ses.getAttribute("editable");
 	boolean bEditable = true;
@@ -82,14 +83,14 @@
 		enviarFacturas = beanSerie.getEnvioFactura();
 		generarPDF = beanSerie.getGenerarPDF();
 		observaciones = beanSerie.getObservaciones();
-		
+		/*
 		String sWhere = " where ";
 		sWhere += FacPlantillaFacturacionBean.T_NOMBRETABLA+"."+ FacPlantillaFacturacionBean.C_IDINSTITUCION+"="+idInstitucion+
 			  " and "+
 			  FacPlantillaFacturacionBean.T_NOMBRETABLA+"."+ FacPlantillaFacturacionBean.C_IDPLANTILLA+"="+iPlantilla;
 		
 		FacPlantillaFacturacionAdm admPlantilla = new FacPlantillaFacturacionAdm(user);
-		Vector datosPlantilla = admPlantilla.select(sWhere);
+		Vector datosPlantilla = admPlantilla.select(sWhere);*/
 		FacPlantillaFacturacionBean beanPlantilla = (FacPlantillaFacturacionBean)datosPlantilla.elementAt(0);
 		sPlantilla = beanPlantilla.getDescripcion();
 		
@@ -478,7 +479,7 @@
 
 						if(document.DatosGeneralesForm.envioFacturas.checked){
 							if(document.DatosGeneralesForm.idTipoPlantillaMail.value == ""){
-							    alert('<siga:Idioma key="Facturacion.mensajes.obligatorio.plantillaMail"/');
+								alert('<siga:Idioma key="Facturacion.mensajes.obligatorio.plantillaMail"/>');
 								return false;
 							}
 						}

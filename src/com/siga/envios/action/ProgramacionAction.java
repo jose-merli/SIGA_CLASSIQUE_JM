@@ -422,6 +422,8 @@ public class ProgramacionAction extends MasterAction {
         /////////////////////////////////////
 		EnvEnviosAdm envAdm = new EnvEnviosAdm(this.getUserBean(request));
 		Vector vDestinatarios =  envAdm.getDestinatarios(envBean.getIdInstitucion().toString(), envBean.getIdEnvio().toString(), envBean.getIdTipoEnvios().toString());			
+		if(vDestinatarios== null)
+			throw new SIGAException("gratuita.envio.ordinario.noDestinatario"); 
 		String ruta =  enviosAdm.generarEtiquetas(String.valueOf(envBean.getIdInstitucion()),String.valueOf(envBean.getIdEnvio()),enviosAdm.getPathDescargaEnviosOrdinarios(envBean),vDestinatarios);
 		request.setAttribute("rutaFichero", ruta);
 		request.setAttribute("generacionOK","OK");
