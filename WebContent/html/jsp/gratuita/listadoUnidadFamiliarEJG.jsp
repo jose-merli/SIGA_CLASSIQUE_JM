@@ -611,28 +611,34 @@
    	}
 	function ajustarCabeceraTabla(){
 		if(document.all.listadoPeticiones){
-			if (document.all.listadoUnidadFamiliar.clientHeight <= document.all.listadoUnidadFamiliarDiv.clientHeight) {
-				document.all.listadoUnidadFamiliarCabeceras.width='98.43%';
-		  } else {
-			  document.all.listadoUnidadFamiliarCabeceras.width='100%';
-			   
-			   
-			   
-		  }
+			ajusteAlto("listadoUnidadFamiliarDiv");
+			ajusteAlto("listadoPeticionesDiv");
 			
-				if (document.all.listadoPeticiones.clientHeight <= document.all.listadoPeticionesDiv.clientHeight) {
-					
-					document.all.listadoPeticionesCabeceras.width='98.43%'; 
+			
+			if (document.all.listadoUnidadFamiliar.clientHeight < document.all.listadoUnidadFamiliarDiv.clientHeight) {
+							document.all.listadoUnidadFamiliarCabeceras.width='100%';
+		  	} else {
+			  
+			  document.all.listadoUnidadFamiliarCabeceras.width='98.43%';
+			  
+			   
+			   
+			   
+		  	}
+			
+				if (document.all.listadoPeticiones.clientHeight < document.all.listadoPeticionesDiv.clientHeight) {
+					document.all.listadoPeticionesCabeceras.width='100%';
+					 
 				  } else {
-					  document.all.listadoPeticionesCabeceras.width='100%';
+					  document.all.listadoPeticionesCabeceras.width='98.43%';
+					  
 					  
 					   
 					   
 				  }
 				
 			
-			ajusteAlto("listadoUnidadFamiliarDiv");
-			ajusteAlto("listadoPeticionesDiv");
+			
 		}
 }
 	
