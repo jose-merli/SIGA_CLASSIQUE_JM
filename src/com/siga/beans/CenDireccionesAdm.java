@@ -1813,9 +1813,6 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 		beanDir.setTelefono1(telefono1);
 		beanDir.setTelefono2(telefono2);
 		
-		//estableciendo los datos del tipo de direccion guardia
-		String tiposDir = ""+ClsConstants.TIPO_DIRECCION_GUARDIA;
-
 		if(idDireccion!=null && !idDireccion.equals("")){
 			
 			// Actualizamos el registro de la dirección de guardia						
@@ -1823,9 +1820,12 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 			beanDir.setOriginalHash(original);
 				
 			// Se llama a la interfaz Direccion para actualizar una nueva direccion
-			direccion.actualizar(beanDir, tiposDir, "", null, this.usrbean);
+			direccion.actualizar(beanDir, "", "", null, this.usrbean);
 			
 		}else{
+			
+			//estableciendo los datos del tipo de direccion guardia
+			String tiposDir = ""+ClsConstants.TIPO_DIRECCION_GUARDIA;
 
 			//Insertamos la nueva direccion de guardia
 			beanDir.setCodigoPostal("");
