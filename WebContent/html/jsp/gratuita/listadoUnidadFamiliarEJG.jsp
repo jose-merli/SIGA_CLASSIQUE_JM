@@ -1,5 +1,6 @@
 <!-- listadoUnidadFamiliarEJG-->
 
+<%@page import="com.atos.utils.ClsConstants"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-15"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -92,7 +93,7 @@
 		   borde="2"
 		   clase="tableTitle"		   
 		   nombreCol="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='checkTodos()'/> ,gratuita.personaJG.literal.parentescoNormalizado,gratuita.busquedaEJG.literal.nif,gratuita.busquedaEJG.literal.nombre,gratuita.operarInteresado.literal.ingresosAnuales,gratuita.operarInteresado.literal.bienesMobiliarios,gratuita.operarInteresado.literal.bienesInmuebles,gratuita.operarInteresado.literal.otrosBienes,"
-		   tamanoCol="5,8,7,25,7,7,7,7,28"
+		   tamanoCol="4,8,8,25,7,7,7,7,28"
 		   
 		   alto="500"
 		   modal="G"
@@ -141,6 +142,8 @@
 						<input type="hidden" name="oculto<%=index%>_11" value="${solicitante.peticionEejg.idPeticion}">
 						<input type="hidden" name="oculto<%=index%>_12" value="${DefinirUnidadFamiliarEJGForm.esComision}">
 						<input type="hidden" name="oculto<%=index%>_13" value="${solicitante.solicitante}">
+						<input type="hidden" name="oculto<%=index%>_14" value="${solicitante.personaJG.nif}">
+						<input type="hidden" name="oculto<%=index%>_15" value="${solicitante.personaJG.tipoIdentificacion}">
 						
 						
 						<c:out value="${solicitante.parentesco.descripcion}"></c:out>
@@ -225,6 +228,8 @@
 						<input type="hidden" name="oculto<%=index%>_10" value="${DefinirUnidadFamiliarEJGForm.numero}">
 						<input type="hidden" name="oculto<%=index%>_12" value="${DefinirUnidadFamiliarEJGForm.esComision}">
 						<input type="hidden" name="oculto<%=index%>_13" value="${solicitante.solicitante}">
+						<input type="hidden" name="oculto<%=index%>_14" value="${solicitante.personaJG.nif}">
+						<input type="hidden" name="oculto<%=index%>_15" value="${solicitante.personaJG.tipoIdentificacion}">
 						<c:choose>
 							<c:when test="${solicitante.peticionEejg.idPeticion!=null}">
 							<input type="hidden" name="oculto<%=index%>_11" value="${solicitante.peticionEejg.idPeticion}">
@@ -473,7 +478,71 @@
 		
 	   
 	} 
+	function validaNumeroIdentificacion (nif,idTipoIdentificacion){
+		var errorNIE = false;
+		var errorNIF = false;
+		var errorDatos = false;
+		var valido = true;
+
+		if(idTipoIdentificacion== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>"){
+			var numero = nif;
+			if(numero.length==9){
+				letIn = numero.substring(8,9);
+				num = numero.substring(0,8);
+				var posicion = num % 23;
+				letras='TRWAGMYFPDXBNJZSQVHLCKET';
+				var letra=letras.substring(posicion,posicion+1);
+				if (letra!=letIn) {
+					errorNIF=true;
+				}
+			}else{
+				errorNIF=true;
+			}
+		}else if(idTipoIdentificacion== "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>"){
+			var dnie = nif;
+			if(dnie.length==9){
+				letIni = dnie.substring(0,1);
+				primera=letIni;
+				if  (letIni.toUpperCase()=='Y')
+			 		letIni = '1';
+			 	else if  (letIni.toUpperCase()=='Z')
+			 		letIni = '2';
+			 	else{
+			 		letIni = '0';
+			 	}
+				num = letIni + dnie.substring(1,8);
+				letFin = dnie.substring(8,9);
+				var posicion = num % 23;
+				letras='TRWAGMYFPDXBNJZSQVHLCKET';
+				var letra=letras.substring(posicion,posicion+1);
+				if (!primera.match('[X|Y|Z]')||letra!=letFin) {
+					errorNIE=true;
+				}
+			}else{
+				errorNIE=true;
+			}
+		}
+		if (errorNIF){
+			valido = false;
+			alert("<siga:Idioma key='messages.nif.comprobacion.digitos.error'/>");
+		}
+		if (errorNIE){
+			valido = false;
+			alert("<siga:Idioma key='messages.nie.comprobacion.digitos.error'/>");
+		}
+		
+		return valido;
+	}
+	
 	function solicitarEejg(fila) {
+		var nif = document.getElementById( 'oculto' + fila + '_14').value;
+		var idTipoIdentificacion = document.getElementById( 'oculto' + fila + '_15').value;
+		
+		if (!validaNumeroIdentificacion(nif,idTipoIdentificacion)) {
+			fin();
+			return false;
+		}
+		
 		var isConfirmado = confirm('<siga:Idioma key="gratuita.eejg.message.confirmaSolicitud"/>');
 		if(!isConfirmado)
 			return;
