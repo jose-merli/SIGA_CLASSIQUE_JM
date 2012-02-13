@@ -822,7 +822,7 @@
 						<siga:Idioma key="pys.solicitudCompra.literal.colegiadoen"/>&nbsp;
 					</td>
 					<td>
-						<siga:ComboBD nombre = "colegiadoen" tipo="cmbInstitucionCenso" parametro="<%=parametroidInstitucionActual%>" clase="<%=estiloCaja %>" estilo='width:160px;' obligatorio="true" readonly="<%=readonly %>" />						
+						<siga:ComboBD nombre = "colegiadoen" tipo="cmbColegiosSinActualAbreviados" parametro="<%=parametroidInstitucionActual%>" clase="<%=estiloCaja %>" estilo='width:160px;' obligatorio="true" readonly="<%=readonly %>" />						
 					</td>
 					<td class="labelText">
 						<siga:Idioma key="censo.busquedaClientes.literal.nColegiado"/>&nbsp;
