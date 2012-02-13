@@ -218,8 +218,11 @@ public class AltaAbonosAction extends MasterAction {
 			// Obtengo los datos del formulario
 			AltaAbonosForm miForm = (AltaAbonosForm)formulario;
 			
+			String numfactura="";
 			// Compruebo que la factura asociada exista y este ligada a la misma persona //ESTO SOBRARIA YA QUE SE HACE EN LA VENTANA PREVIA
-			Vector asociados = adminF.getFacturaPorNumeroSimple(miForm.getIdInstitucion(),miForm.getNumFactura());
+			if(miForm.getNumFactura()!=null)
+				 numfactura =miForm.getNumFactura().trim().toUpperCase();
+			Vector asociados = adminF.getFacturaPorNumeroSimple(miForm.getIdInstitucion(),numfactura);
 			if (asociados.isEmpty()){
 				throw new SIGAException("facturacion.altaAbonos.literal.facturaNoAsociada");	
 			}
@@ -251,7 +254,7 @@ public class AltaAbonosAction extends MasterAction {
 			String numeroAbono=gc.getNuevoContadorConPrefijoSufijo(contadorTablaHash);
 			hash.put(FacAbonoBean.C_NUMEROABONO,numeroAbono);
 			hash.put(FacAbonoBean.C_IMPEXCESIVO,"0");
-			hash.put(FacAbonoBean.C_OBSERVACIONES,UtilidadesString.getMensajeIdioma(usr.getLanguage(),"messages.informes.abono.mensajeFactura")+" "+miForm.getNumFactura());
+			hash.put(FacAbonoBean.C_OBSERVACIONES,UtilidadesString.getMensajeIdioma(usr.getLanguage(),"messages.informes.abono.mensajeFactura")+" "+numfactura);
 			
 			
 			//JTA comprobamos si la factura tiene numero de cuenta y en tal caso es que el pago por banco.
@@ -529,7 +532,7 @@ public class AltaAbonosAction extends MasterAction {
 	protected String confirmarFactura(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String result="nuevaRecarga";
 		Vector facturas = new Vector();
-		
+		String numfactura ="";
 		try{
 			// Obtengo el UserBean y el identificador de la institucion
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
@@ -539,9 +542,11 @@ public class AltaAbonosAction extends MasterAction {
 			AltaAbonosForm form = (AltaAbonosForm) formulario;
 			if (!form.getNumFactura().equalsIgnoreCase("")){
 				FacFacturaAdm facturaAdm =new FacFacturaAdm(this.getUserBean(request)); 
-				facturas=facturaAdm.getFacturaPorNumero(form.getIdInstitucion(),form.getNumFactura(),false);
+				if(form.getNumFactura()!=null)
+				 numfactura =form.getNumFactura().trim().toUpperCase();
+				facturas=facturaAdm.getFacturaPorNumero(form.getIdInstitucion(),numfactura,false);
 				if (!facturas.isEmpty()){
-					facturas=facturaAdm.getFacturaPorNumero(form.getIdInstitucion(),form.getNumFactura(),true);
+					facturas=facturaAdm.getFacturaPorNumero(form.getIdInstitucion(),numfactura,true);
 					if(facturas.isEmpty()){
 						request.setAttribute("IDFACTURA","");
 						request.setAttribute("FECHAFACTURA","");
