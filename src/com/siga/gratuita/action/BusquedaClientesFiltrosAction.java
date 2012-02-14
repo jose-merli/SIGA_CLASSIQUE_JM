@@ -487,11 +487,8 @@ public class BusquedaClientesFiltrosAction extends MasterAction
 			beanDir.setIdDireccion(formulario.getIdDireccion());
 			beanDir.setOriginalHash((Hashtable)request.getSession().getAttribute("DATABACKUP_CLIENTESFILTRO"));
 			
-			//estableciendo los datos del tipo de direccion guardia
-			String tiposDir = ""+ClsConstants.TIPO_DIRECCION_GUARDIA;
-			
 			// Se llama a la interfaz Direccion para actualizar una nueva direccion
-			direccion.actualizar(beanDir, tiposDir, "", null, usr);
+			direccion.actualizar(beanDir, "", "", null, usr);
 			
 			request.setAttribute("mensaje","messages.inserted.success");
 			tx.commit();
