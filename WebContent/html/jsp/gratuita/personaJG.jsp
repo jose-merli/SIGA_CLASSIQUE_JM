@@ -310,7 +310,9 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 	   
 	 <%}%>
 	 
-	 <% 	if (existeDomicilio != null && existeDomicilio.equals("N")) {%>
+	 <% 	
+	 	if(pcajgActivo == -1){
+	 		if (existeDomicilio != null && existeDomicilio.equals("N")) {%>
 
 				document.forms[0].existeDom.checked=true;
 	 			document.PersonaJGForm.direccion.disabled = "disabled";
@@ -319,7 +321,9 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 
 			<%}else{ %>
 			document.forms[0].existeDom.checked=false;
-			<%} %>
+			<%} 
+	 	}	
+		%>
 	<%if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {%> 
 	<%if (checkSolicitante != null && checkSolicitante.equals("1")) {%>
 		 
@@ -434,11 +438,12 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 
 				//existeDomicilio
 				document.forms[0].existeDomicilio.value = resultado[25];
-				if(resultado[25]!=null && resultado[25]=="N")
-					document.forms[0].existeDom.checked=true;
-				else
-					document.forms[0].existeDom.checked=false;
-				
+				<%if(pcajgActivo == -1){	%> 
+					if(resultado[25]!=null && resultado[25]=="N")
+						document.forms[0].existeDom.checked=true;
+					else
+						document.forms[0].existeDom.checked=false;
+				<%}%>
          <%if (conceptoE.equals(PersonaJGAction.ASISTENCIA_ASISTIDO)
 					|| conceptoE.equals(PersonaJGAction.SOJ)) {%> 
 				if (resultado[18] != null && trim(resultado[18])!="" && trim(resultado[18])!="null") {
@@ -1335,20 +1340,24 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 	</tr>
 	<tr>
 		<td class="labelText" width="30%" colspan="5" >
-		<siga:Idioma key="gratuita.busquedaSOJ.literal.solicitaObligaDir"/>
-		<html:hidden name="PersonaJGForm" property = "existeDomicilio" />
+		<html:hidden name="PersonaJGForm" property = "existeDomicilio" value="S" />
 
 	 <%
-	 	if (!accion.equalsIgnoreCase("ver")) {
+	     if(pcajgActivo == -1){
+	 		if (!accion.equalsIgnoreCase("ver")) {
 	 %>
+	 		<siga:Idioma key="gratuita.busquedaSOJ.literal.solicitaObligaDir"/>
+	 
 	  <input type="checkbox" id="existeDom" onclick="desabilitarDomicilio(this);">
 		  <%
-		  	} else {
+		  		} else {
 		  %>
+	 		<siga:Idioma key="gratuita.busquedaSOJ.literal.solicitaObligaDir"/>
 	  <input type="checkbox" id="existeDom" onclick="desabilitarDomicilio(this);" disabled="disabled">		  
 	  <%
-		  	}
-		  %>	
+		  		}
+	     }
+		  %>
 	</td>
 	</tr>
 		</table>
@@ -2406,7 +2415,7 @@ function limpiarPersonaContrario() {
 		//Asociada al boton Guardar -->
 		function accionGuardar(){	
 
-			if (document.forms[0].existeDom.checked) {
+			if (document.forms[0].existeDom!=null && document.forms[0].existeDom.checked) {
 	 			document.PersonaJGForm.existeDomicilio.value = "N";
 			}else {
 	 			document.PersonaJGForm.existeDomicilio.value = "S";
@@ -2541,7 +2550,7 @@ function limpiarPersonaContrario() {
 		function accionGuardarCerrar()	{
 
 
-			if (document.forms[0].existeDom.checked) {
+			if (document.forms[0].existeDom!=null && document.forms[0].existeDom.checked) {
 	 			document.PersonaJGForm.existeDomicilio.value = "N";
 			}else {
 	 			document.PersonaJGForm.existeDomicilio.value = "S";
@@ -2695,8 +2704,7 @@ function limpiarPersonaContrario() {
 		//Asociada al boton Guardar -->
 		function accionGuardar()	{
 
-
-			if (document.forms[0].existeDom.checked) {
+			if (document.forms[0].existeDom!=null && document.forms[0].existeDom.checked) {
 	 			document.PersonaJGForm.existeDomicilio.value = "N";
 			}else {
 	 			document.PersonaJGForm.existeDomicilio.value = "S";
@@ -2770,7 +2778,7 @@ function limpiarPersonaContrario() {
 		function accionGuardar()	{	
 
 
-			if (document.forms[0].existeDom.checked) {
+			if (document.forms[0].existeDom!=null && document.forms[0].existeDom.checked) {
 	 			document.PersonaJGForm.existeDomicilio.value = "N";
 			}else {
 	 			document.PersonaJGForm.existeDomicilio.value = "S";
@@ -2833,7 +2841,7 @@ function limpiarPersonaContrario() {
 		function accionGuardarCerrar()	{	
 
 
-			if (document.forms[0].existeDom.checked) {
+			if (document.forms[0].existeDom!=null && document.forms[0].existeDom.checked) {
 	 			document.PersonaJGForm.existeDomicilio.value = "N";
 			}else {
 	 			document.PersonaJGForm.existeDomicilio.value = "S";
@@ -2899,7 +2907,7 @@ function limpiarPersonaContrario() {
 		function accionGuardarCerrar()	{	
 
 
-			if (document.forms[0].existeDom.checked) {
+			if (document.forms[0].existeDom!=null && document.forms[0].existeDom.checked) {
 	 			document.PersonaJGForm.existeDomicilio.value = "N";
 			}else {
 	 			document.PersonaJGForm.existeDomicilio.value = "S";
@@ -2970,7 +2978,7 @@ function limpiarPersonaContrario() {
 		function accionGuardarCerrar()	{	
 
 
-			if (document.forms[0].existeDom.checked) {
+			if (document.forms[0].existeDom!=null && document.forms[0].existeDom.checked) {
 	 			document.PersonaJGForm.existeDomicilio.value = "N";
 			}else {
 	 			document.PersonaJGForm.existeDomicilio.value = "S";
@@ -3059,7 +3067,7 @@ function limpiarPersonaContrario() {
 		//Asociada al boton Guardar -->
 		function accionGuardarCerrar()	{	
 
-			if (document.forms[0].existeDom.checked) {
+			if (document.forms[0].existeDom!=null && document.forms[0].existeDom.checked) {
 	 			document.PersonaJGForm.existeDomicilio.value = "N";
 			}else {
 	 			document.PersonaJGForm.existeDomicilio.value = "S";
@@ -3146,8 +3154,7 @@ function accionCerrar()
 //Asociada al boton Guardar -->
 function accionGuardarCerrar()	{	
 
-
-	if (document.forms[0].existeDom.checked) {
+	if (document.forms[0].existeDom!=null && document.forms[0].existeDom.checked) {
 			document.PersonaJGForm.existeDomicilio.value = "N";
 	}else {
 			document.PersonaJGForm.existeDomicilio.value = "S";
