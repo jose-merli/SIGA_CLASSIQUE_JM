@@ -34,7 +34,7 @@ public class RespuestasResolucionesFTPListener extends SIGAContextListenerAdapte
 	private Integer idNotificacion;
 	private String nombreProceso = "RespuestasResolucionesFTPListener";
 	private long intervalo = 3600000;
-	private String horaMinuto = null;
+	private String horaMinuto = "00:00";
 	
 	private final static String PCAJG_RESOL_FTP_TIMER_HORA = "PCAJG_RESOL_FTP_TIMER_HORA";
 	private final static String PCAJG_RESP_RESOL_FTP_TIMER_HORAS = "PCAJG_RESP_RESOL_FTP_TIMER_HORAS";
@@ -64,17 +64,15 @@ public class RespuestasResolucionesFTPListener extends SIGAContextListenerAdapte
 		String[] horaMinutos = null;
 		String valor = "00:00";
 		try {
-			valor = admParametros.getValor(""+ClsConstants.INSTITUCION_POR_DEFECTO, MODULO_SCS, PCAJG_RESOL_FTP_TIMER_HORA, valor);
+			valor = admParametros.getValor(""+ClsConstants.INSTITUCION_CGAE, MODULO_SCS, PCAJG_RESOL_FTP_TIMER_HORA, valor);
 			
-			if (valor != null && valor.length()==5 && !valor.equals("00:00")) {
-				JhDate valida = new JhDate();
-				horaMinutos = valor.split(":");
-				valida.validaHora(Integer.parseInt(horaMinutos[0]), Integer.parseInt(horaMinutos[1]));
-			}
+			JhDate valida = new JhDate();
+			horaMinutos = valor.split(":");
+			valida.validaHora(Integer.parseInt(horaMinutos[0]), Integer.parseInt(horaMinutos[1]));
 			
 		} catch (Exception e) {
 			ClsLogging.writeFileLogWithoutSession("Parametro "+PCAJG_RESOL_FTP_TIMER_HORA+" mal configurado. Se pone 00:00");
-			valor = "00:00";
+			valor = this.horaMinuto;
 		}
 		this.horaMinuto = valor;
 		horaMinutos = valor.split(":");
@@ -136,17 +134,15 @@ public class RespuestasResolucionesFTPListener extends SIGAContextListenerAdapte
 			String[] horaMinutos = null;
 			String horaMinutoActual = "00:00";
 			try {
-				horaMinutoActual = admParametros.getValor(""+ClsConstants.INSTITUCION_POR_DEFECTO, MODULO_SCS, PCAJG_RESOL_FTP_TIMER_HORA, horaMinutoActual);
+				horaMinutoActual = admParametros.getValor(""+ClsConstants.INSTITUCION_CGAE, MODULO_SCS, PCAJG_RESOL_FTP_TIMER_HORA, horaMinutoActual);
 				
-				if (horaMinutoActual != null && horaMinutoActual.length()==5 && !horaMinutoActual.equals("00:00")) {
-					JhDate valida = new JhDate();
-					horaMinutos = horaMinutoActual.split(":");
-					valida.validaHora(Integer.parseInt(horaMinutos[0]), Integer.parseInt(horaMinutos[1]));
-				}
+				JhDate valida = new JhDate();
+				horaMinutos = horaMinutoActual.split(":");
+				valida.validaHora(Integer.parseInt(horaMinutos[0]), Integer.parseInt(horaMinutos[1]));
 				
 			} catch (Exception e) {
 				ClsLogging.writeFileLogWithoutSession("Parametro "+PCAJG_RESOL_FTP_TIMER_HORA+" mal configurado. Se pone 00:00");
-				valor = "00:00";
+				horaMinutoActual = this.horaMinuto;
 			}
 			
 			if (nuevoTimer != intervalo||!horaMinutoActual.equals(this.horaMinuto)) {
