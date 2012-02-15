@@ -1523,19 +1523,16 @@ public class SolicitudCompraAction extends MasterAction{
 			tx=usr.getTransaction();
 			
 			String idInstitucion=(String)request.getAttribute("factRapidaIdInstitucion");
+			String idFactura = "";
 			Long idPeticion = (Long)request.getAttribute("factRapidaIdPeticion");
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//			ReadProperties rp = new ReadProperties("SIGA.properties");	
 			String rutaAlmacen = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava")+rp.returnProperty("facturacion.directorioFacturaPDFJava");
     		rutaAlmacen += ClsConstants.FILE_SEP+idInstitucion;
 			rutaAlmacen+=ClsConstants.FILE_SEP;
-		    String rutaServidor =
-		    	Plantilla.obtenerPathNormalizado(rp.returnProperty("sjcs.directorioFisicoSJCSJava")+rp.returnProperty("sjcs.directorioSJCSJava"))+
+		    String rutaServidor = Plantilla.obtenerPathNormalizado(rp.returnProperty("sjcs.directorioFisicoSJCSJava")+rp.returnProperty("sjcs.directorioSJCSJava"))+
 		    	ClsConstants.FILE_SEP+idInstitucion;
 		    
-		    
-			
-			// administradores
+		    // administradores
 			PysCompraAdm admCompra = new PysCompraAdm(this.getUserBean(request));
 			FacSerieFacturacionAdm admSerie = new FacSerieFacturacionAdm(this.getUserBean(request));
 			PysPeticionCompraSuscripcionAdm admPeticion = new PysPeticionCompraSuscripcionAdm(this.getUserBean(request));
@@ -1555,33 +1552,33 @@ public class SolicitudCompraAction extends MasterAction{
 			FacSerieFacturacionBean serieFacturacionTemporal = null;
 			FacFacturacionProgramadaBean programacion = null;
 			Vector facts = null;
-		    try {
-		        tx.begin();
+
+			tx.begin();
 		        
-		        // PASO 0: LOCALIZO LAS COMRPAS (SI NO EXISTEN LAS GENERO)
-			    Vector compras = new Vector();
-			    if (beanPeticion.getIdEstadoPeticion().equals(new Integer(30))) {
-			        // Esta en estado baja
-			        throw new SIGAException("messages.facturacionRapidaCompra.estadoBaja");
-			    } else
-			    if (beanPeticion.getIdEstadoPeticion().equals(new Integer(10))) {
-			        // Esta en estado pendiente. Hay que aprobarla
-			        beanPeticion = admPeticion.aprobarPeticionCompra(beanPeticion);
-			    }
-		        compras = admCompra.obtenerComprasPorPeticion(beanPeticion);
-			    
-		        
-		        // PASO 1: OBTENER SERIE CANDIDATA
-		        
-		        // RGG 206/05/2009 cambio por si los productos son no facturables.
-		        if (compras.size()==0) {
-		            throw new SIGAException("messages.facturacionRapidaCompra.noElementosFacturables");
-		        }
-		        
-		        PysCompraBean pysCompraBean = (PysCompraBean) compras.get(0);
-		  if (pysCompraBean.getIdFactura()==null ||pysCompraBean.getIdFactura().equals("")){// Si despues de hacer la facturacion se vuelve a pulsar el boton, mostrará la factura asociada 
-		        String serieSeleccionada = request.getParameter("serieSeleccionada");
-		        if (serieSeleccionada==null || serieSeleccionada.equals("")) {
+	        // PASO 0: LOCALIZO LAS COMRPAS (SI NO EXISTEN LAS GENERO)
+		    Vector compras = new Vector();
+		    if (beanPeticion.getIdEstadoPeticion().equals(new Integer(30))) {
+		        // Esta en estado baja
+		        throw new SIGAException("messages.facturacionRapidaCompra.estadoBaja");
+		    } else if (beanPeticion.getIdEstadoPeticion().equals(new Integer(10))) {
+		        // Esta en estado pendiente. Hay que aprobarla
+		        beanPeticion = admPeticion.aprobarPeticionCompra(beanPeticion);
+		    }
+	        compras = admCompra.obtenerComprasPorPeticion(beanPeticion);
+	        // RGG 206/05/2009 cambio por si los productos son no facturables.
+	        if (compras.size()==0) {
+	            throw new SIGAException("messages.facturacionRapidaCompra.noElementosFacturables");
+	        }
+		    
+/**************************************  INICIO PROCESO FACTURACIÓN RAPIDA *********************************************************/
+	        
+	        // PASO 1: OBTENER FACTURA
+	        PysCompraBean pysCompraBean = (PysCompraBean) compras.get(0);
+	        		        
+	        if (pysCompraBean.getIdFactura()==null ||pysCompraBean.getIdFactura().equals("")){// Si despues de hacer la facturacion se vuelve a pulsar el boton, mostrará la factura asociada 
+	        	// PASO 1: OBTENER SERIE CANDIDATA
+	        	String serieSeleccionada = request.getParameter("serieSeleccionada");
+	        	if (serieSeleccionada==null || serieSeleccionada.equals("")) {
 				    Vector series =  admSerie.obtenerSeriesAdecuadas(compras);
 				    if (series==null || series.size()==0) {
 				        throw new SIGAException("messages.facturacionRapidaCompra.noSerieAdecuada");
@@ -1590,8 +1587,6 @@ public class SolicitudCompraAction extends MasterAction{
 				        serieFacturacionCandidata = (FacSerieFacturacionBean)series.get(0);
 				    } else {
 				        // existen varias series candidatas
-				        
-				        // devuelvo las compras a su estado original antes de preguntar
 				        tx.rollback();				        
 				        
 				        // PREGUNTA
@@ -1612,218 +1607,76 @@ public class SolicitudCompraAction extends MasterAction{
 		            }
 		        }
 
-		        
-		        ////////////////////////////////////////////////////////
-			    // en este punto tenemos una serie de facturacion adecuada
-			    // en este punto tenemos una peticion de compra aprobada
-			    // en este punto tenemos las compras asociadas a la peticion
-		        ////////////////////////////////////////////////////////
-
-			    
 			    // PASO 2: FACTURACION RAPIDA DESDE SERIE CANDIDATA (GENERACION)
 			    serieFacturacionTemporal =  facturacion.procesarFacturacionRapidaCompras(beanPeticion, compras,serieFacturacionCandidata);
 			    
 			    // Aqui obtengo las facturas implicadas
 			    FacFacturaAdm admF = new FacFacturaAdm(this.getUserBean(request));
+			    FacFacturaBean factBean = new FacFacturaBean();
 			    facts = admF.getFacturasSerieFacturacion(serieFacturacionTemporal);
-			    
-			    // PASO 4: DESHACER RELACIONES TEMPORALES
+			    factBean = (FacFacturaBean)facts.get(0);
+			    idFactura = factBean.getIdFactura();
+
+			    // Deshacer relaciones temporales
 			    programacion = facturacion.restaurarSerieFacturacion(serieFacturacionCandidata, serieFacturacionTemporal);
 		        
 			    tx.commit();
-	
-			}else{
-		
-				FacFacturaAdm admF1 = new FacFacturaAdm(this.getUserBean(request));
-				FacFacturaBean facturaFinal=null;
-				Hashtable factHash=new Hashtable();
-				factHash.put(FacFacturaBean.C_IDINSTITUCION, pysCompraBean.getIdInstitucion());
-				factHash.put(FacFacturaBean.C_IDFACTURA, pysCompraBean.getIdFactura());
-				CenColegiadoAdm admCol = new CenColegiadoAdm(this.getUserBean(request));
+			    
+			    
+			    // PASO 3: CONFIRMACION RAPIDA (en este caso la transacción se gestiona dentro la transaccion)
+			    try {
+			        facturacion.confirmarProgramacionFactura(programacion, request,false,null,false,false);
+			        
+				} catch (SIGAException ee) {
+					mensaje="messages.facturacionRapida.errorConfirmacion";
+					return exito(mensaje,request);
+				} catch (Exception e) {
+					mensaje="messages.facturacionRapida.errorConfirmacion";
+					return exito(mensaje,request);
+			    }
+			} else {
+				 idFactura = pysCompraBean.getIdFactura();
+			}
 				
-	  			Hashtable htCol = admCol.obtenerDatosColegiado(this.getUserBean(request).getLocation(),pysCompraBean.getIdPersona().toString(),this.getUserBean(request).getLanguage());
-	  			String nColegiado = "";
-	  			if (htCol!=null && htCol.size()>0) {
-	  			    nColegiado = (String)htCol.get("NCOLEGIADO_LETRADO");
-	  			}	
-				Vector vFac=admF1.select(factHash);
-				if (vFac==null || vFac.size()==0) {
-				    throw new SIGAException("messages.facturacionRapida.noFactura");
-				
-				} else {
-					//Simular comportamiento del módulo de Facturas
-					InformeFactura informe = new InformeFactura(usr);
-					File filePDF = informe.generarFactura(request, usr.getLanguage().toUpperCase(), idInstitucion, pysCompraBean.getIdFactura(), nColegiado);
-
-					if (filePDF == null) {
-						throw new ClsExceptions("Error al generar la factura. Fichero devuelto es nulo.");
-					}
-					tx.commit();
-					request.setAttribute("nombreFichero", filePDF.getName());
-					request.setAttribute("rutaFichero", filePDF.getPath());
-					request.setAttribute("generacionOK", "OK");
-					salida = "descarga";
-					return salida;
-					
-					/*					 
-					String nombreFichero = "";
-					rutaAlmacen += 	((FacFacturaBean)vFac.get(0)).getIdSerieFacturacion() + "_" + 
-									((FacFacturaBean)vFac.get(0)).getIdProgramacion() + ClsConstants.FILE_SEP;
-
-					File almacen = new File(rutaAlmacen);
-					String sFacturas[] = almacen.list();
-					if (sFacturas.length == 1) {
-					
-					    FacFacturaBean bf = (FacFacturaBean) vFac.get(0);
-					    if (bf.getNumeroFactura()!=null && !bf.getNumeroFactura().equals("")) 
-					    	nombreFichero = bf.getNumeroFactura();
-					    else 
-					    	nombreFichero = bf.getIdFactura();
-					    
-					    rutaAlmacen += UtilidadesString.validarNombreFichero(nColegiado+"-"+nombreFichero) + ".pdf";
-					    File filePDF = new File(rutaAlmacen);
-					    if (!filePDF.exists())  {
-					        throw new SIGAException("messages.general.error.ficheroNoExiste");
-					    }
-					    tx.commit();
-					    request.setAttribute("nombreFichero", filePDF.getName());
-						request.setAttribute("rutaFichero", filePDF.getPath());		
-						request.setAttribute("generacionOK","OK");
-						salida = "descarga";
-         				return salida;
-					} 
-					else {
-					    ArrayList ficherosPDF= new ArrayList();
-					    for (int i=0;i<sFacturas.length;i++) {
-						    
-					        nombreFichero = sFacturas[i];
-						    
-						    String ruta = rutaAlmacen + nombreFichero;
-						    File filePDF = new File(ruta);
-						    ficherosPDF.add(filePDF);
-					    }
-						String nombreFicheroZIP="facturasGeneradas_" +UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","").replaceAll(":","").replaceAll(" ","");
-						String rutaServidorDescargasZip=rutaServidor + File.separator;
-						
-						Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF,false);
-						File fileZIP = new File(rutaServidorDescargasZip+nombreFicheroZIP + ".zip");
-					    if (!fileZIP.exists())  {
-					        throw new SIGAException("messages.general.error.ficheroNoExiste");
-					    }
-					    tx.commit();
-					    request.setAttribute("nombreFichero", nombreFicheroZIP + ".zip");
-						request.setAttribute("rutaFichero", rutaServidorDescargasZip+nombreFicheroZIP + ".zip");			
-						request.setAttribute("borrarFichero", "true");	
-						request.setAttribute("generacionOK","OK");
-						salida = "descarga";
-    					return salida;
-					}					
-					*/
-					}
-
-				}
-		    } catch (Exception e) {
-			    try { tx.rollback(); } catch (Exception ee) {}
-			    throw e;
-		    }
-		  
-		    // PASO 3: FACTURACION RAPIDA (CONFIRMACION)
-			// en este caso la transacción se gestiona dentro la transaccion
-		    try {
-		        facturacion.confirmarProgramacionFactura(programacion, request,false,null,false,false);
-		        
-			} /*catch (ClsExceptions e) {
-				return exito(e.getMsg(),request);
-			}*/catch (SIGAException ee) {
-				mensaje="messages.facturacionRapida.errorConfirmacion";
-				return exito(mensaje,request);
-			} catch (Exception e) {
-				mensaje="messages.facturacionRapida.errorConfirmacion";
-				return exito(mensaje,request);
-		    }
-		 
-			// devolver factura
+			// PASO 4: GENERAR PDF
+			FacFacturaAdm admF1 = new FacFacturaAdm(this.getUserBean(request));
+			FacFacturaBean facturaFinal=null;
+			Hashtable factHash=new Hashtable();
+			factHash.put(FacFacturaBean.C_IDINSTITUCION, pysCompraBean.getIdInstitucion());
+			factHash.put(FacFacturaBean.C_IDFACTURA,idFactura);
+			CenColegiadoAdm admCol = new CenColegiadoAdm(this.getUserBean(request));
 			
+  			Hashtable htCol = admCol.obtenerDatosColegiado(this.getUserBean(request).getLocation(),pysCompraBean.getIdPersona().toString(),this.getUserBean(request).getLanguage());
+  			String nColegiado = "";
+  			if (htCol!=null && htCol.size()>0) {
+  			    nColegiado = (String)htCol.get("NCOLEGIADO_LETRADO");
+  			}	
 
-			// Obtenemos la factura con en el numero de serie correcto
-			FacFacturaAdm admF = new FacFacturaAdm(this.getUserBean(request));
-			/////////////////////////////////
-			// Ahora:
-			// 1. consulta mas limitada para obtener el idfactura con el idprogramacion
-			facts = admF.getFacturasFacturacionProgramada(programacion);
-			
-			// Antes
-			// 2. consulta mas limitada para obtener el idfactura sin el idprogramacion
-			//   FacSerieFacturacionBean serie = new FacSerieFacturacionBean ();
-			//	 serie.setIdInstitucion(programacion.getIdInstitucion());
-			//	 serie.setIdSerieFacturacion(programacion.getIdSerieFacturacion());
-			//	 facts = admF.getFacturasSerieFacturacion(serie);
-			///////////////////////////////////
-			
-			if (facts==null || facts.size()==0) {
+  			Vector vFac=admF1.select(factHash);
+			if (vFac==null || vFac.size()==0) { // Control extra de existencia de factura				
 			    throw new SIGAException("messages.facturacionRapida.noFactura");
 			} 
-			else {
-				String nombreFichero = "";
-				rutaAlmacen += 	((FacFacturaBean)facts.get(0)).getIdSerieFacturacion() + "_" + 
-								((FacFacturaBean)facts.get(0)).getIdProgramacion() + ClsConstants.FILE_SEP;
-
-				File almacen = new File(rutaAlmacen);
-				String sFacturas[] = almacen.list();
-				if (sFacturas.length == 1) {
+			
+			InformeFactura informe = new InformeFactura(usr);
+			File filePDF = informe.generarFactura(request, usr.getLanguage().toUpperCase(), idInstitucion, idFactura, nColegiado);
+			if (filePDF == null) {
+				throw new ClsExceptions("Error al generar la factura. Fichero devuelto es nulo.");
+			}
+			
+			// PASO 5: DESCARGAR PDF
+			request.setAttribute("nombreFichero", filePDF.getName());
+			request.setAttribute("rutaFichero", filePDF.getPath());
+			request.setAttribute("generacionOK", "OK");
+			salida = "descarga";
 				
-				    FacFacturaBean bf = (FacFacturaBean) facts.get(0);
-				    CenColegiadoAdm admCol = new CenColegiadoAdm(this.getUserBean(request));
-					
-		  			Hashtable htCol = admCol.obtenerDatosColegiado(this.getUserBean(request).getLocation(),bf.getIdPersona().toString(),this.getUserBean(request).getLanguage());
-		  			String nColegiado = "";
-		  			if (htCol!=null && htCol.size()>0) {
-		  			    nColegiado = UtilidadesHash.getString(htCol,"NCOLEGIADO_LETRADO");
-		  			}	
-				    if (bf.getNumeroFactura()!=null && !bf.getNumeroFactura().equals("")) 
-				    	nombreFichero = bf.getNumeroFactura();
-				    else 
-				    	nombreFichero = bf.getIdFactura();
-				    
-				    rutaAlmacen += UtilidadesString.validarNombreFichero(nColegiado+"-"+nombreFichero) + ".pdf";
-				    File filePDF = new File(rutaAlmacen);
-				    if (!filePDF.exists())  {
-				        throw new SIGAException("messages.general.error.ficheroNoExiste");
-				    }
-				    request.setAttribute("nombreFichero", filePDF.getName());
-					request.setAttribute("rutaFichero", filePDF.getPath());		
-					request.setAttribute("generacionOK","OK");
-					salida = "descarga";
-				} 
-				else {
-				    ArrayList ficherosPDF= new ArrayList();
-				    for (int i=0;i<sFacturas.length;i++) {
-					    
-				        nombreFichero = sFacturas[i];
-					    
-					    String ruta = rutaAlmacen + nombreFichero;
-					    File filePDF = new File(ruta);
-					    ficherosPDF.add(filePDF);
-				    }				    
-					String nombreFicheroZIP="facturasGeneradas_" +UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","").replaceAll(":","").replaceAll(" ","");
-					String rutaServidorDescargasZip=rutaServidor + File.separator;
-					
-					Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF,false);
-					File fileZIP = new File(rutaServidorDescargasZip+nombreFicheroZIP + ".zip");
-				    if (!fileZIP.exists())  {
-				        throw new SIGAException("messages.general.error.ficheroNoExiste");
-				    }
-				    request.setAttribute("nombreFichero", nombreFicheroZIP + ".zip");
-					request.setAttribute("rutaFichero", rutaServidorDescargasZip+nombreFicheroZIP + ".zip");			
-					request.setAttribute("borrarFichero", "true");		
-					request.setAttribute("generacionOK","OK");
-					salida = "descarga";
-				}
-	    	}
-		} 
-		catch (Exception e) { 
+		} catch (SIGAException es) {
+			throwExcp (es.getLiteral(), new String[] {"modulo.censo"}, es, tx);	
+		} catch (ClsExceptions es) {
+			throwExcp (es.getMessage(), new String[] {"modulo.censo"}, es, tx);	
+		}catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.certificados"},e,tx); 
 		}
+		
 		return salida;
 	}
 	
