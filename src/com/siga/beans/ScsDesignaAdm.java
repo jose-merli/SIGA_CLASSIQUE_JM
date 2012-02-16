@@ -1800,7 +1800,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 										idLenguaje=(String)registroDefendido.get("IDLENGUAJE_DEFENDIDO");
 								}else{
 										idLenguaje=idioma;
-								}						
+								}
 							/**Depende del idioma del defendido se tiene que imprimir la carta del defendido, si no tiene idioma se imprime en el idioma de la institución.**/
 							String 	idiomaExt="";
 							switch (Integer.parseInt(idLenguaje)) {
@@ -1932,8 +1932,9 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				"        " +
 				"       p.Nombre || ' ' || p.Apellidos1 || " +
 				"       Decode(p.Apellidos2, Null, '', ' ' || p.Apellidos2) || ' ' || " +
+				"       Decode(Let.IdinstitucionOrigen, Null, f_Siga_Calculoncolegiado(Let.Idinstitucion, Let.Idpersona),  f_Siga_Calculoncolegiado(Let.IdinstitucionOrigen, Let.Idpersona)) Letrado_Actual, " +
 				"       f_Siga_Calculoncolegiado(Let.IdinstitucionOrigen, Let.Idpersona) Letrado_Actual_Origen, " +
-				"       f_Siga_Calculoncolegiado(Let.Idinstitucion, Let.Idpersona) Letrado_Actual, " +
+				//"       f_Siga_Calculoncolegiado(Let.Idinstitucion, Let.Idpersona) Letrado_Actual, " +
 				"       Let.IdinstitucionOrigen, " +
 				"       (SELECT cli.Idlenguaje FROM Cen_Cliente cli Where cli.Idinstitucion = Let.Idinstitucion And cli.Idpersona = Let.Idpersona) as Idioma_Letrado,  " +
 				"       Pant.Nombre || ' ' || Pant.Apellidos1 || " +
