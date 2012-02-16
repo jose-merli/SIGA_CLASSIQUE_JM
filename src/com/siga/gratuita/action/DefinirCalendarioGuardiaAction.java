@@ -361,15 +361,15 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 
 				if(!miForm.getAccion().equals("modalGuardiaVolantes")&&!miForm.getAccion().equals("modalConsultaCenso")){
 					//Recogemos los datos del formulario
-					fechaInicio = (String)visibles.get(0);
-					fechaFin = (String)visibles.get(1);			
-					numeroColegiado = (String)visibles.get(2);
+					fechaInicio = (String)visibles.get(1);
+					fechaFin = (String)visibles.get(2);			
+					numeroColegiado = (String)visibles.get(3);
 
 					//Almacenamos los datos necesarios en el request
 					miForm.setFechaInicio(fechaInicio);
 					miForm.setFechaFin(fechaFin);
 					request.setAttribute("NUMEROCOLEGIADO",numeroColegiado);
-					request.setAttribute("NOMBRE",(String)visibles.get(3));
+					request.setAttribute("NOMBRE",(String)visibles.get(4));
 
 					//Datos para consultar las guardias:			
 					idCalendario = (String)ocultos.get(0);
@@ -380,7 +380,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				}else if(miForm.getAccion().equals("modalConsultaCenso")){
 					fechaInicio = (String)ocultos.get(3);
 					fechaInicio=GstDate.getFormatedDateShort(this.getUserBean(request).getLanguage(),fechaInicio);
-					fechaFin = (String)visibles.get(1);		
+					fechaFin = (String)visibles.get(2);		
 					//Almacenamos los datos necesarios en el request
 					miForm.setFechaInicio(fechaInicio);
 					miForm.setFechaFin(fechaFin);
@@ -405,15 +405,15 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 					}
 				}else{ //Para el caso de que vengamos desde Volantes
 					//Recogemos los datos del formulario
-					fechaInicio = (String)visibles.get(6);
-					fechaFin = (String)visibles.get(7);			
-					numeroColegiado = (String)visibles.get(3);
+					fechaInicio = (String)visibles.get(7);
+					fechaFin = (String)visibles.get(8);			
+					numeroColegiado = (String)visibles.get(4);
 
 					//Almacenamos los datos necesarios en el request
 					miForm.setFechaInicio(fechaInicio);
 					miForm.setFechaFin(fechaFin);
 					request.setAttribute("NUMEROCOLEGIADO",numeroColegiado);
-					request.setAttribute("NOMBRE",(String)visibles.get(4));
+					request.setAttribute("NOMBRE",(String)visibles.get(5));
 
 					//Datos para consultar las guardias:			
 					idCalendario = (String)ocultos.get(0);

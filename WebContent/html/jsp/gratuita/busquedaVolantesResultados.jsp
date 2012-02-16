@@ -248,7 +248,7 @@
 			document.forms[0].fechaInicio.value = document.getElementById(fechainicioPermuta).value;
 			document.forms[0].fechaFin.value = document.getElementById(fechafinPermuta).value;
 		}
-
+		
 		<!-- Funcion asociada a boton cambiar -->
 		function cambiar(fila) 
 		{		
