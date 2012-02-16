@@ -115,7 +115,7 @@
 			   clase="tableTitle"
 			   nombreCol="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/> ,
 			   gratuita.listarGuardias.literal.turno,facturacion.ano,gratuita.busquedaDesignas.literal.codigo,gratuita.listadoCalendario.literal.fecha,gratuita.listadoCalendario.literal.estado,gratuita.listarDesignasTurno.literal.nColegiado,expedientes.auditoria.literal.nombreyapellidos,pestana.justiciagratuitaejg.interesado,gratuita.busquedaDesignas.literal.validada,"
-			   tamanoCol="5,11,4,8,7,5,7,13,14,6,9" 
+			   tamanoCol="5,11,4,5,7,5,10,13,14,6,9" 
 			   alto="100%" 
 		       ajustePaginador="true"
 		       activarFilaSel="true" >

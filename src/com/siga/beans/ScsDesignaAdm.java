@@ -1777,6 +1777,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				String idTurno  = (String)registro.get("IDTURNO");
 				String idPersona  = (String)registro.get("IDPERSONA");
 				String idiomaletrado = (String)registro.get("IDIOMA_LETRADO");			
+				String idInstitucionOrigen = (String)registro.get("IDINSTITUCIONORIGEN");
+								
 				
 				if(isSolicitantes){						
 					Vector vDefendidos = getDefendidosDesignaSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna,idPersonaJG, idPersona);
@@ -1900,7 +1902,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			h.put(new Integer(2), idturno);
 			h.put(new Integer(3), anio);
 			h.put(new Integer(4), numero);
-
 			String sql = 
 				"Select Des.Idinstitucion, " +
 				"       Des.Idturno, " +
@@ -1931,7 +1932,9 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				"        " +
 				"       p.Nombre || ' ' || p.Apellidos1 || " +
 				"       Decode(p.Apellidos2, Null, '', ' ' || p.Apellidos2) || ' ' || " +
+				"       f_Siga_Calculoncolegiado(Let.IdinstitucionOrigen, Let.Idpersona) Letrado_Actual_Origen, " +
 				"       f_Siga_Calculoncolegiado(Let.Idinstitucion, Let.Idpersona) Letrado_Actual, " +
+				"       Let.IdinstitucionOrigen, " +
 				"       (SELECT cli.Idlenguaje FROM Cen_Cliente cli Where cli.Idinstitucion = Let.Idinstitucion And cli.Idpersona = Let.Idpersona) as Idioma_Letrado,  " +
 				"       Pant.Nombre || ' ' || Pant.Apellidos1 || " +
 				"       Decode(Pant.Apellidos2, Null, '', ' ' || Pant.Apellidos2) || ' ' || " +
@@ -2750,7 +2753,9 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		  String numeroDesigna = (String)registro.get("NUMERO");
 		  String anioDesigna = (String)registro.get("ANIO");
 		  String idTurno  = (String)registro.get("IDTURNO");
-		  String idPersona  = (String)registro.get("IDPERSONA");		 
+		  String idPersona  = (String)registro.get("IDPERSONA");
+		  String institucionOrigen  = (String)registro.get("IDINSTITUCIONORIGEN");
+		  
 		  String idTipoDesigna="";
 		  Hashtable htCodigo = new Hashtable();
 		  try{
@@ -2773,7 +2778,13 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					Hashtable htCodigo2 = new Hashtable();
 					htCodigo2.put(new Integer(1), idInstitucion);
 					htCodigo2.put(new Integer(2), (String)registro.get("IDPERSONA"));
-					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo2, "f_siga_calculoncolegiado", "NCOLEGIADO_LETRADO"));
+					if(institucionOrigen!=null && !institucionOrigen.trim().equals("")){
+						htCodigo2.put(new Integer(1), institucionOrigen);
+						htCodigo2.put(new Integer(2), (String)registro.get("IDPERSONA"));
+						helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo2, "f_siga_calculoncolegiado", "NCOLEGIADO_LETRADO"));
+					}else{
+						helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo2, "f_siga_calculoncolegiado", "NCOLEGIADO_LETRADO"));
+					}	
 				} else {
 					registro.put("NCOLEGIADO_LETRADO", " ");
 				}
@@ -2904,7 +2915,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					htCodigo.put(new Integer(5), idPersona);
 				
 				//Si no se encuentra info en cen_colegiado (Art.27) se busca en cen_nocolegiado
-				if(registro.get("NCOLEGIADO_LETRADO") != null && !((String)registro.get("NCOLEGIADO_LETRADO")).equals("")){
+				//if(registro.get("NCOLEGIADO_LETRADO") != null && !((String)registro.get("NCOLEGIADO_LETRADO")).equals("")){
+				if(institucionOrigen!=null && !institucionOrigen.trim().equals("")){
 					helperInformes.completarHashSalida(registro,getLetradoSalidaOficio(htCodigo));
 				}else{
 					helperInformes.completarHashSalida(registro,getLetradoSalidaOficioArt27(htCodigo));

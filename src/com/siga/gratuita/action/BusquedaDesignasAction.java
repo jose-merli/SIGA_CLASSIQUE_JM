@@ -64,6 +64,7 @@ import com.siga.beans.ScsJuzgadoAdm;
 import com.siga.beans.ScsJuzgadoBean;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
 import com.siga.certificados.Plantilla;
+import com.siga.general.CenVisibilidad;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -471,8 +472,6 @@ public class BusquedaDesignasAction extends MasterAction {
 			 
 				databackup.put("paginador",paginador);
 				databackup.put("datos",datos);
-
-
 
 
 			}else{	
@@ -1795,6 +1794,7 @@ public class BusquedaDesignasAction extends MasterAction {
 		String IDletradoDesig="";
 		String fechaEntrada="";
 		String nColegiado="";
+		String colegiadoOri = "";
 		Row fila;
 		// Obtenemos las relaciones de la EJG con designaciones y asistencias para mostrarlas en la busqueda
 		try{
@@ -1818,7 +1818,14 @@ public class BusquedaDesignasAction extends MasterAction {
 				if (IDletradoDesig==null || IDletradoDesig.equals("")){
 					 IDletradoDesig=" ";
 				} 
-				nColegiado =  desigAdm.getNColegiadoDesig(idInstitucion, desIdTurno,desAnio,desNumero);
+				Hashtable letradoHashtable = desigAdm.obtenerLetradoDesigna(idInstitucion,  desIdTurno,  desAnio,  desNumero);
+				String instiOrigen = UtilidadesHash.getString(letradoHashtable, "IDINSTITUCIONORIGEN");
+				if(instiOrigen!=null && !instiOrigen.trim().equals("")){
+					
+					nColegiado = UtilidadesHash.getString(letradoHashtable, "NCOLEGIADOORIGEN")+"("+CenVisibilidad.getAbreviaturaInstitucion(instiOrigen)+")";
+				}else 
+					nColegiado =  desigAdm.getNColegiadoDesig(idInstitucion, desIdTurno,desAnio,desNumero);
+				
 				if (nColegiado==null || nColegiado.equals("")){
 					 nColegiado=" ";
 				} 
