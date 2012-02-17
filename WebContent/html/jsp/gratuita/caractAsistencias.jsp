@@ -232,7 +232,7 @@ function limpiarColegiado()
 }
 
 function buscarColegiado()
-{
+{	
 	var resultado=ventaModalGeneral("busquedaClientesModalForm","G");
 	if (resultado!=undefined && resultado[0]!=undefined ){
 		
@@ -885,12 +885,11 @@ function bloquearDesbloquear(o)
 <!-- BOTONERA CON GUARDAR, RESTABLECER Y VOLVER -->
 <siga:ConjBotonesAccion botones="V,G,R" modo="<%=modo%>" clase="botonesDetalle"/>
 
-<!--  
+<!-- para la busqueda de ajax de los colegiados -->  
 <html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="" style="display:none">
 		<input type="hidden" name="actionModal" value="">
 		<input type="hidden" name="modo" value="abrirBusquedaModal">
 </html:form>
--->
 
 <iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 
