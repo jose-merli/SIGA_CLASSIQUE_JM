@@ -272,6 +272,8 @@
 		
 		<form-bean name="MantenimientoDestinatariosRetencionesForm" type="com.siga.gratuita.form.MantenimientoDestinatariosRetencionesForm" />
 		
+		<form-bean name="CaracteristicasForm" type="com.siga.gratuita.form.CaracteristicasForm" />
+		
 		
 		
     	<!-- ************************** FORMS CONSULTAS *************************
@@ -3214,6 +3216,11 @@
 			<forward name="edicionMasiva" path="/html/jsp/gratuita/edicionMasivaActa.jsp"/>
 			<forward name="edicionMasivaModal" path="/html/jsp/gratuita/edicionMasivaActaModal.jsp"/>
 		</action>
+		
+		<action path="/JGR_CaracteristicasAsistenciaLetrado" type="com.siga.gratuita.action.CaracteristicasAsistenciaAction" name="CaracteristicasForm">
+			<forward name="abrir" path="/html/jsp/gratuita/caractAsistencias.jsp"/>		
+		</action>
+		
 
 		<!-- ****************************************************************************
 -->

@@ -328,6 +328,12 @@ public class BusquedaAsistenciasAction extends MasterAction {
 		hash.put("actionE","/JGR_AsistidoAsistencia.do");
 		hash.put("esFichaColegial",sEsFichaColegial);
 		
+		//Se guardan el juzgado y la institucion_juzgado
+		//hash.put("numeroJuzgado",obj.getJuzgado().toString());
+		//hash.put("institucionJuzgado",obj.getJuzgadoIdInstitucion().toString());
+		if(obj.getIdTurno()!=null)
+			hash.put("idTurno",obj.getIdTurno().toString());
+		
 		request.setAttribute("asistencia",hash);
 
 		String esFichaColegial = miForm.getEsFichaColegial();
