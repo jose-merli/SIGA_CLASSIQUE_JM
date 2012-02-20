@@ -3090,7 +3090,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
     
 	}
 */
-	public void generarLogEnvioHT(Vector vDestinatarios,Hashtable htErrores, EnvEnviosBean envBean)
+	public void generarLogEnvioHT(Vector vDestinatarios,EnvRemitentesBean remitente,String documentos, Hashtable htErrores, EnvEnviosBean envBean)
 	throws SIGAException, ClsExceptions {
 	    
 		BufferedWriter bwOut = null;
@@ -3112,7 +3112,30 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    
 	    final String separador = ClsConstants.SEPARADOR; 
         //String sLineaCabecera = "ENVIO"+separador+"NIF/CIF"+separador+"NOMBRE"+separador+"APELLIDO 1"+separador+"APELLIDO 2"+separador+"FAX 1"+separador+"FAX 2"+separador+"MOVIL"+separador+"CORREO ELECTRONICO"+separador+"DOMICILIO"+separador+"PROVINCIA"+separador+"POBLACION"+separador+"PAIS"+separador+"MENSAJE"+separador;
-        String sLineaCabecera = "ENVIO"+separador+"NIF/CIF"+separador+"NOMBRE"+separador+"APELLIDO 1"+separador+"APELLIDO 2"+separador+"FAX 1"+separador+"FAX 2"+separador+"MOVIL"+separador+"CORREO ELECTRONICO"+separador+"DOMICILIO"+separador+"PROVINCIA"+separador+"POBLACION"+separador+"PAIS"+separador+"MENSAJE"+separador+"TEL.DESPACHO"+separador;
+        String cadRemitente = "";
+        String txtRemitente = "";
+        if(remitente!=null){
+        	cadRemitente = "REMITENTE"+separador;
+        	if(remitente.getDescripcion()!=null && !remitente.getDescripcion().equals("")){
+	        	
+	     	    txtRemitente = remitente.getDescripcion(); 
+        	}else{
+        		CenPersonaAdm personaAdm = new CenPersonaAdm(this.usrbean);
+	     	    Hashtable htPk = new Hashtable();
+	     	    htPk.put(CenPersonaBean.C_IDPERSONA,remitente.getIdPersona());
+	     	  	Vector vPersona = personaAdm.select(htPk);
+	     	    CenPersonaBean personaBean = (CenPersonaBean) vPersona.firstElement();
+	     	    txtRemitente = personaBean.getNombre()+" "+personaBean.getApellido1();
+        		
+        	}
+        }
+        
+	    String sLineaCabecera = "ENVIO"+separador+"DESCRIPCION"+separador+"FECHA CREACION"+separador+cadRemitente+"NIF/CIF"+separador+"NOMBRE"+separador+"APELLIDO 1"+separador+"APELLIDO 2"+separador+"FAX 1"+separador+"FAX 2"+separador+"MOVIL"+separador+"TEL.DESPACHO"+separador+"CORREO ELECTRONICO"+separador+"DOMICILIO"+separador+"PROVINCIA"+separador+"POBLACION"+separador+"PAIS"+separador+"MENSAJE"+separador+"DOCUMENTOS"+separador;
+        //envBean.getDescripcion()
+        //envBean.getFecha Creacion envio
+        //Remitente
+        //envBean.getUsuMod()
+        
         CenPoblacionesAdm admPob = new CenPoblacionesAdm(this.usrbean);
         CenProvinciaAdm admPro = new CenProvinciaAdm(this.usrbean);
         CenPaisAdm admPais = new CenPaisAdm(this.usrbean);
@@ -3133,6 +3156,12 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	            sLineaCabecera = sLineaCabecera + "MENSAJE" + separador;
 	            */
 	            sLinea += sIdEnvio + separador;
+	            sLinea += envBean.getDescripcion() + separador;
+	            sLinea += GstDate.getFormatedDateLong("", envBean.getFechaCreacion())  + separador;
+	            if(remitente!=null)
+	            	sLinea += txtRemitente + separador;
+	            
+	            
 	            if(destBean.getTipoDestinatario()!=null && destBean.getTipoDestinatario().equalsIgnoreCase(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG)){
 	            	Hashtable htPer = new Hashtable();
 					htPer.put(ScsPersonaJGBean.C_IDPERSONA,destBean.getIdPersona());
@@ -3166,6 +3195,39 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	            sLinea += destBean.getFax1() + separador;
 	            sLinea += destBean.getFax2() + separador;
 	            sLinea += destBean.getMovil() + separador;
+	            GenParametrosAdm paramAdm = new GenParametrosAdm(this.usrbean);
+	    		String preferencia = paramAdm.getValor(destBean.getIdInstitucion().toString(),"ENV","TIPO_ENVIO_PREFERENTE","1");		    		
+	    		
+	    		Hashtable direcciones = new Hashtable();
+	    		EnvEnviosAdm enviosAdm = new EnvEnviosAdm(this.usrbean);        		 
+	    		CenDireccionesAdm direccionAdm = new CenDireccionesAdm(this.usrbean);
+    			direcciones=direccionAdm.getEntradaDireccionEspecifica(destBean.getIdPersona().toString(),destBean.getIdInstitucion().toString(),"2");
+    		 
+    			//si tiene direccion de tipo despacho saca el telefono1 del despacho
+    		    if (direcciones!=null && direcciones.size()>0) {		           
+    		    	Hashtable htDir = (Hashtable)direcciones;
+			    	sLinea += htDir.get(CenDireccionesBean.C_TELEFONO1)+separador;				      			       
+    		    }else {
+    		    	//si no tiene direccion de tipo despacho se busca la dirección preferente y se saca el telefono1 despacho.
+    		    		Hashtable direccion=direccionAdm.getEntradaDireccionEspecifica(destBean.getIdPersona().toString(),destBean.getIdInstitucion().toString(),preferencia);		    				
+	    				if (direccion!=null && direccion.size()!=0) {
+	    					Hashtable htDir = (Hashtable)direccion;
+	    					sLinea += htDir.get(CenDireccionesBean.C_TELEFONO1)+separador;		    					
+	    				}else {    					
+	    					//si no tiene ni direccion de tipo despacho, ni una dirección preferente se saca el telefono1 de la primera dirección que se encuentre.
+	    					direccion=direccionAdm.getEntradaDireccionEspecifica(destBean.getIdPersona().toString(),destBean.getIdInstitucion().toString(),"");
+	    					if (direccion!=null || direccion.size()!=0) {
+	    					Hashtable htDir = (Hashtable)direccion;
+	    					//String telefono=htDir.get(CenDireccionesBean.C_TELEFONO1).toString();
+	    					if ((htDir.get(CenDireccionesBean.C_TELEFONO1))!=null){
+	    						sLinea += htDir.get(CenDireccionesBean.C_TELEFONO1)+separador;	
+	    					}else{
+	    						sLinea += " " +separador;
+	    					}
+	    					
+	    					}
+	    				}        		    	
+    		    }
 	            sLinea += destBean.getCorreoElectronico() + separador;
 	            sLinea += UtilidadesString.sustituirParaExcell(destBean.getDomicilio()) + separador;
 	            if(destBean.getProvincia()!=null && !destBean.getProvincia().trim().equals("") )
@@ -3190,40 +3252,10 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	           
 	                String err = (htErrores.get(destBean)!=null)?"ERROR: "+(String)htErrores.get(destBean):"OK";
         		    sLinea = sLinea + UtilidadesString.sustituirParaExcell(UtilidadesString.getMensajeIdioma("ES", err)) + separador; 
+        		    if(documentos!=null)
+        		    	sLinea += documentos + separador;
         		
-        			GenParametrosAdm paramAdm = new GenParametrosAdm(this.usrbean);
-		    		String preferencia = paramAdm.getValor(destBean.getIdInstitucion().toString(),"ENV","TIPO_ENVIO_PREFERENTE","1");		    		
-		    		
-		    		Hashtable direcciones = new Hashtable();
-		    		EnvEnviosAdm enviosAdm = new EnvEnviosAdm(this.usrbean);        		 
-		    		CenDireccionesAdm direccionAdm = new CenDireccionesAdm(this.usrbean);
-        			direcciones=direccionAdm.getEntradaDireccionEspecifica(destBean.getIdPersona().toString(),destBean.getIdInstitucion().toString(),"2");
-        		 
-        			//si tiene direccion de tipo despacho saca el telefono1 del despacho
-        		    if (direcciones!=null && direcciones.size()>0) {		           
-        		    	Hashtable htDir = (Hashtable)direcciones;
-				    	sLinea += htDir.get(CenDireccionesBean.C_TELEFONO1)+separador;				      			       
-        		    }else {
-        		    	//si no tiene direccion de tipo despacho se busca la dirección preferente y se saca el telefono1 despacho.
-        		    		Hashtable direccion=direccionAdm.getEntradaDireccionEspecifica(destBean.getIdPersona().toString(),destBean.getIdInstitucion().toString(),preferencia);		    				
-		    				if (direccion!=null && direccion.size()!=0) {
-		    					Hashtable htDir = (Hashtable)direccion;
-		    					sLinea += htDir.get(CenDireccionesBean.C_TELEFONO1)+separador;		    					
-		    				}else {    					
-		    					//si no tiene ni direccion de tipo despacho, ni una dirección preferente se saca el telefono1 de la primera dirección que se encuentre.
-		    					direccion=direccionAdm.getEntradaDireccionEspecifica(destBean.getIdPersona().toString(),destBean.getIdInstitucion().toString(),"");
-		    					if (direccion!=null || direccion.size()!=0) {
-		    					Hashtable htDir = (Hashtable)direccion;
-		    					//String telefono=htDir.get(CenDireccionesBean.C_TELEFONO1).toString();
-		    					if ((htDir.get(CenDireccionesBean.C_TELEFONO1))!=null){
-		    						sLinea += htDir.get(CenDireccionesBean.C_TELEFONO1)+separador;	
-		    					}else{
-		    						sLinea += " " +separador;
-		    					}
-		    					
-		    					}
-		    				}        		    	
-        		    }
+        			
         		  
 	            try {
 	            	if (i==0) {
@@ -3720,7 +3752,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		String idInstitucion=envBean.getIdInstitucion().toString();
 		String pathDocumentosAdjuntos="";
 		EnvEnviosAdm envioAdm = new EnvEnviosAdm(this.usrbean);	
-			
+		StringBuffer txtDocumentos = new StringBuffer();
 		try{
 			
 			/**PathDocumentosAdjuntos, que es la dirección donde se guarda en local
@@ -3827,6 +3859,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 							nombreFicheroXX=nombre + UtilidadesString.formatea(new Integer(contadorFicheros).toString(),4,true) + tipoArchivo;
 							contadorFicheros++;							
 							File fGenerado = new File(pathArchivoGenerado);
+							txtDocumentos.append(fGenerado.getName());
+							txtDocumentos.append(",");
 							File fCopiado = new File(sCopiado);
 							fCopiado.getParentFile().mkdirs();
 							if (fGenerado.exists()) {
@@ -3865,6 +3899,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 								String direccionPlantilla=fDoc.getPath();	
 								String direccionPlantilla1=rutaAlm+ Pathdocumento;	 							  	
 								File archivo = new 	File(direccionPlantilla);	
+								txtDocumentos.append(docBean.getDescripcion());
+								txtDocumentos.append(",");
 								File f2 = new File(direccionPlantilla1);								
 								// RGG 14-07-2005 COPIO CADA DOCUMENTO ADJUNTO A LA CARPETA DE CADA IDPERSONA
 								if(archivo==null || !archivo.exists()){					    	
@@ -3955,12 +3991,12 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 
 			if (generarLog) {
 				if(existePlantilla)
-					this.generarLogEnvioHT(vDestinatarios, htErrores, envBean);
+					this.generarLogEnvioHT(vDestinatarios,null,txtDocumentos.toString(), htErrores, envBean);
 				else{
 					Vector unicoDestinatario = new Vector();
 					if(vDestinatarios!=null && vDestinatarios.size()>0)
 						unicoDestinatario.add((EnvDestinatariosBean)vDestinatarios.get(0));
-					this.generarLogEnvioHT(unicoDestinatario, htErrores, envBean);
+					this.generarLogEnvioHT(unicoDestinatario,null,txtDocumentos.toString(), htErrores, envBean);
 				}
 			}
 
@@ -4517,7 +4553,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    String nombreFicheroXX="";
 	    String nombreDestinatarioXX="";
 		Vector ficherosFax = new Vector();		
-	
+		StringBuffer documentos = new StringBuffer();
 		try{
 	        
 		    if (!envBean.getIdTipoEnvios().equals(Integer.valueOf(EnvTipoEnviosAdm.K_FAX))){
@@ -4656,6 +4692,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 //		    	        String sGenerado = sDirPdf + File.separator + idPersona + ".pdf";
 		    	    	String tipoArchivo = pathArchivoGenerado.substring(pathArchivoGenerado.lastIndexOf("."));
 		    	        File fGenerado = new File(pathArchivoGenerado);
+		    	        documentos.append(fGenerado.getName());
+		    	        documentos.append(",");
 		    	        String sCopiadoGenerado = pathDestino + File.separator + nombre + UtilidadesString.formatea(new Integer(contadorFicheros).toString(),4,true) + tipoArchivo;
 		    	        nombreFicheroXX = pathDestinoZETAFAX + File.separator + nombre + UtilidadesString.formatea(new Integer(contadorFicheros).toString(),4,true) + tipoArchivo;
 		    	        contadorFicheros++;
@@ -4683,6 +4721,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		    	        String tipoArchivo = docBean.getPathDocumento().substring(docBean.getPathDocumento().lastIndexOf("."));
 		    	        String idDoc = String.valueOf(docBean.getIdDocumento());
 		    	        File fDoc = docAdm.getFile(envBean,idDoc);
+		    	        documentos.append(docBean.getDescripcion());
+		    	        documentos.append(",");
 		    	        String sAdjunto = fDoc.getPath();
 		    	        File fAdjunto = new File(sAdjunto);
 		    	        String sCopiadoAdjunto = pathDestino + File.separator + nombre + UtilidadesString.formatea(new Integer(contadorFicheros).toString(),4,true) + tipoArchivo;
@@ -4752,7 +4792,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	        // GENERAR EL LOG SI PROCEDE
 	        /////////////////////////////
 	        if (generarLog) {
-	        	generarLogEnvioHT(vDestinatarios,htErrores, envBean);
+	        	generarLogEnvioHT(vDestinatarios,null,documentos.toString(), htErrores, envBean);
 	        }
 	
 	        // RGG Esto son errores de destinatario, se resuelven poniendo estado malo
@@ -4908,9 +4948,11 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    htPk.put(EnvEnviosBean.C_IDENVIO,envBean.getIdEnvio());
         Vector vRem = remAdm.select(htPk);
         String sFrom = "";
+        EnvRemitentesBean remBean = null;
+        StringBuffer txtDocumentos = new StringBuffer("");
         if (vRem.size()>0){
         	// obtengo la primera de la lista
-        	EnvRemitentesBean remBean = (EnvRemitentesBean) vRem.firstElement();
+        	remBean = (EnvRemitentesBean) vRem.firstElement();
 	        sFrom = remBean.getCorreoElectronico();
         }else{
         	// obtengo la de la institucion
@@ -5003,7 +5045,11 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			            
 						htDatos = admEnvio.darFormatoCampos(destBean.getIdInstitucion(), destBean.getIdEnvio(), this.usrbean.getLanguage(), htDatos,vCampos);
 			        	pathArchivoGenerado = generarDocumentoEnvioPDFDestinatario(envBean, destBean, fPlantilla,tipoArchivoPlantilla,htDatos);
-			            //Ruta donde guardamos los pdf
+			        	
+			        	String [] pathGenerado = pathArchivoGenerado.split("\\\\");  
+			        	txtDocumentos.append(pathGenerado[pathGenerado.length-1]);
+		    	        txtDocumentos.append(",");
+			        	//Ruta donde guardamos los pdf
 				        sDirPdf = getPathEnvio(envBean)+File.separator + "documentosdest";
 				    }
 	        
@@ -5131,6 +5177,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		    	        sAttachment = fDoc.getPath();
 		    	        sAttach = docBean.getPathDocumento();
 		    	        addAttachToMultipart(mixedMultipart, fDoc.getPath(), docBean.getPathDocumento());
+		    	        txtDocumentos.append(docBean.getDescripcion());
+		    	        txtDocumentos.append(",");
 		    	      
 		    	    }
 		    	    
@@ -5166,7 +5214,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
         // GENERAR EL LOG DEL ENVIO
         /////////////////////////////////////
         if (generarLog) {
-        	generarLogEnvioHT(vDestinatarios, htErrores, envBean);
+        	generarLogEnvioHT(vDestinatarios,remBean,txtDocumentos.toString(), htErrores, envBean);
         }
         
         // HAN OCURRIDO ERRORES DE DESTINATARIO
@@ -5531,7 +5579,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			// GENERAR EL LOG DEL ENVIO
 			/////////////////////////////////////
 			if (generarLog) {
-				generarLogEnvioHT(vDestinatarios, htErrores, envBean);
+				generarLogEnvioHT(vDestinatarios,null,null, htErrores, envBean);
 			}
 
 			// HAN OCURRIDO ERRORES DE DESTINATARIO
@@ -5754,7 +5802,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
         // GENERAR EL LOG DEL ENVIO
         /////////////////////////////////////
         if (generarLog) {
-        	generarLogEnvioHT(vDestinatarios, htErrores, envBean);
+        	generarLogEnvioHT(vDestinatarios, null,null, htErrores, envBean);
         }
         
         // HAN OCURRIDO ERRORES DE DESTINATARIO

@@ -1325,7 +1325,7 @@ public class Envio
 		    			envio.procesarEnvioMasivo(vDestinatarios,htErrores,false,tx);
 		    	
 		    			// yo genero el log fuera de la transaccion
-		    			envAdm.generarLogEnvioHT(vDestinatarios, htErrores, envBean);
+		    			envAdm.generarLogEnvioHT(vDestinatarios,null,null, htErrores, envBean);
 		    			
 			    		ClsLogging.writeFileLog("### PROCESADO envío AUTOMATICO " + envBean.getDescripcion() + "(" + envBean.getIdEnvio() + ") ",7);
 	
