@@ -243,7 +243,7 @@ public class BusquedaComisionesAction extends MasterAction {
 		
 		if(htCliente!=null){
 			numeroColegiadoN = (String)htCliente.get("NCOLEGIADO");
-			nombreColegiadoN = (String)htCliente.get("NOMCOLEGIADO");
+			nombreColegiadoN = (String)htCliente.get("NOMBRECOLEGIADO");
 			apellidosColegiadoN = (String)htCliente.get("APECOLEGIADO");
 			idPersonaN = (String)htCliente.get("IDPERSONA");
 			miForm.setNombreColegiadoN(nombreColegiadoN);

@@ -1409,7 +1409,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			String idPersona = null;
 			
 			if(htCliente!=null){
-				colegiadoNombre = (String)htCliente.get("NOMCOLEGIADO")+" " +(String)htCliente.get("APECOLEGIADO");
+				colegiadoNombre = (String)htCliente.get("NOMCOLEGIADO");
 				idPersona = (String)htCliente.get("IDPERSONA");
 				
 			}else{

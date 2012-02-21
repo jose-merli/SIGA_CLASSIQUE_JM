@@ -4295,7 +4295,9 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	    Vector salida = new Vector();
 	    Hashtable aux = new Hashtable();
 	    try {
-		    String sql = "SELECT distinct P.IDPERSONA, P.NOMBRE as NOMCOLEGIADO,P.APELLIDOS1 || ' ' || P.APELLIDOS2 as APECOLEGIADO, COL.NCOLEGIADO FROM CEN_PERSONA P, CEN_CLIENTE C, CEN_COLEGIADO COL" +
+	   
+	    	
+		    String sql = "SELECT distinct P.IDPERSONA, P.NOMBRE || ' ' || P.APELLIDOS1 || ' ' || P.APELLIDOS2 as NOMCOLEGIADO, P.NOMBRE as NOMBRECOLEGIADO,P.APELLIDOS1 || ' ' || P.APELLIDOS2 as APECOLEGIADO, COL.NCOLEGIADO FROM CEN_PERSONA P, CEN_CLIENTE C, CEN_COLEGIADO COL" +
 		        	" WHERE P.IDPERSONA=C.IDPERSONA" +
 		        	" AND C.IDPERSONA=COL.IDPERSONA" +
 		        	" AND C.IDINSTITUCION=COL.IDINSTITUCION" +

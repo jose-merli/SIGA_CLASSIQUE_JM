@@ -447,9 +447,6 @@ public class CaracteristicasAsistenciaAction extends MasterAction
 		if(htCliente!=null)
 		{
 			colegiadoNombre = (String)htCliente.get("NOMCOLEGIADO");
-			String apeColegiado = (String)htCliente.get("APECOLEGIADO");
-			if(apeColegiado!=null && !(apeColegiado.equals("")))
-				colegiadoNombre = colegiadoNombre +" "+ apeColegiado;
 			
 			idPersona = (String)htCliente.get("IDPERSONA");
 			
