@@ -3806,7 +3806,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			
 				
 				for (int l=0;l<vDestinatarios.size();l++){
-
+					txtDocumentos = new StringBuffer();
 					EnvDestinatariosBean destBean = (EnvDestinatariosBean) vDestinatarios.elementAt(l);
 					actualizaPaisDestinatario(destBean, htPaises);
 					actualizaPoblacionDestinatario(destBean, htPoblaciones);
@@ -4629,7 +4629,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    Hashtable htProvincia = new Hashtable();
 	    	    Hashtable htPaises = new Hashtable();
 	        for (int l=0;l<vDestinatarios.size();l++){
-
+	        	documentos = new StringBuffer();
 	        	EnvDestinatariosBean destBean = (EnvDestinatariosBean) vDestinatarios.elementAt(l);
 	        	actualizaPaisDestinatario(destBean, htPaises);
 		        actualizaPoblacionDestinatario(destBean, htPoblaciones);
@@ -5019,6 +5019,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
     	    Hashtable htPaises = new Hashtable();
 	        for (int l=0;l<vDestinatarios.size();l++) {
 
+	        	txtDocumentos = new StringBuffer();
 	        	EnvDestinatariosBean destBean = (EnvDestinatariosBean) vDestinatarios.elementAt(l);
 	            actualizaPaisDestinatario(destBean, htPaises);
 	            actualizaPoblacionDestinatario(destBean, htPoblaciones);
@@ -5046,9 +5047,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 						htDatos = admEnvio.darFormatoCampos(destBean.getIdInstitucion(), destBean.getIdEnvio(), this.usrbean.getLanguage(), htDatos,vCampos);
 			        	pathArchivoGenerado = generarDocumentoEnvioPDFDestinatario(envBean, destBean, fPlantilla,tipoArchivoPlantilla,htDatos);
 			        	
-			        	String [] pathGenerado = pathArchivoGenerado.split("\\\\");  
-			        	txtDocumentos.append(pathGenerado[pathGenerado.length-1]);
-		    	        txtDocumentos.append(",");
+
 			        	//Ruta donde guardamos los pdf
 				        sDirPdf = getPathEnvio(envBean)+File.separator + "documentosdest";
 				    }
@@ -5160,6 +5159,10 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			        /////////////////////////////////////
 		    	    /* archivo pdf: [idPersona].pdf */
 		    	    if (pathArchivoGenerado!=null){
+			        	String [] pathGenerado = pathArchivoGenerado.split("\\\\");  
+			        	txtDocumentos.append(pathGenerado[pathGenerado.length-1]);
+		    	        txtDocumentos.append(",");
+		    	    	
 		    	    	sAttachment = pathArchivoGenerado;
 			    	    sAttach = pathArchivoGenerado.substring(pathArchivoGenerado.lastIndexOf(File.separator)+1);
 			    	    addAttachToMultipart(mixedMultipart, pathArchivoGenerado, sAttach);
