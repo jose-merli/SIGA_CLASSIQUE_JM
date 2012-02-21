@@ -17,7 +17,6 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.tools.ant.taskdefs.Concat;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
