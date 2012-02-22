@@ -112,7 +112,7 @@ public class Articulo
 			
 			if (claseArticulo == Articulo.CLASE_SERVICIO) {
 				PysServiciosInstitucionAdm pAdm = new PysServiciosInstitucionAdm (usr);
-				Hashtable servicio = pAdm.getServicio (idInstitucion, idArticulo, idArticuloInstitucion, idTipo);
+				Hashtable servicio = pAdm.getServicioPrecio (idInstitucion, idArticulo, idArticuloInstitucion, idTipo);
 				this.setIdArticuloDescripcion(UtilidadesHash.getString(servicio, "DESCRIPCION_SERVICIO"));
 				this.setIdTipoDescripcion(UtilidadesHash.getString(servicio, "DESCRIPCION_TIPO"));
 				this.setIdArticuloInstitucionDescripcion(UtilidadesHash.getString(servicio, "DESCRIPCION_S_INSTITUCION"));

@@ -389,7 +389,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 					//if (!valor.equalsIgnoreCase("0#0#0#0#")){
 					if (!valor.equalsIgnoreCase("-1")){
 						
-						String datosPrecio[] =  UtilidadesString.split(valor, "#");
+						String datosPrecio[] =  UtilidadesString.splitIgual(valor, "#");
 						
 						// RGG cambio para 10g
 						String diezg = datosPrecio[0];
@@ -412,7 +412,11 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 							UtilidadesHash.set(a, "SERVICIO_DESCRIPCION_PERIODICIDAD", datosPrecio[4]);
 						}
 						
-						UtilidadesHash.set(a, "SERVICIO_DESCRIPCION_PRECIO", datosPrecio[5]);
+						if (datosPrecio.length == 6) {
+							datosPrecio[5] = UtilidadesHash.getString(a, "CONCEPTO") + " " + datosPrecio[5];
+							UtilidadesHash.set(a, "CONCEPTO", datosPrecio[5]);
+							UtilidadesHash.set(a, "SERVICIO_DESCRIPCION_PRECIO", datosPrecio[5]);
+						}
 					}
 
 					//Consulto si la baja ha sido solicitada:

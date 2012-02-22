@@ -32,7 +32,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
@@ -233,6 +232,37 @@ public class UtilidadesString {
 		return sCadena;
 	}
 
+	/**
+	 * Funcion que devuelve un array de cadenas, partiendo de una cadena de caracteres que se separara
+	 * por la cadena especificada, el array de cadenas de caracteres se devolveran según se envien, es decir
+	 * sin pasarlas a mayúsculas o a minúsculas
+	 * @param cadena. Cadena de Caracteres completa
+	 * @param comodin. Separador de la cadena en diferentes cadenas
+	 * 
+	 * Ejemplo Entrada: "1#El Campo#Obtenido"
+	 *         Salida:  1
+	 *                  El Campo
+	 *                  Obtenido
+	 * @return Array de cadenas
+	 */	
+	
+	static public String[] splitIgual(String cadena, String comodin){
+
+		String[] sCadena = null;
+		if ((cadena == null) || cadena.equals(""))
+			return sCadena;
+		
+		StringTokenizer tokens = new StringTokenizer(cadena, comodin);
+		int nCadena = tokens.countTokens();
+	    sCadena = new String[nCadena];
+	    int i=0;
+	    while(tokens.hasMoreTokens()){
+	       sCadena[i]=tokens.nextToken().trim();	      
+	       i++;
+	    }
+		return sCadena;
+	}	
+	
 	static public String[] splitNormal(String cadena, String comodin){
 
 		String[] sCadena = null;
