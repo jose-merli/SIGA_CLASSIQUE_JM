@@ -2918,9 +2918,9 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				//Si no se encuentra info en cen_colegiado (Art.27) se busca en cen_nocolegiado
 				//if(registro.get("NCOLEGIADO_LETRADO") != null && !((String)registro.get("NCOLEGIADO_LETRADO")).equals("")){
 				if(institucionOrigen!=null && !institucionOrigen.trim().equals("")){
-					helperInformes.completarHashSalida(registro,getLetradoSalidaOficio(htCodigo));
-				}else{
 					helperInformes.completarHashSalida(registro,getLetradoSalidaOficioArt27(htCodigo));
+				}else{
+					helperInformes.completarHashSalida(registro,getLetradoSalidaOficio(htCodigo));
 				}
 				String sexoLetrado  = (String)registro.get("SEXO_LETRADO_SINTRADUCIR");				
 				if (sexoLetrado!=null && !sexoLetrado.trim().equals("")){
