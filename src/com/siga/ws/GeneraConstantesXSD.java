@@ -2,9 +2,7 @@ package com.siga.ws;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,19 +10,25 @@ import java.util.List;
 
 public class GeneraConstantesXSD {
 	
+	private static String schema = "USCGAE2";
+	
 	public static void main (String[] args) throws Exception {
 		
 
 //		String url = "jdbc:oracle:thin:pcajg/pcajg@127.0.0.1:1521:XE";
 		String url = "jdbc:oracle:thin:uscgae2/uscgae2@192.168.11.55:1521:SIGADES";
+		
+		
+		
+		
 //		String url = "jdbc:oracle:thin:pcajg/pcajg@192.168.11.55:1521:SIGADES";
 		
 		Class.forName("oracle.jdbc.driver.OracleDriver");
 		Connection conn = DriverManager.getConnection(url);
 
 		//PCAJG 
-		String[] vistas = new String[]{"V_PCAJG_EJG", "V_PCAJG_ABOGADOSDESIGNADOS", "V_PCAJG_CONTRARIOS", "V_PCAJG_DOCUMENTACIONEXP_F", "V_PCAJG_DOCUMENTACIONEXP_DS"
-				, "V_PCAJG_FAMILIARES", "V_PCAJG_MARCASEXPEDIENTES", "V_PCAJG_DELITOS"};
+//		String[] vistas = new String[]{"V_PCAJG_EJG", "V_PCAJG_ABOGADOSDESIGNADOS", "V_PCAJG_CONTRARIOS", "V_PCAJG_DOCUMENTACIONEXP_F", "V_PCAJG_DOCUMENTACIONEXP_DS"
+//				, "V_PCAJG_FAMILIARES", "V_PCAJG_MARCASEXPEDIENTES", "V_PCAJG_DELITOS"};
 		
 		//PAMPLONA 2055
 //		String[] vistas = new String[]{"v_ws_2055_archivo","v_ws_2055_ejg","v_ws_2055_persona"};
@@ -35,6 +39,10 @@ public class GeneraConstantesXSD {
 		
 		//PAIS VASCO GUIPUZKOA
 //		String[] vistas = new String[]{"V_WS_2032_EJG", "V_WS_2032_SOLICITANTES", "V_WS_2032_PROFDESIG"};
+		
+		//ALCALA 2003
+//		String[] vistas = new String[]{"V_WS_JE_2003_DESIGNA"};
+		String[] vistas = new String[]{"V_WS_2003_ACTUALIZA_ABOGADO"};
 		
 		List arrayCampos = new ArrayList(); 
 		
@@ -64,23 +72,17 @@ public class GeneraConstantesXSD {
 	private static void extraerCampos(Connection conn, String vista, List arrayCampos) throws Exception {
 		String sql = "SELECT * FROM " + vista;		
 
-		PreparedStatement ps = conn.prepareStatement(sql);
-		ResultSet rs = null;
+//		PreparedStatement ps = 
+		ResultSet rs = conn.getMetaData().getColumns(conn.getCatalog(), schema, vista, null);
 		
-		try {
-			rs = ps.executeQuery();
-		} catch (SQLException e){
-			System.err.println(sql);
-			throw e;
-		}
 		
 		System.out.println("");			
 		System.out.println("     /***** CAMPOS DE LA VISTA " + vista + " ****/");
 		System.out.println("");
 		System.out.println("	public final String " + vista + " = \"" + vista + "\";");
 		System.out.println("");
-		for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
-			String column = rs.getMetaData().getColumnName(i);
+		while (rs.next()) {
+			String column = rs.getString("COLUMN_NAME");
 			if (!arrayCampos.contains(column)) {
 				arrayCampos.add(column);
 				System.out.println("	public final String " + column + " = \"" + column + "\";");	
@@ -91,7 +93,6 @@ public class GeneraConstantesXSD {
 		System.out.println("");
 			
 		rs.close();
-		ps.close();
 	}
 
 }
