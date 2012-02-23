@@ -145,7 +145,8 @@
 %> 											
 								<tr class="listaNonEdit">
 									<td>
-				  					<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%>
+				  					<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%>&nbsp;
+			  						<%=UtilidadesString.mostrarDatoJSP(a.getDescripcionPrecio())%>
 				  				</td>					  				
 				  				<td>
 				  					<%=a.getCantidad()%>
@@ -244,7 +245,8 @@
 	%> 											
 									<tr class="listaNonEdit">
 										<td>
-					  					<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%>
+					  					<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%>&nbsp;
+			  							<%=UtilidadesString.mostrarDatoJSP(a.getDescripcionPrecio())%>
 					  				</td>					  				
 					  				<td>
 					  					<%=a.getCantidad()%>

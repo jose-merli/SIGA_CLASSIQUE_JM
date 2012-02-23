@@ -701,7 +701,8 @@
 			  					
 				  					<input type='hidden' name='nombreArticulo<%=String.valueOf(fila)%>' value='<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%>'>
 				  					
-			  					<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%>
+			  					<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%>&nbsp;
+			  					<%=UtilidadesString.mostrarDatoJSP(a.getDescripcionPrecio())%>
 			  				</td>
 			  				<td>	
 	<%

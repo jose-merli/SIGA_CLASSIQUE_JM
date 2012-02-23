@@ -294,7 +294,7 @@
 		  									<%=UtilidadesString.mostrarDatoJSP(hash.get(PysProductosSolicitadosBean.C_IDPETICION))%>  										 																				
 		  								</td>  								
 		  								<td>
-												<%=UtilidadesString.mostrarDatoJSP(hash.get("CONCEPTO"))%>										
+												<%=UtilidadesString.mostrarDatoJSP(hash.get("CONCEPTO"))%>								
 											</td>
 		  								<td>
 		  									<%=UtilidadesString.mostrarDatoJSP(hash.get("FORMAPAGO"))%>  														
@@ -404,7 +404,7 @@
 		  									<%=UtilidadesString.mostrarDatoJSP(hash.get(PysServiciosSolicitadosBean.C_IDPETICION))%>  																													
 		  								</td> 
 		  								<td>
-												<%=UtilidadesString.mostrarDatoJSP(hash.get("CONCEPTO"))%>										
+												<%=UtilidadesString.mostrarDatoJSP(hash.get("CONCEPTO"))%>											
 											</td>
 		  								<td>
 		  									<%=UtilidadesString.mostrarDatoJSP(hash.get("FORMAPAGO"))%>  																

@@ -548,7 +548,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 						String aux = (String)((Hashtable) precioAux.get(0)).get("PRECIO_SERVICIO");
 						if (aux != null && !"-1".equals(precioAux)){
 							precio = new Double(aux.split("#")[0]);
-						}			
+						}
 					}
 					double importeAnticipadoTarjeta = new Double(""+servicioBean.getCantidad()).doubleValue() * (precio.doubleValue() + ( (precio.doubleValue()*iva.floatValue()) / 100 ));
 					suscripcionBean.setImporteAnticipado(new Double(importeAnticipadoTarjeta));	
@@ -903,6 +903,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 				UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_IDPRECIOSSERVICIOS, a.getPrecio());
 				UtilidadesHash.set(hash, "IVA" , a.getIdIva());		
 				UtilidadesHash.set(hash, "PERIODICIDAD" , a.getPeriodicidad());
+				UtilidadesHash.set(hash, "SERVICIO_DESCRIPCION_PRECIO" , a.getDescripcionPrecio());
 			} else {
 				return null;
 			}			

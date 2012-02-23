@@ -239,6 +239,7 @@ public class CarroCompra
 		a.setPrecio(UtilidadesHash.getDouble(hash, "VALOR"));
 		a.setIdPeriodicidad(UtilidadesHash.getInteger(hash,"SERVICIO_IDPERIODICIDAD"));		
 		a.setPeriodicidad(UtilidadesHash.getString(hash, "SERVICIO_DESCRIPCION_PERIODICIDAD"));
+		a.setDescripcionPrecio(UtilidadesHash.getString(hash, "SERVICIO_DESCRIPCION_PRECIO"));
 		return this.insertarArticulo(a);		
 	}
 
@@ -573,8 +574,7 @@ public class CarroCompra
 						// RGG cambio para 10g
 						String diezg = datosPrecio[0];
 						diezg = diezg.replaceAll(",",".");
-						precio = new Double(diezg);
-						//precio = new Double(datosPrecio[0]);
+						precio = new Double(diezg);			
 					}
 				}
 			}
@@ -613,7 +613,7 @@ public class CarroCompra
 					
 					// "-1" --> Error no existen datos en la tabla Pys_ServicioInstitucion
 					if (!valor.equalsIgnoreCase("-1")){
-						String datosPrecio[] =  UtilidadesString.split(valor, "#");
+						String datosPrecio[] =  UtilidadesString.splitIgual(valor, "#");
 						// RGG cambio para 10g
 						String diezg = datosPrecio[0];
 						diezg = diezg.replaceAll(",",".");
@@ -626,6 +626,12 @@ public class CarroCompra
 						if (datosPrecio.length == 5) {
 							UtilidadesHash.set(hash, "SERVICIO_DESCRIPCION_PERIODICIDAD", datosPrecio[4]);
 						}
+						
+						
+						if (datosPrecio.length == 6) {
+							UtilidadesHash.set(hash, "SERVICIO_DESCRIPCION_PRECIO", datosPrecio[5]);
+						}								
+						
 					}
 					resultados.add(hash);
 				}

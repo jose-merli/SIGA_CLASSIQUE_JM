@@ -41,6 +41,8 @@ public class Articulo
 	private int cantidad;
 	private Integer idFormaPago;
 	private String formaPago;
+	private String descripcionPrecio;
+	
 	
 	private String momentoCargo;
 
@@ -112,7 +114,7 @@ public class Articulo
 			
 			if (claseArticulo == Articulo.CLASE_SERVICIO) {
 				PysServiciosInstitucionAdm pAdm = new PysServiciosInstitucionAdm (usr);
-				Hashtable servicio = pAdm.getServicioPrecio (idInstitucion, idArticulo, idArticuloInstitucion, idTipo);
+				Hashtable servicio = pAdm.getServicio (idInstitucion, idArticulo, idArticuloInstitucion, idTipo);
 				this.setIdArticuloDescripcion(UtilidadesHash.getString(servicio, "DESCRIPCION_SERVICIO"));
 				this.setIdTipoDescripcion(UtilidadesHash.getString(servicio, "DESCRIPCION_TIPO"));
 				this.setIdArticuloInstitucionDescripcion(UtilidadesHash.getString(servicio, "DESCRIPCION_S_INSTITUCION"));
@@ -463,4 +465,14 @@ public class Articulo
 	public void setIdIva(Float idIva) {
 		this.idIva = idIva;
 	}
+
+	public String getDescripcionPrecio() {
+		return descripcionPrecio;
+	}
+
+	public void setDescripcionPrecio(String descripcionPrecio) {
+		this.descripcionPrecio = descripcionPrecio;
+	}
+	
+	
 }

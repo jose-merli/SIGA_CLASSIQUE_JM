@@ -1474,6 +1474,8 @@ public class SolicitudCompraAction extends MasterAction{
 				//Otros datos:
 				UtilidadesHash.set(hash, "DESCRIPCION_ARTICULO", articulo.getIdArticuloInstitucionDescripcion());
 				
+				UtilidadesHash.set(hash, "SERVICIO_DESCRIPCION_PRECIO", articulo.getDescripcionPrecio());
+				
 				PysFormaPagoAdm formaPagoAdm = new PysFormaPagoAdm(this.getUserBean(request));
 			     Hashtable hFormaPago =new Hashtable();
 			     hFormaPago.put(PysFormaPagoBean.C_IDFORMAPAGO,articulo.getIdFormaPago());
@@ -1715,7 +1717,7 @@ public class SolicitudCompraAction extends MasterAction{
 			UsrBean usr = this.getUserBean(request);
 			Long idPeticion=null; 
 			String idInstitucion=usr.getLocation();
-			SolicitudCompraForm solicitudCompraForm = (SolicitudCompraForm)formulario;
+			
 			String idPeticionParametro=request.getParameter("idPeticionParametro");
 			if (idPeticionParametro!=null && !idPeticionParametro.equals("")) {
 			    idPeticion = new Long(idPeticionParametro);   
