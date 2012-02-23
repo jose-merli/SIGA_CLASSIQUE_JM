@@ -2663,17 +2663,17 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    	}
 		   
 		        //throw new SIGAException("messages.facturacionRapida.error.facturado");
-			    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 //		        ReadProperties rp = new ReadProperties("SIGA.properties");
-		        String rutaAlmacen = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava")+rp.returnProperty("facturacion.directorioFacturaPDFJava");
-		        String barraAlmacen = "";
-		        String nombreFicheroAlmacen = "";
-		        if (rutaAlmacen.indexOf("/") > -1){ 
-		        	barraAlmacen = "/";
-		        }
-		        if (rutaAlmacen.indexOf("\\") > -1){ 
-		        	barraAlmacen = "\\";
-		        }
+//		        String rutaAlmacen = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava")+rp.returnProperty("facturacion.directorioFacturaPDFJava");
+//		        String barraAlmacen = "";
+//		        String nombreFicheroAlmacen = "";
+//		        if (rutaAlmacen.indexOf("/") > -1){ 
+//		        	barraAlmacen = "/";
+//		        }
+//		        if (rutaAlmacen.indexOf("\\") > -1){ 
+//		        	barraAlmacen = "\\";
+//		        }
 		        
 		        ////////////////////////////
 		        // Antes:
@@ -2711,30 +2711,32 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			  			if (htCol!=null && htCol.size()>0) {
 			  			    nColegiado = (String)htCol.get("NCOLEGIADO_LETRADO");
 			  			}	
-				        nombreFicheroAlmacen = UtilidadesString.validarNombreFichero(nColegiado+"-"+nombreFactura +".pdf");
-				        rutaAlmacen += barraAlmacen + idInstitucion + barraAlmacen + fac.getIdSerieFacturacion() + "_" + fac.getIdProgramacion() + barraAlmacen + nombreFicheroAlmacen;
+//				        nombreFicheroAlmacen = UtilidadesString.validarNombreFichero(nColegiado+"-"+nombreFactura +".pdf");
+//				        rutaAlmacen += barraAlmacen + idInstitucion + barraAlmacen + fac.getIdSerieFacturacion() + "_" + fac.getIdProgramacion() + barraAlmacen + nombreFicheroAlmacen;
 				        
 				        /**********************/
-				        File directorio1 = new File(rutaAlmacen);// Si el fichero no existe en el directorio sRutaJava se genera
-			  			if (directorio1==null || !directorio1.exists()){
+//				        File directorio1 = new File(rutaAlmacen);// Si el fichero no existe en el directorio sRutaJava se genera
+//			  			if (directorio1==null || !directorio1.exists()){
 						 File filePDF = inf.generarFactura(request,lenguaje.toUpperCase(),this.getUserBean(request).getLocation(),fac.getIdFactura(),nColegiado);
 							 if (filePDF==null) {
 							    throw new ClsExceptions("Error al generar la factura. Fichero devuelto es nulo.");				
 							} else {
+								request.setAttribute("nombreFichero", filePDF.getName());
+								request.setAttribute("rutaFichero", filePDF.getAbsolutePath());
+								request.setAttribute("borrarFichero", "true");
 								correcto = true;
-		        	}
-		        }
+							}
+		        		
 			  			/*****************/
 		        	}
 		        }
 		        ////////////////////////////
 		        
-				File fileFAC = new File(rutaAlmacen);
-			    if (!fileFAC.exists())  {
-			        throw new SIGAException("messages.general.error.ficheroNoExiste");
-			    }
-		        request.setAttribute("nombreFichero", nombreFicheroAlmacen);
-				request.setAttribute("rutaFichero", rutaAlmacen);			
+//				File fileFAC = new File(rutaAlmacen);
+//			    if (!fileFAC.exists())  {
+//			        throw new SIGAException("messages.general.error.ficheroNoExiste");
+//			    }
+		        			
 				return "descargaFichero";
 		    }
 		   
@@ -2853,6 +2855,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			    }
 			    request.setAttribute("nombreFichero", filePDF.getName());
 				request.setAttribute("rutaFichero", filePDF.getPath());			
+				request.setAttribute("borrarFichero", "true");
 				salida = "descargaFichero";
 			} else {
 			    ArrayList ficherosPDF= new ArrayList();

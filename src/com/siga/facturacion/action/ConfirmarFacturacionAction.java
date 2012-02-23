@@ -223,8 +223,12 @@ public class ConfirmarFacturacionAction extends MasterAction{
 
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 //			ReadProperties rp = new ReadProperties("SIGA.properties");
-			sRutaTemporal = rp.returnProperty("sjcs.directorioFisicoTemporalSJCSJava") +
-			rp.returnProperty("facturacion.directorioTemporalFacturasJava");
+		    
+		    
+		    
+		    
+		    sRutaTemporal = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava") +
+			rp.returnProperty("facturacion.directorioFacturaPDFJava");
 
 			sNombreFichero = idSerieFacturacion+"_"+idProgramacion;
 			String sExtension = ".zip";
@@ -248,21 +252,6 @@ public class ConfirmarFacturacionAction extends MasterAction{
 					}else{
 						ClsLogging.writeFileLog("NO EXISTE EL ZIP, SE PASA A PROGRAMAR SU GENERACION",10);
 						generarFacturaSolo(mapping, formulario, request, response);
-//						SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoRapido);
-						
-						/*FacFacturacionProgramadaBean factBean = new FacFacturacionProgramadaBean();
-						factBean.setIdInstitucion(Integer.valueOf(idInstitucion));
-						factBean.setIdSerieFacturacion(Long.valueOf(idSerieFacturacion));
-						factBean.setIdProgramacion(Long.valueOf(idProgramacion));
-						// Cambiando esto podemos generar el envio, "1","1","1"
-						factBean.setRealizarEnvio("0");
-						factBean.setGenerarPDF("1");
-						factBean.setEnvio("0");
-						Hashtable hash = new Hashtable();
-						hash.put("REQUEST", request);
-						hash.put("FACFACTURACIONPROGRAMADABEAN", factBean);*/
-						
-						//SIGASvlProcesoAutomaticoRapido.NotificarAhora(hash);
 						
 						Hashtable datosProceso = new Hashtable();
 						
@@ -289,7 +278,6 @@ public class ConfirmarFacturacionAction extends MasterAction{
 
 			request.setAttribute("nombreFichero", sNombreFichero);
 			request.setAttribute("rutaFichero", sRutaTemporal+sNombreFichero);
-//			request.setAttribute("borrarFichero", "true");
 		}catch(SIGAException e){	
 			throw e;
 		} catch (Exception e) {

@@ -42,17 +42,15 @@ public class SIGASvlDownloadFile extends HttpServlet
     	if (request.getAttribute("accion") == null) {
     		FileUpload fup=new FileUpload();
             boolean isMultipart = FileUpload.isMultipartContent(request);
-            //System.out.println(isMultipart);
             if (isMultipart) accion="subir";
     	} else {
     		accion=(String)request.getAttribute("accion");
     	}
-    	//System.out.println("accion:"+accion);
     	if(accion==null || accion.equals("")){
     		descargarFichero(request,response);
     		
     	}else{
-    		uploadFichero2(request,response);
+    		uploadFichero(request,response);
     		/* La funcion descargarFichero contiene el borrado */
     	}
     	
@@ -97,19 +95,18 @@ public class SIGASvlDownloadFile extends HttpServlet
 	        	out.write(buffer, 0, len);
 	        }
 	       
-
-	        //response.flushBuffer();
-
 	        ClsLogging.writeFileLog("SERVLET DESCARGA > OK ", request, 10);
-	        
+	        File directorio = null;
 	        if(borrarFichero){
 	        	ClsLogging.writeFileLog("SERVLET DESCARGA > Se va a borrar el fichero de la ruta "+sRutaFichero, request, 10);
 	            cerrar(out, in);
 	        	File f= new File(sRutaFichero);
+	        	directorio = f.getParentFile();
 	        	if (f.delete())
 	        		ClsLogging.writeFileLog("SERVLET DESCARGA > Fichero borrado por peticion de la ruta "+sRutaFichero, request, 10);
 	        	else
 	        		ClsLogging.writeFileLog("SERVLET DESCARGA > NO se ha borrado el fichero en la ruta "+sRutaFichero, request, 10);
+	        	
 	        }
 	        if(borrarDirectorio){
 	        	ClsLogging.writeFileLog("SERVLET DESCARGA > Se va a borrar el directorio de la ruta "+sRutaFichero, request, 10);
@@ -119,6 +116,15 @@ public class SIGASvlDownloadFile extends HttpServlet
 		        	ClsLogging.writeFileLog("SERVLET DESCARGA > Directorio borrado por peticion de la ruta "+f.getPath(), request, 10);
 		        else
 		        	ClsLogging.writeFileLog("SERVLET DESCARGA > No se ha borrado el directorio en la ruta "+f.getPath(), request, 10);
+	        }else{
+	        	if(directorio !=null && directorio.list().length==0){
+	        		cerrar(out, in);
+	        		if(directorio.delete())
+	        			ClsLogging.writeFileLog("SERVLET DESCARGA > Directorio borrado por estar vacio de la ruta "+directorio.getPath(), request, 10);
+	        		else
+			        	ClsLogging.writeFileLog("SERVLET DESCARGA > No se ha borrado el directorio en la ruta "+directorio.getPath(), request, 10);
+	        	}
+	        	
 	        }
 	        
 	        
@@ -168,99 +174,17 @@ public class SIGASvlDownloadFile extends HttpServlet
 		}
 	}
 	
-//    public void uploadFichero(HttpServletRequest req, HttpServletResponse res)
-//    throws ServletException, IOException {
-//    	InputStream inStream = null;
-//    	ObjectOutputStream outStream = null;
-//    	String sOut = "";
-//    	File inFile= null;
-//    	boolean subido = false;
-//    	String sRutaFichero = "";
-//    	try {
-//    		/* inStream = req.getInputStream(); */
-//    		
-//    	    
-//    	    
-//    		String filePath = (String)req.getAttribute("nombreFichero");
-//	    	sRutaFichero = (String)req.getAttribute("rutaFichero");
-//
-//	    	if (filePath == null) {
-//		    	filePath = (String)req.getParameter("nombreFichero");
-//	    	}
-//	    	if (sRutaFichero == null) {
-//	    		sRutaFichero = (String)req.getParameter("rutaFichero");
-//	    	}
-//	    	
-//	    	if (!(filePath.equals(""))){
-//	    		// Comprueba que se haya introducido un nombre valido antes de intentar subirlo
-//		    	String fileName = filePath.substring(filePath.lastIndexOf("\\"));
-//		    	ClsLogging.writeFileLogError("Upload Servlet: fichero: "+filePath, req, 1);
-//		    	inStream =new FileInputStream(filePath);
-//		    	sOut = writeFile(inStream, sRutaFichero, fileName, req);
-//		    	subido = true;
-//		    	
-//	    	}else{
-//	    		ClsLogging.writeFileLogError("Upload Servlet: Error: \n" + "No hay archivos para subir", req, 1);
-//	    	}
-//    	} catch (IOException ioe) {
-//    		ClsLogging.writeFileLogError("Upload Servlet: I/O Error: \n" + ioe.getMessage(), req, 1);
-//    	} catch (Exception e) {
-//    		ClsLogging.writeFileLogError("Upload Servlet: General Error: \n" + e.getMessage(), req, 1);
-//    	}
-//    	finally {
-//    		if (subido) inStream.close();
-//    		
-//    		/* El siguiente codigo permite retornar a infoDirectorio en el directorio en el que se ha añadido
-//    		   el archivo*/
-//    		req.getSession().setAttribute("mensajeOK", "Fichero grabado");
-//	    	req.getSession().setAttribute("path", sRutaFichero);
-//	    	String app=req.getContextPath();
-//	    	res.sendRedirect(app+"/html/jsp/general/infoDirectorio.jsp");
-//    	}
-//    }
-    
-    private String writeFile(InputStream inStream, String path, String fileName, HttpServletRequest req) {
-    	int BUFFER_SIZE = 8 * 1024;
-    	String result = "";
-        //ReadProperties rp=new ReadProperties("Upload.properties");
 
-        path += ClsConstants.FILE_SEP+fileName;
-        File targetFile = new File(path);
-        ClsLogging.writeFileLog("Uploading file: "+targetFile.getPath(),req,1);
-        FileOutputStream outStream = null;
-        try {
-            outStream = new FileOutputStream(targetFile);
-            int bytesRead = 0;
-            byte[] buffer = new byte[BUFFER_SIZE];
-            while ((bytesRead = inStream.read(buffer, 0, BUFFER_SIZE)) != -1) {
-                outStream.write(buffer, 0, bytesRead);
-            }
-
-            result = targetFile.getPath();
-            outStream.close();
-        } catch (IOException ex) {
-            try {
-                outStream.close();
-            } catch (Exception eee) {}
-            ClsLogging.writeFileLogError("Exception thrown while uploading files: " + ex.getMessage(),req,1);
-        }
-        return result;
-    }
     
     
-    public void uploadFichero2(HttpServletRequest req, HttpServletResponse res)	throws ServletException, IOException {
     
-	    InputStream inStream = null;
-	    ObjectOutputStream outStream = null;
-	    String sOut = "";
-	    File inFile= null;
+    public void uploadFichero(HttpServletRequest req, HttpServletResponse res)	throws ServletException, IOException {
 	    String newFolder = "";
         String fileName = "";
         try{
 
             FileUpload fup=new FileUpload();
             boolean isMultipart = FileUpload.isMultipartContent(req);
-            //System.out.println(isMultipart);
             DiskFileUpload upload = new DiskFileUpload();
 
             List items = upload.parseRequest(req);
@@ -271,7 +195,6 @@ public class SIGASvlDownloadFile extends HttpServlet
 	            FileItem item = (FileItem) iter.next();
 
 	            if (item.isFormField()) {
-	                //System.out.println("its a field="+item.getFieldName());
 	                if (item.getFieldName().equals("nombreFichero")) {
 	                    fileName = item.getString(); 
 	                } else

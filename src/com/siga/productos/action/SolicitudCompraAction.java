@@ -1526,11 +1526,8 @@ public class SolicitudCompraAction extends MasterAction{
 			String idFactura = "";
 			Long idPeticion = (Long)request.getAttribute("factRapidaIdPeticion");
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-			String rutaAlmacen = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava")+rp.returnProperty("facturacion.directorioFacturaPDFJava");
-    		rutaAlmacen += ClsConstants.FILE_SEP+idInstitucion;
-			rutaAlmacen+=ClsConstants.FILE_SEP;
-		    String rutaServidor = Plantilla.obtenerPathNormalizado(rp.returnProperty("sjcs.directorioFisicoSJCSJava")+rp.returnProperty("sjcs.directorioSJCSJava"))+
-		    	ClsConstants.FILE_SEP+idInstitucion;
+			
+		    
 		    
 		    // administradores
 			PysCompraAdm admCompra = new PysCompraAdm(this.getUserBean(request));
@@ -1574,7 +1571,6 @@ public class SolicitudCompraAction extends MasterAction{
 	        
 	        // PASO 1: OBTENER FACTURA
 	        PysCompraBean pysCompraBean = (PysCompraBean) compras.get(0);
-	        		        
 	        if (pysCompraBean.getIdFactura()==null ||pysCompraBean.getIdFactura().equals("")){// Si despues de hacer la facturacion se vuelve a pulsar el boton, mostrará la factura asociada 
 	        	// PASO 1: OBTENER SERIE CANDIDATA
 	        	String serieSeleccionada = request.getParameter("serieSeleccionada");
@@ -1635,7 +1631,8 @@ public class SolicitudCompraAction extends MasterAction{
 					return exito(mensaje,request);
 			    }
 			} else {
-				 idFactura = pysCompraBean.getIdFactura();
+				tx.commit();
+				idFactura = pysCompraBean.getIdFactura();
 			}
 				
 			// PASO 4: GENERAR PDF
@@ -1718,16 +1715,9 @@ public class SolicitudCompraAction extends MasterAction{
 			UsrBean usr = this.getUserBean(request);
 			Long idPeticion=null; 
 			String idInstitucion=usr.getLocation();
-			
+			SolicitudCompraForm solicitudCompraForm = (SolicitudCompraForm)formulario;
 			String idPeticionParametro=request.getParameter("idPeticionParametro");
-			if (idPeticionParametro==null) {
-			    idPeticionParametro=(String)request.getSession().getAttribute("idPeticionParametro");
-			    request.getSession().removeValue("idPeticionParametro");
-			} else {
-			    request.getSession().setAttribute("idPeticionParametro",idPeticionParametro);
-			}
-			
-			if (idPeticionParametro!=null && !idPeticionParametro.trim().equals("")) {
+			if (idPeticionParametro!=null && !idPeticionParametro.equals("")) {
 			    idPeticion = new Long(idPeticionParametro);   
 			} else {
 				CarroCompra carro = (CarroCompra)request.getSession().getAttribute(CarroCompraAdm.nombreCarro);

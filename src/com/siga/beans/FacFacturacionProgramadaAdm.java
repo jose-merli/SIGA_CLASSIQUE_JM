@@ -484,25 +484,26 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 	    		
 	    		
 				// Obtencion de la ruta donde se almacenan las facturas en formato PDF			
-			    String rutaAlmacen = p.returnProperty("facturacion.directorioFisicoFacturaPDFJava")+p.returnProperty("facturacion.directorioFacturaPDFJava");
-	    		String barraAlmacen = "";
-	    		String nombreFicheroAlmacen = "";
-	    		if (rutaAlmacen.indexOf("/") > -1){ 
-	    			barraAlmacen = "/";
-	    		}
-	    		if (rutaAlmacen.indexOf("\\") > -1){ 
-	    			barraAlmacen = "\\";
-	    		}    		
-	/**/   		rutaAlmacen += barraAlmacen+institucion.toString()+barraAlmacen+idserieidprogramacion;
+//			    String rutaAlmacen = p.returnProperty("facturacion.directorioFisicoFacturaPDFJava")+p.returnProperty("facturacion.directorioFacturaPDFJava");
+//	    		String barraAlmacen = "";
+//	    		String nombreFicheroAlmacen = "";
+//	    		if (rutaAlmacen.indexOf("/") > -1){ 
+//	    			barraAlmacen = "/";
+//	    		}
+//	    		if (rutaAlmacen.indexOf("\\") > -1){ 
+//	    			barraAlmacen = "\\";
+//	    		}    		
+	/**/   		
+//	    		rutaAlmacen += barraAlmacen+institucion.toString()+barraAlmacen+idserieidprogramacion;
 				
-				File rutaPDF=new File(rutaAlmacen);
+				/*File rutaPDF=new File(rutaAlmacen);
 				rutaPDF.mkdirs();
 				if (!rutaPDF.exists()) {
 	    			v.add("messages.facturacion.comprueba.noPathFacturas") ; // No existe el path de las facturas
 	    		} else 
 	    		if (!rutaPDF.canWrite()) {
 	    			v.add("messages.facturacion.comprueba.noPermisosPathFacturas"); // El path de facturas no tiene los permisos adecuados.
-	    		} 
+	    		} */
 
 				// Obtencion de la ruta de donde se obtiene la plantilla adecuada			
 			    String rutaPlantilla = p.returnProperty("facturacion.directorioFisicoPlantillaFacturaJava")+p.returnProperty("facturacion.directorioPlantillaFacturaJava");
