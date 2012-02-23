@@ -326,6 +326,9 @@
 	<logic:notEmpty name="DefinirUnidadFamiliarEJGForm"	property="peticionesEejg">
 		<logic:iterate name="DefinirUnidadFamiliarEJGForm"	property="peticionesEejg" id="peticion" indexId="indice" type="com.siga.beans.eejg.ScsEejgPeticionesBean">
 
+						
+			
+			<%indice = indice.intValue()+1; %>
 						<input type="hidden" name="peticion<%=indice%>_1" value="${peticion.idPersona}">
 						<input type="hidden" name="peticion<%=indice%>_2" value="${peticion.idInstitucion}">
 						<input type="hidden" name="peticion<%=indice%>_3" value="${peticion.idTipoEjg}">
@@ -339,9 +342,6 @@
 							  <input type="hidden" name="peticion<%=indice%>_6" value=" ">
 							</c:otherwise>
 						</c:choose>
-			
-			<%indice = indice.intValue()+1; %>
-						
 			
 				<bean:define id="elementosFila" name="peticion" property="elementosFila" type="com.siga.tlds.FilaExtElement[]"/>
 				<siga:FilaConIconos fila="<%=String.valueOf(indice.intValue())%>" botones="" elementos="<%=elementosFila%>" clase="listaNonEdit" modo="<%=modo%>" visibleBorrado="false" visibleEdicion="false"	visibleConsulta="false">
@@ -600,13 +600,13 @@
 		sub();
 		for (i = 0; i < chkPersonas.length; i++) {
 			if(chkPersonas[i].checked){
-				var idPersonaJG = document.getElementById( 'peticion' + (i) + '_1');
-				var idInstitucionEJG = document.getElementById( 'peticion' + (i) + '_2');
-				var idTipoEJG = document.getElementById( 'peticion' + (i) + '_3');
-				var anio = document.getElementById( 'peticion' + (i) + '_4');
-				var numero = document.getElementById( 'peticion' + (i) + '_5');
+				var idPersonaJG = document.getElementById( 'peticion' + (i+1) + '_1');
+				var idInstitucionEJG = document.getElementById( 'peticion' + (i+1) + '_2');
+				var idTipoEJG = document.getElementById( 'peticion' + (i+1) + '_3');
+				var anio = document.getElementById( 'peticion' + (i+1) + '_4');
+				var numero = document.getElementById( 'peticion' + (i+1) + '_5');
 				
-				var idPeticion = document.getElementById( 'peticion' + (i) + '_6');
+				var idPeticion = document.getElementById( 'peticion' + (i+1) + '_6');
 				datos = datos + idPersonaJG.value + 	','
 	   			+idInstitucionEJG.value + 	','
 	   			+idTipoEJG.value + 	','
@@ -655,7 +655,6 @@
    	
    	function esperaInfoEejg(fila){
    		selectRowPeticiones(fila);
-   		
    		var confirmar = confirm("<siga:Idioma key='gratuita.eejg.message.avisoEsperaInfo'/>");
    		if(confirmar){
    			return descargarEejg(fila);
@@ -670,9 +669,8 @@
    	}
    	
    	function esperaAdministracionesEejg(fila){
+   		selectRowPeticiones(fila);
    		alert("<siga:Idioma key="general.boton.esperaAdministracionesEejg"/>");
-   		
-   		
    	}
 	
 	function refrescarLocal()
