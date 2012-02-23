@@ -512,4 +512,22 @@ public class DocuShareHelper {
 
 	}
 	
+	public static String getTitleExpedientes(String tipoExpediente, String anioExpediente, String numExpediente) {
+		if (isNull(tipoExpediente) || isNull(anioExpediente) || isNull(numExpediente)) {
+			throw new IllegalArgumentException("Al crear o buscar una collection el tipo, año y número no pueden ser nulos o vacíos.");
+		}
+		return tipoExpediente + " " + anioExpediente + "/" +numExpediente;
+	}
+
+	private static boolean isNull(String st) {		
+		return st == null || st.trim().equals("");
+	}
+
+	public static String getTitleEJG(String anio, String numejg) {
+		if (isNull(anio) || isNull(numejg)) {
+			throw new IllegalArgumentException("Al crear o buscar una collection el año y el número de EJG no pueden ser nulos o vacíos.");
+		}
+		return  anio + "/" +numejg;
+	}
+	
 }

@@ -60,11 +60,13 @@ public class EJGDocumentacionRegTelAction extends MasterAction {
 			DocuShareHelper docuShareHelper = new DocuShareHelper(getUserBean(request));
 
 			if (scsEJGBean.getIdentificadorDS() == null || scsEJGBean.getIdentificadorDS().trim().equals("")) {
-				String title = scsEJGBean.getNumEJG() + "/" + scsEJGBean.getAnio();
-				String idDS = docuShareHelper.buscaCollectionEJG(title);
-				if (idDS != null) {
-					scsEJGBean.setIdentificadorDS(idDS);
-					admEJG.updateDirect(scsEJGBean);
+				if (scsEJGBean.getAnio() != null) {
+					String title = DocuShareHelper.getTitleEJG(scsEJGBean.getAnio().toString(), scsEJGBean.getNumEJG());
+					String idDS = docuShareHelper.buscaCollectionEJG(title);
+					if (idDS != null) {
+						scsEJGBean.setIdentificadorDS(idDS);
+						admEJG.updateDirect(scsEJGBean);
+					}
 				}
 			}
 			if (scsEJGBean.getIdentificadorDS() == null || scsEJGBean.getIdentificadorDS().trim().equals("")) {

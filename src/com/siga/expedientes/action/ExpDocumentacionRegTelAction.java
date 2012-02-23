@@ -33,6 +33,8 @@ import com.siga.beans.ExpExpedienteAdm;
 import com.siga.beans.ExpExpedienteBean;
 import com.siga.beans.ExpFasesAdm;
 import com.siga.beans.ExpFasesBean;
+import com.siga.beans.ExpTipoExpedienteAdm;
+import com.siga.beans.ExpTipoExpedienteBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.expedientes.form.ExpDocumentacionForm;
 import com.siga.general.MasterAction;
@@ -103,6 +105,27 @@ public class ExpDocumentacionRegTelAction extends MasterAction {
 	        			 .append(": ").append((String)request.getParameter("anioExpediente")).append(" / ").append((String)request.getParameter("numeroExpediente"));
 
 	        form.setTituloVentana(tituloVentana.toString());
+	        
+	        if (expExpedienteBean.getIdentificadorDS() == null || expExpedienteBean.getIdentificadorDS().trim().equals("")) {
+	        	GenParametrosAdm parametrosAdm = new GenParametrosAdm(this.getUserBean(request));
+		        String valor = parametrosAdm.getValor(this.getUserBean(request).getLocation(), ClsConstants.MODULO_GENERAL, "REGTEL", "0");
+		        
+	        	if (valor!=null && valor.equals("1")){
+	        		ExpTipoExpedienteAdm expTipoExpedienteAdm = new ExpTipoExpedienteAdm(getUserBean(request));
+	        		if (expExpedienteBean.getIdInstitucion_tipoExpediente() != null && expExpedienteBean.getIdTipoExpediente() != null) {
+	        			Vector v = expTipoExpedienteAdm.select(expExpedienteBean.getIdInstitucion_tipoExpediente().toString(), expExpedienteBean.getIdTipoExpediente().toString());
+	        			if (v != null && v.size() == 1) {
+	        				ExpTipoExpedienteBean expTipoExpedienteBean = (ExpTipoExpedienteBean) v.get(0);
+	        				DocuShareHelper docuShareHelper = new DocuShareHelper(getUserBean(request));
+	        				String identificadorDS = docuShareHelper.buscaCollectionExpedientes(DocuShareHelper.getTitleExpedientes(expTipoExpedienteBean.getNombre(), anioExpediente, numExpediente));
+	        				if (identificadorDS != null && !identificadorDS.trim().equals("")) {
+	        					expExpedienteBean.setIdentificadorDS(identificadorDS);
+	        					expAdm.update(expExpedienteBean);
+	        				}
+	        			}
+	        		}
+		        }
+			}
 	        
 	        form.setUrlDocumentacionDS(getURLdocumentacionDS(getUserBean(request), expExpedienteBean.getIdentificadorDS()));
 			salto = "inicioDS";

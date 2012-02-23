@@ -1262,7 +1262,7 @@ public class DefinirEJGAction extends MasterAction
 	 */
 	private String getIdentificadorDocuShare(UsrBean usrBean, String anio, String numejg) throws ClsExceptions, SIGAException, DSException {
 		String identificadorDS = null;
-		String collectionTitle = anio + "/" +numejg ;
+		String collectionTitle = DocuShareHelper.getTitleEJG(anio, numejg);
 		
 		/* Sólo se intentará la Conexion al DocuShare si el parámetro general para la institucion=1*/	
 		GenParametrosAdm parametrosAdm = new GenParametrosAdm(usrBean);

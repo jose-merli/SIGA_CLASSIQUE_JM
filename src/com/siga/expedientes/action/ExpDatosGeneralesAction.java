@@ -1577,11 +1577,11 @@ public class ExpDatosGeneralesAction extends MasterAction
 			
 			hash.put(ExpExpedienteBean.C_ANIOEXPEDIENTE,anioExpAGuardar.toString());
 			hash.put(ExpExpedienteBean.C_NUMEROEXPEDIENTE,numExp.toString());	
-				
-			
-			
-			
-			String collectionTitle = form.getTipoExpediente() + " " + anioExpAGuardar + "/" +numExpAGuardar ;
+						
+			String collectionTitle = null;
+			if (anioExpAGuardar != null && numExpAGuardar != null) {
+				collectionTitle = DocuShareHelper.getTitleExpedientes(form.getTipoExpediente(), anioExpAGuardar.toString(), numExpAGuardar.toString()) ;
+			}
 			
 			/* Sólo se intentará la Conexion al DocuShare si el parámetro general para la institucion=1*/	
 			GenParametrosAdm parametrosAdm = new GenParametrosAdm(user);
