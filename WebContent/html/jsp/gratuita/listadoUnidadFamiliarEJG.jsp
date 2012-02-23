@@ -92,8 +92,8 @@
 		   nombre="listadoUnidadFamiliar"
 		   borde="2"
 		   clase="tableTitle"		   
-		   nombreCol="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='checkTodos()'/> ,gratuita.personaJG.literal.parentescoNormalizado,gratuita.busquedaEJG.literal.nif,gratuita.busquedaEJG.literal.nombre,gratuita.operarInteresado.literal.ingresosAnuales,gratuita.operarInteresado.literal.bienesMobiliarios,gratuita.operarInteresado.literal.bienesInmuebles,gratuita.operarInteresado.literal.otrosBienes,"
-		   tamanoCol="4,8,8,25,7,7,7,7,28"
+		   nombreCol="gratuita.personaJG.literal.parentescoNormalizado,gratuita.busquedaEJG.literal.nif,gratuita.busquedaEJG.literal.nombre,gratuita.operarInteresado.literal.ingresosAnuales,gratuita.operarInteresado.literal.bienesMobiliarios,gratuita.operarInteresado.literal.bienesInmuebles,gratuita.operarInteresado.literal.otrosBienes,"
+		   tamanoCol="8,8,25,8,8,8,8,28"
 		   
 		   alto="500"
 		   modal="G"
@@ -115,18 +115,7 @@
 			
 			<siga:FilaConIconos fila="<%=String.valueOf(index.intValue())%>" botones="<%=botones%>" elementos="<%=elementosFila%>" clase="listaNonEdit" modo="<%=modo%>" >
 					
-					<td align="center">
-						<c:choose>
-							<c:when test="${solicitante.peticionEejg.idXml!=null}">
-							<input type="checkbox" value="${solicitante.peticionEejg.idXml}" name="chkPersona">
-							</c:when>
-							<c:otherwise>
-							  <input type="checkbox" value="<bean:write name="index"/>" disabled name="chkPersona">
-							</c:otherwise>
-						</c:choose>
 					
-						
-					</td>
 			
 					<td>
 						<input type="hidden" name="oculto<%=index%>_1" value="EJGUnidadFamiliar">
@@ -203,18 +192,7 @@
 				<c:if	test="${solicitante.idPersona==DefinirUnidadFamiliarEJGForm.personaJG.idPersona}">
 				<bean:define id="elementosFila" name="solicitante" property="elementosFila" type="com.siga.tlds.FilaExtElement[]"/>
 				<siga:FilaConIconos fila="<%=String.valueOf(index.intValue())%>" botones="" elementos="<%=elementosFila%>" clase="listaNonEdit" modo="<%=modo%>"  visibleBorrado="false" visibleEdicion="false"	visibleConsulta="false">
-					<td align="center" >
-						
-						<c:choose>
-							<c:when test="${solicitante.peticionEejg.idXml!=null}">
-							<input type="checkbox" value="${solicitante.peticionEejg.idXml}" name="chkPersona">
-							</c:when>
-							<c:otherwise>
-							  <input type="checkbox" value="<bean:write name="index"/>" disabled name="chkPersona">
-							</c:otherwise>
-						</c:choose>
-						
-					</td>
+					
 					<td>
 						<input type="hidden" name="oculto<%=index%>_1" value="EJGUnidadFamiliar">
 						<input type="hidden" name="oculto<%=index%>_2" value="gratuita.personaJG.literal.unidadFamiliar">
@@ -333,8 +311,8 @@
 		   nombre="listadoPeticiones"
 		   borde="2"
 		   clase="tableTitle"		   
-		   nombreCol="gratuita.busquedaEJG.literal.nif,gratuita.busquedaEJG.literal.nombre,gratuita.eejg.peticiones.usuarioPeticion,gratuita.eejg.peticiones.fechaPeticion,"
-		   tamanoCol="10,30,30,10,"
+		   nombreCol="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='checkTodos()'/> ,gratuita.busquedaEJG.literal.nif,gratuita.busquedaEJG.literal.nombre,gratuita.eejg.peticiones.usuarioPeticion,gratuita.eejg.peticiones.fechaPeticion,"
+		   tamanoCol="4,10,30,30,10,"
 		   alto="500"
 		   
 			 
@@ -347,12 +325,39 @@
 	</logic:empty>
 	<logic:notEmpty name="DefinirUnidadFamiliarEJGForm"	property="peticionesEejg">
 		<logic:iterate name="DefinirUnidadFamiliarEJGForm"	property="peticionesEejg" id="peticion" indexId="indice" type="com.siga.beans.eejg.ScsEejgPeticionesBean">
+
+						<input type="hidden" name="peticion<%=indice%>_1" value="${peticion.idPersona}">
+						<input type="hidden" name="peticion<%=indice%>_2" value="${peticion.idInstitucion}">
+						<input type="hidden" name="peticion<%=indice%>_3" value="${peticion.idTipoEjg}">
+						<input type="hidden" name="peticion<%=indice%>_4" value="${peticion.anio}">
+						<input type="hidden" name="peticion<%=indice%>_5" value="${peticion.numero}">
+						<c:choose>
+							<c:when test="${peticion.idPeticion!=null}">
+							<input type="hidden" name="peticion<%=indice%>_6" value="${peticion.idPeticion}">
+							</c:when>
+							<c:otherwise>
+							  <input type="hidden" name="peticion<%=indice%>_6" value=" ">
+							</c:otherwise>
+						</c:choose>
+			
 			<%indice = indice.intValue()+1; %>
 						
 			
 				<bean:define id="elementosFila" name="peticion" property="elementosFila" type="com.siga.tlds.FilaExtElement[]"/>
 				<siga:FilaConIconos fila="<%=String.valueOf(indice.intValue())%>" botones="" elementos="<%=elementosFila%>" clase="listaNonEdit" modo="<%=modo%>" visibleBorrado="false" visibleEdicion="false"	visibleConsulta="false">
-					<input type="hidden" name="oculto<%=indice%>_1" value="${peticion.idPeticion}">
+					<td align="center">
+						<c:choose>
+							<c:when test="${peticion.idXml!=null}">
+							<input type="checkbox" value="${peticion.idXml}" name="chkPersona">
+							</c:when>
+							<c:otherwise>
+							  <input type="checkbox" value="<bean:write name="indice"/>" disabled name="chkPersona">
+							</c:otherwise>
+						</c:choose>
+					
+						
+					</td>
+					
 					<td><c:out value="${peticion.nif}"></c:out>&nbsp;</td>
 					<td><c:out value="${peticion.nombre}"></c:out>&nbsp;
 					<c:out value="${peticion.apellido1}"></c:out>&nbsp;
@@ -535,6 +540,8 @@
 	}
 	
 	function solicitarEejg(fila) {
+		
+		
 		var nif = document.getElementById( 'oculto' + fila + '_14').value;
 		var idTipoIdentificacion = document.getElementById( 'oculto' + fila + '_15').value;
 		
@@ -567,14 +574,13 @@
 	}
 	function descargarEejg(fila) {
 		selectRowPeticiones(fila);
-
-		var idPersonaJG = document.getElementById( 'oculto' + fila + '_6');
-		var idInstitucionEJG = document.getElementById( 'oculto' + fila + '_7');
-		var idTipoEJG = document.getElementById( 'oculto' + fila + '_8');
-		var anio = document.getElementById( 'oculto' + fila + '_9');
-		var numero = document.getElementById( 'oculto' + fila + '_10');
-		var idPeticion = document.getElementById( 'oculto' + fila + '_11');
 		
+		var idPersonaJG = document.getElementById( 'peticion' + fila + '_1');
+		var idInstitucionEJG = document.getElementById( 'peticion' + fila + '_2');
+		var idTipoEJG = document.getElementById( 'peticion' + fila + '_3');
+		var anio = document.getElementById( 'peticion' + fila + '_4');
+		var numero = document.getElementById( 'peticion' + fila + '_5');
+		var idPeticion = document.getElementById( 'peticion' + fila + '_6');
 		datos = idPersonaJG.value + 	','
 	   			+idInstitucionEJG.value + 	','
 	   			+idTipoEJG.value + 	','
@@ -594,13 +600,13 @@
 		sub();
 		for (i = 0; i < chkPersonas.length; i++) {
 			if(chkPersonas[i].checked){
-				var idPersonaJG = document.getElementById( 'oculto' + (i+1) + '_6');
-				var idInstitucionEJG = document.getElementById( 'oculto' + (i+1) + '_7');
-				var idTipoEJG = document.getElementById( 'oculto' + (i+1) + '_8');
-				var anio = document.getElementById( 'oculto' + (i+1) + '_9');
-				var numero = document.getElementById( 'oculto' + (i+1) + '_10');
+				var idPersonaJG = document.getElementById( 'peticion' + (i) + '_1');
+				var idInstitucionEJG = document.getElementById( 'peticion' + (i) + '_2');
+				var idTipoEJG = document.getElementById( 'peticion' + (i) + '_3');
+				var anio = document.getElementById( 'peticion' + (i) + '_4');
+				var numero = document.getElementById( 'peticion' + (i) + '_5');
 				
-				var idPeticion = document.getElementById( 'oculto' + (i+1) + '_11');
+				var idPeticion = document.getElementById( 'peticion' + (i) + '_6');
 				datos = datos + idPersonaJG.value + 	','
 	   			+idInstitucionEJG.value + 	','
 	   			+idTipoEJG.value + 	','

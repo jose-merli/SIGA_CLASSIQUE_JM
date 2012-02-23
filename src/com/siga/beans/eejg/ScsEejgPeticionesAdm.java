@@ -260,8 +260,11 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;
 		StringBuffer sql = new StringBuffer();
+		
 		sql.append(" SELECT  EEJG.NIF,EEJG.NOMBRE, EEJG.APELLIDO1, EEJG.APELLIDO2, ");
-		sql.append(" EEJG.IDPETICION,EEJG.ESTADO, EEJG.IDXML,EEJG.IDPETICION, ");
+		sql.append(" EEJG.IDPETICION,EEJG.ESTADO, EEJG.IDXML, ");
+		sql.append(" EEJG.IDINSTITUCION , EEJG.IDTIPOEJG, ");
+		sql.append(" EEJG.ANIO,EEJG.NUMERO, EEJG.IDPERSONA, ");
 		sql.append(" EEJG.IDIOMA, EEJG.FECHACONSULTA,  TO_CHAR(EEJG.FECHAPETICION, 'DD/MM/YYYY') FECHAPETICION, ");
 		sql.append(" USU.DESCRIPCION DESCRIPCIONUSUARIO,  USU.NIF NIFUSUARIO ");
 		sql.append(" FROM SCS_EEJG_PETICIONES EEJG, ADM_USUARIOS USU ");
