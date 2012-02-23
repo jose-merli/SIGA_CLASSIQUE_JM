@@ -45,7 +45,7 @@ import com.siga.informes.form.MantenimientoInformesForm;
  * Action para la consulta de morosos.
  */
 public class InformePagosColegiadoAction extends MasterAction {
-	final String[] clavesBusqueda={FcsPagoColegiadoBean.C_IDINSTITUCION,"IDPERSONASJCS"
+	final String[] clavesBusqueda={FcsPagoColegiadoBean.C_IDINSTITUCION,"IDPERSONASJCS","IDPAGOS"
 			};
 	/**
 	 * Funcion que atiende a las peticiones. Segun el valor del parametro modo

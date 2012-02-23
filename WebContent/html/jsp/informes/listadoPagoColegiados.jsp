@@ -184,7 +184,7 @@
 			String idInstitucionRow = fila.getString("IDINSTITUCION");
 			String idPersonaRow = fila.getString("IDPERSONASJCS");
 			String idPagosRow = fila.getString("IDPAGOS");
-			String valorCheck = idInstitucionRow + "||" + idPersonaRow + "##" + idPagosRow;
+			String valorCheck = idInstitucionRow + "||" + idPersonaRow + "||" + idPagosRow;
 			boolean isChecked = false;
 			for (int z = 0; z < registrosSeleccionados.size(); z++) {
 	
@@ -272,70 +272,81 @@
 		   
 	}
 
-	function cargarChecks(){		
-		<%if (registrosSeleccionados != null) {
-			for (int p = 0; p < registrosSeleccionados.size(); p++) {
-				Hashtable clavesEJG = (Hashtable) registrosSeleccionados.get(p);
-				valorCheckPersona = (String) clavesEJG.get("CLAVE");
-				String valorPago = "";
-				if((String) clavesEJG.get("IDPAGOS")!=null){
-					valorPago = "##" + (String) clavesEJG.get("IDPAGOS");
-				}%>	
-								
-				var aux='<%=valorCheckPersona + valorPago%>';
-				ObjArray.push(aux);
-			<%}
-		}
-		
-		if(registrosSeleccionados.size() == Integer.parseInt(totalRegistros)){ %>
-			var ele = document.getElementsByName("chkPersona");
-		  	for (i = 0; i < ele.length; i++) {
-	   			ele[i].checked = true;
-	   		}
-		<%}%>
+	function cargarChecks(){
+   		
+   	 	
+		<%if (registrosSeleccionados!=null){
+			
+	   		for (int p=0;p<registrosSeleccionados.size();p++){
+	   		 	
+		   		Hashtable clavesEJG= (Hashtable) registrosSeleccionados.get(p);
+		   		
+		   		
+				valorCheckPersona=(String)clavesEJG.get("CLAVE");
+				
+						
+				%>
+					var aux='<%=valorCheckPersona%>';
+					ObjArray.push(aux);
+				<%
+			} 
+	   	}%>
+	   	
 		ObjArray.toString();
-		seleccionados1=ObjArray;			
-		document.forms[0].registrosSeleccionados.value=seleccionados1;		
+		seleccionados1=ObjArray;
+			
+		document.forms[0].registrosSeleccionados.value=seleccionados1;
+		
 		if(document.getElementById('registrosSeleccionadosPaginador'))
-			document.getElementById('registrosSeleccionadosPaginador').value=ObjArray.length;
+			document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
+			
 	}
-	
-	
 	function cargarChecksTodos(o){
   	   if (document.getElementById('registrosSeleccionadosPaginador')){ 	
-  	   var conf = confirm("<siga:Idioma key="paginador.message.marcarDesmarcar"/>"); 
-	   if (conf){
+  		var conf = confirm("<siga:Idioma key='paginador.message.marcarDesmarcar'/>"); 
+	   	 
+	   	if (conf){
 			ObjArray = new Array();
 		   	if (o.checked){
 		   		parent.seleccionarTodos('<%=paginaSeleccionada%>');
+		   	 		
+				
 			}else{
 				ObjArray1= new Array();
 			 	ObjArray=ObjArray1;
 			 	seleccionados1=ObjArray;
 			 	if(seleccionados1){
-					document.forms[0].registrosSeleccionados.value=seleccionados1;
-					var ele = document.getElementsByName("chkPersona");
-					for (i = 0; i < ele.length; i++) {
-						if(!ele[i].disabled)	
-							ele[i].checked = false; 
-					}
+				document.forms[0].registrosSeleccionados.value=seleccionados1;
+				var ele = document.getElementsByName("chkPersona");
+					
+				for (i = 0; i < ele.length; i++) {
+					if(!ele[i].disabled)	
+						ele[i].checked = false; 
+						
+						
 				}
-			}
-	   	}else{
+				}
+	
+			 }
+	   	  
+	   	  }else{
 	   	  	if (!o.checked ){
 		   	  		var ele = document.getElementsByName("chkPersona");
 						
 				  	for (i = 0; i < ele.length; i++) {
 				  		if(!ele[i].disabled){
 				  			if(ele[i].checked){	
-		     					ele[i].checked = false;		     				
+		     					ele[i].checked = false;
+		     				
 								ObjArray.splice(ObjArray.indexOf(ele[i].value),1);
 							}
 						}
 				   	}
+				   	
 				   	seleccionados1=ObjArray;
 			   }else{
 				   	var ele = document.getElementsByName("chkPersona");
+							
 				  	for (i = 0; i < ele.length; i++) {
 				  		if(!ele[i].disabled){
 							if(!ele[i].checked){				  		
@@ -347,8 +358,8 @@
 				   		
 			   		seleccionados1=ObjArray;
 			   }
-			   
 			   document.forms[0].registrosSeleccionados.value=seleccionados1;
+		   		
 	   	  }
 	   	 if (document.getElementById('registrosSeleccionadosPaginador')){ 		 
 		  document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
@@ -357,23 +368,25 @@
 	 }
 	   
 	function checkTodos(){
-		
+	
 	 	var ele = document.getElementsByName("chkPersona");
 		var todos=1;	
-
 	  	for (i = 0; i < ele.length; i++) {
-   			if(!ele[i].checked && !ele[i].disabled){
+   			if(!ele[i].checked){
    				todos=0;
    				break;
    			} 
    		}
 	   
-	    if (todos==1){
+	   if (todos==1){
 			document.getElementById("chkGeneral").checked=true;
 		}else{
 			document.getElementById("chkGeneral").checked=false;
 		}
-		
+	   
+				
+			
+			
    	}
    	
    	function accionComunicar(){
@@ -382,15 +395,25 @@
 		
 		for (i = 0; i < ObjArray.length; i++) {
 			var idRegistros = ObjArray[i];
+			
 			index = idRegistros.indexOf('||');
 			idInstitucion  = idRegistros.substring(0,index);
-			idPersona = idRegistros.substring(index+2);
-			index2 = idRegistros.indexOf('##');
-			idPago = idRegistros.substring(index2+2);
+			
+			idRegistros = idRegistros.substring(index+2);
+			index = idRegistros.indexOf('||');
+			idPersona  = idRegistros.substring(0,index);
+			
+			idPago = idRegistros.substring(index+2);
+			
+			
+			
+			
+			
+			
+			
 			idioma = parent.document.mantenimientoInformesForm.idioma.value;
  		   	datos += "idPersona=="+idPersona + "##idPago==" +idPago + "##idInstitucion==" +idInstitucion + "##idioma==" +idioma +"%%%";
 		}
-		
 		numElementosSeleccionados =  ObjArray.length; 
 		if (datos == '') {
 			alert ('<siga:Idioma key="general.message.seleccionar"/>');
@@ -426,7 +449,6 @@
 		idPago = document.getElementById(idPago).value;
 		idInstitucion = document.mantenimientoInformesForm.idInstitucion.value;
 		datos = "idInstitucion=="+idInstitucion +"##idPago=="+idPago+"##idPersona=="+idPersona +"%%%";
-		
 		var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='<%=app%>/INF_InformesGenericos.do' target='submitArea'>");
 		formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucion%>'>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
