@@ -119,9 +119,7 @@ function postAccionTipoActuacion()
 	<input type="hidden" name="validarJustificaciones" value="${asistencia.validarJustificaciones}" />
 	<input type="hidden" name="isLetrado" value="${usrBean.letrado}" />
 	<html:hidden property="idTipoAsistencia" value="${ActuacionAsistenciaFormEdicion.idTipoAsistencia}"/>
-	
 	<input type="hidden" name="auxIdCosteFijoActuacion" value="${ActuacionAsistenciaFormEdicion.idCosteFijoActuacion}" />
-	
 	<input type="hidden" name="actionModal" />
 	
 	
@@ -759,7 +757,7 @@ function habilitarCampos(isHabilitar) {
 			textarea = textareas[i];
 			textarea.disabled =  ""; 
 		}	
-	
+		
 		
 	}else{
 		tdTiposActuacion = document.getElementById('tdSelectTiposActuacion');
@@ -767,43 +765,43 @@ function habilitarCampos(isHabilitar) {
 		idTipoActuacion ="";
 		if(index!=-1){
 			descripcionTipoActuacion = document.ActuacionAsistenciaFormEdicion.idTipoActuacion.options[index].text;
-			idTipoActuacion = document.ActuacionAsistenciaFormEdicion.idTipoActuacion.options[index].value;
 		}else 
 			descripcionTipoActuacion ="";
-			tdTiposActuacion.innerHTML = '<input type="hidden" value="'+idTipoActuacion+'" id="idTipoActuacion"/><input type="text" readonly class="boxConsulta" value="'+descripcionTipoActuacion+'" style="width:600px;" />';
-
+		document.getElementById("idTipoActuacion").style.display="none";
+		tdTiposActuacion.innerHTML = tdTiposActuacion.innerHTML+'<input type="text" readonly class="boxConsulta" value="'+descripcionTipoActuacion+'" style="width:600px;" />';
+		
+		
+		
+		
 
 		tdComisaria = document.getElementById('tdSelectComisaria');
 		index=document.ActuacionAsistenciaFormEdicion.idComisaria.selectedIndex;
-		idComisaria="";
 		if(index!=-1){
 			descripcionComisaria = document.ActuacionAsistenciaFormEdicion.idComisaria.options[index].text;
-			idComisaria = document.ActuacionAsistenciaFormEdicion.idComisaria.options[index].value;
 		}else 
 			descripcionComisaria ="";
-		tdComisaria.innerHTML = '<input type="hidden" value="'+idComisaria+'" id="idComisaria"/><input type="text" readonly class="boxConsulta" value="'+descripcionComisaria+'" style="width:680px;" />';
+		document.getElementById("idComisaria").style.display="none";
+		tdComisaria.innerHTML =tdComisaria.innerHTML+ '<input type="text" readonly class="boxConsulta" value="'+descripcionComisaria+'" style="width:680px;" />';
 
 		tdJuzgado = document.getElementById('tdSelectJuzgado');
 		index=document.ActuacionAsistenciaFormEdicion.idJuzgado.selectedIndex;
-		idJuzgado = "";
 		if(index!=-1){
 			descripcionJuzgado = document.ActuacionAsistenciaFormEdicion.idJuzgado.options[index].text;
-			idJuzgado = document.ActuacionAsistenciaFormEdicion.idJuzgado.options[index].value;			
+						
 		}else
 			descripcionJuzgado ="";
-		tdJuzgado.innerHTML = '<input type="hidden" value="'+idJuzgado+'" id="idJuzgado"/><input type="text" readonly class="boxConsulta" value="'+descripcionJuzgado+'" style="width:680px;" />';
+		document.getElementById("idJuzgado").style.display="none";
+		tdJuzgado.innerHTML =tdJuzgado.innerHTML+ '<input type="text" readonly class="boxConsulta" value="'+descripcionJuzgado+'" style="width:680px;" />';
 
 		tdPrision = document.getElementById('tdSelectPrision');
 		index=document.ActuacionAsistenciaFormEdicion.idPrision.selectedIndex;
-		idPrision ="";
+		
 		if(index!=-1){
 			descripcionPrision = document.ActuacionAsistenciaFormEdicion.idPrision.options[index].text;
-			idPrision = document.ActuacionAsistenciaFormEdicion.idPrision.options[index].value;
 		}else
 			descripcionPrision ="";
-		tdPrision.innerHTML = '<input type="hidden" value="'+idPrision+'" id="idPrision"/><input type="text" readonly class="boxConsulta" value="'+descripcionPrision+'" style="width:300px;"/>';
-		
-		
+		document.getElementById("idPrision").style.display="none";
+		tdPrision.innerHTML = tdPrision.innerHTML+'<input type="text" readonly class="boxConsulta" value="'+descripcionPrision+'" style="width:300px;"/>';
 		inputs = document.getElementsByTagName("input");
 		for(var i = 0 ; i <inputs.length ; i++) {
 			input = inputs[i];
@@ -824,10 +822,8 @@ function habilitarCampos(isHabilitar) {
 			textarea = textareas[i];
 			textarea.disabled =  "disabled"; 
 		}
-	}
 		
-
-	
+	}
 	
 }
 function refrescarLocal() {
@@ -839,8 +835,6 @@ function refrescarLocal() {
 function accionGuardarCerrar() 
 {
 	sub();
-	
-	
 	if(document.ActuacionAsistenciaFormEdicion.idTipoActuacion.value== '-1'){
 		msg = "<siga:Idioma key='errors.required' arg0='gratuita.mantActuacion.literal.tipoActuacion'/>";
 		alert(msg);
@@ -867,7 +861,6 @@ function accionGuardarCerrar()
 		document.ActuacionAsistenciaFormEdicion.validada.value = "1";
 	}
 	habilitarCampos(true);
-	
 	if (validateActuacionAsistenciaFormEdicion(document.ActuacionAsistenciaFormEdicion)){
 		document.ActuacionAsistenciaForm.modo.value = 'abrir';
 		document.ActuacionAsistenciaFormEdicion.submit();
@@ -965,6 +958,7 @@ function accionRestablecer()
 	document.ActuacionAsistenciaFormEdicion.reset();
 	inicio();
 }
+
 
 </script>
 
