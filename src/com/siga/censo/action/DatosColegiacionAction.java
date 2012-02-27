@@ -27,6 +27,7 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
@@ -347,7 +348,7 @@ public class DatosColegiacionAction extends MasterAction {
 		CenDatosColegialesEstadoAdm coleAdm = new CenDatosColegialesEstadoAdm(usr);
 
 		try {
-			int anio_control = Integer.parseInt(admParametros.getValor(idInstitucion,"CER", "AÑO_CONTROL_CERTIFICADOS","0"));
+			String anio_control = admParametros.getValor(idInstitucion,"CER", "AÑO_CONTROL_CERTIFICADOS","01/09/2011");
 			String cni_certOrdinario = admParametros.getValor(idInstitucion,"CER", "CONTROL_CERTIFICADO_ORDINARIO","0,0,0");
 			String cni_certNoEjerciente = admParametros.getValor(idInstitucion,"CER", "CONTROL_CNI_NOEJERCIENTE","0,0,0");
 			String cni_certNuevaIncorp = admParametros.getValor(idInstitucion,"CER", "CONTROL_CUOTA_NUEVA_INCORPORACION","0,0,0");
@@ -357,11 +358,11 @@ public class DatosColegiacionAction extends MasterAction {
 				
 				for (int i = 0; i < datosEstado.size(); i++) {
 					Row fila = (Row) datosEstado.get(i);
-					String fechaEstado = fila.getString("FECHAESTADO");
+					String fechaEstado = GstDate.getFormatedDateShort(usr.getLanguage(),fila.getString("FECHAESTADO"));
 					if(fechaEstado != null & !fechaEstado.equals("")){
-						int fe = Integer.parseInt(fechaEstado.substring(0,4));
+						GstDate gstDate = new GstDate();
 						
-						if(fe >= anio_control){
+						if(gstDate.compararFechas(fechaEstado, anio_control) >= 0){
 							Vector datos =  coleAdm.getDatosColegialesPersonaInstitucion(fila.getString("IDINSTITUCION"), idPersona);
 							
 							switch (Integer.parseInt(fila.getString("IDESTADOCOLEGIAL"))) {
