@@ -1022,7 +1022,6 @@ protected String insertar (ActionMapping mapping,
 			
 			//Se llama a la interfaz Direccion para realizar el borrado de la direccion antigua
 			beanDir.setIdDireccion(idDireccionAntigua);
-			direccion.borrar(beanDir, request, usr);
 
 			//Si se necesita confirmación por parte del usuario se realiza una peticion de pregunta
 			if(dirAux.isConfirmacionPregunta()){
@@ -1030,6 +1029,8 @@ protected String insertar (ActionMapping mapping,
 				t.rollback();
 				return dirAux.getTipoPregunta();
 			}
+			
+			direccion.borrar(beanDir, request, usr);
 			
 			//confirmando las modificaciones de BD
 			t.commit();

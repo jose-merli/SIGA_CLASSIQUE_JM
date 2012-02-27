@@ -136,6 +136,7 @@
 	String comisiones = "";
 	String noRevista = "";
 	String noRedAbogacia = "";
+	String usoFoto = "";
 	Boolean descripcion = null;
 	String cuentaContable = ""; 
 	String sexo = "";
@@ -843,6 +844,8 @@ function str_replace(search, replace, subject) {
 			if (noRevista==null) noRevista=""; 
 			noRedAbogacia = (String) registro.get(CenClienteBean.C_NOAPARECERREDABOGACIA);
 			if (noRedAbogacia==null) noRedAbogacia="";
+			usoFoto = (String) registro.get(CenClienteBean.C_EXPORTARFOTO);
+			if (usoFoto==null) usoFoto="";
 		
 			descripcion = (Boolean) request.getAttribute("descripcion");
 
@@ -1334,6 +1337,27 @@ function str_replace(search, replace, subject) {
 					</td>	
 				</tr>
 				
+				<tr>
+					<td class="labelText" style="height:20px"  colspan="6">
+						<%  if (usoFoto.equals(ClsConstants.DB_TRUE)) { 	%>
+							<input type="checkbox" name="exportarFoto"  value="<%=ClsConstants.DB_TRUE %>"  checked onchange="habilitarBoton()"/>
+						<% } else { %>
+							<input type="checkbox" name="exportarFoto"  value="<%=ClsConstants.DB_TRUE %>"  onchange="habilitarBoton()"/>
+						<% } %>
+						
+						<siga:Idioma key="censo.consultaDatosGenerales.literal.usarFoto"/>
+					</td>
+					
+					<% if (user.isLetrado()) { %>
+						<td>
+							<input type="button" class="button" id="modificar" name="modificar"  value='Modificar' onClick="solicitarModificacion();" disabled >
+						</td>
+					<% } %>					
+				</tr>				
+				
+											
+							
+				
 <% } %>					
 					</td>
 				</table> <!-- para alinear -->
@@ -1431,6 +1455,30 @@ function str_replace(search, replace, subject) {
 		function accionRestablecer() {
 			document.forms[0].reset();	
 		}
+
+		function habilitarBoton() {
+			if(document.getElementById("modificar") != null){
+				if(document.getElementById("modificar").disabled){
+					document.getElementById("modificar").disabled = false;
+				}
+			}
+		}
+
+		function solicitarModificacion() {
+		    var type = '¿Confirma la solicitud de modificación?';
+			if (confirm(type)) {
+				if(document.forms[0].exportarFoto.checked){
+					document.forms[0].exportarFoto.value = "1";
+				}else{
+					document.forms[0].exportarFoto.value ="0";
+				}		
+
+				document.forms[0].target="submitArea";
+				document.forms[0].modo.value="solicitarModificacion";
+				document.forms[0].submit();	
+			}			
+		}
+		
 
 	function validarFormulario() {
 

@@ -1695,4 +1695,31 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 		return id;
   
     }
+	
+	public boolean tieneCertificadosPersonaInstitucion(String idInstitucion, String idPersona, String idTipoProducto, String idProducto, String idProductoInstitucion) throws ClsExceptions {
+		boolean correcto = false;
+		StringBuffer sql = new StringBuffer();
+		RowsContainer rc = new RowsContainer(); 
+				
+		sql.append("select * from " + CerSolicitudCertificadosBean.T_NOMBRETABLA);
+		sql.append(" where " + CerSolicitudCertificadosBean.C_IDINSTITUCION + " = " + idInstitucion);
+		sql.append(" and " + CerSolicitudCertificadosBean.C_IDPERSONA_DES + " = " + idPersona);	
+		sql.append(" and " + CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO + " = " + idTipoProducto);	
+		sql.append(" and " + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO + " = " + idProducto);	
+		sql.append(" and " + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION + " = " + idProductoInstitucion);	
+		
+		try {				
+			if (rc.find(sql.toString())) {						
+				if(rc != null){
+					correcto = true;
+				}
+			}
+
+		} catch (Exception e) {
+			throw new ClsExceptions(e,"Error al buscar los certificado de una persona en una institución. ");
+		}
+
+		return correcto;
+
+	}		
 }

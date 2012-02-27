@@ -18,14 +18,14 @@ import com.siga.general.SIGAException;
 * Clase que gestiona la tabla CENSOLICITMODIFDATOSBASICOS de la BBDD
 * 
 */
-public class CenSolicitModifDatosBasicosAdm extends MasterBeanAdministrador {
+public class CenSolicModifExportarFotoAdm extends MasterBeanAdministrador {
 
 	/** 
 	 *  Constructor
 	 * @param  usu - Usuario
 	 */	
-	public CenSolicitModifDatosBasicosAdm(UsrBean usu) {
-		super(CenSolicitModifDatosBasicosBean.T_NOMBRETABLA, usu);
+	public CenSolicModifExportarFotoAdm(UsrBean usu) {
+		super(CenSolicModifExportarFotoBean.T_NOMBRETABLA, usu);
 	}
 
 	/** 
@@ -33,19 +33,15 @@ public class CenSolicitModifDatosBasicosAdm extends MasterBeanAdministrador {
 	 * @return  String[] Los campos ed la tabla   
 	 */
 	protected String[] getCamposBean() {
-		String [] campos = {CenSolicitModifDatosBasicosBean.C_IDSOLICITUD,
-							CenSolicitModifDatosBasicosBean.C_MOTIVO,
-							CenSolicitModifDatosBasicosBean.C_PUBLICIDAD,
-							CenSolicitModifDatosBasicosBean.C_GUIAJUDICIAL,
-							CenSolicitModifDatosBasicosBean.C_ABONOS,
-							CenSolicitModifDatosBasicosBean.C_CARGOS,							
-							CenSolicitModifDatosBasicosBean.C_IDINSTITUCION,
-							CenSolicitModifDatosBasicosBean.C_IDPERSONA,							
-							CenSolicitModifDatosBasicosBean.C_IDLENGUAJE,
-							CenSolicitModifDatosBasicosBean.C_FECHAALTA,							
-							CenSolicitModifDatosBasicosBean.C_IDESTADOSOLIC,							
-							CenSolicitModifDatosBasicosBean.C_FECHAMODIFICACION,
-							CenSolicitModifDatosBasicosBean.C_USUMODIFICACION};
+		String [] campos = {CenSolicModifExportarFotoBean.C_IDSOLICITUD,
+							CenSolicModifExportarFotoBean.C_EXPORTARFOTO,							
+							CenSolicModifExportarFotoBean.C_IDINSTITUCION,
+							CenSolicModifExportarFotoBean.C_MOTIVO,
+							CenSolicModifExportarFotoBean.C_IDPERSONA,							
+							CenSolicModifExportarFotoBean.C_FECHAALTA,							
+							CenSolicModifExportarFotoBean.C_IDESTADOSOLIC,							
+							CenSolicModifExportarFotoBean.C_FECHAMODIFICACION,
+							CenSolicModifExportarFotoBean.C_USUMODIFICACION};
 		return campos;
 	}
 	
@@ -54,7 +50,7 @@ public class CenSolicitModifDatosBasicosAdm extends MasterBeanAdministrador {
 	 * @return  String[]  Claves de la tabla  
 	 */
 	protected String[] getClavesBean() {
-		String [] claves = {CenSolicitModifDatosBasicosBean.C_IDSOLICITUD};
+		String [] claves = {CenSolicModifExportarFotoBean.C_IDSOLICITUD};
 		return claves;
 	}
 
@@ -66,23 +62,19 @@ public class CenSolicitModifDatosBasicosAdm extends MasterBeanAdministrador {
 	 */
 	protected MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions {
 
-		CenSolicitModifDatosBasicosBean bean = null;
+		CenSolicModifExportarFotoBean bean = null;
 		
 		try {
-			bean = new CenSolicitModifDatosBasicosBean();
-			bean.setIdSolicitud (UtilidadesHash.getLong(hash,CenSolicitModifDatosBasicosBean.C_IDSOLICITUD));
-			bean.setMotivo(UtilidadesHash.getString(hash,CenSolicitModifDatosBasicosBean.C_MOTIVO));
-			bean.setPublicidad(UtilidadesHash.getString(hash,CenSolicitModifDatosBasicosBean.C_PUBLICIDAD));			
-			bean.setGuiaJudicial(UtilidadesHash.getString(hash,CenSolicitModifDatosBasicosBean.C_GUIAJUDICIAL));
-			bean.setAbonos(UtilidadesHash.getString(hash,CenSolicitModifDatosBasicosBean.C_ABONOS));
-			bean.setCargos(UtilidadesHash.getString(hash,CenSolicitModifDatosBasicosBean.C_CARGOS));						
-			bean.setIdInstitucion (UtilidadesHash.getInteger(hash,CenSolicitModifDatosBasicosBean.C_IDINSTITUCION));
-			bean.setIdPersona (UtilidadesHash.getLong(hash,CenSolicitModifDatosBasicosBean.C_IDPERSONA));			
-			bean.setIdLenguaje (UtilidadesHash.getString(hash,CenSolicitModifDatosBasicosBean.C_IDLENGUAJE));
-			bean.setFechaAlta(UtilidadesHash.getString(hash,CenSolicitModifDatosBasicosBean.C_FECHAALTA));
-			bean.setIdEstadoSolic (UtilidadesHash.getInteger(hash,CenSolicitModifDatosBasicosBean.C_IDESTADOSOLIC));
-			bean.setFechaMod(UtilidadesHash.getString(hash,CenSolicitModifDatosBasicosBean.C_FECHAMODIFICACION));
-			bean.setUsuMod(UtilidadesHash.getInteger(hash,CenSolicitModifDatosBasicosBean.C_USUMODIFICACION));			
+			bean = new CenSolicModifExportarFotoBean();
+			bean.setIdSolicitud (UtilidadesHash.getLong(hash,CenSolicModifExportarFotoBean.C_IDSOLICITUD));
+			bean.setMotivo(UtilidadesHash.getString(hash,CenSolicModifExportarFotoBean.C_MOTIVO));
+			bean.setExportarFoto(UtilidadesHash.getString(hash,CenSolicModifExportarFotoBean.C_EXPORTARFOTO));			
+			bean.setIdInstitucion (UtilidadesHash.getInteger(hash,CenSolicModifExportarFotoBean.C_IDINSTITUCION));
+			bean.setIdPersona (UtilidadesHash.getLong(hash,CenSolicModifExportarFotoBean.C_IDPERSONA));			
+			bean.setFechaAlta(UtilidadesHash.getString(hash,CenSolicModifExportarFotoBean.C_FECHAALTA));
+			bean.setIdEstadoSolic (UtilidadesHash.getInteger(hash,CenSolicModifExportarFotoBean.C_IDESTADOSOLIC));
+			bean.setFechaMod(UtilidadesHash.getString(hash,CenSolicModifExportarFotoBean.C_FECHAMODIFICACION));
+			bean.setUsuMod(UtilidadesHash.getInteger(hash,CenSolicModifExportarFotoBean.C_USUMODIFICACION));			
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -102,20 +94,16 @@ public class CenSolicitModifDatosBasicosAdm extends MasterBeanAdministrador {
 		Hashtable htData = null;
 		try {
 			htData = new Hashtable();
-			CenSolicitModifDatosBasicosBean b = (CenSolicitModifDatosBasicosBean) bean;
-			UtilidadesHash.set(htData,CenSolicitModifDatosBasicosBean.C_IDSOLICITUD, b.getIdSolicitud());
-			UtilidadesHash.set(htData,CenSolicitModifDatosBasicosBean.C_MOTIVO,b.getMotivo());
-			UtilidadesHash.set(htData,CenSolicitModifDatosBasicosBean.C_PUBLICIDAD,b.getPublicidad());
-			UtilidadesHash.set(htData,CenSolicitModifDatosBasicosBean.C_GUIAJUDICIAL,b.getGuiaJudicial());			
-			UtilidadesHash.set(htData,CenSolicitModifDatosBasicosBean.C_ABONOS,b.getAbonos());
-			UtilidadesHash.set(htData,CenSolicitModifDatosBasicosBean.C_CARGOS,b.getCargos());						
-			UtilidadesHash.set(htData,CenSolicitModifDatosBasicosBean.C_IDINSTITUCION,b.getIdInstitucion ());
-			UtilidadesHash.set(htData,CenSolicitModifDatosBasicosBean.C_IDPERSONA,b.getIdPersona ());			
-			UtilidadesHash.set(htData,CenSolicitModifDatosBasicosBean.C_IDLENGUAJE,b.getIdLenguaje());
-			UtilidadesHash.set(htData,CenSolicitModifDatosBasicosBean.C_IDESTADOSOLIC,b.getIdEstadoSolic());
-			UtilidadesHash.set(htData,CenSolicitModifDatosBasicosBean.C_FECHAALTA,b.getFechaAlta());
-			UtilidadesHash.set(htData,CenSolicitModifDatosBasicosBean.C_FECHAMODIFICACION,b.getFechaMod());			
-			UtilidadesHash.set(htData,CenSolicitModifDatosBasicosBean.C_USUMODIFICACION,b.getUsuMod());
+			CenSolicModifExportarFotoBean b = (CenSolicModifExportarFotoBean) bean;
+			UtilidadesHash.set(htData,CenSolicModifExportarFotoBean.C_IDSOLICITUD, b.getIdSolicitud());
+			UtilidadesHash.set(htData,CenSolicModifExportarFotoBean.C_MOTIVO,b.getMotivo());
+			UtilidadesHash.set(htData,CenSolicModifExportarFotoBean.C_EXPORTARFOTO,b.getExportarFoto());
+			UtilidadesHash.set(htData,CenSolicModifExportarFotoBean.C_IDINSTITUCION,b.getIdInstitucion ());
+			UtilidadesHash.set(htData,CenSolicModifExportarFotoBean.C_IDPERSONA,b.getIdPersona ());			
+			UtilidadesHash.set(htData,CenSolicModifExportarFotoBean.C_IDESTADOSOLIC,b.getIdEstadoSolic());
+			UtilidadesHash.set(htData,CenSolicModifExportarFotoBean.C_FECHAALTA,b.getFechaAlta());
+			UtilidadesHash.set(htData,CenSolicModifExportarFotoBean.C_FECHAMODIFICACION,b.getFechaMod());			
+			UtilidadesHash.set(htData,CenSolicModifExportarFotoBean.C_USUMODIFICACION,b.getUsuMod());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -123,6 +111,33 @@ public class CenSolicitModifDatosBasicosAdm extends MasterBeanAdministrador {
 		}
 		return htData;	
 	}
+	
+	/** 
+	 * Prepara una tabla hash para insertarla en la tabla. <br/>
+	 * Obtiene el campo IDSOLICITUD, <br/>	
+	 * @return  Long  - IdSolicitud secuencial  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */	
+	public Long	getNuevoId()throws ClsExceptions, SIGAException {
+		String sql;
+		RowsContainer rc = null;
+		int contador = 0;
+		Long id=null;
+		rc = new RowsContainer(); 
+		sql ="SELECT SEQ_SOLIMODIDIRECCIONES.NEXTVAL FROM DUAL";
+		
+		try {		
+			if (rc.findForUpdate(sql)) {						
+				Row fila = (Row) rc.get(0);
+				id = Long.valueOf((String)fila.getRow().get("NEXTVAL"));														
+			}
+		
+		} catch (ClsExceptions e) {	
+			throw new ClsExceptions (e, "Error al ejecutar el 'getNuevoId' en BBDD");		
+		}		
+		
+		return id;
+	}	
 	
 	/** 
 	 * Recoge informacion de las tablas a partir de la informacion suministrada por la busqueda<br/>
@@ -138,51 +153,43 @@ public class CenSolicitModifDatosBasicosAdm extends MasterBeanAdministrador {
 	       try {
 	            RowsContainer rc = new RowsContainer(); 
 	            String sql ="SELECT " +
-    						CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_IDSOLICITUD + "," +
-    						CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_MOTIVO + "," +							
-    						CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_PUBLICIDAD + "," +
-    						CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_GUIAJUDICIAL + "," +
-    						CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_ABONOS + "," +
-    						CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_CARGOS + "," +							
-							CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_IDPERSONA + "," +
-	            			CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_IDINSTITUCION + "," +
-	            			CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_IDLENGUAJE + "," +
-	            			CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_FECHAALTA + "," +
-	            			CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_IDESTADOSOLIC + "," +
-	            			//CenTiposModificacionesBean.T_NOMBRETABLA + "." + CenTiposModificacionesBean.C_DESCRIPCION + " AS MODIFICACION," +							
+    						CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDSOLICITUD + "," +
+    						CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_MOTIVO + "," +							
+    						CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_EXPORTARFOTO + "," +
+							CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDPERSONA + "," +
+	            			CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDINSTITUCION + "," +
+	            			CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_FECHAALTA + "," +
+	            			CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDESTADOSOLIC + "," +
 	            			UtilidadesMultidioma.getCampoMultidiomaSimple(CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_DESCRIPCION, this.usrbean.getLanguage()) + " AS ESTADO, " +
-	            			ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_GENERALES+" as TIPOMODIF, "+
+	            			ClsConstants.TIPO_SOLICITUD_MODIF_EXP_FOTO+" as TIPOMODIF, "+
 							" (SELECT "+UtilidadesMultidioma.getCampoMultidioma(CenTiposModificacionesBean.C_DESCRIPCION, this.usrbean.getLanguage()) +
 							" from "+CenTiposModificacionesBean.T_NOMBRETABLA+
-							" where "+CenTiposModificacionesBean.C_IDTIPOMODIFICACION+"="+ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_GENERALES+") as TEXTOTIPOMODIF"+
+							" where "+CenTiposModificacionesBean.C_IDTIPOMODIFICACION+"="+ClsConstants.TIPO_SOLICITUD_MODIF_EXP_FOTO+") as TEXTOTIPOMODIF"+
 							" FROM " + 
-							//CenSolicitModifDatosBasicosBean.T_NOMBRETABLA +", "+CenTiposModificacionesBean.T_NOMBRETABLA +", "+CenEstadoSolicitudModifBean.T_NOMBRETABLA+ 
-							CenSolicitModifDatosBasicosBean.T_NOMBRETABLA +", "+CenEstadoSolicitudModifBean.T_NOMBRETABLA+
+							CenSolicModifExportarFotoBean.T_NOMBRETABLA +", "+CenEstadoSolicitudModifBean.T_NOMBRETABLA+
 							" WHERE " +
-							//CenTiposModificacionesBean.T_NOMBRETABLA +"."+ CenSolicitudesModificacionBean.C_IDTIPOMODIFICACION + "=" + String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_GENERALES) +
-							//" AND " +							
-							CenSolicitModifDatosBasicosBean.T_NOMBRETABLA +"."+ CenSolicitModifDatosBasicosBean.C_IDESTADOSOLIC + "=" + CenEstadoSolicitudModifBean.T_NOMBRETABLA +"."+ CenEstadoSolicitudModifBean.C_IDESTADOSOLIC +
+							CenSolicModifExportarFotoBean.T_NOMBRETABLA +"."+ CenSolicModifExportarFotoBean.C_IDESTADOSOLIC + "=" + CenEstadoSolicitudModifBean.T_NOMBRETABLA +"."+ CenEstadoSolicitudModifBean.C_IDESTADOSOLIC +
 							" AND " +
-							CenSolicitModifDatosBasicosBean.T_NOMBRETABLA +"."+ CenSolicitModifDatosBasicosBean.C_IDINSTITUCION + "=" + institucion;	            
+							CenSolicModifExportarFotoBean.T_NOMBRETABLA +"."+ CenSolicModifExportarFotoBean.C_IDINSTITUCION + "=" + institucion;	            
 											
 				if (!estado.trim().equals("")){								 
 					sql +=" AND " +
-						  CenSolicitModifDatosBasicosBean.T_NOMBRETABLA +"."+ CenSolicitModifDatosBasicosBean.C_IDESTADOSOLIC + "=" + estado;									 
+						  CenSolicModifExportarFotoBean.T_NOMBRETABLA +"."+ CenSolicModifExportarFotoBean.C_IDESTADOSOLIC + "=" + estado;									 
 				}				
 				
 				if (!fechaI.trim().equals("")){								 
 					sql +=" AND " +
-						  CenSolicitModifDatosBasicosBean.T_NOMBRETABLA +"."+ CenSolicitModifDatosBasicosBean.C_FECHAALTA + ">= TO_DATE ('" + fechaI + "', 'DD/MM/YYYY')";
+						  CenSolicModifExportarFotoBean.T_NOMBRETABLA +"."+ CenSolicModifExportarFotoBean.C_FECHAALTA + ">= TO_DATE ('" + fechaI + "', 'DD/MM/YYYY')";
 				}							
 
 				if (!fechaF.trim().equals("")){								 
 					sql +=" AND (" +
-					  CenSolicitModifDatosBasicosBean.T_NOMBRETABLA +"."+ CenSolicitModifDatosBasicosBean.C_FECHAALTA + "<= TO_DATE ('" + fechaF + "', 'DD/MM/YYYY')" +									 
+					  CenSolicModifExportarFotoBean.T_NOMBRETABLA +"."+ CenSolicModifExportarFotoBean.C_FECHAALTA + "<= TO_DATE ('" + fechaF + "', 'DD/MM/YYYY')" +									 
 					  " OR " +
-					  GstDate.dateBetween0and24h(CenSolicitModifDatosBasicosBean.C_FECHAALTA,fechaF)+")";									 
+					  GstDate.dateBetween0and24h(CenSolicModifExportarFotoBean.C_FECHAALTA,fechaF)+")";									 
 				}							
 							
-				sql += " ORDER BY " + CenSolicitModifDatosBasicosBean.C_FECHAALTA + " DESC"; 										
+				sql += " ORDER BY " + CenSolicModifExportarFotoBean.C_FECHAALTA + " DESC"; 										
 							
 	            if (rc.find(sql)) {
 	            	for (int i = 0; i < rc.size(); i++){
@@ -216,13 +223,13 @@ public class CenSolicitModifDatosBasicosAdm extends MasterBeanAdministrador {
 	       try {
 	            RowsContainer rc = new RowsContainer(); 
 	            String sql ="(SELECT " +
-    						CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_IDSOLICITUD + "," +
-    						CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_MOTIVO + "," +							
+    						CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDSOLICITUD + "," +
+    						CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_MOTIVO + "," +							
     												
-							CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_IDPERSONA + "," +
-	            			CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_IDINSTITUCION + ", 0 as CODIGO, " +
-	            			CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_FECHAALTA + "," +
-	            			CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_IDESTADOSOLIC + "," +
+							CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDPERSONA + "," +
+	            			CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDINSTITUCION + ", 0 as CODIGO, " +
+	            			CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_FECHAALTA + "," +
+	            			CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDESTADOSOLIC + "," +
 	            			UtilidadesMultidioma.getCampoMultidiomaSimple(CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_DESCRIPCION, this.usrbean.getLanguage()) + " AS ESTADO, " +
 	            			ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_GENERALES+" as TIPOMODIF, "+
 							" (SELECT "+UtilidadesMultidioma.getCampoMultidioma(CenTiposModificacionesBean.C_DESCRIPCION, this.usrbean.getLanguage())+
@@ -230,27 +237,27 @@ public class CenSolicitModifDatosBasicosAdm extends MasterBeanAdministrador {
 							" where "+CenTiposModificacionesBean.C_IDTIPOMODIFICACION+"="+ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_GENERALES+") as TEXTOTIPOMODIF"+
 							
 							" FROM " + 
-							CenSolicitModifDatosBasicosBean.T_NOMBRETABLA +", "+CenEstadoSolicitudModifBean.T_NOMBRETABLA+
+							CenSolicModifExportarFotoBean.T_NOMBRETABLA +", "+CenEstadoSolicitudModifBean.T_NOMBRETABLA+
 							" WHERE " +
-							CenSolicitModifDatosBasicosBean.T_NOMBRETABLA +"."+ CenSolicitModifDatosBasicosBean.C_IDESTADOSOLIC + "=" + CenEstadoSolicitudModifBean.T_NOMBRETABLA +"."+ CenEstadoSolicitudModifBean.C_IDESTADOSOLIC +
+							CenSolicModifExportarFotoBean.T_NOMBRETABLA +"."+ CenSolicModifExportarFotoBean.C_IDESTADOSOLIC + "=" + CenEstadoSolicitudModifBean.T_NOMBRETABLA +"."+ CenEstadoSolicitudModifBean.C_IDESTADOSOLIC +
 							" AND " +
-							CenSolicitModifDatosBasicosBean.T_NOMBRETABLA +"."+ CenSolicitModifDatosBasicosBean.C_IDINSTITUCION + "=" + institucion;	            
+							CenSolicModifExportarFotoBean.T_NOMBRETABLA +"."+ CenSolicModifExportarFotoBean.C_IDINSTITUCION + "=" + institucion;	            
 											
 				if (!estado.trim().equals("")){								 
 					sql +=" AND " +
-						  CenSolicitModifDatosBasicosBean.T_NOMBRETABLA +"."+ CenSolicitModifDatosBasicosBean.C_IDESTADOSOLIC + "=" + estado;									 
+						  CenSolicModifExportarFotoBean.T_NOMBRETABLA +"."+ CenSolicModifExportarFotoBean.C_IDESTADOSOLIC + "=" + estado;									 
 				}				
 				
 				if (!fechaI.trim().equals("")){								 
 					sql +=" AND " +
-						  CenSolicitModifDatosBasicosBean.T_NOMBRETABLA +"."+ CenSolicitModifDatosBasicosBean.C_FECHAALTA + ">= TO_DATE ('" + fechaI + "', 'DD/MM/YYYY')";
+						  CenSolicModifExportarFotoBean.T_NOMBRETABLA +"."+ CenSolicModifExportarFotoBean.C_FECHAALTA + ">= TO_DATE ('" + fechaI + "', 'DD/MM/YYYY')";
 				}							
 
 				if (!fechaF.trim().equals("")){								 
 					sql +=" AND (" +
-					  CenSolicitModifDatosBasicosBean.T_NOMBRETABLA +"."+ CenSolicitModifDatosBasicosBean.C_FECHAALTA + "<= TO_DATE ('" + fechaF + "', 'DD/MM/YYYY')" +									 
+					  CenSolicModifExportarFotoBean.T_NOMBRETABLA +"."+ CenSolicModifExportarFotoBean.C_FECHAALTA + "<= TO_DATE ('" + fechaF + "', 'DD/MM/YYYY')" +									 
 					  " OR " +
-					  GstDate.dateBetween0and24h(CenSolicitModifDatosBasicosBean.C_FECHAALTA,fechaF)+")";									 
+					  GstDate.dateBetween0and24h(CenSolicModifExportarFotoBean.C_FECHAALTA,fechaF)+")";									 
 				}							
 				sql+=" ) union";
 				sql+= " (SELECT " +
@@ -424,50 +431,6 @@ public class CenSolicitModifDatosBasicosAdm extends MasterBeanAdministrador {
 							  " OR " +
 							  GstDate.dateBetween0and24h(CenSolModiFacturacionServicioBean.C_FECHAALTA,fechaF)+")";									 
 						}	
-	   sql+=" ) union ";
-	 
-	   
-//////////////////////////////////////////	 EXPORTAR FOTO //////////////////////////////////////////////////	   
-	   sql+=" (SELECT " +
-					CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDSOLICITUD + "," +
-					CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_MOTIVO + "," +							
-					CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDPERSONA + "," +
-        			CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDINSTITUCION + ", 0 as CODIGO, " +
-        			CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_FECHAALTA + "," +
-        			CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDESTADOSOLIC + "," +	
-
-				    UtilidadesMultidioma.getCampoMultidiomaSimple(CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_DESCRIPCION, this.usrbean.getLanguage()) + " AS ESTADO, " +
-	    			ClsConstants.TIPO_SOLICITUD_MODIF_EXP_FOTO+" as TIPOMODIF, "+
-					" (SELECT "+UtilidadesMultidioma.getCampoMultidioma(CenTiposModificacionesBean.C_DESCRIPCION, this.usrbean.getLanguage()) +
-					" from "+CenTiposModificacionesBean.T_NOMBRETABLA+
-					" where "+CenTiposModificacionesBean.C_IDTIPOMODIFICACION+"="+ClsConstants.TIPO_SOLICITUD_MODIF_EXP_FOTO+") as TEXTOTIPOMODIF"+
-					" FROM " + 
-					CenSolicModifExportarFotoBean.T_NOMBRETABLA +", "+CenEstadoSolicitudModifBean.T_NOMBRETABLA+
-					" WHERE " +
-					CenSolicModifExportarFotoBean.T_NOMBRETABLA +"."+ CenSolicModifExportarFotoBean.C_IDESTADOSOLIC + "=" + CenEstadoSolicitudModifBean.T_NOMBRETABLA +"."+ CenEstadoSolicitudModifBean.C_IDESTADOSOLIC +
-					" AND " +
-					CenSolicModifExportarFotoBean.T_NOMBRETABLA +"."+ CenSolicModifExportarFotoBean.C_IDINSTITUCION + "=" + institucion;	            
-
-	   				if (!estado.trim().equals("")){								 
-						sql +=" AND " +
-							  CenSolicModifExportarFotoBean.T_NOMBRETABLA +"."+ CenSolicModifExportarFotoBean.C_IDESTADOSOLIC + "=" + estado;									 
-					}				
-					
-					if (!fechaI.trim().equals("")){								 
-						sql +=" AND " +
-							  CenSolicModifExportarFotoBean.T_NOMBRETABLA +"."+ CenSolicModifExportarFotoBean.C_FECHAALTA + ">= TO_DATE ('" + fechaI + "', 'DD/MM/YYYY')";
-					}							
-	
-					if (!fechaF.trim().equals("")){								 
-						sql +=" AND (" +
-						  CenSolicModifExportarFotoBean.T_NOMBRETABLA +"."+ CenSolicModifExportarFotoBean.C_FECHAALTA + "<= TO_DATE ('" + fechaF + "', 'DD/MM/YYYY')" +									 
-						  " OR " +
-						  GstDate.dateBetween0and24h(CenSolicModifExportarFotoBean.C_FECHAALTA,fechaF)+")";									 
-					}
-	        			
-//////////////////////////////////////////////////////////////////////////////////////////////////////////							
-
-						
 		sql+=" ) union ";
 		sql+=" (SELECT " + 
 		ExpSolicitudBorradoBean.T_NOMBRETABLA + "." + ExpSolicitudBorradoBean.C_IDSOLICITUD + "," +
@@ -534,22 +497,18 @@ public class CenSolicitModifDatosBasicosAdm extends MasterBeanAdministrador {
 	       try {
 	            RowsContainer rc = new RowsContainer(); 
 	            String sql ="SELECT " +
-							CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_IDSOLICITUD + "," +
-							CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_MOTIVO + "," +							
-							CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_PUBLICIDAD + "," +
-							CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_GUIAJUDICIAL + "," +
-							CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_ABONOS + "," +
-							CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_CARGOS + "," +							
-							CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_IDPERSONA + "," +
-			    			CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_IDINSTITUCION + "," +
-			    			CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_IDLENGUAJE + "," +
-			    			CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_FECHAALTA + "," +
-			    			CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_IDESTADOSOLIC + "," +
-							CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_FECHAMODIFICACION + "," +
-	            			CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_USUMODIFICACION +
-							" FROM " + CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + 
+							CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDSOLICITUD + "," +
+							CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_MOTIVO + "," +							
+							CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_EXPORTARFOTO + "," +
+							CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDPERSONA + "," +
+			    			CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDINSTITUCION + "," +
+			    			CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_FECHAALTA + "," +
+			    			CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDESTADOSOLIC + "," +
+							CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_FECHAMODIFICACION + "," +
+	            			CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_USUMODIFICACION +
+							" FROM " + CenSolicModifExportarFotoBean.T_NOMBRETABLA + 
 							" WHERE " +
-							CenSolicitModifDatosBasicosBean.T_NOMBRETABLA +"."+ CenSolicitModifDatosBasicosBean.C_IDSOLICITUD + "=" + idSolic;
+							CenSolicModifExportarFotoBean.T_NOMBRETABLA +"."+ CenSolicModifExportarFotoBean.C_IDSOLICITUD + "=" + idSolic;
 														
 	            if (rc.findForUpdate(sql)) {
 	               for (int i = 0; i < rc.size(); i++){
@@ -557,13 +516,8 @@ public class CenSolicitModifDatosBasicosAdm extends MasterBeanAdministrador {
 	                  datos.add(fila);
 	               }
 	            } 
-	       }
-//			catch (SIGAException e) {
-//				throw e;
-//			}
-
-	       catch (Exception e) {
-	       	throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla de solicitudes de modificacion.");
+	       }catch (Exception e) {
+	       		throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla de solicitudes de modificacion.");
 	       }
 	       return datos;                        
 	    }
@@ -595,12 +549,12 @@ public class CenSolicitModifDatosBasicosAdm extends MasterBeanAdministrador {
 				Row row = (Row)original.firstElement();
 				hashOriginal = row.getRow();
 				
-				String idEstadoOriginal = (String)hashOriginal.get(CenSolicitModifDatosBasicosBean.C_IDESTADOSOLIC);
+				String idEstadoOriginal = (String)hashOriginal.get(CenSolicModifExportarFotoBean.C_IDESTADOSOLIC);
 				if (idEstadoOriginal!=null && !idEstadoOriginal.equals("10"))
 					return true;
 					
 				hash=(Hashtable)hashOriginal.clone();
-				hash.put(CenSolicitModifDatosBasicosBean.C_IDESTADOSOLIC,String.valueOf(ClsConstants.ESTADO_SOLICITUD_MODIF_DENEGADA));
+				hash.put(CenSolicModifExportarFotoBean.C_IDESTADOSOLIC,String.valueOf(ClsConstants.ESTADO_SOLICITUD_MODIF_DENEGADA));
 				if (!this.update(hash,hashOriginal)){
 					correcto=false;
 				}	
@@ -613,7 +567,7 @@ public class CenSolicitModifDatosBasicosAdm extends MasterBeanAdministrador {
        		throw new ClsExceptions (e, "Error al denegar la solicitud de datos basicos");
        }
        return correcto;                        
-    }	
+    }
 	
 	/** 
 	 * Procesa la solicitude de modificacion pasada como parametro (su estado pasa a realizado <br/>
@@ -642,46 +596,30 @@ public class CenSolicitModifDatosBasicosAdm extends MasterBeanAdministrador {
 				Row row = (Row)original.firstElement();
 				hashOriginal = row.getRow();
 				hash=(Hashtable)hashOriginal.clone();
-				hash.put(CenSolicitModifDatosBasicosBean.C_IDESTADOSOLIC,String.valueOf(ClsConstants.ESTADO_SOLICITUD_MODIF_REALIZADA));
+				hash.put(CenSolicModifExportarFotoBean.C_IDESTADOSOLIC,String.valueOf(ClsConstants.ESTADO_SOLICITUD_MODIF_REALIZADA));
 				
-				String idEstadoOriginal = (String)hashOriginal.get(CenSolicitModifDatosBasicosBean.C_IDESTADOSOLIC);
+				String idEstadoOriginal = (String)hashOriginal.get(CenSolicModifExportarFotoBean.C_IDESTADOSOLIC);
 				if (idEstadoOriginal!=null && !idEstadoOriginal.equals("10")) {
 					return true;
 				} else {
 					// Actualizo el estado de la solicitud a realizada				
 					if (!this.update(hash,hashOriginal)){
 						correcto=false;
-					}	
-					else{
+					} else {
 						// Obtengo el registro a modificar de la tabla cliente y preparo el bean correspondiente
 						CenClienteAdm adminCliente = new CenClienteAdm(this.usrbean);
 						clienteOriginal=adminCliente.getEntradaCliente((String)hash.get(CenClienteBean.C_IDPERSONA),(String)hash.get(CenClienteBean.C_IDINSTITUCION));
 						clienteModificado.setIdPersona(new Long((String)clienteOriginal.get(CenClienteBean.C_IDPERSONA)));
 						clienteModificado.setIdInstitucion(new Integer((String)clienteOriginal.get(CenClienteBean.C_IDINSTITUCION)));
 						clienteModificado.setFechaAlta((String)clienteOriginal.get(CenClienteBean.C_FECHAALTA));					
-						clienteModificado.setCaracter((String)clienteOriginal.get(CenClienteBean.C_CARACTER));
-						clienteModificado.setFotografia((String)clienteOriginal.get(CenClienteBean.C_FOTOGRAFIA));
-/* *** El campo sexo se obtiene de la tabla cen_persona						
-						clienteModificado.setSexo((String)clienteOriginal.get(CenClienteBean.C_SEXO));
-/***************/					
-						clienteModificado.setPublicidad((String)hash.get(CenSolicitModifDatosBasicosBean.C_PUBLICIDAD));
-						clienteModificado.setGuiaJudicial((String)hash.get(CenSolicitModifDatosBasicosBean.C_GUIAJUDICIAL));
-						clienteModificado.setAbonosBanco((String)hash.get(CenSolicitModifDatosBasicosBean.C_ABONOS));
-						clienteModificado.setCargosBanco((String)hash.get(CenSolicitModifDatosBasicosBean.C_CARGOS));
-						clienteModificado.setAsientoContable((String)clienteOriginal.get(CenClienteBean.C_ASIENTOCONTABLE));
-						clienteModificado.setComisiones((String)clienteOriginal.get(CenClienteBean.C_COMISIONES));
-						clienteModificado.setIdTratamiento(new Integer((String)clienteOriginal.get(CenClienteBean.C_IDTRATAMIENTO)));
-						clienteModificado.setIdLenguaje((String)hash.get(CenSolicitModifDatosBasicosBean.C_IDLENGUAJE));										
+						clienteModificado.setExportarFoto(((String)hash.get(CenSolicModifExportarFotoBean.C_EXPORTARFOTO)));
 						clienteModificado.setOriginalHash(clienteOriginal);					
 						// Fijamos los datos del Historico
-						beanHist.setMotivo((String)hash.get(CenSolicitModifDatosBasicosBean.C_MOTIVO));			
+						beanHist.setMotivo((String)hash.get(CenSolicModifExportarFotoBean.C_MOTIVO));			
 						// Actualizo el registro cliente con historico				
 						if (!adminCliente.updateConHistorico(clienteModificado,beanHist, idioma)){
 							correcto=false;
-						}
-						
-						else
-						{
+						} else {
 							// Lanzamos el proceso de revision de suscripciones del letrado
 							String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado((String)hash.get(CenClienteBean.C_IDINSTITUCION),
 																									  (String)hash.get(CenClienteBean.C_IDPERSONA),
@@ -692,7 +630,7 @@ public class CenSolicitModifDatosBasicosAdm extends MasterBeanAdministrador {
 						}
 					}				
 				}						
-				}				
+			}				
        }
 		catch (SIGAException e) {
 			throw e;

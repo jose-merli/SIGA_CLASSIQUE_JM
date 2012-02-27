@@ -193,6 +193,15 @@ import com.siga.comun.vos.Vo;
  			e.printStackTrace();
  		}
  	}
+ 	
+ 	public void setExportarFoto(String dato) { 
+ 		try {
+ 			UtilidadesHash.set(this.datos,CenClienteBean.C_EXPORTARFOTO, dato);
+ 		} catch (Exception e) {
+ 			// escribimos la traza de momento
+ 			e.printStackTrace();
+ 		}
+ 	}
 	
  	public void setAbono (String dato) { 
  		try {
@@ -390,6 +399,10 @@ import com.siga.comun.vos.Vo;
  	public String getGuiaJudicial	() 	{ 
  		return UtilidadesHash.getString(this.datos, CenClienteBean.C_GUIAJUDICIAL);		
  	}
+ 	
+ 	public String getExportarFoto	() 	{ 
+ 		return UtilidadesHash.getString(this.datos, CenClienteBean.C_EXPORTARFOTO);		
+ 	} 	
 
  	public String getAbono	() 	{ 
  		return UtilidadesHash.getString(this.datos, CenClienteBean.C_ABONOSBANCO);		

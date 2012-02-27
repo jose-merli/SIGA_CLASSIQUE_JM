@@ -39,7 +39,8 @@
 	// valores para el combo de tipos de modificaciones
 	String valoresSolic[] = {String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_GENERALES),String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DIRECCIONES),
 							 String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_CUENTAS_BANCARIAS),String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_CV),
-							 String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_FACTURACION),String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_EXPEDIENTES)};   
+							 String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_FACTURACION),String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_EXPEDIENTES),
+							 String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_EXP_FOTO)};   
 
 	String buscar = (String)request.getAttribute("buscar");
 	String funcionBuscar = "";

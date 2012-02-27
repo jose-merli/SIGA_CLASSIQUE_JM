@@ -9,6 +9,7 @@
 package com.siga.beans;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -1069,6 +1070,39 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 			throw new ClsExceptions("No se ha realizado correctamente la compra :" +e); 
 		}
 		return cargaOk;
+		
+	}
+	
+	public String descripcionCertificado (String candidata, String idInstitucion) throws Exception{
+		RowsContainer rc = new RowsContainer(); 
+	    String desc = "";
+		
+	    try {
+	        String[] cand = candidata.split(",");	
+	        String sql ="SELECT " +
+	        			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_DESCRIPCION + 	
+						" FROM " + PysProductosInstitucionBean.T_NOMBRETABLA +  
+						" WHERE " +
+						PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDINSTITUCION + "=" + idInstitucion +
+						" AND " +
+						PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDTIPOPRODUCTO + "=" + cand[0] +
+						" AND " +
+						PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDPRODUCTO + "=" + cand[1] +
+						" AND " +
+						PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION + "=" + cand[2];
+							
+            if (rc.findForUpdate(sql)) {
+               for (int i = 0; i < rc.size(); i++){
+                  Row fila = (Row) rc.get(i);
+                  desc = fila.getString(PysProductosInstitucionBean.C_DESCRIPCION);
+               }
+            } 
+	   
+		} catch (Exception e) {
+	     	throw e;
+	    }
+	    
+		return desc; 
 		
 	}
 }

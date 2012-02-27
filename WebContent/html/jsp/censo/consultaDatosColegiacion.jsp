@@ -40,6 +40,9 @@
 	String idInstitucion=(String)request.getAttribute("IDINSTITUCIONPERSONA"); // Obtengo el identificador de la institucion	
 	String motivo=(String)request.getAttribute("MOTIVO");
 	String activar=(String)request.getAttribute("ACTIVAR");
+	boolean estadoCertificacion = (Boolean)request.getAttribute("ESTADOCERTIFICACION");
+	String certificadoCorrecto = (String)request.getAttribute("CERTIFICADOCORRECTO");
+	
 	if (motivo==null){
 	  motivo="";
 	}
@@ -372,6 +375,29 @@
 				</td>
 			</tr>
 		</table>		
+<table width="100%" align="center">		
+	<tr>				
+		<td width="100%" align="center">
+		<siga:ConjCampos leyenda="censo.consultaDatosColegiacion.literal.certificacion">
+			<table align="center" width="100%" border="0" cellpadding="0"  cellspacing="0" height="20%">
+				<% if (estadoCertificacion){ %>
+					<td class="labelText">
+						<siga:Idioma key="censo.consultaDatosColegiacion.literal.certCorrecta"/>
+					</td>
+				<% } else { %>	
+					<td class="labelText">
+						<font color=red><b></b><siga:Idioma key="censo.consultaDatosColegiacion.literal.certIncorrecta"/></b></font>
+					</td>
+					<td class="labelText">
+						<siga:Idioma key="censo.consultaDatosColegiacion.literal.certEsperado"/>:&nbsp;&nbsp;&nbsp;&nbsp;
+						<html:text name="DatosColegiacionForm" property="certificadoCorrecto" styleClass="box" readonly="true" size="30" value="<%=certificadoCorrecto%>"></html:text>
+					</td>
+				<% } %>
+			</table>
+		</siga:ConjCampos>	
+		</td>
+	</tr>
+</table>
 <table width="100%" align="center"  >		
 	<tr>				
 		<td width="100%" align="center" >

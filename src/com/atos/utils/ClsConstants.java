@@ -146,6 +146,7 @@ public class ClsConstants {
 	// Tipos solicitudes de modificacion especificas
 	public static final int TIPO_SOLICITUD_MODIF_DATOS_GENERALES	= 10;
 	public static final int TIPO_SOLICITUD_MODIF_DIRECCIONES	    = 30;
+	public static final int TIPO_SOLICITUD_MODIF_EXP_FOTO		    = 35;
 	public static final int TIPO_SOLICITUD_MODIF_CUENTAS_BANCARIAS	= 40;	
 	public static final int TIPO_SOLICITUD_MODIF_DATOS_CV			= 50;
 	public static final int TIPO_SOLICITUD_MODIF_DATOS_FACTURACION	= 70;

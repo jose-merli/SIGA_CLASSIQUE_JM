@@ -13,21 +13,44 @@
 package com.siga.censo.action;
 
 
-import javax.servlet.http.*;
-import javax.transaction.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Vector;
 
-import org.apache.struts.action.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.UserTransaction;
 
-import com.atos.utils.*;
-import com.atos.utils.ClsExceptions;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+
 import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.beans.*;
-import com.siga.general.*;
+import com.siga.beans.CenClienteAdm;
+import com.siga.beans.CenColegiadoAdm;
+import com.siga.beans.CenColegiadoBean;
+import com.siga.beans.CenDatosColegialesEstadoAdm;
+import com.siga.beans.CenDatosColegialesEstadoBean;
+import com.siga.beans.CenEstadoActividadPersonaAdm;
+import com.siga.beans.CenEstadoActividadPersonaBean;
+import com.siga.beans.CenEstadoColegialBean;
+import com.siga.beans.CenHistoricoAdm;
+import com.siga.beans.CenHistoricoBean;
+import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.CenPersonaBean;
+import com.siga.beans.CenTiposSeguroAdm;
+import com.siga.beans.CerSolicitudCertificadosAdm;
+import com.siga.beans.GenParametrosAdm;
+import com.siga.beans.PysProductosInstitucionAdm;
 import com.siga.censo.form.DatosColegiacionForm;
-import java.util.*;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
 
 
 public class DatosColegiacionAction extends MasterAction {
@@ -109,12 +132,14 @@ public class DatosColegiacionAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
-	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	protected String abrir (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String numero = "";
 		String nombre = "";
 		String result = "abrir";
-				
+		boolean estadoCertificacion = false;
+		String certificadoCorrecto = "";
 		CenColegiadoBean datosColegiales;	
+
 		try{
 			
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");		
@@ -163,7 +188,24 @@ public class DatosColegiacionAction extends MasterAction {
 			}else{
 				request.setAttribute("ACTIVAR","0");
 			}
+			CenClienteAdm clienteAdm = new CenClienteAdm(user);
+			Vector datosEstado=clienteAdm.getDatosColegiacion(idPersona,idInstitucion, user.getLanguage());
+			ArrayList<String> candidatas = getCertificadosCandidatosCorrectos(datosEstado,idInstitucion,idPersona.toString(), user);
+
+			if (candidatas != null && candidatas.size() > 0){
+				if(isCorrectoEstadoCertificacion(candidatas, idPersona, user)){
+					estadoCertificacion = true;
+				}else{
+					estadoCertificacion = false;
+					PysProductosInstitucionAdm pysAdm = new PysProductosInstitucionAdm(user);
+					certificadoCorrecto = pysAdm.descripcionCertificado(candidatas.get(0),"2000");
+				}					
+			}else{
+				estadoCertificacion = true;
+			}
 			
+			request.setAttribute("CERTIFICADOCORRECTO", certificadoCorrecto);
+			request.setAttribute("ESTADOCERTIFICACION", estadoCertificacion);				
 			
 		} 
 		catch (Exception e) { 
@@ -252,10 +294,11 @@ public class DatosColegiacionAction extends MasterAction {
 		
 		String result = "abrirDatosColegiacion";
 		UserTransaction tx = null;
-		Vector datosEstado;
+		Vector datosEstado = null;
 		Vector vEstado;
-		try { 
 
+		try { 
+			DatosColegiacionForm miForm = (DatosColegiacionForm)formulario;
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			String accion = (String)request.getParameter("accion");
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
@@ -264,18 +307,126 @@ public class DatosColegiacionAction extends MasterAction {
 			String idInstitucion=usr.getLocation();
 			Long idPersona = new Long(request.getParameter("idPersona"));
 			datosEstado=clienteAdm.getDatosColegiacion(idPersona,idInstitucion, usr.getLanguage());
-			
+		
 			request.setAttribute("ACCION", accion);
 			request.setAttribute("DATESTADO", datosEstado);
-			
-			
-					
 		} 
 		catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null); 
 		}					
 		
 		return result;
+	}
+	
+	
+	private boolean isCorrectoEstadoCertificacion(ArrayList<String> candidatas, Long idPersona, UsrBean usr) throws ClsExceptions{
+		
+		boolean tieneCertificadoCorrecto = false;
+		int i = 0;
+		CerSolicitudCertificadosAdm cerAdm = new CerSolicitudCertificadosAdm(usr);
+		try {
+			while(!tieneCertificadoCorrecto && i < candidatas.size()){
+				String[] cand = candidatas.get(i).split(",");				
+					if(cerAdm.tieneCertificadosPersonaInstitucion("2000", idPersona.toString(), cand[0], cand[1], cand[2])){
+						tieneCertificadoCorrecto = true;
+					}	
+				i++;
+			}
+		
+		} catch (ClsExceptions e) {
+			throw e;
+		}
+		
+		return tieneCertificadoCorrecto;
+	}
+	
+	private ArrayList<String> getCertificadosCandidatosCorrectos(Vector datosEstado, String idInstitucion, String idPersona, UsrBean usr) throws ClsExceptions{
+		
+		ArrayList<String> candidatas = new ArrayList<String>();
+		GenParametrosAdm admParametros = new GenParametrosAdm(usr);
+		CenDatosColegialesEstadoAdm coleAdm = new CenDatosColegialesEstadoAdm(usr);
+
+		try {
+			int anio_control = Integer.parseInt(admParametros.getValor(idInstitucion,"CER", "AÑO_CONTROL_CERTIFICADOS","0"));
+			String cni_certOrdinario = admParametros.getValor(idInstitucion,"CER", "CONTROL_CERTIFICADO_ORDINARIO","0,0,0");
+			String cni_certNoEjerciente = admParametros.getValor(idInstitucion,"CER", "CONTROL_CNI_NOEJERCIENTE","0,0,0");
+			String cni_certNuevaIncorp = admParametros.getValor(idInstitucion,"CER", "CONTROL_CUOTA_NUEVA_INCORPORACION","0,0,0");
+			String cni_certCambioAbogado = admParametros.getValor(idInstitucion,"CER", "CONTROL_CNI_CAMBIO_ABOGADO","0,0,0");
+			
+			if(datosEstado != null && datosEstado.size()>0){				
+				
+				for (int i = 0; i < datosEstado.size(); i++) {
+					Row fila = (Row) datosEstado.get(i);
+					String fechaEstado = fila.getString("FECHAESTADO");
+					if(fechaEstado != null & !fechaEstado.equals("")){
+						int fe = Integer.parseInt(fechaEstado.substring(0,4));
+						
+						if(fe >= anio_control){
+							Vector datos =  coleAdm.getDatosColegialesPersonaInstitucion(fila.getString("IDINSTITUCION"), idPersona);
+							
+							switch (Integer.parseInt(fila.getString("IDESTADOCOLEGIAL"))) {
+								case ClsConstants.ESTADO_COLEGIAL_EJERCIENTE:
+									if (datos != null && datos.size() > 0){
+										//Caso 1 de análisis INC_9125_SIGA
+										if (datos.size() == 1){
+											candidatas.add(cni_certNuevaIncorp);
+											
+										} else if (datos.size() == 2){ 
+											//Caso 3 de análisis INC_9125_SIGA
+											if(isEstadoEncontrado(datos,ClsConstants.ESTADO_COLEGIAL_SINEJERCER)){
+												candidatas.add(cni_certCambioAbogado);
+											}
+											
+										} else {
+											Hashtable registro = (Hashtable)datos.get(0);
+											if(registro.get("IDESTADO").equals(""+ClsConstants.ESTADO_COLEGIAL_SINEJERCER)){ //Caso 4 de análisis INC_9125_SIGA	
+												candidatas.add(cni_certCambioAbogado);
+											} else if (registro.get("IDESTADO").equals(""+ClsConstants.ESTADO_COLEGIAL_EJERCIENTE)){ //Caso 5a de análisis INC_9125_SIGA
+												candidatas.add(cni_certOrdinario);
+											} else {
+												if(isEstadoEncontrado(datos,ClsConstants.ESTADO_COLEGIAL_SINEJERCER)){  //Caso 5b de análisis INC_9125_SIGA
+													candidatas.add(cni_certOrdinario);
+												}
+											}
+										}
+									}
+									
+									break;
+			
+								case ClsConstants.ESTADO_COLEGIAL_SINEJERCER:
+									if (datos != null){
+										//Caso 2 de análisis INC_9125_SIGA
+										if (datos.size() == 1){
+											candidatas.add(cni_certNoEjerciente);
+										}
+									}
+									break;
+									
+								default:
+									break;
+							}					
+						}
+					}
+				}
+			}		
+		} catch (ClsExceptions e) {
+			throw e;
+		}
+		
+		return candidatas;
+	}
+	
+	private boolean isEstadoEncontrado(Vector datosColegiales, int estadoAEncontrar) {
+		boolean encontrado = false;
+		int i = 0;
+		while(!encontrado && i < datosColegiales.size()){
+			Hashtable registro = (Hashtable)datosColegiales.get(i);
+			if(registro.get("IDESTADO").equals(""+estadoAEncontrar)){
+				encontrado = true;
+			}
+			i++;
+		}
+		return encontrado;
 	}
 	
 	protected String baja(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {

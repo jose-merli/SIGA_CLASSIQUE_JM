@@ -606,7 +606,7 @@ public class DatosRegistralesAction extends MasterAction{
 		if(nif!=null && !nif.equals("")){
 			CenPersonaAdm perAdm = new CenPersonaAdm(user);
 			CenPersonaBean perBean = new CenPersonaBean();			
-			perBean = perAdm.getPersona(nif);
+			perBean = perAdm.getPersona2(nif);
 			if(perBean != null){
 				miForm.setIdPersonaNotario(""+perBean.getIdPersona());
 				miForm.setApellido2(perBean.getApellido2());

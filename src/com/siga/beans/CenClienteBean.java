@@ -20,7 +20,7 @@ public class CenClienteBean extends MasterBean {
 	
 
 	private String 	abonosBanco, asientoContable, caracter, cargosBanco, comisiones, fechaAlta, fotografia, 
-					guiaJudicial, idLenguaje, publicidad,  letrado, fechaCarga,norevista,noredabogacia;
+					guiaJudicial, idLenguaje, publicidad,  letrado, fechaCarga,norevista,noredabogacia, exportarFoto;
 	private boolean existeDatos;
 
 	/* Nombre tabla */
@@ -44,6 +44,7 @@ public class CenClienteBean extends MasterBean {
 	static public final String C_FECHACARGA			= "FECHACARGA";
 	static public final String C_NOENVIARREVISTA			= "NOENVIARREVISTA";
 	static public final String C_NOAPARECERREDABOGACIA			= "NOAPARECERREDABOGACIA";
+	static public final String C_EXPORTARFOTO		= "EXPORTARFOTO";
 
 
 	/**
@@ -238,4 +239,12 @@ public class CenClienteBean extends MasterBean {
 	public void setExisteDatos(boolean existeDatos) {
 		this.existeDatos = existeDatos;
 	}
+	public String getExportarFoto() {
+		return exportarFoto;
+	}
+	public void setExportarFoto(String exportarFoto) {
+		this.exportarFoto = exportarFoto;
+	}
+	
+	
 }

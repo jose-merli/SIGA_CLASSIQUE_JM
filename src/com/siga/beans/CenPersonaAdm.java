@@ -454,6 +454,30 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 			throw new ClsExceptions (e, "Error al comprobar existencia de NIF/CIF");
 		}
 	}
+	
+	public CenPersonaBean getPersona2 (String nifcif) throws ClsExceptions{
+		 
+		try {
+			
+			CenPersonaBean perBean = null;
+			Hashtable codigos = new Hashtable();
+			codigos.put(new Integer(1),UtilidadesString.LTrim(nifcif.toUpperCase(),"0"));
+			
+			Vector personas = select("WHERE ltrim(UPPER(" +CenPersonaBean.C_NIFCIF+"),'0') = '" +nifcif+"' ");	
+			
+			if (personas != null) {
+				perBean = (CenPersonaBean)personas.get(0);
+				
+			}
+			
+			
+			return perBean;
+		}
+		
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al comprobar existencia de NIF/CIF");
+		}
+	}	
 
 	/**
 	 * Devuelve un cadena con el nombre y apellidos de una persona. 

@@ -886,20 +886,20 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 			// si es letrado y no tiene alguna colegiación ejerciente,
 			// no se comprueba ni la dirección de despacho ni la de guia judicial
 			if (!(esLetrado.equals("1") && !tieneColegiacionEjerciente)){
-			// SI ES EJERCIENTE O LETRADO QUE EXISTA UNA DIRECCION DE DESPACHO
-			if ((((estado!=null && estado.intValue() == ClsConstants.ESTADO_COLEGIAL_EJERCIENTE) || esLetrado.equals("1"))) && 
-				(this.getNumDirecciones(beanDir, ClsConstants.TIPO_DIRECCION_DESPACHO) < 1)) {
-				SIGAException sigaExp = new SIGAException ("messages.censo.direcciones.tipoDespacho");
-				throw sigaExp;
+				// SI ES EJERCIENTE O LETRADO QUE EXISTA UNA DIRECCION DE DESPACHO
+				if ((((estado!=null && estado.intValue() == ClsConstants.ESTADO_COLEGIAL_EJERCIENTE) || esLetrado.equals("1"))) && 
+					(this.getNumDirecciones(beanDir, ClsConstants.TIPO_DIRECCION_DESPACHO) < 1)) {
+					SIGAException sigaExp = new SIGAException ("messages.censo.direcciones.tipoDespacho");
+					throw sigaExp;
+				}
+				
+				// SI ES EJERCIENTE O LETRADO QUE EXISTA UNA DIRECCION DE GUIA JUDICIAL
+				if ((((estado!=null && estado.intValue() == ClsConstants.ESTADO_COLEGIAL_EJERCIENTE)) || esLetrado.equals("1"))&& 
+					(this.getNumDirecciones(beanDir, ClsConstants.TIPO_DIRECCION_GUIA) < 1)) {
+					SIGAException sigaExp = new SIGAException ("messages.censo.direcciones.tipoGuia");
+					throw sigaExp;
+				}
 			}
-			
-			// SI ES EJERCIENTE O LETRADO QUE EXISTA UNA DIRECCION DE GUIA JUDICIAL
-			if ((((estado!=null && estado.intValue() == ClsConstants.ESTADO_COLEGIAL_EJERCIENTE)) || esLetrado.equals("1"))&& 
-				(this.getNumDirecciones(beanDir, ClsConstants.TIPO_DIRECCION_GUIA) < 1)) {
-				SIGAException sigaExp = new SIGAException ("messages.censo.direcciones.tipoGuia");
-				throw sigaExp;
-			}
-		}
 		}
 		catch (SIGAException e) {
 			throw e;

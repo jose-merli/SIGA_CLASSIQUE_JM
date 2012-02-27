@@ -981,14 +981,14 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 				//codigos.put(new Integer(5),numeroComunitario);
            
             	//v = this.selectBind(" WHERE IDINSTITUCION = :1 AND  (NCOLEGIADO = :2 OR NCOMUNITARIO = :3 OR NCOLEGIADO = :5 OR NCOMUNITARIO = :4)" ,codigos);
-				v = this.selectBind(" WHERE IDINSTITUCION = :1 AND "+numeroComunitario+" IN (NCOLEGIADO,NCOMUNITARIO)" ,codigos);
+				v = this.selectBind(" WHERE IDINSTITUCION = :1 AND '"+numeroComunitario+"' IN (NCOLEGIADO,NCOMUNITARIO)" ,codigos);
             }
             else
             {
             	codigos.put(new Integer(1),idInstitucion.toString());
 				//codigos.put(new Integer(2),numeroColegiado);
 				//codigos.put(new Integer(3),numeroColegiado);				            	
-				v = this.selectBind(" WHERE IDINSTITUCION = :1 AND "+numeroColegiado+" IN (NCOLEGIADO,NCOMUNITARIO)" ,codigos);
+				v = this.selectBind(" WHERE IDINSTITUCION = :1 AND '"+numeroColegiado+"' IN (NCOLEGIADO,NCOMUNITARIO)" ,codigos);
             	//v = this.selectBind(" WHERE IDINSTITUCION = :1 AND  (NCOLEGIADO = :2 OR NCOMUNITARIO = :3)" ,codigos);
             }
             /*

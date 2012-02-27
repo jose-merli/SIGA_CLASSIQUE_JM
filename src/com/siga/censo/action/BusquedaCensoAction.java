@@ -1288,7 +1288,7 @@ public class BusquedaCensoAction extends MasterAction {
 			CenPersonaBean perBean = new CenPersonaBean();
 			
 			if(infoCliente != null){
-				perBean = perAdm.getPersona(nif);
+				perBean = perAdm.getPersona2(nif);
 				miForm.setIdPersona((String)infoCliente.get("ID_LETRADO"));
 				miForm.setColegiadoen((String)infoCliente.get("ID_COLEGIO"));
 				miForm.setNumeroColegiado((String)infoCliente.get("NUM_COLEGIADO"));

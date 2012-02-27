@@ -200,6 +200,22 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 				original.addElement(temporal);
 				result="verDirecciones";
 			}
+			if (tipoBusqueda.equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_EXP_FOTO))){
+				// Obtencion de los datos a modificar				
+				CenSolicModifExportarFotoAdm adminExpFoto = new CenSolicModifExportarFotoAdm(this.getUserBean(request));				
+				modificacion=adminExpFoto.obtenerEntradaSolicitudModificacion((String)ocultos.get(2));
+				// Obtencion de los datos originales
+				CenClienteAdm adminC = new CenClienteAdm(this.getUserBean(request));				
+				temporal.put(CenClienteBean.C_IDPERSONA,(String)ocultos.get(0));
+				temporal.put(CenClienteBean.C_IDINSTITUCION,(String)ocultos.get(1));				
+				Vector temporalV=adminC.select(temporal);
+				// Transformo bean en una hastable con los datos que me interesan
+				CenClienteBean beanOriginal=(CenClienteBean) temporalV.firstElement();
+				Hashtable hashOriginal=new Hashtable();
+				hashOriginal.put(CenClienteBean.C_EXPORTARFOTO,beanOriginal.getExportarFoto());
+				original.addElement(hashOriginal);
+				result="verExportarFoto";
+			}			
 			if (tipoBusqueda.equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_CUENTAS_BANCARIAS))){
 				// Obtencion de los datos a modificar				
 				CenSolicModiCuentasAdm adminCB = new CenSolicModiCuentasAdm(this.getUserBean(request));				
@@ -395,6 +411,7 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 			SolicitudesModificacionEspecificasForm form = (SolicitudesModificacionEspecificasForm) formulario;
 			CenSolicitModifDatosBasicosAdm adminDB = new CenSolicitModifDatosBasicosAdm(this.getUserBean(request));
 			CenSoliModiDireccionesAdm adminD = new CenSoliModiDireccionesAdm(this.getUserBean(request));
+			CenSolicModifExportarFotoAdm adminExpFoto = new CenSolicModifExportarFotoAdm(this.getUserBean(request));
 			CenSolicModiCuentasAdm adminCB = new CenSolicModiCuentasAdm(this.getUserBean(request));
 			CenSolicitudModificacionCVAdm adminCV = new CenSolicitudModificacionCVAdm(this.getUserBean(request));
 			CenSolModiFacturacionServicioAdm adminFact = new CenSolModiFacturacionServicioAdm(this.getUserBean(request));
@@ -411,6 +428,10 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 									
 					vector=adminD.getSolicitudes(form.getIdInstitucion(),form.getEstadoSolicitudModif(),form.getFechaDesde(),form.getFechaHasta());				
 				}
+				if (tipoBusqueda.equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_EXP_FOTO))){
+									
+					vector=adminExpFoto.getSolicitudes(form.getIdInstitucion(),form.getEstadoSolicitudModif(),form.getFechaDesde(),form.getFechaHasta());				
+				}				
 				if (tipoBusqueda.equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_CUENTAS_BANCARIAS))){
 									
 					vector=adminCB.getSolicitudes(form.getIdInstitucion(),form.getEstadoSolicitudModif(),form.getFechaDesde(),form.getFechaHasta());				
@@ -625,7 +646,18 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 							tx.rollback();
 						}
 						
-					//}	
+				}else if (solicitudesTipoModif[i].equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_EXP_FOTO))){
+					CenSolicModifExportarFotoAdm adminExpFoto = new CenSolicModifExportarFotoAdm(this.getUserBean(request));					
+					tx.begin();					
+					correcto=adminExpFoto.procesarSolicitud(solicitudes[i],this.getUserName(request), this.getLenguaje(request));
+					if (correcto){							
+						procesados++;
+						tx.commit();
+					} else{
+						noProcesadas.add(solicitudes[i]);
+						tx.rollback();
+					}						
+						
 				}else if (solicitudesTipoModif[i].equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DIRECCIONES))){
 					CenSoliModiDireccionesAdm adminDir = new CenSoliModiDireccionesAdm(this.getUserBean(request));
 			      // 	i=0;
@@ -784,6 +816,16 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 							tx.rollback();
 						//i++;
 					//}	
+				} else if (solicitudesTipoModif[i].equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_EXP_FOTO))){
+					CenSolicModifExportarFotoAdm adminExpFoto  = new CenSolicModifExportarFotoAdm(this.getUserBean(request));
+					tx.begin();
+					correcto=adminExpFoto.denegarSolicitud(solicitudes[i]);
+					if (correcto){
+						procesados++;
+						tx.commit();
+					} else
+						tx.rollback();
+					
 				}else if (solicitudesTipoModif[i].equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DIRECCIONES))){
 					CenSoliModiDireccionesAdm adminDir = new CenSoliModiDireccionesAdm(this.getUserBean(request));
 			       	//i=0;

@@ -8,6 +8,8 @@ package com.siga.beans;
 
 import java.util.Date;
 import java.util.Hashtable;
+
+import java.util.Vector;
 import com.atos.utils.*;
 import com.siga.Utilidades.*;
 import com.siga.general.SIGAException;
@@ -565,4 +567,36 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 		}
 		return false;
 	}	
+	
+	public Vector getDatosColegialesPersonaInstitucion(String idInstitucion, String idPersona) throws ClsExceptions
+	{
+		Vector salida = new Vector();
+		RowsContainer rows = new RowsContainer();
+		Hashtable codigos=new Hashtable();
+		StringBuffer sql = new StringBuffer();
+		sql.append("select * from " + CenDatosColegialesEstadoBean.T_NOMBRETABLA);
+		sql.append(" where " + CenDatosColegialesEstadoBean.C_IDINSTITUCION + " = " + idInstitucion);
+		sql.append(" and " + CenDatosColegialesEstadoBean.C_IDPERSONA + " = " + idPersona);	
+		sql.append(" ORDER BY fechaestado ");
+		try{
+			
+            RowsContainer rc = this.findBind(sql.toString(),codigos);
+			if (rc!=null) {
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable)fila.getRow(); 
+					if (registro != null) 
+						salida.add(registro);
+				}
+			}
+
+
+		} catch (Exception e) {
+			throw new ClsExceptions(e,"Error al buscar los certificado de una persona en una institución. ");
+		}
+
+		return salida;
+
+	}		
+	
 }

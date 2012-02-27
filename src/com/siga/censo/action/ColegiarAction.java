@@ -235,6 +235,7 @@ public class ColegiarAction extends MasterAction
 				beanClienteDestino.setComisiones (ClsConstants.DB_FALSE);					
 				beanClienteDestino.setCaracter (ClsConstants.TIPO_CARACTER_PUBLICO);
 				beanClienteDestino.setLetrado (ClsConstants.DB_FALSE);
+				beanClienteDestino.setExportarFoto("0");
 				
 				if (! admCliente.insert (beanClienteDestino))
 					throw new SIGAException (admCliente.getError ());
@@ -321,6 +322,7 @@ public class ColegiarAction extends MasterAction
 			hashDir.put (CenDireccionesBean.C_IDPERSONA, idPersona);
 			hashDir.put (CenDireccionesBean.C_IDINSTITUCION, idInstitucionOrigen);
 			Vector listaBeanDireccion = admDir.select (hashDir);
+
 			if ((listaBeanDireccion != null) && (listaBeanDireccion.size () > 0)) {
 				Long idDireccionDestino, idDireccionOrigen;
 				CenDireccionesBean beanDir;
@@ -329,36 +331,46 @@ public class ColegiarAction extends MasterAction
 					
 					//obteniendo direccion de Consejo
 					beanDir = (CenDireccionesBean) listaBeanDireccion.get (i);
-					idDireccionOrigen = beanDir.getIdDireccion ();
-					direccion = new Direccion();
-					String tiposDir ="";
-					
-					//buscando los tipos de la direccion del consejo
-					Hashtable hashDirTipoDir = new Hashtable ();
-					hashDirTipoDir.put (CenDireccionTipoDireccionBean.C_IDPERSONA, beanDir.getIdPersona ());
-					hashDirTipoDir.put (CenDireccionTipoDireccionBean.C_IDINSTITUCION, idInstitucionOrigen);
-					hashDirTipoDir.put (CenDireccionTipoDireccionBean.C_IDDIRECCION, idDireccionOrigen);
-					Vector beanDireccionTipoDireccion = admTipoDir.select (hashDirTipoDir);
-					if ((beanDireccionTipoDireccion != null) && (beanDireccionTipoDireccion.size () >0)) {
-						CenDireccionTipoDireccionBean beanTipoDir;
-						for (int j=0; j < beanDireccionTipoDireccion.size (); j++){
-							//insertando tipo direccion del consejo en colegio
-							beanTipoDir = (CenDireccionTipoDireccionBean) beanDireccionTipoDireccion.get (j); 
-							tiposDir = beanTipoDir.getIdTipoDireccion() + ",";
-						} //for
-					} //if
-					
-					direccion.insertar(beanDir, tiposDir, "", null, user);
-					
-					//enlazando la direccion de Consejo con la del Colegio
-					beanDir = (CenDireccionesBean) listaBeanDireccion.get (i);
-					beanDir.setIdInstitucion (new Integer (idInstitucionOrigen));
-					beanDir.setIdDireccionAlta (beanDir.getIdDireccion());
-					beanDir.setIdDireccion (idDireccionOrigen);
-					beanDir.setIdInstitucionAlta (new Integer (colegio));
-					
-					direccion.actualizar(beanDir, tiposDir, "", null, user);
-					
+					if(beanDir.getFechaBaja() == null || beanDir.getFechaBaja().equalsIgnoreCase("")){
+						idDireccionOrigen = beanDir.getIdDireccion ();
+						direccion = new Direccion();
+						String tiposDir ="";
+						
+						//buscando los tipos de la direccion del consejo
+						Hashtable hashDirTipoDir = new Hashtable ();
+						hashDirTipoDir.put (CenDireccionTipoDireccionBean.C_IDPERSONA, beanDir.getIdPersona ());
+						hashDirTipoDir.put (CenDireccionTipoDireccionBean.C_IDINSTITUCION, idInstitucionOrigen);
+						hashDirTipoDir.put (CenDireccionTipoDireccionBean.C_IDDIRECCION, idDireccionOrigen);
+						Vector beanDireccionTipoDireccion = admTipoDir.select (hashDirTipoDir);
+						if ((beanDireccionTipoDireccion != null) && (beanDireccionTipoDireccion.size () >0)) {
+							CenDireccionTipoDireccionBean beanTipoDir;
+							for (int j=0; j < beanDireccionTipoDireccion.size (); j++){
+								//insertando tipo direccion del consejo en colegio
+								beanTipoDir = (CenDireccionTipoDireccionBean) beanDireccionTipoDireccion.get (j); 
+								tiposDir += beanTipoDir.getIdTipoDireccion() + ",";
+							} //for
+						} //if
+						
+						if (tiposDir.contains("3")){
+							if(estadoColegial.equalsIgnoreCase("20")){
+								if (!tiposDir.contains("2")) tiposDir += "2,";
+								if (!tiposDir.contains("5")) tiposDir += "5,";
+							}
+						
+							//Insertamos en el colegio
+							beanDir.setIdInstitucion (new Integer (colegio));
+							direccion.insertar(beanDir, tiposDir, "", null, user);
+							
+							//enlazando la direccion de Consejo con la del Colegio
+							beanDir = (CenDireccionesBean) listaBeanDireccion.get (i);
+							beanDir.setIdInstitucion (new Integer (idInstitucionOrigen));
+							beanDir.setIdDireccionAlta (beanDir.getIdDireccion());
+							beanDir.setIdDireccion (idDireccionOrigen);
+							beanDir.setIdInstitucionAlta (new Integer (colegio));
+							
+							direccion.actualizar(beanDir, "", "", null, user);
+						}
+					}					
 				} //for
 			} //if
 			

@@ -599,6 +599,7 @@
 			<forward name="abrir" path="/html/jsp/censo/busquedaSolicitudesModificacionEspecificas.jsp"/>
 			<forward name="listar" path="/html/jsp/censo/consultaSolicitudesModificacionEspecificas.jsp"/>
 			<forward name="verDatosGenerales" path="/html/jsp/censo/verSolicitudDatosGenerales.jsp"/>
+			<forward name="verExportarFoto" path="/html/jsp/censo/verSolicitudExportarFoto.jsp"/>
 			<forward name="verDirecciones" path="/html/jsp/censo/verSolicitudDirecciones.jsp"/>
 			<forward name="verCuentasBancarias" path="/html/jsp/censo/verSolicitudCuentasBancarias.jsp"/>
 			<forward name="verDatosCV" path="/html/jsp/censo/verSolicitudDatosCV.jsp"/>

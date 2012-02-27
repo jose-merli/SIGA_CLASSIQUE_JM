@@ -90,7 +90,8 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 				CenClienteBean.C_LETRADO,	
 				CenClienteBean.C_FECHACARGA,
 				CenClienteBean.C_NOENVIARREVISTA, 			
-				CenClienteBean.C_NOAPARECERREDABOGACIA
+				CenClienteBean.C_NOAPARECERREDABOGACIA,
+				CenClienteBean.C_EXPORTARFOTO
 		};
 		return campos;
 	} //getCamposBean ()
@@ -136,6 +137,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			bean.setFechaCarga (UtilidadesHash.getString (hash, CenClienteBean.C_FECHACARGA));
 			bean.setNoEnviarRevista (UtilidadesHash.getString (hash, CenClienteBean.C_NOENVIARREVISTA));
 			bean.setNoAparacerRedAbogacia (UtilidadesHash.getString (hash, CenClienteBean.C_NOAPARECERREDABOGACIA));
+			bean.setExportarFoto (UtilidadesHash.getString (hash, CenClienteBean.C_EXPORTARFOTO));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -172,6 +174,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			UtilidadesHash.set (htData, CenClienteBean.C_USUMODIFICACION,		b.getUsuMod());
 			UtilidadesHash.set (htData, CenClienteBean.C_NOENVIARREVISTA,		b.getNoEnviarRevista());
 			UtilidadesHash.set (htData, CenClienteBean.C_NOAPARECERREDABOGACIA,	b.getNoAparacerRedAbogacia());
+			UtilidadesHash.set (htData, CenClienteBean.C_EXPORTARFOTO,			b.getExportarFoto());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -494,7 +497,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 		    codigos.put(new Integer(2),idPersona.toString());
     		
 		    String sql = " SELECT "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+","+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+","+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+","+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+","+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NATURALDE+","+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDESTADOCIVIL+"," +CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_FALLECIDO+","+
-			 "  " + CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_CARACTER+","+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_FOTOGRAFIA+" ,  "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_SEXO+" ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_PUBLICIDAD+" ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_GUIAJUDICIAL+" ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_ABONOSBANCO+" ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_CARGOSBANCO+" , "+
+			 "  " + CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_CARACTER+","+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_FOTOGRAFIA+" ,  "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_SEXO+" ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_PUBLICIDAD+" ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_GUIAJUDICIAL+" ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_EXPORTARFOTO+" ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_ABONOSBANCO+" ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_CARGOSBANCO+" , "+
 			 "  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_ASIENTOCONTABLE+","+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_COMISIONES+" ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDTRATAMIENTO+" ,  "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+" ,  "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_FECHANACIMIENTO+" as "+CenPersonaBean.C_FECHANACIMIENTO+",  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDLENGUAJE+" ,  "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDTIPOIDENTIFICACION+" ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_FECHAALTA+"  " +" ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOAPARECERREDABOGACIA+ 
 		     ",  TRUNC(f_siga_calculoanios ("+CenPersonaBean.C_FECHANACIMIENTO+", SYSDATE)) AS EDAD  ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOENVIARREVISTA+
 			 " FROM   " + CenClienteBean.T_NOMBRETABLA + ",  "+CenPersonaBean.T_NOMBRETABLA +
@@ -4041,6 +4044,16 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			sql = "SELECT "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+" , " +
 			" DECODE("+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_COMUNITARIO+",'" + ClsConstants.DB_TRUE + "',"+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOMUNITARIO+","+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOLEGIADO+") AS "+CenColegiadoBean.C_NCOLEGIADO+"," +
 			" "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOMUNITARIO+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+","+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_FECHANACIMIENTO+", "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_FECHAINCORPORACION+", "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA+" , "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION+", "+
+		" (SELECT " + CenEstadoColegialBean.T_NOMBRETABLA+"."+CenEstadoColegialBean.C_IDESTADO +   
+			" FROM  "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"  ,  "+CenEstadoColegialBean.T_NOMBRETABLA+"   " + 
+			" WHERE "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDESTADO+" = "+CenEstadoColegialBean.T_NOMBRETABLA+"."+CenEstadoColegialBean.C_IDESTADO+"  " +
+			" AND "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDPERSONA+"= "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA+"  " +
+			" AND "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDINSTITUCION+" = "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION + " " + 
+			" AND "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_FECHAESTADO+" = (SELECT MAX("+CenDatosColegialesEstadoBean.C_FECHAESTADO+") " + 
+			" FROM  "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"   " +
+			" WHERE "+CenColegiadoBean.C_IDPERSONA+" = "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA+"  " +
+			" AND "+CenColegiadoBean.C_IDINSTITUCION+"= "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION+" AND CEN_DATOSCOLEGIALESESTADO.FECHAESTADO <= SYSDATE)) AS IDESTADOCOLEGIAL, " +
+			
 			" (SELECT " + UtilidadesMultidioma.getCampoMultidioma(CenEstadoColegialBean.T_NOMBRETABLA+"."+CenEstadoColegialBean.C_DESCRIPCION, idioma) +   
 			" FROM  "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"  ,  "+CenEstadoColegialBean.T_NOMBRETABLA+"   " + 
 			" WHERE "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDESTADO+" = "+CenEstadoColegialBean.T_NOMBRETABLA+"."+CenEstadoColegialBean.C_IDESTADO+"  " +

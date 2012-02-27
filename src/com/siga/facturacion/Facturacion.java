@@ -877,7 +877,7 @@ public class Facturacion {
     		throw new ClsExceptions(e,"Error al restaurar relaciones de serie de facturacion temporales.");
     	}
     }
-
+ 
 
     
     public void confirmarProgramacionFactura(FacFacturacionProgramadaBean beanP, HttpServletRequest req, boolean archivarFacturacion, SIGALogging log, boolean isTransacionPesada, boolean generarPagosBanco) throws ClsExceptions, SIGAException 

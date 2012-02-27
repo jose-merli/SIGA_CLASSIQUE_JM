@@ -52,6 +52,10 @@ import com.siga.beans.CenNoColegiadoAdm;
 import com.siga.beans.CenNoColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
+import com.siga.beans.CenSoliModiDireccionesAdm;
+import com.siga.beans.CenSoliModiDireccionesBean;
+import com.siga.beans.CenSolicModifExportarFotoAdm;
+import com.siga.beans.CenSolicModifExportarFotoBean;
 import com.siga.beans.CenSolicitModifDatosBasicosAdm;
 import com.siga.beans.CenTipoDireccionAdm;
 import com.siga.beans.CenTipoDireccionBean;
@@ -116,6 +120,8 @@ public class DatosGeneralesAction extends MasterAction {
 				mapDestino = insertarNoColegiado(mapping, miForm, request, response);
 			} else if (accion.equalsIgnoreCase("modificarSociedad")){
 				mapDestino = modificarSociedad(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("solicitarModificacion")) {
+				mapDestino = solicitarModificacion(mapping, miForm, request, response);
 			}else if ( accion.equalsIgnoreCase("getIdenHistorico")){
 				ClsLogging.writeFileLog("DATOS NO COLEGIALES:getIdenHistorico", 10);
 				mapDestino = getIdenHistorico(mapping, miForm, request, response,0,"");
@@ -1207,7 +1213,7 @@ public class DatosGeneralesAction extends MasterAction {
 
 			CenClienteBean beanCli = null;
 			boolean existenDatos = false;
-			//boolean existenDatosEnColegio = false;
+			boolean existenDatosEnColegio = false;
 			
 			if (miForm.getContinuarAprobacion().equals("1")) {
 				beanCli = adminCli.insertNoColegiado(hash, request);
@@ -1218,7 +1224,7 @@ public class DatosGeneralesAction extends MasterAction {
 					beanCli = adminCli.existeCliente(idPersonaValor, new Integer(idInstitucion));
 					if (beanCli != null) {
 						existenDatos = false;
-						//existenDatosEnColegio = true;
+						existenDatosEnColegio = true;
 						adminCli.setError("messages.error.ora.00001");
 					} else {
 						beanCli = adminCli.existeClienteOtraInstitucion(idPersonaValor, new Integer(idInstitucion));
@@ -1294,8 +1300,9 @@ public class DatosGeneralesAction extends MasterAction {
 			if (!adminCli.getError().equals("")) {
 				mensInformacion = adminCli.getError();
 			}
+			
 			/** Si viene a vacio despues de recuperar los datos de beanCli = adminCli.insertNoColegiado pues no debe de entrar solo si el valor beanCli tiene datos. **/
-			if (beanCli!=null){// && existenDatosEnColegio == true){			
+			if (beanCli!=null && !existenDatosEnColegio){			
 				// Inserto los datos del no colegiado en CenNoColegiado:
 				CenNoColegiadoAdm admNoColegiado = new CenNoColegiadoAdm(this.getUserBean(request));
 				Hashtable hashNoColegiado = new Hashtable();
@@ -1329,7 +1336,13 @@ public class DatosGeneralesAction extends MasterAction {
 			}//fin beanCli
 			else
 			{
+				tx.rollback ();
 				request.setAttribute("mensaje",mensInformacion);
+				//Mandamos los datos para el refresco:
+				request.setAttribute("mensaje",mensInformacion);
+				request.setAttribute("idPersona",beanCli.getIdPersona().toString());
+				request.setAttribute("idInstitucion",beanCli.getIdInstitucion().toString());
+				request.setAttribute("tipo",ClsConstants.COMBO_TIPO_PERSONAL);
 			}
 
 	   } 	
@@ -1567,6 +1580,10 @@ public class DatosGeneralesAction extends MasterAction {
 			if (!entrada.containsKey(CenClienteBean.C_NOAPARECERREDABOGACIA)) {
 				entrada.put(CenClienteBean.C_NOAPARECERREDABOGACIA,"0");
 			}
+			
+			if (!entrada.containsKey(CenClienteBean.C_EXPORTARFOTO)) {
+				entrada.put(CenClienteBean.C_EXPORTARFOTO,"0");
+			}			
 				
 		}
 		catch (Exception e) {
@@ -2592,6 +2609,73 @@ public class DatosGeneralesAction extends MasterAction {
 		return "resultadoCenso";
 	}
 
+	/** 
+	 * Funcion que atiende la accion solicitarModificacion
+	 * 
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	protected String solicitarModificacion (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+
+		String modo = "";
+		UserTransaction t = null;
+		modo = "insertarModificacion";
+		
+		try	{
+			DatosGeneralesForm form = (DatosGeneralesForm) formulario;
+			String accion = (String)request.getParameter("accion");				
+			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");	
+			CenSolicModifExportarFotoAdm adm = new CenSolicModifExportarFotoAdm(this.getUserBean(request));
+			CenSolicModifExportarFotoBean bean = getDatos(form, request);
+			t = this.getUserBean(request).getTransaction();			
+			t.begin();	
+			
+			if(!adm.insert(bean)){
+				throw new SIGAException (adm.getError());
+			}
+			
+			t.commit();
+			modo = exitoModal("messages.censo.solicitudes.exito",request);
+		}
+		catch(Exception e){
+			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, t);
+		}
+
+		return modo;
+	} //solicitarModificacion()	
 	
 	
+	/**
+	 * @param form
+	 * @param request
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	protected CenSolicModifExportarFotoBean getDatos (DatosGeneralesForm form, HttpServletRequest request) throws SIGAException {
+		CenSolicModifExportarFotoBean bean = null;
+		
+		try	{			
+			bean = new CenSolicModifExportarFotoBean();
+			CenSolicModifExportarFotoAdm adm = new CenSolicModifExportarFotoAdm(this.getUserBean(request));
+			bean.setIdSolicitud(adm.getNuevoId());
+			bean.setIdInstitucion(new Integer(form.getIdInstitucion()));
+			if(form.getExportarFoto() != null){
+				bean.setExportarFoto(form.getExportarFoto());
+			}else{
+				bean.setExportarFoto("0");
+			}
+			bean.setIdPersona(new Long(form.getIdPersona()));
+			bean.setMotivo("Motivo");
+			bean.setIdEstadoSolic(new Integer(ClsConstants.ESTADO_SOLICITUD_MODIF_PENDIENTE));
+			bean.setFechaAlta("sysdate");
+		} catch(Exception e){
+			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);
+		}
+		return bean;
+	} //getDatos()
+
 } //modificarSociedad ()
