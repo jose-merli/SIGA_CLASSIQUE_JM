@@ -364,6 +364,16 @@ public class Direccion {
 					throw new SIGAException ("messages.directions.duplicatedFact");
 				}
 				
+				if (!preferenteModif.equals("")){
+					 if (!idDireccionesCensoWeb.equals("") &&(!idDireccionesPreferentes.equals(""))){
+						 direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif);
+					 }
+				
+					 if (control != null && control.equals("0")){ // Igual vale 0.....
+						  direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif);
+					 }
+				}				
+				
 			}else { 
 				if (!preferenteModif.equals("")){
 					 if (!idDireccionesCensoWeb.equals("") &&(!idDireccionesPreferentes.equals(""))){
