@@ -287,21 +287,16 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 <%}%>			
 
   <%if (conceptoE.equals(PersonaJGAction.SOJ)) {
-				if (pideJG != null && pideJG.equals("1")) {%>
+		if (pideJG != null && pideJG.equals("1")) {%>
 		  document.forms[0].chkPideJG.checked=true;
 	     
 	  <%} else {%>
 	      document.forms[0].chkPideJG.checked=false;
 	  <%}
 
-				if (solicitaInfoJG != null && solicitaInfoJG.equals("1")) {%>
-		 
-		  document.forms[0].chkSolicitaInfoJG.checked=true;
-		 
-		  
-	     
+		if (solicitaInfoJG != null && solicitaInfoJG.equals("1")) {%>
+			  document.forms[0].chkSolicitaInfoJG.checked=true;
 	   <%} else {%>
-	    
 	      document.forms[0].chkSolicitaInfoJG.checked=false;
 	   <%}%>
 	   
@@ -1487,11 +1482,7 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 		</td>
 		
 
-					<%
-			if (conceptoE.equals(PersonaJGAction.EJG)
-							|| conceptoE
-									.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
-		%>
+		<%	if (conceptoE.equals(PersonaJGAction.EJG) || conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) { %>
 		 <td class="labelText">
 		 <siga:Idioma key="gratuita.busquedaSOJ.literal.grupoLaboral"/>
 	     </td>		
@@ -1692,7 +1683,26 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 			<siga:ComboBD nombre = "minusvalia" tipo="cmbMinusvalia" clase="<%=classCombo%>"  parametro="<%=dato%>"  elementoSel="<%=selMinus%>" readOnly="<%=sreadonly%>"/>
 			
 		</td>
-	
+		
+		<% if (conceptoE.equals(PersonaJGAction.SOJ)) { %>
+			<td class="labelText">
+				<siga:Idioma key="gratuita.personaJG.literal.idioma"/>		
+			</td>
+			
+			<td>
+				<%	if (miform.getSexo() != null) {
+						idioma = miform.getIdioma();
+					} else {
+						idioma = "";
+					}
+					
+					ArrayList selIdioma = new ArrayList();
+					selIdioma.add(idioma);
+					
+				%>
+				<siga:ComboBD nombre = "idioma" tipo="cmbIdioma" clase="<%=classCombo%>"  elementoSel="<%=selIdioma%>" readOnly="<%=sreadonly%>"/>
+			</td>		
+		<% } %>	
 	</tr>
 	</table>
 	</siga:ConjCampos>
@@ -2260,7 +2270,7 @@ function limpiarPersonaContrario() {
 	 <%
 	 	if (!accion.equalsIgnoreCase("ver")) {
 	 %>
-	  <checkbox  name="PersonaJGForm" property="chkSolicitaInfoJG"  />	
+	  <html:checkbox  name="PersonaJGForm" property="chkSolicitaInfoJG"  />	
 	  <%
 		  	} else {
 		  %>
