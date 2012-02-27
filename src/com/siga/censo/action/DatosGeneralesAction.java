@@ -186,10 +186,15 @@ public class DatosGeneralesAction extends MasterAction {
 			CenTipoSociedadAdm admSociedades = new CenTipoSociedadAdm(this.getUserBean(request));
 
 			if (tipo!=null) {
-				
+				request.setAttribute("tipo",tipo);
+				miform.setTipo(tipo);
 				if (tipo.equalsIgnoreCase("J") || tipo.equalsIgnoreCase("Y")) {
 					alTipos = admSociedades.select("where letracif='J' or letracif='Y'");
-				} else {
+				} else if(tipo.equalsIgnoreCase("A") || tipo.equalsIgnoreCase("B") || tipo.equalsIgnoreCase("F") || tipo.equalsIgnoreCase("G")){
+					alTipos = admSociedades.select("where letracif='" + tipo + "'");
+				}else
+				{
+					tipo = "0";
 					alTipos = admSociedades.select("where letracif='" + tipo + "'");
 				}
 				if (alTipos == null) {
@@ -2045,6 +2050,21 @@ public class DatosGeneralesAction extends MasterAction {
 		    String pathImagenes = "";
 		    String nombreFoto = "";
 		    
+		    String tipoOriginal = request.getParameter("tipoOriginal");
+		    //tipoOriginal = (String)request.getAttribute("tipoOriginal");
+		    
+		    
+		    Hashtable hashNifCif = miForm.getDatos();
+		    tipoOriginal= (String)hashNifCif.get("NIFCIF");
+		    
+		    if(tipoOriginal!=null)
+		    {
+		    	tipoOriginal=tipoOriginal.substring(0,1);
+		    	request.setAttribute("tipo",tipoOriginal);
+		    }
+		    
+		    miForm.setTipo(tipoOriginal);
+		    
 		    // obtencion del path app desde tabla parametros
 		    GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request)); 
 		    pathImagenes = paramAdm.getValor(miForm.getIdInstitucion(),ClsConstants.MODULO_CENSO,ClsConstants.PATH_APP, null);
@@ -2195,7 +2215,8 @@ public class DatosGeneralesAction extends MasterAction {
 			hashNoColegiado.put(CenNoColegiadoBean.C_ANOTACIONES,miForm.getAnotaciones());
 			hashNoColegiado.put(CenNoColegiadoBean.C_IDINSTITUCION,miForm.getIdInstitucion());
 			hashNoColegiado.put(CenNoColegiadoBean.C_IDPERSONA,miForm.getIdPersona());
-			if(miForm.getTipo()!=null) hashNoColegiado.put(CenNoColegiadoBean.C_TIPO,miForm.getTipo());
+			if(miForm.getTipo()!=null) 
+				hashNoColegiado.put(CenNoColegiadoBean.C_TIPO,miForm.getTipo());
 			
 			
 			if (miForm.getSociedadSP()!=null && miForm.getSociedadSP().equals("1")){

@@ -537,10 +537,10 @@ public class BusquedaClientesAction extends MasterAction {
 			datosCliente.put("tipoAcceso",String.valueOf(tipoAcceso));
 			// Para ver si debemos abrir el jsp comun de colegiados o el propio para no colegiados:
 			datosCliente.put("tipo",tipo);
-			if (request.getParameter("TIPO")!=null && !request.getParameter("TIPO").equals("")){
-				request.setAttribute("TIPO",request.getParameter("TIPO"));
+			if (request.getParameter("tipo")!=null && !request.getParameter("tipo").equals("")){
+				request.setAttribute("tipo",request.getParameter("tipo"));
 			}else{
-				request.setAttribute("TIPO",null);
+				request.setAttribute("tipo",null);
 			}
 
 			// RGG NCOLEGIADO Sirve para modificar ncolegiado si tiene el parametro

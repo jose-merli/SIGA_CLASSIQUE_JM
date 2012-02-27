@@ -566,9 +566,8 @@ caracterParam[0] = tipoCliente;
 				
 			}
 			
-			function cambioTipo(){
-				
-
+			//function cambioTipo()
+			//{
 				//if (document.forms[0].modo.value == "editar" || document.forms[0].modo.value == "ver"){					
 					//if(document.forms[0].tipoIdentificacion.value == "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>"){
 				//		if(document.forms[0].numIdentificacion.value.charAt(0) == "J" ) {
@@ -584,8 +583,72 @@ caracterParam[0] = tipoCliente;
 				//		}
 				//	}					
 				//}
-			}			
+			//}
 
+
+			function cambioTipo()
+			{	
+				//alert("cambioTipo");				
+				if (document.forms[0].modo.value == "nuevaSociedad" || document.forms[0].modo.value == "editar")
+				{	
+					//alert("cambioTipo Nueva Sociedad o Editar");									
+					//if(document.forms[0].tipoIdentificacion.value == "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>"){
+					if(document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "A"
+						|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "B" 
+						|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "F"
+						|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "G"
+						|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "J"
+						|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "Y"
+						) 
+					{
+							//alert("cambioTipo caracter: "+document.forms[0].numIdentificacion.value.charAt(0));
+							document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>";
+							if(document.forms[0].modo.value == "nuevaSociedad")
+							{
+								//alert("cambioTipo nuevaSociedad");
+								if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "A")
+									document.forms[0].tipo.value = "A";
+								else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "B")
+									document.forms[0].tipo.value = "B";
+								else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "F")
+									document.forms[0].tipo.value = "F";
+								else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "G")
+									document.forms[0].tipo.value = "G";
+								else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "J")
+									document.forms[0].tipo.value = "J";
+								else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "Y")
+									document.forms[0].tipo.value = "Y";																	
+							}
+				//			document.forms[0].tipo.tipo = "cmbTipoSociedadJ";
+				//			document.forms[0].tipo.clase = "boxCombo";
+				//			document.forms[0].tipo.readonly = "false";
+				//			//alert("El tipo es "+document.forms[0].tipo.tipo);
+				//		}else{
+				//			document.forms[0].tipo.tipo = "cmbTipoSociedadAlta";
+				//			document.forms[0].tipo.clase = "boxConsulta";
+				//			document.forms[0].tipo.readonly = "true";
+				//			//alert("El tipo es "+document.forms[0].tipo.tipo);
+				//		}
+					}
+					else 
+					{
+						//alert("cambioTipo Otros");
+						if(document.forms[0].modo.value=="nuevaSociedad")
+						{
+							document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>";
+							document.forms[0].tipo.value = "0";
+						}
+						else
+							document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>";
+					}					
+				}
+				else
+				{
+					//alert("cambioTipo 1: "+document.forms[0].modo.value);
+				}
+					
+			}
+			
 
 		function adaptaTamanoFoto () 
 		{
@@ -710,20 +773,20 @@ caracterParam[0] = tipoCliente;
 							<siga:ConjCampos leyenda="censo.busquedaClientes.literal.titulo1">
 								<table border=0 width="100%">
 									<tr>
-										<td class="labelText" width="10%">
-											<!-- Fecha Alta -->
-											<siga:Idioma key="censo.consultaDatosGenerales.literal.fechaAlta"/>
-										</td>
-										<td>	
-											<html:text name="datosGeneralesForm" property="fechaAlta" style="width:70" styleClass="boxConsulta" readonly="true" value="<%=fechaAlta%>" />
-										</td>
+										
 										<!-- NUMERO IDENTIFICACION NIF/CIF -->
 										<% String CIF=String.valueOf(ClsConstants.TIPO_IDENTIFICACION_CIF);
 										   String OTRO=String.valueOf(ClsConstants.TIPO_IDENTIFICACION_OTRO);
 										%>
 										<td class="labelText" colspan="2">
-											<siga:Idioma key="censo.consultaDatosGenerales.literal.tipoIdentificacion"/>&nbsp;(*)
+											<siga:Idioma key="censo.fichaCliente.literal.identificacion"/>&nbsp;(*)
 
+											<% if (bConsultaPersona) { %>
+													<html:text name="datosGeneralesForm" property="numIdentificacion" size="11" style="width:70px" styleClass="boxConsulta" value="<%=nIdentificacion %>" readonly="true" ></html:text>
+											<% } else { %>
+													<html:text name="datosGeneralesForm" property="numIdentificacion" size="11" style="width:70px" styleClass="<%=estiloCajaNif %>" value="<%=nIdentificacion %>" readonly="<%=breadonlyNif %>" onblur="cambioTipo();"></html:text>
+											<% }  %>
+												
 											 <%if (bConsultaPersona || modo.equalsIgnoreCase("VER")||tipoIdentif) { %>
 											  <html:hidden name="datosGeneralesForm" property="tipoIdentificacion" value="<%=tipoIdentificacionSel%>"/>
 												<% if (tipoIdentificacionSel.equals(CIF)) { %>
@@ -739,11 +802,7 @@ caracterParam[0] = tipoCliente;
 												</html:select>
 											<% }  %>	
 												
-											<% if (bConsultaPersona) { %>
-													<html:text name="datosGeneralesForm" property="numIdentificacion" size="11" style="width:70px" styleClass="boxConsulta" value="<%=nIdentificacion %>" readonly="true" ></html:text>
-											<% } else { %>
-													<html:text name="datosGeneralesForm" property="numIdentificacion" size="11" style="width:70px" styleClass="<%=estiloCajaNif %>" value="<%=nIdentificacion %>" readonly="<%=breadonlyNif %>" onblur="cambioTipo();"></html:text>
-											<% }  %>
+											
 										</td>
 										<td class="labelText" width="40%">
 											<%
@@ -782,6 +841,13 @@ caracterParam[0] = tipoCliente;
 												</html:select>
 											<% } %>
 										
+										</td>
+										<td class="labelText" width="15%">
+											<!-- Fecha Alta -->
+											<siga:Idioma key="censo.consultaDatosGenerales.literal.fechaAlta"/>
+										</td>
+										<td>	
+											<html:text name="datosGeneralesForm" property="fechaAlta" style="width:70" styleClass="boxConsulta" readonly="true" value="<%=fechaAlta%>" />
 										</td>
 									</tr>
 									<tr>
@@ -1001,16 +1067,22 @@ caracterParam[0] = tipoCliente;
 			   
 			
 			<% 	if (!(bConsultaPersona || modo.equalsIgnoreCase("VER")) ) {  
-			    %>
-			    
+			    %>			    
 					// El tipo de identificacion debe ser CIF:
-					if (document.forms[0].tipoIdentificacion.value == "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>") {
-						
+					if (document.forms[0].tipoIdentificacion.value == "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>") {														
 								//Validamos el formato del CIF:
 								var tipo = document.forms[0].tipos.value;
 								var numIdentificacion = document.forms[0].numIdentificacion.value.charAt(0);
+								//Esta validacion comprueba que el identificador pertenece al Tipo Identificador en este caso de CIF
+								if(numIdentificacion.toUpperCase() !='A' && numIdentificacion.toUpperCase() !='B' 
+									&& numIdentificacion.toUpperCase() !='F' && numIdentificacion.toUpperCase() !='G'
+										&& numIdentificacion.toUpperCase() !='J' && numIdentificacion.toUpperCase() !='Y')
+								{
+									alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');									
+									return false;
+								}
 
-								if(tipo == 'Y') tipo='J';
+								if(tipo == 'Y' || tipo == 'y') tipo='J';
 
 								//si el usuario ha elegido el tipo de CIF otros, se debe comprobar que el cif no se corresponde con
 								//ninguno de los otros tipos definidos en la lista
@@ -1033,8 +1105,7 @@ caracterParam[0] = tipoCliente;
 									}
 									else return true;
 								}			
-								
-										
+																		
 								//El tipo debe ser igual a la primera letra del cif 
 								else if  (tipo!="<%=ClsConstants.COMBO_TIPO_OTROS%>" && (tipo.toUpperCase()==numIdentificacion.toUpperCase()) ) 
 								{
@@ -1042,13 +1113,27 @@ caracterParam[0] = tipoCliente;
 								} 
 								else 
 								{
-									alert ('<siga:Idioma key="censo.fichaCliente.literal.errorCIF"/>');
-									return false;		
+									if(!document.forms[0].modo.value == "editar")
+									{
+										alert ('<siga:Idioma key="censo.fichaCliente.literal.errorCIF"/>');
+										return false;
+									}
+									document.forms[0].tipoOriginal.value=document.forms[0].numIdentificacion.value.charAt(0).toUpperCase();
+									//alert("ufffffffffffff: "+document.forms[0].tipoOriginal.value);
+									return true;
 								} //Fin validar el CIF
-					} else {
-
-							if (document.forms[0].tipoIdentificacion.value != "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>") {
-							 
+					} else {							
+							var numIdentificacion = document.forms[0].numIdentificacion.value.charAt(0);
+							//Esta validacion comprueba que el identificador pertenece al Tipo Identificador en este caso de Otros
+							if(numIdentificacion.toUpperCase() =='A' || numIdentificacion.toUpperCase() =='B' 
+								|| numIdentificacion.toUpperCase() =='F' || numIdentificacion.toUpperCase() =='G'
+									|| numIdentificacion.toUpperCase() =='J' || numIdentificacion.toUpperCase() =='Y')
+							{
+								alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');								
+								return false;
+							}
+							if (document.forms[0].tipoIdentificacion.value != "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>") 
+							{							 
 								alert ('<siga:Idioma key="censo.fichaCliente.literal.avisoCIF"/>');
 								return false;
 							} else{
@@ -1059,7 +1144,7 @@ caracterParam[0] = tipoCliente;
 				<% } // if VER  %>
 				return true;
 			} else
-						return false;
+					return false;
 		}
 		
 		<!-- Asociada al boton Guardar -->
