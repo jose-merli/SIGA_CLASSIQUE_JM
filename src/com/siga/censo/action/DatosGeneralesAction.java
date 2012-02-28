@@ -2690,7 +2690,11 @@ public class DatosGeneralesAction extends MasterAction {
 				bean.setExportarFoto("0");
 			}
 			bean.setIdPersona(new Long(form.getIdPersona()));
-			bean.setMotivo("Motivo");
+			if(form.getMotivo()!=null && !form.getMotivo().equals("")){
+				bean.setMotivo(form.getMotivo());
+			}else{
+				bean.setMotivo("Solicitud de modificación de la exportación de la foto");
+			}
 			bean.setIdEstadoSolic(new Integer(ClsConstants.ESTADO_SOLICITUD_MODIF_PENDIENTE));
 			bean.setFechaAlta("sysdate");
 		} catch(Exception e){
