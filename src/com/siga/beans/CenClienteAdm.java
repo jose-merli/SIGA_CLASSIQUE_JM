@@ -3351,6 +3351,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 					beanCli.setAbonosBanco (ClsConstants.TIPO_CARGO_BANCO);
 					beanCli.setCargosBanco (ClsConstants.TIPO_CARGO_BANCO);
 					beanCli.setPublicidad (ClsConstants.DB_FALSE);
+					beanCli.setExportarFoto("0");
 					beanCli.setGuiaJudicial (ClsConstants.DB_FALSE);
 					beanCli.setComisiones (ClsConstants.DB_FALSE);					
 					beanCli.setCaracter (ClsConstants.TIPO_CARACTER_PUBLICO);
