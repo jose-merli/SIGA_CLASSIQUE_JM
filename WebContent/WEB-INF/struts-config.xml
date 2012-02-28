@@ -2736,13 +2736,13 @@
 		<!-- ***** Justicia Gratuita / Definir Turnos ***** -->
 		<action path="/JGR_DefinirTurnos" type="com.siga.gratuita.action.BusquedaTurnosAction" name="DefinirTurnosForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/definirTurnos.jsp"/>
+			<forward name="listado" path="/html/jsp/gratuita/listarTurnos.jsp"/>
 		</action>
-
 		<action path="/DefinirTurnosAction" type="com.siga.gratuita.action.DefinirTurnosAction" name="DefinirTurnosForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/definirTurnos.jsp"/>
 			<forward name="edicion" path="/html/jsp/gratuita/maestroTurnos.jsp"/>
 			<forward name="edicionLetrado" path="/html/jsp/gratuita/maestroTurnosLetrado.jsp"/>
-			<forward name="listado" path="/html/jsp/gratuita/listarTurnos.jsp"/>
+			
 			<forward name="editar" path="/html/jsp/gratuita/pestanasTurnos.jsp"/>
 			<forward name="editarLetrado" path="/html/jsp/gratuita/pestanaTurnoExp.jsp"/>
 			<forward name="ver" path="/html/jsp/gratuita/pestanasTurnos.jsp"/>

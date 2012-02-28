@@ -112,7 +112,7 @@
 		<siga:ConjCampos leyenda="gratuita.mantAsistencias.literal.titulo">
 	<table width="100%" border=0 align="center">
 
-		<html:form action="/DefinirTurnosAction.do" method="POST" target="resultado" enctype="multipart/form-data" onSubmit="return Buscar()">
+		<html:form action="/JGR_DefinirTurnos" method="POST" target="resultado" enctype="multipart/form-data" onSubmit="return Buscar()">
 			<input type="hidden" name="modal" value="">
 			<input type="hidden" name="modo" value="">
 			<input type="hidden" name="materia" value="">
@@ -273,6 +273,13 @@
 	</tr>
 	</table>
 	<siga:ConjBotonesBusqueda botones="N,B"/>
+	
+	<html:form action="/DefinirTurnosAction" method="POST"  >
+			<input type="hidden" name="modal" value="">
+			<input type="hidden" name="modo" value="">
+			<input type="hidden" name="materia" value="">
+			<input type="hidden" name="limpiarFilaSeleccionada" value="">
+	</html:form>
 	
 	<!-- IFRAME LISTA RESULTADOS -->
 	<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
