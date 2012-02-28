@@ -80,9 +80,9 @@
 		//Funcion asociada a boton Nuevo
 		function nuevo() 
 		{		
-			document.forms[0].target="mainWorkArea";
-			document.forms[0].modo.value = "nuevo";
-			document.forms[0].submit();
+			document.DeficionTurnosForm.target="mainWorkArea";
+			document.DeficionTurnosForm.modo.value = "nuevo";
+			document.DeficionTurnosForm.submit();
 		}
 </script>
 		
@@ -274,7 +274,7 @@
 	</table>
 	<siga:ConjBotonesBusqueda botones="N,B"/>
 	
-	<html:form action="/DefinirTurnosAction" method="POST"  >
+	<html:form action="/DefinirTurnosAction" name="DeficionTurnosForm" target="main" type="com.siga.gratuita.form.DefinirTurnosForm" method="POST"  >
 			<input type="hidden" name="modal" value="">
 			<input type="hidden" name="modo" value="">
 			<input type="hidden" name="materia" value="">
