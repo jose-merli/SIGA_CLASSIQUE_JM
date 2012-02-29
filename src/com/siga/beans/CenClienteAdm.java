@@ -4348,7 +4348,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	    Vector salida = new Vector();
 	    Hashtable aux = new Hashtable();
 	    try {
-		    String sql = "SELECT distinct p.nifcif as NIFCIF, P.IDPERSONA, P.NOMBRE as NOMBRE, P.APELLIDOS1 AS APELLIDOS1,  P.APELLIDOS2 as APELLIDOS2, COL.NCOLEGIADO as NCOLEGIADO, CEN_CLIENTE.IDINSTITUCION as IDINSTITUCION," +
+		    String sql = "SELECT distinct p.nifcif as NIFCIF, P.IDPERSONA, P.NOMBRE as NOMBRE, P.APELLIDOS1 AS APELLIDOS1,  P.APELLIDOS2 as APELLIDOS2, DECODE(COL.COMUNITARIO,1,COL.NCOMUNITARIO,COL.NCOLEGIADO) as NCOLEGIADO, CEN_CLIENTE.IDINSTITUCION as IDINSTITUCION," +
 		    " DECODE("+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_LETRADO+",'1','Letrado',NVL((SELECT " + CenEstadoColegialBean.T_NOMBRETABLA+"."+CenEstadoColegialBean.C_DESCRIPCION +
 			" FROM "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+", "+CenEstadoColegialBean.T_NOMBRETABLA+" " + 
 			" WHERE "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDESTADO+" = "+CenEstadoColegialBean.T_NOMBRETABLA+"."+CenEstadoColegialBean.C_IDESTADO+"  " +
@@ -4395,7 +4395,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	    Hashtable aux = new Hashtable();
 		try {
 		    Hashtable codigos = new Hashtable();
-		    String sql = "SELECT distinct p.nifcif as NIFCIF, P.IDPERSONA, P.NOMBRE as NOMBRE, P.APELLIDOS1 AS APELLIDOS1,  P.APELLIDOS2 as APELLIDOS2, COL.NCOLEGIADO as NCOLEGIADO, CEN_CLIENTE.IDINSTITUCION as IDINSTITUCION, " +
+		    String sql = "SELECT distinct p.nifcif as NIFCIF, P.IDPERSONA, P.NOMBRE as NOMBRE, P.APELLIDOS1 AS APELLIDOS1,  P.APELLIDOS2 as APELLIDOS2, DECODE(COL.COMUNITARIO,1,COL.NCOMUNITARIO,COL.NCOLEGIADO) as NCOLEGIADO, CEN_CLIENTE.IDINSTITUCION as IDINSTITUCION, " +
 			" DECODE("+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_LETRADO+",'1','Letrado',NVL((SELECT " + CenEstadoColegialBean.T_NOMBRETABLA+"."+CenEstadoColegialBean.C_DESCRIPCION +
 			" FROM "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+", "+CenEstadoColegialBean.T_NOMBRETABLA+" " + 
 			" WHERE "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDESTADO+" = "+CenEstadoColegialBean.T_NOMBRETABLA+"."+CenEstadoColegialBean.C_IDESTADO+"  " +
