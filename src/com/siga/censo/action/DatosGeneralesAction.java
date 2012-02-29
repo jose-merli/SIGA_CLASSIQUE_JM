@@ -2055,16 +2055,19 @@ public class DatosGeneralesAction extends MasterAction {
 		    String tipoOriginal = request.getParameter("tipoOriginal");
 		    //tipoOriginal = (String)request.getAttribute("tipoOriginal");
 		    
-		    
-		    Hashtable hashNifCif = miForm.getDatos();
-		    tipoOriginal= (String)hashNifCif.get("NIFCIF");
-		    
-		    if(tipoOriginal!=null)
+		    if(tipoOriginal==null || tipoOriginal.equals(""))
 		    {
-		    	tipoOriginal=tipoOriginal.substring(0,1);
-		    	request.setAttribute("tipo",tipoOriginal);
-		    }
+		    	Hashtable hashNifCif = miForm.getDatos();
+		    	tipoOriginal= (String)hashNifCif.get("NIFCIF");
 		    
+		    	if(tipoOriginal!=null)
+		    	{
+		    		tipoOriginal=tipoOriginal.substring(0,1);
+		    		request.setAttribute("tipo",tipoOriginal.toUpperCase());
+		    	}
+		    }
+		    else
+		    	request.setAttribute("tipo",tipoOriginal);
 		    miForm.setTipo(tipoOriginal);
 		    
 		    // obtencion del path app desde tabla parametros
