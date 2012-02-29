@@ -184,8 +184,10 @@ public class DatosGeneralesAction extends MasterAction {
 			String tipo = request.getParameter("tipo");
 			List<CenTipoSociedadBean> alTipos;
 			CenTipoSociedadAdm admSociedades = new CenTipoSociedadAdm(this.getUserBean(request));
-
-			if (tipo!=null) {
+			//Si tipo es 1 su uso es para saber si se muestra la pantalla de editar colegiado o por contra se usa la pantalla de no colegiodos
+			//Si su valor no es 1 y es una letra tipo se usa para cargar el combo de Tipo Sociedades			
+			if (tipo!=null && !tipo.equals("1")) 
+			{
 				request.setAttribute("tipo",tipo);
 				miform.setTipo(tipo);
 				if (tipo.equalsIgnoreCase("J") || tipo.equalsIgnoreCase("Y")) {
@@ -202,7 +204,7 @@ public class DatosGeneralesAction extends MasterAction {
 				}
 				//miform.setTipos(new ArrayList<CenTipoSociedadBean>());
 				miform.setTipos(alTipos);
-			}else{
+			}else{				
 				alTipos = admSociedades.select("");
 				miform.setTipos(alTipos);
 			}

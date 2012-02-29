@@ -587,11 +587,9 @@ caracterParam[0] = tipoCliente;
 
 
 			function cambioTipo()
-			{	
-				//alert("cambioTipo");				
+			{									
 				if (document.forms[0].modo.value == "nuevaSociedad" || document.forms[0].modo.value == "editar")
-				{	
-					//alert("cambioTipo Nueva Sociedad o Editar");									
+				{															
 					//if(document.forms[0].tipoIdentificacion.value == "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>"){
 					if(document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "A"
 						|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "B" 
@@ -600,12 +598,10 @@ caracterParam[0] = tipoCliente;
 						|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "J"
 						|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "Y"
 						) 
-					{
-							//alert("cambioTipo caracter: "+document.forms[0].numIdentificacion.value.charAt(0));
+					{							
 							document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>";
 							if(document.forms[0].modo.value == "nuevaSociedad")
-							{
-								//alert("cambioTipo nuevaSociedad");
+							{								
 								if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "A")
 									document.forms[0].tipo.value = "A";
 								else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "B")
@@ -631,8 +627,7 @@ caracterParam[0] = tipoCliente;
 				//		}
 					}
 					else 
-					{
-						//alert("cambioTipo Otros");
+					{						
 						if(document.forms[0].modo.value=="nuevaSociedad")
 						{
 							document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>";
@@ -641,12 +636,7 @@ caracterParam[0] = tipoCliente;
 						else
 							document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>";
 					}					
-				}
-				else
-				{
-					//alert("cambioTipo 1: "+document.forms[0].modo.value);
-				}
-					
+				}									
 			}
 			
 
@@ -778,7 +768,7 @@ caracterParam[0] = tipoCliente;
 										<% String CIF=String.valueOf(ClsConstants.TIPO_IDENTIFICACION_CIF);
 										   String OTRO=String.valueOf(ClsConstants.TIPO_IDENTIFICACION_OTRO);
 										%>
-										<td class="labelText" colspan="2">
+										<td class="labelText" colspan="2" width="40%">
 											<siga:Idioma key="censo.fichaCliente.literal.identificacion"/>&nbsp;(*)
 
 											<% if (bConsultaPersona) { %>
@@ -842,7 +832,7 @@ caracterParam[0] = tipoCliente;
 											<% } %>
 										
 										</td>
-										<td class="labelText" width="15%">
+										<td class="labelText" width="10%">
 											<!-- Fecha Alta -->
 											<siga:Idioma key="censo.consultaDatosGenerales.literal.fechaAlta"/>
 										</td>
@@ -850,28 +840,29 @@ caracterParam[0] = tipoCliente;
 											<html:text name="datosGeneralesForm" property="fechaAlta" style="width:70" styleClass="boxConsulta" readonly="true" value="<%=fechaAlta%>" />
 										</td>
 									</tr>
+									</table>
+									<table border=0 width="100%">
 									<tr>
-										<td class="labelText" colspan="2">
+										<td class="labelText" colspan="1" width="20%">
 											<!-- CheckBox de Sociedad SJ -->
 											<siga:Idioma key="censo.general.literal.sociedadSJ"/>&nbsp;
 											<html:checkbox name="datosGeneralesForm" property="sociedadSJ" onclick="presentaContadorAux(this)" value="<%=ClsConstants.DB_TRUE%>"    ></html:checkbox>
 										</td>	
-										<td class="labelText" colspan="2">
+										<td class="labelText" colspan="2" width="40%">
 											<!-- CheckBox de Sociedad Profesional -->
 											<siga:Idioma key="censo.general.literal.sociedadProfesional"/>&nbsp;
 											<html:checkbox name="datosGeneralesForm" property="sociedadSP" onclick="presentaContadorAux(this)" value="<%=ClsConstants.DB_TRUE%>"   ></html:checkbox> 
 										</td>
-		<span id="etiquetaNumReg" > 
-										<td id="nombrenumregistro" class="labelText" >
+										<span id="etiquetaNumReg" > 
+										<td id="nombrenumregistro" class="labelText" colspan="2">
 											<!-- NUMERO REGISTRO -->
-<span id="numeroRegistro" >	
-<span id="contadorSP" style="display:none"> <siga:Idioma key="censo.general.literal.numRegistro"/>&nbsp;(*) <html:text name="datosGeneralesForm" property="prefijoNumRegSP"  size="5" maxlength="10" styleClass="<%=estiloCaja%>" style="width:55px" readonly="<%=breadonly%>" ></html:text><html:text name="datosGeneralesForm" property="contadorNumRegSP" size="5" maxlength="8" style="width:58px" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text><html:text name="datosGeneralesForm" property="sufijoNumRegSP" style="width:58px" size="5" maxlength="10" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text> </span>
-<span id="contadorSJ" style="display:none">	<siga:Idioma key="censo.general.literal.numRegistro"/>&nbsp;(*) <html:text name="datosGeneralesForm" property="prefijoNumRegSJ"  size="5" maxlength="10" styleClass="<%=estiloCaja%>" style="width:55px" readonly="<%=breadonly%>" ></html:text><html:text name="datosGeneralesForm" property="contadorNumRegSJ" size="5" maxlength="8" style="width:58px" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text><html:text name="datosGeneralesForm" property="sufijoNumRegSJ" style="width:58px" size="5" maxlength="10" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text></span>
-</span>
-
+											<span id="numeroRegistro" >	
+											<span id="contadorSP" style="display:none"> <siga:Idioma key="censo.general.literal.numRegistro"/>&nbsp;(*) <html:text name="datosGeneralesForm" property="prefijoNumRegSP"  size="5" maxlength="10" styleClass="<%=estiloCaja%>" style="width:55px" readonly="<%=breadonly%>" ></html:text><html:text name="datosGeneralesForm" property="contadorNumRegSP" size="5" maxlength="8" style="width:58px" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text><html:text name="datosGeneralesForm" property="sufijoNumRegSP" style="width:58px" size="5" maxlength="10" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text> </span>
+											<span id="contadorSJ" style="display:none">	<siga:Idioma key="censo.general.literal.numRegistro"/>&nbsp;(*) <html:text name="datosGeneralesForm" property="prefijoNumRegSJ"  size="5" maxlength="10" styleClass="<%=estiloCaja%>" style="width:55px" readonly="<%=breadonly%>" ></html:text><html:text name="datosGeneralesForm" property="contadorNumRegSJ" size="5" maxlength="8" style="width:58px" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text><html:text name="datosGeneralesForm" property="sufijoNumRegSJ" style="width:58px" size="5" maxlength="10" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text></span>
+											</span>
 
 						     			</td>
-		</span>
+										</span>
 									</tr>
 								</table>
 							</siga:ConjCampos>
@@ -1046,6 +1037,48 @@ caracterParam[0] = tipoCliente;
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 
+		//Valida CIF
+		function validarCIF(texto)
+		{ 
+         	alert("cif: "+texto);
+        	var pares = 0; 
+        	var impares = 0; 
+        	var suma; 
+        	var ultima; 
+        	var unumero; 
+        	var uletra = new Array("J", "A", "B","F", "G","Y"); 
+        	var xxx; 
+         
+        	texto = texto.toUpperCase(); 
+         
+        	var regular = new RegExp(/^[ABCDEFGHKLMNPQS]\d\d\d\d\d\d\d[0-9,A-J]$/g); 
+           	if (!regular.exec(texto)) 
+               	return false; 
+                
+           ultima = texto.substr(8,1); 
+
+           for (var cont = 1 ; cont < 7 ; cont ++)
+           { 
+               xxx = (2 * parseInt(texto.substr(cont++,1))).toString() + "0"; 
+               impares += parseInt(xxx.substr(0,1)) + parseInt(xxx.substr(1,1)); 
+               pares += parseInt(texto.substr(cont,1)); 
+           } 
+           xxx = (2 * parseInt(texto.substr(cont,1))).toString() + "0"; 
+           impares += parseInt(xxx.substr(0,1)) + parseInt(xxx.substr(1,1)); 
+            
+           suma = (pares + impares).toString(); 
+           unumero = parseInt(suma.substr(suma.length - 1, 1)); 
+           unumero = (10 - unumero).toString(); 
+           if(unumero == 10) 
+               unumero = 0; 
+            
+           if ((ultima == unumero) ||  (ultima == uletra[unumero])) 
+               return true; 
+           else 
+               return false; 
+    	}//fin método 
+			
+
 		<!-- Asociada al boton SolicitarModificacion -->
 		function accionSolicitarModificacion() 
 		{		
@@ -1069,7 +1102,16 @@ caracterParam[0] = tipoCliente;
 			<% 	if (!(bConsultaPersona || modo.equalsIgnoreCase("VER")) ) {  
 			    %>			    
 					// El tipo de identificacion debe ser CIF:
-					if (document.forms[0].tipoIdentificacion.value == "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>") {														
+					if (document.forms[0].tipoIdentificacion.value == "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>") 
+					{
+						//if (!(validarCIF(document.forms[0].numIdentificacion.value)))
+						//{
+							//alert("cif no valido");
+							//return false;
+						//}
+						//else
+						//{
+							//alert("cif valido");														
 								//Validamos el formato del CIF:
 								var tipo = document.forms[0].tipos.value;
 								var numIdentificacion = document.forms[0].numIdentificacion.value.charAt(0);
@@ -1079,6 +1121,18 @@ caracterParam[0] = tipoCliente;
 										&& numIdentificacion.toUpperCase() !='J' && numIdentificacion.toUpperCase() !='Y')
 								{
 									alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');									
+									return false;
+								}
+								
+								if((tipo == 'Y' || tipo == 'y')&& (numIdentificacion.toUpperCase()!='Y'))
+								{										
+									alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');
+									return false;
+								}
+
+								if((tipo == 'J' || tipo == 'j')&& (numIdentificacion.toUpperCase()!='J'))
+								{
+									alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');
 									return false;
 								}
 
@@ -1118,11 +1172,13 @@ caracterParam[0] = tipoCliente;
 										alert ('<siga:Idioma key="censo.fichaCliente.literal.errorCIF"/>');
 										return false;
 									}
-									document.forms[0].tipoOriginal.value=document.forms[0].numIdentificacion.value.charAt(0).toUpperCase();
-									//alert("ufffffffffffff: "+document.forms[0].tipoOriginal.value);
+									document.forms[0].tipoOriginal.value=document.forms[0].numIdentificacion.value.charAt(0).toUpperCase();									
 									return true;
 								} //Fin validar el CIF
-					} else {							
+						//}
+					} 
+					else 
+						{							
 							var numIdentificacion = document.forms[0].numIdentificacion.value.charAt(0);
 							//Esta validacion comprueba que el identificador pertenece al Tipo Identificador en este caso de Otros
 							if(numIdentificacion.toUpperCase() =='A' || numIdentificacion.toUpperCase() =='B' 
