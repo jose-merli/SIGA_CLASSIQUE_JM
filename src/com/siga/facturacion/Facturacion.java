@@ -505,6 +505,7 @@ public class Facturacion {
 
 		String[] ficheros = directorio.list();
 		if (ficheros == null||ficheros.length==0){
+			directorio.delete();
 			throw new SIGAException("messages.facturacion.descargaFacturas");
 		}else{
 			for (int x=0;x<ficheros.length;x++){
