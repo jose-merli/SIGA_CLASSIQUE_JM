@@ -272,7 +272,7 @@
 		
 		<siga:FilaConIconos fila="200" botones ="" visibleBorrado="false" visibleEdicion="false" visibleConsulta="false"  clase="listaNonEdit">
 					
-					<td colspan="4" align="right"><b><siga:Idioma key="gratuita.listadoUnidadFamiliar.literal.totalUnidadFamiliar"/></b></td>
+					<td colspan="3" align="right"><b><siga:Idioma key="gratuita.listadoUnidadFamiliar.literal.totalUnidadFamiliar"/></b></td>
 					<td align="right"><c:out
 						value="${DefinirUnidadFamiliarEJGForm.importeIngresosAnuales}"></c:out>&euro;</td>
 					<td align="right"><c:out
@@ -281,6 +281,7 @@
 						value="${DefinirUnidadFamiliarEJGForm.importeBienesInmuebles}"></c:out>&euro;</td>
 					<td align="right"><c:out
 						value="${DefinirUnidadFamiliarEJGForm.importeOtrosBienes}"></c:out>&euro;</td>
+					<td align="right"></td>
 		
 		</siga:FilaConIconos>
 	</logic:notEmpty>

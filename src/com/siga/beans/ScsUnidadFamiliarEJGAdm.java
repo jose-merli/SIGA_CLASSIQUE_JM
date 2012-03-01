@@ -442,6 +442,7 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 		unidadFamiliarForm.setEjg(ejg);
 		List<DefinirUnidadFamiliarEJGForm> alUnidadFamiliar = null;
 		List<String> alPeticiones = null;
+		List miembros = new ArrayList();
 		try {
 			RowsContainer rc = new RowsContainer(); 
 												
@@ -466,6 +467,7 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
             		Hashtable<String, Object> htFila=fila.getRow();
             		unidadFamiliar = (ScsUnidadFamiliarEJGBean)this.hashTableToBean(htFila);
             		personaJG = (ScsPersonaJGBean) admPersonaJG.hashTableToBean(htFila);
+            		
             		unidadFamiliar.setPersonaJG(personaJG);
             		parentesco = new ScsParentescoBean();
             		ScsEejgPeticionesBean peticionEejg = null;
@@ -482,13 +484,13 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 	            		peticionEejg.setUsuarioPeticion(usuarioPeticion);
 	            		unidadFamiliar.setPeticionEejg(peticionEejg);
             		}
-            		if(unidadFamiliar.getImoporteBienesMuebles()!=null)
+            		if(unidadFamiliar.getImoporteBienesMuebles()!=null&&!miembros.contains(personaJG.getIdPersona().toString()))
 						importeMuebles += unidadFamiliar.getImoporteBienesMuebles().doubleValue();
-					if(unidadFamiliar.getImoporteBienesInmuebles()!=null)
+					if(unidadFamiliar.getImoporteBienesInmuebles()!=null&&!miembros.contains(personaJG.getIdPersona().toString()))
 						importeInmuebles += unidadFamiliar.getImoporteBienesInmuebles().doubleValue();
-					if(unidadFamiliar.getImporteOtrosBienes()!=null)
+					if(unidadFamiliar.getImporteOtrosBienes()!=null&&!miembros.contains(personaJG.getIdPersona().toString()))
 						importeOtrosBienes += unidadFamiliar.getImporteOtrosBienes().doubleValue();
-					if(unidadFamiliar.getIngresosAnuales()!=null)
+					if(unidadFamiliar.getIngresosAnuales()!=null&&!miembros.contains(personaJG.getIdPersona().toString()))
 						importeIngresosAnuales += unidadFamiliar.getIngresosAnuales().doubleValue();
 					if(idSolicitante!=null && idSolicitante.compareTo(unidadFamiliar.getPersonaJG().getIdPersona())==0)
 						unidadFamiliarForm.setPersonaJG(unidadFamiliar.getPersonaJG());
@@ -514,6 +516,8 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 						alPeticiones.add(peticion.toString());
 						alUnidadFamiliar.add(unidad);
 					}
+					if(!miembros.contains(personaJG.getIdPersona().toString()))
+						miembros.add(personaJG.getIdPersona().toString());
 					
             	}
     			
