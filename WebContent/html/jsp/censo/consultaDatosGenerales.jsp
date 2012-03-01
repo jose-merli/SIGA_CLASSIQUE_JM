@@ -110,6 +110,17 @@
 		checkreadonly = " ";
 	}
 	
+	String checkreadonlyFoto = " ";
+	if (user.isLetrado()) {
+		checkreadonlyFoto = " ";
+	}else{
+		if (formulario.getAccion().equals("ver")) {
+			checkreadonlyFoto = " disabled ";
+		}else{
+			checkreadonlyFoto = " ";
+		}
+	}
+	
 	
 	// seleccion de combos
 	ArrayList tratamientoSel = new ArrayList();
@@ -1340,9 +1351,9 @@ function str_replace(search, replace, subject) {
 				<tr>
 					<td class="labelText" style="height:20px"  colspan="6">
 						<%  if (usoFoto.equals(ClsConstants.DB_TRUE)) { 	%>
-							<input type="checkbox" name="exportarFoto"  value="<%=ClsConstants.DB_TRUE %>"  checked onchange="habilitarBoton()"/>
+							<input type="checkbox" name="exportarFoto"  value="<%=ClsConstants.DB_TRUE %>" <%=checkreadonlyFoto %> checked onClick="habilitarBoton()"/>
 						<% } else { %>
-							<input type="checkbox" name="exportarFoto"  value="<%=ClsConstants.DB_TRUE %>"  onchange="habilitarBoton()"/>
+							<input type="checkbox" name="exportarFoto"  value="<%=ClsConstants.DB_TRUE %>" <%=checkreadonlyFoto %> onClick="habilitarBoton()"/>
 						<% } %>
 						
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.usarFoto"/>
@@ -1460,6 +1471,8 @@ function str_replace(search, replace, subject) {
 			if(document.getElementById("modificar") != null){
 				if(document.getElementById("modificar").disabled){
 					document.getElementById("modificar").disabled = false;
+				}else{
+					document.getElementById("modificar").disabled = true;
 				}
 			}
 		}
