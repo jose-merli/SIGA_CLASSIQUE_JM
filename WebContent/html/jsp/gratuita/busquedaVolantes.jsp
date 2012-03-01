@@ -70,7 +70,14 @@
 
 	<table class="tablaCampos" align="center">
 
-	
+	<tr>
+		<td width="15%"></td>
+		<td width="30%"></td>
+		<td width="15%"></td>
+		<td width="13%"></td>
+		<td width="15%"></td>
+		<td width="12%"></td>
+	</tr>
 
 	<tr>
 		<td class="labelText">
@@ -89,13 +96,13 @@
 
 	<!-- FILA -->
 	<tr>				
-	   <td class="labelText" style="width:150px;">
+	   <td class="labelText" >
 		<siga:Idioma key="censo.busquedaVolantesGuardias.literal.ncolegiado"/>
 	   </td>		 
 	  <td>
-	    <html:text name="ValidarVolantesGuardiasForm" property="numColegiado" onChange="buscarColegiado();" maxlength="15" size="10" styleClass="box"></html:text>
-		<input type="text" name="nomColegiado" value="" class="boxConsulta">
-	    <html:hidden name="ValidarVolantesGuardiasForm" property="idPersona"></html:hidden>
+	    <html:text name="ValidarVolantesGuardiasForm" property="numColegiado" onChange="buscarColegiado();" maxlength="15" size="7" styleClass="box"></html:text>
+		<input type="text" name="nomColegiado" disabled="disabled" value="" class="box" style="width:250">
+	    <html:hidden name="ValidarVolantesGuardiasForm" property="idPersona" ></html:hidden>
 	  </td>
 	  	<td width="140" class="labelText"><siga:Idioma key="facturacion.buscarFactura.literal.FechaDesde"/></td>
 	  	<td width="140"><html:text styleClass="box" property="buscarFechaDesde" size="8" maxlength="10" readonly="true"/><a href='javascript://'onClick="return showCalendarGeneral(buscarFechaDesde);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a></td>
@@ -167,7 +174,8 @@
 				document.forms[0].target="submitArea3";
 				document.forms[0].submit();	
 			} else {
-				document.forms[0].nomColegiado.value="";
+				document.forms[0].numColegiado.value="";
+				
 				document.forms[0].idPersona.value="";
 			}
 		}

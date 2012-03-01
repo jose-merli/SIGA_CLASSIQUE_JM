@@ -37,6 +37,8 @@
 		parent.document.forms[0].target="resultadoModal";
 		parent.document.forms[0].idPersona.value="<%=(res!=null)?(String)res.get("IDPERSONA"):""%>";
 		parent.document.forms[0].nomColegiado.value="<%=(res!=null)?(String)res.get("NOMCOLEGIADO"):""%>";
+		parent.document.forms[0].numColegiado.value="<%=(res!=null)?(String)res.get("NCOLEGIADO"):""%>";
+		
 
 	 }
 

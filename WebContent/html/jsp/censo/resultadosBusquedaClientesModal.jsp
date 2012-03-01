@@ -251,13 +251,14 @@
 					String fechaNacimiento = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usrbean.getLanguage(),
 																										registro.get(CenPersonaBean.C_FECHANACIMIENTO)));
 		
-					String ncomunitario = "";
-					String ncolegiado = "";
-					String estadoColegial = "";
-					ncomunitario = UtilidadesString.mostrarDatoJSP(registro.get(CenColegiadoBean.C_NCOMUNITARIO));
 					
-					if(registro.get(CenColegiadoBean.C_NCOLEGIADO)!=null)
-						ncolegiado = (String)registro.get(CenColegiadoBean.C_NCOLEGIADO);
+					String ncolegiado = (String)registro.get(CenColegiadoBean.C_NCOLEGIADO);
+					String estadoColegial = "";
+					String ncomunitario = (String)registro.get(CenColegiadoBean.C_NCOMUNITARIO);
+					if(ncomunitario!=null && !ncomunitario.equals("") )
+						ncolegiado = UtilidadesString.mostrarDatoJSP(ncomunitario);
+					else if(ncolegiado!=null && !ncolegiado.equals(""))
+						ncolegiado = UtilidadesString.mostrarDatoJSP(ncolegiado);
 					estadoColegial = UtilidadesString.mostrarDatoJSP(UtilidadesMultidioma.getDatoMaestroIdioma((String) registro.get("ESTADOCOLEGIAL"), 
 																												usrbean));
 		
