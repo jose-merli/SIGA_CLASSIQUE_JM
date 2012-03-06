@@ -6,7 +6,9 @@
  */
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
@@ -14,6 +16,7 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.comun.vos.ValueKeyVO;
 import com.siga.general.SIGAException;
 
 /**
@@ -258,6 +261,75 @@ public class CenComponentesAdm extends MasterBeanAdministrador {
 		}
 		return v;
 	}
+
+	public List<ValueKeyVO> getCuentas(String idPersona, String idInstitucion)  throws ClsExceptions, SIGAException{
+		Vector v = null;
+		RowsContainer rc = null;
+		CenComponentesBean cuentas= new CenComponentesBean();
+		List<ValueKeyVO> valueKeyVOs = null;
+		try{
+			rc = new RowsContainer(); 
+			String cuentasSJCSSociedad = "select C.IDCUENTA || '*' || C.IDPERSONA AS ID, substr(B.NOMBRE, 0, 25) || ' ' || 'nº ' || C.cbo_codigo || '-' " +
+			"||  C.codigosucursal || '-' || C.digitocontrol || '-' ||  LPAD(SUBSTR(C.numerocuenta, 7), 10, '*') as DESCRIPCION   " +
+			"from cen_cuentasbancarias C, cen_bancos B, CEN_COMPONENTES A  where C.cbo_codigo = B.codigo AND C.IDPERSONA = A.Idpersona " +
+			"AND A.IDPERSONA = "+idPersona+"  AND C.IDINSTITUCION = "+idInstitucion+"  AND (C.ABONOCARGO = 'A' OR C.ABONOCARGO = 'T')  " +
+			"AND C.ABONOSJCS = 1   and c.fechabaja IS NULL    ORDER BY SOCIEDAD desc, A.IDCUENTA desc, DESCRIPCION";
+
+			if (rc.query(cuentasSJCSSociedad)) {
+
+				for (int i = 0; i < rc.size(); i++)	{
+					valueKeyVOs = new ArrayList<ValueKeyVO>();
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable)fila.getRow(); 
+					if (registro == null && i==0) {
+						ValueKeyVO vk = new ValueKeyVO();
+						vk.setKey("");
+						vk.setValue("");
+						valueKeyVOs.add(vk);
+					}
+					if (registro != null) {
+						ValueKeyVO vk = new ValueKeyVO();
+						vk.setValue((String)registro.get("ID"));
+						vk.setKey((String)registro.get("DESCRIPCION"));
+						valueKeyVOs.add(vk);
+					}
+				}
+			}
+		}
+		catch(ClsExceptions e){
+			throw new ClsExceptions (e, "Error en selectComponentes");
+		}
+		return valueKeyVOs;
+	}
+	public String getPersonaSociedad (String idPersona, String idInstitucion)throws ClsExceptions, SIGAException 
+	{
+		RowsContainer rc = null;
+		
+		try { rc = new RowsContainer(); }
+		catch(Exception e) { e.printStackTrace(); }
+		
+		try {		
+			String sJCSSociedades = "select a.IDPERSONA  AS ID,  P.NOMBRE || ' ' || P.APELLIDOS1 as DESCRIPCION  " +
+			"from cen_cuentasbancarias C,  cen_bancos B, cen_persona p, CEN_COMPONENTES A   where  p.IDPERSONA = A.Idpersona  " +
+			"AND A.CEN_CLIENTE_IDPERSONA = "+idPersona+" AND A.IDINSTITUCION = "+idInstitucion+"    AND C.cbo_codigo = B.codigo    " +
+			"AND C.IDPERSONA = A.Idpersona    AND (C.ABONOCARGO = 'A' OR C.ABONOCARGO = 'T')     AND C.ABONOSJCS = 1     " +
+			"and c.fechabaja IS NULL ORDER BY DESCRIPCION";
+			
+			if (rc.query(sJCSSociedades)) {
+				Row fila = (Row) rc.get(0);
+				Hashtable prueba = fila.getRow();
+				String idPerSociedad = UtilidadesHash.getString(prueba, "ID");
+	
+				 return idPerSociedad;								
+			}
+		}	
+		catch (Exception e) {		
+			throw new ClsExceptions (e, "Error al ejecutar el 'getPersonaSociedad' en B.D.");		
+		}
+		return null;
+	}	
+
+
 
 	/**
 	 * Devuelve un Hastable con los datos de la direccion del cliente pasado como parámetro.

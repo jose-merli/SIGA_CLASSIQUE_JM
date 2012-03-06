@@ -19,7 +19,7 @@ public class CenComponentesBean extends MasterBean {
 	private Long	idPersona;
 	private Float capitalSocial;
 	
-	private String 	cargo, fechaCargo, sociedad,idProvincia,idTipoColegio,numColegiado, cen_Cliente_IdPersona,idCargo;	
+	private String 	cargo, fechaCargo, sociedad,idProvincia,idTipoColegio,numColegiado, cen_Cliente_IdPersona,idCargo,numeroCuenta;	
 	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "CEN_COMPONENTES";
@@ -42,7 +42,12 @@ public class CenComponentesBean extends MasterBean {
 	static public final String C_IDINSTITUCION_TIPOCOLEGIO	= "IDINSTITUCION_TIPOCOLEGIO";
 	
 //	 Metodos GET
+	
 	public String getCargo() {	return cargo;}	
+	public String getNumeroCuenta() {
+		return numeroCuenta;
+	}
+	
 	public Integer getCen_Cliente_IdInstitucion() {return cen_Cliente_IdInstitucion;}
 	public String getCen_Cliente_IdPersona() {return cen_Cliente_IdPersona;}
 	public String getFechaCargo() {return fechaCargo;}
@@ -59,6 +64,9 @@ public class CenComponentesBean extends MasterBean {
 	public Integer getIdInstitucionTipoColegio() {return idInstitucionTipoColegio;	}
 	
 	//	 Metodos SET
+	public void setNumeroCuenta(String numeroCuenta) {
+		this.numeroCuenta = numeroCuenta;
+	}
 	public void setCargo(String cargo) {this.cargo = cargo;	}
 	public void setCen_Cliente_IdInstitucion(Integer cen_Cliente_IdInstitucion) {	this.cen_Cliente_IdInstitucion = cen_Cliente_IdInstitucion;	}
 	public void setCen_Cliente_IdPersona(String cen_Cliente_IdPersona) {this.cen_Cliente_IdPersona = cen_Cliente_IdPersona;}

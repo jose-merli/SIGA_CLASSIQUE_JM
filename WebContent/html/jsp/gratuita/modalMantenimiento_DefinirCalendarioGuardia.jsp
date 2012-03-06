@@ -90,6 +90,7 @@
 		//Busqueda de colegiados de guardias			
 		function buscar() {
 			sub();
+
 			if (compararFecha (document.DefinirCalendarioGuardiaForm.buscarFechaDesde, document.DefinirCalendarioGuardiaForm.buscarFechaHasta) == 1) {
 				mensaje = '<siga:Idioma key="messages.fechas.rangoFechas"/>'
 				alert(mensaje);
@@ -99,9 +100,9 @@
 			document.DefinirCalendarioGuardiaForm.reserva.value="N";			
 			document.DefinirCalendarioGuardiaForm.accion.value="guardias";	
 			document.DefinirCalendarioGuardiaForm.modo.value="buscarPor";
-			//document.DefinirCalendarioGuardiaForm.target="guardias";
 			document.DefinirCalendarioGuardiaForm.target="guardias";
-			document.DefinirCalendarioGuardiaForm.submit();
+			var f =  document.getElementById("DefinirCalendarioGuardiaForm").name;				
+			document.frames.guardias.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=messages.wait';
 		}
 
 		//Busqueda de colegiados de guardias y reservas 	

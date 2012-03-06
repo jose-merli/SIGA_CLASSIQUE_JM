@@ -13,12 +13,13 @@
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 <%@ taglib uri = "struts-tiles.tld" prefix="tiles" %>
 
+
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.atos.utils.ClsConstants" %>
 <%@ page import="com.atos.utils.GstDate"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
-
+<%@ page import="com.siga.gratuita.form.RetencionesIRPFForm"%>
 <%
 	Vector vFechaInicio = new Vector();
 	Vector vFechaFin = new Vector();
@@ -29,7 +30,9 @@
 	Vector obj = new Vector();
 	obj = (Vector) request.getAttribute("resultado");
 	String sociedad = (String) request.getAttribute("SOCIEDAD");
-	String idSociedadLetradoSel = (String) request.getAttribute("idSociedadLetradoSel");
+	String idSociedadLetradoSel ="";
+	if(request.getAttribute("idSociedadLetradoSel")!=null)
+	 idSociedadLetradoSel = (String) request.getAttribute("idSociedadLetradoSel");
 	boolean desactivado = false;
 	String DB_TRUE = ClsConstants.DB_TRUE;
 	String DB_FALSE = ClsConstants.DB_FALSE;
@@ -40,16 +43,30 @@
 	//idBanco.add ((String) request.getAttribute("idCuenta"));
 	ArrayList comboSocSel = new ArrayList();
 	comboSocSel.add(idSociedadLetradoSel);
+	RetencionesIRPFForm miForm = (RetencionesIRPFForm)request.getAttribute("RetencionesIRPFForm");
+	
+	Integer sociedadesCliente = miForm.getSociedadesCliente();
 
 	// para saber hacia donde volver
 	String busquedaVolver = (String) request.getSession().getAttribute("CenBusquedaClientesTipo");
 	if ((busquedaVolver == null) || (usr.isLetrado())) {
 		busquedaVolver = "volverNo";
 	}
-
+	boolean bloquea=false;
+	boolean bloqueachec=false;
+	String bloqueacheck= (String) request.getAttribute("bloqueacheck");
+	if (bloqueacheck=="N")
+		bloqueachec=true;
+		
+	if(sociedadesCliente==null || sociedad == DB_FALSE){
+		bloquea=true;
+	}else if(sociedadesCliente!=null && sociedadesCliente.intValue()==0)
+		bloquea=true;
 	// parametros para la query del combo
 	String letrado = "\'" + UtilidadesString.getMensajeIdioma(usr.getLanguage(),"gratuita.retenciones.letrado") + "\'";
 	String parametros[] = {(String) usr.getLocation(),(String) request.getSession().getAttribute("idPersonaTurno"), letrado};
+	String parametros2[] = {(String) usr.getLocation()};
+
 %>
 
 <%@page import="java.util.Vector"%>
@@ -78,6 +95,19 @@
 	function refrescarLocalArray(arrayDatos) {
 		document.forms[0].action		= "<%=app%>/JGR_PestanaRetencionesIRPF.do";
 		document.forms[0].modo.value	= "buscarPor";
+		document.forms[0].submit();
+		// tambien refresco
+		//refrescarLocal();
+	}
+	
+	function traeDatos() {
+		document.forms[0].action		= "<%=app%>/JGR_PestanaRetencionesIRPF.do";
+		document.forms[0].modo.value	= "traeDatos";
+		//document.getElementById('yourSelectBoxId').options[document.getElementById('yourSelectBoxId').selectedIndex].value
+		if(document.forms[0].sociedadesCliente.checked)
+			document.getElementById('sociedadRefresca').value=document.getElementById('idSJCSSociedad').value;
+		else
+			document.getElementById('sociedadRefresca').value="";
 		document.forms[0].submit();
 		// tambien refresco
 		//refrescarLocal();
@@ -150,15 +180,25 @@
 	//Selecciona los valores de los campos check y combo dependiendo de los valores del Hashtable
 	function rellenarCampos(){	
 	  // Obtenemos los valores para el check sociedad.
-	  sociedad = "<%=sociedad%>";
-	  if(sociedad == "<%=DB_FALSE%>"){
+	  
+	  if(<%=bloquea%>){
+		  
+		  if(<%=bloqueachec%>)
+			  document.forms[0].sociedadesCliente.disabled=true;	
+		document.getElementById("cuentaBancaria").disabled=true;
+		document.getElementById("sociedadSjcs").disabled=true;		
+		document.getElementById("sinasteriscoNumCuenta").disabled=true;
 		document.getElementById("sinasteriscoCuenta").disabled=true;	
-		document.getElementById("cuentaBancaria").disabled=true;	
+		
 	  }else {
 		document.forms[0].sociedadesCliente.checked=true;
-		document.getElementById("sinasteriscoCuenta").disabled=false;
+
 		document.getElementById("cuentaBancaria").disabled=false;
-	  }		
+		document.getElementById("sociedadSjcs").disabled=false;		
+		document.getElementById("sinasteriscoNumCuenta").disabled=false;
+		document.getElementById("sinasteriscoCuenta").disabled=false;
+
+	  }
 	}
 
 	
@@ -180,9 +220,12 @@
 			String botonesA = "";
 			if (sociedad == null || sociedad.equalsIgnoreCase("null")) {
 				botonesA = "E,B";
-				botones = "IRI,N";
-			} else {
 				botones = "IRI,N,G";
+			} else {
+				if(bloquea)
+					botones = "IRI,N,G";
+				else
+					botones = "IRI,G";
 			}
 			String idInstitucion = (String) request.getAttribute("idInstitucion");
 			String idPersona = (String) request.getAttribute("idPersona");
@@ -195,7 +238,8 @@
 		<html:form action="/JGR_PestanaRetencionesIRPF.do" method="post">
 		<html:hidden property = "idpersona" value = ""/>
 		<html:hidden property = "idsociedad" value = ""/>	
-		<html:hidden property = "idsociedadant" value = ""/>				
+		<html:hidden property = "idsociedadant" value = ""/>	
+		<html:hidden property = "sociedadRefresca"/>				
 		<tr>
 			<td>
 				<siga:ConjCampos leyenda="censo.busquedaClientes.literal.liquidacionSJCS" >	
@@ -206,24 +250,43 @@
 						</td>
 						
 						<td>
-							<html:checkbox  property="sociedadesCliente" disabled="<%=desactivado%>" onclick="cuenta()"/>
+							<html:checkbox  property="sociedadesCliente" disabled="<%=desactivado%>" onclick="cuenta();traeDatos()"/>
 						</td>
-					
-						<td id="sinasteriscoCuenta" class="labelText" >
-							<siga:Idioma key="censo.consultaComponentesJuridicos.literal.cuenta"/> 
-						</td>
-						
-						<td id="cuentaBancaria">
-						<%
+					</tr>
+					<tr>
+					<%
 						String parametro[] = new String[2];
 						parametro[0] = idpersonacol;
 						parametro[1] = idInstitucion;
 							//cuentaSJCS
+						String parametro2[] = new String[2];
+						parametro2[1] = idInstitucion;	
+					    parametro2[0] ="2040000639";
 					  %>
-					   <siga:ComboBD nombre="idCuenta" tipo="cuentasSJCSSociedades" parametro="<%=parametro%>"clase="box" obligatorio="false" elementoSel="<%=idBanco%>" />
+						<td id="sinasteriscoNumCuenta" class="labelText" >
+							<siga:Idioma key="censo.consultaComponentesJuridicos.literal.nombreSociedad"/> 
+						</td>
+
+						<td id="sociedadSjcs">
+						
+					   <siga:ComboBD estilo="true" obligatorioSinTextoSeleccionar="true" nombre="idSJCSSociedad" filasMostrar="1"  accion="Hijo:idCuenta;traeDatos()" 
+					   tipo="sJCSSociedades" clase="boxCombo" elementoSel="<%=comboSocSel %>"  parametro="<%=parametro%>"/>
+						</td>	
+	
+						<td id="sinasteriscoCuenta" class="labelText" >
+							<siga:Idioma key="censo.consultaComponentesJuridicos.literal.cuenta"/> 
+						</td>					
+						<td id="cuentaBancaria">
+						
+						<html:select styleId="cuentasSJCSSociedad" styleClass="boxCombo" 
+											property="idCuenta">
+											<bean:define id="cuentasSJCSSociedad" name="RetencionesIRPFForm"
+												property="cuentasSJCSSociedad" type="java.util.Collection" />
+													<html:optionsCollection name="cuentasSJCSSociedad" value="value" label="key"  />
+						</html:select>
 						</td>
 						
-					</tr>						
+					</tr>	
 		   		</table>
 				</siga:ConjCampos>
 			</td>
@@ -401,6 +464,7 @@
 <%
 		}
 	%>
+
 
 
 <%@ include file="/html/jsp/censo/includeVolver.jspf" %>		

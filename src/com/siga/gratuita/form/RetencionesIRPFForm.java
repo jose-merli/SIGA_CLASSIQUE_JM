@@ -1,6 +1,12 @@
 package com.siga.gratuita.form;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
+
+import com.siga.beans.CenComponentesBean;
+import com.siga.beans.ScsJuzgadoBean;
+import com.siga.comun.vos.ValueKeyVO;
 import com.siga.general.MasterForm;
 
 /**
@@ -23,8 +29,20 @@ public class RetencionesIRPFForm extends MasterForm
 	Integer anyoInformeIRPF = null;
 	String idioma;
 	String idCuenta = null;
+	String sociedadRefresca = null;
+	//ArrayList cuentasSJCSSociedad; 
+	private List<ValueKeyVO> cuentasSJCSSociedad;  
 
 	
+	public List getCuentasSJCSSociedad() {
+		return cuentasSJCSSociedad;
+	}
+	public void setCuentasSJCSSociedad(List cuentasSJCSSociedad) {
+		this.cuentasSJCSSociedad = cuentasSJCSSociedad;
+	}
+	public String getSociedadRefresca() {
+		return sociedadRefresca;
+	}
 	// GETTERS
 	public String getFechaInicio() { return FECHAINICIO; }
 	public String getFechaFin() { return FECHAFIN; }
@@ -57,5 +75,9 @@ public class RetencionesIRPFForm extends MasterForm
 	public void setAnyoInformeIRPF(Integer anyoInformeIRPF) { this.anyoInformeIRPF = anyoInformeIRPF; }
 	public void setIdioma(String idioma) { this.idioma = idioma; }
 	public void setIdCuenta(String idCuenta) { this.idCuenta = idCuenta; }
+	public void setSociedadRefresca(String sociedadRefresca) {
+		this.sociedadRefresca = sociedadRefresca;
+	}
+
 
 }
