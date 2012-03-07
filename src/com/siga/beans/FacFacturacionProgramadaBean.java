@@ -11,7 +11,7 @@ package com.siga.beans;
 public class FacFacturacionProgramadaBean extends MasterBean {
 
 	/* Variables */
-	private Integer idInstitucion, idEstadoConfirmacion, idEstadoPDF, idEstadoEnvio;
+	private Integer idInstitucion, idEstadoConfirmacion, idEstadoPDF, idEstadoEnvio, idTipoPlantillaMail, idTipoEnvios;
 	
 	private Long idSerieFacturacion, idProgramacion, idPrevision;
 	
@@ -53,7 +53,8 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	static public final String C_CTACLIENTES				= "CTACLIENTES";
 	static public final String C_VISIBLE					= "VISIBLE";
 	static public final String C_DESCRIPCION 		    	= "DESCRIPCION";
-
+	static public final String C_IDTIPOPLANTILLAMAIL 		= "IDTIPOPLANTILLAMAIL";
+	static public final String C_IDTIPOENVIOS		 		= "IDTIPOENVIOS";	
 
 	// Metodos SET
 	public void setIdInstitucion (Integer id)			{ this.idInstitucion = id; }
@@ -132,5 +133,17 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 		this.realizarEnvio = realizarEnvio;
 	}
 	
+	public Integer getIdTipoPlantillaMail() {
+		return idTipoPlantillaMail;
+	}
+	public void setIdTipoPlantillaMail(Integer idTipoPlantillaMail) {
+		this.idTipoPlantillaMail = idTipoPlantillaMail;
+	}
+	public Integer getIdTipoEnvios() {
+		return idTipoEnvios;
+	}
+	public void setIdTipoEnvios(Integer idTipoEnvios) {
+		this.idTipoEnvios = idTipoEnvios;
+	}
 	
 }

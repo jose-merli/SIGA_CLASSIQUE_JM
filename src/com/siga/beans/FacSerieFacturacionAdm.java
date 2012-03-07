@@ -35,7 +35,8 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 							FacSerieFacturacionBean.C_TIPOSERIE,
 							FacSerieFacturacionBean.C_FECHAMODIFICACION,
 							FacSerieFacturacionBean.C_USUMODIFICACION,
-							FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL};
+							FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL,
+							FacSerieFacturacionBean.C_IDTIPOENVIOS};
 		return campos;
 	}
 
@@ -67,6 +68,7 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 			bean.setFechaMod			(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_FECHAMODIFICACION));
 			bean.setUsuMod				(UtilidadesHash.getInteger(hash,FacSerieFacturacionBean.C_USUMODIFICACION));
 			bean.setIdTipoPlantillaMail	(UtilidadesHash.getInteger(hash,FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL));
+			bean.setIdTipoEnvios		(UtilidadesHash.getInteger(hash,FacSerieFacturacionBean.C_IDTIPOENVIOS));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -102,6 +104,7 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_USUMODIFICACION, b.getUsuMod());
 			
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL, b.getIdTipoPlantillaMail());
+			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_IDTIPOENVIOS, b.getIdTipoEnvios());
 		}
 		catch (Exception e) {
 			htData = null;

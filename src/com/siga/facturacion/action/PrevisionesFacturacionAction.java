@@ -876,7 +876,9 @@ or	 * @param request -
 				if (v!=null && v.size()>0) {
 					FacSerieFacturacionBean be = (FacSerieFacturacionBean) v.get(0);
 					bean.setGenerarPDF(be.getGenerarPDF());			
-					bean.setEnvio(be.getEnvioFactura());			
+					bean.setEnvio(be.getEnvioFactura());
+					bean.setIdTipoPlantillaMail(be.getIdTipoPlantillaMail());
+					bean.setIdTipoEnvios(be.getIdTipoEnvios());
 				}
 				
 				bean.setFechaPrevistaConfirmacion(null);			

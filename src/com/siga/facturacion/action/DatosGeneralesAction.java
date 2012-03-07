@@ -337,8 +337,10 @@ public class DatosGeneralesAction extends MasterAction{
 				if(formDGen.getIdTipoPlantillaMail()!=null && !formDGen.getIdTipoPlantillaMail().equals("")){
 					idTipoPlantillaMail = formDGen.getIdTipoPlantillaMail().split(",")[0];
 					hashNew.put(FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL, idTipoPlantillaMail);
+					hashNew.put(FacSerieFacturacionBean.C_IDTIPOENVIOS, 1);
 				} else{
 					hashNew.put(FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL, "");
+					hashNew.put(FacSerieFacturacionBean.C_IDTIPOENVIOS, "");
 				}
 				
 				boolean eliminarContador = false;

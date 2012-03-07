@@ -146,7 +146,9 @@ public class ProgramarFacturacionAction extends MasterAction{
 			if (vDatos!=null && vDatos.size()>0) {
 				FacSerieFacturacionBean b = (FacSerieFacturacionBean) vDatos.get(0);
 				request.setAttribute("generarPDF",b.getGenerarPDF());	
-				request.setAttribute("envioFactura",b.getEnvioFactura());	
+				request.setAttribute("envioFactura",b.getEnvioFactura());
+				request.setAttribute("idTipoPlantilla",b.getIdTipoPlantillaMail());
+				request.setAttribute("idInstitucionSerie",b.getIdInstitucion());
 			}
 			
 		} catch (Exception e) { 
@@ -412,6 +414,7 @@ public class ProgramarFacturacionAction extends MasterAction{
 	 */
 	protected FacFacturacionProgramadaBean getDatos(ProgramarFacturacionForm form, HttpServletRequest request) throws SIGAException {
 		FacFacturacionProgramadaBean bean = null;
+		String idTipoPlantillaMail = "";
 		try {
 			bean = new FacFacturacionProgramadaBean();
 			FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.getUserBean(request));
@@ -451,9 +454,19 @@ public class ProgramarFacturacionAction extends MasterAction{
 
 			
 			bean.setGenerarPDF((form.getGenerarPDF()!=null)?"1":"0");			
-			bean.setEnvio((form.getEnviarFacturas()!=null)?"1":"0");			
-			if (bean.getEnvio().equals("1")) bean.setGenerarPDF("1");
+			bean.setEnvio((form.getEnviarFacturas()!=null)?"1":"0");
 
+			if(form.getIdTipoPlantillaMail()!=null && !form.getIdTipoPlantillaMail().equals("")){
+				idTipoPlantillaMail = form.getIdTipoPlantillaMail().split(",")[0];
+				bean.setIdTipoPlantillaMail(Integer.parseInt(idTipoPlantillaMail));
+				bean.setIdTipoEnvios(1);
+			} else{
+				bean.setIdTipoPlantillaMail(null);
+				bean.setIdTipoEnvios(null);
+			}
+			
+			if (bean.getEnvio().equals("1"))
+				bean.setGenerarPDF("1");
 			bean.setDescripcion(form.getDescripcionProgramacion());
 			
 		}

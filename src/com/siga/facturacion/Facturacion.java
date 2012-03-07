@@ -1515,16 +1515,18 @@ public class Facturacion {
 		    				}
 		    				
 		    				//SE SELECCIONA LA PLANTILLA MAIL
-		    				FacSerieFacturacionAdm facSerieAdm = new FacSerieFacturacionAdm(userbean);
-		    				Hashtable hashSerie = new Hashtable();
-		    				hashSerie.put(FacSerieFacturacionBean.C_IDINSTITUCION, institucion);
-		    				hashSerie.put(FacSerieFacturacionBean.C_IDSERIEFACTURACION, serieFacturacion);
-		    				Vector vFacSerie = facSerieAdm.select(hashSerie);
-		    				if(vFacSerie != null && vFacSerie.size()>0){
-		    					FacSerieFacturacionBean serieBean = (FacSerieFacturacionBean) vFacSerie.get(0);
-		    					if(serieBean.getIdTipoPlantillaMail() != null){
-		    						int plantillaMail = serieBean.getIdTipoPlantillaMail();
+		    				FacFacturacionProgramadaAdm facProgAdm = new FacFacturacionProgramadaAdm(userbean);
+		    				Hashtable hashProg = new Hashtable();
+		    				hashProg.put(FacFacturacionProgramadaBean.C_IDINSTITUCION, institucion);
+		    				hashProg.put(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, serieFacturacion);
+		    				hashProg.put(FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
+		    				Vector vFacProg = facProgAdm.select(hashProg);
+		    				if(vFacProg != null && vFacProg.size()>0){
+		    					FacFacturacionProgramadaBean facProgBean = (FacFacturacionProgramadaBean) vFacProg.get(0);
+		    					if(facProgBean.getIdTipoPlantillaMail() != null){
+		    						int plantillaMail = facProgBean.getIdTipoPlantillaMail();
 		    						enviosBean.setIdPlantillaEnvios(plantillaMail);
+		    						
 			        				// Creacion documentos
 			         				Documento documento = new Documento(rutaAlmacen+barraAlmacen+nColegiado+"-"+UtilidadesString.validarNombreFichero((String)facturaHash.get(FacFacturaBean.C_NUMEROFACTURA))+".pdf","Factura "+nColegiado+"-"+UtilidadesString.validarNombreFichero((String)facturaHash.get(FacFacturaBean.C_NUMEROFACTURA))+".pdf");
 			        				if(UtilidadesHash.getString(facturaHash,FacFacturaBean.C_NUMEROFACTURA)==null ||UtilidadesHash.getString(facturaHash,FacFacturaBean.C_NUMEROFACTURA).equals("")){

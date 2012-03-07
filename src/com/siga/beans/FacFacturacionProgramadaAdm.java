@@ -54,7 +54,8 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 							FacFacturacionProgramadaBean.C_CTAINGRESOS,
 							FacFacturacionProgramadaBean.C_VISIBLE,
 							FacFacturacionProgramadaBean.C_DESCRIPCION,
-														
+							FacFacturacionProgramadaBean.C_IDTIPOENVIOS,
+							FacFacturacionProgramadaBean.C_IDTIPOPLANTILLAMAIL,
 							FacFacturacionProgramadaBean.C_FECHAMODIFICACION,
 							FacFacturacionProgramadaBean.C_USUMODIFICACION};
 		return campos;
@@ -91,6 +92,8 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			bean.setIdEstadoEnvio(UtilidadesHash.getInteger(hash, FacFacturacionProgramadaBean.C_IDESTADOENVIO));
 			bean.setGenerarPDF(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_GENERAPDF));
 			bean.setEnvio(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_ENVIO));
+			bean.setIdTipoEnvios(UtilidadesHash.getInteger(hash, FacFacturacionProgramadaBean.C_IDTIPOENVIOS));
+			bean.setIdTipoPlantillaMail(UtilidadesHash.getInteger(hash, FacFacturacionProgramadaBean.C_IDTIPOPLANTILLAMAIL));
 			bean.setArchivarFact(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_ARCHIVARFACT));
 			bean.setLocked(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_LOCKED));
 
@@ -139,6 +142,12 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_IDESTADOENVIO, b.getIdEstadoEnvio());
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_GENERAPDF, b.getGenerarPDF());
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_ENVIO, b.getEnvio());
+			if(b.getIdTipoPlantillaMail() != null){
+				UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_IDTIPOPLANTILLAMAIL, b.getIdTipoPlantillaMail());
+			}else{
+				UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_IDTIPOPLANTILLAMAIL, "");
+			}
+			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_IDTIPOENVIOS, b.getIdTipoEnvios());
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_ARCHIVARFACT, b.getArchivarFact());
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_LOCKED, b.getLocked());
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_FECHACARGO, b.getFechaCargo());

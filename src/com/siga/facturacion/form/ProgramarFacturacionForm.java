@@ -18,6 +18,9 @@ import com.siga.general.MasterForm;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class ProgramarFacturacionForm extends MasterForm{
+	
+	private String idTipoPlantillaMail;
+	
 	/**
 	 * @param finalProducto The fFinalProducto to set.
 	 */
@@ -302,7 +305,13 @@ public class ProgramarFacturacionForm extends MasterForm{
 		return UtilidadesHash.getString(this.datos, FacFacturacionProgramadaBean.C_FECHACARGO);
 	}
 	
+	public String getIdTipoPlantillaMail() {
+		return idTipoPlantillaMail;
+	}
 
+	public void setIdTipoPlantillaMail(String idTipoPlantillaMail) {
+		this.idTipoPlantillaMail = idTipoPlantillaMail;
+	}
 	
 	
 }

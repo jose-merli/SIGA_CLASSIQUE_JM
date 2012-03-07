@@ -23,6 +23,14 @@
 	if (generarPDF==null) generarPDF="";
 	String envioFactura = (String)request.getAttribute("envioFactura");	
 	if (envioFactura==null) envioFactura="";
+	String idTipoPlantilla = "";	
+	if (request.getAttribute("idTipoPlantilla")!=null) {
+		idTipoPlantilla = ""+(Integer)request.getAttribute("idTipoPlantilla");
+	}
+	String idInstitucion = "";	
+	if (request.getAttribute("idInstitucionSerie")!=null) {
+		idInstitucion = ""+(Integer)request.getAttribute("idInstitucionSerie");
+	}
 %>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
@@ -32,7 +40,9 @@
 	function reloadPage() {	
 	
 		var generarPDF2='<%=generarPDF%>'; 
-		var envioFactura2='<%=envioFactura%>'; 
+		var envioFactura2='<%=envioFactura%>';
+		var idTipoPlantilla2='<%=idTipoPlantilla%>'; 
+		var idInstitucion='<%=idInstitucion%>'; 
 		if (generarPDF2!='' && generarPDF2=='1') {
 			parent.document.forms[0].generarPDF.checked=true;
 		} else {
@@ -40,10 +50,14 @@
 		}
 		if (envioFactura2!='' && envioFactura2=='1') {
 			parent.document.forms[0].enviarFacturas.checked=true;
+			parent.document.forms[0].idTipoPlantillaMail.disabled=false;
+			parent.document.forms[0].idTipoPlantillaMail.value = idTipoPlantilla2 + ',' + idInstitucion + ',1';
 			parent.document.forms[0].generarPDF.disabled=true;
 			parent.document.forms[0].generarPDF.checked=true;
+			
 		} else {
 			parent.document.forms[0].enviarFacturas.checked=false;
+			parent.document.forms[0].idTipoPlantillaMail.disabled=true;
 			parent.document.forms[0].generarPDF.disabled=false;
 		}
 

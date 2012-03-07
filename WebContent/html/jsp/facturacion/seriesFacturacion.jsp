@@ -21,6 +21,7 @@
 
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="java.util.*"%>
+<%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="com.siga.beans.FacFacturacionProgramadaBean"%>
@@ -55,12 +56,18 @@
 	String sHorasCargoFicheroBanco 	= "";
 	String sMinutosCargoFicheroBanco 	= "";
 	String enviarFacturas 	= "";
+	String idTipoPlantilla = "";
 	String generarPDF 	= "";
 	boolean bEditableConfirmacion = true;
 	boolean bEditableGeneracion = true;
 	boolean bEditable = true;
 	boolean nuevo = true;
 	String auxFcargo ="";
+	String idTipoEnvioCorreoElectronico = ""+EnvEnviosAdm.TIPO_CORREO_ELECTRONICO;
+	String parametrosCmbPlantillaEnvios[] = {usr.getLocation(),idTipoEnvioCorreoElectronico};
+	String parametrosPlantillasMail [] = {"-1",usr.getLocation(),"1"};
+	ArrayList plantillaEnviosSeleccionada = new ArrayList();
+	ArrayList plantillaSeleccionada = new ArrayList();
 	
 	String modoAction=(String) ses.getAttribute("ModoAction");
 
@@ -100,9 +107,15 @@
 					
 			enviarFacturas = UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_ENVIO);
 			generarPDF = UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_GENERAPDF);
-
-			nuevo	= false;				
 			
+			if (hash.get(FacFacturacionProgramadaBean.C_IDTIPOPLANTILLAMAIL) != null && !hash.get(FacFacturacionProgramadaBean.C_IDTIPOPLANTILLAMAIL).equals("")){
+				idTipoPlantilla = (UtilidadesHash.getInteger(hash, FacFacturacionProgramadaBean.C_IDTIPOPLANTILLAMAIL)).toString();
+				if(idTipoPlantilla != null && !idTipoPlantilla.equals("")){	
+					plantillaEnviosSeleccionada.add(idTipoPlantilla+","+usr.getLocation() +",1");
+				}
+			}
+			
+			nuevo	= false;				
 			
 			if (!sFRealGeneracion.trim().equals("")||modoAction.trim().equals("ver")) {
 				bEditable=false;
@@ -325,6 +338,14 @@ function IsNum( numstr ) {
 					}
 				}
 			}
+
+			if(document.programarFacturacionForm.enviarFacturas.checked){
+				if(document.programarFacturacionForm.idTipoPlantillaMail.value == ""){
+					alert('<siga:Idioma key="Facturacion.mensajes.obligatorio.plantillaMail"/>');
+					fin();
+					return false;
+				}
+			}
 			
 			if(<%=nuevo%>){
 				f.modo.value = "insertar";
@@ -340,11 +361,23 @@ function IsNum( numstr ) {
 				if (document.forms[0].enviarFacturas.checked==true) {
 					document.forms[0].generarPDF.checked=true;
 					document.forms[0].generarPDF.disabled=true;
+					document.forms[0].idTipoPlantillaMail.disabled=false;
 				} else {
 					document.forms[0].generarPDF.disabled=false;
+					document.forms[0].idTipoPlantillaMail.disabled=true;
 				}
 				return false;
 			}
+
+			function inicio() 
+			{
+				if (document.forms[0].enviarFacturas.checked==true) {
+					document.forms[0].idTipoPlantillaMail.disabled=false;
+				} else {
+					document.forms[0].idTipoPlantillaMail.disabled=true;
+				}
+			}
+			
 
 			function cambiaSerie() 
 			{
@@ -373,7 +406,7 @@ function IsNum( numstr ) {
 		</script>
 </head>
 
-<body>
+<body onLoad="inicio();">
 <!-- Barra de titulo actualizable desde los mantenimientos -->
 		<table class="tablaTitulo" cellspacing="0" heigth="32">
 			<tr>
@@ -637,6 +670,16 @@ function IsNum( numstr ) {
 										<% } %>
 										<%} %>
 									</td>
+										<td id="titulo" class="labelText">
+											<siga:Idioma key="envios.plantillas.literal.plantilla"/> 
+										</td>
+										<td>
+										<% if (modoAction.equals("editar")) { %>
+											<siga:ComboBD nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxCombo" elementoSel="<%=plantillaEnviosSeleccionada%>" ancho="300" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>"/>
+										<%} else{ %>
+											<siga:ComboBD nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxCombo" elementoSel="<%=plantillaEnviosSeleccionada%>" ancho="300" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>" readonly="true"/>
+										<% } %>
+										</td>
 								</tr>
 						</table>
 
