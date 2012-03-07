@@ -2053,7 +2053,19 @@ public class DatosGeneralesAction extends MasterAction {
 		    String nombreFoto = "";
 		    
 		    String tipoOriginal = request.getParameter("tipoOriginal");
-		    //tipoOriginal = (String)request.getAttribute("tipoOriginal");
+		    String tipoComboOriginal = request.getParameter("tipoIdentificacion");
+		    
+		    if(miForm.getTipo()!= null && miForm.getTipo().equals("Y"))
+		    	tipoOriginal="Y";
+		    else if(miForm.getTipo()!= null && miForm.getTipo().equals("J"))
+		    	tipoOriginal="J";
+
+		    // Si tipoComboOriginal es 50 significa que el valor del combo seleccionado es Otro
+		    // SI tipoComboOriginal es 20 significa que el valor del combo seleccionado es CIF 
+		    if(tipoComboOriginal.equals("50"))
+		    	tipoOriginal="0";
+		    else if(!tipoOriginal.equals("Y"))
+		    	tipoOriginal="";
 		    
 		    if(tipoOriginal==null || tipoOriginal.equals(""))
 		    {

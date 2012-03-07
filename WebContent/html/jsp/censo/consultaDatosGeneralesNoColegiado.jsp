@@ -587,21 +587,19 @@ caracterParam[0] = tipoCliente;
 
 
 			function cambioTipo()
-			{																					
+			{																									
 				if (document.forms[0].modo.value == "nuevaSociedad" || document.forms[0].modo.value == "editar")
-				{																				
-					//if(document.forms[0].tipoIdentificacion.value == "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>"){
+				{					
 					if(document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "A"
 						|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "B" 
 						|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "F"
 						|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "G"
 						|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "J"
-						|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "Y"
 						) 
-					{																	
+					{																							
 							document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>";
 							if(document.forms[0].modo.value == "nuevaSociedad")
-							{																
+							{																								
 								if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "A")
 									document.forms[0].tipo.value = "A";
 								else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "B")
@@ -612,26 +610,17 @@ caracterParam[0] = tipoCliente;
 									document.forms[0].tipo.value = "G";
 								else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "J")
 									document.forms[0].tipo.value = "J";
-								else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "Y")
-									document.forms[0].tipo.value = "Y";																	
-							}
-							else if(document.forms[0].modo.value == "editar")
-							{								
-								if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "J")
-									document.forms[0].tipo.value = "J";
-								else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "Y")
-									document.forms[0].tipo.value = "Y";	
-							}				
+							}											
 					}
 					else 
-					{																	
+					{																							
 						if(document.forms[0].modo.value=="nuevaSociedad")
-						{
+						{							
 							document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>";
 							document.forms[0].tipo.value = "0";
 						}
 						else
-						{							
+						{														
 							document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>";
 						}
 					}					
@@ -1036,42 +1025,40 @@ caracterParam[0] = tipoCliente;
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 
-		//Valida CIF
-		function validarCIF(texto)
+		//Método que valida el CIF de una nueva sociedad
+		function validarCIF(cif)
 		{ 
-         	alert("cif: "+texto);
         	var pares = 0; 
         	var impares = 0; 
         	var suma; 
         	var ultima; 
-        	var unumero; 
-        	var uletra = new Array("J", "A", "B","F", "G","Y"); 
-        	var xxx; 
+        	var unumero;
+        	var letraCif = new Array("J", "A", "B", "C", "D", "E", "F", "G", "H", "I");  
+        	var cadenaCif; 
          
-        	texto = texto.toUpperCase(); 
+        	cif = cif.toUpperCase(); 
          
-        	var regular = new RegExp(/^[ABCDEFGHKLMNPQS]\d\d\d\d\d\d\d[0-9,A-J]$/g); 
-           	if (!regular.exec(texto)) 
+        	var regular = new RegExp(/^[ABCDEFGHJKLMNPQS]\d\d\d\d\d\d\d[0-9,A-J]$/g); 
+           	if (!regular.exec(cif)) 
                	return false; 
                 
-           ultima = texto.substr(8,1); 
+           ultima = cif.substr(8,1); 
 
            for (var cont = 1 ; cont < 7 ; cont ++)
            { 
-               xxx = (2 * parseInt(texto.substr(cont++,1))).toString() + "0"; 
-               impares += parseInt(xxx.substr(0,1)) + parseInt(xxx.substr(1,1)); 
-               pares += parseInt(texto.substr(cont,1)); 
+        	   cadenaCif = (2 * parseInt(cif.substr(cont++,1))).toString() + "0"; 
+               impares += parseInt(cadenaCif.substr(0,1)) + parseInt(cadenaCif.substr(1,1)); 
+               pares += parseInt(cif.substr(cont,1)); 
            } 
-           xxx = (2 * parseInt(texto.substr(cont,1))).toString() + "0"; 
-           impares += parseInt(xxx.substr(0,1)) + parseInt(xxx.substr(1,1)); 
+           cadenaCif = (2 * parseInt(cif.substr(cont,1))).toString() + "0"; 
+           impares += parseInt(cadenaCif.substr(0,1)) + parseInt(cadenaCif.substr(1,1)); 
             
            suma = (pares + impares).toString(); 
            unumero = parseInt(suma.substr(suma.length - 1, 1)); 
            unumero = (10 - unumero).toString(); 
            if(unumero == 10) 
                unumero = 0; 
-            
-           if ((ultima == unumero) ||  (ultima == uletra[unumero])) 
+           if ((ultima == unumero) ||  (ultima == letraCif[unumero])) 
                return true; 
            else 
                return false; 
@@ -1091,65 +1078,63 @@ caracterParam[0] = tipoCliente;
 			document.forms[0].reset();	
 		}
 		
-		function validarFormulario() {
-			
+		function validarFormulario() 
+		{			
 			//Valido el formulario:
 			if (validateDatosGeneralesNoColegiadoForm(document.forms[0])) {
-			//if(true){
-			   
-			
+						   			
 			<% 	if (!(bConsultaPersona || modo.equalsIgnoreCase("VER")) ) {  
 			    %>						        
 					// El tipo de identificacion debe ser CIF:
 					if (document.forms[0].tipoIdentificacion.value == "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>") 
 					{
-						//if (!(validarCIF(document.forms[0].numIdentificacion.value)))
-						//{
-							//alert("cif no valido");
-							//return false;
-						//}
-						//else
-						//{
-							//alert("cif valido");														
+						if (!(validarCIF(document.forms[0].numIdentificacion.value)))
+						{								
+							// Si el CIF no es valido en el campo tipoIdentificacion se pone OTROS
+							document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>";
+							document.forms[0].tipo.value = "0";
+							return true;
+						}
+						else
+						{							
 								//Validamos el formato del CIF:
 								var tipo = document.forms[0].tipos.value;
 								var numIdentificacion = document.forms[0].numIdentificacion.value.charAt(0);
 								//Esta validacion comprueba que el identificador pertenece al Tipo Identificador en este caso de CIF
 								if(numIdentificacion.toUpperCase() !='A' && numIdentificacion.toUpperCase() !='B' 
 									&& numIdentificacion.toUpperCase() !='F' && numIdentificacion.toUpperCase() !='G'
-										&& numIdentificacion.toUpperCase() !='J' && numIdentificacion.toUpperCase() !='Y')
-								{
+										&& numIdentificacion.toUpperCase() !='J')
+								{						
 									alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');									
 									return false;
 								}
 
+								//if(tipo == 'Y') 
+								//	tipo='J';
 								
-								if((tipo == 'Y' || tipo == 'y')&& (numIdentificacion.toUpperCase()!='Y'))
-								{										
-									alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');
-									return false;
-								}
+								//if((tipo == 'Y' || tipo == 'y')&& (numIdentificacion.toUpperCase()!='Y'))
+								//{										
+									//alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');
+									//return false;
+								//}
 
-								if((tipo == 'J' || tipo == 'j')&& (numIdentificacion.toUpperCase()!='J'))
-								{
-									alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');
-									return false;
-								}
-
-								
-								if((numIdentificacion.toUpperCase() != tipo))
-								{									
-									alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');
-									return false;
-								}
-								
-								if(tipo == 'Y' || tipo == 'y') 
-									tipo='J';
-								
+								//if((numIdentificacion.toUpperCase() != tipo))
+								//{		
+									//alert("popo 2");							
+									//alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');
+									//return false;
+									//if(!((numIdentificacion.toUpperCase()=='J') && (tipo == 'J' || tipo == 'Y')))
+									//{
+										//alert("popo 3");
+										//alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');
+										//return false;
+									//}
+								//}
+																								
 								//si el usuario ha elegido el tipo de CIF otros, se debe comprobar que el cif no se corresponde con
 								//ninguno de los otros tipos definidos en la lista
 								if ( tipo=="<%=ClsConstants.COMBO_TIPO_OTROS%>")
-								{
+								{								
 									var i = 0;
 									var esTipoPredefinido = false;
 									while ((i < document.forms[0].tipos.length) && (esTipoPredefinido == false))
@@ -1161,52 +1146,62 @@ caracterParam[0] = tipoCliente;
 										i++;
 									} 
 									if (esTipoPredefinido)
-									{
+									{										
 										alert('<siga:Idioma key="censo.fichaCliente.literal.avisoOtrosCIF"/>');
 										return false;
 									}
-									else return true;
+									else
+										return true;
 								}			
 																		
 								//El tipo debe ser igual a la primera letra del cif 
 								else if  (tipo!="<%=ClsConstants.COMBO_TIPO_OTROS%>" && (tipo.toUpperCase()==numIdentificacion.toUpperCase()) ) 
-								{									  
+								{																		  
 									return true;
 								} 
 								else 
 								{
 									if(!document.forms[0].modo.value == "editar")
-									{
+									{										
 										alert ('<siga:Idioma key="censo.fichaCliente.literal.errorCIF"/>');
 										return false;
 									}
 									document.forms[0].tipoOriginal.value=document.forms[0].numIdentificacion.value.charAt(0).toUpperCase();									  									
 									return true;
 								} //Fin validar el CIF
-						//}
+						}
 					} 
-					else 
-						{														
-							var numIdentificacion = document.forms[0].numIdentificacion.value.charAt(0);
-							//Esta validacion comprueba que el identificador pertenece al Tipo Identificador en este caso de Otros
-							if(numIdentificacion.toUpperCase() =='A' || numIdentificacion.toUpperCase() =='B' 
-								|| numIdentificacion.toUpperCase() =='F' || numIdentificacion.toUpperCase() =='G'
-									|| numIdentificacion.toUpperCase() =='J' || numIdentificacion.toUpperCase() =='Y')
-							{									
-								alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');								
-								return false;
-							}
+					else // Si el tipoIdentificacion es OTROS
+						{			
 
-							var numIdentificacion = document.forms[0].numIdentificacion.value.charAt(0);
-							var tipo = document.forms[0].tipos.value;
-							if((numIdentificacion.toUpperCase() != tipo))
-							{																		
-								alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');
-								return false;
-							}
+						if ((validarCIF(document.forms[0].numIdentificacion.value)))
+						{							
+							// Si el CIF no es valido en el campo tipoIdentificacion se pone OTROS
+							document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>";						
+							return true;
+						}
+																	
+							//var numIdentificacion = document.forms[0].numIdentificacion.value.charAt(0);
+							//Esta validacion comprueba que el identificador pertenece al Tipo Identificador en este caso de Otros
+							//if(numIdentificacion.toUpperCase() =='A' || numIdentificacion.toUpperCase() =='B' 
+								//|| numIdentificacion.toUpperCase() =='F' || numIdentificacion.toUpperCase() =='G'
+									//|| numIdentificacion.toUpperCase() =='J')
+							//{		
+							//	alert("koko 5");							
+								//alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');								
+								//return false;
+							//}
+
+							//var numIdentificacion = document.forms[0].numIdentificacion.value.charAt(0);
+							//var tipo = document.forms[0].tipos.value;
+							//if((numIdentificacion.toUpperCase() != tipo))
+							//{																		
+								//alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');
+								//return false;
+							//}
 							
 							if (document.forms[0].tipoIdentificacion.value != "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>") 
-							{																 
+							{																								 
 								alert ('<siga:Idioma key="censo.fichaCliente.literal.avisoCIF"/>');
 								return false;
 							} 
