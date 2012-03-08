@@ -213,14 +213,14 @@
 	
 	}
 
-ArrayList calidadSel = new ArrayList();
-String[] datos2={usr.getLocation(),usr.getLanguage()};
-String idcalidad="";
-idcalidad=miform.getIdTipoenCalidad();
-if (idcalidad!=null&&!idcalidad.equals("")){
-calidadSel.add(0,idcalidad+","+usr.getLocation());
-}
-String calidadIdinstitucion=miform.getCalidadIdinstitucion();
+	ArrayList calidadSel = new ArrayList();
+	String[] datos2= {usr.getLocation(),usr.getLanguage()};
+	String idcalidad = miform.getIdTipoenCalidad();
+	if (idcalidad!=null&&!idcalidad.equals("")){
+		calidadSel.add(0,idcalidad);
+	}
+	
+	String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 %>
 
 
@@ -864,11 +864,81 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 			}else 
 				return true;
 		}	
+		var poblacionSeleccionada;
+		function recargarComboHijo() {
+			var acceso = poblacionFrame.document.getElementsByTagName("select");
+			acceso[0].value = poblacionSeleccionada;
+			document.PersonaJGForm.poblacion.value = poblacionSeleccionada;
+		}
+
+		function postAccionBusquedaNIF(){
+			poblacionSeleccionada = document.getElementById("poblacion").value;
+			document.getElementById("provincia").onchange();
+			window.setTimeout("recargarComboHijo()",500,"Javascript");	
+			document.getElementById("poblacion").value = document.PersonaJGForm.poblacion.value;		
+		}
+
+		function preAccionExisteNIF(){
+			if(document.PersonaJGForm.NIdentificacion.value == null || document.PersonaJGForm.NIdentificacion.value == ''){
+				return 'cancel';
+			}
+		}
+
+		function postAccionExisteNIF(){
+			if(document.PersonaJGForm.existeNIF.value == '1'){
+			    var type =  'Ya existe una persona con la Identificación introducida - ' + document.PersonaJGForm.NIdentificacion.value + '. ¿Desea obtener los datos del otro registro existente y sobreescribir los actuales (recomendado)?';
+				if (confirm(type)){
+					document.PersonaJGForm.forzarAjax.onchange();
+				}
+				
+			}else if(document.PersonaJGForm.existeNIF.value == '0'){
+				//No existe
+			}
+		}
+		
+		function preAccionBusquedaNIF(){
+			document.PersonaJGForm.tipoId.value = "";
+			document.PersonaJGForm.nombre.value = ""; 
+			document.PersonaJGForm.apellido1.value = "";
+			document.PersonaJGForm.apellido2.value = "";
+
+			document.PersonaJGForm.direccion.value = "";
+			document.PersonaJGForm.cp.value = "";
+			document.PersonaJGForm.provincia.value = "";
+			document.PersonaJGForm.poblacion.value = "";
+			document.PersonaJGForm.existeDomicilio.value = "";
+
+			document.PersonaJGForm.nacionalidad.value = "";
+			document.PersonaJGForm.fechaNac.value = "";
+			document.PersonaJGForm.edad.value = "";
+		
+			document.PersonaJGForm.estadoCivil.value = "";
+			document.PersonaJGForm.regimenConyugal.value = "";
+
+			if(document.PersonaJGForm.tipoGrupoLaboral){
+				document.PersonaJGForm.tipoGrupoLaboral.value = "";
+			}
+			
+			if(document.PersonaJGForm.profesion){
+				document.PersonaJGForm.profesion.value = "";
+			}
+
+			if(document.PersonaJGForm.calidad2){
+				document.PersonaJGForm.calidad2.value = "";
+			}
+
+			if(document.PersonaJGForm.enCalidadDe){
+				document.PersonaJGForm.enCalidadDe.value = "";
+			}
+
+			document.PersonaJGForm.sexo.value = "";
+			document.PersonaJGForm.minusvalia.value = "";
+			
+			document.PersonaJGForm.fax.value = "";
+			document.PersonaJGForm.correoElectronico.value = "";
+		}
                
 		</script>
-		
-
-
 </head>
 
 
@@ -921,6 +991,8 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 	<html:hidden name="PersonaJGForm" property = "localizacionE" />
 	<html:hidden name="PersonaJGForm" property = "tituloE" />
 	<html:hidden name="PersonaJGForm" property = "conceptoE" />
+	<html:hidden name="PersonaJGForm" property = "existeNIF" />
+	<html:hidden name="PersonaJGForm" property = "forzarAjax" />
 	<html:hidden name="PersonaJGForm" property = "lNumerosTelefonos" />
 	<html:hidden property = "idTipoenCalidad" value="<%=idcalidad%>"/>
 	<html:hidden property = "calidadIdinstitucion" value="<%=calidadIdinstitucion%>"/>
@@ -1182,7 +1254,7 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 		   %>
 		</td>
 		<td class="labelText">
-			<html:text name="PersonaJGForm" property="NIdentificacion" size="10" maxlength="20" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" onblur="rellenarFormulario()"></html:text>
+			<html:text name="PersonaJGForm" property="NIdentificacion" size="10" maxlength="20" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>"></html:text>
 		</td>
 
 		<td class="labelText" colspan="3">
@@ -1615,9 +1687,9 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 		</td>		
 			<td>
 				<%if(!accion.equalsIgnoreCase("ver")){%>
-						<siga:ComboBD nombre="calidad2" tipo="ComboCalidades" ancho="200" clase="boxCombo" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="true"  obligatorioSinTextoSeleccionar="true" parametro="<%=datos2%>" elementoSel="<%=calidadSel%>" hijo="t" readonly="false"/>           	   
+						<siga:ComboBD nombre="calidad2" tipo="ComboCalidades" ancho="200" clase="boxCombo" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="true"  obligatorioSinTextoSeleccionar="true" parametro="<%=datos2%>" elementoSel="<%=calidadSel%>" readonly="false"/>           	   
 					<%}else{%>
-						<siga:ComboBD nombre="calidad2" tipo="ComboCalidades" ancho="200" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=calidadSel%>" hijo="t" readonly="true"/>           	   
+						<siga:ComboBD nombre="calidad2" tipo="ComboCalidades" ancho="200" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=calidadSel%>" readonly="true"/>           	   
 			<%}%>
 		</td>
 <%
@@ -2365,6 +2437,20 @@ function limpiarPersonaContrario() {
 	source="tipos" target="identificadores"		
 	parameters="idTipoPersona={idTipoPersona}" postFunction="comprobarTipoPersona"
 	/>
+	
+<ajax:updateFieldFromSelect
+	baseUrl="/SIGA${path}.do?modo=getAjaxBusquedaNIF"
+	source="forzarAjax" target="NIdentificacion,idInstitucionJG,idPersonaJG,nombre,apellido1,apellido2,direccion,cp,fechaNac,minusvalia,provincia,poblacion,estadoCivil,regimenConyugal,tipos,identificadores,representante,nacionalidad,sexo,edad,fax,correoElectronico,idioma,profesion,existeDomicilio,enCalidadDe,hijos"
+	parameters="NIdentificacion={NIdentificacion}, conceptoE={conceptoE}"
+	postFunction="postAccionBusquedaNIF"
+	preFunction="preAccionBusquedaNIF"
+/>
+<ajax:updateFieldFromSelect
+	baseUrl="/SIGA${path}.do?modo=getAjaxExisteNIF"
+	source="NIdentificacion" target="existeNIF" 
+	parameters="NIdentificacion={NIdentificacion}"
+	preFunction="preAccionExisteNIF"
+	postFunction="postAccionExisteNIF" />
 	
 </html:form>
 </table>

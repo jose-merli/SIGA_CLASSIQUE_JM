@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
+import net.sourceforge.ajaxtags.xml.AjaxXmlBuilder;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -143,6 +145,12 @@ public class PersonaJGAction extends MasterAction {
 						mapDestino = abrirPestana(mapping, miForm, request, response);
 					} else if (accion.equalsIgnoreCase("buscarNIF")){
 						mapDestino = buscarNIF(mapping, miForm, request, response);
+					} else if (accion.equalsIgnoreCase("getAjaxBusquedaNIF")){
+						getAjaxBusquedaNIF(mapping, miForm, request, response);
+						return null;
+					} else if (accion.equalsIgnoreCase("getAjaxExisteNIF")){
+						getAjaxExisteNIF(mapping, miForm, request, response);
+						return null;						
 					} else if ( accion.equalsIgnoreCase("guardarEJG") ||
 								accion.equalsIgnoreCase("guardarSOJ") ||
 								accion.equalsIgnoreCase("guardarDesigna") ||
@@ -2960,5 +2968,242 @@ public class PersonaJGAction extends MasterAction {
 		respuestaAjax(new AjaxCollectionXmlBuilder<CenTipoIdentificacionBean>(), alTipoIdentificaciones,response);
 		
 	}
+	
+	/**
+	 * Metodo que implementa el modo buscarNIF
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	protected void getAjaxBusquedaNIF (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws SIGAException 
+	{
+		
+		List listaParametros = new ArrayList();
+		
+		try {
+			String nif = request.getParameter("NIdentificacion").trim();
+			String conceptoE = request.getParameter("conceptoE").trim();
+			listaParametros.add(nif);
+					
+			if(nif!=null && !nif.equals("")){			
+				UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		     	PersonaJGForm miform = (PersonaJGForm)formulario;
+		     	Object objDataBackup =  request.getSession().getAttribute("DATABACKUP");
+		     	ScsPersonaJGAdm admBean =  new ScsPersonaJGAdm(this.getUserBean(request));
+		     	Hashtable dataBackup = null;
+		     	if(objDataBackup!=null){
+			     	if(objDataBackup instanceof Hashtable){
+			     		dataBackup =  (Hashtable)objDataBackup;
+			     	}else{
+			     		dataBackup = new Hashtable();
+			     		request.getSession().setAttribute("DATABACKUP", dataBackup);
+			     	}
+		     	}else{
+		     		dataBackup = new Hashtable();
+		     		request.getSession().setAttribute("DATABACKUP", dataBackup);
+		     	}
+	     		
+	
+		     	// recupero el idpersona anterior
+		     	Hashtable hashAnt = null;
+		     	if (conceptoE.equals(PersonaJGAction.PERSONAJG)) {
+		     		hashAnt = (Hashtable)dataBackup.get("PERSONAPERSONA");
+		     	} else {
+		     		hashAnt = (Hashtable)dataBackup.get(ScsPersonaJGBean.T_NOMBRETABLA);
+		     	}
+	
+				//Quitamos caracteres no alfanumericos, 
+				// anhadimos 0 por delante hasta completar los 20 caracteres maximo
+				// y lo dejamos todo en mayusculas
+				// La configuracion del sistema tambien ignora acentos y demas en las letras
+				Hashtable codigos = new Hashtable();
+				codigos.put(new Integer(1),nif);
+				codigos.put(new Integer(2),user.getLocation());
+				String where = 
+					" where upper(lpad(regexp_replace(nif, '[^[:alnum:]]', ''), 20, '0')) = " +
+					"       upper(lpad(regexp_replace(:1, '[^[:alnum:]]', ''), 20, '0')) " +
+					"   and idinstitucion=:2";
+				Vector resultadoNIF = admBean.selectBind(where,codigos);
+				
+				// RGG 18-04-2006 actualizo el databackup para que no me de error el update
+				if (resultadoNIF!=null && resultadoNIF.size()>0) {
+				
+					Hashtable hash = new Hashtable();
+	
+					ScsPersonaJGBean perBean = (ScsPersonaJGBean) resultadoNIF.get(0);
+					if (perBean.getIdRepresentanteJG()!=null) {
+						ScsPersonaJGAdm adm = new ScsPersonaJGAdm(this.getUserBean(request));
+						request.setAttribute("nombreRepresentante",adm.getNombreApellidos(perBean.getIdRepresentanteJG().toString(),perBean.getIdInstitucion().toString()));
+					}
+					
+					// lo guardamos en el databuckup
+					// OJO, utilizo setForCompare porque traspaso beans, y para mi caso, que es luego compararlo
+					// en el update necesito que si me viene un nulo, se escriba el elemento con un blanco.
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDINSTITUCION,perBean.getIdInstitucion().toString());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPERSONA,perBean.getIdPersona().toString());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_NIF,perBean.getNif().toString());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_NOMBRE,perBean.getNombre());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_APELLIDO1,perBean.getApellido1());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_APELLIDO2,perBean.getApellido2());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_DIRECCION,perBean.getDireccion());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_CODIGOPOSTAL,perBean.getCodigoPostal());						
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_FECHANACIMIENTO,perBean.getFechaNacimiento());			
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPROFESION,perBean.getIdProfesion());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDMINUSVALIA,perBean.getIdMinusvalia());				
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPAIS,perBean.getIdPais());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPROVINCIA,perBean.getIdProvincia());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPOBLACION,perBean.getIdPoblacion());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_ESTADOCIVIL,perBean.getIdEstadoCivil());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_REGIMENCONYUGAL,perBean.getRegimenConyugal());			 
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_TIPOPERSONAJG,perBean.getTipo());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDTIPOIDENTIFICACION,perBean.getTipoIdentificacion());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_ENCALIDADDE,perBean.getEnCalidadDe());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_OBSERVACIONES,perBean.getObservaciones());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDREPRESENTANTEJG,perBean.getIdRepresentanteJG());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_SEXO,perBean.getSexo());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_HIJOS,perBean.getHijos());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_EDAD,perBean.getEdad());				
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_FAX,perBean.getFax());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_EXISTEDOMICILIO,perBean.getExisteDomicilio());	
+					if(perBean.getCorreoElectronico()!=null)
+						UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_CORREOELECTRONICO,perBean.getCorreoElectronico().trim());	
+					
+					//Rellenando los parametros de ajax
+					listaParametros = new ArrayList();
+					listaParametros.add(perBean.getNif().toString());
+					listaParametros.add(perBean.getIdInstitucion().toString());
+					listaParametros.add(perBean.getIdPersona().toString());
+					listaParametros.add(perBean.getNombre());
+					listaParametros.add(perBean.getApellido1());
+					listaParametros.add(perBean.getApellido2());
+					listaParametros.add(perBean.getDireccion());
+					listaParametros.add(perBean.getCodigoPostal());						
+					if(!perBean.getFechaNacimiento().equals("")){
+						listaParametros.add(UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(user.getLanguage(),perBean.getFechaNacimiento())));
+					}else{
+						listaParametros.add("");
+					}
+				
+					if(perBean.getIdMinusvalia()!=null)
+						listaParametros.add(perBean.getIdMinusvalia().toString());
+					else
+						listaParametros.add("");					
+					listaParametros.add(perBean.getIdProvincia());
+					listaParametros.add(perBean.getIdPoblacion());
+					if(perBean.getIdEstadoCivil()!=null)
+						listaParametros.add(perBean.getIdEstadoCivil().toString());
+					else
+						listaParametros.add("");	
+					listaParametros.add(perBean.getRegimenConyugal());			 
+					listaParametros.add(perBean.getTipo());
+					listaParametros.add(perBean.getTipoIdentificacion());
+					if(perBean.getIdRepresentanteJG()!=null)
+						listaParametros.add(perBean.getIdRepresentanteJG().toString());
+					else
+						listaParametros.add("");
+					
+					listaParametros.add(perBean.getIdPais());
+					listaParametros.add(perBean.getSexo());
+					listaParametros.add(perBean.getEdad());				
+					listaParametros.add(perBean.getFax());
+					if(perBean.getCorreoElectronico()!=null)
+						listaParametros.add(perBean.getCorreoElectronico().trim());
+					else
+						listaParametros.add("");	
+					listaParametros.add(perBean.getIdioma());						
+					if(perBean.getIdProfesion()!=null)
+						listaParametros.add(perBean.getIdProfesion().toString());
+					else
+						listaParametros.add("");
+					listaParametros.add(perBean.getExisteDomicilio());
+					listaParametros.add(perBean.getEnCalidadDe());
+					listaParametros.add(perBean.getHijos());
+	
+					
+					// cuelgo el anterior
+					if (hashAnt!=null) {
+						String idPersonaAnt= (String) hashAnt.get(ScsPersonaJGBean.C_IDPERSONA);
+						dataBackup.put("idPersonaAnt",idPersonaAnt);
+					}
+					
+					if (conceptoE.equals(PersonaJGAction.PERSONAJG)) {
+						dataBackup.put("PERSONAPERSONA",hash);
+					} else {
+						dataBackup.put(ScsPersonaJGBean.T_NOMBRETABLA,hash);
+					}
+							
+					
+					//LMSP Se redirige a un jsp que se carga en el frame oculto, y hace todo lo demás :)
+					request.getSession().setAttribute("DATABACKUP",dataBackup);
+					request.setAttribute("resultadoNIF",resultadoNIF);
+					
+				}				
+				
+				/*if (miform.getNombreObjetoDestino() != null) {
+					request.setAttribute("NombreObjetoDestino", miform.getNombreObjetoDestino());
+				}*/
+				
+				if (listaParametros != null && listaParametros.size() > 0){
+					respuestaAjax(new AjaxXmlBuilder(), listaParametros,response);
+				}
+			}
+			
+		} catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
+		}
+	}	
+	
+	/**
+	 * Metodo que implementa el modo buscarNIF
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	protected void getAjaxExisteNIF (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		
+		List listaParametros = new ArrayList();
+		try {
+			
+			String nif = request.getParameter("NIdentificacion").trim();
+					
+			if(nif!=null && !nif.equals("")){			
+				UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		     	ScsPersonaJGAdm admBean =  new ScsPersonaJGAdm(this.getUserBean(request));
+
+				Hashtable codigos = new Hashtable();
+				codigos.put(new Integer(1),nif);
+				codigos.put(new Integer(2),user.getLocation());
+				String where = 
+					" where upper(lpad(regexp_replace(nif, '[^[:alnum:]]', ''), 20, '0')) = " +
+					"       upper(lpad(regexp_replace(:1, '[^[:alnum:]]', ''), 20, '0')) " +
+					"   and idinstitucion=:2";
+				Vector resultadoNIF = admBean.selectBind(where,codigos);
+				
+				if (resultadoNIF!=null && resultadoNIF.size()>0) {
+					ScsPersonaJGBean perBean = (ScsPersonaJGBean) resultadoNIF.get(0);
+					listaParametros.add("1"); //Existe esa persona
+				}else{
+					listaParametros.add("0"); //No existe esa persona
+				}
+				
+			}else{
+				listaParametros.add("0"); //No existe esa persona
+			}
+			
+			respuestaAjax(new AjaxXmlBuilder(), listaParametros,response);
+			
+		} catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
+		}
+	}		
 
 }

@@ -631,7 +631,9 @@ public class PersonaJGForm extends MasterForm {
 	private Vector asuntos;
 	private String modoGuardar;
 	private String accionGuardar;
+	private String existeNIF;
 	private String nombreAnterior; 
+	private String forzarAjax;
 	public List<ScsTelefonosPersonaJGBean> getTelefonos() {
 		return telefonos;
 	}
@@ -719,8 +721,22 @@ public class PersonaJGForm extends MasterForm {
 	public void setIdentificadores(List<CenTipoIdentificacionBean> identificadores) {
 		this.identificadores = identificadores;
 	}
-	
-	
-	
 
+	public String getExisteNIF() {//1 -> existe; 0 -> no existe
+		return existeNIF;
+	}
+
+	public void setExisteNIF(String existeNIF) {
+		this.existeNIF = existeNIF;
+	}
+
+	public String getForzarAjax() {
+		return forzarAjax;
+	}
+
+	public void setForzarAjax(String forzarAjax) {
+		this.forzarAjax = forzarAjax;
+	}
+
+	
 }
