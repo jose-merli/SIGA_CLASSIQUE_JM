@@ -85,7 +85,7 @@ public class Direccion {
 					idDireccionesPreferentes=request.getParameter("idDireccionesPreferentes");
 				} else {
 					//comprobando que no existen dos direcciones con igual campo preferente
-					idDireccionesPreferentes=direccionesAdm.obtenerPreferenteDirecciones (idPersona.toString(), idInstitucionPersona.toString (), preferente, idDireccion, request);
+					idDireccionesPreferentes=direccionesAdm.obtenerPreferenteDirecciones (idPersona.toString(), idInstitucionPersona.toString (), preferente, idDireccion);
 					if(!idDireccionesPreferentes.equals("")){
 						request.setAttribute("idDireccionesPreferentes", idDireccionesPreferentes);
 						request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
@@ -100,7 +100,7 @@ public class Direccion {
 				if (modificarDireccionesCensoWeb!=null && modificarDireccionesCensoWeb.equals("1")){
 					idDireccionesCensoWeb=request.getParameter("idDireccionesCensoWeb");
 				}else {		
-					idDireccionesCensoWeb=direccionesAdm.obtenerTipodireccionCensoWeb(idPersona.toString(),idInstitucionPersona.toString (), tiposdireciones, idDireccion, request);			  
+					idDireccionesCensoWeb=direccionesAdm.obtenerTipodireccionCensoWeb(idPersona.toString(),idInstitucionPersona.toString (), tiposdireciones, idDireccion);			  
 					if  (!idDireccionesCensoWeb.equals("")){			
 						request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
 						request.setAttribute("control", "1");
@@ -201,7 +201,7 @@ public class Direccion {
 					idDireccionesPreferentes=request.getParameter("idDireccionesPreferentes");
 				}else {			
 					//comprobando que no existen dos direcciones con igual campo preferente
-					idDireccionesPreferentes=direccionesAdm.obtenerPreferenteDirecciones (idPersona.toString (),idInstitucionPersona.toString (), preferente, idDireccion, request);
+					idDireccionesPreferentes=direccionesAdm.obtenerPreferenteDirecciones (idPersona.toString (),idInstitucionPersona.toString (), preferente, idDireccion);
 				    if (!idDireccionesPreferentes.equals("")){
 					    request.setAttribute("idDireccionesPreferentes", idDireccionesPreferentes);
 						request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
@@ -220,7 +220,7 @@ public class Direccion {
 					idDireccionesCensoWeb=request.getParameter("idDireccionesCensoWeb");				
 				
 				}else {		
-					idDireccionesCensoWeb=direccionesAdm.obtenerTipodireccionCensoWeb(idPersona.toString (),idInstitucionPersona.toString (), tiposdireciones, idDireccion, request);			  
+					idDireccionesCensoWeb=direccionesAdm.obtenerTipodireccionCensoWeb(idPersona.toString (),idInstitucionPersona.toString (), tiposdireciones, idDireccion);			  
 					if  (!idDireccionesCensoWeb.equals("")){			
 						request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
 						request.setAttribute("control", "1");
@@ -487,7 +487,7 @@ public class Direccion {
 		return valor;
 	} //campoPreferenteBooleanToString()
 	
-	private static String parsearPreferenteModificado (String preferente){
+	public static String parsearPreferenteModificado (String preferente){
 		String valor = "";		
 		for(int j=0;j<preferente.length(); j++){
 			valor = preferente.charAt(j) + "#" + valor;		 

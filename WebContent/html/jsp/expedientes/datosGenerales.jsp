@@ -133,7 +133,8 @@
 	ArrayList vClasif = new ArrayList();
 
 	
-
+	String anioExpOrigen ="";
+	String numExpOrigen ="";
 	String accion = (String) request.getAttribute("accion");
 	String copia = (String) request.getParameter("copia");
 	if(copia==null)
@@ -246,6 +247,11 @@
 	Vector vNombresLongitud= (Vector) request.getAttribute("nombresLongitud");
 	
 	Vector vSaltoLinea= (Vector) request.getAttribute("saltoLinea");
+	
+	if(copia.equals("s")){
+		numExpOrigen = request.getParameter("numeroExpediente");
+		anioExpOrigen = request.getParameter("anioExpediente");		
+	}
 		
 %>	
 
@@ -891,15 +897,27 @@
 				} 
 				else 
 				{
-					if (!tieneEjgRelacionado) 
-					{
+					if (!tieneEjgRelacionado) {
+							
+						if(copia.equals("s")){
 		%>
-						<td class="labelTextValue"><html:text name="ExpDatosGeneralesForm" property="anioExpDisciplinario" maxlength="4" styleClass="box"
-											style="text-align:right;width:40px;"></html:text>&nbsp;/&nbsp;<html:text
-											name="ExpDatosGeneralesForm" property="numExpDisciplinario"
-											maxlength="6" styleClass="box"
-											style="text-align:right;width:60px;"></html:text></td>
-		<%
+						
+							<td class="labelTextValue">
+								<html:text name="ExpDatosGeneralesForm" property="anioExpDisciplinario" value="<%=anioExpOrigen%>" maxlength="4" styleClass="box"	style="text-align:right;width:40px;"></html:text>
+								&nbsp;/&nbsp;
+								<html:text	name="ExpDatosGeneralesForm" property="numExpDisciplinario" value="<%=numExpOrigen%>" maxlength="6" styleClass="box"	style="text-align:right;width:60px;"></html:text>
+							</td>
+											
+		<%				} else {	%>
+			
+							<td class="labelTextValue">
+								<html:text name="ExpDatosGeneralesForm" property="anioExpDisciplinario" maxlength="4" styleClass="box"	style="text-align:right;width:40px;"></html:text>
+								&nbsp;/&nbsp;
+								<html:text	name="ExpDatosGeneralesForm" property="numExpDisciplinario"	maxlength="6" styleClass="box"	style="text-align:right;width:60px;"></html:text>
+							</td>			
+		
+											
+		<%				}
 					} 
 					else 
 					{

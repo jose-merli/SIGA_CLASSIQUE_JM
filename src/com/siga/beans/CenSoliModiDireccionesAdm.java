@@ -477,10 +477,16 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 					dirModificada.setPoblacionExtranjera((String)hash.get(CenSoliModiDireccionesBean.C_POBLACIONEXTRANJERA));
 					dirModificada.setOriginalHash(dirOriginal);					
 					// Fijamos los datos del Historico
-					String motivo = ((String)hash.get(CenSoliModiDireccionesBean.C_MOTIVO));		
+					String motivo = ((String)hash.get(CenSoliModiDireccionesBean.C_MOTIVO));	
 					
 					// Se llama a la interfaz Direccion para actualizar una nueva direccion
 					direccion.actualizar(dirModificada, "", motivo, null, this.usrbean);
+
+					if(!dirModificada.getPreferente().equals("")){ //Cambio de preferencia si la tuviese
+						String preferenteModif = direccion.parsearPreferenteModificado(dirModificada.getPreferente());
+						String idDireccionesPreferentes = adminDir.obtenerPreferenteDirecciones (dirModificada.getIdPersona().toString(), dirModificada.getIdInstitucion().toString(), dirModificada.getPreferente(), dirModificada.getIdDireccion());
+						adminDir.modificarDireccionesPreferentes(dirModificada.getIdPersona(), dirModificada.getIdInstitucion().toString(), idDireccionesPreferentes,preferenteModif);
+					}				
 					
 					// Nos quedamos con una copia de la direccion original (pedido por Jaen) y la insertamos hacemos
 					CenDireccionesBean beanDir = new CenDireccionesBean();

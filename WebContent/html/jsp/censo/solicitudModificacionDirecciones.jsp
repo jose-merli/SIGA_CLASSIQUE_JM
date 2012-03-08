@@ -127,28 +127,61 @@
 			// RGG 01-03-2005 cambio de validacion
 			if((document.consultaDireccionesSolicForm.preferenteMail.checked) && 
 				 (trim(document.consultaDireccionesSolicForm.correoElectronico.value)=="")) {
- 				 var mensaje = "<siga:Idioma key="messages.campoObligatorio.error"/> <siga:Idioma key="censo.datosDireccion.literal.correo"/>";
+ 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.correo"/><siga:Idioma key="messages.campoObligatorio.error"/>";
  				 alert (mensaje);
  				 fin();
 				 return false;
 			}
 			if((document.consultaDireccionesSolicForm.preferenteCorreo.checked) && 
 				 (trim(document.consultaDireccionesSolicForm.domicilio.value)=="")) {
- 				 var mensaje = "<siga:Idioma key="messages.campoObligatorio.error"/> <siga:Idioma key="censo.datosDireccion.literal.direccion"/>";
+ 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.direccion"/><siga:Idioma key="messages.campoObligatorio.error"/>";
  				 alert (mensaje);
  				 fin();
 				 return false;
 			}
+			// RGG 25/04/2005
+			if((trim(document.consultaDireccionesSolicForm.domicilio.value)!="") &&
+				(trim(document.consultaDireccionesSolicForm.codigoPostal.value)=="")) {
+				
+ 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.cp"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+ 				 alert (mensaje);
+ 				 fin();
+				 return false;
+			}
+			if((trim(document.consultaDireccionesSolicForm.domicilio.value)!="") && (trim(document.consultaDireccionesSolicForm.pais.value)==idEspana ||trim(document.consultaDireccionesSolicForm.pais.value)=="" ) && 
+					(trim(document.consultaDireccionesSolicForm.provincia.value)=="")) {
+					
+	 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.provincia"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+	 				 alert (mensaje);
+	 				 fin();
+					 return false;
+				}
+			if(trim(document.consultaDireccionesSolicForm.provincia.value)!=="" && (trim(document.consultaDireccionesSolicForm.poblacion.value)=="")) {
+					
+	 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.poblacion"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+	 				 alert (mensaje);
+	 				 fin();
+					 return false;
+			}
+				
+			if((trim(document.consultaDireccionesSolicForm.domicilio.value)!="") && (trim(document.consultaDireccionesSolicForm.pais.value)!=idEspana && trim(document.consultaDireccionesSolicForm.pais.value)!="") && 
+					(trim(document.consultaDireccionesSolicForm.poblacionExt.value)=="")) {
+					
+	 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.poblacion"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+	 				 alert (mensaje);
+	 				 fin();
+					 return false;
+			}			
 			if((document.consultaDireccionesSolicForm.preferenteFax.checked) && 
 				 (trim(document.consultaDireccionesSolicForm.fax1.value)=="")) {
- 				 var mensaje = "<siga:Idioma key="messages.campoObligatorio.error"/> <siga:Idioma key="censo.datosDireccion.literal.fax1"/>";
+ 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.fax1"/><siga:Idioma key="messages.campoObligatorio.error"/>";
  				 alert (mensaje);
  				 fin();
 				 return false;
 			}
             if((document.consultaDireccionesSolicForm.preferenteSms.checked) && 
 				 (trim(document.consultaDireccionesSolicForm.movil.value)=="")) {
- 				 var mensaje = "<siga:Idioma key="messages.campoObligatorio.error"/> <siga:Idioma key="censo.datosDireccion.literal.movil"/>";
+ 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.movil"/><siga:Idioma key="messages.campoObligatorio.error"/>";
  				 alert (mensaje);
  				 fin();
 				 return false;
@@ -211,11 +244,12 @@
 	
 	<html:form action="/CEN_SolicitudDirecciones.do" method="POST" target="submitArea">
 		<html:hidden property="modo" value="cerrar"/>
-		<input type='hidden' name="idPersona" value="<%=htData.get(CenDireccionesBean.C_IDPERSONA)%>"/>	
-		<input type='hidden' name="idInstitucion" value="<%=htData.get(CenDireccionesBean.C_IDINSTITUCION)%>"/>
-		<input type='hidden' name="idDireccion" value="<%=htData.get(CenDireccionesBean.C_IDDIRECCION)%>">
-		<input type="hidden" name="modificarPreferencias" value="">
-		<input type="hidden" name ="idDireccionesPreferentes" value = ""/>
+		<input type='hidden' name = "idPersona" value="<%=htData.get(CenDireccionesBean.C_IDPERSONA)%>"/>	
+		<input type='hidden' name = "idInstitucion" value="<%=htData.get(CenDireccionesBean.C_IDINSTITUCION)%>"/>
+		<input type='hidden' name = "idDireccion" value="<%=htData.get(CenDireccionesBean.C_IDDIRECCION)%>">
+		<input type="hidden" name = "modificarPreferencias" value="">
+		<input type="hidden" name = "idDireccionesPreferentes" value = ""/>
+		<input type="hidden" name = "idDireccionesCensoWeb" value = ""/>
 		<table class="tablaCentralCamposGrande" align="center">			
 			<tr>				
 				<td>

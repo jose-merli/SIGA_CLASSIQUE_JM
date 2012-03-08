@@ -736,6 +736,7 @@ protected String insertar (ActionMapping mapping,
 			throws SIGAException {
 		
 		String modo = "";
+		String modificarPreferencias = "";
 		UserTransaction t = null;
 		
 		try
@@ -745,41 +746,21 @@ protected String insertar (ActionMapping mapping,
 			DireccionesForm form = (DireccionesForm) formulario;		
 			CenSoliModiDireccionesAdm adm = new CenSoliModiDireccionesAdm(this.getUserBean(request));
 			CenDireccionesAdm admDir = new CenDireccionesAdm(this.getUserBean(request));
-			//String idDireccionesPreferentes="";
 			modo = "insertarModificacion";
-			/*String preferenteModif=this.campoPreferenteBooleanToStringSeparados(form.getPreferenteMail (), 
-					form.getPreferenteCorreo (), form.getPreferenteFax (), form.getPreferenteSms ());*/
-			
-			// compruebo que no existen dos direcciones que tengan igual
-			// el campo preferente
+
 			Long idPersona = form.getIDPersona();
 			Integer idInstitucionPersona = form.getIDInstitucion();
 			String preferente = this.campoPreferenteBooleanToString(form.getPreferenteMail(), form.getPreferenteCorreo(), form.getPreferenteFax(), form.getPreferenteSms ());
 			Long idDireccion = form.getIdDireccion();
-			if (!admDir.comprobarPreferenteDirecciones(idPersona.toString(),idInstitucionPersona.toString(),preferente,idDireccion,request)) {
-				throw new SIGAException(admDir.getError());
+			if (request.getParameter("modificarPreferencias")!=null){
+				modificarPreferencias = request.getParameter("modificarPreferencias");
 			}
-			
-      /* CenDireccionesAdm direccionesAdm = new CenDireccionesAdm (this.getUserBean (request));
-			
-			if (request.getParameter("modificarPreferencias")!=null && request.getParameter("modificarPreferencias").equals("1")){
-				idDireccionesPreferentes=request.getParameter("idDireccionesPreferentes");
-				adm.solicitarModificacionDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,request);
-			}else {
-			//comprobando que no existen dos direcciones con igual campo preferente
-			 idDireccionesPreferentes=direccionesAdm.obtenerPreferenteDirecciones (idPersona.toString (), 
-					idInstitucionPersona.toString (), preferente, idDireccion, request);
-			  if  (!idDireccionesPreferentes.equals("")){
-			
-				request.setAttribute("idDireccionesPreferentes", idDireccionesPreferentes);
-				request.setAttribute("modo", "insertarModificacion");
-				t.rollback();
-				 return "preguntaCambioPreferenciaSolicitud";
-			  } 	
+			if (modificarPreferencias != null && !modificarPreferencias.equals("1")){
+				if (!admDir.comprobarPreferenteDirecciones(idPersona.toString(),idInstitucionPersona.toString(),preferente,idDireccion,request)) {	
+					request.setAttribute("modo", "insertarModificacion");
+					return "preguntaCambioPreferenciaSolicitud";
+				}
 			}
-			if (!admDir.comprobarDireccionTipoDireccion(idPersona.toString(),idInstitucionPersona.toString(),idDireccion.toString(),form)) {
-				throw new SIGAException("messages.obligatorioPostal.error");
-			}*/
 			
 			t.begin();	
 			CenSoliModiDireccionesBean bean = getDatos(form, request);

@@ -1062,7 +1062,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 		
 	}
 	
-	public String obtenerPreferenteDirecciones (String idPersona, String idInstitucion, String preferente, Long idDireccion, HttpServletRequest request) 
+	public String obtenerPreferenteDirecciones (String idPersona, String idInstitucion, String preferente, Long idDireccion) 
 	{
 		
 		String idDirecciones="";
@@ -1616,7 +1616,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 	}	
 	
 	
-	public String obtenerTipodireccionCensoWeb(String idPersona, String idInstitucion, String tcensoweb, Long idDireccion, HttpServletRequest request) 
+	public String obtenerTipodireccionCensoWeb(String idPersona, String idInstitucion, String tcensoweb, Long idDireccion) 
 	{
 		
 		String idDirecciones="";

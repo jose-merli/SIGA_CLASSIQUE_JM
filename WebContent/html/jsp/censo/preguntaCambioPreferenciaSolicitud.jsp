@@ -32,7 +32,6 @@
 			  parent.document.consultaDireccionesSolicForm.idDireccionesPreferentes.value="<%=idDirecciones%>";
 			  parent.document.consultaDireccionesSolicForm.idDireccionesCensoWeb.value="<%=idpreferente%>";
 			  parent.document.consultaDireccionesSolicForm.modo.value="<%=modo%>";
-			  parent.document.consultaDireccionesSolicForm.control.value="<%=control%>";
 			  parent.actualizar();
 			    
 			}
