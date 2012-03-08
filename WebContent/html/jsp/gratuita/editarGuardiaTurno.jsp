@@ -218,6 +218,7 @@
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	<script>
 	function postAccionTurno(){
+		
 		accionComboGuardiaPrincipal();
 	}
 	</script>
@@ -803,7 +804,7 @@
 	</table>
 	</siga:ConjCampos>
 <ajax:select
-	baseUrl="<%=app%>/DefinirGuardiasTurnosAction.do?modo=getAjaxGuardias"
+	baseUrl="/SIGA/DefinirGuardiasTurnosAction.do?modo=getAjaxGuardias"
 	source="turnosPrincipales" target="guardiasPrincipales" parameters="idTurnoPrincipal={idTurnoPrincipal}"
 	postFunction="postAccionTurno"
 	/>
