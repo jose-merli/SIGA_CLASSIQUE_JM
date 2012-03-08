@@ -123,6 +123,16 @@
 			 		<LI ><B style="FONT-SIZE: 14px;">NO se debe añadir condiciones para filtrar la dirección, ya que eso se hace automáticamente.</LI>   
 			 	</ul> 
 			 </LI>
+			 <br>
+			 <LI>Se han añadido los nuevos operadores =,!=,IS NULL,LIKE al formato de los criterios TEXTO. A estos operadores se añaden >,>=,<,<= cuando el formato sea NUMERO, FECHA o MULTIVALOR. Estos operadores funcionan del mismo modo que %%OPERADOR%%
+			 </LI>
+<br>
+			 <LI>Se ha añadido la cláusula DEFECTO para los operadores. La notación será  %%OPERADOR%% %%CRITERIO%% DEFECTO "VALOR". Estos valores aparecerán por defecto en la pantalla de criterios dinámicos. Si el criterio es FECHA el formato será dd/mm/yyyy y también acepta SYSDATE para la fecha actual.
+			 </LI>
+<br>
+			 <LI>Se ha añadido la cláusula NULO para los operadores. La notación será  %%OPERADOR%% %%CRITERIO%% NULO "VALOR". Donde valor es "SI" y "NO". En caso que no exista será "NO". En el caso de que exista la cláusula DEFECTO debe ir siempre detrás de ella. En caso de que admita nulos no será obligatorio dar ningún valor al criterio dinámico en la pantalla de criterios dinámicos y filtrará como IS NULL
+			 </LI>
+			 
 		</ol>
 	</div>
   </BODY>

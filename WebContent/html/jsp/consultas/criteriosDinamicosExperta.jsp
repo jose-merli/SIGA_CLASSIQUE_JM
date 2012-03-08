@@ -29,6 +29,8 @@
 
 	Vector criterios = (Vector)request.getAttribute("criterios");
 	Vector valores = (Vector)request.getAttribute("valores");
+	Vector valoresDefecto = (Vector)request.getAttribute("valoresDefecto");
+	Vector valoresNulo = (Vector)request.getAttribute("valoresNulo");
 	Vector operaciones = (Vector)request.getAttribute("operaciones");
 	Vector tipo = (Vector)request.getAttribute("tipo");
 	
@@ -66,6 +68,8 @@
 			String tipocampo = (String)tipo.get(i);
 			String alias = (String)valias.get(i);
 			String selectAyuda = (String)ayuda.get(i);
+			String valorDefecto = (String)valoresDefecto.get(i);
+			Boolean valorNulo = (Boolean)valoresNulo.get(i);
 			
 			alias=alias.replaceAll("\"",ClsConstants.CONSTANTESUSTITUIRCOMILLAS);
 			selectAyuda=selectAyuda.replaceAll("\"",ClsConstants.CONSTANTESUSTITUIRCOMILLAS);
@@ -84,6 +88,8 @@
 					tipocampo = UtilidadesString.getMensajeIdioma(user,"consultas.recuperarconsulta.literal.valoralfanumerico");
 				}else if (tipocampo.equals(SIGAConstants.TYPE_DATE)){
 					tipocampo = UtilidadesString.getMensajeIdioma(user,"consultas.recuperarconsulta.literal.valorfecha");
+				}else{
+					tipocampo = "";
 				}
 			}else{
 				tipocampo = UtilidadesString.getMensajeIdioma(user,"consultas.recuperarconsulta.literal.valoralfanumerico");
@@ -140,28 +146,43 @@
 			<td class="labelText">
 				<%=tipocampo%>
 			</td>		
-			<td>
-			<% if (valores.get(i)!=null){%>
-				<select id="valor<%=i%>" name="criteriosDinamicos[<%=i%>].val" class = "boxCombo">
-					<% Vector v = (Vector)valores.elementAt(i);
+			
+			<% if(tipocampo.equals("")){%>
+			<td></td>
+			<%}else{%>
+				<td>
+				
+				<% if (valores.get(i)!=null){%>
+				<select id="valor<%=i%>" nulo="<%=valorNulo.booleanValue()%>" name="criteriosDinamicos[<%=i%>].val" class = "boxCombo">
+				
+				
+					<% if(valorNulo.booleanValue())%>
+					<option value="" ><siga:Idioma key="general.combo.seleccionar" /></option>
+					
+				<%
+					Vector v = (Vector)valores.elementAt(i);
 						for (int k=0; k<v.size(); k++){
 							Row fila2 = (Row)v.elementAt(k);
 							String id2 = fila2.getString("ID");
-							String desc2 = fila2.getString("DESCRIPCION");				
+							String desc2 = fila2.getString("DESCRIPCION");
+							if(id2.equals(valorDefecto)){%>
+							<option value="<%=id2%>" selected><%=desc2%></option>
+							<%}else{
 						%>
-						<option value="<%=id2%>"><%=desc2%></option>
-					<%	}%>					
+							<option value="<%=id2%>" ><%=desc2%></option>
+					<%	}}%>					
 				</select>	
 			<%}else{%>				
 				<%if (fecha){%>
-					<input type="text" id="valor<%=i%>" name="criteriosDinamicos[<%=i%>].val" class="box" readonly="true"></input>
+					<input type="text" id="valor<%=i%>" nulo="<%=valorNulo%>"  name="criteriosDinamicos[<%=i%>].val" class="box" value="<%=valorDefecto%>" readonly="true"></input>
 					<a href='javascript://'onClick="return showCalendarGeneral(valor<%=i%>);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
 				<%}else if (numerico){%>
-					<input type="text" id="valor<%=i%>" name="criteriosDinamicos[<%=i%>].val" class="box" maxlength="<%=max%>"></input>
+					<input type="text" id="valor<%=i%>" nulo="<%=valorNulo%>" name="criteriosDinamicos[<%=i%>].val" class="box" value="<%=valorDefecto%>" maxlength="<%=max%>"></input>
 				<%}else{%>
-					<input type="text" id="valor<%=i%>" name="criteriosDinamicos[<%=i%>].val" class="box" maxlength="<%=max-1%>"></input>	
+					<input type="text" id="valor<%=i%>" nulo="<%=valorNulo%>" name="criteriosDinamicos[<%=i%>].val" value="<%=valorDefecto%>" class="box" maxlength="<%=max-1%>"></input>	
 				<%}%>
-			<%}%>
+			<%}
+			}%>
 			</td>		
 		</tr>
 <%}
@@ -201,6 +222,50 @@
 		<!-- Asociada al boton Aceptar -->
 		function accionAceptar() 
 		{		
+			
+			
+			inputs = document.getElementsByTagName("input");
+			error = "";
+			for(var i = 0 ; i <inputs.length ; i++) {
+				input = inputs[i];
+				if(input.type=="text"){
+					if(input.nulo=='false' && input.value==""){
+						id = input.id.split("valor");
+						var index = id[1];
+						//si es nulo permitimos vacio
+						operacion = document.getElementById("operacion"+index+"").value;
+						
+						if(operacion!="20"&&operacion!="21"&&operacion!="22"&&operacion!="23"){
+						
+							nombre = document.getElementById("criteriosDinamicos["+index+"].idC").value;
+						
+							error += "<siga:Idioma key='errors.required' arg0='"+nombre+"'/>"+ '\n';
+						}
+						
+					}
+					
+				}
+				
+			}
+			selects = document.getElementsByTagName("select");
+			for(var i = 0 ; i <selects.length ; i++) {
+				select = selects[i];
+				if(select.nulo=='false' && select.value==""){
+					id = select.id.split("valor");
+					var index = id[1]; 
+					operacion = document.getElementById("operacion"+index+"").value;
+					if(operacion!="20"&&operacion!="21"&&operacion!="22"&&operacion!="23"){
+						nombre = document.getElementById("criteriosDinamicos["+index+"].idC").value;
+						error += "<siga:Idioma key='errors.required' arg0='"+nombre+"'/>"+ '\n';
+					}
+				}
+			}
+			if(error!=""){
+				alert(error);	
+				return false;
+			}
+			
+			
 			document.forms[0].modo.value = "abrirConParametros";	
 			document.forms[0].target = "submitArea";	
 			document.forms[0].submit();
@@ -217,6 +282,8 @@
 		{		
 			cadena=cadena.replace("\"","#@#");
 		}	
+        
+        
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 

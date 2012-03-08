@@ -19,6 +19,7 @@ public class ConOperacionConsultaBean extends MasterBean {
 	private Integer usuModificacion;
 
 	static public final String IS_NULL ="is null";
+	static public final String LIKE ="like";
 
 	//	 Nombre campos de la tabla 
 	static public final String C_IDOPERACION ="IDOPERACION";

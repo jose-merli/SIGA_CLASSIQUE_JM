@@ -12,6 +12,7 @@ import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -1980,6 +1981,24 @@ public class EditarConsultaAction extends MasterAction {
 				    	}
 				    	
 				    	//comprueba que no existan criterios dinánicos
+//				    	List operadoresList = new ArrayList<String>();
+//						operadoresList.add("%=%");
+//						operadoresList.add("%!=%");
+//						operadoresList.add("%>%");
+//						operadoresList.add("%>=%");
+//						operadoresList.add("%<%");
+//						operadoresList.add("%<=%");
+//						operadoresList.add("%IS NULL%");
+//						operadoresList.add("%LIKE%");
+//						operadoresList.add("%OPERADOR%");
+//				    	//comprueba que no existan criterios dinánicos
+//						String operadores[] = select.toUpperCase().split("%");
+//		 				for (int j = operadores.length-1; j >= 0 ; j--) {
+//							String operador = operadores[j];
+//							if(operadoresList.contains(operador)){
+//								throw new SIGAException("messages.consultas.error.criteriosDinamicosNoPermitidos");
+//							}
+//						}
 				    	if(select.toUpperCase().indexOf("%%OPERADOR%%") != -1){
 							throw new SIGAException("messages.consultas.error.criteriosDinamicosNoPermitidos");
 				    	}
@@ -1995,7 +2014,15 @@ public class EditarConsultaAction extends MasterAction {
 			 
 			 // Antes de ejecutar la consulta eliminamos todas las etiquetas introducidas y la nueva consulta la metemos en la variable selectAEjecutar
 			 selectAEjecutar=ConConsultaAdm.eliminarEtiquetas(select);
-			 selectAEjecutar=selectAEjecutar.replaceAll(ClsConstants.ETIQUETAOPERADOR,"=");	 
+			 selectAEjecutar=selectAEjecutar.replaceAll(ClsConstants.ETIQUETAOPERADOR,"=");
+			 selectAEjecutar=selectAEjecutar.replaceAll("%%<%%","=");
+			 selectAEjecutar=selectAEjecutar.replaceAll("%%<=%%","=");
+			 selectAEjecutar=selectAEjecutar.replaceAll("%%>=%%","=");
+			 selectAEjecutar=selectAEjecutar.replaceAll("%%LIKE%%","=");
+			 selectAEjecutar=selectAEjecutar.replaceAll("%%=%%","=");
+			 selectAEjecutar=selectAEjecutar.replaceAll("%%!=%%","=");
+			 selectAEjecutar=selectAEjecutar.replaceAll("%%>%%","=");
+			 selectAEjecutar=selectAEjecutar.replaceAll("%%IS NULL%%"," IS NULL ");
 			 PreparedStatement ps=con.prepareStatement(selectAEjecutar);
 		     ResultSet rs=ps.executeQuery();
 		      ResultSetMetaData rs1=rs.getMetaData();
@@ -2125,6 +2152,8 @@ public class EditarConsultaAction extends MasterAction {
 			    
 			    return selectCritMulti1;
 			}else{
+				//return selectCritMulti;
+				//eSTO ES QUE YA ESTAN RESUELTOS quitamos la excepcion
 				throw new SIGAException("messages.consultas.error.CriterioDinamico");
 			}    
 			    
@@ -2191,6 +2220,25 @@ public class EditarConsultaAction extends MasterAction {
 		String  selectAuxunion="";
 		String aliasSustituir="";
 		String aliasSustituirFinal="";
+		List operadoresList = new ArrayList<String>();
+		operadoresList.add("=");
+		operadoresList.add("!=");
+		operadoresList.add(">");
+		operadoresList.add(">=");
+		operadoresList.add("<");
+		operadoresList.add("<=");
+		operadoresList.add("IS NULL");
+		operadoresList.add("LIKE");
+		operadoresList.add("OPERADOR");
+		List operadoresListTexto = new ArrayList<String>();
+		operadoresListTexto.add("=");
+		operadoresListTexto.add("!=");
+		operadoresListTexto.add("IS NULL");
+		operadoresListTexto.add("LIKE");
+		operadoresListTexto.add("OPERADOR");
+		 
+		
+		
 		//comprobamos si se han metido criterios pero no se ha metido la etiqueta <where>
 		selectAux=select.substring(select.toUpperCase().indexOf(ClsConstants.ETIQUETASFROMCLOSE));
 	if 	(select.toUpperCase().indexOf("WHERE")>=0){
@@ -2213,231 +2261,234 @@ public class EditarConsultaAction extends MasterAction {
 			throw new SIGAException("messages.consultas.error.etiquetaUnionOpen");
 		}
 	  }	
-		
-		// Sustituimos los criterios dinamicos que pueda haber en los campos de salida
-			 while ((critCampoSalida.indexOf(ClsConstants.TIPONUMERO))>=0 || (critCampoSalida.indexOf(ClsConstants.TIPOTEXTO))>=0 || (critCampoSalida.indexOf(ClsConstants.TIPOFECHA)>=0 ||(critCampoSalida.indexOf(ClsConstants.TIPOMULTIVALOR))>=0 ) ){
-			 	aliasSustituir="";
-			 	aliasSustituirFinal="";
-			 	if (critCampoSalida.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR)<0){
+	
+	// Sustituimos los criterios dinamicos que pueda haber en los campos de salida
+		 while ((critCampoSalida.indexOf(ClsConstants.TIPONUMERO))>=0 || (critCampoSalida.indexOf(ClsConstants.TIPOTEXTO))>=0 || (critCampoSalida.indexOf(ClsConstants.TIPOFECHA)>=0 ||(critCampoSalida.indexOf(ClsConstants.TIPOMULTIVALOR))>=0 ) ){
+		 	aliasSustituir="";
+		 	aliasSustituirFinal="";
+		 	if (critCampoSalida.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR)<0){
+				throw new SIGAException("messages.consultas.error.etiquetaOperador");
+			}	
+		 	if (critCampoSalida.toUpperCase().indexOf(ClsConstants.TIPONUMERO)>=0 ){
+		 		String existeOperador=critCampoSalida.substring(0,critCampoSalida.toUpperCase().indexOf(ClsConstants.TIPONUMERO));
+				if (existeOperador.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR)<0){
 					throw new SIGAException("messages.consultas.error.etiquetaOperador");
-				}	
-			 	if (critCampoSalida.toUpperCase().indexOf(ClsConstants.TIPONUMERO)>=0 ){
-			 		String existeOperador=critCampoSalida.substring(0,critCampoSalida.toUpperCase().indexOf(ClsConstants.TIPONUMERO));
-					if (existeOperador.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR)<0){
-						throw new SIGAException("messages.consultas.error.etiquetaOperador");
-				    }
-			 		aliasSustituir=critCampoSalida.substring(0,critCampoSalida.toUpperCase().indexOf(ClsConstants.TIPONUMERO));
-			 		aliasSustituir=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf("WHERE"));
-			 		if (aliasSustituir.toUpperCase().lastIndexOf(" AS ")>=0){
-			 			String aux=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "));
-			 			if (aux.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR)<=0){
-			 				throw new SIGAException("messages.consultas.error.etiquetaOperador");
-			 			}else{
-			 			aliasSustituirFinal=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "),aliasSustituir.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR));
-			 			}
-				 		 
-				    }
-			 		critCampoSalida=critCampoSalida.toUpperCase().replaceFirst(ClsConstants.TIPONUMERO,"1");
-			 		//critCampoSalida=critCampoSalida.toUpperCase().replaceFirst(aliasSustituirFinal,"");
-			 		critCampoSalida=critCampoSalida.substring(0,critCampoSalida.indexOf(aliasSustituirFinal))+critCampoSalida.substring(critCampoSalida.indexOf(aliasSustituirFinal)+aliasSustituirFinal.length());
-			 		
-			 		
-			
-				}else if (critCampoSalida.toUpperCase().indexOf(ClsConstants.TIPOTEXTO)>=0 ){
-					String existeOperador=critCampoSalida.substring(0,critCampoSalida.toUpperCase().indexOf(ClsConstants.TIPOTEXTO));
-					if (existeOperador.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR)<0){
-						throw new SIGAException("messages.consultas.error.etiquetaOperador");
-				    }	
-					aliasSustituir=critCampoSalida.substring(0,critCampoSalida.toUpperCase().indexOf(ClsConstants.TIPOTEXTO));
-			 		aliasSustituir=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf("WHERE"));
-			 		if (aliasSustituir.toUpperCase().lastIndexOf(" AS ")>=0){
-			 			String aux=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "));
-			 			if (aux.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR)<=0){
-			 				throw new SIGAException("messages.consultas.error.etiquetaOperador");
-			 			}else{
-			 			aliasSustituirFinal=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "),aliasSustituir.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR));
-			 			}
-				 		 
-				    }
-			 		critCampoSalida=critCampoSalida.toUpperCase().replaceFirst(ClsConstants.TIPOTEXTO,"'1'");
-			 		//critCampoSalida=critCampoSalida.toUpperCase().replaceFirst(aliasSustituirFinal,"");
-			 		critCampoSalida=critCampoSalida.substring(0,critCampoSalida.indexOf(aliasSustituirFinal))+critCampoSalida.substring(critCampoSalida.indexOf(aliasSustituirFinal)+aliasSustituirFinal.length());
-					
-			 		
-			
-				}else if (critCampoSalida.toUpperCase().indexOf(ClsConstants.TIPOFECHA)>=0 ){
-					String existeOperador=critCampoSalida.substring(0,critCampoSalida.toUpperCase().indexOf(ClsConstants.TIPOFECHA));
-					if (existeOperador.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR)<0){
-						throw new SIGAException("messages.consultas.error.etiquetaOperador");
-				    }
-					aliasSustituir=critCampoSalida.substring(0,critCampoSalida.toUpperCase().indexOf(ClsConstants.TIPOFECHA));
-			 		aliasSustituir=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf("WHERE"));
-			 		if (aliasSustituir.toUpperCase().lastIndexOf(" AS ")>=0){
-			 			String aux=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "));
-			 			if (aux.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR)<=0){
-			 				throw new SIGAException("messages.consultas.error.etiquetaOperador");
-			 			}else{
-			 			aliasSustituirFinal=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "),aliasSustituir.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR));
-			 			}
-				 		 
-				    }
-			 		critCampoSalida=critCampoSalida.toUpperCase().replaceFirst(ClsConstants.TIPOFECHA,"sysdate");
-			 		//critCampoSalida=critCampoSalida.toUpperCase().replaceFirst(aliasSustituirFinal,"");
-			 		critCampoSalida=critCampoSalida.substring(0,critCampoSalida.indexOf(aliasSustituirFinal))+critCampoSalida.substring(critCampoSalida.indexOf(aliasSustituirFinal)+aliasSustituirFinal.length());
-			    	
-			
-				}else if (critCampoSalida.toUpperCase().indexOf(ClsConstants.TIPOMULTIVALOR)>=0 ){
-					String existeOperador=critCampoSalida.substring(0,critCampoSalida.toUpperCase().indexOf(ClsConstants.TIPOMULTIVALOR));
-					if (existeOperador.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR)<0){
-						throw new SIGAException("messages.consultas.error.etiquetaOperador");
-				    }	
-					aliasSustituir=critCampoSalida.substring(0,critCampoSalida.toUpperCase().indexOf(ClsConstants.TIPOMULTIVALOR));
-			 		aliasSustituir=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf("WHERE"));
-			 		if (aliasSustituir.toUpperCase().lastIndexOf(" AS ")>=0){
-			 			String aux=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "));
-			 			if (aux.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR)<=0){
-			 				throw new SIGAException("messages.consultas.error.etiquetaOperador");
-			 			}else{
-			 			aliasSustituirFinal=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "),aliasSustituir.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR));
-			 			}
-				 		 
-				    }
-					    String valor=ClsConstants.TIPOMULTIVALOR+ObtenerSelectAyuda(critCampoSalida,request )+"%%";
-			  // Vemos si esta bien montada la select de ayuda introducida
-					    String selectAyudaTratada=ObtenerSelectAyuda(critCampoSalida,request).toUpperCase().replaceAll("\r\n"," ").replaceAll(" ","");
-					    if (selectAyudaTratada.indexOf("AS\"ID\"")<0 || selectAyudaTratada.indexOf("AS\"DESCRIPCION\"")<0){
-					    	throw new SIGAException("messages.consultas.error.SelectAyuda");
-					    }
-					    try{
-					    RowsContainer rc = new RowsContainer();
-						rc.query(ObtenerSelectAyuda(critCampoSalida,request));
-						int pos =critCampoSalida.indexOf(valor);
-						
-						critCampoSalida=critCampoSalida.substring(0,pos)+"1"+critCampoSalida.substring(pos+valor.length());
-						//critCampoSalida=critCampoSalida.toUpperCase().replaceFirst(aliasSustituirFinal,"");
-						critCampoSalida=critCampoSalida.substring(0,critCampoSalida.indexOf(aliasSustituirFinal))+critCampoSalida.substring(critCampoSalida.indexOf(aliasSustituirFinal)+aliasSustituirFinal.length());
-						
-					    } catch (ClsExceptions e) {
-							throw new SIGAException ("Error al construir la consulta del multivalor. "+e.getMessage());
-						} catch (Exception e){
-							throw new SIGAException ("Error al construir la consulta del multivalor. "+e.getMessage());
-						}
-					    
-						
-					
-					
-				 
-					
-			
-				}else{
+			    }
+		 		aliasSustituir=critCampoSalida.substring(0,critCampoSalida.toUpperCase().indexOf(ClsConstants.TIPONUMERO));
+		 		aliasSustituir=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf("WHERE"));
+		 		if (aliasSustituir.toUpperCase().lastIndexOf(" AS ")>=0){
+		 			String aux=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "));
+		 			if (aux.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR)<=0){
+		 				throw new SIGAException("messages.consultas.error.etiquetaOperador");
+		 			}else{
+		 			aliasSustituirFinal=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "),aliasSustituir.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR));
+		 			}
+			 		 
+			    }
+		 		critCampoSalida=critCampoSalida.toUpperCase().replaceFirst(ClsConstants.TIPONUMERO,"1");
+		 		//critCampoSalida=critCampoSalida.toUpperCase().replaceFirst(aliasSustituirFinal,"");
+		 		critCampoSalida=critCampoSalida.substring(0,critCampoSalida.indexOf(aliasSustituirFinal))+critCampoSalida.substring(critCampoSalida.indexOf(aliasSustituirFinal)+aliasSustituirFinal.length());
+		 		
+		 		
+		
+			}else if (critCampoSalida.toUpperCase().indexOf(ClsConstants.TIPOTEXTO)>=0 ){
+				String existeOperador=critCampoSalida.substring(0,critCampoSalida.toUpperCase().indexOf(ClsConstants.TIPOTEXTO));
+				if (existeOperador.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR)<0){
+					throw new SIGAException("messages.consultas.error.etiquetaOperador");
+			    }	
+				aliasSustituir=critCampoSalida.substring(0,critCampoSalida.toUpperCase().indexOf(ClsConstants.TIPOTEXTO));
+		 		aliasSustituir=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf("WHERE"));
+		 		if (aliasSustituir.toUpperCase().lastIndexOf(" AS ")>=0){
+		 			String aux=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "));
+		 			if (aux.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR)<=0){
+		 				throw new SIGAException("messages.consultas.error.etiquetaOperador");
+		 			}else{
+		 			aliasSustituirFinal=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "),aliasSustituir.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR));
+		 			}
+			 		 
+			    }
+		 		critCampoSalida=critCampoSalida.toUpperCase().replaceFirst(ClsConstants.TIPOTEXTO,"'1'");
+		 		//critCampoSalida=critCampoSalida.toUpperCase().replaceFirst(aliasSustituirFinal,"");
+		 		critCampoSalida=critCampoSalida.substring(0,critCampoSalida.indexOf(aliasSustituirFinal))+critCampoSalida.substring(critCampoSalida.indexOf(aliasSustituirFinal)+aliasSustituirFinal.length());
 				
-					throw new SIGAException("messages.consultas.error.CriterioDinamico");
-				}
-			 }	
+		 		
+		
+			}else if (critCampoSalida.toUpperCase().indexOf(ClsConstants.TIPOFECHA)>=0 ){
+				String existeOperador=critCampoSalida.substring(0,critCampoSalida.toUpperCase().indexOf(ClsConstants.TIPOFECHA));
+				if (existeOperador.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR)<0){
+					throw new SIGAException("messages.consultas.error.etiquetaOperador");
+			    }
+				aliasSustituir=critCampoSalida.substring(0,critCampoSalida.toUpperCase().indexOf(ClsConstants.TIPOFECHA));
+		 		aliasSustituir=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf("WHERE"));
+		 		if (aliasSustituir.toUpperCase().lastIndexOf(" AS ")>=0){
+		 			String aux=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "));
+		 			if (aux.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR)<=0){
+		 				throw new SIGAException("messages.consultas.error.etiquetaOperador");
+		 			}else{
+		 			aliasSustituirFinal=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "),aliasSustituir.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR));
+		 			}
+			 		 
+			    }
+		 		critCampoSalida=critCampoSalida.toUpperCase().replaceFirst(ClsConstants.TIPOFECHA,"sysdate");
+		 		//critCampoSalida=critCampoSalida.toUpperCase().replaceFirst(aliasSustituirFinal,"");
+		 		critCampoSalida=critCampoSalida.substring(0,critCampoSalida.indexOf(aliasSustituirFinal))+critCampoSalida.substring(critCampoSalida.indexOf(aliasSustituirFinal)+aliasSustituirFinal.length());
+		    	
+		
+			}else if (critCampoSalida.toUpperCase().indexOf(ClsConstants.TIPOMULTIVALOR)>=0 ){
+				String existeOperador=critCampoSalida.substring(0,critCampoSalida.toUpperCase().indexOf(ClsConstants.TIPOMULTIVALOR));
+				if (existeOperador.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR)<0){
+					throw new SIGAException("messages.consultas.error.etiquetaOperador");
+			    }	
+				aliasSustituir=critCampoSalida.substring(0,critCampoSalida.toUpperCase().indexOf(ClsConstants.TIPOMULTIVALOR));
+		 		aliasSustituir=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf("WHERE"));
+		 		if (aliasSustituir.toUpperCase().lastIndexOf(" AS ")>=0){
+		 			String aux=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "));
+		 			if (aux.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR)<=0){
+		 				throw new SIGAException("messages.consultas.error.etiquetaOperador");
+		 			}else{
+		 			aliasSustituirFinal=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "),aliasSustituir.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR));
+		 			}
+			 		 
+			    }
+				    String valor=ClsConstants.TIPOMULTIVALOR+ObtenerSelectAyuda(critCampoSalida,request )+"%%";
+		  // Vemos si esta bien montada la select de ayuda introducida
+				    String selectAyudaTratada=ObtenerSelectAyuda(critCampoSalida,request).toUpperCase().replaceAll("\r\n"," ").replaceAll(" ","");
+				    if (selectAyudaTratada.indexOf("AS\"ID\"")<0 || selectAyudaTratada.indexOf("AS\"DESCRIPCION\"")<0){
+				    	throw new SIGAException("messages.consultas.error.SelectAyuda");
+				    }
+				    try{
+				    RowsContainer rc = new RowsContainer();
+					rc.query(ObtenerSelectAyuda(critCampoSalida,request));
+					int pos =critCampoSalida.indexOf(valor);
+					
+					critCampoSalida=critCampoSalida.substring(0,pos)+"1"+critCampoSalida.substring(pos+valor.length());
+					//critCampoSalida=critCampoSalida.toUpperCase().replaceFirst(aliasSustituirFinal,"");
+					critCampoSalida=critCampoSalida.substring(0,critCampoSalida.indexOf(aliasSustituirFinal))+critCampoSalida.substring(critCampoSalida.indexOf(aliasSustituirFinal)+aliasSustituirFinal.length());
+					
+				    } catch (ClsExceptions e) {
+						throw new SIGAException ("Error al construir la consulta del multivalor. "+e.getMessage());
+					} catch (Exception e){
+						throw new SIGAException ("Error al construir la consulta del multivalor. "+e.getMessage());
+					}
+				    
+					
+				
+				
+			 
+				
+		
+			}else{
+			
+				throw new SIGAException("messages.consultas.error.CriterioDinamico");
+			}
+		 }	
 				
 //			  Sustituimos los criterios dinamicos que pueda haber en el where
+			 String operadorWhere = null;
 				 while ((critCampoWhere.indexOf(ClsConstants.TIPONUMERO))>=0 || (critCampoWhere.indexOf(ClsConstants.TIPOTEXTO))>=0 || (critCampoWhere.indexOf(ClsConstants.TIPOFECHA)>=0 ||(critCampoWhere.indexOf(ClsConstants.TIPOMULTIVALOR))>=0 )){
 				 	aliasSustituir="";
 				 	aliasSustituirFinal="";
-			 		
+				 	String operadorEstudio = null;
+				 	if(critCampoWhere.toUpperCase().indexOf(ClsConstants.TIPONUMERO)>=0)
+				 		operadorEstudio = ClsConstants.TIPONUMERO;
+				 	else if(critCampoWhere.toUpperCase().indexOf(ClsConstants.TIPOTEXTO)>=0)
+				 		operadorEstudio = ClsConstants.TIPOTEXTO;
+				 	else if(critCampoWhere.toUpperCase().indexOf(ClsConstants.TIPOFECHA)>=0)
+				 		operadorEstudio = ClsConstants.TIPOFECHA;
+				 	else if(critCampoWhere.toUpperCase().indexOf(ClsConstants.TIPOMULTIVALOR)>=0)
+				 		operadorEstudio = ClsConstants.TIPOMULTIVALOR;
+
 				 	
-				 	if (critCampoWhere.toUpperCase().indexOf(ClsConstants.TIPONUMERO)>=0 ){
-				 		String existeOperador=critCampoWhere.substring(0,critCampoWhere.toUpperCase().indexOf(ClsConstants.TIPONUMERO));
-						if (existeOperador.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR)<0){
-							throw new SIGAException("messages.consultas.error.etiquetaOperador");
-					    }
-				 		aliasSustituir=critCampoWhere.substring(0,critCampoWhere.toUpperCase().indexOf(ClsConstants.TIPONUMERO));
-				 		aliasSustituir=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf("WHERE"));
-				 		if (aliasSustituir.toUpperCase().lastIndexOf(" AS ")>=0){
-				 			String aux=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "));
-				 			if (aux.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR)<=0){
-				 				throw new SIGAException("messages.consultas.error.etiquetaOperador");
-				 			}else{
-				 			 aliasSustituirFinal=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "),aliasSustituir.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR));
-				 			}
-					 		 
-					    }
-				 		critCampoWhere=critCampoWhere.toUpperCase().replaceFirst(ClsConstants.TIPONUMERO,"1");
-				 		//critCampoWhere=critCampoWhere.toUpperCase().replaceFirst(aliasSustituirFinal,"");
-				 		critCampoWhere=critCampoWhere.substring(0,critCampoWhere.indexOf(aliasSustituirFinal))+critCampoWhere.substring(critCampoWhere.indexOf(aliasSustituirFinal)+aliasSustituirFinal.length());
+				 		String sentenciaA=critCampoWhere.substring(0,critCampoWhere.toUpperCase().indexOf(operadorEstudio));
+				 		int indiceAndIni =  sentenciaA.lastIndexOf("AND");
+				 		String lineaEstudio = critCampoWhere.substring(indiceAndIni+3);
+				 		if(operadorEstudio.equals(ClsConstants.TIPOMULTIVALOR)){
+				 			int indexArroba=  lineaEstudio.indexOf("@"); 
+				 			String p1 = lineaEstudio.substring(0,indexArroba);
+				 			String p2 = lineaEstudio.substring(indexArroba);
+				 			String p3 = p2.substring(0,p2.indexOf("%%"))+"%%";
+				 			
+				 			String auxi = p2.substring(p2.indexOf("%%")+2);
+				 			int findIt = auxi.indexOf("AND");
+				 			String p4 = auxi;
+				 			if(findIt>-1)
+				 				p4 = auxi.substring(0,findIt);
+				 							 				
+				 			lineaEstudio = p1+p3+p4;
+				 			//lineaEstudio = lineaEstudio+"%%";
+				 		}else{
+					 		int indiceAndFin = lineaEstudio.indexOf("AND");
+					 		if(indiceAndFin>-1)
+					 			lineaEstudio = lineaEstudio.substring(0,indiceAndFin);
+				 		}
+				 		lineaEstudio = "AND"+lineaEstudio;
+				 		critCampoWhere= critCampoWhere.substring(0,indiceAndIni)+critCampoWhere.substring(indiceAndIni+lineaEstudio.length());
+				 		String operadores[] = sentenciaA.split("%%");
+				 		for (int j = operadores.length-1; j >= 0 ; j--) {
+							String operador = operadores[j];
+							if(operadoresList.contains(operador)){
+								operadorWhere ="%%"+operador+"%%";
+								break;
+								
+							}
+								
+						}
 				 		
+				 		if (operadorWhere==null){
+							throw new SIGAException("messages.consultas.error.etiquetaOperador");
+					    }
+				 		aliasSustituir=lineaEstudio.substring(0,lineaEstudio.toUpperCase().indexOf(operadorEstudio));
+				 		aliasSustituir=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf("AND"));
+				 		if (aliasSustituir.toUpperCase().lastIndexOf(" AS ")>=0){
+				 			String aux=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "));
+				 			if (aux.toUpperCase().lastIndexOf(operadorWhere)<=0)		
+			 			{
+				 				throw new SIGAException("messages.consultas.error.etiquetaOperador");
+				 			}else{
+				 			 aliasSustituirFinal=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "),aliasSustituir.toUpperCase().lastIndexOf(operadorWhere));
+				 			}
+					 		 
+					    }
 				 		
-				
-					}else if (critCampoWhere.toUpperCase().indexOf(ClsConstants.TIPOTEXTO)>=0 ){
-						String existeOperador=critCampoWhere.substring(0,critCampoWhere.toUpperCase().indexOf(ClsConstants.TIPOTEXTO));
-						if (existeOperador.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR)<0){
-							throw new SIGAException("messages.consultas.error.etiquetaOperador");
-					    }	
-						aliasSustituir=critCampoWhere.substring(0,critCampoWhere.toUpperCase().indexOf(ClsConstants.TIPOTEXTO));
-				 		aliasSustituir=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf("WHERE"));
-				 		if (aliasSustituir.toUpperCase().lastIndexOf(" AS ")>=0){
-				 			String aux=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "));
-				 			if (aux.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR)<=0){
-				 				throw new SIGAException("messages.consultas.error.etiquetaOperador");
-				 			}else{
-				 			aliasSustituirFinal=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "),aliasSustituir.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR));
-				 			}
-					 		 
+				 		int posicionDefecto = lineaEstudio.indexOf(" DEFECTO ");
+				 		String valorDefecto = null;
+				 		if (posicionDefecto>=0){
+				 			int inicio=lineaEstudio.substring(posicionDefecto).indexOf("\"");
+				 			String auxiliar =lineaEstudio.substring(posicionDefecto).substring(inicio+1) ;
+							int fin=auxiliar.indexOf("\"");
+							if(inicio!=-1 && fin!=-1){
+								valorDefecto=auxiliar.substring(0,fin);
+							}
 					    }
-						critCampoWhere=critCampoWhere.toUpperCase().replaceFirst(ClsConstants.TIPOTEXTO,"'1'");
-						//critCampoWhere=critCampoWhere.toUpperCase().replaceFirst(aliasSustituirFinal,"");
-						critCampoWhere=critCampoWhere.substring(0,critCampoWhere.indexOf(aliasSustituirFinal))+critCampoWhere.substring(critCampoWhere.indexOf(aliasSustituirFinal)+aliasSustituirFinal.length());
-						
-				 		
-				
-					}else if (critCampoWhere.toUpperCase().indexOf(ClsConstants.TIPOFECHA)>=0 ){
-						String existeOperador=critCampoWhere.substring(0,critCampoWhere.toUpperCase().indexOf(ClsConstants.TIPOFECHA));
-						if (existeOperador.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR)<0){
-							throw new SIGAException("messages.consultas.error.etiquetaOperador");
-					    }
-						aliasSustituir=critCampoWhere.substring(0,critCampoWhere.toUpperCase().indexOf(ClsConstants.TIPOFECHA));
-				 		aliasSustituir=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf("WHERE"));
-				 		if (aliasSustituir.toUpperCase().lastIndexOf(" AS ")>=0){
-				 			String aux=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "));
-				 			if (aux.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR)<=0){
-				 				throw new SIGAException("messages.consultas.error.etiquetaOperador");
-				 			}else{
-				 			  aliasSustituirFinal=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "),aliasSustituir.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR));
-				 			}
-					 		 
-					    }
-						critCampoWhere=critCampoWhere.toUpperCase().replaceFirst(ClsConstants.TIPOFECHA,"sysdate");
-						//critCampoWhere=critCampoWhere.toUpperCase().replaceFirst(aliasSustituirFinal," ");
-						critCampoWhere=critCampoWhere.substring(0,critCampoWhere.indexOf(aliasSustituirFinal))+critCampoWhere.substring(critCampoWhere.indexOf(aliasSustituirFinal)+aliasSustituirFinal.length());
-						String final1=critCampoWhere;
-						
-				    	
-				
-					}else if (critCampoWhere.toUpperCase().indexOf(ClsConstants.TIPOMULTIVALOR)>=0 ){
-						String existeOperador=critCampoWhere.substring(0,critCampoWhere.toUpperCase().indexOf(ClsConstants.TIPOMULTIVALOR));
-						if (existeOperador.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR)<0){
-							throw new SIGAException("messages.consultas.error.etiquetaOperador");
-					    }	
-						aliasSustituir=critCampoWhere.substring(0,critCampoWhere.toUpperCase().indexOf(ClsConstants.TIPOMULTIVALOR));
-				 		aliasSustituir=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf("WHERE"));
-				 		if (aliasSustituir.toUpperCase().lastIndexOf(" AS ")>=0){
-				 			String aux=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "));
-				 			if (aux.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR)<=0){
-				 				throw new SIGAException("messages.consultas.error.etiquetaOperador");
-				 			}else{
-				 			   aliasSustituirFinal=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "),aliasSustituir.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR));
-				 			}
-					 		 
-					    }
-						    String valor=ClsConstants.TIPOMULTIVALOR+ObtenerSelectAyuda(critCampoWhere,request)+"%%";
+				 		String valor = null;
+				 		if (operadorEstudio.equals(ClsConstants.TIPOMULTIVALOR)){
+							
+					 		
+					 		String selectAyuda = ObtenerSelectAyuda(lineaEstudio,request);
+						    valor=ClsConstants.TIPOMULTIVALOR+selectAyuda+"%%";
 				  // Vemos si esta bien montada la select de ayuda introducida
-						    String selectAyudaTratada=ObtenerSelectAyuda(critCampoWhere,request).toUpperCase().replaceAll("\r\n"," ").replaceAll(" ","");
+						    String selectAyudaTratada=selectAyuda.toUpperCase().replaceAll("\r\n"," ").replaceAll(" ","");
 						    if (selectAyudaTratada.indexOf("AS\"ID\"")<0 || selectAyudaTratada.indexOf("AS\"DESCRIPCION\"")<0){
 						    	throw new SIGAException("messages.consultas.error.SelectAyuda");
 						    }
 						    try{
 						    RowsContainer rc = new RowsContainer();
-							rc.query(ObtenerSelectAyuda(critCampoWhere,request));
-							int pos =critCampoWhere.indexOf(valor);
+							rc.query(selectAyuda);
+							int pos =lineaEstudio.indexOf(valor);
+							if(!operadorWhere.equals("%%IS NULL%%")){
+								if(valorDefecto==null)
+					 				lineaEstudio=lineaEstudio.substring(0,pos)+"1"+lineaEstudio.substring(pos+valor.length());
+					 			
+					 			else{
+					 				lineaEstudio= lineaEstudio.substring(0,pos)+valorDefecto+lineaEstudio.substring(pos+valor.length());
+					 			}
+
+								
+								
 							
-							critCampoWhere=critCampoWhere.substring(0,pos)+"1"+critCampoWhere.substring(pos+valor.length());
-							//critCampoWhere=critCampoWhere.toUpperCase().replaceFirst(aliasSustituirFinal,"");
-							critCampoWhere=critCampoWhere.substring(0,critCampoWhere.indexOf(aliasSustituirFinal))+critCampoWhere.substring(critCampoWhere.indexOf(aliasSustituirFinal)+aliasSustituirFinal.length());
+							}
+							else
+								lineaEstudio=lineaEstudio.toUpperCase().replaceFirst(operadorEstudio,"");
 							
 						    } catch (ClsExceptions e) {
 								throw new SIGAException ("Error al construir la consulta del multivalor. "+e.getMessage());
@@ -2445,12 +2496,44 @@ public class EditarConsultaAction extends MasterAction {
 								throw new SIGAException ("Error al construir la consulta del multivalor. "+e.getMessage());
 							}
 					}else{
-					
-						throw new SIGAException("messages.consultas.error.CriterioDinamico");
+				 		
+				 	
+				 		
+				 		
+				 		if(!operadorWhere.equals("%%IS NULL%%")){
+				 			if(valorDefecto==null){
+				 				String valorAplicar = "1";
+				 				if(operadorEstudio.equals(ClsConstants.TIPOFECHA))
+				 					valorAplicar = "sysdate";
+				 					
+				 				String defecto = operadorEstudio.equals(ClsConstants.TIPOTEXTO)||(operadorEstudio.equals(ClsConstants.TIPOFECHA)&&!valorAplicar.equalsIgnoreCase("sysdate"))?"'"+valorAplicar+"'":valorAplicar; 
+				 				lineaEstudio=lineaEstudio.toUpperCase().replaceFirst(operadorEstudio,defecto);
+				 			
+				 			}else{
+				 				valorDefecto = operadorEstudio.equals(ClsConstants.TIPOTEXTO)||(operadorEstudio.equals(ClsConstants.TIPOFECHA)&&!valorDefecto.equalsIgnoreCase("sysdate"))?"'"+valorDefecto+"'":valorDefecto;
+				 				lineaEstudio=lineaEstudio.toUpperCase().replaceFirst(operadorEstudio,""+valorDefecto+"");
+				 			}
+				 		}
+				 		else
+				 			lineaEstudio=lineaEstudio.toUpperCase().replaceFirst(operadorEstudio,"");
 					}
+				 		lineaEstudio=lineaEstudio.substring(0,lineaEstudio.indexOf(aliasSustituirFinal))+lineaEstudio.substring(lineaEstudio.indexOf(aliasSustituirFinal)+aliasSustituirFinal.length());
+				 		
+				 		if(valorDefecto!=null){
+				 			
+				 			lineaEstudio = lineaEstudio.substring(0,lineaEstudio.indexOf("DEFECTO"));
+				 		}
+				 		int posicionNulo = lineaEstudio.indexOf(" NULO ");
+				 		if (posicionNulo>=0){
+				 			lineaEstudio = lineaEstudio.substring(0,lineaEstudio.indexOf("NULO"));
+
+				 		}
+				 		
+				 		
+					 
+					 critCampoWhere = critCampoWhere.trim()+" "+lineaEstudio;
 				 	
 			 }
-				 	  /**Sustituimos los criterios dinamicos que pueda haber dentro de la etiqueta FROM**/
 				 while ((selectFrom.indexOf(ClsConstants.TIPONUMERO))>=0 || (selectFrom.indexOf(ClsConstants.TIPOTEXTO))>=0 || selectFrom.indexOf(ClsConstants.TIPOFECHA)>=0 || (selectFrom.indexOf(ClsConstants.TIPOMULTIVALOR))>=0 ){
 					  
 					  aliasSustituir="";
@@ -2555,6 +2638,7 @@ public class EditarConsultaAction extends MasterAction {
 						throw new SIGAException("messages.consultas.error.CriterioDinamico");
 					}
 				  }
+				
 				 
 				 if (critCampoWhere!=null && !critCampoWhere.equals("")){
 				 	select=critCampoSalida+ClsConstants.ETIQUETASELECTCLOSE+selectFrom+ClsConstants.ETIQUETASFROMCLOSE+critCampoWhere+ClsConstants.ETIQUETASWHERECLOSE;

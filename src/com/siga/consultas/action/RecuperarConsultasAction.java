@@ -9,7 +9,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -23,20 +22,16 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.ReadProperties;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitiveBind;
-import com.siga.Utilidades.SIGAReferences;
-import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.administracion.SIGAConstants;
 import com.siga.administracion.form.InformeForm;
 import com.siga.administracion.service.InformesService;
 import com.siga.beans.AdmInformeAdm;
-import com.siga.beans.AdmInformeBean;
-import com.siga.beans.AdmTipoInformeAdm;
 import com.siga.beans.AdmTipoInformeBean;
 import com.siga.beans.ConCampoConsultaBean;
 import com.siga.beans.ConConsultaAdm;
@@ -44,7 +39,6 @@ import com.siga.beans.ConConsultaBean;
 import com.siga.beans.ConCriteriosDinamicosAdm;
 import com.siga.beans.ConOperacionConsultaAdm;
 import com.siga.beans.ConOperacionConsultaBean;
-import com.siga.certificados.Plantilla;
 import com.siga.consultas.CriterioDinamico;
 import com.siga.consultas.form.RecuperarConsultasForm;
 import com.siga.general.MasterAction;
@@ -580,15 +574,18 @@ public class RecuperarConsultasAction extends MasterAction {
 							(form.getTipoConsulta().equals(ConConsultaAdm.TIPO_CONSULTA_ENV) ||
 							 form.getTipoConsulta().equals(ConConsultaAdm.TIPO_CONSULTA_FAC)) )){
 				String selectExperta=conBean.getSentencia().toUpperCase().replaceAll("\r\n"," ");
+				String selectOriginal = conBean.getSentencia().replaceAll("\r\n"," ");
 			  if (conBean.getEsExperta().equals("1")){
 			  	// Vemos si la consulta experta tiene criterios dinamicos.
 			  	if ((selectExperta.indexOf(ClsConstants.TIPONUMERO))>=0 || (selectExperta.indexOf(ClsConstants.TIPOTEXTO))>=0 || (selectExperta.indexOf(ClsConstants.TIPOFECHA)>=0 ||(selectExperta.indexOf(ClsConstants.TIPOMULTIVALOR))>=0 ) ){
 			  		
 			  		if (selectExperta.toUpperCase().indexOf("%%IDINSTITUCION%%")>=0){
 			  			selectExperta=selectExperta.toUpperCase().replaceAll("%%IDINSTITUCION%%",userBean.getLocation());
+			  			selectOriginal=selectOriginal.replaceAll("%%IDINSTITUCION%%",userBean.getLocation());
+			  			
 					}
 			  		
-			  		obtenerCriteriosCamposSalida(selectExperta,vcd,operaciones,valores,tipo,criterioReal,request, response);
+			  		obtenerCriteriosCamposSalida(selectExperta,selectOriginal,vcd,operaciones,valores,tipo,criterioReal,request, response);
 			  		
 		
 			  	  
@@ -666,8 +663,10 @@ public class RecuperarConsultasAction extends MasterAction {
 	
 				// RGG Error INC_3099 Obtenemos el 'simbolo' del operador para ver si el 'is null'
 				ConOperacionConsultaAdm conadm= new ConOperacionConsultaAdm(this.getUserBean(request));
+				CriterioDinamico criterioDinamico = cDinamicos[i];
+				
 				Hashtable ht = new Hashtable();
-				ht.put(ConOperacionConsultaBean.C_IDOPERACION,(String)cDinamicos[i].getOp());
+				ht.put(ConOperacionConsultaBean.C_IDOPERACION,(String)criterioDinamico.getOp());
 				Vector v = conadm.selectByPK(ht);
 				ConOperacionConsultaBean  conbean = null;
 				String simbolo="";
@@ -677,26 +676,27 @@ public class RecuperarConsultasAction extends MasterAction {
 				}
 				
 	
-				if (!simbolo.trim().equalsIgnoreCase("is null") && (cDinamicos[i].getVal()==null || cDinamicos[i].getVal().equals(""))){
-					throw new SIGAException("messages.consultas.error.ValoresVacios");
-				}
-				if (cDinamicos[i].getTc().equals(SIGAConstants.TYPE_NUMERIC)){
+//				if (!simbolo.trim().equalsIgnoreCase("is null") && (cDinamicos[i].getVal()==null || cDinamicos[i].getVal().equals(""))){
+//					throw new SIGAException("messages.consultas.error.ValoresVacios");
+//				}
+				
+				if (criterioDinamico.getTc().equals(SIGAConstants.TYPE_NUMERIC)){
 					String message = "";
 					try{
-						if (cDinamicos[i].getVal().startsWith(".") || cDinamicos[i].getVal().endsWith(".")){
+						if (criterioDinamico.getVal().startsWith(".") || criterioDinamico.getVal().endsWith(".")){
 							message = "messages.consultas.error.punto";
 							throw new SIGAException(message);							
 						}
-						if (!cDinamicos[i].getDc().equals("") && !cDinamicos[i].getDc().equals("0")){
+						if (!criterioDinamico.getDc().equals("") && !criterioDinamico.getDc().equals("0")){
 							message = "messages.consultas.error.CriteriosNumericos";
-							Float.parseFloat(cDinamicos[i].getVal());
-						}else if (!cDinamicos[i].getDc().equals("") && cDinamicos[i].getDc().equals("0")){
-							if (cDinamicos[i].getVal().indexOf(".")!=-1){
+							Float.parseFloat(criterioDinamico.getVal());
+						}else if (!criterioDinamico.getDc().equals("") && criterioDinamico.getDc().equals("0")){
+							if (criterioDinamico.getVal().indexOf(".")!=-1){
 								message = "messages.consultas.error.noDecimales";
 								throw new SIGAException(message);							
 							}
 							message = "messages.consultas.error.CriteriosNumericos";
-							Long.parseLong(cDinamicos[i].getVal());
+							Long.parseLong(criterioDinamico.getVal());
 						}
 					} catch (SIGAException e) {
 						throw e;
@@ -760,9 +760,11 @@ public class RecuperarConsultasAction extends MasterAction {
 		return "tipoEnvio";
 	} //seleccionarTipoEnvio ()
 	
-	protected void obtenerCriteriosCamposSalida(String selectExperta ,Vector vcd,Vector operaciones,Vector valores,Vector tipo,Vector criterioReal,HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	protected void obtenerCriteriosCamposSalida(String selectExperta,String selectOriginal ,Vector vcd,Vector operaciones,Vector valores,Vector tipo,Vector criterioReal,HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		
 		Vector v_tipoDatos=new Vector();
+		Vector valorDefectoVector=new Vector();
+		Vector valorNuloVector=new Vector();
 		String campo="";
 		String alias="";
 		Vector valias=new Vector();
@@ -772,27 +774,92 @@ public class RecuperarConsultasAction extends MasterAction {
 		v_tipoDatos.add(ClsConstants.TIPOFECHA);
 		v_tipoDatos.add(ClsConstants.TIPOMULTIVALOR);
 		String sentencia_aux="";
+		String sentenciaOriginalAux="";
+		
 		boolean continuar=true;
 		Vector ayuda=new Vector();
 		 UsrBean user = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
-		
+		List operadoresList = new ArrayList<String>();
+		operadoresList.add("=");
+		operadoresList.add("!=");
+		operadoresList.add(">");
+		operadoresList.add(">=");
+		operadoresList.add("<");
+		operadoresList.add("<=");
+		operadoresList.add("IS NULL");
+		operadoresList.add("LIKE");
+		operadoresList.add("OPERADOR");
 	 try{	
 //      Buscamos los criterios dinamicos que pueda haber en la sentencia select construida	 	
 	 	String critCampoSalida=selectExperta;
 	 	 sentencia_aux=critCampoSalida;
+	 	sentenciaOriginalAux = selectOriginal;
 	 	 continuar=true;
 	 	for (int i=0;i<v_tipoDatos.size();i++){// Para cada tipo de datos
 	 		continuar=true;
 	 		sentencia_aux=critCampoSalida;
+	 		sentenciaOriginalAux = selectOriginal;
+	 		String operadorEncontrado = "";
 	 		while ((continuar)&& (sentencia_aux.length()>0)){
+	 			operadorEncontrado = "";
+	 			//int pos_ini2 =sentencia_aux.lastIndexOf(v_tipoDatos.get(i).toString());
 	 			int pos_ini=sentencia_aux.indexOf(v_tipoDatos.get(i).toString());
 	 			if (pos_ini>=0){
 	 				String sentenciaA=sentencia_aux.substring(0,pos_ini);
+	 				
+	 				String operadores[] = sentenciaA.split("%%");
+	 				for (int j = operadores.length-1; j >= 0 ; j--) {
+						String operador = operadores[j];
+						if(operadoresList.contains(operador)){
+							operadorEncontrado = operador;
+							break;
+							
+						}
+							
+					}
+	 				 
+	 				//--int pos_fin = sentencia_aux.indexOf("AND");
 	 				String sentenciaAyuda=sentencia_aux.substring(pos_ini);
+	 				int pos_fin = sentenciaAyuda.indexOf("AND");
+	 				String sentenciaAyudaOriginal = null;
+	 				if(pos_fin==-1)
+	 					sentenciaAyudaOriginal = sentenciaOriginalAux.substring(pos_ini);
+	 				else
+	 					sentenciaAyudaOriginal = sentenciaOriginalAux.substring(pos_ini,pos_ini+pos_fin);
 	 				campo=getAliasMostrar(sentenciaA);
 	 				vcd.add(campo);
 	 				alias=getAliasCompleto(sentenciaA);
 	 				valias.add(alias);
+	 				int posicionValue = sentenciaAyudaOriginal.indexOf(" DEFECTO ");
+			 		String valorDefecto = null;
+			 		if (posicionValue>=0){
+			 			String valueDefecto = sentenciaAyudaOriginal.substring(posicionValue);
+			 			int inicio=valueDefecto.indexOf("\"");
+			 			String auxiliar =valueDefecto.substring(inicio+1) ;
+						int fin=auxiliar.indexOf("\"");
+						String retorno=null;
+						if(inicio!=-1 && fin!=-1){
+							valorDefecto=auxiliar.substring(0,fin);
+						}
+				    }
+			 		valorDefectoVector.add(valorDefecto==null?"":valorDefecto);
+			 		
+			 		
+			 		int posicionNulo = sentenciaAyudaOriginal.indexOf(" NULO ");
+			 		String valorNulo = null;
+			 		if (posicionNulo>=0){
+			 			String valueNulo = sentenciaAyudaOriginal.substring(posicionNulo);
+			 			int inicio=valueNulo.indexOf("\"");
+			 			String auxiliar =valueNulo.substring(inicio+1) ;
+						int fin=auxiliar.indexOf("\"");
+						String retorno=null;
+						if(inicio!=-1 && fin!=-1){
+							valorNulo=auxiliar.substring(0,fin);
+						}
+				    }
+			 		valorNuloVector.add(valorNulo==null?Boolean.FALSE:valorNulo.toLowerCase().equals("si")?Boolean.TRUE:Boolean.FALSE);
+			 		
+			 		
 	 			 if (v_tipoDatos.get(i).toString().equals(ClsConstants.TIPONUMERO)){	
 	 				
 	 				String selectOper = "SELECT ";
@@ -800,7 +867,8 @@ public class RecuperarConsultasAction extends MasterAction {
 	  				selectOper+= UtilidadesMultidioma.getCampoMultidiomaSimple(ConOperacionConsultaBean.C_DESCRIPCION,user.getLanguage())+" AS DESCRIPCION";
 	  				selectOper+= " FROM "+ConOperacionConsultaBean.T_NOMBRETABLA;
 	  				selectOper+= " WHERE "+ConOperacionConsultaBean.C_TIPOOPERADOR+"='N'";
-	  				
+	  				if(!operadorEncontrado.equalsIgnoreCase("OPERADOR"))
+	   					selectOper+= " AND UPPER(SIMBOLO)='"+operadorEncontrado+"' ";
 	  				RowsContainer rc1 = null;
 	  				rc1 = new RowsContainer();
 	  				rc1.query(selectOper);
@@ -809,11 +877,15 @@ public class RecuperarConsultasAction extends MasterAction {
 	  				tipo.add("N");
 	  				ayuda.add("-1");
 	 			 }else if(v_tipoDatos.get(i).toString().equals(ClsConstants.TIPOTEXTO)){
+	 				
 	 			 	 String selectOper = "SELECT ";
 	   				selectOper+= ConOperacionConsultaBean.C_IDOPERACION+" AS ID,";
 	   				selectOper+= UtilidadesMultidioma.getCampoMultidiomaSimple(ConOperacionConsultaBean.C_DESCRIPCION,user.getLanguage())+" AS DESCRIPCION";
 	   				selectOper+= " FROM "+ConOperacionConsultaBean.T_NOMBRETABLA;
 	   				selectOper+= " WHERE "+ConOperacionConsultaBean.C_TIPOOPERADOR+"='A'";
+	   				if(!operadorEncontrado.equalsIgnoreCase("OPERADOR"))
+	   					selectOper+= " AND UPPER(SIMBOLO)='"+operadorEncontrado+"' ";
+	   				
 	   				
 	   				RowsContainer rc1 = null;
 	   				rc1 = new RowsContainer();
@@ -828,21 +900,29 @@ public class RecuperarConsultasAction extends MasterAction {
 	  				selectOper+= UtilidadesMultidioma.getCampoMultidiomaSimple(ConOperacionConsultaBean.C_DESCRIPCION,user.getLanguage())+" AS DESCRIPCION";
 	  				selectOper+= " FROM "+ConOperacionConsultaBean.T_NOMBRETABLA;
 	  				selectOper+= " WHERE "+ConOperacionConsultaBean.C_TIPOOPERADOR+"='D'";
-	  				
+	  				if(!operadorEncontrado.equalsIgnoreCase("OPERADOR"))
+	   					selectOper+= " AND UPPER(SIMBOLO)='"+operadorEncontrado+"' ";
 	  				RowsContainer rc1 = null;
 	  				rc1 = new RowsContainer();
 	  				rc1.query(selectOper);
 	  				operaciones.add(rc1.getAll());
 	  				valores.add(null);
-	  				tipo.add("D");
+	  				if(operadorEncontrado.equalsIgnoreCase("IS NULL"))
+	  					tipo.add("X");
+	  				else
+	  					tipo.add("D");
 	  				ayuda.add("-1");
+	  				if(valorDefecto!=null && valorDefecto.equalsIgnoreCase("sysdate")){
+	  					valorDefectoVector.set(valorDefectoVector.size()-1, GstDate.getHoyJsp());
+	  				}
 	 			 }else if (v_tipoDatos.get(i).toString().equals(ClsConstants.TIPOMULTIVALOR)){
 	 			 	String selectOper = "SELECT ";
 	 				selectOper+= ConOperacionConsultaBean.C_IDOPERACION+" AS ID,";
 	 				selectOper+= UtilidadesMultidioma.getCampoMultidiomaSimple(ConOperacionConsultaBean.C_DESCRIPCION,user.getLanguage())+" AS DESCRIPCION";
 	 				selectOper+= " FROM "+ConOperacionConsultaBean.T_NOMBRETABLA;
 	 				selectOper+= " WHERE "+ConOperacionConsultaBean.C_TIPOOPERADOR+"='N'";
-	 				
+	 				if(!operadorEncontrado.equalsIgnoreCase("OPERADOR"))
+	   					selectOper+= " AND UPPER(SIMBOLO)='"+operadorEncontrado+"' ";
 	 				RowsContainer rc1 = null;
 	 				rc1 = new RowsContainer();
 	 				rc1.query(selectOper);
@@ -867,6 +947,7 @@ public class RecuperarConsultasAction extends MasterAction {
 	 				continuar=false;
 	 			}
 	 			sentencia_aux=sentencia_aux.substring(pos_ini+v_tipoDatos.get(i).toString().length());
+	 			sentenciaOriginalAux=sentenciaOriginalAux.substring(pos_ini+v_tipoDatos.get(i).toString().length());
 	 		}
 	 		
 	 		
@@ -877,6 +958,8 @@ public class RecuperarConsultasAction extends MasterAction {
   
   		request.setAttribute("operaciones",operaciones);
 		request.setAttribute("valores",valores);
+		request.setAttribute("valoresDefecto",valorDefectoVector);
+		request.setAttribute("valoresNulo",valorNuloVector);
 		request.setAttribute("criterios",vcd);
 		request.setAttribute("tipo",tipo);
 		request.setAttribute("alias",valias);
@@ -897,60 +980,156 @@ public class RecuperarConsultasAction extends MasterAction {
 			posicion=sentencia.toUpperCase().lastIndexOf("WHERE");
 			sentencia=sentencia.substring(posicion+"WHERE".length());
 			if (sentencia.toUpperCase().lastIndexOf(" AS ")>=0){// Existe Alias
-	            int posAs=sentencia.toUpperCase().lastIndexOf(" AS ");
-              int posEtiquetaOperador=sentencia.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR);
-              
-       
-            sentencia=sentencia.substring(posAs+" AS ".length(),posEtiquetaOperador).replaceAll("\"","");
-       
-        
-		  	
-		    }else{// no hay alias
-		  
-		     sentencia=sentencia.substring(0,sentencia.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR));
-			
-		     if (sentencia.indexOf(".")>=0){
-		  	  sentencia=sentencia.substring(sentencia.indexOf(".")+1);
-		     }
-		  
-			
-		   }
-		
+				int posAs=sentencia.toUpperCase().lastIndexOf(" AS ");
+				int posEtiquetaOperador=sentencia.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR);
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%=%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%!=%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%>%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%>=%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%<%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%<=%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%IS NULL%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%LIKE%%");
+				}
+
+				sentencia=sentencia.substring(posAs+" AS ".length(),posEtiquetaOperador).replaceAll("\"","");
+
+
+
+			}else{// no hay alias
+				int posEtiquetaOperador=sentencia.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR);
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%=%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%!=%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%>%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%>=%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%<%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%<=%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%IS NULL%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%LIKE%%");
+				}
+				sentencia=sentencia.substring(0,posEtiquetaOperador);
+
+				if (sentencia.indexOf(".")>=0){
+					sentencia=sentencia.substring(sentencia.indexOf(".")+1);
+				}
+
+
+			}
+
 		}else{ 
-		  if ((pos_AND>pos_OR)&& (pos_AND>pos_WHERE)){
-			operador=" AND ";
-			posicion=pos_AND;
-		  }else if ((pos_OR>pos_AND)&& (pos_OR>pos_WHERE)){
-		  	operador=" OR ";
-		  	posicion=pos_OR;
-		  }else if ((pos_WHERE>pos_AND)&& (pos_WHERE>pos_OR)){
-		  	operador="WHERE";
-		  	posicion=pos_WHERE;
-		  }
-		    sentencia=sentencia.substring(posicion+operador.length());
-			
+			if ((pos_AND>pos_OR)&& (pos_AND>pos_WHERE)){
+				operador=" AND ";
+				posicion=pos_AND;
+			}else if ((pos_OR>pos_AND)&& (pos_OR>pos_WHERE)){
+				operador=" OR ";
+				posicion=pos_OR;
+			}else if ((pos_WHERE>pos_AND)&& (pos_WHERE>pos_OR)){
+				operador="WHERE";
+				posicion=pos_WHERE;
+			}
+			sentencia=sentencia.substring(posicion+operador.length());
+
 			if (sentencia.toUpperCase().lastIndexOf(" AS ")>=0){// Existe Alias
-	            int posAs=sentencia.toUpperCase().lastIndexOf(" AS ");
-              int posEtiquetaOperador=sentencia.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR);
-              
-       
-            sentencia=sentencia.substring(posAs+" AS ".length(),posEtiquetaOperador).replaceAll("\"","");
-       
-        
-		  	
-		    }else{// no hay alias
-		  
-		     sentencia=sentencia.substring(0,sentencia.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR));
-			
-		     if (sentencia.indexOf(".")>=0){
-		  	  sentencia=sentencia.substring(sentencia.indexOf(".")+1);
-		     }
-		  
-			
-		   }
-		  }	
-		
-	 return sentencia;
+				int posAs=sentencia.toUpperCase().lastIndexOf(" AS ");
+				int posEtiquetaOperador=sentencia.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR);
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%=%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%!=%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%>%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%>=%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%<%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%<=%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%IS NULL%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%LIKE%%");
+				}
+
+
+				sentencia=sentencia.substring(posAs+" AS ".length(),posEtiquetaOperador).replaceAll("\"","");
+
+
+
+			}else{// no hay alias
+				int posEtiquetaOperador=sentencia.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR);
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%=%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%!=%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%>%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%>=%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%<%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%<=%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%IS NULL%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%LIKE%%");
+				}
+
+				sentencia=sentencia.substring(0,posEtiquetaOperador);
+
+				if (sentencia.indexOf(".")>=0){
+					sentencia=sentencia.substring(sentencia.indexOf(".")+1);
+				}
+
+
+			}
+		}	
+
+		return sentencia;
 	}
 	
 	protected String getAliasCompleto(String sentencia)throws SIGAException {
@@ -965,7 +1144,32 @@ public class RecuperarConsultasAction extends MasterAction {
 			sentencia=sentencia.substring(posicion+"WHERE".length());
 			if (sentencia.toUpperCase().lastIndexOf(" AS ")>=0){// Existe Alias
 	            int posAs=sentencia.toUpperCase().lastIndexOf(" AS ");
-              int posEtiquetaOperador=sentencia.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR);
+	            int posEtiquetaOperador=sentencia.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR);
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%=%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%!=%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%>%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%>=%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%<%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%<=%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%IS NULL%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%LIKE%%");
+				}
+
               
        
             sentencia=sentencia.substring(posAs,posEtiquetaOperador);
@@ -998,7 +1202,32 @@ public class RecuperarConsultasAction extends MasterAction {
 			
 			if (sentencia.toUpperCase().lastIndexOf(" AS ")>=0){// Existe Alias
 	            int posAs=sentencia.toUpperCase().lastIndexOf(" AS ");
-              int posEtiquetaOperador=sentencia.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR);
+	            int posEtiquetaOperador=sentencia.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR);
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%=%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%!=%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%>%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%>=%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%<%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%<=%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%IS NULL%%");
+				}
+				if(posEtiquetaOperador==-1){
+					posEtiquetaOperador=sentencia.toUpperCase().indexOf("%%LIKE%%");
+				}
+
               
        
              sentencia=sentencia.substring(posAs,posEtiquetaOperador);

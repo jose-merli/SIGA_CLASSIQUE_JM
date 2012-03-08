@@ -5,7 +5,9 @@
  */
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -524,12 +526,13 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 		String tipoConsulta = conBean.getTipoConsulta();
 		String idinstitucion = Integer.toString(conBean.getIdInstitucion().intValue());
 		String idConsulta = Integer.toString(conBean.getIdConsulta().intValue());
-		
-		
+
+
 		//Variables para crear consulta parametrizada BIND
 		int iParametroBind = 0;
 		Hashtable codigosBind = new Hashtable();
-		
+		Hashtable codigosLike = new Hashtable();
+
 		String sentenciaCabecera = "";
 		//separando la cabecera y quitando etiquetas si es Experta
 		if (esExperta){
@@ -545,7 +548,7 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 			}
 			sentencia = eliminarEtiquetas (sentencia);
 		}
-		
+
 		//sustituyendo la marca '%%idinstitucion%%' por la institucion actual
 		//cuando no se trate de una consulta experta de facturacion
 		while (sustituyeInstitucion && sentencia.toUpperCase().indexOf ("%%IDINSTITUCION%%") > -1) {
@@ -556,38 +559,38 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 		}
 		//sustituyendo la marca '%%idioma%%' por el idioma del USERBEAN
 		sentencia = sentencia.replaceAll ("%%IDIOMA%%", usrbean.getLanguage());
-		
+
 		String[] cabeceras = null;
 		if (tipoConsulta.equals (ConConsultaAdm.TIPO_CONSULTA_GEN) || esExperta){
 
-		 //consulta general
-			
+			//consulta general
+
 			//obteniendo las cabeceras
 			ConCamposSalidaAdm csAdm = new ConCamposSalidaAdm (usrbean);
 			Vector v = new Vector ();
 			if (! esExperta) {
 				v = csAdm.getCamposSalida (idinstitucion, idConsulta);
-				
+
 				if (! v.isEmpty ()) { //consulta generica
 					cabeceras = new String[v.size()];
 					for (int i=0; i<v.size(); i++) {
 						Row fila = (Row) v.elementAt (i);
 						cabeceras[i] = fila.getString
-								(ConCamposSalidaBean.C_CABECERA).toUpperCase();
+						(ConCamposSalidaBean.C_CABECERA).toUpperCase();
 					}
 				}
 			}
 			else {
 				cabeceras = sacarCabeceras (sentenciaCabecera);
 			}
-			
+
 			//obteniendo los criterios si existen
 			if (sentencia.indexOf (ConCriterioConsultaAdm.CONS_CRITERIOS) > -1) {	
 				ConCriterioConsultaAdm ccAdm = new ConCriterioConsultaAdm (usrbean);
 				String where = ccAdm.getWhere (idinstitucion, idConsulta);
-				
+
 				final Pattern pattern = Pattern.compile
-						(ConCriterioConsultaAdm.CONS_CRITERIOS);
+				(ConCriterioConsultaAdm.CONS_CRITERIOS);
 				final Matcher matcher = pattern.matcher (sentencia);
 				sentencia = matcher.replaceAll (where);
 				sentencia = ccAdm.sustituirParametrosColegiado (sentencia);
@@ -595,7 +598,7 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 				//sustituyendo la marca '%%idioma%%' por el idioma del USERBEAN
 				sentencia = sentencia.replaceAll ("%%IDIOMA%%", usrbean.getLanguage());
 			}
-			
+
 			//sustituyendo los criterios dinamicos si los hubiera
 			if (! esExperta)
 			{ //si no es consulta experta	
@@ -603,7 +606,7 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 					ConCriteriosDinamicosAdm cdAdm = new ConCriteriosDinamicosAdm (usrbean);
 
 					String criteriosDinamicos = "";
-					
+
 					for (int i=0; i<cDinamicos.length && cDinamicos[i]!=null; i++) {
 						Hashtable hash = new Hashtable();
 						hash.put (ConCampoConsultaBean.C_IDCAMPO, cDinamicos[i].getIdC());
@@ -614,27 +617,27 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 						Hashtable hoc = new Hashtable ();
 						hoc.put (ConOperacionConsultaBean.C_IDOPERACION, cDinamicos[i].getOp());
 						ConOperacionConsultaBean ocBean = (ConOperacionConsultaBean)
-								((Vector)ocAdm.selectByPK (hoc)).firstElement();
+						((Vector)ocAdm.selectByPK (hoc)).firstElement();
 						if (i>0)
 							criteriosDinamicos += " AND ";
-						
+
 						//en las comparaciones de igualdad en fechas hay que quitar la hora
 						if (ccBean.getTipoCampo().equals (SIGAConstants.TYPE_DATE) &&
-							ocBean.getSimbolo().trim().equals ("="))
+								ocBean.getSimbolo().trim().equals ("="))
 						{
-//							criteriosDinamicos += "TO_CHAR ("+
-//									cdAdm.getNombreCampo (cDinamicos[i].getIdC())+
-//									", 'YYYY/MM/DD')";
-						    criteriosDinamicos += "TRUNC("+
-									cdAdm.getNombreCampo (cDinamicos[i].getIdC())+
+							//							criteriosDinamicos += "TO_CHAR ("+
+							//									cdAdm.getNombreCampo (cDinamicos[i].getIdC())+
+							//									", 'YYYY/MM/DD')";
+							criteriosDinamicos += "TRUNC("+
+							cdAdm.getNombreCampo (cDinamicos[i].getIdC())+
 							")";
-						    
+
 						} else {
 							criteriosDinamicos += cdAdm.getNombreCampo (cDinamicos[i].getIdC());
 						}
-						
+
 						criteriosDinamicos += " "+ocBean.getSimbolo()+" ";
-						
+
 						//controlando que el operador es "esta vacio"
 						if (! ocBean.getSimbolo ().trim ().equals (ConOperacionConsultaBean.IS_NULL)) {
 							if (ccBean.getFormato ().equals (ConCampoConsultaAdm.CONS_FORMATO)) {
@@ -646,30 +649,30 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 								String formato = ccBean.getFormato();
 								final Pattern pattern = Pattern.compile (ConCampoConsultaAdm.CONS_FORMATO);
 								final Matcher matcher = pattern.matcher (formato);
-								
+
 								if (ccBean.getTipoCampo().equals(SIGAConstants.TYPE_DATE)) {
 									//en las comparaciones de igualdad en fechas hay que quitar la hora
 									if (ocBean.getSimbolo().trim().equals("=")) {
 										while (matcher.find()) {
 											iParametroBind++;
-//											criteriosDinamicos += "TO_CHAR ("+
-//											(matcher.replaceFirst ("---")).replaceFirst
-//												("'---'", ":@"+iParametroBind)+"@:"+
-//											", 'YYYY/MM/DD')";
+											//											criteriosDinamicos += "TO_CHAR ("+
+											//											(matcher.replaceFirst ("---")).replaceFirst
+											//												("'---'", ":@"+iParametroBind)+"@:"+
+											//											", 'YYYY/MM/DD')";
 											String aux = matcher.replaceFirst ("---");
 											aux = UtilidadesString.replaceAllIgnoreCase(aux,"'---'", ":@"+iParametroBind+"@:");
 											criteriosDinamicos += "TRUNC("+aux+")";
 											codigosBind.put (new Integer(iParametroBind),
-												GstDate.getApplicationFormatDate ("", cDinamicos[i].getVal()));
+													GstDate.getApplicationFormatDate ("", cDinamicos[i].getVal()));
 										}
 									}
 									else {
 										while (matcher.find()) {
 											iParametroBind++;
 											criteriosDinamicos += (matcher.replaceFirst ("---")).replaceFirst 
-												("'---'", ":@"+iParametroBind+"@:");
+											("'---'", ":@"+iParametroBind+"@:");
 											codigosBind.put (new Integer(iParametroBind),
-												GstDate.getApplicationFormatDate ("", cDinamicos[i].getVal()));
+													GstDate.getApplicationFormatDate ("", cDinamicos[i].getVal()));
 										}
 									}
 								}
@@ -677,14 +680,14 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 									while (matcher.find()) {
 										iParametroBind++;
 										criteriosDinamicos += (matcher.replaceFirst ("---")).replaceFirst
-											("'---'", ":@"+iParametroBind+"@:");
+										("'---'", ":@"+iParametroBind+"@:");
 										codigosBind.put (new Integer(iParametroBind), cDinamicos[i].getVal());
 									}
 								}
 							}
 						}
 					} //for
-					
+
 					final Pattern pattern2 = Pattern.compile (ConCriteriosDinamicosAdm.CONS_DINAMICOS);
 					final Matcher matcher2 = pattern2.matcher (sentencia);
 					sentencia = matcher2.replaceAll (criteriosDinamicos);
@@ -692,16 +695,26 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 					//	new PaginadorCaseSensitiveBind
 					//		(sentencia, cabeceras, codigosBind);
 					//La anterior linea no es necesaria ya que se ejecuta al final
-					
+
 				}
 			}
 			else
 			{ //es consulta experta
 				if ((sentencia.indexOf (ClsConstants.TIPONUMERO))>-1 ||
-					(sentencia.indexOf (ClsConstants.TIPOTEXTO))>-1 ||
-					(sentencia.indexOf (ClsConstants.TIPOFECHA)>-1 ||
-					(sentencia.indexOf (ClsConstants.TIPOMULTIVALOR))>-1))
+						(sentencia.indexOf (ClsConstants.TIPOTEXTO))>-1 ||
+						(sentencia.indexOf (ClsConstants.TIPOFECHA)>-1 ||
+								(sentencia.indexOf (ClsConstants.TIPOMULTIVALOR))>-1))
 				{
+					List operadoresList = new ArrayList<String>();
+					operadoresList.add("=");
+					operadoresList.add("!=");
+					operadoresList.add(">");
+					operadoresList.add(">=");
+					operadoresList.add("<");
+					operadoresList.add("<=");
+					operadoresList.add("IS NULL");
+					operadoresList.add("LIKE");
+					operadoresList.add("OPERADOR");
 					String criteriosDinamicos = "";
 					String sentenciaAux, sentenciaAux1, sentenciaAux2;
 					String operador = "";
@@ -714,7 +727,7 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 					ConOperacionConsultaAdm ocAdm = new ConOperacionConsultaAdm (usrbean);
 					sentencia=sentencia.replaceAll ("\r\n", " ");
 					int j=0;
-					
+
 					//Por cada tipo de filtro
 					String alias = "";
 					Vector v_tipoDatos = new Vector ();
@@ -728,7 +741,7 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 						{
 							continuar=true;
 							pos_ini=0;
-							
+
 							while (continuar && pos_ini<=sentencia.length()) {
 								if (v_tipoDatos.get(i).toString().equals(ClsConstants.TIPONUMERO))
 									etiqueta=ClsConstants.TIPONUMERO;
@@ -738,7 +751,7 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 									etiqueta=ClsConstants.TIPOFECHA;
 								else
 									etiqueta=ClsConstants.TIPOMULTIVALOR;
-								
+
 
 								if (etiqueta.equals(ClsConstants.TIPOMULTIVALOR)) {
 									int iMV = sentencia.indexOf(ClsConstants.TIPOMULTIVALOR);
@@ -748,21 +761,22 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 								} else if (cDinamicos[j]!=null && !cDinamicos[j].getHp().equals("-1")) {
 									//cuando existe select de ayuda porque estamos con la etiqueta multivalor
 									etiqueta += cDinamicos[j].getHp().replaceAll
-									    (ClsConstants.CONSTANTESUSTITUIRCOMILLAS,"\"");
+									(ClsConstants.CONSTANTESUSTITUIRCOMILLAS,"\"");
 								}
 								pos_iniEtiqueta=sentencia.indexOf (etiqueta);	
 								sentenciaAux=sentencia.substring (0, pos_iniEtiqueta+etiqueta.length());
-								
+
 								if (pos_iniEtiqueta>=0)
 								{
-								 	Hashtable hoc = new Hashtable ();
+									Hashtable hoc = new Hashtable ();
 									hoc.put (ConOperacionConsultaBean.C_IDOPERACION, cDinamicos[j].getOp ());
 									ConOperacionConsultaBean ocBean = (ConOperacionConsultaBean)
-											((Vector)ocAdm.selectByPK (hoc)).firstElement ();
+									((Vector)ocAdm.selectByPK (hoc)).firstElement ();
 									operador = ocBean.getSimbolo ();
 									
 									//controlando que el operador es "esta vacio"
-									if (!ocBean.getSimbolo().trim().equals(ConOperacionConsultaBean.IS_NULL)) {
+									
+									if (!ocBean.getSimbolo().trim().equals(ConOperacionConsultaBean.IS_NULL) && !cDinamicos[j].getVal().equals("") ) {
 										if (cDinamicos[j].getTc().equals (SIGAConstants.TYPE_DATE)) {
 											iParametroBind++;
 											criteriosDinamicos = "TO_DATE (:@"+iParametroBind+"@:"+", 'YYYY/MM/DD HH24:MI:SS')";
@@ -773,31 +787,85 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 											iParametroBind++;
 											criteriosDinamicos = ":@"+iParametroBind+"@:";
 											codigosBind.put (new Integer(iParametroBind), cDinamicos[j].getVal());
+											if(operador.equals(ConOperacionConsultaBean.LIKE)){
+												codigosLike.put (new Integer(iParametroBind), cDinamicos[j].getVal());
+											}
 										}
 									}
 									else {
+										operador = "IS NULL";
 										criteriosDinamicos="";
 									}
-									
+
 									sentenciaAux = sentenciaAux.substring (0, pos_iniEtiqueta) +
-											criteriosDinamicos +
-											sentenciaAux.substring (pos_iniEtiqueta+etiqueta.length());
+									criteriosDinamicos +
+									sentenciaAux.substring (pos_iniEtiqueta+etiqueta.length());
+									String operadores[] = sentenciaAux.split("%%");
+									String operadorEncontrado = null;
+					 				for (int jta = operadores.length-1; jta >= 0 ; jta--) {
+										String operadorCast = operadores[jta];
+										if(operadoresList.contains(operadorCast)){
+											operadorEncontrado = "%%"+operadorCast+"%%";
+											break;
+											
+										}
+											
+									}
+									if(operador.equalsIgnoreCase("IS NULL")){
+										posEtiquetaOperador=sentenciaAux.toUpperCase().lastIndexOf(operadorEncontrado);
+										sentenciaAux1 = sentenciaAux.substring (posEtiquetaOperador,posEtiquetaOperador+operadorEncontrado.length()).replaceAll (operadorEncontrado, " "+operador+" ");
+
+									}else{
+										posEtiquetaOperador=sentenciaAux.toUpperCase().lastIndexOf(operadorEncontrado);
+										sentenciaAux1 = sentenciaAux.substring (posEtiquetaOperador).replaceAll (operadorEncontrado, " "+operador+" ");
+
+									}
 									
-									posEtiquetaOperador = sentenciaAux.lastIndexOf (ClsConstants.ETIQUETAOPERADOR);
-									sentenciaAux1 = sentenciaAux.substring (posEtiquetaOperador).
-											replaceAll (ClsConstants.ETIQUETAOPERADOR, " "+operador);
+									
 									sentenciaAux = sentenciaAux.substring (0, posEtiquetaOperador) + sentenciaAux1;
 									if (!cDinamicos[j].getSt().equals("-1")) {
 										alias = cDinamicos[j].getSt().
-												replaceAll (ClsConstants.CONSTANTESUSTITUIRCOMILLAS, "\"");	
+										replaceAll (ClsConstants.CONSTANTESUSTITUIRCOMILLAS, "\"");	
 										posAlias = sentenciaAux.lastIndexOf (alias);
 										sentenciaAux2=sentenciaAux.substring (posAlias+alias.length());
 										sentenciaAux=sentenciaAux.substring (0, posAlias) + sentenciaAux2;
 									}
+									String sentenciaAuxFin = sentencia.substring(pos_iniEtiqueta+etiqueta.length());
+									int indiceAnd = sentenciaAuxFin.indexOf("AND");
+									int indexDefecto = sentenciaAuxFin.indexOf("DEFECTO");
+									int indexNulo = sentenciaAuxFin.indexOf("NULO");
+									if(indiceAnd>-1){
+										if(indexDefecto>-1 && indexDefecto<indiceAnd )
+											sentenciaAuxFin= sentenciaAuxFin.substring(0,indexDefecto)+" "+sentenciaAuxFin.substring(indiceAnd);
+										else if(indexNulo>-1 && indexNulo<indiceAnd)
+											sentenciaAuxFin= sentenciaAuxFin.substring(0,indexNulo)+" "+sentenciaAuxFin.substring(indiceAnd);
+//										else
+//											sentenciaAuxFin= " "+sentenciaAuxFin.substring(indiceAnd);
+									}
+									else
+										sentenciaAuxFin = "";
 									
-									sentencia = sentenciaAux+sentencia.substring(pos_iniEtiqueta+etiqueta.length());
+									//La linea siguiente se hace por si hubiera alguna operacino oracle al texto
+									//para eliminar el ultimo parentesis
+									if(operador.equalsIgnoreCase("IS NULL")){
+										int indiceAND = sentenciaAuxFin.indexOf("AND");
+										int indiceParentesis = -1;
+										if(indiceAND>-1){
+											indiceParentesis = sentenciaAuxFin.substring(0,indiceAND).indexOf(")");
+											
+										}else{
+											indiceParentesis = sentenciaAuxFin.indexOf(")");
+											
+											
+										}
+										if(indiceParentesis>-1)
+											sentenciaAuxFin = sentenciaAuxFin.replaceFirst("\\)", "");
+									}
+										
+									
+									sentencia = sentenciaAux+sentenciaAuxFin;
 									pos_ini = pos_iniEtiqueta+etiqueta.length();
-									
+
 									j++;
 								}
 								else {
@@ -807,26 +875,26 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 						} else {
 							break;
 						}
-						
+
 					} //for
 
-					
+
 					cabeceras = sacarCabeceras (sentencia);
 
-					
+
 					//PaginadorCaseSensitiveBind paginador =
 					//	new PaginadorCaseSensitiveBind
 					//		(sentencia, cabeceras, codigosBind);
 					//La anterior linea no es necesaria ya que se ejecuta al final
-					
+
 				}
 			}
-			
+
 		}
-		
+
 		if (tipoConsulta.equals(ConConsultaAdm.TIPO_CONSULTA_ENV))
 		{ //consulta de envíos
-			
+
 			cabeceras = new String[11];
 			cabeceras[0]=CenClienteBean.C_IDPERSONA;
 			cabeceras[1]=CenClienteBean.C_IDINSTITUCION;
@@ -839,21 +907,21 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 			cabeceras[8]=CenDireccionesBean.C_IDPAIS;
 			cabeceras[9]=CenDireccionesBean.C_IDPROVINCIA;
 			cabeceras[10]=CenDireccionesBean.C_IDPOBLACION;
-			
+
 			final Pattern pattern3 = Pattern.compile (EnvTipoEnviosAdm.CONS_TIPOENVIO);
-	        final Matcher matcher3 = pattern3.matcher (sentencia);
-	        sentencia = matcher3.replaceAll (tipoEnvio);
-	        
+			final Matcher matcher3 = pattern3.matcher (sentencia);
+			sentencia = matcher3.replaceAll (tipoEnvio);
+
 		}
 		else if (tipoConsulta.equals (ConConsultaAdm.TIPO_CONSULTA_FAC))
 		{ //consulta de facturacion
-			
+
 			cabeceras = new String[2];
 			cabeceras[0] = CenClienteBean.C_IDINSTITUCION;
 			cabeceras[1] = CenClienteBean.C_IDPERSONA;
-		
+
 		}
-		
+
 		// RGG voy a ordenar las bind variables porque las he dejado desordenadas
 		// busco las ocurrencias de :@x para cambiarlas por :y ordenado
 		String sentenciaAux= sentencia;
@@ -861,11 +929,15 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 		int contadorOrdenados=0;
 		Hashtable codigosOrdenados = new Hashtable();
 		while (indice!=-1) {
-		    String numero=sentenciaAux.substring(indice+2,sentenciaAux.indexOf("@:",indice));
-		    contadorOrdenados++;
-		    codigosOrdenados.put(new Integer(contadorOrdenados),(String)codigosBind.get(new Integer(numero)));
-		    sentencia=sentencia.replaceFirst(":@"+numero+"@:",":"+contadorOrdenados);
-		    indice=sentenciaAux.indexOf(":@",indice+2);
+			String numero=sentenciaAux.substring(indice+2,sentenciaAux.indexOf("@:",indice));
+			if(codigosLike.containsKey(new Integer(numero))){
+				sentencia=sentencia.replaceFirst(":@"+numero+"@:","'%"+(String)codigosBind.get(new Integer(numero))+"%'");
+			}else{
+				contadorOrdenados++;
+				codigosOrdenados.put(new Integer(contadorOrdenados),(String)codigosBind.get(new Integer(numero)));
+				sentencia=sentencia.replaceFirst(":@"+numero+"@:",":"+contadorOrdenados);
+			}
+			indice=sentenciaAux.indexOf(":@",indice+2);
 		}
 
 		sentencia = UtilidadesString.replaceAllIgnoreCase(sentencia, "@FECHA@", "SYSDATE");
@@ -873,14 +945,14 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 		// RGG 21/04/2009 Se intentan sustituir los parametros de las funciones de cen_colegiado
 		ConCriterioConsultaAdm concritcon = new ConCriterioConsultaAdm(this.usrbean);
 		sentencia = concritcon.sustituirParametrosColegiado(sentencia);		
-		
+
 		//Monta los resultados
 		Hashtable hash = new Hashtable();
 		hash.put("sentencia", sentencia);
 		hash.put("codigosOrdenados", codigosOrdenados);
 		hash.put("cabeceras", cabeceras);
 		return hash;
-		
+
 	}
 
 	
