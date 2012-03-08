@@ -13,6 +13,8 @@
 <%@ page import = "com.siga.administracion.SIGAConstants"%>
 <%@ page import = "com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import = "com.siga.Utilidades.UtilidadesString"%>
+
+<%@ page import="com.siga.productos.form.CargaProductosForm"%>
 <%@ page import = "com.atos.utils.*"%>
 <%@ page import = "com.siga.general.*"%>
 <%@ page import="java.util.Properties"%>
@@ -24,6 +26,8 @@
 	UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
 
 	String delimitador = (String)request.getAttribute("DELIMITADOR");
+	
+	CargaProductosForm formulario = (CargaProductosForm)request.getAttribute("cargaProductosForm");
 %>
 
 <html>
@@ -43,12 +47,26 @@
 		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 		<script language="JavaScript">
 		
-			function accionGuardar() {
+			function accionGuardar() 
+			{
 				sub();
-				f= document.CargaProductosForm;
+				var mensaje = "<siga:Idioma key="pys.cargaProductos.literal.mensajeAviso"/> ";
+					
+				//Preguntamos si queremos subir los datos del fichero o no							
+				if (confirm(mensaje)) 
+				{
+					f= document.CargaProductosForm;
+					
+			    	f.modo.value = "guardarFich";
+					f.submit();						
+				} 													
+			}
+
+			//Cada vez que se llame a este método se limpiara el objeto file								
+			function refrescarLocal()
+			{	
+				document.all.CargaProductosForm.reset();
 				
-		    	f.modo.value = "guardarFich";
-				f.submit();		
 			}
 			
 		</script>
@@ -102,17 +120,16 @@
 		</div>
 		
 
-<table id="tablaBotonesDetalle" class="botonesDetalle" align="center">
-	<tr>
-		<td style="width: 900px;">&nbsp;</td>
-		<td class="tdBotones">
-			<input type="button" alt='<siga:Idioma key="general.boton.new"/>'
-			name='idButton' id="idButton" onclick="return accionGuardar();" class="button"
-				value='Procesar Fichero'>
-		</td>
-	</tr>
-</table>
-
+		<table id="tablaBotonesDetalle" class="botonesDetalle" align="center">
+			<tr>
+				<td style="width: 900px;">&nbsp;</td>
+				<td class="tdBotones">
+					<input type="button" alt='<siga:Idioma key="general.boton.new"/>'
+					name='idButton' id="idButton" onclick="return accionGuardar();" class="button"
+						value='Procesar Fichero'>				
+				</td>		
+		   </tr>
+	  </table>
 
 		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	</body>

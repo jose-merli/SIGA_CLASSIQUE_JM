@@ -134,12 +134,14 @@ public class CargaProductosAction extends MasterAction {
 		boolean procesoOk = true;
 		String exito = "";
 		String msjError="El fichero contiene errores y no se ha procesado";
+		// Obtengo el UserBean y el identificador de la institucion
+		UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");	
+		int lineNumber = 0;
 		try{
-			// Obtengo el UserBean y el identificador de la institucion
-			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
+					
 			String idInstitucion=user.getLocation();
 			CargaProductosForm form = (CargaProductosForm) formulario;
-			FormFile file = form.getFichero();
+			FormFile file = form.getFichero();			
 		    String nombre ="";
 		    
 		    ResourceBundle rp=ResourceBundle.getBundle("SIGA");
@@ -193,7 +195,7 @@ public class CargaProductosAction extends MasterAction {
 			log.addLog(new String[] {"Se han encontrado los siguientes registros incorrectos. Corrijalos y vuelva a intentarlo"});
 			log.addLog(new String[] {""});
 			
-			int lineNumber = 0;
+			
 			String delimitador="";
 
 			try {
@@ -202,7 +204,7 @@ public class CargaProductosAction extends MasterAction {
 			} catch (Exception e) {
 				//
 			}
-
+			
 			while (linea != null && !linea.trim().equals(""))
 			{
 				// tratamiento de cada línea
@@ -355,7 +357,12 @@ public class CargaProductosAction extends MasterAction {
 		} 
 		
 		if(procesoOk == true){
-			exito = this.exito("messages.cargaProductos.inserted.success", request);
+			String msj=UtilidadesString.getMensajeIdioma(user,
+				"messages.cargaProductos.inserted.success1");	
+			msj+=" "+lineNumber+" "+UtilidadesString.getMensajeIdioma(user,
+			"messages.cargaProductos.inserted.success2");
+  			
+			exito = this.exitoRefresco(msj, request);
 		}else{
 			exito = "descargaFichero";
 		}
