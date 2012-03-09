@@ -842,8 +842,14 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 //										else
 //											sentenciaAuxFin= " "+sentenciaAuxFin.substring(indiceAnd);
 									}
-									else
-										sentenciaAuxFin = "";
+									else{
+										if(indexDefecto>-1 )
+											sentenciaAuxFin= sentenciaAuxFin.substring(0,indexDefecto);
+										else if(indexNulo>-1)
+											sentenciaAuxFin= sentenciaAuxFin.substring(0,indexNulo);
+										
+									}
+										
 									
 									//La linea siguiente se hace por si hubiera alguna operacino oracle al texto
 									//para eliminar el ultimo parentesis
