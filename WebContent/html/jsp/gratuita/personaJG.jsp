@@ -888,7 +888,8 @@
 			if(document.PersonaJGForm.existeNIF.value == '1'){
 			    var type =  'Ya existe una persona con la Identificación introducida - ' + document.PersonaJGForm.NIdentificacion.value + '. ¿Desea obtener los datos del otro registro existente y sobreescribir los actuales (recomendado)?';
 				if (confirm(type)){
-					document.PersonaJGForm.forzarAjax.onchange();
+					//document.PersonaJGForm.forzarAjax.onchange();   -> Busqueda por ajax
+					rellenarFormulario();// -> Búsqueda antigua
 				}
 				
 			}else if(document.PersonaJGForm.existeNIF.value == '0'){

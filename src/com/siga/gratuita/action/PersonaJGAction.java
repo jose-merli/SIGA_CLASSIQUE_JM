@@ -3116,6 +3116,9 @@ public class PersonaJGAction extends MasterAction {
 						listaParametros.add(perBean.getCorreoElectronico().trim());
 					else
 						listaParametros.add("");	
+					
+					
+					//Atributos propios de cada tipo PERSONAJG
 					listaParametros.add(perBean.getIdioma());						
 					if(perBean.getIdProfesion()!=null)
 						listaParametros.add(perBean.getIdProfesion().toString());
