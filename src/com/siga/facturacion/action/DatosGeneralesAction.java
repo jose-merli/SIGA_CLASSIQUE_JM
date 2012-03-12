@@ -141,7 +141,7 @@ public class DatosGeneralesAction extends MasterAction{
 		{
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");		
 			String idInstitucion = user.getLocation();
-		
+			String idTipoPlantillaMail = "";
 			DatosGeneralesForm formDGen = (DatosGeneralesForm) formulario;
 			String nombreAbreviado = formDGen.getNombreAbreviado();
 		
@@ -203,6 +203,12 @@ public class DatosGeneralesAction extends MasterAction{
 				GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
 				beanFac.setCuentaClientes(paramAdm.getValor(idInstitucion, "FAC", "CONTABILIDAD_CLIENTES", ""));
 				beanFac.setCuentaIngresos(paramAdm.getValor(idInstitucion, "FAC", "CONTABILIDAD_VENTAS", ""));
+				
+				if(formDGen.getIdTipoPlantillaMail()!=null && !formDGen.getIdTipoPlantillaMail().equals("")){
+					idTipoPlantillaMail = formDGen.getIdTipoPlantillaMail().split(",")[0];
+					beanFac.setIdTipoPlantillaMail(Integer.parseInt(idTipoPlantillaMail));
+					beanFac.setIdTipoEnvios(1);
+				} 			
 				
 				tx.begin();
 				boolean result = admFac.insert(beanFac);
