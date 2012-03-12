@@ -372,9 +372,11 @@ function IsNum( numstr ) {
 			function inicio() 
 			{
 				if (document.forms[0].enviarFacturas.checked==true) {
-					document.forms[0].idTipoPlantillaMail.disabled=false;
+					if(document.forms[0].idTipoPlantillaMail)
+						document.forms[0].idTipoPlantillaMail.disabled=false;
 				} else {
-					document.forms[0].idTipoPlantillaMail.disabled=true;
+					if(document.forms[0].idTipoPlantillaMail)
+						document.forms[0].idTipoPlantillaMail.disabled=true;
 				}
 			}
 			
