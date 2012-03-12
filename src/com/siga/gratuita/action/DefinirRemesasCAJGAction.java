@@ -1507,7 +1507,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 
 			String sql = "SELECT *" +
 					" FROM " + CajgProcedimientoRemesaBean.T_NOMBRETABLA + 
-					" WHERE " + CajgProcedimientoRemesaBean.C_IDINSTITUCION + " = " + idInstitucion;
+					" WHERE " + CajgProcedimientoRemesaBean.C_IDINSTITUCION + " = " + idInstitucion +
+					" ORDER BY " + CajgProcedimientoRemesaBean.C_IDPROCREMESA;
 			RowsContainer rc = new RowsContainer();
 			if (!rc.find(sql)) {
 				ClsLogging.writeFileLog("No hay ningún registro en " + CajgProcedimientoRemesaBean.T_NOMBRETABLA + " para la institucion " + idInstitucion, 3);				

@@ -446,6 +446,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 			 UtilidadesHash.set(hashDesigna,ScsEJGBean.C_IDTIPORATIFICACIONEJG,((ScsEJGBean)vEjgRelacionado.get(0)).getIdTipoRatificacionEJG());
 			 UtilidadesHash.set(hashDesigna,ScsEJGBean.C_FECHARATIFICACION,((ScsEJGBean)vEjgRelacionado.get(0)).getFechaRatificacion());
 			 UtilidadesHash.set(hashDesigna,ScsEJGBean.C_FECHANOTIFICACION,((ScsEJGBean)vEjgRelacionado.get(0)).getFechaNotificacion());
+			 
 		    }
 			//Se muestra todas las Actuaciones de la designa.
 		    Vector vAct = designaAdm.getConsultaActuacion(hashDatosDesigna, request);
@@ -756,6 +757,12 @@ public class ActuacionesDesignasAction extends MasterAction {
 				else 
 					hash.put(ScsActuacionDesignaBean.C_VALIDADA, "0");
 			}
+			
+			if (miform.getIdMotivoCambio() != null && !miform.getIdMotivoCambio().trim().equals("")) {
+				hash.put(ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO, miform.getIdMotivoCambio());
+			} else {
+				hash.put(ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO, "");
+			}
 
 			//INC_3094_SIGA
 			//Obtener el colegiado designdo activo en la fecha de la actuacion
@@ -916,7 +923,8 @@ public class ActuacionesDesignasAction extends MasterAction {
 							ScsActuacionDesignaBean.C_IDACREDITACION,				ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO,
 							ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO,			ScsActuacionDesignaBean.C_IDPRETENSION,
 		    				ScsActuacionDesignaBean.C_TALONARIO,					ScsActuacionDesignaBean.C_TALON,
-		    				ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO,			ScsActuacionDesignaBean.C_NIG};
+		    				ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO,			ScsActuacionDesignaBean.C_NIG,
+		    				ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO};
 		
 		ScsActuacionDesignaAdm actuacionDesignaAdm = new ScsActuacionDesignaAdm(this.getUserBean(request));
 		boolean ok = false;
@@ -1010,7 +1018,16 @@ public class ActuacionesDesignasAction extends MasterAction {
 				actuacionModificada.put(ScsActuacionDesignaBean.C_NIG, nig);
 			}else{
 				actuacionModificada.put(ScsActuacionDesignaBean.C_NIG, "");
-			}				
+			}			
+			
+			String idMotivoCambio = miform.getIdMotivoCambio();
+			if (idMotivoCambio!=null && !idMotivoCambio.trim().equals("")){
+				actuacionModificada.put(ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO, idMotivoCambio);
+				
+			} else {
+				actuacionModificada.put(ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO, "");
+				
+			}
 
 			// Obtengo el idJuzgado y la idInstitucion del Juzgado:
 			Long idJuzgado=null;

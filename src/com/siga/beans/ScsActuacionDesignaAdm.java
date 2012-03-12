@@ -61,7 +61,8 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 							ScsActuacionDesignaBean.C_IDACREDITACION,				ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO,
 							ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO,			ScsActuacionDesignaBean.C_IDPRETENSION,
 		    				ScsActuacionDesignaBean.C_TALONARIO,					ScsActuacionDesignaBean.C_TALON,
-		    				ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO,			ScsActuacionDesignaBean.C_NIG};
+		    				ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO,			ScsActuacionDesignaBean.C_NIG,
+		    				ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO};
 		return campos;
 	}
 	/** Funcion getClavesBean ()
@@ -116,6 +117,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		    bean.setTalon(UtilidadesHash.getString(hash, ScsActuacionDesignaBean.C_TALON));
 		    bean.setNumeroProcedimiento(UtilidadesHash.getString(hash, ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO));
 		    bean.setNig(UtilidadesHash.getString(hash, ScsActuacionDesignaBean.C_NIG));
+		    bean.setIdMotivoCambio(UtilidadesHash.getInteger(hash, ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO));
 		}
 		catch(Exception e){
 			bean = null;
@@ -168,6 +170,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_TALON,b.getTalon());
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO,b.getNumeroProcedimiento());
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_NIG,b.getNig());
+			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO, String.valueOf(b.getIdMotivoCambio()));
 		}
 		catch (Exception e){
 			hash = null;
@@ -489,7 +492,10 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 									" per.nombre nombre, per.apellidos1 apellido1, per.apellidos2 apellido2,"+
 									" col.ncolegiado ncolegiado, tur.nombre turno, des.fechaentrada fecha, des.FECHAANULACION, "+
 									" tur." + ScsTurnoBean.C_VALIDARJUSTIFICACIONES + " validarJustificaciones, " +
-									" des.codigo codigo, des.idjuzgado juzgado, des.idinstitucion_juzg institucionjuzgado, des.idprocedimiento procedimiento, "+
+									" des.codigo codigo, des.idjuzgado juzgado, des.idinstitucion_juzg institucionjuzgado, des.idprocedimiento procedimiento, " +
+									" des.idjuzgado " + ScsDesignaBean.C_IDJUZGADO + ", " +
+									" des.idinstitucion_juzg " + ScsDesignaBean.C_IDINSTITUCIONJUZGADO + ", " +
+									" des.idpretension " + ScsDesignaBean.C_IDPRETENSION + ", " +
 									" (select nombre "+
 									" from scs_juzgado juz"+
 									" where juz.idinstitucion=des.idinstitucion_juzg "+
@@ -542,6 +548,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 									",act."+ScsActuacionDesignaBean.C_IDPROCEDIMIENTO+
 									",act."+ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO+
 									",act."+ScsActuacionDesignaBean.C_IDACREDITACION+
+									",act."+ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO+
 									",pro.nombre nombreprocedimiento, pro.idprocedimiento idprocedimiento"+
 									",acred."+ScsAcreditacionBean.C_DESCRIPCION+" AS NOMBREACREDITACION "+
 									",act." + ScsActuacionDesignaBean.C_VALIDADA + " actuacionValidada " +

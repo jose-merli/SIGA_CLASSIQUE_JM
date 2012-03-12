@@ -53,6 +53,7 @@ public class ScsActuacionDesignaBean extends MasterBean{
 	static public final String  C_TALON      	     		  = "TALON";
 	static public final String  C_NUMEROPROCEDIMIENTO      	  = "NUMEROPROCEDIMIENTO";
 	static public final String  C_NIG     	  				  = "NIG";
+	static public final String  C_ID_MOTIVO_CAMBIO			  = "ID_MOTIVO_CAMBIO";
 	
 	
 	/*
@@ -89,6 +90,7 @@ public class ScsActuacionDesignaBean extends MasterBean{
     private String   talon;
     private String   numeroProcedimiento;
     private String   nig;
+    private Integer  idMotivoCambio;
 	
     /**
 	 * @return Returns the getTalonario.
@@ -461,6 +463,14 @@ public class ScsActuacionDesignaBean extends MasterBean{
 
 	public void setNig(String nig) {
 		this.nig = nig;
+	}
+
+	protected Integer getIdMotivoCambio() {
+		return idMotivoCambio;
+	}
+
+	protected void setIdMotivoCambio(Integer idMotivoCambio) {
+		this.idMotivoCambio = idMotivoCambio;
 	}
 	
 }

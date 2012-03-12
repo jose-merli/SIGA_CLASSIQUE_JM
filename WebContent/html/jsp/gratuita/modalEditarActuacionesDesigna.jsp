@@ -34,7 +34,7 @@
 	boolean esLetrado=usr.isLetrado();
 	boolean justificacionValidada;
 
-	String anio="", numero="", turno="", idTurno="", fecha="", ncolegiado="", nombre="", apellido1="", apellido2="", codigo="";
+	String anio="", numero="", turno="", idTurno="", fecha="", ncolegiado="", nombre="", apellido1="", apellido2="", codigo="", idJuzgadoDesigna="", juzgadoInstitucionDesigna="", idPretensionDesigna="";
 	String nactuacion = "", fechaActuacion="", acuerdoExtrajudicial="";
 	String anulacion = "", observaciones = "", fechaJustificacion ="", observacionesJustificacion ="", modo="";
 	String idPersona=null;
@@ -54,8 +54,9 @@
 	ArrayList procedimientoSel = new ArrayList();
 	ArrayList acreditacionSel = new ArrayList();
 	ArrayList pretensionSel = new ArrayList();
+	ArrayList motCambioSel = new ArrayList();
 
-	String idJuzgado=null, idInstitucionJuzgado=null, idPrision=null, idInstitucionPrision=null, idProcedimiento="-1", idInstitucionProcedimiento=null, idAcreditacion=null;
+	String idJuzgado=null, idInstitucionJuzgado=null, idPrision=null, idInstitucionPrision=null, idProcedimiento="-1", idInstitucionProcedimiento=null, idAcreditacion=null, idMotivoCambio=null;
 	String idTipoRatificacion=null,fechaRatificacion=null,fechaNotificacion=null,anioEJG=null;
 	String idPretension=null;
 	String nombreJuzgado="", nombreProcedimiento="", nombreAcreditacion="";
@@ -99,6 +100,12 @@
 //	apellido1 = (String)hashDesigna.get("APELLIDO1");
 //	apellido2 = (String)hashDesigna.get("APELLIDO2");
 	idTipoRatificacion=(String)hashDesigna.get("IDTIPORATIFICACIONEJG");
+	
+	idJuzgadoDesigna=(String)hashDesigna.get(ScsDesignaBean.C_IDJUZGADO);
+	juzgadoInstitucionDesigna=(String)hashDesigna.get(ScsDesignaBean.C_IDINSTITUCIONJUZGADO);
+	
+	idPretensionDesigna=(String)hashDesigna.get(ScsDesignaBean.C_IDPRETENSION);
+	
 	if (idTipoRatificacion!=null && !idTipoRatificacion.equals("")) {
 			vTipoRatificacion.add(idTipoRatificacion);
 		}
@@ -175,6 +182,12 @@
 		 	if (idPretension!=null){
 				pretensionSel.add(0,idPretension);
 			}	
+		 	
+		 	 // Datos del motivo del cambio seleccionado
+		 	idMotivoCambio =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO);
+		 	if (idMotivoCambio!=null){
+				motCambioSel.add(0,idMotivoCambio);
+			}
 			
 		 	// Datos del Procedimiento seleccionado:
 		 	if(hashActuacion.get(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO)!=null && !((String)hashActuacion.get(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO)).equals("")){
@@ -231,6 +244,7 @@
 	if(idPretension!=null && (!idPretension.equals("")))
 		paramPretension[1]= idPretension;
 	
+	String[] paramMotivoCambio = new String[]{usr.getLocation()};
 	validarJustificaciones = (String) hashDesigna.get("VALIDARJUSTIFICACIONES");
 	actuacionValidada = actuacionValidada ==null ? "0":actuacionValidada;
 	//Actualizo el combo de juzgados:
@@ -268,8 +282,22 @@
 		maxLenghtProc = "15";
 	
 	
+	String asterisco = "&nbsp(*)";
+	
+	boolean obligatorioNumeroProcedimiento = false;
+	boolean obligatorioProcedimiento = false;
+	boolean validaNumeroProcedimiento = false;
+	
+	if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA) {
+		obligatorioNumeroProcedimiento = true;
+		obligatorioProcedimiento = true;
+		validaNumeroProcedimiento = true;
+	}
+	
+	
 	%>
-<html>
+
+<%@page import="com.siga.ws.CajgConfiguracion"%><html>
 
 <!-- HEAD -->
 <head>
@@ -464,7 +492,7 @@
 				<tr>
 				
 				<td class="labelText" style="vertical-align: middle;">
-							<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento" />
+							<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento" /><%=(obligatorioNumeroProcedimiento?asterisco:"")%>
 						</td>
 						<td style="vertical-align: middle;">
 						<% if (!modoAnterior.equalsIgnoreCase("VER")) { %> 
@@ -578,11 +606,15 @@
 				</tr>
 				<tr>
 					<td class="labelText">
-						<siga:Idioma key="gratuita.actuacionesDesigna.literal.pretensiones"/>
+						<siga:Idioma key="gratuita.actuacionesDesigna.literal.pretensiones"/><%=(obligatorioProcedimiento?asterisco:"")%>
 					</td>
 					<td colspan="7">
 						<siga:ComboBD  ancho="300" nombre="pretension" tipo="comboPretensiones"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" />
-					 
+						<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA) { %>											
+						<siga:ComboBD  ancho="300" nombre="idMotivoCambio" tipo="cmbActuacionDesignaMotivoCambio"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=paramMotivoCambio%>" elementoSel="<%=motCambioSel%>" />
+						<% } else {%>
+						<html:hidden property = "idMotivoCambio" value="<%=idMotivoCambio%>"/>
+						<% } %>					 
 					</td>
 				</tr>
 				<tr>
@@ -787,6 +819,18 @@
 					document.forms[0].estadoActuacion.value='<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>';
 				}
 				*/
+
+				if (<%=obligatorioNumeroProcedimiento%> && document.forms[0].numeroProcedimiento.value=='') {
+					alert('<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento"/> <siga:Idioma key="messages.campoObligatorio.error" />');
+					fin();
+					return false;
+				}		
+				if(<%=validaNumeroProcedimiento%> && !validaProcedimiento(document.forms[0].numeroProcedimiento.value)) {
+					alert('<siga:Idioma key='gratuita.procedimientos.numero.formato'/>');
+					fin();
+					return false;
+				}
+					
 				if (document.forms[0].juzgado.value=='') {
 					alert('<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/> <siga:Idioma key="messages.campoObligatorio.error" />');
 					fin();
@@ -801,7 +845,30 @@
 					alert('<siga:Idioma key="gratuita.procedimientos.literal.acreditacion"/> <siga:Idioma key="messages.campoObligatorio.error" />');
 					fin();
 					return false;
-				}					
+				}			
+
+				if (<%=obligatorioProcedimiento%> && document.forms[0].pretension.value=='') {
+					alert('<siga:Idioma key="gratuita.actuacionesDesigna.literal.pretensiones"/> <siga:Idioma key="messages.campoObligatorio.error" />');
+					fin();
+					return false;
+				}
+				
+				<%if (pcajgActivo == CajgConfiguracion.TIPO_CAJG_TXT_ALCALA) {%>					
+					if (document.forms[0].idMotivoCambio.value=='') {
+																		
+						if ('<%=(idJuzgadoDesigna + "," + juzgadoInstitucionDesigna)%>' != document.forms[0].juzgado.value) {							
+							alert('<siga:Idioma key="messages.gratuita.actuacionesDesigna.distintoJuzgado"/>');
+							fin();
+							return false;
+						}
+						if ('<%=(idPretensionDesigna!=null?idPretensionDesigna:"")%>' != document.forms[0].pretension.value) {							
+							alert('<siga:Idioma key="messages.gratuita.actuacionesDesigna.distintoProcedimiento"/>');
+							fin();
+							return false;
+						}
+					}
+				<%}%>
+									
 				<% if (modoAnterior.equalsIgnoreCase("EDITAR")) { %>
 				document.forms[0].modo.value="modificar";
 				<% } else { %>
@@ -843,6 +910,11 @@
 						document.forms[0].fechaJustificacion.value="<%=UtilidadesBDAdm.getFechaBD("")%>";
 					}		
 				}
+		}
+
+		function validaProcedimiento( strValue ) {
+			var objRegExp  = /^([0-9]+\/[0-9]{4})?$/;
+			return objRegExp.test(strValue);
 		}
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->

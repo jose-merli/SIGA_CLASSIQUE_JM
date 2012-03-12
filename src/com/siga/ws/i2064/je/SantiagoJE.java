@@ -1,9 +1,6 @@
 package com.siga.ws.i2064.je;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Hashtable;
@@ -19,14 +16,9 @@ import org.apache.axis.transport.http.HTTPSender;
 import org.apache.axis.transport.http.HTTPTransport;
 import org.apache.xmlbeans.XmlOptions;
 
-import com.atos.utils.ClsConstants;
-import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
-import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.LogBDDHandler;
-import com.siga.Utilidades.SIGAReferences;
-import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.ws.InformeXML;
 import com.siga.ws.SigaWSHelper;
@@ -40,7 +32,6 @@ import com.siga.ws.i2064.je.xsd.ATESTADOTYPE;
 import com.siga.ws.i2064.je.xsd.COMISARIATYPE;
 import com.siga.ws.i2064.je.xsd.DATOSXUDICIAISTYPE;
 import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument;
-import com.siga.ws.i2064.je.xsd.EnvioJustificacion;
 import com.siga.ws.i2064.je.xsd.IMPORTETYPE;
 import com.siga.ws.i2064.je.xsd.NOMEAPELIDOSTYPE;
 import com.siga.ws.i2064.je.xsd.ORGANOXUDICIALTYPE;
@@ -70,7 +61,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 	private static String PCAJG_JE_USUARIO = "PCAJG_JE_USUARIO";	
 	
 	private int idFacturacion = -1; 
-	private BufferedWriter bw = null;
+	
 		
 	public int getIdFacturacion() {
 		return idFacturacion;
@@ -239,22 +230,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 		}
 	}
 
-	private String getNombreFichero(String nombreSalida, String idInstitucion, UsrBean usrBean) throws ClsExceptions {
-		return nombreSalida + "_" + idInstitucion + "_" + usrBean.getUserName() + "_"
-			+ UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "");
-	}
-
-	private String getDirectorioSalida(String directorio, String idInstitucion) {
-		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		String rutaAlm = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")
-			+ ClsConstants.FILE_SEP
-			+ directorio + ClsConstants.FILE_SEP
-			+ (idInstitucion.equals("0") ? "2000" : idInstitucion) + ClsConstants.FILE_SEP;
-		return rutaAlm;
-	}
-	
-
-
+		
 	private void rellenaDatosJudiciales(DATOSXUDICIAISTYPE datosxudiciais, Hashtable<String, String> hash) {
 		rellenaOrganoXudicial(datosxudiciais.addNewJuzgado(), hash.get(TO_J_NUMEROSALASECCION), SigaWSHelper.getShort("partido judicial", hash.get(TO_J_PARTIDOXUDICIAL)), hash.get(TO_J_COD_ORGANO));
 		PROCBAREMOTYPE procbaremotype = datosxudiciais.addNewProcBaremo();
@@ -372,45 +348,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 		datosJustificaciones.addNewColegio().setIDColegio(mapaFacturacion.get(COL_IDCOLEGIO));
 	}
 	
-	/**
-	 * 
-	 * @param informe 
-	 * @param bufferedWriter
-	 * @param texto
-	 * @param msg 
-	 * @param usrBean 
-	 * @throws IOException
-	 * @throws ClsExceptions 
-	 */
-	private void escribeLog(String idInstitucion, String idFacturacion, UsrBean usrBean, String texto) throws IOException, ClsExceptions {
-		if (bw == null) {
-			FileWriter fileWriter = new FileWriter(getFileInformeIncidencias(idInstitucion, idFacturacion), true);
-			bw = new BufferedWriter(fileWriter);
-		}				
-		
-		bw.write(texto);
-		bw.write("\n");
-		bw.flush();
-	}
-	
-	/**
-	 * 
-	 * @throws IOException
-	 */
-	private boolean closeLogFile() {
-		boolean abierto = false;
-		if (bw != null) {
-			abierto = true;
-			try {
-				bw.flush();			
-				bw.close();
-				bw = null;
-			} catch (IOException e) {
-				ClsLogging.writeFileLogError("Error al cerrar el fichero de LOG", e, 3);
-			}
-		}
-		return abierto;
-	}
+
 	
 	/**
 	 * 

@@ -539,6 +539,7 @@ MDB Microsoft Access Database
   public static final String ESTADO_LISTO_COMISION = "7";
   public static final String GENERADO_EN_REMESA = "8";
   public static final String REMITIDO_COMISION = "9";
+  public static final String ESTADO_LISTO_COMISION_ACTUALIZAR_DESIGNACION = "17";
   
   //constante donde se mete el tipo de paginacion para las jsp (request.setAtributte(PARAM_PAGINACION,"PAGINACIONMODAL");)
   public static final String PARAM_PAGINACION="paginacion";

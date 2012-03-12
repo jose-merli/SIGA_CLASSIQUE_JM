@@ -1930,7 +1930,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			consulta +=" AND (f_siga_get_idultimoestadoejg(ejg.idinstitucion,ejg.idtipoejg, ejg.anio, ejg.numero)" +
 			" NOT IN (7, 8, 9, 10, 11) OR f_siga_get_idultimoestadoejg(ejg.idinstitucion,ejg.idtipoejg, ejg.anio, ejg.numero) IS NULL) ";			
 		} else if (TipoVentana.BUSQUEDA_ANIADIR_REMESA.equals(tipoVentana)) {
-			consulta += " AND " + ClsConstants.ESTADO_LISTO_COMISION + " = F_SIGA_GET_IDULTIMOESTADOEJG(ejg.IDINSTITUCION, ejg.IDTIPOEJG, ejg.ANIO, ejg.NUMERO)";
+			consulta += " AND F_SIGA_GET_IDULTIMOESTADOEJG(ejg.IDINSTITUCION, ejg.IDTIPOEJG, ejg.ANIO, ejg.NUMERO) IN (" + ClsConstants.ESTADO_LISTO_COMISION + ", " + ClsConstants.ESTADO_LISTO_COMISION_ACTUALIZAR_DESIGNACION + ")";
 		}
 		
 		// Se filtra por numero cajg
