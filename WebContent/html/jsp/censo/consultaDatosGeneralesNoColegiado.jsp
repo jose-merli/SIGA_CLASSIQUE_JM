@@ -1120,7 +1120,7 @@ caracterParam[0] = tipoCliente;
 									//return false;
 								//}
 								
-								<% if (tipoDisabled.equals("false")) {%>
+								<% if (tipoDisabled.equals("false")) { %>
 								if((numIdentificacion.toUpperCase() != tipo))
 								{																																		
 									if(!((numIdentificacion.toUpperCase()=='J') && (tipo == 'J' || tipo == 'Y')))
