@@ -55,6 +55,8 @@
 	String modo = null;
 	String busquedaVolver = "";
 	String tipoOriginal = "";
+	
+	String tipoDisabled = "false";
 
 	ArrayList gruposSel = new ArrayList();	
 	String cliente = "";
@@ -787,7 +789,7 @@ caracterParam[0] = tipoCliente;
 												 String tipoEstilo="boxCombo";
 												 String tipoReadOnly="false";
 												 String tipoCombo="cmbTipoSociedadAlta";
-												 String tipoDisabled = "false";
+												 tipoDisabled = "false";
 												
 												if (modo.equalsIgnoreCase("EDITAR") || modo.equalsIgnoreCase("VER")) {
 													if(tipo.equalsIgnoreCase("J") || tipo.equalsIgnoreCase("Y")){
@@ -1087,16 +1089,16 @@ caracterParam[0] = tipoCliente;
 			    %>						        
 					// El tipo de identificacion debe ser CIF:
 					if (document.forms[0].tipoIdentificacion.value == "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>") 
-					{
+					{						
 						if (!(validarCIF(document.forms[0].numIdentificacion.value)))
-						{								
+						{															
 							// Si el CIF no es valido en el campo tipoIdentificacion se pone OTROS
 							document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>";
 							document.forms[0].tipo.value = "0";
 							return true;
 						}
 						else
-						{							
+						{															
 								//Validamos el formato del CIF:
 								var tipo = document.forms[0].tipos.value;
 								var numIdentificacion = document.forms[0].numIdentificacion.value.charAt(0);
@@ -1104,7 +1106,7 @@ caracterParam[0] = tipoCliente;
 								if(numIdentificacion.toUpperCase() !='A' && numIdentificacion.toUpperCase() !='B' 
 									&& numIdentificacion.toUpperCase() !='F' && numIdentificacion.toUpperCase() !='G'
 										&& numIdentificacion.toUpperCase() !='J')
-								{						
+								{															
 									alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');									
 									return false;
 								}
@@ -1117,19 +1119,17 @@ caracterParam[0] = tipoCliente;
 									//alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');
 									//return false;
 								//}
-
-								//if((numIdentificacion.toUpperCase() != tipo))
-								//{		
-									//alert("popo 2");							
-									//alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');
-									//return false;
-									//if(!((numIdentificacion.toUpperCase()=='J') && (tipo == 'J' || tipo == 'Y')))
-									//{
-										//alert("popo 3");
-										//alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');
-										//return false;
-									//}
-								//}
+								
+								<% if (tipoDisabled.equals("false")) {%>
+								if((numIdentificacion.toUpperCase() != tipo))
+								{																																		
+									if(!((numIdentificacion.toUpperCase()=='J') && (tipo == 'J' || tipo == 'Y')))
+									{																	
+										alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');
+										return false;
+									}
+								}
+								<%}%>
 																								
 								//si el usuario ha elegido el tipo de CIF otros, se debe comprobar que el cif no se corresponde con
 								//ninguno de los otros tipos definidos en la lista
