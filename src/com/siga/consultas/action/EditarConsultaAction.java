@@ -2487,8 +2487,10 @@ public class EditarConsultaAction extends MasterAction {
 								
 							
 							}
-							else
-								lineaEstudio=lineaEstudio.toUpperCase().replaceFirst(operadorEstudio,"");
+							else{
+								lineaEstudio = lineaEstudio.substring(0,lineaEstudio.indexOf("%%IS NULL%%"))+" IS NULL";
+
+							}
 							
 						    } catch (ClsExceptions e) {
 								throw new SIGAException ("Error al construir la consulta del multivalor. "+e.getMessage());
@@ -2514,8 +2516,11 @@ public class EditarConsultaAction extends MasterAction {
 				 				lineaEstudio=lineaEstudio.toUpperCase().replaceFirst(operadorEstudio,""+valorDefecto+"");
 				 			}
 				 		}
-				 		else
-				 			lineaEstudio=lineaEstudio.toUpperCase().replaceFirst(operadorEstudio,"");
+				 		else{
+				 					 			
+				 			//lineaEstudio=lineaEstudio.toUpperCase().replaceFirst("%%IS NULL%%"," IS NULL");
+				 			lineaEstudio = lineaEstudio.substring(0,lineaEstudio.indexOf("%%IS NULL%%"))+" IS NULL";
+				 		}
 					}
 				 		lineaEstudio=lineaEstudio.substring(0,lineaEstudio.indexOf(aliasSustituirFinal))+lineaEstudio.substring(lineaEstudio.indexOf(aliasSustituirFinal)+aliasSustituirFinal.length());
 				 		
