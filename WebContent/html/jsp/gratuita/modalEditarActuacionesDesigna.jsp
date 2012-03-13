@@ -609,14 +609,16 @@
 						<siga:Idioma key="gratuita.actuacionesDesigna.literal.pretensiones"/><%=(obligatorioProcedimiento?asterisco:"")%>
 					</td>
 					<td colspan="7">
-						<siga:ComboBD  ancho="300" nombre="pretension" tipo="comboPretensiones"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" />
-						<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA) { %>											
+						<siga:ComboBD  ancho="300" nombre="pretension" tipo="comboPretensiones"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" />										 
+					<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA) { %>
+						<font class="labelText"><siga:Idioma key="gratuita.altaGuardia.literal.motivoCambio"/></font>
 						<siga:ComboBD  ancho="300" nombre="idMotivoCambio" tipo="cmbActuacionDesignaMotivoCambio"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=paramMotivoCambio%>" elementoSel="<%=motCambioSel%>" />
-						<% } else {%>
+					<% } else {%>
 						<html:hidden property = "idMotivoCambio" value="<%=idMotivoCambio%>"/>
-						<% } %>					 
-					</td>
+					<% } %>
+					</td>					
 				</tr>
+					
 				<tr>
 					<td class="labelText">
 						<siga:Idioma key="gratuita.altaGuardia.literal.observaciones"/>
