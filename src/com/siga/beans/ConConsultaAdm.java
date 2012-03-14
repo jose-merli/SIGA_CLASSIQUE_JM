@@ -832,8 +832,8 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 									}
 									String sentenciaAuxFin = sentencia.substring(pos_iniEtiqueta+etiqueta.length());
 									int indiceAnd = sentenciaAuxFin.indexOf("AND");
-									int indexDefecto = sentenciaAuxFin.indexOf("DEFECTO");
-									int indexNulo = sentenciaAuxFin.indexOf("NULO");
+									int indexDefecto = sentenciaAuxFin.toUpperCase().indexOf("DEFECTO");
+									int indexNulo = sentenciaAuxFin.toUpperCase().indexOf("NULO");
 									if(indiceAnd>-1){
 										if(indexDefecto>-1 && indexDefecto<indiceAnd )
 											sentenciaAuxFin= sentenciaAuxFin.substring(0,indexDefecto)+" "+sentenciaAuxFin.substring(indiceAnd);

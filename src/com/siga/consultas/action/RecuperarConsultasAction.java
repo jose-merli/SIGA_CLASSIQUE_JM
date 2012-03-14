@@ -830,7 +830,7 @@ public class RecuperarConsultasAction extends MasterAction {
 	 				vcd.add(campo);
 	 				alias=getAliasCompleto(sentenciaA);
 	 				valias.add(alias);
-	 				int posicionValue = sentenciaAyudaOriginal.indexOf(" DEFECTO ");
+	 				int posicionValue = sentenciaAyudaOriginal.toUpperCase().indexOf(" DEFECTO ");
 			 		String valorDefecto = null;
 			 		if (posicionValue>=0){
 			 			String valueDefecto = sentenciaAyudaOriginal.substring(posicionValue);
@@ -845,7 +845,7 @@ public class RecuperarConsultasAction extends MasterAction {
 			 		valorDefectoVector.add(valorDefecto==null?"":valorDefecto);
 			 		
 			 		
-			 		int posicionNulo = sentenciaAyudaOriginal.indexOf(" NULO ");
+			 		int posicionNulo = sentenciaAyudaOriginal.toUpperCase().indexOf(" NULO ");
 			 		String valorNulo = null;
 			 		if (posicionNulo>=0){
 			 			String valueNulo = sentenciaAyudaOriginal.substring(posicionNulo);

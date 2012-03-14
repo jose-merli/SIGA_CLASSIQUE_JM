@@ -149,9 +149,15 @@
 					<%	}%>
 				</select>			
 			</td>
-			<td class="labelText">
-				<%=tipocampo%>
-			</td>		
+			<% if(ocultar){%>
+				<td class="labelText">
+					&nbsp;
+				</td>
+			<%}else{ %>
+				<td class="labelText">
+					<%=tipocampo%>
+				</td>		
+			<%} %>
 			
 			<% if(tipocampo.equals("")||ocultar){%>
 			<td></td>

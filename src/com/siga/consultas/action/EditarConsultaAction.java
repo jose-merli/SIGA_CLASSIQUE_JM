@@ -2450,7 +2450,7 @@ public class EditarConsultaAction extends MasterAction {
 					 		 
 					    }
 				 		
-				 		int posicionDefecto = lineaEstudio.indexOf(" DEFECTO ");
+				 		int posicionDefecto = lineaEstudio.toUpperCase().indexOf(" DEFECTO ");
 				 		String valorDefecto = null;
 				 		if (posicionDefecto>=0){
 				 			int inicio=lineaEstudio.substring(posicionDefecto).indexOf("\"");
@@ -2526,11 +2526,11 @@ public class EditarConsultaAction extends MasterAction {
 				 		
 				 		if(valorDefecto!=null){
 				 			
-				 			lineaEstudio = lineaEstudio.substring(0,lineaEstudio.indexOf("DEFECTO"));
+				 			lineaEstudio = lineaEstudio.substring(0,lineaEstudio.toUpperCase().indexOf("DEFECTO"));
 				 		}
-				 		int posicionNulo = lineaEstudio.indexOf(" NULO ");
+				 		int posicionNulo = lineaEstudio.toUpperCase().indexOf(" NULO ");
 				 		if (posicionNulo>=0){
-				 			lineaEstudio = lineaEstudio.substring(0,lineaEstudio.indexOf("NULO"));
+				 			lineaEstudio = lineaEstudio.substring(0,posicionNulo);
 
 				 		}
 				 		
