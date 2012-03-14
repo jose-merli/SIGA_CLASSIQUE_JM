@@ -131,12 +131,18 @@
 				
 				<%=campo%>
 			</td>
+			
 			<td>			
 				<select id="operacion<%=i%>"  name="criteriosDinamicos[<%=i%>].op" class = "boxCombo">
-					<% 	Vector o = (Vector)operaciones.elementAt(i);
+					<% 
+					
+					Vector o = (Vector)operaciones.elementAt(i);
+					boolean ocultar = o.size()==1;
 							for (int j=0; j<o.size(); j++){
 							Row fila1 = (Row)o.elementAt(j);
 							String id = fila1.getString("ID");
+							if(ocultar)
+								ocultar = id.equals("20")||id.equals("21")||id.equals("22")||id.equals("23");
 							String desc = fila1.getString("DESCRIPCION");				
 						%>
 						<option value="<%=id%>"><%=desc%></option>
@@ -147,7 +153,7 @@
 				<%=tipocampo%>
 			</td>		
 			
-			<% if(tipocampo.equals("")){%>
+			<% if(tipocampo.equals("")||ocultar){%>
 			<td></td>
 			<%}else{%>
 				<td>

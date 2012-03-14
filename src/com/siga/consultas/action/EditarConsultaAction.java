@@ -2022,7 +2022,7 @@ public class EditarConsultaAction extends MasterAction {
 			 selectAEjecutar=selectAEjecutar.replaceAll("%%=%%","=");
 			 selectAEjecutar=selectAEjecutar.replaceAll("%%!=%%","=");
 			 selectAEjecutar=selectAEjecutar.replaceAll("%%>%%","=");
-			 selectAEjecutar=selectAEjecutar.replaceAll("%%IS NULL%%"," IS NULL ");
+			 selectAEjecutar=selectAEjecutar.replaceAll("%%IS NULL%%","=");
 			 PreparedStatement ps=con.prepareStatement(selectAEjecutar);
 		     ResultSet rs=ps.executeQuery();
 		      ResultSetMetaData rs1=rs.getMetaData();
@@ -2475,7 +2475,7 @@ public class EditarConsultaAction extends MasterAction {
 						    RowsContainer rc = new RowsContainer();
 							rc.query(selectAyuda);
 							int pos =lineaEstudio.indexOf(valor);
-							if(!operadorWhere.equals("%%IS NULL%%")){
+//							if(!operadorWhere.equals("%%IS NULL%%")){
 								if(valorDefecto==null)
 					 				lineaEstudio=lineaEstudio.substring(0,pos)+"1"+lineaEstudio.substring(pos+valor.length());
 					 			
@@ -2486,11 +2486,11 @@ public class EditarConsultaAction extends MasterAction {
 								
 								
 							
-							}
-							else{
-								lineaEstudio = lineaEstudio.substring(0,lineaEstudio.indexOf("%%IS NULL%%"))+" IS NULL";
-
-							}
+//							}
+//							else{
+//								lineaEstudio = lineaEstudio.substring(0,lineaEstudio.indexOf("%%IS NULL%%"))+" IS NULL";
+//
+//							}
 							
 						    } catch (ClsExceptions e) {
 								throw new SIGAException ("Error al construir la consulta del multivalor. "+e.getMessage());
@@ -2502,7 +2502,7 @@ public class EditarConsultaAction extends MasterAction {
 				 	
 				 		
 				 		
-				 		if(!operadorWhere.equals("%%IS NULL%%")){
+//				 		if(!operadorWhere.equals("%%IS NULL%%")){
 				 			if(valorDefecto==null){
 				 				String valorAplicar = "1";
 				 				if(operadorEstudio.equals(ClsConstants.TIPOFECHA))
@@ -2515,12 +2515,12 @@ public class EditarConsultaAction extends MasterAction {
 				 				valorDefecto = operadorEstudio.equals(ClsConstants.TIPOTEXTO)||(operadorEstudio.equals(ClsConstants.TIPOFECHA)&&!valorDefecto.equalsIgnoreCase("sysdate"))?"'"+valorDefecto+"'":valorDefecto;
 				 				lineaEstudio=lineaEstudio.toUpperCase().replaceFirst(operadorEstudio,""+valorDefecto+"");
 				 			}
-				 		}
+				 		/*}
 				 		else{
 				 					 			
 				 			//lineaEstudio=lineaEstudio.toUpperCase().replaceFirst("%%IS NULL%%"," IS NULL");
 				 			lineaEstudio = lineaEstudio.substring(0,lineaEstudio.indexOf("%%IS NULL%%"))+" IS NULL";
-				 		}
+				 		}*/
 					}
 				 		lineaEstudio=lineaEstudio.substring(0,lineaEstudio.indexOf(aliasSustituirFinal))+lineaEstudio.substring(lineaEstudio.indexOf(aliasSustituirFinal)+aliasSustituirFinal.length());
 				 		
