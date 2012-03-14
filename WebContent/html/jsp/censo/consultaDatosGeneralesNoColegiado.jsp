@@ -1086,19 +1086,31 @@ caracterParam[0] = tipoCliente;
 			if (validateDatosGeneralesNoColegiadoForm(document.forms[0])) {
 						   			
 			<% 	if (!(bConsultaPersona || modo.equalsIgnoreCase("VER")) ) {  
-			    %>						        
+			    %>		
+			    	// Se compruba si el Cif s valido para poner el tipo de identificación a CIF o Otros según corresponda						    		 
+			    	if ((validarCIF(document.forms[0].numIdentificacion.value)))
+					{																					
+						// Si el CIF no es valido en el campo tipoIdentificacion se pone OTROS
+						document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>";						
+					}
+			    	else
+			    	{			    		
+			    		document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>";
+			    		document.forms[0].tipo.value = "0";
+			    	}
+			    	       
 					// El tipo de identificacion debe ser CIF:
 					if (document.forms[0].tipoIdentificacion.value == "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>") 
-					{						
+					{											
 						if (!(validarCIF(document.forms[0].numIdentificacion.value)))
-						{															
+						{																					
 							// Si el CIF no es valido en el campo tipoIdentificacion se pone OTROS
 							document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>";
 							document.forms[0].tipo.value = "0";
 							return true;
 						}
 						else
-						{															
+						{																							
 								//Validamos el formato del CIF:
 								var tipo = document.forms[0].tipos.value;
 								var numIdentificacion = document.forms[0].numIdentificacion.value.charAt(0);
@@ -1106,7 +1118,7 @@ caracterParam[0] = tipoCliente;
 								if(numIdentificacion.toUpperCase() !='A' && numIdentificacion.toUpperCase() !='B' 
 									&& numIdentificacion.toUpperCase() !='F' && numIdentificacion.toUpperCase() !='G'
 										&& numIdentificacion.toUpperCase() !='J')
-								{															
+								{																								
 									alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');									
 									return false;
 								}
@@ -1122,9 +1134,9 @@ caracterParam[0] = tipoCliente;
 								
 								<% if (tipoDisabled.equals("false")) { %>
 								if((numIdentificacion.toUpperCase() != tipo))
-								{																																		
+								{																																											
 									if(!((numIdentificacion.toUpperCase()=='J') && (tipo == 'J' || tipo == 'Y')))
-									{																	
+									{																											
 										alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');
 										return false;
 									}
@@ -1134,7 +1146,7 @@ caracterParam[0] = tipoCliente;
 								//si el usuario ha elegido el tipo de CIF otros, se debe comprobar que el cif no se corresponde con
 								//ninguno de los otros tipos definidos en la lista
 								if ( tipo=="<%=ClsConstants.COMBO_TIPO_OTROS%>")
-								{								
+								{																	
 									var i = 0;
 									var esTipoPredefinido = false;
 									while ((i < document.forms[0].tipos.length) && (esTipoPredefinido == false))
@@ -1146,7 +1158,7 @@ caracterParam[0] = tipoCliente;
 										i++;
 									} 
 									if (esTipoPredefinido)
-									{										
+									{																				
 										alert('<siga:Idioma key="censo.fichaCliente.literal.avisoOtrosCIF"/>');
 										return false;
 									}
@@ -1156,26 +1168,25 @@ caracterParam[0] = tipoCliente;
 																		
 								//El tipo debe ser igual a la primera letra del cif 
 								else if  (tipo!="<%=ClsConstants.COMBO_TIPO_OTROS%>" && (tipo.toUpperCase()==numIdentificacion.toUpperCase()) ) 
-								{																		  
+								{																											  
 									return true;
 								} 
 								else 
-								{
+								{									
 									if(!document.forms[0].modo.value == "editar")
-									{										
+									{																		
 										alert ('<siga:Idioma key="censo.fichaCliente.literal.errorCIF"/>');
 										return false;
-									}
+									}									
 									document.forms[0].tipoOriginal.value=document.forms[0].numIdentificacion.value.charAt(0).toUpperCase();									  									
 									return true;
 								} //Fin validar el CIF
 						}
 					} 
 					else // Si el tipoIdentificacion es OTROS
-						{			
-
+						{									
 						if ((validarCIF(document.forms[0].numIdentificacion.value)))
-						{							
+						{														
 							// Si el CIF no es valido en el campo tipoIdentificacion se pone OTROS
 							document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>";						
 							return true;
@@ -1186,8 +1197,7 @@ caracterParam[0] = tipoCliente;
 							//if(numIdentificacion.toUpperCase() =='A' || numIdentificacion.toUpperCase() =='B' 
 								//|| numIdentificacion.toUpperCase() =='F' || numIdentificacion.toUpperCase() =='G'
 									//|| numIdentificacion.toUpperCase() =='J')
-							//{		
-							//	alert("koko 5");							
+							//{																
 								//alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');								
 								//return false;
 							//}
@@ -1201,12 +1211,12 @@ caracterParam[0] = tipoCliente;
 							//}
 							
 							if (document.forms[0].tipoIdentificacion.value != "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>") 
-							{																								 
+							{																																 
 								alert ('<siga:Idioma key="censo.fichaCliente.literal.avisoCIF"/>');
 								return false;
 							} 
 							else
-							{								  
+							{																  
 								return true;
 							}	
 					}
