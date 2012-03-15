@@ -1016,7 +1016,7 @@
 			<html:form action="/JGR_MantenimientoJuzgados" method="POST"
 				target="submitArea">
 				<input type="hidden" name="modo" value="buscarJuzgado">
-				<input type="hidden" name="codigoExt" value="">
+				<input type="hidden" name="codigoExt2" value="">
 				<input type="hidden" name="nombreObjetoDestino" value="">
 			</html:form>
 
@@ -1101,7 +1101,7 @@
 	{ 
 		if (document.getElementById("codJuzgado_"+fila).value!=""){
 			seleccionComboSiga ("juzgado_"+fila, "");
-			document.MantenimientoJuzgadoForm.codigoExt.value = document.getElementById("codJuzgado_"+fila).value;
+			document.MantenimientoJuzgadoForm.codigoExt2.value = document.getElementById("codJuzgado_"+fila).value;
 			document.MantenimientoJuzgadoForm.nombreObjetoDestino.value = "juzgado_" + fila;
 			document.MantenimientoJuzgadoForm.submit();	
 		}

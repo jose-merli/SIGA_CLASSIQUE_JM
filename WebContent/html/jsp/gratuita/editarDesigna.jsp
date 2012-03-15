@@ -542,15 +542,14 @@
 			}
 		}
 
- function obtenerJuzgado() 
-			{ 
+ 		function obtenerJuzgado() { 
 			 if (document.forms[0].codigoExtJuzgado.value!=""){
 				if(document.forms[0].idTurno.selectedIndex <= 0 ){
 					alert("<siga:Idioma key='gratuita.nuevaAsistencia.mensaje.alert1'/>");
 					return;
 				}else{		
 				  document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="";	
- 			       document.MantenimientoJuzgadoForm.codigoExt.value=document.forms[0].codigoExtJuzgado.value;
+ 			       document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[0].codigoExtJuzgado.value;
 				   document.MantenimientoJuzgadoForm.submit();	
 				}
 			 }
@@ -1037,7 +1036,7 @@
 <html:form action="/JGR_MantenimientoJuzgados.do" method="POST"
 	target="submitArea">
 	<input type="hidden" name="modo" value="buscarJuzgado">
-	<html:hidden property="codigoExt" value="" />
+	<html:hidden property="codigoExt2" value="" />
 	<html:hidden property="nombreObjetoDestino" value="" />
 </html:form>
 <!-- SI NO EXISTE FECHA DE ANULACIÓN MOSTRAMOS EL BOTÓN ANULARPOR SI DESEA ANULAR LA DESIGNA //-->

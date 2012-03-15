@@ -330,7 +330,7 @@
 					alert("<siga:Idioma key='gratuita.nuevaAsistencia.mensaje.alert1'/>");
 					return;
 				}else{	
-				   document.MantenimientoJuzgadoForm.codigoExt.value=document.forms[0].codigoExtJuzgado.value;
+				   document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[0].codigoExtJuzgado.value;
 				   document.MantenimientoJuzgadoForm.submit();		
 				   
 				}
@@ -795,7 +795,7 @@
 	
     <html:form action = "/JGR_MantenimientoJuzgados.do" method="POST" target="submitArea">
 		<input type="hidden" name="modo"        value="buscarJuzgado">
-		<html:hidden property = "codigoExt" value=""/>
+		<html:hidden property = "codigoExt2" value=""/>
 	</html:form>	
 
 <% if (modoAnterior.equalsIgnoreCase("VER")) { %>

@@ -418,7 +418,7 @@ String[] getdatos = { usr.getLocation() };
 	</html:form>
 	<html:form action = "/JGR_MantenimientoJuzgados.do" method="POST" target="submitArea23">
 		<input type="hidden" name="modo"        value="buscarJuzgado">
-		<html:hidden property = "codigoExt" value=""/>
+		<html:hidden property = "codigoExt2" value=""/>
 		<html:hidden property = "nombreObjetoDestino" value=""/>
 	</html:form>
 
@@ -513,7 +513,7 @@ String[] getdatos = { usr.getLocation() };
 					alert("<siga:Idioma key='gratuita.nuevaAsistencia.mensaje.alert1'/>");
 					return;
 				}else{	*/
-				   document.MantenimientoJuzgadoForm.codigoExt.value=document.forms[1].codigoExtJuzgado.value;
+				   document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[1].codigoExtJuzgado.value;
 				   document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgado";		
 				   document.MantenimientoJuzgadoForm.submit();		
 				   
@@ -530,7 +530,7 @@ String[] getdatos = { usr.getLocation() };
 					alert("<siga:Idioma key='gratuita.nuevaAsistencia.mensaje.alert1'/>");
 					return;
 				}else{	*/
-				   document.MantenimientoJuzgadoForm.codigoExt.value=document.forms[1].codigoExtJuzgadoActu.value;
+				   document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[1].codigoExtJuzgadoActu.value;
 				   document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgadoActu";		
 				   document.MantenimientoJuzgadoForm.submit();		
 				   

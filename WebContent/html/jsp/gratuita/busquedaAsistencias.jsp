@@ -213,7 +213,7 @@
 			  if (document.getElementById("codigoExtJuzgadoActu").value!=""){
 
   				   document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgado";	
-				   document.MantenimientoJuzgadoForm.codigoExt.value=document.getElementById("codigoExtJuzgadoActu").value;
+				   document.MantenimientoJuzgadoForm.codigoExt2.value=document.getElementById("codigoExtJuzgadoActu").value;
 				   document.MantenimientoJuzgadoForm.submit();		
 				   
 				//}
@@ -551,7 +551,7 @@
 	</html:form>
 	<html:form action = "/JGR_MantenimientoJuzgados.do" method="POST" target="submitArea">
 		<input type="hidden" name="modo"        value="buscarJuzgado">
-		<html:hidden property = "codigoExt" value=""/>
+		<html:hidden property = "codigoExt2" value=""/>
 		<html:hidden property = "nombreObjetoDestino" value=""/>
 	</html:form>
 			

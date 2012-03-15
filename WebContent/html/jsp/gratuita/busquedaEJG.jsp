@@ -549,7 +549,7 @@
 	
 	<html:form action = "/JGR_MantenimientoJuzgados.do" method="POST" target="submitArea21">
 		<input type="hidden" name="modo"        value="buscarJuzgado">
-		<html:hidden property = "codigoExt" value=""/>
+		<html:hidden property = "codigoExt2" value=""/>
 		<html:hidden property = "nombreObjetoDestino" value=""/>
 	</html:form>
 	<html:form action="/JGR_UnidadFamiliarEEJG"  method="post" target="submitArea21">
@@ -607,7 +607,7 @@
 		 function obtenerJuzgado(){ 
 			  if (document.forms[1].codigoExtJuzgado.value!=""){
   				   document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgado";	
-				   document.MantenimientoJuzgadoForm.codigoExt.value=document.forms[1].codigoExtJuzgado.value;
+				   document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[1].codigoExtJuzgado.value;
 				   document.MantenimientoJuzgadoForm.submit();		
 			 }
 		}

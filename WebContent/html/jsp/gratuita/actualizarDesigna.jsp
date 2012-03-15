@@ -432,7 +432,7 @@
 
 <html:form action="/JGR_MantenimientoJuzgados" method="POST"
 		target="submitArea">
-		<html:hidden property="codigoExt" value="" />
+		<html:hidden property="codigoExt2" value="" />
 		<html:hidden property="idJuzgado" value="" />
 	</html:form>
 

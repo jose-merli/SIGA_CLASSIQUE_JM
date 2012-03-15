@@ -274,7 +274,7 @@
 	</html:form>
 	<html:form action = "/JGR_MantenimientoJuzgados.do" method="POST" target="submitArea">
 		<input type="hidden" name="modo"        value="buscarJuzgado">
-		<html:hidden property = "codigoExt" value=""/>
+		<html:hidden property = "codigoExt2" value=""/>
 		<html:hidden property = "nombreObjetoDestino" value=""/>
 	</html:form>
 	<html:form action = "/JGR_MantenimientoComisarias.do" method="POST" target="submitArea">
@@ -711,7 +711,7 @@
 					return;
 				}else{	*/
 				 document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="DOSFRAMES";	
-				   document.MantenimientoJuzgadoForm.codigoExt.value=document.getElementById("codigoExtJuzgado").value;
+				   document.MantenimientoJuzgadoForm.codigoExt2.value=document.getElementById("codigoExtJuzgado").value;
 				   document.MantenimientoJuzgadoForm.submit();		
 				   				   
 				   

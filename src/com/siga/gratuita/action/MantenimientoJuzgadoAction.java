@@ -487,8 +487,8 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 		try {
 			MantenimientoJuzgadoForm miform = (MantenimientoJuzgadoForm)formulario;
 			ScsJuzgadoAdm juzgadoAdm= new ScsJuzgadoAdm(this.getUserBean(request));
-			String codigoExt = miform.getCodigoExt().toUpperCase();
-			String where = " where upper(codigoext) = upper ('"+codigoExt+"')" +
+			String codigoExt2 = miform.getCodigoExt2().toUpperCase();
+			String where = " where upper(codigoext2) = upper ('"+codigoExt2+"')" +
 					       " and idinstitucion="+this.getUserBean(request).getLocation();
 			Vector resultadoJuzgado = juzgadoAdm.select(where);
 			if (resultadoJuzgado!=null && resultadoJuzgado.size()>0) {
@@ -509,12 +509,12 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
 			{
 		//Sacamos las guardias si hay algo selccionado en el turno
-		String codigoExt = request.getParameter("codigoExtJuzgado");
+		String codigoExt2 = request.getParameter("codigoExtJuzgado");
 		
 		
 		MantenimientoJuzgadoForm miform = (MantenimientoJuzgadoForm)formulario;
 		ScsJuzgadoAdm juzgadoAdm= new ScsJuzgadoAdm(this.getUserBean(request));
-		String where = " where upper(codigoext) = upper ('"+codigoExt+"')" +
+		String where = " where upper(codigoext2) = upper ('"+codigoExt2+"')" +
 				       " and idinstitucion="+this.getUserBean(request).getLocation();
 		Vector resultadoJuzgado = juzgadoAdm.select(where);
 		String idJuzgado ="";

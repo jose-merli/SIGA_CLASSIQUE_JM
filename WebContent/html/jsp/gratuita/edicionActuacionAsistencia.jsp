@@ -618,7 +618,7 @@ function postAccionTipoActuacion()
 </html:form>
 <html:form action = "/JGR_MantenimientoJuzgados.do" method="POST" target="submitArea">
 	<input type="hidden" name="modo"        value="buscarJuzgado">
-	<html:hidden property = "codigoExt" value=""/>
+	<html:hidden property = "codigoExt2" value=""/>
 </html:form>	
 <html:form action = "/JGR_MantenimientoComisarias.do" method="POST" target="submitArea">
 	<input type="hidden" name="modo"        value="buscarComisaria">
@@ -660,7 +660,7 @@ function cambioComisaria(){
 function obtenerJuzgado() 
 { 
   	if (document.getElementById("codJuzgado").value!=""){
-		document.MantenimientoJuzgadoForm.codigoExt.value=document.getElementById("codJuzgado").value;
+		document.MantenimientoJuzgadoForm.codigoExt2.value=document.getElementById("codJuzgado").value;
 	   	document.MantenimientoJuzgadoForm.submit();	
 	   	cambioJuzgado();	
  	}
