@@ -256,7 +256,7 @@
 	<html:hidden property="idInstitucion"/>
 	<html:hidden property="idInforme"/> 				
 	<html:hidden property = "idTipoInforme" value="<%=subModo%>"/>
-	<html:hidden property = "datosInforme" value="<%=datosEnvios%>"/>
+	<html:hidden property = "datosInforme" />
 	<html:hidden property="clavesIteracion"/>
 	<html:hidden property="seleccionados" value="1"/>	
 </html:form>
@@ -313,7 +313,7 @@
 		function accionDownload() 
 		{		
 		    sub();
-
+			document.InformesGenericosForm.datosInforme.value=document.DefinirEnviosForm.datosEnvios.value;
 			document.InformesGenericosForm.submit();
 		
 			
@@ -383,6 +383,7 @@
 			}
 			
 		} 
+
 		
 		recargarCombos();
 		
