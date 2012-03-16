@@ -3,9 +3,9 @@
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
-<%@ page pageEncoding="ISO-8859-1"%>
+<%@ page pageEncoding="ISO-8859-15"%>
 <meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-15">
 <%@ page contentType="text/html" language="java"
 	errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
@@ -102,7 +102,7 @@
  						
  				</td>
 				<td align='center' width='8%'><c:out value="${bajaTemporalForm.colegiadoNumero}"/></td>
-				<td align='left' width='18%'><c:out value="${bajaTemporalForm.colegiadoNombre}"/></td>
+				<td align='left' width='18%'><c:out  value="${bajaTemporalForm.colegiadoNombre}"/></td>
 				
 				<c:choose>
 						<c:when test="${BajasTemporalesForm.situacion=='B'||BajasTemporalesForm.fichaColegial==true}">
