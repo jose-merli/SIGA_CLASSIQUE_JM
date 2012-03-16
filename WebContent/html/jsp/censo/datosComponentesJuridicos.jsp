@@ -62,6 +62,7 @@
 	String fechaCargo = "";
 	String numeroColegiado = "";
 	String idPersona = "";
+	String idClientePersona = "";
 	String idInstitucion ="";
 	String tipo="";
 	String capitalSocial="";
@@ -85,6 +86,7 @@
 			apellidos1Cliente = (String)htData.get(CenPersonaBean.C_APELLIDOS1);
 			apellidos2Cliente = (String)htData.get(CenPersonaBean.C_APELLIDOS2);
 			idPersona 		= String.valueOf(htData.get(CenComponentesBean.C_IDPERSONA));
+			idClientePersona = String.valueOf(htData.get(CenComponentesBean.C_CEN_CLIENTE_IDPERSONA));
 			idInstitucion = String.valueOf(htData.get(CenComponentesBean.C_IDINSTITUCION));
 			idBanco.add (String.valueOf(htData.get(CenComponentesBean.C_IDCUENTA)));
 			idtipocolegio.add (String.valueOf(htData.get(CenComponentesBean.C_IDTIPOCOLEGIO)));
@@ -138,6 +140,7 @@
 
 	<!-- Validaciones en Cliente -->
 	<html:javascript formName="componentesJuridicosForm" staticJavascript="false" />  
+	<script src="<%=app%>/html/js/jquery.js" type="text/javascript"></script>
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
@@ -374,12 +377,46 @@
 		function cuenta(){
 			if (document.all.componentesJuridicosForm.sociedad.checked==true){
 				document.getElementById("sinasteriscoCuenta").style.display="none";
-				document.getElementById("asteriscoCuenta").style.display="block";		
+				document.getElementById("asteriscoCuenta").style.display="block";
+				document.getElementById("idCuenta").disabled=false;	
 			}else{
 				document.getElementById("asteriscoCuenta").style.display="none";
 				document.getElementById("sinasteriscoCuenta").style.display="block";
+				document.getElementById("idCuenta").disabled=true;	
+				
 			}
 		}
+		function traeDatos() {
+
+			if (document.all.componentesJuridicosForm.sociedad.checked==true){
+
+				var idclienteper=document.componentesJuridicosForm.clienteIdPersona.value;
+				var idper=document.componentesJuridicosForm.idPersona.value;
+				var idinsti=document.componentesJuridicosForm.clienteIdInstitucion.value;
+
+				$.ajax({ //Comunicación jQuery hacia JSP  
+			           type: "POST",
+			           url: "/SIGA/CEN_ComponentesJuridicos.do?modo=existeOtraSociedad",
+			           data: "idInstitucion="+idinsti+"&idPersona="+idper+"&idClientePersona="+idclienteper,
+			           //contentType: "application/json; charset=utf-8",
+			           dataType: "json",
+			           success:  function(json) {
+				           		if(json.exite=="S")
+				           			if(!confirm('<siga:Idioma key="messages.censo.componentes.errorExisteCliente"/> '+json.nifSociedad +' <siga:Idioma key="messages.censo.componentes.cambiarCliente"/>')){
+				           				document.all.componentesJuridicosForm.sociedad.checked=false;
+				           				cuenta();
+				           			}
+			           },
+			           error: function(xml,msg){
+			        	   //alert("Error1: "+xml);//$("span#ap").text(" Error");
+			        	   alert("Error: "+msg);//$("span#ap").text(" Error");
+			           }
+			        }); 
+						
+			}
+			
+		}
+			
 		
 	</script>	
 
@@ -412,7 +449,7 @@
 		<html:hidden property="modo" 								  value="cerrar"/>
 		<html:hidden property="idPersona" 		  			value="<%=idPersona%>"/>
 		<html:hidden property="idInstitucion"  				value="<%=idInstitucion%>"/>
-		<html:hidden property="clienteIdPersona" 			value=""/> 
+		<html:hidden property="clienteIdPersona" 			value="<%=idClientePersona%>"/> 
 		<html:hidden property="motivo" 								value=""/> 
 		<html:hidden property="nuevo" 								value="1"/> 
 		<html:hidden name="componentesJuridicosForm" property="idTipoColegio"  value="<%=tipo%>"/>
@@ -598,21 +635,21 @@
 						</td>
 						<td>
 							<html:checkbox name="componentesJuridicosForm" property="sociedad" disabled="<%=desactivado%>" 
-											onchange="idCuenta.disabled = !idCuenta.disabled;" onclick="cuenta()"/>
+											 onclick="cuenta();traeDatos()"/>
 						</td>
 					</tr>
 					<tr>
 						<td id="asteriscoCuenta" class="labelText" WIDTH=30%>
 							<siga:Idioma key="censo.consultaComponentesJuridicos.literal.cuenta"/> &nbsp;(*)
 						</td>
-						<td id="sinasteriscoCuenta" class="labelText" WIDTH=30%>
+						<td id="sinasteriscoCuenta" class="labelText" WIDTH=30%  style="display:none" >
 							<siga:Idioma key="censo.consultaComponentesJuridicos.literal.cuenta"/> 
 						</td>
 						<td colspan="3">
 						<% String parametro[] = new String[2];
 						 	parametro[0] = idPersona;
 							parametro[1] = idInstitucion; %>
-							<siga:ComboBD nombre="idCuenta" tipo="cuentaSJCS" parametro="<%=parametro%>"clase="<%=clase%>" obligatorio="false" elementoSel="<%=idBanco%>" readonly="<%=String.valueOf(desactivado)%>"/>
+						    <siga:ComboBD nombre="idCuenta" tipo="cuentaSJCS" parametro="<%=parametro%>" clase="<%=clase%>" obligatorio="false" elementoSel="<%=idBanco%>" readonly="<%=String.valueOf(desactivado)%>"/>									
 						</td>
 					</tr>						
 		   		</table>

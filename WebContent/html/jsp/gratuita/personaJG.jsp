@@ -147,6 +147,7 @@
 	boolean obligatorioFechaNac = false;
 	boolean obligatorioSexo = false;
 	boolean obligatorioMinusvalia = false;
+	boolean opcionDireccion = false;	
 	
 	if ((pcajgActivo == 1)
 			&& ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE
@@ -163,32 +164,58 @@
 		obligatorioIdentificador = true;		
 		if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR))
 			obligatorioParentesco = true;
+		//Para el solicitante: campos sexo, estado civil y todos los datos de dirección (sin opción de marcar sin domicilio).
+	    //Para la unidad familiar: obligatorio el parentesco.
+	    //Para unidad familiar y contrarios:
+
+	       // Si se marca el check sin domicilio no es obligatorio ningún campo.
+	       // Si se desmarca el check son obligatorios todos los campos de dirección.
+
 	} else if ((pcajgActivo == 4) && (conceptoE.equals(PersonaJGAction.EJG) || conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) ||
 				conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)  || conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS) || 
-				conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS))) {		
-		if (conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)){
-			 obligatorioEstadoCivil= true;
-			 obligatorioSexo = true;
-		     obligatorioRegimenConyuge=true;
-		}else if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS) || conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS) 
-				|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) || conceptoE.equals(PersonaJGAction.EJG)){
-			obligatorioNacionalidad=false;
-		}else{
-			obligatorioDireccion = true;
-			obligatorioPoblacion = true;
-			obligatorioCodigoPostal = true;
-			obligatorioIngreso= true;
-		    obligatorioRegimenConyuge=true;
-		    obligatorioNacionalidad=true;
-		    obligatorioEstadoCivil= true;
-		    obligatorioSexo = true;
-			if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)){
-				obligatorioParentesco = true;
-			    obligatorioEstadoCivil= true;
-			    obligatorioIngreso= true;
-			    obligatorioSexo = false;
+				conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS))) {
+			
+		if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS) || conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS) 
+				|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)){
+			opcionDireccion=true;
+			if (existeDomicilio == null || existeDomicilio.equals("S")) {
+				 obligatorioDireccion = true;
+				 obligatorioPoblacion = true;
+				 obligatorioCodigoPostal = true;
 			}
-		 }
+			if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR))
+				obligatorioParentesco = true;
+		}else if (conceptoE.equals(PersonaJGAction.EJG) || conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)){
+			 obligatorioSexo = true;
+			 obligatorioEstadoCivil= true;
+			 obligatorioDireccion = true;
+			 obligatorioPoblacion = true;
+			 obligatorioCodigoPostal = true;
+		}
+				
+				/*if (conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)){
+					 obligatorioEstadoCivil= true;
+					 obligatorioSexo = true;
+				     obligatorioRegimenConyuge=true;
+				}else if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS) || conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS) 
+						|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) || conceptoE.equals(PersonaJGAction.EJG)){
+					obligatorioNacionalidad=false;
+				}else{
+					obligatorioDireccion = true;
+					obligatorioPoblacion = true;
+					obligatorioCodigoPostal = true;
+					obligatorioIngreso= true;
+				    obligatorioRegimenConyuge=true;
+				    obligatorioNacionalidad=true;
+				    obligatorioEstadoCivil= true;
+				    obligatorioSexo = true;
+					if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)){
+						obligatorioParentesco = true;
+					    obligatorioEstadoCivil= true;
+					    obligatorioIngreso= true;
+					    obligatorioSexo = false;
+					}
+				 }*/
 	} else if ((pcajgActivo == 5)
 			&& ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE
 					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)))) {
@@ -301,22 +328,30 @@
 	   <%}%>
 	   
 	   
-	   
-	   
 	 <%}%>
 	 
 	 <% 	
-	 	if(pcajgActivo == -1){
+	 	if(pcajgActivo == 4){
+	 		if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS) || conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS) 
+					|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)){
 	 		if (existeDomicilio != null && existeDomicilio.equals("N")) {%>
 
 				document.forms[0].existeDom.checked=true;
 	 			document.PersonaJGForm.direccion.disabled = "disabled";
 	 			document.PersonaJGForm.cp.disabled = "disabled";
 				document.forms[0].provincia.disabled = "disabled";
-
+				document.getElementById("desaparece").style.display="none";
+				document.getElementById("desaparecePr").style.display="none";
+				document.getElementById("desapareceCp").style.display="none";
+				document.getElementById("desaparecePo").style.display="none";
 			<%}else{ %>
 			document.forms[0].existeDom.checked=false;
+			document.getElementById("desaparece").style.display="inline";
+			document.getElementById("desaparecePr").style.display="inline";
+			document.getElementById("desapareceCp").style.display="inline";
+			document.getElementById("desaparecePo").style.display="inline";
 			<%} 
+	 		}
 	 	}	
 		%>
 	<%if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {%> 
@@ -330,9 +365,13 @@
 			}%>
 		}
 	
-		function desabilitarDomicilio (o) {
+		function desabilitarDomicilio (o) {	
  			if (o.checked) {
-	 			document.forms[0].existeDom.checked = true;
+				document.getElementById("desaparece").style.display="none";
+				document.getElementById("desaparecePr").style.display="none";
+				document.getElementById("desapareceCp").style.display="none";
+				document.getElementById("desaparecePo").style.display="none";
+				document.forms[0].existeDom.checked = true;
 	 			document.PersonaJGForm.existeDomicilio.value = "N";
 	 			document.PersonaJGForm.direccion.value = "";
 	 			document.PersonaJGForm.cp.value = "";
@@ -341,11 +380,16 @@
 	 			document.PersonaJGForm.direccion.disabled = "disabled";
 	 			document.PersonaJGForm.cp.disabled = "disabled";
 				document.forms[0].provincia.disabled = "disabled";
-
+				document.forms[0].poblacion.disabled = "disabled";
 			}else {
+				document.getElementById("desaparece").style.display="inline";
+				document.getElementById("desaparecePr").style.display="inline";
+				document.getElementById("desapareceCp").style.display="inline";
+				document.getElementById("desaparecePo").style.display="inline";
 	 			document.PersonaJGForm.direccion.disabled = "";
 	 			document.PersonaJGForm.cp.disabled = "";
 				document.forms[0].provincia.disabled = "";
+				document.forms[0].poblacion.disabled = "";
 	 			document.forms[0].existeDom.checked = false;
 	 			document.PersonaJGForm.existeDomicilio.value = "S";
 			}
@@ -433,12 +477,24 @@
 
 				//existeDomicilio
 				document.forms[0].existeDomicilio.value = resultado[25];
-				<%if(pcajgActivo == -1){	%> 
-					if(resultado[25]!=null && resultado[25]=="N")
+				<%if(pcajgActivo == 4){ 
+					if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS) || conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS) 
+							|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)){
+					%> 
+					if(resultado[25]!=null && resultado[25]=="N"){
 						document.forms[0].existeDom.checked=true;
-					else
+						document.getElementById("desaparece").style.display="inline";
+						document.getElementById("desaparecePr").style.display="inline";
+						document.getElementById("desapareceCp").style.display="inline";
+						document.getElementById("desaparecePo").style.display="inline";
+					}else{
 						document.forms[0].existeDom.checked=false;
-				<%}%>
+						document.getElementById("desaparece").style.display="none";
+						document.getElementById("desaparecePr").style.display="none";
+						document.getElementById("desapareceCp").style.display="none";
+						document.getElementById("desaparecePo").style.display="none";
+					}	
+				<%} }%>
          <%if (conceptoE.equals(PersonaJGAction.ASISTENCIA_ASISTIDO)
 					|| conceptoE.equals(PersonaJGAction.SOJ)) {%> 
 				if (resultado[18] != null && trim(resultado[18])!="" && trim(resultado[18])!="null") {
@@ -1309,7 +1365,15 @@
 	<tr>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.direccion"/>
-			<%
+			
+			<% if(opcionDireccion){
+				%>
+				<div id="desaparece">
+				<%=asterisco%> 
+				</div>
+				<%
+				
+			}else	
 				if (obligatorioDireccion) {
 			%>
 				<%=asterisco%> 
@@ -1322,7 +1386,14 @@
 		</td>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.cp"/>	
-			<%
+			<% if(opcionDireccion){
+				%>
+				<div id="desapareceCp">
+				<%=asterisco%> 
+				</div>
+				<%
+				
+			}else
 					if (obligatorioCodigoPostal) {
 				%>
 				<%=asterisco%> 
@@ -1337,7 +1408,14 @@
 	<tr>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.provincia"/>	
-			<%
+			<% if(opcionDireccion){
+				%>
+				<div id="desaparecePr">
+				<%=asterisco%> 
+				</div>
+				<%
+				
+			}else
 					if (obligatorioPoblacion) {
 				%>
 				<%=asterisco%> 
@@ -1378,7 +1456,14 @@
 		</td>
 		<td class="labelText">
  			<siga:Idioma key="gratuita.personaJG.literal.poblacion"/>	
- 			<%
+ 			<% if(opcionDireccion){
+				%>
+				<div id="desaparecePo">
+				<%=asterisco%> 
+				</div>
+				<%
+				
+			}else
 	 				if (obligatorioPoblacion) {
 	 			%>
 				<%=asterisco%> 
@@ -1411,12 +1496,14 @@
 		<html:hidden name="PersonaJGForm" property = "existeDomicilio" value="S" />
 
 	 <%
-	     if(pcajgActivo == -1){
+	     if(pcajgActivo == 4){
+	 		if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS) || conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS) 
+					|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)){
 	 		if (!accion.equalsIgnoreCase("ver")) {
 	 %>
 	 		<siga:Idioma key="gratuita.busquedaSOJ.literal.solicitaObligaDir"/>
 	 
-	  <input type="checkbox" id="existeDom" onclick="desabilitarDomicilio(this);">
+			<input type="checkbox" id="existeDom" onclick="desabilitarDomicilio(this);">
 		  <%
 		  		} else {
 		  %>
@@ -1424,6 +1511,7 @@
 	  <input type="checkbox" id="existeDom" onclick="desabilitarDomicilio(this);" disabled="disabled">		  
 	  <%
 		  		}
+	     	}
 	     }
 		  %>
 	</td>
@@ -1638,8 +1726,7 @@
 		%>
 	
 <%
-	 	if (conceptoE
-	 					.equals(PersonaJGAction.ASISTENCIA_REPRESENTANTE)
+	 	if (conceptoE.equals(PersonaJGAction.ASISTENCIA_REPRESENTANTE)
 	 					|| conceptoE
 	 							.equals(PersonaJGAction.DESIGNACION_REPRESENTANTE)
 	 					|| conceptoE
@@ -1654,8 +1741,7 @@
 			<siga:ComboBD nombre = "enCalidadDe" tipo="cmbEnCalidadDe" clase="<%=estiloBox%>" readOnly="<%=sreadonly%>"/>
 		</td>
 <%
-	} else if (conceptoE
-					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
+	} else if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
 %>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.parentescoNormalizado"/>
@@ -2512,12 +2598,8 @@ function limpiarPersonaContrario() {
 		//Asociada al boton Guardar -->
 		function accionGuardar(){	
 
-			if (document.forms[0].existeDom!=null && document.forms[0].existeDom.checked) {
-	 			document.PersonaJGForm.existeDomicilio.value = "N";
-			}else {
-	 			document.PersonaJGForm.existeDomicilio.value = "S";
-			}
-
+ 			document.PersonaJGForm.existeDomicilio.value = "S";
+			
 			var lNumerosTelefonos=getDatos();				
 			if (!lNumerosTelefonos){
                  fin();
@@ -2606,11 +2688,11 @@ function limpiarPersonaContrario() {
 								document.forms[0].NIdentificacion.value=="")
 								error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nIdentificacion'/>"+ '\n';
 						}
-						if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1 && document.PersonaJGForm.existeDomicilio.value!= "N")
+						if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1)
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
-						if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
+						if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value=="")
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
-						if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
+						if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value=="")
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
 						if (<%=obligatorioNacionalidad%> && document.forms[0].nacionalidad.value =="")
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';						
@@ -2801,11 +2883,8 @@ function limpiarPersonaContrario() {
 		//Asociada al boton Guardar -->
 		function accionGuardar()	{
 
-			if (document.forms[0].existeDom!=null && document.forms[0].existeDom.checked) {
-	 			document.PersonaJGForm.existeDomicilio.value = "N";
-			}else {
-	 			document.PersonaJGForm.existeDomicilio.value = "S";
-			}
+	 		document.PersonaJGForm.existeDomicilio.value = "S";
+			
 			var lNumerosTelefonos=getDatos();	
 			
 			if (!lNumerosTelefonos){
@@ -2875,11 +2954,8 @@ function limpiarPersonaContrario() {
 		function accionGuardar()	{	
 
 
-			if (document.forms[0].existeDom!=null && document.forms[0].existeDom.checked) {
-	 			document.PersonaJGForm.existeDomicilio.value = "N";
-			}else {
-	 			document.PersonaJGForm.existeDomicilio.value = "S";
-			}
+ 			document.PersonaJGForm.existeDomicilio.value = "S";
+			
 			var lNumerosTelefonos=getDatos();	
 					
 			if (!lNumerosTelefonos){
@@ -2943,6 +3019,12 @@ function limpiarPersonaContrario() {
 			}else {
 	 			document.PersonaJGForm.existeDomicilio.value = "S";
 			}
+			if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1  && document.PersonaJGForm.existeDomicilio.value!= "N")
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
+			if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
+			if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
 			
 			var lNumerosTelefonos=getDatos();						
 			if (!lNumerosTelefonos){
@@ -3009,7 +3091,13 @@ function limpiarPersonaContrario() {
 			}else {
 	 			document.PersonaJGForm.existeDomicilio.value = "S";
 			}				
-
+			if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1  && document.PersonaJGForm.existeDomicilio.value!= "N")
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
+			if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
+			if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+				
 			var lNumerosTelefonos=getDatos();						
 			if (!lNumerosTelefonos){
                  fin();
@@ -3074,12 +3162,7 @@ function limpiarPersonaContrario() {
 		//Asociada al boton Guardar -->
 		function accionGuardarCerrar()	{	
 
-
-			if (document.forms[0].existeDom!=null && document.forms[0].existeDom.checked) {
-	 			document.PersonaJGForm.existeDomicilio.value = "N";
-			}else {
-	 			document.PersonaJGForm.existeDomicilio.value = "S";
-			}
+ 			document.PersonaJGForm.existeDomicilio.value = "S";
 			
 			var lNumerosTelefonos=getDatos();					
 			if (!lNumerosTelefonos){
@@ -3202,6 +3285,12 @@ function limpiarPersonaContrario() {
 			    error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.regimenConyugal'/>"+ '\n';
 			if (<%=obligatorioNacionalidad%> && document.forms[0].nacionalidad.value =="")
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';	
+			if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1  && document.PersonaJGForm.existeDomicilio.value!= "N")
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
+			if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
+			if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
 			    
 			if(error!=""){
 			  alert(error);
@@ -3251,11 +3340,8 @@ function accionCerrar()
 //Asociada al boton Guardar -->
 function accionGuardarCerrar()	{	
 
-	if (document.forms[0].existeDom!=null && document.forms[0].existeDom.checked) {
-			document.PersonaJGForm.existeDomicilio.value = "N";
-	}else {
-			document.PersonaJGForm.existeDomicilio.value = "S";
-	}
+	document.PersonaJGForm.existeDomicilio.value = "S";
+	
 	var lNumerosTelefonos=getDatos();					
 	if (!lNumerosTelefonos){
          fin();
@@ -3281,7 +3367,14 @@ function accionGuardarCerrar()	{
 		if (calidad==""){			
 			error+="<siga:Idioma key='gratuita.personaJG.literal.mensajecalidad'/>";				
 		}				
-	}			
+	}
+	if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1)
+		error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
+	if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value=="")
+		error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
+	if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value=="")
+		error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+				
 	if (<%=obligatorioEstadoCivil%> && document.forms[0].estadoCivil.value=="")
 		error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.estadoCivil'/>"+ '\n';
 	if (<%=obligatorioRegimenConyuge%> && document.forms[0].regimenConyugal.value=="")

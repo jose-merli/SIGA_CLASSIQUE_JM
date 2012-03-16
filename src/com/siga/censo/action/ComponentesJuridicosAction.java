@@ -16,14 +16,18 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.json.JSONObject;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
+import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.*;
 import com.siga.censo.form.ComponentesJuridicosForm;
+import com.siga.censo.form.DatosGeneralesForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -51,7 +55,6 @@ public class ComponentesJuridicosAction extends MasterAction{
 			miForm = (MasterForm) formulario;
 			if (miForm != null) {
 				
-				 
 				String accion=miForm.getModo();
 				if (accion==null){
 					accion = "";
@@ -59,6 +62,9 @@ public class ComponentesJuridicosAction extends MasterAction{
 				if (accion.equalsIgnoreCase("buscarNIF")){
 					// abrirAvanzadaConParametros
 					mapDestino = buscarNIF(mapping, miForm, request, response);
+				}else if ( accion.equalsIgnoreCase("existeOtraSociedad")){
+					ClsLogging.writeFileLog("DATOS NO COLEGIALES:getIdenHistorico", 10);
+					mapDestino = existeOtraSociedad(mapping, miForm, request, response,0,"");
 				}else {
 					return super.executeInternal(mapping,formulario,request,response);
 				}
@@ -66,9 +72,9 @@ public class ComponentesJuridicosAction extends MasterAction{
 		} while (false);
 	
 	// Redireccionamos el flujo a la JSP correspondiente
-		if (mapDestino == null)	{ 
+		/*if (mapDestino == null)	{ 
 			throw new ClsExceptions("El ActionMapping no puede ser nulo");
-		}
+		}*/
 		
 		return mapping.findForward(mapDestino);
 		
@@ -78,6 +84,68 @@ public class ComponentesJuridicosAction extends MasterAction{
 		throw new SIGAException("messages.general.error",e,new String[] {"modulo.censo"});
 	}
 }
+	
+	@SuppressWarnings("unchecked")
+	protected String existeOtraSociedad (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response, int bandera,String institucion) throws ClsExceptions, SIGAException ,Exception
+			{
+		String numero=null;
+		boolean actualizable= true;
+		Long idPersona = null;
+		UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
+		ComponentesJuridicosForm miForm = (ComponentesJuridicosForm) formulario;
+		Hashtable hashOriginal = (Hashtable)request.getSession().getAttribute("DATABACKUP");
+		CenComponentesBean beanComponentes = new CenComponentesBean();
+		String idClientePersona =(String) request.getParameter("idClientePersona");
+		String insti=(String) request.getParameter("idInstitucion");
+		if(request.getParameter("idPersona")!=null)
+		 idPersona =new Long((String)request.getParameter("idPersona"));
+		
+		//Long idPersona =miForm.getIdPersona();		
+		if(idClientePersona== null || idClientePersona.trim().equals("")){
+			idClientePersona = UtilidadesHash.getString(hashOriginal, CenComponentesBean.C_CEN_CLIENTE_IDPERSONA).toString();
+			idPersona = UtilidadesHash.getLong(hashOriginal, CenComponentesBean.C_IDPERSONA);
+		}	
+		//Comprobamos que el cliente no sea componente de otra sociedad en la qu el campo SOCIEDAD sea = 1(que actue como sociedad)
+		String where = " where CEN_CLIENTE_IDINSTITUCION ="+insti+
+		   			   "   and CEN_CLIENTE_IDPERSONA = "+idClientePersona
+		             + "   and "+CenComponentesBean.C_SOCIEDAD +"="+ClsConstants.DB_TRUE;
+		CenComponentesAdm componentesAdm = new CenComponentesAdm(user);
+		Vector v2 = componentesAdm.select(where);
+		
+		if ((v2 != null) && (v2.size() > 0)) {
+			
+			CenComponentesBean beancomponentes=(CenComponentesBean) v2.get(0);
+			CenPersonaAdm admpersona=new CenPersonaAdm(this.getUserBean(request));
+			String[] nifaux=new String[1];
+			numero=admpersona.obtenerNIF(beancomponentes.getIdPersona().toString());
+			actualizable= false;
+			if(idPersona.equals(beancomponentes.getIdPersona()))
+				actualizable=true;
+				
+		}
+
+		JSONObject json = new JSONObject();
+		if(actualizable){
+			json.put("exite", "N");
+			json.put("nifSociedad", "");
+		}else{
+			json.put("exite", "S");
+			json.put("nifSociedad", numero);
+		}
+		
+		
+		 //response.setContentType("text/x-json;charset=UTF-8");
+		 response.setHeader("Cache-Control", "no-cache");
+		 response.setHeader("Content-Type", "application/json");
+	     response.setHeader("X-JSON", json.toString());
+		 response.getWriter().write(json.toString()); 
+		return null;//"completado";
+		
+	}
+
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		
 		String rc = "";
@@ -280,17 +348,22 @@ public class ComponentesJuridicosAction extends MasterAction{
 				   			   "   and CEN_CLIENTE_IDPERSONA = "+miForm.getClienteIdPersona()
 				             + "   and "+CenComponentesBean.C_SOCIEDAD +"="+ClsConstants.DB_TRUE;
 				Vector v2 = componentesAdm.select(where);
-				if ((v2 != null) && (v2.size() > 0)) {
+				if (miForm.getSociedad()!= null && miForm.getSociedad() && (v2 != null) && (v2.size() > 0)) {
 					
-					CenComponentesBean beancomponentes=(CenComponentesBean) v2.get(0);
-					CenPersonaAdm admpersona=new CenPersonaAdm(this.getUserBean(request));
-					String[] nifaux=new String[1];
-					nifaux[0]=admpersona.obtenerNIF(beancomponentes.getIdPersona().toString());
-					throw new SIGAException ("messages.censo.componentes.errorExisteCliente",nifaux);
+					String update = "UPDATE " + CenComponentesBean.T_NOMBRETABLA        +
+					"   SET " + CenComponentesBean.C_SOCIEDAD    + "= 0, " + CenComponentesBean.C_IDCUENTA + "= '' " + 
+					" WHERE " + CenComponentesBean.C_IDINSTITUCION + "= " + miForm.getIdInstitucion() + 
+					"   AND " + CenComponentesBean.C_CEN_CLIENTE_IDPERSONA + "= " +miForm.getClienteIdPersona();
+					ClsMngBBDD.executeUpdate(update);
+					//CenComponentesBean beancomponentes=(CenComponentesBean) v2.get(0);
+					//CenPersonaAdm admpersona=new CenPersonaAdm(this.getUserBean(request));
+					//String[] nifaux=new String[1];
+					//nifaux[0]=admpersona.obtenerNIF(beancomponentes.getIdPersona().toString());
+					//throw new SIGAException ("messages.censo.componentes.errorExisteCliente",nifaux);
 				}
 				
 				//Comprueba si el idpersona está dado de alta en clientes de la institucion
-				where = " where IDINSTITUCION ="+miForm.getIdInstitucion()+
+				 where = " where IDINSTITUCION ="+miForm.getIdInstitucion()+
 				   			   "   and IDPERSONA = "+miForm.getClienteIdPersona();
 				CenClienteAdm clienteAdm = new CenClienteAdm (this.getUserBean(request));
 				v2 = clienteAdm.select(where);
@@ -466,7 +539,23 @@ public class ComponentesJuridicosAction extends MasterAction{
 			// Para eso primero comprobamos que 
 			String sociedadAntes=UtilidadesHash.getString(hashOriginal, CenComponentesBean.C_SOCIEDAD);
 			
-			if(sociedadAntes.equals(ClsConstants.DB_FALSE))
+			
+			//Comprobamos que el cliente no sea componente de otra sociedad en la qu el campo SOCIEDAD sea = 1(que actue como sociedad)
+			String where = " where CEN_CLIENTE_IDINSTITUCION ="+miForm.getIdInstitucion()+
+			   			   "   and CEN_CLIENTE_IDPERSONA = "+UtilidadesHash.getLong(hashOriginal, CenComponentesBean.C_CEN_CLIENTE_IDPERSONA).toString()
+			             + "   and "+CenComponentesBean.C_SOCIEDAD +"="+ClsConstants.DB_TRUE;
+			Vector v2 = componentesAdm.select(where);
+			if (sociedadAntes.equals(ClsConstants.DB_FALSE) && miForm.getSociedad()!= null && miForm.getSociedad() && (v2 != null) && (v2.size() > 0)) {
+				
+				String update = "UPDATE " + CenComponentesBean.T_NOMBRETABLA        +
+				"   SET " + CenComponentesBean.C_SOCIEDAD    + "= 0, " + CenComponentesBean.C_IDCUENTA + "= '' " + 
+				" WHERE " + CenComponentesBean.C_IDINSTITUCION + "= " + miForm.getIdInstitucion() + 
+				"   AND " + CenComponentesBean.C_CEN_CLIENTE_IDPERSONA + "= " +UtilidadesHash.getLong(hashOriginal, CenComponentesBean.C_CEN_CLIENTE_IDPERSONA).toString();
+				ClsMngBBDD.executeUpdate(update);
+				
+			}
+
+			/*if(sociedadAntes.equals(ClsConstants.DB_FALSE))
 			{
 				if (miForm.getSociedad().booleanValue())  {
 					String where = " where CEN_CLIENTE_IDINSTITUCION ="+beanComponentes.getIdInstitucion()+
@@ -481,7 +570,7 @@ public class ComponentesJuridicosAction extends MasterAction{
 						throw new SIGAException ("messages.censo.componentes.errorExisteCliente",nifaux);
 					}
 				}
-			}
+			}*/
 			
 			
 			t.begin();

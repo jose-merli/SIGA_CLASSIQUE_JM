@@ -1837,14 +1837,9 @@ public class PersonaJGAction extends MasterAction {
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_NOMBRE,miform.getNombre());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_APELLIDO1,miform.getApellido1());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_APELLIDO2,miform.getApellido2());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_DIRECCION,miform.getDireccion());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_CODIGOPOSTAL,miform.getCp());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_FECHANACIMIENTO,GstDate.getApplicationFormatDate("",miform.getFechaNac()));
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPROFESION,miform.getProfesion());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDMINUSVALIA,miform.getMinusvalia());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPAIS,miform.getNacionalidad());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPROVINCIA,miform.getProvincia());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPOBLACION,miform.getPoblacion());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_ESTADOCIVIL,miform.getEstadoCivil());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_REGIMENCONYUGAL,miform.getRegimenConyugal());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_TIPOPERSONAJG,miform.getIdTipoPersona());
@@ -1859,6 +1854,23 @@ public class PersonaJGAction extends MasterAction {
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_FAX,miform.getFax());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_CORREOELECTRONICO,miform.getCorreoElectronico());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_EXISTEDOMICILIO,miform.getExisteDomicilio());			
+			if (miform.getDireccion()==null)
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_DIRECCION,"");
+			else
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_DIRECCION,miform.getDireccion());
+			if(miform.getCp()==null)
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_CODIGOPOSTAL,"");
+			else
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_CODIGOPOSTAL,miform.getCp());
+
+			if(miform.getProvincia()==null)
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPROVINCIA,"");
+			else		
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPROVINCIA,miform.getProvincia());
+			if(miform.getPoblacion()==null)
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPOBLACION,"");
+			else
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPOBLACION,miform.getPoblacion());
 			
 	     	
 			// recojo el databackup
