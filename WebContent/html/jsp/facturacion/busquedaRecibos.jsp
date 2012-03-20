@@ -34,6 +34,12 @@
 	HttpSession ses=request.getSession();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
 	UsrBean user=(UsrBean) ses.getAttribute("USRBEAN");
+	
+	boolean esLetrado = user.isLetrado();
+	boolean esConsejo=false;
+	int idConsejo = new Integer(user.getLocation()).intValue();
+	if(idConsejo==2000 || idConsejo>=3000)
+		esConsejo=true;
 
 	DevolucionesManualesForm form = (DevolucionesManualesForm) request.getSession().getAttribute("DevolucionesManualesForm");
 	
@@ -122,27 +128,33 @@
 		
 			<siga:ConjCampos leyenda="facturacion.devolucionManual.criterios">	
 				<table>
-					<td class="labelText" width="80px"><siga:Idioma key="facturacion.devolucionManual.numeroFactura"/></td>
+					<td class="labelText"><siga:Idioma key="facturacion.devolucionManual.numeroFactura"/></td>
 					<td ><html:text styleClass="box" property="numeroFactura" maxlength="12" /></td>
-					
-					<td class="labelText" width="60px"><siga:Idioma key="facturacion.devolucionManual.titularDomiciliacion"/></td>
-					<td>
-						<html:button property="idButton" onclick="return buscarCliente();" styleClass="button"><siga:Idioma key="general.boton.search"/> </html:button>
-						<html:button property="idButton" onclick="return limpiarCliente();" styleClass="button"><siga:Idioma key="general.boton.clear"/> </html:button>
+					<%
+					if (esConsejo){
+					%>	
+					<td class="labelText" >
+						<siga:BusquedaPersona tipo="personas" idPersona="titular"></siga:BusquedaPersona>
 						<html:hidden property="titular" />
+						<html:hidden property="nombreTitular" size="37"/>
 					</td>
-					
-						<td width="42px"><html:text styleClass="boxConsulta" property="nombreTitular" size="37" readOnly="true"/></td>
-		
+					<%
+					}else { 
+					%>
+					<td class="labelText" >
+						<siga:BusquedaPersona tipo="colegiado"  idPersona="titular"></siga:BusquedaPersona>
+						<html:hidden property="titular" />
+						<html:hidden property="nombreTitular"/>
+					</td>
 					<% 	
+					}
 						int idInstitucion = Integer.parseInt(user.getLocation()); 
 					
 						if (idInstitucion == 2000 || idInstitucion >= 3000) { %>
 		
-							<td class="labelText" ><siga:Idioma key="facturacion.buscarFactura.literal.Deudor"/>&nbsp;&nbsp;&nbsp;&nbsp;
-							</td>
-							<td>  
-								<siga:ComboBD nombre="destinatario" tipo="cmbDeudores"  ancho="160" clase="boxCombo" obligatorio="false"/>
+							<td class="labelText" ><siga:Idioma key="facturacion.buscarFactura.literal.Deudor"/>&nbsp;</td>
+							<td >
+ 								<siga:ComboBD nombre="destinatario" tipo="cmbDeudores"  ancho="170" clase="boxCombo" obligatorio="false"/>
 							</td>
 					
 					<% 	} %>
@@ -194,32 +206,6 @@
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
 		<!-- Funcion asociada a boton buscarCliente -->
-		function buscarCliente() 
-		{
-			var datos = new Array();
-			datos[0] = ""; 			// idpersona
-			datos[1] = ""; 			// idInstitucion
-			datos[2] = ""; 			// Numero Colegiado
-			datos[3] = ""; 			// NIF
-			datos[4] = ""; 			// Nombre
-			datos[5] = ""; 			// Apellido1
-			datos[6] = ""; 			// Apellido2
-
-			var datos = ventaModalGeneral("busquedaClientesModalForm","G");
-			if ((datos == null) || (typeof datos[0] == "undefined"))  {
-				return false;
-			}
-			
-			document.DevolucionesManualesForm.titular.value 		 = datos[0];
-			document.DevolucionesManualesForm.nombreTitular.value = datos[4] + " " + datos[5] + " " + datos[6];
-		}
-
-		<!-- Funcion asociada a boton buscar -->
-		function limpiarCliente() 
-		{
-				document.DevolucionesManualesForm.titular.value="";
-				document.DevolucionesManualesForm.nombreTitular.value= "";
-		}
 
 		function refrescarLocal() 
 		{
@@ -232,6 +218,7 @@
 				sub();		
 				mensaje();
 				// Rango Fechas (desde / hasta)
+				document.DevolucionesManualesForm.nombreTitular.value=document.getElementById('nombrePersona').value;
 				if (compararFecha (document.DevolucionesManualesForm.fechaCargoDesde, document.DevolucionesManualesForm.fechaCargoHasta) == 1) {
 					mensaje = '<siga:Idioma key="messages.fechas.rangoFechas"/>'
 					alert(mensaje);
