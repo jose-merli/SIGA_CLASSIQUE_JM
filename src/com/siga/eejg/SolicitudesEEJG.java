@@ -15,8 +15,6 @@ import com.siga.Utilidades.AxisObjectSerializerDeserializer;
 import com.siga.beans.AdmUsuariosAdm;
 import com.siga.beans.AdmUsuariosBean;
 import com.siga.beans.GenParametrosAdm;
-import com.siga.beans.ScsPersonaJGAdm;
-import com.siga.beans.ScsPersonaJGBean;
 import com.siga.beans.eejg.ScsEejgPeticionesBean;
 import com.siga.beans.eejg.ScsEejgXmlAdm;
 import com.siga.beans.eejg.ScsEejgXmlBean;
@@ -72,14 +70,9 @@ public class SolicitudesEEJG {
 		String idZona = scsEejgPeticionesBean.getIdInstitucion().toString();
 		String dNI_NIE_Tramitador = getDNITramitador(usrBean, scsEejgPeticionesBean);
 		
-		ScsPersonaJGBean scsPersonaJGBean = getDatosSolicitante(usrBean, scsEejgPeticionesBean);
-		String dNI_NIE_Solicitado = scsPersonaJGBean.getNif();
-		String nombre = scsPersonaJGBean.getNombre();
-		String apellido1 = scsPersonaJGBean.getApellido1();
-		String apellido2 = scsPersonaJGBean.getApellido2();
-		String idioma = scsEejgPeticionesBean.getIdioma();
 		
-		DatosPeticionInfoAAPP datosPeticionInfoAAPP = new DatosPeticionInfoAAPP(idSistema, idSolicitudImportada, idZona, dNI_NIE_Tramitador, dNI_NIE_Solicitado, nombre, apellido1, apellido2, idioma);
+		
+		DatosPeticionInfoAAPP datosPeticionInfoAAPP = new DatosPeticionInfoAAPP(idSistema, idSolicitudImportada, idZona, dNI_NIE_Tramitador, scsEejgPeticionesBean.getNif(), scsEejgPeticionesBean.getNombre(), scsEejgPeticionesBean.getApellido1(), scsEejgPeticionesBean.getApellido2(), scsEejgPeticionesBean.getIdioma());
 		Informacion informacion = new Informacion(datosPeticionInfoAAPP);
 				
 		SolicitudPeticionInfoAAPP solicitudPeticionInfoAAPP = new SolicitudPeticionInfoAAPP(informacion);
@@ -92,7 +85,7 @@ public class SolicitudesEEJG {
 				if (respuesta != null) {
 					if ((respuesta.getTipoError() != null && !respuesta.getTipoError().trim().equals("")) || (respuesta.getDescripcionError() != null && !respuesta.getDescripcionError().trim().equals(""))) {
 						String error = respuesta.getTipoError() + ": " + respuesta.getDescripcionError();
-						throw new ClsExceptions("IdPetición: " + scsEejgPeticionesBean.getIdPeticion() + ". Se ha obtenido el siguiente mensaje de error como respuesta del webservice para el colegio " + idZona + " y DNI/NIE solicitado \"" + dNI_NIE_Solicitado + "\" y DNI/NIE del tramitador \""  + dNI_NIE_Tramitador + "\": " + error);
+						throw new ClsExceptions("IdPetición: " + scsEejgPeticionesBean.getIdPeticion() + ". Se ha obtenido el siguiente mensaje de error como respuesta del webservice para el colegio " + idZona + " y DNI/NIE solicitado \"" + scsEejgPeticionesBean.getNif() + "\" y DNI/NIE del tramitador \""  + dNI_NIE_Tramitador + "\": " + error);
 					} else {
 						idPeticionInfoAAPP = respuestaSolicitudPeticionInfoAAPP.getInformacion().getRespuestaPeticionInfoAAPP().getIdPeticionInfoAAPP();
 					}
@@ -117,20 +110,6 @@ public class SolicitudesEEJG {
 		return nif;
 	}
 
-	private ScsPersonaJGBean getDatosSolicitante(UsrBean usrBean, ScsEejgPeticionesBean scsEejgPeticionesBean) throws ClsExceptions {
-		ScsPersonaJGAdm scsPersonaJGAdm = new ScsPersonaJGAdm(usrBean);
-		ScsPersonaJGBean scsPersonaJGBean = null;
-		Hashtable hash = new Hashtable();
-		hash.put(ScsPersonaJGBean.C_IDINSTITUCION, scsEejgPeticionesBean.getIdInstitucion());
-		hash.put(ScsPersonaJGBean.C_IDPERSONA, scsEejgPeticionesBean.getIdPersona());
-		Vector vector = scsPersonaJGAdm.selectByPK(hash);
-		if (vector != null && vector.size() > 0) {
-			scsPersonaJGBean = (ScsPersonaJGBean) vector.get(0);
-		}
-		return scsPersonaJGBean;
-	}
-
-	
 	/**
 	 * 
 	 * @param scsEejgPeticionesBean
