@@ -452,13 +452,14 @@ public class MantenimientoAsistenciasAction extends MasterAction
 				miForm.setHoraAsistencia("00");
 			if(miForm.getMinutoAsistencia().equals(""))
 				miForm.setMinutoAsistencia("00");
-			myCalendar.set(Calendar.HOUR_OF_DAY,Integer.parseInt(miForm.getHoraAsistencia()));
+			myCalendar.set(Calendar.HOUR,Integer.parseInt(miForm.getHoraAsistencia()));
 			myCalendar.set(Calendar.MINUTE,Integer.parseInt(miForm.getMinutoAsistencia()));
 			myCalendar.set(Calendar.SECOND,0);
 			myCalendar.set(Calendar.MILLISECOND,0);
-			simpleDateFormat = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+			simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+			SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
 			String fecha = simpleDateFormat.format(myCalendar.getTime());
-			
+			String fechaTotal = simpleDateFormat2.format(myCalendar.getTime());			
 			
 			
 //			String fecha = GstDate.getApplicationFormatDate(usr.getLanguage(),);
@@ -502,10 +503,10 @@ public class MantenimientoAsistenciasAction extends MasterAction
 					// guardiascolegiado con fechafin = fecha asistencia entonces cogemos el primero. Si no existe ningún registro lanzaremos el mensaje de que
 					// no hay calendario definido para ese periodo.
 					//----------------------------------------------------------------------------------------------------------------------------------
-					String truncFechaGuardia = GstDate.getFormatedDateShort("", fecha); 
+					//String truncFechaGuardia = GstDate.getFormatedDateShort("", fecha); 
 					guardiasAdm.insertarGuardiaManual(usr.getLocation(), idTurno,
 							idGuardia, idPersona,  
-							null,null,truncFechaGuardia,usr);
+							null,null,fecha,usr);
 				}else{
 					// Si no cerramos la transaccion no vuelve correctamente
 					tx.rollback();
@@ -517,7 +518,7 @@ public class MantenimientoAsistenciasAction extends MasterAction
 
 			String numero = asistencias.getNumeroAsistencia(usr.getLocation(), Integer.parseInt(anio));
 			String estadoAsistencia = "1";	// Activo
-			asistencias.insertarNuevaAsistencia(usr.getLocation(), anio,numero, fecha, idTurno, idGuardia, idTipoAsistencia, idTipoAsistenciaColegio,idPersona, estadoAsistencia);
+			asistencias.insertarNuevaAsistencia(usr.getLocation(), anio,numero, fechaTotal, idTurno, idGuardia, idTipoAsistencia, idTipoAsistenciaColegio,idPersona, estadoAsistencia);
 
 			// Si estamos clonando puede que necesitemos meter el juzgado y comisaria
 			// Esto lo hacemos con un update por no modificar el insert, que podria dar problemas ya que se llama desde mas sitios
