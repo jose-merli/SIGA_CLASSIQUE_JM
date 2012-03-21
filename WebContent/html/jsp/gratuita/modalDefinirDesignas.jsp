@@ -396,6 +396,8 @@
 		function accionGuardarCerrar() 
 		{	 
 			sub();
+			if(document.forms[1].colegioOrigen.value==0)
+				document.forms[1].colegioOrigen.value="";
 			if((document.forms[1].idTurno.selectedIndex < 1)//||(document.forms[1].ncolegiado.value.length < 1)
 			   ||(document.forms[1].fechaAperturaInicio.value.length < 1)||(document.forms[1].idSolicitante && document.forms[1].idSolicitante.value=="")){
 				alert("Debe rellenar todos los campos");
