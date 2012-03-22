@@ -773,7 +773,8 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					+ ScsGuardiasTurnoBean.C_IDGUARDIA
 					+ ","
 					+ "guardias2.idpersona, guardias2.fechainicio, guardias2.idcalendarioguardias)) AS FECHA_FIN,  SCS_INCLUSIONGUARDIASENLISTAS.ORDEN, guardias2.posicion, "
-					+ " Grg.NUMEROGRUPO As GRUPO ";
+					//+ " Grg.NUMEROGRUPO As GRUPO ";
+					+ " guardias2.NUMEROGRUPO As GRUPO ";
 			sql += " FROM " + ScsGuardiasTurnoBean.T_NOMBRETABLA + "," + CenPersonaBean.T_NOMBRETABLA + ","
 					+ ScsCabeceraGuardiasBean.T_NOMBRETABLA + " guardias2, " + ScsTurnoBean.T_NOMBRETABLA + ", "
 					+ CenColegiadoBean.T_NOMBRETABLA + "," + ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA + ", "
@@ -1018,7 +1019,8 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					+ ScsGuardiasTurnoBean.C_IDGUARDIA
 					+ ","
 					+ "guardias2.idpersona, guardias2.fechainicio, guardias2.idcalendarioguardias)) AS FECHA_FIN,  SCS_INCLUSIONGUARDIASENLISTAS.ORDEN, guardias2.posicion, "
-					+ " Grg.NUMEROGRUPO As GRUPO ";
+					//+ " Grg.NUMEROGRUPO As GRUPO ";
+					+ " guardias2.NUMEROGRUPO As GRUPO ";
 			sql += " FROM " + ScsGuardiasTurnoBean.T_NOMBRETABLA + "," + CenPersonaBean.T_NOMBRETABLA + ","
 					+ ScsCabeceraGuardiasBean.T_NOMBRETABLA + " guardias2, " + ScsTurnoBean.T_NOMBRETABLA + ", "
 					+ CenColegiadoBean.T_NOMBRETABLA + "," + ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA + ", "

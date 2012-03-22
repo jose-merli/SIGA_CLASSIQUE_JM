@@ -1023,6 +1023,104 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 		return datos;
 	} //getColaGuardia()
 	
+	public boolean getOrdenGuardia(
+			String idinstitucion,
+			String idturno,
+			String idguardia,
+			String fecha) throws ClsExceptions
+	{
+		if (idinstitucion == null || idinstitucion.equals(""))
+			return false;
+		if (idturno == null || idturno.equals(""))
+			return false;
+		if (idguardia == null || idguardia.equals(""))
+			return false;
+		if (fecha == null || fecha.equals(""))
+			fecha = "null";
+		else if (!fecha.trim().equalsIgnoreCase("sysdate"))
+			fecha = "'" + fecha.trim() + "'";
+		
+		StringBuffer consulta = new StringBuffer();
+		boolean existeOrdenEnGrupoGuardia = false;
+		consulta.append("Select grupo, ordengrupo, count(*) from "); 
+		consulta.append("	(select " );
+
+		consulta.append(getBaseConsultaInscripciones());
+		
+		consulta.append("   And Ins.Fechavalidacion Is Not Null ");
+		consulta.append("   And Gua.Idinstitucion = "+idinstitucion+" ");
+		consulta.append("   And Gua.Idturno = "+idturno+" ");
+		consulta.append("   And Gua.Idguardia = "+idguardia+" ");
+		
+		consulta.append("   And Ins.Fechavalidacion Is Not Null ");
+		consulta.append("   And Trunc(Ins.Fechavalidacion) <= "+fecha);
+		consulta.append("   And (Ins.Fechabaja Is Null Or  Trunc(Ins.Fechabaja) > "+ fecha +" ) ");
+		consulta.append("   And gru.idgrupoguardia is not null ");	
+		consulta.append(" ) ");	
+		consulta.append(" group by grupo, ordengrupo having count(*) > 1");
+		
+		try {
+			RowsContainer rc = new RowsContainer();
+			if (rc.find(consulta.toString())) {
+				if(rc.size() > 0) {
+					existeOrdenEnGrupoGuardia = true;
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
+		}
+		return existeOrdenEnGrupoGuardia;
+	} //getOrdenGuardia()
+	
+	public boolean getGrupoGuardia(
+			String idinstitucion,
+			String idturno,
+			String idguardia,
+			String fecha) throws ClsExceptions
+	{
+		if (idinstitucion == null || idinstitucion.equals(""))
+			return false;
+		if (idturno == null || idturno.equals(""))
+			return false;
+		if (idguardia == null || idguardia.equals(""))
+			return false;
+		if (fecha == null || fecha.equals(""))
+			fecha = "null";
+		else if (!fecha.trim().equalsIgnoreCase("sysdate"))
+			fecha = "'" + fecha.trim() + "'";
+		
+		StringBuffer consulta = new StringBuffer();
+		boolean existePersonaEnGrupoGuardia = false;
+		consulta.append("Select grupo, idpersona, fechasuscripcion, count(*) from "); 
+		consulta.append("	(select " );
+
+		consulta.append(getBaseConsultaInscripciones());
+		
+		consulta.append("   And Ins.Fechavalidacion Is Not Null ");
+		consulta.append("   And Gua.Idinstitucion = "+idinstitucion+" ");
+		consulta.append("   And Gua.Idturno = "+idturno+" ");
+		consulta.append("   And Gua.Idguardia = "+idguardia+" ");
+		
+		consulta.append("   And Ins.Fechavalidacion Is Not Null ");
+		consulta.append("   And Trunc(Ins.Fechavalidacion) <= "+fecha);
+		consulta.append("   And (Ins.Fechabaja Is Null Or  Trunc(Ins.Fechabaja) > "+ fecha +" ) ");
+		consulta.append("   And gru.idgrupoguardia is not null ");	
+		consulta.append(" ) ");	
+		consulta.append(" group by grupo, idpersona, fechasuscripcion having count(*) > 1");
+		
+		try {
+			RowsContainer rc = new RowsContainer();
+			if (rc.find(consulta.toString())) {
+				if(rc.size() > 0) {
+					existePersonaEnGrupoGuardia = true;
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
+		}
+		return existePersonaEnGrupoGuardia;
+	} //getgrupoGuardia()
+	
 	/**
 	 * Obtiene las inscripcion activa de la persona en la guardia en la fecha dada
 	 */

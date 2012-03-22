@@ -54,7 +54,8 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 				ScsCabeceraGuardiasBean.C_FECHAALTA,
 				ScsCabeceraGuardiasBean.C_FECHAVALIDACION,
 				ScsCabeceraGuardiasBean.C_USUALTA,
-				ScsCabeceraGuardiasBean.C_POSICION
+				ScsCabeceraGuardiasBean.C_POSICION,
+				ScsCabeceraGuardiasBean.C_NUMEROGRUPO
 		};
 		return campos;
 	}
@@ -92,6 +93,7 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 			bean.setFechaValidacion(UtilidadesHash.getString (hash, ScsCabeceraGuardiasBean.C_FECHAVALIDACION));
 			bean.setUsuAlta(UtilidadesHash.getInteger (hash, ScsCabeceraGuardiasBean.C_USUALTA));
 			bean.setPosicion(UtilidadesHash.getInteger(hash, ScsCabeceraGuardiasBean.C_POSICION));
+			bean.setNumeroGrupo(UtilidadesHash.getInteger(hash, ScsCabeceraGuardiasBean.C_NUMEROGRUPO));
 			
 			
 			
@@ -129,6 +131,7 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsCabeceraGuardiasBean.C_FECHAVALIDACION, b.getFechaValidacion());
 			UtilidadesHash.set(hash, ScsCabeceraGuardiasBean.C_USUALTA, b.getUsuAlta());
 			UtilidadesHash.set(hash, ScsCabeceraGuardiasBean.C_POSICION, b.getPosicion());
+			UtilidadesHash.set(hash, ScsCabeceraGuardiasBean.C_NUMEROGRUPO, b.getNumeroGrupo());
 			UtilidadesHash.set(hash, ScsCabeceraGuardiasBean.C_FECHAMODIFICACION, "SYSDATE");
 			UtilidadesHash.set(hash, ScsCabeceraGuardiasBean.C_USUMODIFICACION, usuModificacion);
 			

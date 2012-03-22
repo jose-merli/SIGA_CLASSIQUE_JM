@@ -29,7 +29,8 @@ public class ScsCabeceraGuardiasBean extends MasterBean{
 	public String  fechaAlta;
 	public String  fechaValidacion;
 	public Integer  usuAlta;
-	private Integer posicion; 
+	private Integer posicion;
+	private Integer numeroGrupo;
 	
 	/* Nombre de Tabla */
 	
@@ -55,6 +56,7 @@ public class ScsCabeceraGuardiasBean extends MasterBean{
 	static public final String  C_FECHAALTA = 		"FECHAALTA";
 	static public final String  C_FECHAVALIDACION = 		"FECHAVALIDACION";
 	static public final String  C_POSICION = 		"POSICION";
+	static public final String  C_NUMEROGRUPO = 		"NUMEROGRUPO";
 	static public final String  C_USUALTA = 		"USUALTA";
 	
 	public String getComenSustitucion() {
@@ -207,6 +209,11 @@ public class ScsCabeceraGuardiasBean extends MasterBean{
 	public void setFechaValidacion(String fechaValidacion) {
 		this.fechaValidacion = fechaValidacion;
 	}
-	
+	public Integer getNumeroGrupo() {
+		return numeroGrupo;
+	}
+	public void setNumeroGrupo(Integer numeroGrupo) {
+		this.numeroGrupo = numeroGrupo;
+	}
 	
 }

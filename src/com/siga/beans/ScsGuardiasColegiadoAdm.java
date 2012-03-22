@@ -457,6 +457,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			consulta+= " ,guard."+ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS;
 			consulta+= " ,guard."+ScsCabeceraGuardiasBean.C_IDPERSONA;
 			consulta+= " ,guard."+ScsCabeceraGuardiasBean.C_POSICION;
+			consulta+= " ,guard."+ScsCabeceraGuardiasBean.C_NUMEROGRUPO;
 			//consulta+= " ,F_SIGA_TIENE_ACTS_VALIDADAS(guard.IDINSTITUCION,guard.IDTURNO,guard.IDGUARDIA,guard.IDCALENDARIOGUARDIAS,guard.IDPERSONA,guard.FECHAINICIO) AS ACT_VALIDADAS";
 			consulta+= " ,(SELECT T.NOMBRE FROM SCS_TURNO T WHERE T.IDINSTITUCION=guard.IDINSTITUCION AND  T.IDTURNO=guard.IDTURNO) AS NOMTURNO";
 			consulta+= " ,(SELECT G.NOMBRE FROM SCS_GUARDIASTURNO G WHERE G.IDINSTITUCION=guard.IDINSTITUCION AND  G.IDTURNO=guard.IDTURNO AND  G.IDGUARDIA=guard.IDGUARDIA) AS NOMGUARDIA";

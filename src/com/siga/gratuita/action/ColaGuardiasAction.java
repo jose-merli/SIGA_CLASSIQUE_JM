@@ -7,7 +7,10 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
@@ -349,6 +352,7 @@ public class ColaGuardiasAction extends MasterAction {
 		ColaGuardiasForm form = (ColaGuardiasForm) formulario;
 		ScsGrupoGuardiaColegiadoAdm admGrupoColegiado = new ScsGrupoGuardiaColegiadoAdm(usr);
 		ScsGrupoGuardiaAdm admGrupo = new ScsGrupoGuardiaAdm(usr);
+		ScsInscripcionGuardiaAdm inscrpAdm = new ScsInscripcionGuardiaAdm(usr);
 		String a = form.getDatosModificados();
 		
 		if (a.length() < 0) {
@@ -397,9 +401,22 @@ public class ColaGuardiasAction extends MasterAction {
 						numeroGrupo, 
 						orden, 
 						idGrupoGuardiaColegiado);
+					
+					if(inscrpAdm.getGrupoGuardia(idInstitucion,idTurno,idGuardia,form.getFechaConsulta())){
+						throw new SIGAException ("messages.grupoguardiacolegiado.existepersonagrupo");
+					}
+					
+					if(inscrpAdm.getOrdenGuardia(idInstitucion,idTurno,idGuardia,form.getFechaConsulta())){
+						throw new SIGAException ("messages.grupoguardiacolegiado.existeordengrupo");
+					}
+					
 				}
 			}
 			tx.commit();
+			
+		}catch (SIGAException e) { //Se lanza la excepción para lanzar una alerta al usuario únicamente. 
+			throwExcp(e.getLiteral(), new String[] { "modulo.gratuita" }, e, tx);
+		
 		} catch (Exception e) {
 			throwExcp("messages.updated.error", new String[] { "modulo.gratuita" }, e, tx);
 			
