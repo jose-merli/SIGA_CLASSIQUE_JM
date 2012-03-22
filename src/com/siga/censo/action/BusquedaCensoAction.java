@@ -1304,7 +1304,11 @@ public class BusquedaCensoAction extends MasterAction {
 				miForm.setProvincia((String)infoCliente.get("IDPROVINCIA"));
 				miForm.setPais((String)infoCliente.get("IDPAIS"));
 				miForm.setPoblacion((String)infoCliente.get("IDPOBLACION"));
-				miForm.setPoblacionExt((String)infoCliente.get("POBLACION"));
+				if(infoCliente.get("IDPOBLACION")!=null && !((String)infoCliente.get("IDPOBLACION")).equals("")){
+					miForm.setPoblacionExt("");
+				} else {
+					miForm.setPoblacionExt((String)infoCliente.get("POBLACION"));
+				}
 				miForm.setDireccion((String)infoCliente.get("DIR_PROFESIONAL"));
 				miForm.setCodPostal((String)infoCliente.get("COD_POSTAL"));
 				miForm.setSexo((String)infoCliente.get("SEXO"));
