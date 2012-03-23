@@ -20,6 +20,7 @@
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.*,java.util.*"%>
+<%@ page import="com.siga.beans.ConModuloBean"%>
 
 <!-- JSP -->
 <%
@@ -57,7 +58,7 @@
 <body onLoad="ajusteAlto('resultado');">
 
 <!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
-
+<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 
 <html:form action="/FAC_ConsultaMorosos.do" method="POST"
 	target="resultado">
@@ -189,7 +190,14 @@
 		 boton una funcion que abajo se reescribe. Los valores asociados separados por comas
 		 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
 	-->
-<siga:ConjBotonesBusqueda botones="B" />
+<siga:ConjBotonesBusqueda botones="B, CON" />
+
+<html:form action="/CON_RecuperarConsultas" method="POST" target="mainWorkArea">
+	<html:hidden property="idModulo" value="<%=ConModuloBean.IDMODULO_FACTURACION%>"/>
+	<html:hidden property="modo" value="inicio"/>
+	<html:hidden property="accionAnterior" value="${path}"/>
+
+</html:form>
 
 
 <!-- FIN: BOTONES BUSQUEDA -->
@@ -286,6 +294,12 @@
 				document.forms[0].target="resultado";	
 				document.forms[0].submit();	
 			}
+		}
+
+		function consultas() 
+		{		
+			document.RecuperarConsultasForm.submit();
+			
 		}
 		
 			
