@@ -2873,13 +2873,19 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			String sociedadSJ = (String)request.getParameter("sociedadSJ");  
 			String sociedadSP = (String)request.getParameter("sociedadSP");
 			
+			String tipoIdentificacionBloqueada = (String)request.getParameter("tipoIdentificacionBloqueada");  
+			
 			if 	((sociedadSJ!=null && sociedadSJ.equals("1"))||(sociedadSP!=null && sociedadSP.equals("1")))
 				beanCli.setCaracter("S");
 			else
 				beanCli.setCaracter("P");
 			
 			CenPersonaAdm admPer = new CenPersonaAdm(this.usrbean);
-			CenPersonaBean beanPer = (CenPersonaBean) admPer.hashTableToBean(hashDatosGenerales);			
+			CenPersonaBean beanPer = (CenPersonaBean) admPer.hashTableToBean(hashDatosGenerales);
+			if(beanPer.getIdTipoIdentificacion()==null && tipoIdentificacionBloqueada!= null )
+			{
+				beanPer.setIdTipoIdentificacion(new Integer(tipoIdentificacionBloqueada));
+			}
 			return insertNoColegiado(beanPer, beanCli, request, request.getParameter("continuarAprobacion"));
 		}
 		catch (SIGAException e) { 

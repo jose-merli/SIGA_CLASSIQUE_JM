@@ -183,6 +183,7 @@ public class DatosGeneralesAction extends MasterAction {
 			//Para saber si debemos cargar en la pestanha el jsp de colegiados/personal o el de no colegiados de Sociedad SJ:
 			String tipo = request.getParameter("tipo");
 			List<CenTipoSociedadBean> alTipos;
+			List<CenTipoSociedadBean> alTiposJY;
 			CenTipoSociedadAdm admSociedades = new CenTipoSociedadAdm(this.getUserBean(request));
 			//Si tipo es 1 su uso es para saber si se muestra la pantalla de editar colegiado o por contra se usa la pantalla de no colegiodos
 			//Si su valor no es 1 y es una letra tipo se usa para cargar el combo de Tipo Sociedades			
@@ -190,21 +191,30 @@ public class DatosGeneralesAction extends MasterAction {
 			{
 				request.setAttribute("tipo",tipo);
 				miform.setTipo(tipo);
+				
+				alTiposJY = admSociedades.select("where letracif='J' or letracif='Y'");
+				miform.setTiposJY(alTiposJY);
+				
 				if (tipo.equalsIgnoreCase("J") || tipo.equalsIgnoreCase("Y")) {
-					alTipos = admSociedades.select("where letracif='J' or letracif='Y'");
+					alTipos = admSociedades.select("");
 				} else if(tipo.equalsIgnoreCase("A") || tipo.equalsIgnoreCase("B") || tipo.equalsIgnoreCase("F") || tipo.equalsIgnoreCase("G")){
-					alTipos = admSociedades.select("where letracif='" + tipo + "'");
-				}else
+					alTipos = admSociedades.select("");
+					//alTipos = admSociedades.select("where letracif='" + tipo + "'");
+				}
+				else
 				{
 					tipo = "0";
-					alTipos = admSociedades.select("where letracif='" + tipo + "'");
+					//alTipos = admSociedades.select("where letracif='" + tipo + "'");
+					alTipos = admSociedades.select("");
 				}
 				if (alTipos == null) {
 					alTipos = new ArrayList<CenTipoSociedadBean>();
 				}
 				//miform.setTipos(new ArrayList<CenTipoSociedadBean>());
 				miform.setTipos(alTipos);
-			}else{				
+			}else{	
+				alTiposJY = admSociedades.select("where letracif='J' or letracif='Y'");
+				miform.setTiposJY(alTiposJY);
 				alTipos = admSociedades.select("");
 				miform.setTipos(alTipos);
 			}
@@ -467,12 +477,15 @@ public class DatosGeneralesAction extends MasterAction {
 		
 			// para los datos anteriores
 			Hashtable datosGeneralesAnteriores = new Hashtable();
-			if (resultado!=null && resultado.size()>0) {
+			if (resultado!=null && resultado.size()>0) {				
 				request.setAttribute("CenResultadoDatosGenerales",resultado);
 				datosGeneralesAnteriores = (Hashtable) resultado.get(0);
 				// guardo el idpersona y el idinstitucion para la consulta de comparacion
 				datosGeneralesAnteriores.put(CenPersonaBean.C_IDPERSONA,miform.getIdPersona());
 				datosGeneralesAnteriores.put("IDINSTITUCION",miform.getIdInstitucion());
+				String primeraLetraCif =(String)datosGeneralesAnteriores.get("NIFCIF");
+				primeraLetraCif = primeraLetraCif.substring(0, 1);
+				request.setAttribute("primeraLetraCif",primeraLetraCif);
 			}
 			
 			// para saber si es colegiado
@@ -557,6 +570,9 @@ public class DatosGeneralesAction extends MasterAction {
 				// guardo el idpersona y el idinstitucion para la consulta de comparacion
 				datosGeneralesAnteriores.put(CenPersonaBean.C_IDPERSONA,miform.getIdPersona());
 				datosGeneralesAnteriores.put("IDINSTITUCION",miform.getIdInstitucion());
+				String primeraLetraCif =(String)datosGeneralesAnteriores.get("NIFCIF");
+				primeraLetraCif = primeraLetraCif.substring(0, 1);
+				request.setAttribute("primeraLetraCif",primeraLetraCif);
 			}
 			
 			// para saber si es colegiado
@@ -1771,6 +1787,11 @@ public class DatosGeneralesAction extends MasterAction {
 			hashNoColegiado.put(CenNoColegiadoBean.C_SOCIEDADSJ,sociedadSJ);
 			hashNoColegiado.put(CenNoColegiadoBean.C_SOCIEDADSP,sociedadSP);
 			String tipo = ClsConstants.COMBO_TIPO_PERSONAL;
+			String tipoBloqueado = request.getParameter("tipoBloqueado");
+			if (miForm.getTipo()==null || miForm.getTipo().equals(""))
+			{
+				miForm.setTipo(tipoBloqueado);
+			}
 			if (miForm.getTipo()!=null && !miForm.getTipo().equals(""))
 				tipo = miForm.getTipo();
 			hashNoColegiado.put(CenNoColegiadoBean.C_TIPO,tipo);
@@ -2054,6 +2075,12 @@ public class DatosGeneralesAction extends MasterAction {
 		    
 		    String tipoOriginal = request.getParameter("tipoOriginal");
 		    String tipoComboOriginal = request.getParameter("tipoIdentificacion");
+		    String tipoIdentificacionBloqueada = request.getParameter("tipoIdentificacionBloqueada");
+		    
+		    if(tipoComboOriginal==null || tipoComboOriginal.equals(""))
+		    {
+		    	tipoComboOriginal = tipoIdentificacionBloqueada;
+		    }
 		    
 		    if(miForm.getTipo()!= null && miForm.getTipo().equals("Y"))
 		    	tipoOriginal="Y";
@@ -2061,7 +2088,7 @@ public class DatosGeneralesAction extends MasterAction {
 		    	tipoOriginal="J";
 
 		    // Si tipoComboOriginal es 50 significa que el valor del combo seleccionado es Otro
-		    // SI tipoComboOriginal es 20 significa que el valor del combo seleccionado es CIF 
+		    // SI tipoComboOriginal es 20 significa que el valor del combo seleccionado es CIF
 		    if(tipoComboOriginal.equals("50"))
 		    	tipoOriginal="0";
 		    else if(!tipoOriginal.equals("Y"))
@@ -2075,6 +2102,8 @@ public class DatosGeneralesAction extends MasterAction {
 		    	if(tipoOriginal!=null)
 		    	{
 		    		tipoOriginal=tipoOriginal.substring(0,1);
+		    		if(tipoComboOriginal.equals("20") && miForm.getTipoJY().equals("Y"))
+		    			tipoOriginal="Y";
 		    		request.setAttribute("tipo",tipoOriginal.toUpperCase());
 		    	}
 		    }
@@ -2171,6 +2200,7 @@ public class DatosGeneralesAction extends MasterAction {
 			}	
 			//hash.put(CenPersonaBean.C_FECHANACIMIENTO,miForm.getFechaConstitucion());
 			
+			hash.put(CenPersonaBean.C_IDTIPOIDENTIFICACION,tipoIdentificacionBloqueada);
 			
 			// Cargo una nueva tabla hash para insertar en la tabla de historico
 			Hashtable hashHist = new Hashtable();			

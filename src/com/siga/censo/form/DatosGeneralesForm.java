@@ -32,12 +32,22 @@ import com.siga.comun.vos.Vo;
     protected FormFile fotografia;
     List<CenTipoSociedadBean> tipos;
     
+    List<CenTipoSociedadBean> tiposJY;
+
     //List<CenTipoSociedadBean> tiposSoc;
     
 	// BLOQUE PARA EL FORMULARIO DE DATOS GENEREALES 
 
     
- 	public List<CenTipoSociedadBean> getTipos() {
+ 	public List<CenTipoSociedadBean> getTiposJY() {
+		return tiposJY;
+	}
+
+	public void setTiposJY(List<CenTipoSociedadBean> tiposJY) {
+		this.tiposJY = tiposJY;
+	}
+
+	public List<CenTipoSociedadBean> getTipos() {
 		return tipos;
 	}
 
@@ -507,6 +517,13 @@ import com.siga.comun.vos.Vo;
 	}	
 	public String getTipo	() 	{ 
 		return UtilidadesHash.getString(this.datos, "TIPO");		
+	}
+	
+	public void setTipoJY (String dato) { 
+		UtilidadesHash.set(this.datos,"TIPOJY", dato);
+	}	
+	public String getTipoJY	() 	{ 
+		return UtilidadesHash.getString(this.datos, "TIPOJY");		
 	}	
 	
 	
