@@ -1311,24 +1311,29 @@
 				<html:text name="ExpDatosGeneralesForm" size="9"  property="nif" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 
-			<td class="labelText" width="12%">
+			<td class="labelText" >
 				<siga:Idioma key="expedientes.auditoria.literal.ncolegiado"/>			
 			</td>
-			<td width="9%">
+			<td>
 				<html:text name="ExpDatosGeneralesForm" property="numColegiado" size="9" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 
-			<td class="labelText" width="7%">
+			<td class="labelText" >
 				<html:hidden name="ExpDatosGeneralesForm" property = "idPersona"/>
 				<html:hidden name="ExpDatosGeneralesForm" property = "idDireccion"/>
 				
 				<siga:Idioma key="expedientes.auditoria.literal.nombre"/>
 			</td>				
 			
-			<td class="labelTextValue" width="35%">
+			<td class="labelTextValue" >
+					<%=form.getNombre()%>
+					<%=form.getPrimerApellido()%>
+					<%=form.getSegundoApellido()%>
+			<!-- 
 				<html:text name="ExpDatosGeneralesForm" property="nombre" styleClass="boxConsulta" readonly="true"></html:text>	
 				<html:text name="ExpDatosGeneralesForm" property="primerApellido" styleClass="boxConsulta" readonly="true"></html:text>
-				<html:text name="ExpDatosGeneralesForm" property="segundoApellido" styleClass="boxConsulta" readonly="true"></html:text>														 				 																										
+				<html:text name="ExpDatosGeneralesForm" property="segundoApellido" styleClass="boxConsulta" readonly="true"></html:text>
+			-->														 				 																										
 			</td>						 			
 			<% if (bEditable) { %>			
 			<td colspan="2" align="right">				
@@ -1383,20 +1388,20 @@
 	<!-- FILA -->
 		<tr>
 			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.nif"/>
+				<siga:Idioma key="expedientes.auditoria.literal.nif"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			</td>				
-			<td width="10%">
+			<td>
 				<html:text name="ExpDatosGeneralesForm" size="9" property="nifDenunciante" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 
-			<td class="labelText" width="12%">
+			<td class="labelText" >
 				<siga:Idioma key="expedientes.auditoria.literal.ncolegiado"/>
 			</td>
-			<td width="9%">
+			<td>
 				<html:text name="ExpDatosGeneralesForm" size="9" property="campo" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 
-			<td class="labelText" width="6%">
+			<td class="labelText" >
 				<siga:Idioma key="expedientes.auditoria.literal.nombre"/>
 			</td>							
 			<td class="labelTextValor" colspan="3">
