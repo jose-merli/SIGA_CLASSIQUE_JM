@@ -17,6 +17,15 @@ import com.siga.general.MasterForm;
 */
 public class MantenimientoFacturacionForm extends MasterForm {
 	
+	
+	String borrarFact = null;
+	
+	public String getBorrarFact() {
+		return borrarFact;
+	}
+	public void setBorrarFact(String borrarFact) {
+		this.borrarFact = borrarFact;
+	}
 	/**
 	 * @return Returns the desdeRegularizacion.
 	 */

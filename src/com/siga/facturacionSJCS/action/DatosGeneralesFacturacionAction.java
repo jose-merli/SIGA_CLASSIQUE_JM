@@ -20,6 +20,7 @@ import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
@@ -46,6 +47,7 @@ import com.siga.beans.FcsHitoGeneralBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.facturacionSJCS.UtilidadesFacturacionSJCS;
 import com.siga.facturacionSJCS.form.DatosGeneralesFacturacionForm;
+import com.siga.facturacionSJCS.form.MantenimientoFacturacionForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -287,6 +289,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 		String idInstitucion = (String)request.getParameter("idInstitucion");
 		String idFacturacion = (String)request.getParameter("idFacturacion");
 		String accion = (String)request.getParameter("accion");
+		String borrar = (String)request.getParameter("borrarFact");		
 		//Datos de salida
 		Vector resultado = new Vector(); //datos a mostrar
 		Vector hitos = new Vector();
@@ -303,6 +306,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 		
 		try 
 		{
+			
 			//Traemos de base de datos la factura seleccionada, con los datos recogidos de la pestanha
 			FcsFacturacionJGAdm facturaAdm = new FcsFacturacionJGAdm (this.getUserBean(request));
 			FcsFacturacionJGBean facturaBean = (FcsFacturacionJGBean)((Vector)facturaAdm.select(consultaFact)).get(0);
@@ -350,8 +354,12 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			request.setAttribute("idEstado",UtilidadesHash.getInteger(nombreEstadoBean, FcsEstadosFacturacionBean.C_IDESTADOFACTURACION));
 			// para ver si ya se ha ejecutado
 			request.setAttribute("yaHaSidoEjecutada",new Boolean(facturaAdm.yaHaSidoEjecutada(idInstitucion,idFacturacion)));
+			if(borrar !=null && borrar.equalsIgnoreCase("S"))
+				request.setAttribute("borrar",new Boolean(true));
+			else
+				request.setAttribute("borrar",new Boolean(false));
 			
-			//para el iframe de abajo pasamos el modo por session, se borrará en la jsp
+		//para el iframe de abajo pasamos el modo por session, se borrará en la jsp
 			if (accion!=null)request.getSession().setAttribute("Modo",accion);
 			request.getSession().setAttribute("vHito",vHito);
 			
@@ -480,9 +488,19 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			
 			DatosGeneralesFacturacionForm miform = (DatosGeneralesFacturacionForm)formulario;
 			String idFacturacion = miform.getIdFacturacion();
-			String idInstitucion = usr.getLocation(); 
-			String idOrdenEstado= admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion);			
+			String idInstitucion = usr.getLocation();
+			String idEstado= miform.getIdEstado();	
+			try{
+				String  estado = (String) ((Hashtable) (new FcsFacturacionJGAdm(usr)).getEstadoFacturacion(idInstitucion, idFacturacion)).get(FcsEstadosFacturacionBean.C_IDESTADOFACTURACION);
+				if (estado!=null && estado.equals(String.valueOf(ClsConstants.ESTADO_FACTURACION_EJECUTADA)) && usr.getStrutsTrans().equalsIgnoreCase("CEN_MantenimientoFacturacion")){
+					volverGenerarFacturacion ( mapping,  formulario,  request,  response);
+				}
+			} 
+			catch (Exception e) { 
+			}	
 			
+			String idOrdenEstado= admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion);		
+				
 			tx.begin();
 			// admFac.ejecutarFacturacion(idInstitucion,idFacturacion,tx);			
 			FcsFactEstadosFacturacionBean beanEstado = null;
@@ -505,6 +523,133 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 		}					
 		return salida;
 	}
+	
+	
+	protected void volverGenerarFacturacion (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		
+		DatosGeneralesFacturacionForm miform = (DatosGeneralesFacturacionForm)formulario;
+		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+		FcsFactGrupoFactHitoAdm criterioAdm = new FcsFactGrupoFactHitoAdm(this.getUserBean(request));
+		
+		UserTransaction tx = null;
+		Vector resultadoConsulta = null;
+		String ok="";
+		try{
+			String idFacturacion = miform.getIdFacturacion();
+			String idInstitucion = usr.getLocation();
+			resultadoConsulta = guardarCriterio( mapping,  formulario,  request,  response);	
+			borrarFacturacion(idFacturacion, miform.getIdInstitucion(), idInstitucion,   formulario,  request);
+			insertar( mapping,  formulario,  request,  response);
+			if (resultadoConsulta!=null && resultadoConsulta.size()>0) {
+				Integer hito ;
+				Integer Grupofac;
+				for (int i = 0; i < resultadoConsulta.size(); i++) {
+						hito = ((FcsFactGrupoFactHitoBean)resultadoConsulta.get(i)).getIdHitoGeneral();
+						Grupofac = ((FcsFactGrupoFactHitoBean)resultadoConsulta.get(i)).getIdGrupoFacturacion();
+						miform.setHito(hito.toString());
+						miform.setGrupoF(Grupofac.toString());
+					insertarCriterio ( mapping,  formulario,  request,  response);	
+				}	
+			}
+
+		} 
+		catch (Exception e) { 
+			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,tx); 
+		}
+	}
+	protected Vector guardarCriterio (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		
+		DatosGeneralesFacturacionForm miform = (DatosGeneralesFacturacionForm)formulario;
+		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+		FcsFactGrupoFactHitoAdm criterioAdm = new FcsFactGrupoFactHitoAdm(this.getUserBean(request));
+		
+		UserTransaction tx = null;
+		Vector resultadoConsulta = null;
+		try{
+		    
+			// vemos si venimos de previsiones
+		    String prevision = "";
+		    if (usr.getStrutsTrans().equalsIgnoreCase("FCS_MantenimientoPrevisiones")) {
+				prevision = "S";
+			} else if (usr.getStrutsTrans().equalsIgnoreCase("CEN_MantenimientoFacturacion")) {
+				prevision = "N";	
+			}
+			
+			// RGG 25/04/2005 Si venimos de prevision no comprobamos esto
+			if (prevision==null || !prevision.equals("S")) {
+				
+				//comprobamos que no exista un criterio igual
+				String consulta = " where "+  
+			    FcsFactGrupoFactHitoBean.C_IDFACTURACION + "=" + (String) miform.getIdFacturacion() +
+				" and " + FcsFactGrupoFactHitoBean.C_IDINSTITUCION + "=" + (String) usr.getLocation();
+				
+				resultadoConsulta = criterioAdm.select(consulta);
+				
+			}
+			
+		} 
+		catch (Exception e) { 
+			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,tx); 
+		}
+		return resultadoConsulta;
+	}
+	
+	protected String borrarFacturacion(String idFacturacion, String idInstitucionRegistro, String idInstitucionUsuario, MasterForm formulario, HttpServletRequest request) throws SIGAException {
+		
+		String result="error";		
+		boolean correcto=false;		
+		Hashtable hash = new Hashtable();		
+		Vector camposOcultos = new Vector();
+		UserTransaction tx = null;
+		
+		try{
+			// Obtengo usuario y creo manejadores para acceder a las BBDD
+			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			
+			// Obtengo los datos del formulario		
+			//MantenimientoFacturacionForm miForm = (MantenimientoFacturacionForm)formulario;		
+
+			
+			//Vector fila = miForm.getDatosTablaOcultos(0);
+
+				
+			FcsFacturacionJGAdm adm = new FcsFacturacionJGAdm(this.getUserBean(request));
+
+			// Recupero el nombre de los ficheros asociados a la facturacion
+			Hashtable nombreFicheros = UtilidadesFacturacionSJCS.getNombreFicherosFacturacion(new Integer(idInstitucionRegistro), new Integer(idFacturacion), this.getUserBean(request));
+
+			// Comienzo control de transacciones 
+			tx = usr.getTransactionPesada();			
+			tx.begin();
+
+			Object[] param_in = new Object[2];
+	 		String resultadoPl[] = new String[2];
+	 		//Parametros de entrada del PL
+	        HttpSession ses = (HttpSession)request.getSession();
+			param_in[0] = idInstitucionRegistro;			
+			param_in[1] = idFacturacion;
+	 		//Ejecucion del PL
+			resultadoPl = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_BORRAR_FACTURACION (?,?,?,?)}", 2, param_in);
+			correcto = ((String)resultadoPl[0]).equals("0");
+			if (!correcto) 
+				throw new SIGAException("messages.deleted.error");
+
+			tx.commit();
+
+			// borrado fisico de ficheros del servidor web
+			UtilidadesFacturacionSJCS.borrarFicheros(new Integer(idInstitucionRegistro), nombreFicheros, this.getUserBean(request));
+
+			request.setAttribute("descOperation","messages.deleted.success");				
+		 }
+		 catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,tx);
+	   	 }
+		 if (correcto) 
+		 	return exitoRefresco("messages.deleted.success",request);
+		 else 
+		 	return exitoRefresco("messages.deleted.error",request);
+	}
+
 	
 	/** 
 	 *  Funcion que implementa la accion ver

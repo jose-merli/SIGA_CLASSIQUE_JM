@@ -44,7 +44,16 @@
 	
 	Boolean yaHaSidoEjecutada = (Boolean) request.getAttribute("yaHaSidoEjecutada");
 	boolean bYaHaSidoEjecutada = (yaHaSidoEjecutada!=null)?yaHaSidoEjecutada.booleanValue():false;
-	
+	boolean bBorrar = false;
+	try{
+		Boolean borrar = (Boolean)request.getAttribute("borrar");
+		 bBorrar = (borrar!=null)?borrar.booleanValue():false;
+	}
+	catch(Exception e){
+		
+		 bBorrar = false;
+	}
+
 	// Para saber hacia donde volver
 	String busquedaVolver = (String) request.getSession().getAttribute("SJCSBusquedaFacturacionTipo");
 	if (busquedaVolver==null) {
@@ -67,12 +76,13 @@
 	String clase = "box", desactivado="false";
 	boolean consulta = false;
 	boolean readonly = false;
-
+	
 	try
 	{
 		modo = (String)request.getAttribute("modo");
 		idInstitucion = (String)request.getAttribute("idInstitucion");
 		idFacturacion = (String)request.getAttribute("idFacturacion");
+			
 		nombreInstitucion = (String)request.getAttribute("nombreInstitucion");
 		strutTrans = (String)request.getAttribute("strutTrans");
 		prevision = ((String)request.getSession().getAttribute("prevision"));
@@ -86,7 +96,7 @@
 			facturaBean = (FcsFacturacionJGBean)request.getSession().getAttribute("DATABACKUP");
 			
 			accion="Modificar";
-			destino = "submitArea2";
+			destino = "submitArea";
 			estado = (String)request.getAttribute("estado");
 			idEstado = (Integer)request.getAttribute("idEstado");
 			fechaEstado = GstDate.getFormatedDateShort("",(String)request.getAttribute("fechaEstado"));
@@ -169,7 +179,8 @@
 			} else {
 				botones = "LC,GM";
 			}
-			
+			if(idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_EJECUTADA && bBorrar)
+				botones += ",EF";
 			 
 		}
 	}
@@ -230,7 +241,7 @@
 				
 				if ((compararFecha(document.forms[0].fechaInicio,document.forms[0].fechaFin)==2)) {
 						document.forms[0].modo.value = "<%=accion%>";
-						document.forms[0].target = "submitArea2";
+						document.forms[0].target = "submitArea";
 						document.forms[0].submit();
 				}else {
 					alert('<siga:Idioma key="gratuita.altaRetencionesIRPF.literal.alert1"/>');
@@ -263,20 +274,21 @@
 			document.forms[0].submit();
 		}
 		function refrescarLocal(){
+			alert("ayy");
 			buscar();
 		}
 		function accionListaConsejo()
 		{
 			sub();
 			document.forms[0].modo.value="listaConsejo";
-			document.forms[0].target = "submitArea2";
+			document.forms[0].target = "submitArea";
 			document.forms[0].submit();
 		}
 		
 		function descargaLogFacturacion()
 		{
 			document.forms[0].modo.value="descargarLog";
-			document.forms[0].target = "submitArea2";
+			document.forms[0].target = "submitArea";
 			document.forms[0].submit();
 		}
 
@@ -288,11 +300,11 @@
 			<% } else { %>
 				document.forms[0].modo.value="ejecutarRegularizacion";
 			<% } %>
-			document.forms[0].target = "submitArea2";
+			document.forms[0].target = "submitArea";
 			document.forms[0].submit();
 			//var f = document.forms[0].name;
 			// con pantalla de espera
-			//document.frames.submitArea2.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=messages.factSJCS.procesandoFacturacion';
+			//document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=messages.factSJCS.procesandoFacturacion';
 		}
 
 		// Funcion asociada a boton Generar Excels
@@ -307,7 +319,7 @@
 
 		function accionGenerarInforme() {
 			document.forms[0].modo.value="descargaFicheroFact";
-			document.forms[0].target = "submitArea2";
+			document.forms[0].target = "submitArea";
 			document.forms[0].submit();
 			/*sub();
 			var f = document.getElementById("InformesGenericosForm");
@@ -321,7 +333,7 @@
 
 		function accionInformeIncidencias() {
 			document.forms[0].modo.value="descargarInformeIncidencias";
-			document.forms[0].target = "submitArea2";
+			document.forms[0].target = "submitArea";
 			document.forms[0].submit();
 		}
 		</script>	
@@ -340,7 +352,7 @@
 		</tr>
 	</table>
 	
-	<html:form action="/FCS_DatosGeneralesFacturacion.do" method="POST" target="submitArea2">
+	<html:form action="/FCS_DatosGeneralesFacturacion.do" method="POST" target="submitArea">
 		<html:hidden property="modo" value=""/>
 		<html:hidden property ="actionModal" value = ""/>
 		<html:hidden property ="idFacturacion" value = "<%=idFacturacion%>"/>
@@ -456,7 +468,7 @@
 			
 <!-- INICIO: SUBMIT AREA -->
 <!-- Obligatoria en todas las páginas-->
-	<iframe name="submitArea2"  src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<iframe name="submitArea"  src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 <!-- FIN: SUBMIT AREA -->
 
 </body>

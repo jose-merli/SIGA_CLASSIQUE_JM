@@ -122,6 +122,8 @@ public class MantenimientoFacturacionAction extends MasterAction {
 			String idFacturacion = "";
 //			String idInstitucionRegistro = "";
 			String idInstitucionUsuario = "";
+			String borrarFact = "";
+			
 
 	     	// OBTENGO VALORES DEL FORM
 			// solamente el 0 porque es el unico que he pulsado
@@ -132,15 +134,18 @@ public class MantenimientoFacturacionAction extends MasterAction {
 				idFacturacion = (String)fila.get(0);
 //				idInstitucionRegistro = (String)fila.get(1);
 				idInstitucionUsuario = (String)fila.get(2);
+				borrarFact =  (String)fila.get(3);
 				}else{
 					idFacturacion = "" + miform.getIdFacturacion();
 					idInstitucionUsuario = "" + miform.getIdInstitucion();
+					borrarFact =  "" + miform.getBorrarFact();
 				}
 			}
 			else {
 				miform.setDesdeRegularizacion("no");
 				idFacturacion = "" + miform.getIdFacturacion();
 				idInstitucionUsuario = "" + miform.getIdInstitucion();
+				borrarFact =  "" + miform.getBorrarFact();
 			}
 			
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
@@ -150,6 +155,7 @@ public class MantenimientoFacturacionAction extends MasterAction {
 			datosFacturacion.put("accion",modo);
 			datosFacturacion.put("idFacturacion",idFacturacion);
 			datosFacturacion.put("idInstitucion",idInstitucionUsuario);
+			datosFacturacion.put("borrarFact",borrarFact);
 			request.setAttribute("datosFacturacion", datosFacturacion);		
 			destino="administracion";
 		}

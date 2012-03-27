@@ -202,10 +202,12 @@
 			boolean borrarestado=false;
 			boolean borrargrupo=false;
 			// permisos de acceso
-			String permisos = "C";	
+			String permisos = "C";
+			String borrar = "N";
 			
 			if (borrarporGrupo.equals("1")&& borrarporEstado.equals("1")){//se puede borrar por grupo y por estado
-				permisos += ",B";			
+				permisos += ",B";
+				borrar = "S";
 			}
 			
 			if (idInstitucion.equals(usrbean.getLocation()) && (idestado.equals(new Integer(ClsConstants.ESTADO_FACTURACION_ABIERTA).toString()) 
@@ -233,6 +235,8 @@
 					<input type="hidden" name="oculto<%=cont %>_1" value="<%=idFacturacion %>">
 					<input type="hidden" name="oculto<%=cont %>_2" value="<%=idInstitucion %>">
 					<input type="hidden" name="oculto<%=cont %>_3" value="<%=usrbean.getLocation() %>">
+					<input type="hidden" name="oculto<%=cont %>_4" value="<%=borrar %>">
+
 
 					<%=nomInstitucion %>
 				</td>

@@ -24,6 +24,7 @@ public class DatosGeneralesFacturacionForm extends MasterForm {
 	private String ejg = "EJG";
 	private String soj = "SOJ";
 	private String idInstitucion = "IDINSTITUCION";
+	private String idEstado=null;
 	
 	
 	/**
@@ -31,6 +32,12 @@ public class DatosGeneralesFacturacionForm extends MasterForm {
 	 */
 	public String getIdInstitucion() {
 		return (String)this.datos.get(idInstitucion);
+	}
+	public String getIdEstado() {
+		return idEstado;
+	}
+	public void setIdEstado(String idEstado) {
+		this.idEstado = idEstado;
 	}
 	/**
 	 * @param ejg The idInstitucion to set.
