@@ -53,6 +53,8 @@ import com.siga.gratuita.form.DefinicionRemesaResolucionesCAJGForm;
 import com.siga.gratuita.form.DefinirEJGForm;
 import com.siga.gratuita.pcajg.resoluciones.ResolucionesFicheroAbstract;
 import com.siga.informes.MasterWords;
+import com.siga.ws.CajgConfiguracion;
+import com.siga.ws.i2055.ResolucionesAsigna;
 
 
 
@@ -102,6 +104,8 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 				mapDestino = descargar(mapping, miForm, request, response, false);			
 			} else if (accion.equalsIgnoreCase("descargarLog")) {
 				mapDestino = descargar(mapping, miForm, request, response, true);
+			} else if (accion.equalsIgnoreCase("obtenerResoluciones")) {
+				mapDestino = obtenerResoluciones(mapping, miForm, request, response);
 			} else {
 				return super.executeInternal(mapping, formulario, request, response);
 			}
@@ -125,6 +129,33 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 		}
 		return mapping.findForward(mapDestino);
 	}
+	
+	
+
+	private String obtenerResoluciones(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		request.getSession().removeAttribute("DATAPAGINADOR");
+	
+		try {
+			ResolucionesAsigna resolucionesAsigna = new ResolucionesAsigna();
+			int numeroResoluciones = resolucionesAsigna.obtenerResoluciones(getUserBean(request), getIDInstitucion(request).toString());
+			String mensaje = null;
+			if (numeroResoluciones == 0) {//no se han obtenido nuevas resoluciones
+				mensaje = "message.remesaResolucion.asigna.noResoluciones";
+				mensaje = UtilidadesString.getMensajeIdioma(getUserBean(request), mensaje);
+			} else {
+				mensaje = "message.remesaResolucion.asigna.numeroResoluciones";			
+				mensaje = UtilidadesString.getMensaje(mensaje, new String[]{String.valueOf(numeroResoluciones)}, getUserBean(request).getLanguage());
+			}
+			request.setAttribute("mensajeResoluciones", mensaje);
+			
+		} catch (Exception e) {
+			throwExcp("messages.general.error", e, null);
+		}
+				
+		return buscarPor(mapping, formulario, request, response);
+	}
+
+
 
 	/**
 	 * Rellena un hash con los valores recogidos del formulario y realiza la
@@ -465,10 +496,7 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 			DefinicionRemesaResolucionesCAJGForm miForm = (DefinicionRemesaResolucionesCAJGForm) formulario;
 			String idInstitucion = miForm.getIdInstitucion();
 			
-		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//			ReadProperties rp = new ReadProperties("SIGA.properties");
-			String rutaAlmacen = rp.returnProperty("cajg.directorioFisicoCAJG") + rp.returnProperty("cajg.directorioCAJGJava");				
-			rutaAlmacen += File.separator + idInstitucion + File.separator + rp.returnProperty("cajg.directorioRemesaResoluciones");
+			
 			
 			CajgRemesaResolucionAdm resolucionAdm = new CajgRemesaResolucionAdm(this.getUserBean(request));
 
@@ -500,11 +528,8 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 			
 			cajgRemesaResolucionBean.setIdRemesaResolucion(Integer.valueOf(idRemesaResolucion));			
 			cajgRemesaResolucionBean.setIdTipoRemesa(Integer.valueOf(miForm.getIdTipoRemesa()));
-			
-			
-			File parentFile = new File(rutaAlmacen, idRemesaResolucion);
-			deleteFiles(parentFile);			
-			parentFile.mkdirs();
+						
+			File parentFile = getRutaAlmacenFichero(idInstitucion, idRemesaResolucion);			
 						
 	    	InputStream stream = formFile.getInputStream();
 	    	
@@ -549,9 +574,26 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 
 	/**
 	 * 
+	 * @param idInstitucion
+	 * @return
+	 */
+	public static File getRutaAlmacenFichero(String idInstitucion, String idRemesaResolucion) {
+		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String rutaAlmacen = rp.returnProperty("cajg.directorioFisicoCAJG") + rp.returnProperty("cajg.directorioCAJGJava");				
+		rutaAlmacen += File.separator + idInstitucion + File.separator + rp.returnProperty("cajg.directorioRemesaResoluciones");
+		
+		File parentFile = new File(rutaAlmacen, idRemesaResolucion);
+		deleteFiles(parentFile);			
+		parentFile.mkdirs();
+		
+		return parentFile;
+	}
+
+	/**
+	 * 
 	 * @param parentFile
 	 */
-	private void deleteFiles(File parentFile) {
+	private static void deleteFiles(File parentFile) {
 		if (parentFile != null) {
 			File[] files = parentFile.listFiles();
 			if (files != null) {
@@ -761,11 +803,8 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 				
 		if (rowsContainer != null && rowsContainer.size() > 0) {
 			generaLog = true;
-			File logFile = new File(file.getParent(), "log");
-			deleteFiles(logFile);
-			logFile.mkdirs();
-			logFile = new File(logFile, nombreFichero + "_errores.txt");
-			
+			File logFile = getLogFile(file.getParentFile(), nombreFichero);
+						
 			FileWriter fileWriter = new FileWriter(logFile);
 			BufferedWriter bw = new BufferedWriter(fileWriter);
 			String descripcion, parametrosError, codigo, numeroLinea;
@@ -797,6 +836,14 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 		}
 
     	return generaLog;
+	}
+
+	public static File getLogFile(File parentFile, String nombreFichero) {
+		File logFile = new File(parentFile.getParent(), "log");
+		deleteFiles(logFile);
+		logFile.mkdirs();
+		logFile = new File(logFile, nombreFichero + "_errores.txt");
+		return logFile;
 	}
 
 	/**
@@ -916,16 +963,25 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		
-		String volver = request.getParameter("volver");
-		if (volver != null && volver.equalsIgnoreCase("SI")) {
-			request.setAttribute("VOLVER", "1");
-		} else {
-			request.setAttribute("VOLVER", "0");
-		}
-		request.getSession().removeAttribute("DATABACKUP");
-		request.getSession().removeAttribute("DATOSFORMULARIO");
-		request.getSession().removeAttribute("DATABACKUP");
-		request.getSession().removeAttribute("accion");
+		try {
+			String volver = request.getParameter("volver");
+			if (volver != null && volver.equalsIgnoreCase("SI")) {
+				request.setAttribute("VOLVER", "1");
+			} else {
+				request.setAttribute("VOLVER", "0");
+			}
+			request.getSession().removeAttribute("DATABACKUP");
+			request.getSession().removeAttribute("DATOSFORMULARIO");
+			request.getSession().removeAttribute("DATABACKUP");
+			request.getSession().removeAttribute("accion");
+		
+			int tipoCAJG = CajgConfiguracion.getTipoCAJG(getIDInstitucion(request));
+			request.setAttribute("pcajgActivo", tipoCAJG);
+		}catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
+		}					
+		
+		  
 		return "inicio";
 	}
 

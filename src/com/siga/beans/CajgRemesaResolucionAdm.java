@@ -1,10 +1,13 @@
 package com.siga.beans;
 
+import java.util.Calendar;
 import java.util.Hashtable;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
 
 public class CajgRemesaResolucionAdm extends MasterBeanAdministrador {
@@ -135,6 +138,35 @@ public class CajgRemesaResolucionAdm extends MasterBeanAdministrador {
 		}
 
 		return numeroMaximo;
+	}
+	
+	/**
+	 * Devuelve la maxima fecha de carga de un colegio o null si es la primera
+	 * @param idinstitucion
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Calendar getMaximaFechaCarga(String idinstitucion) throws ClsExceptions {
+		RowsContainer rc = null;
+		Calendar cal = null;
+
+		try {
+			rc = new RowsContainer();
+
+			String sql = "SELECT MAX(" + CajgRemesaResolucionBean.C_FECHACARGA + ") AS " + CajgRemesaResolucionBean.C_FECHACARGA +
+					" FROM " + nombreTabla + " WHERE " + CajgRemesaResolucionBean.C_IDINSTITUCION + " = " + idinstitucion;
+			if (rc.query(sql)) {
+				Row fila = (Row) rc.get(0);
+				Hashtable ht = fila.getRow();
+				if (!ht.get(CajgRemesaResolucionBean.C_FECHACARGA).equals("")) {
+					cal = UtilidadesFecha.stringToCalendar((String)ht.get(CajgRemesaResolucionBean.C_FECHACARGA));				
+				} 
+			}
+		} catch (ClsExceptions e) {
+			throw e;
+		}
+
+		return cal;
 	}
 	
 	

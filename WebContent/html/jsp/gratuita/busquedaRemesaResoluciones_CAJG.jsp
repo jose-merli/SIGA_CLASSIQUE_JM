@@ -12,10 +12,11 @@
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
 
+
 <!-- IMPORTS -->
 
 <%@ page import="com.atos.utils.UsrBean"%>
-
+<%@page import="com.siga.ws.CajgConfiguracion"%>
 
 <!-- JSP -->
 
@@ -44,8 +45,23 @@
 		}
 	}
 	
+	int pcajgActivo = 0;
+	
+	if (request.getAttribute("pcajgActivo") != null) {
+		pcajgActivo = Integer.parseInt(request.getAttribute("pcajgActivo").toString());
+	}
+	
+	String botones = "N,B,L";
+	
+	if (pcajgActivo == CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA) {
+		botones = "OR,B,L";
+	}
+	
+	
+	
 	
 %>
+
 
 <html>
 
@@ -81,6 +97,13 @@
 		      buscar();
 		 <%}%>
 		
+		}
+
+		function obtenerResoluciones() {
+			sub();
+			document.forms[0].modo.value="obtenerResoluciones";
+			//document.forms[0].target="resultado";
+			document.forms[0].submit();
 		}
 	</script>
 	<!-- INICIO: TITULO Y LOCALIZACION -->
@@ -176,7 +199,7 @@
 	
 	<!-- INICIO: BOTONES BUSQUEDA -->	
 	
-	<siga:ConjBotonesBusqueda botones="N,B,L"  titulo="gratuita.busquedaResolucionesCAJG.literal.Resoluciones" />
+	<siga:ConjBotonesBusqueda botones="<%=botones%>"  titulo="gratuita.busquedaResolucionesCAJG.literal.Resoluciones" />
 	
 	<!-- FIN: BOTONES BUSQUEDA -->
 	
@@ -251,6 +274,7 @@
 					class="frameGeneral">
 	</iframe>
 	<!-- FIN: IFRAME LISTA RESULTADOS -->	
+
 
 			
 <!-- INICIO: SUBMIT AREA -->

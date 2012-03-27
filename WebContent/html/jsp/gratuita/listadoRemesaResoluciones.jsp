@@ -88,6 +88,8 @@
 	String idTipoRemesa = request.getParameter("idTipoRemesa");
 	String action=app+"/JGR_E-Comunicaciones_RemesaResolucion.do?noReset=true&idTipoRemesa="+idTipoRemesa;
 	
+	String mensajeResoluciones = (String)request.getAttribute("mensajeResoluciones");
+	
 %>
 
 <html>
@@ -253,6 +255,13 @@
 															
 	
 	 <%}%>	
+	 
+	 
+	<%if (mensajeResoluciones != null && !mensajeResoluciones.trim().equals("")) {%>
+		<script language="JavaScript">
+			alert('<%=mensajeResoluciones%>');
+		</script>
+	<%}%>
 	 
 <!-- INICIO: SUBMIT AREA -->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>

@@ -29,7 +29,8 @@ public enum SearchButtonsConstants {
 	RENEGOCIAR ("rn","general.boton.renegociar","renegociar(true)",21),
 	NUEVO_GRUPOS ("ng","general.boton.nuevoGrupos","nuevoGrupos()",22),
 	CERRAR ("ce","general.boton.close","cerrar()",23),	
-	CONSULTAS ("con","general.boton.consultas","consultas()",24);
+	CONSULTAS ("con","general.boton.consultas","consultas()",24),
+	OBTENER_RESOLUCIONES ("or","general.boton.obtenerResoluciones","obtenerResoluciones()",25);
 	
 	
     private final String valor;   

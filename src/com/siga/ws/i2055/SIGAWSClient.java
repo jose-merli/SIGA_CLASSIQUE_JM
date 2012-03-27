@@ -226,7 +226,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 	 * 
 	 * @return
 	 */
-	private EngineConfiguration createClientConfig(UsrBean usrBean, String idInstitucion, String logDescripcion) {
+	public static EngineConfiguration createClientConfig(UsrBean usrBean, String idInstitucion, String logDescripcion) {
 		
 		SimpleProvider clientConfig = new SimpleProvider();		
 		Handler logSIGAasignaHandler = (Handler) new LogBDDHandler(usrBean, idInstitucion, logDescripcion);		
