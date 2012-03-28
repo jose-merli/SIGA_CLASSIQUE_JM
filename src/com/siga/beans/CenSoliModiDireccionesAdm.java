@@ -492,7 +492,6 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 					CenDireccionesBean beanDir = new CenDireccionesBean();
 					beanDir=(CenDireccionesBean) adminDir.hashTableToBean(dirOriginal);
 					String oldId = beanDir.getIdDireccion().toString();
-					beanDir.setIdDireccion( adminDir.getNuevoID(beanDir));
 					beanDir.setFechaBaja(GstDate.getHoyJava());
 					
 					//estableciendo los datos del tipo de direccion
