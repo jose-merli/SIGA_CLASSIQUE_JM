@@ -106,6 +106,7 @@
 		<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoContadores</listener-class></listener>
 		<listener><listener-class>com.siga.eejg.SolicitudEEJGListener</listener-class></listener>
 		<listener><listener-class>com.siga.ws.cat.RespuestasResolucionesFTPListener</listener-class></listener>
+		<listener><listener-class>com.siga.ws.i2055.ResolucionesListener</listener-class></listener>
 	-->
 	<listener>
 		<listener-class>com.siga.general.BusinessManagerListener</listener-class>
