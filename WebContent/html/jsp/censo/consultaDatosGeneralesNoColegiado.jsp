@@ -667,8 +667,10 @@ caracterParam[0] = tipoCliente;
 								{
 									 <%if (tipo.equals("J")){%>
 									 	document.forms[0].tipoJY.value = "J";
+									 	document.forms[0].tipo.value = "J";
 									 <%}else{%>
 									 	document.forms[0].tipoJY.value = "Y";
+									 	document.forms[0].tipo.value = "Y";
 									 <%}%>
 									 //mostramos el select cuyo id es soloDos
 									 document.getElementById("soloDos").style.display="block";
