@@ -416,9 +416,9 @@ caracterParam[0] = tipoCliente;
 					  document.getElementById("contadorSJ").style.display="none";			    
 			  <%}
 			  }%>
-			  if (datosGeneralesForm.tipoIdentificacion.disabled==true){
-			  	datosGeneralesForm.tipoIdentificacion.focus();
-			  }
+			  //if (datosGeneralesForm.tipoIdentificacion.disabled==true){
+			  	//datosGeneralesForm.tipoIdentificacion.focus();
+			  //}
 			}
 			
 			function presentaContador(obj)
