@@ -177,12 +177,11 @@
 			
 		if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS) || conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS) 
 				|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)){
-			opcionDireccion=true;
-			if (existeDomicilio == null || existeDomicilio.equals("S")) {
+				 opcionDireccion=true;
 				 obligatorioDireccion = true;
 				 obligatorioPoblacion = true;
 				 obligatorioCodigoPostal = true;
-			}
+			
 			if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR))
 				obligatorioParentesco = true;
 		}else if (conceptoE.equals(PersonaJGAction.EJG) || conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)){
@@ -2599,7 +2598,7 @@ function limpiarPersonaContrario() {
 		function accionGuardar(){	
 
  			document.PersonaJGForm.existeDomicilio.value = "S";
-			
+ 		
 			var lNumerosTelefonos=getDatos();				
 			if (!lNumerosTelefonos){
                  fin();
