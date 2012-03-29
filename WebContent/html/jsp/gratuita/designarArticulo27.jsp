@@ -623,7 +623,7 @@
 		}else{
 			poblacionSeleccionada = document.getElementById("poblacion").value;
 			document.getElementById("provincia").onchange();
-			window.setTimeout("recargarComboHijo()",100,"Javascript");	
+			window.setTimeout("recargarComboHijo()",500,"Javascript");	
 			document.getElementById("poblacion").value = document.busquedaCensoModalForm.poblacion.value;		
 		}
 
@@ -704,7 +704,7 @@
 					}else{
 						poblacionSeleccionada = document.getElementById("poblacion").value;
 						document.getElementById("provincia").onchange();
-						window.setTimeout("recargarComboHijo()",100,"Javascript");	
+						window.setTimeout("recargarComboHijo()",500,"Javascript");	
 						document.getElementById("poblacion").value = datosGeneralesForm.poblacion.value;		
 					}
 					document.getElementById("checkTipoDireccion_3").checked = "checked";
