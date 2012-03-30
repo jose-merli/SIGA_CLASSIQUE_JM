@@ -338,7 +338,6 @@
 				document.forms[0].existeDom.checked=true;
 	 			document.PersonaJGForm.direccion.disabled = "disabled";
 	 			document.PersonaJGForm.cp.disabled = "disabled";
-				document.forms[0].provincia.disabled = "disabled";
 				document.getElementById("desaparece").style.display="none";
 				document.getElementById("desaparecePr").style.display="none";
 				document.getElementById("desapareceCp").style.display="none";
