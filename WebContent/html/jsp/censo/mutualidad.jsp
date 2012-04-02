@@ -16,6 +16,8 @@
 <%@ taglib uri="c.tld" prefix="c"%>
 <!-- AJAX -->
 <%@ taglib uri="ajaxtags.tld" prefix="ajax" %>
+
+ 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 
 	<style>
@@ -41,6 +43,7 @@
 <script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
 <script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
 <script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
+<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
 
 
 <!--Step 3 -->
@@ -56,6 +59,13 @@
 	
 		
 	<script>
+	
+	jQuery.noConflict();
+	
+	function refrescarLocal(){
+		window.location.reload( true );
+	}
+	
 	function preAccionPoblacion(){
 		//document.getElementById("idPoblacion").value=document.MutualidadForm.idPoblacion.value;
 		//alert("document.MutualidadForm.idPoblacion.value"+document.MutualidadForm.idPoblacion.value);
@@ -73,17 +83,19 @@
 </head>
 
 
-<body  class="tablaCentralCampos" onload="cargaCombos();">
-<bean:define id="path" name="org.apache.struts.action.mapping.instance"
-	property="path" scope="request" />
+<body  class="tablaCentralCampos">
+<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request" />
+
+
 <%  
 		ArrayList idPaisSeleccionado = (ArrayList)request.getAttribute("idPaisSeleccionado");
 		ArrayList idBancoSeleccionado = (ArrayList)request.getAttribute("idBancoSeleccionado");
+		String accion = (String)request.getParameter("accion");
 	%>
 	
 
 <html:javascript formName="MutualidadForm" staticJavascript="true" />
-<html:form action="${path}"  method="POST" >
+<html:form action="${path}"  method="POST" target="submitArea">
 <html:hidden property="modo"/>
 <html:hidden property="idTipoIdentificacion"/>
 <html:hidden property="idSexo"/>
@@ -97,7 +109,6 @@
 <html:hidden property="apellido1"/>
 <html:hidden property="apellido2"/>
 <html:hidden property="fechaNacimiento"/>
-<html:hidden property="naturalDe"/>
 <html:hidden property="idSolicitud"/>
 <html:hidden property="idSolicitudAceptada"/>
 <html:hidden property="pais"/>
@@ -110,12 +121,41 @@
 <input type="hidden" name="actionModal" value="">
 
 <c:set var="estiloText" value="box" />
-<c:set var="estiloCombo" value="boxCombo" />
+<c:set var="estiloCombo" value="box" />
 <c:if test="${MutualidadForm.modo=='consulta'}">
-	<c:set var="estiloCombo" value="boxComboConsulta" />
+	<c:set var="estiloCombo" value="boxConsulta" />
 	<c:set var="estiloText" value="boxConsulta" />
 </c:if>
 
+<fieldset id="dialogoSolicitar" style="display:none">
+		<table width="99%">
+		
+			<tr>
+				<td class="labelText" width="80%">
+				
+					<c:choose>
+					<c:when test="${MutualidadForm.idTipoSolicitud=='S'}">
+						<siga:Idioma key="censo.SolicitudIncorporacionDatos.mutualidad.literal.seguroAccidentes"/>
+					</c:when>
+					<c:otherwise>
+						<siga:Idioma key="censo.SolicitudIncorporacionDatos.mutualidad.literal.planProfesional"/>
+					</c:otherwise>
+					</c:choose>
+
+				<td>
+					<html:button styleId="botonSolicitarAltaSeguro" property="idButton"onclick="return accionMostrarSolicitud();" styleClass="button">
+						<siga:Idioma key="general.boton.solicitarCompra" />
+					</html:button>
+				</td>
+			<tr>
+			<tr>
+				<td class="labelText" colspan="2">
+					<a href="http://delegaciones.mutualidadabogacia.com/MicroSiteContacto/pages/contacto.aspx" target="new"><siga:Idioma key="censo.mutualidad.literal.masInfo"/></a>
+				</td>
+			</tr>
+		</table>
+</fieldset>
+<div id="divSolicitud" style="display:none;" >
 		<c:if test="${MutualidadForm.modo=='consulta'}">
 			<siga:ConjCampos>
 				<table>
@@ -133,7 +173,7 @@
 					<c:choose>
 							
 						<c:when test="${MutualidadForm.idSolicitud==null}">
-								<td>No Solicitada mediante SIGA</td>
+								<td class="labelTextValue">No solicitada mediante SIGA</td>
 								<td colspan="6">&nbsp;</td>
 						</c:when>
 						<c:when test="${MutualidadForm.idSolicitud!=null}">
@@ -184,87 +224,59 @@
 					
 					
 					</tr>
-					
-					
-
+					<tr>
+						<td class="labelText" colspan="6">
+							<a href="http://delegaciones.mutualidadabogacia.com/MicroSiteContacto/pages/contacto.aspx" target="new"><siga:Idioma key="censo.mutualidad.literal.masInfo"/></a>
+						</td>
+					</tr>
 				</table>
 			</siga:ConjCampos>
+			<c:choose>
+			<c:when test="${MutualidadForm.idSolicitud==null && MutualidadForm.idTipoSolicitud=='P'}">
+				<p class="labelText">
+				La persona no puede solicitar el alta en la Mutualidad de la Abogacía. Puede que ya sea mutualista.<br> 
+				Compruebe que ha introducido un NIF válido y que su edad esté comprendida entre 18 y 50 años.
+				</p>
+			</c:when>
+			</c:choose>
 		</c:if>
 
 		<c:if test="${MutualidadForm.modo!='consulta' || MutualidadForm.idSolicitud!=null}">
 
 		<siga:ConjCampos>
-			<table>
+			<table width="90%">
+
 				<tr>
-					<td width="20%"></td>
-					<td width="15%"></td>
-					<td width="15%"></td>
-					<td width="15%"></td>
-					<td width="20%"></td>
-					<td width="15%"></td>
+					<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.nifcif" /></td>
+					<td class="labelTextValor"><c:out value="${MutualidadForm.tipoIdentificacion}" />&nbsp;<c:out value="${MutualidadForm.numeroIdentificacion}" /></td>
+
+					<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.nombre"/></td>
+					<td class="labelTextValor" colspan="3">
+						<c:out value="${MutualidadForm.tratamiento}" />
+						<c:out value="${MutualidadForm.nombre}" />
+						<c:out value="${MutualidadForm.apellido1}" />
+						<c:out value="${MutualidadForm.apellido2}" />
+					</td>
 				</tr>
 
 				<tr>
-					<td class="labelText"><siga:Idioma
-							key="censo.SolicitudIncorporacion.literal.nifcif" />
-					</td>
-					<td class="labelTextValor"><c:out
-							value="${MutualidadForm.tipoIdentificacion}" />&nbsp;<c:out
-							value="${MutualidadForm.numeroIdentificacion}" /></td>
-
-
-					<td class="labelText"><siga:Idioma
-							key="censo.consultaDatosGenerales.literal.sexo" />
-					</td>
-					<td class="labelTextValor"><c:out
-							value="${MutualidadForm.sexo}" /></td>
-					<td class="labelText"><siga:Idioma
-							key="censo.SolicitudIncorporacion.literal.tratamiento" />
-					</td>
-					<td class="labelTextValor"><c:out value="${MutualidadForm.tratamiento}" />
-					</td>
-				</tr>
-				<tr>
-
-					<td class="labelText"><siga:Idioma
-							key="censo.SolicitudIncorporacion.literal.nombre"/>
-					</td>
-					<td class="labelTextValor"><c:out value="${MutualidadForm.nombre}" />
-					</td>
-
-					<td class="labelText"><siga:Idioma
-							key="censo.SolicitudIncorporacion.literal.apellido1" />
-					</td>
-					<td class="labelTextValor"><c:out value="${MutualidadForm.apellido1}" />
-					</td>
-
-					<td class="labelText"><siga:Idioma
-							key="censo.SolicitudIncorporacion.literal.apellido2" />
-					</td>
-					<td class="labelTextValor"><c:out value="${MutualidadForm.apellido2}" />
-					</td>
-				</tr>
-				<tr>
-					<td class="labelText"><siga:Idioma
-							key="censo.SolicitudIncorporacion.literal.fechaNacimiento" />
-					</td>
-					<td class="labelTextValor">
-
-					<c:out value="${MutualidadForm.fechaNacimiento}" />
-					</td>
-
-
-					<td class="labelText"><siga:Idioma
-							key="censo.SolicitudIncorporacion.literal.naturalDe" />
-					</td>
-					<td class="labelTextValor"><c:out value="${MutualidadForm.naturalDe}" />
-					</td>
-
-					<td class="labelText"><siga:Idioma
-							key="censo.SolicitudIncorporacion.literal.estadoCivil" />
-					</td>
+					<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.estadoCivil" /></td>
 					<td class="labelTextValor"><c:out value="${MutualidadForm.estadoCivil}" />
+					
+					<td class="labelText"><siga:Idioma key="censo.consultaDatosGenerales.literal.sexo" /> </td>
+					<td class="labelTextValor" width="15%">
+					<c:choose>
+					<c:when test="${MutualidadForm.sexo=='M'}">
+						<siga:Idioma key="censo.sexo.mujer" />
+					</c:when>
+					<c:otherwise>
+						<siga:Idioma key="censo.sexo.hombre" />
+					</c:otherwise>
+					</c:choose>
 					</td>
+					
+					<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.fechaNacimiento" /></td>
+					<td class="labelTextValor"><c:out value="${MutualidadForm.fechaNacimiento}" /></td>
 				</tr>
 
 			</table>
@@ -278,9 +290,15 @@
 		</tr>
 		</table>
 	</c:if>
-		
+<div id="datosSolicitud">		
 		<siga:ConjCampos>
 	<table>
+		<tr>
+			<td class="labelText" ><siga:Idioma key="censo.mutualidad.literal.nacionalidad" /></td>
+			<td colspan="2"><html:text property="nacionalidad" maxlength="100" style="width:300" styleClass="${estiloText}"  ></html:text></td>
+			<td class="labelText" ><siga:Idioma key="censo.mutualidad.literal.email" />&nbsp;(*)</td>
+			<td colspan="2"><html:text property="correoElectronico" maxlength="100" style="width:300" styleClass="${estiloText}" ></html:text></td>
+		</tr>
 		<tr>
 			<td class="labelText" ><siga:Idioma
 							key="censo.mutualidad.literal.pais" /></td>
@@ -299,10 +317,10 @@
 			</td>
 			<td class="labelText" ><siga:Idioma
 							key="censo.mutualidad.literal.provincia" />&nbsp;(*)</td>
-			<td colspan="2">
+			<td>
 			<c:choose>
 					<c:when test="${MutualidadForm.modo=='insertar'}">
-				<html:select styleId="provincias" styleClass="${boxComboConsulta}"  
+				<html:select styleId="provincias" styleClass="${estiloCombo}"  
 					property="idProvincia" >
 					<bean:define id="provincias" name="MutualidadForm"
 						property="provincias" type="java.util.Collection" />
@@ -316,6 +334,9 @@
 				</c:otherwise>
 				</c:choose>
 				</td>
+				<td class="labelText" ><siga:Idioma key="censo.mutualidad.literal.codigoPostal" />&nbsp;(*)
+				<html:text property="codigoPostal" styleClass="${estiloText}" size="5" maxlength="5"  ></html:text>
+				</td>
 		
 		</tr>
 		<tr>
@@ -326,16 +347,14 @@
 			<c:choose>
 					<c:when test="${MutualidadForm.modo=='insertar'}">
 			
-				<html:select styleId="poblaciones" styleClass="boxCombo" style="width:320px;"
-					property="idPoblacion" >
-					<bean:define id="poblaciones" name="MutualidadForm"
-						property="poblaciones" type="java.util.Collection" />
-					<html:optionsCollection name="poblaciones" value="idPoblacion"
-						label="nombre" />
+				<html:select styleId="poblaciones" styleClass="boxCombo" style="width:320px;" property="idPoblacion" >
+					<bean:define id="poblaciones" name="MutualidadForm" property="poblaciones" type="java.util.Collection" />
+					<html:optionsCollection name="poblaciones" value="idPoblacion" label="nombre" />
 				</html:select>
 				</c:when>
 				<c:otherwise>
 					<html:text property="poblacion"  styleClass="${estiloText}" ></html:text>
+					<html:hidden property="idPoblacion"/>
 				</c:otherwise>
 				
 			</c:choose>
@@ -347,27 +366,20 @@
 				
 			<td class="labelText" ><siga:Idioma
 							key="censo.mutualidad.literal.domicilio" />&nbsp;(*)</td>
-			<td><html:text property="domicilio" size="30" maxlength="100" styleClass="${estiloText}" ></html:text></td>
+			<td colspan="2"><html:text property="domicilio" style="width:300" maxlength="100" styleClass="${estiloText}" ></html:text></td>
 			
-			<td class="labelText" ><siga:Idioma
-							key="censo.mutualidad.literal.codigoPostal" />&nbsp;(*)
-				<html:text property="codigoPostal" styleClass="${estiloText}" size="5" maxlength="5"  ></html:text></td>
+			
 		</tr>
 		<tr>
 			
 		</tr>
 		<tr>
-			<td class="labelText" ><siga:Idioma
-							key="censo.mutualidad.literal.telefono" />&nbsp;(*)</td>
+			<td class="labelText" ><siga:Idioma key="censo.mutualidad.literal.telefono" />&nbsp;(*)</td>
 			<td><html:text property="telef1" maxlength="20" styleClass="${estiloText}" ></html:text></td>
-			
-			<td class="labelText" ><siga:Idioma
-							key="censo.mutualidad.literal.movil" /></td>
+			<td class="labelText" ><siga:Idioma key="censo.mutualidad.literal.movil" /></td>
 			<td><html:text property="movil" maxlength="20" styleClass="${estiloText}"  ></html:text></td>
 			
-			<td class="labelText" ><siga:Idioma
-							key="censo.mutualidad.literal.email" />&nbsp;(*)</td>
-			<td><html:text property="correoElectronico" maxlength="100" styleClass="${estiloText}" ></html:text></td>
+			
 		</tr>
 	</table>
 	
@@ -420,7 +432,7 @@
 						<c:choose>
 							<c:when test="${MutualidadForm.modo=='insertar'}">
 								<html:select styleClass="${estiloCombo}" style="width:200px;" name="MutualidadForm" property="idPeriodicidadPago"  >
-									<bean:define id="periodicidadesPago" name="MutualidadForm" property="periodicidadesPago" type="java.util.Map" />
+									<bean:define id="periodicidadesPago" name="MutualidadForm" property="periodicidadesPago" type="java.util.List" />
 									<html:optionsCollection name="periodicidadesPago" value="key" label="value"  />
 								</html:select>	
 								<html:hidden property="periodicidadPago"/>
@@ -440,13 +452,12 @@
 		<siga:ConjCampos leyenda="censo.mutualidad.leyenda.poliza">
 			<table class="tablaCampos">
 				<tr>
-					<td class="labelText" width="150px"><siga:Idioma
-							key="censo.mutualidad.literal.opcionCobertura" /></td>
+					<td class="labelText" width="25%"><siga:Idioma key="censo.mutualidad.literal.opcionCobertura" /></td>
 					<td class="labelTextValor">
 					<c:choose>
 						<c:when test="${MutualidadForm.modo=='insertar'}">
 							<html:select styleClass="${estiloCombo}" styleId="opcionesCobertura" name="MutualidadForm" property="idCobertura" style="width:200px;">
-							<bean:define id="opcionesCobertura" name="MutualidadForm" property="opcionesCobertura" type="java.util.Map" />
+							<bean:define id="opcionesCobertura" name="MutualidadForm" property="opcionesCobertura" type="java.util.List" />
 							<html:optionsCollection name="opcionesCobertura" value="key" label="value" />
 						</html:select>
 						<html:hidden property="cobertura"/>
@@ -457,68 +468,63 @@
 					</c:choose>
 
 					</td>
-					<td class="labelText"  ><siga:Idioma
-							key="censo.mutualidad.literal.cuotaMensual" /></td>
-					<td class="labelTextValor"><html:text property="cuotaCobertura" size="6" styleClass="boxConsulta" style="text-align:right"/>&euro;</td>
-					<td class="labelText"  ><siga:Idioma
-							key="censo.mutualidad.literal.capitalObjetivo" /></td>
-					<td class="labelTextValor"><html:text property="capitalCobertura" size="8" styleClass="boxConsulta" style="text-align:right"/>&euro;</td>
+					<td class="labelText"><siga:Idioma key="censo.mutualidad.literal.cuotaMensual" /></td>
+					<td class="labelTextValor"><html:text property="cuotaCobertura" styleId="cuotaCobertura" size="6" styleClass="boxNumber boxConsulta" style="text-align:right"/>&euro;</td>
+					<td class="labelText"><siga:Idioma key="censo.mutualidad.literal.capitalObjetivo" /></td>
+					<td class="labelTextValor"><html:text property="capitalCobertura" styleId="capitalCobertura" size="8" styleClass="boxNumber boxConsulta" style="text-align:right"/>&euro;</td>
 				</tr>
 				<tr>
-					<td class="labelText" colspan="2">
+					<td class="labelText" colspan="6">
 						<a href="http://www.mutualidadabogacia.com/Home/Alternativa-al-RETA/Elige-el-nivel-de-cobertura-que-deseas.aspx" target="new">Conoce las distintas opciones de cobertura disponibles</a>
 					</td>
 				</tr>
-			</table>
-			<table class="tablaCampos">
+
 				<tr align="left">
 
-					<td class="labelText" width="150px"><siga:Idioma
-							key="censo.mutualidad.literal.beneficiarios" /></td>
+					<td class="labelText"><siga:Idioma key="censo.mutualidad.literal.beneficiarios" /></td>
 					
 					<c:choose>
 						<c:when test="${MutualidadForm.modo=='insertar'}">
-						<td colspan = "4" class="labelTextValor">
-						<html:select styleClass="${estiloCombo}" name="MutualidadForm" property="idBeneficiario" style="width:700px;" onchange="onchangeBeneficiario();">
-							<bean:define id="beneficiarios" name="MutualidadForm" property="beneficiarios" type="java.util.Map" />
-							<html:optionsCollection name="beneficiarios" value="key" label="value" />
-						</html:select>
-						<html:hidden property="beneficiario"/>
-						</td>
-						<td colspan = "1" class="labelText" >
-							<html:text property="otrosBeneficiarios"  size="40" styleClass="${estiloText}" style="display:none" />
-						</td>
+							<td colspan = "4" class="labelTextValor">
+							<html:select styleClass="${estiloCombo}" name="MutualidadForm" property="idBeneficiario" style="width:700px;" onchange="onchangeBeneficiario();">
+								<bean:define id="beneficiarios" name="MutualidadForm" property="beneficiarios" type="java.util.List" />
+								<html:optionsCollection name="beneficiarios" value="key" label="value" />
+							</html:select>
+							<html:hidden property="beneficiario"/>
+							</td>
+							<td colspan = "1" class="labelText" >
+								<html:text property="otrosBeneficiarios"  size="40" styleClass="${estiloText}" style="display:none" />
+							</td>
 						</c:when>
 						<c:otherwise>
-						<td colspan = "4" class="labelTextValor">
-							<c:out value="${MutualidadForm.beneficiario}"></c:out>
-						</td>
-						<td colspan = "1" class="labelTextValor">
-							<c:out value="${MutualidadForm.otrosBeneficiarios}"></c:out>
-						</td>
+							<td colspan = "4" class="labelTextValor">
+								<c:out value="${MutualidadForm.beneficiario}"></c:out>
+							</td>
+							<td colspan = "1" class="labelTextValor">
+								<c:out value="${MutualidadForm.otrosBeneficiarios}"></c:out>
+							</td>
 						</c:otherwise>
 					</c:choose>
 					
 				</tr>
 				<tr align="left">
-					<td class="labelText"><siga:Idioma
-							key="censo.mutualidad.literal.asistenciaSanitaria" /></td>
+					<td class="labelText"><siga:Idioma key="censo.mutualidad.literal.asistenciaSanitaria" /></td>
 					<td colspan= "5" class="labelTextValor">
-					<c:choose>
-						<c:when test="${MutualidadForm.modo=='insertar'}">
-					<html:select styleClass="${estiloCombo}" 
-							name="MutualidadForm" property="idAsistenciaSanitaria">
-							<bean:define id="asistenciasSanitarias" name="MutualidadForm"
-								property="asistenciasSanitarias" type="java.util.Map" />
-							<html:optionsCollection name="asistenciasSanitarias" value="key"
-								label="value" />
-						</html:select>
-						<html:hidden property="asistenciaSanitaria"/>
-						</c:when>
-						<c:otherwise>
-						<c:out value="${MutualidadForm.asistenciaSanitaria}"></c:out>
-						</c:otherwise>
-					</c:choose>
+						<c:choose>
+							<c:when test="${MutualidadForm.modo=='insertar'}">
+						<html:select styleClass="${estiloCombo}" 
+								name="MutualidadForm" property="idAsistenciaSanitaria">
+								<bean:define id="asistenciasSanitarias" name="MutualidadForm"
+									property="asistenciasSanitarias" type="java.util.List" />
+								<html:optionsCollection name="asistenciasSanitarias" value="key"
+									label="value" />
+							</html:select>
+							<html:hidden property="asistenciaSanitaria"/>
+							</c:when>
+							<c:otherwise>
+							<c:out value="${MutualidadForm.asistenciaSanitaria}"></c:out>
+							</c:otherwise>
+						</c:choose>
 					</td>
 
 				</tr>
@@ -555,29 +561,23 @@
 		<table width="100%">
 		
 			<tr>
-			<td class="labelText" ><siga:Idioma
-							key="censo.mutualidad.literal.hijo" />&nbsp;1</td>
+			<td class="labelText" ><siga:Idioma key="censo.mutualidad.literal.hijo" />&nbsp;1</td>
 			<td >
 				<html:text property="edadHijo1" styleId="edadHijo1" size="4" styleClass="${estiloText}" maxlength="2"/>
-				
 			</td>
-			<td class="labelText" ><siga:Idioma
-							key="censo.mutualidad.literal.hijo" />&nbsp;2</td>
+			<td class="labelText" ><siga:Idioma key="censo.mutualidad.literal.hijo" />&nbsp;2</td>
 			<td >
 				<html:text property="edadHijo2" styleId="edadHijo2" size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
-			<td class="labelText" ><siga:Idioma
-							key="censo.mutualidad.literal.hijo" />&nbsp;3</td>
+			<td class="labelText" ><siga:Idioma key="censo.mutualidad.literal.hijo" />&nbsp;3</td>
 			<td >
 				<html:text property="edadHijo3" styleId="edadHijo3" size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
-			<td class="labelText" ><siga:Idioma
-							key="censo.mutualidad.literal.hijo" />&nbsp;4</td>
+			<td class="labelText" ><siga:Idioma key="censo.mutualidad.literal.hijo" />&nbsp;4</td>
 			<td >
 				<html:text property="edadHijo4" styleId="edadHijo4" size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
-			<td class="labelText" ><siga:Idioma
-							key="censo.mutualidad.literal.hijo" />&nbsp;5</td>
+			<td class="labelText" ><siga:Idioma key="censo.mutualidad.literal.hijo" />&nbsp;5</td>
 			<td >
 				<html:text property="edadHijo5" styleId="edadHijo5" size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
@@ -585,28 +585,23 @@
 			</tr>
 			
 			<tr style="display:none" id="masHijos">
-			<td class="labelText" ><siga:Idioma
-							key="censo.mutualidad.literal.hijo" />&nbsp;6</td>
+			<td class="labelText" ><siga:Idioma key="censo.mutualidad.literal.hijo" />&nbsp;6</td>
 			<td>
 				<html:text property="edadHijo6" styleId="edadHijo6" size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
-			<td class="labelText" ><siga:Idioma
-							key="censo.mutualidad.literal.hijo" />&nbsp;7</td>
+			<td class="labelText" ><siga:Idioma key="censo.mutualidad.literal.hijo" />&nbsp;7</td>
 			<td>
 				<html:text property="edadHijo7" styleId="edadHijo7" size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
-			<td class="labelText" ><siga:Idioma
-							key="censo.mutualidad.literal.hijo" />&nbsp;8</td>
+			<td class="labelText" ><siga:Idioma key="censo.mutualidad.literal.hijo" />&nbsp;8</td>
 			<td>
 				<html:text property="edadHijo8" styleId="edadHijo8" size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
-			<td class="labelText" ><siga:Idioma
-							key="censo.mutualidad.literal.hijo" />&nbsp;9</td>
+			<td class="labelText" ><siga:Idioma key="censo.mutualidad.literal.hijo" />&nbsp;9</td>
 			<td>
 				<html:text property="edadHijo9" styleId="edadHijo9" size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
-			<td class="labelText" ><siga:Idioma
-							key="censo.mutualidad.literal.hijo" />&nbsp;10</td>
+			<td class="labelText" ><siga:Idioma key="censo.mutualidad.literal.hijo" />&nbsp;10</td>
 			<td>
 				<html:text property="edadHijo10" styleId="edadHijo10" size="4" styleClass="${estiloText}" maxlength="2"/>
 			</td>
@@ -617,7 +612,29 @@
 	</siga:ConjCampos>
 	</div>
 	
-	
+	<table>
+	<tr>
+		<td class="labelText" >
+			<c:choose>
+			<c:when test="${MutualidadForm.modo=='insertar'}">
+				<input type="checkbox" id="checkCesionDatos">
+			</c:when>
+			<c:otherwise>
+				<input type="checkbox" id="checkCesionDatos" checked="checked" disabled="disabled">
+			</c:otherwise>
+			</c:choose>
+			<c:choose>
+			<c:when test="${MutualidadForm.idTipoSolicitud=='S' || path!='/CEN_Mutualidad'}">
+				<label for="checkCesionDatos"><siga:Idioma key="censo.mutualidad.cesionDatos"/></label>
+			</c:when>
+			<c:otherwise>
+				<label for="checkCesionDatos"><siga:Idioma key="censo.mutualidad.cesionDatosPlan"/></label>
+			</c:otherwise>
+			</c:choose>
+		</td>
+	</tr>
+	</table>
+</div>
 	
 <ajax:updateFieldFromSelect  
 	baseUrl="/SIGA${path}.do?modo=getAjaxCuotaCapitalCobertura"
@@ -631,19 +648,18 @@
 </c:if>
 
 
-<c:if test="${MutualidadForm.modo=='insertar'}">
-	<table>
-		<tr>
-			<td class="labelText" >
-				<input type="checkbox" id="checkCesionDatos">
-				<label for="checkCesionDatos"><siga:Idioma key="censo.mutualidad.cesionDatos"/></label>
-			</td>
-	</tr>
-	
-	</table>
 
-		<siga:ConjBotonesAccion botones="G,R,C" clase="botonesDetalle" />
+</div>
+<div id="botonera">
+<c:if test="${MutualidadForm.modo=='insertar'}">
+	<c:if test="${path=='/CEN_Mutualidad'}">
+		<siga:ConjBotonesAccion botones="GS,R,C" clase="botonesDetalle" />
+	</c:if>
+	<c:if test="${path!='/CEN_Mutualidad'}">
+		<siga:ConjBotonesAccion botones="GS,R" clase="botonesDetalle" />
+	</c:if>
 </c:if>
+</div>
 </html:form>
 
 					
@@ -664,7 +680,8 @@
 
  
 	function accionRestablecer(){
-	
+		document.MutualidadForm.reset();
+		cargaCombos();
 	}
 	
 	function consultarNHijos(){
@@ -689,6 +706,7 @@
 			
 		}
 		
+
 		
 		document.MutualidadForm.periodicidadPago.value = document.MutualidadForm.idPeriodicidadPago.options[document.MutualidadForm.idPeriodicidadPago.selectedIndex].text;
 		document.MutualidadForm.cobertura.value = document.MutualidadForm.idCobertura.options[document.MutualidadForm.idCobertura.selectedIndex].text;
@@ -763,6 +781,15 @@
 					
 				}
 			}
+			
+			deshabilitaCampos();
+			if(!confirm("<siga:Idioma key='censo.mutualidad.literal.confirmacion'/>")){
+				// Si no aceptan el disclaimer salimos de la aplicacion
+				habilitaCampos();
+				fin();
+				return false;		
+			}
+			
 			document.MutualidadForm.submit();
 		}else{
 			fin();
@@ -836,7 +863,9 @@
 		}else{
 			document.getElementById("tdEstadoMutualista").innerText = "No se han recibido datos.";
 		}
-	
+		if(resultado && resultado[0]==''){
+			document.getElementById("tdEstadoMutualista").innerText = "No se han recibido datos.";
+		}
 	}
 	function onchangeBeneficiario()
 	{
@@ -853,6 +882,47 @@
 	}
 	
 	consultarNHijos();
+	
+	function deshabilitaCampos(){
+		jQuery('#datosSolicitud :input').attr('readOnly', 'readOnly');
+		jQuery('#datosSolicitud :input').addClass('boxConsulta');
+		jQuery('#datosSolicitud :input').removeClass('boxCombo');
+		jQuery('#datosSolicitud :input').removeClass('box');
+	}
+	
+	function habilitaCampos(){
+		jQuery('#datosSolicitud :input').removeAttr('readOnly');
+		jQuery('#datosSolicitud :input').removeClass('boxConsulta');
+		jQuery('#datosSolicitud :input').addClass('box');
+		jQuery('#capitalCobertura').addClass('boxConsulta');
+		jQuery('#cuotaCobertura').addClass('boxConsulta');
+	}
+	
+	function accionMostrarSolicitud(){
+		jQuery('#dialogoSolicitar').hide();
+		jQuery('#divSolicitud').show();
+		jQuery('#botonera').show();
+	}
+	
+	jQuery(document).ready(function() {
+		if(("${path}"=="/CEN_Mutualidad")||"${MutualidadForm.modo}"=="consulta"){
+			jQuery('#dialogoSolicitar').hide();
+			jQuery('#divSolicitud').show();
+			jQuery('#botonera').show();
+		}else{
+			jQuery('#dialogoSolicitar').show();
+			jQuery('#divSolicitud').hide();
+			jQuery('#botonera').hide();
+		}
+		cargaCombos();
+		ajusteAlto('divSolicitud');
+		if("${MutualidadForm.idTipoSolicitud}"=="P" ){
+			jQuery('#divSolicitud').css("overflow-y","auto");
+		}
+		if("<%=accion%>"=="ver"){
+			jQuery('#botonSolicitarAltaSeguro').attr("disabled", "disabled");
+		}
+	});
 	
 </script>
 	

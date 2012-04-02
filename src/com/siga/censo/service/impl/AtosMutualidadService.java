@@ -1,15 +1,23 @@
 package com.siga.censo.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CenClienteAdm;
+import com.siga.beans.CenCuentasBancariasAdm;
+import com.siga.beans.CenCuentasBancariasBean;
+import com.siga.beans.CenDireccionesAdm;
+import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.CenSolicitudIncorporacionBean;
@@ -17,6 +25,7 @@ import com.siga.beans.CenSolicitudMutualidadAdm;
 import com.siga.beans.CenSolicitudMutualidadBean;
 import com.siga.censo.form.MutualidadForm;
 import com.siga.censo.service.MutualidadService;
+import com.siga.comun.vos.ValueKeyVO;
 import com.siga.general.SIGAException;
 import com.siga.ws.mutualidad.MutualidadWSClient;
 import com.siga.ws.mutualidad.RespuestaMutualidad;
@@ -38,10 +47,14 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		solicitudMutualidadBean.setIdEstado(CenSolicitudMutualidadBean.ESTADO_INICIAL);
 		solicitudMutualidadBean.setEstado(CenSolicitudMutualidadBean.ESTADO_PTERESPUESTA);
 		solicitudMutualidadBean.setIdSolicitud(solicitudMutualidadAdm.getNewIdSolicitud());
+		if(mutualidadForm.getIdSolicitudIncorporacion()==null){
+			mutualidadForm.setIdSolicitudIncorporacion(mutualidadForm.getIdPersona());
+		}
 		mutualidadForm.setIdSolicitud(solicitudMutualidadBean.getIdSolicitud().toString());
 		solicitudMutualidadBean.setFechaEstado("SYSDATE");
 		solicitudMutualidadBean.setFechaSolicitud("SYSDATE");
 		solicitudMutualidadBean.setIdInstitucion(new Integer(usrBean.getLocation()));
+		solicitudMutualidadBean.setIdSolicitudAceptada(null);
 		solicitudMutualidadAdm.insert(solicitudMutualidadBean);
 		RespuestaMutualidad respuestaSolicitud = altaMutualidad(mutualidadForm,usrBean);
 		if(mutualidadForm.getIdSolicitudAceptada()!=null && !mutualidadForm.getIdSolicitudAceptada().equals("0")){
@@ -55,6 +68,14 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 			solicitudMutualidadAdm.actualizaSolicitudAceptada(solicitudMutualidadBean);
 			if(mutualidadForm.getIdTipoSolicitud().equals(CenSolicitudMutualidadBean.TIPOSOLICITUD_PLANPROFESIONAL))
 				solicitudMutualidadAdm.actualizaEstadoMutualista(solicitudMutualidadBean);
+			
+			// Aqui tenemos que darlo de alta tambien en el seguro gratuito si la solicitud inicial es de plan profesional
+			// y no proviene de la ficha colegial
+			if(mutualidadForm.getIdTipoSolicitud().equals(CenSolicitudMutualidadBean.TIPOSOLICITUD_PLANPROFESIONAL)&&
+				mutualidadForm.getOrigenSolicitud().equalsIgnoreCase(CenSolicitudMutualidadBean.SOLICITUD_INCORPORACION)){
+				mutualidadForm.setIdTipoSolicitud(CenSolicitudMutualidadBean.TIPOSOLICITUD_SEGUROUNIVERSAL);
+				insertarSolicitudMutualidad(mutualidadForm, usrBean);
+			}
 		}
 	}
 	private RespuestaMutualidad altaMutualidad(MutualidadForm mutualidadForm, UsrBean usrBean) throws Exception{
@@ -99,7 +120,7 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 	}
 	
 	public void actualizaEstadoSolicitud(MutualidadForm mutualidadForm, UsrBean usrBean)throws Exception{
-		if(mutualidadForm.getIdSolicitudAceptada()!=null && !mutualidadForm.getIdSolicitudAceptada().equals("")){
+		if(mutualidadForm.getIdSolicitudAceptada()!=null && !mutualidadForm.getIdSolicitudAceptada().equals("") && !mutualidadForm.getIdSolicitudAceptada().equals("0")){
 			actualizaEstado(mutualidadForm,usrBean);
 		}else{
 			CenSolicitudMutualidadAdm solicitudMutualidadAdm = new CenSolicitudMutualidadAdm(usrBean);
@@ -188,7 +209,7 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		datosPersona.put("apellido1", mutualidadForm.getApellido1());
 		datosPersona.put("apellido2", mutualidadForm.getApellido2());
 		datosPersona.put("numeroIdentificacion", mutualidadForm.getNumeroIdentificacion());
-		datosPersona.put("nacionalidad", mutualidadForm.getNaturalDe());
+		datosPersona.put("nacionalidad", mutualidadForm.getNacionalidad());
 		datosPersona.put("nombre", mutualidadForm.getNombre());
 		datosPersona.put("idSexo", mutualidadForm.getIdSexo());
 		datosPersona.put("numHijos", mutualidadForm.getNumeroHijos()==null?"0":mutualidadForm.getNumeroHijos());
@@ -235,8 +256,8 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 	public RespuestaMutualidad isPosibilidadSolicitudAlta(String numeroIdentificacion,String fechaNacimiento,UsrBean usrBean) throws SIGAException,Exception{
 		MutualidadWSClient mutualidadWSClient =  new MutualidadWSClient(usrBean);
 		RespuestaMutualidad posibilidadSolicitudAlta = mutualidadWSClient.getPosibilidadSolicitudAlta(numeroIdentificacion,fechaNacimiento);
-		if(posibilidadSolicitudAlta.getValorRespuesta()==null || posibilidadSolicitudAlta.getValorRespuesta().equals(""))
-			throw new SIGAException("No es posible Realizar el alta. Revise los datos del formulario");
+		//if(posibilidadSolicitudAlta.getValorRespuesta()==null || posibilidadSolicitudAlta.getValorRespuesta().equals(""))
+		//	throw new SIGAException("No es posible Realizar el alta. Revise los datos del formulario");
 		return posibilidadSolicitudAlta;
 		
 	}
@@ -256,24 +277,24 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		if(combosMutualidad.getAsistencia()!=null)
 			mutualidadForm.setAsistenciasSanitarias(combosMutualidad.getAsistencia());
 		else
-			mutualidadForm.setAsistenciasSanitarias(new HashMap<String, String>());
+			mutualidadForm.setAsistenciasSanitarias(new ArrayList<ValueKeyVO>());
 		if(combosMutualidad.getBeneficiarios()!=null)
 			mutualidadForm.setBeneficiarios(combosMutualidad.getBeneficiarios());
 		else
-			mutualidadForm.setBeneficiarios(new HashMap<String, String>());
+			mutualidadForm.setBeneficiarios(new ArrayList<ValueKeyVO>());
 		if(combosMutualidad.getPeriodicidades()!=null)
 			mutualidadForm.setPeriodicidadesPago(combosMutualidad.getPeriodicidades());
 		else
-			mutualidadForm.setPeriodicidadesPago(new HashMap<String, String>());
+			mutualidadForm.setPeriodicidadesPago(new ArrayList<ValueKeyVO>());
 		if(combosMutualidad.getCoberturas()!=null){
 			mutualidadForm.setOpcionesCobertura(combosMutualidad.getCoberturas());
-			String primeraOpcionCobertura = mutualidadForm.getOpcionesCobertura().keySet().iterator().next();
-			mutualidadForm.setIdCobertura(primeraOpcionCobertura);
+			//String primeraOpcionCobertura = mutualidadForm.getOpcionesCobertura().keySet().iterator().next();
+			mutualidadForm.setIdCobertura(mutualidadForm.getOpcionesCobertura().get(0).getKey());
 			this.setCobertura(mutualidadForm,usrBean);
 			
 		}
 		else{
-			mutualidadForm.setOpcionesCobertura(new HashMap<String, String>());
+			mutualidadForm.setOpcionesCobertura(new ArrayList<ValueKeyVO>());
 			mutualidadForm.setCuotaCobertura("");
 			mutualidadForm.setCapitalCobertura("");
 		}
@@ -283,37 +304,106 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		return mutualidadForm;
 		
 	}
-	public MutualidadForm setMutualidadFormDefecto(MutualidadForm mutualidadForm) throws Exception{
-		Iterator itePeriodicidad =  mutualidadForm.getPeriodicidadesPago().keySet().iterator();
-		while(itePeriodicidad.hasNext())	{
-			String idPeriodicidad = (String) itePeriodicidad.next();
-			String descripcionPeriodicidad = mutualidadForm.getPeriodicidadesPago().get(idPeriodicidad);
-			if(descripcionPeriodicidad.equalsIgnoreCase("mensual")){
-				mutualidadForm.setIdPeriodicidadPago(idPeriodicidad);
-			break;
-			}
-			
-		}
-		Iterator iteOpciones =  mutualidadForm.getOpcionesCobertura().keySet().iterator();
-		while(iteOpciones.hasNext())	{
-			String idCobertura = (String) iteOpciones.next();
-			String descripcionCobertuta = mutualidadForm.getOpcionesCobertura().get(idCobertura);
-			if(descripcionCobertuta.equalsIgnoreCase("recomendada")){
-				mutualidadForm.setIdCobertura(idCobertura);
-				break;
-			}
-			
-		}
-		
-		
-//		mutualidadForm.setAsistenciasSanitarias(combosMutualidad.getAsistencia());
-//		mutualidadForm.setBeneficiarios(combosMutualidad.getBeneficiarios());
-		
-		
-		return mutualidadForm;
-		
-	}
+//	public MutualidadForm setMutualidadFormDefecto(MutualidadForm mutualidadForm) throws Exception{
+//		
+//		String id = "";
+//		String descripcion = "";
+//		
+//		Iterator itePeriodicidad =  mutualidadForm.getPeriodicidadesPago().keySet().iterator();
+//		while(itePeriodicidad.hasNext())	{
+//			id = (String) itePeriodicidad.next();
+//			descripcion = mutualidadForm.getPeriodicidadesPago().get(id);
+//			if(descripcion.equalsIgnoreCase("mensual")){
+//				mutualidadForm.setIdPeriodicidadPago(id);
+//			break;
+//			}
+//			
+//		}
+//		Iterator iteOpciones =  mutualidadForm.getOpcionesCobertura().keySet().iterator();
+//		while(iteOpciones.hasNext())	{
+//			id = (String) iteOpciones.next();
+//			descripcion = mutualidadForm.getOpcionesCobertura().get(id);
+//			if(descripcion.equalsIgnoreCase("recomendada")){
+//				mutualidadForm.setIdCobertura(id);
+//				break;
+//			}
+//			
+//		}
+//		
+//		
+//		mutualidadForm.setIdAsistenciaSanitaria("3");
+//		mutualidadForm.setIdBeneficiario("3");
+//		
+////		mutualidadForm.setAsistenciasSanitarias(combosMutualidad.getAsistencia());
+////		mutualidadForm.setBeneficiarios(combosMutualidad.getBeneficiarios());
+//		
+//		
+//		return mutualidadForm;
+//		
+//	}
 	
+	public MutualidadForm getDatosPersonaFicha(MutualidadForm mutualidadForm, UsrBean usr) throws Exception{
+
+		String idInstitucion = usr.getLocation();
+		CenClienteAdm cliAdm = new CenClienteAdm(usr);
+		CenPersonaAdm perAdm = new CenPersonaAdm(usr);
+		String idPersona = mutualidadForm.getIdPersona();
+		Vector v = cliAdm.getDatosPersonales(Long.parseLong(idPersona), Integer.parseInt(idInstitucion));
+
+		CenDireccionesAdm dirAdm = new CenDireccionesAdm(usr);
+		CenDireccionesBean dirBean = dirAdm.obtenerDireccionTipo(idPersona, idInstitucion, Integer.toString(ClsConstants.TIPO_DIRECCION_CENSOWEB));
+		
+		CenCuentasBancariasAdm cuentaAdm = new CenCuentasBancariasAdm(usr);
+		ArrayList<CenCuentasBancariasBean> cuentasArr = cuentaAdm.getCuentasCargo(Long.parseLong(idPersona), Integer.parseInt(idInstitucion));
+		
+		
+		if (v.size()>0){
+			Hashtable per = (Hashtable)v.get(0);
+			per.size();
+			mutualidadForm.setApellido1(UtilidadesHash.getString(per,"APELLIDOS1"));
+			mutualidadForm.setApellido2(UtilidadesHash.getString(per,"APELLIDOS2"));
+			mutualidadForm.setNombre(UtilidadesHash.getString(per,"NOMBRE"));
+			mutualidadForm.setIdSexo(UtilidadesHash.getString(per,"SEXO"));
+			mutualidadForm.setSexo(UtilidadesHash.getString(per,"SEXO"));
+			mutualidadForm.setIdEstadoCivil(UtilidadesHash.getString(per,"IDESTADOCIVIL"));
+			mutualidadForm.setIdTipoIdentificacion(UtilidadesHash.getString(per,"IDTIPOIDENTIFICACION"));
+			mutualidadForm.setNumeroIdentificacion(UtilidadesHash.getString(per,"NIFCIF"));
+			mutualidadForm.setIdTratamiento(UtilidadesHash.getString(per,"IDTRATAMIENTO"));
+			mutualidadForm.setFechaNacimiento(
+				UtilidadesString.formatoFecha(
+					UtilidadesHash.getString(per,"FECHANACIMIENTO"),
+					ClsConstants.DATE_FORMAT_JAVA, 
+					ClsConstants.DATE_FORMAT_SHORT_SPANISH)
+			);
+			
+			if(dirBean!=null) {
+				mutualidadForm.setCodigoPostal(dirBean.getCodigoPostal());
+				mutualidadForm.setIdPais(dirBean.getIdPais());
+				mutualidadForm.setIdProvincia(dirBean.getIdProvincia());
+				mutualidadForm.setIdPoblacion(dirBean.getIdPoblacion());
+				mutualidadForm.setDomicilio(dirBean.getDomicilio());
+				mutualidadForm.setTelef1(dirBean.getTelefono1());
+				mutualidadForm.setFax1(dirBean.getFax1());
+				mutualidadForm.setMovil(dirBean.getMovil());
+				mutualidadForm.setPoblacionExtranjera(dirBean.getPoblacionExtranjera());
+				mutualidadForm.setCorreoElectronico(dirBean.getCorreoElectronico());
+			}
+			mutualidadForm.setIdSolicitudIncorporacion(idPersona);
+			
+			if(!cuentasArr.isEmpty()){
+				CenCuentasBancariasBean cuentaBean = cuentasArr.get(cuentasArr.size()-1);
+				mutualidadForm.setCboCodigo(cuentaBean.getCbo_Codigo());
+				mutualidadForm.setCodigoSucursal(cuentaBean.getCodigoSucursal());
+				mutualidadForm.setDigitoControl(cuentaBean.getDigitoControl());
+				mutualidadForm.setNumeroCuenta(cuentaBean.getNumeroCuenta());
+			}
+			
+			// Nos tenemos que ir a bbdd a por algunos valores
+			mutualidadForm.setTratamiento(cliAdm.getTratmiento(Long.parseLong(idPersona), Integer.parseInt(idInstitucion)));
+			mutualidadForm.setEstadoCivil(perAdm.getEstadoCivil(Long.parseLong(idPersona)));
+		}
+		return mutualidadForm;
+	}
 	
 	public MutualidadForm getSolicitudMutualidad(MutualidadForm mutualidadForm,String idPersona,String idTipoSolicitud,UsrBean usrBean) throws ClsExceptions, SIGAException{
 		CenSolicitudMutualidadAdm  solicitudMutualidadAdm = new CenSolicitudMutualidadAdm(usrBean);
@@ -321,7 +411,7 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		if(solicitudMutualidadBean!=null)
 			mutualidadForm = solicitudMutualidadBean.getMutualidadForm(mutualidadForm);
 		else{
-			mutualidadForm.setEstado(CenSolicitudMutualidadBean.SERVICIO_NOSOLICITADO);
+			//mutualidadForm.setEstado(CenSolicitudMutualidadBean.SERVICIO_NOSOLICITADO);
 			if(idTipoSolicitud.equalsIgnoreCase("P")){
 				mutualidadForm.setIdTipoSolicitud(idTipoSolicitud);
 				CenPersonaAdm personaAdm = new CenPersonaAdm(usrBean);
@@ -350,5 +440,6 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 }

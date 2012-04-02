@@ -252,6 +252,11 @@ public class CenSolicitudMutualidadAdm extends MasterBeanAdministrador {
 		contador ++;
 		sql.append(contador);
 		htCodigos.put(new Integer(contador),solicitudIncorporacionBean.getIdSolicitud());
+		sql.append(" OR SOL.IDSOLICITUDINCORPORACION = (SELECT IDSOLICITUD FROM CEN_SOLICITUDINCORPORACION WHERE IDPERSONA=:");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),solicitudIncorporacionBean.getIdSolicitud());
+		sql.append(") ORDER by SOL.FECHASOLICITUD ASC");
 
 		List<CenSolicitudMutualidadBean> solicitudMutualidadBeans = null;
 		try {
@@ -297,43 +302,30 @@ public class CenSolicitudMutualidadAdm extends MasterBeanAdministrador {
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;
 		sql.append("SELECT SOL.* ");
-		sql.append(" FROM CEN_SOLICITUDMUTUALIDAD SOL,CEN_SOLICITUDINCORPORACION SI ");
-		sql.append(" WHERE SOL.IDSOLICITUDINCORPORACION = SI.IDSOLICITUD ");
-		sql.append(" AND SI.IDPERSONA = :");
+		sql.append(" FROM CEN_SOLICITUDMUTUALIDAD SOL ");
+		sql.append(" WHERE ( SOL.IDSOLICITUDINCORPORACION = :");
 		contador ++;
 		sql.append(contador);
 		htCodigos.put(new Integer(contador),idPersona);
-		sql.append(" AND SOL.IDTIPOSOLICITUD = :");
+		sql.append(" OR SOL.IDSOLICITUDINCORPORACION = (SELECT IDSOLICITUD FROM CEN_SOLICITUDINCORPORACION WHERE IDPERSONA=:");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),idPersona);
+		sql.append(")) AND SOL.IDTIPOSOLICITUD = :");
 		contador ++;
 		sql.append(contador);
 		htCodigos.put(new Integer(contador),idTipoSolicitudMutualidad);
+		sql.append(" ORDER BY IDSOLICITUD DESC");
 		CenSolicitudMutualidadBean solicitudMutualidadBean = null;
 		try {
 			RowsContainer rc = new RowsContainer(); 
-											
             if (rc.findBind(sql.toString(),htCodigos)) {
-            	
-            	switch (rc.size()) {
-				
-            	case 0:
-					
-					break;
-				case 1:
+				if(rc.size()>0) {
 					Row fila = (Row) rc.get(0);
             		Hashtable<String, Object> htFila=fila.getRow();
             		solicitudMutualidadBean =  (CenSolicitudMutualidadBean)this.hashTableToBean(htFila);
-					break;
-
-				default:
-					throw new SIGAException("Existen mas de una solucitud de mutualidad para un mismo idpersona");
 				}
-            	
-            	
-            	
-    			
             }
-       } catch (SIGAException e) {
-       		throw e;
        }catch (Exception e) {
        		throw new ClsExceptions (e, "Error al ejecutar consulta.");
        }

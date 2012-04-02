@@ -96,6 +96,7 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 			bean.setAbonoSJCS(UtilidadesHash.getString(hash,CenCuentasBancariasBean.C_ABONOSJCS));
 			bean.setCbo_Codigo(UtilidadesHash.getString(hash,CenCuentasBancariasBean.C_CBO_CODIGO));
 			bean.setDigitoControl(UtilidadesHash.getString(hash,CenCuentasBancariasBean.C_DIGITOCONTROL));
+			bean.setCodigoSucursal(UtilidadesHash.getString(hash,CenCuentasBancariasBean.C_CODIGOSUCURSAL));
 			bean.setNumeroCuenta(UtilidadesHash.getString(hash,CenCuentasBancariasBean.C_NUMEROCUENTA));
 			bean.setTitular(UtilidadesHash.getString(hash,CenCuentasBancariasBean.C_TITULAR));			
 			bean.setFechaBaja(UtilidadesHash.getString(hash,CenCuentasBancariasBean.C_FECHABAJA));

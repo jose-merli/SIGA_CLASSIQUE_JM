@@ -20,6 +20,8 @@ public class CenSolicitudMutualidadBean extends MasterBean {
 	static public int ESTADO_SOLICITADO = 1;
 	static public String TIPOSOLICITUD_PLANPROFESIONAL = "P";
 	static public String TIPOSOLICITUD_SEGUROUNIVERSAL = "S";
+	static public String FICHA_COLEGIAL = "F";
+	static public String SOLICITUD_INCORPORACION = "SI";
 
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "CEN_SOLICITUDMUTUALIDAD";
@@ -505,7 +507,7 @@ public class CenSolicitudMutualidadBean extends MasterBean {
 		if(idTratamiento!=null)
 			mutualidadForm.setIdTratamiento(this.idTratamiento.toString());
 		mutualidadForm.setMovil(this.movil);
-		mutualidadForm.setNaturalDe(this.naturalDe);
+		mutualidadForm.setNacionalidad(this.naturalDe);
 		mutualidadForm.setNombre(this.nombre);
 		mutualidadForm.setNumeroIdentificacion(this.numeroIdentificacion);
 		mutualidadForm.setTelef1(this.telef1);

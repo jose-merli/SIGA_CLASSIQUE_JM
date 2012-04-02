@@ -579,9 +579,11 @@
 		</action>
 		<action path="/CEN_MutualidadFichaPlan" type="com.siga.censo.action.GestionMutualidadAction" name="MutualidadForm" scope="request"  >
 			<forward name="consulta" path="/html/jsp/censo/mutualidad.jsp"/>
+			<forward name="edicion" path="/html/jsp/censo/mutualidad.jsp"/>
 		</action>
 		<action path="/CEN_MutualidadFichaSeguro" type="com.siga.censo.action.GestionMutualidadAction" name="MutualidadForm" scope="request"  >
 			<forward name="consulta" path="/html/jsp/censo/mutualidad.jsp"/>
+			<forward name="edicion" path="/html/jsp/censo/mutualidad.jsp"/>
 		</action>
 		<!-- ***** Censo / Ver Solicitudes Modificación / Solicitudes Genéricas *****
 -->

@@ -10,6 +10,7 @@ public enum ActionButtonsConstants {
 	IMPRIMIR_APAISADO ("ia","general.aviso.imprimirApaisado","accionImprimirApaisado()",3),
 	NUEVO_LETRADO ("nl","gratuita.modalCambioLetradoDesigna.titulo","accionNuevoLetrado()",4),
 	CREAR_EJG ("ce","general.boton.crearEJG","accionCrearEJG()",5),
+	GUARDAR_SOLICITAR ("gs","general.boton.guardarSolicitar","accionGuardar()",5),
 	CREAR_DESIGNACION ("cd","general.boton.crearDesignacion","accionCrearDesignacion()",6),
 	RELACIONAR_EJG ("re","general.boton.relacionarEJG","relacionarConEJG()",7),
 	RELACIONAR_SOJ ("rs","general.boton.relacionarSOJ","relacionarConSOJ()",8),

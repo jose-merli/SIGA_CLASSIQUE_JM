@@ -1,5 +1,6 @@
 package com.siga.censo.form;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +15,6 @@ import com.siga.general.MasterForm;
 /**
  * 
  * @author jorgeta
- *
  */
  public class MutualidadForm extends MasterForm {
  	
@@ -34,7 +34,7 @@ import com.siga.general.MasterForm;
 	private String nombre;
 	private String apellido1;
 	private String apellido2;
-	private String naturalDe;
+	private String nacionalidad;
 	private String fechaNacimiento;
 	private String estadoCivil;
 	private String idEstadoCivil;
@@ -75,16 +75,18 @@ import com.siga.general.MasterForm;
 	private String beneficiario;
 	private String asistenciaSanitaria;
 	
+	private String origenSolicitud;
 	
-//	List<ValueKeyVO> periodicidadesPago;
-//	List<ValueKeyVO> opcionesCobertura;
-//	List<ValueKeyVO> beneficiarios;
-//	List<ValueKeyVO> asistenciasSanitarias;
 	
-	Map<String, String> periodicidadesPago;
-	Map<String, String> opcionesCobertura;
-	Map<String, String> beneficiarios;
-	Map<String, String> asistenciasSanitarias;
+	List<ValueKeyVO> periodicidadesPago;
+	List<ValueKeyVO> opcionesCobertura;
+	List<ValueKeyVO> beneficiarios;
+	List<ValueKeyVO> asistenciasSanitarias;
+	
+//	Map<String, String> periodicidadesPago;
+//	Map<String, String> opcionesCobertura;
+//	Map<String, String> beneficiarios;
+//	Map<String, String> asistenciasSanitarias;
 	
 	
 	
@@ -109,6 +111,7 @@ import com.siga.general.MasterForm;
 	private String idEstado;
 	private String fechaSolicitud;
 	private String idSolicitudIncorporacion;
+	private String idPersona;
 	
 	private String cuotaCobertura;
 	private String capitalCobertura;
@@ -175,11 +178,11 @@ import com.siga.general.MasterForm;
 	public void setApellido2(String apellido2) {
 		this.apellido2 = apellido2;
 	}
-	public String getNaturalDe() {
-		return naturalDe;
+	public String getNacionalidad() {
+		return nacionalidad;
 	}
-	public void setNaturalDe(String naturalDe) {
-		this.naturalDe = naturalDe;
+	public void setNacionalidad(String nacionalidad) {
+		this.nacionalidad = nacionalidad;
 	}
 	public String getFechaNacimiento() {
 		return fechaNacimiento;
@@ -498,7 +501,7 @@ import com.siga.general.MasterForm;
 		if(idTratamiento!=null&& !idTratamiento.equals(""))
 			solicitudMutualidadBean.setIdTratamiento(new Integer(this.idTratamiento));
 		solicitudMutualidadBean.setMovil(this.movil);
-		solicitudMutualidadBean.setNaturalDe(this.naturalDe);
+		solicitudMutualidadBean.setNaturalDe(this.nacionalidad);
 		solicitudMutualidadBean.setNombre(this.nombre);
 		solicitudMutualidadBean.setNumeroIdentificacion(this.numeroIdentificacion);
 		solicitudMutualidadBean.setTelef1(this.telef1);
@@ -584,29 +587,29 @@ import com.siga.general.MasterForm;
 	public void setCapitalCobertura(String capitalCobertura) {
 		this.capitalCobertura = capitalCobertura;
 	}
-	public Map<String, String> getPeriodicidadesPago() {
+	public List<ValueKeyVO> getPeriodicidadesPago() {
 		return periodicidadesPago;
 	}
-	public void setPeriodicidadesPago(Map<String, String> periodicidadesPago) {
-		this.periodicidadesPago = periodicidadesPago;
+	public void setPeriodicidadesPago(List<ValueKeyVO> list) {
+		this.periodicidadesPago = list;
 	}
-	public Map<String, String> getOpcionesCobertura() {
+	public List<ValueKeyVO> getOpcionesCobertura() {
 		return opcionesCobertura;
 	}
-	public void setOpcionesCobertura(Map<String, String> opcionesCobertura) {
-		this.opcionesCobertura = opcionesCobertura;
+	public void setOpcionesCobertura(List<ValueKeyVO> list) {
+		this.opcionesCobertura = list;
 	}
-	public Map<String, String> getBeneficiarios() {
+	public List<ValueKeyVO> getBeneficiarios() {
 		return beneficiarios;
 	}
-	public void setBeneficiarios(Map<String, String> beneficiarios) {
-		this.beneficiarios = beneficiarios;
+	public void setBeneficiarios(List<ValueKeyVO> list) {
+		this.beneficiarios = list;
 	}
-	public Map<String, String> getAsistenciasSanitarias() {
+	public List<ValueKeyVO> getAsistenciasSanitarias() {
 		return asistenciasSanitarias;
 	}
-	public void setAsistenciasSanitarias(Map<String, String> asistenciasSanitarias) {
-		this.asistenciasSanitarias = asistenciasSanitarias;
+	public void setAsistenciasSanitarias(List<ValueKeyVO> list) {
+		this.asistenciasSanitarias = list;
 	}
 	public String getPeriodicidadPago() {
 		return periodicidadPago;
@@ -685,6 +688,18 @@ import com.siga.general.MasterForm;
 	}
 	public void setPDF(String pdf) {
 		this.pdf = pdf;
+	}
+	public String getIdPersona() {
+		return idPersona;
+	}
+	public void setIdPersona(String idPersona) {
+		this.idPersona = idPersona;
+	}
+	public String getOrigenSolicitud() {
+		return origenSolicitud;
+	}
+	public void setOrigenSolicitud(String origenSolicitud) {
+		this.origenSolicitud = origenSolicitud;
 	}
 	
 	

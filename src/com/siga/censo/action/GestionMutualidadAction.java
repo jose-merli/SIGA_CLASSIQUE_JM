@@ -13,6 +13,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxCollectionXmlBuilder;
@@ -20,12 +21,14 @@ import com.siga.beans.CenPoblacionesAdm;
 import com.siga.beans.CenPoblacionesBean;
 import com.siga.beans.CenProvinciaAdm;
 import com.siga.beans.CenProvinciaBean;
+import com.siga.beans.CenSolicitudIncorporacionBean;
 import com.siga.beans.CenSolicitudMutualidadBean;
 import com.siga.censo.form.MutualidadForm;
 import com.siga.censo.service.MutualidadService;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.ws.mutualidad.RespuestaMutualidad;
 
 import es.satec.businessManager.BusinessManager;
 
@@ -61,23 +64,19 @@ public class GestionMutualidadAction extends MasterAction {
 					if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
 						mapDestino = inicioFicha (mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("getAjaxCuotaCapitalCobertura")){
-					
 						getAjaxCuotaCapitalCobertura(mapping, miForm, request, response);
 						return null;
-						
-					}else if ( accion.equalsIgnoreCase("getAjaxPoblaciones")){
-						getAjaxPoblaciones (mapping, miForm, request, response);
-						return null;
-					}else if ( accion.equalsIgnoreCase("consultaPlanMutualidad")){
-						mapDestino = consultaPlanMutualidad (mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("consultaSeguroUniversal")){
-						mapDestino = consultaSeguroUniversal (mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("nuevo")){
-						mapDestino = nuevo (mapping, miForm, request, response);
+					}else if ( accion.equalsIgnoreCase("nuevo")||
+							accion.equalsIgnoreCase("consultaSeguroUniversal")||
+							accion.equalsIgnoreCase("consultaPlanMutualidad")){
+						mapDestino = abrir (mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("actualizaEstado")){
 						mapDestino = actualizaEstado (mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("actualizaEstadoMutualista")){
 						mapDestino = actualizaEstadoMutualista (mapping, miForm, request, response);
+					}else if ( accion.equalsIgnoreCase("getAjaxPoblaciones")){
+						getAjaxPoblaciones (mapping, miForm, request, response);
+						return null;
 					}else {
 						return super.executeInternal(mapping,formulario,request,response);
 					}
@@ -96,35 +95,81 @@ public class GestionMutualidadAction extends MasterAction {
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		}
 	}
-	protected void getAjaxPoblaciones (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
-			{
-		
-		//Recogemos el parametro enviado por ajax
-		String idProvincia = request.getParameter("idProvincia");
-
-		List<CenPoblacionesBean> alPoblaciones = null;
-		if(idProvincia!= null && !idProvincia.equals("")){
-			CenPoblacionesAdm poblacionesAdm = new CenPoblacionesAdm(this.getUserBean(request));
-			alPoblaciones = poblacionesAdm.getPoblaciones(idProvincia);
-		}
-		if(alPoblaciones==null){
-			alPoblaciones = new ArrayList<CenPoblacionesBean>();
-			
-		}
-		
-		respuestaAjax(new AjaxCollectionXmlBuilder<CenPoblacionesBean>(), alPoblaciones,response);
-		
-	}
-	protected String nuevo (ActionMapping mapping, 		
+	
+	protected String abrir (ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
 			HttpServletResponse response) throws ClsExceptions, SIGAException 
 			{
 		MutualidadForm mutualidadForm = (MutualidadForm) formulario;
+		BusinessManager bm = getBusinessManager();
+		MutualidadService mutualidadService = (MutualidadService)bm.getService(MutualidadService.class);
+		boolean ficha = true;
 		try {
+			
+			String idPersona = (String)request.getParameter("idPersona");
+			String accion = (String)request.getParameter("accion");
+			UsrBean usr = this.getUserBean(request);
+			
+			// En funcion de la pestaña ponemos el tipo de solicitud
+			if(mapping.getPath().equals("/CEN_MutualidadFichaPlan"))
+				mutualidadForm.setIdTipoSolicitud("P");
+			else if(mapping.getPath().equals("/CEN_MutualidadFichaSeguro"))
+				mutualidadForm.setIdTipoSolicitud("S");
+			else
+				ficha = false;
+			// Si no es de ninguna pestaña ya vendra seteado en el formulario
+			
+			// Si no tenemos el numero de identificacion en el formulario es porque estamos en la ficha 
+			// Solo vendran rellenos desde la solicitud de incorporacion porque se hace en la jsp
+			if(mutualidadForm.getNumeroIdentificacion()==null){
+				// Aqui hay que recuperar los datos de la base de datos 
+				mutualidadForm = mutualidadService.getDatosPersonaFicha(mutualidadForm, usr);
+			}
+			
+			// Aqui ya nos garantizamos que tenemos toda la informacion de la persona en el formulario
+			// tanto desde la solicitud de incorporacion como desde la ficha
+
+			CenSolicitudIncorporacionBean solIncBean = new CenSolicitudIncorporacionBean();
+			solIncBean.setIdSolicitud(Long.parseLong(mutualidadForm.getIdSolicitudIncorporacion()));
+			// Aquí he hecho un truco, si la solicitud procede de la ficha y no de una sol de incorporacion
+			// el idSolicitudIncorporacion será el idPersona. De esta forma tambien nos garantizamos que
+			// una persona solo pueda hacer una solicitud de alta en la mutualidad
+			
+			// Por defecto estaremos en modo insertar, a no ser que se encuentre una solicitud anterior
+			mutualidadForm.setModo("insertar");
+			
+			if(ficha){
+				// Buscamos las solicitudes que pueda tener pendientes
+				List<CenSolicitudMutualidadBean> solicitudMutualidadBeans=mutualidadService.getSolicitudesMutualidad(solIncBean, this.getUserBean(request));
+				if(solicitudMutualidadBeans!=null && solicitudMutualidadBeans.size()>0){
+					for(CenSolicitudMutualidadBean solBean:solicitudMutualidadBeans){
+						if(mutualidadForm.getIdTipoSolicitud().equalsIgnoreCase(solBean.getIdTipoSolicitud()) 
+							&& solBean.getIdSolicitudAceptada()!=null && !solBean.getIdSolicitudAceptada().toString().equalsIgnoreCase("0")) {
+							// Nos quedaremos con la ultima peticion que sea del tipo que estamos buscando
+							//mutualidadForm=solBean.getMutualidadForm(mutualidadForm);
+							mutualidadForm = mutualidadService.getSolicitudMutualidad(mutualidadForm, idPersona, solBean.getIdTipoSolicitud(), usr);
+							mutualidadForm.setModo("consulta");
+						}
+					}
+				}
+				if(!mutualidadForm.getModo().equalsIgnoreCase("consulta")) {
+					// Desde la ficha no se puede solicitar el alta del seguro gratuito
+					if(mutualidadForm.getIdTipoSolicitud().equalsIgnoreCase("S")) {
+						mutualidadForm.setModo("consulta");
+					}else {
+						// No hay solicitudes previas. Debemos asegurarnos que pueda hacer la solicitud.
+						// Con estado mutualista sabremos si tiene una solicitud previa, o no cumple las condiciones
+						RespuestaMutualidad respuestaSolicitudAlta = mutualidadService.isPosibilidadSolicitudAlta(mutualidadForm.getNumeroIdentificacion(), mutualidadForm.getFechaNacimiento(),usr);
+						if (!respuestaSolicitudAlta.isPosibleAlta() || 
+							(!mutualidadForm.getIdTipoIdentificacion().equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_IDENTIFICACION_NIF)) && 
+							 !mutualidadForm.getIdTipoIdentificacion().equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE)))){
+							mutualidadForm.setModo("consulta");
+							//mutualidadForm.setEstadoMutualista(respuestaSolicitudAlta.getValorRespuesta());
+						}
+					}
+				}
+			}
 			List<String> alIdsPais = new ArrayList<String>();
 			if(mutualidadForm.getIdPais()!=null && !mutualidadForm.getIdPais().equals("")){
 
@@ -154,21 +199,17 @@ public class GestionMutualidadAction extends MasterAction {
 				alIdsBanco.add(mutualidadForm.getIdBanco());
 			}
 			request.setAttribute("idBancoSeleccionado",alIdsBanco);
-			BusinessManager bm = getBusinessManager();
-			MutualidadService mutualidadService = (MutualidadService)bm.getService(MutualidadService.class);
 
 			mutualidadService.setMutualidadForm(mutualidadForm, this.getUserBean(request));
-			mutualidadService.setMutualidadFormDefecto(mutualidadForm);
+//			mutualidadService.setMutualidadFormDefecto(mutualidadForm);
 			
-			
-
-			mutualidadForm.setModo("insertar");
 		} catch (Exception e) {
 			throwExcp("messages.general.errorExcepcion", e, null); 
 		}
 
 		return "edicion";
 	}
+
 	protected String actualizaEstado (ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
@@ -233,6 +274,7 @@ public class GestionMutualidadAction extends MasterAction {
 		try {
 			Hashtable<String, String> datosMutualidad = new Hashtable<String, String>();
 			datosMutualidad.put("idPersona", request.getParameter("idPersona"));
+			datosMutualidad.put("accion", request.getParameter("accion"));
 			request.setAttribute("datosMutualidad", datosMutualidad);
 			//mutualidadService.setMutualidadForm(mutualidadForm);
 
@@ -252,75 +294,6 @@ public class GestionMutualidadAction extends MasterAction {
 
 			
 	}
-	protected String consultaSeguroUniversal (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-			{
-		MutualidadForm mutualidadForm = (MutualidadForm) formulario;
-		String idPersona = request.getParameter("idPersona");
-		mutualidadForm =getMutualidadForm(mutualidadForm,idPersona,CenSolicitudMutualidadBean.TIPOSOLICITUD_SEGUROUNIVERSAL, this.getUserBean(request));
-		return consulta(mapping, mutualidadForm, request, response);
-		
-	}
-	protected String consultaPlanMutualidad (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-			{
-		MutualidadForm mutualidadForm = (MutualidadForm) formulario;
-		String idPersona = request.getParameter("idPersona");
-		mutualidadForm =getMutualidadForm(mutualidadForm,idPersona,CenSolicitudMutualidadBean.TIPOSOLICITUD_PLANPROFESIONAL, this.getUserBean(request));
-		return consulta(mapping, mutualidadForm, request, response);
-		
-	}
-	
-	protected String consulta (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-			{
-		MutualidadForm mutualidadForm = (MutualidadForm) formulario;
-		
-			
-			List<String> alIdsPais = new ArrayList<String>();
-			if(mutualidadForm.getIdPais()!=null && !mutualidadForm.getIdPais().equals("")){
-
-				alIdsPais.add(mutualidadForm.getIdPais());
-			}
-			request.setAttribute("idPaisSeleccionado",alIdsPais);
-			List<CenProvinciaBean> provinciaBeans = null;
-//			if(mutualidadForm.getIdPais()!= null && mutualidadForm.getIdPais().equals("191")){
-				CenProvinciaAdm provinciaAdm = new CenProvinciaAdm(this.getUserBean(request));
-				provinciaBeans = provinciaAdm.getProvincias("191");
-				mutualidadForm.setProvincias(provinciaBeans);
-//			}else{
-//				mutualidadForm.setProvincias(new ArrayList<CenProvinciaBean>());
-//			}
-			List<CenPoblacionesBean> alPoblaciones = null;
-			if(mutualidadForm.getIdProvincia()!= null && !mutualidadForm.getIdProvincia().equals("")){
-				CenPoblacionesAdm poblacionesAdm = new CenPoblacionesAdm(this.getUserBean(request));
-				alPoblaciones = poblacionesAdm.getPoblaciones(mutualidadForm.getIdProvincia());
-				mutualidadForm.setPoblaciones(alPoblaciones);
-			}else{
-				mutualidadForm.setPoblaciones(new ArrayList<CenPoblacionesBean>());
-			}
-			List<String> alIdsBanco = new ArrayList<String>();
-			if(mutualidadForm.getIdBanco()!=null && !mutualidadForm.getIdBanco().equals("")){
-
-				alIdsBanco.add(mutualidadForm.getIdBanco());
-			}
-			request.setAttribute("idBancoSeleccionado",alIdsBanco);
-			
-			
-			//mutualidadService.setMutualidadForm(mutualidadForm);
-
-			mutualidadForm.setModo("consulta");
-		
-		return "consulta";
-	}
-	
-	
 	
 	
 	protected String insertar(	ActionMapping mapping, MasterForm formulario,
@@ -334,9 +307,14 @@ public class GestionMutualidadAction extends MasterAction {
 
 			BusinessManager bm = getBusinessManager();
 			MutualidadService mutualidadService = (MutualidadService)bm.getService(MutualidadService.class);
+			if(mapping.getPath().equalsIgnoreCase("/CEN_Mutualidad")) {
+				mutualidadForm.setOrigenSolicitud(CenSolicitudMutualidadBean.SOLICITUD_INCORPORACION);
+			}else {
+				mutualidadForm.setOrigenSolicitud(CenSolicitudMutualidadBean.FICHA_COLEGIAL);
+			}
 			mutualidadService.insertarSolicitudMutualidad(mutualidadForm, usrBean);
 //			String[] parametros = {mutualidadForm.getIdSolicitud(),mutualidadForm.getEstado()};
-			if(mutualidadForm.getIdSolicitudAceptada()!=null && !mutualidadForm.getIdSolicitudAceptada().equals("")){
+			if(mutualidadForm.getIdSolicitudAceptada()!=null && !mutualidadForm.getIdSolicitudAceptada().equals("") && !mutualidadForm.getIdSolicitudAceptada().equals("0")){
 				String[] parametros = {mutualidadForm.getIdSolicitud(),mutualidadForm.getIdSolicitudAceptada(),mutualidadForm.getEstado(),""+CenSolicitudMutualidadBean.ESTADO_SOLICITADO};
 				request.setAttribute("parametrosArray", parametros);
 			}else{
@@ -344,21 +322,41 @@ public class GestionMutualidadAction extends MasterAction {
 				request.setAttribute("parametrosArray", parametros);
 				
 			}
-			request.setAttribute("mensaje","messages.inserted.success");
-			request.setAttribute("modal","");
-			 
-			forward = "exitoParametros";
+			if(mapping.getPath().equalsIgnoreCase("/CEN_Mutualidad")) {
+				request.setAttribute("modal","");
+				forward = "exitoParametros";
+			}else {
+				forward = exitoRefresco("messages.updated.success",request);
+			}
 		} catch (Exception e) {
 			throwExcp("messages.general.errorExcepcion", e, null); 
 		}
-		
-		
-
 		return forward;
-
-
-
 	}
+	
+	protected void getAjaxPoblaciones (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
+			{
+		
+		//Recogemos el parametro enviado por ajax
+		String idProvincia = request.getParameter("idProvincia");
+
+		List<CenPoblacionesBean> alPoblaciones = null;
+		if(idProvincia!= null && !idProvincia.equals("")){
+			CenPoblacionesAdm poblacionesAdm = new CenPoblacionesAdm(this.getUserBean(request));
+			alPoblaciones = poblacionesAdm.getPoblaciones(idProvincia);
+		}
+		if(alPoblaciones==null){
+			alPoblaciones = new ArrayList<CenPoblacionesBean>();
+			
+		}
+		
+		respuestaAjax(new AjaxCollectionXmlBuilder<CenPoblacionesBean>(), alPoblaciones,response);
+		
+	}
+	
 	protected void getAjaxCuotaCapitalCobertura (ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 

@@ -8,8 +8,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.TreeMap;
 
 import org.apache.axis.EngineConfiguration;
@@ -30,6 +33,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.LogBDDHandler;
 import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.comun.vos.ValueKeyVO;
 import com.siga.general.SIGAException;
 
 /**
@@ -78,9 +82,9 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 
             Integracion_Solicitud_Respuesta response = stub.estadoMutualista(nif, fechaNacimientoCal);
             respuesta.setCorrecto(true);
-            respuesta.setValorRespuesta(response.getValorRespuesta());
-            respuesta.setRutaPDF(this.getRutaPDF(response.getPDF(),nif, super.getUsrBean().getLocation()));        	
-            if(respuesta.getValorRespuesta().trim().equalsIgnoreCase("1")){
+            respuesta.setValorRespuesta(response.getValorRespuesta()!=null?response.getValorRespuesta():"");
+            respuesta.setRutaPDF(this.getRutaPDF(response.getPDF(),nif, super.getUsrBean().getLocation()));          	
+            if(respuesta.getValorRespuesta()!=null&&respuesta.getValorRespuesta().equalsIgnoreCase("1")){
             	respuesta.setPosibleAlta(true);
             }else{
             	respuesta.setPosibleAlta(false);
@@ -109,9 +113,9 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 
             Integracion_Solicitud_Respuesta response = stub.estadoMutualista(nif, fechaNacimientoCal);
             respuesta.setCorrecto(true);
-            respuesta.setValorRespuesta(response.getValorRespuesta());
+            respuesta.setValorRespuesta(response.getValorRespuesta()!=null?response.getValorRespuesta():"");
             respuesta.setRutaPDF(this.getRutaPDF(response.getPDF(),nif, super.getUsrBean().getLocation()));          	
-            if(respuesta.getValorRespuesta().equalsIgnoreCase("1")){
+            if(respuesta.getValorRespuesta()!=null&&respuesta.getValorRespuesta().equalsIgnoreCase("1")){
             	respuesta.setPosibleAlta(true);
             }else{
             	respuesta.setPosibleAlta(false);
@@ -498,10 +502,10 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 
 	
 	
-	private TreeMap<String, String> transformaCombo(Integracion_TextoValor[] combo){
-		TreeMap<String, String> map= new TreeMap<String, String>();
+	private List<ValueKeyVO> transformaCombo(Integracion_TextoValor[] combo){
+		List<ValueKeyVO> map= new ArrayList<ValueKeyVO>();
 		for (Integracion_TextoValor elemento:combo){
-			map.put(elemento.getValor().toString(), elemento.getOpcion());
+			map.add(new ValueKeyVO(elemento.getValor().toString(), elemento.getOpcion()));
 		}
 		return map;
 		

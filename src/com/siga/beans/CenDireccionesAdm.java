@@ -1880,6 +1880,41 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 		return alDirecciones;
 	}
 
+	/**
+	 * Obtiene la direccion de una persona de un tipo determinado. Obtiene la primera que encuentra y si no encuentra para ese tipo devuelve nulo.
+	 * @param idPersona
+	 * @param idInstitucion
+	 * @param idTipoEnvios
+	 * @return Bean de direcciones. En cdaso de no encontrarlo devuelve nulo.
+	 * @throws ClsExceptions en cualquier caso de error.
+	 */
+	public CenDireccionesBean obtenerDireccionTipo(String idPersona, String idInstitucion, String idTipoDireccion) throws ClsExceptions
+	{
+		CenDireccionesBean salida = null;
+		try {
+            
+			int intTipo=new Integer(idTipoDireccion).intValue();
+			
+			String where =" WHERE " + 
+			CenDireccionesBean.T_NOMBRETABLA +"."+ CenDireccionesBean.C_IDPERSONA + "=" + idPersona +
+			" AND " +
+			CenDireccionesBean.T_NOMBRETABLA +"."+ CenDireccionesBean.C_IDINSTITUCION + "=" + idInstitucion +
+			" AND " +
+			CenDireccionesBean.T_NOMBRETABLA +"."+ CenDireccionesBean.C_IDDIRECCION + "=" + 
+			    " F_SIGA_GETIDDIRECCION_TIPOPREF("+ idInstitucion +","+ idPersona +","+ intTipo +")";
+			
+            Vector v = this.select(where);
+            if (v!=null && v.size()>0) {
+            	salida = (CenDireccionesBean) v.get(0);
+            }
+            
+			return salida;
+
+		} catch (Exception e) {
+			throw new ClsExceptions(e,"Error al buscar la direccion adecuada segun tipo. ");
+		}
+		
+	}
 
 	
 /**/	

@@ -10,7 +10,9 @@
  */
 package com.siga.beans;
 
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ComodinBusquedas;
@@ -20,6 +22,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.PaginadorBind;
 import com.siga.censo.form.BusquedaClientesForm;
@@ -1485,5 +1488,32 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 		}
 	}
 	
+
+	public String getEstadoCivil (Long idPersona) 
+	{
+		RowsContainer rc = null;
+		try { 
+			rc = new RowsContainer(); 
+			Hashtable codigos = new Hashtable();
+		    codigos.put(new Integer(1),idPersona.toString());
+		    String sql = " SELECT " + UtilidadesMultidioma.getCampoMultidiomaSimple("E."+ CenEstadoCivilBean.C_DESCRIPCION,this.usrbean.getLanguage()) + " AS ESTADOCIVIL " +
+						   " FROM " + CenEstadoCivilBean.T_NOMBRETABLA + " E, " + CenPersonaBean.T_NOMBRETABLA + " C " +
+						  " WHERE " + "C." + CenPersonaBean.C_IDPERSONA + " = :1 " + 
+						  	" AND "	+ "E. " + CenEstadoCivilBean.C_IDESTADO + " = C." + CenPersonaBean.C_IDESTADOCIVIL;
+		
+			rc = this.findBind(sql,codigos);
+			if (rc != null) {
+				if (rc.size() != 1) 
+					return null;
+
+				Row fila = (Row) rc.get(0);
+				return UtilidadesHash.getString(fila.getRow(), "ESTADOCIVIL");
+	        }
+		}
+		catch (Exception e) {
+			return null;
+		}
+		return null;
+	}
 }
 	

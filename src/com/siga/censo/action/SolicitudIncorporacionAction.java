@@ -1016,6 +1016,8 @@ public class SolicitudIncorporacionAction extends MasterAction
 											miFormulario.setIdSolicitudPlanProfesional(""+solicitudMutualidadBean.getIdSolicitud().toString());
 											if(solicitudMutualidadBean.getIdSolicitudAceptada()!=null)
 												miFormulario.setIdSolicitudAceptadaPlanProfesional(""+solicitudMutualidadBean.getIdSolicitudAceptada().toString());
+											else
+												miFormulario.setIdSolicitudAceptadaPlanProfesional("");
 											miFormulario.setEstadoSolicitudPlanProfesional(solicitudMutualidadBean.getEstado());
 											miFormulario.setEstadoMutualistaPlanProfesional(solicitudMutualidadBean.getEstadoMutualista());
 											
@@ -1023,6 +1025,8 @@ public class SolicitudIncorporacionAction extends MasterAction
 											miFormulario.setIdSolicitudSeguroUniversal(""+solicitudMutualidadBean.getIdSolicitud().toString());
 											if(solicitudMutualidadBean.getIdSolicitudAceptada()!=null)
 												miFormulario.setIdSolicitudAceptadaSeguroUniversal(""+solicitudMutualidadBean.getIdSolicitudAceptada().toString());
+											else
+												miFormulario.setIdSolicitudAceptadaSeguroUniversal("");
 											miFormulario.setEstadoSolicitudSeguroUniversal(solicitudMutualidadBean.getEstado());
 											
 										}

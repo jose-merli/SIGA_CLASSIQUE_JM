@@ -1,6 +1,8 @@
 package com.siga.ws.mutualidad;
 
-import java.util.Map;
+import java.util.List;
+
+import com.siga.comun.vos.ValueKeyVO;
 
 public class RespuestaMutualidad {
 	
@@ -10,16 +12,16 @@ public class RespuestaMutualidad {
 	private Integer idSolicitud;
 	private Double cuota=0.0;
 	private Double capital=0.0;
-	private Map<String, String> beneficiarios;
-	private Map<String, String> asistencia;
-	private Map<String, String> tiposIdentificador;
-	private Map<String, String> tiposDomicilio;
-	private Map<String, String> tiposDireccion;
-	private Map<String, String> sexos;
-	private Map<String, String> ejerciente;
-	private Map<String, String> periodicidades;
-	private Map<String, String> estadosCiviles;
-	private Map<String, String> coberturas;
+	private List<ValueKeyVO> beneficiarios;
+	private List<ValueKeyVO> asistencia;
+	private List<ValueKeyVO> tiposIdentificador;
+	private List<ValueKeyVO> tiposDomicilio;
+	private List<ValueKeyVO> tiposDireccion;
+	private List<ValueKeyVO> sexos;
+	private List<ValueKeyVO> ejerciente;
+	private List<ValueKeyVO> periodicidades;
+	private List<ValueKeyVO> estadosCiviles;
+	private List<ValueKeyVO> coberturas;
 	private String valorRespuesta;
 	
 	private byte[] pdf;
@@ -74,43 +76,43 @@ public class RespuestaMutualidad {
 		this.capital = capital;
 	}
 
-	public Map<String, String> getBeneficiarios() {
+	public List<ValueKeyVO> getBeneficiarios() {
 		return beneficiarios;
 	}
 
-	public Map<String, String> getAsistencia() {
+	public List<ValueKeyVO> getAsistencia() {
 		return asistencia;
 	}
 
-	public Map<String, String> getTiposIdentificador() {
+	public List<ValueKeyVO> getTiposIdentificador() {
 		return tiposIdentificador;
 	}
 
-	public Map<String, String> getTiposDomicilio() {
+	public List<ValueKeyVO> getTiposDomicilio() {
 		return tiposDomicilio;
 	}
 
-	public Map<String, String> getTiposDireccion() {
+	public List<ValueKeyVO> getTiposDireccion() {
 		return tiposDireccion;
 	}
 
-	public Map<String, String> getSexos() {
+	public List<ValueKeyVO> getSexos() {
 		return sexos;
 	}
 
-	public Map<String, String> getEjerciente() {
+	public List<ValueKeyVO> getEjerciente() {
 		return ejerciente;
 	}
 
-	public Map<String, String> getPeriodicidades() {
+	public List<ValueKeyVO> getPeriodicidades() {
 		return periodicidades;
 	}
 
-	public Map<String, String> getEstadosCiviles() {
+	public List<ValueKeyVO> getEstadosCiviles() {
 		return estadosCiviles;
 	}
 
-	public Map<String, String> getCoberturas() {
+	public List<ValueKeyVO> getCoberturas() {
 		return coberturas;
 	}
 	
@@ -122,43 +124,43 @@ public class RespuestaMutualidad {
 		return rutaPDF;
 	}
 
-	public void setBeneficiarios(Map<String, String> map) {
+	public void setBeneficiarios(List<ValueKeyVO> map) {
 		this.beneficiarios = map;
 	}
 
-	public void setAsistencia(Map<String, String> map) {
+	public void setAsistencia(List<ValueKeyVO> map) {
 		this.asistencia = map;
 	}
 
-	public void setTiposIdentificador(Map<String, String> map) {
+	public void setTiposIdentificador(List<ValueKeyVO> map) {
 		this.tiposIdentificador = map;
 	}
 
-	public void setTiposDomicilio(Map<String, String> map) {
+	public void setTiposDomicilio(List<ValueKeyVO> map) {
 		this.tiposDomicilio = map;
 	}
 
-	public void setTiposDireccion(Map<String, String> map) {
+	public void setTiposDireccion(List<ValueKeyVO> map) {
 		this.tiposDireccion = map;
 	}
 
-	public void setSexos(Map<String, String> map) {
+	public void setSexos(List<ValueKeyVO> map) {
 		this.sexos = map;
 	}
 
-	public void setEjerciente(Map<String, String> map) {
+	public void setEjerciente(List<ValueKeyVO> map) {
 		this.ejerciente = map;
 	}
 
-	public void setPeriodicidades(Map<String, String> map) {
+	public void setPeriodicidades(List<ValueKeyVO> map) {
 		this.periodicidades = map;
 	}
 
-	public void setEstadosCiviles(Map<String, String> map) {
+	public void setEstadosCiviles(List<ValueKeyVO> map) {
 		this.estadosCiviles = map;
 	}
 
-	public void setCoberturas(Map<String, String> map) {
+	public void setCoberturas(List<ValueKeyVO> map) {
 		this.coberturas = map;
 	}
 

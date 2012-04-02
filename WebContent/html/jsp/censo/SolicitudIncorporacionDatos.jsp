@@ -914,7 +914,7 @@
 				<siga:Idioma key="censo.SolicitudIncorporacionDatos.mutualidad.literal.planProfesional"/>
 				</td>
 				<c:choose>
-					<c:when test="${SolicitudIncorporacionForm.idSolicitudPlanProfesional==null||SolicitudIncorporacionForm.idSolicitudPlanProfesional==''}">
+					<c:when test="${SolicitudIncorporacionForm.idSolicitudAceptadaPlanProfesional==null||SolicitudIncorporacionForm.idSolicitudAceptadaPlanProfesional==''}">
 						<td id="tdBotonSolicitudPlanProfesional" >
 						<%if(modoAnterior.equalsIgnoreCase("Editar")){ %>
 							<html:button property="idButton" onclick="return accionSolicitarAltaMutualidad('P');" styleClass="button">
@@ -926,9 +926,18 @@
 							</html:button>
 						<%} %>
 						</td>
+						<c:choose>
+						<c:when test="${SolicitudIncorporacionForm.idSolicitudPlanProfesional!=null&&SolicitudIncorporacionForm.idSolicitudAceptadaPlanProfesional==''}">
+						<td colspan="4" class="labelTextValor" style="color:red;">
+							<siga:Idioma key="censo.mutualidad.literal.errorPrevio"/>
+						</td>
+						</c:when>
+						<c:otherwise>
 						<td id="tdTextoNSolicitudPlanProfesional" style="display:none" class="labelText" >Nº&nbsp;Solicitud:</td>
 						<td id="tdIdSolicitudPlanProfesional" class="labelTextValor">&nbsp;</td> 
-						<td id="tdEstadoSolicitudPlanProfesional" class="labelTextValor" style="color:blue;">&nbsp;</td>
+						<td id="tdEstadoSolicitudPlanProfesional" class="labelTextValor" style="color:blue;"></td>
+						</c:otherwise>
+						</c:choose>
 						<td id="tdBotonEstadoSolicitudPlanProfesional" style="display:none" > 
 							<html:button property="idButton" onclick="return accionComprobarEstadoMutualidad('P');" styleClass="button">Comprobar Estado</html:button>
 						</td>
@@ -937,16 +946,7 @@
 					<c:otherwise>
 						<td class="labelText" >Nº&nbsp;Solicitud:</td>
 						<td class="labelTextValor">
-						
-						<c:choose>
-						<c:when test="${SolicitudIncorporacionForm.idSolicitudAceptadaPlanProfesional!=null}">
 							<c:out value="${SolicitudIncorporacionForm.idSolicitudAceptadaPlanProfesional}" />
-						</c:when>
-						<c:otherwise>
-							<c:out value="${SolicitudIncorporacionForm.idSolicitudPlanProfesional}" />
-						</c:otherwise>
-						</c:choose>
-						
 						</td>
 						<td id="tdEstadoSolicitudPlanProfesional" class="labelTextValor" style="color:blue;"><c:out value="${SolicitudIncorporacionForm.estadoSolicitudPlanProfesional}" /></td>
 						<td id="tdBotonEstadoSolicitudPlanProfesional">
@@ -961,7 +961,7 @@
 				<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacionDatos.mutualidad.literal.seguroAccidentes"/></td>
 				
 				<c:choose>
-					<c:when test="${SolicitudIncorporacionForm.idSolicitudSeguroUniversal==null||SolicitudIncorporacionForm.idSolicitudSeguroUniversal==''}">
+					<c:when test="${SolicitudIncorporacionForm.idSolicitudAceptadaSeguroUniversal==null||SolicitudIncorporacionForm.idSolicitudAceptadaSeguroUniversal==''}">
 						<td id="tdBotonSolicitudSeguroUniversal">
 						<%if(modoAnterior.equalsIgnoreCase("Editar")){ %>
 							<html:button id="botonSolicitarAltaSeguro" property="idButton"onclick="return accionSolicitarAltaMutualidad('S');" styleClass="button">
@@ -973,25 +973,27 @@
 							</html:button>
 						<%} %>
 						</td>
+						<c:choose>
+						<c:when test="${SolicitudIncorporacionForm.idSolicitudSeguroUniversal!=null&&SolicitudIncorporacionForm.idSolicitudAceptadaSeguroUniversal==''}">
+							<td colspan="4" class="labelTextValor" style="color:red;">
+								<siga:Idioma key="censo.mutualidad.literal.errorPrevio"/>
+							</td>
+						</c:when>
+						<c:otherwise>
 						<td id="tdTextoNSolicitudSeguroUniversal"  style="display:none" class="labelText" >Nº&nbsp;Solicitud:</td>
-						<td id="tdIdSolicitudSeguroUniversal" class="labelTextValor">&nbsp;</td>
-						<td id="tdEstadoSolicitudSeguroUniversal" class="labelTextValor" style="color:blue;">&nbsp;</td>
+						<td id="tdEstadoSolicitudSeguroUniversal" class="labelTextValor" style="color:blue;">
+						</td>
 						<td id="tdBotonEstadoSolicitudSeguroUniversal" style="display:none">
 							<html:button property="idButton" onclick="return accionComprobarEstadoMutualidad('S');" styleClass="button">Comprobar Estado</html:button>
 						</td>
 						<td colspan="2"></td>
+						</c:otherwise>
+						</c:choose>
 					</c:when>
 					<c:otherwise>
 						<td class="labelText" >Nº&nbsp;Solicitud:</td>
 						<td class="labelTextValor" >
-						<c:choose>
-						<c:when test="${SolicitudIncorporacionForm.idSolicitudAceptadaSeguroUniversal!=null}">
 							<c:out value="${SolicitudIncorporacionForm.idSolicitudAceptadaSeguroUniversal}" />
-						</c:when>
-						<c:otherwise>
-							<c:out value="${SolicitudIncorporacionForm.idSolicitudSeguroUniversal}" />
-						</c:otherwise>
-						</c:choose>
 						</td>
 						<td id="tdEstadoSolicitudSeguroUniversal" class="labelTextValor" style="color:blue;"><c:out value="${SolicitudIncorporacionForm.estadoSolicitudSeguroUniversal}" /></td>
 						<td id="tdBotonEstadoSolicitudSeguroUniversal">
@@ -1000,6 +1002,11 @@
 						<td colspan="2"></td>
 					</c:otherwise>
 				</c:choose>
+			</tr>
+			<tr>
+				<td class="labelText" colspan="2">
+					<a href="http://delegaciones.mutualidadabogacia.com/MicroSiteContacto/pages/contacto.aspx" target="new"><siga:Idioma key="censo.mutualidad.literal.masInfo"/></a>
+				</td>
 			</tr>
 		</table>
 		</c:when>
@@ -1090,7 +1097,7 @@
 		<html:hidden property="nombre"/>
 		<html:hidden property="apellido1"/>
 		<html:hidden property="apellido2"/>
-		<html:hidden property="naturalDe"/>
+		<html:hidden property="nacionalidad"/>
 		<html:hidden property="fechaNacimiento"/>
 		<html:hidden property="idEstadoCivil"/>
 		<html:hidden property="estadoCivil"/>
@@ -1218,7 +1225,8 @@
 		document.MutualidadForm.nombre.value = document.SolicitudIncorporacionForm.nombre.value;
 		document.MutualidadForm.apellido1.value = document.SolicitudIncorporacionForm.apellido1.value;
 		document.MutualidadForm.apellido2.value = document.SolicitudIncorporacionForm.apellido2.value;
-		document.MutualidadForm.naturalDe.value  = document.SolicitudIncorporacionForm.natural.value;
+		//document.MutualidadForm.nacionalidad.value  = document.SolicitudIncorporacionForm.natural.value;
+		document.MutualidadForm.nacionalidad.value  = "";
 		//document.MutualidadForm.fechaNacimiento.value  = document.SolicitudIncorporacionForm.fechaNacimiento.value;
 		document.MutualidadForm.fechaNacimiento.value  = document.getElementById('fechaNacimientoBBDD').value;
 		
@@ -1255,8 +1263,9 @@
    		
    		
 	    if(resultado && resultado.length){
-	    	
-	    	actualizaDatosMutualidad(idTipoSolicitud,resultado);
+	    	document.SolicitudIncorporacionForm.modo.value = "Modificar";
+			document.SolicitudIncorporacionForm.target = "submitArea";
+			document.SolicitudIncorporacionForm.submit();
 	    }
 	}
 	function actualizaDatosMutualidad(idTipoSolicitud,resultado)
