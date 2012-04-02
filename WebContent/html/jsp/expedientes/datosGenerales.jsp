@@ -64,6 +64,25 @@
 	
 	ExpDatosGeneralesForm form = (ExpDatosGeneralesForm) request
 			.getAttribute("ExpDatosGeneralesForm");
+	
+	
+	String nombreTamanio=""+form.getNombre().length();
+	if(nombreTamanio.equals("0"))
+		nombreTamanio="1";
+	String ape1Tamanio=""+form.getPrimerApellido().length();
+	if(ape1Tamanio.equals("0"))
+		ape1Tamanio="1";
+	String ape2Tamanio=""+form.getSegundoApellido().length();
+	if(ape2Tamanio.equals("0"))
+		ape2Tamanio="1";
+	String numColegiadoTamanio= ""+form.getNumColegiado().length();
+	if(numColegiadoTamanio.equals("0"))
+		numColegiadoTamanio="1";
+	String nifTamanio = ""+form.getNif().length();
+	if(nifTamanio.equals("0"))
+		nifTamanio="1";
+	
+	
 	String nombreRelacion ="";
 	Boolean tieneExpeRelacionado= false;
 	if (form.getRelacionExpediente() != null && !form.getRelacionExpediente().equalsIgnoreCase("")){
@@ -1300,22 +1319,22 @@
 
 	<siga:ConjCampos leyenda="<%=tituloDenunciado%>">
 
-	<table class="tablaCampos" align="center">
+	<table class="tablaCampos" align="center" border =1>
 
 	<!-- FILA -->
 		<tr>
 			<td class="labelText">
 				<siga:Idioma key="expedientes.auditoria.literal.nif"/>&nbsp;&nbsp;&nbsp;&nbsp;(*)
 			</td>				
-			<td>				
-				<html:text name="ExpDatosGeneralesForm" size="9"  property="nif" styleClass="boxConsulta" readonly="true"></html:text>
+			<td width="<%=nifTamanio%>">				
+				<html:text name="ExpDatosGeneralesForm" size="<%=nifTamanio%>"  property="nif" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 
-			<td class="labelText" >
+			<td class="labelText"  NOWRAP >
 				<siga:Idioma key="expedientes.auditoria.literal.ncolegiado"/>			
 			</td>
-			<td>
-				<html:text name="ExpDatosGeneralesForm" property="numColegiado" size="9" styleClass="boxConsulta" readonly="true"></html:text>
+			<td width="<%=numColegiadoTamanio%>">
+				<html:text name="ExpDatosGeneralesForm" property="numColegiado" size="<%=numColegiadoTamanio%>" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 
 			<td class="labelText" >
@@ -1325,24 +1344,28 @@
 				<siga:Idioma key="expedientes.auditoria.literal.nombre"/>
 			</td>				
 			
-			<td class="labelTextValue" >
-					<%=form.getNombre()%>
-					<%=form.getPrimerApellido()%>
-					<%=form.getSegundoApellido()%>
-			<!-- 
-				<html:text name="ExpDatosGeneralesForm" property="nombre" styleClass="boxConsulta" readonly="true"></html:text>	
-				<html:text name="ExpDatosGeneralesForm" property="primerApellido" styleClass="boxConsulta" readonly="true"></html:text>
-				<html:text name="ExpDatosGeneralesForm" property="segundoApellido" styleClass="boxConsulta" readonly="true"></html:text>
-			-->														 				 																										
-			</td>						 			
+			<td   width="<%=nombreTamanio%>">
+				<html:text name="ExpDatosGeneralesForm" property="nombre" size="<%=nombreTamanio%>" styleClass="boxConsulta" readonly="true"></html:text>																								 				 																										
+			</td>		
+			
+			
+			<td  width="<%=ape1Tamanio%>">
+				<html:text name="ExpDatosGeneralesForm" property="primerApellido" size="<%=ape1Tamanio%>" styleClass="boxConsulta" readonly="true"></html:text>
+			</td>
+			
+			<td   width="<%=ape1Tamanio%>">
+				<html:text name="ExpDatosGeneralesForm" property="segundoApellido" size="<%=ape2Tamanio%>"styleClass="boxConsulta" readonly="true"></html:text>
+			</td>
+			
+							 			
 			<% if (bEditable) { %>			
-			<td colspan="2" align="right">				
+			<td colspan="1" align="right">				
 				<input type="button" class="button" alt="<%=seleccionarPersona%>" id="newPerson" name = "idButton"  onclick="return seleccionarPersona();" value="<%=seleccionarPersona%>"/>
 				&nbsp;
 				<input type="button" class="button" alt="<%=nuevoNoCol%>" id="newPerson" name = "idButton"  onclick="return altaPersona();" value="<%=nuevoNoCol%>"/>
 			</td>	
 			<% } else { %>
-			<td colspan="2"></td>
+			<td colspan="1"></td>
 			<%
 				}
 			%>			
