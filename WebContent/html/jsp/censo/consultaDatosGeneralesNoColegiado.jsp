@@ -601,12 +601,21 @@ caracterParam[0] = tipoCliente;
 				//	}					
 				//}
 			//}
-
+									
+			//Funcion que quita blancos a derecha e izquierda de la cadena
+			function fTrim(Str)
+			{				 
+				Str = Str.replace(/(^\s*)|(\s*$)/g,"");			
+				return Str;
+			}
+			
+			
 
 			function cambioTipo()
 			{																									
 				if (document.forms[0].modo.value == "nuevaSociedad" || document.forms[0].modo.value == "editar")
-				{					
+				{		
+					document.forms[0].numIdentificacion.value = fTrim(document.forms[0].numIdentificacion.value);			
 					if(document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "A"
 						|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "B" 
 						|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "F"
@@ -1437,3 +1446,4 @@ caracterParam[0] = tipoCliente;
 
 </body>
 </html>
+
