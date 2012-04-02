@@ -1761,6 +1761,47 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	}
 	
 	
+	public Vector getEstadoCivilDesignaDefendido (String idInstitucion, String turno,String anio,String numero) throws ClsExceptions  
+	{
+		try {
+			Hashtable h = new Hashtable(); 
+			h.put(new Integer(1), idInstitucion);
+			h.put(new Integer(2), turno);
+			h.put(new Integer(3), anio);
+			h.put(new Integer(4), numero);
+
+			String sql = "Select " +
+			"		F_SIGA_GETRECURSO(estcivil.descripcion, 1) estadocivil_defendido,estcivil.descripcion " +
+			" from cen_estadocivil estcivil,"+
+		       "scs_defendidosdesigna defen,"+
+		       "scs_personajg persJg,"+
+		       "Scs_Designa Des "+ 
+		       
+		       " where des.anio = defen.anio(+) " +
+			   " AND des.numero = defen.numero(+) " +
+			   " AND des.idinstitucion = defen.idinstitucion " +
+			   " AND des.idturno = defen.idturno(+) " +
+			   " and persJg.idpersona = defen.idpersona " +
+			   " AND estcivil.idestadocivil = persJg.idestadocivil " +
+		       
+		       "   " +
+				"   And Des.Idinstitucion = :1 " +
+				"   And Des.Idturno = :2 " +
+				"   And Des.Anio = :3 " +
+				"   And Des.Numero = :4";
+			
+			HelperInformesAdm helperInformes = new HelperInformesAdm();	
+			return helperInformes.ejecutaConsultaBind(sql, h);
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion sobre las relaciones de procuradores.");
+		}
+	}
+	
+	
+	
+	
+	
 	public Vector getDatosSalidaOficio (String idInstitucion, String idturno, String anio, String numero, String codigoDesigna, boolean isSolicitantes, String idPersonaJG, String idioma) throws ClsExceptions  
 	{	 
 	Vector vSalida = null;
@@ -1768,10 +1809,25 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		try {
 			vSalida = new Vector();	
 			Vector vDesigna = getDesignaSalidaOficio(idInstitucion,idturno, anio, numero, codigoDesigna); 
+			Vector estadodCivilDefendido = getEstadoCivilDesignaDefendido(idInstitucion,idturno, anio, numero);
+			
+			String estadoCivilDefendido ="";
+			for (int j = 0; j < estadodCivilDefendido.size(); j++) 
+			{
+				Hashtable registro = (Hashtable) estadodCivilDefendido.get(j);
+				estadoCivilDefendido = (String)registro.get("ESTADOCIVIL_DEFENDIDO");				
+			}
+			
 			String idiomainforme="";
 			Hashtable htCodigo = new Hashtable();
 			for (int j = 0; j < vDesigna.size(); j++) {
 				Hashtable registro = (Hashtable) vDesigna.get(j);
+				if(estadoCivilDefendido!=null && !(estadoCivilDefendido.equals("")) &&!(estadoCivilDefendido.equals(" ")))
+				{
+					registro.put("ESTADOCIVIL_DEFENDIDO", estadoCivilDefendido);
+				}
+				else
+					registro.put("ESTADOCIVIL_DEFENDIDO", "");
 				String numeroDesigna = (String)registro.get("NUMERO");
 				String anioDesigna = (String)registro.get("ANIO");
 				String idTurno  = (String)registro.get("IDTURNO");
@@ -1903,9 +1959,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			h.put(new Integer(3), anio);
 			h.put(new Integer(4), numero);
 			String sql = 
-				"Select " +
-				"		F_SIGA_GETRECURSO(estcivil.descripcion, 1) estadocivil_defendido,estcivil.descripcion," +
-						"Des.Idinstitucion, " +
+				"Select Des.Idinstitucion, " +
 				"       Des.Idturno, " +
 				"       Des.Anio, " +
 				"       Des.Numero, " +
@@ -1952,12 +2006,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				"       Scs_Designasletrado Let, " +
 				"       Cen_Persona         p, " +
 				"       Scs_Designasletrado Letant, " +
-				"       Cen_Persona         Pant, " +
-				
-			       "scs_designaprocurador desiprocu,"+
-			       "scs_procurador procu,"+
-			       "cen_estadocivil estcivil"+
-
+				"       Cen_Persona         Pant " +
 				" Where Des.Idinstitucion = Let.Idinstitucion(+) " +
 				"   And Des.Idturno = Let.Idturno(+) " +
 				"   And Des.Anio = Let.Anio(+) " +
@@ -1968,15 +2017,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				"                                      Des.Idturno, " +
 				"                                      Des.Anio, " +
 				"                                      Des.Numero) " +
-				
-				 "AND des.idinstitucion = desiprocu.idinstitucion(+) "+
-				  "AND des.idturno = desiprocu.idturno(+) " +
-				   "AND des.anio = desiprocu.anio(+) "+
-				   "AND des.numero = desiprocu.numero(+) "+
-				   "AND desiprocu.idprocurador = procu.idprocurador(+) "+
-				   "AND des.idinstitucion = procu.idinstitucion " +
-				   "AND estcivil.idestadocivil = p.idestadocivil " +
-				   
 				"   And Des.Idinstitucion = Letant.Idinstitucion(+) " +
 				"   And Des.Idturno = Letant.Idturno(+) " +
 				"   And Des.Anio = Letant.Anio(+) " +
@@ -2723,11 +2763,11 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	       try {
 	            RowsContainer rc = new RowsContainer();
 		        StringBuffer sql = new StringBuffer();		        
-		        sql.append(" select  procu.nombre as procurador_ejg,procu.apellidos1,procu.apellidos2,f_siga_getrecurso (ejg.idprocurador, 1) procurador_ejg ,ejg.aniocajg || '/' || ejg.numero_cajg as ANIONUMEROCAJG, ejg.numero_cajg  || '/' || ejg.aniocajg as NUMEROANIOCAJG, ejg.aniocajg as ANIOCAJG, ejg.numero_cajg as NUMEROCAJG, ejg.idpersona as IDPERSONA ");
+		        sql.append(" select  ejg.aniocajg || '/' || ejg.numero_cajg as ANIONUMEROCAJG, ejg.numero_cajg  || '/' || ejg.aniocajg as NUMEROANIOCAJG, ejg.aniocajg as ANIOCAJG, ejg.numero_cajg as NUMEROCAJG, ejg.idpersona as IDPERSONA ");
 		        sql.append(" ,ejg.anio || '/' || ejg.numejg ANIONUMEROEJG,ejg.numejg || '/' || ejg.anio NUMEROANIOEJG ");
 		        sql.append(" from scs_ejg ejg, scs_designa des, ");
 		        sql.append(" scs_turno tur, scs_tipoejg tip, ");
-		        sql.append(" scs_tipodictamenejg tdic, scs_ejgdesigna ejgDes,scs_procurador procu");        
+		        sql.append(" scs_tipodictamenejg tdic, scs_ejgdesigna ejgDes");        
 		        sql.append(" where ejgDes.Aniodesigna = des.anio ");
 		        sql.append(" and ejgDes.Numerodesigna = des.numero");
 		        sql.append(" and ejgDes.Idturno = des.idturno ");		        
@@ -2741,8 +2781,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
                 sql.append(" and tdic.idtipodictamenejg(+) = ejg.idinstitucion");
                 sql.append(" and tur.idinstitucion(+) = ejg.idinstitucion ");
                 sql.append(" and tur.idturno(+) = ejg.guardiaturno_idturno ");
-                sql.append(" and procu.idprocurador = ejg.idprocurador ");
-                sql.append(" and procu.idinstitucion =  "+idinstitucion);
                 sql.append(" and des.anio = "+anio);
                 sql.append(" and des.numero = "+numero);
                 sql.append(" and des.idturno = "+idturno);
@@ -2842,9 +2880,14 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				String listadoAnioNumeroEjg="";
 				String listadoNumeroAnioEjg="";
 				
-				String procuradorEjg="";
-				String apeProcurador1="";
-				String apeProcurador2="";
+				Vector ejgProcurador =getProcuradorSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna);
+				String procuradorEjg="";				
+				for (int i = 0; i < ejgProcurador.size(); i++) 
+				{
+					Hashtable registroejg = (Hashtable) ejgProcurador.get(i);
+				    procuradorEjg = (String)registroejg.get("PROCURADOR");
+				}
+				
 				
 				Vector Vtramitador=null;
 				for (int i = 0; i < ejgsdesingna.size(); i++) {					
@@ -2856,9 +2899,9 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				    String anionumerocajg = (String)registroejg.get("ANIONUMEROCAJG");
 				    String numeroAnioEjg = (String)registroejg.get("NUMEROANIOEJG"); 
 				    String anioNumeroEjg = (String)registroejg.get("ANIONUMEROEJG");
-				    apeProcurador1 =(String)registroejg.get("APELLIDOS1");
-				    apeProcurador2 =(String)registroejg.get("APELLIDOS2");
-				    procuradorEjg = (String)registroejg.get("PROCURADOR_EJG");
+				    //apeProcurador1 =(String)registroejg.get("APELLIDOS1");
+				    //apeProcurador2 =(String)registroejg.get("APELLIDOS2");
+				    //procuradorEjg = (String)registroejg.get("PROCURADOR_EJG");
 				    if (!numeroaniocajg.equals("/") && (!anionumerocajg.equals("/"))){
 				    	Listadoanionumerocajg+=","+anionumerocajg;
 				    	Listadonumeroaniocajg+=","+numeroaniocajg;
@@ -2885,16 +2928,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				
 				
 				if (procuradorEjg!=null && !procuradorEjg.equals(""))
-				{
-					if (apeProcurador1!=null && !apeProcurador1.equals(""))
-					{
-						procuradorEjg= procuradorEjg +" "+apeProcurador1;
-						if (apeProcurador2!=null && !apeProcurador2.equals(""))
-						{
-							procuradorEjg= procuradorEjg +" "+apeProcurador2;
-						}
-						
-					}
+				{					
 					UtilidadesHash.set(registro, "PROCURADOR_EJG", procuradorEjg);
 				}
 				else
