@@ -623,8 +623,8 @@
 		}else{
 			poblacionSeleccionada = document.getElementById("poblacion").value;
 			document.getElementById("provincia").onchange();
-			window.setTimeout("recargarComboHijo()",500,"Javascript");	
-			document.getElementById("poblacion").value = document.busquedaCensoModalForm.poblacion.value;		
+			window.setTimeout("recargarComboHijo()",750,"Javascript");	
+			document.getElementById("poblacion").value = datosGeneralesForm.poblacion.value;		
 		}
 
 		if(document.busquedaCensoModalForm.preferente.value != null && document.busquedaCensoModalForm.preferente.value != ""){
