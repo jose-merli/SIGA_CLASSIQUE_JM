@@ -1319,7 +1319,7 @@
 
 	<siga:ConjCampos leyenda="<%=tituloDenunciado%>">
 
-	<table class="tablaCampos" align="center" border =1>
+	<table class="tablaCampos" align="center">
 
 	<!-- FILA -->
 		<tr>
@@ -1333,7 +1333,7 @@
 			<td class="labelText"  NOWRAP >
 				<siga:Idioma key="expedientes.auditoria.literal.ncolegiado"/>			
 			</td>
-			<td width="<%=numColegiadoTamanio%>">
+			<td width="<%=numColegiadoTamanio%>" >
 				<html:text name="ExpDatosGeneralesForm" property="numColegiado" size="<%=numColegiadoTamanio%>" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 
