@@ -1004,8 +1004,9 @@
 				</c:choose>
 			</tr>
 			<tr>
-				<td class="labelText" colspan="2">
-					<a href="http://delegaciones.mutualidadabogacia.com/MicroSiteContacto/pages/contacto.aspx" target="new"><siga:Idioma key="censo.mutualidad.literal.masInfo"/></a>
+				<td class="labelText" colspan="5">
+					<siga:Idioma key="censo.mutualidad.literal.masInfo"/>
+					<a href="http://delegaciones.mutualidadabogacia.com/MicroSiteContacto/pages/contacto.aspx" target="new"><siga:Idioma key="censo.mutualidad.literal.aqui"/></a>
 				</td>
 			</tr>
 		</table>

@@ -150,7 +150,8 @@
 			<tr>
 			<tr>
 				<td class="labelText" colspan="2">
-					<a href="http://delegaciones.mutualidadabogacia.com/MicroSiteContacto/pages/contacto.aspx" target="new"><siga:Idioma key="censo.mutualidad.literal.masInfo"/></a>
+					<siga:Idioma key="censo.mutualidad.literal.masInfo"/>
+					<a href="http://delegaciones.mutualidadabogacia.com/MicroSiteContacto/pages/contacto.aspx" target="new"><siga:Idioma key="censo.mutualidad.literal.aqui"/></a>
 				</td>
 			</tr>
 		</table>
@@ -174,7 +175,6 @@
 							
 						<c:when test="${MutualidadForm.idSolicitud==null}">
 								<td class="labelTextValue">No solicitada mediante SIGA</td>
-								<td colspan="6">&nbsp;</td>
 						</c:when>
 						<c:when test="${MutualidadForm.idSolicitud!=null}">
 								<td>&nbsp;</td>
@@ -210,23 +210,17 @@
 								<siga:Idioma key="censo.mutualidad.literal.estadoMutualista" />
 							</html:button>
 						</td>
-						<td id="tdEstadoMutualista" class="labelTextValor" style="color: blue;"><c:out
-							value="${MutualidadForm.estadoMutualista}" />
+						<td id="tdEstadoMutualista" class="labelTextValor" style="color: blue;" colspan="3" width="300px">
+							&nbsp;<c:out value="${MutualidadForm.estadoMutualista}" />
 						</td>
-						
 						</c:when>
-						<c:otherwise>
-						<td colspan="2"></td>
-						</c:otherwise>
 					</c:choose>
-								
-								
-					
-					
+
 					</tr>
 					<tr>
-						<td class="labelText" colspan="6">
-							<a href="http://delegaciones.mutualidadabogacia.com/MicroSiteContacto/pages/contacto.aspx" target="new"><siga:Idioma key="censo.mutualidad.literal.masInfo"/></a>
+						<td class="labelText" colspan="8">
+							<siga:Idioma key="censo.mutualidad.literal.masInfo"/>
+							<a href="http://delegaciones.mutualidadabogacia.com/MicroSiteContacto/pages/contacto.aspx" target="new"><siga:Idioma key="censo.mutualidad.literal.aqui"/></a>
 						</td>
 					</tr>
 				</table>
