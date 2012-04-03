@@ -489,7 +489,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			DatosGeneralesFacturacionForm miform = (DatosGeneralesFacturacionForm)formulario;
 			String idFacturacion = miform.getIdFacturacion();
 			String idInstitucion = usr.getLocation();
-			String idEstado= miform.getIdEstado();	
+
 			String  estado = (String) ((Hashtable) (new FcsFacturacionJGAdm(usr)).getEstadoFacturacion(idInstitucion, idFacturacion)).get(FcsEstadosFacturacionBean.C_IDESTADOFACTURACION);
 			if (estado!=null && estado.equals(String.valueOf(ClsConstants.ESTADO_FACTURACION_EJECUTADA)) && usr.getStrutsTrans().equalsIgnoreCase("CEN_MantenimientoFacturacion")){
 					volverGenerarFacturacion ( mapping,  formulario,  request,  response);
@@ -723,14 +723,22 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			} else if (usr.getStrutsTrans().equalsIgnoreCase("CEN_MantenimientoFacturacion")) {
 				datos.put("PREVISION",ClsConstants.DB_FALSE);	
 			}
-			
-			facturacionAdm.prepararInsert(datos);
-			
+			if(datos.get("IDFACTURACION")==null || datos.get("IDFACTURACION").toString().trim().equalsIgnoreCase("")){
+				facturacionAdm.prepararInsert(datos);
+			} else{
+				//si el has tambien contenia las keys de FECHADESDE y FECHAHASTA, las convierte al formato correcto para insertar
+				//en otro caso no falla
+				try{
+					datos.put(FcsFacturacionJGBean.C_FECHADESDE, GstDate.getApplicationFormatDate("",(String)datos.get(FcsFacturacionJGBean.C_FECHADESDE)));
+					datos.put(FcsFacturacionJGBean.C_FECHAHASTA, GstDate.getApplicationFormatDate("",(String)datos.get(FcsFacturacionJGBean.C_FECHAHASTA)));
+				}catch(Exception e){}
+				
+			}
 			//ponemos el campo regularizacion a false			
 			datos.put(FcsFacturacionJGBean.C_REGULARIZACION,ClsConstants.DB_FALSE);
 			
 			//comprobamos que la facturacion no se solape con otra ya existente
-			FcsFacturacionJGBean facturaPrueba  = new FcsFacturacionJGBean ();
+			FcsFacturacionJGBean facturaPrueba  = new FcsFacturacionJGBean (); 
 			facturaPrueba.setFechaDesde((String)miform.getFechaInicio());
 			facturaPrueba.setFechaHasta((String)miform.getFechaFin());
 			facturaPrueba.setIdInstitucion(Integer.valueOf((String)usr.getLocation()));
