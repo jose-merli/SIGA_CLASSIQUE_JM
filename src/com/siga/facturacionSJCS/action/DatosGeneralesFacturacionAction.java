@@ -490,15 +490,11 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			String idFacturacion = miform.getIdFacturacion();
 			String idInstitucion = usr.getLocation();
 			String idEstado= miform.getIdEstado();	
-			try{
-				String  estado = (String) ((Hashtable) (new FcsFacturacionJGAdm(usr)).getEstadoFacturacion(idInstitucion, idFacturacion)).get(FcsEstadosFacturacionBean.C_IDESTADOFACTURACION);
-				if (estado!=null && estado.equals(String.valueOf(ClsConstants.ESTADO_FACTURACION_EJECUTADA)) && usr.getStrutsTrans().equalsIgnoreCase("CEN_MantenimientoFacturacion")){
+			String  estado = (String) ((Hashtable) (new FcsFacturacionJGAdm(usr)).getEstadoFacturacion(idInstitucion, idFacturacion)).get(FcsEstadosFacturacionBean.C_IDESTADOFACTURACION);
+			if (estado!=null && estado.equals(String.valueOf(ClsConstants.ESTADO_FACTURACION_EJECUTADA)) && usr.getStrutsTrans().equalsIgnoreCase("CEN_MantenimientoFacturacion")){
 					volverGenerarFacturacion ( mapping,  formulario,  request,  response);
-				}
-			} 
-			catch (Exception e) { 
-			}	
-			
+			}
+						
 			String idOrdenEstado= admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion);		
 				
 			tx.begin();
@@ -551,7 +547,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 					insertarCriterio ( mapping,  formulario,  request,  response);	
 				}	
 			}
-
+			request.setAttribute("modal", null);
 		} 
 		catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,tx); 
