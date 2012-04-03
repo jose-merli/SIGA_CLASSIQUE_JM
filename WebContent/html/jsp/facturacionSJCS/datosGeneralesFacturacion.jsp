@@ -274,7 +274,6 @@
 			document.forms[0].submit();
 		}
 		function refrescarLocal(){
-			alert("ayy");
 			buscar();
 		}
 		function accionListaConsejo()
