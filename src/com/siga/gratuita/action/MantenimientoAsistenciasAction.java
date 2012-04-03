@@ -503,10 +503,10 @@ public class MantenimientoAsistenciasAction extends MasterAction
 					// guardiascolegiado con fechafin = fecha asistencia entonces cogemos el primero. Si no existe ningún registro lanzaremos el mensaje de que
 					// no hay calendario definido para ese periodo.
 					//----------------------------------------------------------------------------------------------------------------------------------
-					//String truncFechaGuardia = GstDate.getFormatedDateShort("", fecha); 
+					String truncFechaGuardia = GstDate.getFormatedDateShort("", fechaTotal); 
 					guardiasAdm.insertarGuardiaManual(usr.getLocation(), idTurno,
 							idGuardia, idPersona,  
-							null,null,fecha,usr);
+							null,null,truncFechaGuardia,usr);
 				}else{
 					// Si no cerramos la transaccion no vuelve correctamente
 					tx.rollback();
