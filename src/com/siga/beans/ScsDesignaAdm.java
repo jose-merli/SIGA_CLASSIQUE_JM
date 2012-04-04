@@ -1799,9 +1799,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	}
 	
 	
-	
-	
-	
+			
 	public Vector getDatosSalidaOficio (String idInstitucion, String idturno, String anio, String numero, String codigoDesigna, boolean isSolicitantes, String idPersonaJG, String idioma) throws ClsExceptions  
 	{	 
 	Vector vSalida = null;
@@ -2764,10 +2762,11 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	            RowsContainer rc = new RowsContainer();
 		        StringBuffer sql = new StringBuffer();		        
 		        sql.append(" select  ejg.aniocajg || '/' || ejg.numero_cajg as ANIONUMEROCAJG, ejg.numero_cajg  || '/' || ejg.aniocajg as NUMEROANIOCAJG, ejg.aniocajg as ANIOCAJG, ejg.numero_cajg as NUMEROCAJG, ejg.idpersona as IDPERSONA ");
-		        sql.append(" ,ejg.anio || '/' || ejg.numejg ANIONUMEROEJG,ejg.numejg || '/' || ejg.anio NUMEROANIOEJG ");
+		        sql.append(" ,ejg.anio || '/' || ejg.numejg ANIONUMEROEJG,ejg.numejg || '/' || ejg.anio NUMEROANIOEJG, ");
+		        sql.append(" PROCU.NOMBRE || ' ' || PROCU.APELLIDOS1 || ' ' || PROCU.APELLIDOS2 AS PROCURADOR_EJG ");
 		        sql.append(" from scs_ejg ejg, scs_designa des, ");
 		        sql.append(" scs_turno tur, scs_tipoejg tip, ");
-		        sql.append(" scs_tipodictamenejg tdic, scs_ejgdesigna ejgDes");        
+		        sql.append(" scs_tipodictamenejg tdic, scs_ejgdesigna ejgDes,scs_procurador procu ");
 		        sql.append(" where ejgDes.Aniodesigna = des.anio ");
 		        sql.append(" and ejgDes.Numerodesigna = des.numero");
 		        sql.append(" and ejgDes.Idturno = des.idturno ");		        
@@ -2781,6 +2780,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
                 sql.append(" and tdic.idtipodictamenejg(+) = ejg.idinstitucion");
                 sql.append(" and tur.idinstitucion(+) = ejg.idinstitucion ");
                 sql.append(" and tur.idturno(+) = ejg.guardiaturno_idturno ");
+                sql.append(" and procu.idprocurador= ejg.idprocurador ");
+                sql.append(" and procu.idinstitucion = "+idinstitucion);
                 sql.append(" and des.anio = "+anio);
                 sql.append(" and des.numero = "+numero);
                 sql.append(" and des.idturno = "+idturno);
@@ -2880,15 +2881,9 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				String listadoAnioNumeroEjg="";
 				String listadoNumeroAnioEjg="";
 				
-				Vector ejgProcurador =getProcuradorSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna);
+				//Guarda el nombre del procurador del EJG
 				String procuradorEjg="";				
-				for (int i = 0; i < ejgProcurador.size(); i++) 
-				{
-					Hashtable registroejg = (Hashtable) ejgProcurador.get(i);
-				    procuradorEjg = (String)registroejg.get("PROCURADOR");
-				}
-				
-				
+												
 				Vector Vtramitador=null;
 				for (int i = 0; i < ejgsdesingna.size(); i++) {					
 					Hashtable registroejg = (Hashtable) ejgsdesingna.get(i);				
@@ -2899,9 +2894,10 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				    String anionumerocajg = (String)registroejg.get("ANIONUMEROCAJG");
 				    String numeroAnioEjg = (String)registroejg.get("NUMEROANIOEJG"); 
 				    String anioNumeroEjg = (String)registroejg.get("ANIONUMEROEJG");
-				    //apeProcurador1 =(String)registroejg.get("APELLIDOS1");
-				    //apeProcurador2 =(String)registroejg.get("APELLIDOS2");
-				    //procuradorEjg = (String)registroejg.get("PROCURADOR_EJG");
+				    if(procuradorEjg.equals(""))
+				    	procuradorEjg = (String)registroejg.get("PROCURADOR_EJG");
+				    else
+				    	procuradorEjg = procuradorEjg +","+(String)registroejg.get("PROCURADOR_EJG");
 				    if (!numeroaniocajg.equals("/") && (!anionumerocajg.equals("/"))){
 				    	Listadoanionumerocajg+=","+anionumerocajg;
 				    	Listadonumeroaniocajg+=","+numeroaniocajg;
@@ -2928,13 +2924,13 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				
 				
 				if (procuradorEjg!=null && !procuradorEjg.equals(""))
-				{					
+				{
 					UtilidadesHash.set(registro, "PROCURADOR_EJG", procuradorEjg);
 				}
 				else
 				{
 					UtilidadesHash.set(registro, "PROCURADOR_EJG", "");
-				}				
+				}
 				
 				if (Listadotramitador!=null && !Listadotramitador.equals("")){
 					Listadotramitador =Listadotramitador.substring(1);					
