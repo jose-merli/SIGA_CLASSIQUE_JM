@@ -509,7 +509,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			admEstado.insert(beanEstado);
 			tx.commit();
 		    // Notificación
-			
+			request.setAttribute("modal", null);
 			SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoRapido);
 			
 			salida = this.exitoRefresco("messages.facturacionSJCS.programada",request);
@@ -547,7 +547,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 					insertarCriterio ( mapping,  formulario,  request,  response);	
 				}	
 			}
-			request.setAttribute("modal", null);
+			
 		} 
 		catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,tx); 

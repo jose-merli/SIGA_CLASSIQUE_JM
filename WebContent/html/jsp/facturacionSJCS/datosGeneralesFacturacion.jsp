@@ -96,7 +96,7 @@
 			facturaBean = (FcsFacturacionJGBean)request.getSession().getAttribute("DATABACKUP");
 			
 			accion="Modificar";
-			destino = "submitArea";
+			destino = "submitArea2";
 			estado = (String)request.getAttribute("estado");
 			idEstado = (Integer)request.getAttribute("idEstado");
 			fechaEstado = GstDate.getFormatedDateShort("",(String)request.getAttribute("fechaEstado"));
@@ -241,7 +241,7 @@
 				
 				if ((compararFecha(document.forms[0].fechaInicio,document.forms[0].fechaFin)==2)) {
 						document.forms[0].modo.value = "<%=accion%>";
-						document.forms[0].target = "submitArea";
+						document.forms[0].target = "submitArea2";
 						document.forms[0].submit();
 				}else {
 					alert('<siga:Idioma key="gratuita.altaRetencionesIRPF.literal.alert1"/>');
@@ -263,7 +263,8 @@
 		}
 		
 		function buscarCriterios()
-		{	document.forms[0].modo.value = "abrirAvanzada";
+		{	
+			document.forms[0].modo.value = "abrirAvanzada";
 			document.forms[0].target = "resultado";
 			document.forms[0].submit();
 		}
@@ -280,14 +281,14 @@
 		{
 			sub();
 			document.forms[0].modo.value="listaConsejo";
-			document.forms[0].target = "submitArea";
+			document.forms[0].target = "submitArea2";
 			document.forms[0].submit();
 		}
 		
 		function descargaLogFacturacion()
 		{
 			document.forms[0].modo.value="descargarLog";
-			document.forms[0].target = "submitArea";
+			document.forms[0].target = "submitArea2";
 			document.forms[0].submit();
 		}
 
@@ -299,11 +300,11 @@
 			<% } else { %>
 				document.forms[0].modo.value="ejecutarRegularizacion";
 			<% } %>
-			document.forms[0].target = "submitArea";
+			document.forms[0].target = "submitArea2";
 			document.forms[0].submit();
 			//var f = document.forms[0].name;
 			// con pantalla de espera
-			//document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=messages.factSJCS.procesandoFacturacion';
+			//document.frames.submitArea2.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=messages.factSJCS.procesandoFacturacion';
 		}
 
 		// Funcion asociada a boton Generar Excels
@@ -318,7 +319,7 @@
 
 		function accionGenerarInforme() {
 			document.forms[0].modo.value="descargaFicheroFact";
-			document.forms[0].target = "submitArea";
+			document.forms[0].target = "submitArea2";
 			document.forms[0].submit();
 			/*sub();
 			var f = document.getElementById("InformesGenericosForm");
@@ -332,7 +333,7 @@
 
 		function accionInformeIncidencias() {
 			document.forms[0].modo.value="descargarInformeIncidencias";
-			document.forms[0].target = "submitArea";
+			document.forms[0].target = "submitArea2";
 			document.forms[0].submit();
 		}
 		</script>	
@@ -351,7 +352,7 @@
 		</tr>
 	</table>
 	
-	<html:form action="/FCS_DatosGeneralesFacturacion.do" method="POST" target="submitArea">
+	<html:form action="/FCS_DatosGeneralesFacturacion.do" method="POST" target="submitArea2">
 		<html:hidden property="modo" value=""/>
 		<html:hidden property ="actionModal" value = ""/>
 		<html:hidden property ="idFacturacion" value = "<%=idFacturacion%>"/>
@@ -406,7 +407,7 @@
 	<siga:ConjBotonesAccion clase="botonesSeguido" botones='<%=botones%>' modo='<%=modo%>'/>	
 	
 		<!-- Formularios -->
-		<html:form action="/INF_InformesGenericos.do" method="POST"	target="submitArea">
+		<html:form action="/INF_InformesGenericos.do" method="POST"	target="submitArea2">
 			<input type="hidden" name="actionModal" value="">
 			<html:hidden property="idTipoInforme" value="FACJ2" />
 			<html:hidden property="datosInforme" value="" />
@@ -467,7 +468,7 @@
 			
 <!-- INICIO: SUBMIT AREA -->
 <!-- Obligatoria en todas las páginas-->
-	<iframe name="submitArea"  src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<iframe name="submitArea2"  src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 <!-- FIN: SUBMIT AREA -->
 
 </body>
