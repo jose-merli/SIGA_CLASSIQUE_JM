@@ -187,7 +187,7 @@ public class DatosGeneralesAction extends MasterAction {
 			CenTipoSociedadAdm admSociedades = new CenTipoSociedadAdm(this.getUserBean(request));
 			//Si tipo es 1 su uso es para saber si se muestra la pantalla de editar colegiado o por contra se usa la pantalla de no colegiodos
 			//Si su valor no es 1 y es una letra tipo se usa para cargar el combo de Tipo Sociedades			
-			if (tipo!=null && !tipo.equals("1") && !tipo.equals("LETRADO")) 
+			if (tipo!=null && !tipo.equals("1") && !tipo.equals("LETRADO") && !tipo.equals("")) 
 			{
 				request.setAttribute("tipo",tipo);
 				miform.setTipo(tipo);
