@@ -68,10 +68,10 @@
 				<td  align='center' width='15%'>
 					<bean:write name="comision" property="cargo" />
 				</td>
-				<td  align='center' width='15%'>
+				<td  align='center' width='10%'>
 					<bean:write name="comision" property="numcolegiado" />
 				</td>
-				<td  align='center' width='30%'>
+				<td  align='center' width='35%'>
 					<table> 
 					<c:choose>
 						<c:when test="${index%2==0}">
@@ -81,12 +81,8 @@
 							<tr class="filaTablaImpar">
 						</c:otherwise>
 					</c:choose>
-						<td width='90%'>
-						<bean:write name="comision" property="apellidos" />
-						<bean:write name="comision" property="nombre" /></td>
-						<td  width='10%'>
-						<img id="info_existe_<bean:write name='index'/>" src="/SIGA/html/imagenes/encontrado.gif" alt="<siga:Idioma key="gratuita.volantesExpres.mensaje.esYaExistentePersonaJG"/>"/>
-						</td>
+						<td align='center'>
+						<bean:write name="comision" property="nombre" /> <bean:write name="comision" property="apellidos" />	</td>
 						</tr>
 					</table>
 				</td>

@@ -203,18 +203,19 @@
 		td.setAttribute("width", "10%");
 		td = tr.insertCell(); 
 		td.setAttribute("width", "15%");
-		//td.innerText="";
-		td.innerHTML='<siga:ComboBD nombre="cargos_' + numFila + '" id="cargos_' + numFila + '" tipo="cmbCargosJunta" parametro='<%=parametro%>' clase="boxCombo"  accion="comporbarFila(\''+ tr.id +'\');" />';
+		td.setAttribute("align", "center");
+		td.innerHTML='<siga:ComboBD nombre="cargos_' + numFila + '" id="cargos_' + numFila + '" tipo="cmbCargosJunta" estilo="margin-top:4px;" parametro='<%=parametro%>' clase="boxCombo" accion="comporbarFila(\''+ tr.id +'\');" />';
 		td = tr.insertCell(); 
-		td.setAttribute("width", "15%");
+		td.setAttribute("width", "10%");
+		td.setAttribute("align", "center");
 		td.innerText="";
-		td.innerHTML ='<input type="text"  onBlur="comporbarFila(\''+ tr.id +'\');buscarColegiadoN(\''+ numFila +'\');"  id="numeroColegiado_' + numFila + '" class="box" size="4" maxlength="9" style="width:70;margin-top:2px;" value=""/><input type="hidden" id="idPerson_' + numFila + '" class="box" size="4" maxlength="9" style="width:70;margin-top:2px;" value=""/>';
+		td.innerHTML ='<input type="text"  onBlur="comporbarFila(\''+ tr.id +'\');buscarColegiadoN(\''+ numFila +'\');"  id="numeroColegiado_' + numFila + '" class="box" size="4" maxlength="9" style="width:70;margin-top:5px;" value=""/><input type="hidden" id="idPerson_' + numFila + '" class="box" size="4" maxlength="9" style="width:70;margin-top:2px;" value=""/>';
 		td = tr.insertCell(); 
-		td.setAttribute("width", "30%");
+		td.setAttribute("width", "35%");
 		td.innerText="";
 		//td.innerHTML ='<input type="text" id="numeroColegiado_' + numFila + '" class="box" size="4" maxlength="9" style="width:70;margin-top:2px;" value=""/>';
 		td.innerHTML ='<table><tr>' +
-        '<td><input type="text" onBlur="comporbarFila(\''+ tr.id +'\');" id="nombreColegiado_' + numFila + '" class="box" style="width:100;margin-top:2px;margin-rigth:1px;" value="" maxlength="35"/>' + " "+'<input type="text" onBlur="comporbarFila(\''+ tr.id +'\');buscarNumColegiadoN(\''+ numFila +'\');" id="apellidosColegiado_' + numFila + '" class="box" style="width:130;margin-top:2px;margin-rigth:1px;" value="" maxlength="40"/></td>' + 
+        '<td><input type="text" onBlur="comporbarFila(\''+ tr.id +'\');" id="nombreColegiado_' + numFila + '" class="box" style="width:120;margin-top:2px;margin-rigth:1px;" value="" maxlength="35"/>' + " "+'<input type="text" onBlur="comporbarFila(\''+ tr.id +'\');buscarNumColegiadoN(\''+ numFila +'\');" id="apellidosColegiado_' + numFila + '" class="box" style="width:180;margin-top:2px;margin-rigth:1px;" value="" maxlength="40"/></td>' + 
         '<td><img id="info_existe_' + numFila + '" src="/SIGA/html/imagenes/nuevo.gif" alt="<siga:Idioma key="gratuita.volantesExpres.mensaje.esNuevaPersonaJG"/>"/></td>'+
         '</tr></table>';
 		td = tr.insertCell(); 
@@ -710,8 +711,8 @@
 		<tr class = 'tableTitle'>
 			<td align='center' width='10%'><siga:Idioma key="FactSJCS.mantRetencionesJ.literal.fechaInicio"/></td>
 			<td id='cargo' align='center' width='15%'><siga:Idioma key="censo.datosCV.literal.cargo"/></td>
-			<td align='center' width='15%'><siga:Idioma key="censo.busquedaClientes.literal.nColegiado"/></td>
-			<td align='center' width='30%'><siga:Idioma key="censo.busquedaClientes.literal.nombre"/></td>
+			<td align='center' width='10%'><siga:Idioma key="censo.busquedaClientes.literal.nColegiado"/></td>
+			<td align='center' width='35%'><siga:Idioma key="censo.busquedaClientes.literal.nombre"/></td>
 			<td align='center' width='20%'></td>
 			<td align='center' width='10%'>
 			
