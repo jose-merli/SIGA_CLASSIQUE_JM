@@ -73,7 +73,8 @@ private static Boolean alguienEjecutando=Boolean.FALSE;
 				try {
 					idPeticionInfoAAPP = null;
 					if (numeroErrores < NUM_ERROR_CONEXION) {
-						idPeticionInfoAAPP = solicitudesEEJG.solicitudPeticionInfoAAPP(scsEejgPeticionesBean);	
+						idPeticionInfoAAPP = solicitudesEEJG.solicitudPeticionInfoAAPP(scsEejgPeticionesBean);
+						numeroErrores = 0;
 					}					
 					scsEejgPeticionesBean.setIdSolicitud(idPeticionInfoAAPP);
 					
@@ -82,15 +83,14 @@ private static Boolean alguienEjecutando=Boolean.FALSE;
 						scsEejgPeticionesBean.setFechaSolicitud("SYSDATE");
 					} 
 					
-				} catch (AxisFault e) {
-					numeroErrores++;
-					if (e.getCause() instanceof ConnectException) {												
+				} catch (AxisFault e) {					
+					if (e.getCause() instanceof ConnectException) {
+						numeroErrores++;
 						ClsLogging.writeFileLogError("No hay conexión con el WS EEJG", e, 3);
 					} else {
 						ClsLogging.writeFileLogError("Error con el servidor", e, 3);
 					}
-				}catch (Throwable e) {					
-					numeroErrores++;
+				}catch (Throwable e) {
 					ClsLogging.writeFileLogError("Error No esperado", new Exception(e), 3);
 					//e.printStackTrace();
 					
@@ -135,16 +135,16 @@ private static Boolean alguienEjecutando=Boolean.FALSE;
 				try {					
 					if (numeroErrores < NUM_ERROR_CONEXION) {
 						idXML = solicitudesEEJG.consultaInfoAAPP(scsEejgPeticionesBean);
+						numeroErrores = 0;
 					}	
-				} catch (AxisFault e) {								
-					numeroErrores++;
-					if (e.getCause() instanceof ConnectException) {												
+				} catch (AxisFault e) {
+					if (e.getCause() instanceof ConnectException) {
+						numeroErrores++;
 						ClsLogging.writeFileLogError("No hay conexión con el WS EEJG", e, 3);					
 					} else {
 						ClsLogging.writeFileLogError("Error con el servidor", e, 3);
 					}
-				} catch (Throwable e) {
-					numeroErrores++;
+				} catch (Throwable e) {					
 					ClsLogging.writeFileLogError("Error No esperado", new Exception(e), 3);
 				} finally {
 					//si ya tenía respuesta incrementamos el contador de pendienteInfo y si no el de Intentos consulta
