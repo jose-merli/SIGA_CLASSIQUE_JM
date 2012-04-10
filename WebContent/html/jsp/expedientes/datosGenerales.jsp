@@ -1415,6 +1415,8 @@
 			</td>				
 			<td>
 				<html:text name="ExpDatosGeneralesForm" size="9" property="nifDenunciante" styleClass="boxConsulta" readonly="true"></html:text>
+				<html:hidden name="ExpDatosGeneralesForm" property = "idPersonaDenunciante"/>
+				
 			</td>
 
 			<td class="labelText" >

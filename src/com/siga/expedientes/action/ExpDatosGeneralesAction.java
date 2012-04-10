@@ -42,6 +42,7 @@ import com.siga.beans.ExpCamposValorAdm;
 import com.siga.beans.ExpCamposValorBean;
 import com.siga.beans.ExpClasificacionesAdm;
 import com.siga.beans.ExpClasificacionesBean;
+import com.siga.beans.ExpDenuncianteAdm;
 import com.siga.beans.ExpDenuncianteBean;
 import com.siga.beans.ExpEstadosAdm;
 import com.siga.beans.ExpEstadosBean;
@@ -75,6 +76,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 	static public final String C_APELLIDO1DENUNCIANTE = "APELLIDO1DENUNCIANTE";
 	static public final String C_APELLIDO2DENUNCIANTE = "APELLIDO2DENUNCIANTE";
 	static public final String C_NIFDENUNCIANTE = "NIFDENUNCIANTE";	
+	static public final String C_IDPERSONADENUNCIANTE = "IDPERSONADENUNCIANTE";	
 					
 	public static Hashtable<String,Integer> ultimoAniosNumExpediente = new Hashtable<String, Integer>();
 	
@@ -797,6 +799,11 @@ public class ExpDatosGeneralesAction extends MasterAction
 				form.setNifDenunciante("");
 			} else {
 				form.setNifDenunciante(fila.getString(C_NIFDENUNCIANTE));	
+			}	
+			if (fila.getString(C_IDPERSONADENUNCIANTE).equalsIgnoreCase("null")) {
+				form.setIdPersonaDenunciante("");
+			} else {
+				form.setIdPersonaDenunciante(fila.getString(C_IDPERSONADENUNCIANTE));	
 			}	
 			form.setNumColegiado(fila.getString(CenColegiadoBean.C_NCOLEGIADO));
 			form.setIdAreaSolo(fila.getString(ExpExpedienteBean.C_IDAREA));
@@ -1674,9 +1681,25 @@ public class ExpDatosGeneralesAction extends MasterAction
 					        throw new ClsExceptions("Error al crear campos valor 2. "+admCampoVal.getError());
 					    }
 					}
-					 
 					
+					//Se inserta el denunciante si hay
+					if (form.getIdPersonaDenunciante() != null && !form.getIdPersonaDenunciante().equals("")){
+					    ExpDenuncianteBean denBean = new ExpDenuncianteBean();	    
+					    ExpDenuncianteAdm  denAdm  = new ExpDenuncianteAdm(this.getUserBean(request));
+					    denBean.setIdInstitucion(Integer.valueOf(idInstitucion));
+					    denBean.setIdInstitucion_TipoExpediente(Integer.valueOf(idInstitucion_TipoExpediente));
+					    denBean.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));  
+					    denBean.setNumeroExpediente(Integer.valueOf(form.getNumExpediente()));
+					    denBean.setAnioExpediente(Integer.valueOf(form.getAnioExpediente()));
+					    denBean.setIdDenunciante(denAdm.getNewIdDenunciante(denBean));
+					    denBean.setIdPersona(Long.valueOf(form.getIdPersonaDenunciante()));
+					    		    
+					    if(!denAdm.insert(denBean)) {
+						    return this.exitoModalSinRefresco("messages.inserted.error",request);
+					    }		
+					}
 				}
+				
 				tx.commit();
 			} else {
 				throw new ClsExceptions(expAdm.getError());

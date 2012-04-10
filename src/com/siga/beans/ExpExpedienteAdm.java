@@ -956,6 +956,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		    sql += "P."+CenPersonaBean.C_NIFCIF+" ";
 		    if (numeroCount > 0) {
 		    	sql += ", PER."+CenPersonaBean.C_NOMBRE+" AS NOMBREDENUNCIANTE, ";
+		    	sql += "PER."+CenPersonaBean.C_IDPERSONA+" AS IDPERSONADENUNCIANTE, ";
 		    	sql += "PER."+CenPersonaBean.C_APELLIDOS1+" AS APELLIDO1DENUNCIANTE, ";
 		    	sql += "PER."+CenPersonaBean.C_APELLIDOS2+" AS APELLIDO2DENUNCIANTE, ";
 		    	sql += "PER."+CenPersonaBean.C_NIFCIF+" AS NIFDENUNCIANTE";
