@@ -4350,9 +4350,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							htFuncion.put(new Integer(1), regimenConyugalInteresado);
 							htFuncion.put(new Integer(2), idioma);				
 							helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-							htFuncion, "F_SIGA_GETRECURSO", "REGIMENCONYUGAL_DEFENDIDO"));
+							htFuncion, "F_SIGA_GETRECURSO_ETIQUETA", "REGIMEN_CONYUGALDEFENDIDO"));
 						}else{
-							registro.put("REGIMENCONYUGAL_DEFENDIDO", "");
+							registro.put("REGIMEN_CONYUGALDEFENDIDO", "");
 						}
 						
 						tipoGrupoLaboral = (String)registro.get("GRUPOLABORAL_DEFENDIDO");		

@@ -150,7 +150,7 @@ CenPersonaAdm admPersona=new CenPersonaAdm(user);
 										<siga:Idioma key="facturacion.busquedaAbonos.literal.numeroAbono"/>
 									</td>
 									<td class="labelText">	
-										<html:text property="numeroAbono" styleClass="box" size="12" maxlength="10" value="<%=busquedaNumeroAbono%>"></html:text>
+										<html:text property="numeroAbono" styleClass="box" size="12" maxlength="20" value="<%=busquedaNumeroAbono%>"></html:text>
 									</td>
 									<td class="labelText" colspan="2" style="text-align: right">	
 										<siga:Idioma key="facturacion.busquedaAbonos.literal.fechaAbonoEntre"/>
