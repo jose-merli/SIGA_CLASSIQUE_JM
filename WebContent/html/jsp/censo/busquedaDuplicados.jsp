@@ -94,23 +94,23 @@
 				document.MantenimientoDuplicadosForm.chkNumColegiado.checked)){
 				
 				if(document.MantenimientoDuplicadosForm.nombre.value.length>0&&
-				   document.MantenimientoDuplicadosForm.nombre.value.length<4){
+				   document.MantenimientoDuplicadosForm.nombre.value.length<3){
 					error=true;
 				   	msg=msg+"El campo Nombre es demasiado corto\n";
 				}
 				if(document.MantenimientoDuplicadosForm.apellido1.value.length>0&&
-				   document.MantenimientoDuplicadosForm.apellido1.value.length<4){	
+				   document.MantenimientoDuplicadosForm.apellido1.value.length<3){	
 					error=true;
 					msg=msg+"El campo Apellido 1 es demasiado corto\n";
 				}		
 				if(document.MantenimientoDuplicadosForm.apellido2.value.length>0&&
-				   document.MantenimientoDuplicadosForm.apellido2.value.length<4){
+				   document.MantenimientoDuplicadosForm.apellido2.value.length<3){
 					error=true;
 					msg=msg+"El campo Apellido 2 es demasiado corto\n";
 				}
 			}
 			if(error){
-				msg= msg + "Si no se rellenan al menos 4 caracteres la consulta devolverá demasiados resultados.\nIntente afinar la búsqueda";
+				msg= msg + "Si no se rellenan al menos 3 caracteres la consulta devolverá demasiados resultados.\nIntente afinar la búsqueda";
 				alert(msg);
 				return false;
 			}else{
