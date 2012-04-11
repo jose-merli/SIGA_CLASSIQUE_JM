@@ -361,11 +361,15 @@ function preFunction(pagina){
 				break;	
 			}
 		}
-	 }
-	 if(isModificado){
+	}
+	if(isModificado){
 		if (confirm('<siga:Idioma key="gratuita.informeJustificacionMasiva.confirmar.guardarAlCambiarPagina"/>')){
-			accionGuardar();
+			return false;
+		}else{
+			return true;
 		}
+	}else{
+		return true;
 	}
 	
 
