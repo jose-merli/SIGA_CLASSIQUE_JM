@@ -559,11 +559,21 @@
 		function obtenerJuzgado() 
 		{ 
 		  	if (document.getElementById("codigoExtJuzgado").value!=""){
-			 	document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="";	
+			 	document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgado";	
 			   	document.MantenimientoJuzgadoForm.codigoExt2.value=document.getElementById("codigoExtJuzgado").value;
 				document.MantenimientoJuzgadoForm.submit();		
 		 	}
 		}
+
+		function traspasoDatos(resultado){
+			if(resultado[1] && resultado[1]!=""){
+				if(resultado[1]=="juzgado")
+					 seleccionComboSiga("juzgado",resultado[0]);
+				else
+					 seleccionComboSiga("juzgadoActu",resultado[0]);
+			}	 
+		}	
+		
 		function consultas() 
 		{		
 			document.RecuperarConsultasForm.submit();
@@ -593,8 +603,8 @@
 </iframe>
 <!-- INICIO: SUBMIT AREA -->
 <!-- Obligatoria en todas las páginas-->
-<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"
-	style="display: none"></iframe>
+<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display: none"></iframe>
+<iframe name="submitArea33" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>	
 <!-- FIN: SUBMIT AREA -->
 </body>
 </html>
