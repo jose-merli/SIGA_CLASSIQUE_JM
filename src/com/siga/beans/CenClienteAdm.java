@@ -3533,7 +3533,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	        
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 	        
-	        String sSQL = new InformeCertificadosEspeciales().getSqlCamposGeneral();
+	        String sSQL = new InformeCertificadosEspeciales().getSqlCamposGeneral(new Integer(idInstitucion));
 	  
 	        htDatos=this.getEtiquetasComunesCertificados(ht,idInstitucion);
 	        Enumeration enumHash = ht.keys();

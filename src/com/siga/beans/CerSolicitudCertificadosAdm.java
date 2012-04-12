@@ -1722,4 +1722,33 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 		return correcto;
 
 	}		
+	
+	public String getContador(String idInstitucion) throws ClsExceptions
+	{    	
+    	String sql;
+		RowsContainer rc = null;		
+		String idcontador="SSPP";
+		
+		try { rc = new RowsContainer(); }
+		catch(Exception e) { e.printStackTrace(); }
+		
+		sql ="SELECT LONGITUDCONTADOR FROM ADM_CONTADOR WHERE IDCONTADOR = '"+idcontador+"' AND IDINSTITUCION = "+idInstitucion;
+		
+		try 
+		{		
+			if (rc.findForUpdate(sql)) 
+			{						
+				Row fila = (Row) rc.get(0);
+				idcontador = String.valueOf((String)fila.getRow().get("LONGITUDCONTADOR"));														
+			}
+		}	 
+		catch (ClsExceptions e) 
+		{		
+			throw new ClsExceptions (e, "Error al ejecutar el 'getNuevoId' en BBDD");		
+		}		
+		return idcontador;  
+    }
+	
+	
+	
 }

@@ -19,6 +19,7 @@ import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenPersonaBean;
+import com.siga.beans.CerSolicitudCertificadosAdm;
 import com.siga.beans.CerPlantillasAdm;
 import com.siga.certificados.Certificado;
 import com.siga.general.SIGAException;
@@ -296,7 +297,7 @@ public class InformeCertificadosEspeciales extends MasterReport
 	}	
 	
 	public String getSqlTurno(String tipoCert){
-		String sSQL =getSqlCamposGeneral(tipoCert)+",  (select scs_turno.nombre "+
+		String sSQL =getSqlCamposGeneral(tipoCert,"")+",  (select scs_turno.nombre "+
 									        " from scs_turno "+
 									        " where scs_turno.idinstitucion=it.idinstitucion "+
 									        " and scs_turno.idturno=it.idturno) as nombre_turno, "+
@@ -315,7 +316,7 @@ public class InformeCertificadosEspeciales extends MasterReport
 	}
 	
 	public String getSqlCurso(String tipoCert){
-		String sSQL = getSqlCamposGeneral (tipoCert)+" , f_siga_getrecurso(cv.descripcion, @idioma@) as NOMBRECURSO, "+
+		String sSQL = getSqlCamposGeneral (tipoCert,"")+" , f_siga_getrecurso(cv.descripcion, @idioma@) as NOMBRECURSO, "+
                       " cv.fechainicio as FECHAINICIOCURSO,"+ "cv.fechafin as FECHAFINCURSO" +
 					  getSqlFromGeneral()+" , cen_datoscv  cv,"+
                                      " cen_tiposcv  tipocv"+
@@ -328,7 +329,7 @@ public class InformeCertificadosEspeciales extends MasterReport
 
 	}
 	public String getSqlPasantia(String tipoCert){
-		String sSQL =getSqlCamposGeneral(tipoCert)+", f_siga_getrecurso(cv.descripcion, @idioma@) as DESCRIPCIONPASANTIA, "+
+		String sSQL =getSqlCamposGeneral(tipoCert,"")+", f_siga_getrecurso(cv.descripcion, @idioma@) as DESCRIPCIONPASANTIA, "+
                       " cv.fechainicio as FECHAINICIOPASANTIAS, "+
                       " cv.fechafin as FECHAFINPASANTIAS, "+
                       " DECODE(cv.fechafin,NULL,'',F_SIGA_GETRECURSO_ETIQUETA('messages.certificado.texto.nexoAL',@idioma@)) as NEXO_AL "+
@@ -344,7 +345,7 @@ public class InformeCertificadosEspeciales extends MasterReport
 	}
 	
 	public String getSqlDespacho(String tipoCert){
-		String sSQL = getSqlCamposGeneral(tipoCert)+", ( d.domicilio||' '||d.codigopostal||' '||"+
+		String sSQL = getSqlCamposGeneral(tipoCert,"")+", ( d.domicilio||' '||d.codigopostal||' '||"+
 	                  "   decode(d.idpais,191,((select po.nombre"+
 	                  "                         from cen_poblaciones po"+
 	                  "                         where po.idpoblacion=d.idpoblacion)"+
@@ -385,7 +386,7 @@ public class InformeCertificadosEspeciales extends MasterReport
 	
 	
 	public String getSqlBanco(String tipoCert){
-		String sSQL =getSqlCamposGeneral(tipoCert)+
+		String sSQL =getSqlCamposGeneral(tipoCert,"")+
 		" ,decode(cb.ABONOCARGO,'T',F_SIGA_GETRECURSO_ETIQUETA('censo.tipoCuenta.abonoCargo',1),'A',F_SIGA_GETRECURSO_ETIQUETA('censo.tipoCuenta.abono',1),'C',F_SIGA_GETRECURSO_ETIQUETA('censo.tipoCuenta.cargo',1)) as ABONOCARGO_BANCO, " +
 		" cb.CBO_CODIGO || '-' || " +
 		" cb.CODIGOSUCURSAL || '-' || " +
@@ -417,7 +418,7 @@ public class InformeCertificadosEspeciales extends MasterReport
 
 	
 	public String getSqlComponentes(String tipoCert){
-		String sSQL =getSqlCamposGeneral(tipoCert)+
+		String sSQL =getSqlCamposGeneral(tipoCert,"")+
 		",  cp.NUMCOLEGIADO as NUMCOLEG_COMPONENTE, " +      
 		" 	N.NIFCIF as NIFCIF_COMPONENTE, "+
         "   N.NOMBRE AS NOMBRE_COMPONENTE, "+
@@ -436,7 +437,7 @@ public class InformeCertificadosEspeciales extends MasterReport
 	}
 	
 	public String getSqlDirecciones(String tipoCert){
-		String sSQL = getSqlCamposGeneral(tipoCert)+", "+
+		String sSQL = getSqlCamposGeneral(tipoCert,"")+", "+
 	                  " f_siga_gettiposdireccion(d.IDINSTITUCION,d.IDPERSONA,d.IDDIRECCION, 1) AS TIPO_DIRECCION, " +
 	                  " d.domicilio   AS DOMICILIO_DIRECCION,"+
 	                  " d.codigopostal AS CODIGOPOSTAL_DIRECCION,"+
@@ -469,10 +470,19 @@ public class InformeCertificadosEspeciales extends MasterReport
 
 	}
 
-	public String getSqlCamposGeneral(){
-		return getSqlCamposGeneral(null) + getSqlFromGeneral() + getSqlWhereGeneral();
+	public String getSqlCamposGeneral(Integer idInstitucion)throws SIGAException{
+		CerSolicitudCertificadosAdm cerSolAdmin = new CerSolicitudCertificadosAdm(this.getUsuario());
+		String contador = "";
+		try
+		{
+			contador =(String)cerSolAdmin.getContador(idInstitucion.toString());
+		}catch(ClsExceptions e)
+		{
+			throw new SIGAException("Error al recoger el contador de SSPP.",e);
+		}
+		return getSqlCamposGeneral(null,contador) + getSqlFromGeneral() + getSqlWhereGeneral();
 	}
-	public String getSqlCamposGeneral(String tipoCert){
+	public String getSqlCamposGeneral(String tipoCert,String contador){
 		StringBuffer sql= new StringBuffer();
 		sql.append(" SELECT SYSDATE AS FECHAACTUAL, ");
 		sql.append(" c.fechaalta AS FECHAALTACLIENTE, ");
@@ -480,7 +490,11 @@ public class InformeCertificadosEspeciales extends MasterReport
 		sql.append(" no.OBJETOSOCIAL as OBJETOSOCIAL, ");
 		sql.append(" no.RESENA as RESENA_SOCIEDAD, ");
 		sql.append(" no.fechafin as FECHAFIN_SOCIEDAD, ");		
-		sql.append(" nvl(no.prefijo_numsspp,no.prefijo_numreg)|| nvl(no.CONTADOR_NUMSSPP,no.CONTADOR_NUMREG) || nvl(no.SUFIJO_NUMSSPP,no.SUFIJO_NUMREG) as NUMEROREGISTRO, ");    
+		sql.append(" nvl(no.prefijo_numsspp,no.prefijo_numreg)|| nvl(LPAD(NO.contador_numsspp,");		
+		sql.append(""+contador);
+		sql.append(",'0'),LPAD(NO.contador_numreg,");
+		sql.append(""+contador);
+		sql.append(",'0')) || nvl(no.SUFIJO_NUMSSPP,no.SUFIJO_NUMREG) as NUMEROREGISTRO, ");
 		sql.append(" (select pe.nombre from cen_persona pe where pe.idpersona= no.idpersonanotario) AS NOMBRENOTARIO, ");
 		sql.append(" (select pe.apellidos1 from cen_persona pe where pe.idpersona= no.idpersonanotario) AS APELLIDOS1_NOTARIO, ");
 		sql.append(" (select pe.apellidos2 from cen_persona pe where pe.idpersona= no.idpersonanotario) AS APELLIDOS2_NOTARIO, ");
