@@ -1851,6 +1851,7 @@ public class PersonaJGAction extends MasterAction {
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDIOMA,miform.getIdioma());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_HIJOS,miform.getHijos());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_EDAD,miform.getEdad());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPAIS,miform.getNacionalidad());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_FAX,miform.getFax());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_CORREOELECTRONICO,miform.getCorreoElectronico());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_EXISTEDOMICILIO,miform.getExisteDomicilio());			
