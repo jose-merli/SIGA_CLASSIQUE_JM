@@ -2079,7 +2079,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 
 			StringBuffer sql = new StringBuffer();
 			sql.append(" ");
-			sql.append(" SELECT  TO_CHAR(SYSDATE, 'dd-mm-yyyy') AS FECHAACTUAL, EXP.IDINSTITUCION, ");
+			sql.append(" SELECT  SUBSTR (mate.nombre, 0, 25) || ' ('|| SUBSTR (area.nombre, 0, 25) || ')' AS MATERIA,TO_CHAR(SYSDATE, 'dd-mm-yyyy') AS FECHAACTUAL, EXP.IDINSTITUCION, ");
 			sql.append(" EXP.IDINSTITUCION_TIPOEXPEDIENTE, ");
 			sql.append(" EXP.IDTIPOEXPEDIENTE, ");
 			sql.append(" EXP.ANIOEXPEDIENTE, ");
@@ -2134,12 +2134,13 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			sql.append(" FROM EXP_EXPEDIENTE              EXP,       CEN_CLIENTE                 CLI,       CEN_PERSONA                 PER,       EXP_TIPOEXPEDIENTE          TE,       EXP_CLASIFICACION           CLA,       EXP_FASES                   FASE, ");
 			sql.append(" PYS_TIPOIVA                 IVA,       EXP_ESTADO                  EST,       EXP_TIPORESULTADORESOLUCION RES,       SCS_JUZGADO                 JUZ,       CEN_POBLACIONES             POB,       CEN_PROVINCIAS              PRO, ");
 			sql.append(" cen_direcciones             dir,       cen_provincias              pro1,      cen_poblaciones             pob1,        ");
-			sql.append(" SCS_PROCEDIMIENTOS          PROC  ");
+			sql.append(" SCS_PROCEDIMIENTOS          PROC,SCS_MATERIA  mate, scs_area area ");
 			sql.append(" WHERE EXP.IDINSTITUCION = CLI.IDINSTITUCION    AND EXP.IDPERSONA = CLI.IDPERSONA   AND CLI.IDPERSONA = PER.IDPERSONA   AND EXP.IDINSTITUCION_TIPOEXPEDIENTE = TE.IDINSTITUCION   AND EXP.IDTIPOEXPEDIENTE = TE.IDTIPOEXPEDIENTE   AND EXP.IDINSTITUCION_TIPOEXPEDIENTE = CLA.IDINSTITUCION(+)    AND EXP.IDCLASIFICACION = CLA.IDCLASIFICACION(+)  ");
 			sql.append(" AND EXP.IDTIPOEXPEDIENTE = CLA.IDTIPOEXPEDIENTE(+)    AND EXP.IDINSTITUCION = FASE.IDINSTITUCION (+)   AND EXP.IDTIPOEXPEDIENTE = FASE.IDTIPOEXPEDIENTE (+)   AND EXP.IDFASE = FASE.IDFASE (+)   AND EXP.IDINSTITUCION_TIPOEXPEDIENTE = EST.IDINSTITUCION(+)   AND EXP.IDFASE = EST.IDFASE(+)   AND EXP.IDESTADO = EST.IDESTADO(+) ");
 			sql.append(" AND EXP.IDTIPOEXPEDIENTE = EST.IDTIPOEXPEDIENTE(+)   AND EXP.IDTIPOIVA = IVA.IDTIPOIVA(+)   AND EXP.IDINSTITUCION = RES.IDINSTITUCION(+)   AND EXP.IDRESULTADOJUNTAGOBIERNO = RES.IDTIPORESULTADO(+)   AND EXP.IDINSTITUCION_JUZ = JUZ.IDINSTITUCION(+)   AND EXP.JUZGADO = JUZ.IDJUZGADO(+)   AND JUZ.IDPROVINCIA = PRO.IDPROVINCIA(+) ");
 			sql.append(" AND JUZ.IDPOBLACION = POB.IDPOBLACION(+)   AND EXP.IDINSTITUCION_PROC = PROC.IDINSTITUCION(+)   AND EXP.PROCEDIMIENTO = PROC.IDPROCEDIMIENTO(+) ");
 			sql.append(" AND exp.IDINSTITUCION = dir.idinstitucion(+)  AND EXP.IDPERSONA = dir.idpersona(+)  AND exp.iddireccion = dir.iddireccion(+)  AND dir.idpoblacion = pob1.idpoblacion(+)  AND dir.idprovincia = pro1.idprovincia(+) ");
+			sql.append(" and EXP.idMateria = mate.idmateria(+) and EXP.idinstitucion =mate.idinstitucion(+) and EXP.idarea =mate.idarea(+) and mate.idarea = area.idarea ");
    
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
