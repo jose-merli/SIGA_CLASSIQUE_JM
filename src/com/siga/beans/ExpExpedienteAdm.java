@@ -2140,7 +2140,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			sql.append(" AND EXP.IDTIPOEXPEDIENTE = EST.IDTIPOEXPEDIENTE(+)   AND EXP.IDTIPOIVA = IVA.IDTIPOIVA(+)   AND EXP.IDINSTITUCION = RES.IDINSTITUCION(+)   AND EXP.IDRESULTADOJUNTAGOBIERNO = RES.IDTIPORESULTADO(+)   AND EXP.IDINSTITUCION_JUZ = JUZ.IDINSTITUCION(+)   AND EXP.JUZGADO = JUZ.IDJUZGADO(+)   AND JUZ.IDPROVINCIA = PRO.IDPROVINCIA(+) ");
 			sql.append(" AND JUZ.IDPOBLACION = POB.IDPOBLACION(+)   AND EXP.IDINSTITUCION_PROC = PROC.IDINSTITUCION(+)   AND EXP.PROCEDIMIENTO = PROC.IDPROCEDIMIENTO(+) ");
 			sql.append(" AND exp.IDINSTITUCION = dir.idinstitucion(+)  AND EXP.IDPERSONA = dir.idpersona(+)  AND exp.iddireccion = dir.iddireccion(+)  AND dir.idpoblacion = pob1.idpoblacion(+)  AND dir.idprovincia = pro1.idprovincia(+) ");
-			sql.append(" and EXP.idMateria = mate.idmateria(+) and EXP.idinstitucion =mate.idinstitucion(+) and EXP.idarea =mate.idarea(+) and mate.idarea = area.idarea ");
+			sql.append(" and EXP.idMateria = mate.idmateria(+) and EXP.idinstitucion =mate.idinstitucion(+) and EXP.idarea =mate.idarea(+) and mate.idarea = area.idarea(+) ");
    
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
@@ -2225,6 +2225,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 					 expedienteHashtable.put("EJG_SOLICITANTE_NOMBRE", "");
 					 expedienteHashtable.put("EJG_SOLICITANTE_APELLIDO1", "");
 					 expedienteHashtable.put("EJG_SOLICITANTE_APELLIDO2", "");
+					
 					 
 				 }
 				

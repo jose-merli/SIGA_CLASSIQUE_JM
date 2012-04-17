@@ -2607,7 +2607,9 @@ public class EnvioInformesGenericos extends MasterReport {
 							datoReal.put("idTipoExp", (String) datosInforme.get("idTipoExp"));
 							datoReal.put("plantillas", (String) datosInforme.get("plantillas"));
 							datoReal.put("aSolicitantes", (aSolicitantes)?"S":"N");
-							
+							String material= (String)datoReal.get("MATERIA");
+							if(material.equals(" ()"))
+								datoReal.put("MATERIA", "");
 							// inc-6975 No es obligatorio que tenga direccion para meterlo en el zip
 							//if (idPersonaReal!=null && !idPersonaReal.trim().equals("")) {
 							
