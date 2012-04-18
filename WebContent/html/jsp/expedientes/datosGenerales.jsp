@@ -1423,7 +1423,7 @@
 				<siga:Idioma key="expedientes.auditoria.literal.ncolegiado"/>
 			</td>
 			<td>
-				<html:text name="ExpDatosGeneralesForm" size="9" property="campo" styleClass="boxConsulta" readonly="true"></html:text>
+				<html:text name="ExpDatosGeneralesForm" size="9" property="nColDenunciante" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 
 			<td class="labelText" >

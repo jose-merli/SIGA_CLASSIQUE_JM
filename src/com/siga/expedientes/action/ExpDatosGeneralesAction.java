@@ -76,7 +76,8 @@ public class ExpDatosGeneralesAction extends MasterAction
 	static public final String C_APELLIDO1DENUNCIANTE = "APELLIDO1DENUNCIANTE";
 	static public final String C_APELLIDO2DENUNCIANTE = "APELLIDO2DENUNCIANTE";
 	static public final String C_NIFDENUNCIANTE = "NIFDENUNCIANTE";	
-	static public final String C_IDPERSONADENUNCIANTE = "IDPERSONADENUNCIANTE";	
+	static public final String C_IDPERSONADENUNCIANTE = "IDPERSONADENUNCIANTE";
+	static public final String C_NCOLDENUNCIANTE = "NCOLDENUNCIANTE";
 					
 	public static Hashtable<String,Integer> ultimoAniosNumExpediente = new Hashtable<String, Integer>();
 	
@@ -702,7 +703,10 @@ public class ExpDatosGeneralesAction extends MasterAction
 				where += " AND E."+ExpExpedienteBean.C_IDINSTITUCION+" = C."+CenColegiadoBean.C_IDINSTITUCION+"(+)";
 				where += " AND E."+ExpExpedienteBean.C_IDPERSONA+" = C."+CenColegiadoBean.C_IDPERSONA+"(+)";
 				where += " AND DEN."+ExpDenuncianteBean.C_IDPERSONA+" = PER."+CenPersonaBean.C_IDPERSONA+"(+)";
-	        
+				where += " AND DEN."+ExpDenuncianteBean.C_IDPERSONA+" = CDEN."+CenColegiadoBean.C_IDPERSONA+"(+)";
+	        	where += " AND DEN."+ExpDenuncianteBean.C_IDINSTITUCION+" = CDEN."+CenColegiadoBean.C_IDINSTITUCION+"(+)";
+				
+				
 				where += "AND E."+ExpExpedienteBean.C_IDINSTITUCION + " = '" + idInstitucion + "' AND ";
 				where += "E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE + " = '" + idInstitucion_TipoExpediente + "' AND ";
 				where += "E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE + " = '" + idTipoExpediente + "' AND ";
@@ -804,6 +808,11 @@ public class ExpDatosGeneralesAction extends MasterAction
 				form.setIdPersonaDenunciante("");
 			} else {
 				form.setIdPersonaDenunciante(fila.getString(C_IDPERSONADENUNCIANTE));	
+			}	
+			if (fila.getString(C_NCOLDENUNCIANTE).equalsIgnoreCase("null")) {
+				form.setnColDenunciante("");
+			} else {
+				form.setnColDenunciante(fila.getString(C_NCOLDENUNCIANTE));	
 			}	
 			form.setNumColegiado(fila.getString(CenColegiadoBean.C_NCOLEGIADO));
 			form.setIdAreaSolo(fila.getString(ExpExpedienteBean.C_IDAREA));
