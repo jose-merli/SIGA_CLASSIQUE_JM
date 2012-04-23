@@ -2973,6 +2973,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 					auxCli.setIdPersona(auxPer.getIdPersona());
 					auxCli.setIdInstitucion(new Integer(usr.getLocation()));
 					auxCli.setFechaAlta("SYSDATE");
+					auxCli.setExportarFoto(ClsConstants.DB_FALSE);
 					if (!this.insert(auxCli)) {
 						throw new SIGAException(this.getError());
 					}
@@ -2998,6 +2999,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 				auxCli.setIdPersona(nuevoIdPersona);
 				auxCli.setIdInstitucion(new Integer(usr.getLocation()));
 				auxCli.setFechaAlta("SYSDATE");
+				auxCli.setExportarFoto(ClsConstants.DB_FALSE);
 
 				// Como el campo tratamiento es obligatorio, metemos unos por defecto, nos da igual el elemento pq no se verá
 				try {

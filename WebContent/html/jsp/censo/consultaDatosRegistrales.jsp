@@ -835,6 +835,7 @@
 		function accionRestablecer() 
 		{		
 			document.forms[0].reset();	
+			deshabilitarCamposAbajo();
 		}
 		
 		<!-- Asociada al boton Guardar -->

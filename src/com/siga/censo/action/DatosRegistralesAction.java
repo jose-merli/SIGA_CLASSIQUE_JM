@@ -364,9 +364,65 @@ public class DatosRegistralesAction extends MasterAction{
 			String cargo=miForm.getActividadProfesional();
 			String[] cargoaux=new String[1];
 				
-			if ((!miForm.getIdPersonaNotario().equals(""))){
+			if ((!miForm.getIdPersonaNotario().equals(""))){// EXISTE LA PERSONA
 				hashNoColegiado.put(CenNoColegiadoBean.C_IDPERSONANOTARIO,miForm.getIdPersonaNotario());
-			}else{
+				CenClienteAdm adminCli2=new CenClienteAdm(usr);
+				CenClienteBean colInstBean = adminCli2.existeCliente(new Long(miForm.getIdPersonaNotario()),Integer.parseInt(miForm.getIdInstitucion())); 
+				//MIRAR SI ES NO COLEGIADO DE OTRO COLEGIO
+				if(colInstBean == null){
+					if ((!miForm.getNumIdentificacion().equals(""))){
+						//inserto el notario
+						Hashtable claves = new Hashtable();
+						Hashtable hash_cliente = new Hashtable();
+						UtilidadesHash.set(hash_cliente, CenClienteBean.C_IDINSTITUCION, miForm.getIdInstitucion());
+						UtilidadesHash.set(hash_cliente, CenPersonaBean.C_APELLIDOS1, miForm.getApellido1());
+						UtilidadesHash.set(hash_cliente, CenPersonaBean.C_APELLIDOS2, miForm.getApellido2());
+						UtilidadesHash.set(hash_cliente, CenPersonaBean.C_NOMBRE, miForm.getNombre());
+						UtilidadesHash.set(hash_cliente, CenPersonaBean.C_NIFCIF, miForm.getNumIdentificacion());
+						UtilidadesHash.set(hash_cliente, CenPersonaBean.C_IDTIPOIDENTIFICACION, miForm.getTipoIdentificacion());
+						UtilidadesHash.set(hash_cliente, CenPersonaBean.C_FALLECIDO, ClsConstants.DB_FALSE);
+						UtilidadesHash.set(hash_cliente, CenClienteBean.C_GUIAJUDICIAL, ClsConstants.DB_FALSE);
+						UtilidadesHash.set(hash_cliente, CenClienteBean.C_FECHAALTA, "sysdate");
+						UtilidadesHash.set(hash_cliente, CenClienteBean.C_COMISIONES, ClsConstants.DB_FALSE);
+						UtilidadesHash.set(hash_cliente, CenClienteBean.C_IDTRATAMIENTO, ClsConstants.DB_TRUE);
+						UtilidadesHash.set(hash_cliente, CenClienteBean.C_IDLENGUAJE, this.getUserBean(request).getLanguage());
+						UtilidadesHash.set(hash_cliente, CenClienteBean.C_PUBLICIDAD, ClsConstants.DB_FALSE);
+						CenClienteAdm admCli=new CenClienteAdm (this.getUserBean(request));
+						CenClienteBean beanCli=admCli.insertNoColegiado(hash_cliente, request);
+						UtilidadesHash.set(claves, CenNoColegiadoBean.C_IDINSTITUCION, beanCli.getIdInstitucion());
+						UtilidadesHash.set(claves, CenNoColegiadoBean.C_IDPERSONA, beanCli.getIdPersona());
+						CenNoColegiadoAdm noColAdm = new CenNoColegiadoAdm (this.getUserBean(request));
+						Vector v = noColAdm.select(claves);
+						CenNoColegiadoBean beanNoColegiado = null;
+						//Si no existe un registro del mismo lo inserto con estos valores:
+						if ((v==null) || (v.isEmpty()) ) {
+							// Insertamos el no Colegiado
+							beanNoColegiado = new CenNoColegiadoBean();
+							beanNoColegiado.setIdInstitucion(Integer.valueOf(claves.get(CenNoColegiadoBean.C_IDINSTITUCION).toString()));
+							beanNoColegiado.setIdPersona(Long.valueOf(claves.get(CenNoColegiadoBean.C_IDPERSONA).toString()));
+							beanNoColegiado.setUsuMod(new Integer(usr.getUserName()));
+							beanNoColegiado.setFechaMod("sysdate");
+							beanNoColegiado.setSociedadSJ(ClsConstants.DB_FALSE);
+							beanNoColegiado.setTipo(ClsConstants.DB_TRUE);
+							beanNoColegiado.setAnotaciones("Sociedad dada de alta antes de los cambios No colegiados.");
+							
+							noColAdm.insert(beanNoColegiado);
+							hashNoColegiado.put(CenNoColegiadoBean.C_IDPERSONANOTARIO,claves.get(CenNoColegiadoBean.C_IDPERSONA).toString());
+						}
+					
+						
+						CenGruposClienteClienteBean bean = new CenGruposClienteClienteBean();
+						bean.setIdGrupo(new Integer(5));
+						bean.setIdInstitucion(new Integer(claves.get(CenNoColegiadoBean.C_IDINSTITUCION).toString()));
+						bean.setIdInstitucionGrupo(new Integer(2000));
+						bean.setIdPersona(new Long(claves.get(CenNoColegiadoBean.C_IDPERSONA).toString()));
+		
+						CenGruposClienteClienteAdm admGrupos = new CenGruposClienteClienteAdm(this.getUserBean(request));
+						admGrupos.insert(bean);
+					}
+				}
+				
+			}else{ //NO EXISTE LA PERSONA
 				hashNoColegiado.put(CenNoColegiadoBean.C_IDPERSONANOTARIO,"");
 				if ((!miForm.getNumIdentificacion().equals(""))){
 					//inserto el notario
@@ -606,7 +662,7 @@ public class DatosRegistralesAction extends MasterAction{
 		if(nif!=null && !nif.equals("")){
 			CenPersonaAdm perAdm = new CenPersonaAdm(user);
 			CenPersonaBean perBean = new CenPersonaBean();			
-			perBean = perAdm.getPersona2(nif);
+			perBean = perAdm.getPersona(nif);
 			if(perBean != null){
 				miForm.setIdPersonaNotario(""+perBean.getIdPersona());
 				miForm.setApellido2(perBean.getApellido2());
@@ -614,14 +670,14 @@ public class DatosRegistralesAction extends MasterAction{
 				miForm.setNombre(perBean.getNombre());
 				miForm.setNumIdentificacion(nif);
 			}else{
-				miForm.setIdPersonaNotario(null);
+				miForm.setIdPersonaNotario("");
 				miForm.setApellido2(ape2);
 				miForm.setApellido1(ape1);
 				miForm.setNombre(nombre);
 				miForm.setNumIdentificacion(nif);
 			}
 		}else{
-			miForm.setIdPersonaNotario(null);
+			miForm.setIdPersonaNotario("");
 			miForm.setApellido2(ape2);
 			miForm.setApellido1(ape1);
 			miForm.setNombre(nombre);

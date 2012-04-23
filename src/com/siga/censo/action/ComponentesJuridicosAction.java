@@ -481,6 +481,7 @@ public class ComponentesJuridicosAction extends MasterAction{
 		UtilidadesHash.set(hash_cliente, CenClienteBean.C_IDTRATAMIENTO, ClsConstants.DB_TRUE);
 		UtilidadesHash.set(hash_cliente, CenClienteBean.C_IDLENGUAJE, this.getUserBean(request).getLanguage());
 		UtilidadesHash.set(hash_cliente, CenClienteBean.C_PUBLICIDAD, ClsConstants.DB_FALSE);
+		UtilidadesHash.set(hash_cliente, CenClienteBean.C_EXPORTARFOTO, ClsConstants.DB_FALSE);
 		CenClienteAdm admCli=new CenClienteAdm (this.getUserBean(request));
 		CenClienteBean beanCli=admCli.insertNoColegiado(hash_cliente, request);
 		return beanCli;
