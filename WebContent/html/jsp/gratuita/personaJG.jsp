@@ -1628,9 +1628,10 @@
 				} else {
 							String reg = miform.getRegimenConyugal();
 							if (reg == null)
-								reg = new String("I");
+								reg = new String("");
 			%>
 				<html:select styleClass="boxCombo" name="PersonaJGForm" value="<%=reg%>" property="regimenConyugal" readOnly="false">
+					<html:option value=""></html:option>
 					<html:option value="G"><siga:Idioma key="gratuita.personaJG.regimen.literal.gananciales"/></html:option>
 					<html:option value="S"><siga:Idioma key="gratuita.personaJG.regimen.literal.separacion"/></html:option>
 					<html:option value="I"><siga:Idioma key="gratuita.personaJG.regimen.literal.indeterminado"/></html:option>	
