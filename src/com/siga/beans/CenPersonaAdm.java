@@ -40,6 +40,7 @@ import com.siga.general.SIGAException;
 public class CenPersonaAdm extends MasterBeanAdmVisible {
 
     public static Long K_PERSONA_GENERICA = new Long(-1);
+	public static String PREFIJO_IDENT_NOTARIO = "NOTA";
 	
 	
 	public CenPersonaAdm (UsrBean usu) {
@@ -666,7 +667,6 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 			String sql = "select nifcif from cen_persona where idtipoidentificacion='50' and nifcif like '%NIHN"+idInstitucion+"%' order by nifcif desc";
 			RowsContainer rc = new RowsContainer(); 
 			rc = this.find(sql);
-//			if (rc.query(sql)) {
 			if (rc!=null) {
 				for (int i = 0; i < rc.size(); i++)	{
 					Row fila = (Row) rc.get(i);
@@ -680,14 +680,44 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 			}
 
 		}
-//		catch (SIGAException e) {
-//			throw e;
-//		}
 		catch(Exception e) {
 			throw new ClsExceptions (e, "Error al obtener el nif");
 		}
 		return nif;
 	}
+
+	public String obtenerUltiIdNotario(String idInstitucion) throws ClsExceptions, SIGAException
+	{
+		// Variables y Controles generales
+		CenPersonaBean personaBean;
+		Vector v = null;
+		String nif = null;
+
+		// preparando consulta
+		StringBuffer sql = new StringBuffer();
+		sql.append("select max(substr(nifcif, 9)) as NIFCIF");
+		sql.append("  from cen_persona ");
+		sql.append(" where idtipoidentificacion='50' ");
+		sql.append("   and nifcif like '" + CenPersonaAdm.PREFIJO_IDENT_NOTARIO + idInstitucion + "%'");
+
+		// ejecutando consulta
+		try {
+			RowsContainer rc = new RowsContainer();
+			rc = this.find(sql.toString());
+			if (rc != null) {
+				Row fila = (Row) rc.get(0);
+				Hashtable registro = (Hashtable) fila.getRow();
+				if (registro != null) {
+					nif = (String) registro.get("NIFCIF");
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al obtener el nif");
+		}
+
+		return nif;
+	} // obtenerUltiIdNotario()
+	
 	/** 
 	 * Funcion que elimina una entrada de la tabla  
 	 * @param  idPersona - identificador del usuario

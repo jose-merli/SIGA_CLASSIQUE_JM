@@ -91,7 +91,6 @@ public class DatosGeneralesAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-
 	public ActionForward executeInternal (ActionMapping mapping, ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 
 		String mapDestino = "exception";
@@ -125,6 +124,9 @@ public class DatosGeneralesAction extends MasterAction {
 			}else if ( accion.equalsIgnoreCase("getIdenHistorico")){
 				ClsLogging.writeFileLog("DATOS NO COLEGIALES:getIdenHistorico", 10);
 				mapDestino = getIdenHistorico(mapping, miForm, request, response,0,"");
+			}else if ( accion.equalsIgnoreCase("getIdNotario")){
+				ClsLogging.writeFileLog("DATOS NO COLEGIALES:getIdNotario", 10);
+				mapDestino = getIdNotario(mapping, miForm, request, response,0,"");
 			}else if ( accion.equalsIgnoreCase("getAjaxTipo")){
 				ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxTipo", 10);
 				getAjaxTipo(mapping, miForm, request, response);
@@ -2009,6 +2011,50 @@ public class DatosGeneralesAction extends MasterAction {
 		else
 			return numero;
 	}
+	
+	protected String getIdNotario(ActionMapping mapping,
+			MasterForm formulario,
+			HttpServletRequest request,
+			HttpServletResponse response,
+			int bandera,
+			String institucion) throws ClsExceptions, SIGAException, Exception
+	{
+		// Variables y controles
+		DatosGeneralesForm miForm = (DatosGeneralesForm) formulario;
+		CenPersonaAdm perAdm = new CenPersonaAdm(this.getUserBean(request));
+		
+		// obteniendo la institucion
+		String insti = miForm.getIdInstitucion();
+		if (insti == null || insti.equals(""))
+			insti = institucion;
+		
+		// calculando el numero de identificacion
+		String numero = perAdm.obtenerUltiIdNotario(insti);
+		if (numero == null) {
+			numero = CenPersonaAdm.PREFIJO_IDENT_NOTARIO + insti + "0001";// [0-9]{4}, donde el ultimo numero sera un max+1. Ej. NIHN2040;0011";
+		} else {
+			Integer num = new Integer(numero);
+			num++;
+			String numfinal = num.toString();
+			while (numfinal.length() < 4) {
+				numfinal = "0" + numfinal;
+			}
+			numero = CenPersonaAdm.PREFIJO_IDENT_NOTARIO + insti + numfinal;
+		}
+		
+		// devolviendo el valor calculado
+		if (bandera == 0) { // proviene de Json
+			JSONObject json = new JSONObject();
+			json.put("numHistorico", numero);
+			response.setHeader("Cache-Control", "no-cache");
+			response.setHeader("Content-Type", "application/json");
+			response.setHeader("X-JSON", json.toString());
+			response.getWriter().write(json.toString());
+			return null;// "completado";
+		} else
+			return numero;
+	} // getIdNotario()
+
 	// NO se utiliza. Por si se quiesiera emplear Ajax.
 	protected void getAjaxTipo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)
 			throws ClsExceptions, SIGAException, Exception {

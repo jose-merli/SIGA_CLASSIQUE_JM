@@ -16,6 +16,7 @@
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.censo.form.DatosGeneralesForm"%>
+<%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.siga.beans.CenNoColegiadoBean"%>
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
@@ -126,6 +127,7 @@
 		<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
 		<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
 		<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>	
+		<script src="<%=app%>/html/js/jquery.js" type="text/javascript"></script>
 		
 		<!--Step 3 -->
 		  <!-- defaults for Autocomplete and displaytag -->
@@ -149,6 +151,7 @@
 		<!-- FIN: TITULO Y LOCALIZACION -->
 
 		<script>
+		jQuery.noConflict();
 		function buscarGrupos(){
 			document.ActividadProfesionalForm.modo.value="buscar";
 			document.ActividadProfesionalForm.modoAnterior.value=document.forms[0].accion.value;				
@@ -345,6 +348,22 @@
 				var errorNIF = false;
 				var valido = true;
 
+				if(DatosRegistralesForm.numIdentificacion.value == "") {
+					DatosRegistralesForm.tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>"
+					jQuery.ajax({
+						type: "POST",
+						url: "/SIGA/CEN_DatosGenerales.do?modo=getIdNotario",
+						data: "idInstitucion="+DatosRegistralesForm.idInstitucion.value,
+						dataType: "json",
+						success:  function(json) {
+							DatosRegistralesForm.numIdentificacion.value=json.numHistorico;
+						},
+						error: function(xml,msg){
+							alert("Error: "+msg);
+						}
+					});
+					alert ("Se generará automáticamente un Nº de Identificación Interno");
+				}
 				if(DatosRegistralesForm.tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>"){
 					var numero = DatosRegistralesForm.numIdentificacion.value;
 					if(numero.length==9){
@@ -500,6 +519,37 @@
 					document.DatosRegistralesForm.apellido1.disabled="";   
 					document.DatosRegistralesForm.apellido2.disabled=""; 
 				}
+			}
+
+			function generaNumOtro()
+			{
+				if((document.DatosRegistralesForm.tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>") && (document.DatosRegistralesForm.numIdentificacion.value=="")) {
+					generarIdenHistorico();
+					//NIHN (Número de Identificación Histórico para No colegiados) = 'NIHN' + idinstitucion + [0-9]{4}, donde el ultimo numero sera un max+1. Ej. NIHN20400011
+				}
+			   	
+			}
+			jQuery(document).ready(function(){
+				jQuery(".box").change(function() {
+					if(jQuery(this).attr("name")=="tipoIdentificacion"){
+						generaNumOtro();
+					}
+				});	 
+			});
+			function generarIdenHistorico()
+			{
+				jQuery.ajax({
+					type: "POST",
+					url: "/SIGA/CEN_DatosGenerales.do?modo=getIdNotario",
+					data: "idInstitucion="+DatosRegistralesForm.idInstitucion.value,
+					dataType: "json",
+					success:  function(json) {
+						DatosRegistralesForm.numIdentificacion.value=json.numHistorico;
+					},
+					error: function(xml,msg){
+						alert("Error: "+msg);
+					}
+				});
 			}
 			
 			function buscarNotario(){
@@ -739,7 +789,7 @@
 									<td id="obligatoriotipo" class="labelText" >
 									
 										<!-- NUMERO IDENTIFICACION NIF/CIF -->
-										<siga:Idioma key="censo.SolicitudIncorporacion.literal.nifcif"/>&nbsp (*)
+										<siga:Idioma key="censo.SolicitudIncorporacion.literal.nifcif"/>
 										
 									</td>
 										<%ArrayList tipoIdentificacionSel = new ArrayList();
@@ -847,7 +897,7 @@
 						alert ("Introduzca los campos obligatorios ");
 						fin();
 						return false;
-				  }else{
+					}else{
 						document.forms[0].numIdentificacion.value = (document.forms[0].numIdentificacion.value).toUpperCase();
 						//Se habilitan lo campos para poder enviar correctamente su contenido
 						document.DatosRegistralesForm.tipoIdentificacion.disabled="";
@@ -857,15 +907,15 @@
 						document.DatosRegistralesForm.apellido2.disabled=""; 
 					  	document.forms[0].modo.value="modificarRegistrales";
 						document.forms[0].target="submitArea";					
-						document.forms[0].submit();	
-				  }
+						document.forms[0].submit();
+					}
 				}else{
 					if (<%=SSPP%>=="0"){
-					  if (document.forms[0].tipoIdentificacion.value=="" || document.forms[0].numIdentificacion.value=="" || document.forms[0].nombre.value=="" || document.forms[0].apellido1.value==""){ 
+						if (document.forms[0].tipoIdentificacion.value=="" || document.forms[0].numIdentificacion.value=="" || document.forms[0].nombre.value=="" || document.forms[0].apellido1.value==""){ 
 							alert ("Introduzca los campos obligatorios ");
 							fin();
 							return false;
-					  }else{
+						}else{
 							document.forms[0].numIdentificacion.value = (document.forms[0].numIdentificacion.value).toUpperCase();
 							//Se habilitan lo campos para poder enviar correctamente su contenido
 							document.DatosRegistralesForm.tipoIdentificacion.disabled="";
@@ -877,7 +927,6 @@
 							document.forms[0].target="submitArea";						
 							document.forms[0].submit();	
 						}
-	
 					}else{
 						alert ("Introduzca los campos obligatorios ");
 						fin();
