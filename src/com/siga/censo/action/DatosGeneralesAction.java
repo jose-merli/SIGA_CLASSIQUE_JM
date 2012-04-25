@@ -2030,7 +2030,7 @@ public class DatosGeneralesAction extends MasterAction {
 		
 		// calculando el numero de identificacion
 		String numero = perAdm.obtenerUltiIdNotario(insti);
-		if (numero == null) {
+		if (numero == null || numero.equals("")) {
 			numero = CenPersonaAdm.PREFIJO_IDENT_NOTARIO + insti + "0001";// [0-9]{4}, donde el ultimo numero sera un max+1. Ej. NIHN2040;0011";
 		} else {
 			Integer num = new Integer(numero);
