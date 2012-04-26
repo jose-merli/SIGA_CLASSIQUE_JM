@@ -1,6 +1,7 @@
 package com.siga.ws.i2064.je;
 
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Hashtable;
@@ -14,6 +15,8 @@ import org.apache.axis.SimpleTargetedChain;
 import org.apache.axis.configuration.SimpleProvider;
 import org.apache.axis.transport.http.HTTPSender;
 import org.apache.axis.transport.http.HTTPTransport;
+import org.apache.xmlbeans.XmlCursor;
+import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlOptions;
 
 import com.atos.utils.ClsLogging;
@@ -394,6 +397,11 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 						
 				DatosJustificacionesDocument datosJustificacionesDocument = getDatosJustificacionesDocument(idInstitucion, idFacturacion, usrBean);
 				
+				XmlOptions xmlOptions = new XmlOptions();
+				xmlOptions.setSavePrettyPrintIndent(4);
+				xmlOptions.setSavePrettyPrint();
+				xmlOptions.setCharacterEncoding("ISO-8859-1");
+				
 				if (closeLogFile()) {					
 					throw new ErrorValidacionXML("El fichero xml generado no ha sido validado correctamente para la institución " + idInstitucion);
 				}		
@@ -401,7 +409,16 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 				EnvioJustificacionesService_ServiceLocator locator = new EnvioJustificacionesService_ServiceLocator(createClientConfig(usrBean, idInstitucion, idFacturacion));
 				EnvioJustificacionesServicePortBindingStub stub = new EnvioJustificacionesServicePortBindingStub(new java.net.URL(urlWS), locator);
 				
-				String datosJustificaciones = datosJustificacionesDocument.xmlText();
+//				String datosJustificaciones = datosJustificacionesDocument.newCursor().xmlText(xmlOptions);
+				StringBuffer datosJustificaciones = new StringBuffer("");
+				
+				XmlCursor xmlCursor = datosJustificacionesDocument.getDatosJustificaciones().newCursor();
+				if (xmlCursor != null && xmlCursor.toFirstChild()) {
+					datosJustificaciones.append(xmlCursor.xmlText(xmlOptions));
+					while (xmlCursor != null && xmlCursor.toNextSibling()) {
+						datosJustificaciones.append(xmlCursor.xmlText(xmlOptions));				
+					}
+				}
 								
 				com.siga.ws.i2064.je.axis.Resposta resposta = null;
 				
@@ -410,7 +427,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 				String usuario = admParametros.getValor(idInstitucion, MODULO_SCS, PCAJG_JE_USUARIO, "");
 				
 				try {
-					resposta = stub.envioJustificacion(codAplicacion, usuario, datosJustificaciones);
+					resposta = stub.envioJustificacion(codAplicacion, usuario, datosJustificaciones.toString());
 				} catch (Exception e) {
 					String s = "Se ha producido un error en el envío de WebService para la institución " + idInstitucion;
 					ClsLogging.writeFileLogError(s, e, 3);
@@ -428,8 +445,24 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 
 	}
 
-	
+	public static void main(String args[]) throws XmlException, IOException {
 
+		XmlOptions xmlOptions = new XmlOptions();
+		xmlOptions.setSavePrettyPrintIndent(4);
+		xmlOptions.setSavePrettyPrint();
+
+		File file = new File("c:/tmp/pruebaXunta.xml");
+		DatosJustificacionesDocument datosJustificacionesDocument = DatosJustificacionesDocument.Factory.parse(file);
+		XmlCursor xmlCursor = datosJustificacionesDocument.getDatosJustificaciones().newCursor();
+		if (xmlCursor.toFirstChild()) {
+			StringBuffer datosJustificaciones = new StringBuffer(xmlCursor.xmlText(xmlOptions));
+			while (xmlCursor.toNextSibling()) {
+				datosJustificaciones.append(xmlCursor.xmlText(xmlOptions));				
+			}
+			System.out.println(datosJustificaciones);
+		}
+		System.out.println("fin");
+	}
 
 
 }
