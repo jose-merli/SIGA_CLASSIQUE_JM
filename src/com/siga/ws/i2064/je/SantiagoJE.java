@@ -31,6 +31,7 @@ import com.siga.ws.i2064.je.error.ErrorValidacionXML;
 import com.siga.ws.i2064.je.xsd.ATESTADOTYPE;
 import com.siga.ws.i2064.je.xsd.COMISARIATYPE;
 import com.siga.ws.i2064.je.xsd.DATOSXUDICIAISTYPE;
+import com.siga.ws.i2064.je.xsd.DOCIDENTIFICADORTYPE;
 import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument;
 import com.siga.ws.i2064.je.xsd.IMPORTETYPE;
 import com.siga.ws.i2064.je.xsd.NOMEAPELIDOSTYPE;
@@ -39,6 +40,9 @@ import com.siga.ws.i2064.je.xsd.PERSOATYPE;
 import com.siga.ws.i2064.je.xsd.PROCBAREMOTYPE;
 import com.siga.ws.i2064.je.xsd.SOXCLAVETYPE;
 import com.siga.ws.i2064.je.xsd.TRIMESTRETYPE;
+import com.siga.ws.i2064.je.xsd.DOCIDENTIFICADORTYPE.DOCUMENTADO;
+import com.siga.ws.i2064.je.xsd.DOCIDENTIFICADORTYPE.INDOCUMENTADO;
+import com.siga.ws.i2064.je.xsd.DOCIDENTIFICADORTYPE.DOCUMENTADO.TIPOIDENTIFICADOR;
 import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones;
 import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias;
 import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Periodo;
@@ -123,7 +127,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 					rellenaOrganoJudicial(datosatestado, hash);
 				}
 				
-				rellenaPersonaType(asuntos.addNewDetido(), hash.get(A_D_NOME), hash.get(A_D_PRIMER_APELLIDO), hash.get(A_D_SEGUNDO_APELLIDO), hash.get(A_D_NIF));
+				rellenaPersonaType(asuntos.addNewDetido(), hash.get(A_D_NOME), hash.get(A_D_PRIMER_APELLIDO), hash.get(A_D_SEGUNDO_APELLIDO), hash.get(A_D_TIPOIDENTIFICADOR), hash.get(A_D_NIF));
 				rellenaImporteType(asuntos.addNewIMPORTE(), SigaWSHelper.getBigDecimal("importe", hash.get(A_I_IMPORTE)), SigaWSHelper.getBigDecimal("irpf", hash.get(A_I_IRPF)));
 				
 				List<String> erroresList = SigaWSHelper.validate(asuntos);
@@ -170,7 +174,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 				idExpAXG.setProv(com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.TurnoOficio.Colegiado.Asuntos.IDExpAXG.Prov.Enum.forInt(in+1));//El enumerado empieza en 1
 				
 				rellenaDatosJudiciales(asuntos.addNewDatosxudiciais(), hash);
-				rellenaPersonaType(asuntos.addNewSolicitante(), hash.get(TO_S_NOME), hash.get(TO_S_PRIMER_APELLIDO), hash.get(TO_S_SEGUNDO_APELLIDO), hash.get(TO_S_NIF));
+				rellenaPersonaType(asuntos.addNewSolicitante(), hash.get(TO_S_NOME), hash.get(TO_S_PRIMER_APELLIDO), hash.get(TO_S_SEGUNDO_APELLIDO), hash.get(TO_S_TIPOIDENTIFICADOR), hash.get(TO_S_NIF));
 				rellenaImporteType(asuntos.addNewIMPORTE(), SigaWSHelper.getBigDecimal("importe", hash.get(TO_I_IMPORTE)), SigaWSHelper.getBigDecimal("irpf", hash.get(TO_I_IRPF)));
 				
 				List<String> erroresList = SigaWSHelper.validate(asuntos);
@@ -271,12 +275,22 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 		if (irpf != null) importetype.setIRPF(irpf);
 	}
 
-	private void rellenaPersonaType(PERSOATYPE persoatype, String nome, String primerApellido, String segundoApellido, String nif) {		
+	private void rellenaPersonaType(PERSOATYPE persoatype, String nome, String primerApellido, String segundoApellido, String tipoIdentificador, String nif) {		
 		NOMEAPELIDOSTYPE nomeapelidostype = persoatype.addNewNOMEAPELIDOS();
 		nomeapelidostype.setNome(nome);
 		nomeapelidostype.setPRIMERAPELLIDO(primerApellido);
 		nomeapelidostype.setSEGUNDOAPELLIDO(segundoApellido);
-		persoatype.setNIF(nif);
+		
+		DOCIDENTIFICADORTYPE identificacion = persoatype.addNewIDENTIFICACION();
+		
+		if (tipoIdentificador == null || tipoIdentificador.trim().equals("")) {
+			identificacion.setINDOCUMENTADO(INDOCUMENTADO.S);
+		} else {
+			DOCUMENTADO documentado = identificacion.addNewDOCUMENTADO();
+			documentado.setTIPOIDENTIFICADOR(TIPOIDENTIFICADOR.Enum.forString(tipoIdentificador));
+			documentado.setIDENTIFICADOR(nif);
+		}
+		
 	}
 
 	private void rellenaOrganoJudicial(Datosatestado datosatestado, Hashtable<String, String> hash) {

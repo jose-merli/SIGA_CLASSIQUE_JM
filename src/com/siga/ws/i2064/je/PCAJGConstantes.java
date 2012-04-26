@@ -12,6 +12,8 @@ public interface PCAJGConstantes {
 
      /***** CAMPOS DE LA VISTA V_WS_JE_2064 ****/
 
+	public final String V_WS_JE_2064 = "V_WS_JE_2064";
+
 	public final String IDINSTITUCION = "IDINSTITUCION";
 	public final String IDFACTURACION = "IDFACTURACION";
 	public final String PERIODO_ANO = "PERIODO_ANO";
@@ -22,6 +24,8 @@ public interface PCAJGConstantes {
 
 
      /***** CAMPOS DE LA VISTA V_WS_JE_2064_ASIS ****/
+
+	public final String V_WS_JE_2064_ASIS = "V_WS_JE_2064_ASIS";
 
 	public final String ANIO_ASISTENCIA = "ANIO_ASISTENCIA";
 	public final String NUMERO_ASISTENCIA = "NUMERO_ASISTENCIA";
@@ -47,12 +51,15 @@ public interface PCAJGConstantes {
 	public final String A_D_NOME = "A_D_NOME";
 	public final String A_D_PRIMER_APELLIDO = "A_D_PRIMER_APELLIDO";
 	public final String A_D_SEGUNDO_APELLIDO = "A_D_SEGUNDO_APELLIDO";
+	public final String A_D_TIPOIDENTIFICADOR = "A_D_TIPOIDENTIFICADOR";
 	public final String A_D_NIF = "A_D_NIF";
 	public final String A_I_IMPORTE = "A_I_IMPORTE";
 	public final String A_I_IRPF = "A_I_IRPF";
 
 
      /***** CAMPOS DE LA VISTA V_WS_JE_2064_DESIGNA ****/
+
+	public final String V_WS_JE_2064_DESIGNA = "V_WS_JE_2064_DESIGNA";
 
 	public final String NUMEROASUNTO = "NUMEROASUNTO";
 	public final String ANIO_DESIGNA = "ANIO_DESIGNA";
@@ -79,6 +86,7 @@ public interface PCAJGConstantes {
 	public final String TO_S_NOME = "TO_S_NOME";
 	public final String TO_S_PRIMER_APELLIDO = "TO_S_PRIMER_APELLIDO";
 	public final String TO_S_SEGUNDO_APELLIDO = "TO_S_SEGUNDO_APELLIDO";
+	public final String TO_S_TIPOIDENTIFICADOR = "TO_S_TIPOIDENTIFICADOR";
 	public final String TO_S_NIF = "TO_S_NIF";
 	public final String TO_I_IMPORTE = "TO_I_IMPORTE";
 	public final String TO_I_IRPF = "TO_I_IRPF";
