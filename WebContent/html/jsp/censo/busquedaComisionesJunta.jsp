@@ -204,7 +204,7 @@
 		td = tr.insertCell(); 
 		td.setAttribute("width", "15%");
 		td.setAttribute("align", "center");
-		td.innerHTML='<siga:ComboBD nombre="cargos_' + numFila + '" id="cargos_' + numFila + '" tipo="cmbCargosJunta" estilo="margin-top:4px;" parametro='<%=parametro%>' clase="boxCombo" accion="comporbarFila(\''+ tr.id +'\');" />';
+		td.innerHTML='<siga:ComboBD ancho="140" nombre="cargos_' + numFila + '" id="cargos_' + numFila + '" tipo="cmbCargosJunta" estilo="margin-top:4px;" parametro='<%=parametro%>' clase="boxCombo" accion="comporbarFila(\''+ tr.id +'\');" />';
 		td = tr.insertCell(); 
 		td.setAttribute("width", "10%");
 		td.setAttribute("align", "center");
@@ -616,7 +616,7 @@
 		
 	</td>				
 	<td class="labelText">
-				<siga:ComboBD nombre = "idInstitucionCargo" id="idInstitucionCargo" tipo="cmbNombreColegiosTodos" parametro="<%=parametro %>" obligatorioSinTextoSeleccionar="true" clase="boxCombo"  elementoSel="<%=modoSel %>" accion="limpiarColegiado()"/>
+				<siga:ComboBD ancho="" nombre = "idInstitucionCargo" id="idInstitucionCargo" tipo="cmbNombreColegiosConsejosTodos" parametro="<%=parametro %>" obligatorioSinTextoSeleccionar="true" clase="boxCombo"  elementoSel="<%=modoSel %>" accion="limpiarColegiado()"/>
 	</td>
 	<td  colspan="2">
 		<table><tr>

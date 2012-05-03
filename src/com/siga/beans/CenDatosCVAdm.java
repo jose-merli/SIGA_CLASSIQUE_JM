@@ -532,36 +532,6 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 		return null;
 	}	
 	
-	public Integer getNuevoIDtipocvJunta ()throws SIGAException,ClsExceptions 
-	{
-		RowsContainer rc = null;
-		
-		try { rc = new RowsContainer(); }
-		catch(Exception e) { e.printStackTrace(); }
-		
-		try {		
-			String sql = " select valor from gen_parametros where modulo = 'CEN' and parametro = 'IDTIPOCV_JUNTASGOBIERNO' ";
-
-            // RGG cambio visibilidad
-            rc = this.findForUpdate(sql);
-            if (rc!=null) {
-				Row fila = (Row) rc.get(0);
-				Hashtable prueba = fila.getRow();
-				Integer idCV = UtilidadesHash.getInteger(prueba,"VALOR");
-				if (idCV == null) {
-					return new Integer(1);
-				}
-				else return idCV;								
-			}
-		}	
-//		catch (SIGAException e) {
-//			throw e;
-//		}
-		catch (Exception e) {		
-			throw new ClsExceptions (e, "Error al ejecutar el 'getSecuenciaIDTIPOCV' en B.D.");		
-		}
-		return null;
-	}
 	/** 
 	 * Recoge la informacion del registro seleccionado a partir de sus claves para <br/>
 	 * transacciones (for update)
@@ -749,6 +719,8 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 		Integer idTipoCVSubtipo2 = null;
 		Integer idInstitucionSubtipo1=null;
 		Integer idInstitucionSubtipo2=null;
+		GenParametrosAdm paramAdm = new GenParametrosAdm (this.usrbean);
+		final String IDTIPOCV_JUNTASGOBIERNO = paramAdm.getValor (this.usrbean.getLocation (), "CEN", ClsConstants.GEN_PARAM_IDTIPOCV_JUNTASGOBIERNO, "");
 		try 
 		{
 			    select=" select (select per.nombre"+
@@ -780,7 +752,7 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 				       "    TO_CHAR(T."+CenDatosCVBean.C_FECHAINICIO+",'DD/MM/YYYY') AS FECHAINICIO, "+
 				       "    TO_CHAR(T."+CenDatosCVBean.C_FECHAFIN+",'DD/MM/YYYY')  AS FECHAFIN "+
 				       "  from "+CenDatosCVBean.T_NOMBRETABLA+" t "+
-			           " where T."+CenDatosCVBean.C_IDTIPOCV+"="+ClsConstants.TIPOCV_COMISIONES+ "" +
+			           " where T."+CenDatosCVBean.C_IDTIPOCV+"="+IDTIPOCV_JUNTASGOBIERNO+" "+
 			           "   AND T."+CenDatosCVBean.C_FECHABAJA+" IS NULL ";
 			          // "   AND T."+CenDatosCVBean.C_FECHAFIN+" IS NULL ";//+
 			    	   //"   AND T."+CenDatosCVBean.C_FECHAINICIO+" = "+" TO_DATE('" + formulario.getFechaCargo() + "', '"

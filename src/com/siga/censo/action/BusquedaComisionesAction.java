@@ -31,6 +31,7 @@ import com.siga.beans.CenDatosCVAdm;
 import com.siga.beans.CenDatosCVBean;
 import com.siga.beans.CenHistoricoBean;
 import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.censo.form.BusquedaComisionesForm;
 import com.siga.general.CenVisibilidad;
 import com.siga.general.MasterAction;
@@ -453,7 +454,9 @@ public class BusquedaComisionesAction extends MasterAction {
 			}//%$%
 			if(elementos.length>1 && elementos[1]!=null){     //Alta de cargos
 				String wordAlta = elementos[1];   
-				subelementos = new StringTokenizer(wordAlta,"%%%");   
+				subelementos = new StringTokenizer(wordAlta,"%%%");
+				GenParametrosAdm paramAdm = new GenParametrosAdm (user);
+				final String IDTIPOCV_JUNTASGOBIERNO = paramAdm.getValor (user.getLocation (), "CEN", ClsConstants.GEN_PARAM_IDTIPOCV_JUNTASGOBIERNO, "");
 				while(subelementos.hasMoreTokens()){ 
 					String word2 = subelementos.nextToken();   
 					subelementos2 = new StringTokenizer(word2,",");
@@ -482,7 +485,7 @@ public class BusquedaComisionesAction extends MasterAction {
 						fecha.setTime(dateFormat.parse(form.getFechaCargo()));
 						beanCV.setFechaInicio(sdf.format(fecha.getTime()));//miForm.getFechaInicio());
 						beanCV.setFechaMovimiento(sdf.format(fecha.getTime()));
-						beanCV.setIdTipoCV(adm.getNuevoIDtipocvJunta());						
+						beanCV.setIdTipoCV(new Integer(IDTIPOCV_JUNTASGOBIERNO));						
 						CenColegiadoAdm admCol = new CenColegiadoAdm(this.getUserBean(request));
 						beanCV.setIdPersona(new Long(idPersona));
 						beanCV.setIdTipoCVSubtipo1(idtipocvsubtipo1);
