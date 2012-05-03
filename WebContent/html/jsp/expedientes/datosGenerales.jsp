@@ -1591,84 +1591,80 @@
 		<siga:ConjBotonesAccion botones="V,G" clase="botonesDetalle" />
 	<%
 		} else if (bEditable) {
-	%>
-	<%
-		if (tieneEjgRelacionado) {
-	%>
-			<!-- INICIO: BOTONES ACCIONES -->
 
-<table class="botonesDetalle" align="center">
-<tr>
+			if (tieneEjgRelacionado) {
 	
-<td class="tdBotones">
-<input type="button" alt="<siga:Idioma key="general.boton.volver"/>"  id="idButton" onclick="return accionVolver();" class="button" name="idButton" value="<siga:Idioma key="general.boton.volver"/>">
-</td>
-<td  style="width:900px;">
-&nbsp;
-</td>
-<%
-		if (tieneExpeRelacionado) {
-	%>
-		<td class="tdBotones">
-		<input type="button" alt="<%=nombreRelacion %>"  id="idButton" onclick="return accionAbrir();" class="button" name="idButton" value="Abrir <%=nombreRelacion %>">
-		</td>
-	<%
-		}
-	%>
-<td class="tdBotones">
-<input type="button" alt="<siga:Idioma key="general.boton.guardar"/>"  id="idButton" onclick="return accionGuardar();" class="button" name="idButton" value="<siga:Idioma key="general.boton.guardar"/>">
-</td>
-<td class="tdBotones">
-<input type="button"  alt="<siga:Idioma key="general.boton.restablecer"/>"  id="idButton" onclick="return accionRestablecer();" class="button" name="idButton" value="<siga:Idioma key="general.boton.restablecer"/>">
-</td>
-<td class="tdBotones">
-<input type="button" alt="<siga:Idioma key="general.boton.relacionarEJG"/>"  id="idButton" onclick="return accionComunicar();" class="button" name="idButton" value="<siga:Idioma key="general.boton.comunicar"/>">
-</td>
-<td class="tdBotones">
-<input type="button" alt="<siga:Idioma key="general.boton.relacionarEJG"/>"  id="idButton" onclick="return relacionarConEJG();" class="button" name="idButton" value="<siga:Idioma key="general.boton.relacionarEJG"/>">
-</td>
-</tr>
-</table>
-
-		
-	<%
+				if (tieneExpeRelacionado) {//Se pone como inputs ya que no es posible darle un nombre exacto por que depende del tipo de expediente
+		%>
+					<table class="botonesDetalle" align="center">
+						<tr>
+							<td class="tdBotones">
+							<input type="button" alt="<siga:Idioma key="general.boton.volver"/>"  id="idButton" onclick="return accionVolver();" class="button" name="idButton" value="<siga:Idioma key="general.boton.volver"/>">
+							</td>
+							<td  style="width:900px;">
+							&nbsp;
+							</td>
+							<td class="tdBotones">
+							<input type="button" alt="<%=nombreRelacion %>"  id="idButton" onclick="return accionAbrir();" class="button" name="idButton" value="Abrir <%=nombreRelacion %>">
+							</td>
+							<td class="tdBotones">
+							<input type="button" alt="<siga:Idioma key="general.boton.guardar"/>"  id="idButton" onclick="return accionGuardar();" class="button" name="idButton" value="<siga:Idioma key="general.boton.guardar"/>">
+							</td>
+							<td class="tdBotones">
+							<input type="button"  alt="<siga:Idioma key="general.boton.restablecer"/>"  id="idButton" onclick="return accionRestablecer();" class="button" name="idButton" value="<siga:Idioma key="general.boton.restablecer"/>">
+							</td>
+							<td class="tdBotones">
+							<input type="button" alt="<siga:Idioma key="general.boton.comunicar"/>"  id="idButton" onclick="return accionComunicar();" class="button" name="idButton" value="<siga:Idioma key="general.boton.comunicar"/>">
+							</td>
+							<td class="tdBotones">
+							<input type="button" alt="<siga:Idioma key="general.boton.relacionarEJG"/>"  id="idButton" onclick="return relacionarConEJG();" class="button" name="idButton" value="<siga:Idioma key="general.boton.relacionarEJG"/>">
+							</td>
+						</tr>
+					</table>
+			<%
 				} else {
 			%>
-<table class="botonesDetalle" align="center">
-<tr>
-<td class="tdBotones">
-<input type="button" alt="<siga:Idioma key="general.boton.volver"/>"  id="idButton" onclick="return accionVolver();" class="button" name="idButton" value="<siga:Idioma key="general.boton.volver"/>">
-</td>
-<td  style="width:900px;">
-&nbsp;
-</td>
-	<%
-		if (tieneExpeRelacionado) {
-	%>
-			<td class="tdBotones">
-			<input type="button" alt="<%=nombreRelacion %>"  id="idButton" onclick="return accionAbrir();" class="button" name="idButton" value="Abrir <%= nombreRelacion%>">
-			</td>
-	<%
-		}
-	%>
-
-<td class="tdBotones">
-<input type="button" alt="<siga:Idioma key="general.boton.guardar"/>" id="idButton" onclick="return accionGuardar();" class="button" name="idButton" value="<siga:Idioma key="general.boton.guardar"/>">
-</td>
-<td class="tdBotones">
-<input type="button"  alt="<siga:Idioma key="general.boton.restablecer"/>"  id="idButton" onclick="return accionRestablecer();" class="button" name="idButton" value="<siga:Idioma key="general.boton.restablecer"/>">
-</td>
-<td class="tdBotones">
-<input type="button" alt="<siga:Idioma key="general.boton.comunicar"/>"  id="idButton" onclick="return accionComunicar();" class="button" name="idButton" value="<siga:Idioma key="general.boton.comunicar"/>">
-</td>
-</tr>
-</table>
-
-	<%
-		}
+					<siga:ConjBotonesAccion botones="V,R,G,COM,RE" clase="botonesDetalle" />
+		<%
+				}
+	
+			} else {
+	
+				if (tieneExpeRelacionado) {//Se pone como inputs ya que no es posible darle un nombre exacto por que depende del tipo de expediente
+		%>
+					<table class="botonesDetalle" align="center">
+						<tr>
+							<td class="tdBotones">
+							<input type="button" alt="<siga:Idioma key="general.boton.volver"/>"  id="idButton" onclick="return accionVolver();" class="button" name="idButton" value="<siga:Idioma key="general.boton.volver"/>">
+							</td>
+							<td  style="width:900px;">
+							&nbsp;
+							</td>
+							<td class="tdBotones">
+							<input type="button" alt="<%=nombreRelacion %>"  id="idButton" onclick="return accionAbrir();" class="button" name="idButton" value="Abrir <%=nombreRelacion %>">
+							</td>
+							<td class="tdBotones">
+							<input type="button" alt="<siga:Idioma key="general.boton.guardar"/>"  id="idButton" onclick="return accionGuardar();" class="button" name="idButton" value="<siga:Idioma key="general.boton.guardar"/>">
+							</td>
+							<td class="tdBotones">
+							<input type="button"  alt="<siga:Idioma key="general.boton.restablecer"/>"  id="idButton" onclick="return accionRestablecer();" class="button" name="idButton" value="<siga:Idioma key="general.boton.restablecer"/>">
+							</td>
+							<td class="tdBotones">
+							<input type="button" alt="<siga:Idioma key="general.boton.relacionarEJG"/>"  id="idButton" onclick="return accionComunicar();" class="button" name="idButton" value="<siga:Idioma key="general.boton.comunicar"/>">
+							</td>
+						</tr>
+					</table>
+			<%
+				} else {
+			%>
+					<siga:ConjBotonesAccion botones="V,R,G,COM" clase="botonesDetalle" />
+		<%
+				}
+			}
+		
 		} else {
 	%>
-		<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
+			<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
 	<%
 		}
 	%>	
