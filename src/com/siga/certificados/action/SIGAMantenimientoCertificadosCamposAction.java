@@ -324,7 +324,7 @@ public class SIGAMantenimientoCertificadosCamposAction extends MasterAction
 	    		" and cp.idtipoproducto=" +sIdTipoProducto+
 	    		" and cp.idproducto=" +sIdProducto+
 	    		" and cp.idproductoinstitucion=" +sIdProductoInstitucion+
-	    		" and cp.idcampocertificado=c.idcampocertificado and cp.tipocampo=c.tipocampo)  ORDER BY c1.tipocampo";
+	    		" and cp.idcampocertificado=c.idcampocertificado and cp.tipocampo=c.tipocampo)  ORDER BY c1.tipocampo,descripcion asc";
 	    
 	    
 	    CerCamposCertificadosAdm admcer = new CerCamposCertificadosAdm(this.getUserBean(request));

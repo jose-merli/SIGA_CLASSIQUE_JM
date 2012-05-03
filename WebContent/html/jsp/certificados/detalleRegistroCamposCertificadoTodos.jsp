@@ -159,7 +159,7 @@ function marca(i,tipo, todos ) {
 			}
 			//-- Asociada al boton Cerrar -->
 			function accionCerrar() 
-			{		
+			{
 				window.close();
 			}
 
@@ -229,13 +229,7 @@ while (ek.hasMoreElements()) { //tablas
     
 %>
 
-<fieldset class="legend">
-<legend style="cursor:hand;"> 
-<a onclick="ocultarDIV('tabla_<%=nTabla %>');">
-<img id="tabla_<%=nTabla %>ImMas" src="<%=app%>/html/imagenes/simboloMas.gif"style="display:none">
-<img id="tabla_<%=nTabla %>ImMenos" src="<%=app%>/html/imagenes/simboloMenos.gif"style="display:inline">
-</a>
-</legend>
+
 <div style="display: inline" id="tabla_<%=nTabla %>">
 
 <table border='1' width='98.43%' cellspacing='0' cellpadding='0'>
@@ -319,7 +313,7 @@ while (ek.hasMoreElements()) { //tablas
     </table>
     </div>
     	</div>
-</fieldset>
+<!--  </fieldset> -->
     <%
 }
 }
