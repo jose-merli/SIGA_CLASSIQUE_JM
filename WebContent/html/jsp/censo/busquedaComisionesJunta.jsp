@@ -133,6 +133,10 @@
 		
 		function buscarColegiado()
 		{
+		
+			document.busquedaClientesModalForm.idInstitucion.value=document.getElementById("idInstitucionCargo").value;
+			document.busquedaClientesModalForm.idInstitucionCargo.value=document.getElementById("idInstitucionCargo").value;
+			
 				var resultado=ventaModalGeneral("busquedaClientesModalForm","G");
 				if (resultado!=undefined && resultado[0]!=undefined ){
 					
@@ -144,7 +148,8 @@
 		}
 		function preAccionColegiado()
 		{
-			var insti=document.getElementById("idInstitucion").value;
+		
+			var insti=document.getElementById("idInstitucionCargo").value;
 			 	if(insti== null || insti== "" ){
 			 		alert("<siga:Idioma key='censo.comisiones.colObligatorio'/>");
 				 	return false;
