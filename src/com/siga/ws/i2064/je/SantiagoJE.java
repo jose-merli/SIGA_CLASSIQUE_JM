@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -402,6 +403,10 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 				xmlOptions.setSavePrettyPrint();
 				xmlOptions.setCharacterEncoding("ISO-8859-1");
 				
+				Map<String, String> mapa = new HashMap<String, String>();
+				mapa.put(datosJustificacionesDocument.getDatosJustificaciones().getDomNode().getNamespaceURI(), "");
+				xmlOptions.setSaveSuggestedPrefixes(mapa);
+				
 				if (closeLogFile()) {					
 					throw new ErrorValidacionXML("El fichero xml generado no ha sido validado correctamente para la institución " + idInstitucion);
 				}		
@@ -410,7 +415,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 				EnvioJustificacionesServicePortBindingStub stub = new EnvioJustificacionesServicePortBindingStub(new java.net.URL(urlWS), locator);
 				
 //				String datosJustificaciones = datosJustificacionesDocument.newCursor().xmlText(xmlOptions);
-				StringBuffer datosJustificaciones = new StringBuffer("");
+				StringBuffer datosJustificaciones = new StringBuffer("<?xml version=\"1.0\" encoding=\"ISO8859-1\"?>");
 				
 				XmlCursor xmlCursor = datosJustificacionesDocument.getDatosJustificaciones().newCursor();
 				if (xmlCursor != null && xmlCursor.toFirstChild()) {
