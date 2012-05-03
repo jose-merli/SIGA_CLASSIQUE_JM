@@ -1608,6 +1608,9 @@
 							<input type="button" alt="<%=nombreRelacion %>"  id="idButton" onclick="return accionAbrir();" class="button" name="idButton" value="Abrir <%=nombreRelacion %>">
 							</td>
 							<td class="tdBotones">
+							<input type="button" alt="<siga:Idioma key="general.boton.relacionarEJG"/>"  id="idButton" onclick="return relacionarConEJG();" class="button" name="idButton" value="<siga:Idioma key="general.boton.relacionarEJG"/>">
+							</td>							
+							<td class="tdBotones">
 							<input type="button" alt="<siga:Idioma key="general.boton.guardar"/>"  id="idButton" onclick="return accionGuardar();" class="button" name="idButton" value="<siga:Idioma key="general.boton.guardar"/>">
 							</td>
 							<td class="tdBotones">
@@ -1615,9 +1618,6 @@
 							</td>
 							<td class="tdBotones">
 							<input type="button" alt="<siga:Idioma key="general.boton.comunicar"/>"  id="idButton" onclick="return accionComunicar();" class="button" name="idButton" value="<siga:Idioma key="general.boton.comunicar"/>">
-							</td>
-							<td class="tdBotones">
-							<input type="button" alt="<siga:Idioma key="general.boton.relacionarEJG"/>"  id="idButton" onclick="return relacionarConEJG();" class="button" name="idButton" value="<siga:Idioma key="general.boton.relacionarEJG"/>">
 							</td>
 						</tr>
 					</table>
@@ -1650,7 +1650,7 @@
 							<input type="button"  alt="<siga:Idioma key="general.boton.restablecer"/>"  id="idButton" onclick="return accionRestablecer();" class="button" name="idButton" value="<siga:Idioma key="general.boton.restablecer"/>">
 							</td>
 							<td class="tdBotones">
-							<input type="button" alt="<siga:Idioma key="general.boton.relacionarEJG"/>"  id="idButton" onclick="return accionComunicar();" class="button" name="idButton" value="<siga:Idioma key="general.boton.comunicar"/>">
+							<input type="button" alt="<siga:Idioma key="general.boton.comunicar"/>"  id="idButton" onclick="return accionComunicar();" class="button" name="idButton" value="<siga:Idioma key="general.boton.comunicar"/>">
 							</td>
 						</tr>
 					</table>
