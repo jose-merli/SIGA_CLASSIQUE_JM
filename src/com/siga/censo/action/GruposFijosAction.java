@@ -127,9 +127,11 @@ public class GruposFijosAction extends MasterAction {
 																					  idPersona,
 																					  "",
 																					  ""+this.getUserName(request));
-			if ((resultado == null) || (!resultado[0].equals("0"))){
+			if ((resultado == null) || (!resultado[0].equals("0") && !resultado[0].equals("100"))){
 				throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
-			}	
+			}
+					
+			
 			tx.commit();
 
 			// No se usa
