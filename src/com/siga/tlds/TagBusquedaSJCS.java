@@ -554,7 +554,7 @@ public class TagBusquedaSJCS extends TagSupport {
 					}
 					automatica=false;
 				}
-				if(!manual && !automatica){
+				if(!manual && !automatica && !art27){
 					throw new ClsExceptions("El valor del atributo 'botones' no es válido");
 				}
 		} catch (ClsExceptions e) {

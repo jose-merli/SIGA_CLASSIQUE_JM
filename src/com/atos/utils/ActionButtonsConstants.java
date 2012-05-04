@@ -61,7 +61,7 @@ public enum ActionButtonsConstants {
 	GENERAR_CERRAR ("ygc","general.boton.generarCerrar","accionGenerarCerrar()",50),
 	GUARDAR_CERRAR ("y","general.boton.guardarCerrar","accionGuardarCerrar()",51),
 	GUARDAR_ANYADIR_HISTORICO ("gah","general.boton.guardarAnyadirHistorico","accionGuardarAnyadirHistorico()",52),
-	GUARDAR ("g","general.boton.guardar","accionGuardar()",53),
+	GUARDAR ("g","general.boton.guardar","accionGuardar()", "idButtonGuardar",53),
 	GENERAR_CARTA ("cg","general.boton.cartaInteresados","generarCarta()",54),
 	INFORME_ENVIOS ("ie","general.boton.informeEnvios","accionInformeEnvios();",55),
 	RESTABLECER ("r","general.boton.restablecer","accionRestablecer()",56),

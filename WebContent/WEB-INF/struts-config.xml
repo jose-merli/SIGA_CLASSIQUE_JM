@@ -819,6 +819,7 @@
 			<forward name="continuarAprobacionNoColegiado" path="/html/jsp/censo/continuarAprobacionNoColegiado.jsp"/>
 			<forward name="continuarAprobacion" path="/html/jsp/censo/continuarAprobacion.jsp"/>
 			<forward name="designarArt27" path="/html/jsp/gratuita/designarArticulo27.jsp"/>
+			<forward name="validarNoColegiadoArt27" path="/html/jsp/censo/validarNoColegiadoArt27.jsp"/>
 		</action>
 		
 		<action path="/EXP_AltaNoColegiado" forward="/CEN_DatosGenerales.do" >

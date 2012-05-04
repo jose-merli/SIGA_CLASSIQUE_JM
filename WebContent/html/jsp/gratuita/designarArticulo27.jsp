@@ -81,6 +81,9 @@
 	//Toma los de la institucion:
 	String [] institucionParam = new String[1];
    	institucionParam[0] = user.getLocation();
+   	
+   	ArrayList institucionSel = new ArrayList();
+   	institucionSel.add(0,idInstitucionActual);
   	
 	String estiloCajaNif = "box";
 	String estiloCajaNombreApellidos = "box";
@@ -151,10 +154,15 @@
 		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	
 
 		<script>
+
+		function inicio(){
+			document.getElementById('idButtonGuardar').disabled=true;
+		}
 		
 		function buscarDesignados (){
 
 			if ((document.getElementById('colegiadoen').value 			== null || document.getElementById('colegiadoen').value == "") &&
+				(document.datosGeneralesForm.numIdentificacion.value 	== null || document.datosGeneralesForm.numIdentificacion.value == "") &&	
 				(document.datosGeneralesForm.nombre.value 				== null || document.datosGeneralesForm.nombre.value == "") &&
 				(document.datosGeneralesForm.nColegiado.value 			== null || document.datosGeneralesForm.nColegiado.value == "") &&
 				(document.datosGeneralesForm.apellido2.value 			== null || document.datosGeneralesForm.apellido2.value == "") &&
@@ -213,15 +221,15 @@
 			}else{
 				busquedaCensoModalForm.colegiadoen.value = "";
 			}
-
 			
 			var resultado = ventaModalGeneral("busquedaCensoModalForm","G");	
-			if (resultado!=undefined && resultado[0]!=undefined ){
-				
-				accionRestablecer();
+			if (resultado!=undefined && resultado[0]!=undefined ){				
 				ponerIconoIdentPersona(true);
 		      	document.getElementById("textomod").className="ocultar";
 		      	document.getElementById("textomod").style.display="none";
+				document.getElementById('idButtonGuardar').disabled=false;
+				document.getElementById("tdadicional").style.display="block";
+				document.getElementById("tddireccion").style.display="block";		      	
 				datosGeneralesForm.idPersona.value       = resultado[0];
 				datosGeneralesForm.idInstitucion.value   = resultado[1];				
 
@@ -258,7 +266,7 @@
 						document.getElementById("provincia").value = resultado[9];
 						poblacionSeleccionada = resultado[8];
 						document.getElementById("provincia").onchange();
-						window.setTimeout("recargarComboHijo()",100,"Javascript");	
+						window.setTimeout("recargarComboHijo()",500,"Javascript");	
 						document.getElementById("poblacion").value = resultado[8];		
 					}
 					document.getElementById("checkTipoDireccion_3").checked = "checked";
@@ -267,7 +275,8 @@
 					limpiarDireccion();
 					datosGeneralesForm.idPersona.onchange();
 				}
-				
+
+				// SE DESHABILITAN LOS DATOS GENERALES
 				datosGeneralesForm.tipoIdentificacion.disabled="disabled";
 				datosGeneralesForm.numIdentificacion.disabled="disabled";
 				datosGeneralesForm.idInstitucion.disabled="disabled";
@@ -276,6 +285,13 @@
 				datosGeneralesForm.nombre.disabled="disabled";      
 				datosGeneralesForm.apellido1.disabled="disabled";   
 				datosGeneralesForm.apellido2.disabled="disabled"; 
+
+				// SE DESHABILITAN LOS DATOS DE INFORMACIÓN ADICIONAL
+				datosGeneralesForm.sexo.disabled="disabled";      
+				datosGeneralesForm.estadoCivil.disabled="disabled";   
+				datosGeneralesForm.lugarNacimiento.disabled="disabled";
+				datosGeneralesForm.fechaNacimiento.disabled="disabled";
+				document.getElementById("iconoFecha").style.display="none"; 				
 			}							
 		}		
 
@@ -292,6 +308,9 @@
 		datosGeneralesForm.numIdentificacion.disabled="";
 		datosGeneralesForm.tratamiento.disabled="";
 		datosGeneralesForm.sexo.disabled="";
+		datosGeneralesForm.estadoCivil.disabled="";   
+		datosGeneralesForm.lugarNacimiento.disabled="";
+		datosGeneralesForm.fechaNacimiento.disabled="";		
 		datosGeneralesForm.idInstitucion.disabled="";
 		datosGeneralesForm.colegiadoen.disabled="";  
 		datosGeneralesForm.nColegiado.disabled="";   
@@ -685,73 +704,108 @@
 	}
 	
 	function postAccionBusquedaNIF(){
-
-		if(datosGeneralesForm.idPersona.value != null && datosGeneralesForm.idPersona.value != ""){
-			ponerIconoIdentPersona(true);
-			if(document.busquedaCensoModalForm.textoAlerta.value != null && document.busquedaCensoModalForm.textoAlerta.value == ""){
-				formatearDocumento();
-			
-				//Datos direcciones
-				if(datosGeneralesForm.idInstitucion.value != "<%=idInstitucionActual%>"){
-					datosGeneralesForm.direcciones.disabled="disabled";   
-					document.getElementById("correoElectronico").value 	= document.busquedaCensoModalForm.mail.value;
-					document.getElementById("telefono1").value 			= document.busquedaCensoModalForm.telefono.value;
-					document.getElementById("domicilio").value 			= document.busquedaCensoModalForm.direccion.value;
-					document.getElementById("codigoPostal").value 		= document.busquedaCensoModalForm.codPostal.value;
-					selPais(datosGeneralesForm.pais.value);	
-					if (datosGeneralesForm.pais.value != "" && datosGeneralesForm.pais.value != idEspana) {
-						datosGeneralesForm.poblacionExt.value=datosGeneralesForm.poblacionExt.value;
-					}else{
-						poblacionSeleccionada = document.getElementById("poblacion").value;
-						document.getElementById("provincia").onchange();
-						window.setTimeout("recargarComboHijo()",500,"Javascript");	
-						document.getElementById("poblacion").value = datosGeneralesForm.poblacion.value;		
-					}
-					document.getElementById("checkTipoDireccion_3").checked = "checked";
-		
-				}else{
-					limpiarDireccion();
-					datosGeneralesForm.idPersona.onchange();
-				}
-	
+		if(document.busquedaCensoModalForm.existeNIF.value != null && document.busquedaCensoModalForm.existeNIF.value == "S"){
+			if(confirm('El nº de identificación ya se encuentra registrado, Pulse "Aceptar" para recuperar y sustituir los datos actuales o "Cancelar" para modificarlo')) {
+				datosGeneralesForm.numIdentificacion.onchange();
 			}else{
-				alert(document.busquedaCensoModalForm.textoAlerta.value);
-				limpiarDireccion();
-				if(datosGeneralesForm.numIdentificacion.value != null && datosGeneralesForm.numIdentificacion.value != ""){
-					formatearDocumento();
-					if(datosGeneralesForm.idInstitucion.value == "<%=idInstitucionActual%>"){
-						datosGeneralesForm.idPersona.onchange();
-					}
-				}
-			}
-	
-			if(datosGeneralesForm.numIdentificacion.value != null && datosGeneralesForm.numIdentificacion.value != ""){			
-				datosGeneralesForm.tipoIdentificacion.disabled="disabled";
-				datosGeneralesForm.numIdentificacion.disabled="disabled";
-				datosGeneralesForm.idInstitucion.disabled="disabled";
-				datosGeneralesForm.colegiadoen.disabled="disabled";  
-				datosGeneralesForm.nColegiado.disabled="disabled";   
-				datosGeneralesForm.nombre.disabled="disabled";      
-				datosGeneralesForm.apellido1.disabled="disabled";   
-				datosGeneralesForm.apellido2.disabled="disabled"; 
+				//Aparecen los menus de abajo y se deja el NIF introducido
+				document.getElementById('idButtonGuardar').disabled=false;
+				document.getElementById("tdadicional").style.display="block";
+				document.getElementById("tddireccion").style.display="block";
+				datosGeneralesForm.sexo.disabled="";      
+				datosGeneralesForm.estadoCivil.disabled="";   
+				datosGeneralesForm.lugarNacimiento.disabled="";
+				datosGeneralesForm.fechaNacimiento.disabled="";
+				document.getElementById("iconoFecha").style.display=""; 
+				document.busquedaCensoModalForm.existeNIF.value = "";
 			}
 			
 		}else{
-			//No se ha encontrado esa persona
-			ponerIconoIdentPersona(false);
-			limpiarDireccion();
-			if(document.busquedaCensoModalForm.textoAlerta.value != null && document.busquedaCensoModalForm.textoAlerta.value != ""){
-				alert(document.busquedaCensoModalForm.textoAlerta.value);
+				
+			if(datosGeneralesForm.idPersona.value != null && datosGeneralesForm.idPersona.value != ""){ //EXISTE LA PERSONA
+				if(document.busquedaCensoModalForm.multiple.value != null && document.busquedaCensoModalForm.multiple.value != "S"){ //UNICO REGISTRO
+					ponerIconoIdentPersona(true);
+					formatearDocumento();
+				
+					//Datos direcciones
+					if(datosGeneralesForm.idInstitucion.value != "<%=idInstitucionActual%>"){
+						datosGeneralesForm.direcciones.disabled="disabled";   
+						document.getElementById("correoElectronico").value 	= document.busquedaCensoModalForm.mail.value;
+						document.getElementById("telefono1").value 			= document.busquedaCensoModalForm.telefono.value;
+						document.getElementById("domicilio").value 			= document.busquedaCensoModalForm.direccion.value;
+						document.getElementById("codigoPostal").value 		= document.busquedaCensoModalForm.codPostal.value;
+						selPais(datosGeneralesForm.pais.value);	
+						if (datosGeneralesForm.pais.value != "" && datosGeneralesForm.pais.value != idEspana){
+							datosGeneralesForm.poblacionExt.value=datosGeneralesForm.poblacionExt.value;
+							
+						}else{
+							poblacionSeleccionada = document.getElementById("poblacion").value;
+							document.getElementById("provincia").onchange();
+							window.setTimeout("recargarComboHijo()",500,"Javascript");	
+							document.getElementById("poblacion").value = datosGeneralesForm.poblacion.value;		
+						}
+						document.getElementById("checkTipoDireccion_3").checked = "checked";
+			
+					}else{
+						limpiarDireccion();
+						datosGeneralesForm.idPersona.onchange();
+					}
+			
+					if(datosGeneralesForm.numIdentificacion.value != null && datosGeneralesForm.numIdentificacion.value != ""){		
+						//SE DESHABILITAN LOS DATOS DE IDENTIFICACIÓN 
+						datosGeneralesForm.tipoIdentificacion.disabled="disabled";
+						datosGeneralesForm.numIdentificacion.disabled="disabled";
+						datosGeneralesForm.idInstitucion.disabled="disabled";
+						datosGeneralesForm.colegiadoen.disabled="disabled";  
+						datosGeneralesForm.nColegiado.disabled="disabled";   
+						datosGeneralesForm.nombre.disabled="disabled";      
+						datosGeneralesForm.apellido1.disabled="disabled";   
+						datosGeneralesForm.apellido2.disabled="disabled";
+					}
+	
+					//Aparecen los menus de abajo
+					document.getElementById('idButtonGuardar').disabled=false;
+					document.getElementById("tdadicional").style.display="block";
+					document.getElementById("tddireccion").style.display="block";
+	
+					if(datosGeneralesForm.numIdentificacion.value != null && datosGeneralesForm.numIdentificacion.value != ""){	
+						// SE DESHABILITAN LOS DATOS DE INFORMACIÓN ADICIONAL
+						datosGeneralesForm.sexo.disabled="disabled";      
+						datosGeneralesForm.estadoCivil.disabled="disabled";   
+						datosGeneralesForm.lugarNacimiento.disabled="disabled";
+						datosGeneralesForm.fechaNacimiento.disabled="disabled";
+						document.getElementById("iconoFecha").style.display="none"; 
+					}
+					
+				}else{ //SE ABRE VENTANA MODAL AL SER BUSQUEDA MULTIPLE
+					limpiarDireccion();
+					buscarDesignados ();
+				}
+	
+			}else{ //NO EXISTE LA PERSONA
+				ponerIconoIdentPersona(false);
+				limpiarDireccion();
+				if(document.busquedaCensoModalForm.textoAlerta.value != null && document.busquedaCensoModalForm.textoAlerta.value != ""){
+					alert(document.busquedaCensoModalForm.textoAlerta.value);
+				}
+	
+				if(datosGeneralesForm.numIdentificacion.value != null && datosGeneralesForm.numIdentificacion.value != ""){
+					//Aparecen los menus de abajo
+					document.getElementById('idButtonGuardar').disabled=false;
+					document.getElementById("tdadicional").style.display="block";
+					document.getElementById("tddireccion").style.display="block";
+	
+				}else{
+					limpiarCliente();
+				}							
 			}
-
+	
+			//Reseteamos el texto de alerta
+			document.busquedaCensoModalForm.textoAlerta.value="";
 		}
-
-		//Reseteamos el texto de alerta
-		document.busquedaCensoModalForm.textoAlerta.value="";
 	}
 
-	function ponerIconoIdentPersona (encontrado)
-	{
+	function ponerIconoIdentPersona (encontrado){
 		if (encontrado) {
 			document.getElementById("info_existe").src = "/SIGA/html/imagenes/encontrado.gif";
 			document.getElementById("info_existe").alt = "<siga:Idioma key='gratuita.volantesExpres.mensaje.esYaExistentePersonaJG'/>";
@@ -765,7 +819,7 @@
 
 	</head>
 
-	<body onload="comprobarTelefonoAsterico();selPaisInicio();" class="tablaCentralCampos">
+	<body onload="comprobarTelefonoAsterico();selPaisInicio();inicio();" class="tablaCentralCampos">
 
 <%
 			tipoIdentificacionSel.add(""+ClsConstants.TIPO_IDENTIFICACION_NIF);
@@ -820,7 +874,7 @@
 						<siga:Idioma key="pys.solicitudCompra.literal.colegiadoen"/>&nbsp;
 					</td>
 					<td>
-						<siga:ComboBD nombre = "colegiadoen" tipo="cmbColegiosAbreviados"  clase="<%=estiloCaja %>" estilo='width:160px;' obligatorio="true" readonly="<%=readonly %>" />						
+						<siga:ComboBD nombre = "colegiadoen" tipo="cmbColegiosAbreviados"  clase="<%=estiloCaja %>" estilo='width:160px;' obligatorio="true" readonly="<%=readonly %>" elementoSel="<%=institucionSel%>"/>						
 					</td>
 					<td class="labelText">
 						<siga:Idioma key="censo.busquedaClientes.literal.nColegiado"/>&nbsp;
@@ -833,8 +887,6 @@
 					<td>
 						<!-- Boton para buscar un Colegiado -->
 						<input type="button" class="button" id="idButton" name="buscarColegiado"  value='<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.buscar"/>'  onClick="buscarDesignados();">
-						&nbsp;
-						<input type="button" class="button" id="idButton" name="limpiarColegiado" value='<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.limpiar"/>' onClick="limpiarCliente();">
 					</td>
 				</tr>				
 				<tr>
@@ -866,7 +918,7 @@
 
 	<!-- FILA 3: Informacion Adicional -->
 	<tr>
-		<td>
+		<td id ="tdadicional" style="display:none">
 			<siga:ConjCampos leyenda="censo.general.literal.informacionAdicional">
 				<table class="tablaCampos" align="left">
 					<tr>
@@ -877,7 +929,7 @@
 						<td>
 							<html:text name="datosGeneralesForm" property="fechaNacimiento" styleClass="<%=estiloCaja %>" readonly="true" style='width:80px;' value="<%=fechaNacimiento %>" >
 							</html:text>
-							<a href='javascript://'onClick="return showCalendarGeneral(fechaNacimiento);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+							<a id="iconoFecha" href='javascript://'onClick="return showCalendarGeneral(fechaNacimiento);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
 						</td>
 					
 						<!-- LUGAR NACIMIENTO -->
@@ -936,7 +988,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td>
+		<td id ="tddireccion" style="display:none">
 			<siga:ConjCampos leyenda="censo.consultaDirecciones.cabecera">
 				<table class="tablaCampos" align="left" >	
 
@@ -1151,6 +1203,7 @@
 	<input type="hidden" name="modo" value="abrirBusquedaCensoModal">
 	<input type="hidden" name="clientes"	value="1">
 	<input type="hidden" name="permitirAniadirNuevo" value="S">
+	<html:hidden  name="busquedaCensoModalForm" property="multiple"/>
 	<html:hidden  name="busquedaCensoModalForm" property="textoAlerta"/>
 	<html:hidden  name="busquedaCensoModalForm" property="nombre"/>
 	<html:hidden  name="busquedaCensoModalForm" property="apellido1"/>
@@ -1179,7 +1232,9 @@
 	<html:hidden  name="busquedaCensoModalForm" property="idDireccion"/>
 	<html:hidden  name="busquedaCensoModalForm" property="fechaNacimiento"/>
 	<html:hidden  name="busquedaCensoModalForm" property="lugarNacimiento"/>
+	<html:hidden  name="busquedaCensoModalForm" property="estadoCivil"/>
 	<html:hidden  name="busquedaCensoModalForm" property="tratamiento"/>
+	<html:hidden  name="busquedaCensoModalForm" property="existeNIF"/>
 </html:form>
 
 <ajax:updateSelectFromField
@@ -1195,8 +1250,8 @@
 
 <ajax:updateFieldFromSelect
 	baseUrl="/SIGA/CEN_BusquedaCensoModal.do?modo=getAjaxBusquedaNIF"
-	source="numIdentificacion" target="textoAlerta,idPersona,colegiadoen,nColegiado,apellido1,apellido2,nombre,numIdentificacion,idInstitucion,fax1,mail,telefono,poblacion,poblacionExt,provincia,pais,direccion,codPostal,sexo,fechaNacimiento,lugarNacimiento,tratamiento"
-	parameters="tipoIdentificacion={tipoIdentificacion},numIdentificacion={numIdentificacion},colegiadoen={colegiadoen},nColegiado={nColegiado},apellido1={apellido1},apellido2={apellido2},nombre={nombre}"
+	source="numIdentificacion" target="existeNIF,multiple,textoAlerta,idPersona,colegiadoen,nColegiado,apellido1,apellido2,nombre,numIdentificacion,idInstitucion,fax1,mail,telefono,poblacion,poblacionExt,provincia,pais,direccion,codPostal,sexo,fechaNacimiento,lugarNacimiento,estadoCivil,tratamiento"
+	parameters="tipoIdentificacion={tipoIdentificacion},numIdentificacion={numIdentificacion},colegiadoen={colegiadoen},nColegiado={nColegiado},apellido1={apellido1},apellido2={apellido2},nombre={nombre},existeNIF={existeNIF}"
 	postFunction="postAccionBusquedaNIF"
 	preFunction="preAccionBusquedaNIF" 
 />
@@ -1238,7 +1293,7 @@
 	
 %>
 
-	<siga:ConjBotonesAccion botones="<%=botonesAccion %>" modo="<%=modo%>" idBoton="3"  idPersonaBA="<%=idPersona %>" idInstitucionBA="<%=idInstitucion%>" clase="botonesDetalle"  />
+	<siga:ConjBotonesAccion botones="<%=botonesAccion %>" modo="<%=modo%>" idBoton="1#2" idPersonaBA="<%=idPersona %>" idInstitucionBA="<%=idInstitucion%>" clase="botonesDetalle" />
 
 	<!-- FIN: BOTONES REGISTRO -->
 
@@ -1246,23 +1301,18 @@
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
-var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
+	var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
+
 		//Asociada al boton Restablecer
 		function accionRestablecer() {
-			datosGeneralesForm.idInstitucion.disabled="";
-			datosGeneralesForm.tipoIdentificacion.disabled="";
-			datosGeneralesForm.numIdentificacion.disabled="";
-			datosGeneralesForm.nombre.disabled="";      
-			datosGeneralesForm.apellido1.disabled="";   
-			datosGeneralesForm.apellido2.disabled=""; 
-			datosGeneralesForm.tratamiento.disabled="";
-			datosGeneralesForm.colegiadoen.disabled="";  
-			datosGeneralesForm.nColegiado.disabled="";   
-			datosGeneralesForm.sexo.disabled=="";   
-			datosGeneralesForm.direcciones.disabled="disabled";
-			ponerIconoIdentPersona(false);
-			limpiarDireccion();
-			document.forms[0].reset();	
+			limpiarCliente();   
+
+			//NUEVAS MEJORAS
+			document.getElementById("iconoFecha").style.display="block";
+			document.getElementById('idButtonGuardar').disabled=true;
+			document.getElementById("tdadicional").style.display="none";
+			document.getElementById("tddireccion").style.display="none";
+			document.getElementById("textomod").style.display="none";
 		}
 
 	
@@ -1393,7 +1443,7 @@ var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
 					}else{
 						document.datosGeneralesForm.preferente.value = preferencia;
 						document.datosGeneralesForm.idTipoDireccion.value = tipoDir;
-						document.datosGeneralesForm.modo.value = "validarNoColegiado";
+						document.datosGeneralesForm.modo.value = "validarNoColegiadoArt27";
 						document.datosGeneralesForm.submit();
 					}
 				}else{
@@ -1407,9 +1457,8 @@ var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
 		}
 		
 		function traspasaDatos(resultado){			
-			document.datosGeneralesForm.nombre.value=resultado[4];
-			document.datosGeneralesForm.apellido1.value=resultado[5];
-			document.datosGeneralesForm.apellido2.value=resultado[6];		
+			document.busquedaCensoModalForm.existeNIF.value = resultado[0];
+			postAccionBusquedaNIF();		
 		}
 		
 		function traspasaDatosCliente(resultado){			
@@ -1567,6 +1616,7 @@ var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
 			document.datosGeneralesForm.apellido2.onkeypress = submitConTeclaEnter;
 			document.datosGeneralesForm.apellido1.onkeypress = submitConTeclaEnter;
 			document.datosGeneralesForm.nombre.onkeypress = submitConTeclaEnter;
+			document.datosGeneralesForm.numIdentificacion.onkeypress = submitConTeclaEnter;
 		}
 		
 		function submitConTeclaEnter(){			

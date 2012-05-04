@@ -57,6 +57,8 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 		try{
 			if((miForm == null)||(miForm.getModo()==null)||(miForm.getModo().equals(""))){
 				return mapping.findForward(this.abrir(mapping, miForm, request, response));
+			} else if((miForm == null)||(miForm.getModo()==null)||(miForm.getModo().equals("sustituirLetradoPorArt27"))){
+				return mapping.findForward(this.sustituirLetradoPorArt27(mapping, miForm, request, response));				
 			}else return super.executeInternal(mapping, formulario, request, response);
 		}
 		catch (SIGAException es) { 
@@ -301,6 +303,7 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 				" dp."+ ScsDesignasLetradoBean.C_ANIO+","+
 				" dp."+ ScsDesignasLetradoBean.C_NUMERO+","+ 
 				" dp."+ ScsDesignasLetradoBean.C_IDPERSONA+","+
+				" dp."+ScsDesignasLetradoBean.C_IDINSTITUCIONORIGEN+","+				
 				" dp."+ ScsDesignasLetradoBean.C_FECHADESIGNA+
 				" from "+ 
 				ScsDesignasLetradoBean.T_NOMBRETABLA+" dp, "+
@@ -579,6 +582,69 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 		return exitoModal("messages.updated.success",request);
 	}
 
+	
+	/** 
+	 *  Funcion que atiende la accion modificar
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions,SIGAException   En cualquier caso de error
+	 */
+	protected String sustituirLetradoPorArt27(ActionMapping mapping, MasterForm formulario,
+			HttpServletRequest request, HttpServletResponse response)
+			throws ClsExceptions,SIGAException  {
+		
+		HttpSession ses = request.getSession();
+		UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
+		CambiosLetradosDesignasForm miform = (CambiosLetradosDesignasForm)formulario;
+		ScsDesignasLetradoAdm designaLetradoAdm = new ScsDesignasLetradoAdm(usr);
+		UserTransaction tx=null;
+		
+		try{
+			String idInstitucion = usr.getLocation();
+			String anio = miform.getAnio();
+			String numero = miform.getNumero();
+			String idTurno = miform.getIdTurno();
+			String idPersona = miform.getIdPersona();
+			String idInstitucionOrigen = miform.getnInstitucionOrigen();
+			String fCambio = miform.getAplFechaDesigna();
 
+			tx=usr.getTransaction();
+			tx.begin();
+			
+			// Elminando designacion letrado actual
+			String[] claves = {	ScsDesignasLetradoBean.C_IDINSTITUCION,	ScsDesignasLetradoBean.C_IDTURNO, ScsDesignasLetradoBean.C_ANIO, ScsDesignasLetradoBean.C_NUMERO};
+			Hashtable<String, Object> designaActual = new Hashtable<String, Object>();
+			designaActual.put(ScsDesignasLetradoBean.C_IDINSTITUCION, idInstitucion);
+			designaActual.put(ScsDesignasLetradoBean.C_IDTURNO, idTurno);
+			designaActual.put(ScsDesignasLetradoBean.C_NUMERO, numero);
+			designaActual.put(ScsDesignasLetradoBean.C_ANIO, anio);		
+			if (!designaLetradoAdm.deleteDirect(designaActual, claves))
+				throw new ClsExceptions(designaLetradoAdm.getError());			
+			
+			// Insertando designacion letrado nuevo
+			Hashtable<String, Object> designaNueva = new Hashtable<String, Object>();
+			designaNueva.put(ScsDesignasLetradoBean.C_IDINSTITUCION, idInstitucion);
+			designaNueva.put(ScsDesignasLetradoBean.C_IDTURNO, idTurno);
+			designaNueva.put(ScsDesignasLetradoBean.C_NUMERO, numero);
+			designaNueva.put(ScsDesignasLetradoBean.C_ANIO, anio);
+			designaNueva.put(ScsDesignasLetradoBean.C_IDPERSONA, idPersona);
+			designaNueva.put(ScsDesignasLetradoBean.C_FECHADESIGNA, fCambio);
+			designaNueva.put(ScsDesignasLetradoBean.C_LETRADODELTURNO, ClsConstants.DB_FALSE);
+			designaNueva.put(ScsDesignasLetradoBean.C_MANUAL, ClsConstants.DB_TRUE);
+			designaNueva.put(ScsDesignasLetradoBean.C_IDINSTITUCIONORIGEN, idInstitucionOrigen);
+			if (!designaLetradoAdm.insert(designaNueva))
+				throw new ClsExceptions(designaLetradoAdm.getError());
+			
+			tx.commit();
+			
+		}catch(Exception e){
+			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
+		}
+		
+		return this.abrir(mapping, miform, request, response);//exitoModal("messages.updated.success",request);
+	}	
 
 }

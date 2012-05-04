@@ -115,6 +115,8 @@ public class DatosGeneralesAction extends MasterAction {
 				mapDestino = altaNoColegiado(mapping, miForm, request, response);
 			} else if (accion.equalsIgnoreCase("validarNoColegiado")){
 				mapDestino = validarNoColegiado(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("validarNoColegiadoArt27")){
+				mapDestino = validarNoColegiadoArt27(mapping, miForm, request, response);				
 			} else if (accion.equalsIgnoreCase("insertarNoColegiado")){
 				mapDestino = insertarNoColegiado(mapping, miForm, request, response);
 			} else if (accion.equalsIgnoreCase("modificarSociedad")){
@@ -450,6 +452,71 @@ public class DatosGeneralesAction extends MasterAction {
    	   }
 		return forward;
 	}
+	
+	protected String validarNoColegiadoArt27 (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
+	{
+		String forward ="exception";
+		try {
+			// Obtengo los datos del formulario
+			DatosGeneralesForm miForm = (DatosGeneralesForm)formulario;
+			UsrBean usr = this.getUserBean(request);
+			
+			CenPersonaAdm adminPer=new CenPersonaAdm(usr);
+    		CenPersonaBean cenPersona = adminPer.getPersona(miForm.getNumIdentificacion());
+    		if(cenPersona!=null){
+    			boolean isNombre = ComodinBusquedas.sustituirVocales(cenPersona.getNombre().toUpperCase().trim()).equalsIgnoreCase(ComodinBusquedas.sustituirVocales(miForm.getNombre().toUpperCase().trim())); 
+    			boolean isApellido1 =ComodinBusquedas.sustituirVocales(cenPersona.getApellido1().toUpperCase().trim()).equalsIgnoreCase(ComodinBusquedas.sustituirVocales(miForm.getApellido1().toUpperCase().trim()));
+    			boolean isApellido2 =ComodinBusquedas.sustituirVocales(cenPersona.getApellido2().toUpperCase().trim()).equalsIgnoreCase(ComodinBusquedas.sustituirVocales(miForm.getApellido2().toUpperCase().trim()));
+    			if (!isNombre || ! isApellido1 ||!isApellido2){
+    				miForm.setAccion("messages.fichaCliente.mostrarPersonaExistente");
+    				forward = "validarNoColegiadoArt27";
+   				}else{
+   					CenClienteAdm clienteAdm = new CenClienteAdm(usr);
+   					CenClienteBean cli = clienteAdm.existeCliente(cenPersona.getIdPersona(),new Integer(usr.getLocation()));
+   					if (cli==null) {
+   						forward =  insertarNoColegiado(mapping, formulario, request, response);
+   					}else{
+   						//Comprobamos si el cliente que saca esta colegiado para coger su numero
+   						CenColegiadoAdm admColegiado = new CenColegiadoAdm(usr);
+   						CenColegiadoBean colegiado = admColegiado.getDatosColegiales(cli.getIdPersona(), cli.getIdInstitucion());
+   						if(colegiado!=null){
+   							if(colegiado.getNComunitario()!=null && !colegiado.getNComunitario().equals(""))
+   								miForm.setNumColegiado(colegiado.getNComunitario());
+   							else
+   								miForm.setNumColegiado(colegiado.getNColegiado());
+   						}
+   							
+   						
+   						miForm.setAccion("messages.fichaCliente.clienteExiste");
+   						miForm.setIdInstitucion(cli.getIdInstitucion().toString());
+
+   						forward = "validarNoColegiado";
+   					}	
+   					
+   				}
+    			
+    			miForm.setIdPersona(cenPersona.getIdPersona().toString());
+    			miForm.setNombre(cenPersona.getNombre());
+				miForm.setApellido1(cenPersona.getApellido1());
+				miForm.setApellido2(cenPersona.getApellido2());
+    			
+				
+    			
+    			
+    				
+    		}else{
+    			forward =  insertarNoColegiado(mapping, formulario, request, response);
+    			
+    		}
+			
+			
+
+	   } catch (Exception e) {
+		   throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
+   	   }
+		return forward;
+	}
+	
 
 	private void mandarDatosColegiado (String idInstitucion, String idPersona, DatosGeneralesForm miform, HttpServletRequest request) throws SIGAException 
 	{

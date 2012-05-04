@@ -4965,7 +4965,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			Hashtable codigos = new Hashtable();
 		    codigos.put(new Integer(1),idPersona.toString());
     		codigos.put(new Integer(2),idInstitucion.toString());
-		    Vector v = this.selectBind(" WHERE IDPERSONA=:1" + " AND IDINSTITUCION=:2",codigos);
+		    Vector v = this.selectBind(" WHERE IDPERSONA= :1" + " AND IDINSTITUCION<> :2",codigos);
 			if (v!=null && v.size()>0) {
 				salida = (CenClienteBean) v.get(0);
 			}

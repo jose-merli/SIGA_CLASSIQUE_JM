@@ -16,6 +16,7 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.util.Vector"%>
+<%@ page import="java.util.Hashtable"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
@@ -27,6 +28,13 @@
 	String boton="";
 	String modo = (String) ses.getAttribute("Modo");
 	boolean botonNuevo = (Boolean)request.getSession().getAttribute("botonNuevo");
+	Hashtable designaActual = (Hashtable)obj.get(0);
+	String anio="",numero="", idTurno="", idInstitucion="", fechaDesigna = "";
+	anio = (String)designaActual.get("ANIO");
+	numero = (String)designaActual.get("NUMERO");
+	idTurno = (String)designaActual.get("IDTURNO");
+	fechaDesigna = (String)designaActual.get("FECHADESIGNA");
+	idInstitucion = (String)designaActual.get("IDINSTITUCION");
 
 %>	
 
@@ -52,6 +60,18 @@
 	<html:form action="JGR_CambiosLetradosDesigna.do" method="POST" target="mainPestanas" style="display:none">
 		<html:hidden property = "modo" value = ""/>
 		<html:hidden property = "actionModal" value = ""/>
+		<html:hidden property = "anio" value='<%=anio%>'/>
+		<html:hidden property = "numero" value='<%=numero%>'/>
+		<html:hidden property = "idTurno" value='<%=idTurno%>'/>
+		<html:hidden property = "idInstitucion" value='<%=idInstitucion%>'/>
+		<html:hidden property = "fechaDesigna" value='<%=GstDate.getFormatedDateShort("",fechaDesigna)%>'/>
+		<html:hidden property = "idPersona"/>
+		<html:hidden property = "nInstitucionOrigen"/>
+	</html:form>	
+	
+	<html:form  action="/CEN_DatosGenerales" method="POST" target="submitArea"  enctype="multipart/form-data">
+			<html:hidden  name="datosGeneralesForm" property="modo"/>
+			<html:hidden property = "actionModal" value = ""/>
 	</html:form>	
 
 	<iframe align="center" src="<%=app%>/html/jsp/gratuita/listarCambiosLetradosDesigna.jsp"
@@ -64,11 +84,7 @@
 					class="frameGeneral">
 	</iframe>
 	
-	<%if(botonNuevo){%>
-		<siga:ConjBotonesAccion botones="N,V" clase="botonesDetalle" modo="<%=modo%>" />
-	<%}else{%>
-		<siga:ConjBotonesAccion botones="V" clase="botonesDetalle" modo="<%=modo%>" />
-	<%}%>	
+	<siga:ConjBotonesAccion botones="N,V" clase="botonesDetalle" modo="<%=modo%>" />
 	
 <!-- INICIO: SUBMIT AREA -->
 
@@ -87,9 +103,22 @@
 		function accionNuevo() 
 		{	
 			document.forms[0].target="submitArea";
-			document.forms[0].modo.value = "nuevo";
-			var resultado=ventaModalGeneral(document.forms[0].name,"M");
-			if(resultado=='MODIFICADO') buscar();
+			<% if(botonNuevo){ %>
+				document.forms[0].modo.value = "nuevo";
+				var resultado=ventaModalGeneral(document.forms[0].name,"M");
+				if(resultado=='MODIFICADO') 
+					buscar();
+			<% } else { %>
+			datosGeneralesForm.modo.value = "designarArt27";
+				var resultado=ventaModalGeneral(datosGeneralesForm.name,"G");
+				if(resultado!=null && resultado[0] != null && resultado[0] != ""){
+					document.forms[0].idPersona.value=resultado[0];
+					document.forms[0].nInstitucionOrigen.value=resultado[5];
+					modificar();// Sustituir el letrado
+				}	
+			<% } %>
+
+
 		}
 		
 		function buscar()
@@ -98,6 +127,13 @@
 			document.forms[0].modo.value="";
 			document.forms[0].submit();
 		}
+
+		function modificar()
+		{
+			document.forms[0].target="mainPestanas";
+			document.forms[0].modo.value="sustituirLetradoPorArt27";
+			document.forms[0].submit();
+		}		
 		
 		function refrescarLocal()
 		{

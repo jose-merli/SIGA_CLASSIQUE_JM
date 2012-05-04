@@ -56,7 +56,10 @@ import com.siga.general.MasterForm;
 		String idDireccion;
 		String fechaNacimiento;
 		String lugarNacimiento;
+		String estadoCivil;
 		String textoAlerta;
+		String multiple;
+		String existeNIF;
 		
 		public String getAccion() {
 			return accion;
@@ -261,6 +264,24 @@ import com.siga.general.MasterForm;
 		}
 		public void setTextoAlerta(String textoAlerta) {
 			this.textoAlerta = textoAlerta;
+		}
+		public String getMultiple() {
+			return multiple;
+		}
+		public void setMultiple(String multiple) {
+			this.multiple = multiple;
+		}
+		public String getEstadoCivil() {
+			return estadoCivil;
+		}
+		public void setEstadoCivil(String estadoCivil) {
+			this.estadoCivil = estadoCivil;
+		}
+		public String getExisteNIF() {
+			return existeNIF;
+		}
+		public void setExisteNIF(String existeNIF) {
+			this.existeNIF = existeNIF;
 		}
 		public void reset(){
 			

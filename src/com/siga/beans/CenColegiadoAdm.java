@@ -1494,4 +1494,31 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 		}
 		return colegiaciones;
 	}
+	
+	public int getNumeroColegiaciones (Long idPersona)throws ClsExceptions{
+		RowsContainer rc = null;
+		int resultado = 0;
+		
+		try { 
+			rc = new RowsContainer(); 
+			String sql = "";
+			Hashtable codigos = new Hashtable();
+            codigos.put(new Integer(1),idPersona);
+            sql = " SELECT COUNT(" + CenColegiadoBean.C_IDPERSONA	+ ") as COLEGIACIONES" +
+				  " FROM " + CenColegiadoBean.T_NOMBRETABLA +
+				  " WHERE " + CenColegiadoBean.C_IDPERSONA + " = :1 ";
+			
+			if (rc.findBind(sql,codigos)) {
+				if (rc.size() >= 1) {
+					Row fila = (Row) rc.get(0);					
+					Hashtable prueba = fila.getRow();
+	            	resultado = Integer.parseInt((String)prueba.get("COLEGIACIONES"));
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al recueperar los datos");
+		}
+		
+		return resultado;
+	}
 }
