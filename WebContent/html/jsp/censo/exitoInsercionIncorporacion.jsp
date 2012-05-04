@@ -33,14 +33,22 @@
 			var type = '<siga:Idioma key="<%=mensaje%>"/>';
 			alert(type);
 		<%  } %>
-			var aux = new Array();
-			aux[0]="<%=idPersona %>";
-			aux[1]="<%=idInstitucion %>";
-			top.cierraConParametros(aux);	
+			document.busquedaClientesForm.action=document.busquedaClientesForm.action+"?editarNColegiado=1";
+			document.busquedaClientesForm.idPersona.value="<%=idPersona %>";
+			document.busquedaClientesForm.idInstitucion.value="<%=idInstitucion %>";
+			document.busquedaClientesForm.modo.value="recargarEditar";
+			document.busquedaClientesForm.submit();
 	 }
 	</script>
 </head>
 
 <body onload="reloadPage();">
+
+	<html:form  action="/CEN_BusquedaClientes.do" method="POST" target="mainWorkArea" style="display:none">
+	<html:hidden  name="busquedaClientesForm" property="modo"/>
+	<input type="hidden"  name="idPersona" value="">
+	<input type="hidden"  name="idInstitucion" value="">
+	</html:form>
+	
 </body>
 </html:html>

@@ -1,9 +1,7 @@
 package com.siga.censo.service.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -20,13 +18,16 @@ import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
+import com.siga.beans.CenSolicitudIncorporacionAdm;
 import com.siga.beans.CenSolicitudIncorporacionBean;
 import com.siga.beans.CenSolicitudMutualidadAdm;
 import com.siga.beans.CenSolicitudMutualidadBean;
+import com.siga.beans.GenCatalogosWSAdm;
 import com.siga.censo.form.MutualidadForm;
 import com.siga.censo.service.MutualidadService;
 import com.siga.comun.vos.ValueKeyVO;
 import com.siga.general.SIGAException;
+import com.siga.ws.alterMutua.AlterMutuaHelper;
 import com.siga.ws.mutualidad.MutualidadWSClient;
 import com.siga.ws.mutualidad.RespuestaMutualidad;
 
@@ -441,5 +442,58 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		return null;
 	}
 
+	public MutualidadForm getDatosSolicitudIncorporacion(MutualidadForm form, String idSolicitud, UsrBean usr) throws Exception {
+		CenSolicitudIncorporacionAdm solIncAdm = new CenSolicitudIncorporacionAdm(usr);
+		GenCatalogosWSAdm catAdm = new GenCatalogosWSAdm(usr);
+		Hashtable hash = new Hashtable();
+		hash.put(CenSolicitudIncorporacionBean.C_IDSOLICITUD, idSolicitud);
+		Vector v = solIncAdm.selectByPK(hash);
+		if(v.size()==1){
+			CenSolicitudIncorporacionBean bean = (CenSolicitudIncorporacionBean)v.get(0);
+			form.setIdInstitucion(bean.getIdInstitucion().toString());
+			form.setTipoIdentificacion(bean.getIdTipoIdentificacion().toString());
+			form.setIdTipoIdentificacion(bean.getIdTipoIdentificacion().toString());
+			form.setNumeroIdentificacion(bean.getNumeroIdentificador()!=null?bean.getNumeroIdentificador().toString():"");
+			form.setSexo(bean.getSexo()); 
+			form.setTratamiento(bean.getIdTratamiento().toString()); 
+			form.setNombre(bean.getNombre());
+			form.setApellido1(bean.getApellido1());
+			form.setApellido2(bean.getApellido2());
+			form.setNacionalidad(bean.getNaturalDe()); 
+			form.setFechaNacimiento(UtilidadesString.formatoFecha( bean.getFechaNacimiento(), ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH)); 
+			form.setEstadoCivil(bean.getIdEstadoCivil()!=null?bean.getIdEstadoCivil().toString():"");
+			form.setIdPais(bean.getIdPais());
+			form.setIdProvincia(bean.getIdProvincia());
+			form.setIdPoblacion(bean.getIdPoblacion());
+			form.setDomicilio(bean.getDomicilio());
+			form.setCodigoPostal(bean.getCodigoPostal());
+			form.setTelef1(bean.getTelefono1());
+			form.setTelef2(bean.getTelefono2());
+			form.setMovil(bean.getMovil());
+			form.setFax1(bean.getFax1());
+			form.setFax2(bean.getFax1());
+			form.setCorreoElectronico(bean.getCorreoElectronico());
+			form.setCodigoSucursal(bean.getCodigoSucursal()); 
+			form.setDigitoControl(bean.getDigitoControl());
+			form.setNumeroCuenta(bean.getNumeroCuenta());
+			form.setCboCodigo(bean.getCbo_Codigo());
+			form.setPoblacionExtranjera(bean.getPoblacionExtranjera()); 
+			form.setIdSexo(bean.getSexo());
+			form.setIdTratamiento(bean.getIdTratamiento()!=null?bean.getIdTratamiento().toString():"");
+			form.setIdEstadoCivil(bean.getIdEstadoCivil()!=null?bean.getIdEstadoCivil().toString():"");
+			form.setIdSolicitudIncorporacion(bean.getIdSolicitud().toString());
+			
+			form.setTipoIdentificacion(catAdm.getValor(AlterMutuaHelper.CATALOGO, AlterMutuaHelper.CONJUNTO_TIPOIDENTIFICADOR, bean.getIdTipoIdentificacion().toString()));
+			form.setSexo(catAdm.getValor(AlterMutuaHelper.CATALOGO, AlterMutuaHelper.CONJUNTO_SEXO, bean.getSexo()));
+			form.setEstadoCivil(catAdm.getValor(AlterMutuaHelper.CATALOGO, AlterMutuaHelper.CONJUNTO_ESTADOCIVIL, form.getEstadoCivil()));
+		}
+		return form;
+	}
+
+	public MutualidadForm setMutualidadFormDefecto(MutualidadForm mutualidadForm)
+			throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

@@ -187,6 +187,7 @@
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/jquery.js" type="text/javascript"></script>
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -571,14 +572,14 @@
 
 </head>
 
-<body  class="tablaCentralCampos" onLoad="cargaPais(<%=datosPersonales.getIdPais() %>);cargarChecksCuenta();comprobarTipoIdent();">
+<body  class="tablaCentralCampos" onLoad="cargaPais(<%=datosPersonales.getIdPais() %>);cargarChecksCuenta();comprobarTipoIdent();ajusteAlto('divDocumentoAPresentar');">
 
 
 <bean:define id="isPosibilidadSolicitudAlta" name="isPosibilidadSolicitudAlta"  scope="request" />
 <bean:define id="mostrarSolicitudAlta" name="mostrarSolicitudAlta"  scope="request" />
 <bean:define id="motivoSolicitudAlta" name="motivoSolicitudAlta"  scope="request" />
 
-	<html:form action="/CEN_SolicitudesIncorporacion.do" method="POST">
+	<html:form action="/CEN_MantenimientoSolicitudesIncorporacion.do" method="POST" target="mainWorkArea">
 	
 	
 	<html:hidden property="idSolicitudPlanProfesional"/>
@@ -611,7 +612,7 @@
 		</td>
 	</tr>
 	</table>
-<div style="height:600px; overflow-y: scroll">
+<div>
 	<siga:ConjCampos>
 		<center>
 		<table>
@@ -796,7 +797,7 @@
 			<%if(readonly && !esEspana){%>
 				<td colspan="2" class="labelTextValor"><%=provincia%></td>
 			<%}else{%>
-				<td colspan="2"><siga:ComboBD nombre="provincia" tipo="provincia" clase="<%=estiloCombo%>" elementoSel="<%=selProvincia %>" readOnly="<%=sreadonly%>" obligatorio="true" accion="Hijo:poblacion"/></td>
+				<td colspan="2"><siga:ComboBD nombre="provincia" tipo="provincia" clase="<%=estiloCombo%>" elementoSel="<%=selProvincia %>" readOnly="<%=sreadonly%>" obligatorio="true" accion="Hijo:poblacion" pestana="true"/></td>
 			<%}%>
 		</tr>
 		<tr>
@@ -911,10 +912,13 @@
 		
 			<tr>
 				<td class="labelText" >
+				<html:button property="idButton" onclick="return accionSolicitarAltaAlterMutua();" styleClass="button">
+								<siga:Idioma key="general.boton.solicitarCompra" />
+							</html:button>
 				<siga:Idioma key="censo.SolicitudIncorporacionDatos.mutualidad.literal.planProfesional"/>
 				</td>
 				<c:choose>
-					<c:when test="${SolicitudIncorporacionForm.idSolicitudAceptadaPlanProfesional==null||SolicitudIncorporacionForm.idSolicitudAceptadaPlanProfesional==''}">
+					<c:when test="${SolicitudIncorporacionForm.idSolicitudPlanProfesional==null||SolicitudIncorporacionForm.idSolicitudPlanProfesional==''}">
 						<td id="tdBotonSolicitudPlanProfesional" >
 						<%if(modoAnterior.equalsIgnoreCase("Editar")){ %>
 							<html:button property="idButton" onclick="return accionSolicitarAltaMutualidad('P');" styleClass="button">
@@ -926,18 +930,9 @@
 							</html:button>
 						<%} %>
 						</td>
-						<c:choose>
-						<c:when test="${SolicitudIncorporacionForm.idSolicitudPlanProfesional!=null&&SolicitudIncorporacionForm.idSolicitudAceptadaPlanProfesional==''}">
-						<td colspan="4" class="labelTextValor" style="color:red;">
-							<siga:Idioma key="censo.mutualidad.literal.errorPrevio"/>
-						</td>
-						</c:when>
-						<c:otherwise>
 						<td id="tdTextoNSolicitudPlanProfesional" style="display:none" class="labelText" >Nº&nbsp;Solicitud:</td>
 						<td id="tdIdSolicitudPlanProfesional" class="labelTextValor">&nbsp;</td> 
-						<td id="tdEstadoSolicitudPlanProfesional" class="labelTextValor" style="color:blue;"></td>
-						</c:otherwise>
-						</c:choose>
+						<td id="tdEstadoSolicitudPlanProfesional" class="labelTextValor" style="color:blue;">&nbsp;</td>
 						<td id="tdBotonEstadoSolicitudPlanProfesional" style="display:none" > 
 							<html:button property="idButton" onclick="return accionComprobarEstadoMutualidad('P');" styleClass="button">Comprobar Estado</html:button>
 						</td>
@@ -946,7 +941,16 @@
 					<c:otherwise>
 						<td class="labelText" >Nº&nbsp;Solicitud:</td>
 						<td class="labelTextValor">
+						
+						<c:choose>
+						<c:when test="${SolicitudIncorporacionForm.idSolicitudAceptadaPlanProfesional!=null}">
 							<c:out value="${SolicitudIncorporacionForm.idSolicitudAceptadaPlanProfesional}" />
+						</c:when>
+						<c:otherwise>
+							<c:out value="${SolicitudIncorporacionForm.idSolicitudPlanProfesional}" />
+						</c:otherwise>
+						</c:choose>
+						
 						</td>
 						<td id="tdEstadoSolicitudPlanProfesional" class="labelTextValor" style="color:blue;"><c:out value="${SolicitudIncorporacionForm.estadoSolicitudPlanProfesional}" /></td>
 						<td id="tdBotonEstadoSolicitudPlanProfesional">
@@ -961,7 +965,7 @@
 				<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacionDatos.mutualidad.literal.seguroAccidentes"/></td>
 				
 				<c:choose>
-					<c:when test="${SolicitudIncorporacionForm.idSolicitudAceptadaSeguroUniversal==null||SolicitudIncorporacionForm.idSolicitudAceptadaSeguroUniversal==''}">
+					<c:when test="${SolicitudIncorporacionForm.idSolicitudSeguroUniversal==null||SolicitudIncorporacionForm.idSolicitudSeguroUniversal==''}">
 						<td id="tdBotonSolicitudSeguroUniversal">
 						<%if(modoAnterior.equalsIgnoreCase("Editar")){ %>
 							<html:button id="botonSolicitarAltaSeguro" property="idButton"onclick="return accionSolicitarAltaMutualidad('S');" styleClass="button">
@@ -973,27 +977,25 @@
 							</html:button>
 						<%} %>
 						</td>
-						<c:choose>
-						<c:when test="${SolicitudIncorporacionForm.idSolicitudSeguroUniversal!=null&&SolicitudIncorporacionForm.idSolicitudAceptadaSeguroUniversal==''}">
-							<td colspan="4" class="labelTextValor" style="color:red;">
-								<siga:Idioma key="censo.mutualidad.literal.errorPrevio"/>
-							</td>
-						</c:when>
-						<c:otherwise>
 						<td id="tdTextoNSolicitudSeguroUniversal"  style="display:none" class="labelText" >Nº&nbsp;Solicitud:</td>
-						<td id="tdEstadoSolicitudSeguroUniversal" class="labelTextValor" style="color:blue;">
-						</td>
+						<td id="tdIdSolicitudSeguroUniversal" class="labelTextValor">&nbsp;</td>
+						<td id="tdEstadoSolicitudSeguroUniversal" class="labelTextValor" style="color:blue;">&nbsp;</td>
 						<td id="tdBotonEstadoSolicitudSeguroUniversal" style="display:none">
 							<html:button property="idButton" onclick="return accionComprobarEstadoMutualidad('S');" styleClass="button">Comprobar Estado</html:button>
 						</td>
 						<td colspan="2"></td>
-						</c:otherwise>
-						</c:choose>
 					</c:when>
 					<c:otherwise>
 						<td class="labelText" >Nº&nbsp;Solicitud:</td>
 						<td class="labelTextValor" >
+						<c:choose>
+						<c:when test="${SolicitudIncorporacionForm.idSolicitudAceptadaSeguroUniversal!=null}">
 							<c:out value="${SolicitudIncorporacionForm.idSolicitudAceptadaSeguroUniversal}" />
+						</c:when>
+						<c:otherwise>
+							<c:out value="${SolicitudIncorporacionForm.idSolicitudSeguroUniversal}" />
+						</c:otherwise>
+						</c:choose>
 						</td>
 						<td id="tdEstadoSolicitudSeguroUniversal" class="labelTextValor" style="color:blue;"><c:out value="${SolicitudIncorporacionForm.estadoSolicitudSeguroUniversal}" /></td>
 						<td id="tdBotonEstadoSolicitudSeguroUniversal">
@@ -1002,12 +1004,6 @@
 						<td colspan="2"></td>
 					</c:otherwise>
 				</c:choose>
-			</tr>
-			<tr>
-				<td class="labelText" colspan="5">
-					<siga:Idioma key="censo.mutualidad.literal.masInfo"/>
-					<a href="http://delegaciones.mutualidadabogacia.com/MicroSiteContacto/pages/contacto.aspx" target="new"><siga:Idioma key="censo.mutualidad.literal.aqui"/></a>
-				</td>
 			</tr>
 		</table>
 		</c:when>
@@ -1038,6 +1034,9 @@
 		</c:otherwise>
 	</c:choose>
 </c:if>
+</div>
+
+<div id='divDocumentoAPresentar' style="overflow-y: scroll">
 
 <table id='documentoAPresentar' border='1' width='100%' cellspacing='0' cellpadding='0'>
 	<tr class = 'tableTitle'>
@@ -1073,69 +1072,18 @@
 	  <%}%>
 	</tr>
 	</table>
+	
 	</div>
 
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 	<%if (editar!=null && !editar.equalsIgnoreCase("false")) {%>
-		<siga:ConjBotonesAccion botones="G,R,C" clase="botonesDetalle" />
-	<%}else if (modoAnterior.equalsIgnoreCase("VER")) {%>
-		<siga:ConjBotonesAccion botones="C" clase="botonesDetalle" />
+		<siga:ConjBotonesAccion botones="G,V" clase="botonesDetalle" />
 	<%}else{%>
 		<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
 	<%}%>
 	<!-- FIN: BOTONES REGISTRO -->
 	</html:form>
-	<html:form action="/CEN_Mutualidad"   >
-		<html:hidden property="modo" />
-		<html:hidden property="idTipoSolicitud"/>
-		<html:hidden property="idTipoIdentificacion"/>			
-		<html:hidden property="tipoIdentificacion"/>
-		<html:hidden property="numeroIdentificacion"/>
-		<html:hidden property="idSexo"/>
-		<html:hidden property="sexo"/>
-		<html:hidden property="idTratamiento"/>
-		<html:hidden property="tratamiento"/>
-		<html:hidden property="nombre"/>
-		<html:hidden property="apellido1"/>
-		<html:hidden property="apellido2"/>
-		<html:hidden property="nacionalidad"/>
-		<html:hidden property="fechaNacimiento"/>
-		<html:hidden property="idEstadoCivil"/>
-		<html:hidden property="estadoCivil"/>
-		
-		
-		<html:hidden property="idPais"/>
-		<html:hidden property="idProvincia"/>
-		<html:hidden property="idPoblacion"/>
-		<html:hidden property="poblacionExtranjera"/>
-		<html:hidden property="domicilio"/>
-		<html:hidden property="codigoPostal"/>
-		<html:hidden property="telef1"/>
-		<html:hidden property="telef2"/>
-		<html:hidden property="movil"/>
-		<html:hidden property="fax1"/>
-		<html:hidden property="fax2"/>
-		<html:hidden property="correoElectronico"/>
-		
-		<html:hidden property="titular"/>
-		<html:hidden property="idBanco"/>
-		
-		<html:hidden property="cboCodigo"/>
-		<html:hidden property="codigoSucursal"/>
-		<html:hidden property="digitoControl"/>
-		<html:hidden property="numeroCuenta"/>
-		<html:hidden property="iban" value=""/> 
-		<html:hidden property="idSolicitud"/>
-		<html:hidden property="idSolicitudAceptada"/>
-		<html:hidden property="idSolicitudIncorporacion"/>
-		<html:hidden property="idEstado"/>
-		<html:hidden property="estado"/>
-		<html:hidden property="estadoMutualista"/>
-		
-			
-			
-			<input type="hidden" name="actionModal" />
-	</html:form>
+	
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
@@ -1143,7 +1091,9 @@
 	
 
 	function accionVolver() {		
-		window.location = "<%=app%>/html/jsp/censo/SolicitudIncorporacionValidacion.jsp";
+		document.forms[0].action="./CEN_SolicitudesIncorporacion.do";	
+		document.forms[0].target="mainWorkArea";
+		document.forms[0].submit();
 	}
 
  
@@ -1155,6 +1105,14 @@
 			comprobarTipoIdent();
 			restablecerNColegiado();
 		}
+	}
+	
+	function refrescarLocal()
+	{
+		document.forms[0].modo.value = "abrir";
+		document.forms[0].target = "mainPestanas";
+		document.forms[0].submit();
+		
 	}
 
 	function accionGuardar(){
@@ -1205,6 +1163,47 @@
 		//window.close();
 		top.cierraConParametros("MODIFICADO");
 	}
+	
+	function accionSolicitarAltaAlterMutua()
+	{
+		
+		document.AlterMutuaForm.modo.value="nuevo";
+		
+		document.AlterMutuaForm.domicilio.value  = document.SolicitudIncorporacionForm.domicilio.value;
+		document.AlterMutuaForm.poblacion.value  = document.SolicitudIncorporacionForm.poblacion.text;
+		document.AlterMutuaForm.codigoPostal.value  = document.SolicitudIncorporacionForm.CP.value;
+		document.AlterMutuaForm.telefono1.value  = document.SolicitudIncorporacionForm.telefono1.value;
+		document.AlterMutuaForm.telefono2.value  = document.SolicitudIncorporacionForm.telefono2.value;
+		document.AlterMutuaForm.movil.value  = document.SolicitudIncorporacionForm.telefono3.value;
+		document.AlterMutuaForm.fax.value  = document.SolicitudIncorporacionForm.fax1.value;
+		document.AlterMutuaForm.correoElectronico.value  = document.SolicitudIncorporacionForm.mail.value;
+		
+		document.AlterMutuaForm.cboCodigo.value  = document.SolicitudIncorporacionForm.banco.value;
+		document.AlterMutuaForm.codigoSucursal.value  = document.SolicitudIncorporacionForm.codigoSucursal.value;
+		document.AlterMutuaForm.digitoControl.value  = document.SolicitudIncorporacionForm.digitoControl.value;
+		document.AlterMutuaForm.numeroCuenta.value  = document.SolicitudIncorporacionForm.numeroCuenta.value;
+		
+		document.AlterMutuaForm.identificador.value = document.getElementById('numeroIdentificacionBBDD').value;
+		document.AlterMutuaForm.tipoIdentificacion.value = document.SolicitudIncorporacionForm.tipoIdentificacion.options[document.SolicitudIncorporacionForm.tipoIdentificacion.selectedIndex].text;
+		document.AlterMutuaForm.nombre.value = document.SolicitudIncorporacionForm.nombre.value;
+		document.AlterMutuaForm.apellidos.value = document.SolicitudIncorporacionForm.apellido1.value+" "+document.SolicitudIncorporacionForm.apellido2.value;
+		document.AlterMutuaForm.fechaNacimiento.value = document.SolicitudIncorporacionForm.fechaNacimiento.value;
+		document.AlterMutuaForm.sexo.value = document.SolicitudIncorporacionForm.sexo.options[document.SolicitudIncorporacionForm.sexo.selectedIndex].text;
+		document.AlterMutuaForm.estadoCivil.value  =  document.SolicitudIncorporacionForm.estadoCivil.options[document.SolicitudIncorporacionForm.estadoCivil.selectedIndex].text;
+		
+		//document.AlterMutuaForm.target.value = "mainWorkArea";
+		
+		document.AlterMutuaForm.submit();
+/*		
+   		var resultado = ventaModalGeneral(document.AlterMutuaForm.name,"G",'<siga:Idioma key="censo.mutualidad.aviso.espera" />');
+   		
+	    if(resultado && resultado.length){
+	    	
+	    	actualizaDatosMutualidad(idTipoSolicitud,resultado);
+	    }
+*/
+	}
+	
 	function accionSolicitarAltaMutualidad(idTipoSolicitud)
 	{
 		
@@ -1214,8 +1213,6 @@
 
 		//document.MutualidadForm.numeroIdentificacion.value = document.SolicitudIncorporacionForm.NIFCIF.value;
 		document.MutualidadForm.numeroIdentificacion.value = document.getElementById('numeroIdentificacionBBDD').value;
-		 
-	
 		
 		document.MutualidadForm.sexo.value = document.SolicitudIncorporacionForm.sexo.options[document.SolicitudIncorporacionForm.sexo.selectedIndex].text;
 		document.MutualidadForm.idSexo.value = document.SolicitudIncorporacionForm.sexo.options[document.SolicitudIncorporacionForm.sexo.selectedIndex].value;
@@ -1226,8 +1223,7 @@
 		document.MutualidadForm.nombre.value = document.SolicitudIncorporacionForm.nombre.value;
 		document.MutualidadForm.apellido1.value = document.SolicitudIncorporacionForm.apellido1.value;
 		document.MutualidadForm.apellido2.value = document.SolicitudIncorporacionForm.apellido2.value;
-		//document.MutualidadForm.nacionalidad.value  = document.SolicitudIncorporacionForm.natural.value;
-		document.MutualidadForm.nacionalidad.value  = "";
+		document.MutualidadForm.naturalDe.value  = document.SolicitudIncorporacionForm.natural.value;
 		//document.MutualidadForm.fechaNacimiento.value  = document.SolicitudIncorporacionForm.fechaNacimiento.value;
 		document.MutualidadForm.fechaNacimiento.value  = document.getElementById('fechaNacimientoBBDD').value;
 		
@@ -1264,9 +1260,8 @@
    		
    		
 	    if(resultado && resultado.length){
-	    	document.SolicitudIncorporacionForm.modo.value = "Modificar";
-			document.SolicitudIncorporacionForm.target = "submitArea";
-			document.SolicitudIncorporacionForm.submit();
+	    	
+	    	actualizaDatosMutualidad(idTipoSolicitud,resultado);
 	    }
 	}
 	function actualizaDatosMutualidad(idTipoSolicitud,resultado)
@@ -1356,11 +1351,12 @@
 	
 	<!-- FIN: SCRIPTS BOTONES -->
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
+	
+
+	
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	
 </body>
 </html>
 
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
 

@@ -12,6 +12,7 @@
 		<service interface="com.siga.gratuita.service.AsistenciasService" implementation="com.siga.gratuita.service.impl.AtosAsistenciasService"/>
 		<service interface="com.siga.censo.service.MutualidadService" implementation="com.siga.censo.service.impl.AtosMutualidadService"/>
 		<service interface="com.siga.expedientes.service.ExpedientesService" implementation="com.siga.expedientes.service.impl.AtosExpedientesService"/>
+		<service interface="com.siga.censo.service.AlterMutuaService" implementation="com.siga.censo.service.impl.AtosAlterMutuaService"/>
 	</context>
 	
 	<context id="letrados">

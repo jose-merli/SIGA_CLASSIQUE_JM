@@ -265,20 +265,20 @@ function ventaModalGeneral(nombreFormulario,tamano,recursoMsg){
 	formulario.actionModal.value=formulario.action;
 	// envio los campos del formulario como parametro con el action incluido en ellos
 	if (tamano=="G") {
-		return showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp"+msg,formulario,"dialogHeight:650px;dialogWidth:1000px;help:no;scroll:no;status:no;");
+		return showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp"+msg,formulario,"dialogHeight:650px;dialogWidth:1000px;help:no;scroll:0;status:no;");
 	} else 
 	if (tamano=="M") {
-		return showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp"+msg,formulario,"dialogHeight:440px;dialogWidth:700px;help:no;scroll:no;status:no;");
+		return showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp"+msg,formulario,"dialogHeight:440px;dialogWidth:700px;help:no;scroll:0;status:no;");
 	} else if (tamano=="P") {
 	  
-		return showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp"+msg,formulario,"dialogHeight:340px;dialogWidth:500px;help:no;scroll:no;status:no;");
+		return showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp"+msg,formulario,"dialogHeight:340px;dialogWidth:500px;help:no;scroll:0;status:no;");
 		
 	}else if (tamano=="0") {
 	  
-		return showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp"+msg,formulario,"dialogHide:yes;dialogHeight:120px;dialogWidth:70px;help:no;scroll:no;status:no;dialogLeft:500;dialogTop:450");
+		return showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp"+msg,formulario,"dialogHide:yes;dialogHeight:120px;dialogWidth:70px;help:no;scroll:0;status:no;dialogLeft:500;dialogTop:450");
 		
 	} else {
-		return showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp"+msg,formulario,"dialogHeight:590px;dialogWidth:1000px;help:no;scroll:no;status:no;");
+		return showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp"+msg,formulario,"dialogHeight:590px;dialogWidth:1000px;help:no;scroll:0;status:no;");
 	}
 }	
 
@@ -1261,4 +1261,11 @@ function findPosY(obj)
 	  if (control == 11) control = 0;
 	  else if (control == 10) control = 1;
 	  return control;
+	}
+  
+  function jqueryAlert(texto, width, height){
+	  if(texto!=''){
+	  	var windowTop=window.top; // main.jsp
+		windowTop.jAlert(texto, width, height);
+	  }
 	}

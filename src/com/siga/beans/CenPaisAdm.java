@@ -184,5 +184,27 @@ public class CenPaisAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al ejecutar el \"select\" en B.D."); 
 		}
 		return datos;
+	}
+
+	public String getCodigoExt(String idPais) throws ClsExceptions {
+		String codigoExt="";
+		
+		// Acceso a BBDD
+		RowsContainer rc = null;
+		try { 
+			rc = new RowsContainer(); 
+			String sql = " SELECT " + CenPaisBean.C_CODIGOEXT + " FROM " + CenPaisBean.T_NOMBRETABLA;
+			sql += "  where idpais = " + idPais;
+			if (rc.query(sql)) {
+				Row fila = (Row) rc.get(0);
+				CenPaisBean registro = (CenPaisBean) this.hashTableToBeanInicial(fila.getRow()); 
+				if (registro != null) 
+					codigoExt = registro.getCodigoExt();
+			}
+		} 
+		catch (Exception e) { 	
+			throw new ClsExceptions (e, "Error al ejecutar el \"select\" en B.D."); 
+		}
+		return codigoExt;
 	}	
 }

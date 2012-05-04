@@ -56,7 +56,7 @@
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 </head>
 
-<body onLoad="ajusteAlto('resultado');">
+<body onLoad="ajusteAlto('resultado');inicio();">
 
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 
@@ -151,6 +151,10 @@
 	     		  document.SolicitudIncorporacionForm.buscarEstadoSolicitud.disabled=false;
 			  }
 			}
+		
+		function inicio(){
+			buscar();
+		}
 	</script>
 	
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->

@@ -88,8 +88,8 @@
 <body>
 
 
-		<html:form action="/CEN_SolicitudesIncorporacion.do" method="POST" style="display:none">
-			<html:hidden property = "esModal" value = "S"/>
+		<html:form action="/CEN_SolicitudesIncorporacion.do" method="POST" style="display:none" target="mainWorkArea">
+			<html:hidden property = "esModal" value = "N"/>
 			<html:hidden property = "modo" value = ""/>
 			<html:hidden property = "buscarModoAnteriorBusqueda" value = "true"/>
 			<!-- RGG: cambio a formularios ligeros -->
@@ -112,7 +112,6 @@
 			   tamanoCol = "13,19,8,16,10,15,9,10"
 			   alto  = "270"
 			   ajuste="50"
-			   modal = "g"
 			   activarFilaSel="true">
 
 		<%if (resultados != null) { %>

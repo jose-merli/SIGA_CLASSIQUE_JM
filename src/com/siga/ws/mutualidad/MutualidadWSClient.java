@@ -4,16 +4,12 @@
 package com.siga.ws.mutualidad;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.TreeMap;
 
 import org.apache.axis.EngineConfiguration;
 import org.apache.axis.Handler;
@@ -25,23 +21,23 @@ import org.apache.axis.message.addressing.handler.AddressingHandler;
 import org.apache.axis.transport.http.HTTPSender;
 import org.apache.axis.transport.http.HTTPTransport;
 
-import com.siga.Utilidades.SIGAReferences;
-import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.LogBDDHandler;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.comun.vos.ValueKeyVO;
 import com.siga.general.SIGAException;
+import com.siga.ws.SIGAWSClientAbstract;
 
 /**
  * 
  * @author josebd
  *
  */
-public class MutualidadWSClient extends MutualidadWSClientAbstract {
+public class MutualidadWSClient extends SIGAWSClientAbstract {
 	
 	private static final String URLMUTUALIDADABOGACIA = "URL_WS_MUTUALIDAD";
 	
@@ -487,7 +483,7 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 
 	private WSHttpBinding_IIntegracion_MetodosStub getStub() throws ClsExceptions {
 
-		String urlWS = getUrlWS(URLMUTUALIDADABOGACIA);
+		String urlWS = getUrlWSParametro(URLMUTUALIDADABOGACIA);
 
 		WSHttpBinding_IIntegracion_MetodosStub stub;
 		try {
@@ -576,6 +572,12 @@ public class MutualidadWSClient extends MutualidadWSClientAbstract {
 			}
 	    }
 		return rutaPDF.toString();
+	}
+
+	@Override
+	public void execute() throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

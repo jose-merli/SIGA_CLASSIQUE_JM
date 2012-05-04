@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import javax.xml.namespace.QName;
-
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
 import org.apache.xmlbeans.XmlValidationError;
@@ -33,6 +31,7 @@ import com.siga.beans.CajgRemesaAdm;
 import com.siga.beans.CajgRemesaBean;
 import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaBean;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument;
 import com.siga.ws.pcajg.cat.xsd.TipoIdentificacionIntercambio;
 
@@ -124,6 +123,23 @@ public abstract class SIGAWSClientAbstract {
 	}
 	
 	/**
+	 * 
+	 * @param idInstitucion
+	 * @return
+	 */
+	public static File getErrorFile(int idInstitucion) {
+		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String rutaAlmacen = rp.returnProperty("wsMutualidad.directorioFicheros") + rp.returnProperty("wsMutualidad.directorioLog");
+			
+		rutaAlmacen += File.separator + idInstitucion;
+		
+		File file = new File(rutaAlmacen + File.separator + "log");
+		file.mkdirs();
+		file = new File(file, "incidencias.log");
+		return file;
+	}
+	
+	/**
 	 * @return the usrBean
 	 */
 	public UsrBean getUsrBean() {
@@ -171,6 +187,15 @@ public abstract class SIGAWSClientAbstract {
 	public String getUrlWS() {
 		return urlWS;
 	}
+	
+	/**
+	 * @return the urlWS
+	 * @throws ClsExceptions 
+	 */
+	public String getUrlWSParametro(String parametro) throws ClsExceptions {
+		GenParametrosAdm paramAdm = new GenParametrosAdm(usrBean);
+		return paramAdm.getValor(usrBean.getLocation(),"CEN", parametro, "");
+	}
 
 	/**
 	 * @param urlWS the urlWS to set
@@ -198,6 +223,20 @@ public abstract class SIGAWSClientAbstract {
 	protected void escribeLogRemesa(String texto) throws IOException {
 		if (bw == null) {
 			File errorFile = getErrorFile(getIdInstitucion(), getIdRemesa());			    
+			FileWriter fileWriter = new FileWriter(errorFile, true);
+			bw = new BufferedWriter(fileWriter);
+		}
+		
+		String fecha = sdf.format(new Date());		
+		
+		bw.write(fecha + texto);
+		bw.write("\n");
+		bw.flush();
+	}
+	
+	protected void escribeLog(String texto) throws IOException {
+		if (bw == null) {
+			File errorFile = getErrorFile(getIdInstitucion());			    
 			FileWriter fileWriter = new FileWriter(errorFile, true);
 			bw = new BufferedWriter(fileWriter);
 		}

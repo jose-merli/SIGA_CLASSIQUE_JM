@@ -14,6 +14,7 @@
 		<form-bean name="busquedaClientesAvanzadaForm" type="com.siga.censo.form.BusquedaClientesForm"/>
 		<form-bean name="SolicitudIncorporacionForm" type="com.siga.censo.form.SolicitudIncorporacionForm"/>
 		<form-bean name="MutualidadForm" type="com.siga.censo.form.MutualidadForm"/>
+		<form-bean name="AlterMutuaForm" type="com.siga.censo.form.AlterMutuaForm"/>
 		<form-bean name="consultaDireccionesForm" type="com.siga.censo.form.DireccionesForm"/>
 		<form-bean name="consultaDireccionesSolicForm" type="com.siga.censo.form.DireccionesForm"/>
 		<form-bean name="cuentasBancariasForm" type="com.siga.censo.form.CuentasBancariasForm"/>
@@ -559,23 +560,59 @@
 		
 
 		<!-- ***** Censo / Ver Solicitudes Incorporación ***** -->
-		<action path="/CEN_SolicitudesIncorporacion" type="com.siga.censo.action.SolicitudIncorporacionAction" name="SolicitudIncorporacionForm" scope="request" validate="true" >
+		<action path="/CEN_SolicitudesIncorporacion" type="com.siga.censo.action.SolicitudIncorporacionAction" name="SolicitudIncorporacionForm">
 			<forward name="inicio" path="/html/jsp/censo/busquedaSolicitudesIncorporacion.jsp"/>
 			<forward name="resultados" path="/html/jsp/censo/busquedaSolicitudesIncorporacionResultados.jsp"/>
 			<forward name="SolicitudIncorporacionDesestimada" path="/html/jsp/censo/SolicitudIncorporacionDesestimada.jsp"/>
+			<forward name="SolicitudIncorporacionInicio" path="/html/jsp/censo/pestanasSolicitudIncorporacion.jsp"/>
 			<forward name="SolicitudIncorporacionDatos" path="/html/jsp/censo/SolicitudIncorporacionDatos.jsp"/>
 			<forward name="exitoInsercion" path="/html/jsp/censo/exitoInsercionIncorporacion.jsp"/>
 			<forward name="continuarAprobacion" path="/html/jsp/censo/continuarAprobacionSolicitud.jsp"/>
 			<forward name="continuarInsercionColegiado" path="/html/jsp/censo/continuarInsercionColegiado.jsp"/>
 			<forward name="exitoGuardar" path="/html/jsp/censo/exitoSolicitudIncorporacionDatos.jsp"/>
 		</action>
-		
-		<action path="/CEN_Mutualidad" type="com.siga.censo.action.GestionMutualidadAction" name="MutualidadForm" scope="request"  >
-			<forward name="edicion" path="/html/jsp/censo/mutualidad.jsp"/>
+
+		<action path="/CEN_MantenimientoSolicitudesIncorporacion" type="com.siga.censo.action.MantenimientoSolicitudIncorporacionAction" name="SolicitudIncorporacionForm" scope="request" validate="true" >
+			<forward name="inicio" path="/html/jsp/censo/SolicitudIncorporacionDatos.jsp"/>
+			<forward name="continuarAprobacion" path="/html/jsp/censo/continuarAprobacionSolicitud.jsp"/>
+			<forward name="continuarInsercionColegiado" path="/html/jsp/censo/continuarInsercionColegiado.jsp"/>
+			<forward name="exitoInsercion" path="/html/jsp/censo/exitoInsercionIncorporacion.jsp"/>
 		</action>
 		
+		<action path="/CEN_AlterMutua" type="com.siga.censo.action.GestionAlterMutuaAction" name="AlterMutuaForm" scope="request">
+			<forward name="pestanas" path="/html/jsp/censo/pestanasAlterMutua.jsp"/>
+		</action>
+		<action path="/CEN_AlterMutuaAlternativa" type="com.siga.censo.action.GestionAlterMutuaAction" name="AlterMutuaForm" scope="request">
+			<forward name="abrir" path="/html/jsp/censo/alterMutua.jsp"/>
+		</action>
+		<action path="/CEN_AlterMutuaOfertas" type="com.siga.censo.action.GestionAlterMutuaAction" name="AlterMutuaForm" scope="request">
+			<forward name="abrir" path="/html/jsp/censo/alterMutuaOfertas.jsp"/>
+		</action>
+		
+		<action path="/CEN_AlterMutuaFicha" type="com.siga.censo.action.GestionAlterMutuaAction" name="AlterMutuaForm" scope="request">
+			<forward name="pestanas" path="/html/jsp/censo/pestanasAlterMutua.jsp"/>
+			<forward name="consulta" path="/html/jsp/censo/alterMutuaConsulta.jsp"/>
+		</action>
+		<action path="/CEN_AlterMutuaFichaAlternativa" type="com.siga.censo.action.GestionAlterMutuaAction" name="AlterMutuaForm" scope="request">
+			<forward name="abrir" path="/html/jsp/censo/alterMutua.jsp"/>
+		</action>
+		<action path="/CEN_AlterMutuaFichaOfertas" type="com.siga.censo.action.GestionAlterMutuaAction" name="AlterMutuaForm" scope="request">
+			<forward name="abrir" path="/html/jsp/censo/alterMutuaOfertas.jsp"/>
+		</action>
+
+		
+		<action path="/CEN_Mutualidad" type="com.siga.censo.action.GestionMutualidadAction" name="MutualidadForm" scope="request">
+			<forward name="pestanas" path="/html/jsp/censo/pestanasMutualidad.jsp"/>
+		</action>
+		<action path="/CEN_MutualidadPlanProfesional" type="com.siga.censo.action.GestionMutualidadAction" name="MutualidadForm" scope="request">
+			<forward name="edicion" path="/html/jsp/censo/mutualidad.jsp"/>
+		</action>
+		<action path="/CEN_MutualidadSeguroGratuito" type="com.siga.censo.action.GestionMutualidadAction" name="MutualidadForm" scope="request">
+			<forward name="edicion" path="/html/jsp/censo/mutualidad.jsp"/>
+		</action>
 		<action path="/CEN_MutualidadFicha" type="com.siga.censo.action.GestionMutualidadAction" name="MutualidadForm" scope="request"  >
 			<forward name="inicioFicha" path="/html/jsp/censo/inicioFichaMutualidad.jsp"/>
+			<forward name="editar" path="/html/jsp/censo/inicioFichaMutualidad.jsp"/>
 		</action>
 		<action path="/CEN_MutualidadFichaPlan" type="com.siga.censo.action.GestionMutualidadAction" name="MutualidadForm" scope="request"  >
 			<forward name="consulta" path="/html/jsp/censo/mutualidad.jsp"/>
@@ -585,6 +622,8 @@
 			<forward name="consulta" path="/html/jsp/censo/mutualidad.jsp"/>
 			<forward name="edicion" path="/html/jsp/censo/mutualidad.jsp"/>
 		</action>
+		
+		
 		<!-- ***** Censo / Ver Solicitudes Modificación / Solicitudes Genéricas *****
 -->
 		<action path="/CEN_SolicitudesModificacionGenericas" type="com.siga.censo.action.SolicitudesModificacionAction" name="SolicitudesModificacionForm" scope="session">

@@ -2,7 +2,6 @@
 package com.siga.censo.action;
 
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Random;
 import java.util.Vector;
 
@@ -50,7 +49,6 @@ import com.siga.beans.CenProvinciaAdm;
 import com.siga.beans.CenProvinciaBean;
 import com.siga.beans.CenSolicitudIncorporacionAdm;
 import com.siga.beans.CenSolicitudIncorporacionBean;
-import com.siga.beans.CenSolicitudMutualidadBean;
 import com.siga.beans.CenTipoColegiacionAdm;
 import com.siga.beans.CenTipoColegiacionBean;
 import com.siga.beans.CenTipoSolicitudAdm;
@@ -59,15 +57,11 @@ import com.siga.beans.CenTratamientoAdm;
 import com.siga.beans.CenTratamientoBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.censo.form.SolicitudIncorporacionForm;
-import com.siga.censo.service.MutualidadService;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.action.RetencionesIRPFAction;
-import com.siga.ws.mutualidad.RespuestaMutualidad;
-
-import es.satec.businessManager.BusinessManager;
 
 
 /**
@@ -83,7 +77,7 @@ import es.satec.businessManager.BusinessManager;
  *   para asegurar el correcto funcionamiento de la insercion en cola 
  *   para la copia de direcciones de colegiados a Consejos
  */
-public class SolicitudIncorporacionAction extends MasterAction
+public class MantenimientoSolicitudIncorporacionAction extends MasterAction
 {
 	final int solicitudDesestima = -2;
 	
@@ -119,7 +113,7 @@ public class SolicitudIncorporacionAction extends MasterAction
 					mapDestino = abrir(mapping, miForm, request, response);
 					break;
 				}else if (accion.equalsIgnoreCase("editar")){
-					mapDestino = editar(mapping, miForm, request, response);
+					mapDestino = abrir(mapping, miForm, request, response);
 					break;
 				} else {
 					return super.executeInternal(mapping,
@@ -140,7 +134,7 @@ public class SolicitudIncorporacionAction extends MasterAction
 		}
 	}	
 	
-	protected String editar(ActionMapping mapping,
+	protected String abrir(ActionMapping mapping,
 							MasterForm formulario,
 							HttpServletRequest request,
 							HttpServletResponse response)
@@ -158,28 +152,28 @@ public class SolicitudIncorporacionAction extends MasterAction
 			CenSolicitudIncorporacionAdm solicitudAdm = new CenSolicitudIncorporacionAdm (this.getUserBean(request));
 			
 			// Si es una consulta por Solicitud de incorporacion
-			Long idSolicitud;
-			if(miFormulario.getDatosTablaOcultos(0)!=null){
+			Long idSolicitud=miFormulario.getEditarIdSolicitud();
+			/*if(miFormulario.getDatosTablaOcultos(0)!=null){
 				idSolicitud = new Long((String) miFormulario.getDatosTablaOcultos(0).get(0));
 			}else{
 				idSolicitud = miFormulario.getEditarIdSolicitud();
+			}*/
+			if(idSolicitud==null){
+				idSolicitud = new Long(request.getParameter("IDSOLICITUD"));
 			}
 			UtilidadesHash.set(hash, CenSolicitudIncorporacionBean.C_IDSOLICITUD, idSolicitud);
-			UtilidadesHash.set(hash, "modo", "editar");
-			
 			Vector datosSelect = solicitudAdm.selectByPK(hash);
 			if ((datosSelect != null) && (datosSelect.size() > 0)) {
 				bean = (CenSolicitudIncorporacionBean) datosSelect.get(0);
 			}
 			
-			//forward = this.mostrarDatosSolicitud(request, bean, miFormulario); 
+			forward = this.mostrarDatosSolicitud(request, bean, miFormulario); 
 			request.setAttribute("Editar", "true");
-			request.setAttribute("SOLINC", hash);
 		} 	
 		catch (Exception e) {
 			 throwExcp("messages.general.error", new String[] {"modulo.censo"},e,null);
 	   	}
-		return "SolicitudIncorporacionInicio";
+		return forward;
 	} //editar()
 	
 	protected String ver(ActionMapping mapping, 
@@ -200,21 +194,19 @@ public class SolicitudIncorporacionAction extends MasterAction
 			// Si es una consulta por Solicitud de incorporacion
 			Boolean aux = miFormulario.getBuscarModoAnteriorBusqueda();
 			Long idSolicitud;
-			if ((aux == null) || (aux.booleanValue() != true)) {
-				idSolicitud = new Long(miFormulario.getClave());
-			} else {// Si es una consulta por busqueda de solicitudes
+			/*if ((aux != null) && (aux.booleanValue() == true)) {
 				idSolicitud = new Long((String) miFormulario.getDatosTablaOcultos(0).get(0));
-			}
-			UtilidadesHash.set(hash, CenSolicitudIncorporacionBean.C_IDSOLICITUD, idSolicitud);
-			UtilidadesHash.set(hash, "modo", "ver");
+			}else { // Si es una consulta por busqueda de solicitudes
+				idSolicitud= new Long( miFormulario.getClave());
+			}*/
+			idSolicitud = new Long(request.getParameter("IDSOLICITUD"));
 			
+			UtilidadesHash.set(hash, CenSolicitudIncorporacionBean.C_IDSOLICITUD, idSolicitud);
 			Vector datosSelect = solicitudAdm.selectByPK(hash);
 			if ((datosSelect != null) && (datosSelect.size() > 0)) {
 				bean = (CenSolicitudIncorporacionBean) datosSelect.get(0);
 			}
-			//forward = this.mostrarDatosSolicitud(request, bean, miFormulario);
-			
-			request.setAttribute("SOLINC", hash);
+			forward = this.mostrarDatosSolicitud(request, bean, miFormulario);
 			
 			//Vemos si vamos a una modal o no:
 			String esmodal = miFormulario.getEsModal();
@@ -226,7 +218,7 @@ public class SolicitudIncorporacionAction extends MasterAction
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
 		}
-		return "SolicitudIncorporacionInicio"; 
+		return forward; 
 	} //ver()
 	
 	protected String nuevo(ActionMapping mapping, 
@@ -368,7 +360,7 @@ public class SolicitudIncorporacionAction extends MasterAction
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,t);
 		}
-		return exitoRefresco(mensajeRefresco,request);
+		return exito(mensajeRefresco, request); // exitoRefresco(mensajeRefresco,request);
 	} //insertar()
 	
 	protected String modificar (ActionMapping mapping, 
@@ -674,7 +666,7 @@ public class SolicitudIncorporacionAction extends MasterAction
 			if (fichaColegial)
 				forward = "exitoInsercion";			
 			else
-				forward = exitoGuardar("messages.updated.success", request);
+				forward = exitoRefresco("messages.updated.success", request);
 		}
 		catch (Exception e) {
 			throwExcp ("messages.general.error", new String[] {"modulo.censo"}, e, t);
@@ -1046,16 +1038,81 @@ public class SolicitudIncorporacionAction extends MasterAction
 			UtilidadesHash.set(hash, CenDocumentacionModalidadBean.C_IDMODALIDAD, bean.getIdModalidadDocumentacion());
 			request.setAttribute("ModalidadDocumentacion", ((CenDocumentacionModalidadBean)((admDocModalidad.select(hash)).get(0))).getDescripcion());
 			
-			request.setAttribute("isPosibilidadSolicitudAlta", Boolean.FALSE);
-			request.setAttribute("motivoSolicitudAlta", "");
-			request.setAttribute("mostrarSolicitudAlta", false);
+			
+			request.setAttribute("ModoAnterior", modoAnterior);
+			/*
+			if(!miFormulario.getModo().equalsIgnoreCase("Editar")&&!miFormulario.getModo().equalsIgnoreCase("Ver")){
+				request.setAttribute("isPosibilidadSolicitudAlta", Boolean.FALSE);
+				request.setAttribute("motivoSolicitudAlta", "");
+				request.setAttribute("mostrarSolicitudAlta", false);
+			}else{
+				try {
+					
+					// Leemos el parametro que nos dirá si se activa el WS de la mutualidad o no
+					GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
+					String wsActivo = paramAdm.getValor(bean.getIdInstitucion().toString(), "CEN", "WS_MUTUALIDAD_ACTIVO", "0");
+					
+					if(wsActivo.equalsIgnoreCase("1")){
+						if(bean.getIdTipoIdentificacion()==ClsConstants.TIPO_IDENTIFICACION_NIF || 
+						   bean.getIdTipoIdentificacion()==ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE){
+							BusinessManager bm = getBusinessManager();
+							MutualidadService mutualidadService = (MutualidadService)bm.getService(MutualidadService.class);
+							
+								List<CenSolicitudMutualidadBean> solicitudMutualidadBeans=mutualidadService.getSolicitudesMutualidad(bean, this.getUserBean(request));
+							
+								if(solicitudMutualidadBeans!=null && solicitudMutualidadBeans.size()>0){
+									for(CenSolicitudMutualidadBean solicitudMutualidadBean:solicitudMutualidadBeans){
+										if(solicitudMutualidadBean.getIdTipoSolicitud().equals(CenSolicitudMutualidadBean.TIPOSOLICITUD_PLANPROFESIONAL)){
+											miFormulario.setIdSolicitudPlanProfesional(""+solicitudMutualidadBean.getIdSolicitud().toString());
+											if(solicitudMutualidadBean.getIdSolicitudAceptada()!=null)
+												miFormulario.setIdSolicitudAceptadaPlanProfesional(""+solicitudMutualidadBean.getIdSolicitudAceptada().toString());
+											miFormulario.setEstadoSolicitudPlanProfesional(solicitudMutualidadBean.getEstado());
+											miFormulario.setEstadoMutualistaPlanProfesional(solicitudMutualidadBean.getEstadoMutualista());
+											
+										}else if(solicitudMutualidadBean.getIdTipoSolicitud().equals(CenSolicitudMutualidadBean.TIPOSOLICITUD_SEGUROUNIVERSAL)){
+											miFormulario.setIdSolicitudSeguroUniversal(""+solicitudMutualidadBean.getIdSolicitud().toString());
+											if(solicitudMutualidadBean.getIdSolicitudAceptada()!=null)
+												miFormulario.setIdSolicitudAceptadaSeguroUniversal(""+solicitudMutualidadBean.getIdSolicitudAceptada().toString());
+											miFormulario.setEstadoSolicitudSeguroUniversal(solicitudMutualidadBean.getEstado());
+											
+										}
+									}
+									request.setAttribute("isPosibilidadSolicitudAlta", true);
+									request.setAttribute("motivoSolicitudAlta", "");
+								}else{
+									RespuestaMutualidad respuestaSolicitudAlta = mutualidadService.isPosibilidadSolicitudAlta(bean.getNumeroIdentificador(),bean.getFechaNacimiento(),this.getUserBean(request));
+									request.setAttribute("isPosibilidadSolicitudAlta", respuestaSolicitudAlta.isPosibleAlta());
+									request.setAttribute("motivoSolicitudAlta", respuestaSolicitudAlta.getValorRespuesta());
+									
+									
+								}
+							
+						}else{
+							request.setAttribute("isPosibilidadSolicitudAlta", false);
+							request.setAttribute("motivoSolicitudAlta", "Solo se puede solicitar el alta con NIF o NIE");
+						}
+						request.setAttribute("mostrarSolicitudAlta", true);
+					}else{
+						request.setAttribute("isPosibilidadSolicitudAlta", false);
+						request.setAttribute("mostrarSolicitudAlta", false);
+						request.setAttribute("motivoSolicitudAlta", "WebService de la Mutualidad de la Abogacia no activo");
+					}
+				} catch (SIGAException e) {
+				*/
+					//Que hacemos si falla!! aHORA MISMO NO SE MOSTRARIA LA PARTE DEL FORMULARIO DONDE ESTAN LOS BOTONES
+					//Y EL ESTADO DEL ALTA EN LA MUTUALIDAD
+					request.setAttribute("isPosibilidadSolicitudAlta", false);
+					request.setAttribute("mostrarSolicitudAlta", false);
+					request.setAttribute("motivoSolicitudAlta", "WebService de la Mutualidad de la Abogacia no activo");
+				//}
+			//}
 			
 	   } 
 	   catch (Exception e) {
 		 throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
    	   }
-	   return "SolicitudIncorporacionDatos";
-	   //return "SolicitudIncorporacionInicio";
+	   //return "SolicitudIncorporacionDatos";
+	   return "inicio";
 	} //mostrarDatosSolicitud()
 	
 	/** 

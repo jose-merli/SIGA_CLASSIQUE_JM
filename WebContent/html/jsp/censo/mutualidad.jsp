@@ -45,7 +45,6 @@
 <script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
 <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
 
-
 <!--Step 3 -->
   <!-- defaults for Autocomplete and displaytag -->
   <link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />	
@@ -641,17 +640,10 @@
 	postFunction="postAccionPoblacion" />
 </c:if>
 
-
-
 </div>
 <div id="botonera">
 <c:if test="${MutualidadForm.modo=='insertar'}">
-	<c:if test="${path=='/CEN_Mutualidad'}">
-		<siga:ConjBotonesAccion botones="GS,R,C" clase="botonesDetalle" />
-	</c:if>
-	<c:if test="${path!='/CEN_Mutualidad'}">
-		<siga:ConjBotonesAccion botones="GS,R" clase="botonesDetalle" />
-	</c:if>
+	<siga:ConjBotonesAccion botones="GS,R" clase="botonesDetalle" />
 </c:if>
 </div>
 </html:form>
@@ -670,6 +662,10 @@
 	
 
 	function accionVolver() {		
+		document.forms[0].action="./CEN_SolicitudesIncorporacion.do";	
+		document.forms[0].target="mainWorkArea";
+		document.forms[0].modo.value="";
+		document.forms[0].submit();
 	}
 
  
