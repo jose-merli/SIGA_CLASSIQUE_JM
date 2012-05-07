@@ -397,6 +397,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 				String urlWS = getUrlWsJE(idInstitucion, usrBean);		
 						
 				DatosJustificacionesDocument datosJustificacionesDocument = getDatosJustificacionesDocument(idInstitucion, idFacturacion, usrBean);
+//				DatosJustificacionesDocument datosJustificacionesDocument = DatosJustificacionesDocument.Factory.parse(new File("c:/Editar.xml"));
 				
 				XmlOptions xmlOptions = new XmlOptions();
 				xmlOptions.setSavePrettyPrintIndent(4);
@@ -414,16 +415,6 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 				EnvioJustificacionesService_ServiceLocator locator = new EnvioJustificacionesService_ServiceLocator(createClientConfig(usrBean, idInstitucion, idFacturacion));
 				EnvioJustificacionesServicePortBindingStub stub = new EnvioJustificacionesServicePortBindingStub(new java.net.URL(urlWS), locator);
 				
-//				String datosJustificaciones = datosJustificacionesDocument.newCursor().xmlText(xmlOptions);
-				StringBuffer datosJustificaciones = new StringBuffer("<?xml version=\"1.0\" encoding=\"ISO8859-1\"?>");
-				
-				XmlCursor xmlCursor = datosJustificacionesDocument.getDatosJustificaciones().newCursor();
-				if (xmlCursor != null && xmlCursor.toFirstChild()) {
-					datosJustificaciones.append(xmlCursor.xmlText(xmlOptions));
-					while (xmlCursor != null && xmlCursor.toNextSibling()) {
-						datosJustificaciones.append(xmlCursor.xmlText(xmlOptions));				
-					}
-				}
 								
 				com.siga.ws.i2064.je.axis.Resposta resposta = null;
 				
@@ -432,7 +423,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 				String usuario = admParametros.getValor(idInstitucion, MODULO_SCS, PCAJG_JE_USUARIO, "");
 				
 				try {
-					resposta = stub.envioJustificacion(codAplicacion, usuario, datosJustificaciones.toString());
+					resposta = stub.envioJustificacion(codAplicacion, usuario, "<?xml version=\"1.0\" encoding=\"ISO8859-1\"?>" + datosJustificacionesDocument.xmlText(xmlOptions));
 				} catch (Exception e) {
 					String s = "Se ha producido un error en el envío de WebService para la institución " + idInstitucion;
 					ClsLogging.writeFileLogError(s, e, 3);
