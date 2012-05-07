@@ -83,7 +83,16 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 		AdmInformeBean informeVo = informeForm.getInformeVO();
 		AdmInformeAdm informeAdm = new AdmInformeAdm(usrBean);
 		boolean isNombreFisicoComun = isNombreFisicoComun(informeForm,usrBean);
+		AdmEnvioInformeAdm envioInformeAdm = new AdmEnvioInformeAdm(usrBean);
+		Hashtable tiposEnvioHashtable = new Hashtable();
+		tiposEnvioHashtable.put(AdmEnvioInformeBean.C_IDINSTITUCION, informeVo.getIdInstitucion());
+		tiposEnvioHashtable.put(AdmEnvioInformeBean.C_IDPLANTILLA, informeVo.getIdPlantilla());
+		String[] claves = {AdmEnvioInformeBean.C_IDINSTITUCION,AdmEnvioInformeBean.C_IDPLANTILLA};
+		envioInformeAdm.deleteDirect(tiposEnvioHashtable, claves);
+		
 		informeAdm.delete(informeVo);
+		
+		
 		if(!isNombreFisicoComun)
 			eliminaFicherosAsociados(getDirectorio(informeForm),informeForm.getNombreFisico());
 		
@@ -163,6 +172,34 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 		informeVo.setIdPlantilla(idPlantilla.toString());
 		informeAdm.insert(informeVo);
 		informeForm.setIdPlantilla(idPlantilla.toString());
+		
+		AdmEnvioInformeAdm envioInformeAdm = new AdmEnvioInformeAdm(usrBean);
+		String idTipoEnvios = informeForm.getIdTiposEnvio();
+		String[] idTiposEnvio = idTipoEnvios.split("##");
+		if(idTiposEnvio.length>1){
+			for (int i = 0; i < idTiposEnvio.length; i++) {
+				String[] idsTipoEnvio = idTiposEnvio[i].split(",");
+				String idTipoEnvio = idsTipoEnvio[1];
+				AdmEnvioInformeBean envioInformeBean = new AdmEnvioInformeBean();
+				envioInformeBean.setIdInstitucion(informeVo.getIdInstitucion());
+				envioInformeBean.setIdPlantilla(informeVo.getIdPlantilla());
+				envioInformeBean.setIdTipoEnvios(idTipoEnvio);
+				if(informeForm.getIdTipoEnvio()!=null &&informeForm.getIdTipoEnvio().equals(idTipoEnvio)){
+					envioInformeBean.setDefecto(ClsConstants.DB_TRUE);
+					if(informeForm.getIdPlantillaEnvio()!=null &&!informeForm.getIdPlantillaEnvio().equals(""))
+						envioInformeBean.setIdPlantillaEnvioDef(informeForm.getIdPlantillaEnvio());
+				}else{
+					envioInformeBean.setDefecto(ClsConstants.DB_FALSE);
+					
+				}
+				envioInformeAdm.insert(envioInformeBean);
+				
+			}
+		}
+		
+		
+		
+		
 		creaDirectorio(getDirectorio(informeForm));
  		if(informeForm.getIdTipoInforme().equals(AdmTipoInformeBean.TIPOINFORME_CONSULTAS)){
 			AdmConsultaInformeAdm consultaInformeAdm = new AdmConsultaInformeAdm(usrBean);
@@ -202,30 +239,32 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 		AdmEnvioInformeAdm envioInformeAdm = new AdmEnvioInformeAdm(usrBean);
 		String idTipoEnvios = informeForm.getIdTiposEnvio();
 		String[] idTiposEnvio = idTipoEnvios.split("##");
+		
 		Hashtable tiposEnvioHashtable = new Hashtable();
 		tiposEnvioHashtable.put(AdmEnvioInformeBean.C_IDINSTITUCION, informeVo.getIdInstitucion());
 		tiposEnvioHashtable.put(AdmEnvioInformeBean.C_IDPLANTILLA, informeVo.getIdPlantilla());
 		String[] claves = {AdmEnvioInformeBean.C_IDINSTITUCION,AdmEnvioInformeBean.C_IDPLANTILLA};
 		envioInformeAdm.deleteDirect(tiposEnvioHashtable, claves);
-		for (int i = 0; i < idTiposEnvio.length; i++) {
-			String[] idsTipoEnvio = idTiposEnvio[i].split(",");
-			String idTipoEnvio = idsTipoEnvio[1];
-			AdmEnvioInformeBean envioInformeBean = new AdmEnvioInformeBean();
-			envioInformeBean.setIdInstitucion(informeVo.getIdInstitucion());
-			envioInformeBean.setIdPlantilla(informeVo.getIdPlantilla());
-			envioInformeBean.setIdTipoEnvios(idTipoEnvio);
-			if(informeForm.getIdTipoEnvio()!=null &&informeForm.getIdTipoEnvio().equals(idTipoEnvio)){
-				envioInformeBean.setDefecto(ClsConstants.DB_TRUE);
-				if(informeForm.getIdPlantillaEnvio()!=null &&!informeForm.getIdPlantillaEnvio().equals(""))
-					envioInformeBean.setIdPlantillaEnvioDef(informeForm.getIdPlantillaEnvio());
-			}else{
-				envioInformeBean.setDefecto(ClsConstants.DB_FALSE);
+		if(idTiposEnvio.length>1){
+			for (int i = 0; i < idTiposEnvio.length; i++) {
+				String[] idsTipoEnvio = idTiposEnvio[i].split(",");
+				String idTipoEnvio = idsTipoEnvio[1];
+				AdmEnvioInformeBean envioInformeBean = new AdmEnvioInformeBean();
+				envioInformeBean.setIdInstitucion(informeVo.getIdInstitucion());
+				envioInformeBean.setIdPlantilla(informeVo.getIdPlantilla());
+				envioInformeBean.setIdTipoEnvios(idTipoEnvio);
+				if(informeForm.getIdTipoEnvio()!=null &&informeForm.getIdTipoEnvio().equals(idTipoEnvio)){
+					envioInformeBean.setDefecto(ClsConstants.DB_TRUE);
+					if(informeForm.getIdPlantillaEnvio()!=null &&!informeForm.getIdPlantillaEnvio().equals(""))
+						envioInformeBean.setIdPlantillaEnvioDef(informeForm.getIdPlantillaEnvio());
+				}else{
+					envioInformeBean.setDefecto(ClsConstants.DB_FALSE);
+					
+				}
+				envioInformeAdm.insert(envioInformeBean);
 				
 			}
-			envioInformeAdm.insert(envioInformeBean);
-			
 		}
-		
 		
 		
 	}

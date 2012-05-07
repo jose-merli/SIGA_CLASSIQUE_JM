@@ -464,10 +464,16 @@ function onChangeIdTipoInforme()
 	}else{
 		document.getElementById("tipoFormato").disabled="disabled";	
 	}
+	
+	if(document.InformeFormEdicion.idTipoInforme.value=='CON'){
+		gestionarDatosConsultas();
+		
+	}
+	
 	// if(document.getElementById("idTipoInforme").value!='EJG' || document.getElementById("comboTipoEnvioHidden").value=='cmbTipoEnviosInst')
 		// document.getElementById("trEnvios").style.display =  "none";
 	// else
-		document.getElementById("trEnvios").style.display =  "block";
+		//document.getElementById("trEnvios").style.display =  "block";
 	
 }
 function inicio() 
@@ -546,7 +552,7 @@ function inicio()
 	// if(document.getElementById("idTipoInforme").value!='EJG' || document.getElementById("comboTipoEnvioHidden").value=='cmbTipoEnviosInst')
 		// document.getElementById("trEnvios").style.display =  "none";
 	//else
-		document.getElementById("trEnvios").style.display =  "block";
+		//document.getElementById("trEnvios").style.display =  "block";
 	
 }
 
@@ -555,25 +561,28 @@ function accionGuardar()
 {
 	
 	//alert('a ver?'+document.getElementById("comboTipoEnvioPermitidos").options.length);
-	
-	var tiposEnvio = document.getElementById("comboTipoEnvioPermitidos").options;
 	var tiposEnvioSeleccionados = "";
-	for ( var i = 1; i < tiposEnvio.length; i++) {
-		var tipoEnvio = tiposEnvio[i];
-		if(tipoEnvio.selected){
-			tiposEnvioSeleccionados += tipoEnvio.value+'##';
+	if(document.InformeFormEdicion.idTipoInforme.value!='CON'){
+	
+	
+		var tiposEnvio = document.getElementById("comboTipoEnvioPermitidos").options;
+		
+		for ( var i = 1; i < tiposEnvio.length; i++) {
+			var tipoEnvio = tiposEnvio[i];
+			if(tipoEnvio.selected){
+				tiposEnvioSeleccionados += tipoEnvio.value+'##';
+				
+			}
 			
 		}
+		if(tiposEnvioSeleccionados==''){
+			error = "<siga:Idioma key='errors.required' arg0='administracion.informes.literal.tipoEnviosPermitidos' />";	
+			
+			alert(error);
+			return false;	
 		
+		}
 	}
-	if(tiposEnvioSeleccionados==''){
-		error = "<siga:Idioma key='errors.required' arg0='administracion.informes.literal.tipoEnviosPermitidos' />";	
-		
-		alert(error);
-		return false;	
-	
-	}
-		
 
 	document.getElementById("directorio").disabled="";
 	document.getElementById("idInstitucion").disabled="";
