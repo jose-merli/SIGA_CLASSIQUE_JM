@@ -367,7 +367,7 @@
 						alert("Error: "+msg);
 					}
 				});
-				alert ("Se generará automáticamente un Nº de Identificación Interno");
+				alert ("<siga:Idioma key='messages.nota.automatico'/>");
 				
 			} // Si se dejo en blanco el Tipo de identificacion
 			else if (DatosRegistralesForm.tipoIdentificacion.value == ""){
