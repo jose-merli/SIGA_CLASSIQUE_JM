@@ -315,7 +315,7 @@ function onChangeTipoenvio() {
 					<input type="radio" name="destinatariosCheck" value="C" ><siga:Idioma key="administracion.informes.destinatarios.colegiados"/>
 					<input type="radio" name="destinatariosCheck" value="S" ><siga:Idioma key="administracion.informes.destinatarios.solicitantes"/>
 					<input type="radio" name="destinatariosCheck" value="P" ><siga:Idioma key="administracion.informes.destinatarios.procurador"/>
-					<input type="radio" name="destinatariosCheck" value="J" ><siga:Idioma key="administracion.informes.destinatarios.juzgado"/>
+					<!-- <input type="radio" name="destinatariosCheck" value="J" ><siga:Idioma key="administracion.informes.destinatarios.juzgado"/> -->
 			</td>
 		</tr>
 			<tr id="trEnvios">
