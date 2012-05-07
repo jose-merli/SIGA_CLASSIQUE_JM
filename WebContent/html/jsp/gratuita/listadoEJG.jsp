@@ -34,6 +34,7 @@
 	String app=request.getContextPath(); 
 	HttpSession ses=request.getSession(true);
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
+	String idInstitucion = usr.getLocation();
 	boolean esComision = usr.isComision();
 	
 	String idioma=usr.getLanguage().toUpperCase();
@@ -82,13 +83,7 @@
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 	<title><siga:Idioma key="gratuita.busquedaEJG.literal.EJG"/></title>
-	<script type="text/javascript">
-		function refrescarLocal()
-		{
-			alert(document.forms[0].target);
-			parent.buscar();
-		}
-	</script>
+	
 </head>
 
 <body onload="cargarChecks();checkTodos();">
@@ -232,6 +227,22 @@
 															
 	
 	 <%}%>	
+<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
+	<html:hidden property="idInstitucion" value = "<%=idInstitucion%>"/>
+	<html:hidden property="idTipoInforme" value='<%= usr.isComision() ?"CAJG":"EJG"%>'/>
+	<html:hidden property="enviar" value = "1"/>
+	<html:hidden property="descargar" value="1"/>
+	<html:hidden property="datosInforme"/>
+	<html:hidden property="modo" value = "preSeleccionInformes"/>
+	<input type='hidden' name='actionModal'>
+</html:form>	
+<!-- Formulario para la edicion del envio -->
+<form name="DefinirEnviosForm" method="POST" action="/SIGA/ENV_DefinirEnvios.do" target="mainWorkArea">
+	<input type="hidden" name="modo" value="">
+	<input type="hidden" name="tablaDatosDinamicosD" value="">
+
+</form>
+	 
 <!-- INICIO: SUBMIT AREA -->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 <!-- FIN: SUBMIT AREA -->	
@@ -401,7 +412,7 @@
 			
 			numero = idRegistros.substring(index+2);
 			
- 		   	datos = datos +"idinstitucion=="+idInstitucion + "##idtipo==" +idTipo+"##anio=="+anio +"##numero==" +numero+"%%%";
+ 		   	datos = datos +"idinstitucion=="+idInstitucion + "##idtipo==" +idTipo+"##anio=="+anio +"##numero==" +numero+"##idTipoInforme==EJG%%%";
 			
 			
 		}
@@ -413,7 +424,7 @@
    	function accionGenerarCarta()
 		{
 		
-		sub();
+		//sub();
 		datos =  getDatosSeleccionados();
 		if (datos == '') {
 			alert ('<siga:Idioma key="general.message.seleccionar"/>');
@@ -423,34 +434,34 @@
 		
 		numElementosSeleccionados =  ObjArray.length; 
 		
-		confirmar = '';
-		confirmar += "<siga:Idioma key='general.confirmar.demora' arg0='"+numElementosSeleccionados+"'/>";
-		//if(numElementosSeleccionados<=50 ||confirm(confirmar)){
 		
-			
-		var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='INF_InformesGenericos.do' target='submitArea'>");
-		formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=usr.getLocation() %>'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='EJG'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='enviar' value='1'>"));
 		if(numElementosSeleccionados>50){
-			formu.appendChild(document.createElement("<input type='hidden' name='descargar' value='0'>"));
+			document.InformesGenericosForm.descargar.value = '0';
 		}
 		else{
+			document.InformesGenericosForm.descargar.value = '1';
 			
-			formu.appendChild(document.createElement("<input type='hidden' name='descargar' value='1'>"));
 		}
+		document.InformesGenericosForm.datosInforme.value=datos;
 		
-		document.appendChild(formu);
-		formu.datosInforme.value=datos;
-		formu.submit();
-					
-			
-		//}else {
-			//fin();
-		//}
+		var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
+		if (arrayResultado==undefined||arrayResultado[0]==undefined){
+		   		
+	   	} 
+	   	else {
+	   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
+	   		if(confirmar){
+	   			var idEnvio = arrayResultado[0];
+			    var idTipoEnvio = arrayResultado[1];
+			    var nombreEnvio = arrayResultado[2];				    
+			    
+			   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
+			   	document.DefinirEnviosForm.modo.value='editar';
+			   	document.DefinirEnviosForm.submit();
+	   		}
+	   	}
+		
+		
 	}
 		
    	function accionEditarSeleccionados(){

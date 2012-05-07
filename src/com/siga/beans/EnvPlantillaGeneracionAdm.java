@@ -669,4 +669,16 @@ public class EnvPlantillaGeneracionAdm extends MasterBeanAdministrador
    	        //throw new ClsExceptions(e,"Error al obtener la plantilla");
    	    }
    	}
+   	public List<EnvPlantillasEnviosBean> getPlantillasEnvio(String idTipoEnvio,String idPlantilla,
+			String idInstitucion) throws ClsExceptions {
+		StringBuffer where = new StringBuffer("");
+		where.append(" WHERE IDTIPOENVIOS = ");
+		where.append(idTipoEnvio);
+		where.append(" AND IDPLANTILLA = ");
+		where.append(idInstitucion);
+		where.append(" AND IDINSTITUCION = ");
+		where.append(idInstitucion);
+		
+		return select(where.toString());
+	}
  }

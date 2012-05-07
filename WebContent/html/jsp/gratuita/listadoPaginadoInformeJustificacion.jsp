@@ -34,11 +34,7 @@
 <script>
 
 function informeGenerico(){
-	sub();
 	datos = "";
-	
-		
-	
 	var mostrarTodas = document.InformeJustificacionMasivaForm.mostrarTodas.value;
 	var idInstitucion  =document.InformeJustificacionMasivaForm.idInstitucion.value
 	var idPersona = document.InformeJustificacionMasivaForm.idPersona.value;
@@ -56,6 +52,7 @@ function informeGenerico(){
 	var incluirEjgPteCAJG = document.InformeJustificacionMasivaForm.incluirEjgPteCAJG.value;
 	var activarRestriccionesFicha = document.InformeJustificacionMasivaForm.activarRestriccionesFicha.value;
 	var fichaColegial = document.InformeJustificacionMasivaForm.fichaColegial.value; 
+	
 	if(fichaColegial=='true'){
 		document.InformesGenericosForm.enviar.value ='0';
 		activarRestriccionesFicha = 'true';
@@ -64,13 +61,31 @@ function informeGenerico(){
 		document.InformesGenericosForm.enviar.value ='1';
 	}
 	
-	datos = "fichaColegial=="+fichaColegial+"##mostrarTodas=="+mostrarTodas+ "##idInstitucion==" +idInstitucion+ "##idPersona==" +idPersona+ "##anio==" +anio+ "##estado==" +estado+ "##fechaJustificacionDesde==" +fechaJustificacionDesde+ "##fechaJustificacionHasta==" +fechaJustificacionHasta+ "##fechaDesde==" +fechaDesde+ "##fechaHasta==" +fechaHasta+ "##interesadoApellidos==" +interesadoApellidos+ "##interesadoNombre==" +interesadoNombre+ "##incluirEjgNoFavorable==" +incluirEjgNoFavorable+ "##incluirEjgSinResolucion==" +incluirEjgSinResolucion+ "##incluirSinEJG==" +incluirSinEJG+ "##incluirEjgPteCAJG==" +incluirEjgPteCAJG+ "##activarRestriccionesFicha==" +activarRestriccionesFicha+"%%%";
+	datos = "fichaColegial=="+fichaColegial+"##mostrarTodas=="+mostrarTodas+ "##idInstitucion==" +idInstitucion+ "##idPersona==" +idPersona+ "##anio==" +anio+ "##estado==" +estado+ "##fechaJustificacionDesde==" +fechaJustificacionDesde+ "##fechaJustificacionHasta==" +fechaJustificacionHasta+ "##fechaDesde==" +fechaDesde+ "##fechaHasta==" +fechaHasta+ "##interesadoApellidos==" +interesadoApellidos+ "##interesadoNombre==" +interesadoNombre+ "##incluirEjgNoFavorable==" +incluirEjgNoFavorable+ "##incluirEjgSinResolucion==" +incluirEjgSinResolucion+ "##incluirSinEJG==" +incluirSinEJG+ "##incluirEjgPteCAJG==" +incluirEjgPteCAJG+ "##activarRestriccionesFicha==" +activarRestriccionesFicha+"##idTipoInforme==JUSDE%%%";
 	document.InformesGenericosForm.idInstitucion.value = document.InformeJustificacionMasivaForm.idInstitucion.value;
 	document.InformesGenericosForm.datosInforme.value=datos;
-	document.InformesGenericosForm.submit();
+	if(document.getElementById("informeUnico").value=='1'){
+		sub();
+		document.InformesGenericosForm.submit();
+	}else{
 	
-
-				
+		var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
+		if (arrayResultado==undefined||arrayResultado[0]==undefined){
+		   		
+	   	} 
+	   	else {
+	   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
+	   		if(confirmar){
+	   			var idEnvio = arrayResultado[0];
+			    var idTipoEnvio = arrayResultado[1];
+			    var nombreEnvio = arrayResultado[2];				    
+			    
+			   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
+			   	document.DefinirEnviosForm.modo.value='editar';
+			   	document.DefinirEnviosForm.submit();
+	   		}
+	   	}
+	}
 }
 
 function ajustarCabeceraTabla(){
@@ -361,8 +376,8 @@ function preFunction(pagina){
 				break;	
 			}
 		}
-	}
-	if(isModificado){
+	 }
+	 if(isModificado){
 		if (confirm('<siga:Idioma key="gratuita.informeJustificacionMasiva.confirmar.guardarAlCambiarPagina"/>')){
 			return false;
 		}else{
@@ -622,6 +637,8 @@ function downloadDocumentoResolucion(docResolucion) {
 
 <bean:define id="usrBean" name="USRBEAN" scope="session"
 	type="com.atos.utils.UsrBean"></bean:define>
+<bean:define id="informeUnico" name="informeUnico" scope="request"></bean:define>
+<input type="hidden" id= "informeUnico" value="${informeUnico}">
 
 <!-- FIN: TITULO OPCIONAL DE LA TABLA -->
 <!-- INICIO: CAMPOS -->
@@ -1646,18 +1663,25 @@ function downloadDocumentoResolucion(docResolucion) {
 <html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
 	<html:hidden property="idInstitucion" />
 	<html:hidden property="idTipoInforme" value="JUSDE"/>
-	<html:hidden property="seleccionados" value="0"/>
-	<html:hidden property="enviar" />
+	<html:hidden property="enviar" value="0"/>
 	<html:hidden property="descargar" value="1"/>
 	<html:hidden property="datosInforme"/>
+	<html:hidden property="modo" value = "preSeleccionInformes"/>
+	<input type='hidden' name='actionModal'>
 </html:form>
+<!-- Formulario para la edicion del envio -->
+<form name="DefinirEnviosForm" method="POST" action="/SIGA/ENV_DefinirEnvios.do" target="mainWorkArea">
+	<input type="hidden" name="modo" value="">
+	<input type="hidden" name="tablaDatosDinamicosD" value="">
+
+</form>
 
 <iframe name="submitArea"
 	src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
 	style="display: none"></iframe>
 <!-- FIN: SUBMIT AREA -->
 <script>
-ajustarAltoResultados();
+	ajustarAltoResultados();
 </script>
 </body>
 

@@ -36,6 +36,7 @@
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
 	String idioma=usr.getLanguage().toUpperCase();
+	String idInstitucion = usr.getLocation();
 	//Vector obj = (Vector) ses.getAttribute("resultado");
 	ses.removeAttribute("resultado");
 	/** PAGINADOR ***/
@@ -65,7 +66,7 @@
 	}	 
 		String action=app+"/JGR_ExpedientesSOJ.do?noReset=true";
     /**************/
-
+String informeUnico =(String) request.getAttribute("informeUnico");
 	
 %>
 
@@ -88,6 +89,7 @@
 </head>
 
 <body onload="cargarChecks();checkTodos();">
+	<input type="hidden" id= "informeUnico" value="<%=informeUnico%>">
 	<html:form action="/JGR_ExpedientesSOJ.do" method="post" target="mainWorkArea" style="display:none">
 		<input type="hidden" name="modo" value="">
 		<html:hidden property="registrosSeleccionados" />
@@ -235,6 +237,17 @@
 	
 	 <%}%>
 <!-- INICIO: SUBMIT AREA -->
+<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
+	<html:hidden property="idInstitucion" value = "<%=idInstitucion%>"/>
+	<html:hidden property="idTipoInforme" value="SOJ"/>
+	<html:hidden property="enviar" value = "0"/>
+	<html:hidden property="descargar" value = "1"/>
+	<html:hidden property="datosInforme"/>
+	<html:hidden property="modo" value = "preSeleccionInformes"/>
+	<input type='hidden' name='actionModal'>
+</html:form>
+
+
 	<iframe name="submitArea21" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 <!-- FIN: SUBMIT AREA -->	
@@ -413,7 +426,6 @@
    	
    	function accionGenerarCarta()
 		{
-		
 		sub();
 		datos =  getDatosSeleccionados();
 		if (datos == '') {
@@ -427,17 +439,19 @@
 		confirmar = '';
 		confirmar += "<siga:Idioma key='general.confirmar.demora' arg0='"+numElementosSeleccionados+"'/>";
 		if(numElementosSeleccionados<=50 ||confirm(confirmar)){
+			document.InformesGenericosForm.datosInforme.value=datos;
+			if(document.getElementById("informeUnico").value=='1'){
+				document.InformesGenericosForm.submit();
+			}else{
 			
-				var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='INF_InformesGenericos.do' target='submitArea21'>");
-				formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=usr.getLocation() %>'>"));
-				formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
-				formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='SOJ'>"));
-				formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
-				formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
-				document.appendChild(formu);
-				formu.datosInforme.value=datos;
-				formu.submit();
-					
+				var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
+				if (arrayResultado==undefined||arrayResultado[0]==undefined){
+				  fin(); 		
+			   	} 
+			   	else {
+			   		fin();
+			   	}
+			}
 			
 		}else {
 			fin();

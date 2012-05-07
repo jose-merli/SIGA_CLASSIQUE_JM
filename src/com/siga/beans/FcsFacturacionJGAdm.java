@@ -4114,7 +4114,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 					/// CREAMOS EL INFORME
 					ArrayList filtrosInforme = this.getFiltrosInforme(beanFac.getIdInstitucion().toString(), beanFac.getIdFacturacion().toString());
 					InformePersonalizable informePersonalizable = new InformePersonalizable();
-					File fichero = informePersonalizable.getFicheroGenerado(usrbean,  InformePersonalizable.I_INFORMEFACTSJCS, filtrosInforme);
+					File fichero = informePersonalizable.getFicheroGenerado(usrbean,  InformePersonalizable.I_INFORMEFACTSJCS,null, filtrosInforme);
 					beanFac.setNombreFisico(fichero.getPath());
 				
 					tx.rollback();

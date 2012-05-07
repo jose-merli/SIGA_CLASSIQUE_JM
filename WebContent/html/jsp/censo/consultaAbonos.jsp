@@ -147,7 +147,8 @@
 		registrosPorPagina = "0";
 	}
 	/** FIN PAGINADOR ***/
-
+	String informeUnico =(String) request.getAttribute("informeUnico");
+	
 	boolean bIncluirBajaLogica = UtilidadesString
 			.stringToBoolean((String) request
 					.getAttribute("bIncluirRegistrosConBajaLogica"));
@@ -214,7 +215,7 @@
 
 <body class="tablaCentralCampos">
 		<!-- ******* INFORMACION GENERAL CLIENTE ****** -->
-
+<input type="hidden" id= "informeUnico" value="<%=informeUnico%>">
 	    <table class="tablaTitulo" align="center" cellspacing=0>
 		<tr>
 		<td class="titulitosDatos">
@@ -435,6 +436,21 @@
 			</table>
 		</div>
 
+<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
+	<html:hidden property="idInstitucion" value = "<%=idInstitucion%>"/>
+	<html:hidden property="idTipoInforme"/>
+	<html:hidden property="enviar" value="0"/>
+	<html:hidden property="descargar" value="1"/>
+	<html:hidden property="datosInforme"/>
+	<html:hidden property="modo" value = "preSeleccionInformes"/>
+	<input type='hidden' name='actionModal'>
+</html:form>
+<!-- Formulario para la edicion del envio -->
+<form name="DefinirEnviosForm" method="POST" action="/SIGA/ENV_DefinirEnvios.do" target="mainWorkArea">
+	<input type="hidden" name="modo" value="">
+	<input type="hidden" name="tablaDatosDinamicosD" value="">
+
+</form>
 
 								
 			<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
@@ -492,7 +508,6 @@
 	
 	function download(fila)
 	{
-		sub();
 		var idPago = "idPago"+fila;
 		
 		if(document.getElementById(idPago).value!=''){
@@ -502,33 +517,46 @@
 			idPersona = document.getElementById(idPers).value;
 			idPago = document.getElementById(idPago).value;
 			idInstitucion =  document.getElementById(idInst).value;
-			datos = +idInstitucion +","+idPago+","+idPersona +"#";
-			var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
-			formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucion%>'>"));
-		   	formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
-		   	formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='CPAGO'>"));
-		   	formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
-		   	formu.appendChild(document.createElement("<input type='hidden' name='tablaDatosDinamicosD' value=''>"));
-		   	formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
-		   	document.appendChild(formu);
-		   	formu.tablaDatosDinamicosD.value = datos;
-		   	formu.submit();
+			
+			datos = "idPersona=="+idPersona + "##idPago==" +idPago + "##idInstitucion==" +idInstitucion + "##idTipoInforme==CPAGO%%%";
+			
+			document.InformesGenericosForm.datosInforme.value =datos;
+			document.InformesGenericosForm.idTipoInforme.value = 'CPAGO';
+			
+			
+			
 		}else{
 			// EJEMPLO: var dat="idAbono==25##idinstitucion==2040%%%idAbono==26##idinstitucion==2040%%%idAbono==27##idinstitucion==2040%%%idAbono==28##idinstitucion==2040";
-			var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
-			formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucion%>' >"));
-			formu.appendChild(document.createElement("<input type='hidden' name='idInforme' >"));
-			formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='ABONO'>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
+			
+		
+		
 
 			var idInst = "oculto" + fila + "_2";
 			var idAbono = "oculto" + fila + "_1";
-			datos = 'idAbono=='+ document.getElementById(idAbono).value+ "##idinstitucion=="+ document.getElementById(idInst).value + "%%%";
+			datos = 'idAbono=='+ document.getElementById(idAbono).value+ "##idinstitucion=="+ document.getElementById(idInst).value + "##idTipoInforme==ABONO%%%";
 			
-			formu.datosInforme.value = datos;
-			document.appendChild(formu);
-			formu.submit();
+			document.InformesGenericosForm.datosInforme.value =datos;
+			document.InformesGenericosForm.idTipoInforme.value = 'ABONO';
+		}
+		if(document.getElementById("informeUnico").value=='1'){
+			document.InformesGenericosForm.submit();
+		}else{
+			var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
+			if (arrayResultado==undefined||arrayResultado[0]==undefined){
+			   		
+		   	} 
+		   	else {
+		   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
+		   		if(confirmar){
+		   			var idEnvio = arrayResultado[0];
+				    var idTipoEnvio = arrayResultado[1];
+				    var nombreEnvio = arrayResultado[2];				    
+				    
+				   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
+				   	document.DefinirEnviosForm.modo.value='editar';
+				   	document.DefinirEnviosForm.submit();
+		   		}
+		   	}
 		}
 
 	}

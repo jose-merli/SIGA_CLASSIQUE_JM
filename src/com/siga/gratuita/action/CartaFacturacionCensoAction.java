@@ -16,8 +16,11 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
+import com.siga.beans.AdmInformeAdm;
+import com.siga.beans.AdmTipoInformeAdm;
 import com.siga.beans.FcsFacturacionJGAdm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -119,7 +122,22 @@ public class CartaFacturacionCensoAction extends MasterAction {
 			}else{
 				miFormulario.setRegistrosSeleccionados(new ArrayList());
 			}
-
+			String informeUnico = ClsConstants.DB_TRUE;
+			if(datos!=null && datos.size()>0){
+				AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
+				// mostramos la ventana con la pregunta
+				
+				Vector informeBeans=adm.obtenerInformesTipo(idInstitucion,"CFACT",null, null);
+				if(informeBeans!=null && informeBeans.size()>1){
+					informeUnico = ClsConstants.DB_FALSE;
+					
+				}
+				
+				
+			}
+			request.setAttribute("informeUnico", informeUnico);
+			
+			
 			miFormulario.setDatosPaginador(databackup);
 
 		} catch (Exception e) {

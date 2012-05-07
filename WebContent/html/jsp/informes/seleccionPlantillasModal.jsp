@@ -52,7 +52,7 @@
 	
 	</head>
 
-	<body onload="inicioCheckInforme();">
+	<body>
 
 			<!-- TITULO -->
 			<!-- Barra de titulo actualizable desde los mantenimientos -->
@@ -81,8 +81,8 @@
 		   	      nombre="tablaDatos"
 		   		  borde="1"
 		   		  clase="tableTitle"
-		   		  nombreCol="infomes.seleccionPlantillas.literal.sel,infomes.seleccionPlantillas.literal.descripcion"
-		   		   tamanoCol="10,90"
+		   		  nombreCol="infomes.seleccionPlantillas.literal.sel,infomes.seleccionPlantillas.literal.descripcion,Envio por defecto"
+		   		   tamanoCol="10,50,40"
 		   		  alto="100%"
 		   		  modal="G"
 	   		  	  activarFilaSel="true" 
@@ -104,13 +104,30 @@
 			  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="" visibleConsulta="false" visibleEdicion="false" visibleBorrado="false" pintarEspacio="no" clase="listaNonEdit">
 							
 							<td>
-								<input type="checkbox" value="<%=bean.getIdTipoEnvio()%>" id="<%=bean.getIdPlantilla()%>" name="chkPL" <%=(bean.getPreseleccionado().equals("S"))?"checked":"" %> onclick="onClickCheckInforme(this);">
+								<input type="checkbox" value="<%=bean.getIdTipoEnvio()%>" id="<%=bean.getIdPlantilla()%>,<%=bean.getIdInstitucion()%>" name="chkPL" <%=(bean.getPreseleccionado().equals("S"))?"checked":"" %> >
 							</td>
 							
 							<td>
 							
 							
 								<%=UtilidadesString.mostrarDatoJSP(bean.getDescripcion()) %>
+							</td>
+							<td>
+								<%if(bean.getIdTipoEnvio().equals("")){%>
+									&nbsp;
+								<%}else if(bean.getIdTipoEnvio().equals("1")){%>
+									Correo electrónico
+								<%}else if(bean.getIdTipoEnvio().equals("2")){%>
+									Correo ordinario
+								<%}else if(bean.getIdTipoEnvio().equals("3")){%>
+									Fax
+								<%}else if(bean.getIdTipoEnvio().equals("4")){%>
+									Sms
+								<%}else if(bean.getIdTipoEnvio().equals("5")){%>
+									Burosms
+								<%}%>
+							
+								
 							</td>
 			  			</siga:FilaConIconos>
 <%
@@ -127,121 +144,8 @@
 		<!-- INICIO: SCRIPTS BOTONES -->
 		<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 		<script language="JavaScript">
-		function onClickCheckInforme(checkSeleccionado){
-			checkIdTipoEnvioInforme(checkSeleccionado,checkSeleccionado.value);
-
-			
-		}
 		
-		function checkIdTipoEnvioInforme(checkSeleccionado,valor){
-			if(checkSeleccionado.value==valor){
-				if(checkSeleccionado.checked){
-					checks = document.getElementsByName("chkPL");
-					
-					for(var i = 0 ; i <checks.length ; i++) {
-						check = checks[i];
-						if(check.value==valor){
-							check.disabled =  "";
-						}else{
-							check.disabled =  "disabled";
-							
-						}
-						
-					}
-				}else{
-					checks = document.getElementsByName("chkPL");
-					var atributoDisabled = "";
-					for(var i = 0 ; i <checks.length ; i++) {
-						check = checks[i];
-						if(check.checked && (check.value==valor )){
-							atributoDisabled = "disabled";
-							break;
-						}
-						
-					}
-					
-					
-					
-					
-					
-					for(var j = 0 ; j <checks.length ; j++) {
-						check = checks[j];
-						if(check.value!=valor ){
-							check.disabled =  atributoDisabled;
-						}
-						
-					}
-					
-				}
-			}else{
-				if(checkSeleccionado.checked){
-					checks = document.getElementsByName("chkPL");
-					for(var i = 0 ; i <checks.length ; i++) {
-						check = checks[i];
-						if(check.value==valor){
-							check.disabled =  "disabled";
-						}else{
-							check.disabled =  "";
-							
-						}
-						
-					}
-				}else{
-					checks = document.getElementsByName("chkPL");
-					
-					var atributoDisabled2 = "";
-					for(var i = 0 ; i <checks.length ; i++) {
-						check = checks[i];
-						
-						if(check.value!=valor && check.checked){
-							atributoDisabled2 = "disabled";
-							break;
-						}
-						
-					}
-					
-					
-					
-					
-					for(var j = 0 ; j <checks.length ; j++) {
-						check = checks[j];
-						if(check.value==valor ){
-							check.disabled =  atributoDisabled2;
-						}
-						
-					}
-					
-				}
-				
-				
-				
-			}
-			
-			
-			
-		}	
-		function inicioCheckInforme() {
-			checks = document.getElementsByName("chkPL");
-			var isAlgunoChecked = false;
-			for(var i = 0 ; i <checks.length ; i++) {
-				check = checks[i];
-				if(check.checked){
-					isAlgunoChecked = true;
-					break;
-				}
-				
-			}
-			if(isAlgunoChecked){
-				for(var j = 0 ; j <checks.length ; j++) {
-					check = checks[j];
-					if(check.value=="4" || check.value=="5"){
-						check.disabled =  "disabled";
-					}
-					
-				}
-				
-			}
-		}
+		
 		
 		
 			function accionGenerarCerrar() 
@@ -256,9 +160,9 @@
 					
 					if (oCheck[i].checked)
 					{
-						if(idTipoEnvio=="" && (oCheck[i].value=="4"||oCheck[i].value=="5")){
-							idTipoEnvio= oCheck[i].value;
-						}
+						// if(idTipoEnvio=="" && (oCheck[i].value=="4"||oCheck[i].value=="5")){
+							// idTipoEnvio= oCheck[i].value;
+						//}
 						var indice=aDatos.length;
 						for (j=0; j<aDatos.length; j++)
 						{
@@ -274,7 +178,7 @@
 					
 					auxi += aDatos[i] + "##";
 				}
-				
+				alert("auxi"+auxi);
 				if (auxi.length>2){
 					auxi=auxi.substring(0,auxi.length-2);
 					var array =new Array(2);

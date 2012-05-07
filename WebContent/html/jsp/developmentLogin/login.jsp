@@ -28,8 +28,11 @@
 <html>
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-
+		
+		
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		
+		
 
 		<script>
 		function entrar()
@@ -42,9 +45,10 @@
 			}
 		}
 
-		function entradaDirecta()
+		
+		function entradaDirectaCoruña()
 		{
-			frmLogin.location.value="2040";
+			frmLogin.location.value="2037";
 			frmLogin.profile.value="ADM";
 			frmLogin.user.value="";
 			frmLogin.letrado.value="N";
@@ -145,7 +149,9 @@
 				<td colspan="2" align="center">
 					<br>
 					<input type="button" class="button" value="Entrar" onClick="entrar()" title="Entrar con los datos de los combos">
+					<input type="button" class="button" value="Coruña" onClick="entradaDirectaCoruña()" title="Entrar a CORUÑA como ADMINistrador NO colegiado">
 					<input type="button" class="button" value="León" onClick="entradaDirecta()" title="Entrar a LEON como ADMINistrador NO colegiado">
+					
 					<input type="button" class="button" value="General" onClick="entradaDirectaGen()"  title="Entrar a GENERAL como ADMINistrador NO colegiado">
 				</td>
 			</tr>
@@ -168,5 +174,21 @@
 			<input type="hidden" name="letrado">
 			<input type="hidden" name="posMenu" value="0">
 		</form>
+		
 	</body>
+	<script type="text/javascript">
+	function entradaDirecta()
+	{
+			
+		//jAlert('Mensaje', 'Título','true');
+			
+			frmLogin.location.value="2040";
+			frmLogin.profile.value="ADM";
+			frmLogin.user.value="";
+			frmLogin.letrado.value="N";
+			var urlGet=document.frmLogin.action+"?location="+frmLogin.location.value+"&profile="+frmLogin.profile.value+"&user="+frmLogin.user.value+"&letrado="+frmLogin.letrado.value+"&tmpLoginInstitucion="+frmLogin.tmpLoginInstitucion.value+"&posMenu="+frmLogin.posMenu.value;
+			frmLogin.submit();
+
+	}
+	</script>
 </html>

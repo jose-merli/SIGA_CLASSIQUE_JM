@@ -714,12 +714,13 @@
 		</action>
 
 		<action path="/INF_InformesGenericos" type="com.siga.informes.action.InformesGenericosAction" name="InformesGenericosForm" scope="request">
+			<forward name="seleccionInformes" path="/html/jsp/informes/seleccionInformes.jsp"/>
 			<forward name="seleccionPlantillas" path="/html/jsp/informes/seleccionPlantillas.jsp"/>
 			<forward name="seleccionPlantillasModal" path="/html/jsp/informes/seleccionPlantillasModal.jsp"/>
 			<forward name="definirEnvios" path="/html/jsp/envios/redirigeDefinicionEnvios.jsp"/>
 		</action>
 
-		<action path="/INF_InformesMultiples" type="com.siga.informes.action.InformesFacturacionMultipleAction" name="InformesFacturacionMultipleForm" scope="request">
+		<action path="/INF_InformesMultiples" type="com.siga.informes.action.InformesFacturacionMultipleAction" parameter="FJGM" name="InformesFacturacionMultipleForm" scope="request">
             <forward name="inicio" path="/html/jsp/informes/informeFacturacionMultiple.jsp"/>
 			<!-- Modificar entradas correspondiente a generarInforme y descargar excels
 -->
@@ -728,7 +729,7 @@
 		</action>
 		
 		<!-- Informe multiple - BETA -->
-		<action path="/INF_InformesMultiplesBeta" type="com.siga.informes.action.InformesFacturacionMultipleAction" name="InformesFacturacionMultipleForm" scope="request">
+		<action path="/INF_InformesMultiplesBeta" type="com.siga.informes.action.InformesFacturacionMultipleAction"  parameter="FACJ2" name="InformesFacturacionMultipleForm" scope="request">
             <forward name="inicio" path="/html/jsp/informes/informeFacturacionMultipleBeta.jsp"/>
 			<forward name="generaInformes" path="/html/jsp/informes/informeFacturacionMultipleBeta.jsp"/>
 		</action>
@@ -1759,6 +1760,7 @@
 			<forward name="seleccionImpresoraModal" path="/html/jsp/envios/seleccionImpresoraModal.jsp"/>
 			<forward name="preguntaDireccionEnvio" path="/html/jsp/certificados/preguntaDireccionEnvio.jsp"/>
 			<forward name="export" path="/SIGASvlVectorToClientFile.svrl"/>
+			<forward name="confirmar" path="/html/jsp/general/msjConfirmar.jsp"/>
 		</action>
 
 		<!-- ***** Envíos a Grupos / Definir Plantillas ***** -->
@@ -3093,7 +3095,7 @@
 
         <!-- ***** Facturacion SJCS / mantenimiento de Informes de Facturaciones *****
 -->
-        <action path="/INF_InformeFacturacion" type="com.siga.informes.action.MantenimientoInformesAction" name="mantenimientoInformesForm" scope="request">
+        <action path="/INF_InformeFacturacion" type="com.siga.informes.action.MantenimientoInformesAction" parameter="FACJG" name="mantenimientoInformesForm" scope="request">
             <forward name="inicio" path="/html/jsp/informes/informeFacturacion.jsp"/>
         </action>
 

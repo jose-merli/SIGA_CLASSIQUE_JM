@@ -15,6 +15,7 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.*;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.ScsDocumentacionEJGAdm;
 import com.siga.beans.ScsDocumentacionEJGBean;
 import com.siga.beans.ScsDocumentoEJGAdm;
@@ -437,10 +438,20 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 		miHash.put("IDTIPOEJG", request.getParameter("IDTIPOEJG").toString());
 		miHash.put("IDINSTITUCION", request.getParameter("IDINSTITUCION")
 				.toString());
-
+		
 		try {
 			v = admBean.buscar(miHash);
 			request.setAttribute("resultado", v);
+			String informeUnico = ClsConstants.DB_TRUE;
+			AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
+			Vector informeBeans=adm.obtenerInformesTipo(this.getUserBean(request).getLocation(),"DEJG",null, null);
+			if(informeBeans!=null && informeBeans.size()>1){
+				informeUnico = ClsConstants.DB_FALSE;
+				
+			}
+
+			request.setAttribute("informeUnico", informeUnico);
+			
 		} catch (Exception e) {
 			throwExcp("messages.general.error", e, null);
 		}

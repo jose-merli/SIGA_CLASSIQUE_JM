@@ -279,10 +279,11 @@ public class TagPaginador extends TagSupport {
 	private String getAnchor(int page, String label) {
 		StringBuffer sb = new StringBuffer(ABEGIN);
 		if(this.getPreFunction()!=null && !this.getPreFunction().equals("")){
+			sb.append("var varReturn =");
 			sb.append(this.getPreFunction());
 			sb.append("(");
 			sb.append(page);
-			sb.append(");");
+			sb.append("); if(varReturn==false)return false;");
 		}
 		sb.append("paginar("+page+");");
 		if(this.getPostFunction()!=null && !this.getPostFunction().equals("")){

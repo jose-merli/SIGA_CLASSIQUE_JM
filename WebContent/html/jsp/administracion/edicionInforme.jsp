@@ -34,10 +34,85 @@
 	
 	<script src="<html:rewrite page='/html/js/validacionStruts.js'/>" type="text/javascript"></script>
 	<script src="<html:rewrite page='/html/js/validation.js'/>" type="text/javascript"></script>
-	
+<script src="<html:rewrite page='/html/js/jquery.js'/>"
+	type="text/javascript"></script>
 	
 </head>
+<script type="text/javascript">
 
+function inicioPlantillasEnvio() {
+	var comboTiposEnvio = document.getElementById('idTipoEnvioDefecto');
+	var comboPlantilla = document.getElementById('idPlantillaEnvioDefecto');
+	
+	if(comboPlantilla.options.length>0&&comboTiposEnvio.value!=''){
+	
+	$.ajax({ //Comunicación jQuery hacia JSP  
+           type: "POST",
+           url: "/SIGA/ENV_DefinirEnvios.do?modo=getJQueryPlantillasEnvio",
+           data: "idTipoEnvio="+comboTiposEnvio.value,
+           dataType: "json",
+           success:  function(json) {
+       			var plantillasEnvio = json.plantillasEnvio;
+       			var optionComboPlantilla = comboPlantilla.options;
+       			//Si tiene opciones el valor es el que iene que estar seleccioando
+       			if(optionComboPlantilla){
+       				var valueComboPlantilla = optionComboPlantilla[0].value;
+       				//vaciamos la listas
+					optionComboPlantilla.length = 0;
+					$("#idPlantillaEnvioDefecto").append("<option  value=''>&nbsp;</option>");
+       				$.each(plantillasEnvio, function(i,item2){
+           				var selected = "";
+           				if(valueComboPlantilla!='' && valueComboPlantilla==item2.idPlantillaEnvios){
+           					selected = "selected";
+       					}
+                        $("#idPlantillaEnvioDefecto").append("<option "+selected+" value='"+item2.idPlantillaEnvios+"'>"+item2.nombre+"</option>");
+                    });
+       			}
+	           			
+           },
+           error: function(xml,msg){
+        	   alert("Error: "+msg);//$("span#ap").text(" Error");
+           }
+        });
+
+	}else{
+		$("#idPlantillaEnvioDefecto").append("<option  value=''>&nbsp;</option>");
+		
+	}
+
+}
+
+function onChangeTipoenvio() {
+	var comboTiposEnvio = document.getElementById('idTipoEnvioDefecto');
+	var comboPlantilla = document.getElementById('idPlantillaEnvioDefecto');
+	if(comboTiposEnvio.value!=''){			
+	$.ajax({ //Comunicación jQuery hacia JSP  
+           type: "POST",
+           url: "/SIGA/ENV_DefinirEnvios.do?modo=getJQueryPlantillasEnvio",
+           data: "idTipoEnvio="+comboTiposEnvio.value,
+           dataType: "json",
+           success:  function(json) {
+       			var plantillasEnvio = json.plantillasEnvio;
+       			var optionComboPlantilla = comboPlantilla.options;
+       			optionComboPlantilla.length = 0;
+       			$("#idPlantillaEnvioDefecto").append("<option  value=''>&nbsp;</option>");
+       				$.each(plantillasEnvio, function(i,item2){
+           				var selected = "";
+                        $("#idPlantillaEnvioDefecto").append("<option "+selected+" value='"+item2.idPlantillaEnvios+"'>"+item2.nombre+"</option>");
+                    });
+       			
+	           			
+           },
+           error: function(xml,msg){
+        	   alert("Error: "+msg);//$("span#ap").text(" Error");
+           }
+        });
+	}else{
+		comboPlantilla.options.length = 0;
+		
+	}
+}
+</script>
 <body onload="cargarListadoArchivos();inicio();">
 
 <table class="tablaTitulo" cellspacing="0" heigth="32">
@@ -50,6 +125,7 @@
 	<html:hidden property="modo" />
 	<html:hidden property="modoInterno" />
 	<html:hidden property="claseTipoInforme" />
+	
 </html:form>
 <html:javascript formName="InformeFormEdicion" staticJavascript="true" />
 <html:form action="/ADM_GestionInformes"  name="InformeFormEdicion" type="com.siga.administracion.form.InformeForm" method="POST" target="submitArea" enctype="multipart/form-data">
@@ -60,11 +136,9 @@
 	<html:hidden property="claseTipoInforme" value="${InformeFormEdicion.claseTipoInforme}"/>
 	<html:hidden property="idConsulta" value="${InformeFormEdicion.idConsulta}"/>
 	<html:hidden property="idInstitucionConsulta" value="${InformeFormEdicion.idInstitucionConsulta}"/>
-	<html:hidden property="idTipoEnvio" value="${InformeFormEdicion.idTipoEnvio}"/>
-	<html:hidden property="idPlantillaEnvio" value="${InformeFormEdicion.idPlantillaEnvio}"/>
-	<html:hidden property="idPlantillaGeneracion" value="${InformeFormEdicion.idPlantillaGeneracion}"/>
-	
-	
+	<html:hidden property="idTiposEnvio"/>
+	<html:hidden property="idTipoEnvio"/>
+	<html:hidden property="idPlantillaEnvio"/>
 	
 	<input type="hidden" name="location" value="${InformeFormEdicion.usrBean.location}"/>
 	<input type="hidden" name="actionModal" />
@@ -72,10 +146,11 @@
 	
 	<bean:define id="location" name="InformeFormEdicion" property="usrBean.location"  />
 	<bean:define id="comboTipoEnvio" name="comboTipoEnvio"  scope="request"/>
+	<bean:define id="idTipoEnvioDef" name="idTipoEnvioDef"  scope="request"/>
+	<bean:define id="idPlantillaEnvioDef" name="idPlantillaEnvioDef"  scope="request"/>
 	<input type="hidden" id="comboTipoEnvioHidden" value="${comboTipoEnvio}" />
 	<% String[] parametrosComboEnvios = (String[])request.getAttribute("parametrosComboEnvios"); 
 		ArrayList idTipoEnvioSeleccionado = (ArrayList)request.getAttribute("idTipoEnvioSeleccionado");
-		ArrayList idPlantillaGeneracionSeleccionado = (ArrayList)request.getAttribute("idPlantillaGeneracionSeleccionado");
 		ArrayList idPlantillaEnvioSeleccionado = (ArrayList)request.getAttribute("idPlantillaEnvioSeleccionado");
 	
 	%>
@@ -237,10 +312,10 @@
 			</td>
 					
 			<td class="labelText">
-					<input type="checkbox" name="destinatariosCheck" value="C" ><siga:Idioma key="administracion.informes.destinatarios.colegiados"/>
-					<input type="checkbox" name="destinatariosCheck" value="S" ><siga:Idioma key="administracion.informes.destinatarios.solicitantes"/>
-					<input type="checkbox" name="destinatariosCheck" value="P" ><siga:Idioma key="administracion.informes.destinatarios.procurador"/>
-					<input type="hidden" name="destinatariosCheck" value="J" >
+					<input type="radio" name="destinatariosCheck" value="C" ><siga:Idioma key="administracion.informes.destinatarios.colegiados"/>
+					<input type="radio" name="destinatariosCheck" value="S" ><siga:Idioma key="administracion.informes.destinatarios.solicitantes"/>
+					<input type="radio" name="destinatariosCheck" value="P" ><siga:Idioma key="administracion.informes.destinatarios.procurador"/>
+					<input type="radio" name="destinatariosCheck" value="J" ><siga:Idioma key="administracion.informes.destinatarios.juzgado"/>
 			</td>
 		</tr>
 			<tr id="trEnvios">
@@ -256,34 +331,57 @@
 							<td width="15%"></td>
 
 						</tr>
-
 						<tr>
 							<td class="labelText"><siga:Idioma
-									key="envios.definir.literal.tipoenvio" />&nbsp;(*)</td>
-							<td ><siga:ComboBD nombre="comboTipoEnvio"
-									tipo="${comboTipoEnvio}" clase="boxCombo" obligatorio="false"
-									parametro="${parametrosComboEnvios}"
-									elementoSel="<%=idTipoEnvioSeleccionado%>"
-									accion="Hijo:comboPlantillaEnvio;accionComboTipoEnvio();" /></td>
+									key="administracion.informes.literal.tipoEnviosPermitidos" /> </td>
+							<td>
+							<siga:ComboBD nombre = "comboTipoEnvioPermitidos" tipo="${comboTipoEnvio}"
+							 clase="box" filasMostrar="7"
+							 parametro="${parametrosComboEnvios}"
+							seleccionMultiple="true" 
+							elementoSel="<%=idTipoEnvioSeleccionado%>" obligatorio="true"
+							accion="accionComboTipoEnvio(this.selectedIndex);"
+							
+							
+							/>
+							
+							</td>
+							
+							
+						
+							<td class="labelText"><siga:Idioma
+									key="administracion.informes.literal.tipoEnvioDefecto" /></td>
+							<td ><select  style="width:132px;" id="idTipoEnvioDefecto" onchange="onChangeTipoenvio();">
+									<option  value=""></option>
+									<c:forEach items="${tipoEnviosBeans}" var="tipoEnvio">
+										<c:set var="envioSeleccionado" value="" />
+										<c:if test="${idTipoEnvioDef==tipoEnvio.idTipoEnvios}">
+											<c:set var="envioSeleccionado" value="selected" />
+										</c:if>
+										<option ${envioSeleccionado} value="${tipoEnvio.idTipoEnvios}" ><c:out value="${tipoEnvio.nombre}"/> </option>
+									</c:forEach>
+							
+									</select>
+							</td>
 
 
 							<td class="labelText"><siga:Idioma
-									key="envios.plantillas.literal.plantilla" />&nbsp;(*)</td>
+									key="administracion.informes.literal.plantillaEnvioDefecto" /></td>
 
-							<td ><siga:ComboBD
-									nombre="comboPlantillaEnvio" tipo="cmbPlantillaEnvios2"
-									clase="boxCombo" obligatorio="FALSE" hijo="t"
-									elementoSel="<%=idPlantillaEnvioSeleccionado%>"
-									accion="Hijo:idPlantillaGeneracion" /></td>
-							<td class="labelText" style="display: none"><siga:Idioma
-									key="envios.definir.literal.plantillageneracion" /></td>
-							<td style="display: none"><siga:ComboBD
-									nombre="idPlantillaGeneracion" tipo="cmbPlantillaGeneracion"
-									elementoSel="<%=idPlantillaGeneracionSeleccionado%>"
-									clase="boxCombo" obligatorio="false" hijo="t"  />
+							<td ><select style="width:202px;" id="idPlantillaEnvioDefecto">
+									
+										<option value="${idPlantillaEnvioDef}"><c:out value="${idPlantillaEnvioDef}" /></option>
+									
+								</select>
+								<script>
+							inicioPlantillasEnvio();
+					</script>
 							</td>
+							
 						</tr>
-					</table></td>
+					</table>
+					
+					</td>
 
 
 
@@ -329,7 +427,7 @@ function cargarListadoArchivos(){
 	document.InformeFormEdicion.modoInterno.value = document.InformeForm.modo.value;
 	//if(document.InformeForm.modo.value=='modificar'||document.InformeForm.modo.value=='consultar'){
 		
-	if((document.InformeForm.modo.value=='modificar'||document.InformeForm.modo.value=='consultar') && document.InformeFormEdicion.idTipoEnvio.value!='4' && document.InformeFormEdicion.idTipoEnvio.value!='5'){
+	if((document.InformeForm.modo.value=='modificar'||document.InformeForm.modo.value=='consultar') ){
 
 		document.InformeFormEdicion.modo.value = "listadoArchivosInforme";
 		document.InformeFormEdicion.submit();
@@ -366,9 +464,9 @@ function onChangeIdTipoInforme()
 	}else{
 		document.getElementById("tipoFormato").disabled="disabled";	
 	}
-	if(document.getElementById("idTipoInforme").value!='EJG' || document.getElementById("comboTipoEnvioHidden").value=='cmbTipoEnviosInst')
-		document.getElementById("trEnvios").style.display =  "none";
-	else
+	// if(document.getElementById("idTipoInforme").value!='EJG' || document.getElementById("comboTipoEnvioHidden").value=='cmbTipoEnviosInst')
+		// document.getElementById("trEnvios").style.display =  "none";
+	// else
 		document.getElementById("trEnvios").style.display =  "block";
 	
 }
@@ -444,10 +542,10 @@ function inicio()
 		// document.getElementById("idTipoInforme").disabled = "disabled";
 		
 	}
-	inicioCombos();
-	if(document.getElementById("idTipoInforme").value!='EJG' || document.getElementById("comboTipoEnvioHidden").value=='cmbTipoEnviosInst')
-		document.getElementById("trEnvios").style.display =  "none";
-	else
+	
+	// if(document.getElementById("idTipoInforme").value!='EJG' || document.getElementById("comboTipoEnvioHidden").value=='cmbTipoEnviosInst')
+		// document.getElementById("trEnvios").style.display =  "none";
+	//else
 		document.getElementById("trEnvios").style.display =  "block";
 	
 }
@@ -455,6 +553,28 @@ function inicio()
 
 function accionGuardar() 
 {
+	
+	//alert('a ver?'+document.getElementById("comboTipoEnvioPermitidos").options.length);
+	
+	var tiposEnvio = document.getElementById("comboTipoEnvioPermitidos").options;
+	var tiposEnvioSeleccionados = "";
+	for ( var i = 1; i < tiposEnvio.length; i++) {
+		var tipoEnvio = tiposEnvio[i];
+		if(tipoEnvio.selected){
+			tiposEnvioSeleccionados += tipoEnvio.value+'##';
+			
+		}
+		
+	}
+	if(tiposEnvioSeleccionados==''){
+		error = "<siga:Idioma key='errors.required' arg0='administracion.informes.literal.tipoEnviosPermitidos' />";	
+		
+		alert(error);
+		return false;	
+	
+	}
+		
+
 	document.getElementById("directorio").disabled="";
 	document.getElementById("idInstitucion").disabled="";
 	document.getElementById("idPlantilla").disabled="";
@@ -496,31 +616,9 @@ function accionGuardar()
 		fin();
 		return false;
 	}
-	var cmbTipoEnvio = document.getElementsByName("comboTipoEnvio")[0];
-	var cmbPlantillaEnvio = document.getElementsByName("comboPlantillaEnvio")[0];
-	var cmbPlantillaGeneracion = document.getElementsByName("idPlantillaGeneracion")[0];
-	if (cmbTipoEnvio.value!='') {
-		var idTipoEnvio=cmbTipoEnvio.value.split(",")[1];
-		document.InformeFormEdicion.idTipoEnvio.value = idTipoEnvio;	
-	}else{
-		document.InformeFormEdicion.idTipoEnvio.value = "";
-		
-	}
-	if (cmbPlantillaEnvio.value!='') {
-		var idPlantillaEnvio=cmbPlantillaEnvio.value.split(",")[0];
-		document.InformeFormEdicion.idPlantillaEnvio.value = idPlantillaEnvio;	
-	}else{
-		document.InformeFormEdicion.idPlantillaEnvio.value = "";
-		
-	}
-	if (cmbPlantillaGeneracion.value!='') {
-		var idPlantillaGeneracion=cmbPlantillaGeneracion.value;
-		document.InformeFormEdicion.idPlantillaGeneracion.value = idPlantillaGeneracion;	
-	}else{
-		document.InformeFormEdicion.idPlantillaGeneracion.value = "";
-		
-	}
-	
+	document.InformeFormEdicion.idTiposEnvio.value = tiposEnvioSeleccionados;
+	document.InformeFormEdicion.idTipoEnvio.value = document.getElementById("idTipoEnvioDefecto").value;
+	document.InformeFormEdicion.idPlantillaEnvio.value = document.getElementById("idPlantillaEnvioDefecto").value;
 	sub();
 	if(document.InformeFormEdicion.idTipoInforme.value!='CON'){ 
 		listaDestinatarios = document.getElementsByName("destinatariosCheck");
@@ -550,6 +648,8 @@ function accionGuardar()
 	document.InformeFormEdicion.modo.value = document.InformeForm.modo.value; 
 	document.getElementById("directorio").disabled = "";
 	 if (validateInformeFormEdicion(document.InformeFormEdicion)){
+			 
+	 
 		document.InformeFormEdicion.submit();
 		document.InformeForm.modo.value="modificar";
 		if(formatearFormulario(document.InformeFormEdicion)){
@@ -618,45 +718,63 @@ function gestionarDatosConsultas()
 	
 	
 }
-function accionComboTipoEnvio() {
-	
-	var cmbTipoEnvio = document.getElementsByName("comboTipoEnvio")[0];
-	var cmbPlantillaGeneracion = document.getElementsByName("idPlantillaGeneracion")[0];
-	if (cmbTipoEnvio.value!='') {
-		var idTipoEnvio=cmbTipoEnvio.value.split(",")[1];
-		if(idTipoEnvio=='4' ||idTipoEnvio=='5' ){
-				
-		
-			cmbPlantillaGeneracion.disabled="disabled";		
-			document.InformeFormEdicion.preseleccionado.value = 'N';
-			document.getElementById("preseleccionado").disabled = "disabled";
-		}else{
-			cmbPlantillaGeneracion.disabled="";
-			document.getElementById("preseleccionado").disabled = "";
+function accionComboTipoEnvio(index) {
+	var envioDefectoSeleccionado = document.getElementById("idTipoEnvioDefecto").value;
+	document.getElementById("idTipoEnvioDefecto").options.length = 0;
+
+	var tiposEnvio = document.getElementById("comboTipoEnvioPermitidos").options;
+	var findDefecto = false;
+	$("#idTipoEnvioDefecto").append("<option  value=''>&nbsp;</option>");
+	for ( var i = 0; i < tiposEnvio.length; i++) {
+		var optionTipoEnvio =tiposEnvio[i];
+		if(optionTipoEnvio.selected){
+			var idTipoEnvio = optionTipoEnvio.value.split(',')[1];
+			if(!findDefecto && idTipoEnvio==envioDefectoSeleccionado){
+				findDefecto = true;
+			}
+			$("#idTipoEnvioDefecto").append("<option  value='"+idTipoEnvio+"'>"+optionTipoEnvio.text+"</option>");
 		}
-	}else{
-		cmbPlantillaGeneracion.disabled="";
-		document.getElementById("preseleccionado").disabled = "";
-		
 	}
-
+	document.getElementById("idTipoEnvioDefecto").value = envioDefectoSeleccionado;
+	if(!findDefecto){
+		onChangeTipoenvio();
 	
+	}
+		
+
 }
+/*function accionComboTipoEnvio(index) {
+	var envioDefectoSeleccionado = document.getElementById("idTipoEnvioDefecto").value;
+	document.getElementById("idTipoEnvioDefecto").options.length = 0;
+
+	var tiposEnvio = document.getElementById("comboTipoEnvioPermitidos").options;
+	boolean findDefecto = false;
+	for ( var i = 0; i < tiposEnvio.length; i++) {
+		var optionTipoEnvio =tiposEnvio[i];
+		if(optionTipoEnvio.selected){
+			var idTipoEnvio = optionTipoEnvio.value.split(',')[1];
+			if(!findDefecto && idTipoEnvio==envioDefectoSeleccionado){
+				findDefecto = true;
+			}
+			$("#idTipoEnvioDefecto").append("<option  value='"+idTipoEnvio+"'>"+optionTipoEnvio.text+"</option>");
+		}
+	}
+	document.getElementById("idTipoEnvioDefecto").value = envioDefectoSeleccionado;
+	if(!findDefecto){
+		//onChangeTipoenvio();
+	
+	}
+		
+
+}*/
 
 
-function inicioCombos() 
-{		
-	var cmbTipoEnvio = document.getElementsByName("comboTipoEnvio")[0];
-	cmbTipoEnvio.onchange();
-}
 
 <!-- Asociada al boton Restablecer -->
 function accionRestablecer() 
 {		
 	document.InformeFormEdicion.reset();
 }
-
-	
 
 </script>
 

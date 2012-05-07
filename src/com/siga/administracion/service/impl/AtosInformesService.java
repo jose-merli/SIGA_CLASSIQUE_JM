@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,10 +13,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 
 import com.atos.utils.ClsConstants;
@@ -30,6 +25,8 @@ import com.siga.administracion.form.InformeForm;
 import com.siga.administracion.service.InformesService;
 import com.siga.beans.AdmConsultaInformeAdm;
 import com.siga.beans.AdmConsultaInformeBean;
+import com.siga.beans.AdmEnvioInformeAdm;
+import com.siga.beans.AdmEnvioInformeBean;
 import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.AdmInformeBean;
 import com.siga.beans.AdmLenguajesAdm;
@@ -39,11 +36,12 @@ import com.siga.beans.AdmTipoInformeBean;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenInstitucionBean;
 import com.siga.beans.ConConsultaBean;
+import com.siga.beans.EnvPlantillasEnviosAdm;
+import com.siga.beans.EnvPlantillasEnviosBean;
+import com.siga.beans.EnvTipoEnviosAdm;
+import com.siga.beans.EnvTipoEnviosBean;
 import com.siga.beans.FileInforme;
-import com.siga.beans.ScsActuacionAsistenciaAdm;
-import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.gratuita.form.AsistenciaForm;
 
 import es.satec.businessManager.BusinessException;
 import es.satec.businessManager.BusinessManager;
@@ -78,6 +76,8 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 		AdmInformeBean informeVo = informeAdm.obtenerInforme(idInstitucion,informeForm.getIdPlantilla());
 		return informeVo;
 	}
+	
+	
 	public void borrarInforme(InformeForm informeForm, UsrBean usrBean)
 			throws ClsExceptions, SIGAException {
 		AdmInformeBean informeVo = informeForm.getInformeVO();
@@ -198,12 +198,36 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 		if(!informeOld.getNombreFisico().equals(informeVo.getNombreFisico())){
 			cambiaNombreFiles(getDirectorio(informeForm),informeOld.getNombreFisico(),informeVo.getNombreFisico());
 		}
-		
-//		if(!informeOld.getDirectorio().equals(informeVo.getDirectorio())){
-//			cambiaDirectorio(getDirectorio(informeFormOld),getDirectorio(informeForm));
-//		}
-//		
 		informeAdm.updateDirect(informeVo);
+		AdmEnvioInformeAdm envioInformeAdm = new AdmEnvioInformeAdm(usrBean);
+		String idTipoEnvios = informeForm.getIdTiposEnvio();
+		String[] idTiposEnvio = idTipoEnvios.split("##");
+		Hashtable tiposEnvioHashtable = new Hashtable();
+		tiposEnvioHashtable.put(AdmEnvioInformeBean.C_IDINSTITUCION, informeVo.getIdInstitucion());
+		tiposEnvioHashtable.put(AdmEnvioInformeBean.C_IDPLANTILLA, informeVo.getIdPlantilla());
+		String[] claves = {AdmEnvioInformeBean.C_IDINSTITUCION,AdmEnvioInformeBean.C_IDPLANTILLA};
+		envioInformeAdm.deleteDirect(tiposEnvioHashtable, claves);
+		for (int i = 0; i < idTiposEnvio.length; i++) {
+			String[] idsTipoEnvio = idTiposEnvio[i].split(",");
+			String idTipoEnvio = idsTipoEnvio[1];
+			AdmEnvioInformeBean envioInformeBean = new AdmEnvioInformeBean();
+			envioInformeBean.setIdInstitucion(informeVo.getIdInstitucion());
+			envioInformeBean.setIdPlantilla(informeVo.getIdPlantilla());
+			envioInformeBean.setIdTipoEnvios(idTipoEnvio);
+			if(informeForm.getIdTipoEnvio()!=null &&informeForm.getIdTipoEnvio().equals(idTipoEnvio)){
+				envioInformeBean.setDefecto(ClsConstants.DB_TRUE);
+				if(informeForm.getIdPlantillaEnvio()!=null &&!informeForm.getIdPlantillaEnvio().equals(""))
+					envioInformeBean.setIdPlantillaEnvioDef(informeForm.getIdPlantillaEnvio());
+			}else{
+				envioInformeBean.setDefecto(ClsConstants.DB_FALSE);
+				
+			}
+			envioInformeAdm.insert(envioInformeBean);
+			
+		}
+		
+		
+		
 	}
 	private void cambiaNombreFiles(String pathDirectorio, String nombreFisicoOld, String nombreFisico){	
 		File directorioFile = new File (pathDirectorio);
@@ -477,10 +501,22 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 //		}
 		admConsulta.deleteConsultaInforme(consultaInforme);
 		borrarInforme(informeForm, usrBean);
-
 		
-		
-		
+	}
+	public List<EnvTipoEnviosBean> getTiposEnvio(List<String> excluidosList, UsrBean usrBean) throws ClsExceptions {
+		EnvTipoEnviosAdm tipoEnviosAdm = new EnvTipoEnviosAdm(usrBean);
+		List<EnvTipoEnviosBean> tipoEnviosBeans = tipoEnviosAdm.select(excluidosList,usrBean.getLanguage());
+		return tipoEnviosBeans;
+	}
+	public List<EnvTipoEnviosBean> getTiposEnvioPermitidos(AdmInformeBean informeBean, UsrBean usrBean) throws ClsExceptions {
+		EnvTipoEnviosAdm tipoEnviosAdm = new EnvTipoEnviosAdm(usrBean);
+		List<EnvTipoEnviosBean> tipoEnviosBeans = tipoEnviosAdm.getEnviosPermitidos(informeBean,usrBean.getLanguage());
+		return tipoEnviosBeans;
+	}
+	public List<EnvPlantillasEnviosBean> getPlantillasEnvio(String idTipoEnvio, String idInstitucion, UsrBean usrBean) throws ClsExceptions {
+		EnvPlantillasEnviosAdm plantillasEnviosAdm = new EnvPlantillasEnviosAdm(usrBean);
+		List<EnvPlantillasEnviosBean> plantillasEnviosBeans = plantillasEnviosAdm.getPlantillasEnvio(idTipoEnvio,idInstitucion);
+		return plantillasEnviosBeans;
 	}
 	
 

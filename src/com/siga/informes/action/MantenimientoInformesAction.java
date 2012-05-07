@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,8 +13,10 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
+import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.AdmTipoFiltroInformeBean;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
@@ -81,9 +84,22 @@ public class MantenimientoInformesAction extends MasterAction {
 					return super.executeInternal(mapping, formulario, request,
 							response);
 				}
-			} else
-				return super.executeInternal(mapping, formulario, request,
+			} else{
+				String idTipoInforme = mapping.getParameter();
+				if(idTipoInforme!=null &&!idTipoInforme.equals("")){
+					String informeUnico = ClsConstants.DB_TRUE;
+					AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
+					Vector informeBeans=adm.obtenerInformesTipo(this.getUserBean(request).getLocation(),idTipoInforme,null, null);
+					if(informeBeans!=null && informeBeans.size()>1){
+						informeUnico = ClsConstants.DB_FALSE;
+						
+					}
+	
+					request.setAttribute("informeUnico", informeUnico);
+				}
+				return super.executeInternal(mapping, formulario, request,					
 						response);
+			}
 		} catch (SIGAException e) {
 			throw e;
 		}catch (Exception e) {
@@ -98,7 +114,7 @@ public class MantenimientoInformesAction extends MasterAction {
 		ArrayList<HashMap<String, String>> filtrosInforme = 
 			obtenerDatosFormCertificadoPago(formulario, request);
 		InformePersonalizable inf = new InformePersonalizable();
-		File ficheroSalida = inf.getFicheroGenerado(usr, InformePersonalizable.I_CERTIFICADOPAGO, filtrosInforme);
+		File ficheroSalida = inf.getFicheroGenerado(usr, InformePersonalizable.I_CERTIFICADOPAGO,null, filtrosInforme);
 		request.setAttribute("nombreFichero", ficheroSalida.getName());
 		request.setAttribute("rutaFichero", ficheroSalida.getPath());
 		request.setAttribute("borrarFichero", "true");

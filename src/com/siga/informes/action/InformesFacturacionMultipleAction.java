@@ -6,11 +6,13 @@
 package com.siga.informes.action;
 
 import java.io.File;
+import java.util.Vector;
 
 import javax.servlet.http.*;
 
 import org.apache.struts.action.*;
 import com.atos.utils.*;
+import com.siga.beans.AdmInformeAdm;
 import com.siga.general.*;
 import com.siga.informes.InformeFacturasEmitidas;
 
@@ -44,6 +46,19 @@ public class InformesFacturacionMultipleAction extends MasterAction
 			// La primera vez que se carga el formulario 
 			// Abrir
 			if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
+				
+				String idTipoInforme = mapping.getParameter();
+				if(idTipoInforme!=null &&!idTipoInforme.equals("")){
+					String informeUnico = ClsConstants.DB_TRUE;
+					AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
+					Vector informeBeans=adm.obtenerInformesTipo(this.getUserBean(request).getLocation(),idTipoInforme,null, null);
+					if(informeBeans!=null && informeBeans.size()>1){
+						informeUnico = ClsConstants.DB_FALSE;
+						
+					}
+	
+					request.setAttribute("informeUnico", informeUnico);
+				}
 				mapDestino = abrir(mapping, miForm, request, response);						
 			}
 			else if (accion.equalsIgnoreCase("generarInforme")){

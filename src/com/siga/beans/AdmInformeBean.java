@@ -21,9 +21,7 @@ public class AdmInformeBean extends MasterBean {
 	private String idPlantilla, descripcion, alias, nombreFisico, directorio, idTipoInforme, visible, nombreSalida,
 			preseleccionado, aSolicitantes, destinatarios, tipoformato,codigo,orden, claseJava;
 	private Integer idInstitucion;
-	private String idTipoEnvio;
-	private String idPlantillaEnvio;
-	private String idPlantillaGeneracion;
+	
 	static public final String TIPODESTINATARIO_CENPERSONA = "C";
 	static public final String TIPODESTINATARIO_SCSPERSONAJG = "S";
 	static public final String TIPODESTINATARIO_SCSPROCURADOR = "P";
@@ -56,9 +54,7 @@ public class AdmInformeBean extends MasterBean {
 	static public final String C_CODIGO = "CODIGO";
 	static public final String C_ORDEN = "ORDEN";
 	static public final String C_CLASEJAVA = "CLASEJAVA";
-	static public final String C_IDTIPOENVIO = "IDTIPOENVIO";
-	static public final String C_IDPLANTILLAENVIO = "IDPLANTILLAENVIO";
-	static public final String C_IDPLANTILLAGENERACION = "IDPLANTILLAGENERACION";
+	
 
 	
 	// Metodos SET
@@ -125,32 +121,11 @@ public class AdmInformeBean extends MasterBean {
 		informeForm.setTipoFormato(tipoformato);
 		informeForm.setOrden(orden);
 		informeForm.setUsrBean(usrBean);
-		informeForm.setIdTipoEnvio(idTipoEnvio);
-		informeForm.setIdPlantillaEnvio(idPlantillaEnvio);
-		informeForm.setIdPlantillaGeneracion(idPlantillaGeneracion);
-		
 		
 		return informeForm;
 		
 	}
-	public String getIdTipoEnvio() {
-		return idTipoEnvio;
-	}
-	public void setIdTipoEnvio(String idTipoEnvio) {
-		this.idTipoEnvio = idTipoEnvio;
-	}
-	public String getIdPlantillaEnvio() {
-		return idPlantillaEnvio;
-	}
-	public void setIdPlantillaEnvio(String idPlantillaEnvio) {
-		this.idPlantillaEnvio = idPlantillaEnvio;
-	}
-	public String getIdPlantillaGeneracion() {
-		return idPlantillaGeneracion;
-	}
-	public void setIdPlantillaGeneracion(String idPlantillaGeneracion) {
-		this.idPlantillaGeneracion = idPlantillaGeneracion;
-	}
+	
 	
 	
 }

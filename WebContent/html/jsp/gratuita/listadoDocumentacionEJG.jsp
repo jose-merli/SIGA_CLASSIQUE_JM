@@ -29,6 +29,7 @@
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession(true);
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
+	String idInstitucion = usr.getLocation();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
 	Vector obj = (Vector) request.getAttribute("resultado");
 	String accion = (String)request.getSession().getAttribute("accion");
@@ -62,7 +63,7 @@
 		
 	};
 	String[] datoPresentador={usr.getLocation(),idTipoEJG,anio,numero};
-	
+	String informeUnico =(String) request.getAttribute("informeUnico");
 %>
 
 <html>
@@ -84,12 +85,13 @@
 </head>
 
 <body class="tablaCentralCampos">	
-	
+	<input type="hidden" id= "informeUnico" value="<%=informeUnico%>">
 	<html:form action="/JGR_DocumentacionEJG" method="post" target="mainPestanas" style="display:none">
 	<input type="hidden" name="modo" value="<%=accion%>">
 	<input type="hidden" name="idTipoEJG" value="<%=idTipoEJG%>">
 	<input type="hidden" name="anio" value="<%=anio%>">
 	<input type="hidden" name="numero" value="<%=numero%>">
+	
 			<!-- RGG: cambio a formularios ligeros -->
 			<input type="hidden" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
@@ -213,6 +215,16 @@
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 	<siga:ConjBotonesAccion botones="<%=botones %>" clase="botonesDetalle" modo="<%=accion%>"/>
 
+<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
+	<html:hidden property="idInstitucion" value ="<%=idInstitucion%>"/>
+	<html:hidden property="idTipoInforme" value="DEJG"/>
+	<html:hidden property="enviar" value="0"/>
+	<html:hidden property="descargar" value="1"/>
+	<html:hidden property="datosInforme"/>
+	<html:hidden property="modo" value = "preSeleccionInformes"/>
+	<input type='hidden' name='actionModal'>
+</html:form>	
+
 	
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">	
@@ -247,20 +259,26 @@
 		}
 		
 		function accionImprimir(){
-						
-			var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
-			formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=usr.getLocation()%>'>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='DEJG'>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='asolicitantes' value='S'>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
-			formu.appendChild(document.createElement('<input type="hidden" name="idTipoEJG" value="<%=idTipoEJG%>">'));
-			formu.appendChild(document.createElement('<input type="hidden" name="anio" value="<%=anio%>">'));
-			formu.appendChild(document.createElement('<input type="hidden" name="numero" value="<%=numero%>">'));
-	
-			document.appendChild(formu);
-			formu.submit();
+			sub();
+			var idInstitucion= document.getElementById ('idInstitucion').value;
+			var idTipoEJG= document.getElementById ('idTipoEJG').value;
+			var anio= document.getElementById ('anio').value;
+			var numero= document.getElementById ('numero').value;
+			var datos = "idInstitucion=="+idInstitucion + "##idtipo==" +idTipoEJG+"##anio=="+anio +"##numero==" +numero+"##idTipoInforme==DEJG%%%";
+			document.InformesGenericosForm.datosInforme.value =datos;
+
+			if(document.getElementById("informeUnico").value=='1'){
+				document.InformesGenericosForm.submit();
+			}else{
+			var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
+			if (arrayResultado==undefined||arrayResultado[0]==undefined){
+				fin();	
+		   	} 
+		   	else {
+		   		fin();
+		   	}			
+			
+			}
 		}
 		
 	

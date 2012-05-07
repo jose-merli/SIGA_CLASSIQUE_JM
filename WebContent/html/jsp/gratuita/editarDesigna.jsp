@@ -563,7 +563,7 @@
 		}
 		
 		function generarCarta() {
-			sub();
+			//sub();
 			
 			//idInstitucion  = document.MaestroDesignasForm.idInstitucion;
 			idInstitucion  = <%=idInstitucionLocation%>;
@@ -571,24 +571,32 @@
 			anio  = <%=anio%>;
 			idTurno  = <%=idTurno%>;
 			numero = <%=numero%>;
- 		   	datos = "idInstitucion=="+idInstitucion +"##anio=="+anio + "##idTurno==" +idTurno+"##numero==" +numero+"%%%";
+ 		   	datos = "idInstitucion=="+idInstitucion +"##anio=="+anio + "##idTurno==" +idTurno+"##numero==" +numero+"##idTipoInforme==OFICI%%%";
 			
 			
-			var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
-			formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucionLocation%>'>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='OFICI'>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='enviar' value='1'>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
-				
-			formu.appendChild(document.createElement("<input type='hidden' name='descargar' value='1'>"));
+ 		   document.InformesGenericosForm.datosInforme.value=datos;
+ 		  var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
+ 			if (arrayResultado==undefined||arrayResultado[0]==undefined){
+ 			   		
+ 		   	} 
+ 		   	else {
+ 		   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
+ 		   		if(confirmar){
+ 		   			var idEnvio = arrayResultado[0];
+ 				    var idTipoEnvio = arrayResultado[1];
+ 				    var nombreEnvio = arrayResultado[2];				    
+ 				    
+ 				   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
+ 				   	document.DefinirEnviosForm.modo.value='editar';
+ 				   	document.DefinirEnviosForm.submit();
+ 		   		}
+ 		   	}
 			
-			
-			document.appendChild(formu);
-			formu.datosInforme.value=datos;
-			formu.submit();
 	
+			
+			
+			
+			
 	}
 		 	
 	function accionCerrar() {
@@ -1043,6 +1051,21 @@
 <siga:ConjBotonesAccion botones="G,R,V" clase="botonesDetalle"
 	modo="<%=modo1%>" />
 
+<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
+	<html:hidden property="idInstitucion" value = "<%=idInstitucionLocation%>"/>
+	<html:hidden property="idTipoInforme" value="OFICI"/>
+	<html:hidden property="enviar" value="1"/>
+	<html:hidden property="descargar" value="1"/>
+	<html:hidden property="datosInforme"/>
+	<html:hidden property="modo" value = "preSeleccionInformes"/>
+	<input type='hidden' name='actionModal'>
+</html:form>
+<!-- Formulario para la edicion del envio -->
+<form name="DefinirEnviosForm" method="POST" action="/SIGA/ENV_DefinirEnvios.do" target="mainWorkArea">
+	<input type="hidden" name="modo" value="">
+	<input type="hidden" name="tablaDatosDinamicosD" value="">
+
+</form>
 
 <iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"
 	style="display: none"></iframe>

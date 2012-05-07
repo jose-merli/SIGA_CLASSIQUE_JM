@@ -34,6 +34,8 @@
 	//Combo Facturaciones
 	String comboParams[] = new String[1];
 	comboParams[0] = usrbean.getLocation();
+	String informeUnico =(String) request.getAttribute("informeUnico");
+
 %>
 
 
@@ -63,6 +65,7 @@
 
 <!-- Campos -->
 <siga:ConjCampos leyenda="factSJCS.informes.informeMultiple.cabecera">
+<input type="hidden" id= "informeUnico" value="<%=informeUnico%>">
 	<table class="tablaCampos" align="center">
 		<tr>
 			<td class="labelText" width="150"><siga:Idioma
@@ -85,13 +88,17 @@
 
 
 <!-- Formularios -->
-<html:form action="/INF_InformesGenericos.do" method="POST"	target="submitArea">
-	<input type="hidden" name="actionModal" value="">
-	<html:hidden property="idTipoInforme" value="FJGM" />
-	<html:hidden property="datosInforme" value="" />
-	<html:hidden property="seleccionados" value="" />
-	<html:hidden property="idInforme" value="" />
+<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
+	<html:hidden property="idInstitucion" value="<%=usrbean.getLocation()%>"/>
+	<html:hidden property="idTipoInforme" value="FJGM"/>
+	<html:hidden property="enviar" value="0"/>
+	<html:hidden property="descargar" value="1"/>
+	<html:hidden property="datosInforme"/>
+	<html:hidden property="modo" value = "preSeleccionInformes"/>
+	<input type='hidden' name='actionModal'>
+	
 </html:form>
+
 <html:form action="/FCS_DatosGeneralesFacturacion.do" method="POST"	target="submitArea">
 	<html:hidden property="accion" value="downloadMultiple" />
 	<html:hidden property="idFacturacionIniDownload" value="" />
@@ -99,6 +106,12 @@
 	<html:hidden property="idioma" value="" />
 </html:form>
 
+<!-- Formulario para la edicion del envio -->
+<form name="DefinirEnviosForm" method="POST" action="/SIGA/ENV_DefinirEnvios.do" target="mainWorkArea">
+	<input type="hidden" name="modo" value="">
+	<input type="hidden" name="tablaDatosDinamicosD" value="">
+
+</form>
 
 <!-- Botones -->
 <siga:ConjBotonesAccion clase="botonesSeguido" botones="GX,GM" />
@@ -108,14 +121,25 @@
 <script language="JavaScript">
 	// Funcion asociada a boton Generar Informe
 	function accionGenerarInforme() {
-		sub();
-		var f = document.getElementById("InformesGenericosForm");
 		idFactIni = document.getElementById("idFacturacionInicio").value;
 		idFactFin = document.getElementById("idFacturacionFin").value;
-		f.datosInforme.value = "idFacturacionIni" + "==" + idFactIni + "##"
-				+ "idFacturacionFin" + "==" + idFactFin;
-		f.seleccionados.value = "1";
-		f.submit();
+		datos = "idFacturacionIni" + "==" + idFactIni + "##"
+		+ "idFacturacionFin" + "==" + idFactFin;
+		document.InformesGenericosForm.datosInforme.value=datos;
+		if(document.getElementById("informeUnico").value=='1'){
+			sub();
+			document.InformesGenericosForm.submit();
+		}else{
+			var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
+			if (arrayResultado==undefined||arrayResultado[0]==undefined){
+			   		
+		   	}else {
+		   		
+			
+			}
+		}
+		
+		
 	}
 
 	// Funcion asociada a boton Generar Excels

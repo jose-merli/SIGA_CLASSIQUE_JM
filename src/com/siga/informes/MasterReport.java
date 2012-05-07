@@ -156,6 +156,32 @@ public class MasterReport
 	    }
 	    return salida;
 	}
+	public Vector getDatosInforme(String datosInforme) throws ClsExceptions {
+	    Vector salida = new Vector ();
+	    if(datosInforme.endsWith("%%%")){
+	    	int indice = datosInforme.lastIndexOf("%%%");
+	    	datosInforme = datosInforme.substring(0,indice);
+	    }
+	    try {
+	        GstStringTokenizer st1 = new GstStringTokenizer(datosInforme,"%%%");
+		    while (st1.hasMoreTokens()) {
+		        Hashtable ht = new Hashtable();
+		        String registro = st1.nextToken();
+		        GstStringTokenizer st = new GstStringTokenizer(registro,"##");
+			    while (st.hasMoreTokens()) {
+			        String dupla = st.nextToken();
+			        String d[]= dupla.split("==");
+			        if(d.length==2)
+			        	ht.put(d[0],d[1]);    
+			    }
+		        salida.add(ht);
+		    }
+	    } catch (Exception e) {
+	        throw new ClsExceptions(e,"Error al obtener los datos del formulario.");
+	    }
+	    return salida;
+	}
+	
 	
 	/**
 	 * Genera un informe PDF sin mas configuracion

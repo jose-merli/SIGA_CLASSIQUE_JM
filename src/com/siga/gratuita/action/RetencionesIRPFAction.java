@@ -23,6 +23,7 @@ import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenComponentesAdm;
@@ -130,6 +131,19 @@ public class RetencionesIRPFAction extends MasterAction {
 			request.setAttribute("desdeFicha", desdeFicha);
 			request.setAttribute("anyoIRPF", String.valueOf(Calendar
 					.getInstance().get(Calendar.YEAR) - 1));
+			
+			String informeUnico = ClsConstants.DB_TRUE;
+			AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
+			// mostramos la ventana con la pregunta
+			
+			Vector informeBeans=adm.obtenerInformesTipo(idInstitucion,"IRPF",null, null);
+			if(informeBeans!=null && informeBeans.size()>1){
+				informeUnico = ClsConstants.DB_FALSE;
+				
+			}
+
+			request.setAttribute("informeUnico", informeUnico);
+			
 
 		} catch (Exception e) {
 			throwExcp("messages.general.error",

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.struts.upload.FormFile;
+import org.json.JSONArray;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.UsrBean;
@@ -12,6 +13,7 @@ import com.siga.beans.AdmInformeBean;
 import com.siga.beans.AdmLenguajesBean;
 import com.siga.beans.AdmTipoInformeBean;
 import com.siga.beans.CenInstitucionBean;
+import com.siga.beans.EnvTipoEnviosBean;
 import com.siga.beans.FileInforme;
 import com.siga.general.MasterForm;
 import com.siga.tlds.FilaExtElement;
@@ -51,10 +53,11 @@ public class InformeForm extends MasterForm {
 	private String lenguaje;
 	String idConsulta;
 	String idInstitucionConsulta;
+	String idTiposEnvio;
 	String idTipoEnvio;
 	private String idPlantillaEnvio;
 	private String idPlantillaGeneracion;
-	
+	private List<EnvTipoEnviosBean> tiposEnvioPermitidos;
 	public String getIdConsulta() {
 		return idConsulta;
 	}
@@ -284,9 +287,7 @@ public class InformeForm extends MasterForm {
 		informeVO.setTipoformato(tipoFormato);
 		informeVO.setUsrBean(usrBean);
 		informeVO.setOrden(orden);
-		informeVO.setIdTipoEnvio(idTipoEnvio);
-		informeVO.setIdPlantillaEnvio(idPlantillaEnvio);
-		informeVO.setIdPlantillaGeneracion(idPlantillaGeneracion);
+		
 		
 		return informeVO;
 
@@ -417,5 +418,24 @@ public class InformeForm extends MasterForm {
 		this.idPlantillaGeneracion = idPlantillaGeneracion;
 	}
 
+	public String getIdTiposEnvio() {
+		return idTiposEnvio;
+	}
+
+	public void setIdTiposEnvio(String idTiposEnvio) {
+		this.idTiposEnvio = idTiposEnvio;
+	}
+
+	public List<EnvTipoEnviosBean> getTiposEnvioPermitidos() {
+		return tiposEnvioPermitidos;
+	}
+
+	public void setTiposEnvioPermitidos(List<EnvTipoEnviosBean> tiposEnvioPermitidos) {
+		this.tiposEnvioPermitidos = tiposEnvioPermitidos;
+	}
+
+	
+
+	
 	
 }

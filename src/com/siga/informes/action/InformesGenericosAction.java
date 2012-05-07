@@ -5,9 +5,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -35,12 +37,15 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.SIGAConstants;
+import com.siga.administracion.form.InformeForm;
+import com.siga.administracion.service.InformesService;
 import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.AdmInformeBean;
 import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.AdmTipoFiltroInformeBean;
 import com.siga.beans.AdmTipoInformeAdm;
 import com.siga.beans.AdmTipoInformeBean;
+import com.siga.beans.EnvTipoEnviosBean;
 import com.siga.beans.FcsFacturacionJGAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.GenRecursosAdm;
@@ -51,6 +56,7 @@ import com.siga.beans.ScsDocumentacionEJGBean;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsGuardiasTurnoAdm;
+import com.siga.beans.ScsInclusionGuardiasEnListasAdm;
 import com.siga.beans.ScsInclusionGuardiasEnListasBean;
 import com.siga.beans.ScsListaGuardiasAdm;
 import com.siga.beans.ScsListaGuardiasBean;
@@ -69,6 +75,8 @@ import com.siga.informes.InformePersonalizable;
 import com.siga.informes.MasterReport;
 import com.siga.informes.MasterWords;
 import com.siga.informes.form.InformesGenericosForm;
+
+import es.satec.businessManager.BusinessManager;
 
 /**
  * Clase para la generación de informes genéricos configurados en ADM_INFORME
@@ -91,10 +99,13 @@ public class InformesGenericosAction extends MasterAction {
 					if (accion != null && accion.equalsIgnoreCase("descargaFicheroGlobal")) {
 						return super.executeInternal(mapping, formulario,
 								request, response);
-					} else {
-						return ejecutarAccion(mapping, formulario,
+					}else if (accion != null && accion.equalsIgnoreCase("preSeleccionInformes")) {
+						return preSeleccionInformes(mapping, formulario,
 								request, response);
-					}
+					}else if (accion != null && accion.equalsIgnoreCase("download")) {
+						return download(mapping, formulario,
+								request, response);
+					} 
 				}
 			} while (false);
 
@@ -110,309 +121,9 @@ public class InformesGenericosAction extends MasterAction {
 					new String[] { "modulo.gratuita" });
 		}
 	}
-
-	/** 
-	 * Método que atiende a las peticiones. 
-	 * Segun el valor de los parametros idInforme e ifTipoInforme del formulario ejecuta distintas acciones
-	 * @param  mapping - Mapeo de los struts
-	 * @param  formulario -  Action Form asociado a este Action
-	 * @param  request - objeto llamada HTTP 
-	 * @param  response - objeto respuesta HTTP
-	 * @return  String  Destino del action  
-	 * @exception  ClsExceptions  En cualquier caso de error
-	 */
-	public ActionForward ejecutarAccion (ActionMapping mapping,
-			ActionForm formulario,
-			HttpServletRequest request, 
-			HttpServletResponse response) throws SIGAException {
-
-		String mapDestino = "exception";
-		InformesGenericosForm miForm = null;
-		UsrBean usr = this.getUserBean(request);
-
-		try { 
-
-			miForm = (InformesGenericosForm) formulario;
-			String idInforme = miForm.getIdInforme();
-			String idTipoInforme = miForm.getIdTipoInforme();
-			String idInstitucion = miForm.getIdInstitucion();
-			String seleccionados = miForm.getSeleccionados();
-			String aSolicitantes =  miForm.getAsolicitantes();
-			String destinatarios =  miForm.getDestinatarios();
-			String enviar =  miForm.getEnviar();
-			String idTipoEnvio = miForm.getIdTipoEnvio();
-			String idPersonaJG = null;
-			String idinstitucion = null;
-			String idPK = null;
-			String anio = null;
-			String numero = null;
-
-			if((aSolicitantes!=null && aSolicitantes.equalsIgnoreCase("S")) &&
-					(miForm.getDatosTabla()!=null && miForm.getDatosTabla().size()>0) &&
-					(idTipoInforme.equals("OFICIOLD") || idTipoInforme.equals("EJG"))){
-				Vector vCampos = miForm.getDatosTablaOcultos(0);
-				idPersonaJG = (String) vCampos.get(0);
-				idinstitucion = (String) vCampos.get(1);
-				idPK = (String) vCampos.get(2);
-				anio = (String) vCampos.get(3);
-				numero = (String) vCampos.get(4);
-			}
-			// Para la comision tenemos que usar las comunicaciones de CAJG en vez de EJG
-			if(idTipoInforme.equals("EJG") && usr.isComision())
-				idTipoInforme="CAJG";
-
-			AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
-			AdmTipoInformeAdm admT = new AdmTipoInformeAdm(this.getUserBean(request));
-
-			if (seleccionados!=null && seleccionados.equals("3")) {
-				// mostramos la ventana con la pregunta
-				Vector infs=adm.obtenerInformesTipo(idInstitucion,idTipoInforme,aSolicitantes, destinatarios);
-				request.setAttribute("plantillas",infs);
-				return mapping.findForward("seleccionPlantillasModal");
-			}
-			
-
-			if (idTipoInforme.equals("") && idInforme.equals("")) {
-				// ERROR
-				throw new ClsExceptions("Error en generación de informe: No se ha indicado el tipo de informe ni el informe.");
-			} else
-				if (idTipoInforme.equals("") && !idInforme.equals("")) {
-					idTipoInforme = adm.obtenerInforme(idInstitucion,idInforme).getIdTipoInforme();
-				} else	if (!idTipoInforme.equals("") && seleccionados.equals("0")) {
-					// Si existes varios informes para el mismo tipo
-					Vector infs=adm.obtenerInformesTipo(idInstitucion,idTipoInforme,aSolicitantes, destinatarios);
-					if (infs!=null && infs.size()>0) {
-						//añadimos al final de los datos del informe a la persona seleccionada si la hubiera
-						
-						
-						StringBuffer datosInforme = new StringBuffer(miForm.getDatosInforme());
-						if(idPersonaJG!=null){
-							if(idTipoInforme.equals("OFICIOLD")){
-								datosInforme = new StringBuffer();
-
-
-
-
-								//datosInforme.append("idPersonaJG==");
-								datosInforme.append("idPersona==");
-								datosInforme.append(idPersonaJG);
-								datosInforme.append("##");
-								datosInforme.append("idinstitucion==");
-								datosInforme.append(idinstitucion);
-								datosInforme.append("##");
-								datosInforme.append("idturno==");
-								datosInforme.append(idPK);
-								datosInforme.append("##");
-								datosInforme.append("anio==");
-								datosInforme.append(anio);
-								datosInforme.append("##");
-								datosInforme.append("numero==");
-								datosInforme.append(numero);
-							}else if(idTipoInforme.equals("EJG") || idTipoInforme.equals("CAJG")){
-								datosInforme = new StringBuffer();
-								datosInforme.append("idPersonaJG==");
-								datosInforme.append(idPersonaJG);
-								datosInforme.append("##");
-								datosInforme.append("idinstitucion==");
-								datosInforme.append(idinstitucion);
-								datosInforme.append("##");
-								datosInforme.append("idTipoEJG==");
-								datosInforme.append(idPK);
-								datosInforme.append("##");
-								datosInforme.append("anio==");
-								datosInforme.append(anio);
-								datosInforme.append("##");
-								datosInforme.append("numero==");
-								datosInforme.append(numero);
-							}
-	                        
-
-						}
-						
-					
-						if (idTipoInforme.equals("CPAGO")) {
-                            Vector vCampos = miForm.getDatosTablaOcultos(0);
-                            //idInstitucion==2040##idPago==308##idPersona==2046000001
-                            if(vCampos!=null&&vCampos.size()==3){
-                                String idInstitucion2 = (String) vCampos.get(0);
-                                String idPago =  (String) vCampos.get(1);
-                                String idPersona = (String) vCampos.get(2);
-                                datosInforme = new StringBuffer();
-                                datosInforme.append("idPersona==");
-                                datosInforme.append(idPersona);
-                                datosInforme.append("##");
-                                datosInforme.append("idInstitucion==");
-                                datosInforme.append(idInstitucion2);
-                                datosInforme.append("##");
-                                datosInforme.append("idPago==");
-                                datosInforme.append(idPago);
-                              
-                            }
-						}else if (idTipoInforme.equals("CFACT")) {
-                            Vector vCampos = miForm.getDatosTablaOcultos(0);
-                            //idInstitucion==2040##idPago==308##idPersona==2046000001
-                            if(vCampos!=null&&vCampos.size()==3){
-                                String idInstitucion2 = (String) vCampos.get(0);
-                                String idPago =  (String) vCampos.get(1);
-                                String idPersona = (String) vCampos.get(2);
-                                datosInforme = new StringBuffer();
-                                datosInforme.append("idPersona==");
-                                datosInforme.append(idPersona);
-                                datosInforme.append("##");
-                                datosInforme.append("idInstitucion==");
-                                datosInforme.append(idInstitucion2);
-                                datosInforme.append("##");
-                                datosInforme.append("idPago==");
-                                datosInforme.append(idPago);
-                                
-                            }
-						}else if (idTipoInforme.equals("DEJG")) {
-							datosInforme = new StringBuffer();
-							datosInforme.append(ScsEJGBean.C_IDINSTITUCION + "==");
-							datosInforme.append(miForm.getIdInstitucion());
-							datosInforme.append("##");
-							datosInforme.append(ScsEJGBean.C_IDTIPOEJG + "==");
-							datosInforme.append(miForm.getIdTipoEJG());
-							datosInforme.append("##");
-							datosInforme.append(ScsEJGBean.C_ANIO + "==");
-							datosInforme.append(miForm.getAnio());
-							datosInforme.append("##");
-							datosInforme.append(ScsEJGBean.C_NUMERO + "==");
-							datosInforme.append(miForm.getNumero());
-						}
-
-						miForm.setDatosInforme(datosInforme.toString());
-
-						if (infs.size()==1) {
-							// solo hay una, no se pregunta
-							idInforme = ((AdmInformeBean)infs.get(0)).getIdPlantilla();
-
-							miForm.setIdInforme(idInforme);
-
-						} else if (infs.size()>1) {
-							idInforme = "";
-
-							for (int i=0;i<infs.size();i++) {
-								AdmInformeBean b = (AdmInformeBean)infs.get(i);
-								idInforme+=b.getIdPlantilla() + "##";
-							}
-							idInforme = idInforme.substring(0,idInforme.lastIndexOf("##"));
-
-							// hay que mostrar las plantillas para que las genere.
-							miForm.setIdInforme(idInforme);
-							miForm.setIdTipoInforme(idTipoInforme);
-							miForm.setEnviar(enviar);
-							//miForm.setNombreSalida(nombreSalida);
-							//miForm.setDirectorio(directorio);
-
-							return mapping.findForward("seleccionPlantillas");
-						}
-
-					} else {
-						// ERROR
-						throw new ClsExceptions("Error en generación de informe: No se encuentra el informe configurado.");
-					}
-				}
-
-			// aqui ya tenemos el tipo de informe y los informes seleccionados
-			miForm.setIdInforme(idInforme);
-			miForm.setIdTipoInforme(idTipoInforme);
-			//miForm.setDatosInforme(idPersonaJG);
-
-			
-			
-			
-			
-			// Obtengo el tipo de formato
-			AdmTipoInformeBean b = admT.obtenerTipoInforme(idTipoInforme);
-
-
-			// SELECCION DE METODO
-			if (b.getTipoFormato().equals("CR")) {
-				// tratamiento genérico para Informes de Crystal
-				// Solo es necesaria la llamada genérica con parámetos (CRYSTALREPORTMASTER)
-				if (idTipoInforme.equals("EJEM")) {
-					mapDestino = ejem(mapping, miForm, request, response);
-				} else 
-					if (idTipoInforme.equals("LGUAR")) {
-						mapDestino = listaGuardias(mapping, miForm, request, response);
-					} else {
-						throw new ClsExceptions("ERROR: El tipo de informe seleccionado no está configurado.");
-					}
-
-			} else 
-				if (b.getTipoFormato().equals("F")) {
-					// tratamiento particular para informes FOP
-					// Es necesaria la llamada particular (MASTERREPORT)
-
-					if (idTipoInforme.equals("ABONO")) {
-						mapDestino = abono(mapping, miForm, request, response);
-					} else if (idTipoInforme.equals("CPAGO")) {
-						mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesPagoColegiados);
-					} else if (idTipoInforme.equals("CFACT")) {
-						mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesFacturacionesColegiados);
-					} else {
-						throw new ClsExceptions("ERROR: El tipo de informe seleccionado no está configurado.");
-					}
-
-				} else 
-					if (b.getTipoFormato().equals("W")) {
-						// tratamiento particular para informes WORD
-						// Es necesaria la consulta particular y la llamada generica (PENDIENTE DE DESARROLLO)
-						if (idTipoInforme.equals("OFICI")) {
-							mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesDesigna);
-							//mapDestino = ofici(mapping, miForm, request, response);
-						} else 	if (idTipoInforme.equals("FACJG")) {
-								mapDestino = generaInfFacJG(mapping, miForm, request, response);
-							} else if (idTipoInforme.equals("FJGM")) {
-								mapDestino = generaInfFacJG(mapping, miForm, request, response);
-							} else if (idTipoInforme.equals(InformePersonalizable.I_INFORMEFACTSJCS)) {
-								
-								mapDestino = generaInfPersonalizableFacJG(mapping, miForm, request, response);
-							} else if (idTipoInforme.equals("EJGCA")) {
-								mapDestino = ejgca(mapping, miForm, request, response);
-							} else if (idTipoInforme.equals("EJG")){
-								// mapDestino = ejg(mapping, miForm, request, response);
-								mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesEjg);
-							}else if (idTipoInforme.equals("SOJ")){
-								mapDestino = soj(mapping, miForm, request, response);
-							} else if (idTipoInforme.equalsIgnoreCase("CAJG")) {
-								mapDestino = ejg(mapping, miForm, request, response);
-							} else if (idTipoInforme.equals("COBRO")) {
-								mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesMorosos);
-							}else if (idTipoInforme.equals("IRPF")) {
-								mapDestino = irpf(mapping, miForm, request, response);
-							}else if (idTipoInforme.equals("CENSO")) {
-								mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesCenso);
-							}else if (idTipoInforme.equals("EXP")) {
-								mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesExpedientes);
-							}else if (idTipoInforme.equals("LIGUA")) {
-								mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesListadoGuardias);
-							} else if (idTipoInforme.equals("JUSDE")) {
-								mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesJustificacion);
-							} else if (idTipoInforme.equals("DEJG")) {
-								mapDestino = dejg(mapping, miForm, request, response);
-							} else if (idTipoInforme.equals("ACTAC")) {
-								mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesEjg);
-							} else {
-								throw new ClsExceptions("ERROR: El tipo de informe seleccionado no está configurado.");
-							}
-
-					} else {
-						throw new ClsExceptions("ERROR: El tipo de formato no está configurado.");
-					}
-
-		} catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.informes"},e,null); 
-		}
-		
-		
-		
-		
-		return mapping.findForward(mapDestino);
-
-	}
-
+	
+	
+	
 
 	/**
 	 * Metodo que permite la generación del informe homónimo.
@@ -430,15 +141,16 @@ public class InformesGenericosAction extends MasterAction {
 			UsrBean usr = this.getUserBean(request);
 			//Obtenemos el formulario y sus datos:
 			InformesGenericosForm miform = (InformesGenericosForm)formulario;
+			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 			File ficheroSalida = null;
 			Vector informesRes = new Vector(); 
 			// Obtiene del campo idInforme los ids separados por ## y devuelve sus beans
-			InformeAbono admInf = new InformeAbono(usr);
-			Vector plantillas = admInf.obtenerPlantillasFormulario(miform, usr);
+			InformeAbono informeAbono = new InformeAbono(usr);
+			Vector plantillas = envioInformesGenericos.getPlantillasInforme(miform.getIdInforme(),"##",usr);
 			// Obtiene del campo datosInforme los campos del formulario primcipal
 			// para obtener la clave para el informe. LOs datos se obtienen en una cadena como los ocultos
 			// y se sirven como un vector de hashtables por si se trata de datos multiregistro.
-			Vector datos = admInf.obtenerDatosFormulario(miform);
+			Vector datos = informeAbono.obtenerDatosFormulario(miform);
 			// --- acceso a paths y nombres 
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 //			ReadProperties rp = new ReadProperties("SIGA.properties");	
@@ -454,7 +166,7 @@ public class InformesGenericosAction extends MasterAction {
 				for (int j=0;j<datos.size();j++) {
 					Hashtable ht = (Hashtable) datos.get(j); 
 					String idAbono = (String)ht.get("idAbono");
-					informesRes.add(admInf.generarAbono(request,usr.getLanguage(),usr.getLocation(),idAbono,b.getIdPlantilla()));
+					informesRes.add(informeAbono.generarAbono(request,usr.getLanguage(),usr.getLocation(),idAbono,b.getIdPlantilla()));
 				}
 			}
 
@@ -494,10 +206,14 @@ public class InformesGenericosAction extends MasterAction {
 	protected String generaInfPersonalizableFacJG (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) 
 	throws SIGAException, ClsExceptions{
 		UsrBean usr = this.getUserBean(request);
+		EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
+		InformesGenericosForm miform = (InformesGenericosForm) formulario;
+		Vector informesList = envioInformesGenericos.getPlantillasInforme(miform.getIdInforme(),"##",usr);
+		
 		ArrayList<HashMap<String, String>> filtrosInforme = 
 			obtenerDatosFormInformeFacturacionJG(formulario, request);
 		InformePersonalizable inf = new InformePersonalizable();
-		File ficheroSalida = inf.getFicheroGenerado(usr, InformePersonalizable.I_INFORMEFACTSJCS, filtrosInforme);
+		File ficheroSalida = inf.getFicheroGenerado(usr, InformePersonalizable.I_INFORMEFACTSJCS, informesList,filtrosInforme);
 		
 			request.setAttribute("nombreFichero", ficheroSalida.getName());
 			request.setAttribute("rutaFichero", ficheroSalida.getPath());
@@ -511,7 +227,6 @@ public class InformesGenericosAction extends MasterAction {
 	protected String irpf (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) 
 	throws SIGAException{
 		InformesGenericosForm miForm = (InformesGenericosForm) formulario;
-		boolean isAEnviar =  miForm.getEnviar()!=null && miForm.getEnviar().equals(ClsConstants.DB_TRUE);
 		InformeCertificadoIRPF informeIRPF = new InformeCertificadoIRPF();
 		File ficheroSalida=null;
 		try {
@@ -521,7 +236,7 @@ public class InformesGenericosAction extends MasterAction {
 			String fecha = fm.format(new Date(session.getCreationTime()));
 			
 			
-			ficheroSalida = informeIRPF.getInformeIRPF(formulario, this.getUserBean(request),isAEnviar);
+			ficheroSalida = informeIRPF.getInformeIRPF(formulario, this.getUserBean(request));
 
 		}
 		
@@ -529,21 +244,14 @@ public class InformesGenericosAction extends MasterAction {
 			throwExcp("messages.general.error",new String[] {"modulo.informes"},e,null);
 		}
 
-		if(isAEnviar){
-			request.setAttribute("datosEnvios",informeIRPF.getDatosEnvios());
-			//Para redirigeDefinicionenvios
-			request.setAttribute("subModo","certificadoIRPF");
-
-			return "definirEnvios";
-
-		}else{
+		
 
 			request.setAttribute("nombreFichero", ficheroSalida.getName());
 			request.setAttribute("rutaFichero", ficheroSalida.getPath());
 			request.setAttribute("borrarFichero", "true");
 			request.setAttribute("generacionOK","OK");
 			return "descarga";
-		}
+		
 
 
 
@@ -577,6 +285,8 @@ public class InformesGenericosAction extends MasterAction {
 				isPermisoEnvio = false;
 				ClsLogging.writeFileLog("Acceso denegado al modulo de envios, descargamos el informe",request,3);
 			}
+			//hacemos lo siguiente para setear el permiso de esta accion
+			testAccess(request.getContextPath()+mapping.getPath()+".do",null,request);
 		} catch (ClsExceptions e) {
 			throw new SIGAException(e.getMsg());
 		}
@@ -778,7 +488,7 @@ public class InformesGenericosAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	protected String ejg (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) 
+	protected String cajg (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) 
 	throws SIGAException{
 		Date inicio = new Date();
 		ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() + ",==> SIGA: INICIO InformesGenericos.InformeEjg",10);
@@ -793,7 +503,9 @@ public class InformesGenericosAction extends MasterAction {
 			Vector informesRes = new Vector(); 
 			// Obtiene del campo idInforme los ids separados por ## y devuelve sus beans
 			InformeAbono admInf = new InformeAbono(usr); 
-			Vector plantillas = admInf.obtenerPlantillasFormulario(miform, usr);
+			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
+			Vector plantillas = envioInformesGenericos.getPlantillasInforme(miform.getIdInforme(),"@@",usr);
+			
 			// Obtiene del campo datosInforme los campos del formulario primcipal
 			// para obtener la clave para el informe. LOs datos se obtienen en una cadena como los ocultos
 			// y se sirven como un vector de hashtables por si se trata de datos multiregistro.
@@ -831,11 +543,7 @@ public class InformesGenericosAction extends MasterAction {
 							if (miform.getDatosInforme() != null && !miform.getDatosInforme().trim().equals("")) {
 								Hashtable aux  = (Hashtable)datos.get(z);
 								if (aux!=null) {
-									if ((String)aux.get("idtipo")!=null){
-										idTipoEJG= (String)aux.get("idtipo");
-									}else{
-										idTipoEJG= (String)aux.get("idTipoEJG");
-									}
+									idTipoEJG= (String)aux.get("idtipo");
 									anio= (String)aux.get("anio");
 									numero= (String)aux.get("numero");
 									String idPersonaJG=null;
@@ -977,7 +685,9 @@ public class InformesGenericosAction extends MasterAction {
 			Vector informesRes = new Vector(); 
 			// Obtiene del campo idInforme los ids separados por ## y devuelve sus beans
 			InformeAbono admInf = new InformeAbono(usr); 
-			Vector plantillas = admInf.obtenerPlantillasFormulario(miform, usr);
+			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
+			Vector plantillas = envioInformesGenericos.getPlantillasInforme(miform.getIdInforme(),"##",usr);
+			
 			// Obtiene del campo datosInforme los campos del formulario primcipal
 			// para obtener la clave para el informe. LOs datos se obtienen en una cadena como los ocultos
 			// y se sirven como un vector de hashtables por si se trata de datos multiregistro.
@@ -1223,7 +933,9 @@ public class InformesGenericosAction extends MasterAction {
 			usr = this.getUserBean (request);
 			miform = (InformesGenericosForm) formulario;
 			infAdm = new AdmInformeAdm (usr);
-			plantillas = infAdm.obtenerInformesTipo(idinstitucion, miform.getIdTipoInforme(), miform.getAsolicitantes(), miform.getDestinatarios());
+			//plantillas = infAdm.obtenerInformesTipo(idinstitucion, miform.getIdTipoInforme(), miform.getAsolicitantes(), miform.getDestinatarios());
+			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
+			plantillas = envioInformesGenericos.getPlantillasInforme(miform.getIdInforme(),"##",usr);
 			// del merge (revisar)
 			datos = this.obtenerDatosFormulario (miform);
 			//idfacturacion = "";
@@ -1648,103 +1360,7 @@ public class InformesGenericosAction extends MasterAction {
 		return total;
 	} //getTotal()
 
-	/**
-	 * Metodo que permite la generación del informe homónimo.
-	 * @param  mapping - Mapeo de los struts
-	 * @param  formulario -  Action Form asociado a este Action
-	 * @param  request - objeto llamada HTTP 
-	 * @param  response - objeto respuesta HTTP
-	 * @return  String  Destino del action  
-	 * @exception  ClsExceptions  En cualquier caso de error
-	 */
-	protected String ejem (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) 
-	throws SIGAException{
-
-		try {
-			UsrBean usr = this.getUserBean(request);
-			//Obtenemos el formulario y sus datos:
-			InformesGenericosForm miform = (InformesGenericosForm)formulario;
-			File ficheroSalida = null;
-			Vector informesRes = new Vector(); 
-			// Obtiene del campo idInforme los ids separados por ## y devuelve sus beans
-			InformeAbono admInf = new InformeAbono(usr);
-			Vector plantillas = admInf.obtenerPlantillasFormulario(miform, usr);
-			// Obtiene del campo datosInforme los campos del formulario primcipal
-			// para obtener la clave para el informe. LOs datos se obtienen en una cadena como los ocultos
-			// y se sirven como un vector de hashtables por si se trata de datos multiregistro.
-			Vector datos = admInf.obtenerDatosFormulario(miform);
-			// --- acceso a paths y nombres 
-		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//			ReadProperties rp = new ReadProperties("SIGA.properties");	
-			String rutaPlantilla = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
-			String rutaAlmacen = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
-
-			////////////////////////////////////////////////
-			// MODELO DE TIPO CR: LLAMADA A CRYSTALREPORTMASTER
-
-
-
-			for (int i=0;i<plantillas.size();i++) {
-				AdmInformeBean b = (AdmInformeBean) plantillas.get(i); 
-				for (int j=0;j<datos.size();j++) {
-					Hashtable ht = (Hashtable) datos.get(j); 
-					String fechaInicio = (String)ht.get("fechaDesde");
-					String fechaFin = (String)ht.get("fechaHasta");
-					String idInstitucion = miform.getIdInstitucion();
-
-					String rutaPl = rutaPlantilla + ClsConstants.FILE_SEP+miform.getIdInstitucion()+ClsConstants.FILE_SEP+b.getDirectorio()+ClsConstants.FILE_SEP;
-					String nombrePlantilla=b.getNombreFisico()+"_"+usr.getLanguageExt()+".rpt";
-					String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP+usr.getLocation()+ClsConstants.FILE_SEP+b.getDirectorio();
-					File rutaPDF=new File(rutaAlm);
-					rutaPDF.mkdirs();
-					if(!rutaPDF.canWrite()){
-						throw new SIGAException("messages.informes.generico.noPlantilla");					
-					}
-					rutaAlm+=ClsConstants.FILE_SEP;
-					String nombrePDF = b.getNombreSalida()+"_"+fechaInicio.replaceAll("/","")+"_"+fechaFin.replaceAll("/","")+"_"+idInstitucion+".pdf";
-
-					Hashtable param = new Hashtable();
-					param.put("fecha_inicio",fechaInicio);
-					param.put("fecha_fin",fechaFin);
-					param.put("idinstitucion",idInstitucion);
-					informesRes.add(CrystalReportMaster.generarPDF(rutaPl+nombrePlantilla, rutaAlm+nombrePDF, param));
-				}
-			}
-
-
-
-			/////////////////////////////////////////////////
-			if (informesRes.size()!=0) {
-				if (informesRes.size()<2) {
-					ficheroSalida = (File) informesRes.get(0);
-				} else {
-					AdmTipoInformeAdm admT = new AdmTipoInformeAdm(this.getUserBean(request));
-					AdmTipoInformeBean beanT = admT.obtenerTipoInforme(miform.getIdTipoInforme());
-					ArrayList ficherosPDF= new ArrayList();
-					for (int i=0;i<informesRes.size();i++) {
-						File f = (File) informesRes.get(i);
-						ficherosPDF.add(f);
-					}
-					String nombreFicheroZIP=beanT.getDescripcion().trim() + "_" +UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","").replaceAll(":","").replaceAll(" ","");
-					String rutaServidorDescargasZip = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
-				rutaServidorDescargasZip += ClsConstants.FILE_SEP+miform.getIdInstitucion()+ClsConstants.FILE_SEP+"temp"+ File.separator;
-					File ruta = new File(rutaServidorDescargasZip);
-					ruta.mkdirs();
-					Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF);
-					ficheroSalida = new File(rutaServidorDescargasZip + nombreFicheroZIP + ".zip");
-				}
-				request.setAttribute("nombreFichero", ficheroSalida.getName());
-				request.setAttribute("rutaFichero", ficheroSalida.getPath());
-				request.setAttribute("borrarFichero", "true");	
-			}
-		}
-		catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.informes"},e,null);
-		}
-		request.setAttribute("generacionOK","OK");
-		return "descarga";	
-	}
-
+	
 	/**
 	 * Metodo que permite la generación del informe homónimo.
 	 * @param  mapping - Mapeo de los struts
@@ -1975,28 +1591,27 @@ public class InformesGenericosAction extends MasterAction {
 		UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));   
 		String idioma =  userBean.getLanguageExt();
 		String idiomaInt =  userBean.getLanguage();
-
-		String idInstitucion = form.getIdInstitucion();
-		String idTipoEJG = form.getIdTipoEJG();
-		String anio = form.getAnio();
-		String numero = form.getNumero();
+		
 		MasterReport masterReport = new MasterReport();
-		Vector datos = masterReport.obtenerDatosFormulario(form);
-		if (datos != null && datos.size() > 0) {
-			Hashtable hashtable = (Hashtable)datos.get(0);
-			idInstitucion = (String)hashtable.get(ScsEJGBean.C_IDINSTITUCION);
-			idTipoEJG = (String)hashtable.get(ScsEJGBean.C_IDTIPOEJG);
-			anio = (String)hashtable.get(ScsEJGBean.C_ANIO);
-			numero = (String)hashtable.get(ScsEJGBean.C_NUMERO);
-		}
+		Vector datos = masterReport.obtenerDatosFormulario(form.getDatosInforme());
+		//idinstitucion=="+idInstitucion + "##idtipo==" +idTipoEJG+"##anio=="+anio +"##numero==" +numero+"##idTipoInforme==DEJG%%%";
+		
+		
+		Hashtable hashtable = (Hashtable)datos.get(0);
+		String idInstitucion = (String)hashtable.get("idInstitucion");
+		String idTipoEJG = (String)hashtable.get("idtipo");
+		String anio = (String)hashtable.get("anio");
+		String numero = (String)hashtable.get("numero");
+		
 
 		try {
 
 			GstDate gstDate = new GstDate();
 			String hoy = gstDate.parseDateToString(new Date(),"dd/MM/yyyy", this.getLocale(request));
 			ArrayList informesRes = new ArrayList(); 
-
-			Vector plantillas = masterReport.obtenerPlantillasFormulario(form, userBean);
+			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
+			Vector plantillas = envioInformesGenericos.getPlantillasInforme(form.getIdInforme(),"@@",userBean);
+			
 			String presentador = null;
 			String solicitanteParentesco, documentacion;
 
@@ -2266,6 +1881,715 @@ public class InformesGenericosAction extends MasterAction {
 
 
 	}
+	public ActionForward preSeleccionInformes (ActionMapping mapping,
+			ActionForm formulario,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws SIGAException {
+
+		String mapDestino = "exception";
+		UsrBean usr = this.getUserBean(request);
+
+		try { 
+			InformesGenericosForm miForm = (InformesGenericosForm) formulario;
+			String idTipoInforme = miForm.getIdTipoInforme();
+			
+			if (idTipoInforme.equals("") &&  miForm.getIdInforme().equals("")) 
+				throw new ClsExceptions("Error en generación de informe: No se ha indicado el tipo de informe ni el informe.");
+			
+
+			AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
+			AdmTipoInformeAdm admT = new AdmTipoInformeAdm(this.getUserBean(request));
+			// mostramos la ventana con la pregunta
+			Vector informeBeans=adm.obtenerInformesTipo(miForm.getIdInstitucion(),idTipoInforme,miForm.getAsolicitantes(), miForm.getDestinatarios());
+			if(informeBeans==null||informeBeans.size()==0)
+				throw new SIGAException("messages.informes.noPlantillas");
+			
+			
+			
+			if(miForm.getEnviar()!=null && miForm.getEnviar().equals(ClsConstants.DB_TRUE) ){
+				String accessEnvio = testAccess(request.getContextPath()+"/ENV_DefinirEnvios.do",null,request);
+				if (!accessEnvio.equals(SIGAConstants.ACCESS_READ) && !accessEnvio.equals(SIGAConstants.ACCESS_FULL)) {
+						miForm.setEnviar(ClsConstants.DB_FALSE);
+						ClsLogging.writeFileLog("Acceso denegado al modulo de envios, descargamos el informe",request,3);
+				}
+				//hacemos lo siguiente para setear el permiso de esta accion
+				testAccess(request.getContextPath()+mapping.getPath()+".do",null,request);
+				
+			}
+			
+			BusinessManager bm = getBusinessManager();
+			InformesService informeService = (InformesService)bm.getService(InformesService.class);
+			List<InformeForm> informeForms = new ArrayList<InformeForm>();
+			for (int i = 0; i < informeBeans.size(); i++) {
+				AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(i);
+				InformeForm informe = informeBean.getInforme(); 
+				if(miForm.getEnviar()!=null && miForm.getEnviar().equals(ClsConstants.DB_TRUE) ){
+					List<EnvTipoEnviosBean> tipoEnviosBeans = informeService.getTiposEnvioPermitidos(informeBean,usr);
+					informe.setTiposEnvioPermitidos(tipoEnviosBeans);
+				}
+				informeForms.add(informe);
+
+			}
+			request.setAttribute("informeForms",informeForms);
+			
+			
+			
+			
+			String asunto = "";
+			if(idTipoInforme.equals(EnvioInformesGenericos.comunicacionesDesigna)){
+				asunto = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "informes.genericos.designas.asunto");
+				
+			}
+			else if(idTipoInforme.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesEjg)){
+				asunto = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "informes.genericos.ejg.asunto");
+			}else if(idTipoInforme.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesMorosos)){
+				asunto = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "facturacion.consultamorosos.mail.asunto");
+			}else if (idTipoInforme.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesCenso)){
+				asunto = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "informes.genericos.censo.asunto");
+			}else if (idTipoInforme.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesFacturacionesColegiados)){
+				if(informeBeans.size()==1&&miForm.getEnviar().equals(ClsConstants.DB_FALSE)){
+					AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(0);
+					String idInformes = informeBean.getIdPlantilla()+","+informeBean.getIdInstitucion()+"";
+					miForm.setIdInforme(idInformes);
+					return download(mapping, formulario, request, response);
+				}
+				asunto = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "informes.sjcs.facturacion.envio.asunto");
+			}else if (idTipoInforme.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesPagoColegiados)){
+				if(informeBeans.size()==1&&miForm.getEnviar().equals(ClsConstants.DB_FALSE)){
+					AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(0);
+					String idInformes = informeBean.getIdPlantilla()+","+informeBean.getIdInstitucion()+"";
+					miForm.setIdInforme(idInformes);
+					return download(mapping, formulario, request, response);
+				}
+				asunto = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "informes.sjcs.pagos.envio.asunto");
+			}else if (idTipoInforme.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesJustificacion)){
+				if(informeBeans.size()==1&&miForm.getEnviar().equals(ClsConstants.DB_FALSE)){
+					AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(0);
+					String idInformes = informeBean.getIdPlantilla()+","+informeBean.getIdInstitucion()+"";
+					miForm.setIdInforme(idInformes);
+					return download(mapping, formulario, request, response);
+				}
+				asunto = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "informes.genericos.justificacion.asunto");
+			}else if (idTipoInforme.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesExpedientes)){
+				asunto = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "informes.genericos.expedientes.asunto");
+			} else if (idTipoInforme.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesListadoGuardias)){
+				
+				String datosInforme = getDatosInformeListaGuardias(miForm.getDatosInforme(), usr);
+				miForm.setDatosInforme(datosInforme);
+				asunto = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "informes.sjcs.lista.envio.guardias");
+			}
+			else if (idTipoInforme.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesIRPF)){
+				
+				asunto = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "gratuita.retencionesIRPF.informe.envio.asunto");
+				InformeCertificadoIRPF certificadoIRPF = new InformeCertificadoIRPF();
+				Vector datosInformeVector = certificadoIRPF.obtenerDatosFormulario(miForm.getDatosInforme());
+				Hashtable datosInformeHashtable = (Hashtable)datosInformeVector.get(0);
+				String idPersona = (String) datosInformeHashtable.get("idPersona");
+				String periodo = (String) datosInformeHashtable.get("periodo");
+				String anyoInformeIRPF = (String) datosInformeHashtable.get("anyoInformeIRPF");
+				String idInstitucionAux = (String) datosInformeHashtable.get("idInstitucion");
+				String idioma = (String) datosInformeHashtable.get("idioma");
+				String datosAEnviar = certificadoIRPF.getDatosInforme(idInstitucionAux, periodo,
+						anyoInformeIRPF, idioma, idPersona, usr);
+				miForm.setDatosInforme(datosAEnviar);
+				if(informeBeans.size()==1&&miForm.getEnviar().equals(ClsConstants.DB_FALSE)){
+					AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(0);
+					String idInformes = informeBean.getIdPlantilla()+","+informeBean.getIdInstitucion()+"";
+					miForm.setIdInforme(idInformes);
+					return download(mapping, formulario, request, response);
+				}
+				
+			}else if (idTipoInforme.equalsIgnoreCase("FACJG")||idTipoInforme.equalsIgnoreCase("FJGM")||idTipoInforme.equalsIgnoreCase("FACJ2")){
+				
+				if(informeBeans.size()==1){
+					AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(0);
+					String idInformes = informeBean.getIdPlantilla()+","+informeBean.getIdInstitucion()+"";
+					miForm.setIdInforme(idInformes);
+					return download(mapping, formulario, request, response);
+				}
+			}else if(idTipoInforme.equals(EnvioInformesGenericos.comunicacionesCAJG)){
+				miForm.setEnviar("0");
+				/*if(informeBeans.size()==1){
+					AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(0);
+					String idInformes = informeBean.getIdPlantilla()+","+informeBean.getIdInstitucion()+ "";
+					miForm.setIdInforme(idInformes);
+					return download(mapping, formulario, request, response);
+				}*/
+				
+			}else if(idTipoInforme.equals("ABONO")){
+				if(informeBeans.size()==1&&miForm.getEnviar().equals(ClsConstants.DB_FALSE)){
+					AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(0);
+					String idInformes = informeBean.getIdPlantilla()+","+informeBean.getIdInstitucion()+"";
+					miForm.setIdInforme(idInformes);
+					return download(mapping, formulario, request, response);
+				}
+			}else if(idTipoInforme.equals("ACTAC")){
+				if(informeBeans.size()==1&&miForm.getEnviar().equals(ClsConstants.DB_FALSE)){
+					AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(0);
+					String idInformes = informeBean.getIdPlantilla()+","+informeBean.getIdInstitucion()+"";
+					miForm.setIdInforme(idInformes);
+					return download(mapping, formulario, request, response);
+				}
+			}else if(idTipoInforme.equals("SOJ")){
+				if(informeBeans.size()==1&&miForm.getEnviar().equals(ClsConstants.DB_FALSE)){
+					AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(0);
+					String idInformes = informeBean.getIdPlantilla()+","+informeBean.getIdInstitucion()+"";
+					miForm.setIdInforme(idInformes);
+					return download(mapping, formulario, request, response);
+				}
+			}else if(idTipoInforme.equals("DEJG")){
+				if(informeBeans.size()==1&&miForm.getEnviar().equals(ClsConstants.DB_FALSE)){
+					AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(0);
+					String idInformes = informeBean.getIdPlantilla()+","+informeBean.getIdInstitucion()+"";
+					miForm.setIdInforme(idInformes);
+					return download(mapping, formulario, request, response);
+				}
+			}
+			request.setAttribute("asunto", asunto);
+			//Vamos a ver si, aunque el informe generico tenga configurado el envio, el usuario tiene permiso para ello.
+			
+			
+			
+			
+			//Fecha Programada:
+			SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+			sdf.applyPattern(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+			Calendar cal = Calendar.getInstance();   
+			String fecha;
+			fecha = sdf.format(cal.getTime()).toString();
+			request.setAttribute("fecha", fecha);
+			
+			return mapping.findForward("seleccionInformes");
+
+
+		} catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.informes"},e,null); 
+		}
+		return mapping.findForward(mapDestino);
+
+	}
+	/*protected String envioModal(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) 
+	throws SIGAException{
+
+		DefinirEnviosForm form = (DefinirEnviosForm)formulario;
+		UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));   
+
+		String idInstitucion = userBean.getLocation();	
+		String idSolicitud = form.getIdSolicitud();
+		String idFactura = form.getIdFactura();
+		String idPersona = form.getIdPersona();
+		String desc = form.getDescEnvio();
+		String subModo = form.getSubModo();
+		String datosEnvios = form.getDatosEnvios();
+		String descargar = form.getDescargar();
+
+		String nombreyapellidos = "";
+		String idEnvio=null;
+		String idTipoEnvio=form.getIdTipoEnvio();
+		boolean isEnvioSMS = idTipoEnvio!=null && !idTipoEnvio.equals("") && (Integer.parseInt(idTipoEnvio)==EnvEnviosAdm.TIPO_SMS || Integer.parseInt(idTipoEnvio)==EnvEnviosAdm.TIPO_BUROSMS);
+
+		try {
+			//SOLICITUD CERTIFICADO:
+			// Si el envío procede de una solicitud de certificado, seteamos el tipo
+			// de envío según el tipo que se eligió al solicitar el certificado.
+			if (subModo!=null && subModo.equalsIgnoreCase("SolicitudCertificado")){
+				CerSolicitudCertificadosAdm solCerAdm = new CerSolicitudCertificadosAdm(this.getUserBean(request));
+				Hashtable htPk = new Hashtable();
+				htPk.put(CerSolicitudCertificadosBean.C_IDINSTITUCION,idInstitucion);
+				htPk.put(CerSolicitudCertificadosBean.C_IDSOLICITUD,idSolicitud);
+				CerSolicitudCertificadosBean solCerBean = (CerSolicitudCertificadosBean) solCerAdm.selectByPK(htPk).firstElement();
+				idTipoEnvio = String.valueOf(solCerBean.getIdTipoEnvios());
+				//form.setComboTipoEnvio(idInstitucion+","+idTipoEnvio);
+				ArrayList comboTipoEnvio = new ArrayList();
+				comboTipoEnvio.add(idInstitucion+","+idTipoEnvio);
+				request.setAttribute("comboTipoEnvio",comboTipoEnvio);
+
+				PysProductosInstitucionAdm prodAdm = new PysProductosInstitucionAdm(this.getUserBean(request));
+				Integer idTipoProducto = solCerBean.getPpn_IdTipoProducto();
+				Long idProducto = solCerBean.getPpn_IdProducto();
+				Long idProductoInstitucion = solCerBean.getPpn_IdProductoInstitucion();
+				Hashtable htPk2 = new Hashtable();
+				htPk2.put(PysProductosInstitucionBean.C_IDINSTITUCION,idInstitucion);
+				htPk2.put(PysProductosInstitucionBean.C_IDTIPOPRODUCTO,idTipoProducto);
+				htPk2.put(PysProductosInstitucionBean.C_IDPRODUCTO,idProducto);
+				htPk2.put(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION,idProductoInstitucion);
+				PysProductosInstitucionBean prodBean = (PysProductosInstitucionBean)prodAdm.selectByPK(htPk2).firstElement();
+				String tipoCert = prodBean.getTipoCertificado();
+				if (tipoCert.equalsIgnoreCase(PysProductosInstitucionAdm.TIPO_CERTIFICADO_COMUNICACION)||
+						tipoCert.equalsIgnoreCase(PysProductosInstitucionAdm.TIPO_CERTIFICADO_DILIGENCIA)){
+					request.setAttribute("ComDil","true");
+				}
+				//SOLICITUD INCORPORACION:
+			} else if (subModo!=null && subModo.equalsIgnoreCase("solicitudIncorporacion")){
+				CenSolicitudIncorporacionAdm admSolic = new CenSolicitudIncorporacionAdm(this.getUserBean(request));
+				Hashtable hashSolic = new Hashtable();
+				hashSolic.put(CenSolicitudIncorporacionBean.C_IDSOLICITUD,idSolicitud);
+				Vector aux = admSolic.selectByPK(hashSolic);
+				CenSolicitudIncorporacionBean beanSolic = null;
+				if (aux!=null && aux.size()>0) {
+					beanSolic = (CenSolicitudIncorporacionBean) aux.get(0);
+					nombreyapellidos = beanSolic.getNombre()+" "+beanSolic.getApellido1()+" "+beanSolic.getApellido2(); 
+				}
+			} else if (subModo!=null && subModo.equalsIgnoreCase("envioFactura")){
+				FacFacturaAdm admFac = new FacFacturaAdm(this.getUserBean(request));
+				Hashtable hashFac = new Hashtable();
+				hashFac.put(FacFacturaBean.C_IDINSTITUCION,userBean.getLocation());
+				hashFac.put(FacFacturaBean.C_IDFACTURA,idFactura);
+				Vector aux = admFac.selectByPK(hashFac);
+				FacFacturaBean beanFac = null;
+				if (aux!=null && aux.size()>0) {
+					beanFac = (FacFacturaBean) aux.get(0);
+					desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(),"envios.literal.facturaNumero") + " " + beanFac.getNumeroFactura();
+					idPersona=beanFac.getIdPersona().toString();
+				}
+			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesMorosos)){
+				//Hashtable htFacturasPersona  = getFacturasPersonaAComunicar(form);
+				idPersona = getIdColegiadoUnico(form);
+
+				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")&&!isEnvioSMS ));//
+				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
+				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null)); 
+
+
+				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "facturacion.consultamorosos.mail.asunto");
+
+			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesDesigna)){
+				MasterReport masterReport = new  MasterReport(); 
+				Vector vCampos = masterReport.obtenerDatosFormulario(form);
+				idPersona = getIdColegiadoUnicoDesignas(vCampos,userBean);
+				//si la persona es null es que hay mas de un colegiado de las distintas designas
+				//si solo hay uno comprobaremos que si hay mas de un solicitante(siempre y cuando algun informe sea
+				// de tipo solicitante)
+				boolean isPersonaUnica = idPersona!=null;
+				//Vamos a permitir editar cuando sea solo a colegiados
+				
+				
+				
+				boolean isASolicitantes = false;
+				boolean isAprocurador = false;
+				if(isPersonaUnica){
+					
+					
+					Hashtable ht = (Hashtable) vCampos.get(0); 
+					String plantillas = (String)ht.get("plantillas");
+					EnvioInformesGenericos informesAdm = new EnvioInformesGenericos();
+					Vector vPlantillas = informesAdm.getPlantillasInforme(plantillas,  userBean);
+					
+					for (int j = 0; j < vPlantillas.size(); j++) {
+						AdmInformeBean informeBean = (AdmInformeBean)vPlantillas.get(j);
+						
+						String tiposDestinatario = informeBean.getDestinatarios();
+						if(tiposDestinatario!=null){
+							char[] tipoDestinatario = tiposDestinatario.toCharArray();
+							for (int k = 0; k < tipoDestinatario.length; k++) {
+								
+								if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)){
+									isASolicitantes = true;
+									break;
+								}else if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPROCURADOR)){
+									isAprocurador = true;
+									break;
+								}
+							}
+
+						}
+						//Comprbamos que al ser a solicitantes haya una persona unica
+						
+						
+					}
+					
+					
+					
+				}
+				
+				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")&&!isEnvioSMS));
+				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
+				request.setAttribute("isEditarEnvio",Boolean.valueOf(isPersonaUnica&&!isASolicitantes&&!isAprocurador));
+				//request.setAttribute("isEditarEnvio",Boolean.valueOf(false));
+				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.genericos.designas.asunto");
+
+
+			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesEjg)){
+				MasterReport masterReport = new  MasterReport(); 
+				Vector vCampos = masterReport.obtenerDatosFormulario(form);
+				EnvioInformesGenericos informesAdm = new EnvioInformesGenericos();
+				informesAdm.setPersonasEjg(vCampos,userBean);
+				Hashtable destinatariosHashtable = informesAdm.getDestinatariosEjg(vCampos);
+				
+				
+
+				//si la persona es null es que hay mas de un colegiado de las distintas designas
+				//si solo hay uno comprobaremos que si hay mas de un solicitante(siempre y cuando algun informe sea
+				// de tipo solicitante)
+				boolean isDestinatarioUnico = destinatariosHashtable!=null && destinatariosHashtable.size()==1;
+				//Vamos a permitir editar cuando sea solo a colegiados
+				
+				boolean isASolicitantes = false;
+				if(isDestinatarioUnico &&!isEnvioSMS){
+					
+					
+					Hashtable ht = (Hashtable) vCampos.get(0); 
+					String plantillas = (String)ht.get("plantillas");
+					
+					Vector vPlantillas = informesAdm.getPlantillasInforme(plantillas,  userBean);
+					
+					for (int j = 0; j < vPlantillas.size(); j++) {
+						AdmInformeBean informeBean = (AdmInformeBean)vPlantillas.get(j);
+						
+						String tiposDestinatario = informeBean.getDestinatarios();
+						if(tiposDestinatario!=null){
+							char[] tipoDestinatario = tiposDestinatario.toCharArray();
+							for (int k = 0; k < tipoDestinatario.length; k++) {
+								
+								if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)){
+									isASolicitantes = true;
+									break;
+								}
+							}
+
+						}
+						//Comprbamos que al ser a solicitantes haya una persona unica
+						
+						
+					}
+					
+					
+					
+				}
+				
+				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")&&!isEnvioSMS));
+				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
+				request.setAttribute("isEditarEnvio",Boolean.valueOf(isDestinatarioUnico&&!isEnvioSMS));
+				
+				if(form.getIdTipoEnvio()!=null && !form.getIdTipoEnvio().equals("")){
+					ArrayList comboTipoEnvio = new ArrayList();
+					comboTipoEnvio.add(idInstitucion+","+form.getIdTipoEnvio());
+					request.setAttribute("comboTipoEnvio",comboTipoEnvio);
+				}
+				
+				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.genericos.ejg.asunto");
+
+
+			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesJustificacion)){
+				
+				Hashtable htPersonas = new Hashtable();
+				MasterReport masterReport = new  MasterReport(); 
+				Vector vCampos = masterReport.obtenerDatosFormulario(form);
+				Hashtable ht = (Hashtable) vCampos.get(0); 
+				idPersona = (String) ht.get("idPersona");
+				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")&&!isEnvioSMS));//
+				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
+				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null)); 
+
+
+				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.genericos.justificacion.asunto");
+
+			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesCenso)){
+				idPersona = getIdColegiadoUnico(form);
+
+				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")&&!isEnvioSMS));
+				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
+				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null));
+				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.genericos.censo.asunto");
+
+
+			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesListadoGuardias)){
+				request.setAttribute("exitenDatos","");
+				try{
+					idPersona = getIdColegiados(form, request);
+
+				} catch (SIGAException e) {
+					request.setAttribute("exitenDatos","messages.general.error.noExistenDatos");
+				}
+				datosEnvios = form.getDatosEnvios();
+	    		Hashtable backupHash = (Hashtable)request.getSession().getAttribute("DATABACKUP");
+	    		request.setAttribute("DATABACKUP",backupHash);
+				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")&&!isEnvioSMS));
+				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
+				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null));
+				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.sjcs.lista.envio.guardias");
+
+			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesPagoColegiados)){
+				idPersona = getIdPersonaUnica(form);
+				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
+				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")&&!isEnvioSMS));
+				
+				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null));
+				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.sjcs.pagos.envio.asunto");
+
+
+			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesFacturacionesColegiados)){
+				idPersona = getIdPersonaUnica(form);
+				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
+				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")&&!isEnvioSMS));
+				
+				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null));
+				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.sjcs.facturacion.envio.asunto");
+
+
+			}
+			else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesExpedientes)){
+				idPersona = getIdColegiadoUnico(form);
+
+				request.setAttribute("isDescargar",new Boolean(idPersona!=null&&!isEnvioSMS));
+				form.setDescargar((idPersona!=null)?"1":"");
+				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
+				// RGG también se añade que, incluso siendo un aúnica persona, no sea asolicitantes
+				MasterReport masterReport = new  MasterReport(); 
+				EnvioInformesGenericos informesAdm = new EnvioInformesGenericos();
+				Vector vCampos = masterReport.obtenerDatosFormulario(form);
+				Hashtable datosInforme = null;
+				if (vCampos.size()>0) {
+					datosInforme = (Hashtable) vCampos.get(0);
+				}
+				String plantillas = (String) datosInforme.get("plantillas");
+				Vector vPlantillas = informesAdm.getPlantillasInforme(plantillas,userBean);
+				boolean aSolicitantes = informesAdm.esAlgunaASolicitantes(vPlantillas);
+
+				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null && !aSolicitantes));
+				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.genericos.expedientes.asunto");
+
+
+			}else if (subModo!=null && subModo.equalsIgnoreCase("pagoColegiados")){
+				idPersona = getIdPersonaUnica(form);
+				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
+				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null));
+				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.sjcs.pagos.envio.asunto");
+
+
+			}else if (subModo!=null && subModo.equalsIgnoreCase("certificadoIRPF")){
+				idPersona = getIdPersonaUnica(form);
+				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
+				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null));
+				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "gratuita.retencionesIRPF.informe.envio.asunto");
+
+
+			}
+
+			//obtener idEnvio
+			EnvEnviosAdm envAdm = new EnvEnviosAdm(this.getUserBean(request));
+			//idEnvio = String.valueOf(envAdm.getNewIdEnvio(idInstitucion));
+
+
+			//obtener nombreyapellidos
+			CenPersonaAdm persAdm = new CenPersonaAdm(this.getUserBean(request));		
+			if ( (idPersona!=null && !idPersona.equals("")) && 
+					(subModo!=null && !subModo.equalsIgnoreCase("solicitudIncorporacion")
+					) )
+				nombreyapellidos = persAdm.obtenerNombreApellidos(idPersona);
+
+			
+
+
+			//Nombre:
+			// Antes: String nombre = idEnvio + "-" + desc + "-" + nombreyapellidos;
+			// Ahora INC 4403:
+			String nombre = ""  + desc + " " + nombreyapellidos;
+			//////////////////////////////
+
+			if (nombre.length()>100){
+				nombre = nombre.substring(0,99);
+			}
+			form.setNombre(nombre);
+
+			//Fecha Programada:
+			SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+
+			if (form.getModo().equalsIgnoreCase("envioModal"))
+			{
+				sdf.applyPattern(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+			}
+
+			else
+			{
+				sdf.applyPattern(ClsConstants.DATE_FORMAT_LONG_SPANISH);
+			}
+
+			Calendar cal = Calendar.getInstance();   
+			String fecha;
+			fecha = sdf.format(cal.getTime()).toString();
+			form.setFechaProgramada(fecha);
+
+
+			//request.setAttribute(EnvEnviosBean.C_IDENVIO,idEnvio);
+			request.setAttribute(CerSolicitudCertificadosBean.C_IDPERSONA_DES,idPersona);
+			request.setAttribute(CerSolicitudCertificadosBean.C_IDSOLICITUD,idSolicitud);
+			request.setAttribute(FacFacturaBean.C_IDFACTURA,idFactura);
+			request.setAttribute("subModo",subModo);
+			request.setAttribute("datosEnvios",datosEnvios);
+			
+			AdmInformeAdm informeAdm = new AdmInformeAdm(userBean);
+			List<InformeForm> plantillasList = new ArrayList<InformeForm>();
+			String[] plantillas = datosEnvios.split("plantillas==");
+			if(plantillas.length>0){
+				String aux = plantillas[1];
+				String[] informesList = aux.substring(0,aux.indexOf("##")).split("@@");
+				for (int i = 0; i < informesList.length; i++) {
+					String[] idsPlantilla = informesList[i].split(",") ;
+					String idInforme = idsPlantilla[0];
+					String idInstitucionInforme = idsPlantilla[1];
+					AdmInformeBean informeBean = informeAdm.obtenerInforme(idInstitucionInforme, idInforme);
+					plantillasList.add(informeBean.getInforme(new InformeForm()));
+					
+				}
+				
+				
+			}
+			request.setAttribute("plantillasList", plantillasList);
+			
+//			EnvTipoEnviosAdm tipoEnviosAdm
+				
+			
+			GenParametrosAdm param = new GenParametrosAdm(userBean);
+			request.setAttribute("smsHabilitado",param.getValor(idInstitucion, "ENV", "HABILITAR_SMS_BUROSMS", "N"));
+		
+		
+		} catch (SIGAException e) {
+			throwExcp(e.getLiteral(),new String[] {},e,null);
+		} catch (Exception ex) {
+			throwExcp("messages.general.error",new String[] {"modulo.envios"},ex,null);
+		}
+
+		return "envioModal";
+	}
+ */
+	
+	
+	
+	public ActionForward download (ActionMapping mapping,
+			ActionForm formulario,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws SIGAException {
+
+		String mapDestino = "exception";
+		InformesGenericosForm miForm = null;
+		UsrBean usr = this.getUserBean(request);
+
+		try { 
+
+			miForm = (InformesGenericosForm) formulario;
+			
+			String idTipoInforme = miForm.getIdTipoInforme();
+			
+			
+			AdmTipoInformeAdm tipoInformeAdm = new AdmTipoInformeAdm(this.getUserBean(request));
+			AdmTipoInformeBean tipoInformeBean = tipoInformeAdm.obtenerTipoInforme(idTipoInforme);
+
+			if (tipoInformeBean.getTipoFormato().equals("F")) {
+				// tratamiento particular para informes FOP
+				// Es necesaria la llamada particular (MASTERREPORT)
+
+				if (idTipoInforme.equals("ABONO")) {
+					mapDestino = abono(mapping, miForm, request, response);
+				} else if (idTipoInforme.equals("CPAGO")) {
+
+					mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesPagoColegiados);
+				} else if (idTipoInforme.equals("CFACT")) {
+					//						miForm.setClavesIteracion("idPersona");
+					mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesFacturacionesColegiados);
+				} else {
+					throw new ClsExceptions("ERROR: El tipo de informe seleccionado no está configurado.");
+				}
+
+			} else if (tipoInformeBean.getTipoFormato().equals("W")) {
+				// tratamiento particular para informes WORD
+				// Es necesaria la consulta particular y la llamada generica (PENDIENTE DE DESARROLLO)
+				if (idTipoInforme.equals("OFICI")) {
+					mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesDesigna);
+				} else 	if (idTipoInforme.equals("FACJG")) {
+					mapDestino = generaInfFacJG(mapping, miForm, request, response);
+				} else if (idTipoInforme.equals("FJGM")) {
+					mapDestino = generaInfFacJG(mapping, miForm, request, response);
+				} else if (idTipoInforme.equals(InformePersonalizable.I_INFORMEFACTSJCS)) {
+					mapDestino = generaInfPersonalizableFacJG(mapping, miForm, request, response);
+				} else if (idTipoInforme.equals("EJGCA")) {
+					mapDestino = ejgca(mapping, miForm, request, response);
+				} else if (idTipoInforme.equals("EJG")){
+					mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesEjg);
+				}else if (idTipoInforme.equals("SOJ")){
+					mapDestino = soj(mapping, miForm, request, response);
+				} else if (idTipoInforme.equalsIgnoreCase("CAJG")) {
+					mapDestino = cajg(mapping, miForm, request, response);
+				} else if (idTipoInforme.equals("COBRO")) {
+					mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesMorosos);
+				}else if (idTipoInforme.equals("IRPF")) {
+					mapDestino = irpf(mapping, miForm, request, response);
+				}else if (idTipoInforme.equals("CENSO")) {
+					mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesCenso);
+				}else if (idTipoInforme.equals("EXP")) {
+					mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesExpedientes);
+				}else if (idTipoInforme.equals("LIGUA")) {
+					mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesListadoGuardias);
+				} else if (idTipoInforme.equals("JUSDE")) {
+					mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesJustificacion);
+				} else if (idTipoInforme.equals("DEJG")) {
+					mapDestino = dejg(mapping, miForm, request, response);
+				} else if (idTipoInforme.equals("ACTAC")) {
+					mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesEjg);
+				} else {
+					throw new ClsExceptions("ERROR: El tipo de informe seleccionado no está configurado.");
+				}
+
+			} else {
+				throw new ClsExceptions("ERROR: El tipo de formato no está configurado.");
+			}
+
+
+		} catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.informes"},e,null); 
+		}
+
+		return mapping.findForward(mapDestino);
+
+	}
+	private String getDatosInformeListaGuardias(String datosInforme,UsrBean usr) throws ClsExceptions, SIGAException{
+		Hashtable htPersonas = new Hashtable();
+		 
+		Vector guardias = new Vector();
+		MasterReport masterReport = new  MasterReport(); 
+		Vector datosFormularioVector = masterReport.obtenerDatosFormulario(datosInforme);
+		Hashtable ht = (Hashtable) datosFormularioVector.get(0); 
+		String idInstitucion = (String) ht.get("idInstitucion");
+		String fechaInicio = (String) ht.get("fechaIni");
+		String fechaFin = (String) ht.get("fechaFin");
+		String idlista = (String) ht.get("idLista");
+
+		ScsInclusionGuardiasEnListasAdm admIGL =new ScsInclusionGuardiasEnListasAdm(usr);
+		Hashtable paramBusqueda=new Hashtable();
+		paramBusqueda.put(ScsInclusionGuardiasEnListasBean.C_IDINSTITUCION,idInstitucion);
+		paramBusqueda.put(ScsInclusionGuardiasEnListasBean.C_IDLISTA,idlista);
+		Vector listasIncluidas=admIGL.select(paramBusqueda);
+		Enumeration listaResultados=listasIncluidas.elements();
+		
+		while(listaResultados.hasMoreElements()){
+			ScsInclusionGuardiasEnListasBean fila=(ScsInclusionGuardiasEnListasBean)listaResultados.nextElement();
+			Vector guardia = new Vector();
+			guardia.add(fila.getIdTurno().toString());
+			guardia.add(fila.getIdGuardia().toString());
+			guardias.add(guardia);
+			
+		}
+		ScsGuardiasTurnoAdm admGT = new ScsGuardiasTurnoAdm(usr);
+		Vector datos = admGT.getDatosPersonasGuardias(idInstitucion,idlista,guardias,fechaInicio,fechaFin);
+		if(datos.size()==0)
+	    	throw new SIGAException("messages.general.error.noExistenDatos");
+		
+		
+		String datosInformeReturn = "";
+		for (int j=0; j<datos.size(); j++){		    						
+			Hashtable letradoOut=(Hashtable)datos.get(j);	
+			Long letrado =new Long((String)letradoOut.get("IDPERSONA")).longValue();	
+			datosInformeReturn+="idPersona==" +letrado+"##"+datosInforme+"%%%";
+	    	
+
+		}		
+		return datosInformeReturn;
+				
+ 
+
+		
+	}
+	
 
 
 

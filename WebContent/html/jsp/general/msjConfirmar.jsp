@@ -29,10 +29,15 @@
 		}
 		function onload() 
 		{	
+			
+
 			msjConfirmacion = document.getElementById("msjConfimacion"); 
 			
+						
 			if(msjConfirmacion && msjConfirmacion.value!=''){
 				if (confirm(msjConfirmacion.value)){
+					
+					
 					accionSiguiente();
 				}
 			}
@@ -42,6 +47,7 @@
 		function accionSiguiente() 
 		{	sub();
 			document.forms[0].submit();
+			
 		}
 
 </script>
@@ -51,11 +57,15 @@
 <body onload=onload();>
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 <bean:define id="msjConfimacion" name="msjConfimacion" scope="request"/>
+<bean:define id="cerrarModal" name="cerrarModal" scope="request"/>
 
 <input type="hidden" id="msjConfimacion" value="${msjConfimacion}">
 <html:form action="${path}"  method="POST" >
 	<html:hidden property="modo"/>
+	<html:hidden property="parametros" />
 </html:form>
+<script type="text/javascript">
+</script>
 
 </body>
 

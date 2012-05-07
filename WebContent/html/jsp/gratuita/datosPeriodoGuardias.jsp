@@ -6,6 +6,7 @@
 --
 
 <!-- CABECERA JSP -->
+<%@page import="com.atos.utils.UsrBean"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -29,9 +30,9 @@
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-
+	UsrBean userBean = ((UsrBean)ses.getAttribute(("USRBEAN")));
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
-
+	String idInstitucion = userBean.getLocation();
 	Hashtable datos=(Hashtable)request.getAttribute("DATOS");
 
 	String	botones="GM,R,C";
@@ -143,7 +144,17 @@
 			-->
 		
 			<siga:ConjBotonesAccion botones='<%=botones%>' modo=''  modal="P"/>
-			
+	<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
+	<html:hidden property="idInstitucion" value = "<%=idInstitucion%>"/>
+	<html:hidden property="idTipoInforme" value="LIGUA"/>
+	<html:hidden property="enviar" value="1"/>
+	<html:hidden property="descargar" value="1"/>
+	<html:hidden property="datosInforme"/>
+	<html:hidden property="modo" value = "preSeleccionInformes"/>
+	<html:hidden property="tipoPersonas"/>
+	
+	<input type='hidden' name='actionModal'>
+</html:form>			
 			<!-- FIN: BOTONES REGISTRO -->
 
 	
@@ -156,7 +167,7 @@
 			function accionGenerarInforme() 
 			{	
 
-
+				//alert("pepe");
 				var fechaIni = document.forms[0].fechaInicio.value;
 				var fechaFin = document.forms[0].fechaFin.value;
 				sub();
@@ -185,19 +196,9 @@
 
 					var auxlist = <%=(String)datos.get("IDLISTA")%>;
 					var idInstitucion = <%=(String)datos.get("IDINSTITUCION")%>;
-				   	datos = "idInstitucion==" +idInstitucion+"##idTipoPersonas==1##fechaIni=="+fechaIni+"##fechaFin=="+fechaFin+"##idLista=="+auxlist; 
-					var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
-					formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=(String)datos.get("IDINSTITUCION")%>'>"));
-					formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
-					formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='LIGUA'>"));
-					formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
-					formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
-					formu.appendChild(document.createElement("<input type='hidden' name='enviar' value='1'>"));
-					formu.appendChild(document.createElement("<input type='hidden' name='descargar' value='1'>"));
-					formu.appendChild(document.createElement("<input type='hidden' name='tipoPersonas'>"));
-					document.appendChild(formu);
-					formu.datosInforme.value=datos;
-					formu.submit();				
+				   	datos = "idInstitucion==" +idInstitucion+"##idTipoPersonas==1##fechaIni=="+fechaIni+"##fechaFin=="+fechaFin+"##idLista=="+auxlist+"##idTipoInforme==LIGUA"; 
+				   	document.InformesGenericosForm.datosInforme.value =datos;
+					var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");				
 					accionCerrar();
 				}else{	
 					document.forms[0].modo.value="finalizarInforme";

@@ -1438,7 +1438,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 				ArrayList filtrosInforme = fact.getFiltrosInforme(idInstitucion,idFacturacion);
 				
 				informePersonalizable.setIdFacturacion(idFacturacion);
-				fichero = informePersonalizable.getFicheroGenerado(user,  InformePersonalizable.I_INFORMEFACTSJCS, filtrosInforme);
+				fichero = informePersonalizable.getFicheroGenerado(user,  InformePersonalizable.I_INFORMEFACTSJCS,null, filtrosInforme);
 				if (!informePersonalizable.isEliminarFichero()) {
 					nombreFichero = fichero.getPath();
 					FcsFacturacionJGBean bean = new FcsFacturacionJGBean();

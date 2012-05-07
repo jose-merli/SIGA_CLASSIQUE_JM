@@ -318,6 +318,7 @@
 		}
 
 		function accionGenerarInforme() {
+			
 			document.forms[0].modo.value="descargaFicheroFact";
 			document.forms[0].target = "submitArea2";
 			document.forms[0].submit();
@@ -406,14 +407,7 @@
 	
 	<siga:ConjBotonesAccion clase="botonesSeguido" botones='<%=botones%>' modo='<%=modo%>'/>	
 	
-		<!-- Formularios -->
-		<html:form action="/INF_InformesGenericos.do" method="POST"	target="submitArea2">
-			<input type="hidden" name="actionModal" value="">
-			<html:hidden property="idTipoInforme" value="FACJ2" />
-			<html:hidden property="datosInforme" value="" />
-			<html:hidden property="seleccionados" value="" />
-			<html:hidden property="idInforme" value="" />
-		</html:form>
+		
 		
 
 <!-- PARA LA FUNCION VOLVER -->

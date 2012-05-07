@@ -49,12 +49,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 				AdmInformeBean.C_CODIGO,
 				AdmInformeBean.C_ORDEN,
 				AdmInformeBean.C_CLASEJAVA
-				,
-				AdmInformeBean.C_IDTIPOENVIO
-				,
-				AdmInformeBean.C_IDPLANTILLAENVIO
-				,
-				AdmInformeBean.C_IDPLANTILLAGENERACION
+				
 				
 		};
 		return campos;
@@ -103,9 +98,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 			bean.setCodigo	(UtilidadesHash.getString(hash, AdmInformeBean.C_CODIGO));
 			bean.setOrden	(UtilidadesHash.getString(hash, AdmInformeBean.C_ORDEN));
 			bean.setClaseJava	(UtilidadesHash.getString(hash, AdmInformeBean.C_CLASEJAVA));
-			bean.setIdTipoEnvio	(UtilidadesHash.getString(hash, AdmInformeBean.C_IDTIPOENVIO));
-			bean.setIdPlantillaEnvio(	UtilidadesHash.getString(hash, AdmInformeBean.C_IDPLANTILLAENVIO));
-			bean.setIdPlantillaGeneracion(UtilidadesHash.getString(hash, AdmInformeBean.C_IDPLANTILLAGENERACION));
+			
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -138,9 +131,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(htData, AdmInformeBean.C_CODIGO, 		b.getCodigo());
 			UtilidadesHash.set(htData, AdmInformeBean.C_ORDEN, 		b.getOrden());
 			UtilidadesHash.set(htData, AdmInformeBean.C_CLASEJAVA, 		b.getClaseJava());
-			UtilidadesHash.set(htData, AdmInformeBean.C_IDTIPOENVIO, 		b.getIdTipoEnvio());
-			UtilidadesHash.set(htData, AdmInformeBean.C_IDPLANTILLAENVIO, 		b.getIdPlantillaEnvio());
-			UtilidadesHash.set(htData, AdmInformeBean.C_IDPLANTILLAGENERACION, 		b.getIdPlantillaGeneracion());
+			
 		}
 		catch (Exception e) {
 			htData = null;
@@ -182,10 +173,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 				"       "+AdmInformeBean.C_TIPOFORMATO+", " +
 				"       "+AdmInformeBean.C_CODIGO+", " +
 				"       "+AdmInformeBean.C_ORDEN+", " +
-				"       "+AdmInformeBean.C_CLASEJAVA+", " +
-				"       "+AdmInformeBean.C_IDTIPOENVIO+", " +
-				"       "+AdmInformeBean.C_IDPLANTILLAENVIO+", " +
-				"       "+AdmInformeBean.C_IDPLANTILLAGENERACION+" " +
+				"       "+AdmInformeBean.C_CLASEJAVA+" " +
 				"  FROM "+AdmInformeBean.T_NOMBRETABLA+" " +
 				" WHERE "+AdmInformeBean.C_IDPLANTILLA+" = '"+idInforme+"' " +
 //				"   AND "+AdmInformeBean.C_VISIBLE+" = 'S' " +
@@ -216,9 +204,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 				salida.setCodigo		((String)ht.get(AdmInformeBean.C_CODIGO));
 				salida.setOrden		((String)ht.get(AdmInformeBean.C_ORDEN));
 				salida.setClaseJava((String)ht.get(AdmInformeBean.C_CLASEJAVA));
-				salida.setIdTipoEnvio((String)ht.get(AdmInformeBean.C_IDTIPOENVIO));
-				salida.setIdPlantillaEnvio((String)ht.get(AdmInformeBean.C_IDPLANTILLAENVIO));
-				salida.setIdPlantillaGeneracion((String)ht.get(AdmInformeBean.C_IDPLANTILLAGENERACION));
+				
 			}
 		}
 		catch (ClsExceptions e) {
@@ -320,19 +306,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 			where[k].append(
 				"  AND ASOLICITANTES = 'S'");
 
-		// No hay destinatarios, ¿¿deberia haberlos??
-		/*if (destinatarios != null && !destinatarios.equals("")) {
-			where[k].append(
-				"  AND (");
-			for (int i = 0; i < destinatarios.length(); i++) {
-				where[i].append(" DESTINATARIOS like '%" + destinatarios.charAt(i) + "%'");
-				if (i < destinatarios.length() - 1)
-					where[i].append(" OR ");
-			}
-			where[k].append(
-				"      ) ");
-		}*/
-
+		
 		try {
 			k = CON_COLEGIO;
 			do {

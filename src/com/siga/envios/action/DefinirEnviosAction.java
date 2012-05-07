@@ -6,6 +6,7 @@
 package com.siga.envios.action;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -13,9 +14,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.Vector;
@@ -28,6 +27,9 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -37,6 +39,7 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.administracion.service.InformesService;
 import com.siga.beans.AdmInformeBean;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenClienteBean;
@@ -52,14 +55,11 @@ import com.siga.beans.CerSolicitudCertificadosAdm;
 import com.siga.beans.CerSolicitudCertificadosBean;
 import com.siga.beans.EnvComunicacionMorososAdm;
 import com.siga.beans.EnvDestinatariosBean;
-import com.siga.beans.EnvEnvioProgramadoAdm;
-import com.siga.beans.EnvEnvioProgramadoBean;
 import com.siga.beans.EnvEnviosAdm;
 import com.siga.beans.EnvEnviosBean;
 import com.siga.beans.EnvEstadoEnvioAdm;
 import com.siga.beans.EnvEstatEnvioAdm;
-import com.siga.beans.EnvProgramIRPFAdm;
-import com.siga.beans.EnvProgramIRPFBean;
+import com.siga.beans.EnvPlantillasEnviosBean;
 import com.siga.beans.EnvTipoEnviosAdm;
 import com.siga.beans.EnvTipoEnviosBean;
 import com.siga.beans.FacFacturaAdm;
@@ -69,7 +69,6 @@ import com.siga.beans.PysProductosInstitucionAdm;
 import com.siga.beans.PysProductosInstitucionBean;
 import com.siga.beans.ScsDefendidosDesignaAdm;
 import com.siga.beans.ScsDesignaAdm;
-import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsInclusionGuardiasEnListasAdm;
 import com.siga.beans.ScsInclusionGuardiasEnListasBean;
@@ -80,10 +79,11 @@ import com.siga.envios.form.DefinirEnviosForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.informes.InformeCertificadoIRPF;
 import com.siga.informes.InformeFactura;
 import com.siga.informes.MasterReport;
 import com.siga.servlets.SIGASvlProcesoAutomaticoRapido;
+
+import es.satec.businessManager.BusinessManager;
 
 
 /**
@@ -108,18 +108,29 @@ public class DefinirEnviosAction extends MasterAction {
 				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir"))
 				{
 					mapDestino = abrir(mapping, miForm, request, response);
+				}else if (accion.equalsIgnoreCase("getJQueryTiposEnvioPermitido"))
+				{
+					getJQueryTiposEnvioPermitido(mapping, miForm, request, response);
+					return null;
 				} 
-
+				else if (accion.equalsIgnoreCase("getJQueryPlantillasEnvio"))
+				{
+					getJQueryPlantillasEnvio(mapping, miForm, request, response);
+					return null;
+				} 
 				else if (accion.equalsIgnoreCase("envioModal"))
 				{
 					mapDestino = envioModal(mapping, miForm, request, response);
 				} 
-
+				
 				else if (accion.equalsIgnoreCase("envioModalCertificado"))
 				{
 					mapDestino = envioModalCertificado(mapping, miForm, request, response);
 				} 
-
+				else if (accion.equalsIgnoreCase("insertarEnvioGenerico"))
+				{
+					mapDestino = insertarEnvioGenerico(mapping, miForm, request, response);
+				}
 				else if (accion.equalsIgnoreCase("insertarEnvioModal"))
 				{
 					mapDestino = insertarEnvioModal(mapping, miForm, request, response);
@@ -510,6 +521,7 @@ public class DefinirEnviosAction extends MasterAction {
 
 		return "editar";
 	}
+	
 	/**
 	 * Este metodo no convierte el vector de datos que viene de la jsp y los trasforma en
 	 * un hashtable donde las clavs son las persona. Luego los envios a morosos se haran por persona.
@@ -614,278 +626,7 @@ public class DefinirEnviosAction extends MasterAction {
 					desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(),"envios.literal.facturaNumero") + " " + beanFac.getNumeroFactura();
 					idPersona=beanFac.getIdPersona().toString();
 				}
-			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesMorosos)){
-				//Hashtable htFacturasPersona  = getFacturasPersonaAComunicar(form);
-				idPersona = getIdColegiadoUnico(form);
-
-				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")&&!isEnvioSMS ));//
-				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
-				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null)); 
-
-
-				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "facturacion.consultamorosos.mail.asunto");
-
-			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesDesigna)){
-				MasterReport masterReport = new  MasterReport(); 
-				Vector vCampos = masterReport.obtenerDatosFormulario(form);
-				idPersona = getIdColegiadoUnicoDesignas(vCampos,userBean);
-				//si la persona es null es que hay mas de un colegiado de las distintas designas
-				//si solo hay uno comprobaremos que si hay mas de un solicitante(siempre y cuando algun informe sea
-				// de tipo solicitante)
-				boolean isPersonaUnica = idPersona!=null;
-				//Vamos a permitir editar cuando sea solo a colegiados
-				
-				
-				/*
-				 //ESTO FUNCIONARIA EL PROBLEMA ES AL ENVIARLOS
-				if(isPersonaUnica){
-					
-					
-						Hashtable ht = (Hashtable) vCampos.get(0); 
-						String plantillas = (String)ht.get("plantillas");
-						EnvioInformesGenericos informesAdm = new EnvioInformesGenericos();
-						Vector vPlantillas = informesAdm.getPlantillasInforme(plantillas, idInstitucion, userBean);
-						
-						int numSolicitantes = 0;
-						for (int j = 0; j < vPlantillas.size(); j++) {
-							AdmInformeBean informeBean = (AdmInformeBean)vPlantillas.get(j);
-							boolean isASolicitantes = false;
-							boolean isAColegiados = false;
-							String tiposDestinatario = informeBean.getDestinatarios();
-							if(tiposDestinatario!=null){
-								char[] tipoDestinatario = tiposDestinatario.toCharArray();
-								for (int k = 0; k < tipoDestinatario.length; k++) {
-									
-									if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_CENPERSONA)){
-										isAColegiados = true;
-									}else if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)){
-										isASolicitantes = true;
-									}else if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO)){
-										//TODO SCS_JUZGADOSJG
-									}
-								}
-
-							}
-							//Comprbamos que al ser a solicitantes haya una persona unica
-							
-							if(isASolicitantes)
-								numSolicitantes += getNumSolicitantesDesignas(vCampos, userBean);
-							//si es solicitante unica comprbamos que no vaya a colegiados tambien
-							if(numSolicitantes>1){
-								isPersonaUnica = false;
-								break;
-							}
-							isPersonaUnica = numSolicitantes+1==1; 
-							if(!isPersonaUnica){
-								break;
-							}
-
-						}
-						
-						
-					}
-					*/
-				boolean isASolicitantes = false;
-				boolean isAprocurador = false;
-				if(isPersonaUnica){
-					
-					
-					Hashtable ht = (Hashtable) vCampos.get(0); 
-					String plantillas = (String)ht.get("plantillas");
-					EnvioInformesGenericos informesAdm = new EnvioInformesGenericos();
-					Vector vPlantillas = informesAdm.getPlantillasInforme(plantillas, idInstitucion, userBean);
-					
-					for (int j = 0; j < vPlantillas.size(); j++) {
-						AdmInformeBean informeBean = (AdmInformeBean)vPlantillas.get(j);
-						
-						String tiposDestinatario = informeBean.getDestinatarios();
-						if(tiposDestinatario!=null){
-							char[] tipoDestinatario = tiposDestinatario.toCharArray();
-							for (int k = 0; k < tipoDestinatario.length; k++) {
-								
-								if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)){
-									isASolicitantes = true;
-									break;
-								}else if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPROCURADOR)){
-									isAprocurador = true;
-									break;
-								}
-							}
-
-						}
-						//Comprbamos que al ser a solicitantes haya una persona unica
-						
-						
-					}
-					
-					
-					
-				}
-				
-				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")&&!isEnvioSMS));
-				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
-				request.setAttribute("isEditarEnvio",Boolean.valueOf(isPersonaUnica&&!isASolicitantes&&!isAprocurador));
-				//request.setAttribute("isEditarEnvio",Boolean.valueOf(false));
-				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.genericos.designas.asunto");
-
-
-			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesEjg)){
-				MasterReport masterReport = new  MasterReport(); 
-				Vector vCampos = masterReport.obtenerDatosFormulario(form);
-				EnvioInformesGenericos informesAdm = new EnvioInformesGenericos();
-				informesAdm.setPersonasEjg(vCampos,userBean);
-				Hashtable destinatariosHashtable = informesAdm.getDestinatariosEjg(vCampos);
-				
-				
-
-				//si la persona es null es que hay mas de un colegiado de las distintas designas
-				//si solo hay uno comprobaremos que si hay mas de un solicitante(siempre y cuando algun informe sea
-				// de tipo solicitante)
-				boolean isDestinatarioUnico = destinatariosHashtable!=null && destinatariosHashtable.size()==1;
-				//Vamos a permitir editar cuando sea solo a colegiados
-				
-				boolean isASolicitantes = false;
-				if(isDestinatarioUnico &&!isEnvioSMS){
-					
-					
-					Hashtable ht = (Hashtable) vCampos.get(0); 
-					String plantillas = (String)ht.get("plantillas");
-					
-					Vector vPlantillas = informesAdm.getPlantillasInforme(plantillas, idInstitucion, userBean);
-					
-					for (int j = 0; j < vPlantillas.size(); j++) {
-						AdmInformeBean informeBean = (AdmInformeBean)vPlantillas.get(j);
-						
-						String tiposDestinatario = informeBean.getDestinatarios();
-						if(tiposDestinatario!=null){
-							char[] tipoDestinatario = tiposDestinatario.toCharArray();
-							for (int k = 0; k < tipoDestinatario.length; k++) {
-								
-								if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)){
-									isASolicitantes = true;
-									break;
-								}
-							}
-
-						}
-						//Comprbamos que al ser a solicitantes haya una persona unica
-						
-						
-					}
-					
-					
-					
-				}
-				
-				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")&&!isEnvioSMS));
-				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
-				request.setAttribute("isEditarEnvio",Boolean.valueOf(isDestinatarioUnico&&!isEnvioSMS));
-				
-				if(form.getIdTipoEnvio()!=null && !form.getIdTipoEnvio().equals("")){
-					ArrayList comboTipoEnvio = new ArrayList();
-					comboTipoEnvio.add(idInstitucion+","+form.getIdTipoEnvio());
-					request.setAttribute("comboTipoEnvio",comboTipoEnvio);
-				}
-				
-				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.genericos.ejg.asunto");
-
-
-			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesJustificacion)){
-				
-				Hashtable htPersonas = new Hashtable();
-				MasterReport masterReport = new  MasterReport(); 
-				Vector vCampos = masterReport.obtenerDatosFormulario(form);
-				Hashtable ht = (Hashtable) vCampos.get(0); 
-				idPersona = (String) ht.get("idPersona");
-				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")&&!isEnvioSMS));//
-				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
-				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null)); 
-
-
-				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.genericos.justificacion.asunto");
-
-			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesCenso)){
-				idPersona = getIdColegiadoUnico(form);
-
-				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")&&!isEnvioSMS));
-				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
-				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null));
-				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.genericos.censo.asunto");
-
-
-			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesListadoGuardias)){
-				request.setAttribute("exitenDatos","");
-				try{
-					idPersona = getIdColegiados(form, request);
-
-				} catch (SIGAException e) {
-					request.setAttribute("exitenDatos","messages.general.error.noExistenDatos");
-				}
-				datosEnvios = form.getDatosEnvios();
-	    		Hashtable backupHash = (Hashtable)request.getSession().getAttribute("DATABACKUP");
-	    		request.setAttribute("DATABACKUP",backupHash);
-				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")&&!isEnvioSMS));
-				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
-				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null));
-				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.sjcs.lista.envio.guardias");
-
-			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesPagoColegiados)){
-				idPersona = getIdPersonaUnica(form);
-				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
-				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")&&!isEnvioSMS));
-				
-				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null));
-				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.sjcs.pagos.envio.asunto");
-
-
-			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesFacturacionesColegiados)){
-				idPersona = getIdPersonaUnica(form);
-				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
-				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")&&!isEnvioSMS));
-				
-				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null));
-				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.sjcs.facturacion.envio.asunto");
-
-
 			}
-			else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesExpedientes)){
-				idPersona = getIdColegiadoUnico(form);
-
-				request.setAttribute("isDescargar",new Boolean(idPersona!=null&&!isEnvioSMS));
-				form.setDescargar((idPersona!=null)?"1":"");
-				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
-				// RGG también se añade que, incluso siendo un aúnica persona, no sea asolicitantes
-				MasterReport masterReport = new  MasterReport(); 
-				EnvioInformesGenericos informesAdm = new EnvioInformesGenericos();
-				Vector vCampos = masterReport.obtenerDatosFormulario(form);
-				Hashtable datosInforme = null;
-				if (vCampos.size()>0) {
-					datosInforme = (Hashtable) vCampos.get(0);
-				}
-				String plantillas = (String) datosInforme.get("plantillas");
-				Vector vPlantillas = informesAdm.getPlantillasInforme(plantillas,userBean.getLocation(),userBean);
-				boolean aSolicitantes = informesAdm.esAlgunaASolicitantes(vPlantillas);
-
-				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null && !aSolicitantes));
-				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.genericos.expedientes.asunto");
-
-
-			}else if (subModo!=null && subModo.equalsIgnoreCase("pagoColegiados")){
-				idPersona = getIdPersonaUnica(form);
-				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
-				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null));
-				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.sjcs.pagos.envio.asunto");
-
-
-			}else if (subModo!=null && subModo.equalsIgnoreCase("certificadoIRPF")){
-				idPersona = getIdPersonaUnica(form);
-				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
-				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null));
-				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "gratuita.retencionesIRPF.informe.envio.asunto");
-
-
-			}
-
 			//obtener idEnvio
 			EnvEnviosAdm envAdm = new EnvEnviosAdm(this.getUserBean(request));
 			//idEnvio = String.valueOf(envAdm.getNewIdEnvio(idInstitucion));
@@ -952,7 +693,6 @@ public class DefinirEnviosAction extends MasterAction {
 
 		return "envioModal";
 	}
-
 	protected String envioModalCertificado(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) 
 	throws SIGAException{
 
@@ -979,15 +719,98 @@ public class DefinirEnviosAction extends MasterAction {
 		return "envioModalCertificado";
 	}
 
-	/**
-	 * Metodo que implementa el modo enviarPersona
-	 * @param  mapping - Mapeo de los struts
-	 * @param  formulario -  Action Form asociado a este Action
-	 * @param  request - objeto llamada HTTP 
-	 * @param  response - objeto respuesta HTTP
-	 * @return  String  Destino del action  
-	 * @exception  ClsExceptions  En cualquier caso de error
-	 */
+	protected String insertarEnvioGenerico (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws SIGAException 
+			{
+
+		UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));   
+		UserTransaction tx = userBean.getTransactionPesada();
+		DefinirEnviosForm form = (DefinirEnviosForm)formulario;
+		boolean isEnvioBatch = false;
+		
+		try {
+			String fechaProgramada = null;
+			String fechaProg = form.getFechaProgramada() + " " + new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds();
+
+			String language = userBean.getLanguage();
+			String format = language.equalsIgnoreCase("EN")?ClsConstants.DATE_FORMAT_LONG_ENGLISH:ClsConstants.DATE_FORMAT_LONG_SPANISH;		    
+			GstDate gstDate = new GstDate();
+			if (fechaProg != null && !fechaProg.equals("")) {
+				Date date = gstDate.parseStringToDate(fechaProg,format,request.getLocale());
+				//A peticion de Luis pedro retraso 15 minutos el envio
+				date.setTime(date.getTime()+900000);
+				//date.
+				SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+				fechaProgramada = sdf.format(date);
+			} else{
+				fechaProgramada = null;
+			}
+				tx.begin();
+				EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
+				if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesDesigna)){
+					envioInformesGenericos.gestionarComunicacionDesignas(form,  request.getLocale(), userBean);
+					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
+				}else if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesEjg)){
+					envioInformesGenericos.gestionarComunicacionEjg(form,  request.getLocale(), userBean);
+					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
+				}else if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesMorosos)){
+					envioInformesGenericos.gestionarComunicacionMorosos(form,  request.getLocale(), userBean);
+					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
+				}else if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesCenso)){
+					envioInformesGenericos.gestionarComunicacionCenso(form,  request.getLocale(), userBean);
+					form.setEditarEnvio("true");
+					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
+				}else if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesFacturacionesColegiados)){
+//					form.setClavesIteracion("idPersona");
+					envioInformesGenericos.gestionarComunicacionFacturacionColegiados(form,  request.getLocale(), userBean);
+					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
+				}else if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesPagoColegiados)){
+					envioInformesGenericos.gestionarComunicacionPagoColegiados(form,  request.getLocale(), userBean);
+					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
+				}else if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesJustificacion)){
+					envioInformesGenericos.gestionarComunicacionJustificaciones(form,  request.getLocale(), userBean);
+					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
+				}else if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesExpedientes)){
+					envioInformesGenericos.gestionarComunicacionExpedientes(form,  request.getLocale(), userBean);
+					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
+				}else if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesListadoGuardias)){
+					envioInformesGenericos.gestionarComunicacionListadoGuardias(form,  request.getLocale(), userBean);
+					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
+				}else if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesIRPF)){
+					envioInformesGenericos.gestionarComunicacionIRPF(form,  request.getLocale(), userBean);
+					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
+				}
+
+				tx.commit();
+				if(isEnvioBatch){
+					SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoGeneracionEnvio);
+					return exitoModal("messages.inserted.success",request);
+				}
+				else{
+					if(form.getIdEnvio()!=null&&!form.getIdEnvio().equals("")){
+						Hashtable htEnvio = new Hashtable();
+						htEnvio.put(EnvEnviosBean.C_IDTIPOENVIOS,form.getIdTipoEnvio());
+						htEnvio.put(EnvEnviosBean.C_IDENVIO,form.getIdEnvio());
+						htEnvio.put(EnvEnviosBean.C_DESCRIPCION,form.getNombre());
+						request.getSession().removeAttribute("EnvEdicionEnvio");
+						request.setAttribute("envio",htEnvio);
+						return "seleccionEnvio";
+					}
+				}
+		}
+		catch (ClsExceptions e){
+			this.throwExcp(e.getMessage(),new String[] {"modulo.envios"}, e, tx);
+		}
+		catch (Exception e){
+			this.throwExcp("messages.general.error",new String[] {"modulo.envios"},e,tx);
+		}
+		return "exception";
+		
+	} 
+
+	
 	protected String insertarEnvioModal (ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
@@ -998,7 +821,6 @@ public class DefinirEnviosAction extends MasterAction {
 		UserTransaction tx = userBean.getTransactionPesada();
 		DefinirEnviosForm form = (DefinirEnviosForm)formulario;
 		boolean tieneDireccion = true;
-		boolean isEnvioBatch = false;
 		String subModo = form.getSubModo();
 		try {
 
@@ -1048,22 +870,12 @@ public class DefinirEnviosAction extends MasterAction {
 			
 			
 			
-			String idEnvio = null;
-			// obtener idEnvio
-			if(!subModo.equals(EnvioInformesGenericos.comunicacionesCenso)&&
-					!subModo.equals(EnvioInformesGenericos.comunicacionesDesigna)&&
-					!subModo.equals(EnvioInformesGenericos.comunicacionesEjg)&&
-					!subModo.equals(EnvioInformesGenericos.comunicacionesExpedientes)&&
-					!subModo.equals(EnvioInformesGenericos.comunicacionesMorosos)&&
-					!subModo.equals(EnvioInformesGenericos.comunicacionesPagoColegiados)&&
-					!subModo.equals(EnvioInformesGenericos.comunicacionesFacturacionesColegiados)&&
-					!subModo.equals("certificadoIRPF") && !subModo.equals(EnvioInformesGenericos.comunicacionesListadoGuardias)){
-					idEnvio = form.getIdEnvio();
+			String idEnvio = form.getIdEnvio();
 				if (idEnvio.equalsIgnoreCase("")){
 					EnvEnviosAdm envAdm = new EnvEnviosAdm(this.getUserBean(request));
 					idEnvio = String.valueOf(envAdm.getNewIdEnvio(idInstitucion));
 				}
-			}
+			
 			
 			
 
@@ -1215,224 +1027,7 @@ public class DefinirEnviosAction extends MasterAction {
 				envio.generarEnvio(idPersona, EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA, vDocs);
 				envio.addDestinatarioIndividualDocAdjuntos(dest,null,true);
 				// RGG envio.addDestinatarioIndividual(dest,null,true);
-			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesMorosos)){
-
-
-				
-					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
-					envioInformesGenericos.gestionarComunicacionMorosos(form,  request.getLocale(), userBean);
-					idEnvio = form.getIdEnvio();
-					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
-				
-
-
-			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesExpedientes)){
-
-
-				
-					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
-					envioInformesGenericos.gestionarComunicacionExpedientes(form,  request.getLocale(), userBean);
-					idEnvio = form.getIdEnvio();
-					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
-				
-
-
-			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesDesigna)){
-
-
-			
-					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
-					envioInformesGenericos.gestionarComunicacionDesignas(form,  request.getLocale(), userBean);
-					idEnvio = form.getIdEnvio();
-					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
-			
-			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesEjg)){
-
-
-				
-					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
-					
-					envioInformesGenericos.gestionarComunicacionEjg(form,  request.getLocale(), userBean);
-					idEnvio = form.getIdEnvio();
-					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
-				
-			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesPagoColegiados)){
-				
-					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
-					envioInformesGenericos.gestionarComunicacionPagoColegiados(form,  request.getLocale(), userBean);
-					idEnvio = form.getIdEnvio();
-					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
-				
-			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesFacturacionesColegiados)){
-				
-					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
-					envioInformesGenericos.gestionarComunicacionFacturacionColegiados(form,  request.getLocale(), userBean);
-					idEnvio = form.getIdEnvio();
-					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
-								
-				
-			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesCenso)){
-				
-				
-					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
-					envioInformesGenericos.gestionarComunicacionCenso(form,  request.getLocale(), userBean);
-					idEnvio = form.getIdEnvio();
-					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
-				
-
-			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesListadoGuardias)){
-				
-				
-					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
-					envioInformesGenericos.gestionarComunicacionListadoGuardias(form,  request.getLocale(), userBean);
-					idEnvio = form.getIdEnvio();
-					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
-
-					
-			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesActaComision)){
-				
-				
-					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
-					envioInformesGenericos.gestionarComunicacionJustificaciones(form,  request.getLocale(), userBean);
-					idEnvio = form.getIdEnvio();
-					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
-					
-
-			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesJustificacion)){
-				
-				
-					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
-					envioInformesGenericos.gestionarComunicacionJustificaciones(form,  request.getLocale(), userBean);
-					idEnvio = form.getIdEnvio();
-					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
-				
-
-			}else if (subModo!=null && subModo.equalsIgnoreCase("certificadoIRPF")){
-
-
-				
-					// Obtenemos la información pertinente relacionada con los certificados
-					idPersona = getIdPersonaUnica(form);
-					InformeCertificadoIRPF informeCertificado = new InformeCertificadoIRPF();
-					if(idPersona!=null){
-						Vector vCampos = informeCertificado.obtenerDatosFormulario(form);
-
-						String periodo = null;
-						String anyoInformeIRPF = null;
-						String idioma = null;
-						String plantillas = null;
-						for (int i = 0; i < vCampos.size(); i++) {
-							Hashtable ht = (Hashtable) vCampos.get(i); 
-							idPersona= (String)ht.get("idPersona");
-							periodo = (String)ht.get("periodo");
-							anyoInformeIRPF= (String)ht.get("anyoInformeIRPF");
-							idInstitucion= (String)ht.get("idInstitucion");
-							idioma = (String)ht.get("idioma");
-							plantillas = (String) ht.get("plantillas");
-
-
-						} 
-
-						Vector vDocumentos = informeCertificado.getDocumentosAEnviar(plantillas, periodo, anyoInformeIRPF, idPersona, idioma, idInstitucion, userBean);
-
-						//envio = new Envio(userBean,nombreEnvio);
-
-
-						if (idEnvio ==null ||idEnvio.equalsIgnoreCase("")){
-							EnvEnviosAdm envAdm = new EnvEnviosAdm(this.getUserBean(request));
-							idEnvio = String.valueOf(envAdm.getNewIdEnvio(idInstitucion));
-						}
-						enviosBean.setIdEnvio(Integer.valueOf(idEnvio));
-						
-						// Bean envio
-						Envio envio = new Envio(enviosBean,userBean);
-						//enviosBean = envio.getEnviosBean();
-						enviosBean.setDescripcion(enviosBean.getIdEnvio()+" "+enviosBean.getDescripcion());
-						// trunco la descripción
-						if (enviosBean.getDescripcion().length()>200)  enviosBean.setDescripcion(enviosBean.getDescripcion().substring(0,99));
-						// Preferencia del tipo de envio si el usuario tiene uno:
-						enviosBean.setIdTipoEnvios(new Integer(idTipoEnvio));
-
-						enviosBean.setIdPlantillaEnvios(Integer.valueOf(idPlantilla));
-						if (idPlantillaGeneracion!=null && !idPlantillaGeneracion.equals("")) {
-							enviosBean.setIdPlantilla(Integer.valueOf(idPlantillaGeneracion));
-						} else {
-							enviosBean.setIdPlantilla(null);
-						}
-
-
-
-						//Vector vDocumentos = (Vector) htDocumentosPersona.get(idPersona);
-
-						// Genera el envio:
-						envio.generarEnvio(idPersona, EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,vDocumentos);
-
-
-
-					}else{
-						//idInstitucion = userBean.getLocation();
-						Vector vCampos = informeCertificado.obtenerDatosFormulario(form);
-
-						String periodo = null;
-						String anyoInformeIRPF = null;
-						String idioma = null;
-						String plantillas = null;
-						EnvEnvioProgramadoAdm envioProgramadoAdm  = new EnvEnvioProgramadoAdm(userBean);
-						EnvProgramIRPFAdm programIRPFAdm = new EnvProgramIRPFAdm(userBean);
-						EnvEnvioProgramadoBean envioProgramado = null;
-						EnvProgramIRPFBean programIRPF = null;
-						for (int i = 0; i < vCampos.size(); i++) {
-							Hashtable ht = (Hashtable) vCampos.get(i); 
-							idPersona = (String) ht.get("idPersona");
-							idInstitucion = (String) ht.get("idInstitucion");
-							periodo = (String) ht.get("periodo");
-							anyoInformeIRPF = (String) ht.get("anyoInformeIRPF");
-							idioma = (String) ht.get("idioma");
-							plantillas = (String) ht.get("plantillas");
-
-							envioProgramado = new EnvEnvioProgramadoBean();
-
-							envioProgramado.setIdEnvio(envioProgramadoAdm.getNewIdEnvio(idInstitucion));
-							envioProgramado.setIdInstitucion(new Integer(idInstitucion));
-							envioProgramado.setIdTipoEnvios(new Integer(idTipoEnvio));
-							envioProgramado.setIdPlantillaEnvios(Integer.valueOf(idPlantilla));
-							if (idPlantillaGeneracion!=null && !idPlantillaGeneracion.equals("")) {
-								envioProgramado.setIdPlantilla(Integer.valueOf(idPlantillaGeneracion));
-							} else {
-								envioProgramado.setIdPlantilla(null);
-							}
-
-							envioProgramado.setNombre(nombreEnvio);
-							envioProgramado.setEstado(ClsConstants.DB_FALSE);
-							envioProgramado.setFechaProgramada(fechaProgramada);
-
-							programIRPF = new EnvProgramIRPFBean();
-							programIRPF.setIdProgram(programIRPFAdm.getNewIdProgramIrpf(idInstitucion));
-							programIRPF.setIdEnvio(envioProgramado.getIdEnvio());
-							programIRPF.setIdInstitucion(envioProgramado.getIdInstitucion());
-							programIRPF.setIdPersona(new Long(idPersona));
-							programIRPF.setIdioma(new Integer(idioma));
-							programIRPF.setEstado(ClsConstants.DB_FALSE);
-							programIRPF.setPeriodo(new Integer(periodo));
-							programIRPF.setAnyoIRPF(new Integer(anyoInformeIRPF));
-							programIRPF.setPlantillas(plantillas);
-
-							envioProgramadoAdm.insert(envioProgramado);
-							programIRPFAdm.insert(programIRPF);
-
-							//Obtenemos el bean del envio:
-
-
-
-
-
-
-						}
-						isEnvioBatch = true;
-					}
-
-				
-			}  
+			} 
 			else {
 				//Generamos el envío
 				Envio envio = new Envio(enviosBean,userBean);
@@ -1452,9 +1047,8 @@ public class DefinirEnviosAction extends MasterAction {
 			}
 
 			tx.commit();
-			if(isEnvioBatch)
-				SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoGeneracionEnvio);
-
+			
+			
 		}
 		catch (ClsExceptions e){
 			this.throwExcp(e.getMessage(),new String[] {"modulo.envios"}, e, tx);
@@ -1472,8 +1066,7 @@ public class DefinirEnviosAction extends MasterAction {
 		} else {
 			return exitoModal("messages.inserted.success",request);
 		}
-			} 
-
+	} 
 	/**
 	 * Metodo que implementa el modo enviarPersona
 	 * @param  mapping - Mapeo de los struts
@@ -2294,6 +1887,63 @@ public class DefinirEnviosAction extends MasterAction {
 			throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null); 
 		}
 		return "export";
+	}
+	protected void getJQueryPlantillasEnvio (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, JSONException, IOException
+			{
+		UsrBean usr = this.getUserBean(request);
+		String idTipoEnvio = request.getParameter("idTipoEnvio");
+		JSONObject json = new JSONObject();
+		BusinessManager bm = getBusinessManager();
+		InformesService informeService = (InformesService)bm.getService(InformesService.class);
+		List<EnvPlantillasEnviosBean> plantillasEnviosBeans = informeService.getPlantillasEnvio(idTipoEnvio,usr.getLocation(),usr);
+		JSONArray plantillasEnviosJsonArray = new JSONArray();
+		for (int i=0;i<plantillasEnviosBeans.size();i++) {
+			plantillasEnviosJsonArray.put(plantillasEnviosBeans.get(i).getJSONObject());
+		}
+
+		
+		json.put("plantillasEnvio", plantillasEnviosJsonArray);
+		
+		// json.
+		 response.setContentType("text/x-json;charset=ISO-8859-15");
+		 response.setHeader("Cache-Control", "no-cache");
+		 response.setHeader("Content-Type", "application/json");
+	     response.setHeader("X-JSON", json.toString());
+		 response.getWriter().write(json.toString()); 
+		
+	}
+	protected void getJQueryTiposEnvioPermitido (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, JSONException, IOException
+			{
+		UsrBean usr = this.getUserBean(request);
+		String idPlantilla = request.getParameter("idPlantilla");
+		String idInstitucion = request.getParameter("idInstitucion");
+		JSONObject json = new JSONObject();
+		BusinessManager bm = getBusinessManager();
+		InformesService informeService = (InformesService)bm.getService(InformesService.class);
+		AdmInformeBean informeBean = new AdmInformeBean();
+		informeBean.setIdPlantilla(idPlantilla);
+		informeBean.setIdInstitucion(new Integer(idInstitucion));
+		List<EnvTipoEnviosBean> tipoEnviosBeans = informeService.getTiposEnvioPermitidos(informeBean,usr);
+		JSONArray tiposEnvioJsonArray = new JSONArray();
+		for (int i=0;i<tipoEnviosBeans.size();i++) {
+			tiposEnvioJsonArray.put(tipoEnviosBeans.get(i).getJSONObject());
+		}
+
+		
+		json.put("tiposEnvioPermitidos", tiposEnvioJsonArray);
+		// json.
+		 response.setContentType("text/x-json;charset=ISO-8859-15");
+		 response.setHeader("Cache-Control", "no-cache");
+		 response.setHeader("Content-Type", "application/json");
+	     response.setHeader("X-JSON", json.toString());
+		 response.getWriter().write(json.toString()); 
+		
 	}
 
 

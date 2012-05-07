@@ -25,6 +25,7 @@ import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
+import com.siga.beans.AdmInformeBean;
 import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.FacFacturaAdm;
@@ -248,6 +249,94 @@ public class InformeFacturasEmitidas extends MasterReport
 		}
         return fPdf;
 	}
+	public File generarComunicacionOficioPdfFromXmlToFoXsl (AdmInformeBean beanInforme,String identificador) throws ClsExceptions,SIGAException 
+	{
+	
+		File fPdf = null;
+		
+	
+		File rutaTmp=null;
+	
+			
+		try {
+			UsrBean usr = this.getUsuario();
+			String idioma = usr.getLanguage();
+			String idInstitucion = usr.getLocation();
+			
+	
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");	
+			
+			// RGG 26/02/2007 cambio en los codigos de lenguajes
+			AdmLenguajesAdm a = new AdmLenguajesAdm(usr);
+			String idiomaExt = a.getLenguajeExt(idioma);
+			
+			// YYYY/MM/DD HH24:MI:SS
+			String fecha = UtilidadesBDAdm.getFechaCompletaBD("formato_ingles");
+			fecha = fecha.replaceAll("/","");
+			fecha = fecha.replaceAll(":","");
+			fecha = fecha.replaceAll(" ","_");
+			
+			String carpetaInstitucion = "";
+			if (beanInforme.getIdInstitucion() == null
+					|| beanInforme.getIdInstitucion().compareTo(Integer.valueOf(0)) == 0) {
+				carpetaInstitucion = "2000";
+			} else {
+				carpetaInstitucion = "" + beanInforme.getIdInstitucion();
+			}
+			
+			String directorioPlatillas         = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava"),
+				   directorioEspecificoInforme = rp.returnProperty("informes.directorioPlantillaInformesJava"),
+				   directorioSalida            = rp.returnProperty("informes.directorioFisicoSalidaInformesJava");
+
+			// Directorios y nombres de trabajo
+			String plantillaNombre = beanInforme.getNombreFisico() + "_"+ idiomaExt + ".xsl";
+			
+			String plantillaRuta   = directorioPlatillas + directorioEspecificoInforme + ClsConstants.FILE_SEP + carpetaInstitucion+ClsConstants.FILE_SEP+beanInforme.getDirectorio();
+			
+
+			String pdfRuta         = directorioSalida    + directorioEspecificoInforme + ClsConstants.FILE_SEP + idInstitucion;
+			
+			String pathXml = plantillaRuta+ClsConstants.FILE_SEP+"identificador_"   + idiomaExt + ".xml";
+			
+			identificador = identificador + ".pdf";
+			String pdfNombre = beanInforme.getNombreSalida() + "_"	+ identificador;
+			
+			// obtener ruta almacen
+			File rutaPDF = new File(pdfRuta);
+			rutaPDF.mkdirs();
+			if(!rutaPDF.exists()){
+				throw new SIGAException("messages.facturacion.comprueba.noPathFacturas");					
+			} 
+			else {
+				if(!rutaPDF.canWrite()){
+					throw new SIGAException("messages.facturacion.comprueba.noPermisosPathFacturas");					
+				}
+			}
+			pdfRuta += ClsConstants.FILE_SEP;
+			
+			
+			
+			
+			fPdf = this.generarInformePdfFromXmlToFoXsl(pathXml,plantillaRuta,plantillaNombre,pdfRuta,pdfNombre, null);
+		}
+		catch (SIGAException se) {
+			throw se;
+		}
+		catch (ClsExceptions ex) {
+			throw ex;
+		}
+		catch (Exception e) {
+			throw new ClsExceptions(e,"Error al generar el informe: "+e.getLocalizedMessage());
+		} 
+		finally {
+			if(rutaTmp!=null){
+				Plantilla.borrarDirectorio(rutaTmp);
+			}
+		}
+        return fPdf;
+	}
+	
 	/**
 	 * Metodo que sobreescribe al método homonimo del MasterReport
 	 * 
@@ -266,10 +355,13 @@ public class InformeFacturasEmitidas extends MasterReport
 		
 		
 		try {
-			String idInstitucion = this.getUsuario().getLocation();
-			String fDesde = UtilidadesHash.getString(datosFormulario, "FECHA_DESDE");
-			String fHasta = UtilidadesHash.getString(datosFormulario, "FECHA_HASTA");
+//			String idInstitucion = this.getUsuario().getLocation();
+//			String fDesde = UtilidadesHash.getString(datosFormulario, "FECHA_DESDE");
+//			String fHasta = UtilidadesHash.getString(datosFormulario, "FECHA_HASTA");
 			
+			String idInstitucion = "2040";
+			String fDesde = "11/01/2011";
+			String fHasta = "11/01/2011";
 			
 			
 			//Nos traemos las filas del informe 

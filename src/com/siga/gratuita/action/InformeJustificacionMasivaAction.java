@@ -27,6 +27,7 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.PaginadorBind;
 import com.siga.administracion.SIGAConstants;
+import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
@@ -63,6 +64,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 					
 					if (accion == null || accion.equalsIgnoreCase("")||accion.equalsIgnoreCase("abrir")) {
 						if(mapping.getPath().equals("/JGR_InformeJustificacion")){
+							//aqui no
 							mapDestino = inicioInforme(mapping, miForm, request, response);
 							break;
 						}else {
@@ -170,6 +172,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			
 		}
 		if(form.getFichaColegial()){
+			
 			GenParametrosAdm paramAdm = new GenParametrosAdm (user);
 			String activarMensaje = paramAdm.getValor (user.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.ACTIVAR_MENSAJE_DOCRESOLUCION_COLEGIADO, "");
 			String mensaje = "";
@@ -178,9 +181,20 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			}
 			request.setAttribute("MENSAJE_DOCRESOLUCION", mensaje);
 			
-		}else{
+//				String informeUnico = ClsConstants.DB_TRUE;
+//				AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
+//				Vector informeBeans=adm.obtenerInformesTipo(this.getUserBean(request).getLocation(),"JUSDE",null, null);
+//				if(informeBeans!=null && informeBeans.size()>1){
+//					informeUnico = ClsConstants.DB_FALSE;
+//					
+//				}
+//
+//				request.setAttribute("informeUnico", informeUnico);
+//			
 			
+		}else{
 			request.setAttribute("MENSAJE_DOCRESOLUCION","");
+//			request.setAttribute("informeUnico", "0");
 			
 		}
 		
@@ -681,6 +695,15 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			String fecha = gstDate.parseDateToString(new Date(),"dd/MM/yyyy", this.getLocale(request)); 
 			f.setFecha(fecha);
 		}
+		String informeUnico = ClsConstants.DB_TRUE;
+		AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
+		Vector informeBeans=adm.obtenerInformesTipo(this.getUserBean(request).getLocation(),"JUSDE",null, null);
+		if(informeBeans!=null && informeBeans.size()>1){
+			informeUnico = ClsConstants.DB_FALSE;
+			
+		}
+
+		request.setAttribute("informeUnico", informeUnico);
 		return "listadoPaginado";
 	}
 	

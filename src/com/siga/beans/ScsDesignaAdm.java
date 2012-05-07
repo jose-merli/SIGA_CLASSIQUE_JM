@@ -1761,7 +1761,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	}
 	
 	
-	public Vector getEstadoCivilDesignaDefendido (String idInstitucion, String turno,String anio,String numero) throws ClsExceptions  
+	public Vector getEstadoCivilDesignaDefendido (String idInstitucion, String turno,String anio,String numero,String idPersonaJG,String idioma) throws ClsExceptions  
 	{
 		try {
 			Hashtable h = new Hashtable(); 
@@ -1769,9 +1769,10 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			h.put(new Integer(2), turno);
 			h.put(new Integer(3), anio);
 			h.put(new Integer(4), numero);
+			h.put(new Integer(5), idPersonaJG);
 
 			String sql = "Select " +
-			"		F_SIGA_GETRECURSO(estcivil.descripcion, 1) estadocivil_defendido,estcivil.descripcion " +
+			"		F_SIGA_GETRECURSO(estcivil.descripcion, "+idioma+") estadocivil_defendido,estcivil.descripcion " +
 			" from cen_estadocivil estcivil,"+
 		       "scs_defendidosdesigna defen,"+
 		       "scs_personajg persJg,"+
@@ -1784,11 +1785,13 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			   " and persJg.idpersona = defen.idpersona " +
 			   " AND estcivil.idestadocivil = persJg.idestadocivil " +
 		       
-		       "   " +
+		       
 				"   And Des.Idinstitucion = :1 " +
 				"   And Des.Idturno = :2 " +
 				"   And Des.Anio = :3 " +
-				"   And Des.Numero = :4";
+				"   And Des.Numero = :4"+
+				"   and persJg.idpersona =:5 " ;
+				
 			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
 			return helperInformes.ejecutaConsultaBind(sql, h);
@@ -1807,25 +1810,15 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		try {
 			vSalida = new Vector();	
 			Vector vDesigna = getDesignaSalidaOficio(idInstitucion,idturno, anio, numero, codigoDesigna); 
-			Vector estadodCivilDefendido = getEstadoCivilDesignaDefendido(idInstitucion,idturno, anio, numero);
 			
-			String estadoCivilDefendido ="";
-			for (int j = 0; j < estadodCivilDefendido.size(); j++) 
-			{
-				Hashtable registro = (Hashtable) estadodCivilDefendido.get(j);
-				estadoCivilDefendido = (String)registro.get("ESTADOCIVIL_DEFENDIDO");				
-			}
+			
+			
 			
 			String idiomainforme="";
 			Hashtable htCodigo = new Hashtable();
 			for (int j = 0; j < vDesigna.size(); j++) {
 				Hashtable registro = (Hashtable) vDesigna.get(j);
-				if(estadoCivilDefendido!=null && !(estadoCivilDefendido.equals("")) &&!(estadoCivilDefendido.equals(" ")))
-				{
-					registro.put("ESTADOCIVIL_DEFENDIDO", estadoCivilDefendido);
-				}
-				else
-					registro.put("ESTADOCIVIL_DEFENDIDO", "");
+				
 				String numeroDesigna = (String)registro.get("NUMERO");
 				String anioDesigna = (String)registro.get("ANIO");
 				String idTurno  = (String)registro.get("IDTURNO");
@@ -1833,9 +1826,9 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				String idiomaletrado = (String)registro.get("IDIOMA_LETRADO");			
 				String idInstitucionOrigen = (String)registro.get("IDINSTITUCIONORIGEN");
 								
-				
+				Vector vDefendidos = getDefendidosDesignaSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna,idPersonaJG, idPersona);
 				if(isSolicitantes){						
-					Vector vDefendidos = getDefendidosDesignaSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna,idPersonaJG, idPersona);
+					
 					if(vDefendidos!=null && vDefendidos.size()>0){
 						for (int k = 0; k < vDefendidos.size(); k++) {
 							Hashtable clone = (Hashtable) registro.clone();							
@@ -1866,7 +1859,61 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 							/**Llama a la funcion para recuperar los valores con el idioma que le pasamos.**/
 							registroDefendido  = getregistrodatosDesigna(registro, idInstitucion,idLenguaje);
 							/**Para saaber en que idioma se tiene que imprimer la carta de oficio**/
-							registroDefendido.put("CODIGOLENGUAJE", idiomaExt);								
+							registroDefendido.put("CODIGOLENGUAJE", idiomaExt);
+							
+							
+							htCodigo = new Hashtable();
+							String sexoDefendico="";
+							if((String)registroDefendido.get("SEXO_DEFENDIDO")!=null && !((String)registroDefendido.get("SEXO_DEFENDIDO")).trim().equals("")){
+								sexoDefendico=	(String)registroDefendido.get("SEXO_DEFENDIDO");
+								htCodigo.put(new Integer(1), sexoDefendico);
+								htCodigo.put(new Integer(2), idioma);
+								helperInformes.completarHashSalida(registroDefendido,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETRECURSO_ETIQUETA", "SEXO_DEFENDIDO"));
+							}else{
+								registroDefendido.put("SEXO_DEFENDIDO", "");
+							}
+							htCodigo = new Hashtable();
+							String calidadDefendido="";
+							if((String)registroDefendido.get("CALIDAD_DEFENDIDO")!=null && !((String)registroDefendido.get("CALIDAD_DEFENDIDO")).trim().equals("")){
+								calidadDefendido=	(String)registroDefendido.get("CALIDAD_DEFENDIDO");
+								htCodigo.put(new Integer(1), calidadDefendido);
+								htCodigo.put(new Integer(2), idioma);
+								helperInformes.completarHashSalida(registroDefendido,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETRECURSO", "CALIDAD_DEFENDIDO"));
+							}else{
+								registroDefendido.put("CALIDAD_DEFENDIDO", "");
+							}			
+							
+							String nombrePais="";
+							if((String)registroDefendido.get("NOMBRE_PAIS")!=null && !((String)registroDefendido.get("NOMBRE_PAIS")).trim().equals("")){
+								nombrePais=	(String)registroDefendido.get("NOMBRE_PAIS");
+								htCodigo.put(new Integer(1), nombrePais);
+								htCodigo.put(new Integer(2), idioma);
+								helperInformes.completarHashSalida(registroDefendido,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETRECURSO", "NOMBRE_PAIS"));
+							}else{
+								registroDefendido.put("NOMBRE_PAIS", "");
+							}
+							//Listado de Telefonos de interesados de Designas
+							if((String)registroDefendido.get("IDPERSONAINTERESADO")!=null && !((String)registroDefendido.get("IDPERSONAINTERESADO")).trim().equals("")){
+								Vector aux = getListadoTelefonosInteresadoSalidaOficio((String)registroDefendido.get("IDPERSONAINTERESADO"),idInstitucion);
+								String tInteresado = "";								
+								for (int i=0;i<aux.size();i++) {
+									Hashtable reg = (Hashtable) aux.get(i);
+					             	tInteresado+= (String) reg.get("NOMBRETELEFONO") + ": ";	
+									tInteresado+= (String) reg.get("NUMEROTELEFONO") + "; ";						 
+								}
+								if (tInteresado.length()>0) tInteresado = tInteresado.substring(0,tInteresado.length()-2);
+								registroDefendido.put("LISTA_TELEFONOS_INTERESADO", tInteresado);
+							}else
+								registroDefendido.put("LISTA_TELEFONOS_INTERESADO", "");
+							
+							Vector estadodCivilDefendidoVector = getEstadoCivilDesignaDefendido(idInstitucion,idturno, anio, numero,(String)registroDefendido.get("IDPERSONAINTERESADO"),idLenguaje);
+							String estadoCivilDefendido = "";
+							if(estadodCivilDefendidoVector.size()>0){
+								estadoCivilDefendido = (String) ((Hashtable)estadodCivilDefendidoVector.get(0)).get("ESTADOCIVIL_DEFENDIDO");
+							}
+							registroDefendido.put("ESTADOCIVIL_DEFENDIDO", estadoCivilDefendido);
+							
+							
 							clone.putAll(registroDefendido);						
 							vSalida.add(clone);
 						}
@@ -1881,8 +1928,11 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 							case 3:  idiomainforme="EU"; break;
 							case 4:  idiomainforme="GL"; break;
 						}
+						
+						
+						
+						
 						registro.put("CODIGOLENGUAJE", idiomainforme);	
-						registro.put("LISTA_TELEFONOS_INTERESADO", "");		
 						registro.put("LISTA_TELEFONOS_INTERESADO", "");
 						registro.put("NUMERO_EJG", "");
 						registro.put("NIF_DEFENDIDO", "");
@@ -1898,6 +1948,9 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 						registro.put("OBS_DEFENDIDO", "");		
 						registro.put("O_A_DEFENDIDO", "");
 						registro.put("EL_LA_DEFENDIDO", "");
+						registro.put("ESTADOCIVIL_DEFENDIDO", "");
+						registro.put("NOMBRE_PAIS", "");
+						
 						vSalida.add(registro);
 					}	
 				
@@ -1913,6 +1966,83 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 							case 4:  idiomainforme="GL"; break;	
 					}
 					registro.put("CODIGOLENGUAJE", idiomainforme);					
+					
+					
+					if(vDefendidos!=null && vDefendidos.size()>0){
+						for (int k = 0; k < vDefendidos.size(); k++) {
+							Hashtable registroDefendido = (Hashtable) vDefendidos.get(k);								
+							
+							String idpersonainteresado=(String)registroDefendido.get("IDLENGUAJE_DEFENDIDO");							
+							/****
+							  	Se modifica para que salgan los informes de los interesados en el idioma que tenga dicho interesado, 
+								si no tiene idioma se imprime en el idioma del usuario. y los delitos también salen en el idioma del interesado.								
+							***/							
+							
+							/**Depende del idioma del defendido se tiene que imprimir la carta del defendido, si no tiene idioma se imprime en el idioma de la institución.**/
+								
+							/**Llama a la funcion para recuperar los valores con el idioma que le pasamos.**/
+							/**Para saaber en que idioma se tiene que imprimer la carta de oficio**/
+							registroDefendido.put("CODIGOLENGUAJE", idiomainforme);								
+							htCodigo = new Hashtable();
+							String sexoDefendico="";
+							if((String)registroDefendido.get("SEXO_DEFENDIDO")!=null && !((String)registroDefendido.get("SEXO_DEFENDIDO")).trim().equals("")){
+								sexoDefendico=	(String)registroDefendido.get("SEXO_DEFENDIDO");
+								htCodigo.put(new Integer(1), sexoDefendico);
+								htCodigo.put(new Integer(2), idioma);
+								helperInformes.completarHashSalida(registroDefendido,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETRECURSO_ETIQUETA", "SEXO_DEFENDIDO"));
+							}else{
+								registroDefendido.put("SEXO_DEFENDIDO", "");
+							}
+							htCodigo = new Hashtable();
+							String calidadDefendido="";
+							if((String)registroDefendido.get("CALIDAD_DEFENDIDO")!=null && !((String)registroDefendido.get("CALIDAD_DEFENDIDO")).trim().equals("")){
+								calidadDefendido=	(String)registroDefendido.get("CALIDAD_DEFENDIDO");
+								htCodigo.put(new Integer(1), calidadDefendido);
+								htCodigo.put(new Integer(2), idioma);
+								helperInformes.completarHashSalida(registroDefendido,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETRECURSO", "CALIDAD_DEFENDIDO"));
+							}else{
+								registroDefendido.put("CALIDAD_DEFENDIDO", "");
+							}			
+							
+							String nombrePais="";
+							if((String)registroDefendido.get("NOMBRE_PAIS")!=null && !((String)registroDefendido.get("NOMBRE_PAIS")).trim().equals("")){
+								nombrePais=	(String)registroDefendido.get("NOMBRE_PAIS");
+								htCodigo.put(new Integer(1), nombrePais);
+								htCodigo.put(new Integer(2), idioma);
+								helperInformes.completarHashSalida(registroDefendido,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETRECURSO", "NOMBRE_PAIS"));
+							}else{
+								registroDefendido.put("NOMBRE_PAIS", "");
+							}
+							//Listado de Telefonos de interesados de Designas
+							if((String)registroDefendido.get("IDPERSONAINTERESADO")!=null && !((String)registroDefendido.get("IDPERSONAINTERESADO")).trim().equals("")){
+								Vector aux = getListadoTelefonosInteresadoSalidaOficio((String)registroDefendido.get("IDPERSONAINTERESADO"),idInstitucion);
+								String tInteresado = "";								
+								for (int i=0;i<aux.size();i++) {
+									Hashtable reg = (Hashtable) aux.get(i);
+					             	tInteresado+= (String) reg.get("NOMBRETELEFONO") + ": ";	
+									tInteresado+= (String) reg.get("NUMEROTELEFONO") + "; ";						 
+								}
+								if (tInteresado.length()>0) tInteresado = tInteresado.substring(0,tInteresado.length()-2);
+								registroDefendido.put("LISTA_TELEFONOS_INTERESADO", tInteresado);
+							}else
+								registroDefendido.put("LISTA_TELEFONOS_INTERESADO", "");
+							
+							Vector estadodCivilDefendidoVector = getEstadoCivilDesignaDefendido(idInstitucion,idturno, anio, numero,(String)registroDefendido.get("IDPERSONAINTERESADO"),idioma);
+							String estadoCivilDefendido = "";
+							if(estadodCivilDefendidoVector.size()>0){
+								estadoCivilDefendido = (String) ((Hashtable)estadodCivilDefendidoVector.get(0)).get("ESTADOCIVIL_DEFENDIDO");
+							}
+							registroDefendido.put("ESTADOCIVIL_DEFENDIDO", estadoCivilDefendido);
+							
+							
+							
+						}
+						registro.put("defendido", vDefendidos);
+						
+					}else{
+						//registro.put("defendido","");
+					}
+					
 					registro.put("LISTA_TELEFONOS_INTERESADO", "");
 					registro.put("NUMERO_EJG", "");
 					registro.put("NIF_DEFENDIDO", "");
@@ -1928,6 +2058,9 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					registro.put("OBS_DEFENDIDO", "");		
 					registro.put("O_A_DEFENDIDO", "");
 					registro.put("EL_LA_DEFENDIDO", "");
+					registro.put("ESTADOCIVIL_DEFENDIDO", "");
+					registro.put("NOMBRE_PAIS", "");
+					
 					vSalida.add(registro);
 				}		
 			}
@@ -3206,36 +3339,10 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					
 				}
 							
-					htCodigo = new Hashtable();
-							String sexoDefendico="";
-							if((String)registro.get("SEXO_DEFENDIDO")!=null && !((String)registro.get("SEXO_DEFENDIDO")).trim().equals("")){
-								sexoDefendico=	(String)registro.get("SEXO_DEFENDIDO");
-								htCodigo.put(new Integer(1), sexoDefendico);
-								htCodigo.put(new Integer(2), idioma);
-								helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETRECURSO_ETIQUETA", "SEXO_DEFENDIDO"));
-							}else{
-								registro.put("SEXO_DEFENDIDO", "");
-							}
-							htCodigo = new Hashtable();
-							String calidadDefendido="";
-							if((String)registro.get("CALIDAD_DEFENDIDO")!=null && !((String)registro.get("CALIDAD_DEFENDIDO")).trim().equals("")){
-								calidadDefendido=	(String)registro.get("CALIDAD_DEFENDIDO");
-								htCodigo.put(new Integer(1), calidadDefendido);
-								htCodigo.put(new Integer(2), idioma);
-								helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETRECURSO", "CALIDAD_DEFENDIDO"));
-							}else{
-								registro.put("CALIDAD_DEFENDIDO", "");
-							}			
+					
 							
-							String nombrePais="";
-							if((String)registro.get("NOMBRE_PAIS")!=null && !((String)registro.get("NOMBRE_PAIS")).trim().equals("")){
-								nombrePais=	(String)registro.get("NOMBRE_PAIS");
-								htCodigo.put(new Integer(1), nombrePais);
-								htCodigo.put(new Integer(2), idioma);
-								helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETRECURSO", "NOMBRE_PAIS"));
-							}else{
-								registro.put("NOMBRE_PAIS", "");
-							}
+							
+							
 							htCodigo = new Hashtable();
 							htCodigo.put(new Integer(1), idInstitucion);
 							htCodigo.put(new Integer(2), numeroDesigna);
@@ -3245,19 +3352,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				            helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETDELITOS_DESIGNA", "DELITOS"));
 							htCodigo.remove(new Integer(5));
 								
-							//Listado de Telefonos de interesados de Designas
-							if((String)registro.get("IDPERSONAINTERESADO")!=null && !((String)registro.get("IDPERSONAINTERESADO")).trim().equals("")){
-								Vector aux = getListadoTelefonosInteresadoSalidaOficio((String)registro.get("IDPERSONAINTERESADO"),idInstitucion);
-								String tInteresado = "";								
-								for (int i=0;i<aux.size();i++) {
-									Hashtable reg = (Hashtable) aux.get(i);
-					             	tInteresado+= (String) reg.get("NOMBRETELEFONO") + ": ";	
-									tInteresado+= (String) reg.get("NUMEROTELEFONO") + "; ";						 
-								}
-								if (tInteresado.length()>0) tInteresado = tInteresado.substring(0,tInteresado.length()-2);
-								registro.put("LISTA_TELEFONOS_INTERESADO", tInteresado);
-							}else
-								registro.put("LISTA_TELEFONOS_INTERESADO", "");
 							
 								if(Idpretension!=null && !Idpretension.trim().equalsIgnoreCase("")){			
 								Vector vpretenciones=ejgdm.getPretension(Idpretension, idInstitucion,idioma);

@@ -2202,13 +2202,15 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 					 Hashtable haste = ejgAdm.getDatosEjg(UtilidadesHash.getString(expedienteHashtable, ExpExpedienteBean.C_IDINSTITUCION), UtilidadesHash.getString(expedienteHashtable, ExpExpedienteBean.C_ANIOEJG), UtilidadesHash.getString(expedienteHashtable, ExpExpedienteBean.C_NUMEROEJG), UtilidadesHash.getString(expedienteHashtable, ExpExpedienteBean.C_IDTIPOEJG));
 					 String SUFIJO = (String) haste.get("SUFIJO");
 					 String CODIGO = (String) haste.get("CODIGO");
-					 String codigoEjg = null;
+					 String codigoEjg = "";
 					 if (SUFIJO != null && !SUFIJO.equals("")) {
 							codigoEjg = CODIGO + "-" + SUFIJO;
 							
-						} else {
-							codigoEjg = CODIGO;
-						}
+					} else {
+						codigoEjg = CODIGO;
+					}
+					 if(codigoEjg==null)
+						 codigoEjg = "";	
 					 expedienteHashtable.put("EJG_ANIO", UtilidadesHash.getString(expedienteHashtable, ExpExpedienteBean.C_ANIOEJG));
 					 expedienteHashtable.put("EJG_NUMEJG", UtilidadesHash.getString(expedienteHashtable, ExpExpedienteBean.C_ANIOEJG)+" / "+codigoEjg);
 					 expedienteHashtable.put("EJG_CODIGO", codigoEjg);

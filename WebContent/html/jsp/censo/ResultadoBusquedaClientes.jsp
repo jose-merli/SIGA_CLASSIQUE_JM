@@ -225,19 +225,6 @@
 	<input type="hidden" name="actionModal" value="">
 	<input type="hidden" name="verFichaLetrado" value="">
 </html:form>
-<!-- Formulario para la creacion de envio -->
-<html:form action="/ENV_DefinirEnvios.do" method="POST" target="mainWorkArea" style="display:none">
-	<html:hidden property = "actionModal" value = ""/>
-	<html:hidden property = "modo" value = ""/>
-	<html:hidden property = "tablaDatosDinamicosD" value = ""/>
-	<html:hidden property = "subModo" value = ""/>
-	<html:hidden property = "filaSelD" value=""/>
-	<html:hidden property = "idPersona" value=""/>
-	<html:hidden property = "descEnvio" value=""/>
-	<html:hidden property = "datosEnvios" value=""/>
-	
-	
-</html:form>
 
 <%
 	String tamanosCol = "";
@@ -656,6 +643,21 @@
 	}
 		}
 %>
+<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
+	<html:hidden property="idInstitucion" value = "<%=idInstitucionLocation%>"/>
+	<html:hidden property="idTipoInforme" value="CENSO"/>
+	<html:hidden property="enviar" value="1"/>
+	<html:hidden property="descargar" value="1"/>
+	<html:hidden property="datosInforme"/>
+	<html:hidden property="modo" value = "preSeleccionInformes"/>
+	<input type='hidden' name='actionModal'>
+</html:form>
+<!-- Formulario para la edicion del envio -->
+<html:form action="/ENV_DefinirEnvios.do" method="POST" target="mainWorkArea">
+	<html:hidden property = "modo" value = ""/>
+	<html:hidden property = "tablaDatosDinamicosD" value = ""/>
+
+</html:form>
 
 
 <script language="JavaScript">
@@ -808,30 +810,32 @@
 		var idPersona = document.getElementById(auxPers).value;
 		var auxInst = 'oculto' + fila + '_2';
 		var idInstPersona = document.getElementById(auxInst).value;		
-	   	datos = "idPersona=="+idPersona + "##idInstitucion==" +idInstPersona ; 
+	   	datos = "idPersona=="+idPersona + "##idInstitucion==" +idInstPersona+ "##idTipoPersonas==" +<%=colegiado%>+"##idTipoInforme==CENSO" ; 
 		
-		var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
-		formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucionLocation%>'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='CENSO'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='enviar' value='1'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='descargar' value='1'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='tipoPersonas' value='<%=colegiado%>'>"));
 		
-		document.appendChild(formu);
-		formu.datosInforme.value=datos;
-		formu.submit();
-			
-				
-			
+	   	document.InformesGenericosForm.datosInforme.value=datos;
+		var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
+	   	if (arrayResultado==undefined||arrayResultado[0]==undefined){
+	   				   		
+	   	} 
+	   	else {
+	   		
+	   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
+	   		if(confirmar){
+	   			var idEnvio = arrayResultado[0];
+			    var idTipoEnvio = arrayResultado[1];
+			    var nombreEnvio = arrayResultado[2];				    
+			    
+			   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
+			   	document.DefinirEnviosForm.modo.value='editar';
+			   	document.DefinirEnviosForm.submit();
+	   		}
+	   	}
 	}
    	
 	function accionComunicar()
 		{
 		
-			sub();
 			
 			datos = "";
 		
@@ -849,35 +853,38 @@
 				idRegistros = idRegistros.substring(index+2);					
 				}	
 			
- 		   	datos = datos +"idPersona=="+idPersona + "##idInstitucion==" +idInstitucion+"%%%";
+ 		   	datos = datos +"idPersona=="+idPersona + "##idInstitucion==" +idInstitucion+"##idTipoPersonas==" +<%=colegiado%>+"##idTipoInforme==CENSO%%%";
 		}
 		
 		numElementosSeleccionados =  ObjArray.length; 
 		if (datos == '') {
 			alert ('<siga:Idioma key="general.message.seleccionar"/>');
-			fin();
 			return;
 		}
-			
-			var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
-			formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucionLocation%>'>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='CENSO'>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='enviar' value='1'>"));
 			if(numElementosSeleccionados>50){
-				formu.appendChild(document.createElement("<input type='hidden' name='descargar' value='0'>"));
+				document.InformesGenericosForm.descargar.value = '0';
 			}
 			else{
-				
-				formu.appendChild(document.createElement("<input type='hidden' name='descargar' value='1'>"));
+				document.InformesGenericosForm.descargar.value = '1';
 			}
-			formu.appendChild(document.createElement("<input type='hidden' name='tipoPersonas' value='<%=colegiado%>'>"));
+			document.InformesGenericosForm.datosInforme.value=datos;
+			var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
+			if (arrayResultado==undefined||arrayResultado[0]==undefined){
+			   		
+		   	} 
+		   	else {
+		   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
+		   		if(confirmar){
+		   			var idEnvio = arrayResultado[0];
+				    var idTipoEnvio = arrayResultado[1];
+				    var nombreEnvio = arrayResultado[2];				    
+				    
+				   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
+				   	document.DefinirEnviosForm.modo.value='editar';
+				   	document.DefinirEnviosForm.submit();
+		   		}
+		   	}
 			
-			document.appendChild(formu);
-			formu.datosInforme.value=datos;
-			formu.submit();
 		}
 
 	

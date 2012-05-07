@@ -177,6 +177,21 @@ public class AbonosClienteAction extends MasterAction {
 			request.setAttribute("NOMBRE", nombre);
 			request.setAttribute("NUMERO", numero);
 			request.setAttribute("container", abonos);
+			String informeUnico = ClsConstants.DB_TRUE;
+			if(abonos!=null && abonos.size()>0){
+				AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
+				// mostramos la ventana con la pregunta
+				
+				Vector informeBeans=adm.obtenerInformesTipo(idInstitucion,"CPAGO",null, null);
+				if(informeBeans!=null && informeBeans.size()>1){
+					informeUnico = ClsConstants.DB_FALSE;
+					
+				}
+				
+				
+			}
+			request.setAttribute("informeUnico", informeUnico);
+			
 			
 			
 		} 
@@ -347,6 +362,25 @@ public class AbonosClienteAction extends MasterAction {
 			request.setAttribute("container", abonos);
 			request.setAttribute("bIncluirRegistrosConBajaLogica",new Boolean(bIncluirRegistrosConBajaLogica).toString());
 			request.setAttribute("destinatarioAbono", (Integer)destinatarioAbono);
+			String informeUnico = ClsConstants.DB_TRUE;
+			
+				AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
+				// mostramos la ventana con la pregunta
+				String idTipoInforme = "ABONO";
+				if(destinatarioAbono==FacAbonoAdm.DESTINATARIOABONO_SJCS){
+					idTipoInforme = "CPAGO";
+				}
+				
+				Vector informeBeans=adm.obtenerInformesTipo(idInstitucion,idTipoInforme,null, null);
+				if(informeBeans!=null && informeBeans.size()>1){
+					informeUnico = ClsConstants.DB_FALSE;
+					
+				}
+				
+				
+			
+			request.setAttribute("informeUnico", informeUnico);
+			
 
 			
 		}catch (SIGAException e1) {

@@ -4,13 +4,18 @@
 */
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.gratuita.beans.ScsProgCalendariosBean;
+import com.siga.gratuita.form.ConjuntoGuardiasForm;
+import com.siga.gratuita.form.ProgrCalendariosForm;
 
 
 public class EnvTipoEnviosAdm extends MasterBeanAdministrador {
@@ -20,6 +25,7 @@ public class EnvTipoEnviosAdm extends MasterBeanAdministrador {
 	public static final String K_FAX = "3";
 	public static final String K_SMS = "4";
 	public static final String K_BUROSMS = "5";
+	public static final String K_ENVIOTELEMATICO = "6";
 	static public final String CONS_TIPOENVIO="%%TIPOENVIO%%";
 	
 	public EnvTipoEnviosAdm(UsrBean usuario)
@@ -126,4 +132,83 @@ public class EnvTipoEnviosAdm extends MasterBeanAdministrador {
         }
         return new Integer(valor);        
     }
+   
+    
+	public List<EnvTipoEnviosBean> select(List<String> excluidosList, String idioma) throws ClsExceptions {
+		StringBuffer sql = new StringBuffer("");
+		sql.append(" SELECT IDTIPOENVIOS,F_SIGA_GETRECURSO(NOMBRE,");
+		sql.append(idioma);
+		sql.append(" ) NOMBRE FROM ENV_TIPOENVIOS ");
+		if(excluidosList!=null && excluidosList.size()>0){
+			sql.append(" WHERE IDTIPOENVIOS NOT IN (");
+			for (String idTipoEnvio : excluidosList) {
+				sql.append(idTipoEnvio);
+				sql.append(",");
+			}
+			//quitamos la coma
+			sql.substring(0,sql.length()-1);
+			sql.append(" )");
+			
+		}
+		sql.append(" ORDER  BY IDTIPOENVIOS");
+		List<EnvTipoEnviosBean> tipoEnviosBeans = null;
+		
+		RowsContainer rc = new RowsContainer(); 
+		if (rc.find(sql.toString())) {
+			tipoEnviosBeans = new ArrayList<EnvTipoEnviosBean>();
+			
+			EnvTipoEnviosBean tipoEnviosBean = null;
+			ConjuntoGuardiasForm conjuntoGuardiaForm = null;
+			for (int i = 0; i < rc.size(); i++){
+				Row fila = (Row) rc.get(i);
+				Hashtable<String, Object> htFila=fila.getRow();
+				tipoEnviosBean =  (EnvTipoEnviosBean)this.hashTableToBean(htFila);
+				
+				tipoEnviosBeans.add(tipoEnviosBean);
+				
+			}
+		}else{
+			tipoEnviosBeans = new ArrayList<EnvTipoEnviosBean>();
+		} 
+		
+ 
+		return tipoEnviosBeans;
+	}
+	public List<EnvTipoEnviosBean> getEnviosPermitidos(AdmInformeBean informeBean, String idioma) throws ClsExceptions {
+		StringBuffer sql = new StringBuffer("");
+		sql.append(" SELECT TE.IDTIPOENVIOS,F_SIGA_GETRECURSO(TE.NOMBRE,");
+		sql.append(idioma);
+		sql.append(" ) NOMBRE,ei.idplantillaenviodef,ei.defecto FROM ENV_TIPOENVIOS TE,adm_envioinforme ei");
+		sql.append(" where ei.idtipoenvios = te.idtipoenvios");
+		sql.append(" AND  ei.idinstitucion =");
+		sql.append(informeBean.getIdInstitucion());
+		sql.append(" and ei.idplantilla =");
+		sql.append(informeBean.getIdPlantilla());
+		sql.append(" ORDER  BY IDTIPOENVIOS");
+		List<EnvTipoEnviosBean> tipoEnviosBeans = null;
+		
+		RowsContainer rc = new RowsContainer(); 
+		if (rc.find(sql.toString())) {
+			tipoEnviosBeans = new ArrayList<EnvTipoEnviosBean>();
+			
+			EnvTipoEnviosBean tipoEnviosBean = null;
+			ConjuntoGuardiasForm conjuntoGuardiaForm = null;
+			for (int i = 0; i < rc.size(); i++){
+				Row fila = (Row) rc.get(i);
+				Hashtable<String, Object> htFila=fila.getRow();
+				tipoEnviosBean =  (EnvTipoEnviosBean)this.hashTableToBean(htFila);
+				tipoEnviosBean.setIdPlantillaDefecto(UtilidadesHash.getString(htFila,"IDPLANTILLAENVIODEF"));
+				tipoEnviosBean.setDefecto(UtilidadesHash.getString(htFila,"DEFECTO"));
+				tipoEnviosBeans.add(tipoEnviosBean);
+				
+			}
+		}else{
+			tipoEnviosBeans = new ArrayList<EnvTipoEnviosBean>();
+		} 
+		
+ 
+		return tipoEnviosBeans;
+	}
+	
+	
 }

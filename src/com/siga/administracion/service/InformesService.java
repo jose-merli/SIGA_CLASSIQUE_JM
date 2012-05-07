@@ -13,6 +13,8 @@ import com.siga.beans.AdmLenguajesBean;
 import com.siga.beans.AdmTipoInformeBean;
 import com.siga.beans.CenInstitucionBean;
 import com.siga.beans.ConConsultaBean;
+import com.siga.beans.EnvPlantillasEnviosBean;
+import com.siga.beans.EnvTipoEnviosBean;
 import com.siga.beans.FileInforme;
 import com.siga.general.SIGAException;
 
@@ -35,6 +37,8 @@ public interface InformesService extends BusinessService{
 	public boolean isNombreFisicoUnico(InformeForm informeForm,boolean isInsertar, UsrBean usrBean) throws SIGAException, ClsExceptions;
 	public List<InformeForm> getInformesConsulta(ConConsultaBean 	consulta,InformeForm informeForm,UsrBean usrBean)throws ClsExceptions;
 	public void borrarConsultaInforme(AdmConsultaInformeBean 	consulta,InformeForm informeForm,UsrBean usrBean)throws ClsExceptions, SIGAException;
-//	public boolean isNombreFisicoComun(InformeForm informeForm, UsrBean usrBean) throws SIGAException, ClsExceptions;
+	public List<EnvTipoEnviosBean> getTiposEnvio(List<String> excluidosList, UsrBean usrBean) throws ClsExceptions;
+	public List<EnvPlantillasEnviosBean> getPlantillasEnvio(String idTipoEnvio, String idInstitucion, UsrBean usrBean) throws ClsExceptions;
+	public List<EnvTipoEnviosBean> getTiposEnvioPermitidos(AdmInformeBean informeBean, UsrBean usrBean) throws ClsExceptions;
 	
 }

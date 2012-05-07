@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -30,7 +31,7 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.comun.form.AuxForm;
 
 public class MasterForm extends AuxForm  {
-
+	
 	protected Hashtable datos = new Hashtable();
 
 	public Hashtable getDatos() 			 { return (Hashtable)datos.clone();	}
@@ -201,7 +202,7 @@ public class MasterForm extends AuxForm  {
 	public void setRutaFichero(String rutaFichero) {
 		this.rutaFichero = rutaFichero;
 	}
-	
+
 	
 	
 	

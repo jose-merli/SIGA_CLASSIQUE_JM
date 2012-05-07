@@ -41,7 +41,7 @@ public class InformePersonalizable extends MasterReport
 	private boolean eliminarFichero = false;
 	
 	public File getFicheroGenerado(UsrBean usr,
-								  String idtipoinforme,
+								  String idtipoinforme,Vector informesList,
 								  ArrayList<HashMap<String, String>> filtrosInforme)
 		throws ClsExceptions, SIGAException
 	{
@@ -53,17 +53,18 @@ public class InformePersonalizable extends MasterReport
 		try {
 			// obteniendo las plantillas por tipo
 			AdmInformeAdm adm = new AdmInformeAdm(usr);
-			Vector infs = adm.obtenerInformesTipo(idinstitucion, idtipoinforme,
-					"N"/* aSolicitantes */, null);
+			if(informesList==null)
+				informesList = adm.obtenerInformesTipo(idinstitucion, idtipoinforme,
+						"N"/* aSolicitantes */, null);
 
-			if (infs.size() == 0)
+			if (informesList.size() == 0)
 				throw new SIGAException("Error al buscar la plantilla del informe");
 			AdmTipoInformeAdm admT = new AdmTipoInformeAdm(usr);
 			AdmTipoInformeBean tipoInformeBean = admT.obtenerTipoInforme(AdmTipoInformeBean.TIPOINFORME_CONSULTAS);
 			
 			// por cada plantilla, se genera el documento
 			listaFicheros = new ArrayList<File>();
-			for (Object inf : infs) {
+			for (Object inf : informesList) {
 				informe = (AdmInformeBean) inf;
 				if (informe.getTipoformato().equalsIgnoreCase(AdmInformeBean.TIPOFORMATO_WORD)){
 					try {

@@ -1,4 +1,4 @@
-<!-- consultaCartaFacturacion.jsp -->
+<!-- consultaCartaFacturacionCenso.jsp -->
 <!-- 
 	 VERSIONES:
 	 jtacosta 2009 
@@ -41,7 +41,7 @@
 	String idInstitucion = userBean.getLocation();
 	String idiomaLabel = userBean.getLanguage().toUpperCase();
 	Vector resultado = null;
-	
+	String informeUnico =(String) request.getAttribute("informeUnico");
 	if (datosPaginador != null) {
 
 		if (datosPaginador.get("datos") != null && !datosPaginador.get("datos").equals("")) {
@@ -79,7 +79,7 @@
 <!-- INICIO: LISTA DE VALORES -->
 <!-- Tratamiento del tagTabla y tagFila para la formacion de la lista 
 			 de cabeceras fijas -->
-
+<input type="hidden" id= "informeUnico" value="<%=informeUnico%>">
 <html:form action="/JGR_PestanaRetencionesFacturacion?noReset=false" method="POST" target="mainWorkArea"
 	style="display:none">
 	<html:hidden property="modo" value="" />
@@ -98,19 +98,6 @@
 
 </html:form>
 
-<!-- Formulario para la creacion de envio -->
-<html:form action="/ENV_DefinirEnvios" method="POST"
-	target="mainWorkArea" style="display:none">
-	<html:hidden property="actionModal" value="" />
-	<html:hidden property="modo" value="" />
-	<html:hidden property="tablaDatosDinamicosD" value="" />
-	<html:hidden property="subModo" value="" />
-	<html:hidden property="filaSelD" value="" />
-	<html:hidden property="idPersona" value="" />
-	<html:hidden property="descEnvio" value="" />
-	<html:hidden property="datosEnvios" value="" />
-
-</html:form>
 
 <siga:TablaCabecerasFijas nombre="tablaDatos" borde="1"
 	clase="tableTitle"
@@ -174,8 +161,17 @@
 
 	<!-- FIN: ZONA DE REGISTROS -->
 </siga:TablaCabecerasFijas>
-
+<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
+	<html:hidden property="idInstitucion" value = "<%=idInstitucion%>"/>
+	<html:hidden property="idTipoInforme" value="CFACT"/>
+	<html:hidden property="enviar" value="0"/>
+	<html:hidden property="descargar" value="1"/>
+	<html:hidden property="datosInforme"/>
+	<html:hidden property="modo" value = "preSeleccionInformes"/>
+	<input type='hidden' name='actionModal'>
+</html:form>
 <!-- FIN: LISTA DE VALORES -->
+
 
 <iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"
 	style="display: none"></iframe>
@@ -196,17 +192,19 @@
 		idFacturacion = document.getElementById(idFacturacion).value;
 		idInstitucion = document.CartaFacturacionCensoForm.idInstitucion.value;
 		datos = "idInstitucion=="+idInstitucion +"##idFacturacion=="+idFacturacion+"##idPersona=="+idPersona +"##idTipoInforme==CFACT"+"%%%";
-		var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
-		formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucion%>'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='CFACT'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='descargar' value='1'>"));
+		document.InformesGenericosForm.datosInforme.value =datos;
+		if(document.getElementById("informeUnico").value=='1'){
+			document.InformesGenericosForm.submit();
+		}else{
 		
-		document.appendChild(formu);
-		formu.datosInforme.value=datos;
-		formu.submit();
+			var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
+			if (arrayResultado==undefined||arrayResultado[0]==undefined){
+			   		
+		   	} 
+		   	else {
+		   		
+		   	}
+		}
 	 }
 	
 	function refrescarLocal() {

@@ -281,15 +281,23 @@
 	
 
 
-	<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
+<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
 	<html:hidden property="idInstitucion" />
 	<html:hidden property="idTipoInforme" value="JUSDE"/>
-	<html:hidden property="seleccionados" value="0"/>
 	<html:hidden property="enviar" value="1"/>
-	<html:hidden property="descargar"/>
+	<html:hidden property="descargar" value="1"/>
 	<html:hidden property="datosInforme"/>
+	<html:hidden property="modo" value = "preSeleccionInformes"/>
+	<input type='hidden' name='actionModal'>
+	
 </html:form>
 	
+<!-- Formulario para la edicion del envio -->
+<form name="DefinirEnviosForm" method="POST" action="/SIGA/ENV_DefinirEnvios.do" target="mainWorkArea">
+	<input type="hidden" name="modo" value="">
+	<input type="hidden" name="tablaDatosDinamicosD" value="">
+
+</form>
 
 
 	
@@ -308,7 +316,6 @@ function refrescarLocal(){
 }
 	
 	function informeJustificacion(){
-		sub();
 		datos = "";
 		
 		
@@ -335,10 +342,30 @@ function refrescarLocal(){
 		var activarRestriccionesFicha = document.getElementById("activarRestricciones").checked;
 		var fichaColegial = document.InformeJustificacionMasivaForm.fichaColegial.value;
 		var actuacionesPendientes = document.getElementById("actuacionesPendientes").value;
-		datos = "fichaColegial=="+fichaColegial+"##mostrarTodas=="+mostrarTodas+ "##idInstitucion==" +idInstitucion+ "##idPersona==" +idPersona+ "##anio==" +anio+ "##estado==" +estado+ "##fechaJustificacionDesde==" +fechaJustificacionDesde+ "##fechaJustificacionHasta==" +fechaJustificacionHasta+ "##fechaDesde==" +fechaDesde+ "##fechaHasta==" +fechaHasta+ "##interesadoApellidos==" +interesadoApellidos+ "##interesadoNombre==" +interesadoNombre+ "##incluirEjgNoFavorable==" +incluirEjgNoFavorable+ "##incluirEjgSinResolucion==" +incluirEjgSinResolucion+ "##incluirSinEJG==" +incluirSinEJG+ "##incluirEjgPteCAJG==" +incluirEjgPteCAJG+ "##activarRestriccionesFicha==" +activarRestriccionesFicha+"##actuacionesPendientes==" +actuacionesPendientes+"%%%";
+		datos = "fichaColegial=="+fichaColegial+"##mostrarTodas=="+mostrarTodas+ "##idInstitucion==" +idInstitucion+ "##idPersona==" +idPersona+ "##anio==" +anio+ "##estado==" +estado+ "##fechaJustificacionDesde==" +fechaJustificacionDesde+ "##fechaJustificacionHasta==" +fechaJustificacionHasta+ "##fechaDesde==" +fechaDesde+ "##fechaHasta==" +fechaHasta+ "##interesadoApellidos==" +interesadoApellidos+ "##interesadoNombre==" +interesadoNombre+ "##incluirEjgNoFavorable==" +incluirEjgNoFavorable+ "##incluirEjgSinResolucion==" +incluirEjgSinResolucion+ "##incluirSinEJG==" +incluirSinEJG+ "##incluirEjgPteCAJG==" +incluirEjgPteCAJG+ "##activarRestriccionesFicha==" +activarRestriccionesFicha+"##actuacionesPendientes==" +actuacionesPendientes+"##idTipoInforme==JUSDE%%%";
+		
+		
 		document.InformesGenericosForm.idInstitucion.value = document.InformeJustificacionMasivaForm.idInstitucion.value;
 		document.InformesGenericosForm.datosInforme.value=datos;
-		document.InformesGenericosForm.submit();
+		
+		
+		
+		var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
+		if (arrayResultado==undefined||arrayResultado[0]==undefined){
+		   		
+	   	} 
+	   	else {
+	   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
+	   		if(confirmar){
+	   			var idEnvio = arrayResultado[0];
+			    var idTipoEnvio = arrayResultado[1];
+			    var nombreEnvio = arrayResultado[2];				    
+			    
+			   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
+			   	document.DefinirEnviosForm.modo.value='editar';
+			   	document.DefinirEnviosForm.submit();
+	   		}
+	   	}
 		
 
 					

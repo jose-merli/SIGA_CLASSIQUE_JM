@@ -1,4 +1,4 @@
-<!-- listadoUnidadFamiliarEJG-->
+<!-- listadoUnidadFamiliarEJG.jsp-->
 
 <%@page import="com.atos.utils.ClsConstants"%>
 <meta http-equiv="Expires" content="0">
@@ -34,7 +34,8 @@
 
 <bean:define id="modo" name="DefinirUnidadFamiliarEJGForm" property="modo" type="java.lang.String"/>
 <bean:define id="conceptoEJG" scope="request" name="EJG_UNIDADFAMILIAR" />
-
+<bean:define id="usrBean" name="USRBEAN" scope="session"
+	type="com.atos.utils.UsrBean"/>
 <html:form action="/JGR_UnidadFamiliarPerJG" method="post" target="submitArea" >
 		<html:hidden property="modo" value="abrirPestana"/>
 
@@ -406,7 +407,22 @@
 	 <siga:ConjBotonesAccion botones="V,N" modo="${DefinirUnidadFamiliarEJGForm.modo}" clase="botonesDetalle" />
 	</c:otherwise>
 </c:choose>
+<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
+	<html:hidden property="idInstitucion" value = "${DefinirUnidadFamiliarEJGForm.idInstitucion}"/>
+	<html:hidden property="idTipoInforme" value='<%=usrBean.isComision() ?"CAJG":"EJG"%>'/>
+	<html:hidden property="enviar" value="0"/ />
+	<html:hidden property="descargar" value="1"/>
+	<html:hidden property="datosInforme"/>
+	<html:hidden property="destinatarios" value="S"/>
+	<html:hidden property="modo" value = "preSeleccionInformes"/>
+	<input type='hidden' name='actionModal'>
+</html:form>	
+	<!-- Formulario para la edicion del envio -->
+<form name="DefinirEnviosForm" method="POST" action="/SIGA/ENV_DefinirEnvios.do" target="mainWorkArea">
+	<input type="hidden" name="modo" value="">
+	<input type="hidden" name="tablaDatosDinamicosD" value="">
 
+</form>
 	
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"	style="display: none"></iframe>
 	
@@ -458,25 +474,31 @@
 		var esComision = document.getElementById( 'oculto' + fila + '_12');
 		var solicitante = document.getElementById( 'oculto' + fila + '_13');
 		
-		var datos = "idinstitucion=="+idInstitucionEJG.value + "##idtipo==" +idTipoEJG.value+"##anio=="+anio.value +"##numero==" +numero.value+"##idPersonaJG==" +idPersonaJG.value+"%%%";
-	   				 
-	   	var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='INF_InformesGenericos.do' target='submitArea'>");
-		formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='${DefinirUnidadFamiliarEJGForm.idInstitucion}'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='EJG'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='asolicitantes' value='S'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
+		var datos = "idinstitucion=="+idInstitucionEJG.value + "##idtipo==" +idTipoEJG.value+"##anio=="+anio.value +"##numero==" +numero.value+"##idPersonaJG==" +idPersonaJG.value+"##idTipoInforme==EJG%%%";
+		
 		if(solicitante.value==1){
-			formu.appendChild(document.createElement("<input type='hidden' name='enviar' value='1'>"));
-		}else
-			formu.appendChild(document.createElement("<input type='hidden' name='enviar' value='0'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='descargar' value='1'>"));
-		
-		
-		document.appendChild(formu);
-		formu.datosInforme.value=datos;
-		formu.submit();
+			document.InformesGenericosForm.enviar.value = '1';
+			
+		}else{
+			document.InformesGenericosForm.enviar.value = '0';
+		}
+		document.InformesGenericosForm.datosInforme.value=datos;
+		var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
+		if (arrayResultado==undefined||arrayResultado[0]==undefined){
+		   		
+	   	} 
+	   	else {
+	   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
+	   		if(confirmar){
+	   			var idEnvio = arrayResultado[0];
+			    var idTipoEnvio = arrayResultado[1];
+			    var nombreEnvio = arrayResultado[2];				    
+			    
+			   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
+			   	document.DefinirEnviosForm.modo.value='editar';
+			   	document.DefinirEnviosForm.submit();
+	   		}
+	   	}
 
 		
 		

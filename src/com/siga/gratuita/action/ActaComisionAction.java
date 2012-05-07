@@ -31,6 +31,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.Paginador;
+import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.ScsActaComisionAdm;
 import com.siga.beans.ScsActaComisionBean;
 import com.siga.beans.ScsEJGAdm;
@@ -252,9 +253,10 @@ public class ActaComisionAction extends MasterAction{
 	 * @param  response - objeto respuesta HTTP
 	 * @return  String  Destino del action  
 	 * @exception  SIGAException  En cualquier caso de error
+	 * @throws ClsExceptions 
 	 */	
 	@Override
-	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException, ClsExceptions {
 		ActaComisionForm actaForm = (ActaComisionForm) formulario;
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 		ScsActaComisionAdm actaAdm = new ScsActaComisionAdm(usr);
@@ -279,6 +281,18 @@ public class ActaComisionAction extends MasterAction{
 		if(accion!=null && accion.equalsIgnoreCase("ver")){
 			request.setAttribute("modo", "consulta");
 		}
+
+		String informeUnico = ClsConstants.DB_TRUE;
+		AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
+		Vector informeBeans=adm.obtenerInformesTipo(this.getUserBean(request).getLocation(),"ACTAC",null, null);
+		if(informeBeans!=null && informeBeans.size()>1){
+			informeUnico = ClsConstants.DB_FALSE;
+			
+		}
+
+		request.setAttribute("informeUnico", informeUnico);
+
+		
 		return "editar";
 	}
 

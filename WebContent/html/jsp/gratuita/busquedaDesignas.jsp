@@ -573,43 +573,12 @@ String[] getdatos = { usr.getLocation() };
 
 <!-- boton informe generico por resultados -->
 <script>
-function creaFormInterno() {
-	var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea23'>");
-	formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=usr.getLocation() %>'>"));
-	formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
-	formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='OFICI'>"));
-	formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
-	
-	formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
-	document.appendChild(formu);
-	return formu;
-}
-
-// EJEMPLO: var dat="idAbono==25##idinstitucion==2040%%%idAbono==26##idinstitucion==2040%%%idAbono==27##idinstitucion==2040%%%idAbono==28##idinstitucion==2040";
-function generarCarta() {
-	
-    var dat = "";
-    var datos = document.frames.resultado.document.getElementsByName("datosCarta");
-    if (datos.length==0) return;
-	for(i=0; i<datos.length; i++)
-	{
-		dat += datos[i].value+"%%%";
-	}
-	if (dat.length>3)
-		dat = dat.substring(0,dat.length-3);
-	
-	var formularioInformes = creaFormInterno();
-	formularioInformes.datosInforme.value=dat;
-	formularioInformes.submit();
-}
 function generarCarta() {
     if(window.frames.resultado.ObjArray){
 	 window.frames.resultado.accionComunicar();
 	}
 	
 } 	
-
-
 </script>
 <!--<input type="button" name="descarga" value="Descargar Factura Rectificativa" onclick="generaInformeGenericoSimple();" class="button">-->
 

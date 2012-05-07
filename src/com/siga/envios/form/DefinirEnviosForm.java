@@ -1,8 +1,11 @@
 package com.siga.envios.form;
 
+import java.util.List;
 import java.util.StringTokenizer;
 
 import com.siga.beans.EnvEnviosAdm;
+import com.siga.beans.EnvPlantillasEnviosBean;
+import com.siga.beans.ScsComisariaBean;
 import com.siga.general.MasterForm;
 
 /**
@@ -14,11 +17,12 @@ public class DefinirEnviosForm extends MasterForm
 {
 	// Atributos
 	private String tipoFecha = EnvEnviosAdm.FECHA_CREACION;
+	private String idTipoInforme;
 
-	
+	List<EnvPlantillasEnviosBean> plantillasEnvio;
 	// GETTERS
 	public String getTipoFecha() { return tipoFecha; }
-	
+	private String datosInforme;
 	public String getComboTipoEnvio() { return (String) this.datos.get("comboTipoEnvio"); }
 	public String getIdEstado() { return (String) this.datos.get("idEstado"); }
 	public String getIdTipoEnvio() { return (String) this.datos.get("idTipoEnvio"); }
@@ -93,4 +97,27 @@ public class DefinirEnviosForm extends MasterForm
 	public void setDescargar(String descargar) { try { this.datos.put("descargar", descargar); } catch (Exception e) {} }
 	public void setClavesIteracion(String clavesIteracion) { try { this.datos.put("clavesIteracion", clavesIteracion); } catch (Exception e) {} }
 
+	public List<EnvPlantillasEnviosBean> getPlantillasEnvio() {
+		return plantillasEnvio;
+	}
+
+	public void setPlantillasEnvio(List<EnvPlantillasEnviosBean> plantillasEnvio) {
+		this.plantillasEnvio = plantillasEnvio;
+	}
+	public String getDatosInforme() {
+		return datosInforme;
+	}
+	public void setDatosInforme(String datosInforme) {
+		this.datosInforme = datosInforme;
+	}
+	public String getIdTipoInforme() {
+		return idTipoInforme;
+	}
+	public void setIdTipoInforme(String idTipoInforme) {
+		this.idTipoInforme = idTipoInforme;
+	}
+	
+	
+	
+	
 }

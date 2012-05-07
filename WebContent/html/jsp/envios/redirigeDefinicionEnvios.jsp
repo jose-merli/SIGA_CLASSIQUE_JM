@@ -33,7 +33,7 @@ String idTipoEnvio = (request.getAttribute("idTipoEnvio")!=null?(String) request
 </body>
 <script type="text/jscript" language="JavaScript1.2">
 function reloadPage() {
-  	var resultado = ventaModalGeneral('DefinirEnviosForm','P');
+  	var resultado = ventaModalGeneral('DefinirEnviosForm','G');
   	if (resultado==undefined||resultado[0]==undefined){
   		if(parent.vueltaEnvio)
   			parent.vueltaEnvio();

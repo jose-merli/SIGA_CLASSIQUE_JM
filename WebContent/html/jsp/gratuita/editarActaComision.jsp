@@ -1,4 +1,4 @@
-<!-- nuevaActaComision.jsp -->
+<!-- editarActaComision.jsp -->
 
 <%@page import="com.siga.beans.ScsActaComisionBean"%>
 <%@page import="java.util.Hashtable"%>
@@ -64,7 +64,7 @@
 		readOnlySt="true";
 		claseTextArea="boxConsulta";
 	}
-	
+	String informeUnico =(String) request.getAttribute("informeUnico");
 %>
 <html>
 
@@ -78,7 +78,7 @@
 </head>
 
 <body>
-
+<input type="hidden" id= "informeUnico" value="<%=informeUnico%>">
 	<html:form action="/JGR_ActasComision" method="POST" target="submitArea">
 		<html:hidden property = "modo" value = ""/>
 		<html:hidden property = "idInstitucion" value = ""/>
@@ -173,8 +173,17 @@
 		<siga:ConjBotonesAccion botones="Y,C,GA" modal="G"/>		
 	<%}%>
 
-			
-	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"	style="display: none"></iframe>
+<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
+	<html:hidden property="idInstitucion" value = "<%=idInstitucion%>"/>
+	<html:hidden property="idTipoInforme" value="ACTAC"/>
+	<html:hidden property="enviar" value="0"/>
+	<html:hidden property="descargar" value="1"/>
+	<html:hidden property="datosInforme"/>
+	<html:hidden property="modo" value = "preSeleccionInformes"/>
+	<input type='hidden' name='actionModal'>
+</html:form>				
+<!-- Formulario para la edicion del envio -->
+
 
 	<script language="JavaScript">
 		function accionCerrar(){
@@ -208,25 +217,23 @@
 		
 		function generarActa() {
 			sub();
-			
 			//idInstitucion  = document.MaestroDesignasForm.idInstitucion;
 			var idInstitucion  = <%=idInstitucion%>;
-			
 			var datos = "idInstitucion=="+<%=idInstitucion%>+"##idActa=="+<%=idActa%>+"##anioActa=="+<%=anioActa%>+"##numeroActa=="+<%=numeroActa%>;
+			document.InformesGenericosForm.datosInforme.value =datos;
+			if(document.getElementById("informeUnico").value=='1'){
+				document.InformesGenericosForm.submit();
+			}else{
 			
-			
-			var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='INF_InformesGenericos.do' target='submitArea'>");
-			formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucion %>'>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='ACTAC'>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='enviar' value='0'>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='descargar' value='1'>"));
-			
-			document.appendChild(formu);
-			formu.datosInforme.value=datos;
-			formu.submit();
+				var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
+				if (arrayResultado==undefined||arrayResultado[0]==undefined){
+				   		fin();
+			   	} 
+			   	else {
+			   		fin();
+			   	}
+			}
+
 		} 	
 		
 	</script>

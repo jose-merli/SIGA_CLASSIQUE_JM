@@ -1,6 +1,7 @@
 package com.siga.beans;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
@@ -10,7 +11,6 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.Utilidades.UtilidadesMultidioma;
 
 public class EnvPlantillasEnviosAdm extends MasterBeanAdministrador
 {
@@ -372,6 +372,16 @@ public class EnvPlantillasEnviosAdm extends MasterBeanAdministrador
 	}
 	return datos;
 }
+	public List<EnvPlantillasEnviosBean> getPlantillasEnvio(String idTipoEnvio,
+			String idInstitucion) throws ClsExceptions {
+		StringBuffer where = new StringBuffer("");
+		where.append(" WHERE IDTIPOENVIOS = ");
+		where.append(idTipoEnvio);
+		where.append(" AND IDINSTITUCION = ");
+		where.append(idInstitucion);
+		
+		return select(where.toString());
+	}
 
 
 	

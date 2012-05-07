@@ -26,6 +26,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.PaginadorBind;
+import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
@@ -201,7 +202,16 @@ public class DefinirExpedientesSOJAction extends MasterAction {
 			miHash.put("BUSQUEDAREALIZADA","1");
 			request.getSession().setAttribute("DATOSFORMULARIO",miHash);	
 			request.getSession().setAttribute("BUSQUEDAREALIZADA", consulta.toString());
+			
+			String informeUnico = ClsConstants.DB_TRUE;
+			AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
+			Vector informeBeans=adm.obtenerInformesTipo(this.getUserBean(request).getLocation(),"SOJ",null, null);
+			if(informeBeans!=null && informeBeans.size()>1){
+				informeUnico = ClsConstants.DB_FALSE;
+				
+			}
 
+			request.setAttribute("informeUnico", informeUnico);
 
 		}catch (SIGAException e1) {
 			// Excepcion procedente de obtenerPagina cuando se han borrado datos

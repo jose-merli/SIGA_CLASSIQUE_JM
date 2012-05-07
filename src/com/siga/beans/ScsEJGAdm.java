@@ -147,21 +147,28 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append("WHERE "); 
 			sql.append("EJG.IDPERSONAJG = PJG.IDPERSONA(+) ");
 			sql.append(" AND EJG.IDINSTITUCION = PJG.IDINSTITUCION(+) ");
-			sql.append(" AND EJG.IDINSTITUCION = ");
-			sql.append(idInstitucion);
-			sql.append(" AND EJG.ANIO = ");
-			sql.append(anio);
-			sql.append(" AND EJG.NUMERO = ");
-			sql.append(numero);
-			sql.append(" AND EJG.IDTIPOEJG = ");
-			sql.append(idTipoEJG);
-
-			Vector v = this.selectGenerico(sql.toString());
+			sql.append(" AND EJG.IDINSTITUCION = :1 ");
+//			sql.append(idInstitucion);
+			sql.append(" AND EJG.ANIO = :2 ");
+//			sql.append(anio);
+			sql.append(" AND EJG.NUMERO = :3");
+//			sql.append(numero);
+			sql.append(" AND EJG.IDTIPOEJG = :4 ");
+//			sql.append(idTipoEJG);
+			Hashtable htCodigos = new Hashtable();
+			htCodigos.put(new Integer(1), idInstitucion);
+			htCodigos.put(new Integer(2), anio);
+			htCodigos.put(new Integer(3), numero);
+			htCodigos.put(new Integer(4), idTipoEJG);
+			Vector v = this.selectGenericoBind(sql.toString(),htCodigos );
 			if (v!=null && v.size()>0) {
 				return (Hashtable) v.get(0);
 			}
 		} 
 		catch (ClsExceptions e) {
+			e.printStackTrace();
+		} catch (SIGAException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return new Hashtable();
@@ -3993,10 +4000,10 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					UtilidadesHash.set(registro, "TELEFONO2_LETRADO", "");
 					UtilidadesHash.set(registro, "MOVIL_LETRADO", "");
 				}		
-			
+				Vector vDefendidos = getInteresadosEjgSalida(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG);
 				if(isSolicitantes){
-					Hashtable registrosolicitante=new Hashtable();
-					Vector vDefendidos = getInteresadosEjgSalida(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG);
+					
+					
 					if(vDefendidos!=null && vDefendidos.size()>0){
 						for (int k = 0; k < vDefendidos.size(); k++) {
 							Hashtable clone = (Hashtable) registro.clone();
@@ -4057,7 +4064,6 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 						 idioma=idelenguajesolicitanteprincipal;
 					 }					
 					//registro=getregistrodatos(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,registro);
-					registro.putAll(getregistrodatosEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,registro));
 					switch (Integer.parseInt(idioma)) {
 							case 1:  idiomainforme="ES"; break;
 							case 2:  idiomainforme="CA"; break;
@@ -4065,7 +4071,60 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							case 4:  idiomainforme="GL"; break;	
 					}
 						registro.put("CODIGOLENGUAJE", idiomainforme);
-					vSalida.add(registro);
+						
+						if(vDefendidos!=null && vDefendidos.size()>0){
+							for (int k = 0; k < vDefendidos.size(); k++) {
+								Hashtable registroDefendido = (Hashtable) vDefendidos.get(k);
+								String Idpersona=(String)registroDefendido.get("IDPERSONA");						
+
+								
+								
+							
+								registroDefendido  = getregistrodatosEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,registro);
+								/**Para saaber en que idioma se tiene que imprimer la carta de oficio**/
+								registroDefendido.put("CODIGOLENGUAJE", "");
+								
+								// jbd // Esto queda un poco feo, es porque getInteresadosEjgSalida siempre nos devuelve un registro,
+								try{   // aunque no tenga datos y puede dar error al comunicar a un NO defendido
+									if (Idpersona!=null&&(!Idpersona.trim().equals(""))){								
+										Vector vDestinatario = admUniFam.getDatosInteresadoEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,Idpersona);
+										if(vDestinatario!=null && vDestinatario.size()>0){
+											Hashtable destinatario = (Hashtable) vDestinatario.get(0);
+											registroDefendido.putAll(destinatario);										
+										}
+									}
+									
+								}catch (Exception e) {
+									
+								}
+								
+							}
+							
+							registro.put("defendido", vDefendidos);
+							vSalida.add(registro);
+							
+							UtilidadesHash.set(registro, "NIF_DEFENDIDO", "");
+							UtilidadesHash.set(registro, "NOMBRE_DEFENDIDO", "");
+							UtilidadesHash.set(registro, "FECHANAC_DEFENDIDO", "");
+							UtilidadesHash.set(registro, "ESTADOCIVIL_DEFENDIDO", "");
+							UtilidadesHash.set(registro, "DOMICILIO_DEFENDIDO", "");
+							UtilidadesHash.set(registro, "CP_DEFENDIDO", "");
+							UtilidadesHash.set(registro, "POBLACION_DEFENDIDO", "");
+							UtilidadesHash.set(registro, "TELEFONO1_DEFENDIDO", "");
+							UtilidadesHash.set(registro, "PROVINCIA_DEFENDIDO", "");
+							UtilidadesHash.set(registro, "SEXO_INTERESADO", "");
+							UtilidadesHash.set(registro, "LENGUAJE_INTERESADO", "");
+							UtilidadesHash.set(registro, "CALIDAD_INTERESADO", "");
+							UtilidadesHash.set(registro, "CODIGOLENGUAJE", "");
+							UtilidadesHash.set(registro, "PROFESION_DEFENDIDO", "");
+							UtilidadesHash.set(registro, "REGIMENCONYUGAL_DEFENDIDO", "");
+							
+							
+						}else{
+							vSalida.add(registro);
+						}	
+						
+					//vSalida.add(registro);
 				}
 
 
@@ -4356,7 +4415,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 						}
 						
 						tipoGrupoLaboral = (String)registro.get("GRUPOLABORAL_DEFENDIDO");		
-						if (tipoGrupoLaboral!=null && !regimenConyugalInteresado.trim().equals("")){
+						if (tipoGrupoLaboral!=null && !tipoGrupoLaboral.trim().equals("")){
 							htFuncion.put(new Integer(1), tipoGrupoLaboral);
 							htFuncion.put(new Integer(2), idioma);				
 							helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
@@ -4902,6 +4961,10 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 								if(idLetradoDesigna!=null && !idLetradoDesigna.trim().equals("")){
 									helperInformes.completarHashSalida(registro,getColegiadoSalida(idInstitucionLetradoDesigna, 
 											idLetradoDesigna,"LETRADO_DESIGNADO"));
+									
+			    	    			
+			    	    			
+									
 									String sexoLetrado  = (String)registro.get("SEXO_ST_LETRADO_DESIGNADO");
 									sexoLetrado = UtilidadesString.getMensajeIdioma(usrbean, sexoLetrado);
 									registro.put("SEXO_LETRADO_DESIGNADO", sexoLetrado);
@@ -4943,7 +5006,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 									UtilidadesHash.set(registro, "TELEFONO2_LETRADO_DESIGNADO", "");
 									UtilidadesHash.set(registro, "MOVIL_LETRADO_DESIGNADO", "");									
 								}
-				
+								
 								String idJuzgadoDesigna  = (String)registro.get("IDJUZGADODESIGNA");
 								String idInstitucionJuzgadoDesigna  = (String)registro.get("IDINSTITUCION_JUZGDESIGNA");
 								if(idJuzgadoDesigna!=null && !idJuzgadoDesigna.trim().equals(""))
@@ -4998,7 +5061,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 								UtilidadesHash.set(registro, "HORA_ACTUACION", "");
 								UtilidadesHash.set(registro, "LISTA_INTERESADOS_DESIGNA", "");			
 							}
-							
+							if(registro.get("N_APELLI_1_LETRADO_DESIGNADO")==null)
+								registro.put("N_APELLI_1_LETRADO_DESIGNADO","");
+							if(registro.get("N_APEL_1_2_LETRADO_DESIGNADO")==null)
+								registro.put("N_APEL_1_2_LETRADO_DESIGNADO","");
+							if(registro.get("APEL_1_2_N_LETRADO_DESIGNADO")==null)
+								registro.put("APEL_1_2_N_LETRADO_DESIGNADO","");
 							/**Fin de Datos de la desingacion asociada al Ejg**/
 							
 								// Aqui sacaremos la informacion de la persona a la que va dirigida la carta

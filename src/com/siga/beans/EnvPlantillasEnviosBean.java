@@ -1,5 +1,14 @@
 package com.siga.beans;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.siga.Utilidades.AjaxXMLBuilderAnnotation;
+import com.siga.Utilidades.AjaxXMLBuilderNameAnnotation;
+import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
+
+@AjaxXMLBuilderAnnotation 
+
 public class EnvPlantillasEnviosBean extends MasterBean
 {
 	/* Variables */
@@ -28,7 +37,7 @@ public class EnvPlantillasEnviosBean extends MasterBean
     {
         this.idInstitucion = idInstitucion;
     }
-    
+	@AjaxXMLBuilderValueAnnotation(isCData=false)
     public Integer getIdTipoEnvios()
     {
         return idTipoEnvios;
@@ -48,7 +57,7 @@ public class EnvPlantillasEnviosBean extends MasterBean
     {
         this.idPlantillaEnvios = idPlantillaEnvios;
     }
-
+    @AjaxXMLBuilderNameAnnotation
     public String getNombre()
     {
         return nombre;
@@ -66,4 +75,14 @@ public class EnvPlantillasEnviosBean extends MasterBean
 	public void setAcuseRecibo(String acuseRecibo) {
 		this.acuseRecibo = acuseRecibo;
 	}
+	public JSONObject getJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("idPlantillaEnvios", this.idPlantillaEnvios);
+            obj.put("nombre", this.nombre);
+            obj.put("acuseRecibo", this.acuseRecibo==null||this.acuseRecibo.equals("")?"0":this.acuseRecibo);
+        } catch (JSONException e) {
+        }
+        return obj;
+    }
 }

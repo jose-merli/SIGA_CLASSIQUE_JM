@@ -145,7 +145,8 @@ public class EnvInformesGenericosAdm extends MasterBeanAdministrador {
 			htCodigos.put(new Integer(keyContador), programInformes.getIdProgram());
 			select.append(" AND T.IDPROGRAM = :");
 			select.append(keyContador);
-			keyContador++;
+			
+			/*keyContador++;
 			htCodigos.put(new Integer(keyContador), programInformes.getIdInstitucion());
 			select.append(" AND T.IDINSTITUCION = :");
 			select.append(keyContador);
@@ -199,7 +200,7 @@ public class EnvInformesGenericosAdm extends MasterBeanAdministrador {
 			
 			select.append(")) ");
 			
-				
+				*/
 			
 			Vector datos = this.selectGenericoBind(select.toString(), htCodigos);
 			if (datos==null || datos.size()==0) {
