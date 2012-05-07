@@ -1,4 +1,5 @@
 <!-- login.jsp -->
+<%@page import="com.atos.utils.ClsConstants"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -28,11 +29,8 @@
 <html>
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		
-		
+
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-		
-		
 
 		<script>
 		function entrar()
@@ -45,10 +43,9 @@
 			}
 		}
 
-		
-		function entradaDirectaCoruña()
+		function entradaDirecta()
 		{
-			frmLogin.location.value="2037";
+			frmLogin.location.value="2040";
 			frmLogin.profile.value="ADM";
 			frmLogin.user.value="";
 			frmLogin.letrado.value="N";
@@ -58,7 +55,7 @@
  
 		function entradaDirectaGen()
 		{
-			frmLogin.location.value="2000";
+			frmLogin.location.value=<%=ClsConstants.INSTITUCION_CGAE%>;
 			frmLogin.profile.value="ADM";
 			frmLogin.user.value="";
 			frmLogin.letrado.value="N";
@@ -74,42 +71,20 @@
 			frmLogin.user.value="";
 			frmLogin.letrado.value="";
 
-			if (document.frmLogin.tmpLoginInstitucion.value=="")
-			{
+			if (document.frmLogin.tmpLoginInstitucion.value==""){
 				alert("Debe seleccionar una Institución");
-				
 				return false;
-			}
-			
-			else
-			{
+			}else{
 				frmLogin.location.value=document.frmLogin.tmpLoginInstitucion.value;
 			}
 
-			if (document.frmLogin.tmpLoginPerfil.value=="")
-			{
+			if (document.frmLogin.tmpLoginPerfil.value==""){
 				alert("Debe seleccionar un Perfil");
-				
 				return false;
-			}
-			
-			else
-			{
+			}else{
 				frmLogin.profile.value=document.frmLogin.tmpLoginPerfil.value;
 			}
 
-/*			if (document.frmLogin.tmpLoginUsuario.value=="")
-			{
-				alert("Debe seleccionar un Usuario");
-				
-				return false;
-			}
-			
-			else
-			{
-				frmLogin.user.value=document.frmLogin.tmpLoginUsuario.value;
-			}
-*/
 			frmLogin.letrado.value=document.frmLogin.sLetrado.value;
 			
 			return true;
@@ -123,20 +98,16 @@
 		
 		<p class="titulos"><siga:Idioma key="index.bienvenida"/></p>
 		
-		<table border="1" cellspacing="0" cellpadding="0" align="center">
+		<table border="0" align="center">
 			<tr>
 				<td class="labelText">Institución</td>
 				<td ><siga:ComboBD nombre="tmpLoginInstitucion" tipo="tmpLoginInstitucion" clase="boxCombo" accion="Hijo:tmpLoginPerfil"/></td>
 			</tr>
 			<tr>
 				<td class="labelText">Perfil</td>
-				<td ><siga:ComboBD nombre="tmpLoginPerfil" tipo="tmpLoginPerfil" clase="boxCombo" hijo="t"/></td>
+				<td><siga:ComboBD nombre="tmpLoginPerfil" tipo="tmpLoginPerfil" clase="boxCombo" hijo="t"/></td>
 			</tr>
-<!--			<tr>
-				<td class="labelText">Usuario</td>
-				<td ><siga:ComboBD nombre="tmpLoginUsuario" tipo="tmpLoginUsuario" clase="boxCombo" hijo="t"/></td>
-			</tr>
--->			<tr>
+			<tr  style="display:none">
 				<td class="labelText">¿Letrado?</td>
 				<td >
 					<select name="sLetrado" class="boxCombo">
@@ -149,17 +120,15 @@
 				<td colspan="2" align="center">
 					<br>
 					<input type="button" class="button" value="Entrar" onClick="entrar()" title="Entrar con los datos de los combos">
-					<input type="button" class="button" value="Coruña" onClick="entradaDirectaCoruña()" title="Entrar a CORUÑA como ADMINistrador NO colegiado">
-					<input type="button" class="button" value="León" onClick="entradaDirecta()" title="Entrar a LEON como ADMINistrador NO colegiado">
-					
-					<input type="button" class="button" value="General" onClick="entradaDirectaGen()"  title="Entrar a GENERAL como ADMINistrador NO colegiado">
+					<!--input type="button" class="button" value="León" onClick="entradaDirecta()" title="Entrar a LEON como ADMINistrador NO colegiado"-->
+					<input type="button" class="button" value="COGITI" onClick="entradaDirectaGen()"  title="Entrar al COGITI como ADMINistrador">
 				</td>
 			</tr>
 
 			<tr>
 			<td colspan="2" class="labelText">
 				<CENTER>
-					<a href="/SIGA/CEN_SolicitudesIncorporacionAccesoDirecto.do?idInstitucion=2032"	onClick="false" target="_top">
+					<a href="<%=app%>/CEN_SolicitudesIncorporacionAccesoDirecto.do?idInstitucion=2032"	onClick="false" target="_top">
 						<siga:Idioma key="censo.busquedaSolicitudesIncorporacion.literal.cabecera"/>
 					</a>
 				</CENTER>
@@ -174,21 +143,5 @@
 			<input type="hidden" name="letrado">
 			<input type="hidden" name="posMenu" value="0">
 		</form>
-		
 	</body>
-	<script type="text/javascript">
-	function entradaDirecta()
-	{
-			
-		//jAlert('Mensaje', 'Título','true');
-			
-			frmLogin.location.value="2040";
-			frmLogin.profile.value="ADM";
-			frmLogin.user.value="";
-			frmLogin.letrado.value="N";
-			var urlGet=document.frmLogin.action+"?location="+frmLogin.location.value+"&profile="+frmLogin.profile.value+"&user="+frmLogin.user.value+"&letrado="+frmLogin.letrado.value+"&tmpLoginInstitucion="+frmLogin.tmpLoginInstitucion.value+"&posMenu="+frmLogin.posMenu.value;
-			frmLogin.submit();
-
-	}
-	</script>
 </html>
