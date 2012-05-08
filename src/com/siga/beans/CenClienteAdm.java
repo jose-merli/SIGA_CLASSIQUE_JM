@@ -4975,7 +4975,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			throw new ClsExceptions (e, "Error al consultar datos en B.D.");
 		}
 	}
-	public CenClienteBean insertNoColegiadoCenso ( HttpServletRequest request, Long idPersona, String institucion) throws SIGAException
+	public CenClienteBean insertNoColegiadoCenso (HttpServletRequest request, Long idPersona, String institucion) throws SIGAException
 	{
 		
 			CenClienteBean auxCli = null;			
@@ -5000,13 +5000,27 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 						 * se realiza la pregunta si quiere que utilize los mismos datos ya existentes**/
 					auxCli = this.existeClienteOtraInstitucionCenso (idPersona,new Integer(institucion));
 					if (auxCli!=null){
-							auxCli.setExisteDatos(true);
+							CenClienteBean beanCli = new CenClienteBean ();
+							beanCli.setExisteDatos(true);
+							
 							//Se deberia de insertar un registro en cen_clientes para la nueva institucion
-							auxCli.setIdInstitucion(new Integer(this.usrbean.getLocation()));
-							if (!this.insert(auxCli)) {
+							beanCli.setIdTratamiento (auxCli.getIdTratamiento());
+							beanCli.setIdInstitucion(new Integer(this.usrbean.getLocation()));
+							beanCli.setIdPersona (idPersona);
+							beanCli.setFechaAlta ("SYSDATE");
+							beanCli.setIdLenguaje (ClsConstants.LENGUAJE_ESP);
+							beanCli.setAbonosBanco (ClsConstants.TIPO_CARGO_BANCO);
+							beanCli.setCargosBanco (ClsConstants.TIPO_CARGO_BANCO);
+							beanCli.setPublicidad (ClsConstants.DB_FALSE);
+							beanCli.setExportarFoto("0");
+							beanCli.setGuiaJudicial (ClsConstants.DB_FALSE);
+							beanCli.setComisiones (ClsConstants.DB_FALSE);					
+							beanCli.setCaracter (ClsConstants.TIPO_CARACTER_PUBLICO);
+							
+							if (!this.insert(beanCli)) {
 								throw new SIGAException(this.getError());
 							}
-							return auxCli;
+							return beanCli;
 
 					}
 				}
