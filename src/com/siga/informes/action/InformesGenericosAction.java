@@ -504,7 +504,7 @@ public class InformesGenericosAction extends MasterAction {
 			// Obtiene del campo idInforme los ids separados por ## y devuelve sus beans
 			InformeAbono admInf = new InformeAbono(usr); 
 			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
-			Vector plantillas = envioInformesGenericos.getPlantillasInforme(miform.getIdInforme(),"@@",usr);
+			Vector plantillas = envioInformesGenericos.getPlantillasInforme(miform.getIdInforme(),"##",usr);
 			
 			// Obtiene del campo datosInforme los campos del formulario primcipal
 			// para obtener la clave para el informe. LOs datos se obtienen en una cadena como los ocultos
