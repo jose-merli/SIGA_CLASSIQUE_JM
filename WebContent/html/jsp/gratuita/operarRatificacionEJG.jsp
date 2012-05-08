@@ -417,7 +417,8 @@
 			var anio  = <%=anio%>;
 			var idTipo  = <%=idTipoEJG%>;
 			var numero = <%=numero%>;
-			var datos = "idinstitucion=="+idInstitucion + "##idtipo==" +idTipo+"##anio=="+anio +"##numero==" +numero+"%%%";
+			var idTipoInforme  = document.InformesGenericosForm.idTipoInforme.value;
+			var datos = "idinstitucion=="+idInstitucion + "##idtipo==" +idTipo+"##anio=="+anio +"##numero==" +numero+"##idTipoInforme=="+idTipoInforme+"%%%";
 			
 			
 			
