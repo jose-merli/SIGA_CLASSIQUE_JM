@@ -175,36 +175,37 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 		
 		AdmEnvioInformeAdm envioInformeAdm = new AdmEnvioInformeAdm(usrBean);
 		String idTipoEnvios = informeForm.getIdTiposEnvio();
-		String[] idTiposEnvio = idTipoEnvios.split("##");
-		if(idTiposEnvio.length>0){
-			for (int i = 0; i < idTiposEnvio.length; i++) {
-				String[] idsTipoEnvio = idTiposEnvio[i].split(",");
-				if(idsTipoEnvio.length>1){
-					String idTipoEnvio = idsTipoEnvio[1];
-					if(!idTipoEnvio.equals("")){
-						AdmEnvioInformeBean envioInformeBean = new AdmEnvioInformeBean();
-						envioInformeBean.setIdInstitucion(informeVo.getIdInstitucion());
-						envioInformeBean.setIdPlantilla(informeVo.getIdPlantilla());
-						envioInformeBean.setIdTipoEnvios(idTipoEnvio);
-						if(informeForm.getIdTipoEnvio()!=null &&informeForm.getIdTipoEnvio().equals(idTipoEnvio)){
-							envioInformeBean.setDefecto(ClsConstants.DB_TRUE);
-							if(informeForm.getIdPlantillaEnvio()!=null &&!informeForm.getIdPlantillaEnvio().equals(""))
-								envioInformeBean.setIdPlantillaEnvioDef(informeForm.getIdPlantillaEnvio());
+		if(idTipoEnvios!=null){
+			String[] idTiposEnvio = idTipoEnvios.split("##");
+			if(idTiposEnvio.length>0){
+				for (int i = 0; i < idTiposEnvio.length; i++) {
+					String[] idsTipoEnvio = idTiposEnvio[i].split(",");
+					if(idsTipoEnvio.length>1){
+						String idTipoEnvio = idsTipoEnvio[1];
+						if(!idTipoEnvio.equals("")){
+							AdmEnvioInformeBean envioInformeBean = new AdmEnvioInformeBean();
+							envioInformeBean.setIdInstitucion(informeVo.getIdInstitucion());
+							envioInformeBean.setIdPlantilla(informeVo.getIdPlantilla());
+							envioInformeBean.setIdTipoEnvios(idTipoEnvio);
+							if(informeForm.getIdTipoEnvio()!=null &&informeForm.getIdTipoEnvio().equals(idTipoEnvio)){
+								envioInformeBean.setDefecto(ClsConstants.DB_TRUE);
+								if(informeForm.getIdPlantillaEnvio()!=null &&!informeForm.getIdPlantillaEnvio().equals(""))
+									envioInformeBean.setIdPlantillaEnvioDef(informeForm.getIdPlantillaEnvio());
+							}else{
+								envioInformeBean.setDefecto(ClsConstants.DB_FALSE);
+								
+							}
+							envioInformeAdm.insert(envioInformeBean);
 						}else{
-							envioInformeBean.setDefecto(ClsConstants.DB_FALSE);
-							
+							break;
 						}
-						envioInformeAdm.insert(envioInformeBean);
 					}else{
 						break;
 					}
-				}else{
-					break;
+					
 				}
-				
 			}
 		}
-		
 		
 		
 		
