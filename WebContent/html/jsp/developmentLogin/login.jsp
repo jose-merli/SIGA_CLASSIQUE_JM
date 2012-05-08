@@ -1,5 +1,4 @@
 <!-- login.jsp -->
-<%@page import="com.atos.utils.ClsConstants"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -55,7 +54,7 @@
  
 		function entradaDirectaGen()
 		{
-			frmLogin.location.value=<%=ClsConstants.INSTITUCION_CGAE%>;
+			frmLogin.location.value="2000";
 			frmLogin.profile.value="ADM";
 			frmLogin.user.value="";
 			frmLogin.letrado.value="N";
@@ -71,20 +70,42 @@
 			frmLogin.user.value="";
 			frmLogin.letrado.value="";
 
-			if (document.frmLogin.tmpLoginInstitucion.value==""){
+			if (document.frmLogin.tmpLoginInstitucion.value=="")
+			{
 				alert("Debe seleccionar una Institución");
+				
 				return false;
-			}else{
+			}
+			
+			else
+			{
 				frmLogin.location.value=document.frmLogin.tmpLoginInstitucion.value;
 			}
 
-			if (document.frmLogin.tmpLoginPerfil.value==""){
+			if (document.frmLogin.tmpLoginPerfil.value=="")
+			{
 				alert("Debe seleccionar un Perfil");
+				
 				return false;
-			}else{
+			}
+			
+			else
+			{
 				frmLogin.profile.value=document.frmLogin.tmpLoginPerfil.value;
 			}
 
+/*			if (document.frmLogin.tmpLoginUsuario.value=="")
+			{
+				alert("Debe seleccionar un Usuario");
+				
+				return false;
+			}
+			
+			else
+			{
+				frmLogin.user.value=document.frmLogin.tmpLoginUsuario.value;
+			}
+*/
 			frmLogin.letrado.value=document.frmLogin.sLetrado.value;
 			
 			return true;
@@ -98,16 +119,20 @@
 		
 		<p class="titulos"><siga:Idioma key="index.bienvenida"/></p>
 		
-		<table border="0" align="center">
+		<table border="1" cellspacing="0" cellpadding="0" align="center">
 			<tr>
 				<td class="labelText">Institución</td>
 				<td ><siga:ComboBD nombre="tmpLoginInstitucion" tipo="tmpLoginInstitucion" clase="boxCombo" accion="Hijo:tmpLoginPerfil"/></td>
 			</tr>
 			<tr>
 				<td class="labelText">Perfil</td>
-				<td><siga:ComboBD nombre="tmpLoginPerfil" tipo="tmpLoginPerfil" clase="boxCombo" hijo="t"/></td>
+				<td ><siga:ComboBD nombre="tmpLoginPerfil" tipo="tmpLoginPerfil" clase="boxCombo" hijo="t"/></td>
 			</tr>
-			<tr  style="display:none">
+<!--			<tr>
+				<td class="labelText">Usuario</td>
+				<td ><siga:ComboBD nombre="tmpLoginUsuario" tipo="tmpLoginUsuario" clase="boxCombo" hijo="t"/></td>
+			</tr>
+-->			<tr>
 				<td class="labelText">¿Letrado?</td>
 				<td >
 					<select name="sLetrado" class="boxCombo">
@@ -120,15 +145,15 @@
 				<td colspan="2" align="center">
 					<br>
 					<input type="button" class="button" value="Entrar" onClick="entrar()" title="Entrar con los datos de los combos">
-					<!--input type="button" class="button" value="León" onClick="entradaDirecta()" title="Entrar a LEON como ADMINistrador NO colegiado"-->
-					<input type="button" class="button" value="COGITI" onClick="entradaDirectaGen()"  title="Entrar al COGITI como ADMINistrador">
+					<input type="button" class="button" value="León" onClick="entradaDirecta()" title="Entrar a LEON como ADMINistrador NO colegiado">
+					<input type="button" class="button" value="General" onClick="entradaDirectaGen()"  title="Entrar a GENERAL como ADMINistrador NO colegiado">
 				</td>
 			</tr>
 
 			<tr>
 			<td colspan="2" class="labelText">
 				<CENTER>
-					<a href="<%=app%>/CEN_SolicitudesIncorporacionAccesoDirecto.do?idInstitucion=2032"	onClick="false" target="_top">
+					<a href="/SIGA/CEN_SolicitudesIncorporacionAccesoDirecto.do?idInstitucion=2032"	onClick="false" target="_top">
 						<siga:Idioma key="censo.busquedaSolicitudesIncorporacion.literal.cabecera"/>
 					</a>
 				</CENTER>
