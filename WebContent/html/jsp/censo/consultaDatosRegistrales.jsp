@@ -354,19 +354,7 @@
 			} // Si se dejo en blanco el N. Identificacion
 			else if(DatosRegistralesForm.numIdentificacion.value == "") {
 				DatosRegistralesForm.tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>";
-				
-				jQuery.ajax({
-					type: "POST",
-					url: "/SIGA/CEN_DatosGenerales.do?modo=getIdNotario",
-					data: "idInstitucion="+DatosRegistralesForm.idInstitucion.value,
-					dataType: "json",
-					success:  function(json) {
-						DatosRegistralesForm.numIdentificacion.value=json.numHistorico;
-					},
-					error: function(xml,msg){
-						alert("Error: "+msg);
-					}
-				});
+				generarIdenHistorico();
 				alert ("<siga:Idioma key='messages.nota.automatico'/>");
 				
 			} // Si se dejo en blanco el Tipo de identificacion
@@ -531,11 +519,13 @@
 
 		function generaNumOtro()
 		{
-			if((document.DatosRegistralesForm.tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>") && (document.DatosRegistralesForm.numIdentificacion.value=="")) {
+			if((DatosRegistralesForm.tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>") && (DatosRegistralesForm.numIdentificacion.value=="")) {
 				generarIdenHistorico();
-				//NIHN (Número de Identificación Histórico para No colegiados) = 'NIHN' + idinstitucion + [0-9]{4}, donde el ultimo numero sera un max+1. Ej. NIHN20400011
+			} else if ((DatosRegistralesForm.tipoIdentificacion.value != "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>") && (DatosRegistralesForm.numIdentificacion.value.substr(0,4)=="NOTA")) {
+				// Quitar el Num. de identificacion automatico de notario (NOTA) si se cambia el tipo de identificacion a distinto de Otro
+				DatosRegistralesForm.numIdentificacion.value="";
+				DatosRegistralesForm.numIdentificacion.disabled = "";
 			}
-		   	
 		}
 		jQuery(document).ready(function(){
 			jQuery(".box").change(function() {
@@ -553,6 +543,7 @@
 				dataType: "json",
 				success:  function(json) {
 					DatosRegistralesForm.numIdentificacion.value=json.numHistorico;
+					DatosRegistralesForm.numIdentificacion.disabled = "disabled";
 				},
 				error: function(xml,msg){
 					alert("Error: "+msg);
