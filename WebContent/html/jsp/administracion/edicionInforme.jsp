@@ -546,13 +546,19 @@ function inicio()
 		//alert("document.getElementById(idTipoInforme)"+document.getElementById("idTipoInforme").disabled);
 		gestionarDatosConsultas();
 		// document.getElementById("idTipoInforme").disabled = "disabled";
-		
+	}else{
+		var tiposInforme = document.getElementById("idTipoInforme").options;
+		for ( var i = 1; i < tiposInforme.length; i++) {
+			var tipoInforme = tiposInforme[i];
+			
+			if(tipoInforme.value=="CON"){
+				document.getElementById("idTipoInforme").remove(i);
+				break;
+				
+			}
+		}
 	}
-	
-	// if(document.getElementById("idTipoInforme").value!='EJG' || document.getElementById("comboTipoEnvioHidden").value=='cmbTipoEnviosInst')
-		// document.getElementById("trEnvios").style.display =  "none";
-	//else
-		//document.getElementById("trEnvios").style.display =  "block";
+
 	
 }
 

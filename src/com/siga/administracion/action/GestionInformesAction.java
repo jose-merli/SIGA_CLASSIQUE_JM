@@ -318,9 +318,8 @@ public class GestionInformesAction extends MasterAction {
 			request.setAttribute("InformeFormEdicion", informeFormEdicion);
 			
 
-			String comboTipoEnvio = "cmbTipoEnviosInstSms";
-			request.setAttribute("comboTipoEnvio", comboTipoEnvio);
-			request.setAttribute("parametrosComboEnvios", new String[]{usrBean.getLocation()});
+			request.setAttribute("comboTipoEnvio", "cmbTipoEnviosInst");
+			request.setAttribute("parametrosComboEnvios", new String[]{informeForm.getIdInstitucion()});
 				
 				
 			
@@ -382,33 +381,16 @@ public class GestionInformesAction extends MasterAction {
 			
 			request.setAttribute("InformeFormEdicion", informeFormEdicion);
 			
-				GenParametrosAdm param = new GenParametrosAdm(usrBean);
-				boolean isEnvioSmsConfigurado = UtilidadesString.stringToBoolean(param.getValor(usrBean.getLocation(), "ENV", "HABILITAR_SMS_BUROSMS", "N"));
-				String comboTipoEnvio = "cmbTipoEnviosInst";
-				if(isEnvioSmsConfigurado){
-//					Descomentar esto cuando se quiera abrir las plantillas al resto de tipos de envios(11/11/11) y borrar comboTipoEnvio = "cmbTipoEnviosSoloSms"(tambien del combo.properties)
-//					comboTipoEnvio = "cmbTipoEnviosInstSms";
-					comboTipoEnvio = "cmbTipoEnviosSoloSms";
-					
-				}
-				request.setAttribute("comboTipoEnvio", comboTipoEnvio);
-				request.setAttribute("parametrosComboEnvios", new String[]{usrBean.getLocation()});
-				List alIdsTipoEnvio = new ArrayList();
-				if(informeFormEdicion.getIdTipoEnvio()!=null && !informeFormEdicion.getIdTipoEnvio().equals(""))
-					alIdsTipoEnvio.add(informeFormEdicion.getIdInstitucion()+","+informeFormEdicion.getIdTipoEnvio());
-				request.setAttribute("idTipoEnvioSeleccionado",alIdsTipoEnvio);
-				List alIdsPlantillaEnvio = new ArrayList();
-				if(informeFormEdicion.getIdPlantillaEnvio()!=null && !informeFormEdicion.getIdPlantillaEnvio().equals("")){
-
-					alIdsPlantillaEnvio.add(informeFormEdicion.getIdPlantillaEnvio()+","+informeFormEdicion.getIdInstitucion()+","+informeFormEdicion.getIdTipoEnvio());
-				}
-				request.setAttribute("idPlantillaEnvioSeleccionado",alIdsPlantillaEnvio);
-				List alIdsPlantillaGeneracion = new ArrayList();
-				if(informeFormEdicion.getIdPlantillaGeneracion()!=null && !informeFormEdicion.getIdPlantillaGeneracion().equals("")){
-					
-					alIdsPlantillaGeneracion.add(informeFormEdicion.getIdPlantillaGeneracion());
-				}
-				request.setAttribute("idPlantillaGeneracionSeleccionado",alIdsPlantillaEnvio);
+				
+				
+				request.setAttribute("comboTipoEnvio", "cmbTipoEnviosInst");
+				request.setAttribute("parametrosComboEnvios", new String[]{informeForm.getIdInstitucion()});
+				
+				request.setAttribute("idTipoEnvioSeleccionado",new ArrayList());
+				request.setAttribute("tipoEnviosBeans", new ArrayList());
+				request.setAttribute("idTipoEnvioDef", "");
+				request.setAttribute("idPlantillaEnvioDef","");
+				
 			
 			
 			informeForm.setModo("modificar");
@@ -496,26 +478,14 @@ public class GestionInformesAction extends MasterAction {
 			InformeForm informeFormEdicion = informeBean.getInforme();
 			informeFormEdicion.setLenguajes(informeForm.getLenguajes());
 			informeFormEdicion.setClaseTipoInforme(informeForm.getClaseTipoInforme());
-//			request.setAttribute("comboTipoEnvio", "cmbTipoEnviosInstSms");
+
 			request.setAttribute("comboTipoEnvio", "cmbTipoEnviosSoloSms");
 			request.setAttribute("parametrosComboEnvios", new String[]{informeForm.getIdInstitucion()});
 			
-			List alIdsTipoEnvio = new ArrayList();
-			if(informeFormEdicion.getIdTipoEnvio()!=null && !informeFormEdicion.getIdTipoEnvio().equals(""))
-				alIdsTipoEnvio.add(informeFormEdicion.getIdInstitucion()+","+informeFormEdicion.getIdTipoEnvio());
-			request.setAttribute("idTipoEnvioSeleccionado",alIdsTipoEnvio);
-			List alIdsPlantillaEnvio = new ArrayList();
-			if(informeFormEdicion.getIdPlantillaEnvio()!=null && !informeFormEdicion.getIdPlantillaEnvio().equals("")){
-				
-				alIdsPlantillaEnvio.add(informeFormEdicion.getIdPlantillaEnvio()+","+informeFormEdicion.getIdInstitucion()+","+informeFormEdicion.getIdTipoEnvio());
-			}
-			request.setAttribute("idPlantillaEnvioSeleccionado",alIdsPlantillaEnvio);
-			List alIdsPlantillaGeneracion = new ArrayList();
-			if(informeFormEdicion.getIdPlantillaGeneracion()!=null && !informeFormEdicion.getIdPlantillaGeneracion().equals("")){
-				
-				alIdsPlantillaGeneracion.add(informeFormEdicion.getIdPlantillaGeneracion());
-			}
-			request.setAttribute("idPlantillaGeneracionSeleccionado",alIdsPlantillaEnvio);
+			request.setAttribute("idTipoEnvioSeleccionado",new ArrayList());
+			request.setAttribute("tipoEnviosBeans", new ArrayList());
+			request.setAttribute("idTipoEnvioDef", "");
+			request.setAttribute("idPlantillaEnvioDef","");
 			
 			request.setAttribute("InformeFormEdicion", informeFormEdicion);
 			informeForm.setModo("consultar");
