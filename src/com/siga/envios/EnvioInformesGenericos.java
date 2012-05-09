@@ -7090,17 +7090,7 @@ public class EnvioInformesGenericos extends MasterReport {
 								idPersona2, true, aSolicitantes);
 
 				// Anotación en cada expediente
-				if (vDatosInformeFinal.size() == 1) {
-					Envio.generarComunicacionExpediente(idInstitucion2,
-							new Integer(idInstitucionTipoExp), new Integer(
-									idTipoExp), new Integer(numero),
-							new Integer(anio), idPersona2, userBean);
-				} else {
-					Envio.generarComunicacionExpediente(idInstitucion2,
-							new Integer(idInstitucionTipoExp), new Integer(
-									idTipoExp), new Integer(numero),
-							new Integer(anio), null, userBean);
-				}
+				
 				// RECORRER LOS DATOSINFORMEFINAL
 				// Por cada destinatario real
 				for (int j = 0; j < vDatosInformeFinal.size(); j++) {
@@ -7152,6 +7142,11 @@ public class EnvioInformesGenericos extends MasterReport {
 
 						envio.generarEnvioDireccionEspecifica(idPersonaReal,
 								idDireccionReal, vDocumentos);
+						Envio.generarComunicacionExpediente(idInstitucion2,
+									new Integer(idInstitucionTipoExp), new Integer(
+											idTipoExp), new Integer(numero),
+									new Integer(anio), idPersonaReal, userBean);
+
 					}
 				}
 

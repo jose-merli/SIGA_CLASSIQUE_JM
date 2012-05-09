@@ -797,6 +797,8 @@ public class DefinirEnviosAction extends MasterAction {
 						request.getSession().removeAttribute("EnvEdicionEnvio");
 						request.setAttribute("envio",htEnvio);
 						return "seleccionEnvio";
+					}else{
+						return exitoModal("messages.envio.errorNoDireccion",request);
 					}
 				}
 		}
