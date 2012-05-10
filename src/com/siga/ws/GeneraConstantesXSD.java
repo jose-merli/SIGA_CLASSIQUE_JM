@@ -17,6 +17,7 @@ public class GeneraConstantesXSD {
 
 //		String url = "jdbc:oracle:thin:pcajg/pcajg@127.0.0.1:1521:XE";
 		String url = "jdbc:oracle:thin:uscgae2/uscgae2@192.168.11.55:1521:SIGADES";
+//		String url = "jdbc:oracle:thin:angelcpe/angelcpe@10.60.3.79:1526:SIGAPRE";		
 		
 		
 		

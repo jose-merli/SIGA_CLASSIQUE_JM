@@ -25,16 +25,21 @@ import com.siga.informes.MasterWords;
 import com.siga.ws.SIGAWSClientAbstract;
 import com.siga.ws.SigaWSHelper;
 import com.siga.ws.i2064.xsd.ANEXOITYPE;
+import com.siga.ws.i2064.xsd.ASUNTOSPENALESTYPE;
+import com.siga.ws.i2064.xsd.AUTORIZACIONESTYPE;
 import com.siga.ws.i2064.xsd.AVOGADOTYPE;
 import com.siga.ws.i2064.xsd.BENINMUEBLETYPE;
 import com.siga.ws.i2064.xsd.BENMUEBLETYPE;
 import com.siga.ws.i2064.xsd.DATOSCONTACTO;
 import com.siga.ws.i2064.xsd.DIRECCIONTYPE;
+import com.siga.ws.i2064.xsd.DOCIDENTIFICADORTYPE;
 import com.siga.ws.i2064.xsd.FAMILIARTYPE;
 import com.siga.ws.i2064.xsd.INGRESOSTYPE;
 import com.siga.ws.i2064.xsd.NOMEAPELIDOSTYPE;
+import com.siga.ws.i2064.xsd.PARTECONTRARIATYPE;
 import com.siga.ws.i2064.xsd.PERSOATYPE;
 import com.siga.ws.i2064.xsd.PROCURADORTYPE;
+import com.siga.ws.i2064.xsd.REPRESENTANTELEGALTYPE;
 import com.siga.ws.i2064.xsd.SOLICITUDEAXGDocument;
 import com.siga.ws.i2064.xsd.ANEXOITYPE.DATOSECONOMICOS;
 import com.siga.ws.i2064.xsd.ANEXOITYPE.DATOSPERSOAIS;
@@ -46,14 +51,21 @@ import com.siga.ws.i2064.xsd.ANEXOITYPE.DATOSECONOMICOS.SOLICITANTE;
 import com.siga.ws.i2064.xsd.ANEXOITYPE.DATOSECONOMICOS.FAMILIA.FAMILIAR;
 import com.siga.ws.i2064.xsd.ANEXOITYPE.DATOSECONOMICOS.SOLICITANTE.BENS;
 import com.siga.ws.i2064.xsd.ANEXOITYPE.DATOSPERSOAIS.FAMILIA;
+import com.siga.ws.i2064.xsd.ANEXOITYPE.PROCEDEMENTO.PROFAMILIA;
 import com.siga.ws.i2064.xsd.ANEXOITYPE.PROCEDEMENTO.TIPOPROCEDEMENTO;
-import com.siga.ws.i2064.xsd.ANEXOITYPE.PROCEDEMENTO.XURISDICCION;
 import com.siga.ws.i2064.xsd.ANEXOITYPE.PROCEDEMENTO.TIPOPROCEDEMENTO.ADMINISTRATIVO;
 import com.siga.ws.i2064.xsd.ANEXOITYPE.PROCEDEMENTO.TIPOPROCEDEMENTO.XUDICIAL;
 import com.siga.ws.i2064.xsd.ANEXOITYPE.PROCEDEMENTO.TIPOPROCEDEMENTO.ADMINISTRATIVO.DILIXENCIA;
 import com.siga.ws.i2064.xsd.ANEXOITYPE.PROCEDEMENTO.TIPOPROCEDEMENTO.XUDICIAL.ORGANO;
 import com.siga.ws.i2064.xsd.ANEXOITYPE.PROCEDEMENTO.TIPOPROCEDEMENTO.XUDICIAL.ORGANO.ORGANO2;
+import com.siga.ws.i2064.xsd.ASUNTOSPENALESTYPE.CONDICION;
+import com.siga.ws.i2064.xsd.ASUNTOSPENALESTYPE.TIPOEXPEDIENTE;
+import com.siga.ws.i2064.xsd.AUTORIZACIONESTYPE.AEATTGSSCATASTRO;
+import com.siga.ws.i2064.xsd.AUTORIZACIONESTYPE.IDENTIDAD;
 import com.siga.ws.i2064.xsd.AVOGADOTYPE.DESIGNACION;
+import com.siga.ws.i2064.xsd.BENINMUEBLETYPE.TIPOVALORACION;
+import com.siga.ws.i2064.xsd.DOCIDENTIFICADORTYPE.DOCUMENTADO;
+import com.siga.ws.i2064.xsd.DOCIDENTIFICADORTYPE.INDOCUMENTADO;
 import com.siga.ws.i2064.xsd.SOLICITUDEAXGDocument.SOLICITUDEAXG;
 
 /**
@@ -125,8 +137,25 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 					rellenaDocumentosAdjuntos(anexoIType, mapExp);
 					anexoIType.setOBSERVACIONS(mapExp.get(OBSERVACIONES));
 					
+					rellenaRepresentanteLegal(anexoIType.addNewREPRESENTANTELEGAL(), mapExp);
+					AUTORIZACIONESTYPE autorizacionestype = anexoIType.addNewAUTORIZACIONES();
+					String s = mapExp.get(A_AEAT_TGSS_CATASTRO);
+					if (s != null && !s.trim().equals("")) {
+						autorizacionestype.setAEATTGSSCATASTRO(AEATTGSSCATASTRO.Enum.forString(s));
+					}
+					s = mapExp.get(A_IDENTIDAD);
+					if (s != null && !s.trim().equals("")) {
+						autorizacionestype.setIDENTIDAD(IDENTIDAD.Enum.forString(s));
+					}
+					
+					SigaWSHelper.deleteEmptyNode(anexoIType.getDomNode());
+					
+					if (anexoIType.getDATOSECONOMICOS() == null) {
+						//ñapa pq los datos economicos no pueden ser nulos pero sí su contenido!!!
+						anexoIType.addNewDATOSECONOMICOS();
+					}
 								
-					if(!validateXML_EJG(anexoIType, anio, numejg, numero, idTipoEJG)){
+					if(!validateXML_EJG_NoDeleteEmptyNode(anexoIType, anio, numejg, numero, idTipoEJG)){
 						solicitudeAXG.removeANEXOI(solicitudeAXG.sizeOfANEXOIArray()-1);								
 					}
 				} catch (IllegalArgumentException e) {
@@ -178,6 +207,11 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 	}
 	
 	
+	private void rellenaRepresentanteLegal(REPRESENTANTELEGALTYPE representantelegaltype, Map<String, String> map) {		
+		rellenaDatosPersonalesFamilia(representantelegaltype.addNewDATOSREPRESENTANTE(), map.get(REP_NOME), map.get(REP_PRIMERAPELLIDO), map.get(REP_SEGUNDOAPELLIDO), map.get(REP_IDADE), map.get(REP_PARENTESCO));
+	}
+
+
 	/**
 	 * 
 	 * @param procurador
@@ -226,7 +260,14 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 		if (list != null) {			
 			for (int i = 0; i < list.size(); i++) {
 				Map<String, String> map = list.get(i);
-				anexoIType.addNewPARTECONTRARIA().setNOME(map.get(CONT_NOMBRE));
+				PARTECONTRARIATYPE partecontrariatype = anexoIType.addNewPARTECONTRARIA();
+				
+				NOMEAPELIDOSTYPE nomeapelidostype = partecontrariatype.addNewNOMECOMPLETO();
+				nomeapelidostype.setNOME(map.get(CONT_NOMBRE));
+				nomeapelidostype.setPRIMERAPELLIDO(map.get(CONT_APELLIDO1));
+				nomeapelidostype.setSEGUNDOAPELLIDO(map.get(CONT_APELLIDO2));
+				
+				partecontrariatype.setDOMICILIO(map.get(CONT_DOMICILIO));
 			}
 		}
 		
@@ -251,7 +292,7 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 		direcciontype.setENDEREZO(mapExp.get(A_ENDEREZO));
 		direcciontype.setLOCALIDADE(mapExp.get(A_LOCALIDADE));
 		direcciontype.setMUNICIPIO(mapExp.get(A_MUNICIPIO));
-		direcciontype.setPROVINCIA(getBigInteger(mapExp.get(A_PROVINCIA)));
+		direcciontype.setPROVINCIA(mapExp.get(A_PROVINCIA));
 		direcciontype.setCODPOSTAL(mapExp.get(A_CODPOSTAL));
 		abogado.setRENUNCIAAVOGADO(getBoolean(mapExp.get(A_RENUNCIA_AVOGADO)));
 	}
@@ -264,7 +305,12 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 	 * @throws Exception
 	 */
 	private void rellenaProcedimiento(PROCEDEMENTO procedemento, Map<String, String> mapExp) throws Exception {		
-		procedemento.xsetXURISDICCION(XURISDICCION.Factory.newValue(SigaWSHelper.getInteger("jurisdicción", mapExp.get(P_XURISDICCION))));		
+		
+		procedemento.setXURISDICCION(SigaWSHelper.getInteger("jurisdicción", mapExp.get(P_XURISDICCION)));
+		String s = mapExp.get(PRO_FAMILIA);
+		if (s != null && !s.trim().equals("")) {
+			procedemento.setPROFAMILIA(PROFAMILIA.Enum.forString(s));
+		}
 		
 		TIPOPROCEDEMENTO tipoProcedemento = procedemento.addNewTIPOPROCEDEMENTO();
 		if (TIPO_PROCEDEMENTO_XUDICIAL.equals(mapExp.get(TIPO_PROCEDEMENTO_CHOICE))) {
@@ -289,9 +335,19 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 		} else {
 			throw new IllegalArgumentException("No está definido si es un procedimiento judicial o administrativo.");
 		}
-		procedemento.setPRETENSION(mapExp.get(P_PRETENSION));
-		procedemento.setCONDICION(mapExp.get(P_CONDICION));
+		procedemento.setPRETENSION(mapExp.get(P_PRETENSION));		
 		procedemento.setDATAINICIO(SigaWSHelper.getCalendar(mapExp.get(P_DATA_INICIO)));
+		
+		ASUNTOSPENALESTYPE asuntospenalestype = procedemento.addNewASUNTOSPENALES();
+		String condicion = mapExp.get(P_CONDICION);
+		if (condicion != null && !condicion.trim().equals("")) {
+			asuntospenalestype.setCONDICION(CONDICION.Enum.forString(condicion));	
+		}
+		String tipoExpediente = mapExp.get(P_TIPO_EXPEDIENTE);
+		if (tipoExpediente != null && !tipoExpediente.trim().equals("")) {
+			asuntospenalestype.setTIPOEXPEDIENTE(TIPOEXPEDIENTE.Enum.forString(tipoExpediente));
+		}
+		asuntospenalestype.setINFRACCIONIMPUTADA(mapExp.get(P_INFRACCION_IMPUTADA));		
 	}
 
 
@@ -324,14 +380,14 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 					BENS bens = solicitante.addNewBENS();
 					rellenaBienesInmuebles(bens.addNewBENSINMUEBLES(), map);
 					rellenaBienesMuebles(bens.addNewBENSMUEBLES(), map);
-					solicitante.setALUGUER(getBigDecimal(map.get(DE_ALUGUER)));
+					solicitante.setALQUILERRMENSUAL(getBigDecimal(map.get(DE_ALQUILER_RMENSUAL)));
 					solicitante.setOUTROSDATOS(map.get(DE_OUTROS_DATOS));
 				} else if (TRUE.equals(map.get(IS_CONYUGE))) {
-					CONXUXE conxuxe = datosEconomicos.addNewCONXUXE();					
-					rellenaIngresos(conxuxe.addNewINGRESOS(), map);
+					CONXUXE conxuxe = datosEconomicos.addNewCONXUXE();
 					com.siga.ws.i2064.xsd.ANEXOITYPE.DATOSECONOMICOS.CONXUXE.BENS bens = conxuxe.addNewBENS();
 					rellenaBienesInmuebles(bens.addNewBENSINMUEBLES(), map);
 					rellenaBienesMuebles(bens.addNewBENSMUEBLES(), map);
+					rellenaIngresos(conxuxe.addNewINGRESOS(), map);
 				} else {
 					if (familia == null) {
 						familia = datosEconomicos.addNewFAMILIA();
@@ -340,13 +396,14 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 					NOMEAPELIDOSTYPE nomeapelidostype = familiar.addNewNOMEAPELIDOS();					
 					nomeapelidostype.setNOME(map.get(NOME));
 					nomeapelidostype.setPRIMERAPELLIDO(map.get(APELLIDO1));
-					nomeapelidostype.setSEGUNDOAPELLIDO(map.get(APELLIDO2));					
+					nomeapelidostype.setSEGUNDOAPELLIDO(map.get(APELLIDO2));
 					
-					rellenaIngresos(familiar.addNewINGRESOS(), map);
-					familiar.setPARENTESCO(getBigInteger(map.get(PARENTESCO)));
 					com.siga.ws.i2064.xsd.ANEXOITYPE.DATOSECONOMICOS.FAMILIA.FAMILIAR.BENS bens = familiar.addNewBENS();
 					rellenaBienesInmuebles(bens.addNewBENSINMUEBLES(), map);
 					rellenaBienesMuebles(bens.addNewBENSMUEBLES(), map);
+					
+					familiar.setPARENTESCO(getBigInteger(map.get(PARENTESCO)));					
+					rellenaIngresos(familiar.addNewINGRESOS(), map);
 				}
 			}
 		}
@@ -360,7 +417,10 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 	private void rellenaBienesInmuebles(BENINMUEBLETYPE  beninmuebletype, Map<String, String> map) {
 		beninmuebletype.setTIPO(map.get(DE_BI_TIPO));
 		beninmuebletype.setVALORACION(getBigDecimal(map.get(DE_BI_VALORACION)));
-		beninmuebletype.setTIPOVALORACION(map.get(DE_BI_TIPOVALORACION));
+		String tipoValoracion = map.get(DE_BI_TIPOVALORACION);
+		if (tipoValoracion != null && !tipoValoracion.trim().equals("")) {
+			beninmuebletype.setTIPOVALORACION(TIPOVALORACION.Enum.forString(tipoValoracion));
+		}
 		beninmuebletype.setCARGAS(map.get(DE_BI_CARGAS));
 	}
 
@@ -408,13 +468,13 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 					if (numConyuge > 0) {
 						throw new IllegalArgumentException("El solicitante tiene más de un conyuge. Revise los datos introducidos.");
 					}
-					rellenaDatosPersonaType(datosPersoais.addNewMATRIMONIO().addNewCONXUXE(), map);
+					rellenaDatosPersonaType(datosPersoais.addNewCONXUXE(), map);
 					numConyuge++;
 				} else {
 					if (familia == null) {
 						familia = datosPersoais.addNewFAMILIA();
 					}
-					rellenaDatosPersonalesFamilia(familia, map);					
+					rellenaDatosPersonalesFamilia(familia.addNewFAMILIAR(), map.get(NOME), map.get(APELLIDO1), map.get(APELLIDO2), map.get(IDADE), map.get(PARENTESCO));					
 				}
 			}
 		}
@@ -425,14 +485,13 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 	 * @param familia
 	 * @param map
 	 */
-	private void rellenaDatosPersonalesFamilia(FAMILIA familia, Map<String, String> map) {		
-		FAMILIARTYPE familiar = familia.addNewFAMILIAR();
+	private void rellenaDatosPersonalesFamilia(FAMILIARTYPE familiar, String nome, String apellido1, String apellido2, String idade, String parentesco) {
 		NOMEAPELIDOSTYPE nomeapelidostype = familiar.addNewNOMEAPELIDOS();
-		nomeapelidostype.setNOME(map.get(NOME));
-		nomeapelidostype.setPRIMERAPELLIDO(map.get(APELLIDO1));
-		nomeapelidostype.setSEGUNDOAPELLIDO(map.get(APELLIDO2));
-		familiar.xsetIDADE(com.siga.ws.i2064.xsd.FAMILIARTYPE.IDADE.Factory.newValue(SigaWSHelper.getInteger("edad", map.get(IDADE))));
-		familiar.setPARENTESCO(getBigInteger(map.get(PARENTESCO)));
+		nomeapelidostype.setNOME(nome);
+		nomeapelidostype.setPRIMERAPELLIDO(apellido1);
+		nomeapelidostype.setSEGUNDOAPELLIDO(apellido2);
+		familiar.xsetIDADE(com.siga.ws.i2064.xsd.FAMILIARTYPE.IDADE.Factory.newValue(SigaWSHelper.getInteger("edad", idade)));
+		familiar.setPARENTESCO(getBigInteger(parentesco));
 	}
 
 
@@ -448,22 +507,38 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 		nombreApeSol.setNOME(map.get(NOME));
 		nombreApeSol.setPRIMERAPELLIDO(map.get(APELLIDO1));
 		nombreApeSol.setSEGUNDOAPELLIDO(map.get(APELLIDO2));		
-		personaType.xsetNACIONALIDADE(com.siga.ws.i2064.xsd.PERSOATYPE.NACIONALIDADE.Factory.newValue(SigaWSHelper.getInteger("nacionalidad", map.get(NACIONALIDADE))));		
-		personaType.setESTADOCIVIL(getBigInteger(map.get(ESTADO_CIVIL)));
-		personaType.setNIF(map.get(NIF));
+		personaType.setNACIONALIDADE(SigaWSHelper.getBigInteger("nacionalidad", map.get(NACIONALIDADE)));
+		Integer iEstadoCivil = SigaWSHelper.getInteger("estado civil", map.get(ESTADO_CIVIL));
+		if (iEstadoCivil != null) {
+			personaType.setESTADOCIVIL(iEstadoCivil);
+		}
+		
+		DOCIDENTIFICADORTYPE identificador = personaType.addNewIDENTIFICADOR();
+		String tipoIdentificador = map.get(TIPOIDENTIFICADOR);
+		
+		if (tipoIdentificador == null || tipoIdentificador.trim().equals("")) {
+			identificador.setINDOCUMENTADO(INDOCUMENTADO.S);
+		} else {
+			DOCUMENTADO documentado = identificador.addNewDOCUMENTADO();
+			documentado.setTIPOIDENTIFICADOR(com.siga.ws.i2064.xsd.DOCIDENTIFICADORTYPE.DOCUMENTADO.TIPOIDENTIFICADOR.Enum.forString(tipoIdentificador));
+			documentado.setIDENTIFICADOR(map.get(NIF));
+		}
+		
+		
 		personaType.setDATANACEMENTO(SigaWSHelper.getCalendar(map.get(DATA_NACEMENTO)));
 		DATOSCONTACTO datosContacto = personaType.addNewDATOSCONTACTO();
 		DIRECCIONTYPE direccion = datosContacto.addNewENDEREZO();
 		direccion.setENDEREZO(map.get(DC_ENDEREZO));
 		direccion.setLOCALIDADE(map.get(DC_LOCALIDADE));
 		direccion.setMUNICIPIO(map.get(DC_MUNICIPIO));
-		direccion.setPROVINCIA(getBigInteger(map.get(DC_PROVINCIA)));
+		direccion.setPROVINCIA(map.get(DC_PROVINCIA));
 		direccion.setCODPOSTAL(map.get(DC_CODPOSTAL));		
 		datosContacto.setTELEFONO(map.get(DC_TELEFONO));
 		datosContacto.setFAX(map.get(DC_FAX));
+		datosContacto.setCORREOELECTRONICO(map.get(DC_CORREO_ELECTRONICO));
 		personaType.setPROFESION(map.get(PROFESION));
 		personaType.setEMPRESA(map.get(EMPRESA));
-		
+		personaType.setREGIMENCOTIZACION(map.get(REGIMEN_COTIZACION));		
 	}
 
 

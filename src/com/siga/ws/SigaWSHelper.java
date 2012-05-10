@@ -205,15 +205,14 @@ public class SigaWSHelper {
 		return in;
 	}
 	
-	/**
-	 * 
-	 * @param xmlObject
-	 * @return
-	 * @throws Exception
-	 */
-	public static List<String> validate(XmlObject xmlObject) throws Exception {
-		
-		deleteEmptyNode(xmlObject.getDomNode());
+	public static List<String> validateNoDeleteEmptyNode(XmlObject xmlObject) throws Exception {
+		return validate(xmlObject, false);
+	}
+	
+	private static List<String> validate(XmlObject xmlObject, boolean deleteEmptyNode) throws Exception {
+		if (deleteEmptyNode) {
+			deleteEmptyNode(xmlObject.getDomNode());
+		}
 		List<String> list = new ArrayList<String>();
 		XmlOptions xmlOptions = new XmlOptions();
 		List<XmlValidationError> errores = new ArrayList<XmlValidationError>();
@@ -265,6 +264,16 @@ public class SigaWSHelper {
 			
 		}
 		return list;
+	}
+	
+	/**
+	 * 
+	 * @param xmlObject
+	 * @return
+	 * @throws Exception
+	 */
+	public static List<String> validate(XmlObject xmlObject) throws Exception {
+		return validate(xmlObject, true);		
 	}
 
 	private static String getRutaNodo(Node domNode) {

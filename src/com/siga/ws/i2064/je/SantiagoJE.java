@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -18,8 +20,11 @@ import org.apache.axis.transport.http.HTTPSender;
 import org.apache.axis.transport.http.HTTPTransport;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlException;
+import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
 
+import com.aspose.words.internal.fi;
+import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.LogBDDHandler;
@@ -61,10 +66,13 @@ import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificacione
 import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado.Asuntos.Datosatestado.UnidadYJuzgado.UnidadPolicial;
 import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado.Asuntos.IDExpAXG.Prov;
 import com.siga.ws.i2064.je.xsd.PROCBAREMOTYPE.PROCPORCENTUAL;
+import com.siga.ws.i2064.je.xsd.resposta.CargaAsunto;
 
 public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 
 	private static String CODIGO_PETICION_CORRECTA = "C0001";
+	private static String CODIGO_ASUNTO_CORRECTO = "AC0001";
+	
 	private static String PCAJG_JE_CODIGO_APLICACION = "PCAJG_JE_CODIGO_APLICACION";
 	private static String PCAJG_JE_USUARIO = "PCAJG_JE_USUARIO";	
 	
@@ -425,13 +433,82 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 				try {
 					resposta = stub.envioJustificacion(codAplicacion, usuario, "<?xml version=\"1.0\" encoding=\"ISO8859-1\"?>" + datosJustificacionesDocument.xmlText(xmlOptions));
 				} catch (Exception e) {
-					String s = "Se ha producido un error en el envío de WebService para la institución " + idInstitucion;
+					String s = "Se ha producido un error en el envío de WebService de Justificación económica para la institución " + idInstitucion;
 					ClsLogging.writeFileLogError(s, e, 3);
 					throw new ErrorEnvioWS(s, e);
 				}
 								
 				if (!CODIGO_PETICION_CORRECTA.equals(resposta.getCodResposta())) {
 					escribeLog(idInstitucion, idFacturacion, usrBean, resposta.getCodResposta() + ";" + resposta.getDescricion());
+					String ficheiroResposta = resposta.getFicheiroResposta();
+					if (ficheiroResposta != null && !ficheiroResposta.trim().equals("")) {
+						XmlOptions xmlOptionsRes = new XmlOptions();
+												
+						Map<String, String> mapaRes = new HashMap<String, String>();						
+						mapaRes.put("", com.siga.ws.i2064.je.xsd.resposta.DatosJustificacionesDocument.Factory.newInstance().addNewDatosJustificaciones().getDomNode().getNamespaceURI());
+						xmlOptionsRes.setLoadSubstituteNamespaces(mapaRes);
+						
+						com.siga.ws.i2064.je.xsd.resposta.DatosJustificacionesDocument res = com.siga.ws.i2064.je.xsd.resposta.DatosJustificacionesDocument.Factory.parse(ficheiroResposta, xmlOptionsRes);						
+						
+						if (res != null) {
+							if (!res.validate()) {
+								StringBuffer s = new StringBuffer("Se ha producido un error en el envío de WebService de Justificación económica para la institución " + idInstitucion + ". La respuesta obtenida no cumple con el esquema establecido.");
+								List<String> errores = SigaWSHelper.validate(res);
+								if (errores != null) {
+									for (String error:errores) {
+										s.append("\n" + error);
+									}
+								}
+								throw new ErrorEnvioWS(s.toString());
+							}
+							
+							com.siga.ws.i2064.je.xsd.resposta.DatosJustificacionesDocument.DatosJustificaciones datosJustificaciones = res.getDatosJustificaciones();
+							if (datosJustificaciones != null) {								
+								com.siga.ws.i2064.je.xsd.resposta.DatosJustificacionesDocument.DatosJustificaciones.Asistencias asistencias = datosJustificaciones.getAsistencias();
+								
+								if (asistencias != null) {
+									com.siga.ws.i2064.je.xsd.resposta.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado[] cols = asistencias.getColegiadoArray();
+									if (cols != null && cols.length > 0) {
+										for (com.siga.ws.i2064.je.xsd.resposta.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado col : cols) {
+											short nColegiado = col.getCodColegiado();
+											com.siga.ws.i2064.je.xsd.resposta.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado.Asuntos asuntos[] = col.getAsuntosArray();
+											if (asuntos != null && asuntos.length > 0) {
+												for (com.siga.ws.i2064.je.xsd.resposta.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado.Asuntos asunto : asuntos) {
+													com.siga.ws.i2064.je.xsd.resposta.SOXCLAVETYPE soxclavetype = asunto.getSOXCLAVE();
+													if (soxclavetype != null) {
+														int ejgAnio = soxclavetype.getSOXANO();
+														BigInteger ejgNum = soxclavetype.getSOXNUMERO();
+														rellenaError(idInstitucion, idFacturacion, usrBean, asunto.getCargaAsunto(), ejgAnio, ejgNum, nColegiado);														
+													}
+												}
+											}
+										}
+									}
+								}
+								
+								com.siga.ws.i2064.je.xsd.resposta.DatosJustificacionesDocument.DatosJustificaciones.TurnoOficio turnoOficio = datosJustificaciones.getTurnoOficio();
+								if (turnoOficio != null) {
+									com.siga.ws.i2064.je.xsd.resposta.DatosJustificacionesDocument.DatosJustificaciones.TurnoOficio.Colegiado cols[] = turnoOficio.getColegiadoArray();
+									if (cols != null && cols.length > 0) {
+										for (com.siga.ws.i2064.je.xsd.resposta.DatosJustificacionesDocument.DatosJustificaciones.TurnoOficio.Colegiado col:cols) {
+											short nColegiado = col.getCodColegiado();
+											com.siga.ws.i2064.je.xsd.resposta.DatosJustificacionesDocument.DatosJustificaciones.TurnoOficio.Colegiado.Asuntos[] asuntos = col.getAsuntosArray();
+											if (asuntos != null && asuntos.length > 0) {
+												for (com.siga.ws.i2064.je.xsd.resposta.DatosJustificacionesDocument.DatosJustificaciones.TurnoOficio.Colegiado.Asuntos asunto : asuntos) {
+													com.siga.ws.i2064.je.xsd.resposta.SOXCLAVETYPE soxclavetype = asunto.getSOXCLAVE();
+													if (soxclavetype != null) {
+														int ejgAnio = soxclavetype.getSOXANO();
+														BigInteger ejgNum = soxclavetype.getSOXNUMERO();														
+														rellenaError(idInstitucion, idFacturacion, usrBean, asunto.getCargaAsunto(), ejgAnio, ejgNum, nColegiado);
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
 					throw new ErrorNegocioWS(resposta.getCodResposta() + ": " + resposta.getDescricion());					
 				}			
 			} finally {
@@ -441,7 +518,21 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 
 	}
 
-	public static void main(String args[]) throws XmlException, IOException {
+	private void rellenaError(String idInstitucion, String idFacturacion, UsrBean usrBean, CargaAsunto cargaAsunto, int ejgAnio, BigInteger ejgNum, short nColegiado) throws ClsExceptions, IOException {
+		
+		if (cargaAsunto != null) {
+			String desc = cargaAsunto.getDescripcion();
+			String codigo = cargaAsunto.getCodigo();
+			if (!CODIGO_ASUNTO_CORRECTO.equals(codigo) && desc != null && !desc.trim().equals("")) {
+				String texto = "Error en el EJG;" + ejgAnio + "/" + ejgNum + ";para el colegiado;" + nColegiado + ";" + desc;																
+				escribeLog(idInstitucion, idFacturacion, usrBean, texto);
+			}
+		}
+		
+	}
+
+
+	public static void main2(String args[]) throws XmlException, IOException {
 
 		XmlOptions xmlOptions = new XmlOptions();
 		xmlOptions.setSavePrettyPrintIndent(4);
@@ -457,6 +548,21 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 			}
 			System.out.println(datosJustificaciones);
 		}
+		System.out.println("fin");
+	}
+	
+	public static void main	(String args[]) throws XmlException, IOException, URISyntaxException {
+		String ficheiroResposta = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" standalone=\"no\"?><DatosJustificaciones><Periodo><Ano>2012</Ano><Trimestre>PRIMEIRO</Trimestre><dende>2012-01-01</dende><ata>2012-03-31</ata></Periodo><Colegio><IDColegio>A15078</IDColegio></Colegio><TurnoOficio><colegiado><codColegiado>1111</codColegiado><Asuntos><Fecha>2011-11-29</Fecha><SOXCLAVE><SOX_ANO>2020</SOX_ANO><SOX_NUMERO>2834</SOX_NUMERO></SOXCLAVE><IDExpAXG><Cons>PR</Cons><Proc>204A</Proc><Ano>2020</Ano><Num>113</Num><Prov>0</Prov></IDExpAXG><Datosxudiciais><Juzgado><NUMEROSALASECCION>002</NUMEROSALASECCION><PARTIDOXUDICIAL>1502</PARTIDOXUDICIAL><COD_ORGANO>43</COD_ORGANO></Juzgado><ProcBaremo><TIPO_BAREMO>20</TIPO_BAREMO><COD_BAREMO>208</COD_BAREMO><ANO_PROC>2011</ANO_PROC><NUM_PROC>5464</NUM_PROC></ProcBaremo></Datosxudiciais><Solicitante><NOMEAPELIDOS><Nome>JACOB</Nome><PRIMER_APELLIDO>AVENDA</PRIMER_APELLIDO><SEGUNDO_APELLIDO>ACOSTA</SEGUNDO_APELLIDO></NOMEAPELIDOS><IDENTIFICACION><DOCUMENTADO><TIPO_IDENTIFICADOR>1</TIPO_IDENTIFICADOR><IDENTIFICADOR>36174523G</IDENTIFICADOR></DOCUMENTADO></IDENTIFICACION></Solicitante><IMPORTE><IMPORTE>233.49</IMPORTE><IRPF>15</IRPF></IMPORTE><CargaAsunto><Codigo>AE0008</Codigo><Descripcion>O DNI indicado non ÃƒÂ© correcto</Descripcion></CargaAsunto></Asuntos></colegiado></TurnoOficio></DatosJustificaciones>";
+		XmlOptions xmlOptionsRes = new XmlOptions();
+		
+		Map<String, String> mapaRes = new HashMap<String, String>();
+
+		mapaRes.put("", com.siga.ws.i2064.je.xsd.resposta.DatosJustificacionesDocument.Factory.newInstance().addNewDatosJustificaciones().getDomNode().getNamespaceURI());
+		xmlOptionsRes.setLoadSubstituteNamespaces(mapaRes);
+		
+		com.siga.ws.i2064.je.xsd.resposta.DatosJustificacionesDocument res = com.siga.ws.i2064.je.xsd.resposta.DatosJustificacionesDocument.Factory.parse(ficheiroResposta, xmlOptionsRes);
+		res.validate();
+		res.getDatosJustificaciones().getTurnoOficio().getColegiadoArray()[0].getAsuntosArray()[0].getCargaAsunto().getCodigo();
 		System.out.println("fin");
 	}
 

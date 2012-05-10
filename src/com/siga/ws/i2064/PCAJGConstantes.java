@@ -12,6 +12,8 @@ public interface PCAJGConstantes {
 
      /***** CAMPOS DE LA VISTA V_WS_2064_EJG ****/
 
+	public final String V_WS_2064_EJG = "V_WS_2064_EJG";
+
 	public final String IDREMESA = "IDREMESA";
 	public final String IDEJGREMESA = "IDEJGREMESA";
 	public final String IDINSTITUCION = "IDINSTITUCION";
@@ -27,6 +29,7 @@ public interface PCAJGConstantes {
 	public final String DATA_RECEPCION = "DATA_RECEPCION";
 	public final String TIPO_PROCEDEMENTO_CHOICE = "TIPO_PROCEDEMENTO_CHOICE";
 	public final String P_XURISDICCION = "P_XURISDICCION";
+	public final String PRO_FAMILIA = "PRO_FAMILIA";
 	public final String P_TPX_TIPOPROCXUDICIAL = "P_TPX_TIPOPROCXUDICIAL";
 	public final String P_TPX_ANIO = "P_TPX_ANIO";
 	public final String P_TPX_NUMERO = "P_TPX_NUMERO";
@@ -42,6 +45,8 @@ public interface PCAJGConstantes {
 	public final String P_TPA_ANO = "P_TPA_ANO";
 	public final String P_PRETENSION = "P_PRETENSION";
 	public final String P_CONDICION = "P_CONDICION";
+	public final String P_TIPO_EXPEDIENTE = "P_TIPO_EXPEDIENTE";
+	public final String P_INFRACCION_IMPUTADA = "P_INFRACCION_IMPUTADA";
 	public final String P_DATA_INICIO = "P_DATA_INICIO";
 	public final String A_COLEXIO = "A_COLEXIO";
 	public final String A_NUM_COLEXIADO = "A_NUM_COLEXIADO";
@@ -63,9 +68,20 @@ public interface PCAJGConstantes {
 	public final String PR_SEGUNDOAPELLIDO = "PR_SEGUNDOAPELLIDO";
 	public final String PR_RENUNCIA_PROCURADOR = "PR_RENUNCIA_PROCURADOR";
 	public final String OBSERVACIONES = "OBSERVACIONES";
+	public final String REP_NOME = "REP_NOME";
+	public final String REP_PRIMERAPELLIDO = "REP_PRIMERAPELLIDO";
+	public final String REP_SEGUNDOAPELLIDO = "REP_SEGUNDOAPELLIDO";
+	public final String REP_IDADE = "REP_IDADE";
+	public final String REP_PARENTESCO = "REP_PARENTESCO";
+	public final String REP_TIPOIDENTIFICADOR = "REP_TIPOIDENTIFICADOR";
+	public final String REP_IDENTIFICADOR = "REP_IDENTIFICADOR";
+	public final String A_AEAT_TGSS_CATASTRO = "A_AEAT_TGSS_CATASTRO";
+	public final String A_IDENTIDAD = "A_IDENTIDAD";
 
 
      /***** CAMPOS DE LA VISTA V_WS_2064_PERSONA ****/
+
+	public final String V_WS_2064_PERSONA = "V_WS_2064_PERSONA";
 
 	public final String IDPERSONA = "IDPERSONA";
 	public final String IS_SOLICITANTE = "IS_SOLICITANTE";
@@ -75,6 +91,7 @@ public interface PCAJGConstantes {
 	public final String APELLIDO2 = "APELLIDO2";
 	public final String NACIONALIDADE = "NACIONALIDADE";
 	public final String ESTADO_CIVIL = "ESTADO_CIVIL";
+	public final String TIPOIDENTIFICADOR = "TIPOIDENTIFICADOR";
 	public final String NIF = "NIF";
 	public final String DATA_NACEMENTO = "DATA_NACEMENTO";
 	public final String IDADE = "IDADE";
@@ -85,8 +102,10 @@ public interface PCAJGConstantes {
 	public final String DC_CODPOSTAL = "DC_CODPOSTAL";
 	public final String DC_TELEFONO = "DC_TELEFONO";
 	public final String DC_FAX = "DC_FAX";
+	public final String DC_CORREO_ELECTRONICO = "DC_CORREO_ELECTRONICO";
 	public final String PROFESION = "PROFESION";
 	public final String EMPRESA = "EMPRESA";
+	public final String REGIMEN_COTIZACION = "REGIMEN_COTIZACION";
 	public final String PARENTESCO = "PARENTESCO";
 	public final String DE_INGRESO_IMP = "DE_INGRESO_IMP";
 	public final String DE_INGRESO_CONCEPTO = "DE_INGRESO_CONCEPTO";
@@ -97,16 +116,23 @@ public interface PCAJGConstantes {
 	public final String DE_BM_TIPO = "DE_BM_TIPO";
 	public final String DE_BE_VALORACION = "DE_BE_VALORACION";
 	public final String DE_BE_MATRICULA = "DE_BE_MATRICULA";
-	public final String DE_ALUGUER = "DE_ALUGUER";
+	public final String DE_ALQUILER_RMENSUAL = "DE_ALQUILER_RMENSUAL";
 	public final String DE_OUTROS_DATOS = "DE_OUTROS_DATOS";
 
 
      /***** CAMPOS DE LA VISTA V_WS_2064_CONTRARIOS ****/
 
+	public final String V_WS_2064_CONTRARIOS = "V_WS_2064_CONTRARIOS";
+
 	public final String CONT_NOMBRE = "CONT_NOMBRE";
+	public final String CONT_APELLIDO1 = "CONT_APELLIDO1";
+	public final String CONT_APELLIDO2 = "CONT_APELLIDO2";
+	public final String CONT_DOMICILIO = "CONT_DOMICILIO";
 
 
      /***** CAMPOS DE LA VISTA V_WS_2064_DOCUMENTO ****/
+
+	public final String V_WS_2064_DOCUMENTO = "V_WS_2064_DOCUMENTO";
 
 	public final String DA_DOCUMENTO = "DA_DOCUMENTO";
 

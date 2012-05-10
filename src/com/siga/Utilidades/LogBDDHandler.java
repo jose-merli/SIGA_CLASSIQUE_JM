@@ -46,7 +46,11 @@ public class LogBDDHandler extends BasicHandler {
 			Transformer transform = tf.newTransformer();
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			transform.transform(new DOMSource(msg.getSOAPEnvelope().getAsDocument()), new StreamResult(baos));
-			ClsLogging.writeFileLog(baos.toString(), 3);
+			String xml = baos.toString();
+			if (xml != null && xml.length() > 500) {
+				xml = xml.substring(0, 200) + " ... " + xml.substring(xml.length() - 200);
+			}
+			ClsLogging.writeFileLog(xml, 3);
 			
 			//TODO si los parámetros no son nulos insertamos en la tabla
 			if (usrBean != null && idInstitucion != null) {		
@@ -61,7 +65,7 @@ public class LogBDDHandler extends BasicHandler {
 				genWebServiceLogAdm.insert(bean);
 				
 			} else {
-				ClsLogging.writeFileLog("No se ha podido insertar en bdd la traza del webservice porque no se han recibido los parámetros de usuario o idinstitucion correctamente.", 3);
+				ClsLogging.writeFileLog("No se ha podido insertar en bdd la traza del webservice porque no se han recibido los parámetros de usuario o idinstitucion correctamente. " + baos.toString(), 3);
 			}
 		} catch (Exception e){
 			ClsLogging.writeFileLogError("Error al dejar la traza con el mensaje SOAP.", e, 3);

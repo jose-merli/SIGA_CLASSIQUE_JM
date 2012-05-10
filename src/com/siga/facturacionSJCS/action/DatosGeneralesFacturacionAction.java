@@ -180,12 +180,15 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 				} catch (ErrorValidacionXML e) {
 					estadoFuturo = ClsConstants.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA;
 					mensajePantalla = "messages.facturacion.validacionIncorrecta";
+					ClsLogging.writeFileLogError(mensajePantalla, e, 3);
 				} catch (ErrorEnvioWS e) {
 					estadoFuturo = ClsConstants.ESTADO_FACTURACION_ENVIO_NO_DISPONIBLE;
 					mensajePantalla = "messages.facturacion.envioNoDisponible";
+					ClsLogging.writeFileLogError(mensajePantalla, e, 3);
 				} catch (ErrorNegocioWS e) {
 					estadoFuturo = ClsConstants.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO;
 					mensajePantalla = "messages.facturacion.envioNoAceptado";
+					ClsLogging.writeFileLogError(mensajePantalla, e, 3);
 				} 
 			}
 			

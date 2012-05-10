@@ -274,11 +274,44 @@ public abstract class SIGAWSClientAbstract {
 	 * @param idTipoEJG
 	 * @throws Exception
 	 */
-	protected boolean validateXML_EJG(XmlObject xmlObject, String anio, String numejg, String numero, String idTipoEJG) throws Exception {
+	protected boolean validateXML_EJG(XmlObject xmlObject, String anio, String numejg, String numero, String idTipoEJG) throws Exception {				
+		return validateXML_EJG(xmlObject, anio, numejg, numero, idTipoEJG, true);
+	}
+	
+	/**
+	 * 
+	 * @param xmlObject
+	 * @param usr
+	 * @param anio
+	 * @param numejg
+	 * @param numero
+	 * @param idTipoEJG
+	 * @throws Exception
+	 */
+	protected boolean validateXML_EJG_NoDeleteEmptyNode(XmlObject xmlObject, String anio, String numejg, String numero, String idTipoEJG) throws Exception {				
+		return validateXML_EJG(xmlObject, anio, numejg, numero, idTipoEJG, false);
+	}
+	
+	/**
+	 * 
+	 * @param xmlObject
+	 * @param usr
+	 * @param anio
+	 * @param numejg
+	 * @param numero
+	 * @param idTipoEJG
+	 * @throws Exception
+	 */
+	private boolean validateXML_EJG(XmlObject xmlObject, String anio, String numejg, String numero, String idTipoEJG, boolean deleteEmptyNode) throws Exception {
 				
 		boolean valido = true;
-		List<String> list = SigaWSHelper.validate(xmlObject);
-		if (list.size() > 0) {
+		List<String> list = null;
+		if (deleteEmptyNode) {
+			list = SigaWSHelper.validate(xmlObject);
+		} else {
+			list = SigaWSHelper.validateNoDeleteEmptyNode(xmlObject);
+		}
+		if (list != null && list.size() > 0) {
 			valido = false;
 			for (String st : list) {
 				if (st != null) {
