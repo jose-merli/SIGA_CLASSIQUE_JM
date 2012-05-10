@@ -4274,7 +4274,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	    Hashtable aux = new Hashtable();
 		try {
 		    Hashtable codigos = new Hashtable();
-		    String sql = "SELECT P.IDPERSONA, P.NOMBRE as NOMCOLEGIADO, P.APELLIDOS1 || ' ' || P.APELLIDOS2 as APECOLEGIADO, COL.NCOLEGIADO FROM CEN_PERSONA P, CEN_CLIENTE C, CEN_COLEGIADO COL" +
+		    String sql = "SELECT P.IDPERSONA,  P.NOMBRE || ' ' || P.APELLIDOS1 || ' ' || P.APELLIDOS2 as NOMCOLEGIADO, P.NOMBRE as NOMBRECOLEGIADO, P.APELLIDOS1 || ' ' || P.APELLIDOS2 as APECOLEGIADO, COL.NCOLEGIADO FROM CEN_PERSONA P, CEN_CLIENTE C, CEN_COLEGIADO COL" +
 		        	" WHERE P.IDPERSONA=C.IDPERSONA" +
 		        	" AND C.IDPERSONA=COL.IDPERSONA" +
 		        	" AND C.IDINSTITUCION=COL.IDINSTITUCION" +
@@ -4288,7 +4288,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 		    		codigos.put(new Integer(1),idInstitucion);
 		    		if(nombreColegiado!=null && !nombreColegiado.trim().equals("")){
 		    			sql +=" AND UPPER(TRIM(P.nombre)) LIKE UPPER(TRIM(:2))";
-		    			codigos.put(new Integer(2),"%"+nombreColegiado+"%");
+		    			codigos.put(new Integer(2),"%"+nombreColegiado.trim()+"%");
 		    			if(apellidosColegiado!=null && !apellidosColegiado.trim().equals("")){
 			        		sql +=" AND UPPER(TRIM(P.APELLIDOS1 || ' ' || P.APELLIDOS2)) LIKE UPPER(TRIM(:3))";
 			        		codigos.put(new Integer(3),"%"+apellidosColegiado+"%");

@@ -220,8 +220,8 @@
 		td.innerText="";
 		//td.innerHTML ='<input type="text" id="numeroColegiado_' + numFila + '" class="box" size="4" maxlength="9" style="width:70;margin-top:2px;" value=""/>';
 		td.innerHTML ='<table><tr>' +
-        '<td><input type="text" onBlur="comporbarFila(\''+ tr.id +'\');" id="nombreColegiado_' + numFila + '" class="box" style="width:120;margin-top:2px;margin-rigth:1px;" value="" maxlength="35"/>' + " "+'<input type="text" onBlur="comporbarFila(\''+ tr.id +'\');buscarNumColegiadoN(\''+ numFila +'\');" id="apellidosColegiado_' + numFila + '" class="box" style="width:180;margin-top:2px;margin-rigth:1px;" value="" maxlength="40"/></td>' + 
-        '<td><img id="info_existe_' + numFila + '" src="/SIGA/html/imagenes/nuevo.gif" alt="<siga:Idioma key="gratuita.volantesExpres.mensaje.esNuevaPersonaJG"/>"/></td>'+
+        '<td><input type="text" onBlur="comporbarFila(\''+ tr.id +'\');" id="nombreColegiado_' + numFila + '" class="box" style="width:120;margin-top:2px;margin-rigth:1px;" value="" maxlength="35"/>' + " "+'<input type="text" onBlur="comporbarFila(\''+ tr.id +'\');buscarNumColegiadoN(\''+ numFila +'\');" id="apellidosColegiado_' + numFila + '" class="box" style="width:200;margin-top:2px;margin-rigth:1px;" value="" maxlength="40"/></td>' + 
+        
         '</tr></table>';
 		td = tr.insertCell(); 
 		td.setAttribute("colspan", "2");
@@ -303,8 +303,8 @@
 			var resultado=ventaModalGeneral("busquedaClientesModalForm","G");
 			if (resultado!=undefined && resultado[0]!=undefined ){
 
-				document.getElementById("info_existe_" + num).src = "/SIGA/html/imagenes/encontrado.gif";
-				document.getElementById("info_existe_" + num).alt = "<siga:Idioma key='gratuita.volantesExpres.mensaje.esYaExistentePersonaJG'/>";
+				
+				
 				document.getElementById("idPerson_"+num).value=resultado[0];
 				document.getElementById("numeroColegiado_"+num).value= resultado[2];
 				document.getElementById("nombreColegiado_"+num).value= resultado[4];
@@ -315,8 +315,8 @@
 				document.getElementById("numeroColegiado_"+num).value = '';
 				document.getElementById("nombreColegiado_"+num).value = '';
 				document.getElementById("apellidosColegiado_"+num).value = '';
-				document.getElementById("info_existe_" + num).src = "/SIGA/html/imagenes/nuevo.gif";
-				document.getElementById("info_existe_" + num).alt = "<siga:Idioma key='gratuita.volantesExpres.mensaje.esNuevaPersonaJG'/>";
+				
+				
 			}
 			document.BusquedaComisionesForm.numeroColegiadoN.value="";
 		 	document.BusquedaComisionesForm.nombreColegiadoN.value="";
@@ -330,8 +330,7 @@
 			document.getElementById("numeroColegiado_"+num).value = '';
 			document.getElementById("nombreColegiado_"+num).value = '';
 			document.getElementById("apellidosColegiado_"+num).value = '';
-			document.getElementById("info_existe_" + num).src = "/SIGA/html/imagenes/nuevo.gif";
-			document.getElementById("info_existe_" + num).alt = "<siga:Idioma key='gratuita.volantesExpres.mensaje.esNuevaPersonaJG'/>";
+
 
 	}
 	function preAccionColegiadoN()
@@ -339,21 +338,15 @@
 	}
 		
 	function postAccionColegiadoN(){
-
+			
 		 num=document.BusquedaComisionesForm.numeroN.value;
 		var idPer=document.BusquedaComisionesForm.idPersonaN.value;
 		document.getElementById("idPerson_"+num).value=idPer;
 		document.getElementById("nombreColegiado_"+num).value=document.BusquedaComisionesForm.nombreColegiadoN.value;
 		document.getElementById("apellidosColegiado_"+num).value=document.BusquedaComisionesForm.apellidosColegiadoN.value;
+		document.getElementById("numeroColegiado_"+num).value=document.BusquedaComisionesForm.numeroColegiadoN.value;
      	multiple=document.BusquedaComisionesForm.multiple.value;
-		if(idPer==""){
-			document.getElementById("info_existe_" + num).src = "/SIGA/html/imagenes/nuevo.gif";
-			document.getElementById("info_existe_" + num).alt = "<siga:Idioma key='gratuita.volantesExpres.mensaje.esNuevaPersonaJG'/>";
-	     	
-		}else{
-			document.getElementById("info_existe_" + num).src = "/SIGA/html/imagenes/encontrado.gif";
-			document.getElementById("info_existe_" + num).alt = "<siga:Idioma key='gratuita.volantesExpres.mensaje.esYaExistentePersonaJG'/>";
-			}
+		//alert("multiple"+multiple);
      	if(multiple=="S"){
 	  		document.busquedaClientesModalForm.numeroColegiado.value=document.getElementById("numeroColegiado_"+num).value;         	
 	  		document.busquedaClientesModalForm.nombrePersona.value=document.getElementById("nombreColegiado_"+num).value;
@@ -363,8 +356,7 @@
 			document.busquedaClientesModalForm.modo.value="buscarModalResultado";
 			var resultado = ventaModalGeneral("busquedaClientesModalForm","G");	
 			if (resultado!=undefined && resultado[0]!=undefined ){
-				document.getElementById("info_existe_" + num).src = "/SIGA/html/imagenes/encontrado.gif";
-				document.getElementById("info_existe_" + num).alt = "<siga:Idioma key='gratuita.volantesExpres.mensaje.esYaExistentePersonaJG'/>";
+				
 					
 				document.getElementById("idPerson_"+num).value=resultado[0];
 				document.getElementById("numeroColegiado_"+num).value= resultado[2];
@@ -376,8 +368,7 @@
 				document.getElementById("numeroColegiado_"+num).value = '';
 				document.getElementById("nombreColegiado_"+num).value = '';
 				document.getElementById("apellidosColegiado_"+num).value = '';
-				document.getElementById("info_existe_" + num).src = "/SIGA/html/imagenes/nuevo.gif";
-				document.getElementById("info_existe_" + num).alt = "<siga:Idioma key='gratuita.volantesExpres.mensaje.esNuevaPersonaJG'/>";
+				
 									
 
 			}

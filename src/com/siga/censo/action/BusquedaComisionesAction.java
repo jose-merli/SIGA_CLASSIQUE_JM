@@ -226,11 +226,11 @@ public class BusquedaComisionesAction extends MasterAction {
 		String insti= miForm.getIdInstitucionCargo();//idInstitucionCargo
 		if(numeroColegiadoN!= null && !numeroColegiadoN.equals("")){
 			CenClienteAdm admCli = new CenClienteAdm(this.getUserBean(request) );
-			vClientes = admCli.getClientePorNColegiado(insti,numeroColegiadoN);
+			vClientes = admCli.getClientePorNColegiado(insti,numeroColegiadoN.trim());
 	
-		}else 	if(apellidosColegiadoN!= null && !apellidosColegiadoN.equals("")){
+		}else if(apellidosColegiadoN!= null && !apellidosColegiadoN.equals("")){
 			CenClienteAdm admCli = new CenClienteAdm(this.getUserBean(request) );
-			vClientes = admCli.getClientePorNombreColegiado(insti,nombreColegiadoN, apellidosColegiadoN);
+			vClientes = admCli.getClientePorNombreColegiado(insti,nombreColegiadoN, apellidosColegiadoN.trim());
 		}
 		if(vClientes==null || vClientes.size()==0){
 			multiple="N";
