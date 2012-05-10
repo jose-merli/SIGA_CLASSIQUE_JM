@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -18,12 +16,8 @@ import org.apache.axis.SimpleTargetedChain;
 import org.apache.axis.configuration.SimpleProvider;
 import org.apache.axis.transport.http.HTTPSender;
 import org.apache.axis.transport.http.HTTPTransport;
-import org.apache.xmlbeans.XmlCursor;
-import org.apache.xmlbeans.XmlException;
-import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
 
-import com.aspose.words.internal.fi;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
@@ -530,41 +524,5 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 		}
 		
 	}
-
-
-	public static void main2(String args[]) throws XmlException, IOException {
-
-		XmlOptions xmlOptions = new XmlOptions();
-		xmlOptions.setSavePrettyPrintIndent(4);
-		xmlOptions.setSavePrettyPrint();
-
-		File file = new File("c:/tmp/pruebaXunta.xml");
-		DatosJustificacionesDocument datosJustificacionesDocument = DatosJustificacionesDocument.Factory.parse(file);
-		XmlCursor xmlCursor = datosJustificacionesDocument.getDatosJustificaciones().newCursor();
-		if (xmlCursor.toFirstChild()) {
-			StringBuffer datosJustificaciones = new StringBuffer(xmlCursor.xmlText(xmlOptions));
-			while (xmlCursor.toNextSibling()) {
-				datosJustificaciones.append(xmlCursor.xmlText(xmlOptions));				
-			}
-			System.out.println(datosJustificaciones);
-		}
-		System.out.println("fin");
-	}
-	
-	public static void main	(String args[]) throws XmlException, IOException, URISyntaxException {
-		String ficheiroResposta = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" standalone=\"no\"?><DatosJustificaciones><Periodo><Ano>2012</Ano><Trimestre>PRIMEIRO</Trimestre><dende>2012-01-01</dende><ata>2012-03-31</ata></Periodo><Colegio><IDColegio>A15078</IDColegio></Colegio><TurnoOficio><colegiado><codColegiado>1111</codColegiado><Asuntos><Fecha>2011-11-29</Fecha><SOXCLAVE><SOX_ANO>2020</SOX_ANO><SOX_NUMERO>2834</SOX_NUMERO></SOXCLAVE><IDExpAXG><Cons>PR</Cons><Proc>204A</Proc><Ano>2020</Ano><Num>113</Num><Prov>0</Prov></IDExpAXG><Datosxudiciais><Juzgado><NUMEROSALASECCION>002</NUMEROSALASECCION><PARTIDOXUDICIAL>1502</PARTIDOXUDICIAL><COD_ORGANO>43</COD_ORGANO></Juzgado><ProcBaremo><TIPO_BAREMO>20</TIPO_BAREMO><COD_BAREMO>208</COD_BAREMO><ANO_PROC>2011</ANO_PROC><NUM_PROC>5464</NUM_PROC></ProcBaremo></Datosxudiciais><Solicitante><NOMEAPELIDOS><Nome>JACOB</Nome><PRIMER_APELLIDO>AVENDA</PRIMER_APELLIDO><SEGUNDO_APELLIDO>ACOSTA</SEGUNDO_APELLIDO></NOMEAPELIDOS><IDENTIFICACION><DOCUMENTADO><TIPO_IDENTIFICADOR>1</TIPO_IDENTIFICADOR><IDENTIFICADOR>36174523G</IDENTIFICADOR></DOCUMENTADO></IDENTIFICACION></Solicitante><IMPORTE><IMPORTE>233.49</IMPORTE><IRPF>15</IRPF></IMPORTE><CargaAsunto><Codigo>AE0008</Codigo><Descripcion>O DNI indicado non Ã© correcto</Descripcion></CargaAsunto></Asuntos></colegiado></TurnoOficio></DatosJustificaciones>";
-		XmlOptions xmlOptionsRes = new XmlOptions();
-		
-		Map<String, String> mapaRes = new HashMap<String, String>();
-
-		mapaRes.put("", com.siga.ws.i2064.je.xsd.resposta.DatosJustificacionesDocument.Factory.newInstance().addNewDatosJustificaciones().getDomNode().getNamespaceURI());
-		xmlOptionsRes.setLoadSubstituteNamespaces(mapaRes);
-		
-		com.siga.ws.i2064.je.xsd.resposta.DatosJustificacionesDocument res = com.siga.ws.i2064.je.xsd.resposta.DatosJustificacionesDocument.Factory.parse(ficheiroResposta, xmlOptionsRes);
-		res.validate();
-		res.getDatosJustificaciones().getTurnoOficio().getColegiadoArray()[0].getAsuntosArray()[0].getCargaAsunto().getCodigo();
-		System.out.println("fin");
-	}
-
 
 }
