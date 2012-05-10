@@ -1504,10 +1504,18 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			String sql = "";
 			Hashtable codigos = new Hashtable();
             codigos.put(new Integer(1),idPersona);
-            sql = " SELECT COUNT(" + CenColegiadoBean.C_IDPERSONA	+ ") as COLEGIACIONES" +
-				  " FROM " + CenColegiadoBean.T_NOMBRETABLA +
-				  " WHERE " + CenColegiadoBean.C_IDPERSONA + " = :1 ";
-			
+            sql = " SELECT COUNT(C." + CenColegiadoBean.C_IDPERSONA	+ ") as COLEGIACIONES" +
+				  " FROM " + CenColegiadoBean.T_NOMBRETABLA + " C , " + CenDatosColegialesEstadoBean.T_NOMBRETABLA + " DC " +
+				  " WHERE C." + CenColegiadoBean.C_IDPERSONA + " = :1 " +
+            	  " AND C.IDINSTITUCION = DC.IDINSTITUCION "+
+            	  " AND C.IDPERSONA = DC.IDPERSONA "+
+				  " AND dc.fechaestado = "+
+            	  " 	(select max(DC2.fechaestado) "+
+				  "       from CEN_DATOSCOLEGIALESESTADO DC2 "+
+				  "       where DC2.idinstitucion = c.idinstitucion "+
+				  "          and DC2.idpersona = c.idpersona "+
+				  "          and trunc(DC2.fechaestado) < trunc(sysdate))";
+            	  			
 			if (rc.findBind(sql,codigos)) {
 				if (rc.size() >= 1) {
 					Row fila = (Row) rc.get(0);					
