@@ -451,7 +451,6 @@
 			datosGeneralesForm.tipoIdentificacion.value = "50";
 		}
 
-		document.getElementById('idButton').disabled=false;
 	}
 	
 	function nif(a) {
