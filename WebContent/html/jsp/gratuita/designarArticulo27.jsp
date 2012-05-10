@@ -300,7 +300,7 @@
 	function limpiarCliente (){
 		document.getElementById('tipoIdentificacion').value = "10";
 		document.getElementById('numIdentificacion').value = "";
-		document.getElementById('colegiadoen').value = "";
+		document.getElementById('colegiadoen').value = '<%=idInstitucionActual%>';
 		document.getElementById('nColegiado').value = "";
 		document.getElementById('tratamiento').value = "";
 		document.getElementById('nombre').value = "";
