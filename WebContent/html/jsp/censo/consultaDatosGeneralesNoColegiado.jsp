@@ -1126,7 +1126,7 @@ caracterParam[0] = tipoCliente;
         	var suma; 
         	var ultima; 
         	var unumero;
-        	var letraCif = new Array("J", "A", "B", "C", "D", "E", "F", "G", "H", "I");  
+        	var letraCif = new Array("J", "A", "B", "C","F", "G");  
         	var cadenaCif; 
          
         	cif = cif.toUpperCase(); 
@@ -1136,7 +1136,7 @@ caracterParam[0] = tipoCliente;
                	return false; 
                 
            ultima = cif.substr(8,1); 
-
+			
            for (var cont = 1 ; cont < 7 ; cont ++)
            { 
         	   cadenaCif = (2 * parseInt(cif.substr(cont++,1))).toString() + "0"; 
@@ -1151,7 +1151,9 @@ caracterParam[0] = tipoCliente;
            unumero = (10 - unumero).toString(); 
            if(unumero == 10) 
                unumero = 0; 
-           if ((ultima == unumero) ||  (ultima == letraCif[unumero])) 
+
+           //if ((ultima == unumero) ||  (ultima == letraCif[unumero]))
+           if (ultima == letraCif[unumero])
                return true; 
            else 
                return false; 
