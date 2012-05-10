@@ -138,6 +138,7 @@
 		<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
 		<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
 		<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>	
+		<script src="<%=app%>/html/js/jquery.js" type="text/javascript"></script>
 		
 		<!--Step 3 -->
 		  <!-- defaults for Autocomplete and displaytag -->
@@ -154,7 +155,8 @@
 		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	
 
 		<script>
-
+		jQuery.noConflict();
+		
 		function inicio(){
 			document.getElementById('idButtonGuardar').disabled=true;
 		}
@@ -434,7 +436,11 @@
 		}else{
 			return -3;
 		}
-	} 		
+	} 	
+
+	function bloquearBuscar(){
+		document.getElementById('idButton').disabled=true;
+	}	
 		
 	function rellenarComboIden(){
 		if(nif(datosGeneralesForm.numIdentificacion.value) == 1){
@@ -646,14 +652,15 @@
 			document.getElementById("poblacion").value = datosGeneralesForm.poblacion.value;		
 		}
 
-		if(document.busquedaCensoModalForm.preferente.value != null && document.busquedaCensoModalForm.preferente.value != ""){
-			if (document.busquedaCensoModalForm.preferente.value.indexOf("E") >= 0)
+		if(document.datosGeneralesForm.preferente.value != null && document.datosGeneralesForm.preferente.value != ""){
+			
+			if (document.datosGeneralesForm.preferente.value.indexOf("E") >= 0)
 				document.datosGeneralesForm.preferenteMail.checked = "checked";
-			if (document.busquedaCensoModalForm.preferente.value.indexOf("C") >= 0)
+			if (document.datosGeneralesForm.preferente.value.indexOf("C") >= 0)
 				document.datosGeneralesForm.preferenteCorreo.checked  = "checked";
-			if (document.busquedaCensoModalForm.preferente.value.indexOf("F") >= 0)
+			if (document.datosGeneralesForm.preferente.value.indexOf("F") >= 0)
 				document.datosGeneralesForm.preferenteFax.checked  = "checked";
-			if (document.busquedaCensoModalForm.preferente.value.indexOf("S") >= 0)
+			if (document.datosGeneralesForm.preferente.value.indexOf("S") >= 0)
 				document.datosGeneralesForm.preferenteSms.checked  = "checked";
 		}else{
 			document.datosGeneralesForm.preferenteMail.checked = "";
@@ -797,7 +804,12 @@
 	
 				}else{
 					limpiarCliente();
-				}							
+				}	
+
+				datosGeneralesForm.nColegiado.value="";  
+				datosGeneralesForm.colegiadoen.value="";  
+				datosGeneralesForm.colegiadoen.disabled="disabled";  
+				datosGeneralesForm.nColegiado.disabled="disabled";   						
 			}
 	
 			//Reseteamos el texto de alerta
@@ -863,7 +875,7 @@
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.nIdentificacion"/>&nbsp;(*)
 					</td>				
 					<td colspan="3">
-  				        <html:text name="datosGeneralesForm" property="numIdentificacion" size="20" maxlength="20" styleClass="<%=estiloCajaNif%>" value="<%=nIdentificacion%>" onblur="rellenarComboIden()"></html:text>
+  				        <html:text name="datosGeneralesForm" property="numIdentificacion" size="20" maxlength="20" styleClass="<%=estiloCajaNif%>" value="<%=nIdentificacion%>" onblur="rellenarComboIden()" onmousedown="bloquearBuscar()"></html:text>
   				        <siga:ComboBD nombre = "tipoIdentificacion" tipo="cmbTipoIdentificacionSinCIF" clase="box" obligatorio="true" elementoSel="<%=tipoIdentificacionSel%>" />
   				        <img id="info_existe" src="/SIGA/html/imagenes/nuevo.gif" alt="<siga:Idioma key="gratuita.volantesExpres.mensaje.esNuevaPersonaJG"/>"/>		
 					</td>
@@ -1616,7 +1628,7 @@
 			document.datosGeneralesForm.apellido2.onkeypress = submitConTeclaEnter;
 			document.datosGeneralesForm.apellido1.onkeypress = submitConTeclaEnter;
 			document.datosGeneralesForm.nombre.onkeypress = submitConTeclaEnter;
-			document.datosGeneralesForm.numIdentificacion.onkeypress = submitConTeclaEnter;
+			//document.datosGeneralesForm.numIdentificacion.onkeypress = submitConTeclaEnter;
 		}
 		
 		function submitConTeclaEnter(){			

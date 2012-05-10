@@ -291,7 +291,7 @@ public class BusquedaCensoAction extends MasterAction {
 					// Se llama a la interfaz Direccion para insertar una nueva direccion
 					beanDir.setIdDireccion(new Long(miForm.getIdDireccion()));
 					beanDir.setOriginalHash ((Hashtable) request.getSession ().getAttribute ("ORIGINALDIR"));
-					direccion.actualizar(beanDir, tiposDir, "", null, usr);
+					direccion.actualizar(beanDir, "", "", null, usr);
 				}
 				
 				//confirmando las modificaciones de BD
@@ -1405,14 +1405,22 @@ public class BusquedaCensoAction extends MasterAction {
 								miForm.setColegiadoen(idInstitucion);
 								col = colAdm.existeColegiado(idPersona, new Integer(idInstitucion));
 								if(col != null){ //EL CLIENTE ES COLEGIADO EN NUESTRO COLEGIO
-									miForm.setNumeroColegiado(col.getNColegiado());
+									if(col.getNColegiado()!=null &&!col.getNColegiado().equals("")){
+										miForm.setNumeroColegiado(col.getNColegiado());
+									}else{
+										miForm.setNumeroColegiado(col.getNComunitario());
+									}
 									
 								}else{ //EL CLIENTE ES NO COLEGIADO
 									
 									//SE MIRA SI ES COLEGIADO EN OTRO COLEGIO
 									col = colAdm.existeColegiadoOtraInstitucion(idPersona, new Integer(idInstitucion));							
 									if(col != null){ //EL CLIENTE ES COLEGIADO EN OTRO COLEGIO
-										miForm.setNumeroColegiado(col.getNColegiado());
+										if(col.getNColegiado()!=null &&!col.getNColegiado().equals("")){
+											miForm.setNumeroColegiado(col.getNColegiado());
+										}else{
+											miForm.setNumeroColegiado(col.getNComunitario());
+										}
 										miForm.setColegiadoen(""+col.getIdInstitucion());
 										miForm.setSexo("");
 										miForm.setFechaNacimiento("");
@@ -1436,7 +1444,11 @@ public class BusquedaCensoAction extends MasterAction {
 							}else{ //EL LETRADO NO ES DE NUESTRO COLEGIO						
 								col = colAdm.existeColegiadoOtraInstitucion(idPersona, new Integer(idInstitucion));							
 								if(col != null){ //EL CLIENTE ES COLEGIADO EN OTRO COLEGIO
-									miForm.setNumeroColegiado(col.getNColegiado());
+									if(col.getNColegiado()!=null &&!col.getNColegiado().equals("")){
+										miForm.setNumeroColegiado(col.getNColegiado());
+									}else{
+										miForm.setNumeroColegiado(col.getNComunitario());
+									}
 									miForm.setColegiadoen(""+col.getIdInstitucion());
 									miForm.setIdInstitucion(""+col.getIdInstitucion());
 									
@@ -1450,7 +1462,7 @@ public class BusquedaCensoAction extends MasterAction {
 										}else{ //NO COLEGIADOS DE TIPO PERSONA
 											miForm.setNumeroColegiado("No Colegiado");
 											miForm.setColegiadoen(""+nCol.getIdInstitucion());
-											miForm.setIdInstitucion(""+col.getIdInstitucion());
+											miForm.setIdInstitucion(""+nCol.getIdInstitucion());
 										}
 									}
 								}
