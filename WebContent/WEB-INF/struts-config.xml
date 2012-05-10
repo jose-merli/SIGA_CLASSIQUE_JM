@@ -345,10 +345,7 @@
 		<forward name="descargaFicheroGlobal" path="/ServletDescargaFichero.svrl"/>
 		<forward name="descargaFicheroPrevio" path="/html/jsp/gratuita/descargarFichero.jsp"/>
 		<forward name="descarga" path="/html/jsp/gratuita/imprimir.jsp"/>
-		<forward name="seleccionPlantillas" path="/html/jsp/informes/seleccionPlantillas.jsp"/>
-		<forward name="seleccionPlantillasNew" path="/html/jsp/informes/seleccionPlantillasNew.jsp"/>
-		<forward name="seleccionPlantillasModal" path="/html/jsp/informes/seleccionPlantillasModal.jsp"/>
-		<forward name="seleccionPlantillasModalNew" path="/html/jsp/informes/seleccionPlantillasModalNew.jsp"/>
+		
 		<forward name="definirEnvios" path="/html/jsp/envios/redirigeDefinicionEnvios.jsp"/>
 		<forward name="confirmar" path="/html/jsp/general/msjConfirmar.jsp"/>
 		
@@ -715,8 +712,6 @@
 
 		<action path="/INF_InformesGenericos" type="com.siga.informes.action.InformesGenericosAction" name="InformesGenericosForm" scope="request">
 			<forward name="seleccionInformes" path="/html/jsp/informes/seleccionInformes.jsp"/>
-			<forward name="seleccionPlantillas" path="/html/jsp/informes/seleccionPlantillas.jsp"/>
-			<forward name="seleccionPlantillasModal" path="/html/jsp/informes/seleccionPlantillasModal.jsp"/>
 			<forward name="definirEnvios" path="/html/jsp/envios/redirigeDefinicionEnvios.jsp"/>
 		</action>
 
