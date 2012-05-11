@@ -905,6 +905,7 @@ public class BusquedaCensoAction extends MasterAction {
 			String idPersona = miform.getIdPersona();
 			// obtener idinstitucion
 			String idInstitucion = miform.getIdInstitucion();
+			String colegiadoen = miform.getIdInstitucion().replace("\u00a0"," ").trim();
 			
 			//PODRIA ESTAR EN NUESTRO COLEGIO
 			CenClienteAdm cliAdm = new CenClienteAdm(user);
@@ -937,7 +938,7 @@ public class BusquedaCensoAction extends MasterAction {
 			String sexo = miform.getSexo().replace("\u00a0"," ").trim();
 			String tratamiento = miform.getTratamiento().replace("\u00a0"," ").trim();			
 			String fax = miform.getFax1().replace("\u00a0"," ").trim();		
-			String pais = miform.getPais().replace("\u00a0"," ").trim();		
+			String pais = miform.getPais().replace("\u00a0"," ").trim();	
 			
 			Hashtable datosCliente = new Hashtable();
 			
@@ -961,6 +962,7 @@ public class BusquedaCensoAction extends MasterAction {
 			datosCliente.put("fax1",fax);
 			datosCliente.put("FechaNacimiento",perBean.getFechaNacimiento());
 			datosCliente.put("LugarNacimiento",perBean.getNaturalDe());
+			datosCliente.put("colegiadoen",colegiadoen);
 			
 			request.setAttribute("datosCensoModal", datosCliente);	
 

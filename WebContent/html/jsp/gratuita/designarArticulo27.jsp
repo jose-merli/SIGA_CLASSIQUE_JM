@@ -240,7 +240,7 @@
 				//Datos Generales
 				datosGeneralesForm.numIdentificacion.value = resultado[3];
 				document.busquedaCensoModalForm.nif.value= datosGeneralesForm.numIdentificacion.value;
-				datosGeneralesForm.colegiadoen.value = datosGeneralesForm.idInstitucion.value;
+				datosGeneralesForm.colegiadoen.value = resultado[20];
 				datosGeneralesForm.nColegiado.value   =  resultado[2];
 				datosGeneralesForm.tratamiento.value=resultado[15];		
 				datosGeneralesForm.nombre.value          = resultado[4];
