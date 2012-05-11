@@ -158,6 +158,7 @@
 		jQuery.noConflict();
 		
 		function inicio(){
+			document.getElementById('idButtonB').disabled=false;
 			document.getElementById('idButtonGuardar').disabled=true;
 		}
 		
@@ -230,6 +231,7 @@
 		      	document.getElementById("textomod").className="ocultar";
 		      	document.getElementById("textomod").style.display="none";
 				document.getElementById('idButtonGuardar').disabled=false;
+				document.getElementById('idButtonB').disabled=true;
 				document.getElementById("tdadicional").style.display="block";
 				document.getElementById("tddireccion").style.display="block";		      	
 				datosGeneralesForm.idPersona.value       = resultado[0];
@@ -439,7 +441,7 @@
 	} 	
 
 	function bloquearBuscar(){
-		document.getElementById('idButton').disabled=true;
+		document.getElementById('idButtonB').disabled=true;
 	}	
 		
 	function rellenarComboIden(){
@@ -451,6 +453,9 @@
 			datosGeneralesForm.tipoIdentificacion.value = "50";
 		}
 
+		if(datosGeneralesForm.numIdentificacion.value == null || datosGeneralesForm.numIdentificacion.value == ""){
+			document.getElementById('idButtonB').disabled=false;
+		}
 	}
 	
 	function nif(a) {
@@ -588,7 +593,43 @@
 	    };
 	 
 	    return sa ? s : s[0];
-	} 			  		
+	} 		
+
+	function bloquearDireccion(){
+
+		//Datos direccion
+		document.getElementById("domicilio").disabled=true;
+		document.getElementById("codigoPostal").disabled=true;
+		document.getElementById("pais").disabled=true;
+		document.getElementById("provincia").disabled=true;
+		document.getElementById("poblacion").disabled=true;
+		document.getElementById("movil").disabled=true;
+		document.getElementById("telefono1").disabled=true;
+		document.getElementById("telefono2").disabled=true;
+		document.getElementById("fax1").disabled=true;
+		document.getElementById("fax2").disabled=true;
+		document.getElementById("correoElectronico").disabled=true;
+		document.getElementById("paginaWeb").disabled=true;
+		document.getElementById("poblacionExt").disabled=true;
+
+		//Preferencia
+		document.datosGeneralesForm.preferenteMail.disabled=true;
+		document.datosGeneralesForm.preferenteCorreo.disabled=true;
+		document.datosGeneralesForm.preferenteFax.disabled=true;
+		document.datosGeneralesForm.preferenteSms.disabled=true;
+
+		//Tipo Direccion
+		document.getElementById("checkTipoDireccion_1").disabled=true;
+		document.getElementById("checkTipoDireccion_2").disabled=true;
+		document.getElementById("checkTipoDireccion_3").disabled=true;
+		document.getElementById("checkTipoDireccion_4").disabled=true;
+		document.getElementById("checkTipoDireccion_5").disabled=true;
+		document.getElementById("checkTipoDireccion_6").disabled=true;
+		document.getElementById("checkTipoDireccion_7").disabled=true;
+		document.getElementById("checkTipoDireccion_8").disabled=true;
+
+	}	
+	  		
 
 	function limpiarDireccion(){
 
@@ -627,6 +668,38 @@
 		document.getElementById("checkTipoDireccion_6").checked = "";
 		document.getElementById("checkTipoDireccion_7").checked = "";
 		document.getElementById("checkTipoDireccion_8").checked = "";
+
+		//Se desbloquea los campos
+		document.getElementById("domicilio").disabled=false;
+		document.getElementById("codigoPostal").disabled=false;
+		document.getElementById("pais").disabled=false;
+		document.getElementById("provincia").disabled=false;
+		document.getElementById("poblacion").disabled=false;
+		document.getElementById("movil").disabled=false;
+		document.getElementById("telefono1").disabled=false;
+		document.getElementById("telefono2").disabled=false;
+		document.getElementById("fax1").disabled=false;
+		document.getElementById("fax2").disabled=false;
+		document.getElementById("correoElectronico").disabled=false;
+		document.getElementById("paginaWeb").disabled=false;
+		document.getElementById("poblacionExt").disabled=false;
+
+		//Preferencia
+		document.datosGeneralesForm.preferenteMail.disabled=false;
+		document.datosGeneralesForm.preferenteCorreo.disabled=false;
+		document.datosGeneralesForm.preferenteFax.disabled=false;
+		document.datosGeneralesForm.preferenteSms.disabled=false;
+
+		//Tipo Direccion
+		document.getElementById("checkTipoDireccion_1").disabled=false;
+		document.getElementById("checkTipoDireccion_2").disabled=false;
+		document.getElementById("checkTipoDireccion_3").disabled=false;
+		document.getElementById("checkTipoDireccion_4").disabled=false;
+		document.getElementById("checkTipoDireccion_5").disabled=false;
+		document.getElementById("checkTipoDireccion_6").disabled=false;
+		document.getElementById("checkTipoDireccion_7").disabled=false;
+		document.getElementById("checkTipoDireccion_8").disabled=false;
+
 	}
 
 	var poblacionSeleccionada;
@@ -634,6 +707,7 @@
 		var acceso = poblacionFrame.document.getElementsByTagName("select");
 		acceso[0].value = poblacionSeleccionada;
 		document.datosGeneralesForm.poblacion.value = poblacionSeleccionada;
+		document.getElementById("poblacion").disabled=true;
 	}
 
 	function postAccionDirecciones() {	
@@ -650,7 +724,8 @@
 			poblacionSeleccionada = document.getElementById("poblacion").value;
 			document.getElementById("provincia").onchange();
 			window.setTimeout("recargarComboHijo()",750,"Javascript");	
-			document.getElementById("poblacion").value = datosGeneralesForm.poblacion.value;		
+			document.getElementById("poblacion").value = datosGeneralesForm.poblacion.value;
+			document.getElementById("poblacion").disabled=true;		
 		}
 
 		if(document.datosGeneralesForm.preferente.value != null && document.datosGeneralesForm.preferente.value != ""){
@@ -705,6 +780,9 @@
 			document.getElementById("textomod").className="labelText";
 			document.getElementById("textomod").style.display="block";
 		}			
+
+		//Se bloquean los datos de direccion. Solo se podrán mdficar en la ficha del letrado.
+		bloquearDireccion();
 	}
 
 	function preAccionBusquedaNIF(){
@@ -720,6 +798,7 @@
 				document.getElementById('idButtonGuardar').disabled=false;
 				document.getElementById("tdadicional").style.display="block";
 				document.getElementById("tddireccion").style.display="block";
+				document.getElementById('idButtonB').disabled=true;
 				datosGeneralesForm.sexo.disabled="";      
 				datosGeneralesForm.estadoCivil.disabled="";   
 				datosGeneralesForm.lugarNacimiento.disabled="";
@@ -775,7 +854,8 @@
 					document.getElementById('idButtonGuardar').disabled=false;
 					document.getElementById("tdadicional").style.display="block";
 					document.getElementById("tddireccion").style.display="block";
-	
+					document.getElementById('idButtonB').disabled=true;
+					
 					if(datosGeneralesForm.numIdentificacion.value != null && datosGeneralesForm.numIdentificacion.value != ""){	
 						// SE DESHABILITAN LOS DATOS DE INFORMACIÓN ADICIONAL
 						datosGeneralesForm.sexo.disabled="disabled";      
@@ -799,6 +879,7 @@
 	
 				if(datosGeneralesForm.numIdentificacion.value != null && datosGeneralesForm.numIdentificacion.value != ""){
 					//Aparecen los menus de abajo
+					document.getElementById('idButtonB').disabled=true;
 					document.getElementById('idButtonGuardar').disabled=false;
 					document.getElementById("tdadicional").style.display="block";
 					document.getElementById("tddireccion").style.display="block";
@@ -899,7 +980,7 @@
 					</td>
 					<td>
 						<!-- Boton para buscar un Colegiado -->
-						<input type="button" class="button" id="idButton" name="buscarColegiado"  value='<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.buscar"/>'  onClick="buscarDesignados();">
+						<input type="button" class="button" id="idButtonB" name="buscarColegiado"  value='<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.buscar"/>'  onClick="buscarDesignados();" disabled="">
 					</td>
 				</tr>				
 				<tr>
@@ -1319,13 +1400,41 @@
 		//Asociada al boton Restablecer
 		function accionRestablecer() {
 			limpiarCliente();   
-
+			
 			//NUEVAS MEJORAS
 			document.getElementById("iconoFecha").style.display="block";
-			document.getElementById('idButtonGuardar').disabled=true;
+			document.getElementById('idButtonB').disabled=false;
 			document.getElementById("tdadicional").style.display="none";
 			document.getElementById("tddireccion").style.display="none";
 			document.getElementById("textomod").style.display="none";
+			document.getElementById('idButtonGuardar').disabled=true;
+
+			//Se desbloquea los campos de direccion
+			document.getElementById("domicilio").disabled=false;
+			document.getElementById("codigoPostal").disabled=false;
+			document.getElementById("pais").disabled=false;
+			document.getElementById("provincia").disabled=false;
+			document.getElementById("poblacion").disabled=false;
+			document.getElementById("movil").disabled=false;
+			document.getElementById("telefono1").disabled=false;
+			document.getElementById("telefono2").disabled=false;
+			document.getElementById("fax1").disabled=false;
+			document.getElementById("fax2").disabled=false;
+			document.getElementById("correoElectronico").disabled=false;
+			document.getElementById("paginaWeb").disabled=false;
+			document.getElementById("poblacionExt").disabled=false;
+			document.datosGeneralesForm.preferenteMail.disabled=false;
+			document.datosGeneralesForm.preferenteCorreo.disabled=false;
+			document.datosGeneralesForm.preferenteFax.disabled=false;
+			document.datosGeneralesForm.preferenteSms.disabled=false;
+			document.getElementById("checkTipoDireccion_1").disabled=false;
+			document.getElementById("checkTipoDireccion_2").disabled=false;
+			document.getElementById("checkTipoDireccion_3").disabled=false;
+			document.getElementById("checkTipoDireccion_4").disabled=false;
+			document.getElementById("checkTipoDireccion_5").disabled=false;
+			document.getElementById("checkTipoDireccion_6").disabled=false;
+			document.getElementById("checkTipoDireccion_7").disabled=false;
+			document.getElementById("checkTipoDireccion_8").disabled=false;
 		}
 
 	
@@ -1386,6 +1495,7 @@
 			if (validarFormulario()) {
 				if (validarDireccion()) {
 					document.busquedaCensoModalForm.numeroColegiado.value    =document.datosGeneralesForm.nColegiado.value;
+					document.busquedaCensoModalForm.colegiadoen.value    =datosGeneralesForm.colegiadoen.value;
 					document.busquedaCensoModalForm.apellido2.value    =document.datosGeneralesForm.apellido2.value;
 					document.busquedaCensoModalForm.apellido1.value    =document.datosGeneralesForm.apellido1.value;
 					document.busquedaCensoModalForm.nombre.value       =document.datosGeneralesForm.nombre.value;
@@ -1407,47 +1517,58 @@
 					document.busquedaCensoModalForm.direcciones.value  =document.datosGeneralesForm.direcciones.value;
 					document.busquedaCensoModalForm.idDireccion.value  =document.datosGeneralesForm.idDireccion.value;
 
-					//Rellenando preferencias
-					var preferencia = "";
-					if (document.datosGeneralesForm.preferenteMail.checked)
-						preferencia += "E";
-					if (document.datosGeneralesForm.preferenteCorreo.checked)
-						preferencia += "C";
-					if (document.datosGeneralesForm.preferenteFax.checked)
-						preferencia += "F";
-					if (document.datosGeneralesForm.preferenteSms.checked)
-						preferencia += "S";
 
-					//Rellenando tipoDireccion
-					var tipoDir = "";
-					if (document.getElementById("checkTipoDireccion_1").checked)
-						tipoDir +="1,";
-					if (document.getElementById("checkTipoDireccion_2").checked)
-						tipoDir +="2,";
-					if (document.getElementById("checkTipoDireccion_3").checked)
-						tipoDir +="3,";
-					if (document.getElementById("checkTipoDireccion_4").checked)
-						tipoDir +="4,";
-					if (document.getElementById("checkTipoDireccion_5").checked)
-						tipoDir +="5,";
-					if (document.getElementById("checkTipoDireccion_6").checked)
-						tipoDir +="6,";
-					if (document.getElementById("checkTipoDireccion_7").checked)
-						tipoDir +="7,";
-					if (document.getElementById("checkTipoDireccion_8").checked)
-						tipoDir +="8";
-
-					 //Se valida que se seleccione un tipoDireccion
-					if (tipoDir == ""){
-					     var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.tipoDireccion"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
-		 				 alert (mensaje);
-		 				 fin();
-						 return false;
-					}					
-
-					document.busquedaCensoModalForm.preferente.value = preferencia;
-					document.busquedaCensoModalForm.tipoDireccion.value = tipoDir;
-
+					//SI ES DE NUESTRO COLEGIO NO SE TOCA DIRECCIONES
+					if(datosGeneralesForm.idInstitucion.value != "<%=idInstitucionActual%>"){
+						//Rellenando preferencias
+						var preferencia = "";
+						if (document.datosGeneralesForm.preferenteMail.checked)
+							preferencia += "E";
+						if (document.datosGeneralesForm.preferenteCorreo.checked)
+							preferencia += "C";
+						if (document.datosGeneralesForm.preferenteFax.checked)
+							preferencia += "F";
+						if (document.datosGeneralesForm.preferenteSms.checked)
+							preferencia += "S";
+	
+						//Rellenando tipoDireccion
+						var tipoDir = "";
+						if (document.getElementById("checkTipoDireccion_1").checked)
+							tipoDir +="1,";
+						if (document.getElementById("checkTipoDireccion_2").checked)
+							tipoDir +="2,";
+						if (document.getElementById("checkTipoDireccion_3").checked)
+							tipoDir +="3,";
+						if (document.getElementById("checkTipoDireccion_4").checked)
+							tipoDir +="4,";
+						if (document.getElementById("checkTipoDireccion_5").checked)
+							tipoDir +="5,";
+						if (document.getElementById("checkTipoDireccion_6").checked)
+							tipoDir +="6,";
+						if (document.getElementById("checkTipoDireccion_7").checked)
+							tipoDir +="7,";
+						if (document.getElementById("checkTipoDireccion_8").checked)
+							tipoDir +="8";
+	
+						 //Se valida que se seleccione un tipoDireccion
+						if (tipoDir == ""){
+						     var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.tipoDireccion"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+			 				 alert (mensaje);
+			 				 fin();
+							 return false;
+						}					
+	
+						document.busquedaCensoModalForm.preferente.value = preferencia;
+						document.busquedaCensoModalForm.tipoDireccion.value = tipoDir;
+					}else{
+						if(document.datosGeneralesForm.idDireccion.value == null || document.datosGeneralesForm.idDireccion.value == "-1"){
+						     var mensaje = "Seleccione una direccion";
+			 				 alert (mensaje);
+			 				 fin();
+							 return false;
+						}
+					}
+					
 					if(document.datosGeneralesForm.idPersona.value!= null && document.datosGeneralesForm.idPersona.value!=""){	
 						document.busquedaCensoModalForm.idPersona.value    =document.datosGeneralesForm.idPersona.value;					
 						document.busquedaCensoModalForm.modo.value = "insertarNoColegiadoArticulo27";

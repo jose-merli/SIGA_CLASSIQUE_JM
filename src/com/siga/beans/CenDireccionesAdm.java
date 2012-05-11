@@ -1857,7 +1857,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 						 " WHERE CEN_DIRECCIONES.IDPERSONA = "+idPersona+" AND CEN_DIRECCIONES.IDINSTITUCION = "+idInstitucion+" AND CEN_DIRECCIONES.FECHABAJA IS NULL"+
 				" UNION "+
 				
-						" Select -1, '-- ' || f_siga_getrecurso_etiqueta('consultas.recuperarconsulta.literal.nueva', "+usrbean.getLanguage()+") as nombre "+
+						" Select -1, '-- ' || 'Seleccionar' "+
 						" from dual "+
 				" ORDER BY nombre ";
 			rc = this.find(sql);

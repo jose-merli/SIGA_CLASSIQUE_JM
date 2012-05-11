@@ -244,58 +244,56 @@ public class BusquedaCensoAction extends MasterAction {
 				forward =  insertarNoColArticulo27(mapping, miForm, request, response, new Long(miForm.getIdPersona()));
 
 			}else{	
+				//Solo se modifica/inserta direccion a los nuevos letrados o letrados que vienen de otro colegio
+				if(miForm.getIdInstitucion() != null && !miForm.getIdInstitucion().equals(usr.getLocation())){
 				
-				Direccion direccion = new Direccion();
-				t = usr.getTransactionPesada();
-				t.begin ();
-				
-				CenDireccionesBean beanDir = new CenDireccionesBean ();
-				beanDir.setCodigoPostal (miForm.getCodPostal());
-				beanDir.setCorreoElectronico (miForm.getMail());
-				beanDir.setDomicilio (miForm.getDireccion());
-				beanDir.setFax1 (miForm.getFax1 ());
-				beanDir.setFax2 (miForm.getFax2 ());
-				beanDir.setIdInstitucion(new Integer(usr.getLocation()));
-				beanDir.setIdPais (miForm.getPais ());
-				if (miForm.getPais ().equals ("")) {
-					miForm.setPais (ClsConstants.ID_PAIS_ESPANA);
+					Direccion direccion = new Direccion();
+					t = usr.getTransactionPesada();
+					t.begin ();
+					
+					CenDireccionesBean beanDir = new CenDireccionesBean ();
+					beanDir.setCodigoPostal (miForm.getCodPostal());
+					beanDir.setCorreoElectronico (miForm.getMail());
+					beanDir.setDomicilio (miForm.getDireccion());
+					beanDir.setFax1 (miForm.getFax1 ());
+					beanDir.setFax2 (miForm.getFax2 ());
+					beanDir.setIdInstitucion(new Integer(usr.getLocation()));
+					beanDir.setIdPais (miForm.getPais ());
+					if (miForm.getPais ().equals ("")) {
+						miForm.setPais (ClsConstants.ID_PAIS_ESPANA);
+					}
+					if (miForm.getPais().equals (ClsConstants.ID_PAIS_ESPANA)) {
+						beanDir.setIdPoblacion (miForm.getPoblacion ());
+						beanDir.setIdProvincia (miForm.getProvincia ());
+						beanDir.setPoblacionExtranjera ("");
+					} else {
+						beanDir.setPoblacionExtranjera (miForm.getPoblacionExt ());
+						beanDir.setIdPoblacion ("");
+						beanDir.setIdProvincia ("");
+					}
+					
+					beanDir.setIdPersona (new Long(miForm.getIdPersona()));
+					beanDir.setMovil (miForm.getMovil ());
+					beanDir.setPaginaweb (miForm.getPaginaWeb ());
+					beanDir.setTelefono1 (miForm.getTelefono ());
+					beanDir.setTelefono2 (miForm.getTelefono2 ());
+					beanDir.setPreferente(miForm.getPreferente());
+					
+					//estableciendo los datos del tipo de direccion
+					String tiposDir = "";
+					if(miForm.getTipoDireccion()!= null && !miForm.getTipoDireccion().equals("")){
+						tiposDir = miForm.getTipoDireccion();
+					}
+	
+					//Si la dirección es nueva se añade para este no colegiado se inserta en el sistema
+					if(miForm.getDirecciones()!= null && miForm.getDirecciones().equals("-1")){
+						// Se llama a la interfaz Direccion para insertar una nueva direccion
+						direccion.insertar(beanDir, tiposDir, "", null, usr);
+					}
+					
+					//confirmando las modificaciones de BD
+					t.commit();		
 				}
-				if (miForm.getPais().equals (ClsConstants.ID_PAIS_ESPANA)) {
-					beanDir.setIdPoblacion (miForm.getPoblacion ());
-					beanDir.setIdProvincia (miForm.getProvincia ());
-					beanDir.setPoblacionExtranjera ("");
-				} else {
-					beanDir.setPoblacionExtranjera (miForm.getPoblacionExt ());
-					beanDir.setIdPoblacion ("");
-					beanDir.setIdProvincia ("");
-				}
-				
-				beanDir.setIdPersona (new Long(miForm.getIdPersona()));
-				beanDir.setMovil (miForm.getMovil ());
-				beanDir.setPaginaweb (miForm.getPaginaWeb ());
-				beanDir.setTelefono1 (miForm.getTelefono ());
-				beanDir.setTelefono2 (miForm.getTelefono2 ());
-				beanDir.setPreferente(miForm.getPreferente());
-				
-				//estableciendo los datos del tipo de direccion
-				String tiposDir = "";
-				if(miForm.getTipoDireccion()!= null && !miForm.getTipoDireccion().equals("")){
-					tiposDir = miForm.getTipoDireccion();
-				}
-
-				//Si la dirección es nueva se añade para este no colegiado se inserta en el sistema
-				if(miForm.getDirecciones()!= null && miForm.getDirecciones().equals("-1")){
-					// Se llama a la interfaz Direccion para insertar una nueva direccion
-					direccion.insertar(beanDir, tiposDir, "", null, usr);
-				}else{					
-					// Se llama a la interfaz Direccion para insertar una nueva direccion
-					beanDir.setIdDireccion(new Long(miForm.getIdDireccion()));
-					beanDir.setOriginalHash ((Hashtable) request.getSession ().getAttribute ("ORIGINALDIR"));
-					direccion.actualizar(beanDir, "", "", null, usr);
-				}
-				
-				//confirmando las modificaciones de BD
-				t.commit();				
 				
 				//Mandamos los datos para el refresco:
 				request.setAttribute("idPersona",miForm.getIdPersona());
@@ -304,8 +302,8 @@ public class BusquedaCensoAction extends MasterAction {
 				request.setAttribute("apellido2",miForm.getApellido2());
 				//String ncol = "No Colegiado";
 				String colOrigen = "";
-				if(!miForm.getIdInstitucion().equals(usr.getLocation())){
-					 colOrigen = miForm.getIdInstitucion();
+				if(!miForm.getColegiadoen().equals(usr.getLocation())){
+					 colOrigen = miForm.getColegiadoen();
 				}	
 				request.setAttribute("colegioOrigen",colOrigen);
 				request.setAttribute("nColegiado",miForm.getNumeroColegiado());
@@ -908,6 +906,13 @@ public class BusquedaCensoAction extends MasterAction {
 			// obtener idinstitucion
 			String idInstitucion = miform.getIdInstitucion();
 			
+			//PODRIA ESTAR EN NUESTRO COLEGIO
+			CenClienteAdm cliAdm = new CenClienteAdm(user);
+			CenClienteBean cli = null;
+			cli = cliAdm.existeCliente(new Long(idPersona), new Integer(user.getLocation()));	
+			if(cli != null){
+				idInstitucion = user.getLocation();
+			}
 			CenPersonaAdm perAdm = new CenPersonaAdm(user);
 			CenPersonaBean perBean = new CenPersonaBean();
 			perBean = perAdm.getPersonaPorId(idPersona);
@@ -1356,6 +1361,14 @@ public class BusquedaCensoAction extends MasterAction {
 							miForm.setTratamiento((String)infoCliente.get("TRATAMIENTO"));
 							miForm.setEstadoCivil("");
 							miForm.setTextoAlerta("");
+							
+							//PODRIA ESTAR EN NUESTRO COLEGIO
+							CenClienteAdm cliAdm = new CenClienteAdm(user);
+							CenClienteBean cli = null;
+							cli = cliAdm.existeCliente(idPersona, new Integer(idInstitucion));	
+							if(cli != null){
+								miForm.setIdInstitucion(idInstitucion);
+							}
 			
 						}else{
 							miForm.setIdPersona(""+idPersona);
