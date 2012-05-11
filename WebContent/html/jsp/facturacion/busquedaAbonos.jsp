@@ -305,7 +305,7 @@ CenPersonaAdm admPersona=new CenPersonaAdm(user);
 				
 				// Asociada al boton Restablecer
 				function limpiar() 
-				{		
+				{
 					document.GenerarAbonosForm.idPersonaBusqueda.value="<%=idPersonaBusqueda%>";
 					document.GenerarAbonosForm.busquedaIdAbono.value="";
 					document.GenerarAbonosForm.busquedaIdFactura.value="";
@@ -318,6 +318,8 @@ CenPersonaAdm admPersona=new CenPersonaAdm(user);
 					document.GenerarAbonosForm.fechaAbonoHasta.value="";
 					document.GenerarAbonosForm.fechaFacturaDesde.value="";
 					document.GenerarAbonosForm.fechaFacturaHasta.value="";
+					document.GenerarAbonosForm.numeroNifTagBusquedaPersonas.value="";
+					document.GenerarAbonosForm.nombrePersona.value="";
 				}
 				
 				function buscarCliente() {
