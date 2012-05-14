@@ -826,6 +826,20 @@
 			document.MutualidadForm.idEstado.value = resultado[0];
 			document.MutualidadForm.estado.value = resultado[1];	
 	    	document.getElementById("tdEstadoSolicitud").innerText = resultado[1];
+	    	var ruta = resultado[2];
+			if(ruta.length>0 && confirm('¿Desea descargar el documento asociado a la solicitud?')){
+				
+				var formu=document.createElement("<form method='POST' name='descargar'  action='/SIGA/ServletDescargaFichero.svrl' target='submitArea'>");
+				formu.appendChild(document.createElement("<input type='hidden' name='rutaFichero'   value=''/>"));
+				formu.appendChild(document.createElement("<input type='hidden' name='nombreFichero'   value=''/>"));
+				formu.appendChild(document.createElement("<input type='hidden' name='accion'   value=''/>"));
+				document.appendChild(formu);
+				formu.rutaFichero.value=ruta;
+				formu.nombreFichero.value='Solicitud.pdf';
+				formu.accion.value = "";
+				formu.submit();
+				
+			}
 		}
 		
 	}

@@ -231,7 +231,6 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 			
 			Integracion_DatosBancarios		datosBancarios = null;
 			Integracion_DatosPoliza			datosPoliza = null;
-			Integracion_Domicilio			datosDireccionDomicilio = null;
 			Integracion_Domicilio			datosDireccionDespacho = null;
 			Integracion_Persona				datosPersona = null;
 			Integracion_Solicitud			datosSolicitud = null;
@@ -240,6 +239,9 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 			Integracion_Domicilio[]			datosDirecciones = new Integracion_Domicilio[1];
 			
 			datosDireccionDespacho = rellenarDatosDireccion(ht.get("datosDireccionDespacho"));
+			datosDireccionDespacho.setTipoDireccion(1);
+			datosDireccionDespacho.setTipoDomicilio(1);
+			datosDireccionDespacho.setDireccionContacto(1);
 			datosDirecciones[0]=datosDireccionDespacho;
 			datosPersona = rellenarDatosPersona(ht.get("datosPersona"));
 			datosSolicitud = rellenarDatosSolicitud(ht.get("datosSolicitudEstados"));
@@ -561,7 +563,13 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 		    try {
 			    rutaPDF.append( rp.returnProperty("wsMutualidad.directorioFicheros") );
 			    rutaPDF.append( rp.returnProperty("wsMutualidad.directorioLog") );
-			    rutaPDF.append( "/" + institucion + "/" +NIF + "_" +  UtilidadesString.getTimeStamp() + ".pdf" );
+			    rutaPDF.append( "/" + institucion );
+
+   	   			File fDirectorio = new File(rutaPDF.toString());
+   	   			if(!fDirectorio.exists())
+   	   				fDirectorio.mkdirs();
+   	   			
+			    rutaPDF.append( "/" +NIF + "_" +  UtilidadesString.getTimeStamp() + ".pdf" );
 				FileOutputStream fos;
 				File ficheroTemp = new File(rutaPDF.toString()); 
 				fos = new FileOutputStream(ficheroTemp);

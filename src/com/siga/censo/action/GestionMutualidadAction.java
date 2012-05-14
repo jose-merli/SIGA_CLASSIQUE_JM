@@ -160,7 +160,7 @@ public class GestionMutualidadAction extends MasterAction {
 				}
 				if(!mutualidadForm.getModo().equalsIgnoreCase("consulta")) {
 					// Desde la ficha no se puede solicitar el alta del seguro gratuito
-					if(mutualidadForm.getIdTipoSolicitud().equalsIgnoreCase("S")) {
+					if(ficha && mutualidadForm.getIdTipoSolicitud().equalsIgnoreCase("S")) {
 						mutualidadForm.setModo("consulta");
 					}else {
 						// No hay solicitudes previas. Debemos asegurarnos que pueda hacer la solicitud.

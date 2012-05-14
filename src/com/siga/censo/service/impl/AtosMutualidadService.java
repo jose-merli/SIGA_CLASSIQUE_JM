@@ -183,6 +183,9 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		datosDireccionDomicilio.put("movil", mutualidadForm.getMovil());
 		datosDireccionDomicilio.put("pais", mutualidadForm.getPais());
 		datosDireccionDomicilio.put("poblacion", mutualidadForm.getPoblacion());
+		if(mutualidadForm.getPoblacionExtranjera()!=null){
+			datosDireccionDomicilio.put("poblacion", mutualidadForm.getPoblacionExtranjera());
+		}
 		datosDireccionDomicilio.put("provincia", mutualidadForm.getProvincia());
 
 		
