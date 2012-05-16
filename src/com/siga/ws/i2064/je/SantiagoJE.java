@@ -438,9 +438,9 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 					if (ficheiroResposta != null && !ficheiroResposta.trim().equals("")) {
 						XmlOptions xmlOptionsRes = new XmlOptions();
 												
-						Map<String, String> mapaRes = new HashMap<String, String>();						
-						mapaRes.put("", com.siga.ws.i2064.je.xsd.resposta.DatosJustificacionesDocument.Factory.newInstance().addNewDatosJustificaciones().getDomNode().getNamespaceURI());
-						xmlOptionsRes.setLoadSubstituteNamespaces(mapaRes);
+//						Map<String, String> mapaRes = new HashMap<String, String>();						
+//						mapaRes.put("", com.siga.ws.i2064.je.xsd.resposta.DatosJustificacionesDocument.Factory.newInstance().addNewDatosJustificaciones().getDomNode().getNamespaceURI());
+//						xmlOptionsRes.setLoadSubstituteNamespaces(mapaRes);
 						
 						com.siga.ws.i2064.je.xsd.resposta.DatosJustificacionesDocument res = com.siga.ws.i2064.je.xsd.resposta.DatosJustificacionesDocument.Factory.parse(ficheiroResposta, xmlOptionsRes);						
 						
