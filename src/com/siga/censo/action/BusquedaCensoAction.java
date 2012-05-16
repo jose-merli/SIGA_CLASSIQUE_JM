@@ -1370,7 +1370,7 @@ public class BusquedaCensoAction extends MasterAction {
 							miForm.setLugarNacimiento(perBean.getNaturalDe());
 							miForm.setTratamiento((String)infoCliente.get("TRATAMIENTO"));
 							miForm.setEstadoCivil("");
-							miForm.setIdioma("");
+							miForm.setIdioma("1");
 							miForm.setTextoAlerta("");
 							
 							//PODRIA ESTAR EN NUESTRO COLEGIO
@@ -1379,7 +1379,8 @@ public class BusquedaCensoAction extends MasterAction {
 							cli = cliAdm.existeCliente(idPersona, new Integer(idInstitucion));	
 							if(cli != null){
 								miForm.setIdInstitucion(idInstitucion);
-								miForm.setIdioma(cli.getIdLenguaje());
+								if(cli.getIdLenguaje() != null)
+									miForm.setIdioma(cli.getIdLenguaje());
 							}
 			
 						}else{
@@ -1394,7 +1395,7 @@ public class BusquedaCensoAction extends MasterAction {
 							miForm.setLugarNacimiento("");
 							miForm.setEstadoCivil("");
 							miForm.setTratamiento("");
-							miForm.setIdioma("");
+							miForm.setIdioma("1");
 							
 							miForm.setFax1("");
 							miForm.setMail("");
@@ -1511,7 +1512,7 @@ public class BusquedaCensoAction extends MasterAction {
 				miForm.setLugarNacimiento("");
 				miForm.setEstadoCivil("");
 				miForm.setTratamiento("");	
-				miForm.setIdioma("");
+				miForm.setIdioma("1");
 				miForm.setTextoAlerta("No se ha encontrado ninguna persona con los datos introducidos. Complete los datos para crear una nueva");
 			}
 			

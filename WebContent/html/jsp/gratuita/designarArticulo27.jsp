@@ -1465,6 +1465,11 @@
 			alert ('<siga:Idioma key="messages.campos.required"/> <siga:Idioma key="censo.consultaDatosGenerales.literal.tratamiento"/>');
 		   	return false;
 		}
+
+		if (trim(document.getElementById("idioma").value)=="") {
+			alert ('<siga:Idioma key="messages.campos.required"/> <siga:Idioma key="censo.consultaDatosGenerales.literal.idiomacomunicaciones"/>');
+		   	return false;
+		}		
 		
 		var tipoIden = document.datosGeneralesForm.tipoIdentificacion.value;
 		var dev = -1;
