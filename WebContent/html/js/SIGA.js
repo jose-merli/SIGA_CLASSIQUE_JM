@@ -1262,10 +1262,3 @@ function findPosY(obj)
 	  else if (control == 10) control = 1;
 	  return control;
 	}
-  
-  function jqueryAlert(texto, width, height){
-	  if(texto!=''){
-	  	var windowTop=window.top; // main.jsp
-		windowTop.jAlert(texto, width, height);
-	  }
-	}

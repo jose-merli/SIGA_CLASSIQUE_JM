@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 
 <!-- alterMutuaConsulta.jsp -->
 <!-- CABECERA JSP -->
@@ -169,6 +170,8 @@
 	
 	<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
 
+	<div id="dialog-message" title="SIGA" style="vertical-align: top;"></div>
+
 	<script>
 	function refrescarLocal(){
 		window.location.reload(true);
@@ -182,7 +185,7 @@
             data: $('form').serialize(),
             contentType: "application/x-www-form-urlencoded;charset=UTF-8",
             success: function(json){
-           		jqueryAlert(json.mensaje,400,300);
+           		jAlert(json.mensaje,400,300);
 		        fin();
             },
             error: function(e){
@@ -190,6 +193,19 @@
 		        fin();
             }
         });
+	}
+	
+	function jAlert(texto, ancho, alto){
+		$("#dialog-message").html(texto);
+		$("#dialog-message").height(alto);
+		$("#dialog-message").dialog({
+			modal: true,
+			resizable: false,
+			width: ancho,
+			height: alto,
+			buttons: { "Ok": function() { $(this).dialog("close"); $(this).dialog("destroy"); } }
+		});
+		$("#dialog-message").scrollTop(0);
 	}
 
  	</script>

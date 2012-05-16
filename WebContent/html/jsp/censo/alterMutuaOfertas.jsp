@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <!-- alterMutuaOfertas.jsp -->
 <!-- CABECERA JSP -->
 <%@page import="com.siga.Utilidades.UtilidadesString"%>
@@ -67,7 +67,7 @@
 
 <body class="tablaCentralCampos">
 
-<div style="height:95%;overflow: auto;" id="datosSolicitud"  style="display:none;">
+<div id="datosSolicitud"  style="display:none;">
 	<fmt:setLocale value="es_ES"/>
 	<html:form action="/CEN_AlterMutua" method="POST">
 		<html:hidden property="apellidos"/>
@@ -129,7 +129,7 @@
 					<input type="checkbox"  id="seleccionada${i.index}" class="propuestas requiredText" name="grupoPropuestas" value="${p.idPaquete}" />
 					<label for="seleccionada${i.index}">&nbsp;${p.nombre}</label>
 				</td>
-				<td><img class="botonConsulta" src="<%=app%>/html/imagenes/lupa.gif" style="cursor:hand;" name="descripcion${i.index}"></td>
+				<td><img class="botonConsulta" src="<%=app%>/html/imagenes/bconsultar_on.gif" style="cursor:hand;" name="descripcion${i.index}"></td>
 				<td id="descripcion${i.index}" style="display:none">${p.descripcion}</td>
 			</tr>
 			</c:forEach>
@@ -290,6 +290,8 @@
 </tr>
 </table>
 
+<div id="dialog-message" title="SIGA" style="vertical-align: top;"></div>
+
 	<script>
 	function refrescarLocal(){
 		window.location.reload(true);
@@ -320,7 +322,7 @@
 		});
 		if($('#selectPais').val()==='00') $('#selectPais').val('724');
 		if($('#selectPais').val()==='724' && $('#selectProvincia').val()==='00'){
-			$('#selectProvincia').addClas('obligatorio');
+			$('#selectProvincia').addClass('obligatorio');
 			val=false;
 		}
 		$.each($("input[name='grupoPropuestas']:checked"), function() {
@@ -347,7 +349,7 @@
 	            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 	            success: function(json){
 	            	if(json.error==false){
-	            		jqueryAlert(json.mensaje,400);
+	            		jAlert(json.mensaje,400);
 				        fin();
 	            	}else{
 	            		alert('Error de comunicación: ');
@@ -387,6 +389,8 @@
 
 	$(document).ready(function(){
 
+		$('#datosSolicitud').height($(window).height()-25);
+		
 		$(".defaultText").focus(function(){
 			if ($(this).val() == $(this)[0].title){
 				$(this).removeClass("defaultTextActive");
@@ -429,7 +433,7 @@
 				//var texto =  $($(this).attr('name')).html();
 				var desc ="#"+$(this).attr('name')
 				var texto = $("#"+desc).html();
-				jqueryAlert(texto, 600, 600);
+				jAlert(texto, 600, 600);
 			}
 		);
  	   
@@ -457,13 +461,27 @@
        	$("#selectPais").trigger('change');
        	
        	if(AlterMutuaForm.numeroPropuestas.value<=0){
-       		jqueryAlert(AlterMutuaForm.msgRespuesta.value,400,300);
+       		jAlert(AlterMutuaForm.msgRespuesta.value,400,300);
        		makeReadOnly();
        	}
     	
    		$('#datosSolicitud').show();
+   		
     });
 
+	function jAlert(texto, ancho, alto){
+		$("#dialog-message").html(texto);
+		$("#dialog-message").height(alto);
+		$("#dialog-message").dialog({
+			modal: true,
+			resizable: false,
+			width: ancho,
+			height: alto,
+			buttons: { "Ok": function() { $(this).dialog("close"); $(this).dialog("destroy"); } }
+		});
+		$("#dialog-message").scrollTop(0);
+	}
+	
 	</script>
 
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display:none" />

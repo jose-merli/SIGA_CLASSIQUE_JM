@@ -492,7 +492,7 @@ public class AtosAlterMutuaService extends JtaBusinessServiceTemplate
 						CenPoblacionesAdm pobAdm = new CenPoblacionesAdm(usr);
 						CenPaisAdm paisAdm = new CenPaisAdm(usr);
 						form.setCodigoPostal(dirBean.getCodigoPostal());
-						if(dirBean.getIdPais()!=null)
+						if(dirBean.getIdPais()!=null && !dirBean.getIdPais().equalsIgnoreCase(""))
 							form.setIdPais(paisAdm.getCodigoExt( dirBean.getIdPais() ));
 						form.setIdProvincia(dirBean.getIdProvincia());
 						form.setDomicilio(dirBean.getDomicilio());

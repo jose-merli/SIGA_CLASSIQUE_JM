@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 
 <!-- alterMutua.jsp -->
 <!-- CABECERA JSP -->
@@ -66,7 +67,7 @@
 
 <body class="tablaCentralCampos">
 
-<div style="height:95%;overflow: auto;" id="datosSolicitud" style="display:none;">
+<div id="datosSolicitud" style="display:none; height:600px; overflow-y:auto">
 	<fmt:setLocale value="es_ES"/>
 	<html:form action="/CEN_AlterMutua" method="POST">
 		<html:hidden property="apellidos"/>
@@ -127,7 +128,7 @@
 				<html:optionsCollection name="AlterMutuaForm" property="propuestas" label="nombre" value="idPaquete" />
 			</html:select>
 			</td>
-			<td><img id="botonConsulta" src="<%=app%>/html/imagenes/lupa.gif" style="cursor:hand;"></td>
+			<td><img id="botonConsulta" src="<%=app%>/html/imagenes/bconsultar_on.gif" style="cursor:hand;"></td>
 			<td class="labelText">Tarifa</td>
 			<td class="labelTextValue"> <div id="holderTarifa"/> </td>
 		</c:if>
@@ -454,6 +455,9 @@
 	</tr>
 	</table>
 
+
+	<div id="dialog-message" title="SIGA" style="vertical-align: top; "></div>
+	
 	<script>
 	function refrescarLocal(){
 		window.location.reload(true);
@@ -548,7 +552,7 @@
 	            data: $('form').serialize(),
 	            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 	            success: function(json){
-            		jqueryAlert(json.mensaje,400);
+            		jAlert(json.mensaje,400);
             		document.AlterMutuaForm.idSolicitudalter.value = json.idSolicitud;
             		$("#holderIdSolicitudAlter").text(json.idSolicitud);
             		showEstado();
@@ -575,7 +579,7 @@
 	            data: $('form').serialize(),
 	            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 	            success: function(json){
-	            	jqueryAlert(json.breve,600,300);
+	            	jAlert(json.breve,600,300);
 	            	if(!json.error){
 		            	$('#holderTarifa').text(json.tarifa);
 	            	};
@@ -600,7 +604,7 @@
             data: $('form').serialize(),
             contentType: "application/x-www-form-urlencoded;charset=UTF-8",
             success: function(json){
-           		jqueryAlert(json.mensaje,400,300);
+           		jAlert(json.mensaje,400,300);
 		        fin();
             },
             error: function(e){
@@ -759,11 +763,13 @@
     
     $(document).ready(function(){
 	      	
+    	$('#datosSolicitud').height($(window).height()-25);
+    	
   	   $("#botonConsulta").click(
  			function(){
  				var selec = $('#propuestaSeleccionada').prop("selectedIndex");
  				var texto =  $("#descripcion"+selec).html();
- 				jqueryAlert(texto, 600, 600);
+ 				jAlert(texto, 600, 600);
  			}
  		);
          	
@@ -835,14 +841,28 @@
        	}
        		
        	if(AlterMutuaForm.idSolicitudalter.value==='' && AlterMutuaForm.numeroPropuestas.value<=0){
-       		jqueryAlert(AlterMutuaForm.msgRespuesta.value,400,300);
+       		jAlert(AlterMutuaForm.msgRespuesta.value,400,300);
        	}
        	
      	setTexts();
      	
      	$('#datosSolicitud').show();
 
+   		
      });
+    
+	function jAlert(texto, ancho, alto){
+		$("#dialog-message").html(texto);
+		$("#dialog-message").height(alto);
+		$("#dialog-message").dialog({
+			modal: true,
+			resizable: false,
+			width: ancho,
+			height: alto,
+			buttons: { "Ok": function() { $(this).dialog("close"); $(this).dialog("destroy"); } }
+		});
+		$("#dialog-message").scrollTop(0);
+	}
      	
 	</script>
 
