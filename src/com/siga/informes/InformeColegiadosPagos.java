@@ -423,7 +423,7 @@ public class InformeColegiadosPagos extends MasterReport {
 						"       PJG.NOMBRE||' '||PJG.APELLIDO1||' '||PJG.APELLIDO2 NOMBRE_ASISTIDO, to_char(AAS.FECHA,'DD/MM/YYYY') FECHA_ACTUACION, " +
 						"       DECODE(FAAS.PRECIOAPLICADO,0,NULL,FAAS.PRECIOAPLICADO) AS PRECIO_ACTUACION," +
 						"		f_siga_getrecurso(COS.DESCRIPCION, "+ idioma +" ) AS TIPO_DESPLAZAMIENTO," +
-						"		TACTCOS.IMPORTE AS IMPORTE_DESPLAZAMIENTO, " +
+						"		f_siga_formatonumero(TACTCOS.IMPORTE, 2) AS IMPORTE_DESPLAZAMIENTO, " +
 						"		(case when instr(f_siga_getrecurso(COS.DESCRIPCION, 1),' 5 km') > 0 then '5 km' " +
 						"		when instr(f_siga_getrecurso(COS.DESCRIPCION, 1),' 25 km') > 0 then '25 km' " +
 						"		when instr(f_siga_getrecurso(COS.DESCRIPCION, 1),' 50 km') > 0 then '50 km' " +
@@ -549,8 +549,10 @@ public class InformeColegiadosPagos extends MasterReport {
 					rc2.find(sql2);
 					if(rc2!=null && rc2.size()>0){
 						//tratar el primero
-						Row r2=(Row)rc2.get(0);
+						Row r2=(Row)rc2.get(0);						
 						htAux.putAll(r2.getRow());
+						String sImporteDesplazamineto=r1.getString("IMPORTE_DESPLAZAMIENTO");
+						htAux.put("IMPORTE_DESPLAZAMIENTO",sImporteDesplazamineto+ClsConstants.CODIGO_EURO);
 						result.addElement(htAux);
 						//tratar el resto
 						int size2=rc2.size();

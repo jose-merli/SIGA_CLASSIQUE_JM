@@ -370,7 +370,7 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 						"       PJG.NOMBRE||' '||PJG.APELLIDO1||' '||PJG.APELLIDO2 NOMBRE_ASISTIDO, to_char(AAS.FECHA,'DD/MM/YYYY') FECHA_ACTUACION, " +
 						"       DECODE(FAAS.PRECIOAPLICADO,0,NULL,FAAS.PRECIOAPLICADO) AS PRECIO_ACTUACION," +
 						"		f_siga_getrecurso(COS.DESCRIPCION, "+ idioma +" ) AS TIPO_DESPLAZAMIENTO," +
-						"		TACTCOS.IMPORTE AS IMPORTE_DESPLAZAMIENTO, " +
+						"		f_siga_formatonumero(TACTCOS.IMPORTE, 2) AS IMPORTE_DESPLAZAMIENTO, " +
 						"		(case when instr(f_siga_getrecurso(COS.DESCRIPCION, 1),' 5 km') > 0 then '5 km' " +
 						"		when instr(f_siga_getrecurso(COS.DESCRIPCION, 1),' 25 km') > 0 then '25 km' " +
 						"		when instr(f_siga_getrecurso(COS.DESCRIPCION, 1),' 50 km') > 0 then '50 km' " +
@@ -432,7 +432,7 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 							"       to_char(ASI.FECHAHORA, 'DD/MM/YYYY') FECHA_ACTUACION, " +
 							"       DECODE(FASI.PRECIOAPLICADO, 0, NULL, FASI.PRECIOAPLICADO) AS PRECIO_ACTUACION, " +
 							"       '' AS TIPO_DESPLAZAMIENTO, " +
-							"       SUM(TACTCOS.IMPORTE) AS IMPORTE_DESPLAZAMIENTO, " +
+							"       SUM(f_siga_formatonumero(TACTCOS.IMPORTE, 2)) AS IMPORTE_DESPLAZAMIENTO, " +
 							"       '' AS ABREVIATURA_DESPLAZAMIENTO " +
 							"  from FCS_FACT_ASISTENCIA FASI, " +
 							"       SCS_ASISTENCIA               ASI, " +
@@ -498,12 +498,16 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 						//tratar el primero
 						Row r2=(Row)rc2.get(0);
 						htAux.putAll(r2.getRow());
+						String sImporteDesplazamineto=r2.getString("IMPORTE_DESPLAZAMIENTO");
+						htAux.put("IMPORTE_DESPLAZAMIENTO",sImporteDesplazamineto+ClsConstants.CODIGO_EURO);
 						result.addElement(htAux);
 						//tratar el resto
 						int size2=rc2.size();
 						for(int j=1;j<size2;j++){
 							r2=(Row)rc2.get(j);
 							htAux=r2.getRow();
+							sImporteDesplazamineto=r2.getString("IMPORTE_DESPLAZAMIENTO");
+							htAux.put("IMPORTE_DESPLAZAMIENTO",sImporteDesplazamineto+ClsConstants.CODIGO_EURO);
 							result.addElement(htAux);
 						}
 					}else{
