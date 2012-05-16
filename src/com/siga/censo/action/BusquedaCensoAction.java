@@ -1379,6 +1379,7 @@ public class BusquedaCensoAction extends MasterAction {
 							cli = cliAdm.existeCliente(idPersona, new Integer(idInstitucion));	
 							if(cli != null){
 								miForm.setIdInstitucion(idInstitucion);
+								miForm.setIdioma(cli.getIdLenguaje());
 							}
 			
 						}else{
