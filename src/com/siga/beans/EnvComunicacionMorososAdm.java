@@ -172,9 +172,9 @@ public class EnvComunicacionMorososAdm extends MasterBeanAdministrador
      * @throws ClsExceptions
      * @throws SIGAException
      */
-    public Hashtable getEnvioMorosos (String idInstitucion, String idEnvioDoc) throws ClsExceptions,SIGAException {
+    public Vector<Hashtable> getEnvioMorosos (String idInstitucion, String idEnvioDoc) throws ClsExceptions,SIGAException {
 		
-    	Hashtable htEnvioMoroso = null;
+    	Vector<Hashtable> envioMorosoVector = new Vector<Hashtable>();
     	try {
             RowsContainer rc = new RowsContainer(); 
             
@@ -209,15 +209,18 @@ public class EnvComunicacionMorososAdm extends MasterBeanAdministrador
             //solo vendar 
             if (rc.findBind(sql.toString(),codigos)) {
                //La FK es 1 a 1 luego solo ohabra un registro
-                  Row fila = (Row) rc.get(0);
-                  htEnvioMoroso=fila.getRow();	                  
+            	for (int i = 0; i < rc.size(); i++){
+                    Row fila = (Row) rc.get(i);
+                    Hashtable htEnvioMoroso=fila.getRow();
+                    envioMorosoVector.add(htEnvioMoroso);
+            	}
                
                
             } 
        } catch (Exception e) {
        		throw new ClsExceptions (e, this.getClass().getName()+".getEnvioMorosos");
        }
-		return htEnvioMoroso;
+		return envioMorosoVector;
 	}
     /**
      * Devolvemos el array de todas las comunicaciones factura/persona. Nos saldran tantas como comunicaciones se hayan hecho 
@@ -294,7 +297,7 @@ public class EnvComunicacionMorososAdm extends MasterBeanAdministrador
                   key.append(UtilidadesHash.getString(resultado, EnvComunicacionMorososBean.C_IDPERSONA));
                   key.append(UtilidadesHash.getString(resultado, EnvComunicacionMorososBean.C_IDFACTURA));
                   key.append(UtilidadesHash.getString(resultado, EnvComunicacionMorososBean.C_IDENVIO));
-                  tmComunicacionMorosos.put(key.toString(), resultado);
+                  tmComunicacionMorosos.put(new Long(key.toString()), resultado);
                }
             } 
        } catch (Exception e) {

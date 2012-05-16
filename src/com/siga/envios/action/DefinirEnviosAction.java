@@ -469,7 +469,7 @@ public class DefinirEnviosAction extends MasterAction {
 		String idTipoEnvio = (String)vOcultos.elementAt(1);
 		Vector resultado=new Vector();
 		EnvComunicacionMorososAdm admComunicaMorosos = new EnvComunicacionMorososAdm(userBean);
-		UserTransaction tx = userBean.getTransaction();
+		UserTransaction tx = userBean.getTransactionPesada();
 		Hashtable htEnvioMorosos=null;
 		TreeMap tmIdEnviosAActualizar=null;
 		try {
@@ -482,14 +482,28 @@ public class DefinirEnviosAction extends MasterAction {
 					"  and idinstitucion="+userBean.getLocation();
 			
 			resultado = (Vector)enviosAdm.selectGenerico(sql);
-			if (resultado!=null && resultado.size()>=1){ 
-			htEnvioMorosos = admComunicaMorosos.getEnvioMorosos(idInstitucion, idEnvio);
-			tmIdEnviosAActualizar = enviosAdm.getActualizacionIdEnviosMorosos(htEnvioMorosos);
-			}
 			
 			tx.begin();
+			
+			if (resultado!=null && resultado.size()>=1){ 
+				
+				Vector  morososVector = admComunicaMorosos.getEnvioMorosos(idInstitucion, idEnvio);
+				for (int i = 0; i < morososVector.size(); i++) {
+					htEnvioMorosos = (Hashtable)morososVector.get(i);
+					tmIdEnviosAActualizar = enviosAdm.getActualizacionIdEnviosMorosos(htEnvioMorosos);
+					enviosAdm.borrarEnvio(idInstitucion,idEnvio,htEnvioMorosos,tmIdEnviosAActualizar);	
+				}
+				
+				
+			}
+			Hashtable htEnvio = new Hashtable();
+			htEnvio.put(EnvEnviosBean.C_IDINSTITUCION, idInstitucion);
+			htEnvio.put(EnvEnviosBean.C_IDENVIO, idEnvio);
+	        // Borramos los registros de BBDD
+			enviosAdm.delete(htEnvio);
+			
 			estatEnvioAdm.borrarEnvio(idInstitucion,idEnvio, idTipoEnvio);
-            enviosAdm.borrarEnvio(idInstitucion,idEnvio,htEnvioMorosos,tmIdEnviosAActualizar);
+            
             tx.commit();
 		} catch (Exception e) {
 			

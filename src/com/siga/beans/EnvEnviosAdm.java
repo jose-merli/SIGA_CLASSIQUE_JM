@@ -1208,18 +1208,19 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
         Hashtable htEnvio = new Hashtable();
 		htEnvio.put(EnvEnviosBean.C_IDINSTITUCION, idInstitucion);
 		htEnvio.put(EnvEnviosBean.C_IDENVIO, idEnvio);
-		
+
 		try {
 
         //Borramos el directorio de documentos adjuntos
-	        String rutaDocs = getPathEnvio(idInstitucion,idEnvio);
-	        File fDir = new File(rutaDocs);
-	        borrarDirectorio(fDir);
+	        
 	        if (htEnvioMorosos!=null){
 	       	  borraReferenciaMorosos(idInstitucion,idEnvio,htEnvioMorosos,tmIdEnviosAActualizar);
 	        }
 	        // Borramos los registros de BBDD
-		    delete(htEnvio);
+		    //delete(htEnvio);
+		    String rutaDocs = getPathEnvio(idInstitucion,idEnvio);
+	        File fDir = new File(rutaDocs);
+	        borrarDirectorio(fDir);
 
         } catch (SIGAException e) {	                
             throw e;
@@ -1238,7 +1239,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
         	 Iterator itComunicacionMorosos = tmEnviosMorososAActualizar.keySet().iterator();
         	int idEnvioActualizado = 1;
         	 while (itComunicacionMorosos.hasNext()) {
-        		String key = (String) itComunicacionMorosos.next();
+        		Long key = (Long) itComunicacionMorosos.next();
         		Hashtable comunicacionMorosos = (Hashtable) tmEnviosMorososAActualizar.get(key);
         		Hashtable comunicacionMorososOld = (Hashtable)comunicacionMorosos.clone();
         		UtilidadesHash.set(comunicacionMorosos, EnvComunicacionMorososBean.C_IDENVIO, ""+idEnvioActualizado);
@@ -1260,7 +1261,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
      * @return
      * @throws Exception
      */
-    public TreeMap getActualizacionIdEnviosMorosos(Hashtable htEnvioMoroso)throws Exception{
+    public TreeMap<Long,Hashtable> getActualizacionIdEnviosMorosos(Hashtable htEnvioMoroso)throws Exception{
     	EnvComunicacionMorososAdm admComunicaMorosos = new EnvComunicacionMorososAdm(this.usrbean);
         TreeMap tmComunicacionMorosos = admComunicaMorosos.getComunicacionesMorosos(htEnvioMoroso);
         StringBuffer key = new StringBuffer();
@@ -1270,9 +1271,9 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
         key.append(UtilidadesHash.getString(htEnvioMoroso, EnvComunicacionMorososBean.C_IDENVIO));
         //si solo hay uno se va es el que se va a eliminar luego no hay que actualizar nada.
         //Asi mismo si se elimina el ultimo envio tampoco actualiaremos ids
-        if(tmComunicacionMorosos.size()>1 && !((String)tmComunicacionMorosos.lastKey()).equals(key)){
+        if(tmComunicacionMorosos.size()>1 && !(tmComunicacionMorosos.lastKey().toString()).equals(key.toString())){
         	//Borramos el envio de moroso asociado al envio
-        	tmComunicacionMorosos.remove(key.toString());
+        	tmComunicacionMorosos.remove(Long.valueOf(key.toString()));
 	    	
         }else{
         	tmComunicacionMorosos = null;
