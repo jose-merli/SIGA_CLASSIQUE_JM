@@ -43,11 +43,14 @@
 	String sInst = "";
 	String general = "N";
 
-	String datoTipoExp[] = new String[4];
+	Object[] aPerfiles = new Object[2];
+	aPerfiles[0] = userBean.getProfile();
+	aPerfiles[1] = userBean.getProfile();
+
+	String datoTipoExp[] = new String[2];
 	datoTipoExp[0] = idinstitucion;
-	datoTipoExp[1] = userBean.getUserName();
-	datoTipoExp[2] = idinstitucion;
-	datoTipoExp[3] = userBean.getUserName();
+	datoTipoExp[1] = idinstitucion;
+
 
 	try {
 		BusquedaExpedientesForm form = (BusquedaExpedientesForm) session
@@ -176,7 +179,8 @@
 					</td>
 					<td><siga:ComboBD nombre="comboTipoExpediente"
 							tipo="cmbTipoExpedienteLocaloGeneralPermisos"
-							elementoSel="<%=vTipoExp%>" parametro="<%=datoTipoExp%>" clase="boxCombo" ancho="200"
+							elementoSel="<%=vTipoExp%>" parametrosIn="<%=aPerfiles%>"
+							parametro="<%=datoTipoExp%>" clase="boxCombo" ancho="200"
 							obligatorio="false" hijo="t" /></td>
 					<td class="labelText"><siga:Idioma
 							key="expedientes.auditoria.literal.otrainstitucion" /> <input

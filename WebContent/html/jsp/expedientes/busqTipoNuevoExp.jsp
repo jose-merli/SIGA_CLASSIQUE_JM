@@ -23,11 +23,14 @@
 	UsrBean user = ((UsrBean)ses.getAttribute(("USRBEAN")));
 	String idinstitucion = user.getLocation();
 
-	String datoTipoExp[] = new String[4];
+    String datoTipoExp[] = new String[2];
+	
+	
+    Object[] aPerfiles = new Object[2];
+	aPerfiles[0] = user.getProfile();
+	aPerfiles[1] = user.getProfile();
 	datoTipoExp[0] = idinstitucion;
-	datoTipoExp[1] = user.getUserName();
-	datoTipoExp[2] = idinstitucion;
-	datoTipoExp[3] = user.getUserName();
+	datoTipoExp[1] = idinstitucion;
 		
 %>	
 
@@ -79,7 +82,7 @@
 				<siga:Idioma key="expedientes.auditoria.literal.tipo"/>&nbsp;(*)
 			</td>				
 			<td>		
-				<siga:ComboBD nombre = "comboTipoExpediente" tipo="cmbTipoExpedienteLocaloGeneralPermisosNuevo" clase="boxCombo" obligatorio="true" parametro="<%=datoTipoExp%>"/>						
+				<siga:ComboBD nombre = "comboTipoExpediente" tipo="cmbTipoExpedienteLocaloGeneralPermisosNuevo" clase="boxCombo" obligatorio="true" parametro="<%=datoTipoExp%>" parametrosIn="<%=aPerfiles%>"/>						
 			</td>			
 		</tr>				
 		</table>
