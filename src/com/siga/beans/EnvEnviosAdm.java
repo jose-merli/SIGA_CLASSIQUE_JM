@@ -46,6 +46,7 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimePart;
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.transaction.UserTransaction;
 
 import service.ServiciosECOS.ServiciosECOSServiceSOAPStub;
 import service.ServiciosECOS.ServiciosECOSService_ServiceLocator;
@@ -1202,30 +1203,58 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    return sDirectorio;
 	}
 	
-    public void borrarEnvio(String idInstitucion, String idEnvio, Hashtable htEnvioMorosos, TreeMap tmIdEnviosAActualizar)
-    	throws SIGAException,ClsExceptions{
+    public void borrarEnvio(String idInstitucion, String idEnvio,String idTipoEnvio,UsrBean userBean)
+    	throws Exception{
 
-        Hashtable htEnvio = new Hashtable();
-		htEnvio.put(EnvEnviosBean.C_IDINSTITUCION, idInstitucion);
-		htEnvio.put(EnvEnviosBean.C_IDENVIO, idEnvio);
-
+       
+    	UserTransaction tx = userBean.getTransaction();
 		try {
+			String sql="select * from env_envios  e " +
+			"  where e.idenvio in (select t.idenviodoc from env_comunicacionmorosos t" +
+			"                      where idinstitucion=" +userBean.getLocation()+
+			"                      and idenviodoc="+idEnvio+")"+
+			"  and idinstitucion="+userBean.getLocation();
+	
+			Vector resultado = (Vector)selectGenerico(sql);
+			
+			EnvEstatEnvioAdm estatEnvioAdm = new EnvEstatEnvioAdm (usrbean);
+			
+			tx.begin();
+	
+			if (resultado!=null && resultado.size()>=1){ 
+				EnvComunicacionMorososAdm admComunicaMorosos = new EnvComunicacionMorososAdm(userBean);
+				Vector  morososVector = admComunicaMorosos.getEnvioMorosos(idInstitucion, idEnvio);
+				for (int i = 0; i < morososVector.size(); i++) {
+					Hashtable htEnvioMorosos = (Hashtable)morososVector.get(i);
+					TreeMap<Long, Hashtable> tmIdEnviosAActualizar = getActualizacionIdEnviosMorosos(htEnvioMorosos);
+					if(htEnvioMorosos!=null)
+						borraReferenciaMorosos(idInstitucion,idEnvio,htEnvioMorosos,tmIdEnviosAActualizar);
+				
+				}	
+		
+		
+			}
+			Hashtable htEnvio = new Hashtable();
+			htEnvio.put(EnvEnviosBean.C_IDINSTITUCION, idInstitucion);
+			htEnvio.put(EnvEnviosBean.C_IDENVIO, idEnvio);
+			String rutaDocus = getPathEnvio(idInstitucion,idEnvio);
+			// Borramos los registros de BBDD
+			delete(htEnvio);
+			estatEnvioAdm.borrarEnvio(idInstitucion,idEnvio, idTipoEnvio);
+			
+			File fDir = new File(rutaDocus);
+			borrarDirectorio(fDir);
+			tx.commit();
 
-        //Borramos el directorio de documentos adjuntos
-	        
-	        if (htEnvioMorosos!=null){
-	       	  borraReferenciaMorosos(idInstitucion,idEnvio,htEnvioMorosos,tmIdEnviosAActualizar);
-	        }
-	        // Borramos los registros de BBDD
-		    //delete(htEnvio);
-		    String rutaDocs = getPathEnvio(idInstitucion,idEnvio);
-	        File fDir = new File(rutaDocs);
-	        borrarDirectorio(fDir);
-
-        } catch (SIGAException e) {	                
-            throw e;
-		} catch (Exception e) {
-            throw new SIGAException("messages.general.error",e);
+        } catch (Exception e) {	                
+        	try {
+    			if (tx!=null) {
+    				tx.rollback();
+    			}
+    		} catch (Exception el) {
+    		}
+    		throw e;
+    		
         }
     }
     private void borraReferenciaMorosos(String idInstitucion, String idEnvio,

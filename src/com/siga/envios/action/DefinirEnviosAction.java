@@ -458,56 +458,18 @@ public class DefinirEnviosAction extends MasterAction {
 		UsrBean userBean = ((UsrBean)ses.getAttribute(("USRBEAN")));
 
 		DefinirEnviosForm form = (DefinirEnviosForm)formulario;
-
-		EnvEnviosAdm enviosAdm = new EnvEnviosAdm (this.getUserBean(request));
-		EnvEstatEnvioAdm estatEnvioAdm = new EnvEstatEnvioAdm (this.getUserBean(request));
-
+		EnvEnviosAdm enviosAdm = new EnvEnviosAdm (userBean);
 		Vector vOcultos = form.getDatosTablaOcultos(0);		
 
 		String idInstitucion = userBean.getLocation();
 		String idEnvio = (String)vOcultos.elementAt(0);
 		String idTipoEnvio = (String)vOcultos.elementAt(1);
-		Vector resultado=new Vector();
-		EnvComunicacionMorososAdm admComunicaMorosos = new EnvComunicacionMorososAdm(userBean);
-		UserTransaction tx = userBean.getTransactionPesada();
-		Hashtable htEnvioMorosos=null;
-		TreeMap tmIdEnviosAActualizar=null;
 		try {
-			//Hacemos todo esto antes para evitar que vayan los selects dentro de la transaccion
-			
-			String sql="select * from env_envios e " +
-					"  where e.idenvio in (select t.idenviodoc from env_comunicacionmorosos t" +
-					"                      where idinstitucion=" +userBean.getLocation()+
-					"                      and idenviodoc="+idEnvio+")"+
-					"  and idinstitucion="+userBean.getLocation();
-			
-			resultado = (Vector)enviosAdm.selectGenerico(sql);
-			
-			tx.begin();
-			
-			if (resultado!=null && resultado.size()>=1){ 
-				
-				Vector  morososVector = admComunicaMorosos.getEnvioMorosos(idInstitucion, idEnvio);
-				for (int i = 0; i < morososVector.size(); i++) {
-					htEnvioMorosos = (Hashtable)morososVector.get(i);
-					tmIdEnviosAActualizar = enviosAdm.getActualizacionIdEnviosMorosos(htEnvioMorosos);
-					enviosAdm.borrarEnvio(idInstitucion,idEnvio,htEnvioMorosos,tmIdEnviosAActualizar);	
-				}
-				
-				
-			}
-			Hashtable htEnvio = new Hashtable();
-			htEnvio.put(EnvEnviosBean.C_IDINSTITUCION, idInstitucion);
-			htEnvio.put(EnvEnviosBean.C_IDENVIO, idEnvio);
-	        // Borramos los registros de BBDD
-			enviosAdm.delete(htEnvio);
-			
-			estatEnvioAdm.borrarEnvio(idInstitucion,idEnvio, idTipoEnvio);
+			enviosAdm.borrarEnvio(idInstitucion,idEnvio,idTipoEnvio,userBean);
             
-            tx.commit();
 		} catch (Exception e) {
 			
-			this.throwExcp("messages.elementoenuso.error",e,tx);
+			this.throwExcp("messages.elementoenuso.error",e,null);
 		}
 
 		return exitoRefresco("messages.deleted.success",request);
