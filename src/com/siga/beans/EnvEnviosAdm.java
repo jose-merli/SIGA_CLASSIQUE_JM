@@ -5090,9 +5090,10 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		    	    MimeMessage mensaje = new MimeMessage(sesion);
 		    	    
 		    	    //Se especifica la dirección de origen.
-		    	    mensaje.setFrom(new InternetAddress(sFrom));
+//		    	    mensaje.setFrom(new InternetAddress(sFrom));
 		    	    //ATTENCION INCIDENCIA. DESCOMENTAR ESTO
-//		    	    mensaje.setFrom(new InternetAddress(sFrom,"Descripcion o nombre del remitente"));
+		    	    String descripcionFrom = remBean!=null && remBean.getDescripcion()!=null && !remBean.getDescripcion().trim().equals("")?remBean.getDescripcion().trim():sFrom;
+		    	    mensaje.setFrom(new InternetAddress(sFrom,descripcionFrom));
 			    	 // Acuse de recibo
 		    	    if(envBean.getAcuseRecibo()!=null && envBean.getAcuseRecibo().equals(ClsConstants.DB_TRUE))
 		    	    	mensaje.addHeader("Disposition-Notification-To",sFrom);
