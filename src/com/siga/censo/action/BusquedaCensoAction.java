@@ -295,6 +295,14 @@ public class BusquedaCensoAction extends MasterAction {
 					t.commit();		
 				}
 				
+				//Se actualiza si ha cambiado el tratamiento y el idioma
+				CenClienteBean cliNew = cli;
+				if(miForm.getTratamiento()!= null && !miForm.getTratamiento().equals("")){
+					cliNew.setIdTratamiento(Integer.parseInt(miForm.getTratamiento()));
+				}
+				cliNew.setIdLenguaje(miForm.getIdioma());
+				clienteAdm.updateDirect(cliNew);
+				
 				//Mandamos los datos para el refresco:
 				request.setAttribute("idPersona",miForm.getIdPersona());
 				request.setAttribute("nombre",miForm.getNombre());
@@ -331,7 +339,7 @@ public class BusquedaCensoAction extends MasterAction {
 			CenClienteAdm adminCli=new CenClienteAdm(usr);
 			CenClienteBean beanCli = new  CenClienteBean();
 			String institucion =  usr.getLocation();
-			beanCli =  adminCli.insertNoColegiadoCenso ( request, new Long(miForm.getIdPersona()),institucion);
+			beanCli =  adminCli.insertNoColegiadoCenso ( request, new Long(miForm.getIdPersona()),institucion, miForm.getTratamiento());
 			String mensInformacion = "messages.inserted.success"; 
 			if (!adminCli.getError().equals("")) {
 				mensInformacion = adminCli.getError();
@@ -428,7 +436,7 @@ public class BusquedaCensoAction extends MasterAction {
 			CenClienteAdm adminCli=new CenClienteAdm(usr);
 			CenClienteBean beanCli = new  CenClienteBean();
 			String institucion =  miForm.getIdInstitucion();
-			beanCli =  adminCli.insertNoColegiadoCenso ( request, new Long(miForm.getIdPersona()),institucion);
+			beanCli =  adminCli.insertNoColegiadoCenso ( request, new Long(miForm.getIdPersona()),institucion, null);
 			String mensInformacion = "messages.inserted.success"; 
 			if (!adminCli.getError().equals("")) {
 				mensInformacion = adminCli.getError();
@@ -1362,6 +1370,7 @@ public class BusquedaCensoAction extends MasterAction {
 							miForm.setLugarNacimiento(perBean.getNaturalDe());
 							miForm.setTratamiento((String)infoCliente.get("TRATAMIENTO"));
 							miForm.setEstadoCivil("");
+							miForm.setIdioma("");
 							miForm.setTextoAlerta("");
 							
 							//PODRIA ESTAR EN NUESTRO COLEGIO
@@ -1384,6 +1393,7 @@ public class BusquedaCensoAction extends MasterAction {
 							miForm.setLugarNacimiento("");
 							miForm.setEstadoCivil("");
 							miForm.setTratamiento("");
+							miForm.setIdioma("");
 							
 							miForm.setFax1("");
 							miForm.setMail("");
@@ -1411,6 +1421,7 @@ public class BusquedaCensoAction extends MasterAction {
 									miForm.setEstadoCivil("");
 								}							
 								miForm.setTratamiento(cli.getIdTratamiento().toString());
+								miForm.setIdioma(cli.getIdLenguaje());
 								if(perBean.getFechaNacimiento() != null && !perBean.getFechaNacimiento().equals("")){
 									miForm.setFechaNacimiento(UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(user.getLanguage(),perBean.getFechaNacimiento())));
 								}else{
@@ -1498,7 +1509,8 @@ public class BusquedaCensoAction extends MasterAction {
 				miForm.setFechaNacimiento("");
 				miForm.setLugarNacimiento("");
 				miForm.setEstadoCivil("");
-				miForm.setTratamiento("");				
+				miForm.setTratamiento("");	
+				miForm.setIdioma("");
 				miForm.setTextoAlerta("No se ha encontrado ninguna persona con los datos introducidos. Complete los datos para crear una nueva");
 			}
 			
@@ -1527,6 +1539,7 @@ public class BusquedaCensoAction extends MasterAction {
 			listaParametros.add(miForm.getLugarNacimiento());
 			listaParametros.add(miForm.getEstadoCivil());
 			listaParametros.add(miForm.getTratamiento());
+			listaParametros.add(miForm.getIdioma());
 			respuestaAjax(new AjaxXmlBuilder(), listaParametros,response);
 		}
 	}	

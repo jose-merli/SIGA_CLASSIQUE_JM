@@ -46,6 +46,7 @@ import com.siga.general.MasterForm;
 	 	String pais;
 	 	String telefono2;
 	 	String tratamiento;
+	 	String idioma;
 	 	String colegiadoen;
 	 	String verFichaLetrado;
 	 	String chkBusqueda;
@@ -283,13 +284,20 @@ import com.siga.general.MasterForm;
 		public void setExisteNIF(String existeNIF) {
 			this.existeNIF = existeNIF;
 		}
+		public String getIdioma() {
+			return idioma;
+		}
+		public void setIdioma(String idioma) {
+			this.idioma = idioma;
+		}
 		public void reset(){
 			
 		 	  nombre="";
 		 	  apellido1="";
 		 	  apellido2="";
 		 	  nif="";
-		 	  accion="";	 	
+		 	  accion="";	
+		 	  idioma="";
 
 			  direccion="";
 		 	  codPostal="";

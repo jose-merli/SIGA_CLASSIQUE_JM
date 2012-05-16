@@ -1328,6 +1328,7 @@
 	<html:hidden  name="busquedaCensoModalForm" property="lugarNacimiento"/>
 	<html:hidden  name="busquedaCensoModalForm" property="estadoCivil"/>
 	<html:hidden  name="busquedaCensoModalForm" property="tratamiento"/>
+	<html:hidden  name="busquedaCensoModalForm" property="idioma"/>
 	<html:hidden  name="busquedaCensoModalForm" property="existeNIF"/>
 </html:form>
 
@@ -1344,7 +1345,7 @@
 
 <ajax:updateFieldFromSelect
 	baseUrl="/SIGA/CEN_BusquedaCensoModal.do?modo=getAjaxBusquedaNIF"
-	source="numIdentificacion" target="existeNIF,multiple,textoAlerta,idPersona,colegiadoen,nColegiado,apellido1,apellido2,nombre,numIdentificacion,idInstitucion,fax1,mail,telefono,poblacion,poblacionExt,provincia,pais,direccion,codPostal,sexo,fechaNacimiento,lugarNacimiento,estadoCivil,tratamiento"
+	source="numIdentificacion" target="existeNIF,multiple,textoAlerta,idPersona,colegiadoen,nColegiado,apellido1,apellido2,nombre,numIdentificacion,idInstitucion,fax1,mail,telefono,poblacion,poblacionExt,provincia,pais,direccion,codPostal,sexo,fechaNacimiento,lugarNacimiento,estadoCivil,tratamiento,idioma"
 	parameters="tipoIdentificacion={tipoIdentificacion},numIdentificacion={numIdentificacion},colegiadoen={colegiadoen},nColegiado={nColegiado},apellido1={apellido1},apellido2={apellido2},nombre={nombre},existeNIF={existeNIF}"
 	postFunction="postAccionBusquedaNIF"
 	preFunction="preAccionBusquedaNIF" 
@@ -1500,7 +1501,9 @@
 					document.busquedaCensoModalForm.apellido1.value    =document.datosGeneralesForm.apellido1.value;
 					document.busquedaCensoModalForm.nombre.value       =document.datosGeneralesForm.nombre.value;
 					document.busquedaCensoModalForm.idInstitucion.value=document.datosGeneralesForm.idInstitucion.value;
-					document.busquedaCensoModalForm.nif.value          =document.datosGeneralesForm.numIdentificacion.value;					
+					document.busquedaCensoModalForm.nif.value          =document.datosGeneralesForm.numIdentificacion.value;
+					document.busquedaCensoModalForm.tratamiento.value  =document.datosGeneralesForm.tratamiento.value;
+					document.busquedaCensoModalForm.idioma.value       =document.datosGeneralesForm.idioma.value;					
 					document.busquedaCensoModalForm.direccion.value    =document.datosGeneralesForm.domicilio.value;
 					document.busquedaCensoModalForm.codPostal.value    =document.datosGeneralesForm.codigoPostal.value;
 					document.busquedaCensoModalForm.pais.value         =document.datosGeneralesForm.pais.value;

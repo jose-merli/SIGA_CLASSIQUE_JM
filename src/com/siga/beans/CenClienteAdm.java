@@ -3000,22 +3000,24 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 				auxCli.setIdInstitucion(new Integer(usr.getLocation()));
 				auxCli.setFechaAlta("SYSDATE");
 				auxCli.setExportarFoto(ClsConstants.DB_FALSE);
-
-				// Como el campo tratamiento es obligatorio, metemos unos por defecto, nos da igual el elemento pq no se verá
-				try {
-					CenTratamientoAdm tratamientoAdm = new CenTratamientoAdm(this.usrbean);
-					Vector vT = tratamientoAdm.select();
-					if (vT == null || vT.size() < 1) {
+				
+				if (beanCli.getIdTratamiento()==null){
+					// Como el campo tratamiento es obligatorio, metemos unos por defecto, nos da igual el elemento pq no se verá
+					try {
+						CenTratamientoAdm tratamientoAdm = new CenTratamientoAdm(this.usrbean);
+						Vector vT = tratamientoAdm.select();
+						if (vT == null || vT.size() < 1) {
+							throw new SIGAException("messages.fichaCliente.noExisteTratamiento");
+						}
+						else { 				
+						    CenTratamientoBean b = (CenTratamientoBean)vT.get(0);
+						    auxCli.setIdTratamiento(b.getIdTratamiento());
+						}
+					}
+					catch (Exception e) {
 						throw new SIGAException("messages.fichaCliente.noExisteTratamiento");
-					}
-					else { 				
-					    CenTratamientoBean b = (CenTratamientoBean)vT.get(0);
-					    auxCli.setIdTratamiento(b.getIdTratamiento());
-					}
+	                }
 				}
-				catch (Exception e) {
-					throw new SIGAException("messages.fichaCliente.noExisteTratamiento");
-                }
                 
 				if (!this.insert(auxCli)) {
 					throw new SIGAException(this.getError());
@@ -4975,7 +4977,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			throw new ClsExceptions (e, "Error al consultar datos en B.D.");
 		}
 	}
-	public CenClienteBean insertNoColegiadoCenso (HttpServletRequest request, Long idPersona, String institucion) throws SIGAException
+	public CenClienteBean insertNoColegiadoCenso (HttpServletRequest request, Long idPersona, String institucion, String idTratamiento) throws SIGAException
 	{
 		
 			CenClienteBean auxCli = null;			
@@ -5004,7 +5006,11 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 							beanCli.setExisteDatos(true);
 							
 							//Se deberia de insertar un registro en cen_clientes para la nueva institucion
-							beanCli.setIdTratamiento (auxCli.getIdTratamiento());
+							if(idTratamiento != null && !idTratamiento.equals("")){
+								beanCli.setIdTratamiento (Integer.parseInt(idTratamiento));
+							}else{
+								beanCli.setIdTratamiento (auxCli.getIdTratamiento());
+							}
 							beanCli.setIdInstitucion(new Integer(this.usrbean.getLocation()));
 							beanCli.setIdPersona (idPersona);
 							beanCli.setFechaAlta ("SYSDATE");
