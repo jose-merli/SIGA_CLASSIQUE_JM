@@ -1629,7 +1629,8 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		} catch (SIGAException e) {
 			forward = exitoRefresco(e.getLiteral(), request);
 		} catch (Exception e) {
-			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
+			//throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
+			forward = exitoRefresco("messages.general.error.calendarioNoGrupoDefinido", request);
 		} 
 		
 		return forward;
