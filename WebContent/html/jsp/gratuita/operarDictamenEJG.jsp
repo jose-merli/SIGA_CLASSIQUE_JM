@@ -80,6 +80,7 @@
 		obligatorioFundamento = true;
 	}
 	String asterisco = "&nbsp(*)&nbsp";
+	String informeUnico =(String) request.getAttribute("informeUnico");
 %>
 
 <html>
@@ -100,6 +101,7 @@
 	localizacion="gratuita.busquedaEJG.localizacion" />
 </head>
 <body>
+<input type="hidden" id= "informeUnico" value="<%=informeUnico%>">
 <tr>
 	<td width="100%" align="center">
 
@@ -128,10 +130,14 @@
 			 <%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
 			- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%>
 			<%=UtilidadesString.mostrarDatoJSP(t_apellido2)%></td>
-			<td> <siga:InformeSimple
-			idInstitucion="<%=usr.getLocation()%>"
-			recurso="gratuita.EJG.InformeCalificacion" idInforme="EJGCA"
-			idTipoInforme="EJGCA" formularioDatos="DefinirDictamenEJGForm" /></td>	
+			<td> 
+			<input 	type="button" 
+				alt='<siga:Idioma key="gratuita.EJG.InformeCalificacion" />'  
+		       	id="idButton"  
+		       	onclick="return generarCarta();" 
+		       	class="button" 
+		       	value='<siga:Idioma key="gratuita.EJG.InformeCalificacion" />'/>
+			</td>	
 		</tr>
 	</table>
 
@@ -246,6 +252,18 @@
 			</siga:ConjCampos></td>
 		</tr>
 	</table>
+	
+	<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
+	<html:hidden property="idInstitucion" value = "<%=usr.getLocation()%>"/>
+	<html:hidden property="idTipoInforme" value='EJGCA'/>
+	<html:hidden property="enviar" value = "0"/>
+	<html:hidden property="descargar" value="1"/>
+	<html:hidden property="datosInforme"/>
+	<html:hidden property="modo" value = "preSeleccionInformes"/>
+	<input type='hidden' name='actionModal'>
+</html:form>
+	
+	
 	<% 
 	if(accion!=null && !accion.equalsIgnoreCase("ver")){ %>
 	<table align="left">
@@ -298,6 +316,37 @@
 			document.forms[0].submit();
 
 		}
+		function generarCarta()
+		{
+		sub();
+	
+		var anio  = <%=anio%>;
+		var idTipo  = <%=idTipoEJG%>;
+		var numero = <%=numero%>;
+		
+		var datos = "idTipoEJG==" +idTipo+"##anio=="+anio +"##numero==" +numero+"%%%";
+		
+		
+		document.InformesGenericosForm.datosInforme.value=datos;
+		
+		
+			document.InformesGenericosForm.datosInforme.value=datos;
+			if(document.getElementById("informeUnico").value=='1'){
+				document.InformesGenericosForm.submit();
+			}else{
+			
+				var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
+				if (arrayResultado==undefined||arrayResultado[0]==undefined){
+				  fin(); 		
+			   	} 
+			   	else {
+			   		fin();
+			   	}
+			}
+			
+
+		}
+		
 	</script> <!-- FIN: SCRIPTS BOTONES --> <!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 
 	<!-- INICIO: SUBMIT AREA --> <!-- Obligatoria en todas las páginas--> <iframe

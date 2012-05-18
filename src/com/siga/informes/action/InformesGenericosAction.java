@@ -45,6 +45,7 @@ import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.AdmTipoFiltroInformeBean;
 import com.siga.beans.AdmTipoInformeAdm;
 import com.siga.beans.AdmTipoInformeBean;
+import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.EnvTipoEnviosBean;
 import com.siga.beans.FcsFacturacionJGAdm;
 import com.siga.beans.GenParametrosAdm;
@@ -87,7 +88,7 @@ public class InformesGenericosAction extends MasterAction {
 	public ActionForward executeInternal(ActionMapping mapping,
 			ActionForm formulario, HttpServletRequest request,
 			HttpServletResponse response) throws SIGAException {
-		String mapDestino = "exception";
+		String mapDestino = null;
 		MasterForm miForm = null;
 
 		try {
@@ -111,7 +112,7 @@ public class InformesGenericosAction extends MasterAction {
 
 			// Redireccionamos el flujo a la JSP correspondiente
 			if (mapDestino == null) {
-				throw new ClsExceptions("El ActionMapping no puede ser nulo");
+				throw new ClsExceptions("El ActionMapping no puede ser nulo INFORMES GENERICOS");
 			}
 			return mapping.findForward(mapDestino);
 		} catch (SIGAException es) {
@@ -345,7 +346,8 @@ public class InformesGenericosAction extends MasterAction {
 			Vector informesRes = new Vector(); 
 			// Obtiene del campo idInforme los ids separados por ## y devuelve sus beans
 			InformeAbono admInf = new InformeAbono(usr);
-			Vector plantillas = admInf.obtenerPlantillasFormulario(miform, usr);
+			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
+			Vector plantillas = envioInformesGenericos.getPlantillasInforme(miform.getIdInforme(),"##",usr);
 			// Obtiene del campo datosInforme los campos del formulario primcipal
 			// para obtener la clave para el informe. LOs datos se obtienen en una cadena como los ocultos
 			// y se sirven como un vector de hashtables por si se trata de datos multiregistro.
@@ -1888,7 +1890,6 @@ public class InformesGenericosAction extends MasterAction {
 
 		String mapDestino = "exception";
 		UsrBean usr = this.getUserBean(request);
-
 		try { 
 			InformesGenericosForm miForm = (InformesGenericosForm) formulario;
 			String idTipoInforme = miForm.getIdTipoInforme();
@@ -1938,6 +1939,7 @@ public class InformesGenericosAction extends MasterAction {
 			String asunto = "";
 			if(idTipoInforme.equals(EnvioInformesGenericos.comunicacionesDesigna)){
 				asunto = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "informes.genericos.designas.asunto");
+				
 				
 			}
 			else if(idTipoInforme.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesEjg)){
@@ -2044,13 +2046,16 @@ public class InformesGenericosAction extends MasterAction {
 					miForm.setIdInforme(idInformes);
 					return download(mapping, formulario, request, response);
 				}
+			}else if(idTipoInforme.equals("EJGCA")){
+				if(informeBeans.size()==1&&miForm.getEnviar().equals(ClsConstants.DB_FALSE)){
+					AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(0);
+					String idInformes = informeBean.getIdPlantilla()+","+informeBean.getIdInstitucion()+"";
+					miForm.setIdInforme(idInformes);
+					return download(mapping, formulario, request, response);
+				}
 			}
 			request.setAttribute("asunto", asunto);
 			//Vamos a ver si, aunque el informe generico tenga configurado el envio, el usuario tiene permiso para ello.
-			
-			
-			
-			
 			//Fecha Programada:
 			SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
 			sdf.applyPattern(ClsConstants.DATE_FORMAT_SHORT_SPANISH);

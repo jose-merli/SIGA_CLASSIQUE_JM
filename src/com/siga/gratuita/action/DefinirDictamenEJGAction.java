@@ -174,12 +174,27 @@ public class DefinirDictamenEJGAction extends MasterAction {
 				request.getSession().setAttribute("DATABACKUPDICT",admEJG.beanToHashTable((ScsEJGBean)v.get(0)));
 				int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 				request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
+				String informeUnico = ClsConstants.DB_TRUE;
+				
+				AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
+				// mostramos la ventana con la pregunta
+				
+				Vector informeBeans=adm.obtenerInformesTipo(usr.getLocation().toString(),"EJGCA",null, null);
+				if(informeBeans!=null && informeBeans.size()>1){
+					informeUnico = ClsConstants.DB_FALSE;
+					
+				}
+					
+					
+				
+				request.setAttribute("informeUnico", informeUnico);
 			}catch (Exception e) {
 				throwExcp("error.general.yanoexiste",e,null);
 			}
 		} catch (Exception e) {
 			   throwExcp("messages.general.error",e,null);
 		}
+		
 		
 		return "inicio";		
 	}

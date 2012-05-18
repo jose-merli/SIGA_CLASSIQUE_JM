@@ -42,6 +42,8 @@ public class ExceptionManagerAction extends Action {
     String institucion = usrbean==null?"":usrbean.getLocation();
 
     if (exc==null){
+    	if(mapping!=null)
+    		ClsLogging.writeFileLogError("@@@@ Excepcion NULA @@@@"+mapping.getPath(),req , 1);
       ClsLogging.writeFileLogError("@@@@ Excepcion NULA @@@@", req, 1);
       ClsLogging.writeFileLogError("@@@@ La excepcion no ha sido preparada @@@@", req, 1);
     }

@@ -23,6 +23,7 @@
 <%@ page import="com.siga.beans.*"%>
 <!-- JSP -->
 <% 
+String informeUnico =(String) request.getAttribute("informeUnico");
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
@@ -127,6 +128,8 @@
 </head>
 
 <body>
+<input type="hidden" id= "informeUnico" value="<%=informeUnico%>">
+
 		<table class="tablaTitulo" cellspacing="0" heigth="38">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
@@ -156,10 +159,15 @@
 				%>
 				<table>
 					<tr>
-						<td><siga:InformeSimple
-							idInstitucion="<%=usr.getLocation()%>"
-							recurso="gratuita.EJG.botonComunicaciones" idTipoInforme="SOJ"
-							formularioDatos="DatosGeneralesSOJForm" /></td>
+						<td>
+						<input 	type="button" 
+				alt='<siga:Idioma key="general.boton.cartaInteresados" />'  
+		       	id="idButton"  
+		       	onclick="return generarCarta();" 
+		       	class="button" 
+		       	value='<siga:Idioma key="gratuita.EJG.botonComunicaciones" />'/>
+		       	
+						</td>
 					</tr>
 				</table>
 				<%
@@ -442,11 +450,49 @@
 		<input type="hidden" name="tipo"        value="">
 	</html:form>
 	
+	<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
+	<html:hidden property="idInstitucion" value = "<%=usr.getLocation()%>"/>
+	<html:hidden property="idTipoInforme" value='SOJ'/>
+	<html:hidden property="enviar" value = "0"/>
+	<html:hidden property="descargar" value="1"/>
+	<html:hidden property="datosInforme"/>
+	<html:hidden property="modo" value = "preSeleccionInformes"/>
+	<input type='hidden' name='actionModal'>
+</html:form>
 
 <!-- FIN: BOTONES REGISTRO -->
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
+		
+	function generarCarta()
+	{
+	sub();
+	var idInst = document.DatosGeneralesSOJForm.idInstitucion.value;
+	var idTipo = document.DatosGeneralesSOJForm.idTipoSOJ.value;
+	var anio = document.DatosGeneralesSOJForm.anio.value;
+	var numero = document.DatosGeneralesSOJForm.numero.value;
+	datos = "idinstitucion=="+idInst + "##idtipo==" +idTipo+"##anio=="+anio +"##numero==" +numero+"%%%";
+	
+	
+	
+		document.InformesGenericosForm.datosInforme.value=datos;
+		if(document.getElementById("informeUnico").value=='1'){
+			document.InformesGenericosForm.submit();
+		}else{
+		
+			var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
+			if (arrayResultado==undefined||arrayResultado[0]==undefined){
+			  fin(); 		
+		   	} 
+		   	else {
+		   		fin();
+		   	}
+		}
+		
+
+	}
+		
 	
 		function accionCrearEJG() 
 		{	

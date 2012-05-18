@@ -80,7 +80,7 @@ String path = actionMapping.getPath();
 	if ((volver!=null && volver.equalsIgnoreCase("SI")) && !busquedaVolver.equals("volverNo")) { 
 		botonesAccion="V,G,R";
 	}
-
+	String informeUnico =(String) request.getAttribute("informeUnico");
 %>	
 
 <%@page import="org.apache.struts.action.ActionMapping"%>
@@ -115,7 +115,7 @@ String path = actionMapping.getPath();
 	</head>
 
 	<body class="tablaCentralCampos">
-
+<input type="hidden" id= "informeUnico" value="<%=informeUnico%>">
 		<!-- ******* INFORMACION GENERAL CLIENTE ****** -->
 	
 		<!-- CAMPOS DEL REGISTRO -->
@@ -270,12 +270,10 @@ String path = actionMapping.getPath();
 			<tr  width="100%">
 				<td>
 					<br>&nbsp;&nbsp;&nbsp;&nbsp;
-					<siga:InformeSimple 
-						idInstitucion="<%=usr.getLocation()%>" 
-						recurso="facturacion.abonos.boton.DescargarFacturaRectificativaPDF"
-						idTipoInforme="ABONO"
-						formularioDatos="AbonosDatosGeneralesForm" 
-						/>
+					<input type="button" name="idButton" id ="idButton" value="<siga:Idioma key="facturacion.abonos.boton.DescargarFacturaRectificativaPDF"/>" onclick="download();" class="button">
+					
+					
+					
 				</td>
 			</tr>
 			<% } %>
@@ -283,10 +281,44 @@ String path = actionMapping.getPath();
 
 			</table>		
 
+<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
+	<html:hidden property="idInstitucion" value = "<%=idInstitucion%>"/>
+	<html:hidden property="idTipoInforme" value="ABONO"/>
+	<html:hidden property="enviar" value="0"/>
+	<html:hidden property="descargar" value="1"/>
+	<html:hidden property="datosInforme"/>
+	<html:hidden property="modo" value = "preSeleccionInformes"/>
+	<input type='hidden' name='actionModal'>
+</html:form>
 
 		<siga:ConjBotonesAccion clase="botonesDetalle" botones="<%=botonesAccion%>" modo="<%=modo%>" />
 
 		<script language="JavaScript">
+		
+		function download()
+		{
+			
+			sub();
+				var idInst = document.AbonosDatosGeneralesForm.idInstitucion.value;
+				var idAbono = document.AbonosDatosGeneralesForm.idAbono.value;
+				datos = 'idAbono=='+ idAbono+ "##idinstitucion=="+ idInst + "##idTipoInforme==ABONO%%%";
+				
+				document.InformesGenericosForm.datosInforme.value =datos;
+				document.InformesGenericosForm.idTipoInforme.value = 'ABONO';
+			
+			if(document.getElementById("informeUnico").value=='1'){
+				document.InformesGenericosForm.submit();
+			}else{
+				var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
+				if (arrayResultado==undefined||arrayResultado[0]==undefined){
+				   	fin();
+			   	}else {
+			   		fin();
+			   	}
+			   	
+			}
+
+		}
 		
 			//Asociada al boton Restablecer
 			function accionRestablecer() 

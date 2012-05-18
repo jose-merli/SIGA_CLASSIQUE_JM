@@ -5092,7 +5092,13 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		    	    //Se especifica la dirección de origen.
 //		    	    mensaje.setFrom(new InternetAddress(sFrom));
 		    	    //ATTENCION INCIDENCIA. DESCOMENTAR ESTO
-		    	    String descripcionFrom = remBean!=null && remBean.getDescripcion()!=null && !remBean.getDescripcion().trim().equals("")?remBean.getDescripcion().trim():sFrom;
+		    	    String descripcionFrom = sFrom;
+		    	    if(remBean!=null && remBean.getDescripcion()!=null && !remBean.getDescripcion().trim().equals(""))
+		    	    	descripcionFrom = remBean.getDescripcion().trim();
+		    	    else if(remBean.getIdPersona()!=null){
+		    	    	CenPersonaAdm personaAdm = new CenPersonaAdm(usrbean);
+		    	    	descripcionFrom =  personaAdm.obtenerNombreApellidosJSP(remBean.getIdPersona().toString());
+		    	    }
 		    	    mensaje.setFrom(new InternetAddress(sFrom,descripcionFrom));
 			    	 // Acuse de recibo
 		    	    if(envBean.getAcuseRecibo()!=null && envBean.getAcuseRecibo().equals(ClsConstants.DB_TRUE))

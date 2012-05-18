@@ -21,6 +21,7 @@ import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.ScsDefinirSOJAdm;
 import com.siga.beans.ScsEJGAdm;
@@ -270,6 +271,20 @@ public class DefinirDatosGeneralesSOJAction extends MasterAction {
 			Row ejg=ejgAdm.getEJGdeSOJ(institucion, anio, tipoSoj, numero);
 			miForm.setEJG((ejg==null?null:ejg.getRow()));
 			
+			String informeUnico = ClsConstants.DB_TRUE;
+			
+			AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
+			// mostramos la ventana con la pregunta
+			
+			Vector informeBeans=adm.obtenerInformesTipo(institucion,"SOJ",null, null);
+			if(informeBeans!=null && informeBeans.size()>1){
+				informeUnico = ClsConstants.DB_FALSE;
+				
+			}
+				
+				
+			
+			request.setAttribute("informeUnico", informeUnico);
 			
 		} catch (Exception e) {
 			throwExcp("messages.general.error",e,null);

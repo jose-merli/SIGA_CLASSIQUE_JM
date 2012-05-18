@@ -17,7 +17,6 @@ import javax.transaction.*;
 
 import org.apache.struts.action.*;
 import com.atos.utils.*;
-import com.atos.utils.UsrBean;
 import com.siga.beans.*;
 import com.siga.general.*;
 import com.siga.facturacion.form.AbonosDatosGeneralesForm;
@@ -71,6 +70,21 @@ public class AbonosDatosGeneralesAction extends MasterAction {
 			request.setAttribute("container", datosAbono);
 			request.getSession().setAttribute("DATABACKUP", datosAbono);
 			request.setAttribute("volver", volver);		
+			String informeUnico = ClsConstants.DB_TRUE;
+			
+			AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
+			// mostramos la ventana con la pregunta
+			
+			Vector informeBeans=adm.obtenerInformesTipo(idInstitucion,"ABONO",null, null);
+			if(informeBeans!=null && informeBeans.size()>1){
+				informeUnico = ClsConstants.DB_FALSE;
+				
+			}
+				
+				
+			
+			request.setAttribute("informeUnico", informeUnico);
+			
 		} 
 		catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 

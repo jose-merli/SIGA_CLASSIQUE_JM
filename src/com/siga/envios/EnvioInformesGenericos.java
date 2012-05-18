@@ -3583,7 +3583,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 	}
 
-	private String getIdColegiadoUnico(Vector vCampos) {
+	public String getIdColegiadoUnico(Vector vCampos) {
 		Hashtable htPersonas = new Hashtable();
 		String idPersona = null;
 		String idInstitucion = null;
@@ -3842,6 +3842,10 @@ public class EnvioInformesGenericos extends MasterReport {
 			form.setIdTipoEnvio(keyEnvios.split("_")[0]);
 			form.setIdPlantillaEnvios(keyEnvios.split("_")[1]);
 			form.setAcuseRecibo(keyEnvios.split("_")[2]);
+			
+			CenPersonaAdm personaAdm = new CenPersonaAdm(userBean);	
+			String nombreyapellidos = personaAdm.obtenerNombreApellidos(idPersona);
+			form.setNombre(form.getNombre()+" "+nombreyapellidos);
 
 			Envio envio = getEnvio(form, true, locale, userBean);
 			// Genera el envio:
@@ -4017,6 +4021,10 @@ public class EnvioInformesGenericos extends MasterReport {
 			form.setIdPlantillaEnvios(keyEnvios.split("_")[1]);
 			form.setAcuseRecibo(keyEnvios.split("_")[2]);
 
+			CenPersonaAdm personaAdm = new CenPersonaAdm(userBean);	
+			String nombreyapellidos = personaAdm.obtenerNombreApellidos(idPersona);
+			form.setNombre(form.getNombre()+" "+nombreyapellidos);
+			
 			Envio envio = getEnvio(form, true, locale, userBean);
 			// Genera el envio:
 			envio.generarEnvio(idPersona,
@@ -4375,6 +4383,9 @@ public class EnvioInformesGenericos extends MasterReport {
 			form.setIdTipoEnvio(keyEnvios.split("_")[0]);
 			form.setIdPlantillaEnvios(keyEnvios.split("_")[1]);
 			form.setAcuseRecibo(keyEnvios.split("_")[2]);
+			CenPersonaAdm personaAdm = new CenPersonaAdm(userBean);	
+			String nombreyapellidos = personaAdm.obtenerNombreApellidos(idPersona);
+			form.setNombre(form.getNombre()+" "+nombreyapellidos);
 			
 			Envio envio = getEnvio(form, true, locale, userBean);
 
@@ -4595,7 +4606,10 @@ public class EnvioInformesGenericos extends MasterReport {
 				form.setIdTipoEnvio(keyEnvios.split("_")[0]);
 				form.setIdPlantillaEnvios(keyEnvios.split("_")[1]);
 				form.setAcuseRecibo(keyEnvios.split("_")[2]);
-			
+			CenPersonaAdm personaAdm = new CenPersonaAdm(userBean);	
+			String nombreyapellidos = personaAdm.obtenerNombreApellidos(idPersona);
+			form.setNombre(form.getNombre()+" "+nombreyapellidos);
+				
 			Envio envio = getEnvio(form, true, locale, userBean);
 
 			// Genera el envio:
@@ -4831,6 +4845,10 @@ public class EnvioInformesGenericos extends MasterReport {
 			form.setIdPlantillaEnvios(keyEnvios.split("_")[1]);
 			form.setAcuseRecibo(keyEnvios.split("_")[2]);
 
+			CenPersonaAdm personaAdm = new CenPersonaAdm(userBean);	
+			String nombreyapellidos = personaAdm.obtenerNombreApellidos(idPersona);
+			form.setNombre(form.getNombre()+" "+nombreyapellidos);
+			
 			Envio envio = getEnvio(form, true, locale, userBean);
 
 			// Genera el envio:
@@ -5485,7 +5503,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		return todos;
 	}
 
-	private void setPersonasDesignas(Vector vCampos, UsrBean userBean)
+	public void setPersonasDesignas(Vector vCampos, UsrBean userBean)
 			throws ClsExceptions, SIGAException {
 		ScsDesignaAdm desigAdm = new ScsDesignaAdm(userBean);
 		ScsDefendidosDesignaAdm defendidosAdm = new ScsDefendidosDesignaAdm(
@@ -5770,8 +5788,13 @@ public class EnvioInformesGenericos extends MasterReport {
 			form.setIdTipoEnvio(keyEnvios.split("_")[0]);
 			form.setIdPlantillaEnvios(keyEnvios.split("_")[1]);
 			form.setAcuseRecibo(keyEnvios.split("_")[2]);
-
+			
+			CenPersonaAdm personaAdm = new CenPersonaAdm(userBean);	
+			String nombreyapellidos = personaAdm.obtenerNombreApellidos(idPersonaUnica);
+			form.setNombre(form.getNombre()+" "+nombreyapellidos);
+			
 			Envio envio = getEnvio(form, true, locale, userBean);
+
 			// Genera el envio:
 			envio.generarEnvio(idPersonaUnica,
 					EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,
@@ -6193,7 +6216,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		// boolean isEnvioSMS =
 		// Integer.parseInt(idTipoEnvio)==EnvEnviosAdm.TIPO_BUROSMS ||
 		// Integer.parseInt(idTipoEnvio)==EnvEnviosAdm.TIPO_SMS;
-		boolean isEnvioSMS = false;
+//		boolean isEnvioSMS = false;
 
 		String idInstitucion = userBean.getLocation();
 
@@ -6283,12 +6306,18 @@ public class EnvioInformesGenericos extends MasterReport {
 			form.setIdPlantillaEnvios(keyEnvios.split("_")[1]);
 			form.setAcuseRecibo(keyEnvios.split("_")[2]);
 
-			Envio envio = getEnvio(form, true, locale, userBean);
-
-			// Genera el envio:
 			// Tenemos que mirar si es persona JG o Persona
 			String idPersonaUnica = (String) destinatariosHashtable.keySet()
 					.iterator().next();
+			
+			CenPersonaAdm personaAdm = new CenPersonaAdm(userBean);	
+			String nombreyapellidos = personaAdm.obtenerNombreApellidos(idPersonaUnica);
+			form.setNombre(form.getNombre()+" "+nombreyapellidos);
+			
+			Envio envio = getEnvio(form, true, locale, userBean);
+
+			// Genera el envio:
+			
 			envio.generarEnvio(idPersonaUnica,
 					(String) destinatariosHashtable.get(idPersonaUnica),
 					vDocumentos);
@@ -6716,6 +6745,9 @@ public class EnvioInformesGenericos extends MasterReport {
 			form.setIdTipoEnvio(keyEnvios.split("_")[0]);
 			form.setIdPlantillaEnvios(keyEnvios.split("_")[1]);
 			form.setAcuseRecibo(keyEnvios.split("_")[2]);
+			CenPersonaAdm personaAdm = new CenPersonaAdm(userBean);	
+			String nombreyapellidos = personaAdm.obtenerNombreApellidos(idPersona);
+			form.setNombre(form.getNombre()+" "+nombreyapellidos);
 			
 			
 			Envio envio = getEnvio(form, true, locale, userBean);
@@ -7126,6 +7158,10 @@ public class EnvioInformesGenericos extends MasterReport {
 								+ " " + (String) datoReal.get("NOMBRE_DEST"));
 						form.setIdPersona(idPersonaReal);
 						// Hago un envio
+						CenPersonaAdm personaAdm = new CenPersonaAdm(userBean);	
+						String nombreyapellidos = personaAdm.obtenerNombreApellidos(idPersonaReal);
+						form.setNombre(form.getNombre()+" "+nombreyapellidos);
+						
 						Envio envio = getEnvio(form, true, locale, userBean);
 						// obtengo sus documentos según vPlantillas
 
