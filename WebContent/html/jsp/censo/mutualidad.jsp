@@ -88,6 +88,8 @@
 
 <%  
 		ArrayList idPaisSeleccionado = (ArrayList)request.getAttribute("idPaisSeleccionado");
+		ArrayList idPaisNacionalidad = new ArrayList();
+		idPaisNacionalidad.add("191");
 		ArrayList idBancoSeleccionado = (ArrayList)request.getAttribute("idBancoSeleccionado");
 		String accion = (String)request.getParameter("accion");
 	%>
@@ -116,6 +118,7 @@
 <html:hidden property="idEstado"/>
 <html:hidden property="estado"/>
 <html:hidden property="colegio"/>
+<html:hidden property="nacionalidad"/>
 <html:hidden property="estadoMutualista"/>
 
 <input type="hidden" name="actionModal" value="">
@@ -289,7 +292,21 @@
 	<table>
 		<tr>
 			<td class="labelText" ><siga:Idioma key="censo.mutualidad.literal.nacionalidad" /></td>
-			<td colspan="2"><html:text property="nacionalidad" maxlength="100" style="width:300" styleClass="${estiloText}"  ></html:text></td>
+			
+			<td colspan="2">
+			<c:choose>
+					<c:when test="${MutualidadForm.modo=='insertar'}">
+						<siga:ComboBD nombre="comboNacionalidad" tipo="pais" ancho="300" clase="${estiloCombo}" readonly="${MutualidadForm.modo=='consulta'}" obligatorio="false" elementoSel='<%=idPaisNacionalidad%>' accion="cargaCombos(this.value);" />
+
+					</c:when>
+					<c:otherwise>
+						<html:text property="nacionalidad" maxlength="100" style="width:300" styleClass="${estiloText}" ></html:text>
+					</c:otherwise>
+				</c:choose>
+			
+				
+			</td>
+			
 			<td class="labelText" ><siga:Idioma key="censo.mutualidad.literal.email" />&nbsp;(*)</td>
 			<td colspan="2"><html:text property="correoElectronico" maxlength="100" style="width:300" styleClass="${estiloText}" ></html:text></td>
 		</tr>
@@ -707,6 +724,7 @@
 			document.getElementById("idPais").value = "191";
 		}
 		document.MutualidadForm.pais.value = document.MutualidadForm.idPais.options[document.MutualidadForm.idPais.selectedIndex].text;
+		document.MutualidadForm.nacionalidad.value = document.MutualidadForm.comboNacionalidad.options[document.MutualidadForm.comboNacionalidad.selectedIndex].text
 
 		if(document.MutualidadForm.idProvincia&&document.MutualidadForm.idProvincia.selectedIndex!=-1){
 			document.MutualidadForm.provincia.value = document.MutualidadForm.idProvincia.options[document.MutualidadForm.idProvincia.selectedIndex].text;
