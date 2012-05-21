@@ -9,6 +9,8 @@
 
 package com.siga.facturacion.action;
 
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -19,6 +21,7 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.*;
@@ -50,6 +53,8 @@ public class DatosGeneralesAction extends MasterAction{
 			String observaciones="";
 			FacSerieFacturacionBean beanSerie = null;
 			Vector datosPlantilla = null;
+			Vector pagoSec=new Vector();
+			Vector ocultos=new Vector();
 			
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");		
 			String idInstitucion = user.getLocation();
@@ -88,6 +93,8 @@ public class DatosGeneralesAction extends MasterAction{
 				FacPlantillaFacturacionAdm admPlantilla = new FacPlantillaFacturacionAdm(user);
 	
 				 datosPlantilla = admPlantilla.select(sWhere);
+				 
+				 pagoSec=admSerieFac.obtenerFormasPago(idInstitucion, idSerieFacturacion);
 
 
 			}
@@ -107,13 +114,15 @@ public class DatosGeneralesAction extends MasterAction{
 				ht.put(AdmContadorBean.C_GENERAL,"1");
 				Vector datosContador = admCon.select(ht);
 				request.setAttribute("datosContador", datosContador);
-			}
+			}		
 			
-
+			
 			FacBancoInstitucionAdm admBancoFac = new FacBancoInstitucionAdm(this.getUserBean(request));
 			Vector datosBancos = admBancoFac.obtenerBancosSerieFacturacion(idInstitucion,idSerieFacturacion);
 			request.setAttribute("bancosInstitucion", datosBancos);
 
+			request.setAttribute("container_S", pagoSec);
+			
 			request.getSession().setAttribute("idSerieFacturacion", idSerieFacturacion);
 		} 
 		  catch (Exception e) { 
@@ -144,9 +153,16 @@ public class DatosGeneralesAction extends MasterAction{
 			String idTipoPlantillaMail = "";
 			DatosGeneralesForm formDGen = (DatosGeneralesForm) formulario;
 			String nombreAbreviado = formDGen.getNombreAbreviado();
+			String[] pagoSec;
+			ArrayList formaPago=new ArrayList();
+			Hashtable hashAux = new Hashtable();
 		
 			
+			FacFormaPagoSerieAdm admSerie = new FacFormaPagoSerieAdm(this.getUserBean(request));
 			FacSerieFacturacionAdm admFac =  new FacSerieFacturacionAdm(this.getUserBean(request));
+			FacSerieFacturacionBean beanFac = new FacSerieFacturacionBean();
+			FacFormaPagoSerieBean beanForma = new FacFormaPagoSerieBean();
+			
 			String where1 = " Where ";
 			where1 += FacSerieFacturacionBean.T_NOMBRETABLA+"."+ FacSerieFacturacionBean.C_IDINSTITUCION+"="+idInstitucion+
 				 	" and "+
@@ -157,9 +173,7 @@ public class DatosGeneralesAction extends MasterAction{
 			{
 				UserTransaction tx = null;
 				tx = ((UsrBean)request.getSession().getAttribute("USRBEAN")).getTransaction();
-						
-				FacSerieFacturacionBean beanFac = new FacSerieFacturacionBean();
-		
+							
 				String where2 = 	" Where ";
 				where2 += FacSerieFacturacionBean.T_NOMBRETABLA+"."+ FacSerieFacturacionBean.C_IDINSTITUCION+"="+idInstitucion;
 				Vector vec = admFac.selectTabla_2(where2);
@@ -232,6 +246,30 @@ public class DatosGeneralesAction extends MasterAction{
 					request.setAttribute("idInstitucion",idInstitucion);
 					request.setAttribute("mensaje","messages.inserted.success");
 					request.setAttribute("idSerieFacturacion", idSerieFacturacion.toString());
+					
+					pagoSec=formDGen.getFormaPagoAutomática();
+					
+					for (int i=1;i<pagoSec.length;i++) {
+						formaPago.add(pagoSec[i]);
+					}	
+					
+					if (!formaPago.isEmpty()){			
+						int i=0;
+						while(i<formaPago.size()){
+							if (((String)formaPago.get(i)).compareToIgnoreCase("-1")!=0){							
+								hashAux.put(beanFac.C_IDINSTITUCION,idInstitucion);																					
+								hashAux.put(beanFac.C_IDSERIEFACTURACION,idSerieFacturacion.toString());				
+								hashAux.put(beanForma.C_IDFORMAPAGO,(String)formaPago.get(i));
+								hashAux.put(ConCriterioConsultaBean.C_USUMODIFICACION, (String)user.getUserName());
+								hashAux.put(ConCriterioConsultaBean.C_FECHAMODIFICACION, "sysdate");
+								boolean correcto=admSerie.insert(hashAux);					
+							}	
+							i++;							
+						}
+					}					
+					
+					request.setAttribute("container_S", formaPago);
+					
 					tx.commit();
 				}
 				else
@@ -286,13 +324,29 @@ public class DatosGeneralesAction extends MasterAction{
 	{
 		try
 		{
-			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");		
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");	
+			UserTransaction tx2 = null;
 			String idInstitucion = user.getLocation();
-			 FacSerieFacturacionBean facSerieFacturacionBean = null;	
+			FacSerieFacturacionBean facSerieFacturacionBean = null;	
 			DatosGeneralesForm formDGen = (DatosGeneralesForm) formulario;
 			String nombreAbreviado = formDGen.getNombreAbreviado();
 			Long idSerieFac = formDGen.getIdSerieFacturacion();
 			String idTipoPlantillaMail = "";
+			String[] pagoSec;
+			Vector pagoSecAux = new Vector();
+			ArrayList formaPago = new ArrayList();
+			Hashtable hashAux = new Hashtable();
+			Hashtable hash = new Hashtable();
+			Hashtable hfila = new Hashtable();
+			Row fila = new Row();
+			
+			boolean correctoInsercion = true;
+			boolean correctoEliminar = true;
+			
+			FacFormaPagoSerieAdm admSerie = new FacFormaPagoSerieAdm(this.getUserBean(request));
+			FacFormaPagoSerieBean beanForma = new FacFormaPagoSerieBean();		
+			FacSerieFacturacionBean beanFac = new FacSerieFacturacionBean();
+			FacSerieFacturacionAdm admSerieFac = new FacSerieFacturacionAdm(this.getUserBean(request));
 		
 			FacSerieFacturacionAdm admFac =  new FacSerieFacturacionAdm(this.getUserBean(request));
 			String where1 = " Where ";
@@ -310,9 +364,9 @@ public class DatosGeneralesAction extends MasterAction{
 				idSerieFacturacionActual = facSerieFacturacionBean.getIdSerieFacturacion();
 			  }
 			}
+
 			
-			if (datosNomAbr==null || datosNomAbr.size()==0 ||  idSerieFac.equals(idSerieFacturacionActual))
-			{
+			if (datosNomAbr==null || datosNomAbr.size()==0 ||  idSerieFac.equals(idSerieFacturacionActual)){
 				String idSerieFacturacion=(String)request.getSession().getAttribute("idSerieFacturacion");
 				
 				UserTransaction tx = null;
@@ -405,8 +459,7 @@ public class DatosGeneralesAction extends MasterAction{
 				
 				tx.begin();
 				boolean result = admFac.update(hashNew,hashOld);
-				if (result)
-				{
+				if (result){
 
 					// RGG 12/09/2007 
 					// Borramos el contador que estaba relacionado si no es general ni tiene 
@@ -432,11 +485,11 @@ public class DatosGeneralesAction extends MasterAction{
 						}
 					}
 					
+				//	request.setAttribute("container_S", pagoSec);
 					request.setAttribute("mensaje","messages.updated.success");
 					tx.commit();
 				}
-				else
-				{
+				else{
 					request.setAttribute("mensaje","messages.updated.error");
 					tx.rollback();
 				}
@@ -451,10 +504,56 @@ public class DatosGeneralesAction extends MasterAction{
 				backupSerFac.put("NOMBREABREVIADO",formDGen.getNombreAbreviado());
 				request.getSession().setAttribute("DATABACKUP",backupSerFac);
 			}
-			else
-			{
+			else{
 				request.setAttribute("mensaje","facturacion.datosGenerales.literal.mensajeExisteNombreAbreviadoSerFac");
 			}
+					
+			tx2 = ((UsrBean)request.getSession().getAttribute("USRBEAN")).getTransaction();			
+			
+			tx2.begin();			
+			
+			// Obtengo el IDSERVICIOSINSTITUCION y los campos SOLICITARBAJA y SOLICITARALTA si no fueron seleccionados
+			pagoSecAux=admSerieFac.obtenerIdPago(idInstitucion, idSerieFac.toString());
+	    	
+	    	// Creo un vector con las formas de pago (IDFORMAPAGO) existentes para esas caracteristicas
+
+	    	for (int z = 0; z < pagoSecAux.size(); z++){
+				fila = (Row) pagoSecAux.get(z);
+				hfila = fila.getRow();
+    			String nuevoPago = (String) hfila.get("IDFORMAPAGO");
+				
+				hash.put(beanForma.C_IDINSTITUCION,(String)idInstitucion);	
+				hash.put(beanForma.C_IDSERIEFACTURACION,(String)idSerieFac.toString());	
+				hash.put(beanForma.C_IDFORMAPAGO,(String)nuevoPago);	
+				
+				correctoEliminar=admSerie.delete(hash);
+			}
+			
+			pagoSec=formDGen.getFormaPagoAutomática();
+			
+			for (int i=0;i<pagoSec.length;i++) {
+				formaPago.add(pagoSec[i]);
+			}	
+					
+			if (!formaPago.isEmpty()){			
+				int i=0;
+				while(i<formaPago.size()){
+					if (((String)formaPago.get(i)).compareToIgnoreCase("-1")!=0){							
+						hashAux.put(beanFac.C_IDINSTITUCION,idInstitucion);																					
+						hashAux.put(beanFac.C_IDSERIEFACTURACION,idSerieFacturacionActual.toString());				
+						hashAux.put(beanForma.C_IDFORMAPAGO,(String)formaPago.get(i));
+						hashAux.put(ConCriterioConsultaBean.C_USUMODIFICACION, (String)user.getUserName());
+						hashAux.put(ConCriterioConsultaBean.C_FECHAMODIFICACION, "sysdate");
+						correctoInsercion=admSerie.insert(hashAux);					
+					}	
+					i++;							
+				}
+			}					
+			
+			request.setAttribute("container_S", formaPago);
+			
+			tx2.commit();			
+			
 		} 
 		  catch (Exception e) { 
 		   throwExcp("messages.general.error",new String[] {"modulo.facturacion.asignacionConceptos"},e,null); 

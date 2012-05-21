@@ -9,6 +9,8 @@
 
 package com.siga.facturacion.form;
 
+import java.util.Vector;
+
 import com.siga.general.MasterForm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.*;
@@ -16,6 +18,7 @@ import com.siga.beans.*;
 public class DatosGeneralesForm extends MasterForm {
 	
 	private String idPlantillaMail, idTipoPlantillaMail;
+	private String[] formaPagoAutomática;
 
 	// Metodos Set (Formulario (*.jsp))
 	public void setIdInstitucion (Integer id) {
@@ -196,5 +199,15 @@ public class DatosGeneralesForm extends MasterForm {
 	public void setIdTipoPlantillaMail(String idTipoPlantillaMail) {
 		this.idTipoPlantillaMail = idTipoPlantillaMail;
 	}
- 	
+
+	public String[] getFormaPagoAutomática() {
+
+		return this.formaPagoAutomática;
+	}
+
+	public void setFormaPagoAutomática(String[] formaPagoAutomática) {
+		this.formaPagoAutomática = formaPagoAutomática;
+	}
+ 
+	
 }

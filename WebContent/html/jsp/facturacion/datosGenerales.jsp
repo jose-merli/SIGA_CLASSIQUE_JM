@@ -31,6 +31,17 @@
 <%@ page import="java.util.Vector"%>
 <%@ page import="java.util.Enumeration"%>
 <%@ page import="java.util.ArrayList"%>
+
+<%@ page import="com.atos.utils.*"%>
+<%@ page import="java.util.*"%>
+<%@ page import="java.lang.*"%>
+<%@ page import="com.atos.utils.Row"%>
+<%@ page import="com.siga.beans.*"%>
+<%@ page import="com.siga.productos.form.MantenimientoProductosForm"%>
+<%@ page import="com.siga.administracion.SIGAMasterTable"%>
+<%@ page import="com.siga.administracion.SIGAConstants"%>
+<%@ page import="com.atos.utils.UsrBean"%>
+<%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
@@ -124,7 +135,36 @@
 	String parametro[] = new String[1];
 	parametro[0] = user.getLocation();
 	
+	
+	Enumeration enumTemp = null;
+	int haySec = 0;
+	Row rowTemp = new Row();
 
+	ArrayList vSec = new ArrayList(); // valores originales formas pago automática
+	
+	// Informacion sobre formas de pago automática
+	// Obtener informacion para rellenar en caso de modificacion o consulta
+	if ((accion.equalsIgnoreCase("editar"))||(accion.equalsIgnoreCase("ver"))){
+	//	enumTemp = ((Vector)request.getAttribute("container")).elements();
+		enumTemp = ((Vector) request.getAttribute("container_S"))
+			.elements();
+		if (enumTemp.hasMoreElements()) {
+			haySec = 1;
+			while (enumTemp.hasMoreElements()) {
+				rowTemp = (Row) enumTemp.nextElement();
+				vSec.add(rowTemp
+						.getString(FacSerieFacturacionBean.C_IDFORMAPAGO));
+			}
+		}
+	}
+	String estiloCombo = "boxCombo";
+	boolean lectura = false;
+	if (accion.equalsIgnoreCase("consulta")) {
+		estiloCombo = "boxConsulta";
+		lectura = true;
+	}
+	
+	boolean check = false; 
 %>
 
 <html>
@@ -134,13 +174,12 @@
 
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-
+		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		<!-- Validaciones en Cliente -->
 			<!-- El nombre del formulario se obtiene del struts-config -->
-			<html:javascript formName="DatosGeneralesForm" staticJavascript="false" />  
-			<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-			<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
+		<html:javascript formName="DatosGeneralesForm" staticJavascript="false" />  
+		<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		 	
 		<!-- INICIO: TITULO Y LOCALIZACION -->
@@ -152,7 +191,9 @@
 
 
 		<script language="JavaScript">
-	
+
+			var resetComboPagoSecretaria;
+		
 			function actualiza() 
 			{
 				if (document.forms[0].envioFacturas.checked==true) {
@@ -168,12 +209,18 @@
 
 			function configuraContador() 
 			{
+				//var con = document.getElementById("conta")
 				var con = document.getElementById("conta")
+				var con2 = document.getElementById("conta2")
 				if (document.forms[0].configurarContador.checked==true) {
+					check = true;
 					con.style.display='block';
+					con2.style.display='block';
 					comprobarNuevo();
-				} else {
+				} 
+				else {
 					con.style.display='none';
+					con2.style.display='none';
 				}
 				return false;
 			}
@@ -193,7 +240,7 @@
 			function refrescarLocal() {
 				document.location = document.location;
 			}
-			
+
 			
 		</script>
 	</head>
@@ -214,7 +261,7 @@
 				<html:hidden property="ids" value=""/>
 
 				<tr>
-					<td>		
+					<td style="width:100%">		
 						<!-- SUBCONJUNTO DE DATOS -->
 						<!-- Conjunto de campos recuadrado y con titulo -->
 						<siga:ConjCampos leyenda="facturacion.serios.literal.seriesFacturacion">
@@ -314,7 +361,7 @@
 
 <% if (accion.equals("nuevo")) {  %>
 
-		<table class="tablaCentralCampos" style="display:none">
+	<table class="tablaCentralCampos"style="display:none" >
 	
 <% } else {  %>
 		<table class="tablaCentralCampos">
@@ -322,48 +369,51 @@
 <% }  %>
 
 				<tr>
-					<td>		
+					<td >		
 	
 						<siga:ConjCampos leyenda="facturacion.serios.literal.contador">
 
 							<table align="left" border="0">
 								<tr>
-									<td class="labelText" style="width:150px">
+									<td class="labelText" style="width:35%">
 										<siga:Idioma key="facturacion.datosGenerales.literal.nombreContador"/>&nbsp;
 									</td>
-									<td  class="labelTextValue" style="width:250px">
+									<td  class="labelTextValue" >
 										<html:text name="DatosGeneralesForm" property="idContador" size="20" maxlength="20" styleClass="boxConsulta" value="<%=idContador%>" readonly="true"></html:text>
 									</td>
-									<td class="labelText" style="width:150px">
+									</tr>
+									<tr>
+									<td class="labelText" >
 										<siga:Idioma key="facturacion.datosGenerales.literal.contadorGenerico"/>&nbsp;
 									</td>
-									<td  class="labelTextValue">
+									<td  class="labelTextValue" >
 										<html:text name="DatosGeneralesForm" property="prefijo" size="8" maxlength="10" styleClass="box" value="<%=prefijo%>" disabled="true"></html:text>
 										<html:text name="DatosGeneralesForm" property="contador" size="15" maxlength="15" styleClass="box" value="<%=contador%>" disabled="true"></html:text>
 										<html:text name="DatosGeneralesForm" property="sufijo" size="8" maxlength="10" styleClass="box" value="<%=sufijo%>"  disabled="true"></html:text>
 									</td>
 								</tr>
-<% if (accion.equals("ver")) { %>
-	<input type="hidden" name="configurarContador" value="off">
-<% } else { %>
-
 								<tr>
-									<td class="labelText"  style="text-align:left;width:150px">
+								<% if (accion.equals("ver")) { %>
+									<input type="hidden" name="configurarContador" value="off"/>
+								<% } else { %>
+									<td class="labelText">
 										<siga:Idioma key="facturacion.datosGenerales.literal.configurarContador"/>&nbsp;
 									</td>
 									<td  class="labelTextValue">
-										<input type="checkbox" name="configurarContador" onclick="configuraContador();">
+										<input type="checkbox" name="configurarContador" onclick="configuraContador();"/>
 									</td>
+								<% }  %>																
 								</tr>
-<% }  %>
-								<tr id="conta">
-									<td class="labelText" style="text-align:left;width:150px">
+								<tr id="conta">								
+									<td class="labelText">
 										<siga:Idioma key="facturacion.datosGenerales.literal.existentes"/>&nbsp;
 									</td>
 									<td class="labelText">
 										<siga:ComboBD nombre="contadorExistente" tipo="cmbContadorFacturacion" parametro="<%=parametro %>" clase="boxCombo" obligatorio="false" elementoSel="<%=contadorSel %>" accion="comprobarNuevo()" />
 									</td>
-									<td class="labelText" style="width:150px">
+									</tr>
+								<tr id="conta2">	
+									<td class="labelText" >
 										<siga:Idioma key="facturacion.datosGenerales.literal.nuevoContador"/>&nbsp;
 									</td>
 									<td  class="labelTextValue">
@@ -372,12 +422,96 @@
 										<html:text name="DatosGeneralesForm" property="sufijo_nuevo" size="8" maxlength="10" styleClass="box" value="<%=sufijo_nuevo%>" disabled="true"></html:text>
 									</td>
 								</tr>
+						
 							</table>
 
 						</siga:ConjCampos>
 					</td>
-				</tr>
-		</table>
+			<td style="width:480px"><!-- SUBCONJUNTO DE DATOS --> <!-- Conjunto de campos recuadrado y con titulo -->
+			<siga:ConjCampos leyenda="facturacion.serios.literal.formaPago">
+				<table align="center" border="0">
+					<tr>
+						<td width="60%" class="labelText">
+						<siga:Idioma key="facturacion.serios.literal.formaPagoSeleccionar" />:  
+						</td>
+						<td width="40%" class="labelText" align="right">
+						<%
+						 	if (vSec.isEmpty()) {
+						 					int i = 0;
+						 %>
+												<%
+													if (accion != "ver") {
+												%> <siga:ComboBD
+													nombre="formaPagoAutomática"
+													tipo="cmbFormaPagoAutomaticoSerie" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=i%>" obligatorio="true"/> <%
+						 	} else {
+						 %> <siga:ComboBD
+													nombre="formaPagoAutomática"
+													tipo="cmbFormaPagoAutomaticoSerie" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=i%>" obligatorio="true"
+													readOnly="true" /> <%
+						 	}
+						 %> <%
+						 	} else {
+						
+						 					ArrayList elementoSel = new ArrayList();
+						 					for (int kk = 0; kk < vSec.size(); kk++) {
+						 						elementoSel.add(vSec.get(kk));
+						 					}
+						 %> <%
+						 	if (accion != "ver") {
+						 %> <siga:ComboBD
+													nombre="formaPagoAutomática"
+													tipo="cmbFormaPagoAutomaticoSerie" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=vSec%>" obligatorio="true"/> <%
+						 	} else {
+						 %>
+												<siga:ComboBD nombre="formaPagoAutomática"
+													tipo="cmbFormaPagoAutomaticoSerie" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=vSec%>" obligatorio="true"
+													readOnly="true" /> <%
+						 	}
+						 %> <%
+						 	}
+						 %> 
+						 <br/>
+						</td>
+					</tr>
+				</table>
+			</siga:ConjCampos>
+			</td>
+		</tr>
+	
+<% if (accion.equals("nuevo")) {  %>
+
+	</table>
+	
+<% } else {  %>
+	</table>
+
+<% }  %>	
+<% if (accion.equals("nuevo")) {  %>
+	<table class="tablaCentralCampos" >
+		<tr>
+			<td style="width:100%"><!-- SUBCONJUNTO DE DATOS --> <!-- Conjunto de campos recuadrado y con titulo -->
+				<siga:ConjCampos leyenda="facturacion.serios.literal.formaPago">
+					<table align="center" border="0">
+						<tr>
+							<td width="60%" class="labelText" align="left"><siga:Idioma
+								key="facturacion.serios.literal.formaPagoSeleccionar" />:  
+							</td>
+							<td width="40%" class="labelText" align="right">
+								<%
+								int i = 0;
+								%> <siga:ComboBD
+									nombre="formaPagoAutomática"
+									tipo="cmbFormaPagoAutomaticoSerie" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=i%>" obligatorio="true"/>
+								<br/>
+							</td> 
+						</tr>
+					</table>
+				</siga:ConjCampos>
+			</td>
+		</tr>
+	</table>	
+<%} %>		
 
 			</html:form>
 

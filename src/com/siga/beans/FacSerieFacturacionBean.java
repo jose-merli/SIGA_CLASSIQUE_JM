@@ -17,29 +17,30 @@ public class FacSerieFacturacionBean extends MasterBean {
 
 					configDeudor, configIngresos, cuentaIngresos, cuentaClientes,tipoSerie, observaciones;
 
-					
+	private String[] formaPagoAutomática;				
 
 
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "FAC_SERIEFACTURACION";
 	
 	/* Nombre campos de la tabla */
-	static public final String C_IDINSTITUCION 		= "IDINSTITUCION";
-	static public final String C_IDSERIEFACTURACION = "IDSERIEFACTURACION";
-	static public final String C_IDPLANTILLA 		= "IDPLANTILLA";
-	static public final String C_DESCRIPCION 		= "DESCRIPCION";
-	static public final String C_NOMBREABREVIADO 	= "NOMBREABREVIADO";
-	static public final String C_ENVIOFACTURA 		= "ENVIOFACTURAS";
-	static public final String C_GENERARPDF 		= "GENERARPDF";
-	static public final String C_IDCONTADOR 		= "IDCONTADOR";
-	static public final String C_CONFDEUDOR			= "CONFDEUDOR";		
-	static public final String C_CONFINGRESOS		= "CONFINGRESOS";
-	static public final String C_CTAINGRESOS		= "CTAINGRESOS";
-	static public final String C_CTACLIENTES		= "CTACLIENTES";
-	static public final String C_OBSERVACIONES 		= "OBSERVACIONES";
-	static public final String C_TIPOSERIE			= "TIPOSERIE";
+	static public final String C_IDINSTITUCION 		 = "IDINSTITUCION";
+	static public final String C_IDSERIEFACTURACION  = "IDSERIEFACTURACION";
+	static public final String C_IDPLANTILLA 		 = "IDPLANTILLA";
+	static public final String C_DESCRIPCION 		 = "DESCRIPCION";
+	static public final String C_NOMBREABREVIADO 	 = "NOMBREABREVIADO";
+	static public final String C_ENVIOFACTURA 		 = "ENVIOFACTURAS";
+	static public final String C_GENERARPDF 		 = "GENERARPDF";
+	static public final String C_IDCONTADOR 		 = "IDCONTADOR";
+	static public final String C_CONFDEUDOR			 = "CONFDEUDOR";		
+	static public final String C_CONFINGRESOS		 = "CONFINGRESOS";
+	static public final String C_CTAINGRESOS		 = "CTAINGRESOS";
+	static public final String C_CTACLIENTES		 = "CTACLIENTES";
+	static public final String C_OBSERVACIONES 		 = "OBSERVACIONES";
+	static public final String C_TIPOSERIE			 = "TIPOSERIE";
 	static public final String C_IDTIPOPLANTILLAMAIL = "IDTIPOPLANTILLAMAIL";
 	static public final String C_IDTIPOENVIOS		 = "IDTIPOENVIOS";
+	static public final String C_IDFORMAPAGO	     = "IDFORMAPAGO";
 	
 	// Metodos SET
 	public void setIdInstitucion (Integer id)		{ this.idInstitucion = id; }
@@ -56,6 +57,7 @@ public class FacSerieFacturacionBean extends MasterBean {
 	public void setCuentaIngresos(String cuentaIngresos) {	this.cuentaIngresos = cuentaIngresos;	}
 	public void setObservaciones (String d)			     { this.observaciones = d; }
 	public void setTipoSerie(String valor) {	this.tipoSerie = valor;	}
+	public void setFormaPagoAutomática(String[] formaPagoAutomática) {this.formaPagoAutomática = formaPagoAutomática;}
 
 	
 	// Metodos GET
@@ -86,6 +88,15 @@ public class FacSerieFacturacionBean extends MasterBean {
 	}
 	public void setIdTipoEnvios(Integer idTipoEnvios) {
 		this.idTipoEnvios = idTipoEnvios;
+	}	
+	
+	public String[] getFormaPagoAutomática() {
+		
+		// Al cmabiar el tipo de campo en la jsp es necesario partir la cadena
+		if (formaPagoAutomática.length == 1) {
+			return formaPagoAutomática[0].split(",");
+		}		
+		return formaPagoAutomática;
 	}	
 	
 }

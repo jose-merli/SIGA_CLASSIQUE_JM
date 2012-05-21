@@ -10,6 +10,7 @@ import java.util.*;
 import com.atos.utils.*;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.general.SIGAException;
 
 
 public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
@@ -407,4 +408,103 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 		}
 		return salida;
 	}	
+	
+	
+	/** 
+	 * Recoge las formas de pago relacionadas con un determinado registro por sus claves <br/>
+	 * y su atributo Internet
+	 * @param  idInst - identificador de la institucion 
+	 * @param  idTipoProd - identificador del tipo de producto
+	 * @param  idProd - identificador del producto	 
+	 * @param  idProdInst - identificador del producto institucion	  
+	 * @param  internet - descripcion de la forma de pago 
+	 * @return  Vector - Filas seleccionadas  
+	 * @exception  ClsExceptions, SIGAException
+	 */
+	public Vector obtenerFormasPago (String idInstitucion, String idSerieFacturacion) throws ClsExceptions, SIGAException {
+		   Vector datos=new Vector();
+	       try {
+	            RowsContainer rc = new RowsContainer(); 
+	            String sql ="SELECT " +
+	            			FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION  + "," +
+	            			FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + "," +
+	            			FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_IDFORMAPAGO + "," +
+	            			FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_FECHAMODIFICACION + ", " +
+	            			FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_USUMODIFICACION +
+							" FROM " + FacSerieFacturacionBean.T_NOMBRETABLA + ", " + FacFormaPagoSerieBean.T_NOMBRETABLA + 
+							" WHERE " +
+							FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDINSTITUCION + "=" + idInstitucion +
+							" AND " +
+							FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDSERIEFACTURACION + "=" + idSerieFacturacion +
+	            			" AND " +							
+	            			FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDINSTITUCION + "=" + FacFormaPagoSerieBean.T_NOMBRETABLA + "." + PysFormaPagoProductoBean.C_IDINSTITUCION + "(+)" +
+							" AND " +
+							FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDSERIEFACTURACION + "=" + FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_IDSERIEFACTURACION  + "(+)";
+					
+							
+	            if (rc.find(sql)) {
+	               for (int i = 0; i < rc.size(); i++){
+	                  Row fila = (Row) rc.get(i);
+	                  datos.add(fila);
+	               }
+	            } 
+	       }
+		   catch (Exception e) {
+	       		if (e instanceof SIGAException){
+	       			throw (SIGAException)e;
+	       		}
+	       		else{
+	       			throw new ClsExceptions(e,"Error al obtener las formas de pago relacionadas.");
+	       		}	
+		   }
+	       return datos;                        
+	    }	
+	
+	/** 
+	 * Recoge las formas de pago relacionadas con un determinado registro por sus claves <br/>
+	 * y su atributo Internet
+	 * @param  idInst - identificador de la institucion 
+	 * @param  idTipoProd - identificador del tipo de producto
+	 * @param  idProd - identificador del producto	 
+	 * @param  idProdInst - identificador del producto institucion	  
+	 * @param  internet - descripcion de la forma de pago 
+	 * @return  Vector - Filas seleccionadas  
+	 * @exception  ClsExceptions, SIGAException
+	 */
+	public Vector obtenerIdPago (String idInstitucion, String idSerieFacturacion) throws ClsExceptions, SIGAException {
+		   Vector datos=new Vector();
+	       try {
+	            RowsContainer rc = new RowsContainer(); 
+	            String sql ="SELECT " +
+		    			FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION  + "," +
+		    			FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + "," +
+		    			FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_IDFORMAPAGO + 				
+							" FROM " + FacSerieFacturacionBean.T_NOMBRETABLA + ", " + FacFormaPagoSerieBean.T_NOMBRETABLA + 
+							" WHERE " +
+							FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDINSTITUCION + "=" + idInstitucion +
+							" AND " +
+							FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDSERIEFACTURACION + "=" + idSerieFacturacion +
+	            			" AND " +							
+	            			FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDINSTITUCION + "=" + FacFormaPagoSerieBean.T_NOMBRETABLA + "." + PysFormaPagoProductoBean.C_IDINSTITUCION + "(+)" +
+							" AND " +
+							FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDSERIEFACTURACION + "=" + FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_IDSERIEFACTURACION  + "(+)";
+					
+							
+	            if (rc.find(sql)) {
+	               for (int i = 0; i < rc.size(); i++){
+	                  Row fila = (Row) rc.get(i);
+	                  datos.add(fila);
+	               }
+	            } 
+	       }
+		   catch (Exception e) {
+	       		if (e instanceof SIGAException){
+	       			throw (SIGAException)e;
+	       		}
+	       		else{
+	       			throw new ClsExceptions(e,"Error al obtener las formas de pago relacionadas.");
+	       		}	
+		   }
+	       return datos;                        
+	    }		
 }

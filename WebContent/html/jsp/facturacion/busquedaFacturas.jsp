@@ -191,7 +191,7 @@
 			<siga:ConjCampos leyenda="facturacion.buscarCliente.leyenda">	
 			<table class="tablaCampos" align="center" border="0">
 				<tr>
-					<td class="labelText" width="10"><siga:Idioma key="facturacion.buscarFactura.literal.Cliente"/>&nbsp;&nbsp;&nbsp;&nbsp;
+					<td class="labelText" width="140"><siga:Idioma key="Colegiado Suscrito"/>&nbsp;&nbsp;&nbsp;&nbsp;
 					</td>
 					<td  width="150"> 
 					<% if (!user.isLetrado()) { %>
@@ -199,9 +199,10 @@
 						<html:button property="idButton" onclick="return limpiarCliente();" styleClass="button"><siga:Idioma key="general.boton.clear"/> </html:button>
 					<% } %>
 					</td>
-					<td class="labelText" width="400"> 
+					<td class="labelText" width="200"> 
 					<input type="text" name="buscarNombreCliente" value="<%=UtilidadesString.mostrarDatoJSP(nombreClienteAnterior)%>" size="50" class="boxConsulta" readOnly="true"/>
 					</td>
+					
 					<td class="labelText" ><siga:Idioma key="facturacion.buscarFactura.literal.Deudor"/>&nbsp;&nbsp;&nbsp;&nbsp;
 					</td>
 					<td colspan="2"> 
