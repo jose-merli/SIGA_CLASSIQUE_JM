@@ -41,7 +41,6 @@ import com.siga.beans.CenClienteBean;
 import com.siga.beans.CenColaCambioLetradoAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
-import com.siga.beans.CenDireccionTipoDireccionBean;
 import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenHistoricoAdm;
@@ -52,8 +51,6 @@ import com.siga.beans.CenNoColegiadoAdm;
 import com.siga.beans.CenNoColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
-import com.siga.beans.CenSoliModiDireccionesAdm;
-import com.siga.beans.CenSoliModiDireccionesBean;
 import com.siga.beans.CenSolicModifExportarFotoAdm;
 import com.siga.beans.CenSolicModifExportarFotoBean;
 import com.siga.beans.CenSolicitModifDatosBasicosAdm;
@@ -944,7 +941,10 @@ public class DatosGeneralesAction extends MasterAction {
 			// primero compruebo la existencia del nif
 			// pero solamente cuando ha cambiado el NIF
 			String nifAnterior = (String) hashOriginal.get(CenPersonaBean.C_NIFCIF); 
-			if (nifAnterior!=null && !nifAnterior.toUpperCase().equals(miForm.getNumIdentificacion().toUpperCase())) {
+			String nifNuevo = (String)miForm.getNumIdentificacion().toUpperCase();			
+			if(nifNuevo.length()<9)
+				nifNuevo = UtilidadesString.relleno("0",9 - nifNuevo.length()) + nifNuevo;  
+			if (nifAnterior!=null && !nifAnterior.toUpperCase().equals(nifNuevo)) {
 				if (adminPer.existeNifPersona(miForm.getNumIdentificacion(), miForm.getNombre(), miForm.getApellido1(), miForm.getApellido2())) {
 				      throw new SIGAException("messages.censo.nifcifExiste");
 				}
