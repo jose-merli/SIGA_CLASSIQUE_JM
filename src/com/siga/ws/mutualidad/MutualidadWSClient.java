@@ -304,9 +304,14 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 			
 			Integracion_Solicitud_Respuesta response = stub.MGASolicitudPolizaProfesional(datosBancarios, datosPoliza, datosDirecciones, datosPersona, datosSolicitud, datosSolicitudEstados, datosBeneficiarios);
 			
-			respuesta.setCorrecto(true);
-			respuesta.setIdSolicitud(response.getIdSolicitud());
-			respuesta.setPDF(response.getPDF());
+			if(response.getIdSolicitud()!=null && response.getIdSolicitud()!=0){
+				respuesta.setCorrecto(true);
+				respuesta.setIdSolicitud(response.getIdSolicitud());
+				respuesta.setPDF(response.getPDF());
+			}else{
+				respuesta.setCorrecto(false);
+				respuesta.setMensajeError(response.getValorRespuesta());	
+			}
 
 		}catch (Exception e) {
 			escribeLog("Error en llamada al solicitar alta en el plan profesional: " + e.getMessage());
@@ -371,7 +376,7 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 		
 		dp.setProfesion("Abogado"); // Ponemos fijo Abogado porque nadie mas lo va a usar
 		
-		dp.setColegio("");
+		dp.setColegio(ht.get("colegio"));
 		
 		dp.setAsistenciaSanitaria(Integer.parseInt(ht.get("asistenciaSanitaria")));
 		

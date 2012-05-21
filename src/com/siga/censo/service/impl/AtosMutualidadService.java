@@ -16,6 +16,8 @@ import com.siga.beans.CenCuentasBancariasAdm;
 import com.siga.beans.CenCuentasBancariasBean;
 import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
+import com.siga.beans.CenInfluenciaAdm;
+import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.CenSolicitudIncorporacionAdm;
@@ -42,7 +44,7 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		super(businessManager);
 	}
 	
-	public void insertarSolicitudMutualidad(MutualidadForm mutualidadForm, UsrBean usrBean)throws Exception{
+	public RespuestaMutualidad insertarSolicitudMutualidad(MutualidadForm mutualidadForm, UsrBean usrBean)throws Exception{
 		CenSolicitudMutualidadBean solicitudMutualidadBean = mutualidadForm.getMutualidadBean();
 		CenSolicitudMutualidadAdm solicitudMutualidadAdm = new CenSolicitudMutualidadAdm(usrBean);
 		solicitudMutualidadBean.setIdEstado(CenSolicitudMutualidadBean.ESTADO_INICIAL);
@@ -58,7 +60,7 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		solicitudMutualidadBean.setIdSolicitudAceptada(null);
 		solicitudMutualidadAdm.insert(solicitudMutualidadBean);
 		RespuestaMutualidad respuestaSolicitud = altaMutualidad(mutualidadForm,usrBean);
-		if(mutualidadForm.getIdSolicitudAceptada()!=null && !mutualidadForm.getIdSolicitudAceptada().equals("0")){
+		if(mutualidadForm.getIdSolicitudAceptada()!=null && !mutualidadForm.getIdSolicitudAceptada().equals("") && !mutualidadForm.getIdSolicitudAceptada().equals("0")){
 			solicitudMutualidadBean.setIdSolicitudAceptada(new Long(mutualidadForm.getIdSolicitudAceptada()));
 			
 			solicitudMutualidadBean.setEstado(CenSolicitudMutualidadBean.ESTADO_PTERESPUESTA);
@@ -78,6 +80,7 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 				insertarSolicitudMutualidad(mutualidadForm, usrBean);
 			}
 		}
+		return respuestaSolicitud;
 	}
 	private RespuestaMutualidad altaMutualidad(MutualidadForm mutualidadForm, UsrBean usrBean) throws Exception{
 		MutualidadWSClient mutualidadWSClient =  new MutualidadWSClient(usrBean);
@@ -88,7 +91,8 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 			respuestaAlta = mutualidadWSClient.altaAccidentesUniversal(getFormularioAlta(mutualidadForm));
 		else 
 			throw new SIGAException("El tipo de solicitud no esta implementado");
-		mutualidadForm.setIdSolicitudAceptada(respuestaAlta.getIdSolicitud().toString());
+		if(respuestaAlta.isCorrecto())
+			mutualidadForm.setIdSolicitudAceptada(respuestaAlta.getIdSolicitud().toString());
 		return respuestaAlta;
 		
 	}
@@ -230,7 +234,7 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 				mutualidadForm.getEdadHijo10();
 		datosPersona.put("edadesHijos", edadeshijos);
 		//No pasamos el colegio
-//		datosSolicitud.put("colegio", mutualidadForm);
+		datosPersona.put("colegio", mutualidadForm.getColegio());
 		//en ejerciente Pasamos el id del tipo de solicitud de incorporacion. hay dudas pasamos 0
 		datosPersona.put("ejerciente", "");
 		datosPersona.put("estadoCivil", mutualidadForm.getIdEstadoCivil());
@@ -357,6 +361,8 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		CenDireccionesAdm dirAdm = new CenDireccionesAdm(usr);
 		CenDireccionesBean dirBean = dirAdm.obtenerDireccionTipo(idPersona, idInstitucion, Integer.toString(ClsConstants.TIPO_DIRECCION_CENSOWEB));
 		
+		CenInstitucionAdm instAdm = new CenInstitucionAdm(usr);
+		
 		CenCuentasBancariasAdm cuentaAdm = new CenCuentasBancariasAdm(usr);
 		ArrayList<CenCuentasBancariasBean> cuentasArr = cuentaAdm.getCuentasCargo(Long.parseLong(idPersona), Integer.parseInt(idInstitucion));
 		
@@ -405,6 +411,9 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 			// Nos tenemos que ir a bbdd a por algunos valores
 			mutualidadForm.setTratamiento(cliAdm.getTratmiento(Long.parseLong(idPersona), Integer.parseInt(idInstitucion)));
 			mutualidadForm.setEstadoCivil(perAdm.getEstadoCivil(Long.parseLong(idPersona)));
+			
+			mutualidadForm.setIdInstitucion(usr.getLocation());
+			mutualidadForm.setColegio(instAdm.getAbreviaturaInstitucion(mutualidadForm.getIdInstitucion()));
 		}
 		return mutualidadForm;
 	}
@@ -448,12 +457,13 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 	public MutualidadForm getDatosSolicitudIncorporacion(MutualidadForm form, String idSolicitud, UsrBean usr) throws Exception {
 		CenSolicitudIncorporacionAdm solIncAdm = new CenSolicitudIncorporacionAdm(usr);
 		GenCatalogosWSAdm catAdm = new GenCatalogosWSAdm(usr);
+		CenInstitucionAdm instAdm = new CenInstitucionAdm(usr);
 		Hashtable hash = new Hashtable();
 		hash.put(CenSolicitudIncorporacionBean.C_IDSOLICITUD, idSolicitud);
 		Vector v = solIncAdm.selectByPK(hash);
 		if(v.size()==1){
 			CenSolicitudIncorporacionBean bean = (CenSolicitudIncorporacionBean)v.get(0);
-			form.setIdInstitucion(bean.getIdInstitucion().toString());
+			form.setIdInstitucion(usr.getLocation());
 			form.setTipoIdentificacion(bean.getIdTipoIdentificacion().toString());
 			form.setIdTipoIdentificacion(bean.getIdTipoIdentificacion().toString());
 			form.setNumeroIdentificacion(bean.getNumeroIdentificador()!=null?bean.getNumeroIdentificador().toString():"");
@@ -462,7 +472,7 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 			form.setNombre(bean.getNombre());
 			form.setApellido1(bean.getApellido1());
 			form.setApellido2(bean.getApellido2());
-			form.setNacionalidad(bean.getNaturalDe()); 
+			form.setNacionalidad(""); 
 			form.setFechaNacimiento(UtilidadesString.formatoFecha( bean.getFechaNacimiento(), ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH)); 
 			form.setEstadoCivil(bean.getIdEstadoCivil()!=null?bean.getIdEstadoCivil().toString():"");
 			form.setIdPais(bean.getIdPais());
@@ -485,6 +495,8 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 			form.setIdTratamiento(bean.getIdTratamiento()!=null?bean.getIdTratamiento().toString():"");
 			form.setIdEstadoCivil(bean.getIdEstadoCivil()!=null?bean.getIdEstadoCivil().toString():"");
 			form.setIdSolicitudIncorporacion(bean.getIdSolicitud().toString());
+			form.setIdInstitucion(usr.getLocation());
+			form.setColegio(instAdm.getAbreviaturaInstitucion(form.getIdInstitucion()));
 			
 			form.setTipoIdentificacion(catAdm.getValor(AlterMutuaHelper.CATALOGO, AlterMutuaHelper.CONJUNTO_TIPOIDENTIFICADOR, bean.getIdTipoIdentificacion().toString()));
 			form.setSexo(catAdm.getValor(AlterMutuaHelper.CATALOGO, AlterMutuaHelper.CONJUNTO_SEXO, bean.getSexo()));

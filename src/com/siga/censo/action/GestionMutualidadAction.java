@@ -395,7 +395,7 @@ public class GestionMutualidadAction extends MasterAction {
 			}else {
 				mutualidadForm.setOrigenSolicitud(CenSolicitudMutualidadBean.FICHA_COLEGIAL);
 			}
-			mutualidadService.insertarSolicitudMutualidad(mutualidadForm, usrBean);
+			RespuestaMutualidad respuesta = mutualidadService.insertarSolicitudMutualidad(mutualidadForm, usrBean);
 //			String[] parametros = {mutualidadForm.getIdSolicitud(),mutualidadForm.getEstado()};
 			if(mutualidadForm.getIdSolicitudAceptada()!=null && !mutualidadForm.getIdSolicitudAceptada().equals("") && !mutualidadForm.getIdSolicitudAceptada().equals("0")){
 				String[] parametros = {mutualidadForm.getIdSolicitud(),mutualidadForm.getIdSolicitudAceptada(),mutualidadForm.getEstado(),""+CenSolicitudMutualidadBean.ESTADO_SOLICITADO};
@@ -405,11 +405,15 @@ public class GestionMutualidadAction extends MasterAction {
 				request.setAttribute("parametrosArray", parametros);
 				
 			}
-			if(mapping.getPath().equalsIgnoreCase("/CEN_Mutualidad")) {
-				request.setAttribute("modal","");
-				forward = "exitoParametros";
-			}else {
-				forward = exitoRefresco("messages.updated.success",request);
+			if(respuesta.getMensajeError()!=null && !respuesta.getMensajeError().equalsIgnoreCase("")){
+				forward = exito(respuesta.getMensajeError(),request);
+			}else{
+				if(mapping.getPath().equalsIgnoreCase("/CEN_Mutualidad")) {
+					request.setAttribute("modal","");
+					forward = "exitoParametros";
+				}else {
+					forward = exitoRefresco("messages.updated.success",request);
+				}
 			}
 		} catch (Exception e) {
 			throwExcp("messages.general.errorExcepcion", e, null); 

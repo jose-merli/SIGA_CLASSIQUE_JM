@@ -38,6 +38,7 @@ import com.siga.general.MasterForm;
 	private String fechaNacimiento;
 	private String estadoCivil;
 	private String idEstadoCivil;
+	private String colegio;
 	
 	
 	private String idPais;
@@ -700,6 +701,12 @@ import com.siga.general.MasterForm;
 	}
 	public void setOrigenSolicitud(String origenSolicitud) {
 		this.origenSolicitud = origenSolicitud;
+	}
+	public String getColegio() {
+		return colegio;
+	}
+	public void setColegio(String colegio) {
+		this.colegio = colegio;
 	}
 	
 	

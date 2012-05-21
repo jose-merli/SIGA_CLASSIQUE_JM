@@ -13,7 +13,7 @@ import com.siga.ws.mutualidad.RespuestaMutualidad;
 import es.satec.businessManager.BusinessService;
 
 public interface MutualidadService extends BusinessService{
-	public void insertarSolicitudMutualidad(MutualidadForm mutualidadForm, UsrBean usrBean)throws Exception;
+	public RespuestaMutualidad insertarSolicitudMutualidad(MutualidadForm mutualidadForm, UsrBean usrBean)throws Exception;
 	public List<CenSolicitudMutualidadBean> getSolicitudesMutualidad(CenSolicitudIncorporacionBean solicitudIncorporacionBean, UsrBean usrBean)throws ClsExceptions ;
 	public MutualidadForm getSolicitudMutualidad(MutualidadForm mutualidadForm, String idPersona,String idTipoSolicitud,UsrBean usrBean) throws ClsExceptions, SIGAException ;
 	public MutualidadForm setMutualidadForm(MutualidadForm mutualidadForm, UsrBean usrBean) throws Exception;

@@ -115,6 +115,7 @@
 <html:hidden property="poblacion"/>
 <html:hidden property="idEstado"/>
 <html:hidden property="estado"/>
+<html:hidden property="colegio"/>
 <html:hidden property="estadoMutualista"/>
 
 <input type="hidden" name="actionModal" value="">
@@ -775,11 +776,11 @@
 			deshabilitaCampos();
 			if(!confirm("<siga:Idioma key='censo.mutualidad.literal.confirmacion'/>")){
 				// Si no aceptan el disclaimer salimos de la aplicacion
-				habilitaCampos();
 				fin();
+				habilitaCampos();
 				return false;		
 			}
-			
+			habilitaCampos();
 			document.MutualidadForm.submit();
 		}else{
 			fin();
