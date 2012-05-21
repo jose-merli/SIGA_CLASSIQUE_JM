@@ -1699,155 +1699,100 @@ public class DatosGeneralesPagoAction extends MasterAction {
 		double importeTotalMovimiento;
 		double importeAnteriorAplicado;
 		Integer auxIdMovimiento = null;
+		Integer auxIdMovimientoAnt = 0;
 		String ausFechaModificacion;
 		String auxUsuarioModificacion;
 		double importeNuevoMovimiento;
 		boolean noAplica = false;
+		
+		FcsAplicaMovimientosVariosAdm aplicaMovimientosVariosAdm = new FcsAplicaMovimientosVariosAdm(
+				usr);		
 
 		try {
 
 			// obtiene todos los movimientos varios del colegiado ordenados por
-			// fecha de alta
+			// importe y fecha de alta
 			FcsMovimientosVariosAdm movimientosAdm = new FcsMovimientosVariosAdm(
 					usr);
 			Vector movimientos = movimientosAdm.getMovimientosRW(
 					movimientosBean.getIdInstitucion().toString(), idPago,
 					movimientosBean.getIdPersona().toString());
 
-			// obtiene la suma de todos los movimientos varios positivos
 			for (int contador = 0; contador < movimientos.size(); contador++) {
-				
-				if (!noAplica){
+
+				if (!noAplica) {
 
 					if (FcsMovimientosVariosBean.C_IDMOVIMIENTO != null) {
 						auxIdMovimiento = UtilidadesHash.getInteger(
 								(Hashtable) movimientos.get(contador),
 								FcsMovimientosVariosBean.C_IDMOVIMIENTO);
 					}
-
-					importeTotalMovimiento = UtilidadesHash.getDouble(
-						(Hashtable) movimientos.get(contador),
-						FcsMovimientosVariosBean.C_CANTIDAD).doubleValue();
-					ausFechaModificacion = UtilidadesHash.getString(
-						(Hashtable) movimientos.get(contador),
-						FcsMovimientosVariosBean.C_FECHAMODIFICACION);
-					auxUsuarioModificacion = UtilidadesHash.getString(
-						(Hashtable) movimientos.get(contador),
-						FcsMovimientosVariosBean.C_USUMODIFICACION);
-
-					movimientosBean.setIdMovimiento(auxIdMovimiento);
-					movimientosBean.setFechaMod(ausFechaModificacion);
-					movimientosBean.setUsuMod(Integer
-						.valueOf(auxUsuarioModificacion));
-					movimientosBean.setCantidad(importeTotalMovimiento);
-
-					if (importeTotalMovimiento > -1) {
-						importeMovimientos += importeTotalMovimiento;
-					// iterMov.remove();
-						this.insertarAplicacionMovimientos(movimientosBean, idPago,
-							importeTotalMovimiento, usr);
-					} else {
-
-					// Si el importe del movimiento es mayor que el restante de
-					// movimientos positivos
-					// deja la cantidad resultante en 0, crea un MV con la
-					// diferencia y termina.
-
-						importeAnteriorAplicado = UtilidadesHash.getDouble(
-								(Hashtable) movimientos.get(contador),
-								FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO).doubleValue();
-						
-						importeTotalMovimiento = importeTotalMovimiento - importeAnteriorAplicado;
-						
-						importeMovimientos += importeTotalMovimiento;
 					
-						importeAplicado = importeTotalMovimiento - (importeSJCS + importeMovimientos);
+					if (auxIdMovimiento.intValue() != auxIdMovimientoAnt.intValue()) {
 
-						if ((importeSJCS + importeMovimientos) < 0) {
-						// importeNuevoMovimiento = importeSJCS +
-						// importeMovimientos;
-						//importeMovimientos = importeMovimientos + importeSJCS;
-						
-						
-						
-							movimientosBean.setCantidad(importeAplicado);
+						importeTotalMovimiento = UtilidadesHash.getDouble(
+								(Hashtable) movimientos.get(contador),
+								FcsMovimientosVariosBean.C_CANTIDAD).doubleValue();
+						ausFechaModificacion = UtilidadesHash.getString(
+								(Hashtable) movimientos.get(contador),
+								FcsMovimientosVariosBean.C_FECHAMODIFICACION);
+						auxUsuarioModificacion = UtilidadesHash.getString(
+								(Hashtable) movimientos.get(contador),
+								FcsMovimientosVariosBean.C_USUMODIFICACION);
+	
+						movimientosBean.setIdMovimiento(auxIdMovimiento);
+						movimientosBean.setFechaMod(ausFechaModificacion);
+						movimientosBean.setUsuMod(Integer
+								.valueOf(auxUsuarioModificacion));
+						movimientosBean.setCantidad(importeTotalMovimiento);
+	
+						if (importeTotalMovimiento > -1) {
+							// Si el importe del movimiento es positivo
+							importeMovimientos += importeTotalMovimiento;
 							this.insertarAplicacionMovimientos(movimientosBean,
-								idPago, importeAplicado, usr);
-						
-							importeMovimientos = (importeAplicado - (importeTotalMovimiento - (importeSJCS + importeMovimientos)) - importeSJCS);
-						
-							noAplica = true;
-						
-						/*
-						 * Hashtable movimientoBean = new Hashtable ();
-						 * movimientoBean
-						 * .put(FcsMovimientosVariosBean.C_CANTIDAD,
-						 * String.valueOf(importeNuevoMovimiento));
-						 * movimientoBean
-						 * .put(FcsMovimientosVariosBean.C_DESCRIPCION,
-						 * UtilidadesString.getMensajeIdioma( usr.getLanguage(),
-						 * "factSJCS.abonos.literal.descripcionMovimiento"));
-						 * movimientoBean
-						 * .put(FcsMovimientosVariosBean.C_FECHAALTA,
-						 * "SYSDATE");
-						 * movimientoBean.put(FcsMovimientosVariosBean
-						 * .C_FECHAMODIFICACION, "SYSDATE");
-						 * movimientoBean.put(FcsMovimientosVariosBean
-						 * .C_IDINSTITUCION,
-						 * movimientosBean.getIdInstitucion().toString());
-						 * movimientoBean
-						 * .put(FcsMovimientosVariosBean.C_IDPERSONA,
-						 * movimientosBean.getIdPersona().toString());
-						 * movimientoBean
-						 * .put(FcsMovimientosVariosBean.C_CONTABILIZADO, "0");
-						 * movimientoBean = movimientosAdm
-						 * .prepararInsert(movimientoBean);
-						 * movimientosAdm.insert (movimientoBean); // Seguir con
-						 * otro MV continue;
-						 */
+									idPago, importeTotalMovimiento, usr);
 						} else {
-							movimientosBean.setCantidad(importeTotalMovimiento);
-							this.insertarAplicacionMovimientos(movimientosBean,
-								idPago, importeTotalMovimiento, usr);
-						}
+	
+							// Si el importe del movimiento es negatio
+							
+							//Primero comprobamos si se ha aplicado anteriormente algun importe en 
+							// otro pago al movimiento
+							importeAnteriorAplicado = aplicaMovimientosVariosAdm.getSumaMovimientosAplicados(movimientosBean.getIdInstitucion().toString(), 
+									auxIdMovimiento.toString(), movimientosBean.getIdPersona().toString());
+	
+							importeTotalMovimiento = importeTotalMovimiento
+									- importeAnteriorAplicado;
+	
+							importeMovimientos += importeTotalMovimiento;
+	
+							importeAplicado = importeTotalMovimiento
+									- (importeSJCS + importeMovimientos);
+	
+							if ((importeSJCS + importeMovimientos) <= 0) {
+	
+								movimientosBean.setCantidad(importeAplicado);
+	
+								this.insertarAplicacionMovimientos(movimientosBean,
+										idPago, importeAplicado, usr);
+	
+								importeMovimientos = (importeAplicado
+										- (importeTotalMovimiento - (importeSJCS + importeMovimientos)) - importeSJCS);
+	
+								noAplica = true;
 
+							} else {
+	
+								movimientosBean.setCantidad(importeTotalMovimiento);
+								this.insertarAplicacionMovimientos(movimientosBean,
+										idPago, importeTotalMovimiento, usr);
+							}
+	
+						}
+						auxIdMovimientoAnt = auxIdMovimiento;
 					}
 				}
 
 			}
-			// Intentar aplicar MV negativos
-			/*
-			 * for(Iterator iterMov = movimientos.iterator();
-			 * iterMov.hasNext();){ importeTotalMovimiento =
-			 * UtilidadesHash.getDouble((Hashtable) iterMov.next(),
-			 * "CANTIDAD").doubleValue(); // importeMovimientos +=
-			 * importeTotalMovimiento; // Si no se pueden aplicar mas
-			 * movimientos negativos, sale de la iteracion if
-			 * (importeMovimientos == 0) break; // Si el importe del movimiento
-			 * es mayor que el restante de movimientos positivos // deja la
-			 * cantidad resultante en 0, crea un MV con la diferencia y termina.
-			 * if ((importeSJCS + importeMovimientos) < 0){
-			 * importeNuevoMovimiento = importeSJCS + importeMovimientos;
-			 * importeMovimientos = - importeSJCS; Hashtable movimientoBean =
-			 * new Hashtable ();
-			 * movimientoBean.put(FcsMovimientosVariosBean.C_CANTIDAD,
-			 * String.valueOf(importeNuevoMovimiento));
-			 * movimientoBean.put(FcsMovimientosVariosBean.C_DESCRIPCION,
-			 * UtilidadesString.getMensajeIdioma( usr.getLanguage(),
-			 * "factSJCS.abonos.literal.descripcionMovimiento"));
-			 * movimientoBean.put(FcsMovimientosVariosBean.C_FECHAALTA,
-			 * "SYSDATE");
-			 * movimientoBean.put(FcsMovimientosVariosBean.C_FECHAMODIFICACION,
-			 * "SYSDATE");
-			 * movimientoBean.put(FcsMovimientosVariosBean.C_IDINSTITUCION,
-			 * movimientosBean.getIdInstitucion().toString());
-			 * movimientoBean.put(FcsMovimientosVariosBean.C_IDPERSONA,
-			 * movimientosBean.getIdPersona().toString());
-			 * movimientoBean.put(FcsMovimientosVariosBean.C_CONTABILIZADO,
-			 * "0"); movimientoBean = movimientosAdm
-			 * .prepararInsert(movimientoBean); movimientosAdm.insert
-			 * (movimientoBean); // Seguir con otro MV continue; } }
-			 */
 		} catch (Exception e) {
 			throwExcp("messages.general.error",
 					new String[] { "modulo.facturacionSJCS" }, e, tx);

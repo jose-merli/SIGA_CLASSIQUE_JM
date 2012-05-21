@@ -547,6 +547,42 @@ public class FcsAplicaMovimientosVariosAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e,"Error en FcsAplicaMovimientosVariosAdm.getSumaMovimientos:"+consulta);
 		}
 	}
+
+	
+	/**
+	 * Devuelve la suma de los movimientos apliados al pago de un colegiado
+	 *  
+	 * @param idInstitucion
+	 * @param idPago
+	 * @param idPersona
+	 * @return
+	 */
+	public double getSumaMovimientosAplicados (String idInstitucion, String idMovimiento, String idPersona) throws ClsExceptions 
+	{
+		Vector resultado = new Vector();
+		//query con la select a ejecutar
+		String consulta = " SELECT sum(" + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + ") as importe" +
+							" from " + 	FcsAplicaMovimientosVariosBean.T_NOMBRETABLA +
+							" where "+FcsAplicaMovimientosVariosBean.C_IDINSTITUCION+" = "+ idInstitucion +
+							" and " + FcsAplicaMovimientosVariosBean.C_IDPERSONA + " = "+ idPersona +
+							" and " + FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO + " = " + idMovimiento ;
+							
+		try{
+			resultado = (Vector)this.selectGenerico(consulta);
+			if (resultado.isEmpty()){
+				return 0;
+			}
+			else{
+				String aux = ((Hashtable)resultado.get(0)).get("IMPORTE").toString();
+				if (aux == null || "".equals(aux))
+					return 0;
+				else
+					return Double.parseDouble(aux); 
+			}
+		}catch(Exception e){
+			throw new ClsExceptions (e,"Error en FcsAplicaMovimientosVariosAdm.getSumaMovimientos:"+consulta);
+		}
+	}	
 	
 	
 	/**
