@@ -24,6 +24,7 @@ import com.siga.beans.CenSolicitudIncorporacionAdm;
 import com.siga.beans.CenSolicitudIncorporacionBean;
 import com.siga.beans.CenSolicitudMutualidadAdm;
 import com.siga.beans.CenSolicitudMutualidadBean;
+import com.siga.beans.CenTratamientoAdm;
 import com.siga.beans.GenCatalogosWSAdm;
 import com.siga.censo.form.MutualidadForm;
 import com.siga.censo.service.MutualidadService;
@@ -297,7 +298,13 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		if(combosMutualidad.getCoberturas()!=null){
 			mutualidadForm.setOpcionesCobertura(combosMutualidad.getCoberturas());
 			//String primeraOpcionCobertura = mutualidadForm.getOpcionesCobertura().keySet().iterator().next();
-			mutualidadForm.setIdCobertura(mutualidadForm.getOpcionesCobertura().get(0).getKey());
+			String idCobertura = ""; 
+			if(mutualidadForm.getIdCobertura()!=null && !mutualidadForm.getIdCobertura().equalsIgnoreCase("")){
+				idCobertura=mutualidadForm.getIdCobertura();
+			}else{
+				idCobertura=mutualidadForm.getOpcionesCobertura().get(0).getKey();
+			}
+			mutualidadForm.setIdCobertura(idCobertura);
 			this.setCobertura(mutualidadForm,usrBean);
 			
 		}
@@ -458,6 +465,7 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		CenSolicitudIncorporacionAdm solIncAdm = new CenSolicitudIncorporacionAdm(usr);
 		GenCatalogosWSAdm catAdm = new GenCatalogosWSAdm(usr);
 		CenInstitucionAdm instAdm = new CenInstitucionAdm(usr);
+		CenTratamientoAdm tratamientoAdm = new CenTratamientoAdm(usr);
 		Hashtable hash = new Hashtable();
 		hash.put(CenSolicitudIncorporacionBean.C_IDSOLICITUD, idSolicitud);
 		Vector v = solIncAdm.selectByPK(hash);
@@ -468,7 +476,7 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 			form.setIdTipoIdentificacion(bean.getIdTipoIdentificacion().toString());
 			form.setNumeroIdentificacion(bean.getNumeroIdentificador()!=null?bean.getNumeroIdentificador().toString():"");
 			form.setSexo(bean.getSexo()); 
-			form.setTratamiento(bean.getIdTratamiento().toString()); 
+			form.setTratamiento(tratamientoAdm.getTratamiento(bean.getIdTratamiento().toString())); 
 			form.setNombre(bean.getNombre());
 			form.setApellido1(bean.getApellido1());
 			form.setApellido2(bean.getApellido2());
@@ -499,7 +507,7 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 			form.setColegio(instAdm.getAbreviaturaInstitucion(form.getIdInstitucion()));
 			
 			form.setTipoIdentificacion(catAdm.getValor(AlterMutuaHelper.CATALOGO, AlterMutuaHelper.CONJUNTO_TIPOIDENTIFICADOR, bean.getIdTipoIdentificacion().toString()));
-			form.setSexo(catAdm.getValor(AlterMutuaHelper.CATALOGO, AlterMutuaHelper.CONJUNTO_SEXO, bean.getSexo()));
+			form.setSexo(bean.getSexo());
 			form.setEstadoCivil(catAdm.getValor(AlterMutuaHelper.CATALOGO, AlterMutuaHelper.CONJUNTO_ESTADOCIVIL, form.getEstadoCivil()));
 		}
 		return form;

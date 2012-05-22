@@ -137,4 +137,28 @@ public class CenTratamientoAdm extends MasterBeanAdministrador {
 		}
 		return datos;
 	}	
+	
+	public String getTratamiento(String idTratamiento) throws ClsExceptions{
+		String tratamiento="";
+		RowsContainer rc = null;
+		try { 
+			rc = new RowsContainer(); 
+			String sql = " SELECT "+UtilidadesMultidioma.getCampoMultidioma(CenTratamientoBean.C_DESCRIPCION,this.usrbean.getLanguage())+" FROM "+CenTratamientoBean.T_NOMBRETABLA;
+			sql += " where " + CenTratamientoBean.C_IDTRATAMIENTO + "=" + idTratamiento;
+			if (rc.query(sql)) {
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					CenTratamientoBean registro = (CenTratamientoBean) this.hashTableToBeanInicial(fila.getRow()); 
+					if (registro != null) 
+						tratamiento = registro.getDescripcion();
+						
+				}
+			}
+		} 
+		catch (Exception e) { 	
+			throw new ClsExceptions (e, "Error al ejecutar el \"select\" en B.D."); 
+		}
+		return tratamiento;
+		
+	}
 }
