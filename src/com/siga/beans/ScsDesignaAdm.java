@@ -2913,8 +2913,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
                 sql.append(" and tdic.idtipodictamenejg(+) = ejg.idinstitucion");
                 sql.append(" and tur.idinstitucion(+) = ejg.idinstitucion ");
                 sql.append(" and tur.idturno(+) = ejg.guardiaturno_idturno ");
-                sql.append(" and procu.idprocurador= ejg.idprocurador ");
-                sql.append(" and procu.idinstitucion = "+idinstitucion);
+                sql.append(" and procu.idprocurador(+)= ejg.idprocurador ");
+                sql.append(" and procu.idinstitucion(+) = "+idinstitucion);
                 sql.append(" and des.anio = "+anio);
                 sql.append(" and des.numero = "+numero);
                 sql.append(" and des.idturno = "+idturno);
