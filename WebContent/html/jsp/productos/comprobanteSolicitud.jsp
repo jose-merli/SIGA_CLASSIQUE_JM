@@ -114,6 +114,18 @@
  			sub();
 			document.solicitudCompraForm.modo.value = "facturacionRapidaCompra";
 		 	document.solicitudCompraForm.target="submitArea";
+		 	tableCabecera = document.getElementById("cabecera");
+		 	filas = tableCabecera.rows.length;
+		 	numColumnas = tableCabecera.rows[0].cells.length - 1;
+		 	
+		 	for (a = 1; a < filas ; a++) {
+		 		tableCabecera.rows[a].cells[numColumnas].innerHTML = "";
+		 	}
+
+			var divAsistencias = document.getElementById("divAsistencias");
+			if(divAsistencias) 
+				 divAsistencias.innerHTML="";
+		 	
 		 	document.solicitudCompraForm.submit();
 		 	window.setTimeout("fin()",5000,"Javascript");
  		}

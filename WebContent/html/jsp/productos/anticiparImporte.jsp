@@ -31,8 +31,8 @@
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
 	
 	String totalAnticipado = (String) request.getAttribute("totalAnticipado");
-	String precioSolicitud = UtilidadesNumero.formato(UtilidadesNumero.redondea( (String) request.getAttribute("precioSolicitud"),2)).replace(',','.');
-	
+	//String precioSolicitud = UtilidadesNumero.formato(UtilidadesNumero.redondea( (String) request.getAttribute("precioSolicitud"),2));//.replace(',','.');
+	String precioSolicitud = (String) request.getAttribute("precioSolicitud");
 	String idTipoClave = (String) request.getAttribute("idTipoClave");
 	String idClave = (String) request.getAttribute("idClave");
 	String idClaveInstitucion = (String) request.getAttribute("idClaveInstitucion");
@@ -113,7 +113,7 @@
 												<siga:Idioma key="pys.mantenimientoServicios.literal.precioSolicitud"/>
 											</td>
 											<td class="labelTextNum">	
-												<%=precioSolicitud.replace('.',',')%>&nbsp;&euro;
+												<%=UtilidadesNumero.formatoCampo(precioSolicitud)%>&nbsp;&euro;
 											</td>
 										</tr>
 										<tr>
