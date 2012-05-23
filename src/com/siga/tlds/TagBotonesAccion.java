@@ -250,6 +250,9 @@ public class TagBotonesAccion extends TagSupport {
 				case GENERAR_INFORME:
 					printButton(usrbean, out, abc);
 					break;
+				case INFORME_RETENCIONES_IRPF:
+					printButton(usrbean, out, abc);
+					break;
 				case BA:
 					// tratamiento de botones de acceso rápido
 					// de momento solamente puede haber uno.
