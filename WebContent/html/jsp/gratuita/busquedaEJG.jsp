@@ -221,6 +221,12 @@
 				buscar('buscarPor');
 				
 		}
+
+		function consultas() 
+		{		
+			document.RecuperarConsultasForm.submit();
+			
+		}
 		
 		
 	</script>
@@ -250,6 +256,8 @@
 
 <body onLoad="inicio();ajusteAlto('resultado');" >
 <!--bean:define id="permisoEejg" scope="request" name="permisoEejg" type="java.lang.Boolean"/-->
+
+<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 
 	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="" style="display:none">
 		<input type="hidden" name="actionModal" value="">
@@ -564,22 +572,29 @@
 	<%if(ventanaCajg.equalsIgnoreCase("0")){%>
 	<%if(!esComision){%>
 		<%if(permisoEejg){ %>
-			<siga:ConjBotonesBusqueda botones="C,N,B,DEE"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+			<siga:ConjBotonesBusqueda botones="C,N,B,DEE, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
 		<%}else{ %>
-			<siga:ConjBotonesBusqueda botones="C,N,B"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+			<siga:ConjBotonesBusqueda botones="C,N,B, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
 		<%} %>
 	<%}else{ %>
 		<%if(permisoEejg){ %>
-			<siga:ConjBotonesBusqueda botones="C,B,DEE,ES"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+			<siga:ConjBotonesBusqueda botones="C,B,DEE,ES, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
 		<%}else{ %>
-			<siga:ConjBotonesBusqueda botones="C,B,ES"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+			<siga:ConjBotonesBusqueda botones="C,B,ES, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
 		<%} %>
 	<%} %>
 	<%}else if(ventanaCajg.equalsIgnoreCase("1")){%> <!-- Antiguo busquedaEJG_Cajg -->
-		<siga:ConjBotonesBusqueda botones="le,B"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+		<siga:ConjBotonesBusqueda botones="le,B, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
 	<%}else if(ventanaCajg.equalsIgnoreCase("2")){%> <!-- Antiguo busquedaEJG_Listos -->
-		<siga:ConjBotonesBusqueda botones="B,ar"  titulo="gratuita.BusquedaRemesas_CAJG.literal.Remesa.ExpedientesListos" />
+		<siga:ConjBotonesBusqueda botones="B,ar, CON"  titulo="gratuita.BusquedaRemesas_CAJG.literal.Remesa.ExpedientesListos" />
 	<%}%>
+	
+<html:form action="/CON_RecuperarConsultas" method="POST" target="mainWorkArea">
+	<html:hidden property="idModulo" value="<%=ConModuloBean.IDMODULO_SJCS%>"/>
+	<html:hidden property="modo" value="inicio"/>
+	<html:hidden property="accionAnterior" value="${path}"/>
+
+</html:form>	
 	<!-- FIN: BOTONES BUSQUEDA -->
 	
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->

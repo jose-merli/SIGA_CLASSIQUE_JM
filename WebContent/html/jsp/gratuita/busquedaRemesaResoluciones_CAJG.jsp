@@ -17,6 +17,7 @@
 
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@page import="com.siga.ws.CajgConfiguracion"%>
+<%@ page import="com.siga.beans.ConModuloBean"%>
 
 <!-- JSP -->
 
@@ -51,10 +52,10 @@
 		pcajgActivo = Integer.parseInt(request.getAttribute("pcajgActivo").toString());
 	}
 	
-	String botones = "N,B,L";
+	String botones = "N,B,L,CON";
 	
 	if (pcajgActivo == CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA) {
-		botones = "OR,B,L";
+		botones = "OR,B,L,CON";
 	}
 	
 	
@@ -105,6 +106,13 @@
 			//document.forms[0].target="resultado";
 			document.forms[0].submit();
 		}
+
+		function consultas() 
+		{		
+			document.RecuperarConsultasForm.submit();
+			
+		}
+		
 	</script>
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<siga:Titulo 
@@ -116,7 +124,7 @@
 
 <body  onload="inicio();ajusteAlto('resultado');inicio2();">
 
-	
+	<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
 	<html:form action="/JGR_E-Comunicaciones_RemesaResolucion.do?noReset=true" method="POST" target="resultado">
 		<html:hidden property = "modo" value = "inicio"/>
@@ -200,7 +208,11 @@
 	<!-- INICIO: BOTONES BUSQUEDA -->	
 	
 	<siga:ConjBotonesBusqueda botones="<%=botones%>"  titulo="gratuita.busquedaResolucionesCAJG.literal.Resoluciones" />
-	
+		<html:form action="/CON_RecuperarConsultas" method="POST" target="mainWorkArea">
+			<html:hidden property="idModulo" value="<%=ConModuloBean.IDMODULO_SJCS %>"/>
+			<html:hidden property="modo" value="inicio"/>
+			<html:hidden property="accionAnterior" value="${path}"/>		
+		</html:form>
 	<!-- FIN: BOTONES BUSQUEDA -->
 	
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->

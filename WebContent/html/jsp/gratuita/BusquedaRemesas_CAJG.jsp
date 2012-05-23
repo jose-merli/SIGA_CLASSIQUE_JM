@@ -159,7 +159,7 @@
 
 <body  onload="inicio();ajusteAlto('resultado');inicio2();">
 
-	
+	<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
 	<html:form action="/JGR_E-Comunicaciones_Gestion.do?noReset=true" method="POST" target="resultado">
 		<html:hidden property = "modo" value = "inicio"/>
@@ -260,7 +260,14 @@
 	
 	<!-- INICIO: BOTONES BUSQUEDA -->	
 	
-	<siga:ConjBotonesBusqueda botones="B,N"  titulo="gratuita.BusquedaRemesas_CAJG.literal.Remesa" />
+	<siga:ConjBotonesBusqueda botones="B,N,CON"  titulo="gratuita.BusquedaRemesas_CAJG.literal.Remesa" />
+	
+	<html:form action="/CON_RecuperarConsultas" method="POST" target="mainWorkArea">
+	<html:hidden property="idModulo" value="<%=ConModuloBean.IDMODULO_SJCS%>"/>
+	<html:hidden property="modo" value="inicio"/>
+	<html:hidden property="accionAnterior" value="${path}"/>
+
+</html:form>	
 	
 	<!-- FIN: BOTONES BUSQUEDA -->
 	
@@ -341,7 +348,12 @@
 			}
 		}
 
-		 
+		function consultas() 
+		{		
+			document.RecuperarConsultasForm.submit();
+			
+		}
+		
 		
 
 

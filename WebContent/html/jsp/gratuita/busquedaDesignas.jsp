@@ -17,6 +17,7 @@
 <%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="java.util.*"%>
+<%@ page import="com.siga.beans.ConModuloBean"%>
 
 <!-- JSP -->
 <% 
@@ -579,6 +580,12 @@ function generarCarta() {
 	}
 	
 } 	
+
+function consultas() 
+{		
+	document.RecuperarConsultasForm.submit();
+	
+}
 </script>
 <!--<input type="button" name="descarga" value="Descargar Factura Rectificativa" onclick="generaInformeGenericoSimple();" class="button">-->
 
@@ -591,8 +598,16 @@ function generarCarta() {
 	<%if(usr.isLetrado()){%>	
 		<siga:ConjBotonesBusqueda botones="C,B,IJ"  titulo="gratuita.busquedaDesignas.literal.titulo"/>
 	<%}else{%>
-		<siga:ConjBotonesBusqueda botones="C,B,N,IJ"  titulo="gratuita.busquedaDesignas.literal.titulo"/>
+		<siga:ConjBotonesBusqueda botones="C,B,N,IJ, CON"  titulo="gratuita.busquedaDesignas.literal.titulo"/>
+		<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
+		<html:form action="/CON_RecuperarConsultas" method="POST" target="mainWorkArea">
+			<html:hidden property="idModulo" value="<%=ConModuloBean.IDMODULO_SJCS %>"/>
+			<html:hidden property="modo" value="inicio"/>
+			<html:hidden property="accionAnterior" value="${path}"/>		
+		</html:form>
 	<%}%>
+	
+	
 
 	<!-- INICIO: IFRAME LISTA RESULTADOS -->
 	<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
