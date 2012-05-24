@@ -155,6 +155,15 @@ public class BusquedaExpedientesForm extends MasterForm {
  		}
  	}
 
+ 	public void setFechaHasta (String dato) { 
+ 		try {
+ 			UtilidadesHash.set(this.datos,"FechaHasta", dato);
+ 		} catch (Exception e) {
+ 			// escribimos la traza de momento
+ 			e.printStackTrace();
+ 		}
+ 	} 	
+ 	
  	public void setNombre (String dato) { 
  		try {
  			UtilidadesHash.set(this.datos,"Nombre", dato);
@@ -322,6 +331,10 @@ public class BusquedaExpedientesForm extends MasterForm {
  		return UtilidadesHash.getString(this.datos, "Fecha");		
  	}
 
+ 	public String getFechaHasta () 	{ 
+ 		return UtilidadesHash.getString(this.datos, "FechaHasta");		
+ 	}
+ 	
  	public String getNombre () 	{ 
  		return UtilidadesHash.getString(this.datos, "Nombre");		
  	}

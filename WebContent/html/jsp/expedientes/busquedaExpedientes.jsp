@@ -164,39 +164,26 @@
 
 				<!-- FILA -->
 				<tr>
-					<td width="15%"></td>
-					<td width="15%"></td>
-					<td width="20%"></td>
-					<td width="20%"></td>
-					<td width="15%"></td>
-					<td width="15%"></td>
-				</tr>
-				<tr>
-
-
-					<td class="labelText"><siga:Idioma
-							key="expedientes.auditoria.literal.tipo" />
+					<td class="labelText" style="width:250x;">
+						<siga:Idioma key="expedientes.auditoria.literal.tipo" />
 					</td>
 					<td><siga:ComboBD nombre="comboTipoExpediente"
 							tipo="cmbTipoExpedienteLocaloGeneralPermisos"
 							elementoSel="<%=vTipoExp%>" parametrosIn="<%=aPerfiles%>"
 							parametro="<%=datoTipoExp%>" clase="boxCombo" ancho="200"
 							obligatorio="false" hijo="t" /></td>
+					<td>&nbsp;</td>
 					<td class="labelText"><siga:Idioma
 							key="expedientes.auditoria.literal.otrainstitucion" /> <input
 						type="checkbox" name="checkGeneral" value="S"
 						<%if (general.equals("S")) {%> checked <%}%>
-						onclick="javascript:marked()" /></td>
-
-
+						onclick="javascript:marked()" />
+					</td>
 
 					<td colspan="3">
-
-
 						<table>
 							<tr>
-								<td class="labelText"><siga:Idioma
-										key="expedientes.literal.orden" />
+								<td class="labelText"><siga:Idioma key="expedientes.literal.orden" />
 								</td>
 								<td><html:select onchange="buscar();"
 										name="busquedaExpedientesForm" property="orden"
@@ -217,41 +204,48 @@
 							</tr>
 						</table>
 					</td>
-
-
 				</tr>
 
 				<!-- FILA -->
 				<tr>
-
-					<td class="labelText"><siga:Idioma
-							key="expedientes.auditoria.literal.nexpediente" />
+					<td class="labelText">
+						<siga:Idioma key="expedientes.auditoria.literal.nexpediente" />
 					</td>
-					<td class="labelTextValue"><html:text
+					<td><html:text
 							name="busquedaExpedientesForm" property="anioExpediente"
 							style="width:40px;" maxlength="4" styleClass="box"></html:text>&nbsp;/&nbsp;<html:text
 							name="busquedaExpedientesForm" property="numeroExpediente"
-							style="width:60px;" maxlength="6" styleClass="box"></html:text></td>
-
-					<td class="labelText"><siga:Idioma
-							key="expedientes.auditoria.literal.nexpdisciplinarioejg" />
+							style="width:60px;" maxlength="6" styleClass="box"></html:text>
 					</td>
-					<td class="labelTextValue"><html:text
+					<td>&nbsp;</td>
+					<td class="labelText" colspan="2">
+						<siga:Idioma key="expedientes.auditoria.literal.nexpdisciplinarioejg" />
+					</td>
+					<td>
+						<html:text
 							name="busquedaExpedientesForm" property="anioExpDisciplinario"
 							style="width:40px;" maxlength="4" styleClass="box"></html:text>&nbsp;/&nbsp;<html:text
 							name="busquedaExpedientesForm" property="numeroExpDisciplinario"
-							style="width:60px;" maxlength="6" styleClass="box"></html:text>
+							style="width:60px;" maxlength="6" styleClass="box">
+						</html:text>
 					</td>
-					<td class="labelText"><siga:Idioma
-							key="expedientes.gestionarExpedientes.fechaApertura" /></td>
+				</tr>
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="expedientes.gestionarExpedientes.fechaApertura" /></td>
 					<td><html:text name="busquedaExpedientesForm" property="fecha"
 							maxlength="10" size="10" styleClass="box" readonly="true">
-						</html:text> <a href='javascript://'
-						onClick="return showCalendarGeneral(fecha);"><img
-							src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
+							</html:text> <a href='javascript://'onClick="return showCalendarGeneral(fecha);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
 					</td>
-
-
+					<td>&nbsp;</td>
+					<td class="labelText" colspan="2">
+						<siga:Idioma key="expedientes.gestionarExpedientes.fechaAperturaHasta" /></td>
+					<td><html:text name="busquedaExpedientesForm" property="fechaHasta"
+							maxlength="10" size="10" styleClass="box" readonly="true">
+						</html:text> <a href='javascript://'
+						onClick="return showCalendarGeneral(fechaHasta);"><img
+							src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
+					</td>												
 				</tr>
 				<tr>
 					<td class="labelText"><siga:Idioma
@@ -260,9 +254,9 @@
 					<td colspan="2"><html:text name="busquedaExpedientesForm"
 							property="asunto" size="40" maxlength="70" styleClass="box"></html:text>
 					</td>
-					<td class="labelText">Campo Configurado</td>
-					<td colspan="2"><html:text name="busquedaExpedientesForm"
-							property="campoConfigurado" size="40" maxlength="40"
+					<td class="labelText" colspan="2">Campo Configurado</td>
+					<td ><html:text name="busquedaExpedientesForm"
+							property="campoConfigurado" size="42" maxlength="40"
 							styleClass="box"></html:text>
 					</td>
 
@@ -272,7 +266,7 @@
 							key="expedientes.auditoria.literal.observaciones" />
 					</td>
 					<td colspan="5"><html:text name="busquedaExpedientesForm"
-							property="observaciones" size="130" maxlength="4000"
+							property="observaciones" size="128" maxlength="4000"
 							styleClass="box"></html:text>
 					</td>
 				</tr>

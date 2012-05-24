@@ -396,7 +396,11 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		String anioExpediente = form.getAnioExpediente();
 		String numeroExpDisciplinario = form.getNumeroExpDisciplinario();
 		String anioExpDisciplinario = form.getAnioExpDisciplinario();
-		String fecha = form.getFecha();
+		String fecha = "", fechaHasta = "";
+		if (!form.getFecha().equals(""))
+			fecha = GstDate.getApplicationFormatDate("", form.getFecha()); 
+		if (!form.getFechaHasta().equals(""))
+			fechaHasta = GstDate.getApplicationFormatDate("", form.getFechaHasta());
 		String nombreDenunciado = form.getNombre();
 		String ap1Denunciado = form.getPrimerApellido();
 		String ap2Denunciado = form.getSegundoApellido();
@@ -487,7 +491,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		}
 		
 		//confirmar que el formato de la fecha es correcto cuando se hagan inserts        
-		where += (fecha!=null && !fecha.equals("")) ? " AND " + GstDate.dateBetween0and24h(ExpExpedienteBean.C_FECHA,fecha) : "";
+		where += ((fecha!=null && !fecha.equals("")) || (fechaHasta!=null && !fechaHasta.equals(""))) ? " AND " + GstDate.dateBetweenDesdeAndHasta(ExpExpedienteBean.C_FECHA,fecha,fechaHasta) : "";
 		where += (fase!=null && !fase.equals("")) ? " AND E." + ExpExpedienteBean.C_IDFASE + " = " + fase : "";
 		where += (asunto!=null && !asunto.equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(asunto.trim(),"E." + ExpExpedienteBean.C_ASUNTO): "";
 		where += (observaciones!=null && !observaciones.equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(observaciones.trim(),"E." + ExpExpedienteBean.C_OBSERVACIONES): "";
