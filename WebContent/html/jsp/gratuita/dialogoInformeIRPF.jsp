@@ -126,7 +126,8 @@
 	<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
 	<html:hidden property="idInstitucion" value = "<%=idInstitucion%>"/>
 	<html:hidden property="idTipoInforme" value="IRPF"/>
-	<html:hidden property="enviar" value="1" />
+	 
+	<html:hidden property="enviar" value='<%=(desdeFicha!=null && !desdeFicha.equals(""))?"0":"1"%>' />
 	<html:hidden property="descargar" value="1"/>
 	<html:hidden property="datosInforme"/>
 	<html:hidden property="modo" value = "preSeleccionInformes"/>
@@ -159,7 +160,7 @@
 		
 		function accionComunicar()
 		{
-			
+			sub();
 			if (!validateInformeRetencionesIRPFForm(document.RetencionesIRPFForm)) {
 				fin();
 				return false;
@@ -183,6 +184,7 @@
 			
 				var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
 				if (arrayResultado==undefined||arrayResultado[0]==undefined){
+					fin();
 				   		
 			   	} 
 			   	else {
@@ -196,6 +198,8 @@
 					   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
 					   	document.DefinirEnviosForm.modo.value='editar';
 					   	document.DefinirEnviosForm.submit();
+			   		}else{
+			   			fin();
 			   		}
 			   	}
 				
