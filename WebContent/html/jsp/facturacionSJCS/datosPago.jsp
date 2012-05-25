@@ -249,13 +249,16 @@
 	
 	<script>
 		function convertirAFormato(n){
-			
 			if (n.toString().indexOf(".", 0) != -1  && n.toString().indexOf(",", 0) != -1){
 				var d = n.replace(".","");
+				for (;d.toString().indexOf(".", 0) != -1;)
+				{
+					d = d.replace(".","");
+				}				
 				d = d.replace(",",".");
 				d = new Number(d);
 				d = Number(d.toFixed(2));
-				d = d.toString();			
+				d = d.toString();
 			}else{
 				var d = n.replace(",",".");
 				d = new Number(d);
@@ -264,9 +267,8 @@
 				//d = d.replace(".","");
 				if(String(d).indexOf(',') < 0){
 					d += ',00'; // aqui puede variar segun la cantidad de decimales que desees;
-				}	
+				}
 			}
-			
 			return d;	
 		}
 
@@ -274,16 +276,32 @@
 			return convertirAFormato(n).replace(",",".");
 		}
 
-		function convertirANumero(n){
-			
+
+		function convertirANumero(n)
+		{
 			numero = convertirAFormato(n);
-			
 			if (numero.toString().indexOf(".", 0) != -1  && numero.toString().indexOf(",", 0) != -1){
 				numero = numero.replace(".","");
-				return numero.replace(",",".");
+				numero = numero.replace(",",".");
+				return numero;
 			}else{
-				return numero.replace(",",".");
+				numero = numero.replace(",",".");
+				return numero;
 			}
+		}
+
+		
+
+		function convertirANumeroGuardar(n)
+		{						
+			numero = convertirAFormato(n);
+		
+			for (;numero.toString().indexOf(".", 0) != -1;)
+			{			
+				numero = numero.replace(".","");					
+			}											
+			numero = numero.replace(",",".");
+			return numero;			
 		}
 				
 		/*	NOTA:
@@ -952,7 +970,7 @@
 			
 			for (i=0;i<4;i++){
 				var objImporte = document.getElementById("importe"+conceptos[i]);
-				var importe = convertirANumero(objImporte.value);
+				var importe = convertirANumeroGuardar(objImporte.value);
 				
 				//Copia del importe restante para recuperarla tras enviar el formulario
 				restantes[i] = document.getElementById("txtRestante"+conceptos[i]).value;
