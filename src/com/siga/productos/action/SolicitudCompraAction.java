@@ -1721,11 +1721,17 @@ public class SolicitudCompraAction extends MasterAction{
 			String idPeticionParametro=request.getParameter("idPeticionParametro");
 			if (idPeticionParametro!=null && !idPeticionParametro.equals("")) {
 			    idPeticion = new Long(idPeticionParametro);   
-			} else {
-				CarroCompra carro = (CarroCompra)request.getSession().getAttribute(CarroCompraAdm.nombreCarro);
-				idPeticion = carro.getIdPeticion();
-			}			
 			
+			} else { //Se busca en la sesion para los tipos de producto en lso que hay que seleccionar una serie porque está en mas de una
+				SolicitudCompraForm form = (SolicitudCompraForm)request.getSession().getAttribute("solicitudCompraForm");
+				if(form.getIdPeticion()!=null && !form.getIdPeticion().equals("")) {
+					idPeticion = new Long(form.getIdPeticion());
+			
+				}else{
+					CarroCompra carro = (CarroCompra)request.getSession().getAttribute(CarroCompraAdm.nombreCarro);
+					idPeticion = carro.getIdPeticion();
+				}
+			}			
 			
 			request.setAttribute("factRapidaIdInstitucion",idInstitucion);
 			request.setAttribute("factRapidaIdPeticion",idPeticion);
