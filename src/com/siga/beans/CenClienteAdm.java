@@ -1163,7 +1163,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			
 			
 //	 1
-	       if (!formulario.getNombreInstitucion().trim().equals("")) {
+	       if (formulario.getNombreInstitucion()!= null && !formulario.getNombreInstitucion().trim().equals("")) {
 	       	contador++;
 		     codigosBind.put(new Integer(contador),formulario.getNombreInstitucion());
 	       		sqlClientes += " AND "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" = :"+contador;
@@ -1249,7 +1249,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 //	 6  //Consulta sobre el campo NIF/CIF, si el usuario mete comodines la búsqueda es como se hacía siempre, en el caso
 		// de no meter comodines se ha creado un nuevo metodo ComodinBusquedas.preparaCadenaNIFSinComodin para que monte 
 	    // la consulta adecuada. 
-	       if (!formulario.getNif().trim().equals("")) {
+	       if (formulario.getNif()!=null && !formulario.getNif().trim().equals("")) {
 	    	   if ((bBusqueda ) ) {
 	    		   contador++;
 	    		   codigosBind.put(new Integer(contador), formulario.getNif().trim().toUpperCase());

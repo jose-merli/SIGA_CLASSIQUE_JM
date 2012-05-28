@@ -32,7 +32,7 @@
 <%@ page import="java.util.Hashtable"%>
 <%@ page import="java.util.Enumeration"%>
 <%@ page import="com.siga.tlds.FilaExtElement"%>
-<%@ page import="com.siga.Utilidades.paginadores.PaginadorBind"%>
+<%@ page import="com.siga.Utilidades.PaginadorBind"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.atos.utils.Row"%>
 

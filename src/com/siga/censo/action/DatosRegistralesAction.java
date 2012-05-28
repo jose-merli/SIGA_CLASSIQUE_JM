@@ -30,8 +30,10 @@ import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.Utilidades.paginadores.PaginadorBind;
+//import com.siga.Utilidades.paginadores.PaginadorBind;
+import com.siga.Utilidades.PaginadorBind;
 import com.siga.beans.*;
+import com.siga.censo.form.BusquedaClientesForm;
 import com.siga.censo.form.DatosRegistralesForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -306,6 +308,20 @@ public class DatosRegistralesAction extends MasterAction{
 				CenClienteBean beanCli = adminCli.insertNoColegiado(hashPer, request);
 				if(beanCli != null){
 					miForm.setIdPersonaNotario(beanCli.getIdPersona().toString());
+					
+					// Inserto los datos del no colegiado en CenNoColegiado:
+					CenNoColegiadoAdm admNoColegiado = new CenNoColegiadoAdm(this.getUserBean(request));
+					Hashtable hashNoColegiado = new Hashtable();
+					hashNoColegiado.put(CenNoColegiadoBean.C_IDINSTITUCION,beanCli.getIdInstitucion());
+					hashNoColegiado.put(CenNoColegiadoBean.C_IDPERSONA,beanCli.getIdPersona());
+					//El tipo sera siempre Personal:
+					hashNoColegiado.put(CenNoColegiadoBean.C_TIPO,ClsConstants.COMBO_TIPO_PERSONAL);
+					//No es sociedad SJ:
+					hashNoColegiado.put(CenNoColegiadoBean.C_SOCIEDADSJ,ClsConstants.DB_FALSE);
+					hashNoColegiado.put(CenNoColegiadoBean.C_USUMODIFICACION,usr.getUserName());
+					hashNoColegiado.put(CenNoColegiadoBean.C_FECHAMODIFICACION,"SYSDATE");
+					
+		   		    admNoColegiado.insert(hashNoColegiado);
 				}
 			}
 			
@@ -610,8 +626,25 @@ public class DatosRegistralesAction extends MasterAction{
 			}else{	
 				databackup=new HashMap();
 				//Haria falta meter los parametros en con ClsConstants
-
-				PaginadorBind paginador = cliente.getDatosPersonas(miFormulario, user.getLocation());
+				
+				BusquedaClientesForm formClientes = new BusquedaClientesForm();
+				if (miFormulario.getNombre()!=null)
+					formClientes.setNombrePersona(miFormulario.getNombre());
+				else
+					formClientes.setNombrePersona("");
+				
+				if (miFormulario.getApellido1()!=null)
+					formClientes.setApellido1(miFormulario.getApellido1());
+				else
+					formClientes.setApellido1("");
+				
+				if (miFormulario.getApellido2()!=null)
+					formClientes.setApellido2(miFormulario.getApellido2());
+				else
+					formClientes.setApellido2("");
+				
+				CenClienteAdm cli = new CenClienteAdm(user);
+				PaginadorBind paginador = cli.getClientesNoColegiados(idInstitucion,formClientes);
 				
 				if (paginador!=null&& paginador.getNumeroTotalRegistros()>0){
 					int totalRegistros = paginador.getNumeroTotalRegistros();
