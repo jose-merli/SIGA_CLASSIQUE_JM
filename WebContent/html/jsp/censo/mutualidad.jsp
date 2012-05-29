@@ -386,9 +386,9 @@
 		</tr>
 		<tr>
 			<td class="labelText" ><siga:Idioma key="censo.mutualidad.literal.telefono" />&nbsp;(*)</td>
-			<td><html:text property="telef1" maxlength="20" styleClass="${estiloText}" ></html:text></td>
+			<td><html:text property="telef1" maxlength="9" styleClass="${estiloText}" ></html:text></td>
 			<td class="labelText" ><siga:Idioma key="censo.mutualidad.literal.movil" /></td>
-			<td><html:text property="movil" maxlength="20" styleClass="${estiloText}"  ></html:text></td>
+			<td><html:text property="movil" maxlength="9" styleClass="${estiloText}"  ></html:text></td>
 			
 			
 		</tr>

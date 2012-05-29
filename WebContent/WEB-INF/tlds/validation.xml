@@ -4607,8 +4607,31 @@
          <field property="domicilio" depends = "required">
                  <arg0 key="censo.mutualidad.literal.domicilio"/>
          </field>
-         <field property = "telef1" depends = "required">
+         
+         <field property = "telef1" depends = "required,maxlength,mask">
                  <arg0 key="censo.mutualidad.literal.telefono"/>
+                 <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+					<var>
+						<var-name>maxlength</var-name>
+						<var-value>9</var-value>
+					</var>
+					<var>
+						<var-name>mask</var-name>
+						<var-value>^[0-9]*$</var-value>
+		            </var>
+         </field>
+         
+         <field property = "movil" depends = "maxlength,mask">
+                 <arg0 key="censo.mutualidad.literal.movil"/>
+                 <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+					<var>
+						<var-name>maxlength</var-name>
+						<var-value>9</var-value>
+					</var>
+					<var>
+						<var-name>mask</var-name>
+						<var-value>^[0-9]*$</var-value>
+		            </var>
          </field>
         
           <field property = "correoElectronico" depends = "required">
