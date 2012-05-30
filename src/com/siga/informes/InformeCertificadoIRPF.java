@@ -20,13 +20,11 @@ import com.aspose.words.Document;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
-import com.atos.utils.GstStringTokenizer;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.AdmInformeBean;
 import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.AdmTipoInformeAdm;
@@ -37,11 +35,11 @@ import com.siga.beans.EnvDestinatariosBean;
 import com.siga.beans.EnvEnvioProgramadoBean;
 import com.siga.beans.EnvEnviosBean;
 import com.siga.beans.EnvProgramIRPFBean;
-import com.siga.beans.EnvProgramPagosBean;
 import com.siga.beans.FacAbonoAdm;
 import com.siga.beans.GenPeriodoAdm;
 import com.siga.beans.GenPeriodoBean;
 import com.siga.beans.HelperInformesAdm;
+import com.siga.beans.ScsEJGAdm;
 import com.siga.certificados.Plantilla;
 import com.siga.envios.Documento;
 import com.siga.envios.Envio;
@@ -201,7 +199,12 @@ public class InformeCertificadoIRPF extends MasterReport
 	throws SIGAException,ClsExceptions
 	{
 		File ficheroSalida = null;
-
+		
+		ScsEJGAdm obj = new ScsEJGAdm(usr);
+		
+		Vector idioma = obj.getIdiomaCodigoExt(idiomaExt);
+		Hashtable codigoExt= (Hashtable)idioma.get(0);
+		String codigoExterno = (String)codigoExt.get("LENGUAJE");
 		// obteniendo rutas
 		ReadProperties rp = new ReadProperties(
 				SIGAReferences.RESOURCE_FILES.SIGA);
@@ -228,11 +231,11 @@ public class InformeCertificadoIRPF extends MasterReport
 
 		// obteniendo los datos para el informe
 		Vector vDatosInforme = new FacAbonoAdm(usr).getRetencionesIRPF(idInstitucion,
-				idPersona, periodo, anyoInformeIRPF, usr.getLanguage());
+				idPersona, periodo, anyoInformeIRPF, codigoExterno);
 
 		// obteniendo el periodo
 		String textoPeriodo = (String) (new GenPeriodoAdm(usr).obtenerPeriodo(periodo,
-				usr.getLanguage())).get(GenPeriodoBean.C_NOMBRE);
+				codigoExterno)).get(GenPeriodoBean.C_NOMBRE);
 
 		Hashtable htDatosComunesInforme = new Hashtable();
 		htDatosComunesInforme.put("ANIO_E", textoPeriodo + " " + anyoInformeIRPF);
