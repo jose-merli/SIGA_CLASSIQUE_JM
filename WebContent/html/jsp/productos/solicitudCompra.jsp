@@ -670,8 +670,7 @@
 						clase="boxCombo" obligatorio="true" ancho="95"
 						accion="mostrarCombos();" elementoSel="<%=elementoSel0%>" />
 					</td>
-					<td class="labelText" id="filaNaranja"><siga:Idioma
-						key="pys.solicitudCompra.literal.tipoProducto" /></td>
+					<td class="labelText" id="filaNaranja"> <p>></p> </td>
 					<td id="tipoProducto1"><siga:ComboBD nombre="tipoProducto"
 						tipo="cmbTipoProducto" clase="boxCombo" obligatorio="false"
 						accion="Hijo:categoriaProducto;compruebaComboSigaPadre();"
@@ -685,8 +684,7 @@
 
 					</td>
 
-					<td class="labelText"><siga:Idioma
-						key="pys.solicitudCompra.literal.categoriaProducto" /></td>
+					<td class="labelText"><p>></p></td>
 					<td id="categoriaProducto1"><siga:ComboBD
 						nombre="categoriaProducto" tipo="cmbProducto_1" clase="boxCombo"
 						accion="Hijo:producto;" hijo="t" elementoSel="<%=elementoSel2%>"
@@ -697,8 +695,7 @@
 						parametro="<%=parametroCombo%>" ancho="130" /></td>
 
 
-					<td class="labelText"><siga:Idioma
-						key="pys.solicitudCompra.literal.producto" /></td>
+					<td class="labelText"><p>></p></td>
 
 					<td id="producto1">
 					<%
@@ -708,13 +705,13 @@
 					%> <siga:ComboBD nombre="producto"
 						tipo="cmbProductoInstitucionLetrado" clase="boxCombo"
 						parametro="<%=dato%>" hijo="t" elementoSel="<%=elementoSel3%>"
-						accion="parent.desactivar(this);" ancho="130" /> <%
+						accion="parent.desactivar(this);" ancho="220" /> <%
  	} else {
  			dato[1] = DB_FALSE;
  %> <siga:ComboBD nombre="producto" tipo="cmbProductoInstitucion"
 						clase="boxCombo" parametro="<%=dato%>" hijo="t"
 						elementoSel="<%=elementoSel3%>" accion="parent.desactivar(this);"
-						ancho="130" /> <%
+						ancho="220" /> <%
  	}
  %>
 					</td>
@@ -769,6 +766,9 @@
 								accion="actualizarInstitucionPresentador(this);"												
 						/>																			
 					</td>
+					<td id="campoBlanco">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 																																																									
 					<td align=right id="nombreProducto"><html:text name="solicitudCompraForm"
 						property="nombreProducto" size="20" maxlength="100"
@@ -917,7 +917,7 @@ function muestra(id)
 function mostrarColegio()
 {		
 	<%
-	if (esConsejo && user.getStrutsTrans().equals("PYS_SolicitarCertificado")){	%>	
+	if (esConsejo && user.getStrutsTrans().equals("PYS_SolicitarCertificado")){	%>
 		document.getElementById("comboPresentador").style.display="block";
 		document.getElementById("presentador").style.display="block";
 		<%if (request.getSession().getAttribute("volver") != null && request.getSession().getAttribute("volver").equals("s")) {%>
@@ -928,6 +928,7 @@ function mostrarColegio()
 	<%}else
 	{
 	%>	
+	document.getElementById("campoBlanco").style.display="block";
 		document.getElementById("comboPresentador").style.display="none";
 		document.getElementById("presentador").style.display="none";
 		<%if (request.getSession().getAttribute("volver") != null && request.getSession().getAttribute("volver").equals("s")) {%>
