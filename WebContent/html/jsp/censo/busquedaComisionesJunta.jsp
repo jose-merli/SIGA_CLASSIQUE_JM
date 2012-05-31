@@ -214,7 +214,7 @@
 		td.setAttribute("width", "10%");
 		td.setAttribute("align", "center");
 		td.innerText="";
-		td.innerHTML ='<input type="text"  onBlur="comporbarFila(\''+ tr.id +'\');buscarColegiadoN(\''+ numFila +'\');"  id="numeroColegiado_' + numFila + '" class="box" size="4" maxlength="9" style="width:70;margin-top:5px;" value=""/><input type="hidden" id="idPerson_' + numFila + '" class="box" size="4" maxlength="9" style="width:70;margin-top:2px;" value=""/>';
+		td.innerHTML ='<input type="text" onmousedown="bloquearBuscar(\''+ numFila +'\');" onBlur="comporbarFila(\''+ tr.id +'\');buscarColegiadoN(\''+ numFila +'\');"  id="numeroColegiado_' + numFila + '" class="box" size="4" maxlength="9" style="width:70;margin-top:5px;" value=""/><input type="hidden" id="idPerson_' + numFila + '" class="box" size="4" maxlength="9" style="width:70;margin-top:2px;" value=""/>';
 		td = tr.insertCell(); 
 		td.setAttribute("width", "35%");
 		td.innerText="";
@@ -265,9 +265,6 @@
 	}
 
 	function borradoLogicoFila(num, idFila){
-		
-                                             
-
          document.datosCVForm.idPerson.value=document.getElementById("idPersona_"+num).value;
          document.datosCVForm.idPersona.value=document.getElementById("idPersona_"+num).value;
          document.datosCVForm.idCV.value=document.getElementById("IDCV_"+num).value;
@@ -278,14 +275,18 @@
          if(borrarFila (num, "fila_"+num))
          	document.getElementById('idBorrar').onclick();
 
-		}
-	function buscarColegiadoN(num){
-
-
-		         document.BusquedaComisionesForm.numeroColegiadoN.value=document.getElementById("numeroColegiado_"+num).value;
-		         document.BusquedaComisionesForm.numeroN.value=num;
-		         document.getElementById('numeroN').onchange();
 	}
+
+	function buscarColegiadoN(num){
+		document.BusquedaComisionesForm.numeroColegiadoN.value=document.getElementById("numeroColegiado_"+num).value;
+		document.BusquedaComisionesForm.numeroN.value=num;
+		document.getElementById('numeroN').onchange();
+
+		if(document.getElementById("numeroColegiado_"+num).value == null || document.getElementById("numeroColegiado_"+num).value == ""){
+			document.getElementById("idButtonB__" + num).disabled="";
+		}
+	}
+	
 	function buscarNumColegiadoN(num){
 
 
@@ -324,6 +325,11 @@
 	        document.BusquedaComisionesForm.numeroN.value="";
 				
 	}
+
+	function bloquearBuscar(numFila){
+		document.getElementById("idButtonB__" + numFila).disabled="disabled";
+	}	
+	
 	function limpiarColegiadoN(num)
 	{
 			document.getElementById("idPerson_"+num).value = '';
@@ -345,6 +351,7 @@
 		document.getElementById("nombreColegiado_"+num).value=document.BusquedaComisionesForm.nombreColegiadoN.value;
 		document.getElementById("apellidosColegiado_"+num).value=document.BusquedaComisionesForm.apellidosColegiadoN.value;
 		document.getElementById("numeroColegiado_"+num).value=document.BusquedaComisionesForm.numeroColegiadoN.value;
+		document.getElementById("idButtonB__" + num).disabled="";
      	multiple=document.BusquedaComisionesForm.multiple.value;
 		//alert("multiple"+multiple);
      	if(multiple=="S"){
@@ -577,6 +584,8 @@
 		}
 	
 	}
+
+
 	
 	
 		</script>
@@ -617,7 +626,7 @@
 	<td  colspan="2">
 		<table><tr>
 				<td class="labelText"><siga:Idioma	key="gratuita.volantesExpres.literal.colegiado" /></td>
-				<td><html:text styleId="numeroColegiado" property="numeroColegiado" size="4" maxlength="9"	styleClass="box"></html:text></td>
+				<td><html:text styleId="numeroColegiado" property="numeroColegiado" size="4" maxlength="9"	styleClass="box" ></html:text></td>
 				<td><html:text styleId="nombreColegiado"
 									property="nombreColegiado" size="40" maxlength="50"
 									styleClass="box" readonly="true" id="nombreCol"></html:text></td>
