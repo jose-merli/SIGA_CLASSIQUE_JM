@@ -25,6 +25,8 @@ import com.jcraft.jsch.JSchException;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CajgEJGRemesaAdm;
+import com.siga.beans.CajgRemesaAdm;
+import com.siga.beans.CajgRemesaBean;
 import com.siga.beans.CajgRemesaEstadosAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaBean;
@@ -1241,9 +1243,18 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 					cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_GENERADA);				
 					//MARCAMOS COMO ENVIADA
 					if (cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_ENVIADA )) {
-						cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), ClsConstants.REMITIDO_COMISION);
 						//cuando se envía el intercambio se envía * 10
-						guardarIdIntercambioRemesa((int)intercambioDocument.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().getIdentificadorIntercambio()/10);						
+						int idIntercambio = (int)intercambioDocument.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().getIdentificadorIntercambio()/10;
+						guardarIdIntercambioRemesa(usr, idIntercambio);
+						cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), ClsConstants.REMITIDO_COMISION);
+						
+						//vuelvo a hacer el mismo update del idintercambio porque a veces falla la capa de bdd y no hace el commit (no se pq)
+						CajgRemesaAdm cajgRemesaAdm = new CajgRemesaAdm(usr);
+						if (!cajgEJGRemesaAdm.updateSQL("UPDATE " + CajgRemesaBean.T_NOMBRETABLA + " SET " + CajgRemesaBean.C_IDINTERCAMBIO + " = " + idIntercambio +
+								" WHERE " + CajgRemesaBean.C_IDINSTITUCION + " = " + getIdInstitucion() +
+								" AND " + CajgRemesaBean.C_IDREMESA + " = " + getIdRemesa())) {
+							throw new Exception("No se ha podido actualizar el campo idIntercambio de la tabla " + CajgRemesaBean.T_NOMBRETABLA);
+						}
 					}
 					//si todo ha ido bien subimos los ficheros
 					ftpPcajgAbstract = FtpPcajgFactory.getInstance(usr, String.valueOf(getIdInstitucion()));

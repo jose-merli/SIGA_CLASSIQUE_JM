@@ -1583,7 +1583,7 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 					//MARCAMOS COMO ENVIADA
 					cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), ClsConstants.REMITIDO_COMISION);
 					//cuando se envía el intercambio se envía * 10
-					guardarIdIntercambioRemesa((int)intercambioDocument.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().getIdentificadorIntercambio()/10);
+					guardarIdIntercambioRemesa(usr, (int)intercambioDocument.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().getIdentificadorIntercambio()/10);
 				}
 				
 				//TODO FALTA EL ENVIO WEBSERVICE !!!!

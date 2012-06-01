@@ -511,9 +511,9 @@ public abstract class SIGAWSClientAbstract {
 		this.simular = simular;
 	}
 
-	protected void guardarIdIntercambioRemesa(int idIntercambio) throws Exception {
+	protected void guardarIdIntercambioRemesa(UsrBean usr, int idIntercambio) throws Exception {
 		//como la hemos enviado seteamos el identificador de intercambio de envio
-		CajgRemesaAdm cajgRemesaAdm = new CajgRemesaAdm(getUsrBean());
+		CajgRemesaAdm cajgRemesaAdm = new CajgRemesaAdm(usr);
 		Hashtable hash = new Hashtable();
 		hash.put(CajgRemesaBean.C_IDINSTITUCION, getIdInstitucion());
 		hash.put(CajgRemesaBean.C_IDREMESA, getIdRemesa());
@@ -523,7 +523,7 @@ public abstract class SIGAWSClientAbstract {
 			cajgRemesaBean.setIdIntercambio(idIntercambio);
 			if (!cajgRemesaAdm.update(cajgRemesaBean)) {
 				throw new Exception("No se ha podido actualizar la remesa = \"" + getIdRemesa() + "\" de la idinstitucion \"" + getIdInstitucion() + "\" con el idIntercambio = \"" + idIntercambio + "\"");
-			}
+			}			
 		} else {
 			throw new Exception("No se ha recuperado la remesa con idinstitucion " + getIdInstitucion() + " e idremesa = " + getIdRemesa());
 		}		
