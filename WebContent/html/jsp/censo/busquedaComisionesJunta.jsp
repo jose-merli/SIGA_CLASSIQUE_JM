@@ -576,17 +576,17 @@
 	}
 	
 	function comporbarFila(idFila){
+		fila = idFila.split("_")[1]
 		t = document.getElementById("cargostabla");
 		ulti = t.rows.length;
-		if (t.rows[ulti-1].id == idFila) 
-		{
-			crearFila(); 
+		if (t.rows[ulti-1].id == idFila){
+			if((document.getElementById("numeroColegiado_"+fila).value != null    && document.getElementById("numeroColegiado_"+fila).value != "") ||
+			   (document.getElementById("nombreColegiado_"+fila).value != null    && document.getElementById("nombreColegiado_"+fila).value != "") ||
+			   (document.getElementById("apellidosColegiado_"+fila).value != null && document.getElementById("apellidosColegiado_"+fila).value != "") ){
+				crearFila(); 
+			}
 		}
-	
 	}
-
-
-	
 	
 		</script>
 
