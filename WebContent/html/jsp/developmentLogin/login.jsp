@@ -14,7 +14,7 @@
 <%@ page import="com.atos.utils.Row"%>
 <%@ page import="com.atos.utils.ClsLogging" %>
 
-<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.*"%>
 
 <%
 	String app=request.getContextPath();
@@ -23,6 +23,9 @@
 	if (src==null) {
 	  src=new Properties();
 	}
+	
+   	ArrayList idADM = new ArrayList();
+   	idADM.add(0,"ADM");
 %>
 
 <html>
@@ -126,7 +129,9 @@
 			</tr>
 			<tr>
 				<td class="labelText">Perfil</td>
-				<td ><siga:ComboBD nombre="tmpLoginPerfil" tipo="tmpLoginPerfil" clase="boxCombo" hijo="t"/></td>
+				<td>
+					<siga:ComboBD nombre="tmpLoginPerfil" tipo="tmpLoginPerfil" clase="box" filasMostrar="7" elementoSel="<%=idADM%>" seleccionMultiple="true" hijo="t"/>
+				</td>		
 			</tr>
 <!--			<tr>
 				<td class="labelText">Usuario</td>

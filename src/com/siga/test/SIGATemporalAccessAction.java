@@ -29,12 +29,11 @@ public class SIGATemporalAccessAction extends Action
 	{
 		String result="";
 //		String user=request.getParameter("user");
-		String profile=request.getParameter("profile");
 		String location = request.getParameter("location");
 		String menuPosition=request.getParameter("posMenu");
 		String sAccess=request.getParameter("access");
-		String profileArray[]=new String[1];
-		profileArray[0]=profile;
+		String profile=request.getParameter("profile");
+		String profileArray[] = profile.split (",");
 		String letrado=request.getParameter("letrado");
 		UsrBean usrbean = UsrBean.UsrBeanAutomatico(location);
 		UsuariosTO certificado = (UsuariosTO) request.getAttribute("USUARIOTO");
@@ -106,7 +105,8 @@ public class SIGATemporalAccessAction extends Action
 		usrbean.setProfile(profileArray);
 		usrbean.setLocation(location);
 		usrbean.setLetrado(letrado.equals("S")?true:false);
-		usrbean.setComision(profile.equalsIgnoreCase("CJG")?true:false);
+		//usrbean.setComision(profile.equalsIgnoreCase("CJG")?true:false); //Con la nueva forma de entrar se debe hacer un contains
+		usrbean.setComision(profile.contains("CJG")?true:false);
 		
 		// obtengo el idioma de la institucion
 		String idLenguajeInstitucion = "1";

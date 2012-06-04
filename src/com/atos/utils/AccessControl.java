@@ -91,13 +91,19 @@ public class AccessControl implements SIGAConstants, Serializable {
 		if (perfiles.length() > 0)
 			perfiles = perfiles.substring(1);
 
-		String queryAccess = "select unique a.idproceso, p.transaccion, a.derechoacceso,p.descripcion, p.idparent "
+		String queryAccess = "select a.idproceso, p.transaccion,decode(max(decode(a.derechoacceso,1,9)), 9, 1, max(a.derechoacceso)) derechoacceso, "
+				+ " p.descripcion, p.idparent "
 				+ "from adm_tiposacceso a, gen_procesos p where idperfil in ("
 				+ perfiles
 				+ ") and a.idproceso=p.idproceso and "
 				+ ColumnConstants.FN_ACCESS_RIGHT_INSTITUCION
 				+ "="
-				+ institucion;
+				+ institucion
+				+ "and p.descripcion not like 'HIDDEN%' " //Para los procesos hidden no se cogen los permisos propios si no los del padre.
+				//Esto se necesita asi, porque si alguien (como susi) crea un proceso hidden y no le asigna un drecho acceso 
+				//habra conflictos con otros peerfiles que se creen desde cero daran conflicto con los existentes
+				//PREGUNTAR A NVL(CARLOS (si está todavía),ADRIAN)
+				+ " group by a.idproceso, p.transaccion,  p.descripcion, p.idparent ";
 
 		Connection con = null;
 		Statement stmtAccess = null;
