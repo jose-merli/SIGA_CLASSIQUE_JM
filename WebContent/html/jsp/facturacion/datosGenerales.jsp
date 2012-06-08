@@ -364,12 +364,12 @@
 	<table class="tablaCentralCampos"style="display:none" >
 	
 <% } else {  %>
-		<table class="tablaCentralCampos">
+		<table class="tablaCentralCampos" border="0">
 
 <% }  %>
 
-				<tr>
-					<td >		
+				<tr border="1">
+					<td style="width:50%" border ="1">		
 	
 						<siga:ConjCampos leyenda="facturacion.serios.literal.contador">
 
@@ -396,7 +396,7 @@
 								<% if (accion.equals("ver")) { %>
 									<input type="hidden" name="configurarContador" value="off"/>
 								<% } else { %>
-									<td class="labelText">
+									<td class="labelText" style="width:39%">
 										<siga:Idioma key="facturacion.datosGenerales.literal.configurarContador"/>&nbsp;
 									</td>
 									<td  class="labelTextValue">
@@ -427,7 +427,7 @@
 
 						</siga:ConjCampos>
 					</td>
-			<td style="width:480px"><!-- SUBCONJUNTO DE DATOS --> <!-- Conjunto de campos recuadrado y con titulo -->
+			<td style="width:45%"><!-- SUBCONJUNTO DE DATOS --> <!-- Conjunto de campos recuadrado y con titulo -->
 			<siga:ConjCampos leyenda="facturacion.serios.literal.formaPago">
 				<table align="center" border="0">
 					<tr>

@@ -250,10 +250,12 @@ public class DatosGeneralesAction extends MasterAction{
 					pagoSec=formDGen.getFormaPagoAutomática();
 					
 					for (int i=1;i<pagoSec.length;i++) {
+						if (!pagoSec[i].equals("")){
 						formaPago.add(pagoSec[i]);
+						}
 					}	
 					
-					if (!formaPago.isEmpty()){			
+					if (!formaPago.isEmpty()){	
 						int i=0;
 						while(i<formaPago.size()){
 							if (((String)formaPago.get(i)).compareToIgnoreCase("-1")!=0){							
