@@ -130,7 +130,7 @@
 			<tr>
 				<td class="labelText">Perfil</td>
 				<td>
-					<siga:ComboBD nombre="tmpLoginPerfil" tipo="tmpLoginPerfil" clase="box" filasMostrar="7" elementoSel="<%=idADM%>" seleccionMultiple="true" hijo="t"/>
+					<siga:ComboBD nombre="tmpLoginPerfil" tipo="tmpLoginPerfil" clase="box" filasMostrar="20" elementoSel="<%=idADM%>" seleccionMultiple="true" hijo="t" obligatorioSinTextoSeleccionar="true"/>
 				</td>		
 			</tr>
 <!--			<tr>
