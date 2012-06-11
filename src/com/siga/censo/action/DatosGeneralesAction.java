@@ -941,9 +941,11 @@ public class DatosGeneralesAction extends MasterAction {
 			// primero compruebo la existencia del nif
 			// pero solamente cuando ha cambiado el NIF
 			String nifAnterior = (String) hashOriginal.get(CenPersonaBean.C_NIFCIF); 
-			String nifNuevo = (String)miForm.getNumIdentificacion().toUpperCase();			
-			if(nifNuevo.length()<9)
-				nifNuevo = UtilidadesString.relleno("0",9 - nifNuevo.length()) + nifNuevo;  
+			String nifNuevo = (String)miForm.getNumIdentificacion().toUpperCase();	
+			nifAnterior =UtilidadesString.LTrim(nifAnterior,"0");
+			nifNuevo =UtilidadesString.LTrim(nifNuevo,"0");			
+			//if(nifNuevo.length()<9)
+				//nifNuevo = UtilidadesString.relleno("0",9 - nifNuevo.length()) + nifNuevo;  
 			if (nifAnterior!=null && !nifAnterior.toUpperCase().equals(nifNuevo)) {
 				if (adminPer.existeNifPersona(miForm.getNumIdentificacion(), miForm.getNombre(), miForm.getApellido1(), miForm.getApellido2())) {
 				      throw new SIGAException("messages.censo.nifcifExiste");

@@ -1178,7 +1178,11 @@ public class UtilidadesString {
 		{
 			if (cadenaASub == null) cadenaASub = new String (" ");
 	        for (int j = 0; j < s.length(); j++) {
-	        	if(s.startsWith(cadenaASub)) s = s.substring(cadenaASub.length());
+	        	if(s.startsWith(cadenaASub))
+	        	{
+	        		s = s.substring(cadenaASub.length());
+	        		j=0;
+	        	}
 	        	else break;
 	        }
 	        return s;
