@@ -186,8 +186,9 @@ public class DatosRegistralesAction extends MasterAction{
 							miform.setApellido1(beanNotario.getApellido1());
 							miform.setApellido2(beanNotario.getApellido2());
 							miform.setTipoIdentificacion(beanNotario.getIdTipoIdentificacion().toString());
+							miform.setIdPersonaNotario(idnotario.toString());
 							request.setAttribute("tipoident", beanNotario.getIdTipoIdentificacion().toString());
-							
+							request.setAttribute("idPersonaNotario",idnotario);
 						}
 					}
 				}
@@ -209,6 +210,7 @@ public class DatosRegistralesAction extends MasterAction{
 				accionPestanha = request.getParameter("accion");
 				request.setAttribute("idPersona", idPersona);
 				request.setAttribute("idInstitucion", idInstitucionPersona);
+				
 				request.setAttribute("accion", accion);
 				request.setAttribute("nombrePersona", nombre);
 				request.setAttribute("numero", numero);
@@ -505,13 +507,12 @@ public class DatosRegistralesAction extends MasterAction{
 			request.setAttribute("mensaje","messages.updated.success");
 			request.setAttribute("idPersona",miForm.getIdPersona());
 			request.setAttribute("idInstitucion",miForm.getIdInstitucion());
-			
 			request.setAttribute("error","OK");
 	  
 	   } catch (Exception e) {
 		 throwExcp("messages.general.error",new String[] {"modulo.censo"},e,tx);
    	   }
-   	   return this.exitoRefresco("messages.updated.success", request);
+   	   return "exitoInsercionRegistrales";
 	}
 	
 	private Hashtable prepararFormatosFechas (Hashtable entrada)throws ClsExceptions 

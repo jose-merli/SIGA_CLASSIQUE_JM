@@ -514,6 +514,7 @@
 				document.DatosRegistralesForm.nombre.disabled="";      
 				document.DatosRegistralesForm.apellido1.disabled="";   
 				document.DatosRegistralesForm.apellido2.disabled=""; 
+				document.DatosRegistralesForm.idPersonaNotario.value = "";
 			}
 		}
 
@@ -607,6 +608,7 @@
 			document.getElementById('nombre').value = "";
 			document.getElementById('apellido1').value = "";
 			document.getElementById('apellido2').value = "";
+			document.DatosRegistralesForm.idPersonaNotario.value ="";
 			document.DatosRegistralesForm.nombre.disabled="";
 			document.DatosRegistralesForm.apellido1.disabled="";
 			document.DatosRegistralesForm.apellido2.disabled="";
@@ -649,16 +651,17 @@
 	</script>
 </head>
 
-<body class="tablaCentralCampos" onload="buscarGrupos(); inicio()">
+<body class="tablaCentralCampos" onload="inicio();buscarGrupos();">
 
 
-<html:form  action="/CEN_DatosRegistrales.do" method="POST" target="mainPestanas"  enctype="multipart/form-data">
+<html:form  action="/CEN_DatosRegistrales.do" method="POST" target="mainPestanas" enctype="multipart/form-data">
 <input type="hidden" name="actionModal" value="">
+<html:hidden  name="DatosRegistralesForm" property="idPersonaNotario"/>
 <html:hidden  name="DatosRegistralesForm" property="modo"/>
 <html:hidden  name="DatosRegistralesForm" property="idInstitucion" value="<%=user.getLocation()%>"/>
 <html:hidden  name="DatosRegistralesForm" property="idPersona"/>
 <html:hidden  name="DatosRegistralesForm" property="accion"/>
-<html:hidden  name="DatosRegistralesForm" property="idPersonaNotario"/>
+
 
 		<table class="tablaCentralCampos" align="center" cellspacing=0>
 		
@@ -856,8 +859,8 @@
 
 					</td>
 				</tr>
-			</html:form>
 			</table>
+		</html:form>
 
 <siga:ConjBotonesAccion botones="<%=botones%>"    modo='<%=modo%>' clase="botonesDetalle"/>	
 	<html:form action="/CEN_ActividadProfesional.do" method="POST" target="resultado">
@@ -903,9 +906,8 @@
 						document.DatosRegistralesForm.numIdentificacion.disabled="";
 						document.DatosRegistralesForm.nombre.disabled="";      
 						document.DatosRegistralesForm.apellido1.disabled="";   
-						document.DatosRegistralesForm.apellido2.disabled=""; 
-					  	document.forms[0].modo.value="modificarRegistrales";
-						document.forms[0].target="submitArea";					
+						document.DatosRegistralesForm.apellido2.disabled="";
+					  	document.forms[0].modo.value="modificarRegistrales";		
 						document.forms[0].submit();
 					}
 				}else{
@@ -922,8 +924,7 @@
 							document.DatosRegistralesForm.nombre.disabled="";      
 							document.DatosRegistralesForm.apellido1.disabled="";   
 							document.DatosRegistralesForm.apellido2.disabled=""; 
-						  	document.forms[0].modo.value="modificarRegistrales";
-							document.forms[0].target="submitArea";						
+						  	document.forms[0].modo.value="modificarRegistrales";						
 							document.forms[0].submit();	
 						}
 					}else{
@@ -938,7 +939,7 @@
 			}
 		}
 		
-		function refrescarLocal() {
+		function refrescarLocal() {		
 			document.forms[0].modo.value="abrir";
 			deshabilitarCamposAbajo();
 			document.forms[0].submit();	
@@ -966,8 +967,6 @@
 		<!-- INICIO: SUBMIT AREA -->
 		<!-- Obligatoria en todas las páginas-->
 		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-		<iframe name="submitArea2" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-		<iframe name="submitArea3" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 		<!-- FIN: SUBMIT AREA -->
 	<script>
 		capturarEnter();
