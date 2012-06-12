@@ -121,7 +121,19 @@
 
 </table>
 
-<siga:ConjBotonesAccion botones="<%=botones%>" modal="P" />
+<table class="botonesDetalle" align="center">
+<tr>
+	<td  style="width:900px;">&nbsp;</td>
+	<td class="tdBotones">
+		<input type="button" alt="<siga:Idioma key="general.boton.comunicar"/>"  id="idButton" onclick="return accionComunicar();" class="button" name="idButton" value="<siga:Idioma key="general.boton.comunicar"/>">
+	</td>
+	<%if (desdeFicha!=null && !desdeFicha.equals("")){%>
+	<td class="tdBotones">
+		<input type="button" alt="<siga:Idioma key="general.boton.close"/>"  id="idButton" onclick="return accionCerrar();" class="button" name="idButton" value="<siga:Idioma key="general.boton.close"/>">
+	</td>
+	<%}%>
+</tr>
+</table>
 
 	<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
 	<html:hidden property="idInstitucion" value = "<%=idInstitucion%>"/>
@@ -202,10 +214,8 @@
 			   			fin();
 			   		}
 			   	}
-				
 			}
 		}
-		
 		
 	</script>
 
