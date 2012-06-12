@@ -1120,13 +1120,13 @@ caracterParam[0] = tipoCliente;
 
 		//Método que valida el CIF de una nueva sociedad
 		function validarCIF(cif)
-		{ 
+		{
         	var pares = 0; 
         	var impares = 0; 
         	var suma; 
         	var ultima; 
         	var unumero;
-        	var letraCif = new Array("J", "A", "B", "C","X","X","F", "G","X","I");  
+        	var letraCif = new Array("J", "A", "B", "X","X","X","F", "G","X","X");  
         	//var letraCif = new Array("J", "A", "B", "C","D","E","F", "G","H","I");  
         	var cadenaCif; 
          
@@ -1137,6 +1137,7 @@ caracterParam[0] = tipoCliente;
                	return false; 
                 
            ultima = cif.substr(8,1); 
+           
 			
            for (var cont = 1 ; cont < 7 ; cont ++)
            { 
@@ -1152,12 +1153,27 @@ caracterParam[0] = tipoCliente;
            unumero = (10 - unumero).toString(); 
            if(unumero == 10) 
                unumero = 0; 
-
+           
            if ((ultima == unumero) ||  (ultima == letraCif[unumero]))
-           //if (ultima == letraCif[unumero])
-               return true; 
+           {
+          // if (ultima == letraCif[unumero])
+           //{
+         	if(document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "A"
+					|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "B" 
+					|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "F"
+					|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "G"
+					|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "J"
+					) 
+				{
+        	   	return true;
+				}
+           		else
+        		   	return false;
+           } 
            else 
-               return false; 
+           {
+               return false;
+           } 
     	}//fin método 
 			
 
@@ -1181,7 +1197,7 @@ caracterParam[0] = tipoCliente;
 						   			
 			<% 	if (!(bConsultaPersona || modo.equalsIgnoreCase("VER")) ) {  
 			%>
-			    	// Se compruba si el Cif s valido para poner el tipo de identificación a CIF o Otros según corresponda						    		 
+			    	// Se compruba si el Cif s valido para poner el tipo de identificación a CIF o Otros según corresponda
 			    	if ((validarCIF(document.forms[0].numIdentificacion.value)))
 					{
 						// Si el CIF no es valido en el campo tipoIdentificacion se pone OTROS
@@ -1189,7 +1205,6 @@ caracterParam[0] = tipoCliente;
 						document.forms[0].tipoIdentificacionBloqueada.value = "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>";
 						var letraNumIdentificacion = document.forms[0].numIdentificacion.value.charAt(0);
 						document.forms[0].tipoBloqueado.value = letraNumIdentificacion;
-
 					}
 			    	else
 			    	{
@@ -1449,4 +1464,3 @@ caracterParam[0] = tipoCliente;
 
 </body>
 </html>
-
