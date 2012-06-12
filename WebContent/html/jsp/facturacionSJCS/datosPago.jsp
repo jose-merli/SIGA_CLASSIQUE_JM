@@ -267,7 +267,7 @@
 				//d = d.replace(".","");
 				if(String(d).indexOf(',') < 0){
 					d += ',00'; // aqui puede variar segun la cantidad de decimales que desees;
-				}
+				}				
 			}
 			return d;	
 		}
@@ -281,7 +281,10 @@
 		{
 			numero = convertirAFormato(n);
 			if (numero.toString().indexOf(".", 0) != -1  && numero.toString().indexOf(",", 0) != -1){
-				numero = numero.replace(".","");
+				for (;numero.toString().indexOf(".", 0) != -1;)
+				{
+					numero = numero.replace(".","");
+				}
 				numero = numero.replace(",",".");
 				return numero;
 			}else{
@@ -293,7 +296,7 @@
 		
 
 		function convertirANumeroGuardar(n)
-		{						
+		{
 			numero = convertirAFormato(n);
 		
 			for (;numero.toString().indexOf(".", 0) != -1;)
@@ -823,7 +826,7 @@
 				if (objImporte.value.toString().indexOf(".", 0) != -1  && objImporte.value.toString().indexOf(",", 0) != -1){			
 					objImporte.value = convertirAFormato(document.getElementById("importe"+conceptos[i]).value);
 					objPorcentaje.value = objPorcentaje.value.replace(/,/,".");
-				}else{					
+				}else{
 					objImporte.value = objImporte.value.replace(/,/,".");
 					objPorcentaje.value = objPorcentaje.value.replace(/,/,".");
 				}
@@ -921,7 +924,6 @@
 				importe = parseFloat(porcentaje * total / 100);
 			}
 
-			
 			//actualiza los input por si se ha corregido una coma o el redondeo
 			document.getElementById("importe"+concepto).value = convertirAFormato(""+importe);				
 			document.getElementById("porcentaje"+concepto).value = convertirAFormato(""+porcentaje);	
@@ -931,13 +933,13 @@
 
 			//si el porcentaje restante es menor que 1, se sustituye el importe a pagar 
 			//por el importe pendiente y se actualiza el importe restante
-			if ( porcentajeRestante < 1 && porcentajeRestante > 0 || importeRestante < 0){
-				document.getElementById("importe"+concepto).value = importePendiente;	
+			if ( porcentajeRestante < 1 && porcentajeRestante > 0 || importeRestante < 0){				
+				document.getElementById("importe"+concepto).value = convertirAFormato(""+importePendiente);	
 				document.getElementById("porcentaje"+concepto).value = porcentajePendiente;	
 				importeRestante = 0;
 				porcentajeRestante = 0;	
 			}
-
+			
 			document.getElementById("txtRestante"+concepto).value = convertirAFormato(new String(importeRestante)) + "\u20AC (" + convertirAFormato(new String(porcentajeRestante)) + "%)";
 		}
 
