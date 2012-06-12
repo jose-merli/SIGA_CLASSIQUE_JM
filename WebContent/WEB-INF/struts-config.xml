@@ -794,6 +794,7 @@
 			<forward name="inicio" path="/html/jsp/censo/consultaDatosRegistrales.jsp"/>
 			<forward name="buscarNIF" path="/html/jsp/censo/NotariosOculta.jsp"/>
 			<forward name="resultadoNotarios" path="/html/jsp/censo/resultadosBusquedaNotarioModal.jsp"/>
+			<forward name="exitoInsercionRegistrales" path="/html/jsp/censo/exitoInsercionRegistrales.jsp"/>
 		</action>
 		
 		<action path="/CEN_ActividadProfesional" type="com.siga.censo.action.ActividadProfesionalAction" name="ActividadProfesionalForm" scope="request">
