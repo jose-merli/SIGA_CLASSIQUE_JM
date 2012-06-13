@@ -14,11 +14,11 @@
 <%@ taglib uri="struts-html.tld" prefix="html"%>
 <%@ taglib uri="struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="c.tld" prefix="c"%>
+
 <!-- AJAX -->
 <%@ taglib uri="ajaxtags.tld" prefix="ajax" %>
 
- 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
 
 	<style>
 		.ocultar {display:none}
@@ -26,7 +26,8 @@
 <html>
 <head>
 
-
+<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request" />
+				 
 <link id="default" rel="stylesheet" type="text/css"
 		href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
 	<script src="<html:rewrite page='/html/js/SIGA.js'/>"
@@ -49,12 +50,6 @@
   <!-- defaults for Autocomplete and displaytag -->
   <link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />	
   <link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
-  
-	
-	<!-- INICIO: TITULO Y LOCALIZACION -->
-	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo titulo="censo.mutualidad.titulo" />
-	<!-- FIN: TITULO Y LOCALIZACION -->
 	
 		
 	<script>
@@ -78,13 +73,17 @@
 	}	
 
 	</script>	
-
+	
+	
+	<siga:Titulo titulo="censo.mutualidad.titulo" localizacion="censo.solicitudIncorporacion.localizacion"/>
+	<%if(path.toString().contains("Ficha")){ %>
+		<siga:Titulo titulo="censo.mutualidad.titulo" localizacion="censo.fichaCliente.localizacion"/>
+	<%}%>
+	
 </head>
 
 
 <body  class="tablaCentralCampos">
-<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request" />
-
 
 <%  
 		ArrayList idPaisSeleccionado = (ArrayList)request.getAttribute("idPaisSeleccionado");
@@ -173,11 +172,11 @@
 						<td width=""></td>
 					</tr>
 					<tr>
-					<td class="labelText">Solicitud de Alta</td>
+					<td class="labelText"><siga:Idioma key="censo.mutualidad.literal.solicitudAlta"/></td>
 					<c:choose>
 							
 						<c:when test="${MutualidadForm.idSolicitud==null}">
-								<td class="labelTextValue">No solicitada mediante SIGA</td>
+								<td class="labelTextValue"><siga:Idioma key="censo.mutualidad.literal.altaNoSolicitada"/></td>
 						</c:when>
 						<c:when test="${MutualidadForm.idSolicitud!=null}">
 								<td>&nbsp;</td>
