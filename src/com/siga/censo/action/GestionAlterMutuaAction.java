@@ -56,7 +56,7 @@ public class GestionAlterMutuaAction extends MasterAction {
 					
 					if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
 						mapDestino = abrir (mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("editar")){
+					}else if ( accion.equalsIgnoreCase("editar") || accion.equalsIgnoreCase("ver")){
 						mapDestino = inicio (mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("insertar")){
 						mapDestino = insertar (mapping, miForm, request, response);
@@ -94,6 +94,7 @@ public class GestionAlterMutuaAction extends MasterAction {
 		AlterMutuaForm alterForm = (AlterMutuaForm)formulario;
 		String forward = "";
 		String idPersona = "";
+		String idSolicitud = "";
 		boolean mostrarSolicitud = false;
 		try {
 			Hashtable<String, String> datosAlter = new Hashtable<String, String>();
@@ -106,15 +107,23 @@ public class GestionAlterMutuaAction extends MasterAction {
 				CenColegiadoBean colBean = colAmd.getDatosColegiales(Long.valueOf(idPersona), Integer.valueOf(usrBean.getLocation()));
 				CenSolicitudAlterMutuaAdm alterAdm = new CenSolicitudAlterMutuaAdm(usrBean);
 				Vector v = alterAdm.getSolicitudes(idPersona,null);
-				if(v.size()>0 || colBean.getSituacionEjercicio().equalsIgnoreCase("0")){
-					mostrarSolicitud = true;
-				}
 			}else if(request.getParameter("IDSOLICITUD")!=null){
-				mostrarSolicitud = true;
 				datosAlter.put("IDSOLICITUD", request.getParameter("IDSOLICITUD"));
 				request.setAttribute("SOLINC", datosAlter);
+				idSolicitud=request.getParameter("IDSOLICITUD");
 			}
-			if(mostrarSolicitud){
+			mostrarSolicitud = true;
+			alterForm.setIdPersona(idPersona);
+			alterForm.setIdSolicitud(idSolicitud);
+			alterForm = this.getRellenarFormulario(alterForm, this.getUserBean(request));
+			
+			BusinessManager bm = getBusinessManager();
+			AlterMutuaService alterService = (AlterMutuaService)bm.getService(AlterMutuaService.class);
+			alterForm = alterService.getEstadoColegiado(alterForm, this.getUserBean(request));
+			
+			if(!alterForm.isError() && (alterForm.getIdSolicitudalter()==null || alterForm.getIdSolicitudalter().equalsIgnoreCase(""))){
+				forward = abrirConsulta(alterForm, usrBean);
+			}else if(mostrarSolicitud){
 				forward = "pestanas";
 			}else{
 				idPersona = request.getParameter("idPersona").toString();
@@ -155,7 +164,6 @@ public class GestionAlterMutuaAction extends MasterAction {
 			
 			List<String> alIdsPais = new ArrayList<String>();
 			if(alterForm.getIdPais()!=null && !alterForm.getIdPais().equals("")){
-
 				alIdsPais.add(alterForm.getIdPais());
 			}
 			request.setAttribute("idPaisSeleccionado",alIdsPais);
@@ -203,7 +211,7 @@ public class GestionAlterMutuaAction extends MasterAction {
 			alterForm.setProvincias(provincias);
 
 			alterForm.setModo("insertar");
-			//request.setAttribute("AlterMutuaForm",alterForm);
+			
 		} catch (Exception e) {
 			throwExcp("messages.general.errorExcepcion", e, null); 
 		}
@@ -255,7 +263,7 @@ public class GestionAlterMutuaAction extends MasterAction {
 			alterForm = alterService.getTarifaSolicitud(alterForm, usrBean);
 			
 			JSONObject json = new JSONObject();
-			json.put("tarifa", UtilidadesString.formatoImporte(new Double( alterForm.getTarifaPropuesta() ))+"€");
+			json.put("tarifa", UtilidadesString.formatoImporte(new Double( alterForm.getTarifaPropuesta() )));
 			json.put("breve", alterForm.getBrevePropuesta());
 			json.put("error", alterForm.isError());
 			json.put("mensaje", alterForm.getMsgRespuesta());
@@ -286,6 +294,7 @@ public class GestionAlterMutuaAction extends MasterAction {
 			JSONObject json = new JSONObject();
 			json.put("error", alterForm.isError());
 			json.put("mensaje", alterForm.getMsgRespuesta());
+			json.put("ruta", alterForm.getRutaFichero());
 			response.setContentType("application/x-www-form-urlencoded;charset=ISO-8859-15");
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Content-Type", "application/json");

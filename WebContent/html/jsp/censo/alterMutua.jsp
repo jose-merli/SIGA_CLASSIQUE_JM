@@ -25,6 +25,7 @@
 <head>
 
 <%String app=request.getContextPath(); %>
+<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request" />
 
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/css/jquery-ui.css"/>">
@@ -59,7 +60,11 @@
 </style>
 
 <!-- INICIO: TITULO Y LOCALIZACION -->
-<siga:Titulo titulo="censo.alterMutua.titulo" />
+	<siga:Titulo titulo="censo.alterMutua.titulo" localizacion="censo.solicitudIncorporacion.localizacion"/>
+	<%if(path.toString().contains("Ficha")){ %>
+		<siga:Titulo titulo="censo.alterMutua.titulo" localizacion="censo.fichaCliente.localizacion"/>
+	<%}%>
+	
 <!-- FIN: TITULO Y LOCALIZACION -->
 
 </head>
@@ -76,19 +81,13 @@
 		<html:hidden property="domicilio"/>
 		<html:hidden property="email"/>
 		<html:hidden property="estadoCivil"/>
-		<html:hidden property="fax"/>
 		<html:hidden property="fechaNacimiento"/>
 		<html:hidden property="identificador"/>
 		<html:hidden property="idInstitucion"/>
-		<html:hidden property="idPaquete"/>
-		<html:hidden property="movil"/>
 		<html:hidden property="msgRespuesta"/>
 		<html:hidden property="nombre"/>
-		<html:hidden property="poblacion"/>
 		<html:hidden property="sexo"/>
 		<html:hidden property="idSexo"/>
-		<html:hidden property="telefono1"/>
-		<html:hidden property="telefono2"/>
 		<html:hidden property="tipoEjercicio"/>
 		<html:hidden property="idTipoIdentificacion"/>
 		<html:hidden property="idSolicitudalter"/>
@@ -108,6 +107,11 @@
 		<html:hidden property="numeroPropuestas"/>
 		<html:hidden property="idPersona"/>
 
+		<html:hidden property="tarifaPaquete"/>
+		<html:hidden property="brevePaquete"/>
+		<html:hidden property="descripcionPaquete"/>
+		<html:hidden property="nombrePaquete"/>
+		
 		<input type="hidden" name="actionModal" value="">
 		
 		<c:set var="estiloText" value="box" />
@@ -118,85 +122,115 @@
 			<c:set var="estiloCombo" value="boxComboConsulta" />
 		</c:if>
 
-		<fieldset><legend>Selección de propuesta</legend>
-		<table>
-		<tr>
-			<td class="labelText">Modalidad de contratación</td>
-		<c:if test="${AlterMutuaForm.numeroPropuestas > 0}">
-			<td class="labelTextValue">
-			<html:select styleId="propuestaSeleccionada" styleClass="${estiloCombo}" property="propuesta" >
-				<html:optionsCollection name="AlterMutuaForm" property="propuestas" label="nombre" value="idPaquete" />
-			</html:select>
-			</td>
-			<td><img id="botonConsulta" src="<%=app%>/html/imagenes/bconsultar_on.gif" style="cursor:hand;"></td>
-			<td class="labelText">Tarifa</td>
-			<td class="labelTextValue"> <div id="holderTarifa"/> </td>
-		</c:if>
-		<c:if test="${AlterMutuaForm.numeroPropuestas <= 0}">
-			<td class="labelTextValue">No se han recibido datos de Alter Mutua</td>
-		</c:if>
-		</tr>
-		</table>
-		<table id="tablaPropuestas" style="display:none">
-			<c:forEach items="${AlterMutuaForm.propuestas}" var="p" varStatus="i">
-			<tr class="labelTextValue">
-				<td class="colorImpar" id="propuesta${i.index}" width="200px"><div class="arrow">${p.nombre}</div></td>
-				<td id="seleccionada${i.index}"><input type="radio" name="grupoPropuestas" value="${i.index}"/></td>
-				<td id="breve${i.index}"></td>
-				<td id="idPaquete${i.index}">${p.idPaquete}</td>
-				<td id="familiares${i.index}">${p.familiares}</td>
-				<td id="herederos${i.index}">${p.herederos}</td>
-				<td id="tarifa${i.index}" colspan="2">
-					<fmt:formatNumber type="NUMBER" minFractionDigits="2" maxFractionDigits="2"><c:out value="${p.tarifa}"/></fmt:formatNumber>¤
-				</td>
-				<td id="descripcion${i.index}">${p.descripcion}</td>
+		<fieldset><legend><siga:Idioma key="censo.alterMutua.literal.seleccionPropuesta"/></legend>
+
+			<c:if test="${AlterMutuaForm.nombrePaquete!=null && AlterMutuaForm.nombrePaquete!=''}">
+			<table>
+			<tr>
+				<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.modalidadContratacion"/></td>
+				<td class="labelTextValue">${AlterMutuaForm.nombrePaquete}</td>
+				<td><img id="botonConsultaPaquete" src="<%=app%>/html/imagenes/bconsultar_on.gif" style="cursor:hand;"></td>
+				<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.tarifa"/></td>
+				<td class="labelTextValue" align="right">${AlterMutuaForm.tarifaPaquete}</td>
+				<td class="labelTextValue" align="left">¤</td>
 			</tr>
-			</c:forEach>
-		</table>
-	
+			</table>
+			<table id="tablaPropuestas" style="display:none">
+				<tr class="labelTextValue">
+					<td id="propuesta0" width="200px">${AlterMutuaForm.nombrePaquete}</td>
+					<td id="breve0">${AlterMutuaForm.brevePaquete}</td>
+					<td id="tarifa0">${AlterMutuaForm.tarifaPaquete}</td>
+					<td id="descripcion0">${AlterMutuaForm.descripcionPaquete}</td>
+				</tr>
+			</table>
+			</c:if>
+			
+			<c:if test="${AlterMutuaForm.nombrePaquete==null || AlterMutuaForm.nombrePaquete==''}">
+				<c:if test="${AlterMutuaForm.numeroPropuestas > 0}">
+				<table>
+				<tr>
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.modalidadContratacion"/></td>
+					<td class="labelTextValue">
+					<html:select styleId="propuestaSeleccionada" styleClass="${estiloCombo}" property="idPaquete" >
+						<html:optionsCollection name="AlterMutuaForm" property="propuestas" label="nombre" value="idPaquete" />
+					</html:select>
+					</td>
+					<td><img id="botonConsulta" src="<%=app%>/html/imagenes/bconsultar_on.gif" style="cursor:hand;"></td>
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.tarifa"/></td>
+					<td class="labelTextValue" style="text-align:right"><div id="holderTarifa"/></td>
+					<td class="labelTextValue" style="text-align:left">¤</td>
+				</c:if>
+				<c:if test="${AlterMutuaForm.numeroPropuestas <= 0}">
+				<table>
+				<tr>
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.noHayDatos"/></td>
+				</tr>
+				</table>
+				</c:if>
+				</tr>
+				</table>
+				<table id="tablaPropuestas" style="display:none">
+					<c:forEach items="${AlterMutuaForm.propuestas}" var="p" varStatus="i">
+					<tr class="labelTextValue">
+						<td id="propuesta${i.index}" width="200px">${p.nombre}</td>
+						<td id="seleccionada${i.index}"><input type="radio" name="grupoPropuestas" value="${i.index}"/></td>
+						<td id="breve${i.index}">${p.breve}</td>
+						<td id="idPaquete${i.index}">${p.idPaquete}</td>
+						<td id="familiares${i.index}">${p.familiares}</td>
+						<td id="herederos${i.index}">${p.herederos}</td>
+						<td id="tarifa${i.index}" colspan="2"><fmt:formatNumber type="NUMBER" minFractionDigits="2" maxFractionDigits="2"><c:out value="${p.tarifa}"/></fmt:formatNumber></td>
+						<td id="descripcion${i.index}">${p.descripcion}</td>
+					</tr>
+					</c:forEach>
+				</table>
+			</c:if>
 		</fieldset>
 
-		<!--c:if test="${AlterMutuaForm.idSolicitudalter!=null}"-->
-		<fieldset id="estadoSolicitud" ><legend>Estado de la solicitud</legend>
+		<fieldset id="estadoSolicitud" ><legend><siga:Idioma key="censo.alterMutua.literal.estadoSolicitud"/></legend>
 		<table>
 		<tr>
-			<td class="labelText">Solicitud</td>
+			<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.solicitud"/></td>
 			<td class="labelTextValue" id="holderIdSolicitudAlter">${AlterMutuaForm.idSolicitudalter}</td>
-			<td><input type="button" alt=""  id="idButton" onclick="return consultarEstado();" class="button" name="idButton" value="Consultar estado"></td>
+			<td><input type="button" alt=""  id="idButton" onclick="return consultarEstado();" class="button" name="idButton" value="<siga:Idioma key='censo.alterMutua.literal.consultarEstado'/>"></td>
+			<td class="labelText">&nbsp;</td>
+			<td class="tdBotonDescarga" style="display:none"><siga:Idioma key="censo.alterMutua.literal.descargarDocumento"/></td>
+			<td class="tdBotonDescarga" style="display:none"><img id="botonDescarga" src="<%=app%>/html/imagenes/bdownload_on.gif" style="cursor:hand;"></td>
 		</tr>
 		</table>
 		</fieldset>
+		
+		
 		<!--/c:if-->
 			
-		<fieldset><legend>Datos Personales</legend>
+		<fieldset><legend><siga:Idioma key="censo.alterMutua.literal.datosPersonales"/></legend>
 			<table>
 				<tr>
-					<td class="labelText">Identificador</td>
-					<td class="labelTextValor"><c:out value="${AlterMutuaForm.tipoIdentificacion}" />&nbsp;<c:out value="${AlterMutuaForm.identificador}" /></td>
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.identificador"/></td>
+					<td class="labelTextValor" width="100px"><c:out value="${AlterMutuaForm.tipoIdentificacion}"/>&nbsp;<c:out value="${AlterMutuaForm.identificador}"/></td>
 					
-					<td class="labelText">Nombre</td>
-					<td class="labelTextValor"><c:out value="${AlterMutuaForm.nombre}" /></td>
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.nombre"/></td>
+					<td class="labelTextValor" width="100px"><c:out value="${AlterMutuaForm.nombre}"/></td>
 					
-					<td class="labelText">Apellidos</td>
-					<td class="labelTextValor"><c:out value="${AlterMutuaForm.apellidos}" /></td>
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.apellidos"/></td>
+					<td class="labelTextValor" width="100px"><c:out value="${AlterMutuaForm.apellidos}"/></td>
 					
-					<td class="labelText">Fecha Nacimiento</td>
-					<td class="labelTextValor"><c:out value="${AlterMutuaForm.fechaNacimiento}" /></td>
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.fechaNacimiento"/></td>
+					<td class="labelTextValor" width="100px"><c:out value="${AlterMutuaForm.fechaNacimiento}"/></td>
 				</tr>
 				<tr>
 					
-					<td class="labelText">Sexo</td>
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.sexo"/></td>
 					<td class="labelTextValor"> <c:out value="${AlterMutuaForm.sexo}" /> </td>
 					
 					<c:if test="${AlterMutuaForm.estadoCivil!=''}">
-						<td class="labelText">Estado Civil</td>
+						<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.estadoCivil"/></td>
 						<td class="labelTextValor">
 							<c:out value="${AlterMutuaForm.estadoCivil}" />
 							<html:hidden property="idEstadoCivil"/>
 						</td>
 					</c:if>
 					<c:if test="${AlterMutuaForm.estadoCivil==''}">
-						<td class="labelText">Estado Civil (*)</td>
+						<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.estadoCivil"/> (*)</td>
 						<td class="labelTextValor">
 						<html:select styleClass="${estiloCombo} requiredText" property="idEstadoCivil" >
 							<html:optionsCollection name="AlterMutuaForm" property="estadosCiviles" label="value" value="key" />
@@ -205,74 +239,83 @@
 					</c:if>
 					</td>
 					
-					<td class="labelText">Colegio</td>
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.colegio"/></td>
 					<td class="labelTextValor"><c:out value="${AlterMutuaForm.colegio}" /></td>
 					
-					<td class="labelText">Situación ejercicio</td>
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.situacionEjercicio"/></td>
 					<td class="labelTextValor"><c:out value="${AlterMutuaForm.tipoEjercicio}" /></td>
 				</tr>
 			</table>
 		</fieldset>
-			
-
 		
+		<fieldset id="estadoColegiado" ><legend><siga:Idioma key="censo.alterMutua.literal.estadoColegiado"/></legend>
+		<table>
+		<tr>
+			<td style="width:120px">&nbsp;</td>
+			<td><input type="button" alt=""  id="idButton" onclick="return consultarEstadoColegiado();" class="button" name="idButton" value="<siga:Idioma key='censo.alterMutua.literal.consultarEstado'/>"></td>
+		</tr>
+		</table>
+		</fieldset>
 		
-		<fieldset><legend>Contacto</legend>
+		<fieldset><legend><siga:Idioma key="censo.alterMutua.literal.contacto"/></legend>
 			<table>
 				<tr>
-					<td class="labelText">Medio de Comunicación (*)</td>
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.medioComunicacion"/> (*)</td>
 					<td class="labelTextValue">
 						<html:select styleClass="${estiloCombo}" property="tipoComunicacion" >
 						<html:optionsCollection name="AlterMutuaForm" property="tiposComunicacion" label="value" value="key" />
 						</html:select>
 					</td>
-					<td class="labelText">Idioma (*)</td>
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.idioma"/> (*)</td>
 					<td class="labelTextValue">
 						<html:select styleClass="${estiloCombo}" property="idioma" >
 						<html:optionsCollection name="AlterMutuaForm" property="idiomas" label="value" value="key" />
 						</html:select>
 					</td>
 					
-					<td class="labelText" colspan="2">Acepta publicidad&nbsp;<html:checkbox property="admitePublicidad"></html:checkbox> </td>
+					<td class="labelText" colspan="2">
+						<label for="admitePublicidad"><siga:Idioma key="censo.alterMutua.literal.aceptaPublicidad"/>&nbsp;</label>
+						<input type="checkbox" id="admitePublicidad" name="admitePublicidad" value="true" checked/>
+					</td>
 				</tr>
 				<tr>
-					<td class="labelText">Teléfono (*)</td>
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.telefono"/> (*)</td>
 					<td class="labelTextValue"><html:text property="telefono1" maxlength="14" styleClass="${estiloText} requiredText"></html:text> </td>
 
-					<td class="labelText">Teléfono 2</td>
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.telefono"/> 2</td>
 					<td class="labelTextValue"><html:text property="telefono2" maxlength="14" styleClass="${estiloText}" size="20"></html:text> </td>
 
-					<td class="labelText">Móvil</td>
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.movil"/></td>
 					<td class="labelTextValue"><html:text property="movil" maxlength="14" styleClass="${estiloText}" size="20"></html:text> </td>
 				</tr>
 				<tr>
-					<td class="labelText">Fax</td>
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.fax"/></td>
 					<td class="labelTextValue"><html:text property="fax" maxlength="14" styleClass="${estiloText}" size="20"></html:text> </td>
 					
-					<td class="labelText">Correo Electrónico (*)</td>
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.correoElectronico"/> (*)</td>
 					<td class="labelTextValue" colspan="3"><html:text property="correoElectronico" maxlength="100" styleClass="${estiloText} requiredText" style="width:100%"></html:text> </td>
 				</tr>
 			</table>
 
-			<fieldset><legend>Dirección</legend>
+			<fieldset><legend><siga:Idioma key="censo.alterMutua.literal.direccion"/></legend>
 				<table>
 					<tr>
-						<td class="labelText">Domicilio (*)</td>
+						<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.domicilio"/> (*)</td>
 						<td class="labelTextValue"><html:text property="domicilio" size="30" maxlength="200" styleClass="${estiloText} requiredText"></html:text></td>
 						
-						<td class="labelText">Código Postal (*)</td>
+						<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.codigoPostal"/> (*)</td>
 						<td class="labelTextValue"> <html:text property="codigoPostal" styleClass="${estiloText} requiredText" size="5" maxlength="5"></html:text></td>
 					</tr>
 					
 					<tr>
-						<td class="labelText">Pais (*)</td>
+						<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.pais"/> (*)</td>
 						<td class="labelTextValue">
 							<html:select styleId="selectPais" styleClass="${estiloCombo} requiredText" property="idPais" >
 							<html:optionsCollection name="AlterMutuaForm" property="paises" label="value" value="key" />
 							</html:select>
 						</td>
 
-						<td class="labelText">Provincia (*)</td>
+						<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.provincia"/> (*)</td>
 						<td class="labelTextValue" id="tdProvincia">
 							<html:select styleId="selectProvincia" styleClass="${estiloCombo} requiredText" property="idProvincia" >
 							<html:optionsCollection name="AlterMutuaForm" property="provincias" label="value" value="key" />
@@ -282,10 +325,10 @@
 					</tr>
 					<tr>
 
-						<td class="labelText">Población (*)</td>
+						<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.poblacion"/> (*)</td>
 						<td class="labelTextValue" id="tdPoblacion"><html:text property="poblacion" style="width:300px" maxlength="50" styleClass="${estiloCombo} requiredText"></html:text></td>
 						
-						<td class="labelText">Tipo de Dirección </td>
+						<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.tipoDireccion"/></td>
 						<td class="labelTextValue">
 							<html:select styleClass="${estiloCombo}" property="tipoDireccion" >
 							<html:optionsCollection name="AlterMutuaForm" property="tiposDireccion" label="value" value="key" />
@@ -298,16 +341,16 @@
 			
 		</fieldset>
 
-		<fieldset><legend>Cuenta bancaria</legend>
+		<fieldset><legend><siga:Idioma key="censo.alterMutua.literal.cuentaBancaria"/></legend>
 		<table>
 			<tr>
-				<td class="labelText" nowrap>Pais cuenta bancaria</td>
+				<td class="labelText" nowrap><siga:Idioma key="censo.alterMutua.literal.paisCuentaBancaria"/></td>
 				<td class="labelTextValue">
 					<html:select styleId="selectPaisCuenta" styleClass="${estiloCombo} requiredText" property="idPaisCuenta" >
 						<html:optionsCollection name="AlterMutuaForm" property="paises" label="value" value="key" />
 					</html:select>
 				</td>
-				<td class="cuentaNacional labelText" nowrap>Número de cuenta</td>
+				<td class="cuentaNacional labelText" nowrap><siga:Idioma key="censo.alterMutua.literal.numeroCuenta"/></td>
 				<td class="cuentaNacional">
 					<html:text size="4"  maxlength="4" property="cboCodigo" styleClass="${estiloText} requiredText"></html:text>
 					- <html:text size="4"  maxlength="4" property="codigoSucursal" styleClass="${estiloText} requiredText"></html:text>
@@ -315,14 +358,14 @@
 					- <html:text size="10" maxlength="10" property="numeroCuenta" styleClass="${estiloText} requiredText"></html:text>
 				</td>
 
-				<td class="cuentaExtranjera labelText" nowrap>IBAN</td>	
+				<td class="cuentaExtranjera labelText" nowrap><siga:Idioma key="censo.alterMutua.literal.iban"/></td>	
 				<td class="cuentaExtranjera labelText">
-				      <html:text size="30" styleId="IBAN" maxlength="30" property="iban" styleClass="${estiloText} requiredText"></html:text>
+				      <html:text styleId="IBAN" maxlength="30" property="iban" styleClass="${estiloText} requiredText"></html:text>
 				</td>
 				
-				<td class="cuentaExtranjera labelText" nowrap>SWIFT</td>	
+				<td class="cuentaExtranjera labelText" nowrap><siga:Idioma key="censo.alterMutua.literal.swift"/>SWIFT</td>	
 				<td class="cuentaExtranjera labelText">
-				      <html:text size="11"  maxlength="11" property="swift" styleClass="${estiloText} requiredText"></html:text>
+				      <html:text styleId="SWIFT" maxlength="11" property="swift" styleClass="${estiloText} requiredText"></html:text>
 				</td>
 			</tr>
 		</table>
@@ -330,146 +373,154 @@
 
 		
 		<fieldset id="fieldsetFamiliares">
-			<legend>Familiares 
-				<html:button id="nuevaPersona" property="idButton" onclick="return nuevoFamiliar();" styleClass="button">Añadir</html:button>
+			<legend><siga:Idioma key="censo.alterMutua.literal.familiares"/> 
+				<html:button styleId="botonNuevoFamiliar" property="idButton" onclick="return nuevoFamiliar();" styleClass="button"><siga:Idioma key="censo.alterMutua.literal.anadir"/></html:button>
 			</legend>
-			<div class="familiares">
+			<div>
+				<table  class="familiares" style="width:100%">
+				</table>
 			</div>	
 		</fieldset>
 
 		<fieldset id="fieldsetBeneficiarios">
-			<legend>Beneficiarios</legend>
-			<div class="beneficiarios">
+			<legend><siga:Idioma key="censo.alterMutua.literal.beneficiarios"/></legend>
 			<table>
 				<tr>
-					<td class="labelText">
-						Seleccione los beneficiarios en caso de fallecimiento
-					</td>
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.seleccionBeneficiarios"/></td>
 					<td class="labelTextValue">
 						<html:select styleId="selectBeneficiarios" styleClass="${estiloCombo} requiredText" property="selectBeneficiarios" >
-							<html:option value="1">Herederos Legales</html:option>
-							<html:option value="3">Otros</html:option>
+							<html:option value="1"><siga:Idioma key="censo.alterMutua.literal.herederosLegales"/></html:option>
+							<html:option value="3"><siga:Idioma key="censo.alterMutua.literal.otros"/></html:option>
 						</html:select>
 					</td>
-					<td>
-						<html:button styleId="botonBeneficiario" id="nuevoBeneficiario" property="idButton" onclick="return nuevoBeneficiario();" styleClass="button">Añadir</html:button>
+					<td id="botonBeneficiario">
+						<html:button styleId="botonNuevoBeneficiario" property="idButton" onclick="return nuevoBeneficiario();" styleClass="button"><siga:Idioma key="censo.alterMutua.literal.anadir"/></html:button>
+						<html:button styleId="botonCopiarFamiliares" property="idButton" onclick="return copiarFamiliares();" styleClass="button"><siga:Idioma key="censo.alterMutua.literal.copiarFamiliares"/></html:button>
 					</td>
 				</tr>
 			</table>
-			</div>	
+			<table class="beneficiarios" style="width:100%">
+			</table>	
 		</fieldset>
 		
 		<div style="display:none">
 		
-		<div class="personaFamiliar">
-			<span>
-				<table>
-					<tr>
-						<td><html:select styleClass="defaultText" property="parentesco" >
-							<html:optionsCollection name="AlterMutuaForm" property="tiposParentesco" label="value" value="key" />
-							</html:select> 
-						</td>
+			<table style="width:100%">
+				<tr class="personaFamiliar">
+					<td style="width:105px"><html:select styleClass="defaultText" property="parentesco" styleId="tipoParentesco">
+						<html:optionsCollection name="AlterMutuaForm" property="tiposParentesco" label="value" value="key" />
+						</html:select> 
+					</td>
 
-						<td>
-							<html:select styleClass="defaultText" property="sexo" >
-							<html:optionsCollection name="AlterMutuaForm" property="sexos" label="value" value="key" />
-							</html:select>
-						</td>
+					<td style="width:85px">
+						<html:select styleClass="defaultText" property="sexo" styleId="tipoSexo">
+						<html:optionsCollection name="AlterMutuaForm" property="sexos" label="value" value="key" />
+						</html:select>
+					</td>
 
-						<td><html:text styleId="nombre" styleClass="requiredText" style="width:140px" property="nombreWSPersona" title="Nombre (*)" maxlength="100"></html:text></td>
+					<td style="width:165px"><html:text style="width:150px" styleId="nombre" styleClass="requiredText" property="nombreWSPersona" title="Nombre (*)" maxlength="100"></html:text></td>
 
-						<td><html:text styleId="apellidos" styleClass="requiredText" style="width:140px" property="apellidosWSPersona" title="Apellidos (*)" maxlength="100"></html:text></td>
+					<td style="width:165px"><html:text style="width:150px" styleId="apellidos" styleClass="requiredText" property="apellidosWSPersona" title="Apellidos (*)" maxlength="100"></html:text></td>
 
-						<td><html:select styleClass="defaultText" property="tipoIdentificador" >
-							<html:optionsCollection name="AlterMutuaForm" property="tiposIdentificacion" label="value" value="key" />
-							</html:select> 
-						</td>
+					<td style="width:165px">
+						<html:select styleClass="defaultText tipoIdent" property="tipoIdentificador"  styleId="tipoIdentificador">
+						<html:optionsCollection name="AlterMutuaForm" property="tiposIdentificacion" label="value" value="key" />
+						</html:select> 
+					</td>
 
-						<td><html:text styleId="identificador" styleClass="defaultText" style="width:100px" property="identificadorWSPersona" title="Identificador" maxlength="100"></html:text></td>
+					<td style="width:115px"><html:text styleId="identificador" style="width:90px" styleClass="defaultText ident" property="identificadorWSPersona" title="Identificador" maxlength="100"></html:text></td>
 
-						<td><html:text style="width:110px" styleClass="datepicker requiredText" property="fechaNacimientoWSPersona" title="F.Nacimiento (*)" maxlength="10"></html:text></td>
+					<td style="width:115px"><html:text styleClass="datepicker requiredText" style="width:95px" property="fechaNacimientoWSPersona" title="F.Nacimiento (*)" maxlength="10"></html:text></td>
 
-						<td class="labelText"><a href="#" class="eliminar">Eliminar</a></td>
-				</table>
+					<td class="labelText"><a href="#" class="eliminar"><siga:Idioma key='censo.alterMutua.literal.eliminar'/></a></td>
 				</tr>
-			</span>
-		</div>
-		<div class="personaBeneficiario">
-			<span>
-				<table>
-					<tr>
-						<td>
-							<html:select styleClass="defaultText" property="parentesco" >
-							<html:optionsCollection name="AlterMutuaForm" property="tiposParentesco" label="value" value="key" />
-							</html:select> 
-						</td>
 
-						<td>
-							<html:select styleClass="defaultText" property="sexo" >
-							<html:optionsCollection name="AlterMutuaForm" property="sexos" label="value" value="key" />
-							</html:select>
-						</td>
-						
-						<td><html:text styleId="nombre" styleClass="requiredText" style="width:140px" property="nombreWSPersona" title="Nombre (*)" maxlength="100"></html:text></td>
+				<tr class="personaBeneficiario">
+					<td style="width:105px">
+						<html:select styleClass="defaultText" property="parentesco" >
+						<html:optionsCollection name="AlterMutuaForm" property="tiposParentesco" label="value" value="key" />
+						</html:select> 
+					</td>
 
-						<td><html:text styleId="apellidos" styleClass="requiredText" style="width:140px" property="apellidosWSPersona" title="Apellidos (*)" maxlength="100"></html:text></td>
- 
-						<td>
-							<html:select styleClass="defaultText" property="tipoIdentificador" >
-							<html:optionsCollection name="AlterMutuaForm" property="tiposIdentificacion" label="value" value="key" />
-							</html:select> 
-						</td>
+					<td style="width:85px">
+						<html:select styleClass="defaultText" property="sexo" >
+						<html:optionsCollection name="AlterMutuaForm" property="sexos" label="value" value="key" />
+						</html:select>
+					</td>
+					
+					<td style="width:165px"><html:text style="width:150px" styleId="nombre" styleClass="requiredText" property="nombreWSPersona" title="Nombre (*)" maxlength="100"></html:text></td>
 
-						<td><html:text styleId="identificador" styleClass="defaultText" style="width:100px" property="identificadorWSPersona" title="Identificador" maxlength="100"></html:text></td>
+					<td style="width:165px"><html:text style="width:150px" styleId="apellidos" styleClass="requiredText" property="apellidosWSPersona" title="Apellidos (*)" maxlength="100"></html:text></td>
 
-						<td><html:text style="width:110px" styleClass="datepicker requiredText" property="fechaNacimientoWSPersona" title="F.Nacimiento (*)" maxlength="10"></html:text></td>
-						
-						<td class="labelText"><a href="#" class="eliminar">Eliminar</a></td>
-				</table>
+					<td style="width:165px">
+						<html:select styleClass="defaultText tipoIdent" property="tipoIdentificador" >
+						<html:optionsCollection name="AlterMutuaForm" property="tiposIdentificacion" label="value" value="key" />
+						</html:select> 
+					</td>
+
+					<td style="width:115px"><html:text styleId="identificador" styleClass="defaultText ident" style="width:90px" property="identificadorWSPersona" title="Identificador" maxlength="100"></html:text></td>
+
+					<td style="width:115px"><html:text style="width:95px" styleClass="datepicker defaultText" property="fechaNacimientoWSPersona" title="F.Nacimiento" maxlength="10"></html:text></td>
+					
+					<td class="labelText"><a href="#" class="eliminar"><siga:Idioma key='censo.alterMutua.literal.eliminar'/></a></td>
 				</tr>
-			</span>
+			</table>
 		</div>
 		
-		</div>
-		
-		<fieldset class="labelTextValue" id="fieldsetBeneficiarios">
-			<legend>Observaciones</legend>
-			<html:textarea styleClass="box" property="observaciones" rows="4" style="width:99%"></html:textarea>
+		<fieldset class="labelTextValue" id="fieldsetObservaciones">
+			<legend><siga:Idioma key='censo.alterMutua.literal.observaciones'/></legend>
+			<html:textarea styleClass="box" property="observaciones" styleId="textoObservaciones" rows="4" style="width:99%" maxlength="40"></html:textarea>
 		</fieldset>
+		
+		</div>
 			
 	</html:form>
 </div>
 
 
-	<table class="botonesDetalle" align="center">
+<table class="botonesDetalle" align="center" style="display:none;">
 	<tr>
-	<td  style="width:900px;">
-	&nbsp;
+	<td class="tdBotones">
+	<input type="button" alt="Volver"  id="idButton" onclick="return accionVolver();" class="button" name="idButton" value="Volver">
+	</td>
+	<td  style="width:900px;"> &nbsp; </td>
+	<td class="tdBotones">
+		<input type="button" alt="" id="idButtonSolicitar" onclick="return accionGuardar();" class="button" name="idButton" value="<siga:Idioma key='general.boton.solicitarCompra'/>">
 	</td>
 	<td class="tdBotones">
-	<input type="button" alt="" id="idButtonSolicitar" onclick="return accionGuardar();" class="button" name="idButton" value="<siga:Idioma key="general.boton.solicitarCompra"/>">
-	</td>
-	<td class="tdBotones">
-	<input type="button" alt=""  id="idButtonActualizar" onclick="return accionActualizar();" class="button" name="idButton" value="Actualizar tarifa">
+		<input type="button" alt=""  id="idButtonActualizar" onclick="return accionActualizar();" class="button" name="idButton" value="<siga:Idioma key='general.boton.actualizarTarifa'/>">
 	</td>
 	</tr>
-	</table>
+</table>
 
 
-	<div id="dialog-message" title="SIGA" style="vertical-align: top; "></div>
+	<div id="dialog-message" title="SIGA" style="vertical-align: top; max-height: 400px"></div>
+	<form name="busquedaClientesForm" method="POST" action="/SIGA/CEN_BusquedaClientes.do" target="mainWorkArea">
+			<input type="hidden" name="modo" value="Editar">
+			<input type="hidden" name="avanzada" value="">
+	</form>
+	<form name="SolicitudIncorporacionForm" method="POST" action="/SIGA/CEN_SolicitudesIncorporacion.do" target="mainWorkArea">
+		<input type="hidden" name="modo" value="">
+	</form>	
 	
 	<script>
 	function refrescarLocal(){
 		window.location.reload(true);
 	}
-	
-	function accionVolver() {		
-		document.forms[0].action="./CEN_SolicitudesIncorporacion.do";	
-		document.forms[0].target="mainWorkArea";
-		document.forms[0].modo.value="";
-		document.forms[0].submit();
-	}
-	
+	<%if(path.toString().contains("Ficha")){ %>
+		function accionVolver() 
+		{
+			document.busquedaClientesForm.action = "/SIGA/CEN_BusquedaClientes.do" + "?noReset=true&buscar=true";
+			document.busquedaClientesForm.modo.value="abrirConParametros";
+			document.busquedaClientesForm.submit();	
+		}
+	<%}else{%>
+		function accionVolver() {		
+			document.SolicitudIncorporacionForm.action="./CEN_SolicitudesIncorporacion.do";	
+			document.SolicitudIncorporacionForm.target="mainWorkArea";
+			document.SolicitudIncorporacionForm.submit();
+		}
+	<%}%>
 	
 	function accionCerrar(){
 		top.cierraConParametros();
@@ -502,6 +553,8 @@
 	}
 	
 	function validarFormulario(){
+		$('.obligatorio').removeClass('obligatorio');
+		sincronizaFamiliares();
 		var val = true;
 		// Para cada campo obligatorio ...
 		$('.requiredText').each(function(index){
@@ -512,6 +565,12 @@
 			}
 			val = val && true;
 		});
+
+		if($("#selectBeneficiarios").val()==3 && 
+			$(".ben :visible").length<=0){
+			$("#botonNuevoBeneficiario").addClass("obligatorio");
+			val = false;
+		}
 		$('.ben').find('.requiredText').each(function(index){
 			// Si el titulo es igual que el valor (no se ha rellenado)
 			if($(this).attr('title') === $(this).val()){ 
@@ -539,68 +598,61 @@
 				$(this).addClass("obligatorio");
 			});
 			val=false;
+		}else if($('#selectPaisCuenta').val()!='724' && !isIBANValido($('#IBAN').val()) && !isSWIFTValido($('#SWIFT').val())){
+				val=false;
+				$('#IBAN').addClass("obligatorio");
+				$('#SWIFT').addClass("obligatorio");
 		}
+		$('.ident').each(function(){
+			var tipoIdent = $(":input:eq(" + ($(":input").index(this) - 1) + ")").val();
+			if( $(this).val()!=$(this).attr('title')
+				&& (tipoIdent==="0"
+					|| tipoIdent==="2")
+				&& isNumeroIdentificacionValido($(this).val())<=0){
+				val = false;
+				$(this).addClass("obligatorio");
+			}
+		});
+
 		return val;
 	}
 	
 	function accionGuardar(){
 		sub();
-		if(validarFormulario() && rellenaPersonas()){
-			$.ajax({
-	            type: "POST",
-	            url: "/SIGA/CEN_AlterMutua.do?modo=insertar",
-	            data: $('form').serialize(),
-	            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-	            success: function(json){
-            		jAlert(json.mensaje,400);
-            		document.AlterMutuaForm.idSolicitudalter.value = json.idSolicitud;
-            		$("#holderIdSolicitudAlter").text(json.idSolicitud);
-            		showEstado();
-            		makeReadOnly();
-			        fin();
-	            },
-	            error: function(e){
-	                alert('Error de comunicación: ' + e);
-			        fin();
-	            }
-	        });
+		var mensaje="<siga:Idioma key='censo.alterMutua.literal.mensajeConfirmacion'/>";
+		if(confirm(mensaje)){
+			if(accionActualizar()){
+				$.ajax({
+		            type: "POST",
+		            url: "/SIGA/CEN_AlterMutua.do?modo=insertar",
+		            data: $('form').serialize(),
+		            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+		            success: function(json){
+	            		jAlert(json.mensaje,400);
+	            		document.AlterMutuaForm.idSolicitudalter.value = json.idSolicitud;
+	            		$("#holderIdSolicitudAlter").text(json.idSolicitud);
+	            		showEstado();
+	            		makeReadOnly();
+						fin();
+		            },
+		            error: function(e){
+						fin();
+		                alert('Error de comunicación: ' + e);
+		            }
+		        });
+			}else{
+				fin();
+			}
 		}else{
-			alert("Rellene correctamente los campos obligatorios");
 			fin();
 		}
 	}
 	
-	function accionActualizar(){
-		sub();
-		if(validarFormulario() && rellenaPersonas()){
-	        $.ajax({
-	            type: "POST",
-	            url: "/SIGA/CEN_AlterMutua.do?modo=getTarifa",
-	            data: $('form').serialize(),
-	            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-	            success: function(json){
-	            	jAlert(json.breve,600,300);
-	            	if(!json.error){
-		            	$('#holderTarifa').text(json.tarifa);
-	            	};
-			        fin();
-	            },
-	            error: function(e){
-	                alert('Error de comunicación: ' + e);
-			        fin();
-	            }
-	        });
-		}else{
-			alert("Rellene correctamente los campos obligatorios");
-			fin();
-		}
-	}
-	
-	function consultarEstado(){
+	function consultarEstadoColegiado(){
 		sub();
         $.ajax({
             type: "POST",
-            url: "/SIGA/CEN_AlterMutua.do?modo=getEstado",
+            url: "/SIGA/CEN_AlterMutua.do?modo=getEstadoColegiado",
             data: $('form').serialize(),
             contentType: "application/x-www-form-urlencoded;charset=UTF-8",
             success: function(json){
@@ -612,6 +664,69 @@
 		        fin();
             }
         });
+	}
+	
+	function accionActualizar(){
+		var retVal=false;
+		if(validarFormulario() && rellenaPersonas()){
+	        $.ajax({
+	            type: "POST",
+	            url: "/SIGA/CEN_AlterMutua.do?modo=getTarifa",
+	            data: $('form').serialize(),
+	            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+	            async: false,
+	            success: function(json){
+	            	if(!json.error){
+		            	$('#holderTarifa').text(json.tarifa);
+		            	retVal=true;
+	            	};
+	            },
+	            error: function(e){
+	                alert('Error de comunicación: ' + e);
+	            }
+	        });
+		}else{
+			alert("<siga:Idioma key='censo.alterMutua.literal.relleneCampos'/>");
+		}
+		return retVal;
+	}
+	
+	function consultarEstado(){
+		sub();
+        $.ajax({
+            type: "POST",
+            url: "/SIGA/CEN_AlterMutua.do?modo=getEstado",
+            data: $('form').serialize(),
+            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+            success: function(json){
+           		jAlert(json.mensaje,400,300);
+           		if(json.ruta!=""){
+					$(".tdBotonDescarga").show();
+					$("#botonDescarga").live('click',
+						function(){
+						descargaFichero(json.ruta);
+           	 			}
+           	 		);
+           		}
+		        fin();
+            },
+            error: function(e){
+                alert('Error de comunicación: ' + e);
+		        fin();
+            }
+        });
+	}
+	
+	function descargaFichero(ruta){
+		var formu=document.createElement("<form method='POST' name='descargar'  action='/SIGA/ServletDescargaFichero.svrl' target='submitArea'>");
+		formu.appendChild(document.createElement("<input type='hidden' name='rutaFichero'   value=''/>"));
+		formu.appendChild(document.createElement("<input type='hidden' name='nombreFichero'   value=''/>"));
+		formu.appendChild(document.createElement("<input type='hidden' name='accion'   value=''/>"));
+		document.appendChild(formu);
+		formu.rutaFichero.value=ruta;
+		formu.nombreFichero.value='Solicitud.pdf';
+		formu.accion.value = "";
+		formu.submit();
 	}
 	
 	function isPersonaValida($per){
@@ -629,32 +744,36 @@
 	
 	function nuevoBeneficiario(){
 		$('.personaBeneficiario').clone().attr("class","ben").appendTo('.beneficiarios');
+		$("#botonNuevoBeneficiario").removeClass("obligatorio");
         $('.eliminar').live('click', function() { 
-            $(this).parents('span').remove();
+            $(this).parents('tr').remove();
   		});
         setTexts();
 	};
 	
 	function nuevoFamiliar(){
-		$('.personaFamiliar').clone().attr("class","fam").appendTo('.familiares');
+		$('.personaFamiliar').clone().attr("class","fam").attr("id","fam"+($('.fam').length+1)).appendTo('.familiares');
         $('.eliminar').live('click', function() { 
-            $(this).parents('span').remove();
+            $(this).parents('tr').remove();
             removeFamiliaresBeneficiarios();
   		});
         addFamiliaresBeneficiarios();
         setTexts();
 	};
 	
+	
 	function addFamiliaresBeneficiarios(){
 		if($("#selectBeneficiarios option[value=2]").length <= 0){
-			$("#selectBeneficiarios").append('<option value="2">Familiares</option>');
+			$("#selectBeneficiarios").append('<option value="2"><siga:Idioma key="censo.alterMutua.literal.familiares"/></option>');
 			$("#selectBeneficiarios option[value=2]").insertBefore("#selectBeneficiarios option[value=3]");
+			$("#botonCopiarFamiliares").show();
 		}
 	}
 	
 	function removeFamiliaresBeneficiarios(){
 		if($(".fam :visible").length == 0){
 			$("#selectBeneficiarios option[value=2]").remove();
+			$("#botonCopiarFamiliares").hide();
 		}
 	}
 	
@@ -665,6 +784,9 @@
 				$(this).val("");
 			}
 		});
+		$(".obligatorio").on({focus:function(){
+			$(this).removeClass("obligatorio");
+		}});
 		$(".defaultText").blur(function(){
 			if ($(this).val() == ""){
 				$(this).addClass("defaultTextActive");
@@ -672,7 +794,7 @@
 			}
 		});
 		$(".defaultText").blur();
-		$(".requiredText").focus(function(srcc){
+		$(".requiredText").focus(function(){
 			if ($(this).val() == $(this)[0].title){
 				$(this).removeClass("requiredTextActive");
 				$(this).removeClass("obligatorio");
@@ -685,31 +807,28 @@
 				$(this).val($(this)[0].title);
 			}
 		});
-		$(".requiredText").click(function(){
+		$(".requiredText").focus(function(){
 			$(this).removeClass("requiredTextActive");
 			$(this).removeClass("obligatorio");
 		});
+		$(".datepicker").on({change: function(){
+			$(this).removeClass("requiredTextActive");
+			$(this).removeClass("defaultTextActive");
+			$(this).removeClass("obligatorio");
+		}});
 		$(".requiredText").blur();
-		
-		$(".datepicker").live('hover', function() {
+			
+		$(".datepicker").on({hover: function() {
 			$(this).datepicker({
 				yearRange: '-100:+0',
     			changeMonth: true,
     			changeYear: true,
     			regional: "es",
     			beforeShow: function (textbox, instance) {   
-                    instance.dpDiv.css({
-                        marginTop: (-280) + 'px'
-                    });
+//                    instance.dpDiv.css({marginTop: textbox.offsetHeight + 'px', marginLeft: -textbox.offsetWidth-100 + 'px'});
+                    instance.dpDiv.css({marginTop: '0px', marginLeft: '0px'});
     			}});
-		});       
-    	$(function() {
-    		$( "#datepicker" ).datepicker({
-    			appendText: '(yyyy-mm-dd)',
-    			changeMonth: true,
-    			changeYear: true
-    		});
-    	});
+		}});       
 	};
 	
 	// Pasa una persona a un string separado por &&
@@ -735,10 +854,13 @@
 	}
 	
    	function showEstado(){
-   		if(AlterMutuaForm.idSolicitudalter.value)
+   		if(AlterMutuaForm.idSolicitudalter.value){
       		$("#estadoSolicitud").show();
-   		else
+      		$("#estadoColegiado").show();
+   		}else{
       		$("#estadoSolicitud").hide();	
+      		$("#estadoColegiado").hide();
+   		}
    	}
 
     
@@ -750,18 +872,38 @@
    			$(this).after($(this).find("option:selected").text());
    			$(this).hide();
    		});
-   		$('#fieldsetBeneficiarios').hide();
-   		$('#fieldsetFamiliares').hide();
    		$('#idButtonSolicitar').hide();
+   		$('#botonNuevoFamiliar').hide();
    		$('#idButtonActualizar').hide();
    		$('.box').addClass("boxConsulta");
    		$('.box').removeClass("box");
    		$('.boxCombo').addClass("boxComboConsulta");
    		$('.boxCombo').removeClass("boxCombo");
-   		
+//   		mostrarFamiliares();
+//   		mostrarHerederos();
+    }
+    
+    function makeEditable(){
+    	$(":input").prop("readonly", false);
+    	$(":checkbox").prop("disabled", false);
+    	$(".textoBorrar").remove();
+    	
+   		$("select").each(function(){
+   			$(this).show();
+   			$(this).after().remove();
+   		});
+   		$('#idButtonSolicitar').show();
+   		$('#botonNuevoFamiliar').show();
+   		$('#idButtonActualizar').show();
+   		$('.boxConsulta').addClass("box");
+   		$('.boxConsulta').removeClass("boxConsulta");
+   		$('.boxComboConsulta').addClass("boxCombo");
+   		$('.boxComboConsulta').removeClass("boxComboConsulta");
     }
     
     $(document).ready(function(){
+    	
+
 	      	
     	$('#datosSolicitud').height($(window).height()-25);
     	
@@ -772,16 +914,31 @@
  				jAlert(texto, 600, 600);
  			}
  		);
-         	
+  	   
+  	   	$("#botonConsultaPaquete").click(
+  	 			function(){
+  	 				var texto =  $("#descripcion0").html();
+  	 				jAlert(texto, 600, 600);
+  	 			}
+  	 		);
+  	           	
        	$("#propuestaSeleccionada").change(
    			function(){
    				var selec = $(this).prop("selectedIndex");
    				var idPaquete =  $("#idPaquete"+selec).text();
-   				var breve =  $("#breve"+selec).text();
            		var familiares =  $("#familiares"+selec).text();
            		var herederos =  $("#herederos"+selec).text();
+           		
+   				var breve =  $("#breve"+selec).html();
+   				var nombre = $("#propuesta"+selec).text();
            		var tarifa =  $("#tarifa"+selec).text();
-           		document.AlterMutuaForm.idPaquete.value = idPaquete;
+           		var descripcion =  $("#descripcion"+selec).html();
+
+           		document.AlterMutuaForm.nombrePaquete.value = nombre;
+           		document.AlterMutuaForm.brevePaquete.value = breve;
+           		document.AlterMutuaForm.descripcionPaquete.value = descripcion;
+           		document.AlterMutuaForm.tarifaPaquete.value = tarifa;
+           		
            		$("#holderTarifa").text(tarifa);
            		$("#holderBreve").text(breve);
            		if(herederos==="true"){  
@@ -827,8 +984,14 @@
        	$("#selectBeneficiarios").change(function(){
        		if($("#selectBeneficiarios").val()==3){
        			$("#botonBeneficiario").show();
+       			addFamiliaresBeneficiarios();
        		}else{
        			$("#botonBeneficiario").hide();
+       			$("#botonCopiarFamiliares").hide();
+       			$('.ben').each(function(index){
+       				// Si el titulo es igual que el valor (no se ha rellenado)
+       				$(this).remove();
+       			});
        		}
        	});
        	$("#selectBeneficiarios").trigger('change');
@@ -847,9 +1010,17 @@
      	setTexts();
      	
      	$('#datosSolicitud').show();
+     	$('.botonesDetalle').show();
+     	$('#botonCopiarFamiliares').hide();
 
-   		
      });
+       $('#textoObservaciones').on('keyup keydown blur', function() {
+           var maxlength = 4000;
+           var val = $(this).val();
+           if (val.length > maxlength) {
+               $(this).val(val.slice(0, maxlength));
+           }
+       });
     
 	function jAlert(texto, ancho, alto){
 		$("#dialog-message").html(texto);
@@ -863,7 +1034,135 @@
 		});
 		$("#dialog-message").scrollTop(0);
 	}
-     	
+	
+	function copiarFamiliares(){
+		$('.famBen').remove();
+		$('.fam').clone().attr("class","ben").addClass("famBen").appendTo('.beneficiarios');
+        $('.eliminar').on({click: function() { 
+            $(this).parents('span').remove();
+        }});
+		$('.famBen').each(function(){
+			$(this).find('input').each(function(){
+				if($(this).attr('title') != $(this).val()){
+					$(this).prop("readonly", true);
+			    	$(this).addClass("boxConsulta");
+			    	$(this).removeClass("box");
+			   		$(this).addClass("boxComboConsulta");
+			   		$(this).removeClass("boxCombo");
+			   		$(this).removeClass("requiredText");
+			   		$(this).removeClass("requiredTextActive");
+				}
+			});
+			$(this).find('select').each(function(){
+				$(this).after($(this).find("option:selected").text());
+	   			$(this).hide();
+			});
+		});
+        setTexts();
+	}
+	
+	function mostrarFamiliares(){
+		var st = AlterMutuaForm.familiares.value;
+		var salida="";
+		if(st && st!=""){
+			var familiares = st.split("%%%");
+			salida += "<tr>";
+			salida += "<td class='labelText'><siga:Idioma key='censo.alterMutua.literal.parentesco'/></td>";
+			salida += "<td class='labelText'><siga:Idioma key='censo.alterMutua.literal.sexo'/></td>";
+			salida += "<td class='labelText'><siga:Idioma key='censo.alterMutua.literal.nombre'/></td>";
+			salida += "<td class='labelText'><siga:Idioma key='censo.alterMutua.literal.apellidos'/></td>";
+			salida += "<td class='labelText'><siga:Idioma key='censo.alterMutua.literal.identificador'/></td>";
+			salida += "<td class='labelText'><siga:Idioma key='censo.alterMutua.literal.fechaNacimiento'/></td>";
+			salida += "</tr>";
+			
+			for ( var i = 0; i < familiares.length-1; i++) {
+				salida+=printPersona(familiares[i]);		
+			}
+
+			$(".familiares").append(salida);
+			
+			$("#fieldsetFamiliares").show();
+		}else{
+			$("#fieldsetFamiliares").hide();
+		}
+	}
+	function mostrarHerederos(){
+		var st = AlterMutuaForm.herederos.value;
+		var salida="";
+		if(st && st!=""){
+			var herederos = st.split("%%%");
+			salida += "<tr>";
+			salida += "<td class='labelText'><siga:Idioma key='censo.alterMutua.literal.parentesco'/></td>";
+			salida += "<td class='labelText'><siga:Idioma key='censo.alterMutua.literal.sexo'/></td>";
+			salida += "<td class='labelText'><siga:Idioma key='censo.alterMutua.literal.nombre'/></td>";
+			salida += "<td class='labelText'><siga:Idioma key='censo.alterMutua.literal.apellidos'/></td>";
+			salida += "<td class='labelText'><siga:Idioma key='censo.alterMutua.literal.identificador'/></td>";
+			salida += "<td class='labelText'><siga:Idioma key='censo.alterMutua.literal.fechaNacimiento'/></td>";
+			salida += "</tr>";
+			
+			for ( var i = 0; i < herederos.length-1; i++) {
+				salida+=printPersona(herederos[i]);		
+			}
+			$(".beneficiarios").append(salida);
+			$("#fieldsetBeneficiarios").show();
+		}else{
+			$("#fieldsetBeneficiarios").hide();
+		}
+	}
+	
+	function printPersona(persona){
+		var html="";
+		var campos = persona.split("&&");
+		
+		var parentesco = $("#tipoParentesco option:[value="+campos[0]+"]").text();
+		var sexo = $("#tipoSexo option:[value="+campos[1]+"]").text();
+		var tipoIdent = $("#tipoIdentificador option:[value="+campos[2]+"]").text();
+		var nombre = campos[3];
+		var apellidos = campos[4];
+		var identificador = campos[5];
+		var fechaNacimiento = campos[6];
+		html += "<tr>";
+		html += "<td class='labelTextValue'>"+parentesco+"</td>";
+		html += "<td class='labelTextValue'>"+sexo+"</td>";
+		html += "<td class='labelTextValue'>"+nombre+"</td>";
+		html += "<td class='labelTextValue'>"+apellidos+"</td>";
+		if(identificador!=""){
+			html += "<td class='labelTextValue'>"+tipoIdent+" "+identificador+"</td>";
+		}else{
+			html += "<td class='labelTextValue'>&nbsp;</td>";
+		}
+		html += "<td class='labelTextValue'>"+fechaNacimiento+"</td>";
+		html += "</tr>";
+
+		return html;
+	}
+	
+	function sincronizaFamiliares(){
+		$('.famBen').each(function(){
+			var idFam = $(this).attr("id");
+			var idBen = $(this).attr("id")+"ben";
+			$(this).attr("id",idBen);
+			
+			var camposBen = $("#"+idBen).find('select');
+			var a=0;
+			$("#"+idFam).find('select').each(function(){
+				if($(this).val()!=camposBen[a].value && $(this).val()!=$(this).attr('title')){
+					$(this).val(camposBen[a].value);
+				}
+				a++;
+			});
+			
+			var inputBen = $("#"+idBen).find('input');
+			a=0;
+			$("#"+idFam).find('input').each(function(){
+				if($(this).val()!=inputBen[a].value){
+					$(this).val(inputBen[a].value);
+				}
+				a++;
+			});
+			$(this).attr("id",idFam);
+		});
+	}
 	</script>
 
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display:none" />

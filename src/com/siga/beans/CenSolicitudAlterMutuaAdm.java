@@ -61,7 +61,13 @@ public class CenSolicitudAlterMutuaAdm extends MasterBeanAdministrador {
 				CenSolicitudAlterMutuaBean.C_PROPUESTA,
 				CenSolicitudAlterMutuaBean.C_IDPAQUETE,
 				CenSolicitudAlterMutuaBean.C_IDTIPOEJERCICIO,
-				CenSolicitudAlterMutuaBean.C_ESTADO
+				CenSolicitudAlterMutuaBean.C_FAMILIARES,
+				CenSolicitudAlterMutuaBean.C_BENEFICIARIOS,
+				CenSolicitudAlterMutuaBean.C_ESTADO,
+				CenSolicitudAlterMutuaBean.C_NOMBREPAQUETE,
+				CenSolicitudAlterMutuaBean.C_TARIFAPAQUETE,
+				CenSolicitudAlterMutuaBean.C_BREVEPAQUETE,
+				CenSolicitudAlterMutuaBean.C_DESCRIPCIONPAQUETE
 		};
 		
 		
@@ -117,6 +123,13 @@ public class CenSolicitudAlterMutuaAdm extends MasterBeanAdministrador {
 			
 			bean.setIdPersona(UtilidadesHash.getString(hash,CenSolicitudAlterMutuaBean.C_IDPERSONA));
 			bean.setEstado(UtilidadesHash.getString(hash,CenSolicitudAlterMutuaBean.C_ESTADO));
+			bean.setFamiliares(UtilidadesHash.getString(hash,CenSolicitudAlterMutuaBean.C_FAMILIARES));
+			bean.setBeneficiarios(UtilidadesHash.getString(hash,CenSolicitudAlterMutuaBean.C_BENEFICIARIOS));
+
+			bean.setNombrePaquete(UtilidadesHash.getString(hash,CenSolicitudAlterMutuaBean.C_NOMBREPAQUETE));
+			bean.setTarifaPaquete(UtilidadesHash.getString(hash,CenSolicitudAlterMutuaBean.C_TARIFAPAQUETE));
+			bean.setBrevePaquete(UtilidadesHash.getString(hash,CenSolicitudAlterMutuaBean.C_BREVEPAQUETE));
+			bean.setDescripcionPaquete(UtilidadesHash.getString(hash,CenSolicitudAlterMutuaBean.C_DESCRIPCIONPAQUETE));
 			
 			
 			
@@ -169,6 +182,12 @@ public class CenSolicitudAlterMutuaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,CenSolicitudAlterMutuaBean.C_IDPAQUETE, b.getIdPaquete());
 			UtilidadesHash.set(htData,CenSolicitudAlterMutuaBean.C_IDTIPOEJERCICIO, b.getIdTipoEjercicio());
 			UtilidadesHash.set(htData,CenSolicitudAlterMutuaBean.C_IDPERSONA, b.getIdPersona());
+			UtilidadesHash.set(htData,CenSolicitudAlterMutuaBean.C_FAMILIARES, b.getFamiliares());
+			UtilidadesHash.set(htData,CenSolicitudAlterMutuaBean.C_BENEFICIARIOS, b.getBeneficiarios());
+			UtilidadesHash.set(htData,CenSolicitudAlterMutuaBean.C_BREVEPAQUETE, b.getBrevePaquete());
+			UtilidadesHash.set(htData,CenSolicitudAlterMutuaBean.C_TARIFAPAQUETE, b.getTarifaPaquete());
+			UtilidadesHash.set(htData,CenSolicitudAlterMutuaBean.C_DESCRIPCIONPAQUETE, b.getDescripcionPaquete());
+			UtilidadesHash.set(htData,CenSolicitudAlterMutuaBean.C_NOMBREPAQUETE, b.getNombrePaquete());
 			
 
 		}
@@ -284,10 +303,9 @@ public class CenSolicitudAlterMutuaAdm extends MasterBeanAdministrador {
 		RowsContainer rc = null;
 		Vector result = new Vector();
 		sql.append("SELECT SOL.* ");
-		sql.append(" FROM CEN_SOLICITUDALTER SOL, CEN_SOLICITUDINCORPORACION SI");
-		sql.append(" WHERE ((SOL.IDSOLICITUD = SI.IDSOLICITUD ");
-		sql.append(" AND SI.IDPERSONA = " + identificador + ")");
-		sql.append(" OR SI.IDSOLICITUD = " + identificador + ")");
+		sql.append(" FROM CEN_SOLICITUDALTER SOL");
+		sql.append(" WHERE ( SOL.IDPERSONA = " + identificador );
+		sql.append(" OR SOL.IDSOLICITUD = " + identificador + ")");
 		if(propuesta!=null){
 			sql.append(" AND SOL.PROPUESTA = " + propuesta );
 		}

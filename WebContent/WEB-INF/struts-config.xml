@@ -578,6 +578,7 @@
 		
 		<action path="/CEN_AlterMutua" type="com.siga.censo.action.GestionAlterMutuaAction" name="AlterMutuaForm" scope="request">
 			<forward name="pestanas" path="/html/jsp/censo/pestanasAlterMutua.jsp"/>
+			<forward name="consulta" path="/html/jsp/censo/alterMutuaConsulta.jsp"/>
 		</action>
 		<action path="/CEN_AlterMutuaAlternativa" type="com.siga.censo.action.GestionAlterMutuaAction" name="AlterMutuaForm" scope="request">
 			<forward name="abrir" path="/html/jsp/censo/alterMutua.jsp"/>

@@ -160,7 +160,7 @@ public class AtosAlterMutuaService extends JtaBusinessServiceTemplate
 			}
 			
 			// Actualizamos el error y mensaje
-			alterMutuaForm.setIdSolicitudAlter(respuesta.getIdentificador().toString());
+			//alterMutuaForm.setIdSolicitudAlter(respuesta.getIdentificador().toString());
 			alterMutuaForm.setError(respuesta.isError());
 			alterMutuaForm.setMsgRespuesta(respuesta.getMensaje());
 		}
@@ -204,15 +204,6 @@ public class AtosAlterMutuaService extends JtaBusinessServiceTemplate
 		direccion.setProvincia(form.getIdProvincia());
 		direccion.setPais(form.getIdPais());
 		
-		WSCuentaBancaria cuenta = new WSCuentaBancaria();
-		cuenta.setEntidad(form.getCboCodigo());
-		cuenta.setSucursal(form.getCodigoSucursal());
-		cuenta.setDC(form.getDigitoControl());
-		cuenta.setCuenta(form.getNumeroCuenta());
-		cuenta.setIBAN(form.getIban());
-		cuenta.setSWIFT(form.getSwift());
-		cuenta.setPais(form.getIdPaisCuenta());
-
 		// Creamos el registro de asegurado
 		WSAsegurado asegurado = new WSAsegurado();
 		asegurado.setNombre(form.getNombre());
@@ -231,7 +222,20 @@ public class AtosAlterMutuaService extends JtaBusinessServiceTemplate
 		
 		// Añadimos la direccion al asegurado
 		asegurado.setDireccion(direccion);
-		asegurado.setCuentaBancaria(cuenta);
+		if(form.getIdPaisCuenta()!=null){
+			WSCuentaBancaria cuenta = new WSCuentaBancaria();
+			cuenta.setPais(form.getIdPaisCuenta());
+			if(cuenta.getPais().equalsIgnoreCase("724")){
+				cuenta.setEntidad(form.getCboCodigo());
+				cuenta.setSucursal(form.getCodigoSucursal());
+				cuenta.setDC(form.getDigitoControl());
+				cuenta.setCuenta(form.getNumeroCuenta());
+			}else{
+				cuenta.setIBAN(form.getIban());
+				cuenta.setSWIFT(form.getSwift());
+			}
+			asegurado.setCuentaBancaria(cuenta);
+		}
 		
 		asegurado.setFamiliares(this.getPersonas(form.getFamiliares()));
 		if(form.getSelectBeneficiarios()!=null){
@@ -260,6 +264,7 @@ public class AtosAlterMutuaService extends JtaBusinessServiceTemplate
 		//Parentesco, Sexo, TipoIdentificador, Nombre, Apellidos, Identificador, Fnacimiento
 		int i=0;
 	     while (st.hasMoreTokens()) {
+	    	 p = new WSPersona();
 	         StringTokenizer stp = new StringTokenizer(st.nextToken(),"&&");
 	         p.setParentesco(Integer.parseInt(stp.nextToken()));
 	         p.setSexo( Integer.parseInt(stp.nextToken()));
@@ -314,7 +319,7 @@ public class AtosAlterMutuaService extends JtaBusinessServiceTemplate
 		CenPersonaAdm perAdm = new CenPersonaAdm(usr); 
 		
 		Hashtable hash = new Hashtable();
-		if(form.getIdSolicitud()!=null){
+		if(form.getIdSolicitud()!=null && !form.getIdSolicitud().equalsIgnoreCase("")){
 			hash.put(CenSolicitudAlterMutuaBean.C_IDSOLICITUD, form.getIdSolicitud());
 			hash.put(CenSolicitudAlterMutuaBean.C_PROPUESTA, form.getPropuesta());
 			Vector v = solAlterAdm.select(hash);
@@ -356,10 +361,17 @@ public class AtosAlterMutuaService extends JtaBusinessServiceTemplate
 				form.setCodigoInstitucion(catAdm.getCodigoExtInstitucion(usr.getLocation()));
 				form.setIdTipoEjercicio(bean.getIdTipoEjercicio());
 				form.setTipoEjercicio(catAdm.getValorIdExt(AlterMutuaHelper.CATALOGO, AlterMutuaHelper.CONJUNTO_TIPOEJERCICIO, form.getIdTipoEjercicio()));
-				form.setTipoIdentificacion(catAdm.getValor(AlterMutuaHelper.CATALOGO, AlterMutuaHelper.CONJUNTO_TIPOIDENTIFICADOR, bean.getIdTipoIdentificacion().toString()));
+				form.setTipoIdentificacion(catAdm.getValorIdExt(AlterMutuaHelper.CATALOGO, AlterMutuaHelper.CONJUNTO_TIPOIDENTIFICADOR, bean.getIdTipoIdentificacion().toString()));
 				form.setSexo(catAdm.getValor(AlterMutuaHelper.CATALOGO, AlterMutuaHelper.CONJUNTO_SEXO, bean.getIdSexo()));
 				
 				form.setIdSolicitudAlter(bean.getIdSolicitudAlter());
+				form.setFamiliares(bean.getFamiliares());
+				form.setHerederos(bean.getBeneficiarios());
+				
+				form.setBrevePaquete(bean.getBrevePaquete());
+				form.setDescripcionPaquete(bean.getDescripcionPaquete());
+				form.setTarifaPaquete(bean.getTarifaPaquete());
+				form.setNombrePaquete(bean.getNombrePaquete());
 			}else{
 			
 				hash = new Hashtable();
@@ -400,10 +412,10 @@ public class AtosAlterMutuaService extends JtaBusinessServiceTemplate
 					form.setDigitoControl(bean.getDigitoControl());
 					form.setNumeroCuenta(bean.getNumeroCuenta());
 					form.setCboCodigo(bean.getCbo_Codigo());
-					if(bean.getIdPais()!=null)
+					if(bean.getIdPais()!=null && !bean.getIdPais().equalsIgnoreCase(""))
 						form.setIdPais(catAdm.getIdExternoPais(bean.getIdPais()));
 					form.setCodigoInstitucion(catAdm.getCodigoExtInstitucion(usr.getLocation()));
-					form.setIdTipoEjercicio(String.valueOf(AlterMutuaHelper.getTipoEjercicioAM(String.valueOf(bean.getIdTipoColegiacion()))));
+					form.setIdTipoEjercicio(String.valueOf(AlterMutuaHelper.getTipoEjercicioAM(String.valueOf(bean.getIdTipoSolicitud()))));
 					form.setTipoEjercicio(catAdm.getValorIdExt(AlterMutuaHelper.CATALOGO, AlterMutuaHelper.CONJUNTO_TIPOEJERCICIO, form.getIdTipoEjercicio()));
 					form.setTipoIdentificacion(catAdm.getValor(AlterMutuaHelper.CATALOGO, AlterMutuaHelper.CONJUNTO_TIPOIDENTIFICADOR, bean.getIdTipoIdentificacion().toString()));
 					form.setSexo(catAdm.getValor(AlterMutuaHelper.CATALOGO, AlterMutuaHelper.CONJUNTO_SEXO, bean.getSexo()));
@@ -526,16 +538,17 @@ public class AtosAlterMutuaService extends JtaBusinessServiceTemplate
 					
 					CenEstadoColegialAdm colAdm = new CenEstadoColegialAdm(usr);
 					Vector col = colAdm.getEstadoColegial(String.valueOf(idInstitucion), String.valueOf(idPersona), "1");
-					String tipoEjercicio = "";//col.get(0);
+					String estadoEjercicio = "";//col.get(0);
 					if(col.size()>0){
 						Hashtable h = (Hashtable)col.get(0);
-						tipoEjercicio = h.get("IDESTADO").toString();
+						estadoEjercicio = h.get("IDESTADO").toString();
 					}
-					form.setIdTipoEjercicio(String.valueOf(AlterMutuaHelper.getTipoEjercicioAM(tipoEjercicio)));
+					form.setIdTipoEjercicio(String.valueOf(AlterMutuaHelper.getEstadoEjercicioAM(estadoEjercicio)));
 					form.setTipoEjercicio(catAdm.getValorIdExt(AlterMutuaHelper.CATALOGO, AlterMutuaHelper.CONJUNTO_TIPOEJERCICIO, form.getIdTipoEjercicio()));
 				}
 			}
 		}
 		return form;
 	}
+
 }

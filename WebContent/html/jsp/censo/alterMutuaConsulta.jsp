@@ -33,6 +33,7 @@
 	}
 	%>
 
+<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request" />
 
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/css/jquery-ui.css"/>">
@@ -67,7 +68,10 @@
 </style>
 
 <!-- INICIO: TITULO Y LOCALIZACION -->
-<siga:Titulo titulo="censo.alterMutua.titulo" />
+	<siga:Titulo titulo="censo.alterMutua.titulo" localizacion="censo.solicitudIncorporacion.localizacion"/>
+	<%if(path.toString().contains("Ficha")){ %>
+		<siga:Titulo titulo="censo.alterMutua.titulo" localizacion="censo.fichaCliente.localizacion"/>
+	<%}%>
 <!-- FIN: TITULO Y LOCALIZACION -->
 
 </head>
@@ -119,46 +123,45 @@
 		
 		<c:set var="estiloText" value="box" />
 		<c:set var="estiloCombo" value="boxCombo" />
-
-		<!--c:if test="${AlterMutuaForm.idSolicitudalter!=null}"-->
-		<fieldset id="estadoSolicitud" ><legend>Estado del colegiado</legend>
+		
+		<fieldset id="estadoColegiado" ><legend><siga:Idioma key="censo.alterMutua.literal.estadoColegiado"/></legend>
 		<table>
 		<tr>
-			<td style="width:100px">&nbsp;</td>
-			<td class="labelTextValue" id="holderIdSolicitudAlter">${AlterMutuaForm.idSolicitudalter}</td>
-			<td><input type="button" alt=""  id="idButton" onclick="return consultarEstado();" class="button" name="idButton" value="Consultar estado"></td>
+			<td style="width:120px">&nbsp;</td>
+			<td><input type="button" alt=""  id="idButton" onclick="return consultarEstadoColegiado();" class="button" name="idButton" value="<siga:Idioma key='censo.alterMutua.literal.consultarEstado'/>"></td>
 		</tr>
 		</table>
 		</fieldset>
+		
 		<!--/c:if-->
 			
-		<fieldset><legend>Datos Personales</legend>
+		<fieldset><legend><siga:Idioma key="censo.alterMutua.literal.datosPersonales"/></legend>
 			<table>
 				<tr>
-					<td class="labelText">Identificador</td>
-					<td class="labelTextValor"><c:out value="${AlterMutuaForm.tipoIdentificacion}" />&nbsp;<c:out value="${AlterMutuaForm.identificador}" /></td>
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.identificador"/></td>
+					<td class="labelTextValor" width="100px"><c:out value="${AlterMutuaForm.tipoIdentificacion}"/>&nbsp;<c:out value="${AlterMutuaForm.identificador}"/></td>
 					
-					<td class="labelText">Nombre</td>
-					<td class="labelTextValor"><c:out value="${AlterMutuaForm.nombre}" /></td>
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.nombre"/></td>
+					<td class="labelTextValor" width="100px"><c:out value="${AlterMutuaForm.nombre}"/></td>
 					
-					<td class="labelText">Apellidos</td>
-					<td class="labelTextValor"><c:out value="${AlterMutuaForm.apellidos}" /></td>
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.apellidos"/></td>
+					<td class="labelTextValor" width="100px"><c:out value="${AlterMutuaForm.apellidos}"/></td>
 					
-					<td class="labelText">Fecha Nacimiento</td>
-					<td class="labelTextValor"><c:out value="${AlterMutuaForm.fechaNacimiento}" /></td>
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.fechaNacimiento"/></td>
+					<td class="labelTextValor" width="100px"><c:out value="${AlterMutuaForm.fechaNacimiento}"/></td>
 				</tr>
 				<tr>
 					
-					<td class="labelText">Sexo</td>
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.sexo"/></td>
 					<td class="labelTextValor"> <c:out value="${AlterMutuaForm.sexo}" /> </td>
-
-					<td class="labelText">Estado Civil</td>
+					
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.estadoCivil"/></td>
 					<td class="labelTextValor"><c:out value="${AlterMutuaForm.estadoCivil}" /></td>
 					
-					<td class="labelText">Colegio</td>
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.colegio"/></td>
 					<td class="labelTextValor"><c:out value="${AlterMutuaForm.colegio}" /></td>
 					
-					<td class="labelText">Situación ejercicio</td>
+					<td class="labelText"><siga:Idioma key="censo.alterMutua.literal.situacionEjercicio"/></td>
 					<td class="labelTextValor"><c:out value="${AlterMutuaForm.tipoEjercicio}" /></td>
 				</tr>
 			</table>
@@ -167,17 +170,37 @@
 	<siga:ConjBotonesAccion botones="V"  clase="botonesDetalle"  />
 	
 	</html:form>
-	
-	<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
 
+	<form name="busquedaClientesForm" method="POST" action="/SIGA/CEN_BusquedaClientes.do" target="mainWorkArea">
+			<input type="hidden" name="modo" value="Editar">
+			<input type="hidden" name="avanzada" value="">
+	</form>
+	<form name="SolicitudIncorporacionForm" method="POST" action="/SIGA/CEN_SolicitudesIncorporacion.do" target="mainWorkArea">
+		<input type="hidden" name="modo" value="">
+	</form>		
 	<div id="dialog-message" title="SIGA" style="vertical-align: top;"></div>
 
 	<script>
+	<%if(path.toString().contains("Ficha")){ %>
+		function accionVolver() 
+		{
+			document.busquedaClientesForm.action = "/SIGA/CEN_BusquedaClientes.do" + "?noReset=true&buscar=true";
+			document.busquedaClientesForm.modo.value="abrirConParametros";
+			document.busquedaClientesForm.submit();	
+		}
+	<%}else{%>
+		function accionVolver() {		
+			document.SolicitudIncorporacionForm.action="./CEN_SolicitudesIncorporacion.do";	
+			document.SolicitudIncorporacionForm.target="mainWorkArea";
+			document.SolicitudIncorporacionForm.submit();
+		}
+	<%}%>
+	
 	function refrescarLocal(){
 		window.location.reload(true);
 	}
 
-	function consultarEstado(){
+	function consultarEstadoColegiado(){
 		sub();
         $.ajax({
             type: "POST",

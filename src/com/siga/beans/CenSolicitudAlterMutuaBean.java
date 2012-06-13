@@ -3,8 +3,6 @@ package com.siga.beans;
 
 import com.atos.utils.GstDate;
 import com.siga.censo.form.AlterMutuaForm;
-import com.siga.general.MasterForm;
-import com.sun.java_cup.internal.parse_action;
 
 /**
  * 
@@ -55,6 +53,12 @@ public class CenSolicitudAlterMutuaBean extends MasterBean {
 	static public final String C_IDPAQUETE                  = "IDPAQUETE";
 	static public final String C_IDTIPOEJERCICIO            = "IDTIPOEJERCICIO";
 	static public final String C_IDPERSONA            		= "IDPERSONA";
+	static public final String C_FAMILIARES            		= "FAMILIARES";
+	static public final String C_BENEFICIARIOS         		= "BENEFICIARIOS";
+	static public final String C_BREVEPAQUETE         		= "BREVEPAQUETE";
+	static public final String C_TARIFAPAQUETE         		= "TARIFAPAQUETE";
+	static public final String C_DESCRIPCIONPAQUETE    		= "DESCRIPCIONPAQUETE";
+	static public final String C_NOMBREPAQUETE    			= "NOMBREPAQUETE";
 	
 	private String idSolicitud;
 	private String idSolicitudalter;
@@ -94,6 +98,12 @@ public class CenSolicitudAlterMutuaBean extends MasterBean {
 	private String tipoEjercicio;	
 	private String idTipoEjercicio;	
 	private String idPersona;	
+	private String familiares;	
+	private String beneficiarios;	
+	private String brevePaquete;
+	private String tarifaPaquete;
+	private String descripcionPaquete;
+	private String nombrePaquete;
 	
 	
 
@@ -395,6 +405,55 @@ public class CenSolicitudAlterMutuaBean extends MasterBean {
 	public void setIdTipoEjercicio(String idTipoEjercicio) {
 		this.idTipoEjercicio = idTipoEjercicio;
 	}
+	
+	public String getFamiliares() {
+		return familiares;
+	}
+
+	public void setFamiliares(String familiares) {
+		this.familiares = familiares;
+	}
+
+	public String getBeneficiarios() {
+		return beneficiarios;
+	}
+
+	public void setBeneficiarios(String beneficiarios) {
+		this.beneficiarios = beneficiarios;
+	}
+
+	
+	public String getBrevePaquete() {
+		return brevePaquete;
+	}
+
+	public void setBrevePaquete(String brevePaquete) {
+		this.brevePaquete = brevePaquete;
+	}
+
+	public String getTarifaPaquete() {
+		return tarifaPaquete;
+	}
+
+	public void setTarifaPaquete(String tarifaPaquete) {
+		this.tarifaPaquete = tarifaPaquete;
+	}
+
+	public String getDescripcionPaquete() {
+		return descripcionPaquete;
+	}
+
+	public void setDescripcionPaquete(String descripcionPaquete) {
+		this.descripcionPaquete = descripcionPaquete;
+	}
+
+	public String getNombrePaquete() {
+		return nombrePaquete;
+	}
+
+	public void setNombrePaquete(String nombrePaquete) {
+		this.nombrePaquete = nombrePaquete;
+	}
 
 	public AlterMutuaForm getAlterMutuaForm(AlterMutuaForm alterMutuaForm) {
 		alterMutuaForm.setApellidos(this.apellidos);
@@ -428,6 +487,14 @@ public class CenSolicitudAlterMutuaBean extends MasterBean {
 		alterMutuaForm.setIdTipoEjercicio(this.idTipoEjercicio);
 		alterMutuaForm.setTipoEjercicio(this.tipoEjercicio);
 		alterMutuaForm.setIdPersona(this.idPersona);
+		alterMutuaForm.setFamiliares(this.familiares);
+		alterMutuaForm.setHerederos(this.beneficiarios);
+		
+		alterMutuaForm.setDescripcionPaquete(this.descripcionPaquete);
+		alterMutuaForm.setBrevePaquete(this.brevePaquete);
+		alterMutuaForm.setTarifaPaquete(this.tarifaPaquete);
+		alterMutuaForm.setNombrePaquete(this.nombrePaquete);
+		
 		try {
 			alterMutuaForm.setPropuesta(Integer.parseInt(this.propuesta));
 			alterMutuaForm.setFechaNacimiento(GstDate.getFormatedDateShort("",this.fechaNacimiento));

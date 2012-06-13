@@ -99,6 +99,20 @@ public class AlterMutuaHelper implements java.io.Serializable {
 		try{
 			int intEjercicio =Integer.parseInt(tipoEjercicio);
 			switch (intEjercicio) {
+				case 10: return TipoEjercicio.EjercientePropia;
+				case 30: return TipoEjercicio.EjercientePropia;
+				// En siga no tenemos cuenta ajena 
+				default: return TipoEjercicio.NoEjerciente;
+			}
+		}catch (Exception e) {
+			return TipoEjercicio.NoEjerciente;
+		}
+	}
+	
+	public static int getEstadoEjercicioAM(String tipoEjercicio) {
+		try{
+			int intEjercicio =Integer.parseInt(tipoEjercicio);
+			switch (intEjercicio) {
 				case 20: return TipoEjercicio.EjercientePropia;
 				// En siga no tenemos cuenta ajena 
 				default: return TipoEjercicio.NoEjerciente;

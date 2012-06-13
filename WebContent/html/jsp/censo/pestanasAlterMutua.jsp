@@ -1,4 +1,4 @@
-<!-- pestanasMutualidad.jsp -->
+<!-- pestanasAlterMutua.jsp -->
 <!-- EJEMPLO DE VENTANA DE PESTAÑAS -->
 <!-- Contiene la zona de pestanhas y la zona de gestion principal 
 	 VERSIONES:
@@ -27,7 +27,16 @@
 
 <!-- HEAD -->
 <head>
-
+<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request" />
+<%
+	String pestanaId="";
+	if(path.toString().contains("Ficha")){
+		pestanaId = "ALTERFIC";
+	}else{
+		pestanaId = "ALTERMUT";
+	}
+		
+%>
 	<link id="default" rel="stylesheet" type="text/css" href='<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>'>
 	<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript"></script>
 </head>
@@ -37,7 +46,7 @@
 	<html:hidden property = "modo" value = ""/>
 	</html:form> 
 	<siga:PestanasExt 
-			pestanaId="ALTERMUT" 
+			pestanaId="<%=pestanaId%>" 
 			target="mainPestanas"
 			parametros="SOLINC"
 	/>

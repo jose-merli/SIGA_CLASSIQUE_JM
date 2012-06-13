@@ -1262,3 +1262,135 @@ function findPosY(obj)
 	  else if (control == 10) control = 1;
 	  return control;
 	}
+
+  
+function isNumeroIdentificacionValido(a){
+
+	var a = trim(a);
+	var temp=a.toUpperCase();
+	var cadenadni="TRWAGMYFPDXBNJZSQVHLCKE";
+ 
+	if (temp!==''){
+		//si no tiene un formato valido devuelve error
+		if ((!/^[A-Z]{1}[0-9]{7}[A-Z0-9]{1}$/.test(temp) && !/^[T]{1}[A-Z0-9]{8}$/.test(temp)) && !/^[0-9]{8}[A-Z]{1}$/.test(temp)){
+			return 0;
+		}
+ 
+		//comprobacion de NIFs estandar
+		if (/^[0-9]{8}[A-Z]{1}$/.test(temp)){
+			posicion = a.substring(8,0) % 23;
+			letra = cadenadni.charAt(posicion);
+			var letradni=temp.charAt(8);
+			if (letra == letradni){
+			   	return 1;
+			}else{
+				return -1;
+			}
+		}
+ 
+		//algoritmo para comprobacion de codigos tipo CIF
+		suma = parseInt(a[2])+parseInt(a[4])+parseInt(a[6]);
+		for (i = 1; i < 8; i += 2){
+			temp1 = 2 * parseInt(a[i]);
+			temp1 += '';
+			temp1 = temp1.substring(0,1);
+			temp2 = 2 * parseInt(a[i]);
+			temp2 += '';
+			temp2 = temp2.substring(1,2);
+			if (temp2 == ''){
+				temp2 = '0';
+			}
+			suma += (parseInt(temp1) + parseInt(temp2));
+		}
+		suma += '';
+		n = 10 - parseInt(suma.substring(suma.length-1, suma.length));
+ 
+		//comprobacion de NIFs especiales (se calculan como CIFs)
+		if (/^[KLM]{1}/.test(temp)){
+			if (a[8] == String.fromCharCode(64 + n)){
+				return 1;
+			}else{
+				return -1;
+			}
+		}
+ 
+		//comprobacion de CIFs
+		if (/^[ABCDEFGHJNPQRSUVW]{1}/.test(temp)){
+			temp = n + '';
+			if (a[8] == String.fromCharCode(64 + n) || a[8] == parseInt(temp.substring(temp.length-1, temp.length))){
+				return 2;
+			}else{
+				return -2;
+			}
+		}
+ 
+		//comprobacion de NIEs
+		//T
+		if (/^[T]{1}/.test(temp)){
+			if (a[8] == /^[T]{1}[A-Z0-9]{8}$/.test(temp)){
+				return 3;
+			}else{
+				return -3;
+			}
+		}
+ 
+		//XYZ
+		if (/^[XYZ]{1}/.test(temp)){
+			pos = str_replace(['X', 'Y', 'Z'], ['0','1','2'], temp).substring(0, 8) % 23;
+			if (a[8] == cadenadni.substring(pos, pos + 1)){
+				return 3;
+			}else{
+				return -3;
+			}
+		}
+	}
+	return 0;
+}
+
+function isIBANValido(value) {
+
+    function replaceChars(val) {
+        var replaced = '',
+            char, code;
+        for (var i = 0, m = val.length; i < m; i++) {
+            char = val.charAt(i);
+            code = char.charCodeAt(0);
+            replaced += (code >= 65 && code <= 90) ? new String(code - 55) : char;
+        }
+        return replaced;
+    }
+
+    function mod97(num) {
+        var mod = 0,
+            digit;
+        for (var i = 0, m = num.length; i < m; i++) {
+            digit = parseInt(num.charAt(i), 10);
+            mod = ((mod * 10) + digit) % 97;
+        }
+        return mod;
+    }
+
+    value = value.toUpperCase();
+    if (false === (new RegExp('^[A-Z]{2}[0-9]{2}[A-Z0-9]+$')).test(value)) {
+        return false;
+    }
+
+    var ibanPrefix = value.substr(0, 4),
+        ibanRearranged = value.substr(4) + ibanPrefix,
+        ibanAsNumber = replaceChars(ibanRearranged);
+
+    if (mod97(ibanAsNumber) !== 1) {
+        return false;
+    }
+
+    return true;
+}
+
+function isSWIFTValido(swift){
+	var regSWIFT = /^([a-zA-Z]){4}([a-zA-Z]){2}([0-9a-zA-Z]){2}([0-9a-zA-Z]{3})?$/;
+	if(regSWIFT.test(swift) == false){
+		return false;
+	}
+	return true; 
+}
+

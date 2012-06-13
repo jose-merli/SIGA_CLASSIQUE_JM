@@ -112,6 +112,10 @@ public class AlterMutuaForm extends MasterForm {
 	private String selectBeneficiarios;
 	private int numeroPropuestas;
 	
+	private String brevePaquete;
+	private String tarifaPaquete;
+	private String descripcionPaquete;
+	private String nombrePaquete;
 	
 	public boolean isError() {
 		return error;
@@ -581,6 +585,31 @@ public class AlterMutuaForm extends MasterForm {
 	public String getPais() {
 		return pais;
 	}
+	
+	public String getBrevePaquete() {
+		return brevePaquete;
+	}
+	public void setBrevePaquete(String brevePaquete) {
+		this.brevePaquete = brevePaquete;
+	}
+	public String getTarifaPaquete() {
+		return tarifaPaquete;
+	}
+	public void setTarifaPaquete(String tarifaPaquete) {
+		this.tarifaPaquete = tarifaPaquete;
+	}
+	public String getDescripcionPaquete() {
+		return descripcionPaquete;
+	}
+	public void setDescripcionPaquete(String descripcionPaquete) {
+		this.descripcionPaquete = descripcionPaquete;
+	}
+	public String getNombrePaquete() {
+		return nombrePaquete;
+	}
+	public void setNombrePaquete(String nombrePaquete) {
+		this.nombrePaquete = nombrePaquete;
+	}
 	public CenSolicitudAlterMutuaBean getSolicitudAlterMutuaBean(){
 		CenSolicitudAlterMutuaBean bean = new CenSolicitudAlterMutuaBean();
 		bean.setApellidos(this.apellidos);              
@@ -615,7 +644,18 @@ public class AlterMutuaForm extends MasterForm {
 		bean.setProvincia(this.provincia);              
 		bean.setPoblacion(this.poblacion);              
 		bean.setIdPaquete(this.idPaquete);              
-		bean.setIdTipoEjercicio(this.idTipoEjercicio);              
+		bean.setIdTipoEjercicio(this.idTipoEjercicio);
+		
+		bean.setFamiliares(this.familiares);              
+		bean.setBeneficiarios(this.herederos);
+		
+		if(this.descripcionPaquete!=null){
+			bean.setDescripcionPaquete(UtilidadesString.replaceAllIgnoreCase(this.descripcionPaquete,"€","&euro;"));
+		}
+		bean.setBrevePaquete(this.brevePaquete);
+		bean.setTarifaPaquete(this.tarifaPaquete);
+		bean.setNombrePaquete(this.nombrePaquete);
+		
 		try {
 			bean.setPropuesta(String.valueOf(this.propuesta));              
 			bean.setFechaNacimiento(UtilidadesString.formatoFecha(this.fechaNacimiento,ClsConstants.DATE_FORMAT_SHORT_SPANISH, ClsConstants.DATE_FORMAT_JAVA));        
