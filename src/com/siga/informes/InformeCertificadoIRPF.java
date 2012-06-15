@@ -200,16 +200,11 @@ public class InformeCertificadoIRPF extends MasterReport
 	{
 		File ficheroSalida = null;
 		
-		String codigoExterno =""; 
-		if(idiomaExt.equals(ClsConstants.ESPANOL))
-			codigoExterno= ClsConstants.ES;
-		else if(idiomaExt.equals(ClsConstants.CATALAN))
-			codigoExterno= ClsConstants.CA;
-		else if(idiomaExt.equals(ClsConstants.EUSKERA))
-			codigoExterno= ClsConstants.EU;
-		else if(idiomaExt.equals(ClsConstants.GALLEGO))
-			codigoExterno= ClsConstants.GL;
+		ScsEJGAdm obj = new ScsEJGAdm(usr);
 		
+		Vector idioma = obj.getIdiomaCodigoExt(idiomaExt);
+		Hashtable codigoExt= (Hashtable)idioma.get(0);
+		String codigoExterno = (String)codigoExt.get("LENGUAJE");
 		// obteniendo rutas
 		ReadProperties rp = new ReadProperties(
 				SIGAReferences.RESOURCE_FILES.SIGA);
@@ -249,7 +244,7 @@ public class InformeCertificadoIRPF extends MasterReport
 		// DIA_HOY,MES_HOY,ANYO_HOY
 		// del momento cuando se genera
 		helper.completarHashSalida(htDatosComunesInforme, helper
-				.getPersonaInstitucion(idInstitucion,codigoExterno));
+				.getPersonaInstitucion(idInstitucion));
 
 		String identificador = null;
 		// Si solo hay una persona ponemos el idpersona en el titulo

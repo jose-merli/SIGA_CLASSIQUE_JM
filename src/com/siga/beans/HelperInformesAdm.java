@@ -405,7 +405,7 @@ public class HelperInformesAdm  {
 		}
 	}
 	
-	public Vector getPersonaInstitucion (String idInstitucion, String idioma)throws SIGAException,ClsExceptions
+	public Vector getPersonaInstitucion (String idInstitucion)throws SIGAException,ClsExceptions
 	{	
 		try { 
 			 
@@ -413,8 +413,7 @@ public class HelperInformesAdm  {
 			sql.append(" select ins.nombre NOMBREINSTITUCION,per.nifcif AS NIFCIFINSTITUCION ");
 			sql.append(" ,f_siga_getdireccioncliente(ins.idinstitucion,per.idpersona,1,3) AS INSTITUCIONPOBLACION ");
 			sql.append(" ,TO_CHAR(SYSDATE, 'dd') AS DIA_HOY ");
-			//sql.append(" ,TO_CHAR(SYSDATE, 'MONTH', 'NLS_DATE_LANGUAGE = SPANISH') AS MES_HOY ");
-			sql.append(" ,pkg_siga_fecha_en_letra.f_siga_fechaenletra(to_char(sysdate),'M', "+idioma+") AS MES_HOY ");
+			sql.append(" ,TO_CHAR(SYSDATE, 'MONTH', 'NLS_DATE_LANGUAGE = SPANISH') AS MES_HOY ");
 			sql.append(" ,TO_CHAR(SYSDATE, 'yyyy') AS ANIO_HOY ");
 			sql.append(" from cen_institucion ins,cen_persona per ");
 			sql.append(" where ins.idpersona = per.idpersona ");

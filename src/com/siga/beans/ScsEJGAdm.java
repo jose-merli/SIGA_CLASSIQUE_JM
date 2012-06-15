@@ -5087,5 +5087,29 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		
 	}
 	
+	//Recupera a partir del codigo Externo el Idlenguaje del IDIOMA 
+	public Vector getIdiomaCodigoExt (String codigoExt) throws ClsExceptions,SIGAException {
+		   Vector datos=new Vector();
+	       try {
+	            RowsContainer rc = new RowsContainer(); 
+	            	            
+	            String sql ="SELECT A.IDLENGUAJE AS LENGUAJE" +
+	            		" FROM ADM_LENGUAJES A" +
+	            		" WHERE A.CODIGOEXT='"+codigoExt+"'"; 
+	            																
+	            if (rc.find(sql)) {
+	               for (int i = 0; i < rc.size(); i++){
+	                  Row fila = (Row) rc.get(i);
+	                  Hashtable resultado=fila.getRow();	                  
+	                  datos.add(resultado);
+	               }
+	            } 	            
+	       } catch (Exception e) {
+	       		throw new ClsExceptions (e, "Error al obtener la informacion del idioma.");
+	       }
+	       return datos;                        
+	    }
+	
+	
 }
 
