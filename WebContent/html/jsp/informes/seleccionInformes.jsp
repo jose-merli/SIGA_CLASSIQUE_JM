@@ -332,7 +332,7 @@ function accionDownload()
 <!-- Asociada al boton Cerrar -->
 	function accionCerrar() 
 	{			
-		window.close();
+		window.top.close();
 	}
 
 	function accionEnviar() {

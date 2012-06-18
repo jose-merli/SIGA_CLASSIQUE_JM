@@ -1,4 +1,4 @@
-<!-- altaTurno_2.jsp -->
+<!-- editarTelefonoClientesFiltro.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -15,17 +15,22 @@
 <% 	String app		= request.getContextPath();%>
 
 <html>
-	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-		<html:javascript formName="busquedaClientesFiltrosForm" staticJavascript="false" />  
-		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
-		<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-		<script src="<%=app%>/html/js/validation.js" type="text/javascript"></script>
+<head>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.msgbox.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.dragndrop.min.js"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<html:javascript formName="busquedaClientesFiltrosForm" staticJavascript="false" />  
+	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/validation.js" type="text/javascript"></script>
 </head>
 
 <body onload="init();">
-  <html:form action="JGR_BusquedaClientesFiltros.do" method="post" target="submitArea">
+  <html:form action="JGR_BusquedaClientesFiltros.do" method="post" target="submitArea" styleId="busquedaClientesFiltrosForm">
 	<table class="tablaTitulo" cellspacing="0" heigth="32">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
@@ -39,20 +44,40 @@
 				<siga:ConjCampos leyenda="gratuita.editartelefonosGuardia.literal.telefonosGuardia">
 					<table class="tablaCampos" align="center">	
 						<tr>
-		   					<td class="labelText"><siga:Idioma key="censo.datosDireccion.literal.telefono1"/>&nbsp(*)</td>				
-		   					<td><html:text name="busquedaClientesFiltrosForm" property="telefono1"  maxlength="20" size="10" styleClass="box"></html:text></td>
-		   					<td class="labelText"><siga:Idioma key="censo.datosDireccion.literal.fax1"/>&nbsp</td>
-		   					<td><html:text name="busquedaClientesFiltrosForm" property="fax1"  maxlength="20" size="10" styleClass="box"></html:text></td>
+		   					<td class="labelText">
+		   						<siga:Idioma key="censo.datosDireccion.literal.telefono1"/>&nbsp(*)
+		   					</td>				
+		   					<td>
+		   						<html:text name="busquedaClientesFiltrosForm" property="telefono1" styleId="telefono1" maxlength="20" size="10" styleClass="box"></html:text>
+		   					</td>
+		   					<td class="labelText">
+		   						<siga:Idioma key="censo.datosDireccion.literal.fax1"/>&nbsp
+		   					</td>
+		   					<td>
+		   						<html:text name="busquedaClientesFiltrosForm" property="fax1" styleId="fax1" maxlength="20" size="10" styleClass="box"></html:text>
+		   					</td>
 		 				</tr>
 	 					<tr>
-		   					<td class="labelText"><siga:Idioma key="censo.datosDireccion.literal.telefono2"/>&nbsp</td>				
-		   					<td><html:text name="busquedaClientesFiltrosForm" property="telefono2"  maxlength="20" size="10" styleClass="box"></html:text></td>	
-		  				 	<td class="labelText"><siga:Idioma key="censo.datosDireccion.literal.fax2"/>&nbsp</td>				
-		   					<td><html:text name="busquedaClientesFiltrosForm" property="fax2"  maxlength="20" size="10" styleClass="box"></html:text></td>
+		   					<td class="labelText">
+		   						<siga:Idioma key="censo.datosDireccion.literal.telefono2"/>&nbsp
+		   					</td>				
+		   					<td>
+		   						<html:text name="busquedaClientesFiltrosForm" property="telefono2" styleId="telefono2" maxlength="20" size="10" styleClass="box"></html:text>
+		   					</td>	
+		  				 	<td class="labelText">
+		  				 		<siga:Idioma key="censo.datosDireccion.literal.fax2"/>&nbsp
+		  				 	</td>				
+		   					<td>
+		   						<html:text name="busquedaClientesFiltrosForm" property="fax2" styleId="fax2" maxlength="20" size="10" styleClass="box"></html:text>
+		   					</td>
 	 					</tr>
 	 					<tr>
-		   					<td class="labelText"><siga:Idioma key="censo.datosDireccion.literal.movil"/>&nbsp</td>				
-		   					<td><html:text name="busquedaClientesFiltrosForm" property="movil"  maxlength="20" size="10" styleClass="box"></html:text></td>	
+		   					<td class="labelText">
+		   						<siga:Idioma key="censo.datosDireccion.literal.movil"/>&nbsp
+		   					</td>				
+		   					<td>
+		   						<html:text name="busquedaClientesFiltrosForm" property="movil" styleId="movil" maxlength="20" size="10" styleClass="box"></html:text>
+		   					</td>	
 		  				</tr>
 		   			</table>
 				</siga:ConjCampos>
@@ -61,13 +86,15 @@
 		<tr>
 			<td height="80px">&nbsp;</td>
 		</tr>
-	</table>	
-	<siga:ConjBotonesAccion botones="C,Y" modal="P"/>	
-	<html:hidden name="busquedaClientesFiltrosForm" property="modo"/>
-	<html:hidden name="busquedaClientesFiltrosForm" property="idPersona" />
-	<html:hidden name="busquedaClientesFiltrosForm" property="idDireccion" />
-	<html:hidden name="busquedaClientesFiltrosForm" property="idInstitucion" />
-	<html:hidden name="busquedaClientesFiltrosForm" property="sustituta" />
+	</table>
+	
+	<siga:ConjBotonesAccion botones="C,Y" modal="P"/>
+	
+	<html:hidden name="busquedaClientesFiltrosForm" property="modo" styleId="modo"/>
+	<html:hidden name="busquedaClientesFiltrosForm" property="idPersona" styleId="idPersona"/>
+	<html:hidden name="busquedaClientesFiltrosForm" property="idDireccion" styleId="idDireccion"/>
+	<html:hidden name="busquedaClientesFiltrosForm" property="idInstitucion" styleId="idInstitucion"/>
+	<html:hidden name="busquedaClientesFiltrosForm" property="sustituta" styleId="sustituta"/>
   </html:form>
 
 	<!-- ******* BOTONES DE ACCIONES ****** -->
@@ -77,28 +104,32 @@
 	
 	function init(){
 		//Guardamos los valores de los campos para poder comprobar si hubo cambios
-		saveValuesOfFields(document.forms[0]);
-		window.returnValue="";
+		saveValuesOfFields(document.getElementById("busquedaClientesFiltrosForm"));
+		window.top.returnValue="";
 	}
 	
 	function accionCerrar() {		
-		window.close();
+		window.top.close();
 	}
 		
 	function accionGuardarCerrar() 	{		
-	      document.busquedaClientesFiltrosForm.telefono1.value=eliminarBlancos(trim(document.busquedaClientesFiltrosForm.telefono1.value));
-		  document.busquedaClientesFiltrosForm.telefono2.value=eliminarBlancos(trim(document.busquedaClientesFiltrosForm.telefono2.value));
-		  document.busquedaClientesFiltrosForm.fax1.value=eliminarBlancos(trim(document.busquedaClientesFiltrosForm.fax1.value));
-		  document.busquedaClientesFiltrosForm.fax2.value=eliminarBlancos(trim(document.busquedaClientesFiltrosForm.fax2.value));
-		  document.busquedaClientesFiltrosForm.movil.value=eliminarBlancos(trim(document.busquedaClientesFiltrosForm.movil.value));
-		if(validateBusquedaClientesFiltrosForm(document.busquedaClientesFiltrosForm)){
-			if(checkElementsForChanges(document.forms[0])){ //Si hubo cambios los envio
-				document.forms[0].submit();
-			}else{											//Si no hubo cambios digo que ok y cierro
+	    document.getElementById("telefono1").value=eliminarBlancos(trim(document.getElementById("telefono1").value));
+		document.getElementById("telefono2").value=eliminarBlancos(trim(document.getElementById("telefono2").value));
+		document.getElementById("fax1").value=eliminarBlancos(trim(document.getElementById("fax1").value));
+		document.getElementById("fax2").value=eliminarBlancos(trim(document.getElementById("fax2").value));
+		document.getElementById("movil").value=eliminarBlancos(trim(document.getElementById("movil").value));
+		if(validateBusquedaClientesFiltrosForm(document.getElementById("busquedaClientesFiltrosForm"))){
+			if(checkElementsForChanges(document.getElementById("busquedaClientesFiltrosForm"))){ //Si hubo cambios los envio
+				//alert("accionGuardarCerrar : Hubo Cambios");
+				document.getElementById("busquedaClientesFiltrosForm").submit();
+			} else {											//Si no hubo cambios digo que ok y cierro
 				//no se si habria que mostrar mensaje
-				window.returnValue="MODIFICADO";
-				window.close();
+				//alert("accionGuardarCerrar : MODIFICADO");
+				window.top.returnValue="MODIFICADO";
+				window.top.close();
 			}
+		} else {
+			//alert("From no validado correctamente.");
 		}
 	}
 		
@@ -108,7 +139,7 @@
 			if(trim(telefono1.value) ==""){
 				var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.telefono1"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
 				alert(mensaje);
-				ok=false;
+				ok = false;
 			}
 		}
 		return ok;

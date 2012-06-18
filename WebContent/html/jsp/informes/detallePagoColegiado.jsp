@@ -61,7 +61,7 @@
 			<!-- Asociada al boton Cerrar -->
 			function accionCerrar() 
 			{		
-				window.close();
+				window.top.close();
 			}
 			
 		</script>

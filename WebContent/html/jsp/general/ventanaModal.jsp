@@ -40,10 +40,13 @@
 			<siga:Idioma key="general.ventana.cgae"/>
 		</title>
 		
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-		<script language="JavaScript">
-
+		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+		
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+		
+		<script type="text/javascript">
 			function cargaContenidoModal() {
 				var datos = window.dialogArguments;
 				var formu = document.createElement('form');
@@ -53,19 +56,19 @@
 					if (datos[i].value) {
 						if (datos[i].name=='actionModal') {
 							formu.setAttribute('action', datos[i].value);
-						} else {
-						
-							var el = document.createElement("<input type='hidden' name='"+datos[i].name+"'>");
-							
-							el.setAttribute('value', datos[i].value);
+						} else {						
+							var el = document.createElement("input");
+							el.setAttribute("type", "hidden")
+							el.setAttribute("name", datos[i].name);
+							el.setAttribute("id", datos[i].name);
+							el.setAttribute("value", datos[i].value);
 							formu.appendChild(el);
 						}
 					}
 				}
-				document.appendChild(formu);
+				document.body.appendChild(formu);
 				formu.submit();
-			}
-		
+			}		
 		</script>
 	</head>
 

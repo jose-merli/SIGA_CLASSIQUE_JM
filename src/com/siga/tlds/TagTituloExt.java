@@ -37,9 +37,9 @@ public class TagTituloExt extends TagTitulo {
 			out.println("var tit =\""+ UtilidadesString.getMensajeIdioma(usrbean, this.titulo) +"\";");
 			if (this.localizacion!=null && !this.localizacion.equals("")) {
 				out.println("var loc =\""+ UtilidadesString.getMensajeIdioma(usrbean, this.localizacion) +"\";");
-				out.println("top.setLocalizacion(loc);");
+				out.println("setLocalizacion(loc);");
 			}
-			out.println("top.setTitulo(siga, tit);");
+			out.println("setTitulo(siga, tit);");
 			out.println("</script>");
 
 		}

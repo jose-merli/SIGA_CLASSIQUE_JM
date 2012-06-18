@@ -105,42 +105,35 @@
 			lectura="true";
 			botones = "C";
 		}
-		if (!modo.equals("nuevo")){
-			
-			claseDatosIdentif = "boxConsulta";
-			
-		}
-		
-		
-	} 
-	else {
+		if (!modo.equals("nuevo")){			
+			claseDatosIdentif = "boxConsulta";			
+		}		
+	} else {
 		if (modo.equals("nuevo")) {
 			desactivado  = false;
 			idPersona		  = String.valueOf((Long)request.getAttribute("idPersona"));
 			idInstitucion = String.valueOf((Integer)request.getAttribute("idInstitucion"));
 		}
 	}
-	String[] param = {idInstitucion, idInstitucion};
-	
-	
-	
-	
+	String[] param = {idInstitucion, idInstitucion};	
 %>	
 <html>
 
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script language="JavaScript" src="<%=app%>/html/js/validation.js" type="text/jscript"></script>
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	
+	<script src="<%=app%>/html/js/validation.js" type="text/javascript"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>	
 	<!-- Calendario -->
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 
 	<!-- Validaciones en Cliente -->
 	<html:javascript formName="componentesJuridicosForm" staticJavascript="false" />  
-	<script src="<%=app%>/html/js/jquery.js" type="text/javascript"></script>
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
@@ -148,37 +141,38 @@
 	
 		//Asociada al boton Volver
 		function accionCerrar(){ 		
-			window.close();
+			window.top.close();
 		}	
 		
 		//Asociada al boton Restablecer
 		function accionRestablecer(){		
-			document.all.componentesJuridicosForm.reset();
+			document.getElementsByName("componentesJuridicosForm")[0].reset();
 			rellenarCampos();
 		}			
 		//Asociada al boton GuardarCerrar
 		function accionGuardarCerrar() {
             sub();
             //habilita los posibles botones deshabilitados para que sí se envíen en el formulario
-            componentesJuridicosForm.nombre.disabled=false;
-			componentesJuridicosForm.apellidos1.disabled=false;
-			componentesJuridicosForm.apellidos2.disabled=false;
+            jQuery.removeAttr(document.getElementById("nombre"),"disabled");
+            jQuery.removeAttr(document.getElementById("apellidos1"),"disabled");
+            jQuery.removeAttr(document.getElementById("apellidos2"),"disabled");
             
 			// Validamos los errores ///////////
-			if ((document.all.componentesJuridicosForm.sociedad.checked) && (document.all.componentesJuridicosForm.idCuenta.value == "")) {
+			if ((document.getElementById("sociedad").checked) && (document.getElementById("idCuenta").value == "")) {
 				alert ("<siga:Idioma key="messages.censo.componentes.errorCuentaObligatoria"/>");
 				fin();
 				return false;
 			}
 			
-			if (!validateComponentesJuridicosForm(document.componentesJuridicosForm)){
+			if (!validateComponentesJuridicosForm(document.getElementsByName("componentesJuridicosForm")[0])){
 				fin();
 				return false;
 			}
 			////////////////////////////////////
 
 			<% if (!bOcultarHistorico) { %>
-					var datos = showModalDialog("/SIGA/html/jsp/general/ventanaMotivoHistorico.jsp","","dialogHeight:230px;dialogWidth:520px;help:no;scroll:no;status:no;");
+				var datos = showModalDialog("/SIGA/html/jsp/general/ventanaMotivoHistorico.jsp","","dialogHeight:230px;dialogWidth:520px;help:no;scroll:no;status:no;");
+				window.top.focus();
 			<% } else { %>
 					var datos = new Array();
 					datos[0] = 1;
@@ -191,26 +185,23 @@
 			}
 			
 			if (datos[0] == 1) { // Boton Guardar
-				document.componentesJuridicosForm.motivo.value = datos[1];
+				document.getElementById("motivo").value = datos[1];
 				<%if (modo.equals("editar")) {%>
-					document.componentesJuridicosForm.modo.value = "modificar";
+					document.getElementsByName("componentesJuridicosForm")[0].modo.value = "modificar";
 				<%}	else { %>
-					document.componentesJuridicosForm.modo.value = "insertar";
+					document.getElementsByName("componentesJuridicosForm")[0].modo.value = "insertar";
 				<%}%>
-				document.componentesJuridicosForm.capitalSocial.value=document.componentesJuridicosForm.capitalSocial.value.replace(/,/,".");
-				document.componentesJuridicosForm.target = "submitArea";
+				document.getElementById("capitalSocial").value = document.getElementById("capitalSocial").value.replace(/,/,".");
+				document.getElementsByName("componentesJuridicosForm")[0].target = "submitArea";
 				
 				if(document.getElementById("colegiadoabogacia").style.display=="block"){
-				  document.componentesJuridicosForm.idTipoColegio.value=document.componentesJuridicosForm.idTipoColegio1.value;
-				}
-				
+					document.getElementById("idTipoColegio").value = document.getElementById("idTipoColegio1").value;
+				}				
 				if(document.getElementById("colegiadonoabogacia").style.display=="block"){
-				 
-				  document.componentesJuridicosForm.idTipoColegio.value=document.componentesJuridicosForm.idTipoColegio2.value;
-				}
-				
-				document.componentesJuridicosForm.submit();
-			}else{
+					document.getElementById("idTipoColegio").value =document.getElementById("idTipoColegio2").value;
+				}				
+				document.getElementsByName("componentesJuridicosForm")[0].submit();
+			} else {
 				fin();
 				return false;
 			}
@@ -219,22 +210,20 @@
 		//Selecciona los valores de los campos check y combo dependiendo de los valores del Hashtable
 		function rellenarCampos(){	
 			// Obtenemos los valores para el check sociedad.
-			sociedad = "<%=sociedad%>"	;
-		  if(sociedad == "<%=DB_TRUE%>"){
-		  	document.all.componentesJuridicosForm.sociedad.checked=true;
-			if (document.all.idCuenta){
-		  	 document.all.idCuenta.disabled=false;
-			}
-		  }
-		  else {
-		    if (document.all.idCuenta){
-		  	 document.all.idCuenta.disabled=true;
-			}
-		  }
+			var sociedad = "<%=sociedad%>"	;
+		  	if(sociedad == "<%=DB_TRUE%>"){
+		  		document.getElementById("sociedad").checked=true;
+				if (document.getElementById("idCuenta")){
+		  	 		jQuery.removeAttr(document.getElementById("idCuenta"),"disabled");
+				}
+		  	} else {
+			    if (document.getElementById("idCuenta")){
+			    	jQuery.attr(document.getElementById("idCuenta"),"disabled","disabled");
+				}
+		  	}
 		}
 		
-		function buscarCliente() {
-	
+		function buscarCliente() {	
 			var datos = new Array();
 			datos[0] = ""; 						// idpersona
 			datos[1] = ""; 						// idInstitucion
@@ -246,127 +235,114 @@
 
 			var datos = ventaModalGeneral("busquedaClientesModalForm","G");
 
-			if (datos == null || datos[0] == undefined) return false;
-			document.componentesJuridicosForm.clienteIdPersona.value 		 = datos[0];
-			document.componentesJuridicosForm.clienteIdInstitucion.value = datos[1];
-			document.componentesJuridicosForm.nombre.value = datos[4];
-			document.componentesJuridicosForm.apellidos1.value=datos[5];
-			document.componentesJuridicosForm.apellidos2.value=datos[6];
-			document.componentesJuridicosForm.nifcif.value = datos[3];
+			if (datos == null || datos[0] == undefined) {
+				return false;
+			}
+			document.getElementById("clienteIdPersona").value = datos[0];
+			document.getElementById("clienteIdInstitucion").value = datos[1];
+			document.getElementById("nombre").value = datos[4];
+			document.getElementById("apellidos1").value=datos[5];
+			document.getElementById("apellidos2").value=datos[6];
+			document.getElementById("nifcif").value = datos[3];
 			document.getElementById("numColegiado").value = datos[2];
 			document.getElementById("profesional").checked=true;
 			document.getElementById("colegiado").style.display="block";
 			document.getElementById("colegiadoabogacia").style.display="block";
 			document.getElementById("colegiadonoabogacia").style.display="none";
-			lista_tipo = document.getElementById("idTipoColegio1").options;
+			var lista_tipo = document.getElementById("idTipoColegio1").options;
 			for (i = 0; i < lista_tipo.length; i++) {
-						if (lista_tipo.options[i].value == "5" ) {
-							lista_tipo.options[i].selected = true;
-							document.componentesJuridicosForm.idTipoColegio.value=lista_tipo.options[i].value;
-							break;
-						}
-				
-			}
-			
+				if (lista_tipo.options[i].value == "5" ) {
+					lista_tipo.options[i].selected = true;
+					document.getElementById("idTipoColegio").value=lista_tipo.options[i].value;
+					break;
+				}				
+			}			
 			document.getElementById("sjcs").style.display="block";
 			document.getElementById("colegio1").style.display="block";
-			document.getElementById("colegio2").style.display="block";
-			
-			
+			document.getElementById("colegio2").style.display="block";			
 		}
-		function obtenerNif() 
-			{
+		
+		function obtenerNif() {
 			if (document.componentesJuridicosForm.nifcif.value!="")  {
-			     var sNIF = document.componentesJuridicosForm.nifcif.value;
+				var sNIF = document.getElementById("nifcif").value;
 			     //document.componentesJuridicosForm.nifcif.value = formateaNIF(sNIF);
-				} 
+			} 
 				
-		   	     var nif = (document.componentesJuridicosForm.nifcif.value);
+		   	var nif = (document.getElementById("nifcif").value);
 				
- 				if (nif!="") {
-					
-				
-					//LMSP En lugar de abrir la ventana modal, se manda al frame oculto, y éste se encarga de todo :)
-					document.forms[0].modo.value="buscarNIF";
-					document.forms[0].target="submitArea";
-					document.forms[0].submit();
-				}				
-			}
+ 			if (nif!="") {
+				//LMSP En lugar de abrir la ventana modal, se manda al frame oculto, y éste se encarga de todo :)
+				document.forms[0].modo.value="buscarNIF";
+				document.forms[0].target="submitArea";
+				document.forms[0].submit();
+			}				
+		}
+		
 		function profesionalCol(){
 			if (document.getElementById("profesional").checked){
 				document.getElementById("colegiado").style.display="block";
-				
-					document.getElementById("provincia1").style.display="block";
-					document.getElementById("provincia2").style.display="block";
+				document.getElementById("provincia1").style.display="block";
+				document.getElementById("provincia2").style.display="block";
 				<%if (tipo.equals("1")) {%>
-					document.getElementById("colegiadoabogacia").style.display="block";
-					document.getElementById("colegiadonoabogacia").style.display="none";
-					if (document.all.componentesJuridicosForm.sociedad.checked==false){
-						document.getElementById("asteriscoCuenta").style.display="none";
-					}else{
-						document.getElementById("asteriscoCuenta").style.display="block";
-					}
+				document.getElementById("colegiadoabogacia").style.display="block";
+				document.getElementById("colegiadonoabogacia").style.display="none";
+				if (document.getElementById("sociedad").checked==false){
+					document.getElementById("asteriscoCuenta").style.display="none";
+				} else {
+					document.getElementById("asteriscoCuenta").style.display="block";
+				}
 				<%}	else { %>
-					document.getElementById("colegiadoabogacia").style.display="none";
-					document.getElementById("colegiadonoabogacia").style.display="block";
+				document.getElementById("colegiadoabogacia").style.display="none";
+				document.getElementById("colegiadonoabogacia").style.display="block";
 				<%}	 %>
-			}else{
+			} else {
 				document.getElementById("colegiado").style.display="none";
 				document.getElementById("provincia1").style.display="none";
 				document.getElementById("provincia2").style.display="none";
 			}
 		}
 		
-		function cargar(){
-			 
-			<% 
-			
-			if (tipo.equals("")) {%>
-					document.getElementById("colegiado").style.display="none";
-					document.getElementById("provincia1").style.display="none";
-					document.getElementById("provincia2").style.display="none";
+		function cargar() {			 
+			<% if (tipo.equals("")) {%>
+			document.getElementById("colegiado").style.display="none";
+			document.getElementById("provincia1").style.display="none";
+			document.getElementById("provincia2").style.display="none";
 			<%}	else { %>
-			 
-					document.getElementById("profesional").checked=true;
-					<%if (tipo.equals("1")) {%>
-					
-						document.getElementById("colegiado").style.display="block";
-						document.getElementById("colegio1").style.display="block";
-						document.getElementById("colegio2").style.display="block";
-						document.getElementById("colegiadoabogacia").style.display="block";
-						document.getElementById("colegiadonoabogacia").style.display="none";
-						document.getElementById("sjcs").style.display="block";
-						if (document.all.componentesJuridicosForm.sociedad.checked==false){
-							document.getElementById("asteriscoCuenta").style.display="none";
-							document.getElementById("sinasteriscoCuenta").style.display="block";
-						}else{
-							document.getElementById("sinasteriscoCuenta").style.display="none";
-							document.getElementById("asteriscoCuenta").style.display="block";
-						}
-					<%}	else { %>
-						
-						document.getElementById("colegiado").style.display="block";
-						document.getElementById("provincia1").style.display="block";
-						document.getElementById("provincia2").style.display="block";
-						document.getElementById("colegiadoabogacia").style.display="none";
-						document.getElementById("colegiadonoabogacia").style.display="block";
-					<%}%>
+			document.getElementById("profesional").checked=true;
+			<%if (tipo.equals("1")) {%>
+			document.getElementById("colegiado").style.display="block";
+			document.getElementById("colegio1").style.display="block";
+			document.getElementById("colegio2").style.display="block";
+			document.getElementById("colegiadoabogacia").style.display="block";
+			document.getElementById("colegiadonoabogacia").style.display="none";
+			document.getElementById("sjcs").style.display="block";
+			if (document.getElementById("sociedad").checked==false){
+				document.getElementById("asteriscoCuenta").style.display="none";
+				document.getElementById("sinasteriscoCuenta").style.display="block";
+			} else {
+				document.getElementById("sinasteriscoCuenta").style.display="none";
+				document.getElementById("asteriscoCuenta").style.display="block";
+			}
+			<%}	else { %>
+			document.getElementById("colegiado").style.display="block";
+			document.getElementById("provincia1").style.display="block";
+			document.getElementById("provincia2").style.display="block";
+			document.getElementById("colegiadoabogacia").style.display="none";
+			document.getElementById("colegiadonoabogacia").style.display="block";
+			<%}%>
 			<%}%>
 		}
 		
 		function cambiar(){
-		
-		  var idtipoColegioAux = document.getElementById("idTipoColegio1").value.split("#");
-		 
-			if (idtipoColegioAux[0]!=1){
-			 
+			var idtipoColegioAux = document.getElementById("idTipoColegio1").value.split("#");		 
+			if (idtipoColegioAux[0]!=1){			 
 				document.getElementById("colegio1").style.display="none";
 				document.getElementById("provincia1").style.display="block";
 				document.getElementById("colegio2").style.display="none";
 				document.getElementById("provincia2").style.display="block";
 				document.getElementById("sjcs").style.display="none";
-			}else{
-			   document.getElementById("colegio1").style.display="block";
+			} else {
+			   	document.getElementById("colegio1").style.display="block";
 				document.getElementById("provincia1").style.display="none";
 				document.getElementById("colegio2").style.display="block";
 				document.getElementById("provincia2").style.display="none";
@@ -375,24 +351,23 @@
 		}
 		
 		function cuenta(){
-			if (document.all.componentesJuridicosForm.sociedad.checked==true){
+			if (document.getElementById("sociedad").checked==true){
 				document.getElementById("sinasteriscoCuenta").style.display="none";
 				document.getElementById("asteriscoCuenta").style.display="block";
 				document.getElementById("idCuenta").disabled=false;	
-			}else{
+			} else {
 				document.getElementById("asteriscoCuenta").style.display="none";
 				document.getElementById("sinasteriscoCuenta").style.display="block";
 				document.getElementById("idCuenta").disabled=true;	
 				
 			}
 		}
+		
 		function traeDatos() {
-
-			if (document.all.componentesJuridicosForm.sociedad.checked==true){
-
-				var idclienteper=document.componentesJuridicosForm.clienteIdPersona.value;
-				var idper=document.componentesJuridicosForm.idPersona.value;
-				var idinsti=document.componentesJuridicosForm.clienteIdInstitucion.value;
+			if (document.getElementById("sociedad").checked==true){
+				var idclienteper = document.getElementById("clienteIdPersona").value;
+				var idper = document.getElementById("idPersona").value;
+				var idinsti = document.getElementById("clienteIdInstitucion").value;
 
 				$.ajax({ //Comunicación jQuery hacia JSP  
 			           type: "POST",
@@ -403,7 +378,7 @@
 			           success:  function(json) {
 				           		if(json.exite=="S")
 				           			if(!confirm('<siga:Idioma key="messages.censo.componentes.errorExisteCliente"/> '+json.nifSociedad +' <siga:Idioma key="messages.censo.componentes.cambiarCliente"/>')){
-				           				document.all.componentesJuridicosForm.sociedad.checked=false;
+				           				document.getElementById("sociedad").checked=false;
 				           				cuenta();
 				           			}
 			           },
@@ -411,16 +386,12 @@
 			        	   //alert("Error1: "+xml);//$("span#ap").text(" Error");
 			        	   alert("Error: "+msg);//$("span#ap").text(" Error");
 			           }
-			        }); 
-						
-			}
-			
-		}
-			
-		
+			    });						
+			}			
+		}	
 	</script>	
 
-	<!-- INICIO: TITULO Y LOCALIZACION 	-->	
+<!-- INICIO: TITULO Y LOCALIZACION 	-->	
 </head>
 <body onload="cargar();">
 		<table class="tablaTitulo" cellspacing="0" heigth="32">
@@ -444,16 +415,21 @@
 	<!-- INICIO: CAMPOS -->
 	<!-- Zona de campos de busqueda o filtro -->
 
-	<html:form action="/CEN_ComponentesJuridicos.do" method="POST" target="resultado">
+	<html:form action="/CEN_ComponentesJuridicos.do" method="POST" styleId="componentesJuridicosForm" target="resultado">
 
-		<html:hidden property="modo" 								  value="cerrar"/>
-		<html:hidden property="idPersona" 		  			value="<%=idPersona%>"/>
-		<html:hidden property="idInstitucion"  				value="<%=idInstitucion%>"/>
-		<html:hidden property="clienteIdPersona" 			value="<%=idClientePersona%>"/> 
-		<html:hidden property="motivo" 								value=""/> 
-		<html:hidden property="nuevo" 								value="1"/> 
-		<html:hidden name="componentesJuridicosForm" property="idTipoColegio"  value="<%=tipo%>"/>
+		<html:hidden styleId="modo" property="modo" value="cerrar"/>
+		<html:hidden styleId="idPersona" property="idPersona" value="<%=idPersona%>"/>
+		<html:hidden styleId="idInstitucion" property="idInstitucion" value="<%=idInstitucion%>"/>
+		<html:hidden styleId="clienteIdPersona" property="clienteIdPersona" value="<%=idClientePersona%>"/> 
+		<html:hidden styleId="motivo" property="motivo" value=""/> 
+		<html:hidden styleId="nuevo" property="nuevo" value="1"/> 
+		<html:hidden styleId="idTipoColegio" name="componentesJuridicosForm" property="idTipoColegio" value="<%=tipo%>"/>
 		
+		<input type="hidden" id="filaSelD" name="filaSelD" />	
+		<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD" />
+		<input type="hidden" id="actionModal" name="actionModal" value="" />
+		<input type="hidden" id="fechaCargo" name="fechaCargo" value="" />
+
 	<siga:ConjCampos leyenda="censo.busquedaClientes.literal.datosIdentificacion">
 	<table class="tablaCampos" align="center" border="0">
 		<tr>		
@@ -461,13 +437,13 @@
 				<siga:Idioma key="censo.consultaComponentesJuridicos.literal.nifcif"/>&nbsp;(*)
 			</td>
 			<td>
-				<html:text name="componentesJuridicosForm" property="nifcif" value='<%=nifcif%>' size="20" maxlength ="20" styleClass="<%=claseDatosIdentif%>" readOnly="<%=desactivado%>" onBlur="obtenerNif();"></html:text>	
+				<html:text name="componentesJuridicosForm"  styleId="nifcif" property="nifcif" value='<%=nifcif%>' size="20" maxlength ="20" styleClass="<%=claseDatosIdentif%>" readOnly="<%=desactivado%>" onBlur="obtenerNif();"></html:text>	
 			</td>
 			<td class="labelText">
 				<siga:Idioma key="censo.consultaComponentesJuridicos.literal.nombre"/>&nbsp;(*)
 			</td>
 			<td>
-				<html:text name="componentesJuridicosForm" property="nombre" value='<%=nombreCliente%>' size="20" maxlength ="60" styleClass="<%=claseDatosIdentif%>" readOnly="<%=desactivado%>"></html:text>
+				<html:text name="componentesJuridicosForm" styleId="nombre" property="nombre" value='<%=nombreCliente%>' size="20" maxlength ="60" styleClass="<%=claseDatosIdentif%>" readOnly="<%=desactivado%>"></html:text>
 			</td>
 		</tr>
 		<tr>
@@ -475,13 +451,13 @@
 				<siga:Idioma key="censo.consultaComponentesJuridicos.literal.apellido1"/>&nbsp;(*)
 			</td>
 			<td>
-				<html:text name="componentesJuridicosForm" property="apellidos1" value='<%=apellidos1Cliente%>' size="20" maxlength ="60" styleClass="<%=claseDatosIdentif%>" readOnly="<%=desactivado%>"></html:text>
+				<html:text name="componentesJuridicosForm" styleId="apellidos1" property="apellidos1" value='<%=apellidos1Cliente%>' size="20" maxlength ="60" styleClass="<%=claseDatosIdentif%>" readOnly="<%=desactivado%>"></html:text>
 			</td>
 			<td class="labelText">
 				<siga:Idioma key="censo.consultaComponentesJuridicos.literal.apellido2"/>&nbsp;
 			</td>
 			<td>
-				<html:text name="componentesJuridicosForm" property="apellidos2" value='<%=apellidos2Cliente%>' size="20" maxlength ="60" styleClass="<%=claseDatosIdentif%>" readOnly="<%=desactivado%>"></html:text>
+				<html:text name="componentesJuridicosForm" styleId="apellidos2" property="apellidos2" value='<%=apellidos2Cliente%>' size="20" maxlength ="60" styleClass="<%=claseDatosIdentif%>" readOnly="<%=desactivado%>"></html:text>
 			</td>
 			</tr>
 			<tr>
@@ -496,7 +472,7 @@
 			</td>
 			
 			<td width="20px">
-				<html:checkbox name="componentesJuridicosForm" property="profesional" disabled="<%=desactivado%>" onclick="profesionalCol()"/>
+				<html:checkbox name="componentesJuridicosForm" styleId="profesional" property="profesional" disabled="<%=desactivado%>" onclick="profesionalCol()"/>
 			</td>
 			<td class="labelText" >
 				<siga:Idioma key="censo.consultaComponentesJuridicos.literal.esProfesionalColegiado"/>
@@ -561,7 +537,7 @@
 						<siga:Idioma key="censo.consultaDatosColegiales.literal.colegiado"/>
 					</td>
 					<td>
-						<html:text name="componentesJuridicosForm" property="numColegiado" value='<%=numeroColegiado%>' size="10" styleClass="<%=clase%>"></html:text>
+						<html:text name="componentesJuridicosForm" styleId="numColegiado" property="numColegiado" value='<%=numeroColegiado%>' size="10" styleClass="<%=clase%>"></html:text>
 					</td>
 				</tr>
 			
@@ -586,11 +562,12 @@
 						</td>
 						
 						<td width="140px" colspan="2">
-							<html:text name="componentesJuridicosForm" property="fechaCargo" value='<%=fechaCargo%>' size="10" styleClass="<%=clase%>" readOnly="true">
-							</html:text>
+							
 							<%if (!desactivado) {%>
-							<a href='javascript://'onClick="return showCalendarGeneral(fechaCargo);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
-							<%}%>
+								<siga:Fecha  nombreCampo= "fechaCargo" valorInicial="<%=fechaCargo%>"/>
+							<%}else{%>
+								<siga:Fecha  nombreCampo= "fechaCargo"  valorInicial="<%=fechaCargo%>" disabled="true"/>
+							<%}%>								
 						</td>
 						
 						<td class="labelText" >
@@ -608,13 +585,14 @@
 							<siga:Idioma key="censo.consultaComponentesJuridicos.literal.descripcioncargo"/>&nbsp;
 						</td>	
 						<td colspan="2">
-							<html:text name="componentesJuridicosForm" property="cargo" value='<%=cargo%>' size="50" maxlength ="255" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text>
+							<html:text name="componentesJuridicosForm" property="cargo" styleId="cargo" value='<%=cargo%>' size="50" maxlength ="255" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text>
 						</td>
 						<td class="labelText" width="185px">
 							<siga:Idioma key="censo.consultaComponentesJuridicos.literal.ParticipacionSociedad"/>&nbsp;
 						</td>	
 						<td >
-							<html:text name="componentesJuridicosForm" property="capitalSocial" value='<%=capitalSocial%>' onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);" onblur="filterCharsNaN(this);" size="7" maxlength ="10" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text>
+							<html:text name="componentesJuridicosForm" property="capitalSocial" styleId="capitalSocial" value='<%=capitalSocial%>' onkeypress="filterChars(this,false,true);" 
+								onkeyup="filterCharsUp(this);" onblur="filterCharsNaN(this);" size="7" maxlength ="10" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text>
 						</td>
 						
 					</tr>
@@ -634,7 +612,7 @@
 							<siga:Idioma key="censo.consultaComponentesJuridicos.literal.liquidarSJCS"/>
 						</td>
 						<td>
-							<html:checkbox name="componentesJuridicosForm" property="sociedad" disabled="<%=desactivado%>" 
+							<html:checkbox name="componentesJuridicosForm" property="sociedad" styleId="sociedad" disabled="<%=desactivado%>" 
 											 onclick="cuenta();traeDatos()"/>
 						</td>
 					</tr>
@@ -661,13 +639,14 @@
 	<script>
 		rellenarCampos();
 	</script>
+	
 	</html:form>
 	
 	<!-- FORMULARIO PARA RECOGER LOS DATOS DE LA BUSQUEDA -->
-<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
-  <input type="hidden" name="actionModal" value="">
-  <input type="hidden" name="modo" value="abrirBusquedaModal">
- </html:form>
+	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
+ 		<input type="hidden" id="actionModal"  name="actionModal" value="">
+  		<input type="hidden" id="modo" name="modo" value="abrirBusquedaModal">
+	</html:form>
 	
 	
 	<!-- FIN: CAMPOS -->

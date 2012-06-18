@@ -49,7 +49,7 @@ import org.displaytag.util.TagConstants;
  * A table writer that formats a table in HTML and writes it to a JSP page.
  * @author Fabrizio Giustina
  * @author Jorge L. Barroso
- * @version $Id: HtmlTableWriter.java,v 1.1 2010-04-21 16:04:20 Juanan Exp $
+ * @version $Id: HtmlTableWriter.java,v 1.2 2012-06-18 09:36:55 jose Exp $
  * @see org.displaytag.render.TableWriterTemplate
  * @since 1.1
  */

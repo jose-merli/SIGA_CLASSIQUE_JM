@@ -66,12 +66,13 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 	<!-- Calendario -->
 	<script src="<%=app%>/html/js/calendarJs.jsp" 				 		 type="text/javascript"></script>
-  <script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		<!-- Validaciones en Cliente -->
@@ -84,7 +85,7 @@
 	<script language="JavaScript">
 		<!-- Asociada al boton Volver -->
 		function accionCerrar(){ 			
-			window.close();
+			window.top.close();
 		}	
 		
 		<!-- Asociada al boton Restablecer -->
@@ -273,13 +274,13 @@
 									<siga:Idioma key="censo.datosCV.literal.fechaInicio"/> &nbsp;(*)
 								</td>
 								<td>
-									<input type="text" name="fechaInicio" value='<%=fechaInicio%>' maxlength="10" class="box" readonly="true"><a href='javascript://'onClick="return showCalendarGeneral(fechaInicio);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>	
+									<siga:Fecha  nombreCampo= "fechaInicio" valorInicial="<%=fechaInicio%>"/>
 								</td>						
 								<td class="labelText">
 									<siga:Idioma key="censo.datosCV.literal.fechaFin"/> 
 								</td>	
 								<td>
-										<input type="text" name="fechaFin" value="<%=fechaFin%>" maxlength="10" class="box" readonly="true"><a href='javascript://'onClick="return showCalendarGeneral(fechaFin);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
+									<siga:Fecha  nombreCampo= "fechaFin" valorInicial="<%=fechaFin%>"/>
 								<br>
 								</td>									
 							</tr>

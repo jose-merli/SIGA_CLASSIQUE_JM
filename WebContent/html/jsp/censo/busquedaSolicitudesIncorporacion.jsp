@@ -39,8 +39,12 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 	<script src="<%=app%>/html/js/validation.js" type="text/javascript"></script>
 
@@ -69,7 +73,8 @@
 
 	<html:form action="/CEN_SolicitudesIncorporacion.do" method="POST" target="resultado">
 		<html:hidden property = "modo" value = ""/>
-		<input type="hidden" name="limpiarFilaSeleccionada" value="">
+		<input type="hidden" id="limpiarFilaSeleccionada" name="limpiarFilaSeleccionada" value=""/>
+		<input type="hidden" id="filaSelD" name="filasSelD" value=""/>
 
 		<tr>				
 			<td class="labelText"><siga:Idioma key="censo.busquedaSolicitudesIncorporacion.literal.tipoSolicitud"/></td>				
@@ -85,14 +90,12 @@
 			<td>
 				<!--input class="box" type="text" name="buscarFechaDesde"  style="width:75px" maxlength="10" class="box" readonly="true"-->
 				<siga:Fecha nombreCampo="buscarFechaDesde" />
-				<a href='javascript://'onClick="return showCalendarGeneral(buscarFechaDesde);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
 			</td>
 
 			<td class="labelText"><siga:Idioma key="censo.busquedaSolicitudesIncorporacion.literal.fechaHasta"/></td>
 			<td>
 				<!--input class="box" type="text" name="buscarFechaHasta" style="width:75px" maxlength="10" class="box" readonly="true"-->
 				<siga:Fecha nombreCampo="buscarFechaHasta" campoCargarFechaDesde="buscarFechaDesde"/>
-				<a href='javascript://'onClick="document.forms[0].buscarFechaHasta.value=document.forms[0].buscarFechaDesde.value; return showCalendarGeneral(buscarFechaHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
 			</td>
 		</tr>
 	</html:form>

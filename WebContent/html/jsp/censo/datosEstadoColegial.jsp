@@ -84,8 +84,10 @@
 <!-- HEAD -->
 	<head>
 
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+		
+		
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
 		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 		
@@ -174,15 +176,12 @@
 										</td>				
 										<td>
 										<% if (nextModo.equalsIgnoreCase("insertar") || nextModo.equalsIgnoreCase("modificar")){%>										
-			  								<html:text property="fechaEstado" size="10" styleClass="box" value="<%=fechaEstado%>" readOnly="true"></html:text>
-											<a href='javascript://' onClick="return showCalendarGeneral(fechaEstado);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-												<img src="<%=app%>/html/imagenes/calendar.gif" alt="gratuita.listadoCalendario.literal.seleccionarFecha"  border="0">
-											</a>																																
+			  								<siga:Fecha  nombreCampo= "fechaEstado" valorInicial="<%=fechaEstado%>"  posicionX="10" posicionY="10"/>																																
 										<% } else { %>		
-											<% if (fechaEstado.equalsIgnoreCase("")){ %>									 	
-												<html:text property="fechaEstado" size="10" styleClass="boxConsulta" value="" readOnly="true"></html:text>
+											<% if (fechaEstado.equalsIgnoreCase("")){ %>	
+											<siga:Fecha  nombreCampo= "fechaEstado"  disabled="true"/>								 	
 											<% }else{ %>										 										 	
-												<html:text property="fechaEstado" size="20" styleClass="boxConsulta" value="<%=fechaEstado%>" readOnly="true"></html:text>
+											<siga:Fecha  nombreCampo= "fechaEstado" valorInicial="<%=fechaEstado%>"  disabled="true"/>
 											<% } %>																	
 										<% } %>																																																															
 										</td>	
@@ -249,6 +248,7 @@
 				
 					<% if (!bOcultarHistorico) { %>
 							var datos = showModalDialog("/SIGA/html/jsp/general/ventanaMotivoHistorico.jsp","","dialogHeight:230px;dialogWidth:520px;help:no;scroll:no;status:no;");
+							window.top.focus();
 					<% } else { %>
 							var datos = new Array();
 							datos[0] = 1;
@@ -272,9 +272,7 @@
 			<!-- Asociada al boton Cerrar -->
 			function accionCerrar() 
 			{		
-				// esta funcion cierra la ventana y devuelve 
-				// un valor a la ventana padre (USAR SIEMPRE)
-				top.cierraConParametros("NORMAL");
+				window.top.close();
 			}
 
 			<!-- Asociada al boton Restablecer -->

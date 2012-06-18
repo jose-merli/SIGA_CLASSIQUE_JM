@@ -88,7 +88,7 @@
 <!-- ESTILOS Y JAVASCRIPT -->
 <link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 <link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/css/jquery-ui.css"> 
-<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 <script src="<%=app%>/html/js/jquery.js" type="text/javascript"></script>
 <script src="<%=app%>/html/js/jquery-ui.js" type="text/javascript"></script>
 
@@ -120,10 +120,11 @@
 			function usuario()
 			{
 				MM_swapImage('AbrirUsuario','','<%=app%>/html/imagenes/botonUsuario_activo.gif',1);
-
 				f = "dialogHeight:250px;dialogWidth:450px;status:no;unadorned:no;scroll:no"
-//				"width=750,height=200,scrollbars=no;resizable:no;top=100;left=100;Directories=no;Location=no;Menubar=no;Status=yes;Toolbar=no;"
-				return showModalDialog("<%=app%>/html/jsp/general/ventanaUsuario.jsp", "", f);
+				//"width=750,height=200,scrollbars=no;resizable:no;top=100;left=100;Directories=no;Location=no;Menubar=no;Status=yes;Toolbar=no;"
+				var returnValue = showModalDialog("<%=app%>/html/jsp/general/ventanaUsuario.jsp", "", f);
+				window.top.focus();
+				return returnValue;
 			}
 			
 			
@@ -131,7 +132,7 @@
 			{
 				MM_swapImage('AbrirAyuda','','<%=app%>/html/imagenes/botonAyuda_activo.gif',1);
 				window.open('<%=pathAyuda%>', 'Ayuda', 'width=800px,height=600px,scrollbars=1;resizable:no;top=100px;left=100px;Directories=no;Location=no;Menubar=no;Status=yes;Toolbar=no;');
-								
+				window.top.focus();
 				return false;
 			}
 
@@ -139,7 +140,7 @@
 			{
 				MM_swapImage('AbrirAyuda','','<%=app%>/html/imagenes/botonAyuda_activo.gif',1);
 				window.open('<%=pathVersiones%>', 'Versiones', 'width=800px,height=600px,scrollbars=1;resizable:no;top=100px;left=100px;Directories=no;Location=no;Menubar=no;Status=yes;Toolbar=no;');
-								
+				window.top.focus();				
 				return false;
 			}
 			
@@ -148,7 +149,7 @@
 				MM_swapImage('closeApp','','<%=app%>/html/imagenes/botonCerrar_activo.gif',1);
 				
 				if(confirm('<siga:Idioma key="general.cerrarAplicacion"/>')){
-					window.close();
+					window.top.close();
 				}
 				
 				return false;
@@ -197,49 +198,48 @@
 	<div style="position: absolute; left: 180px; top: 50px; z-index: 5;">
 		<table border=0 cellspacing=0 cellpadding=0>
 			<tr>
-				<td width="300px"><a href="javascript://" class="imageLink"
-					onclick="return version();"> <img
-						src="<%=app%>/html/imagenes/botonVersion.gif"
-						alt="<siga:Idioma key="general.icono.version"/>" align="middle"
-						border="0"> &nbsp;<siga:Idioma key="general.icono.version" />
-				</a></td>
-				<td width="175px"><a href="javascript://" class="imageLink"
-					onclick="return usuario();" onMouseOut="MM_swapImgRestore()"
-					onMouseOver="MM_swapImage('AbrirUsuario','','<%=app%>/html/imagenes/botonUsuario_ilum.gif',1)">
-						<img src="<%=app%>/html/imagenes/botonUsuario.gif"
-						alt="<siga:Idioma key="general.boton.usuario"/>" align="middle"
-						name="AbrirUsuario" border="0"> &nbsp;<siga:Idioma
-							key="general.boton.usuario" /> </a></td>
-				<td width="175px"><a href="javascript://" class="imageLink"
-					onclick="return ayuda();" onMouseOut="MM_swapImgRestore()"
-					onMouseOver="MM_swapImage('AbrirAyuda','','<%=app%>/html/imagenes/botonAyuda_ilum.gif',1)">
-						<img src="<%=app%>/html/imagenes/botonAyuda.gif"
-						alt="<siga:Idioma key="general.boton.ayuda"/>" align="middle"
-						name="AbrirAyuda" border="0"> &nbsp;<siga:Idioma
-							key="general.boton.ayuda" /> </a></td>
-				<td width="175px"><a href="javascript://" class="imageLink"
-					onclick="return cerrarSession();" onMouseOut="MM_swapImgRestore()"
-					onMouseOver="MM_swapImage('closeSession','','<%=app%>/html/imagenes/botonSession_ilum.gif',1)">
-						<img src="<%=app%>/html/imagenes/botonSession.gif"
-						alt="<siga:Idioma key="general.cerrarSesion"/>" align="middle"
-						name="closeSession" border="0"> &nbsp;<siga:Idioma
-							key="general.cerrarSesion" /> </a></td>
+			<td width="300px">
+			<a href="javascript://"  class="imageLink" onclick="return version();" >
+				<img src="<%=app%>/html/imagenes/botonVersion.gif" alt="<siga:Idioma key="general.icono.version"/>" align="middle" border="0">
+				&nbsp;<siga:Idioma key="general.icono.version"/>
+			</a>
+			</td>
+			<td width="175px">
+				<a href="javascript://" class="imageLink" onclick="return usuario();" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('AbrirUsuario','','<%=app%>/html/imagenes/botonUsuario_ilum.gif',1)">
+				<img src="<%=app%>/html/imagenes/botonUsuario.gif" alt="<siga:Idioma key="general.boton.usuario"/>" align="middle" name="AbrirUsuario"  border="0">
+				&nbsp;<siga:Idioma key="general.boton.usuario"/>
+			</a>
+			</td>
+			<td width="175px">
+			<a href="javascript://" class="imageLink" onclick="return ayuda();" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('AbrirAyuda','','<%=app%>/html/imagenes/botonAyuda_ilum.gif',1)">
+				<img src="<%=app%>/html/imagenes/botonAyuda.gif" alt="<siga:Idioma key="general.boton.ayuda"/>" align="middle" name="AbrirAyuda"  border="0">
+				&nbsp;<siga:Idioma key="general.boton.ayuda"/>
+			</a>
+			</td>
+			<td width="175px">
+			<a href="javascript://" class="imageLink" onclick="return cerrarSession();" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('closeSession','','<%=app%>/html/imagenes/botonSession_ilum.gif',1)">
+				<img src="<%=app%>/html/imagenes/botonSession.gif" alt="<siga:Idioma key="general.cerrarSesion"/>" align="middle" name="closeSession"  border="0">
+				&nbsp;<siga:Idioma key="general.cerrarSesion"/>
+			</a>
+			</td>
 			</tr>
-		</table>
-	</div>
+			</table>
+		</div>
 
-	<!-- TITULO -->
-	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<div class="posicionTitulo"  style="width:1000px; height:18px">
-		<table class="tablaTitulo" cellspacing="0">
-			<tr  style="height:18px">
-				<td class="titulosLeft" width="50%">&nbsp;&nbsp;<input
-					id="barraNavegacion" class="boxCabecera" type="text"
-					name="navegacion" value="" readonly></td>
-				<td id="titulo" class="titulos" width="50%">&nbsp;</td>
+		<!-- TITULO -->
+		<!-- Barra de titulo actualizable desde los mantenimientos -->
+		<div id="posicionTitulo" class="posicionTitulo">
+			<table class="tablaTitulo" cellspacing="0">
+			<tr>
+				<td class="titulosLeft" width="50%">
+				&nbsp;&nbsp;<input id="barraNavegacion" class="boxCabecera" type="text" name="navegacion" value="" readonly>
+				</td>
+				<td id="titulo" class="titulos"  width="50%">
+				&nbsp;
+				</td>
 			</tr>
-		</table>
-	</div>
+			</table>
+		</div>
 
 	<!-- INICIO: IFRAME PRINCIPAL -->
 

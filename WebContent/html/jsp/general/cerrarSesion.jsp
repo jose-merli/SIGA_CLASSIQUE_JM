@@ -31,7 +31,7 @@
 %>
 <link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 
-<script type="text/jscript" language="JavaScript1.2">
+<script type="text/javascript">
 	
 	function reloadPage() {
 			top.location='<%=pathInicio%>';

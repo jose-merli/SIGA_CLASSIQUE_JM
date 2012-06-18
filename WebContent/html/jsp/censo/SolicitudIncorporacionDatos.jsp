@@ -165,28 +165,29 @@
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-
-	<style>
-		.ocultar {display:none}
-	</style>	
-
-
 <html>
 
 <head>
-	<html:javascript formName="SolicitudIncorporacionForm" staticJavascript="false" />  
+	<style>
+		.ocultar {
+			display:none
+		}
+	</style>
 	
-  	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<html:javascript formName="SolicitudIncorporacionForm" staticJavascript="false" />  	
+  	
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>	
+	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	
 	<title><siga:Idioma key="censo.SolicitudIncorporacionDatos.titulo"/></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.dragndrop.min.js"></script>
 	<script src="<%=app%>/html/js/jquery.js" type="text/javascript"></script>
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
@@ -693,8 +694,8 @@
 				<td class="labelTextValor"><%=UtilidadesString.mostrarDatoJSP(datosPersonales.getFechaEstadoColegial())%></td>
 			<%}else{%>
 				<td>
-					<siga:Fecha nombreCampo="fechaEstadoColegial" valorInicial="<%=datosPersonales.getFechaEstadoColegial() %>"></siga:Fecha>
-					<a href='javascript://'onClick="return showCalendarGeneral(fechaEstadoColegial);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
+					<siga:Fecha nombreCampo="fechaEstadoColegial" valorInicial="<%=datosPersonales.getFechaEstadoColegial() %>" />
+<%-- 					<a href='javascript://'onClick="return showCalendarGeneral(fechaEstadoColegial);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a> --%>
 				</td>
 			<%}%>
 			
@@ -767,8 +768,8 @@
 				<td class="labelTextValor"><%=UtilidadesString.mostrarDatoJSP(datosPersonales.getFechaNacimiento())%></td>
 			<%}else{%>
 				<td>
-					<siga:Fecha nombreCampo="fechaNacimiento" valorInicial="<%=datosPersonales.getFechaNacimiento() %>"></siga:Fecha>
-					<a href='javascript://'onClick="return showCalendarGeneral(fechaNacimiento);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
+					<siga:Fecha nombreCampo="fechaNacimiento" valorInicial="<%=datosPersonales.getFechaNacimiento() %>" />
+<%-- 					<a href='javascript://'onClick="return showCalendarGeneral(fechaNacimiento);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a> --%>
 				</td>
 			<%}%>
 			
@@ -812,7 +813,7 @@
 			</td> 
 			
 			<td class="ocultar" colspan="2" id="poblacionExtranjera">
-				<html:text property="poblacionExt" style="width:300" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getPoblacionExtranjera()%>" readOnly="<%=readonly%>"></html:text>
+				<html:text styleId="poblacionExt" property="poblacionExt" style="width:300" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getPoblacionExtranjera()%>" readOnly="<%=readonly%>"></html:text>
 			</td>
 				
 			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.domicilio"/>&nbsp;(*)</td>
@@ -848,7 +849,7 @@
 		
 		
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
+			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
 
 	</table>
@@ -1160,8 +1161,8 @@
 	}
 
 	function accionCerrar(){	
-		//window.close();
-		top.cierraConParametros("MODIFICADO");
+		window.top.close();
+		//top.cierraConParametros("MODIFICADO");
 	}
 	
 	function accionSolicitarAltaAlterMutua()
@@ -1271,20 +1272,20 @@
 		document.MutualidadForm.idEstado.value = resultado[3];
 		if(idTipoSolicitud=='P'){
 			if(resultado[1]!='0'&&resultado[1]!='')
-				document.getElementById("tdIdSolicitudPlanProfesional").innerText = resultado[1];
+				document.getElementById("tdIdSolicitudPlanProfesional").innerHTML = resultado[1];
 			else
-				document.getElementById("tdIdSolicitudPlanProfesional").innerText = resultado[0];
-	    	document.getElementById("tdEstadoSolicitudPlanProfesional").innerText = resultado[2];
+				document.getElementById("tdIdSolicitudPlanProfesional").innerHTML = resultado[0];
+	    	document.getElementById("tdEstadoSolicitudPlanProfesional").innerHTML = resultado[2];
 	    	document.getElementById("tdBotonSolicitudPlanProfesional").style.display="none";
 	    	document.getElementById("tdBotonEstadoSolicitudPlanProfesional").style.display="";
 	    	document.getElementById("tdTextoNSolicitudPlanProfesional").style.display="";
 	    	
 		}else{
 			if(resultado[1]!='0'&&resultado[1]!='')
-				document.getElementById("tdIdSolicitudSeguroUniversal").innerText = resultado[1];
+				document.getElementById("tdIdSolicitudSeguroUniversal").innerHTML = resultado[1];
 			else
-				document.getElementById("tdIdSolicitudSeguroUniversal").innerText = resultado[0];
-	    	document.getElementById("tdEstadoSolicitudSeguroUniversal").innerText = resultado[2];
+				document.getElementById("tdIdSolicitudSeguroUniversal").innerHTML = resultado[0];
+	    	document.getElementById("tdEstadoSolicitudSeguroUniversal").innerHTML = resultado[2];
 	    	document.getElementById("tdBotonSolicitudSeguroUniversal").style.display="none";
 	    	document.getElementById("tdBotonEstadoSolicitudSeguroUniversal").style.display="";
 	    	document.getElementById("tdTextoNSolicitudSeguroUniversal").style.display="";
@@ -1312,9 +1313,9 @@
 			document.MutualidadForm.idEstado.value = resultado[0];
 			document.MutualidadForm.estado.value = resultado[1];	
 			if(idTipoSolicitud=='P'){
-		    	document.getElementById("tdEstadoSolicitudPlanProfesional").innerText = resultado[1];
+		    	document.getElementById("tdEstadoSolicitudPlanProfesional").innerHTML = resultado[1];
 			}else{
-		    	document.getElementById("tdEstadoSolicitudSeguroUniversal").innerText = resultado[1];
+		    	document.getElementById("tdEstadoSolicitudSeguroUniversal").innerHTML = resultado[1];
 		    	
 			}
 			var ruta = resultado[2];

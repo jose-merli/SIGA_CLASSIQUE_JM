@@ -158,8 +158,11 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 
 <!-- HEAD -->
 <head>
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
@@ -218,8 +221,9 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 			<html:hidden property = "idInstitucion" value = "<%=String.valueOf(idInstitucion)%>"/>
 			<html:hidden property = "numeroFactura" value = "<%=numeroFactura%>"/>
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<input type="hidden" id="filaSelD" name="filaSelD" />
+			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD" />
+			<input type="hidden" name="actionModal" value="" />
 
  			<html:hidden property = "datosPagosCajaImportePendiente" value = "<%=String.valueOf(pendiente)%>"/>
 			

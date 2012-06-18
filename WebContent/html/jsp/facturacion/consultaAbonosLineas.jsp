@@ -115,8 +115,12 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 }
 		</style>
 
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<link id="default" rel="stylesheet" type="text/css"
+			href="<%=app%>/html/jsp/general/stylesheet.jsp" />
+		<link rel="stylesheet"
+			href="<%=app%>/html/js/themes/base/jquery.ui.all.css" />
+		
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>			
 
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
@@ -145,7 +149,8 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 				<html:hidden property="idAbono" value="<%=idAbono%>"/> 				
 				<html:hidden property="idInstitucion" value="<%=idInstitucion%>"/>	
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
+			<input type="hidden"  name ="filaSelD" id="filaSelD"/>
+			<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
 		</html:form>
 
@@ -196,9 +201,9 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 									  clase="listaNonEdit">
 									  
 									<td>
-										<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=idAbono%>">
-										<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=idInstitucion%>">
-										<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=row.getString(FacLineaAbonoBean.C_NUMEROLINEA)%>">
+										<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_1" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=idAbono%>">
+										<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_2" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=idInstitucion%>">
+										<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_3" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=row.getString(FacLineaAbonoBean.C_NUMEROLINEA)%>">
 										<%=UtilidadesString.mostrarDatoJSP(row.getString(FacLineaAbonoBean.C_CANTIDAD))%>
 									</td>
 									<td>

@@ -47,7 +47,7 @@
 		
 
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	
 	</head>
@@ -120,8 +120,8 @@
 			{
 				var aDatos = new Array();
 				aDatos[0] = "0";
-		    	window.returnValue=aDatos;
-				window.close();
+		    	window.top.returnValue=aDatos;
+				window.top.close();
 			}
 
 			function accionGuardarCerrar() 
@@ -138,8 +138,8 @@
 					}
 				}
 				
-		    	window.returnValue=aDatos;
-				window.close();
+		    	window.top.returnValue=aDatos;
+				window.top.close();
 			}
 			
 			function marcarUnoSolo(o){

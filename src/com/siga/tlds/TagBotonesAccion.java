@@ -240,7 +240,7 @@ public class TagBotonesAccion extends TagSupport {
 							this.valoresEdicion.contains(this.modo)) {  					
 						out.println("<td class=\"tdBotones\">");
 						out.println("<acronym title=\""+UtilidadesString.getMensajeIdioma(usrbean, "general.aviso.imprimirApaisado")+"\" >");
-						out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, "general.aviso.imprimirApaisado") +"\"  id=\"idButton\" onclick=\"return accionImprimirApaisado();\" class=\"button\" value=\"");
+						out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, "general.aviso.imprimirApaisado") +"\"  name=\"idButton\" onclick=\"return accionImprimirApaisado();\" class=\"button\" value=\"");
 						out.print(UtilidadesString.getMensajeIdioma(usrbean,"general.boton.imprimir"));
 						out.println("\">");
 						out.println("</acronym>"); 
@@ -288,7 +288,7 @@ public class TagBotonesAccion extends TagSupport {
 									out.println("</form>");
 
 									// Se pinta la funcion javascript
-									out.println("<script languaje=\"javascript\"> <!--");
+									out.println("<script type=\"text/javascript\">");
 									out.println("function accionBA"+contador+"() {");
 									out.println("  var form = document.getElementById(\"ba"+contador+"\");	");
 									out.println("  form.modo.value=\""+beanBot.getModo()+"\";	");
@@ -297,12 +297,14 @@ public class TagBotonesAccion extends TagSupport {
 									out.println("  form.idInstitucion.value=\""+this.idInstitucionBA+"\";	");
 									out.println("  if (form.modal.value==\"1\") {");
 									out.println("  	  var res"+contador+" = ventaModalGeneral(form.name,'P');");
-									out.println("  	  if(res"+contador+" && res"+contador+"=='MODIFICADO') refrescarLocal();");
+									out.println("  	  if(res"+contador+" && res"+contador+"=='MODIFICADO') { ");
+									out.println("  	  	refrescarLocal(); ");
+									out.println("  	  }");
 									out.println("  } else {");
-									out.println("  	  form.submit();");
+									out.println("  	  	form.submit();");
 									out.println("  }");
 									out.println("}");
-									out.println("--> </script>");
+									out.println("</script>");
 
 									out.println("<td class=\"tdBotones\">");
 									out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, beanBot.getNombreBoton()) +"\"  id=\"idButton\" onclick=\"return accionBA"+contador+"();\" class=\"button\" value=\"");

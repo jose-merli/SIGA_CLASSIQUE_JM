@@ -21,23 +21,25 @@
 
 <!-- HEAD -->
 <head>
-<link id="default" rel="stylesheet" type="text/css"	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
-<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript"></script>
-<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
-<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
+	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
+		
+	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>" ></script>
+	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
+	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
+	<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
 
-<!--Step 2 -->
-<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
-<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
-<script type="text/javascript"
-	src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
-<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
+	<!--Step 2 -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
 
 
-<!--Step 3 -->
-  <!-- defaults for Autocomplete and displaytag -->
-  <link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />
-  <link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
+	<!--Step 3 -->
+	<!-- defaults for Autocomplete and displaytag -->
+	<link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />
+	<link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
   
 </head>
 
@@ -91,9 +93,9 @@
 	  				visibleBorrado = "no"
 	  				clase="listaNonEdit">
 				
-				<input type="hidden" name="idPlantilla_${status.count}" value="${informe.idPlantilla}">
-				<input type="hidden" name="idInstitucion_${status.count}" value="${informe.idInstitucion}">
-				<input type="hidden" name="claseTipoInforme_${status.count}" value="${informe.claseTipoInforme}">
+				<input type="hidden" name="idPlantilla_${status.count}" id="idPlantilla_${status.count}"  value="${informe.idPlantilla}">
+				<input type="hidden" name="idInstitucion_${status.count}" id="idInstitucion_${status.count}" value="${informe.idInstitucion}">
+				<input type="hidden" name="claseTipoInforme_${status.count}" id="claseTipoInforme_${status.count}" value="${informe.claseTipoInforme}">
 				 
 				<td align='left'><c:out value="${informe.descripcionInstitucion}"></c:out></td>
 				<td align='left'><c:out value="${informe.descripcionTipoInforme}"></c:out></td>

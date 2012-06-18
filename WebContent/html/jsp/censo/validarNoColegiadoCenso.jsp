@@ -28,9 +28,12 @@
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 %>	
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-	<script type="text/jscript" language="JavaScript1.2">
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript">
 	function cerrarVentana() {
 		var type = '<siga:Idioma key="messages.censo.existeColegiado"/>';
 		alert(type);

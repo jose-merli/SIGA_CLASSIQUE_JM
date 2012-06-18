@@ -1,4 +1,4 @@
-<!-- pestanasAsisSJCS.jsp -->
+<!-- pestanaAsisLetradoSJCS.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -27,23 +27,24 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>pe="text/javascript"></script>
 
 
-<script language="JavaScript">
+	<script language="JavaScript">
 			//Funcion asociada a boton buscar
-			function buscar() 
-			{
-				document.frames["mainPestanas"].location.href=document.frames["mainPestanas"].location.href;
+			function buscar() {
+				window.frames["mainPestanas"].location.href = window.frames["mainPestanas"].location.href;
 			}
 
-			function refrescarLocal()
-			{
+			function refrescarLocal() {
 				buscar();
 			}
 	
-</script>
+	</script>
 	
 </head>
  

@@ -21,7 +21,7 @@
 %>
 
 	
-	<script type="text/jscript" language="JavaScript1.2">
+	<script type="text/javascript">
 	function reloadPage() {
 		var type = unescape('<%=mensaje%>');
 		alert(type);

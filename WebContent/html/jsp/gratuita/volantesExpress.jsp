@@ -25,8 +25,11 @@
 
 <!-- HEAD -->
 <head>
-<link id="default" rel="stylesheet" type="text/css"	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
-<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
+	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
+		
+	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>" ></script>
+	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
 <script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
 <script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
 
@@ -48,19 +51,17 @@
 <siga:TituloExt titulo="gratuita.volantesExpres.literal.titulo"	localizacion="gratuita.volantesExpres.literal.localizacion" />
 
 <script type="text/javascript">
-		function init() 
-		{
+		function init() {
 			document.getElementById("colegiadosSustituidos").disabled= true;
 			document.getElementById("colegiadosGuardia").disabled= true;
 			document.getElementById("turnos").disabled= true;
-			document.getElementById("guardias").disabled= true;
-		
+			document.getElementById("guardias").disabled= true;		
 		}
-		function accionCalendario() 
-		{
-			// Abrimos el calendario 
-			
+		
+		function accionCalendario() {
+			// Abrimos el calendario			
 			var resultado = showModalDialog("<html:rewrite page='/html/jsp/general/calendarGeneral.jsp'/>?valor="+document.VolantesExpressForm.fechaGuardia.value,document.VolantesExpressForm.fechaGuardia,"dialogHeight:275px;dialogWidth:400px;help:no;scroll:no;status:no;");
+			window.top.focus();
 			if (resultado) {
 				 document.VolantesExpressForm.turnos.value= '';
 				 document.VolantesExpressForm.guardias.value= '';
@@ -477,7 +478,6 @@
 			td.setAttribute("width", "5%");
 			td.setAttribute("align", "center");
 			td.className = "";
-			td.innerText="";
 			td.innerHTML = '<input type="hidden" id="claveAnio_' + numFila + '" value=""> ' +
 			                  '<input type="hidden" id="claveNumero_' + numFila + '" value="">' + 
 			                  '<input type="hidden" id="claveIdInstitucion_' + numFila + '" value="">' +
@@ -494,7 +494,6 @@
 			td = tr.insertCell(); 
 			td.setAttribute("width", "26%");
 			td.className = "";
-			td.innerText="";
 			//Centro detencion
 			if (document.VolantesExpressForm.lugar[0].checked && 
 			    document.VolantesExpressForm.lugar[0].value == "centro") {
@@ -516,7 +515,6 @@
 			td = tr.insertCell(); 
 			td.setAttribute("width", "36%");
 			td.className = "";
-			td.innerText="";
 			td.innerHTML ='<table><tr><td><input type="text" id="dni_' + numFila + '" class="box" style="width:70;margin-top:2px;margin-rigth:1px;" value="" maxlength="20" onBlur="obtenerPersona(' + numFila + ');" />-</td>' +
 			                 '<td><input type="text" id="nombre_' + numFila + '" class="box" style="width:80;margin-top:2px;margin-rigth:1px;" value="" maxlength="80"/></td>' + 
 			                 '<td><input type="text" id="apellido1_' + numFila + '" class="box" style="width:80;margin-top:2px;margin-rigth:1px;" value="" maxlength="80"/></td>' +
@@ -530,7 +528,6 @@
 			td = tr.insertCell(); 
 			td.setAttribute("width", "8%");
 			td.className = "";
-			td.innerText="";
 			td.innerHTML ='<input type="text" id="diligencia_' + numFila + '" class="box" maxlength="20" style="width:70;margin-top:2px;" value=""/> ';
 	
 			// delitos
@@ -538,7 +535,6 @@
 			td = tr.insertCell(); 
 			td.setAttribute("width", "14%");
 			td.className = "";
-			td.innerText="";
 			//if(isDelitosVE.booleanValue()%>){
 			if(document.VolantesExpressForm.delito && document.VolantesExpressForm.delito.value=='true'){
 				aux = '';
@@ -556,10 +552,7 @@
 			td = tr.insertCell(); 
 			td.setAttribute("width", "11%");
 			td.setAttribute("align", "left");
-			td.className = "";
-			td.innerText="";
-	
-			
+			td.className = "";			
 			concatenado = '<table><tr><td><img src="/SIGA/html/imagenes/bborrar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='general.boton.borrar'/>" name="" border="0" onclick="borrarFila(\''+ tr.id +'\')"></td></tr></table>';
 			td.innerHTML = concatenado;
 			tr.scrollIntoView(false);

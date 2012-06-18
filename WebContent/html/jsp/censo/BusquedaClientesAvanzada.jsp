@@ -136,8 +136,10 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	 
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -172,7 +174,7 @@
 		<!-- parametro para colegiados o no -->
 		<html:hidden name="busquedaClientesAvanzadaForm" property = "colegiado" value="<%=colegiado%>"/>
 		<html:hidden name="busquedaClientesAvanzadaForm" property = "avanzada"/>
-		<input type="hidden" name="limpiarFilaSeleccionada" value="">
+		<input type="hidden" id="limpiarFilaSeleccionada" name="limpiarFilaSeleccionada" value=""/>
 		<html:hidden property="seleccionarTodos" />
 	<tr>				
 	<td>
@@ -297,17 +299,15 @@
 			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaNacimientoDesde"/>
 			</td>				
 			<td>
-			<html:text styleClass="box" name="busquedaClientesAvanzadaForm" property="fechaNacimientoDesde" size="10"  readonly="true">
-			</html:text>
-			<a href='javascript://'onClick="return showCalendarGeneral(fechaNacimientoDesde);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+			<siga:Fecha  nombreCampo= "fechaNacimientoDesde"/>
+			
 		</td>
         <td class="labelText">
 			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaNacimientoHasta"/>
 			</td>				
 			<td colspan="2">
-			<html:text styleClass="box" name="busquedaClientesAvanzadaForm" property="fechaNacimientoHasta" size="10"  readonly="true">
-			</html:text>
-			<a href='javascript://'onClick="return showCalendarGeneral(fechaNacimientoHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+			<siga:Fecha  nombreCampo= "fechaNacimientoHasta"/>
+			
 		</td>
 	</tr>
 	<!-- FILA -->
@@ -433,17 +433,13 @@
 			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaIncorporacionDesde"/>
 		</td>
 		<td >
-			<html:text name="busquedaClientesAvanzadaForm" property="fechaIncorporacionDesde" styleClass="box" readonly="true">
-			</html:text>
-			<a href='javascript://'onClick="return showCalendarGeneral(fechaIncorporacionDesde);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+		<siga:Fecha  nombreCampo= "fechaIncorporacionDesde"/>
 		</td>
 		<td class="labelText" >
 			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaIncorporacionHasta"/>
 		</td>
 		<td >
-			<html:text name="busquedaClientesAvanzadaForm" property="fechaIncorporacionHasta" styleClass="box" readonly="true">
-			</html:text>
-			<a href='javascript://'onClick="return showCalendarGeneral(fechaIncorporacionHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+		<siga:Fecha  nombreCampo= "fechaIncorporacionHasta"/>
 		</td>
 	
 		</tr>				
@@ -501,17 +497,13 @@
 			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaAltaDesde"/>
 		</td>
 		<td >
-			<html:text name="busquedaClientesAvanzadaForm" property="fechaAltaDesde" styleClass="box" readonly="true">
-			</html:text>
-			<a href='javascript://'onClick="return showCalendarGeneral(fechaAltaDesde);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+			<siga:Fecha  nombreCampo= "fechaAltaDesde"/>
 		</td>
 		<td class="labelText" >
 			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaAltaHasta"/>
 		</td>
 		<td >
-			<html:text name="busquedaClientesAvanzadaForm" property="fechaAltaHasta" styleClass="box" readonly="true">
-			</html:text>
-			<a href='javascript://'onClick="return showCalendarGeneral(fechaAltaHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+			<siga:Fecha  nombreCampo= "fechaAltaHasta"/>
 		</td>
 
 		<td colspan="2" class="labelText" >

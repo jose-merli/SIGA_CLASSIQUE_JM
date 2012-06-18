@@ -84,7 +84,7 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	<!-- Calendario -->
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
@@ -234,6 +234,7 @@
 			else {
 				<% if (!bOcultarHistorico) { %>
 						var datos = showModalDialog("/SIGA/html/jsp/general/ventanaMotivoHistorico.jsp","","dialogHeight:230px;dialogWidth:520px;help:no;scroll:no;status:no;");
+						window.top.focus();
 				<% } else { %>
 						var datos = new Array();
 						datos[0] = 1;

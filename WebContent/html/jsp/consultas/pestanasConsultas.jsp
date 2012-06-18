@@ -22,7 +22,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="java.util.Properties"%>
 <!-- JSP -->
-<% 
+<%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
@@ -41,7 +41,7 @@
 		<!-- Funcion asociada a boton buscar -->
 		function buscar() 
 		{
-			document.frames["mainPestanas"].location.href=document.frames["mainPestanas"].location.href;
+			window.frames["mainPestanas"].location.href=window.frames["mainPestanas"].location.href;
 		}
 
 </script>
@@ -50,7 +50,8 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 
 		<siga:TituloExt 

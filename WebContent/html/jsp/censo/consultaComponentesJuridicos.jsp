@@ -63,7 +63,7 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->		
@@ -82,19 +82,20 @@
 
 	<!-- SCRIPTS LOCALES -->
 	<script language="JavaScript">
-
 		function accionNuevo() {		
-		  document.componentesJuridicosForm.modo.value = "nuevo";
-  	  var rc = ventaModalGeneral(document.componentesJuridicosForm.name, "G");
-  	  if (rc != null) { 
-  	 	 	if (rc == "MODIFICADO") {
-  	 	 		refrescarLocal();
-  	  	}
-  	  }
+			document.componentesJuridicosForm.modo.value = "nuevo";
+  	  		var rc = ventaModalGeneral(document.componentesJuridicosForm.name, "G");
+			if (rc != null) { 
+  	 	 		if (rc == "MODIFICADO") {
+  	 	 			refrescarLocal();
+  	  			}
+  	  		}
 		}
 		
 		function refrescarLocal() {
-			document.location.reload();
+			//document.location.reload();
+			document.componentesJuridicosForm.modo.value = "abrir";
+			document.componentesJuridicosForm.submit();
 		}
 
 	</script>
@@ -110,19 +111,20 @@
 			 de cabeceras fijas -->
 
 		<!-- Formulario de la lista de detalle multiregistro -->
-		<html:form action="/CEN_ComponentesJuridicos.do" method="POST">
-
-		<!-- Campo obligatorio -->
-		<html:hidden property = "modo" value = ""/>
-		<input type="hidden" name="nombreUsuario" value="<%=nombreUsu%>"/>
-		<input type="hidden" name="numeroUsuario" value="<%=numero%>"/>
-		<input type='hidden' name="idPersona" 		value="<%=idPersona%>"/>	
-		<input type='hidden' name="idInstitucion" value="<%=institucion%>"/>
-		<input type='hidden' name="accion" 				value="<%=modo%>">		
+		<html:form action="/CEN_ComponentesJuridicos.do" method="POST" styleId="componentesJuridicosForm">
+			<!-- Campo obligatorio -->
+			<html:hidden property = "modo" value = ""/>
+			<input type="hidden" id="nombreUsuario" name="nombreUsuario" value="<%=nombreUsu%>" />
+			<input type="hidden" id="numeroUsuario" name="numeroUsuario" value="<%=numero%>" />
+			<input type='hidden' id="idPersona" name="idPersona" value="<%=idPersona%>" />	
+			<input type='hidden' id="idInstitucion" name="idInstitucion" value="<%=institucion%>" />
+			<input type='hidden' id="accion" name="accion" value="<%=modo%>" />		
 		
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<input type="hidden" id="filaSelD" name="filaSelD" />
+			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD" />
+			<input type="hidden" id="actionModal" name="actionModal" value="" />
+			<input type="hidden" id="fechaCargo" name="fechaCargo" value="" />
 		</html:form>
 		
 			<tr>
@@ -158,10 +160,7 @@
 	 		<br><br>
 	   		 <p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
 	 		<br><br>	 		
-	 <%		
-	 	}
-	 	else
-	 		{	 
+	 <%	} else {	 
 			Enumeration en = vDatos.elements();		
  			int i=0;  									
 			while(en.hasMoreElements()){
@@ -187,18 +186,18 @@
 			<!-- Aqui se iteran los diferentes registros de la lista -->
 
 			<!-- REGISTRO  -->		
-				<siga:FilaConIconos fila='<%=String.valueOf(i)%>' botones='<%=iconos%>'   modo='<%=modo%>' clase="listaNonEdit" visibleConsulta="no">
+				<siga:FilaConIconos fila='<%=String.valueOf(i)%>' botones='<%=iconos%>' modo='<%=modo%>' clase="listaNonEdit" visibleConsulta="no">
 					<td>
 					
-					<input type='hidden' name='oculto<%=String.valueOf(i)%>_1' value='<%=htData.get(CenComponentesBean.C_IDCOMPONENTE)%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(i)%>_1' name='oculto<%=String.valueOf(i)%>_1' value='<%=htData.get(CenComponentesBean.C_IDCOMPONENTE)%>'>
 					  	<%=UtilidadesString.mostrarDatoJSP(htData.get(CenPersonaBean.C_NIFCIF))%>
-  				</td>
-  				<td><%=UtilidadesString.mostrarDatoJSP(nombreCompleto)%></td>
-  				<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenComponentesBean.C_CARGO))%></td>
-  				<td><%=UtilidadesString.mostrarDatoJSP(com.atos.utils.GstDate.getFormatedDateShort("",htData.get(CenComponentesBean.C_FECHACARGO)))%></td>
-  				<td><%=UtilidadesString.mostrarDatoJSP(sociedad)%></td>  			
-  			   	<td><%=UtilidadesString.mostrarDatoJSP(ejerciente)%></td> 
-				<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenComponentesBean.C_CAPITALSOCIAL))%></td> 										
+	  				</td>
+	  				<td><%=UtilidadesString.mostrarDatoJSP(nombreCompleto)%></td>
+	  				<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenComponentesBean.C_CARGO))%></td>
+	  				<td><%=UtilidadesString.mostrarDatoJSP(com.atos.utils.GstDate.getFormatedDateShort("",htData.get(CenComponentesBean.C_FECHACARGO)))%></td>
+	  				<td><%=UtilidadesString.mostrarDatoJSP(sociedad)%></td>  			
+	  			   	<td><%=UtilidadesString.mostrarDatoJSP(ejerciente)%></td> 
+					<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenComponentesBean.C_CAPITALSOCIAL))%></td> 										
 				</siga:FilaConIconos>
 				<!-- FIN REGISTRO -->
  <%		}
@@ -206,19 +205,13 @@
   			</siga:TablaCabecerasFijas>
   				<!-- FIN: ZONA DE REGISTROS -->
   				
-	 <%		
-	 		}
-	 	else 	{	  // Cliente juridico
-	 		botones = "V"; 
+	 <%		} else 	{	  // Cliente juridico
+	 			botones = "V"; 
 	 	%>
-		 	<script> alert ("<siga:Idioma key="message.censo.componentes.noJuridico"/>");</script>
-	 	 
+		 	<script> alert ("<siga:Idioma key="message.censo.componentes.noJuridico"/>");</script>	 	 
 	 	<% }  
 	 %>
-
-
-
-		<siga:ConjBotonesAccion botones="<%=botones%>"    modo='<%=modo%>' clase="botonesDetalle"/>		
+		<siga:ConjBotonesAccion botones="<%=botones%>" modo='<%=modo%>' clase="botonesDetalle"/>		
 
 <%@ include file="/html/jsp/censo/includeVolver.jspf" %>
 

@@ -48,7 +48,7 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	
 		<!-- Validaciones en Cliente -->
 	<html:javascript formName="EstadosForm" staticJavascript="false" />  
@@ -594,7 +594,7 @@
 				sub();						
 				if (validateEstadosForm(document.EstadosForm)){
 					EstadosForm.submit();			
-					window.returnValue="MODIFICADO";
+					window.top.returnValue="MODIFICADO";
 				}else{
 					
 					fin();
@@ -607,7 +607,7 @@
 		<!-- Asociada al boton Cerrar -->
 		function accionCerrar() 
 		{		
-			window.close();
+			window.top.close();
 		}
 	
 		<!-- Asociada al boton Restablecer -->

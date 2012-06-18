@@ -987,7 +987,31 @@
       <required>false</required>
       <rtexprvalue>true</rtexprvalue> 
     </attribute>
-    
+    <attribute>
+      <name>readOnly</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue> 
+    </attribute>
+    <attribute>
+        <name>preFunction</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+    <name>postFunction</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>posicionX</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+    <name>posicionY</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
   </tag>  
   
   

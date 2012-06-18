@@ -18,14 +18,17 @@
 
 <html>
 <head>
-<link id="default" rel="stylesheet" type="text/css"	href='<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>'>
-<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
-<script language="JavaScript" type="text/javascript">
+<script type="text/javascript">
 		//Asociada al boton Cancelar
 		function accionCancelar() 
 		{	
-			window.close();	
+			window.top.close();	
 		}
 		function onload() 
 		{	
@@ -36,8 +39,6 @@
 						
 			if(msjConfirmacion && msjConfirmacion.value!=''){
 				if (confirm(msjConfirmacion.value)){
-					
-					
 					accionSiguiente();
 				}
 			}

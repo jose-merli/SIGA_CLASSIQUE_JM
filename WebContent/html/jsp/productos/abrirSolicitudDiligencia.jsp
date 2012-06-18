@@ -18,23 +18,26 @@
 <%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
 
 <!-- JSP -->
-<%  
-	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
-	UsrBean userBean = ((UsrBean)ses.getAttribute(("USRBEAN")));
+<%
+	String app = request.getContextPath();
+	HttpSession ses = request.getSession();
+	Properties src = (Properties) ses
+			.getAttribute(SIGAConstants.STYLESHEET_REF);
+	UsrBean userBean = ((UsrBean) ses.getAttribute(("USRBEAN")));
 
 	String idInstitucion = userBean.getLocation();
-	String idPersonaX = (String)request.getAttribute("idPersonaX");
-	String idInstitucionX = (String)request.getAttribute("idInstitucionX");
-	String idBoton = (String)request.getAttribute("idBoton");
+	String idPersonaX = (String) request.getAttribute("idPersonaX");
+	String idInstitucionX = (String) request
+			.getAttribute("idInstitucionX");
+	String idBoton = (String) request.getAttribute("idBoton");
 	ArrayList aInstitucion = new ArrayList();
 	aInstitucion.add(idInstitucion);
-	
+
 	ArrayList aMetodoSol = new ArrayList();
 	aMetodoSol.add(3);
-	String [] parametro = {userBean.getLocation(),userBean.getLocation()};
-	
+	String[] parametro = { userBean.getLocation(),
+			userBean.getLocation() };
+
 	String fechaSolicitud = UtilidadesBDAdm.getFechaBD("");
 %>	
 
@@ -42,12 +45,10 @@
 
 <!-- HEAD -->
 <head>
-
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
-
-
 </head>
 
 <body>
@@ -64,88 +65,72 @@
 
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
 	<!-- Zona de campos de busqueda o filtro -->
-	<table  class="tablaCentralCamposPeque"  align="center">
-	
-	<form id="DummyForm2" name="DummyForm2" action="<%=app%>/PYS_CompraPredefinida.do" method="POST" target="submitArea">
-	<input type="hidden" name= "modo" value = "insertarDiligencia">
-	<input type="hidden" name = "idPersona" value="<%=idPersonaX%>">
-	<input type="hidden" name = "idInstitucion" value="<%=idInstitucionX%>">
-	<input type="hidden" name = "idBoton" value="<%=idBoton%>">
-	
-	<tr>				
-	<td>
+	<table class="tablaCentralCamposPeque" align="center">
+		<form id="DummyForm2" name="DummyForm2" action="<%=app%>/PYS_CompraPredefinida.do" method="POST"
+			target="submitArea">
+			<input type="hidden" name="modo" value="insertarDiligencia">
+			<input type="hidden" name="idPersona" value="<%=idPersonaX%>">
+			<input type="hidden" name="idInstitucion" value="<%=idInstitucionX%>">
+			<input type="hidden" name="idBoton" value="<%=idBoton%>">
+			<tr>
+				<td>
+					<siga:ConjCampos leyenda="certificados.solicitudes.literal.instituciones">
+						<table class="tablaCampos" align="center">
 
-	<siga:ConjCampos leyenda="certificados.solicitudes.literal.instituciones">
+							<tr>
+								<td class="labelText"><siga:Idioma
+										key="certificados.solicitudes.literal.institucionorigen" />&nbsp(*)
+								</td>
+								<td><siga:ComboBD nombre="idInstitucionOrigen"
+										tipo="cmbColegiosAbreviados" obligatorio="true"
+										elementoSel="<%=aInstitucion%>" clase="boxCombo" /></td>
 
-	<table class="tablaCampos" align="center">
-
-	<tr>
-		<td class="labelText">
-			<siga:Idioma key="certificados.solicitudes.literal.institucionorigen"/>&nbsp(*)
-		</td>				
-		<td>
-			<siga:ComboBD nombre = "idInstitucionOrigen" tipo="cmbColegiosAbreviados" obligatorio="true" elementoSel="<%=aInstitucion%>" clase="boxCombo"/>
-		</td>
-	
-	</tr>
-	<tr>
-		<td class="labelText">
-			<siga:Idioma key="certificados.solicitudes.literal.institucionDestino2"/>&nbsp(*)
-		</td>				
-		<td>
-			<siga:ComboBD nombre = "idInstitucionDestino" tipo="cmbColegiosAbreviados" obligatorio="true" clase="boxCombo"/>
-		</td>
-	</tr>
-	
-	</table>
-		
-	</siga:ConjCampos>
-	
-	<siga:ConjCampos>
-	<table class="tablaCampos" align="center">
-		<tr>	
-		<td class="labelText" width="30%">
-			<siga:Idioma key="certificados.solicitudes.literal.fechaSolicitud"/>
-		</td>				
-		<td>
-			<siga:Fecha nombreCampo="fechaSolicitud" valorInicial="<%=fechaSolicitud%>"></siga:Fecha>
-			&nbsp;<a onClick="return showCalendarGeneral(fechaSolicitud);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-		</td>
-		</tr>
-		<tr>
-		<td class="labelText" width="120">
-			<siga:Idioma key="certificados.solicitudes.literal.metodoSolicitud"/>
-		</td>				
-		<td>
-			<siga:ComboBD nombre="metodoSolicitud" tipo="comboMetodoSolicitud" obligatorio="false" parametro="<%=parametro%>" ElementoSel="<%=aMetodoSol%>" clase="boxCombo"/>
-		</td>
-		</tr>
-	</table>
-	</siga:ConjCampos>
-	
-	<siga:ConjCampos>
-
-	<table class="tablaCampos" align="center">
-
-	<tr>	
-		<td class="labelText" width="55">
-			<siga:Idioma key="certificados.solicitudes.literal.descripcion"/>
-		</td>				
-		<td>
-			<!-- input type="text" name="descripcion" class="box" size="55" maxlength="4000"-->
-			<textarea COLS=80 ROWS=4 NAME="descripcion" class="box" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)"></textarea>
-		</td>
-	</tr>
-	
-	</table>
-		
-	</siga:ConjCampos>
-	
-	
-	
-	</td>
-	</tr>
-	</form>
+							</tr>
+							<tr>
+								<td class="labelText"><siga:Idioma
+										key="certificados.solicitudes.literal.institucionDestino2" />&nbsp(*)
+								</td>
+								<td><siga:ComboBD nombre="idInstitucionDestino"
+										tipo="cmbColegiosAbreviados" obligatorio="true"
+										clase="boxCombo" /></td>
+							</tr>
+						</table>
+					</siga:ConjCampos> 
+					<siga:ConjCampos>
+						<table class="tablaCampos" align="center">
+							<tr>
+								<td class="labelText" width="30%"><siga:Idioma
+										key="certificados.solicitudes.literal.fechaSolicitud" /></td>
+								<td><siga:Fecha nombreCampo="fechaSolicitud"
+										valorInicial="<%=fechaSolicitud%>" posicionX="10"
+										posicionY="10"></siga:Fecha></td>
+							</tr>
+							<tr>
+								<td class="labelText" width="120"><siga:Idioma
+										key="certificados.solicitudes.literal.metodoSolicitud" /></td>
+								<td><siga:ComboBD nombre="metodoSolicitud"
+										tipo="comboMetodoSolicitud" obligatorio="false"
+										parametro="<%=parametro%>" ElementoSel="<%=aMetodoSol%>"
+										clase="boxCombo" /></td>
+							</tr>
+						</table>
+					</siga:ConjCampos> 
+					<siga:ConjCampos>
+						<table class="tablaCampos" align="center">
+							<tr>
+								<td class="labelText" width="55"><siga:Idioma
+										key="certificados.solicitudes.literal.descripcion" /></td>
+								<td>
+									<!-- input type="text" name="descripcion" class="box" size="55" maxlength="4000"-->
+									<textarea COLS=80 ROWS=4 NAME="descripcion" class="box"
+										onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)"></textarea>
+								</td>
+							</tr>
+						</table>
+					</siga:ConjCampos>
+				</td>
+			</tr>
+		</form>
 	</table>
 
 	<!-- FIN: CAMPOS DE BUSQUEDA-->
@@ -159,17 +144,16 @@
 		 PARA POSICIONARLA EN SU SITIO NATURAL, SI NO SE POSICIONA A MANO
 		 La propiedad modal dice el tamanho de la ventana (M,P,G)
 	-->
-		<siga:ConjBotonesAccion botones="Y,C" modal="P"/>
+	<siga:ConjBotonesAccion botones="Y,C" modal="P"/>
 
 	<!-- FIN: BOTONES REGISTRO -->
 
 
 	<!-- INICIO: SCRIPTS BOTONES -->
-	<script language="JavaScript">
+	<script type="text/javascript">
 		
 		<!-- Asociada al boton Guardar y Cerrar-->
-		function accionGuardarCerrar() 
-		{			
+		function accionGuardarCerrar() {			
 		        sub();			
 		        var formu = document.getElementById("DummyForm2");
 				var msg1 = "<siga:Idioma key="certificados.solicitudes.literal.faltaOrigen"/>";
@@ -192,8 +176,7 @@
 				} 
 		}
 		<!-- Asociada al boton Cerrar -->
-		function accionCerrar() 
-		{			
+		function accionCerrar() {			
 			top.cierraConParametros("");
 		}
 	</script>

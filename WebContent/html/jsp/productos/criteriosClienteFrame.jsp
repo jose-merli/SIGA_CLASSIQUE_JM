@@ -46,7 +46,7 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>			
 	
@@ -156,27 +156,24 @@
 			valor.value=valor1.value;
 			
 		}
-		function quitarvalorcombo(){
-			
+		
+		function quitarvalorcombo(){			
 		 	var tiene_0=false;
 		 	var tiene_1=false;
 			var posicion_0=0;
 			var posicion_1=0;
 		 	for (i=0;i<valor.options.length;i++){
-		 		if (valor[i].innerText==0){
+		 		if (valor[i].innerHTML==0){
 		 			tiene_0=true;
 					posicion_0=i;
-		 			break;
-					
+		 			break;					
 		 		}
 		 	}
-			if (tiene_0){
-				
-		 		valor.options[posicion_0]=null;
-				
+			if (tiene_0){				
+		 		valor.options[posicion_0]=null;				
 		 	}
 		 	for (i=0;i<valor.options.length;i++){
-		 		if (valor[i].innerText==1){
+		 		if (valor[i].innerHTML==1){
 		 			tiene_1=true;
 					posicion_1=i;
 					break;
@@ -185,9 +182,7 @@
 		 	
 			if (tiene_1){
 				valor.options[posicion_1]=null;
-			}
-			
-			
+			}			
 		}
 		
 	</script>

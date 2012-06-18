@@ -154,8 +154,11 @@
 	}
 	</script>
 	
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 		<!-- Calendario -->
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
@@ -199,17 +202,13 @@
 			<html:hidden name="datosFacturacionForm" property = "idPersona" value = "<%=idPersona %>" />
 			<html:hidden name="datosFacturacionForm" property = "idInstitucion" value = "<%=idInstitucion %>" />
 			<!-- RGG: cambio a formularios ligeros -->
-			<html:hidden name="datosFacturacionForm"  property ="filaSelD"/>
-			<input type="hidden" name="tablaDatosDinamicosD">
+			<html:hidden name="datosFacturacionForm" property ="filaSelD" styleId="filaSelD"/>
+			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
 			<input type="hidden" name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>">
 			<input type="hidden" name="accion" value="<%=modo%>">
 		</html:form>
 		
-		
-		
-
-
 		<tr>
 		<td class="titulitosDatos">
 		
@@ -434,15 +433,15 @@
 				<td>
 
 					<!-- campos hidden -->
-					<input type="hidden" name="oculto<%=cont %>_1" value="<%=idInstitucion  %>"/>
-					<input type="hidden" name="oculto<%=cont %>_2" value="<%=idTipoProducto  %>"/>
-					<input type="hidden" name="oculto<%=cont %>_3" value="<%=idProducto  %>"/>
-					<input type="hidden" name="oculto<%=cont %>_4" value="<%=idProductoInstitucion  %>"/>
-					<input type="hidden" name="oculto<%=cont %>_5" value="<%=idPersona  %>"/>
-					<input type="hidden" name="oculto<%=cont %>_6" value="<%=idFormaPago %>"/>
-					<input type="hidden" name="oculto<%=cont %>_7" value="<%=identifCuenta %>"/>
-					<input type="hidden" name="oculto<%=cont %>_8" value="<%=idPeticion %>"/>
-					<input type="hidden" name="oculto<%=cont %>_9" value="<%=fechaEfectiva %>"/>
+					<input type="hidden" id="oculto<%=cont %>_1" name="oculto<%=cont %>_1" value="<%=idInstitucion  %>"/>
+					<input type="hidden" id="oculto<%=cont %>_2" name="oculto<%=cont %>_2" value="<%=idTipoProducto  %>"/>
+					<input type="hidden" id="oculto<%=cont %>_3" name="oculto<%=cont %>_3" value="<%=idProducto  %>"/>
+					<input type="hidden" id="oculto<%=cont %>_4" name="oculto<%=cont %>_4" value="<%=idProductoInstitucion  %>"/>
+					<input type="hidden" id="oculto<%=cont %>_5" name="oculto<%=cont %>_5" value="<%=idPersona  %>"/>
+					<input type="hidden" id="oculto<%=cont %>_6" name="oculto<%=cont %>_6" value="<%=idFormaPago %>"/>
+					<input type="hidden" id="oculto<%=cont %>_7" name="oculto<%=cont %>_7" value="<%=identifCuenta %>"/>
+					<input type="hidden" id="oculto<%=cont %>_8" name="oculto<%=cont %>_8" value="<%=idPeticion %>"/>
+					<input type="hidden" id="oculto<%=cont %>_9" name="oculto<%=cont %>_9" value="<%=fechaEfectiva %>"/>
 
 					<%=fecha%>
 				</td>

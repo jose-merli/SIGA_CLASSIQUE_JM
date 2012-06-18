@@ -91,8 +91,11 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->
@@ -113,23 +116,23 @@
 		var flag = true;
 		j = 1;
 		while (flag) {
-		  var aux = 'oculto' + fila + '_' + j;
-		  var oculto = document.getElementById(aux);
-		  if (oculto == null)  { flag = false; }
-		  else { 
-		  	datos.value = datos.value + oculto.value + ','; 
-		  }
-		  j++;
-		}
-		
+		  	var aux = 'oculto' + fila + '_' + j;
+		  	var oculto = document.getElementById(aux);
+			if (oculto == null)  { 
+				flag = false; 
+			} else { 
+		  		datos.value = datos.value + oculto.value + ','; 
+		  	}
+			j++;
+		}		
 		datos.value = datos.value + "%";
 		
     	document.BusquedaPersonaJGForm.modo.value = "enviar";
 	   	document.BusquedaPersonaJGForm.submit();
 	}
+	
 	function lopd(fila) {
-		alert('<siga:Idioma key="general.boton.lopd"/>');
-		
+		alert('<siga:Idioma key="general.boton.lopd"/>');		
 	}
 	</script>
 
@@ -142,12 +145,13 @@
 			 de cabeceras fijas -->
 
 		<!-- Formulario de la lista de detalle multiregistro -->
-		<html:form action="/JGR_BusquedaPersonaJG.do" method="POST" target="submitArea"  style="display:none">
-			<html:hidden name="BusquedaPersonaJGForm" property = "modo" value = ""/>
-			<html:hidden name="BusquedaPersonaJGForm" property = "conceptoE" />
+		<html:form action="/JGR_BusquedaPersonaJG.do" method="POST" target="submitArea" style="display:none" styleId="BusquedaPersonaJGForm">
+			<html:hidden name="BusquedaPersonaJGForm" styleId="modo" property = "modo" value = ""/>
+			<html:hidden name="BusquedaPersonaJGForm" styleId="conceptoE" property = "conceptoE" />
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
+			<input type="hidden" id="actionModal" name="actionModal" value="">
+			<input type="hidden" id="filaSelD" name="filaSelD">
 		</html:form>	
 		
 
@@ -161,27 +165,25 @@
 			%>
 
 		<siga:TablaCabecerasFijas 
-		   nombre="tablaDatos"
-		   borde="1"
-		   clase="tableTitle"
-		   nombreCol="<%=nombresCol %>"
-		   tamanoCol="<%=tamanosCol %>"
-		   ajustePaginador="true"
-		   			alto="100%"
-
-		  >
+		   	nombre="tablaDatos"
+		   	borde="1"
+		   	clase="tableTitle"
+		   	nombreCol="<%=nombresCol %>"
+		   	tamanoCol="<%=tamanosCol %>"
+		   	ajustePaginador="true"
+		   	alto="100%" >
 
 			<!-- INICIO: ZONA DE REGISTROS -->
 			<!-- Aqui se iteran los diferentes registros de la lista -->
 			
-<%
-				if (resultado == null || resultado.size() == 0) {
+			<%
+			if (resultado == null || resultado.size() == 0) {
 			%>			
 	 		<br>
 	   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
 	 		<br>
-<%
-	} else {
+			<%
+			} else {
 
 			FilaExtElement[] elems = null;
 			
@@ -189,8 +191,7 @@
 			// recorro el resultado
 			//for (int i=0;i<vPersonas.size();i++) {
 			//ScsPersonaJGBean registro = (ScsPersonaJGBean) vPersonas.get(i);
-			for (int i = 0; i < resultado.size(); i++) {
-					
+			for (int i = 0; i < resultado.size(); i++) {				
 			
 				Row fila = (Row) resultado.elementAt(i);
 				Hashtable registro = (Hashtable) fila.getRow();
@@ -202,11 +203,10 @@
 							"lopd",	"lopd",	SIGAConstants.ACCESS_READ);
 					elems[0] = new FilaExtElement("seleccionar", "seleccionar",
 							SIGAConstants.ACCESS_READ);
-				}else{
+				} else {
 					elems = new FilaExtElement[1];
 					elems[0] = new FilaExtElement("seleccionar", "seleccionar",
-							SIGAConstants.ACCESS_READ);
-									
+							SIGAConstants.ACCESS_READ);									
 				}
 				
 				String cont = new Integer(i + 1).toString();
@@ -238,13 +238,12 @@
 				 la de botones de acción sobre los registos  -->
 			
 			<siga:FilaConIconos fila="<%=cont %>" botones=""
-			 modo="<%=modo %>" elementos="<%=elems%>" visibleBorrado="no"
-			  visibleEdicion="no" visibleConsulta="no" pintarEspacio="no" clase="listaNonEdit">
+			 	modo="<%=modo %>" elementos="<%=elems%>" visibleBorrado="no"
+			 	visibleEdicion="no" visibleConsulta="no" pintarEspacio="no" clase="listaNonEdit">
 			
 				<td>
-
 					<!-- campos hidden -->
-					<input type="hidden" name="oculto<%=cont %>_1" value="<%=idPersona %>">
+					<input type="hidden" id="oculto<%=cont %>_1" name="oculto<%=cont %>_1" value="<%=idPersona %>">
 
 					<%=nif%>
 				</td>

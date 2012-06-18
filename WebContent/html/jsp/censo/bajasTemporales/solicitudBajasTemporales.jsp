@@ -22,14 +22,13 @@
 
 <!-- HEAD -->
 <head>
-<link id="default" rel="stylesheet" type="text/css"
-	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
-<script src="<html:rewrite page='/html/js/SIGA.js'/>"
-	type="text/javascript"></script>
-<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"
-	type="text/javascript"></script>
-<script
-	src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>" />
+	<link rel="stylesheet" href="<html:rewrite page='/html/js/themes/base/jquery.ui.all.css'/>" />
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery-1.7.1.js'/>" ></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
+	<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript" ></script>
+	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
+	<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
 	
 	<script src="<html:rewrite page='/html/js/validacionStruts.js'/>" type="text/javascript"></script>
 	
@@ -98,17 +97,13 @@
 			<c:choose>
 				<c:when test="${BajasTemporalesForm.modo=='insertarNuevaSolicitud'}">
 					<td class="labelText"  style="align:left"><siga:Idioma key="censo.bajastemporales.fechaInicio"/></td>
-					<td><html:text property="fechaDesde" size="10" readonly="true"
-						styleClass="box" />&nbsp; <a href='javascript://'
-						onClick="return showCalendarGeneral(fechaDesde)"> <img
-						src="<html:rewrite page='/html/imagenes/calendar.gif'/>"
-						border="0"> </a></td>
+					<td>
+					<siga:Fecha  nombreCampo= "fechaDesde" posicionX="10" posicionY="10"/>
+					</td>
 					<td class="labelText"><siga:Idioma key="censo.bajastemporales.fechaFin"/></td>
-					<td><html:text property="fechaHasta" size="10" readonly="true"
-						styleClass="box" />&nbsp; <a href='javascript://'
-						onClick="return showCalendarGeneral(fechaHasta)"> <img
-						src="<html:rewrite page='/html/imagenes/calendar.gif'/>"
-						border="0"> </a></td>
+					<td>
+					<siga:Fecha  nombreCampo= "fechaHasta"  posicionX="10" posicionY="10"/>
+					</td>
 
 				</c:when>
 				<c:otherwise>

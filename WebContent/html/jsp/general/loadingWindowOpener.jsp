@@ -13,16 +13,15 @@
 %>
 <link rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 <script language="javascript">
-   var val;
-   function openLoadingWindow() {
-	try {
-       val = showModelessDialog('<%=app%>/html/jsp/general/loadingWindow.jsp<%=msg%>','', 'unadorned:yes;resizable:no;status:no;dialogWidth:200px;dialogHeight:200px;help:no;');
-	       <% 
-	          if (formName != null) {
-	       %>
+   	var val;
+   	function openLoadingWindow() {
+		try {
+    		val = showModalDialog('<%=app%>/html/jsp/general/loadingWindow.jsp<%=msg%>','', 'unadorned:yes;resizable:no;status:no;dialogWidth:200px;dialogHeight:200px;help:no;');
+	       	<% if (formName != null) {%>
 	           parent.document.<%=formName%>.submit();
-	       <% } %>
-	       return;
+	       	<% } %>
+	       	window.top.focus();
+	    	return;
     	} catch(e) {
     		alert("Error javascript:"+e.name + " - "+e.message + " - document:"+document.location + " - document parent :"+parent.document.location);
     	}

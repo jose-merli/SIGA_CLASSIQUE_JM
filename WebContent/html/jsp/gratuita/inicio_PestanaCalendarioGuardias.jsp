@@ -1,16 +1,18 @@
 <!-- inicio_PestanaCalendarioGuardias.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
-<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
+<meta http-equiv="Pragma" content="no-cache">
+<%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-1">
-<%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
+<%@ page contentType="text/html" language="java"
+	errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
-<%@ taglib uri = "struts-bean.tld" prefix="bean"%>
-<%@ taglib uri = "struts-html.tld" prefix="html"%>
-<%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="struts-html.tld" prefix="html"%>
+<%@ taglib uri="struts-logic.tld" prefix="logic"%>
 
 <%@ taglib uri="c.tld" prefix="c"%>
 
@@ -77,15 +79,22 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+<link id="default" rel="stylesheet" type="text/css"
+	href="<%=app%>/html/jsp/general/stylesheet.jsp" />
+<link rel="stylesheet"
+	href="<%=app%>/html/js/themes/base/jquery.ui.all.css" />
 
-		<!-- INICIO: TITULO Y LOCALIZACION -->
-		<!-- Escribe el título y localización en la barra de título del frame principal -->
-		<siga:TituloExt 
-			titulo="censo.fichaCliente.sjcs.calendarioGuardias.cabecera" 
-			localizacion="censo.fichaCliente.sjcs.calendarioGuardias.localizacion"/>
-		<!-- FIN: TITULO Y LOCALIZACION -->		
+
+<script type="text/javascript" src="<%=app%>/html/js/jquery.msgbox.js"></script>
+<script type="text/javascript" src="<%=app%>/html/js/jquery.dragndrop.min.js"></script>
+<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+
+<!-- INICIO: TITULO Y LOCALIZACION -->
+<!-- Escribe el título y localización en la barra de título del frame principal -->
+<siga:TituloExt
+	titulo="censo.fichaCliente.sjcs.calendarioGuardias.cabecera"
+	localizacion="censo.fichaCliente.sjcs.calendarioGuardias.localizacion" />
+<!-- FIN: TITULO Y LOCALIZACION -->
 </head>
 
 <body class="tablaCentralCampos">
@@ -93,86 +102,76 @@
 	<%
 		//Entrada desde el menu de Censo:
 		if (entrada.equalsIgnoreCase("2")) { %>
-    <table class="tablaTitulo" align="center" cellspacing=0>
-			<tr>
-				<td class="titulitosDatos">
-					<siga:Idioma key="censo.fichaCliente.calendarioGuardias.pestana.titulito"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombrePestanha)%>&nbsp;&nbsp;
-				    <% if(numeroPestanha!= null && !numeroPestanha.equalsIgnoreCase("")) { %>
-						<%if (estadoColegial!=null && !estadoColegial.equals("")){%>
-							<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>
-							 <%= UtilidadesString.mostrarDatoJSP(numeroPestanha)  %> &nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>)
-						 <%}else{%> 
-						 	(<siga:Idioma key="censo.busquedaClientes.literal.sinEstadoColegial"/>) 
-						 <%}%>
-					<% } else { %>
-						   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
-					<% } %>
-				</td>
-			</tr>
+	<table class="tablaTitulo" align="center" cellspacing=0>
+		<tr>
+			<td class="titulitosDatos"><siga:Idioma
+					key="censo.fichaCliente.calendarioGuardias.pestana.titulito" />&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombrePestanha)%>&nbsp;&nbsp;
+				<% if(numeroPestanha!= null && !numeroPestanha.equalsIgnoreCase("")) { %>
+				<%if (estadoColegial!=null && !estadoColegial.equals("")){%> <siga:Idioma
+					key="censo.fichaCliente.literal.colegiado" /> <%= UtilidadesString.mostrarDatoJSP(numeroPestanha)  %>
+				&nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>) <%}else{%>
+				(<siga:Idioma key="censo.busquedaClientes.literal.sinEstadoColegial" />)
+				<%}%> <% } else { %> <siga:Idioma
+					key="censo.fichaCliente.literal.NoColegiado" /> <% } %></td>
+		</tr>
 	</table>
 	<% } %>
-		
+
 	<!-- INICIO: CAPA DE REGISTRO CON MEDIDAS EN EL ESTILO -->
-	<html:form action = "/JGR_PestanaCalendarioGuardias.do" method="POST" target="submitArea" style="display:none">
-		<html:hidden property = "modo" value = "<%=modopestanha%>"/>			
-		<html:hidden property = "orden" value = "FECHA"/>
-		<html:hidden property = "idInstitucion" value = "<%=idinstitucionpestanha%>"/>
-		<html:hidden property = "idPersona" value = "<%=idpersonapestanha%>"/>
-		<html:hidden property = "actionModal" value = "M"/>
-		<html:hidden property = "modoPestanha" value = "<%=modopestanha%>"/>
-		
+	<html:form action="/JGR_PestanaCalendarioGuardias.do" method="POST" styleId="PermutasForm" target="submitArea" style="display:none">
+		<html:hidden property="modo" value="<%=modopestanha%>" />
+		<html:hidden property="orden" value="FECHA" />
+		<html:hidden property="idInstitucion"
+			value="<%=idinstitucionpestanha%>" />
+		<html:hidden property="idPersona" value="<%=idpersonapestanha%>" />
+		<html:hidden property="actionModal" value="M" />
+		<html:hidden property="modoPestanha" value="<%=modopestanha%>" />
+
 		<!-- Datos del Colegiado seleccionado -->
-		<html:hidden property = "nombreColegiadoPestanha" value = "<%=nombrePestanha%>"/>
-		<html:hidden property = "numeroColegiadoPestanha" value = "<%=numeroPestanha%>"/>
-		
-		<!-- Datos del elemento seleccionado -->		
-		<html:hidden property = "idCalendarioGuardias" value = ""/>
-		<html:hidden property = "idTurno" value = ""/>
-		<html:hidden property = "idGuardia" value = ""/>
-		<html:hidden property = "fechaInicio" value = ""/>
-		<html:hidden property = "fechaFin" value = ""/>
-		<html:hidden property = "reserva" value = ""/>
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-		</html:form>	
-		<html:form action="/JGR_DefinirCalendarioGuardia.do" method="post" target="submitArea">
-			<html:hidden property = "usuMod" value = "<%=usr.getUserName()%>"/>
-			<html:hidden property = "modo" value = ""/>
-			<html:hidden property = "accion" value = ""/>		
-			<html:hidden property = "idCalendarioGuardias" value = ""/>
-			<html:hidden property = "idInstitucion" value = "<%=idinstitucion%>"/>
-			<html:hidden property = "idTurno" value = ""/>
-			<html:hidden property = "idGuardia" value = ""/>
-			<html:hidden property = "diasACobrar" value = ""/>
-			<html:hidden property = "diasGuardia" value = ""/>		
-			<html:hidden property = "tipoDias" value = ""/>
-			<html:hidden property = "idPersona" value = "<%=idpersonapestanha%>"/>
-			<html:hidden property = "actionModal" value = ""/>
-			<input type="hidden" name="tablaDatosDinamicosD">
-		</html:form>	
-		<bean:define id="nombreCol" value="gratuita.inicio_PestanaCalendarioGuardias.literal.fechaInicio,gratuita.inicio_PestanaCalendarioGuardias.literal.fechaFin,gratuita.inicio_PestanaCalendarioGuardias.literal.turno,gratuita.inicio_PestanaCalendarioGuardias.literal.guardia,gratuita.inicio_PestanaCalendarioGuardias.literal.tipodias,gratuita.inicio_PestanaCalendarioGuardias.literal.estado,"></bean:define>	
-		<bean:define id="tamanioCol" value="8,8,17,15,15,17,10"></bean:define>
-				<c:if test="${PermutasForm.validaGuardiasColegiado==1}">
-					<%nombreCol = "gratuita.busquedaVolantesGuardias.literal.val,"+nombreCol; %>
-					<%tamanioCol = "5,"+tamanioCol; %>
-				</c:if>
-					
-				<siga:TablaCabecerasFijas 		   
-				   nombre="listado"
-				   borde="1"
-				   clase="tableTitle"		   
-				   nombreCol="<%=nombreCol%>"
-				   tamanoCol="<%=tamanioCol%>"
-		   			alto="100%"
-		   			ajuste="70"		
+		<html:hidden property="nombreColegiadoPestanha"
+			value="<%=nombrePestanha%>" />
+		<html:hidden property="numeroColegiadoPestanha"
+			value="<%=numeroPestanha%>" />
 
-			>
-		
-			
-					
+		<!-- Datos del elemento seleccionado -->
+		<html:hidden property="idCalendarioGuardias" value="" />
+		<html:hidden property="idTurno" value="" />
+		<html:hidden property="idGuardia" value="" />
+		<html:hidden property="fechaInicio" value="" />
+		<html:hidden property="fechaFin" value="" />
+		<html:hidden property="reserva" value="" />
+		<!-- RGG: cambio a formularios ligeros -->
+		<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD" />
+		<input type="hidden" id="filaSelD" name="filaSelD" />
+	</html:form>
+	<html:form action="/JGR_DefinirCalendarioGuardia.do" method="post" styleId="DefinirCalendarioGuardiaForm" target="submitArea">
+		<html:hidden property="usuMod" value="<%=usr.getUserName()%>" />
+		<html:hidden property="modo" value="" />
+		<html:hidden property="accion" value="" />
+		<html:hidden property="idCalendarioGuardias" value="" />
+		<html:hidden property="idInstitucion" value="<%=idinstitucion%>" />
+		<html:hidden property="idTurno" value="" />
+		<html:hidden property="idGuardia" value="" />
+		<html:hidden property="diasACobrar" value="" />
+		<html:hidden property="diasGuardia" value="" />
+		<html:hidden property="tipoDias" value="" />
+		<html:hidden property="idPersona" value="<%=idpersonapestanha%>" />
+		<html:hidden property="actionModal" value="" />
+		<input type="hidden" name="tablaDatosDinamicosD">
+	</html:form>
+	<bean:define id="nombreCol"
+		value="gratuita.inicio_PestanaCalendarioGuardias.literal.fechaInicio,gratuita.inicio_PestanaCalendarioGuardias.literal.fechaFin,gratuita.inicio_PestanaCalendarioGuardias.literal.turno,gratuita.inicio_PestanaCalendarioGuardias.literal.guardia,gratuita.inicio_PestanaCalendarioGuardias.literal.tipodias,gratuita.inicio_PestanaCalendarioGuardias.literal.estado,"></bean:define>
+	<bean:define id="tamanioCol" value="8,8,17,15,15,17,10"></bean:define>
+	<c:if test="${PermutasForm.validaGuardiasColegiado==1}">
+		<%nombreCol = "gratuita.busquedaVolantesGuardias.literal.val,"+nombreCol; %>
+		<%tamanioCol = "5,"+tamanioCol; %>
+	</c:if>
+
+	<siga:TablaCabecerasFijas nombre="listado" borde="1" clase="tableTitle"
+		nombreCol="<%=nombreCol%>" tamanoCol="<%=tamanioCol%>" alto="100%"
+		ajuste="70">
 		<% if ((obj!= null) && (obj.size()>0)) { %>
-
-					<%
+		<%
 					int recordNumber=1;
 					String fechaInicio="", fechaFin="", idcalendarioguardias="", idturno="", idguardia="", reserva="";
 					String turno="", guardia="", tipodias="", estado="";
@@ -182,7 +181,7 @@
 					while ((recordNumber) <= obj.size())
 					{	 	Hashtable hash = (Hashtable)obj.get(recordNumber-1);
 					%>
-				<!-- Campos ocultos por cada fila del Confirmador:
+		<!-- Campos ocultos por cada fila del Confirmador:
 					1- IDCALENDARIOGUARDIAS
 					2- IDTURNO
 					3- IDGUARDIA
@@ -190,7 +189,7 @@
 					5- RESERVA
 					6- FECHA FIN
 				-->
-				<!-- Campos visibles por cada fila:
+		<!-- Campos visibles por cada fila:
 					1- FECHAINICIO
 					2- FECHAFIN
 					3- TURNO
@@ -198,7 +197,7 @@
 					5- TIPODIAS
 					6- ESTADO
 				-->
-				<%
+		<%
 					//Datos ocultos:
 					idcalendarioguardias = UtilidadesHash.getString(hash,ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS);
 					idturno = UtilidadesHash.getString(hash,ScsCabeceraGuardiasBean.C_IDTURNO);
@@ -249,31 +248,36 @@
 					}
 					elems[3]=new FilaExtElement("masinformacion","masinformacion",SIGAConstants.ACCESS_FULL);
 				%>
-		       	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="" elementos='<%=elems%>' clase="listaNonEdit" visibleEdicion="no" visibleBorrado="no" visibleConsulta="no" pintarEspacio="no">
-		       			
-		       		
-					<c:if test="${PermutasForm.validaGuardiasColegiado==1}">
-						<td align="center">
-						<input type="checkbox" name="chkVal" value="<%=idinstitucion+"@@"+idturno+"@@"+idguardia+"@@"+idcalendarioguardias+"@@"+idpersonapestanha+"@@"+fechaInicio+"@@"+fechaInicio %>" <%=(validado.equals("1"))?"checked":""%>  <%=(Integer.valueOf(numActuacionesValidadas)>0 || facturado.equals("1"))?"disabled":""%> >
-						</td>
-					</c:if>
-					<input type="checkbox" name="chkValOld" value="<%=idinstitucion+"@@"+idturno+"@@"+idguardia+"@@"+idcalendarioguardias+"@@"+idpersonapestanha+"@@"+fechaInicio+"@@"+fechaInicio %>" <%=(validado.equals("1"))?"checked":""%>  disabled style="display:none">
-
-					<td align="center">
-						<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idcalendarioguardias%>' >
-						<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=idturno%>' >
-						<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=idguardia%>' >
-						<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=fechaInicio%>' />
-						<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_5' value='<%=reserva%>' />
-						<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_6' value='<%=fechaFin%>' />
-						<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio)%>
-					</td>
-					<td align="center"><%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin)%></td>
-					<td align="center"><%=turno%></td>
-					<td align="center"><%=guardia%></td>
-					<td align="center"><%=tipodias%></td>
-					<td align="center">
-					<%
+		<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>'
+			botones="" elementos='<%=elems%>' clase="listaNonEdit"
+			visibleEdicion="no" visibleBorrado="no" visibleConsulta="no"
+			pintarEspacio="no">
+			<c:if test="${PermutasForm.validaGuardiasColegiado==1}">
+				<td align="center"><input type="checkbox" name="chkVal"
+					value="<%=idinstitucion+"@@"+idturno+"@@"+idguardia+"@@"+idcalendarioguardias+"@@"+idpersonapestanha+"@@"+fechaInicio+"@@"+fechaInicio %>"
+					<%=(validado.equals("1"))?"checked":""%>
+					<%=(Integer.valueOf(numActuacionesValidadas)>0 || facturado.equals("1"))?"disabled":""%>>
+				</td>
+			</c:if>
+			<input type="checkbox" name="chkValOld"
+				value="<%=idinstitucion+"@@"+idturno+"@@"+idguardia+"@@"+idcalendarioguardias+"@@"+idpersonapestanha+"@@"+fechaInicio+"@@"+fechaInicio %>"
+				<%=(validado.equals("1"))?"checked":""%> disabled
+				style="display: none">
+			<td align="center">
+				<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_1' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idcalendarioguardias%>' />
+				<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_2' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=idturno%>' />
+				<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_3' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=idguardia%>'/>
+				<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_4' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=fechaInicio%>' />
+				<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_5' name='oculto<%=String.valueOf(recordNumber)%>_5' value='<%=reserva%>' />
+				<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_6' name='oculto<%=String.valueOf(recordNumber)%>_6' value='<%=fechaFin%>' /> 
+				<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio)%>
+			</td>
+			<td align="center"><%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin)%></td>
+			<td align="center"><%=turno%></td>
+			<td align="center"><%=guardia%></td>
+			<td align="center"><%=tipodias%></td>
+			<td align="center">
+				<%
 						String descripcion = "";
 						switch (Integer.parseInt(estado))
 						{
@@ -285,73 +289,76 @@
 							case 6: descripcion="gratuita.inicio_PestanaCalendarioGuardias.literal.estado6"; break;
 							default: descripcion=""; break;
 						}
-						if (!descripcion.equals("")) {%>
-							<siga:Idioma key="<%=descripcion%>"/>
-						<% } %>
-					</td>
-				</siga:FilaConIconos>
-					<% 		recordNumber++; %>
-					<% } %>
-			<!-- FIN: RESULTADO -->
-		<% } else { %>
-				<br>
-					<p class="titulitos" align="center" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/>
-				</p><br>
+						if (!descripcion.equals("")) {%> <siga:Idioma
+					key="<%=descripcion%>" /> <% } %>
+			</td>
+		</siga:FilaConIconos>
+		<% 		recordNumber++; %>
 		<% } %>
-				</siga:TablaCabecerasFijas>
+		<!-- FIN: RESULTADO -->
+		<% } else { %>
+		<br>
+		<p class="titulitos" align="center" style="text-align: center">
+			<siga:Idioma key="messages.noRecordFound" />
+		</p>
+		<br>
+		<% } %>
+	</siga:TablaCabecerasFijas>
 
-				<div style="position:absolute; left:400px;bottom:35px;z-index:2;">
-				<table align="center">
-				<tr>
-					<td class="labelText">
-					<siga:Idioma key="gratuita.inicio_PestanaCalendarioGuardias.literal.ordenacion"/>:
-					&nbsp;
-					<!-- Combo de ordenacion-->
-					<select id="orden" name="orden" onchange="refrescarLocalThis(this)" class="boxCombo">
+	<div style="position: absolute; left: 400px; bottom: 35px; z-index: 2;">
+		<table align="center">
+			<tr>
+				<td class="labelText"><siga:Idioma
+						key="gratuita.inicio_PestanaCalendarioGuardias.literal.ordenacion" />:
+					&nbsp; <!-- Combo de ordenacion--> <select id="orden" name="orden"
+					onchange="refrescarLocalThis(this)" class="boxCombo">
 						<option value="">&nbsp;</option>
-						<option value="FECHA"><siga:Idioma key="gratuita.inicio_PestanaCalendarioGuardias.literal.fecha"/></option>
-						<option value="TURNO"><siga:Idioma key="gratuita.inicio_PestanaCalendarioGuardias.literal.guardia"/></option>
-					</select>
-					</td>
-				</tr>
-				</table>
-				</div>
+						<option value="FECHA">
+							<siga:Idioma
+								key="gratuita.inicio_PestanaCalendarioGuardias.literal.fecha" />
+						</option>
+						<option value="TURNO">
+							<siga:Idioma
+								key="gratuita.inicio_PestanaCalendarioGuardias.literal.guardia" />
+						</option>
+				</select></td>
+			</tr>
+		</table>
+	</div>
 
-	<html:form action="/JGR_ValidarVolantesGuardias.do" method="POST" target="submitArea">
-	<html:hidden name="ValidarVolantesGuardiasForm" property = "modo" value = ""/>
-	<html:hidden name="ValidarVolantesGuardiasForm" property = "datosValidar" value = ""/>
-	<html:hidden name="ValidarVolantesGuardiasForm" property = "datosBorrar" value = ""/>
-		</html:form>	
-		
-	
+	<html:form action="/JGR_ValidarVolantesGuardias.do" method="POST" target="submitArea" styleId="ValidarVolantesGuardiasForm">
+		<html:hidden name="ValidarVolantesGuardiasForm" property="modo"
+			value="" />
+		<html:hidden name="ValidarVolantesGuardiasForm"
+			property="datosValidar" value="" />
+		<html:hidden name="ValidarVolantesGuardiasForm" property="datosBorrar"
+			value="" />
+	</html:form>
+
+
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
-
 		<!-- Funcion asociada la busqueda del refresco -->
-		function refrescarLocal() 
-		{			
+		function refrescarLocal() {			
 			document.forms[0].target = "_self";		
 			document.forms[0].orden.value = document.getElementById('orden').value;
 			document.forms[0].modo.value = "abrir";
 			document.forms[0].submit();
-		}	
-		function refrescarLocalThis(objeto) 
-		{			
+		}
+		
+		function refrescarLocalThis(objeto) {			
 			document.forms[0].target = "_self";		
 			document.forms[0].orden.value = objeto.value;
 			document.forms[0].modo.value = "abrir";
 			document.forms[0].submit();
-		}	
-			
-		
+		}		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 
-		
+
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
-		function accionGuardar() 
-		{		
+		function accionGuardar() {		
 			sub();
 			var datosvalidar="";
 			var datosborrar="";
@@ -371,8 +378,12 @@
 					}
 				}	
 			}
-			if (datosvalidar.length>2) datosvalidar=datosvalidar.substring(0,datosvalidar.length-2);
-			if (datosborrar.length>2) datosborrar=datosborrar.substring(0,datosborrar.length-2);
+			if (datosvalidar.length>2) {
+				datosvalidar=datosvalidar.substring(0,datosvalidar.length-2);
+			}
+			if (datosborrar.length>2) {
+				datosborrar=datosborrar.substring(0,datosborrar.length-2);
+			}
 			if (trim(datosvalidar)!="" || trim(datosborrar)!="") {
 				document.ValidarVolantesGuardiasForm.datosValidar.value=datosvalidar;
 				document.ValidarVolantesGuardiasForm.datosBorrar.value=datosborrar;
@@ -382,8 +393,9 @@
 				fin();
 			}
 		}
+		
 		//Guardo los campos seleccionados
-		function seleccionarFila(fila){
+		function seleccionarFila(fila) {
 		    var idcalendario = 'oculto' + fila + '_' + 1;
 		    var idturno = 'oculto' + fila + '_' + 2;
 		    var idguardia = 'oculto' + fila + '_' + 3;
@@ -401,8 +413,7 @@
 		}
 
 		<!-- Funcion asociada al boton Cambiar -->
-		function permutar(fila) 
-		{		
+		function permutar(fila) {		
 			//Datos del elemento seleccionado:
 			seleccionarFila(fila)			
 			
@@ -411,24 +422,24 @@
 			//document.forms[0].target = "_blank";
 			//document.forms[0].submit();
 			var salida = ventaModalGeneral(document.forms[0].name,"M"); 			
-			if (salida == "MODIFICADO") 
+			if (salida == "MODIFICADO"){
 				refrescarLocal();
+			}
 		}
 
 		<!-- Funcion asociada al boton Cambiar -->
-		function confirmar(fila) 
-		{		
+		function confirmar(fila) {		
 			//Datos del elemento seleccionado:
 			seleccionarFila(fila)			
 
 			document.forms[0].modo.value = "abrirAvanzada";
 			var salida = ventaModalGeneral(document.forms[0].name,"G"); 			
-			if (salida == "MODIFICADO") 
+			if (salida == "MODIFICADO") {
 				refrescarLocal();			
+			}
 		}
 		
-		function sustituir(fila) 
-		{		
+		function sustituir(fila) {		
 			//Datos del elemento seleccionado:
 			seleccionarFila(fila)			
 
@@ -436,23 +447,24 @@
 			//document.forms[0].target = "_blank";
 			//document.forms[0].submit();
 			var salida = ventaModalGeneral(document.forms[0].name,"M"); 			
-			if (salida == "MODIFICADO") 
+			if (salida == "MODIFICADO") {
 				refrescarLocal();			
+			}
 		}
 		
-		function masinformacion(fila)
-		{
+		function masinformacion(fila) {
 			selectRow(fila); 
 			consultar2(fila, document.forms[1]);
 			document.forms[1].modo.value = "ver";
 			document.forms[1].accion.value = "modalConsultaCenso";
 			document.forms[1].submit();
 			var salida = ventaModalGeneral(document.forms[1].name,"M"); 			
-			if (salida == "MODIFICADO") 
-				windows.close();	
+			if (salida == "MODIFICADO") {
+				window.top.close();	
+			}
 		}
-		function consultar2(fila, formulario) 
-		{
+		
+		function consultar2(fila, formulario) {
 		   var datos;
 		   datos = formulario.tablaDatosDinamicosD;
 		   datos.value = ""; 
@@ -474,41 +486,41 @@
 		        datos.value = datos.value + "%"
 		      } else { j = 2; }
 
-		      if ((tabla.rows[fila].cells)[i].innerText == ""){
+		      if ((tabla.rows[fila].cells)[i].innerHTML == ""){
 		        datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
-		      }else{
-		        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';
+		      } else {
+		        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
 		      }
 		   }
-		}
-		
-		
+		}		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
-	<!-- FIN  ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->		
+	<!-- FIN  ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 
 
-<%
+	<%
 String botones = "";
 if (!busquedaVolver.equals("volverNo")) { 
 	botones = "V"; 
 } %>
-<c:if test="${PermutasForm.validaGuardiasColegiado==1}">
+	<c:if test="${PermutasForm.validaGuardiasColegiado==1}">
 		<% if(botones.equals("V")) 
 				botones = "V,G";
 			else
 				botones = "G";
 		%>
-		 
-</c:if>
-<siga:ConjBotonesAccion botones="<%=botones.toString()%>"  clase="botonesDetalle"  />
 
-			
-<!-- INICIO: SUBMIT AREA -->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
+	</c:if>
+	<siga:ConjBotonesAccion botones="<%=botones.toString()%>"
+		clase="botonesDetalle" />
 
-<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
+
+	<!-- INICIO: SUBMIT AREA -->
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"
+		style="display: none"></iframe>
+	<!-- FIN: SUBMIT AREA -->
+
+	<%@ include file="/html/jsp/censo/includeVolver.jspf"%>
 
 </body>
 </html>

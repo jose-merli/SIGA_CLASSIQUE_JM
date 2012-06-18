@@ -1,4 +1,4 @@
-<!-- modalSustitucionLetrado.jsp-->
+<!-- modalSustitucionLetradoGuardia.jsp-->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -60,8 +60,14 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.msgbox.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.dragndrop.min.js"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
@@ -88,27 +94,27 @@
 
 	<!-- INICIO: CAMPOS -->
 	<!-- Zona de campos de busqueda o filtro -->
-	<table class="tablaCentralCamposPeque" align="center" border="0">
+	
 	
 	<!-- Comienzo del formulario con los campos -->	
-	<html:form action="<%=action%>" method="post">
-		<html:hidden property = "usuMod" value = "<%=usr.getUserName()%>"/>
-		<html:hidden property = "modo" value = "modificar"/>
+	<html:form action="<%=action%>" method="post" styleId="PermutasForm">
+		<html:hidden property = "usuMod" styleId="usuMod" value = "<%=usr.getUserName()%>"/>
+		<html:hidden property = "modo" styleId="modo" value = "modificar"/>
 		
 		<% if(origen.equalsIgnoreCase("CALENDARIOGUARDIAS")) { %>
-			<html:hidden property = "idCalendarioGuardias" />
-			<% } %>
-		<html:hidden property = "idTurno" value="<%=idTurno%>"/>
-		<html:hidden property = "idGuardia" value="<%=idGuardia%>"/>
-		<html:hidden property = "idPersonaSolicitante" value="<%=idPersona%>"/>
-		<html:hidden property = "idPersona" />
-		<html:hidden property = "idInstitucion" />
-		<html:hidden property = "sustituta" value="<%=sustitucion%>"/>
-		<input type="hidden" name="checkSalto" value="">
-		<input type="hidden" name="checkCompensacion" value="">
+			<html:hidden property = "idCalendarioGuardias" styleId="idCalendarioGuardias"/>
+		<% } %>
+		<html:hidden property="idTurno" styleId="idTurno" value="<%=idTurno%>"/>
+		<html:hidden property="idGuardia" styleId="idGuardia" value="<%=idGuardia%>"/>
+		<html:hidden property="idPersonaSolicitante" styleId="idPersonaSolicitante" value="<%=idPersona%>"/>
+		<html:hidden property="idPersona" styleId="idPersona" />
+		<html:hidden property="idInstitucion" styleId="idInstitucion" />
+		<html:hidden property="sustituta" styleId="sustituta" value="<%=sustitucion%>"/>
+		<input type="hidden" name="checkSalto" id="checkSalto" value="" />
+		<input type="hidden" name="checkCompensacion" id="checkCompensacion" value=""/> 
 			
 		<!-- INICIO: CAMPOS DEL REGISTRO -->
-	
+		<table class="tablaCentralCamposPeque" align="center" border="0">
 		<tr>
 			<td>
 				<!-- SUBCONJUNTO DE DATOS -->
@@ -119,14 +125,14 @@
 										<siga:Idioma key="gratuita.modalSustitucionLetrado.literal.turno"/>:			
 									</td>
 									<td>
-										<input type="text" name="turno"  maxlength="20" class="boxConsulta" value="<%=turno%>" readOnly="true" style="width:220px">
+										<input type="text" name="turno" id="turno" maxlength="20" class="boxConsulta" value="<%=turno%>" readOnly="true" style="width:220px">
 									</td>		
 									<td class="labelText">
 										<siga:Idioma key="gratuita.modalSustitucionLetrado.literal.guardia"/>:
 										
 									</td>
 									<td >
-										<input type="text" name="guardia"   maxlength="20" class="boxConsulta" value="<%=guardia%>" readOnly="true"  style="width:220px">
+										<input type="text" name="guardia" id="guardia" maxlength="20" class="boxConsulta" value="<%=guardia%>" readOnly="true"  style="width:220px">
 									</td>	
 						</tr>
 						<!-- SI A ESTA PAGINA LLEGAMOS DESDE LA PESTAÑA DE CALENDARIO DE GUARDIAS DE LA FICHA COLEGIAL MOSTRAMOS 
@@ -139,13 +145,13 @@
 								<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaInicio"/>:
 							</td>
 							<td >
-								<html:text name="PermutasForm" property="fechaInicio" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio)%>" readOnly="true"></html:text>
+								<html:text name="PermutasForm" property="fechaInicio" styleId="fechaInicio" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio)%>" readOnly="true"></html:text>
 							</td>		
 							<td class="labelText">
 								<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaFin"/>:
 							</td>
 							<td >
-								<html:text name="PermutasForm" property="fechaFin" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin)%>" readOnly="true"></html:text>
+								<html:text name="PermutasForm" property="fechaFin" styleId="fechaFin" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin)%>" readOnly="true"></html:text>
 							</td>
 						</tr>
 					
@@ -162,15 +168,14 @@
 								<table class="tablaCampos" border="0" >		
 									<tr id="mifila">
 										<td colspan="4"> 
-											<html:hidden  property="flagSalto" value=""></html:hidden>
-											<html:hidden  property="flagCompensacion" value=""></html:hidden>
-											<html:hidden  property="fecha" value="<%=fechaHoy%>"></html:hidden>
+											<html:hidden  property="flagSalto" styleId="flagSalto" value=""></html:hidden>
+											<html:hidden  property="flagCompensacion" styleId="flagCompensacion" value=""></html:hidden>
+											<html:hidden  property="fecha" styleId="fecha" value="<%=fechaHoy%>"></html:hidden>
 											<siga:BusquedaSJCS nombre="<%=nombreForm%>" propiedad="seleccionLetrado" concepto="Guardia" operacion="Sustitucion"
 												botones="M,A" campoTurno="idTurno" campoGuardia="idGuardia" campoColegiado="ncolegiado" campoNombreColegiado="nomColegiado"
 												campoFecha="fecha" campoPersona="idPersona" campoFlagSalto="flagSalto" campoFlagCompensacion="flagCompensacion"
 												campoCompensacion="compensacion" campoSalto="salto" mostrarNColegiado="true" mostrarNombreColegiado="true"
-												modo="editar"
-											/>
+												modo="editar"/>
 										</td> 
 									</tr>
 									<tr>
@@ -178,17 +183,15 @@
 											<siga:Idioma key='gratuita.busquedaEJG.literal.numeroColegidado'/>
 										</td>		
 										<td>
-											<input type="text" name="ncolegiado" class="boxConsulta" readOnly value="" size="6">
+											<input type="text" name="ncolegiado" id="ncolegiado" class="boxConsulta" readOnly value="" size="6">
 										</td>
 										<td class="labelText">
 											<siga:Idioma key='FactSJCS.listadoRetencionesJ.literal.nombreColegiado'/>
 										</td>
 										<td>
-											<input type="text" name="nomColegiado" class="boxConsulta" readOnly value="" size="50">
+											<input type="text" name="nomColegiado" id="nomColegiado" class="boxConsulta" readOnly value="" size="50">
 										</td>			
-									</tr>							
-									
-										
+									</tr>									
 								</table>
 							</siga:ConjCampos>		
 				
@@ -206,7 +209,7 @@
 										 				<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.motivos"/> (*)			
 													</td>
 													<td >
-														<html:textarea name="PermutasForm" property="comenSustitucion" onKeyDown="cuenta(this,250)" onChange="cuenta(this,250)" cols="80" rows="4" style="width:580"  styleClass="box" readOnly="false" ></html:textarea>
+														<html:textarea name="PermutasForm" property="comenSustitucion" styleId="comenSustitucion" onKeyDown="cuenta(this,250)" onChange="cuenta(this,250)" cols="80" rows="4" style="width:580"  styleClass="box" readOnly="false" ></html:textarea>
 													</td>	
 										
 												</tr>
@@ -227,7 +230,7 @@
 										 				<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.motivos"/> (*)			
 													</td>
 													<td >
-														<html:textarea name="DefinirGuardiasTurnosForm" property="comenSustitucion" onKeyDown="cuenta(this,250)" onChange="cuenta(this,250)" cols="80" rows="4" style="width:580"  styleClass="box" readOnly="false" ></html:textarea>
+														<html:textarea name="DefinirGuardiasTurnosForm" property="comenSustitucion" styleId="comenSustitucion" onKeyDown="cuenta(this,250)" onChange="cuenta(this,250)" cols="80" rows="4" style="width:580"  styleClass="box" readOnly="false" ></html:textarea>
 													</td>	
 										
 												</tr>
@@ -235,19 +238,9 @@
 				
 		    								</siga:ConjCampos>	
 											</td>		
-									  </tr>	
-								
-								<% }%>
-								
-										
-	</table>
-
-
-
-
-
-
-	
+									  </tr>								
+								<% }%>										
+		</table>	
 	</html:form>			
 	
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
@@ -257,70 +250,51 @@
 	<!-- FIN: BOTONES REGISTRO -->
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">
-	
-		
-	
-	
 		//Asociada al boton GuardarCerrar -->
-		function accionGuardarCerrar() 
-		{		
+		function accionGuardarCerrar() {		
 			sub();
 			//Chequeo que ha seleccionado un valor de la lista:
 			//alert(document.forms[0].flagSalto.value);
-			//alert(document.forms[0].flagCompensacion.value);
-			
-			
-			
-				
-			
-			
-			
-			if(document.forms[0].idPersona.value == "") {
+			//alert(document.forms[0].flagCompensacion.value);			
+			if(document.getElementById("idPersona").value == "") {
 				alert('<siga:Idioma key="gratuita.literal.sustitucionLetradoGuardia.selecSustituto"/>');
 				fin();
 				return false;
-			} 
-			else if(document.forms[0].idPersona.value == document.forms[0].idPersonaSolicitante.value){
-					alert('<siga:Idioma key="gratuita.literal.sustitucionLetradoGuardia.coincide"/>');
-					fin();
-					return false;
-			}
-			if(document.<%=nombreForm%>.comenSustitucion.value == "") {
-					alert('<siga:Idioma key="gratuita.literal.sustitucionLetradoGuardia.Motivos"/>');
-					fin();
-					return false;
-			}	
-				
-			if(document.<%=nombreForm%>.comenSustitucion.value == "") {
-					alert('<siga:Idioma key="gratuita.literal.sustitucionLetradoGuardia.Motivos"/>');
-					fin();
-					return false;
+			} else if(document.getElementById("idPersona").value == document.getElementById("idPersonaSolicitante").value) {
+				alert('<siga:Idioma key="gratuita.literal.sustitucionLetradoGuardia.coincide"/>');
+				fin();
+				return false;
+			} else if(document.getElementById("comenSustitucion").value == "") {
+				alert('<siga:Idioma key="gratuita.literal.sustitucionLetradoGuardia.Motivos"/>');
+				fin();
+				return false;
+			} else if(document.getElementById("comenSustitucion").value == "") {
+				alert('<siga:Idioma key="gratuita.literal.sustitucionLetradoGuardia.Motivos"/>');
+				fin();
+				return false;
+			} else {
+				if(document.getElementById("salto").checked) {
+					document.getElementById("checkSalto").value ="1";
+				} else {
+					document.getElementById("checkSalto").value ="0";
+				}
+				if(document.getElementById("compensacion").checked) {
+					document.getElementById("checkCompensacion").value ="1";
+				} else {
+					document.getElementById("checkCompensacion").value ="0";	
+				}
+				document.getElementById("modo").value = "insertarSustitucion";
+				document.getElementById("PermutasForm").target = "submitArea";							
+				document.getElementById("PermutasForm").submit();	
 			}			
-			else {
-					if(document.forms[0].salto.checked)
-						document.forms[0].checkSalto.value ="1";
-					else
-						document.forms[0].checkSalto.value ="0";
-					if(document.forms[0].compensacion.checked)
-						document.forms[0].checkCompensacion.value ="1";
-					else
-						document.forms[0].checkCompensacion.value ="0";	
-					document.forms[0].modo.value = "insertarSustitucion";
-					document.forms[0].target = "submitArea";							
-					document.forms[0].submit();	
-				
-			}
-			
-			
 		}
 
 		//Asociada al boton Cerrar -->
-		function accionCerrar() 
-		{		
+		function accionCerrar() {		
 			top.cierraConParametros("NORMAL");
-		}		
-		function refrescarLocal() 
-		{		
+		}
+		
+		function refrescarLocal() {		
 			top.cierraConParametros("NORMAL");
 		}
 

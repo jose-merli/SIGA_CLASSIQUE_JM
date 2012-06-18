@@ -55,8 +55,10 @@
 
 <!-- HEAD -->
 <head>
-	<link id="default" rel="stylesheet" type="text/css"	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
-<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 <!--Step 2 -->
 <script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
@@ -119,7 +121,7 @@
 			} 
 
 			document.getElementById('idBuscarCargos').onclick();
-			
+			window.top.focus();
 			return false;
 		}
 		
@@ -192,7 +194,7 @@
 		numFila = indice;
 		indice++;
 		//if(table.rows.length>0){
-	   	tr = table.insertRow();
+	   	tr = table.insertRow(0);
 	   	var fila ="filaTablaPar";
 	   	 if((numFila+2)%2==0)
 	   	 	 fila = "filaTablaPar";
@@ -202,41 +204,37 @@
 	   	
 		tr.className=fila;	
 		tr.id = "fila_" + numFila;
-		td = tr.insertCell(); 
-		td.innerText="";
+		td = tr.insertCell(0);
 		td.innerHTML ='';
 		td.setAttribute("width", "10%");
-		td = tr.insertCell(); 
+		td = tr.insertCell(1); 
 		td.setAttribute("width", "15%");
 		td.setAttribute("align", "center");
 		td.innerHTML='<siga:ComboBD ancho="140" nombre="cargos_' + numFila + '" id="cargos_' + numFila + '" tipo="cmbCargosJunta" estilo="margin-top:4px;" parametro='<%=parametro%>' clase="boxCombo" accion="comporbarFila(\''+ tr.id +'\');" />';
-		td = tr.insertCell(); 
+		td = tr.insertCell(2); 
 		td.setAttribute("width", "10%");
 		td.setAttribute("align", "center");
-		td.innerText="";
 		td.innerHTML ='<input type="text" onmousedown="bloquearBuscar(\''+ numFila +'\');" onBlur="comporbarFila(\''+ tr.id +'\');buscarColegiadoN(\''+ numFila +'\');"  id="numeroColegiado_' + numFila + '" class="box" size="4" maxlength="9" style="width:70;margin-top:5px;" value=""/><input type="hidden" id="idPerson_' + numFila + '" class="box" size="4" maxlength="9" style="width:70;margin-top:2px;" value=""/>';
-		td = tr.insertCell(); 
+		td = tr.insertCell(3); 
 		td.setAttribute("width", "35%");
-		td.innerText="";
 		//td.innerHTML ='<input type="text" id="numeroColegiado_' + numFila + '" class="box" size="4" maxlength="9" style="width:70;margin-top:2px;" value=""/>';
 		td.innerHTML ='<table><tr>' +
         '<td><input type="text" onBlur="comporbarFila(\''+ tr.id +'\');" id="nombreColegiado_' + numFila + '" class="box" style="width:120;margin-top:2px;margin-rigth:1px;" value="" maxlength="35"/>' + " "+'<input type="text" onBlur="comporbarFila(\''+ tr.id +'\');buscarNumColegiadoN(\''+ numFila +'\');" id="apellidosColegiado_' + numFila + '" class="box" style="width:200;margin-top:2px;margin-rigth:1px;" value="" maxlength="40"/></td>' + 
         
         '</tr></table>';
-		td = tr.insertCell(); 
+		td = tr.insertCell(4); 
 		td.setAttribute("colspan", "2");
 		td.setAttribute("align", "center");
 		td.className = "";
-		td.innerText="";
 		td.setAttribute("width", "20%");
 		td.innerHTML ='<input type="button" class="button"  name="Buscar_' + numFila + '" id="idButtonB__' + numFila + '" value="<siga:Idioma key="general.boton.search" />"	onClick="comporbarFila(\''+ tr.id +'\');buscarColegiadoNBoton(' + numFila + ');">     <input type="button" class="button" id="idButton_' + numFila + '" name="Limpiar_' + numFila + '" 	value="<siga:Idioma	key="general.boton.clear" />" onClick="limpiarColegiadoN(' + numFila + ');">';
-		td = tr.insertCell(); 
+		td = tr.insertCell(5); 
 		td.setAttribute("width", "10%");
 		td.setAttribute("align", "left");
-		td.innerHTML= '<img src="/SIGA/html/imagenes/bborrar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='general.boton.borrar'/>" name="" border="0" onclick="borrarFila( ' + numFila + ',\''+ tr.id +'\')">';
+		td.innerHTML= '<img src="/SIGA/html/imagenes/bborrar_off.gif" style="cursor:pointer;" title="<siga:Idioma key='general.boton.borrar'/>" alt="<siga:Idioma key='general.boton.borrar'/>" name="" border="0" onclick="borrarFila( ' + numFila + ',\''+ tr.id +'\')">';
 
-		concatenado = '<table><tr><td>	<img id="iconoboton_consultar' + numFila + '" src="/SIGA/html/imagenes/bconsultar_off.gif" style="cursor:hand;" alt="Consultar" name="consultar_' + numFila + '" border="0" onClick=" selectRow(' + numFila + '); consultar(' + numFila + '); " onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage("consultar_' + numFila + '","","/SIGA/html/imagenes/bconsultar_on.gif",1)">'+
-			'<img id="iconoboton_editar' + numFila + '" src="/SIGA/html/imagenes/beditar_off.gif" style="cursor:hand;" alt="Editar" name="editar_' + numFila + '" border="0" onClick=" selectRow(' + numFila + '); editar(' + numFila + '); " onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage("editar_' + numFila + '","","/SIGA/html/imagenes/beditar_on.gif",1)">'+
+		concatenado = '<table><tr><td>	<img id="iconoboton_consultar' + numFila + '" src="/SIGA/html/imagenes/bconsultar_off.gif" style="cursor:pointer;" title="Consultar" alt="Consultar" name="consultar_' + numFila + '" border="0" onClick=" selectRow(' + numFila + '); consultar(' + numFila + '); " onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage("consultar_' + numFila + '","","/SIGA/html/imagenes/bconsultar_on.gif",1)">'+
+			'<img id="iconoboton_editar' + numFila + '" src="/SIGA/html/imagenes/beditar_off.gif" style="cursor:pointer;" title="Editar" alt="Editar" name="editar_' + numFila + '" border="0" onClick=" selectRow(' + numFila + '); editar(' + numFila + '); " onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage("editar_' + numFila + '","","/SIGA/html/imagenes/beditar_on.gif",1)">'+
 			'</td></tr></table>';
 
 			disablebuttons();
@@ -344,8 +342,7 @@
 	}
 		
 	function postAccionColegiadoN(){
-			
-		 num=document.BusquedaComisionesForm.numeroN.value;
+		num=document.BusquedaComisionesForm.numeroN.value;
 		var idPer=document.BusquedaComisionesForm.idPersonaN.value;
 		document.getElementById("idPerson_"+num).value=idPer;
 		document.getElementById("nombreColegiado_"+num).value=document.BusquedaComisionesForm.nombreColegiadoN.value;
@@ -353,7 +350,6 @@
 		document.getElementById("numeroColegiado_"+num).value=document.BusquedaComisionesForm.numeroColegiadoN.value;
 		document.getElementById("idButtonB__" + num).disabled="";
      	multiple=document.BusquedaComisionesForm.multiple.value;
-		//alert("multiple"+multiple);
      	if(multiple=="S"){
 	  		document.busquedaClientesModalForm.numeroColegiado.value=document.getElementById("numeroColegiado_"+num).value;         	
 	  		document.busquedaClientesModalForm.nombrePersona.value=document.getElementById("nombreColegiado_"+num).value;
@@ -389,18 +385,13 @@
 	}
 
 
-	function preAccionBorrarCargo(){
-
-		
-		
+	function preAccionBorrarCargo(){		
 	}
-	function postAccionBorrarCargo(){
-
-
-		
+	
+	function postAccionBorrarCargo(){		
 	}
-	function  borrarFila (numFil, idFila) 
-	{ 
+	
+	function  borrarFila (numFil, idFila) { 
 		if (!confirm("<siga:Idioma key='messages.deleteConfirmation'/>")){
 			return false;
 		}else{
@@ -601,15 +592,15 @@
 	<table class="tablaCentralCampos" align="center">
 
 	<html:form id="BusquedaComisionesForm" action="/CEN_GestionarComisiones.do" method="POST" target="mainWorkArea">
-	<html:hidden property = "modo" value = "inicio"/>
-	<html:hidden property="idPersona" value=""/>
-	<html:hidden property="numeroN" value=""/>
-	<html:hidden property="multiple" value=""/>
-	<html:hidden property="idPersonaN" value=""/>
-	<html:hidden property="numeroColegiadoN" value=""/>
-	<html:hidden property="nombreColegiadoN" value=""/>
-	<html:hidden property="apellidosColegiadoN" value=""/>	
-	<html:hidden property="datosCargos" value=""/>
+	<html:hidden styleId="modo" property = "modo" value = "inicio"/>
+	<html:hidden styleId="idPersona" property="idPersona" value=""/>
+	<html:hidden styleId="numeroN" property="numeroN" value=""/>
+	<html:hidden styleId="multiple" property="multiple" value=""/>
+	<html:hidden styleId="idPersonaN" property="idPersonaN" value=""/>
+	<html:hidden styleId="numeroColegiadoN" property="numeroColegiadoN" value=""/>
+	<html:hidden styleId="nombreColegiadoN" property="nombreColegiadoN" value=""/>
+	<html:hidden styleId="apellidosColegiadoN" property="apellidosColegiadoN" value=""/>	
+	<html:hidden styleId="datosCargos" property="datosCargos" value=""/>
 	
 
 			
@@ -648,8 +639,7 @@
 		<siga:Idioma key="censo.busquedaComisiones.literal.fechaCargo"/> (*)
 	</td>
 	<td class="labelText">
-		<html:text styleClass="box"  property="fechaCargo" size="8" maxlength="10" readonly="true" />
-		<a href='javascript://'onClick="return showCalendarGeneral(fechaCargo);"><img src="<html:rewrite page='/html/imagenes/calendar.gif'/>" border="0"> </a>
+				<siga:Fecha  nombreCampo= "fechaCargo"/>
 	</td>
 				
 	<td colspan="2">
@@ -689,12 +679,12 @@
 	
 	<!-- INICIO: BOTONES BUSQUEDA -->	
 	
-<table align="center" >
+<table style="width: 100%;">
 <tr> 
 <td class="titulitos">
 <siga:Idioma key="censo.comisiones.literal.consultarComisiones"/>
 </td>
-<td align="right" >
+<td class="tdBotones">
 <input type='button'  id = 'idInsertarCargo' class="button" style="display:block" disabled="" name='idButton' value='<siga:Idioma key="general.boton.new"/>' alt='<siga:Idioma key="general.boton.new"/>' onclick="accionInsertarRegistroTabla();">
 </td>
 <td class="tdBotones">
@@ -839,7 +829,7 @@
 				
 		function accionGuardar(){
 	         document.getElementById('idGuardarCargos').onclick();
-			//documentResultado =document.frames['resultado'];
+			//documentResultado =window.frames['resultado'];
 			//documentResultado.finalizar();
 			
 		}	

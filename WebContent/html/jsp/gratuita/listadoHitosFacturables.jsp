@@ -71,23 +71,24 @@
   <!---------------------------------------------------------->
   <!-------------------- ESTILOS - INICIO -------------------->
   <!---------------------------------------------------------->
-  <link id="default" rel="stylesheet" type="text/css"
-        href="<%=app%>/html/jsp/general/stylesheet.jsp">
-  <style type="text/css">
-    .box {
-      font-family: <%=src.get("font.style")%>;
-      font-size: 10px;
-      vertical-align: middle;
-      width: 70;
-    }
-    .boxDisabled {
-      font-family: <%=src.get("font.style")%>;
-      font-size: 10px;
-      background-color: #dfdfde;
-      vertical-align: middle;
-      width: 70;
-    }
-  </style>
+  
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	<style type="text/css">
+	    .box {
+	      font-family: <%=src.get("font.style")%>;
+	      font-size: 10px;
+	      vertical-align: middle;
+	      width: 70;
+	    }
+	    .boxDisabled {
+	      font-family: <%=src.get("font.style")%>;
+	      font-size: 10px;
+	      background-color: #dfdfde;
+	      vertical-align: middle;
+	      width: 70;
+	    }
+	</style>
   <!------------------------------------------------------->
   <!-------------------- ESTILOS - FIN -------------------->
   <!------------------------------------------------------->
@@ -107,8 +108,10 @@
   <!------------------------------------------------------------------->
   <!-------------------- FUNCIONES SCRIPT - INICIO -------------------->
   <!------------------------------------------------------------------->
-  <script src="<%=app%>/html/js/validation.js" type="text/jscript"></script>
-  <script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+  <script src="<%=app%>/html/js/validation.js" type="text/javascript"></script>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
   
   <script>
     

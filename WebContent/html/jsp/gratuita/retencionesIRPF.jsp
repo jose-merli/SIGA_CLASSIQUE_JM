@@ -76,24 +76,25 @@
 <html>
 	<head>
 	<title><siga:Idioma key="gratuita.retencionesIRPF.literal.title"/></title>
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+			
+		
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 		<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 
 <script>
 	// Creamos un array con las fechas inicio y fin, para ver que los rangos introducidos, no se solapan.
 
-	function refrescarLocal()
-	{
-		
-			document.forms[0].action		= "<%=app%>/JGR_PestanaRetencionesIRPF.do";
-			document.forms[0].modo.value	= "buscarPor";			
-			document.forms[0].submit();
-		
+	function refrescarLocal(){
+		//alert('traeDatos');
+		document.forms[0].setAttribute("action","<%=app%>/JGR_PestanaRetencionesIRPF.do");
+		document.forms[0].modo.value	= "buscarPor";			
+		document.forms[0].submit();		
 	}
 
 	function refrescarLocalArray(arrayDatos) {
-		document.forms[0].action		= "<%=app%>/JGR_PestanaRetencionesIRPF.do";
+		document.forms[0].setAttribute("action","<%=app%>/JGR_PestanaRetencionesIRPF.do");
 		document.forms[0].modo.value	= "buscarPor";
 		document.forms[0].submit();
 		// tambien refresco
@@ -101,104 +102,108 @@
 	}
 	
 	function traeDatos() {
-		document.forms[0].action		= "<%=app%>/JGR_PestanaRetencionesIRPF.do";
+		//alert('traeDatos');
+		document.forms[0].setAttribute("action","<%=app%>/JGR_PestanaRetencionesIRPF.do");
 		document.forms[0].modo.value	= "traeDatos";
 		//document.getElementById('yourSelectBoxId').options[document.getElementById('yourSelectBoxId').selectedIndex].value
-		if(document.forms[0].sociedadesCliente.checked)
+		if(document.forms[0].sociedadesCliente.checked) {
 			document.getElementById('sociedadRefresca').value=document.getElementById('idSJCSSociedad').value;
-		else
+		} else {
 			document.getElementById('sociedadRefresca').value="";
+		}
 		document.forms[0].submit();
 		// tambien refresco
 		//refrescarLocal();
 	}
 
-	function accionNuevo()
-	{
-		document.forms[0].action		= "<%=app%>/JGR_PestanaRetencionesIRPF.do";
+	function accionNuevo() {
+		document.forms[0].setAttribute("action","<%=app%>/JGR_PestanaRetencionesIRPF.do");
 		document.forms[0].modo.value	= "nuevo";		
    		var resultado = ventaModalGeneral(document.forms[0].name,"P");
-	    if(resultado == "MODIFICADO") 
+	    if(resultado == "MODIFICADO") {
 	    	refrescarLocal();
-	   
+	    }
 	}
 	
-	function accionGuardar()
-	{
-
-		
-		//var idPersonaSociedadActual = document.forms[0].sociedadesCliente.value;
-		
+	function accionGuardar() {		
+		//var idPersonaSociedadActual = document.forms[0].sociedadesCliente.value;		
 		//if(idPersonaSociedadActual == idPersonaSociedadInicial)
 		//{
 		///	alert("Debe cambiar a quien va dirigido el pago");
 		//}
 		//else
 		//{
-		//	document.forms[0].action		= "<%=app%>/JGR_PestanaRetencionesIRPF.do";
+		//	document.forms[0].setAttribute("action","<%=app%>/JGR_PestanaRetencionesIRPF.do");
 		//	document.forms[0].modo.value	= "guardarPagoPor";
 		//	document.forms[0].submit();
-		//}
-
-		
-		
+		//}	
 		
 		// Validamos los errores ///////////		
 		if ((document.forms[0].sociedadesCliente.checked) && (document.forms[0].idCuenta.value == "")) {
 			alert ("<siga:Idioma key="messages.censo.componentes.errorCuentaObligatoria"/>");
 			fin();
 			return false;
-		}else if ((document.forms[0].sociedadesCliente.checked) && (document.forms[0].idCuenta.value != "")) {
+		} else if ((document.forms[0].sociedadesCliente.checked) && (document.forms[0].idCuenta.value != "")) {
 			document.forms[0].idsociedad.value= document.forms[0].idCuenta.value;
 		}
 
-		document.forms[0].action		= "<%=app%>/JGR_PestanaRetencionesIRPF.do";
+		document.forms[0].setAttribute("action","<%=app%>/JGR_PestanaRetencionesIRPF.do");
 		document.forms[0].modo.value	= "guardarPagoPor";
 		document.forms[0].submit();		
 	}
 	
-	function accionInformeRetencionesIRPF() {
-			
-			document.RetencionesIRPFForm.modo.value = "dialogoInformeIRPF";
-			// Abro ventana modal y refresco si necesario
-			var resultado = ventaModalGeneral(document.RetencionesIRPFForm.name,"P");
+	function accionInformeRetencionesIRPF() {			
+		document.RetencionesIRPFForm.modo.value = "dialogoInformeIRPF";
+		// Abro ventana modal y refresco si necesario
+		var resultado = ventaModalGeneral(document.RetencionesIRPFForm.name,"P");
 	}
 
-	function cuenta()
-	{
-		if (document.forms[0].sociedadesCliente.checked==true){
-			document.getElementById("sinasteriscoCuenta").disabled=false;	
-			document.getElementById("cuentaBancaria").disabled=false;	
-					
-		}else{			
-			document.getElementById("sinasteriscoCuenta").disabled=true;
-			document.getElementById("cuentaBancaria").disabled=true;			
+	function cuenta() {
+		//alert('cuenta');
+		if (document.forms[0].sociedadesCliente.checked == true){
+			$("#sinasteriscoCuenta", this.document).removeClass("disabled");	
+			$("#cuentasSJCSSociedad", this.document).removeAttr("disabled");					
+		} else {			
+			if(!$("#sinasteriscoCuenta", this.document).hasClass("disabled")){
+				$("#sinasteriscoCuenta", this.document).addClass("disabled");
+			}
+			if($("#cuentasSJCSSociedad", this.document).attr("disabled") == undefined ){
+				$("#cuentasSJCSSociedad", this.document).attr("disabled","disabled");
+			}			
 		}
 		//refrescarLocal();
 	}
 	
 	//Selecciona los valores de los campos check y combo dependiendo de los valores del Hashtable
-	function rellenarCampos(){	
-	  // Obtenemos los valores para el check sociedad.
-	  
-	  if(<%=bloquea%>){
-		  
-		  if(<%=bloqueachec%>)
-			  document.forms[0].sociedadesCliente.disabled=true;	
-		document.getElementById("cuentaBancaria").disabled=true;
-		document.getElementById("sociedadSjcs").disabled=true;		
-		document.getElementById("sinasteriscoNumCuenta").disabled=true;
-		document.getElementById("sinasteriscoCuenta").disabled=true;	
-		
-	  }else {
-		document.forms[0].sociedadesCliente.checked=true;
-
-		document.getElementById("cuentaBancaria").disabled=false;
-		document.getElementById("sociedadSjcs").disabled=false;		
-		document.getElementById("sinasteriscoNumCuenta").disabled=false;
-		document.getElementById("sinasteriscoCuenta").disabled=false;
-
-	  }
+	function rellenarCampos() {	
+	  	// Obtenemos los valores para el check sociedad.
+	  	//alert('rellenarCampos');
+	  	if(<%=bloquea%>){
+	  		//alert('rellenarCampos: bloquea');
+			if(<%=bloqueachec%>){
+				document.forms[0].sociedadesCliente.disabled=true;
+			}
+			if($("#idSJCSSociedad", this.document).attr("disabled") == undefined ){
+				$("#idSJCSSociedad", this.document).attr("disabled","disabled");
+			}
+			if($("#cuentasSJCSSociedad", this.document).attr("disabled") == undefined ){
+				$("#cuentasSJCSSociedad", this.document).attr("disabled","disabled");
+			}		
+			if(!$("#sinasteriscoNumCuenta", this.document).hasClass("disabled")){
+				$("#sinasteriscoNumCuenta", this.document).addClass("disabled");
+			}
+			if(!$("#sinasteriscoCuenta", this.document).hasClass("disabled")){
+				$("#sinasteriscoCuenta", this.document).addClass("disabled");
+			}
+	  	} else {
+	  		//alert('rellenarCampos: No bloquea');
+			document.forms[0].sociedadesCliente.checked=true;
+			
+			$("#idSJCSSociedad", this.document).removeAttr("disabled");
+			$("#cuentasSJCSSociedad", this.document).removeAttr("disabled");
+			$("#sinasteriscoNumCuenta", this.document).removeClass("disabled");
+			$("#sinasteriscoCuenta", this.document).removeClass("disabled");
+		}
 	}
 
 	
@@ -235,11 +240,8 @@
 			alto = "300";
 		%>
 	
-		<html:form action="/JGR_PestanaRetencionesIRPF.do" method="post">
-		<html:hidden property = "idpersona" value = ""/>
-		<html:hidden property = "idsociedad" value = ""/>	
-		<html:hidden property = "idsociedadant" value = ""/>	
-		<html:hidden property = "sociedadRefresca"/>				
+		<html:form action="/JGR_PestanaRetencionesIRPF.do" method="post" styleId="RetencionesIRPFForm">
+						
 		<tr>
 			<td>
 				<siga:ConjCampos leyenda="censo.busquedaClientes.literal.liquidacionSJCS" >	
@@ -267,23 +269,21 @@
 							<siga:Idioma key="censo.consultaComponentesJuridicos.literal.nombreSociedad"/> 
 						</td>
 
-						<td id="sociedadSjcs">
-						
-					   <siga:ComboBD estilo="true" obligatorioSinTextoSeleccionar="true" nombre="idSJCSSociedad" filasMostrar="1"  accion="Hijo:idCuenta;traeDatos()" 
-					   tipo="sJCSSociedades" clase="boxCombo" elementoSel="<%=comboSocSel %>"  parametro="<%=parametro%>"/>
+						<td id="sociedadSjcs">						
+						    <siga:ComboBD obligatorioSinTextoSeleccionar="true" nombre="idSJCSSociedad" filasMostrar="1"  accion="Hijo:idCuenta;traeDatos()" 
+						   		tipo="sJCSSociedades" clase="boxCombo" elementoSel="<%=comboSocSel%>" parametro="<%=parametro%>"/>
 						</td>	
 	
 						<td id="sinasteriscoCuenta" class="labelText" >
 							<siga:Idioma key="censo.consultaComponentesJuridicos.literal.cuenta"/> 
 						</td>					
-						<td id="cuentaBancaria">
-						
-						<html:select styleId="cuentasSJCSSociedad" styleClass="boxCombo" 
-											property="idCuenta">
-											<bean:define id="cuentasSJCSSociedad" name="RetencionesIRPFForm"
-												property="cuentasSJCSSociedad" type="java.util.Collection" />
-													<html:optionsCollection name="cuentasSJCSSociedad" value="value" label="key"  />
-						</html:select>
+						<td id="cuentaBancaria">						
+							<html:select styleId="cuentasSJCSSociedad" styleClass="boxCombo" 
+								property="idCuenta">
+								<bean:define id="cuentasSJCSSociedad" name="RetencionesIRPFForm"
+									property="cuentasSJCSSociedad" type="java.util.Collection" />
+								<html:optionsCollection name="cuentasSJCSSociedad" value="value" label="key"  />
+							</html:select>
 						</td>
 						
 					</tr>	
@@ -291,19 +291,25 @@
 				</siga:ConjCampos>
 			</td>
 		</tr>
-
-	<input type="hidden" name="idInstitucion" value="<bean:write name='idInstitucion'/>"/>
-	<input type="hidden" name="idPersona" value="<bean:write name='idPersona'/>"/>
 		
-		<input type="hidden" name="modo" />
-		<input type="hidden" name="idPersonaSociedadInicial" value="<%=idSociedadLetradoSel%>">
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
-			<input type="hidden" name="desdeFicha" value="1" />
-				<script>
-		rellenarCampos();
-	</script>
+		<input type="hidden" id="idsociedad" name="idsociedad" value = ""/>
+		<input type="hidden" id="idPersonaSociedadInicial" name="idPersonaSociedadInicial" value="<%=idSociedadLetradoSel%>" />
+		<input type="hidden" id="idsociedadant" name="idsociedadant" value = ""/>	
+		<input type="hidden" id="sociedadRefresca" name="sociedadRefresca"/>
+		
+		<input type="hidden" id="idInstitucion" name="idInstitucion" value="<bean:write name='idInstitucion'/>" />
+		<input type="hidden" id="idPersona" name="idPersona" value="<bean:write name='idPersona'/>" />
+		
+		<input type="hidden" id="modo" name="modo" />
+		
+		<!-- RGG: cambio a formularios ligeros -->
+		<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
+		<input type="hidden" id="filaSelD" name="filaSelD">
+		<input type="hidden" id="actionModal" name="actionModal" value="">
+		<input type="hidden" id="desdeFicha" name="desdeFicha" value="1" />
+		<script>
+			rellenarCampos();
+		</script>
 		</html:form>	
 	
 	<p>
@@ -314,10 +320,9 @@
 		   clase="tableTitle"
 		   nombreCol="<%=nC%>"
 		   tamanoCol="<%=tC%>"
-		   			alto="100%"
-		   			ajusteBotonera="true"		
-		   modal="P"
-		  >
+		   alto="100%"
+		   ajusteBotonera="true"		
+		   modal="P">
 		  
 		<%
 		  			if (obj != null && obj.size() > 0) {
@@ -344,25 +349,23 @@
 					%>
 						
 						
-						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=hash.get("IDINSTITUCION")%>' />
-						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=hash.get("IDPERSONA")%>' />
-						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=hash.get("IDRETENCION")%>' />
-						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=hash.get("FECHAINICIO")%>' />
+						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' id='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=hash.get("IDINSTITUCION")%>' />
+						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' id='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=hash.get("IDPERSONA")%>' />
+						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_3' id='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=hash.get("IDRETENCION")%>' />
+						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_4' id='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=hash.get("FECHAINICIO")%>' />
 						<%
 							if (hash.get("FECHAFIN").equals("")) {
 						%>
-							<input type='hidden' name='oculto<%=String
-															.valueOf(recordNumber)%>_5' value=' ' />
+							<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_5' id='oculto<%=String.valueOf(recordNumber)%>_5' value=' ' />
 						<%
 							} else {
 						%>
-							<input type='hidden' name='oculto<%=String
-															.valueOf(recordNumber)%>_5' value='<%=hash.get("FECHAFIN")%>' />
+							<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_5' id='oculto<%=String.valueOf(recordNumber)%>_5' value='<%=hash.get("FECHAFIN")%>' />
 						<%
 							}
 						%>
-						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_6' value='<%=hash.get("FECHAMODIFICACION")%>' />
-						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_7' value='<%=hash.get("USUMODIFICACION")%>' />
+						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_6' id='oculto<%=String.valueOf(recordNumber)%>_6' value='<%=hash.get("FECHAMODIFICACION")%>' />
+						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_7' id='oculto<%=String.valueOf(recordNumber)%>_7' value='<%=hash.get("USUMODIFICACION")%>' />
 						<td ><%=GstDate.getFormatedDateShort(usr
 												.getLanguage(), ((String) hash
 												.get("FECHAINICIO")))%>&nbsp;</td>
@@ -379,29 +382,23 @@
 								if (hash.get("FECHAINICIO") != null
 															&& !hash.get("FECHAINICIO").equals("")) {
 							%>
-								<input type='hidden' name='oculto<%=String
-															.valueOf(recordNumber)%>_1' value='<%=hash.get("IDINSTITUCION")%>' />
-								<input type='hidden' name='oculto<%=String
-															.valueOf(recordNumber)%>_2' value='<%=hash.get("IDPERSONA")%>' />
-								<input type='hidden' name='oculto<%=String
-															.valueOf(recordNumber)%>_3' value='<%=hash.get("IDRETENCION")%>' />
-								<input type='hidden' name='oculto<%=String
-															.valueOf(recordNumber)%>_4' value='<%=hash.get("FECHAINICIO")%>' />
+								<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' id='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=hash.get("IDINSTITUCION")%>' />
+								<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' id='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=hash.get("IDPERSONA")%>' />
+								<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_3' id='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=hash.get("IDRETENCION")%>' />
+								<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_4' id='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=hash.get("FECHAINICIO")%>' />
 								<%
 									if (hash.get("FECHAFIN").equals("")) {
 								%>
-								<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_5' value=' ' />
+								<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_5' id='oculto<%=String.valueOf(recordNumber)%>_5' value=' ' />
 								<%
 									} else {
 								%>
-								<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_5' value='<%=hash.get("FECHAFIN")%>' />
+								<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_5' id='oculto<%=String.valueOf(recordNumber)%>_5' value='<%=hash.get("FECHAFIN")%>' />
 								<%
 									}
 								%>
-								<input type='hidden' name='oculto<%=String
-															.valueOf(recordNumber)%>_6' value='<%=hash.get("FECHAMODIFICACION")%>' />
-								<input type='hidden' name='oculto<%=String
-															.valueOf(recordNumber)%>_7' value='<%=hash.get("USUMODIFICACION")%>' />
+								<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_6' id='oculto<%=String.valueOf(recordNumber)%>_6' value='<%=hash.get("FECHAMODIFICACION")%>' />
+								<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_7' id='oculto<%=String.valueOf(recordNumber)%>_7' value='<%=hash.get("USUMODIFICACION")%>' />
 								<td ><%=GstDate
 															.getFormatedDateShort(
 																	usr

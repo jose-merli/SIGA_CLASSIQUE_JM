@@ -243,8 +243,12 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+			
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>	
 	
@@ -363,9 +367,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 				</td>	
 			</tr>
 	
-			<tr>
-				
-			
+			<tr>			
 				<td class="labelText" width="20%">
 					<siga:Idioma key='gratuita.mantAsistencias.literal.tasiscolegio'/>&nbsp;(*)
 				</td>
@@ -376,8 +378,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 				<%}else{%>
 					<siga:ComboBD  ancho="700" nombre="idTipoAsistenciaColegio" tipo="scstipoasistenciacolegio" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorioSinTextoSeleccionar="true" obligatorio="false" elementoSel="<%=TIPOASISTENCIACOLEGIOSEL%>" />
 				<%}%>
-				</td>	
-				
+				</td>				
 			</tr>
 		</table>
 		<table width="100%" border="0" style="table-layout:fixed">
@@ -392,10 +393,10 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 				<td class="labelText" >	
 					<siga:Idioma key='gratuita.mantAsistencias.literal.fcierre'/>
 				</td>
-				<td class="labelTextValor" >	
+				<td class="labelTextValor"  width="30%" >	
 					<% if(modo.equals("editar")){%>
-						<html:text name="AsistenciasForm" property="fechaCierre" size="8" maxlength="10" styleClass="box" value="<%=FECHACIERRE%>" readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaCierre);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-					<%}else{%>
+					<siga:Fecha  nombreCampo= "fechaCierre" valorInicial="<%=FECHACIERRE%>"/>
+				<%}else{%>
 						<%=FECHACIERRE%>
 					<%}%>
 				</td>
@@ -1081,9 +1082,9 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			if (document.getElementById("tipoPcajg").value=="2"){
 				var idJuzgado = document.getElementsByName('juzgado')[0];
 				if(idJuzgado.value!="")
-					document.getElementById("tdNumeroProcedimiento").innerText = '<siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/>(*)';
+					document.getElementById("tdNumeroProcedimiento").innerHTML = '<siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/>(*)';
 				else
-					document.getElementById("tdNumeroProcedimiento").innerText = '<siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/>';
+					document.getElementById("tdNumeroProcedimiento").innerHTML = '<siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/>';
 			}
 			
 		}
@@ -1091,9 +1092,9 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			if (document.getElementById("tipoPcajg").value=="2"){
 				var idComisaria = document.getElementsByName('comisaria')[0];
 				if(idComisaria.value!="")
-					document.getElementById("tdNumeroDiligencia").innerText = '<siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligencia'/>(*)';
+					document.getElementById("tdNumeroDiligencia").innerHTML = '<siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligencia'/>(*)';
 				else
-					document.getElementById("tdNumeroDiligencia").innerText = '<siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligencia'/>';
+					document.getElementById("tdNumeroDiligencia").innerHTML = '<siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligencia'/>';
 			}
 			
 		}

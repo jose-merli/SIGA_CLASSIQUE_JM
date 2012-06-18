@@ -48,30 +48,28 @@
 <html>
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		
+		
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 		<!-- Para el calendario -->
 		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 
 		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
-		<script language="JavaScript">
+		<script type="text/javascript">
 
 		<!-- Funcion asociada a boton Finalizar -->
-		function accionCerrar()
-		{
-			window.close();
+		function accionCerrar() {
+			window.top.close();
 		}
 
-		function completarColegiacion()
-		{
+		function completarColegiacion() {
 			//if(document.forms[0].idInstitucionColegiacion.value== null || document.forms[0].idInstitucionColegiacion.value == ""){
 				document.forms[0].idInstitucionColegiacion.value = document.forms[0].idInstitucionPresentador.value;
 			//}
 		}
 		
 		<!-- Asociada al boton Aceptar -->
-		function accionAceptar()
-		{
+		function accionAceptar() {
 			//var aux=document.forms[0].idPlantilla.value;
 			var aux2=document.forms[0].idInstitucionPresentador.value;
 			var aux3=document.forms[0].idInstitucionColegiacion.value;
@@ -86,15 +84,13 @@
 				return false;
 			}
 			*/
-			if(aux2=="")
-			{
+			if(aux2=="") {
 				var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.presentador"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
 				alert (mensaje);
 				return false;
 			}
 
-			if(aux3=="")
-			{
+			if(aux3=="") {
 				var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.colegiadoen"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
 				alert (mensaje);
 				return false;

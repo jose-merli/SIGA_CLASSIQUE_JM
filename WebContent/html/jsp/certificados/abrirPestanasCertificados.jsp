@@ -40,19 +40,17 @@
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 		
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 		
 		<siga:Titulo titulo="certificados.mantenimiento.titulo" localizacion="menu.certificados"/>
 
 		<script language="JavaScript">
 			<!-- Funcion asociada a boton buscar -->
-			function buscar() 
-			{
-				document.frames["mainPestanas"].location.href=document.frames["mainPestanas"].location.href;
+			function buscar() {
+				window.frames["mainPestanas"].location.href=window.frames["mainPestanas"].location.href;
 			}
 
-			function refrescarLocal()
-			{
+			function refrescarLocal() {
 				buscar();
 			}
 		</script>

@@ -21,15 +21,14 @@
 <!-- HEAD -->
 <head>
 <title><siga:Idioma key="gratuita.altaTurnos.literal.title" /></title>
-<link id="default" rel="stylesheet" type="text/css"
-	href='<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>'>
-<script src="<html:rewrite page='/html/js/SIGA.js'/>"
-	type="text/javascript"></script>
-<script
-	src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"
-	type="text/javascript"></script>
-<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"
-	type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
+	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
+	
+	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>"></script>
+	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
+	
+	<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
+	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
 
 <script>
 
@@ -678,7 +677,7 @@ function downloadDocumentoResolucion(docResolucion) {
 	<html:hidden property="incluirEjgPteCAJG" />
 	<html:hidden property="activarRestriccionesFicha" />
 	
-	<input type="hidden" name="tablaDatosDinamicosD">
+	<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD">
 	<input type="hidden" name="actionModal" value="">
 
 	<c:choose>
@@ -712,7 +711,7 @@ function downloadDocumentoResolucion(docResolucion) {
 </html:form>
 
 
-<table id='listadoInformeJustificacionCab' border='1' width='100%'
+<table id='listadoInformeJustificacionCab' style="width:100%;table-layout: fixed;"  border='1' 
 	cellspacing='0' cellpadding='0'>
 	<tr class='tableTitle'>
 		<td align='center' width="8%"><siga:Idioma

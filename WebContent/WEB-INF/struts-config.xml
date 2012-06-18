@@ -2249,7 +2249,7 @@
             <forward name="editar" path="/html/jsp/gratuita/pestanasAsisLetradoSJCS.jsp?esFichaColegial=1"/>
             <forward name="nuevo" path="/html/jsp/gratuita/nuevaAsistencia.jsp?esFichaColegial=1"/>
             <forward name="recogidaDatos" path="/html/jsp/gratuita/datosCartaAsistencia.jsp?esFichaColegial=1"/>
-    </action>
+    	</action>
 
 		<action path="/JGR_ResponsableAsistencia" type="com.siga.gratuita.action.AsisRespAsistenciaAction" name="AsistenciasForm">
 		    <forward name="editar" path="/html/jsp/gratuita/asisRespAsistencias.jsp"/>

@@ -29,7 +29,8 @@
 <!-- HEAD -->
 <head>
 
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script>
 		function init(){
 			document.forms[0].submit();

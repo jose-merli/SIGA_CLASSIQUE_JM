@@ -19,8 +19,13 @@
 <html>
 <head>
 <link id="default" rel="stylesheet" type="text/css"
-	href='<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>'>
-<script src="<html:rewrite page='/html/js/SIGA.js'/>"
+	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
+<link rel="stylesheet"
+	href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
+
+<script type="text/javascript"
+	src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>"></script>
+<script src="<html:rewrite page="/html/js/SIGA.js"/>"
 	type="text/javascript"></script>
 <script
 	src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"
@@ -28,12 +33,11 @@
 
 <script language="JavaScript" type="text/javascript">
 		//Asociada al boton Cancelar
-		function accionCancelar() 
-		{	
-			window.close();	
+		function accionCancelar() {	
+			window.top.close();	
 		}
-		function comprobarEstado() 
-		{	
+		
+		function comprobarEstado() {	
 			if(document.InscripcionTGForm.estadoPendientes &&document.InscripcionTGForm.estadoPendientes!=''){
 				if(confirm(document.InscripcionTGForm.estadoPendientes.value)) {
 					accionSiguiente();
@@ -42,8 +46,8 @@
 			return true;
 		}
 		//Asociada al boton Siguiente
-		function accionSiguiente() 
-		{	sub();
+		function accionSiguiente() {	
+			sub();
 			document.InscripcionTGForm.submit();
 		}
 
@@ -52,12 +56,13 @@
 </head>
 
 <body onload=comprobarEstado();>
-<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
-<html:form action="${path}"  method="POST" >
-	<html:hidden property="modo"/>
-	<html:hidden property="estadoPendientes" />
+	<bean:define id="path" name="org.apache.struts.action.mapping.instance"
+		property="path" scope="request" />
+	<html:form action="${path}" method="POST">
+		<html:hidden property="modo" />
+		<html:hidden property="estadoPendientes" />
 
-</html:form>
+	</html:form>
 
 </body>
 

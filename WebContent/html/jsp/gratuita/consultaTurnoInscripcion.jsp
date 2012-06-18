@@ -15,54 +15,46 @@
 	errorPage="/html/jsp/error/errorSIGA.jsp"%>
 <html>
 <head>
-<link id="default" rel="stylesheet" type="text/css"
-	href='<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>'>
-<script src="<html:rewrite page='/html/js/SIGA.js'/>"
-	type="text/javascript"></script>
-<script
-	src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"
-	type="text/javascript"></script>
-
-<script language="JavaScript" type="text/javascript">
-
-
-		//Asociada al boton Cancelar
-		function accionCancelar() 
-		{	
-			window.close();	
-		}
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
+	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
 		
-		//Asociada al boton Cancelar
-		function accionCerrar() 
-		{		
-			window.close();
-		}
+	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>" ></script>
+	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
+	<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
 
-	//Asociada al boton Restablecer
-		function accionRestablecer() 
-		{		
-			document.InscripcionTGForm.reset();
-		}
-		
-		function comprobarEstado() 
-		{	
-			
-			if(document.InscripcionTGForm.estadoPendientes &&document.InscripcionTGForm.estadoPendientes.value!=''){
-				if(!confirm(document.InscripcionTGForm.estadoPendientes.value)) {
-					accionCerrar();
-				}
+	<script language="JavaScript" type="text/javascript">	
+	
+			//Asociada al boton Cancelar
+			function accionCancelar() {	
+				window.top.close();	
 			}
-			return true;
-		
-		}
-		//Asociada al boton Siguiente
-		function accionSiguiente() 
-		{	sub();
-			document.InscripcionTGForm.target="_self";
-			document.InscripcionTGForm.submit();
-		}
-
-</script>
+			
+			//Asociada al boton Cancelar
+			function accionCerrar() {		
+				window.top.close();
+			}
+	
+		//Asociada al boton Restablecer
+			function accionRestablecer() {		
+				document.InscripcionTGForm.reset();
+			}
+			
+			function comprobarEstado() {				
+				if(document.InscripcionTGForm.estadoPendientes &&document.InscripcionTGForm.estadoPendientes.value!=''){
+					if(!confirm(document.InscripcionTGForm.estadoPendientes.value)) {
+						accionCerrar();
+					}
+				}
+				return true;		
+			}
+			//Asociada al boton Siguiente
+			function accionSiguiente() {	
+				sub();
+				document.InscripcionTGForm.target="_self";
+				document.InscripcionTGForm.submit();
+			}
+	
+	</script>
 
 </head>
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
@@ -105,9 +97,7 @@
 				</c:if>
 				
 				</td>
-			</tr>
-			
-			
+			</tr>			
 		</table>
 		</td>
 	</tr>
@@ -196,32 +186,27 @@
 							style="text-align: left"><c:out
 							value="${definirTurnosForm.requisitos}"></c:out></textarea></td>
 					</tr>
-
-
-
 				</table>
 			</siga:ConjCampos>
 			<siga:ConjCampos leyenda="gratuita.listarTurnos.literal.guardias">
 				<table width="100%" border="0" align="center">
 					<tr>
-						<td class="labelText" style="text-align: center"><c:choose>
-							<c:when test="${definirTurnosForm.guardias==0}">
-								<siga:Idioma
-									key="gratuita.maestroTurnos.literal.guardias.obligatorias" />
-							</c:when>
-							<c:when test="${definirTurnosForm.guardias==1}">
-								<siga:Idioma
-									key="gratuita.maestroTurnos.literal.guardias.todasNinguna" />
-							</c:when>
-							<c:otherwise>
-								<siga:Idioma
-									key="gratuita.maestroTurnos.literal.guardias.elegir" />
-							</c:otherwise>
-						</c:choose></td>
-
-
-
-
+						<td class="labelText" style="text-align: center">
+							<c:choose>
+								<c:when test="${definirTurnosForm.guardias==0}">
+									<siga:Idioma
+										key="gratuita.maestroTurnos.literal.guardias.obligatorias" />
+								</c:when>
+								<c:when test="${definirTurnosForm.guardias==1}">
+									<siga:Idioma
+										key="gratuita.maestroTurnos.literal.guardias.todasNinguna" />
+								</c:when>
+								<c:otherwise>
+									<siga:Idioma
+										key="gratuita.maestroTurnos.literal.guardias.elegir" />
+								</c:otherwise>
+							</c:choose>
+						</td>
 					</tr>
 				</table>
 			</siga:ConjCampos>
@@ -229,29 +214,33 @@
 				leyenda="gratuita.maestroTurnos.literal.configuracion">
 				<table border="0" align="center" width="100%">
 					<tr>
-						<td class="labelText" style="text-align: left"><siga:Idioma
-							key="gratuita.maestroTurnos.literal.validarJustificaciones" /> <c:choose>
-							<c:when test="${definirTurnosForm.validarJustificaciones=='S'}">
-								<input type="checkbox" name="validarJustificaciones" disabled
-									checked="checked">
-							</c:when>
+						<td class="labelText" style="text-align: left">
+							<siga:Idioma key="gratuita.maestroTurnos.literal.validarJustificaciones" /> 
+							<c:choose>
+								<c:when test="${definirTurnosForm.validarJustificaciones=='S'}">
+									<input type="checkbox" name="validarJustificaciones" disabled
+										checked="checked">
+								</c:when>
+	
+								<c:otherwise>
+									<input type="checkbox" name="validarJustificaciones" disabled>
+								</c:otherwise>
+							</c:choose>
+						</td>
 
-							<c:otherwise>
-								<input type="checkbox" name="validarJustificaciones" disabled>
-							</c:otherwise>
-						</c:choose></td>
-
-						<td class="labelText" style="text-align: left"><siga:Idioma
-							key="gratuita.maestroTurnos.literal.validarInscripciones" /> <c:choose>
-							<c:when test="${definirTurnosForm.validacionInscripcion=='S'}">
-								<input type="checkbox" name="validacionInscripcion" disabled
-									checked="checked">
-							</c:when>
-
-							<c:otherwise>
-								<input type="checkbox" name="validacionInscripcion" disabled>
-							</c:otherwise>
-						</c:choose></td>
+						<td class="labelText" style="text-align: left">
+							<siga:Idioma key="gratuita.maestroTurnos.literal.validarInscripciones" /> 
+							<c:choose>
+								<c:when test="${definirTurnosForm.validacionInscripcion=='S'}">
+									<input type="checkbox" name="validacionInscripcion" disabled
+										checked="checked">
+								</c:when>
+	
+								<c:otherwise>
+									<input type="checkbox" name="validacionInscripcion" disabled>
+								</c:otherwise>
+							</c:choose>
+						</td>
 					</tr>
 				</table>
 			</siga:ConjCampos>
@@ -292,7 +281,6 @@
 					</tr>
 				</table>
 			</siga:ConjCampos>
-
 		</td>
 	</tr>
 

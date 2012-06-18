@@ -16,18 +16,22 @@
 	HttpSession ses=request.getSession();
 	String urlAction = (String)request.getAttribute("urlAction");	
 %>
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-<script type="text/jscript" language="JavaScript1.2">
-function reloadPage() {
-	//top.frames['MainWorkArea'].location='<%=urlAction%>';
-	document.forms[0].target="mainWorkArea";	
-	if(document.forms[0].modo.value=="Borrar" ) document.forms[0].modo.value="";
-	document.forms[0].submit();
- };
-
-
-</script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+		
+	<script type="text/javascript">
+	function reloadPage() {
+		//top.frames['MainWorkArea'].location='<%=urlAction%>';
+		document.forms[0].target="mainWorkArea";	
+		if(document.forms[0].modo.value=="Borrar" ) document.forms[0].modo.value="";
+		document.forms[0].submit();
+	 };
+	
+	
+	</script>
 </head>
 <body onload="reloadPage()"></body>
 <form id="enviar" name="enviar "method="<%=request.getMethod()%>" action="<%=urlAction%>">

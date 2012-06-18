@@ -1,4 +1,4 @@
-<!-- datosProcurador.jsp -->
+<!-- datosGruposFijos.jsp -->
 
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -51,8 +51,10 @@
 
 <!-- HEAD -->
 <head>
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 
 	<!-- Validaciones en Cliente -->
@@ -65,21 +67,22 @@
 
 		<!-- Asociada al boton Volver -->
 		function accionCerrar(){ 
-			window.close();
+			window.top.close();
+			window.parent.close();
 		}	
 
 		<!-- Asociada al boton Reset -->
 		function accionRestablecer(){ 
-			MantenimientoGruposFijosForm.reset();
+			document.getElementById("MantenimientoGruposFijosForm").reset();
 		}	
 	
 		<!-- Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() {
 			sub();
-			if (validateMantenimientoGruposFijosForm(document.MantenimientoGruposFijosForm)){
-				MantenimientoGruposFijosForm.modo.value = "<%=accion%>";
-				MantenimientoGruposFijosForm.submit();
-			}else{
+			if (validateMantenimientoGruposFijosForm(document.getElementById("MantenimientoGruposFijosForm"))) {
+				document.getElementById("MantenimientoGruposFijosForm").modo.value = "<%=accion%>";
+				document.getElementById("MantenimientoGruposFijosForm").submit();
+			} else {
 				fin();
 				return false;
 			}
@@ -100,7 +103,7 @@
 
 	<!-- INICIO: CAMPOS -->
 	<!-- Zona de campos de busqueda o filtro -->
-	<html:form action="/CEN_MantenimientoGruposFijos.do" method="POST" target="submitArea">
+	<html:form action="/CEN_MantenimientoGruposFijos.do" method="POST" target="submitArea" styleId="MantenimientoGruposFijosForm">
 		<html:hidden property = "modo" />
 		<html:hidden name="MantenimientoGruposFijosForm" property="idGrupo" />
 		

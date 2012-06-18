@@ -66,8 +66,14 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.msgbox.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.dragndrop.min.js"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 	
@@ -272,8 +278,8 @@
 	<script language="JavaScript">
 	
 		//Asociada al boton GuardarCerrar -->
-		function accionGuardarCerrar() 
-		{		sub();
+		function accionGuardarCerrar() {		
+			sub();
 				//Valido el tamanho del textarea motivosSolicitud
 				if (validatePermutasConfirmadorForm(document.PermutasForm)){
 					//Si esta marcado el campo Confirmar como SI modificamos.					
@@ -291,8 +297,7 @@
 		}
 
 		//Asociada al boton Cerrar -->
-		function accionCerrar() 
-		{		
+		function accionCerrar() {		
 			top.cierraConParametros("NORMAL");
 		}		
 

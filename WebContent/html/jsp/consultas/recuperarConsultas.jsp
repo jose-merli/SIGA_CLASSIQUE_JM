@@ -55,31 +55,28 @@
 
 <!-- HEAD -->
 <head>
-
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet2.jsp">
 	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-
-<logic:notEqual name="RecuperarConsultasForm" property="tipoConsulta" value="<%=ConConsultaAdm.TIPO_CONSULTA_GEN%>">	
-	<!-- INICIO: TITULO Y LOCALIZACION -->
-	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo
-		titulo="consultas.consultaslistas.literal.titulo" 
-		localizacion="consultas.consultaslistas.literal.localizacion"/>
-	<!-- FIN: TITULO Y LOCALIZACION -->	
-</logic:notEqual>	
-<logic:equal name="RecuperarConsultasForm" property="tipoConsulta" value="<%=ConConsultaAdm.TIPO_CONSULTA_GEN%>">	
-	<!-- INICIO: TITULO Y LOCALIZACION -->
-	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo 
-		titulo="consultas.consultasRecuperar.cabecera" 
-		localizacion="consultas.consultaslistas.literal.localizacion"/>
-	<!-- FIN: TITULO Y LOCALIZACION -->	
-</logic:equal>	
-
-
 	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+
+	<logic:notEqual name="RecuperarConsultasForm" property="tipoConsulta" value="<%=ConConsultaAdm.TIPO_CONSULTA_GEN%>">	
+		<!-- INICIO: TITULO Y LOCALIZACION -->
+		<!-- Escribe el título y localización en la barra de título del frame principal -->
+		<siga:Titulo
+			titulo="consultas.consultaslistas.literal.titulo" 
+			localizacion="consultas.consultaslistas.literal.localizacion"/>
+		<!-- FIN: TITULO Y LOCALIZACION -->	
+	</logic:notEqual>	
+	<logic:equal name="RecuperarConsultasForm" property="tipoConsulta" value="<%=ConConsultaAdm.TIPO_CONSULTA_GEN%>">	
+		<!-- INICIO: TITULO Y LOCALIZACION -->
+		<!-- Escribe el título y localización en la barra de título del frame principal -->
+		<siga:Titulo 
+			titulo="consultas.consultasRecuperar.cabecera" 
+			localizacion="consultas.consultaslistas.literal.localizacion"/>
+		<!-- FIN: TITULO Y LOCALIZACION -->	
+	</logic:equal>	
 </head>
 
 <body onload="ajusteAlto('resultado');<%=funcionBuscar%>">
@@ -199,8 +196,7 @@
 	<script language="JavaScript">
 		
 		<!-- Funcion asociada a boton buscar -->
-		function buscar() 
-		{
+		function buscar() {
 			sub();	
 			if (document.forms[0].tipoConsulta.value=="<%=ConConsultaAdm.TIPO_CONSULTA_GEN%>"){
 				document.forms[1].action=document.forms[1].action+"?noReset=true";
@@ -213,15 +209,15 @@
 		}
 
 		<!-- Funcion asociada a boton Nuevo -->
-		function nuevo() 
-		{					
+		function nuevo() {					
 			document.forms[1].submit();
 		}
-		function accionVolver() 
-		{
-			var formu=document.createElement("<form  method='POST'  action='<%=app%><%=request.getAttribute("accionAnterior")%>.do' target='mainWorkArea'>");
-			document.appendChild(formu);
-			formu.submit();
+		
+		function accionVolver() {
+			var action = '<%=app%><%=request.getAttribute("accionAnterior")%>.do';
+			var formuStr = "<form id=\"backForm\" method=\"POST\" action=\""+action+"\" target=\"mainWorkArea\">";
+			$(formuStr).appendTo(document.body);
+			$("#backForm",document).submit();
 		}
 		
 	</script>

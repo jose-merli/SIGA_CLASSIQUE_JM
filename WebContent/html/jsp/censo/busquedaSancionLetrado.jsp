@@ -57,8 +57,10 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	<!-- Calendario -->
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
@@ -96,7 +98,7 @@
 	<html:form action="/CEN_SancionesLetrado.do?noReset=true" method="POST" target="resultado">
 		<html:hidden name="SancionesLetradoForm" property = "modo" value = ""/>
 		<input type="hidden" name= "actionModal" value = "">
-		<input type="hidden" name="limpiarFilaSeleccionada" value="">
+		<input type="hidden" id="limpiarFilaSeleccionada" name="limpiarFilaSeleccionada" value=""/>
 		
 	
 	
@@ -175,10 +177,13 @@
 		
 		</td>
 		<td class="labelText" >
-			<siga:Idioma key="facturacion.consultamorosos.literal.desde"/>&nbsp;&nbsp;<html:text name="SancionesLetradoForm" property="fechaInicioBuscar" size="10" styleClass="box" value=""></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaInicioBuscar);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+			<siga:Idioma key="facturacion.consultamorosos.literal.desde"/>&nbsp;&nbsp;
+			<siga:Fecha  nombreCampo= "fechaInicioBuscar"/>
+			
 		</td>
 		<td class="labelText">
-			<siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>&nbsp;&nbsp;<html:text name="SancionesLetradoForm" property="fechaFinBuscar" size="10" styleClass="box" value=""></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaFinBuscar);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+			<siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>&nbsp;&nbsp;
+			<siga:Fecha  nombreCampo= "fechaFinBuscar"/>
 		</td>
 	
 		
@@ -197,10 +202,12 @@
 			<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fArchivada"/>
 		</td>
 		<td class="labelText">
-		  <siga:Idioma key="facturacion.consultamorosos.literal.desde"/>&nbsp;&nbsp;<html:text name="SancionesLetradoForm" property="fechaInicioArchivada" size="10" styleClass="box" value=""></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaInicioArchivada);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+		  <siga:Idioma key="facturacion.consultamorosos.literal.desde"/>&nbsp;&nbsp;
+		  <siga:Fecha  nombreCampo= "fechaInicioArchivada"/>
 		</td>
 		<td class="labelText">
-		  <siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>&nbsp;&nbsp;<html:text name="SancionesLetradoForm" property="fechaFinArchivada" size="10" styleClass="box" value=""></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaFinArchivada);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+		  <siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>&nbsp;&nbsp;
+		  <siga:Fecha  nombreCampo= "fechaFinArchivada"/>
 		</td>
 	</tr>
 	<%}else{%>

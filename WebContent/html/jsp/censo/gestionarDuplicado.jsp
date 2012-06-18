@@ -62,10 +62,10 @@
 	<title><siga:Idioma key="censo.SolicitudIncorporacionDatos.titulo"/></title>
 
   	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 

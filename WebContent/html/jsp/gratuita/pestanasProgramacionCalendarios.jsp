@@ -23,8 +23,11 @@
 <!-- HEAD -->
 <head>
 
-<link id="default" rel="stylesheet" type="text/css"	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
-<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
+	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
+		
+	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>" ></script>
+	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -33,19 +36,17 @@
 	
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
-<script language="JavaScript">
+	<script language="JavaScript">
 			///Funcion asociada a boton buscar -->
-			function buscar() 
-			{
-				document.frames["mainPestanas"].location.href=document.frames["mainPestanas"].location.href;
+			function buscar() {
+				window.frames["mainPestanas"].location.href=window.frames["mainPestanas"].location.href;
 			}
 
-			function refrescarLocal()
-			{
+			function refrescarLocal() {
 				buscar();
 			}
 	
-</script>
+	</script>
 	
 </head>
  

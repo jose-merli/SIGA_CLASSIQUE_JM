@@ -62,9 +62,12 @@
 
 <!-- HEAD -->
 <head>
-
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	
+		
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.msgbox.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.dragndrop.min.js"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 	<script src="/SIGA/html/js/calendarJs.jsp" type="text/javascript"></script>
 
@@ -87,7 +90,7 @@
 		//Funcion asociada a boton Finalizar
 		function accionCerrar()
 		{
-			window.close();
+			window.top.close();
 		}
 
 		//Asociada al boton Aceptar
@@ -195,7 +198,6 @@
 				    </td>
 					<td>
 						<siga:Fecha nombreCampo="fechaEstado" valorInicial="<%=fecha%>"></siga:Fecha>
-						<a href='javascript://'onClick="return showCalendarGeneral(fechaEstado);"><img src="/SIGA/html/imagenes/calendar.gif" border="0"></a>
 					</td>
 				</tr>
 	             </table>

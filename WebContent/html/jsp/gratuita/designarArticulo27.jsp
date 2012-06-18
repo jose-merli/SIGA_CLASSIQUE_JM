@@ -128,10 +128,13 @@
 
 <!-- HEAD -->
 <head>
-		<link id="default" rel="stylesheet" type="text/css"	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
-		<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript"></script>
-		<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
-		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
+	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
+		
+	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>" ></script>
+	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
+	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
+	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 		
 		<!--Step 2 -->
 		<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
@@ -1581,7 +1584,7 @@
 						document.busquedaCensoModalForm.idPersona.value    =document.datosGeneralesForm.idPersona.value;					
 						document.busquedaCensoModalForm.modo.value = "insertarNoColegiadoArticulo27";
 						document.busquedaCensoModalForm.submit();
-						window.returnValue="MODIFICADO";
+						window.top.returnValue="MODIFICADO";
 					}else{
 						document.datosGeneralesForm.preferente.value = preferencia;
 						document.datosGeneralesForm.idTipoDireccion.value = tipoDir;

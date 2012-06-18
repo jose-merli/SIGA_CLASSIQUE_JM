@@ -145,7 +145,7 @@ public class TagPestana extends TagSupport {
 			for (int i=0;i<contador;i++) 
 			{
 				out.println("<!-- INICIO: PESTAÑA -->"); 
-				out.print("<td><a id=\"");
+				out.print("<td class=\"pestanaTD\"><a id=\"");
 				out.print(this.nombre[i]);
 				out.print("\" name=\"pestana\" href=\"#\" action=\"");
 				out.print(this.action[i]);

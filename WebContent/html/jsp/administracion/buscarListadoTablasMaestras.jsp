@@ -78,13 +78,15 @@
 
 <html>
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+			
 		
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 		
 		<script>
-			function refrescarLocal()
-	 		{   // De momento no queremos que refresque la consulta porque al haber añadido la paginacion, si estabamos en la pagina 2, al refrescar volvemos a la 1
+			function refrescarLocal() {   
+				// De momento no queremos que refresque la consulta porque al haber añadido la paginacion, si estabamos en la pagina 2, al refrescar volvemos a la 1
 			    // y queremos que nos siga manteniendo donde estabamos. En un futuro se arreglara esto (que refresque la consulta y permanezca en la pagina de la que 
 				// viniamos.
 				parent.buscar();

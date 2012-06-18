@@ -94,7 +94,7 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->	
 
@@ -112,7 +112,8 @@
 				
 				<%if((!esLetrado)&&(aprobarSolicitudBaja)){%>
 					var fecha = showModalDialog("/SIGA/html/jsp/productos/ventanaFechaEfectiva.jsp","","dialogHeight:200px;dialogWidth:400px;help:no;scroll:no;status:no;");
-			        if( fecha!=null){ 
+					window.top.focus();
+					if( fecha!=null){ 
 			  	  		// document.forms[0].fechaEfectiva.value=fecha;
 			  	  		var campoFecha = 'ocultoS' + fila + '_6'; // Columna oculta con la fecha efectiva
 			  	  		document.getElementById(campoFecha).value = fecha;
@@ -156,7 +157,8 @@
 				var tabla;
 				<%if((!esLetrado)&&(aprobarSolicitudBaja)){%>
 					var fecha = showModalDialog("/SIGA/html/jsp/productos/ventanaFechaEfectiva.jsp","","dialogHeight:200px;dialogWidth:400px;help:no;scroll:no;status:no;");
-			        if( fecha!=null){ 
+					window.top.focus();
+					if( fecha!=null){ 
 			  	  		// document.forms[0].fechaEfectiva.value=fecha;
 			  	  		var campoFecha = 'ocultoP' + fila + '_6'; // Columna oculta con la fecha efectiva
 			  	  		document.getElementById(campoFecha).value = fecha;

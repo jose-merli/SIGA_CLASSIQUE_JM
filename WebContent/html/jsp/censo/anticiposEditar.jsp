@@ -115,7 +115,7 @@
 	</script>
 	
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<html:javascript formName="AnticiposClienteForm" staticJavascript="false" />
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
  	
@@ -139,6 +139,7 @@
 	<table  class="tablaCentralCamposMedia" cellspacing=0 cellpadding=0 align="center" border="0">
 
 	<html:form action="/CEN_AnticiposCliente.do" method="POST" target="submitArea">
+	
 	<html:hidden name="AnticiposClienteForm" property = "modo" value = "<%=modo %>"/>
 	<html:hidden name="AnticiposClienteForm" property = "idInstitucion" value="<%=usr.getLocation() %>" />
 	<html:hidden name="AnticiposClienteForm" property = "idPersona"  value="<%=idPersona%>"/>
@@ -158,7 +159,7 @@
 			<siga:Idioma key="censo.anticipos.literal.descripcion"/>&nbsp;(*)
 		</td>				
 		<td class="labelText" colspan="3">
-			<html:text name="AnticiposClienteForm" property="descripcion" size="54" maxlength="200" styleClass="<%=estilo %>" readonly="<%=readOnly %>"  value="<%=descripcion%>"/>
+			<html:text name="AnticiposClienteForm" property="descripcion" styleId="descripcion" size="54" maxlength="200" styleClass="<%=estilo %>" readonly="<%=readOnly %>"  value="<%=descripcion%>"/>
 		</td>
 		</tr>
 
@@ -173,7 +174,7 @@
 			<siga:Idioma key="censo.anticipos.literal.fecha"/>
 		</td>				
 		<td class="labelText">
-			<html:text name="AnticiposClienteForm" property="fecha" size="12" maxlength="10" styleClass="boxConsulta" readonly="true"  value="<%=fecha%>"/>
+			<html:text name="AnticiposClienteForm" property="fecha" styleId="fecha" size="12" maxlength="10" styleClass="boxConsulta" readonly="true"  value="<%=fecha%>"/>
 		</td>
 		</tr>
 
@@ -183,7 +184,7 @@
 			<siga:Idioma key="censo.anticipos.literal.ctaContable"/>
 		</td>				
 		<td class="labelText">
-			<html:text name="AnticiposClienteForm" property="ctaContable" size="12" maxlength="20" styleClass="<%=estilo %>" readonly="<%=readOnly %>"/>
+			<html:text name="AnticiposClienteForm" property="ctaContable" styleId="ctaContable" size="12" maxlength="20" styleClass="<%=estilo %>" readonly="<%=readOnly %>"/>
 		</td>
 		</tr>
 
@@ -196,7 +197,7 @@
 			<siga:Idioma key="censo.anticipos.literal.importeAnticipado"/>&nbsp;(*)
 		</td>
 		<td class="labelText">
-			<html:text name="AnticiposClienteForm" property="importeAnticipado"  size="11" maxlength="11" styleClass="<%=estiloNumber %>" readonly="<%=readOnlyImporte %>" value="<%=UtilidadesNumero.formatoCampo(importeAnticipado)%>"/>&nbsp;&euro; 
+			<html:text name="AnticiposClienteForm" property="importeAnticipado" styleId="importeAnticipado" size="11" maxlength="11" styleClass="<%=estiloNumber %>" readonly="<%=readOnlyImporte %>" value="<%=UtilidadesNumero.formatoCampo(importeAnticipado)%>"/>&nbsp;&euro; 
 		</td>
 <% if (!modo.equals("insertar"))  { %>
 
@@ -204,14 +205,12 @@
 			<siga:Idioma key="censo.anticipos.literal.importeRestante"/>
 		</td>
 		<td class="labelText">
-			<html:text name="AnticiposClienteForm" property="importeRestante"  size="11" maxlength="11"  styleClass="boxConsultaNumber" readonly="true"  value="<%=UtilidadesNumero.formatoCampo(importeRestante)%>"/>&nbsp;&euro; 
+			<html:text name="AnticiposClienteForm" property="importeRestante" styleId="importeRestante" size="11" maxlength="11" styleClass="boxConsultaNumber" readonly="true" value="<%=UtilidadesNumero.formatoCampo(importeRestante)%>"/>&nbsp;&euro; 
 		</td>
 <% } %>
 
 		</tr>
-
-
-		
+				
 		</table>
 
 	</siga:ConjCampos>
@@ -220,8 +219,9 @@
 	</tr>
 			
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD" />
+			<input type="hidden" name="filaSelD" id="filaSelD" />
+			<input type="hidden" name="actionModal" value="" />
 		</html:form>	
 	</table>
 	
@@ -263,12 +263,12 @@
 }%>
 				<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' visibleConsulta="no" visibleBorrado="no" visibleEdicion="no" pintarEspacio="no" botones="" elementos='<%=elems%>'  modo='<%=modo%>' clase="listaNonEdit">
 					<td>
-						<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=idInstitucionReg %>">
-						<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_2" value="<%=idPersonaReg %>">
-						<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_3" value="<%=idAnticipoReg %>">
-						<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_4" value="<%=idTipoServicioReg %>">
-						<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_5" value="<%=idServicioReg %>">
-						<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_6" value="<%=idServicioInstitucionReg %>">
+						<input type="hidden" id="oculto<%=String.valueOf(i+1)%>_1" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=idInstitucionReg %>">
+						<input type="hidden" id="oculto<%=String.valueOf(i+1)%>_2" name="oculto<%=String.valueOf(i+1)%>_2" value="<%=idPersonaReg %>">
+						<input type="hidden" id="oculto<%=String.valueOf(i+1)%>_3" name="oculto<%=String.valueOf(i+1)%>_3" value="<%=idAnticipoReg %>">
+						<input type="hidden" id="oculto<%=String.valueOf(i+1)%>_4" name="oculto<%=String.valueOf(i+1)%>_4" value="<%=idTipoServicioReg %>">
+						<input type="hidden" id="oculto<%=String.valueOf(i+1)%>_5" name="oculto<%=String.valueOf(i+1)%>_5" value="<%=idServicioReg %>">
+						<input type="hidden" id="oculto<%=String.valueOf(i+1)%>_6" name="oculto<%=String.valueOf(i+1)%>_6" value="<%=idServicioInstitucionReg %>">
 						
 						<%=UtilidadesString.mostrarDatoJSP(descripcionServicioReg)%></td>
 						
@@ -307,34 +307,28 @@
 	
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
-	<script language="JavaScript">
+	<script type="text/javascript" >
 
 		<!-- Asociada al boton GuardarCerrar -->
-		function accionGuardarCerrar() 
-		{
+		function accionGuardarCerrar() {
 			sub();		
 			document.forms[0].importeAnticipado.value=document.forms[0].importeAnticipado.value.replace(/,/,".");
 			if (validateAnticiposClienteForm(document.AnticiposClienteForm)){
-					document.forms[0].modo.value="<%=modo%>";
-					document.forms[0].submit();
-					
-			}else{
+				document.forms[0].modo.value="<%=modo%>";
+				document.forms[0].submit();					
+			} else {
 				fin();
 				return false;
 			}
-
 		}
 		
 		<!-- Asociada al boton Cerrar -->
-		function accionCerrar() 
-		{		
-
-			window.returnValue="MODIFICADO";
-			window.close();
+		function accionCerrar() {
+			window.top.returnValue="MODIFICADO";
+			window.parent.close();
 		}
 		
-		function borrarServicios(fila) 
-		{		
+		function borrarServicios(fila) {		
 			var datos;
 			datos = document.getElementById('tablaDatosDinamicosD');
 			datos.value = ""; 
@@ -344,19 +338,20 @@
 			var flag = true;
 			j = 1;
 			while (flag) {
-			  var aux = 'oculto' + fila + '_' + j;
-			  var oculto = document.getElementById(aux);
-			  if (oculto == null)  { flag = false; }
-			  else { datos.value = datos.value + oculto.value + ','; }
-			  j++;
+				var aux = 'oculto' + fila + '_' + j;
+				var oculto = document.getElementById(aux);
+				if (oculto == null)  { 
+					flag = false; 
+				} else { 
+					datos.value = datos.value + oculto.value + ','; 
+				}
+			  	j++;
 			}
 			datos.value = datos.value + "%"
 									
 	    	document.AnticiposClienteForm.modo.value = "borrarServicios";
 			document.AnticiposClienteForm.submit();
-
 		}
-
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 

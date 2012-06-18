@@ -351,78 +351,95 @@ caracterParam[0] = tipoCliente;
 
 <!-- HEAD -->
 <head>
-
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 		
 
-		<!-- Calendario -->
-		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
+	<!-- Calendario -->
+	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 
-		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
-		<!-- Validaciones en Cliente -->
-		<!-- El nombre del formulario se obtiene del struts-config -->
-			<html:javascript formName="datosGeneralesNoColegiadoForm" staticJavascript="false" />  
-		  	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
+	<!-- Validaciones en Cliente -->
+	<!-- El nombre del formulario se obtiene del struts-config -->
+	<html:javascript formName="datosGeneralesNoColegiadoForm" staticJavascript="false" />  
+	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 		  	
-		<!--Step 2 -->
-		<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
+	<!--Step 2 -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
 		
 		
-		<!--Step 3 -->
-		  <!-- defaults for Autocomplete and displaytag -->
-		  <link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />
-		  <link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
+	<!--Step 3 -->
+	<!-- defaults for Autocomplete and displaytag -->
+	<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/ajaxtags.css'/>" />
 		  	
-		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	
+	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	
 
-		<script>
+	<script>		
+		<!-- Funcion asociada a buscarGrupos() -->
+		function buscarGrupos(){
+			document.GruposClienteClienteForm.modo.value="buscar";
+			document.GruposClienteClienteForm.modoAnterior.value=document.forms[0].accion.value;				
+			document.GruposClienteClienteForm.idPersona.value=document.forms[0].idPersona.value;	
+			document.GruposClienteClienteForm.idInstitucion.value=document.forms[0].idInstitucion.value;	
+			document.GruposClienteClienteForm.target="resultado";	
+			document.GruposClienteClienteForm.submit();	
+		}	
 		
-			<!-- Funcion asociada a buscarGrupos() -->
-			function buscarGrupos(){
-					document.GruposClienteClienteForm.modo.value="buscar";
-					document.GruposClienteClienteForm.modoAnterior.value=document.forms[0].accion.value;				
-					document.GruposClienteClienteForm.idPersona.value=document.forms[0].idPersona.value;	
-					document.GruposClienteClienteForm.idInstitucion.value=document.forms[0].idInstitucion.value;	
-					document.GruposClienteClienteForm.target="resultado";	
-					document.GruposClienteClienteForm.submit();	
-			}
-		
-		
-			function refrescarLocal() {
-				<% if (modo.equalsIgnoreCase("NUEVASOCIEDAD")) { %>
-				document.forms[0].accion.value="editar";
-				<% } %>
-				document.forms[0].modo.value="abrir";
-				
-				document.forms[0].submit();
-
+		function refrescarLocal() {
+			<% if (modo.equalsIgnoreCase("NUEVASOCIEDAD")) { %>
+			document.forms[0].accion.value="editar";
+			<% } %>
+			document.forms[0].modo.value="abrir";
+			
+			document.forms[0].submit();
 				//Refresco el iframe de grupos:
-				buscarGrupos();
-			}
+			buscarGrupos();
+		}
+		
+		function deshabilitarCheckSociedad () {			  
+		 <%if (modo.equalsIgnoreCase("EDITAR") || modo.equalsIgnoreCase("VER")) {%>  
+		  <% if(valorSociedadSP.equals("1")){%>
+		    document.forms[0].sociedadSP.checked=true;
+			document.getElementById("sociedadSJ").disabled=true;
+			document.getElementById("sociedadSP").disabled=true;
+			document.getElementById("contadorSP").style.display="block";
+			document.getElementById("contadorSJ").style.display="none";			    
+		  <% }
+		  }%>
+			if (document.getElementById("tipoIdentificacion").disabled==true){
+		  		document.getElementById("tipoIdentificacion").focus();
+		  	}
+		}
+		
+		function refrescarLocal() {
+			<% if (modo.equalsIgnoreCase("NUEVASOCIEDAD")) { %>
+				document.forms[0].accion.value="editar";
+			<% } %>
+			document.forms[0].modo.value="abrir";
+			document.forms[0].submit();
+			buscarGrupos();
+		}
 			
 			function deshabilitarCheckSociedad (){
-			 <%if (modo.equalsIgnoreCase("EDITAR") || modo.equalsIgnoreCase("VER")) {%>  
-			  <% if(valorSociedadSP.equals("1")){%>
+			 <%if (modo.equalsIgnoreCase("EDITAR") || modo.equalsIgnoreCase("VER")) {  
+			   	if(valorSociedadSP.equals("1")){%>
 			     	document.forms[0].sociedadSP.checked=true;
 			
 					  document.getElementById("sociedadSJ").disabled=true;
 					  document.getElementById("sociedadSP").disabled=true;
 					  document.getElementById("contadorSP").style.display="block";
 					  document.getElementById("contadorSJ").style.display="none";			    
-			  <%}
+			 <%}
 			  }%>
-			  //if (datosGeneralesForm.tipoIdentificacion.disabled==true){
-			  	//datosGeneralesForm.tipoIdentificacion.focus();
-			  //}
 			}
 			
-			function presentaContador(obj)
-			{
+			function presentaContador(obj){
 				<%if (modo.equalsIgnoreCase("EDITAR") || modo.equalsIgnoreCase("VER")) {%>//En modo edicion no se permite modificar el check de SJ y SP
 			   		if (document.getElementById("sociedadSP").checked || document.getElementById("sociedadSJ").checked){
 			   			document.getElementById("nombrenumregistro").style.display="block";
@@ -432,175 +449,127 @@ caracterParam[0] = tipoCliente;
 			   			document.getElementById("sociedadSJ").disabled=true;
 			   		}
 					<%if (modo.equalsIgnoreCase("VER")) {%>
-			   				document.getElementById("sociedadSP").disabled=true;
-			   				document.getElementById("sociedadSJ").disabled=true;
+		   				document.getElementById("sociedadSP").disabled=true;
+		   				document.getElementById("sociedadSJ").disabled=true;
 			   		<%}%>
 				<%}%>
 				
-				if (obj) {
-					if (obj.checked)
-					{
+				if (obj){
+					if (obj.checked){
 						document.getElementById("sociedadSP").checked = false;
 						
-						if(document.getElementById("sociedadSJ").disabled==false)
-						{
+						if(document.getElementById("sociedadSJ").disabled==false){
 							document.getElementById("sociedadSJ").checked = false;
 				    	}
 						obj.checked = true;
 					}
 				}
-				
-				if (document.getElementById("sociedadSP").checked) { 
-
-					if (document.datosGeneralesForm.modoSociedadSP.value==0){// si el modo de sociedad es Registro
-			    		
-						     document.getElementById("contadorSJ").style.display="none";
-							 document.getElementById("contadorSP").style.display="block";
-						     numeroRegistro.style.display="block";
-							 datosGeneralesForm.prefijoNumRegSP.disabled=true;
-							 datosGeneralesForm.sufijoNumRegSP.disabled=true;
-							 datosGeneralesForm.contadorNumRegSP.disabled=true;
-							 etiquetaNumReg.style.display="block";
-						
-				 		
-			  		}else{// si el modo de sociedad es Histórico
-							document.getElementById("contadorSJ").style.display="none";
-							document.getElementById("contadorSP").style.display="block";
-						    numeroRegistro.style.display="block";
-							etiquetaNumReg.style.display="block";
-				    }
-				 }else{
+			
+			if (document.getElementById("sociedadSP").checked) { 
+				if (document.datosGeneralesForm.modoSociedadSP.value==0){// si el modo de sociedad es Registro			    		
+					     document.getElementById("contadorSJ").style.display="none";
+						 document.getElementById("contadorSP").style.display="block";
+						 document.getElementById("numeroRegistro").style.display="block";
+						 document.getElementById("prefijoNumRegSP").disabled=true;
+						 document.getElementById("sufijoNumRegSP").disabled=true;
+						 document.getElementById("contadorNumRegSP").disabled=true;
+						 document.getElementById("etiquetaNumReg").style.display="block";			 		
+		  		} else {// si el modo de sociedad es Histórico
+						document.getElementById("contadorSJ").style.display="none";
+						document.getElementById("contadorSP").style.display="block";
+						document.getElementById("numeroRegistro").style.display="block";
+						document.getElementById("etiquetaNumReg").style.display="block";
+			    }
+			} else {
+			 	document.getElementById("contadorSJ").style.display="none";
+				document.getElementById("contadorSP").style.display="none";				 	
+			 	if (document.getElementById("sociedadSJ").checked) { 
+					if (document.getElementById("modoSociedadSJ").value==0){// si el modo de sociedad es Registro			    		
+					     document.getElementById("contadorSJ").style.display="block";
+						 document.getElementById("contadorSP").style.display="none";
+						 document.getElementById("numeroRegistro").style.display="block";
+						 document.getElementById("prefijoNumRegSJ").disabled=true;
+						 document.getElementById("sufijoNumRegSJ").disabled=true;
+						 document.getElementById("contadorNumRegSJ").disabled=true;
+						 document.getElementById("etiquetaNumReg").style.display="block";				 		
+		  			} else {// si el modo de sociedad es Histórico
+						document.getElementById("contadorSJ").style.display="block";
+						document.getElementById("contadorSP").style.display="none";
+						document.getElementById("numeroRegistro").style.display="block";
+						document.getElementById("etiquetaNumReg").style.display="block";
+			   		}
+			 	} else {
 				 	document.getElementById("contadorSJ").style.display="none";
 					document.getElementById("contadorSP").style.display="none";
-				 	
-				 	if (document.getElementById("sociedadSJ").checked) { 
-						if (document.datosGeneralesForm.modoSociedadSJ.value==0){// si el modo de sociedad es Registro
-			    		
-						     document.getElementById("contadorSJ").style.display="block";
-							 document.getElementById("contadorSP").style.display="none";
-						     numeroRegistro.style.display="block";
-							 datosGeneralesForm.prefijoNumRegSJ.disabled=true;
-							 datosGeneralesForm.sufijoNumRegSJ.disabled=true;
-							 datosGeneralesForm.contadorNumRegSJ.disabled=true;
-							 etiquetaNumReg.style.display="block";
-						
-				 		
-			  			}else{// si el modo de sociedad es Histórico
-							document.getElementById("contadorSJ").style.display="block";
-							document.getElementById("contadorSP").style.display="none";
-						    numeroRegistro.style.display="block";
-							etiquetaNumReg.style.display="block";
-				   		}
-				 	}else{
-					 	document.getElementById("contadorSJ").style.display="none";
-						document.getElementById("contadorSP").style.display="none";
-				 	}
-				 }
-				 if (datosGeneralesForm.sociedadSP.disabled==false){
-			  		datosGeneralesForm.sociedadSP.focus();
-			  	}
-				
+			 	}
 			}
+			if (document.getElementById("sociedadSP").disabled==false){
+		  		document.getElementById("sociedadSP").focus();
+		  	}				
+		}
+		
+		function presentaContadorAux(obj) {				
+			<%if (modo.equalsIgnoreCase("EDITAR") || modo.equalsIgnoreCase("VER")) {%>//En modo edicion no se permite modificar el check de SJ y SP
+		   		if (document.getElementById("sociedadSP").checked || document.getElementById("sociedadSJ").checked){
+		   			document.getElementById("nombrenumregistro").style.display="block";
+		   			//document.getElementById("sociedadSJ").disabled=true;			   			
+		   			<%if (modo.equalsIgnoreCase("VER")) {%>
+		   				document.getElementById("sociedadSP").disabled=true;
+		   				document.getElementById("sociedadSJ").disabled=true;
+		   			<%}%>
+		   		}					
+			<%}%>
 			
-			function presentaContadorAux(obj)
-			{  
-				
-				<%if (modo.equalsIgnoreCase("EDITAR") || modo.equalsIgnoreCase("VER")) {%>//En modo edicion no se permite modificar el check de SJ y SP
-			   		if (document.getElementById("sociedadSP").checked || document.getElementById("sociedadSJ").checked){
-			   			document.getElementById("nombrenumregistro").style.display="block";
-			   			//document.getElementById("sociedadSJ").disabled=true;
-			   			
-			   			<%if (modo.equalsIgnoreCase("VER")) {%>
-			   				document.getElementById("sociedadSP").disabled=true;
-			   				document.getElementById("sociedadSJ").disabled=true;
-			   			<%}%>
-			   		}
-					
-				<%}%>
-				
-				if (obj) {
-					if (obj.checked) {
-						document.getElementById("sociedadSP").checked = false;
-						
+			if (obj) {
+				if (obj.checked) {
+					document.getElementById("sociedadSP").checked = false;						
 					if(document.getElementById("sociedadSJ").disabled==false){	
 						document.getElementById("sociedadSJ").checked = false;
 				    }
-						obj.checked = true;
-						
-						
-					}
+					obj.checked = true;
 				}
-				
-				if (document.getElementById("sociedadSP").checked) { 
-
-					if (document.datosGeneralesForm.modoSociedadSP.value==0){// si el modo de sociedad es Registro
-			    		
-						     document.getElementById("contadorSJ").style.display="none";
-							 document.getElementById("contadorSP").style.display="block";
-						     numeroRegistro.style.display="block";
-							 datosGeneralesForm.prefijoNumRegSP.disabled=true;
-							 datosGeneralesForm.sufijoNumRegSP.disabled=true;
-							 datosGeneralesForm.contadorNumRegSP.disabled=true;
-							 etiquetaNumReg.style.display="block";
-						
-				 		
-			  		}else{// si el modo de sociedad es Histórico
-							document.getElementById("contadorSJ").style.display="none";
-							document.getElementById("contadorSP").style.display="block";
-						    numeroRegistro.style.display="block";
-							etiquetaNumReg.style.display="block";
-				    }
-				 }else{
-				 	document.getElementById("contadorSJ").style.display="none";
-					document.getElementById("contadorSP").style.display="none";
-				 	
-				 	if (document.getElementById("sociedadSJ").checked) { 
-						if (document.datosGeneralesForm.modoSociedadSJ.value==0){// si el modo de sociedad es Registro
-			    		
-						     document.getElementById("contadorSJ").style.display="block";
-							 document.getElementById("contadorSP").style.display="none";
-						     numeroRegistro.style.display="block";
-							 datosGeneralesForm.prefijoNumRegSJ.disabled=true;
-							 datosGeneralesForm.sufijoNumRegSJ.disabled=true;
-							 datosGeneralesForm.contadorNumRegSJ.disabled=true;
-							 etiquetaNumReg.style.display="block";
-						
-				 		
-			  			}else{// si el modo de sociedad es Histórico
-							document.getElementById("contadorSJ").style.display="block";
-							document.getElementById("contadorSP").style.display="none";
-						    numeroRegistro.style.display="block";
-							etiquetaNumReg.style.display="block";
-				   		}
-				 	}else{
-					 	document.getElementById("contadorSJ").style.display="none";
-						document.getElementById("contadorSP").style.display="none";
-				 	}
-				 }
-				 if (datosGeneralesForm.sociedadSP.disabled==false){
-			  		datosGeneralesForm.sociedadSP.focus();
-			  	}
-				
 			}
 			
-			//function cambioTipo()
-			//{
-				//if (document.forms[0].modo.value == "editar" || document.forms[0].modo.value == "ver"){					
-					//if(document.forms[0].tipoIdentificacion.value == "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>"){
-				//		if(document.forms[0].numIdentificacion.value.charAt(0) == "J" ) {
-				//			document.forms[0].tipo.tipo = "cmbTipoSociedadJ";
-				//			document.forms[0].tipo.clase = "boxCombo";
-				//			document.forms[0].tipo.readonly = "false";
-				//			alert("El tipo es "+document.forms[0].tipo.tipo);
-				//		}else{
-				//			document.forms[0].tipo.tipo = "cmbTipoSociedadAlta";
-				//			document.forms[0].tipo.clase = "boxConsulta";
-				//			document.forms[0].tipo.readonly = "true";
-				//			alert("El tipo es "+document.forms[0].tipo.tipo);
-				//		}
-				//	}					
-				//}
-			//}
+			if (document.getElementById("sociedadSP").checked) { 
+				if (document.datosGeneralesForm.modoSociedadSP.value==0){// si el modo de sociedad es Registro			    		
+					document.getElementById("contadorSJ").style.display="none";
+					document.getElementById("contadorSP").style.display="block";
+					document.getElementById("numeroRegistro").style.display="block";
+					document.getElementById("prefijoNumRegSP").disabled=true;
+					document.getElementById("sufijoNumRegSP").disabled=true;
+					document.getElementById("contadorNumRegSP").disabled=true;
+					document.getElementById("etiquetaNumReg").style.display="block";			 		
+		  		} else {// si el modo de sociedad es Histórico
+					document.getElementById("contadorSJ").style.display="none";
+					document.getElementById("contadorSP").style.display="block";
+					document.getElementById("numeroRegistro").style.display="block";
+					document.getElementById("etiquetaNumReg").style.display="block";
+			    }
+			} else {
+			 	document.getElementById("contadorSJ").style.display="none";
+				document.getElementById("contadorSP").style.display="none";				 	
+			 	if (document.getElementById("sociedadSJ").checked) { 
+					if (document.getElementById("modoSociedadSJ").value==0){// si el modo de sociedad es Registro			    		
+					    document.getElementById("contadorSJ").style.display="block";
+						document.getElementById("contadorSP").style.display="none";
+						document.getElementById("numeroRegistro").style.display="block";
+						document.getElementById("prefijoNumRegSJ").disabled=true;
+						document.getElementById("sufijoNumRegSJ").disabled=true;
+						document.getElementById("contadorNumRegSJ").disabled=true;
+						document.getElementById("etiquetaNumReg").style.display="block";			 		
+		  			} else {// si el modo de sociedad es Histórico
+						document.getElementById("contadorSJ").style.display="block";
+						document.getElementById("contadorSP").style.display="none";
+						document.getElementById("numeroRegistro").style.display="block";
+						document.getElementById("etiquetaNumReg").style.display="block";
+			   		}
+			 	} else {
+				 	document.getElementById("contadorSJ").style.display="none";
+					document.getElementById("contadorSP").style.display="none";
+			 	}
+			}
+		}
+			
 									
 			//Funcion que quita blancos a derecha e izquierda de la cadena
 			function fTrim(Str)
@@ -706,7 +675,7 @@ caracterParam[0] = tipoCliente;
 		{
 			widthMax = 180;
 			heightMax = 240;
-			foto = document.getElementById ("fotoNueva");
+			foto = document.getElementById("fotoNueva");
 			if (foto) {
 				ratio = foto.height / foto.width;
 	
@@ -786,13 +755,13 @@ caracterParam[0] = tipoCliente;
 			<html:hidden name="datosGeneralesForm" property="accion"/>
 			<html:hidden name="datosGeneralesForm" property="motivo"/>
 			<html:hidden name="datosGeneralesForm" property="actionModal" value=""/>
-			<html:hidden name="datosGeneralesForm" property="abono" value="B"/>
-			<html:hidden name="datosGeneralesForm" property="cargo"  value="B"/>
+			<html:hidden name="datosGeneralesForm" property="abono" styleId="abono" value="B"/>
+			<html:hidden name="datosGeneralesForm" property="cargo" styleId="cargo" value="B"/>
 			<html:hidden name="datosGeneralesForm" property="idTratamiento"  value="1"/>
-			<html:hidden name="datosGeneralesForm" property="modoSociedadSJ"/>
-			<html:hidden name="datosGeneralesForm" property="modoSociedadSP"/>
-			<html:hidden name="datosGeneralesForm" property="longitudSP"/>
-			<html:hidden name="datosGeneralesForm" property="continuarAprobacion" value = ""/>
+			<html:hidden name="datosGeneralesForm" property="modoSociedadSJ" styleId="modoSociedadSJ"/>
+			<html:hidden name="datosGeneralesForm" property="modoSociedadSP" styleId="modoSociedadSP"/>
+			<html:hidden name="datosGeneralesForm" property="longitudSP" styleId="longitudSP"/>
+			<html:hidden name="datosGeneralesForm" property="continuarAprobacion" styleId="continuarAprobacion" value = ""/>
 			
 		<tr>
 			<!-- COLUMNA: FOTO -->	
@@ -811,7 +780,7 @@ caracterParam[0] = tipoCliente;
 					<br>&nbsp;		
 					
 					<% if (!breadonly) { %>
-							<html:file name="datosGeneralesForm" property="foto" size="8" styleClass="<%=estiloCaja %>" accept="image/gif,image/jpg" ></html:file>		
+							<html:file name="datosGeneralesForm" styleId="foto" property="foto" size="8" styleClass="<%=estiloCaja %>" accept="image/gif,image/jpg" ></html:file>		
 							<br>&nbsp;		
 					<% } %>
 				</siga:ConjCampos>
@@ -834,13 +803,13 @@ caracterParam[0] = tipoCliente;
 											<siga:Idioma key="censo.fichaCliente.literal.identificacion"/>&nbsp;(*)
 
 											<% if (bConsultaPersona) { %>
-													<html:text name="datosGeneralesForm" property="numIdentificacion" size="11" style="width:70px" styleClass="boxConsulta" value="<%=nIdentificacion %>" readonly="true" ></html:text>
+													<html:text name="datosGeneralesForm" property="numIdentificacion" styleId="numIdentificacion" size="11" style="width:70px" styleClass="boxConsulta" value="<%=nIdentificacion %>" readonly="true" ></html:text>
 											<% } else { %>
-													<html:text name="datosGeneralesForm" property="numIdentificacion" size="11" style="width:70px" styleClass="<%=estiloCajaNif %>" value="<%=nIdentificacion %>" readonly="<%=breadonlyNif %>" onblur="cambioTipo();"></html:text>
+													<html:text name="datosGeneralesForm" property="numIdentificacion" styleId="numIdentificacion" size="11" style="width:70px" styleClass="<%=estiloCajaNif %>" value="<%=nIdentificacion %>" readonly="<%=breadonlyNif %>" onblur="cambioTipo();"></html:text>
 											<% }  %>
 												
 											 <%if (bConsultaPersona || modo.equalsIgnoreCase("VER")||tipoIdentif) { %>
-											  <html:hidden name="datosGeneralesForm" property="tipoIdentificacion" value="<%=tipoIdentificacionSel%>"/>
+											  <html:hidden name="datosGeneralesForm" property="tipoIdentificacion" styleId="tipoIdentificacion" value="<%=tipoIdentificacionSel%>"/>
 												<% if (tipoIdentificacionSel.equals(CIF)) { %>
 												<siga:Idioma key="censo.fichaCliente.literal.cif"/>
 												<% } else if (tipoIdentificacionSel.equals(OTRO)) { %>
@@ -849,7 +818,7 @@ caracterParam[0] = tipoCliente;
 										
 											<% } else { %>
 													<input type="hidden" name="tipoIdentificacionBloqueada" value="<%=tipoIdentificacionSel%>"/>
-													<html:select name="datosGeneralesForm" property="tipoIdentificacion" value="<%=tipoIdentificacionSel%>" styleClass="boxCombo" disabled="true">													
+													<html:select name="datosGeneralesForm" property="tipoIdentificacion" value="<%=tipoIdentificacionSel%>" styleId="tipoIdentificacion"  styleClass="boxCombo" disabled="true">													
 														<html:option value="<%=OTRO%>"> <siga:Idioma key="censo.fichaCliente.literal.otro"/></html:option>	
 														<html:option value="<%=CIF%>" > <siga:Idioma key="censo.fichaCliente.literal.cif"/></html:option>
 													</html:select>
@@ -881,7 +850,7 @@ caracterParam[0] = tipoCliente;
 												}
 											%>  
 											<siga:Idioma key="censo.general.literal.tipoRegistro"/>&nbsp;(*) 
-											<input type="hidden" name="tipoOriginal" value="<%=tipoOriginal%>">
+											<input type="hidden" id="tipoOriginal"  name="tipoOriginal" value="<%=tipoOriginal%>">
 
 											
 											<% if (tipoDisabled.equals("false")) {%>
@@ -917,7 +886,7 @@ caracterParam[0] = tipoCliente;
 											<siga:Idioma key="censo.consultaDatosGenerales.literal.fechaAlta"/>
 										</td>
 										<td>	
-											<html:text name="datosGeneralesForm" property="fechaAlta" style="width:70" styleClass="boxConsulta" readonly="true" value="<%=fechaAlta%>" />
+											<html:text name="datosGeneralesForm" property="fechaAlta" styleId="fechaAlta" style="width:70" styleClass="boxConsulta" readonly="true" value="<%=fechaAlta%>" />
 										</td>
 									</tr>
 									</table>
@@ -926,21 +895,30 @@ caracterParam[0] = tipoCliente;
 										<td class="labelText" colspan="1" width="20%">
 											<!-- CheckBox de Sociedad SJ -->
 											<siga:Idioma key="censo.general.literal.sociedadSJ"/>&nbsp;
-											<html:checkbox name="datosGeneralesForm" property="sociedadSJ" onclick="presentaContadorAux(this)" value="<%=ClsConstants.DB_TRUE%>"    ></html:checkbox>
+											<html:checkbox name="datosGeneralesForm" property="sociedadSJ" styleId="sociedadSJ" onclick="presentaContadorAux(this)" value="<%=ClsConstants.DB_TRUE%>"    ></html:checkbox>
 										</td>	
 										<td class="labelText" colspan="2" width="40%">
 											<!-- CheckBox de Sociedad Profesional -->
 											<siga:Idioma key="censo.general.literal.sociedadProfesional"/>&nbsp;
-											<html:checkbox name="datosGeneralesForm" property="sociedadSP" onclick="presentaContadorAux(this)" value="<%=ClsConstants.DB_TRUE%>"   ></html:checkbox> 
+											<html:checkbox name="datosGeneralesForm" property="sociedadSP" styleId="sociedadSP" onclick="presentaContadorAux(this)" value="<%=ClsConstants.DB_TRUE%>"   ></html:checkbox> 
 										</td>
 										<span id="etiquetaNumReg" > 
 										<td id="nombrenumregistro" class="labelText" colspan="2">
 											<!-- NUMERO REGISTRO -->
 											<span id="numeroRegistro" >	
-											<span id="contadorSP" style="display:none"> <siga:Idioma key="censo.general.literal.numRegistro"/>&nbsp;(*) <html:text name="datosGeneralesForm" property="prefijoNumRegSP"  size="5" maxlength="10" styleClass="<%=estiloCaja%>" style="width:55px" readonly="<%=breadonly%>" ></html:text><html:text name="datosGeneralesForm" property="contadorNumRegSP" size="5" maxlength="8" style="width:58px" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text><html:text name="datosGeneralesForm" property="sufijoNumRegSP" style="width:58px" size="5" maxlength="10" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text> </span>
-											<span id="contadorSJ" style="display:none">	<siga:Idioma key="censo.general.literal.numRegistro"/>&nbsp;(*) <html:text name="datosGeneralesForm" property="prefijoNumRegSJ"  size="5" maxlength="10" styleClass="<%=estiloCaja%>" style="width:55px" readonly="<%=breadonly%>" ></html:text><html:text name="datosGeneralesForm" property="contadorNumRegSJ" size="5" maxlength="8" style="width:58px" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text><html:text name="datosGeneralesForm" property="sufijoNumRegSJ" style="width:58px" size="5" maxlength="10" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text></span>
+												<span id="contadorSP" style="display:none">
+													<siga:Idioma key="censo.general.literal.numRegistro"/>&nbsp;(*) 
+													<html:text name="datosGeneralesForm" property="prefijoNumRegSP" styleId="prefijoNumRegSP" size="5" maxlength="10" styleClass="<%=estiloCaja%>" style="width:55px" readonly="<%=breadonly%>" ></html:text>
+													<html:text name="datosGeneralesForm" property="contadorNumRegSP" styleId="contadorNumRegSP" size="5" maxlength="8" style="width:58px" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text>
+													<html:text name="datosGeneralesForm" property="sufijoNumRegSP" styleId="sufijoNumRegSP" style="width:58px" size="5" maxlength="10" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text>
+												</span>
+												<span id="contadorSJ" style="display:none">
+													<siga:Idioma key="censo.general.literal.numRegistro"/>&nbsp;(*) 
+													<html:text name="datosGeneralesForm" property="prefijoNumRegSJ" styleId="prefijoNumRegSJ" size="5" maxlength="10" styleClass="<%=estiloCaja%>" style="width:55px" readonly="<%=breadonly%>" ></html:text>
+													<html:text name="datosGeneralesForm" property="contadorNumRegSJ" styleId="contadorNumRegSJ" size="5" maxlength="8" style="width:58px" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text>
+													<html:text name="datosGeneralesForm" property="sufijoNumRegSJ" styleId="sufijoNumRegSJ" style="width:58px" size="5" maxlength="10" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text>
+												</span>
 											</span>
-
 						     			</td>
 										</span>
 									</tr>
@@ -959,29 +937,18 @@ caracterParam[0] = tipoCliente;
 											<siga:Idioma key="censo.consultaDatosGenerales.literal.denominacion"/>&nbsp;(*)
 										</td>
 										<td style="width:240px">
-											<html:text name="datosGeneralesForm" property="denominacion" size="40" maxlength="100" styleClass="<%=estiloCajaNombreApellidos %>" readonly="<%=breadonlyNombreApellidos %>" ></html:text>
+											<html:text name="datosGeneralesForm" property="denominacion" styleId="denominacion" size="40" maxlength="100" styleClass="<%=estiloCajaNombreApellidos %>" readonly="<%=breadonlyNombreApellidos %>" ></html:text>
 										</td>
 										<td class="labelText">
 											<!-- Abreviatura -->
 											<siga:Idioma key="censo.fichaCliente.literal.abreviatura"/>&nbsp;
 										</td>
 										<td  class="labelText">
-											<html:text name="datosGeneralesForm" property="abreviatura" size="15" maxlength="100" styleClass="<%=estiloCajaNombreApellidos %>" readonly="<%=breadonlyNombreApellidos %>" ></html:text>
+											<html:text name="datosGeneralesForm" property="abreviatura" styleId="abreviatura" size="15" maxlength="100" styleClass="<%=estiloCajaNombreApellidos %>" readonly="<%=breadonlyNombreApellidos %>" ></html:text>
 										</td>
 									</tr>
 									<tr>
-										<!-- FECHA CONSTITUCION 
-										<td class="labelText">
-											
-											<siga:Idioma key="censo.general.literal.FechaConstitucion"/>&nbsp;(*)
-										</td>
-										<td class="labelText">
-											<html:text name="datosGeneralesForm" property="fechaConstitucion" size="10" styleClass="<%=estiloCaja %>" readonly="true"></html:text>&nbsp;
-											<% if (!breadonly) { %>
-											<a href='javascript://'onClick="return showCalendarGeneral(fechaConstitucion);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
-											<% } %>
-										</td>
-										-->
+
 									</tr>
 								</table>
 							</siga:ConjCampos>
@@ -1020,17 +987,17 @@ caracterParam[0] = tipoCliente;
 														<siga:Idioma key="censo.consultaDatosGenerales.literal.guiaJudicial"/>
 														&nbsp;
 														<% if (guiaJudicial.equals(ClsConstants.DB_TRUE)) { %>
-															<input type="checkbox" name="guiaJudicial" value="<%=ClsConstants.DB_TRUE %>"  <%=checkreadonly %> checked />
+															<input type="checkbox" name="guiaJudicial" id="guiaJudicial" value="<%=ClsConstants.DB_TRUE %>"  <%=checkreadonly %> checked />
 														<% } else { %>
-															<input type="checkbox" name="guiaJudicial"  value="<%=ClsConstants.DB_TRUE %>"  <%=checkreadonly %> />
+															<input type="checkbox" name="guiaJudicial" id="guiaJudicial" value="<%=ClsConstants.DB_TRUE %>"  <%=checkreadonly %> />
 														<% } %>
 														&nbsp;
 														<!-- PUBLICIDAD -->
 														<siga:Idioma key="censo.consultaDatosGenerales.literal.publicidad"/>
 														<% if (publicidad.equals(ClsConstants.DB_TRUE)) { %>
-															<input type="checkbox" name="publicidad"  value="<%=ClsConstants.DB_TRUE %>"  <%=checkreadonly %> checked />
+															<input type="checkbox" name="publicidad" id="publicidad" value="<%=ClsConstants.DB_TRUE %>"  <%=checkreadonly %> checked />
 														<% } else { %>
-															<input type="checkbox" name="publicidad" value="<%=ClsConstants.DB_TRUE %>"  <%=checkreadonly %> />
+															<input type="checkbox" name="publicidad" id="publicidad" value="<%=ClsConstants.DB_TRUE %>"  <%=checkreadonly %> />
 														<% } %>
 														&nbsp;
 									
@@ -1038,9 +1005,9 @@ caracterParam[0] = tipoCliente;
 														<siga:Idioma key="censo.consultaDatosGenerales.literal.comisiones"/>
 														&nbsp;
 														<% if (comisiones.equals(ClsConstants.DB_TRUE)) { %>
-															<input type="checkbox" name="comisiones"  value="<%=ClsConstants.DB_TRUE %>"  <%=checkreadonly %> checked />
+															<input type="checkbox" name="comisiones" id="comisiones" value="<%=ClsConstants.DB_TRUE %>"  <%=checkreadonly %> checked />
 														<% } else { %>
-															<input type="checkbox" name="comisiones" value="<%=ClsConstants.DB_TRUE %>"  <%=checkreadonly %> />
+															<input type="checkbox" name="comisiones" id="comisiones" value="<%=ClsConstants.DB_TRUE %>"  <%=checkreadonly %> />
 														<% } %>
 													</td>
 												</tr>
@@ -1051,9 +1018,9 @@ caracterParam[0] = tipoCliente;
 													</td>
 													<td style="width:320px">
 														<% if (!user.isLetrado()) { %>
-																<html:text name="datosGeneralesForm" property="cuentaContable" size="10" styleClass="<%=estiloCaja %>" readonly="<%=breadonly %>" value="<%=cuentaContable %>"></html:text>
+																<html:text name="datosGeneralesForm" property="cuentaContable" styleId="cuentaContable" size="10" styleClass="<%=estiloCaja %>" readonly="<%=breadonly %>" value="<%=cuentaContable %>"></html:text>
 														<% } else { %>
-																<html:hidden name="datosGeneralesForm" property="cuentaContable" value="<%=cuentaContable %>"></html:hidden>
+																<html:hidden name="datosGeneralesForm" property="cuentaContable" styleId="cuentaContable" value="<%=cuentaContable %>"></html:hidden>
 														<% }  %>
 													</td>
 												</tr>
@@ -1062,7 +1029,7 @@ caracterParam[0] = tipoCliente;
 														<siga:Idioma key="censo.general.literal.anotaciones"/>
 													</td>
 													<td style="width:320px">
-														<html:textarea name="datosGeneralesForm" property="anotaciones"  onKeyDown="cuenta(this,2000)" onChange="cuenta(this,2000)" rows="2" style="width:300px" styleClass="<%=estiloCaja %>" readonly="<%=breadonly %>" />
+														<html:textarea name="datosGeneralesForm" property="anotaciones" styleId="anotaciones" onKeyDown="cuenta(this,2000)" onChange="cuenta(this,2000)" rows="2" style="width:300px" styleClass="<%=estiloCaja %>" readonly="<%=breadonly %>" />
 													</td>
 												</tr>
 											</table>
@@ -1088,8 +1055,8 @@ caracterParam[0] = tipoCliente;
 				</table><!-- Tabla columna principal -->	
 			</td>
 		</tr>
-		<input type="hidden" name="prefijoOld" value="">
-   		<input type="hidden" name="sufijoOld" value="">
+		<input type="hidden" name="prefijoOld" id="prefijoOld" value="">
+   		<input type="hidden" name="sufijoOld" id="sufijoOld" value="">
    		<input type="hidden" name="tipoBloqueado" value="">
    		   		
 		</html:form>
@@ -1105,7 +1072,7 @@ caracterParam[0] = tipoCliente;
 
 	<siga:ConjBotonesAccion botones="<%=botonesAccion%>"  modo="<%=modo%>"  clase="botonesDetalle" />
 
-	<html:form action="/CEN_GruposFijosClientes.do" method="POST" target="resultado">
+	<html:form action="/CEN_GruposFijosClientes.do" method="POST" target="resultado" >
 		<html:hidden name="GruposClienteClienteForm" property="modo" value="buscar"/>
 		<html:hidden name="GruposClienteClienteForm" property="idPersona" />
 		<html:hidden name="GruposClienteClienteForm" property="idInstitucion" />
@@ -1116,7 +1083,7 @@ caracterParam[0] = tipoCliente;
 	
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
-	<script language="JavaScript">
+	<script type="text/javascript">
 
 		//Método que valida el CIF de una nueva sociedad
 		function validarCIF(cif)
@@ -1139,8 +1106,7 @@ caracterParam[0] = tipoCliente;
            ultima = cif.substr(8,1); 
            
 			
-           for (var cont = 1 ; cont < 7 ; cont ++)
-           { 
+           for (var cont = 1 ; cont < 7 ; cont ++) { 
         	   cadenaCif = (2 * parseInt(cif.substr(cont++,1))).toString() + "0"; 
                impares += parseInt(cadenaCif.substr(0,1)) + parseInt(cadenaCif.substr(1,1)); 
                pares += parseInt(cif.substr(cont,1)); 
@@ -1178,20 +1144,17 @@ caracterParam[0] = tipoCliente;
 			
 
 		<!-- Asociada al boton SolicitarModificacion -->
-		function accionSolicitarModificacion() 
-		{		
+		function accionSolicitarModificacion() {		
 			document.forms[0].modo.value="abrirSolicitud";
 			ventaModalGeneral(document.forms[0].name,'P');
 		}
 
 		<!-- Asociada al boton Restablecer -->
-		function accionRestablecer() 
-		{		
+		function accionRestablecer() {		
 			document.forms[0].reset();	
 		}
 		
-		function validarFormulario() 
-		{			
+		function validarFormulario() {			
 			//Valido el formulario:
 			if (validateDatosGeneralesNoColegiadoForm(document.forms[0])) {
 						   			
@@ -1240,15 +1203,7 @@ caracterParam[0] = tipoCliente;
 									alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');									
 									return false;
 								}
-								//if(tipo == 'Y') 
-								//	tipo='J';
-								
-								//if((tipo == 'Y' || tipo == 'y')&& (numIdentificacion.toUpperCase()!='Y'))
-								//{										
-									//alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');
-									//return false;
-								//}
-								
+							
 								<% if (tipoDisabled.equals("false")) { %>
 								if((numIdentificacion.toUpperCase() != tipo))
 								{
@@ -1297,7 +1252,7 @@ caracterParam[0] = tipoCliente;
 									}									
 									document.forms[0].tipoOriginal.value=document.forms[0].numIdentificacion.value.charAt(0).toUpperCase();									  									
 									return true;
-								} //Fin validar el CIF
+								}
 						}
 					} 
 					else // Si el tipoIdentificacion es OTROS
@@ -1311,23 +1266,7 @@ caracterParam[0] = tipoCliente;
 								return true;
 							}
 																	
-							//var numIdentificacion = document.forms[0].numIdentificacion.value.charAt(0);
-							//Esta validacion comprueba que el identificador pertenece al Tipo Identificador en este caso de Otros
-							//if(numIdentificacion.toUpperCase() =='A' || numIdentificacion.toUpperCase() =='B' 
-								//|| numIdentificacion.toUpperCase() =='F' || numIdentificacion.toUpperCase() =='G'
-									//|| numIdentificacion.toUpperCase() =='J')
-							//{																
-								//alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');								
-								//return false;
-							//}
 
-							//var numIdentificacion = document.forms[0].numIdentificacion.value.charAt(0);
-							//var tipo = document.forms[0].tipos.value;
-							//if((numIdentificacion.toUpperCase() != tipo))
-							//{																		
-								//alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');
-								//return false;
-							//}
 							
 							if (document.forms[0].tipoIdentificacion.value != "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>") 
 							{
@@ -1343,113 +1282,94 @@ caracterParam[0] = tipoCliente;
 					}
 				<% } // if VER  %>				  
 				return true;
-			} else
-					return false;
+			} else {
+				return false;
+			}
 		}
 		
 		<!-- Asociada al boton Guardar -->
-		function accionGuardar() 
-		{		
-			//Valido el formulario:
-			
+		function accionGuardar() {		
+			//Valido el formulario:			
 			sub();
-			if (document.datosGeneralesForm.longitudSP.value < document.datosGeneralesForm.contadorNumRegSP.value.length){
+			if (document.getElementById("longitudSP").value < document.getElementById("contadorNumRegSP").value.length){
 			  alert('<siga:Idioma key="messages.contador.error.longitudSuperada"/>');
 			  fin();
 			  return false;
-			}
+			}			
 			
-			
-			if (document.datosGeneralesForm.contadorNumRegSP.value=="" && document.datosGeneralesForm.sociedadSP.checked){
+			if (document.getElementById("contadorNumRegSP").value=="" && document.getElementById("sociedadSP").checked){
 				var mensaje='<siga:Idioma key="messages.contador.error.contadorObligatorio"/>';
 				 alert (mensaje);
 				 fin();
 				 return false;
-			}
+			}			
 			
-			
-			if (document.datosGeneralesForm.contadorNumRegSJ.value=="" && document.datosGeneralesForm.sociedadSJ.checked){
+			if (document.getElementById("contadorNumRegSJ").value=="" && document.getElementById("sociedadSJ").checked){
 				var mensaje='<siga:Idioma key="messages.contador.error.contadorObligatorio"/>';
 				 alert (mensaje);
 				 fin();
 				 return false;
-			}
-		
+			}		
 			
 			if (validarFormulario()) {
-			<%	
-			  if (!modo.equalsIgnoreCase("NUEVASOCIEDAD")) { %>
-			
-			
+			<% if (!modo.equalsIgnoreCase("NUEVASOCIEDAD")) { %>		
 					<% if (!bOcultarHistorico) { %>
-							var datos = showModalDialog("<%=app%>/html/jsp/general/ventanaMotivoHistorico.jsp","","dialogHeight:230px;dialogWidth:520px;help:no;scroll:no;status:no;");
+						var datos = showModalDialog("<%=app%>/html/jsp/general/ventanaMotivoHistorico.jsp","","dialogHeight:230px;dialogWidth:520px;help:no;scroll:no;status:no;");
+						window.top.focus();
 					<% } else { %>
 							var datos = new Array();
 							datos[0] = 1;
 							datos[1] = "";
-					<% } %>
-					
+					<% } %>					
 					if (datos[0] == 1) { // Boton Guardar
-					  // document.forms[0].tipoIdentificacion.value=< %=tipoIdentificacionSel%>;
-					
+					    // document.forms[0].tipoIdentificacion.value=< %=tipoIdentificacionSel%>;					
 						document.forms[0].motivo.value = datos[1];
 						document.forms[0].target="submitArea2";
 						document.forms[0].modo.value="modificarSociedad";
 						//document.forms[0].tipo.value = document.forms[0].tipos.value;
-						if (datosGeneralesForm.sociedadSP.checked){
-						datosGeneralesForm.prefijoNumRegSP.disabled=false;
-	 					datosGeneralesForm.sufijoNumRegSP.disabled=false;
-          			    datosGeneralesForm.contadorNumRegSP.disabled=false;
-	                    datosGeneralesForm.sociedadSP.disabled=false;
+						if (document.getElementById("sociedadSP").checked) {
+							document.getElementById("prefijoNumRegSP").disabled=false;
+		 					document.getElementById("sufijoNumRegSP").disabled=false;
+	          			    document.getElementById("contadorNumRegSP").disabled=false;
+		                    document.getElementById("sociedadSP").disabled=false;
 						}
-						if (datosGeneralesForm.sociedadSJ.checked){
-	                    datosGeneralesForm.prefijoNumRegSJ.disabled=false;
-	 					datosGeneralesForm.sufijoNumRegSJ.disabled=false;
-          			    datosGeneralesForm.contadorNumRegSJ.disabled=false;
-	                    datosGeneralesForm.sociedadSJ.disabled=false;
-						}
-						
+						if (document.getElementById("sociedadSJ").checked) {
+		                    document.getElementById("prefijoNumRegSJ").disabled=false;
+		 					document.getElementById("sufijoNumRegSJ").disabled=false;
+	          			    document.getElementById("contadorNumRegSJ").disabled=false;
+		                    document.getElementById("sociedadSJ").disabled=false;
+						}						
 						document.forms[0].submit();	
-					}else{
+					} else {
 						fin();
 					 	return false;
-					}
-				
-			<%	} else { %>
-			
-			   if (datosGeneralesForm.sociedadSP){
-				    if (document.datosGeneralesForm.modoSociedadSP.value==0){// cuando estamos en modo registro antes de enviar los datos los inicializamos a blanco porque 
-																		   // si no se produce un error de inserccion.
-					  
-					    datosGeneralesForm.prefijoNumRegSP.disabled=false;
-					    datosGeneralesForm.sufijoNumRegSP.disabled=false;
-					 	datosGeneralesForm.contadorNumRegSP.disabled=false;
-						
-					 	
-					 }
-				} 
-				 if (datosGeneralesForm.sociedadSJ){
-					  if (document.datosGeneralesForm.modoSociedadSJ.value==0){// cuando estamos en modo registro antes de enviar los datos los inicializamos a blanco porque 
-																		   // si no se produce un error de inserccion.
-					  
-					    datosGeneralesForm.prefijoNumRegSJ.disabled=false;
-					    datosGeneralesForm.sufijoNumRegSJ.disabled=false;
-					 	datosGeneralesForm.contadorNumRegSJ.disabled=false;
-						
-					 	
-					  }		
-				 }
-					
+					}				
+			<%	} else { %>			
+					if (document.getElementById("sociedadSP")){
+					    if (document.datosGeneralesForm.modoSociedadSP.value==0){// cuando estamos en modo registro antes de enviar los datos los inicializamos a blanco porque 
+																			   // si no se produce un error de inserccion.					  
+						    document.getElementById("prefijoNumRegSP").disabled=false;
+						    document.getElementById("sufijoNumRegSP").disabled=false;
+						 	document.getElementById("contadorNumRegSP").disabled=false;				 	
+						 }
+					} 
+					if (document.getElementById("sociedadSJ")){
+					  	if (document.getElementById("modoSociedadSJ").value==0){// cuando estamos en modo registro antes de enviar los datos los inicializamos a blanco porque 
+																		   // si no se produce un error de inserccion.					  
+						    document.getElementById("prefijoNumRegSJ").disabled=false;
+						    document.getElementById("sufijoNumRegSJ").disabled=false;
+						 	document.getElementById("contadorNumRegSJ").disabled=false;				 	
+					  	}		
+				 	}					
 					document.forms[0].target="submitArea2";
 					document.forms[0].modo.value="insertarSociedad";
 					document.forms[0].submit();	
 			<%	}  %>
-			}else{
+			} else {
 				fin();
 				return false;
 			}  // Fin de validar el formulario
-		}
-		
+		}		
 	</script>
 
 

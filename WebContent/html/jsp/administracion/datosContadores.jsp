@@ -29,12 +29,7 @@
 	  estiloCombo="boxCombo";
 	  soloLectura="false";
 	  
-	}
-	
-
-	
-	
-	
+	}	
 	AdmContadorBean bean = (AdmContadorBean)datos.elementAt(0);
 
 	String modificable=(bean.getModificableContador()!=null && bean.getModificableContador().equals("1"))?"Si":"No";
@@ -46,12 +41,15 @@
 
 <html>
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+			
+		
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 		<!-- Validaciones en Cliente -->
 	   <html:javascript formName="gestionContadoresForm" staticJavascript="false" />  
 		
 		<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 
 		<!-- INICIO: SCRIPTS BOTONES -->
@@ -59,7 +57,7 @@
             function refrescarLocal() {
 			  
 				parent.refrescarLocal();
-				window.close();
+				window.top.close();
 			}
 			<!-- Asociada al boton Restablecer -->
 			function accionRestablecer() 
@@ -106,32 +104,27 @@
 				}
 				gestionContadoresForm.submit();
 				
-			}	
-				
-				
-			
+			}		
 			
 			<!-- Asociada al boton Cerrar -->
-			function accionCerrar() 
-			{		
-				window.close();
+			function accionCerrar() {		
+				window.top.close();
 			}
+			
 			function showCalendarGeneral(inputElement){
-                 var cont=document.getElementById("contadorSiguiente");
+                var cont=document.getElementById("contadorSiguiente");
 				
              	var resultado = showModalDialog("<%=app%>/html/jsp/general/calendarGeneral.jsp?valor="+inputElement.value,inputElement,"dialogHeight:295px;dialogWidth:360px;help:no;scroll:no;status:no;");	
-            	if (resultado) {
+             	window.top.focus();
+             	if (resultado) {
             		inputElement.value = resultado;
         	    } 
 				if (inputElement.value==""){
-				   gestionContadoresForm.reconfiguracionContador.value="0";
-				   gestionContadoresForm.reconfiguracionPrefijo.value="";
-				   gestionContadoresForm.reconfiguracionSufijo.value="";		
-				  
-				  	  				  
-				  cont.style.display="none";
-				}else{
-				
+					gestionContadoresForm.reconfiguracionContador.value="0";
+				   	gestionContadoresForm.reconfiguracionPrefijo.value="";
+				   	gestionContadoresForm.reconfiguracionSufijo.value="";				  	  				  
+				  	cont.style.display="none";
+				} else {				
 				  <% if (bean.getReconfiguracionContador()!=null && !bean.getReconfiguracionContador().equals("")){%>
 				   gestionContadoresForm.reconfiguracionContador.value="<%=bean.getReconfiguracionContador()%>";
 				  

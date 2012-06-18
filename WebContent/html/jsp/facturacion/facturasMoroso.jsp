@@ -82,7 +82,7 @@
 			<!-- Asociada al boton Cerrar -->
 			function accionCerrar() 
 			{		
-				window.close();
+				window.top.close();
 			}
 			function MM_swapImgRestore(){
 				//meto esto para machacar el error de metod de Siga.js

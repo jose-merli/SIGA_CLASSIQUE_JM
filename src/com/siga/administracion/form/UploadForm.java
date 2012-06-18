@@ -18,7 +18,7 @@ import org.apache.struts.upload.MultipartRequestHandler;
  * that struts uses is org.apache.struts.upload.CommonsMultipartRequestHandler.
  *
  * @author Mike Schachter
- * @version $Revision: 1.1 $ $Date: 2009-09-23 15:29:57 $
+ * @version $Revision: 1.2 $ $Date: 2012-06-18 09:36:04 $
  */
 
 public class UploadForm extends ActionForm

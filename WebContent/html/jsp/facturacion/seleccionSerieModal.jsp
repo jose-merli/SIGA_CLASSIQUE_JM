@@ -47,7 +47,7 @@
 		
 
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	
 	</head>
@@ -128,8 +128,8 @@
 					alert('<siga:Idioma key="messages.facturacion.seleccionSerie.noSeleccion"/>');
 					return false;
 				}
-				window.returnValue=dato;
-				window.close();
+				window.top.returnValue=dato;
+				window.top.close();
 			}
 	
 			

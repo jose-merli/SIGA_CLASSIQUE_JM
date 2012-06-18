@@ -28,7 +28,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	<!-- Calendario -->
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
@@ -45,8 +45,8 @@
 			}else{
 			
 				//Mando a la ventana padre la fecha de Cargo y cierro la modal:
-				window.returnValue = document.all.confirmarFacturacionForm.fechaCargo.value;
-				window.close();
+				window.top.returnValue = document.all.confirmarFacturacionForm.fechaCargo.value;
+				window.top.close();
 				}
 			}		
 	</script>	

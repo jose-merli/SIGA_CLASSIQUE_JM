@@ -214,7 +214,8 @@
 	</script>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 		<!-- Calendario -->
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
@@ -255,15 +256,16 @@
 			<!-- Formulario de la lista de detalle multiregistro -->
 			<html:form action="/CEN_AnticiposCliente.do" method="POST" target="_self">
 			<!-- Campo obligatorio -->
-			<html:hidden property = "modo" value = "" />
-			<html:hidden property = "accion" value = "<%=modo%>" />
-			<html:hidden name="AnticiposClienteForm" property = "idPersona" value = "<%=idPersona %>" />
-			<html:hidden name="AnticiposClienteForm" property = "idInstitucion" value = "<%=idInstitucion %>" />
+			<html:hidden styleId="modo" property = "modo" value = "" />
+			<html:hidden styleId="accion" property = "accion" value = "<%=modo%>" />
+			<html:hidden styleId="idPersona" name="AnticiposClienteForm" property = "idPersona" value = "<%=idPersona %>" />
+			<html:hidden styleId="idInstitucion" name="AnticiposClienteForm" property = "idInstitucion" value = "<%=idInstitucion %>" />
 
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
-			<input type="hidden" name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>">
+			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
+			<input type="hidden" id="actionModal" name="actionModal" value="">
+			<input type="hidden" id="incluirRegistrosConBajaLogica" name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>">
+			<input type="hidden" id="filaSelD" name="filaSelD">
 			</html:form>
 
 
@@ -376,9 +378,9 @@
 				<td>
 
 					<!-- campos hidden -->
-					<input type="hidden" name="oculto<%=cont %>_1" value="<%=idInstitucion  %>"/>
-					<input type="hidden" name="oculto<%=cont %>_2" value="<%=UtilidadesHash.getString(anticipo, PysAnticipoLetradoBean.C_IDPERSONA)  %>"/>
-					<input type="hidden" name="oculto<%=cont %>_3" value="<%=UtilidadesHash.getString(anticipo, PysAnticipoLetradoBean.C_IDANTICIPO)  %>"/>
+					<input type="hidden" id="oculto<%=cont %>_1" name="oculto<%=cont %>_1" value="<%=idInstitucion  %>"/>
+					<input type="hidden" id="oculto<%=cont %>_2" name="oculto<%=cont %>_2" value="<%=UtilidadesHash.getString(anticipo, PysAnticipoLetradoBean.C_IDPERSONA)  %>"/>
+					<input type="hidden" id="oculto<%=cont %>_3" name="oculto<%=cont %>_3" value="<%=UtilidadesHash.getString(anticipo, PysAnticipoLetradoBean.C_IDANTICIPO)  %>"/>
 
 					<%=fecha %>
 				</td>
@@ -442,9 +444,9 @@
 						<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal"/>
 						
 						<% if (bIncluirBajaLogica) { %>
-							<input type="checkbox" name="bajaLogica" onclick="incluirRegBajaLogica(this);" checked>
+							<input type="checkbox" id="bajaLogica" name="bajaLogica" onclick="incluirRegBajaLogica(this);" checked>
 						<% } else { %>
-							<input type="checkbox" name="bajaLogica" onclick="incluirRegBajaLogica(this);">
+							<input type="checkbox" id="bajaLogica"  name="bajaLogica" onclick="incluirRegBajaLogica(this);">
 						<% } %>
 					</td>
 				</tr>

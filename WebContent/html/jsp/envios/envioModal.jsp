@@ -88,6 +88,8 @@
 
 	String obligatorio = UtilidadesString.getMensajeIdioma(user,
 			"messages.campoObligatorio.error");
+	  
+
 %>	
 <%@page import="java.util.Properties"%>
 <%@page import="java.util.Vector"%>
@@ -99,7 +101,9 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	
+		
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	
 		<!-- Validaciones en Cliente -->
 	<html:javascript formName="DefinirEnviosForm" staticJavascript="false" />  
@@ -218,14 +222,13 @@
 				</c:otherwise>
 			</c:choose>
 							<tr>
-								<td class="labelText" colspan="2"><siga:Idioma
+								<td class="labelText" colspan="2">
+								<siga:Idioma
 										key="envios.definir.literal.fechaprogramada" />
-									&nbsp;&nbsp;&nbsp;&nbsp; <html:text name="DefinirEnviosForm"
-										property="fechaProgramada" size="10" maxlength="10"
-										styleClass="box" readonly="true" /> <a href='javascript://'
-									onClick="return showCalendarGeneral(fechaProgramada);"><img
-										src="<%=app%>/html/imagenes/calendar.gif" border="0">
-								</a></td>
+									&nbsp;&nbsp;&nbsp;&nbsp;
+								<% String hoy = UtilidadesBDAdm.getFechaBD(""); %>	
+								<siga:Fecha nombreCampo="fechaProgramada" posicionX="10" posicionY="10" valorInicial="<%= hoy %>"></siga:Fecha>
+								</td>
 								<td class="labelText"><siga:Idioma
 										key="envios.definir.literal.editarenvio" /></td>
 										<td>
@@ -324,13 +327,13 @@
 		<!-- Asociada al boton Cerrar -->
 		function accionCerrar() 
 		{			
-			window.close();
+			window.top.close();
 		}
 		
 		function noExisteDatos(mensaje) 
 		{			
  			alert('<siga:Idioma key="messages.general.error.noExistenDatos"/>');
-			window.close();
+			window.top.close();
 		}
 		
 		function recargarCombos() 

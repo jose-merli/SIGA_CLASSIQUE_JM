@@ -1,3 +1,4 @@
+<!--  resultadosBusquedaClientesFiltros.jsp -->
 <!-- EJEMPLO DE VENTANA LISTA DE CABECERAS FIJAS -->
 <!-- Contiene el contenido del frame de una pantalla de detalle multiregistro
 	 Utilizando tags pinta una lista con cabeceras fijas 
@@ -84,8 +85,11 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<html:javascript formName="/JGR_BusquedaClientesFiltros.do" staticJavascript="false" />  
@@ -98,28 +102,27 @@
   <script language="JavaScript">
 	
 	function seleccionar(fila) {
-		var persona=document.getElementById('oculto' + fila + '_1').value;
-		var colegiado=document.getElementById('oculto' + fila + '_2').value;
-		var nombre=document.getElementById('oculto' + fila + '_3').value;
-		var apellido1=document.getElementById('oculto' + fila + '_4').value;
-		var apellido2=document.getElementById('oculto' + fila + '_5').value;
-		var salto=document.getElementById('oculto' + fila + '_6').value;
-		var compensacion=document.getElementById('oculto' + fila + '_7').value;
-		var turnoLetrado=document.getElementById('oculto' + fila + '_8').value;
-		var guardiaLetrado=document.getElementById('oculto' + fila + '_9').value;
-		var sustitucion=document.getElementById('oculto' + fila + '_10').value;
+		var persona = document.getElementById('oculto' + fila + '_1').value;
+		var colegiado = document.getElementById('oculto' + fila + '_2').value;
+		var nombre = document.getElementById('oculto' + fila + '_3').value;
+		var apellido1 = document.getElementById('oculto' + fila + '_4').value;
+		var apellido2 = document.getElementById('oculto' + fila + '_5').value;
+		var salto = document.getElementById('oculto' + fila + '_6').value;
+		var compensacion = document.getElementById('oculto' + fila + '_7').value;
+		var turnoLetrado = document.getElementById('oculto' + fila + '_8').value;
+		var guardiaLetrado = document.getElementById('oculto' + fila + '_9').value;
+		var sustitucion = document.getElementById('oculto' + fila + '_10').value;
 		//alert("<->"+sustitucion+"<-->");
-		var vForm=document.forms[1];
-		vForm.idPersona.value=persona;
-		vForm.sustituta.value=sustitucion;
-		//alert("<->"+vForm.name+"<-->");
-		var res = ventaModalGeneral(vForm.name,"P");
-		
+		var vForm = document.forms[1];
+		document.getElementById("idPersona").value = persona;
+		document.getElementById("sustituta").value = sustitucion;
+		//alert("<->"+vForm.name+"<->");
+		var res = ventaModalGeneral(vForm.name,"P");		
 		if(res=="MODIFICADO"){
 			aa = new Array(persona,colegiado,nombre, apellido1, apellido2,salto,compensacion,turnoLetrado,guardiaLetrado,sustitucion);
-			window.returnValue= aa;
+			window.top.returnValue = aa;
 			alert("<siga:Idioma key="gratuita.busquedaSJCS.literal.seleccionadoA"/> "+nombre+" "+apellido1+" "+apellido2);
-			window.close();
+			window.top.close();
 		}
 	}
 	
@@ -135,19 +138,19 @@
 
 		<!-- Formulario de la lista de detalle multiregistro -->
 		<html:form action="/JGR_BusquedaClientesFiltros.do" method="POST" target="submitArea"  style="display:none">
-
-		<!-- Campo obligatorio -->
-		<html:hidden property = "modo" value = "" />
+			<!-- Campo obligatorio -->
+			<html:hidden property = "modo" value = "" />
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<input type="hidden" id="filaSelD" name="filaSelD" />
+			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD" />
+			<input type="hidden" name="actionModal" value="" />
 		</html:form>	
 		
-		<form name="aux" action="<%=app%>/JGR_BusquedaClientesFiltros.do" method="post" style="display:none">
+		<form name="aux" id="aux" action="<%=app%>/JGR_BusquedaClientesFiltros.do" method="post" style="display:none">
 			<input type="hidden" name="actionModal" value="BusquedaClientesFiltrosForm"/>
-			<input type="hidden" name="idInstitucion" value="<%=idInstitucion%>"/>
-			<input type="hidden" name="idPersona" value=""/>
-			<input type="hidden" name="sustituta" value=""/>
+			<input type="hidden" name="idInstitucion" id="idInstitucion" value="<%=idInstitucion%>"/>
+			<input type="hidden" name="idPersona" id="idPersona" value=""/>
+			<input type="hidden" name="sustituta" id="sustituta" value=""/>
 			<input type="hidden" name="modo" value="editar"/>
 		</form>
 		
@@ -233,23 +236,22 @@
 			
 				<td class='tableTitlePrimero'>
 					<!-- campos hidden -->
-					<input type="hidden" name="oculto<%=cont %>_1" value="<%=idPersona %>">
-					<input type="hidden" name="oculto<%=cont %>_2" value="<%=ncolegiado %>">
-					<input type="hidden" name="oculto<%=cont %>_3" value="<%=nombre %>">
-					<input type="hidden" name="oculto<%=cont %>_4" value="<%=apellido1 %>">
-					<input type="hidden" name="oculto<%=cont %>_5" value="<%=apellido2 %>">
+					<input type="hidden" id="oculto<%=cont %>_1" name="oculto<%=cont %>_1" value="<%=idPersona %>">
+					<input type="hidden" id="oculto<%=cont %>_2" name="oculto<%=cont %>_2" value="<%=ncolegiado %>">
+					<input type="hidden" id="oculto<%=cont %>_3" name="oculto<%=cont %>_3" value="<%=nombre %>">
+					<input type="hidden" id="oculto<%=cont %>_4" name="oculto<%=cont %>_4" value="<%=apellido1 %>">
+					<input type="hidden" id="oculto<%=cont %>_5" name="oculto<%=cont %>_5" value="<%=apellido2 %>">
 	
 					<%if(i==0 &&sConcepto.equals("DESIGNACION")){%>
-						<input type="hidden" name="oculto<%=cont %>_6" value="0">
+						<input type="hidden" id="oculto<%=cont %>_6" name="oculto<%=cont %>_6" value="0">
 					<%}else{%>
-						<input type="hidden" name="oculto<%=cont %>_6" value="<%=salto%>">
+						<input type="hidden" id="oculto<%=cont %>_6" name="oculto<%=cont %>_6" value="<%=salto%>">
 					<%}%>
 
-					<input type="hidden" name="oculto<%=cont %>_7" value="<%=compensacion%>">
-					
-					<input type="hidden" name="oculto<%=cont %>_8" value="<%=idTurnoLetrado %>">
-					<input type="hidden" name="oculto<%=cont %>_9" value="<%=idGuardiaLetrado %>">
-					<input type="hidden" name="oculto<%=cont %>_10" value="<%=sustitucion%>">					
+					<input type="hidden" id="oculto<%=cont %>_7" name="oculto<%=cont %>_7" value="<%=compensacion%>">					
+					<input type="hidden" id="oculto<%=cont %>_8" name="oculto<%=cont %>_8" value="<%=idTurnoLetrado %>">
+					<input type="hidden" id="oculto<%=cont %>_9" name="oculto<%=cont %>_9" value="<%=idGuardiaLetrado %>">
+					<input type="hidden" id="oculto<%=cont %>_10" name="oculto<%=cont %>_10" value="<%=sustitucion%>">					
 					<%=contador+i+1%>
 				</td>
 				<td>

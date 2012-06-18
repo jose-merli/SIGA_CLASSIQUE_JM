@@ -46,8 +46,11 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -57,8 +60,7 @@
 	<!-- FIN: TITULO Y LOCALIZACION -->
 	
 	<script>
-		function buscarContrarios()
-		{
+		function buscarContrarios() {
 <%			if (esFichaColegial) {%>
 				document.forms[0].action = "/SIGA/JGR_ContrariosAsistenciaLetrado.do";
 <%			} else { %>
@@ -143,22 +145,19 @@
 			document.forms[0].action = "<%=sAction2%>";
 			document.forms[0].modo.value= "abrir";
 			document.forms[0].submit();
-		}
+		}		
 		
-		
-		function accionNuevo() 
-		{	
-			document.forms[0].modo.value="nuevo";
-			
+		function accionNuevo() {	
+			document.forms[0].modo.value="nuevo";			
 			document.forms[0].target="submitArea";
 			
-			var resultado=ventaModalGeneral(document.forms[1].name,"G");
-			if (resultado=="MODIFICADO")
+			var resultado = ventaModalGeneral(document.forms[1].name,"G");
+			if (resultado=="MODIFICADO") {
 				buscarContrarios();
+			}
 		}
 
-		function refrescarLocal()
-		{
+		function refrescarLocal() {
 			buscarContrarios();
 		}
 </script>		
@@ -174,7 +173,7 @@
 
 <%	String sAction = esFichaColegial ? "JGR_ContrariosAsistenciaPerJGLetrado.do" : "JGR_ContrariosAsistenciaPerJG.do";%>
 		<!-- Formulario de la lista de detalle multiregistro -->
-		<html:form action="<%=sAction%>" method="post" target="submitArea">
+		<html:form action="<%=sAction%>" method="post" target="submitArea" styleId="PersonaJGForm">
 			<html:hidden property = "actionModal" value = ""/>			
 			<input type="hidden" name="idInstitucionJG" value="<%=usr.getLocation() %>">
 			<input type="hidden" name="idPersonaJG" value="">

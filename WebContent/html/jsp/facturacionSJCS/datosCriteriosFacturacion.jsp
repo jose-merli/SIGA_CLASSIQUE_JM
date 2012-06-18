@@ -47,7 +47,7 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<html:javascript formName="DatosCriteriosFacturacionForm" staticJavascript="false" />
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
  	
@@ -137,7 +137,7 @@
 				else{
 					document.forms[0].modo.value="insertarCriterio";
 					document.forms[0].submit();
-					window.returnValue="MODIFICADO";			
+					window.top.returnValue="MODIFICADO";			
 				}
 			}
 		}
@@ -147,7 +147,7 @@
 
 		    document.forms[0].modo.value="insertarCriterio";
 			document.forms[0].submit();
-			window.returnValue="MODIFICADO";			
+			window.top.returnValue="MODIFICADO";			
 		}
 		
 		<!-- Asociada al boton Cerrar -->

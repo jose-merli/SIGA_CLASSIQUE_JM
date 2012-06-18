@@ -43,14 +43,17 @@
 <!-- HEAD -->
 <head>
 	<title><"definirTurnos.title"></title>
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script>
 		var tit = "<siga:Idioma key="administracion.auditoria.titulo"/>";
  		var loc = "<siga:Idioma key="administracion.auditoria.titulo"/>";
 		//se kitara el dia q seacceda desde el menu
-		//top.setTitulo(tit);
-		//top.setLocalizacion(loc);
+		//setTitulo(tit);
+		//setLocalizacion(loc);
 	</script>
 			<script language="JavaScript" type="text/javascript">
 			var user, psswd, profile, loc;
@@ -93,7 +96,7 @@
 				//if(confirm('¿Está seguro de que desea abandonar la aplicación?'))
 				if(confirm('<siga:Idioma key="general.cerrarAplicacion"/>'))
 				{
-					window.close();
+					window.top.close();
 				}
 				
 				return false;

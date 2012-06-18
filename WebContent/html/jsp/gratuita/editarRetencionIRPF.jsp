@@ -48,8 +48,11 @@
 <!-- HEAD -->
 <head>
 	<title>Modificacion Retencion IRPF</title>
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 	<script type="text/javascript">
 		function mostrarCalendario(numfila){
@@ -84,7 +87,7 @@
 	<fieldset>
 	<table  class="tablaCentralCampos"  align="center">
 	<html:form action="/JGR_PestanaRetencionesIRPF" method="post" target="_self">
-	<input type="hidden" name="modo" value="modificar">
+	<input type="hidden" name="modo" id="modo" value="modificar">
 	<tr>
 	<td>
 	 <table width="100%" border="0">
@@ -130,13 +133,11 @@
 	<!-- SCRIPTS BOTONES -->
 	<script language="JavaScript">
 
-		function accionVolver() 
-		{
+		function accionVolver() {
 		}
 
-		function accionCancelar() 
-		{		
-			window.close();
+		function accionCancelar() {		
+			window.top.close();
 		}
 		
 	</script>
@@ -154,18 +155,17 @@
 <!-- FIN: SUBMIT AREA -->
 <script>
 	<!-- Asociada al boton GuardarCerrar -->
-	function accionGuardarCerrar() 
-	{
+	function accionGuardarCerrar() {
 		sub();
-		if(document.forms[0].idRetencion.value == "")
-		{
+		if(document.getElementById("idRetencion").value == "") {
 			alert("<siga:Idioma key='gratuita.altaRetencionesIRPF.literal.alert3'/>");
 			fin();
 			return false;
 		}
-		document.forms[0].action	= "<%=app%>/JGR_PestanaRetencionesIRPF.do";
+		document.forms[0].setAttribute("action","<%=app%>/JGR_PestanaRetencionesIRPF.do");
 		document.forms[0].submit();
-		window.returnValue="MODIFICADO";			
+		window.top.returnValue="MODIFICADO";
+		window.top.close();
 	}
 </script>
 </body>

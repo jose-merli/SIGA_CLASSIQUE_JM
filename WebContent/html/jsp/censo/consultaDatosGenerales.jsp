@@ -258,10 +258,11 @@ caracterParam[0] = tipoCliente;
 	<!-- HEAD -->
 	<head>
 
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+				
 		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
-		<script src="<%=app%>/html/js/jquery.js" type="text/javascript"></script>
+
 		<!-- Calendario -->
 		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 
@@ -321,10 +322,10 @@ caracterParam[0] = tipoCliente;
 		}
 	   	
 	}	
-	$(document).ready(function(){
-		$(".box").change(function() {	
-		//$("input[type=select][name='tipoIdentificacion']").change(function(){
-			if($(this).attr("name")=="tipoIdentificacion"){
+	jQuery(document).ready(function(){
+		jQuery(".box").change(function() {	
+		//jQuery("input[type=select][name='tipoIdentificacion']").change(function(){
+			if(jQuery(this).attr("name")=="tipoIdentificacion"){
 				generaNumOtro();
 			}
 		 });	 
@@ -332,7 +333,7 @@ caracterParam[0] = tipoCliente;
 	function generarIdenHistorico()
 	{
 
-		$.ajax({ //Comunicación jQuery hacia JSP  
+		jQuery.ajax({ //Comunicación jQuery hacia JSP  
 	           type: "POST",
 	           url: "/SIGA/CEN_DatosGenerales.do?modo=getIdenHistorico",
 	           data: "idInstitucion="+'<%=institucionParam[0]%>',
@@ -342,8 +343,8 @@ caracterParam[0] = tipoCliente;
 		           		document.forms[0].numIdentificacion.value=json.numHistorico;
 	           },
 	           error: function(xml,msg){
-	        	   //alert("Error1: "+xml);//$("span#ap").text(" Error");
-	        	   alert("Error: "+msg);//$("span#ap").text(" Error");
+	        	   //alert("Error1: "+xml);//jQuery("span#ap").text(" Error");
+	        	   alert("Error: "+msg);//jQuery("span#ap").text(" Error");
 	           }
 	        }); 
 	}
@@ -581,7 +582,7 @@ caracterParam[0] = tipoCliente;
 		if (/^[T]{1}/.test(temp))
 		{
 			
-			if (a[8] == /^[T]{1}[A-Z0-9]{8}$/.test(temp))
+			if (a[8] == /^[T]{1}[A-Z0-9]{8}jQuery/.test(temp))
 			{
 				
 				return 3;
@@ -628,13 +629,13 @@ caracterParam[0] = tipoCliente;
  
 	if (temp!==''){
 		//si no tiene un formato valido devuelve error
-		if ((!/^[A-Z]{1}[0-9]{7}[A-Z0-9]{1}$/.test(temp) && !/^[T]{1}[A-Z0-9]{8}$/.test(temp)) && !/^[0-9]{8}[A-Z]{1}$/.test(temp))
+		if ((!/^[A-Z]{1}[0-9]{7}[A-Z0-9]{1}jQuery/.test(temp) && !/^[T]{1}[A-Z0-9]{8}jQuery/.test(temp)) && !/^[0-9]{8}[A-Z]{1}jQuery/.test(temp))
 		{
 			return 0;
 		}
  
 		//comprobacion de NIFs estandar
-		if (/^[0-9]{8}[A-Z]{1}$/.test(temp))
+		if (/^[0-9]{8}[A-Z]{1}jQuery/.test(temp))
 		{
 			posicion = a.substring(8,0) % 23;
 			letra = cadenadni.charAt(posicion);
@@ -701,7 +702,7 @@ caracterParam[0] = tipoCliente;
 		//T
 		if (/^[T]{1}/.test(temp))
 		{
-			if (a[8] == /^[T]{1}[A-Z0-9]{8}$/.test(temp))
+			if (a[8] == /^[T]{1}[A-Z0-9]{8}jQuery/.test(temp))
 			{
 				return 3;
 			}
@@ -1015,10 +1016,13 @@ function str_replace(search, replace, subject) {
 					<!-- FECHA ALTA -->
 					<td class="labelText" style="width:170px">
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.fechaAlta"/>
+					
+						
 					</td>				
 					<td>
 						<html:text name="datosGeneralesForm" property="fechaAlta" styleClass="boxConsulta" readonly="true" value="<%=fechaAlta %>" style="width:100px" >
 						</html:text>
+
 					</td>
 				</tr>
 				
@@ -1134,16 +1138,14 @@ function str_replace(search, replace, subject) {
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.fechaNacimiento"/>&nbsp;
 					</td>				
 					<td>
-					<% if (bConsultaPersona || !pintaCalendario) { %>
-							<html:text name="datosGeneralesForm" property="fechaNacimiento" styleClass="boxConsulta" readonly="true" style='width:80px;' value="<%=fechaNacimiento %>" >
-							</html:text>
+					<% if (breadonly || bConsultaPersona || !pintaCalendario) { %>
+					<siga:Fecha  nombreCampo= "fechaNacimiento" valorInicial="<%=fechaNacimiento %>" disabled="true"/>
+
 					<% } else { %>
-							<html:text name="datosGeneralesForm" property="fechaNacimiento" styleClass="<%=estiloCaja %>" readonly="true" style='width:80px;' value="<%=fechaNacimiento %>" >
-							</html:text>
+					<siga:Fecha  nombreCampo= "fechaNacimiento" valorInicial="<%=fechaNacimiento %>"/>
+
 					<% }  %>
-					<% if (!breadonly && !bConsultaPersona && pintaCalendario) { %>
-							<a href='javascript://'onClick="return showCalendarGeneral(fechaNacimiento);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
-					<% } %>
+					
 					</td>
 				
 					<!-- LUGAR NACIMIENTO -->
@@ -1400,7 +1402,7 @@ function str_replace(search, replace, subject) {
 	</table>
 
 	
-	<html:form action="/CEN_GruposFijosClientes.do" method="POST" target="resultado">
+	<html:form action="/CEN_GruposFijosClientes.do" method="POST" target="resultado" styleId="GruposClienteClienteForm">
 		<html:hidden name="GruposClienteClienteForm" property="modo" value="buscar"/>
 		<html:hidden name="GruposClienteClienteForm" property="idPersona" />
 		<html:hidden name="GruposClienteClienteForm" property="idInstitucion" />
@@ -1551,6 +1553,7 @@ function str_replace(search, replace, subject) {
 				<%	if (!formulario.getAccion().equals("nuevo")) { %>
 					<% if (!bOcultarHistorico) { %>
 							var datos = showModalDialog("<%=app%>/html/jsp/general/ventanaMotivoHistorico.jsp","","dialogHeight:230px;dialogWidth:520px;help:no;scroll:no;status:no;");
+							window.top.focus();
 						<% } else { %>
 								var datos = new Array();
 								datos[0] = 1;

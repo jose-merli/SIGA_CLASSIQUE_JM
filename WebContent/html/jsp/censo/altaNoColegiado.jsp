@@ -127,8 +127,11 @@
 
 <!-- HEAD -->
 <head>
-		<link id="default" rel="stylesheet" type="text/css"	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
-		<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>" />
+	
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery-1.7.1.js'/>" ></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
+		<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript" ></script>
 		<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
 		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 		
@@ -140,8 +143,8 @@
 		
 		<!--Step 3 -->
 		  <!-- defaults for Autocomplete and displaytag -->
-		  <link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />
-		  <link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
+		  <link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/ajaxtags.css'/>" />
+		  <link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/displaytag.css'/>" />
 
 
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
@@ -877,9 +880,7 @@
 							<siga:Idioma key="censo.consultaDatosGenerales.literal.fechaNacimiento"/>&nbsp;
 						</td>				
 						<td>
-							<html:text name="datosGeneralesForm" property="fechaNacimiento" styleClass="<%=estiloCaja %>" readonly="true" style='width:80px;' value="<%=fechaNacimiento %>" >
-							</html:text>
-							<a href='javascript://'onClick="return showCalendarGeneral(fechaNacimiento);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+							<siga:Fecha  nombreCampo= "fechaNacimiento" valorInicial="<%=fechaNacimiento %>"/>
 						</td>
 					
 						<!-- LUGAR NACIMIENTO -->
@@ -1391,7 +1392,7 @@ var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
 						document.busquedaCensoModalForm.idPersona.value    =document.datosGeneralesForm.idPersona.value;					
 						document.busquedaCensoModalForm.modo.value = "insertarNoColegiado";
 						document.busquedaCensoModalForm.submit();
-						window.returnValue="MODIFICADO";
+						window.top.returnValue="MODIFICADO";
 					}else{
 						document.datosGeneralesForm.preferente.value = preferencia;
 						document.datosGeneralesForm.idTipoDireccion.value = tipoDir;

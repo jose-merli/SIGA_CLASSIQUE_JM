@@ -30,29 +30,29 @@
 
 <html>
 <head>
-<link id="default" rel="stylesheet" type="text/css"
-	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>	
+	
+	
+	
 	<!-- Para el calendario -->
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 
-<script src="<html:rewrite page="/html/js/SIGA.js"/>"
-	type="text/javascript"></script>
-
-<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
-<script language="JavaScript">
+	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
+	<script type="text/javascript">
 
 		<!-- Funcion asociada a boton Finalizar -->
-		function accionCerrar()
-		{
-			window.close();
+		function accionCerrar()	{
+			window.top.close();
 		}
 
 		<!-- Asociada al boton Aceptar -->
-		function accionAceptar()
-		{
+		function accionAceptar() {
 			var aux3=document.forms[0].idProductoCertificado.value;
-			if(aux3=="")
-			{
+			if(aux3=="") {
 				var mensaje = "<siga:Idioma key="certificados.mantenimiento.literal.productoCertificado"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
 				alert (mensaje);
 				return false;
@@ -93,8 +93,8 @@
 			<siga:Idioma key="certificados.solicitudes.literal.fechaSolicitud"/>
 		</td>				
 		<td>
-			<siga:Fecha nombreCampo="fechaSolicitud" valorInicial="<%=fechaSolicitud%>"></siga:Fecha>
-			&nbsp;<a onClick="return showCalendarGeneral(fechaSolicitud);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+
+			<siga:Fecha nombreCampo="fechaSolicitud" valorInicial="<%=fechaSolicitud%>" posicionX="30" posicionY="10"></siga:Fecha>
 		</td>
 	</tr>
 	<tr>

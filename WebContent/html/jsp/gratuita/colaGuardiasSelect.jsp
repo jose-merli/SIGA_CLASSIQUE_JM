@@ -32,8 +32,12 @@
 	<!-- HEAD -->
 	<head>
 
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+			
+		
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+		
 		<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
 		<siga:Titulo titulo="pestana.justiciagratuitaturno.colaGuardia" localizacion="gratuita.turnos.localizacion.colaTurno"/>
 		<script>
@@ -83,15 +87,13 @@
 			// Abrimos el calendario 
 			document.ColaGuardiasForm.target="areaDatos";
 			var resultado = showModalDialog("<html:rewrite page='/html/jsp/general/calendarGeneral.jsp'/>?valor="+ document.ColaGuardiasForm.fechaConsulta.value, document.ColaGuardiasForm.fechaConsulta,"dialogHeight:275px;dialogWidth:400px;help:no;scroll:no;status:no;");
-			if (resultado) {
-				 
+			window.top.focus();
+			if (resultado) {				 
 				 document.ColaGuardiasForm.fechaConsulta.value = resultado;
 				 document.getElementById('fechaConsulta').value = resultado;
-				 document.ColaGuardiasForm.modo.value = 'ver';
-				 
-				 document.ColaGuardiasForm.submit();
-				
-		 	}else{
+				 document.ColaGuardiasForm.modo.value = 'ver';				 
+				 document.ColaGuardiasForm.submit();				
+		 	} else {
 					if(document.ColaGuardiasForm.fechaConsulta.value==''){
 						document.getElementById('fechaConsulta').value = '';
 						document.ColaGuardiasForm.fechaConsulta.value = '';
@@ -101,14 +103,10 @@
 			} 
 		}
 		
-		function mostrarFechaActual()
-	{
-		
+		function mostrarFechaActual() {		
 			fechaActual = getFechaActualDDMMYYYY();
-			document.getElementById("fechaConsulta").value = fechaActual;
-		
-		
-	}
+			document.getElementById("fechaConsulta").value = fechaActual;		
+		}
 				
 		</script>
 

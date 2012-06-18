@@ -38,8 +38,11 @@
 	<!-- HEAD -->
 	<head>
 
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
@@ -69,15 +72,15 @@
 			<!-- INICIO: CAMPOS DEL REGISTRO -->
 			<fieldset>
 			<!-- Comienzo del formulario con los campos -->
-			<table align="center">
+			<table class="tablaCentralCampos" align="center">
 				<html:form action="/CEN_ModificacionDatos.do" method="POST" target="submitArea">
 					<html:hidden property = "modo" value = "insertar"/>
 					<tr>		
 						<td>		
-							<table align="center">
+							<table table style="border:0px; width:100%;">
 								<!-- FILA -->
 								<tr>				
-									<td class="labelText">
+									<td class="labelText" style="width:20%;">
 										<siga:Idioma key="censo.solicitudTextoLibre.literal.tipoModificacion"/>&nbsp;(*)
 									</td>				
 									<td>
@@ -86,11 +89,11 @@
 								</tr>
 								<!-- FILA -->
 								<tr>				
-									<td class="labelText">
+									<td class="labelText" style="width:20%;">
 										<siga:Idioma key="censo.solicitudTextoLibre.literal.descripcion"/>&nbsp;(*)
-									</td>				
+									</td colspan="1" style="width:50%;">				
 									<td>
-										<textarea name="descripcion" class="box" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" style="overflow:auto" rows="24" cols="180"></textarea>
+										<textarea name="descripcion" class="box" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" style="width:100%;"  rows="24" cols="180"></textarea>
 									</td>
 								</tr>
 							</table>

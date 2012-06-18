@@ -46,8 +46,11 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<title><siga:Idioma key="FactSJCS.mantRetencionesJ.cabecera"/></title>
 	<script type="text/javascript">
 		function refrescarLocal(){
@@ -70,8 +73,8 @@
 		<input type="hidden" name="modo" value="">		
 		
 		<!-- RGG: cambio a formularios ligeros -->
-		<input type="hidden" name="filaSelD">
-		<input type="hidden" name="tablaDatosDinamicosD">
+		<input type="hidden" id="filaSelD" name="filaSelD">
+		<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
 		<input type="hidden" name="actionModal" value="">
 	</html:form>	
 	
@@ -104,8 +107,8 @@
 				} 
 			%>				
 				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" clase="listaNonEdit" >
-					<td><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=fila.get("IDRETENCION")%>">
-					    <input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=fila.get("RETENCIONAPLICADA")%>">
+					<td><input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_1" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=fila.get("IDRETENCION")%>">
+					    <input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_2" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=fila.get("RETENCIONAPLICADA")%>">
 					<%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(fila, "NCOLEGIADO"))%></td>
 					<td>
 					<%if (UtilidadesHash.getString(fila, "NOMBRE")!=null && !UtilidadesHash.getString(fila, "NOMBRE").equals("")){%>

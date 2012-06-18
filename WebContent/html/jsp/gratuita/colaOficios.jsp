@@ -41,8 +41,12 @@
 	<!-- HEAD -->
 	<head>
 
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+			
+		
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+		
 		<siga:Titulo titulo="pestana.justiciagratuitaturno.colaOficio" localizacion="gratuita.turnos.localizacion.colaTurno.manteniento"/>
 		<script>
 		
@@ -176,19 +180,18 @@
 			document.forms[0].target = "submitArea";
 			document.forms[0].submit();
 		}
-		function accionCalendario() 
-		{
+		
+		function accionCalendario() {
 			document.ColaOficiosForm.target="_self";
 			// Abrimos el calendario 
 			var resultado = showModalDialog("<html:rewrite page='/html/jsp/general/calendarGeneral.jsp'/>?valor="+ document.ColaOficiosForm.fechaConsulta.value, document.ColaOficiosForm.fechaConsulta,"dialogHeight:275px;dialogWidth:400px;help:no;scroll:no;status:no;");
-			if (resultado) {
-				 
+			window.top.focus();
+			if (resultado) {				 
 				 document.ColaOficiosForm.fechaConsulta.value = resultado;
 				 document.getElementById('fechaConsulta').value = resultado;
 				 document.ColaOficiosForm.modo.value = 'ver';
-				 document.ColaOficiosForm.submit();
-				
-		 	}else{
+				 document.ColaOficiosForm.submit();				
+		 	} else {
 					if(document.ColaOficiosForm.fechaConsulta.value==''){
 						document.getElementById('fechaConsulta').value = '';
 						document.ColaOficiosForm.fechaConsulta.value = '';

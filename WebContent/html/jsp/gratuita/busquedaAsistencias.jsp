@@ -146,8 +146,12 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	
 	<script src="<%=app%>/html/js/validation.js" type="text/javascript"></script>
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
@@ -160,27 +164,22 @@
 	
 	<script language="JavaScript">	
 	
-	function buscarCliente ()
-	{
+	function buscarCliente () {
 		var resultado = ventaModalGeneral("busquedaClientesModalForm","G");
 		var colegiado = document.getElementById('nColegiado');
-		if (resultado != null && resultado[2]!=null)
-		{
+		if (resultado != null && resultado[2]!=null) {
 			colegiado=resultado[2];
 		}
-		if(colegiado!=null) 
-		{
+		if(colegiado!=null) {
 			document.forms[1].colegiado.value = colegiado;
 		}
 	}
 	
-	function refrescarLocal()
-	{
+	function refrescarLocal() {
 		buscar();
 	}
 
-	function fLoad()
-	{
+	function fLoad() {
 		var tmp1 = document.getElementsByName("turnos");
 		var tmp2 = tmp1[0]; 
 		tmp2.onchange();
@@ -208,8 +207,7 @@
 		<%}%>
 		}
 
-		function obtenerJuzgado() 
-			{ 
+		function obtenerJuzgado() { 
 			  if (document.getElementById("codigoExtJuzgadoActu").value!=""){
 
   				   document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgado";	
@@ -218,12 +216,11 @@
 				   
 				//}
 			 }
-			}
+		}
 			
-			function traspasoDatos(resultado){
-		
-		      seleccionComboSiga("juzgado",resultado[0]);
-		    }	
+		function traspasoDatos(resultado){
+			seleccionComboSiga("juzgado",resultado[0]);
+		}	
 
 	</script>
 	
@@ -301,7 +298,7 @@
 				<siga:Idioma key="gratuita.busquedaAsistencias.literal.actuacionesValidadas"/>
 			</td>	
 			<td colspan="3">	
-				<Select name="actuacionesPendientes" class="boxCombo">
+				<Select name="actuacionesPendientes" id="actuacionesPendientes" class="boxCombo">
 						<option value=''  selected ></option>
 						<option value='No' ><siga:Idioma key="general.no"/></option>
 						<option value='Si' ><siga:Idioma key="general.yes"/></option>

@@ -67,8 +67,9 @@
 <!-- HEAD -->
 
 <head>
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"></script>
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -79,7 +80,6 @@
 
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
-
 	</script>	
 	
 	<!-- INICIO: TITULO Y LOCALIZACION 	-->	
@@ -211,12 +211,12 @@
 				fin();
 			}
 			
-			//window.close();
+			//window.top.close();
 				
 		}
 		function accionCerrar() 
 		{		
-				window.close();	
+				window.top.close();	
 		}
 	</script>	
 <!-- INICIO: SUBMIT AREA -->

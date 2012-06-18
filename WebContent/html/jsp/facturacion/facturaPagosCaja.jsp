@@ -37,7 +37,9 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	
+		
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 
 	<!-- Calendario -->
@@ -48,7 +50,7 @@
 
 		<!-- Asociada al boton Volver -->
 		function accionCerrar(){ 
-			window.close();
+			window.top.close();
 			return 0;
 		}	
 	
@@ -133,7 +135,9 @@
 						</tr>
 						<tr>
 							<td class="labelText"><siga:Idioma key="facturacion.pagosFactura.Caja.literal.Fecha"/></td>
-							<td class="labelText"><input class="box" type="text" name="datosPagosCajaFecha" size="16" maxlength="20" class="box" readonly="true" value="<%=fechaActual%>">&nbsp;<a href='javascript://'onClick="return showCalendarGeneral(datosPagosCajaFecha);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a></td>
+							<td class="labelText">
+							<siga:Fecha  nombreCampo= "datosPagosCajaFecha" valorInicial="<%=fechaActual %>" posicionX="50" posicionY="10"/>
+							</td>
 						</tr>
 						<tr>
 							<td class="labelText"><siga:Idioma key="facturacion.pagosFactura.Caja.literal.ImportePendiente"/></td>

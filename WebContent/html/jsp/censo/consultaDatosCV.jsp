@@ -1,19 +1,21 @@
 <!-- consultaDatosCV.jsp -->
 <!-- Historico modificaciones:
-		miguel.villegas: implementacion boton volver -->		
+		miguel.villegas: implementacion boton volver -->
 
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
-<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
+<meta http-equiv="Pragma" content="no-cache">
+<%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
+<%@ page contentType="text/html" language="java"
+	errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
-<%@ taglib uri = "libreria_SIGA.tld" 	prefix = "siga"%>
-<%@ taglib uri = "struts-bean.tld"  	prefix = "bean"%>
-<%@ taglib uri = "struts-html.tld" 		prefix = "html"%>
-<%@ taglib uri = "struts-logic.tld" 	prefix = "logic"%>
+<%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
+<%@ taglib uri="struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="struts-html.tld" prefix="html"%>
+<%@ taglib uri="struts-logic.tld" prefix="logic"%>
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
@@ -58,17 +60,22 @@
 	}
 
 	boolean bIncluirBajaLogica = UtilidadesString.stringToBoolean((String)request.getAttribute("bIncluirRegistrosConBajaLogica"));
-%>	
+%>
 <html>
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+<link id="default" rel="stylesheet" type="text/css"
+	href="<%=app%>/html/jsp/general/stylesheet.jsp" />
+<link rel="stylesheet"
+	href="<%=app%>/html/js/themes/base/jquery.ui.all.css" />
 
 
-	<!-- SCRIPTS LOCALES -->
-	<script language="JavaScript">
+<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+
+
+<!-- SCRIPTS LOCALES -->
+<script language="JavaScript">
 		function solicitar(fila) {
 				var datos;
 				datos = document.getElementById('tablaDatosDinamicosD');
@@ -128,82 +135,74 @@
 		
 
 	</script>
-		<!-- INICIO: TITULO Y LOCALIZACION -->
-		<!-- Escribe el título y localización en la barra de título del frame principal -->
-		
-		<% if (sTipo!=null && sTipo.equals("LETRADO")){%>
-		 <siga:Titulo 
-			titulo="censo.fichaCliente.datosCV.cabecera"
-			localizacion="censo.fichaLetrado.localizacion"/>
-		<%}else{%>
-		<siga:TituloExt 
-			titulo="censo.fichaCliente.datosCV.cabecera" 
-			localizacion="censo.fichaCliente.datosCV.localizacion"/>
-		<%}%>
-		
-		<!-- FIN: TITULO Y LOCALIZACION -->
+<!-- INICIO: TITULO Y LOCALIZACION -->
+<!-- Escribe el título y localización en la barra de título del frame principal -->
+
+<% if (sTipo!=null && sTipo.equals("LETRADO")){%>
+<siga:Titulo titulo="censo.fichaCliente.datosCV.cabecera"
+	localizacion="censo.fichaLetrado.localizacion" />
+<%}else{%>
+<siga:TituloExt titulo="censo.fichaCliente.datosCV.cabecera"
+	localizacion="censo.fichaCliente.datosCV.localizacion" />
+<%}%>
+
+<!-- FIN: TITULO Y LOCALIZACION -->
 
 </head>
 
 <body class="tablaCentralCampos">
-	
+
 	<!-- ******* INFORMACION GENERAL CLIENTE ****** -->
 	<table class="tablaTitulo" align="center" cellspacing=0>
-	<html:form method="post" action="/CEN_DatosCV.do">
+		<html:form method="post" action="/CEN_DatosCV.do" styleId="datosCVForm">
 			<!-- Campo obligatorio -->
-			<html:hidden property = "modo" value = ""/>
-			<input type="hidden" name="nombreUsuario" value="<%=nombre%>"/>
-			<input type="hidden" name="numeroUsuario" value="<%=numero%>"/>
-			<input type='hidden' name="idPersona" 		value="<%=String.valueOf((Long)request.getAttribute("idPersona"))%>"/>	
-			<input type='hidden' name="idInstitucion" value="<%=String.valueOf((Integer)request.getAttribute("idInstitucion"))%>"/>
-			<input type='hidden' name="accion" 				value="<%=accion%>"/>		
+			<html:hidden property="modo" value="" />
+			<input type="hidden" name="nombreUsuario" value="<%=nombre%>" />
+			<input type="hidden" name="numeroUsuario" value="<%=numero%>" />
+			<input type='hidden' name="idPersona" value="<%=String.valueOf((Long)request.getAttribute("idPersona"))%>" />
+			<input type='hidden' name="idInstitucion" value="<%=String.valueOf((Integer)request.getAttribute("idInstitucion"))%>" />
+			<input type='hidden' name="accion" value="<%=accion%>" />
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
+			<input type="hidden" id="filaSelD" name="filaSelD">
+			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
 			<input type="hidden" name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>">
 		</html:form>
 
 		<tr>
-		<td class="titulitosDatos">
-			<siga:Idioma key="censo.consultaDatosCV.literal.titulo1"/> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombre)%> &nbsp;&nbsp;
-	    	<%if(!numero.equalsIgnoreCase("")){%>
-				<%if (estadoColegial!=null && !estadoColegial.equals("")){%>
-					<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>
-					 <%= UtilidadesString.mostrarDatoJSP(numero)  %> &nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>)
-				 <%}else{%> 
-				 	(<siga:Idioma key="censo.busquedaClientes.literal.sinEstadoColegial"/>) 
-				 <%}%>
-			<%} 
-			else {%>
-			   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
-			<%}%>
-		</td>
+			<td class="titulitosDatos"><siga:Idioma
+					key="censo.consultaDatosCV.literal.titulo1" /> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombre)%>
+				&nbsp;&nbsp; <%if(!numero.equalsIgnoreCase("")){%> <%if (estadoColegial!=null && !estadoColegial.equals("")){%>
+				<siga:Idioma key="censo.fichaCliente.literal.colegiado" /> <%= UtilidadesString.mostrarDatoJSP(numero)  %>
+				&nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>) <%}else{%>
+				(<siga:Idioma key="censo.busquedaClientes.literal.sinEstadoColegial" />)
+				<%}%> <%} 
+			else {%> <siga:Idioma key="censo.fichaCliente.literal.NoColegiado" />
+				<%}%></td>
 		</tr>
-		</table>	
-		
-		<siga:TablaCabecerasFijas 
-		   	nombre="tablaDatos"
-		   	borde="1"
-   			estilo=""
-		   	clase="tableTitle"
-		  	nombreCol=",censo.busquedaClientes.literal.institucion,censo.consultaDatosCV.literal.tipo,,,censo.consultaDatosCV.literal.fechaInicio,censo.consultaDatosCV.literal.fechaFin,censo.consultaDatosCV.literal.descripcion,censo.consultaDatosCV.literal.verificado,"
-		  	tamanoCol="10,10,10,10,10,10,20,10,10"
-		    alto="100%"
-		    ajuste = "70"		
-		    modal="M">  
+	</table>
 
-<%		if((String.valueOf((Long)request.getAttribute("idPersona"))).equals(idUsr) &&
+	<siga:TablaCabecerasFijas nombre="tablaDatos" borde="1" estilo=""
+		clase="tableTitle"
+		nombreCol=",censo.busquedaClientes.literal.institucion,censo.consultaDatosCV.literal.tipo,,,censo.consultaDatosCV.literal.fechaInicio,censo.consultaDatosCV.literal.fechaFin,censo.consultaDatosCV.literal.descripcion,censo.consultaDatosCV.literal.verificado,"
+		tamanoCol="10,10,10,10,10,10,20,10,10" alto="100%" ajuste="70"
+		modal="M">
+
+		<%		if((String.valueOf((Long)request.getAttribute("idPersona"))).equals(idUsr) &&
 				usr.isLetrado()){
 					botones +=",SN";  
 					
-					}
-					
-%>
- 	<% if(vDatos == null || vDatos.size()<1 )	{ %>
-	 		<br><br>
-	   		 <p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-	 		<br><br>	 		
-	 <%		
+					}					
+		%>
+		<% if(vDatos == null || vDatos.size()<1 )	{ %>
+		<br>
+		<br>
+		<p class="titulitos" style="text-align: center">
+			<siga:Idioma key="messages.noRecordFound" />
+		</p>
+		<br>
+		<br>
+		<%		
 	 	}
 	 	else
 	 	{	 
@@ -239,54 +238,56 @@
 				if(htData.get("IDINSTITUCIONCARGO")!=null && !htData.get("IDINSTITUCIONCARGO").toString().trim().equals(""))
 					institucion = CenVisibilidad.getAbreviaturaInstitucion(htData.get("IDINSTITUCIONCARGO").toString());
 
-	%> 				
-				<siga:FilaConIconos fila='<%=String.valueOf(i)%>' botones='<%=iconos%>' elementos='<%=elems%>' modo='<%=accion%>' clase="listaNonEdit">
-				<td><%=UtilidadesString.mostrarDatoJSP(institucion)%></td>
-					<td><input type='hidden' name='oculto<%=String.valueOf(i)%>_1' value='<%=htData.get(CenDatosCVBean.C_IDCV)%>'>	
-					<input type='hidden' name='oculto<%=String.valueOf(i)%>_2' value='<%=htData.get(CenDatosCVBean.C_IDINSTITUCIONCARGO)%>'>
-  						<%=UtilidadesString.mostrarDatoJSP(htData.get("TIPOAPUNTE"))%>
-  				</td>
-  				<td><%=UtilidadesString.mostrarDatoJSP(htData.get("DESCSUBTIPO1"))%></td>
-  				<td><%=UtilidadesString.mostrarDatoJSP(htData.get("DESCSUBTIPO2"))%></td>
-  				<td><%=UtilidadesString.mostrarDatoJSP(com.atos.utils.GstDate.getFormatedDateShort("",htData.get(CenDatosCVBean.C_FECHAINICIO)))%></td>
-  				<td><%=UtilidadesString.mostrarDatoJSP(com.atos.utils.GstDate.getFormatedDateShort("",htData.get(CenDatosCVBean.C_FECHAFIN)))%></td>
-  				<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDatosCVBean.C_DESCRIPCION))%></td>
-  				<td><%=UtilidadesString.mostrarDatoJSP(certificado)%></td> 
-				</siga:FilaConIconos>
+	%>
+		<siga:FilaConIconos fila='<%=String.valueOf(i)%>'
+			botones='<%=iconos%>' elementos='<%=elems%>' modo='<%=accion%>'
+			clase="listaNonEdit">
+			<td><%=UtilidadesString.mostrarDatoJSP(institucion)%></td>
+			<td>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_1' name='oculto<%=String.valueOf(i)%>_1' value='<%=htData.get(CenDatosCVBean.C_IDCV)%>'> 
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_2' name='oculto<%=String.valueOf(i)%>_2' value='<%=htData.get(CenDatosCVBean.C_IDINSTITUCIONCARGO)%>'>
+				<%=UtilidadesString.mostrarDatoJSP(htData.get("TIPOAPUNTE"))%>
+			</td>
+			<td><%=UtilidadesString.mostrarDatoJSP(htData.get("DESCSUBTIPO1"))%></td>
+			<td><%=UtilidadesString.mostrarDatoJSP(htData.get("DESCSUBTIPO2"))%></td>
+			<td><%=UtilidadesString.mostrarDatoJSP(com.atos.utils.GstDate.getFormatedDateShort("",htData.get(CenDatosCVBean.C_FECHAINICIO)))%></td>
+			<td><%=UtilidadesString.mostrarDatoJSP(com.atos.utils.GstDate.getFormatedDateShort("",htData.get(CenDatosCVBean.C_FECHAFIN)))%></td>
+			<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDatosCVBean.C_DESCRIPCION))%></td>
+			<td><%=UtilidadesString.mostrarDatoJSP(certificado)%></td>
+		</siga:FilaConIconos>
 
- <%		}
- 	}%>  			
-  
-  	</siga:TablaCabecerasFijas>
- <% if (!usr.isLetrado()){%> 			
-  	<div style="position:absolute; left:400px;bottom:35px;z-index:2;">
+		<%		}
+ 	}%>
+
+	</siga:TablaCabecerasFijas>
+	<% if (!usr.isLetrado()){%>
+	<div style="position: absolute; left: 400px; bottom: 35px; z-index: 2;">
 		<table align="center" border="0">
 			<tr>
-				<td class="labelText">
-					<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal"/>
-					
-					<% if (bIncluirBajaLogica) { %>
-						<input type="checkbox" name="bajaLogica" onclick="incluirRegBajaLogica(this);" checked>
-					<% } else { %>
-						<input type="checkbox" name="bajaLogica" onclick="incluirRegBajaLogica(this);">
-					<% } %>
-				</td>
+				<td class="labelText"><siga:Idioma
+						key="censo.consultaRegistrosBajaLogica.literal" /> <% if (bIncluirBajaLogica) { %>
+					<input type="checkbox" name="bajaLogica"
+					onclick="incluirRegBajaLogica(this);" checked> <% } else { %>
+					<input type="checkbox" name="bajaLogica"
+					onclick="incluirRegBajaLogica(this);"> <% } %></td>
 			</tr>
 		</table>
 	</div>
-<%}%>
-  	
+	<%}%>
+
 	<%
 	
-	%>		
-  	<siga:ConjBotonesAccion botones="<%=botones%>"   modo='<%=accion%>' clase="botonesDetalle"/>		
-	
-<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
-	
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
+	%>
+	<siga:ConjBotonesAccion botones="<%=botones%>" modo='<%=accion%>'
+		clase="botonesDetalle" />
 
-	</body>
+	<%@ include file="/html/jsp/censo/includeVolver.jspf"%>
+
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"
+		style="display: none"></iframe>
+	<!-- FIN: SUBMIT AREA -->
+
+</body>
 </html>

@@ -64,8 +64,10 @@
 	<!-- HEAD -->
 	<head>
 
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+		
+		
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 		
 
@@ -75,6 +77,7 @@
 		<html:javascript formName="HistoricoForm" staticJavascript="false" />  
 		<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
+		
 		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 
 
@@ -141,20 +144,18 @@
 						<siga:Idioma key="censo.busquedaHistorico.literal.fechaEfectivaInicio"/>&nbsp;&nbsp;
 					</td>					
 					<td>
-						<html:text property="fechaInicio" size="10" styleClass="box" readOnly="true"></html:text>
-						<a href='javascript://' onClick="return showCalendarGeneral(fechaInicio);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-							<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
-						</a>						
+								
+									<siga:Fecha  nombreCampo= "fechaInicio"/>
+								
 						
 					</td>					
 					<td class="labelText">
 						<siga:Idioma key="censo.busquedaHistorico.literal.fechaEfectivaFin"/>&nbsp;&nbsp;					
 					</td>					
 					<td>
-						<html:text property="fechaFin" size="10" styleClass="box" readOnly="true"></html:text>
-						<a href='javascript://' onClick="return showCalendarGeneral(fechaFin);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-							<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
-						</a>						
+	
+									<siga:Fecha  nombreCampo= "fechaFin"/>
+					</div>
 					</td>
 				</tr>
 

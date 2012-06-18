@@ -9,9 +9,8 @@
 
 <html:html>
 <head>
-	
-
-<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
+	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>" ></script>
+	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
 </head>
 <body>
 <%
@@ -31,7 +30,7 @@ String idTipoEnvio = (request.getAttribute("idTipoEnvio")!=null?(String) request
 </html:form>
 <iframe name="submitArea" src="<html:rewrite page="/html/jsp/general/blank.jsp"/>" style="display:none"></iframe> 
 </body>
-<script type="text/jscript" language="JavaScript1.2">
+<script language="JavaScript">
 function reloadPage() {
   	var resultado = ventaModalGeneral('DefinirEnviosForm','G');
   	if (resultado==undefined||resultado[0]==undefined){

@@ -30,8 +30,8 @@
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 	<link rel="stylesheet" type="text/css" href="<%=app%>/html/css/calendar.css">	
 	
-	<script language="JavaScript" src="<%=app%>/html/js/calendarJs.jsp" ></script>
-	<script language="JavaScript" src="<%=app%>/html/js/validation.js" type="text/jscript"></script>
+	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/validation.js" type="text/javascript"></script>
 </head>
 
 <body onLoad="load('<%=valor%>');">

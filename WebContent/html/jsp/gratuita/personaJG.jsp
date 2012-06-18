@@ -256,21 +256,25 @@
 <head>
 	<html:javascript formName="PersonaJGForm" staticJavascript="false" />  
   	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+		
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 	
 	<!--Step 2 -->
-<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
-<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
-<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
-<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
 
 
-<!--Step 3 -->
-  <!-- defaults for Autocomplete and displaytag -->
-  <link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />
+	<!--Step 3 -->
+  	<!-- defaults for Autocomplete and displaytag -->
+  	<link type="text/css" rel="stylesheet" href="<%=app%>/html/css/ajaxtags.css" />
   	
 	<script type="text/javascript">
 	
@@ -410,11 +414,12 @@
 
 				function traspasoDatos(resultado,bNuevo) 
 				{
+
 					document.forms[0].nuevo.value = bNuevo;					
 				  if (bNuevo=="1"){// sólo cargamos los datos de la persona si esta ya estaba dada de alta en personaJG					  
-					if (resultado[1]!="null" && trim(resultado[1])!="") {								
+					if (resultado[1]!="null" && trim(resultado[1])!="") {					
 						document.forms[0].idTipoPersona.value=resultado[22];						
-						document.getElementById('idTipoPersona').onchange();
+						document.forms[0].idTipoPersona.onchange();
 						//recuperamos el valor del tipoIdentificacion.											
 						var funcionRetardo = 'retarda('+resultado[0]+')';
 						window.setTimeout(funcionRetardo,150,"Javascript");						 															
@@ -557,7 +562,7 @@
 		{
 			//Falla al dar el boton ver, yo pondría esto 			
 			<%if (!accion.equalsIgnoreCase("ver")) {%>	
-			if(document.PersonaJGForm.tipos.value == 'F')
+			if(document.PersonaJGForm.idTipoPersona.value == 'F')
 			{
 				//alert("document.PersonaJGForm.tipos.value FISICA: "+document.PersonaJGForm.tipos.value);
 				document.getElementById("apelli2").style.display="block";
@@ -832,12 +837,9 @@
 		function accionCalendario() 
 		{
 			// Abrimos el calendario 
+			if (document.getElementById('fechaNac').value!='') {
 
-			var resultado = showModalDialog("<html:rewrite page='/html/jsp/general/calendarGeneral.jsp'/>?valor="+document.PersonaJGForm.fechaNac.value,document.PersonaJGForm.fechaNac,"dialogHeight:275px;dialogWidth:400px;help:no;scroll:no;status:no;");
-			if (resultado) {
-				 
-				 document.getElementById('fechaNac').value=resultado;
-				 rellenaEdad(resultado,'S');
+				rellenaEdad(document.getElementById('fechaNac').value,'S');
 		 	}else{
 				//Si da a reset no viene nada por lo que actualizamos. si viene con fecha
 				//es que ha cerrado desde el aspa, lo dejamos como estuviera(no hacemos nada) 		 		
@@ -1036,7 +1038,7 @@
 	
 <!-- CAMPOS DEL REGISTRO -->
 <table align="center"  width="100%" class="tablaCentralCampos" cellpadding="0" cellspacing="0">
-<html:form action="<%=actionE%>" method="POST" target="mainPestanas">	
+<html:form action="<%=actionE%>" method="POST" target="mainPestanas" styleId="PersonaJGForm">	
 
 	<html:hidden property = "modo" />
 	<html:hidden property = "nuevo" value="<%=nuevo%>" />
@@ -1272,7 +1274,7 @@
 				} else {
 			%>
 			
-			<html:select styleId="tipos"   styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" property="idTipoPersona">				
+			<html:select styleId="idTipoPersona"   styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" property="idTipoPersona">				
 				<bean:define id="tipos" name="PersonaJGForm"
 						property="tipos" type="java.util.Collection" />
 				<html:optionsCollection name="tipos" value="idTipo"
@@ -1434,14 +1436,14 @@
 			if (esFichaColegial && bPestana.equals("true")) {
 				//sHack = "top.frames[0].document.frames[0].document.frames[0].document.frames[0].document.getElementById('poblacionFrame').src";
 
-				sHack += "var destino_provincia0=top.frames[0].document.frames[0].document.frames[0].document.frames[0].document.getElementById('poblacionFrame').src;";
+				sHack += "var destino_provincia0=(document.getElementById('poblacionFrame')).src;";
 				sHack += "var tam_provincia0 = destino_provincia0.indexOf('&id=');";
 				sHack += "if(tam_provincia0==-1)";
 				sHack += "{";
 				sHack += "	tam_provincia0=destino_provincia0.length;";
 				sHack += "}";
 				sHack += "destino_provincia0=destino_provincia0.substring(0,tam_provincia0)+'&id='+provincia.value;";
-				sHack += "top.frames[0].document.frames[0].document.frames[0].document.frames[0].document.getElementById('poblacionFrame').src=destino_provincia0;";
+				sHack += "(document.getElementById('poblacionFrame')).src=destino_provincia0;";
 
 			} else {
 				sHack = "Hijo:poblacion";
@@ -1553,11 +1555,11 @@
  			%>		
 		</td>
 		<td >
-			<html:text name="PersonaJGForm" property="fechaNac" size="10" maxlength="10" styleClass="<%=estiloBox%>"  readOnly="true"></html:text>
+		    <siga:Fecha  nombreCampo= "fechaNac" />
 			<%
 				if (!accion.equalsIgnoreCase("ver")) {
 			%>
-			<a href='javascript://' onClick="accionCalendario();"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+			 <siga:Fecha  nombreCampo= "fechaNac"  disabled="true"/>
 			<%
 				}
 			%>
@@ -2095,7 +2097,7 @@ function limpiarPersonaContrario() {
 								src="<%=app%>/JGR_TelefonosPersonasJG.do?accion=<%=accion%>&idPersona=<%=idPersona%>&idInstitucion=<%=usr.getLocation()%>&esFichaColegial=<%=sEsFichaColegial%>"
 								id="resultado" name="resultado" scrolling="no" frameborder="0"
 								marginheight="0" marginwidth="0"
-								style="width: 400px; height:85px;"> </iframe></siga:ConjCampos></td>							
+								style="width: 500px; height:85px;"> </iframe></siga:ConjCampos></td>							
 						</tr>				
 						<tr >
 							<td class="labelText" colspan="1" align="center">
@@ -2377,7 +2379,7 @@ function limpiarPersonaContrario() {
 				<tr>
 					<td colspan="2"><siga:ConjCampos
 						leyenda="gratuita.personaJG.literal.telefonos">
-					<iframe align="center"
+					<iframe 
 						src="<%=app%>/JGR_TelefonosPersonasJG.do?accion=<%=accion%>&idPersona=<%=idPersona%>&idInstitucion=<%=usr.getLocation()%>&esFichaColegial=<%=sEsFichaColegial%>"
 						id="resultado" name="resultado" scrolling="no" frameborder="0"
 						marginheight="0" marginwidth="0"
@@ -2520,13 +2522,13 @@ function limpiarPersonaContrario() {
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 <ajax:select
 	baseUrl="/SIGA${path}.do?modo=getAjaxTipoIdentificacion"
-	source="tipos" target="identificadores"		
+	source="idTipoPersona" target="identificadores"		
 	parameters="idTipoPersona={idTipoPersona}" postFunction="comprobarTipoPersona"
 	/>
 	
 <ajax:updateFieldFromSelect
 	baseUrl="/SIGA${path}.do?modo=getAjaxBusquedaNIF"
-	source="forzarAjax" target="NIdentificacion,idInstitucionJG,idPersonaJG,nombre,apellido1,apellido2,direccion,cp,fechaNac,minusvalia,provincia,poblacion,estadoCivil,regimenConyugal,tipos,identificadores,representante,nacionalidad,sexo,edad,fax,correoElectronico,idioma,profesion,existeDomicilio,enCalidadDe,hijos"
+	source="forzarAjax" target="NIdentificacion,idInstitucionJG,idPersonaJG,nombre,apellido1,apellido2,direccion,cp,fechaNac,minusvalia,provincia,poblacion,estadoCivil,regimenConyugal,idTipoPersona,identificadores,representante,nacionalidad,sexo,edad,fax,correoElectronico,idioma,profesion,existeDomicilio,enCalidadDe,hijos"
 	parameters="NIdentificacion={NIdentificacion}, conceptoE={conceptoE}"
 	postFunction="postAccionBusquedaNIF"
 	preFunction="preAccionBusquedaNIF"
@@ -2624,7 +2626,7 @@ function limpiarPersonaContrario() {
 		 	document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarEJG';
 			document.forms[0].target="submitArea2";		
-			var tipo = document.PersonaJGForm.idTipoPersona.value		
+			var tipo = document.PersonaJGForm.idTipoPersona.value;		
 			var tipoId = document.PersonaJGForm.tipoId.value;	
 			var msg1="<siga:Idioma key="gratuita.personaJG.messages.alertTipo1"/>";
 			var msg2="<siga:Idioma key="gratuita.personaJG.messages.alertTipo2"/>";
@@ -2861,9 +2863,8 @@ function limpiarPersonaContrario() {
 			}				
 		}			
 		//Asociada al boton Cerrar -->
-		function accionCerrar()   
-		{	
-			window.close();
+		function accionCerrar() {	
+			window.top.close();
 		}
 		
 		function refrescarLocal() {
@@ -3004,9 +3005,8 @@ function limpiarPersonaContrario() {
 <%} else if (conceptoE.equals(PersonaJGAction.ASISTENCIA_CONTRARIOS)) {%>
 
 		//Asociada al boton Cerrar -->
-		function accionCerrar()   
-		{	
-			window.close();
+		function accionCerrar() {	
+			window.top.close();
 		}
 
 		//Asociada al boton Guardar -->
@@ -3078,7 +3078,7 @@ function limpiarPersonaContrario() {
 		// Asociada al boton Cerrar -->
 		function accionCerrar()   
 		{	
-			window.close();
+			window.top.close();
 		}
 
 		//Asociada al boton Guardar -->
@@ -3229,7 +3229,7 @@ function limpiarPersonaContrario() {
 		//Asociada al boton Cerrar -->
 		function accionCerrar()   
 		{	
-			window.close();
+			window.top.close();
 		}
 
 		function refrescarLocal() {
@@ -3240,7 +3240,7 @@ function limpiarPersonaContrario() {
 		//Asociada al boton Cerrar -->
 		function accionCerrar()   
 		{	
-			window.close();
+			window.top.close();
 		}
 
 		//Asociada al boton Guardar -->
@@ -3333,7 +3333,7 @@ function limpiarPersonaContrario() {
 //Asociada al boton Cerrar -->
 function accionCerrar()   
 {	
-	window.close();
+	window.top.close();
 }
 
 //Asociada al boton Guardar -->
@@ -3424,18 +3424,14 @@ function accionGuardarCerrar()	{
 <%}%>
 
 
-function buscar() 
-{		
+function buscar() {		
 	var resultado = ventaModalGeneral("BusquedaPersonaJGForm","G");			
-	if (resultado != null && resultado[1]!=null)
-	{
-
+	if (resultado != null && resultado[1]!=null) {
 		traspasoDatos(resultado,resultado[17]);
 	}
 }
 //función para obtener los valores de los telefonos para una persona
-function getDatos() 
-{	        
+function getDatos() {
 	table = resultado.document.getElementById("tablaTelefono");
 	filas = table.rows.length;
 	// Datos Lista de Telefonos.	
@@ -3582,20 +3578,20 @@ function accionRestablecer()
 	} else {
 %>
 	<!-- formulario para seleccionar representante -->
-	<form name="representanteTutor" action="<%=app + actionE%>" method="post">
-		<input type="hidden" name="actionModal" value="">
-		<input type="hidden" name="modo" value="abrirPestana">
-		<input type="hidden" name="idInstitucionJG" value="<%=usr.getLocation()%>">
-		<input type="hidden" name="idPersonaJG" value="<%=miform.getIdRepresentanteJG()%>">
-		<input type="hidden" name="idInstitucionPER" value="<%=usr.getLocation()%>">
-		<input type="hidden" name="idPersonaPER" value="<%=miform.getIdPersonaJG()%>">
-		<input type="hidden" name="conceptoE" value="<%=PersonaJGAction.PERSONAJG%>">
-		<input type="hidden" name="tituloE" value="gratuita.personaJG.literal.representante">
-		<input type="hidden" name="localizacionE" value="">
-		<input type="hidden" name="accionE" value="editar">
-		<input type="hidden" name="actionE" value="<%=actionE%>">
-		<input type="hidden" name="pantallaE" value="M">
-		<input type="hidden" name="repPCAJG" value="<%=pcajgActivo%>">
+	<form id="representanteTutor" name="representanteTutor" action="<%=app + actionE%>" method="post">
+		<input type="hidden" id="actionModal"      name="actionModal" value="">
+		<input type="hidden" id="modo"      name="modo" value="abrirPestana">
+		<input type="hidden" id="idInstitucionJG"     name="idInstitucionJG" value="<%=usr.getLocation()%>">
+		<input type="hidden" id="idPersonaJG"      name="idPersonaJG" value="<%=miform.getIdRepresentanteJG()%>">
+		<input type="hidden" id="idInstitucionPER"     name="idInstitucionPER" value="<%=usr.getLocation()%>">
+		<input type="hidden" id="idPersonaPER"     name="idPersonaPER" value="<%=miform.getIdPersonaJG()%>">
+		<input type="hidden" id="conceptoE"      name="conceptoE" value="<%=PersonaJGAction.PERSONAJG%>">
+		<input type="hidden" id="tituloE"      name="tituloE" value="gratuita.personaJG.literal.representante">
+		<input type="hidden" id="localizacionE"     name="localizacionE" value="">
+		<input type="hidden" id="accionE"      name="accionE" value="editar">
+		<input type="hidden" id="actionE"      name="actionE" value="<%=actionE%>">
+		<input type="hidden" id="pantallaE"      name="pantallaE" value="M">
+		<input type="hidden" id="repPCAJG"      name="repPCAJG" value="<%=pcajgActivo%>">
 	</form>
 	<!-- FIN formulario para seleccionar representante -->
 <%
@@ -3604,10 +3600,10 @@ function accionRestablecer()
 
 
 	<!-- formulario para buscar personaJG-->
-	<html:form action="/JGR_BusquedaPersonaJG.do" method="POST" target="submitArea">
-		<input type="hidden" name="actionModal" value="">
-		<input type="hidden" name="modo" value="abrir">
-		<input type="hidden" name="conceptoE" value="<%=conceptoE%>">
+	<html:form action="/JGR_BusquedaPersonaJG.do" method="POST" target="submitArea" styleId="BusquedaPersonaJGForm">
+		<input type="hidden" id="actionModal" name="actionModal" value="">
+		<input type="hidden" id="modo" name="modo" value="abrir">
+		<input type="hidden" id="conceptoE" name="conceptoE" value="<%=conceptoE%>">
 	</html:form>
 	<!-- FIN formulario para buscar personaJG-->
 	

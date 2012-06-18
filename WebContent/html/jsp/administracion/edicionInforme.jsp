@@ -23,19 +23,16 @@
 
 <!-- HEAD -->
 <head>
-<link id="default" rel="stylesheet" type="text/css"
-	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
-<script src="<html:rewrite page='/html/js/SIGA.js'/>"
-	type="text/javascript"></script>
-<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"
-	type="text/javascript"></script>
-<script
-	src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
+	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
+		
+	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>" ></script>
+	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
+	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
+	<script	src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
 	
 	<script src="<html:rewrite page='/html/js/validacionStruts.js'/>" type="text/javascript"></script>
 	<script src="<html:rewrite page='/html/js/validation.js'/>" type="text/javascript"></script>
-<script src="<html:rewrite page='/html/js/jquery.js'/>"
-	type="text/javascript"></script>
 	
 </head>
 <script type="text/javascript">
@@ -704,7 +701,7 @@ function formatearFormulario(formulario)
 function refrescarLocal()
 {	
 	if (document.InformeForm.modo.value=='insertar'){
-		window.close();
+		window.top.close();
 	}else{
 		cargarListadoArchivos();
 	}
@@ -714,10 +711,10 @@ function refrescarLocal()
 function accionCerrar() 
 {		
 	// parent.refrescarLocal();
-	window.close(); 
+	window.top.close(); 
 	 // document.InformeForm.modo.value = "buscar";
 	 // document.InformeForm.submit();
-	 // window.close(); 
+	 // window.top.close(); 
 	
 }
 function gestionarDatosConsultas() 
@@ -737,6 +734,7 @@ function accionComboTipoEnvio(index) {
 	var envioDefectoSeleccionado = document.getElementById("idTipoEnvioDefecto").value;
 	document.getElementById("idTipoEnvioDefecto").options.length = 0;
 
+	alert($('#comboTipoEnvioPermitidos').val());
 	var tiposEnvio = document.getElementById("comboTipoEnvioPermitidos").options;
 	var findDefecto = false;
 	$("#idTipoEnvioDefecto").append("<option  value=''>&nbsp;</option>");

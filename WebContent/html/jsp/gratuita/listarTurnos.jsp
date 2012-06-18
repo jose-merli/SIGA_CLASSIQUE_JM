@@ -118,8 +118,12 @@
 <%@page import="com.siga.Utilidades.PaginadorBind"%>
 <html>
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+
+			
+		
+	    			
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 		<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
 		<!-- INICIO: TITULO Y LOCALIZACION -->
 		<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -163,15 +167,7 @@
 			<tr>
 					<td class="labelText"><siga:Idioma key="gratuita.gestionInscripciones.fechaConsulta"/></td>
 					<td >
-					<html:text id="fechaConsulta" name="DefinirTurnosLetradoForm" property="fechaConsulta" size="10" maxlength="10" styleClass="box" ></html:text>
-					&nbsp;&nbsp;<a
-						id="calendarioTd" 
-						onClick="accionCalendario();"
-						onMouseOut="MM_swapImgRestore();"
-						onMouseOver="MM_swapImage('Calendario','','<html:rewrite page='/html/imagenes/calendar.gif'/>',1);"><img
-						src="<html:rewrite page='/html/imagenes/calendar.gif'/>"
-						alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"
-						border="0"></a>
+					<siga:Fecha  nombreCampo= "fechaConsulta" postFunction="accionCalendario();"/>
 					</td>
 				</tr>
 				
@@ -205,11 +201,10 @@
 					botones="C";
 				alto="326";}
 	%>
-		<html:form action="DefinirTurnosAction.do" method="post" target="<%=elTarget%>" style="display:none">
-			
+		<html:form action="DefinirTurnosAction.do" method="post" target="<%=elTarget%>" style="display:none">			
 			<!-- Datos del Colegiado seleccionado -->
-			<input type="hidden" name = "nombreColegiadoPestanha" value = "<%=nombrePestanha%>"/>
-			<input type="hidden" name = "numeroColegiadoPestanha" value = "<%=numeroPestanha%>"/>
+			<input type="hidden" name="nombreColegiadoPestanha" value = "<%=nombrePestanha%>"/>
+			<input type="hidden" name="numeroColegiadoPestanha" value = "<%=numeroPestanha%>"/>
 			
 			<input type="hidden" name="modo" />
 			<!-- campos a pasar -->
@@ -227,11 +222,9 @@
 			<input type="hidden" name="turnosBajaLogica" value="<%=turnosBajaLogica%>">
 			
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
-			
-			
+			<input type="hidden" id="filaSelD" name="filaSelD"/>
+			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD"/>
+			<input type="hidden" name="actionModal" value="">		
 		</html:form>	
 		
 		
@@ -360,38 +353,36 @@
 
 			<siga:FilaConIconos fila='<%=String.valueOf(i)%>' botones="<%=botones%>" visibleBorrado="<%=String.valueOf(isEntradaSJCS)%>" visibleEdicion="<%=String.valueOf(isEntradaSJCS)%>" pintarEspacio="<%=String.valueOf(isEntradaSJCS)%>" elementos='<%=elems%>' clase="listaNonEdit">
 				
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_1' value='<%=registro.get("IDTURNO")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_2' value='<%=registro.get("GUARDIAS")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_3' value='<%=registro.get("VALIDARJUSTIFICACIONES")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_4' value='<%=registro.get("VALIDARINSCRIPCIONES")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_5' value='<%=registro.get("DESIGNADIRECTA")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_6' value='<%=registro.get("REPARTOPORPUNTOS")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_7' value=''>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_8' value=''>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_9' value='<%=registro.get("IDORDENACIONCOLAS")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_10' value='<%=o5%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_11' value='<%=registro.get("IDAREA")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_12' value='<%=registro.get("IDMATERIA")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_13' value='<%=registro.get("IDZONA")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_14' value='<%=o3%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_15' value='<%=o4%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_16' value='<%=o5%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_17' value='<%=registro.get("IDGRUPOFACTURACION")%>'>
-				
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_18' value=''>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_19' value=''>
-				
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_20' value='<%=registro.get("FECHASOLICITUD")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_21' value='<%=registro.get("OBSERVACIONESSOLICITUD")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_22' value='<%=registro.get("FECHAVALIDACION")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_23' value='<%=registro.get("OBSERVACIONESVALIDACION")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_24' value='<%=registro.get("FECHASOLICITUDBAJA")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_25' value='<%=registro.get("OBSERVACIONESBAJA")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_26' value='<%=registro.get("IDGRUPOFACTURACION")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_27' value='<%=registro.get("FECHABAJA")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_28' value='<%=registro.get("FECHADENEGACION")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_29' value=''>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_30' value='<%=registro.get("OBSERVACIONESVALBAJA")%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_1' name='oculto<%=String.valueOf(i)%>_1' name='oculto<%=String.valueOf(i)%>_1' value='<%=registro.get("IDTURNO")%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_2' name='oculto<%=String.valueOf(i)%>_2' value='<%=registro.get("GUARDIAS")%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_3' name='oculto<%=String.valueOf(i)%>_3' value='<%=registro.get("VALIDARJUSTIFICACIONES")%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_4' name='oculto<%=String.valueOf(i)%>_4' value='<%=registro.get("VALIDARINSCRIPCIONES")%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_5' name='oculto<%=String.valueOf(i)%>_5' value='<%=registro.get("DESIGNADIRECTA")%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_6' name='oculto<%=String.valueOf(i)%>_6' value='<%=registro.get("REPARTOPORPUNTOS")%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_7' name='oculto<%=String.valueOf(i)%>_7' value=''>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_8' name='oculto<%=String.valueOf(i)%>_8' value=''>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_9' name='oculto<%=String.valueOf(i)%>_9' value='<%=registro.get("IDORDENACIONCOLAS")%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_10' name='oculto<%=String.valueOf(i)%>_10' value='<%=o5%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_11' name='oculto<%=String.valueOf(i)%>_11' value='<%=registro.get("IDAREA")%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_12' name='oculto<%=String.valueOf(i)%>_12' value='<%=registro.get("IDMATERIA")%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_13' name='oculto<%=String.valueOf(i)%>_13' value='<%=registro.get("IDZONA")%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_14' name='oculto<%=String.valueOf(i)%>_14' value='<%=o3%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_15' name='oculto<%=String.valueOf(i)%>_15' value='<%=o4%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_16' name='oculto<%=String.valueOf(i)%>_16' value='<%=o5%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_17' name='oculto<%=String.valueOf(i)%>_17' value='<%=registro.get("IDGRUPOFACTURACION")%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_18' name='oculto<%=String.valueOf(i)%>_18' value=''>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_19' name='oculto<%=String.valueOf(i)%>_19' value=''>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_20' name='oculto<%=String.valueOf(i)%>_20' value='<%=registro.get("FECHASOLICITUD")%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_21' name='oculto<%=String.valueOf(i)%>_21' value='<%=registro.get("OBSERVACIONESSOLICITUD")%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_22' name='oculto<%=String.valueOf(i)%>_22' value='<%=registro.get("FECHAVALIDACION")%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_23' name='oculto<%=String.valueOf(i)%>_23' value='<%=registro.get("OBSERVACIONESVALIDACION")%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_24' name='oculto<%=String.valueOf(i)%>_24' value='<%=registro.get("FECHASOLICITUDBAJA")%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_25' name='oculto<%=String.valueOf(i)%>_25' value='<%=registro.get("OBSERVACIONESBAJA")%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_26' name='oculto<%=String.valueOf(i)%>_26' value='<%=registro.get("IDGRUPOFACTURACION")%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_27' name='oculto<%=String.valueOf(i)%>_27' value='<%=registro.get("FECHABAJA")%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_28' name='oculto<%=String.valueOf(i)%>_28' value='<%=registro.get("FECHADENEGACION")%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_29' name='oculto<%=String.valueOf(i)%>_29' value=''>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_30' name='oculto<%=String.valueOf(i)%>_30' value='<%=registro.get("OBSERVACIONESVALBAJA")%>'>
 				
 				<%if (!isEntradaSJCS){%>
 				<td ><%=registro.get("ABREVIATURA")%>&nbsp;</td>
@@ -524,12 +515,8 @@
 		<% } %>
 
 	
-		<script>
-				 
-				
-			
-	function solicitarbaja(fila) 
-	{
+	<script>		
+	function solicitarbaja(fila) {
 	   	document.FormASolicitarBaja.idInstitucion.value = <%=usr.getLocation()%>;
 	   	document.FormASolicitarBaja.idPersona.value = <%=request.getSession().getAttribute("idPersonaTurno")%>;
 	   
@@ -564,15 +551,10 @@
 	   	var resultado = ventaModalGeneral(document.FormASolicitarBaja.name,"G");
 	   	if (resultado=='MODIFICADO') {
 		  	refrescarLocal();
-	 	}
-	   	
-	   	
-	 }
-				 
-			
+	 	}	   	
+	}	
 				
-	function consultaInscripcion(fila) 
-	{
+	function consultaInscripcion(fila) {
 		document.FormAConsultar.idInstitucion.value = <%=usr.getLocation()%>;
 		document.FormAConsultar.idPersona.value = <%=request.getSession().getAttribute("idPersonaTurno")%>;
 	   
@@ -598,21 +580,13 @@
 		document.FormAConsultar.observacionesValBaja.value 		= document.getElementById(oValbaja).value;
 	   	document.FormAConsultar.fechaDenegacion.value 		= document.getElementById(fechaDenegacion).value;
 
-		document.FormAConsultar.observacionesDenegacion.value 		= document.getElementById(observacionesDenegacion).value;
-		
+		document.FormAConsultar.observacionesDenegacion.value 		= document.getElementById(observacionesDenegacion).value;		
 		
 	   	document.FormAConsultar.modo.value = "consultaInscripcion";
-	   	var resultado = ventaModalGeneral(document.FormAConsultar.name,"M");
-												
+	   	var resultado = ventaModalGeneral(document.FormAConsultar.name,"M");				
+	}
 				
-				 
-		}
-				
-				
-				
-				
-				function darDeBajaEnTodosLosTurnos(mostrarMensaje) 
-				{
+	function darDeBajaEnTodosLosTurnos(mostrarMensaje) {
 					/*
 					----ANTES-----
 					sub();
@@ -635,39 +609,34 @@
 				    if(resultado == "MODIFICADO") 
 				    	refrescarLocal();
 					// refrescarLocal();
-				}
+	}
 				
 				
-				 function buscar()
-				 {
+	function buscar() {
 					document.FormASolicitar.action		 = "<%=app%>/JGR_DefinirTurnosLetradoAction.do?granotm=<%=System.currentTimeMillis()%>";
 			 		document.FormASolicitar.modo.value = "buscarPor";
 			 		document.FormASolicitar.submit();
-				 }
+	}
 					
-				function accionSolicitar()
-				{
+	function accionSolicitar() {
 					document.FormASolicitar.modo.value	= "busquedaTurnosDisponibles";
 			   		var resultado = ventaModalGeneral(document.FormASolicitar.name,"G");
 				    if(resultado == "MODIFICADO") 
 				    	refrescarLocal();
-				}
+	}
 				
-				function refrescarLocal(incluirBajaLogica)
-				
-				{
-			
+	function refrescarLocal(incluirBajaLogica) {			
 					document.DefinirTurnosLetradoForm.action = "<%=app%>/JGR_DefinirTurnosLetrado.do";
 					if(incluirBajaLogica){
 						document.DefinirTurnosLetradoForm.incluirRegistrosConBajaLogica.value = "S";
 					}
 					document.DefinirTurnosLetradoForm.submit();
-				}
+	}
 		
 				
 
-				// Funcion que agrega el concepto de baja logica
-				function incluirRegBajaLogica(o) {
+	// Funcion que agrega el concepto de baja logica
+	function incluirRegBajaLogica(o) {
 					if (o.checked) {
 						document.DefinirTurnosLetradoForm.incluirRegistrosConBajaLogica.value = "S";
 					} else {
@@ -675,10 +644,9 @@
 					}
 					document.DefinirTurnosLetradoForm.modo.value = "abrirTurnosLimpiar";
 					document.DefinirTurnosLetradoForm.submit();
-				}
-	function mostrarFecha()
-	{
-		
+	}
+	
+	function mostrarFecha() {		
 		if(document.getElementById('fechaConsulta')){
 			if(document.DefinirTurnosLetradoForm.fechaConsulta && document.DefinirTurnosLetradoForm.fechaConsulta.value!=''&& document.DefinirTurnosLetradoForm.fechaConsulta.value!='sysdate'){
 				document.getElementById('fechaConsulta').value = document.DefinirTurnosLetradoForm.fechaConsulta.value;
@@ -689,16 +657,13 @@
 			}
 		}
 	}
-	function accionCalendario() 
-		{
+	
+	function accionCalendario() {
 			// Abrimos el calendario 
-			var resultado = showModalDialog("<html:rewrite page='/html/jsp/general/calendarGeneral.jsp'/>?valor="+ document.DefinirTurnosLetradoForm.fechaConsulta.value, document.DefinirTurnosLetradoForm.fechaConsulta,"dialogHeight:275px;dialogWidth:400px;help:no;scroll:no;status:no;");
-			if (resultado) {
-				 
-				 document.DefinirTurnosLetradoForm.fechaConsulta.value = resultado;
-				 document.getElementById('fechaConsulta').value = resultado;
+
+			if (document.getElementById('fechaConsulta').value!='') {
+				document.DefinirTurnosLetradoForm.fechaConsulta.value =document.getElementById('fechaConsulta').value;
 				 document.DefinirTurnosLetradoForm.modo.value = 'abrir';
-				 
 				 document.DefinirTurnosLetradoForm.submit();
 				
 		 	}else{
@@ -710,16 +675,16 @@
 						document.DefinirTurnosLetradoForm.submit();
 					}
 			} 
-		}
-</script>	
+	}
+	</script>	
 		<html:form action="/JGR_DefinirTurnosLetrado.do" method="post" target="">
 			<input type="hidden" name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>">
 			<html:hidden property="modo" value="" />
 			<html:hidden property="fechaConsulta"/>
 		</html:form>	
 		
-		<html:form action="/JGR_AltaTurnosGuardias"  name="FormASolicitar" type ="com.siga.gratuita.form.InscripcionTGForm">
-			<html:hidden property="modo"/>
+		<html:form action="/JGR_AltaTurnosGuardias" name="FormASolicitar" type ="com.siga.gratuita.form.InscripcionTGForm" styleId="FormASolicitar">
+			<html:hidden property="modo" />
 			<html:hidden property="idInstitucion" />
 			<html:hidden property="idPersona" />
 			<html:hidden property="idTurno" />
@@ -736,7 +701,7 @@
 			<html:hidden property="estadoPendientes"/>
 			<input type="hidden" name="actionModal" />
 	</html:form>
-	<html:form action="/JGR_SolicitarBajaTurno"  name="FormASolicitarBaja" type ="com.siga.gratuita.form.InscripcionTGForm">
+	<html:form action="/JGR_SolicitarBajaTurno" name="FormASolicitarBaja" type ="com.siga.gratuita.form.InscripcionTGForm" styleId="FormASolicitarBaja">
 			<html:hidden property="modo"/>
 			<html:hidden property="idInstitucion" />
 			<html:hidden property="idPersona" />
@@ -755,7 +720,7 @@
 			<input type="hidden" name="actionModal" />
 	</html:form>
 	
-	<html:form action="/JGR_BajaTurnos"  name="FormAConsultar" type ="com.siga.gratuita.form.InscripcionTGForm">
+	<html:form action="/JGR_BajaTurnos" name="FormAConsultar" type ="com.siga.gratuita.form.InscripcionTGForm" styleId="FormAConsultar">
 			<html:hidden property="modo"/>
 			<html:hidden property="idInstitucion" />
 			<html:hidden property="idPersona" />

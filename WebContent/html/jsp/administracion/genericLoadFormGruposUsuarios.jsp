@@ -18,11 +18,11 @@
 
 <html>
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
 		
-		<script type="text/jscript" language="JavaScript1.2">
-			function reloadPage()
-			{
+		<script type="text/javascript">
+			function reloadPage() {
 				var type = '<siga:Idioma key="<%=messageName%>"/>';
 				alert(type);   
 				var tab ='<%=app%>/listadoGruposUsuarios.do?mode=listing';

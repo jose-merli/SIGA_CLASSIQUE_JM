@@ -129,38 +129,38 @@
 	<title><siga:Idioma key="pys.gestionSolicitudes.titulo"/></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-	<script>
-	
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
 		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	
+	<script type="text/javascript">		
 	function incluirRegBajaLogica(o) {
 		if (o.checked) {
-			document.facturasClienteForm.incluirRegistrosConBajaLogica.value = "s";
-			
+			document.facturasClienteForm.incluirRegistrosConBajaLogica.value = "s";			
 		} else {
 			document.facturasClienteForm.incluirRegistrosConBajaLogica.value = "n";
 		}
-		document.facturasClienteForm.modo.value = "abrir";
-		
+		document.facturasClienteForm.modo.value = "abrir";		
 		document.facturasClienteForm.submit();
 	}
 	</script>
 
-		<!-- INICIO: TITULO Y LOCALIZACION -->
-		<!-- Escribe el título y localización en la barra de título del frame principal -->
+	<!-- INICIO: TITULO Y LOCALIZACION -->
+	<!-- Escribe el título y localización en la barra de título del frame principal -->
 		
 			
-		<% if (sTipo!=null && sTipo.equals("LETRADO")){%>
-		 <siga:Titulo 
-			titulo="censo.fichaCliente.facturacion.facturas.cabecera"
-			localizacion="censo.fichaLetrado.facturacion.localizacion"/>
-		<%}else{%>
-		<siga:TituloExt 
-			titulo="censo.fichaCliente.facturacion.facturas.cabecera" 
-			localizacion="censo.fichaCliente.facturacion.facturas.localizacion"/>
-		<%}%>
-		<!-- FIN: TITULO Y LOCALIZACION -->
+	<% if (sTipo!=null && sTipo.equals("LETRADO")){%>
+	 <siga:Titulo 
+		titulo="censo.fichaCliente.facturacion.facturas.cabecera"
+		localizacion="censo.fichaLetrado.facturacion.localizacion"/>
+	<%}else{%>
+	<siga:TituloExt 
+		titulo="censo.fichaCliente.facturacion.facturas.cabecera" 
+		localizacion="censo.fichaCliente.facturacion.facturas.localizacion"/>
+	<%}%>
+	<!-- FIN: TITULO Y LOCALIZACION -->
 </head>
 
 <body class="tablaCentralCampos">
@@ -168,57 +168,52 @@
 		<!-- ******* INFORMACION GENERAL CLIENTE ****** -->
 
     <table class="tablaTitulo" align="center" cellspacing=0>
-			<tr>
-				<td class="titulitosDatos">
-					<siga:Idioma key="censo.facturacion.facturas.literal.Cabecera"/> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombre)%> &nbsp;&nbsp;
-					<%if(!numero.equalsIgnoreCase("")){%>
-							<siga:Idioma key="censo.facturacion.facturas.literal.NColegiado"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(numero)%>
-					<%} 
-					else {%>
-					   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
-					<%}%>
-				</td>
-			</tr>
-		</table>
+		<tr>
+			<td class="titulitosDatos">
+				<siga:Idioma key="censo.facturacion.facturas.literal.Cabecera"/> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombre)%> &nbsp;&nbsp;
+				<%if(!numero.equalsIgnoreCase("")){%>
+				<siga:Idioma key="censo.facturacion.facturas.literal.NColegiado"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(numero)%>
+				<%} else {%>
+				<siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
+				<%}%>
+			</td>
+		</tr>
+	</table>
 		
 	<table cellspacing="0" cellpadding="0" width="100%">
-	<tr>
-			
+		<tr>			
 			<html:form action="/CEN_FacturasCliente.do" method="POST" target="_self">
-			<html:hidden property = "modo" value = ""/>
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
-			<input type="hidden" name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>">
-			<input type="hidden" name="idPersona" value="<%=SidPersona.toString()%>">
-			<input type="hidden" name="idInstitucion" value="<%=SidInstitucion.toString()%>">
-		</html:form>
-		
-		
-					
-		<%
-		String tamanosCol="";
-		String nombresCol="";
-		tamanosCol="10,12,20,12,12,12,12,6,";
-		nombresCol="censo.facturacion.facturas.literal.Fecha,censo.facturacion.facturas.literal.NumeroFactura,censo.facturacion.facturas.literal.Descripcion,censo.facturacion.facturas.literal.ImporteNeto,censo.facturacion.facturas.literal.ImporteIVA,censo.facturacion.facturas.literal.ImporteTotal,censo.facturacion.facturas.literal.ImportePagado,";
-%>
-		<siga:TablaCabecerasFijas 
-		   nombre="tablaDatos"
-		   borde="1"
-		   clase="tableTitle"
-		   nombreCol="<%=nombresCol %>"
-		   tamanoCol="<%=tamanosCol %>"
-		   alto="350"		   
-		   ajuste="80"
-		>
+				<html:hidden property = "modo" value = ""/>
+				<!-- RGG: cambio a formularios ligeros -->
+				<input type="hidden" id="filaSelD" name="filaSelD" />
+				<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD" />
+				<input type="hidden" name="actionModal" value="">
+				<input type="hidden" name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>">
+				<input type="hidden" name="idPersona" value="<%=SidPersona.toString()%>">
+				<input type="hidden" name="idInstitucion" value="<%=SidInstitucion.toString()%>">
+			</html:form>				
+			<%
+			String tamanosCol="";
+			String nombresCol="";
+			tamanosCol="10,12,20,12,12,12,12,6,";
+			nombresCol="censo.facturacion.facturas.literal.Fecha,censo.facturacion.facturas.literal.NumeroFactura,censo.facturacion.facturas.literal.Descripcion,censo.facturacion.facturas.literal.ImporteNeto,censo.facturacion.facturas.literal.ImporteIVA,censo.facturacion.facturas.literal.ImporteTotal,censo.facturacion.facturas.literal.ImportePagado,";
+			%>
+			<siga:TablaCabecerasFijas 
+			   nombre="tablaDatos"
+			   borde="1"
+			   clase="tableTitle"
+			   nombreCol="<%=nombresCol %>"
+			   tamanoCol="<%=tamanosCol %>"
+			   alto="350"		   
+			   ajuste="80">
 			
-			
-			
-		<% if ((resultado == null) || (resultado.size() == 0)) {   %>
-						 		<br>
-						   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-						 		<br>
-		<% } else { %>
+			<% if ((resultado == null) || (resultado.size() == 0)) {   %>
+			<br/>
+			<p class="titulitos" style="text-align:center" >
+				<siga:Idioma key="messages.noRecordFound"/>
+			</p>
+			<br/>
+			<% } else { %>
 					<%	 for (int i = 1; i <= resultado.size(); i++) {
 							
 							 Row fila = (Row) resultado.get(i-1);
@@ -241,33 +236,29 @@
 
    	 		%>
 									<siga:FilaConIconos fila='<%=""+i%>' botones="C" visibleEdicion="false" visibleBorrado="false" pintarEspacio="no" clase="listaNonEdit"> 
-									<td><!-- Datos ocultos tabla -->
-											<input type="hidden" id="oculto<%=i%>_1" value="<%=idInstitucion%>">
-											<input type="hidden" id="oculto<%=i%>_2" value="<%=idFactura%>">
-											<input type="hidden" id="oculto<%=i%>_3" value="<%=total%>">
-											<input type="hidden" id="oculto<%=i%>_4" value="<%=totalPagado%>">
-											<input type="hidden" id="oculto<%=i%>_5" value="<%=accion%>">
-											<input type="hidden" id="oculto<%=i%>_6" value="<%=idPersona.toString()%>">
-											
-											<%=UtilidadesString.mostrarDatoJSP(fecha)%>
-									</td>
-									<td><%=UtilidadesString.mostrarDatoJSP(numFactura)%></td>
-									<td><%=UtilidadesString.mostrarDatoJSP(descripcion)%></td>
-									<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(totalNeto.doubleValue()))%> &euro; </td>
-									<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(totalIva.doubleValue()))%> &euro; </td>
-									<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(total.doubleValue()))%> &euro; </td>
-									<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(totalPagado.doubleValue()))%> &euro; </td>
+										<td><!-- Datos ocultos tabla -->
+												<input type="hidden" id="oculto<%=i%>_1" name="oculto<%=i%>_1" value="<%=idInstitucion%>">
+												<input type="hidden" id="oculto<%=i%>_2" name="oculto<%=i%>_2" value="<%=idFactura%>">
+												<input type="hidden" id="oculto<%=i%>_3" name="oculto<%=i%>_3" value="<%=total%>">
+												<input type="hidden" id="oculto<%=i%>_4" name="oculto<%=i%>_4" value="<%=totalPagado%>">
+												<input type="hidden" id="oculto<%=i%>_5" name="oculto<%=i%>_5" value="<%=accion%>">
+												<input type="hidden" id="oculto<%=i%>_6" name="oculto<%=i%>_6" value="<%=idPersona.toString()%>">											
+												<%=UtilidadesString.mostrarDatoJSP(fecha)%>
+										</td>
+										<td><%=UtilidadesString.mostrarDatoJSP(numFactura)%></td>
+										<td><%=UtilidadesString.mostrarDatoJSP(descripcion)%></td>
+										<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(totalNeto.doubleValue()))%> &euro; </td>
+										<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(totalIva.doubleValue()))%> &euro; </td>
+										<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(total.doubleValue()))%> &euro; </td>
+										<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(totalPagado.doubleValue()))%> &euro; </td>
 									</siga:FilaConIconos>
 			<%	
 			 			} // if
 				 	 }  // for  
 				} // else
 			%>
-
 			</siga:TablaCabecerasFijas>
-		<%if ( hm.get("datos")!=null && !hm.get("datos").equals("")){%>
-	  
-	  						
+		<%if ( hm.get("datos")!=null && !hm.get("datos").equals("")){%>  						
 			<siga:Paginador totalRegistros="<%=totalRegistros%>" 
 								registrosPorPagina="<%=registrosPorPagina%>" 
 								paginaSeleccionada="<%=paginaSeleccionada%>" 
@@ -277,36 +268,32 @@
 								divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:30px; left: 0px"
 								distanciaPaginas=""
 								action="<%=action%>" />
-
-	 	<%}%>
-		
-	</tr>
+	 	<%}%>		
+		</tr>
 	</table>
 	<div style="position:absolute; left:200px;bottom:50px;z-index:2;">
-			<table align="center" border="0">
-				<tr>
-					<td class="labelText">
-						<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal"/>
-						
-						<% if (bIncluirBajaLogica) { %>
-							<input type="checkbox" name="incluirRegistrosConBajaLogica" onclick="incluirRegBajaLogica(this);" checked>
-						<% } else { %>
-							<input type="checkbox" name="incluirRegistrosConBajaLogica" onclick="incluirRegBajaLogica(this);">
-						<% } %>
-					</td>
-				</tr>
-			</table>
-		</div>
-		
+		<table align="center" border="0">
+			<tr>
+				<td class="labelText">
+					<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal"/>
+					<% if (bIncluirBajaLogica) { %>
+					<input type="checkbox" name="incluirRegistrosConBajaLogica" onclick="incluirRegBajaLogica(this);" checked>
+					<% } else { %>
+					<input type="checkbox" name="incluirRegistrosConBajaLogica" onclick="incluirRegBajaLogica(this);">
+					<% } %>
+				</td>
+			</tr>
+		</table>
+	</div>		
 
 	<siga:ConjBotonesAccion botones="<%=botonesAccion%>" modo='' clase="botonesDetalle"/>
 
-<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
+	<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
 
 
-<!-- INICIO: SUBMIT AREA -->
-<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
+	<!-- INICIO: SUBMIT AREA -->
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<!-- FIN: SUBMIT AREA -->
 
 </body>
 </html>

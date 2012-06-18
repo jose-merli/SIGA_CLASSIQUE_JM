@@ -96,7 +96,7 @@
 %>	
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp"type="text/javascript"></script>	
@@ -135,7 +135,7 @@ function marca(i,tipo, todos ) {
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 		
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 	
 		<!-- INICIO: SCRIPTS BOTONES -->
@@ -155,12 +155,12 @@ function marca(i,tipo, todos ) {
 						
 				MantenimientoCertificadosCamposForm.filasSelect.value=values;
 				MantenimientoCertificadosCamposForm.submit();
-				window.returnValue="MODIFICADO";
+				window.top.returnValue="MODIFICADO";
 			}
 			//-- Asociada al boton Cerrar -->
 			function accionCerrar() 
 			{
-				window.close();
+				window.top.close();
 			}
 
 		</script>

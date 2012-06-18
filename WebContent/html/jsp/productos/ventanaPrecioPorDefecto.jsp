@@ -69,7 +69,7 @@
 		</style>
 
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
 		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>			
 		
@@ -186,8 +186,8 @@
 					datos[0] = 1;
 					datos[1] = document.forms[0].precio.value.replace(/,/,".");
 					datos[2] = document.forms[0].periodicidad.value;
-					window.returnValue = datos;
-					window.close();
+					window.top.returnValue = datos;
+					window.top.close();
 				}	
 			}
 	
@@ -204,8 +204,8 @@
 				datos[0] = 0;
 				datos[1] = "";
 				datos[2] = "";
-				window.returnValue=datos;
-				window.close();
+				window.top.returnValue=datos;
+				window.top.close();
 			}
 
 		</script>

@@ -311,8 +311,9 @@ public class TagFila extends TagSupport
 			
 			aux += "</a>";*/
 	aux = "<img id=\"iconoboton_"+ accion + this.fila + "\" src=\"" + path + "/html/imagenes/b" + accion + "_off.gif\" " +
-	  "style=\"cursor:hand;\" " +
+	  "style=\"cursor:pointer;\" " +
 			  "alt=\"" + UtilidadesString.getMensajeIdioma(usrBean, "general.boton." + accion) + "\" " +
+			  "title=\"" + UtilidadesString.getMensajeIdioma(usrBean, "general.boton." + accion) + "\" " +
 			  "name=\"" + accion + "_" + this.fila + "\" " +
 			  //"name=\"iconoFila\" " +
 //			  "width='26' " +
@@ -329,6 +330,7 @@ public class TagFila extends TagSupport
 		else {
 		 	aux = "<img id=\"iconoboton_"+ accion + this.fila + "\"  src=\"" + path + "/html/imagenes/b" + accion + "_disable.gif\" " +
 	     		"alt=\"" + UtilidadesString.getMensajeIdioma(usrBean, "general.boton." + accion) + "\" " +
+	     		"title=\"" + UtilidadesString.getMensajeIdioma(usrBean, "general.boton." + accion) + "\" " +
 				  "name=\"" + accion + "_" + this.fila + "\" " +
 	     		//"name=\"iconoFila\" " +
 //				  "width='26' " +

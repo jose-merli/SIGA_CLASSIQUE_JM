@@ -46,7 +46,7 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	<!-- TITULO Y LOCALIZACION -->
 	<title><siga:Idioma key="censo.consultaDatosGenerales.cabecera"/></title>
@@ -54,8 +54,8 @@
 		var pretitulo = "<siga:Idioma key="general.ventana.cgae"/>";
 		var tit = "<siga:Idioma key="censo.fichaCliente.cabecera"/>";
 		var loc = "<siga:Idioma key="censo.fichaCliente.localizacion"/>";
-		top.setTitulo(pretitulo, tit);
-		top.setLocalizacion(loc);
+		setTitulo(pretitulo, tit);
+		setLocalizacion(loc);
 	</script>
 
 	

@@ -22,7 +22,7 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 
 	<!-- Validaciones en Cliente -->
@@ -38,8 +38,8 @@
 			var datos = new Array();
 			datos[0] = 0;		// Boton cerrar
 			datos[1] = "";
-			window.returnValue=datos;
-			window.close();
+			window.top.returnValue=datos;
+			window.top.close();
 		}	
 	
 		<!-- Asociada al boton GuardarCerrar -->
@@ -69,8 +69,8 @@
 			datos[0] = 1;								// Boton aceptar
 			datos[1] = importeAnticipado;		// Valor importe
 
-			window.returnValue = datos;
-			window.close();
+			window.top.returnValue = datos;
+			window.top.close();
 		}		
 	</script>	
 </head>

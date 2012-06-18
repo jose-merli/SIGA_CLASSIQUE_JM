@@ -32,6 +32,11 @@ public class TagFecha extends TagSupport {
     private String styleId;
     private String campoCargarFechaDesde;
     private String disabled;
+	private String preFunction;
+	private String postFunction;
+	private String posicionX;
+	private String posicionY;
+	private String readOnly;
     
 	public void setValorInicial(String valorInicial) {
 		this.valorInicial = valorInicial;
@@ -56,7 +61,101 @@ public class TagFecha extends TagSupport {
 			
 			out.println("<!-- input de fecha con validacion -->");
 			out.println("<script language=\"JavaScript\">");
+			out.println("jQuery.noConflict(); ");
+			out.println("jQuery(function() {");
+			out.println("jQuery.maxZIndex = jQuery.fn.maxZIndex = function(opt) {");
+			out.println("  ");
+			out.println("	  var def = { inc: 10, group: \"*\" };");
+			out.println("	    jQuery.extend(def, opt);");
+			out.println("	     var zmax = 0;");
+			out.println("	    jQuery(def.group).each(function() {");
+			out.println("	        var cur = parseInt(jQuery(this).css('z-index'));");
+			out.println("	   zmax = cur > zmax ? cur : zmax;");
+			out.println("	     });");
+			out.println("	    if (!this.jquery)");
+			out.println("	         return zmax;");
+			out.println("	    return this.each(function() {");
+			out.println("	          zmax += def.inc;");
+			out.println("	         jQuery(this).css(\"z-index\", zmax);");
+			out.println("	      });");
+			out.println("	  	}");
+			out.println("jQuery(\"#invoke" + this.nombreCampo + "\").click(function() {  ");
+			out.println("	jQuery( '#"+ this.nombreCampo +"' ).datepicker(\"dialog\", \"\", updateDate,{");
+			//out.println("	showOn: 'button',");			
+			out.println("	buttonImage: '/SIGA/html/imagenes/calendar.gif',");		
+			out.println("	buttonImageOnly: true,");			
+			out.println("	changeMonth: true,");	
+			out.println("	showButtonPanel: true,");
+			if ((this.valorInicial != "")&&(this.valorInicial != null))
+				out.println("	defaultDate: '"+ this.valorInicial +"',");	
+			out.println("	changeYear: true,");	
+			out.println("	closeText: 'X', showTrigger: '#calImg' ,alignment: 'bottomRight',showAnim:'drop',");
+			if ((this.disabled != null))
+				if(this.disabled.equals("true"))
+					out.println("	disabled: true,");
+			out.println("		  currentText: 'Hoy',");
+			out.println("		  firstDay: 1,");
+			if ((this.campoCargarFechaDesde != "")&&(this.campoCargarFechaDesde != null)){
+				out.println("//var lockDate = new Date(jQuery('#"+ this.campoCargarFechaDesde +"').datepicker('getDate'));");
+				out.println("//		  minDate: lockDate,");
+			}
+			out.println("		  dateFormat: 'dd/mm/yy',");
+			out.println("		  monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],");
+			out.println("	      monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],");
+			out.println("         dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],");
+			out.println("		  dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],");
+			out.println("		  dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],");
+			if ((this.getPostFunction() != "")&&(this.getPostFunction() != null)){
+				out.println("		  onClose: function(dateText, inst) { "+this.getPostFunction()+"}, ");
+			}
+			out.println("		  beforeShow: function( input ) { jQuery('#ui-datepicker-div').maxZIndex(); ");
+			if ((this.getPreFunction() != "")&&(this.getPreFunction() != null)){
+				out.println("		 "+this.getPreFunction()+" ");
+			}
+			out.println("		 	 setTimeout(function() { ");  
+			out.println("		 				   var buttonPane = jQuery( input )   ");
+		    out.println("		 	     .datepicker( \"widget\" )   ");
+		    out.println("		 	     .find( \".ui-datepicker-buttonpane\" ); ");  
+		   	 	  
+		    out.println("		 	var btn = jQuery('<BUTTON class=\"ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all\">Limpiar</BUTTON>');");   
+		    out.println("		   btn.unbind(\"click\").bind(\"click\", function () {  "); 
+		    out.println("          jQuery.datepicker._clearDate( input );   });   ");
+		    out.println("          btn.appendTo( buttonPane );");  
+			out.println("          	 }, 1 );      },   ");
+			out.println("		  onChangeMonthYear: function( input ) {  ");
+			out.println("		 	 setTimeout(function() { ");  
+			out.println("		 				   var buttonPane = jQuery( input )   ");
+		    out.println("		 	     .datepicker( \"widget\" )   ");
+		    out.println("		 	     .find( \".ui-datepicker-buttonpane\" ); ");  
+		   	 	  
+		    out.println("		 	var btn = jQuery('<BUTTON class=\"ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all\">Limpiar</BUTTON>');");   
+		    out.println("		   btn.unbind(\"click\").bind(\"click\", function () {  "); 
+		    out.println("          jQuery.datepicker._clearDate( input );   });   ");
+		    out.println("          btn.appendTo( buttonPane );");  
+			out.println("          	 }, 1 );      }   ");
 			
+			out.println("	},");
+			if ((this.posicionX != "")&&(this.posicionX != null))
+				out.println("["+this.posicionX+",");
+			else
+				out.println("[350,");
+			
+			if ((this.posicionY != "")&&(this.posicionY != null))
+				out.println(this.posicionY+"]);");
+			else
+				out.println("150]);");
+			//out.println("jQuery('#calImg').click(function() {");
+			//out.println("		jQuery( '#"+ this.nombreCampo +"' ).datepicker('dialog',reformatDate);");
+			//out.println("});");
+			//out.println("jQuery( '#"+ this.nombreCampo +"' ).datepicker('dialog',reformatDate);");
+			out.println("function updateDate(date) {");
+			out.println("	jQuery( '#"+ this.nombreCampo +"').val(date);");
+			out.println("}");
+			
+			out.println("});");
+			out.println("});");			
+
+
 			out.println("function validaFecha"+ this.nombreCampo +"(field){ ");
 			
 			out.println("	var checkstr = \"0123456789\";");
@@ -146,8 +245,9 @@ public class TagFecha extends TagSupport {
 			out.println("	}");
 			out.println("}");
 			out.println("</script>");
+
 			out.println(""); // Linea vacia por legibilidad del codigo
-			out.println("<input type=\"text\" name=\"" + this.nombreCampo + "\" ");
+			out.println("<input type=\"text\" name=\"" + this.nombreCampo + "\" id=\"" + this.nombreCampo + "\" ");
 			// out.println("	property=\"" + this.nombreCampo + "\" ");
 			if(anchoTextField!=null && !anchoTextField.equals("")){
 				out.println("	size=\""+anchoTextField+"\""+" maxlength=\"10\" ");
@@ -157,13 +257,6 @@ public class TagFecha extends TagSupport {
 			if ((this.valorInicial != "")&&(this.valorInicial != null)){
 				out.println("		alert(this.valorInicial); ");
 				out.println("	value=\"" + this.valorInicial + "\" ");
-			}
-			else
-			{
-				if ((this.campoCargarFechaDesde != null) && (!this.campoCargarFechaDesde.equals("")))
-				{
-					out.println("	onfocus=\"this.value=document.forms[0]." + this.campoCargarFechaDesde + ".value;\" ");
-				}
 			}
 			if ((this.styleId != null)&&(this.styleId.equals(""))){
 				out.println("		styleId = =\"" + this.styleId + "\" ");
@@ -177,12 +270,34 @@ public class TagFecha extends TagSupport {
 				out.println("		class = 'box' ");
 				
 			}
-			
-			out.println("	onblur=\"return validaFecha"+ this.nombreCampo +"(" + this.nombreCampo + ");\"/> ");
+			if ((this.readOnly != null)){
+				if(this.readOnly.equals("true"))
+					out.println("		readOnly='true' ");
+			}
+			if(this.getPreFunction()!=null && !this.getPreFunction().equals("")){
+				out.println("onfocus=\"return "+	this.getPreFunction()+"\"");
+			}
+			if(this.getPostFunction()!=null && !this.getPostFunction().equals("")){
+				out.println("	onblur=\""+	this.getPostFunction()+"return validaFecha"+ this.nombreCampo +"(" + this.nombreCampo + ");\"/> ");
+			}else{
+				out.println("	onblur=\"return validaFecha"+ this.nombreCampo +"(" + this.nombreCampo + ");\"/>");
+			}
+			if ((this.disabled != null)){
+				if(this.disabled.equals("true"))
+					out.println("<input type=\"hidden\" name=\"" + this.nombreCampo + "\" id=\"" + this.nombreCampo + "\"" );
+							if(this.valorInicial!=null && !this.valorInicial.equals(""))		
+								out.println(" value=\"" +this.valorInicial + "\" />");
+							else
+								out.println("  />");
+			}else{
+				out.println("<a id=\"invoke" + this.nombreCampo + "\" title=\"\" href=\"#\"><img src=\"/SIGA/html/imagenes/calendar.gif\" border=\"0\"> </a>");
+			}
+			//out.println("/> ");
 			out.println(""); // Linea vacia por legibilidad del codigo
 		}catch (Exception e){
 			e.printStackTrace();
 		}
+
 		return EVAL_BODY_INCLUDE;	 	 	
 	}
 	public String getAnchoTextField() {
@@ -203,4 +318,35 @@ public class TagFecha extends TagSupport {
 	public void setDisabled(String disabled) {
 		this.disabled = disabled;
 	}
+	public String getReadOnly() {
+		return readOnly;
+	}
+	public void setReadOnly(String readOnly) {
+		this.readOnly = readOnly;
+	}
+	public String getPreFunction() {
+		return preFunction;
+	}
+	public void setPreFunction(String preFunction) {
+		this.preFunction = preFunction;
+	}
+	public String getPostFunction() {
+		return postFunction;
+	}
+	public void setPostFunction(String postFunction) {
+		this.postFunction = postFunction;
+	}
+	public String getPosicionX() {
+		return posicionX;
+	}
+	public void setPosicionX(String posicionX) {
+		this.posicionX = posicionX;
+	}
+	public String getPosicionY() {
+		return posicionY;
+	}
+	public void setPosicionY(String posicionY) {
+		this.posicionY = posicionY;
+	}
+
 }

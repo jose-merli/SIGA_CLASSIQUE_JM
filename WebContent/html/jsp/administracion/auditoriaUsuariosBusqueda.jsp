@@ -30,9 +30,12 @@
 
 <html>
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+			
 		
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 		<siga:Titulo titulo="administracion.auditoriaUsuarios.titulo" localizacion="menu.auditoriaUsuarios.localizacion"/>
 		
@@ -97,13 +100,13 @@
 	       					<siga:Idioma key="administracion.auditoriaUsuarios.literal.fechaDesde"/>
 	       				</td>
 						<td>
-							<html:text styleClass="box" property="fechaDesde" size="8" maxlength="10" readonly="true"/><a href='javascript://'onClick="return showCalendarGeneral(fechaDesde);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
+							<siga:Fecha  nombreCampo= "fechaDesde"/>
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="administracion.auditoriaUsuarios.literal.fechaHasta"/>
 						</td>
 						<td>
-							<html:text styleClass="box" property="fechaHasta" size="8" maxlength="10" readonly="true"/><a href='javascript://'onClick="return showCalendarGeneral(fechaHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
+							<siga:Fecha  nombreCampo= "fechaHasta"/>
 						</td>
 	       			</tr>
 				</html:form>

@@ -64,20 +64,22 @@
 	}
 	
 	boolean bIncluirBajaLogica = UtilidadesString.stringToBoolean((String)request.getAttribute("bIncluirRegistrosConBajaLogica"));	
-%>	
-	
+%>
+
 <html>
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+<link id="default" rel="stylesheet" type="text/css"
+	href="<%=app%>/html/jsp/general/stylesheet.jsp" />
+<link rel="stylesheet"
+	href="<%=app%>/html/js/themes/base/jquery.ui.all.css" />
 
-	<!-- SCRIPTS LOCALES -->
-	<script language="JavaScript">
-	
-	
- 
+
+<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+
+<!-- SCRIPTS LOCALES -->
+<script language="JavaScript">
 	function solicitar(fila) {
 		var datos;
 		datos = document.getElementById('tablaDatosDinamicosD');
@@ -88,121 +90,110 @@
 		var flag = true;
 		j = 1;
 		while (flag) {
-		  var aux = 'oculto' + fila + '_' + j;
-		  var oculto = document.getElementById(aux);
-		  if (oculto == null)  { flag = false; }
-		  else { datos.value = datos.value + oculto.value + ','; }
-		  j++;
+			var aux = 'oculto' + fila + '_' + j;
+		  	var oculto = document.getElementById(aux);
+		  	if (oculto == null)  { 
+		  		flag = false;
+		  	} else { 
+		  		datos.value = datos.value + oculto.value + ','; 
+		    }
+		  	j++;
 		}
 		datos.value = datos.value + "%"
-    document.consultaDireccionesForm.modo.value = "solicitarModificacion";
-
-    ventaModalGeneral(document.forms[0].name,"G");
- }
+    	document.consultaDireccionesForm.modo.value = "solicitarModificacion";
+		ventaModalGeneral(document.forms[0].name,"G");
+	}
  
-		function accionNuevo() {		
-		  document.consultaDireccionesForm.modo.value = "nuevo";
-  	  var rc = ventaModalGeneral(document.consultaDireccionesForm.name, "G");
-  	  if (rc != null) { 
+	function accionNuevo() {		
+		document.consultaDireccionesForm.modo.value = "nuevo";
+  	  	var rc = ventaModalGeneral(document.consultaDireccionesForm.name, "G");
+  	  	if (rc != null) { 
   	 	 	if (rc == "MODIFICADO") {
   	 	 		refrescarLocal();
+  	  		}
   	  	}
-  	  }
-		}
+	}
 		
-		function refrescarLocal() {
-		
-			//document.location.reload();
-			document.consultaDireccionesForm.modo.value = "abrir";
-			document.consultaDireccionesForm.submit();
-		}
+	function refrescarLocal() {
+		//document.location.reload();
+		document.consultaDireccionesForm.modo.value = "abrir";
+		document.consultaDireccionesForm.submit();
+	}
 
-		function incluirRegBajaLogica(o)
-		{
-			if (o.checked) {
-				document.consultaDireccionesForm.incluirRegistrosConBajaLogica.value = "s";
-			}
-			else {
-				document.consultaDireccionesForm.incluirRegistrosConBajaLogica.value = "n";
-			}
-			document.consultaDireccionesForm.modo.value = "abrir";
-			
-			document.consultaDireccionesForm.submit();
+	function incluirRegBajaLogica(o) {
+		if (o.checked) {
+			document.consultaDireccionesForm.incluirRegistrosConBajaLogica.value = "s";
+		} else {
+			document.consultaDireccionesForm.incluirRegistrosConBajaLogica.value = "n";
 		}
+		document.consultaDireccionesForm.modo.value = "abrir";
+		document.consultaDireccionesForm.submit();
+	}
 		
 	</script>
-		<!-- INICIO: TITULO Y LOCALIZACION -->
-		<!-- Escribe el título y localización en la barra de título del frame principal -->
-		
-		<% if (sTipo!=null && sTipo.equals("LETRADO")){%>
-		 <siga:Titulo 
-			titulo="censo.fichaCliente.datosDirecciones.cabecera"
-			localizacion="censo.fichaLetrado.localizacion"/>
-		<%}else{%>
-		 <siga:TituloExt 
-			titulo="censo.fichaCliente.datosDirecciones.cabecera" 
-			localizacion="censo.fichaCliente.datosDirecciones.localizacion"/>
-		<%}%>
-		
-		<!-- FIN: TITULO Y LOCALIZACION -->
+<!-- INICIO: TITULO Y LOCALIZACION -->
+<!-- Escribe el título y localización en la barra de título del frame principal -->
+
+<% if (sTipo!=null && sTipo.equals("LETRADO")){%>
+<siga:Titulo titulo="censo.fichaCliente.datosDirecciones.cabecera"
+	localizacion="censo.fichaLetrado.localizacion" />
+<%}else{%>
+<siga:TituloExt titulo="censo.fichaCliente.datosDirecciones.cabecera"
+	localizacion="censo.fichaCliente.datosDirecciones.localizacion" />
+<%}%>
+
+<!-- FIN: TITULO Y LOCALIZACION -->
 
 </head>
 
 <body class="tablaCentralCampos">
-	
-		<!-- ******* INFORMACION GENERAL CLIENTE ****** -->
-    <table class="tablaTitulo" align="center" cellspacing=0>
-		<html:form method="post" action="/CEN_ConsultasDirecciones.do">
-		
+
+	<!-- ******* INFORMACION GENERAL CLIENTE ****** -->
+	<table class="tablaTitulo" align="center" cellspacing=0>
+		<html:form method="post" action="/CEN_ConsultasDirecciones.do" styleId="consultaDireccionesForm">
 			<!-- Campo obligatorio -->
-			<html:hidden property = "modo" value = ""/>
-			<input type="hidden" name="nombreUsuario" value= "<%=(String)request.getAttribute("nombrePersona")%>"/>
-			<input type="hidden" name="numeroUsuario" value= "<%=(String)request.getAttribute("numero")%>"/>
-			<input type='hidden' name="idPersona" 		value= "<%=String.valueOf((Long)request.getAttribute("idPersona"))%>"/>	
-			<input type='hidden' name="idInstitucion" value= "<%=String.valueOf((Integer)request.getAttribute("idInstitucion"))%>"/>
-			<input type='hidden' name="accion" 				value= "<%=String.valueOf(request.getAttribute("accion"))%>">
+			<html:hidden property="modo" value="" />
+			<input type="hidden" name="nombreUsuario" value="<%=(String)request.getAttribute("nombrePersona")%>" />
+			<input type="hidden" name="numeroUsuario" value="<%=(String)request.getAttribute("numero")%>" />
+			<input type='hidden' name="idPersona" value="<%=String.valueOf((Long)request.getAttribute("idPersona"))%>" />
+			<input type='hidden' name="idInstitucion" value="<%=String.valueOf((Integer)request.getAttribute("idInstitucion"))%>" />
+			<input type='hidden' name="accion" value="<%=String.valueOf(request.getAttribute("accion"))%>">
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
+			<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD">
+			<input type="hidden" name="filaSelD" id="filaSelD">
 			<input type="hidden" name="actionModal" value="">
 			<input type="hidden" name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>">
 		</html:form>
-		
-	<tr>
-		<td class="titulitosDatos">
-			<siga:Idioma key="censo.consultaDirecciones.literal.titulo1"/> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombre)%> &nbsp;&nbsp;
-		    <%if(!numero.equalsIgnoreCase("")){%>
-				<%if (estadoColegial!=null && !estadoColegial.equals("")){%>
-					<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>
-					 <%= UtilidadesString.mostrarDatoJSP(numero)  %> &nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>)
-				 <%}else{%> 
-				 	(<siga:Idioma key="censo.busquedaClientes.literal.sinEstadoColegial"/>) 
-				 <%}%>
-			<%} 
-			else {%>
-				   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
-			<%}%>
-		</td>
-	</tr>
-	</table>	
 
-		<siga:TablaCabecerasFijas 
-  			nombre="tablaDatos"
-   			borde="1"
-   			estilo=""
-   			clase="tableTitle"
-   			nombreCol=",censo.consultaDirecciones.literal.tipoDireccion,censo.consultaDirecciones.literal.direccion,censo.datosDireccion.literal.cp,censo.consultaDirecciones.literal.poblacion,censo.consultaDirecciones.literal.telefono1,censo.datosDireccion.literal.fax1,censo.datosDireccion.literal.movil,censo.consultaDirecciones.literal.correo,censo.consultaDirecciones.literal.preferente,"
-			tamanoCol="10,13,5,12,8,8,8,16,7,14" 
-  			alto = "360"
-  			ajuste="70"
-  			modal="G">
- 	<%	 		
+		<tr>
+			<td class="titulitosDatos"><siga:Idioma
+					key="censo.consultaDirecciones.literal.titulo1" /> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombre)%>
+				&nbsp;&nbsp; <%if(!numero.equalsIgnoreCase("")){%> <%if (estadoColegial!=null && !estadoColegial.equals("")){%>
+				<siga:Idioma key="censo.fichaCliente.literal.colegiado" /> <%= UtilidadesString.mostrarDatoJSP(numero)  %>
+				&nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>) <%}else{%>
+				(<siga:Idioma key="censo.busquedaClientes.literal.sinEstadoColegial" />)
+				<%}%> <%} 
+			else {%> <siga:Idioma key="censo.fichaCliente.literal.NoColegiado" />
+				<%}%></td>
+		</tr>
+	</table>
+
+	<siga:TablaCabecerasFijas nombre="tablaDatos" borde="1" estilo=""
+		clase="tableTitle"
+		nombreCol=",censo.consultaDirecciones.literal.tipoDireccion,censo.consultaDirecciones.literal.direccion,censo.datosDireccion.literal.cp,censo.consultaDirecciones.literal.poblacion,censo.consultaDirecciones.literal.telefono1,censo.datosDireccion.literal.fax1,censo.datosDireccion.literal.movil,censo.consultaDirecciones.literal.correo,censo.consultaDirecciones.literal.preferente,"
+		tamanoCol="10,13,5,12,8,8,8,16,7,14" alto="360" ajuste="70" modal="G">
+		<%	 		
  		if(vDatos == null || vDatos.size()<1 )
  			{ 	
 	 %>
-	 		<br><br>
-	   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-	 		<br><br>	 		
-	 <%		
+		<br>
+		<br>
+		<p class="titulitos" style="text-align: center">
+			<siga:Idioma key="messages.noRecordFound" />
+		</p>
+		<br>
+		<br>
+		<%		
 	 		}
 	 	else
 	 		{	 
@@ -261,58 +252,59 @@
 				if(htData.get(CenDireccionesBean.C_CORREOELECTRONICO)!=null && !htData.get(CenDireccionesBean.C_CORREOELECTRONICO).toString().equalsIgnoreCase("")){
 					correo = htData.get(CenDireccionesBean.C_CORREOELECTRONICO).toString();
 				}
-	%> 						
-				<siga:FilaConIconos fila='<%=String.valueOf(i)%>' botones='<%=iconos%>' modo = '<%=accion%>' elementos='<%=elems%>' clase="listaNonEdit">
-					<td>
-						<input type='hidden' name='oculto<%=String.valueOf(i)%>_1' value='<%=htData.get(CenDireccionesBean.C_IDDIRECCION)%>'>
-						<input type='hidden' name='oculto<%=String.valueOf(i)%>_2' value='<%=htData.get(CenTipoDireccionBean.C_IDTIPODIRECCION)%>'>
-						<input type='hidden' name='oculto<%=String.valueOf(i)%>_3' value='<%=descripcionTipoDir%>'>
-						<%=UtilidadesString.mostrarDatoJSP(htData.get(CenTipoDireccionBean.T_NOMBRETABLA + "." + CenTipoDireccionBean.C_DESCRIPCION))%>
-  				</td>
-  				<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_DOMICILIO))%></td>
-  				<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_CODIGOPOSTAL))%></td>
-  				<td><%=UtilidadesString.mostrarDatoJSP(poblacionFinal)%></td>
-  				<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_TELEFONO1))%></td>
-  				<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_FAX1))%></td>
-  				<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_MOVIL))%></td>
-  				<% if(!correo.equalsIgnoreCase("")){%>		
-  					<td nowrap><a href="mailto:<%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_CORREOELECTRONICO))%>"><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_CORREOELECTRONICO))%></a></td>
-  				<%}else{ %>
-  					<td><%=UtilidadesString.mostrarDatoJSP(correo)%></td>
-  				<%} %>
-  				<td><%=UtilidadesString.mostrarDatoJSP(preferente)%></td> 
-  			   										
-				</siga:FilaConIconos>
- <%		}
- 	}%>  			
-  			</siga:TablaCabecerasFijas>   			
-  			  
-<% if (!usr.isLetrado()){%>
-	<div style="position:absolute; left:400px;bottom:35px;z-index:2;">
+	%>
+		<siga:FilaConIconos fila='<%=String.valueOf(i)%>'
+			botones='<%=iconos%>' modo='<%=accion%>' elementos='<%=elems%>'
+			clase="listaNonEdit">
+			<td>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_1' name='oculto<%=String.valueOf(i)%>_1' value='<%=htData.get(CenDireccionesBean.C_IDDIRECCION)%>'> 
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_2' name='oculto<%=String.valueOf(i)%>_2' value='<%=htData.get(CenTipoDireccionBean.C_IDTIPODIRECCION)%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_3' name='oculto<%=String.valueOf(i)%>_3' value='<%=descripcionTipoDir%>'> <%=UtilidadesString.mostrarDatoJSP(htData.get(CenTipoDireccionBean.T_NOMBRETABLA + "." + CenTipoDireccionBean.C_DESCRIPCION))%>
+			</td>
+			<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_DOMICILIO))%></td>
+			<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_CODIGOPOSTAL))%></td>
+			<td><%=UtilidadesString.mostrarDatoJSP(poblacionFinal)%></td>
+			<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_TELEFONO1))%></td>
+			<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_FAX1))%></td>
+			<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_MOVIL))%></td>
+			<% if(!correo.equalsIgnoreCase("")){%>
+			<td nowrap><a
+				href="mailto:<%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_CORREOELECTRONICO))%>"><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_CORREOELECTRONICO))%></a></td>
+			<%}else{ %>
+			<td><%=UtilidadesString.mostrarDatoJSP(correo)%></td>
+			<%} %>
+			<td><%=UtilidadesString.mostrarDatoJSP(preferente)%></td>
+
+		</siga:FilaConIconos>
+		<%		}
+ 	}%>
+	</siga:TablaCabecerasFijas>
+
+	<% if (!usr.isLetrado()){%>
+	<div style="position: absolute; left: 400px; bottom: 35px; z-index: 2;">
 		<table align="center" border="0">
 			<tr>
-				<td class="labelText">
-					<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal"/>
-					
-					<% if (bIncluirBajaLogica) { %>
-						<input type="checkbox" name="bajaLogica" onclick="incluirRegBajaLogica(this);" checked>
-					<% } else { %>
-						<input type="checkbox" name="bajaLogica" onclick="incluirRegBajaLogica(this);">
-					<% } %>
-				</td>
+				<td class="labelText"><siga:Idioma
+						key="censo.consultaRegistrosBajaLogica.literal" /> <% if (bIncluirBajaLogica) { %>
+					<input type="checkbox" name="bajaLogica"
+					onclick="incluirRegBajaLogica(this);" checked> <% } else { %>
+					<input type="checkbox" name="bajaLogica"
+					onclick="incluirRegBajaLogica(this);"> <% } %></td>
 			</tr>
 		</table>
 	</div>
-<%}%>	
-  			  
-	<siga:ConjBotonesAccion botones="<%=botones%>" modo="<%=accion%>" clase="botonesDetalle"/>
+	<%}%>
 
-<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
-	
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
-	
-	</body>
+	<siga:ConjBotonesAccion botones="<%=botones%>" modo="<%=accion%>"
+		clase="botonesDetalle" />
+
+	<%@ include file="/html/jsp/censo/includeVolver.jspf"%>
+
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"
+		style="display: none"></iframe>
+	<!-- FIN: SUBMIT AREA -->
+
+</body>
 </html>

@@ -56,7 +56,7 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
@@ -83,8 +83,8 @@
 			var datos = new Array();
 			datos[0] = 0;		// Boton cerrar
 			datos[1] = "";
-			window.returnValue=datos;
-			window.close();
+			window.top.returnValue=datos;
+			window.top.close();
 		}	
 	
 		<!-- Asociada al boton GuardarCerrar -->
@@ -122,8 +122,8 @@
 			datos[1] = document.GestionSolicitudesForm.pagoTarjetaNumero1.value + document.GestionSolicitudesForm.pagoTarjetaNumero2.value + document.GestionSolicitudesForm.pagoTarjetaNumero3.value + document.GestionSolicitudesForm.pagoTarjetaNumero4.value;
 			datos[2] = document.GestionSolicitudesForm.pagoTarjetaAno.value + document.GestionSolicitudesForm.pagoTarjetaMes.value;
 	
-			window.returnValue = datos;
-			window.close();
+			window.top.returnValue = datos;
+			window.top.close();
 			*/
 		}		
 	</script>	

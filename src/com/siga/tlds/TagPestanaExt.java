@@ -144,7 +144,7 @@ public class TagPestanaExt extends TagSupport {
 			out.println("<!-- INICIO: TABLA DE PESTAÑAS -->");
 
 			
-			out.println("<script language=\"JavaScript\">");
+			out.println("<script type=\"text/javascript\">");
 			out.println("function pulsarId(id, target) {");
 			out.println("	var objLink = document.getElementById(id);");
 			out.println("	sub();");
@@ -152,25 +152,26 @@ public class TagPestanaExt extends TagSupport {
 			out.println("}");
 			
 			out.println("function pulsar(objLink, target) {");
-			out.println("	if (window.semaforoPestana) {");
-			out.println("		window.semaforoPestana=false;");
-			out.println("		var dir = objLink.action;");
-			out.println("		activateLink(objLink);");
-			out.println("		document.frames[target].location=dir;");
+			out.println("	var dir = objLink.getAttribute('action');");
+			out.println("	activateLink(objLink);");
+			out.println("	for(i=0; i < window.frames.length; i++){ ");
+			out.println("		if(window.frames[i].name == target){ ");
+			out.println("			window.frames[i].location=dir;");
+			out.println("		} ");
 			out.println("	} ");
-			out.println("return false;");
+			out.println("	return false;");
 			out.println("}");
 			
 			out.println("function activateLink(objLink) {");
-			out.println("var links=document.getElementsByTagName('a');");
-			out.println("for(i=0; i<links.length;i++) {");
-			out.println("var lnk=links[i];");
-			out.println("if(lnk==objLink) {");
-			out.println("lnk.className='here';");
-			out.println("} else {");
-			out.println("lnk.className='';");
-			out.println("}");
-			out.println("}");
+			out.println("   var links=document.getElementsByTagName('a');");
+			out.println("   for(i=0; i<links.length;i++) {");
+			out.println("       var lnk=links[i];");
+			out.println("       if(lnk==objLink) {");
+			out.println("           $(lnk).addClass('here');");
+			out.println("       } else {");
+			out.println("           $(lnk).removeClass('here');");
+			out.println("       }");
+			out.println("   }");
 			out.println("}");
 
 			out.println("function activarPestana() {");
@@ -186,7 +187,7 @@ public class TagPestanaExt extends TagSupport {
 			out.println("}");
 			
 			
-			out.println("</SCRIPT>");
+			out.println("</script>");
 
 			out.println("<div style=\" position:relative; left:0px; width=100%; height=30px; top:0px; "+ hidden +"\" id=\""+iddiv+"\">");
 			out.println("<table  class=\"tablaLineaPestanasArriba\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\">");
@@ -197,10 +198,9 @@ public class TagPestanaExt extends TagSupport {
 			out.println("<table class=\"pest\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">");
 			out.println("<tr>");
 			if (elements!=null) {
-				for (int i=0;i<elements.length;i++) 
-				{		
+				for (int i=0;i<elements.length;i++) {		
 					if (!elements[i].mostrar) continue;
-					out.print("<td><a id=\"");
+					out.print("<td class=\"pestanaTD\"><a id=\"");
 					out.print(elements[i].name);
 					out.print("\" name=\"pestanaExt\" href=\"#\" action=\"");
 					out.print(path+"/"+elements[i].url+".do"+"?granotmp="+System.currentTimeMillis());
@@ -220,9 +220,7 @@ public class TagPestanaExt extends TagSupport {
 					out.print("</a></td>");
 				}
 			}
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
@@ -241,11 +239,8 @@ public class TagPestanaExt extends TagSupport {
 			out.println("<td></td>");
 			out.println("</tr>");
 			out.println("</table>"); 
-			out.println("</div>");
-	
-		}
-		catch (Exception e)
-		{
+			out.println("</div>");	
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return EVAL_PAGE; 			// continua la ejecucion de la pagina

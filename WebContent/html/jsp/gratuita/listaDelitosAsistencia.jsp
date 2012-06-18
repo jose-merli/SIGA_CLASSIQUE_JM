@@ -46,9 +46,11 @@
 
 <!-- HEAD -->
 <head>
-
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	<script>
 		function refrescarLocal(){
@@ -65,13 +67,14 @@
 	<html:form action="<%=sAction%>" method="post" target="resultado">
 		<html:hidden property = "modo" value = ""/>
 		<!-- Datos de la pestanha -->
-		<html:hidden name="pestanaDelitoAsistenciaForm" property="anio" />
-		<html:hidden name="pestanaDelitoAsistenciaForm" property="numero" />
-		<input type="hidden" name="esFichaColegial" value="<%=sEsFichaColegial%>"/>
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
-		</html:form>	
+		<html:hidden name="pestanaDelitoAsistenciaForm" property="anio" styleId="anio" />
+		<html:hidden name="pestanaDelitoAsistenciaForm" property="numero" styleId="numero"/>
+		<input type="hidden" id="esFichaColegial" name="esFichaColegial" value="<%=sEsFichaColegial%>"/>
+		<!-- RGG: cambio a formularios ligeros -->
+		<input type="hidden" id="filaSelD" name="filaSelD"/>
+		<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD"/>
+		<input type="hidden" name="actionModal" value=""/>
+	</html:form>	
 		
 		
 	<!-- INICIO: RESULTADO -->
@@ -81,10 +84,8 @@
 			   clase="tableTitle"		   
 			   nombreCol="gratuita.mantenimientoTablasMaestra.literal.delito,"
 			   tamanoCol="90,10"
-		   			alto="100%"
-
-			   modal="P"
-		>
+		   	   alto="100%"
+			   modal="P" >
 	<% if (vDelitosAsistencia!= null && !vDelitosAsistencia.isEmpty()) { %>
 			<%
 				String descripcion="", idDelito="";
@@ -103,7 +104,7 @@
 			-->
 	       	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="B" visibleConsulta="no" visibleEdicion="no" clase="listaNonEdit" modo="<%=modopestanha%>" >
 				<td>
-						<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idDelito%>' >
+						<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_1' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idDelito%>' />
 						<%=descripcion%>
 				</td>
 			</siga:FilaConIconos>

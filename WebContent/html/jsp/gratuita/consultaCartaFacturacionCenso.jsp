@@ -61,16 +61,17 @@
 
 <!-- HEAD -->
 <head>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
-<link id="default" rel="stylesheet" type="text/css"
-	href="<%=app%>/html/jsp/general/stylesheet.jsp">
-<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-
-<!-- INICIO: TITULO Y LOCALIZACION -->
-<!-- Escribe el título y localización en la barra de título del frame principal -->
-<siga:Titulo titulo="censo.fichaCliente.sjcs.to.facturacion.titulo"
-	localizacion="censo.fichaCliente.sjcs.to.facturacion.localizacion" />
-<!-- FIN: TITULO Y LOCALIZACION -->
+	<!-- INICIO: TITULO Y LOCALIZACION -->
+	<!-- Escribe el título y localización en la barra de título del frame principal -->
+	<siga:Titulo titulo="censo.fichaCliente.sjcs.to.facturacion.titulo"
+		localizacion="censo.fichaCliente.sjcs.to.facturacion.localizacion" />
+	<!-- FIN: TITULO Y LOCALIZACION -->
 
 </head>
 
@@ -91,8 +92,8 @@
 
 
 	<!-- RGG: cambio a formularios ligeros -->
-	<input type="hidden" name="filaSelD">
-	<input type="hidden" name="tablaDatosDinamicosD" value="">
+	<input type="hidden" id="filaSelD" name="filaSelD">
+	<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD" value="">
 	<input type="hidden" name="actionModal" value="">
 
 
@@ -138,10 +139,12 @@
 		visibleConsulta="no" visibleEdicion="no" visibleBorrado="no"
 		elementos='<%=elemento%>' pintarEspacio="no" clase="listaNonEdit">
 		
-		<input type="hidden" name="idPersona<%="" + (i + 1)%>"
+		<input type="hidden" id="idPersona<%="" + (i + 1)%>"
+			name="idPersona<%="" + (i + 1)%>"
 			value="<%=(String)fila.get("IDPERSONA")%>">
 
-		<input type="hidden" name="idFacturacion<%="" + (i + 1)%>"
+		<input type="hidden" id="idFacturacion<%="" + (i + 1)%>"
+			name="idFacturacion<%="" + (i + 1)%>"
 			value="<%=(String)fila.get("IDFACTURACION")%>">
 
 		<td><%=UtilidadesString.mostrarDatoJSP((String)fila.get("FECHADESDE"))+" - "+UtilidadesString.mostrarDatoJSP((String)fila.get("FECHAHASTA"))%></td>
@@ -161,7 +164,7 @@
 
 	<!-- FIN: ZONA DE REGISTROS -->
 </siga:TablaCabecerasFijas>
-<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
+<html:form action="/INF_InformesGenericos" method="post" target="submitArea">
 	<html:hidden property="idInstitucion" value = "<%=idInstitucion%>"/>
 	<html:hidden property="idTipoInforme" value="CFACT"/>
 	<html:hidden property="enviar" value="0"/>
@@ -192,9 +195,9 @@
 		idFacturacion = document.getElementById(idFacturacion).value;
 		idInstitucion = document.CartaFacturacionCensoForm.idInstitucion.value;
 		datos = "idInstitucion=="+idInstitucion +"##idFacturacion=="+idFacturacion+"##idPersona=="+idPersona +"##idTipoInforme==CFACT"+"%%%";
-		document.InformesGenericosForm.datosInforme.value =datos;
+		document.forms["InformesGenericosForm"].datosInforme.value =datos;
 		if(document.getElementById("informeUnico").value=='1'){
-			document.InformesGenericosForm.submit();
+			document.forms["InformesGenericosForm"].submit();
 		}else{
 		
 			var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
@@ -212,7 +215,7 @@
 	}
 	function accionCerrar() 
 	{		
-		window.close();
+		window.top.close();
 	}
    	
 

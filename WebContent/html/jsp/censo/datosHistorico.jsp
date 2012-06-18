@@ -85,8 +85,10 @@
 <!-- HEAD -->
 	<head>
 
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+		
+		
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
 		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>			
 
@@ -103,7 +105,7 @@
 			titulo="censo.busquedaHistorico.literal.titulo1" 
 			localizacion="censo.busquedaHistorico.literal.titulo1"/-->
 		<!-- FIN: TITULO Y LOCALIZACION -->
-	
+		<script>alert('datosHistorico');</script>
 	</head>
 
 	<body>
@@ -184,20 +186,15 @@
 										</td>
 										<td width="25%">							
 											<% if (remitente.equalsIgnoreCase("insertar")){ %>
-												<html:text property="fechaEntrada" size="10" styleClass="box" readOnly="true"></html:text>
-												<a href='javascript://' onClick="return showCalendarGeneral(fechaEntrada);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-													<img src="<%=app%>/html/imagenes/calendar.gif" alt="gratuita.listadoCalendario.literal.seleccionarFecha"  border="0">
-												</a>						
-						  					<% } else { %>
+												<siga:Fecha  nombreCampo= "fechaEntrada"/>
+											<% } else { %>
 					  							<% if (remitente.equalsIgnoreCase("modificar")){ %>
 			  										<% String fecha=GstDate.getFormatedDateShort("",row.getString(CenHistoricoBean.C_FECHAENTRADA)); %>
-			  										<html:text property="fechaEntrada" size="10" styleClass="box" value="<%=fecha%>" readOnly="true"></html:text>										
-													<a href='javascript://' onClick="return showCalendarGeneral(fechaEntrada);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-														<img src="<%=app%>/html/imagenes/calendar.gif" alt="gratuita.listadoCalendario.literal.seleccionarFecha"  border="0">
-													</a>						
+			  										<siga:Fecha  nombreCampo= "fechaEntrada" valorInicial="<%=fecha%>"/>
+			  															
 						  					 	<% } else { %>
 											 		<% String fecha=GstDate.getFormatedDateShort("",row.getString(CenHistoricoBean.C_FECHAENTRADA));%>	
-													<html:text property="fechaEntrada" size="" styleClass="boxConsulta" value="<%=fecha%>" readOnly="true"></html:text>
+													<siga:Fecha  nombreCampo= "fechaEntrada" valorInicial="<%=fecha%>" disabled="true"/>
 											 	<% } %>				  					 
 							  				<% } %>														
 										</td>
@@ -208,20 +205,16 @@
 										</td>
 										<td width="25%">							
 											<% if (remitente.equalsIgnoreCase("insertar")){%>
-												<html:text property="fechaEfectiva" size="10" styleClass="box" readOnly="true"></html:text>
-												<a href='javascript://' onClick="return showCalendarGeneral(fechaEfectiva);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-													<img src="<%=app%>/html/imagenes/calendar.gif" alt="gratuita.listadoCalendario.literal.seleccionarFecha"  border="0">
-												</a>						
+												<siga:Fecha  nombreCampo= "fechaEfectiva"/>
+																		
 						  					<% } else { %>
 			  									<% if (remitente.equalsIgnoreCase("modificar")){ %>
 			  										<% String fecha=GstDate.getFormatedDateShort("",row.getString(CenHistoricoBean.C_FECHAEFECTIVA));%>
-			  										<html:text property="fechaEfectiva" size="10" styleClass="box" value="<%=fecha%>" readOnly="true"></html:text>										
-													<a href='javascript://' onClick="return showCalendarGeneral(fechaEfectiva);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-														<img src="<%=app%>/html/imagenes/calendar.gif" alt="gratuita.listadoCalendario.literal.seleccionarFecha"  border="0">
-													</a>						
+			  										<siga:Fecha  nombreCampo= "fechaEfectiva" valorInicial="<%=fecha%>"/>
+			  																
 				  							 	<% }else{ %>
 									 				<% String fecha=GstDate.getFormatedDateShort("",row.getString(CenHistoricoBean.C_FECHAEFECTIVA));%>	
-													<html:text property="fechaEfectiva" size="" styleClass="boxConsulta" value="<%=fecha%>" readOnly="true"></html:text>
+													<siga:Fecha  nombreCampo= "fechaEfectiva" valorInicial="<%=fecha%>" disabled="true"/>
 												 <% } %>				  					 				  					 
 				  							<% } %>														
 										</td>

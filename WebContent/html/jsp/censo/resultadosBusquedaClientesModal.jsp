@@ -85,7 +85,7 @@
 	<!-- HEAD -->
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		<!-- Validaciones en Cliente -->
@@ -160,15 +160,16 @@
 			<!-- Campo obligatorio -->
 			<html:hidden property ="modo" value = "" />
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
-			<html:hidden property="numeroColegiado" value=""/>
-			<html:hidden property="idInstitucion" value=""/>
-			<html:hidden property="idPersona" value=""/>
-			<html:hidden property="nif" value=""/>
-			<html:hidden property="nombrePersona" value=""/>
-			<html:hidden property="apellido1" value=""/>
-			<html:hidden property="apellido2" value=""/>
+			<input type="hidden" name="filaSelD" id="filaSelD" />
+			<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD"/>
+			<input type="hidden" name="actionModal" value="" />
+			<html:hidden property="numeroColegiado" styleId="numeroColegiado" value=""/>
+			<html:hidden property="idInstitucion" styleId="idInstitucion" value=""/>
+			<html:hidden property="idPersona" styleId="idPersona" value=""/>
+			<html:hidden property="nif" styleId="nif" value=""/>
+			<html:hidden property="nombrePersona" styleId="nombrePersona" value=""/>
+			<html:hidden property="apellido1" styleId="apellido1" value=""/>
+			<html:hidden property="apellido2" styleId="apellido2" value=""/>
 		</html:form>
 		<%
 			String nombresCol = "";
@@ -259,11 +260,7 @@
 						ncolegiado = UtilidadesString.mostrarDatoJSP(ncomunitario);
 					else if(ncolegiado!=null && !ncolegiado.equals(""))
 						ncolegiado = UtilidadesString.mostrarDatoJSP(ncolegiado);
-					estadoColegial = UtilidadesString.mostrarDatoJSP(UtilidadesMultidioma.getDatoMaestroIdioma((String) registro.get("ESTADOCOLEGIAL"), 
-																												usrbean));
-		
-					
-					
+					estadoColegial = UtilidadesString.mostrarDatoJSP(UtilidadesMultidioma.getDatoMaestroIdioma((String) registro.get("ESTADOCOLEGIAL"), usrbean));					
 			 		%>
 						<!-- REGISTRO  -->
 						<!-- Esto es un ejemplo de dos columnas de datos, lo que significa
@@ -273,17 +270,16 @@
 						<siga:FilaConIconos fila="<%=cont %>" botones="" modo="<%=modo %>" 
 							elementos="<%=elems%>" visibleBorrado="no" visibleEdicion="no" 
 							visibleConsulta="no" clase="listaNonEdit"
-							pintarEspacio="no"
-							>
+							pintarEspacio="no">
 							<td>
 								<!-- campos hidden -->
-								<input type="hidden" name="oculto<%=cont%>_1" value="<%=idPersona%>">
-								<input type="hidden" name="oculto<%=cont%>_2" value="<%=idInstitucion%>">
-								<input type="hidden" name="oculto<%=cont%>_3" value="<%=ncolegiado%>">
-								<input type="hidden" name="oculto<%=cont%>_4" value="<%=nif%>">
-								<input type="hidden" name="oculto<%=cont%>_5" value="<%=nombre%>">
-								<input type="hidden" name="oculto<%=cont%>_6" value="<%=apellido1%>">
-								<input type="hidden" name="oculto<%=cont%>_7" value="<%=apellido2%>">
+								<input type="hidden" id="oculto<%=cont%>_1" name="oculto<%=cont%>_1" value="<%=idPersona%>">
+								<input type="hidden" id="oculto<%=cont%>_2" name="oculto<%=cont%>_2" value="<%=idInstitucion%>">
+								<input type="hidden" id="oculto<%=cont%>_3" name="oculto<%=cont%>_3" value="<%=ncolegiado%>">
+								<input type="hidden" id="oculto<%=cont%>_4" name="oculto<%=cont%>_4" value="<%=nif%>">
+								<input type="hidden" id="oculto<%=cont%>_5" name="oculto<%=cont%>_5" value="<%=nombre%>">
+								<input type="hidden" id="oculto<%=cont%>_6" name="oculto<%=cont%>_6" value="<%=apellido1%>">
+								<input type="hidden" id="oculto<%=cont%>_7" name="oculto<%=cont%>_7" value="<%=apellido2%>">
 								<%=nif%>
 							</td>
 							<%

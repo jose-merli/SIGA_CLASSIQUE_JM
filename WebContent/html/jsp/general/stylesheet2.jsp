@@ -130,6 +130,12 @@ legend {
 	margin-top:0px;
 }
 
+a.disabled {
+	opacity: 0.5;
+  	pointer-events: none;
+  	cursor: default;
+}
+
 .valorTop {
 	text-align: left;
 	margin: auto;
@@ -996,18 +1002,17 @@ A.imageLink:active {
 
 
 .posicionPrincipal {
-	position:absolute; width:1000px; height:600; z-index:3; top: 102px; left: 0px  ;
+	position:absolute; width:1000px; height:600px; z-index:3; top: 102px; left: 0px;
 	border-bottom: 0px solid #<%=src.get("color.labeltable")%>;
 	border-left: 0px solid #<%=src.get("color.labeltable")%>;
 	border-right: 0px solid #<%=src.get("color.labeltable")%>;
 	border-top: 0px solid #<%=src.get("color.labeltable")%>;
 	margin:0px;
-	margin-top:3px; 
-	
+	margin-top:3px; 	
 }
 
 .posicionTitulo { 
-	position:absolute; left:0px; width=1000; top:80px; z-index: 5;
+	position:absolute; left:0px; width:1000px; top:80px; z-index: 5;
 }
 	
 

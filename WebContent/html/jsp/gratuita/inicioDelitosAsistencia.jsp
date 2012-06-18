@@ -55,8 +55,11 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
@@ -100,10 +103,10 @@
 		<html:hidden property = "modo" value = ""/>
 		<html:hidden property = "actionModal" value = ""/>			
 		<!-- Datos de la pestanha -->
-		<html:hidden name="pestanaDelitoAsistenciaForm" property="anio" />
-		<html:hidden name="pestanaDelitoAsistenciaForm" property="numero" />
-		<html:hidden name="pestanaDelitoAsistenciaForm" property="delito" />
-		<input type="hidden" name="esFichaColegial" value="<%=sEsFichaColegial%>"/>
+		<html:hidden name="pestanaDelitoAsistenciaForm" property="anio" styleId="anio" />
+		<html:hidden name="pestanaDelitoAsistenciaForm" property="numero" styleId="numero" />
+		<html:hidden name="pestanaDelitoAsistenciaForm" property="delito" styleId="delito" />
+		<input type="hidden" name="esFichaColegial" id="esFichaColegial" value="<%=sEsFichaColegial%>"/>
 	</html:form>
 	
 
@@ -123,17 +126,19 @@
 					class="frameGeneral">
 	</iframe>
 
-	<div style="position:absolute; width:60%;left:200px;bottom:32px;z-index:0;">
+	<div style="position:absolute; width:60%;left:200px;bottom:32px;z-index:2;">
 		<table class="tablaCampos" align="center" border="0">
 		<tr>
 			<td class="labelText">
 				<siga:Idioma key="gratuita.general.literal.comentariosDelitosFaltas"/>
 			</td>
-			<td>
+			<td style="width: 50%">
 			  <% if(modopestanha != null && modopestanha.equalsIgnoreCase("ver")){%>
-				<textarea name="delitoAux" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)"  id="delitoAux" cols="60" rows="3" style="overflow:auto" class="boxConsulta" readonly="true"></textarea>
+				<textarea name="delitoAux" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" 
+					id="delitoAux" cols="60" rows="3" style="overflow:auto" class="boxConsulta" readonly="true"></textarea>
 			  <%}else{ %>
-			    <textarea name="delitoAux" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)"  id="delitoAux" cols="60" rows="3" style="overflow:auto" class="box"></textarea> 
+			    <textarea name="delitoAux" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" 
+			    	id="delitoAux" cols="60" rows="3" style="overflow:auto" class="box"></textarea> 
 			  <%}%>	
 			</td>
 		</tr>
@@ -146,28 +151,26 @@
 		String sClasePestanas = esFichaColegial ? "botonesDetalle3" : "botonesDetalle";
 %>
 
-	<siga:ConjBotonesAccion botones="<%=botonesAccion %>"  clase="botonesDetalle" modo="<%=modopestanha%>"/>	
+	<siga:ConjBotonesAccion botones="<%=botonesAccion %>" clase="botonesDetalle" modo="<%=modopestanha%>"/>	
 		
 	<!-- INICIO: SCRIPTS BOTONES ACCION -->
 	<script language="JavaScript">
 
 		<!-- Funcion asociada al boton accionRestablecer -->
-		function accionRestablecer() 
-		{
+		function accionRestablecer() {
+			document.getElementById("delitoAux").value = "";
 			document.forms[0].reset();
 		}		
 
 		<!-- Funcion asociada al refresco -->
-		function refrescarLocal() 
-		{
+		function refrescarLocal() {
 			document.forms[0].target = '_self';
 			document.forms[0].modo.value = "abrirAvanzada";
 			document.forms[0].submit();
 		}		
 
 		<!-- Funcion asociada a boton buscar -->
-		function buscar() 
-		{
+		function buscar() {
 <%			if (esFichaColegial) {%>
 				document.forms[0].action = "/SIGA/JGR_DelitosAsistenciaLetrado.do";
 <%			} else { %>
@@ -180,8 +183,7 @@
 		}		
 
 		<!-- Funcion asociada a boton Nuevo -->
-		function accionNuevo() 
-		{		
+		function accionNuevo() {		
 <%			if (esFichaColegial) {%>
 				document.forms[0].action = "/SIGA/JGR_DelitosAsistenciaLetrado.do";
 <%			} else { %>
@@ -195,8 +197,7 @@
 		}
 
 		<!-- Funcion asociada a boton Guardar -->
-		function accionGuardar() 
-		{
+		function accionGuardar() {
 			sub();		
 <%			if (esFichaColegial) {%>
 				document.forms[0].action = "/SIGA/JGR_DelitosAsistenciaLetrado.do";
@@ -213,8 +214,7 @@
 			document.forms[0].submit();
 		}
 
-		function accionVolver()
-		{
+		function accionVolver() {
 			<%
 			// indicamos que es boton volver
 			ses.setAttribute("esVolver","1");

@@ -112,8 +112,13 @@
 
 <!-- HEAD -->
 <head>
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	
+		
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
 </head>
 
@@ -213,7 +218,7 @@
 				<siga:Idioma key='gratuita.busquedaAsistencias.literal.fechaAsistencia'/>&nbsp;(*)
 			</td>	
 			<td >
-				<html:text name="AsistenciasForm" property="fechaHora" size="10" maxlength="10" styleClass="box" value="<%=fecha%>"  readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="showCalendarGeneral(fechaHora);rellenarComboLetrado();fin();" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+			 <siga:Fecha nombreCampo="fechaHora" valorInicial="<%=fecha%>"></siga:Fecha>
 			</td>
 			<td   class="labelText">
 				<siga:Idioma key='gratuita.nuevaAsistencia.literal.hora'/>&nbsp;
@@ -311,7 +316,7 @@
 		// Funcion asociada a boton limpiar -->
 		function accionCerrar() 
 		{		
-			window.close();
+			window.top.close();
 		}
 		function refrescarLocal() 
 		{		

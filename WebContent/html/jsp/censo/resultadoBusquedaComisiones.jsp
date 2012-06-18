@@ -47,26 +47,27 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<title><siga:Idioma key="gratuita.listadoZonas.literal.listadoZonas"/></title>
 	
 	<script language="JavaScript">
-	
- 
  </script>
 </head>
 
 <body >
-	<html:form action="/CEN_GestionarComisiones.do" method="POST" target="submitArea">
-			<input type="hidden" name="modo" value="modificar">
-			<input type="hidden" name="datosModificados" value="">
+	<html:form action="/CEN_GestionarComisiones.do" method="POST" target="submitArea" styleId="BusquedaComisionesForm">
+			<input type="hidden" id="modo" name="modo" value="modificar">
+			<input type="hidden" id="datosModificados" name="datosModificados" value="">
 			
 
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<input type="hidden" id="filaSelD" name="filaSelD">
+			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
+			<input type="hidden" id="actionModal" name="actionModal" value="">
 
 			
 			
@@ -116,13 +117,13 @@
 			 
 				<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' botones="<%=botones%>" visibleBorrado="no" visibleEdicion="no" pintarEspacio="no" clase="listaNonEdit" >
 					<td>
-					     <input type="hidden" name="oculto<%=i+1%>_1" value="<%=(b.get(CenDatosCVBean.C_IDINSTITUCION))%>">
-					     <input type="hidden" name="oculto<%=i+1%>_2" value="<%=(b.get(CenDatosCVBean.C_IDPERSONA))%>"> 
-						 <input type="hidden" name="oculto<%=i+1%>_3" value="<%=(b.get(CenDatosCVBean.C_IDCV))%>"> 
-						 <input type="hidden" name="oculto<%=i+1%>_4" value="<%=(b.get(CenDatosCVBean.C_IDTIPOCV))%>"> 
-						 <input type="hidden" name="oculto<%=i+1%>_5" value="<%=(c_subTipo1)%>"> 
-						 <input type="hidden" name="oculto<%=i+1%>_6" value="<%=(c_subTipo2)%>"> 
-						 <input type="hidden" name="oculto<%=i+1%>_7" value="<%=UtilidadesString.mostrarDatoJSP(b.get("NCOLEGIADO"))%>">
+					     <input type="hidden" id="oculto<%=i+1%>_1" name="oculto<%=i+1%>_1" value="<%=(b.get(CenDatosCVBean.C_IDINSTITUCION))%>">
+					     <input type="hidden" id="oculto<%=i+1%>_2" name="oculto<%=i+1%>_2" value="<%=(b.get(CenDatosCVBean.C_IDPERSONA))%>"> 
+						 <input type="hidden" id="oculto<%=i+1%>_3" name="oculto<%=i+1%>_3" value="<%=(b.get(CenDatosCVBean.C_IDCV))%>"> 
+						 <input type="hidden" id="oculto<%=i+1%>_4" name="oculto<%=i+1%>_4" value="<%=(b.get(CenDatosCVBean.C_IDTIPOCV))%>"> 
+						 <input type="hidden" id="oculto<%=i+1%>_5" name="oculto<%=i+1%>_5" value="<%=(c_subTipo1)%>"> 
+						 <input type="hidden" id="oculto<%=i+1%>_6" name="oculto<%=i+1%>_6" value="<%=(c_subTipo2)%>"> 
+						 <input type="hidden" id="oculto<%=i+1%>_7" name="oculto<%=i+1%>_7" value="<%=UtilidadesString.mostrarDatoJSP(b.get("NCOLEGIADO"))%>">
 						 						 
 						<%=UtilidadesString.mostrarDatoJSP(b.get("APELLIDOS"))%>
 					</td>				

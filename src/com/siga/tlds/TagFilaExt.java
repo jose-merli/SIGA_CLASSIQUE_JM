@@ -96,9 +96,10 @@ public class TagFilaExt extends TagFila {
 		if (permitido) {
 			//Si trae label es que quiere poner un boton con texto
 			aux = "<img id=\"iconoboton_"+ accion + this.fila + "\" src=\"" + path + "/html/imagenes/b" + icono + "_off.gif\" " +
-				  "style=\"cursor:hand;\" " +
+				  "style=\"cursor:pointer;\" " +
 				  "alt=\"" + UtilidadesString.getMensajeIdioma(usrBean, alt) + "\" " +
 				  "name=\"iconoFila\" " +
+				  "title=\"" + UtilidadesString.getMensajeIdioma(usrBean, alt) + "\" " +
 				  "border=\"0\" " +
 				  "onClick=\" selectRow(" + this.fila + "); "+ accion + "(" + this.fila + "); \" " +
 				  "onMouseOut=\"MM_swapImgRestore()\" " +
@@ -108,6 +109,7 @@ public class TagFilaExt extends TagFila {
 		else {
 			aux = "<img id=\"iconoboton_"+ accion + this.fila + "\"  src=\"" + path + "/html/imagenes/b" + icono + "_disable.gif\" " +
 				  "alt=\"" + UtilidadesString.getMensajeIdioma(usrBean, alt) + "\" " +
+				  "title=\"" + UtilidadesString.getMensajeIdioma(usrBean, alt) + "\" " +
 				  "name=\"" + accion + "_" + this.fila + "\" " +
 				  "border=\"0\"" +
 				  ">";

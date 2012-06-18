@@ -142,59 +142,52 @@
 <!-- HEAD -->
 <head>
 
-<link id="default" rel="stylesheet" type="text/css"
-	href="<%=app%>/html/jsp/general/stylesheet.jsp">
-<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-
-<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
-<!-- Validaciones en Cliente -->
-<!-- El nombre del formulario se obtiene del struts-config -->
-<html:javascript formName="/CEN_BusquedaClientes.do"
-	staticJavascript="false" />
-<script src="<%=app%>/html/js/validacionStruts.js"
-	type="text/javascript"></script>
-<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
-
-<!-- INICIO: TITULO Y LOCALIZACION -->
-<!-- Escribe el título y localización en la barra de título del frame principal -->
-<siga:Titulo titulo="<%=titu %>"
-	localizacion="censo.busquedaClientes.localizacion" />
-<!-- FIN: TITULO Y LOCALIZACION -->
-
-<!-- SCRIPTS LOCALES -->
-<script language="JavaScript">
-	function refrescarLocal() {
-		parent.buscar();
-	}
-	function vueltaEnvio() {
-		
-	}
-	function accionCerrar() {
-		
-	}
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 	
-	function informacionLetrado(fila)
-			{
-				document.forms[0].filaSelD.value = fila;
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	
+	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
+	<!-- Validaciones en Cliente -->
+	<!-- El nombre del formulario se obtiene del struts-config -->
+	<html:javascript formName="/CEN_BusquedaClientes.do" staticJavascript="false" />
+	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
+	
+	<!-- INICIO: TITULO Y LOCALIZACION -->
+	<!-- Escribe el título y localización en la barra de título del frame principal -->
+	<siga:Titulo titulo="<%=titu %>"
+		localizacion="censo.busquedaClientes.localizacion" />
+	<!-- FIN: TITULO Y LOCALIZACION -->
+	
+	<!-- SCRIPTS LOCALES -->
+	<script language="JavaScript">
+		function refrescarLocal() {
+			parent.buscar();
+		}
+		function vueltaEnvio() {
 			
-				
-			    var idInst = <%=idInstitucionLocation%>;			          		
-			   				   	
-			   	var auxPers = 'oculto' + fila + '_1';
-			    var idPers = document.getElementById(auxPers);			    
-
-			   		    
-				document.forms[0].tablaDatosDinamicosD.value=idPers.value + ',' + idInst + ',LETRADO' + '%';		
-				document.forms[0].modo.value="editar";
-				var verLetradoAux = 'oculto' + fila + '_4';
-			    var verLetrado = document.getElementById(verLetradoAux);			    
-				document.forms[0].verFichaLetrado.value=verLetrado.value;
-			   	document.forms[0].submit();			   	
-			}
-	function lopd(fila) {
-		alert('<siga:Idioma key="general.boton.lopd"/>');
+		}
+		function accionCerrar() {
+			
+		}
 		
-	}
+		function informacionLetrado(fila) {
+			document.forms[0].filaSelD.value = fila;					
+		    var idInst = <%=idInstitucionLocation%>;			   				   	
+		   	var auxPers = 'oculto' + fila + '_1';
+		    var idPers = document.getElementById(auxPers);
+			document.forms[0].tablaDatosDinamicosD.value=idPers.value + ',' + idInst + ',LETRADO' + '%';		
+			document.forms[0].modo.value="editar";
+			var verLetradoAux = 'oculto' + fila + '_4';
+		    var verLetrado = document.getElementById(verLetradoAux);			    
+			document.forms[0].verFichaLetrado.value=verLetrado.value;
+		   	document.forms[0].submit();			   	
+		}
+		
+		function lopd(fila) {
+			alert('<siga:Idioma key="general.boton.lopd"/>');
+			
+		}
 	</script>
 
 </head>
@@ -220,8 +213,8 @@
 	<html:hidden property="colegiado" value="<%=colegiado %>" />
 	<html:hidden property="avanzada" value="" />
 
-	<input type="hidden" name="filaSelD">
-	<input type="hidden" name="tablaDatosDinamicosD">
+	<input type="hidden" id="filaSelD" name="filaSelD">
+	<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
 	<input type="hidden" name="actionModal" value="">
 	<input type="hidden" name="verFichaLetrado" value="">
 </html:form>
@@ -487,10 +480,10 @@
 								if (colegiado.equals(ClsConstants.DB_TRUE)) {
 		%>
 		<td><!-- campos hidden --> 
-		<input type="hidden" name="oculto<%=cont%>_1" value="<%=idPersona%>"> 
-		<input type="hidden" name="oculto<%=cont%>_2" value="<%=idInstitucion%>">
-		<input type="hidden" name="oculto<%=cont%>_3" value="NINGUNO">
-		<input type="hidden" name="oculto<%=cont%>_4" value="1"> <%=nif%>
+		<input type="hidden" name="oculto<%=cont%>_1" id="oculto<%=cont%>_1" value="<%=idPersona%>"> 
+		<input type="hidden" name="oculto<%=cont%>_2" id="oculto<%=cont%>_2" value="<%=idInstitucion%>">
+		<input type="hidden" name="oculto<%=cont%>_3" id="oculto<%=cont%>_3" value="NINGUNO">
+		<input type="hidden" name="oculto<%=cont%>_4" id="oculto<%=cont%>_4" value="1"> <%=nif%>
 		</td>
 		<td><%=ncolegiado%></td>
 		<td><%=apellido1 + " " + apellido2%></td>
@@ -534,12 +527,12 @@
 									if (colegiado.equals(ClsConstants.DB_FALSE)) {
 		%>
 
-		<td><!-- campos hidden --> <input type="hidden"
-			name="oculto<%=cont%>_1" value="<%=idPersona%>"> <input
-			type="hidden" name="oculto<%=cont%>_2" value="<%=idInstitucion%>">
-		<input type="hidden" name="oculto<%=cont%>_3" value="<%=tipo%>">
-
-		<siga:Idioma key='<%=tipoaux %>' /></td>
+		<td><!-- campos hidden --> 
+			<input type="hidden" name="oculto<%=cont%>_1" id="oculto<%=cont%>_1" value="<%=idPersona%>" /> 
+			<input type="hidden" name="oculto<%=cont%>_2" id="oculto<%=cont%>_2" value="<%=idInstitucion%>" />
+			<input type="hidden" name="oculto<%=cont%>_3" id="oculto<%=cont%>_3" value="<%=tipo%>"/>
+			<siga:Idioma key='<%=tipoaux %>' />
+		</td>
 		<td><%=nif%></td>
 		<%
 			if (tipo != null && tipo != "" && !tipo.equals("1")) {
@@ -559,12 +552,12 @@
 		<%
 			} else {
 		%>
-		<td><!-- campos hidden --> <input type="hidden"
-			name="oculto<%=cont%>_1" value="<%=idPersona%>"> <input
-			type="hidden" name="oculto<%=cont%>_2" value="<%=idInstitucion%>">
-		<input type="hidden" name="oculto<%=cont%>_3" value="LETRADO">
-
-		<%=idPersona%></td>
+		<td><!-- campos hidden --> 
+			<input type="hidden" name="oculto<%=cont%>_1" id="oculto<%=cont%>_1" value="<%=idPersona%>" /> 
+			<input type="hidden" name="oculto<%=cont%>_2" id="oculto<%=cont%>_2" value="<%=idInstitucion%>" />
+			<input type="hidden" name="oculto<%=cont%>_3" id="oculto<%=cont%>_3" value="LETRADO" />
+			<%=idPersona%>
+		</td>
 		<td><%=nif%></td>
 		<td><%=apellido1 + " " + apellido2%></td>
 		<td><%=nombre%></td>
@@ -669,26 +662,18 @@
 	}
  
 	   
-	function pulsarCheck(obj){
-	
-		if (!obj.checked ){
-		   		
+	function pulsarCheck(obj){	
+		if (!obj.checked ){		   		
 			ObjArray.splice(ObjArray.indexOf(obj.value),1);
 			seleccionados1=ObjArray;
-		}else{
+		 } else {
 			ObjArray.push(obj.value);
 		   	seleccionados1=ObjArray;
-		}
-		  	
-		  	
-		document.forms[0].registrosSeleccionados.value=seleccionados1;
-		
+		}	  	
+		document.forms[0].registrosSeleccionados.value=seleccionados1;		
 		document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
-		checkTodos();
-		   
+		checkTodos();		   
 	}
-
-
 		
 	function cargarChecks(){
 		<%if (registrosSeleccionados != null) {
@@ -705,49 +690,38 @@
 						ObjArray.push('<%=valorCheckPersona%>');
 					<%}
 					}
-
 				}%>
 		ObjArray.toString();
 		seleccionados1=ObjArray;
 		document.forms[0].registrosSeleccionados.value=seleccionados1;
-		if(document.getElementById('registrosSeleccionadosPaginador'))
+		if(document.getElementById('registrosSeleccionadosPaginador')) {
 			document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
+		}
 			
 	}
 
 	function cargarChecksTodos(o){  		
 		if (document.getElementById('registrosSeleccionadosPaginador')){			
-	  		var conf = confirm('<siga:Idioma key="paginador.message.marcarDesmarcar"/>'); 
-	   	   	
-		   	if (conf){			   	
-		   		
+	  		var conf = confirm('<siga:Idioma key="paginador.message.marcarDesmarcar"/>'); 	   	   	
+		   	if (conf){
 				ObjArray = new Array();
 			   	if (o.checked){				   				
-					parent.seleccionarTodos('<%=paginaSeleccionada%>');
-					
-				}else{
-					
+					parent.seleccionarTodos('<%=paginaSeleccionada%>');					
+				} else {					
 					ObjArray1= new Array();
 				 	ObjArray=ObjArray1;
-				 	
-				 	seleccionados1=ObjArray;
-				 	
+				 	seleccionados1=ObjArray;				 	
 					document.forms[0].registrosSeleccionados.value=seleccionados1;
-					var ele = document.getElementsByName("chkPersona");
-						
+					var ele = document.getElementsByName("chkPersona");						
 					for (i = 0; i < ele.length; i++) {
-						if(!ele[i].disabled)	
+						if(!ele[i].disabled){
 							ele[i].checked = false; 
-							
-					}
-		
-				 }
-		   	  
-		   	  }else{
-		   	  	if (!o.checked ){
-		   	  			
-			   	  		var ele = document.getElementsByName("chkPersona");
-							
+						}							
+					}		
+				 }		   	  
+		   	  } else {
+		   	  	if (!o.checked ){		   	  			
+			   	  		var ele = document.getElementsByName("chkPersona");							
 					  	for (i = 0; i < ele.length; i++) {
 					  		if(!ele[i].disabled){
 					  			if(ele[i].checked){	
@@ -755,13 +729,10 @@
 									ObjArray.splice(ObjArray.indexOf(ele[i].value),1);
 								}
 							}
-					   	}
-					   	
+					   	}					   	
 					   	seleccionados1=ObjArray;
-				   }else{
-				   	
-					   	var ele = document.getElementsByName("chkPersona");
-								
+				   } else {				   	
+					   	var ele = document.getElementsByName("chkPersona");								
 					  	for (i = 0; i < ele.length; i++) {
 					  		if(!ele[i].disabled){
 								if(!ele[i].checked){				  		
@@ -769,20 +740,18 @@
 									ObjArray.push(ele[i].value);
 								}
 							}
-					   	}
-					   		
+					   	}					   		
 				   		seleccionados1=ObjArray;
 				   }
-				   document.forms[0].registrosSeleccionados.value=seleccionados1;
-			   		
+				   document.forms[0].registrosSeleccionados.value=seleccionados1;			   		
 		   	  }
-		   	if(document.getElementById('registrosSeleccionadosPaginador'))  		 
-				document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
+		   	if(document.getElementById('registrosSeleccionadosPaginador')) {
+		   		document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
+		   	}
 		}
 	 }
 	   
-	function checkTodos(){
-	
+	function checkTodos(){	
 	 	var ele = document.getElementsByName("chkPersona");
 		var todos=1;	
 	  	for (i = 0; i < ele.length; i++) {
@@ -790,22 +759,15 @@
    				todos=0;
    				break;
    			} 
-   		}
-	   
-	   if (todos==1){
-	   		
+   		}	   
+	    if (todos==1){	   		
 			document.getElementById("chkGeneral").checked=true;
-		}else{
+		} else {
 			document.getElementById("chkGeneral").checked=false;
-		}
-	   
-				
-			
-			
+		}			
    	}
    	
-   	function comunicar(fila)
-	{
+   	function comunicar(fila) {
 		var auxPers = 'oculto' + fila + '_1';
 		var idPersona = document.getElementById(auxPers).value;
 		var auxInst = 'oculto' + fila + '_2';
@@ -855,19 +817,18 @@
 			
  		   	datos = datos +"idPersona=="+idPersona + "##idInstitucion==" +idInstitucion+"##idTipoPersonas==" +<%=colegiado%>+"##idTipoInforme==CENSO%%%";
 		}
-		
 		numElementosSeleccionados =  ObjArray.length; 
 		if (datos == '') {
 			alert ('<siga:Idioma key="general.message.seleccionar"/>');
 			return;
 		}
 			if(numElementosSeleccionados>50){
-				document.InformesGenericosForm.descargar.value = '0';
+				document.forms["InformesGenericosForm"].descargar.value = '0';
 			}
 			else{
 				document.InformesGenericosForm.descargar.value = '1';
 			}
-			document.InformesGenericosForm.datosInforme.value=datos;
+			document.forms["InformesGenericosForm"].datosInforme.value=datos;
 			var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
 			if (arrayResultado==undefined||arrayResultado[0]==undefined){
 			   		
@@ -879,47 +840,42 @@
 				    var idTipoEnvio = arrayResultado[1];
 				    var nombreEnvio = arrayResultado[2];				    
 				    
-				   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
-				   	document.DefinirEnviosForm.modo.value='editar';
-				   	document.DefinirEnviosForm.submit();
+				   	document.forms["DefinirEnviosForm"].tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
+				   	document.forms["DefinirEnviosForm"].modo.value='editar';
+				   	document.forms["DefinirEnviosForm"].submit();
 		   		}
 		   	}
 			
 		}
 
 	
-		function accionGenerarExcels(){
-   		sub();
-			
-			datos = "";
-		
+	function accionGenerarExcels(){
+   		sub();			
+		datos = "";		
 		for (i = 0; i < ObjArray.length; i++) {				
 			var idRegistros = ObjArray[i];
 			index = idRegistros.indexOf('||');
 			idInstitucion  = idRegistros.substring(0,index);			
 			if(<%=ParametrolopdActivo%>){//si el parametro de EXPORTAR_COLEGIADOS_ACOGIDOS_A_LOPD esta activo.
 				idPersona = idRegistros.substring(index+2);
-			}else{
+			} else {
 				idRegistros = idRegistros.substring(index+2);
 				index = idRegistros.indexOf('||');
 				idPersona  = idRegistros.substring(0,index);
 				idRegistros = idRegistros.substring(index+2);									
-			}
-			
+			}			
 			datos = datos +	idPersona + "," +idInstitucion +",<%=colegiado%>#";
 		}
 			
-			if (datos == '') {
-				
-				alert ('<siga:Idioma key="general.message.seleccionar"/>');
-				fin();
-				return;
-			}
-			document.forms[0].tablaDatosDinamicosD.value = datos;
-			document.forms[0].modo.value ='generaExcel';		
-			document.forms[0].submit();			
+		if (datos == '') {
+			alert ('<siga:Idioma key="general.message.seleccionar"/>');
 			fin();
-			
+			return;
+		}
+		document.forms[0].tablaDatosDinamicosD.value = datos;
+		document.forms[0].modo.value ='generaExcel';		
+		document.forms[0].submit();			
+		fin();			
    	}
 
 </script>

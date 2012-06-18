@@ -46,7 +46,7 @@
 		
 
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
 		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>			
 		
@@ -120,15 +120,15 @@
 			
 			function accionGuardarCerrar() 
 			{	 
-			    if (window.returnValue=document.forms[0].fechaEfectiva.value=="") {
+			    if (window.top.returnValue=document.forms[0].fechaEfectiva.value=="") {
 				  var msg="<siga:Idioma key="messages.servicios.fechaEfectivaObligatoria"/>";
 				  alert(msg);
 				  fin();
 				  return false;
 				}else{  
-			    	window.returnValue=document.forms[0].fechaEfectiva.value;
+			    	window.top.returnValue=document.forms[0].fechaEfectiva.value;
 				
-					window.close();
+					window.top.close();
 				}	
 					
 			}

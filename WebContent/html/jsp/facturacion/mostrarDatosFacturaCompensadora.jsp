@@ -48,8 +48,8 @@
 %>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-	<script type="text/jscript" language="JavaScript1.2">
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript">
 	var idFactura="<%=idFactura%>";
 	function reloadPage() {
 		if (idFactura!="") {

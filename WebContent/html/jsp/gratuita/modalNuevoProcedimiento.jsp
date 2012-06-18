@@ -30,8 +30,11 @@
 
 <!-- HEAD -->
 <head>
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<html:javascript formName="MantenimientoJuzgadoForm" staticJavascript="false" />
  	
 </head>
@@ -133,7 +136,7 @@
 			document.forms[0].procedimiento.value = datos;
 			if (document.forms[0].procedimiento.value!='') {
 				document.forms[0].submit();
-				window.returnValue="MODIFICADO";			
+				window.top.returnValue="MODIFICADO";			
 			} 
 			else
 				alert('<siga:Idioma key="gratuita.procedimientos.error.seleccionarProcedimiento"/>');

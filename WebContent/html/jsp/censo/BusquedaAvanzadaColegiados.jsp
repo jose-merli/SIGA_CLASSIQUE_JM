@@ -27,10 +27,11 @@
 	<css:css 		relativePath="/html/jsp/general/" 		files="stylesheet2.jsp" />
 	<css:css 		relativePath="/html/css/" 				files="ajaxtags.css" />
 	<css:css 	   	relativePath="/html/css/themes/" 		files="default.css,mac_os_x.css" />
+	<css:css		relativePath="/html/js/themes/base"		files="jquery.ui.all.css" />
 	<js:javascript 	relativePath="/html/js/"				files="prototype.js,window.js" />
 	<js:javascript 	relativePath="/html/js/scriptaculous/"	files="scriptaculous.js" />
 	<js:javascript 	relativePath="/html/js/overlibmws/"		files="overlibmws.js" />
-	<js:javascript 	relativePath="/html/js/"				files="SIGA.js,ajaxtags.js,calendarJs.jsp" />
+	<js:javascript 	relativePath="/html/js/"				files="jquery-1.7.1.js,jquery.custom.js,SIGA.js,ajaxtags.js,calendarJs.jsp" />
 	<js:javascript 	relativePath="/html/jsp/censo/"			files="busquedaColegiados.js.jsp" />
 	<html:base />
 </head>
@@ -107,15 +108,13 @@
 					<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaNacimientoDesde"/>
 				</td>				
 				<td>
-					<html:text styleClass="box" name="BusquedaColegiadosForm" property="fechaNacimientoDesde" size="10"  readonly="true" />
-					<a href='javascript://'onClick="return showCalendarGeneral(fechaNacimientoDesde);"><img src="/SIGA/html/imagenes/calendar.gif" border="0"></a>
+					<siga:Fecha  nombreCampo= "fechaNacimientoDesde"/>
 				</td>
 		        <td class="labelText">
 					<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaNacimientoHasta"/>
 				</td>				
 				<td>
-					<html:text styleClass="box" name="BusquedaColegiadosForm" property="fechaNacimientoHasta" size="10"  readonly="true" />
-					<a href='javascript://'onClick="return showCalendarGeneral(fechaNacimientoHasta);"><img src="/SIGA/html/imagenes/calendar.gif" border="0"></a>
+					<siga:Fecha  nombreCampo= "fechaNacimientoHasta"/>
 				</td>
 			</tr>
 			<tr>				
@@ -229,17 +228,13 @@
 					<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaIncorporacionDesde"/>
 				</td>
 				<td >
-					<html:text name="BusquedaColegiadosForm" property="fechaIncorporacionDesde" styleClass="box" readonly="true">
-					</html:text>
-					<a href='javascript://'onClick="return showCalendarGeneral(fechaIncorporacionDesde);"><img src="/SIGA/html/imagenes/calendar.gif" border="0"></a>
+									<siga:Fecha  nombreCampo= "fechaIncorporacionDesde"/>
 				</td>
 				<td class="labelText" >
 					<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaIncorporacionHasta"/>
 				</td>
 				<td >
-					<html:text name="BusquedaColegiadosForm" property="fechaIncorporacionHasta" styleClass="box" readonly="true">
-					</html:text>
-					<a href='javascript://'onClick="return showCalendarGeneral(fechaIncorporacionHasta);"><img src="/SIGA/html/imagenes/calendar.gif" border="0"></a>
+					<siga:Fecha  nombreCampo= "fechaIncorporacionHasta"/>
 				</td>
 			</tr>				
 			<tr>				
@@ -273,17 +268,13 @@
 				<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaAltaDesde"/>
 			</td>
 			<td >
-				<html:text name="BusquedaColegiadosForm" property="factFechaAltaDesde" styleClass="box" readonly="true">
-				</html:text>
-				<a href='javascript://'onClick="return showCalendarGeneral(factFechaAltaDesde);"><img src="/SIGA/html/imagenes/calendar.gif" border="0"></a>
+				<siga:Fecha  nombreCampo= "factFechaAltaDesde"/>
 			</td>
 			<td class="labelText" >
 				<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaAltaHasta"/>
 			</td>
 			<td >
-				<html:text name="BusquedaColegiadosForm" property="factFechaAltaHasta" styleClass="box" readonly="true">
-				</html:text>
-				<a href='javascript://'onClick="return showCalendarGeneral(factFechaAltaHasta);"><img src="/SIGA/html/imagenes/calendar.gif" border="0"></a>
+				<siga:Fecha  nombreCampo= "factFechaAltaHasta"/>
 			</td>
 		</tr>
 		</table>

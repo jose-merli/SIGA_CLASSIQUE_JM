@@ -448,7 +448,7 @@ makeCM.prototype.construct=function(nowrite){ //Changed v4.06
   // Si no hay menus definidos avisamos con un mensaje y cerramos la ventana:
   if(!c.l[0]||c.l[0].m.length==0) {
   	var salida = cm_message(textoNoMenu);
-  	window.close();
+  	window.top.close();
   }
   
   if(!nowrite){for(var i=1;i<c.l.length;i++){c.l[i].str+="</div>"}} //Added 4.06

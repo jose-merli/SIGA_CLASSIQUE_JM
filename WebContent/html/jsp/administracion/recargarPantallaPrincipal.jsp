@@ -21,7 +21,7 @@
 			action=app+"/openMainFrameset2.do";
 		}
 	%>
-	<script type="text/jscript" language="JavaScript1.2">
+	<script type="text/javascript">
 	function reloadPage() {
 		<% if (messageName!= null && !messageName.equals("")) { %>
 					var type = '<siga:Idioma key="<%=messageName%>"/>';

@@ -47,13 +47,14 @@ function setReset(){
   window.dialogArguments.value='';
   close();
 }
+
 function setYear(){
 	year=parseInt(document.calControl.year.value,10);
 	if(year>1900&&year<3000){
 		calDate.setFullYear(year);
 		buildDetail();
 	}else {
-	document.all["detail"].innerHTML="";
+	document.getElementById("detail").innerHTML="";
     alert('Año no valido');
     document.calControl.year.select();
     document.calControl.year.focus();
@@ -131,7 +132,7 @@ function buildDetail(){
 		}
 		
 		calDoc+=calendarEnd;
-		document.all["detail"].innerHTML=calDoc;
+		document.getElementById("detail").innerHTML=calDoc;
 }
 var meses=new Array ( "","Enero",
                         "Febrero",
@@ -184,7 +185,7 @@ function returnDate(inDay){
 		outDate=jsReplace(outDate,"MM",makeTwoDigit(month+1));
 		if(calDateFormat.indexOf("YYYY")!=-1)outDate=jsReplace(outDate,"YYYY",year);
 		else if(calDateFormat.indexOf("YY")!=-1)outDate=jsReplace(outDate,"YY",new String(year).substring(2,4));
-		window.returnValue=outDate;		
+		window.top.returnValue=outDate;		
 		close();
 }
 

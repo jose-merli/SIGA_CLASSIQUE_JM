@@ -51,7 +51,7 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>	
 	
 	<script>
 
@@ -72,12 +72,11 @@
 		}	
 		
 		function validaTabla(){
-		  if (document.all.tablaDatos.clientHeight < document.all.tablaDatosDiv.clientHeight) {
-		   document.all.tablaDatosCabeceras.width='100%';
-		  }
-		  else {
-		   document.all.tablaDatosCabeceras.width='95%';
-		  }
+		  	if (document.getElementById("tablaDatos").clientHeight < document.getElementById("tablaDatosDiv").clientHeight) {
+		   		document.getElementById("tablaDatosCabeceras").width='100%';
+			} else {
+				document.getElementById("tablaDatosCabeceras").width='95%';
+			}
 		}
 	</script>
 	
@@ -91,22 +90,23 @@
 		<html:hidden property="idPersona" />
 		<html:hidden property="idInstitucion" />
 		<html:hidden property="modoAnterior" />
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
-		</html:form>
+		<!-- RGG: cambio a formularios ligeros -->
+		<input type="hidden" name="filaSelD" id="filaSelD" />
+		<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD" />
+		<input type="hidden" name="actionModal" value="" />
+	</html:form>
 
 	<!-- INICIO TABLA DE GRUPOS -->
-		<siga:TablaCabecerasFijas 
+	<siga:TablaCabecerasFijas 
 		   	nombre="tablaDatos"
 		   	borde="0"
    			estilo=""
 		   	clase="tableTitle"
 		  	nombreCol="censo.fichaCliente.literal.actprofesional,"
 		  	tamanoCol="80,20"
-		   alto="100%"
-		   ajusteBotonera="true"
-		     modal="P">  
+		    alto="100%"
+		    ajusteBotonera="true"
+		    modal="P">  
 
  	<% if(vGrupos==null || vGrupos.isEmpty())	{ %>
 	 		<br>
@@ -121,27 +121,25 @@
 				i++;
 	%> 				
 				<siga:FilaConIconos fila='<%=String.valueOf(i)%>' botones='<%=iconos%>' modo='<%=modoAnterior%>' clase="listaNonEdit" visibleEdicion="no" visibleConsulta="no" pintarEspacio="false" >
-				<td><input type='hidden' name='oculto<%=String.valueOf(i)%>_1' value='<%=(String)htData.get(CenActividadProfesionalBean.C_IDACTIVIDADPROFESIONAL)%>'>	
-					<input type='hidden' name='oculto<%=String.valueOf(i)%>_2' value='<%=(String)htData.get("IDINSTITUCION_GRUPO")%>'>	
+				<td>
+					<input type='hidden' id='oculto<%=String.valueOf(i)%>_1' name='oculto<%=String.valueOf(i)%>_1' value='<%=(String)htData.get(CenActividadProfesionalBean.C_IDACTIVIDADPROFESIONAL)%>'>	
+					<input type='hidden' id='oculto<%=String.valueOf(i)%>_2' name='oculto<%=String.valueOf(i)%>_2' value='<%=(String)htData.get("IDINSTITUCION_GRUPO")%>'>	
   					<%=UtilidadesString.mostrarDatoJSP(htData.get("NOMBRE"))%>
   				</td>
 				</siga:FilaConIconos>
 
     <% } } %>  			
   		</siga:TablaCabecerasFijas>
- 	<!-- FIN TABLA DE GRUPOS -->		
-  			
-
-
+ 	<!-- FIN TABLA DE GRUPOS -->
 	<table class="botonesDetalle">
 		<tr>
 			<td class="tdBotones">					
 		<% if (modoAnterior!=null && (modoAnterior.equalsIgnoreCase("ver") || modoAnterior.equalsIgnoreCase("nuevo") || modoAnterior.equalsIgnoreCase("nuevaSociedad"))) { %>
-		&nbsp;
+				&nbsp;
 		<% } else { %>
-		<input type='button' id="botonNuevo" onclick='return nuevo();' value='<siga:Idioma key="general.boton.new" />' alt='<siga:Idioma key="general.boton.new" />' class='button' />
+				<input type='button' id="botonNuevo" onclick='return nuevo();' value='<siga:Idioma key="general.boton.new" />' alt='<siga:Idioma key="general.boton.new" />' class='button' />
 		<% } %>
-		</td>
+			</td>
 		</tr>
 	</table>
 

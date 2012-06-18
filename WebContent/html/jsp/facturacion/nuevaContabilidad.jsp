@@ -35,7 +35,7 @@
 <!-- HEAD -->
 <head>
 	<title>Modificacion Retencion IRPF</title>
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 	<script type="text/javascript">
@@ -68,7 +68,7 @@
 			{
 //				document.forms[0].esConfirmacion.value = "0";
                 fin(parent.document); 
-				window.close();
+				window.top.close();
 			}
 		<%}%>
 	}
@@ -138,12 +138,12 @@
 
 		function accionVolver() 
 		{
-			window.close();
+			window.top.close();
 		}
 
 		function accionCancelar() 
 		{		
-			window.close();
+			window.top.close();
 		}
 		
 	</script>

@@ -48,10 +48,11 @@
 <html>
 <!-- HEAD -->
 <head>
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
 	
-
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	
 	<!-- TITULO Y LOCALIZACION -->
 	<siga:Titulo 
@@ -60,23 +61,20 @@
 	<script language="JavaScript">
 
 		//Funcion asociada a boton buscar
-		function buscar() 
-		{
+		function buscar() {
 			sub();
 			document.forms[0].modo.value = "listadoTurnosDisponibles";
 			document.forms[0].submit();
 		}		
 		
 		//Funcion asociada a boton limpiar
-		function limpiar() 
-		{		
+		function limpiar() {		
 			document.forms[0].reset();
 		}
-</script>
+	</script>
 		
-<script language="JavaScript">
-		function mostrarPartido(obj)
-		{
+	<script language="JavaScript">
+		function mostrarPartido(obj) {
 			if (document.partidosJud) { 
 				document.partidosJud.action= "<%=app%>/html/jsp/gratuita/partidosJudiciales.jsp";
 				document.partidosJud.idinstitucion.value="<%=usr.getLocation()%>";
@@ -85,7 +83,7 @@
 				document.partidosJud.submit();
 			};
 		}
-</script>
+	</script>
 		 
 </head>
 <body  onLoad="ajusteAlto('resultado');" >
@@ -122,7 +120,7 @@
 		<input type="hidden" name="idTurno" />
 		<input type="hidden" name="fechaSolicitud"/>
 		<input type="hidden" name="observacionesSolicitud"/>
-		<input type="hidden" name="tablaDatosDinamicosD">
+		<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
 		<input type="hidden" name="actionModal" value="">
 
 	<tr>

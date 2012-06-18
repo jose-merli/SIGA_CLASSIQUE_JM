@@ -31,7 +31,7 @@
 	<js:javascript 	relativePath="/html/js/"				files="prototype.js,window.js" />
 	<js:javascript 	relativePath="/html/js/scriptaculous/"	files="scriptaculous.js" />
 	<js:javascript 	relativePath="/html/js/overlibmws/"		files="overlibmws.js" />
-	<js:javascript 	relativePath="/html/js/"				files="SIGA.js,ajaxtags.js," />
+	<js:javascript 	relativePath="/html/js/"				files="jquery-1.7.1.js,SIGA.js,ajaxtags.js," />
 	<js:javascript 	relativePath="/html/jsp/censo/"			files="busquedaColegiados.js.jsp" />
 	<html:base />
 </head>

@@ -36,12 +36,10 @@
 %>	
 
 <script>
-	function validarFechas(fechaInicio, fechaFin)
-	{
+	function validarFechas(fechaInicio, fechaFin) {
 		var fi = fechaInicio.substring(6,10)+fechaInicio.substring(3,5)+fechaInicio.substring(0,2);
 		var ff = fechaFin.substring(6,10)+fechaFin.substring(3,5)+fechaFin.substring(0,2);
-		if(fi>ff)
-		{
+		if(fi>ff) {
 			alert("<siga:Idioma key='gratuita.altaRetencionesIRPF.literal.alert1'/>");
 			return false;
 		}
@@ -49,13 +47,10 @@
 		String fInicio 	= "";
 		String fFin		= "";
 		Hashtable hash	= null;
-		if(obj!=null)
-		{
-			for(int x=0;x<obj.size();x++)
-			{
+		if(obj!=null) {
+			for(int x=0;x<obj.size();x++) {
 				hash 	= (Hashtable)obj.get(x);
-				if(hash.get("FECHAINICIO") != null)
-				{
+				if(hash.get("FECHAINICIO") != null) {
 					fInicio = (String)hash.get("FECHAINICIO");
 					fFin	= (String)hash.get("FECHAFIN");
 					fInicio = fInicio.substring(0,4)+fInicio.substring(5,7)+fInicio.substring(8,10);
@@ -65,8 +60,7 @@
 				if(((fi > "<%=fInicio%>") && (fi < "<%=fFin%>" && "<%=fFin%>" != "")) ||
  				  ((ff  	> "<%=fInicio%>") && (ff	< "<%=fFin%>" && "<%=fFin%>" != "")) ||
  				  (fi == "<%=fInicio%>")
- 				  )
-				{
+ 				  )	{
 					alert("<siga:Idioma key='gratuita.altaRetencionesIRPF.literal.alert2'/>");
 					return false;
 				} 
@@ -83,8 +77,13 @@
 <!-- HEAD -->
 <head>
 	<title><siga:Idioma key="gratuita.altaRetencionIRPF.literal.aRetencionIRPF"/></title>
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+
+		
+	
+		
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 	<script type="text/javascript">
 		function mostrarCalendario(numfila){
@@ -128,9 +127,8 @@
 			<siga:Idioma key="gratuita.altaRetencionIRPF.literal.fDesde"/>
 			</td>
 			<td>
-				<html:text name="RetencionesIRPFForm" property="fechaInicio" size="10" maxlength="10" styleClass="box" readOnly="true" ></html:text>
-				<a href='javascript://'onClick="return showCalendarGeneral(fechaInicio);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>			
-				</td>
+				<siga:Fecha  nombreCampo= "fechaInicio" posicionX="10" posicionY="10"/>
+			</td>
 		</tr>
 		<tr>
 			<td width="35%" class="labelText" colspan="2">
@@ -154,13 +152,12 @@
 	<!-- SCRIPTS BOTONES -->
 	<script language="JavaScript">
 
-		function accionVolver() 
-		{
+		function accionVolver() {
 		}
 
-		function accionCancelar() 
-		{		
-			top.cierraConParametros("NORMAL");
+		function accionCancelar() {		
+			//window.top.cierraConParametros("NORMAL");
+			window.top.close();
 		}
 		
 	</script>
@@ -188,29 +185,28 @@
 			if(validarFechas(document.forms[0].fechaInicio.value,document.forms[0].fechaFin.value))
 			{
 				document.forms[0].submit();
-				window.returnValue="MODIFICADO";			
+				window.top.returnValue="MODIFICADO";			
 			}
 		}
 		*/
-		function accionGuardarCerrar() 
-		{
+		function accionGuardarCerrar() {
 			sub();
-			if(document.forms[0].idRetencion.value == "")
-			{
+			if(document.forms[0].idRetencion.value == "") {
 				alert("<siga:Idioma key='gratuita.altaRetencionesIRPF.literal.alert3'/>");
 				fin();
 				return false;
-			}
-			if(document.forms[0].fechaInicio.value == ""){
+			} else if(document.forms[0].fechaInicio.value == "") {
 				alert("Debe introducir una fecha de inicio");
 				fin();
 				return false;
-			} 
-			else
-			{
-				document.forms[0].target = "submitArea";
+			} else {
+				/*document.forms[0].target = "submitArea";
 				document.forms[0].submit();
-				//window.returnValue="MODIFICADO";			
+				//window.top.returnValue="MODIFICADO"; */
+				document.forms[0].setAttribute("action","<%=app%>/JGR_PestanaRetencionesIRPF.do");
+				document.forms[0].submit();
+				window.top.returnValue="MODIFICADO";
+				window.top.close();
 			}
 		}
 </script>

@@ -448,8 +448,8 @@ public class TagBusquedaSJCS extends TagSupport {
 					out.println("<td class='labelText' width='200'>"); 
 					out.println(UtilidadesString.getMensajeIdioma(usrbean, "gratuita.busquedaSJCS.literal.letradosGuardia"));
 					out.println("</td>");  
-					out.println("<td  class='labelTextValue' align=\"left\">"); 
-					out.println("<select  id=\"comboDiaGuardia\" onafterupdate=\"cargarPrimero(this);\"  onChange=\"seleccionarDatosCombo(this);\" name= \"letradoDiaGuardia\" value=\"\" class=\"boxCombo\" > ");
+					out.println("<td class='labelTextValue' align=\"left\">"); 
+					out.println("<select id=\"comboDiaGuardia\" onafterupdate=\"cargarPrimero(this);\" onChange=\"seleccionarDatosCombo(this);\" name= \"letradoDiaGuardia\" value=\"\" class=\"boxCombo\" > ");
 					out.println("<option value=\"\"></option> ");
 					out.println("</select> ");
 					out.println("</td>");  
@@ -468,7 +468,7 @@ public class TagBusquedaSJCS extends TagSupport {
 					out.println("<td align=\"right\">");
 					out.print("<input");
 					out.print(" type=\"button\" id =\"idButton\" name =\"idButton\" class=\"button\" value=\""+msg+"\"");
-					out.print(" onclick=\"buscarMan();\">");
+					out.print(" onclick=\"buscarMan();\" />");
 					out.println("</td>");
 				}
 				
@@ -477,7 +477,7 @@ public class TagBusquedaSJCS extends TagSupport {
 					out.println("<td align=\"center\">");
 					out.print("<input");
 					out.print(" type=\"button\" id =\"idButton\" name =\"idButton\" class=\"button\" value=\""+msg+"\"");
-					out.print(" onclick=\"buscarDesig27();\">");
+					out.print(" onclick=\"buscarDesig27();\" />");
 					out.println("</td>");
 				}				
 				
@@ -486,7 +486,7 @@ public class TagBusquedaSJCS extends TagSupport {
 					out.println("<td align=\"right\">");
 					out.print("<input");
 					out.print(" type=\"button\" id =\"idButton\" name =\"idButton\" class=\"button\" value=\""+msg+"\"");
-					out.print(" onclick=\"buscarAut();\">");
+					out.print(" onclick=\"buscarAut();\" />");
 					out.println("</td>");
 				}
 				
@@ -495,7 +495,7 @@ public class TagBusquedaSJCS extends TagSupport {
 					out.println("<td align=\"right\">");
 					out.print("<input");
 					out.print(" type=\"button\" name =\"idButton\" class=\"button\" id =\"idButton\" value=\""+msg+"\"");
-					out.print(" onclick=\"eliminaLetradoSeleccionado();\">");
+					out.print(" onclick=\"eliminaLetradoSeleccionado();\" />");
 					out.println("</td>");
 				}
 				out.println("</tr>");  
@@ -506,12 +506,12 @@ public class TagBusquedaSJCS extends TagSupport {
 				out.println("<table style=\"width:100%\"><tr>");  
 				out.println("<td id='tdCheckSalto' class='labelText' style='display:none;'>"); 
 				out.println("<div id=\"mensalto\" style=\"display:inline\">"+UtilidadesString.getMensajeIdioma(usrbean, "gratuita.busquedaSJCS.literal.incluirSalto")+"</div>");
-				out.println(" <input type='Checkbox' id='"+campoSalto+"' name='"+campoSalto+"'>");  
+				out.println(" <input type='Checkbox' id='"+campoSalto+"' name='"+campoSalto+"' />");  
 				out.println("</td>"); 
 	
 				out.println("<td id='tdCheckCompensacion' class='labelText' colspan='2' style='visibility:hidden'>"); 
 				out.println(UtilidadesString.getMensajeIdioma(usrbean, "gratuita.busquedaSJCS.literal.incluirCompensacion") + " " + UtilidadesString.getMensajeIdioma(usrbean, "gratuita.busquedaSJCS.literal.incluirCompensacionLetradoSaliente"));
-				out.println(" <input type='Checkbox' id='"+campoCompensacion+"' name='"+campoCompensacion+"'>");  
+				out.println(" <input type='Checkbox' id='"+campoCompensacion+"' name='"+campoCompensacion+"' />");  
 				out.println("</td>");  
 				out.println("</tr>");  
 				out.println("</table>");
@@ -581,18 +581,26 @@ public class TagBusquedaSJCS extends TagSupport {
 		out.println("function creaForm() {");
 		out.println("	var vForm=document.forms['busquedaClientesFiltrosForm'];");
 		out.println("	if(vForm==null){");
-		out.println("		var app="+nombre+".action;");
-		out.println("		app=app.substring(0,app.substr(1).indexOf('/')+1);");
-		out.println("		var formu=document.createElement(\"<form name='busquedaClientesFiltrosForm' action='\"+app+\"/JGR_BusquedaClientesFiltros.do'>\");");
-		out.println("		formu.appendChild(document.createElement(\"<input type='hidden' name='modo' value=''>\"));");
-		out.println("		formu.appendChild(document.createElement(\"<input type='hidden' name='actionModal' value='\"+app+\"/JGR_BusquedaClientesFiltros.do'>\"));");
-		out.println("		formu.appendChild(document.createElement(\"<input type='hidden' name='concepto' value=''>\"));");
-		out.println("		formu.appendChild(document.createElement(\"<input type='hidden' name='operacion' value=''>\"));");
-		out.println("		formu.appendChild(document.createElement(\"<input type='hidden' name='idTurno' value=''>\"));");
-		out.println("		formu.appendChild(document.createElement(\"<input type='hidden' name='idGuardia' value=''>\"));");
-		out.println("		formu.appendChild(document.createElement(\"<input type='hidden' name='fecha' value=''>\"));");
-		out.println("		document.appendChild(formu);");
-		out.println("		vForm=formu;");
+		out.println("		var app = document.getElementById(\""+nombre+"\").action;");
+		out.println("		app=app.substring(0,app.lastIndexOf('/'));");
+		out.println("		var action = app+\"/JGR_BusquedaClientesFiltros.do\";");
+		out.println("		var formStr = '<form name=\"busquedaClientesFiltrosForm\" id=\"busquedaClientesFiltrosForm\" action=\"'+action+'\" />'; ");
+		out.println("		$(\"body\").append(formStr);");
+		out.println("		var modoStr = '<input type=\"hidden\" name=\"modo\" value=\"\" />';");
+		out.println("		$(modoStr).appendTo(\"#busquedaClientesFiltrosForm\");");
+		out.println("		var actionModalStr = '<input type=\"hidden\" name=\"actionModal\" value=\"'+action+'\" />';");
+		out.println("		$(actionModalStr).appendTo(\"#busquedaClientesFiltrosForm\");");
+		out.println("		var conceptoStr = '<input type=\"hidden\" name=\"concepto\" value=\"\" />';");
+		out.println("		$(conceptoStr).appendTo(\"#busquedaClientesFiltrosForm\");");
+		out.println("		var operacionStr = '<input type=\"hidden\" name=\"operacion\" value=\"\" />';");
+		out.println("		$(operacionStr).appendTo(\"#busquedaClientesFiltrosForm\");");
+		out.println("		var idTurnoStr = '<input type=\"hidden\" name=\"idTurno\" value=\"\" />';");
+		out.println("		$(idTurnoStr).appendTo(\"#busquedaClientesFiltrosForm\");");
+		out.println("		var idGuardiaStr = '<input type=\"hidden\" name=\"idGuardia\" value=\"\" />';");
+		out.println("		$(idGuardiaStr).appendTo(\"#busquedaClientesFiltrosForm\");");
+		out.println("		var fechaStr = '<input type=\"hidden\" name=\"fecha\" value=\"\" />';");
+		out.println("		$(fechaStr).appendTo(\"#busquedaClientesFiltrosForm\");");
+		out.println("		vForm = document.getElementById(\"busquedaClientesFiltrosForm\");");
 		out.println("	}");
 		out.println("	return vForm;");
 		out.println("}");
@@ -602,18 +610,26 @@ public class TagBusquedaSJCS extends TagSupport {
 		out.println("function creaFormArticulo27() {");
 		out.println("	var vForm=document.forms['DatosGeneralesForm'];");
 		out.println("	if(vForm==null){");
-		out.println("		var app="+nombre+".action;");
-		out.println("		app=app.substring(0,app.substr(1).indexOf('/')+1);");
-		out.println("		var formu=document.createElement(\"<form name='DatosGeneralesForm' action='\"+app+\"/CEN_DatosGenerales.do'>\");");
-		out.println("		formu.appendChild(document.createElement(\"<input type='hidden' name='modo' value=''>\"));");
-		out.println("		formu.appendChild(document.createElement(\"<input type='hidden' name='actionModal' value='\"+app+\"/CEN_DatosGenerales.do'>\"));");
-		out.println("		formu.appendChild(document.createElement(\"<input type='hidden' name='concepto' value=''>\"));");
-		out.println("		formu.appendChild(document.createElement(\"<input type='hidden' name='operacion' value=''>\"));");
-		out.println("		formu.appendChild(document.createElement(\"<input type='hidden' name='idTurno' value=''>\"));");
-		out.println("		formu.appendChild(document.createElement(\"<input type='hidden' name='idGuardia' value=''>\"));");
-		out.println("		formu.appendChild(document.createElement(\"<input type='hidden' name='fecha' value=''>\"));");
-		out.println("		document.appendChild(formu);");
-		out.println("		vForm=formu;");
+		out.println("		var app = document.getElementById(\""+nombre+"\").action;");
+		out.println("		app=app.substring(0,app.lastIndexOf('/'));");
+		out.println("		var action = app+\"/CEN_DatosGenerales.do\";");
+		out.println("		var formStr = '<form name=\"DatosGeneralesForm\" id=\"DatosGeneralesForm\" action=\"'+action+'\" />'; ");
+		out.println("		$(\"body\").append(formStr);");
+		out.println("		var modoStr = '<input type=\"hidden\" name=\"modo\" value=\"\" />';");
+		out.println("		$(modoStr).appendTo(\"#busquedaClientesFiltrosForm\");");
+		out.println("		var actionModalStr = '<input type=\"hidden\" name=\"actionModal\" value=\"'+action+'\" />';");
+		out.println("		$(actionModalStr).appendTo(\"#busquedaClientesFiltrosForm\");");
+		out.println("		var conceptoStr = '<input type=\"hidden\" name=\"concepto\" value=\"\" />';");
+		out.println("		$(conceptoStr).appendTo(\"#busquedaClientesFiltrosForm\");");
+		out.println("		var operacionStr = '<input type=\"hidden\" name=\"operacion\" value=\"\" />';");
+		out.println("		$(operacionStr).appendTo(\"#busquedaClientesFiltrosForm\");");
+		out.println("		var idTurnoStr = '<input type=\"hidden\" name=\"idTurno\" value=\"\" />';");
+		out.println("		$(idTurnoStr).appendTo(\"#busquedaClientesFiltrosForm\");");
+		out.println("		var idGuardiaStr = '<input type=\"hidden\" name=\"idGuardia\" value=\"\" />';");
+		out.println("		$(idGuardiaStr).appendTo(\"#busquedaClientesFiltrosForm\");");
+		out.println("		var fechaStr = '<input type=\"hidden\" name=\"fecha\" value=\"\" />';");
+		out.println("		$(fechaStr).appendTo(\"#busquedaClientesFiltrosForm\");");
+		out.println("		vForm = document.getElementById(\"busquedaClientesFiltrosForm\");");
 		out.println("	}");
 		out.println("	return vForm;");
 		out.println("}");		
@@ -625,16 +641,15 @@ public class TagBusquedaSJCS extends TagSupport {
 		//gratuita.nuevaAsistencia.mensaje.alert4 guradia??
 		String msg2=UtilidadesString.getMensajeIdioma(usrbean, "messages.campoObligatorio.error");
 		String msg1=UtilidadesString.getMensajeIdioma(usrbean, "gratuita.busquedaEJG.literal.turno");
-		out.println("	if("+nombre+"."+campoTurno+".value==null || "+nombre+"."+campoTurno+".value==''|| "+nombre+"."+campoTurno+".value=='-1'){ ('"+msg1+" "+msg2+"'); return false;}");
+		out.println("	if(document.getElementById(\""+campoTurno+"\").value==null || document.getElementById(\""+campoTurno+"\").value==''|| document.getElementById(\""+campoTurno+"\").value=='-1'){ alert('"+msg1+" "+msg2+"'); return false;}");
 		if(!concepto.equalsIgnoreCase("DESIGNACION")&&!concepto.equalsIgnoreCase("SALTOSCOMP")){
 			msg1=UtilidadesString.getMensajeIdioma(usrbean, "gratuita.busquedaEJG.literal.guardia");
-			out.println("	if("+nombre+"."+campoGuardia+".value==null || "+nombre+"."+campoGuardia+".value==''){ alert('"+msg1+" "+msg2+"'); return false;}");
+			out.println("	if(document.getElementById(\""+campoGuardia+"\").value==null || document.getElementById(\""+campoGuardia+"\").value==''){ alert('"+msg1+" "+msg2+"'); return false;}");
 			msg1=UtilidadesString.getMensajeIdioma(usrbean, "gratuita.busquedaEJG.literal.fechaApertura");
-			out.println("	if("+nombre+"."+campoFecha+".value==null || "+nombre+"."+campoFecha+".value==''){ alert('"+msg1+" "+msg2+"'); return false;}");
-		}else if(concepto.equalsIgnoreCase("DESIGNACION")){
+			out.println("	if(document.getElementById(\""+campoFecha+"\").value==null || document.getElementById(\""+campoFecha+"\").value==''){ alert('"+msg1+" "+msg2+"'); return false;}");
+		} else if(concepto.equalsIgnoreCase("DESIGNACION")){
 			msg1=UtilidadesString.getMensajeIdioma(usrbean, "gratuita.busquedaEJG.literal.fechaApertura");
-			out.println("	if("+nombre+"."+campoFecha+".value==null || "+nombre+"."+campoFecha+".value==''){ alert('"+msg1+" "+msg2+"'); return false;}");
-			
+			out.println("	if(document.getElementById(\""+campoFecha+"\").value==null || document.getElementById(\""+campoFecha+"\").value==''){ alert('"+msg1+" "+msg2+"'); return false;}");			
 		}
 		out.println("	return true;");
 		out.println("}");
@@ -677,7 +692,7 @@ public class TagBusquedaSJCS extends TagSupport {
 		out.println("	  	    "+nombre+".sustituta.value=res[9];");
 		out.println("	    } ");
     	
-    	//out.println(" alert('SALTOS: CheckSalto.style.display='+tdCheckSalto.style.display+' -- condiciones='+res[5]+' y '+res[6]);");
+    	//out.println(" alert('SALTOS: CheckSalto.style.display='+document.getElementById('tdCheckSalto').style.display+' -- condiciones='+res[5]+' y '+res[6]);");
 	
 		// RGG 10/04/2008 Cambio pedido expresamente por Luis Pedro que consiste en:
 		// 	Siempre que haya busquda manual se muestra lo del salto
@@ -685,45 +700,45 @@ public class TagBusquedaSJCS extends TagSupport {
 		/*out.println("		"+nombre+"."+campoFlagSalto+".value='1';");
 		out.println("		"+nombre+"."+campoFlagCompensacion+".value=res[6];");
 		out.println("		document.getElementById('"+campoSalto+"').checked=false;");
-		out.println("		tdCheckSalto.style.display='block'; ");
+		out.println("		document.getElementById('tdCheckSalto').style.display='block'; ");
 		*/
 		
 		out.println("		"+nombre+"."+campoFlagSalto+".value=res[5];");
 		out.println("		"+nombre+"."+campoFlagCompensacion+".value=res[6];");
 		//out.println("		document.getElementById('"+campoSalto+"').checked=(res[5]=='1' && res[6]=='N');");
-		//out.println("		tdCheckSalto.style.display=(res[5]=='1' && res[6]=='N'?'block':'none'); ");
+		//out.println("		document.getElementById('tdCheckSalto').style.display=(res[5]=='1' && res[6]=='N'?'block':'none'); ");
 		out.println("	}");
        
 		if((concepto.equals("ASISTENCIA") || concepto.equals("EJG") || concepto.equals("SOJ")) && operacion.equals("ASIGNACION")){
 			out.println("		document.getElementById('"+campoSalto+"').checked=false;");
-			out.println("		tdCheckSalto.style.visibility='visible'; ");
-			out.println("		tdCheckSalto.style.display='block'; ");
+			out.println("		document.getElementById('tdCheckSalto').style.visibility='visible'; ");
+			out.println("		document.getElementById('tdCheckSalto').style.display='block'; ");
 		}
 		if(concepto.equals("GUARDIA") && operacion.equals("SUSTITUCION")){// inc-5917
 			out.println("		document.getElementById('"+campoCompensacion+"').checked=false;");
-			out.println("		tdCheckCompensacion.style.visibility='visible'; ");
-			out.println("		tdCheckCompensacion.style.display='block'; ");
+			out.println("		document.getElementById('tdCheckCompensacion').style.visibility='visible'; ");
+			out.println("		document.getElementById('tdCheckCompensacion').style.display='block'; ");
 			out.println("		document.getElementById('"+campoSalto+"').checked=false;");
-			out.println("		tdCheckSalto.style.visibility='visible'; ");
-			out.println("		tdCheckSalto.style.display='block'; ");
+			out.println("		document.getElementById('tdCheckSalto').style.visibility='visible'; ");
+			out.println("		document.getElementById('tdCheckSalto').style.display='block'; ");
 		}
 		if(concepto.equals("DESIGNACION") && operacion.equals("SUSTITUCION")){
 			out.println("		document.getElementById('"+campoCompensacion+"').checked=false;");
-			out.println("		tdCheckCompensacion.style.visibility='visible'; ");
-			out.println("		tdCheckCompensacion.style.display='block'; ");
+			out.println("		document.getElementById('tdCheckCompensacion').style.visibility='visible'; ");
+			out.println("		document.getElementById('tdCheckCompensacion').style.display='block'; ");
 			out.println("		document.getElementById('"+campoSalto+"').checked=false;");
-			out.println("		tdCheckSalto.style.visibility='visible'; ");
-			out.println("		tdCheckSalto.style.display='block'; ");
+			out.println("		document.getElementById('tdCheckSalto').style.visibility='visible'; ");
+			out.println("		document.getElementById('tdCheckSalto').style.display='block'; ");
 		}
 		if(concepto.equals("DESIGNACION")  && !operacion.equals("ASIGNACION")){
 			out.println("		document.getElementById('"+campoCompensacion+"').checked=false;");
-			out.println("		tdCheckCompensacion.style.visibility='hidden'; ");
-			//out.println("		tdCheckCompensacion.style.display='none'; ");
+			out.println("		document.getElementById('tdCheckCompensacion').style.visibility='hidden'; ");
+			//out.println("		document.getElementById('tdCheckCompensacion').style.display='none'; ");
 		}
 		if(concepto.equals("DESIGNACION")  && operacion.equals("ASIGNACION")){
 		    out.println("		document.getElementById('"+campoSalto+"').checked=false;");
-			out.println("		tdCheckSalto.style.visibility='visible'; ");
-		    out.println("		tdCheckSalto.style.display='block'; ");
+			out.println("		document.getElementById('tdCheckSalto').style.visibility='visible'; ");
+		    out.println("		document.getElementById('tdCheckSalto').style.display='block'; ");
 		}
 /*
  		out.println("	}else{");//si no hay respuesta ocultamos los resultados????
@@ -742,9 +757,9 @@ public class TagBusquedaSJCS extends TagSupport {
 		out.println("		"+nombre+"."+campoFlagSalto+".value='';");
 		out.println("		"+nombre+"."+campoFlagCompensacion+".value='';");
 		out.println("		document.getElementById('"+campoSalto+"').checked=false;");
-		out.println("		tdCheckSalto.style.display='none'; ");
+		out.println("		document.getElementById('tdCheckSalto').style.display='none'; ");
 		out.println("		document.getElementById('"+campoCompensacion+"').checked=false;");
-		out.println("		tdCheckCompensacion.style.visibility='hidden'; ");
+		out.println("		document.getElementById('tdCheckCompensacion').style.visibility='hidden'; ");
 */
 		out.println("}");
 		
@@ -764,11 +779,11 @@ public class TagBusquedaSJCS extends TagSupport {
 		if(campoColegiado!=null){
 			out.println("		"+nombre+"."+campoColegiado+".value=res[1];");
 		}
-		out.println("		tdCheckCompensacion.style.visibility='hidden'; ");
-		//out.println("		tdCheckCompensacion.style.display='none'; ");
+		out.println("		document.getElementById('tdCheckCompensacion').style.visibility='hidden'; ");
+		//out.println("		document.getElementById('tdCheckCompensacion').style.display='none'; ");
 
-		out.println("		tdCheckSalto.style.visibility='hidden'; ");
-		//out.println("		tdCheckSalto.style.display='none'; ");
+		out.println("		document.getElementById('tdCheckSalto').style.visibility='hidden'; ");
+		//out.println("		document.getElementById('tdCheckSalto').style.display='none'; ");
 		
 		out.println("	}");
 
@@ -780,18 +795,18 @@ public class TagBusquedaSJCS extends TagSupport {
 			out.println(""); 
 			out.println("function buscarMan() {");
 			out.println("	if(validaForm()){");
-			out.println("		var vForm=creaForm();");
-			out.println("		vForm.modo.value='abrir';");
-			out.println("		vForm.concepto.value='"+concepto+"';");
-			out.println("		vForm.operacion.value='"+operacion+"';");
-			out.println("		vForm.idTurno.value="+nombre+"."+campoTurno+".value;");
-			if(!concepto.equalsIgnoreCase("DESIGNACION")){
-				out.println("		vForm.idGuardia.value="+nombre+"."+campoGuardia+".value;");
-				out.println("		vForm.fecha.value="+nombre+"."+campoFecha+".value;");
-			}else if(concepto.equalsIgnoreCase("DESIGNACION")){
-				out.println("		vForm.fecha.value="+nombre+"."+campoFecha+".value;");
+			out.println("		var vForm = creaForm();");
+			out.println("		vForm.modo.setAttribute(\"value\",\"abrir\");");
+			out.println("		vForm.concepto.setAttribute(\"value\",\""+concepto+"\");");
+			out.println("		vForm.operacion.setAttribute(\"value\",\""+operacion+"\");");
+			out.println("		vForm.idTurno.setAttribute(\"value\",document.getElementById(\""+campoTurno+"\").value);");
+			if(!concepto.equalsIgnoreCase("DESIGNACION")) {
+				out.println("		vForm.idGuardia.setAttribute(\"value\", document.getElementById(\""+campoGuardia+"\").value);");
+				out.println("		vForm.fecha.setAttribute(\"value\", document.getElementById(\""+campoFecha+"\").value);");
+			} else if(concepto.equalsIgnoreCase("DESIGNACION")) {
+				out.println("		vForm.fecha.setAttribute(\"value\", document.getElementById(\""+campoFecha+"\").value);");
 			}
-			out.println("		var res = ventaModalGeneral(vForm.name,\"G\");");
+			out.println("		var res = ventaModalGeneral(vForm.getAttribute(\"name\"),\"G\");");
 			out.println("		manejaRespuestaForm(res);");
 			out.println("	}");
 			out.println("}");
@@ -802,18 +817,18 @@ public class TagBusquedaSJCS extends TagSupport {
 			out.println(""); 
 			out.println("function buscarDesig27() {");
 			out.println("	if(validaArt27Form()){");
-			out.println("		var vForm=creaFormArticulo27();");
-			out.println("		vForm.modo.value='designarArt27';");
-			out.println("		vForm.concepto.value='"+concepto+"';");
-			out.println("		vForm.operacion.value='"+operacion+"';");
-			out.println("		vForm.idTurno.value="+nombre+"."+campoTurno+".value;");
-			if(!concepto.equalsIgnoreCase("DESIGNACION")){
-				out.println("		vForm.idGuardia.value="+nombre+"."+campoGuardia+".value;");
-				out.println("		vForm.fecha.value="+nombre+"."+campoFecha+".value;");
-			}else if(concepto.equalsIgnoreCase("DESIGNACION")){
-				out.println("		vForm.fecha.value="+nombre+"."+campoFecha+".value;");
+			out.println("		var vForm = creaFormArticulo27();");
+			out.println("		vForm.modo.setAttribute(\"value\",\"designarArt27\");");
+			out.println("		vForm.concepto.setAttribute(\"value\",\""+concepto+"\");");
+			out.println("		vForm.operacion.setAttribute(\"value\",\""+operacion+"\");");
+			out.println("		vForm.idTurno.setAttribute(\"value\", document.getElementById(\""+campoTurno+"\").value);");
+			if(!concepto.equalsIgnoreCase("DESIGNACION")) {
+				out.println("		vForm.idGuardia.setAttribute(\"value\",\""+nombre+"."+campoGuardia+"\").value);");
+				out.println("		vForm.fecha.setAttribute(\"value\", document.getElementById(\""+campoFecha+"\").value);");
+			} else if(concepto.equalsIgnoreCase("DESIGNACION")) {
+				out.println("		vForm.fecha.setAttribute(\"value\", document.getElementById(\""+campoFecha+"\").value);");
 			}
-			out.println("		var res = ventaModalGeneral(vForm.name,\"G\");");
+			out.println("		var res = ventaModalGeneral(vForm.getAttribute(\"name\"),\"G\");");
 			out.println("		manejaRespuestaForm(res);");
 			out.println("	}");
 			out.println("}");
@@ -826,22 +841,21 @@ public class TagBusquedaSJCS extends TagSupport {
 			out.println("function buscarAut() {");
 			out.println("	sub(); ");
 			out.println("	if(validaForm()){");
-			out.println("		var vForm=creaForm();");
-			out.println("		vForm.target='submitArea';");
-			out.println("		vForm.modo.value='buscarPor';");
-			out.println("		vForm.concepto.value='"+concepto+"';");
-			out.println("		vForm.operacion.value='"+operacion+"';");
-			out.println("		vForm.idTurno.value="+nombre+"."+campoTurno+".value;");
-			if(!concepto.equalsIgnoreCase("DESIGNACION")){
-				out.println("		vForm.idGuardia.value="+nombre+"."+campoGuardia+".value;");
-				out.println("		vForm.fecha.value="+nombre+"."+campoFecha+".value;");
-			}else if(concepto.equalsIgnoreCase("DESIGNACION")){
-				out.println("		vForm.fecha.value="+nombre+"."+campoFecha+".value;");
-				
+			out.println("		var vForm = creaForm();");
+			out.println("		vForm.setAttribute(\"target\",\"submitArea\");");
+			out.println("		vForm.modo.setAttribute(\"value\",\"buscarPor\");");
+			out.println("		vForm.concepto.setAttribute(\"value\",\""+concepto+"\");");
+			out.println("		vForm.operacion.setAttribute(\"value\",\""+operacion+"\");");
+			out.println("		vForm.idTurno.setAttribute(\"value\", document.getElementById(\""+campoTurno+"\").value);");
+			if(!concepto.equalsIgnoreCase("DESIGNACION")) {
+				out.println("		vForm.idGuardia.setAttribute(\"value\", document.getElementById(\""+campoGuardia+"\").value);");
+				out.println("		vForm.fecha.setAttribute(\"value\", document.getElementById(\""+campoFecha+"\").value);");
+			} else if(concepto.equalsIgnoreCase("DESIGNACION")) {
+				out.println("		vForm.fecha.setAttribute(\"value\", document.getElementById(\""+campoFecha+"\").value);");
 			}
 			out.println("		creaSubmitArea();");
 			out.println("		vForm.submit();");
-			out.println("	}else{");
+			out.println("	} else {");
 			out.println("		fin();");
 			out.println("		return false;");
 			out.println("	}");
@@ -851,10 +865,10 @@ public class TagBusquedaSJCS extends TagSupport {
 		if (eliminarSeleccionado) {
 			out.println("function eliminaLetradoSeleccionado(){");
 			if(campoPersona!=null){
-				out.println("	"+nombre+"."+campoPersona+".value=\"\";");
+				out.println("	document.getElementById(\""+campoPersona+"\").value=\"\";");
 			}			
 			if(campoColegiado!=null){
-				out.println("	"+nombre+"."+campoColegiado+".value=\"\";");
+				out.println("	document.getElementById(\""+campoColegiado+"\").value=\"\";");
 			}
 			
 			if (this.campoNombreColegiado != null) { 
@@ -868,32 +882,25 @@ public class TagBusquedaSJCS extends TagSupport {
 				out.println("	if (campo){");
 				out.println("		campo.checked=false;");
 				out.println("	}");
-				out.println("	tdCheckCompensacion.style.visibility='hidden'; ");
+				out.println("	document.getElementById('tdCheckCompensacion').style.visibility='hidden'; ");
 			}
 			if (campoSalto != null) {
 				out.println("	var campo = document.getElementById('"+campoSalto+"');");
 				out.println("	if (campo){");
 				out.println("		campo.checked=false;");
 				out.println("	}");
-				out.println("	tdCheckSalto.style.visibility='hidden'; ");
-			}
-			
-			out.println("	if ("+nombre+".sustituta) {");
-			out.println("	    "+nombre+".sustituta.value=\"\";");
-			out.println("	} ");
-	    	
-			out.println("	if ("+nombre+"."+campoFlagSalto+") {");	
-			out.println("		"+nombre+"."+campoFlagSalto+".value=\"\";");
-			out.println("	} ");
-			
-			
-			out.println("	if ("+nombre+"."+campoFlagCompensacion+") {");	
-			out.println("		"+nombre+"."+campoFlagCompensacion+".value=\"\";");
-			out.println("	} ");
-			
-			
-			out.println("}");
-			
+				out.println("	document.getElementById('tdCheckSalto').style.visibility='hidden'; ");
+			}			
+			out.println("	if (document.getElementById(\"sustituta\")) {");
+			out.println("	    document.getElementById(\"sustituta\").value=\"\";");
+			out.println("	} ");	    	
+			out.println("	if (document.getElementById(\""+campoFlagSalto+"\")) {");	
+			out.println("		document.getElementById(\""+campoFlagSalto+"\").value=\"\";");
+			out.println("	} ");			
+			out.println("	if (document.getElementById(\""+campoFlagCompensacion+"\")) {");	
+			out.println("		document.getElementById(\""+campoFlagCompensacion+"\").value=\"\";");
+			out.println("	} ");			
+			out.println("}");			
 		}
 		
 		if(diaGuardia){
@@ -903,12 +910,12 @@ public class TagBusquedaSJCS extends TagSupport {
 			out.println("function rellenarComboGuardia() {");
 			if (!this.modo.equalsIgnoreCase("ver")) {
 			    out.println("	if("+nombre+"."+campoTurno+".value!='' && "+nombre+"."+campoGuardia+".value!='' && "+nombre+"."+campoFecha+".value!=''){");
-				out.println("		var vForm=creaForm();");
-				out.println("		vForm.target='submitArea';");
-				out.println("		vForm.modo.value='ver';");
-				out.println("		vForm.idTurno.value="+nombre+"."+campoTurno+".value;");
-				out.println("		vForm.idGuardia.value="+nombre+"."+campoGuardia+".value;");
-				out.println("		vForm.fecha.value="+nombre+"."+campoFecha+".value;");
+				out.println("		var vForm = creaForm();");
+				out.println("		vForm.setAttribute(\"target\",\"submitArea\");");
+				out.println("		vForm.modo.setAttribute(\"value\",\"ver\");");
+				out.println("		vForm.idTurno.setAttribute(\"value\", document.getElementById(\""+campoTurno+"\").value);");
+				out.println("		vForm.idGuardia.setAttribute(\"value\", document.getElementById(\""+campoGuardia+"\").value);");
+				out.println("		vForm.fecha.setAttribute(\"value\", document.getElementById(\""+campoFecha+"\").value);");
 				out.println("		creaSubmitArea();");
 				out.println("		vForm.submit();");
 				out.println("	}");
@@ -924,33 +931,27 @@ public class TagBusquedaSJCS extends TagSupport {
 			out.println("function seleccionarDatosCombo(objeto) {");
 			if (!this.modo.equalsIgnoreCase("ver")) {
 				if(campoPersona!=null && campoColegiado!=null){
-				    out.println(" if (objeto.value!='') { ");
-				    	
+				    out.println(" if (objeto.value!='') { ");				    	
 				    	//out.println(" alert('COMBO: seleccionado letrado de guardia');");
-					
-				    	out.println(" "+nombre+"."+campoPersona+".value=objeto.value;");
-						out.println(" "+nombre+"."+campoColegiado+".value=document.ncolegiado[objeto.selectedIndex];");
-						out.println(" document.getElementById('"+this.campoNombreColegiado+"').value=objeto.options[objeto.selectedIndex].text;");
+				    	out.println(" document.getElementById('"+campoPersona+"').setAttribute(\"value\",objeto.value);");
+						out.println(" document.getElementById('"+campoColegiado+"').setAttribute(\"value\",document.ncolegiado[objeto.selectedIndex]);");
+						out.println(" document.getElementById('"+this.campoNombreColegiado+"').setAttribute(\"value\", objeto.options[objeto.selectedIndex].text);");
 						//out.println(" document.getElementById('"+campoSalto+"').checked=true;");
-						//out.println(" tdCheckSalto.style.display='block'; ");				
-						out.println(" document.getElementById('"+campoSalto+"').checked=false;");
-						//out.println(" tdCheckSalto.style.display='block'; ");				
+						//out.println(" document.getElementById('tdCheckSalto').style.display='block'; ");				
+						out.println(" document.getElementById('"+campoSalto+"').setAttribute(\"checked\",\"false\");");
+						//out.println(" document.getElementById('tdCheckSalto').style.display='block'; ");				
 				    out.println(" }  ");
 //				    out.println(" if (document.ncolegiado.lenght==0) { ");
 //				    	out.println(" "+nombre+"."+campoPersona+".value='';");
 //						out.println(" "+nombre+"."+campoColegiado+".value='';");
 //						out.println(" document.getElementById('"+this.campoNombreColegiado+"').value='';");
 //						out.println(" document.getElementById('"+campoSalto+"').checked=false;");
-//						out.println(" tdCheckSalto.style.display='none'; ");				
+//						out.println(" document.getElementById('tdCheckSalto').style.display='none'; ");				
 //				    out.println(" }  ");
 				}
 			}
-			out.println("}");
-			
-			
-		
-		}
-		
+			out.println("}");	
+		}		
 		out.println("");
 		out.println("</script>");
 	}

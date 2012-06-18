@@ -61,8 +61,11 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	
+	
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -123,8 +126,7 @@
 		<siga:Idioma key="censo.busquedaComisiones.literal.fechaCargo"/>
 	</td>
 	<td class="labelText">
-		<html:text styleClass="box" property="fechaCargo" size="8" maxlength="10" readonly="true"/>
-		<a href='javascript://'onClick="return showCalendarGeneral(fechaCargo);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
+ <siga:Fecha nombreCampo="fechaCargo"></siga:Fecha>
 	</td>
 	</tr>
 	

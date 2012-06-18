@@ -1,4 +1,4 @@
-<!-- listarTurnosDispBaja.jsp -->
+<!-- listadoTurnosDisponiblesBaja.jsp -->
  <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -33,28 +33,27 @@
 
 <head>
 	
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-	<script language="JavaScript">
-
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
 		
-		function solicitarbaja(fila) 
-	{
-	   	document.FormAValidar.idInstitucion.value = document.getElementById('idInstitucionSolicitud').value;
-	   	document.FormAValidar.idPersona.value = document.getElementById('idPersonaSolicitud').value;
-	   	var idTurno 				= 'oculto' + fila + '_' + 1;		
-	   	document.FormAValidar.idTurno.value = document.getElementById(idTurno).value;
-	   	document.FormAValidar.modo.value = "sbtConsultaTurno";
-	   	document.FormAValidar.target="_parent";
-	   	document.FormAValidar.submit();
-	   	
-	   	
-	 }
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script language="JavaScript">
+		
+		function solicitarbaja(fila) {
+		   	document.FormAValidar.idInstitucion.value = document.getElementById('idInstitucionSolicitud').value;
+		   	document.FormAValidar.idPersona.value = document.getElementById('idPersonaSolicitud').value;
+		   	var idTurno = 'oculto' + fila + '_' + 1;		
+		   	document.FormAValidar.idTurno.value = document.getElementById(idTurno).value;
+		   	document.FormAValidar.modo.value = "sbtConsultaTurno";
+		   	document.FormAValidar.target="_parent";
+		   	document.FormAValidar.submit();	   	
+		 }
 		
 		
 		//SCRIPTS BOTONES
 		function accionCancelar() {		
-			window.close();
+			window.top.close();
 		}
 		
 		function accionContinuar()	{
@@ -62,54 +61,44 @@
 			document.forms[0].target="_parent";
 		}
 		
-	   function marcarDesmarcarTodos(o,numeroChekBox) 
-			{
-				var ele = document.getElementsByName('bajaTurno');
-				for (i = 0; i < ele.length; i++) {
-				    if(!ele[i].disabled){
-					 ele[i].checked = o.checked;
-					}
-					
+	   function marcarDesmarcarTodos(o,numeroChekBox) {
+			var ele = document.getElementsByName('bajaTurno');
+			for (i = 0; i < ele.length; i++) {
+			    if(!ele[i].disabled){
+				 ele[i].checked = o.checked;
 				}
 			}
-		function darDeBajaEnTurnosSel(mostrarMensaje) 
-		   
-	    { 
+		}
+	   
+		function darDeBajaEnTurnosSel(mostrarMensaje) { 
 	    	sub();
-			 var ele = document.getElementsByName('bajaTurno');
-			   
-			   
-			   var encontrado=false;
-			   var datos='';
-				for (i = 0; i < ele.length; i++) {
-				    if(ele[i].checked){
-					  encontrado=true;
-					  var idTurno=  'oculto' + (i+1) + '_'+1 ;
-					  var validar='oculto'+(i+1)+'_'+4;
-					  var fSolicitud ='oculto'+(i+1)+'_'+21;
-					  var datos = datos +","+ document.getElementById (idTurno).value+"##"+document.getElementById (validar).value+"##"+document.getElementById (fSolicitud).value ; 
-					
-					}
-					
+			var ele = document.getElementsByName('bajaTurno');			 
+			var encontrado=false;
+			var datos='';
+			for (i = 0; i < ele.length; i++) {
+			    if(ele[i].checked){
+				  encontrado=true;
+				  var idTurno=  'oculto' + (i+1) + '_'+1 ;
+				  var validar='oculto'+(i+1)+'_'+4;
+				  var fSolicitud ='oculto'+(i+1)+'_'+21;
+				  var datos = datos +","+ document.getElementById (idTurno).value+"##"+document.getElementById (validar).value+"##"+document.getElementById (fSolicitud).value ; 
 				}
-				datos=datos.substring(1);
-				
-				if (!encontrado){
-				 alert("<siga:Idioma key="censo.fichaCliente.turnoInscrito.avisoSeleccion"/>");
-				 fin();
-				 return;
+			}
+			datos=datos.substring(1);
+			
+			if (!encontrado){
+				alert("<siga:Idioma key="censo.fichaCliente.turnoInscrito.avisoSeleccion"/>");
+				fin();
+				return;
+			}
+			
+			if (mostrarMensaje) {
+				var mensaje = "<siga:Idioma key="censo.fichaCliente.turnoInscrito.pregunta.bajaTodosLosTurnos"/>";
+				if(!confirm(mensaje)) {
+                	fin();
+					return;
 				}
-				
-				
-				
-				if (mostrarMensaje) {
-						var mensaje = "<siga:Idioma key="censo.fichaCliente.turnoInscrito.pregunta.bajaTodosLosTurnos"/>";
-						if(!confirm(mensaje)) {
-                           fin();
-							return;
-						}
-						
-				}
+			}
 			document.FormAValidar.idInstitucion.value = document.getElementById('idInstitucionSolicitud').value;
 	   		document.FormAValidar.idPersona.value = document.getElementById('idPersonaSolicitud').value;
 			document.FormAValidar.turnosSel.value=datos;
@@ -143,20 +132,22 @@
 	</table>
 
 
-		<html:form action = "/JGR_SolicitarBajaTurno.do" method="POST" target="_parent" style="display:none">
-		<input type="hidden" name="origen" value="listarTurnosDisp">
-		<input type="hidden" name="modo"   value="ver">
-		<input type="hidden" name="paso" value="turno"/>
-		<input type="hidden" name="idInstitucion" />
-		<input type="hidden" name="idPersona" />
-		<input type="hidden" name="idTurno" />
-		<input type="hidden" name="fechaSolicitud"/>
-		<input type="hidden" name="observacionesSolicitud"/>
+		<html:form action = "/JGR_SolicitarBajaTurno.do" method="POST" target="_parent" style="display:none" 
+				name="FormAValidar" type ="com.siga.gratuita.form.InscripcionTGForm">
+			<input type="hidden" id="origen" name="origen" value="listarTurnosDisp">
+			<input type="hidden" id="modo" name="modo" value="ver">
+			<input type="hidden" id="paso" name="paso" value="turno"/>
+			<input type="hidden" id="idInstitucion" name="idInstitucion" />
+			<input type="hidden" id="idPersona" name="idPersona" />
+			<input type="hidden" id="idTurno" name="idTurno" />
+			<input type="hidden" id="fechaSolicitud" name="fechaSolicitud"/>
+			<input type="hidden" id="observacionesSolicitud" name="observacionesSolicitud"/>
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
-			<input type='hidden' name='turnosSel'>
-			<input type='hidden' name='validarTurno'>
+			<input type="hidden" id="filaSelD" name="filaSelD">
+			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
+			<input type="hidden" id="actionModal" name="actionModal" value="">
+			<input type='hidden' id="turnosSel" name='turnosSel'>
+			<input type='hidden' id="validarTurno" name='validarTurno'>
 		</html:form>	
 		
 	<% 	String nC="";
@@ -178,9 +169,7 @@
 		   			alto="80%"
 		   			ajusteBotonera="true"		
 
-		   modal="G"
-		   >
-
+		   modal="G" >
 	<%
 	String idPersona = (String)request.getAttribute("idPersonaTurno");
 	if (obj.size()>0){%>
@@ -226,25 +215,25 @@
 				
 			%>
 				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>"  elementos='<%=elems%>' clase="listaNonEdit" visibleConsulta="no" visibleEdicion="no" visibleBorrado="no" pintarEspacio="false">
-					<input type='hidden' name='idPersonaSolicitud' value='<%=idPersona%>'>
-					<input type='hidden' name='idInstitucionSolicitud' value='<%=hash.get("IDINSTITUCION")%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=hash.get("IDTURNO")%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=hash.get("GUARDIAS")%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=hash.get("VALIDARJUSTIFICACIONES")%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=hash.get("VALIDARINSCRIPCIONES")%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_5' value='<%=hash.get("DESIGNADIRECTA")%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_6' value='<%=hash.get("REPARTOPORPUNTOS")%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_7' value='<%=o1%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_8' value='<%=o2%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_9' value='<%=hash.get("IDORDENACIONCOLAS")%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_10' value='<%=o5%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_11' value='<%=hash.get("IDAREA")%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_12' value='<%=hash.get("IDMATERIA")%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_13' value='<%=hash.get("IDZONA")%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_14' value='<%=o3%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_15' value='<%=o4%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_16' value='<%=o5%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_17' value='<%=hash.get("IDGRUPOFACTURACION")%>'>
+					<input type='hidden' id='idPersonaSolicitud' name='idPersonaSolicitud' value='<%=idPersona%>'>
+					<input type='hidden' id='idInstitucionSolicitud' name='idInstitucionSolicitud' value='<%=hash.get("IDINSTITUCION")%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_1' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=hash.get("IDTURNO")%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_2' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=hash.get("GUARDIAS")%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_3' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=hash.get("VALIDARJUSTIFICACIONES")%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_4' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=hash.get("VALIDARINSCRIPCIONES")%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_5' name='oculto<%=String.valueOf(recordNumber)%>_5' value='<%=hash.get("DESIGNADIRECTA")%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_6' name='oculto<%=String.valueOf(recordNumber)%>_6' value='<%=hash.get("REPARTOPORPUNTOS")%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_7' name='oculto<%=String.valueOf(recordNumber)%>_7' value='<%=o1%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_8' name='oculto<%=String.valueOf(recordNumber)%>_8' value='<%=o2%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_9' name='oculto<%=String.valueOf(recordNumber)%>_9' value='<%=hash.get("IDORDENACIONCOLAS")%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_10' name='oculto<%=String.valueOf(recordNumber)%>_10' value='<%=o5%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_11' name='oculto<%=String.valueOf(recordNumber)%>_11' value='<%=hash.get("IDAREA")%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_12' name='oculto<%=String.valueOf(recordNumber)%>_12' value='<%=hash.get("IDMATERIA")%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_13' name='oculto<%=String.valueOf(recordNumber)%>_13' value='<%=hash.get("IDZONA")%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_14' name='oculto<%=String.valueOf(recordNumber)%>_14' value='<%=o3%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_15' name='oculto<%=String.valueOf(recordNumber)%>_15' value='<%=o4%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_16' name='oculto<%=String.valueOf(recordNumber)%>_16' value='<%=o5%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_17' name='oculto<%=String.valueOf(recordNumber)%>_17' value='<%=hash.get("IDGRUPOFACTURACION")%>'>
 					
 					<%
 					// Para posibles valores nulos.
@@ -252,10 +241,10 @@
 					if(hash.get("PARTIDAPRESUPUESTARIA")!=null && !hash.get("PARTIDAPRESUPUESTARIA").equals(""))
 						partidaPresupuestaria = (String) hash.get("PARTIDAPRESUPUESTARIA");
 					%>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_18' value='<%=partidaPresupuestaria%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_19' value='<%=hash.get("GRUPOFACTURACION")%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_20' value='<%=o6%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_21' value='<%=hash.get("FECHASOLICITUD")%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_18' name='oculto<%=String.valueOf(recordNumber)%>_18' value='<%=partidaPresupuestaria%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_19' name='oculto<%=String.valueOf(recordNumber)%>_19' value='<%=hash.get("GRUPOFACTURACION")%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_20' name='oculto<%=String.valueOf(recordNumber)%>_20' value='<%=o6%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_21' name='oculto<%=String.valueOf(recordNumber)%>_21' value='<%=hash.get("FECHASOLICITUD")%>'>
 					<td align="center">
 						<input type="checkBox" name="bajaTurno" id="<%="bajaTurno"+String.valueOf(recordNumber)%>" <%=deshabilitarCheck%> >
 					</td>
@@ -272,21 +261,19 @@
 	 		<br>
 	   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
 	 		<br>
-	 		
-
 		<%}%>
 		</siga:TablaCabecerasFijas>
-<html:form action="/JGR_SolicitarBajaTurno"  name="FormAValidar" type ="com.siga.gratuita.form.InscripcionTGForm">
-	<html:hidden property="modo"/>
-	<html:hidden property="idInstitucion" />
-	<html:hidden property="idPersona" />
-	<html:hidden property="idTurno" />
-	<html:hidden property="fechaSolicitud" />
-	<html:hidden property="fechaValidacion" />
-	<html:hidden property="turnosSel" />
-	
-	<input type="hidden" name="actionModal" />
-</html:form>
+<%-- 	<html:form action="/JGR_SolicitarBajaTurno"  name="FormAValidar" type ="com.siga.gratuita.form.InscripcionTGForm"> --%>
+<%-- 		<html:hidden property="modo"/> --%>
+<%-- 		<html:hidden property="idInstitucion" /> --%>
+<%-- 		<html:hidden property="idPersona" /> --%>
+<%-- 		<html:hidden property="idTurno" /> --%>
+<%-- 		<html:hidden property="fechaSolicitud" /> --%>
+<%-- 		<html:hidden property="fechaValidacion" /> --%>
+<%-- 		<html:hidden property="turnosSel" /> --%>
+		
+<!-- 		<input type="hidden" name="actionModal" /> -->
+<%-- 	</html:form> --%>
 
 
 				

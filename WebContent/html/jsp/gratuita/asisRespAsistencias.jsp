@@ -107,12 +107,16 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	
 	<!-- validaciones struct -->
 	<html:javascript formName="Asistencias1Form" staticJavascript="false" />  
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	<!-- fin validaciones struct -->
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
 
 	<siga:Titulo 

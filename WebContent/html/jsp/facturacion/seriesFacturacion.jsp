@@ -144,7 +144,7 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<!-- Calendario -->
 	<script src="<%=app%>/html/js/calendarJs.jsp" 				 		 type="text/javascript"></script>
   <script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
@@ -201,7 +201,7 @@ function IsNum( numstr ) {
 
 		//<!-- Asociada al boton Volver -->
 		function accionCerrar(){ 			
-			window.close();
+			window.top.close();
 		}			
 		
 		//<!-- Asociada al boton GuardarCerrar -->
@@ -392,10 +392,10 @@ function IsNum( numstr ) {
 				document.forms[0].fechaCargo.value =document.forms[0].fechaPrevistaConfirmacion.value;
 			} 
 
-			function accionCalendario() 
-			{
+			function accionCalendario() {
 				// Abrimos el calendario 				
 				var resultado = showModalDialog("<html:rewrite page='/html/jsp/general/calendarGeneral.jsp'/>?valor="+document.programarFacturacionForm.fechaPrevistaConfirmacion.value,document.programarFacturacionForm.fechaPrevistaConfirmacion,"dialogHeight:275px;dialogWidth:400px;help:no;scroll:no;status:no;");
+				window.top.focus();
 				if (resultado) {
 					document.programarFacturacionForm.fechaPrevistaConfirmacion.value = resultado;
 					document.programarFacturacionForm.horasConfirmacion.value = "20";//ponemos que la hora por defecto para confirmacion seran las 20:00

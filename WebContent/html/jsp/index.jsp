@@ -32,38 +32,29 @@
 		</style>
 	
 		<script language="JavaScript">
-			function redirect(sUserCode, sProfile, sLocation, sAccess)
-			{
-				win = self;
-				
-				if(win.opener == null)
-				{
+			function redirect(sUserCode, sProfile, sLocation, sAccess) {
+				win = self;				
+				if(win.opener == null) {
 	    			win.opener = top;
-	  			}
-	  			
+	  			}	  			
 				frmLogin.user.value=sUserCode;
 				frmLogin.profile.value=sProfile;
 				frmLogin.location.value=sLocation;
 				frmLogin.access.value=sAccess;
 				
-				for (i=0; i<optPosMenu.length; i++)
-				{
-					if (optPosMenu[i].checked)
-					{
+				for (i=0; i<optPosMenu.length; i++) {
+					if (optPosMenu[i].checked) {
 						frmLogin.posMenu.value=optPosMenu[i].value;
 						i=optPosMenu;
 					}
-				}
-				
+				}				
 				frmLogin.submit();
 			}
 			
-			function getLocation(sUsuCod, sProfileCod)
-			{
-				var loc=showModalDialog("<%=app%>/html/jsp/general/locationSelector.jsp", "", "center:yes; dialogHeight:150px; dialogWidth:350px; edge:Raised; center:Yes; help:No; scroll:No; resizable:No; status:No; unadorned:Yes;");
-				
-				if(loc!=null && loc!='')
-				{
+			function getLocation(sUsuCod, sProfileCod) {
+				var loc = showModalDialog("<%=app%>/html/jsp/general/locationSelector.jsp", "", "center:yes; dialogHeight:150px; dialogWidth:350px; edge:Raised; center:Yes; help:No; scroll:No; resizable:No; status:No; unadorned:Yes;");
+				window.top.focus();
+				if(loc!=null && loc!='') {
 					redirect(sUsuCod, sProfileCod, loc, "DENY");
 				}
 			}

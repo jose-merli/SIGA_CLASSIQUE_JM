@@ -69,7 +69,7 @@
 			}
 
 		</style>
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		<!-- Validaciones en Cliente -->
@@ -138,8 +138,8 @@
 			<html:hidden property = "tipoModifEspec" value ="<%=tipoModificacion%>"/>			
 			
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
+			<input type="hidden" id="filaSelD" name="filaSelD">
+			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
 		</html:form>
 					
@@ -200,25 +200,25 @@
 							  pintarEspacio="no" 							  					  							  
 							  clase="listaNonEdit">
 							<td align="center">
-								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDPERSONA)%>">
-								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDINSTITUCION)%>">
-								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDSOLICITUD)%>">
-								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=row.getString("TIPOMODIF")%>">
-                                <input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=row.getString("CODIGO")%>">
+								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_1" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDPERSONA)%>">
+								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_2" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDINSTITUCION)%>">
+								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_3" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDSOLICITUD)%>">
+								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_4" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=row.getString("TIPOMODIF")%>">
+                                <input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_5" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=row.getString("CODIGO")%>">
 								<!-- Valores especificos de la clave original para cada tipo de modificacion existente -->
 
 								
 
 								<!-- ENVIOS 3 idSolicitud, 1 idPersona, 6 descripcion -->
-								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_6" value="<%=row.getString("TEXTOTIPOMODIF")%>">
+								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_6" name="oculto<%=String.valueOf(recordNumber)%>_6" value="<%=row.getString("TEXTOTIPOMODIF")%>">
 								
 								
 								<!-- Si esta pendiente de procesar habilito checkbox -->
 								
 								<% if (row.getString("IDESTADOSOLIC").equalsIgnoreCase(String.valueOf(ClsConstants.ESTADO_SOLICITUD_MODIF_PENDIENTE))){%>
-									<input type="checkbox" name="validado" value="1">
-									<input type="hidden" name="solicita_<%=String.valueOf(recordPendiente)%>" value='<%=row.getString("IDSOLICITUD")%>'>	
-									<input type="hidden" name="solicitaTipoModif_<%=String.valueOf(recordPendiente)%>" value='<%=row.getString("TIPOMODIF")%>'>								
+									<input type="checkbox" id="validado" value="1" name="validado" value="1">
+									<input type="hidden" id="solicita_<%=String.valueOf(recordPendiente)%>" name="solicita_<%=String.valueOf(recordPendiente)%>" value='<%=row.getString("IDSOLICITUD")%>'>	
+									<input type="hidden" id="solicitaTipoModif_<%=String.valueOf(recordPendiente)%>"  name="solicitaTipoModif_<%=String.valueOf(recordPendiente)%>" value='<%=row.getString("TIPOMODIF")%>'>								
 									<% recordPendiente++; %>
 								<% } else { %>
 									&nbsp;

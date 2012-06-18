@@ -38,15 +38,15 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script>
 	function init(){
 		alert('<siga:Idioma key="facturacion.pagoContabilidad.literal.operacionExito"/>');
 		document.forms[0].modo.value="descargar";
 		//document.forms[0].submit();
 		<%if(generacionOK!=null){%>
-			window.returnValue="MODIFICADO"; 
-			window.close();
+			window.top.returnValue="MODIFICADO"; 
+			window.top.close();
 		<%}%>
 	}
 	</script>

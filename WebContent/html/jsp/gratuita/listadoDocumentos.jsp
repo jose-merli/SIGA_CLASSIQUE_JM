@@ -62,8 +62,11 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	<title><siga:Idioma key="gratuita.retenciones.listadoRetenciones"/></title>
 
@@ -92,10 +95,10 @@
 		        }
 		        datos.value = datos.value + "%"
 		      } else { j = 2; }
-		      if ((tabla.rows[fila].cells)[i].innerText == "")
+		      if ((tabla.rows[fila].cells)[i].innerHTML == "")
 		        datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
 		      else
-		        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';
+		        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
 		   }
 		   document.forms[0].modo.value = "verDocu";
 		   ventaModalGeneral(document.forms[0].name,"P");
@@ -121,10 +124,10 @@
 		        }
 		        datos.value = datos.value + "%"
 		      } else { j = 2; }
-		      if ((tabla.rows[fila].cells)[i].innerText == "") 
+		      if ((tabla.rows[fila].cells)[i].innerHTML == "") 
 		        datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
 		      else
-		        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';
+		        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
 		   }
 		   document.forms[0].modo.value = "editarDocu";
 		   var resultado = ventaModalGeneral(document.forms[0].name,"P");
@@ -160,10 +163,10 @@
 		        		}
 		        		datos.value = datos.value + "%"
 		      		} else { j = 2; }
-		      		if ((tabla.rows[fila].cells)[i].innerText == "")
+		      		if ((tabla.rows[fila].cells)[i].innerHTML == "")
 		        		datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
 		      		else
-		        		datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';
+		        		datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
 		   	}
 		   	var auxTarget = document.forms[0].target;
 		   	document.forms[0].target="submitArea";

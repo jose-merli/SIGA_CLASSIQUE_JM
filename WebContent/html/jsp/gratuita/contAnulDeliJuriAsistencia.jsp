@@ -74,8 +74,12 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>	
 	
@@ -118,52 +122,63 @@
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
 	<!-- Zona de campos de busqueda o filtro -->
 	<html:form action = "<%=ACTION%>" method="POST" target="mainWorkArea">
-	<html:hidden property = "anio" value = "<%=ANIO%>"/>	
-	<html:hidden property = "numero" value = "<%=NUMERO%>"/>	
-	<html:hidden property = "modo" value = ""/>	
-	<input type="hidden" name="esFichaColegial" value="<%=sEsFichaColegial%>"/>
-	<fieldset>
-	<table width="100%" border="0">
-		<%if(DATO.equals("MOTIVOSANULACION")){%>
-		<tr>
-			<%if(accion != null && accion.equalsIgnoreCase("modificar")){%>
-			<td class="labelText" width="150">	
-				<siga:Idioma key='gratuita.contAnulDeliJuriAsistencia.literal.fanulacion'/>
-			</td>
-			<td>
-				<html:text name="AsistenciasForm" property="fechaAnulacion" size="10" maxlength="10" styleClass="box" value="<%=FECHAANULACION%>" readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaAnulacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-			</td>	
-			<%}else{%>
-			<td class="labelText" width="150">	
-				<siga:Idioma key='gratuita.contAnulDeliJuriAsistencia.literal.fanulacion'/>
-			</td>
-			<td>
-				<%=FECHAANULACION%>
-			</td>
-			<%}%>
-		</tr>
-		<%}%>
-			<%if(accion != null && accion.equalsIgnoreCase("modificar")){%>
-				<tr align="center">
-				<td class="labelText"  width="150" >	
-					<siga:Idioma key='<%=TITULOTEXTAREA%>'/>
-				</td>	
-				<td class="labelTextValor" >	
-					<html:textarea name="AsistenciasForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" property="<%=NOMBRETEXTAREA%>" cols="200" rows="25" style="overflow:auto" styleClass="boxCombo" value="<%=VALORDATO%>" readOnly="false" ></html:textarea>
-				</td>
+		<html:hidden property = "anio" styleId="anio" value = "<%=ANIO%>"/>	
+		<html:hidden property = "numero" styleId="numero" value = "<%=NUMERO%>"/>	
+		<html:hidden property = "modo" value = ""/>	
+		<input type="hidden" name="esFichaColegial" value="<%=sEsFichaColegial%>"/>
+		<fieldset>
+			<table width="100%" border="0">
+				<%if(DATO.equals("MOTIVOSANULACION")){%>
+				<tr>
+					<%if(accion != null && accion.equalsIgnoreCase("modificar")){%>
+					<td class="labelText" width="150">	
+						<siga:Idioma key='gratuita.contAnulDeliJuriAsistencia.literal.fanulacion'/>
+					</td>
+					<td>
+						<html:text name="AsistenciasForm" property="fechaAnulacion" styleId="fechaAnulacion" 
+							size="10" maxlength="10" styleClass="box" value="<%=FECHAANULACION%>" readOnly="true">
+						</html:text>
+						&nbsp;&nbsp;
+						<a onClick="return showCalendarGeneral(fechaAnulacion);" onMouseOut="MM_swapImgRestore();" 
+							onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
+							<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" />
+						</a>
+					</td>	
+					<%}else{%>
+					<td class="labelText" width="150">	
+						<siga:Idioma key='gratuita.contAnulDeliJuriAsistencia.literal.fanulacion'/>
+					</td>
+					<td>
+						<%=FECHAANULACION%>
+					</td>
+					<%}%>
 				</tr>
-			<%}else{%>
-				<tr align="center">
-				<td class="labelText"  width="150">	
-					<siga:Idioma key='<%=TITULOTEXTAREA%>'/>
-				</td>	
-				<td class="labelTextValor">	
-					<html:textarea name="AsistenciasForm" property="<%=NOMBRETEXTAREA%>" cols="200" rows="25" style="overflow:auto" styleClass="boxConsulta" value="<%=VALORDATO%>" readOnly="true" ></html:textarea>
-				</td>
-				</tr>
-			<%}%>
-	</table>
-	</fieldset>
+				<%}%>
+					<%if(accion != null && accion.equalsIgnoreCase("modificar")){%>
+						<tr align="center">
+						<td class="labelText"  width="150" >	
+							<siga:Idioma key='<%=TITULOTEXTAREA%>'/>
+						</td>	
+						<td class="labelTextValor" >	
+							<html:textarea name="AsistenciasForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" 
+								property="<%=NOMBRETEXTAREA%>" cols="200" rows="25" style="overflow:auto" styleClass="boxCombo" 
+								value="<%=VALORDATO%>" readOnly="false" styleId="<%=NOMBRETEXTAREA%>"></html:textarea>
+						</td>
+						</tr>
+					<%}else{%>
+						<tr align="center">
+						<td class="labelText"  width="150">	
+							<siga:Idioma key='<%=TITULOTEXTAREA%>'/>
+						</td>	
+						<td class="labelTextValor">	
+							<html:textarea name="AsistenciasForm" property="<%=NOMBRETEXTAREA%>" cols="200" rows="25" 
+								style="overflow:auto" styleClass="boxConsulta" value="<%=VALORDATO%>" readOnly="true" property="<%=NOMBRETEXTAREA%>">
+							</html:textarea>
+						</td>
+						</tr>
+					<%}%>
+			</table>
+		</fieldset>
 	
 	</html:form>
 	
@@ -174,26 +189,22 @@
 	<script language="JavaScript">
 
 		<!-- Funcion asociada a boton limpiar -->
-		function limpiar() 
-		{		
+		function limpiar() {		
 			document.forms[0].reset();
 		}
 		
-		function accionRestablecer() 
-		{		
+		function accionRestablecer() {		
 			parent.buscar();
 		}
 		
-		function refrescarLocal()
-		{
+		function refrescarLocal() {
 			parent.buscar();
 		}
 
 		<!-- Funcion asociada a boton Nuevo -->
 		function nuevo() { }
  		
-		function accionGuardar() 
-		{
+		function accionGuardar() {
 			sub();		
 			document.forms[0].modo.value = "modificar";
 			document.forms[0].target = "submitArea";							
@@ -201,8 +212,7 @@
 		}
 
 		
-		function accionVolver()
-		{
+		function accionVolver() {
 			<%
 			// indicamos que es boton volver
 			ses.setAttribute("esVolver","1");

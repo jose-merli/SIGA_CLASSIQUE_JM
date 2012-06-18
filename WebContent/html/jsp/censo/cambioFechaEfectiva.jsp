@@ -72,8 +72,10 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 
 	<!-- Calendario -->
@@ -142,11 +144,7 @@
 		<siga:Idioma key="pys.solicitarBaja.literal.fechaEfectiva"/> (*)
 	</td>				
 	<td>
-
-			<html:text name="datosFacturacionForm" property="fechaEfectiva" styleClass="box" readonly="true" value="<%=fechaEfectiva %>" > 
-			</html:text>
-	
-			<a href='javascript://'onClick="return showCalendarGeneral(fechaEfectiva);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+			<siga:Fecha  nombreCampo= "fechaEfectiva" valorInicial="<%=fechaEfectiva %>" posicionX="50" posicionY="10"/>
 	</td>
 	
 

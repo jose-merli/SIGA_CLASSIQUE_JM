@@ -57,8 +57,10 @@
 	<!-- HEAD -->
 	<head>
 
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+		
+		
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 		
 
@@ -96,7 +98,7 @@
 									<html:hidden property = "solicitudes" value = ""/>																		
 									<html:hidden property = "idPersona" value ="<%=idPersona%>"/>
 									<html:hidden property = "idInstitucion" value ="<%=idInstitucion%>"/>
-									<html:hidden property = "limpiarFilaSeleccionada" value =""/>
+									<html:hidden property = "limpiarFilaSeleccionada" value ="" />
 									<!-- INICIOFILAS -->					
 									<tr>				
 										<td class="labelText">
@@ -125,20 +127,13 @@
 											<siga:Idioma key="censo.busquedaSolicitudesTextoLibre.literal.fechaDesde"/>&nbsp;&nbsp;
 										</td>										
 										<td>
-											<html:text property="fechaDesde" size="10" styleClass="box" readOnly="true"></html:text>
-											<a href='javascript://' onClick="return showCalendarGeneral(fechaDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-												<img src="<%=app%>/html/imagenes/calendar.gif"  border="0">
-											</a>						
-											
+											<siga:Fecha  nombreCampo= "fechaDesde"/>
 										</td>					
 										<td class="labelText">
 											<siga:Idioma key="censo.busquedaSolicitudesTextoLibre.literal.fechaHasta"/>&nbsp;&nbsp;					
 										</td>					
 										<td>
-											<html:text property="fechaHasta" size="10" styleClass="box" readOnly="true"></html:text>
-											<a href='javascript://' onClick="return showCalendarGeneral(fechaHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-												<img src="<%=app%>/html/imagenes/calendar.gif"  border="0">
-											</a>						
+											<siga:Fecha  nombreCampo= "fechaHasta"/>
 										</td>
 									</tr>
 								</html:form>	

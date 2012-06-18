@@ -65,7 +65,7 @@
 			}
 
 		</style>
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		<!-- Validaciones en Cliente -->
@@ -103,10 +103,10 @@
 			        }
 			        datos.value = datos.value + "%"
 			      } else { j = 2; }
-			      if ((tabla.rows[fila].cells)[i].innerText == "") 
+			      if ((tabla.rows[fila].cells)[i].innerHTML == "") 
 			        datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
 			      else
-			        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';
+			        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
 			   }
 			   document.forms[0].target="mainWorkArea";
 			   document.forms[0].modo.value = "modificarDatos";
@@ -163,8 +163,8 @@
 			<html:hidden property = "idInstitucion" value ="<%=idInstitucion%>"/>			
 			<html:hidden property = "solicitudes"/>													
 					<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
+			<input type="hidden" id="filaSelD" name="filaSelD">
+			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
 		</html:form>
 		
@@ -221,17 +221,17 @@
 							  pintarEspacio='no'
 							  clase="listaNonEdit">
 							<td align="center">
-								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDPERSONA)%>">
-								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDINSTITUCION)%>">
+								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_1" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDPERSONA)%>">
+								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_2" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDINSTITUCION)%>">
 
 								<!-- ENVIOS 3 idSolicitud, 4 idPersona, 5 descripcion -->
-								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDSOLICITUD)%>">
-								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDPERSONA)%>">
-								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=UtilidadesString.mostrarDatoJSP(row.getString("MODIFICACION"))%>">
+								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_3" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDSOLICITUD)%>">
+								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_4" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDPERSONA)%>">
+								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_5" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=UtilidadesString.mostrarDatoJSP(row.getString("MODIFICACION"))%>">
 
 								<% if (row.getString("IDESTADOSOLIC").equalsIgnoreCase(String.valueOf(ClsConstants.ESTADO_SOLICITUD_MODIF_PENDIENTE))){%>
-									<input type="checkbox" name="validado" value="1">
-									<input type="hidden" name="solicita_<%=String.valueOf(recordPendiente)%>" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDSOLICITUD)%>">									
+									<input type="checkbox"  id="validado" name="validado" value="1">
+									<input type="hidden" id="solicita_<%=String.valueOf(recordPendiente)%>" name="solicita_<%=String.valueOf(recordPendiente)%>" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDSOLICITUD)%>">									
 									<% recordPendiente++; %>
 								<% } else { %>
 									&nbsp;

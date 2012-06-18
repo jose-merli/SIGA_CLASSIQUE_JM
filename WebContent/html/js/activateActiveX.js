@@ -4,7 +4,7 @@ activateActiveX
 Purpose:  Dynamically replace any elements that will be affected by the new security feature in IE6/IE7 that requires a user to click certain types of elements to activate them before use.
 
 Usage:  Include this file at the end of your html document using the following...
-	<script language="JScript" type="text/jscript" src="activateActiveX.js"></script>
+	<script type="text/javascript" src="activateActiveX.js"></script>
 	
 
 

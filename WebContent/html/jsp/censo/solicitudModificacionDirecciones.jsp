@@ -65,15 +65,18 @@
 .ocultar {display:none}
 </style>	
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		<!-- Validaciones en Cliente -->
 		<!-- El nombre del formulario se obtiene del struts-config -->
 		<html:javascript formName="consultaDireccionesSolicForm" staticJavascript="false" />  
 		<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-		 <script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
@@ -82,7 +85,7 @@
 		var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
 		
 		function accionCerrar(){ 			
-			window.close();
+			window.top.close();
 		}	
 		
 	    function selPais(valor) {                                                                   

@@ -140,7 +140,7 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
  	
 	<!-- SCRIPTS LOCALES -->
@@ -192,8 +192,8 @@
 			
 
  			<!-- RGG: cambio a formularios ligeros -->
- 			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
+			<html:hidden name="SancionesLetradoForm"  property ="filaSelD" styleId="filaSelD"/>
+			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
 		</html:form>
  
@@ -285,8 +285,8 @@
   				
 				<td>
 					<!-- campos hidden -->
-					<input type="hidden" name="oculto<%=cont %>_1" value="<%=idPersona %>">
-					<input type="hidden" name="oculto<%=cont %>_2" value="<%=idSancion %>">
+					<input type="hidden" id="oculto<%=cont %>_1" name="oculto<%=cont %>_1" value="<%=idPersona %>">
+					<input type="hidden" id="oculto<%=cont %>_2" name="oculto<%=cont %>_2" value="<%=idSancion %>">
 
 					<%=UtilidadesString.mostrarDatoJSP(institucion) %>
 					

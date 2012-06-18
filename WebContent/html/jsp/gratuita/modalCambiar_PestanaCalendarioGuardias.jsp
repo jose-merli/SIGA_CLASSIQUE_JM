@@ -55,8 +55,14 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.msgbox.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.dragndrop.min.js"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 
@@ -89,22 +95,22 @@
 	
 	<!-- Comienzo del formulario con los campos -->	
 	<html:form action="/JGR_PestanaCalendarioGuardias.do" method="post">
-		<html:hidden property = "usuMod" value = "<%=usr.getUserName()%>"/>
-		<html:hidden property = "modo" value = "modificar"/>
+		<html:hidden property = "usuMod" styleId="usuMod" value="<%=usr.getUserName()%>"/>
+		<html:hidden property = "modo" styleId="modo" value = "modificar"/>
 		
-		<html:hidden property = "idInstitucion" value = "<%=idinstitucion%>"/>
+		<html:hidden property = "idInstitucion" styleId="idInstitucion" value = "<%=idinstitucion%>"/>
 		
-		<html:hidden property = "idTurnoSolicitante" value = "<%=idturno%>"/>
-		<html:hidden property = "idGuardiaSolicitante" value = "<%=idguardia%>"/>
-		<html:hidden property = "idCalendarioGuardiasSolicitante" value = "<%=idcalendarioguardias%>"/>
-		<html:hidden property = "idPersonaSolicitante" value = "<%=idpersona%>"/>
+		<html:hidden property = "idTurnoSolicitante" styleId="idTurnoSolicitante" value = "<%=idturno%>"/>
+		<html:hidden property = "idGuardiaSolicitante" styleId="idGuardiaSolicitante" value = "<%=idguardia%>"/>
+		<html:hidden property = "idCalendarioGuardiasSolicitante" styleId="idCalendarioGuardiasSolicitante" value = "<%=idcalendarioguardias%>"/>
+		<html:hidden property = "idPersonaSolicitante" styleId="idPersonaSolicitante" value = "<%=idpersona%>"/>
 
-		<html:hidden property = "idCalendarioGuardiasConfirmador" value = ""/>
-		<html:hidden property = "idTurnoConfirmador" value = ""/>
-		<html:hidden property = "idGuardiaConfirmador" value = ""/>
-		<html:hidden property = "idPersonaConfirmador" value = ""/>
-		<html:hidden property = "fechaInicioConfirmador" value = ""/>
-		<html:hidden property = "fechaFinConfirmador" value = ""/>
+		<html:hidden property = "idCalendarioGuardiasConfirmador" styleId="idCalendarioGuardiasConfirmador" value = ""/>
+		<html:hidden property = "idTurnoConfirmador" styleId="idTurnoConfirmador" value = ""/>
+		<html:hidden property = "idGuardiaConfirmador" styleId="idGuardiaConfirmador" value = ""/>
+		<html:hidden property = "idPersonaConfirmador" styleId="idPersonaConfirmador" value = ""/>
+		<html:hidden property = "fechaInicioConfirmador" styleId="fechaInicioConfirmador" value = ""/>
+		<html:hidden property = "fechaFinConfirmador" styleId="fechaFinConfirmador" value = ""/>
 
 	<!-- INICIO: CAMPOS -->
 	<!-- Zona de campos de busqueda o filtro -->
@@ -126,13 +132,13 @@
 				<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.numero"/>		
 			</td>
 			<td class="labelText">
-				<html:text name="PermutasForm" property="numeroColegiadoSolicitante" size="20" maxlength="20" styleClass="box" value="<%=numeroColegiado%>" readOnly="true"></html:text>
+				<html:text name="PermutasForm" property="numeroColegiadoSolicitante"  styleId="numeroColegiadoSolicitante" size="20" maxlength="20" styleClass="box" value="<%=numeroColegiado%>" readOnly="true"></html:text>
 			</td>		
 			<td class="labelText">
 				<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.nombre"/>
 			</td>
 			<td class="labelText">
-				<html:text name="PermutasForm" property="nombreSolicitante" size="30" maxlength="300" styleClass="box" value="<%=nombreYApellidos%>" readOnly="true"></html:text>
+				<html:text name="PermutasForm" property="nombreSolicitante" styleId="nombreSolicitante" size="30" maxlength="300" styleClass="box" value="<%=nombreYApellidos%>" readOnly="true"></html:text>
 			</td>
 		</tr>
 		<tr>
@@ -140,13 +146,13 @@
 				<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaInicio"/>
 			</td>
 			<td class="labelText">
-				<html:text name="PermutasForm" property="fechaInicioSolicitante" size="10" maxlength="10" styleClass="box" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio)%>" readOnly="true"></html:text>
+				<html:text name="PermutasForm" property="fechaInicioSolicitante" styleId="fechaInicioSolicitante" size="10" maxlength="10" styleClass="box" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio)%>" readOnly="true"></html:text>
 			</td>		
 			<td class="labelText">
 				<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaFin"/>
 			</td>
 			<td class="labelText">
-				<html:text name="PermutasForm" property="fechaFinSolicitante" size="10" maxlength="10" styleClass="box" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin)%>" readOnly="true"></html:text>
+				<html:text name="PermutasForm" property="fechaFinSolicitante" styleId="fechaFinSolicitante" size="10" maxlength="10" styleClass="box" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin)%>" readOnly="true"></html:text>
 			</td>
 		</tr>		
 		<tr>
@@ -154,7 +160,7 @@
 				<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.motivos"/>&nbsp;(*)
 			</td>
 			<td class="labelText" colspan="3">
-				<html:textarea name="PermutasForm" property="motivosSolicitante" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" cols="80" rows="2" style="width:545" styleClass="boxCombo" value="" readOnly="false" ></html:textarea>
+				<html:textarea name="PermutasForm" property="motivosSolicitante" styleId="motivosSolicitante" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" cols="80" rows="2" style="width:545" styleClass="boxCombo" value="" readOnly="false" ></html:textarea>
 			</td>		
 		</tr>		
 		</table>
@@ -169,8 +175,9 @@
 	</table>
 	
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<input type="hidden" name="filaSelD" id="filaSelD" />
+			<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD" />
+			<input type="hidden" name="actionModal" value="" />
 		</html:form>	
 		
 	<!-- FIN: BOTONES BUSQUEDA -->
@@ -217,12 +224,12 @@
 				idPersonaConfirmador = UtilidadesHash.getString(hash,ScsCabeceraGuardiasBean.C_IDPERSONA);
 			%>
 			<tr class="listaNonEdit">
-					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idCalendarioGuardiasConfirmador%>' >
-					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=idTurnoConfirmador%>' >
-					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=idGuardiaConfirmador%>' >
-					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=idPersonaConfirmador%>' />
-					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_5' value='<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioConfirmador)%>' />
-					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_6' value='<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFinConfirmador)%>' />
+					<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_1' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idCalendarioGuardiasConfirmador%>' >
+					<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_2' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=idTurnoConfirmador%>' >
+					<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_3' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=idGuardiaConfirmador%>' >
+					<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_4' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=idPersonaConfirmador%>' />
+					<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_5' name='oculto<%=String.valueOf(recordNumber)%>_5' value='<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioConfirmador)%>' />
+					<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_6' name='oculto<%=String.valueOf(recordNumber)%>_6' value='<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFinConfirmador)%>' />
 				<td align="center">
 					<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioConfirmador)%>
 				</td>
@@ -232,7 +239,7 @@
 				<td align="center"><%=numeroColegiadoConfirmador%></td>
 				<td align="center"><%=nombreConfirmador%></td>								
 				<td align="center">
-					<input type="radio" name="guardiaConfirmador" value="<%=String.valueOf(recordNumber)%>" onclick="seleccionarFila('<%=String.valueOf(recordNumber)%>')" />
+					<input type="radio" name="guardiaConfirmador" id="guardiaConfirmador" value="<%=String.valueOf(recordNumber)%>" onclick="seleccionarFila('<%=String.valueOf(recordNumber)%>')" />
 				</td>
 			</tr>
 				<% 		recordNumber++; %>
@@ -256,7 +263,7 @@
 	<script language="JavaScript">
 	
 		//Guardo los campos seleccionados
-		function seleccionarFila(fila){
+		function seleccionarFila(fila) {
 		    var idcalendario = 'oculto' + fila + '_' + 1;
 		    var idturno = 'oculto' + fila + '_' + 2;
 		    var idguardia = 'oculto' + fila + '_' + 3;
@@ -265,22 +272,20 @@
    		    var fechafin = 'oculto' + fila + '_' + 6;
    		    
 			//Datos del elemento seleccionado:
-			document.forms[0].idCalendarioGuardiasConfirmador.value = document.getElementById(idcalendario).value;
-			document.forms[0].idTurnoConfirmador.value = document.getElementById(idturno).value;
-			document.forms[0].idGuardiaConfirmador.value = document.getElementById(idguardia).value;
-			document.forms[0].idPersonaConfirmador.value = document.getElementById(idpersona).value;		
-			document.forms[0].fechaInicioConfirmador.value = document.getElementById(fechainicio).value;
-			document.forms[0].fechaFinConfirmador.value = document.getElementById(fechafin).value;
-			
+			document.getElementById("idCalendarioGuardiasConfirmador").value = document.getElementById(idcalendario).value;
+			document.getElementById("idTurnoConfirmador").value = document.getElementById(idturno).value;
+			document.getElementById("idGuardiaConfirmador").value = document.getElementById(idguardia).value;
+			document.getElementById("idPersonaConfirmador").value = document.getElementById(idpersona).value;		
+			document.getElementById("fechaInicioConfirmador").value = document.getElementById(fechainicio).value;
+			document.getElementById("fechaFinConfirmador").value = document.getElementById(fechafin).value;			
 		}
 	
 	
 		//Asociada al boton GuardarCerrar
-		function accionGuardarCerrar() 
-		{		
+		function accionGuardarCerrar() {		
 			sub();
 				//Chequeo que ha seleccionado un valor de la lista:
-				if(document.forms[0].idPersonaConfirmador.value == "") {
+				if(document.getElementById("idPersonaConfirmador").value == "") {
 					alert('<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.error.seleccionar"/>');
 					fin();
 					return false;
@@ -290,7 +295,7 @@
 						document.forms[0].modo.value = "insertar";
 						document.forms[0].target = "submitArea";							
 						document.forms[0].submit();	
-					}else{
+					} else {
 						fin();
 						return false;
 					}
@@ -298,12 +303,11 @@
 		}
 
 		//Asociada al boton Cerrar
-		function accionCerrar() 
-		{		
+		function accionCerrar() {		
 			top.cierraConParametros("NORMAL");
-		}		
-		function refrescarLocal() 
-		{		
+		}
+		
+		function refrescarLocal() {		
 			top.cierraConParametros("NORMAL");
 		}
 

@@ -1,4 +1,4 @@
-<!-- busquedaPersonasModal.jsp -->
+<!-- busquedaModalPersonaJG.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -37,8 +37,11 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -82,11 +85,16 @@
 	<table class="tablaCampos" align="center">
 
 	<html:form action="/JGR_BusquedaPersonaJG.do" method="POST" target="resultadoModal">
-	<html:hidden name="BusquedaPersonaJGForm" property = "modo" value = ""/>
-	<html:hidden name="BusquedaPersonaJGForm" property = "conceptoE" />
+	<html:hidden name="BusquedaPersonaJGForm" styleId="modo" property = "modo" value = ""/>
+	<html:hidden name="BusquedaPersonaJGForm" styleId="conceptoE" property = "conceptoE" />
+
+	<!-- RGG: cambio a formularios ligeros -->
+	<input type="hidden" id="filaSelD" name="filaSelD">
+	<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
+	<input type="hidden" id="actionModal" name="actionModal" value="">
 
 	<!-- campos ocultos -->
-	<html:hidden name="BusquedaPersonaJGForm" property = "idInstitucion" />
+	<html:hidden name="BusquedaPersonaJGForm" styleId="idInstitucion" property = "idInstitucion" />
 			
 	<!-- FILA -->
 	<tr>				
@@ -154,8 +162,7 @@
 	<script language="JavaScript">
 
 		<!-- Funcion asociada a boton buscar -->
-		function buscar() 
-		{
+		function buscar() {
 			sub();		
 			document.forms[0].modo.value="buscarPersonaInit";
 			document.forms[0].submit();			
@@ -202,8 +209,7 @@
 
 
 		<!-- Asociada al boton Cerrar -->
-		function accionCerrar() 
-		{		
+		function accionCerrar() {		
 			top.cierraConParametros("NORMAL");
 		}
 

@@ -158,7 +158,7 @@ public class TagBotonesBusqueda extends TagSupport {
 					case BUSCAR: 
 								out.println("<td class=\"tdBotones\">");
 								
-								out.println("   <script language='JavaScript'>");
+								out.println("   <script type='text/javascript'>");
 								out.println("     function setFilaSeleccionadaD (valor) {");
 								out.println("       a = document.getElementById('limpiarFilaSeleccionada')");
 								out.println("       if (a == undefined) return;");
@@ -170,7 +170,7 @@ public class TagBotonesBusqueda extends TagSupport {
 								
 								out.println("   </script>");
 			
-								out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, sbc.getLabel()) +"\" id=\"idButton\"  onclick=\"setFilaSeleccionadaD('true'); "+ sbc.getAccion() +"; setFilaSeleccionadaD('false');\" class=\"button\" value=\"");
+								out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, sbc.getLabel()) +"\" name=\"idButton\"  onclick=\"setFilaSeleccionadaD('true'); "+ sbc.getAccion() +"; setFilaSeleccionadaD('false');\" class=\"button\" value=\"");
 								out.print(UtilidadesString.getMensajeIdioma(usrbean, sbc.getLabel()));
 								out.println("\">");
 								out.println("</td>");

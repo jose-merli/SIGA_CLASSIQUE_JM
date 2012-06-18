@@ -11,8 +11,8 @@
 		if(selector.value!='')
 		{
 			if(confirm('Ha solicitado conectarse como usuario del Ilustrísimo Colegio de '+selector.value)) {
-				window.returnValue = selector.value;
-			  	window.close();		
+				window.top.returnValue = selector.value;
+			  	window.top.close();		
 			}	
 		}
 		return;

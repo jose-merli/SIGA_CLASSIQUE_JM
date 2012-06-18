@@ -127,8 +127,10 @@
 	<!-- HEAD -->
 	<head>
 
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+		
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+		
 		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>			
 
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
@@ -186,6 +188,7 @@
 				<html:hidden name="DatosColegialesForm" property="id"/> 					
 				<html:hidden property="nombre" value="<%=nombre%>"/> 	
 				<html:hidden property="numero" value="<%=numero%>"/>
+				<html:hidden name="DatosColegialesForm"  property ="filaSelD" styleId="filaSelD"/>
 				 <input type="hidden" name="pestanaSituacion" value="<%=request.getAttribute("PESTANASITUACION")%>">											
 
 				<tr>				
@@ -223,18 +226,15 @@
 									<td>
 										<% if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")){ %>
 										 	<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaPresentacion());%>
-											<% if (fecha.equalsIgnoreCase("")){ %>									 	
-												<html:text property="fechaPresentacion" size="10" styleClass="boxConsulta" value="" readOnly="true"></html:text>
+											<% if (fecha.equalsIgnoreCase("")){ %>
+											<siga:Fecha  nombreCampo= "fechaPresentacion" disabled="true"/>									 	
 											<% }else{ %>	
-												<html:text property="fechaPresentacion" size="10" styleClass="boxConsulta" value="<%=fecha%>" readOnly="true"></html:text>										
+											<siga:Fecha  nombreCampo= "fechaPresentacion" valorInicial="<%=fecha %>"  disabled="true"/>
 											<% } %>
 										<% } else { %>
 											<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaPresentacion());%>
-			  								<html:text property="fechaPresentacion" size="10" styleClass="box" value="<%=fecha%>" readOnly="true"></html:text>										
-											<a href='javascript://' onClick="return showCalendarGeneral(fechaPresentacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-												<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
-											</a>																	
-										<% } %>												
+			  								<siga:Fecha  nombreCampo= "fechaPresentacion" valorInicial="<%=fecha %>"/>
+			  							<% } %>												
 									</td>
 									<td class="labelText">
 										<siga:Idioma key="censo.consultaDatosColegiales.literal.fechaIncorporacion"/>&nbsp;(*)
@@ -242,17 +242,15 @@
 									<td>									
 										<% if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")){ %>
 										 	<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaIncorporacion());%>																			
-											<% if (fecha.equalsIgnoreCase("")){ %>									 	
-												<html:text property="fechaIncorporacion" size="10" styleClass="boxConsulta" value="" readOnly="true"></html:text>
-											<% }else{ %>										 										 	
-												<html:text property="fechaIncorporacion" size="10" styleClass="boxConsulta" value="<%=fecha%>" readOnly="true"></html:text>
+											<% if (fecha.equalsIgnoreCase("")){ %>	
+												<siga:Fecha  nombreCampo= "fechaIncorporacion" disabled="true"/>														 	
+											<% }else{ %>
+												<siga:Fecha  nombreCampo= "fechaIncorporacion" disabled="true" valorInicial="<%=fecha %>"/>																 										 	
 											<% } %>											
 										<% } else { %>
 											<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaIncorporacion());%>
-			  								<html:text property="fechaIncorporacion" size="10" styleClass="box" value="<%=fecha%>" readOnly="true"></html:text>										
-											<a href='javascript://' onClick="return showCalendarGeneral(fechaIncorporacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-												<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
-											</a>																	
+											<siga:Fecha  nombreCampo= "fechaIncorporacion"  valorInicial="<%=fecha %>"/>		
+			  																								
 										<% } %>																							
 									</td>									
 								</tr>	
@@ -263,17 +261,14 @@
 									<td>
 										<% if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")){ %>
 										 	<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaJura());%>										
-											<% if (fecha.equalsIgnoreCase("")){ %>									 	
-												<html:text property="fechaJura" size="10" styleClass="boxConsulta" value="" readOnly="true"></html:text>
+											<% if (fecha.equalsIgnoreCase("")){ %>	
+											<siga:Fecha  nombreCampo= "fechaJura" disabled="true"/>										 	
 											<% }else{ %>										 	
-												<html:text property="fechaJura" size="10" styleClass="boxConsulta" value="<%=fecha%>" readOnly="true"></html:text>
+											<siga:Fecha  nombreCampo= "fechaJura" disabled="true" valorInicial="<%=fecha %>"/>		
 											<% } %>	
 										<% } else { %>
 											<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaJura());%>
-			  								<html:text property="fechaJura" size="10" styleClass="box" value="<%=fecha%>" readOnly="true"></html:text>
-											<a href='javascript://' onClick="return showCalendarGeneral(fechaJura);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-												<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
-											</a>																	
+											<siga:Fecha  nombreCampo= "fechaJura"  valorInicial="<%=fecha %>"/>	
 										<% } %>																																		
 									</td>						
 									
@@ -283,18 +278,15 @@
 									<td>
 										<% if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")){ %>									
 									 		<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaTitulacion());%>
-											<% if (fecha.equalsIgnoreCase("")){ %>									 	
-												<html:text property="fechaTitulacion" size="10" styleClass="boxConsulta" value="" readOnly="true"></html:text>
-											<% }else{ %>										 										 	
-												<html:text property="fechaTitulacion" size="20" styleClass="boxConsulta" value="<%=fecha%>" readOnly="true"></html:text>
+											<% if (fecha.equalsIgnoreCase("")){ %>
+											<siga:Fecha  nombreCampo= "fechaTitulacion" disabled="true"/>										 	
+											<% }else{ %>										 								
+											<siga:Fecha  nombreCampo= "fechaTitulacion" disabled="true" valorInicial="<%=fecha %>"/>			 	
 											<% } %>											
 										<% } else { %>
 											<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaTitulacion());%>
-			  								<html:text property="fechaTitulacion" size="10" styleClass="box" value="<%=fecha%>" readOnly="true"></html:text>
-											<a href='javascript://' onClick="return showCalendarGeneral(fechaTitulacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-												<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
-											</a>																	
-										<% } %>																																													
+											<siga:Fecha  nombreCampo= "fechaTitulacion"  valorInicial="<%=fecha %>"/>	
+			  							<% } %>																																													
 									</td>	
 									<td class="labelText">
 										<siga:Idioma key="censo.consultaDatosColegiales.literal.fechaDentologico"/>&nbsp;
@@ -303,17 +295,14 @@
 										<% if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")){ %>
 										 	<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaDeontologia());%>
 											<% if (fecha.equalsIgnoreCase("")){ %>									 	
-												<html:text property="fechaDeontologia" size="10" styleClass="boxConsulta" value="" readOnly="true"></html:text>
+													<siga:Fecha  nombreCampo= "fechaDeontologia" disabled="true"/>	
 											<% }else{ %>										 										 	
-												<html:text property="fechaDeontologia" size="20" styleClass="boxConsulta" value="<%=fecha%>" readOnly="true"></html:text>
+												<siga:Fecha  nombreCampo= "fechaDeontologia" disabled="true" valorInicial="<%=fecha %>"/>	
 											<% } %>											
 										<% } else { %>
 											<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaDeontologia());%>
-			  								<html:text property="fechaDeontologia" size="10" styleClass="box" value="<%=fecha%>" readOnly="true"></html:text>
-											<a href='javascript://' onClick="return showCalendarGeneral(fechaDeontologia);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-												<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
-											</a>																	
-										<% } %>																																																								
+												<siga:Fecha  nombreCampo= "fechaDeontologia" valorInicial="<%=fecha %>"/>	
+			  							<% } %>																																																								
 									</td>											
 								</tr>
 								<tr>	
@@ -500,7 +489,7 @@
 					</td>
 				</tr>
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
+			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
 		</html:form>
 			</table>		
@@ -534,11 +523,8 @@
 			}
 		
 			<!-- Asociada al boton Guardar -->
-			function accionGuardar() 
-			{		
-	
-				sub();
-				
+			function accionGuardar() {		
+				sub();				
 				//Comprobar numColegiado:
 				if (document.forms[0].numColegiado.value==""){
 					mensaje='<siga:Idioma key="censo.resultadosSolicitudesModificacion.literal.nColegiado"/> <siga:Idioma key="messages.campoObligatorio.error"/>';
@@ -554,7 +540,6 @@
 					fin();
 					return false;
 				}
-
 				//Comprobar fechaPresentacion
 				if (document.forms[0].fechaPresentacion.value==""){
 					mensaje='<siga:Idioma key="censo.consultaDatosColegiales.literal.fechaPresentacion"/> <siga:Idioma key="messages.campoObligatorio.error"/>';
@@ -568,35 +553,30 @@
 					alert(mensaje);
 					fin();
 					return false;
-				}				
-               
-				
-				
-					<% if (!bOcultarHistorico) { %>
-							var datos = showModalDialog("<%=app%>/html/jsp/general/ventanaMotivoHistorico.jsp","","dialogHeight:230px;dialogWidth:520px;help:no;scroll:no;status:no;");
-					<% } else { %>
-							var datos = new Array();
-							datos[0] = 1;
-							datos[1] = "";
-					<% } %>
-					if (datos[0] == 1) { // Boton Guardar
-						document.forms[0].motivo.value = datos[1];
-						document.forms[0].modo.value = "modificarDatos";
-					  
-					    document.forms[0].target = "submitArea";
-					
-						// Como estan disabled, salvo que los habilitemos de nuevo no van a pasar el valor adecuado en el formulario
-						if (document.forms[0].situacionEjercicio.disabled){
-							document.forms[0].situacionEjercicio.disabled =false;
-						}
-						if (document.forms[0].otrosColegios.disabled){
-							document.forms[0].otrosColegios.disabled =false;
-						}
-
-						document.forms[0].submit();
-					}else{
-						fin();
+				}
+				<% if (!bOcultarHistorico) { %>
+				var datos = showModalDialog("<%=app%>/html/jsp/general/ventanaMotivoHistorico.jsp","","dialogHeight:230px;dialogWidth:520px;help:no;scroll:no;status:no;");
+				window.top.focus();
+				<% } else { %>
+				var datos = new Array();
+				datos[0] = 1;
+				datos[1] = "";
+				<% } %>				
+				if (datos[0] == 1) { // Boton Guardar
+					document.forms[0].motivo.value = datos[1];
+					document.forms[0].modo.value = "modificarDatos";
+					document.forms[0].target = "submitArea";
+					// Como estan disabled, salvo que los habilitemos de nuevo no van a pasar el valor adecuado en el formulario
+					if (document.forms[0].situacionEjercicio.disabled){
+						document.forms[0].situacionEjercicio.disabled =false;
 					}
+					if (document.forms[0].otrosColegios.disabled){
+						document.forms[0].otrosColegios.disabled =false;
+					}
+					document.forms[0].submit();
+				} else {
+					fin();
+				}
 				
 			}
 
@@ -682,11 +662,11 @@
 							  clase="listaNonEdit">
 						  
 							<td>
-								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=row.getString(CenDatosColegialesEstadoBean.C_IDPERSONA)%>">
-								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=row.getString(CenDatosColegialesEstadoBean.C_IDINSTITUCION)%>">
-								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=row.getString(CenDatosColegialesEstadoBean.C_FECHAESTADO)%>">
-								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=nombre%>">
-						  		<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=numero%>">
+								<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_1' name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=row.getString(CenDatosColegialesEstadoBean.C_IDPERSONA)%>">
+								<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_2' name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=row.getString(CenDatosColegialesEstadoBean.C_IDINSTITUCION)%>">
+								<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_3' name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=row.getString(CenDatosColegialesEstadoBean.C_FECHAESTADO)%>">
+								<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_4' name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=nombre%>">
+						  		<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_5' name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=numero%>">
 								<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("",row.getString(CenDatosColegialesEstadoBean.C_FECHAESTADO)))%>
 							</td>
 							<td>

@@ -67,10 +67,13 @@
 <html>
 <!-- HEAD -->
 <head>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<html:javascript formName="DefinirEJGForm" staticJavascript="false" />  
   	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>	
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
 	<script type="text/javascript">
 		function actualizarFecha(){
@@ -272,7 +275,7 @@
 			document.forms[0].guardiaTurnoIdTurno.value = id.substring(posicion);
 			document.forms[0].guardiaTurnoIdGuardia.value = document.forms[0].identificador2.value;
 			if (validateDefinirEJGForm(document.forms[0])){
-//				window.returnValue="MODIFICADO";
+//				window.top.returnValue="MODIFICADO";
                document.DefinirEJGForm.NColegiado.value=document.DefinirEJGForm.numeroColegiado.value;
                
 				document.forms[0].submit();

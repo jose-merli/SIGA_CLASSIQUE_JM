@@ -47,7 +47,7 @@
 		
 
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	
 	</head>
@@ -145,8 +145,8 @@
 						auxi += aDatos[i] + "##";
 					}
 					if (auxi.length>2) auxi=auxi.substring(0,auxi.length-2);
-			    	window.returnValue=auxi;
-					window.close();
+			    	window.top.returnValue=auxi;
+					window.top.close();
 				}else{
 					// Debe haber un concepto marcado
 					alert('<siga:Idioma key="infomes.seleccionSerie.debeSeleccionar"/>');

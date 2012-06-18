@@ -46,8 +46,11 @@
 <html>
 <!-- HEAD -->
 <head>
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -79,25 +82,26 @@
 		String sAction = esFichaColegial ? "/JGR_ContrariosAsistenciaPerJGLetrado.do" : "/JGR_ContrariosAsistenciaPerJG.do" ;
 %>
 		<!-- Formulario de la lista de detalle multiregistro -->
-		<html:form action="<%=sAction%>" method="post" target="submitArea" style="display:none">
+		<html:form action="<%=sAction%>" method="post" target="submitArea" style="display:none" styleId="PersonaJGForm">
 			<input type="hidden" name="modo" value="abrirPestana">
 			
-			<input type="hidden" name="idInstitucionJG" value="<%=usr.getLocation() %>">
-			<input type="hidden" name="idPersonaJG" value="">
+			<input type="hidden" id="idInstitucionJG" name="idInstitucionJG" value="<%=usr.getLocation() %>">
+			<input type="hidden" id="idPersonaJG" name="idPersonaJG" value="">
 	
-			<input type="hidden" name="idInstitucionASI" value="<%=usr.getLocation() %>">
-			<input type="hidden" name="anioASI" value="<%=miForm.getAnio() %>">
-			<input type="hidden" name="numeroASI" value="<%=miForm.getNumero() %>">
+			<input type="hidden" id="idInstitucionASI" name="idInstitucionASI" value="<%=usr.getLocation() %>">
+			<input type="hidden" id="anioASI" name="anioASI" value="<%=miForm.getAnio() %>">
+			<input type="hidden" id="numeroASI" name="numeroASI" value="<%=miForm.getNumero() %>">
 	
-			<input type="hidden" name="conceptoE" value="<%=PersonaJGAction.ASISTENCIA_CONTRARIOS %>">
-			<input type="hidden" name="tituloE" value="gratuita.mantAsistencias.literal.tituloCO">
-			<input type="hidden" name="localizacionE" value="">
+			<input type="hidden" id="conceptoE" name="conceptoE" value="<%=PersonaJGAction.ASISTENCIA_CONTRARIOS %>">
+			<input type="hidden" id="tituloE" name="tituloE" value="gratuita.mantAsistencias.literal.tituloCO">
+			<input type="hidden" id="localizacionE" name="localizacionE" value="">
 			<input type="hidden" name="accionE" value="nuevo">
 			<input type="hidden" name="actionE" value="<%=sAction%>">
-			<input type="hidden" name="pantallaE" value="M">
+			<input type="hidden" id="pantallaE" name="pantallaE" value="M">
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD" />
+			<input type="hidden" id="filaSelD" name="filaSelD" />
+			<input type="hidden" name="actionModal" value="" />
 		</html:form>	
 		
 
@@ -128,15 +132,15 @@
 						<td>
 <!--						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=hash.get("IDPERSONA")%>'> -->
 
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=PersonaJGAction.ASISTENCIA_CONTRARIOS%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="gratuita.contrariosAsistencia.literal.titulo">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="gratuita.contrariosAsistencia.literal.titulo">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="editar">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=usr.getLocation()%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_6" value="<%=hash.get("IDPERSONA")%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_7" value="<%=usr.getLocation()%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_8" value="<%=miForm.getAnio() %>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_9" value="<%=miForm.getNumero() %>">
+							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_1" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=PersonaJGAction.ASISTENCIA_CONTRARIOS%>">
+							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_2" name="oculto<%=String.valueOf(recordNumber)%>_2" value="gratuita.contrariosAsistencia.literal.titulo">
+							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_3" name="oculto<%=String.valueOf(recordNumber)%>_3" value="gratuita.contrariosAsistencia.literal.titulo">
+							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_4" name="oculto<%=String.valueOf(recordNumber)%>_4" value="editar">
+							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_5" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=usr.getLocation()%>">
+							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_6" name="oculto<%=String.valueOf(recordNumber)%>_6" value="<%=hash.get("IDPERSONA")%>">
+							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_7" name="oculto<%=String.valueOf(recordNumber)%>_7" value="<%=usr.getLocation()%>">
+							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_8" name="oculto<%=String.valueOf(recordNumber)%>_8" value="<%=miForm.getAnio() %>">
+							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_9" name="oculto<%=String.valueOf(recordNumber)%>_9" value="<%=miForm.getNumero() %>">
 					
 						
 								&nbsp;<%=hash.get("NIF")%></td>

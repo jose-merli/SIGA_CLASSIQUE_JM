@@ -57,8 +57,9 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"></script>
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->
@@ -92,12 +93,12 @@
 		<!-- Formulario de la lista de detalle multiregistro -->
 		<html:form action="/CEN_AnticiposCliente.do" method="POST" target="submitArea" style="display:none">
 			<!-- Campo obligatorio -->
-			<html:hidden property = "modo" value = "" />
-			<input type="hidden" name="documentosSolicitados">
+			<html:hidden styleId="modo" property = "modo" value = "" />
+			<input id="documentosSolicitados" type="hidden" name="documentosSolicitados">
 			
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<input id="tablaDatosDinamicosD" type="hidden" name="tablaDatosDinamicosD">
+			<input id="actionModal" type="hidden" name="actionModal" value="">
 		</html:form>
 
 <%
@@ -150,16 +151,16 @@
 				<td>
 
 			<% if (selec) {  %>
-					<input type="checkbox" name="validado" value="1" checked>
+					<input type="checkbox" name="validado" id="validado"  value="1" checked>
 			<% } else {  %>
-					<input type="checkbox" name="validado" value="1">
+					<input type="checkbox" name="validado" id="validado" value="1">
 			<% }  %>
 
 					<!-- campos hidden -->
-					<input type="hidden" name="solicita_<%=cont%>_1" value="<%=fila.getString("IDINST")%>">
-					<input type="hidden" name="solicita_<%=cont%>_2" value="<%=fila.getString("IDTIPOSERV")%>">
-					<input type="hidden" name="solicita_<%=cont%>_3" value="<%=fila.getString("IDSERV")%>">
-					<input type="hidden" name="solicita_<%=cont%>_4" value="<%=fila.getString("IDESERVINST")%>">
+					<input type="hidden" id="solicita_<%=cont%>_1" name="solicita_<%=cont%>_1" value="<%=fila.getString("IDINST")%>">
+					<input type="hidden" id="solicita_<%=cont%>_2" name="solicita_<%=cont%>_2" value="<%=fila.getString("IDTIPOSERV")%>">
+					<input type="hidden" id="solicita_<%=cont%>_3" name="solicita_<%=cont%>_3" value="<%=fila.getString("IDSERV")%>">
+					<input type="hidden" id="solicita_<%=cont%>_4" name="solicita_<%=cont%>_4" value="<%=fila.getString("IDESERVINST")%>">
 																													
 				</td>
 				<td>

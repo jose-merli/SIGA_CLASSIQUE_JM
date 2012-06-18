@@ -21,42 +21,36 @@
 
 <!-- HEAD -->
 <head>
-<link id="default" rel="stylesheet" type="text/css"	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
-<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript"></script>
-<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
-<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
-
-<!--Step 2 -->
-<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
-<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
-<script type="text/javascript"
-	src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
-<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
-
-
-<!--Step 3 -->
-  <!-- defaults for Autocomplete and displaytag -->
-  <link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />
-  <link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
- 
-<!-- Step 4 -->
- <!-- Importar el js propio de la pagina-->
-<script src="<html:rewrite page='/html/js/censo/bajasTemporales.js'/>" type="text/javascript"></script>
-<script>
-	
-	function borrar(fila){
-		if (confirm('<siga:Idioma key="messages.deleteConfirmation"/>')){
-			return borrarFila(fila);
-		}
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
+	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
 		
-	}
-	
-</script>
-<head>
-       
-</head>
+	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>" ></script>
+	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
+	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
+	<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
 
-</head>
+	<!--Step 2 -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
+
+
+	<!--Step 3 -->
+	<!-- defaults for Autocomplete and displaytag -->
+	<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/ajaxtags.css'/>" />
+ 
+	<!-- Step 4 -->
+	<!-- Importar el js propio de la pagina-->
+	<script src="<html:rewrite page='/html/js/censo/bajasTemporales.js'/>" type="text/javascript"></script>
+	<script>		
+		function borrar(fila){
+			if (confirm('<siga:Idioma key="messages.deleteConfirmation"/>')){
+				return borrarFila(fila);
+			}			
+		}		
+	</script>
+<head>
 
 <body  onload="onInit();">
 
@@ -71,13 +65,13 @@
 			<td align='center' width='10%'><siga:Idioma key="censo.bajastemporales.fechaInicio"/></td>
 			<td align='center' width='10%'><siga:Idioma key="censo.bajastemporales.fechaFin"/></td>
 			<td align='center'  width='8%'><siga:Idioma key="censo.bajastemporales.estadoBaja"/></td>
-			<td align='center' width='8%'>&nbsp;</td>
+			<td align='center' >&nbsp;</td>
 		</tr>
 	</table>
 </div>
 
 
-<table class="tablaCampos" id='bajasTemporales' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>
+<table class="tablaCampos" id='bajasTemporales' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' >
 		<logic:notEmpty name="BajasTemporalesForm"	property="bajasTemporales">
 		<logic:iterate name="BajasTemporalesForm" property="bajasTemporales" id="bajaTemporalBean" indexId="index">
 				<%index = index-1; %>
@@ -137,7 +131,7 @@
 							<td align='center' width='10%'>&nbsp;</td>
 							<td align='center' width='10%'>&nbsp;</td>
 							<td align='center'  width='8%'>&nbsp;</td>
-							  
+							<td align='center'  width='8%'>&nbsp;</td>  
 						</c:otherwise>
 					</c:choose>
 				
@@ -190,17 +184,17 @@
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 	<html:form action="${path}"  name="FormBajasTemporales"
 		type="com.siga.censo.form.BajasTemporalesForm">
-		<html:hidden property="modo" />
-		<html:hidden property="idInstitucion" />
-		<html:hidden property="idPersona" />
-		<html:hidden property="colegiadoNombre" />
-		<html:hidden property="colegiadoNumero" />
-		<html:hidden property="fechaAlta" />
-		<html:hidden property="fechaDesde" />
-		<html:hidden property="fechaHasta" />
-		<html:hidden property="tipo" />
-		<html:hidden property="datosSeleccionados" />
-		<input type="hidden" name="actionModal" />
+		<html:hidden styleId="modo" property="modo" />
+		<html:hidden styleId="idInstitucion" property="idInstitucion" />
+		<html:hidden styleId="idPersona" property="idPersona" />
+		<html:hidden styleId="colegiadoNombre" property="colegiadoNombre" />
+		<html:hidden styleId="colegiadoNumero" property="colegiadoNumero" />
+		<html:hidden styleId="fechaAlta" property="fechaAlta" />
+		<html:hidden styleId="fechaDesde"   property="fechaDesde" />
+		<html:hidden styleId="fechaHasta"   property="fechaHasta" />
+		<html:hidden styleId="tipo" property="tipo" />
+		<html:hidden styleId="datosSeleccionados" property="datosSeleccionados" />
+		<input type="hidden" id="actionModal" name="actionModal" />
 	</html:form>
 </c:if>
 <input type="hidden" id="deshabilitarValidaciones" value="false">
@@ -231,8 +225,8 @@ if(document.getElementById("chkGeneral")){
 }
 
 if(!document.getElementById('idBusqueda')){
-	top.setLocalizacion('<siga:Idioma key="censo.fichaCliente.sjcs.bajastemporales.localizacion"/>');
-	top.setTitulo('<siga:Idioma key="general.ventana.cgae"/>', '<siga:Idioma key="censo.fichaCliente.sjcs.bajastemporales.cabecera"/>');
+	setLocalizacion('<siga:Idioma key="censo.fichaCliente.sjcs.bajastemporales.localizacion"/>');
+	setTitulo('<siga:Idioma key="general.ventana.cgae"/>', '<siga:Idioma key="censo.fichaCliente.sjcs.bajastemporales.cabecera"/>');
 }
 </script>
 	

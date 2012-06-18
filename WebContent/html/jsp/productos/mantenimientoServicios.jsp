@@ -173,7 +173,7 @@
 		</style>
 
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>			
 
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
@@ -914,23 +914,19 @@
 			function accionGuardar() 
 			{	
 			sub();
-			if (document.forms[0].automatico.checked || document.forms[0].bajaLogica.checked){
-		
+			if (document.forms[0].automatico.checked || document.forms[0].bajaLogica.checked){		
 			      var fecha = showModalDialog("/SIGA/html/jsp/productos/ventanaFechaEfectiva.jsp","","dialogHeight:200px;dialogWidth:400px;help:no;scroll:no;status:no;");
-                  if (fecha!=null){
-				
-     				  document.forms[0].fechaEfectiva.value=fecha;
-				  }else{
-				 
-				  	fin();
-				    return false;
+			      window.top.focus();
+			      if (fecha!=null){				
+     				  	document.forms[0].fechaEfectiva.value=fecha;
+				  } else {				 
+				  		fin();
+				    	return false;
 				  }	  
-				 }
+			}
 			    			
-				if (validateMantenimientoServiciosForm(document.MantenimientoServiciosForm)){
-				
-					if (validacionPosterior()){
-					
+			if (validateMantenimientoServiciosForm(document.MantenimientoServiciosForm)){				
+					if (validacionPosterior()){					
 						<% if (modo.equalsIgnoreCase("modificar")){ %>
 						
 							document.forms[0].modo.value="modificar";
@@ -942,7 +938,7 @@
 						
 							// Inserto el precio por defecto
 							var datos = showModalDialog("/SIGA/html/jsp/productos/ventanaPrecioPorDefecto.jsp","","dialogHeight:230px;dialogWidth:520px;help:no;scroll:no;status:no;");
-							 
+							window.top.focus(); 
 							if (datos) {
 							  
 								if (datos[0] == 1) { // Recibo precio y periodicidad

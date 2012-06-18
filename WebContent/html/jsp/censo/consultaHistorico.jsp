@@ -50,8 +50,11 @@
 <!-- HEAD -->
 	<head>
 
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+		
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		<!-- Validaciones en Cliente -->
@@ -81,13 +84,14 @@
 	<body class="tablaCentralCampos">
 
 		<!-- Formulario de la lista de detalle multiregistro -->
-		<html:form action="/CEN_Historico.do" method="POST" style="display:none">
+		<html:form action="/CEN_Historico.do" method="POST" style="display:none" styleId="HistoricoForm">
 
 		<!-- Campo obligatorio -->
 		<html:hidden property = "modo" value = ""/>
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
+			<input type="hidden" id="actionModal" name="actionModal" value="">
+			<input type="hidden" id="filaSelD" name="filaSelD">	
 		</html:form>
 		
 		<!-- INICIO: LISTA DE VALORES -->
@@ -101,7 +105,7 @@
 		   		  clase="tableTitle"
 				  nombreCol="censo.consultaHistorico.literal.tipo,censo.consultaHistorico.literal.fechaEntrada,censo.consultaHistorico.literal.fechaEfectiva,censo.consultaHistorico.literal.tipoApunte,censo.consultaHistorico.literal.motivo,"
 				  tamanoCol="16,12,12,10,22,8"
-		   alto="100%"
+				  alto="100%"
 				  modal="M">
 
 
@@ -136,9 +140,9 @@
 							  visibleBorrado='no'
 							  clase="listaNonEdit">
 							<td>
-								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=row.getString(CenHistoricoBean.C_IDPERSONA)%>">
-								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=row.getString(CenHistoricoBean.C_IDINSTITUCION)%>">
-								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=row.getString(CenHistoricoBean.C_IDHISTORICO)%>">
+								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_1" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=row.getString(CenHistoricoBean.C_IDPERSONA)%>">
+								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_2" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=row.getString(CenHistoricoBean.C_IDINSTITUCION)%>">
+								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_3" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=row.getString(CenHistoricoBean.C_IDHISTORICO)%>">
 								<%=UtilidadesString.mostrarDatoJSP(row.getString(CenTipoCambioBean.C_DESCRIPCION))%>		
 							</td>
 							<td>

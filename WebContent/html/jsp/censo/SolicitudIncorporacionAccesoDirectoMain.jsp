@@ -45,7 +45,7 @@ UsrBean userBean = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			
 		<!-- ESTILOS Y JAVASCRIPT -->
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 		<script language="JavaScript" type="text/javascript">
 			var user, psswd, profile, loc;
@@ -88,7 +88,7 @@ UsrBean userBean = (UsrBean) request.getSession().getAttribute("USRBEAN");
 				//if(confirm('¿Está seguro de que desea abandonar la aplicación?'))
 				if(confirm('<siga:Idioma key="general.cerrarAplicacion"/>'))
 				{
-					window.close();
+					window.top.close();
 				}
 				
 				return false;

@@ -84,8 +84,9 @@
 <html>
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		
+		
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 		<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 
 		<script>
@@ -138,14 +139,14 @@
 			      		j = 2;
 			      	}
 			      	
-			      	if ((tabla.rows[fila].cells)[i].innerText == "")
+			      	if ((tabla.rows[fila].cells)[i].innerHTML == "")
 			      	{
 			        	datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
 			        }
 			      	
 			      	else
 			      	{
-			        	datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';
+			        	datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
 			        }
 			   	}
 			   	
@@ -200,14 +201,14 @@
 			      		j = 2;
 			      	}
 			      	
-			      	if ((tabla.rows[fila].cells)[i].innerText == "")
+			      	if ((tabla.rows[fila].cells)[i].innerHTML == "")
 			      	{
 			        	datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
 			        }
 			      	
 			      	else
 			      	{
-			        	datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';
+			        	datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
 			        }
 			   	}
 
@@ -300,14 +301,10 @@
 			      		j = 2;
 			      	}
 			      	
-			      	if ((tabla.rows[fila].cells)[i].innerText == "")
-			      	{
+			      	if ((tabla.rows[fila].cells)[i].innerHTML == "") {
 			        	datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
-			        }
-			      	
-			      	else
-			      	{
-			        	datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';
+			        } else {
+			        	datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
 			        }
 			   	}
 			   	
@@ -363,14 +360,10 @@
 			      		j = 2;
 			      	}
 			      	
-			      	if ((tabla.rows[fila].cells)[i].innerText == "")
-			      	{
+			      	if ((tabla.rows[fila].cells)[i].innerHTML == "") {
 			        	datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
-			        }
-			      	
-			      	else
-			      	{
-			        	datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';
+			        } else {
+			        	datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
 			        }
 			   	}
 			   	
@@ -426,14 +419,10 @@
 			      		j = 2;
 			      	}
 			      	
-			      	if ((tabla.rows[fila].cells)[i].innerText == "")
-			      	{
+			      	if ((tabla.rows[fila].cells)[i].innerHTML == "") {
 			        	datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
-			        }
-			      	
-			      	else
-			      	{
-			        	datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';
+			        } else {
+			        	datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
 			        }
 			   	}
 			   	

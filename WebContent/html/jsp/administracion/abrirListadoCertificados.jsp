@@ -24,20 +24,21 @@
 
 <html>
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+			
 		
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 		<siga:Titulo titulo="administracion.certificados.titulo" localizacion="menu.censo"/>
 
 		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 		<script language="JavaScript">
 			<!-- Funcion asociada a boton buscar -->
-			function buscar() 
-			{
+			function buscar() {
 				sub();
-				listadoCertificadosForm.modo.value="buscarInicio";
-				listadoCertificadosForm.submit();
+				document.getElementById("modo").value="buscarInicio";
+				document.getElementsByName("listadoCertificadosForm")[0].submit();
 			}
 		</script>
 		<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
@@ -48,8 +49,8 @@
 			<siga:ConjCampos>
 			<table class="tablaCentralCampos" align="center">
 				<html:form action="/ADM_GestionarCertificados.do" method="POST" target="resultado">
-					<input type="hidden" name="modo" value="inicio">
-					<input type="hidden" name="limpiarFilaSeleccionada" value="">
+					<input type="hidden" id="modo" name="modo" value="inicio">
+					<input type="hidden" id="limpiarFilaSeleccionada" name="limpiarFilaSeleccionada" value="">
 
 					<tr>				
 						<td class="labelText">

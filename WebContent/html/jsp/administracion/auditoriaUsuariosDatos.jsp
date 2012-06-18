@@ -40,9 +40,11 @@
 <html>
 
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+			
 		
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 		<!-- INICIO: SCRIPTS BOTONES -->
 		<script language="JavaScript">
@@ -62,7 +64,7 @@
 			<!-- Asociada al boton Cerrar -->
 			function accionCerrar() 
 			{		
-				window.close();
+				window.top.close();
 			}
 
 		</script>
@@ -111,10 +113,11 @@
 				</td>
 				<td class="labelTextValue">
 					<% String fechaEntrada = GstDate.getFormatedDateShort("", UtilidadesHash.getString(h, CenHistoricoBean.C_FECHAENTRADA)); %>
-					<html:text styleClass="<%=estilo%>" property="fechaEntrada" size="8" maxlength="10" readonly="true" value="<%=fechaEntrada%>" />
 					<% if (estilo.equals("box")) {%>
-						<a href='javascript://'onClick="return showCalendarGeneral(fechaEntrada);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
-					<% } %>
+						<siga:Fecha  nombreCampo= "fechaEntrada" valorInicial="<%=fechaEntrada%>"/>
+					<% }else{ %>
+						<siga:Fecha  nombreCampo= "fechaEntrada" valorInicial="<%=fechaEntrada%>" disabled="false"/>
+					<% } %>						
 				</td>
 			</tr>
 			<tr>
@@ -126,9 +129,10 @@
 				</td>
 				<td class="labelTextValue">
 					<% String fechaEfectiva = GstDate.getFormatedDateShort("", UtilidadesHash.getString(h, CenHistoricoBean.C_FECHAEFECTIVA)); %>
-					<html:text styleClass="<%=estilo%>" property="fechaEfectiva" size="8" maxlength="10" readonly="true" value="<%=fechaEfectiva%>" />
 					<% if (estilo.equals("box")) {%>
-						<a href='javascript://'onClick="return showCalendarGeneral(fechaEfectiva);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
+					<siga:Fecha  nombreCampo= "fechaEfectiva" valorInicial="<%=fechaEfectiva%>"/>
+					<% }else{ %>
+					<siga:Fecha  nombreCampo= "fechaEfectiva" valorInicial="<%=fechaEfectiva%>" disabled="false"/>
 					<% } %>
 				</td>
 			</tr>

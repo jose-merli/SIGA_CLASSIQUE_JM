@@ -23,7 +23,7 @@
 
 		<!-- Asociada al boton Volver -->
 		function accionCerrar(){ 
-			window.close();
+			window.top.close();
 			return 0;
 		}	
 	

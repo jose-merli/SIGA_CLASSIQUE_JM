@@ -22,8 +22,12 @@
 
 <!-- HEAD -->
 <head>
-<link id="default" rel="stylesheet" type="text/css"	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
-<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript"></script>
+<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>" />
+<link rel="stylesheet" href="<html:rewrite page='/html/js/themes/base/jquery.ui.all.css'/>" />
+	
+<script type="text/javascript" src="<html:rewrite page='/html/js/jquery-1.7.1.js'/>" ></script>
+<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
+<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript" ></script>
 <script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
 <script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
 
@@ -36,8 +40,8 @@
 
 <!--Step 3 -->
   <!-- defaults for Autocomplete and displaytag -->
-  <link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />
-  <link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
+<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/ajaxtags.css'>" />
+<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/displaytag.css'>" />
 
 <!-- Step 4 -->
  <!-- Importar el js propio de la pagina-->
@@ -225,19 +229,14 @@
 							</td>
 							<td class="labelText" style="width:15%"><siga:Idioma key="censo.bajastemporales.filtro.fechaDesde"/></td>
 							<td>
-							<html:text property="fechaDesde"
-								size="10" readonly="true" styleClass="box" />&nbsp; 
-								<a href='javascript://' onClick="return showCalendarGeneral(fechaDesde)">
-								<img src="<html:rewrite page='/html/imagenes/calendar.gif'/>" border="0"> </a>
-								
-			
+								<siga:Fecha  nombreCampo= "fechaDesde" campoCargarFechaDesde="fechaHasta"/>
 							</td>
 				
 							<td class="labelText"><siga:Idioma key="censo.bajastemporales.filtro.fechaHasta"/></td>
-							<td><html:text property="fechaHasta"
-								size="10" readonly="true" styleClass="box" />&nbsp; 
-								<a href='javascript://' onClick="return showCalendarGeneral(fechaHasta)">
-								<img src="<html:rewrite page='/html/imagenes/calendar.gif'/>" border="0"> </a>
+							<td>
+							<siga:Fecha  nombreCampo= "fechaHasta"/>
+							
+
 							</td>
 						</tr>
 					</table>

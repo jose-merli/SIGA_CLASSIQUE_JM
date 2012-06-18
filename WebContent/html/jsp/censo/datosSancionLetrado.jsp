@@ -138,8 +138,9 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	<!-- Calendario -->
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
@@ -156,7 +157,7 @@
 
 	<script language="JavaScript">
 		function accionCerrar(){ 			 
-			window.close();
+			window.top.close();
 		}		
 		function accionGuardarCerrar(){ 	
 			sub();
@@ -333,9 +334,10 @@
 								<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fechaImposicion"/>
 							</td>
 							<td >
-								<html:text name="SancionesLetradoForm" property="fechaImposicion" size="10" styleClass="<%=estiloCaja%>" value="<%=fechaImposicion%>" readOnly="true"></html:text>
 								<% if (!formulario.getModo().equals("Ver")) { %>
-									&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaImposicion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+								<siga:Fecha  nombreCampo= "fechaImposicion" valorInicial="<%=fechaImposicion%>"/>
+								<% }else{ %>
+								<siga:Fecha  nombreCampo= "fechaImposicion" valorInicial="<%=fechaImposicion%>" disabled="true"/>
 								<% } %>
 							</td>
 							<td class="labelText">
@@ -350,19 +352,22 @@
 								<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fechaAcuerdo"/>
 							</td>
 							<td >
-								<html:text name="SancionesLetradoForm" property="fechaAcuerdo" size="10" styleClass="<%=estiloCaja%>" value="<%=fechaAcuerdo%>" readOnly="true"></html:text>
 								<% if (!formulario.getModo().equals("Ver")) { %>
-									&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaAcuerdo);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-								<% } %>
+									 <siga:Fecha  nombreCampo= "fechaAcuerdo" valorInicial="<%=fechaAcuerdo%>" />
+								<% }else{ %>
+									<siga:Fecha  nombreCampo= "fechaAcuerdo" valorInicial="<%=fechaAcuerdo%>" disabled="true"/>
+								<% } %>									
 							</td>
 							<td class="labelText">
 								<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fechaResolucion"/>
 							</td>
 							<td >
-								<html:text name="SancionesLetradoForm" property="fechaResolucion" size="10" styleClass="<%=estiloCaja%>" value="<%=fechaResolucion%>" readOnly="true"></html:text>
 								<% if (!formulario.getModo().equals("Ver")) { %>
-									&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaResolucion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+								 <siga:Fecha  nombreCampo= "fechaResolucion" valorInicial="<%=fechaResolucion%>" />
+								<% }else{ %>
+								 <siga:Fecha  nombreCampo= "fechaResolucion" valorInicial="<%=fechaResolucion%>" disabled="true"/>
 								<% } %>
+								
 							</td>
 						</tr>
 											
@@ -388,18 +393,20 @@
 								<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fechaInicio"/>
 							</td>
 							<td style="padding-left:25px;">
-								<html:text name="SancionesLetradoForm" property="fechaInicio" size="10" styleClass="<%=estiloCaja%>" value="<%=fechaInicio%>" readOnly="true"></html:text>
 								<% if (!formulario.getModo().equals("Ver")) { %>
-								&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaInicio);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+								 <siga:Fecha  nombreCampo= "fechaInicio" valorInicial="<%=fechaInicio%>" />
+								<% }else{ %>
+								<siga:Fecha  nombreCampo= "fechaInicio" valorInicial="<%=fechaInicio%>" disabled="true"/>
 								<% } %>
 							</td>
 							<td class="labelText">
 								<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fechaFin"/>
 							</td>
 							<td style="padding-left:25px;">
-								<html:text name="SancionesLetradoForm" property="fechaFin" size="10" styleClass="<%=estiloCaja%>" value="<%=fechaFin%>" readOnly="true"></html:text>
-								<% if (!formulario.getModo().equals("Ver")) { %>
-									&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaFin);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+							<% if (!formulario.getModo().equals("Ver")) { %>
+								<siga:Fecha  nombreCampo= "fechaFin" valorInicial="<%=fechaFin%>" />
+								<% }else{ %>
+								<siga:Fecha  nombreCampo= "fechaFin" valorInicial="<%=fechaFin%>" disabled="true"/>
 								<% } %>
 							</td>
 						</tr>
@@ -411,11 +418,10 @@
 							<td >
 								<% if (!formulario.getModo().equals("Ver")) { %>
 								<input type="checkbox" name="chkFirmeza" value="1" onclick="return fechaFirmeza();"  <%=(chkFirmeza.equals("1"))?"checked":""%> />
-								<html:text name="SancionesLetradoForm" property="firmeza" size="10" styleClass="<%=estiloCaja%>" value="<%=fechaFirmeza%>" readOnly="true"></html:text>
-								 &nbsp;&nbsp;<a onClick="showCalendarGeneral(firmeza);return checkFirmeza();" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-								<% }else {%>
+								<siga:Fecha  nombreCampo= "firmeza" valorInicial="<%=fechaFirmeza%>"/>
+								<% }else { %>
 								<input type="checkbox" disabled="disabled" name="chkFirmeza" value="1" onclick="return fechaFirmeza();"  <%=(chkFirmeza.equals("1"))?"checked":""%> />
-								<html:text name="SancionesLetradoForm" property="firmeza" size="10" styleClass="<%=estiloCaja%>" value="<%=fechaFirmeza%>" readOnly="true"></html:text>
+								<siga:Fecha  nombreCampo= "firmeza" valorInicial="<%=fechaFirmeza%>" disabled="true"/>
 								<%} %>
 								
 							</td>
@@ -425,11 +431,10 @@
 							<td >
 								<% if (!formulario.getModo().equals("Ver")) { %>
 									<input type="checkbox" name="chkRehabilitado" value="1" onclick="return fechaRehabilitado();"  <%=(chkRehabilitado.equals("1"))?"checked":""%> />
-									<html:text name="SancionesLetradoForm" property="rehabilitado" size="10" styleClass="<%=estiloCaja%>" value="<%=fechaRehabilitado%>" readOnly="true"></html:text>								
-									&nbsp;&nbsp;<a onClick="showCalendarGeneral(rehabilitado);return checkRehabilitado();" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+									<siga:Fecha  nombreCampo= "rehabilitado" valorInicial="<%=fechaRehabilitado%>"/>								
 								<% }else {%>	
 									<input type="checkbox" disabled="disabled"  name="chkRehabilitado" value="1" onclick="return fechaRehabilitado();"  <%=(chkRehabilitado.equals("1"))?"checked":""%> />
-									<html:text name="SancionesLetradoForm" property="rehabilitado" size="10" styleClass="<%=estiloCaja%>" value="<%=fechaRehabilitado%>" readOnly="true"></html:text>								
+									<siga:Fecha  nombreCampo= "rehabilitado" valorInicial="<%=fechaRehabilitado%>" disabled="true"/>								
 								<%}%>
 							</td>
 						</tr>
@@ -442,11 +447,10 @@
 								
 								<% if (!formulario.getModo().equals("Ver")) { %>
 									<input type="checkbox" name="chkArchivada" value="1" onclick="return fechaArchivo();" <%=(chkArchivada.equals("1"))?"checked":""%> />
-									<html:text name="SancionesLetradoForm" property="fechaArchivada" size="10" styleClass="<%=estiloCaja%>" value="<%=fechaArchivada%>" readOnly="true"></html:text>
-									&nbsp;&nbsp;<a onClick="showCalendarGeneral(fechaArchivada);return checkArchivada();" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+									<siga:Fecha  nombreCampo= "fechaArchivada" valorInicial="<%=fechaArchivada%>"/>			
 								<% }else {%>														
 									<input type="checkbox" disabled="disabled"  name="chkArchivada" value="1" onclick="return fechaArchivo();" <%=(chkArchivada.equals("1"))?"checked":""%> />
-									<html:text name="SancionesLetradoForm" property="fechaArchivada" size="10" styleClass="<%=estiloCaja%>" value="<%=fechaArchivada%>" readOnly="true"></html:text>
+									<siga:Fecha  nombreCampo= "fechaArchivada" valorInicial="<%=fechaArchivada%>" disabled="true"/>			
 								<%}%>
 							</td>							
 					   </tr>	

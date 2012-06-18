@@ -39,9 +39,10 @@
 	 
 %>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
+	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
 
-<script type="text/jscript" language="JavaScript1.2">
+<script type="text/javascript">
 	
 	function reloadPage() {
 	
@@ -53,7 +54,7 @@
 			<%  } %>
 			<%  if (modal!=null){%>
 					<%  	if (sinrefresco!=null){%>
-								window.returnValue=""; 
+								window.top.returnValue=""; 
 								
 					<%  	} else {%>
 								var array =new Array(5);
@@ -63,12 +64,12 @@
 								array[3]="<%=datos[3]%>";
 								array[4]="<%=datos[4]%>";
 								
-								window.returnValue=array; 
+								window.top.returnValue=array; 
 								
 								
 					<%  	} %>
 					
-							window.close();
+							window.top.close();
 			<%  }else{%>	
 					<%  	if (sinrefresco==null){%>
 								parent.refrescarLocal();

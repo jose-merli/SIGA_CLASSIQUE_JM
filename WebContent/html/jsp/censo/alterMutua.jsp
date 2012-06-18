@@ -537,7 +537,7 @@
 					valido=false;
 				}
 			});
-			document.AlterMutuaForm.familiares.value = familiares;
+			document.forms["AlterMutuaForm"].familiares.value = familiares;
 			// Bucle beneficiarios
 			var beneficiarios = "";
 			$('.ben').each(function(index) {
@@ -547,7 +547,7 @@
 					valido=false;
 				}
 			});
-			document.AlterMutuaForm.herederos.value = beneficiarios;
+			document.forms["AlterMutuaForm"].herederos.value = beneficiarios;
 			
 			return valido;
 	}
@@ -593,7 +593,7 @@
 			$('#selectProvincia').addClas('obligatorio');
 			val=false;
 		}
-		if($('#selectPaisCuenta').val()==='724' && document.AlterMutuaForm.digitoControl.value != obtenerDigitoControl("00" + document.AlterMutuaForm.cboCodigo.value + document.AlterMutuaForm.codigoSucursal.value) + "" + obtenerDigitoControl(document.AlterMutuaForm.numeroCuenta.value)){
+		if($('#selectPaisCuenta').val()==='724' && document.forms["AlterMutuaForm"].digitoControl.value != obtenerDigitoControl("00" + document.forms["AlterMutuaForm"].cboCodigo.value + document.forms["AlterMutuaForm"].codigoSucursal.value) + "" + obtenerDigitoControl(document.forms["AlterMutuaForm"].numeroCuenta.value)){
 			$('#tdCuenta').find('.requiredText').each(function(){
 				$(this).addClass("obligatorio");
 			});
@@ -629,7 +629,7 @@
 		            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 		            success: function(json){
 	            		jAlert(json.mensaje,400);
-	            		document.AlterMutuaForm.idSolicitudalter.value = json.idSolicitud;
+	            		document.forms["AlterMutuaForm"].idSolicitudalter.value = json.idSolicitud;
 	            		$("#holderIdSolicitudAlter").text(json.idSolicitud);
 	            		showEstado();
 	            		makeReadOnly();
@@ -854,7 +854,7 @@
 	}
 	
    	function showEstado(){
-   		if(AlterMutuaForm.idSolicitudalter.value){
+   		if(document.forms["AlterMutuaForm"].idSolicitudalter.value){
       		$("#estadoSolicitud").show();
       		$("#estadoColegiado").show();
    		}else{
@@ -934,27 +934,27 @@
            		var tarifa =  $("#tarifa"+selec).text();
            		var descripcion =  $("#descripcion"+selec).html();
 
-           		document.AlterMutuaForm.nombrePaquete.value = nombre;
-           		document.AlterMutuaForm.brevePaquete.value = breve;
-           		document.AlterMutuaForm.descripcionPaquete.value = descripcion;
-           		document.AlterMutuaForm.tarifaPaquete.value = tarifa;
+           		document.forms["AlterMutuaForm"].nombrePaquete.value = nombre;
+           		document.forms["AlterMutuaForm"].brevePaquete.value = breve;
+           		document.forms["AlterMutuaForm"].descripcionPaquete.value = descripcion;
+           		document.forms["AlterMutuaForm"].tarifaPaquete.value = tarifa;
            		
            		$("#holderTarifa").text(tarifa);
            		$("#holderBreve").text(breve);
            		if(herederos==="true"){  
            			$("#fieldsetBeneficiarios").show();
-           			AlterMutuaForm.requiereBeneficiarios.value = true;
+           			document.forms["AlterMutuaForm"].requiereBeneficiarios.value = true;
            		}else{
            			$("#fieldsetBeneficiarios").hide();
-           			AlterMutuaForm.requiereBeneficiarios.value = false;
+           			document.forms["AlterMutuaForm"].requiereBeneficiarios.value = false;
            		}
            		
            		if(familiares==="true"){
            			$("#fieldsetFamiliares").show();
-           			AlterMutuaForm.requiereFamiliares.value = true;
+           			document.forms["AlterMutuaForm"].requiereFamiliares.value = true;
            		}else{
            			$("#fieldsetFamiliares").hide();
-           			AlterMutuaForm.requiereFamiliares.value = false;
+           			document.forms["AlterMutuaForm"].requiereFamiliares.value = false;
            		}
    			}
        	);
@@ -999,12 +999,12 @@
         	
       	showEstado();
 
-       	if(AlterMutuaForm.idSolicitudalter.value || AlterMutuaForm.numeroPropuestas.value<=0){
+       	if(document.forms["AlterMutuaForm"].idSolicitudalter.value || document.forms["AlterMutuaForm"].numeroPropuestas.value<=0){
        		makeReadOnly();
        	}
        		
-       	if(AlterMutuaForm.idSolicitudalter.value==='' && AlterMutuaForm.numeroPropuestas.value<=0){
-       		jAlert(AlterMutuaForm.msgRespuesta.value,400,300);
+       	if(document.forms["AlterMutuaForm"].idSolicitudalter.value==='' && document.forms["AlterMutuaForm"].numeroPropuestas.value<=0){
+       		jAlert(document.forms["AlterMutuaForm"].msgRespuesta.value,400,300);
        	}
        	
      	setTexts();
@@ -1062,7 +1062,7 @@
 	}
 	
 	function mostrarFamiliares(){
-		var st = AlterMutuaForm.familiares.value;
+		var st = document.forms["AlterMutuaForm"].familiares.value;
 		var salida="";
 		if(st && st!=""){
 			var familiares = st.split("%%%");
@@ -1087,7 +1087,7 @@
 		}
 	}
 	function mostrarHerederos(){
-		var st = AlterMutuaForm.herederos.value;
+		var st = document.forms["AlterMutuaForm"].herederos.value;
 		var salida="";
 		if(st && st!=""){
 			var herederos = st.split("%%%");

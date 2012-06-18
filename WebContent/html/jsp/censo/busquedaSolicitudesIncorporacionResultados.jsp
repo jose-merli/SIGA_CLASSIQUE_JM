@@ -32,8 +32,11 @@
 	<title><siga:Idioma key="censo.SolicitudIncorporacionDatos.titulo"/></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	<script language="javascript">
 		function refrescarLocalArray(arrayDatos) {
@@ -88,13 +91,13 @@
 <body>
 
 
-		<html:form action="/CEN_SolicitudesIncorporacion.do" method="POST" style="display:none" target="mainWorkArea">
+		<html:form action="/CEN_SolicitudesIncorporacion.do" method="POST" style="display:none" target="mainWorkArea" styleId="SolicitudIncorporacionForm">
 			<html:hidden property = "esModal" value = "N"/>
 			<html:hidden property = "modo" value = ""/>
 			<html:hidden property = "buscarModoAnteriorBusqueda" value = "true"/>
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
+			<input type="hidden" id="filaSelD" name="filaSelD">
+			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
 		</html:form>
 		

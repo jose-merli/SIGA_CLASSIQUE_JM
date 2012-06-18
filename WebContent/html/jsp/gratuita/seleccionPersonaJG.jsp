@@ -36,10 +36,13 @@
 	String nombrePersonaJG = (String)request.getAttribute("nombrePersonaSeleccionado");
 %>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
-<script type="text/jscript" language="JavaScript1.2">
+<script type="text/javascript">
 	function reloadPage() {
  			<%  if (mensaje!=null){
 						String msg=UtilidadesString.getMensajeIdioma(userBean.getLanguage(),mensaje);
@@ -51,8 +54,8 @@
 					var aux = new Array();
 					aux[0]="<%=idPersonaJG %>";
 					aux[1]="<%=nombrePersonaJG %>";
-					window.returnValue=aux; 
-					window.close();
+					window.top.returnValue=aux; 
+					window.top.close();
 			<%  } %>
 			return false;
 	}

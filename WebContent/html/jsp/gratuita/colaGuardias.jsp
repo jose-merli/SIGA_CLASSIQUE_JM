@@ -60,8 +60,12 @@
 	<!-- HEAD -->
 	<head>
 
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+			
+		
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+		
 		<siga:Titulo titulo="pestana.justiciagratuitaturno.colaGuardia" localizacion="gratuita.turnos.localizacion.colaTurno.manteniento"/>
 		
 	<SCRIPT>
@@ -183,20 +187,16 @@
 			
 			td = tr.insertCell();	
 			td.id = "check_"+numFila;
-			td.innerText="";
 			td.innerHTML ='<input type="checkbox" id="checkGrupoOrden" value='+val+' onclick="modificaParametro(this)" checked/>';
 			
 			td = tr.insertCell();	
-			td.id = "grupo_"+numFila;
-			td.innerText="";
-			
+			td.id = "grupo_"+numFila;			
 			td.innerHTML ='<input type="text" value="" id=grupo_'+val+' size="1">'+
 						  '<input type="hidden" value="" id=grupoOriginal_'+val+'>';
 
 
 			td = tr.insertCell();	
 			td.id = "orden_"+numFila;
-			td.innerText="";
 			td.innerHTML ='<input type="text" value="" id=orden_'+val+' size="1" maxlength="4">'+
 						  '<input type="hidden" value="" id=ordenOriginal_'+val+'>';
 
@@ -206,9 +206,9 @@
 			person = document.getElementById("idPersona_"+(fila+1)).value;
 			fSuscr = document.getElementById("fechaSuscripcion_"+(fila+1)).value;
 			//idGrupoGuar = document.getElementById("idGrupoGuardiaColegiado_"+(fila+1)).value;
-			td.innerText=document.getElementById("colegiado_"+fila).innerText;
+			td.innerHTML = document.getElementById("colegiado_"+fila).innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
 
-			td.innerHTML = td.innerText +
+			td.innerHTML = td.innerHTML +
 						   ' <input name="numeroColegiadoBusqueda" type="hidden" class="box" size="10" value="'+numColBusqueda+'" > '+
 						   ' <input name="idPersona_'+val+'" type="hidden" class="box" size="10" value="'+person+'" > '+
 						   ' <input name="fechaSuscripcion_'+val+'" type="hidden" class="box" size="20" value="'+fSuscr+'" > '+
@@ -216,19 +216,18 @@
 
 			td = tr.insertCell();	
 			td.id = "nombre_"+numFila;
-			td.innerText=document.getElementById("nombre_"+fila).innerText;
+			td.innerHTML = document.getElementById("nombre_"+fila).innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
 
 			td = tr.insertCell();	
 			td.id = "falta_"+numFila;
-			td.innerText=document.getElementById("falta_"+fila).innerText;
+			td.innerHTML = document.getElementById("falta_"+fila).innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
 
 			td = tr.insertCell();	
 			td.id = "fbaja_"+numFila;
-			td.innerText=document.getElementById("fbaja_"+fila).innerText;
+			td.innerHTML = document.getElementById("fbaja_"+fila).innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
 
 			td = tr.insertCell();	
 			td.id = "iconos_"+numFila;
-			td.innerText="";
 			td.align="center";
 			td.innerHTML = '<img src=/SIGA/html/imagenes/bcambiarusuario.gif name="bcambiarusuario" onClick="fijarUltimoLetrado('+(numFila+1)+')" style="cursor:hand;" alt="<siga:Idioma key="gratuita.turnos.literal.fijarUltimoLetrado"/>" >'+
 			   			   '<img src=/SIGA/html/imagenes/icono+.gif          name="banadirlinea"    onClick="anadirFilaLetrado('+numFila+')"  style="cursor:hand;" alt="<siga:Idioma key="gratuita.turnos.literal.anadirFila"/>"         >';

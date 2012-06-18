@@ -19,8 +19,11 @@
 <!-- HEAD -->
 <head>
   
-	<link id="default" rel="stylesheet" type="text/css"	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
-	<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
+	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
+		
+	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>" ></script>
+	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
 	<title><siga:Idioma key="gratuita.operarUnidadFamiliar.literal.unidadFamiliar"/></title>
 	<siga:Titulo 
 		titulo="gratuita.busquedaEJG.unidadFamiliar" 
@@ -794,10 +797,10 @@
 		        }
 		        datos.value = datos.value + "%"
 		      } else { j = 2; }
-		      if ((tabla.rows[fila].cells)[i].innerText == "")
+		      if ((tabla.rows[fila].cells)[i].innerHTML == "")
 		        datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
 		      else
-		        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';
+		        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
 		   }
 		   document.forms[0].modo.value = "Ver";
 		   ventaModalGeneral(document.forms[0].name,"G");
@@ -825,10 +828,10 @@
 		        }
 		        datos.value = datos.value + "%"
 		      } else { j = 2; }
-		      if ((tabla.rows[fila].cells)[i].innerText == "") 
+		      if ((tabla.rows[fila].cells)[i].innerHTML == "") 
 		        datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
 		      else
-		        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';
+		        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
 		   }
 		   document.forms[0].modo.value = "Editar";
 		   var resultado = ventaModalGeneral(document.forms[0].name,"G");
@@ -866,10 +869,10 @@
 		        		}
 		        		datos.value = datos.value + "%"
 		      		} else { j = 2; }
-		      		if ((tabla.rows[fila].cells)[i].innerText == "")
+		      		if ((tabla.rows[fila].cells)[i].innerHTML == "")
 		        		datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
 		      		else
-		        		datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';
+		        		datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
 		   	}
 		   	var auxTarget = document.forms[0].target;
 		   	document.forms[0].target="submitArea";

@@ -4,9 +4,13 @@
 <% String app=request.getContextPath(); %>
 <head>
 	<title>Sistema de Gestión de la Abogacía</title>
-	<link id="default" rel="STYLESHEET" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-	<script language="JavaScript" type="text/javascript">
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+		
+	<script type="text/javascript">
 		var user, psswd, profile, loc;
 		user=getParameterValue('user');
 		psswd=getParameterValue('psswd');		
@@ -24,7 +28,7 @@
 		function cerrarAplicacion() {
 			MM_swapImage('closeApp','','<%=app%>/html/imagenes/botonCerrar_activo.gif',1);
 			if(confirm('¿Está seguro de que desea abandonar la aplicación?'))
-				window.close(); 
+				window.top.close(); 
 			return false;
 		}
 		function inicio() {
@@ -69,7 +73,7 @@ DHTML script collection at http://simplythebest.net/info/dhtml_scripts.html */
 <img id="logoSIGA" align="bottom" src="<%=app%>/html/imagenes/logoSIGA.png">
 </div>
 <div style="position:absolute; left:500px; top:36px; z-index: 5;"> 
-  <!--<a href="javascript://" class="imageLink" onclick="if(confirm('¿Está seguro de que desea abandonar la aplicación?'))window.close(); else return false;">
+  <!--<a href="javascript://" class="imageLink" onclick="if(confirm('¿Está seguro de que desea abandonar la aplicación?'))window.top.close(); else return false;">
 <img src="<%=app%>/html/imagenes/botonCerrar.gif" align="middle" border="0">&nbsp;Cerrar Aplicación</a>-->
   <a href="javascript://" class="imageLink" onclick="return cerrarAplicacion();" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('closeApp','','<%=app%>/html/imagenes/botonCerrar_ilum.gif',1)"> 
   <img src="<%=app%>/html/imagenes/botonCerrar.gif" alt="Cerrar Aplicacion" align="middle" name="closeApp" width="27" height="27" border="0"> 

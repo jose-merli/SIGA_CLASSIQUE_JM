@@ -22,7 +22,8 @@
 <html>
 <head>
 <title><"Mantenimiento Modulos Actualizables.Titulo"/></title>
-<link id="default" rel="STYLESHEET" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
+	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
 <script language="JavaScript">
 	
 	function aceptar() {

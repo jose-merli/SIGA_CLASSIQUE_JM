@@ -124,8 +124,11 @@
 
 <!-- HEAD -->
 <head>
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+
+
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	
 	<!-- Calendario -->
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
@@ -140,7 +143,7 @@
 
 		//Asociada al boton Volver
 		function accionCerrar(){ 		
-			window.close();
+			window.top.close();
 		}	
 		
 		// Asociada al boton Restablecer 
@@ -170,6 +173,7 @@
 
 			<% if (!bOcultarHistorico) { %>
 				var datos = showModalDialog("/SIGA/html/jsp/general/ventanaMotivoHistorico.jsp","","dialogHeight:230px;dialogWidth:520px;help:no;scroll:no;status:no;");
+				window.top.focus();
 			<% } else { %>
 				var datos = new Array();
 				datos[0] = 1;
@@ -285,17 +289,19 @@
 							<tr>
 								<td class="labelText" ><siga:Idioma key="censo.datosCV.literal.fechaInicio"/>&nbsp(*)</td>
 								<td>
-									<html:text name="datosCVForm" property="fechaInicio" value='<%=fechaInicio%>' size="10" styleClass="<%=clase%>" readOnly="true"></html:text>
 									<%if (editarCampos) {%>
-										<a href='javascript://'onClick="return showCalendarGeneral(fechaInicio);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
+									<siga:Fecha  nombreCampo= "fechaInicio" valorInicial="<%=fechaInicio%>" />
+									<%}else{%>	
+									<siga:Fecha  nombreCampo= "fechaInicio" valorInicial="<%=fechaInicio%>" disabled="true" />
 									<%}%>	
 								</td>
 								
 								<td class="labelText" ><siga:Idioma key="censo.datosCV.literal.fechaFin"/>&nbsp(*)</td>	
 								<td>
-										<html:text name="datosCVForm" property="fechaFin" value="<%=fechaFin%>" size="10" styleClass="<%=clase%>" readOnly="true"></html:text>
 										<%if (editarCampos) {%>
-											<a href='javascript://'onClick="return showCalendarGeneral(fechaFin);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
+										<siga:Fecha  nombreCampo= "fechaFin" valorInicial="<%=fechaFin%>" />
+										<%}else{%>	
+										<siga:Fecha  nombreCampo= "fechaFin" valorInicial="<%=fechaFin%>" disabled="true" />
 										<%}%>	
 								</td>	
 							</tr>
@@ -306,10 +312,10 @@
 
 								<td class="labelText"><siga:Idioma key="censo.datosCV.literal.fechaCertificado"/>&nbsp</td>
 								<td>
-									<html:text name="datosCVForm" property="fechaMovimiento" value='<%=fechaCertificado%>' size="10" styleClass="<%=clase%>" readOnly="true"></html:text>
 									<%if (editarCampos) {%>
-										<a href='javascript://'onClick="return showCalendarGeneral(fechaMovimiento);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
+									<siga:Fecha  nombreCampo= "fechaMovimiento" valorInicial="<%=fechaCertificado%>" />
 									<%} else { %>
+									<siga:Fecha  nombreCampo= "fechaMovimiento" valorInicial="<%=fechaCertificado%>"  disabled="true"/>
 									<%}%>	
 								</td>
 							</tr>

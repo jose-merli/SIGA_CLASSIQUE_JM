@@ -25,12 +25,13 @@
 	<meta http-equiv="Cache-Control" 	content="no-cache">
 	<siga:Titulo titulo="censo.busquedaClientes.colegiados.titulo" localizacion="censo.busquedaClientes.localizacion" />
 	<css:css 		relativePath="/html/jsp/general/" 		files="stylesheet2.jsp" />
+	<css:css 		relativePath="/html/jsp/general/" 		files="stylesheet.jsp" />	
 	<css:css 		relativePath="/html/css/" 				files="ajaxtags.css" />
 	<css:css 	   	relativePath="/html/css/themes/" 		files="default.css,mac_os_x.css" />
 	<js:javascript 	relativePath="/html/js/"				files="prototype.js,window.js" />
 	<js:javascript 	relativePath="/html/js/scriptaculous/"	files="scriptaculous.js" />
 	<js:javascript 	relativePath="/html/js/overlibmws/"		files="overlibmws.js" />
-	<js:javascript 	relativePath="/html/js/"				files="SIGA.js,ajaxtags.js," />
+	<js:javascript 	relativePath="/html/js/"				files="jquery-1.7.1.js,ajaxtags.js,jquery.custom.js,jquery.msgbox.js,jquery.dragndrop.min.js,SIGA.js" />
 	<js:javascript 	relativePath="/html/jsp/censo/"			files="busquedaColegiados.js.jsp" />
 	<html:base />
 </head>

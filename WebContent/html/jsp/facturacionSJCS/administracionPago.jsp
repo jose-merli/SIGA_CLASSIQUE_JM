@@ -44,7 +44,7 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	<!-- TITULO Y LOCALIZACION -->
 	<title><siga:Idioma key="factSJCS.datosGeneralesPagos.cabecera"/></title>
@@ -53,7 +53,7 @@
 		var tit = "<siga:Idioma key="factSJCS.datosGeneralesPagos.cabecera"/>";
 		var loc = "<siga:Idioma key="factSJCS.datosGeneralesPagos.ruta"/>";
 		top.setTitulo(pretitulo, tit);
-		top.setLocalizacion(loc);
+		setLocalizacion(loc);
 	</script>
 
 	

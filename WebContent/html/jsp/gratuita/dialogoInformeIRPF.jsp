@@ -41,10 +41,11 @@
 
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css"
-		href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
-	<script src="<html:rewrite page="/html/js/SIGA.js"/>"
-		type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
+	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
+		
+	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>" ></script>
+	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
 	
 	<!-- Calendario -->
 	<script src="<html:rewrite page="/html/js/calendarJs.jsp"/>"
@@ -141,15 +142,15 @@
 	 
 	<html:hidden property="enviar" value='<%=(desdeFicha!=null && !desdeFicha.equals(""))?"0":"1"%>' />
 	<html:hidden property="descargar" value="1"/>
-	<html:hidden property="datosInforme"/>
+	<html:hidden property="datosInforme" styleId="datosInforme"/>
 	<html:hidden property="modo" value = "preSeleccionInformes"/>
 	
 	<input type='hidden' name='actionModal'>
 </html:form>	
 <!-- Formulario para la edicion del envio -->
 <form name="DefinirEnviosForm" method="POST" action="/SIGA/ENV_DefinirEnvios.do" target="mainWorkArea">
-	<input type="hidden" name="modo" value="">
-	<input type="hidden" name="tablaDatosDinamicosD" value="">
+	<input type="hidden" name="modo" id="modo" value="">
+	<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD" value="">
 
 </form>
 
@@ -185,12 +186,12 @@
 			idioma = document.RetencionesIRPFForm.idioma.value;
 		   	datos = "idPersona=="+idPersona + "##periodo==" +periodo + "##anyoInformeIRPF==" +anyoInformeIRPF + "##idInstitucion==" +idInstitucion + "##idioma==" +idioma +"%%%";
 		   	
-		   	//document.InformesGenericosForm.enviar.value =document.getElementById("enviar").value;
 		
-			document.InformesGenericosForm.datosInforme.value =datos;
+			// document.InformesGenericosForm.datosInforme.value =datos;
+			$("#datosInforme").val(datos);
 			
 			if(document.getElementById("informeUnico").value=='1'){
-				document.InformesGenericosForm.submit();
+				document.forms["InformesGenericosForm"].submit();
 			}else{
 			
 			
@@ -207,9 +208,9 @@
 					    var idTipoEnvio = arrayResultado[1];
 					    var nombreEnvio = arrayResultado[2];				    
 					    
-					   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
-					   	document.DefinirEnviosForm.modo.value='editar';
-					   	document.DefinirEnviosForm.submit();
+					   	document.forms["DefinirEnviosForm"].tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
+					   	document.forms["DefinirEnviosForm"].modo.value='editar';
+					   	document.forms["DefinirEnviosForm"].submit();
 			   		}else{
 			   			fin();
 			   		}

@@ -111,7 +111,7 @@
 	<head>
 	
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">		
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 		<!-- INICIO: TITULO Y LOCALIZACION -->
 		<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -629,7 +629,7 @@
 	
 	function accionCerrar() 
 	{		
-		window.close();
+		window.top.close();
 	}
 	
 	function renegociar() 

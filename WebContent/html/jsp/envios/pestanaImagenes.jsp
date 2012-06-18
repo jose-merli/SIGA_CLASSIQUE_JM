@@ -28,13 +28,11 @@
 			}
 	
 			//Asociada al boton Nuevo
-			function accionNuevo()
-			{
+			function accionNuevo() {
 				document.ImagenPlantillaForm.action = "/SIGA/ENV_ImagenesPlantilla.do";
 				document.ImagenPlantillaForm.modo.value="nuevo";
 				var resultado=ventaModalGeneral("ImagenPlantillaForm","P");
-				if (resultado=="MODIFICADO")
-				{
+				if (resultado=="MODIFICADO") {
 					parent.buscar();
 				}
 			}
@@ -74,15 +72,14 @@
     						}
     						datos.value = datos.value + "%"
   						} 
-  						else 
-  						{ 
+  						else { 
   							j = 2; 
   						}
-  						if ((tabla.rows[fila].cells)[i].innerText == "") 
+  						if ((tabla.rows[fila].cells)[i].innerHTML == "") {
     						datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
- 						else
-    						datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';
-					
+  						} else {
+    						datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
+  						}
 					document.forms[0].target="submitArea";
 					document.forms[0].modo.value = "download";
 					document.forms[0].submit();

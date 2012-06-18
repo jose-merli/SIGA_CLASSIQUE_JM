@@ -48,8 +48,11 @@
 
 <!-- HEAD -->
 <head>
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>	
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	
 	<script>
 
@@ -69,12 +72,11 @@
 		}	
 		
 		function validaTabla(){
-		  if (document.all.tablaDatos.clientHeight < document.all.tablaDatosDiv.clientHeight) {
-		   document.all.tablaDatosCabeceras.width='100%';
-		  }
-		  else {
-		   document.all.tablaDatosCabeceras.width='95%';
-		  }
+			if (document.getElementById("tablaDatos").clientHeight < document.getElementById("tablaDatosDiv").clientHeight) {
+				document.getElementById("tablaDatosCabeceras").width='100%';
+			} else {
+				document.getElementById("tablaDatosCabeceras").width='95%';
+			}
 		}
 	</script>
 	
@@ -83,15 +85,16 @@
 <body onload="validaTabla();">
 
 	<!-- Comienzo del formulario con los campos -->
-	<html:form action="/CEN_GruposFijosClientes.do" method="POST" target="submitArea" style="display:none">
+	<html:form action="/CEN_GruposFijosClientes.do" method="POST" target="submitArea" style="display:none" styleId="GruposClienteClienteForm">
 		<html:hidden property="modo" value="insertar"/>
-		<html:hidden property="idPersona" />
-		<html:hidden property="idInstitucion" />
+		<html:hidden property="idPersona"/>
+		<html:hidden property="idInstitucion"/>
 		<html:hidden property="modoAnterior" />
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
-		</html:form>
+		<!-- RGG: cambio a formularios ligeros -->
+		<html:hidden name="GruposClienteClienteForm"  property ="filaSelD" styleId="filaSelD"/>
+		<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
+		<input type="hidden" name="actionModal" value="">
+	</html:form>
 
 	<!-- INICIO TABLA DE GRUPOS -->
 		<siga:TablaCabecerasFijas 
@@ -118,8 +121,8 @@
 				i++;
 	%> 				
 				<siga:FilaConIconos fila='<%=String.valueOf(i)%>' botones='<%=iconos%>' modo='<%=modoAnterior%>' clase="listaNonEdit" visibleEdicion="no" visibleConsulta="no" pintarEspacio="false" >
-				<td><input type='hidden' name='oculto<%=String.valueOf(i)%>_1' value='<%=(String)htData.get(CenGruposClienteBean.C_IDGRUPO)%>'>	
-					<input type='hidden' name='oculto<%=String.valueOf(i)%>_2' value='<%=(String)htData.get("IDINSTITUCION_GRUPO")%>'>	
+				<td><input type="hidden" id='oculto<%=String.valueOf(i)%>_1' name='oculto<%=String.valueOf(i)%>_1' value='<%=(String)htData.get(CenGruposClienteBean.C_IDGRUPO)%>'>	
+					<input type="hidden" id='oculto<%=String.valueOf(i)%>_2' name='oculto<%=String.valueOf(i)%>_2' value='<%=(String)htData.get("IDINSTITUCION_GRUPO")%>'>	
   					<%=UtilidadesString.mostrarDatoJSP(htData.get(CenGruposClienteBean.C_NOMBRE))%>
   				</td>
 				</siga:FilaConIconos>

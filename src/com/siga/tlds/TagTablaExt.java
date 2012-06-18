@@ -23,7 +23,7 @@ public class TagTablaExt extends TagTabla
 
 	public int doStartTag() 
 	{
-	    String aux = "";
+	    //String aux = "";
 		
 	    try {
 	        
@@ -50,8 +50,8 @@ public class TagTablaExt extends TagTabla
 			if (!this.modal.equals("")) {
 				out.println("<input type=\"hidden\" name=\"actionModal\">");
 			}
-			out.println("<input type=\"hidden\" name=\"tablaDatosDinamicosD\">");
-			out.println("<input type=\"hidden\" name=\"filaSelD\">");
+			//out.println("<input type=\"hidden\" name=\"tablaDatosDinamicosD\" id=\"tablaDatosDinamicosD\" >");
+			//out.println("<input type=\"hidden\" name=\"filaSelD\" id=\"filaSelD\" >");
 			
 			out.println("<script language='JavaScript'>");
 			if (this.ajusteAlto) {
@@ -106,10 +106,10 @@ public class TagTablaExt extends TagTabla
 			out.println("        }");
 			out.println("        datos.value = datos.value + \"%\"");
 			out.println("      } else { j = 2; }");
-			out.println("      if ((tabla.rows[fila].cells)[i].innerText == \"\")");
+			out.println("      if ((tabla.rows[fila].cells)[i].innerHTML == \"\")");
 			out.println("        datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';");
 			out.println("      else");
-			out.println("        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';");
+			out.println("        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';");
 			out.println("   }");
 			out.println("   document.forms[0].modo.value = \"Ver\";");
 	
@@ -149,10 +149,10 @@ public class TagTablaExt extends TagTabla
 			out.println("        }");
 			out.println("        datos.value = datos.value + \"%\"");
 			out.println("      } else { j = 2; }");
-			out.println("      if ((tabla.rows[fila].cells)[i].innerText == \"\") ");
+			out.println("      if ((tabla.rows[fila].cells)[i].innerHTML == \"\") ");
 			out.println("        datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';");
 			out.println("      else");
-			out.println("        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';");
+			out.println("        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';");
 			out.println("   }");
 			out.println("   document.forms[0].modo.value = \"Editar\";");
 	
@@ -160,12 +160,12 @@ public class TagTablaExt extends TagTabla
 			{
 				out.println("   var resultado = ventaModalGeneral(document.forms[0].name,\""+this.modal+"\");");
 				out.println("   if (resultado) {");
-				out.println("  	 	if (resultado[0]) {");
-				out.println("   		refrescarLocalArray(resultado);");
-				out.println("   	} else ");
-				out.println("   	if (resultado==\"MODIFICADO\")");
-				out.println("   	{");
-				out.println("      		refrescarLocal();");
+				out.println("  	 	if (resultado==\"MODIFICADO\") {");
+				out.println("   	    alert(\""+UtilidadesString.getMensajeIdioma(usrbean,"messages.updated.success")+"\");");
+				out.println("   		refrescarLocal();");
+				out.println("       } else if (resultado[0]) {");
+				out.println("   	    alert(\""+UtilidadesString.getMensajeIdioma(usrbean,"messages.updated.success")+"\");");
+				out.println("      		refrescarLocalArray(resultado);");
 				out.println("   	}");
 				out.println("   }");
 			}
@@ -202,10 +202,10 @@ public class TagTablaExt extends TagTabla
 			out.println("        		}");
 			out.println("        		datos.value = datos.value + \"%\"");
 			out.println("      		} else { j = 2; }");
-			out.println("      		if ((tabla.rows[fila].cells)[i].innerText == \"\")");
+			out.println("      		if ((tabla.rows[fila].cells)[i].innerHTML == \"\")");
 			out.println("        		datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';");
 			out.println("      		else");
-			out.println("        		datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';");
+			out.println("        		datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';");
 			out.println("   	}");
 			out.println("   	var auxTarget = document.forms[0].target;");
 			out.println("   	document.forms[0].target=\"submitArea\";");
@@ -220,7 +220,7 @@ public class TagTablaExt extends TagTabla
 			out.println("<!-- 1. Pintamos la cabecera de la tabla con los contenidos -->");
 			
 				out.println("<table id='" + this.nombre + "Cabeceras' border='" + this.borde + 
-							"' width='98.43%' cellspacing='0' cellpadding='0'>");
+							"' width='983px' cellspacing='0' cellpadding='0' style='table-layout:fixed;'>");
 				out.println("	<tr class = '" + this.clase + "'>");
 
 				if (this.nombreCol.length == this.tamanoCol.length) {
@@ -240,7 +240,7 @@ public class TagTablaExt extends TagTabla
 				//out.println("<div id='" + this.nombre + "Div' style='height:" + this.alto + "px; position:absolute; width:100%; overflow-y:auto'>");
 				// LMS 15/02/2005 Con el position absolute había que estar haciendo filigranas en los JPS. Le elimino.
 				
-				out.println("<div id='" + this.nombre + "Div' style='height:" + this.alto + "; position:absolute; width:100%; overflow-y:auto'>");
+				out.println("<div id='" + this.nombre + "Div' style='height:" + this.alto + "; width:100%; overflow-y:auto'>");
 				out.println("<table id='" + this.nombre + "' border='" + this.borde + 
 							"' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>"); 
 				
@@ -270,10 +270,10 @@ public class TagTablaExt extends TagTabla
 	{
 		try
 		{
-			String aux = "";
+			//String aux = "";
 			
-			HttpSession session = pageContext.getSession();
-			UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);			
+			//HttpSession session = pageContext.getSession();
+			//UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);			
 			PrintWriter out = pageContext.getResponse().getWriter();
 			out.println("</table>");
 			out.println("</div>");
@@ -282,10 +282,10 @@ public class TagTablaExt extends TagTabla
 			out.println("");
 			out.println(" function validarAncho_" + this.nombre + "() {");
 	
-			out.println("  if (document.all." + this.nombre +".clientHeight < document.all." + this.nombre + "Div.clientHeight) {");
-			out.println("   document.all." + this.nombre + "Cabeceras.width='100%';");
+			out.println("  if (document.getElementById('" + this.nombre +"').clientHeight < document.getElementById('" + this.nombre + "Div').clientHeight) {");
+			out.println("   document.getElementById('" + this.nombre + "Cabeceras').width='100%';");
 			out.println("  } else {");
-			out.println("   document.all." + this.nombre + "Cabeceras.width='98.43%';");
+			out.println("   document.getElementById('" + this.nombre + "Cabeceras').width='98.43%';");
 			out.println("  } ");
 			out.println(" }");
 			out.println("");

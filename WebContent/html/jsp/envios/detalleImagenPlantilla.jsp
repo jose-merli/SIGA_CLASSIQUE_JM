@@ -68,13 +68,13 @@
 					}
 				}
 				document.ImagenPlantillaForm.submit();
-				window.returnValue="MODIFICADO";
+				window.top.returnValue="MODIFICADO";
 			}
 			
 			//Asociada al boton Cerrar
 			function accionCerrar() 
 			{		
-				window.close();
+				window.top.close();
 			}
 		</script>
 		<!-- FIN: SCRIPTS BOTONES -->

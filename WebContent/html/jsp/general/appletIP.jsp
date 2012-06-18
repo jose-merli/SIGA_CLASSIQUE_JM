@@ -49,7 +49,7 @@
 		</object>
 		<!-- APPLET IP -->	
 
-	<script language="JScript" type="text/jscript" src="<%=app%>/html/js/activateActiveX.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/activateActiveX.js"></script>
 		
 </body>
 </html>

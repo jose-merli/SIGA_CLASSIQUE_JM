@@ -62,16 +62,19 @@
 	}
 %>
 
-<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	
 <script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
 <script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
 <script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
 <script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
 
-<link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />
-<link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
+<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/ajaxtags.css'/>" />
+<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/displaytag.css'/>" />
 
 <html>
 
@@ -89,7 +92,7 @@
 
 	function accionCerrar() {		
 		 window.open('', '_self', '');
-	        window.close();
+	        window.top.close();
 	}
 
 	window.resizeTo("500","500");

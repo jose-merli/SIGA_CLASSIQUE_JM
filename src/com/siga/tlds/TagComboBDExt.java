@@ -251,7 +251,7 @@ public class TagComboBDExt extends TagSupport {
 								   " SCROLLING=\"NO\">");
 				out.println("</iframe>");
 //				out.println("<input type=\"hidden\" id=\""+ this.nombre +"\" name=\"" + this.nombre + "\">");
-				out.println("<input type=\"hidden\" name=\"" + this.nombre + "\" value=\"\">");
+				out.println("<input type=\"hidden\" id=\"" + this.nombre + "\" name=\"" + this.nombre + "\" value=\"\">");
 				return;
 			}
 			if (readonly)
@@ -288,7 +288,7 @@ public class TagComboBDExt extends TagSupport {
 
 				String widthStyle=(this.ancho!=null?"width:"+ancho+"px;":"");
 				String aux = "";
-				aux = "<Select name = \"" + this.nombre + "\" style = \""+widthStyle+this.estilo +"\" class = \""+ this.clase + "\" " +
+				aux = "<select id = \"" + this.nombre + "\" name = \"" + this.nombre + "\" style = \""+widthStyle+this.estilo +"\" class = \""+ this.clase + "\" " +
 		           		(this.seleccionMultiple==true?"multiple ":"") + (this.filasMostrar==1?"":"size = \"" + this.filasMostrar +"\" ") +
 						" onChange=\"";
 				

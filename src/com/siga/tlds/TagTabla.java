@@ -194,10 +194,10 @@ public class TagTabla extends TagSupport {
 			
 			// RGG 07-12-04 se introduce el campo para hacer modal la ventana que se abra. 
 			if (!this.modal.equals("")) {
-				out.println("<input type=\"hidden\" name=\"actionModal\">");
+				out.println("<input type=\"hidden\" name=\"actionModal\" id=\"actionModal\" >");
 			}
-			out.println("<input type=\"hidden\" name=\"tablaDatosDinamicosD\">");
-			out.println("<input type=\"hidden\" name=\"filaSelD\">");
+			//out.println("<input type=\"hidden\" name=\"tablaDatosDinamicosD\" id=\"tablaDatosDinamicosD\" >");
+			//out.println("<input type=\"hidden\" name=\"filaSelD\" id=\"filaSelD\" >");
 			
 			out.println("<!-- 0. Pintamos las funciones -->");
 			
@@ -249,12 +249,12 @@ public class TagTabla extends TagSupport {
 			out.println("        }");
 			out.println("        datos.value = datos.value + \"%\"");
 			out.println("      } else { j = 2; }");
-			//out.println("      datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';");
+			//out.println("      datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML + ',';");
 			//out.println("      if ((tabla.rows[fila].cells)[i].all[0]!=null)");
-			out.println("      if ((tabla.rows[fila].cells)[i].innerText == \"\")");
+			out.println("      if ((tabla.rows[fila].cells)[i].innerHTML == \"\")");
 			out.println("        datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';");
 			out.println("      else");
-			out.println("        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';");
+			out.println("        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';");
 			out.println("   }");
 			out.println("   document.forms[0].modo.value = \"Ver\";");
 
@@ -295,12 +295,12 @@ public class TagTabla extends TagSupport {
 			out.println("        }");
 			out.println("        datos.value = datos.value + \"%\"");
 			out.println("      } else { j = 2; }");
-			//out.println("      datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';");
+			//out.println("      datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML + ',';");
 			//out.println("      if ((tabla.rows[fila].cells)[i].all[0]=null)");
-			out.println("      if ((tabla.rows[fila].cells)[i].innerText == \"\") ");
+			out.println("      if ((tabla.rows[fila].cells)[i].innerHTML == \"\") ");
 			out.println("        datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';");
 			out.println("      else");
-			out.println("        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';");
+			out.println("        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';");
 			out.println("   }");
 			out.println("   document.forms[0].modo.value = \"Editar\";");
 
@@ -312,16 +312,12 @@ public class TagTabla extends TagSupport {
 					out.println("   var resultado = ventaModalGeneral(document.forms[0].name,\""+this.modal+"\");");
 				}
 				out.println("   if (resultado) {");
-				out.println("  	 	if (resultado[0]) {");
-				out.println("   		refrescarLocalArray(resultado);");
-				out.println("   	} else ");
-				out.println("   	if (resultado==\"MODIFICADO\")");
-				out.println("   	{");
-				/* LMS (04/01/2005) */
-				/* Se llama directamente al método buscar del frame padre. */
-				//out.println("      document.forms[0].modo.value = \"Buscar\";");
-				//out.println("      document.forms[0].submit();");
-				out.println("      		refrescarLocal();");
+				out.println("  	 	if (resultado==\"MODIFICADO\") {");
+				out.println("   	    alert(\""+UtilidadesString.getMensajeIdioma(usrbean,"messages.updated.success")+"\");");
+				out.println("   		refrescarLocal();");
+				out.println("       } else if (resultado[0]) {");
+				out.println("   	    alert(\""+UtilidadesString.getMensajeIdioma(usrbean,"messages.updated.success")+"\");");
+				out.println("      		refrescarLocalArray(resultado);");
 				out.println("   	}");
 				out.println("   }");
 			} else { 
@@ -364,12 +360,12 @@ public class TagTabla extends TagSupport {
 			out.println("        		}");
 			out.println("        		datos.value = datos.value + \"%\"");
 			out.println("      		} else { j = 2; }");
-			//out.println("      datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';");
+			//out.println("      datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML + ',';");
 			//out.println("      if ((tabla.rows[fila].cells)[i].all[0]!=null)");
-			out.println("      		if ((tabla.rows[fila].cells)[i].innerText == \"\")");
+			out.println("      		if ((tabla.rows[fila].cells)[i].innerHTML == \"\")");
 			out.println("        		datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';");
 			out.println("      		else");
-			out.println("        		datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';");
+			out.println("        		datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';");
 			out.println("   	}");
 			// Omitir borrado vista
 //			out.println("   tabla.rows[fila].style.display = \"none\";");
@@ -392,7 +388,7 @@ public class TagTabla extends TagSupport {
 			out.println("<!-- 1. Pintamos la cabecera de la tabla con los contenidos -->");
 		
 			out.println("<table id='" + this.nombre + "Cabeceras' border='" + this.borde + 
-						"' width='98.43%' cellspacing='0' cellpadding='0'>");
+						"' width='983px' cellspacing='0' cellpadding='0' style='table-layout:fixed;'>");
 			out.println("	<tr class = '" + this.clase + "'>");
 
 			if (this.nombreCol.length == this.tamanoCol.length) {
@@ -413,12 +409,12 @@ public class TagTabla extends TagSupport {
 			// LMS 15/02/2005 Con el position absolute había que estar haciendo filigranas en los JPS. Le elimino.
 			
 			if(estilo!=null && !estilo.equals("")){
-				out.println("<div id='" + this.nombre + "Div' style='" + this.estilo +"'>");				
+				out.println("<div id='" + this.nombre + "Div' style='" + this.estilo +"'>");		
 			}else{
-				out.println("<div id='" + this.nombre + "Div' style='height:" + this.alto + "; position:absolute; width:100%; overflow-y:auto'>");
+				out.println("<div id='" + this.nombre + "Div' style='height:" + this.alto + "; width:100%; overflow-y:auto'>");
 			}
 			out.println("<table id='" + this.nombre + "' border='" + this.borde + 
-						"' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>"); 
+						"' align='center' width='983px' cellspacing='0' cellpadding='0'  style='table-layout:fixed; margin:0px;'>"); 
 			
 			out.println("	<tr>");
 			
@@ -445,11 +441,11 @@ public class TagTabla extends TagSupport {
 	public int doEndTag() 
 	{
 		try {
-			String aux = "";
+			//String aux = "";
 			//pageContext.getResponse().setContentType("text/html");
 			
-			HttpSession session = pageContext.getSession();
-			UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);			
+			//HttpSession session = pageContext.getSession();
+			//UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);			
 			PrintWriter out = pageContext.getResponse().getWriter();
 			out.println("</table>");
 			out.println("</div>");
@@ -477,8 +473,8 @@ public class TagTabla extends TagSupport {
 			}
 			out.println("");
 			out.println(" function validarAncho_" + this.nombre + "() {");
-			out.println("  if (document.all." + this.nombre +".clientHeight < document.all." + this.nombre + "Div.clientHeight) {");
-			out.println("   document.all." + this.nombre + "Cabeceras.width='100%';");
+			out.println("  if (document.getElementById('" + this.nombre +"').clientHeight < document.getElementById('" + this.nombre + "Div').clientHeight) {");
+			out.println("   document.getElementById('" + this.nombre + "Cabeceras').width='100%';document.getElementById('" + this.nombre + "').width='100%';");
 			out.println("  }");
 
 			// seleccionamos la fila

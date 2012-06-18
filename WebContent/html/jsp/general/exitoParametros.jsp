@@ -44,7 +44,7 @@
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 
-<script type="text/jscript" language="JavaScript1.2">
+<script type="text/javascript">
 	
 	function reloadPage() {
 	
@@ -57,7 +57,7 @@
 			<%  } %>
 			<%  if (modal!=null){%>
 					<%  	if (sinrefresco!=null){%>
-								window.returnValue=""; 
+								window.top.returnValue=""; 
 								
 					<%  	} else {
 							%>
@@ -69,11 +69,11 @@
 									array[<%=i%>]="<%=parametro%>";	
 								<%}%>
 
-								window.returnValue=array; 
+								window.top.returnValue=array; 
 								
 					<%  	} %>
 					
-							window.close();
+							window.top.close();
 			<%  }else{%>	
 					<%  	if (sinrefresco==null){%>
 					

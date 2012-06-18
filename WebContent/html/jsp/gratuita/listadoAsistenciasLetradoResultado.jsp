@@ -1,17 +1,19 @@
 <!-- listadoAsistenciasLetradoResultado.jsp -->
 <meta http-equiv="Expires" content="0">
-<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
+<meta http-equiv="Pragma" content="no-cache">
+<%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 
-<%@ taglib uri = "struts-bean.tld" prefix="bean"%> 
-<%@ taglib uri = "struts-html.tld" prefix="html"%>
-<%@ taglib uri = "struts-logic.tld" prefix="logic"%>
-<%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
+<%@ taglib uri="struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="struts-html.tld" prefix="html"%>
+<%@ taglib uri="struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.atos.utils.*"%>
-<%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
+<%@ page contentType="text/html" language="java"
+	errorPage="/html/jsp/error/errorSIGA.jsp"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.Utilidades.*"%>
 <% 	
@@ -98,80 +100,85 @@
 
 %>
 <html>
-	<head>
-	<title><"listarAsistencias.title"></title>
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-		<script>
-		function accionNuevo()
-		{
-			document.forms[0].modo.value	= "nuevo";
-   		var resultado = ventaModalGeneral(document.forms[0].name,"M");
-	   	if(resultado = "MODIFICADO")
-	   	{
-	   		refrescarLocal();
-	   	}
+<head>
+<title><"listarAsistencias.title"></title>
+<link id="default" rel="stylesheet" type="text/css"
+	href="<%=app%>/html/jsp/general/stylesheet.jsp" />
+<link rel="stylesheet"
+	href="<%=app%>/html/js/themes/base/jquery.ui.all.css" />
+
+
+<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+<script type="text/javascript">
+		function accionNuevo() {
+			document.forms[0].modo.value = "nuevo";
+	   		var resultado = ventaModalGeneral(document.forms[0].name,"M");
+		   	if(resultado = "MODIFICADO") {
+		   		refrescarLocal();
+		   	}
 		}
-		function refrescarLocal()
-		{
+		
+		function refrescarLocal() {
 			parent.refrescarLocal();
 		} 
 		</script>
-		
-		<script language='JavaScript'>
-		function borrarSobreescrito(fila) {
+
+<script type="text/javascript">
+			function borrarSobreescrito(fila) {
 			   var datos;
 			   if (confirm('<%= UtilidadesString.getMensajeIdioma(usr,"messages.deleteConfirmation")%>')){
 			   	datos = document.getElementById('tablaDatosDinamicosD');
-			       datos.value = ""; 
+			    datos.value = ""; 
 			   	var i, j;
 			   	for (i = 0; i < 8; i++) {
-			      		var tabla;
-			      		tabla = document.getElementById('listarAsistencias');
-			      		if (i == 0) {
-			        		var flag = true;
-			        		j = 1;
-			        		while (flag) {
-			          			var aux = 'oculto' + fila + '_' + j;
-			          			var oculto = document.getElementById(aux);
-			          			if (oculto == null)  { flag = false; }
-			          else { 
-			          if(oculto.value=='')       		oculto.value=' ';
-						datos.value = datos.value + oculto.value + ','; }
-			          			j++;
-			        		}
-			        		datos.value = datos.value + "%"
-			      		} else { j = 2; }
-			      		if ((tabla.rows[fila].cells)[i].innerText == "")
-			        		datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
-			      		else
-			        		datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';
+			    	var tabla;
+			      	tabla = document.getElementById('listarAsistencias');
+			      	if (i == 0) {
+			        	var flag = true;
+			        	j = 1;
+			        	while (flag) {
+			        		var aux = 'oculto' + fila + '_' + j;
+			        		var oculto = document.getElementById(aux);
+			        		if (oculto == null) { 
+			        			flag = false; 
+			        		} else { 
+					        	if(oculto.value=='') {
+					        		oculto.value=' ';
+					          	}
+								datos.value = datos.value + oculto.value + ','; 
+							}
+					      	j++;
+					    }
+					    datos.value = datos.value + "%";
+			      	} else { 
+			      		j = 2; 
+			      	}
+			      	if ((tabla.rows[fila].cells)[i].innerHTML == "") {
+			      		datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
+			      	} else {
+			      		datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
+			      	}
 			   	}
 			   	document.forms[0].target="submitArea";
 			   	document.forms[0].modo.value = "Borrar";
 			   	document.forms[0].submit();
 			 	}
-			 }		
-
+			 }
 		</script>
-		
-	</head>
 
-<body class="tablaCentralCampos" >
+</head>
 
-	<% 	
-	
-String nC="";
+<body class="tablaCentralCampos">
+
+	<% 		
+		String nC="";
 		String tC="";
 		String botones="C,E,B";
 		String alto="243";
 	  	nC="gratuita.listadoAsistencias.literal.turno,gratuita.listadoAsistencias.literal.guardia,gratuita.listadoAsistencias.literal.anio,gratuita.listadoAsistencias.literal.numero,gratuita.busquedaAsistencias.literal.fechaAsistencia,gratuita.busquedaAsistencias.literal.asistido,gratuita.mantAsistencias.literal.estado,gratuita.busquedaAsistencias.literal.validada,";
 		tC="20,12,4,6,8,20,6,10,";
-
-
-
 	%>
-	
+
 	<% 
 		String target = "mainWorkArea";
 		if (esFichaColegial) { 
@@ -181,38 +188,36 @@ String nC="";
 		
 	 %>
 
-		<html:form action="/JGR_AsistenciasLetrado.do" method="post" target="<%=target%>" style="display:none">
-		
+	<html:form action="/JGR_AsistenciasLetrado.do" method="post"
+		target="<%=target%>" style="display:none">
+
 		<input type="hidden" name="modo" />
-		
+
 		<input type="hidden" name="idPersona" value="<%=idPersona%>" />
 		<input type="hidden" name="nColegiado" value="<%=numeroPestanha%>">
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
-			<input type="hidden" name="esFichaColegial" value="<%=esFichaColegial%>">
-		</html:form>	
-		
-		<!-- campos a pasar -->
-		<%
+		<!-- RGG: cambio a formularios ligeros -->
+		<input type="hidden" id="tablaDatosDinamicosD"
+			name="tablaDatosDinamicosD" />
+		<input type="hidden" id="filaSelD" name="filaSelD" />
+		<input type="hidden" name="actionModal" value="">
+		<input type="hidden" name="esFichaColegial"
+			value="<%=esFichaColegial%>">
+	</html:form>
+
+	<!-- campos a pasar -->
+	<%
 		String ajuste="true";
 		%>
-		<siga:TablaCabecerasFijas 
-		   nombre="listarAsistencias"
-		   borde="2"
-		   clase="tableTitle"
-		   nombreCol="<%=nC%>"
-		   tamanoCol="<%=tC%>"
-		   alto="100%"
-		   ajusteBotonera="<%=ajuste %>" 
-		   activarFilaSel="true" 
-		   ajustePaginador="true">
+	<siga:TablaCabecerasFijas nombre="listarAsistencias" borde="2"
+		clase="tableTitle" nombreCol="<%=nC%>" tamanoCol="<%=tC%>" alto="100%"
+		ajusteBotonera="<%=ajuste %>" activarFilaSel="true"
+		ajustePaginador="true">
 
 		<script>
 			function borrar(fila) {
 				borrarSobreescrito(fila);
 			}
-		</script>  
+		</script>
 		<%
 		
 		if (resultado.size()>0){
@@ -223,17 +228,14 @@ String nC="";
 		    	Vector v = null;
 		    	ScsAsistenciasAdm scsAsistenciasAdm = new ScsAsistenciasAdm(usr);
 		    	
-				while (recordNumber-1 < resultado.size())
-				{	 
+				while (recordNumber-1 < resultado.size()) {	 
 					Row fila = (Row)resultado.elementAt(recordNumber-1);
 					Hashtable registro = (Hashtable) fila.getRow();
 					//String esModificable=ScsAsistenciasAdm.esModificableAsistenciaJSP(registro.get("IDFACTURACION").toString());
 					String idFacturacion = (String)registro.get("IDFACTURACION");
-					if (usr.isLetrado()) {
-						
+					if (usr.isLetrado()) {						
 						botones = "C,E";
-					} else { //Como administrador
-						
+					} else { //Como administrador						
 						if(idFacturacion != null && !idFacturacion.trim().equals("")) {
 							if (esFichaColegial && modoPestanha!=null && modoPestanha.equalsIgnoreCase("ver"))
 								botones = "C";
@@ -242,77 +244,80 @@ String nC="";
 						} else // No es Fciah Colegial, estamos como Administrador en menu SJCS con todos los permisos:
 								botones = "C,E,B";
 					}
-					
-						// Verificamos si el turno permite la modificacion de la asistencia
+					// Verificamos si el turno permite la modificacion de la asistencia
 					if (!UtilidadesString.stringToBoolean((String)registro.get(ScsTurnoBean.C_LETRADOASISTENCIAS))) {
 						botones = "C";
-					}
-					
-					
+					}				
 					
 					nTurno = ScsTurnoAdm.getNombreTurnoJSP(usr.getLocation(),(String)registro.get("IDTURNO"));
 									
 %>
-<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" clase="listaNonEdit">
-						<td>
-						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=registro.get("ANIO")%>'> 
-						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=registro.get("NUMERO")%>'> 
-						<%=nTurno%></td>
-						<td><%=ScsGuardiasTurnoAdm.getNombreGuardiaJSP(usr.getLocation(),(String)registro.get("IDTURNO"),(String)registro.get("IDGUARDIA")) %></td>
-						<td><%=registro.get("ANIO")%></td>
-						<td><%=registro.get("NUMERO")%></td>
-						<%
+		<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>'
+			botones="<%=botones%>" clase="listaNonEdit">
+			<td><input type='hidden'
+				id='oculto<%=String.valueOf(recordNumber)%>_1'
+				name='oculto<%=String.valueOf(recordNumber)%>_1'
+				value='<%=registro.get("ANIO")%>'> <input type='hidden'
+				id='oculto<%=String.valueOf(recordNumber)%>_2'
+				name='oculto<%=String.valueOf(recordNumber)%>_2'
+				value='<%=registro.get("NUMERO")%>'> <%=nTurno%></td>
+			<td><%=ScsGuardiasTurnoAdm.getNombreGuardiaJSP(usr.getLocation(),(String)registro.get("IDTURNO"),(String)registro.get("IDGUARDIA")) %></td>
+			<td><%=registro.get("ANIO")%></td>
+			<td><%=registro.get("NUMERO")%></td>
+			<%
 						// Formateamos la fecha
 						fecha = GstDate.getFormatedDateShort(usr.getLanguage(),registro.get("FECHAHORA"));
 						%>
-						<td><%=fecha%></td>
-						
-						<td><%=registro.get("NOMBRE")%>&nbsp;</td>
-						<td><%ArrayList estadoSel    = new ArrayList();	
-							estadoSel.add(registro.get("ESTADO"));%>
-							<siga:ComboBD nombre="estado" tipo="cmbEstadosAsistencia" obligatorio="false" accion="" elementoSel="<%=estadoSel%>" clase="boxComboEnTabla" ReadOnly="true" obligatorioSinTextoSeleccionar="no"/>&nbsp;
-						</td>
-						<td><%=ScsAsistenciasAdm.obtenerActuacionesPendientesValidarJSP(usr.getLocation(),(String)registro.get("ANIO"),(String)registro.get("NUMERO")) %> &nbsp;</td>
-					</siga:FilaConIconos>
-					<% recordNumber++;
+			<td><%=fecha%></td>
+
+			<td><%=registro.get("NOMBRE")%>&nbsp;</td>
+			<td>
+				<%ArrayList estadoSel    = new ArrayList();	
+							estadoSel.add(registro.get("ESTADO"));%> <siga:ComboBD
+					nombre="estado" tipo="cmbEstadosAsistencia" obligatorio="false"
+					accion="" elementoSel="<%=estadoSel%>" clase="boxComboEnTabla"
+					ReadOnly="true" obligatorioSinTextoSeleccionar="no" />&nbsp;
+			</td>
+			<td><%=ScsAsistenciasAdm.obtenerActuacionesPendientesValidarJSP(usr.getLocation(),(String)registro.get("ANIO"),(String)registro.get("NUMERO")) %>
+				&nbsp;</td>
+		</siga:FilaConIconos>
+		<% recordNumber++;
 				} %>
 		<%}else{%>
 		<tr>
 			<td colspan="10" align="center">
-				<p class="labelText" style="text-align:center">
-					<siga:Idioma key="gratuita.retenciones.noResultados"/>
+				<p class="labelText" style="text-align: center">
+					<siga:Idioma key="gratuita.retenciones.noResultados" />
 				</p>
 			</td>
 		</tr>
 		<%}%>
-		</siga:TablaCabecerasFijas>
-		<%if ( hm.get("datos")!=null && !hm.get("datos").equals("")){%>
-	  
-	  						
-		<siga:Paginador totalRegistros="<%=totalRegistros%>" 
-								registrosPorPagina="<%=registrosPorPagina%>" 
-								paginaSeleccionada="<%=paginaSeleccionada%>" 
-								idioma="<%=idioma%>"
-								modo="buscarPor"								
-								clase="paginator" 
-								divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:25px; left: 0px"
-								distanciaPaginas=""
-								action="<%=action%>" />
-															
-	
-	 <%}%>	
+	</siga:TablaCabecerasFijas>
+	<%if ( hm.get("datos")!=null && !hm.get("datos").equals("")){%>
+
+
+	<siga:Paginador totalRegistros="<%=totalRegistros%>"
+		registrosPorPagina="<%=registrosPorPagina%>"
+		paginaSeleccionada="<%=paginaSeleccionada%>" idioma="<%=idioma%>"
+		modo="buscarPor" clase="paginator"
+		divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:30px; left: 0px"
+		distanciaPaginas="" action="<%=action%>" />
+
+
+	<%}%>
 
 
 
-<% if (!busquedaVolver.equals("volverNo")) { %>
-	<siga:ConjBotonesAccion botones="V,N" clase="botonesDetalle"/>
-<% } else { %>
-	<siga:ConjBotonesAccion botones="N" clase="botonesDetalle"/>
-<% } %>
+	<% if (!busquedaVolver.equals("volverNo")) { %>
+	<siga:ConjBotonesAccion botones="V,N" clase="botonesDetalle" />
+	<% } else { %>
+	<siga:ConjBotonesAccion botones="N" clase="botonesDetalle" />
+	<% } %>
 
-<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
+	<%@ include file="/html/jsp/censo/includeVolver.jspf"%>
 
-<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"
+		style="display: none"></iframe>
 
-	</body>
+</body>
 </html>

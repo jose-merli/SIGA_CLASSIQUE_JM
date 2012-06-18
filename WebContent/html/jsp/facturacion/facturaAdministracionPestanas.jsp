@@ -57,24 +57,26 @@
 
 <!-- HEAD -->
 <head>
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
+	
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
-		<!-- INICIO: TITULO Y LOCALIZACION -->
-		<!-- Escribe el título y localización en la barra de título del frame principal -->
-		<siga:Titulo 
-			  titulo="facturacion.administracionFacturasPestanas.literal.cabecera" 
-			  localizacion="facturacion.administracionFacturasPestanas.ruta"/>
-		<!-- FIN: TITULO Y LOCALIZACION -->
+	<!-- INICIO: TITULO Y LOCALIZACION -->
+	<!-- Escribe el título y localización en la barra de título del frame principal -->
+	<siga:Titulo 
+		  titulo="facturacion.administracionFacturasPestanas.literal.cabecera" 
+		  localizacion="facturacion.administracionFacturasPestanas.ruta"/>
+	<!-- FIN: TITULO Y LOCALIZACION -->
 </head>
  
 <body onload="ajusteAlto('mainPestanasNivel3');return activarPestana();">
 
 	<!-- Formulario de la lista de detalle multiregistro -->
 	<html:form action="/FAC_BusquedaFactura.do" method="POST" style="display:none">
-
-	<!-- Campo obligatorio -->
-	<html:hidden property = "modo" value = ""/>
+		<!-- Campo obligatorio -->
+		<html:hidden property = "modo" value = ""/>
 	</html:form> 
 	
 	<!-- INICIO: CONJUNTO DE PESTAÑAS (LINEA) -->

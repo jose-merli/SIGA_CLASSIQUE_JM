@@ -21,26 +21,19 @@
 <html>
 <!-- HEAD -->
 <head>
-<title><siga:Idioma key="gratuita.altaTurnos.literal.title" /></title>
-<link id="default" rel="stylesheet" type="text/css"
-	href='<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>'>
-<script src="<html:rewrite page='/html/js/SIGA.js'/>"
-	type="text/javascript"></script>
-<script
-	src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"
-	type="text/javascript"></script>
-<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"
-	type="text/javascript"></script>
-
-<script type="text/javascript">
-	
-	
+	<title><siga:Idioma key="gratuita.altaTurnos.literal.title" /></title>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
+	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
 		
-		function accionCerrar() 
-		{		
-			window.close();
-		}
-		
+	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>" ></script>
+	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
+	<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
+	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"type="text/javascript"></script>
+	
+	<script type="text/javascript">		
+		function accionCerrar() {		
+			window.top.close();
+		}		
 	</script>
 </head>
 
