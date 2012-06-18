@@ -432,7 +432,7 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 							"       to_char(ASI.FECHAHORA, 'DD/MM/YYYY') FECHA_ACTUACION, " +
 							"       DECODE(FASI.PRECIOAPLICADO, 0, NULL, FASI.PRECIOAPLICADO) AS PRECIO_ACTUACION, " +
 							"       '' AS TIPO_DESPLAZAMIENTO, " +
-							"       SUM(f_siga_formatonumero(TACTCOS.IMPORTE, 2)) AS IMPORTE_DESPLAZAMIENTO, " +
+							"       f_siga_formatonumero(SUM(TACTCOS.IMPORTE), 2) AS IMPORTE_DESPLAZAMIENTO, " +
 							"       '' AS ABREVIATURA_DESPLAZAMIENTO " +
 							"  from FCS_FACT_ASISTENCIA FASI, " +
 							"       SCS_ASISTENCIA               ASI, " +
