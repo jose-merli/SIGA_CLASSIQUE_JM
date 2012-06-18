@@ -725,7 +725,7 @@
 		</tr>
 	</table>
 	</div>
-	<div id="divCargos" style='height:600px;width:1000px; overflow-y:auto'>
+	<div id="divCargos" style='height:560px;width:1000px; overflow-y:auto'>
 	<table id='cargostabla' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>
 		
 	</table>

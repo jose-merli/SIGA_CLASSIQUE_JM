@@ -167,7 +167,7 @@ public class GestionInformesAction extends MasterAction {
 			if(isEnvioSmsConfigurado){
 //				Descomentar esto cuando se quiera abrir las plantillas al resto de tipos de envios(11/11/11) y borrar comboTipoEnvio = "cmbTipoEnviosSoloSms"(tambien del combo.properties)
 //				comboTipoEnvio = "cmbTipoEnviosInstSms";
-				comboTipoEnvio = "cmbTipoEnviosSoloSms";
+				comboTipoEnvio = "cmbTipoEnviosInstSms";
 				
 			}
 			request.setAttribute("comboTipoEnvio", comboTipoEnvio);
@@ -183,6 +183,23 @@ public class GestionInformesAction extends MasterAction {
 		
 		
 		return "inicio";
+	}
+	
+	protected void comprobarComboSms(HttpServletRequest request)  throws ClsExceptions, SIGAException {
+		
+		UsrBean usrBean = this.getUserBean(request);
+		GenParametrosAdm param = new GenParametrosAdm(usrBean);
+		boolean isEnvioSmsConfigurado = UtilidadesString.stringToBoolean(param.getValor(usrBean.getLocation(), "ENV", "HABILITAR_SMS_BUROSMS", "N"));
+		String comboTipoEnvio = "cmbTipoEnviosInst";
+		if(isEnvioSmsConfigurado){
+//			Descomentar esto cuando se quiera abrir las plantillas al resto de tipos de envios(11/11/11) y borrar comboTipoEnvio = "cmbTipoEnviosSoloSms"(tambien del combo.properties)
+//			comboTipoEnvio = "cmbTipoEnviosInstSms";
+			comboTipoEnvio = "cmbTipoEnviosInstSms";
+			
+		}
+		request.setAttribute("comboTipoEnvio", comboTipoEnvio);
+
+		
 	}
 	
 	protected String getAjaxBusqueda (ActionMapping mapping, 		
@@ -282,8 +299,7 @@ public class GestionInformesAction extends MasterAction {
 		informeFormEdicion.setIdInstitucion(informeFormEdicion.getUsrBean().getLocation());
 		informeFormEdicion.setLenguajes(informeForm.getLenguajes());
 		
-		String comboTipoEnvio = "cmbTipoEnviosInstSms";
-		request.setAttribute("comboTipoEnvio", comboTipoEnvio);
+		comprobarComboSms(request);
 		request.setAttribute("parametrosComboEnvios", new String[]{usrBean.getLocation()});
 		
 		
@@ -318,7 +334,7 @@ public class GestionInformesAction extends MasterAction {
 			request.setAttribute("InformeFormEdicion", informeFormEdicion);
 			
 
-			request.setAttribute("comboTipoEnvio", "cmbTipoEnviosInst");
+			comprobarComboSms(request);
 			request.setAttribute("parametrosComboEnvios", new String[]{informeForm.getIdInstitucion()});
 				
 				
