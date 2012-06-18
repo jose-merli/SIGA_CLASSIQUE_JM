@@ -1827,7 +1827,7 @@ public class BusquedaClientesAction extends MasterAction {
 				case 0:
 					if(noColegiadoAdm == null)
 						noColegiadoAdm = new CenNoColegiadoAdm(user);
-					datosTabla = noColegiadoAdm.getInformeNoColegiado(idInstitucionPersona,idPersona,user.getLanguageInstitucion(),false,null);
+					datosTabla = noColegiadoAdm.getInformeNoColegiado(idInstitucionPersona,idPersona,user.getLanguageInstitucion(),false);
 					
 					break;
 				case 1:

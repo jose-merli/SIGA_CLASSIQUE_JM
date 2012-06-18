@@ -266,48 +266,17 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 		}
 		return datos;
 	}
-	public Vector getInformeNoColegiado (String idInstitucion, String idPersona,String idioma,boolean isInforme,UsrBean usrBean)throws ClsExceptions {
+	public Vector getInformeNoColegiado (String idInstitucion, String idPersona,String idioma,boolean isInforme)throws ClsExceptions {
 		Vector vInforme = null;
-		Vector v= null;
 		HelperInformesAdm helperInformes = new HelperInformesAdm();
 		CenDireccionesAdm admDirecciones = null;
 		try {
-			if(usrBean!=null){
-				CenComponentesAdm componentesAdm = new CenComponentesAdm(usrBean);
-				v= componentesAdm.selectComponentes(new Long(idPersona), new Integer(idInstitucion));
-			}
+			
 			vInforme = getDatosInformeNoColegiado(idInstitucion, idPersona, idioma, isInforme); 
-			//vInforme.
+
 			Hashtable registro = null;
-			Hashtable registroContenido = null;
 			if(isInforme){
-				registro = (Hashtable) vInforme.get(0);
-				if(v!=null && v.size()!=0)
-				{
-					registroContenido = (Hashtable) v.get(0);
-					registro.put("CARGO", registroContenido.get("CARGO"));
-					registro.put("FECHACARGO", registroContenido.get("FECHACARGO"));
-					registro.put("NIF_COMPONENTE", registroContenido.get("NIFCIF"));
-					String nombreCompleto="";
-					if(registroContenido.get("NOMBRE")!=null)
-						nombreCompleto =(String)registroContenido.get("NOMBRE");
-					if(registroContenido.get("APELLIDOS1")!=null)
-						nombreCompleto =nombreCompleto +" "+(String)registroContenido.get("APELLIDOS1");				
-					if(registroContenido.get("APELLIDOS2")!=null)
-						nombreCompleto =nombreCompleto +" "+(String)registroContenido.get("APELLIDOS2");
-					registro.put("NOMBRE_COMPONENTE", nombreCompleto);
-					if(registroContenido.get("EJERCIENTE")!=null && registroContenido.get("EJERCIENTE").equals("1"))
-						registro.put("EJERCIENTE", UtilidadesString.getMensajeIdioma(usrBean,"censo.consultaDatosGenerales.literal.ejerciente"));
-					else
-						registro.put("EJERCIENTE", "");
-				
-					if(((String)registroContenido.get(CenComponentesBean.C_SOCIEDAD)).equals(ClsConstants.DB_FALSE)){	
-						registro.put("PARTICIPACION_SOCIEDAD_%",UtilidadesString.getMensajeIdioma(usrBean,"general.no"));
-					}else{		   	 					
-						registro.put("PARTICIPACION_SOCIEDAD_%",UtilidadesString.getMensajeIdioma(usrBean,"general.yes"));							   	 				
-					}	 
-				}
-								
+				registro = (Hashtable) vInforme.get(0);	
 			}else{
 				registro = ((Row) vInforme.get(0)).getRow();
 			}
@@ -324,6 +293,86 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error ScsEJGAdm.getInformeNoColegiado.");
 		}
 	return vInforme;
+
+}
+	public Hashtable getInformeNoColegiadoInforme (String idInstitucion, String idPersona,String idioma,boolean isInforme,UsrBean usrBean)throws ClsExceptions {
+		Vector vInforme = null;
+		Vector v= null;
+		Hashtable total=new Hashtable();
+		HelperInformesAdm helperInformes = new HelperInformesAdm();
+		CenDireccionesAdm admDirecciones = null;
+		try {
+			//Se recogen los componentes si los hubiera de BBDD
+			if(usrBean!=null){
+				CenComponentesAdm componentesAdm = new CenComponentesAdm(usrBean);
+				v= componentesAdm.selectComponentes(new Long(idPersona), new Integer(idInstitucion));
+			}
+						
+			vInforme = getDatosInformeNoColegiado(idInstitucion, idPersona, idioma, isInforme); 
+			
+			
+			Hashtable registro = null;
+			Hashtable registroContenido = null;
+			Vector vInformeComp =new Vector();
+			if(isInforme){
+				//registro = (Hashtable) vInforme.get(0);
+
+				if(v!=null && v.size()!=0)
+				{
+					for(int i=0;i<v.size();i++)
+					{
+
+						registroContenido = (Hashtable) v.get(i);
+						registro = new Hashtable();
+						registro.put("CARGO", registroContenido.get("CARGO"));
+						registro.put("FECHACARGO", registroContenido.get("FECHACARGOINFORME"));
+						registro.put("NIF_COMPONENTE", registroContenido.get("NIFCIF"));
+						String nombreCompleto="";
+						if(registroContenido.get("NOMBRE")!=null)
+							nombreCompleto =(String)registroContenido.get("NOMBRE");
+						if(registroContenido.get("APELLIDOS1")!=null)
+							nombreCompleto =nombreCompleto +" "+(String)registroContenido.get("APELLIDOS1");
+						if(registroContenido.get("APELLIDOS2")!=null)
+							nombreCompleto =nombreCompleto +" "+(String)registroContenido.get("APELLIDOS2");
+						registro.put("NOMBRE_COMPONENTE", nombreCompleto);
+						if(registroContenido.get("EJERCIENTE")!=null && registroContenido.get("EJERCIENTE").equals("1"))
+							registro.put("EJERCIENTE", UtilidadesString.getMensajeIdioma(usrBean,"censo.consultaDatosGenerales.literal.ejerciente"));
+						else
+							registro.put("EJERCIENTE", "");
+				
+						if(((String)registroContenido.get(CenComponentesBean.C_SOCIEDAD)).equals(ClsConstants.DB_FALSE)){
+							registro.put("PARTICIPACION_SOCIEDAD_%",UtilidadesString.getMensajeIdioma(usrBean,"general.no"));
+						}else{
+							registro.put("PARTICIPACION_SOCIEDAD_%",UtilidadesString.getMensajeIdioma(usrBean,"general.yes"));							   	 				
+						}
+						vInformeComp.add(registro);
+					}//fin for
+				}
+								
+			}else{
+				registro = ((Row) vInforme.get(0)).getRow();
+			}
+						
+			
+			//Añadimos los campos de la direccion preferente para el tipo de envio
+			//AQUI TENGO DUDAS, NO SE SI ES ESTO LO QUE PIDEN. EN TAL CASO ME TENDRE QUE TRAER EL IDTIPOENVIO.
+			//AHORA SE LO METO A PELO
+			admDirecciones = new CenDireccionesAdm(usrbean);
+			helperInformes.completarHashSalida(registro,admDirecciones.getDireccionPreferente(idInstitucion, idPersona, "1"));
+			
+			if(vInformeComp.size()!=0)
+			{
+				total.put("vInformeComp", vInformeComp);
+			}
+			
+			if(vInforme.size()!=0)
+			{
+				total.put("vInforme", vInforme);
+			}
+		}catch (Exception e) {
+			throw new ClsExceptions (e, "Error ScsEJGAdm.getInformeNoColegiado.");
+		}
+		return total;
 					
 }
 	

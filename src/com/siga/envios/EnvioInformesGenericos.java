@@ -192,10 +192,11 @@ public class EnvioInformesGenericos extends MasterReport {
 			String idInstitucion = (String) datosInforme.get("idInstitucion");
 
 			Vector vDatosInformeFinal = null;
+			Hashtable total=null;
 			switch (Integer.parseInt(idTipoPersonas)) {
 
 			case 0: // Caso de No Colegiados
-				vDatosInformeFinal = noColegiadoAdm.getInformeNoColegiado(
+				total = noColegiadoAdm.getInformeNoColegiadoInforme(
 						idInstitucion, idPersona, idioma, true,usrBean);
 				break;
 
@@ -214,8 +215,14 @@ public class EnvioInformesGenericos extends MasterReport {
 			datosCVAdm.updateInformeDatosCV(usrBean,
 					Integer.parseInt(idInstitucion), Long.parseLong(idPersona),
 					htDatosInforme);
-
-			htDatosInforme.put("row", vDatosInformeFinal);
+			
+			if(total!=null)
+			{
+				htDatosInforme.put("region", total.get("vInformeComp"));
+				htDatosInforme.put("row", total.get("vInforme"));
+			}
+			else			
+				htDatosInforme.put("row", vDatosInformeFinal);
 
 		} else if (idTipoInforme
 				.equals(EnvioInformesGenericos.comunicacionesPagoColegiados)) {
