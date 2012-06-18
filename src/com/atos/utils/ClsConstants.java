@@ -28,6 +28,19 @@ public class ClsConstants {
 	// *****************************************************************
 	//  S I G A
 	// *****************************************************************
+	
+	// Idioma
+	public static final String ESPANOL="ES";
+	public static final String CATALAN="CA";
+	public static final String EUSKERA="EU";
+	public static final String GALLEGO="GL";
+	
+	public static final String ES="1";
+	public static final String CA="2";
+	public static final String EU="3";
+	public static final String GL="4";
+	
+	
 	// Configuración Interfaz
 	public static final String RELATIVE_PATH_IMAGES="html/imagenes";
 	public static final String RELATIVE_PATH_LOGOS="logos";
