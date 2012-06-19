@@ -134,13 +134,13 @@
 					<td width="140">
 						<!--html:text styleClass="box" property="buscarFechaDesde" size="8" maxlength="10" readonly="true"/-->
 						<siga:Fecha nombreCampo="buscarFechaDesde" />
-						<a href='javascript://'onClick="return showCalendarGeneral(buscarFechaDesde);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a></td>
+					</td>
 		
 					<td width="120" class="labelText"><siga:Idioma key="facturacion.buscarFactura.literal.FechaHasta"/></td>
 					<td>
 						<!--html:text styleClass="box" property="buscarFechaHasta" size="8" maxlength="10" readonly="true"/-->
 						<siga:Fecha nombreCampo="buscarFechaHasta" />
-						<a href='javascript://'onClick="return showCalendarGeneral(buscarFechaHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a></td>
+					</td>
 				</tr>
 		
 				<tr>				
@@ -152,7 +152,7 @@
 					<td>
 						<!--html:text styleClass="box" property="buscarFechaGeneracion" size="8" maxlength="10" readonly="true"/-->
 						<siga:Fecha nombreCampo="buscarFechaGeneracion" />
-						<a href='javascript://'onClick="return showCalendarGeneral(buscarFechaGeneracion);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a></td>
+					</td>
 
 					<td class="labelText"><siga:Idioma key="facturacion.buscarFactura.literal.Estado"/></td>
 					<td><siga:ComboBD nombre="buscarIdEstado" tipo="cmbEstadosFactura"  clase="boxCombo" obligatorio="false" elementoSel="<%=idEstadoSeleccionado%>"/>

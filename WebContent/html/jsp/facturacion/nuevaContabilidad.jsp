@@ -109,8 +109,7 @@
 				<siga:Idioma key="gratuita.nuevaContabilidad.literal.fDesde"/>:&nbsp;(*)
 			</td>
 			<td>
-				<siga:Fecha nombreCampo="fechaDesde"/>&nbsp;
-				<a href='javascript://'onClick="return showCalendarGeneral(fechaDesde);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>		
+				<siga:Fecha nombreCampo="fechaDesde"/>		
 			</td>
 		</tr>
 		<tr>
@@ -118,8 +117,7 @@
 				<siga:Idioma key="gratuita.nuevaContabilidad.literal.fHasta"/>:&nbsp;(*)
 			</td>
 			<td>
-				<siga:Fecha nombreCampo="fechaHasta"/>&nbsp;
-				<a href='javascript://'onClick="return showCalendarGeneral(fechaHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>			
+				<siga:Fecha nombreCampo="fechaHasta"/>
 			</td>
 		</tr>
 	</table>

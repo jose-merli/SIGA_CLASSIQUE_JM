@@ -953,8 +953,7 @@
 					<%}else{%>										
 					<td>
 						<siga:Fecha nombreCampo="fechaOficioJuzgado" valorInicial="<%=fechaOficioJuzgado%>"></siga:Fecha>
-						<a onClick="return showCalendarGeneral(fechaOficioJuzgado);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-							<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>" border="0"></a>
+						
 					</td>
 					<%} %>
 					<td class="labelText">
@@ -965,8 +964,7 @@
 					<%}else{%>								
 					<td>
 						<siga:Fecha nombreCampo="fechaRecepcionColegio" valorInicial="<%=fechaRecepcionColegio%>"></siga:Fecha>
-						<a onClick="return showCalendarGeneral(fechaRecepcionColegio);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-							<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>" border="0"></a>
+						
 					</td>
 					<%}%>
 					</tr>

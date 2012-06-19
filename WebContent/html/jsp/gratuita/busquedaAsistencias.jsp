@@ -263,13 +263,13 @@
 				<siga:Idioma key="gratuita.busquedaAsistencias.literal.fechaAsistencia"/>&nbsp; <siga:Idioma key="gratuita.busquedaAsistencias.literal.entre"/>
 			</td>
 			<td>
-				<siga:Fecha nombreCampo="fechaDesde" valorInicial="<%=fechaDesde%>" />&nbsp;<a onClick="return showCalendarGeneral(fechaDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+				<siga:Fecha nombreCampo="fechaDesde" valorInicial="<%=fechaDesde%>" />
 			</td>
 			<td class="labelText">	
 				<siga:Idioma key="gratuita.busquedaAsistencias.literal.y"/>
 			</td>
 			<td>	
-				<siga:Fecha nombreCampo="fechaHasta" valorInicial="<%=fechaHasta%>" />&nbsp;<a onClick="return showCalendarGeneral(fechaHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+				<siga:Fecha nombreCampo="fechaHasta" valorInicial="<%=fechaHasta%>" />
 			</td>
 		</tr>
 		<tr>

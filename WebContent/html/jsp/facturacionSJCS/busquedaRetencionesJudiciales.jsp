@@ -96,14 +96,12 @@
 	</td>
 	<td class="labelText" >
 		<siga:Fecha nombreCampo="fechaNotificacionDesde" />
-		<a onClick="return showCalendarGeneral(fechaNotificacionDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
 	</td>
 	<td class="labelText" nowrap>
 		<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.fechaNotificacionHasta"/>
 	</td>
 	<td class="labelText" >
 		<siga:Fecha nombreCampo="fechaNotificacionHasta" />
-		<a onClick="return showCalendarGeneral(fechaNotificacionHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
 	</td>
 	
 	</tr>

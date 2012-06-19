@@ -138,13 +138,7 @@
 				<td class="labelText" style="text-align: right"><siga:Idioma
 					key="gratuita.busquedaAsistencias.literal.fechaValidacion" /> <siga:Fecha
 					nombreCampo="fechaValidacion" valorInicial=""
-					 /> &nbsp;<a
-					onClick="return showCalendarGeneral(fechaValidacion);"
-					onMouseOut="MM_swapImgRestore();"
-					onMouseOver="MM_swapImage('Calendario','','<html:rewrite page="/html/imagenes/calendar_hi.gif"/>',1);"><img
-					src="<html:rewrite page='/html/imagenes/calendar.gif'/>"
-					alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"
-					border="0"></a></td>
+					 /> </td>
 			</tr>
 			</table>
 		</siga:ConjCampos>		

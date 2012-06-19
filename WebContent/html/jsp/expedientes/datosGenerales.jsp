@@ -1049,11 +1049,7 @@
 			if (bEditable) 
 			{
 	%> 
-				<siga:Fecha nombreCampo="fechaCaducidad" valorInicial="<%=form.getFechaCaducidad()%>" /> <a
-										href='javascript://'
-										onClick="return showCalendarGeneral(fechaCaducidad);"><img
-											src="<%=app%>/html/imagenes/calendar.gif" border="0">
-				</a> 
+				<siga:Fecha nombreCampo="fechaCaducidad" valorInicial="<%=form.getFechaCaducidad()%>" /> 
 	<%
 			} 
 			else 
@@ -1134,7 +1130,7 @@
 					if (bEditable) {
 				%>
 					<siga:Fecha nombreCampo="fechaInicial" valorInicial="<%=form.getFechaInicial()%>"/>
-					<a href='javascript://'onClick="return showCalendarGeneral(fechaInicial);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+					
 				<%
 					} else {
 				%>
@@ -1169,7 +1165,7 @@
 					if (bEditable) {
 				%>
 					<siga:Fecha nombreCampo="fechaFinal" valorInicial="<%=form.getFechaFinal()%>"/>
-					<a href='javascript://'onClick="return showCalendarGeneral(fechaFinal);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+					
 				<%
 					} else {
 				%>	
@@ -1188,7 +1184,7 @@
 					if (bEditable) {
 				%>
 					<siga:Fecha nombreCampo="fechaProrroga" valorInicial="<%=form.getFechaProrroga()%>"/>
-					<a href="javascript://" onClick="return showCalendarGeneral(fechaProrroga);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+					
 				<%
 					} else {
 				%>

@@ -55,16 +55,10 @@
 							<td class="labelText"><siga:Idioma key="sjcs.actas.fechaResolucion" /></td>
 							<td>
 								<siga:Fecha nombreCampo="fechaResolucion" /> 
-								<a onClick="return showCalendarGeneral(fechaResolucion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-									<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>" border="0" valign="bottom" anchoTextField="9">
-								</a>
 							</td>
 							<td class="labelText"><siga:Idioma key="sjcs.actas.fechaReunion" /></td>
 							<td>
 								<siga:Fecha nombreCampo="fechaReunion" /> 
-								<a onClick="return showCalendarGeneral(fechaReunion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-									<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>" border="0" valign="bottom" anchoTextField="9">
-								</a>
 							</td>
 						</tr>
 						<tr>

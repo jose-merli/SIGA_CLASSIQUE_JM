@@ -727,7 +727,7 @@
 					
 					<%if (bEditable){%>	
 						<siga:Fecha nombreCampo="fechaCaducidad" valorInicial="<%=form.getFechaCaducidad()%>"/>
-						<a href='javascript://'onClick="return showCalendarGeneral(fechaCaducidad);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+						
 					<% }else{ %>
 						<html:text name="ExpDatosGeneralesForm" property="fechaCaducidad" size="10" maxlength="10" styleClass="<%=boxStyle%>" readonly="true"></html:text>							
 					<%}%>
@@ -789,7 +789,7 @@
 			<td>
 				<% if (bEditable){%>
 					<siga:Fecha nombreCampo="fechaInicial" valorInicial="<%=form.getFechaInicial()%>"/>
-					<a href='javascript://'onClick="return showCalendarGeneral(fechaInicial);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+					
 				<%}else{%>
 					<html:text name="ExpDatosGeneralesForm" property="fechaInicial" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true">
 					</html:text>
@@ -812,7 +812,7 @@
 			<td>
 				<% if (bEditable){%>
 					<siga:Fecha nombreCampo="fechaFinal" valorInicial="<%=form.getFechaFinal()%>"/>
-					<a href='javascript://'onClick="return showCalendarGeneral(fechaFinal);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+					
 				<%}else {%>	
 					<html:text name="ExpDatosGeneralesForm" property="fechaFinal" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true">
 					</html:text>
@@ -825,7 +825,7 @@
 			<td>
 				<% if (bEditable){%>
 					<siga:Fecha nombreCampo="fechaProrroga" valorInicial="<%=form.getFechaProrroga()%>"/>
-					<a href="javascript://" onClick="return showCalendarGeneral(fechaProrroga);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+					
 				<%}else{%>
 					<html:text name="ExpDatosGeneralesForm" property="fechaProrroga" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true"></html:text>
 				<%} %>

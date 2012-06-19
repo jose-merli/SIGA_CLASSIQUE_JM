@@ -334,7 +334,7 @@
 									Date date = new Date(beanSolicitud.getFechaSolicitud());
 									String fechaSol = sdf.format(date);	%>
 									<siga:Fecha nombreCampo="fechaSolicitud" valorInicial="<%=fechaSol%>" />&nbsp
-									<a onClick="return showCalendarGeneral(fechaSolicitud);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+									
 								<%} else {%>
 									<html:text	name="SolicitudesCertificadosForm" style="width:80px"
 										property="fechaSolicitud" styleClass="boxConsulta" readonly="true"
@@ -441,7 +441,6 @@
 										fechaEm = sdf.format(date);
 									}%>
 								<siga:Fecha nombreCampo="fechaEmision" valorInicial="<%=fechaEm%>" />&nbsp
-								<a onClick="return showCalendarGeneral(fechaEmision);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
 							<%} else {%>
 								<html:text
 									name="SolicitudesCertificadosForm" style="width:80px"

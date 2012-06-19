@@ -151,10 +151,8 @@
 		
 	<td class="labelText" colspan="3" style="text-align: left">
 		<siga:Fecha nombreCampo="fechaAperturaSOJDesde" valorInicial="<%=fechaAperturaDesde%>"></siga:Fecha>
-		<a onClick="return showCalendarGeneral(fechaAperturaSOJDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
 		<siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>
 		<siga:Fecha nombreCampo="fechaAperturaSOJHasta" valorInicial="<%=fechaAperturaHasta%>"></siga:Fecha>
-		<a onClick="return showCalendarGeneral(fechaAperturaSOJHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
 	</td>
 	</tr>
 	<tr>

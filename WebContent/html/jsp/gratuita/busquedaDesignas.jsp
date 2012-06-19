@@ -213,14 +213,14 @@ String[] getdatos = { usr.getLocation() };
 		</td>
 		<td>
 			<siga:Fecha nombreCampo="fechaAperturaInicio" valorInicial="<%=fechaAperturaInicio%>" />
-			&nbsp;<a onClick="return showCalendarGeneral(fechaAperturaInicio);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+			
 		</td>
 		<td class="labelText" width="10">	
 			<siga:Idioma key="gratuita.busquedaDesignas.literal.y"/>
 		</td>	
 		<td>	
 			<siga:Fecha nombreCampo="fechaAperturaFin" valorInicial="<%=fechaAperturaFin%>" />
-			&nbsp;<a onClick="return showCalendarGeneral(fechaAperturaFin);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+			
 		</td>	
 	</tr>
 	<tr>

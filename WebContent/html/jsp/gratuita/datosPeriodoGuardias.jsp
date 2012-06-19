@@ -110,9 +110,7 @@
 										</td>				
 										<td>	
 											<siga:Fecha nombreCampo="fechaInicio"></siga:Fecha>
-											<a href='javascript://' onClick="return showCalendarGeneral(fechaInicio);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-												<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
-											</a>
+											
 						  				</td>
 									</tr>
 									<tr>
@@ -121,9 +119,7 @@
 										</td>				
 										<td>	
 											<siga:Fecha nombreCampo="fechaFin"></siga:Fecha>
-											<a href='javascript://' onClick="return showCalendarGeneral(fechaFin);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-												<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
-											</a>
+											
 						  				</td>
 									</tr>
 								</table>

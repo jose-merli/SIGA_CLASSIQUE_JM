@@ -141,13 +141,10 @@
 		</td>
 		<td class="labelText" colspan="5">	
 			<siga:Fecha nombreCampo="fechaDesde"></siga:Fecha>
-			<a onClick="return showCalendarGeneral(fechaDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="general.literal.seleccionarFecha"/>'  border="0"></a>
 			&nbsp;
 			<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta"/>
 			&nbsp;
 			<siga:Fecha nombreCampo="fechaHasta"></siga:Fecha>		
-			&nbsp;
-			<a onClick="return showCalendarGeneral(fechaHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="general.literal.seleccionarFecha"/>'  border="0"></a>
 		</td>
 		<td class="labelText">	
 			<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.compensado"/>

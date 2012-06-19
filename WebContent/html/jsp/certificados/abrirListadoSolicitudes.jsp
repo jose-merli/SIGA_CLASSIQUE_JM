@@ -311,18 +311,14 @@
 					<td class="labelText"><siga:Idioma
 							key="certificados.solicitudes.literal.fechadesde" /></td>
 					<td><siga:Fecha nombreCampo="fechaDesde"
-							valorInicial="<%=fechaDesde%>" /> <a href='javascript://'
-						onClick="return showCalendarGeneral(fechaDesde);"><img
-							src="<%=app%>/html/imagenes/calendar.gif" border="0"></a></td>
+							valorInicial="<%=fechaDesde%>" /></td>
 
 
 
 					<td class="labelText"><siga:Idioma
 							key="certificados.solicitudes.literal.fechahasta" /></td>
 					<td><siga:Fecha nombreCampo="fechaHasta"
-							valorInicial="<%=fechaHasta%>" /> <a href='javascript://'
-						onClick="return showCalendarGeneral(fechaHasta);"><img
-							src="<%=app%>/html/imagenes/calendar.gif" border="0"></a></td>
+							valorInicial="<%=fechaHasta%>" /></td>
 					<td class="labelText"><siga:Idioma
 							key="certificados.solicitudes.literal.estadosolicitud" /></td>
 					<td>
@@ -358,18 +354,14 @@
 						Fecha Emision Desde
 					</td>
 					<td><siga:Fecha nombreCampo="fechaEmisionDesde"
-							valorInicial="<%=fechaEmisionDesde%>" /> <a href='javascript://'
-						onClick="return showCalendarGeneral(fechaEmisionDesde);"><img
-							src="<%=app%>/html/imagenes/calendar.gif" border="0"></a></td>
+							valorInicial="<%=fechaEmisionDesde%>" /> </td>
 
 					<td class="labelText">
 						<!-- siga:Idioma key="certificados.solicitudes.literal.fechaemision"/ -->
 						Hasta
 					</td>
 					<td><siga:Fecha nombreCampo="fechaEmisionHasta"
-							valorInicial="<%=fechaEmisionHasta%>" /> <a href='javascript://'
-						onClick="return showCalendarGeneral(fechaEmisionHasta);"><img
-							src="<%=app%>/html/imagenes/calendar.gif" border="0"></a></td>
+							valorInicial="<%=fechaEmisionHasta%>" /> </td>
 				</tr>
 				<tr>
 					<td class="labelText"><siga:Idioma

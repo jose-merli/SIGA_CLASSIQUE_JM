@@ -75,16 +75,12 @@
 				key="facturacion.consultamorosos.literal.fechadesde" /></td>
 			<td>
 			<siga:Fecha nombreCampo="fechaDesde" /> 
-			<a href='javascript://'
-				onClick="return showCalendarGeneral(fechaDesde);"><img
-				src="<%=app%>/html/imagenes/calendar.gif" border="0"></a></td>
+			</td>
 			<td width ="10%" class="labelText"><siga:Idioma
 				key="facturacion.consultamorosos.literal.hasta" /></td>
 			<td>
 			 <siga:Fecha nombreCampo="fechaHasta" /> 
-			<a href='javascript://'
-				onClick="return showCalendarGeneral(fechaHasta);"><img
-				src="<%=app%>/html/imagenes/calendar.gif" border="0"></a></td>
+			</td>
 			<td width ="15%" class="labelText"><siga:Idioma
 				key="censo.consultaDatosColegiales.literal.estado" /></td>
 			<td colspan ="3">
