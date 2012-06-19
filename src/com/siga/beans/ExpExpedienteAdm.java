@@ -1512,7 +1512,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 				    " AND    E.IDTIPOEXPEDIENTE = ES.IDTIPOEXPEDIENTE (+) "+
 				    " AND    E.ALERTAGENERADACAD <> 'S' "+ // COMPRUEBA QUE NO SE HA ANOTADO LA CADUCIDAD.
 				    " AND    E.FECHACADUCIDAD <= SYSDATE "+
-				    " AND    ES.ESTADOFINAL = 'N'";
+				    " AND    ES.ESTADOFINAL(+) = 'N'";
 			
 			rc1 = new RowsContainer();
 			if (rc1.query(sql_estado2)) {
