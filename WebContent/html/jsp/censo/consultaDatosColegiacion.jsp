@@ -88,7 +88,6 @@
 		
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 		
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 		
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->

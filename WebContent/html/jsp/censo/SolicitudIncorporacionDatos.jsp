@@ -188,7 +188,6 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
 	<script type="text/javascript" src="<%=app%>/html/js/jquery.dragndrop.min.js"></script>
-	<script src="<%=app%>/html/js/jquery.js" type="text/javascript"></script>
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->

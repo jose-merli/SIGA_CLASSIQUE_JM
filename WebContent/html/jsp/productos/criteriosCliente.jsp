@@ -185,7 +185,6 @@
 		<!-- El nombre del formulario se obtiene del struts-config -->
 		<html:javascript formName="MantenimientoServiciosForm" staticJavascript="false" />  
 		<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	
 	</head>
 

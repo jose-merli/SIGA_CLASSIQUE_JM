@@ -40,11 +40,11 @@
 	<script src="<html:rewrite page='/html/js/validacionStruts.js'/>" type="text/javascript"></script>
 	<script src="<html:rewrite page='/html/js/validation.js'/>" type="text/javascript"></script>
 
+<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
 <script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
 <script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
 <script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
 <script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
-<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
 
 <!--Step 3 -->
   <!-- defaults for Autocomplete and displaytag -->

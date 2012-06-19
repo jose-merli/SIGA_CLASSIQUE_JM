@@ -124,7 +124,6 @@
 		<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
 		<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
 		<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>	
-		<script src="<%=app%>/html/js/jquery.js" type="text/javascript"></script>
 		
 		<!--Step 3 -->
 		<!-- defaults for Autocomplete and displaytag -->
