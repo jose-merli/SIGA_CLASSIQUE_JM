@@ -175,7 +175,8 @@
 			<html:form action="/ENV_Datos_Generales" method="POST" target="submitArea">
 				<html:hidden property = "modo" value = ""/>
 				<html:hidden property = "accion" value = ""/>
-
+				<input type="hidden" name="filaSelD" id="filaSelD">
+				<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD">
 				<html:hidden property = "idEnvio" value = "<%=idEnvio%>"/>
 				<html:hidden property = "idTipoEnvio" value = "<%=idTipoEnvio%>"/>
 				<html:hidden property = "idInstitucion" value = "<%=idInstitucion%>"/>
