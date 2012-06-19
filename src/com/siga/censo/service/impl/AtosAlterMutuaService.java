@@ -70,15 +70,21 @@ public class AtosAlterMutuaService extends JtaBusinessServiceTemplate
 		Calendar fechaNacimiento = UtilidadesFecha.stringToCalendar(alterMutuaForm.getFechaNacimiento());
 		int sexo = AlterMutuaHelper.getSexoAM(alterMutuaForm.getSexo());
 		int propuesta = alterMutuaForm.getPropuesta();
+		WSRespuesta respuesta = null;
 		
+		if(fechaNacimiento==null){
+			fechaNacimiento=Calendar.getInstance();
+		}
 		// Realizamos la llamada al WS
 		AlterMutuaWSClient wsClient = new AlterMutuaWSClient(usr);
-		WSRespuesta respuesta = wsClient.getPropuestas(tipoIdent, ident, fechaNacimiento, sexo, propuesta);
+		respuesta = wsClient.getPropuestas(tipoIdent, ident, fechaNacimiento, sexo, propuesta);
 		
 		// Si no devuelve error, y devuelve algo coherente, lo metemos en el formulario
-		if(!respuesta.isError() && respuesta.getPropuestas()!=null){
+		if(respuesta!=null && !respuesta.isError() && respuesta.getPropuestas()!=null){
 			alterMutuaForm.setPropuestas(respuesta.getPropuestas());
 			alterMutuaForm.setNumeroPropuestas(respuesta.getPropuestas().length);
+		}else{
+			alterMutuaForm.setError(true);
 		}
 		
 		// Por ultimo actualizamos el error y mensaje

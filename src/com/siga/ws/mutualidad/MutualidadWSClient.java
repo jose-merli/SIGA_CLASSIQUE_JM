@@ -105,16 +105,21 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
             WSHttpBinding_IIntegracion_MetodosStub stub = getStub();
            
             Calendar fechaNacimientoCal = Calendar.getInstance();
-            fechaNacimientoCal = UtilidadesFecha.stringToCalendar(fechaNacimiento);
-
-            Integracion_Solicitud_Respuesta response = stub.estadoMutualista(nif, fechaNacimientoCal);
-            respuesta.setCorrecto(true);
-            respuesta.setValorRespuesta(response.getValorRespuesta()!=null?response.getValorRespuesta():"");
-            respuesta.setRutaPDF(this.getRutaPDF(response.getPDF(),nif, super.getUsrBean().getLocation()));          	
+            if(fechaNacimiento!=null){
+	            fechaNacimientoCal = UtilidadesFecha.stringToCalendar(fechaNacimiento);
+	
+	            Integracion_Solicitud_Respuesta response = stub.estadoMutualista(nif, fechaNacimientoCal);
+	            respuesta.setCorrecto(true);
+	            respuesta.setValorRespuesta(response.getValorRespuesta()!=null?response.getValorRespuesta():"");
+	            respuesta.setRutaPDF(this.getRutaPDF(response.getPDF(),nif, super.getUsrBean().getLocation()));
+            }
             if(respuesta.getValorRespuesta()!=null&&respuesta.getValorRespuesta().equalsIgnoreCase("1")){
             	respuesta.setPosibleAlta(true);
             }else{
+            	respuesta.setCorrecto(false);
             	respuesta.setPosibleAlta(false);
+            	respuesta.setValorRespuesta("");
+            	respuesta.setRutaPDF("");
             }
            
         } catch (Exception e) {
