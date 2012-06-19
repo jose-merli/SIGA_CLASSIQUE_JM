@@ -54,7 +54,7 @@
 <html>
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		
+<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>		
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"> </script>
 		
 		<!-- Calendario -->
@@ -159,7 +159,9 @@
 		  
 			if (!ProgramacionForm.automatico.checked)	
 			{
-				ProgramacionForm.imgCalendario.width=0;
+
+
+				jQuery("#invokefechaProgramada").hide();
 				ProgramacionForm.horas.readOnly=true;
 				ProgramacionForm.minutos.readOnly=true;
 				ProgramacionForm.fechaProgramada.readOnly=true;
@@ -170,7 +172,8 @@
 			}
 			else
 			{ 
-				ProgramacionForm.imgCalendario.width=16;
+
+				jQuery("#invokefechaProgramada").show();
 				ProgramacionForm.horas.readOnly=false;
 				ProgramacionForm.minutos.readOnly=false;
 				ProgramacionForm.fechaProgramada.readOnly=false;
@@ -199,7 +202,7 @@
 	       <%if (bEditable){%>
 			if (!ProgramacionForm.automatico.checked)	
 			{
-				ProgramacionForm.imgCalendario.width=0;
+
 				ProgramacionForm.horas.readOnly=true;
 				ProgramacionForm.minutos.readOnly=true;
 			
@@ -210,8 +213,8 @@
 			else
 			{ 
 			<% if (fechaOrig==null || fechaOrig.equals("")){%>
-			    
-				ProgramacionForm.imgCalendario.width=16;
+
+			
 				ProgramacionForm.horas.readOnly=false;
 				ProgramacionForm.minutos.readOnly=false;
 
@@ -295,8 +298,8 @@
 				</td>
 				<td>
 					<% if (bEditable){%>
-						<siga:Fecha nombreCampo="fechaProgramada" valorInicial="<%=fechaOrig%>"/>
-						<a href='javascript://'onClick="return showCalendarGeneral(fechaProgramada);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0" id="imgCalendario"></a>
+						<siga:Fecha nombreCampo="fechaProgramada" valorInicial="<%=fechaOrig%>" />
+					
 					<%}else{%>
 						<html:text name="ProgramacionForm" property="fechaProgramada" styleClass="boxConsulta" value="<%=fechaOrig%>" size="10" maxlength="10" readonly="<%=!bEditable%>"/>
 					<%}%>

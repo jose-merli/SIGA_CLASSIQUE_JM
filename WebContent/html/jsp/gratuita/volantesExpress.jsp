@@ -26,9 +26,9 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
-	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
 		
-	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>" ></script>
+	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery.js"/>" ></script>
+	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery.custom.js"/>" ></script>
 	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
 <script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
 <script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
@@ -60,9 +60,8 @@
 		
 		function accionCalendario() {
 			// Abrimos el calendario			
-			var resultado = showModalDialog("<html:rewrite page='/html/jsp/general/calendarGeneral.jsp'/>?valor="+document.VolantesExpressForm.fechaGuardia.value,document.VolantesExpressForm.fechaGuardia,"dialogHeight:275px;dialogWidth:400px;help:no;scroll:no;status:no;");
-			window.top.focus();
-			if (resultado) {
+			
+			if (document.getElementById('fechaGuardia').value!='') {
 				 document.VolantesExpressForm.turnos.value= '';
 				 document.VolantesExpressForm.guardias.value= '';
 				 document.VolantesExpressForm.colegiadosGuardia.value= '';
@@ -71,7 +70,7 @@
 			     document.VolantesExpressForm.idGuardia.value = '';
 				 document.VolantesExpressForm.idColegiadoGuardia.value = '';
 				 document.VolantesExpressForm.idColegiadoSustituido.value = '';
-				 document.VolantesExpressForm.fechaGuardia.value = resultado;
+				 document.VolantesExpressForm.fechaGuardia.value =  document.getElementById('fechaGuardia').value;
 				 document.getElementById('fechaGuardia').onchange();
 				
 		 	}else{
@@ -707,16 +706,7 @@
 				<siga:Idioma
 					key="gratuita.volantesExpres.literal.GuardiaDia" />&nbsp;(*)</td>
 				<td>
-				<siga:Fecha styleId="fechaGuardia" nombreCampo="fechaGuardia"/> &nbsp;<a
-					href='javascript:accionCalendario();//' id="iconoCalendarioA"
-					onMouseOut="MM_swapImgRestore();"
-					onMouseOver="MM_swapImage('Calendario','','<html:rewrite page="/html/imagenes/calendar_hi.gif',1);"/>"><img
-					id="iconoCalendario"
-					src="<html:rewrite page='/html/imagenes/calendar.gif'/>"
-					alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"
-					border="0" align="bottom"></a>
-					
-					
+				<siga:Fecha styleId="fechaGuardia" nombreCampo="fechaGuardia" postFunction="accionCalendario();"/>
 					</td>
 
 				<td class="labelText"><siga:Idioma
@@ -869,15 +859,10 @@
 				</p>
 				</td>
 				<td class="labelText" style="text-align: right"><siga:Idioma
-					key="gratuita.volantesExpres.literal.fechaJustificacion" /> <siga:Fecha
+					key="gratuita.volantesExpres.literal.fechaJustificacion" /> 
+					<siga:Fecha
 					nombreCampo="fechaJustificacion"
-					valorInicial="${VolantesExpressForm.fechaJustificacion}" /> &nbsp;<a
-					onClick="return showCalendarGeneral(fechaJustificacion);"
-					onMouseOut="MM_swapImgRestore();"
-					onMouseOver="MM_swapImage('Calendario','','<html:rewrite page="/html/imagenes/calendar_hi.gif"/>',1);"><img
-					src="<html:rewrite page='/html/imagenes/calendar.gif'/>"
-					alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"
-					border="0"></a></td>
+					valorInicial="${VolantesExpressForm.fechaJustificacion}" /></td>
 			</tr>
 		</table>
 	</siga:ConjCampos>
