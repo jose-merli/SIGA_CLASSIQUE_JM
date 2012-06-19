@@ -208,11 +208,17 @@
 	
 	boolean bResidente = false;
 	String residente = (String) request.getAttribute("RESIDENTE");
+	String residenteInstiProduccion = (String) ses.getAttribute("BRESIDENTE");
 	if (bColegiado){//para los COLEGIADOS tiene sentido mirar el check de residente para habilitar y deshabilitar los campos nif, nombre y apellidos
-    	if (residente != null && residente.equals(ClsConstants.DB_TRUE))
+    	if (residente != null && residente.equals(ClsConstants.DB_TRUE) && residenteInstiProduccion.equals("0"))
 	    	bResidente = true;
+    	else
+    		bResidente = false;
     }else{
-	   bResidente = true;
+    	if(residenteInstiProduccion.equals("0"))
+	   		bResidente = true;
+    	else
+    		bResidente = false;
 	  //bResidente = true;
 	  // Solo se podra modificar el tipo de identificacion si el colegiado es la propia institucion y nos encontramos en dicha institucion o si el  colegiado
 		// ha sido dado de alta por la institucion donde nos encontramos.
@@ -1138,9 +1144,9 @@ function str_replace(search, replace, subject) {
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.fechaNacimiento"/>&nbsp;
 					</td>				
 					<td>
-					<% if (breadonly || bConsultaPersona || !pintaCalendario) { %>
+					<% if (breadonly || bConsultaPersona || !pintaCalendario || !bResidente) { %>
 					<siga:Fecha  nombreCampo= "fechaNacimiento" valorInicial="<%=fechaNacimiento %>" disabled="true"/>
-
+					
 					<% } else { %>
 					<siga:Fecha  nombreCampo= "fechaNacimiento" valorInicial="<%=fechaNacimiento %>"/>
 
@@ -1153,7 +1159,7 @@ function str_replace(search, replace, subject) {
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.nacido"/>
 					</td>				
 					<td>
-					<% if (bConsultaPersona) { %>
+					<% if (bConsultaPersona || !bResidente) { %>
 							<html:text name="datosGeneralesForm" property="lugarNacimiento" size="20" maxlength="100" styleClass="boxConsulta" style='width:190px;' value="<%=nacido %>" readonly="true" ></html:text>
 					<% } else { %>
 							<html:text name="datosGeneralesForm" property="lugarNacimiento" size="20" maxlength="100" styleClass="<%=estiloCajaNombreApellidos %>" style='width:190px;' value="<%=nacido %>" readonly="<%=breadonlyNombreApellidos%>" ></html:text>
@@ -1166,7 +1172,7 @@ function str_replace(search, replace, subject) {
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.estadoCivil"/>
 					</td>				
 					<td>
-					<% if (bConsultaPersona) { %>
+					<% if (bConsultaPersona || !bResidente) { %>
 							<siga:ComboBD nombre = "estadoCivil" tipo="estadoCivil" clase="boxConsulta" obligatorio="false" elementoSel="<%=estadoCivilSel %>" readonly="true"/>						
 					<% } else { %>
 							<siga:ComboBD nombre = "estadoCivil" tipo="estadoCivil" clase="<%=estiloCajaNombreApellidos %>" obligatorio="false" elementoSel="<%=estadoCivilSel %>" readonly="<%=readonlyComboNIFCIF %>"/>						
@@ -1182,9 +1188,9 @@ function str_replace(search, replace, subject) {
 							String ssexo = "";
 							if (sexo.equals(ClsConstants.TIPO_SEXO_HOMBRE)) ssexo = UtilidadesString.getMensajeIdioma(user, "censo.sexo.hombre");
 							if (sexo.equals(ClsConstants.TIPO_SEXO_MUJER)) ssexo = UtilidadesString.getMensajeIdioma(user, "censo.sexo.mujer");
-						if (breadonly || bConsultaPersona) { 
+						if (breadonly || bConsultaPersona || !bResidente) { 
 							
-							if (bConsultaPersona || !pintaComboSexo) { 
+							if (bConsultaPersona || !pintaComboSexo || !bResidente) { 
 					%>
 								<!-- MAV 7/9/2005 Incorporo atributo ssexo para solventar incidencia -->
 								<html:hidden  name="datosGeneralesForm" property="sexo" value="<%=sexo %>"/>

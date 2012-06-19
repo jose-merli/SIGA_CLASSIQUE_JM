@@ -42,6 +42,7 @@ import com.siga.beans.CenEstadoActividadPersonaBean;
 import com.siga.beans.CenEstadoColegialBean;
 import com.siga.beans.CenHistoricoAdm;
 import com.siga.beans.CenHistoricoBean;
+import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.CenTiposSeguroAdm;
@@ -191,6 +192,38 @@ public class DatosColegiacionAction extends MasterAction {
 			}
 			CenClienteAdm clienteAdm = new CenClienteAdm(user);
 			Vector datosEstado=clienteAdm.getDatosColegiacion(idPersona,idInstitucion, user.getLanguage());
+			//Comprobamos
+			if(idInstitucion!=null && idInstitucion.equals("2000"))
+			{
+				for (int i = 0; i < datosEstado.size(); i++) 
+				{
+					Row fila = (Row) datosEstado.get(i);
+					String situacionResidente = fila.getString("SITUACIONRESIDENTE");
+					String institucion = fila.getString("IDINSTITUCION");
+					
+					CenInstitucionAdm obj = new CenInstitucionAdm(user);
+					String fechaProduccion = obj.getFechaEnProduccion(institucion);
+					
+					//Si es residente el colegiado y para la institucion actual está en producción y la institucion es != 2000 entonces debe de bloquear en el jsp
+					//los campos q pertenezcan a la tabla cen_personas
+					if(situacionResidente!=null && situacionResidente.equals("1") && !fechaProduccion.equals("") && institucion!=null && !(institucion.equals("2000")))
+					{
+						i=datosEstado.size();
+						request.getSession().setAttribute("BRESIDENTE","1");
+						//request.setAttribute("BRESIDENTE","1");
+					}
+					else
+					{
+						request.getSession().setAttribute("BRESIDENTE","0");
+						//request.setAttribute("BRESIDENTE","0");
+					}
+				}
+			}
+			else
+			{
+				//request.setAttribute("BRESIDENTE","0");
+				request.getSession().setAttribute("BRESIDENTE","0");
+			}
 			ArrayList<String> candidatas = getCertificadosCandidatosCorrectos(datosEstado,idInstitucion,idPersona.toString(), user);
 
 			if (candidatas != null && candidatas.size() > 0){
