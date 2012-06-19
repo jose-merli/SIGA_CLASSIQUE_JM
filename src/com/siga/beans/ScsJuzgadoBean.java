@@ -12,7 +12,7 @@ public class ScsJuzgadoBean extends MasterBean{
 	
 	private Integer	idInstitucion, idJuzgado ;
 	private String	nombre=null, direccion=null, codigoPostal=null, idProvincia=null, idPoblacion=null, 
-					telefono1=null, telefono2=null, fax1=null,codProcurador="", visible="", movil="";
+					telefono1=null, telefono2=null, fax1=null,codProcurador="", email=null, visible="", movil="";
 	
 	private String fechabaja;
 	
@@ -38,6 +38,7 @@ public class ScsJuzgadoBean extends MasterBean{
 	static public final String 	C_VISIBLE =      			"VISIBLE";
 	static public final String 	C_FECHABAJA = 				"FECHABAJA";	
 	static public final String 	C_MOVIL =      			"MOVIL";
+	static public final String 	C_EMAIL = 					"EMAIL";
 	/* cambio para codigo ext */
 	private String codigoExt;
 	private String codigoExt2;
@@ -221,6 +222,19 @@ public class ScsJuzgadoBean extends MasterBean{
 	public void setCodigoExt2(String codigoExt2) {
 		this.codigoExt2 = codigoExt2;
 	}
+	
+	/**
+	 * @return Returns the email.
+	 */
+	public String getEmail() {
+		return email;
+	}
+	/**
+	 * @param email The email to set.
+	 */
+	public void setEmail(String email) {
+		this.email = email;
+	}	
 	
 
 }

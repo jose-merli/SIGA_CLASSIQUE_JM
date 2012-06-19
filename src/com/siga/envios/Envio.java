@@ -45,6 +45,8 @@ import com.siga.beans.ExpAnotacionAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.PysProductosInstitucionAdm;
 import com.siga.beans.PysProductosInstitucionBean;
+import com.siga.beans.ScsJuzgadoAdm;
+import com.siga.beans.ScsJuzgadoBean;
 import com.siga.beans.ScsPersonaJGAdm;
 import com.siga.beans.ScsPersonaJGBean;
 import com.siga.beans.ScsProcuradorAdm;
@@ -296,7 +298,25 @@ public class Envio
 	    			
 	    			
 	    		}else if(tipoDestinatario.equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO)){
-	    			//TODO SCS_JUZGADOS
+	    			ScsJuzgadoAdm juzgadoAdm = new ScsJuzgadoAdm(usrBean);
+	    			Vector juzgadoVector = juzgadoAdm.busquedaJuzgado(enviosBean.getIdInstitucion().toString(),idPersona);
+	    			Hashtable juzgadoHashtable = (Hashtable) juzgadoVector.get(0);
+	    			
+			        destBean.setNombre((String)juzgadoHashtable.get(ScsJuzgadoBean.C_NOMBRE));
+					destBean.setApellidos1("");
+			        destBean.setApellidos2("");	
+			        destBean.setNifcif("");
+			        
+			        destBean.setDomicilio((String)juzgadoHashtable.get(ScsJuzgadoBean.C_DIRECCION));
+			        destBean.setIdPoblacion((String)juzgadoHashtable.get(ScsJuzgadoBean.C_IDPOBLACION));
+			        destBean.setIdProvincia((String)juzgadoHashtable.get(ScsJuzgadoBean.C_IDPROVINCIA));
+			        destBean.setIdPais(ClsConstants.ID_PAIS_ESPANA);
+			         
+			        destBean.setCorreoElectronico((String)juzgadoHashtable.get(ScsJuzgadoBean.C_EMAIL)); 
+			        destBean.setCodigoPostal((String)juzgadoHashtable.get(ScsJuzgadoBean.C_CODIGOPOSTAL));
+			        destBean.setFax1((String)juzgadoHashtable.get(ScsJuzgadoBean.C_FAX1));
+			        destBean.setFax2((String)juzgadoHashtable.get(ScsJuzgadoBean.C_FAX1));
+			        destBean.setMovil((String)juzgadoHashtable.get(ScsJuzgadoBean.C_TELEFONO1));
 	    		}
 	            
 			    crearDestinatario=true;
@@ -490,7 +510,7 @@ public class Envio
      * @throws SIGAException
      * @throws ClsExceptions
      */
-    public void generarEnvioOrdinario(EnvEnviosBean enviosBean,Hashtable htPersonas,Hashtable htPersonasJG) throws SIGAException,ClsExceptions
+    public void generarEnvioOrdinario(EnvEnviosBean enviosBean,Hashtable htPersonas,Hashtable htPersonasJG,Hashtable htJuzgado, Hashtable htProcurador) throws SIGAException,ClsExceptions
 	{
         EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
         envAdm.insert(enviosBean);
@@ -514,7 +534,20 @@ public class Envio
 			addDocumentosDestinatario(idPersona,EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG,documentos);
 			
 		}
-       
+        Iterator iteProcurador = htProcurador.keySet().iterator();
+        while (iteProcurador.hasNext()) {
+			String idPersona = (String) iteProcurador.next();
+			Vector documentos = (Vector)htProcurador.get(idPersona);
+			addDocumentosDestinatario(idPersona,EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR,documentos);
+			
+		}    
+        Iterator iteJuzgado = htJuzgado.keySet().iterator();
+        while (iteJuzgado.hasNext()) {
+			String idPersona = (String) iteJuzgado.next();
+			Vector documentos = (Vector)htJuzgado.get(idPersona);
+			addDocumentosDestinatario(idPersona,EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO,documentos);
+			
+		}               
                 
     }
     

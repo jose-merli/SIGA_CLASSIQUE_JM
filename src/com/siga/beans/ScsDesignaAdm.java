@@ -3463,4 +3463,32 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			return datos;                        
 		}
 	
+	public Long getIdJuzgadoDesigna(String institucion, String anio, String numero, String turno) throws ClsExceptions,SIGAException {
+		Long idJuzgado = null;
+		try {
+			
+			StringBuffer sql = new StringBuffer();
+			sql.append(" select des.idJuzgado  ");
+			sql.append(" from SCS_DESIGNA des  ");
+ 
+			sql.append(" WHERE des.idinstitucion = ");
+			sql.append(institucion);
+			sql.append(" AND des.ANIO = ");
+			sql.append(anio);
+			sql.append(" and des.NUMERO =  ");
+			sql.append(numero);
+			
+			sql.append(" and des.IDTURNO = ");
+			sql.append(turno);
+			RowsContainer rc = new RowsContainer(); 
+			if (rc.find(sql.toString())) {
+				Row fila = (Row) rc.get(0);
+				idJuzgado = Long.parseLong((String)fila.getString("IDJUZGADO"));	                  
+			} 
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion sobre el idjuzgado de una designa.");
+		}
+		return idJuzgado;                        
+	}
 }

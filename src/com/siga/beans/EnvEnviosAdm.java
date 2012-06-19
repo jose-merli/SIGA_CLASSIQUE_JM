@@ -451,6 +451,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			sql.append(" AND D.Tipodestinatario ='");
 			sql.append(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG);
 			sql.append("') ");
+			
 			sql.append(" UNION ");
 			sql.append(" (SELECT  D.NOMBRE || ' ' || D.APELLIDOS1 || ' ' || D.APELLIDOS2 AS NOMBREYAPELLIDOS,D.NIFCIF,null,D.IDPERSONA ");
 			sql.append(", D.TIPODESTINATARIO");
@@ -462,14 +463,21 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			sql.append(" AND D.Tipodestinatario ='");
 			sql.append(EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR);
 			sql.append("') ");
+
+			sql.append(" UNION ");
+			sql.append(" (SELECT  D.NOMBRE || ' ' || D.APELLIDOS1 || ' ' || D.APELLIDOS2 AS NOMBREYAPELLIDOS,D.NIFCIF,null,D.IDPERSONA ");
+			sql.append(", D.TIPODESTINATARIO");
+			sql.append(" FROM ENV_DESTINATARIOS D ");
+			sql.append(" WHERE D.IDINSTITUCION = ");
+			sql.append(idInstitucion);
+			sql.append(" AND D.IDENVIO = ");
+			sql.append(idEnvio);
+			sql.append(" AND D.Tipodestinatario ='");
+			sql.append(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO);
+			sql.append("') ");
 			
 			sql.append(") ORDER BY NOMBREYAPELLIDOS ");   
 			
-			// TODO AÑADIR UNION PARA JUZGADOS
-//			sql.append(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO);
-			
-			
-
 			//ClsLogging.writeFileLog("EnvEnviosAdm.getDestinatariosManuales -> QUERY: "+sql,3);
 			
 			if (rc.query(sql.toString())) {
@@ -1574,10 +1582,11 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				}else{
 					if(tipoDestinatario!=null&&tipoDestinatario.equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG)){
 						sSQL = rp.returnProperty("envios.consulta.conPersonaJG");
+					}else if(tipoDestinatario!=null&&tipoDestinatario.equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO)){
+						sSQL = rp.returnProperty("envios.consulta.conJuzgado");						
 					}else{
 						sSQL = rp.returnProperty("envios.consulta.conPersona");
 					}
-					//TODO scs_JUAZGADO
 				}
 			}
 			else
@@ -3207,6 +3216,20 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 					sLinea += beanPersonaJG.getNombre() + separador;
 					sLinea += beanPersonaJG.getApellido1() + separador;
 					sLinea += beanPersonaJG.getApellido2() + separador;
+	            
+	            }else if(destBean.getTipoDestinatario()!=null && destBean.getTipoDestinatario().equalsIgnoreCase(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO)){
+	            	Hashtable htJuz = new Hashtable();
+					htJuz.put(ScsJuzgadoBean.C_IDJUZGADO,destBean.getIdPersona());
+					htJuz.put(ScsJuzgadoBean.C_IDINSTITUCION,destBean.getIdInstitucion());
+					ScsJuzgadoAdm admJuz = new ScsJuzgadoAdm(this.usrbean);
+					Vector v = admJuz.selectByPK(htJuz);
+					ScsJuzgadoBean beanJuzgado= null;
+					if (v!=null && v.size()>0) {
+						beanJuzgado = (ScsJuzgadoBean) v.get(0);
+					}
+					
+					sLinea += beanJuzgado.getNombre() + separador;
+					
 	            }else{
 	            	CenPersonaAdm admPer = new CenPersonaAdm(this.usrbean);
 		            Hashtable htPer = new Hashtable();

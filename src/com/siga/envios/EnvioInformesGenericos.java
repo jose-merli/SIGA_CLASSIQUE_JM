@@ -85,6 +85,7 @@ import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsInclusionGuardiasEnListasAdm;
 import com.siga.beans.ScsInclusionGuardiasEnListasBean;
+import com.siga.beans.ScsJuzgadoAdm;
 import com.siga.beans.ScsListaGuardiasAdm;
 import com.siga.beans.ScsPersonaJGAdm;
 import com.siga.beans.ScsProcuradorAdm;
@@ -2032,6 +2033,8 @@ public class EnvioInformesGenericos extends MasterReport {
 		List lComunicacionesMorosos = new ArrayList();
 		Hashtable htPersonas = new Hashtable();
 		Hashtable htPersonasJG = new Hashtable();
+		Hashtable htJuzgado = new Hashtable();
+		Hashtable htProcuradores = new Hashtable();
 		for (int j = 0; j < vDestProgramInfBean.size(); j++) {
 			EnvDestProgramInformesBean destProgramInfBean = (EnvDestProgramInformesBean) vDestProgramInfBean
 					.get(j);
@@ -2070,8 +2073,12 @@ public class EnvioInformesGenericos extends MasterReport {
 						.getIdPersona().toString());
 
 			} else if (destProgramInfBean.getTipoDestinatario().equals(
+					EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR)) {
+					datosInforme.put("idPersona", destProgramInfBean.getIdPersona().toString());
+			
+			} else if (destProgramInfBean.getTipoDestinatario().equals(
 					EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO)) {
-				// TODO SCS_JUZGADOS
+					datosInforme.put("idPersona", destProgramInfBean.getIdPersona().toString());
 			}
 
 			datosInforme.put("idInstitucion", destProgramInfBean
@@ -2290,12 +2297,34 @@ public class EnvioInformesGenericos extends MasterReport {
 
 				}
 				htPersonasJG.put(idPersona, vDocumentos);
+			
+			} else if (destProgramInfBean.getTipoDestinatario().equals(
+					EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR)) {
+
+				if (htProcuradores.containsKey(idPersona)) {
+					Vector vAuxDocumentos = (Vector) htProcuradores
+							.get(idPersona);
+					vDocumentos.addAll(vAuxDocumentos);
+
+				}
+				htProcuradores.put(idPersona, vDocumentos);
+				
+			} else if (destProgramInfBean.getTipoDestinatario().equals(
+					EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO)) {
+
+				if (htJuzgado.containsKey(idPersona)) {
+					Vector vAuxDocumentos = (Vector) htJuzgado
+							.get(idPersona);
+					vDocumentos.addAll(vAuxDocumentos);
+
+				}
+				htJuzgado.put(idPersona, vDocumentos);
 			}
 
 		}
 
 		envio.generarEnvioOrdinario(envio.getEnviosBean(), htPersonas,
-				htPersonasJG);
+				htPersonasJG,htJuzgado,htProcuradores);
 
 		if (programInfBean.getIdTipoInforme().equals(
 				EnvioInformesGenericos.comunicacionesMorosos)) {
@@ -2370,7 +2399,14 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		} else if (destProgramInfBean.getTipoDestinatario().equals(
 				EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO)) {
-			// TODO SCS_JUZGADOS
+			datosInforme.put("idPersona", destProgramInfBean.getIdPersona().toString());
+			ScsJuzgadoAdm juzgadoAdm = new ScsJuzgadoAdm(this.getUsuario());
+			descripcionEnvios.append(" ");
+			Vector juzgadoVector = juzgadoAdm.busquedaJuzgado(
+					destProgramInfBean.getIdInstitucion().toString(),
+					destProgramInfBean.getIdPersona().toString());
+			Hashtable procuradorHashtable = (Hashtable) juzgadoVector.get(0);
+			descripcionEnvios.append(procuradorHashtable.get("NOMBRE"));
 		}
 
 		enviosBean.setDescripcion(descripcionEnvios.toString());
@@ -2551,7 +2587,14 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		} else if (destProgramInfBean.getTipoDestinatario().equals(
 				EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO)) {
-			// TODO SCS_JUZGADOS
+			datosInforme.put("idPersona", destProgramInfBean.getIdPersona().toString());
+			ScsJuzgadoAdm juzgadoAdm = new ScsJuzgadoAdm(this.getUsuario());
+			descripcionEnvios.append(" ");
+			Vector juzgadoVector = juzgadoAdm.busquedaJuzgado(
+					destProgramInfBean.getIdInstitucion().toString(),
+					destProgramInfBean.getIdPersona().toString());
+			Hashtable procuradorHashtable = (Hashtable) juzgadoVector.get(0);
+			descripcionEnvios.append(procuradorHashtable.get("NOMBRE"));
 		}
 
 		enviosBean.setDescripcion(descripcionEnvios.toString());
@@ -5538,8 +5581,10 @@ public class EnvioInformesGenericos extends MasterReport {
 					idTurno, anio, numero);
 			if (idProcurador != null && !idProcurador.equals(""))
 				ht.put("idProcurador", idProcurador);
-
 			
+			Long idJuzgado = desigAdm.getIdJuzgadoDesigna(idInstitucion,anio,numero,idTurno);
+			if (idJuzgado != null && !idJuzgado.equals(""))
+				ht.put("idJuzgado", idJuzgado.toString());
 
 		}
 
@@ -5739,6 +5784,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		boolean isASolicitantes = false;
 		boolean isAProcurador = false;
+		boolean isAJuzgado = false;
 		Vector<AdmInformeBean> informesVector = null;
 		String keyEnvios = null;
 		if (isPersonaUnica && enviosHashtable.size() == 1) {
@@ -5771,6 +5817,10 @@ public class EnvioInformesGenericos extends MasterReport {
 							isAProcurador = true;
 							break;
 						}
+						if (String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO)) {
+							isAJuzgado = true;
+							break;
+						}						
 					}
 
 				}
@@ -5781,7 +5831,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		}
 
 		if (isPersonaUnica && enviosHashtable.size() == 1 && !isASolicitantes
-				&& !isAProcurador) {
+				&& !isAProcurador && !isAJuzgado) {
 			Vector vDocumentos = new Vector();
 			for (int i = 0; i < datosInformeVector.size(); i++) {
 				Hashtable datosInforme = (Hashtable) datosInformeVector.get(i);
@@ -6137,18 +6187,33 @@ public class EnvioInformesGenericos extends MasterReport {
 											}
 
 										}
-									} else if (String
-											.valueOf(tipoDestinatario[k])
-											.equalsIgnoreCase(
-													AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO)) {
-										// TODO SCS_JUZGADOSJG
+									} else if (String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO)) {
+
+										if (idJuzgado == null)
+											continue;
+
+										destProgramInformes = new EnvDestProgramInformesBean();
+										destProgramInformes.setIdProgram(programInformes.getIdProgram());
+										destProgramInformes.setIdEnvio(programInformes.getIdEnvio());
+										destProgramInformes.setIdInstitucion(programInformes.getIdInstitucion());
+										destProgramInformes.setIdPersona(new Long(idJuzgado));
+										destProgramInformes.setIdInstitucionPersona(new Integer(idInstitucion));
+										destProgramInformes.setTipoDestinatario(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO);
+										
+										if (!lPersonas.contains(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO + idJuzgado)) {
+											destProgramInformesAdm.insert(destProgramInformes);
+											countEnvios++;
+											lPersonas.add(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO + idJuzgado);
+										}
+										
+										if (!lDestPersonas.contains(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO + idJuzgado)) {
+											lDestinatarios.add(destProgramInformes);
+											lDestPersonas.add(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO + idJuzgado);
+										}
 									}
 								}
-
 							}
-
 						}
-
 					}
 
 					// if(lDestinatarios==null || lDestinatarios.size()==0)
@@ -6263,6 +6328,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				&& destinatariosHashtable.size() == 1;
 		Vector<AdmInformeBean> informesVector = null;
 		boolean isASolicitantes = false;
+		boolean isAJuzgado = false;
 		if (isDestinatarioUnico && enviosHashtable.size() == 1) {
 
 			Iterator iteEnvios = enviosHashtable.keySet().iterator();
@@ -6286,6 +6352,11 @@ public class EnvioInformesGenericos extends MasterReport {
 							isASolicitantes = true;
 							break;
 						}
+						
+						if (String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO)) {
+							isAJuzgado = true;
+							break;
+						}												
 
 					}
 
@@ -6297,7 +6368,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		}
 
 		if (isDestinatarioUnico && enviosHashtable.size() == 1
-				&& !isASolicitantes) {
+				&& !isASolicitantes &&!isAJuzgado) {
 
 			Vector vDocumentos = new Vector();
 			for (int i = 0; i < datosInformeVector.size(); i++) {
@@ -6617,18 +6688,33 @@ public class EnvioInformesGenericos extends MasterReport {
 											}
 
 										}
-									} else if (String
-											.valueOf(tipoDestinatario[k])
-											.equalsIgnoreCase(
-													AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO)) {
-										// TODO SCS_JUZGADOSJG
+									} else if (String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO)) {
+	
+										if (idJuzgado == null)
+											continue;
+
+										destProgramInformes = new EnvDestProgramInformesBean();
+										destProgramInformes.setIdProgram(programInformes.getIdProgram());
+										destProgramInformes.setIdEnvio(programInformes.getIdEnvio());
+										destProgramInformes.setIdInstitucion(programInformes.getIdInstitucion());
+										destProgramInformes.setIdPersona(new Long(idJuzgado));
+										destProgramInformes.setIdInstitucionPersona(new Integer(idInstitucion));
+										destProgramInformes.setTipoDestinatario(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO);
+										
+										if (!lPersonas.contains(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO + idJuzgado)) {
+											destProgramInformesAdm.insert(destProgramInformes);
+											countEnvios++;
+											lPersonas.add(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO + idJuzgado);
+										}
+										
+										if (!lDestPersonas.contains(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO + idJuzgado)) {
+											lDestinatarios.add(destProgramInformes);
+											lDestPersonas.add(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO + idJuzgado);
+										}										
 									}
 								}
-
 							}
-
 						}
-
 					}
 
 					// if(lDestinatarios==null || lDestinatarios.size()==0)
