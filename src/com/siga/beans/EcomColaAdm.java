@@ -10,7 +10,11 @@ public class EcomColaAdm extends MasterBeanAdministrador {
 
 	
 	public enum OPERACION {
-		OBTENER_PROCURADOR_ASIGNA (1);	
+		ASIGNA_OBTENER_PROCURADOR (1)
+		, ASIGNA_ENVIO_DOCUMENTO (2)
+		, EJIS_OBTENER_DESTINATARIOS (3)
+		, EJIS_COMUNICACION_DESIGNA_ABOGADO_PROCURADOR (4)
+		, ASIGNA_CONSULTA_NUMERO (5);
 		
 		private int id = -1;
 		
@@ -22,7 +26,7 @@ public class EcomColaAdm extends MasterBeanAdministrador {
 		}
 	}
 	
-	protected EcomColaAdm(UsrBean usrBean) {
+	public EcomColaAdm(UsrBean usrBean) {
 		super(EcomColaBean.T_NOMBRETABLA, usrBean);
 	}
 
@@ -82,7 +86,7 @@ public class EcomColaAdm extends MasterBeanAdministrador {
 		EcomColaBean bean = null;
 		try{
 			bean = new EcomColaBean();
-			bean.setIdEcomCola(UtilidadesHash.getSigaSequence(bean.getIdEcomCola(), hash, EcomColaBean.C_IDECOMCOLA));
+			bean.setIdEcomCola(UtilidadesHash.getInteger(hash, EcomColaBean.C_IDECOMCOLA));
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, EcomColaBean.C_IDINSTITUCION));
 			bean.setIdEstadoCola(UtilidadesHash.getInteger(hash, EcomColaBean.C_IDESTADOCOLA));
 			bean.setIdOperacion(UtilidadesHash.getInteger(hash, EcomColaBean.C_IDOPERACION));
@@ -99,4 +103,20 @@ public class EcomColaAdm extends MasterBeanAdministrador {
 		return bean;
 	}
 
+	public boolean insert(EcomColaBean bean) throws ClsExceptions{
+		try {
+					
+			bean.setIdEstadoCola(EcomColaBean.EstadosCola.INICIAL.getId());			
+			bean.setReintento(0);
+			bean.setFechaCreacion("SYSDATE");
+			
+			String seq = String.valueOf(getSecuenciaNextVal(EcomColaBean.SEQ_ECOM_COLA));			
+			bean.setIdEcomCola(Integer.valueOf(seq));
+			
+			return super.insert(this.beanToHashTable(bean));
+		}
+		catch (Exception e)	{
+			throw new ClsExceptions (e,  e.getMessage());
+		}
+	}
 }
