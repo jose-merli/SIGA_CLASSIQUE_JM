@@ -734,7 +734,6 @@ function accionComboTipoEnvio(index) {
 	var envioDefectoSeleccionado = document.getElementById("idTipoEnvioDefecto").value;
 	document.getElementById("idTipoEnvioDefecto").options.length = 0;
 
-	alert($('#comboTipoEnvioPermitidos').val());
 	var tiposEnvio = document.getElementById("comboTipoEnvioPermitidos").options;
 	var findDefecto = false;
 	$("#idTipoEnvioDefecto").append("<option  value=''>&nbsp;</option>");
@@ -751,7 +750,7 @@ function accionComboTipoEnvio(index) {
 	document.getElementById("idTipoEnvioDefecto").value = envioDefectoSeleccionado;
 	if(!findDefecto){
 		onChangeTipoenvio();
-	
+		
 	}
 		
 
@@ -789,6 +788,7 @@ function accionRestablecer()
 	document.InformeFormEdicion.reset();
 }
 
+window.onload=accionComboTipoEnvio;
 </script>
 
 </body>
