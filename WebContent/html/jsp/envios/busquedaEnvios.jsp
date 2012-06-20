@@ -125,8 +125,8 @@
 			<html:hidden property = "idImpresora"/>
 
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
+			<input type="hidden" name="filaSelD" id="filaSelD">
+			<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
 		</html:form>
 
@@ -228,9 +228,9 @@
 						String fechaProgramada = fila.getString(EnvEnviosBean.C_FECHAPROGRAMADA);
 %>
 	  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="C,E,B" elementos="<%=elems%>" clase="listaNonEdit">
-						<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=fila.getString("IDENVIO")%>">
-						<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=fila.getString("IDTIPOENVIOS")%>">
-						<input type="hidden" name="oculto<%=""+(i+1)%>_3" value="<%=pathFechaCreacion%>">
+						<input type="hidden" name="oculto<%=""+(i+1)%>_1" id="oculto<%=""+(i+1)%>_1" value="<%=fila.getString("IDENVIO")%>">
+						<input type="hidden" name="oculto<%=""+(i+1)%>_2" id="oculto<%=""+(i+1)%>_2" value="<%=fila.getString("IDTIPOENVIOS")%>">
+						<input type="hidden" name="oculto<%=""+(i+1)%>_3" id="oculto<%=""+(i+1)%>_3" value="<%=pathFechaCreacion%>">
 											
 					<td><%=UtilidadesString.mostrarDatoJSP(fila.getString(EnvEnviosBean.C_IDENVIO))%></td>
 					<td><%=UtilidadesString.mostrarDatoJSP(fila.getString(EnvEnviosBean.C_DESCRIPCION))%></td>

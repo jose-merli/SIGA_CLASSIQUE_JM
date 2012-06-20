@@ -153,6 +153,7 @@
 		<input type="hidden" name="fechaInscripcion" value="">
 			<!-- RGG: cambio a formularios ligeros -->
 			<input type="hidden" name="tablaDatosDinamicosD">
+			<!--input type="hidden" name="filaSelD"-->
 			<input type="hidden" name="actionModal" value="">
 		</html:form>	
 		
@@ -230,7 +231,7 @@
 								 literalDuracion = "gratuita.altaTurnos_2.literal.quincenas";	
 				%>
 		  <siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>"  elementos='<%=elems%>' clase="listaNonEdit">
-				<td><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=hash.get("IDTURNO")%>'><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=hash.get("IDGUARDIA")%>'><%=hash.get("GUARDIA")%><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=hash.get("GUARDIAS")%>'><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=fechainscripcion%>'></td>
+				<td><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' id='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=hash.get("IDTURNO")%>'><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=hash.get("IDGUARDIA")%>'><%=hash.get("GUARDIA")%><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=hash.get("GUARDIAS")%>'><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=fechainscripcion%>'></td>
 				<td><%if(((String)hash.get("OBLIGATORIEDAD")).equalsIgnoreCase("0")){%><siga:Idioma key="gratuita.altaTurnos_2.literal.obligatorias"/><%}else if(((String)hash.get("OBLIGATORIEDAD")).equalsIgnoreCase("1")){%><siga:Idioma key="gratuita.altaTurnos_2.literal.todasninguna"/><%}else{%><siga:Idioma key="gratuita.altaTurnos_2.literal.aeleccion"/><%}%></td>
 				<td>
 				<%=UtilidadesString.mostrarDatoJSP(ScsGuardiasTurnoAdm.obtenerTipoDia((String)hash.get("SELECCIONLABORABLES"), (String)hash.get("SELECCIONFESTIVOS"), usr))%>

@@ -22,7 +22,9 @@
 <!-- IMPORTS -->
 
 <!-- JSP -->
-	
+	<% 
+	String app=request.getContextPath();
+%>
 <html>
 
 <!-- HEAD -->
