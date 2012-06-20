@@ -190,7 +190,7 @@
 		<img id="logoImg" src="<%=logo%>" style="vertical-align: middle;">
 	</div>
 	<div id="img2"
-		style="position: absolute; left: 0px; top: 0px; text-align: center; height: 79px; width: 170px; z-index: 1; background-color: transparent;">
+		style="position: absolute; left: 0px; top: 0px; text-align: center; height: 79px; width: 170px; z-index: -1; background-color: transparent;">
 		<img id="logoSIGA" align="bottom"
 			src="<%=app%>/html/imagenes/logoSIGA.png">
 	</div>
