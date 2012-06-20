@@ -67,6 +67,30 @@ public class PaginadorSQL extends Paginador implements IPaginador,Serializable
 			throw new ClsExceptions(e, e.getMessage());
 		}
 	}
+	
+	protected PaginadorSQL(String query,String orden,boolean ordenar) throws ClsExceptions {
+
+		try {
+			setQueryInicio(query);
+			inicializar(query);
+
+			//Inicializo la query
+			String columnas = query.substring(6, query.toUpperCase().indexOf(
+					"FROM"));
+
+			/*
+			 * this.query = "SELECT "+columnas+" FROM (SELECT a.*, rownum r FROM
+			 * ("+ query+") a WHERE rownum <=rowmax) WHERE r>=rowmin";
+			 */
+
+			this.query = "SELECT /*+ no_merge */ * FROM (SELECT /*+ no_merge */ a.*, rownum r FROM (" + query
+					+ ") a WHERE rownum<=rowmax) WHERE r>=rowmin "+orden+"";
+
+		} catch (Exception e) {
+			throw new ClsExceptions(e, e.getMessage());
+		}
+	}
+	
 
 	protected PaginadorSQL(String query1, String query2) throws ClsExceptions {
 

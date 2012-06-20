@@ -36,6 +36,10 @@ public class Paginador implements IPaginador, Serializable
 	public Paginador(Vector v, String[] cabeceras) throws ClsExceptions {
 		paginador = new PaginadorVector(v, cabeceras);
 	}
+	
+	public Paginador(String query,String orden,boolean ordenar) throws ClsExceptions {
+		paginador = new PaginadorSQL(query,orden,true);
+	}
 
 	public Vector obtenerSiguientes() throws ClsExceptions, SIGAException {
 		return paginador.obtenerSiguientes();

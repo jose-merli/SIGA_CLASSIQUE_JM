@@ -82,6 +82,7 @@ public class CenGruposClienteAdm extends MasterBeanAdministrador {
 		/*Vector datos = new Vector();*/
 		String select = null;
 		Paginador paginador=null;
+		String orden="";
 		
 		try {
 			select  =" SELECT i."+CenInstitucionBean.C_IDINSTITUCION;
@@ -115,11 +116,11 @@ public class CenGruposClienteAdm extends MasterBeanAdministrador {
 			
 			//ORDER BY:
 			select += " ORDER BY grupo."+CenGruposClienteBean.C_IDINSTITUCION+",grupo."+CenGruposClienteBean.C_NOMBRE;
-			
+			orden="order by idinstitucion,nombre desc";
 			//Consulta:
 			//datos = this.selectGenerico(select);
 			/*** PAGINACION ***/ 
-	        paginador = new Paginador(select);				
+	        paginador = new Paginador(select,orden,true);				
 			int totalRegistros = paginador.getNumeroTotalRegistros();
 			
 			if (totalRegistros==0){					
