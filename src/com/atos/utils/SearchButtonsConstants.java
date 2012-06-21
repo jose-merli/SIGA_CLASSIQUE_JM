@@ -30,7 +30,8 @@ public enum SearchButtonsConstants {
 	NUEVO_GRUPOS ("ng","general.boton.nuevoGrupos","nuevoGrupos()",22),
 	CERRAR ("ce","general.boton.close","cerrar()",23),	
 	CONSULTAS ("con","general.boton.consultas","consultas()",24),
-	OBTENER_RESOLUCIONES ("or","general.boton.obtenerResoluciones","obtenerResoluciones()",25);
+	OBTENER_RESOLUCIONES ("or","general.boton.obtenerResoluciones","obtenerResoluciones()",25),
+	OBTENER_DESIGNAPROCURADOR ("odp","general.boton.obtenerDesignaProcurador","obtenerDesignaProcurador()",26);
 	
 	
     private final String valor;   

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -68,7 +67,9 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 				ScsPersonaJGBean.C_NIF,
 				ScsPersonaJGBean.C_NOMBRE,	
 				ScsPersonaJGBean.C_APELLIDO1,
-				ScsPersonaJGBean.C_APELLIDO2
+				ScsPersonaJGBean.C_APELLIDO2,
+				ScsEejgPeticionesBean.C_RUTA_PDF,
+				ScsEejgPeticionesBean.C_IDECOMCOLA
 				};
 		return campos;
 	}	
@@ -128,6 +129,9 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 			bean.setApellido1(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_APELLIDO1));
 			bean.setApellido2(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_APELLIDO2));
 			
+			bean.setRutaPDF(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_RUTA_PDF));
+			bean.setIdEcomCola(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_IDECOMCOLA));
+			
 			bean.setFechaMod(UtilidadesHash.getString(hash, ScsEejgPeticionesBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_USUMODIFICACION));
 			
@@ -171,6 +175,9 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_NOMBRE, b.getNombre());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_APELLIDO1, b.getApellido1());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_APELLIDO2, b.getApellido2());
+			
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_RUTA_PDF, b.getRutaPDF());
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_IDECOMCOLA, b.getIdEcomCola());
 			
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_USUMODIFICACION, String.valueOf(b.getUsuMod()));
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_FECHAMODIFICACION, b.getFechaMod());

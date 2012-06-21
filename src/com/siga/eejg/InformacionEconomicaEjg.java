@@ -1,16 +1,31 @@
 package com.siga.eejg;
 
+import java.io.File;
 import java.net.ConnectException;
 import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 import org.apache.axis.AxisFault;
 
 import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
+import com.siga.beans.EcomColaAdm;
+import com.siga.beans.EcomColaBean;
 import com.siga.beans.GenParametrosAdm;
+import com.siga.beans.MasterBean;
+import com.siga.beans.ScsPersonaJGBean;
+import com.siga.beans.ScsUnidadFamiliarEJGAdm;
+import com.siga.beans.ScsUnidadFamiliarEJGBean;
 import com.siga.beans.eejg.ScsEejgPeticionesAdm;
 import com.siga.beans.eejg.ScsEejgPeticionesBean;
+import com.siga.gratuita.service.EejgService;
+import com.siga.ws.CajgConfiguracion;
+
+import es.satec.businessManager.BusinessException;
+import es.satec.businessManager.BusinessManager;
 
 public class InformacionEconomicaEjg {
 	
@@ -155,7 +170,10 @@ private static Boolean alguienEjecutando=Boolean.FALSE;
 					}
 					if (idXML > -1) {	
 						//el estado lo pone el método consultaInfoAAPP
-						scsEejgPeticionesBean.setIdXml(idXML);
+						scsEejgPeticionesBean.setIdXml(idXML);						
+						if (CajgConfiguracion.getTipoCAJG(scsEejgPeticionesBean.getIdInstitucion()) == CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA) {
+							enviaPDF(scsEejgPeticionesBean, usrBean);
+						}
 						scsEejgPeticionesBean.setFechaConsulta("SYSDATE");
 					} else {
 						if (scsEejgPeticionesBean.getNumeroIntentosConsulta() >= NUMERO_REINTENTOS_CONSULTA ||
@@ -167,6 +185,51 @@ private static Boolean alguienEjecutando=Boolean.FALSE;
 				}
 			}
 			
+		}
+	}
+
+	private void enviaPDF(ScsEejgPeticionesBean scsEejgPeticionesBean, UsrBean usrBean) {
+		try {
+			BusinessManager bm = BusinessManager.getInstance();
+			EejgService eEjgS = (EejgService)bm.getService(EejgService.class);
+			
+			ScsUnidadFamiliarEJGAdm scsUnidadFamiliarEJGAdm = new ScsUnidadFamiliarEJGAdm(usrBean);
+			ScsUnidadFamiliarEJGBean unidadFamiliarVo = new ScsUnidadFamiliarEJGBean();
+			unidadFamiliarVo.setIdInstitucion(scsEejgPeticionesBean.getIdInstitucion());
+			unidadFamiliarVo.setAnio(scsEejgPeticionesBean.getAnio());
+			unidadFamiliarVo.setIdTipoEJG(scsEejgPeticionesBean.getIdTipoEjg());
+			unidadFamiliarVo.setNumero(scsEejgPeticionesBean.getNumero());
+			unidadFamiliarVo.setIdPersona(scsEejgPeticionesBean.getIdPersona().intValue());
+			
+			Vector<ScsUnidadFamiliarEJGBean> v = scsUnidadFamiliarEJGAdm.selectByPK(scsUnidadFamiliarEJGAdm.beanToHashTable(unidadFamiliarVo));
+			
+			if (v == null || v.size() != 1) {
+				throw new BusinessException("No se ha encontrado el registro de la unidad familiar.");
+			}
+			unidadFamiliarVo = v.get(0);
+			usrBean.setLocation(String.valueOf(scsEejgPeticionesBean.getIdInstitucion()));
+			unidadFamiliarVo.setPeticionEejg(scsEejgPeticionesBean);
+			
+			//el proceso que genera el fichero recoge el dato de personaJGBean
+			ScsPersonaJGBean scsPersonaJGBean = new ScsPersonaJGBean();
+			scsPersonaJGBean.setIdPersona(unidadFamiliarVo.getIdPersona());
+			unidadFamiliarVo.setPersonaJG(scsPersonaJGBean);
+			
+			Map<Integer, Map<String, String>> mapInformeEejg = eEjgS.getDatosInformeEejg(unidadFamiliarVo, usrBean);
+			File fichero = eEjgS.getInformeEejg(mapInformeEejg, usrBean);
+
+			scsEejgPeticionesBean.setRutaPDF(fichero.getAbsolutePath());
+			
+			EcomColaBean ecomColaBean = new EcomColaBean();
+			ecomColaBean.setIdOperacion(EcomColaBean.OPERACION.ASIGNA_ENVIO_DOCUMENTO.getId());		
+			
+			EcomColaAdm ecomColaAdm = new EcomColaAdm(usrBean);
+			if (!ecomColaAdm.insert(ecomColaBean)) {
+				throw new ClsExceptions("No se ha podido insertar en la cola de comunicaciones.");
+			}
+			scsEejgPeticionesBean.setIdEcomCola(ecomColaBean.getIdEcomCola());
+		} catch (Exception e) {
+			ClsLogging.writeFileLogError("Se ha producido un error al generar y enviar el pdf a Asigna", e, 3);
 		}
 	}
 	

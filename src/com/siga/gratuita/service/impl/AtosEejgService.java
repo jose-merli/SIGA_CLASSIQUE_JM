@@ -78,9 +78,9 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 		try {
 			institucion = admInstitucion.getNombreInstitucion(usr.getLocation());
 		} catch (SIGAException e) {
-			throw new BusinessException(e.getMessage());
+			throw new BusinessException(e.getMessage(), e);
 		} catch (ClsExceptions e) {
-			throw new BusinessException(e.getMessage());
+			throw new BusinessException(e.getMessage(), e);
 		}
 		
 		String rutaLogoColegio = plantillaRuta+ClsConstants.FILE_SEP+"recursos"+ClsConstants.FILE_SEP+"Logo.GIF";
@@ -313,11 +313,11 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 		try {
 			fichero = informe.generarInformeEejg(mapInformeEejg);
 		} catch (ClsExceptions e) {
-			throw new BusinessException(e.getMessage());
+			throw new BusinessException(e.getMessage(), e);
 		} catch (SIGAException e) {
-			throw new BusinessException(e.getLiteral());
+			throw new BusinessException(e.getLiteral(), e);
 		} catch (UnsupportedEncodingException e) {
-			throw new BusinessException(e.toString());
+			throw new BusinessException(e.toString(), e);
 		}
 		return fichero;
 	}

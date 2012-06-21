@@ -410,7 +410,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							ScsEJGBean.C_OBSERVACIONIMPUGNACION,	ScsEJGBean.C_FECHAPUBLICACION,
 							ScsEJGBean.C_NUMERORESOLUCION,			ScsEJGBean.C_ANIORESOLUCION,
 							ScsEJGBean.C_BISRESOLUCION,				ScsEJGBean.C_IDACTA,
-							ScsEJGBean.C_IDINSTITUCIONACTA,			ScsEJGBean.C_ANIOACTA};
+							ScsEJGBean.C_IDINSTITUCIONACTA,			ScsEJGBean.C_ANIOACTA,
+							ScsEJGBean.C_IDECOMCOLA};
 		return campos;
 	}
 	
@@ -516,6 +517,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			bean.setIdActa(UtilidadesHash.getString(hash,ScsEJGBean.C_IDACTA));
 			bean.setIdInstitucionActa(UtilidadesHash.getString(hash,ScsEJGBean.C_IDINSTITUCIONACTA));
 			bean.setAnioActa(UtilidadesHash.getString(hash,ScsEJGBean.C_ANIOACTA));
+			bean.setIdEcomCola(UtilidadesHash.getInteger(hash,ScsEJGBean.C_IDECOMCOLA));
 		}
 		catch (Exception e){
 			throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR HASHTABLE A BEAN");
@@ -616,6 +618,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,ScsEJGBean.C_IDACTA, b.getIdActa());
 			UtilidadesHash.set(htData,ScsEJGBean.C_IDINSTITUCIONACTA, b.getIdInstitucionActa());			
 			UtilidadesHash.set(htData,ScsEJGBean.C_ANIOACTA, b.getAnioActa());			
+			UtilidadesHash.set(htData,ScsEJGBean.C_IDECOMCOLA, b.getIdEcomCola());
 		}
 		catch (Exception e){
 			 throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR EL BEAN A HASHTABLE");

@@ -146,7 +146,7 @@ public class CajgRemesaResolucionAdm extends MasterBeanAdministrador {
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public Calendar getMaximaFechaCarga(String idinstitucion) throws ClsExceptions {
+	public Calendar getMaximaFechaCarga(String idinstitucion, int idTipoRemesa) throws ClsExceptions {
 		RowsContainer rc = null;
 		Calendar cal = null;
 
@@ -154,7 +154,8 @@ public class CajgRemesaResolucionAdm extends MasterBeanAdministrador {
 			rc = new RowsContainer();
 
 			String sql = "SELECT MAX(" + CajgRemesaResolucionBean.C_FECHACARGA + ") AS " + CajgRemesaResolucionBean.C_FECHACARGA +
-					" FROM " + nombreTabla + " WHERE " + CajgRemesaResolucionBean.C_IDINSTITUCION + " = " + idinstitucion;
+					" FROM " + nombreTabla + " WHERE " + CajgRemesaResolucionBean.C_IDINSTITUCION + " = " + idinstitucion +
+					" AND " + CajgRemesaResolucionBean.C_IDTIPOREMESA + " = " + idTipoRemesa;
 			if (rc.query(sql)) {
 				Row fila = (Row) rc.get(0);
 				Hashtable ht = fila.getRow();

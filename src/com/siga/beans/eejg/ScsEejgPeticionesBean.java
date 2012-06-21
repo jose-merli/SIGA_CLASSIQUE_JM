@@ -1,7 +1,5 @@
 package com.siga.beans.eejg;
 
-import com.atos.utils.ClsConstants;
-import com.atos.utils.UsrBean;
 import com.siga.administracion.SIGAConstants;
 import com.siga.beans.AdmUsuariosBean;
 import com.siga.beans.MasterBean;
@@ -54,6 +52,8 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	private String	nombre;
 	private String	apellido1;
 	private String	apellido2;
+	private String rutaPDF;
+	private Integer idEcomCola;
 	
 	FilaExtElement[] elementosFila;
 	
@@ -87,6 +87,8 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	static public final String 	C_NOMBRE			=				"NOMBRE";
 	static public final String 	C_APELLIDO1			=				"APELLIDO1";
 	static public final String 	C_APELLIDO2			=				"APELLIDO2";
+	static public final String 	C_RUTA_PDF			=				"RUTA_PDF";
+	static public final String 	C_IDECOMCOLA			=				"IDECOMCOLA";
 	
 	public Long getIdPeticion() {
 		return idPeticion;
@@ -312,6 +314,19 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	}
 	public void setElementosFila(FilaExtElement[] elementosFila) {
 		this.elementosFila = elementosFila;
+	}
+	
+	public Integer getIdEcomCola() {
+		return idEcomCola;
+	}
+	public void setIdEcomCola(Integer idEcomCola) {
+		this.idEcomCola = idEcomCola;
+	}
+	public String getRutaPDF() {
+		return rutaPDF;
+	}
+	public void setRutaPDF(String rutaPDF) {
+		this.rutaPDF = rutaPDF;
 	}
 	
 	

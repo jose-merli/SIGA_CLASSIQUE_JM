@@ -37,6 +37,7 @@
 	
 	String titulo = "";
 	String localizacion = "gratuita.BusquedaRemesas.localizacion";
+	String botones = "N,B,L,CON";
 	
 	if (idTipoRemesa != null) {
 		if (idTipoRemesa.equals("1")) {
@@ -52,10 +53,16 @@
 		pcajgActivo = Integer.parseInt(request.getAttribute("pcajgActivo").toString());
 	}
 	
-	String botones = "N,B,L,CON";
+	
 	
 	if (pcajgActivo == CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA) {
-		botones = "OR,B,L,CON";
+		if (idTipoRemesa != null) {
+			if (idTipoRemesa.equals("1")) {
+				botones = "OR,B,L,CON";
+			} else if(idTipoRemesa.equals("2")) {
+				botones = "ODP,B,L,CON";
+			}
+		}
 	}
 	
 	
@@ -109,13 +116,18 @@
 			//document.forms[0].target="resultado";
 			document.forms[0].submit();
 		}
-
+		
 		function consultas() 
 		{		
 			document.RecuperarConsultasForm.submit();
 			
 		}
-		
+
+		function obtenerDesignaProcurador() {
+			sub();
+			document.forms[0].modo.value="obtenerDesignaProcurador";
+			document.forms[0].submit();
+		}
 	</script>
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<siga:Titulo 

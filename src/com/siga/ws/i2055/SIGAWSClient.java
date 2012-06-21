@@ -143,6 +143,9 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 							continue;
 						}
 						
+						ConsultaNumeracionAsigna consultaNumeracionAsigna = new ConsultaNumeracionAsigna();
+						consultaNumeracionAsigna.obtenerNumeracion(getUsrBean(), getIdInstitucion(), Integer.valueOf(anio), Integer.valueOf(numero), idTipoEJG);
+						
 						correctos++;
 					}
 				

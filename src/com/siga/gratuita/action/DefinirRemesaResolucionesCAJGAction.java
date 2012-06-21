@@ -54,6 +54,7 @@ import com.siga.gratuita.form.DefinirEJGForm;
 import com.siga.gratuita.pcajg.resoluciones.ResolucionesFicheroAbstract;
 import com.siga.informes.MasterWords;
 import com.siga.ws.CajgConfiguracion;
+import com.siga.ws.i2055.DesignacionProcuradorAsigna;
 import com.siga.ws.i2055.ResolucionesAsigna;
 
 
@@ -106,6 +107,8 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 				mapDestino = descargar(mapping, miForm, request, response, true);
 			} else if (accion.equalsIgnoreCase("obtenerResoluciones")) {
 				mapDestino = obtenerResoluciones(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("obtenerDesignaProcurador")) {
+				mapDestino = obtenerDesignaProcurador(mapping, miForm, request, response);				
 			} else {
 				return super.executeInternal(mapping, formulario, request, response);
 			}
@@ -131,6 +134,22 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 	}
 	
 	
+	
+	private String obtenerDesignaProcurador(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		request.getSession().removeAttribute("DATAPAGINADOR");
+	
+		try {
+			DesignacionProcuradorAsigna designacionProcuradorAsigna = new DesignacionProcuradorAsigna();
+			designacionProcuradorAsigna.obtenerDesignaciones(getUserBean(request), getIDInstitucion(request));
+			String mensaje = "message.remesaDesignaProcurador.asigna.esperando";
+			request.setAttribute("mensajeUsuario", UtilidadesString.getMensajeIdioma(getUserBean(request), mensaje));
+			
+		} catch (Exception e) {
+			throwExcp("messages.general.error", e, null);
+		}
+				
+		return buscarPor(mapping, formulario, request, response);
+	}
 
 	private String obtenerResoluciones(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		request.getSession().removeAttribute("DATAPAGINADOR");
@@ -146,7 +165,7 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 				mensaje = "message.remesaResolucion.asigna.numeroResoluciones";			
 				mensaje = UtilidadesString.getMensaje(mensaje, new String[]{String.valueOf(numeroResoluciones)}, getUserBean(request).getLanguage());
 			}
-			request.setAttribute("mensajeResoluciones", mensaje);
+			request.setAttribute("mensajeUsuario", mensaje);
 			
 		} catch (Exception e) {
 			throwExcp("messages.general.error", e, null);

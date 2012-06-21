@@ -88,7 +88,7 @@
 	String idTipoRemesa = request.getParameter("idTipoRemesa");
 	String action=app+"/JGR_E-Comunicaciones_RemesaResolucion.do?noReset=true&idTipoRemesa="+idTipoRemesa;
 	
-	String mensajeResoluciones = (String)request.getAttribute("mensajeResoluciones");
+	String mensajeUsuario = (String)request.getAttribute("mensajeUsuario");
 	
 %>
 
@@ -260,9 +260,9 @@
 	 <%}%>	
 	 
 	 
-	<%if (mensajeResoluciones != null && !mensajeResoluciones.trim().equals("")) {%>
+	<%if (mensajeUsuario != null && !mensajeUsuario.trim().equals("")) {%>
 		<script language="JavaScript">
-			alert('<%=mensajeResoluciones%>');
+			alert('<%=mensajeUsuario%>');
 		</script>
 	<%}%>
 	 

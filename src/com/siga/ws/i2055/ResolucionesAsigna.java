@@ -20,6 +20,8 @@ import com.siga.Utilidades.GestorContadores;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CajgRemesaResolucionAdm;
 import com.siga.beans.CajgRemesaResolucionBean;
+import com.siga.beans.EcomColaAdm;
+import com.siga.beans.EcomColaBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
@@ -37,7 +39,7 @@ public class ResolucionesAsigna {
 		
 		Calendar fechaHasta = Calendar.getInstance();
 		
-		Calendar fechaInicio = obtenerFechaInicio(usrBean, idInstitucion);
+		Calendar fechaInicio = obtenerFechaInicio(usrBean, idInstitucion, 1);
 		
 		ResultadoConsultaResolucionesExpediente[] resultados = stub.consultaResolucionesExpediente(fechaInicio, fechaHasta);
 		if (resultados != null && resultados.length > 0) {
@@ -177,8 +179,19 @@ public class ResolucionesAsigna {
 						scsEJGBean.setRatificacionDictamen(ratificacionDictamen);
 						
 						Calendar cal = resol.getCalificacionConsultaResoluciones().getFecha();						
-						scsEJGBean.setFechaResolucionCAJG(GstDate.convertirFechaHora(cal.getTime()));							
-												
+						scsEJGBean.setFechaResolucionCAJG(GstDate.convertirFechaHora(cal.getTime()));	
+						
+						EcomColaBean ecomColaBean = new EcomColaBean();		
+						ecomColaBean.setIdInstitucion(Integer.valueOf(idInstitucion));
+						ecomColaBean.setIdOperacion(EcomColaBean.OPERACION.ASIGNA_CONSULTA_NUMERO.getId());		
+						
+						EcomColaAdm ecomColaAdm = new EcomColaAdm(usrBean);
+						if (!ecomColaAdm.insert(ecomColaBean)) {
+							throw new ClsExceptions("No se ha podido insertar en la cola de comunicaciones.");
+						}
+							
+						scsEJGBean.setIdEcomCola(ecomColaBean.getIdEcomCola());
+						
 						if (scsEJGAdm.update(scsEJGBean)) {
 							logBw.write(anio + "/" + numEjg + ": El expediente se ha actualizado correctamente.");
 							logBw.newLine();
@@ -243,9 +256,9 @@ public class ResolucionesAsigna {
 		
 	}
 
-	private Calendar obtenerFechaInicio(UsrBean usrBean, String idInstitucion) throws ClsExceptions {
+	private Calendar obtenerFechaInicio(UsrBean usrBean, String idInstitucion, int idTipoRemesa) throws ClsExceptions {
 		CajgRemesaResolucionAdm cajgRemesaResolucionAdm = new CajgRemesaResolucionAdm(usrBean);
-		Calendar cal = cajgRemesaResolucionAdm.getMaximaFechaCarga(idInstitucion);
+		Calendar cal = cajgRemesaResolucionAdm.getMaximaFechaCarga(idInstitucion, idTipoRemesa);
 		if (cal == null) {
 			cal = Calendar.getInstance();
 			cal.set(Calendar.YEAR, 2000);
