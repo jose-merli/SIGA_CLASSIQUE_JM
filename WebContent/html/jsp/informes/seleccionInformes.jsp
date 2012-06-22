@@ -39,6 +39,7 @@
 	type="text/javascript"></script>
 </head>
 <script>
+jQuery.noConflict();
 		function inicioPlantillasEnvio(index) {
 				var comboTiposEnvio = document.getElementById('idTipoEnvio_'+index);
 				var comboPlantilla = document.getElementById('idPlantillaEnvio_'+index);
@@ -46,7 +47,7 @@
 				
 				if(comboPlantilla.options.length>0&&comboTiposEnvio.value!=''){
 				
-				$.ajax({ //Comunicación jQuery hacia JSP  
+				jQuery.ajax({ //Comunicación jQuery hacia JSP  
 			           type: "POST",
 			           url: "/SIGA/ENV_DefinirEnvios.do?modo=getJQueryPlantillasEnvio",
 			           data: "idTipoEnvio="+comboTiposEnvio.value,
@@ -59,13 +60,13 @@
 		           				var valueComboPlantilla = optionComboPlantilla[0].value;
 		           				//vaciamos la listas
 								optionComboPlantilla.length = 0;
-								$("#idPlantillaEnvio_"+index).append("<option  value=''>&nbsp;</option>");
-		           				$.each(plantillasEnvio, function(i,item2){
+								jQuery("#idPlantillaEnvio_"+index).append("<option  value=''>&nbsp;</option>");
+		           				jQuery.each(plantillasEnvio, function(i,item2){
 			           				var selected = "";
 			           				if(valueComboPlantilla!='' && valueComboPlantilla==item2.idPlantillaEnvios){
 			           					selected = "selected";
 		           					}
-			                        $("#idPlantillaEnvio_"+index).append("<option "+selected+" value='"+item2.idPlantillaEnvios+"'>"+item2.nombre+"</option>");
+			                        jQuery("#idPlantillaEnvio_"+index).append("<option "+selected+" value='"+item2.idPlantillaEnvios+"'>"+item2.nombre+"</option>");
 			                      //ATENCION EL i+1 el porque tenemos la linea vacia al principio
 			                        document.getElementById("idPlantillaEnvio_"+index).options[i+1].setAttribute("acuseRecibo", item2.acuseRecibo);
 			                        
@@ -79,7 +80,7 @@
 			        });
 			
 				}else{
-					$("#idPlantillaEnvio_"+index).append("<option  value=''>&nbsp;</option>");
+					jQuery("#idPlantillaEnvio_"+index).append("<option  value=''>&nbsp;</option>");
 					
 				}
 			
@@ -91,7 +92,7 @@
 			var idTipoEnvioDefecto = document.getElementById('idTipoEnvioDefecto_'+index).value;
 			
 			if(comboTiposEnvio.value!=''){			
-			$.ajax({ //Comunicación jQuery hacia JSP  
+			jQuery.ajax({ //Comunicación jQuery hacia JSP  
 		           type: "POST",
 		           url: "/SIGA/ENV_DefinirEnvios.do?modo=getJQueryPlantillasEnvio",
 		           data: "idTipoEnvio="+comboTiposEnvio.value,
@@ -101,13 +102,13 @@
 	           			var optionComboPlantilla = comboPlantilla.options;
 	           			
 	           			optionComboPlantilla.length = 0;
-	           			$("#idPlantillaEnvio_"+index).append("<option  value=''>&nbsp;</option>");
-	           				$.each(plantillasEnvio, function(i,item2){
+	           			jQuery("#idPlantillaEnvio_"+index).append("<option  value=''>&nbsp;</option>");
+	           				jQuery.each(plantillasEnvio, function(i,item2){
 		           				var selected = "";
 		           				if(idPlantillaEnvioDefecto==item2.idPlantillaEnvios&&comboTiposEnvio.value ==idTipoEnvioDefecto){
 		           					selected = "selected";
 	           					}
-		                        $("#idPlantillaEnvio_"+index).append("<option "+selected+" value='"+item2.idPlantillaEnvios+"'>"+item2.nombre+"</option>");
+		                        jQuery("#idPlantillaEnvio_"+index).append("<option "+selected+" value='"+item2.idPlantillaEnvios+"'>"+item2.nombre+"</option>");
 		                        //ATENCION EL i+1 el porque tenemos la linea vacia al principio
 		                        document.getElementById("idPlantillaEnvio_"+index).options[i+1].setAttribute("acuseRecibo", item2.acuseRecibo);
 		                        
