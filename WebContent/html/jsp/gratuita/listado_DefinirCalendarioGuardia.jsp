@@ -74,8 +74,6 @@
 	<html:hidden property = "accion" value = ""/>
 	<html:hidden property = "modoPestanha" value = "<%=modopestanha%>"/>
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
 		</html:form>	
 		
 
@@ -141,10 +139,10 @@
 			%>
 		       	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="E,C,B" elementos="<%=elems%>"  clase="listaNonEdit" modo="<%=modopestanha%>"  >
 				<td align="center">
-				<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idcalendarioguardias%>' >
-				<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=idturno%>' >
-				<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=idguardia%>' >
-				<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=idinstitucion%>' />
+				<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_1' id='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idcalendarioguardias%>' />
+				<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_2' id='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=idturno%>' />
+				<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_3' id='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=idguardia%>' />
+				<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_4' id='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=idinstitucion%>' />
 				<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio)%></td>
 				<td align="center"><%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin)%></td>
 				<td align="center"><%=generado%></td>
