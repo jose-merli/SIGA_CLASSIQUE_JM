@@ -203,28 +203,25 @@
 	%>
 		<html:form action="DefinirTurnosAction.do" method="post" target="<%=elTarget%>" style="display:none">			
 			<!-- Datos del Colegiado seleccionado -->
-			<input type="hidden" name="nombreColegiadoPestanha" value = "<%=nombrePestanha%>"/>
-			<input type="hidden" name="numeroColegiadoPestanha" value = "<%=numeroPestanha%>"/>
+			<input type="hidden" id="nombreColegiadoPestanha" name="nombreColegiadoPestanha"  value = "<%=nombrePestanha%>"/>
+			<input type="hidden" id="numeroColegiadoPestanha"  name="numeroColegiadoPestanha" value = "<%=numeroPestanha%>"/>
 			
-			<input type="hidden" name="modo" />
+			<input type="hidden" id="modo"  name="modo" />
 			<!-- campos a pasar -->
-			<input type="hidden" name="paso" value="turno"/>
-			<input type="hidden" name="idInstitucion" />
-			<input type="hidden" name="idPersona" />
-			<input type="hidden" name="idTurno" />
-			<input type="hidden" name="fechaSolicitud"/>
+			<input type="hidden" id="paso"  name="paso" value="turno"/>
+			<input type="hidden" id="idInstitucion"  name="idInstitucion" />
+			<input type="hidden" id="idPersona"  name="idPersona" />
+			<input type="hidden" id="idTurno"  name="idTurno" />
+			<input type="hidden" id="fechaSolicitud" name="fechaSolicitud"/>
 			
-			<input type="hidden" name="observacionesSolicitud"/>
-			<input type="hidden" name="fechaValidacion"/>
-			<input type="hidden" name="observacionesValidacion"/>
-			<input type="hidden" name="fechaSolicitudBaja"/>
-			<input type="hidden" name="observacionesBaja"/>
-			<input type="hidden" name="turnosBajaLogica" value="<%=turnosBajaLogica%>">
-			
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" id="filaSelD" name="filaSelD"/>
-			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD"/>
-			<input type="hidden" name="actionModal" value="">		
+			<input type="hidden" id="observacionesSolicitud" name="observacionesSolicitud"/>
+			<input type="hidden" id="fechaValidacion" name="fechaValidacion"/>
+			<input type="hidden" id="observacionesValidacion" name="observacionesValidacion"/>
+			<input type="hidden" id="fechaSolicitudBaja" name="fechaSolicitudBaja"/>
+			<input type="hidden" id="observacionesBaja" name="observacionesBaja"/>
+			<input type="hidden" id="turnosBajaLogica"  name="turnosBajaLogica" value="<%=turnosBajaLogica%>">
+			<input type="hidden" id="actionModal"  name="actionModal" value="">		
+							
 		</html:form>	
 		
 		
@@ -353,36 +350,36 @@
 
 			<siga:FilaConIconos fila='<%=String.valueOf(i)%>' botones="<%=botones%>" visibleBorrado="<%=String.valueOf(isEntradaSJCS)%>" visibleEdicion="<%=String.valueOf(isEntradaSJCS)%>" pintarEspacio="<%=String.valueOf(isEntradaSJCS)%>" elementos='<%=elems%>' clase="listaNonEdit">
 				
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_1' name='oculto<%=String.valueOf(i)%>_1' name='oculto<%=String.valueOf(i)%>_1' value='<%=registro.get("IDTURNO")%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_2' name='oculto<%=String.valueOf(i)%>_2' value='<%=registro.get("GUARDIAS")%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_3' name='oculto<%=String.valueOf(i)%>_3' value='<%=registro.get("VALIDARJUSTIFICACIONES")%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_4' name='oculto<%=String.valueOf(i)%>_4' value='<%=registro.get("VALIDARINSCRIPCIONES")%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_5' name='oculto<%=String.valueOf(i)%>_5' value='<%=registro.get("DESIGNADIRECTA")%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_6' name='oculto<%=String.valueOf(i)%>_6' value='<%=registro.get("REPARTOPORPUNTOS")%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_7' name='oculto<%=String.valueOf(i)%>_7' value=''>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_8' name='oculto<%=String.valueOf(i)%>_8' value=''>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_9' name='oculto<%=String.valueOf(i)%>_9' value='<%=registro.get("IDORDENACIONCOLAS")%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_10' name='oculto<%=String.valueOf(i)%>_10' value='<%=o5%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_11' name='oculto<%=String.valueOf(i)%>_11' value='<%=registro.get("IDAREA")%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_12' name='oculto<%=String.valueOf(i)%>_12' value='<%=registro.get("IDMATERIA")%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_13' name='oculto<%=String.valueOf(i)%>_13' value='<%=registro.get("IDZONA")%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_14' name='oculto<%=String.valueOf(i)%>_14' value='<%=o3%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_15' name='oculto<%=String.valueOf(i)%>_15' value='<%=o4%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_16' name='oculto<%=String.valueOf(i)%>_16' value='<%=o5%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_17' name='oculto<%=String.valueOf(i)%>_17' value='<%=registro.get("IDGRUPOFACTURACION")%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_18' name='oculto<%=String.valueOf(i)%>_18' value=''>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_19' name='oculto<%=String.valueOf(i)%>_19' value=''>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_20' name='oculto<%=String.valueOf(i)%>_20' value='<%=registro.get("FECHASOLICITUD")%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_21' name='oculto<%=String.valueOf(i)%>_21' value='<%=registro.get("OBSERVACIONESSOLICITUD")%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_22' name='oculto<%=String.valueOf(i)%>_22' value='<%=registro.get("FECHAVALIDACION")%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_23' name='oculto<%=String.valueOf(i)%>_23' value='<%=registro.get("OBSERVACIONESVALIDACION")%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_24' name='oculto<%=String.valueOf(i)%>_24' value='<%=registro.get("FECHASOLICITUDBAJA")%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_25' name='oculto<%=String.valueOf(i)%>_25' value='<%=registro.get("OBSERVACIONESBAJA")%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_26' name='oculto<%=String.valueOf(i)%>_26' value='<%=registro.get("IDGRUPOFACTURACION")%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_27' name='oculto<%=String.valueOf(i)%>_27' value='<%=registro.get("FECHABAJA")%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_28' name='oculto<%=String.valueOf(i)%>_28' value='<%=registro.get("FECHADENEGACION")%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_29' name='oculto<%=String.valueOf(i)%>_29' value=''>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_30' name='oculto<%=String.valueOf(i)%>_30' value='<%=registro.get("OBSERVACIONESVALBAJA")%>'>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_1' name='oculto<%=String.valueOf(i)%>_1' value='<%=registro.get("IDTURNO")%>'/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_2' name='oculto<%=String.valueOf(i)%>_2' value='<%=registro.get("GUARDIAS")%>'/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_3' name='oculto<%=String.valueOf(i)%>_3' value='<%=registro.get("VALIDARJUSTIFICACIONES")%>'/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_4' name='oculto<%=String.valueOf(i)%>_4' value='<%=registro.get("VALIDARINSCRIPCIONES")%>'/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_5' name='oculto<%=String.valueOf(i)%>_5' value='<%=registro.get("DESIGNADIRECTA")%>'/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_6' name='oculto<%=String.valueOf(i)%>_6' value='<%=registro.get("REPARTOPORPUNTOS")%>'/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_7' name='oculto<%=String.valueOf(i)%>_7' value=''/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_8' name='oculto<%=String.valueOf(i)%>_8' value=''/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_9' name='oculto<%=String.valueOf(i)%>_9' value='<%=registro.get("IDORDENACIONCOLAS")%>'/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_10' name='oculto<%=String.valueOf(i)%>_10' value='<%=o5%>'/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_11' name='oculto<%=String.valueOf(i)%>_11' value='<%=registro.get("IDAREA")%>'/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_12' name='oculto<%=String.valueOf(i)%>_12' value='<%=registro.get("IDMATERIA")%>'/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_13' name='oculto<%=String.valueOf(i)%>_13' value='<%=registro.get("IDZONA")%>'/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_14' name='oculto<%=String.valueOf(i)%>_14' value='<%=o3%>'/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_15' name='oculto<%=String.valueOf(i)%>_15' value='<%=o4%>'/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_16' name='oculto<%=String.valueOf(i)%>_16' value='<%=o5%>'/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_17' name='oculto<%=String.valueOf(i)%>_17' value='<%=registro.get("IDGRUPOFACTURACION")%>'/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_18' name='oculto<%=String.valueOf(i)%>_18' value=''/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_19' name='oculto<%=String.valueOf(i)%>_19' value=''/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_20' name='oculto<%=String.valueOf(i)%>_20' value='<%=registro.get("FECHASOLICITUD")%>'/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_21' name='oculto<%=String.valueOf(i)%>_21' value='<%=registro.get("OBSERVACIONESSOLICITUD")%>'/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_22' name='oculto<%=String.valueOf(i)%>_22' value='<%=registro.get("FECHAVALIDACION")%>'/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_23' name='oculto<%=String.valueOf(i)%>_23' value='<%=registro.get("OBSERVACIONESVALIDACION")%>'/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_24' name='oculto<%=String.valueOf(i)%>_24' value='<%=registro.get("FECHASOLICITUDBAJA")%>'/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_25' name='oculto<%=String.valueOf(i)%>_25' value='<%=registro.get("OBSERVACIONESBAJA")%>'/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_26' name='oculto<%=String.valueOf(i)%>_26' value='<%=registro.get("IDGRUPOFACTURACION")%>'/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_27' name='oculto<%=String.valueOf(i)%>_27' value='<%=registro.get("FECHABAJA")%>'/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_28' name='oculto<%=String.valueOf(i)%>_28' value='<%=registro.get("FECHADENEGACION")%>'/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_29' name='oculto<%=String.valueOf(i)%>_29' value=''/>
+				<input type='hidden' id='oculto<%=String.valueOf(i)%>_30' name='oculto<%=String.valueOf(i)%>_30' value='<%=registro.get("OBSERVACIONESVALBAJA")%>'/>
 				
 				<%if (!isEntradaSJCS){%>
 				<td ><%=registro.get("ABREVIATURA")%>&nbsp;</td>
@@ -465,9 +462,9 @@
 							<siga:Idioma key="gratuita.gestionInscripciones.vertodas"/>
 							
 							<% if (bIncluirBajaLogica) { %>
-								<input type="checkbox" name="bajaLogica" onclick="incluirRegBajaLogica(this);" checked>
+								<input type="checkbox" id="bajaLogica"  name="bajaLogica" onclick="incluirRegBajaLogica(this);" checked/>
 							<% } else { %>
-								<input type="checkbox" name="bajaLogica" onclick="incluirRegBajaLogica(this);">
+								<input type="checkbox" id="bajaLogica" name="bajaLogica" onclick="incluirRegBajaLogica(this);"/>
 							<% } %>
 						</td>
 							
@@ -679,64 +676,64 @@
 	</script>	
 		<html:form action="/JGR_DefinirTurnosLetrado.do" method="post" target="">
 			<input type="hidden" name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>">
-			<html:hidden property="modo" value="" />
-			<html:hidden property="fechaConsulta"/>
+			<html:hidden property="modo"  styleId="modo"  value="" />
+			<html:hidden property="fechaConsulta"  styleId="fechaConsulta"/>
 		</html:form>	
 		
 		<html:form action="/JGR_AltaTurnosGuardias" name="FormASolicitar" type ="com.siga.gratuita.form.InscripcionTGForm" styleId="FormASolicitar">
-			<html:hidden property="modo" />
-			<html:hidden property="idInstitucion" />
-			<html:hidden property="idPersona" />
-			<html:hidden property="idTurno" />
-			<html:hidden property="fechaSolicitud" />
-			<html:hidden property="observacionesSolicitud" />
-			<html:hidden property="fechaValidacion" />
-			<html:hidden property="observacionesValidacion" />
-			<html:hidden property="fechaSolicitudBaja" />
-			<html:hidden property="observacionesBaja" />
-			<html:hidden property="fechaBaja" />
-			<html:hidden property="observacionesValBaja" />
-			<html:hidden property="observacionesDenegacion" />
-			<html:hidden property="fechaDenegacion" />
-			<html:hidden property="estadoPendientes"/>
-			<input type="hidden" name="actionModal" />
+			<html:hidden styleId="modo"  property="modo" />
+			<html:hidden styleId="idInstitucion"  property="idInstitucion" />
+			<html:hidden styleId="idPersona"  property="idPersona"  />
+			<html:hidden styleId="idTurno" property="idTurno" />
+			<html:hidden styleId="fechaSolicitud"  property="fechaSolicitud" />
+			<html:hidden styleId="observacionesSolicitud"  property="observacionesSolicitud" />
+			<html:hidden styleId="fechaValidacion" property="fechaValidacion" />
+			<html:hidden styleId="observacionesValidacion"  property="observacionesValidacion" />
+			<html:hidden styleId="fechaSolicitudBaja"  property="fechaSolicitudBaja"  />
+			<html:hidden styleId="observacionesBaja"  property="observacionesBaja" />
+			<html:hidden styleId="fechaBaja"  property="fechaBaja" />
+			<html:hidden styleId="observacionesValBaja"   property="observacionesValBaja" />
+			<html:hidden styleId="observacionesDenegacion" property="observacionesDenegacion" />
+			<html:hidden styleId="fechaDenegacion"  property="fechaDenegacion" />
+			<html:hidden styleId="estadoPendientes" property="estadoPendientes"/>
+			<input type="hidden" name="actionModal" id="actionModal" />
 	</html:form>
 	<html:form action="/JGR_SolicitarBajaTurno" name="FormASolicitarBaja" type ="com.siga.gratuita.form.InscripcionTGForm" styleId="FormASolicitarBaja">
-			<html:hidden property="modo"/>
-			<html:hidden property="idInstitucion" />
-			<html:hidden property="idPersona" />
-			<html:hidden property="idTurno" />
-			<html:hidden property="fechaSolicitud" />
-			<html:hidden property="observacionesSolicitud" />
-			<html:hidden property="fechaValidacion" />
-			<html:hidden property="observacionesValidacion" />
-			<html:hidden property="fechaSolicitudBaja" />
-			<html:hidden property="observacionesBaja" />
-			<html:hidden property="fechaBaja" />
-			<html:hidden property="observacionesValBaja" />
-			<html:hidden property="observacionesDenegacion" />
-			<html:hidden property="fechaDenegacion" />
-			<html:hidden property="estadoPendientes"/>
-			<input type="hidden" name="actionModal" />
+			<html:hidden styleId="modo"  property="modo"/>
+			<html:hidden styleId="idInstitucion"  property="idInstitucion" />
+			<html:hidden styleId="idPersona" property="idPersona" />
+			<html:hidden styleId="idTurno" property="idTurno" />
+			<html:hidden styleId="fechaSolicitud" property="fechaSolicitud" />
+			<html:hidden styleId="observacionesSolicitud"  property="observacionesSolicitud" />
+			<html:hidden styleId="fechaValidacion"  property="fechaValidacion" />
+			<html:hidden styleId="observacionesValidacion"   property="observacionesValidacion" />
+			<html:hidden styleId="fechaSolicitudBaja"  property="fechaSolicitudBaja" />
+			<html:hidden styleId="observacionesBaja"  property="observacionesBaja" />
+			<html:hidden styleId="fechaBaja" property="fechaBaja" />
+			<html:hidden styleId="observacionesValBaja" property="observacionesValBaja" />
+			<html:hidden styleId="observacionesDenegacion"  property="observacionesDenegacion" />
+			<html:hidden styleId="fechaDenegacion"  property="fechaDenegacion" />
+			<html:hidden styleId="estadoPendientes" property="estadoPendientes"/>
+			<input type="hidden" name="actionModal" id="actionModal"  />
 	</html:form>
 	
 	<html:form action="/JGR_BajaTurnos" name="FormAConsultar" type ="com.siga.gratuita.form.InscripcionTGForm" styleId="FormAConsultar">
-			<html:hidden property="modo"/>
-			<html:hidden property="idInstitucion" />
-			<html:hidden property="idPersona" />
-			<html:hidden property="idTurno" />
-			<html:hidden property="fechaSolicitud" />
-			<html:hidden property="observacionesSolicitud" />
-			<html:hidden property="fechaValidacion" />
-			<html:hidden property="observacionesValidacion" />
-			<html:hidden property="fechaSolicitudBaja" />
-			<html:hidden property="observacionesBaja" />
-			<html:hidden property="fechaBaja"/>
-			<html:hidden property="observacionesDenegacion" />
-			<html:hidden property="observacionesValBaja" />
-			<html:hidden property="fechaDenegacion" />
-			<html:hidden property="estadoPendientes"/>
-			<input type="hidden" name="actionModal" />
+			<html:hidden styleId="modo"  property="modo"/>
+			<html:hidden styleId="idInstitucion"  property="idInstitucion" />
+			<html:hidden styleId="idPersona"  property="idPersona" />
+			<html:hidden styleId="idTurno" property="idTurno" />
+			<html:hidden styleId="fechaSolicitud"  property="fechaSolicitud" />
+			<html:hidden styleId="observacionesSolicitud"  property="observacionesSolicitud" />
+			<html:hidden styleId="fechaValidacion"  property="fechaValidacion" />
+			<html:hidden styleId="observacionesValidacion"  property="observacionesValidacion" />
+			<html:hidden styleId="fechaSolicitudBaja" property="fechaSolicitudBaja" />
+			<html:hidden styleId="observacionesBaja"  property="observacionesBaja" />
+			<html:hidden styleId="fechaBaja" property="fechaBaja"/>
+			<html:hidden styleId="observacionesDenegacion"  property="observacionesDenegacion" />
+			<html:hidden styleId="observacionesValBaja"  property="observacionesValBaja" />
+			<html:hidden styleId="fechaDenegacion"  property="fechaDenegacion" />
+			<html:hidden styleId="estadoPendientes" property="estadoPendientes"/>
+			<input type="hidden" name="actionModal" id="actionModal" />
 	</html:form>
 	
 		

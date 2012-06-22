@@ -129,32 +129,28 @@
 			 de cabeceras fijas -->
 			 
 		<html:form action="/FAC_ConsultaMorosos.do" method="POST" target="submitArea" style="display:none">			
-		    <html:hidden property = "modo" value = ""/>
+		    <html:hidden styleId = "modo" value = ""/>
 		    
-		    <html:hidden property="registrosSeleccionados" />
-			<html:hidden property="datosPaginador" />
-			<html:hidden property="seleccionarTodos" />
+		    <html:hidden styleId="registrosSeleccionados"  property="registrosSeleccionados" />
+			<html:hidden styleId="datosPaginador"  property="datosPaginador" />
+			<html:hidden styleId="seleccionarTodos"  property="seleccionarTodos" />
 		    
-			<html:hidden property = "hiddenFrame" value = "1"/>
-			<html:hidden property = "idPersona" value = ""/>
-			<html:hidden property = "fechaDesde" value = ""/>
-			<html:hidden property = "fechaHasta" value = ""/>
-			<html:hidden property = "numColegiado" value = ""/>
-			<html:hidden property = "nombre" value = ""/>
-			<html:hidden property = "modelo" value = ""/>
-			
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD" value = "">
-			<input type="hidden" name="actionModal" value="">
+			<html:hidden styleId = "hiddenFrame"  property = "hiddenFrame" value = "1"/>
+			<html:hidden styleId = "idPersona"  property = "idPersona"  value = ""/>
+			<html:hidden styleId = "fechaDesde"  property = "fechaDesde" value = ""/>
+			<html:hidden styleId = "fechaHasta"  property = "fechaHasta" value = ""/>
+			<html:hidden styleId = "numColegiado"  property = "numColegiado" value = ""/>
+			<html:hidden styleId = "nombre"  property = "nombre" value = ""/>
+			<html:hidden styleId = "modelo"  property = "modelo" value = ""/>
+			<input type="hidden" id="actionModal"  name="actionModal" value="">
 			
 			
 		</html:form>
 		
 	
 		<html:form action="/FAC_Devoluciones" target="submitArea">
-			<html:hidden property="modo" value="renegociarCobrosRecobros" />
-			<html:hidden property="datosFacturas" />
+			<html:hidden property="modo"  styleId="modo" value="renegociarCobrosRecobros" />
+			<html:hidden property="datosFacturas"  styleId="datosFacturas" />
 			<input type="hidden" name="actionModal" value="">
 			
 		</html:form>

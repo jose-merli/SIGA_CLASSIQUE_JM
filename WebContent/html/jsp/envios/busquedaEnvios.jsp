@@ -118,16 +118,12 @@
 			 
 		<html:form action="/ENV_DefinirEnvios.do?noReset=true" method="POST" target="mainWorkArea" style="display:none">
 				
-		    <html:hidden property = "modo"/>
-			<html:hidden property = "hiddenFrame" value = "1"/>
-			<html:hidden property = "idEnvio"/>
-			<html:hidden property = "idTipoEnvio"/>
-			<html:hidden property = "idImpresora"/>
-
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD" id="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+		    <html:hidden styleId = "modo" property = "modo"/>
+			<html:hidden styleId = "hiddenFrame"  property = "hiddenFrame"  value = "1"/>
+			<html:hidden styleId = "idEnvio" property = "idEnvio"/>
+			<html:hidden styleId = "idTipoEnvio"  property = "idTipoEnvio"/>
+			<html:hidden styleId = "idImpresora"  property = "idImpresora"/>
+			<input type="hidden" id="actionModal"  name="actionModal" value="">
 		</html:form>
 
 			<siga:TablaCabecerasFijas 

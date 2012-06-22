@@ -101,15 +101,10 @@
 
 		<html:form action="/PCAJGGestionarTablasMaestras.do" method="POST" target="submitArea" style="display:none">
 			<html:hidden property = "modo" value = ""/>
-			<input type="hidden" name="nombreTablaMaestra" value="<%=beanTablaMaestra.getIdentificador()%>">
-			<input type="hidden" name="tablaRelacion" value="<%=beanTablaMaestra.getTablaRelacion()%>">
-			<input type="hidden" name="aliasTabla" value="<%=beanTablaMaestra.getAliasTabla()%>">
-			
-			
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<input type="hidden" id="nombreTablaMaestra"  name="nombreTablaMaestra" value="<%=beanTablaMaestra.getIdentificador()%>">
+			<input type="hidden" id="tablaRelacion"  name="tablaRelacion" value="<%=beanTablaMaestra.getTablaRelacion()%>">
+			<input type="hidden" id="aliasTabla" name="aliasTabla" value="<%=beanTablaMaestra.getAliasTabla()%>">
+			<input type="hidden" id="actionModal" value="">
 		</html:form>	
 		
 			

@@ -130,17 +130,13 @@
 		<html:form action="/CEN_SolicitudesModificacionEspecificas.do" method="POST" target="_blank" style="display:none">
 
 			<!-- Campo obligatorio -->
-			<html:hidden property = "modo" value = ""/>
-			<html:hidden property = "idPersona" value ="<%=idPersona%>"/>
-			<html:hidden property = "idInstitucion" value ="<%=idInstitucion%>"/>
-			<html:hidden property = "solicitudes"/>
-			<html:hidden property = "solicitudesTipoModif"/>
-			<html:hidden property = "tipoModifEspec" value ="<%=tipoModificacion%>"/>			
-			
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" id="filaSelD" name="filaSelD">
-			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<html:hidden styleId = "modo" property = "modo" value = ""/>
+			<html:hidden styleId = "idPersona"  property = "idPersona" value ="<%=idPersona%>"/>
+			<html:hidden styleId = "idInstitucion"  property = "idInstitucion" value ="<%=idInstitucion%>"/>
+			<html:hidden styleId = "solicitudes" property = "solicitudes"/>
+			<html:hidden styleId = "solicitudesTipoModif" property = "solicitudesTipoModif"/>
+			<html:hidden styleId = "tipoModifEspec"  property = "tipoModifEspec" value ="<%=tipoModificacion%>"/>			
+			<input type="hidden" id="actionModal"  name="actionModal" value="">
 		</html:form>
 					
 			<!-- EN FUNCION DEL TIPO DE MODIFICACION SOLICITADA SE ABRE UNA VENTANA DE UN TAMAÑO U OTRO -->

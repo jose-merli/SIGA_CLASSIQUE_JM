@@ -82,12 +82,8 @@
 		<html:form action="/CEN_MantenimientoPago.do?noReset=true" method="POST" target="mainPestanas" style="display:none">
 
 		<!-- Campo obligatorio -->
-		<html:hidden property = "modo" value = "" />
-		
-		<!-- RGG: cambio a formularios ligeros -->
-		<input type="hidden" name="filaSelD">
-		<input type="hidden" name="tablaDatosDinamicosD">
-		<input type="hidden" name="actionModal" value="">
+		<html:hidden property = "modo"  styleId = "modo" value = "" />
+		<input type="hidden" name="actionModal"  id="actionModal"  value="">
 		</html:form>	
 		
 

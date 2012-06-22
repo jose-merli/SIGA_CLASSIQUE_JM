@@ -301,10 +301,6 @@
 		<input type="hidden" id="idPersona" name="idPersona" value="<bean:write name='idPersona'/>" />
 		
 		<input type="hidden" id="modo" name="modo" />
-		
-		<!-- RGG: cambio a formularios ligeros -->
-		<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
-		<input type="hidden" id="filaSelD" name="filaSelD">
 		<input type="hidden" id="actionModal" name="actionModal" value="">
 		<input type="hidden" id="desdeFicha" name="desdeFicha" value="1" />
 		<script>

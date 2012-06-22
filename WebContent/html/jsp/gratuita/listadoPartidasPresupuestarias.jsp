@@ -54,12 +54,8 @@
 <body>
 	<%if (obj.size()>0){%>
 	<html:form action="/PartidaPresupuestariaAction.do" method="post" target="submitArea"	 style="display:none">
-		<input type="hidden" name="modo" value="">
-
-		<!-- RGG: cambio a formularios ligeros -->
-		<input type="hidden" name="filaSelD">
-		<input type="hidden" name="tablaDatosDinamicosD">
-		<input type="hidden" name="actionModal" value="">
+		<input type="hidden" name="modo"  id="modo"  value="">
+		<input type="hidden" name="actionModal"  id="actionModal"  value="">
 	</html:form>	
 		
 		<siga:TablaCabecerasFijas 		   

@@ -113,16 +113,12 @@
 		<!-- Formulario de la lista de detalle multiregistro -->
 		<html:form action="/CEN_ComponentesJuridicos.do" method="POST" styleId="componentesJuridicosForm">
 			<!-- Campo obligatorio -->
-			<html:hidden property = "modo" value = ""/>
+			<html:hidden property = "modo"  styleId = "modo"  value = ""/>
 			<input type="hidden" id="nombreUsuario" name="nombreUsuario" value="<%=nombreUsu%>" />
 			<input type="hidden" id="numeroUsuario" name="numeroUsuario" value="<%=numero%>" />
 			<input type='hidden' id="idPersona" name="idPersona" value="<%=idPersona%>" />	
 			<input type='hidden' id="idInstitucion" name="idInstitucion" value="<%=institucion%>" />
 			<input type='hidden' id="accion" name="accion" value="<%=modo%>" />		
-		
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" id="filaSelD" name="filaSelD" />
-			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD" />
 			<input type="hidden" id="actionModal" name="actionModal" value="" />
 			<input type="hidden" id="fechaCargo" name="fechaCargo" value="" />
 		</html:form>

@@ -146,17 +146,13 @@
 
 <body>
 		<html:form action="/FAC_DevolucionesManual.do?noReset=true" method="POST" style="display:none">
-			<html:hidden property = "modo" value = ""/>
-			<html:hidden property = "recibos"/>
-			<html:hidden property = "numeroRecibo"/>
-			<html:hidden property = "fechaCargoDesde"/>
-			<html:hidden property = "fechaCargoHasta"/>
-			<html:hidden property = "titular"/>
-
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<html:hidden styleId = "modo"  property = "modo" value = ""/>
+			<html:hidden styleId = "recibos" property = "recibos"/>
+			<html:hidden styleId = "numeroRecibo" property = "numeroRecibo"/>
+			<html:hidden styleId = "fechaCargoDesde" property = "fechaCargoDesde"/>
+			<html:hidden styleId = "fechaCargoHasta" property = "fechaCargoHasta"/>
+			<html:hidden styleId = "titular" property = "titular"/>
+			<input type="hidden" name="actionModal"  id="actionModal"  value="">
 		</html:form>
 		
 			

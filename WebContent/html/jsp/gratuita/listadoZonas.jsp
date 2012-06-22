@@ -47,13 +47,9 @@
 <body>
 	<%if (obj.size()>0){%>
 	<html:form action="/JGR_DefinirZonasSubzonas.do" method="post" target="mainWorkArea" style="display:none">
-		<html:hidden property = "modo" value = ""/>
-		<html:hidden property = "accion" value = "zona"/>
-		
-		<!-- RGG: cambio a formularios ligeros -->
-		<input type="hidden" name="filaSelD">
-		<input type="hidden" name="tablaDatosDinamicosD">
-		<input type="hidden" name="actionModal" value="">
+		<html:hidden property = "modo"  styleId = "modo"  value = ""/>
+		<html:hidden property = "accion"  styleId = "accion" value = "zona"/>
+		<input type="hidden" name="actionModal"  id="actionModal"  value="">
 	</html:form>	
 		
 		<siga:TablaCabecerasFijas 		   

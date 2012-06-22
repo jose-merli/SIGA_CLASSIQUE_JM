@@ -191,16 +191,12 @@
 	<html:form action="/JGR_AsistenciasLetrado.do" method="post"
 		target="<%=target%>" style="display:none">
 
-		<input type="hidden" name="modo" />
+		<input type="hidden" name="modo" id="modo" />
 
-		<input type="hidden" name="idPersona" value="<%=idPersona%>" />
-		<input type="hidden" name="nColegiado" value="<%=numeroPestanha%>">
-		<!-- RGG: cambio a formularios ligeros -->
-		<input type="hidden" id="tablaDatosDinamicosD"
-			name="tablaDatosDinamicosD" />
-		<input type="hidden" id="filaSelD" name="filaSelD" />
-		<input type="hidden" name="actionModal" value="">
-		<input type="hidden" name="esFichaColegial"
+		<input type="hidden" name="idPersona" id="idPersona" value="<%=idPersona%>" />
+		<input type="hidden" name="nColegiado"  id="nColegiado" value="<%=numeroPestanha%>">
+		<input type="hidden" name="actionModal"  id="actionModal" value="">
+		<input type="hidden" name="esFichaColegial" id="esFichaColegial"
 			value="<%=esFichaColegial%>">
 	</html:form>
 

@@ -140,18 +140,15 @@
 		<html:form action="/JGR_BusquedaClientesFiltros.do" method="POST" target="submitArea"  style="display:none">
 			<!-- Campo obligatorio -->
 			<html:hidden property = "modo" value = "" />
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" id="filaSelD" name="filaSelD" />
-			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD" />
-			<input type="hidden" name="actionModal" value="" />
+			<input type="hidden" name="actionModal"  id="actionModal" value="" />
 		</html:form>	
 		
 		<form name="aux" id="aux" action="<%=app%>/JGR_BusquedaClientesFiltros.do" method="post" style="display:none">
-			<input type="hidden" name="actionModal" value="BusquedaClientesFiltrosForm"/>
+			<input type="hidden" name="actionModal"  id="actionModal" value="BusquedaClientesFiltrosForm"/>
 			<input type="hidden" name="idInstitucion" id="idInstitucion" value="<%=idInstitucion%>"/>
 			<input type="hidden" name="idPersona" id="idPersona" value=""/>
 			<input type="hidden" name="sustituta" id="sustituta" value=""/>
-			<input type="hidden" name="modo" value="editar"/>
+			<input type="hidden" name="modo"  id="modo" value="editar"/>
 		</form>
 		
 <%		String tamanosCol="";

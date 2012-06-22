@@ -93,23 +93,19 @@
 		<!-- Formulario de la lista de detalle multiregistro -->
 		<html:form action="/JGR_MantenimientoDesignas.do" method="post" target="mainWorkArea" style="display:none">
 			<!-- Campo obligatorio -->
-			<html:hidden property = "modo" value = ""/>
-			<html:hidden property="registrosSeleccionados" />
-			<html:hidden property="datosPaginador" />
-			<html:hidden property="seleccionarTodos" />
-			
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
-			<html:hidden property="compensar" value="" />
+			<html:hidden property = "modo"  styleId = "modo" value = ""/>
+			<html:hidden property="registrosSeleccionados"  styleId="registrosSeleccionados" />
+			<html:hidden property="datosPaginador"  styleId="datosPaginador" />
+			<html:hidden property="seleccionarTodos"  styleId="seleccionarTodos" />
+			<input type="hidden" id="actionModal" name="actionModal" value="">
+			<html:hidden property="compensar" styleId="compensar"  value="" />
 		</html:form>
 		
 		<html:form action="/JGR_Designas" method="POST" target="resultado" style="display:none">			
-		    <html:hidden property = "modo" value = ""/>
-		    <html:hidden property="registrosSeleccionados" />
-			<html:hidden property="datosPaginador" />
-			<html:hidden property="seleccionarTodos" />
+		    <html:hidden property = "modo"  styleId = "modo" value = ""/>
+		    <html:hidden property="registrosSeleccionados" styleId="registrosSeleccionados" />
+			<html:hidden property="datosPaginador"  styleId="datosPaginador" />
+			<html:hidden property="seleccionarTodos"  styleId="seleccionarTodos" />
 		</html:form>	
 		
 			<siga:TablaCabecerasFijas 
@@ -162,18 +158,18 @@
 								break;
 							}
 						}if (isChecked) {%>
-								<input type="checkbox" value="<%=valorCheck%>"  name="chkPersona" checked onclick="pulsarCheck(this)">
+								<input type="checkbox" value="<%=valorCheck%>"  id="chkPersona"  name="chkPersona" checked onclick="pulsarCheck(this)">
 							<%} else {%>
-								<input type="checkbox" value="<%=valorCheck%>"  name="chkPersona" onclick="pulsarCheck(this)" >
+								<input type="checkbox" value="<%=valorCheck%>"  id="chkPersona"  name="chkPersona" onclick="pulsarCheck(this)" >
 						<%}%>
 						</td>
 						<td>
-							<input type='hidden' name='oculto<%=String.valueOf(contadorFila)%>_1' value='<%=registro.get("IDTURNO")%>'>
-							<input type='hidden' name='oculto<%=String.valueOf(contadorFila)%>_2' value='<%=registro.get("IDLETRADODESIG")%>'>
-							<input type='hidden' name='oculto<%=String.valueOf(contadorFila)%>_3' value='<%=registro.get("NUMERO")%>'>
+							<input type='hidden' id='oculto<%=String.valueOf(contadorFila)%>_1' name='oculto<%=String.valueOf(contadorFila)%>_1' value='<%=registro.get("IDTURNO")%>'>
+							<input type='hidden' id='oculto<%=String.valueOf(contadorFila)%>_2' name='oculto<%=String.valueOf(contadorFila)%>_2' value='<%=registro.get("IDLETRADODESIG")%>'>
+							<input type='hidden' id='oculto<%=String.valueOf(contadorFila)%>_3' name='oculto<%=String.valueOf(contadorFila)%>_3' value='<%=registro.get("NUMERO")%>'>
 							
-							<input type='hidden' name='datosCarta' value='idinstitucion==<%=usr.getLocation()%>##idturno==<%=registro.get("IDTURNO")%>##anio==<%=registro.get("ANIO")%>##numero==<%=registro.get("NUMERO")%>##ncolegiado==<%=registro.get("NCOLEGIADO")%>##codigo==<%=registro.get("CODIGO")%>'>
-							<input type='hidden' name='oculto<%=String.valueOf(contadorFila)%>_4' value='<%=registro.get("ANIO")%>'>
+							<input type='hidden' id='datosCarta' name='datosCarta' value='idinstitucion==<%=usr.getLocation()%>##idturno==<%=registro.get("IDTURNO")%>##anio==<%=registro.get("ANIO")%>##numero==<%=registro.get("NUMERO")%>##ncolegiado==<%=registro.get("NCOLEGIADO")%>##codigo==<%=registro.get("CODIGO")%>'>
+							<input type='hidden' id='oculto<%=String.valueOf(contadorFila)%>_4'  name='oculto<%=String.valueOf(contadorFila)%>_4' value='<%=registro.get("ANIO")%>'>
 							<%=registro.get("TURNODESIG")%>&nbsp;
 						</td>
 						<td><%=registro.get("ANIO")%>&nbsp;</td>
@@ -219,19 +215,18 @@
 
 <!-- FIN: LISTA DE VALORES -->
 <html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
-	<html:hidden property="idInstitucion" value = "<%=idInstitucionLocation%>"/>
-	<html:hidden property="idTipoInforme" value="OFICI"/>
-	<html:hidden property="enviar" value="1"/>
-	<html:hidden property="descargar" value="1"/>
-	<html:hidden property="datosInforme"/>
-	<html:hidden property="modo" value = "preSeleccionInformes"/>
-	<input type='hidden' name='actionModal'>
+	<html:hidden styleId="idInstitucion"  property="idInstitucion"  value = "<%=idInstitucionLocation%>"/>
+	<html:hidden styleId="idTipoInforme" property="idTipoInforme"  value="OFICI"/>
+	<html:hidden styleId="enviar" property="enviar"  value="1"/>
+	<html:hidden styleId="descargar" property="descargar" value="1"/>
+	<html:hidden styleId="datosInforme" property="datosInforme"/>
+	<html:hidden styleId="modo" property="modo"  value = "preSeleccionInformes"/>
+	<input type='hidden' name='actionModal' id='actionModal'>
 </html:form>
 	<!-- Formulario para la edicion del envio -->
 <form name="DefinirEnviosForm" method="POST" action="/SIGA/ENV_DefinirEnvios.do" target="mainWorkArea">
-	<input type="hidden" name="modo" value="">
-	<input type="hidden" name="tablaDatosDinamicosD" value="">
-
+	<input type="hidden" name="modo"  id="modo"  value="">
+	<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD"  value="">
 </form>
 	
 <!-- INICIO: SUBMIT AREA -->

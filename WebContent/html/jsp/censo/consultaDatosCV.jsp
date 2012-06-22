@@ -156,17 +156,15 @@
 	<table class="tablaTitulo" align="center" cellspacing=0>
 		<html:form method="post" action="/CEN_DatosCV.do" styleId="datosCVForm">
 			<!-- Campo obligatorio -->
-			<html:hidden property="modo" value="" />
-			<input type="hidden" name="nombreUsuario" value="<%=nombre%>" />
-			<input type="hidden" name="numeroUsuario" value="<%=numero%>" />
-			<input type='hidden' name="idPersona" value="<%=String.valueOf((Long)request.getAttribute("idPersona"))%>" />
-			<input type='hidden' name="idInstitucion" value="<%=String.valueOf((Integer)request.getAttribute("idInstitucion"))%>" />
-			<input type='hidden' name="accion" value="<%=accion%>" />
+			<html:hidden property="modo"  styleId="modo" value="" />
+			<input type="hidden" id="nombreUsuario"  name="nombreUsuario" value="<%=nombre%>" />
+			<input type="hidden" id="numeroUsuario"  name="numeroUsuario" value="<%=numero%>" />
+			<input type='hidden' id="idPersona"  name="idPersona" value="<%=String.valueOf((Long)request.getAttribute("idPersona"))%>" />
+			<input type='hidden' id="idInstitucion"  name="idInstitucion" value="<%=String.valueOf((Integer)request.getAttribute("idInstitucion"))%>" />
+			<input type='hidden' id="accion"  name="accion" value="<%=accion%>" />
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" id="filaSelD" name="filaSelD">
-			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
-			<input type="hidden" name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>">
+			<input type="hidden" id="actionModal"  name="actionModal" value="">
+			<input type="hidden" id="incluirRegistrosConBajaLogica"  name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>">
 		</html:form>
 
 		<tr>

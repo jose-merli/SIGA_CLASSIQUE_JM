@@ -158,11 +158,9 @@
 		<!-- Formulario de la lista de detalle multiregistro -->
 		<html:form action="/CEN_BusquedaClientesModal" method="POST" target="submitArea" style="display:none">
 			<!-- Campo obligatorio -->
-			<html:hidden property ="modo" value = "" />
+			<html:hidden property ="modo" styleId ="modo" value = "" />
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD" id="filaSelD" />
-			<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD"/>
-			<input type="hidden" name="actionModal" value="" />
+			<input type="hidden" id="actionModal"  name="actionModal" value="" />
 			<html:hidden property="numeroColegiado" styleId="numeroColegiado" value=""/>
 			<html:hidden property="idInstitucion" styleId="idInstitucion" value=""/>
 			<html:hidden property="idPersona" styleId="idPersona" value=""/>

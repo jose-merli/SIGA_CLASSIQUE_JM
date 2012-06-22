@@ -70,12 +70,8 @@
 <body >
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
     <html:form action="${path}" method="post" target="submitArea">
-		<input type="hidden" name="modo" value="">		
-		
-		<!-- RGG: cambio a formularios ligeros -->
-		<input type="hidden" id="filaSelD" name="filaSelD">
-		<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
-		<input type="hidden" name="actionModal" value="">
+		<input type="hidden" id="modo"  name="modo" value="">		
+		<input type="hidden" id="actionModal"  name="actionModal" value="">
 	</html:form>	
 	
 		<siga:TablaCabecerasFijas 		   

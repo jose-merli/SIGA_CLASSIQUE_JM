@@ -1040,19 +1040,19 @@
 <table align="center"  width="100%" class="tablaCentralCampos" cellpadding="0" cellspacing="0">
 <html:form action="<%=actionE%>" method="POST" target="mainPestanas" styleId="PersonaJGForm">	
 
-	<html:hidden property = "modo" />
-	<html:hidden property = "nuevo" value="<%=nuevo%>" />
+	<html:hidden styleId = "modo"  property = "modo" />
+	<html:hidden styleId = "nuevo" property = "nuevo" value="<%=nuevo%>" />
 
-	<html:hidden name="PersonaJGForm" property = "accionE" />
-	<html:hidden name="PersonaJGForm" property = "pantalla" />
-	<html:hidden name="PersonaJGForm" property = "localizacionE" />
-	<html:hidden name="PersonaJGForm" property = "tituloE" />
-	<html:hidden name="PersonaJGForm" property = "conceptoE" />
-	<html:hidden name="PersonaJGForm" property = "existeNIF" />
-	<html:hidden name="PersonaJGForm" property = "forzarAjax" />
-	<html:hidden name="PersonaJGForm" property = "lNumerosTelefonos" />
-	<html:hidden property = "idTipoenCalidad" value="<%=idcalidad%>"/>
-	<html:hidden property = "calidadIdinstitucion" value="<%=calidadIdinstitucion%>"/>
+	<html:hidden name="PersonaJGForm" property = "accionE" styleId="accionE"/>
+	<html:hidden name="PersonaJGForm" property = "pantalla" styleId = "pantalla"/>
+	<html:hidden name="PersonaJGForm" property = "localizacionE" styleId = "localizacionE" />
+	<html:hidden name="PersonaJGForm" property = "tituloE" styleId = "tituloE" />
+	<html:hidden name="PersonaJGForm" property = "conceptoE" styleId = "conceptoE" />
+	<html:hidden name="PersonaJGForm" property = "existeNIF"  styleId = "existeNIF" />
+	<html:hidden name="PersonaJGForm" property = "forzarAjax" styleId = "existeNIF"  />
+	<html:hidden name="PersonaJGForm" property = "lNumerosTelefonos" styleId = "lNumerosTelefonos" />
+	<html:hidden property = "idTipoenCalidad"  styleId = "idTipoenCalidad" value="<%=idcalidad%>"/>
+	<html:hidden property = "calidadIdinstitucion" styleId = "calidadIdinstitucion" value="<%=calidadIdinstitucion%>"/>
 	
 	
 	
@@ -1062,19 +1062,19 @@
 					|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)
 					|| conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) {
 	%>
-	<html:hidden name="PersonaJGForm" property = "idInstitucionEJG" />
-	<html:hidden name="PersonaJGForm" property = "idTipoEJG" />
-	<html:hidden name="PersonaJGForm" property = "anioEJG" />
-	<html:hidden name="PersonaJGForm" property = "numeroEJG" />
-	<html:hidden property = "actionModal" value = ""/>
+	<html:hidden name="PersonaJGForm" styleId = "idInstitucionEJG" property = "idInstitucionEJG" />
+	<html:hidden name="PersonaJGForm" styleId = "idTipoEJG"  property = "idTipoEJG" />
+	<html:hidden name="PersonaJGForm" styleId = "anioEJG" property = "anioEJG" />
+	<html:hidden name="PersonaJGForm" styleId = "numeroEJG" property = "numeroEJG" />
+	<html:hidden property = "actionModal" styleId = "actionModal"  value = ""/>
 <%
 	} else if (conceptoE.equals(PersonaJGAction.SOJ)
 				|| conceptoE.equals(PersonaJGAction.SOJ_REPRESENTANTE)) {
 %>
-	<html:hidden name="PersonaJGForm" property = "idInstitucionSOJ" />
-	<html:hidden name="PersonaJGForm" property = "idTipoSOJ" />
-	<html:hidden name="PersonaJGForm" property = "anioSOJ" />
-	<html:hidden name="PersonaJGForm" property = "numeroSOJ" />
+	<html:hidden name="PersonaJGForm" styleId = "idInstitucionSOJ"  property = "idInstitucionSOJ" />
+	<html:hidden name="PersonaJGForm" styleId = "idTipoSOJ"  property = "idTipoSOJ" />
+	<html:hidden name="PersonaJGForm" styleId = "anioSOJ" property = "anioSOJ" />
+	<html:hidden name="PersonaJGForm" styleId = "numeroSOJ" property = "numeroSOJ" />
 <%
 	} else if (conceptoE
 				.equals(PersonaJGAction.ASISTENCIA_ASISTIDO)
@@ -1083,9 +1083,9 @@
 				|| conceptoE
 						.equals(PersonaJGAction.ASISTENCIA_CONTRARIOS)) {
 %>
-	<html:hidden name="PersonaJGForm" property = "idInstitucionASI" />
-	<html:hidden name="PersonaJGForm" property = "anioASI" />
-	<html:hidden name="PersonaJGForm" property = "numeroASI" />
+	<html:hidden name="PersonaJGForm" styleId = "idInstitucionASI"  property = "idInstitucionASI" />
+	<html:hidden name="PersonaJGForm" styleId = "anioASI" property = "anioASI" />
+	<html:hidden name="PersonaJGForm" styleId = "numeroASI"  property = "numeroASI" />
 <%
 	} else if (conceptoE
 				.equals(PersonaJGAction.DESIGNACION_INTERESADO)
@@ -1094,22 +1094,22 @@
 				|| conceptoE
 						.equals(PersonaJGAction.DESIGNACION_REPRESENTANTE)) {
 %>
-	<html:hidden name="PersonaJGForm" property = "idInstitucionDES" />
-	<html:hidden name="PersonaJGForm" property = "idTurnoDES" />
-	<html:hidden name="PersonaJGForm" property = "anioDES" />
-	<html:hidden name="PersonaJGForm" property = "numeroDES" />	
+	<html:hidden name="PersonaJGForm" styleId = "idInstitucionDES" property = "idInstitucionDES" />
+	<html:hidden name="PersonaJGForm" styleId = "idTurnoDES" property = "idTurnoDES" />
+	<html:hidden name="PersonaJGForm" styleId = "anioDES"  property = "anioDES" />
+	<html:hidden name="PersonaJGForm" styleId = "numeroDES" property = "numeroDES" />	
 	
 <%
 	} else if (conceptoE.equals(PersonaJGAction.PERSONAJG)) {
 %>
-	<html:hidden name="PersonaJGForm" property = "idInstitucionPER" />
-	<html:hidden name="PersonaJGForm" property = "idPersonaPER" />
+	<html:hidden name="PersonaJGForm" styleId = "idInstitucionPER" property = "idInstitucionPER" />
+	<html:hidden name="PersonaJGForm" styleId = "idPersonaPER"  property = "idPersonaPER" />
 <%
 	}
 %>
 
-	<html:hidden name="PersonaJGForm" property = "idPersonaJG" />
- 	<html:hidden name="PersonaJGForm" property = "idInstitucionJG"/>
+	<html:hidden name="PersonaJGForm" styleId = "idPersonaJG" property = "idPersonaJG" />
+ 	<html:hidden name="PersonaJGForm" styleId = "idInstitucionJG" property = "idInstitucionJG"/>
  	
 
 <tr>				

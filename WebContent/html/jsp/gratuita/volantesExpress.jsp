@@ -680,16 +680,16 @@
 <!-- INICIO: CAMPOS DE BUSQUEDA-->
 <html:form action="/JGR_VolantesExpres" method="POST"
 	target="mainWorkArea">
-	<html:hidden property="tipoPcajg" />
-	<html:hidden property="modo" value=""/>
-	<html:hidden property="idColegiado" />
-	<html:hidden property="idInstitucion" />
-	<html:hidden property="datosAsistencias" />
-	<html:hidden property="idTipoAsistencia" />
-	<html:hidden property="delito" />
-	<html:hidden property="msgError" value=""/>
-	<html:hidden property="msgAviso" value=""/>
-	<input type="hidden" name="buscaColegiadoManual" value="false"/>
+	<html:hidden property="tipoPcajg" styleId="tipoPcajg" />
+	<html:hidden property="modo" styleId="modo" value=""/>
+	<html:hidden property="idColegiado" styleId="idColegiado" />
+	<html:hidden property="idInstitucion" styleId="idInstitucion" />
+	<html:hidden property="datosAsistencias" styleId="datosAsistencias" />
+	<html:hidden property="idTipoAsistencia" styleId="idTipoAsistencia" />
+	<html:hidden property="delito" styleId="delito" />
+	<html:hidden property="msgError" styleId="msgError" value=""/>
+	<html:hidden property="msgAviso" styleId="msgAviso" value=""/>
+	<input type="hidden" name="buscaColegiadoManual"  id="buscaColegiadoManual" value="false"/>
 
 	<siga:ConjCampos
 		leyenda="gratuita.volantesExpres.literal.cabeceraVolante">

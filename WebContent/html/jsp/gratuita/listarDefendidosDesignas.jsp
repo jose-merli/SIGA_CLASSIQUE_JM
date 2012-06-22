@@ -123,25 +123,23 @@ function accionCerrar() {
 		<!-- Formulario de la lista de detalle multiregistro -->
 		<!-- Formulario de la lista de detalle multiregistro -->
 		<html:form action="/JGR_DefendidosDesignasPerJG.do" method="post" target="submitArea" style="display:none">
-			<input type="hidden" name="modo" value="abrirPestana">
+			<input type="hidden" id="modo"  name="modo" value="abrirPestana">
 			
-			<input type="hidden" name="idInstitucionJG" value="<%=usr.getLocation() %>">
-			<input type="hidden" name="idPersonaJG" value="">
+			<input type="hidden" id="idInstitucionJG" value="<%=usr.getLocation() %>">
+			<input type="hidden" id="idInstitucionJG" name="idPersonaJG" value="">
 	
-			<input type="hidden" name="idInstitucionDES" value="<%=usr.getLocation() %>">
-			<input type="hidden" name="idTurnoDES" value="<%=idturno %>">
-			<input type="hidden" name="anioDES" value="<%=anio %>">
-			<input type="hidden" name="numeroDES" value="<%=numero %>">
+			<input type="hidden" id="idInstitucionDES" name="idInstitucionDES" value="<%=usr.getLocation() %>">
+			<input type="hidden" id="idTurnoDES" name="idTurnoDES" value="<%=idturno %>">
+			<input type="hidden" id="anioDES" name="anioDES" value="<%=anio %>">
+			<input type="hidden" id="numeroDES"  name="numeroDES" value="<%=numero %>">
 	
-			<input type="hidden" name="conceptoE" value="<%=PersonaJGAction.DESIGNACION_INTERESADO %>">
-			<input type="hidden" name="tituloE" value="gratuita.defendidosDesigna.literal.titulo">
-			<input type="hidden" name="localizacionE" value="">
-			<input type="hidden" name="accionE" value="nuevo">
-			<input type="hidden" name="actionE" value="/JGR_DefendidosDesignasPerJG.do">
-			<input type="hidden" name="pantallaE" value="M">
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<input type="hidden" id="conceptoE" name="conceptoE" value="<%=PersonaJGAction.DESIGNACION_INTERESADO %>">
+			<input type="hidden" id="tituloE"  name="tituloE" value="gratuita.defendidosDesigna.literal.titulo">
+			<input type="hidden" id="localizacionE"  name="localizacionE" value="">
+			<input type="hidden" id="localizacionE"  name="accionE" value="nuevo">
+			<input type="hidden" id="actionE" name="actionE" value="/JGR_DefendidosDesignasPerJG.do">
+			<input type="hidden" id="pantallaE" name="pantallaE" value="M">
+
 		</html:form>	
 		<table class="tablaTitulo" cellspacing="0" heigth="38">
 		<tr>

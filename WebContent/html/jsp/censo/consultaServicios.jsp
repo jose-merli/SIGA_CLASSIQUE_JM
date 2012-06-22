@@ -241,21 +241,19 @@ String app = request.getContextPath();
 		<!-- Formulario de la lista de detalle multiregistro -->
 		<html:form action="/CEN_Facturacion.do" method="POST">
 			<!-- Campo obligatorio -->
-			<html:hidden property = "modo" value = "" />
+			<html:hidden property = "modo" styleId = "modo" value = "" />
 
 			<!-- para saber si productos o servicios -->
-			<html:hidden property = "tipoSolicitud" value = "S" />
+			<html:hidden property = "tipoSolicitud" styleId = "tipoSolicitud"  value = "S" />
 
-			<html:hidden name="datosFacturacionForm" property = "idPersona" value = "<%=idPersona %>" />
-			<html:hidden name="datosFacturacionForm" property = "idInstitucion" value = "<%=idInstitucion %>" />
+			<html:hidden name="datosFacturacionForm" property = "idPersona"  styleId = "idPersona"  value = "<%=idPersona %>" />
+			<html:hidden name="datosFacturacionForm" property = "idInstitucion"  styleId = "idInstitucion"  value = "<%=idInstitucion %>" />
 			<!-- RGG: cambio a formularios ligeros -->
-			<html:hidden name="datosFacturacionForm"  property ="filaSelD" styleId="filaSelD"/>
-			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD"/>
-			<input type="hidden" name="actionModal" value=""/>
+			<input type="hidden" name="actionModal" id="actionModal"  value=""/>
 			
-			<input type="hidden" name="pos" value="S"/>
-			<input type="hidden" name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>"/>
-			<input type="hidden" name="accion" value="<%=modo%>"/>
+			<input type="hidden" name="pos" id="pos" value="S"/>
+			<input type="hidden" name="incluirRegistrosConBajaLogica" id="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>"/>
+			<input type="hidden" name="accion" id="accion" value="<%=modo%>"/>
 		</html:form>
 
 

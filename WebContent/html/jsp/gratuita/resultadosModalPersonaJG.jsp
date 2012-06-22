@@ -149,9 +149,7 @@
 			<html:hidden name="BusquedaPersonaJGForm" styleId="modo" property = "modo" value = ""/>
 			<html:hidden name="BusquedaPersonaJGForm" styleId="conceptoE" property = "conceptoE" />
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
 			<input type="hidden" id="actionModal" name="actionModal" value="">
-			<input type="hidden" id="filaSelD" name="filaSelD">
 		</html:form>	
 		
 

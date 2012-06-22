@@ -503,41 +503,31 @@
 	
 	
 		<html:form action="/CER_GestionSolicitudes.do?noReset=true" method="POST" target="resultado">
-			<html:hidden property = "modo" value = ""/>
-			<html:hidden property = "hiddenFrame" value = "1"/>
+			<html:hidden styleId = "modo"  property = "modo"  value = ""/>
+			<html:hidden styleId = "hiddenFrame"  property = "hiddenFrame"  value = "1"/>
 
-			<input type="hidden" name="idsParaGenerarFicherosPDF" value="">
-			<input type="hidden" name="idsTemp" value="">
-			<input type="hidden" name="validado" value="0">
-			<input type="hidden" name="idPeticion" value="">
-			<input type="hidden" name="idProducto" value="">
-			<input type="hidden" name="idTipoProducto" value="">
-			<input type="hidden" name="idProductoInstitucion" value="">
-
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<input type="hidden" id="idsParaGenerarFicherosPDF"  name="idsParaGenerarFicherosPDF"  value="">
+			<input type="hidden" id="idsTemp"  name="idsTemp" value="">
+			<input type="hidden" id="validado"  name="validado"  value="0">
+			<input type="hidden" id="idPeticion"  name="idPeticion"  value="">
+			<input type="hidden" id="idProducto"  name="idProducto" value="">
+			<input type="hidden" id="idTipoProducto"  name="idTipoProducto"  value="">
+			<input type="hidden" id="idProductoInstitucion"  name="idProductoInstitucion"  value="">
+			<input type="hidden" id="actionModal"  name="actionModal"  value="">
 		</html:form>
 
 		<!-- Formulario para la búsqueda de clientes -->
 		<html:form action="/CEN_BusquedaClientes.do" method="POST" target="mainWorkArea">
-			<html:hidden property = "modo" value = "ver"/>
-			<html:hidden property = "filaSelD" value = ""/>
-			<html:hidden property = "tablaDatosDinamicosD" value = ""/>		
+			<html:hidden styleId = "modo"  property = "modo" value = "ver"/>
 		</html:form>
-		
 		<!-- Formulario para la creacion de envio -->
 		<html:form action="/ENV_DefinirEnvios.do" method="POST" target="mainWorkArea">
-			<html:hidden property = "actionModal" value = ""/>
-			<html:hidden property = "modo" value = ""/>
-			<html:hidden property = "subModo" value = ""/>
-			<html:hidden property = "filaSelD" value = ""/>
-			<html:hidden property = "tablaDatosDinamicosD" value = ""/>
-			
-			<html:hidden property = "idSolicitud" value = ""/>
-			<html:hidden property = "idPersona" value = ""/>
-			<html:hidden property = "descEnvio" value = ""/>
+			<html:hidden styleId = "actionModal"  property = "actionModal"  value = ""/>
+			<html:hidden styleId = "modo"  property = "modo"  value = ""/>
+			<html:hidden styleId = "subModo"  property = "subModo"  value = ""/>
+			<html:hidden styleId = "idSolicitud"  property = "idSolicitud" value = ""/>
+			<html:hidden styleId = "idPersona"  property = "idPersona"  value = ""/>
+			<html:hidden styleId = "descEnvio"  property = "descEnvio" value = ""/>
 		</html:form>
 			<siga:TablaCabecerasFijas
 		   	      nombre="tablaDatos"

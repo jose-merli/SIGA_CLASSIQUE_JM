@@ -173,11 +173,7 @@
 		</td>
 	</tr>
 	</table>
-	
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD" id="filaSelD" />
-			<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD" />
-			<input type="hidden" name="actionModal" value="" />
+			<input type="hidden" id="actionModal"  name="actionModal" value="" />
 		</html:form>	
 		
 	<!-- FIN: BOTONES BUSQUEDA -->

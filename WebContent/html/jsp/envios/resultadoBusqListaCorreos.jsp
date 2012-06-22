@@ -62,13 +62,9 @@
 			 
 		<html:form action="/ENV_ListaCorreos.do?noReset=true" method="POST" target="mainWorkArea" style="display:none">
 			
-		    <html:hidden property = "modo" value = ""/>
-			<html:hidden property = "hiddenFrame" value = "1"/>
-
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+		    <html:hidden property = "modo"  styleId = "modo"  value = ""/>
+			<html:hidden property = "hiddenFrame"  styleId = "hiddenFrame"  value = "1"/>
+			<input type="hidden" name="actionModal"  id="actionModal"  value="">
 		</html:form>
 
 		<siga:TablaCabecerasFijas 

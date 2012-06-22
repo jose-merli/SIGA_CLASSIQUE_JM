@@ -113,13 +113,9 @@
 	    <html:form action="${path}?noReset=true" method="POST" target="<%=elTarget%>"  style="display:none">
 			<!-- Campo obligatorio -->
 			<html:hidden property = "modo" value = "" />
-	
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<input type="hidden" id="actionModal"  name="actionModal" value="">
 			
-			<input type="hidden" name="checkHistoricoMovimiento" value="">
+			<input type="hidden"  id="checkHistoricoMovimiento"  name="checkHistoricoMovimiento" value="">
 		</html:form>	
 		
 	<% if(esFicha != null && esFicha.equalsIgnoreCase("1")){%>

@@ -46,13 +46,11 @@
 	
 
 		<html:form action="/ADM_GestionarGruposUsuario.do" method="POST" target="submitArea">
-			<html:hidden property = "modo" value = ""/>
-			<html:hidden property = "modal" value = "true"/>
+			<html:hidden property = "modo" styleId = "modal" value = ""/>
+			<html:hidden property = "modal" styleId = "modal" value = "true"/>
 			
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<input type="hidden" name="actionModal" id="actionModal" value="">
 		</html:form>	
 		
 		

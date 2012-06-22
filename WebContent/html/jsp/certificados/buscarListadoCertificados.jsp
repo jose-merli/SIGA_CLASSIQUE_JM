@@ -51,14 +51,10 @@
 
 	<body class="tablaCentralCampos">
 		<html:form action="/CER_MantenimientoCertificados.do" method="POST" target="mainWorkArea">
-			<html:hidden property = "modo" value = ""/>
-			<html:hidden property = "hiddenFrame" value = "1"/>
-			<html:hidden property = "certificado" value = "<%=sCertificado%>"/>
-
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<html:hidden  styleId = "modo"  property = "modo" value = ""/>
+			<html:hidden  styleId = "hiddenFrame"  property = "hiddenFrame" value = "1"/>
+			<html:hidden  styleId = "certificado"  property = "certificado" value = "<%=sCertificado%>"/>
+			<input type="hidden" id="actionModal" name="actionModal" value="">
 		</html:form>
 
 		

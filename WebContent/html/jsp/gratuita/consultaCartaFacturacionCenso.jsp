@@ -83,19 +83,14 @@
 <input type="hidden" id= "informeUnico" value="<%=informeUnico%>">
 <html:form action="/JGR_PestanaRetencionesFacturacion?noReset=false" method="POST" target="mainWorkArea"
 	style="display:none">
-	<html:hidden property="modo" value="" />
-	<html:hidden property="hiddenFrame" value="1" />
-	<html:hidden property="idInstitucion" />
-	<html:hidden property="idioma" />
-	<html:hidden property="idPersona" />
-	<html:hidden property="datosPaginador" />
+	<html:hidden styleId="modo"  property="modo" value="" />
+	<html:hidden styleId="hiddenFrame"  property="hiddenFrame" value="1" />
+	<html:hidden styleId="idInstitucion" property="idInstitucion"  />
+	<html:hidden styleId="idioma" property="idioma"  />
+	<html:hidden styleId="idPersona"  property="idPersona" />
+	<html:hidden styleId="datosPaginador"  property="datosPaginador" />
 
-
-	<!-- RGG: cambio a formularios ligeros -->
-	<input type="hidden" id="filaSelD" name="filaSelD">
-	<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD" value="">
-	<input type="hidden" name="actionModal" value="">
-
+	<input type="hidden" id="actionModal"  name="actionModal" value="">
 
 </html:form>
 

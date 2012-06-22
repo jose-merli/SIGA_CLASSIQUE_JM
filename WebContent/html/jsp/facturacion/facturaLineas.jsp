@@ -98,11 +98,8 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 <body>
 
 		<html:form action="<%=path%>" method="POST" target="submitArea" style="display:none">
-			<html:hidden property="modo" value = ""/>
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" id="filaSelD" name="filaSelD"/>
-			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD"/>
-			<input type="hidden" name="actionModal" value=""/>
+			<html:hidden styleId="modo"  property="modo" value = ""/>
+			<input type="hidden" id="actionModal"  name="actionModal" value=""/>
 		</html:form>
 		
 			<siga:TablaCabecerasFijas 

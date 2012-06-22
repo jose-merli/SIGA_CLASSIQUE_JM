@@ -146,15 +146,15 @@
 		<html:form action="DefinirGuardiasTurnosAction.do" method="post" target="" 	 style="display:none">
 		
 		<!-- Campo obligatorio -->
-		<html:hidden property = "modo" value = ""/>
+		<html:hidden property = "modo" styleId = "modo" value = ""/>
 		
-		<input type="hidden" name="guardiaElegida" value="">
-		<input type="hidden" name="guardias" value="">
-		<input type="hidden" name="fechaInscripcion" value="">
+		<input type="hidden" name="guardiaElegida" id="guardiaElegida" value="">
+		<input type="hidden" name="guardias" id="guardias" value="">
+		<input type="hidden" name="fechaInscripcion"  id="fechaInscripcion" value="">
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
+			<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD">
 			<!--input type="hidden" name="filaSelD"-->
-			<input type="hidden" name="actionModal" value="">
+			<input type="hidden" name="actionModal" id="actionModal" value="">
 		</html:form>	
 		
 		  <%
@@ -231,7 +231,7 @@
 								 literalDuracion = "gratuita.altaTurnos_2.literal.quincenas";	
 				%>
 		  <siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>"  elementos='<%=elems%>' clase="listaNonEdit">
-				<td><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' id='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=hash.get("IDTURNO")%>'><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=hash.get("IDGUARDIA")%>'><%=hash.get("GUARDIA")%><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=hash.get("GUARDIAS")%>'><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=fechainscripcion%>'></td>
+				<td><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' id='oculto<%=String.valueOf(recordNumber)%>_1'  value='<%=hash.get("IDTURNO")%>'/><input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_2' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=hash.get("IDGUARDIA")%>'/><%=hash.get("GUARDIA")%><input type='hidden'  id='oculto<%=String.valueOf(recordNumber)%>_3' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=hash.get("GUARDIAS")%>'/><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_4' id='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=fechainscripcion%>'/></td>
 				<td><%if(((String)hash.get("OBLIGATORIEDAD")).equalsIgnoreCase("0")){%><siga:Idioma key="gratuita.altaTurnos_2.literal.obligatorias"/><%}else if(((String)hash.get("OBLIGATORIEDAD")).equalsIgnoreCase("1")){%><siga:Idioma key="gratuita.altaTurnos_2.literal.todasninguna"/><%}else{%><siga:Idioma key="gratuita.altaTurnos_2.literal.aeleccion"/><%}%></td>
 				<td>
 				<%=UtilidadesString.mostrarDatoJSP(ScsGuardiasTurnoAdm.obtenerTipoDia((String)hash.get("SELECCIONLABORABLES"), (String)hash.get("SELECCIONFESTIVOS"), usr))%>

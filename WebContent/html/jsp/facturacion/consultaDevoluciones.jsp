@@ -144,13 +144,9 @@
 		</tr>
 	</table>				
 				<html:form action="/FAC_Devoluciones.do" method="POST" target="mainWorkArea" style="display:none">
-					<html:hidden property = "modo" value = ""/>
-					<html:hidden property="idInstitucion" value="<%=idInstitucion%>"/>
-
-					<!-- RGG: cambio a formularios ligeros -->
-					<input type="hidden" name="filaSelD">
-					<input type="hidden" name="tablaDatosDinamicosD">
-					<input type="hidden" name="actionModal" value="">
+					<html:hidden styleId = "modo"  property = "modo"  value = ""/>
+					<html:hidden styleId="idInstitucion" property="idInstitucion" value="<%=idInstitucion%>"/>
+					<input type="hidden" id="actionModal"  name="actionModal" value="">
 				</html:form>
 
 							<siga:TablaCabecerasFijas 

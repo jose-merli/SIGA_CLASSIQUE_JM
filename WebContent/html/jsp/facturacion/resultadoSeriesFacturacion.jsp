@@ -73,12 +73,8 @@
 
 		<!-- Formulario de la lista de detalle multiregistro -->
 		<html:form action="/FAC_AsignacionConceptosFacturables.do" target="mainWorkArea" method="POST"  style="display:none">
-			<html:hidden property = "modo" value = "success"/>
-			
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<html:hidden property = "modo"  styleId = "modo"  value = "success"/>
+			<input type="hidden" name="actionModal"  id="actionModal"  value="">
 		</html:form>			
 
 			<%

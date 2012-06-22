@@ -72,10 +72,8 @@
 	<table align="center">
 
 	<html:form action="/CEN_SolicitudesIncorporacion.do" method="POST" target="resultado">
-		<html:hidden property = "modo" value = ""/>
+		<html:hidden property = "modo"  styleId = "modo"  value = ""/>
 		<input type="hidden" id="limpiarFilaSeleccionada" name="limpiarFilaSeleccionada" value=""/>
-		<input type="hidden" id="filaSelD" name="filasSelD" value=""/>
-
 		<tr>				
 			<td class="labelText"><siga:Idioma key="censo.busquedaSolicitudesIncorporacion.literal.tipoSolicitud"/></td>				
 			<td><siga:ComboBD nombre = "buscarTipoSolicitud" tipo="solicitud" clase="boxCombo" /></td>

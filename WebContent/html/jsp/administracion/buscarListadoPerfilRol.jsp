@@ -43,13 +43,9 @@
 
 	<body class="tablaCentralCampos">
 		<html:form action="/ADM_GestionarPerfilRol.do" method="POST" target="submitArea">
-			<html:hidden property = "modo" value = ""/>
-			<html:hidden property = "modal" value = "true"/>
-			
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<html:hidden property = "modo" styleId = "modo"  value = ""/>
+			<html:hidden property = "modal" styleId = "modal"  value = "true"/>
+			<input type="hidden" name="actionModal"  id="actionModal"  value="">
 		</html:form>	
 		
 		

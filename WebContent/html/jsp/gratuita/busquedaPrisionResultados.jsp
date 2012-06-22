@@ -51,12 +51,9 @@
 
 <body>
 		<html:form action="/JGR_MantenimientoPrisiones.do" method="POST" target="submitArea" style="display:none">
-			<html:hidden property = "modo" value = ""/>
+			<html:hidden property = "modo"  styleId = "modo"  value = ""/>
 
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<input type="hidden" name="actionModal"  id="actionModal"  value="">
 		</html:form>	
 		
 			

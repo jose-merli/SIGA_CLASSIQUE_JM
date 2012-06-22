@@ -94,14 +94,11 @@ String informeUnico =(String) request.getAttribute("informeUnico");
 <body onload="cargarChecks();checkTodos();">
 	<input type="hidden" id= "informeUnico" value="<%=informeUnico%>">
 	<html:form action="/JGR_ExpedientesSOJ.do" method="post" target="mainWorkArea" style="display:none">
-		<input type="hidden" name="modo" value="">
-		<html:hidden property="registrosSeleccionados" />
-		<html:hidden property="datosPaginador" />
-		<html:hidden property="seleccionarTodos" />
-		<!-- RGG: cambio a formularios ligeros -->
-		<input type="hidden" name="filaSelD">
-		<input type="hidden" name="tablaDatosDinamicosD">
-		<input type="hidden" name="actionModal" value="">
+		<input type="hidden" name="modo"  id="modo"  value="">
+		<html:hidden property="registrosSeleccionados"  styleId="registrosSeleccionados" />
+		<html:hidden property="datosPaginador"  styleId="datosPaginador" />
+		<html:hidden property="seleccionarTodos"  styleId="seleccionarTodos" />
+		<input type="hidden" name="actionModal"  id="actionModal" value="">
 	</html:form>	
 		
 		<siga:TablaCabecerasFijas 		   

@@ -202,16 +202,12 @@
 <body>
 		<html:form action="/PYS_GestionarSolicitudes.do" method="POST">
 			<html:hidden property = "modo" value = ""/>
-			<input type="hidden" name="concepto" value=""> 
-     		<input type="hidden" name="idSolicitud" value="">
-			<input type="hidden" name="idProducto" value="">
-			<input type="hidden" name="idProductoInstitucion" value="">
-			<input type="hidden" name="idTipoProducto" value="">
-
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<input type="hidden" name="concepto"  id="concepto" value=""> 
+     		<input type="hidden" name="idSolicitud"  id="idSolicitud" value="">
+			<input type="hidden" name="idProducto"  id="idProducto" value="">
+			<input type="hidden" name="idProductoInstitucion"  id="idProductoInstitucion" value="">
+			<input type="hidden" name="idTipoProducto"  id="idTipoProducto" value="">
+			<input type="hidden" name="actionModal"  id="actionModal" value="">
 		</html:form>	
 		
 			<siga:TablaCabecerasFijas 
@@ -350,14 +346,11 @@
 
 		<!-- Formulario para la creacion de envio -->
 		<html:form action="/ENV_DefinirEnvios.do" method="POST" target="mainWorkArea">
-			<html:hidden property = "actionModal" value = ""/>
-			<html:hidden property = "modo" value = ""/>
-			<html:hidden property = "tablaDatosDinamicosD" value = ""/>
-			<input type="hidden" name="filaSelD">
-			
-			<html:hidden property = "idSolicitud" value = ""/>
-			<html:hidden property = "idPersona" value = ""/>
-			<html:hidden property = "descEnvio" value = ""/>
+			<html:hidden styleId = "actionModal"  property = "actionModal" value = ""/>
+			<html:hidden styleId = "modo"  property = "modo" value = ""/>
+			<html:hidden styleId = "idSolicitud"  property = "idSolicitud" value = ""/>
+			<html:hidden styleId = "idPersona"  property = "idPersona" value = ""/>
+			<html:hidden styleId = "descEnvio"  property = "descEnvio" value = ""/>
 			
 		</html:form>
 

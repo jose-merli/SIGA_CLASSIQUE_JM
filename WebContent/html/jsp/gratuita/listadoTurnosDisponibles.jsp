@@ -140,22 +140,18 @@
 	</table>
 	<html:form action="/JGR_AltaTurnosGuardias.do" method="POST"
 		target="_parent" style="display:none">
-		<input type="hidden" name="origen" value="listarTurnosDisp">
-		<input type="hidden" name="modo" value="ver">
-		<input type="hidden" name="paso" value="turno" />
-		<input type="hidden" name="idInstitucion" />
-		<input type="hidden" name="idPersona" />
-		<input type="hidden" name="idTurno" />
-		<input type="hidden" name="fechaSolicitud" />
-		<input type="hidden" name="observacionesSolicitud" />
-		<!-- RGG: cambio a formularios ligeros -->
-		<input type="hidden" id="tablaDatosDinamicosD"
-			name="tablaDatosDinamicosD" />
-		<input type="hidden" id="filaSelD"
-			name="filaSelD" />
-		<input type="hidden" name="actionModal" value="">
-		<input type='hidden' name='turnosSel'>
-		<input type='hidden' name='validarTurno'>
+		<input type="hidden" name="origen"  id="origen" value="listarTurnosDisp">
+		<input type="hidden" name="modo" id="modo" value="ver">
+		<input type="hidden" name="paso" id="paso" value="turno" />
+		<input type="hidden" name="idInstitucion" id="idInstitucion" />
+		<input type="hidden" name="idPersona"  id="idPersona" />
+		<input type="hidden" name="idTurno"  id="idTurno" />
+		<input type="hidden" name="fechaSolicitud" id="fechaSolicitud" />
+		<input type="hidden" name="observacionesSolicitud"  id="observacionesSolicitud" />
+
+		<input type="hidden" name="actionModal"  id="actionModal" value="">
+		<input type='hidden' name='turnosSel' id='turnosSel'>
+		<input type='hidden' name='validarTurno' id='validarTurno'>
 	</html:form>
 
 	<%

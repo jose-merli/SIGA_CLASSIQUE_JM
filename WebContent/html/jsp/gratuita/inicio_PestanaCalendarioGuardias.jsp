@@ -117,45 +117,41 @@
 
 	<!-- INICIO: CAPA DE REGISTRO CON MEDIDAS EN EL ESTILO -->
 	<html:form action="/JGR_PestanaCalendarioGuardias.do" method="POST" styleId="PermutasForm" target="submitArea" style="display:none">
-		<html:hidden property="modo" value="<%=modopestanha%>" />
-		<html:hidden property="orden" value="FECHA" />
-		<html:hidden property="idInstitucion"
+		<html:hidden styleId="modo"  property="modo" value="<%=modopestanha%>" />
+		<html:hidden styleId="orden"  property="orden" value="FECHA" />
+		<html:hidden styleId="idInstitucion" property="idInstitucion"
 			value="<%=idinstitucionpestanha%>" />
-		<html:hidden property="idPersona" value="<%=idpersonapestanha%>" />
-		<html:hidden property="actionModal" value="M" />
-		<html:hidden property="modoPestanha" value="<%=modopestanha%>" />
+		<html:hidden styleId="idPersona"  property="idPersona" value="<%=idpersonapestanha%>" />
+		<html:hidden styleId="actionModal"  property="actionModal" value="M" />
+		<html:hidden styleId="modoPestanha" property="modoPestanha" value="<%=modopestanha%>" />
 
 		<!-- Datos del Colegiado seleccionado -->
-		<html:hidden property="nombreColegiadoPestanha"
+		<html:hidden styleId="nombreColegiadoPestanha" property="nombreColegiadoPestanha"
 			value="<%=nombrePestanha%>" />
-		<html:hidden property="numeroColegiadoPestanha"
+		<html:hidden styleId="numeroColegiadoPestanha" property="numeroColegiadoPestanha"
 			value="<%=numeroPestanha%>" />
 
 		<!-- Datos del elemento seleccionado -->
-		<html:hidden property="idCalendarioGuardias" value="" />
-		<html:hidden property="idTurno" value="" />
-		<html:hidden property="idGuardia" value="" />
-		<html:hidden property="fechaInicio" value="" />
-		<html:hidden property="fechaFin" value="" />
-		<html:hidden property="reserva" value="" />
-		<!-- RGG: cambio a formularios ligeros -->
-		<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD" />
-		<input type="hidden" id="filaSelD" name="filaSelD" />
+		<html:hidden styleId="idCalendarioGuardias"  property="idCalendarioGuardias" value="" />
+		<html:hidden styleId="idTurno"  property="idTurno" value="" />
+		<html:hidden styleId="idGuardia"  property="idGuardia" value="" />
+		<html:hidden styleId="fechaInicio"  property="fechaInicio" value="" />
+		<html:hidden styleId="fechaFin"  property="fechaFin" value="" />
+		<html:hidden styleId="reserva" property="reserva" value="" />
 	</html:form>
 	<html:form action="/JGR_DefinirCalendarioGuardia.do" method="post" styleId="DefinirCalendarioGuardiaForm" target="submitArea">
-		<html:hidden property="usuMod" value="<%=usr.getUserName()%>" />
-		<html:hidden property="modo" value="" />
-		<html:hidden property="accion" value="" />
-		<html:hidden property="idCalendarioGuardias" value="" />
-		<html:hidden property="idInstitucion" value="<%=idinstitucion%>" />
-		<html:hidden property="idTurno" value="" />
-		<html:hidden property="idGuardia" value="" />
-		<html:hidden property="diasACobrar" value="" />
-		<html:hidden property="diasGuardia" value="" />
-		<html:hidden property="tipoDias" value="" />
-		<html:hidden property="idPersona" value="<%=idpersonapestanha%>" />
-		<html:hidden property="actionModal" value="" />
-		<input type="hidden" name="tablaDatosDinamicosD">
+		<html:hidden styleId="usuMod"  property="usuMod" value="<%=usr.getUserName()%>" />
+		<html:hidden styleId="modo"  property="modo" value="" />
+		<html:hidden styleId="accion" property="accion"  value="" />
+		<html:hidden styleId="idCalendarioGuardias" property="idCalendarioGuardias" value="" />
+		<html:hidden styleId="idInstitucion"  property="idInstitucion" value="<%=idinstitucion%>" />
+		<html:hidden styleId="idTurno"  property="idTurno"value="" />
+		<html:hidden styleId="idGuardia"  property="idGuardia" value="" />
+		<html:hidden styleId="diasACobrar"  property="diasACobrar" value="" />
+		<html:hidden styleId="diasGuardia"  property="diasGuardia" value="" />
+		<html:hidden styleId="tipoDias"  property="tipoDias" value="" />
+		<html:hidden styleId="idPersona"  property="idPersona" value="<%=idpersonapestanha%>" />
+		<html:hidden styleId="actionModal"  property="actionModal" value="" />
 	</html:form>
 	<bean:define id="nombreCol"
 		value="gratuita.inicio_PestanaCalendarioGuardias.literal.fechaInicio,gratuita.inicio_PestanaCalendarioGuardias.literal.fechaFin,gratuita.inicio_PestanaCalendarioGuardias.literal.turno,gratuita.inicio_PestanaCalendarioGuardias.literal.guardia,gratuita.inicio_PestanaCalendarioGuardias.literal.tipodias,gratuita.inicio_PestanaCalendarioGuardias.literal.estado,"></bean:define>

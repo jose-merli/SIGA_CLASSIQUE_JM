@@ -87,11 +87,10 @@
 		<html:form action="/CEN_Historico.do" method="POST" style="display:none" styleId="HistoricoForm">
 
 		<!-- Campo obligatorio -->
-		<html:hidden property = "modo" value = ""/>
+		<html:hidden styleId = "modo" property = "modo" value = ""/>
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
 			<input type="hidden" id="actionModal" name="actionModal" value="">
-			<input type="hidden" id="filaSelD" name="filaSelD">	
+
 		</html:form>
 		
 		<!-- INICIO: LISTA DE VALORES -->

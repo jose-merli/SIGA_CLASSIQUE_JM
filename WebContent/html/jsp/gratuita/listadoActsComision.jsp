@@ -97,14 +97,11 @@
 <body onload="cargarChecks();checkTodos();">
 
 	<html:form action="/JGR_EJG.do?noReset=true" method="post" target="mainWorkArea" style="display:none">
-		<input type="hidden" name="modo" value="">
-		<!-- RGG: cambio a formularios ligeros -->
-		<input type="hidden" name="filaSelD">
-		<input type="hidden" name="tablaDatosDinamicosD">
-		<input type="hidden" name="actionModal" value="">
-		<html:hidden property="registrosSeleccionados" />
-		<html:hidden property="datosPaginador" />
-		<html:hidden property="seleccionarTodos" />
+		<input type="hidden" name="modo"  id="modo" value="">
+		<input type="hidden" name="actionModal"  id="actionModal"  value="">
+		<html:hidden property="registrosSeleccionados"  styleId="registrosSeleccionados" />
+		<html:hidden property="datosPaginador"  styleId="datosPaginador" />
+		<html:hidden property="seleccionarTodos"  styleId="seleccionarTodos" />
 	</html:form>	
 		
 		<siga:TablaCabecerasFijas 		   

@@ -79,22 +79,21 @@
 		<html:form action="/JGR_ContrariosDesignasPerJG.do" method="post" target="submitArea" style="display:none">
 			<input type="hidden" name="modo" value="abrirPestana">
 			
-			<input type="hidden" name="idInstitucionJG" value="<%=usr.getLocation() %>">
-			<input type="hidden" name="idPersonaJG" value="">
+			<input type="hidden" id="idInstitucionJG"  name="idInstitucionJG" value="<%=usr.getLocation() %>">
+			<input type="hidden" id="idPersonaJG" name="idPersonaJG" value="">
 	
-			<input type="hidden" name="idInstitucionDES" value="<%=usr.getLocation() %>">
-			<input type="hidden" name="idTurnoDES" value="<%=idturno %>">
-			<input type="hidden" name="anioDES" value="<%=anio %>">
-			<input type="hidden" name="numeroDES" value="<%=numero %>">
+			<input type="hidden" id="idInstitucionDES" name="idInstitucionDES" value="<%=usr.getLocation() %>">
+			<input type="hidden" id="idTurnoDES" name="idTurnoDES" value="<%=idturno %>">
+			<input type="hidden" id="anioDES" name="anioDES" value="<%=anio %>">
+			<input type="hidden" id="numeroDES" name="numeroDES" value="<%=numero %>">
 	
-			<input type="hidden" name="conceptoE" value="<%=PersonaJGAction.DESIGNACION_CONTRARIOS %>">
-			<input type="hidden" name="tituloE" value="gratuita.contrariosDesigna.literal.titulo">
-			<input type="hidden" name="localizacionE" value="">
-			<input type="hidden" name="accionE" value="nuevo">
-			<input type="hidden" name="actionE" value="/JGR_ContrariosDesignasPerJG.do">
-			<input type="hidden" name="pantallaE" value="M">
+			<input type="hidden" id="conceptoE" name="conceptoE" value="<%=PersonaJGAction.DESIGNACION_CONTRARIOS %>">
+			<input type="hidden" id="tituloE" name="tituloE" value="gratuita.contrariosDesigna.literal.titulo">
+			<input type="hidden" id="localizacionE" name="localizacionE" value="">
+			<input type="hidden" id="accionE"  name="accionE" value="nuevo">
+			<input type="hidden" id="actionE" name="actionE" value="/JGR_ContrariosDesignasPerJG.do">
+			<input type="hidden" id="pantallaE" name="pantallaE" value="M">
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
 		</html:form>	
 		

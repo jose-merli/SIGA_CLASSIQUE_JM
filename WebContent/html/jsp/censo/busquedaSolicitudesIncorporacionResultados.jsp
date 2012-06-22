@@ -92,13 +92,11 @@
 
 
 		<html:form action="/CEN_SolicitudesIncorporacion.do" method="POST" style="display:none" target="mainWorkArea" styleId="SolicitudIncorporacionForm">
-			<html:hidden property = "esModal" value = "N"/>
-			<html:hidden property = "modo" value = ""/>
-			<html:hidden property = "buscarModoAnteriorBusqueda" value = "true"/>
+			<html:hidden styleId = "esModal"  property = "esModal" value = "N"/>
+			<html:hidden styleId = "modo"  property = "modo" value = ""/>
+			<html:hidden styleId = "buscarModoAnteriorBusqueda" property = "buscarModoAnteriorBusqueda" value = "true"/>
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" id="filaSelD" name="filaSelD">
-			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<input type="hidden" id="actionModal" name="actionModal" value="">
 		</html:form>
 		
 			<siga:TablaCabecerasFijas 

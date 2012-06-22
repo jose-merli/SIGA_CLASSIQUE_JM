@@ -424,9 +424,6 @@
 		<html:hidden styleId="motivo" property="motivo" value=""/> 
 		<html:hidden styleId="nuevo" property="nuevo" value="1"/> 
 		<html:hidden styleId="idTipoColegio" name="componentesJuridicosForm" property="idTipoColegio" value="<%=tipo%>"/>
-		
-		<input type="hidden" id="filaSelD" name="filaSelD" />	
-		<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD" />
 		<input type="hidden" id="actionModal" name="actionModal" value="" />
 		<input type="hidden" id="fechaCargo" name="fechaCargo" value="" />
 

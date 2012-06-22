@@ -238,18 +238,14 @@
 
 	<!--pilar-->
 	<!-- INICIO: LISTA RESULTADOS -->
-	<html:form action="/CEN_DatosColegiacion.do" method="POST"
+	<html:form action="/CEN_DatosColegiacion.do" method="POST" 
 		style="display:none">
 		<html:hidden property="modo" value="" />
-		<input type="hidden" name="nColegiado" value="" />
-		<input type="hidden" name="idInstitucion" value="" />
-		<input type="hidden" name="nifcif" value="" />
-		<input type="hidden" name="letrado" value="" />
-
-		<!-- RGG: cambio a formularios ligeros -->
-		<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD" />
-		<input type="hidden" name="filaSelD" id="filaSelD" />
-		<input type="hidden" name="actionModal" value="">
+		<input type="hidden" id="nColegiado"  name="nColegiado" value="" />
+		<input type="hidden" id="idInstitucion"  name="idInstitucion" value="" />
+		<input type="hidden" id="nifcif" name="nifcif" value="" />
+		<input type="hidden" id="letrado"  name="letrado" value="" />
+		<input type="hidden" id="actionModal" name="actionModal" value="">
 	</html:form>
 
 	<siga:TablaCabecerasFijas nombre="tablaResultados" borde="1"

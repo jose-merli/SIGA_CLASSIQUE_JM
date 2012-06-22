@@ -173,13 +173,11 @@
 <html:javascript formName="EnviosDatosGeneralesForm" staticJavascript="false" />
 
 			<html:form action="/ENV_Datos_Generales" method="POST" target="submitArea">
-				<html:hidden property = "modo" value = ""/>
-				<html:hidden property = "accion" value = ""/>
-				<input type="hidden" name="filaSelD" id="filaSelD">
-				<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD">
-				<html:hidden property = "idEnvio" value = "<%=idEnvio%>"/>
-				<html:hidden property = "idTipoEnvio" value = "<%=idTipoEnvio%>"/>
-				<html:hidden property = "idInstitucion" value = "<%=idInstitucion%>"/>
+				<html:hidden property = "modo" styleId = "modo" value = ""/>
+				<html:hidden property = "accion" styleId = "accion"  value = ""/>
+				<html:hidden property = "idEnvio" styleId = "idEnvio"  value = "<%=idEnvio%>"/>
+				<html:hidden property = "idTipoEnvio" styleId = "idTipoEnvio" value = "<%=idTipoEnvio%>"/>
+				<html:hidden property = "idInstitucion" styleId = "idInstitucion" value = "<%=idInstitucion%>"/>
 
 				<table class="tablaTitulo" align="center" cellspacing="0">
 					<tr>

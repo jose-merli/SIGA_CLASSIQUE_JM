@@ -113,18 +113,16 @@
 	<!-- Formulario de la lista de detalle multiregistro -->
 	<html:form action="DefinirGuardiasTurnosAction.do" method="post"
 		target="mainPestanas">
-		<html:hidden property="modo" value="" />
+		<html:hidden property="modo" styleId="modo" value="" />
 		<!-- Datos del Colegiado seleccionado -->
-		<html:hidden property="nombreColegiadoPestanha"
+		<html:hidden  property="nombreColegiadoPestanha"  styleId="nombreColegiadoPestanha"
 			value="<%=nombrePestanha%>" />
-		<html:hidden property="numeroColegiadoPestanha"
+		<html:hidden property="numeroColegiadoPestanha"  styleId="numeroColegiadoPestanha"
 			value="<%=numeroPestanha%>" />
-		<html:hidden property="actionModal" value="M" />
-		<html:hidden property="bajaLogica" value="N" />
-		<!-- RGG: cambio a formularios ligeros -->
-		<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
-		<input type="hidden" id="filaSelD" name="filaSelD">
-		<div class="nonEdit" style="text-align: center; width: 100%">
+		<html:hidden property="actionModal" styleId="actionModal" value="M" />
+		<html:hidden property="bajaLogica" styleId="bajaLogica"  value="N" />
+
+
 			<table>
 				<tr>
 					<td class="labelText"><siga:Idioma

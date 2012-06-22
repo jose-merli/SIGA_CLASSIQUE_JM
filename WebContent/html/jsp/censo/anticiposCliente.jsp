@@ -265,7 +265,6 @@
 			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
 			<input type="hidden" id="actionModal" name="actionModal" value="">
 			<input type="hidden" id="incluirRegistrosConBajaLogica" name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>">
-			<input type="hidden" id="filaSelD" name="filaSelD">
 			</html:form>
 
 

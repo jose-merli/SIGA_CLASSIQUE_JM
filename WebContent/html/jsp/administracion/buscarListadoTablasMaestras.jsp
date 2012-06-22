@@ -112,22 +112,18 @@
 
 		<html:form action="/ADM_GestionarTablasMaestras.do" method="POST" target="submitArea" style="display:none">
 			<html:hidden property = "modo" value = ""/>
-			<input type="hidden" name="nombreTablaMaestra" value="<%=beanTablaMaestra.getIdTablaMaestra()%>">
-			<input type="hidden" name="nombreCampoCodigo" value="<%=beanTablaMaestra.getIdCampoCodigo()%>">
-			<input type="hidden" name="nombreCampoCodigoExt" value="<%=beanTablaMaestra.getIdCampoCodigoExt()%>">
-			<input type="hidden" name="nombreCampoDescripcion" value="<%=beanTablaMaestra.getIdCampoDescripcion()%>">
-			<input type="hidden" name="local" value="<%=beanTablaMaestra.getLocal()%>">
-			<input type="hidden" name="aliasTabla" value="<%=beanTablaMaestra.getAliasTabla()%>">
-			<input type="hidden" name="longitudCodigo" value="<%=beanTablaMaestra.getLongitudCodigo()%>">
-			<input type="hidden" name="longitudCodigoExt" value="<%=beanTablaMaestra.getLongitudCodigoExt()%>">
-			<input type="hidden" name="longitudDescripcion" value="<%=beanTablaMaestra.getLongitudDescripcion()%>">
-			<input type="hidden" name="tipoCodigo" value="<%=beanTablaMaestra.getTipoCodigo()%>">
-			<input type="hidden" name="tipoCodigoExt" value="<%=beanTablaMaestra.getTipoCodigoExt()%>">
-			
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<input type="hidden" id="nombreTablaMaestra"  name="nombreTablaMaestra" value="<%=beanTablaMaestra.getIdTablaMaestra()%>">
+			<input type="hidden" id="nombreCampoCodigo" name="nombreCampoCodigo" value="<%=beanTablaMaestra.getIdCampoCodigo()%>">
+			<input type="hidden" id="nombreCampoCodigoExt" name="nombreCampoCodigoExt" value="<%=beanTablaMaestra.getIdCampoCodigoExt()%>">
+			<input type="hidden" id="nombreCampoDescripcion" name="nombreCampoDescripcion" value="<%=beanTablaMaestra.getIdCampoDescripcion()%>">
+			<input type="hidden" id="local" name="local" value="<%=beanTablaMaestra.getLocal()%>">
+			<input type="hidden" id="aliasTabla" name="aliasTabla" value="<%=beanTablaMaestra.getAliasTabla()%>">
+			<input type="hidden" id="longitudCodigo"  name="longitudCodigo" value="<%=beanTablaMaestra.getLongitudCodigo()%>">
+			<input type="hidden" id="longitudCodigoExt"  name="longitudCodigoExt" value="<%=beanTablaMaestra.getLongitudCodigoExt()%>">
+			<input type="hidden" id="longitudDescripcion"  name="longitudDescripcion" value="<%=beanTablaMaestra.getLongitudDescripcion()%>">
+			<input type="hidden" id="tipoCodigo"  name="tipoCodigo" value="<%=beanTablaMaestra.getTipoCodigo()%>">
+			<input type="hidden" id="tipoCodigoExt"  name="tipoCodigoExt" value="<%=beanTablaMaestra.getTipoCodigoExt()%>">
+			<input type="hidden" id="actionModal"  name="actionModal" value="">
 		</html:form>	
 		
 		<% if(aceptabaja == 1){

@@ -91,11 +91,9 @@
 
 <body>
 		<html:form action="/CEN_MantenimientoGruposFijos.do" method="POST" target="submitArea">
-			<html:hidden property = "modo" value = ""/>
+			<html:hidden styleId = "modo"  property = "modo" value = ""/>
 
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" id="filaSelD" name="filaSelD">
-			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
 			<input type="hidden" id="actionModal" name="actionModal" value="">
 		</html:form>
 			

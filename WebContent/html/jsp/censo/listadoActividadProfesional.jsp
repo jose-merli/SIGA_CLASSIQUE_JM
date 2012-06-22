@@ -86,14 +86,12 @@
 
 	<!-- Comienzo del formulario con los campos -->
 	<html:form action="/CEN_ActividadProfesional.do" method="POST" target="submitArea" style="display:none">
-		<html:hidden property="modo" value="insertar"/>
-		<html:hidden property="idPersona" />
-		<html:hidden property="idInstitucion" />
-		<html:hidden property="modoAnterior" />
+		<html:hidden styleId="modo"  property="modo" value="insertar"/>
+		<html:hidden styleId="idPersona"  property="idPersona" />
+		<html:hidden styleId="idInstitucion"  property="idInstitucion" />
+		<html:hidden styleId="modoAnterior"  property="modoAnterior" />
 		<!-- RGG: cambio a formularios ligeros -->
-		<input type="hidden" name="filaSelD" id="filaSelD" />
-		<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD" />
-		<input type="hidden" name="actionModal" value="" />
+		<input type="hidden" name="actionModal"  id="actionModal" value="" />
 	</html:form>
 
 	<!-- INICIO TABLA DE GRUPOS -->

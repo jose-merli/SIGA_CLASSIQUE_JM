@@ -578,7 +578,7 @@
 			
 			
  		   document.InformesGenericosForm.datosInforme.value=datos;
- 		  var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
+ 		   var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
  			if (arrayResultado==undefined||arrayResultado[0]==undefined){
  			   		
  		   	} 
@@ -656,11 +656,11 @@
 <!-- Comienzo del formulario con los campos -->
 <table class="tablaCentralCampos" height="420" align="center" >
 	<html:form action="JGR_Designas.do" method="POST" target="mainWorkArea">
-		<html:hidden name="MaestroDesignasForm" property="modo" value="" />
-		<html:hidden name="MaestroDesignasForm" property="idTurno" value="<%=idTurno%>" />
-		<html:hidden name="BuscarDesignasForm" property="calidad" value="<%=calidad%>" />	
-		<input type="hidden" name="modificarDesigna" value="0">
-		<html:hidden property="compensar" value="" />
+		<html:hidden name="MaestroDesignasForm" property="modo"  styleId="modo" value="" />
+		<html:hidden name="MaestroDesignasForm" property="idTurno" styleId="idTurno"  value="<%=idTurno%>" />
+		<html:hidden name="BuscarDesignasForm" property="calidad" styleId="calidad" value="<%=calidad%>" />	
+		<input type="hidden" name="modificarDesigna" id="modificarDesigna"  value="0">
+		<html:hidden property="compensar" styleId="compensar" value="" />
 		<tr>
 			<td valign="top">
 			<siga:ConjCampos leyenda="gratuita.busquedaDesignas.literal.turno">

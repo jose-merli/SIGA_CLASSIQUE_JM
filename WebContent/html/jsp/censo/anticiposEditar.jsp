@@ -219,9 +219,7 @@
 	</tr>
 			
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD" />
-			<input type="hidden" name="filaSelD" id="filaSelD" />
-			<input type="hidden" name="actionModal" value="" />
+			<input type="hidden" name="actionModal" id="actionModal" value="" />
 		</html:form>	
 	</table>
 	

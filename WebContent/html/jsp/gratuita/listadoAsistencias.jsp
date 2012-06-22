@@ -150,13 +150,9 @@
 
 		<html:form action="/JGR_Asistencia.do" method="post" target="<%=target%>"  style="display:none">
 
-			<input type="hidden" name="modo" />
-			<input type="hidden" name="esFichaColegial" value="<%=sEsFichaColegial%>" />
-		
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<input type="hidden" name="modo"  id="modo" />
+			<input type="hidden" name="esFichaColegial"  id="esFichaColegial"  value="<%=sEsFichaColegial%>" />
+			<input type="hidden" name="actionModal"  id="actionModal"  value="">
 		</html:form>	
 		
 		<%

@@ -184,8 +184,8 @@ function descargaLog(fila)
 
 <html:form action="${path}"   method="POST" target="submitArea">
 
-<html:hidden property="modo" value=""/>
-<input type="hidden" name="actionModal" />
+<html:hidden styleId="modo"  property="modo" value=""/>
+<input type="hidden" name="actionModal"  id="actionModal" />
 
 		<table width="100%" border="0">
 			<tr>
@@ -221,7 +221,7 @@ function descargaLog(fila)
 			<tr>
 				
 				<td class="labelText"><siga:Idioma key="gratuita.calendarios.programacion.estado"/></td>
-				<td><html:select property="estado" styleClass="boxCombo">
+				<td><html:select property="estado" styleId="estado" styleClass="boxCombo">
 						
 						<html:option value="">&nbsp;</html:option>
 						<html:option value="0"><siga:Idioma key="gratuita.calendarios.programacion.estado.programada"/></html:option>

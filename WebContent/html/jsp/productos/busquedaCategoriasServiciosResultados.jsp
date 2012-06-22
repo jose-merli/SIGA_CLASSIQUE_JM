@@ -37,12 +37,8 @@
 
 <body>
 		<html:form action="/PYS_MantenimientoCategoriasServicios.do" method="POST" target="submitArea">
-			<html:hidden property = "modo" value = ""/>
-			
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<html:hidden property = "modo"  styleId = "modo"  value = ""/>
+			<input type="hidden" id="actionModal"  name="actionModal" value="">
 		</html:form>	
 		
 			<siga:TablaCabecerasFijas 

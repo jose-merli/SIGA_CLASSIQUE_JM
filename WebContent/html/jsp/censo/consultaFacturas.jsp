@@ -183,14 +183,12 @@
 	<table cellspacing="0" cellpadding="0" width="100%">
 		<tr>			
 			<html:form action="/CEN_FacturasCliente.do" method="POST" target="_self">
-				<html:hidden property = "modo" value = ""/>
+				<html:hidden property = "modo" styleId="modo" value = ""/>
 				<!-- RGG: cambio a formularios ligeros -->
-				<input type="hidden" id="filaSelD" name="filaSelD" />
-				<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD" />
-				<input type="hidden" name="actionModal" value="">
-				<input type="hidden" name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>">
-				<input type="hidden" name="idPersona" value="<%=SidPersona.toString()%>">
-				<input type="hidden" name="idInstitucion" value="<%=SidInstitucion.toString()%>">
+				<input type="hidden" id="actionModal"  name="actionModal" value="">
+				<input type="hidden" id="incluirRegistrosConBajaLogica"  name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>">
+				<input type="hidden" id="idPersona"  name="idPersona" value="<%=SidPersona.toString()%>">
+				<input type="hidden" id="idInstitucion"  name="idInstitucion" value="<%=SidInstitucion.toString()%>">
 			</html:form>				
 			<%
 			String tamanosCol="";

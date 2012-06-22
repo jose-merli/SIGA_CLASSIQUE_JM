@@ -56,19 +56,15 @@
 			 de cabeceras fijas -->
 			 
 		<html:form action="/CON_RecuperarConsultas.do" method="POST" target="mainWorkArea" style="display:none">			
-		    <html:hidden property = "modo" value = ""/>
-			<html:hidden property = "hiddenFrame" value = "1"/>			
-			<html:hidden property = "idInstitucion"/>
-			<html:hidden property = "idConsulta"/>
-			<html:hidden property = "tipoConsulta"/>
-			<html:hidden property = "tipoEnvio"/>
-			<html:hidden property = "accionAnterior"/>
-			<html:hidden property = "idModulo"/>
-			
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD" id="filaSelD" />
-			<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD" />
-			<input type="hidden" name="actionModal" value="">
+		    <html:hidden styleId = "modo"  property = "modo"  value = ""/>
+			<html:hidden styleId = "hiddenFrame"  property = "hiddenFrame" value = "1"/>			
+			<html:hidden styleId = "idInstitucion" property = "idInstitucion"/>
+			<html:hidden styleId = "idConsulta" property = "idConsulta"/>
+			<html:hidden styleId = "tipoConsulta"  property = "tipoConsulta"/>
+			<html:hidden styleId = "tipoEnvio"  property = "tipoEnvio"/>
+			<html:hidden styleId = "accionAnterior"  property = "accionAnterior"/>
+			<html:hidden styleId = "idModulo"  property = "idModulo"/>
+			<input type="hidden" id="actionModal" name="actionModal" value="">
 		</html:form>	
   
 			<siga:TablaCabecerasFijas 

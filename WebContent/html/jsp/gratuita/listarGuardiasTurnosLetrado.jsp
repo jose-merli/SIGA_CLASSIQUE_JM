@@ -127,15 +127,12 @@
 	<html:form action="DefinirGuardiasTurnosAction.do" method="post" target="">
 
 		<!-- Campo obligatorio -->
-		<html:hidden property="modo" value="" />
-		<input type="hidden" name="guardiaElegida" value="" />
-		<input type="hidden" name="guardias" value="" />
-		<input type="hidden" name="fechaInscripcion" value="" />
-		<!-- RGG: cambio a formularios ligeros -->
-		<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD" />
-		<input type="hidden" id="filaSelD" name="filaSelD" />
-		<input type="hidden" name="actionModal" value="" />
-		<html:hidden property="validarInscripciones" name="DefinirGuardiasTurnosForm" />
+		<html:hidden styleId="modo"  property="modo" value="" />
+		<input type="hidden" name="guardiaElegida" id="guardiaElegida" value="" />
+		<input type="hidden" name="guardias" id="guardias" value="" />
+		<input type="hidden" name="fechaInscripcion" id="fechaInscripcion" value="" />
+		<input type="hidden" name="actionModal" id="actionModal" value="" />
+		<html:hidden styleId="validarInscripciones"   property="validarInscripciones" name="DefinirGuardiasTurnosForm" />
 		<input type="hidden" id="fechaSolicitudTurno" name="fechaSolicitudTurno" value="${inscripcionTurnoSeleccionada.fechaSolicitud}" />
 		
 		<siga:ConjCampos leyenda="gratuita.listarGuardias.literal.turno">

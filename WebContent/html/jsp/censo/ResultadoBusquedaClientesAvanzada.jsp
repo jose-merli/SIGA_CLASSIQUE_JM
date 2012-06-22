@@ -199,12 +199,9 @@
 		<html:hidden property="seleccionarTodos" />
 	
 		<!-- parametro para colegiados o no -->
-		<html:hidden property = "colegiado" value= "<%=colegiado %>"/>
-		<html:hidden property = "avanzada" value = ""/>
-		<!-- RGG: cambio a formularios ligeros -->
-		<input type="hidden" id="filaSelD" name="filaSelD">
-		<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
-		<input type="hidden" name="actionModal" value="">
+		<html:hidden styleId = "colegiado" property = "colegiado"  value= "<%=colegiado %>"/>
+		<html:hidden styleId = "avanzada"  property = "avanzada"  value = ""/>
+		<input type="hidden" name="actionModal" id="actionModal"  value="">
 		<input type="hidden" id="verFichaLetrado" name="verFichaLetrado" value="">			
 	</html:form>
 

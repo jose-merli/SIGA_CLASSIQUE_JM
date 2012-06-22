@@ -161,17 +161,14 @@
 		<!-- Formulario de la lista de detalle multiregistro -->
 		<form id="cuentasBancariasForm" name="cuentasBancariasForm" method="post" action="<%=app%>/CEN_CuentasBancarias.do">
 			<!-- Campo obligatorio -->
-			<html:hidden property="modo" value="" />
-			<input type="hidden" name="nombreUsuario" value="<%=nombre%>" /> 
-			<input type="hidden" name="numeroUsuario" value="<%=numero%>" /> 
-			<input type='hidden' name="idPersona" value="<%=idPersona%>" /> 
-			<input type='hidden' name="idInstitucion" value="<%=institucion%>" /> 
-			<input type='hidden' name="accion" value="<%=String.valueOf(request.getAttribute("accion"))%>" />
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD"/>
-			<input type="hidden" id="filaSelD" name="filaSelD"/>
-			<input type="hidden" name="actionModal" value="" />
-			<input type="hidden" name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>" />
+			<html:hidden property="modo" styleId="modo"  value="" />
+			<input type="hidden" name="nombreUsuario" id="nombreUsuario" value="<%=nombre%>" /> 
+			<input type="hidden" name="numeroUsuario" id="numeroUsuario" value="<%=numero%>" /> 
+			<input type='hidden' name="idPersona" id="idPersona" value="<%=idPersona%>" /> 
+			<input type='hidden' name="idInstitucion" id="idInstitucion" value="<%=institucion%>" /> 
+			<input type='hidden' name="accion"  id="accion" value="<%=String.valueOf(request.getAttribute("accion"))%>" />
+			<input type="hidden" name="actionModal" id="actionModal"  value="" />
+			<input type="hidden" name="incluirRegistrosConBajaLogica" id="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>" />
 		</form>
 		<tr>
 			<td class="titulitosDatos">

@@ -62,11 +62,6 @@
 	<html:form action="/CEN_GestionarComisiones.do" method="POST" target="submitArea" styleId="BusquedaComisionesForm">
 			<input type="hidden" id="modo" name="modo" value="modificar">
 			<input type="hidden" id="datosModificados" name="datosModificados" value="">
-			
-
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" id="filaSelD" name="filaSelD">
-			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
 			<input type="hidden" id="actionModal" name="actionModal" value="">
 
 			

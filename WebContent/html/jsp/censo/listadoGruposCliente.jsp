@@ -86,14 +86,11 @@
 
 	<!-- Comienzo del formulario con los campos -->
 	<html:form action="/CEN_GruposFijosClientes.do" method="POST" target="submitArea" style="display:none" styleId="GruposClienteClienteForm">
-		<html:hidden property="modo" value="insertar"/>
-		<html:hidden property="idPersona"/>
-		<html:hidden property="idInstitucion"/>
-		<html:hidden property="modoAnterior" />
-		<!-- RGG: cambio a formularios ligeros -->
-		<html:hidden name="GruposClienteClienteForm"  property ="filaSelD" styleId="filaSelD"/>
-		<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
-		<input type="hidden" name="actionModal" value="">
+		<html:hidden property="modo"  styleId="modo"  value="insertar"/>
+		<html:hidden property="idPersona" styleId="idPersona"/>
+		<html:hidden property="idInstitucion"  styleId="idInstitucion"/>
+		<html:hidden property="modoAnterior" styleId="modoAnterior" />
+		<input type="hidden" id="actionModal"  name="actionModal" value="">
 	</html:form>
 
 	<!-- INICIO TABLA DE GRUPOS -->

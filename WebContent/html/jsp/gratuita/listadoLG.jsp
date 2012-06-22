@@ -59,12 +59,9 @@
 <body>
 
 	<html:form action="/JGR_DefinirListaGuardias.do" method="post" target="mainWorkArea" style="display:none">
-		<html:hidden property = "modo" value = ""/>
-		<html:hidden property = "accion" value = "buscarPor"/>
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+		<html:hidden property = "modo" styleId = "modo" value = ""/>
+		<html:hidden property = "accion" styleId = "accion" value = "buscarPor"/>
+			<input type="hidden" id="actionModal"  name="actionModal" value="">
 		</html:form>	
 		
 	<!-- INICIO: RESULTADO -->

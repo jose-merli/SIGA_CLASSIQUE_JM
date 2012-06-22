@@ -207,7 +207,27 @@ public class TagTabla extends TagSupport {
 
 			out.println("<script language='JavaScript'>");
 			out.println("");
+			
+
+			out.println(" $(document).ready(function() { ");
+			out.println(" if (document.getElementById('tablaDatosDinamicosD')){  ");
+			out.println("     //do nothing ");
+			out.println("     }  ");
+			out.println(" else{  ");
+			out.println("     $('form:first',document).append('<input type=\"hidden\" name=\"tablaDatosDinamicosD\" id=\"tablaDatosDinamicosD\" />');");
+			out.println(" }  ");
+			out.println("  ");
+			out.println(" if (document.getElementById('filaSelD')){  ");
+			out.println("     //do nothing ");
+			out.println("     }  ");
+			out.println(" else{  ");
+			out.println("    $('form:first',document).append('<input type=\"hidden\" name=\"filaSelD\" id=\"filaSelD\" />')  ");
+			out.println(" }  ");
+			out.println("  ");
+			out.println("     });  ");
+			
 			out.println("");
+			
 			
 			out.println(" function selectRow(fila) {");
 			out.println("   document.getElementById('filaSelD').value = fila;");

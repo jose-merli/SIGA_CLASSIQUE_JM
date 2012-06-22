@@ -152,17 +152,15 @@
 	<table class="tablaTitulo" align="center" cellspacing=0>
 		<html:form method="post" action="/CEN_ConsultasDirecciones.do" styleId="consultaDireccionesForm">
 			<!-- Campo obligatorio -->
-			<html:hidden property="modo" value="" />
-			<input type="hidden" name="nombreUsuario" value="<%=(String)request.getAttribute("nombrePersona")%>" />
-			<input type="hidden" name="numeroUsuario" value="<%=(String)request.getAttribute("numero")%>" />
-			<input type='hidden' name="idPersona" value="<%=String.valueOf((Long)request.getAttribute("idPersona"))%>" />
-			<input type='hidden' name="idInstitucion" value="<%=String.valueOf((Integer)request.getAttribute("idInstitucion"))%>" />
-			<input type='hidden' name="accion" value="<%=String.valueOf(request.getAttribute("accion"))%>">
+			<html:hidden property="modo"  styleId="modo" value="" />
+			<input type="hidden" id="nombreUsuario"  name="nombreUsuario" value="<%=(String)request.getAttribute("nombrePersona")%>" />
+			<input type="hidden" id="numeroUsuario"  name="numeroUsuario" value="<%=(String)request.getAttribute("numero")%>" />
+			<input type='hidden' id="idPersona"  name="idPersona" value="<%=String.valueOf((Long)request.getAttribute("idPersona"))%>" />
+			<input type='hidden' id="idInstitucion"  name="idInstitucion" value="<%=String.valueOf((Integer)request.getAttribute("idInstitucion"))%>" />
+			<input type='hidden' id="accion"  name="accion" value="<%=String.valueOf(request.getAttribute("accion"))%>">
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD">
-			<input type="hidden" name="filaSelD" id="filaSelD">
-			<input type="hidden" name="actionModal" value="">
-			<input type="hidden" name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>">
+			<input type="hidden" id="actionModal"  name="actionModal" value="">
+			<input type="hidden" id="incluirRegistrosConBajaLogica"  name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>">
 		</html:form>
 
 		<tr>

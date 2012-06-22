@@ -54,14 +54,9 @@
 	
 	<body>
 		<html:form action="/ADM_Contadores.do" method="POST" target="submitArea">
-			<input type="hidden" name="modo" value="modificar">
-			<input type="hidden" name="datosModificados" value="">
-			
-
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<input type="hidden" id="modo"  name="modo" value="modificar">
+			<input type="hidden" id="datosModificados" name="datosModificados"  value="">
+			<input type="hidden" id="actionModal" name="actionModal" value="">
 			
 		</html:form>	
 		

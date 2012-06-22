@@ -46,12 +46,8 @@
 
 <body>
 		<html:form action="/FAC_Sufijos.do" method="POST" target="submitArea">
-			<html:hidden name="sufijosForm" property="modo" value = ""/>
-
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<html:hidden name="sufijosForm" styleId="modo"  property="modo" value = ""/>
+			<input type="hidden" name="actionModal"  id="actionModal" value="">
 		</html:form>
 		
 

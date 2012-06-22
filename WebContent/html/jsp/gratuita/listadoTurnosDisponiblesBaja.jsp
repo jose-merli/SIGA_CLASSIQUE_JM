@@ -142,9 +142,6 @@
 			<input type="hidden" id="idTurno" name="idTurno" />
 			<input type="hidden" id="fechaSolicitud" name="fechaSolicitud"/>
 			<input type="hidden" id="observacionesSolicitud" name="observacionesSolicitud"/>
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" id="filaSelD" name="filaSelD">
-			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
 			<input type="hidden" id="actionModal" name="actionModal" value="">
 			<input type='hidden' id="turnosSel" name='turnosSel'>
 			<input type='hidden' id="validarTurno" name='validarTurno'>

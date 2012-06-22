@@ -74,12 +74,8 @@
 
 	<body class="tablaCentralCampos">
 		<html:form action="/PYS_MantenimientoServicios.do" method="post" target="">
-			<html:hidden property="modo" value=""/>		
-					
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<html:hidden property="modo"  styleId="modo"  value=""/>		
+			<input type="hidden" name="actionModal"  id="actionModal"  value="">
 		</html:form>	
 		
 			<siga:TablaCabecerasFijas 

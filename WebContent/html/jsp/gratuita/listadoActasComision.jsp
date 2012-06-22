@@ -94,14 +94,11 @@
 <body>
 
 	<html:form action="/JGR_ActasComision.do?noReset=true" target="mainWorkArea" method="post">
-		<input type="hidden" name="modo" value="">
-		<!-- RGG: cambio a formularios ligeros -->
-		<input type="hidden" name="filaSelD">
-		<input type="hidden" name="tablaDatosDinamicosD">
-		<input type="hidden" name="actionModal" value="">
-		<html:hidden property="registrosSeleccionados" />
-		<html:hidden property="datosPaginador" />
-		<html:hidden property="seleccionarTodos" />
+		<input type="hidden" name="modo"  id="modo" value="">
+		<input type="hidden" name="actionModal"  id="actionModal"  value="">
+		<html:hidden styleId="registrosSeleccionados"  property="registrosSeleccionados" />
+		<html:hidden styleId="datosPaginador"  property="datosPaginador" />
+		<html:hidden styleId="seleccionarTodos"  property="seleccionarTodos" />
 	</html:form>	
 	
 		<siga:TablaCabecerasFijas 		   

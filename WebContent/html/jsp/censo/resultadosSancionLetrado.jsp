@@ -164,37 +164,27 @@
 		<html:form action="/CEN_SancionesLetrado.do?noReset=true" target="mainPestanas" method="POST" style="display:none">
 
 			<!-- Campo obligatorio -->
-			<html:hidden property = "modo" value = "" />
-			<html:hidden property = "formulario" value = "" />
-			<input type="hidden" name= "accionModal" value = "">
-			<input type="hidden" name= "pestanaColegiacion" value = "<%=pestanaColegiacion %>">
-			<input type="hidden" name= "personaColegiacion" value = "<%=personaColegiacion %>">
-			<input type="hidden" name= "institucionColegiacion" value = "<%=institucionColegiacion %>">
-			<html:hidden property="registrosSeleccionados" />
-			<html:hidden property="datosPaginador" />
-			<html:hidden property="seleccionarTodos" />
-			<html:hidden property="nombreInstitucionBuscar" />
-			<html:hidden property="tipoSancionBuscar" />
-			<html:hidden property="refCGAE" />
-			<html:hidden property="colegiadoBuscar" />
-			<html:hidden property="chkRehabilitado" />
-			<html:hidden property="mostrarTiposFechas" />			
-			<html:hidden property="fechaInicioBuscar" />
-			<html:hidden property="fechaFinBuscar" />
-			<html:hidden property="mostrarSanciones" />					
-			<html:hidden property="fechaInicioArchivada"/>
-			<html:hidden property="fechaFinArchivada"/>
-			
-			
-			
-			
-			
-			
-
- 			<!-- RGG: cambio a formularios ligeros -->
-			<html:hidden name="SancionesLetradoForm"  property ="filaSelD" styleId="filaSelD"/>
-			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<html:hidden styleId = "modo"  property = "modo" value = "" />
+			<html:hidden styleId = "formulario"  property = "formulario" value = "" />
+			<input type="hidden" id= "accionModal"  name= "accionModal" value = "">
+			<input type="hidden" id= "pestanaColegiacion" name= "pestanaColegiacion"  value = "<%=pestanaColegiacion %>">
+			<input type="hidden" id= "personaColegiacion" name= "personaColegiacion" value = "<%=personaColegiacion %>">
+			<input type="hidden" id= "institucionColegiacion" name= "institucionColegiacion"  value = "<%=institucionColegiacion %>">
+			<html:hidden styleId="registrosSeleccionados"  property="registrosSeleccionados" />
+			<html:hidden styleId="datosPaginador"  property="datosPaginador" />
+			<html:hidden styleId="seleccionarTodos"  property="seleccionarTodos" />
+			<html:hidden styleId="nombreInstitucionBuscar"  property="nombreInstitucionBuscar" />
+			<html:hidden styleId="tipoSancionBuscar"  property="tipoSancionBuscar" />
+			<html:hidden styleId="refCGAE"  property="refCGAE" />
+			<html:hidden styleId="colegiadoBuscar"  property="colegiadoBuscar" />
+			<html:hidden styleId="chkRehabilitado"  property="chkRehabilitado" />
+			<html:hidden styleId="mostrarTiposFechas"  property="mostrarTiposFechas" />			
+			<html:hidden styleId="fechaInicioBuscar"  property="fechaInicioBuscar" />
+			<html:hidden styleId="fechaFinBuscar"  property="fechaFinBuscar" />
+			<html:hidden styleId="mostrarSanciones"  property="mostrarSanciones" />					
+			<html:hidden styleId="fechaInicioArchivada" property="fechaInicioArchivada"/>
+			<html:hidden styleId="fechaFinArchivada" property="fechaFinArchivada"/>
+			<input type="hidden" id="actionModal" name="actionModal" value="">
 		</html:form>
  
    			<%String tamanosCol = "";

@@ -158,14 +158,11 @@
 		<html:form action="/CEN_SolicitudesModificacionGenericas.do?noReset=true" method="POST" target="" style="display:none">
 
 			<!-- Campo obligatorio -->
-			<html:hidden property = "modo" value = ""/>
-			<html:hidden property = "idPersona" value ="<%=idPersona%>"/>
-			<html:hidden property = "idInstitucion" value ="<%=idInstitucion%>"/>			
-			<html:hidden property = "solicitudes"/>													
-					<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" id="filaSelD" name="filaSelD">
-			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<html:hidden property = "modo" styleId = "modo" value = ""/>
+			<html:hidden property = "idPersona" styleId = "idPersona" value ="<%=idPersona%>"/>
+			<html:hidden property = "idInstitucion"  styleId = "idInstitucion" value ="<%=idInstitucion%>"/>			
+			<html:hidden property = "solicitudes" styleId = "solicitudes"/>													
+			<input type="hidden" name="actionModal" id="actionModal" value="">
 		</html:form>
 		
 			<siga:TablaCabecerasFijas 

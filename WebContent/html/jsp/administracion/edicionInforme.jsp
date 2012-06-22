@@ -125,19 +125,19 @@ function onChangeTipoenvio() {
 </html:form>
 <html:javascript formName="InformeFormEdicion" staticJavascript="true" />
 <html:form action="/ADM_GestionInformes"  name="InformeFormEdicion" type="com.siga.administracion.form.InformeForm" method="POST" target="submitArea" enctype="multipart/form-data">
-	<html:hidden property="modo" value="${InformeFormEdicion.modo}"/>
-	<html:hidden property="modoInterno" value="${InformeFormEdicion.modoInterno}"/>
-	<html:hidden property="idPlantilla" value="${InformeFormEdicion.idPlantilla}"/>
-	<html:hidden property="destinatarios" value="${InformeFormEdicion.destinatarios}"/>
-	<html:hidden property="claseTipoInforme" value="${InformeFormEdicion.claseTipoInforme}"/>
-	<html:hidden property="idConsulta" value="${InformeFormEdicion.idConsulta}"/>
-	<html:hidden property="idInstitucionConsulta" value="${InformeFormEdicion.idInstitucionConsulta}"/>
-	<html:hidden property="idTiposEnvio"/>
-	<html:hidden property="idTipoEnvio"/>
-	<html:hidden property="idPlantillaEnvio"/>
+	<html:hidden styleId="modo" property="modo"  value="${InformeFormEdicion.modo}"/>
+	<html:hidden styleId="modoInterno" property="modoInterno" value="${InformeFormEdicion.modoInterno}"/>
+	<html:hidden styleId="idPlantilla"  property="idPlantilla" value="${InformeFormEdicion.idPlantilla}"/>
+	<html:hidden styleId="destinatarios"  property="destinatarios"  value="${InformeFormEdicion.destinatarios}"/>
+	<html:hidden styleId="claseTipoInforme" property="claseTipoInforme"  value="${InformeFormEdicion.claseTipoInforme}"/>
+	<html:hidden styleId="idConsulta" property="idConsulta" value="${InformeFormEdicion.idConsulta}"/>
+	<html:hidden styleId="idInstitucionConsulta" property="idInstitucionConsulta" value="${InformeFormEdicion.idInstitucionConsulta}"/>
+	<html:hidden styleId="idTiposEnvio" property="idTiposEnvio"/>
+	<html:hidden styleId="idTipoEnvio" property="idTipoEnvio"/>
+	<html:hidden styleId="idPlantillaEnvio" property="idPlantillaEnvio"/>
 	
-	<input type="hidden" name="location" value="${InformeFormEdicion.usrBean.location}"/>
-	<input type="hidden" name="actionModal" />
+	<input type="hidden"  id="location"  name="location" value="${InformeFormEdicion.usrBean.location}"/>
+	<input type="hidden"  id="actionModal" name="actionModal" />
 
 	
 	<bean:define id="location" name="InformeFormEdicion" property="usrBean.location"  />

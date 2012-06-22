@@ -72,13 +72,9 @@
 	<body onload="buscar();">
 		
 			<html:form action="/EXP_MantenerTiposExpedientes.do" method="POST" target="submitArea" style="display:none">
-				<html:hidden property = "modo" value = ""/>
-				<html:hidden property = "hiddenFrame" value = "1"/>
-				
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="filaSelD">
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+				<html:hidden property = "modo"  styleId = "modo"  value = ""/>
+				<html:hidden property = "hiddenFrame"  styleId = "hiddenFrame"  value = "1"/>
+				<input type="hidden" id="actionModal"  name="actionModal" value="">
 		</html:form>
 		
 				

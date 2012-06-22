@@ -70,10 +70,7 @@
 		<html:hidden name="pestanaDelitoAsistenciaForm" property="anio" styleId="anio" />
 		<html:hidden name="pestanaDelitoAsistenciaForm" property="numero" styleId="numero"/>
 		<input type="hidden" id="esFichaColegial" name="esFichaColegial" value="<%=sEsFichaColegial%>"/>
-		<!-- RGG: cambio a formularios ligeros -->
-		<input type="hidden" id="filaSelD" name="filaSelD"/>
-		<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD"/>
-		<input type="hidden" name="actionModal" value=""/>
+		<input type="hidden" id="actionModal"  name="actionModal" value=""/>
 	</html:form>	
 		
 		

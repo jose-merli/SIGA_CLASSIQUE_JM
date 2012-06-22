@@ -203,20 +203,18 @@
 	target="mainWorkArea" style="display:none">
 
 	<!-- Campo obligatorio -->
-	<html:hidden property="modo" value="" />
-	<html:hidden property="registrosSeleccionados" />
-	<html:hidden property="datosPaginador" />
-	<html:hidden property="seleccionarTodos" />
+	<html:hidden styleId="modo" property="modo" value="" />
+	<html:hidden  styleId="registrosSeleccionados" property="registrosSeleccionados" />
+	<html:hidden styleId="datosPaginador"  property="datosPaginador" />
+	<html:hidden styleId="seleccionarTodos"  property="seleccionarTodos" />
 	
 
 	<!-- parametro para colegiados o no -->
-	<html:hidden property="colegiado" value="<%=colegiado %>" />
-	<html:hidden property="avanzada" value="" />
+	<html:hidden styleId="colegiado"  property="colegiado" value="<%=colegiado %>" />
+	<html:hidden  styleId="avanzada" property="avanzada" value="" />
 
-	<input type="hidden" id="filaSelD" name="filaSelD">
-	<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
-	<input type="hidden" name="actionModal" value="">
-	<input type="hidden" name="verFichaLetrado" value="">
+	<input type="hidden" id="actionModal"  name="actionModal" value="">
+	<input type="hidden" id="verFichaLetrado"  name="verFichaLetrado" value="">
 </html:form>
 
 <%

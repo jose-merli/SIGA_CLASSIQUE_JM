@@ -180,16 +180,15 @@
 
 				<html:form action="/CEN_DatosColegiales.do" method="POST">
 
-				<html:hidden property = "modo" value = ""/>
+				<html:hidden property = "modo"  styleId = "modo" value = ""/>
 				<!--html:hidden property = "actionModal" value=""/-->				
-				<html:hidden property="motivo" value=""/> 				
-				<html:hidden property="idPersona" value="<%=idPersona.toString()%>"/> 				
-				<html:hidden property="idInstitucion" value="<%=idInstitucion%>"/> 
-				<html:hidden name="DatosColegialesForm" property="id"/> 					
-				<html:hidden property="nombre" value="<%=nombre%>"/> 	
-				<html:hidden property="numero" value="<%=numero%>"/>
-				<html:hidden name="DatosColegialesForm"  property ="filaSelD" styleId="filaSelD"/>
-				 <input type="hidden" name="pestanaSituacion" value="<%=request.getAttribute("PESTANASITUACION")%>">											
+				<html:hidden property="motivo" styleId="motivo"  value=""/> 				
+				<html:hidden property="idPersona" styleId="idPersona" value="<%=idPersona.toString()%>"/> 				
+				<html:hidden property="idInstitucion" styleId="idInstitucion"  value="<%=idInstitucion%>"/> 
+				<html:hidden name="DatosColegialesForm" property="id" styleId="id"/> 					
+				<html:hidden property="nombre"  styleId="nombre" value="<%=nombre%>"/> 	
+				<html:hidden property="numero"  styleId="numero" value="<%=numero%>"/>
+	    		 <input type="hidden" name="pestanaSituacion" id="pestanaSituacion" value="<%=request.getAttribute("PESTANASITUACION")%>">											
 
 				<tr>				
 					<td width="100%" align="center">

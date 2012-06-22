@@ -264,10 +264,10 @@
 	
 	
 		<html:form  action="/ENV_Programacion.do" method="POST" target="submitArea">
-				<html:hidden property = "modo" value = "modificar"/>
-				<html:hidden property = "hiddenFrame" value = "1"/>
-				<html:hidden property = "idEnvio" value = "<%=idEnvio%>"/>
-				<html:hidden property = "idTipoEnvio" value = "<%=idTipoEnvio%>"/>
+				<html:hidden property = "modo" styleId = "modo" value = "modificar"/>
+				<html:hidden property = "hiddenFrame" styleId = "hiddenFrame"  value = "1"/>
+				<html:hidden property = "idEnvio" styleId = "idEnvio"  value = "<%=idEnvio%>"/>
+				<html:hidden property = "idTipoEnvio"  styleId = "idTipoEnvio" value = "<%=idTipoEnvio%>"/>
 		
 	<table class="tablaTitulo" align="center" cellspacing="0">
 		<tr>

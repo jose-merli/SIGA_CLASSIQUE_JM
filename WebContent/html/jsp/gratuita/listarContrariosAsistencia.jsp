@@ -83,7 +83,7 @@
 %>
 		<!-- Formulario de la lista de detalle multiregistro -->
 		<html:form action="<%=sAction%>" method="post" target="submitArea" style="display:none" styleId="PersonaJGForm">
-			<input type="hidden" name="modo" value="abrirPestana">
+			<input type="hidden" id="modo" name="modo" value="abrirPestana">
 			
 			<input type="hidden" id="idInstitucionJG" name="idInstitucionJG" value="<%=usr.getLocation() %>">
 			<input type="hidden" id="idPersonaJG" name="idPersonaJG" value="">
@@ -95,13 +95,10 @@
 			<input type="hidden" id="conceptoE" name="conceptoE" value="<%=PersonaJGAction.ASISTENCIA_CONTRARIOS %>">
 			<input type="hidden" id="tituloE" name="tituloE" value="gratuita.mantAsistencias.literal.tituloCO">
 			<input type="hidden" id="localizacionE" name="localizacionE" value="">
-			<input type="hidden" name="accionE" value="nuevo">
-			<input type="hidden" name="actionE" value="<%=sAction%>">
+			<input type="hidden" name="accionE" id="accionE" value="nuevo">
+			<input type="hidden" name="actionE" id="actionE" value="<%=sAction%>">
 			<input type="hidden" id="pantallaE" name="pantallaE" value="M">
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD" />
-			<input type="hidden" id="filaSelD" name="filaSelD" />
-			<input type="hidden" name="actionModal" value="" />
+			<input type="hidden" name="actionModal" id="actionModal" value="" />
 		</html:form>	
 		
 

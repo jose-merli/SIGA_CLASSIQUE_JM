@@ -145,13 +145,11 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 	<body class="tablaCentralCampos">
 		
 		<html:form action="<%=path%>" method="POST" target="submitArea" style="display:none">
-				<html:hidden property ="modo" value = ""/>
-				<html:hidden property="idAbono" value="<%=idAbono%>"/> 				
-				<html:hidden property="idInstitucion" value="<%=idInstitucion%>"/>	
+				<html:hidden property ="modo"  styleId ="modo" value = ""/>
+				<html:hidden property="idAbono"  styleId="idAbono"  value="<%=idAbono%>"/> 				
+				<html:hidden property="idInstitucion"  styleId="idInstitucion"  value="<%=idInstitucion%>"/>	
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden"  name ="filaSelD" id="filaSelD"/>
-			<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<input type="hidden" name="actionModal" id="actionModal"  value="">
 		</html:form>
 
 						<siga:TablaCabecerasFijas 
