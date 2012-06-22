@@ -210,12 +210,12 @@
 	String residente = (String) request.getAttribute("RESIDENTE");
 	String residenteInstiProduccion = (String) ses.getAttribute("BRESIDENTE");
 	if (bColegiado){//para los COLEGIADOS tiene sentido mirar el check de residente para habilitar y deshabilitar los campos nif, nombre y apellidos
-    	if (residente != null && residente.equals(ClsConstants.DB_TRUE) && residenteInstiProduccion.equals("0"))
+    	if (residente != null && residente.equals(ClsConstants.DB_TRUE) && residenteInstiProduccion !=null && residenteInstiProduccion.equals("0"))
 	    	bResidente = true;
     	else
     		bResidente = false;
     }else{
-    	if(residenteInstiProduccion.equals("0"))
+    	if(residenteInstiProduccion !=null && residenteInstiProduccion.equals("0"))
 	   		bResidente = true;
     	else
     		bResidente = false;
