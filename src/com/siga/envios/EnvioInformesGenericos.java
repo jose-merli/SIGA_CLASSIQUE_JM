@@ -198,7 +198,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 			case 0: // Caso de No Colegiados
 				total = noColegiadoAdm.getInformeNoColegiadoInforme(
-						idInstitucion, idPersona, idioma, true,usrBean);
+						idInstitucion, idPersona, idioma, true);
 				break;
 
 			case 1: // Caso de colegiados

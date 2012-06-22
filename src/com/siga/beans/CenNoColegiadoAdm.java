@@ -295,7 +295,7 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 	return vInforme;
 
 }
-	public Hashtable getInformeNoColegiadoInforme (String idInstitucion, String idPersona,String idioma,boolean isInforme,UsrBean usrBean)throws ClsExceptions {
+	public Hashtable getInformeNoColegiadoInforme (String idInstitucion, String idPersona,String idioma,boolean isInforme)throws ClsExceptions {
 		Vector vInforme = null;
 		Vector v= null;
 		Vector vCuentabancaria= null;
@@ -305,10 +305,10 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 		CenCuentasBancariasAdm admCuentasBancarias = new CenCuentasBancariasAdm(usrbean);
 		try {
 			//Se recogen los componentes si los hubiera de BBDD
-			if(usrBean!=null){
-				CenComponentesAdm componentesAdm = new CenComponentesAdm(usrBean);
+			//if(usrBean!=null){
+				CenComponentesAdm componentesAdm = new CenComponentesAdm(usrbean);
 				v= componentesAdm.selectComponentes(new Long(idPersona), new Integer(idInstitucion));									
-			}
+			//}
 												
 			//Se recogen los datos paa el informe del No Colegiado
 			vInforme = getDatosInformeNoColegiado(idInstitucion, idPersona, idioma, isInforme); 
@@ -339,14 +339,14 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 							nombreCompleto =nombreCompleto +" "+(String)registroContenido.get("APELLIDOS2");
 						registro.put("NOMBRE_COMPONENTE", nombreCompleto);
 						if(registroContenido.get("EJERCIENTE")!=null && registroContenido.get("EJERCIENTE").equals("1"))
-							registro.put("EJERCIENTE", UtilidadesString.getMensajeIdioma(usrBean,"censo.consultaDatosGenerales.literal.ejerciente"));
+							registro.put("EJERCIENTE", UtilidadesString.getMensajeIdioma(usrbean,"censo.consultaDatosGenerales.literal.ejerciente"));
 						else
 							registro.put("EJERCIENTE", "");
 				
 						if(((String)registroContenido.get(CenComponentesBean.C_SOCIEDAD)).equals(ClsConstants.DB_FALSE)){
-							registro.put("PARTICIPACION_SOCIEDAD_%",UtilidadesString.getMensajeIdioma(usrBean,"general.no"));
+							registro.put("PARTICIPACION_SOCIEDAD_%",UtilidadesString.getMensajeIdioma(usrbean,"general.no"));
 						}else{
-							registro.put("PARTICIPACION_SOCIEDAD_%",UtilidadesString.getMensajeIdioma(usrBean,"general.yes"));							   	 				
+							registro.put("PARTICIPACION_SOCIEDAD_%",UtilidadesString.getMensajeIdioma(usrbean,"general.yes"));							   	 				
 						}
 						vInformeComp.add(registro);
 					}//fin for
@@ -375,9 +375,9 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 				total.put("vInformeComp", vInformeComp);
 			}
 			
-			if(vInforme.size()!=0)
+			if(registro.size()!=0)
 			{
-				total.put("vInforme", vInforme);
+				total.put("vInforme", registro);
 			}
 		}catch (Exception e) {
 			throw new ClsExceptions (e, "Error ScsEJGAdm.getInformeNoColegiado.");
