@@ -1192,6 +1192,7 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			CenTiposCVAdm admTiposCV = null;
 			CenTiposCVSubtipo1Adm admSubtipo1CV = null;
 			CenTiposCVSubtipo2Adm admSubtipo2CV = null;
+			CenCuentasBancariasAdm admCuentasBancarias = new CenCuentasBancariasAdm(usrbean);
 			
 			try {
 				
@@ -1214,6 +1215,10 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 				//AHORA SE LO METO A PELO
 				admDirecciones = new CenDireccionesAdm(usrbean);
 				helperInformes.completarHashSalida(registro,admDirecciones.getDireccionPreferente(idInstitucion, idPersona, "1"));
+				
+				helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteAbono(idInstitucion, idPersona));
+				helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteCargo(idInstitucion, idPersona));
+				helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteSJCS(idInstitucion, idPersona));
 								
 			}catch (Exception e) {
 				throw new ClsExceptions (e, "Error ScsEJGAdm.getInformeColegiado.");
@@ -1443,6 +1448,7 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 		HelperInformesAdm helperInformes = new HelperInformesAdm();
 		CenEstadoColegialAdm admEstadoCol = null;
 		CenDireccionesAdm admDirecciones = null;
+		CenCuentasBancariasAdm admCuentasBancarias = new CenCuentasBancariasAdm(usrbean);
 		try {
 			
 			vInforme = getDatosInformeLetrado(idInstitucion, idPersona, idioma, isInforme);
@@ -1463,6 +1469,10 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			//AHORA SE LO METO A PELO
 			admDirecciones = new CenDireccionesAdm(usrbean);
 			helperInformes.completarHashSalida(registro,admDirecciones.getDireccionPreferente(idInstitucion, idPersona, "1"));
+			
+			helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteAbono(idInstitucion, idPersona));
+			helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteCargo(idInstitucion, idPersona));
+			helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteSJCS(idInstitucion, idPersona));
 			
 		}catch (Exception e) {
 			throw new ClsExceptions (e, "Error ScsEJGAdm.getInformeLetrado.");

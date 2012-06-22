@@ -298,16 +298,19 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 	public Hashtable getInformeNoColegiadoInforme (String idInstitucion, String idPersona,String idioma,boolean isInforme,UsrBean usrBean)throws ClsExceptions {
 		Vector vInforme = null;
 		Vector v= null;
+		Vector vCuentabancaria= null;
 		Hashtable total=new Hashtable();
 		HelperInformesAdm helperInformes = new HelperInformesAdm();
 		CenDireccionesAdm admDirecciones = null;
+		CenCuentasBancariasAdm admCuentasBancarias = new CenCuentasBancariasAdm(usrbean);
 		try {
 			//Se recogen los componentes si los hubiera de BBDD
 			if(usrBean!=null){
 				CenComponentesAdm componentesAdm = new CenComponentesAdm(usrBean);
-				v= componentesAdm.selectComponentes(new Long(idPersona), new Integer(idInstitucion));
+				v= componentesAdm.selectComponentes(new Long(idPersona), new Integer(idInstitucion));									
 			}
-						
+												
+			//Se recogen los datos paa el informe del No Colegiado
 			vInforme = getDatosInformeNoColegiado(idInstitucion, idPersona, idioma, isInforme); 
 			
 			
@@ -348,6 +351,8 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 						vInformeComp.add(registro);
 					}//fin for
 				}
+				else
+					registro = (Hashtable) vInforme.get(0);	
 								
 			}else{
 				registro = ((Row) vInforme.get(0)).getRow();
@@ -359,6 +364,11 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 			//AHORA SE LO METO A PELO
 			admDirecciones = new CenDireccionesAdm(usrbean);
 			helperInformes.completarHashSalida(registro,admDirecciones.getDireccionPreferente(idInstitucion, idPersona, "1"));
+												
+			helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteAbono(idInstitucion, idPersona));
+			helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteCargo(idInstitucion, idPersona));
+			helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteSJCS(idInstitucion, idPersona));
+												
 			
 			if(vInformeComp.size()!=0)
 			{

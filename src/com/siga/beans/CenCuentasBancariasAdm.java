@@ -909,5 +909,104 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 	}
 	
 
+	public Vector getCuentaCorrienteAbono (String idInstitucion, String idPersona)throws ClsExceptions{
+		RowsContainer rc = null;		
+		Vector datos=new Vector();
+		
+		try { 
+			rc = new RowsContainer(); 
+			String sql = "";
+			                      
+            sql = "SELECT ' ' ||'nº ' || cuen.cbo_codigo || '-' || cuen.codigosucursal ||'-' ||cuen.digitocontrol ||'-' || LPAD(SUBSTR(cuen.numerocuenta, 7), 10, '*') as CUENTABANCARIA_ABONO "; 
+            sql +=" FROM cen_cuentasbancarias cuen";
+            sql +=" WHERE cuen.abonocargo IN ('A', 'T')";
+            sql +=" AND cuen.idinstitucion = "+idInstitucion;
+            sql +=" AND cuen.idpersona = "+idPersona;
+            sql +=" AND (cuen.FECHABAJA is null or cuen.fechabaja > sysdate)";
+            sql += " order by fechamodificacion desc";       
+            
+         // RGG cambio visibilidad
+			rc = this.find(sql);
+			if (rc!=null) 
+			{ 				
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable)fila.getRow(); 
+					if (registro != null) 
+						datos.add(registro);
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al recuperar los datos de getCuentaCorrienteAbono()");
+		}		
+		return datos;
+	}
+	
+	public Vector getCuentaCorrienteCargo (String idInstitucion, String idPersona)throws ClsExceptions{
+		RowsContainer rc = null;		
+		Vector datos=new Vector();
+		
+		try { 
+			rc = new RowsContainer(); 
+			String sql = "";
+			                      
+            sql = "SELECT ' ' ||'nº ' || cuen.cbo_codigo || '-' || cuen.codigosucursal ||'-' ||cuen.digitocontrol ||'-' || LPAD(SUBSTR(cuen.numerocuenta, 7), 10, '*') as CUENTABANCARIA_CARGO ";
+            sql +=" FROM cen_cuentasbancarias cuen";
+            sql +=" WHERE cuen.abonocargo IN ('C', 'T')";
+            sql +=" AND cuen.idinstitucion = "+idInstitucion;
+            sql +=" AND cuen.idpersona = "+idPersona;
+            sql +=" AND (cuen.FECHABAJA is null or cuen.fechabaja > sysdate)";
+            sql += " order by fechamodificacion desc";       
+            
+         // RGG cambio visibilidad
+			rc = this.find(sql);
+			if (rc!=null) 
+			{ 				
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable)fila.getRow(); 
+					if (registro != null) 
+						datos.add(registro);
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al recuperar los datos de getCuentaCorrienteCargo()");
+		}		
+		return datos;
+	}
+	
+	public Vector getCuentaCorrienteSJCS (String idInstitucion, String idPersona)throws ClsExceptions{
+		RowsContainer rc = null;		
+		Vector datos=new Vector();
+		
+		try { 
+			rc = new RowsContainer(); 
+			String sql = "";
+			                      
+            sql = "SELECT ' ' ||'nº ' || cuen.cbo_codigo || '-' || cuen.codigosucursal ||'-' ||cuen.digitocontrol ||'-' || LPAD(SUBSTR(cuen.numerocuenta, 7), 10, '*') as CUENTABANCARIA_SJCS ";
+            sql +=" FROM cen_cuentasbancarias cuen";
+            sql +=" WHERE ( cuen.abonosjcs = 1 OR (cuen.abonosjcs = 0 AND cuen.abonocargo IN ('A', 'T')))";
+            sql +=" AND cuen.idinstitucion = "+idInstitucion;
+            sql +=" AND cuen.idpersona = "+idPersona;
+            sql +=" AND (cuen.FECHABAJA is null or cuen.fechabaja > sysdate)";
+            sql += " order by abonosjcs desc, fechamodificacion desc";       
+            
+         // RGG cambio visibilidad
+			rc = this.find(sql);
+			if (rc!=null) 
+			{ 				
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable)fila.getRow(); 
+					if (registro != null) 
+						datos.add(registro);
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al recuperar los datos de getCuentaCorrienteSJCS()");
+		}		
+		return datos;
+	}
+	
 	
 }
