@@ -150,13 +150,10 @@
 <body onload="inicio()">
 
 	<html:form action="/JGR_E-Comunicaciones_RemesaResolucion.do?noReset=true" method="post" target="mainWorkArea" style="display:none">
-		<input type="hidden" name="modo" value="">
-		<!-- RGG: cambio a formularios ligeros -->
-		<input type="hidden" name="filaSelD">
-		<input type="hidden" name="tablaDatosDinamicosD">
-		<input type="hidden" name="actionModal" value="">
-		<input type="hidden" name="idRemesaResolucion" value="">
-		<html:hidden property = "idTipoRemesa" value = "<%=idTipoRemesa%>"/>
+		<input type="hidden" name="modo"  id="modo"  value="">
+		<input type="hidden" name="actionModal" id="actionModal"  value="">
+		<input type="hidden" name="idRemesaResolucion"  id="idRemesaResolucion" value="">
+		<html:hidden property = "idTipoRemesa"  styleId = "idTipoRemesa"  value = "<%=idTipoRemesa%>"/>
 				
 	</html:form>	
 		
