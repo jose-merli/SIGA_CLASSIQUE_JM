@@ -3483,7 +3483,9 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			RowsContainer rc = new RowsContainer(); 
 			if (rc.find(sql.toString())) {
 				Row fila = (Row) rc.get(0);
-				idJuzgado = Long.parseLong((String)fila.getString("IDJUZGADO"));	                  
+				if(fila.getString("IDJUZGADO") != null && !fila.getString("IDJUZGADO").equals("")){
+					idJuzgado = Long.parseLong((String)fila.getString("IDJUZGADO"));
+				}
 			} 
 		}
 		catch (Exception e) {
