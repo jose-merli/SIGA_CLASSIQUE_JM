@@ -3228,7 +3228,12 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 						beanJuzgado = (ScsJuzgadoBean) v.get(0);
 					}
 					
+					sLinea += "" + separador;
 					sLinea += beanJuzgado.getNombre() + separador;
+					sLinea += "" + separador;
+					sLinea += "" + separador;
+					
+					
 					
 	            }else{
 	            	CenPersonaAdm admPer = new CenPersonaAdm(this.usrbean);
