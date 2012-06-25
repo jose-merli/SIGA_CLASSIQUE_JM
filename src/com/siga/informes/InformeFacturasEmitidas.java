@@ -355,14 +355,14 @@ public class InformeFacturasEmitidas extends MasterReport
 		
 		
 		try {
-//			String idInstitucion = this.getUsuario().getLocation();
-//			String fDesde = UtilidadesHash.getString(datosFormulario, "FECHA_DESDE");
-//			String fHasta = UtilidadesHash.getString(datosFormulario, "FECHA_HASTA");
+			String idInstitucion = this.getUsuario().getLocation();
+			String fDesde = UtilidadesHash.getString(datosFormulario, "FECHA_DESDE");
+			String fHasta = UtilidadesHash.getString(datosFormulario, "FECHA_HASTA");
 			
-			String idInstitucion = "2040";
-			String fDesde = "11/01/2011";
-			String fHasta = "11/01/2011";
-			
+//			String idInstitucion = "2040";
+//			String fDesde = "11/01/2011";
+//			String fHasta = "11/01/2011";
+//			
 			
 			//Nos traemos las filas del informe 
 			FacFacturaAdm adm = new FacFacturaAdm(this.getUsuario());
