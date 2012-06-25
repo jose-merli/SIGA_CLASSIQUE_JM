@@ -195,6 +195,7 @@
 			}
 			
 			function growl(msg,type){
+				//$.noticeRemove($('.notice-item-wrapper'), 400);
 				$.noticeAdd({
 					text: msg,
 					type: type

@@ -324,6 +324,7 @@
 
 			function descargaLog(fila)
 			{
+				sub();
 				   var datos;
 				   datos = document.getElementById('tablaDatosDinamicosD');
 				   datos.value = ""; 
@@ -355,6 +356,7 @@
 				document.forms[0].modo.value="descargarLogErrores";
 				document.forms[0].submit();
 				document.forms[0].target = aux;
+				fin();
 			}
 
 	</script>

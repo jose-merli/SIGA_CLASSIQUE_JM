@@ -44,7 +44,7 @@
 				}
 				%>
 					var type = '<siga:Idioma key="<%=mensaje%>"/>';
-					alert(type,<%=estilo%>);%>
+					alert(type,"<%=estilo%>");
 			<%  } %>
 		<%  if (tipoConsulta.equals(ConConsultaAdm.TIPO_CONSULTA_ENV)){%>
 				document.forms[0].modo.value="tipoEnvio";
@@ -57,6 +57,7 @@
 		<%  } %>
 			document.forms[0].modo.value="criteriosDinamicos";
 			var valores = ventaModalGeneral(document.forms[0].name,"G");
+			fin();
 	}
 	</script>
 

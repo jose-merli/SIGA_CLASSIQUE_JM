@@ -12,11 +12,16 @@
    String msg=(request.getParameter("msg") == null) ? "" : "?msg="+request.getParameter("msg");
 %>
 <link rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+
+		<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript"></script>		
+		<script src="<html:rewrite page='/html/js/jquery.js'/>" type="text/javascript"></script>		
+		<script src="<html:rewrite page='/html/js/jquery.custom.js'/>" type="text/javascript"></script>	
+		
 <script language="javascript">
    	var val;
    	function openLoadingWindow() {
 		try {
-    		val = showModalDialog('<%=app%>/html/jsp/general/loadingWindow.jsp<%=msg%>','', 'unadorned:yes;resizable:no;status:no;dialogWidth:200px;dialogHeight:200px;help:no;');
+    		//val = showModalDialog('<%=app%>/html/jsp/general/loadingWindow.jsp<%=msg%>','', 'unadorned:yes;resizable:no;status:no;dialogWidth:200px;dialogHeight:200px;help:no;');
 	       	<% if (formName != null) {%>
 	           parent.document.<%=formName%>.submit();
 	       	<% } %>

@@ -63,7 +63,7 @@
 		//Asociada al boton Cerrar
 		function accionCerrar() 
 		{
-			top.cierraConParametros ("VACIO");		
+			top.cierraConParametros ("");		
 		}
 		
 		function accionDownload() 

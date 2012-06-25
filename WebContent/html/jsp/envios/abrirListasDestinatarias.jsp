@@ -38,7 +38,9 @@
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 		
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"> </script>
+		<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript"></script>		
+		<script src="<html:rewrite page='/html/js/jquery.js'/>" type="text/javascript"></script>		
+		<script src="<html:rewrite page='/html/js/jquery.custom.js'/>" type="text/javascript"></script>	
 
 		<!-- INICIO: SCRIPTS BOTONES -->
 		<script language="JavaScript">

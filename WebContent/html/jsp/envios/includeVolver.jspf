@@ -70,6 +70,7 @@
 		<!-- Asociada al boton Volver -->
 		function accionVolver() 
 		{
+		sub();
 <%
  		if (!busquedaVolver.equals("volverNo")) { 
 		if (busquedaVolver.equals("GS")) {	%>
