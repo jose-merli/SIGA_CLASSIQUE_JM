@@ -165,12 +165,38 @@ public class TagBusquedaPersona extends TagSupport
 			out.println("			if(vForm==null){");
 			out.println("				var app=busquedaClientesModalForm.action;");
 			out.println("				app=app.substring(0,app.substr(1).indexOf('/')+1);");
-			out.println("				var formu=document.createElement(\"<form name='busquedaClientesModalForm' action='\"+app+\"/CEN_BusquedaClientesModal.do'>\");");
-			out.println("				formu.appendChild(document.createElement(\"<input type='hidden' name='actionModal' value=''>\"));");			
-			out.println("				formu.appendChild(document.createElement(\"<input type='hidden' name='modo' value=''>\"));");
-			out.println("				formu.appendChild(document.createElement(\"<input type='hidden' name='tipoBus' value='"+this.tipo+"'>\"));");
-			out.println("				formu.appendChild(document.createElement(\"<input type='hidden' name='numeroNif' value=''>\"));");
-			out.println("				document.appendChild(formu);");
+			
+			out.println("				var formu = document.createElement('form');								");
+			out.println("				formu.setAttribute('name', 'busquedaClientesModalForm');                ");
+			out.println("				formu.setAttribute('method', 'POST');                                   ");
+			out.println("				formu.setAttribute('action', '\"+app+\"/CEN_BusquedaClientesModal.do'); ");
+			out.println("				formu.setAttribute('target', 'submitArea');                             ");
+			out.println("				formu.setAttribute('method', 'POST');                                   ");
+
+			out.println("				var actionModal = document.createElement('input');                      ");
+			out.println("				actionModal.setAttribute('type', 'hidden');                             ");
+			out.println("				actionModal.setAttribute('name', 'actionModal');                        ");
+			out.println("				actionModal.setAttribute('value', '');                                  ");
+			out.println("				formu.appendChild(actionModal);                                         ");
+
+			out.println("				var modo = document.createElement('input');                             ");
+			out.println("				modo.setAttribute('type', 'hidden');                                    ");
+			out.println("				modo.setAttribute('name', 'modo');                                      ");
+			out.println("				modo.setAttribute('value', '');                                         ");
+			out.println("				formu.appendChild(modo);                                                ");
+
+			out.println("				var tipoBus = document.createElement('input');                          ");
+			out.println("				tipoBus.setAttribute('type', 'hidden');                                 ");
+			out.println("				tipoBus.setAttribute('name', 'tipoBus');                                ");
+			out.println("				tipoBus.setAttribute('value', '"+this.tipo+"');                         ");
+			out.println("				formu.appendChild(tipoBus);                                             ");
+
+			out.println("				var numeroNif = document.createElement('input');                        ");
+			out.println("				numeroNif.setAttribute('type', 'hidden');                               ");
+			out.println("				numeroNif.setAttribute('name', 'numeroNif');                            ");
+			out.println("				numeroNif.setAttribute('value', '');                                    ");
+			out.println("				formu.appendChild(numeroNif);                                           ");
+			
 			out.println("				vForm=formu;");
 			out.println("			}");
 			out.println("			return vForm;");
