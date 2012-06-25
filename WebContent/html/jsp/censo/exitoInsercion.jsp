@@ -36,9 +36,10 @@
 					if (error!=null && error.equals("ERROR")){
 						String contadorSugeridoSP=(String)request.getAttribute("contadorSugeridoSP");
 						String contadorSugeridoSJ=(String)request.getAttribute("contadorSugeridoSJ");
+						
 						%>
 							var type = '<siga:Idioma key="<%=mensaje%>"/>';
-							alert(type);
+							alert(type,"error");
 						<%
 							if (contadorSugeridoSP!=null){
 								%>
@@ -52,9 +53,15 @@
 								}
 			 				} 
 					} else {
+						String estilo="notice";
+						if(mensaje.contains("error")){
+							estilo="error";
+						}else if(mensaje.contains("success")){
+							estilo="success";
+						}
 						%>
 							var type = '<siga:Idioma key="<%=mensaje%>"/>';
-							alert(type);
+							alert(type,"<%=estilo%>");
 							document.forms[0].submit();
 		 				<%
 		 			}

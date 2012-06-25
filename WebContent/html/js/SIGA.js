@@ -5,8 +5,8 @@
 
 //Version nueva para los alrets
 
-/* Alert para la nueva funcionalidad comentado temporalmente hasta que este depurado 
-
+/* Alert para la nueva funcionalidad comentado temporalmente hasta que este depurado */
+/*
 function alert(message, title, acceptText) {
 	var returnValue = true;
 	if(message){
@@ -27,7 +27,16 @@ function alert(message, title, acceptText) {
 	}
 	return returnValue;
 }
+*/
 
+function alert(message, estilo) {
+	var returnValue = true;
+	var windowTop=window.top;
+	message.replace(/\r\n|\r|\n/g, "<br>");
+	windowTop.growl(message,estilo);
+	return returnValue;
+}
+/*
 function confirm(message, title, acceptText, cancelText) {
 	var returnValue = false;
 	if(message){
@@ -492,82 +501,15 @@ function finsubicono(identificador) {
  */
 
 function sub(w){
-	if(w == undefined) {
-		w = this.top;
-	}
-	try {
-		// disable links in current frame
-		var links = w.document.getElementsByTagName("a");
-		for ( var l = 0; l < links.length; l++) {
-			if (!$(links[l]).hasClass("disabled")) {
-				$(links[l]).addClass("disabled");
-			}
-		}
-	} catch (e) {
-		// TODO: handle exception
-	}
-	try {
-		// disable buttons in current frame
-		var buts = w.document.getElementsByTagName("input");
-		for ( var b = 0; b < buts.length; b++) {
-			if (buts[b].type == 'button') {
-				$(buts[b]).attr("disabled", "disabled");
-			}
-		}
-	} catch (e) {
-		// TODO: handle exception
-	}
-	try {
-		// Go to child frames
-		var framess = w.frames;
-		for(var f=0; f < framess.length; f++){
-			sub(framess[f]);
-		}
-	} catch (e) {
-		// TODO: handle exception
-	}
+	var windowTop=window.top;
+	windowTop.mainSub();
 	return true;
 }
 
 function fin(w){
-	
-	var $ = window.top.$;
-	if(w == undefined) {
-		w = this.top;
-	}
-	try {
-		// enable links and buttons in current frame
-		var links = w.document.getElementsByTagName("a");
-		for ( var l = 0; l < links.length; l++) {
-			if ($(links[l]).hasClass("disabled")) {
-				$(links[l]).removeClass("disabled");
-			}
-		}
-	} catch (e) {
-		// TODO: handle exception
-		//alert("Error habilitando links. Continuo.");
-	}
-	try {
-		var buts = w.document.getElementsByTagName("input");
-		for ( var b = 0; b < buts.length; b++) {
-			if (buts[b].type == 'button') {
-				$(buts[b]).removeAttr("disabled");
-			}
-		}
-	} catch (e) {
-		// TODO: handle exception
-		//alert("Error habilitando botones. Continuo.");
-	}
-	try {
-			// Go to child frames
-		var framess = w.frames;
-		for(var f=0; f < framess.length; f++){
-			fin(framess[f]);
-		}
-	} catch (e) {
-		// TODO: handle exception
-		//alert("Error procesando frame. Continuo.");
-	}
+	var windowTop=window.top;
+	if(windowTop.bloqueado)
+		windowTop.mainFin();
 	return true;
 }
 
@@ -1404,5 +1346,18 @@ function isSWIFTValido(swift){
 	}
 	return true; 
 }
+
+document._oldGetElementById = document.getElementById;
+document.getElementById = function(elemIdOrName) {
+    var result = document._oldGetElementById(elemIdOrName);
+    if (! result) {
+        var elems = document.getElementsByName(elemIdOrName); 
+        if (elems && elems.length > 0) {
+            result = elems[0];
+        }
+    }
+
+    return result;
+};
 
 fin();

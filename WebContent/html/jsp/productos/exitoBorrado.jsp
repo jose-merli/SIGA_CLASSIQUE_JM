@@ -31,10 +31,6 @@
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script type="text/javascript">
 		function reloadPage() {
-			<% if (mensaje!=null){%>
-				var type ='<%=mensaje%>';
-				alert(type);
-			<% } %>
 			<% if (modal!=null){%>
 				document.MantenimientoServiciosForm.submit();
 				<% if (modal.equalsIgnoreCase("SI_HAY_CONDICION")) { %> 
@@ -45,6 +41,10 @@
 				window.top.close();
 			<% }else{ %>	
 				document.MantenimientoServiciosForm.submit();
+			<% } %>
+			<% if (mensaje!=null){%>
+				var type ='<%=mensaje%>';
+				alert(type,"success");
 			<% } %>
 
 		} 

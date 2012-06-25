@@ -34,14 +34,14 @@
 
 	<script>
 	function reloadPage() {
-		<%  if (mensaje!=null){%>
-			var type = '<siga:Idioma key="<%=mensaje%>"/>';
-			alert(type);
-		<%  } %>
 		
 		<% if (cerrarModal.equals("SI")) { %>
 			window.top.close();
 		<% } %>
+		<%  if (mensaje!=null){%>
+			var type = '<siga:Idioma key="<%=mensaje%>"/>';
+			alert(type);
+		<%  } %>
 		document.mantenimientoPagoForm.submit();
 	}
 	</script>

@@ -24,7 +24,7 @@
 	<script type="text/javascript">
 	function reloadPage() {
 		var type = unescape('<%=mensaje%>');
-		alert(type);
+		alert(type,"error");
 		parent.refrescarLocal();
 	
 	return false;

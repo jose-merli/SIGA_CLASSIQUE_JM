@@ -42,7 +42,7 @@
    			function doShowError()
    			{
      			var type =unescape('<%=msg%>');
-     			alert(type);
+     			alert(type,"error");
      			return false;
    			}
    			

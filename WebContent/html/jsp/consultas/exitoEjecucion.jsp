@@ -35,10 +35,17 @@
 
 	<script>
 	function reloadPage() {
-		<%  if (mensaje!=null){%>
-			var type = '<siga:Idioma key="<%=mensaje%>"/>';
-			alert(type);
-		<%  } %>
+		<%  if (mensaje!=null){
+				String estilo="notice";
+				if(mensaje.contains("error")){
+					estilo="error";
+				}else if(mensaje.contains("success")){
+					estilo="success";
+				}
+				%>
+					var type = '<siga:Idioma key="<%=mensaje%>"/>';
+					alert(type,<%=estilo%>);%>
+			<%  } %>
 		<%  if (tipoConsulta.equals(ConConsultaAdm.TIPO_CONSULTA_ENV)){%>
 				document.forms[0].modo.value="tipoEnvio";
 				var tipoenvio = ventaModalGeneral(document.forms[0].name,"P");

@@ -592,7 +592,7 @@
 	<!-- Zona de campos de busqueda o filtro -->
 					<siga:ConjCampos leyenda="pys.solicitudCompra.leyenda.datosSolicitud">		
 						<table class="tablaCampos" align="center" border=0>
-						<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="submitArea" type="">
+						<html:form action="/CEN_BusquedaClientesModal" method="POST" target="submitArea" type="">
 		  				<input type="hidden" name="actionModal" value="">
 		  				<input type="hidden" name="modo" value="abrirBusquedaModal">
 		  				<input type="hidden" name="ventana" 		value="solicitud">

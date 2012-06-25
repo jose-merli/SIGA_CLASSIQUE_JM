@@ -38,7 +38,7 @@
 				if (mensaje!=null){
 					%>
 						var type = '<siga:Idioma key="<%=mensaje%>"/>';
-						alert(type);
+						alert(type,"success");
 					<%
 				}
 				if (modal!=null){

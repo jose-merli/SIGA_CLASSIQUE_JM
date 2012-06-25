@@ -46,7 +46,6 @@
 		 	if (mensaje!=null){
 		%>
 			    var type = '<siga:Idioma key="<%=mensaje%>"/>';
-				alert(type);
 			
 				var aux = new Array();
 				aux[0]="<%=idPersona %>";
@@ -66,6 +65,7 @@
 				
 				top.cierraConParametros(aux);
 	
+				alert(type);
 	 	<% 	
 	 		}
 	 	%>

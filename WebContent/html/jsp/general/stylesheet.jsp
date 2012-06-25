@@ -822,13 +822,11 @@ A.lb:active {
 	font-size: 12px;
 	font-weight: normal;
 	text-align: center;
-	//border-bottom: 1px solid #FFFFFF;
-	//border-left: 1px solid #FFFFFF;
-	//border-right: 1px solid #FFFFFF;
-	border-bottom: 1px groove #FFFFFF;
-	border-left: 1px groove #FFFFFF;
-	border-right: 1px groove #FFFFFF;
-	border-style: groove;
+	border-bottom: 1px solid #FFFFFF;
+	border-top: 1px solid #FFFFFF;
+	border-left: 1px solid #FFFFFF;
+	border-right: 1px solid #FFFFFF;
+	border-style: solid;
 }
 
 .clLevel0 {
@@ -839,23 +837,19 @@ A.lb:active {
 
 .clLevel0over {
 	background-color: #<%= src.get ( "color.menu.level0.activo.BG" ) %>;
-	layer-background-color: #<%= src.get ( "color.menu.level0.activo.BG" )
-		%>;
+	layer-background-color: #<%= src.get ( "color.menu.level0.activo.BG" )%>;
 	color: #<%= src.get ( "color.menu.level0.activo.font" ) %>;
 	cursor: pointer;
-	//border-bottom: 1px solid #000000;
-	//border-left: 1px solid #000000;
-	//border-right: 1px solid #000000;
-	border-bottom: 1px groove #000000;
-	border-left: 1px groove #000000;
-	border-right: 1px groove #000000;
-	border-style: groove;
+	border-bottom: 1px solid #000000;
+	border-left: 1px solid #000000;
+	border-right: 1px solid #000000;
+	border-top: 1px solid #000000;
+	border-style: solid;
 }
 
 .clLevel0NoLinkOver {
 	background-color: #<%= src.get ( "color.menu.level0.activo.BG" ) %>;
-	layer-background-color: #<%= src.get ( "color.menu.level0.activo.BG" )
-		%>;
+	layer-background-color: #<%= src.get ( "color.menu.level0.activo.BG" )%>;
 	color: #<%= src.get ( "color.menu.level0.activo.font" ) %>;
 	cursor: default;
 }
@@ -880,32 +874,23 @@ A.lb:active {
 	background-color: #<%= src.get ( "color.menu.level1.BG" ) %>;
 	layer-background-color: #<%= src.get ( "color.menu.level1.BG" ) %>;
 	color: #<%= src.get ( "color.menu.level1.font" ) %>;
-	//border-bottom: 1px solid #FFFFFF;
-	//border-left: 1px solid #FFFFFF;
-	//border-right: 1px solid #FFFFFF;
-	border-bottom: 1px groove #FFFFFF;
-	border-left: 1px groove #FFFFFF;
-	border-right: 1px groove #FFFFFF;
-	//border-style: solid;
-	border-style: groove;
-	//border-style: solid;
-	//border-width:1px; 
-
+	border-bottom: 1px solid #FFFFFF;
+	border-top: 1px solid #FFFFFF;
+	border-left: 1px solid #FFFFFF;
+	border-right: 1px solid #FFFFFF;
+	border-style: solid;
 }
 
 .clLevel1over {
 	background-color: #<%= src.get ( "color.menu.level1.activo.BG" ) %>;
-	layer-background-color: #<%= src.get ( "color.menu.level1.activo.BG" )
-		%>;
+	layer-background-color: #<%= src.get ( "color.menu.level1.activo.BG" )%>;
 	color: #<%= src.get ( "color.menu.level1.activo.font" ) %>;
 	cursor: pointer;
-	//border-bottom: 1px solid #000000;
-	//border-left: 1px solid #000000;
-	//border-right: 1px solid #000000;
-	border-bottom: 1px groove #000000;
-	border-left: 1px groove #000000;
-	border-right: 1px groove #000000;
-	border-style: groove;
+	border-bottom: 1px solid #000000;
+	border-top: 1px solid #000000;
+	border-left: 1px solid #000000;
+	border-right: 1px solid #000000;
+	border-style: solid;
 }
 
 .clLevel1NoLinkOver {
@@ -1240,11 +1225,7 @@ A.imageLink:active {
 	font-weight: normal;
 	color: #FFFFFF;
 	text-decoration:none;
-	padding-top: 4px;
-	padding-bottom: 4px;
-	padding-left: 7px;
-	padding-right: 7px;
-	.padding: 4px 5px;
+	padding: 4px 10px 4px 4px;
 	border-left-width: 2px;
 	border-left-style: solid;
 	border-left-color: #<%=src.get("color.background")%>;	
@@ -1258,11 +1239,7 @@ A.imageLink:active {
 	font-weight: normal;
 	color: #FFFFFF;
 	text-decoration:none;
-	padding-top: 4px;
-	padding-bottom: 4px;
-	padding-left: 7px;
-	padding-right: 7px;
-	.padding: 4px 5px;
+	padding: 4px 10px 4px 4px;
 	border-left-width: 2px;
 	border-left-style: solid;
 	border-left-color: #<%=src.get("color.background")%>;
@@ -1276,11 +1253,7 @@ A.imageLink:active {
 	font-weight: normal;
 	color: #FFFFFF;
 	text-decoration:none;
-	padding-top: 4px;
-	padding-bottom: 4px;
-	padding-left: 7px;
-	padding-right: 7px;
-	.padding: 4px 5px;
+	padding: 4px 10px 4px 4px;
 	border-left-width: 2px;
 	border-left-style: solid;
 	border-left-color: #<%=src.get("color.background")%>;
@@ -1533,6 +1506,7 @@ div#panel #paneles div {
     padding-left: 10px;
     padding-right: 10px;
     width: 100%;
+    border: 1px;
 }
 
 .sigaPopupImageContainer {
@@ -2242,4 +2216,40 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 	padding:5px;
 	font-family: <%=src.get("font.style")%>;
 	font-size:<%=fontSize%>;
+}
+
+.notice-wrap {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	width: 350px;
+	z-index: 9999;
+}
+
+* html .notice-wrap {
+	position: absolute;		
+}
+ 
+.notice-item {
+	background: #333;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	color: #eee;
+	padding: 16px 16px 16px 16px;
+	font-family: <%=src.get("font.style")%>;
+	font-size: <%=fontSize%>;
+	border: 2px solid #999;
+	display: block;
+	position: relative;
+	margin: 0 0 12px 0;
+}
+
+.notice-item-close {
+	position: absolute;
+	font-family: Arial;
+	font-size: 12px;
+	font-weight: bold;
+	right: 6px;
+	top: 6px;
+	cursor: pointer;
 }

@@ -49,12 +49,7 @@
 	function reloadPage() {
 	
 			
-			<%  if (mensaje!=null){
-						String msg=UtilidadesString.escape(UtilidadesString.getMensajeIdioma(userBean.getLanguage(),mensaje));
-			%>
-						alert(unescape("<%=msg %>"));
-						
-			<%  } %>
+
 			<%  if (modal!=null){%>
 					<%  	if (sinrefresco!=null){%>
 								window.top.returnValue=""; 
@@ -80,6 +75,18 @@
 								parent.refrescarLocal();
 					<%  	} %>
 			<%  } %>
+			<%  if (mensaje!=null){
+				String msg=UtilidadesString.escape(UtilidadesString.getMensajeIdioma(userBean.getLanguage(),mensaje));
+				String estilo="notice";
+				if(mensaje.contains("error")){
+					estilo="error";
+				}else if(mensaje.contains("success")){
+					estilo="success";
+				}
+				%>
+					alert(<%=msg%>,<%=estilo%>);
+					
+		<%  } %>
 			return false;
 	}
 </script>

@@ -637,7 +637,7 @@
 		            },
 		            error: function(e){
 						fin();
-		                alert('Error de comunicación: ' + e);
+		                alert('Error de comunicación',"error");
 		            }
 		        });
 			}else{
@@ -660,7 +660,7 @@
 		        fin();
             },
             error: function(e){
-                alert('Error de comunicación: ' + e);
+                alert('Error de comunicación',"error");
 		        fin();
             }
         });
@@ -682,11 +682,11 @@
 	            	};
 	            },
 	            error: function(e){
-	                alert('Error de comunicación: ' + e);
+	                alert('Error de comunicación',"error");
 	            }
 	        });
 		}else{
-			alert("<siga:Idioma key='censo.alterMutua.literal.relleneCampos'/>");
+			alert("<siga:Idioma key='censo.alterMutua.literal.relleneCampos'/>","error");
 		}
 		return retVal;
 	}
@@ -711,7 +711,7 @@
 		        fin();
             },
             error: function(e){
-                alert('Error de comunicación: ' + e);
+                alert('Error de comunicación',"error");
 		        fin();
             }
         });
@@ -879,26 +879,9 @@
    		$('.box').removeClass("box");
    		$('.boxCombo').addClass("boxComboConsulta");
    		$('.boxCombo').removeClass("boxCombo");
-//   		mostrarFamiliares();
-//   		mostrarHerederos();
-    }
-    
-    function makeEditable(){
-    	$(":input").prop("readonly", false);
-    	$(":checkbox").prop("disabled", false);
-    	$(".textoBorrar").remove();
-    	
-   		$("select").each(function(){
-   			$(this).show();
-   			$(this).after().remove();
-   		});
-   		$('#idButtonSolicitar').show();
-   		$('#botonNuevoFamiliar').show();
-   		$('#idButtonActualizar').show();
-   		$('.boxConsulta').addClass("box");
-   		$('.boxConsulta').removeClass("boxConsulta");
-   		$('.boxComboConsulta').addClass("boxCombo");
-   		$('.boxComboConsulta').removeClass("boxComboConsulta");
+   		$('.persona').remove();
+   		mostrarFamiliares();
+   		mostrarHerederos();
     }
     
     $(document).ready(function(){

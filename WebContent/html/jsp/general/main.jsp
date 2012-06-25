@@ -88,12 +88,14 @@
 <!-- ESTILOS Y JAVASCRIPT -->
 <link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 <link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/css/jquery-ui.css"> 
+<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/css/jquery.notice.css"> 
 <script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
-<script src="<%=app%>/html/js/jquery.js" type="text/javascript"></script>
+<script src="<%=app%>/html/js/jquery.blockUI.js" type="text/javascript"></script>
+<script src="<%=app%>/html/js/jquery.notice.js" type="text/javascript"></script>
 <script src="<%=app%>/html/js/jquery-ui.js" type="text/javascript"></script>
 
 <script language="JavaScript" type="text/javascript">
-			var user, psswd, profile, loc;
+			var user, psswd, profile, loc, bloqueado;
 			user='<%=userBean.getUserName()%>';
 			psswd='clavecita';
 			loc='<%=userBean.getLocation()%>';
@@ -168,7 +170,37 @@
 			{
 				showModelessDialog('<%=app%>/html/jsp/general/loadingWindowPru.jsp','', 'dialogLeft:2000;dialogTop:2000;dialogWidth:2000px;dialogHeight:2000px;resizable:yes;help:no;center:no;');
 			}
-			   
+
+			function mainSub(){
+ 				$(document).ready(
+					function() { 
+						$.blockUI({
+							message: '<img src="<%=app%>/html/imagenes/loadingBar.gif">', 
+							css:{border:0, background:'transparent'},
+							overlayCSS: { backgroundColor:'#000', opacity: .0} }); 
+					}
+				)
+				bloqueado=true; 
+			}
+
+			function mainFin(){
+				if(bloqueado){
+					$(document).ready(
+						function() { 
+					    	$.unblockUI(); 
+						}
+					)
+					bloqueado=false;
+				} 
+			}
+			
+			function growl(msg,type){
+				$.noticeAdd({
+					text: msg,
+					type: type
+				});
+			}
+				
 		</script>
 </head>
 
@@ -256,16 +288,6 @@
 			mainWorkArea.location='<%=app%>/html/jsp/general/entrada.jsp';
 		</script>
 
-
-
-	<div id="velo">
-		<table class="tvelo">
-			<tr>
-				<td><siga:Idioma key="messages.enProceso" />
-				</td>
-			</tr>
-		</table>
-	</div>
 
 	<form name="formularioOcultoCerrarSesion" target="submitApplet"
 		action="<%=app%>/html/jsp/general/cerrarSesion.jsp"></form>

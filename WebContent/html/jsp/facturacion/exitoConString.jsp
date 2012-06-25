@@ -37,10 +37,6 @@
 	<script type="text/javascript">
 	function reloadPage() {
 
-	<%  if (mensaje!=null){%>
-		var type = "<%=mensaje%>";
-		alert(type);
-	<%  } %>
 	<%  if (modal!=null){%>
 	<%  	if (sinrefresco!=null){%>
 				window.top.returnValue=""; 
@@ -52,6 +48,10 @@
 	<%  	if (sinrefresco==null){%>
 				parent.refrescarLocal();
 	<%  	} %>
+	<%  } %>
+	<%  if (mensaje!=null){%>
+		var type = "<%=mensaje%>";
+		alert(type);
 	<%  } %>
 	return false;
 

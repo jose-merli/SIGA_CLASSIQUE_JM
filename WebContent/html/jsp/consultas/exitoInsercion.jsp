@@ -40,9 +40,16 @@
 
 	<script>
 	function reloadPage() {
-		<%  if (mensaje!=null){%>
-			var type = '<siga:Idioma key="<%=mensaje%>"/>';
-			alert(type);
+		<%  if (mensaje!=null){
+			String estilo="notice";
+			if(mensaje.contains("error")){
+				estilo="error";
+			}else if(mensaje.contains("success")){
+				estilo="success";
+			}
+			%>
+				var type = '<siga:Idioma key="<%=mensaje%>"/>';
+				alert(type,<%=estilo%>);%>
 		<%  } %>
 		document.EditarConsultaForm.submit();
 		<%  if (ejecucion!=null){

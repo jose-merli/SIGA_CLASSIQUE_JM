@@ -37,9 +37,14 @@
 	function reloadPage() {
 	<%  if (mensaje!=null){	
 		String msg=UtilidadesString.getMensajeIdioma(userBean.getLanguage(),mensaje);
-	%>
-		var type = '<%=msg%>';
-		alert(type);
+		String estilo="notice";
+		if(mensaje.contains("error")){
+			estilo="error";
+		}else if(mensaje.contains("success")){
+			estilo="success";
+		}
+		%>
+			alert(<%=msg%>,<%=estilo%>);
 		//document.forms[0].submit();
 		
 	<%  } %>

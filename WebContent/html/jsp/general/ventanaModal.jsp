@@ -45,6 +45,8 @@
 		
 		
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+		<script type="text/javascript" src="<%=app%>/html/js/jquery.blockUI.js"></script>
+		<script src="<%=app%>/html/js/jquery.notice.js" type="text/javascript"></script>
 		
 		<script type="text/javascript">
 			function cargaContenidoModal() {
@@ -69,6 +71,37 @@
 				document.body.appendChild(formu);
 				formu.submit();
 			}		
+			
+			function mainSub(){
+ 				$(document).ready(
+					function() { 
+						$.blockUI({
+							message: '<img src="<%=app%>/html/imagenes/loadingBar.gif">', 
+							css:{border:0, background:'transparent'},
+							overlayCSS: { backgroundColor:'#000', opacity: .0} }); 
+					}
+				)
+				bloqueado=true; 
+			}
+
+			function mainFin(){
+				if(bloqueado){
+					$(document).ready(
+						function() { 
+					    	$.unblockUI(); 
+						}
+					)
+					bloqueado=false;
+				} 
+			}
+			
+			function growl(msg,type){
+				$.noticeAdd({
+					text: msg,
+					type: type
+				});
+			}
+			
 		</script>
 	</head>
 

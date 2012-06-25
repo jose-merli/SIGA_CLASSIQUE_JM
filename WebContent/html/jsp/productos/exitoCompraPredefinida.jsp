@@ -44,7 +44,7 @@
 		String msg=UtilidadesString.getMensajeIdioma(userBean.getLanguage(),mensaje);
 	%>
 		var type = '<%=msg%>';
-		alert(type);
+		alert(type, "success");
 		document.forms[0].submit();
 	<%  } %>
 	
