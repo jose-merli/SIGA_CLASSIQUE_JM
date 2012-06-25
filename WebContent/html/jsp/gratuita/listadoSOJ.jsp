@@ -185,11 +185,12 @@ String informeUnico =(String) request.getAttribute("informeUnico");
 								<input type="checkbox" value="<%=valorCheck%>"  name="chkPersona" onclick="pulsarCheck(this)" >
 						<%}%>
 						</td>
-					<td><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=registro.get(ScsSOJBean.C_IDTIPOSOJ)%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=usr.getLocation()%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=IDPERSONAJG%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=registro.get(ScsSOJBean.C_NUMERO)%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=registro.get(ScsSOJBean.C_ANIO)%>">
+					<td>
+					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" id="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=registro.get(ScsSOJBean.C_IDTIPOSOJ)%>"/>
+					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" id="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=usr.getLocation()%>"/>
+					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" id="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=IDPERSONAJG%>"/>
+					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" id="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=registro.get(ScsSOJBean.C_NUMERO)%>"/>
+					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_5" id="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=registro.get(ScsSOJBean.C_ANIO)%>"/>
 					<%=GstDate.getFormatedDateShort("",registro.get(ScsSOJBean.C_FECHAAPERTURA).toString())%>&nbsp;</td>
 					<td><%=UtilidadesString.mostrarDatoJSP(nombreTurno)%></td>
 					<td><%=UtilidadesString.mostrarDatoJSP(nombreGuardia)%></td>					
