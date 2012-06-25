@@ -1217,8 +1217,14 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 				helperInformes.completarHashSalida(registro,admDirecciones.getDireccionPreferente(idInstitucion, idPersona, "1"));
 				
 				helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteAbono(idInstitucion, idPersona));
+				if(registro.get("CUENTABANCARIA_ABONO")==null)
+					registro.put("CUENTABANCARIA_ABONO", "");
 				helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteCargo(idInstitucion, idPersona));
+				if(registro.get("CUENTABANCARIA_CARGO")==null)
+					registro.put("CUENTABANCARIA_CARGO", "");
 				helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteSJCS(idInstitucion, idPersona));
+				if(registro.get("CUENTABANCARIA_SJCS")==null)
+					registro.put("CUENTABANCARIA_SJCS", "");
 								
 			}catch (Exception e) {
 				throw new ClsExceptions (e, "Error ScsEJGAdm.getInformeColegiado.");
@@ -1471,8 +1477,14 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			helperInformes.completarHashSalida(registro,admDirecciones.getDireccionPreferente(idInstitucion, idPersona, "1"));
 			
 			helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteAbono(idInstitucion, idPersona));
+			if(registro.get("CUENTABANCARIA_ABONO")==null)
+				registro.put("CUENTABANCARIA_ABONO", "");
 			helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteCargo(idInstitucion, idPersona));
+			if(registro.get("CUENTABANCARIA_CARGO")==null)
+				registro.put("CUENTABANCARIA_CARGO", "");
 			helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteSJCS(idInstitucion, idPersona));
+			if(registro.get("CUENTABANCARIA_SJCS")==null)
+				registro.put("CUENTABANCARIA_SJCS", "");
 			
 		}catch (Exception e) {
 			throw new ClsExceptions (e, "Error ScsEJGAdm.getInformeLetrado.");

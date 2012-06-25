@@ -366,8 +366,14 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 			helperInformes.completarHashSalida(registro,admDirecciones.getDireccionPreferente(idInstitucion, idPersona, "1"));
 												
 			helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteAbono(idInstitucion, idPersona));
+			if(registro.get("CUENTABANCARIA_ABONO")==null)
+				registro.put("CUENTABANCARIA_ABONO", "");
 			helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteCargo(idInstitucion, idPersona));
+			if(registro.get("CUENTABANCARIA_CARGO")==null)
+				registro.put("CUENTABANCARIA_CARGO", "");
 			helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteSJCS(idInstitucion, idPersona));
+			if(registro.get("CUENTABANCARIA_SJCS")==null)
+				registro.put("CUENTABANCARIA_SJCS", "");
 												
 			
 			if(vInformeComp.size()!=0)
