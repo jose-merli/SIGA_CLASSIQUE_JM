@@ -221,6 +221,7 @@ public class TagTabla extends TagSupport {
 			
 			
 			out.println(" function selectRow(fila) {");
+			out.println("   if(document.getElementById('filaSelD')){ ");
 			out.println("   document.getElementById('filaSelD').value = fila;");
 			out.println("   var tabla;");
 			out.println("   tabla = document.getElementById('" + this.nombre + "');");
@@ -234,6 +235,7 @@ public class TagTabla extends TagSupport {
 			////////////////////////////
 			out.println("   }");
 			out.println("   tabla.rows[fila].className = 'listaNonEditSelected';");
+			out.println("  }");
 			out.println(" }");
 			out.println("");
 
