@@ -210,10 +210,10 @@ public class TagTabla extends TagSupport {
 			out.println("");
 			
 
-			out.println(" $(document).ready(function() { ");
-			out.println("    $('form:first',document).append('<input type=\"hidden\" name=\"tablaDatosDinamicosD\" id=\"tablaDatosDinamicosD\" />');");
+			out.println(" jQuery(document).ready(function() { ");
+			out.println("    jQuery('form:first',document).append('<input type=\"hidden\" name=\"tablaDatosDinamicosD\" id=\"tablaDatosDinamicosD\" />');");
 			out.println("  ");
-			out.println("    $('form:first',document).append('<input type=\"hidden\" name=\"filaSelD\" id=\"filaSelD\" />')  ");
+			out.println("    jQuery('form:first',document).append('<input type=\"hidden\" name=\"filaSelD\" id=\"filaSelD\" />')  ");
 			out.println("  ");
 			out.println("     });  ");
 			
