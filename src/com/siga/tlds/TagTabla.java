@@ -210,19 +210,9 @@ public class TagTabla extends TagSupport {
 			
 
 			out.println(" $(document).ready(function() { ");
-			out.println(" if (document.getElementById('tablaDatosDinamicosD')){  ");
-			out.println("     //do nothing ");
-			out.println("     }  ");
-			out.println(" else{  ");
-			out.println("     $('form:first',document).append('<input type=\"hidden\" name=\"tablaDatosDinamicosD\" id=\"tablaDatosDinamicosD\" />');");
-			out.println(" }  ");
+			out.println("    $('form:first',document).append('<input type=\"hidden\" name=\"tablaDatosDinamicosD\" id=\"tablaDatosDinamicosD\" />');");
 			out.println("  ");
-			out.println(" if (document.getElementById('filaSelD')){  ");
-			out.println("     //do nothing ");
-			out.println("     }  ");
-			out.println(" else{  ");
 			out.println("    $('form:first',document).append('<input type=\"hidden\" name=\"filaSelD\" id=\"filaSelD\" />')  ");
-			out.println(" }  ");
 			out.println("  ");
 			out.println("     });  ");
 			
@@ -434,7 +424,7 @@ public class TagTabla extends TagSupport {
 				out.println("<div id='" + this.nombre + "Div' style='height:" + this.alto + "; width:100%; overflow-y:auto'>");
 			}
 			out.println("<table id='" + this.nombre + "' border='" + this.borde + 
-						"' align='center' width='983px' cellspacing='0' cellpadding='0'  style='table-layout:fixed; margin:0px;'>"); 
+						"' align='center' width='100%' cellspacing='0' cellpadding='0'  style='table-layout:fixed; margin:0px;'>"); 
 			
 			out.println("	<tr>");
 			

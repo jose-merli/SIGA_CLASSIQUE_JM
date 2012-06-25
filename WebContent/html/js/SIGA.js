@@ -5,7 +5,7 @@
 
 //Version nueva para los alrets
 
-/* Alert para la nueva funcionalidad comentado temporalmente hasta que este depurado */
+/* Alert para la nueva funcionalidad comentado temporalmente hasta que este depurado 
 
 function alert(message, title, acceptText) {
 	var returnValue = true;
@@ -48,7 +48,7 @@ function confirm(message, title, acceptText, cancelText) {
 	}
 	return returnValue;
 }
-
+*/
 /*  Hack for allowing correct typing in modal dialogs in safari. */
 try {
 	if($.browser.msie || $.browser.mozilla){

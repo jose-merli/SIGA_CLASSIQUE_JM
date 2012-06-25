@@ -82,30 +82,30 @@
 		
 		function validaTabla(){
 			  //Ajusto tablas de letrados en cola:
-			  if (document.all.tablaLetrados.clientHeight < document.all.tablaLetradosDiv.clientHeight) {
-				   document.all.tituloTablaLetrados.width='100%';
-				   document.all.tablaLetradosCabeceras.width='100%';
+			  if (document.getElementById("tablaLetrados").clientHeight < document.getElementById("tablaLetradosDiv").clientHeight) {
+				   document.getElementById("tituloTablaLetrados").width='100%';
+				   document.getElementById("tablaLetradosCabeceras").width='100%';
 			  } else {
-				   document.all.tituloTablaLetrados.width='96.5%';
-				   document.all.tablaLetradosCabeceras.width='96.5%';
+				   document.getElementById("tituloTablaLetrados").width='96.5%';
+				   document.getElementById("tablaLetradosCabeceras").width='96.5%';
 			  }
 		
 			  //Ajusto tabla de compensaciones:
-			  if (document.all.tablaCompensaciones.clientHeight < document.all.tablaCompensacionesDiv.clientHeight) {
-				   document.all.tituloTablaCompensaciones.width='100%';
-				   document.all.tablaCompensacionesCabeceras.width='100%';
+			  if (document.getElementById("tablaCompensaciones").clientHeight < document.getElementById("tablaCompensacionesDiv").clientHeight) {
+				   document.getElementById("tituloTablaCompensaciones").width='100%';
+				   document.getElementById("tablaCompensacionesCabeceras").width='100%';
 			  } else {
-				   document.all.tituloTablaCompensaciones.width='96.5%';
-				   document.all.tablaCompensacionesCabeceras.width='96.5%';
+				   document.getElementById("tituloTablaCompensaciones").width='96.5%';
+				   document.getElementById("tablaCompensacionesCabeceras").width='96.5%';
 			  }
 			  
 			  //Ajusto tabla de saltos:
-			  if (document.all.tablaSaltos.clientHeight < document.all.tablaSaltosDiv.clientHeight) {
-				   document.all.tituloTablaSaltos.width='100%';
-				   document.all.tablaSaltosCabeceras.width='100%';
+			  if (document.getElementById("tablaSaltos").clientHeight < document.getElementById("tablaSaltosDiv").clientHeight) {
+				   document.getElementById("tituloTablaSaltos").width='100%';
+				   document.getElementById("tablaSaltosCabeceras").width='100%';
 			  } else {
-				   document.all.tituloTablaSaltos.width='96.5%';
-				   document.all.tablaSaltosCabeceras.width='96.5%';
+				   document.getElementById("tituloTablaSaltos").width='96.5%';
+				   document.getElementById("tablaSaltosCabeceras").width='96.5%';
 			  }	 		  
 		}
 		
