@@ -14,7 +14,6 @@ String app=request.getContextPath();
 HttpSession ses=request.getSession();
 UsrBean user = (UsrBean)ses.getAttribute("USRBEAN");
 
-out.println(exception.toString());
 //ClsLogging.writeFileLogError("Error de programa en JSP", (Exception)exception,(UsrBean)user, 3);
 
 %>
