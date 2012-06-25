@@ -817,7 +817,7 @@
 		}
 		numElementosSeleccionados =  ObjArray.length; 
 		if (datos == '') {
-			alert('<siga:Idioma key="general.message.seleccionar"/>','attention');
+			alert('<siga:Idioma key="general.message.seleccionar"/>');
 			return;
 		}
 			if(numElementosSeleccionados>50){
