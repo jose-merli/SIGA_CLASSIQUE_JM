@@ -1121,6 +1121,7 @@ function init()
 
 	<!-- Asociada al boton Guardar -->
 	function accionGuardar() {	
+		sub();
 		if(document.getElementById("idTurnoPrincipal")&&document.getElementById("idTurnoPrincipal").value !="-1" && document.getElementById("idTurnoPrincipal").value !=""){
 				error = '';
 				if(document.getElementById("idGuardiaPrincipal").value =="-1" || document.getElementById("idGuardiaPrincipal").value ==""){
