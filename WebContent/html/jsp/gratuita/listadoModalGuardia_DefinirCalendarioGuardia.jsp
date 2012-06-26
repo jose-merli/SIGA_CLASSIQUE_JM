@@ -298,20 +298,10 @@
 					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_9' value='<%=fechaFin%>' />
 					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_10' value='<%=fechaInicioPermuta%>' />
 					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_11' value='<%=fechaFinPermuta%>' />
-					<!--< % //Si tengo permuta muestro las fechas de la permuta:
-					if (!numero.equals("NINGUNO")) { % >-->
 					<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioPermuta)%>
-					<!--< } else { %>
-					< %=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio)% >
-					< % } % >-->
 				</td>
 				<td align="center">
-					<!--< % //Si tengo permuta muestro las fechas de la permuta:
-					if (!numero.equals("NINGUNO")) { % >-->
 					<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFinPermuta)%>
-					<!--< % } else { % >
-					< %=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin)% >
-					< % } % >-->
 				</td>
 				
 				<td align="center">

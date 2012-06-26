@@ -73,6 +73,7 @@
 	<html:hidden property = "modo" value = ""/>
 	<html:hidden property = "accion" value = ""/>
 	<html:hidden property = "actionModal" styleId = "actionModal" value = ""/>
+	<html:hidden property = "tablaDatosDinamicosD" styleId = "tablaDatosDinamicosD" value = ""/>
 	<html:hidden property = "modoPestanha" value = "<%=modopestanha%>"/>
 			<!-- RGG: cambio a formularios ligeros -->
 		</html:form>	
