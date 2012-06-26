@@ -270,8 +270,7 @@
 					
 
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<input type="hidden" name="actionModal" id="actionModal" value=""/>
 		</html:form>
 
 				</table>
@@ -305,11 +304,11 @@
 				  		Hashtable htFila = (Hashtable)vDatos.elementAt(i);
 %>
 		  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones='E,C' clase="listaNonEdit" visibleBorrado="no">
-						<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=htFila.get(EnvCamposBean.C_IDCAMPO)%>"/>
-						<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=htFila.get(EnvCamposBean.C_NOMBRE)%>"/>
-						<input type="hidden" name="oculto<%=""+(i+1)%>_3" value="<%=htFila.get(CerFormatosBean.C_IDFORMATO)%>"/>
-						<input type="hidden" name="oculto<%=""+(i+1)%>_4" value="<%=htFila.get(CerFormatosBean.C_DESCRIPCION)%>"/>
-						<input type="hidden" name="oculto<%=""+(i+1)%>_5" value="<%=htFila.get(EnvCamposEnviosBean.C_TIPOCAMPO)%>"/>
+						<input type="hidden" name="oculto<%=""+(i+1)%>_1" id="oculto<%=""+(i+1)%>_1" value="<%=htFila.get(EnvCamposBean.C_IDCAMPO)%>"/>
+						<input type="hidden" name="oculto<%=""+(i+1)%>_2" id="oculto<%=""+(i+1)%>_2" value="<%=htFila.get(EnvCamposBean.C_NOMBRE)%>"/>
+						<input type="hidden" name="oculto<%=""+(i+1)%>_3" id="oculto<%=""+(i+1)%>_3" value="<%=htFila.get(CerFormatosBean.C_IDFORMATO)%>"/>
+						<input type="hidden" name="oculto<%=""+(i+1)%>_4" id="oculto<%=""+(i+1)%>_4" value="<%=htFila.get(CerFormatosBean.C_DESCRIPCION)%>"/>
+						<input type="hidden" name="oculto<%=""+(i+1)%>_5" id="oculto<%=""+(i+1)%>_5" value="<%=htFila.get(EnvCamposEnviosBean.C_TIPOCAMPO)%>"/>
 						
 						<td><%=UtilidadesString.mostrarDatoJSP(htFila.get(EnvCamposBean.C_NOMBRE))%></td>
 						<td><%=UtilidadesString.mostrarDatoJSP(htFila.get(CerFormatosBean.C_DESCRIPCION))%></td>

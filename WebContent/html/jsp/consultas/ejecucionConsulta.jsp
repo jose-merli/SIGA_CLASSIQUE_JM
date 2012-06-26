@@ -68,7 +68,6 @@
 		
 		function accionDownload() 
 		{
-			sub();
 			RecuperarConsultasForm.modo.value = "download";
 			RecuperarConsultasForm.target = "submitArea";
 			RecuperarConsultasForm.submit();

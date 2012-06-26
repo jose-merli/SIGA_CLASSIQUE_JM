@@ -31,7 +31,7 @@
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
 	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
 		
-	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>" ></script>
+	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery.js"/>" ></script>
 	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
 	
 </head>

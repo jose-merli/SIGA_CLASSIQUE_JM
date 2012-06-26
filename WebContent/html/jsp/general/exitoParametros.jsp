@@ -46,49 +46,42 @@
 
 <script type="text/javascript">
 	
-	function reloadPage() {
+function reloadPage() {
 	
-			
-
-			<%  if (modal!=null){%>
-					<%  	if (sinrefresco!=null){%>
-								window.top.returnValue=""; 
-								
-					<%  	} else {
-							%>
-					
-								var array =new Array(<%=parametros.length%>);
-								<%
-								for (int i = 0; i < parametros.length; i++) {
-									String parametro = parametros[i].trim();%>
-									array[<%=i%>]="<%=parametro%>";	
-								<%}%>
-
-								window.top.returnValue=array; 
-								
-					<%  	} %>
-					
-							window.top.close();
-			<%  }else{%>	
-					<%  	if (sinrefresco==null){%>
-					
-								parent.refrescarLocal();
-					<%  	} %>
-			<%  } %>
-			<%  if (mensaje!=null){
+	
+	<%  if (mensaje!=null){
 				String msg=UtilidadesString.escape(UtilidadesString.getMensajeIdioma(userBean.getLanguage(),mensaje));
-				String estilo="notice";
-				if(mensaje.contains("error")){
-					estilo="error";
-				}else if(mensaje.contains("success")){
-					estilo="success";
-				}
-				%>
-					alert(<%=msg%>,<%=estilo%>);
-					
-		<%  } %>
-			return false;
-	}
+	%>
+				alert(unescape("<%=msg %>"));
+				
+	<%  } %>
+	<%  if (modal!=null){%>
+			<%  	if (sinrefresco!=null){%>
+						window.top.returnValue=""; 
+						
+			<%  	} else {
+					%>
+			
+						var array =new Array(<%=parametros.length%>);
+						<%
+						for (int i = 0; i < parametros.length; i++) {
+							String parametro = parametros[i].trim();%>
+							array[<%=i%>]="<%=parametro%>";	
+						<%}%>
+
+						window.top.returnValue=array; 
+						
+			<%  	} %>
+			
+					window.top.close();
+	<%  }else{%>	
+			<%  	if (sinrefresco==null){%>
+			
+						parent.refrescarLocal();
+			<%  	} %>
+	<%  } %>
+	return false;
+}
 </script>
 
 </head>
