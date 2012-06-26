@@ -40,8 +40,8 @@
 
 <!--Step 3 -->
   <!-- defaults for Autocomplete and displaytag -->
-<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/ajaxtags.css'/>" />
-<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/displaytag.css'/>" />
+  <link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />
+  <link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
 
 <!-- Step 4 -->
  <!-- Importar el js propio de la pagina-->
