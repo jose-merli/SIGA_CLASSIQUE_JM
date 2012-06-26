@@ -519,6 +519,8 @@
 		<!-- Formulario para la búsqueda de clientes -->
 		<html:form action="/CEN_BusquedaClientes.do" method="POST" target="mainWorkArea">
 			<html:hidden styleId = "modo"  property = "modo" value = "ver"/>
+			<html:hidden styleId = "filaSelD"  property = "filaSelD" value = "ver"/>
+			<html:hidden styleId = "tablaDatosDinamicosD"  property = "tablaDatosDinamicosD" value = "ver"/>
 		</html:form>
 		<!-- Formulario para la creacion de envio -->
 		<html:form action="/ENV_DefinirEnvios.do" method="POST" target="mainWorkArea">
