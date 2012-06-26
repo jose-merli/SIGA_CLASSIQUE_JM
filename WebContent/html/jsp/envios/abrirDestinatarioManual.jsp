@@ -176,7 +176,7 @@
 
 	<script type="text/javascript">
 		function selectRow(fila) {
-		   document.getElementByName('filaSelD').value = fila;
+		   document.getElementById('filaSelD').value = fila;
 		   var tabla;
 		   tabla = document.getElementById('tablaDatos');
 		   for (var i=0; i<tabla.rows.length; i++) {
