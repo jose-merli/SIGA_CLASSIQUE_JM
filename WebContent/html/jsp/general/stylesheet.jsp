@@ -1215,6 +1215,8 @@ A.imageLink:active {
 }
 
 .pestanaTD {
+white-space: nowrap;
+
 }
 
 .pestanaTD a {
@@ -2169,61 +2171,16 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 #popup_prompt {
 	margin: .5em 0em;
 }
-.jMsgbox-background{
-	background-color: #<%=src.get("color.background")%>;
-	font-family: <%=src.get("font.style")%>;
-}
-.jMsgbox-mainWrap{
-	font-family: <%=src.get("font.style")%>;
-	border: #<%=src.get("color.background")%> 1px solid; background-color: #fff; overflow: hidden; vertical-align:top;
-}
-.jMsgbox-mainWrap input[type=text]{
-	font-family: <%=src.get("font.style")%>;
-	border:1px solid #<%=src.get("color.labelText")%>;
-}
-.jMsgbox-mainWrap input[type=button]{
-	border:1px solid #<%=src.get("color.labelText")%>;
-	background-color:#9fcdfb;
-}
-.jMsgbox-headWrap{
-	border:1px solid #fff;
-	background-color:#<%=src.get("color.labelTable")%>;
-	color:#fff;
-	padding:5px;
-	font-family: <%=src.get("font.style")%>;
-}
-.jMsgbox-titleWrap{
-	font-family: <%=src.get("font.style")%>;
-	font-size:<%=fontSize%>;
-	font-weight:bold;
-}
-.jMsgbox-closeWrap{
-	color:#ccc;
-	font-size:<%=fontSize%>;
-	font-family: <%=src.get("font.style")%>;
-	font-weight:bold;
-	text-decoration:none;
-}
-.jMsgbox-closeWrap:hover{
-	font-family: <%=src.get("font.style")%>;
-	text-decoration:none;
-	color:#fff;
-}
-.jMsgbox-closeWrap img{
-	border:none;
-}
-.jMsgbox-contentWrap{
-	padding:5px;
-	font-family: <%=src.get("font.style")%>;
-	font-size:<%=fontSize%>;
-}
+
 
 .notice-wrap {
-	position: fixed;
-	top: 20px;
-	right: 20px;
+	top: 50px;
 	width: 350px;
+	float:left;
+	clear:both;
 	z-index: 9999;
+	position: relative;
+	left: 50%;
 }
 
 * html .notice-wrap {
@@ -2231,17 +2188,21 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 }
  
 .notice-item {
-	background: #333;
-	-moz-border-radius: 6px;
+	background: #F9EDBE;
 	-webkit-border-radius: 6px;
-	color: #eee;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	color: #000;
 	padding: 16px 16px 16px 16px;
 	font-family: <%=src.get("font.style")%>;
 	font-size: <%=fontSize%>;
+	font-weight: bold;
 	border: 2px solid #999;
 	display: block;
 	position: relative;
 	margin: 0 0 12px 0;
+	left:-175px;
 }
 
 .notice-item-close {
