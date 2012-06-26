@@ -25,7 +25,7 @@
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>" />
 <link rel="stylesheet" href="<html:rewrite page='/html/js/themes/base/jquery.ui.all.css'/>" />
 	
-<script type="text/javascript" src="<html:rewrite page='/html/js/jquery-1.7.1.js'/>" ></script>
+<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>" ></script>
 <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
 <script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript" ></script>
 <script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
@@ -40,8 +40,8 @@
 
 <!--Step 3 -->
   <!-- defaults for Autocomplete and displaytag -->
-<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/ajaxtags.css'>" />
-<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/displaytag.css'>" />
+<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/ajaxtags.css'/>" />
+<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/displaytag.css'/>" />
 
 <!-- Step 4 -->
  <!-- Importar el js propio de la pagina-->
