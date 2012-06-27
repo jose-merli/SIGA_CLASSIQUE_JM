@@ -85,6 +85,7 @@ public class TagFecha extends TagSupport {
 			out.println("	buttonImage: '/SIGA/html/imagenes/calendar.gif',");		
 			out.println("	buttonImageOnly: true,");			
 			out.println("	changeMonth: true,");	
+			out.println("	yearRange: 'c-70:c+2',");	
 			out.println("	showButtonPanel: true,");
 			if ((this.valorInicial != "")&&(this.valorInicial != null))
 				out.println("	defaultDate: '"+ this.valorInicial +"',");	
