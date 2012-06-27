@@ -152,6 +152,8 @@
 		<html:hidden styleId="tipoDias"  property="tipoDias" value="" />
 		<html:hidden styleId="idPersona"  property="idPersona" value="<%=idpersonapestanha%>" />
 		<html:hidden styleId="actionModal"  property="actionModal" value="" />
+		<html:hidden styleId="tablaDatosDinamicosD"  property="tablaDatosDinamicosD" value="" />
+		<html:hidden styleId="filaSelD"  property="filaSelD" value="" />
 	</html:form>
 	<bean:define id="nombreCol"
 		value="gratuita.inicio_PestanaCalendarioGuardias.literal.fechaInicio,gratuita.inicio_PestanaCalendarioGuardias.literal.fechaFin,gratuita.inicio_PestanaCalendarioGuardias.literal.turno,gratuita.inicio_PestanaCalendarioGuardias.literal.guardia,gratuita.inicio_PestanaCalendarioGuardias.literal.tipodias,gratuita.inicio_PestanaCalendarioGuardias.literal.estado,"></bean:define>
@@ -447,7 +449,8 @@
 		}
 		
 		function masinformacion(fila) {
-			selectRow(fila); 
+			selectRow(fila);
+		
 			consultar2(fila, document.forms[1]);
 			document.forms[1].modo.value = "ver";
 			document.forms[1].accion.value = "modalConsultaCenso";
