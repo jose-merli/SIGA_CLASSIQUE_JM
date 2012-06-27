@@ -140,6 +140,7 @@ function accionCerrar() {
 			<input type="hidden" id="actionE" name="actionE" value="/JGR_DefendidosDesignasPerJG.do">
 			<input type="hidden" id="pantallaE" name="pantallaE" value="M">
 
+			<input type="hidden" id="actionModal" name="actionModal" value="M">
 		</html:form>	
 		<table class="tablaTitulo" cellspacing="0" heigth="38">
 		<tr>
