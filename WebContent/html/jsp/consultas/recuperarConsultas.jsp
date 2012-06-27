@@ -214,10 +214,15 @@
 		}
 		
 		function accionVolver() {
+			sub();
 			var action = '<%=app%><%=request.getAttribute("accionAnterior")%>.do';
-			var formuStr = "<form id=\"backForm\" method=\"POST\" action=\""+action+"\" target=\"mainWorkArea\">";
-			$(formuStr).appendTo(document.body);
-			$("#backForm",document).submit();
+			var formu = document.createElement('form');
+			formu.setAttribute('name', 'backForm');
+			formu.setAttribute('method', 'POST');
+			formu.setAttribute('action', action);
+			formu.setAttribute('target', 'mainWorkArea');
+			document.body.appendChild(formu);
+			formu.submit();
 		}
 		
 	</script>
