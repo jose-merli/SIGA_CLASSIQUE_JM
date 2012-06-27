@@ -142,10 +142,10 @@
 		<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>	
 		
 		<!--Step 3 -->
-		  <!-- defaults for Autocomplete and displaytag -->
+		  <!-- defaults for Autocomplete and displaytag
 		  <link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/ajaxtags.css'/>" />
 		  <link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/displaytag.css'/>" />
-
+		-->
 
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		<!-- Validaciones en Cliente -->
@@ -789,7 +789,7 @@
 	<!------------------------------->
 	<!-- Tabla central principal -->
 	<!------------------------------->
-	<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" >
+	<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0">
 		<html:form  action="/CEN_DatosGenerales" method="POST" target="submitArea"  enctype="multipart/form-data">
 			<html:hidden  name="datosGeneralesForm" property="modo"/>
 			<html:hidden  name="datosGeneralesForm" property="idInstitucion"/>

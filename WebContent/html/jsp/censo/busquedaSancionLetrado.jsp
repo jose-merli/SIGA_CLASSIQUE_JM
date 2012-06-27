@@ -28,28 +28,24 @@
 
 	String tienepermisoArchivo = (String) request.getAttribute("tienepermiso");
 	
-		String idPersonaBusqueda="";
-		String busquedaCliente="";
-		String nifCliente="";
-	
-		
-		// Si el cliente es un letrado, le establezco a el como parte de la busqueda
+	String idPersonaBusqueda="";
+	String busquedaCliente="";
+	String nifCliente="";
+	String fechaInicioArchivada = "";
+	String fechaFinArchivada="";
+			
+	// Si el cliente es un letrado, le establezco a el como parte de la busqueda
 	if (user.isLetrado()) {
 		idPersonaBusqueda=String.valueOf(user.getIdPersona());
 		CenPersonaAdm admPersona=new CenPersonaAdm(user);
 		busquedaCliente=admPersona.obtenerNombreApellidos(idPersonaBusqueda);
 		nifCliente = admPersona.obtenerNIF(idPersonaBusqueda);
-	}
-		
-		String fechaInicioArchivada = "";
-		String fechaFinArchivada="";
-	
+	}			
 %>	
 	
 <%  
 	// locales
 	SancionesLetradoForm formulario = (SancionesLetradoForm)request.getSession().getAttribute("SancionesLetradoForm");
-
 %>	
 
 <html>
@@ -99,9 +95,7 @@
 		<html:hidden name="SancionesLetradoForm" property = "modo" value = ""/>
 		<input type="hidden" name= "actionModal" value = "">
 		<input type="hidden" id="limpiarFilaSeleccionada" name="limpiarFilaSeleccionada" value=""/>
-		
-	
-	
+				
 	<!-- FILA -->
 	<tr>				
 
@@ -141,8 +135,7 @@
 			<html:hidden name="SancionesLetradoForm" property="colegiadoBuscar" size="8" maxlength="80" styleClass="boxConsulta" value = "<%=idPersonaBusqueda%>" readOnly="true"></html:hidden>
 			<html:hidden property = "colegiadoBuscar" value = "<%=idPersonaBusqueda%>"/>
 			
-		</td>
-	
+		</td>	
 	</tr>
 	
 	<tr>
@@ -154,13 +147,14 @@
 					<% 	}%>
 			</td>
 		</tr>
-	
+	</table>
+	<table class="tablaCampos" align="center" width="100%">
 	<tr>
 		<td class="labelText" >
-			<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.sancionesReahabilitadas"/> <html:checkbox name="SancionesLetradoForm" property="chkRehabilitado" value="0"></html:checkbox>
-			
+			<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.sancionesReahabilitadas"/>		
+			<html:checkbox name="SancionesLetradoForm" property="chkRehabilitado" value="0"></html:checkbox>			
 		</td>
-		  <td class="labelText" width="125" >
+		<td class="labelText" width="125" >
 			<siga:Idioma key="gratuita.listadoAsistencias.literal.fecha"/>
 		</td>
 		<td>
@@ -177,20 +171,19 @@
 		
 		</td>
 		<td class="labelText" >
-			<siga:Idioma key="facturacion.consultamorosos.literal.desde"/>&nbsp;&nbsp;
+			<siga:Idioma key="facturacion.consultamorosos.literal.desde"/>	
+		</td>	
+		<td>
 			<siga:Fecha  nombreCampo= "fechaInicioBuscar"/>
-			
-		</td>
+		</td>	
+		
 		<td class="labelText">
-			<siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>&nbsp;&nbsp;
-			<siga:Fecha  nombreCampo= "fechaFinBuscar"/>
+			<siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>
 		</td>
-	
-		
+		<td>
+			<siga:Fecha  nombreCampo= "fechaFinBuscar"/>
+		</td>			
 	</tr>	
-		
-		
-	
 		
 	<% if(tienepermisoArchivo.equals("1")){%>
 	<tr>
@@ -201,12 +194,18 @@
 		<td class="labelText" colspan="2" align="center">
 			<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fArchivada"/>
 		</td>
-		<td class="labelText">
+		
+		<td class="labelText">		
 		  <siga:Idioma key="facturacion.consultamorosos.literal.desde"/>&nbsp;&nbsp;
+		</td>
+		<td>
 		  <siga:Fecha  nombreCampo= "fechaInicioArchivada"/>
 		</td>
+		
 		<td class="labelText">
 		  <siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>&nbsp;&nbsp;
+		</td>
+		<td>
 		  <siga:Fecha  nombreCampo= "fechaFinArchivada"/>
 		</td>
 	</tr>
@@ -272,12 +271,7 @@
 		{		
 			document.forms[0].reset();
 		}
-
-
-	
-
-						
-			
+										
 	</script>
 	
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->

@@ -106,17 +106,13 @@
 						<td class="labelText"><siga:Idioma key="expedientes.auditoria.literal.fechainicial" />
 						</td>
 						<td>
-							<html:text name="ExpSeguimientoForm" property="fechaDesde" maxlength="10" size="10" styleClass="box" readonly="true">
-							</html:text>
-							<a href='javascript://' onClick="return showCalendarGeneral(fechaDesde);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+							<siga:Fecha nombreCampo="fechaDesde" valorInicial="<%=form.getFechaDesde()%>" />
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="expedientes.auditoria.literal.fechafinal" />
 						</td>
 						<td>
-							<html:text name="ExpSeguimientoForm" property="fechaHasta" maxlength="10" size="10" styleClass="box" readonly="true">
-							</html:text>
-							<a href='javascript://' onClick="return showCalendarGeneral(fechaHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+							<siga:Fecha nombreCampo="fechaHasta" valorInicial="<%=form.getFechaHasta()%>" />
 						</td>
 					</tr>
 				</table>

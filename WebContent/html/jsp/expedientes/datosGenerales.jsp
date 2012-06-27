@@ -867,11 +867,9 @@
 		<%
 			if (accion.equals("nuevo") || copia.equals("s")) 
 			{
-		%> 		<html:text name="ExpDatosGeneralesForm" property="fecha"
-				styleClass="box" readonly="true" size="10"
-				value="<%=fechaApertura%>"></html:text> 
-				<a href='javascript://'onClick="return showCalendarGeneral(fecha);">
-				<img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a> 
+		%>
+		 <siga:Fecha nombreCampo="fecha" valorInicial="<%=fechaApertura%>" />
+		
 		<%
 			} 
 			else 
@@ -1054,7 +1052,7 @@
 			} 
 			else 
 			{
-	%> 
+	%>
 				<html:text name="ExpDatosGeneralesForm" property="fechaCaducidad" size="10" maxlength="10" styleClass="<%=boxStyle%>" readonly="true"></html:text> 
 	<%
 			}

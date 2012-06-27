@@ -204,21 +204,22 @@
 				<siga:Idioma key="expedientes.auditoria.literal.sancionprescrita"/>
 			</td>			
 			<td>
-				<html:text name="expResolucionForm" property="sancionPrescrita" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true">
-				</html:text>
 				<% if (bEditable){%>
-				<a href='javascript://'onClick="return showCalendarGeneral(sancionPrescrita);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+					<siga:Fecha  nombreCampo="sancionPrescrita" valorInicial="<%=f.getSancionPrescrita()%>"/>				
+				<%} else{%>
+					<siga:Fecha  nombreCampo="sancionPrescrita" valorInicial="<%=f.getSancionPrescrita()%>" disabled="true"/>
 				<%}%>
 			</td>
+			
 			<td class="labelText" style="text-align: right">
 				<siga:Idioma key="expedientes.auditoria.literal.sancionfinalizada"/>
 			</td>
 			<td>
 				&nbsp&nbsp&nbsp&nbsp&nbsp
-				<html:text name="expResolucionForm" property="sancionFinalizada" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true">
-				</html:text>
 				<% if (bEditable){%>
-				<a href='javascript://'onClick="return showCalendarGeneral(sancionFinalizada);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+					<siga:Fecha  nombreCampo="sancionFinalizada" valorInicial="<%=f.getSancionFinalizada()%>"/>
+				<%} else{%>
+					<siga:Fecha  nombreCampo="sancionFinalizada" valorInicial="<%=f.getSancionFinalizada()%>" disabled="true"/>
 				<%}%>
 			</td>				
 		</tr>
@@ -228,10 +229,10 @@
 				<siga:Idioma key="expedientes.auditoria.literal.actuacionesprescritas"/>
 			</td>				
 			<td>
-				<html:text name="expResolucionForm" property="actuacionesPrescritas" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true">
-				</html:text>
 				<% if (bEditable){%>
-				<a href='javascript://'onClick="return showCalendarGeneral(actuacionesPrescritas);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+					<siga:Fecha  nombreCampo="actuacionesPrescritas" valorInicial="<%=f.getActuacionesPrescritas()%>"/>
+				<%} else{%>
+					<siga:Fecha  nombreCampo="actuacionesPrescritas" valorInicial="<%=f.getActuacionesPrescritas()%>" disabled="true"/>
 				<%}%>
 			</td>			
 		
@@ -240,10 +241,10 @@
 			</td>				
 			<td>
 				&nbsp&nbsp&nbsp&nbsp&nbsp
-				<html:text name="expResolucionForm" property="anotacionesCanceladas" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true">
-				</html:text>
 				<% if (bEditable){%>
-				<a href='javascript://'onClick="return showCalendarGeneral(anotacionesCanceladas);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+					<siga:Fecha  nombreCampo="anotacionesCanceladas" valorInicial="<%=f.getAnotacionesCanceladas()%>"/>
+				<%} else{%>
+					<siga:Fecha  nombreCampo="anotacionesCanceladas" valorInicial="<%=f.getAnotacionesCanceladas()%>" disabled="true"/>
 				<%}%>
 			</td>			
 		</tr>
@@ -252,10 +253,11 @@
 				<siga:Idioma key="expedientes.auditoria.literal.fechaResolucion"/>
 			</td>
 			<td>
-				<html:text name="expResolucionForm" property="fechaResolucion" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true"></html:text>
 				<% if (bEditable){%>
-					<a href='javascript://'onClick="return showCalendarGeneral(fechaResolucion);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
-				<% } %>
+					<siga:Fecha  nombreCampo="fechaResolucion" valorInicial="<%=f.getFechaResolucion()%>"/>
+				<%} else{%>
+					<siga:Fecha  nombreCampo="fechaResolucion" valorInicial="<%=f.getFechaResolucion()%>" disabled="true"/>
+				<%}%>
 			</td>
 			
 <% if (mostrarResultadoInforme != null && mostrarResultadoInforme.equalsIgnoreCase("S")) {%>

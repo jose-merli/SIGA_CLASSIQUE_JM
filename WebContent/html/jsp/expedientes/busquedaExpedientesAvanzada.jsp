@@ -52,11 +52,10 @@
 	datoTipoExp[0] = idinstitucion;
 	datoTipoExp[1] = idinstitucion;
 
-
+	BusquedaExpedientesForm form = (BusquedaExpedientesForm) session.getAttribute("busquedaExpedientesForm");
 
 	try {
-		BusquedaExpedientesForm form = (BusquedaExpedientesForm) session
-				.getAttribute("busquedaExpedientesForm");
+		
 		if (form == null) {
 			vTipoExp.add("");
 			vInst.add("");
@@ -261,12 +260,9 @@
 					<td class="labelText"><siga:Idioma
 							key="expedientes.gestionarExpedientes.fechaApertura" />
 					</td>
-					<td><html:text name="busquedaExpedientesForm" property="fecha"
-							maxlength="10" size="10" styleClass="box" readonly="true">
-						</html:text> <a href='javascript://'
-						onClick="return showCalendarGeneral(fecha);"><img
-							src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a></td>
-
+					<td>
+						<siga:Fecha nombreCampo="fecha" valorInicial="<%=form.getFecha()%>" />
+					</td>
 				</tr>
 				<tr>
 					<td class="labelText"><siga:Idioma

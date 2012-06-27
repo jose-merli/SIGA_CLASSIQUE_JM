@@ -44,8 +44,8 @@
 	ArrayList vTipoExp = new ArrayList();
 	ArrayList vFase = new ArrayList();
 	ArrayList vEstado = new ArrayList();
+	BusquedaAlertaForm form = (BusquedaAlertaForm) session.getAttribute("busquedaAlertaForm");
 	try {
-		BusquedaAlertaForm form = (BusquedaAlertaForm) session.getAttribute("busquedaAlertaForm");
 		if (form == null) {
 			modoBuscar = "buscarIni";
 			vTipoExp.add("");
@@ -148,17 +148,13 @@
 							<siga:Idioma key="expedientes.auditoria.literal.fechainicial" />
 						</td>
 						<td>
-							<html:text name="busquedaAlertaForm" property="fechaDesde" maxlength="10" size="10" styleClass="box" readonly="true">
-							</html:text> 
-							<a href='javascript://' onClick="return showCalendarGeneral(fechaDesde);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+							<siga:Fecha  nombreCampo="fechaDesde" valorInicial="<%=form.getFechaDesde()%>"/>							
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="expedientes.auditoria.literal.fechafinal" />
 						</td>
 						<td>
-							<html:text name="busquedaAlertaForm" property="fechaHasta" maxlength="10" size="10" styleClass="box" readonly="true">
-							</html:text>
-							<a href='javascript://' onClick="return showCalendarGeneral(fechaHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+							<siga:Fecha  nombreCampo="fechaHasta" valorInicial="<%=form.getFechaHasta()%>"/>							
 						</td>
 						<td></td>
 					</tr>
