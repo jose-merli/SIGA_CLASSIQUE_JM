@@ -44,7 +44,7 @@
 			estilo="success";
 		}
 		%>
-			alert(<%=msg%>,<%=estilo%>);
+			alert(<%=msg%>,"<%=estilo%>");
 		//document.forms[0].submit();
 		
 	<%  } %>

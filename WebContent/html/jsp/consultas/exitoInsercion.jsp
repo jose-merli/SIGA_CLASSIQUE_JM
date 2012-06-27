@@ -49,7 +49,7 @@
 			}
 			%>
 				var type = '<siga:Idioma key="<%=mensaje%>"/>';
-				alert(type,<%=estilo%>);%>
+				alert(type,"<%=estilo%>");
 		<%  } %>
 		document.EditarConsultaForm.submit();
 		<%  if (ejecucion!=null){
