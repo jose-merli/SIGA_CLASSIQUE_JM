@@ -242,9 +242,10 @@
 			document.forms[0].modo.value	= "generarInforme";
 			document.forms[0].comunicacion.value = "true";
 	   		var resultado = ventaModalGeneral(document.forms[0].name,"P");
-			
 	   		if(resultado == "MODIFICADO"){
 	   			buscar();
+	   		}else if (resultado == ""){
+	   			alert('<siga:Idioma key="messages.listaGuardias.definirListaGuardias.generarInforme.sinGuardias.error"/>');
 	   		}
 		}
 		
