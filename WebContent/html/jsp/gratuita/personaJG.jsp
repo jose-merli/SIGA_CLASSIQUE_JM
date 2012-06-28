@@ -1555,12 +1555,16 @@
  			%>		
 		</td>
 		<td >
-		    <siga:Fecha  nombreCampo= "fechaNac" />
+		   
 			<%
 				if (!accion.equalsIgnoreCase("ver")) {
 			%>
-			 <siga:Fecha  nombreCampo= "fechaNac"  disabled="true"/>
+			 <siga:Fecha  nombreCampo= "fechaNac"/>
 			<%
+				}else{
+			%>
+			 <siga:Fecha  nombreCampo= "fechaNac"   disabled="true"/>
+			 <%
 				}
 			%>
 		</td>
