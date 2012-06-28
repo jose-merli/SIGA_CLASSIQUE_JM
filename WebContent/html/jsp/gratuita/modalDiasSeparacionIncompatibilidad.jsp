@@ -37,6 +37,8 @@
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script src="<%=app%>/html/js/jquery.blockUI.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/jquery.notice.js" type="text/javascript"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
     
 	<script language="JavaScript">
@@ -77,6 +79,37 @@
 			window.top.returnValue = datos;
 			window.top.close();
 		}
+		
+		function mainSub(){
+				$(document).ready(
+				function() { 
+					$.blockUI({
+						message: '<img src="<%=app%>/html/imagenes/loadingBar.gif">', 
+						css:{border:0, background:'transparent'},
+						overlayCSS: { backgroundColor:'#000', opacity: .0} }); 
+				}
+			)
+			bloqueado=true; 
+		}
+
+		function mainFin(){
+			if(bloqueado){
+				$(document).ready(
+					function() { 
+				    	$.unblockUI(); 
+					}
+				)
+				bloqueado=false;
+			} 
+		}
+		
+		function growl(msg,type){
+			//$.noticeRemove($('.notice-item-wrapper'), 400);
+			$.noticeAdd({
+				text: msg,
+				type: type
+			});
+		}
 
 	</script>	
 </head>
@@ -99,23 +132,25 @@
 	           method="POST">
 		<table class="tablaCampos" align="center">	
 			<tr>
-				<td class="labelText" colspan="5">
+				<td class="labelText">
 				    <siga:Idioma key="messages.gratuita.incompatibilidadesGuardias.pideDiasSeparacion" />
 				</td>
-				<td><p align="right">
+				<td style="text-align: center;">
 				    <input type="text" maxlength="2" size="1"
 				           style="text-align: right;"
 				           name="diasseparacion" />
-				</p></td>
+				</td>
 			</tr>
+		</table>
+		<table class="tablaCampos" align="center">	
 			<tr>
 			    <td class="labelText">
 			    	<br><siga:Idioma key="gratuita.incompatibilidadesGuardias.literal.motivos" />
 			    </td>
-			    <td colspan="5"><p align="right">
-				    <textarea class="box" type="text" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" maxlength="1024" rows="3"
-				              name="motivos"></textarea>
-				</p></td>
+			    <td>
+				    <textarea class="box" type="text" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" maxlength="1024" rows="3" name="motivos">
+				    </textarea>
+				</td>
 			</tr>
 		</table>
 	</html:form>

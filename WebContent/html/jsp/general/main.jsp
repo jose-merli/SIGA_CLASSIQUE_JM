@@ -100,6 +100,7 @@
 			psswd='clavecita';
 			loc='<%=userBean.getLocation()%>';
 
+			jQuery.noConflict();
 			function inicio()
 			{
 				MM_preloadImages('<%=app%>/html/imagenes/botonSession_ilum.gif',
@@ -172,12 +173,15 @@
 			}
 
 			function mainSub(){
- 				$(document).ready(
+				jQuery(document).ready(
 					function() { 
-						$.blockUI({
-							message: '<img src="<%=app%>/html/imagenes/loadingBar.gif">', 
+						jQuery.blockUI({
+							message: '<img src="<%=app%>/html/imagenes/loadingBar.gif"/><span id="barraBloqueante">&nbsp;</span>', 
 							css:{border:0, background:'transparent'},
 							overlayCSS: { backgroundColor:'#000', opacity: .0} }); 
+						jQuery("#barraBloqueante").click(function() { 
+							jQuery.unblockUI(); 
+						});
 					}
 				)
 				bloqueado=true; 
@@ -185,9 +189,9 @@
 
 			function mainFin(){
 				if(bloqueado){
-					$(document).ready(
+					jQuery(document).ready(
 						function() { 
-					    	$.unblockUI(); 
+					    	jQuery.unblockUI(); 
 						}
 					)
 					bloqueado=false;
@@ -196,7 +200,7 @@
 			
 			function growl(msg,type){
 				//$.noticeRemove($('.notice-item-wrapper'), 400);
-				$.noticeAdd({
+				jQuery.noticeAdd({
 					text: msg,
 					type: type
 				});

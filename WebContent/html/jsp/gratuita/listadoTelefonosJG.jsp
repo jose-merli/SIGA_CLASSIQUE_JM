@@ -153,6 +153,7 @@
 											<input type="checkbox"
 												id="preferenteSms_<bean:write name='index'/>"
 												name="preferenteSms_<bean:write name='index'/>"
+												class="preferenteSms"
 												value="<bean:write name="telefonosJGForm" property="preferenteSms"/>"
 												onClick="checkSms()"
 												<%=(preferenteSms.equals("1")) ? "checked" : ""%> />
@@ -183,6 +184,7 @@
 										<bean:define id="preferenteSms" name="telefono" property="preferenteSms"></bean:define>
 										<td style="width:120px; text-align: center; margin:2px">
 											<input type="checkbox" disabled="disabled"
+												class="preferenteSms"
 												id="preferenteSms_<bean:write name='index'/>" name="preferenteSms_<bean:write name='index'/>"
 												value="<bean:write name="telefonosJGForm" property="preferenteSms"/>"
 												onClick="checkSms()"
@@ -258,20 +260,9 @@
 		
 		//funcion de marcar un telefono para enviar sms
 		function checkSms(){
-			var chkpreferenteSms = document.getElementsByName("preferenteSms");
-			//var chkpreferenteSms = document.getElementById("preferenteSms");	
-		  	for (i = 0; i < chkpreferenteSms.length; i++) {
-		  		if(chkpreferenteSms[i].checked){	   			
-		   			if(chkpreferenteSms[i].value=="1"){
-		   				chkpreferenteSms[i].value="0";
-		   				chkpreferenteSms[i].checked=false;
-			   		} else {
-			   			chkpreferenteSms[i].value="1";	   				
-			   		}
-		   		} else {
-		   			chkpreferenteSms[i].value="0";
-		   		}
-	   		}
+			var boxes = $("input:checkbox").click(function(){
+			    boxes.val('1').not(this).attr('checked', false).val('0');
+			});
 	   	}
 	
 		//borrar un telefono se borra la fila.		

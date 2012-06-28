@@ -2175,7 +2175,7 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 
 .notice-wrap {
 	top: 50px;
-	width: 350px;
+	width: 400px;
 	float:left;
 	clear:both;
 	z-index: 9999;
