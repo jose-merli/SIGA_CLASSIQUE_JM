@@ -233,6 +233,8 @@
 			
 	   		if(resultado == "MODIFICADO"){
 	   			buscar();
+	   		}else if (resultado == ""){
+	   			alert('<siga:Idioma key="messages.listaGuardias.definirListaGuardias.generarInforme.sinGuardias.error"/>');
 	   		}
 	
 		}
