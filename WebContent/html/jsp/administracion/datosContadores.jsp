@@ -304,10 +304,11 @@
 										<td class="labelText" width="30%">
 											<siga:Idioma key="administracion.parametrosGenerales.literal.fechaReconfiguracion"/>
 										</td>
-										<td class="labelTextValue" colspan="5">
-											<html:text  property="fechaReconfiguracion" size="10" maxlength="10" styleClass="<%=estilo%>" value="<%=fechaReconf%>" readonly="true"></html:text>
+										<td class="labelTextValue" colspan="5">																																										
 											<% if (modo!=null && modo.equals("editar")){%>
-		                                     &nbsp;&nbsp;<a onClick="showCalendarGeneral(fechaReconfiguracion);return false;" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif"  alt=''<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>'  border="0"></a>
+		                                     &nbsp;&nbsp;<siga:Fecha  nombreCampo="fechaReconfiguracion" valorInicial="<%=fechaReconf%>"/>
+											<%}else{%>
+												<siga:Fecha  nombreCampo="fechaReconfiguracion" valorInicial="<%=fechaReconf%>" disabled="true"/>
 											<%}%>
 											 
 										</td>

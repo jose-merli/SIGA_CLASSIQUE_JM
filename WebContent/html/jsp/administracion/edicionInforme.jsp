@@ -505,7 +505,8 @@ function inicio()
 		inputs = document.getElementsByTagName("input");
 		for(var i = 0 ; i <inputs.length ; i++) {
 			input = inputs[i];
-			input.disabled =  "disabled"; 
+			if(input.value!="Cerrar")
+				input.disabled =  "disabled"; 
 		}
 		selects = document.getElementsByTagName("select");
 		for(var i = 0 ; i <selects.length ; i++) {
