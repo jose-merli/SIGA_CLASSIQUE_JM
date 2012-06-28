@@ -109,7 +109,7 @@
 											<siga:Idioma key="informes.listaGuardias.desde"/>&nbsp;(*)
 										</td>				
 										<td>	
-											<siga:Fecha nombreCampo="fechaInicio"></siga:Fecha>
+											<siga:Fecha nombreCampo="fechaInicio" posicionX="10" posicionY="10"></siga:Fecha>
 											
 						  				</td>
 									</tr>
@@ -118,7 +118,7 @@
 											<siga:Idioma key="informes.listaGuardias.hasta"/>&nbsp;(*)
 										</td>				
 										<td>	
-											<siga:Fecha nombreCampo="fechaFin"></siga:Fecha>
+											<siga:Fecha nombreCampo="fechaFin" posicionX="10" posicionY="10"></siga:Fecha>
 											
 						  				</td>
 									</tr>
