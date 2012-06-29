@@ -77,6 +77,7 @@
 		<html:hidden property = "idPersona" value = ""/>		
 			<!-- RGG: cambio a formularios ligeros -->
 			<input type="hidden" name="tablaDatosDinamicosD">
+			<input type="hidden" name="filaSelD">
 			<input type="hidden" name="actionModal" value="">
 
 			<input type="hidden" name="validarVolantes" value="">
