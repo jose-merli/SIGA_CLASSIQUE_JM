@@ -129,7 +129,7 @@
 			 de cabeceras fijas -->
 			 
 		<html:form action="/FAC_ConsultaMorosos.do" method="POST" target="submitArea" style="display:none">			
-		    <html:hidden styleId = "modo" value = ""/>
+		    <html:hidden styleId = "modo" property = "modo" value = ""/>
 		    
 		    <html:hidden styleId="registrosSeleccionados"  property="registrosSeleccionados" />
 			<html:hidden styleId="datosPaginador"  property="datosPaginador" />
