@@ -105,7 +105,6 @@
 			titulo="censo.busquedaHistorico.literal.titulo1" 
 			localizacion="censo.busquedaHistorico.literal.titulo1"/-->
 		<!-- FIN: TITULO Y LOCALIZACION -->
-		<script>alert('datosHistorico');</script>
 	</head>
 
 	<body>
