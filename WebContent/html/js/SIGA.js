@@ -60,15 +60,15 @@ function confirm(message, title, acceptText, cancelText) {
 */
 /*  Hack for allowing correct typing in modal dialogs in safari. */
 try {
-	if(jQuery.browser.msie || jQuery.browser.mozilla){
-		jQuery.browser.safari = false;
+	if($.browser.msie || $.browser.mozilla){
+		$.browser.safari = false;
 	} else {
-		jQuery.browser.safari = ( jQuery.browser.webkit && /chrome/.test(navigator.userAgent.toLowerCase()) ) ? false : true;
+		$.browser.safari = ( $.browser.webkit && /chrome/.test(navigator.userAgent.toLowerCase()) ) ? false : true;
 	}
-	if( (jQuery.browser.safari) && (window.top.dialogArguments) ){
+	if( ($.browser.safari) && (window.top.dialogArguments) ){
 		// Only applies to Windows Safari browsers
 		if(/win32/.test(navigator.platform.toLowerCase())){
-			jQuery(document).keydown(function(event) {
+			$(document).keydown(function(event) {
 				// Backspace key works fine
 				if(event.which == 8){
 					return true;
@@ -535,8 +535,8 @@ function ajusteAltoPaginador(nObj) {
 
 function ajusteAltoMain(nObj, menos) {
 	//alert("ajusteAlto obj: "+nObj+"; menos: "+menos);
-	if(!jQuery || !jQuery.height || !jQuery.offset){
-		jQuery=window.top.jQuery;
+	if(!$ || !$.height || !$.offset){
+		$=window.top.$;
 	}
 	var obj = document.getElementById(nObj);
 	if (obj) {
@@ -545,12 +545,12 @@ function ajusteAltoMain(nObj, menos) {
 		//alert("obj = "+obj.id + " : " + obj.nodeName + " : " + obj.offsetTop);
 		if (obj.nodeName == 'IFRAME') {
 			if (nObj == 'mainWorkArea') {
-				hCont = jQuery(window).height() - jQuery('#posicionTitulo', window.top.document).height() - jQuery('#posicionTitulo', window.top.document).offset().top;
+				hCont = $(window).height() - $('#posicionTitulo', window.top.document).height() - $('#posicionTitulo', window.top.document).offset().top;
 				//alert("final iframe mainWorkArea : "+hCont);
 				obj.style.height = hCont;
 		        obj.style.pixelHeight = hCont;
 			} else {				
-				hCont = jQuery(window).height() - jQuery(obj, this.parent.document).offset().top - menos;
+				hCont = $(window).height() - $(obj, this.parent.document).offset().top - menos;
 				//hCont = jQuery.height(window) - jQuery.offset(obj, this.parent.document).top - menos;
 				//alert("final iframe other : "+hCont);
 				obj.style.height = hCont;
