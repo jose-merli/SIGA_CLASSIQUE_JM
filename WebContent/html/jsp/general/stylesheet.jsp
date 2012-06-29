@@ -558,6 +558,8 @@ a.disabled {
 	color: #<%=src.get("color.button.font")%>;
 	background-color: #<%=src.get("color.button.BG")%>;
 	border: 2px solid  #<%=src.get("color.button.border")%>;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
 	font-size: <%=fontSize %>;
 	font-weight: normal;
 	cursor: pointer;
@@ -948,7 +950,6 @@ A.lb:active {
 	position: absolute;
 	visibility: hidden;
 }
-
 
 A.imageLink:link {
 	color:#<%=src.get("color.labelText")%>;;
@@ -2188,20 +2189,20 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 }
  
 .notice-item {
-	background: #F9EDBE;
+	background: #F9EDBE url(<%=app%>/html/imagenes/warning.png) no-repeat 2px;
 	-webkit-border-radius: 6px;
 	-moz-border-radius: 6px;
 	border-radius: 6px;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 	color: #000;
-	padding: 16px 16px 16px 16px;
+	padding: 10px 10px 10px 50px;
 	font-family: <%=src.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	font-weight: bold;
 	border: 2px solid #999;
 	display: block;
 	position: relative;
-	margin: 0 0 12px 0;
+	margin: 2px 2px 12px 2px;
 	left:-175px;
 }
 
@@ -2213,4 +2214,12 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 	right: 6px;
 	top: 6px;
 	cursor: pointer;
+}
+
+.error{
+	background: #F57676 url(<%=app%>/html/imagenes/error.png) no-repeat 2px;
+}
+
+.success{
+	background: #84F576 url(<%=app%>/html/imagenes/success.png) no-repeat 2px;
 }

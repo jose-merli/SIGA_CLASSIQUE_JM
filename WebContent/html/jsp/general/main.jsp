@@ -94,6 +94,20 @@
 <script src="<%=app%>/html/js/jquery.notice.js" type="text/javascript"></script>
 <script src="<%=app%>/html/js/jquery-ui.js" type="text/javascript"></script>
 
+<style type="text/css">
+.notice-wrap {
+	position: absolute;
+	top: 40px;
+	z-index: 9999;
+	left: 175px;
+	width: 825px;
+}
+.notice-item{
+	left:0px;
+	margin: 0px;
+}
+</style>
+
 <script language="JavaScript" type="text/javascript">
 			var user, psswd, profile, loc, bloqueado;
 			user='<%=userBean.getUserName()%>';
@@ -177,7 +191,7 @@
 					function() { 
 						jQuery.blockUI({
 							message: '<img src="<%=app%>/html/imagenes/loadingBar.gif"/><span id="barraBloqueante">&nbsp;</span>', 
-							css:{border:0, background:'transparent'},
+							css:{border:0,left:'300px', background:'transparent'},
 							overlayCSS: { backgroundColor:'#000', opacity: .0} }); 
 						jQuery("#barraBloqueante").click(function() { 
 							jQuery.unblockUI(); 
@@ -205,7 +219,12 @@
 					type: type
 				});
 			}
+			
+			jQuery(document).ready(function(){
+				jQuery('.imgMain').css({ 'opacity' : 0.6 });
+			});
 				
+			
 		</script>
 </head>
 
@@ -232,7 +251,7 @@
 			src="<%=app%>/html/imagenes/logoSIGA.png">
 	</div>
 
-	<div style="position: absolute; left: 180px; top: 50px; z-index: 5;">
+<div style="position: absolute; left: 180px; top: 50px; z-index: 5;">
 		<table border=0 cellspacing=0 cellpadding=0>
 			<tr>
 			<td width="300px">

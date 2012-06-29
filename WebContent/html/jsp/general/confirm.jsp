@@ -33,7 +33,7 @@
 	</script>
 </head>
 <body onload="fixHeight();">
-	<table class="sigaPopupTable">
+	<table class="sigaPopupTable labelText">
 		<tbody>
 			<tr>
 				<td class="sigaPopupImageContainer">
