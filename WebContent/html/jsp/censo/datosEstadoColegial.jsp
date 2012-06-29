@@ -176,7 +176,7 @@
 										</td>				
 										<td>
 										<% if (nextModo.equalsIgnoreCase("insertar") || nextModo.equalsIgnoreCase("modificar")){%>										
-			  								<siga:Fecha  nombreCampo= "fechaEstado" valorInicial="<%=fechaEstado%>"  posicionX="10" posicionY="10"/>																																
+			  								<siga:Fecha  nombreCampo= "fechaEstado" valorInicial="<%=fechaEstado%>"  posicionX="120" posicionY="20"/>																																
 										<% } else { %>		
 											<% if (fechaEstado.equalsIgnoreCase("")){ %>	
 											<siga:Fecha  nombreCampo= "fechaEstado"  disabled="true"/>								 	
