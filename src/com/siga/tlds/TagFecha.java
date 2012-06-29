@@ -79,18 +79,19 @@ public class TagFecha extends TagSupport {
 			out.println("	         jQuery(this).css(\"z-index\", zmax);");
 			out.println("	      });");
 			out.println("	  	}");
-			out.println("jQuery(\"#invoke" + this.nombreCampo + "\").click(function() {  ");
+			out.println("	  var click_"+ this.nombreCampo +" = 0;");
+			out.println("jQuery(\"#invoke" + this.nombreCampo + "\").click(function() {if(click_"+ this.nombreCampo +" ==0){ ");
 			out.println("	jQuery( '#"+ this.nombreCampo +"' ).datepicker(\"dialog\", \"\", updateDate,{");
 			//out.println("	showOn: 'button',");			
 			out.println("	buttonImage: '/SIGA/html/imagenes/calendar.gif',");		
 			out.println("	buttonImageOnly: true,");			
 			out.println("	changeMonth: true,");	
-			out.println("	yearRange: 'c-70:c+2',");	
+			out.println("	yearRange: 'c-100:c+100',");	
 			out.println("	showButtonPanel: true,");
 			if ((this.valorInicial != "")&&(this.valorInicial != null))
 				out.println("	defaultDate: '"+ this.valorInicial +"',");	
 			out.println("	changeYear: true,");	
-			out.println("	closeText: 'X', showTrigger: '#calImg' ,alignment: 'bottomRight',showAnim:'drop',");
+			out.println("	closeText: 'X', showTrigger: '#calImg' ,alignment: 'bottomRight',");
 			if ((this.disabled != null))
 				if(this.disabled.equals("true"))
 					out.println("	disabled: true,");
@@ -106,10 +107,13 @@ public class TagFecha extends TagSupport {
 			out.println("         dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],");
 			out.println("		  dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],");
 			out.println("		  dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],");
+			//out.println("	onSelect: function(dateText, inst) { click_"+ this.nombreCampo +" =0; alert('Select: inst.defaultDate = ' + inst.settings.defaultDate); }, ");
+			out.println("	onClose:  function(dateText, inst) { ");
 			if ((this.getPostFunction() != "")&&(this.getPostFunction() != null)){
-				out.println("		  onClose: function(dateText, inst) { "+this.getPostFunction()+"}, ");
+				out.println("	 "+this.getPostFunction()+"; ");
 			}
-			out.println("		  beforeShow: function( input ) { jQuery('#ui-datepicker-div').maxZIndex(); ");
+			out.println("	},");
+			out.println("		  beforeShow: function( input ) { jQuery('#ui-datepicker-div').maxZIndex();click_"+ this.nombreCampo +" =1;");
 			if ((this.getPreFunction() != "")&&(this.getPreFunction() != null)){
 				out.println("		 "+this.getPreFunction()+" ");
 			}
@@ -120,7 +124,7 @@ public class TagFecha extends TagSupport {
 		   	 	  
 		    out.println("		 	var btn = jQuery('<BUTTON class=\"ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all\">Limpiar</BUTTON>');");   
 		    out.println("		   btn.unbind(\"click\").bind(\"click\", function () {  "); 
-		    out.println("          jQuery.datepicker._clearDate( input );   });   ");
+		    out.println("          				jQuery.datepicker._clearDate( input ); });   ");
 		    out.println("          btn.appendTo( buttonPane );");  
 			out.println("          	 }, 1 );      },   ");
 			out.println("		  onChangeMonthYear: function( input ) {  ");
@@ -145,12 +149,19 @@ public class TagFecha extends TagSupport {
 				out.println(this.posicionY+"]);");
 			else
 				out.println("150]);");
+			
+			//out.println("	jQuery.datepicker._generateHTML_Old = jQuery.datepicker._generateHTML; jQuery.datepicker._generateHTML = function(inst) { ");
+
+			//out.println("	res = this._generateHTML_Old(inst); res = res.replace(\"_hideDatepicker()\",\"_clearDate('#\"+inst.id+\"')\"); return res;} ");
+
+			//out.println("	jQuery('<style type=\"text/css\">.ui-datepicker-current { display: none; }</style>').appendTo(\"head\");");
+			out.println("}else{click_"+ this.nombreCampo +" = 0;}");
 			//out.println("jQuery('#calImg').click(function() {");
 			//out.println("		jQuery( '#"+ this.nombreCampo +"' ).datepicker('dialog',reformatDate);");
 			//out.println("});");
 			//out.println("jQuery( '#"+ this.nombreCampo +"' ).datepicker('dialog',reformatDate);");
 			out.println("function updateDate(date) {");
-			out.println("	jQuery( '#"+ this.nombreCampo +"').val(date);");
+			out.println("	jQuery( '#"+ this.nombreCampo +"').val(date);click_"+ this.nombreCampo +" =0;");
 			out.println("}");
 			
 			out.println("});");

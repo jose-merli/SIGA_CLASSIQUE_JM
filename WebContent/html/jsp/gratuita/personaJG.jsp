@@ -1555,15 +1555,21 @@
  			%>		
 		</td>
 		<td >
-		   
+		   <%
+		   String fechaNac="";
+			if ((miform.getFechaNac() != null)
+								&& (!miform.getFechaNac().equalsIgnoreCase(""))) {
+				 fechaNac = miform.getFechaNac();
+						}
+		%>
 			<%
 				if (!accion.equalsIgnoreCase("ver")) {
 			%>
-			 <siga:Fecha  nombreCampo= "fechaNac"/>
+			 <siga:Fecha  nombreCampo= "fechaNac" valorInicial="<%=fechaNac%>"/>
 			<%
 				}else{
 			%>
-			 <siga:Fecha  nombreCampo= "fechaNac"   disabled="true"/>
+			 <siga:Fecha  nombreCampo= "fechaNac"  valorInicial="<%=fechaNac%>" disabled="true"/>
 			 <%
 				}
 			%>
