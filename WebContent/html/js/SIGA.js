@@ -28,7 +28,7 @@ function alert(message, title, acceptText) {
 	return returnValue;
 }
 */
-
+jQuery.noConflict();
 function alert(message, estilo) {
 	var returnValue = true;
 	var windowTop=window.top;

@@ -89,7 +89,8 @@
 <link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 <link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/css/jquery-ui.css"> 
 <link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/css/jquery.notice.css"> 
-<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 <script src="<%=app%>/html/js/jquery.blockUI.js" type="text/javascript"></script>
 <script src="<%=app%>/html/js/jquery.notice.js" type="text/javascript"></script>
 <script src="<%=app%>/html/js/jquery-ui.js" type="text/javascript"></script>
@@ -114,7 +115,7 @@
 			psswd='clavecita';
 			loc='<%=userBean.getLocation()%>';
 
-			jQuery.noConflict();
+			
 			function inicio()
 			{
 				MM_preloadImages('<%=app%>/html/imagenes/botonSession_ilum.gif',
