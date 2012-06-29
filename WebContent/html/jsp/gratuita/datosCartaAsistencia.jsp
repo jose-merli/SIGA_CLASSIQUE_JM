@@ -1,4 +1,4 @@
-<!-- contAnulDeliJuriAsistencia.jsp -->
+<!-- datosCartaAsistencia.jsp -->
 <!-- 
 	 Permite recoger datos para la generacion de cartas de asistencia
 	 VERSIONES:
@@ -112,7 +112,7 @@
 										<td class="labelText">
 											<siga:Idioma key="informes.cartaAsistencia.textoCabecera"/>&nbsp;
 										</td>				
-										<td>	
+										<td width="85%">	
  											<html:textarea cols="100" rows="6" property="cabeceraCarta" styleClass="box"></html:textarea> 
 						  				</td>
 									</tr>
@@ -120,7 +120,7 @@
 										<td class="labelText">
 											<siga:Idioma key="informes.cartaAsistencia.textoMotivo"/>&nbsp;
 										</td>				
-										<td>	
+										<td width="85%">	
  											<html:textarea cols="100" rows="6" property="motivoCarta" styleClass="box"></html:textarea> 
 						  				</td>
 									</tr>
@@ -128,7 +128,7 @@
 										<td class="labelText">
 											<siga:Idioma key="informes.cartaAsistencia.textoPie"/>&nbsp;
 										</td>				
-										<td>	
+										<td width="85%">
  											<html:textarea cols="100" rows="6" property="pieCarta" styleClass="box"></html:textarea> 
 						  				</td>
 									</tr>
