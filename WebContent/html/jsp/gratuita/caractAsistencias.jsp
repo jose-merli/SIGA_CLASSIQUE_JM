@@ -427,11 +427,11 @@ function accionGuardar()
 	}
 
 	indice = document.CaracteristicasForm.idJuzgado.selectedIndex;
-	if(document.CaracteristicasForm.idJuzgado.selectedIndex!="")
+	if(document.CaracteristicasForm.idJuzgado.selectedIndex!="" && document.CaracteristicasForm.idJuzgado.selectedIndex!="-1")
 		document.CaracteristicasForm.descripcionJuzgadoHidden.value=document.CaracteristicasForm.idJuzgado.options[indice].text;
 	
 	indice = document.CaracteristicasForm.idPretension.selectedIndex;
-	if(document.CaracteristicasForm.idPretension.selectedIndex!="")
+	if(document.CaracteristicasForm.idPretension.selectedIndex!="" && document.CaracteristicasForm.idJuzgado.selectedIndex!="-1")
 		document.CaracteristicasForm.descripcionPretensionHidden.value=document.CaracteristicasForm.idPretension.options[indice].text;
 		
 	document.forms[0].modo.value = "guardar";
