@@ -49,6 +49,7 @@
 		
 			function accionGuardar() 
 			{
+				$('#botonProcesar').attr('disabled','');
 				sub();
 				var mensaje = "<siga:Idioma key="pys.cargaProductos.literal.mensajeAviso"/> ";
 					
@@ -73,7 +74,7 @@
 		<!-- FIN: SCRIPTS BOTONES -->
 	</head>
 
-	<body onload="ajusteAlto('divAyuda');sub();">
+	<body onload="ajusteAlto('divAyuda');">
 		<siga:ConjCampos leyenda="pys.cargaProductos.titulo">
 			<table   align="left" cellpadding="0" cellpadding="0">
 				<html:form  action="/PYS_CargaProductos.do" method="POST" target="submitArea" enctype="multipart/form-data" >
@@ -84,7 +85,7 @@
 							<siga:Idioma key="pys.cargaProductos.literal.fichero"/>&nbsp;(*)
 						</td>				
 						<td >
-							<html:file name="CargaProductosForm"  property="fichero" size="90" styleClass="box"  onchange="fin();"></html:file>
+							<html:file name="CargaProductosForm"  property="fichero" size="90" styleClass="box"  onchange="$('#botonProcesar').removeAttr('disabled');"></html:file>
 						</td>
 					</tr>
 				</html:form>
@@ -125,7 +126,7 @@
 				<td style="width: 900px;">&nbsp;</td>
 				<td class="tdBotones">
 					<input type="button" alt='<siga:Idioma key="general.boton.new"/>'
-					name='idButton' id="idButton" onclick="return accionGuardar();" class="button"
+					name='idButton' id="botonProcesar" onclick="return accionGuardar();" class="button" disabled
 						value='Procesar Fichero'>				
 				</td>		
 		   </tr>
