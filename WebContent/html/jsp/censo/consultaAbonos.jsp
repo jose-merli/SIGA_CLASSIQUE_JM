@@ -243,15 +243,15 @@
 	<table cellspacing="0" cellpadding="0" width="100%">
 
 			<html:form action="${path}" method="POST" target="_self">
-				<html:hidden property = "modo" value = ""/>
-				<html:hidden property="idPersona" value="<%=idPersona.toString()%>"/>
-				<html:hidden property="idInstitucion" value="<%=idInstitucion%>"/>
-				<html:hidden property="accion" value="<%=accion%>"/>
+				<html:hidden styleId = "modo" property = "modo" value = ""/>
+				<html:hidden styleId="idPersona" property="idPersona" value="<%=idPersona.toString()%>"/>
+				<html:hidden styleId="idInstitucion" property="idInstitucion"  value="<%=idInstitucion%>"/>
+				<html:hidden styleId="accion" property="accion" value="<%=accion%>"/>
 				
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
-			<input type="hidden" name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>">
+			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
+			<input type="hidden" id="actionModal" name="actionModal" value="">
+			<input type="hidden" id="incluirRegistrosConBajaLogica" name="incluirRegistrosConBajaLogica"  value="<%=bIncluirBajaLogica%>">
 		</html:form>
 				<tr>				
 						<siga:TablaCabecerasFijas 
@@ -303,16 +303,16 @@
 									  >
 									  
 									  
-									 <input type="hidden" name="idPersona<%="" + String.valueOf(recordNumber)%>"	
+									 <input type="hidden" name="idPersona<%="" + String.valueOf(recordNumber)%>"	  id="idPersona<%="" + String.valueOf(recordNumber)%>"	
 									 		value="<%=row.getString(FacAbonoBean.C_IDPERSONA)%>">
-									 <input type="hidden" name="idPersonaOrigen<%="" + String.valueOf(recordNumber)%>"	
+									 <input type="hidden" name="idPersonaOrigen<%="" + String.valueOf(recordNumber)%>"	 id="idPersonaOrigen<%="" + String.valueOf(recordNumber)%>"	
 									 		value="<%=row.getString("IDPERORIGEN")%>">
 			
-									<input type="hidden" name="idPago<%="" + String.valueOf(recordNumber)%>"
+									<input type="hidden" name="idPago<%="" + String.valueOf(recordNumber)%>" id="idPago<%="" + String.valueOf(recordNumber)%>"
 										value="<%=row.getString(FacAbonoBean.C_IDPAGOSJG)%>"> 
 									<td>
-										<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=row.getString(FacAbonoBean.C_IDABONO)%>">
-										<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=idInstitucion%>">
+										<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" id="oculto<%=String.valueOf(recordNumber)%>_1"  value="<%=row.getString(FacAbonoBean.C_IDABONO)%>">
+										<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" id="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=idInstitucion%>">
 										<%=UtilidadesString.mostrarDatoJSP(GstDate
 									.getFormatedDateShort("",
 											row.getString(FacAbonoBean.C_FECHA)))%>
@@ -421,11 +421,11 @@
 						<%
 													if (bIncluirBajaLogica) {
 												%>
-							<input type="checkbox" name="incluirRegistrosConBajaLogica" onclick="incluirRegBajaLogica(this);" checked>
+							<input type="checkbox" name="incluirRegistrosConBajaLogica"  id="incluirRegistrosConBajaLogica"  onclick="incluirRegBajaLogica(this);" checked>
 						<%
 							} else {
 						%>
-							<input type="checkbox" name="incluirRegistrosConBajaLogica" onclick="incluirRegBajaLogica(this);">
+							<input type="checkbox" name="incluirRegistrosConBajaLogica" id="incluirRegistrosConBajaLogica" onclick="incluirRegBajaLogica(this);">
 						<%
 							}
 						%>
@@ -434,19 +434,19 @@
 			</table>
 		</div>
 
-<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
-	<html:hidden property="idInstitucion" value = "<%=idInstitucion%>"/>
-	<html:hidden property="idTipoInforme"/>
-	<html:hidden property="enviar" value="0"/>
-	<html:hidden property="descargar" value="1"/>
-	<html:hidden property="datosInforme"/>
-	<html:hidden property="modo" value = "preSeleccionInformes"/>
-	<input type='hidden' name='actionModal'>
+<html:form action="/INF_InformesGenericos" method="post"  target="submitArea">
+	<html:hidden property="idInstitucion" styleId="idInstitucion" value = "<%=idInstitucion%>"/>
+	<html:hidden property="idTipoInforme"  styleId="idTipoInforme"/>
+	<html:hidden property="enviar"   styleId="enviar" value="0"/>
+	<html:hidden property="descargar"  styleId="descargar" value="1"/>
+	<html:hidden property="datosInforme"  styleId="datosInforme"/>
+	<html:hidden property="modo"  styleId="modo" value = "preSeleccionInformes"/>
+	<input type='hidden' name='actionModal' id='actionModal'>
 </html:form>
 <!-- Formulario para la edicion del envio -->
-<form name="DefinirEnviosForm" method="POST" action="/SIGA/ENV_DefinirEnvios.do" target="mainWorkArea">
-	<input type="hidden" name="modo" value="">
-	<input type="hidden" name="tablaDatosDinamicosD" value="">
+<form name="DefinirEnviosForm" id="DefinirEnviosForm"  method="POST" action="/SIGA/ENV_DefinirEnvios.do" target="mainWorkArea">
+	<input type="hidden" name="modo"  id="modo"  value="">
+	<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD" value="">
 
 </form>
 
@@ -496,10 +496,13 @@
 			document.AbonosClienteForm.submit();
 		}
 		function accionImprimir() {		
-	
-			document.AbonosClienteForm.modo.value = 'imprimir';
-			document.AbonosClienteForm.target = "submitArea";
-			document.AbonosClienteForm.submit();
+			var idPago = "idPago"+1;
+			
+			if(document.getElementById(idPago)!=null &&  document.getElementById(idPago).value!=''){
+				document.AbonosClienteForm.modo.value = 'imprimir';
+				document.AbonosClienteForm.target = "submitArea";
+				document.AbonosClienteForm.submit();
+			}
 		}	
 	 
 		function creaFormInformeFacturaRectificativa() {

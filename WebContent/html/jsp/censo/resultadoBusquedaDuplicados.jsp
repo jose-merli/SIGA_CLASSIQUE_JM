@@ -63,17 +63,11 @@
 %>
 
 <link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
-		
-	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
-	
-<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
-<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
-<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
-<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
+<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script><script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
 
-<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/ajaxtags.css'/>" />
+	<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript"></script>
+
 
 <html>
 
@@ -81,7 +75,6 @@
 <head>
 
 	<script type="text/javascript">
-
 	var contador=0;
 	ObjArray = new Array();
 
@@ -189,25 +182,25 @@
 <body class="tablaCentralCampos" >
 
 <html:form action="/CEN_MantenimientoDuplicados.do?noReset=true" method="POST" target="submitArea">
-	<input type="hidden" name="actionModal" value="">
-	<html:hidden property="modo"/>
-	<html:hidden property="registrosSeleccionados" />
-	<html:hidden property="seleccionados" />
-	<html:hidden property="seleccion" />
-	<html:hidden property="datosPaginador" />
-	<html:hidden property="chkApellidos" />
-	<html:hidden property="chkNombreApellidos" />
-	<html:hidden property="chkNumColegiado" />
-	<html:hidden property="chkIdentificador" />
-	<html:hidden property="nifcif" />
-	<html:hidden property="nombre" />
-	<html:hidden property="numeroColegiado" />
-	<html:hidden property="apellido1" />
-	<html:hidden property="apellido2" />
-	<html:hidden property="agruparColegiaciones" />
-	<html:hidden property="tipoConexion" />
-	<html:hidden property="sentidoOrdenacion" />
-	<html:hidden property="campoOrdenacion" />
+	<input type="hidden" name="actionModal" id="actionModal"  value="">
+	<html:hidden styleId="modo" property="modo"/>
+	<html:hidden styleId="registrosSeleccionados" property="registrosSeleccionados" />
+	<html:hidden styleId="seleccionados" property="seleccionados" />
+	<html:hidden styleId="seleccion" property="seleccion" />
+	<html:hidden styleId="datosPaginador" property="datosPaginador" />
+	<html:hidden styleId="chkApellidos" property="chkApellidos" />
+	<html:hidden styleId="chkNombreApellidos" property="chkNombreApellidos" />
+	<html:hidden styleId="chkNumColegiado" property="chkNumColegiado" />
+	<html:hidden styleId="chkIdentificador" property="chkIdentificador" />
+	<html:hidden styleId="nifcif" property="nifcif" />
+	<html:hidden styleId="nombre" property="nombre" />
+	<html:hidden styleId="numeroColegiado" property="numeroColegiado" />
+	<html:hidden styleId="apellido1" property="apellido1" />
+	<html:hidden styleId="apellido2" property="apellido2" />
+	<html:hidden styleId="agruparColegiaciones" property="agruparColegiaciones" />
+	<html:hidden styleId="tipoConexion" property="tipoConexion" />
+	<html:hidden styleId="sentidoOrdenacion" property="sentidoOrdenacion" />
+	<html:hidden styleId="campoOrdenacion" property="campoOrdenacion" />
 	
 	<table class="tablaTitulo" align="center">
 		<tr>
