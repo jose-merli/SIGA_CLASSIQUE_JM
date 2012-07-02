@@ -326,10 +326,10 @@ public class TagTabla extends TagSupport {
 				}
 				out.println("   if (resultado) {");
 				out.println("  	 	if (resultado==\"MODIFICADO\") {");
-				out.println("   	    alert(\""+UtilidadesString.getMensajeIdioma(usrbean,"messages.updated.success")+"\");");
+				out.println("   	    alert(\""+UtilidadesString.getMensajeIdioma(usrbean,"messages.updated.success")+"\",'success');");
 				out.println("   		refrescarLocal();");
 				out.println("       } else if (resultado[0]) {");
-				out.println("   	    alert(\""+UtilidadesString.getMensajeIdioma(usrbean,"messages.updated.success")+"\");");
+				out.println("   	    alert(\""+UtilidadesString.getMensajeIdioma(usrbean,"messages.updated.success")+"\",'success');");
 				out.println("      		refrescarLocalArray(resultado);");
 				out.println("   	}");
 				out.println("   }");
