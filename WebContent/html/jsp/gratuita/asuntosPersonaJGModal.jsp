@@ -55,6 +55,10 @@
 </head>
 
 <body>
+
+		
+
+		
 		<html:form action="<%=action%>" method="POST" target="_self">
 			<html:hidden property="modo"/>
 
@@ -62,42 +66,43 @@
 			<html:hidden property="accionGuardar"/>
 			<html:hidden property="idioma"/>
 		
-		<table width="100%">
+		<table>
 		<tr>
-		<td class="labelText">
+		<td class="labelText" style="width:490px">
 			<siga:Idioma key="gratuita.personaJG.literal.asuntos" arg0="<%=nombre%>"/>
 		</td>
 		</tr>
-		</table>
-		<div style="height:150px">
-		<siga:TablaCabecerasFijas 		   
-		   nombre="listadoAsuntos"
-		   borde="2"
-		   clase="tableTitle"		   
-		   nombreCol="Asunto, Año, Numero"
-		   tamanoCol="40,30,30"
-		   ajusteBotonera="false">
-		   	<%if (vAsuntos!= null && !vAsuntos.isEmpty()) { %>
-				<%String numero="", anio="", asunto="";
-				
-				for(int recordNumber = 0; recordNumber<vAsuntos.size(); recordNumber++){
-					Hashtable hash = (Hashtable)vAsuntos.get(recordNumber);
-					numero = (String)hash.get("NUMERO");
-					anio = (String)hash.get("ANIO");
-					asunto = (String)hash.get("ASUNTO");
-					%>
-					<tr class="<%=((recordNumber+1)%2==0?"filaTablaPar":"filaTablaImpar")%>" style="padding:5px;">
-						<td><siga:Idioma key="<%=asunto%>"/></td>
-						<td><%=anio%></td>
-						<td><%=numero%></td>
-					</tr>
-				<%} %>
-			<%} %>
-		</siga:TablaCabecerasFijas>
-		</div>
-		<table>
 		<tr>
-			<td class="labelText">
+		<td>
+		<div style="width:100%;height:140px;overflow-y:auto" >
+			<table  border='1' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed;'>
+					<tr class="tableTitle">
+					<td>Asunto</td>
+					<td>Año</td>
+					<td>Número</td>
+					</tr>
+			   	<%if (vAsuntos!= null && !vAsuntos.isEmpty()) { %>
+					<%String numero="", anio="", asunto="";
+					
+					for(int recordNumber = 0; recordNumber<vAsuntos.size(); recordNumber++){
+						Hashtable hash = (Hashtable)vAsuntos.get(recordNumber);
+						numero = (String)hash.get("NUMERO");
+						anio = (String)hash.get("ANIO");
+						asunto = (String)hash.get("ASUNTO");%>
+						
+						<tr class="<%=((recordNumber+1)%2==0?"filaTablaPar":"filaTablaImpar")%>" style="padding:5px;">
+							<td><siga:Idioma key="<%=asunto%>"/></td>
+							<td><%=anio%></td>
+							<td><%=numero%></td>
+						</tr>
+					<%} %>
+				<%} %>
+			</table>
+		</div>
+		<td>
+		</tr>
+		<tr>
+			<td class="labelText" width="470px">
 				<input type="radio" id="act"name="accionG" value="update" checked><label for="act"><siga:Idioma key="gratuita.personaJG.literal.asuntos.actualizar"/></input></label><br>
 				<siga:Idioma key="gratuita.personaJG.literal.asuntos.actualizar.explicacion"/><br>
 				
