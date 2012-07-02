@@ -89,8 +89,9 @@
 <link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 <link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/css/jquery-ui.css"> 
 <link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/css/jquery.notice.css"> 
-<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
 <script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 <script src="<%=app%>/html/js/jquery.blockUI.js" type="text/javascript"></script>
 <script src="<%=app%>/html/js/jquery.notice.js" type="text/javascript"></script>
 <script src="<%=app%>/html/js/jquery-ui.js" type="text/javascript"></script>
@@ -110,6 +111,7 @@
 </style>
 
 <script language="JavaScript" type="text/javascript">
+
 			var user, psswd, profile, loc, bloqueado;
 			user='<%=userBean.getUserName()%>';
 			psswd='clavecita';
