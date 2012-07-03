@@ -28,7 +28,19 @@
 		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
 		<script src="<%=app%>/html/js/jquery.js" type="text/javascript"></script>
 		<script src="<%=app%>/html/js/jquery.blockUI.js" type="text/javascript"></script>
+		<script src="<%=app%>/html/js/jquery.notice.js" type="text/javascript"></script>
 		
+		<script type="text/javascript">
+		
+		function growl(msg,type){
+			//$.noticeRemove($('.notice-item-wrapper'), 400);
+			jQuery.noticeAdd({
+				text: msg,
+				type: type
+			});
+		}
+		
+		</script>
 	</head>
 
 	<body>
