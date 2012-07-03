@@ -207,7 +207,7 @@
 				<% if (bEditable){%>
 					<siga:Fecha  nombreCampo="sancionPrescrita" valorInicial="<%=f.getSancionPrescrita()%>"/>				
 				<%} else{%>
-					<siga:Fecha  nombreCampo="sancionPrescrita" valorInicial="<%=f.getSancionPrescrita()%>" disabled="true"/>
+					<siga:Fecha  nombreCampo="sancionPrescrita" valorInicial="<%=f.getSancionPrescrita()%>" disabled="true" readOnly="true"/>
 				<%}%>
 			</td>
 			
@@ -219,7 +219,7 @@
 				<% if (bEditable){%>
 					<siga:Fecha  nombreCampo="sancionFinalizada" valorInicial="<%=f.getSancionFinalizada()%>"/>
 				<%} else{%>
-					<siga:Fecha  nombreCampo="sancionFinalizada" valorInicial="<%=f.getSancionFinalizada()%>" disabled="true"/>
+					<siga:Fecha  nombreCampo="sancionFinalizada" valorInicial="<%=f.getSancionFinalizada()%>" disabled="true" readOnly="true"/>
 				<%}%>
 			</td>				
 		</tr>
@@ -232,7 +232,7 @@
 				<% if (bEditable){%>
 					<siga:Fecha  nombreCampo="actuacionesPrescritas" valorInicial="<%=f.getActuacionesPrescritas()%>"/>
 				<%} else{%>
-					<siga:Fecha  nombreCampo="actuacionesPrescritas" valorInicial="<%=f.getActuacionesPrescritas()%>" disabled="true"/>
+					<siga:Fecha  nombreCampo="actuacionesPrescritas" valorInicial="<%=f.getActuacionesPrescritas()%>" disabled="true" readOnly="true"/>
 				<%}%>
 			</td>			
 		
@@ -244,7 +244,7 @@
 				<% if (bEditable){%>
 					<siga:Fecha  nombreCampo="anotacionesCanceladas" valorInicial="<%=f.getAnotacionesCanceladas()%>"/>
 				<%} else{%>
-					<siga:Fecha  nombreCampo="anotacionesCanceladas" valorInicial="<%=f.getAnotacionesCanceladas()%>" disabled="true"/>
+					<siga:Fecha  nombreCampo="anotacionesCanceladas" valorInicial="<%=f.getAnotacionesCanceladas()%>" disabled="true" readOnly="true"/>
 				<%}%>
 			</td>			
 		</tr>
@@ -256,7 +256,7 @@
 				<% if (bEditable){%>
 					<siga:Fecha  nombreCampo="fechaResolucion" valorInicial="<%=f.getFechaResolucion()%>"/>
 				<%} else{%>
-					<siga:Fecha  nombreCampo="fechaResolucion" valorInicial="<%=f.getFechaResolucion()%>" disabled="true"/>
+					<siga:Fecha  nombreCampo="fechaResolucion" valorInicial="<%=f.getFechaResolucion()%>" disabled="true" readOnly="true"/>
 				<%}%>
 			</td>
 			

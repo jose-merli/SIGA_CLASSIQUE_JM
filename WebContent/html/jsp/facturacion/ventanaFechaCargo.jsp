@@ -76,8 +76,7 @@
 									<siga:Idioma key="censo.consultaComponentesJuridicos.literal.fechaCargo"/>&nbsp;(*)
 								</td>
 								<td class="labelText">
-									<html:text name="confirmarFacturacionForm" property="fechaCargo" cols="8" styleClass="box" readonly="true"></html:text>
-									<a href='javascript://'onClick="return showCalendarGeneral(fechaCargo);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+									<siga:Fecha  nombreCampo="fechaCargo" posicionX="10" posicionY="10"/>
 								</td>
 							</tr>
 					</table>

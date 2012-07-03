@@ -109,7 +109,7 @@
 				<siga:Idioma key="gratuita.nuevaContabilidad.literal.fDesde"/>:&nbsp;(*)
 			</td>
 			<td>
-				<siga:Fecha nombreCampo="fechaDesde"/>		
+				<siga:Fecha nombreCampo="fechaDesde" posicionX="250" posicionY="10"/>		
 			</td>
 		</tr>
 		<tr>
@@ -117,7 +117,7 @@
 				<siga:Idioma key="gratuita.nuevaContabilidad.literal.fHasta"/>:&nbsp;(*)
 			</td>
 			<td>
-				<siga:Fecha nombreCampo="fechaHasta"/>
+				<siga:Fecha nombreCampo="fechaHasta" posicionX="250" posicionY="10"/>
 			</td>
 		</tr>
 	</table>

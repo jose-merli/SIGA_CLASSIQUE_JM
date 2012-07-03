@@ -482,12 +482,9 @@ function IsNum( numstr ) {
 								</td>
 								<td>
 									<% if (bEditable) { %>
-									<html:text name="programarFacturacionForm" property="fechaInicialProducto" value="<%=sFInicialProducto%>" size="10" styleClass="box" readonly="true"/>
-										<a href='javascript://' onClick="return showCalendarGeneral(fechaInicialProducto);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-											<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="facturacion.seriesFacturacion.literal.seleccionarFecha"/>' border="0">
-										</a>
+										<siga:Fecha  nombreCampo="fechaInicialProducto" valorInicial="<%=sFInicialProducto%>"/>
 									<% } else { %>
-									<html:text name="programarFacturacionForm" property="fechaInicialProducto" value="<%=sFInicialProducto%>" size="10" styleClass="boxConsulta" readonly="true"/>
+										<siga:Fecha  nombreCampo="fechaInicialProducto" valorInicial="<%=sFInicialProducto%>" disabled="true" readOnly="true"/>
 									<% }  %>
 								</td>
 								<td class="labelText"  width="100px">
@@ -495,12 +492,9 @@ function IsNum( numstr ) {
 								</td>
 								<td>									
 								<% if (bEditable) { %>
-									<html:text name="programarFacturacionForm" property="fechaFinalProducto" value="<%=sFFinalProducto%>" size="10" styleClass="box" readonly="true"></html:text>									
-										<a href='javascript://' onClick="return showCalendarGeneral(fechaFinalProducto);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-											<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="facturacion.seriesFacturacion.literal.seleccionarFecha"/>' border="0">
-										</a>
+									<siga:Fecha  nombreCampo="fechaFinalProducto" valorInicial="<%=sFFinalProducto%>"/>
 								<% } else { %>
-									<html:text name="programarFacturacionForm" property="fechaFinalProducto" value="<%=sFFinalProducto%>" size="10" styleClass="boxConsulta" readonly="true"></html:text>									
+									<siga:Fecha  nombreCampo="fechaFinalProducto" valorInicial="<%=sFFinalProducto%>" disabled="true" readOnly="true"/>
 								<% }  %>
 								</td>
 							</tr>
@@ -514,12 +508,9 @@ function IsNum( numstr ) {
 								</td>	
 								<td width="120px">
 									<% if (bEditable) { %>
-									<html:text name="programarFacturacionForm" property="fechaInicialServicio" value="<%=sFInicialServicio%>" size="10" styleClass="box" readonly="true"></html:text>									
-										<a href='javascript://' onClick="return showCalendarGeneral(fechaInicialServicio);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-											<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="facturacion.seriesFacturacion.literal.seleccionarFecha"/>' border="0">
-										</a>
+										<siga:Fecha  nombreCampo="fechaInicialServicio" valorInicial="<%=sFInicialServicio%>"/>
 									<% } else { %>
-									<html:text name="programarFacturacionForm" property="fechaInicialServicio" value="<%=sFInicialServicio%>" size="10" styleClass="boxConsulta" readonly="true"></html:text>									
+										<siga:Fecha  nombreCampo="fechaInicialServicio" valorInicial="<%=sFInicialServicio%>" disabled="true" readOnly="true"/>
 									<% }  %>
 								</td>
 								<td class="labelText">
@@ -527,12 +518,9 @@ function IsNum( numstr ) {
 								</td>
 								<td  width="120px">
 								<% if (bEditable) { %>
-									<html:text name="programarFacturacionForm" property="fechaFinalServicio" value="<%=sFFinalServicio%>" size="10" styleClass="box" readonly="true"></html:text>									
-										<a href='javascript://' onClick="return showCalendarGeneral(fechaFinalServicio);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-											<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="facturacion.seriesFacturacion.literal.seleccionarFecha"/>' border="0">
-										</a>
+									<siga:Fecha  nombreCampo="fechaFinalServicio" valorInicial="<%=sFFinalServicio%>"/>
 								<% } else { %>
-									<html:text name="programarFacturacionForm" property="fechaFinalServicio" value="<%=sFFinalServicio%>" size="10" styleClass="boxConsulta" readonly="true"></html:text>									
+									<siga:Fecha  nombreCampo="fechaFinalServicio" valorInicial="<%=sFFinalServicio%>" disabled="true" readOnly="true"/>
 								<% }  %>
 								</td>
 							</tr>
@@ -549,12 +537,9 @@ function IsNum( numstr ) {
 								</td>
 								<td   width="120px">
 									<% if (bEditable) { %>
-										<html:text name="programarFacturacionForm" property="fechaPrevistaGeneracion" value="<%=sFPrevistaGeneracion%>" size="10" styleClass="box" readonly="true"></html:text>									
-											<a href='javascript://' onClick="return showCalendarGeneral(fechaPrevistaGeneracion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-												<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="facturacion.seriesFacturacion.literal.seleccionarFecha"/>' border="0">
-											</a>
+										<siga:Fecha  nombreCampo="fechaPrevistaGeneracion" valorInicial="<%=sFPrevistaGeneracion%>"/>
 									<% } else { %>
-										<html:text name="programarFacturacionForm" property="fechaPrevistaGeneracion" value="<%=sFPrevistaGeneracion%>" size="10" styleClass="boxConsulta" readonly="true"></html:text>									
+										<siga:Fecha  nombreCampo="fechaPrevistaGeneracion" valorInicial="<%=sFPrevistaGeneracion%>" disabled="true" readOnly="true"/>
 									<% }  %>
 								</td>
 								<td class="labelText"   width="40px">
@@ -586,14 +571,10 @@ function IsNum( numstr ) {
 								</td>
 								<td   width="120px">
 								<% if (modoAction.equals("editar")) { %>
-									<html:text name="programarFacturacionForm" property="fechaPrevistaConfirmacion" value="<%=sFPrevistaConfirmacion%>" size="10" styleClass="box" readonly="true"></html:text>									
-										<a href='javascript://' onClick="javascript:accionCalendario();" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-											<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="facturacion.seriesFacturacion.literal.seleccionarFecha"/>' border="0">
-										</a>
-										
+									<siga:Fecha  nombreCampo="fechaPrevistaConfirmacion" valorInicial="<%=sFPrevistaConfirmacion%>"/>
 								<% } else { %>
-										<html:text name="programarFacturacionForm" property="fechaPrevistaConfirmacion" value="<%=sFPrevistaConfirmacion%>" size="10" styleClass="boxConsulta" readonly="true"></html:text>									
-										<% }  %>
+										<siga:Fecha  nombreCampo="fechaPrevistaConfirmacion" valorInicial="<%=sFPrevistaConfirmacion%>" disabled="true" readOnly="true"/>
+								<%}%>
 								</td>
 								<td class="labelText"  width="40px">
 									<siga:Idioma key="facturacion.seriesFacturacion.literal.hora"/>
@@ -618,12 +599,9 @@ function IsNum( numstr ) {
 								</td>
 								<td   width="120px">
 								<% if (modoAction.equals("editar")) { %>
-										<html:text name="programarFacturacionForm" property="fechaCargo" value="<%=sFCargoFicheroBanco%>" size="10" styleClass="box" readonly="false"></html:text>									
-										<a href='javascript://' onClick="return showCalendarGeneral(fechaCargo);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-											<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="facturacion.seriesFacturacion.literal.seleccionarFecha"/>' border="0">
-										</a>
+										<siga:Fecha  nombreCampo="fechaCargo" valorInicial="<%=sFCargoFicheroBanco%>"/>
 								<% } else { %>
-										<html:text name="programarFacturacionForm" property="fechaCargo" value="<%=sFCargoFicheroBanco%>" size="10" styleClass="boxConsulta" readonly="true"></html:text>									
+										<siga:Fecha  nombreCampo="fechaCargo" valorInicial="<%=sFCargoFicheroBanco%>" disabled="true" readOnly="true"/>
 								<% } %>
 								</td>					
 							</tr>

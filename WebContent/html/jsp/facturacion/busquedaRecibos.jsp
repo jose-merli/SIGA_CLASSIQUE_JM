@@ -168,10 +168,11 @@
 					<td><html:text styleClass="box" property="numeroRemesa" size='10' maxlength="12" /></td>
 
 					<td class="labelText"  width="170px"><siga:Idioma key="facturacion.devolucionManual.fechaCargoDesde"/></td>
-					<td><html:text styleClass="box" property="fechaCargoDesde" cols="8" maxlength="10" readonly="true"/><a href='javascript://'onClick="return showCalendarGeneral(fechaCargoDesde);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a></td>
-		
+					<td><siga:Fecha  nombreCampo="fechaCargoDesde" valorInicial="<%=form.getFechaCargoDesde()%>"/></td>
+
 					<td class="labelText" width="60px"><siga:Idioma key="facturacion.devolucionManual.fechaCargoHasta"/></td>
-					<td><html:text styleClass="box" property="fechaCargoHasta" cols="8" maxlength="10" readonly="true"/><a href='javascript://'onClick="return showCalendarGeneral(fechaCargoHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a></td>
+					<td><siga:Fecha  nombreCampo="fechaCargoHasta" valorInicial="<%=form.getFechaCargoHasta()%>"/></td>
+
 				
 				</table>
 

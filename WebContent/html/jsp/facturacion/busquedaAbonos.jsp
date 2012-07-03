@@ -59,8 +59,9 @@ CenPersonaAdm admPersona=new CenPersonaAdm(user);
 	// para ver si tengo que buscar tras mostrar la pantalla
 	String buscar = (String)request.getAttribute("buscar");
 	String funcionBuscar = "";
+	GenerarAbonosForm formSession = new GenerarAbonosForm();
 	if (buscar!=null) {
-		GenerarAbonosForm formSession = (GenerarAbonosForm) request.getSession().getAttribute("GenerarAbonosForm");
+		formSession = (GenerarAbonosForm) request.getSession().getAttribute("GenerarAbonosForm");
 		idPersonaBusqueda=formSession.getIdPersonaBusqueda();
 		busquedaIdAbono=formSession.getBusquedaIdAbono();
 		busquedaIdFactura=formSession.getBusquedaIdFactura();
@@ -154,13 +155,9 @@ CenPersonaAdm admPersona=new CenPersonaAdm(user);
 									</td>
 									<td class="labelText" colspan="2" style="text-align: right">	
 										<siga:Idioma key="facturacion.busquedaAbonos.literal.fechaAbonoEntre"/>
-										<html:text property="fechaAbonoDesde" size="10" styleClass="box" readOnly="true"></html:text>
-										<a href='javascript://' onClick="return showCalendarGeneral(fechaAbonoDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-										<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>'  border="0"></a>&nbsp;&nbsp;
+										<siga:Fecha  nombreCampo="fechaAbonoDesde" valorInicial="<%=formSession.getFechaAbonoDesde()%>"/>&nbsp;&nbsp;																											
 										<siga:Idioma key="facturacion.consultamorosos.literal.y"/>&nbsp;&nbsp;
-										<html:text property="fechaAbonoHasta" size="10" styleClass="box" readOnly="true"></html:text>
-										<a href='javascript://' onClick="return showCalendarGeneral(fechaAbonoHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-										<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>'  border="0">
+										<siga:Fecha  nombreCampo="fechaAbonoHasta" valorInicial="<%=formSession.getFechaAbonoHasta()%>"/>										
 										</a>
 									</td>
 								</tr>
@@ -176,13 +173,9 @@ CenPersonaAdm admPersona=new CenPersonaAdm(user);
 									</td>
 									<td class="labelText" colspan="2" style="text-align: right">	
 										<siga:Idioma key="facturacion.busquedaAbonos.literal.fechaFacturaEntre"/>
-										<html:text property="fechaFacturaDesde" size="10" styleClass="box" readOnly="true"></html:text>
-										<a href='javascript://' onClick="return showCalendarGeneral(fechaFacturaDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-										<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>' border="0"></a>&nbsp;&nbsp;
+										<siga:Fecha  nombreCampo="fechaFacturaDesde" valorInicial="<%=formSession.getFechaFacturaDesde()%>"/>&nbsp;&nbsp;
 										<siga:Idioma key="facturacion.consultamorosos.literal.y"/>&nbsp;&nbsp;
-										<html:text property="fechaFacturaHasta" size="10" styleClass="box" readOnly="true"></html:text>
-										<a href='javascript://' onClick="return showCalendarGeneral(fechaFacturaHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-										<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>'  border="0"></a>
+										<siga:Fecha  nombreCampo="fechaFacturaHasta" valorInicial="<%=formSession.getFechaFacturaHasta()%>"/>										
 									</td>
 								</tr>
 								<tr>

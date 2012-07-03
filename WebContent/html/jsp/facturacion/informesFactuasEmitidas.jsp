@@ -73,7 +73,7 @@
 			<siga:Idioma key="facturacion.informes.facturasEmitidas.fechaDesde.literal"/>&nbsp;(*)
 		</td>				
 		<td>
-			<html:text styleClass="box" property="fechaDesde" style="width:75px" maxlength="10" readonly="true"/>&nbsp;<a href='javascript://'onClick="return showCalendarGeneral(fechaDesde);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+			<siga:Fecha nombreCampo="fechaDesde"/>
 		</td>
 	</tr>
 	<tr>
@@ -81,7 +81,7 @@
 			<siga:Idioma key="facturacion.informes.facturasEmitidas.fechaHasta.literal"/>&nbsp;(*)
 		</td>				
 		<td>
-			<html:text styleClass="box" property="fechaHasta" style="width:75px" maxlength="10" readonly="true"/>&nbsp;<a href='javascript://'onClick="return showCalendarGeneral(fechaHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+			<siga:Fecha nombreCampo="fechaHasta"/>
 		</td>
 	</tr>
 

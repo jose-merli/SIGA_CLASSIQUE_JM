@@ -74,10 +74,12 @@
 					<siga:Idioma key="gratuita.busquedaContabilidad.literal.fecha"/>:&nbsp;&nbsp;
 				</td>
 				<td class="labelText">	
-					<siga:Idioma key="gratuita.busquedaContabilidad.literal.entre"/>&nbsp;<html:text name="ContabilidadForm" property="fechaDesde" size="10" styleClass="box" value="" readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>' border="0"></a>
+					<siga:Idioma key="gratuita.busquedaContabilidad.literal.entre"/>&nbsp;
+					<siga:Fecha  nombreCampo="fechaDesde"/>
 				</td>
 				<td class="labelText">	
-					<siga:Idioma key="gratuita.busquedaContabilidad.literal.y"/>&nbsp;<html:text name="ContabilidadForm" property="fechaHasta" size="10" styleClass="box" value="" readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>'  border="0"></a>
+					<siga:Idioma key="gratuita.busquedaContabilidad.literal.y"/>&nbsp;
+					<siga:Fecha  nombreCampo="fechaHasta"/>
 				</td>
 				<td class="labelText"><siga:Idioma key="facturacion.buscarFactura.literal.Estado"/></td>
 				<td><siga:ComboBD nombre="buscarIdEstado" tipo="cmbEstadosContab"  clase="boxCombo" obligatorio="false" elementoSel="<%=idEstadoSeleccionado%>"/>
