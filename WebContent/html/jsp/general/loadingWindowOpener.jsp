@@ -1,5 +1,7 @@
 <!-- loadingWindowOpener.jsp -->
 <%@ page contentType="text/html" language="java"%>
+<%@ page import="com.siga.Utilidades.UtilidadesString"%> 
+<%@ page import="com.atos.utils.UsrBean"%>
 <!-- TAGLIBS -->
 <%@ taglib uri = "libreria_SIGA.tld" 	prefix = "siga"%>
 <%@ taglib uri = "struts-bean.tld"  	prefix = "bean"%>
@@ -8,8 +10,14 @@
 <html>
 <head>
 <% String app = request.getContextPath();
-   String formName=request.getParameter("formName");
-   String msg=(request.getParameter("msg") == null) ? "" : "?msg="+request.getParameter("msg");
+	UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
+   	String formName=request.getParameter("formName");
+//   String msg=(request.getParameter("msg") == null) ? "" : "?msg="+request.getParameter("msg");
+   	String msg="";
+   	if(request.getParameter("msg")!=null){
+	   msg=UtilidadesString.escape(UtilidadesString.getMensajeIdioma(userBean.getLanguage(),request.getParameter("msg")));
+   	}
+   
 %>
 <link rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 
@@ -21,7 +29,8 @@
    	var val;
    	function openLoadingWindow() {
 		try {
-    		//val = showModalDialog('<%=app%>/html/jsp/general/loadingWindow.jsp<%=msg%>','', 'unadorned:yes;resizable:no;status:no;dialogWidth:200px;dialogHeight:200px;help:no;');
+			alert("<%=msg%>");
+    		sub();
 	       	<% if (formName != null) {%>
 	           parent.document.<%=formName%>.submit();
 	       	<% } %>
