@@ -405,15 +405,15 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 					}
 				}else{ //Para el caso de que vengamos desde Volantes
 					//Recogemos los datos del formulario
-					fechaInicio = (String)visibles.get(7);
-					fechaFin = (String)visibles.get(8);			
-					numeroColegiado = (String)visibles.get(4);
+					fechaInicio = (String)visibles.get(6);
+					fechaFin = (String)visibles.get(7);			
+					numeroColegiado = (String)visibles.get(3);
 
 					//Almacenamos los datos necesarios en el request
 					miForm.setFechaInicio(fechaInicio);
 					miForm.setFechaFin(fechaFin);
 					request.setAttribute("NUMEROCOLEGIADO",numeroColegiado);
-					request.setAttribute("NOMBRE",(String)visibles.get(5));
+					request.setAttribute("NOMBRE",(String)visibles.get(4));
 
 					//Datos para consultar las guardias:			
 					idCalendario = (String)ocultos.get(0);
