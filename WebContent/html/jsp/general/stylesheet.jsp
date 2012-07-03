@@ -1165,7 +1165,7 @@ A.imageLink:active {
 
 .posicionPrincipal {
 	<%--position:absolute; width:1000px; height:600; z-index:3; top: 102px; left: 0px; --%>
-	position:absolute; width:1000px; height: 600px; top: 102px;  
+	position:absolute; width:1000px; height: 600px; top: 106px; z-index:3;  
 	border-bottom: 0px solid #<%=src.get("color.labeltable")%>;
 	border-left: 0px solid #<%=src.get("color.labeltable")%>;
 	border-right: 0px solid #<%=src.get("color.labeltable")%>;
@@ -1211,24 +1211,22 @@ A.imageLink:active {
 	color: #000000;
 	text-decoration:none;
 	height: 18px;
-	.padding: 4px 0px;	
+	.padding: 4px 0px;
 	<!--font-family: Arial, Helvetica, sans-serif;-->
 }
 
 .pestanaTD {
-white-space: nowrap;
-
+	white-space: nowrap;
 }
 
 .pestanaTD a {
 	font-family: <%=src.get("font.style")%>;
 	background: url(<%=app%>/html/imagenes/<%=src.get("color.fondo.pesatana")%>) no-repeat right;
-<!--	font-family: Arial, Helvetica, sans-serif; -->
 	font-size: <%=fontSize %>;
 	font-weight: normal;
 	color: #FFFFFF;
 	text-decoration:none;
-	padding: 4px 10px 4px 4px;
+	padding: 4px 7px 4px 2px;
 	border-left-width: 2px;
 	border-left-style: solid;
 	border-left-color: #<%=src.get("color.background")%>;	
@@ -1236,30 +1234,10 @@ white-space: nowrap;
 
 .pestanaTD a:hover {
 	background: url(<%=app%>/html/imagenes/pestahover.gif) no-repeat right;
-<!--	font-family: Arial, Helvetica, sans-serif; -->
-	font-family: <%=src.get("font.style")%>;
-	font-size: <%=fontSize %>;
-	font-weight: normal;
-	color: #FFFFFF;
-	text-decoration:none;
-	padding: 4px 10px 4px 4px;
-	border-left-width: 2px;
-	border-left-style: solid;
-	border-left-color: #<%=src.get("color.background")%>;
 }
 
 .pestanaTD a.here {
 	background: url(<%=app%>/html/imagenes/pestahover.gif) no-repeat right;
-<!--	font-family: Arial, Helvetica, sans-serif; -->
-	font-family: <%=src.get("font.style")%>;
-	font-size: <%=fontSize %>;
-	font-weight: normal;
-	color: #FFFFFF;
-	text-decoration:none;
-	padding: 4px 10px 4px 4px;
-	border-left-width: 2px;
-	border-left-style: solid;
-	border-left-color: #<%=src.get("color.background")%>;
 }
 	
 .listaNonEdit {
@@ -1300,11 +1278,12 @@ white-space: nowrap;
 	background-color: #333333;
 	width: 100%;
 	height: 5px;
-	
+	z-index: 100;
 }
 .tablaLineaPestanasArriba {
     width: 100%;
 	height: 5px;
+	z-index: 100;
 }
 
 .posicionModalGrande {
