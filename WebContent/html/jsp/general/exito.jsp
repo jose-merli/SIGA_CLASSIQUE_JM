@@ -63,7 +63,7 @@
 							String estilo="notice";
 							if(mensaje.contains("error")){
 								estilo="error";
-							}else if(mensaje.contains("success")){
+							}else if(mensaje.contains("success")||mensaje.contains("updated")){
 								estilo="success";
 							} 
 				%>
