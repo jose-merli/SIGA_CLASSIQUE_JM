@@ -1165,7 +1165,7 @@ A.imageLink:active {
 
 .posicionPrincipal {
 	<%--position:absolute; width:1000px; height:600; z-index:3; top: 102px; left: 0px; --%>
-	position:absolute; width:1000px; height: 600px; top: 106px; z-index:3;  
+	position:absolute; width:1000px; height: 600px; top: 102px; z-index:3;  
 	border-bottom: 0px solid #<%=src.get("color.labeltable")%>;
 	border-left: 0px solid #<%=src.get("color.labeltable")%>;
 	border-right: 0px solid #<%=src.get("color.labeltable")%>;
