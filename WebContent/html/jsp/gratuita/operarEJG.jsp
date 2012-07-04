@@ -593,24 +593,11 @@
 				<!-- JBD 16/2/2009 INC-5682-SIGA -->
 				<% if (!modo.equalsIgnoreCase("ver")) { %>
 					<td>	
-						<html:text name="DefinirMantenimientoEJGForm"
-								property="fechaAperturaEJG" size="10" maxlength="10"
-								styleClass="box" value="<%= FECHAAPERTURA %>" readonly="true"></html:text>
-						<a 	id="botonFechaApertura"
-							onClick="return showCalendarGeneral(fechaAperturaEJG);" 
-							onMouseOut="MM_swapImgRestore();" 
-							onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-							<img 	src="<%=app%>/html/imagenes/calendar.gif" 
-									alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  
-									border="0" valign="bottom">
-						</a>
+						<siga:Fecha nombreCampo="fechaAperturaEJG"   valorInicial="<%=FECHAAPERTURA%>" />						
 					</td >	
 				<%}else{%>
 					<td>	
-						<html:text name="DefinirMantenimientoEJGForm" property="fechaAperturaEJG"
-							size="10" maxlength="10" styleClass="boxConsulta"
-							value='<%=FECHAAPERTURA%>'
-							readonly="true"></html:text>
+						<siga:Fecha nombreCampo="fechaAperturaEJG"   valorInicial="<%=FECHAAPERTURA%>" disabled="true" readOnly="true" />						
 					</td >	
 				<%}%>
 				<!-- JBD 16/2/2009 INC-5682-SIGA -->
@@ -650,9 +637,9 @@
 			</td>
 			<td>	
 			<%if (modo.equals("ver")) {%>
-				<input type="text" class="boxConsulta" value="<%=FECHAPRESENTACION%>" readOnly="true">
+				<siga:Fecha nombreCampo="fechaPresentacion"   valorInicial="<%=FECHAPRESENTACION%>" disabled="true" readOnly="true" />				
 			<%} else {%>
-				<html:text name="DefinirMantenimientoEJGForm" property="fechaPresentacion" size="10" maxlength="10" styleClass="box" value="<%=FECHAPRESENTACION%>" readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaPresentacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+				<siga:Fecha nombreCampo="fechaPresentacion"   valorInicial="<%=FECHAPRESENTACION%>"/>				
 			<%}%>
 			</td>
 			<td class="labelText" nowrap>
@@ -660,9 +647,9 @@
 			</td>
 			<td>	
 			<%if (modo.equals("ver")) {%>
-				<input type="text" class="boxConsulta" value="<%=FECHALIMITEPRESENTACION%>" readOnly="true">
+				<siga:Fecha nombreCampo="fechaLimitePresentacion"   valorInicial="<%=FECHALIMITEPRESENTACION%>" disabled="true" readOnly="true" />				
 			<%} else {%>
-				<html:text name="DefinirMantenimientoEJGForm" property="fechaLimitePresentacion" size="10" maxlength="10" styleClass="box" value="<%=FECHALIMITEPRESENTACION%>" readOnly="true"></html:text><a onClick="return showCalendarGeneral(fechaLimitePresentacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+				<siga:Fecha nombreCampo="fechaLimitePresentacion"   valorInicial="<%=FECHALIMITEPRESENTACION%>" />				
 			<%}%>
 			</td>
 		</tr>

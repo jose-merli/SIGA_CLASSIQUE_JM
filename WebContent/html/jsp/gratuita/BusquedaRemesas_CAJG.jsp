@@ -238,10 +238,12 @@
 		
 		</td>
 		<td class="labelText" >
-			<siga:Idioma key="gratuita.BusquedaRemesas_CAJG.literal.desde"/>&nbsp;&nbsp;<html:text name="DefinicionRemesas_CAJG_Form" property="fechaInicioBuscar" size="10" styleClass="box" value=""></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaInicioBuscar);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+			<siga:Idioma key="gratuita.BusquedaRemesas_CAJG.literal.desde"/>&nbsp;&nbsp;
+			<siga:Fecha nombreCampo="fechaInicioBuscar" valorInicial="" />
 		</td>
 		<td class="labelText">
-			<siga:Idioma key="gratuita.BusquedaRemesas_CAJG.literal.hasta"/>&nbsp;&nbsp;<html:text name="DefinicionRemesas_CAJG_Form" property="fechaFinBuscar" size="10" styleClass="box" value=""></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaFinBuscar);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+			<siga:Idioma key="gratuita.BusquedaRemesas_CAJG.literal.hasta"/>&nbsp;&nbsp;
+			<siga:Fecha nombreCampo="fechaFinBuscar" valorInicial="" />
 		</td>
 	</tr>
 	

@@ -156,8 +156,7 @@
 					<siga:Idioma key="gratuita.BusquedaRemesas_CAJG.literal.fGeneracion"/>&nbsp;(*)
 				</td>
 				<td class="labelText">
-					<html:text  property="fechaGeneracion" size="10" maxlength="10" styleClass="box"  value="<%=fecha%>" readOnly="true"></html:text>
-					<a onClick="return showCalendarGeneral(fechaGeneracion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
+					<siga:Fecha nombreCampo="fechaGeneracion"  posicionX="10" posicionY="10" valorInicial="" />					
 				</td>
 		
 			</tr>
