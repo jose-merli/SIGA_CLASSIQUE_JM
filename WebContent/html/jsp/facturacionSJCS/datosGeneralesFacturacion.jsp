@@ -195,6 +195,7 @@
 
 <!-- HEAD -->
 <head>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<% if(strutTrans.equalsIgnoreCase("FCS_MantenimientoPrevisiones")){  %>
 		<siga:Titulo titulo="factSJCS.mantenimientoFacturacion.datosGenerales" localizacion="factSJCS.previsiones.ruta.localizacion"/>
 	<% } else if(strutTrans.equalsIgnoreCase("CEN_MantenimientoFacturacion")) { %>
@@ -203,7 +204,6 @@
 	
 	
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	
 	<!-- Calendario -->
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
