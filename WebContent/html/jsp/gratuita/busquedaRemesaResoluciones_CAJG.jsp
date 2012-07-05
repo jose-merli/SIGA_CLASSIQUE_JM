@@ -184,26 +184,20 @@
 				<siga:Idioma key="gratuita.BusquedaResolucionCAJG.literal.fResolucionDesde"/>
 			</td>
 			<td class="labelText">
-				<html:text name="DefinicionRemesaResolucionesCAJGForm" property="fechaResolucion" size="10" maxlength="10" styleClass="box"   readOnly="true"></html:text>
-				<a onClick="return showCalendarGeneral(fechaResolucion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
-			
+				<siga:Fecha nombreCampo="fechaResolucion"/>
+
 				<siga:Idioma key="gratuita.BusquedaResolucionCAJG.literal.fResolucionHasta"/>
-			
-				<html:text name="DefinicionRemesaResolucionesCAJGForm" property="fechaResolucionHasta" size="10" maxlength="10" styleClass="box"   readOnly="true"></html:text>
-				<a onClick="return showCalendarGeneral(fechaResolucionHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
+				<siga:Fecha nombreCampo="fechaResolucionHasta"/>
 			</td>
 			
 			<td class="labelText">
 				<siga:Idioma key="gratuita.BusquedaResolucionCAJG.literal.fCargaDesde"/>
 			</td>
 			<td class="labelText">
-				<html:text name="DefinicionRemesaResolucionesCAJGForm" property="fechaCarga" size="10" maxlength="10" styleClass="box"   readOnly="true"></html:text>
-				<a onClick="return showCalendarGeneral(fechaCarga);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
-			
+				<siga:Fecha nombreCampo="fechaCarga"/>
+
 				<siga:Idioma key="gratuita.BusquedaResolucionCAJG.literal.fCargaHasta"/>
-			
-				<html:text name="DefinicionRemesaResolucionesCAJGForm" property="fechaCargaHasta" size="10" maxlength="10" styleClass="box"   readOnly="true"></html:text>
-				<a onClick="return showCalendarGeneral(fechaCargaHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
+				<siga:Fecha nombreCampo="fechaCargaHasta"/>
 			</td>
 			
 		</tr>	

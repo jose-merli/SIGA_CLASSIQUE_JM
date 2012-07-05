@@ -216,9 +216,10 @@
 					<siga:Idioma key="gratuita.BusquedaResolucionCAJG.literal.fResolucion"/><%=readonly?"":"&nbsp;(*)"%>
 				</td>
 				<td class="labelText">
-					<html:text   property="fechaResolucion" size="10" maxlength="10" styleClass="<%=estilocaja%>"  value="<%=fechaResolucion%>" readOnly="true"></html:text>
 					<%if (!readonly) {%>
-						<a onClick="return showCalendarGeneral(fechaResolucion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
+						<siga:Fecha nombreCampo="fechaResolucion"   valorInicial="<%=fechaResolucion%>"/>
+					<%}else{%>
+						<siga:Fecha nombreCampo="fechaResolucion"   valorInicial="<%=fechaResolucion%>" disabled="true" readOnly="true" />
 					<%}%>
 				</td>
 		
