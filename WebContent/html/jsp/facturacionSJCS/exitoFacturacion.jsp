@@ -10,6 +10,8 @@
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
+<%@ page import="com.atos.utils.UsrBean"%>
+<%@ page import="com.siga.Utilidades.UtilidadesString"%> 
 <%@ page import="java.util.Hashtable"%>
 <html>
 <head>
@@ -17,7 +19,7 @@
 	String app=request.getContextPath(); 
 	HttpSession ses=request.getSession();
 	
-	
+	UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 	// ATRIBUTOS
 	// MENSAJE = mensaje a mostrar (si no hay mensaje no muestra alert)  
 	String mensaje = (String)request.getAttribute("mensaje");
@@ -34,11 +36,20 @@
 
 	<script>
 	function reloadPage() {
-	
-		<%  if (mensaje!=null){%>
-			var type = '<siga:Idioma key="<%=mensaje%>"/>';
-			alert(type);
+		
+		<%  if (mensaje!=null){
+			String msg=UtilidadesString.escape(UtilidadesString.getMensajeIdioma(userBean.getLanguage(),mensaje));
+			String estilo="notice";
+			if(mensaje.contains("error")){
+				estilo="error";
+			}else if(mensaje.contains("success")||mensaje.contains("updated")){
+				estilo="success";
+			} 
+		%>
+					alert(unescape("<%=msg %>"),"<%=estilo%>");
+					
 		<%  } %>
+
 		document.mantenimientoFacturacionForm.submit();
 	}
 	</script>
