@@ -73,7 +73,7 @@
 	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
 		
 	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>" ></script>
-	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
+	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script><script src="<html:rewrite page="/html/js/jquery.custom.js"/>" type="text/javascript"></script>
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 	<script src="<%=app%>/html/js/validation.js" type="text/javascript"></script>	
 	
