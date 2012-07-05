@@ -876,11 +876,7 @@ A.lb:active {
 	background-color: #<%= src.get ( "color.menu.level1.BG" ) %>;
 	layer-background-color: #<%= src.get ( "color.menu.level1.BG" ) %>;
 	color: #<%= src.get ( "color.menu.level1.font" ) %>;
-	border-bottom: 1px solid #FFFFFF;
-	border-top: 1px solid #FFFFFF;
-	border-left: 1px solid #FFFFFF;
-	border-right: 1px solid #FFFFFF;
-	border-style: solid;
+	border: 1px solid #FFFFFF;
 }
 
 .clLevel1over {
@@ -888,17 +884,12 @@ A.lb:active {
 	layer-background-color: #<%= src.get ( "color.menu.level1.activo.BG" )%>;
 	color: #<%= src.get ( "color.menu.level1.activo.font" ) %>;
 	cursor: pointer;
-	border-bottom: 1px solid #000000;
-	border-top: 1px solid #000000;
-	border-left: 1px solid #000000;
-	border-right: 1px solid #000000;
-	border-style: solid;
+	border: 1px solid #000000;
 }
 
 .clLevel1NoLinkOver {
 	background-color: #<%= src.get ( "color.menu.level1.activo.BG" ) %>;
-	layer-background-color: #<%= src.get ( "color.menu.level1.activo.BG" )
-		%>;
+	layer-background-color: #<%= src.get ( "color.menu.level1.activo.BG" )%>;
 	color: #<%= src.get ( "color.menu.level1.activo.font" ) %>;
 }
 
@@ -921,13 +912,7 @@ A.lb:active {
 	background-color: #<%= src.get ( "color.menu.level2.BG" ) %>;
 	layer-background-color: #<%= src.get ( "color.menu.level2.BG" ) %>;
 	color: #<%= src.get ( "color.menu.level2.font" ) %>;
-	//border-bottom: 1px solid #FFFFFF;
-	//border-left: 1px solid #FFFFFF;
-	//border-right: 1px solid #FFFFFF;
-	border-bottom: 1px groove #FFFFFF;
-	border-left: 1px groove #FFFFFF;
-	border-right: 1px groove #FFFFFF;
-	border-style: groove;
+	border: 1px solid #FFFFFF;
 }
 
 .clLevel2over {
@@ -937,13 +922,7 @@ A.lb:active {
 	color: #<%= src.get ( "color.menu.level2.activo.font" ) %>;
 	cursor: pointer;
 	cursor: pointer;
-	//border-bottom: 1px solid #000000;
-	//border-left: 1px solid #000000;
-	//border-right: 1px solid #000000;
-	border-bottom: 1px groove #000000;
-	border-left: 1px groove #000000;
-	border-right: 1px groove #000000;
-	border-style: groove;
+	border: 1px solid #000000;
 }
 
 .clLevel2border {
