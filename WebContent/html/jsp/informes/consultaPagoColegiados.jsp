@@ -29,8 +29,8 @@
 	<link id="default" rel="stylesheet" type="text/css"	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
 	
 	<script src="<html:rewrite page="/html/js/SIGA.js"/>"	type="text/javascript"></script>
+	<script src="<html:rewrite page="/html/js/jquery.js"/>"	type="text/javascript"></script>
 	<script src="<html:rewrite page="/html/js/validation.js"/>"	type="text/javascript"></script>
-	<script src=""	type="text/javascript"></script>
 	<script src="<html:rewrite page="/html/js/validacionStruts.js"/>" type="text/javascript"></script>
 
 	<siga:Titulo 	titulo="informes.sjcs.pagos.literal.titulo"
@@ -223,8 +223,7 @@
 
 <!-- INICIO: SUBMIT AREA -->
 <!-- Obligatoria en todas las páginas-->
-<iframe name="submitArea" src="<html:rewrite page="/html/jsp/general/blank.jsp"/>
-	style="display:none"></iframe>
+<iframe name="submitArea" src="<html:rewrite page="/html/jsp/general/blank.jsp"/>" style="display:none"></iframe>
 <!-- FIN: SUBMIT AREA -->
 
 </body>

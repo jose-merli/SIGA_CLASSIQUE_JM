@@ -42,7 +42,7 @@
 	
 	<script src="<html:rewrite page="/html/js/SIGA.js"/>"	type="text/javascript"></script>
 	<script src="<html:rewrite page="/html/js/validation.js"/>"	type="text/javascript"></script>
-	<script src=""	type="text/javascript"></script>
+	<script src="<html:rewrite page="/html/js/jquery.js"/>"	type="text/javascript"></script>
 	<script src="<html:rewrite page="/html/js/validacionStruts.js"/>" type="text/javascript"></script>
 
 	<siga:Titulo titulo="menu.justiciaGratuita.cartaFact" localizacion="factSJCS.informes.ruta" />
@@ -222,8 +222,7 @@
 
 <!-- INICIO: SUBMIT AREA -->
 <!-- Obligatoria en todas las páginas-->
-<iframe name="submitArea" src="<html:rewrite page="/html/jsp/general/blank.jsp"/>
-	style="display:none"></iframe>
+<iframe name="submitArea" src="<html:rewrite page="/html/jsp/general/blank.jsp"/>" style="display:none"></iframe>
 <!-- FIN: SUBMIT AREA -->
 
 </body>
