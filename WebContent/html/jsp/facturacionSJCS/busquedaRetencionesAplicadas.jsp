@@ -42,9 +42,14 @@
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<siga:TituloExt titulo="factSJCS.busquedaRetAplicadas.literal.titulo"  localizacion="factSJCS.busquedaRetAplicadas.literal.localizacion"/>
 	
+	<script type="text/javascript">
+	function setFocus(){
+		document.getElementById("numeroNifTagBusquedaPersonas").blur();
+	}
+	</script>
 </head>
 
-<body onLoad="ajusteAlto('resultado');">
+<body onLoad="ajusteAlto('resultado');setFocus();">
 
 	<!-- INICIO: FORMULARIO DE BUSQUEDA DE CLIENTES -->
 	
