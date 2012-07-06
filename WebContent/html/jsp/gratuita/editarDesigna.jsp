@@ -128,6 +128,7 @@
 	String[] datoJuzgado 	= null;
 	String filtrarModulos = "N";
 	String comboJuzgados ="", comboModulos="";
+	String art27 = "";
 	 
 	try {
 
@@ -139,6 +140,9 @@
 		fechaApertura = GstDate.getFormatedDateShort("",beanDesigna.getFechaEntrada());		
 		fechaOficioJuzgado = GstDate.getFormatedDateShort("",beanDesigna.getFechaOficioJuzgado());
 		fechaRecepcionColegio = GstDate.getFormatedDateShort("",beanDesigna.getFechaRecepcionColegio());
+		
+		//Artículo 27
+		art27 =(String)beanDesigna.getArt27();
 		
 		if (request.getAttribute("filtrarModulos") != null) {
 			filtrarModulos = (String)request.getAttribute("filtrarModulos");
@@ -693,6 +697,8 @@
 						</td>
 						<td colspan="4"></td>
 					</tr>
+					</table>
+					<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" width="100%" border="0">
 					<tr>
 						<td class="labelText">
 							<siga:Idioma key="gratuita.busquedaSOJ.literal.turno" />
@@ -717,6 +723,9 @@
 							</td>
 						<%}%>
 						<!-- JBD 16/2/2009 INC-5682-SIGA -->
+						<%if(art27.equals("1")){ %>
+							<td class="labelText" nowrap="nowrap"><siga:Idioma key="gratuita.editarDesigna.literal.art27Texto"/></td>
+						<%}%>
 					</tr>
 				</table>
 			</siga:ConjCampos> 
