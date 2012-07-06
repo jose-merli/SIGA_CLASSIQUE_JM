@@ -641,6 +641,16 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 				       "  where p."+CenTiposCVSubtipo1Bean.C_IDTIPOCV+"=t."+CenDatosCVBean.C_IDTIPOCV+
 				       "    and p."+CenTiposCVSubtipo1Bean.C_IDINSTITUCION+"=t."+CenDatosCVBean.C_IDINSTITUCION_SUBT1+
 				       "    and p."+CenTiposCVSubtipo1Bean.C_IDTIPOCVSUBTIPO1+"=t."+CenDatosCVBean.C_IDTIPOCVSUBTIPO1+") COMISION,"+
+				       
+				       
+				       
+				       " (select CODIGOEXT " + 
+				       "  from "+CenTiposCVSubtipo1Bean.T_NOMBRETABLA+" p"+
+				       "  where p."+CenTiposCVSubtipo1Bean.C_IDTIPOCV+"=t."+CenDatosCVBean.C_IDTIPOCV+
+				       "    and p."+CenTiposCVSubtipo1Bean.C_IDINSTITUCION+"=t."+CenDatosCVBean.C_IDINSTITUCION_SUBT1+
+				       "    and p."+CenTiposCVSubtipo1Bean.C_IDTIPOCVSUBTIPO1+"=t."+CenDatosCVBean.C_IDTIPOCVSUBTIPO1+") CODIGOEXT,"+
+				       
+				       
 				           
 				       "  (select " + UtilidadesMultidioma.getCampoMultidioma("p."+CenTiposCVSubtipo2Bean.C_DESCRIPCION, this.usrbean.getLanguage()) + " " +
 				       "   from "+CenTiposCVSubtipo2Bean.T_NOMBRETABLA+" p"+
@@ -696,7 +706,7 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 			    	select+=" AND (("+fechaCargo+" between TO_DATE(TO_CHAR(T."+CenDatosCVBean.C_FECHAINICIO+",'DD/MM/YYYY'),'DD/MM/YYYY') and TO_DATE(TO_CHAR(T."+CenDatosCVBean.C_FECHAFIN+",'DD/MM/YYYY'),'DD/MM/YYYY')) OR (T."+CenDatosCVBean.C_FECHAFIN+" IS NULL AND TO_DATE(TO_CHAR(T."+CenDatosCVBean.C_FECHAINICIO+",'DD/MM/YYYY'),'DD/MM/YYYY') <= "+fechaCargo+"))";
 			    }
 			    
-			    select+= " ORDER BY APELLIDOS ASC";
+			    select+= " ORDER BY CODIGOEXT, FECHAINICIO";
 				CenTiposCVSubtipo1Adm admCV = new CenTiposCVSubtipo1Adm(this.usrbean);
 				Hashtable datosCV= new Hashtable();
 			
