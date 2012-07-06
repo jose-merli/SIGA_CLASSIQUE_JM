@@ -32,6 +32,8 @@ import java.util.Hashtable;
 import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.ReadProperties;
+import com.siga.Utilidades.SIGAReferences;
 
 
 
@@ -201,8 +203,7 @@ public class RowsContainer implements Serializable {
 				    ClsLogging.writeFileLog(fecha + ",==> SIGA: Control de querys largas (>3 seg.),FIND,"+new Long((fin.getTime()-ini.getTime())).toString()+","+sqlStatement+","+new Long((fin.getTime()-ini.getTime())).toString(),10);
 				}
             } catch (SQLException exce) {
-          	  //ClsLogging.writeFileLogError("Error en find: "+ exce.getMessage() + " SQL:"+sqlStatement,exce,3);
-              rs = st.executeQuery(Row.validateWhereClause(sqlStatement));
+            	rs = st.executeQuery(Row.validateWhereClause(sqlStatement));
             }
 
 		   	if (rs != null) {
@@ -231,9 +232,10 @@ public class RowsContainer implements Serializable {
 		   	} else {
 		   	  ok = false;
 		   	}
-
+		   	
          } catch (Exception il) {
              exc=il;
+             
          }finally {
 		   	try {
 		   	  if (rs != null) rs.close();
@@ -265,7 +267,11 @@ public class RowsContainer implements Serializable {
         boolean moreResults = true;
         Exception exc=null;
         try {
+        	ReadProperties properties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+        	String timeOut = properties.returnProperty("general.sql.timeout");
+
             pst = con.prepareStatement(sqlStatement);
+            pst.setQueryTimeout(Integer.parseInt(timeOut));
 	   	     Enumeration e = data.keys();
 	   	     while (e.hasMoreElements()) {
 	   	         Integer key = (Integer)e.nextElement();
@@ -280,41 +286,47 @@ public class RowsContainer implements Serializable {
 	   	     }
             try {
                 rs = pst.executeQuery();
+                
             } catch (SQLException exce) {
-           	 	//ClsLogging.writeFileLogError("Error en find BIND: "+ exce.getMessage() + " SQL:"+ ClsMngBBDD.getSQLBindInformation(sqlStatement,data),exce,3);
-           	 	// RGG control de errores
-           	 	throw new ClsExceptions(exce, "Error en find BIND: "+ exce.getMessage() + " SQL:"+ ClsMngBBDD.getSQLBindInformation(sqlStatement,data));
+
+            	if(exce.getMessage().contains("ORA-01013")){
+            		throw new ClsExceptions(exce, "Error en find BIND: La consulta ha superado los " + pst.getQueryTimeout() + " segundos de ejecucion y ha sido cancelada. SQL:"+ ClsMngBBDD.getSQLBindInformation(sqlStatement,data));
+            	}else{
+	           	 	// RGG control de errores
+	           	 	throw new ClsExceptions(exce, "Error en find BIND: "+ exce.getMessage() + " SQL:"+ ClsMngBBDD.getSQLBindInformation(sqlStatement,data));
+            	}
             }
 
-  	if (rs != null) {
-  	  while (position < this.getFirstIndex()) {
-  	    if (rs.next()) {
-  	      position++;
-  	    } else {
-  	      moreResults = false;
-  	    }
-  	  }
-  	  if (moreResults) {
-  	    while ((moreResults=rs.next()) && ((this.size == -1) ? true : this.rows.size() < this.size)) {
-  	      ok = true;
-  	      this.rows.add(Row.create(rs));
-  	    }
-  	  }
-  	} else {
-  	  ok = false;
-  	}
-
+		  	if (rs != null) {
+		  	  while (position < this.getFirstIndex()) {
+		  	    if (rs.next()) {
+		  	      position++;
+		  	    } else {
+		  	      moreResults = false;
+		  	    }
+		  	  }
+		  	  if (moreResults) {
+		  	    while ((moreResults=rs.next()) && ((this.size == -1) ? true : this.rows.size() < this.size)) {
+		  	      ok = true;
+		  	      this.rows.add(Row.create(rs));
+		  	    }
+		  	  }
+		  	} else {
+		  	  ok = false;
+		  	}
+		  	
         } catch (Exception il) {
             exc=il;
         }finally {
-  	try {
-  	  if (rs != null) rs.close();
-  	  if (pst != null) pst.close();
-  	} catch (SQLException exce) {
-  	  throw new ClsExceptions(exce,exce.getMessage());
-  	}
-  	if (exc!=null)
-            throw new ClsExceptions(exc,exc.getMessage());
+		  	try {
+		  	  if (rs != null) rs.close();
+		  	  if (pst != null) pst.close();
+		  	} catch (SQLException exce) {
+		  	  throw new ClsExceptions(exce,exce.getMessage());
+		  	}
+		  	
+		  	if (exc!=null)
+		  		throw new ClsExceptions(exc,exc.getMessage());
         }
         return ok;
       }
@@ -330,68 +342,75 @@ public class RowsContainer implements Serializable {
         Exception exc=null;
         Hashtable auxiliar = null; 
         try {
-             pst = con.prepareStatement(sqlStatement);
-	   	     Enumeration e = data.keys();
-	   	     while (e.hasMoreElements()) {
-	   	         Integer key = (Integer)e.nextElement();
-	   	         pst.setString(key.intValue(), (String)data.get(key));
-	   	     }
+        	ReadProperties properties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+        	String timeOut = properties.returnProperty("general.sql.timeout");
+
+            pst = con.prepareStatement(sqlStatement);
+            pst.setQueryTimeout(Integer.parseInt(timeOut));        	
+            Enumeration e = data.keys();
+	   	    while (e.hasMoreElements()) {
+	   	        Integer key = (Integer)e.nextElement();
+	   	        pst.setString(key.intValue(), (String)data.get(key));
+	   	    }
+	   	    
             try {
                 rs = pst.executeQuery();
             } catch (SQLException exce) {
-           	 	//ClsLogging.writeFileLogError("Error en find BIND: "+ exce.getMessage() + " SQL:"+ ClsMngBBDD.getSQLBindInformation(sqlStatement,data),exce,3);
-           	 	// RGG control de errores
-           	 	throw new ClsExceptions(exce, "Error en find BIND: "+ exce.getMessage() + " SQL:"+ ClsMngBBDD.getSQLBindInformation(sqlStatement,data));
-           	 	
+            	if(exce.getMessage().contains("ORA-01013")){
+            		throw new ClsExceptions(exce, "Error en find BIND: La consulta ha superado los " + pst.getQueryTimeout() + " segundos de ejecucion y ha sido cancelada. SQL:"+ ClsMngBBDD.getSQLBindInformation(sqlStatement,data));
+            	}else{
+            		// RGG control de errores
+           	 		throw new ClsExceptions(exce, "Error en find BIND: "+ exce.getMessage() + " SQL:"+ ClsMngBBDD.getSQLBindInformation(sqlStatement,data));
+            	}
             }
 
-  	if (rs != null) {
-      // RGG
-      auxiliar = this.getHashVacio(rs);
-  	  
-      while (position < this.getFirstIndex()) {
-  	    if (rs.next()) {
-  	      position++;
-  	    } else {
-  	      moreResults = false;
-  	    }
-  	  }
-  	  
-      if (!rs.next()) {
-  	    moreResults = false;
-   	  }
-  	  
-  	  if (moreResults) {
-  	    while (((this.size == -1) ? true : this.rows.size() < this.size)) {
-  	      ok = true;
-  	      this.rows.add(Row.create(rs));
-  	      if (!rs.next()) {
-  	          break;
-  	      }
-  	    }
-  	  } else {
-  	      // RGG en lugar de devolver false, devuelvo el hash vacío
-  	  	  this.rows.add(Row.create(auxiliar));
-  	  	  ok=true;
-  	  }
-  	} else {
-  	  // RGG en lugar de devolver false, devuelvo el hash vacío
-  	  //ok = false;
-  	  this.rows.add(Row.create(auxiliar));
-  	  ok=true;
-  	}
+		  	if (rs != null) {
+		      // RGG
+		      auxiliar = this.getHashVacio(rs);
+		  	  
+		      while (position < this.getFirstIndex()) {
+		  	    if (rs.next()) {
+		  	      position++;
+		  	    } else {
+		  	      moreResults = false;
+		  	    }
+		  	  }
+		  	  
+		      if (!rs.next()) {
+		  	    moreResults = false;
+		   	  }
+		  	  
+		  	  if (moreResults) {
+		  	    while (((this.size == -1) ? true : this.rows.size() < this.size)) {
+		  	      ok = true;
+		  	      this.rows.add(Row.create(rs));
+		  	      if (!rs.next()) {
+		  	          break;
+		  	      }
+		  	    }
+		  	  } else {
+		  	      // RGG en lugar de devolver false, devuelvo el hash vacío
+		  	  	  this.rows.add(Row.create(auxiliar));
+		  	  	  ok=true;
+		  	  }
+		  	} else {
+		  	  // RGG en lugar de devolver false, devuelvo el hash vacío
+		  	  //ok = false;
+		  	  this.rows.add(Row.create(auxiliar));
+		  	  ok=true;
+		  	}
 
         } catch (Exception il) {
-  	exc=il;
+        	exc=il;
         }finally {
-  	try {
-  	  if (rs != null) rs.close();
-  	  if (pst != null) pst.close();
-  	} catch (SQLException exce) {
-  	  throw new ClsExceptions(exce,exce.getMessage());
-  	}
-  	if (exc!=null)
-            throw new ClsExceptions(exc,exc.getMessage());
+		  	try {
+		  	  if (rs != null) rs.close();
+		  	  if (pst != null) pst.close();
+		  	} catch (SQLException exce) {
+		  	  throw new ClsExceptions(exce,exce.getMessage());
+		  	}
+		  	if (exc!=null)
+		  		throw new ClsExceptions(exc,exc.getMessage());
         }
         return ok;
       }
