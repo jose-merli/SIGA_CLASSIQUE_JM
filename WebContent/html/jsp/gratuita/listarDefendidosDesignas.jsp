@@ -110,6 +110,9 @@ function accionCerrar() {
 		
 	}
 	
+	jQuery(document).ready(function(){
+		jQuery("#listadoDefendidosDiv").height("100%");
+	});
 	</script>
 
 </head>

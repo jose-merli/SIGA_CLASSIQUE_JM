@@ -64,6 +64,10 @@
 		function refrescarLocal(){
 			parent.buscar();
 		}
+		
+		jQuery(document).ready(function(){
+			jQuery("#tablaDatosDiv").height("100%");
+		});
 	
 	</script>
 
