@@ -645,7 +645,7 @@
 				<%if(readonly){ %>
 					<td><textarea cols="120" rows="2" name="observaciones" style="overflow:hidden" class="boxConsulta" readonly><%=datosPersonales.getObservaciones()%></textarea></td>
 				<%}else{%>
-					<td><textarea cols="120" rows="2" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" name="observaciones" style="overflow:hidden" class="box" ><%=datosPersonales.getObservaciones()%></textarea></td>
+					<td><textarea cols="120" rows="3" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" name="observaciones" style="overflow:hidden;width:300px" class="box" ><%=datosPersonales.getObservaciones()%></textarea></td>
 				<%}%>
 			</td>
 			</tr>
