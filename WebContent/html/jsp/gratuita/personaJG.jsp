@@ -2241,7 +2241,7 @@ function limpiarPersonaContrario() {
 	<table width="100%" >
 	<tr>
 		<td height="156px">
-			<html:textarea name="PersonaJGForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" property="observaciones" cols="60" rows="7" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>"></html:textarea>
+			<html:textarea name="PersonaJGForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" property="observaciones" cols="60" rows="7" style="width:500px" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>"></html:textarea>
 		</td>
 	</tr>
 	</table>
