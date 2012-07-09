@@ -712,14 +712,11 @@
 						<!-- JBD 16/2/2009 INC-5682-SIGA -->
 						<% if (!modo.equalsIgnoreCase("ver")) { %>
 							<td>
-								<html:text name="MaestroDesignasForm" property="fecha" size="10" maxlength="10" styleClass="box" value="<%=fechaApertura%>" readonly="true"></html:text>
-								<a 	id="botonFechaApertura" onClick="return showCalendarGeneral(fecha);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-									<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom">
-								</a>
+								<siga:Fecha nombreCampo="fecha"   valorInicial="<%=fechaApertura%>"/>															
 							</td>
 						<%}else{%>
 							<td>
-								<html:text name="MaestroDesignasForm" property="fecha" size="10" maxlength="10" styleClass="boxConsulta" value='<%=fechaApertura%>' readonly="true"></html:text>
+								<siga:Fecha nombreCampo="fecha"   valorInicial="<%=fechaApertura%>" disabled="true" readOnly="true" />								
 							</td>
 						<%}%>
 						<!-- JBD 16/2/2009 INC-5682-SIGA -->
@@ -803,22 +800,21 @@
 						<td>
 							<html:text name="MaestroDesignasForm" property="fechaEstado" size="10" maxlength="10" styleClass="boxConsulta" value="<%=fechaEstado%>" readonly="true"></html:text>
 						</td>
-							<td class="labelText" id="tdTextoAnulacion" style="text-align: rigth; display: none">
-								<siga:Idioma key="gratuita.editarDesigna.literal.fechaAnulacion" />
-							</td>
-							<td id="tdFechaAnulacion" style="text-align: rigth; display: none">
-								<html:text name="MaestroDesignasForm" property="fechaAnulacion" size="10" maxlength="10" styleClass="boxConsulta" value="<%=fechaAnulacion%>" readonly="true"></html:text> &nbsp;
-							</td>
+						<td class="labelText" id="tdTextoAnulacion" style="text-align: rigth; display: none">
+							<siga:Idioma key="gratuita.editarDesigna.literal.fechaAnulacion" />
+						</td>
+						<td id="tdFechaAnulacion" style="text-align: rigth; display: none">
+							<html:text name="MaestroDesignasForm" property="fechaAnulacion" size="10" maxlength="10" styleClass="boxConsulta" value="<%=fechaAnulacion%>" readonly="true"></html:text> &nbsp;
+						</td>
 						<td class="labelText">
 							<siga:Idioma key="gratuita.editarDesigna.literal.fechaCierre" />
 						</td>
 						<td>
 						<% if (!modo.equalsIgnoreCase("ver")) {%> 
-							<html:text name="MaestroDesignasForm" property="fechaCierre" size="8" maxlength="10" styleClass="box" value="<%=fecha%>" readonly="true"></html:text> &nbsp; 
-							<a onClick="return showCalendarGeneral(fechaCierre);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-							<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>" border="0"></a> 
-						<%} else { %> 
- 							<html:text name="MaestroDesignasForm" property="fechaCierre" size="8" maxlength="10" styleClass="boxConsulta" value="<%=fecha%>" readonly="true"></html:text>
+							<siga:Fecha nombreCampo="fechaCierre"   valorInicial="<%=fecha%>" />
+							 
+						<%} else { %>
+							<siga:Fecha nombreCampo="fechaCierre"   valorInicial="<%=fecha%>" disabled="true" readOnly="true" />  							
  						<% } %>
 						</td>
 					</tr>
@@ -932,11 +928,9 @@
 							key="gratuita.editarDesigna.literal.fechaJuicio" /></td>
 						<td class="labelText" style="width: 150px">
 						<% if (!modo.equalsIgnoreCase("ver")) { %> 
-							<html:text name="MaestroDesignasForm" property="fechaJuicio" size="10" maxlength="10" styleClass="box" value="<%=sFechaJuicio%>" readonly="true"></html:text> &nbsp; 
-							<a onClick="return showCalendarGeneral(fechaJuicio);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-							<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>" border="0"></a> 
+							<siga:Fecha nombreCampo="fechaJuicio"   valorInicial="<%=sFechaJuicio%>"/>														 
 						<% } else { %> 
-							<html:text name="MaestroDesignasForm" property="fechaJuicio" size="10" maxlength="10" styleClass="boxConsulta" value="<%=sFechaJuicio%>" readonly="true"></html:text> 
+							<siga:Fecha nombreCampo="fechaJuicio"   valorInicial="<%=sFechaJuicio%>" disabled="true" readOnly="true" />							 
 						<% } %>
 						</td>
 						<td class="labelText" style="width: 80px">

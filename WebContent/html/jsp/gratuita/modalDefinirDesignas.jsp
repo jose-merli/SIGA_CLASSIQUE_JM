@@ -246,13 +246,10 @@
 			<siga:Idioma key="gratuita.busquedaDesignas.literal.fechaApertura"/>&nbsp;(*)
 		</td>
 		<td class="labelText"  >
-				<html:text name="BuscarDesignasForm" property="fechaAperturaInicio" size="10" styleClass="box" value="<%=fecha%>" readOnly="true"></html:text>&nbsp;
-				&nbsp;<a onClick="return showCalendarGeneral(fechaAperturaInicio);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+			<siga:Fecha nombreCampo="fechaAperturaInicio"   valorInicial="<%=fecha%>" posicionX="400" posicionY="10"/>				
 		</td>
-		
 	</tr>
-	
-	
+		
 	<tr>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.busquedaDesignas.literal.tipoDesigna"/>
