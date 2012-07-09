@@ -65,33 +65,50 @@ public class TagFecha extends TagSupport {
 			out.println("jQuery(function() {");
 			out.println("jQuery.maxZIndex = jQuery.fn.maxZIndex = function(opt) {");
 			out.println("  ");
-			out.println("	  var def = { inc: 10, group: \"*\" };");
+			out.println("	    var def = { inc: 10, group: \"*\" };");
 			out.println("	    jQuery.extend(def, opt);");
-			out.println("	     var zmax = 0;");
+			out.println("	    var zmax = 0;");
 			out.println("	    jQuery(def.group).each(function() {");
 			out.println("	        var cur = parseInt(jQuery(this).css('z-index'));");
-			out.println("	   zmax = cur > zmax ? cur : zmax;");
+			out.println("	        zmax = cur > zmax ? cur : zmax;");
 			out.println("	     });");
 			out.println("	    if (!this.jquery)");
 			out.println("	         return zmax;");
 			out.println("	    return this.each(function() {");
-			out.println("	          zmax += def.inc;");
+			out.println("	         zmax += def.inc;");
 			out.println("	         jQuery(this).css(\"z-index\", zmax);");
 			out.println("	      });");
 			out.println("	  	}");
-			out.println("	  var click_"+ this.nombreCampo +" = 0;");
-			out.println("jQuery(\"#invoke" + this.nombreCampo + "\").click(function() {if(click_"+ this.nombreCampo +" ==0){ ");
-			out.println("	jQuery( '#"+ this.nombreCampo +"' ).datepicker(\"dialog\", \"\", updateDate,{");
-			//out.println("	showOn: 'button',");			
+			out.println("	  ");
+			out.println("jQuery(\"#invoke" + this.nombreCampo + "\").live(\"click\", function(){");
+			out.println("	if(calendario==''){");
+			out.println("    ");
+			out.println("   	 calendar('#"+ this.nombreCampo +"');");
+			out.println("		 calendario = '#"+ this.nombreCampo +"';");
+			out.println("	}else{ ");
+			out.println("	    ");
+			out.println("		 if(calendario!='#"+ this.nombreCampo +"'){");
+			out.println("		 	jQuery.datepicker._hideDatepicker();");
+			out.println("	   		calendario = '';");
+			out.println("	    }else{");			
+			out.println("			calendario = '';}");
+			out.println("} ");
+			out.println("});");
+						
+			out.println("function calendar(a) {");	
+			out.println("	jQuery( a ).datepicker(\"dialog\", \"\", updateDate,{");
+			out.println("	showOn: 'focus',");			
 			out.println("	buttonImage: '/SIGA/html/imagenes/calendar.gif',");		
-			out.println("	buttonImageOnly: true,");			
+			out.println("	buttonImageOnly: true,showOnFocus: false,");			
 			out.println("	changeMonth: true,");	
 			out.println("	yearRange: 'c-100:c+100',");	
 			out.println("	showButtonPanel: true,");
 			if ((this.valorInicial != "")&&(this.valorInicial != null))
 				out.println("	defaultDate: '"+ this.valorInicial +"',");	
 			out.println("	changeYear: true,");	
-			out.println("	closeText: 'X', showTrigger: '#calImg' ,alignment: 'bottomRight',");
+			out.println("	closeText: 'X', ");
+			out.println("	showTrigger: '#calImg' ,");
+			out.println("	alignment: 'bottomRight',");
 			if ((this.disabled != null))
 				if(this.disabled.equals("true"))
 					out.println("	disabled: true,");
@@ -101,70 +118,65 @@ public class TagFecha extends TagSupport {
 				out.println("//var lockDate = new Date(jQuery('#"+ this.campoCargarFechaDesde +"').datepicker('getDate'));");
 				out.println("//		  minDate: lockDate,");
 			}
-			out.println("		  dateFormat: 'dd/mm/yy',");
-			out.println("		  monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],");
-			out.println("	      monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],");
-			out.println("         dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],");
-			out.println("		  dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],");
-			out.println("		  dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],");
-			//out.println("	onSelect: function(dateText, inst) { click_"+ this.nombreCampo +" =0; alert('Select: inst.defaultDate = ' + inst.settings.defaultDate); }, ");
-			out.println("	onClose:  function(dateText, inst) { ");
+			out.println("	dateFormat: 'dd/mm/yy',");
+			out.println("	monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],");
+			out.println("   dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],");
+			out.println("	dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],");
+			out.println("	dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],");
+		    out.println("		 	        ");
+			out.println("	onSelect: function(dateText, inst) { calendario = '';  }, ");
+		    out.println("		 	        ");
+			out.println("	onClose:  function(dateText, inst) {");
 			if ((this.getPostFunction() != "")&&(this.getPostFunction() != null)){
 				out.println("	 "+this.getPostFunction()+"; ");
 			}
 			out.println("	},");
-			out.println("		  beforeShow: function( input ) { jQuery('#ui-datepicker-div').maxZIndex();click_"+ this.nombreCampo +" =1;");
+		    out.println("		 	        ");
+			out.println("	beforeShow: function( input ) {");
+			out.println("				jQuery('#ui-datepicker-div').maxZIndex();");
 			if ((this.getPreFunction() != "")&&(this.getPreFunction() != null)){
 				out.println("		 "+this.getPreFunction()+" ");
 			}
+			out.println("		 	  setTimeout(function() { ");  
+			out.println("		 		var buttonPane = jQuery( input ).datepicker( \"widget\" ).find( \".ui-datepicker-buttonpane\" );   ");
+		    out.println("		 	    var btn = jQuery('<BUTTON class=\"ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all\">Limpiar</BUTTON>');");   
+		    out.println("		                  btn.unbind(\"click\").bind(\"click\", function () {  "); 
+		    out.println("          				  jQuery.datepicker._clearDate( input ); });   ");
+		    out.println("               btn.appendTo( buttonPane );");  
+			out.println("          	  }, 1 );       ");
+		    out.println("		 	  },        ");
+		    out.println("		 	        ");
+			out.println("	onChangeMonthYear: function( input ) {  ");
 			out.println("		 	 setTimeout(function() { ");  
-			out.println("		 				   var buttonPane = jQuery( input )   ");
-		    out.println("		 	     .datepicker( \"widget\" )   ");
-		    out.println("		 	     .find( \".ui-datepicker-buttonpane\" ); ");  
-		   	 	  
-		    out.println("		 	var btn = jQuery('<BUTTON class=\"ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all\">Limpiar</BUTTON>');");   
-		    out.println("		   btn.unbind(\"click\").bind(\"click\", function () {  "); 
-		    out.println("          				jQuery.datepicker._clearDate( input ); });   ");
-		    out.println("          btn.appendTo( buttonPane );");  
-			out.println("          	 }, 1 );      },   ");
-			out.println("		  onChangeMonthYear: function( input ) {  ");
-			out.println("		 	 setTimeout(function() { ");  
-			out.println("		 				   var buttonPane = jQuery( input )   ");
-		    out.println("		 	     .datepicker( \"widget\" )   ");
-		    out.println("		 	     .find( \".ui-datepicker-buttonpane\" ); ");  
-		   	 	  
-		    out.println("		 	var btn = jQuery('<BUTTON class=\"ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all\">Limpiar</BUTTON>');");   
-		    out.println("		   btn.unbind(\"click\").bind(\"click\", function () {  "); 
-		    out.println("          jQuery.datepicker._clearDate( input );   });   ");
-		    out.println("          btn.appendTo( buttonPane );");  
-			out.println("          	 }, 1 );      }   ");
-			
+			out.println("		 		var buttonPane = jQuery( input ).datepicker( \"widget\" ).find( \".ui-datepicker-buttonpane\" );   ");
+		    out.println("		 	    var btn = jQuery('<BUTTON class=\"ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all\">Limpiar</BUTTON>');");   
+		    out.println("		                  btn.unbind(\"click\").bind(\"click\", function () {  "); 
+		    out.println("                             jQuery.datepicker._clearDate( input );   });   ");
+		    out.println("               btn.appendTo( buttonPane );");  
+			out.println("          	  }, 1 );        ");
+		    out.println("	} 	 	        ");			
 			out.println("	},");
+			out.println("		 	        ");
 			if ((this.posicionX != "")&&(this.posicionX != null))
 				out.println("["+this.posicionX+",");
 			else
 				out.println("[350,");
-			
+			out.println("		 	        ");
 			if ((this.posicionY != "")&&(this.posicionY != null))
 				out.println(this.posicionY+"]);");
 			else
 				out.println("150]);");
 			
-			//out.println("	jQuery.datepicker._generateHTML_Old = jQuery.datepicker._generateHTML; jQuery.datepicker._generateHTML = function(inst) { ");
-
-			//out.println("	res = this._generateHTML_Old(inst); res = res.replace(\"_hideDatepicker()\",\"_clearDate('#\"+inst.id+\"')\"); return res;} ");
-
-			//out.println("	jQuery('<style type=\"text/css\">.ui-datepicker-current { display: none; }</style>').appendTo(\"head\");");
-			out.println("}else{click_"+ this.nombreCampo +" = 0;}");
-			//out.println("jQuery('#calImg').click(function() {");
-			//out.println("		jQuery( '#"+ this.nombreCampo +"' ).datepicker('dialog',reformatDate);");
-			//out.println("});");
-			//out.println("jQuery( '#"+ this.nombreCampo +"' ).datepicker('dialog',reformatDate);");
 			out.println("function updateDate(date) {");
-			out.println("	jQuery( '#"+ this.nombreCampo +"').val(date);click_"+ this.nombreCampo +" =0;");
+			out.println("	jQuery( '#"+ this.nombreCampo +"').val(date);");
+			out.println("	calendario = '';");
 			out.println("}");
 			
-			out.println("});");
+			out.println("}");
+			
+			out.println("jQuery( '#"+ this.nombreCampo +"' ).hover(function() {     ");
+			out.println("	jQuery(this).datepicker(\"hide\"); ");
+			out.println("});");		
 			out.println("});");			
 
 
@@ -181,7 +193,7 @@ public class TagFecha extends TagSupport {
 			out.println("	var bisiesto = 0;");
 			out.println("	var err = 0;");
 			out.println("	var i;");
-			out.println("	if (campoFecha.value == \"\"){");
+			out.println("	if (campoFecha!=null && campoFecha.value == \"\" ){");
 			out.println("		err = 6;");
 			out.println("	}else{");
 			out.println("		err = 0;");
@@ -271,7 +283,7 @@ public class TagFecha extends TagSupport {
 				out.println("	value=\"" + this.valorInicial + "\" ");
 			}
 			if ((this.styleId != null)&&(this.styleId.equals(""))){
-				out.println("		styleId = =\"" + this.styleId + "\" ");
+				out.println("		styleId =\"" + this.styleId + "\" ");
 			}
 			if ((this.disabled != null)){
 				if(this.disabled.equals("true"))
@@ -284,10 +296,10 @@ public class TagFecha extends TagSupport {
 			}
 			if ((this.readOnly != null)){
 				if(this.readOnly.equals("true"))
-					out.println("		readOnly='true' ");
+					out.println("readOnly='true' ");
 			}
 			if(this.getPreFunction()!=null && !this.getPreFunction().equals("")){
-				out.println("onfocus=\"return "+	this.getPreFunction()+"\"");
+				out.println("   onfocus=\"return "+	this.getPreFunction()+"\"");
 			}
 			if(this.getPostFunction()!=null && !this.getPostFunction().equals("")){
 				out.println("	onblur=\""+	this.getPostFunction()+"return validaFecha"+ this.nombreCampo +"(" + this.nombreCampo + ");\"/> ");
