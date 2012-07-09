@@ -158,7 +158,7 @@
 									<html:text name="MantenimientoComisariaForm" property="nombre" size="20" styleClass="<%=estilo%>"></html:text>
 								</td>
 								<td class="labelText">
-									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext"/> (*)
+									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext"/>
 								</td>
 								<td class="labelText">
 									<html:text name="MantenimientoComisariaForm" property="codigoExt" size="10" maxlength="10"  readonly="<%=desactivado %>" styleClass="<%=estilo%>"></html:text>
