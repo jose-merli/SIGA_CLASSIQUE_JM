@@ -219,26 +219,26 @@
 			tr = table.insertRow(numFila);
 			tr.id = "fila_" + numFila;
 			td = tr.insertCell(0);
-			td.setAttribute("style", "width:120px; text-align: center; margin:2px");
+			td.setAttribute("width", "120px");
 			td.className = "";
-			td.innerHTML = '<input type="text" id="nombreTelefonoJG_'   + numFila + '" class="box" style="width:100%;padding:2px;text-align:center;" maxLength="20" value="" />';
+			td.innerHTML = '<input type="text" id="nombreTelefonoJG_'   + numFila + '" class="box" style="width:120px;padding:2px;text-align:center;" maxLength="20" value="" />';
 
 			// numero de telefono
 			td = tr.insertCell(1); 
-			td.setAttribute("style", "width:120px; text-align: center; margin:2px");
+			td.setAttribute("width", "120px");
 			td.className = "";
-			td.innerHTML ='<input type="text" id="numeroTelefonoJG_' + numFila + '" class="box" style="width:100%;padding:2px;text-align:center;" maxLength="20" value="" />';
+			td.innerHTML ='<input type="text" id="numeroTelefonoJG_' + numFila + '" class="box" style="width:120px;padding:2px;text-align:center;" maxLength="20" value="" />';
 
 			//sms				
 			td = tr.insertCell(2); 
-			td.setAttribute("style", "width:45px; text-align: center");
+			td.setAttribute("width", "45px");
 			td.className = "";
 			td.innerHTML ='<input type="checkbox" id="preferenteSms_' + numFila + '"  name="preferenteSms_' + numFila + '" value=""  onClick="checkSms()"/>';					
 				
 
 			//imagen de borrar
 			td = tr.insertCell(3); 
-			td.setAttribute("style", "width:80px; text-align: center;");
+			td.setAttribute("width", "80px");
 			td.className = "";				
 			td.innerHTML = '<img src="/SIGA/html/imagenes/bborrar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='general.boton.borrar'/>" name="" border="0" onclick="borrarFila(\''+ tr.id +'\')">';
 			tr.scrollIntoView(true);
