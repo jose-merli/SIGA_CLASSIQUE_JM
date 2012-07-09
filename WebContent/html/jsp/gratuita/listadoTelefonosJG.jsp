@@ -136,20 +136,20 @@
 										<%
 											if (!accion.equalsIgnoreCase("ver")) {
 										%>
-										<td style="width:120px; text-align: center; margin:2px">
+										<td width="120px">
 											<input type="text"
 												id="nombreTelefonoJG_<bean:write name='index'/>" class="box"
-												maxLength="20"
+												maxLength="20" style="width:110px"
 												value="<bean:write name="telefonosJGForm" property="nombreTelefonoJG" />" />
 										</td>
-										<td style="width:120px; text-align: center; margin:2px">
+										<td width="120px">
 											<input type="text"
 												id="numeroTelefonoJG_<bean:write name='index'/>" class="box"
-												maxLength="20"
+												maxLength="20" style="width:110px"
 												value="<bean:write name="telefonosJGForm" property="numeroTelefonoJG" />" />
 										</td>
 										<bean:define id="preferenteSms" name="telefono" property="preferenteSms"></bean:define>
-										<td style="width:45px; text-align: center; margin:2px">
+										<td width="45px">
 											<input type="checkbox"
 												id="preferenteSms_<bean:write name='index'/>"
 												name="preferenteSms_<bean:write name='index'/>"
@@ -158,7 +158,7 @@
 												onClick="checkSms()"
 												<%=(preferenteSms.equals("1")) ? "checked" : ""%> />
 										</td>
-										<td style="width:80px; text-align: center;">
+										<td width="80px">
 											<img src="/SIGA/html/imagenes/bborrar_off.gif"
 												style="cursor: hand;"
 												alt="<siga:Idioma key="general.borrar"/>" name="" border="0"
@@ -167,30 +167,30 @@
 										<%
 											} else {
 										%>
-										<td style="width:120px; text-align: center; margin:2px">
+										<td width="120px">
 											<input type="text" readonly="readonly"
 												id="nombreTelefonoJG_<bean:write name='index'/>"
 												class="boxConsulta"
 												maxLength="20"
 												value="<bean:write name="telefonosJGForm" property="nombreTelefonoJG" />" />
 										</td>
-										<td style="width:120px; text-align: center; margin:2px">
+										<td width="120px">
 											<input type="text" readonly="readonly"
 												id="numeroTelefonoJG_<bean:write name='index'/>"
 												class="boxConsulta"
-												maxLength="20"
+												maxLength="20" style="width:110px"
 												value="<bean:write name="telefonosJGForm" property="numeroTelefonoJG" />" />
 										</td>
 										<bean:define id="preferenteSms" name="telefono" property="preferenteSms"></bean:define>
-										<td style="width:120px; text-align: center; margin:2px">
+										<td width="120px">
 											<input type="checkbox" disabled="disabled"
-												class="preferenteSms"
+												class="preferenteSms" style="width:110px"
 												id="preferenteSms_<bean:write name='index'/>" name="preferenteSms_<bean:write name='index'/>"
 												value="<bean:write name="telefonosJGForm" property="preferenteSms"/>"
 												onClick="checkSms()"
 												<%=(preferenteSms.equals("1")) ? "checked" : ""%> />
 										</td>
-										<td style="width:80px; text-align: center;" />
+										<td width="80px" style="text-align: center;" />
 										<%
 											}
 										%>
@@ -221,13 +221,13 @@
 			td = tr.insertCell(0);
 			td.setAttribute("width", "120px");
 			td.className = "";
-			td.innerHTML = '<input type="text" id="nombreTelefonoJG_'   + numFila + '" class="box" style="width:120px;padding:2px;text-align:center;" maxLength="20" value="" />';
+			td.innerHTML = '<input type="text" id="nombreTelefonoJG_'   + numFila + '" class="box" style="width:110px;padding:2px;text-align:center;" maxLength="20" value="" />';
 
 			// numero de telefono
 			td = tr.insertCell(1); 
 			td.setAttribute("width", "120px");
 			td.className = "";
-			td.innerHTML ='<input type="text" id="numeroTelefonoJG_' + numFila + '" class="box" style="width:120px;padding:2px;text-align:center;" maxLength="20" value="" />';
+			td.innerHTML ='<input type="text" id="numeroTelefonoJG_' + numFila + '" class="box" style="width:110px;padding:2px;text-align:center;" maxLength="20" value="" />';
 
 			//sms				
 			td = tr.insertCell(2); 
