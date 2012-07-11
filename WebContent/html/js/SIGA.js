@@ -407,6 +407,10 @@ function ventaModalGeneral(nombreFormulario, tamano, recursoMsg) {
 		returnValue = showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp" + msg,
 				formulario,
 				"dialogHeight:340px;dialogWidth:500px;help:no;scroll:no;status:no;");
+	} else if (tamano == "XS") {
+		returnValue = showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp" + msg,
+				formulario,
+				"dialogHeight:140px;dialogWidth:300px;help:no;scroll:no;status:no;");
 	} else if (tamano == "0") {
 		returnValue = showModalDialog(
 				"/SIGA/html/jsp/general/ventanaModal.jsp" + msg,
@@ -500,9 +504,10 @@ function finsubicono(identificador) {
  *  }
  */
 
-function sub(w){
+function sub(msg){
+	if(!msg)msg='';
 	var windowTop=window.top;
-	windowTop.mainSub();
+	windowTop.mainSub(msg);
 	return true;
 }
 
@@ -535,7 +540,7 @@ function ajusteAltoPaginador(nObj) {
 
 function ajusteAltoMain(nObj, menos) {
 	//alert("ajusteAlto obj: "+nObj+"; menos: "+menos);
-	if(!$ || !$.height || !$.offset){
+	if(!$){
 		$=window.top.$;
 	}
 	var obj = document.getElementById(nObj);
