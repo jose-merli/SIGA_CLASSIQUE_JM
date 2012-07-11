@@ -189,11 +189,11 @@
 				showModelessDialog('<%=app%>/html/jsp/general/loadingWindowPru.jsp','', 'dialogLeft:2000;dialogTop:2000;dialogWidth:2000px;dialogHeight:2000px;resizable:yes;help:no;center:no;');
 			}
 
-			function mainSub(){
+			function mainSub(msg){
 				jQuery(document).ready(
 					function() { 
 						jQuery.blockUI({
-							message: '<img src="<%=app%>/html/imagenes/loadingBar.gif"/><span id="barraBloqueante">&nbsp;</span>', 
+							message: '<span class="labelText">'+msg+'</span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/><span id="barraBloqueante">&nbsp;</span>', 
 							css:{border:0,left:'300px', background:'transparent'},
 							overlayCSS: { backgroundColor:'#000', opacity: .0} }); 
 						jQuery("#barraBloqueante").click(function() { 
@@ -216,17 +216,12 @@
 			}
 			
 			function growl(msg,type){
-				//$.noticeRemove($('.notice-item-wrapper'), 400);
+				jQuery('.notice-item-wrapper').remove();
 				jQuery.noticeAdd({
 					text: msg,
 					type: type
 				});
 			}
-			
-			jQuery(document).ready(function(){
-				jQuery('.imgMain').css({ 'opacity' : 0.6 });
-			});
-				
 			
 		</script>
 </head>
@@ -245,11 +240,11 @@
 
 	<!-- CABECERA GENERAL -->
 	<div id="img1"
-		style="position: absolute; left: 0px; top: 0px; text-align: center; vertical-align: middle; height: 79px; width: 170px; z-index: 2">
+		style="position: absolute; left: 0px; top: 0px; text-align: center; vertical-align: middle; height: 78px; width: 170px; z-index: 2">
 		<img id="logoImg" src="<%=logo%>" style="vertical-align: middle;">
 	</div>
 	<div id="img2"
-		style="position: absolute; left: 0px; top: 0px; text-align: center; height: 79px; width: 170px; z-index: -1; background-color: transparent;">
+		style="position: absolute; left: 0px; top: 0px; text-align: center; height: 78px; width: 170px; z-index: -1; background-color: transparent;">
 		<img id="logoSIGA" align="bottom"
 			src="<%=app%>/html/imagenes/logoSIGA.png">
 	</div>
