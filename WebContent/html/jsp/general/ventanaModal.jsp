@@ -73,13 +73,16 @@
 				formu.submit();
 			}		
 			
-			function mainSub(){
- 				$(document).ready(
+			function mainSub(msg){
+				jQuery(document).ready(
 					function() { 
-						$.blockUI({
-							message: '<img src="<%=app%>/html/imagenes/loadingBar.gif">', 
-							css:{border:0, background:'transparent'},
+						jQuery.blockUI({
+							message: '<span class="labelText">'+msg+'</span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/><span id="barraBloqueante">&nbsp;</span>', 
+							css:{border:0,left:'300px', background:'transparent'},
 							overlayCSS: { backgroundColor:'#000', opacity: .0} }); 
+						jQuery("#barraBloqueante").click(function() { 
+							jQuery.unblockUI(); 
+						});
 					}
 				)
 				bloqueado=true; 
@@ -87,9 +90,9 @@
 
 			function mainFin(){
 				if(bloqueado){
-					$(document).ready(
+					jQuery(document).ready(
 						function() { 
-					    	$.unblockUI(); 
+					    	jQuery.unblockUI(); 
 						}
 					)
 					bloqueado=false;
@@ -97,7 +100,8 @@
 			}
 			
 			function growl(msg,type){
-				$.noticeAdd({
+				jQuery('.notice-item-wrapper').remove();
+				jQuery.noticeAdd({
 					text: msg,
 					type: type
 				});
