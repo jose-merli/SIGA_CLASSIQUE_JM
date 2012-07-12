@@ -52,10 +52,12 @@
 
 <script type="text/javascript">
 		function init() {
-			document.getElementById("colegiadosSustituidos").disabled= true;
-			document.getElementById("colegiadosGuardia").disabled= true;
-			document.getElementById("turnos").disabled= true;
-			document.getElementById("guardias").disabled= true;		
+			
+		   	jQuery("#colegiadosSustituidos").attr("disabled","disabled");
+		   	jQuery("#colegiadosGuardia").attr("disabled","disabled");
+		   	jQuery("#turnos").attr("disabled","disabled");
+		   	jQuery("#guardias").attr("disabled","disabled");
+			
 		}
 		
 		function accionCalendario() {
@@ -87,10 +89,10 @@
 		
 		if (idColegiadoGuardia!="-1"){
 			document.VolantesExpressForm.idColegiadoSustituido.value = '-1';
-			document.getElementById("colegiadosSustituidos").disabled= true;
+			jQuery("#colegiadosSustituidos").attr("disabled","disabled");
 		}else{
-     		document.getElementById("colegiadosSustituidos").disabled= false;
-		}
+			jQuery("#colegiadosSustituidos").removeAttr("disabled");
+ 		}
 		actualizarResultados();
 	}
 	function preAccionColegiado(){
@@ -124,8 +126,7 @@
 		}
 	}
 	function preAccionTurno(){
-		document.getElementById("guardias").disabled= true;
-		
+		jQuery("#guardias").attr("disabled","disabled");
 	}
 	function postAccionTurno(){
 		if((document.VolantesExpressForm.idTurno && document.VolantesExpressForm.idTurno.value != ''&& document.VolantesExpressForm.idTurno.value != '-1')){
@@ -606,11 +607,15 @@
 	} 
 	function validarAnchoTabla () 
 		{
-			if (document.all.asistencias.clientHeight < document.all.divAsistencias.clientHeight) {
-				document.all.tabAsistenciasCabeceras.width='100%';
+		
+		
+			if (document.getElementById("asistencias").clientHeight < document.getElementById("divAsistencias").clientHeight) {
+				
+			
+				document.getElementById("tabAsistenciasCabeceras").width='100%';
 			}
 			else {
-				document.all.tabAsistenciasCabeceras.width='98.30%';
+				document.getElementById("tabAsistenciasCabeceras").width='98.30%';
 			}
 		}
 	
@@ -1147,16 +1152,17 @@
 		if (encontrado) {
 			document.getElementById("info_existe_" + fila).src = "/SIGA/html/imagenes/encontrado.gif";
 			document.getElementById("info_existe_" + fila).alt = "<siga:Idioma key='gratuita.volantesExpres.mensaje.esYaExistentePersonaJG'/>";
-			document.getElementById("nombre_" + fila).disabled = true;
-			document.getElementById("apellido1_" + fila).disabled = true;
-			document.getElementById("apellido2_" + fila).disabled = true;
+			jQuery("#nombre_" + fila).attr("disabled","disabled");
+			jQuery("#apellido1_" + fila).attr("disabled","disabled");
+			jQuery("#apellido2_" + fila).attr("disabled","disabled");
 		}
 		else {
 			document.getElementById("info_existe_" + fila).src = "/SIGA/html/imagenes/nuevo.gif";
 			document.getElementById("info_existe_" + fila).alt = "<siga:Idioma key='gratuita.volantesExpres.mensaje.esNuevaPersonaJG'/>";
-			document.getElementById("nombre_" + fila).disabled = false;
-			document.getElementById("apellido1_" + fila).disabled = false;
-			document.getElementById("apellido2_" + fila).disabled = false;
+			jQuery("#nombre_" + fila).removeAttr("disabled");
+			jQuery("#apellido1_" + fila).removeAttr("disabled");
+			jQuery("#apellido2_" + fila).removeAttr("disabled");
+			
 		}
 	} //ponerIconoIdentPersona ()
 	function accionCrearEJG(anioAsistencia,numeroAsistencia,idInstitucion,fila) 

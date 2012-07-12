@@ -87,13 +87,15 @@
 		//jQuery.noConflict();
 		function preAccionBuscarCargos(){
 
-			document.getElementById("idButtonL").disabled=false;
-			document.getElementById("idButtonB").disabled=false;
-			document.getElementById("numeroColegiado").disabled=false;
-			document.getElementById("nombreColegiado").disabled=false;
-			document.getElementById("cargos").disabled=false;
-			document.getElementById("idInstitucionCargo").disabled=false;
-			document.getElementById("fechaCargo").disabled=false;
+			jQuery("#idButtonL").removeAttr("disabled");
+			jQuery("#idButtonB").removeAttr("disabled");
+			jQuery("#numeroColegiado").removeAttr("disabled");
+			jQuery("#nombreColegiado").removeAttr("disabled");
+			jQuery("#cargos").removeAttr("disabled");
+			jQuery("#idInstitucionCargo").removeAttr("disabled");
+			jQuery("#fechaCargo").removeAttr("disabled");
+			jQuery("#invokefechaCargo").show();
+			
 				
 			if(document.getElementById("idInstitucionCargo").value==null || document.getElementById("idInstitucionCargo").value==""){
 				alert("<siga:Idioma key='censo.comisiones.colObligatorio'/>");
@@ -108,7 +110,8 @@
 		function postAccionBuscarCargos(){
 			table = document.getElementById("cargostabla");
 			indice= table.rows.length;
-			document.getElementById("idInsertarCargo").disabled="";
+			jQuery("#idInsertarCargo").removeAttr("disabled");
+			validarAnchoTabla ();
 			fin();
 			
 		}
@@ -170,15 +173,18 @@
 		if(!validado){
 			return;
 		}
-		document.getElementById("idButtonL").disabled=true;
-		document.getElementById("idButtonB").disabled=true;
-		document.getElementById("numeroColegiado").disabled=true;
-		document.getElementById("nombreColegiado").disabled=true;
-		document.getElementById("cargos").disabled=true;
-		document.getElementById("idInstitucionCargo").disabled=true;
-		document.getElementById("fechaCargo").disabled=true;
+		
+	   	jQuery("#idButtonL").attr("disabled","disabled");
+	   	jQuery("#idButtonB").attr("disabled","disabled");
+	   	jQuery("#numeroColegiado").attr("disabled","disabled");
+	   	jQuery("#nombreColegiado").attr("disabled","disabled");
+	   	jQuery("#cargos").attr("disabled","disabled");
+	   	jQuery("#idInstitucionCargo").attr("disabled","disabled");
+	   	jQuery("#fechaCargo").attr("disabled","disabled");
+	   	//jQuery('#fechaCargo').datepicker("disable");
+	   	jQuery("#invokefechaCargo").hide();
 		crearFila();
-		document.getElementById ("idInsertarCargo").disabled="disabled";
+		jQuery("#idInsertarCargo").attr("disabled","disabled");
 	}
 	 		
 	function validarDatosMinimos () {
@@ -239,6 +245,7 @@
 
 			disablebuttons();
 			var cargo='cargos_' + numFila + '';
+			validarAnchoTabla ();
 			document.getElementById (cargo).focus();
 	}
 	function disablebuttons(){
@@ -253,8 +260,9 @@
 			if(document.getElementById("editaCargo_"+x)!=null){
 				document.getElementById("editaCargo_"+x).src="/SIGA/html/imagenes/beditar_disable.gif";
 				document.getElementById("borradoLogico_"+x).src="/SIGA/html/imagenes/bborrar_disable.gif";
-				document.getElementById("editaCargo_"+x).disabled="disabled";
-				document.getElementById("borradoLogico_"+x).disabled="disabled";
+				
+			   	jQuery("#editaCargo_"+x).attr("disabled","disabled");
+			   	jQuery("#borradoLogico_"+x).attr("disabled","disabled");
 				document.getElementById("borradoLogico_"+x).style.cursor="default";
 				document.getElementById("editaCargo_"+x).style.cursor="default";
 			}
@@ -282,7 +290,7 @@
 		document.getElementById('numeroN').onchange();
 
 		if(document.getElementById("numeroColegiado_"+num).value == null || document.getElementById("numeroColegiado_"+num).value == ""){
-			document.getElementById("idButtonB__" + num).disabled="";
+			jQuery("#idButtonB__" + num).removeAttr("disabled");
 		}
 	}
 	
@@ -326,7 +334,7 @@
 	}
 
 	function bloquearBuscar(numFila){
-		document.getElementById("idButtonB__" + numFila).disabled="disabled";
+	   	jQuery("#idButtonB__"+numFila).attr("disabled","disabled");
 	}	
 	
 	function limpiarColegiadoN(num)
@@ -349,7 +357,7 @@
 		document.getElementById("nombreColegiado_"+num).value=document.BusquedaComisionesForm.nombreColegiadoN.value;
 		document.getElementById("apellidosColegiado_"+num).value=document.BusquedaComisionesForm.apellidosColegiadoN.value;
 		document.getElementById("numeroColegiado_"+num).value=document.BusquedaComisionesForm.numeroColegiadoN.value;
-		document.getElementById("idButtonB__" + num).disabled="";
+		jQuery("#idButtonB__" + num).removeAttr("disabled");
      	multiple=document.BusquedaComisionesForm.multiple.value;
      	if(multiple=="S"){
 	  		document.busquedaClientesModalForm.numeroColegiado.value=document.getElementById("numeroColegiado_"+num).value;         	
@@ -404,14 +412,16 @@
 					j= table.rows[i].id.split("_")[1]; 
 					if(document.getElementById("idPersona_" + j)!=null){
 						t.deleteRow (i);
+						validarAnchoTabla();
 						 return true;
 					}else return false;
 				}	
 				if (t.rows[i].id == idFila) 
 				{
 					// Guardamos los datos a borrar
-					fila = idFila.split("_")[1]
+					fila = idFila.split("_")[1];
 					t.deleteRow (i);
+					validarAnchoTabla ();
 					return true; 
 				}
 			}
@@ -581,13 +591,25 @@
 		}
 	}
 
+	function validarAnchoTabla() 
+	{
 	
+		if (document.getElementById("cargostabla").clientHeight < document.getElementById("divCargos").clientHeight) {
+			
+		
+			document.getElementById("tabCargosCabeceras").width='100%';
+		}
+		else {
+			document.getElementById("tabCargosCabeceras").width='98.30%';
+		}
+	}
+
 			</script>
 
 	</head>
 
 
-<body  >
+<body onload="validarAnchoTabla();" >
 
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 
@@ -719,7 +741,7 @@
 		</tr>
 	</table>
 	</div>
-	<div id="divCargos" style='height:530px;width:1000px; overflow-y:auto'>
+	<div id="divCargos" style='height:530px;position:absolute;width:100%;  overflow-y:auto' >
 	<table id='cargostabla' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>
 		
 	</table>
