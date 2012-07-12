@@ -2142,8 +2142,8 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 
 
 .notice-wrap {
-	top: 50px;
-	width: 400px;
+	top: 2px;
+	width: 90%;
 	float:left;
 	clear:both;
 	z-index: 9999;
@@ -2170,7 +2170,7 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 	display: block;
 	position: relative;
 	margin: 2px 2px 12px 2px;
-	left:-175px;
+	left:-50%;
 }
 
 .notice-item-close {
