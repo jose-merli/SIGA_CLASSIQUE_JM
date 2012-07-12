@@ -296,8 +296,7 @@ public class TagFecha extends TagSupport {
 				out.println("		class = 'box' ");
 				
 			}
-			if ((this.readOnly != null)){
-				if(this.readOnly.equals("true"))
+			if ((this.readOnly != null && this.readOnly.equals("true")) || (this.disabled != null  && this.disabled.equals("true"))){
 					out.println("readOnly='true' ");
 			}
 			if(this.getPreFunction()!=null && !this.getPreFunction().equals("")){
