@@ -175,13 +175,14 @@ public class TagFecha extends TagSupport {
 			out.println("}");
 			
 			out.println("jQuery( '#"+ this.nombreCampo +"' ).hover(function() {     ");
-			out.println("	jQuery(this).datepicker(\"hide\"); ");
+			//out.println("	jQuery(this).datepicker(\"hide\"); ");
 			out.println("});");		
 			out.println("});");			
 
 
 			out.println("function validaFecha"+ this.nombreCampo +"(field){ ");
-			
+			if (!((this.readOnly != null && this.readOnly.equals("true")) || (this.disabled != null  && this.disabled.equals("true")))){
+
 			out.println("	var checkstr = \"0123456789\";");
 			out.println("	var campoFecha = field;");
 			out.println("	var fecha = \"\";");
@@ -267,6 +268,7 @@ public class TagFecha extends TagSupport {
 			out.println("		campoFecha.select();");
 			out.println("		campoFecha.focus();");
 			out.println("	}");
+			}
 			out.println("}");
 			out.println("</script>");
 

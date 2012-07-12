@@ -87,7 +87,8 @@
 
 	<html:form action="/CEN_GestionarComisiones.do" method="POST" target="resultado">
 	<html:hidden property = "modo" value = "inicio"/>
-	
+	<html:hidden property = "idInstitucionCargo" value=''/>
+	<html:hidden property = "idPersona" value=''/>	
 	<!-- FILA -->
 	<tr>				
 	<td class="labelText">

@@ -48,7 +48,7 @@
   
 </head>
 <body>
-	<table class="tablaCampos" id='cargostabla' border='1' width='100%' cellspacing='0' cellpadding='0'>
+	<table class="tablaCampos" id='cargostabla' border='1' width='983px' cellspacing='0' cellpadding='0'>
 	  <logic:notEmpty name="BusquedaComisionesForm"	property="comisiones">
 		<logic:iterate name="BusquedaComisionesForm" id="comision"   property="comisiones" indexId="index">
 				

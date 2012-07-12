@@ -57,8 +57,8 @@
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
 	
-	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 
 <!--Step 2 -->
 <script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
@@ -82,10 +82,11 @@
 	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
 
 		<script language="JavaScript">
-
+		jQuery.noConflict();
 		var indice = 0;
-		
+		//jQuery.noConflict();
 		function preAccionBuscarCargos(){
+
 			document.getElementById("idButtonL").disabled=false;
 			document.getElementById("idButtonB").disabled=false;
 			document.getElementById("numeroColegiado").disabled=false;
@@ -105,7 +106,6 @@
 
 		}
 		function postAccionBuscarCargos(){
-
 			table = document.getElementById("cargostabla");
 			indice= table.rows.length;
 			document.getElementById("idInsertarCargo").disabled="";
@@ -194,7 +194,7 @@
 		numFila = indice;
 		indice++;
 		//if(table.rows.length>0){
-	   	tr = table.insertRow(0);
+	   	tr = table.insertRow();
 	   	var fila ="filaTablaPar";
 	   	 if((numFila+2)%2==0)
 	   	 	 fila = "filaTablaPar";
@@ -238,7 +238,8 @@
 			'</td></tr></table>';
 
 			disablebuttons();
-
+			var cargo='cargos_' + numFila + '';
+			document.getElementById (cargo).focus();
 	}
 	function disablebuttons(){
 
@@ -456,6 +457,7 @@
 		// Datos Dinamicos Asistencias
 		var datos = "", accion = "";
 		var actualiza="";	
+		if(filas!=0){
 		for (a = 0; a < filas-1 ; a++) {
 			i = table.rows[a].id.split("_")[1];
 			var validado = validarDatosFila (i);
@@ -540,7 +542,7 @@
 
 		}
 		return datos;
-			
+	   } else return null;		
 	}
 
 	function preAccionGuardarCargos(){
@@ -553,7 +555,7 @@
 		}
 		datosCargos = getDatos('cargostabla');
 
-		if(datosCargos=='cancel'){
+		if(datosCargos=='cancel'  || datosCargos==null){
 			fin();
 			return 'cancel';
 		}
@@ -578,12 +580,14 @@
 			}
 		}
 	}
+
 	
-		</script>
+			</script>
 
-</head>
+	</head>
 
-<body  onLoad="ajusteAlto('resultado');" >
+
+<body  >
 
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 
@@ -591,9 +595,9 @@
 	<fieldset>
 	<table class="tablaCentralCampos" align="center">
 
-	<html:form id="BusquedaComisionesForm" action="/CEN_GestionarComisiones.do" method="POST" target="mainWorkArea">
+	<html:form action="/CEN_GestionarComisiones.do" styleId="BusquedaComisionesForm" method="POST" target="mainWorkArea">
 	<html:hidden styleId="modo" property = "modo" value = "inicio"/>
-	<html:hidden styleId="idPersona" property="idPersona" value=""/>
+	<html:hidden property="idPersona" value=""/>
 	<html:hidden styleId="numeroN" property="numeroN" value=""/>
 	<html:hidden styleId="multiple" property="multiple" value=""/>
 	<html:hidden styleId="idPersonaN" property="idPersonaN" value=""/>
@@ -617,7 +621,7 @@
 	<td  colspan="2">
 		<table><tr>
 				<td class="labelText"><siga:Idioma	key="gratuita.volantesExpres.literal.colegiado" /></td>
-				<td><html:text styleId="numeroColegiado" property="numeroColegiado" size="4" maxlength="9"	styleClass="box" ></html:text></td>
+				<td><html:text styleId="numeroColegiado" property="numeroColegiado" size="4" maxlength="9"	styleClass="box" value=""></html:text></td>
 				<td><html:text styleId="nombreColegiado"
 									property="nombreColegiado" size="40" maxlength="50"
 									styleClass="box" readonly="true" id="nombreCol"></html:text></td>
@@ -685,7 +689,7 @@
 <siga:Idioma key="censo.comisiones.literal.consultarComisiones"/>
 </td>
 <td class="tdBotones">
-<input type='button'  id = 'idInsertarCargo' class="button" style="display:block" disabled="" name='idButton' value='<siga:Idioma key="general.boton.new"/>' alt='<siga:Idioma key="general.boton.new"/>' onclick="accionInsertarRegistroTabla();">
+<input type='button'  id = 'idInsertarCargo' class="button" style="display:block" name='idButton' value='<siga:Idioma key="general.boton.new"/>' alt='<siga:Idioma key="general.boton.new"/>' onclick="accionInsertarRegistroTabla();">
 </td>
 <td class="tdBotones">
 <input type="button" alt="Buscar" id="idBuscarCargos"  name='idButton' class="button" value="Buscar"  class='busquedaAsistencias'>
@@ -702,7 +706,7 @@
 	
 	
 	<div>		
-	<table id='tabCargosCabeceras' border='1' width='1000px' cellspacing='0' cellpadding='0'>
+	<table id='tabCargosCabeceras' border='1' width='100%' cellspacing='0' cellpadding='0'>
 		<tr class = 'tableTitle'>
 			<td align='center' width='10%'><siga:Idioma key="FactSJCS.mantRetencionesJ.literal.fechaInicio"/></td>
 			<td id='cargo' align='center' width='15%'><siga:Idioma key="censo.datosCV.literal.cargo"/></td>
@@ -715,7 +719,7 @@
 		</tr>
 	</table>
 	</div>
-	<div id="divCargos" style='height:560px;width:1000px; overflow-y:auto'>
+	<div id="divCargos" style='height:530px;width:1000px; overflow-y:auto'>
 	<table id='cargostabla' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>
 		
 	</table>

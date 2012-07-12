@@ -17,11 +17,11 @@ import com.siga.general.MasterForm;
 public class BusquedaComisionesForm extends MasterForm{
 	
 
-	private String comision="";
-	private String cargos="";	
-	private String fechaCargo="";
-	private String idInstitucion;
-	private String idInstitucionCargo;	
+	String comision="";
+	String cargos="";	
+	String fechaCargo="";
+	String idInstitucion;
+	String idInstitucionCargo;	
 	String idPersona;	
 	String datosCargos;
 	String numeroN;	
@@ -35,6 +35,9 @@ public class BusquedaComisionesForm extends MasterForm{
 	String numeroColegiadoN;
 	String msgError;
 	String msgAviso;
+	String apellidosColegiadoN;
+	String nombreColegiadoN;
+	String idPersonaN;	
 	
 	public String getMsgError() {
 		return msgError;
@@ -66,9 +69,6 @@ public class BusquedaComisionesForm extends MasterForm{
 	public void setApellidosColegiadoN(String apellidosColegiadoN) {
 		this.apellidosColegiadoN = apellidosColegiadoN;
 	}
-	String apellidosColegiadoN;
-	String nombreColegiadoN;
-	String idPersonaN;	
 	public String getNumeroColegiadoN() {
 		return numeroColegiadoN;
 	}
