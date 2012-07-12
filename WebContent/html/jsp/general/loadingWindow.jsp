@@ -18,7 +18,7 @@
 
 <table align="center" border="0" height="100%" width="100%">
 <tr><td align="center" class="labelText"><siga:Idioma key="${msg}"/></td></tr>
-<tr><td align="center"><img src="<html:rewrite page='/html/imagenes/loading.gif'/>"></td></tr>
+<tr><td align="center"><img src="<html:rewrite page='/html/imagenes/loadingBar.gif'/>"></td></tr>
 </table>
 </body>
 </html>
