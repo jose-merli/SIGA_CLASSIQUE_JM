@@ -821,7 +821,7 @@ A.lb:active {
 	position: absolute;
 	padding: 1px;
 	font-family: <%= src.get ( "font.style") %>;
-	font-size: 12px;
+	font-size: <%= fontSize %>;
 	font-weight: normal;
 	text-align: center;
 	border-bottom: 1px solid #FFFFFF;
