@@ -50,6 +50,9 @@
 		<script src="<%=app%>/html/js/jquery.notice.js" type="text/javascript"></script>
 		
 		<script type="text/javascript">
+		
+			jQuery.noConflict();
+			
 			function cargaContenidoModal() {
 				var datos = window.dialogArguments;
 				var formu = document.createElement('form');
