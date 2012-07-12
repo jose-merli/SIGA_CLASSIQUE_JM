@@ -540,8 +540,8 @@ function ajusteAltoPaginador(nObj) {
 
 function ajusteAltoMain(nObj, menos) {
 	//alert("ajusteAlto obj: "+nObj+"; menos: "+menos);
-	if(!$){
-		$=window.top.$;
+	if(!jQuery){
+		jQuery=window.top.jQuery;
 	}
 	var obj = document.getElementById(nObj);
 	if (obj) {
@@ -550,12 +550,12 @@ function ajusteAltoMain(nObj, menos) {
 		//alert("obj = "+obj.id + " : " + obj.nodeName + " : " + obj.offsetTop);
 		if (obj.nodeName == 'IFRAME') {
 			if (nObj == 'mainWorkArea') {
-				hCont = $(window).height() - $('#posicionTitulo', window.top.document).height() - $('#posicionTitulo', window.top.document).offset().top;
+				hCont = jQuery(window).height() - jQuery('#posicionTitulo', window.top.document).height() - jQuery('#posicionTitulo', window.top.document).offset().top;
 				//alert("final iframe mainWorkArea : "+hCont);
 				obj.style.height = hCont;
 		        obj.style.pixelHeight = hCont;
 			} else {				
-				hCont = $(window).height() - $(obj, this.parent.document).offset().top - menos;
+				hCont = jQuery(window).height() - jQuery(obj, this.parent.document).offset().top - menos;
 				//hCont = jQuery.height(window) - jQuery.offset(obj, this.parent.document).top - menos;
 				//alert("final iframe other : "+hCont);
 				obj.style.height = hCont;
