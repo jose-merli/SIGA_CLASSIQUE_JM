@@ -73,13 +73,14 @@
 			{
 				valor = document.getElementById("valor_" + o.value);
 				if (o.checked) {
-					valor.disabled = false;
+					jQuery("#valor_" + o.value).removeAttr("disabled");
+					
 				}
 				else {
 					var mensaje = "<siga:Idioma key="administracion.multidioma.etiquetas.alert.restaurarValor"/>";
 					if(!bMostrarAlert || confirm(mensaje)) {						
 						valor.value = document.getElementById("valorOriginal_" + o.value).value;
-						valor.disabled = true;
+						jQuery("#valor_" + o.value).attr("disabled","disabled");
 					}
 					else {
 						o.checked = true;

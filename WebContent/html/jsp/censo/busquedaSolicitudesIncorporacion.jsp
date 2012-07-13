@@ -137,9 +137,9 @@
 		function deshabilitarCombo(){
 		  if (document.SolicitudIncorporacionForm.buscarVerAlarmas.checked){
 		  document.SolicitudIncorporacionForm.buscarEstadoSolicitud.value="";
-		    document.SolicitudIncorporacionForm.buscarEstadoSolicitud.disabled=true;
+		   	jQuery("#buscarEstadoSolicitud").attr("disabled","disabled");
 		  }	else{
-     		  document.SolicitudIncorporacionForm.buscarEstadoSolicitud.disabled=false;
+     		 jQuery("#buscarEstadoSolicitud").removeAttr("disabled");
 		  }
 		}
 
@@ -147,9 +147,9 @@
 		function deshabilitarCombo(a){
 			  if (document.SolicitudIncorporacionForm.buscarVerAlarmas.checked){
 			  document.SolicitudIncorporacionForm.buscarEstadoSolicitud.value="";
-			    document.SolicitudIncorporacionForm.buscarEstadoSolicitud.disabled=true;
+			   	jQuery("#buscarEstadoSolicitud").attr("disabled","disabled");
 			  }	else{
-	     		  document.SolicitudIncorporacionForm.buscarEstadoSolicitud.disabled=false;
+	     		jQuery("#buscarEstadoSolicitud").removeAttr("disabled");
 			  }
 			}
 		

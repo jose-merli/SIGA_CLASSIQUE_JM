@@ -57,11 +57,12 @@
 	 		
 	 		function cambiarUsuario (o) {
 	 			if (o.checked) {
-		 			document.auditoriaUsuariosForm.nombre.disabled = true;
-		 			document.auditoriaUsuariosForm.nombre.value = "";
+	 				document.auditoriaUsuariosForm.nombre.value = "";
+	 				jQuery("#nombre").attr("disabled","disabled");
+		 			
 				}
 				else {
-		 			document.auditoriaUsuariosForm.nombre.disabled = false;
+					jQuery("#nombre").removeAttr("disabled");
 				}
 	 		}
 	 	-->

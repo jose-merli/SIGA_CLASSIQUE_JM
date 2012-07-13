@@ -353,9 +353,9 @@
 											<% } %>																												
 										<% } else { %>
 											<% if (datosCol.getOtrosColegios().equalsIgnoreCase(ClsConstants.DB_TRUE)){ %>										
-				  								<input type="checkbox" name="otrosColegios" value="1" checked disabled>
+				  								<input type="checkbox" id="otrosColegios" name="otrosColegios" value="1" checked disabled>
 											<% }else{ %>
-				  								<input type="checkbox" name="otrosColegios" value="1" disabled>
+				  								<input type="checkbox" id="otrosColegios" name="otrosColegios" value="1" disabled>
 											<% } %>
 										<% } %>																																	
 									</td>
@@ -567,10 +567,10 @@
 					document.forms[0].target = "submitArea";
 					// Como estan disabled, salvo que los habilitemos de nuevo no van a pasar el valor adecuado en el formulario
 					if (document.forms[0].situacionEjercicio.disabled){
-						document.forms[0].situacionEjercicio.disabled =false;
+						jQuery("#situacionEjercicio").removeAttr("disabled");
 					}
 					if (document.forms[0].otrosColegios.disabled){
-						document.forms[0].otrosColegios.disabled =false;
+						jQuery("#otrosColegios").removeAttr("disabled");
 					}
 					document.forms[0].submit();
 				} else {

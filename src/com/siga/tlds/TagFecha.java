@@ -308,12 +308,13 @@ public class TagFecha extends TagSupport {
 				out.println("	onblur=\"return validaFecha"+ this.nombreCampo +"(" + this.nombreCampo + ");\"/>");
 			}
 			if ((this.disabled != null)){
-				if(this.disabled.equals("true"))
+				if(this.disabled.equals("true")){
 					out.println("<input type=\"hidden\" name=\"" + this.nombreCampo + "\" id=\"" + this.nombreCampo + "\"" );
 							if(this.valorInicial!=null && !this.valorInicial.equals(""))		
 								out.println(" value=\"" +this.valorInicial + "\" />");
 							else
 								out.println("  />");
+				}			
 			}else{
 				out.println("<a id=\"invoke" + this.nombreCampo + "\" title=\"\" href=\"#\"><img src=\"/SIGA/html/imagenes/calendar.gif\" border=\"0\"> </a>");
 			}

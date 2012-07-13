@@ -354,11 +354,11 @@
 			if (document.getElementById("sociedad").checked==true){
 				document.getElementById("sinasteriscoCuenta").style.display="none";
 				document.getElementById("asteriscoCuenta").style.display="block";
-				document.getElementById("idCuenta").disabled=false;	
+				jQuery("#idCuenta").removeAttr("disabled");
 			} else {
 				document.getElementById("asteriscoCuenta").style.display="none";
 				document.getElementById("sinasteriscoCuenta").style.display="block";
-				document.getElementById("idCuenta").disabled=true;	
+			   	jQuery("#idCuenta").attr("disabled","disabled");
 				
 			}
 		}

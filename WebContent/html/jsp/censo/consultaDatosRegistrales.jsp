@@ -470,7 +470,7 @@
 			} else if ((DatosRegistralesForm.tipoIdentificacion.value != "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>") && (DatosRegistralesForm.numIdentificacion.value.substr(0,4)=="NOTA")) {
 				// Quitar el Num. de identificacion automatico de notario (NOTA) si se cambia el tipo de identificacion a distinto de Otro
 				DatosRegistralesForm.numIdentificacion.value="";
-				DatosRegistralesForm.numIdentificacion.disabled = "";
+				jQuery("#numIdentificacion").removeAttr("disabled");
 			}
 		}
 		jQuery(document).ready(function(){
@@ -489,7 +489,7 @@
 				dataType: "json",
 				success:  function(json) {
 					DatosRegistralesForm.numIdentificacion.value=json.numHistorico;
-					DatosRegistralesForm.numIdentificacion.disabled = "disabled";
+				   	jQuery("#numIdentificacion").attr("disabled","disabled");
 				},
 				error: function(xml,msg){
 					alert("Error: "+msg);

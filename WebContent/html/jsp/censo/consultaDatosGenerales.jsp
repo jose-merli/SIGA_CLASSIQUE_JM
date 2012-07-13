@@ -1478,9 +1478,9 @@ function str_replace(search, replace, subject) {
 		function habilitarBoton() {
 			if(document.getElementById("modificar") != null){
 				if(document.getElementById("modificar").disabled){
-					document.getElementById("modificar").disabled = false;
+					jQuery("#modificar").removeAttr("disabled");
 				}else{
-					document.getElementById("modificar").disabled = true;
+				   	jQuery("#modificar").attr("disabled","disabled");
 				}
 			}
 		}

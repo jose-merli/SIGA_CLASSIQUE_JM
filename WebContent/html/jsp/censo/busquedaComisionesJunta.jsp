@@ -290,7 +290,7 @@
 		document.getElementById('numeroN').onchange();
 
 		if(document.getElementById("numeroColegiado_"+num).value == null || document.getElementById("numeroColegiado_"+num).value == ""){
-			jQuery("#idButtonB__" + num).removeAttr("disabled");
+			jQuery("#idButtonB_" + num).removeAttr("disabled");
 		}
 	}
 	

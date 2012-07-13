@@ -248,7 +248,7 @@
 				//Datos direcciones
 				if(resultado[1] != "<%=idInstitucionActual%>"){
 					limpiarDireccion();
-					datosGeneralesForm.direcciones.disabled="disabled";   
+					jQuery("#direcciones").attr("disabled","disabled");
 					document.getElementById("correoElectronico").value 	= resultado[13];
 					document.getElementById("fax1").value 	= resultado[16];
 					document.getElementById("telefono1").value 			= resultado[12];
@@ -272,15 +272,15 @@
 					limpiarDireccion();
 					datosGeneralesForm.idPersona.onchange();
 				}
-				
-				datosGeneralesForm.tipoIdentificacion.disabled="disabled";
-				datosGeneralesForm.numIdentificacion.disabled="disabled";
-				datosGeneralesForm.idInstitucion.disabled="disabled";
-				datosGeneralesForm.colegiadoen.disabled="disabled";  
-				datosGeneralesForm.nColegiado.disabled="disabled";   
-				datosGeneralesForm.nombre.disabled="disabled";      
-				datosGeneralesForm.apellido1.disabled="disabled";   
-				datosGeneralesForm.apellido2.disabled="disabled"; 
+				jQuery("#tipoIdentificacion").attr("disabled","disabled");
+				jQuery("#numIdentificacion").attr("disabled","disabled");
+				jQuery("#idInstitucion").attr("disabled","disabled");
+				jQuery("#colegiadoen").attr("disabled","disabled");
+				jQuery("#nColegiado").attr("disabled","disabled");
+				jQuery("#nombre").attr("disabled","disabled");
+				jQuery("#apellido1").attr("disabled","disabled");
+				jQuery("#apellido2").attr("disabled","disabled");
+
 			}							
 		}		
 
@@ -293,16 +293,16 @@
 		document.getElementById('nombre').value = "";
 		document.getElementById('apellido1').value = "";
 		document.getElementById('apellido2').value = "";
-		datosGeneralesForm.tipoIdentificacion.disabled="";
-		datosGeneralesForm.numIdentificacion.disabled="";
-		datosGeneralesForm.tratamiento.disabled="";
-		datosGeneralesForm.sexo.disabled="";
-		datosGeneralesForm.idInstitucion.disabled="";
-		datosGeneralesForm.colegiadoen.disabled="";  
-		datosGeneralesForm.nColegiado.disabled="";   
-		datosGeneralesForm.nombre.disabled="";      
-		datosGeneralesForm.apellido1.disabled="";   
-		datosGeneralesForm.apellido2.disabled=""; 
+		jQuery("#tipoIdentificacion").removeAttr("disabled");
+		jQuery("#numIdentificacion").removeAttr("disabled");
+		jQuery("#idInstitucion").removeAttr("disabled");
+		jQuery("#colegiadoen").removeAttr("disabled");
+		jQuery("#nColegiado").removeAttr("disabled");
+		jQuery("#nombre").removeAttr("disabled");
+		jQuery("#apellido1").removeAttr("disabled");
+		jQuery("#apellido2").removeAttr("disabled");
+		jQuery("#tratamiento").removeAttr("disabled");
+		jQuery("#sexo").removeAttr("disabled");
 		ponerIconoIdentPersona(false);
 	}	
 			
@@ -573,8 +573,7 @@
 
 		//Combo Direccioens
 		document.getElementById("direcciones").value 		= "-1";
-		document.getElementById("direcciones").disabled		="disabled";
-		 
+		jQuery("#direcciones").attr("disabled","disabled");
 		//Datos direccion
 		document.getElementById("domicilio").value 			= "";
 		document.getElementById("codigoPostal").value 		= "";
@@ -698,7 +697,7 @@
 			
 				//Datos direcciones
 				if(datosGeneralesForm.idInstitucion.value != "<%=idInstitucionActual%>"){
-					datosGeneralesForm.direcciones.disabled="disabled";   
+				   	jQuery("#direcciones").attr("disabled","disabled");
 					document.getElementById("correoElectronico").value 	= document.busquedaCensoModalForm.mail.value;
 					document.getElementById("telefono1").value 			= document.busquedaCensoModalForm.telefono.value;
 					document.getElementById("domicilio").value 			= document.busquedaCensoModalForm.direccion.value;
@@ -731,14 +730,14 @@
 			}
 	
 			if(datosGeneralesForm.numIdentificacion.value != null && datosGeneralesForm.numIdentificacion.value != ""){			
-				datosGeneralesForm.tipoIdentificacion.disabled="disabled";
-				datosGeneralesForm.numIdentificacion.disabled="disabled";
-				datosGeneralesForm.idInstitucion.disabled="disabled";
-				datosGeneralesForm.colegiadoen.disabled="disabled";  
-				datosGeneralesForm.nColegiado.disabled="disabled";   
-				datosGeneralesForm.nombre.disabled="disabled";      
-				datosGeneralesForm.apellido1.disabled="disabled";   
-				datosGeneralesForm.apellido2.disabled="disabled"; 
+				jQuery("#tipoIdentificacion").attr("disabled","disabled");
+				jQuery("#numIdentificacion").attr("disabled","disabled");
+				jQuery("#idInstitucion").attr("disabled","disabled");
+				jQuery("#colegiadoen").attr("disabled","disabled");
+				jQuery("#nColegiado").attr("disabled","disabled");
+				jQuery("#nombre").attr("disabled","disabled");
+				jQuery("#apellido1").attr("disabled","disabled");				
+				jQuery("#apellido2").attr("disabled","disabled");
 			}
 			
 		}else{
@@ -1252,17 +1251,17 @@
 var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
 		//Asociada al boton Restablecer
 		function accionRestablecer() {
-			datosGeneralesForm.idInstitucion.disabled="";
-			datosGeneralesForm.tipoIdentificacion.disabled="";
-			datosGeneralesForm.numIdentificacion.disabled="";
-			datosGeneralesForm.nombre.disabled="";      
-			datosGeneralesForm.apellido1.disabled="";   
-			datosGeneralesForm.apellido2.disabled=""; 
-			datosGeneralesForm.tratamiento.disabled="";
-			datosGeneralesForm.colegiadoen.disabled="";  
-			datosGeneralesForm.nColegiado.disabled="";   
-			datosGeneralesForm.sexo.disabled=="";   
-			datosGeneralesForm.direcciones.disabled="disabled";
+			jQuery("#tipoIdentificacion").removeAttr("disabled");
+			jQuery("#numIdentificacion").removeAttr("disabled");
+			jQuery("#idInstitucion").removeAttr("disabled");
+			jQuery("#colegiadoen").removeAttr("disabled");
+			jQuery("#nColegiado").removeAttr("disabled");
+			jQuery("#nombre").removeAttr("disabled");
+			jQuery("#apellido1").removeAttr("disabled");
+			jQuery("#apellido2").removeAttr("disabled");
+			jQuery("#tratamiento").removeAttr("disabled");
+			jQuery("#sexo").removeAttr("disabled");
+			jQuery("#direcciones").attr("disabled","disabled");
 			ponerIconoIdentPersona(false);
 			limpiarDireccion();
 			document.forms[0].reset();	
@@ -1420,16 +1419,18 @@ var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
 		}
 	
 		//funciones de direcciones
-		function selPais(valor) {                                                                   
+		function selPais(valor) {              
+
+
 		   if (valor!="" && valor!=idEspana) {
 		   		document.getElementById("poblacion").value="";
 		   		document.getElementById("provincia").value="";
-			   	document.getElementById("provincia").disabled=true;
+		   		jQuery("#provincia").attr("disabled","disabled");
 				document.getElementById("poblacionEspanola").className="ocultar";
 				document.getElementById("poblacionExtranjera").className="";
 	       } else {
 		   		document.getElementById("poblacionExt").value="";
-				document.getElementById("provincia").disabled=false;
+				jQuery("#provincia").removeAttr("disabled");
 				document.getElementById("poblacionEspanola").className="";
 				document.getElementById("poblacionExtranjera").className="ocultar";
 	       }
