@@ -527,21 +527,21 @@
 						<siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono1" />&nbsp;(*)
 					</td>
 					<td>
-						<html:text property="telefono1" maxlength="20" styleId="telefono1"
+						<html:text property="telefono1" maxlength="15" styleId="telefono1"
 							styleClass="<%=estiloBox%>" value="" />
 					</td>
 					<td class="labelText">
 						<siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono2" />
 					</td>
 					<td>
-						<html:text property="telefono2" styleId="telefono2" maxlength="20"
+						<html:text property="telefono2" styleId="telefono2" maxlength="15"
 							styleClass="<%=estiloBox%>" value="" />
 					</td>
 					<td class="labelText">
 						<siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono3" />
 					</td>
 					<td>
-						<html:text property="telefono3" styleId="telefono3" maxlength="20"
+						<html:text property="telefono3" styleId="telefono3" maxlength="15"
 							styleClass="<%=estiloBox%>" value=""/>
 					</td>
 				</tr>
@@ -550,14 +550,14 @@
 						<siga:Idioma key="censo.SolicitudIncorporacion.literal.fax1" />
 					</td>
 					<td>
-						<html:text property="fax1" styleId="fax1" maxlength="20"
+						<html:text property="fax1" styleId="fax1" maxlength="15"
 							styleClass="<%=estiloBox%>" />
 					</td>
 					<td class="labelText">
 						<siga:Idioma key="censo.SolicitudIncorporacion.literal.fax2" />
 					</td>
 					<td>
-						<html:text property="fax2" styleId="fax2" maxlength="20"
+						<html:text property="fax2" styleId="fax2" maxlength="15"
 							styleClass="<%=estiloBox%>" />
 					</td>
 					<td class="labelText">
