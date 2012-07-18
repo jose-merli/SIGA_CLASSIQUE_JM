@@ -425,7 +425,7 @@
 					</td>
 					<td>
 						<html:text property="nombre" styleId="nombre" value="" style="width:180"
-							maxlength="120" styleClass="<%=estiloBox%>" />
+							maxlength="100" styleClass="<%=estiloBox%>" />
 					</td>
 					<td class="labelText">
 						<siga:Idioma key="censo.SolicitudIncorporacion.literal.apellido1" />&nbsp;(*)

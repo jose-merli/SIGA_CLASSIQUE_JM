@@ -753,7 +753,7 @@
 		<tr>
 		
 			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.nombre"/>&nbsp;(*)</td>
-			<td><html:text property="nombre" style="width:180" maxlength="120" value="<%=datosPersonales.getNombre()%>" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" ></html:text></td>
+			<td><html:text property="nombre" style="width:180" maxlength="100" value="<%=datosPersonales.getNombre()%>" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" ></html:text></td>
 
 			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.apellido1"/>&nbsp;(*)</td>
 			<td><html:text property="apellido1"  style="width:180" maxlength="100" value="<%=datosPersonales.getApellido1()%>" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" ></html:text></td>
