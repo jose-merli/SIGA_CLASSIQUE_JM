@@ -152,6 +152,9 @@
 	
 	if ((titular==null)||(titular.equalsIgnoreCase(""))){
 		titular=datosPersonales.getNombre()+" "+datosPersonales.getApellido1()+" "+datosPersonales.getApellido2();
+		if (titular.length()>100){
+			titular=titular.substring(0,99);
+		}
 	}
 	
 	ArrayList selColegiacion = new ArrayList();
