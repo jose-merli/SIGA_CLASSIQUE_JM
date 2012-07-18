@@ -1617,6 +1617,7 @@
 			<forward name="SolicitudIncorporacionDesestimada" path="/html/jsp/censo/SolicitudIncorporacionDesestimada.jsp"/>
 			<forward name="SolicitudIncorporacionDatos" path="/html/jsp/censo/SolicitudIncorporacionDatos.jsp"/>
 			<forward name="SolicitudIncorporacionError" path="/html/jsp/censo/SolicitudIncorporacionError.jsp"/>
+			<forward name="SolicitudIncorporacionInicio" path="/html/jsp/censo/pestanasSolicitudIncorporacion.jsp"/>
 		
 		</action>
 
