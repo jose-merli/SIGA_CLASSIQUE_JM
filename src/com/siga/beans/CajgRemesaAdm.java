@@ -31,7 +31,7 @@ public class CajgRemesaAdm extends MasterBeanAdministrador {
 		String [] campos = {CajgRemesaBean.C_IDINSTITUCION, CajgRemesaBean.C_IDREMESA,
 							CajgRemesaBean.C_PREFIJO, 		CajgRemesaBean.C_NUMERO,
 							CajgRemesaBean.C_SUFIJO,		CajgRemesaBean.C_DESCRIPCION,
-							CajgRemesaBean.C_IDINTERCAMBIO,
+							CajgRemesaBean.C_IDINTERCAMBIO, CajgRemesaBean.C_IDECOMCOLA,
 							CajgRemesaBean.C_FECHAMODIFICACION,	CajgRemesaBean.C_USUMODIFICACION};
 		return campos;
 	}
@@ -62,6 +62,7 @@ public class CajgRemesaAdm extends MasterBeanAdministrador {
 			bean.setSufijo(UtilidadesHash.getString(hash, CajgRemesaBean.C_SUFIJO));
 			bean.setDescripcion(UtilidadesHash.getString(hash, CajgRemesaBean.C_DESCRIPCION));
 			bean.setIdIntercambio(UtilidadesHash.getInteger(hash,CajgRemesaBean.C_IDINTERCAMBIO));
+			bean.setIdecomcola(UtilidadesHash.getLong(hash,CajgRemesaBean.C_IDECOMCOLA));
 			
 			bean.setFechaMod(UtilidadesHash.getString (hash,CajgRemesaBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,CajgRemesaBean.C_USUMODIFICACION));
@@ -89,6 +90,7 @@ public class CajgRemesaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, CajgRemesaBean.C_SUFIJO, b.getSufijo());
 			UtilidadesHash.set(hash, CajgRemesaBean.C_DESCRIPCION, b.getDescripcion());
 			UtilidadesHash.set(hash, CajgRemesaBean.C_IDINTERCAMBIO, b.getIdIntercambio());
+			UtilidadesHash.set(hash, CajgRemesaBean.C_IDECOMCOLA, b.getIdecomcola());
 			
 			UtilidadesHash.set(hash, CajgRemesaBean.C_FECHAMODIFICACION, b.getFechaMod());	
 			UtilidadesHash.set(hash, CajgRemesaBean.C_USUMODIFICACION, b.getUsuMod());	

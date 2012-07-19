@@ -114,7 +114,7 @@ public class ScsEJGBean extends MasterBean{
 	private String anioActa;
 	private String idActa;
 	private String idInstitucionActa;
-	private Integer idEcomCola;
+	private Long idEcomCola;
     
     public String getDescripcionOrigen() {
 		return descripcionOrigen;
@@ -1028,10 +1028,10 @@ public class ScsEJGBean extends MasterBean{
 	public void setIdInstitucionActa(String idInstitucionActa) {
 		this.idInstitucionActa = idInstitucionActa;
 	}
-	public Integer getIdEcomCola() {
+	public Long getIdEcomCola() {
 		return idEcomCola;
 	}
-	public void setIdEcomCola(Integer idEcomCola) {
+	public void setIdEcomCola(Long idEcomCola) {
 		this.idEcomCola = idEcomCola;
 	}
 	

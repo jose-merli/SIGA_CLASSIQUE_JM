@@ -517,7 +517,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			bean.setIdActa(UtilidadesHash.getString(hash,ScsEJGBean.C_IDACTA));
 			bean.setIdInstitucionActa(UtilidadesHash.getString(hash,ScsEJGBean.C_IDINSTITUCIONACTA));
 			bean.setAnioActa(UtilidadesHash.getString(hash,ScsEJGBean.C_ANIOACTA));
-			bean.setIdEcomCola(UtilidadesHash.getInteger(hash,ScsEJGBean.C_IDECOMCOLA));
+			bean.setIdEcomCola(UtilidadesHash.getLong(hash,ScsEJGBean.C_IDECOMCOLA));
 		}
 		catch (Exception e){
 			throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR HASHTABLE A BEAN");

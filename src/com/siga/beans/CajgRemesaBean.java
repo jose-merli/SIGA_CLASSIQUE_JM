@@ -18,6 +18,7 @@ public class CajgRemesaBean extends MasterBean{
 	private String sufijo;
 	private String descripcion;
 	private Integer idIntercambio;
+	private Long idecomcola;
 	
 	
 	/*
@@ -34,6 +35,7 @@ public class CajgRemesaBean extends MasterBean{
 	static public final String	C_SUFIJO	=					"SUFIJO";
 	static public final String	C_DESCRIPCION	=				"DESCRIPCION";
 	static public final String	C_IDINTERCAMBIO	=				"IDINTERCAMBIO";
+	static public final String	C_IDECOMCOLA	=				"IDECOMCOLA";
 	
 	
 	public Integer getIdInstitucion() {
@@ -77,6 +79,12 @@ public class CajgRemesaBean extends MasterBean{
 	}
 	public void setIdIntercambio(Integer idIntercambio) {
 		this.idIntercambio = idIntercambio;
+	}
+	public Long getIdecomcola() {
+		return idecomcola;
+	}
+	public void setIdecomcola(Long idecomcola) {
+		this.idecomcola = idecomcola;
 	}
 	
 
