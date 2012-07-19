@@ -101,12 +101,8 @@
 			buttons="g,ae";//guardar y añadir expedientes
 			if (isPCajgTXT) {
 				buttons+=",gf";//generar fichero txt
-			} else if (cajgConfig == 2) {
-				if (ejecutandose) {
-					buttons+=",val,ftp";//genera fichero txt, envio ftp
-				} else {
-					buttons+=",gf,val,ftp";//genera fichero txt, envio ftp
-				}
+			} else if (cajgConfig == 2) {				
+				buttons+=",val,ftp";//validar remesa, envio ftp
 			} else if (cajgConfig == 3) {
 				if (tipoPCAJGGeneral == 1) {
 					buttons+=",ws";//envio WebService
@@ -264,7 +260,8 @@
 			}
 		}
 		
-		function deshabilitaTodos() {
+		function deshabilitaTodos() {			
+			deshabilita(document.getElementById('idButtonGuardar'));
 			deshabilita(document.getElementById('idButtonEnvioFTP'));
 			deshabilita(document.getElementById('idButtonValidarRemesa'));
 			deshabilita(document.getElementById('idButtonGeneraXML'));			

@@ -42,9 +42,9 @@ import com.siga.ws.pcajg.cat.xsd.TipoIdentificacionIntercambio;
 public abstract class SIGAWSClientAbstract {
 	
 	
-	protected static String rutaOUT = "xml" + File.separator + "OUT";
+	public static String rutaOUT = "xml" + File.separator + "OUT";
 	private BufferedWriter bw = null;
-	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ");
+	public static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ");
 	
 	private UsrBean usrBean;
 	private int idInstitucion;
@@ -512,6 +512,11 @@ public abstract class SIGAWSClientAbstract {
 	}
 
 	protected void guardarIdIntercambioRemesa(UsrBean usr, int idIntercambio) throws Exception {
+		
+		if (!(idIntercambio > 0)) {
+			throw new Exception("No se ha podido actualizar la remesa = \"" + getIdRemesa() + "\" de la idinstitucion \"" + getIdInstitucion() + "\" con el idIntercambio = \"" + idIntercambio + "\" porque el valor idintercambio debe ser mayor que cero");
+		}
+		
 		//como la hemos enviado seteamos el identificador de intercambio de envio
 		CajgRemesaAdm cajgRemesaAdm = new CajgRemesaAdm(usr);
 		Hashtable hash = new Hashtable();
@@ -521,6 +526,7 @@ public abstract class SIGAWSClientAbstract {
 		if (v != null && v.size() == 1) {
 			CajgRemesaBean cajgRemesaBean = (CajgRemesaBean)v.get(0);			
 			cajgRemesaBean.setIdIntercambio(idIntercambio);
+			
 			if (!cajgRemesaAdm.update(cajgRemesaBean)) {
 				throw new Exception("No se ha podido actualizar la remesa = \"" + getIdRemesa() + "\" de la idinstitucion \"" + getIdInstitucion() + "\" con el idIntercambio = \"" + idIntercambio + "\"");
 			}			
@@ -529,4 +535,17 @@ public abstract class SIGAWSClientAbstract {
 		}		
 	}
 
+	public static File getRespuestaFile(int idInstitucion, String idRemesa, String fileName) {
+		
+		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String rutaAlmacen = rp.returnProperty("cajg.directorioFisicoCAJG") + rp.returnProperty("cajg.directorioCAJGJava");
+			
+		rutaAlmacen += File.separator + idInstitucion;
+		rutaAlmacen += File.separator + idRemesa;
+		
+		File file = new File(rutaAlmacen + File.separator + SIGAWSClientAbstract.rutaOUT);
+		file.mkdirs();
+		file = new File(file, fileName);
+		return file;
+	}
 }

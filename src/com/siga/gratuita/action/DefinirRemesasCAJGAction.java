@@ -7,6 +7,7 @@ package com.siga.gratuita.action;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -24,9 +25,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 
+import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.upload.FormFile;
+import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
+import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
+import org.redabogacia.sigaservices.app.services.EcomColaService;
 
 import weblogic.management.timer.Timer;
 
@@ -77,6 +84,8 @@ import com.siga.ws.PCAJG;
 import com.siga.ws.SIGAWSClientAbstract;
 import com.siga.ws.SIGAWSListener;
 
+import es.satec.businessManager.BusinessManager;
+
 
 
 
@@ -84,6 +93,8 @@ import com.siga.ws.SIGAWSListener;
 * Maneja las acciones que se pueden realizar sobre la tabla SCS_EJG
 */
 public class DefinirRemesasCAJGAction extends MasterAction {
+	
+	private static final Logger log = Logger.getLogger(DefinirRemesasCAJGAction.class);
 
 	/**
 	 * Funcion que atiende a las peticiones. Segun el valor del parametro modo
@@ -154,7 +165,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			} else if (accion.equalsIgnoreCase("descargarLog")) {
 				mapDestino = descargarLog(mapping, miForm, request, response);	
 			} else if (accion.equalsIgnoreCase("generaXML")) {
-				mapDestino = generaXML(mapping, miForm, request, response);	
+				mapDestino = generaXML(mapping, miForm, request, response);			
 			} else {
 				return super.executeInternal(mapping, formulario, request, response);
 			}
@@ -642,6 +653,27 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				
 				cajgRemesaBean.setDescripcion(miForm.getDescripcion());
 				
+				FormFile formFile = miForm.getFile();
+				if (formFile != null && formFile.getFileSize() > 0) {					 
+					
+					EcomColaService ecomColaService = (EcomColaService) BusinessManager.getInstance().getService(EcomColaService.class);
+					EcomCola ecomCola = new EcomCola();
+					ecomCola.setIdinstitucion(Short.valueOf(idInstitucion.toString()));
+					ecomCola.setIdoperacion(AppConstants.OPERACION.XUNTA_FICHERO_RESPUESTA.getId());
+					ecomColaService.insert(ecomCola);
+					cajgRemesaBean.setIdecomcola(ecomCola.getIdecomcola());
+					
+					File parentFile = SIGAServicesHelper.getDirectorioRespuesta(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa), ecomCola.getIdecomcola());
+					File file = new File(parentFile, formFile.getFileName());
+					OutputStream os = new FileOutputStream(file);
+					InputStream is = formFile.getInputStream();
+					byte[] bytes = new byte[is.available()];
+					is.read(bytes);
+					os.write(bytes);
+					os.flush();
+					os.close();
+				}
+				
 				tx = usr.getTransaction();
 				tx.begin();
 				remesaAdm.updateDirect(cajgRemesaBean);
@@ -651,16 +683,20 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				request.setAttribute("IDREMESA", miHash.get(CajgRemesaBean.C_IDREMESA));
 				request.setAttribute("INSTITUCION", this.getIDInstitucion(request).toString());
 
-			} else {
+			} else {				
 				throw new Exception("No se ha encontrado la remesa " + idRemesa + " de la institución " + idInstitucion);
 			}
 			
 			
 		} catch (Exception e) {
+			log.error("Error al modificar la remesa", e);
 			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, tx);
 		}
 		return exitoRefresco("messages.updated.success", request);
 	}
+	
+	
+	
 
 	/**
 	 * Rellena un hash con los valores recogidos del formulario y los borra de
@@ -1757,6 +1793,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 	
 	
 	
+	
 	/**
 	 * 
 	 * @param mapping
@@ -1941,7 +1978,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		if (file == null) {
 			throw new SIGAException("messages.general.error.ficheroNoExiste");
 		}
-
+		request.setAttribute("accion", "");
 		request.setAttribute("nombreFichero", file.getName());
 		request.setAttribute("rutaFichero", file.getAbsolutePath());
 

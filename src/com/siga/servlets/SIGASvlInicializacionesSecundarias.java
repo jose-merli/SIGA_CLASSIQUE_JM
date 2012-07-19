@@ -10,12 +10,16 @@ import java.util.Hashtable;
 
 import javax.servlet.ServletContextEvent;
 
+import org.redabogacia.sigaservices.app.services.SigaLog4jService;
+
 import com.aspose.words.License;
 import com.atos.utils.ClsLogging;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.informes.CrystalReportMaster;
 import com.siga.informes.MasterWords;
+
+import es.satec.businessManager.BusinessManager;
 
 
 /**
@@ -52,6 +56,12 @@ public final class SIGASvlInicializacionesSecundarias extends SIGAContextListene
 	    SIGAReferences.initialize(arg0.getServletContext());
 	    // this.inicializarCrystal();
 	    this.inicializarWords();
+	    this.inicializarLog4j();
+	}
+
+	private void inicializarLog4j() {
+		SigaLog4jService sigaLog4jService = (SigaLog4jService) BusinessManager.getInstance().getService(SigaLog4jService.class);
+		sigaLog4jService.initLog4j();
 	}
 
 	private void inicializarCrystal() 

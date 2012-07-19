@@ -82,7 +82,16 @@
 		estilocaja = "box";		
 	}
 	
+	
+	boolean subirFicheroRespuesta = false;
+		
 	int cajgConfig = CajgConfiguracion.getTipoCAJG(Integer.parseInt(usr.getLocation()));
+	
+	if (idEstado == 2) {//enviada
+		if (CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO == cajgConfig) {
+			subirFicheroRespuesta = true;
+		}
+	}
 	
 %>
 
@@ -250,7 +259,7 @@
 
 <body onload="buscarGrupos();cargadatosRemesa();ajusteAlto('resultado1');">
 	
-	<html:form action="/JGR_E-Comunicaciones_Gestion.do?noReset=true" method="POST" target="resultado">
+	<html:form action="/JGR_E-Comunicaciones_Gestion.do?noReset=true" method="POST" target="resultado" enctype="multipart/form-data">
 		<html:hidden property = "modo" value = "inicio"/>
 		<html:hidden property = "idInstitucion" value = "<%=usr.getLocation()%>"/>
 		<html:hidden property = "actionModal" value = ""/>
@@ -308,7 +317,19 @@
 							</html:select>
 							
 						</td>
+						
+					</tr>
+					
+					<% if (subirFicheroRespuesta) { %>
+					<tr>				
+						<td class="labelText">
+							<siga:Idioma key="gratuita.BusquedaResolucionCAJG.literal.FicheroResoluciones"/>&nbsp;(*)
+						</td>				
+						<td class="labelText">	
+							<html:file property="file" size="45" styleClass="box" accept="image/gif,image/jpg"></html:file>
+						</td>						
 					</tr>					
+					<%} %>
 					
 					<% File errorFile = SIGAWSClientAbstract.getErrorFile(Integer.parseInt(usr.getLocation()), Integer.parseInt(idremesa));
 						if (errorFile != null && errorFile.length() > 0) { %>

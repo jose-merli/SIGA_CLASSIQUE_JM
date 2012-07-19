@@ -18,6 +18,7 @@ import javax.transaction.UserTransaction;
 import org.apache.xmlbeans.XmlOptions;
 
 import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsLogging;
 import com.siga.beans.CajgRemesaEstadosAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaBean;
@@ -164,7 +165,7 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 					}
 					escribeErrorExpediente(anio, numejg, numero, idTipoEJG, e.getMessage(), CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
 				} catch (Exception e) {
-					e.printStackTrace();
+					ClsLogging.writeFileLogError("Se ha producido un error al recuperar los datos del expediente", e, 3);
 					if (anexoIType != null) {
 						solicitudeAXG.removeANEXOI(solicitudeAXG.sizeOfANEXOIArray()-1);
 					}
@@ -209,6 +210,17 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 	
 	private void rellenaRepresentanteLegal(REPRESENTANTELEGALTYPE representantelegaltype, Map<String, String> map) {		
 		rellenaDatosPersonalesFamilia(representantelegaltype.addNewDATOSREPRESENTANTE(), map.get(REP_NOME), map.get(REP_PRIMERAPELLIDO), map.get(REP_SEGUNDOAPELLIDO), map.get(REP_IDADE), map.get(REP_PARENTESCO));
+		
+		DOCIDENTIFICADORTYPE docidentificadortype = representantelegaltype.addNewIDENTIFICADORREP();
+		String tipoIdentificador = map.get(REP_TIPOIDENTIFICADOR);
+		
+		if (tipoIdentificador == null || tipoIdentificador.trim().equals("")) {
+			docidentificadortype.setINDOCUMENTADO(INDOCUMENTADO.S);
+		} else {
+			DOCUMENTADO documentado = docidentificadortype.addNewDOCUMENTADO();
+			documentado.setTIPOIDENTIFICADOR(com.siga.ws.i2064.xsd.DOCIDENTIFICADORTYPE.DOCUMENTADO.TIPOIDENTIFICADOR.Enum.forString(tipoIdentificador));
+			documentado.setIDENTIFICADOR(map.get(REP_IDENTIFICADOR));
+		}
 	}
 
 
@@ -306,7 +318,10 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 	 */
 	private void rellenaProcedimiento(PROCEDEMENTO procedemento, Map<String, String> mapExp) throws Exception {		
 		
-		procedemento.setXURISDICCION(SigaWSHelper.getInteger("jurisdicción", mapExp.get(P_XURISDICCION)));
+		Integer xurisdiccion = SigaWSHelper.getInteger("jurisdicción", mapExp.get(P_XURISDICCION));
+		if (xurisdiccion != null) {
+			procedemento.setXURISDICCION(xurisdiccion);
+		}
 		String s = mapExp.get(PRO_FAMILIA);
 		if (s != null && !s.trim().equals("")) {
 			procedemento.setPROFAMILIA(PROFAMILIA.Enum.forString(s));

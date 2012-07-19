@@ -858,7 +858,7 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 	}
 
 	public static File getLogFile(File parentFile, String nombreFichero) {
-		File logFile = new File(parentFile.getParent(), "log");
+		File logFile = new File(parentFile, "log");
 		deleteFiles(logFile);
 		logFile.mkdirs();
 		logFile = new File(logFile, nombreFichero + "_errores.txt");

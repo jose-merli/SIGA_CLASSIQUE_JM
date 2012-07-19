@@ -7,15 +7,15 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.apache.axis.AxisFault;
+import org.redabogacia.sigaservices.app.AppConstants.OPERACION;
+import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
+import org.redabogacia.sigaservices.app.services.EcomColaService;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
-import com.siga.beans.EcomColaAdm;
-import com.siga.beans.EcomColaBean;
 import com.siga.beans.GenParametrosAdm;
-import com.siga.beans.MasterBean;
 import com.siga.beans.ScsPersonaJGBean;
 import com.siga.beans.ScsUnidadFamiliarEJGAdm;
 import com.siga.beans.ScsUnidadFamiliarEJGBean;
@@ -220,14 +220,15 @@ private static Boolean alguienEjecutando=Boolean.FALSE;
 
 			scsEejgPeticionesBean.setRutaPDF(fichero.getAbsolutePath());
 			
-			EcomColaBean ecomColaBean = new EcomColaBean();
-			ecomColaBean.setIdOperacion(EcomColaBean.OPERACION.ASIGNA_ENVIO_DOCUMENTO.getId());		
-			
-			EcomColaAdm ecomColaAdm = new EcomColaAdm(usrBean);
-			if (!ecomColaAdm.insert(ecomColaBean)) {
+			EcomCola ecomCola = new EcomCola();
+			ecomCola.setIdoperacion(OPERACION.ASIGNA_ENVIO_DOCUMENTO.getId());			
+			EcomColaService ecomColaService = (EcomColaService)BusinessManager.getInstance().getService(EcomColaService.class);
+						
+			if (ecomColaService.insert(ecomCola) != 1) {
 				throw new ClsExceptions("No se ha podido insertar en la cola de comunicaciones.");
 			}
-			scsEejgPeticionesBean.setIdEcomCola(ecomColaBean.getIdEcomCola());
+			scsEejgPeticionesBean.setIdEcomCola(ecomCola.getIdecomcola());
+			
 		} catch (Exception e) {
 			ClsLogging.writeFileLogError("Se ha producido un error al generar y enviar el pdf a Asigna", e, 3);
 		}

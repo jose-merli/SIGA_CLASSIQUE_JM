@@ -11,6 +11,10 @@ import java.util.Vector;
 
 import javax.transaction.UserTransaction;
 
+import org.redabogacia.sigaservices.app.AppConstants.OPERACION;
+import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
+import org.redabogacia.sigaservices.app.services.EcomColaService;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
@@ -20,12 +24,12 @@ import com.siga.Utilidades.GestorContadores;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CajgRemesaResolucionAdm;
 import com.siga.beans.CajgRemesaResolucionBean;
-import com.siga.beans.EcomColaAdm;
-import com.siga.beans.EcomColaBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
 import com.siga.gratuita.action.DefinirRemesaResolucionesCAJGAction;
+
+import es.satec.businessManager.BusinessManager;
 
 public class ResolucionesAsigna {
 	
@@ -181,16 +185,16 @@ public class ResolucionesAsigna {
 						Calendar cal = resol.getCalificacionConsultaResoluciones().getFecha();						
 						scsEJGBean.setFechaResolucionCAJG(GstDate.convertirFechaHora(cal.getTime()));	
 						
-						EcomColaBean ecomColaBean = new EcomColaBean();		
-						ecomColaBean.setIdInstitucion(Integer.valueOf(idInstitucion));
-						ecomColaBean.setIdOperacion(EcomColaBean.OPERACION.ASIGNA_CONSULTA_NUMERO.getId());		
-						
-						EcomColaAdm ecomColaAdm = new EcomColaAdm(usrBean);
-						if (!ecomColaAdm.insert(ecomColaBean)) {
+						EcomCola ecomCola = new EcomCola();
+						ecomCola.setIdinstitucion(Short.valueOf(idInstitucion));
+						ecomCola.setIdoperacion(OPERACION.ASIGNA_CONSULTA_NUMERO.getId());			
+						EcomColaService ecomColaService = (EcomColaService)BusinessManager.getInstance().getService(EcomColaService.class);
+												
+						if (ecomColaService.insert(ecomCola) != 1) {
 							throw new ClsExceptions("No se ha podido insertar en la cola de comunicaciones.");
 						}
 							
-						scsEJGBean.setIdEcomCola(ecomColaBean.getIdEcomCola());
+						scsEJGBean.setIdEcomCola(ecomCola.getIdecomcola());
 						
 						if (scsEJGAdm.update(scsEJGBean)) {
 							logBw.write(anio + "/" + numEjg + ": El expediente se ha actualizado correctamente.");

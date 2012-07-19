@@ -14,7 +14,7 @@
 		<service interface="com.siga.expedientes.service.ExpedientesService" implementation="com.siga.expedientes.service.impl.AtosExpedientesService"/>
 		<service interface="com.siga.censo.service.AlterMutuaService" implementation="com.siga.censo.service.impl.AtosAlterMutuaService"/>
 	</context>
-	
+	<!-- 
 	<context id="letrados">
 		<transactionManager type="DAO">
 			<property name="DaoConfigURL">/DaoConfig.xml</property>
@@ -22,6 +22,16 @@
    		<service interface="com.siga.censo.service.LetradoService" 	 implementation="com.siga.censo.service.impl.SIGALetradoService"/>
    		<service interface="com.siga.censo.service.ColegiadoService" implementation="com.siga.censo.service.impl.SIGAColegiadoService"/>
    		<service interface="com.siga.censo.service.CensoService" 	 implementation="com.siga.censo.service.impl.SIGACensoService"/>
+	</context>
+	 -->
+	
+	<context id="mybatis">
+		<transactionManager type="MYBATIS">
+			<property name="MybatisConfigURL">/SqlMyBatisConfig.xml</property>
+		</transactionManager>
+   				
+		<service interface="org.redabogacia.sigaservices.app.services.EcomColaService" 	 implementation="org.redabogacia.sigaservices.app.services.impl.EcomColaServiceImpl"/>	
+		
 	</context>
 </configuration> 
 	

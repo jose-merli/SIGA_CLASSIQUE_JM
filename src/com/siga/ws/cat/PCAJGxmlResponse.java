@@ -68,27 +68,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 	private String namespace = IntercambioDocument.type.getProperties()[0].getName().getNamespaceURI();//"rp.cat.ws.siga.com";
 	private static String DESCRIPCION_SIN_ERRORES = "No hi han errors";	
 		
-	/**
-	 * 
-	 * @param idInstitucion
-	 * @param idRemesa
-	 * @param fileName
-	 * @return
-	 */
-	private File getRespuestaFile(int idInstitucion, int idRemesa, String fileName) {
 		
-		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		String rutaAlmacen = rp.returnProperty("cajg.directorioFisicoCAJG") + rp.returnProperty("cajg.directorioCAJGJava");
-			
-		rutaAlmacen += File.separator + idInstitucion;
-		rutaAlmacen += File.separator + idRemesa;
-		
-		File file = new File(rutaAlmacen + File.separator + rutaOUT);
-		file.mkdirs();
-		file = new File(file, fileName);
-		return file;
-	}
-	
 	private File getResolucionIRFile(int idInstitucion, String fileName) {		
 		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		String rutaAlmacen = rp.returnProperty("cajg.directorioFisicoCAJG") + rp.returnProperty("cajg.directorioCAJGJava");			
@@ -126,7 +106,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 					ClsLogging.writeFileLog("Encontrado fichero " + fileName, 3);					
 					
 					if (fileName.startsWith(comienzoFicheroIEE_GEN)) {
-						File fileIEE = getRespuestaFile(getIdInstitucion(), getIdRemesa(), fileName);					
+						File fileIEE = getRespuestaFile(getIdInstitucion(), String.valueOf(getIdRemesa()), fileName);					
 						fileOutputStream = new FileOutputStream(fileIEE);
 						filesIEE.add(fileIEE);
 					} else if (fileName.startsWith(comienzoFicheroIR_GEN)) {
@@ -507,7 +487,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 					throw new ClsExceptions("La institucion del fichero es distinta a la del usuario de SIGA");
 				}
 				
-				file.renameTo(getRespuestaFile(getIdInstitucion(), getIdRemesa(), file.getName()));
+				file.renameTo(getRespuestaFile(getIdInstitucion(), String.valueOf(getIdRemesa()), file.getName()));
 				ClsLogging.writeFileLog("Fichero movido a la ruta: " + file.getAbsolutePath(), 3);
 				
 				escribeLogRemesa("Fichero de respuesta " + file.getName() + " encontrado en el servidor FTP. Analizando respuesta.");

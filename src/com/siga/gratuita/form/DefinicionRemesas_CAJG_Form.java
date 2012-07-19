@@ -5,10 +5,17 @@
 
 package com.siga.gratuita.form;
 
+import org.apache.struts.upload.FormFile;
+
 import com.atos.utils.ClsConstants;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.beans.*;
-import com.siga.general.MasterForm;
+import com.siga.beans.CajgEJGRemesaBean;
+import com.siga.beans.CajgRemesaBean;
+import com.siga.beans.CajgRemesaEstadosBean;
+import com.siga.beans.ScsAsistenciasBean;
+import com.siga.beans.ScsEJGBean;
+import com.siga.beans.ScsEJGDESIGNABean;
+import com.siga.beans.ScsPersonaJGBean;
 
 
 
@@ -923,6 +930,21 @@ import com.siga.general.MasterForm;
 			
 			public void setSimular(String simular) {
 				this.datos.put("SIMULAR", simular);
+			}
+			
+			private FormFile file;
+			
+			/**
+			 * @return the file
+			 */
+			public FormFile getFile() {
+				return file;
+			}
+			/**
+			 * @param file the file to set
+			 */
+			public void setFile(FormFile file) {
+				this.file = file;
 			}
 		
 }

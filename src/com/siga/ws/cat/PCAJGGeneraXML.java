@@ -1244,7 +1244,9 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 					//MARCAMOS COMO ENVIADA
 					if (cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_ENVIADA )) {
 						//cuando se envía el intercambio se envía * 10
-						int idIntercambio = (int)intercambioDocument.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().getIdentificadorIntercambio()/10;
+						long idIntercambioLong = intercambioDocument.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().getIdentificadorIntercambio();
+						ClsLogging.writeFileLog(String.format("El identificador del intercambio es %s", idIntercambioLong), 3);
+						int idIntercambio = (int)idIntercambioLong/10;
 						guardarIdIntercambioRemesa(usr, idIntercambio);
 						cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), ClsConstants.REMITIDO_COMISION);
 						
@@ -1311,13 +1313,17 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 	}
 
-	public static void main2(String[] args) throws Exception {
-		File fileXSL = new File("C:\\Datos\\plantillas\\CAJG\\2047\\plantilla.xsl");
-		File file = new File("C:\\Documents and Settings\\angelcpe.ITCGAE-WS011\\Escritorio\\temp\\generalitat\\IED_2047_GEN_12_20091221_5.xml");
-		File xmlTrans = new File(file.getParentFile(), "T" + file.getName());
-		TransformerFactory tFactory = TransformerFactory.newInstance();
-		Transformer transformer = tFactory.newTransformer(new StreamSource(fileXSL));							
-		transformer.transform(new StreamSource(file), new StreamResult(xmlTrans));
+	public static void main(String[] args) throws Exception {
+//		File fileXSL = new File("C:\\Datos\\plantillas\\CAJG\\2047\\plantilla.xsl");
+//		File file = new File("C:\\Documents and Settings\\angelcpe.ITCGAE-WS011\\Escritorio\\temp\\generalitat\\IED_2047_GEN_12_20091221_5.xml");
+//		File xmlTrans = new File(file.getParentFile(), "T" + file.getName());
+//		TransformerFactory tFactory = TransformerFactory.newInstance();
+//		Transformer transformer = tFactory.newTransformer(new StreamSource(fileXSL));							
+//		transformer.transform(new StreamSource(file), new StreamResult(xmlTrans));
+		long l = 300;
+		int i = (int)l/10;
+		
+		System.out.println(i);
 	}
 	
 }
