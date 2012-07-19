@@ -24,8 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-//import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.Category;
 
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.eejg.SchedulerException;
@@ -46,8 +44,10 @@ public class ClsLogging{
 	private static boolean bLogXeMail;     //Indica si se escribirá en el fichero de log de log4j.
 	
 	//private static Logger logger=null;
-	private static Category logger = null;
-	private static Category logXeMail = null;
+	private static Logger logger = null;
+	private static Logger logXeMail = null;
+	
+		
 	
 	/**
 	 *  Read the configuration parameters of the Logs.
