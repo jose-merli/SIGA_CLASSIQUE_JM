@@ -2856,7 +2856,8 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			int contador=0;
 	
 	
-			String sql = " select fac_factura.numerofactura AS NUMERO_FACTURA, " +
+			String sql = " select fac_factura.idfactura AS ID_FACTURA, "+
+			" fac_factura.numerofactura AS NUMERO_FACTURA, " +
 			" to_char (fac_factura.fechaemision,'DD/MM/RRRR') AS FECHA, ";
 			contador++;
 			codigos.put(new Integer(contador),institucion);
@@ -2897,7 +2898,8 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	
 			//INC-4369 Se quiere obtener tambien los abonos (facturas rectificativas). Los importes tienen que salir con el signo negativo.	
 			sql += " union ALL "+       
-			" select fac_abono.numeroabono AS NUMERO_FACTURA, "+
+			" select fac_factura.idfactura AS ID_FACTURA, "+
+			" 	 fac_abono.numeroabono AS NUMERO_FACTURA, "+
 			"    to_char(fac_abono.fecha, 'DD/MM/RRRR') AS FECHA, ";
 			contador++;
 			codigos.put(new Integer(contador),institucion);
@@ -2937,7 +2939,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			codigos.put(new Integer(contador),fechaHasta);
 	
 			sql += " trunc(to_date(:"+contador+", 'YYYY/MM/DD HH24:mi:ss')) ";
-			sql +=" order by NUMERO_FACTURA ";
+			sql +=" order by ID_FACTURA ";
 	
 	
 	
