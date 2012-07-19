@@ -53,7 +53,7 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	private String	apellido1;
 	private String	apellido2;
 	private String rutaPDF;
-	private Integer idEcomCola;
+	private Long idEcomCola;
 	
 	FilaExtElement[] elementosFila;
 	
@@ -316,10 +316,10 @@ public class ScsEejgPeticionesBean extends MasterBean{
 		this.elementosFila = elementosFila;
 	}
 	
-	public Integer getIdEcomCola() {
+	public Long getIdEcomCola() {
 		return idEcomCola;
 	}
-	public void setIdEcomCola(Integer idEcomCola) {
+	public void setIdEcomCola(Long idEcomCola) {
 		this.idEcomCola = idEcomCola;
 	}
 	public String getRutaPDF() {

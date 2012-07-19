@@ -130,7 +130,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 			bean.setApellido2(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_APELLIDO2));
 			
 			bean.setRutaPDF(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_RUTA_PDF));
-			bean.setIdEcomCola(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_IDECOMCOLA));
+			bean.setIdEcomCola(UtilidadesHash.getLong(hash,ScsEejgPeticionesBean.C_IDECOMCOLA));
 			
 			bean.setFechaMod(UtilidadesHash.getString(hash, ScsEejgPeticionesBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_USUMODIFICACION));
