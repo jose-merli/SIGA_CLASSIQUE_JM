@@ -261,9 +261,11 @@
 		
 	
 		
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/validation.js" type="text/javascript"></script>
 	
 	<!--Step 2 -->
 	<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
@@ -1584,7 +1586,7 @@
 						}
 		%>
 		<td>
-			<html:text name="PersonaJGForm" value ="<%=edad %>" property="edad" size="3" styleClass="<%=estiloBox %>"/>
+			<html:text name="PersonaJGForm" onkeypress="return soloDigitos(event)" value ="<%=edad %>" property="edad" size="3" styleClass="<%=estiloBox %>"/>
 		</td>
 
 	</tr>
