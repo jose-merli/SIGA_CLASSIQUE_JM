@@ -3,6 +3,7 @@
 	<name>SIGA92</name>
 	<comment></comment>
 	<projects>
+		<project>SIGAServices</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
