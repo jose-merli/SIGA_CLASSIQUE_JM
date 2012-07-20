@@ -136,6 +136,8 @@ public class EnvPlantillasEnviosAdm extends MasterBeanAdministrador
                 codigos.put(new Integer(contador),nombre.trim());
                 sSQL += " AND "+ComodinBusquedas.prepararSentenciaCompletaBind(":"+contador,"P." + EnvPlantillasEnviosBean.C_NOMBRE );
             }
+            
+            sSQL += " ORDER BY NOMBREPLANTILLA ";
 
             ClsLogging.writeFileLogWithoutSession("SQL Envíos a Grupos / Definir plantillas: " + sSQL, 3);
             rc.findNLSBind(sSQL,codigos);
