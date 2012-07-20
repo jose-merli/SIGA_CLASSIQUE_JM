@@ -190,18 +190,18 @@ function marca(i,tipo, todos ) {
 <%
 				String miModo = bNuevo ? "Insertar" : "Modificar";
 %>
-				<html:hidden property = "modo" value = "<%=miModo%>"/>
-				<html:hidden property = "hiddenFrame" value = "1"/>
+				<html:hidden styleId="modo" property = "modo" value = "<%=miModo%>"/>
+				<html:hidden styleId = "modo" property = "hiddenFrame" value = "1"/>
 				
-				<html:hidden property="idInstitucion" value="<%=sIdInstitucion%>"/>
-				<html:hidden property="idTipoProducto" value="<%=sIdTipoProducto%>"/>
-				<html:hidden property="idProducto" value="<%=sIdProducto%>"/>
-				<html:hidden property="idProductoInstitucion" value="<%=sIdProductoInstitucion%>"/>
+				<html:hidden styleId="idInstitucion" property="idInstitucion" value="<%=sIdInstitucion%>"/>
+				<html:hidden styleId="idTipoProducto"  property="idTipoProducto" value="<%=sIdTipoProducto%>"/>
+				<html:hidden styleId="idProducto" property="idProducto" value="<%=sIdProducto%>"/>
+				<html:hidden styleId="idProductoInstitucion" property="idProductoInstitucion" value="<%=sIdProductoInstitucion%>"/>
 				
-				<html:hidden property="idCampoCertificado" value="<%=sIdCampo%>"/>
-				<html:hidden property="idFormato" value="<%=sIdFormato%>"/>
-				<html:hidden property="tipoCampo" value="<%=sTipoCampo%>"/>
-				<html:hidden property="filasSelect"/>
+				<html:hidden styleId="idCampoCertificado" property="idCampoCertificado" value="<%=sIdCampo%>"/>
+				<html:hidden styleId="idFormato" property="idFormato" value="<%=sIdFormato%>"/>
+				<html:hidden styleId="tipoCampo" property="tipoCampo" value="<%=sTipoCampo%>"/>
+				<html:hidden styleId="filasSelect" property="filasSelect"/>
 
 
 
