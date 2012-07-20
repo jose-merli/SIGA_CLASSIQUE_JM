@@ -220,7 +220,7 @@
 			if(document.ActaComisionForm.minuIni.value!=""){
 				if(document.ActaComisionForm.minuIni.value>59){
 					error = true;
-					errores += "<siga:Idioma key='sjcs.actas.horaInicioError01'/>"+ '\n';
+					errores += "<siga:Idioma key='sjcs.actas.horaInicioError02'/>"+ '\n';
 				} else {
 					if(document.ActaComisionForm.horaIni.value==""){
 						document.ActaComisionForm.horaIni.value=0;
