@@ -77,18 +77,18 @@
 
 	<body class="detallePestanas">
 		<html:form action="/CER_Campos.do" method="POST" target="mainWorkArea">
-			<html:hidden property="modo" value=""/>
+			<html:hidden id="modo" property="modo" value=""/>
 
-			<html:hidden property="idInstitucion" value="<%=sIdInstitucion%>"/>
-			<html:hidden property="idTipoProducto" value="<%=sIdTipoProducto%>"/>
-			<html:hidden property="idProducto" value="<%=sIdProducto%>"/>
-			<html:hidden property="idProductoInstitucion" value="<%=sIdProductoInstitucion%>"/>
+			<html:hidden styleId="idInstitucion" property="idInstitucion" value="<%=sIdInstitucion%>"/>
+			<html:hidden styleId="idTipoProducto" property="idTipoProducto" value="<%=sIdTipoProducto%>"/>
+			<html:hidden styleId="idProducto" property="idProducto" value="<%=sIdProducto%>"/>
+			<html:hidden styleId="idProductoInstitucion" property="idProductoInstitucion" value="<%=sIdProductoInstitucion%>"/>
 			
-			<html:hidden property="certificado" value="<%=sCertificado%>"/>
+			<html:hidden styleId="certificado" property="certificado" value="<%=sCertificado%>"/>
 
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<input id="tablaDatosDinamicosD" type="hidden" name="tablaDatosDinamicosD">
+			<input id="actionModal" type="hidden" name="actionModal" value="">
 		</html:form>
 
 	<!-- TITULO INFORMATIVO -->
@@ -130,11 +130,11 @@
 %>
 	  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=sBotones%>" clase="listaNonEdit">
 					<td>
-						<input type="hidden" name="oculto<%=""+(i+1)%>_1" value=" <%=htDatos.get(CerCamposCertificadosBean.C_IDCAMPOCERTIFICADO)%>">
-						<input type="hidden" name="oculto<%=""+(i+1)%>_2" value=" <%=htDatos.get(CerFormatosBean.C_IDFORMATO)%>">
-						<input type="hidden" name="oculto<%=""+(i+1)%>_3" value=" <%=htDatos.get(CerCamposCertificadosBean.C_TIPOCAMPO)%>">
-						<input type="hidden" name="oculto<%=""+(i+1)%>_4" value=" <%=htDatos.get(CerCamposCertificadosBean.C_CAPTURARDATOS)%>">
-						<input type="hidden" name="oculto<%=""+(i+1)%>_5" value=" <%=htDatos.get(CerProducInstiCampCertifBean.C_VALOR)%>">
+						<input id="oculto<%=""+(i+1)%>_1" type="hidden" name="oculto<%=""+(i+1)%>_1" value=" <%=htDatos.get(CerCamposCertificadosBean.C_IDCAMPOCERTIFICADO)%>">
+						<input id="oculto<%=""+(i+1)%>_2" type="hidden" name="oculto<%=""+(i+1)%>_2" value=" <%=htDatos.get(CerFormatosBean.C_IDFORMATO)%>">
+						<input id="oculto<%=""+(i+1)%>_3" type="hidden" name="oculto<%=""+(i+1)%>_3" value=" <%=htDatos.get(CerCamposCertificadosBean.C_TIPOCAMPO)%>">
+						<input id="oculto<%=""+(i+1)%>_4" type="hidden" name="oculto<%=""+(i+1)%>_4" value=" <%=htDatos.get(CerCamposCertificadosBean.C_CAPTURARDATOS)%>">
+						<input id="oculto<%=""+(i+1)%>_5" type="hidden" name="oculto<%=""+(i+1)%>_5" value=" <%=htDatos.get(CerProducInstiCampCertifBean.C_VALOR)%>">
 						
 						<%=htDatos.get(CerCamposCertificadosBean.C_NOMBRE)%>
 					</td>
