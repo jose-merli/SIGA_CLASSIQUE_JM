@@ -408,6 +408,49 @@
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
 	<script type="text/javascript">
+	
+			function controlFecha(){
+				var sFechaNac = document.forms[0].fechaNac.value;
+				
+				if(!validarFecha2(sFechaNac)){
+					sFechaNac = "";
+				}
+			
+				if (sFechaNac!="") {							
+					var diaFechaNac = parseInt(sFechaNac.substring(0,2),10);
+					var mesFechaNac = parseInt(sFechaNac.substring(3,5),10);
+					var anioFechaNac = parseInt(sFechaNac.substring(6,10),10);
+				
+					var dFechaActual = new Date();
+					var diaFechaActual = dFechaActual.getDate();
+					var mesFechaActual = dFechaActual.getMonth()+1;
+					var anioFechaActual = dFechaActual.getFullYear();
+					
+					var numEdad = anioFechaActual - anioFechaNac;
+					if ((mesFechaActual<mesFechaNac)||(mesFechaActual==mesFechaNac&&diaFechaActual<diaFechaNac)){
+						numEdad = numEdad - 1;							
+					}
+				}
+
+				<%if (obligatorioFechaNac) {%>
+					if (sFechaNac=="") {
+						document.forms[0].edad.value = "";
+					}
+					else {
+						document.forms[0].edad.value = numEdad;			
+					}
+					
+				<%} else {%>
+					if (sFechaNac=="") {
+						document.forms[0].edad.readonly="true";
+					}
+					else {
+						document.forms[0].edad.value = numEdad;
+						document.forms[0].edad.readonly="false";			
+					}						
+				<%}%>	
+															
+			}
 
 			function retarda(tipoId){
 				document.PersonaJGForm.tipoId.value = tipoId;
@@ -1567,7 +1610,7 @@
 			<%
 				if (!accion.equalsIgnoreCase("ver")) {
 			%>
-			 <siga:Fecha  nombreCampo= "fechaNac" valorInicial="<%=fechaNac%>"/>
+			 <siga:Fecha  nombreCampo= "fechaNac" valorInicial="<%=fechaNac%>" readOnly="true" postFunction="controlFecha()" />
 			<%
 				}else{
 			%>
@@ -1586,7 +1629,18 @@
 						}
 		%>
 		<td>
-			<html:text name="PersonaJGForm" onkeypress="return soloDigitos(event)" value ="<%=edad %>" property="edad" size="3" styleClass="<%=estiloBox %>"/>
+			<%
+				if (obligatorioFechaNac) {
+			%>
+				<html:text name="PersonaJGForm" onkeypress="return soloDigitos(event)" value ="<%=edad %>" property="edad" size="3" styleClass="boxConsulta" readOnly="<%=obligatorioFechaNac%>"/>
+			<%
+				}else{
+			%>
+			 	<html:text name="PersonaJGForm" onkeypress="return soloDigitos(event)" value ="<%=edad %>" property="edad" size="3" styleClass="<%=estiloBox %>" readOnly="<%=obligatorioFechaNac%>"/>
+			<%
+				}
+			%>	
+					
 		</td>
 
 	</tr>
