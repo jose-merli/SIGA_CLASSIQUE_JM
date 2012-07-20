@@ -753,6 +753,19 @@ function validarFecha(fecha){
 	}
 }
 
+function validarFecha2(fecha){
+	var objRegExp = /^\d{2}\/\d{2}\/\d{4}$/
+	if (fecha==""){
+		return true;
+	}else {
+		if (!objRegExp.test(fecha)){
+			return false; // No cumple con el formato
+		}else{
+			return true; // Cumple con el formato
+		}
+	}
+}
+
 /*
  * Valida que el valor del elemento año es un valor numerico o vacío.
  * Además hace un trim() del valor.
