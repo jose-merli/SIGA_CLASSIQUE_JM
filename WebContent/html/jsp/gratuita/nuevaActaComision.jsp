@@ -109,10 +109,72 @@
 			}if (document.ActaComisionForm.fechaResolucion.value==""){
 				error = true;
 				errores += "<siga:Idioma key='errors.required' arg0='sjcs.actas.fechaResolucion'/>"+ '\n';
-			}if (document.ActaComisionForm.fechaResolucion.value!=""&&document.ActaComisionForm.fechaReunion.value!=""&&document.ActaComisionForm.fechaReunion.value>document.ActaComisionForm.fechaResolucion.value){
+			}if (document.ActaComisionForm.fechaResolucion.value!=""&&document.ActaComisionForm.fechaReunion.value!=""&&validarFecha(document.ActaComisionForm.fechaReunion.value)&&validarFecha(document.ActaComisionForm.fechaResolucion.value)&&compararFecha(document.ActaComisionForm.fechaReunion.value, document.ActaComisionForm.fechaResolucion.value)==1){
 				error = true;
 				errores += "<siga:Idioma key='sjcs.actas.fechasErroneas'/>"+ '\n';
 			}
+			
+			if(document.ActaComisionForm.horaIni.value!=""){
+				if(document.ActaComisionForm.horaIni.value>23){
+					error = true;
+					//errores += "<siga:Idioma key='sjcs.actas.XXX'/>"+ '\n';
+					errores += "La hora inicial no puede ser mayor de 23"+ '\n';
+				} else {
+					if(document.ActaComisionForm.minuIni.value==""){
+						document.ActaComisionForm.minuIni.value=0;
+					}
+				}			
+			}
+			if(document.ActaComisionForm.minuIni.value!=""){
+				if(document.ActaComisionForm.minuIni.value>59){
+					error = true;
+					//errores += "<siga:Idioma key='sjcs.actas.XXX'/>"+ '\n';
+					errores += "Los minutos de la hora inicial no puede ser mayor de 59"+ '\n';
+				} else {
+					if(document.ActaComisionForm.horaIni.value==""){
+						document.ActaComisionForm.horaIni.value=0;
+					}
+				}	
+			}
+			
+			if(document.ActaComisionForm.horaFin.value!=""){
+				if(document.ActaComisionForm.horaFin.value>23){
+					error = true;
+					//errores += "<siga:Idioma key='sjcs.actas.XXX'/>"+ '\n';
+					errores += "La hora final no puede ser mayor de 23"+ '\n';
+				} else {
+					if(document.ActaComisionForm.minuFin.value==""){
+						document.ActaComisionForm.minuFin.value=0;
+					}
+				}			
+			}
+			if(document.ActaComisionForm.minuFin.value!=""){
+				if(document.ActaComisionForm.minuFin.value>59){
+					error = true;
+					//errores += "<siga:Idioma key='sjcs.actas.XXX'/>"+ '\n';
+					errores += "Los minutos de la hora final no puede ser mayor de 59"+ '\n';
+				} else {
+					if(document.ActaComisionForm.horaFin.value==""){
+						document.ActaComisionForm.horaFin.value=0;
+					}
+				}	
+			}					
+			
+			//if(document.ActaComisionForm.horaIni.value!=""&&document.ActaComisionForm.minuIni.value!=""&&document.ActaComisionForm.horaFin.value!=""&&document.ActaComisionForm.minuFin.value!=""){
+			//	if (document.ActaComisionForm.horaIni.value>document.ActaComisionForm.horaFin.value){
+			//		error = true;
+			//		//errores += "<siga:Idioma key='sjcs.actas.XXX'/>"+ '\n';
+			//		errores += "La hora inicial es mayor que la hora final"+ '\n';
+			//	}
+			//	else {
+			//		if (document.ActaComisionForm.horaIni.value==document.ActaComisionForm.horaFin.value&&document.ActaComisionForm.minuIni.value>document.ActaComisionForm.minuFin.value){
+			//			error = true;
+			//			//errores += "<siga:Idioma key='sjcs.actas.XXX'/>"+ '\n';
+			//			errores += "La hora inicial es mayor que la hora final"+ '\n';
+			//		}
+			//	}
+			//}		
+			
 			if(error==false){
 				document.ActaComisionForm.modo.value="insertar";
 				document.ActaComisionForm.submit();
