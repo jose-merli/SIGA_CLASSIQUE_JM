@@ -3,7 +3,6 @@ package com.siga.envios.action;
 import java.io.File;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,7 +14,6 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
-import com.siga.beans.EnvCamposEnviosAdm;
 import com.siga.beans.EnvCamposPlantillaBean;
 import com.siga.beans.EnvEnviosAdm;
 import com.siga.beans.EnvEnviosBean;
@@ -94,8 +92,7 @@ public class ImagenPlantillaAction extends MasterAction
 		try 
 		{
 			ImagenPlantillaForm form = (ImagenPlantillaForm)formulario;
-	        Vector vOcultos = form.getDatosTablaOcultos(0);
-			String idImagen = (String)vOcultos.elementAt(3);
+			String idImagen = (String)form.getDatosTablaOcultos(0).elementAt(3);
 			form.setIdImagen(idImagen);
 
 			EnvImagenPlantillaAdm admImagenPlantilla = new EnvImagenPlantillaAdm(this.getUserBean(request));
@@ -134,13 +131,11 @@ public class ImagenPlantillaAction extends MasterAction
 		
 		// Obtenemos el nombre de plantilla por si se ha modificado
 	    EnvPlantillasEnviosAdm plantAdm = new EnvPlantillasEnviosAdm(this.getUserBean(request));
-	    Hashtable htPk = new Hashtable();
+	    Hashtable<String,Object> htPk = new Hashtable<String, Object>();
 	    htPk.put(EnvCamposPlantillaBean.C_IDINSTITUCION,form.getIdInstitucion());
 	    htPk.put(EnvCamposPlantillaBean.C_IDTIPOENVIOS,form.getIdTipoEnvios());
 	    htPk.put(EnvCamposPlantillaBean.C_IDPLANTILLAENVIOS,form.getIdPlantillaEnvios());
-	    Vector vPlant = plantAdm.selectByPK(htPk);	    
-	    EnvPlantillasEnviosBean pantillaEnvios = (EnvPlantillasEnviosBean)vPlant.firstElement();
-	    String plantilla = pantillaEnvios.getNombre();	    	    
+	    EnvPlantillasEnviosBean pantillaEnvios = (EnvPlantillasEnviosBean)plantAdm.selectByPK(htPk).firstElement();   	    
 	    form.setPlantillaEnvios(pantillaEnvios);
 	    
 		EnvImagenPlantillaAdm admImagenPlantilla = new EnvImagenPlantillaAdm(this.getUserBean(request));
@@ -156,7 +151,6 @@ public class ImagenPlantillaAction extends MasterAction
 	{
 		ImagenPlantillaForm form = (ImagenPlantillaForm)formulario;
 		UsrBean userBean =this.getUserBean(request);
-		EnvCamposEnviosAdm admCamposEnvio = new EnvCamposEnviosAdm(userBean);
 
         String idInstitucion = userBean.getLocation();
         String idEnvio = (String)request.getParameter("idEnvio");
@@ -168,12 +162,10 @@ public class ImagenPlantillaAction extends MasterAction
 
         
         EnvEnviosAdm admEnvio = new EnvEnviosAdm(userBean);
-        Vector vEnvio = admEnvio.selectByPK(htAux);
-        EnvEnviosBean envioBean = (EnvEnviosBean)vEnvio.elementAt(0);
+        EnvEnviosBean envioBean = (EnvEnviosBean)admEnvio.selectByPK(htAux).elementAt(0);
 
 //        String sDescripcionEnvio = envioBean.getDescripcion();
         String sIdPlantillaEnvio = ""+envioBean.getIdPlantillaEnvios();
-        String sIdPlantillaGeneracion = ""+envioBean.getIdPlantilla();
 
         htAux.clear();
         htAux.put(EnvPlantillasEnviosBean.C_IDINSTITUCION, envioBean.getIdInstitucion());
@@ -182,8 +174,7 @@ public class ImagenPlantillaAction extends MasterAction
         
 
         EnvPlantillasEnviosAdm admPlantillaEnvio = new EnvPlantillasEnviosAdm(this.getUserBean(request));
-        Vector vPlantillaEnvio = admPlantillaEnvio.selectByPK(htAux);
-        EnvPlantillasEnviosBean plantillaEnvio = (EnvPlantillasEnviosBean)vPlantillaEnvio.elementAt(0);
+        EnvPlantillasEnviosBean plantillaEnvio = (EnvPlantillasEnviosBean)admPlantillaEnvio.selectByPK(htAux).elementAt(0);
 
 		
 		form.setIdInstitucion(idInstitucion);
@@ -205,8 +196,7 @@ public class ImagenPlantillaAction extends MasterAction
 	{
 		ImagenPlantillaForm form = (ImagenPlantillaForm)formulario;
 		EnvImagenPlantillaAdm admImagenPlantilla = new EnvImagenPlantillaAdm(this.getUserBean(request));
-		Vector vOcultos = form.getDatosTablaOcultos(0);
-		String idImagen = (String)vOcultos.elementAt(3);
+		String idImagen = (String)form.getDatosTablaOcultos(0).elementAt(3);
 	    
 		Hashtable<String,Object> htPk = new Hashtable<String, Object>();
 	    htPk.put(EnvImagenPlantillaBean.C_IDINSTITUCION,form.getIdInstitucion());
@@ -214,8 +204,7 @@ public class ImagenPlantillaAction extends MasterAction
 	    htPk.put(EnvImagenPlantillaBean.C_IDPLANTILLAENVIOS,form.getIdPlantillaEnvios());
 	    htPk.put(EnvImagenPlantillaBean.C_IDIMAGEN,idImagen);
 	    
-	    Vector vImagen = admImagenPlantilla.selectByPK(htPk);
-	    EnvImagenPlantillaBean imagenBean =(EnvImagenPlantillaBean)vImagen.firstElement();
+	    EnvImagenPlantillaBean imagenBean =(EnvImagenPlantillaBean)admImagenPlantilla.selectByPK(htPk).get(0);	 
 	    form.setIdImagen(idImagen);
 	    form.setNombre(imagenBean.getNombre());
 	    form.setTipoArchivo(imagenBean.getTipoArchivo());
@@ -288,8 +277,7 @@ public class ImagenPlantillaAction extends MasterAction
 		ImagenPlantillaForm form = (ImagenPlantillaForm)formulario;
 		UsrBean userBean = this.getUserBean(request);
         EnvImagenPlantillaAdm imagenAdm = new EnvImagenPlantillaAdm(userBean);
-        Vector vOcultos = form.getDatosTablaOcultos(0);
-		String idImagen = (String)vOcultos.elementAt(3);
+		String idImagen = (String)form.getDatosTablaOcultos(0).elementAt(3);
 		form.setIdImagen(idImagen);
         
         

@@ -9,8 +9,15 @@
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
-<%@ taglib uri="c.tld" prefix="c"%>
 
+<%@ page import="com.siga.envios.form.ImagenPlantillaForm"%>
+<%@ page import="com.siga.beans.EnvPlantillasEnviosBean"%>
+
+<%
+	ImagenPlantillaForm formPlantilla = (ImagenPlantillaForm)request.getAttribute("ImagenPlantillaForm");
+	EnvPlantillasEnviosBean envPlantilla = formPlantilla.getPlantillaEnvios();
+	String plantilla = envPlantilla.getNombre();
+%>
 
 <html>
 	<head>
@@ -118,9 +125,7 @@
 	<table class="tablaTitulo" align="center" height="20" cellpadding="0" cellspacing="0">
 		<tr>
 			<td class="titulosPeq">
-				<siga:Idioma key="envios.plantillas.literal.plantilla"/>:&nbsp;
-				<c:out value="${ImagenPlantillaForm.plantillaEnvios.nombre}"></c:out>
-								
+				<siga:Idioma key="envios.plantillas.literal.plantilla"/>:&nbsp;<%=plantilla%>								
 			</td>
 		</tr>
 	</table>				
@@ -144,26 +149,24 @@
 		   		  </logic:empty>
 		   		 <logic:notEmpty name="ImagenPlantillaForm"	property="imagenes">
 					<logic:iterate name="ImagenPlantillaForm" property="imagenes" id="imagen" indexId="index">
-					
-					
-
-				<%index = index.intValue()+1; %>
+										
+				<%
+					ImagenPlantillaForm formImagen = formPlantilla.getImagenes().get(index);
+					index = index.intValue()+1;										 
+				%>
 				<input type="hidden" id="oculto<%=index%>_1" value="<bean:write name="imagen" property="idInstitucion" />">
 				<input type="hidden" id="oculto<%=index%>_2" value="<bean:write name="imagen" property="idTipoEnvios" />">
 				<input type="hidden" id="oculto<%=index%>_3" value="<bean:write name="imagen" property="idPlantillaEnvios" />">
 				<input type="hidden" id="oculto<%=index%>_4" value="<bean:write name="imagen" property="idImagen" />">
 	  			<siga:FilaConIconos fila='<%=String.valueOf(index.intValue())%>' botones='<%=botonesFila%>'elementos='<%=elementosFila%>' clase="listaNonEdit" visibleConsulta='no'>
-					<td>
-						<c:out value="${imagen.nombre}"></c:out>						
-						
-					</td>
-					<td><c:out value="${imagen.tipoArchivo}"></c:out></td>
-					<td><c:out value="${imagen.embebedTxt}"></c:out></td>
+					<td><%=formImagen.getNombre()%></td>
+					<td><%=formImagen.getTipoArchivo()%></td>
+					<td><%=formImagen.getEmbebedTxt()%></td>
 				</siga:FilaConIconos>
 
-		</logic:iterate>
-		</logic:notEmpty>
-	</siga:TablaCabecerasFijas>
+					</logic:iterate>
+				</logic:notEmpty>
+			</siga:TablaCabecerasFijas>
 
 	<siga:ConjBotonesAccion botones="<%=botones%>" clase="botonesDetalle"/>
 
