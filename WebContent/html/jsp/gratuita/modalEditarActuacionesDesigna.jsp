@@ -645,9 +645,9 @@
 					     </font>
 					     <%}else{%>	
 					    	 <font class="labelTextValor">
-					     		<html:text name="ActuacionesDesignasForm" property="talonario" size="20" styleClass="boxConsulta" />
+					     		<html:text name="ActuacionesDesignasForm" property="talonario" size="20" styleClass="boxConsulta" readOnly="true"/>
 					     		&nbsp;/&nbsp;
-					     		<html:text name="ActuacionesDesignasForm" property="talon" size="20" styleClass="boxConsulta" />
+					     		<html:text name="ActuacionesDesignasForm" property="talon" size="20" styleClass="boxConsulta" readOnly="true"/>
 					    	 </font>	
 					     <%}%>	
 					     
