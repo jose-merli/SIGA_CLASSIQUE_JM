@@ -1837,7 +1837,10 @@ public class PersonaJGAction extends MasterAction {
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_NOMBRE,miform.getNombre());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_APELLIDO1,miform.getApellido1());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_APELLIDO2,miform.getApellido2());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_FECHANACIMIENTO,GstDate.getApplicationFormatDate("",miform.getFechaNac()));
+			if ((miform.getFechaNac()==null)||(miform.getFechaNac().equalsIgnoreCase("")))
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_FECHANACIMIENTO,"");
+			else
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_FECHANACIMIENTO,GstDate.getApplicationFormatDate("",miform.getFechaNac()));
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPROFESION,miform.getProfesion());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDMINUSVALIA,miform.getMinusvalia());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_ESTADOCIVIL,miform.getEstadoCivil());
