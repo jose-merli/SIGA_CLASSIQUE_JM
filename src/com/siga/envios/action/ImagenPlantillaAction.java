@@ -16,6 +16,7 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.beans.EnvCamposEnviosAdm;
+import com.siga.beans.EnvCamposPlantillaBean;
 import com.siga.beans.EnvEnviosAdm;
 import com.siga.beans.EnvEnviosBean;
 import com.siga.beans.EnvImagenPlantillaAdm;
@@ -126,18 +127,22 @@ public class ImagenPlantillaAction extends MasterAction
 	{
 		ImagenPlantillaForm form = (ImagenPlantillaForm)formulario;
 		
-		
-		
-		
-		
 		form.setIdInstitucion(request.getParameter("idInstitucion").toString());
 		form.setIdTipoEnvios(request.getParameter("idTipoEnvio").toString());
 		form.setIdPlantillaEnvios(request.getParameter("idPlantillaEnvios").toString());
 		String editable = request.getParameter("editable").toString();
-		String nombrePlantilla = request.getParameter("plantilla").toString();
-	    EnvPlantillasEnviosBean pantillaEnvios = new EnvPlantillasEnviosBean();
-	    pantillaEnvios.setNombre(nombrePlantilla);
+		
+		// Obtenemos el nombre de plantilla por si se ha modificado
+	    EnvPlantillasEnviosAdm plantAdm = new EnvPlantillasEnviosAdm(this.getUserBean(request));
+	    Hashtable htPk = new Hashtable();
+	    htPk.put(EnvCamposPlantillaBean.C_IDINSTITUCION,form.getIdInstitucion());
+	    htPk.put(EnvCamposPlantillaBean.C_IDTIPOENVIOS,form.getIdTipoEnvios());
+	    htPk.put(EnvCamposPlantillaBean.C_IDPLANTILLAENVIOS,form.getIdPlantillaEnvios());
+	    Vector vPlant = plantAdm.selectByPK(htPk);	    
+	    EnvPlantillasEnviosBean pantillaEnvios = (EnvPlantillasEnviosBean)vPlant.firstElement();
+	    String plantilla = pantillaEnvios.getNombre();	    	    
 	    form.setPlantillaEnvios(pantillaEnvios);
+	    
 		EnvImagenPlantillaAdm admImagenPlantilla = new EnvImagenPlantillaAdm(this.getUserBean(request));
 	    List<ImagenPlantillaForm> lImagenes = admImagenPlantilla.getImagenes(form.getImagenPlantillaBean());
 	    form.setImagenes(lImagenes);
