@@ -10,9 +10,9 @@
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
-<%@ taglib uri="c.tld" prefix="c"%>
-
-
+<%
+	String nombrePlantilla   = (String)request.getAttribute("nombrePlantilla");
+%>
 
 <html>
 	<head>
@@ -90,8 +90,7 @@
 				<table class="tablaTitulo" align="center" cellspacing="0">
 					<tr>
 						<td id="titulo" class="titulitosDatos">
-							<siga:Idioma key="envios.plantillas.literal.plantilla"/>:&nbsp;
-							<c:out value="${PlantillasEnviosCorreoElectronicoForm.plantillaEnvios.descripcionPlantilla}"></c:out>
+							<siga:Idioma key="envios.plantillas.literal.plantilla"/>:&nbsp;<%=nombrePlantilla%>
 						</td>
 					</tr>
 				</table>

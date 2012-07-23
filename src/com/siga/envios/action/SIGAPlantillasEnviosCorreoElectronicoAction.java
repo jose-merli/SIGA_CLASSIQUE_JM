@@ -35,12 +35,8 @@ public class SIGAPlantillasEnviosCorreoElectronicoAction extends MasterAction
         
 		EnvPlantillasEnviosAdm plantillasEnvioAdm = new EnvPlantillasEnviosAdm (this.getUserBean(request));
         EnvPlantillasEnviosBean plantillasEnvioBean = (EnvPlantillasEnviosBean) plantillasEnvioAdm.selectByPK(ht).get(0);	        
-        nombrePlantilla = plantillasEnvioBean.getNombre();	  	    
-	    	    
-		SIGAPlantillasEnviosForm plantForm = new SIGAPlantillasEnviosForm();
-		plantForm.setDescripcionPlantilla(nombrePlantilla);
-		form.setPlantillaEnvios(plantForm);
-
+        nombrePlantilla = plantillasEnvioBean.getNombre();	
+        request.setAttribute("nombrePlantilla", nombrePlantilla);
 	    
 	    EnvCamposPlantillaAdm admProducto = new EnvCamposPlantillaAdm(this.getUserBean(request));	    
 	    Vector vDatos = admProducto.obtenerCampos(form.getIdInstitucion(), form.getIdTipoEnvios(), form.getIdPlantillaEnvios(), "E");
