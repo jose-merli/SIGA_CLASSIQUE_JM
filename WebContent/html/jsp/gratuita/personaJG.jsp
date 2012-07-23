@@ -409,8 +409,8 @@
 
 	<script type="text/javascript">
 	
-			function controlFecha(){
-				var sFechaNac = document.forms[0].fechaNac.value;
+			function proFechaNac(){
+				var sFechaNac = document.forms[0].fechaNac.value;				
 				
 				if(!validarFecha2(sFechaNac)){
 					sFechaNac = "";
@@ -448,8 +448,7 @@
 						document.forms[0].edad.value = numEdad;
 						document.forms[0].edad.readonly="false";			
 					}						
-				<%}%>	
-															
+				<%}%>																
 			}
 
 			function retarda(tipoId){
@@ -1610,7 +1609,7 @@
 			<%
 				if (!accion.equalsIgnoreCase("ver")) {
 			%>
-			 <siga:Fecha  nombreCampo= "fechaNac" valorInicial="<%=fechaNac%>" readOnly="true" postFunction="controlFecha()" />
+			 <siga:Fecha  nombreCampo= "fechaNac" valorInicial="<%=fechaNac%>" readOnly="true" postFunction="proFechaNac()" />
 			<%
 				}else{
 			%>
