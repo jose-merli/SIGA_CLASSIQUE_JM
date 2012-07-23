@@ -22,18 +22,20 @@ public class SIGAPlantillasEnviosCorreoElectronicoAction extends MasterAction
 //	    String idInstitucion = form.getIdInstitucion();
 //	    String idTipoEnvio = form.getIdTipoEnvio();
 //	    String idPlantillaEnvios = form.getIdPlantillaEnvios();
-//	    
-//	    String sEditable = form.getEditable();
 	    
 		form.setIdInstitucion(request.getParameter("idInstitucion").toString());
 		form.setIdTipoEnvios(request.getParameter("idTipoEnvio").toString());
 		form.setIdPlantillaEnvios(request.getParameter("idPlantillaEnvios").toString());
-		String editable = request.getParameter("editable").toString();
 		String nombrePlantilla = request.getParameter("plantilla").toString();
 	    
-	    
-	    
-	    
+		Hashtable<String,Object> ht = new Hashtable<String, Object>();
+		ht.put(EnvPlantillasEnviosBean.C_IDINSTITUCION,form.getIdInstitucion());
+		ht.put(EnvPlantillasEnviosBean.C_IDPLANTILLAENVIOS,form.getIdPlantillaEnvios());
+		ht.put(EnvPlantillasEnviosBean.C_IDTIPOENVIOS,form.getIdTipoEnvios());
+        
+		EnvPlantillasEnviosAdm plantillasEnvioAdm = new EnvPlantillasEnviosAdm (this.getUserBean(request));
+        EnvPlantillasEnviosBean plantillasEnvioBean = (EnvPlantillasEnviosBean) plantillasEnvioAdm.selectByPK(ht).get(0);	        
+        nombrePlantilla = plantillasEnvioBean.getNombre();	  	    
 	    	    
 		SIGAPlantillasEnviosForm plantForm = new SIGAPlantillasEnviosForm();
 		plantForm.setDescripcionPlantilla(nombrePlantilla);
@@ -52,8 +54,10 @@ public class SIGAPlantillasEnviosCorreoElectronicoAction extends MasterAction
 	    
 	    else
 	    {
-		    Hashtable ht1 = (Hashtable)vDatos.elementAt(0);
-		    Hashtable ht2 = (Hashtable)vDatos.elementAt(1);
+	    	Hashtable<String,Object> ht1 = new Hashtable<String, Object>();
+		    ht1 = (Hashtable)vDatos.elementAt(0);
+		    Hashtable<String,Object> ht2 = new Hashtable<String, Object>();
+		    ht2 = (Hashtable)vDatos.elementAt(1);
 		    
 		    if (ht1.get(EnvCamposBean.C_IDCAMPO).equals(EnvCamposPlantillaAdm.K_IDCAMPO_ASUNTO))
 		    {
