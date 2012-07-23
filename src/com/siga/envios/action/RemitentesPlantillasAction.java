@@ -24,6 +24,7 @@ import com.siga.beans.CenPersonaBean;
 import com.siga.beans.EnvDestinatariosBean;
 import com.siga.beans.EnvEnviosAdm;
 import com.siga.beans.EnvEnviosBean;
+import com.siga.beans.EnvImagenPlantillaBean;
 import com.siga.beans.EnvPlantillaRemitentesAdm;
 import com.siga.beans.EnvPlantillaRemitentesBean;
 import com.siga.beans.EnvPlantillasEnviosAdm;
@@ -114,13 +115,10 @@ public class RemitentesPlantillasAction extends MasterAction {
        
         
         try {
-	        Vector tipo, datos;
-	       
-	        Hashtable htTipo = new Hashtable();
+	        Hashtable<String,Object> htTipo = new Hashtable<String, Object>();
 	        htTipo.put(EnvTipoEnviosBean.C_IDTIPOENVIOS,idTipoEnvios);
 	        EnvTipoEnviosAdm tipoAdm = new EnvTipoEnviosAdm (this.getUserBean(request));
-	        tipo = tipoAdm.selectByPK(htTipo);
-	        EnvTipoEnviosBean tipoBean = (EnvTipoEnviosBean)tipo.firstElement();	        
+	        EnvTipoEnviosBean tipoBean = (EnvTipoEnviosBean)tipoAdm.selectByPK(htTipo).firstElement();	        
 	        request.setAttribute("tipo", tipoBean.getNombre());
 	        
 	        EnvPlantillasEnviosAdm plantillasEnvioAdm = new EnvPlantillasEnviosAdm (this.getUserBean(request));
@@ -128,14 +126,10 @@ public class RemitentesPlantillasAction extends MasterAction {
 	        htTipo.put(EnvPlantillasEnviosBean.C_IDPLANTILLAENVIOS,idPlantillaEnvios);
 	        htTipo.put(EnvPlantillasEnviosBean.C_IDTIPOENVIOS,idTipoEnvios);
 	        
-	        EnvPlantillasEnviosBean plantillasEnvioBean = (EnvPlantillasEnviosBean) plantillasEnvioAdm.selectByPK(htTipo).get(0);
+	        EnvPlantillasEnviosBean plantillasEnvioBean = (EnvPlantillasEnviosBean) plantillasEnvioAdm.selectByPK(htTipo).get(0);	        
+	        nombrePlantilla = plantillasEnvioBean.getNombre();	        	        	       
 	        
-	        
-	        
-	        
-	        
-	        datos = plantillasEnvioAdm.getRemitentes(idInstitucion,idTipoEnvios,idPlantillaEnvios);
-	        request.setAttribute("datos", datos); 
+	        request.setAttribute("datos", plantillasEnvioAdm.getRemitentes(idInstitucion,idTipoEnvios,idPlantillaEnvios)); 
 
 	        request.setAttribute("nombrePlantilla", nombrePlantilla);
 	        request.setAttribute("acuseRecibo", plantillasEnvioBean.getAcuseRecibo());
