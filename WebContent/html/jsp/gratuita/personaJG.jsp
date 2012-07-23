@@ -409,6 +409,43 @@
 
 	<script type="text/javascript">
 	
+			function comprobarFecha(sFecha){
+			
+				<%if (!obligatorioFechaNac) {%>
+					if (sFecha==""){
+						return true;
+					}
+				<%}%>
+			
+				if ((sFecha=="")||(!validarFecha2(sFecha))){
+					return false;
+				}							
+								
+				var diaFecha = parseInt(sFecha.substring(0,2),10);
+				var mesFecha = parseInt(sFecha.substring(3,5),10);
+				var anioFecha = parseInt(sFecha.substring(6,10),10);
+				
+				var dFechaActual = new Date();
+				var diaFechaActual = dFechaActual.getDate();
+				var mesFechaActual = dFechaActual.getMonth()+1;
+				var anioFechaActual = dFechaActual.getFullYear();
+				
+				if (anioFecha>anioFechaActual) {
+					return false;
+				}
+				else {
+					if ((anioFecha==anioFechaActual)&&(mesFecha>mesFechaActual)) {
+						return false;
+					}
+					else {
+						if ((anioFecha==anioFechaActual)&&(mesFecha==mesFechaActual)&&(diaFecha>diaFechaActual)) {
+							return false;
+						}
+					}
+				}
+				return true;
+			}							
+	
 			function proFechaNac(){
 				var sFechaNac = document.forms[0].fechaNac.value;				
 				
@@ -430,6 +467,10 @@
 					if ((mesFechaActual<mesFechaNac)||(mesFechaActual==mesFechaNac&&diaFechaActual<diaFechaNac)){
 						numEdad = numEdad - 1;							
 					}
+					
+					if (numEdad<0) {
+						numEdad="";
+					}
 				}
 
 				<%if (obligatorioFechaNac) {%>
@@ -442,11 +483,13 @@
 					
 				<%} else {%>
 					if (sFechaNac=="") {
-						document.forms[0].edad.readonly="true";
+						document.forms[0].edad.className="box";
+						document.forms[0].edad.readOnly=false;
 					}
 					else {
-						document.forms[0].edad.value = numEdad;
-						document.forms[0].edad.readonly="false";			
+						document.forms[0].edad.value = numEdad;		
+						document.forms[0].edad.className="boxConsulta";
+						document.forms[0].edad.readOnly=true;	
 					}						
 				<%}%>																
 			}
@@ -1629,13 +1672,13 @@
 		%>
 		<td>
 			<%
-				if (obligatorioFechaNac) {
+				if ((obligatorioFechaNac)||(accion.equalsIgnoreCase("ver"))||(fechaNac!="")) {
 			%>
-				<html:text name="PersonaJGForm" onkeypress="return soloDigitos(event)" value ="<%=edad %>" property="edad" size="3" styleClass="boxConsulta" readOnly="<%=obligatorioFechaNac%>"/>
+				<html:text name="PersonaJGForm" value ="<%=edad %>" property="edad" size="3" styleClass="boxConsulta" readOnly="true"/>
 			<%
 				}else{
 			%>
-			 	<html:text name="PersonaJGForm" onkeypress="return soloDigitos(event)" value ="<%=edad %>" property="edad" size="3" styleClass="<%=estiloBox %>" readOnly="<%=obligatorioFechaNac%>"/>
+			 	<html:text name="PersonaJGForm" onkeypress="return soloDigitos(event)" value ="<%=edad %>" property="edad" size="3" styleClass="<%=estiloBox %>"/>
 			<%
 				}
 			%>	
@@ -2679,11 +2722,15 @@ function limpiarPersonaContrario() {
 				return false;
 			}
 			if(document.forms[0].NIdentificacion.value=="") document.forms[0].tipoId.value = "";
-			if(!validaEdad()){
-				alert("<siga:Idioma key='gratuita.personaJG.messages.EdadErronea'/>");
+			
+			//if(!validaEdad()){
+			if(!comprobarFecha(document.getElementById('fechaNac').value)){
+				//alert("<siga:Idioma key='gratuita.personaJG.messages.EdadErronea'/>");
+				alert("<siga:Idioma key='fecha.error.valida'/>");				
 				fin();
 				return false;
-			}				
+			}
+							
 			document.forms[0].importeIngresosAnuales.value=document.forms[0].importeIngresosAnuales.value.replace(/,/,".").trim();
 			document.forms[0].importeBienesInmuebles.value=document.forms[0].importeBienesInmuebles.value.replace(/,/,".").trim();
 			document.forms[0].importeBienesMuebles.value=document.forms[0].importeBienesMuebles.value.replace(/,/,".").trim();
