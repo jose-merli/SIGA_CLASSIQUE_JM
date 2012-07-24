@@ -346,72 +346,72 @@
 		}
 		
 		function obtenerLetra(){
-			generarLetra();
-			/*if (!generarLetra()){
-				validaNumeroIdentificacion
-			}*/
+			if (generarLetra()) {
+				var tipoIdentificacion = document.getElementById("tipoIdentificacion").value;
+				if(tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")
+					alert("<siga:Idioma key='messages.nifcif.comprobacion.correcto'/>");
+				else
+					if(tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")
+						alert("<siga:Idioma key='messages.nie.comprobacion.correcto'/>");
+			}
+
 		}
-		
+	
 		function generarLetra() {
-			var numId = SolicitudIncorporacionForm.NIFCIF.value;
-			var tipoIdentificacion = SolicitudIncorporacionForm.tipoIdentificacion.value;
+			var numId = document.getElementById("NIFCIF").value;
+			var tipoIdentificacion = document.getElementById("tipoIdentificacion").value;
 		  	var letra='TRWAGMYFPDXBNJZSQVHLCKET';
-			if(numId.length==0){
+			if(numId.length==0) {
 				return false;		
 			}
-			if( (tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")){
+			if(tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>"){
 				if(numId.length==8){
 					if(isNumero(numId)==true){
 					 	numero = numId;
 					 	numero = numero % 23;
 					 	letra=letra.substring(numero,numero+1);
-					 	SolicitudIncorporacionForm.NIFCIF.value =numId+letra;
-					}else{
-						return validaNumeroIdentificacion(tipoIdentificacion, numId);
+					 	document.getElementById("NIFCIF").value = numId+letra;
 					}
-				}else{
-					rc = validaNumeroIdentificacion(tipoIdentificacion, numId);
-					if(rc==false){
-					    return rc;
-					}	
-				}
-			} else	if((tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") ){
-				if(numId.length==8){
-					var dnie = SolicitudIncorporacionForm.NIFCIF.value;
-					letIni = numId.substring(0,1);
-					primeraLetra = letIni;
-					if  (letIni.toUpperCase()=='Y')
-				 		letIni = '1';
-				 	else if  (letIni.toUpperCase()=='Z')
-				 		letIni = '2';
-				 	else{
-				 		letIni = '0';
-				 	}
-					num = letIni+numId.substring(1,8);
-					if(primeraLetra.match('[X|Y|Z]') && isNumero(num)){
-						var posicion = num % 23;
-						letras='TRWAGMYFPDXBNJZSQVHLCKET';
-						var letra=letras.substring(posicion,posicion+1);
-						numero = dnie + letra;
-						SolicitudIncorporacionForm.NIFCIF.value = numero;
-					}else{
+					else
+						return validaNumeroIdentificacion(tipoIdentificacion, numId);					
+				} 
+				else
+					return validaNumeroIdentificacion(tipoIdentificacion, numId);
+			} 
+			else
+				if((tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") ){
+					if(numId.length==8){
+						var dnie = document.getElementById("NIFCIF").value;
+						letIni = numId.substring(0,1);
+						primeraLetra = letIni;
+						if  (letIni.toUpperCase()=='Y')
+				 			letIni = '1';
+				 		else {
+				 			if  (letIni.toUpperCase()=='Z')
+				 				letIni = '2';
+				 			else
+				 				letIni = '0';
+				 		}
+				 
+						num = letIni+numId.substring(1,8);
+						if(primeraLetra.match('[X|Y|Z]') && isNumero(num)){
+							var posicion = num % 23;
+							letras='TRWAGMYFPDXBNJZSQVHLCKET';
+							var letra=letras.substring(posicion,posicion+1);
+							numero = dnie + letra;
+							document.getElementById("NIFCIF").value = numero;
+						} 
+						else 
+							return validaNumeroIdentificacion(tipoIdentificacion, numId);					
+					} 
+					else
 						return validaNumeroIdentificacion(tipoIdentificacion, numId);
-					}	
-				}else{
-					rc = validaNumeroIdentificacion(tipoIdentificacion, numId);
-					if(rc==undefined){
-						return rc;
-					}else if(rc==false){
-						return rc;
-					}	
 				}
-				
-			}
+							
 			// Caso1: Se han realizado las modificaciones necesarias sin encontrar errores 
-			// Caso2: no es nif ni nie no hay generacion de letra
-
+			// Caso2: no es nif ni nie no hay generacion de letra	
 			return true;
-		}
+		}	
 
 		function validaNumeroIdentificacion(){
 			var errorNIE = false;
