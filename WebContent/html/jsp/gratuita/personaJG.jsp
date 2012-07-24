@@ -1652,7 +1652,7 @@
 			<%
 				if (!accion.equalsIgnoreCase("ver")) {
 			%>
-			 <siga:Fecha  nombreCampo= "fechaNac" valorInicial="<%=fechaNac%>" postFunction="proFechaNac()" />
+			 <siga:Fecha  nombreCampo= "fechaNac" valorInicial="<%=fechaNac%>" postFunction="proFechaNac();" />
 			<%
 				}else{
 			%>
