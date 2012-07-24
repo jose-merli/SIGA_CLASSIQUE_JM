@@ -24,7 +24,6 @@ import com.siga.beans.CenPersonaBean;
 import com.siga.beans.EnvDestinatariosBean;
 import com.siga.beans.EnvEnviosAdm;
 import com.siga.beans.EnvEnviosBean;
-import com.siga.beans.EnvImagenPlantillaBean;
 import com.siga.beans.EnvPlantillaRemitentesAdm;
 import com.siga.beans.EnvPlantillaRemitentesBean;
 import com.siga.beans.EnvPlantillasEnviosAdm;
@@ -112,30 +111,29 @@ public class RemitentesPlantillasAction extends MasterAction {
         String idTipoEnvios      = (String)request.getParameter("idTipoEnvio");
         String nombrePlantilla   = (String)request.getParameter("plantilla");
         String idPlantillaEnvios = (String)request.getParameter("idPlantillaEnvios");
-       
+        String editable = (String)request.getParameter("editable").toString();
+        Hashtable<String,Object> htTipo = new Hashtable<String, Object>();
         
-        try {
-	        Hashtable<String,Object> htTipo = new Hashtable<String, Object>();
+        try {	        
 	        htTipo.put(EnvTipoEnviosBean.C_IDTIPOENVIOS,idTipoEnvios);
 	        EnvTipoEnviosAdm tipoAdm = new EnvTipoEnviosAdm (this.getUserBean(request));
 	        EnvTipoEnviosBean tipoBean = (EnvTipoEnviosBean)tipoAdm.selectByPK(htTipo).firstElement();	        
-	        request.setAttribute("tipo", tipoBean.getNombre());
+	        
 	        
 	        EnvPlantillasEnviosAdm plantillasEnvioAdm = new EnvPlantillasEnviosAdm (this.getUserBean(request));
 	        htTipo.put(EnvPlantillasEnviosBean.C_IDINSTITUCION,idInstitucion);
 	        htTipo.put(EnvPlantillasEnviosBean.C_IDPLANTILLAENVIOS,idPlantillaEnvios);
-	        htTipo.put(EnvPlantillasEnviosBean.C_IDTIPOENVIOS,idTipoEnvios);
 	        
-	        EnvPlantillasEnviosBean plantillasEnvioBean = (EnvPlantillasEnviosBean) plantillasEnvioAdm.selectByPK(htTipo).get(0);	        
+	        EnvPlantillasEnviosBean plantillasEnvioBean = (EnvPlantillasEnviosBean) plantillasEnvioAdm.selectByPK(htTipo).firstElement();	        
 	        nombrePlantilla = plantillasEnvioBean.getNombre();	        	        	       
 	        
+	        request.setAttribute("tipo", tipoBean.getNombre());
 	        request.setAttribute("datos", plantillasEnvioAdm.getRemitentes(idInstitucion,idTipoEnvios,idPlantillaEnvios)); 
-
 	        request.setAttribute("nombrePlantilla", nombrePlantilla);
 	        request.setAttribute("acuseRecibo", plantillasEnvioBean.getAcuseRecibo());
 	        request.setAttribute("idTipoEnvio", idTipoEnvios);
 	        request.setAttribute("idPlantillaEnvios", idPlantillaEnvios);
-	        request.setAttribute("editable", request.getParameter("editable"));
+	        request.setAttribute("editable", editable);
         } 
         catch (Exception e) {
             throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
