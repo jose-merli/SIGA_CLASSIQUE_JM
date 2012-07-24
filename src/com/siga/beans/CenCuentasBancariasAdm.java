@@ -206,15 +206,17 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 			String where = " WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona +
 							" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion;
 			if(!bIncluirRegistrosConBajaLogica) {
-				where += " AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_FECHABAJA + " IS NULL";
+				where += " AND (" + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_FECHABAJA + " IS NULL " +
+								 " 	OR " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_FECHABAJA + " > SYSDATE) ";
 			}
 			
 			String where2 = " WHERE " + CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_CEN_CLIENTE_IDPERSONA + " = " + idPersona +
 							" AND " + CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_CEN_CLIENTE_IDINSTITUCION + " = " + idInstitucion;
 			if(!bIncluirRegistrosConBajaLogica) {
-				where2 += " AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_FECHABAJA + " IS NULL";
+				where2 += " AND (" + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_FECHABAJA + " IS NULL " +
+								 " 	OR " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_FECHABAJA + " > SYSDATE) ";
 			}
-		
+			
 			rc = new RowsContainer(); 
 			String sql = UtilidadesBDAdm.sqlSelect(CenCuentasBancariasBean.T_NOMBRETABLA, this.getCamposCuentas());
 			sql += where;			
