@@ -660,6 +660,7 @@
 	function inicio() {
 		//Para que se rellene el combo de costes
 		if( document.getElementsByName("ActuacionAsistenciaForm")[0].modo.value != "ver" ) {
+		// if(document.ActuacionAsistenciaForm.modo.value=='ver' && document.ActuacionAsistenciaFormEdicion.validada.value != "1"){	
 			document.getElementById("tiposActuacion").onchange();
 		}
 		document.getElementById("checkDiaDespues").checked = document.ActuacionAsistenciaFormEdicion.diaDespues.value=='S';
@@ -939,7 +940,9 @@
 	<!-- Asociada al boton Restablecer -->
 	function accionRestablecer() {		
 		document.ActuacionAsistenciaFormEdicion.reset();
-		inicio();
+		if(document.ActuacionAsistenciaFormEdicion.validada.value != "1"){ 
+			inicio();
+		}
 	}
 </script>
 
