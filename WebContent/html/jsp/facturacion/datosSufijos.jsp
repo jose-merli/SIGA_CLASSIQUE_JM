@@ -62,7 +62,9 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 
 	<!-- Validaciones en Cliente -->
@@ -85,8 +87,13 @@
 	
 		<!-- Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() {
+			
 			sub();
 			if (validateSufijosForm(document.sufijosForm)) {
+				while(sufijosForm.sufijo.value.length <3) {
+					sufijosForm.sufijo.value = "0"+sufijosForm.sufijo.value;
+				}
+				alert(sufijosForm.sufijo.value);
 				sufijosForm.modo.value = "<%=accion%>";
 				sufijosForm.submit();
 			}else{
@@ -125,7 +132,7 @@
 									<siga:Idioma key="facturacion.sufijos.literal.sufijo"/>&nbsp;(*)
 								</td>
 								<td class="labelText">
-									<html:text name="sufijosForm" property="sufijo" size="3" maxlength="5" styleClass="<%=claseSufijo%>" readonly="<%=lecturaSufijo%>" value="<%=sufijo%>"/>
+									<html:text name="sufijosForm" property="sufijo" size="3" maxlength="3" styleClass="<%=claseSufijo%>" readonly="<%=lecturaSufijo%>" value="<%=sufijo%>"/>
 								</td>
 							</tr>
 							<tr>
