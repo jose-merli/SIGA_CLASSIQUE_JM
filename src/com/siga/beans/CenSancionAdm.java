@@ -256,17 +256,11 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 */
 	public Paginador getSancionesBuscar(SancionesLetradoForm form, String idInstitucionAlta, String tipobusqueda) throws ClsExceptions{
-		Vector salida = new Vector();
-		Hashtable hash=null;
 		String chkRehabilitado="";
 		String tipofecha="";
-		String fechainicioarchivada="";
-		String fechafinarchivada="";
-		RowsContainer rc = new RowsContainer(); 
-		try{
-			
+		try{					
             String sql ="SELECT " +
-			" nvl( " +CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+",' ') || ' ' || nvl( " +CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+",' ') || ' ' || nvl( " +CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+",' ') AS NOMBRE_LETRADO, " +
+			CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+"||nvl2("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+",' '||"+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+",'')||', '||"+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+" AS NOMBRE_LETRADO, " +
 			" " +CenTipoSancionBean.T_NOMBRETABLA+"."+CenTipoSancionBean.C_DESCRIPCION+" AS NOMBRE_TIPOSANCION, " +
 			" " +CenInstitucionBean.T_NOMBRETABLA+"."+CenInstitucionBean.C_ABREVIATURA+" AS ABREVIATURA_INSTI, " +
 			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_IDINSTITUCION+", " +
@@ -429,7 +423,9 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 			}
 			if (form.getChkRehabilitado()!=null){
 				chkRehabilitado ="1";
-				sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_CHKREHABILITADO+ "=" + chkRehabilitado;			}
+				sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_CHKREHABILITADO+ "=" + chkRehabilitado;			
+			}
+			sql += " ORDER BY NOMBRE_LETRADO";
 		
 			Paginador paginador = new Paginador(sql);				
 			int totalRegistros = paginador.getNumeroTotalRegistros();
