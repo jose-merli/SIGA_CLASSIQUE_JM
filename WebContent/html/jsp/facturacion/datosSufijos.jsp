@@ -93,7 +93,6 @@
 				while(sufijosForm.sufijo.value.length <3) {
 					sufijosForm.sufijo.value = "0"+sufijosForm.sufijo.value;
 				}
-				alert(sufijosForm.sufijo.value);
 				sufijosForm.modo.value = "<%=accion%>";
 				sufijosForm.submit();
 			}else{
