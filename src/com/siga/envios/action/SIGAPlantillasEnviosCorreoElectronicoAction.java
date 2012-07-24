@@ -17,11 +17,6 @@ public class SIGAPlantillasEnviosCorreoElectronicoAction extends MasterAction
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions
 	{
 	    SIGAPlantillasEnviosCorreoElectronicoForm form = (SIGAPlantillasEnviosCorreoElectronicoForm)formulario;
-
-
-//	    String idInstitucion = form.getIdInstitucion();
-//	    String idTipoEnvio = form.getIdTipoEnvio();
-//	    String idPlantillaEnvios = form.getIdPlantillaEnvios();
 	    
 		form.setIdInstitucion(request.getParameter("idInstitucion").toString());
 		form.setIdTipoEnvios(request.getParameter("idTipoEnvio").toString());
@@ -34,7 +29,7 @@ public class SIGAPlantillasEnviosCorreoElectronicoAction extends MasterAction
 		ht.put(EnvPlantillasEnviosBean.C_IDTIPOENVIOS,form.getIdTipoEnvios());
         
 		EnvPlantillasEnviosAdm plantillasEnvioAdm = new EnvPlantillasEnviosAdm (this.getUserBean(request));
-        EnvPlantillasEnviosBean plantillasEnvioBean = (EnvPlantillasEnviosBean) plantillasEnvioAdm.selectByPK(ht).get(0);	        
+        EnvPlantillasEnviosBean plantillasEnvioBean = (EnvPlantillasEnviosBean) plantillasEnvioAdm.selectByPK(ht).firstElement();		        
         nombrePlantilla = plantillasEnvioBean.getNombre();	
         request.setAttribute("nombrePlantilla", nombrePlantilla);
 	    
