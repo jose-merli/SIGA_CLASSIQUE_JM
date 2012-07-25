@@ -1044,7 +1044,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 	        expBean.setTipoExpDisciplinario(form.getTipoExpDisciplinario().equals("")?null:Integer.valueOf(form.getTipoExpDisciplinario()));
 		    expBean.setNumExpDisciplinario(form.getNumExpDisciplinario().equals("")?null:Integer.valueOf(form.getNumExpDisciplinario()));
 		    expBean.setAnioExpDisciplinario(form.getAnioExpDisciplinario().equals("")?null:Integer.valueOf(form.getAnioExpDisciplinario()));
-	        
+	        expBean.setObservaciones(form.getObservaciones());
 	        expBean.setAsunto(form.getAsunto());
 	        expBean.setIdClasificacion(form.getClasificacion().equals("")?null:Integer.valueOf(form.getClasificacion()));
 	        expBean.setJuzgado(form.getJuzgado());
@@ -1085,8 +1085,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 	        expBean.setFechaProrrogaEstado(form.getFechaProrroga().equals("")?"":GstDate.getApplicationFormatDate("",form.getFechaProrroga()));
 	        
 	        expBean.setFechaCaducidad(form.getFechaCaducidad().equals("")?"":GstDate.getApplicationFormatDate("",form.getFechaCaducidad()));
-	        if (form.getObservaciones()!= null && !form.getObservaciones().equals(""))
-	        	expBean.setObservaciones(form.getObservaciones());
+
 	        if (form.getMinuta()!= null){
 	        	if(!form.getMinuta().equals(""))
 	        		try{
