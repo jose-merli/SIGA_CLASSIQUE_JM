@@ -92,7 +92,7 @@
 				for (i = 0; i < 2; i++) 
 				{
   						var tabla;
-  						tabla = document.getElementById('tabladatos');
+  						tabla = document.getElementById('tablaDatos');
   						if (i == 0)
   						{
     						var flag = true;
