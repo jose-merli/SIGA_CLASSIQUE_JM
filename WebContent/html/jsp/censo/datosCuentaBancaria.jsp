@@ -62,7 +62,7 @@ VERSIONES: -->
 	ArrayList listaBancos = new ArrayList();
 	String fechaBaja = "";
 
-	String modo=(String)request.getAttribute("modoConsulta");	
+	String modo=(String)request.getAttribute("modoConsulta");		
 	if (modo.equals("ver") || modo.equals("editar")) {
 		htData = (Hashtable)request.getSession().getAttribute("DATABACKUP");
 		if (htData != null) {
@@ -111,7 +111,10 @@ VERSIONES: -->
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script src="<html:rewrite page='/html/js/jquery-ui.js'/>" type="text/javascript"></script>	
 	
 	<!-- Validaciones en Cliente -->
 	<html:javascript formName="cuentasBancariasForm" staticJavascript="false" />  
@@ -188,7 +191,6 @@ VERSIONES: -->
 		}		
 		<!-- Selecciona los valores de los campos check y combo dependiendo de los valores del Hashtable -->
 		function rellenarCampos(){
-
 			<%if (htData != null) {%>
 				// Obtenemos el valor para los check Tipo de Cuenta.
 				var abonoCargo = "";
@@ -371,7 +373,10 @@ VERSIONES: -->
 							<!-- FILA -->
 							<tr>
 								<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.banco"/></td>
-								<td class="labelText" COLSPAN="3"><siga:ComboBD nombre="banco" ancho="500" tipo="cmbBancos" clase="<%=claseCombo%>" obligatorio="true" elementoSel="<%=listaBancos%>" accion="document.all.cuentasBancariasForm.cbo_Codigo.value=document.all.cuentasBancariasForm.banco.value" readonly="<%=String.valueOf(desactivado)%>"/></td>
+								<td class="labelText" COLSPAN="3">
+									<select style="width:500px;" id="banco" class="claseCombo" onchange="document.all.cuentasBancariasForm.cbo_Codigo.value=document.all.cuentasBancariasForm.banco.value">																		
+									</select>							
+								</td>
 							</tr>
 
 							<!-- FILA -->
@@ -395,10 +400,9 @@ VERSIONES: -->
 				</td>
 			</tr>
 		</html:form>
-		</table>
+		</table>	
 	
-	<script>rellenarCampos()</script>
-	
+		<script>rellenarCampos()</script>	
 	
 	<!-- FIN: CAMPOS -->
 
@@ -428,3 +432,27 @@ VERSIONES: -->
 
 </body>
 </html>
+
+<script>
+	$.ajax({ //Comunicación jQuery hacia JSP  
+   		type: "GET",
+		url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBancos",
+		contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+		success: function(json){		
+			var listBancos = json.listaBancos;
+
+       		$.each(listBancos, function(i,itemBanco){
+       			if(cuentasBancariasForm.cbo_Codigo.value!=null && itemBanco.idCodigo == cuentasBancariasForm.cbo_Codigo.value)
+       				$("#banco").append("<option selected value='"+itemBanco.idCodigo+"'>"+itemBanco.nombre+"</option>");
+       			else
+       				$("#banco").append("<option value='"+itemBanco.idCodigo+"'>"+itemBanco.nombre+"</option>");       			
+       		});									
+       		document.getElementById("banco").disabled=<%=String.valueOf(desactivado)%>;       		
+			fin();
+		},
+		error: function(e){
+			alert('Error de comunicación: ' + e);
+			fin();
+		}
+	});
+</script>

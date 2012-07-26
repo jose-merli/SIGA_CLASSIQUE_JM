@@ -7,6 +7,7 @@
 package com.siga.censo.action;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,13 +17,25 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.*;
+import com.siga.beans.CenBancosAdm;
+import com.siga.beans.CenBancosBean;
+import com.siga.beans.CenClienteAdm;
+import com.siga.beans.CenColegiadoAdm;
+import com.siga.beans.CenColegiadoBean;
+import com.siga.beans.CenCuentasBancariasAdm;
+import com.siga.beans.CenCuentasBancariasBean;
+import com.siga.beans.CenHistoricoBean;
+import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.CenSolicModiCuentasAdm;
+import com.siga.beans.CenSolicModiCuentasBean;
 import com.siga.censo.form.CuentasBancariasForm;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
@@ -72,6 +85,10 @@ public class CuentasBancariasAction extends MasterAction{
 					mapDestino = solicitarModificacion(mapping, miForm, request, response);
 				} else if(accion.equalsIgnoreCase("insertarModificacion")){
 					mapDestino = insertarModificacion(mapping, miForm, request, response);
+				} 
+				else if ( accion.equalsIgnoreCase("getAjaxBancos")){
+					getAjaxBancos (mapping, miForm, request, response);
+					return null;					
 				} else {
 					return super.executeInternal(mapping,
 							      formulario,
@@ -630,5 +647,46 @@ public class CuentasBancariasAction extends MasterAction{
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);
 		}
 		return null;
+	}
+	
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 * @throws Exception
+	 */
+	protected void getAjaxBancos (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception {
+		
+		CenBancosAdm bancosAdm = new CenBancosAdm(this.getUserBean(request));
+				
+		List<CenBancosBean> listaBancos = bancosAdm.getBancos(this.getUserBean(request));
+		
+		JSONObject json = new JSONObject();
+		JSONArray lbJsonArray = new JSONArray();
+		
+		for (int i=0;i<listaBancos.size();i++) {
+			//CenBancosBean cbb = listaBancos.get(i);
+			//json = new JSONObject();
+			//json.put("idCodigo", cbb.getCodigo());
+			//json.put("nombre", cbb.getNombre());
+			//lbJsonArray.put(json);
+			lbJsonArray.put(listaBancos.get(i).getJSONObject());
+		}		
+		
+		json.put("listaBancos", lbJsonArray);
+		
+		// json.
+		 response.setContentType("text/x-json;charset=ISO-8859-15");
+		 response.setHeader("Cache-Control", "no-cache");
+		 response.setHeader("Content-Type", "application/json");
+	     response.setHeader("X-JSON", json.toString());
+		 response.getWriter().write(json.toString()); 
 	}
 }

@@ -5,6 +5,9 @@
 
 package com.siga.beans;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Clase que recoge y establece los valores del bean CEN_BANCOS <br/>
  * Tiene tantos metodos set y get por cada uno de los campos de dicho formulario 
@@ -28,5 +31,16 @@ public class CenBancosBean extends MasterBean {
 	//Metodos GET
 	public String getCodigo() {return codigo;}	
 	public String getNombre() {return nombre;}
+	
+	public JSONObject getJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("idCodigo", this.codigo);
+            obj.put("nombre", this.nombre);
+        } 
+        catch (JSONException e) {
+        }
+        return obj;
+    }
 	
 }
