@@ -305,7 +305,8 @@ public class CenSolicitudAlterMutuaAdm extends MasterBeanAdministrador {
 		sql.append("SELECT SOL.* ");
 		sql.append(" FROM CEN_SOLICITUDALTER SOL");
 		sql.append(" WHERE ( SOL.IDPERSONA = " + identificador );
-		sql.append(" OR SOL.IDSOLICITUD = " + identificador + ")");
+		sql.append(" OR SOL.IDSOLICITUD = " + identificador );
+		sql.append(" OR SOL.IDSOLICITUD = (SELECT IDSOLICITUD FROM CEN_SOLICITUDINCORPORACION WHERE IDPERSONA= "+identificador + "))");
 		if(propuesta!=null){
 			sql.append(" AND SOL.PROPUESTA = " + propuesta );
 		}
