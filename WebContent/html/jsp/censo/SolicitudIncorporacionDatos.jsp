@@ -181,11 +181,13 @@
   	
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 	
-	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script src="<html:rewrite page='/html/js/jquery-ui.js'/>" type="text/javascript"></script>
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>	
-	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>	
 	
 	<title><siga:Idioma key="censo.SolicitudIncorporacionDatos.titulo"/></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
@@ -890,14 +892,16 @@
 			<tr>					
 				<td class="labelText" nowrap>Cuenta</td>	
 				<td class="labelText">
-				      <html:text size="4"  maxlength="4" property="cbo_Codigo"     value="<%=cbo_Codigo%>" 				styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" onChange="document.SolicitudIncorporacionForm.banco.value=document.SolicitudIncorporacionForm.cbo_Codigo.value"></html:text>
+				      <html:text size="4"  maxlength="4" property="cbo_Codigo"     value="<%=cbo_Codigo%>" 				styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" onChange="SolicitudIncorporacionForm.banco.value=SolicitudIncorporacionForm.cbo_Codigo.value"></html:text>
 					- <html:text size="4"  maxlength="4" property="codigoSucursal" value="<%=cuentaCodigoSucursal%>" 	styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"></html:text>
 					- <html:text size="2"  maxlength="2" property="digitoControl"  value="<%=cuentaDigitoControl%>" 	styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"></html:text>
 					- <html:text size="10" maxlength="10" property="numeroCuenta"  value="<%=cuentaNumeroCuenta%>" 		styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"></html:text></td>
 				
 				<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.banco"/></td>
 				<td class="labelText">
-					<siga:ComboBD nombre="banco" ancho="450" tipo="cmbBancos" clase="boxCombo" elementoSel="<%=listaBancos%>" readOnly="<%=sreadonly%>" accion="document.SolicitudIncorporacionForm.cbo_Codigo.value=document.SolicitudIncorporacionForm.banco.value"/>
+					<select style="width:450px;" id="banco" class="boxCombo" onchange="SolicitudIncorporacionForm.cbo_Codigo.value=SolicitudIncorporacionForm.banco.value">																		
+					</select>
+					<!--<siga:ComboBD nombre="banco" ancho="450" tipo="cmbBancos" clase="boxCombo" elementoSel="<%=listaBancos%>" readOnly="<%=sreadonly%>" accion="document.SolicitudIncorporacionForm.cbo_Codigo.value=document.SolicitudIncorporacionForm.banco.value"/>-->
 				</td>
 			</tr>
 		</table>
@@ -1362,4 +1366,26 @@
 </body>
 </html>
 
+<script>
+	jQuery.ajax({ //Comunicación jQuery hacia JSP  
+   		type: "POST",
+		url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBancos",
+		dataType: "json",
+		success: function(json){		
+			var listBancos = json.listaBancos;
 
+       		jQuery.each(listBancos, function(i,itemBanco){
+       			if(SolicitudIncorporacionForm.cbo_Codigo.value!=null && itemBanco.idCodigo == SolicitudIncorporacionForm.cbo_Codigo.value)
+       				jQuery("#banco").append("<option selected value='"+itemBanco.idCodigo+"'>"+itemBanco.nombre+"</option>");
+       			else
+       				jQuery("#banco").append("<option value='"+itemBanco.idCodigo+"'>"+itemBanco.nombre+"</option>");       			
+       		});									
+       		document.getElementById("banco").disabled=<%=sreadonly%>;       		
+			fin();
+		},
+		error: function(e){
+			alert('Error de comunicación: ' + e);
+			fin();
+		}
+	});
+</script>

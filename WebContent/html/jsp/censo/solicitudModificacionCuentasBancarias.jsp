@@ -296,18 +296,18 @@
 </html>
 
 <script>
-	$.ajax({ //Comunicación jQuery hacia JSP  
+	jQuery.ajax({ //Comunicación jQuery hacia JSP  
    		type: "GET",
 		url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBancos",
 		contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 		success: function(json){		
 			var listBancos = json.listaBancos;
 
-       		$.each(listBancos, function(i,itemBanco){
+       		jQuery.each(listBancos, function(i,itemBanco){
        			if(cuentasBancariasSolicForm.cbo_Codigo.value!=null && itemBanco.idCodigo == cuentasBancariasSolicForm.cbo_Codigo.value)
-       				$("#banco").append("<option selected value='"+itemBanco.idCodigo+"'>"+itemBanco.nombre+"</option>");
+       				jQuery("#banco").append("<option selected value='"+itemBanco.idCodigo+"'>"+itemBanco.nombre+"</option>");
        			else
-       				$("#banco").append("<option value='"+itemBanco.idCodigo+"'>"+itemBanco.nombre+"</option>");       			
+       				jQuery("#banco").append("<option value='"+itemBanco.idCodigo+"'>"+itemBanco.nombre+"</option>");       			
        		});											
 			fin();
 		},
