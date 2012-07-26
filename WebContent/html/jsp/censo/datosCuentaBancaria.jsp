@@ -375,7 +375,8 @@ VERSIONES: -->
 								<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.banco"/></td>
 								<td class="labelText" COLSPAN="3">
 									<select style="width:500px;" id="banco" class="claseCombo" onchange="document.all.cuentasBancariasForm.cbo_Codigo.value=document.all.cuentasBancariasForm.banco.value">																		
-									</select>							
+									</select>	
+									<!--<siga:ComboBD nombre="banco" ancho="500" tipo="cmbBancos" clase="<%=claseCombo%>" obligatorio="true" elementoSel="<%=listaBancos%>" accion="document.all.cuentasBancariasForm.cbo_Codigo.value=document.all.cuentasBancariasForm.banco.value" readonly="<%=String.valueOf(desactivado)%>"/>-->						
 								</td>
 							</tr>
 
