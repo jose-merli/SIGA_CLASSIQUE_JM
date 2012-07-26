@@ -243,7 +243,7 @@
 									<siga:Idioma key="censo.datosCuentaBancaria.literal.banco"/>
 								</td>
 								<td class="labelText" COLSPAN="3">
-									<select style="width:500px;" id="banco" class="boxCombo" onchange="cuentasBancariasSolicForm.cbo_Codigo.value=cuentasBancariasSolicForm.banco.value">																		
+									<select id="banco" class="boxCombo" onchange="cuentasBancariasSolicForm.cbo_Codigo.value=cuentasBancariasSolicForm.banco.value">																		
 									</select>									
 					   				<!--<siga:ComboBD nombre="banco" tipo="cmbBancos" clase="boxCombo" obligatorio="true" elementoSel="<%=lista%>" accion="document.all.cuentasBancariasSolicForm.cbo_Codigo.value=document.all.cuentasBancariasSolicForm.banco.value"/>-->
 					   			</td>
