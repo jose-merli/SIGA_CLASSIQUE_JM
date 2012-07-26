@@ -47,7 +47,7 @@ public class AtosAsistenciasService extends JtaBusinessServiceTemplate
 	public List<ActuacionAsistenciaForm> getActuacionesAsistencia(AsistenciaForm asistenciaForm, UsrBean usrBean)
 			throws ClsExceptions {
 		ScsActuacionAsistenciaAdm  actuacionAsistenciaAdm = new ScsActuacionAsistenciaAdm(usrBean);
-		List<ActuacionAsistenciaForm> lista = actuacionAsistenciaAdm.getActuacionesAsistencia(asistenciaForm.getAsistenciaVO());
+		List<ActuacionAsistenciaForm> lista = actuacionAsistenciaAdm.getActuacionesAsistencia(asistenciaForm.getAsistenciaVO(), usrBean);
 		return lista;
 	}
 	

@@ -412,7 +412,7 @@ public class ScsActuacionAsistenciaAdm extends MasterBeanAdministrador {
 	
 	return alActuacionesAsistencias;
 }
-	public  List<ActuacionAsistenciaForm> getActuacionesAsistencia(ScsAsistenciasBean asistencia) throws ClsExceptions{
+	public  List<ActuacionAsistenciaForm> getActuacionesAsistencia(ScsAsistenciasBean asistencia, UsrBean usrBean) throws ClsExceptions{
 		StringBuffer sql =  new StringBuffer();
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;
@@ -422,7 +422,7 @@ public class ScsActuacionAsistenciaAdm extends MasterBeanAdministrador {
 		sql.append("AA.IDFACTURACION, AA.FACTURADO, ");
 		
 		
-		sql.append("F_SIGA_GETRECURSO(TA.DESCRIPCION, 1) DESCRIPCIONACTUACION, ");
+		sql.append("F_SIGA_GETRECURSO(TA.DESCRIPCION, "+usrBean.getLanguage()+") DESCRIPCIONACTUACION, ");
 		
 		sql.append("DECODE(AA.IDFACTURACION,null, null, ");
 		sql.append("FJG.NOMBRE || ' (' || TO_CHAR(FJG.FECHADESDE, 'DD/MM/YYYY') || '-' || ");
