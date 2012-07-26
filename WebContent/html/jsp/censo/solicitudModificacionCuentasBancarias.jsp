@@ -50,7 +50,10 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script src="<html:rewrite page='/html/js/jquery-ui.js'/>" type="text/javascript"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 	<!-- Calendario -->
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
@@ -240,8 +243,10 @@
 									<siga:Idioma key="censo.datosCuentaBancaria.literal.banco"/>
 								</td>
 								<td class="labelText" COLSPAN="3">
-					   			<siga:ComboBD nombre="banco" tipo="cmbBancos" clase="boxCombo" obligatorio="true" elementoSel="<%=lista%>" accion="document.all.cuentasBancariasSolicForm.cbo_Codigo.value=document.all.cuentasBancariasSolicForm.banco.value"/>
-					   		</td>
+									<select style="width:500px;" id="banco" class="boxCombo" onchange="cuentasBancariasSolicForm.cbo_Codigo.value=cuentasBancariasSolicForm.banco.value">																		
+									</select>									
+					   				<!--<siga:ComboBD nombre="banco" tipo="cmbBancos" clase="boxCombo" obligatorio="true" elementoSel="<%=lista%>" accion="document.all.cuentasBancariasSolicForm.cbo_Codigo.value=document.all.cuentasBancariasSolicForm.banco.value"/>-->
+					   			</td>
 							</tr>
 							<!-- FILA -->
 							<tr>
@@ -251,7 +256,7 @@
 								<td class="labelText"><siga:Idioma key="censo.datosCuentaBancaria.literal.cuenta"/>&nbsp;(*)</td>			
 							</tr>
 							<tr>										
-								<td class="labelText"><html:text name="cuentasBancariasSolicForm" property="cbo_Codigo" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_CBO_CODIGO))%>"         size="4"  maxlength="4"  styleClass="box" onChange="document.all.cuentasBancariasSolicForm.banco.value=document.all.cuentasBancariasSolicForm.cbo_Codigo.value"></html:text></td>
+								<td class="labelText"><html:text name="cuentasBancariasSolicForm" property="cbo_Codigo" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_CBO_CODIGO))%>"         size="4"  maxlength="4"  styleClass="box" onChange="cuentasBancariasSolicForm.banco.value=cuentasBancariasSolicForm.cbo_Codigo.value"></html:text></td>
 								<td class="labelText"><html:text name="cuentasBancariasSolicForm" property="codigoSucursal" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_CODIGOSUCURSAL))%>" size="4"  maxlength="4"  styleClass="box"></html:text></td>
 								<td class="labelText"><html:text name="cuentasBancariasSolicForm" property="digitoControl" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_DIGITOCONTROL))%>"   size="2"  maxlength="2"  styleClass="box"></html:text></td>						
 								<td class="labelText"><html:text name="cuentasBancariasSolicForm" property="numeroCuenta" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_NUMEROCUENTA))%>"     size="10" maxlength="10" styleClass="box"></html:text></td>
@@ -289,3 +294,26 @@
 </html:form>
 </body>
 </html>
+
+<script>
+	$.ajax({ //Comunicación jQuery hacia JSP  
+   		type: "GET",
+		url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBancos",
+		contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+		success: function(json){		
+			var listBancos = json.listaBancos;
+
+       		$.each(listBancos, function(i,itemBanco){
+       			if(cuentasBancariasSolicForm.cbo_Codigo.value!=null && itemBanco.idCodigo == cuentasBancariasSolicForm.cbo_Codigo.value)
+       				$("#banco").append("<option selected value='"+itemBanco.idCodigo+"'>"+itemBanco.nombre+"</option>");
+       			else
+       				$("#banco").append("<option value='"+itemBanco.idCodigo+"'>"+itemBanco.nombre+"</option>");       			
+       		});											
+			fin();
+		},
+		error: function(e){
+			alert('Error de comunicación: ' + e);
+			fin();
+		}
+	});
+</script>
