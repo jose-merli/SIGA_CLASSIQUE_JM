@@ -108,6 +108,7 @@ public class CenBancosAdm extends MasterBeanAdministrador
  				CenBancosBean bancoBean = new CenBancosBean();
 				bancoBean.setNombre(UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar"));
 				bancoBean.setCodigo("-1");
+				listaBancos.add(bancoBean);
  				
 				for (int i = 0; i < rc.size(); i++)	{
 					Row fila = (Row) rc.get(i);
