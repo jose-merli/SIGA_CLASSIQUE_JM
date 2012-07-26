@@ -246,6 +246,7 @@
 					<html:text name="MantenimientoMovimientosForm" property="cantidad" size= "11" maxlength="11" styleClass="<%=claseNum%>" readonly="false"  value="<%=UtilidadesNumero.formatoCampo(cantidad)%>"/>&nbsp;&euro;
 				</td>
 			</tr>
+			<%if ((modo!=null)&&(!modo.equals("nuevo"))){%>
 			<tr>
 				<td class="labelText">
 					<siga:Idioma key="factSJCS.datosMovimientos.literal.pago"/>
@@ -253,7 +254,7 @@
 				<td class="labelText" colspan="3">
 					<html:text name="MantenimientoMovimientosForm" property="idPagoJg" size= "50" maxlength="100" styleClass="boxConsulta" readonly="true" value="<%=pago%>"/>
 				</td>
-				
+			<%}%>	
 			</tr>
 			<tr>
 				<td class="labelText">
