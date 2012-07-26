@@ -45,7 +45,6 @@ import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.AdmTipoFiltroInformeBean;
 import com.siga.beans.AdmTipoInformeAdm;
 import com.siga.beans.AdmTipoInformeBean;
-import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.EnvTipoEnviosBean;
 import com.siga.beans.FcsFacturacionJGAdm;
 import com.siga.beans.GenParametrosAdm;
@@ -61,6 +60,7 @@ import com.siga.beans.ScsInclusionGuardiasEnListasAdm;
 import com.siga.beans.ScsInclusionGuardiasEnListasBean;
 import com.siga.beans.ScsListaGuardiasAdm;
 import com.siga.beans.ScsListaGuardiasBean;
+import com.siga.beans.ScsPersonaJGAdm;
 import com.siga.beans.ScsPersonaJGBean;
 import com.siga.beans.ScsTipoDocumentoEJGBean;
 import com.siga.certificados.Plantilla;
@@ -1592,22 +1592,35 @@ public class InformesGenericosAction extends MasterAction {
 	throws SIGAException, ClsExceptions {
 		UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));   
 		String idioma =  userBean.getLanguageExt();
-		String idiomaInt =  userBean.getLanguage();
+		String idiomaInt =  userBean.getLanguage();			
 		
 		MasterReport masterReport = new MasterReport();
-		Vector datos = masterReport.obtenerDatosFormulario(form.getDatosInforme());
-		//idinstitucion=="+idInstitucion + "##idtipo==" +idTipoEJG+"##anio=="+anio +"##numero==" +numero+"##idTipoInforme==DEJG%%%";
+		Vector datos = masterReport.obtenerDatosFormulario(form.getDatosInforme().toUpperCase());
+		//IDINSTITUCION==2040##IDTIPO==1##ANIO==2012##NUMERO==80##IDTIPOINFORME==DEJG%%%;
 		
 		
-		Hashtable hashtable = (Hashtable)datos.get(0);
-		String idInstitucion = (String)hashtable.get("idInstitucion");
-		String idTipoEJG = (String)hashtable.get("idtipo");
-		String anio = (String)hashtable.get("anio");
-		String numero = (String)hashtable.get("numero");
-		
+		Hashtable ht = (Hashtable)datos.get(0);
+		String idInstitucion = (String)ht.get("IDINSTITUCION");
+		String idTipoEJG = (String)ht.get("IDTIPO");
+		String anio = (String)ht.get("ANIO");
+		String numero = (String)ht.get("NUMERO");
+		ht.put("IDTIPOEJG",idTipoEJG);
 
 		try {
-
+			ScsPersonaJGAdm perAdm = new ScsPersonaJGAdm(userBean);					
+			String idlenguajeSolicitante = perAdm.getLenguajeSolicitante(ht);
+			
+			if (idlenguajeSolicitante!=null && !idlenguajeSolicitante.trim().equals("")){
+				idiomaInt=idlenguajeSolicitante;
+				
+				switch (Integer.parseInt(idiomaInt)) {
+					case 1:  idioma="ES"; break;
+					case 2:  idioma="CA"; break;
+					case 3:  idioma="EU"; break;
+					case 4:  idioma="GL"; break;	
+				}
+			}		
+			
 			GstDate gstDate = new GstDate();
 			String hoy = gstDate.parseDateToString(new Date(),"dd/MM/yyyy", this.getLocale(request));
 			ArrayList informesRes = new ArrayList(); 
@@ -1632,7 +1645,7 @@ public class InformesGenericosAction extends MasterAction {
 
 
 			ScsDocumentacionEJGAdm scsDocumentacionEJGAdm = new ScsDocumentacionEJGAdm(getUserBean(request));
-			RowsContainer rowscontainer = scsDocumentacionEJGAdm.getDocumentacionEJG(idInstitucion, idTipoEJG, anio, numero, userBean.getLanguage());
+			RowsContainer rowscontainer = scsDocumentacionEJGAdm.getDocumentacionEJG(idInstitucion, idTipoEJG, anio, numero, idiomaInt);
 
 			if (rowscontainer == null || rowscontainer.size() == 0) {
 				throw new SIGAException("messages.informes.noDocumentos");
