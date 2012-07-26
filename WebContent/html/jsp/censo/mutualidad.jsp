@@ -846,21 +846,42 @@
 	    	document.getElementById("tdEstadoSolicitud").innerText = resultado[1];
 	    	var ruta = resultado[2];
 			if(ruta.length>0 && confirm('¿Desea descargar el documento asociado a la solicitud?')){
-				
-				var formu=document.createElement("<form method='POST' name='descargar'  action='/SIGA/ServletDescargaFichero.svrl' target='submitArea'>");
-				formu.appendChild(document.createElement("<input type='hidden' name='rutaFichero'   value=''/>"));
-				formu.appendChild(document.createElement("<input type='hidden' name='nombreFichero'   value=''/>"));
-				formu.appendChild(document.createElement("<input type='hidden' name='accion'   value=''/>"));
-				document.appendChild(formu);
-				formu.rutaFichero.value=ruta;
-				formu.nombreFichero.value='Solicitud.pdf';
-				formu.accion.value = "";
+
+				var formu = document.createElement('form');
+             	formu.setAttribute('name', 'descargar');
+                formu.setAttribute('method', 'POST');
+                formu.setAttribute('action', '/SIGA/ServletDescargaFichero.svrl');
+                formu.setAttribute('target', 'submitArea');
+                formu.setAttribute('method', 'POST');
+
+                var myinput = document.createElement('input');
+                myinput.setAttribute('type', 'hidden');
+                myinput.setAttribute('name', 'rutaFichero');
+                myinput.setAttribute('value', ruta);
+                formu.appendChild(myinput);
+
+                var myinput2 = document.createElement('input');
+                myinput2.setAttribute('type', 'hidden');
+                myinput2.setAttribute('name', 'nombreFichero');
+                myinput2.setAttribute('value', 'Solicitud.pdf');
+                formu.appendChild(myinput2);
+
+                var myinput3 = document.createElement('input');
+                myinput3.setAttribute('type', 'hidden');
+                myinput3.setAttribute('name', 'accion');
+                myinput3.setAttribute('value', '');
+                formu.appendChild(myinput3);
+                
+				document.body.appendChild(formu);
 				formu.submit();
 				
 			}
 		}
 		
 	}
+	
+
+	
 	function accionComprobarEstadoMutualista()
 	{
 		document.MutualidadForm.modo.value = "actualizaEstadoMutualista";
@@ -870,17 +891,34 @@
 			document.MutualidadForm.estadoMutualista.value = resultado[0];	
 	    	document.getElementById("tdEstadoMutualista").innerText = resultado[0];
 			if(ruta.length>0 && confirm('¿Desea descargar el documento asociado a la solicitud?')){
-				
-				var formu=document.createElement("<form method='POST' name='descargar'  action='/SIGA/ServletDescargaFichero.svrl' target='submitArea'>");
-				formu.appendChild(document.createElement("<input type='hidden' name='rutaFichero'   value=''/>"));
-				formu.appendChild(document.createElement("<input type='hidden' name='nombreFichero'   value=''/>"));
-				formu.appendChild(document.createElement("<input type='hidden' name='accion'   value=''/>"));
-				document.appendChild(formu);
-				formu.rutaFichero.value=ruta;
-				formu.nombreFichero.value='Solicitud.pdf';
-				formu.accion.value = "";
+
+				var formu = document.createElement('form');
+             	formu.setAttribute('name', 'descargar');
+                formu.setAttribute('method', 'POST');
+                formu.setAttribute('action', '/SIGA/ServletDescargaFichero.svrl');
+                formu.setAttribute('target', 'submitArea');
+                formu.setAttribute('method', 'POST');
+
+                var myinput = document.createElement('input');
+                myinput.setAttribute('type', 'hidden');
+                myinput.setAttribute('name', 'rutaFichero');
+                myinput.setAttribute('value', ruta);
+                formu.appendChild(myinput);
+
+                var myinput2 = document.createElement('input');
+                myinput2.setAttribute('type', 'hidden');
+                myinput2.setAttribute('name', 'nombreFichero');
+                myinput2.setAttribute('value', 'Solicitud.pdf');
+                formu.appendChild(myinput2);
+
+                var myinput3 = document.createElement('input');
+                myinput3.setAttribute('type', 'hidden');
+                myinput3.setAttribute('name', 'accion');
+                myinput3.setAttribute('value', '');
+                formu.appendChild(myinput3);
+                
+				document.body.appendChild(formu);
 				formu.submit();
-				
 			}
 		}else{
 			document.getElementById("tdEstadoMutualista").innerText = "No se han recibido datos.";
@@ -889,6 +927,58 @@
 			document.getElementById("tdEstadoMutualista").innerText = "No se han recibido datos.";
 		}
 	}
+	
+	function accionActualizaEstados()
+	{
+		if(document.MutualidadForm.modo.value=="consulta" && document.MutualidadForm.idSolicitud && document.MutualidadForm.idSolicitud.value!=""){
+			fin();
+			document.MutualidadForm.modo.value = "actualizaEstados";
+			var resultado = ventaModalGeneral(document.MutualidadForm.name,"0",'<siga:Idioma key="censo.mutualidad.aviso.espera" />');
+			if(resultado){
+				var estadoMut = resultado[0];
+				var estadoSol = resultado[1];
+				var ruta = resultado[2];
+				if(resultado[0]=='') estadoMut = "No se han recibido datos.";
+		    	if(document.getElementById("tdEstadoMutualista")) document.getElementById("tdEstadoMutualista").innerText = estadoMut;
+		    	document.getElementById("tdEstadoSolicitud").innerText = estadoSol;
+		    	
+				if(ruta.length>0 && confirm('¿Desea descargar el documento asociado a la solicitud?')){
+	
+					var formu = document.createElement('form');
+	             	formu.setAttribute('name', 'descargar');
+	                formu.setAttribute('method', 'POST');
+	                formu.setAttribute('action', '/SIGA/ServletDescargaFichero.svrl');
+	                formu.setAttribute('target', 'submitArea');
+	                formu.setAttribute('method', 'POST');
+	
+	                var myinput = document.createElement('input');
+	                myinput.setAttribute('type', 'hidden');
+	                myinput.setAttribute('name', 'rutaFichero');
+	                myinput.setAttribute('value', ruta);
+	                formu.appendChild(myinput);
+	
+	                var myinput2 = document.createElement('input');
+	                myinput2.setAttribute('type', 'hidden');
+	                myinput2.setAttribute('name', 'nombreFichero');
+	                myinput2.setAttribute('value', 'Solicitud.pdf');
+	                formu.appendChild(myinput2);
+	
+	                var myinput3 = document.createElement('input');
+	                myinput3.setAttribute('type', 'hidden');
+	                myinput3.setAttribute('name', 'accion');
+	                myinput3.setAttribute('value', '');
+	                formu.appendChild(myinput3);
+	
+					document.body.appendChild(formu);
+					formu.submit();
+				}
+			}else{
+				document.getElementById("tdEstadoMutualista").innerText = "No se han recibido datos.";
+			}
+		}
+	}
+	
+	
 	function onchangeBeneficiario()
 	{
 		
@@ -944,7 +1034,9 @@
 		if("<%=accion%>"=="ver"){
 			jQuery('#botonSolicitarAltaSeguro').attr("disabled", "disabled");
 		}
+		accionActualizaEstados();
 	});
+	
 	
 </script>
 	

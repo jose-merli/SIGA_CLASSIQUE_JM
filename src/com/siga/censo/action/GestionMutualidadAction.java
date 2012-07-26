@@ -76,6 +76,8 @@ public class GestionMutualidadAction extends MasterAction {
 						mapDestino = inicioSolicitud(mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("actualizaEstadoMutualista")){
 						mapDestino = actualizaEstadoMutualista (mapping, miForm, request, response);
+					}else if ( accion.equalsIgnoreCase("actualizaEstados")){
+						mapDestino = actualizaEstados (mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("getAjaxPoblaciones")){
 						getAjaxPoblaciones (mapping, miForm, request, response);
 						return null;
@@ -328,6 +330,35 @@ public class GestionMutualidadAction extends MasterAction {
 
 		return forward;
 	}
+	
+	protected String actualizaEstados (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException 
+			{
+		MutualidadForm mutualidadForm = (MutualidadForm) formulario;
+		String forward = "exception";
+		try {
+			BusinessManager bm = getBusinessManager();
+			MutualidadService mutualidadService = (MutualidadService)bm.getService(MutualidadService.class);
+			mutualidadService.actualizaEstadoMutualista(mutualidadForm, this.getUserBean(request));
+			mutualidadService.actualizaEstadoSolicitud(mutualidadForm, this.getUserBean(request));
+			
+			String[] parametros = {mutualidadForm.getEstadoMutualista(), mutualidadForm.getEstado(), mutualidadForm.getPDF()};		
+			
+			request.setAttribute("parametrosArray", parametros);
+			//request.setAttribute("mensaje","messages.updated.success");
+			request.setAttribute("modal","");
+			
+			forward = "exitoParametros";
+			
+			
+		} catch (Exception e) {
+			throwExcp("messages.general.errorExcepcion", e, null); 
+		}
+		
+		return forward;
+			}
 	
 	protected String inicioFicha (ActionMapping mapping, 		
 			MasterForm formulario, 
