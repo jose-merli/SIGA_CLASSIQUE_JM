@@ -7,6 +7,8 @@ import java.util.Vector;
 
 import javax.transaction.SystemException;
 
+import org.redabogacia.sigaservices.app.AppConstants.EEJG_ESTADO;
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
@@ -221,7 +223,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 			peticionEejg.setNumeroIntentosSolicitud(0);
 			peticionEejg.setNumeroIntentosConsulta(0);
 			peticionEejg.setNumeroIntentosPendienteInfo(0);
-			peticionEejg.setEstado(ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL);
+			peticionEejg.setEstado((int)EEJG_ESTADO.INICIAL.getId());
 			insert(peticionEejg);
 //			tx.commit();
 //		} catch (Exception e) {
@@ -439,8 +441,8 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		
 		StringBuffer where = new StringBuffer(" WHERE " + ScsEejgPeticionesBean.C_IDSOLICITUD + " IS NULL");
 		where.append(" AND " + ScsEejgPeticionesBean.C_NUMEROINTENTOSSOLICITUD + " < " + numeroReintentosSolicitud);
-		where.append(" AND (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL);
-		where.append(" OR (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL_ESPERANDO);
+		where.append(" AND (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + EEJG_ESTADO.INICIAL.getId());
+		where.append(" OR (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + EEJG_ESTADO.INICIAL_ESPERANDO.getId());
 		where.append(" AND (SYSDATE - " + horasMaximas + ") >= " + ScsEejgPeticionesBean.C_FECHAMODIFICACION);
 		where.append(" ))");
 		return where.toString();
@@ -459,7 +461,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		updateSql.append(" SET ");
 		updateSql.append(ScsEejgPeticionesBean.C_ESTADO);
 		updateSql.append("=");
-		updateSql.append(ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL_ESPERANDO);
+		updateSql.append(EEJG_ESTADO.INICIAL_ESPERANDO.getId());
 		updateSql.append(" , ");
 		updateSql.append(ScsEejgPeticionesBean.C_FECHAMODIFICACION);
 		updateSql.append(" = SYSDATE ");
@@ -507,10 +509,10 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		where.append(" AND " + ScsEejgPeticionesBean.C_NUMEROINTENTOSCONSULTA + " < " + numeroReintentosConsulta);
 		where.append(" AND " + ScsEejgPeticionesBean.C_NUMEROINTENTOSPENDIENTEINFO + " < " + numeroReintentosPendienteInfo);
 		
-		where.append(" AND (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA);
-		where.append(" 		OR (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA_ESPERANDO);
+		where.append(" AND (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + EEJG_ESTADO.ESPERA.getId());
+		where.append(" 		OR (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + EEJG_ESTADO.ESPERA_ESPERANDO.getId());
 		where.append(" 			AND (SYSDATE - " + horasMaximas + ") >= " + ScsEejgPeticionesBean.C_FECHAMODIFICACION + ")");
-		where.append(" 		OR (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + ScsEejgPeticionesBean.EEJG_ESTADO_PENDIENTE_INFO);
+		where.append(" 		OR (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + EEJG_ESTADO.PENDIENTE_INFO.getId());
 		where.append(" 			AND (SYSDATE - " + (horasReintentoPendienteInfo/24.0) + ") >= " + ScsEejgPeticionesBean.C_FECHAMODIFICACION + "))");
 		
 		return where.toString();
@@ -523,7 +525,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		updateSql.append(" SET ");
 		updateSql.append(ScsEejgPeticionesBean.C_ESTADO);
 		updateSql.append("=");
-		updateSql.append(ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA_ESPERANDO);
+		updateSql.append(EEJG_ESTADO.ESPERA_ESPERANDO.getId());
 		updateSql.append(" , ");
 		updateSql.append(ScsEejgPeticionesBean.C_FECHAMODIFICACION);
 		updateSql.append(" = SYSDATE ");

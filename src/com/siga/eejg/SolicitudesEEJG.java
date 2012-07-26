@@ -6,6 +6,7 @@ import java.util.Vector;
 
 import org.apache.axis.EngineConfiguration;
 import org.apache.axis.configuration.FileProvider;
+import org.redabogacia.sigaservices.app.AppConstants.EEJG_ESTADO;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -144,12 +145,12 @@ public class SolicitudesEEJG {
 					ScsEejgXmlAdm scsEejgXmlAdm = new ScsEejgXmlAdm(usrBean);			
 					idXML = insertaLogBDD(scsEejgXmlAdm, scsEejgPeticionesBean, 
 							AxisObjectSerializerDeserializer.serializeAxisObject(respuestaConsultaInfoAAPP, false, false), 
-							ScsEejgXmlBean.RESPUESTA, ScsEejgPeticionesBean.EEJG_ESTADO_FINALIZADO);
+							ScsEejgXmlBean.RESPUESTA, EEJG_ESTADO.FINALIZADO);
 					
 					if (isPendiente(respuestaConsultaInfo.getDatosInfoAAPP())) {
-						scsEejgPeticionesBean.setEstado(ScsEejgPeticionesBean.EEJG_ESTADO_PENDIENTE_INFO);
+						scsEejgPeticionesBean.setEstado((int)EEJG_ESTADO.PENDIENTE_INFO.getId());
 					} else {
-						scsEejgPeticionesBean.setEstado(ScsEejgPeticionesBean.EEJG_ESTADO_FINALIZADO);
+						scsEejgPeticionesBean.setEstado((int)EEJG_ESTADO.FINALIZADO.getId());
 					}
 					
 				}
@@ -190,7 +191,7 @@ public class SolicitudesEEJG {
 	 * @param estado
 	 * @return
 	 */
-	private int insertaLogBDD(ScsEejgXmlAdm scsEejgXmlAdm,	ScsEejgPeticionesBean scsEejgPeticionesBean, String xml, String envioRespuesta, int estado) {		
+	private int insertaLogBDD(ScsEejgXmlAdm scsEejgXmlAdm,	ScsEejgPeticionesBean scsEejgPeticionesBean, String xml, String envioRespuesta, EEJG_ESTADO eejgEstado) {		
 		int idXml = -1;
 
 		try {
@@ -198,7 +199,7 @@ public class SolicitudesEEJG {
 			idXml = scsEejgXmlAdm.getNuevoIdXml();
 			scsEejgXmlBean.setIdXml(idXml);
 			scsEejgXmlBean.setIdPeticion(scsEejgPeticionesBean.getIdPeticion());
-			scsEejgXmlBean.setEstado(estado);
+			scsEejgXmlBean.setEstado((int)eejgEstado.getId());
 			scsEejgXmlBean.setEnvioRespuesta(envioRespuesta);
 			scsEejgXmlBean.setXml(xml);
 

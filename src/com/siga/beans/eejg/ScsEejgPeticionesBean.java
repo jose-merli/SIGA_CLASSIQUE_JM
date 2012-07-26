@@ -1,5 +1,8 @@
 package com.siga.beans.eejg;
 
+import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.AppConstants.EEJG_ESTADO;
+
 import com.siga.administracion.SIGAConstants;
 import com.siga.beans.AdmUsuariosBean;
 import com.siga.beans.MasterBean;
@@ -15,15 +18,6 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	 * 
 	 */
 	private static final long serialVersionUID = -6457973849067549976L;
-
-	public static final int EEJG_ESTADO_INICIAL = 10;  
-	public static final int EEJG_ESTADO_INICIAL_ESPERANDO = 15;
-	public static final int EEJG_ESTADO_ESPERA = 20;
-	public static final int EEJG_ESTADO_ESPERA_ESPERANDO = 25;
-	public static final int EEJG_ESTADO_PENDIENTE_INFO = 23;
-	public static final int EEJG_ESTADO_FINALIZADO = 30;
-	public static final int EEJG_ESTADO_ERROR_SOLICITUD = 40;
-	public static final int EEJG_ESTADO_ERROR_CONSULTA_INFO = 50;
 	
 	public static final String INSTITUCION_PARAMETROS_EEJG = "2000";
 	
@@ -280,32 +274,27 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	public FilaExtElement[] getElementosFila() {
 		FilaExtElement[] elementosFila = null;
 		int	estado = this.getEstado();
-		switch (estado) {
-			case ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL:
+		if (estado == AppConstants.EEJG_ESTADO.INICIAL.getId()) {
 				elementosFila = new FilaExtElement[4];
 				elementosFila[3] = new FilaExtElement("espera", "esperaEejg","general.boton.esperaEejg",SIGAConstants.ACCESS_READ);
-			break;
-			case ScsEejgPeticionesBean.EEJG_ESTADO_PENDIENTE_INFO:
+		} else if (estado == EEJG_ESTADO.PENDIENTE_INFO.getId()) {
 				elementosFila = new FilaExtElement[5];
 				elementosFila[3] = new FilaExtElement("espera", "avisoEsperaInfoEejg","general.boton.esperaInfoEejg",SIGAConstants.ACCESS_READ);
 				elementosFila[4] = new FilaExtElement("download", "esperaInfoEejg","general.boton.descargarEejg",	SIGAConstants.ACCESS_READ);
-			break;
-			case ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA:case ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA_ESPERANDO:case ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL_ESPERANDO:
+		} else if (estado == EEJG_ESTADO.ESPERA.getId()
+					|| estado == EEJG_ESTADO.ESPERA_ESPERANDO.getId()
+					|| estado == EEJG_ESTADO.INICIAL_ESPERANDO.getId()) {
 				elementosFila = new FilaExtElement[4];
 				elementosFila[3] = new FilaExtElement("espera", "esperaAdministracionesEejg","general.boton.esperaAdministracionesEejg",SIGAConstants.ACCESS_READ);
-			break;
-			case ScsEejgPeticionesBean.EEJG_ESTADO_ERROR_SOLICITUD:case ScsEejgPeticionesBean.EEJG_ESTADO_ERROR_CONSULTA_INFO:
+		} else if (estado == EEJG_ESTADO.ERROR_SOLICITUD.getId() || estado == EEJG_ESTADO.ERROR_CONSULTA_INFO.getId()) {
 				elementosFila = new FilaExtElement[4];
 				elementosFila[3] = new FilaExtElement("descargaLog", "errorEejg","general.boton.errorEejg",SIGAConstants.ACCESS_READ);
-			break;
-			case ScsEejgPeticionesBean.EEJG_ESTADO_FINALIZADO:
+		} else if (estado == EEJG_ESTADO.FINALIZADO.getId()) {
 				elementosFila = new FilaExtElement[4];
 				elementosFila[3] = new FilaExtElement("download", "descargarEejg","general.boton.descargarEejg",	SIGAConstants.ACCESS_READ);
-			break;
-		default:
+		} else {
 			elementosFila = new FilaExtElement[4];
-			elementosFila[3] = new FilaExtElement(null, "solicitarEejg","general.boton.solicitarEejg",	SIGAConstants.ACCESS_READ,"general.boton.solicitudEejg","90");
-			break;
+			elementosFila[3] = new FilaExtElement(null, "solicitarEejg","general.boton.solicitarEejg",	SIGAConstants.ACCESS_READ,"general.boton.solicitudEejg","90");		
 		}
 				
 		
@@ -328,9 +317,5 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	public void setRutaPDF(String rutaPDF) {
 		this.rutaPDF = rutaPDF;
 	}
-	
-	
-	
-
-	
+		
 }

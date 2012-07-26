@@ -11,6 +11,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
 
+import org.redabogacia.sigaservices.app.AppConstants.EEJG_ESTADO;
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
@@ -240,7 +242,7 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 			
 			//Sacaremmos solos las peticiones que esten finalizadas 
 			peticionEejg = new ScsEejgPeticionesBean();
-			peticionEejg.setEstado(ScsEejgPeticionesBean.EEJG_ESTADO_FINALIZADO);
+			peticionEejg.setEstado((int)EEJG_ESTADO.FINALIZADO.getId());
 			unidadFamiliar.setPeticionEejg(peticionEejg);
 			List<DefinirUnidadFamiliarEJGForm> alUnidadFamiliar = null;
 			try {

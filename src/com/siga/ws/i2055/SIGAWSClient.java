@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.transaction.UserTransaction;
 
@@ -24,6 +25,10 @@ import org.apache.axis.configuration.SimpleProvider;
 import org.apache.axis.transport.http.HTTPSender;
 import org.apache.axis.transport.http.HTTPTransport;
 import org.apache.xmlbeans.XmlOptions;
+import org.redabogacia.sigaservices.app.AppConstants.EEJG_ESTADO;
+import org.redabogacia.sigaservices.app.AppConstants.OPERACION;
+import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
+import org.redabogacia.sigaservices.app.services.EcomColaService;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -37,6 +42,12 @@ import com.siga.beans.CajgEJGRemesaAdm;
 import com.siga.beans.CajgRemesaEstadosAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaBean;
+import com.siga.beans.ScsPersonaJGBean;
+import com.siga.beans.ScsUnidadFamiliarEJGAdm;
+import com.siga.beans.ScsUnidadFamiliarEJGBean;
+import com.siga.beans.eejg.ScsEejgPeticionesAdm;
+import com.siga.beans.eejg.ScsEejgPeticionesBean;
+import com.siga.gratuita.service.EejgService;
 import com.siga.ws.SIGAWSClientAbstract;
 import com.siga.ws.SigaWSHelper;
 import com.siga.ws.i2055.xmlbeans.Direccion;
@@ -49,6 +60,9 @@ import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.Dt
 import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.DtSolicitante;
 import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.TurnadoAbogado;
 import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.DtPretensionesDefender.Procedimiento;
+
+import es.satec.businessManager.BusinessException;
+import es.satec.businessManager.BusinessManager;
 
 /**
  * @author angelcpe
@@ -90,91 +104,90 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		
 		int correctos = 0;
 		UserTransaction tx = getUsrBean().getTransaction();
+					
+		tx.begin();
+		//elimino primero las posibles respuestas que ya tenga por si se ha relanzado
+		cajgRespuestaEJGRemesaAdm.eliminaAnterioresErrores(getIdInstitucion(), getIdRemesa());
+		cajgRespuestaEJGRemesaAdm.insertaErrorEJGnoEnviados(getIdInstitucion(), getIdRemesa(), getUsrBean(), v_ws_2055_ejg);	
+		tx.commit();
 		
-		try {			
-			tx.begin();
-			//elimino primero las posibles respuestas que ya tenga por si se ha relanzado
-			cajgRespuestaEJGRemesaAdm.eliminaAnterioresErrores(getIdInstitucion(), getIdRemesa());
-			cajgRespuestaEJGRemesaAdm.insertaErrorEJGnoEnviados(getIdInstitucion(), getIdRemesa(), getUsrBean(), v_ws_2055_ejg);	
-				
+		for (int i = 0; i < listDtExpedientes.size(); i++) {
 			
-			for (int i = 0; i < listDtExpedientes.size(); i++) {
+			Registrar_SolicitudResult respuesta = null;
+			
+			try {
+				mapExp = listDtExpedientes.get(i);
+				anio = mapExp.get(ANIO);
+				numejg = mapExp.get(NUMEJG);
+				numero = mapExp.get(NUMERO);
+				idTipoEJG = mapExp.get(IDTIPOEJG);								
+									
+				escribeLogRemesa("Enviando información del expediente " + anio + "/" + numejg);
+				SIGAAsignaDocument sigaAsignaDocument = getDtExpedientes(mapExp);
+				SigaWSHelper.deleteEmptyNode(sigaAsignaDocument.getSIGAAsigna().getDomNode());
 				
-				Registrar_SolicitudResult respuesta = null;
+				//guardamos el xml que vamos a enviar
+				saveXML(sigaAsignaDocument);
 				
-				try {
-					mapExp = listDtExpedientes.get(i);
-					anio = mapExp.get(ANIO);
-					numejg = mapExp.get(NUMEJG);
-					numero = mapExp.get(NUMERO);
-					idTipoEJG = mapExp.get(IDTIPOEJG);								
+				if(validateXML_EJG(sigaAsignaDocument, anio, numejg, numero, idTipoEJG) && !isSimular() && stub != null){												
+					String xml = sigaAsignaDocument.xmlText();
+					SIGAAsigna sigaAsigna = (SIGAAsigna) AxisObjectSerializerDeserializer.deserializeAxisObject(xml, SIGAAsigna.class);
+				
+					respuesta = stub.registrar_Solicitud(sigaAsigna);					
+					escribeLogRemesa("El expediente se ha enviado correctamente.");					
+					
+					if (respuesta == null) {
+						escribeLogRemesa("No se ha obtenido respuesta para el expediente " + anio + "/" + numejg);						
+						continue;
+					}
 										
-					escribeLogRemesa("Enviando información del expediente " + anio + "/" + numejg);
-					SIGAAsignaDocument sigaAsignaDocument = getDtExpedientes(mapExp);
-					SigaWSHelper.deleteEmptyNode(sigaAsignaDocument.getSIGAAsigna().getDomNode());
-					
-					//guardamos el xml que vamos a enviar
-					saveXML(sigaAsignaDocument);
-					
-					if(validateXML_EJG(sigaAsignaDocument, anio, numejg, numero, idTipoEJG) && !isSimular() && stub != null){												
-						String xml = sigaAsignaDocument.xmlText();
-						SIGAAsigna sigaAsigna = (SIGAAsigna) AxisObjectSerializerDeserializer.deserializeAxisObject(xml, SIGAAsigna.class);
-					
-						respuesta = stub.registrar_Solicitud(sigaAsigna);					
-						escribeLogRemesa("El expediente se ha enviado correctamente.");					
-						
-						if (respuesta == null) {
-							escribeLogRemesa("No se ha obtenido respuesta para el expediente " + anio + "/" + numejg);						
-							continue;
+					BigInteger idTipoError = respuesta.getIdTipoError();
+					if (idTipoError != null && idTipoError.intValue() != 0) {//si tiene un error definido. TODO habrá que enviar un texto !!!
+						String descripcionError = "Error tras el envío: [" + idTipoError.toString() + "]";
+						if (respuesta.getDescripcionError() != null) {
+							descripcionError += " " + respuesta.getDescripcionError(); 
 						}
-											
-						BigInteger idTipoError = respuesta.getIdTipoError();
-						if (idTipoError != null && idTipoError.intValue() != 0) {//si tiene un error definido. TODO habrá que enviar un texto !!!
-							String descripcionError = "Error tras el envío: [" + idTipoError.toString() + "]";
-							if (respuesta.getDescripcionError() != null) {
-								descripcionError += " " + respuesta.getDescripcionError(); 
-							}
-							escribeErrorExpediente(anio, numejg, numero, idTipoEJG, descripcionError, CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_COMISION);
-							continue;
-						}
-						
-						if (!sigaAsigna.getDtExpedientes().getIDExpedienteSIGA().equals(respuesta.getIDExpedienteSIGA())) {
-							escribeLogRemesa("El identificador SIGA no se corresponde con el enviado para el expediente " + anio + "/" + numejg);						
-							continue;
-						}
-						
-						ConsultaNumeracionAsigna consultaNumeracionAsigna = new ConsultaNumeracionAsigna();
-						consultaNumeracionAsigna.obtenerNumeracion(getUsrBean(), getIdInstitucion(), Integer.valueOf(anio), Integer.valueOf(numero), idTipoEJG);
-						
-						correctos++;
+						escribeErrorExpediente(anio, numejg, numero, idTipoEJG, descripcionError, CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_COMISION);
+						continue;
 					}
-				
-				} catch (Exception e) {					
-					if (e.getCause() instanceof ConnectException) {	
-						String descripcionError = "Se ha producido un error de conexión con el WebService";
-						escribeLogRemesa(descripcionError);					
-						ClsLogging.writeFileLogError("Error de conexión al enviar el expediente", e, 3);
-						escribeErrorExpediente(anio, numejg, numero, idTipoEJG, descripcionError, CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
-					} else {
-						trataError(anio, numejg, numero, idTipoEJG, e);						
+					
+					if (!sigaAsigna.getDtExpedientes().getIDExpedienteSIGA().equals(respuesta.getIDExpedienteSIGA())) {
+						escribeLogRemesa("El identificador SIGA no se corresponde con el enviado para el expediente " + anio + "/" + numejg);						
+						continue;
 					}
+					//INSERTAR EN LA COLA PARA ENVÍO DE DOCUMENTACIÓN
+					enviaDocumentacion(getUsrBean(), getIdInstitucion(), anio, numero, idTipoEJG);
+					
+					ConsultaNumeracionAsigna consultaNumeracionAsigna = new ConsultaNumeracionAsigna();
+					consultaNumeracionAsigna.obtenerNumeracion(getUsrBean(), getIdInstitucion(), Integer.valueOf(anio), Integer.valueOf(numero), idTipoEJG);
+					
+					correctos++;
+				}
+			
+			} catch (Exception e) {					
+				if (e.getCause() instanceof ConnectException) {	
+					String descripcionError = "Se ha producido un error de conexión con el WebService";
+					escribeLogRemesa(descripcionError);					
+					ClsLogging.writeFileLogError("Error de conexión al enviar el expediente", e, 3);
+					escribeErrorExpediente(anio, numejg, numero, idTipoEJG, descripcionError, CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
+				} else {
+					trataError(anio, numejg, numero, idTipoEJG, e);						
 				}
 			}
-			
-			if (!isSimular() && correctos > 0) {				
-				CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(getUsrBean());
-				// Marcar como generada
-				cajgRemesaEstadosAdm.nuevoEstadoRemesa(getUsrBean(), getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_GENERADA);				
-				//MARCAMOS COMO ENVIADA
-				if (cajgRemesaEstadosAdm.nuevoEstadoRemesa(getUsrBean(), getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_ENVIADA)) {
-					CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(getUsrBean());
-					cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(getUsrBean(), String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), ClsConstants.REMITIDO_COMISION);
-				}				
-				escribeLogRemesa("Los envíos junto con sus respuestas han sido tratatados satisfactoriamente");
-			}
-		}  finally {			
-			tx.commit();
-		}				
+		}
+		
+		if (!isSimular() && correctos > 0) {				
+			CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(getUsrBean());
+			// Marcar como generada
+			cajgRemesaEstadosAdm.nuevoEstadoRemesa(getUsrBean(), getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_GENERADA);				
+			//MARCAMOS COMO ENVIADA
+			if (cajgRemesaEstadosAdm.nuevoEstadoRemesa(getUsrBean(), getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_ENVIADA)) {
+				CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(getUsrBean());
+				cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(getUsrBean(), String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), ClsConstants.REMITIDO_COMISION);
+			}				
+			escribeLogRemesa("Los envíos junto con sus respuestas han sido tratatados satisfactoriamente");
+		}
+				
 	}
 
 
@@ -667,6 +680,80 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		if (st != null) dtPretensionesDefender.setPretensionDefender(st);
 		b = getBoolean(map.get(PRE_SAM));
 		if (b != null) dtPretensionesDefender.setSAM(b);		
+	}
+	
+	private void enviaDocumentacion(UsrBean usrBean, int idInstitucion, String anio,	String numero, String idTipoEJG) throws ClsExceptions {
+		ScsEejgPeticionesAdm scsEejgPeticionesAdm = new ScsEejgPeticionesAdm(usrBean);
+		Hashtable<String, Object> hash = new Hashtable<String, Object>();
+		hash.put(ScsEejgPeticionesBean.C_IDINSTITUCION, idInstitucion);
+		hash.put(ScsEejgPeticionesBean.C_ANIO, anio);
+		hash.put(ScsEejgPeticionesBean.C_NUMERO, numero);
+		hash.put(ScsEejgPeticionesBean.C_IDTIPOEJG, idTipoEJG);
+		
+		Vector vector = scsEejgPeticionesAdm.select(hash);
+		
+		if (vector != null && vector.size() > 0) {
+			for (int i = 0; i < vector.size();i++) {
+				ScsEejgPeticionesBean scsEejgPeticionesBean = (ScsEejgPeticionesBean)vector.get(i);
+				int estado = scsEejgPeticionesBean.getEstado();
+				if (estado == EEJG_ESTADO.PENDIENTE_INFO.getId() || estado == EEJG_ESTADO.FINALIZADO.getId()) {
+					enviaPDF(scsEejgPeticionesBean, usrBean);
+				}
+			}
+		}
+		
+	}
+	
+	private void enviaPDF(ScsEejgPeticionesBean scsEejgPeticionesBean, UsrBean usrBean) {
+		try {
+			BusinessManager bm = BusinessManager.getInstance();
+			EejgService eEjgS = (EejgService)bm.getService(EejgService.class);
+			
+			ScsUnidadFamiliarEJGAdm scsUnidadFamiliarEJGAdm = new ScsUnidadFamiliarEJGAdm(usrBean);
+			ScsUnidadFamiliarEJGBean unidadFamiliarVo = new ScsUnidadFamiliarEJGBean();
+			unidadFamiliarVo.setIdInstitucion(scsEejgPeticionesBean.getIdInstitucion());
+			unidadFamiliarVo.setAnio(scsEejgPeticionesBean.getAnio());
+			unidadFamiliarVo.setIdTipoEJG(scsEejgPeticionesBean.getIdTipoEjg());
+			unidadFamiliarVo.setNumero(scsEejgPeticionesBean.getNumero());
+			unidadFamiliarVo.setIdPersona(scsEejgPeticionesBean.getIdPersona().intValue());
+			
+			Vector<ScsUnidadFamiliarEJGBean> v = scsUnidadFamiliarEJGAdm.selectByPK(scsUnidadFamiliarEJGAdm.beanToHashTable(unidadFamiliarVo));
+			
+			if (v == null || v.size() != 1) {
+				throw new BusinessException("No se ha encontrado el registro de la unidad familiar.");
+			}
+			unidadFamiliarVo = v.get(0);
+			usrBean.setLocation(String.valueOf(scsEejgPeticionesBean.getIdInstitucion()));
+			unidadFamiliarVo.setPeticionEejg(scsEejgPeticionesBean);
+			
+			//el proceso que genera el fichero recoge el dato de personaJGBean
+			ScsPersonaJGBean scsPersonaJGBean = new ScsPersonaJGBean();
+			scsPersonaJGBean.setIdPersona(unidadFamiliarVo.getIdPersona());
+			unidadFamiliarVo.setPersonaJG(scsPersonaJGBean);
+			
+			Map<Integer, Map<String, String>> mapInformeEejg = eEjgS.getDatosInformeEejg(unidadFamiliarVo, usrBean);
+			File fichero = eEjgS.getInformeEejg(mapInformeEejg, usrBean);
+
+			scsEejgPeticionesBean.setRutaPDF(fichero.getAbsolutePath());
+			
+			EcomCola ecomCola = new EcomCola();
+			ecomCola.setIdoperacion(OPERACION.ASIGNA_ENVIO_DOCUMENTO.getId());
+			ecomCola.setIdinstitucion(Short.valueOf(scsEejgPeticionesBean.getIdInstitucion().toString()));
+			EcomColaService ecomColaService = (EcomColaService)BusinessManager.getInstance().getService(EcomColaService.class);
+						
+			if (ecomColaService.insert(ecomCola) != 1) {				
+				throw new ClsExceptions("No se ha podido insertar en la cola de comunicaciones.");
+			}
+			scsEejgPeticionesBean.setIdEcomCola(ecomCola.getIdecomcola());
+			
+			ScsEejgPeticionesAdm scsEejgPeticionesAdm = new ScsEejgPeticionesAdm(usrBean);
+			if (!scsEejgPeticionesAdm.update(scsEejgPeticionesBean)) {
+				throw new ClsExceptions("No se ha podido actualizar scsEejgPeticionesBean.");
+			}
+			
+		} catch (Exception e) {
+			ClsLogging.writeFileLogError("Se ha producido un error al generar y enviar el pdf a Asigna", e, 3);
+		}
 	}
 
 }

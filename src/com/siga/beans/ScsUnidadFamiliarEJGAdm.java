@@ -12,9 +12,10 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
+import org.redabogacia.sigaservices.app.AppConstants.EEJG_ESTADO;
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -22,10 +23,8 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.eejg.ScsEejgPeticionesAdm;
 import com.siga.beans.eejg.ScsEejgPeticionesBean;
-import com.siga.beans.eejg.ScsEejgXmlAdm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirUnidadFamiliarEJGForm;
-import com.siga.gratuita.vos.VolantesExpressVo;
 			 
 public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 	
@@ -416,7 +415,7 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 	    sql.append(" AND eejg.IDINSTITUCION = USU.IDINSTITUCION(+) ");
 	    
 	    if(unidadFamiliarForm.getPeticionEejg()!=null && unidadFamiliarForm.getPeticionEejg().getEstado()!=null){
-	    	if(unidadFamiliarForm.getPeticionEejg().getEstado().compareTo(ScsEejgPeticionesBean.EEJG_ESTADO_FINALIZADO)==0){
+	    	if(unidadFamiliarForm.getPeticionEejg().getEstado() == EEJG_ESTADO.FINALIZADO.getId()){
 		    	sql.append(" and (eejg.estado =:");
 		    	contador ++;
 				sql.append(contador);
@@ -424,7 +423,7 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 				sql.append(" or eejg.estado =:");
 		    	contador ++;
 				sql.append(contador);
-				htCodigos.put(new Integer(contador),ScsEejgPeticionesBean.EEJG_ESTADO_PENDIENTE_INFO);
+				htCodigos.put(new Integer(contador), EEJG_ESTADO.PENDIENTE_INFO.getId());
 				sql.append(")");
 	    	}else{
 	    		sql.append(" and eejg.estado =:");
