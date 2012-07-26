@@ -920,6 +920,7 @@
 		<action path="/CEN_LineasFacturaFacturasCliente" type="com.siga.facturacion.action.GestionarFacturaLineasAction" name="GestionarFacturaForm" scope="request">
 			<forward name="inicio" path="/html/jsp/facturacion/facturaLineas.jsp"/>
 			<forward name="ver" path="/html/jsp/facturacion/facturaLineasDatos.jsp"/>
+			<forward name="editar" path="/html/jsp/facturacion/facturaLineasDatos.jsp"/>
 		</action>
 
 
