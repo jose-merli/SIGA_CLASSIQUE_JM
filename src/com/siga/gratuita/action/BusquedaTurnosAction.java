@@ -138,6 +138,10 @@ public class BusquedaTurnosAction extends MasterAction {
 			if(form.getTurnosBajaLogica().equalsIgnoreCase("N")){
 				where+=	" AND turnos.visibilidad = '1'";
 			}
+			
+			if(form.getIdTipoTurno()!=null&&!form.getIdTipoTurno().trim().equalsIgnoreCase("")){
+				where+=	" AND turnos.IDTIPOTURNO = "+form.getIdTipoTurno();
+			}
 
 			request.getSession().setAttribute("DATOSFORMULARIO",hash);
 			request.getSession().setAttribute("BUSQUEDAREALIZADA","SI");

@@ -52,8 +52,9 @@
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
 	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
 		
-	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	
 
 	
@@ -267,6 +268,21 @@
 	<tr>		
 		<td class="labelText"><siga:Idioma key="gratuita.definirTurnosIndex.literal.bajalogica"/></td>
 		<td><html:checkbox property="turnosBajaLogica"  onclick="activarBajaLogica(this);" /></td>
+		<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.maestroTurnos.literal.tipoturno"/>&nbsp;</td>
+		<%
+			ArrayList vTipoTurno = new ArrayList();
+			try {
+				if (hash.get("IDTIPOTURNO")==null || hash.get("IDTIPOTURNO").equals("-1")){
+					vTipoTurno.add("0");
+				}
+				else {
+					vTipoTurno.add((String)hash.get("IDTIPOTURNO"));
+				}
+			} catch (Exception e) {
+				vTipoTurno.add("0");
+			}
+		%>		
+		<td><siga:ComboBD nombre="idTipoTurno" tipo="tipoTurno" clase="boxCombo" estilo="true" obligatorio="false" elementoSel='<%=vTipoTurno%>' parametro="<%=dato%>"/></td>
 	</tr>	
 	<%}%>
 	</html:form>
