@@ -729,10 +729,13 @@
 			}
 		}
 		function generarCarta() {
-   			if(window.frames.resultado.ObjArray){
+   			if(window.frames.resultado.ObjArray){   				
  				window.frames.resultado.accionGenerarCarta();
 			}
-
+			else {
+				alert("<siga:Idioma key='general.message.seleccionar'/>");
+				fin();
+			}			
 		} 	
 		
 		function accionEditarSel() {
@@ -742,7 +745,7 @@
 		} 
 		
 		function descargaEejg(){
-			<%if(ventanaCajg.equalsIgnoreCase("0")){%>
+			<%if(ventanaCajg.equalsIgnoreCase("0")){%>				
 				if(window.frames.resultado.ObjArray){
 					sub();
 			   	 	datos =  window.frames.resultado.getDatosSeleccionados();
@@ -758,6 +761,10 @@
 					document.DefinirUnidadFamiliarEJGForm.submit();
 				
  					// window.frames.resultado.accionDescargaEejg();
+				}
+				else {
+					alert("<siga:Idioma key='general.message.seleccionar'/>");
+				    fin();
 				}
 			<%}%>
 		}
