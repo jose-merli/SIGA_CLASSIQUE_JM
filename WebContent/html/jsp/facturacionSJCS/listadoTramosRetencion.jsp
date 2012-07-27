@@ -3,9 +3,9 @@
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
-<%@ page pageEncoding="ISO-8859-1"%>
+<%@ page pageEncoding="ISO-8859-15"%>
 <meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-15">
 <%@ page contentType="text/html" language="java"
 	errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
@@ -51,9 +51,9 @@
 	<table id='tabTramosRetencionCabeceras' border='1' width='100%' cellspacing='0' cellpadding='0'>
 		<tr class = 'tableTitle'>
 			<td align='center' width='8%'>Nº Tramo</td>
-			<td align='center' width='8%'>Descripcion</td>
+			<td align='center' width='8%'>Descripción</td>
 			<td align='center' width='8%'>Nº SMI</td>
-			<td align='center' width='8%'>Limite Tramo</td>
+			<td align='center' width='8%'>Límite Tramo</td>
 			<td align='center' width='8%'>Porcentaje</td>
 			
 		</tr>
