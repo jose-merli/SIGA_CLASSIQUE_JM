@@ -580,9 +580,12 @@ String[] getdatos = { usr.getLocation() };
 <script>
 function generarCarta() {
     if(window.frames.resultado.ObjArray){
-	 window.frames.resultado.accionComunicar();
+	 	window.frames.resultado.accionComunicar();
 	}
-	
+	else {
+		alert("<siga:Idioma key='general.message.seleccionar'/>");
+		fin();
+	}		
 } 	
 
 function consultas() 
