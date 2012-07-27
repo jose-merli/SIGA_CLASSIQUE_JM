@@ -647,32 +647,31 @@ public class ScsDefinirSOJAdm extends MasterBeanAdministrador {
 		int contador = 0;
 		StringBuffer sql = new StringBuffer();
 		sql.append(" SELECT SOJ.*, ");
-		sql.append(" F_SIGA_GETRECURSO(TIPOSOJ.DESCRIPCION, "+usrbean.getLanguage()+") DESCRIPCIONTIPOSOJ, ");
-		sql.append(" F_SIGA_GETRECURSO(TIPOSOJC.DESCRIPCION, "+usrbean.getLanguage()+") DESCRIPCIONTIPOSOJCOLEGIO, ");
-		sql.append(" F_SIGA_GETRECURSO(TC.DESCRIPCION, "+usrbean.getLanguage()+") DESCRIPCIONTIPOCONSULTA, ");
-		sql.append(" F_SIGA_GETRECURSO(TR.DESCRIPCION, "+usrbean.getLanguage()+") DESCRIPCIONTIPORESPUESTA, ");
+		sql.append(" F_SIGA_GETRECURSO(TIPOSOJ.DESCRIPCION, NVL(PERS.IDLENGUAJE,"+usrbean.getLanguage()+")) DESCRIPCIONTIPOSOJ, ");
+		sql.append(" F_SIGA_GETRECURSO(TIPOSOJC.DESCRIPCION, NVL(PERS.IDLENGUAJE,"+usrbean.getLanguage()+")) DESCRIPCIONTIPOSOJCOLEGIO, ");
+		sql.append(" F_SIGA_GETRECURSO(TC.DESCRIPCION, NVL(PERS.IDLENGUAJE,"+usrbean.getLanguage()+")) DESCRIPCIONTIPOCONSULTA, ");
+		sql.append(" F_SIGA_GETRECURSO(TR.DESCRIPCION, NVL(PERS.IDLENGUAJE,"+usrbean.getLanguage()+")) DESCRIPCIONTIPORESPUESTA, ");
 		sql.append(" EJG.NUMEJG ");
-		sql.append(" FROM SCS_SOJ            SOJ, ");
+		sql.append(" FROM SCS_SOJ       SOJ, ");
 		sql.append(" SCS_TIPOSOJ        TIPOSOJ, ");
 		sql.append(" SCS_TIPOSOJCOLEGIO TIPOSOJC, ");
 		sql.append(" SCS_TIPOCONSULTA   TC, ");
 		sql.append(" SCS_TIPORESPUESTA  TR, ");
-		sql.append(" SCS_EJG            EJG ");
+		sql.append(" SCS_EJG            EJG, ");
+		sql.append(" SCS_PERSONAJG 		PERS ");
 		sql.append(" WHERE SOJ.IDINSTITUCION = EJG.IDINSTITUCION(+) ");
 		sql.append(" AND SOJ.EJGIDTIPOEJG = EJG.IDTIPOEJG(+) ");
 		sql.append(" AND SOJ.EJGANIO = EJG.ANIO(+) ");
-		sql.append(" AND SOJ.EJGNUMERO = EJG.NUMERO(+) ");
-	      
+		sql.append(" AND SOJ.EJGNUMERO = EJG.NUMERO(+) ");	      
 		sql.append(" AND SOJ.IDINSTITUCION = TC.IDINSTITUCION(+) ");
-		sql.append(" AND SOJ.IDTIPOCONSULTA = TC.IDTIPOCONSULTA(+) ");
-	      
+		sql.append(" AND SOJ.IDTIPOCONSULTA = TC.IDTIPOCONSULTA(+) ");	      
 		sql.append(" AND SOJ.IDINSTITUCION = TR.IDINSTITUCION(+) ");
-		sql.append(" AND SOJ.IDTIPORESPUESTA = TR.IDTIPORESPUESTA(+) ");
-	      
+		sql.append(" AND SOJ.IDTIPORESPUESTA = TR.IDTIPORESPUESTA(+) ");	      
 		sql.append(" AND SOJ.IDINSTITUCION = TIPOSOJC.IDINSTITUCION(+) ");
-		sql.append(" AND SOJ.IDTIPOSOJCOLEGIO = TIPOSOJC.IDTIPOSOJCOLEGIO(+) ");
-	      
+		sql.append(" AND SOJ.IDTIPOSOJCOLEGIO = TIPOSOJC.IDTIPOSOJCOLEGIO(+) ");	      
 		sql.append(" AND SOJ.IDTIPOSOJ = TIPOSOJ.IDTIPOSOJ ");
+		sql.append(" AND SOJ.IDINSTITUCION = PERS.IDINSTITUCION(+) ");
+		sql.append(" AND SOJ.IDPERSONAJG = PERS.IDPERSONA(+) ");
 	    
 		sql.append(" AND SOJ.IDINSTITUCION = :");
 		contador++;
