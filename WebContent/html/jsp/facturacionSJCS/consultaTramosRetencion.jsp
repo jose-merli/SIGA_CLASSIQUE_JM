@@ -96,7 +96,6 @@
 
 <body onload="onload();" >
 
-
 <!-- INICIO: CAMPOS DE BUSQUEDA-->
 <html:form action="/FCS_GestionTramosLEC" method="POST" target="mainWorkArea">
 <html:hidden property="modo"/>
@@ -110,46 +109,36 @@
 			<td></td>
 		</tr>
 		<tr>
-			<td class="labelText"><siga:Idioma
-					key="fcs.tramosLEC.literal.año" /></td>
-			<td><html:text styleId="idAnio"
-				property="anio" size="4" maxlength="4"
-				styleClass="box" style="width:50"></html:text></td>
-			<td class="labelText"><siga:Idioma
-					key="fcs.tramosLEC.literal.smi" /></td>
+			<td class="labelText"><siga:Idioma key="fcs.tramosLEC.literal.año" /></td>
+			<td><html:text styleId="idAnio" property="anio" size="4" maxlength="4" styleClass="box" style="width:50"></html:text></td>
+			<td class="labelText"><siga:Idioma key="fcs.tramosLEC.literal.smi" /></td>
 			<td><html:text	property="smi" styleClass="box" onchange="onChangeSmi();"></html:text></td>
-		</tr>
-		<tr>
-			<td class="labelText"><siga:Idioma key="fcs.tramosLEC.literal.numeroMeses" /></td>
-			<td><html:text 
-				property="numeroMeses" 
-				styleClass="box" maxlength="2" style="width:30" onchange="onChangeNumeroMeses();"></html:text></td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
 		</tr>
 	</table>
 </siga:ConjCampos>
 <siga:ConjCampos leyenda="fcs.tramosLEC.leyenda.simulacionRetencion">
-<table width="100%" class="tablaCampos" border="0" >
-<tr>
-	<td width="20%"></td>
-	<td width="10%"></td>
-	<td width="20%"></td>
-	<td></td>
-</tr>
-<tr>
-			<td class="labelText"><siga:Idioma key="fcs.tramosLEC.literal.importe" /></td>
-			<td><html:text 
-				property="importe" styleId="idImporte"
-				styleClass="box" style="width:70;text-align=right" /></td>
-			<td class="labelText"><siga:Idioma key="fcs.tramosLEC.literal.importeRetencion" /></td>
-			<td><html:text 
-				property="importeRetencion" 
-				styleClass="box" readonly="true" style="width:70;text-align=right" /></td>
+	<table width="100%" class="tablaCampos" border="0" >
+		<tr>
+			<td width="20%"></td>
+			<td width="10%"></td>
+			<td width="10%"></td>
+			<td width="10%"></td>
+			<td width="25%"></td>
+			<td></td>
 		</tr>
-</table>
+		<tr>
+			<td class="labelText"><siga:Idioma key="fcs.tramosLEC.literal.numeroMeses" /></td>
+			<td><html:text property="numeroMeses" styleClass="box" maxlength="2" style="width:30" onchange="onChangeNumeroMeses();"></html:text></td>
+			<td class="labelText"><siga:Idioma key="fcs.tramosLEC.literal.importe" /></td>
+			<td><html:text property="importe" styleId="idImporte" styleClass="box" style="width:70;text-align=right" /></td>
+			<td>&nbsp;</td>
+			<td class="labelText"><siga:Idioma key="fcs.tramosLEC.literal.importeRetencion" /></td>
+			<td><html:text property="importeRetencion" styleClass="boxConsulta" readonly="true" style="width:70;text-align=right" /></td>
+		</tr>
+	</table>
 </siga:ConjCampos>
 <input type='button'  id = 'idBuscarTramosRetencion' name='idButton' style="display:none" value='Buscar' alt='Buscar' class='busquedaTramosRetencion'>
+
 <ajax:updateFieldFromField 
 	baseUrl="/SIGA/FCS_GestionTramosLEC.do?modo=getAjaxSmi"
     source="anio" target="smi"
@@ -163,8 +152,6 @@
 	parameters="importe={importe},anio={anio},numeroMeses={numeroMeses}"
 	preFunction ="preAccionImporte" 
 	postFunction="postAccionImporte"
-	
-	
 />
 
 <div id="divTramosRetencion" style='height:480px;position:absolute;width:100%; overflow-y:auto'>
@@ -172,9 +159,6 @@
 	</table>
 </div>	
 </html:form>
-
-
-
 
 <ajax:htmlContent
 	baseUrl="/SIGA/FCS_GestionTramosLEC.do?modo=getAjaxBusquedaTramosRetencion"
@@ -184,11 +168,6 @@
 	postFunction="postAccionBuscarTramosRetencion"
 	parameters="anio={anio},numeroMeses={numeroMeses},idInstitucion={idInstitucion},smi={smi}"/>
 
-
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"	style="display: none"></iframe>
-
-
 </body>
-
-
 </html>
