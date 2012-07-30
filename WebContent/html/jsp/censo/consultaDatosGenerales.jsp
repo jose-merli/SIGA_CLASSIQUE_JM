@@ -1044,7 +1044,7 @@ function str_replace(search, replace, subject) {
 						if (bResidente) { %>
 							<siga:ComboBD nombre = "tipoIdentificacion" tipo="cmbTipoIdentificacionSinCIF" clase="<%=estiloCajaNif%>" obligatorio="true" elementoSel="<%=tipoIdentificacionSel%>"  readonly="<%=readonlyComboNIFCIF%>"/>						
 						<% } else {%>
-							<siga:ComboBD nombre = "tipoIdentificacion" tipo="cmbTipoIdentificacionSinCIF" clase="boxConsulta" obligatorio="true" elementoSel="<%=tipoIdentificacionSel%>" readonly="true"/>
+							<siga:ComboBD nombre = "tipoIdentificacion" tipo="cmbTipoIdentificacionConCIF" clase="boxConsulta" obligatorio="true" elementoSel="<%=tipoIdentificacionSel%>" readonly="true"/>
 						<% } %>
 					<% } %>
 					&nbsp;
@@ -1549,7 +1549,6 @@ function str_replace(search, replace, subject) {
 		<!-- Asociada al boton Guardar -->
 		function accionGuardar() {		
 			sub();
-
 			<%if (cliente.equals("") || cliente.equals("No Colegiado")){%>
 				if((document.forms[0].tipoIdentificacion.value== "") && (document.forms[0].numIdentificacion.value==""))
 					alert ("<siga:Idioma key="messages.tipoIdenti.comprobacion.aviso"/>");

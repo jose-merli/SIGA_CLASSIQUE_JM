@@ -805,6 +805,7 @@ caracterParam[0] = tipoCliente;
 											<% if (bConsultaPersona) { %>
 													<html:text name="datosGeneralesForm" property="numIdentificacion" styleId="numIdentificacion" size="11" style="width:70px" styleClass="boxConsulta" value="<%=nIdentificacion %>" readonly="true" ></html:text>
 											<% } else { %>
+													<input type="hidden" name="tipoIdentificacionBloqueada" value="<%=tipoIdentificacionSel%>"/>
 													<html:text name="datosGeneralesForm" property="numIdentificacion" styleId="numIdentificacion" size="11" style="width:70px" styleClass="<%=estiloCajaNif %>" value="<%=nIdentificacion %>" readonly="<%=breadonlyNif %>" onblur="cambioTipo();"></html:text>
 											<% }  %>
 												
@@ -817,7 +818,7 @@ caracterParam[0] = tipoCliente;
 												<% } %>
 										
 											<% } else { %>
-													<input type="hidden" name="tipoIdentificacionBloqueada" value="<%=tipoIdentificacionSel%>"/>
+													
 													<html:select name="datosGeneralesForm" property="tipoIdentificacion" value="<%=tipoIdentificacionSel%>" styleId="tipoIdentificacion"  styleClass="boxCombo" disabled="true">													
 														<html:option value="<%=OTRO%>"> <siga:Idioma key="censo.fichaCliente.literal.otro"/></html:option>	
 														<html:option value="<%=CIF%>" > <siga:Idioma key="censo.fichaCliente.literal.cif"/></html:option>
@@ -908,15 +909,15 @@ caracterParam[0] = tipoCliente;
 											<span id="numeroRegistro" >	
 												<span id="contadorSP" style="display:none">
 													<siga:Idioma key="censo.general.literal.numRegistro"/>&nbsp;(*) 
-													<html:text name="datosGeneralesForm" property="prefijoNumRegSP" styleId="prefijoNumRegSP" size="5" maxlength="10" styleClass="<%=estiloCaja%>" style="width:55px" readonly="<%=breadonly%>" ></html:text>
+													<html:text name="datosGeneralesForm" property="prefijoNumRegSP" styleId="prefijoNumRegSP" size="5" maxlength="8" styleClass="<%=estiloCaja%>" style="width:55px" readonly="<%=breadonly%>" ></html:text>
 													<html:text name="datosGeneralesForm" property="contadorNumRegSP" styleId="contadorNumRegSP" size="5" maxlength="8" style="width:58px" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text>
-													<html:text name="datosGeneralesForm" property="sufijoNumRegSP" styleId="sufijoNumRegSP" style="width:58px" size="5" maxlength="10" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text>
+													<html:text name="datosGeneralesForm" property="sufijoNumRegSP" styleId="sufijoNumRegSP" style="width:58px" size="5" maxlength="8" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text>
 												</span>
 												<span id="contadorSJ" style="display:none">
 													<siga:Idioma key="censo.general.literal.numRegistro"/>&nbsp;(*) 
-													<html:text name="datosGeneralesForm" property="prefijoNumRegSJ" styleId="prefijoNumRegSJ" size="5" maxlength="10" styleClass="<%=estiloCaja%>" style="width:55px" readonly="<%=breadonly%>" ></html:text>
+													<html:text name="datosGeneralesForm" property="prefijoNumRegSJ" styleId="prefijoNumRegSJ" size="5" maxlength="8" styleClass="<%=estiloCaja%>" style="width:55px" readonly="<%=breadonly%>" ></html:text>
 													<html:text name="datosGeneralesForm" property="contadorNumRegSJ" styleId="contadorNumRegSJ" size="5" maxlength="8" style="width:58px" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text>
-													<html:text name="datosGeneralesForm" property="sufijoNumRegSJ" styleId="sufijoNumRegSJ" style="width:58px" size="5" maxlength="10" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text>
+													<html:text name="datosGeneralesForm" property="sufijoNumRegSJ" styleId="sufijoNumRegSJ" style="width:58px" size="5" maxlength="8" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text>
 												</span>
 											</span>
 						     			</td>

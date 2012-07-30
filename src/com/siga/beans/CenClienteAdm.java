@@ -2929,33 +2929,45 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 				auxCli =  this.existeCliente(auxPer.getIdPersona(),new Integer(usr.getLocation()));
 				if (auxCli!=null) {
 					existeCliente= true;
-				}else{				
-						/**Busca si no existe el cliente en la institución actual, busca si existe en cualquier colegio y si existe 
-						 * se realiza la pregunta si quiere que utilize los mismos datos ya existentes**/
+				}else{
+					
+					/**Busca si no existe el cliente en la institución actual, busca si existe en cualquier colegio y si existe 
+					 * se realiza la pregunta si quiere que utilize los mismos datos ya existentes**/
 					auxCli = this.existeClienteOtraInstitucion (auxPer.getIdPersona(),new Integer(usr.getLocation()));
 					if (auxCli!=null){
 						if (auxPer.isExisteDatos()){
-							auxCli.setExisteDatos(true);
+							CenClienteBean beanCliente = new CenClienteBean ();
+							beanCliente.setExisteDatos(true);
 							//Se deberia de insertar un registro en cen_clientes para la nueva institucion
-								auxCli.setIdInstitucion(new Integer(usr.getLocation()));
-								if (!this.insert(auxCli)) {
-									throw new SIGAException(this.getError());
-								}
-							return auxCli;
+							beanCliente.setIdTratamiento (auxCli.getIdTratamiento());
+							beanCliente.setIdInstitucion(new Integer(this.usrbean.getLocation()));
+							beanCliente.setIdPersona (auxPer.getIdPersona());
+							beanCliente.setFechaAlta ("SYSDATE");
+							beanCliente.setIdLenguaje (ClsConstants.LENGUAJE_ESP);
+							beanCliente.setAbonosBanco (ClsConstants.TIPO_CARGO_BANCO);
+							beanCliente.setCargosBanco (ClsConstants.TIPO_CARGO_BANCO);
+							beanCliente.setPublicidad (ClsConstants.DB_FALSE);
+							beanCliente.setExportarFoto("0");
+							beanCliente.setGuiaJudicial (ClsConstants.DB_FALSE);
+							beanCliente.setComisiones (ClsConstants.DB_FALSE);					
+							beanCliente.setCaracter (ClsConstants.TIPO_CARACTER_PUBLICO);
+							beanCliente.setLetrado(ClsConstants.DB_FALSE);
+							if (!this.insert(beanCliente)) {
+								throw new SIGAException(this.getError());
+							}
+							return beanCliente;
 						}else{
-						 existeCliente= false;
+							existeCliente= false;
 						}
 					}
-				}
-				
-			}
-			
-		}
-			catch (SIGAException e) {
+				}				
+			}			
+		
+		} catch (SIGAException e) {
 				//auxCli = null;
 				//return auxCli;
 				throw e;
-			}	
+		}	
 			
 			// proceso
 			if (existePersona) {				
