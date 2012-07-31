@@ -304,14 +304,16 @@
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
 	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
-		
 	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
-	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
-	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/SIGA.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery-ui.js'/>"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/calendarJs.jsp"></script>
+	<script type="text/javascript" src="<%=app%>/html/jsp/general/validacionSIGA.jsp"></script>
 	<!-- validaciones struct -->
 	<html:javascript formName="ActuacionesDesignasForm" staticJavascript="false" />  
-	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/validacionStruts.js"></script>
 	<!-- fin validaciones struct -->
 
 	<script language="JavaScript">
@@ -326,25 +328,36 @@
 		}
 		
 		// Funcion que obtiene el juzgado buscando por codigo externo	
-		 function obtenerJuzgado() 
-			{ 
-			  if (document.forms[0].codigoExtJuzgado.value!=""){
-				if(document.forms[0].idTurno.selectedIndex <= 0 ){
-					alert("<siga:Idioma key='gratuita.nuevaAsistencia.mensaje.alert1'/>");
-					return;
-				}else{	
-				   document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[0].codigoExtJuzgado.value;
-				   document.MantenimientoJuzgadoForm.submit();		
-				   
-				}
+		function obtenerJuzgado() { 
+			if (document.forms[0].codigoExtJuzgado.value!=""){
+				document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[0].codigoExtJuzgado.value;
+				document.MantenimientoJuzgadoForm.submit();		
 			 }
-			}
-	//		
-			
+		}
+
+		//					
 		function traspasoDatos(resultado){
-		 //seleccionComboSiga("juzgado",resultado[0]);
-		 document.forms[0].juzgado.value=resultado[0];
+		 	seleccionComboSiga("juzgado",resultado[0]);		 	
 		}	
+		
+	function cambiarJuzgado(comboJuzgado) {
+		if(comboJuzgado.value!=""){
+			jQuery.ajax({ //Comunicación jQuery hacia JSP  
+	   			type: "POST",
+				url: "/SIGA/JGR_MantenimientoJuzgados.do?modo=getAjaxJuzgado2",
+				data: "idCombo="+comboJuzgado.value,
+				dataType: "json",
+				success: function(json){		
+		       		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;      		
+					fin();
+				},
+				error: function(e){
+					alert('Error de comunicación: ' + e);
+					fin();
+				}
+			});
+		}
+	}		
 	</script>		
 </head>
 
@@ -516,12 +529,12 @@
 		
 			<% if (esLetrado||modoAnterior.equalsIgnoreCase("VER")){%>
 					<td colspan="6" >
-							<siga:ComboBD nombre="juzgado" ancho="530" tipo="<%=comboJuzgados%>"estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>" accion="Hijo:procedimiento" />
+							<siga:ComboBD nombre="juzgado" ancho="530" tipo="<%=comboJuzgados%>"estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>" accion="Hijo:procedimiento"/>
 					</td>
 					<%}else{%>
 					  <td colspan="5" >
-							<input type="text" name="codigoExtJuzgado" class="box" size="8"  style="margin-top:0px;" maxlength="10" onBlur="obtenerJuzgado();" />
-							<siga:ComboBD nombre="juzgado" ancho="430" tipo="<%=comboJuzgados%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>"  accion="Hijo:procedimiento" />
+							<input type="text" name="codigoExtJuzgado" class="box" size="8"  style="margin-top:0px;" maxlength="10" onChange="obtenerJuzgado();" />
+							<siga:ComboBD nombre="juzgado" ancho="430" tipo="<%=comboJuzgados%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>"  accion="Hijo:procedimiento" accion="parent.cambiarJuzgado(this);"/>
 					</td>
 			<%}%>
 				
