@@ -588,7 +588,7 @@
 		
 	 	function obtenerJuzgado() {
 		  	if (document.getElementById("codigoExtJuzgado").value!=""){
-			 	document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="";	
+			 	document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgado";	
 			   	document.MantenimientoJuzgadoForm.codigoExt2.value=document.getElementById("codigoExtJuzgado").value;
 				document.MantenimientoJuzgadoForm.submit();		
 		 	}
