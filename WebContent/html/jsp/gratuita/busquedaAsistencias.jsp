@@ -229,7 +229,7 @@
 				data: "idCombo="+comboJuzgado.value,
 				dataType: "json",
 				success: function(json){		
-		       		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;      		
+		       		document.getElementById("codigoExtJuzgadoActu").value = json.codigoExt2;      		
 					fin();
 				},
 				error: function(e){
