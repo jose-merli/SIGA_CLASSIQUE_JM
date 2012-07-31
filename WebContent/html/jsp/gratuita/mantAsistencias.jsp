@@ -492,7 +492,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			<td class="labelText" style="vertical-align:text-top;text-align: right">
 			<siga:Idioma key='gratuita.mantenimientoTablasMaestra.literal.codigoext'/>
 			&nbsp;
-			<input type="text" name="codigoExtComisaria" class="box" size="8"  maxlength="10" onBlur="obtenerComisaria();" />
+			<input type="text" name="codigoExtComisaria" class="box" size="8"  maxlength="10" onChange="obtenerComisaria();" />
 			<%}%>
 			<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="420" obligatorio="false" parametro="<%=parametroComisaria%>" elementoSel="<%=comisariaSel%>" clase="<%=estilo%>" readonly="<%=readOnly%>" accion="actualizarTdNumeroDiligencia(); cambiarComisaria(this);"/>
 			</td>

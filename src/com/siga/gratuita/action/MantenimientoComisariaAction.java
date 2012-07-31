@@ -10,6 +10,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.json.JSONObject;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
@@ -46,7 +47,11 @@ public class MantenimientoComisariaAction extends MasterAction {
 				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
 					mapDestino = abrir(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("buscarComisaria")){
-				    mapDestino = buscarComisaria(mapping, miForm, request, response);	
+				    mapDestino = buscarComisaria(mapping, miForm, request, response);
+				    
+				}else if (accion.equalsIgnoreCase("getAjaxComisaria")){
+					getAjaxComisaria(mapping, miForm, request, response);
+				    return null;			    				    
 			    	
 				} else {
 					return super.executeInternal(mapping,
@@ -292,5 +297,34 @@ public class MantenimientoComisariaAction extends MasterAction {
 		}
 		//System.out.println("Dentro del actio"+comisariaID);
 		return "buscarComisaria";
-	}		
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected void getAjaxComisaria (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
+		{
+		String codigoExt = "";
+		
+		String idCombo = request.getParameter("idCombo");
+		
+		String sql = "SELECT C.CODIGOEXT FROM SCS_COMISARIA C " + 
+			" WHERE UPPER(C.IDCOMISARIA||','||C.IDINSTITUCION) = UPPER('"+idCombo+"')";
+			
+		ScsComisariaAdm comisariaAdm= new ScsComisariaAdm(this.getUserBean(request));		
+		Vector resultadoComisaria = comisariaAdm.selectGenerico(sql);
+		
+		if (resultadoComisaria!=null && resultadoComisaria.size()>0)
+			codigoExt =  (String)((Hashtable)resultadoComisaria.get(0)).get("CODIGOEXT");
+				
+		JSONObject json = new JSONObject();		
+		json.put("codigoExt", codigoExt);
+		
+		 response.setContentType("text/x-json;charset=ISO-8859-15");
+		 response.setHeader("Cache-Control", "no-cache");
+		 response.setHeader("Content-Type", "application/json");
+	     response.setHeader("X-JSON", json.toString());
+		 response.getWriter().write(json.toString()); 			
+	}	
 }
