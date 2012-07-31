@@ -118,10 +118,8 @@
 	String idPersona				 = (String)request.getAttribute("idPersona");
 	String nColegiadoAsistencia      = (String)request.getAttribute("nColegiadoAsistencia");
 	String nombreColegiadoAsistencia = (String)request.getAttribute("nombreColegiadoAsistencia");
-	// -----------------------------------------------------------
-	
+	// -----------------------------------------------------------	
 %>	
-
 
 <html>
 
@@ -130,17 +128,15 @@
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
 	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
-		
-	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
-	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
+			
+	<script type="text/javascript" src="<%=app%>/html/js/SIGA.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery-ui.js'/>"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/calendarJs.jsp"></script>	
 
 	<html:javascript formName="BuscarDesignasForm" staticJavascript="false" />
-	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
- 	
- 	
-	<!--TITULO Y LOCALIZACION -->
-
+	<script type="text/javascript" src="<%=app%>/html/js/validacionStruts.js"></script> 	
 </head>
 
 	<script language="JavaScript">	
@@ -186,24 +182,36 @@
 		{		
 			fin();
 		}
-	    function obtenerJuzgado() 
-			{ 
-			
-			 if (document.forms[1].codigoExtJuzgado.value!=""){
-				if(document.forms[1].idTurno.selectedIndex <= 0 ){
-					alert("<siga:Idioma key='gratuita.nuevaAsistencia.mensaje.alert1'/>");
-					return;
-				}else{		
- 			       document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[1].codigoExtJuzgado.value;
-				   document.MantenimientoJuzgadoForm.submit();	
-				}
+		
+	   function obtenerJuzgado() { 
+			if (document.forms[1].codigoExtJuzgado.value!=""){	
+ 				document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[1].codigoExtJuzgado.value;
+				document.MantenimientoJuzgadoForm.submit();	
 			 }
-			}
-		function traspasoDatos(resultado){
-		
-		 seleccionComboSiga("juzgado",resultado[0]);
-		
 		}
+		
+		function traspasoDatos(resultado) {
+			seleccionComboSiga("juzgado",resultado[0]);
+		}
+		
+	function cambiarJuzgado(comboJuzgado) {
+		if(comboJuzgado.value!=""){
+			jQuery.ajax({ //Comunicación jQuery hacia JSP  
+	   			type: "POST",
+				url: "/SIGA/JGR_MantenimientoJuzgados.do?modo=getAjaxJuzgado2",
+				data: "idCombo="+comboJuzgado.value,
+				dataType: "json",
+				success: function(json){		
+		       		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;      		
+					fin();
+				},
+				error: function(e){
+					alert('Error de comunicación: ' + e);
+					fin();
+				}
+			});
+		}
+	}		
 	</script>
 
 <body onload="cargarCliente()">
@@ -293,11 +301,11 @@
 					   <siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext"/>
 					</td>	 
 					<td class="labelText" width="10%" >	
-					   <input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();"/>&nbsp;
+					   <input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onChange="obtenerJuzgado();"/>&nbsp;
 					</td>	 
 					<td> &nbsp;</td>	
 					<td>
-					   <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="460" estilo="true"  clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  parametro="<%=datoJuzgado%>" elementoSel="<%=elementoSelJuzgado%>" hijo="t"/>
+					   <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="460" estilo="true"  clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  parametro="<%=datoJuzgado%>" elementoSel="<%=elementoSelJuzgado%>" hijo="t" accion="parent.cambiarJuzgado(this);"/>
 					</td>   
 				</tr>
 			</table>

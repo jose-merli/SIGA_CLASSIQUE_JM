@@ -251,7 +251,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script type="text/javascript" src="<%=app%>/html/js/calendarJs.jsp" ></script>
 	<script type="text/javascript" src="<%=app%>/html/jsp/general/validacionSIGA.jsp" ></script>
-	<script src="<html:rewrite page='/html/js/jquery-ui.js'/>" type="text/javascript"></script>	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery-ui.js'/>"></script>	
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<% if(esFichaColegial){ %>
@@ -520,9 +520,9 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 				<td class="labelText" style="vertical-align:text-top;text-align: right">	
 				   <siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext"/>
 				   &nbsp;
-				   <input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();"/>
+				   <input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onChange="obtenerJuzgado();"/>
 				<%}%>
-				<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="420" obligatorio="false" parametro="<%=parametroJuzgado%>" elementoSel="<%=juzgadoSel%>" clase="<%=estilo%>" readonly="<%=readOnly%>" accion="actualizarTdNumeroProcedimiento()"/>
+				<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="420" obligatorio="false" parametro="<%=parametroJuzgado%>" elementoSel="<%=juzgadoSel%>" clase="<%=estilo%>" readonly="<%=readOnly%>" accion="actualizarTdNumeroProcedimiento(); cambiarJuzgado(this);"/>
 				</td>   
 					
 			</tr>
@@ -1030,40 +1030,29 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			}
 		}
 		
-		 function obtenerJuzgado() 
-			{ 
+		 function obtenerJuzgado() { 
 			 if (document.forms[0].codigoExtJuzgado.value!=""){
-				if(document.forms[0].idTurno.selectedIndex <= 0 ){
-					alert("<siga:Idioma key='gratuita.nuevaAsistencia.mensaje.alert1'/>");
-					return;
-				}else{		
- 			       document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[0].codigoExtJuzgado.value;
-				   document.MantenimientoJuzgadoForm.submit();	
-				}
+			 	document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgado";
+ 			    document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[0].codigoExtJuzgado.value;
+				document.MantenimientoJuzgadoForm.submit();	
 			 }
-			}
-		function traspasoDatos(resultado){
-		 //seleccionComboSiga("juzgado",resultado[0]);
-		 document.forms[0].juzgado.value=resultado[0];
-		
 		}
+		
+		function traspasoDatos(resultado) {
+		 	seleccionComboSiga("juzgado",resultado[0]);		
+		}
+		
 		// Funcion que obtiene la comisaria buscando por codigo externo	
-			 function obtenerComisaria() 
-			 { 
-				  if (document.forms[0].codigoExtComisaria.value!=""){
-					if(document.forms[0].idTurno.selectedIndex <= 0 ){
-						alert("<siga:Idioma key='gratuita.nuevaAsistencia.mensaje.alert1'/>");
-						return;
-					}else{	
-					   document.MantenimientoComisariaForm.codigoExtBusqueda.value=document.forms[0].codigoExtComisaria.value;
-					   document.MantenimientoComisariaForm.submit();		
-					}
-				  }
-			 }
+		function obtenerComisaria() { 
+			if (document.forms[0].codigoExtComisaria.value!=""){
+				document.MantenimientoComisariaForm.codigoExtBusqueda.value=document.forms[0].codigoExtComisaria.value;
+				document.MantenimientoComisariaForm.submit();	
+			}
+		}
+			 
 		//			
-		function traspasoDatosComisaria(resultado){
-//		 seleccionComboSiga("comisaria",resultado[0]);
-		 document.forms[0].comisaria.value=resultado[0];
+		function traspasoDatosComisaria(resultado) {
+			seleccionComboSiga("comisaria",resultado[0]);
 		}	
 
 		<!-- Asociada al boton Nuevo-->
@@ -1117,6 +1106,25 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			});
 		}
 	}		
+	
+	function cambiarJuzgado(comboJuzgado) {
+		if(comboJuzgado.value!=""){
+			jQuery.ajax({ //Comunicación jQuery hacia JSP  
+	   			type: "POST",
+				url: "/SIGA/JGR_MantenimientoJuzgados.do?modo=getAjaxJuzgado2",
+				data: "idCombo="+comboJuzgado.value,
+				dataType: "json",
+				success: function(json){		
+		       		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;      		
+					fin();
+				},
+				error: function(e){
+					alert('Error de comunicación: ' + e);
+					fin();
+				}
+			});
+		}
+	}	
 		
 		actualizarTdNumeroDiligencia();
 		
