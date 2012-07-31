@@ -1032,7 +1032,6 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 		
 		 function obtenerJuzgado() { 
 			 if (document.forms[0].codigoExtJuzgado.value!=""){
-			 	document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgado";
  			    document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[0].codigoExtJuzgado.value;
 				document.MantenimientoJuzgadoForm.submit();	
 			 }

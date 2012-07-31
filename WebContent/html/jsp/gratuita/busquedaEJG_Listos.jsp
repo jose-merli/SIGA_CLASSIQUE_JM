@@ -445,7 +445,6 @@
 		// Funcion que obtiene el juzgado buscando por codigo externo	
 		function obtenerJuzgado() { 
 			if (document.forms[1].codigoExtJuzgado.value!=""){
-				document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgado";
 				document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[1].codigoExtJuzgado.value;
 				document.MantenimientoJuzgadoForm.submit();
 			 }
