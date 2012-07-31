@@ -360,15 +360,15 @@
 	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
 		
 	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
-	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
-	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/SIGA.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery-ui.js'/>"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/calendarJs.jsp"></script>
+	<script type="text/javascript" src="<%=app%>/html/jsp/general/validacionSIGA.jsp"></script>
 
-<!-- INICIO: TITULO Y LOCALIZACION -->
-	<siga:TituloExt 
-		titulo="gratuita.editarDesigna.literal.titulo" 
-		localizacion="gratuita.editarDesigna.literal.location"
-	/>
+	<!-- INICIO: TITULO Y LOCALIZACION -->
+	<siga:TituloExt titulo="gratuita.editarDesigna.literal.titulo" localizacion="gratuita.editarDesigna.literal.location"/>
 	
 	<script language="JavaScript">
 
@@ -550,24 +550,35 @@
 		}
 
  		function obtenerJuzgado() { 
-			 if (document.forms[0].codigoExtJuzgado.value!=""){
-				if(document.forms[0].idTurno.selectedIndex <= 0 ){
-					alert("<siga:Idioma key='gratuita.nuevaAsistencia.mensaje.alert1'/>");
-					return;
-				}else{		
-				  document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="";	
- 			       document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[0].codigoExtJuzgado.value;
-				   document.MantenimientoJuzgadoForm.submit();	
-				}
-			 }
+			if (document.forms[0].codigoExtJuzgado.value!=""){
+				document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgado";	
+ 			    document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[0].codigoExtJuzgado.value;
+				document.MantenimientoJuzgadoForm.submit();
+			}
 		}
 	
 		function traspasoDatos(resultado){
-		 //seleccionComboSiga("juzgado",resultado[0]);
-		 document.forms[0].juzgado.value=resultado[0];
-		 
-		
+		 	seleccionComboSiga("juzgado",resultado[0]);
 		}
+		
+	function cambiarJuzgado(comboJuzgado) {
+		if(comboJuzgado.value!=""){
+			jQuery.ajax({ //Comunicación jQuery hacia JSP  
+	   			type: "POST",
+				url: "/SIGA/JGR_MantenimientoJuzgados.do?modo=getAjaxJuzgado2",
+				data: "idCombo="+comboJuzgado.value,
+				dataType: "json",
+				success: function(json){		
+		       		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;      		
+					fin();
+				},
+				error: function(e){
+					alert('Error de comunicación: ' + e);
+					fin();
+				}
+			});
+		}
+	}		
 		
 		function generarCarta() {
 			//sub();
@@ -840,14 +851,14 @@
 											<%}%>
 										</td>
 										<td class="labelText" width="10%">
-											<input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();" />&nbsp;
+											<input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onChange="obtenerJuzgado();" />&nbsp;
 										</td>
 										<td>&nbsp;</td>
 									<% } %>
 
 									<% if (!modo.equalsIgnoreCase("ver")) { %> 
 										<td width="80%">
-											<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="500" pestana="t" accion="Hijo:idProcedimiento" />
+											<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="500" pestana="t" accion="Hijo:idProcedimiento" accion="parent.cambiarJuzgado(this);"/>
 										</td> 
 									<% } else { %> 
 										<td width="100%">
