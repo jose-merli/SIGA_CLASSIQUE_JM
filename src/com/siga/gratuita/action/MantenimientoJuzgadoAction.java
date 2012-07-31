@@ -14,14 +14,13 @@ import net.sourceforge.ajaxtags.xml.AjaxXmlBuilder;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.json.JSONObject;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.CenClienteAdm;
 import com.siga.beans.ScsJuzgadoAdm;
 import com.siga.beans.ScsJuzgadoBean;
 import com.siga.beans.ScsJuzgadoProcedimientoAdm;
@@ -30,7 +29,6 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.MantenimientoJuzgadoForm;
-import com.siga.gratuita.form.VolantesExpressForm;
 
 /**
  * @author david.sanchez
@@ -76,7 +74,11 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 			} else if (accion.equalsIgnoreCase("recargarJuzgadoModal")){
 				mapDestino = recargarJuzgadoModal(mapping, miForm, request, response);
 			}else if (accion.equalsIgnoreCase("buscarJuzgado")){
-			    mapDestino = buscarJuzgado(mapping, miForm, request, response);	
+			    mapDestino = buscarJuzgado(mapping, miForm, request, response);
+			    
+			}else if (accion.equalsIgnoreCase("getAjaxJuzgado2")){
+				getAjaxJuzgado2(mapping, miForm, request, response);
+			    return null;			    
 		    	
 			}else if (accion.equalsIgnoreCase("getAjaxJuzgado")){
 			    getAjaxJuzgado(mapping, miForm, request, response);
@@ -491,9 +493,6 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 			String where = " where upper(codigoext2) = upper ('"+codigoExt2+"')" +
 					       " and idinstitucion="+this.getUserBean(request).getLocation();
 			Vector resultadoJuzgado = juzgadoAdm.select(where);
-			if (resultadoJuzgado!=null && resultadoJuzgado.size()>0) {
-				ScsJuzgadoBean juzgadoBean = (ScsJuzgadoBean) resultadoJuzgado.get(0);
-			}
 			request.setAttribute("resultadoJuzgado",resultadoJuzgado);
 			request.setAttribute("nombreObjetoDestino",miform.getNombreObjetoDestino());
 		}
@@ -526,7 +525,37 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 		
 		List listaParametros = new ArrayList();
 		listaParametros.add(idJuzgado);
-		respuestaAjax(new AjaxXmlBuilder(), listaParametros,response );
+		respuestaAjax(new AjaxXmlBuilder(), listaParametros, response);
 		
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected void getAjaxJuzgado2 (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
+		{
+		//Sacamos las guardias si hay algo selccionado en el turno
+		String idCombo = request.getParameter("idCombo");
+		
+		
+		MantenimientoJuzgadoForm miform = (MantenimientoJuzgadoForm)formulario;
+		ScsJuzgadoAdm juzgadoAdm= new ScsJuzgadoAdm(this.getUserBean(request));
+		String where = " WHERE UPPER(IDJUZGADO||','||IDINSTITUCION) = UPPER('"+idCombo+"')";
+		Vector resultadoJuzgado = juzgadoAdm.select(where);
+		String codigoExt2 ="";
+		if (resultadoJuzgado!=null && resultadoJuzgado.size()>0) {
+			ScsJuzgadoBean juzgadoBean = (ScsJuzgadoBean) resultadoJuzgado.get(0);
+			codigoExt2 = juzgadoBean.getCodigoExt2();
+		}
+				
+		JSONObject json = new JSONObject();		
+		json.put("codigoExt2", codigoExt2);
+		
+		 response.setContentType("text/x-json;charset=ISO-8859-15");
+		 response.setHeader("Cache-Control", "no-cache");
+		 response.setHeader("Content-Type", "application/json");
+	     response.setHeader("X-JSON", json.toString());
+		 response.getWriter().write(json.toString()); 		
 	}
 }
