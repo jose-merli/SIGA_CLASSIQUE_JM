@@ -111,9 +111,12 @@
 <!-- HEAD -->
 <head>
 
-<link id="default" rel="stylesheet" type="text/css"
-	href="<%=app%>/html/jsp/general/stylesheet.jsp">
-<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+	
+	<script type="text/javascript" src="<%=app%>/html/js/SIGA.js" ></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script src="<html:rewrite page='/html/js/jquery-ui.js'/>" type="text/javascript"></script>
 
 <!-- INICIO: TITULO Y LOCALIZACION -->
 <!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -443,8 +446,8 @@
 			</td>				
 			<td>
 				
-				 	  <input type="text" name="codigoExtJuzgado" class="box" size="3"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />
-				 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateriaExp" ancho="310" clase="boxCombo" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" hijo="t" accion="Hijo:idProcedimiento" readonly="false"/>           	   
+				 	  <input type="text" name="codigoExtJuzgado" class="box" size="3"  style="margin-top:3px;" maxlength="10" onChange="obtenerJuzgado();" />
+				 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateriaExp" ancho="310" clase="boxCombo" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" hijo="t" accion="Hijo:idProcedimiento" readonly="false" accion="parent.cambiarJuzgado(this);"/>           	   
 				
 			</td>
 		</tr>					
@@ -591,8 +594,25 @@
 		 	}
 		}
 	 	
-		
-	</script> <!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
+	function cambiarJuzgado(comboJuzgado) {
+		if(comboJuzgado.value!=""){
+			jQuery.ajax({ //Comunicación jQuery hacia JSP  
+	   			type: "POST",
+				url: "/SIGA/JGR_MantenimientoJuzgados.do?modo=getAjaxJuzgado2",
+				data: "idCombo="+comboJuzgado.value,
+				dataType: "json",
+				success: function(json){		
+		       		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;      		
+					fin();
+				},
+				error: function(e){
+					alert('Error de comunicación: ' + e);
+					fin();
+				}
+			});
+		}
+	}	 	
+</script> <!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 
 <html:form action="/CEN_BusquedaClientesModal.do" method="POST"
 	target="mainWorkArea" type="">

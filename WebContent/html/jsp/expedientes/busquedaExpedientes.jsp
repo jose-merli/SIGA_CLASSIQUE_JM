@@ -97,9 +97,11 @@
 	display: inline
 }
 </style>
-<link id="default" rel="stylesheet" type="text/css"
-	href="<%=app%>/html/jsp/general/stylesheet.jsp">
-<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+	<script type="text/javascript" src="<%=app%>/html/js/SIGA.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script src="<html:rewrite page='/html/js/jquery-ui.js'/>" type="text/javascript"></script>
 
 <!-- INICIO: TITULO Y LOCALIZACION -->
 <!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -357,8 +359,8 @@
 			</td>				
 			<td>
 				
-				 	  <input type="text" name="codigoExtJuzgado" class="box" size="3"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />
-				 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateriaExp" ancho="310" clase="boxCombo" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" hijo="t" accion="Hijo:idProcedimiento" readonly="false"/>           	   
+				 	  <input type="text" name="codigoExtJuzgado" class="box" size="3"  style="margin-top:3px;" maxlength="10" onChange="obtenerJuzgado();" />
+				 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateriaExp" ancho="310" clase="boxCombo" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" hijo="t" accion="Hijo:idProcedimiento" readonly="false" accion="parent.cambiarJuzgado(this);"/>           	   
 				
 			</td>
 		</tr>					
@@ -552,7 +554,7 @@
 			   	document.MantenimientoJuzgadoForm.codigoExt2.value=document.getElementById("codigoExtJuzgado").value;
 				document.MantenimientoJuzgadoForm.submit();		
 		 	}
-		}
+		}		
 
 		function traspasoDatos(resultado){
 			if(resultado[1] && resultado[1]!=""){
@@ -568,8 +570,28 @@
 			document.RecuperarConsultasForm.submit();
 		
 		}
-	</script>
+		
+	function cambiarComisaria(comboComisaria) {
+		if(comboComisaria.value!=""){
+			jQuery.ajax({ //Comunicación jQuery hacia JSP  
+	   			type: "POST",
+				url: "/SIGA/JGR_MantenimientoComisarias.do?modo=getAjaxComisaria",
+				data: "idCombo="+comboComisaria.value,
+				dataType: "json",
+				success: function(json){		
+		       		document.getElementById("codigoExtComisaria").value = json.codigoExt;      		
+					fin();
+				},
+				error: function(e){
+					alert('Error de comunicación: ' + e);
+					fin();
+				}
+			});
+		}
+	}			
+</script>
 <!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
+
 <html:form action="/CEN_BusquedaClientesModal.do" method="POST"
 	target="mainWorkArea" type="" style="display:none">
 	<input type="hidden" name="actionModal" value="">
