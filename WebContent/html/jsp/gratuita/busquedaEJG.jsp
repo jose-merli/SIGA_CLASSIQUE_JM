@@ -193,11 +193,14 @@
 	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
 		
 	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/SIGA.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery-ui.js'/>"></script>
 	
-	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
-	<script src="<%=app%>/html/js/validation.js" type="text/javascript"></script>
-	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/calendarJs.jsp"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/validation.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/validacionStruts.js"></script>
 	
 	<script type="text/javascript">	
 		function refrescarLocal(){
@@ -484,10 +487,10 @@
 					<siga:Idioma key="gratuita.mantAsistencias.literal.juzgado" />
 				</td>
 				<td class="labelText" colspan="2">
-					<input type="text" name="codigoExtJuzgado" class="box" size="7" style="margin-top: 3px;" maxlength="10" onBlur="obtenerJuzgado();" />
+					<input type="text" name="codigoExtJuzgado" class="box" size="7" style="margin-top: 3px;" maxlength="10" onChange="obtenerJuzgado();" />
 				</td>
 				<td class="labelText" colspan="2">
-					<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="500" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" hijo="t" elementoSel="<%=juzgado%>" parametro="<%=datos%>" />
+					<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="500" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" hijo="t" elementoSel="<%=juzgado%>" parametro="<%=datos%>" accion="parent.cambiarJuzgado(this);"/>
 				</td>
 			</tr>
 			<tr>
@@ -606,6 +609,25 @@
 				   document.MantenimientoJuzgadoForm.submit();		
 			 }
 		}
+		
+	function cambiarJuzgado(comboJuzgado) {
+		if(comboJuzgado.value!=""){
+			jQuery.ajax({ //Comunicación jQuery hacia JSP  
+	   			type: "POST",
+				url: "/SIGA/JGR_MantenimientoJuzgados.do?modo=getAjaxJuzgado2",
+				data: "idCombo="+comboJuzgado.value,
+				dataType: "json",
+				success: function(json){		
+		       		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;      		
+					fin();
+				},
+				error: function(e){
+					alert('Error de comunicación: ' + e);
+					fin();
+				}
+			});
+		}
+	}		
 	
 		//<!-- Funcion asociada a boton buscar -->
 		function buscarPaginador(){		
