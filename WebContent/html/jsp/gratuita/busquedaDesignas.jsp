@@ -113,11 +113,14 @@ String[] getdatos = { usr.getLocation() };
 	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
 		
 	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/SIGA.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery-ui.js'/>"></script>
 	
-	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
-	<script src="<%=app%>/html/js/validation.js" type="text/javascript"></script>
-	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/calendarJs.jsp"></script>	
+	<script type="text/javascript" src="<%=app%>/html/js/validation.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/validacionStruts.js"></script>
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<siga:Titulo 
@@ -329,10 +332,10 @@ String[] getdatos = { usr.getLocation() };
 				<td class="labelText">
 					<siga:Idioma key="gratuita.mantAsistencias.literal.juzgado" /></td>
 				<td class="labelText">
-					<input type="text" name="codigoExtJuzgado" class="box" size="7" style="margin-top: 3px;" maxlength="10" onBlur="obtenerJuzgado();" />
+					<input type="text" name="codigoExtJuzgado" class="box" size="7" style="margin-top: 3px;" maxlength="10" onChange="obtenerJuzgado(this, 'juzgado');" />
 				</td>
 				<td class="labelText" colspan="3">
-					<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="450" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" hijo="t" elementoSel="<%=juzgado%>" parametro="<%=dato%>" />
+					<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="450" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" hijo="t" elementoSel="<%=juzgado%>" parametro="<%=dato%>" accion="parent.cambiarJuzgado(this,'codigoExtJuzgado');"/>
 				</td>
 		</tr>
 		<tr>
@@ -381,8 +384,8 @@ String[] getdatos = { usr.getLocation() };
 				<siga:Idioma key="gratuita.mantAsistencias.literal.juzgado"/>
 			</td>
 			<td class="labelText" >
-				<input type="text" name="codigoExtJuzgadoActu" class="box" size="8"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado2();" />
-				<siga:ComboBD nombre="juzgadoActu" tipo="comboJuzgados" ancho="680" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  hijo="t" elementoSel="<%=juzgadoActu%>" parametro="<%=dato%>"/>           	   
+				<input type="text" name="codigoExtJuzgadoActu" class="box" size="8"  style="margin-top:3px;" maxlength="10" onChange="obtenerJuzgado(this, 'juzgadoActu');" />
+				<siga:ComboBD nombre="juzgadoActu" tipo="comboJuzgados" ancho="680" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  hijo="t" elementoSel="<%=juzgadoActu%>" parametro="<%=dato%>" accion="parent.cambiarJuzgado(this,'codigoExtJuzgadoActu');"/>           	   
 			</td>
 		</tr>
 		
@@ -510,38 +513,35 @@ String[] getdatos = { usr.getLocation() };
 				redireccionar();
 			}
 		}
+		
 		// Funcion que obtiene el juzgado buscando por codigo externo	
-		 function obtenerJuzgado() 
-			{ 
-			  if (document.forms[1].codigoExtJuzgado.value!=""){
-/*				if(document.forms[2].identificador.selectedIndex <= 0 ){
-					alert("<siga:Idioma key='gratuita.nuevaAsistencia.mensaje.alert1'/>");
-					return;
-				}else{	*/
-				   document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[1].codigoExtJuzgado.value;
-				   document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgado";		
-				   document.MantenimientoJuzgadoForm.submit();		
-				   
-				//}
-			 }
+		function obtenerJuzgado(codigo, combo) { 
+			if (codigo.value!=""){
+				document.MantenimientoJuzgadoForm.codigoExt2.value=codigo.value;
+				document.MantenimientoJuzgadoForm.nombreObjetoDestino.value=combo;		
+				document.MantenimientoJuzgadoForm.submit();		
 			}
-			
-			
-		// Funcion que obtiene el juzgado buscando por codigo externo	
-		 function obtenerJuzgado2() 
-			{ 
-			  if (document.forms[1].codigoExtJuzgadoActu.value!=""){
-/*				if(document.forms[2].identificador.selectedIndex <= 0 ){
-					alert("<siga:Idioma key='gratuita.nuevaAsistencia.mensaje.alert1'/>");
-					return;
-				}else{	*/
-				   document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[1].codigoExtJuzgadoActu.value;
-				   document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgadoActu";		
-				   document.MantenimientoJuzgadoForm.submit();		
-				   
-				//}
-			 }
-			}			
+		}
+		
+	function cambiarJuzgado(comboJuzgado, codigo) {
+		if(comboJuzgado.value!=""){
+			jQuery.ajax({ //Comunicación jQuery hacia JSP  
+	   			type: "POST",
+				url: "/SIGA/JGR_MantenimientoJuzgados.do?modo=getAjaxJuzgado2",
+				data: "idCombo="+comboJuzgado.value,
+				dataType: "json",
+				success: function(json){		
+		       		document.getElementById(codigo).value = json.codigoExt2;      		
+					fin();
+				},
+				error: function(e){
+					alert('Error de comunicación: ' + e);
+					fin();
+				}
+			});
+		}
+	}		
+					
 	//		
 		function traspasoDatos(resultado){
 		
