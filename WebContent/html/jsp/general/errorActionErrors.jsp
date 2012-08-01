@@ -1,4 +1,5 @@
-<!-- errorAlerts.jsp -->
+<!-- errorActionErrors.jsp -->
+
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-15"%>
 <meta http-equiv="Cache-Control" content="no-cache">

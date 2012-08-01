@@ -1,5 +1,12 @@
 package com.siga.gratuita.form;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+
+import com.atos.utils.UsrBean;
 import com.siga.general.MasterForm;
 
 /**
@@ -102,4 +109,33 @@ public class ActaComisionForm extends MasterForm {
 		guardaFundamento 	= false;
 		guardaRatificacion 	= false;
 	}
+	
+	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request ) {		
+		ActionErrors errors = new ActionErrors();
+		UsrBean user = (UsrBean)request.getSession().getAttribute("USRBEAN");	
+		
+		try {
+			if (this.horaIni!=null && this.horaIni!="" && Integer.parseInt(this.horaIni,10)>20) 
+				errors.add("horaIni",new ActionMessage("sjcs.actas.horaInicioError01"));
+			
+			if (this.minuIni!=null && this.minuIni!="" && Integer.parseInt(this.minuIni,10)>59) 
+				errors.add("horaIni",new ActionMessage("sjcs.actas.horaInicioError02"));
+
+			if (this.horaFin!=null && this.horaFin!="" && Integer.parseInt(this.horaFin,10)>20) 
+				errors.add("horaFin",new ActionMessage("sjcs.actas.horaFinError01"));
+			
+			if (this.minuFin!=null && this.minuFin!="" && Integer.parseInt(this.minuFin,10)>59) 
+				errors.add("horaFin",new ActionMessage("sjcs.actas.horaFinError02"));
+			
+		}
+		catch (Exception e) {
+			errors.add(user.getUserName(), new ActionMessage(e.getMessage()));
+		}	
+		
+		if (!errors.isEmpty()) {
+			this.reset();
+		}
+
+		return errors;
+	}	
 }

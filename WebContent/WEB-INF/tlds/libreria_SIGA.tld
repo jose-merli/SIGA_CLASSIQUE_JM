@@ -911,9 +911,15 @@
       <name>arg1</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    
+    </attribute>    
   </tag>
+  
+  <!-- Mensajes de Error -->
+  <tag>
+    <name>Error</name>
+    <tag-class>com.siga.tlds.TagError</tag-class>
+    <body-content>jsp</body-content>    
+  </tag>  
   
   <!-- Informes Genericos Simple -->
   <tag>
