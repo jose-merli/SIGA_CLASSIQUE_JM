@@ -22,21 +22,21 @@
 <html>
 
 <head>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>" />
 	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
 		
-	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>" ></script>
-	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
-	<script src="<html:rewrite page="/html/js/jquery.custom.js"/>" type="text/javascript"></script>
-	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
-	<script src="<%=app%>/html/js/validation.js" type="text/javascript"></script>	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery-1.7.1.js'/>" ></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/calendarJs.jsp"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/validation.js"></script>	
 	
 	<siga:Titulo titulo="sjcs.actas.titulo" localizacion="sjcs.actas.localizacion"  />
 </head>
 
 <body>
 
-	<html:form action="/JGR_ActasComision" method="POST" target="submitArea">
+	<html:form action="/JGR_ActasComisionEd" method="POST" target="submitArea">
 		<html:hidden property = "modo" value = ""/>
 		<html:hidden property = "idInstitucion" value = ""/>
 		<html:hidden property = "actionModal" value = ""/>
