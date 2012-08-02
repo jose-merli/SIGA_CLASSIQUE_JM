@@ -145,13 +145,13 @@ public class ActaComisionForm extends MasterForm {
 				}
 			}
 			
-			if (this.horaIni!=null && !this.horaIni.equalsIgnoreCase("") && Integer.parseInt(this.horaIni,10)>24) 
+			if (this.horaIni!=null && !this.horaIni.equalsIgnoreCase("") && Integer.parseInt(this.horaIni,10)>23) 
 				errors.add(UtilidadesString.getMensajeIdioma(user, "sjcs.actas.horaInicio"),new ActionMessage("sjcs.actas.horaInicioError01"));
 			
 			if (this.minuIni!=null && !this.minuIni.equalsIgnoreCase("") && Integer.parseInt(this.minuIni,10)>59) 
 				errors.add(UtilidadesString.getMensajeIdioma(user, "sjcs.actas.horaInicio"),new ActionMessage("sjcs.actas.horaInicioError02"));
 
-			if (this.horaFin!=null && !this.horaFin.equalsIgnoreCase("") && Integer.parseInt(this.horaFin,10)>24) 
+			if (this.horaFin!=null && !this.horaFin.equalsIgnoreCase("") && Integer.parseInt(this.horaFin,10)>23)
 				errors.add(UtilidadesString.getMensajeIdioma(user, "sjcs.actas.horaFin"),new ActionMessage("sjcs.actas.horaFinError01"));
 			
 			if (this.minuFin!=null && !this.minuFin.equalsIgnoreCase("") && Integer.parseInt(this.minuFin,10)>59) 
