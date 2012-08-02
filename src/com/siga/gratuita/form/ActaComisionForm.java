@@ -1,12 +1,18 @@
 package com.siga.gratuita.form;
 
+import java.util.Date;
+import java.util.Locale;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 
+import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
+import com.atos.utils.Validaciones;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.MasterForm;
 
 /**
@@ -112,20 +118,44 @@ public class ActaComisionForm extends MasterForm {
 	
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request ) {		
 		ActionErrors errors = new ActionErrors();
-		UsrBean user = (UsrBean)request.getSession().getAttribute("USRBEAN");	
-		
-		try {
-			if (this.horaIni!=null && this.horaIni!="" && Integer.parseInt(this.horaIni,10)>20) 
-				errors.add("horaIni",new ActionMessage("sjcs.actas.horaInicioError01"));
-			
-			if (this.minuIni!=null && this.minuIni!="" && Integer.parseInt(this.minuIni,10)>59) 
-				errors.add("horaIni",new ActionMessage("sjcs.actas.horaInicioError02"));
+		UsrBean user = (UsrBean)request.getSession().getAttribute("USRBEAN");			
 
-			if (this.horaFin!=null && this.horaFin!="" && Integer.parseInt(this.horaFin,10)>20) 
-				errors.add("horaFin",new ActionMessage("sjcs.actas.horaFinError01"));
+		try {
+			if (this.numeroActa==null || this.numeroActa.equalsIgnoreCase(""))
+				errors.add(UtilidadesString.getMensajeIdioma(user, "sjcs.actas.numeroActa"),new ActionMessage("errors.required"));
 			
-			if (this.minuFin!=null && this.minuFin!="" && Integer.parseInt(this.minuFin,10)>59) 
-				errors.add("horaFin",new ActionMessage("sjcs.actas.horaFinError02"));
+			if (this.anioActa==null || this.anioActa.equalsIgnoreCase(""))
+				errors.add(UtilidadesString.getMensajeIdioma(user, "sjcs.actas.anio"),new ActionMessage("errors.required"));
+			
+			if (this.fechaResolucion==null || this.fechaResolucion.equalsIgnoreCase(""))
+				errors.add(UtilidadesString.getMensajeIdioma(user, "sjcs.actas.fechaResolucion"),new ActionMessage("errors.required"));
+			
+			if (this.fechaResolucion!=null && !this.fechaResolucion.equalsIgnoreCase("") && this.fechaReunion!=null && !this.fechaReunion.equalsIgnoreCase("")) {
+				Validaciones validator = new Validaciones();				
+				String msg = "";
+				if (!validator.validaFecha(this.fechaResolucion, msg, true) || !validator.validaFecha(this.fechaReunion, msg, true)) 
+					errors.add(UtilidadesString.getMensajeIdioma(user, "sjcs.actas.fechaResolucion"),new ActionMessage("sjcs.actas.fechasErroneas"));
+				else {
+					Locale locale = new Locale(user.getLanguage());
+					GstDate gstDate = new GstDate();					
+					Date dFechaResolucion = gstDate.parseStringToDate(this.fechaResolucion, "dd/MM/yyyy", locale);
+					Date dFechaReunion = gstDate.parseStringToDate(this.fechaReunion, "dd/MM/yyyy", locale);
+					if (!dFechaResolucion.after(dFechaReunion))
+						errors.add(UtilidadesString.getMensajeIdioma(user, "sjcs.actas.fechaResolucion"),new ActionMessage("sjcs.actas.fechasErroneas"));
+				}
+			}
+			
+			if (this.horaIni!=null && !this.horaIni.equalsIgnoreCase("") && Integer.parseInt(this.horaIni,10)>24) 
+				errors.add(UtilidadesString.getMensajeIdioma(user, "sjcs.actas.horaInicio"),new ActionMessage("sjcs.actas.horaInicioError01"));
+			
+			if (this.minuIni!=null && !this.minuIni.equalsIgnoreCase("") && Integer.parseInt(this.minuIni,10)>59) 
+				errors.add(UtilidadesString.getMensajeIdioma(user, "sjcs.actas.horaInicio"),new ActionMessage("sjcs.actas.horaInicioError02"));
+
+			if (this.horaFin!=null && !this.horaFin.equalsIgnoreCase("") && Integer.parseInt(this.horaFin,10)>24) 
+				errors.add(UtilidadesString.getMensajeIdioma(user, "sjcs.actas.horaFin"),new ActionMessage("sjcs.actas.horaFinError01"));
+			
+			if (this.minuFin!=null && !this.minuFin.equalsIgnoreCase("") && Integer.parseInt(this.minuFin,10)>59) 
+				errors.add(UtilidadesString.getMensajeIdioma(user, "sjcs.actas.horaFin"),new ActionMessage("sjcs.actas.horaFinError02"));
 			
 		}
 		catch (Exception e) {

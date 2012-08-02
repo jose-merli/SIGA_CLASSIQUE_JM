@@ -30,22 +30,33 @@ public class TagError extends TagSupport
 				return (EVAL_BODY_INCLUDE);
 			}						
 
-			String cadena = "";
-			Iterator  reports = errors.get();
+			String cadena = "";			
 			HttpSession session = pageContext.getSession();
 			PrintWriter out = pageContext.getResponse().getWriter();
 			UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
 			if (usrbean==null) 
-				usrbean = UsrBean.UsrBeanAutomatico("2000");		
- 
-			while (reports.hasNext()) {
-				ActionMessage report = (ActionMessage) reports.next();
-				String key = report.getKey();
-				String s = UtilidadesString.getMensajeIdioma(usrbean, key);
-				if (cadena != "")
-					cadena = cadena + "\\n";
-				cadena = cadena + s;
+				usrbean = UsrBean.UsrBeanAutomatico("2000");
+			
+			Iterator iProperties = errors.properties();
+			while (iProperties.hasNext()) {
+				String sProperty = (String)iProperties.next();
+				String[] aProperty = new String[1];
+				aProperty[0] = sProperty;
+				
+				Iterator  iValores = errors.get(sProperty);
+				 
+				while (iValores.hasNext()) {
+					ActionMessage am = (ActionMessage) iValores.next();
+					String key = am.getKey();
+					String s = UtilidadesString.getMensajeIdioma(usrbean, key);
+					if (s.indexOf("{0}")>0)
+						s = UtilidadesString.getMensajeIdioma(usrbean, key, aProperty);
+					if (cadena != "")
+						cadena = cadena + "\\n";
+					cadena = cadena + s;
+				}				
 			}
+						
 			out.print("<script>alert('"+cadena+"');</script>");
 		}
 		catch (Exception e)	{
