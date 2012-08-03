@@ -558,7 +558,7 @@
 		}
 	
 		function traspasoDatos(resultado){
-		 	seleccionComboSiga("juzgado",resultado[0]);
+		 	document.getElementById("juzgado").value=resultado[0];
 		}
 		
 	function cambiarJuzgado(comboJuzgado) {
