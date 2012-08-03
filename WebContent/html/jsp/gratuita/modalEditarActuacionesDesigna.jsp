@@ -534,7 +534,7 @@
 					<%}else{%>
 					  <td colspan="5" >
 							<input type="text" name="codigoExtJuzgado" class="box" size="8"  style="margin-top:0px;" maxlength="10" onChange="obtenerJuzgado();" />
-							<siga:ComboBD nombre="juzgado" ancho="430" tipo="<%=comboJuzgados%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>"  accion="Hijo:procedimiento" accion="parent.cambiarJuzgado(this);"/>
+							<siga:ComboBD nombre="juzgado" ancho="430" tipo="<%=comboJuzgados%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>"  accion="Hijo:procedimiento; parent.cambiarJuzgado(this);"/>
 					</td>
 			<%}%>
 				
