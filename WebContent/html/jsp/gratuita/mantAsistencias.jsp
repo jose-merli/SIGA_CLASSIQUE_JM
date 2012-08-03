@@ -1037,8 +1037,8 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			 }
 		}
 		
-		function traspasoDatos(resultado) {
-		 	seleccionComboSiga("juzgado",resultado[0]);		
+		function traspasoDatos(resultado) {	
+		 	document.getElementById("juzgado").value=resultado[0];	
 		}
 		
 		// Funcion que obtiene la comisaria buscando por codigo externo	
