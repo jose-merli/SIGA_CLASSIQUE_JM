@@ -557,12 +557,7 @@
 		}		
 
 		function traspasoDatos(resultado){
-			if(resultado[1] && resultado[1]!=""){
-				if(resultado[1]=="juzgado")
-					 seleccionComboSiga("juzgado",resultado[0]);
-				else
-					 seleccionComboSiga("juzgadoActu",resultado[0]);
-			}	 
+			 seleccionComboSiga("juzgado",resultado[0]);
 		}	
 		
 		function consultas() 

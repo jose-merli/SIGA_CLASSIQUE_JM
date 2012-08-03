@@ -583,7 +583,7 @@
 		}
 
 		function traspasoDatos(resultado){
-			 seleccionComboSiga("comboJuzgados",resultado[0]);
+			 seleccionComboSiga("juzgado",resultado[0]);
 		}	
 		
 	 	function obtenerJuzgado() {
