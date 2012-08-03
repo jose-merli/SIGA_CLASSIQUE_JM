@@ -1,12 +1,12 @@
 <!-- buscarJuzgadoOculta.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
 <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<%@ page contentType="text/html" language="java"
-	errorPage="/html/jsp/error/errorSIGA.jsp"%>
+<%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
@@ -28,12 +28,10 @@
 	String app = request.getContextPath();
 	HttpSession ses = request.getSession(true);
 	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
-	Properties src = (Properties) ses
-			.getAttribute(SIGAConstants.STYLESHEET_REF);
+	Properties src = (Properties) ses.getAttribute(SIGAConstants.STYLESHEET_REF);
 	Vector obj = (Vector) request.getAttribute("resultadoJuzgado");
 
-	String nombreObjetoDestino = (String) request
-			.getAttribute("nombreObjetoDestino");
+	String nombreObjetoDestino = (String) request.getAttribute("nombreObjetoDestino");
 
 	ScsJuzgadoBean myBean = null;
 
@@ -49,9 +47,11 @@
 	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
 		
 	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/SIGA.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>	
+	<script type="text/javascript" src="<%=app%>/html/js/calendarJs.jsp"></script>
 	
-	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 	<script language="JavaScript" type="text/javascript">	
 	var aux = new Array();	
 <%
@@ -67,34 +67,31 @@
 	 	<%}
 	}
 %>
-	<%if (nombreObjetoDestino != null && !nombreObjetoDestino.equals("")&& !nombreObjetoDestino.equals("DOSFRAMES")&& !nombreObjetoDestino.equals("TRESFRAMES")) { %>//venimos de una ventana principañ
-	
-  	 	 top.frames[0].traspasoDatos(aux);
-	<%}else{
-	   		if(nombreObjetoDestino != null && !nombreObjetoDestino.equals("")&& nombreObjetoDestino.equals("DOSFRAMES")){%>
-	        	window.parent.parent.traspasoDatos(aux);
-	 		<%}else{
-	    		if (nombreObjetoDestino != null && !nombreObjetoDestino.equals("")&& nombreObjetoDestino.equals("TRESFRAMES")){%>
-	        		window.parent.parent.parent.traspasoDatos(aux);
-	   			<%}else{// venimos de una ventana modal%>
-	      				window.parent.traspasoDatos(aux);
-	  			<% } 
-	  		}
-	  }%>   
-	  
-	 
-
-	 
-	
-	
+	if (top.MantenimientoJuzgadoForm!=undefined) {
+		top.traspasoDatos(aux);
+	}
+	else {
+		if (window.parent.MantenimientoJuzgadoForm!=undefined) {
+			window.parent.traspasoDatos(aux);
+		}		
+		else {
+			if (window.parent.parent.MantenimientoJuzgadoForm!=undefined) {
+				window.parent.parent.traspasoDatos(aux);
+			}		
+			else {
+				if (window.parent.parent.parent.MantenimientoJuzgadoForm!=undefined) {
+					window.parent.parent.parent.traspasoDatos(aux);
+				}					
+			}			
+		}
+	}
 	</script>
 </head>
 
 <body>
 
 <!-- INICIO: SUBMIT AREA -->
-<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"
-	style="display: none"></iframe>
+<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display: none"></iframe>
 <!-- FIN: SUBMIT AREA -->
 </body>
 </html>

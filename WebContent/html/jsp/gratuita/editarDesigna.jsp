@@ -858,7 +858,7 @@
 
 									<% if (!modo.equalsIgnoreCase("ver")) { %> 
 										<td width="80%">
-											<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="500" pestana="t" accion="Hijo:idProcedimiento" accion="parent.cambiarJuzgado(this);"/>
+											<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="500" pestana="t" accion="Hijo:idProcedimiento; cambiarJuzgado(this);"/>
 										</td> 
 									<% } else { %> 
 										<td width="100%">
