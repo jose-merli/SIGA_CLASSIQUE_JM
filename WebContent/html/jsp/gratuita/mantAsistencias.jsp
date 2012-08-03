@@ -1051,7 +1051,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			 
 		//			
 		function traspasoDatosComisaria(resultado) {
-			seleccionComboSiga("comisaria",resultado[0]);
+			document.getElementById("comisaria").value=resultado[0];	
 		}	
 
 		<!-- Asociada al boton Nuevo-->
