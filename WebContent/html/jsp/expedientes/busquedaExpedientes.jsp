@@ -360,7 +360,7 @@
 			<td>
 				
 				 	  <input type="text" name="codigoExtJuzgado" class="box" size="3"  style="margin-top:3px;" maxlength="10" onChange="obtenerJuzgado();" />
-				 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateriaExp" ancho="310" clase="boxCombo" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" hijo="t" accion="Hijo:idProcedimiento" readonly="false" accion="parent.cambiarJuzgado(this);"/>           	   
+				 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateriaExp" ancho="310" clase="boxCombo" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" hijo="t" accion="Hijo:idProcedimiento; parent.cambiarJuzgado(this);" readonly="false"/>           	   
 				
 			</td>
 		</tr>					
@@ -571,15 +571,15 @@
 		
 		}
 		
-	function cambiarComisaria(comboComisaria) {
-		if(comboComisaria.value!=""){
+	function cambiarJuzgado(comboJuzgado) {
+		if(comboJuzgado.value!=""){
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
 	   			type: "POST",
-				url: "/SIGA/JGR_MantenimientoComisarias.do?modo=getAjaxComisaria",
-				data: "idCombo="+comboComisaria.value,
+				url: "/SIGA/JGR_MantenimientoJuzgados.do?modo=getAjaxJuzgado2",
+				data: "idCombo="+comboJuzgado.value,
 				dataType: "json",
 				success: function(json){		
-		       		document.getElementById("codigoExtComisaria").value = json.codigoExt;      		
+		       		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;      		
 					fin();
 				},
 				error: function(e){
