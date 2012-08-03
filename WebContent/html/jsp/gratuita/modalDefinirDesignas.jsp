@@ -71,14 +71,13 @@
 	try {
 		datoJuzgado[0] = usr.getLocation();
 		if (idTurnoAsistencia!=null){
-		 datoJuzgado[1] = (idTurnoAsistencia.split(","))[1];
+		 datoJuzgado[1] = (idTurnoAsistencia.split(","))[1];		 
 		}else{
 		  if (idTurnoEJG!=null){
 		     datoJuzgado[1] = (idTurnoEJG.split(","))[1];
 		  }else{
-		    datoJuzgado[1]="";
-		  }	 
-		 
+		    datoJuzgado[1]="-1";
+		  }	 		 
 		}
 	}
 	catch(Exception e) {}
