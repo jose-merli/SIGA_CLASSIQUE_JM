@@ -390,7 +390,7 @@ VERSIONES: -->
 							
 							<!-- FILA -->
 							<tr>						
-								<td class="labelText"><html:text size="4"  maxlength="4" name="cuentasBancariasForm" property="cbo_Codigo"     value="<%=cbo_Codigo%>" 				styleClass="<%=clase%>" readOnly="<%=desactivado%>" onChange="cuentasBancariasForm.banco.value=this.cbo_Codigo.value"></html:text></td>
+								<td class="labelText"><html:text size="4"  maxlength="4" name="cuentasBancariasForm" property="cbo_Codigo"     value="<%=cbo_Codigo%>" 				styleClass="<%=clase%>" readOnly="<%=desactivado%>" onChange="cuentasBancariasForm.banco.value=this.value"></html:text></td>
 								<td class="labelText"><html:text size="4"  maxlength="4" name="cuentasBancariasForm" property="codigoSucursal" value="<%=cuentaCodigoSucursal%>" 	styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></td>
 								<td class="labelText"><html:text size="5"  maxlength="2" name="cuentasBancariasForm" property="digitoControl"  value="<%=cuentaDigitoControl%>" 	styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></td>
 								<td class="labelText"><html:text size="10" maxlength="10" name="cuentasBancariasForm" property="numeroCuenta"  value="<%=cuentaNumeroCuenta%>" 		styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></td>

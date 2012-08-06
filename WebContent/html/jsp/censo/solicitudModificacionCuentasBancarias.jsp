@@ -243,7 +243,7 @@
 									<siga:Idioma key="censo.datosCuentaBancaria.literal.banco"/>
 								</td>
 								<td class="labelText" COLSPAN="3">
-									<select style="width:500px;" id="banco" class="boxCombo" onchange="cuentasBancariasSolicForm.cbo_Codigo.value=cuentasBancariasSolicForm.banco.value">																		
+									<select style="width:500px;" id="banco" class="boxCombo" onchange="cuentasBancariasSolicForm.cbo_Codigo.value=this.value">																		
 									</select>									
 					   				<!--<siga:ComboBD nombre="banco" tipo="cmbBancos" clase="boxCombo" obligatorio="true" elementoSel="<%=lista%>" accion="document.all.cuentasBancariasSolicForm.cbo_Codigo.value=document.all.cuentasBancariasSolicForm.banco.value"/>-->
 					   			</td>
@@ -256,7 +256,7 @@
 								<td class="labelText"><siga:Idioma key="censo.datosCuentaBancaria.literal.cuenta"/>&nbsp;(*)</td>			
 							</tr>
 							<tr>										
-								<td class="labelText"><html:text name="cuentasBancariasSolicForm" property="cbo_Codigo" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_CBO_CODIGO))%>"         size="4"  maxlength="4"  styleClass="box" onChange="cuentasBancariasSolicForm.banco.value=cuentasBancariasSolicForm.cbo_Codigo.value"></html:text></td>
+								<td class="labelText"><html:text name="cuentasBancariasSolicForm" property="cbo_Codigo" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_CBO_CODIGO))%>"         size="4"  maxlength="4"  styleClass="box" onChange="cuentasBancariasSolicForm.banco.value=this.value"></html:text></td>
 								<td class="labelText"><html:text name="cuentasBancariasSolicForm" property="codigoSucursal" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_CODIGOSUCURSAL))%>" size="4"  maxlength="4"  styleClass="box"></html:text></td>
 								<td class="labelText"><html:text name="cuentasBancariasSolicForm" property="digitoControl" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_DIGITOCONTROL))%>"   size="2"  maxlength="2"  styleClass="box"></html:text></td>						
 								<td class="labelText"><html:text name="cuentasBancariasSolicForm" property="numeroCuenta" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_NUMEROCUENTA))%>"     size="10" maxlength="10" styleClass="box"></html:text></td>
