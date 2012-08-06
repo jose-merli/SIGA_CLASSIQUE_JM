@@ -119,6 +119,7 @@ public class TagFecha extends TagSupport {
 				out.println("//		  minDate: lockDate,");
 			}
 			out.println("	dateFormat: 'dd/mm/yy',");
+			out.println("	monthNamesShort: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],");
 			out.println("	monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],");
 			out.println("   dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],");
 			out.println("	dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],");
