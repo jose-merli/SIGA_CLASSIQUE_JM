@@ -37,6 +37,10 @@
 	type="text/javascript"></script>
 <script src="<html:rewrite page='/html/js/jquery.js'/>"
 	type="text/javascript"></script>
+	
+<script src="<html:rewrite page='/html/js/jquery.custom.js'/>"
+	type="text/javascript"></script>
+	
 </head>
 <script>
 jQuery.noConflict();
@@ -175,11 +179,9 @@ jQuery.noConflict();
 			<tr>
 				<td class="labelText"><siga:Idioma
 						key="envios.definir.literal.fechaprogramada" /></td>
-				<td  class="labelTextValor"><html:text name="DefinirEnviosForm"
-						property="fechaProgramada" size="10" maxlength="10"
-						styleClass="box" readonly="true" value="${fecha}"/> <a href='javascript://'
-					onClick="return showCalendarGeneral(fechaProgramada);"><img
-						src="<html:rewrite page='/html/imagenes/calendar.gif'/>" border="0"> </a></td>
+				<td  class="labelTextValor">
+				<siga:Fecha nombreCampo="fechaProgramada" valorInicial="${fecha}" posicionX="30"  posicionY="30"></siga:Fecha>
+				</td>
 			</tr>
 			<tr>
 			<td>
