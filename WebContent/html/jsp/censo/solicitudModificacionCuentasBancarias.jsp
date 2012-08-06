@@ -38,8 +38,6 @@
 	String idPersona=String.valueOf(htData.get(CenCuentasBancariasBean.C_IDPERSONA));
 	String DB_TRUE=ClsConstants.DB_TRUE;
 	String DB_FALSE=ClsConstants.DB_FALSE;
-	ArrayList lista=new ArrayList();	
-	lista.add(String.valueOf(htData.get(CenCuentasBancariasBean.C_CBO_CODIGO)));	
 %>
 <%@page import="java.util.Hashtable"%>
 <%@page import="java.util.ArrayList"%>
@@ -245,7 +243,6 @@
 								<td class="labelText" COLSPAN="3">
 									<select style="width:500px;" id="banco" class="boxCombo" onchange="cuentasBancariasSolicForm.cbo_Codigo.value=this.value">																		
 									</select>									
-					   				<!--<siga:ComboBD nombre="banco" tipo="cmbBancos" clase="boxCombo" obligatorio="true" elementoSel="<%=lista%>" accion="document.all.cuentasBancariasSolicForm.cbo_Codigo.value=document.all.cuentasBancariasSolicForm.banco.value"/>-->
 					   			</td>
 							</tr>
 							<!-- FILA -->

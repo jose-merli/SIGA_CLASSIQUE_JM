@@ -146,8 +146,6 @@
 	if (datosPersonales.getNColegiado()!=null)
 		nColegiado= datosPersonales.getNColegiado();
 	
-	ArrayList listaBancos = new ArrayList();
-	listaBancos.add(String.valueOf(cbo_Codigo));
 	String fechaBaja = "";
 	
 	if ((titular==null)||(titular.equalsIgnoreCase(""))){
@@ -899,9 +897,8 @@
 				
 				<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.banco"/></td>
 				<td class="labelText">
-					<select style="width:450px;" id="banco" class="boxCombo" onchange="SolicitudIncorporacionForm.cbo_Codigo.value=SolicitudIncorporacionForm.banco.value">																		
+					<select style="width:450px;" id="banco" class="boxCombo" onchange="SolicitudIncorporacionForm.cbo_Codigo.value=this.value">																		
 					</select>
-					<!--<siga:ComboBD nombre="banco" ancho="450" tipo="cmbBancos" clase="boxCombo" elementoSel="<%=listaBancos%>" readOnly="<%=sreadonly%>" accion="document.SolicitudIncorporacionForm.cbo_Codigo.value=document.SolicitudIncorporacionForm.banco.value"/>-->
 				</td>
 			</tr>
 		</table>

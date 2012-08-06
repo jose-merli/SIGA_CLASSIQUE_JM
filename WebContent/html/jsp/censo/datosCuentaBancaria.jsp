@@ -59,7 +59,6 @@ VERSIONES: -->
 	String cuentaCodigoSucursal = "";
 	String cuentaDigitoControl = "";
 	String cuentaNumeroCuenta = "";
-	ArrayList listaBancos = new ArrayList();
 	String fechaBaja = "";
 
 	String modo=(String)request.getAttribute("modoConsulta");		
@@ -73,7 +72,6 @@ VERSIONES: -->
 				cuentaDigitoControl  = String.valueOf(htData.get(CenCuentasBancariasBean.C_DIGITOCONTROL));
 				cuentaNumeroCuenta = String.valueOf(htData.get(CenCuentasBancariasBean.C_NUMEROCUENTA));
 				idCuenta = String.valueOf(htData.get(CenCuentasBancariasBean.C_IDCUENTA));
-				listaBancos.add(String.valueOf(htData.get(CenCuentasBancariasBean.C_CBO_CODIGO)));
 				idInstitucion = String.valueOf(htData.get(CenCuentasBancariasBean.C_IDINSTITUCION));
 				fechaBaja = String.valueOf(htData.get(CenCuentasBancariasBean.C_FECHABAJA));
 				if ((fechaBaja != null) && !fechaBaja.equals(""))
@@ -375,8 +373,7 @@ VERSIONES: -->
 								<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.banco"/></td>
 								<td class="labelText" COLSPAN="3">
 									<select style="width:500px;" id="banco" class="claseCombo" onchange="cuentasBancariasForm.cbo_Codigo.value=this.value">																		
-									</select>	
-									<!--<siga:ComboBD nombre="banco" ancho="500" tipo="cmbBancos" clase="<%=claseCombo%>" obligatorio="true" elementoSel="<%=listaBancos%>" accion="document.all.cuentasBancariasForm.cbo_Codigo.value=document.all.cuentasBancariasForm.banco.value" readonly="<%=String.valueOf(desactivado)%>"/>-->						
+									</select>							
 								</td>
 							</tr>
 
