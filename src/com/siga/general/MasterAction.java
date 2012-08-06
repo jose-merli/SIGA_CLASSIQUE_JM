@@ -470,6 +470,20 @@ public abstract class MasterAction extends SIGAAuxAction {
 		}
 		return "exito"; 
 	}
+	
+	/** 
+	 *  Funcion que prepara la salida en caso de exito con descarga de archivo
+	 *  @param mensaje en formato key de recurso
+	 *  @param request para enviar los datos
+	 *  @return String con el forward
+	 */
+	protected String exitoConDescarga(String mensaje, HttpServletRequest request) {
+		if (mensaje!=null && !mensaje.equals("")) {
+			request.setAttribute("mensaje",mensaje);
+		}
+		return "exitoDescarga"; 
+	}
+	
 	/** 
 	 *  Funcion que prepara la salida en caso de exito sin refresco
 	 *  @param mensaje en formato key de recurso

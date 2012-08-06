@@ -355,17 +355,15 @@ public class CargaProductosAction extends MasterAction {
 		catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.productos"},e,tx); 
 		} 
-		
+		String msj="Error en la lectura del fichero. Analice el log para mas detalles.";
 		if(procesoOk == true){
-			String msj=UtilidadesString.getMensajeIdioma(user,
-				"messages.cargaProductos.inserted.success1");	
-			msj+=" "+lineNumber+" "+UtilidadesString.getMensajeIdioma(user,
-			"messages.cargaProductos.inserted.success2");
-  			
+			msj=UtilidadesString.getMensajeIdioma(user, "messages.cargaProductos.inserted.success1");	
+			msj+=" "+lineNumber+" "+UtilidadesString.getMensajeIdioma(user, "messages.cargaProductos.inserted.success2");
 			exito = this.exitoRefresco(msj, request);
 		}else{
-			exito = "descargaFichero";
+			exito = this.exitoConDescarga(msj, request);
 		}
+		
 		return exito;
 		
 	}
