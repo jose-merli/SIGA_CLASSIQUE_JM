@@ -374,7 +374,7 @@ VERSIONES: -->
 							<tr>
 								<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.banco"/></td>
 								<td class="labelText" COLSPAN="3">
-									<select style="width:500px;" id="banco" class="claseCombo" onchange="cuentasBancariasForm.cbo_Codigo.value=cuentasBancariasForm.banco.value">																		
+									<select style="width:500px;" id="banco" class="claseCombo" onchange="cuentasBancariasForm.cbo_Codigo.value=this.value">																		
 									</select>	
 									<!--<siga:ComboBD nombre="banco" ancho="500" tipo="cmbBancos" clase="<%=claseCombo%>" obligatorio="true" elementoSel="<%=listaBancos%>" accion="document.all.cuentasBancariasForm.cbo_Codigo.value=document.all.cuentasBancariasForm.banco.value" readonly="<%=String.valueOf(desactivado)%>"/>-->						
 								</td>
@@ -390,7 +390,7 @@ VERSIONES: -->
 							
 							<!-- FILA -->
 							<tr>						
-								<td class="labelText"><html:text size="4"  maxlength="4" name="cuentasBancariasForm" property="cbo_Codigo"     value="<%=cbo_Codigo%>" 				styleClass="<%=clase%>" readOnly="<%=desactivado%>" onChange="cuentasBancariasForm.banco.value=cuentasBancariasForm.cbo_Codigo.value"></html:text></td>
+								<td class="labelText"><html:text size="4"  maxlength="4" name="cuentasBancariasForm" property="cbo_Codigo"     value="<%=cbo_Codigo%>" 				styleClass="<%=clase%>" readOnly="<%=desactivado%>" onChange="cuentasBancariasForm.banco.value=this.cbo_Codigo.value"></html:text></td>
 								<td class="labelText"><html:text size="4"  maxlength="4" name="cuentasBancariasForm" property="codigoSucursal" value="<%=cuentaCodigoSucursal%>" 	styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></td>
 								<td class="labelText"><html:text size="5"  maxlength="2" name="cuentasBancariasForm" property="digitoControl"  value="<%=cuentaDigitoControl%>" 	styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></td>
 								<td class="labelText"><html:text size="10" maxlength="10" name="cuentasBancariasForm" property="numeroCuenta"  value="<%=cuentaNumeroCuenta%>" 		styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></td>
