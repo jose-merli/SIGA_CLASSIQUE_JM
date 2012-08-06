@@ -151,8 +151,8 @@ public class TagFecha extends TagSupport {
 			out.println("		 	 setTimeout(function() { ");  
 			out.println("		 		var buttonPane = jQuery( input ).datepicker( \"widget\" ).find( \".ui-datepicker-buttonpane\" );   ");
 		    out.println("		 	    var btn = jQuery('<BUTTON class=\"ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all\">Limpiar</BUTTON>');");   
-		    out.println("		                  btn.unbind(\"click\").bind(\"click\", function () {  "); 
-		    out.println("                             jQuery.datepicker._clearDate( input );   });   ");
+		    out.println("		                  btn.unbind(\"click\").bind(\"click\", function (input) {  "); 
+		    out.println("                             jQuery( '#"+ this.nombreCampo +"').val('');   });   ");
 		    out.println("               btn.appendTo( buttonPane );");  
 			out.println("          	  }, 1 );        ");
 		    out.println("	} 	 	        ");			
