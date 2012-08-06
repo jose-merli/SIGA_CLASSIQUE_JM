@@ -509,108 +509,7 @@
 			
 		}	
 	
-		function download(fila) {
-			sub();
-			var idPago = "idPago"+fila;
-			
-			if(document.getElementById(idPago).value!=''){
-				var idPers = "idPersonaOrigen"+fila;
-			
-				var idInst = "oculto"+fila+"_2";
-				idPersona = document.getElementById(idPers).value;
-				idPago = document.getElementById(idPago).value;
-				idInstitucion =  document.getElementById(idInst).value;
-				datos = +idInstitucion +","+idPago+","+idPersona +"#";
-			   	
-				var formu = document.createElement('form');
-				formu.setAttribute('name', 'InformesGenericosForm');
-				formu.setAttribute('method', 'POST');
-				formu.setAttribute('action', '/SIGA/INF_InformesGenericos.do');
-				formu.setAttribute('target', 'submitArea');
-				formu.setAttribute('method', 'POST');
-				
-				var myinput = document.createElement('input');
-				myinput.setAttribute('type', 'hidden');
-				myinput.setAttribute('name', 'idInstitucion');
-				myinput.setAttribute('value', '<%=idInstitucion %>');
-				formu.appendChild(myinput);
-				
-				var myinput2 = document.createElement('input');
-				myinput2.setAttribute('type', 'hidden');
-				myinput2.setAttribute('name', 'idTipoInforme');
-				myinput2.setAttribute('value', 'CPAGO');
-				formu.appendChild(myinput2);
-			   	
-				var myinput3 = document.createElement('input');
-				myinput3.setAttribute('type', 'hidden');
-				myinput3.setAttribute('name', 'datosInforme');
-				myinput3.setAttribute('value', '');
-				formu.appendChild(myinput3);
-				
-				var myinput4 = document.createElement('input');
-				myinput4.setAttribute('type', 'hidden');
-				myinput4.setAttribute('name', 'tablaDatosDinamicosD');
-				myinput4.setAttribute('value', '');
-				formu.appendChild(myinput4);
-				
-				var myinput5 = document.createElement('input');
-				myinput5.setAttribute('type', 'hidden');
-				myinput5.setAttribute('name', 'seleccionados');
-				myinput5.setAttribute('value', '0');
-				formu.appendChild(myinput5);
-			   	
-				//formu.datosInforme.value = datos;
-				document.body.appendChild(formu);
-			   	formu.submit();
-			   	
-			}else{
-				
-				// EJEMPLO: var dat="idAbono==25##idinstitucion==2040%%%idAbono==26##idinstitucion==2040%%%idAbono==27##idinstitucion==2040%%%idAbono==28##idinstitucion==2040";
-				
-				var formu = document.createElement('form');
-				formu.setAttribute('name', 'InformesGenericosForm');
-				formu.setAttribute('method', 'POST');
-				formu.setAttribute('action', '/SIGA/INF_InformesGenericos.do');
-				formu.setAttribute('target', 'submitArea');
-				formu.setAttribute('method', 'POST');
-				
-				var myinput = document.createElement('input');
-				myinput.setAttribute('type', 'hidden');
-				myinput.setAttribute('name', 'idInstitucion');
-				myinput.setAttribute('value', '<%=idInstitucion %>');
-				formu.appendChild(myinput);
-				
-				var myinput2 = document.createElement('input');
-				myinput2.setAttribute('type', 'hidden');
-				myinput2.setAttribute('name', 'idInforme');
-				myinput2.setAttribute('value', '');
-				formu.appendChild(myinput2);
-				
-				var myinput3 = document.createElement('input');
-				myinput3.setAttribute('type', 'hidden');
-				myinput3.setAttribute('name', 'idTipoInforme');
-				myinput3.setAttribute('value', 'ABONO');
-				formu.appendChild(myinput3);
-				
-				var myinput4 = document.createElement('input');
-				myinput4.setAttribute('type', 'hidden');
-				myinput4.setAttribute('name', 'datosInforme');
-				myinput4.setAttribute('value', '');
-				formu.appendChild(myinput4);
-				
-				var myinput5 = document.createElement('input');
-				myinput5.setAttribute('type', 'hidden');
-				myinput5.setAttribute('name', 'seleccionados');
-				myinput5.setAttribute('value', '0');
-				formu.appendChild(myinput5);
-				
-				var idInst = "oculto" + fila + "_2";
-				var idAbono = "oculto" + fila + "_1";
-				datos = 'idAbono=='+ document.getElementById(idAbono).value+ "##idinstitucion=="+ document.getElementById(idInst).value + "%%%";
-				
-				document.body.appendChild(formu);
-				formu.submit();
-			}
+
 	
 	function download(fila)
 	{
@@ -666,7 +565,7 @@
 		}
 
 	}
-		}
+		
 			</script>
 			
 	</body>
