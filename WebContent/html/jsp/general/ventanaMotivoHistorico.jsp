@@ -38,12 +38,13 @@
 	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
 		
 	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+		<script src="<%=app%>/html/js/jquery.blockUI.js" type="text/javascript"></script>
+		<script src="<%=app%>/html/js/jquery.notice.js" type="text/javascript"></script>
 		
-	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
-
-	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
-	<script language="JavaScript">
+		<script type="text/javascript">
+		
+		jQuery.noConflict();
 
 		<!-- Asociada al evento onload -->
 		function setDefault(){ 
@@ -78,6 +79,14 @@
 			window.top.returnValue = datos;
 			window.top.close();
 		}		
+		
+		function growl(msg,type){
+			jQuery('.notice-item-wrapper').remove();
+			jQuery.noticeAdd({
+				text: msg,
+				type: type
+			});
+		}
 
 	</script>	
 </head>
@@ -100,8 +109,8 @@
 	<html:form action="/CEN_DatosCV.do" method="POST">
 		<table class="tablaCampos" align="center">	
 			<tr>
-				<td class="labelText"><siga:Idioma key="censo.datosCV.literal.motivo"/></td>
-				<td><textarea cols="80" rows="4" name="motivo" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" class="box" style="overflow:hidden"></textarea></td>			   	
+				<td class="labelText" width="80px"><siga:Idioma key="censo.datosCV.literal.motivo"/></td>
+				<td><textarea cols="80" rows="4" name="motivo" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" class="box" style="width:100%; overflow:hidden"></textarea></td>			   	
 			</tr>
 		</table>
 	</html:form>
