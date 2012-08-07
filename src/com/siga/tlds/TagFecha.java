@@ -119,13 +119,21 @@ public class TagFecha extends TagSupport {
 				out.println("//		  minDate: lockDate,");
 			}
 			out.println("	dateFormat: 'dd/mm/yy',");
-			out.println("	regional: 'es', ");
-			out.println("	monthNamesShort: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],");
-			out.println("	monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],");
-			out.println("   dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],");
-			out.println("	dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],");
-			out.println("	dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],");
+			if(usrbean.getLanguageExt().equalsIgnoreCase("CA")){
+				out.println("	monthNames: ['Gener','Febrer','Mar&ccedil;','Abril','Maig','Juny','Juliol','Agost','Setembre','Octubre','Novembre','Desembre'], ");
+				out.println("	monthNamesShort: ['Gener','Febrer','Mar&ccedil;','Abril','Maig','Juny','Juliol','Agost','Setembre','Octubre','Novembre','Desembre'], ");
+				out.println("	dayNames: ['Diumenge','Dilluns','Dimarts','Dimecres','Dijous','Divendres','Dissabte'], ");
+				out.println("	dayNamesShort: ['Dug','Dln','Dmt','Dmc','Djs','Dvn','Dsb'], ");
+				out.println("	dayNamesMin: ['Dg','Dl','Dt','Dc','Dj','Dv','Ds'], ");
+			}else{
+				out.println("	monthNamesShort: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],");
+				out.println("	monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],");
+				out.println("   dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],");
+				out.println("	dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],");
+				out.println("	dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],");
+			}
 		    out.println("		 	        ");
+		    out.println("	regional: '" + usrbean.getLanguageExt().toString() +"', ");
 			out.println("	onSelect: function(dateText, inst) { calendario = '';  }, ");
 		    out.println("		 	        ");
 			out.println("	onClose:  function(dateText, inst) {");
@@ -135,6 +143,8 @@ public class TagFecha extends TagSupport {
 			out.println("	},");
 		    out.println("		 	        ");
 			out.println("	beforeShow: function( input ) {");
+			out.println("				jQuery('.ui-datepicker').draggable();");
+			out.println("				jQuery.datepicker.setDefaults(jQuery.datepicker.regional['" + usrbean.getLanguageExt().toString() +"']);");
 			out.println("				jQuery('#ui-datepicker-div').maxZIndex();");
 			if ((this.getPreFunction() != "")&&(this.getPreFunction() != null)){
 				out.println("		 "+this.getPreFunction()+" ");
