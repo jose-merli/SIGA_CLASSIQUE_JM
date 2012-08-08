@@ -9,21 +9,115 @@
 
 package com.siga.facturacion.action;
 
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.UsrBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
-import com.siga.general.*;
+import com.siga.beans.CenPoblacionesAdm;
+import com.siga.beans.CenPoblacionesBean;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
 
 public class ComprobarPoblacionAction extends MasterAction{
+	
+	/** 
+	 *  Funcion que atiende a las peticiones. Segun el valor del parametro modo del formulario ejecuta distintas acciones
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	
+	protected ActionForward executeInternal (ActionMapping mapping,
+							      ActionForm formulario,
+							      HttpServletRequest request, 
+							      HttpServletResponse response) throws SIGAException {
+
+		String mapDestino = "exception";
+		MasterForm miForm = null;
+
+		try {		
+		    
+			miForm = (MasterForm) formulario;
+			if (miForm == null)
+				return mapping.findForward(mapDestino);
+			
+			String accion = miForm.getModo();
+
+			if ( accion.equalsIgnoreCase("getAjaxPoblaciones")){
+				getAjaxPoblaciones (mapping, miForm, request, response);
+				return null;					
+			} else {
+				return super.executeInternal(mapping,
+						      formulario,
+						      request, 
+						      response);
+			}
+		} catch (SIGAException es) {
+			throw es;
+		} catch (Exception e) {
+			throw new SIGAException("Error en la Aplicación",e);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 * @throws Exception
+	 */
+	protected void getAjaxPoblaciones (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception {
+
+		UsrBean usr = this.getUserBean(request);		
+		CenPoblacionesAdm poblacionesAdm = new CenPoblacionesAdm(usr);
+		CenPoblacionesBean poblacionBean = new CenPoblacionesBean();
+		
+		poblacionBean.setidProvincia((String)request.getParameter("idProvincia"));
+		poblacionBean.setNombre((String)request.getParameter("NombrePoblacion"));
+				
+		List<CenPoblacionesBean> listaPoblaciones = poblacionesAdm.getPoblacionesProvincia(usr, poblacionBean);
+		
+		JSONObject json = new JSONObject();
+		JSONArray lbJsonArray = new JSONArray();
+		
+		for (int i=0;i<listaPoblaciones.size();i++) {
+			lbJsonArray.put(listaPoblaciones.get(i).getJSONObject());
+		}		
+		
+		json.put("listaPoblaciones", lbJsonArray);
+		
+		// json.
+		 response.setContentType("text/x-json;charset=ISO-8859-15");
+		 response.setHeader("Cache-Control", "no-cache");
+		 response.setHeader("Content-Type", "application/json");
+	     response.setHeader("X-JSON", json.toString());
+		 response.getWriter().write(json.toString()); 
+	}	
+	
 
 	/** 
 	 *  Funcion que atiende la accion abrirConParametros

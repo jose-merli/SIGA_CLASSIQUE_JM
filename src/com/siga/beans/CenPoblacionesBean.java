@@ -6,6 +6,9 @@
  */
 package com.siga.beans;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.siga.Utilidades.AjaxXMLBuilderAnnotation;
 import com.siga.Utilidades.AjaxXMLBuilderNameAnnotation;
 import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
@@ -20,7 +23,7 @@ import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
 public class CenPoblacionesBean extends MasterBean {
 
 	/* Variables */
-	private Integer idPartido;
+	private Integer idPartido, prioridad;
 	private String 	idPoblacion, idProvincia, nombre, ine, idPoblacionMunicipio;
 
 	/* Nombre tabla */
@@ -45,6 +48,7 @@ public class CenPoblacionesBean extends MasterBean {
 	static public final String C_NOMBRE						= "NOMBRE";
 	static public final String C_INE     					= "INE";
 	static public final String C_IDPOBLACIONMUNICIPIO       = "IDPOBLACIONMUNICIPIO";
+	static public final String C_PRIORIDAD       			= "PRIORIDAD";
 	
 	// Metodos SET
 	public void setIdPartido (Integer id) 			{ this.idPartido = id; }
@@ -53,6 +57,7 @@ public class CenPoblacionesBean extends MasterBean {
 	public void setNombre (String s)				{ this.nombre = s; }
 	public void setIne (String s)				    { this.ine = s; }
 	public void setIdPoblacionMunicipio (String s)	{ this.idPoblacionMunicipio = s; }
+	public void setPriodidad (Integer num)			{ this.prioridad = num; }
 
 	// Metodos GET
 	public Integer getIdPartido 		  ()	{ return this.idPartido; }
@@ -63,4 +68,18 @@ public class CenPoblacionesBean extends MasterBean {
 	public String getNombre 			  ()	{ return this.nombre; }
 	public String getIne    			  ()	{ return this.ine; }
 	public String getIdPoblacionMunicipio ()	{ return this.idPoblacionMunicipio; }
+	public Integer getPrioridad 		  ()	{ return this.prioridad; }
+	
+	public JSONObject getJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("idPoblacion", this.idPoblacion);
+            obj.put("idProvincia", this.idProvincia);
+            obj.put("nombre", this.nombre);
+            obj.put("prioridad", this.prioridad);
+        } 
+        catch (JSONException e) {
+        }
+        return obj;
+    }	
 }

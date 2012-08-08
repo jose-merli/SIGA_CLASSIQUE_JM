@@ -190,5 +190,51 @@ public class CenPoblacionesAdm extends MasterBeanAdministrador {
        }
        return alPoblaciones;
 		
-	}	
+	}
+	
+ 	public List<CenPoblacionesBean> getPoblacionesProvincia(UsrBean usuario, CenPoblacionesBean poblBean) throws ClsExceptions{
+ 		List<CenPoblacionesBean> listaPoblaciones = null; 		
+		RowsContainer rc = null;
+		
+		try{
+    		
+		    String sql = " SELECT "+CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_IDPROVINCIA+", "+
+		    		CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_IDPOBLACION+", "+
+		    		CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_NOMBRE+", "+
+		    		" NVL("+CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_PRIORIDAD+",3) AS "+CenPoblacionesBean.C_PRIORIDAD+		    		
+		    		" FROM " + CenPoblacionesBean.T_NOMBRETABLA+
+		    		" WHERE "+CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_IDPROVINCIA+"="+poblBean.getIdProvincia()+
+		    		" AND UPPER("+CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_NOMBRE+") LIKE '%"+poblBean.getNombre().toUpperCase()+"%'"+
+		    		" ORDER BY "+CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_PRIORIDAD+" ASC , "+
+		    		CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_NOMBRE+" ASC";
+
+            rc = this.find(sql);
+            
+ 			if (rc!=null) { 				 				
+ 				listaPoblaciones = new ArrayList<CenPoblacionesBean>();
+ 				CenPoblacionesBean poblacionBean = new CenPoblacionesBean();
+ 				poblacionBean.setNombre(UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar"));
+ 				poblacionBean.setIdPoblacion("");
+ 				poblacionBean.setPriodidad(0);
+ 				listaPoblaciones.add(poblacionBean);
+ 				
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable)fila.getRow(); 
+					if (registro != null) { 
+						poblacionBean = new CenPoblacionesBean();
+						poblacionBean.setNombre(UtilidadesHash.getString(registro,poblacionBean.C_NOMBRE));
+						poblacionBean.setIdPoblacion(UtilidadesHash.getString(registro,poblacionBean.C_IDPOBLACION));
+						poblacionBean.setPriodidad(UtilidadesHash.getInteger(registro,poblacionBean.C_PRIORIDAD));
+						poblacionBean.setidProvincia(UtilidadesHash.getString(registro,poblacionBean.C_IDPROVINCIA));
+						listaPoblaciones.add(poblacionBean);
+					}
+				}
+			}
+		}
+		catch(Exception e) {
+			throw new ClsExceptions (e, "Error en getPoblacionesProvincia");
+		}
+		return listaPoblaciones;
+	}    	
 }
