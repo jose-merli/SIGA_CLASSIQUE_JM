@@ -80,15 +80,15 @@
 	
 	ArrayList selPais = new ArrayList();
 	ArrayList selProvincia = new ArrayList();
-	ArrayList selPoblacion = new ArrayList();
 	ArrayList selIdent = new ArrayList();
 	ArrayList selTratamiento = new ArrayList();
 	ArrayList selEstadoCiv = new ArrayList();
+	String idPobl = "";
 	selPais.add(datosPersonales.getIdPais());
 	boolean esEspana=datosPersonales.getIdPais().equalsIgnoreCase(ClsConstants.ID_PAIS_ESPANA)||datosPersonales.getIdPais().equalsIgnoreCase("");
 	if (esEspana){	
 		selProvincia.add(datosPersonales.getIdProvincia());
-		selPoblacion.add(datosPersonales.getIdPoblacion());
+		idPobl=datosPersonales.getIdPoblacion();
 	}
 	selEstadoCiv.add(datosPersonales.getIdEstadoCivil());
 	selTratamiento.add(datosPersonales.getIdTratamiento());
@@ -478,7 +478,8 @@
 		function cargaPais(valor) {      
 			<%if(!readonly){%>
 			   if (valor!=null && valor!="" && valor!=<%=ClsConstants.ID_PAIS_ESPANA%>) {
-				    document.getElementById("poblacion").value="";
+			   		SolicitudIncorporacionForm.txtFiltroPoblacion.value="";
+			   		SolicitudIncorporacionForm.poblacion.value="";			    
 			   		document.getElementById("provincia").value="";
 				   	document.getElementById("provincia").disabled=true;
 					document.getElementById("poblacionEspanola").className="ocultar";
@@ -493,7 +494,7 @@
 			<%}%>
 		}
 	 
-		function recargar(){
+		function recargar(){			
 			<%if (esEspana){ %>
 			var tmp1 = document.getElementsByName("provincia");
 			if (tmp1){
@@ -575,7 +576,7 @@
 
 </head>
 
-<body  class="tablaCentralCampos" onLoad="cargaPais(<%=datosPersonales.getIdPais() %>);cargarChecksCuenta();comprobarTipoIdent();ajusteAlto('divDocumentoAPresentar');">
+<body  class="tablaCentralCampos" onLoad="cargaPais(<%=datosPersonales.getIdPais() %>);cargarChecksCuenta();comprobarTipoIdent();ajusteAlto('divDocumentoAPresentar');cargarPoblaciones();cargarBancos();">
 
 
 <bean:define id="isPosibilidadSolicitudAlta" name="isPosibilidadSolicitudAlta"  scope="request" />
@@ -591,13 +592,7 @@
 	<html:hidden property="idSolicitudSeguroUniversal"/>
 	<input type="hidden" id="numeroIdentificacionBBDD" value ="<%=datosPersonales.getNumeroIdentificador()%>" /> 
 	<input type="hidden" id="fechaNacimientoBBDD" value ="<%=datosPersonales.getFechaNacimiento()%>" />
-	
-	
-	
-	
-	
-	
-	
+	<html:hidden property="poblacion" value="<%=idPobl%>"/>
 	
 	<table align="center" width="100%">
 	<tr>
@@ -800,7 +795,7 @@
 			<%if(readonly && !esEspana){%>
 				<td colspan="2" class="labelTextValor"><%=provincia%></td>
 			<%}else{%>
-				<td colspan="2"><siga:ComboBD nombre="provincia" tipo="provincia" clase="<%=estiloCombo%>" elementoSel="<%=selProvincia %>" readOnly="<%=sreadonly%>" obligatorio="true" accion="Hijo:poblacion" pestana="true"/></td>
+				<td colspan="2"><siga:ComboBD nombre="provincia" tipo="provincia" clase="<%=estiloCombo%>" elementoSel="<%=selProvincia %>" readOnly="<%=sreadonly%>" obligatorio="true" pestana="true" accion="seleccionarProvincia();"/></td>
 			<%}%>
 		</tr>
 		<tr>
@@ -809,8 +804,10 @@
 			<td id="poblacionEspanola" colspan="2">
 			<%if(readonly){%>
 				<input type="text" value="<%=poblacion%>" size="30" maxlength="100" class="boxConsulta" readonly></input>
-			<%}else{%>
-				<siga:ComboBD nombre="poblacion" tipo="poblacion" clase="<%=estiloCombo%>" elementoSel="<%=selPoblacion %>" readOnly="<%=sreadonly%>" obligatorio="true" hijo="t" ancho="300"/>
+			<%}else{%> 
+				<input name="txtFiltroPoblacion" type="text" style="width:300px;" value="" onkeyup="cambiarPoblacion(this.value);" onFocus="cambiarPoblacion(this.value);" onblur="pierdoFoco();" onkeydown="controlTecla(event);">
+				<select class="<%=estiloCombo%>" style="width:300px;" id="selPoblacion" onchange="seleccionarPoblacion(this);" onblur="pierdoFocoCombo();" onclick="pierdoFocoCombo();" onkeydown="controlTeclaCombo(event);" onmouseover="obtenerFocoCombo();" readOnly="<%=readonly%>">																		
+				</select>				
 			<%}%>
 			</td> 
 			
@@ -1121,7 +1118,7 @@
 
 	function accionGuardar(){
 		sub();
-		if(cambioModalidad()){
+		if(cambioModalidad()){			
 			if(datosValidos()){
 				var datos;
 				var size=0;
@@ -1149,7 +1146,7 @@
 						datos.value = datos.value + (tabla.rows[fila].cells)[0].all[j-2].checked + ',';
 						datos.value = datos.value + "#"
 					}
-				}
+				}								
 				document.SolicitudIncorporacionForm.modo.value = "Modificar";
 				document.SolicitudIncorporacionForm.target = "submitArea";
 				document.SolicitudIncorporacionForm.submit();
@@ -1363,26 +1360,161 @@
 </body>
 </html>
 
-<script>
-	jQuery.ajax({ //Comunicación jQuery hacia JSP  
-   		type: "POST",
-		url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBancos",
-		dataType: "json",
-		success: function(json){		
-			var listBancos = json.listaBancos;
+<script>	
+	function cargarBancos() {
+		jQuery.ajax({ //Comunicación jQuery hacia JSP  
+   			type: "POST",
+			url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBancos",
+			dataType: "json",
+			success: function(json){		
+				var listBancos = json.listaBancos;
 
-       		jQuery.each(listBancos, function(i,itemBanco){
-       			if(SolicitudIncorporacionForm.cbo_Codigo.value!=null && itemBanco.idCodigo == SolicitudIncorporacionForm.cbo_Codigo.value)
-       				jQuery("#banco").append("<option selected value='"+itemBanco.idCodigo+"'>"+itemBanco.nombre+"</option>");
-       			else
-       				jQuery("#banco").append("<option value='"+itemBanco.idCodigo+"'>"+itemBanco.nombre+"</option>");       			
-       		});									
-       		document.getElementById("banco").disabled=<%=sreadonly%>;       		
-			fin();
-		},
-		error: function(e){
-			alert('Error de comunicación: ' + e);
-			fin();
+    	   		jQuery.each(listBancos, function(i,itemBanco){
+	       			if(SolicitudIncorporacionForm.cbo_Codigo.value!=null && itemBanco.idCodigo == SolicitudIncorporacionForm.cbo_Codigo.value)
+       					jQuery("#banco").append("<option selected value='"+itemBanco.idCodigo+"'>"+itemBanco.nombre+"</option>");
+       				else
+    	   				jQuery("#banco").append("<option value='"+itemBanco.idCodigo+"'>"+itemBanco.nombre+"</option>");       			
+	       		});										
+       			document.getElementById("banco").disabled=<%=sreadonly%>;       		
+				fin();
+			},
+			error: function(e){
+				alert('Error de comunicación: ' + e);
+				fin();
+			}
+		});
+	}
+
+	//
+	// Código para el filtro de las poblaciones
+	//
+	function cargarPoblaciones () {		
+		var pos = jQuery("#selPoblacion").offset();             
+   		jQuery("#selPoblacion").css("position", "absolute");             
+   		jQuery("#selPoblacion").css("zIndex", 9999);             
+   		jQuery("#selPoblacion").offset(pos); 	
+		jQuery("#selPoblacion").hide();  
+				
+		<%if (esEspana&&!readonly){ %>
+			SolicitudIncorporacionForm.txtFiltroPoblacion.value="<%=poblacion%>";
+			SolicitudIncorporacionForm.poblacion.value="<%=idPobl%>";
+		<%}%>		
+	}	
+	
+	function seleccionarProvincia() {
+		SolicitudIncorporacionForm.txtFiltroPoblacion.value="";
+		SolicitudIncorporacionForm.poblacion.value="";
+	}	   		
+	
+	function seleccionarPoblacion(selectPoblacion) {		
+		var texto=selectPoblacion.options[selectPoblacion.selectedIndex].text;
+		if (texto==cteGuiones||texto==cteSeleccionar)
+			texto="";			 
+		SolicitudIncorporacionForm.txtFiltroPoblacion.value=texto;
+		SolicitudIncorporacionForm.poblacion.value=selectPoblacion.options[selectPoblacion.selectedIndex].value;
+	}
+	
+	function controlTeclaCombo(e) {
+		var tecla = (document.all) ? e.keyCode : e.which; 
+		
+		if (tecla==13) {
+			jQuery("#selPoblacion").hide();
 		}
-	});
+	}
+	
+	function obtenerFocoCombo() {
+		bControlTecla=true;
+		jQuery("#selPoblacion").focus();
+	}				
+	
+	function pierdoFocoCombo() {
+		jQuery("#selPoblacion").hide();
+	}
+	
+	var bControlTecla=false;
+	function pierdoFoco() {	
+		if (bControlTecla)
+			bControlTecla=false;
+		else
+			jQuery("#selPoblacion").hide();
+	}		
+	
+	function controlTecla(e) {
+		var tecla = (document.all) ? e.keyCode : e.which; 
+		
+		if (tecla==40) {
+			bControlTecla=true;
+			jQuery("#selPoblacion").focus();
+		}
+	}		
+	
+	var cteGuiones="------------------------------------------------------------";
+	var cteSeleccionar="<siga:Idioma key='general.combo.seleccionar'/>";	
+	var numOcurrencias=0;	
+	function cambiarPoblacion(filtroPoblacion) {
+		numOcurrencias=numOcurrencias+1;
+		//alert("numOcurrencias"+numOcurrencias);	
+ 		var bPrioridadCapital = false;
+ 		var bPrioridadSegunda = false;
+ 		var bGuionesCapital = true;
+ 		var bGuionesSegunda = true;
+	 	jQuery("#selPoblacion option").remove();
+	 	var idProvincia = document.SolicitudIncorporacionForm.provincia.value;
+	 		
+		jQuery.ajax({ 
+			type: "POST",
+			url: "/SIGA/FAC_ComprobarPoblacion.do?modo=getAjaxPoblaciones",				
+			data: "idProvincia="+idProvincia+"&NombrePoblacion="+filtroPoblacion,
+			dataType: "json",
+			success: function(json){		
+				var listPoblaciones = json.listaPoblaciones;
+
+		   		jQuery.each(listPoblaciones, function(i,itemPoblacion){
+					if(itemPoblacion.nombre==cteSeleccionar)
+  	   					jQuery("#selPoblacion").append("<option value=''>"+itemPoblacion.nombre+"</option>");  
+		   	   		
+		   	   		else  {
+						if(bGuionesCapital&&bPrioridadCapital&&itemPoblacion.prioridad>1) {
+							jQuery("#selPoblacion").append("<option value=''>"+cteGuiones+"</option>");
+							bGuionesCapital=false;
+						}
+						
+						if(bGuionesSegunda&&bPrioridadSegunda&&itemPoblacion.prioridad>2) {
+							jQuery("#selPoblacion").append("<option value=''>"+cteGuiones+"</option>");
+							bGuionesSegunda=false;
+						}   		   		   		   			
+																	
+						if (itemPoblacion.nombre==filtroPoblacion)
+  							jQuery("#selPoblacion").append("<option selected value='"+itemPoblacion.idPoblacion+"'>"+itemPoblacion.nombre+"</option>");
+  						else
+  							jQuery("#selPoblacion").append("<option value='"+itemPoblacion.idPoblacion+"'>"+itemPoblacion.nombre+"</option>");
+  						  	   					 
+  	   					bPrioridadCapital = (!bPrioridadCapital&&itemPoblacion.prioridad==1);
+  	   							
+  	   					bPrioridadSegunda = (!bPrioridadSegunda&&itemPoblacion.prioridad==2);
+  	   				}  	   							  	
+		    	});	  		
+	        
+	        	var len = jQuery("#selPoblacion option").length;
+    	    
+	        	if (len==1)
+    	    		jQuery("#selPoblacion").hide(); 
+	        	
+	        	else {
+    	    		jQuery("#selPoblacion").show();
+        	    	
+        	    	if (len>10)
+        	    		len=10;    					    				
+    				jQuery("#selPoblacion").attr("size", len);
+    				jQuery("#selPoblacion options").eq(1).attr("selected", "selected");    				
+    			}   		    	
+		    	       		       				       				    		
+				fin();
+			},
+			error: function(e){
+				alert('Error de comunicación: ' + e);
+				fin();
+			}
+		}); 		       
+	}	
 </script>
