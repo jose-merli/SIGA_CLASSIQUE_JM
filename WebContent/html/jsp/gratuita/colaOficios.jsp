@@ -312,7 +312,7 @@
 		   clase="tableTitle"
 		   tamanoCol="16,38,18,18,10";
 		   nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,F.Val,F.Baja,"
-		   alto="450"
+		   alto="70%"
 		   ajusteAlto="">
 
 			<!-- INICIO: ZONA DE REGISTROS -->

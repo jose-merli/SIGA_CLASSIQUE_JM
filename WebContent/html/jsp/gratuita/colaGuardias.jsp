@@ -342,7 +342,7 @@
 		   clase="tableTitle"
 		   tamanoCol="<%=tamanoCol%>"
 		   nombreCol="<%=nombreCol%>"
-		   alto="400"
+		   alto="70%"
 		   ajusteAlto="">
 
 			<!-- INICIO: ZONA DE REGISTROS -->
