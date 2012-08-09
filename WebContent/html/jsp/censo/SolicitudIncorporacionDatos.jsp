@@ -1,9 +1,9 @@
 <!-- SolicitudIncorporacionDatos.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
-<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
+<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-15"%>
 <meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15">
 
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
@@ -478,7 +478,7 @@
 		function cargaPais(valor) {      
 			<%if(!readonly){%>
 			   if (valor!=null && valor!="" && valor!=<%=ClsConstants.ID_PAIS_ESPANA%>) {
-			   		SolicitudIncorporacionForm.txtFiltroPoblacion.value="";
+			   		SolicitudIncorporacionForm.txtFiltroPoblacion.value=cteSeleccionar;
 			   		SolicitudIncorporacionForm.poblacion.value="";			    
 			   		document.getElementById("provincia").value="";
 				   	document.getElementById("provincia").disabled=true;
@@ -805,9 +805,11 @@
 			<%if(readonly){%>
 				<input type="text" value="<%=poblacion%>" size="30" maxlength="100" class="boxConsulta" readonly></input>
 			<%}else{%> 
-				<input name="txtFiltroPoblacion" type="text" style="width:300px;" value="" onkeyup="cambiarPoblacion(this.value);" onFocus="cambiarPoblacion(this.value);" onblur="pierdoFoco();" onkeydown="controlTecla(event);">
-				<select class="<%=estiloCombo%>" style="width:300px;" id="selPoblacion" onchange="seleccionarPoblacion(this);" onblur="pierdoFocoCombo();" onclick="pierdoFocoCombo();" onkeydown="controlTeclaCombo(event);" onmouseover="obtenerFocoCombo();" readOnly="<%=readonly%>">																		
-				</select>				
+				<input name="txtFiltroPoblacion" type="text" style="width:300px;" value="" onkeyup="cambiarPoblacion(this.value);" onFocus="obtenerFoco();cambiarPoblacion(this.value);" onblur="pierdoFoco();" onkeydown="controlTecla(event);">
+				<div id="divPoblaciones">
+					<select class="<%=estiloCombo%>" style="width:300px;" id="selPoblacion" onchange="seleccionarPoblacion();" onblur="pierdoFocoCombo();" onclick="pierdoFocoCombo();" onkeydown="controlTeclaCombo(event);" onmouseover="obtenerFocoCombo();">																		
+					</select>
+				</div>				
 			<%}%>
 			</td> 
 			
@@ -1388,133 +1390,178 @@
 	//
 	// Código para el filtro de las poblaciones
 	//
-	function cargarPoblaciones () {		
-		var pos = jQuery("#selPoblacion").offset();             
-   		jQuery("#selPoblacion").css("position", "absolute");             
-   		jQuery("#selPoblacion").css("zIndex", 9999);             
-   		jQuery("#selPoblacion").offset(pos); 	
-		jQuery("#selPoblacion").hide();  
-				
-		<%if (esEspana&&!readonly){ %>
-			SolicitudIncorporacionForm.txtFiltroPoblacion.value="<%=poblacion%>";
-			SolicitudIncorporacionForm.poblacion.value="<%=idPobl%>";
+	var msgControl="";
+	var bControlTecla=false;
+	var cteGuiones="-------------------------------------------------------------------------";
+	var cteControl="controlFiltro";
+	var cteSeleccionar="<siga:Idioma key='general.combo.seleccionar'/>";
+	var controlFiltroPoblacion=cteControl;		
+	
+	function cargarPoblaciones () {
+		<%if (!readonly){ %>		
+			//msgControl=msgControl+"cargarPoblaciones()\n";alert(msgControl);	
+			var pos = jQuery("#selPoblacion").offset();             
+   			jQuery("#selPoblacion").css("position", "absolute");             
+   			jQuery("#selPoblacion").css("zIndex", 9999);             
+   			jQuery("#selPoblacion").offset(pos); 	
+			jQuery("#divPoblaciones").hide();  		
+		
+			<%if (esEspana&&!readonly){ %>		
+				SolicitudIncorporacionForm.txtFiltroPoblacion.value="<%=poblacion%>";
+				SolicitudIncorporacionForm.poblacion.value="<%=idPobl%>";
+			<%}%>
 		<%}%>		
 	}	
 	
 	function seleccionarProvincia() {
-		SolicitudIncorporacionForm.txtFiltroPoblacion.value="";
+		//msgControl=msgControl+"seleccionarProvincia()\n";alert(msgControl);	
+		SolicitudIncorporacionForm.txtFiltroPoblacion.value=cteSeleccionar;
 		SolicitudIncorporacionForm.poblacion.value="";
 	}	   		
 	
-	function seleccionarPoblacion(selectPoblacion) {		
-		var texto=selectPoblacion.options[selectPoblacion.selectedIndex].text;
-		if (texto==cteGuiones||texto==cteSeleccionar)
-			texto="";			 
+	function seleccionarPoblacion() {
+		//msgControl=msgControl+"seleccionarPoblacion()\n";alert(msgControl);		
+		var texto=jQuery("#selPoblacion option:selected").text();		
+		if (texto==cteGuiones)
+			texto=cteSeleccionar;			 
 		SolicitudIncorporacionForm.txtFiltroPoblacion.value=texto;
-		SolicitudIncorporacionForm.poblacion.value=selectPoblacion.options[selectPoblacion.selectedIndex].value;
+		SolicitudIncorporacionForm.poblacion.value=jQuery("#selPoblacion option:selected").val();
 	}
 	
 	function controlTeclaCombo(e) {
+		//msgControl=msgControl+"controlTeclaCombo(e)\n";alert(msgControl);
 		var tecla = (document.all) ? e.keyCode : e.which; 
 		
-		if (tecla==13) {
-			jQuery("#selPoblacion").hide();
+		if (tecla==13) { //TECLA INTRO
+			jQuery("#divPoblaciones").hide();
 		}
-	}
+	}	
 	
-	function obtenerFocoCombo() {
+	function obtenerFocoCombo() {	
+		//msgControl=msgControl+"obtenerFocoCombo()\n";alert(msgControl);	
 		bControlTecla=true;
 		jQuery("#selPoblacion").focus();
 	}				
 	
 	function pierdoFocoCombo() {
-		jQuery("#selPoblacion").hide();
+		//msgControl=msgControl+"pierdoFocoCombo()\n";alert(msgControl);
+		jQuery("#divPoblaciones").hide();		
 	}
 	
-	var bControlTecla=false;
-	function pierdoFoco() {	
+	function obtenerFoco() {
+		//msgControl=msgControl+"obtenerFoco()\n";alert(msgControl);
 		if (bControlTecla)
 			bControlTecla=false;
-		else
-			jQuery("#selPoblacion").hide();
-	}		
-	
-	function controlTecla(e) {
-		var tecla = (document.all) ? e.keyCode : e.which; 
+		if (SolicitudIncorporacionForm.txtFiltroPoblacion.value==cteSeleccionar)
+			SolicitudIncorporacionForm.txtFiltroPoblacion.value="";
+	}			
 		
-		if (tecla==40) {
-			bControlTecla=true;
-			jQuery("#selPoblacion").focus();
+	function pierdoFoco() {	
+		//msgControl=msgControl+"pierdoFoco()\n";alert(msgControl);	
+		if (bControlTecla)
+			bControlTecla=false;
+		else {
+			jQuery("#divPoblaciones").hide();
+			var optionSelected = jQuery("#selPoblacion").prop("selectedIndex");
+			if (optionSelected<=0)
+				SolicitudIncorporacionForm.txtFiltroPoblacion.value=cteSeleccionar;			
 		}
 	}		
 	
-	var cteGuiones="------------------------------------------------------------";
-	var cteSeleccionar="<siga:Idioma key='general.combo.seleccionar'/>";	
-	var numOcurrencias=0;	
+	function controlTecla(e) {
+		//msgControl=msgControl+"controlTecla(e)\n";alert(msgControl);
+		var tecla = (document.all) ? e.keyCode : e.which; 
+		
+		switch(tecla) {
+			case 40: //CURSOR ABAJO
+  				bControlTecla=true;
+				jQuery("#selPoblacion").focus();
+  				break;
+  				
+  			case 9: //TABULADOR
+  				jQuery("#divPoblaciones").hide();
+  				jQuery("#domicilio").focus();  				
+  				break;
+  		}
+	}		
+			 	
 	function cambiarPoblacion(filtroPoblacion) {
-		numOcurrencias=numOcurrencias+1;
-		//alert("numOcurrencias"+numOcurrencias);	
- 		var bPrioridadCapital = false;
- 		var bPrioridadSegunda = false;
- 		var bGuionesCapital = true;
- 		var bGuionesSegunda = true;
-	 	jQuery("#selPoblacion option").remove();
-	 	var idProvincia = document.SolicitudIncorporacionForm.provincia.value;
+		if (controlFiltroPoblacion!=filtroPoblacion) {
+			controlFiltroPoblacion=filtroPoblacion;
+			msgControl=msgControl+"cambiarPoblacion("+filtroPoblacion+")\n";alert(msgControl); 				 		
+		 	var idProvincia = document.SolicitudIncorporacionForm.provincia.value;		 		 		
 	 		
-		jQuery.ajax({ 
-			type: "POST",
-			url: "/SIGA/FAC_ComprobarPoblacion.do?modo=getAjaxPoblaciones",				
-			data: "idProvincia="+idProvincia+"&NombrePoblacion="+filtroPoblacion,
-			dataType: "json",
-			success: function(json){		
-				var listPoblaciones = json.listaPoblaciones;
+			jQuery.ajax({ 
+				type: "POST",
+				url: "/SIGA/FAC_ComprobarPoblacion.do?modo=getAjaxPoblaciones",				
+				data: "idProvincia="+idProvincia+"&NombrePoblacion="+filtroPoblacion,
+				dataType: "json",
+				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+				success: function(json){		
+					var listPoblaciones = json.listaPoblaciones;					
+					var bPrioridadCapital = false;
+ 					var bPrioridadSegunda = false;
+	 				var bGuionesCapital = true;
+ 					var bGuionesSegunda = true;
+ 					var seleccionado = false;
+ 					
+ 					SolicitudIncorporacionForm.poblacion.value="";
+ 					jQuery("#selPoblacion option").remove();
 
-		   		jQuery.each(listPoblaciones, function(i,itemPoblacion){
-					if(itemPoblacion.nombre==cteSeleccionar)
-  	   					jQuery("#selPoblacion").append("<option value=''>"+itemPoblacion.nombre+"</option>");  
+			   		jQuery.each(listPoblaciones, function(i,itemPoblacion){
+						if(itemPoblacion.nombre==cteSeleccionar)
+  	   						jQuery("#selPoblacion").append("<option value=''>"+itemPoblacion.nombre+"</option>");  
 		   	   		
-		   	   		else  {
-						if(bGuionesCapital&&bPrioridadCapital&&itemPoblacion.prioridad>1) {
-							jQuery("#selPoblacion").append("<option value=''>"+cteGuiones+"</option>");
-							bGuionesCapital=false;
-						}
+			   	   		else  {
+							if(bGuionesCapital&&bPrioridadCapital&&itemPoblacion.prioridad>1) {
+								jQuery("#selPoblacion").append("<option value=''>"+cteGuiones+"</option>");
+								bGuionesCapital=false;
+							}
 						
-						if(bGuionesSegunda&&bPrioridadSegunda&&itemPoblacion.prioridad>2) {
-							jQuery("#selPoblacion").append("<option value=''>"+cteGuiones+"</option>");
-							bGuionesSegunda=false;
-						}   		   		   		   			
+							if(bGuionesSegunda&&bPrioridadSegunda&&itemPoblacion.prioridad>2) {
+								jQuery("#selPoblacion").append("<option value=''>"+cteGuiones+"</option>");
+								bGuionesSegunda=false;
+							}   		   		   		   			
 																	
-						if (itemPoblacion.nombre==filtroPoblacion)
-  							jQuery("#selPoblacion").append("<option selected value='"+itemPoblacion.idPoblacion+"'>"+itemPoblacion.nombre+"</option>");
-  						else
-  							jQuery("#selPoblacion").append("<option value='"+itemPoblacion.idPoblacion+"'>"+itemPoblacion.nombre+"</option>");
+							if (!seleccionado&&itemPoblacion.seleccionado==1){
+								seleccionado=true;
+  								jQuery("#selPoblacion").append("<option selected value='"+itemPoblacion.idPoblacion+"'>"+itemPoblacion.nombre+"</option>");
+  								SolicitudIncorporacionForm.poblacion.value=itemPoblacion.idPoblacion;
+  								
+  								// Si pulsas muchas teclas rápidamente en el filtro y tabulador, puede venir bien volver a mostrar el filtro original
+  								SolicitudIncorporacionForm.txtFiltroPoblacion.value=filtroPoblacion;
+	  						}
+  							else
+  								jQuery("#selPoblacion").append("<option value='"+itemPoblacion.idPoblacion+"'>"+itemPoblacion.nombre+"</option>");
   						  	   					 
-  	   					bPrioridadCapital = (!bPrioridadCapital&&itemPoblacion.prioridad==1);
+	  	   					bPrioridadCapital = (!bPrioridadCapital&&itemPoblacion.prioridad==1);
   	   							
-  	   					bPrioridadSegunda = (!bPrioridadSegunda&&itemPoblacion.prioridad==2);
-  	   				}  	   							  	
-		    	});	  		
+  		   					bPrioridadSegunda = (!bPrioridadSegunda&&itemPoblacion.prioridad==2);
+  	   					}  	   							  	
+		    		});	  		
 	        
-	        	var len = jQuery("#selPoblacion option").length;
+		        	var len = jQuery("#selPoblacion option").length;
     	    
-	        	if (len==1)
-    	    		jQuery("#selPoblacion").hide(); 
+		        	if (len==1)
+    		    		jQuery("#divPoblaciones").hide(); 
 	        	
-	        	else {
-    	    		jQuery("#selPoblacion").show();
-        	    	
-        	    	if (len>10)
-        	    		len=10;    					    				
-    				jQuery("#selPoblacion").attr("size", len);
-    				jQuery("#selPoblacion options").eq(1).attr("selected", "selected");    				
-    			}   		    	
+	        		else {    	    		        	    	
+        	    		if (len>10)
+        	    			len=10;    					    				
+	    				jQuery("#selPoblacion").attr("size", len);
+    					jQuery("#divPoblaciones").show();			
+    				}   		    	
 		    	       		       				       				    		
-				fin();
-			},
-			error: function(e){
-				alert('Error de comunicación: ' + e);
-				fin();
-			}
-		}); 		       
+					fin();
+				},
+				error: function(e){
+					alert('Error de comunicación: ' + e);
+					fin();
+				}
+			});
+		}	   
+		else {
+			jQuery("#divPoblaciones").show();
+		}    
 	}	
 </script>
