@@ -23,7 +23,7 @@ import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
 public class CenPoblacionesBean extends MasterBean {
 
 	/* Variables */
-	private Integer idPartido, prioridad;
+	private Integer idPartido, prioridad, seleccionado;
 	private String 	idPoblacion, idProvincia, nombre, ine, idPoblacionMunicipio;
 
 	/* Nombre tabla */
@@ -49,6 +49,7 @@ public class CenPoblacionesBean extends MasterBean {
 	static public final String C_INE     					= "INE";
 	static public final String C_IDPOBLACIONMUNICIPIO       = "IDPOBLACIONMUNICIPIO";
 	static public final String C_PRIORIDAD       			= "PRIORIDAD";
+	static public final String C_SELECCIONADO    			= "SELECCIONADO";
 	
 	// Metodos SET
 	public void setIdPartido (Integer id) 			{ this.idPartido = id; }
@@ -58,6 +59,7 @@ public class CenPoblacionesBean extends MasterBean {
 	public void setIne (String s)				    { this.ine = s; }
 	public void setIdPoblacionMunicipio (String s)	{ this.idPoblacionMunicipio = s; }
 	public void setPriodidad (Integer num)			{ this.prioridad = num; }
+	public void setSeleccionado (Integer num)		{ this.seleccionado = num; }
 
 	// Metodos GET
 	public Integer getIdPartido 		  ()	{ return this.idPartido; }
@@ -69,6 +71,7 @@ public class CenPoblacionesBean extends MasterBean {
 	public String getIne    			  ()	{ return this.ine; }
 	public String getIdPoblacionMunicipio ()	{ return this.idPoblacionMunicipio; }
 	public Integer getPrioridad 		  ()	{ return this.prioridad; }
+	public Integer getSeleccionado 		  ()	{ return this.seleccionado; }
 	
 	public JSONObject getJSONObject() {
         JSONObject obj = new JSONObject();
@@ -77,6 +80,7 @@ public class CenPoblacionesBean extends MasterBean {
             obj.put("idProvincia", this.idProvincia);
             obj.put("nombre", this.nombre);
             obj.put("prioridad", this.prioridad);
+            obj.put("seleccionado", this.seleccionado);
         } 
         catch (JSONException e) {
         }
