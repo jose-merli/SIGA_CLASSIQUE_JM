@@ -103,6 +103,8 @@
 			<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.factSJCS.error.noExisteDetalleFacturacion"/></p>
 			<br>
 		<% } else {%>
+		
+			<table><tr><td>
 					<siga:TablaCabecerasFijas 
 					   nombre="tablaDatos"
 					   borde="1"
@@ -155,13 +157,10 @@
 				valorFinal = String.valueOf(importeTotal);
 				%>			
 				</siga:TablaCabecerasFijas>
-		
-				<div style="position:absolute;left:0px;width:100%;bottom:110px">
+			</td></tr>
+			<tr><td>
+				<div >
 				<table border="0" width="100%">
-					<tr>
-						<td height="220px" colspan="2">
-						</td>
-					</tr>
 					<tr>	
 						<td width="70%"  align="right" valign="bottom">
 						</td>
@@ -179,6 +178,7 @@
 					</tr>
 				</table>
 				</div>
+			</td></tr></table>
 		<%}%>
 		
 		

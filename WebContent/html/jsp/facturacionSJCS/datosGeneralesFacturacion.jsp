@@ -340,7 +340,7 @@
 		</script>	
 </head>
 
-<body onLoad="ajusteAltoBotones('resultado');">
+<body>
 	<!-- TITULO -->
 	<table class="tablaTitulo" cellspacing="0" heigth="32">
 		<tr>
@@ -414,9 +414,7 @@
 	<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
 
 <!-- FIN ******* CAPA DE PRESENTACION ****** -->
-<table width="100%" align="center"  >		
-	<tr>				
-		<td width="100%" align="center" >
+
 		<iframe align="center" src="<%=app%>/html/jsp/facturacionSJCS/consultaCriteriosFacturacion.jsp?idInstitucion=<%=idInstitucion%>&idFacturacion=<%=idFacturacion%>&modo=<%=modo%>&regularizacion=<%=bRegularizacion%>"
 							id="resultado"
 							name="resultado" 
@@ -425,27 +423,20 @@
 							marginheight="0"
 							marginwidth="0";					 
 							class="frameGeneral"					
-							style="width:100%; height:400px;">
+							style="width:100%;height:35%">
 		</iframe>
-		</td>
-	</tr>
-</table>									
 
-<table width="100%" align="center">		
-	<tr>				
-		<td width="100%" align="center">
 		<iframe align="center" src="<%=app%>/html/jsp/facturacionSJCS/consultaDetallesCriteriosFacturacion.jsp?idInstitucion=<%=idInstitucion%>&idFacturacion=<%=idFacturacion%>&modo=<%=modo%>&regularizacion=<%=bRegularizacion%>"
 							id="resultado10"
 							name="resultado10" 
-							scrolling="no"
+							scrolling="auto"
 							frameborder="0"
 							marginheight="0"
 							marginwidth="0";					 
 							class="frameGeneral"
-							style="width:100%; height:300px;">
+							style="width:100%;height:320px;">
 		</iframe>
-		</td>
-	</tr>
+
 </table>
 	
 	
