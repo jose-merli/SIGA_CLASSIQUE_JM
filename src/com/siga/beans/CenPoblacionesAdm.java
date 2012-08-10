@@ -195,29 +195,33 @@ public class CenPoblacionesAdm extends MasterBeanAdministrador {
  	public List<CenPoblacionesBean> getPoblacionesProvincia(UsrBean usuario, CenPoblacionesBean poblBean) throws ClsExceptions{
  		List<CenPoblacionesBean> listaPoblaciones = null; 		
 		Hashtable codigosBind = new Hashtable();
+		Boolean sinFiltro = false;
 		
 		try{
     		
 		    String sql = " SELECT "+CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_IDPROVINCIA+", "+
 		    		CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_IDPOBLACION+", "+
 		    		CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_NOMBRE+", "+
-		    		" NVL("+CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_PRIORIDAD+",3) AS "+CenPoblacionesBean.C_PRIORIDAD+", "+
-		    		" CASE LENGTH(FILTRO.VALOR) "+
-		    		"  WHEN LENGTH("+CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_NOMBRE+") THEN 1 "+
-		    		"  ELSE 0 "+
-		    		" END  AS SELECCIONADO "+
-		    		" FROM " + CenPoblacionesBean.T_NOMBRETABLA+
+		    		CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_PRIORIDAD;
+		    
+		    if (poblBean.getNombre()==null||poblBean.getNombre().trim().equalsIgnoreCase("")) {
+		    	codigosBind.put(1,'*');
+		    	sinFiltro=true;
+		    }
+		    	
+		    else {		    	
+		    	
+		    	sql+=", LENGTH(FILTRO.VALOR)-LENGTH("+CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_NOMBRE+") AS "+CenPoblacionesBean.C_SELECCIONADO;
+		    	codigosBind.put(1,poblBean.getNombre());
+		    }		    
+		    		
+		    sql+=	" FROM " + CenPoblacionesBean.T_NOMBRETABLA+
 		    		" , (SELECT :1 AS VALOR FROM DUAL) FILTRO "+
 		    		" WHERE "+CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_IDPROVINCIA+"=:2 "+
 		    		" AND REGEXP_LIKE("+CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_NOMBRE+", FILTRO.VALOR) "+
 		    		" ORDER BY "+CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_PRIORIDAD+" ASC, "+
 		    		CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_NOMBRE+" ASC ";	    
-		    		    
-		    
-		    if (poblBean.getNombre()==null||poblBean.getNombre().trim().equalsIgnoreCase(""))
-		    	codigosBind.put(1,'*');
-		    else
-		    	codigosBind.put(1,poblBean.getNombre());
+
 		    codigosBind.put(2,poblBean.getIdProvincia());
 		    
 		    RowsContainer rc = new RowsContainer();
@@ -241,7 +245,10 @@ public class CenPoblacionesAdm extends MasterBeanAdministrador {
 						poblacionBean.setIdPoblacion(UtilidadesHash.getString(registro,poblacionBean.C_IDPOBLACION));
 						poblacionBean.setPriodidad(UtilidadesHash.getInteger(registro,poblacionBean.C_PRIORIDAD));
 						poblacionBean.setidProvincia(UtilidadesHash.getString(registro,poblacionBean.C_IDPROVINCIA));
-						poblacionBean.setSeleccionado(UtilidadesHash.getInteger(registro,poblacionBean.C_SELECCIONADO));
+						if (sinFiltro)
+							poblacionBean.setSeleccionado(false);
+						else
+							poblacionBean.setSeleccionado(UtilidadesHash.getInteger(registro,poblacionBean.C_SELECCIONADO)==0);
 						
 						listaPoblaciones.add(poblacionBean);
 					}
