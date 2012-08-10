@@ -218,7 +218,7 @@
 				<siga:Idioma key='gratuita.busquedaAsistencias.literal.fechaAsistencia'/>&nbsp;(*)
 			</td>	
 			<td >
-			 <siga:Fecha nombreCampo="fechaHora" valorInicial="<%=fecha%>"></siga:Fecha>
+			 <siga:Fecha nombreCampo="fechaHora" valorInicial="<%=fecha%>" postFunction="rellenarComboLetrado();"></siga:Fecha>
 			</td>
 			<td   class="labelText">
 				<siga:Idioma key='gratuita.nuevaAsistencia.literal.hora'/>&nbsp;
