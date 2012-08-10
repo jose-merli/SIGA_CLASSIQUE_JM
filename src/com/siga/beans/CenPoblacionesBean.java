@@ -23,8 +23,9 @@ import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
 public class CenPoblacionesBean extends MasterBean {
 
 	/* Variables */
-	private Integer idPartido, prioridad, seleccionado;
+	private Integer idPartido, prioridad;
 	private String 	idPoblacion, idProvincia, nombre, ine, idPoblacionMunicipio;
+	private Boolean seleccionado;
 
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "CEN_POBLACIONES";
@@ -59,7 +60,7 @@ public class CenPoblacionesBean extends MasterBean {
 	public void setIne (String s)				    { this.ine = s; }
 	public void setIdPoblacionMunicipio (String s)	{ this.idPoblacionMunicipio = s; }
 	public void setPriodidad (Integer num)			{ this.prioridad = num; }
-	public void setSeleccionado (Integer num)		{ this.seleccionado = num; }
+	public void setSeleccionado (Boolean booleano)		{ this.seleccionado = booleano; }
 
 	// Metodos GET
 	public Integer getIdPartido 		  ()	{ return this.idPartido; }
@@ -71,7 +72,7 @@ public class CenPoblacionesBean extends MasterBean {
 	public String getIne    			  ()	{ return this.ine; }
 	public String getIdPoblacionMunicipio ()	{ return this.idPoblacionMunicipio; }
 	public Integer getPrioridad 		  ()	{ return this.prioridad; }
-	public Integer getSeleccionado 		  ()	{ return this.seleccionado; }
+	public Boolean getSeleccionado 		  ()	{ return this.seleccionado; }
 	
 	public JSONObject getJSONObject() {
         JSONObject obj = new JSONObject();
