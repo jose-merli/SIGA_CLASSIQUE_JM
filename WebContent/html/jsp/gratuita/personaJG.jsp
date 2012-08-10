@@ -1136,7 +1136,7 @@
 	<html:hidden name="PersonaJGForm" property = "tituloE" styleId = "tituloE" />
 	<html:hidden name="PersonaJGForm" property = "conceptoE" styleId = "conceptoE" />
 	<html:hidden name="PersonaJGForm" property = "existeNIF"  styleId = "existeNIF" />
-	<html:hidden name="PersonaJGForm" property = "forzarAjax" styleId = "existeNIF"  />
+	<html:hidden name="PersonaJGForm" property = "forzarAjax" styleId = "forzarAjax"  />
 	<html:hidden name="PersonaJGForm" property = "lNumerosTelefonos" styleId = "lNumerosTelefonos" />
 	<html:hidden property = "idTipoenCalidad"  styleId = "idTipoenCalidad" value="<%=idcalidad%>"/>
 	<html:hidden property = "calidadIdinstitucion" styleId = "calidadIdinstitucion" value="<%=calidadIdinstitucion%>"/>
