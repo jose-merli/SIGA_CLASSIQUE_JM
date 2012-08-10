@@ -481,12 +481,16 @@
 			function mostrarCombos(){
 				var institucion = <%=idInstitucionP%>;				
 				if (document.solicitudCompraForm.catalogo.value=='C' && (institucion == 2000 || institucion>=3000))
-				{
+				{					
+					document.getElementById("campoBlanco").style.display="none";
+					document.getElementById("campoBlancoPresentador").style.display="block";
 					document.getElementById("comboPresentador").style.display="block";
 					document.getElementById("presentador").style.display="block";								
 				}
 				else
 				{
+					document.getElementById("campoBlanco").style.display="block";
+					document.getElementById("campoBlancoPresentador").style.display="none";
 					document.getElementById("comboPresentador").style.display="none";
 					document.getElementById("presentador").style.display="none";										
 				}
@@ -664,56 +668,58 @@
 			<table class="tablaCampos" align="center" border="0">
 				<!-- FILA -->
 				<tr>
-					<td class="labelText" valign="top"><siga:Idioma
-						key="pys.solicitudCompra.literal.catalogo" />&nbsp;(*)</td>
-					<td><siga:ComboBD nombre="catalogo" tipo="cmbCatalogo"
-						clase="boxCombo" obligatorio="true" ancho="95"
-						accion="mostrarCombos();" elementoSel="<%=elementoSel0%>" />
+					<td class="labelText" valign="top"><siga:Idioma key="pys.solicitudCompra.literal.catalogo" />&nbsp;(*)</td>
+					<td>
+						<siga:ComboBD nombre="catalogo" tipo="cmbCatalogo"
+						  clase="boxCombo" obligatorio="true" ancho="110"
+						  accion="mostrarCombos();" elementoSel="<%=elementoSel0%>" />
 					</td>
-					<td class="labelText" id="filaNaranja"> <p>></p> </td>
-					<td id="tipoProducto1"><siga:ComboBD nombre="tipoProducto"
-						tipo="cmbTipoProducto" clase="boxCombo" obligatorio="false"
-						accion="Hijo:categoriaProducto;compruebaComboSigaPadre();"
-						elementoSel="<%=elementoSel1%>" ancho="120" />
+					
+					<td class="labelText" id="filaNaranja"><p>></p></td>
+					<td id="tipoProducto1">
+						<siga:ComboBD nombre="tipoProducto"  tipo="cmbTipoProducto" 
+						  clase="boxCombo" obligatorio="false" ancho="140" 
+						  accion="Hijo:categoriaProducto;compruebaComboSigaPadre();"
+						  elementoSel="<%=elementoSel1%>"  />
 					</td>
-					<td id="tipoServicio1" style="display: none"><siga:ComboBD
-						nombre="tipoServicio" tipo="cmbTipoServicio_1" clase="boxCombo"
-						obligatorio="false"
-						accion="Hijo:categoriaServicio;compruebaComboSigaPadre()"
-						elementoSel="<%=elementoSel4%>" ancho="120" />
-
+					<td id="tipoServicio1" style="display: none">
+						<siga:ComboBD nombre="tipoServicio" tipo="cmbTipoServicio_1" 
+						  clase="boxCombo" obligatorio="false" ancho="140"
+						  accion="Hijo:categoriaServicio;compruebaComboSigaPadre()"
+						  elementoSel="<%=elementoSel4%>" />
 					</td>
 
 					<td class="labelText"><p>></p></td>
-					<td id="categoriaProducto1"><siga:ComboBD
-						nombre="categoriaProducto" tipo="cmbProducto_1" clase="boxCombo"
-						accion="Hijo:producto;" hijo="t" elementoSel="<%=elementoSel2%>"
-						parametro="<%=parametroCombo%>" ancho="130" /></td>
-					<td id="categoriaServicio1" style="display: none"><siga:ComboBD
-						nombre="categoriaServicio" tipo="cmbServicio_1" clase="boxCombo"
-						accion="Hijo:servicio;" hijo="t" elementoSel="<%=elementoSel5%>"
-						parametro="<%=parametroCombo%>" ancho="130" /></td>
+					<td id="categoriaProducto1">
+						<siga:ComboBD nombre="categoriaProducto" tipo="cmbProducto_1" 
+						  clase="boxCombo" ancho="150" parametro="<%=parametroCombo%>"
+						  accion="Hijo:producto;" hijo="t" elementoSel="<%=elementoSel2%>"/>
+					</td>
+					<td id="categoriaServicio1" style="display: none">
+						<siga:ComboBD nombre="categoriaServicio" tipo="cmbServicio_1" 
+						  clase="boxCombo" ancho="150" parametro="<%=parametroCombo%>"
+						  accion="Hijo:servicio;" hijo="t" elementoSel="<%=elementoSel5%>"/>
+					</td>
 
 
 					<td class="labelText"><p>></p></td>
-
 					<td id="producto1">
 					<%
 						if (esLetrado) {
 								dato[1] = DB_TRUE;
 								dato[2] = DB_FALSE;
-					%> <siga:ComboBD nombre="producto"
-						tipo="cmbProductoInstitucionLetrado" clase="boxCombo"
-						parametro="<%=dato%>" hijo="t" elementoSel="<%=elementoSel3%>"
-						accion="parent.desactivar(this);" ancho="220" /> <%
- 	} else {
- 			dato[1] = DB_FALSE;
- %> <siga:ComboBD nombre="producto" tipo="cmbProductoInstitucion"
-						clase="boxCombo" parametro="<%=dato%>" hijo="t"
-						elementoSel="<%=elementoSel3%>" accion="parent.desactivar(this);"
-						ancho="220" /> <%
- 	}
- %>
+					%> 
+						<siga:ComboBD nombre="producto" tipo="cmbProductoInstitucionLetrado" 
+						  clase="boxCombo" ancho="300" parametro="<%=dato%>" 
+						  accion="parent.desactivar(this);" hijo="t" elementoSel="<%=elementoSel3%>"/> 
+					<%
+ 						} else {
+ 							dato[1] = DB_FALSE;
+ 					%> 
+ 						<siga:ComboBD nombre="producto" tipo="cmbProductoInstitucion"
+						  clase="boxCombo" ancho="300" parametro="<%=dato%>" 
+						  accion="parent.desactivar(this);" hijo="t" elementoSel="<%=elementoSel3%>"/> 
+					<%}%>
 					</td>
 
 					<td id="servicio1" style="display: none">
@@ -721,34 +727,32 @@
 						if (esLetrado) {
 								dato[1] = DB_TRUE;
 								dato[2] = DB_FALSE;
-					%> <siga:ComboBD nombre="servicio"
-						tipo="cmbServicioInstitucionLetrado" clase="boxCombo"
-						obligatorio="false" parametro="<%=dato%>" hijo="t"
-						elementoSel="<%=elementoSel6%>" accion="parent.desactivar(this);"
-						ancho="130" /> <%
- 	} else {
- 			dato[1] = DB_FALSE;
- %> <siga:ComboBD nombre="servicio" tipo="cmbServicioInstitucion"
-						clase="boxCombo" obligatorio="false" parametro="<%=dato%>"
-						hijo="t" elementoSel="<%=elementoSel6%>"
-						accion="parent.desactivar(this);" ancho="130" /> <%
- 	}
- %>
+					%> 
+						<siga:ComboBD nombre="servicio" tipo="cmbServicioInstitucionLetrado" 
+						  clase="boxCombo" obligatorio="false" ancho="300" parametro="<%=dato%>"
+						  accion="parent.desactivar(this);" hijo="t" elementoSel="<%=elementoSel6%>"/> 
+					<%
+ 						} else {
+ 							dato[1] = DB_FALSE;
+ 					%> 
+ 						<siga:ComboBD nombre="servicio" tipo="cmbServicioInstitucion"
+						  clase="boxCombo"  obligatorio="false" ancho="300" parametro="<%=dato%>"
+						  hijo="t" elementoSel="<%=elementoSel6%>" accion="parent.desactivar(this);"/> 
+					<%
+ 						}
+ 					%>
 					</td>
 
-
-
-					<td align=right id="solicitarProducto1"><html:button
-						property="idButton" onclick="return solicitar('Producto');"
-						styleClass="button">
-						<siga:Idioma key="general.boton.solicitarCompra" />
-					</html:button></td>
+					<td align=left id="solicitarProducto1">
+						<html:button property="idButton" onclick="return solicitar('Producto');" styleClass="button">
+							<siga:Idioma key="general.boton.solicitarCompra" />
+						</html:button>
+					</td>
 					<td align=left id="solicitarServicio1" style="display: none">
-					<html:button property="idButton"
-						onclick="return solicitar('Servicio');" style="align:right"
-						styleClass="button">
-						<siga:Idioma key="general.boton.solicitarCompra" />
-					</html:button></td>
+						<html:button property="idButton" onclick="return solicitar('Servicio');" style="align:right" styleClass="button">
+							<siga:Idioma key="general.boton.solicitarCompra" />
+						</html:button>
+					</td>
 
 				</tr>
 		</table>
@@ -758,25 +762,21 @@
 							<siga:Idioma key="pys.solicitudCompra.literal.presentador"/>
 					</td>
 					<td id = "comboPresentador">									
-						<siga:ComboBD nombre="idInstitucionPresentador" 
-								tipo="cmbInstitucionesAbreviadas" 
-								elementoSel ="<%=idInstitucionPresentador%>"
-								clase="<%=estiloComboInstitucionPresentador%>"
-								readonly="<%=soloLectura%>"
-								accion="actualizarInstitucionPresentador(this);"												
-						/>																			
+						<siga:ComboBD nombre="idInstitucionPresentador" tipo="cmbInstitucionesAbreviadas" 
+						  clase="<%=estiloComboInstitucionPresentador%>" elementoSel ="<%=idInstitucionPresentador%>"
+						  accion="actualizarInstitucionPresentador(this);" readonly="<%=soloLectura%>"/>																								
 					</td>
-					<td id="campoBlanco">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td id="campoBlancoPresentador" style="width:190px">&nbsp;</td>
+					
+					<td id="campoBlanco" style="width:605px">&nbsp;</td>
 																																																									
-					<td align=right id="nombreProducto"><html:text name="solicitudCompraForm"
-						property="nombreProducto" size="20" maxlength="100"
-						styleClass="box" readonly="false" onKeyPress="return disableEnterKey(event)"/></td>
-					<td align=right id="solicitarServicio1"><html:button
-						property="idButton" onclick="return buscarProducto();"
-						styleClass="button">
-						<siga:Idioma key="general.boton.search" />
+					<td align=left id="nombreProducto">
+						<html:text name="solicitudCompraForm" property="nombreProducto" size="44" maxlength="100"
+						  styleClass="box" readonly="false" onKeyPress="return disableEnterKey(event)"/>
+					</td>
+					<td align=left id="solicitarServicio1">
+						<html:button property="idButton" onclick="return buscarProducto();" styleClass="button">
+							<siga:Idioma key="general.boton.search" />
 						</html:button>
 					</td>
 			</tr>
@@ -918,6 +918,8 @@ function mostrarColegio()
 {		
 	<%
 	if (esConsejo && user.getStrutsTrans().equals("PYS_SolicitarCertificado")){	%>
+		document.getElementById("campoBlanco").style.display="none";
+		document.getElementById("campoBlancoPresentador").style.display="block";
 		document.getElementById("comboPresentador").style.display="block";
 		document.getElementById("presentador").style.display="block";
 		<%if (request.getSession().getAttribute("volver") != null && request.getSession().getAttribute("volver").equals("s")) {%>
@@ -927,10 +929,11 @@ function mostrarColegio()
 		<%request.getSession().setAttribute("volver","");}%>		
 	<%}else
 	{
-	%>	
-	document.getElementById("campoBlanco").style.display="block";
-		document.getElementById("comboPresentador").style.display="none";
-		document.getElementById("presentador").style.display="none";
+	%>			
+		document.getElementById("campoBlanco").style.display="none";
+		document.getElementById("campoBlancoPresentador").style.display="block";
+		document.getElementById("comboPresentador").style.display="block";
+		document.getElementById("presentador").style.display="block";
 		<%if (request.getSession().getAttribute("volver") != null && request.getSession().getAttribute("volver").equals("s")) {%>
 			document.solicitudCompraForm.catalogo.disabled=true;
 		<%}%>
