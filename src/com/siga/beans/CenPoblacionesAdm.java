@@ -243,8 +243,13 @@ public class CenPoblacionesAdm extends MasterBeanAdministrador {
 						poblacionBean = new CenPoblacionesBean();
 						poblacionBean.setNombre(UtilidadesHash.getString(registro,poblacionBean.C_NOMBRE));
 						poblacionBean.setIdPoblacion(UtilidadesHash.getString(registro,poblacionBean.C_IDPOBLACION));
-						poblacionBean.setPriodidad(UtilidadesHash.getInteger(registro,poblacionBean.C_PRIORIDAD));
 						poblacionBean.setidProvincia(UtilidadesHash.getString(registro,poblacionBean.C_IDPROVINCIA));
+						
+						if (UtilidadesHash.getInteger(registro,poblacionBean.C_PRIORIDAD)!=null)
+							poblacionBean.setPriodidad(UtilidadesHash.getInteger(registro,poblacionBean.C_PRIORIDAD));
+						else
+							poblacionBean.setPriodidad(-1);
+						
 						if (sinFiltro)
 							poblacionBean.setSeleccionado(false);
 						else
