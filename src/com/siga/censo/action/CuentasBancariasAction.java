@@ -81,14 +81,16 @@ public class CuentasBancariasAction extends MasterAction{
 				// Abrir
 				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
 					mapDestino = abrir(mapping, miForm, request, response);						
-				}else if (accion.equalsIgnoreCase("solicitarModificacion")){
+				} else if (accion.equalsIgnoreCase("solicitarModificacion")){
 					mapDestino = solicitarModificacion(mapping, miForm, request, response);
 				} else if(accion.equalsIgnoreCase("insertarModificacion")){
 					mapDestino = insertarModificacion(mapping, miForm, request, response);
-				} 
-				else if ( accion.equalsIgnoreCase("getAjaxBancos")){
+				} else if ( accion.equalsIgnoreCase("getAjaxBancos")){
 					getAjaxBancos (mapping, miForm, request, response);
 					return null;					
+				} else if ( accion.equalsIgnoreCase("getAjaxBanco")){
+					getAjaxBanco (mapping, miForm, request, response);
+					return null;
 				} else {
 					return super.executeInternal(mapping,
 							      formulario,
@@ -669,15 +671,13 @@ public class CuentasBancariasAction extends MasterAction{
 		List<CenBancosBean> listaBancos = bancosAdm.getBancos(this.getUserBean(request));
 		
 		JSONObject json = new JSONObject();
+		JSONObject jsonAux = new JSONObject();
 		JSONArray lbJsonArray = new JSONArray();
 		
 		for (int i=0;i<listaBancos.size();i++) {
-			//CenBancosBean cbb = listaBancos.get(i);
-			//json = new JSONObject();
-			//json.put("idCodigo", cbb.getCodigo());
-			//json.put("nombre", cbb.getNombre());
-			//lbJsonArray.put(json);
-			lbJsonArray.put(listaBancos.get(i).getJSONObject());
+			jsonAux = listaBancos.get(i).getJSONObject();
+			jsonAux.put("iPrioridad", i);
+			lbJsonArray.put(jsonAux);
 		}		
 		
 		json.put("listaBancos", lbJsonArray);
@@ -689,4 +689,38 @@ public class CuentasBancariasAction extends MasterAction{
 	     response.setHeader("X-JSON", json.toString());
 		 response.getWriter().write(json.toString()); 
 	}
+	
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 * @throws Exception
+	 */
+	protected void getAjaxBanco (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception {
+		
+		CenBancosAdm bancosAdm = new CenBancosAdm(this.getUserBean(request));
+		
+		String idBanco = (String)request.getParameter("idBanco");
+		if (idBanco==null||idBanco.trim().equalsIgnoreCase(""))
+			throw new SIGAException("Falta el identificador del banco");	
+				
+		CenBancosBean bancoBean = bancosAdm.getBanco(idBanco);
+		
+		JSONObject json = new JSONObject();				
+		json.put("banco", bancoBean.getJSONObject());
+		
+		// json.
+		 response.setContentType("text/x-json;charset=ISO-8859-15");
+		 response.setHeader("Cache-Control", "no-cache");
+		 response.setHeader("Content-Type", "application/json");
+	     response.setHeader("X-JSON", json.toString());
+		 response.getWriter().write(json.toString()); 
+	}	
 }
