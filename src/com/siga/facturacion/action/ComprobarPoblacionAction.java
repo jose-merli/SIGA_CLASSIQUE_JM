@@ -96,8 +96,12 @@ public class ComprobarPoblacionAction extends MasterAction{
 		CenPoblacionesAdm poblacionesAdm = new CenPoblacionesAdm(usr);
 		CenPoblacionesBean poblacionBean = new CenPoblacionesBean();
 		
-		poblacionBean.setidProvincia((String)request.getParameter("idProvincia"));
-		poblacionBean.setNombre((String)request.getParameter("NombrePoblacion"));
+		String idProvincia = (String)request.getParameter("idProvincia");
+		if (idProvincia==null||idProvincia.trim().equalsIgnoreCase(""))
+			throw new SIGAException("Falta el identificador de la provincia");				
+		
+		poblacionBean.setidProvincia(idProvincia);
+		poblacionBean.setNombre((String)request.getParameter("filtroPoblacion"));			
 				
 		List<CenPoblacionesBean> listaPoblaciones = poblacionesAdm.getPoblacionesProvincia(usr, poblacionBean);
 		
