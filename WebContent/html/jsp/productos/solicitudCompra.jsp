@@ -930,10 +930,10 @@ function mostrarColegio()
 	<%}else
 	{
 	%>			
-		document.getElementById("campoBlanco").style.display="none";
-		document.getElementById("campoBlancoPresentador").style.display="block";
-		document.getElementById("comboPresentador").style.display="block";
-		document.getElementById("presentador").style.display="block";
+		document.getElementById("campoBlanco").style.display="block";
+		document.getElementById("campoBlancoPresentador").style.display="none";
+		document.getElementById("comboPresentador").style.display="none";
+		document.getElementById("presentador").style.display="none";
 		<%if (request.getSession().getAttribute("volver") != null && request.getSession().getAttribute("volver").equals("s")) {%>
 			document.solicitudCompraForm.catalogo.disabled=true;
 		<%}%>
