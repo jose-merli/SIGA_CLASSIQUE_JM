@@ -621,10 +621,7 @@
 		if(resultado && resultado.length > 0){
 			var fin = resultado[0].indexOf(',');
 			if (fin != -1) { 
-				var idComisaria = resultado[0].substring(0,fin);
-				document.getElementById("idComisaria").value=idComisaria;
-			} else {
-				
+				document.getElementById("idComisaria").value=resultado[0].substring(0,fin);
 			}
 		}		
 	}
@@ -649,10 +646,7 @@
 		if(resultado && resultado.length > 0){
 			var fin = resultado[0].indexOf(',');
 			if (fin != -1) { 
-				var idJuzgado = resultado[0].substring(0,fin);
-				document.geElementById("idJuzgado").value=idJuzgado;
-			}else{
-				
+				document.getElementById("idJuzgado").value=resultado[0].substring(0,fin);
 			}
 		}	
 	}	

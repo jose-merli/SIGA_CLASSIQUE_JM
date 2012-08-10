@@ -9,10 +9,10 @@
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
-<%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
-<%@ taglib uri="struts-bean.tld" prefix="bean"%>
-<%@ taglib uri="struts-html.tld" prefix="html"%>
-<%@ taglib uri="struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="libreria_SIGA.tld" prefix="siga" %>
+<%@ taglib uri="struts-bean.tld"   prefix="bean" %>
+<%@ taglib uri="struts-html.tld"   prefix="html" %>
+<%@ taglib uri="struts-logic.tld"  prefix="logic"%>
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
@@ -51,39 +51,25 @@
 	<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
 	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>	
 	<script type="text/javascript" src="<%=app%>/html/js/calendarJs.jsp"></script>
-	
 	<script language="JavaScript" type="text/javascript">	
-	var aux = new Array();	
-<%
-	if (myBean!=null)
-	{
-%>	   
-
+	
+	var aux = new Array();
+<%	if (myBean!=null)
+	{ %>	   
 		aux[0]="<%=myBean.getIdJuzgado()%>"+","+"<%=myBean.getIdInstitucion()%>";
-<%
-		if (nombreObjetoDestino != null && !nombreObjetoDestino.equals("")) {
-%>
+<%		if (nombreObjetoDestino != null && !nombreObjetoDestino.equals("")) 
+		{ %>
          	aux[1]="<%=nombreObjetoDestino%>";
-	 	<%}
-	}
-%>
+<%		} %>
+<%	} %>
 	if (top.MantenimientoJuzgadoForm!=undefined) {
 		top.traspasoDatos(aux);
-	}
-	else {
-		if (window.parent.MantenimientoJuzgadoForm!=undefined) {
-			window.parent.traspasoDatos(aux);
-		}		
-		else {
-			if (window.parent.parent.MantenimientoJuzgadoForm!=undefined) {
-				window.parent.parent.traspasoDatos(aux);
-			}		
-			else {
-				if (window.parent.parent.parent.MantenimientoJuzgadoForm!=undefined) {
-					window.parent.parent.parent.traspasoDatos(aux);
-				}					
-			}			
-		}
+	} else if (window.parent.MantenimientoJuzgadoForm!=undefined) {
+		window.parent.traspasoDatos(aux);
+	} else if (window.parent.parent.MantenimientoJuzgadoForm!=undefined) {
+		window.parent.parent.traspasoDatos(aux);
+	} else if (window.parent.parent.parent.MantenimientoJuzgadoForm!=undefined) {
+		window.parent.parent.parent.traspasoDatos(aux);
 	}
 	</script>
 </head>
@@ -91,7 +77,7 @@
 <body>
 
 <!-- INICIO: SUBMIT AREA -->
-<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display: none"></iframe>
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display: none"></iframe>
 <!-- FIN: SUBMIT AREA -->
 </body>
 </html>
