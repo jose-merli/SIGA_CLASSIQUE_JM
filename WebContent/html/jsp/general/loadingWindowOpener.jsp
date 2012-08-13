@@ -29,8 +29,7 @@
    	var val;
    	function openLoadingWindow() {
 		try {
-			alert("<%=msg%>");
-    		sub();
+    		sub("<%=msg%>");
 	       	<% if (formName != null) {%>
 	           parent.document.<%=formName%>.submit();
 	       	<% } %>
