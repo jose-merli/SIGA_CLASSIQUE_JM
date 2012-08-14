@@ -754,7 +754,7 @@ function validarFecha(fecha){
 }
 
 function validarFecha2(fecha){
-	var objRegExp = /^\d{2}\/\d{2}\/\d{4}$/
+	var objRegExp = /^\d{1,2}(\-|\/|\.)\d{1,2}(\-|\/|\.)\d{1,4}$/
 	if (fecha==""){
 		return true;
 	}else {

@@ -421,9 +421,15 @@
 					return false;
 				}							
 								
-				var diaFecha = parseInt(sFecha.substring(0,2),10);
-				var mesFecha = parseInt(sFecha.substring(3,5),10);
-				var anioFecha = parseInt(sFecha.substring(6,10),10);
+				sFechaNac=sFechaNac.replace('.','/');
+				sFechaNac=sFechaNac.replace('-','/');										
+				var diaFechaNac = parseInt(sFechaNac.substring(0, sFechaNac.indexOf('/')),10);
+				var auxFecha = sFechaNac.substring(sFechaNac.indexOf('/')+1);					
+				var mesFechaNac = parseInt(auxFecha.substring(0, auxFecha.indexOf('/')),10);
+				var anioFechaNac = parseInt(auxFecha.substring(auxFecha.indexOf('/')+1),10);
+					
+				if (anioFechaNac<1000)
+					anioFechaNac=anioFechaNac+2000;
 				
 				var dFechaActual = new Date();
 				var diaFechaActual = dFechaActual.getDate();
@@ -447,16 +453,22 @@
 			}							
 	
 			function proFechaNac(){
-				var sFechaNac = document.forms[0].fechaNac.value;				
+				var sFechaNac = document.forms[0].fechaNac.value;								
 				
 				if(!validarFecha2(sFechaNac)){
-					sFechaNac = "";
+					return false;
 				}
 			
-				if (sFechaNac!="") {							
-					var diaFechaNac = parseInt(sFechaNac.substring(0,2),10);
-					var mesFechaNac = parseInt(sFechaNac.substring(3,5),10);
-					var anioFechaNac = parseInt(sFechaNac.substring(6,10),10);
+				if (sFechaNac!="") {										
+					sFechaNac=sFechaNac.replace('.','/');
+					sFechaNac=sFechaNac.replace('-','/');										
+					var diaFechaNac = parseInt(sFechaNac.substring(0, sFechaNac.indexOf('/')),10);
+					var auxFecha = sFechaNac.substring(sFechaNac.indexOf('/')+1);					
+					var mesFechaNac = parseInt(auxFecha.substring(0, auxFecha.indexOf('/')),10);
+					var anioFechaNac = parseInt(auxFecha.substring(auxFecha.indexOf('/')+1),10);
+					
+					if (anioFechaNac<1000)
+						anioFechaNac=anioFechaNac+2000;
 				
 					var dFechaActual = new Date();
 					var diaFechaActual = dFechaActual.getDate();
@@ -919,94 +931,7 @@
 		function rellenarCampos(){
 			document.forms[0].provincia.onchange();
 	} 
-
-
-		function accionCalendario() 
-		{
-			// Abrimos el calendario 
-			if (document.getElementById('fechaNac').value!='') {
-
-				rellenaEdad(document.getElementById('fechaNac').value,'S');
-		 	}else{
-				//Si da a reset no viene nada por lo que actualizamos. si viene con fecha
-				//es que ha cerrado desde el aspa, lo dejamos como estuviera(no hacemos nada) 		 		
-		 		 
-				 if( document.getElementById('fechaNac').value=='')
-					 document.getElementById('fechaNac').value='';
-			} 
-		}
-	
-		function rellenaEdad(fecha, Actualiza){
-			//calculo la fecha de hoy 
-		    hoy=new Date() 
-		    //alert(hoy) 
-
-		    //calculo la fecha que recibo 
-		    //La descompongo en un array 
-		    var array_fecha = fecha.split("/") 
-		    //si el array no tiene tres partes, la fecha es incorrecta 
-		    if (array_fecha.length!=3) 
-		       return false 
-
-		    //compruebo que los ano, mes, dia son correctos 
-		    var ano 
-		    ano = parseInt(array_fecha[2]); 
-		    if (isNaN(ano)) 
-		       return false 
-			var mes 
-		    mes = parseInt(array_fecha[1]); 
-		    if (isNaN(mes)) 
-		       return false 
-
-		    var dia 
-		    dia = parseInt(array_fecha[0]); 
-		    if (isNaN(dia)) 
-		       return false 
-
-		    //si el año de la fecha que recibo solo tiene 2 cifras hay que cambiarlo a 4 
-		    if (ano<=99) 
-		       ano +=1900 
-
-		    //resto los años de las dos fechas 
-		    edad=hoy.getYear()- ano - 1; //-1 porque no se si ha cumplido años ya este año 
-			var edadReal=edad;
-		    //si resto los meses y me da menor que 0 entonces no ha cumplido años. Si da mayor si ha cumplido 
-		    if (hoy.getMonth() + 1 - mes < 0){ //+ 1 porque los meses empiezan en 0 
-		    	edadReal= edad;
-		    }else	
-		    if (hoy.getMonth() + 1 - mes > 0){ 
-		    	edadReal= edad+1;
-			}else	
-		    //entonces es que eran iguales. miro los dias 
-		    //si resto los dias y me da menor que 0 entonces no ha cumplido años. Si da mayor o igual si ha cumplido 
-		    if (hoy.getMonth() + 1 - mes == 0){ 
-			    if (hoy.getUTCDate() - dia >= 0) {
-			    	edadReal= edad + 1;
-			    }else
-			    	edadReal= edad;
-		    }    		    	
-		    if(document.PersonaJGForm.edad.value==undefined)
-				document.PersonaJGForm.edad.value="";
 			
-		    if(Actualiza=='S'){   
-				if(edadReal!=undefined){
-					document.PersonaJGForm.edad.value=edadReal;
-				}
-		    }else
-			    return edadReal;
-	} 
-
-
-		function 	validaEdad(){
-			if(document.PersonaJGForm.edad.value!=''){
-				var edad = rellenaEdad(document.getElementById('fechaNac').value,'N');
-				if(document.PersonaJGForm.edad.value==edad)
-					return true;
-				else 
-					return false;
-			}else 
-				return true;
-		}	
 		var poblacionSeleccionada;
 		function recargarComboHijo() {
 			var acceso = poblacionFrame.document.getElementsByTagName("select");
@@ -1644,10 +1569,11 @@
 		<td >
 		   <%
 		   String fechaNac="";
-			if ((miform.getFechaNac() != null)
-								&& (!miform.getFechaNac().equalsIgnoreCase(""))) {
+		   Boolean bFechaNac=false;
+			if ((miform.getFechaNac() != null) && (!miform.getFechaNac().equalsIgnoreCase(""))) {
 				 fechaNac = miform.getFechaNac();
-						}
+				 bFechaNac=true;
+			}
 		%>
 			<%
 				if (!accion.equalsIgnoreCase("ver")) {
@@ -1664,21 +1590,20 @@
 		<td class="labelText">
 			<siga:Idioma key="gratuita.busquedaSOJ.literal.edad"/>	
 		</td>
-				<%
-			if ((miform.getEdad() != null)
-								&& (!miform.getEdad().equalsIgnoreCase(""))) {
-					edad = miform.getEdad();
-						}
+		<%
+			if ((miform.getEdad() != null) && (!miform.getEdad().equalsIgnoreCase(""))) {
+				edad = miform.getEdad();
+			}
 		%>
 		<td>
 			<%
-				if ((obligatorioFechaNac)||(accion.equalsIgnoreCase("ver"))||(fechaNac!="")) {
+				if ((obligatorioFechaNac)||(accion.equalsIgnoreCase("ver"))) {
 			%>
 				<html:text name="PersonaJGForm" value ="<%=edad %>" property="edad" size="3" styleClass="boxConsulta" readOnly="true"/>
 			<%
 				}else{
 			%>
-			 	<html:text name="PersonaJGForm" onkeypress="return soloDigitos(event)" value ="<%=edad %>" property="edad" size="3" styleClass="<%=estiloBox %>"/>
+			 	<html:text name="PersonaJGForm" maxlength="3" onkeypress="return soloDigitos(event)" value ="<%=edad %>" property="edad" size="3" styleClass="<%=estiloBox %>" readonly="<%=bFechaNac%>"/>
 			<%
 				}
 			%>	
@@ -2704,6 +2629,13 @@ function limpiarPersonaContrario() {
 			document.forms[0].submit(); 
 		}
 		
+		function validaEdad() {
+			if(document.PersonaJGForm.edad.value!='')
+				if (document.PersonaJGForm.edad.value.length>3)
+					return false;
+			return true;
+		}		
+		
 		//Asociada al boton Guardar -->
 		function accionGuardar(){	
 
@@ -2723,9 +2655,13 @@ function limpiarPersonaContrario() {
 			}
 			if(document.forms[0].NIdentificacion.value=="") document.forms[0].tipoId.value = "";
 			
-			//if(!validaEdad()){
+			if(!validaEdad()){
+				alert("<siga:Idioma key='gratuita.personaJG.messages.EdadErronea'/>");				
+				fin();
+				return false;
+			}
+			
 			if(!comprobarFecha(document.getElementById('fechaNac').value)){
-				//alert("<siga:Idioma key='gratuita.personaJG.messages.EdadErronea'/>");
 				alert("<siga:Idioma key='fecha.error.valida'/>");				
 				fin();
 				return false;
