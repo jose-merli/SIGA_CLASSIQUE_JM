@@ -48,7 +48,7 @@
 		function entradaDirecta()
 		{
 			frmLogin.location.value="2040";
-			frmLogin.profile.value="ADM";
+			frmLogin.profile.value="ADG";
 			frmLogin.user.value="";
 			frmLogin.letrado.value="N";
 			var urlGet=document.frmLogin.action+"?location="+frmLogin.location.value+"&profile="+frmLogin.profile.value+"&user="+frmLogin.user.value+"&letrado="+frmLogin.letrado.value+"&tmpLoginInstitucion="+frmLogin.tmpLoginInstitucion.value+"&posMenu="+frmLogin.posMenu.value;
@@ -58,7 +58,7 @@
 		function entradaDirectaGen()
 		{
 			frmLogin.location.value="2000";
-			frmLogin.profile.value="ADM";
+			frmLogin.profile.value="ADG";
 			frmLogin.user.value="";
 			frmLogin.letrado.value="N";
 			var urlGet=document.frmLogin.action+"?location="+frmLogin.location.value+"&profile="+frmLogin.profile.value+"&user="+frmLogin.user.value+"&letrado="+frmLogin.letrado.value+"&tmpLoginInstitucion="+frmLogin.tmpLoginInstitucion.value+"&posMenu="+frmLogin.posMenu.value;
