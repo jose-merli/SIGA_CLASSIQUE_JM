@@ -25,7 +25,7 @@
 	}
 	
    	ArrayList idADM = new ArrayList();
-   	idADM.add(0,"ADM");
+   	idADM.add(0,"ADG");
 %>
 
 <html>
@@ -122,24 +122,15 @@
 		
 		<p class="titulos"><siga:Idioma key="index.bienvenida"/></p>
 		
-		<table border="1" cellspacing="0" cellpadding="0" align="center">
+		<table align="center">
 			<tr>
 				<td class="labelText">Institución</td>
-				<td ><siga:ComboBD nombre="tmpLoginInstitucion" tipo="tmpLoginInstitucion" clase="boxCombo" accion="Hijo:tmpLoginPerfil"/></td>
+				<td><siga:ComboBD nombre="tmpLoginInstitucion" tipo="tmpLoginInstitucion" clase="boxCombo" accion="Hijo:tmpLoginPerfil"/></td>
+				<td valign="middle" align="center" ><input type="button" class="button" value="Entrar" onClick="entrar()" title="Entrar con los datos de los combos"></td>
 			</tr>
 			<tr>
-				<td class="labelText">Perfil</td>
-				<td>
-					<siga:ComboBD nombre="tmpLoginPerfil" tipo="tmpLoginPerfil" clase="box" filasMostrar="20" elementoSel="<%=idADM%>" seleccionMultiple="true" hijo="t" obligatorioSinTextoSeleccionar="true"/>
-				</td>		
-			</tr>
-<!--			<tr>
-				<td class="labelText">Usuario</td>
-				<td ><siga:ComboBD nombre="tmpLoginUsuario" tipo="tmpLoginUsuario" clase="boxCombo" hijo="t"/></td>
-			</tr>
--->			<tr>
 				<td class="labelText">¿Letrado?</td>
-				<td >
+				<td>
 					<select name="sLetrado" class="boxCombo">
 						<option value=N>NO, no soy Letrado</option>
 						<option value=S>SÍ, soy Letrado</option>
@@ -147,16 +138,21 @@
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2" align="center">
-					<br>
-					<input type="button" class="button" value="Entrar" onClick="entrar()" title="Entrar con los datos de los combos">
-					<input type="button" class="button" value="León" onClick="entradaDirecta()" title="Entrar a LEON como ADMINistrador NO colegiado">
-					<input type="button" class="button" value="General" onClick="entradaDirectaGen()"  title="Entrar a GENERAL como ADMINistrador NO colegiado">
-				</td>
+				<td class="labelText">Perfil</td>
+				<td>
+					<siga:ComboBD nombre="tmpLoginPerfil" tipo="tmpLoginPerfil" clase="box" filasMostrar="20" elementoSel="<%=idADM%>" seleccionMultiple="true" hijo="t" obligatorioSinTextoSeleccionar="true"/>
+				</td>		
 			</tr>
 
 			<tr>
-			<td colspan="2" class="labelText">
+				<td colspan="3" valign="middle" align="center" >
+					<input type="button" class="button" value="Colegio León" onClick="entradaDirecta()" title="Entrar a LEON como ADMINistrador NO colegiado">
+					&nbsp;
+					<input type="button" class="button" value="GENERAL" onClick="entradaDirectaGen()"  title="Entrar a GENERAL como ADMINistrador NO colegiado">
+				</td>
+			</tr>
+			<tr>
+			<td colspan="3" class="labelText">
 				<CENTER>
 					<a href="/SIGA/CEN_SolicitudesIncorporacionAccesoDirecto.do?idInstitucion=2032"	onClick="false" target="_top">
 						<siga:Idioma key="censo.busquedaSolicitudesIncorporacion.literal.cabecera"/>
