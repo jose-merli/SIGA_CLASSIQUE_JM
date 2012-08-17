@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import com.siga.Utilidades.UtilidadesString;
+
 /*
  * Created on 18-feb-2008
  *
@@ -74,8 +76,11 @@ public class InfoDirectorio {
 				}
 				for (int i = 0; i<directorios.size(); i++) {
 				    File aux2 = (File) directorios.get(i);
-				    pintaInfoDirectorio(aux2, nivel+1, v);
-				    
+				    //     pintaInfoDirectorio(aux2, nivel, v);
+				    Date dat = new Date(aux2.lastModified());
+			        SimpleDateFormat fec = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					String fech = sdf.format(dat);
+				    traza (aux2.getName(), aux2.getAbsolutePath(), "dd", acceso, fech, nivel+1, v);
 				}
 		}
 		else {
@@ -85,6 +90,69 @@ public class InfoDirectorio {
 		}
 		
 	}
+	
+	
+	public static Vector busqueda(String p, String s) 
+	{
+     	if (s == null || s.equals("")){
+			return null;
+		} 
+		
+     	File f = new File (p);
+		if (!f.exists()) { 
+			return null;
+		}
+		
+		Vector v = new Vector();
+		getApariciones(f, s ,0, v);
+		return v;
+	}
+
+	private static void getApariciones (File f, String s, int nivel, Vector v) 
+	{
+		
+			Date d = new Date(f.lastModified());
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String fecha = sdf.format(d);
+			String acceso = "";
+			
+			try {
+				acceso += f.canRead()?"+r":"-r";
+				acceso += f.canWrite()?"+w":"+w";
+			}
+			catch (Exception e) {
+				acceso = "";
+			}
+			catch (Throwable e) {
+				acceso = "";
+			}
+			
+			if(f.getName().contains(s)){
+				String path=f.getAbsolutePath();
+				if (path.startsWith("C:")) {
+					// windows
+					path = path.substring(2,path.length());
+					path = UtilidadesString.replaceAllIgnoreCase(path,"\\","/");
+				}
+				if (f.isDirectory()) {
+					traza (path, f.getAbsolutePath(), "dd", acceso, fecha, nivel, v);
+				}else{
+					traza (path, f.getAbsolutePath(), "f", acceso, fecha, nivel, v);
+				}
+			}
+			
+			if (f.isDirectory()) {		    
+					String[] children = f.list();
+				    ArrayList directorios = new ArrayList();
+					for (int i = 0; i<children.length; i++) {
+					    File aux = new File(f, children[i]);
+				        getApariciones(aux, s, nivel+1, v);
+					}
+			}
+			
+		
+	}
+	
 
 	private static void traza (String nombre, String path, String tipo, String acceso, String fecha, int nivel, Vector v) 
 	{
