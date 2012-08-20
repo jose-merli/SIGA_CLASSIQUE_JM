@@ -409,17 +409,29 @@
 
 	<script type="text/javascript">
 	
+			function validacionFecha (dia, mes, anio) {
+ 				if (mes<1 || mes>12 || day<1 || dia>31 || (
+ 						(mes==4 || mes==6 || mes==9 || mes==11) && dia>30) ||
+	   					(mes==2 && (
+	   						dia>29 || (!((anio%4==0 && anio%100!=0)||anio%400==0) && dia>28)
+	   					)
+	   				)
+	   			)
+   					return (false);
+ 				
+ 				return true;
+			}
+	
 			function comprobarFecha(sFecha){
+				var sFechaNac = sFecha;	
 			
 				<%if (!obligatorioFechaNac) {%>
-					if (sFecha==""){
+					if (sFechaNac=="")
 						return true;
-					}
 				<%}%>
 			
-				if ((sFecha=="")||(!validarFecha2(sFecha))){
+				if ((sFechaNac=="")||(!validarFecha2(sFechaNac)))
 					return false;
-				}							
 								
 				sFechaNac=sFechaNac.replace('.','/');
 				sFechaNac=sFechaNac.replace('-','/');										
@@ -427,24 +439,27 @@
 				var auxFecha = sFechaNac.substring(sFechaNac.indexOf('/')+1);					
 				var mesFechaNac = parseInt(auxFecha.substring(0, auxFecha.indexOf('/')),10);
 				var anioFechaNac = parseInt(auxFecha.substring(auxFecha.indexOf('/')+1),10);
-					
+				
 				if (anioFechaNac<1000)
 					anioFechaNac=anioFechaNac+2000;
+				
+				if (!validacionFecha(diaFechaNac, mesFechaNac, anioFechaNac))
+					return false;					
 				
 				var dFechaActual = new Date();
 				var diaFechaActual = dFechaActual.getDate();
 				var mesFechaActual = dFechaActual.getMonth()+1;
 				var anioFechaActual = dFechaActual.getFullYear();
 				
-				if (anioFecha>anioFechaActual) {
+				if (anioFechaNac>anioFechaActual) {
 					return false;
 				}
 				else {
-					if ((anioFecha==anioFechaActual)&&(mesFecha>mesFechaActual)) {
+					if ((anioFechaNac==anioFechaActual)&&(mesFechaNac>mesFechaActual)) {
 						return false;
 					}
 					else {
-						if ((anioFecha==anioFechaActual)&&(mesFecha==mesFechaActual)&&(diaFecha>diaFechaActual)) {
+						if ((anioFechaNac==anioFechaActual)&&(mesFechaNac==mesFechaActual)&&(diaFechaNac>diaFechaActual)) {
 							return false;
 						}
 					}
@@ -455,9 +470,8 @@
 			function proFechaNac(){
 				var sFechaNac = document.forms[0].fechaNac.value;								
 				
-				if(!validarFecha2(sFechaNac)){
+				if(!validarFecha2(sFechaNac))
 					return false;
-				}
 			
 				if (sFechaNac!="") {										
 					sFechaNac=sFechaNac.replace('.','/');
@@ -469,6 +483,9 @@
 					
 					if (anioFechaNac<1000)
 						anioFechaNac=anioFechaNac+2000;
+						
+					if (!validacionFecha(diaFechaNac, mesFechaNac, anioFechaNac))
+						return false;
 				
 					var dFechaActual = new Date();
 					var diaFechaActual = dFechaActual.getDate();
@@ -1016,7 +1033,7 @@
 	if (pantalla.equals("P")) {
 %>
 
-<body class="tablaCentralCampos" onload="recargar();comprobarTipoPersona();comprobarTipoIdent();">
+<body class="tablaCentralCampos" onload="recargar();comprobarTipoPersona();comprobarTipoIdent();proFechaNac();">
 
 <!-- capa principal -->
 <div id="camposRegistro"  align="center">
@@ -2627,14 +2644,7 @@ function limpiarPersonaContrario() {
 			document.forms[0].modo.value="buscar";
 			document.forms[0].target="mainWorkArea"; 
 			document.forms[0].submit(); 
-		}
-		
-		function validaEdad() {
-			if(document.PersonaJGForm.edad.value!='')
-				if (document.PersonaJGForm.edad.value.length>3)
-					return false;
-			return true;
-		}		
+		}	
 		
 		//Asociada al boton Guardar -->
 		function accionGuardar(){	
@@ -2653,13 +2663,9 @@ function limpiarPersonaContrario() {
 				fin();
 				return false;
 			}
-			if(document.forms[0].NIdentificacion.value=="") document.forms[0].tipoId.value = "";
 			
-			if(!validaEdad()){
-				alert("<siga:Idioma key='gratuita.personaJG.messages.EdadErronea'/>");				
-				fin();
-				return false;
-			}
+			if(document.forms[0].NIdentificacion.value=="") 
+				document.forms[0].tipoId.value = "";
 			
 			if(!comprobarFecha(document.getElementById('fechaNac').value)){
 				alert("<siga:Idioma key='fecha.error.valida'/>");				
@@ -2794,12 +2800,20 @@ function limpiarPersonaContrario() {
 		   	sub();
 
 		   	var tipoIdent=document.forms[0].tipoId.value;
-			var numId=document.forms[0].NIdentificacion.value;	
+			var numId=document.forms[0].NIdentificacion.value;				
 			if (!validaNumeroIdentificacion()) {
 				fin();
 				return false;
 			}
-			if(document.forms[0].NIdentificacion.value=="") document.forms[0].tipoId.value = "";
+			
+			if(document.forms[0].NIdentificacion.value=="") 
+				document.forms[0].tipoId.value = "";
+				
+			if(!comprobarFecha(document.getElementById('fechaNac').value)){
+				alert("<siga:Idioma key='fecha.error.valida'/>");				
+				fin();
+				return false;
+			}
 						
 			document.forms[0].importeIngresosAnuales.value=document.forms[0].importeIngresosAnuales.value.replace(/,/,".").trim();
 			document.forms[0].importeBienesInmuebles.value=document.forms[0].importeBienesInmuebles.value.replace(/,/,".").trim();
@@ -2942,12 +2956,19 @@ function limpiarPersonaContrario() {
 			sub();
 			var tipoIdent=document.forms[0].tipoId.value;
 			var numId=document.forms[0].NIdentificacion.value;
-
 			if (!validaNumeroIdentificacion()) {
 				fin();
 				return false;
 			}
-			if(document.forms[0].NIdentificacion.value=="") document.forms[0].tipoId.value = "";
+			
+			if(document.forms[0].NIdentificacion.value=="") 
+				document.forms[0].tipoId.value = "";
+				
+			if(!comprobarFecha(document.getElementById('fechaNac').value)){
+				alert("<siga:Idioma key='fecha.error.valida'/>");				
+				fin();
+				return false;
+			}				
 			
 			document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarSOJ';
@@ -3012,13 +3033,21 @@ function limpiarPersonaContrario() {
 			}		
 			sub();
 			var tipoIdent=document.forms[0].tipoId.value;
-			var numId=document.forms[0].NIdentificacion.value;
-			
+			var numId=document.forms[0].NIdentificacion.value;			
 			if (!validaNumeroIdentificacion()) {
 				fin();
 				return false;
 			}
-			if(document.forms[0].NIdentificacion.value=="") document.forms[0].tipoId.value = "";
+			
+			if(document.forms[0].NIdentificacion.value=="") 
+				document.forms[0].tipoId.value = "";
+				
+			if(!comprobarFecha(document.getElementById('fechaNac').value)){
+				alert("<siga:Idioma key='fecha.error.valida'/>");				
+				fin();
+				return false;
+			}
+				
 		 	document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarAsistencia';
 			document.forms[0].target="submitArea2";
@@ -3081,13 +3110,20 @@ function limpiarPersonaContrario() {
 					
             sub();
             var tipoIdent=document.forms[0].tipoId.value;
-			var numId=document.forms[0].NIdentificacion.value;
-            
+			var numId=document.forms[0].NIdentificacion.value;            
 			if (!validaNumeroIdentificacion()) {
 				fin();
 				return false;
 			}
-			if(document.forms[0].NIdentificacion.value=="") document.forms[0].tipoId.value = "";
+			
+			if(document.forms[0].NIdentificacion.value=="")
+			 	document.forms[0].tipoId.value = "";
+			 	
+			 if(!comprobarFecha(document.getElementById('fechaNac').value)){
+				alert("<siga:Idioma key='fecha.error.valida'/>");				
+				fin();
+				return false;
+			}
 
 		 	document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarAsistencia';
@@ -3153,13 +3189,20 @@ function limpiarPersonaContrario() {
 						
             sub();
             var tipoIdent=document.forms[0].tipoId.value;
-			var numId=document.forms[0].NIdentificacion.value;
-			
+			var numId=document.forms[0].NIdentificacion.value;			
 			if (!validaNumeroIdentificacion()) {
 				fin();
 				return false;
 			}
-			if(document.forms[0].NIdentificacion.value=="") document.forms[0].tipoId.value = "";
+			
+			if(document.forms[0].NIdentificacion.value=="") 
+				document.forms[0].tipoId.value = "";
+				
+			if(!comprobarFecha(document.getElementById('fechaNac').value)){
+				alert("<siga:Idioma key='fecha.error.valida'/>");				
+				fin();
+				return false;
+			}
 			
 		 	document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarContrariosEjg';
@@ -3220,14 +3263,20 @@ function limpiarPersonaContrario() {
 			
 			sub();
 			var tipoIdent=document.forms[0].tipoId.value;
-			var numId=document.forms[0].NIdentificacion.value;		
-					
-						
+			var numId=document.forms[0].NIdentificacion.value;													
 			if (!validaNumeroIdentificacion()) {
 				fin();
 				return false;
 			}
-			if(document.forms[0].NIdentificacion.value=="") document.forms[0].tipoId.value = "";
+			
+			if(document.forms[0].NIdentificacion.value=="") 
+				document.forms[0].tipoId.value = "";
+				
+			if(!comprobarFecha(document.getElementById('fechaNac').value)){
+				alert("<siga:Idioma key='fecha.error.valida'/>");				
+				fin();
+				return false;
+			}
 			
 		 	document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarPersona';
@@ -3310,13 +3359,19 @@ function limpiarPersonaContrario() {
 			sub();
 			var tipoIdent=document.forms[0].tipoId.value;
 			var numId=document.forms[0].NIdentificacion.value;		
-					
-						
 			if (!validaNumeroIdentificacion()) {
 				fin();
 				return false;
 			}
-			if(document.forms[0].NIdentificacion.value=="") document.forms[0].tipoId.value = "";
+			
+			if(document.forms[0].NIdentificacion.value=="") 
+				document.forms[0].tipoId.value = "";
+				
+			if(!comprobarFecha(document.getElementById('fechaNac').value)){
+				alert("<siga:Idioma key='fecha.error.valida'/>");				
+				fin();
+				return false;
+			}
 
 			var error = "";
 			if (document.getElementById('calidad2')){				 
@@ -3399,13 +3454,19 @@ function accionGuardarCerrar()	{
 	sub();
 	var tipoIdent=document.forms[0].tipoId.value;
 	var numId=document.forms[0].NIdentificacion.value;		
-			
-				
 	if (!validaNumeroIdentificacion()) {
 		fin();
 		return false;
 	}
-	if(document.forms[0].NIdentificacion.value=="") document.forms[0].tipoId.value = "";
+	
+	if(document.forms[0].NIdentificacion.value=="") 
+		document.forms[0].tipoId.value = "";
+		
+	if(!comprobarFecha(document.getElementById('fechaNac').value)){
+		alert("<siga:Idioma key='fecha.error.valida'/>");				
+		fin();
+		return false;
+	}
 
 	var error = "";
 	if (document.getElementById('calidad2')){				 
@@ -3476,6 +3537,7 @@ function buscar() {
 	var resultado = ventaModalGeneral("BusquedaPersonaJGForm","G");			
 	if (resultado != null && resultado[1]!=null) {
 		traspasoDatos(resultado,resultado[17]);
+		proFechaNac();
 	}
 }
 //función para obtener los valores de los telefonos para una persona
