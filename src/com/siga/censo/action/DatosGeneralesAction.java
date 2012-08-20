@@ -45,6 +45,7 @@ import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenHistoricoAdm;
 import com.siga.beans.CenHistoricoBean;
+import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenNoColegiadoActividadAdm;
 import com.siga.beans.CenNoColegiadoActividadBean;
 import com.siga.beans.CenNoColegiadoAdm;
@@ -170,6 +171,8 @@ public class DatosGeneralesAction extends MasterAction {
 		String forward="inicio", accionPestanha=null, idPersona=null, idInstitucion=null;
 		UsrBean user = null;
 		UserTransaction tx = null;
+		CenClienteAdm cliAdm = new CenClienteAdm(user);
+		CenInstitucionAdm insAdm = new CenInstitucionAdm(user); 
 		
 		try {
 			DatosGeneralesForm miform = (DatosGeneralesForm)formulario;
@@ -187,8 +190,9 @@ public class DatosGeneralesAction extends MasterAction {
 			List<CenTipoSociedadBean> alTiposJY;
 			CenTipoSociedadAdm admSociedades = new CenTipoSociedadAdm(this.getUserBean(request));
 			//Si tipo es 1 su uso es para saber si se muestra la pantalla de editar colegiado o por contra se usa la pantalla de no colegiodos
-			//Si su valor no es 1 y es una letra tipo se usa para cargar el combo de Tipo Sociedades			
-			if (tipo!=null && !tipo.equals("1") && !tipo.equals("LETRADO") && !tipo.equals("")) 
+			//Si su valor no es 1 y es una letra tipo se usa para cargar el combo de Tipo Sociedades
+			if (tipo==null) tipo = "";
+			if (!tipo.equals("1") && !tipo.equals("LETRADO") && !tipo.equals("")) 
 			{
 				request.setAttribute("tipo",tipo);
 				miform.setTipo(tipo);
@@ -224,6 +228,38 @@ public class DatosGeneralesAction extends MasterAction {
 			// compruebo que vienen idpersona e idinstitucion
 			idPersona = miform.getIdPersona();
 			idInstitucion = miform.getIdInstitucion();
+			
+			// Control de edicion de datos generales de persona
+			request.setAttribute("BDATOSGENERALESEDITABLES", "false");
+			if (accionPestanha!=null && accionPestanha.equalsIgnoreCase("NUEVO")) {
+				request.setAttribute("BDATOSGENERALESEDITABLES", "true");
+			} else {
+				int clienteOtraInstitucion = cliAdm.getTipoClienteOtraInstitucionProduccion(Long.parseLong(idPersona), Integer.parseInt(idInstitucion));
+				int clienteEstaInstitucion = cliAdm.getTipoClienteProduccion(Long.parseLong(idPersona), Integer.parseInt(idInstitucion));
+				
+				if (idPersona.length() <= 4) { // Es Institucion
+					if (Integer.parseInt(idInstitucion) == ClsConstants.INSTITUCION_CGAE) {
+						request.setAttribute("BDATOSGENERALESEDITABLES", "true");
+					} else if (insAdm.getIdInstitucion(idPersona) == idInstitucion) {
+						request.setAttribute("BDATOSGENERALESEDITABLES", "true");
+					}
+				} else if (!tipo.equals("LETRADO") && 
+						(clienteEstaInstitucion == CenClienteAdm.TIPOCLIENTE_PROD_NOC || 
+						clienteEstaInstitucion == CenClienteAdm.TIPOCLIENTE_PROD_NOCPRO)) { // Es No-colegiado
+				
+					if (clienteOtraInstitucion < CenClienteAdm.TIPOCLIENTE_PROD_NOCPRO) { // No esta en otros colegios en produccion
+						request.setAttribute("BDATOSGENERALESEDITABLES", "true");
+					}
+				} else { // es colegiado o letrado
+					if (clienteEstaInstitucion == CenClienteAdm.TIPOCLIENTE_PROD_RESPRO) {
+						request.setAttribute("BDATOSGENERALESEDITABLES", "true");
+					} else if (clienteOtraInstitucion < CenClienteAdm.TIPOCLIENTE_PROD_COLPRO) { // No esta colegiado en otros colegios
+						request.setAttribute("BDATOSGENERALESEDITABLES", "true");
+						// Si estamos en un Colegio, entonces lo podra editar (y el CGAE no podra pq ya esta en un colegio)
+						// Si estamos en CGAE, lo podra editar siempre que no este activo en ningun colegio en produccion
+					}
+				}
+			}
 
 			//Esto es para para la variable del check observacion
 			if (idPersona != null && !idPersona.equals("")) {

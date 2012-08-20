@@ -53,6 +53,14 @@ import com.siga.informes.InformeCertificadosEspeciales;
  */
 public class CenClienteAdm extends MasterBeanAdmVisible
 {
+	public static final int TIPOCLIENTE_PROD_UNICO = 0;
+	public static final int TIPOCLIENTE_PROD_NOC = 10; // No-colegiado
+	public static final int TIPOCLIENTE_PROD_COL = 20; // Colegiado no residente
+	public static final int TIPOCLIENTE_PROD_RES = 30; // Colegiado residente
+	public static final int TIPOCLIENTE_PROD_NOCPRO = 40; // No-colegiado en colegio en produccion
+	public static final int TIPOCLIENTE_PROD_COLPRO = 50; // Colegiado no residente en colegio en produccion
+	public static final int TIPOCLIENTE_PROD_RESPRO = 60; // Colegiado residente en colegio en produccion
+
 	//////////////////// CONSTRUCTORES ////////////////////
 	public CenClienteAdm (UsrBean usuario) {
 		super (CenClienteBean.T_NOMBRETABLA, usuario);
@@ -3119,6 +3127,85 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			throw new ClsExceptions (e, "Error al consultar datos en B.D.");
 		}
 	}
+	
+	private int selectTipoClienteProduccion (Long idPersona, Integer idInstitucion, boolean igualdad) throws ClsExceptions, SIGAException 
+	{
+		int salida = TIPOCLIENTE_PROD_UNICO;
+		try {
+			Hashtable<Integer, String> codigos = new Hashtable();
+			codigos.put(new Integer(1),idPersona.toString());
+			codigos.put(new Integer(2),idInstitucion.toString());
+			
+			StringBuffer select = new StringBuffer();
+			select.append(" ");
+			select.append("Select Decode(Ins.Fechaenproduccion, ");
+			select.append("              Null, ");
+			select.append("              Decode(f_Siga_Gettipocliente(Col.Idpersona, ");
+			select.append("                                           Col.Idinstitucion, ");
+			select.append("                                           Sysdate), ");
+			select.append("                     0, ");
+			select.append("                     "+TIPOCLIENTE_PROD_NOC+", ");
+			select.append("                     30, ");
+			select.append("                     "+TIPOCLIENTE_PROD_NOC+", ");
+			select.append("                     40, ");
+			select.append("                     "+TIPOCLIENTE_PROD_NOC+", ");
+			select.append("                     50, ");
+			select.append("                     "+TIPOCLIENTE_PROD_NOC+", ");
+			select.append("                     Decode(Col.Situacionresidente, 1, "+TIPOCLIENTE_PROD_RES+", "+TIPOCLIENTE_PROD_COL+")), ");
+			select.append("              Decode(f_Siga_Gettipocliente(Col.Idpersona, ");
+			select.append("                                           Col.Idinstitucion, ");
+			select.append("                                           Sysdate), ");
+			select.append("                     0, ");
+			select.append("                     "+TIPOCLIENTE_PROD_NOCPRO+", ");
+			select.append("                     30, ");
+			select.append("                     "+TIPOCLIENTE_PROD_NOCPRO+", ");
+			select.append("                     40, ");
+			select.append("                     "+TIPOCLIENTE_PROD_NOCPRO+", ");
+			select.append("                     50, ");
+			select.append("                     "+TIPOCLIENTE_PROD_NOCPRO+", ");
+			select.append("                     Decode(Col.Situacionresidente, 1, "+TIPOCLIENTE_PROD_RESPRO+", "+TIPOCLIENTE_PROD_COLPRO+"))) as TIPO ");
+
+			select.append("  From Cen_Cliente Cli, Cen_Colegiado Col, Cen_Institucion Ins ");
+			select.append(" Where Cli.Idinstitucion = Col.Idinstitucion(+) ");
+			select.append("   And Cli.Idpersona = Col.Idpersona(+) ");
+			select.append("   And Cli.Idinstitucion = Ins.Idinstitucion ");
+			select.append("   And Cli.Idpersona = :1 ");
+			select.append("   And Cli.Idinstitucion "+(igualdad ? "=" : "<>")+" :2 ");
+			select.append("   Order By 1 desc ");
+			
+			Vector v = this.selectGenericoBind(select.toString(), codigos);
+			if (v!=null && v.size()>0) {
+				salida = Integer.parseInt((String) ((Hashtable) v.get(0)).get("TIPO"));
+			}
+			return salida;
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al consultar datos en B.D.");
+		}
+	}
+	
+	/**
+	 * Comprueba si existe un cliente a traves de idpersona para una
+	 * institucion diferente a la pasada como parametro 
+	 * devolviendo alguna constante tipo CLIENTE_
+	 * @param idPersona Long con el id de persona
+	 * @param idInstitucion Integer con el id de institucion
+	 */
+	public int getTipoClienteOtraInstitucionProduccion (Long idPersona, Integer idInstitucion) throws ClsExceptions, SIGAException 
+	{
+		return selectTipoClienteProduccion(idPersona, idInstitucion, false);
+	}
+	/**
+	 * Comprueba el tipo de un cliente a traves de idpersona e idinstitucion
+	 * devolviendo alguna constante tipo CLIENTE_
+	 * @param idPersona Long con el id de persona
+	 * @param idInstitucion Integer con el id de institucion
+	 * @return CenClienteBean con el objeto encontrado o nulo si no existe
+	 */
+	public int getTipoClienteProduccion (Long idPersona, Integer idInstitucion) throws ClsExceptions, SIGAException 
+	{
+		return selectTipoClienteProduccion(idPersona, idInstitucion, true);
+	}
 
 	/**
 	 * Realiza el alta de un colegiado desde una solicitud de incorporación
@@ -4972,23 +5059,6 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 		return clientes;
 	}
 	
-	public CenClienteBean existeClienteOtraInstitucionCenso (Long idPersona, Integer idInstitucion) throws ClsExceptions, SIGAException 
-	{
-		try {
-			CenClienteBean salida = null;
-			Hashtable codigos = new Hashtable();
-		    codigos.put(new Integer(1),idPersona.toString());
-    		codigos.put(new Integer(2),idInstitucion.toString());
-		    Vector v = this.selectBind(" WHERE IDPERSONA= :1" + " AND IDINSTITUCION<> :2",codigos);
-			if (v!=null && v.size()>0) {
-				salida = (CenClienteBean) v.get(0);
-			}
-			return salida;
-		}
-		catch (Exception e) {
-			throw new ClsExceptions (e, "Error al consultar datos en B.D.");
-		}
-	}
 	public CenClienteBean insertNoColegiadoCenso (HttpServletRequest request, Long idPersona, String institucion, String idTratamiento) throws SIGAException
 	{
 		
@@ -5012,7 +5082,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 				}else{				
 						/**Busca si no existe el cliente en la institución actual, busca si existe en cualquier colegio y si existe 
 						 * se realiza la pregunta si quiere que utilize los mismos datos ya existentes**/
-					auxCli = this.existeClienteOtraInstitucionCenso (idPersona,new Integer(institucion));
+					auxCli = this.existeClienteOtraInstitucion (idPersona,new Integer(institucion));
 					if (auxCli!=null){
 							CenClienteBean beanCli = new CenClienteBean ();
 							beanCli.setExisteDatos(true);

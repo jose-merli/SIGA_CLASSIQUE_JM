@@ -26,111 +26,81 @@
 
 <!-- JSP -->
 <%  
-	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
+	// Controles generales
+	String app = request.getContextPath();
+	HttpSession ses = request.getSession();
+	Properties src = (Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
 	UsrBean user = (UsrBean) ses.getAttribute("USRBEAN");
-	boolean bOcultarHistorico = user.getOcultarHistorico();
-
+	
+	// Datos formulario y sesion
 	DatosGeneralesForm formulario = (DatosGeneralesForm)request.getAttribute("datosGeneralesForm");
 	String modo = formulario.getAccion();
-
+	boolean bOcultarHistorico = user.getOcultarHistorico();
+	String mostrarMensaje = (String) request.getSession().getAttribute("MOSTRARMENSAJE");
+	String mostrarMensajeNifCif = (String) request.getSession().getAttribute("MOSTRARMENSAJECIFNIF");
+	
 	// para saber hacia donde volver
 	String busquedaVolver = (String) request.getSession().getAttribute("CenBusquedaClientesTipo");
 	if (busquedaVolver==null) {
 		busquedaVolver = "volverNo";
 	}
-
-	String mostrarMensaje = (String) request.getSession().getAttribute("MOSTRARMENSAJE");
-	String mostrarMensajeNifCif = (String) request.getSession().getAttribute("MOSTRARMENSAJECIFNIF");
-
-	// variables
+	
+	// Obtencion colegiado
+    String numeroColegiado = (String) request.getAttribute("CenDatosGeneralesNoColegiado");
+    boolean bColegiado;
+	if (numeroColegiado!=null) {
+		bColegiado=true;
+	} else {
+		bColegiado=false;
+	}
+	
+	// Obteniendo varias cosas
 	ArrayList gruposSel = new ArrayList();	
 	String cliente = "";
-	String numeroColegiado = "";
-	boolean bColegiado = false;
 	boolean bfCertificado=true;
 	String fechaCertificado = "";
 	Vector resultado = null;
-    numeroColegiado = (String) request.getAttribute("CenDatosGeneralesNoColegiado");
-		if (numeroColegiado!=null) {
-			bColegiado=true;
-		} 
-	
-	// RGG 24-06-2005 cambio para controlar acceso a datos persona otra institucion que la creadora
-	String consultaPersona = (String) request.getAttribute("CenDatosPersonalesOtraInstitucion");
-	boolean bConsultaPersona = false;
-	
 	
 	if (!formulario.getIdPersona().equals("")) {
-		// modo != nuevo	
+		// modo != nuevo
 
-		// atributos
+		// Obteniendo atributos varios
 		resultado = (Vector) request.getAttribute("CenResultadoDatosGenerales");
-	
+		
+		// Obteniendo grupos
 		String[] arrayGruposSel = formulario.getGrupos();
 		if (arrayGruposSel!=null) {
 			for (int j=0;j<arrayGruposSel.length;j++) {
 				gruposSel.add(arrayGruposSel[j]);
 			}
 		}
-	
+		
+		// Obteniendo estado colegial/no colegial
 		String colegiado = (String) request.getAttribute("CenDatosGeneralesColegiado");
         if (colegiado!=null && !colegiado.equals("")){
-		   cliente = UtilidadesString.getMensajeIdioma(user, colegiado);
-        }else{
-        	cliente = UtilidadesString.getMensajeIdioma(user,"censo.busquedaClientes.literal.sinEstadoColegial");
-        }
+			cliente = UtilidadesString.getMensajeIdioma(user, colegiado);
+		}else{
+			cliente = UtilidadesString.getMensajeIdioma(user,"censo.busquedaClientes.literal.sinEstadoColegial");
+		}
 		
+        // Obteniendo certificado incorporacion
 		fechaCertificado = (String) request.getAttribute("CenDatosGeneralesCertificado");
 		if (fechaCertificado==null || fechaCertificado.equals("")) {
 			fechaCertificado=UtilidadesString.getMensajeIdioma(user, "censo.ConsultaDatosGenerales.mensaje.NoCertificado");
 			bfCertificado=false;
 		}
 
-	} // del if de nuevo
+	} // del if de modo != nuevo
 	
 	
-	//  tratamiento de readonly
-	String estiloCaja = "";
-	String readonly = "false";  // para el combo
-	boolean breadonly = false;  // para lo que no es combo
-	String checkreadonly = " "; // para el check
-	// caso de accion
-	if (formulario.getAccion().equals("ver")) {
-		// caso de consulta
-		estiloCaja = "boxConsulta";
-		readonly = "true";
-		breadonly = true;
-		checkreadonly = " disabled ";
-	} else {
-		estiloCaja = "box";
-		readonly = "false";
-		breadonly = false;
-		checkreadonly = " ";
-	}
-	
-	String checkreadonlyFoto = " ";
-	if (user.isLetrado()) {
-		checkreadonlyFoto = " ";
-	}else{
-		if (formulario.getAccion().equals("ver")) {
-			checkreadonlyFoto = " disabled ";
-		}else{
-			checkreadonlyFoto = " ";
-		}
-	}
-	
-	
-	// seleccion de combos
+	// Definicion de variables a usar en la JSP
 	ArrayList tratamientoSel = new ArrayList();
 	ArrayList tipoIdentificacionSel = new ArrayList();
 	ArrayList estadoCivilSel = new ArrayList();
 	ArrayList idiomaSel = new ArrayList();
 	ArrayList caracterSel = new ArrayList();
-
 	String idInstitucion = "";
-	String idPersona = "";
+	String idPersona = formulario.getIdPersona();
 	String fotografia = "";
 	String nombre = "";
 	String apellido1 = "";
@@ -162,14 +132,75 @@
 	estadoColegial = (String) request.getAttribute("ESTADOCOLEGIAL");
 	int tipoIdenNIF = ClsConstants.TIPO_IDENTIFICACION_NIF;
     int tipoIdenCIF = ClsConstants.TIPO_IDENTIFICACION_CIF;
-
-	//Toma los de la institucion:
+	
+    
+	// Obteniendo idinstitucion
 	String [] institucionParam = new String[1];
-	if (formulario.getIdInstitucion()!= null && !formulario.getIdInstitucion().equals(""))
+	if (formulario.getIdInstitucion()!= null && !formulario.getIdInstitucion().equals("")) {
    		institucionParam[0] = formulario.getIdInstitucion();
-   	else
+	} else {
 	   	institucionParam[0] = user.getLocation();
-  	
+	}
+	
+	// Obteniendo Tipo de cliente
+    String sTipo = (String) request.getAttribute("TIPO");
+	if (sTipo == null)
+		sTipo = "";
+	String tipoCliente="";
+	if (bColegiado) { 
+		tipoCliente = ClsConstants.TIPO_CLIENTE_COLEGIADO;
+	} else if (sTipo.equalsIgnoreCase("LETRADO")) {
+		tipoCliente = ClsConstants.TIPO_CLIENTE_LETRADO;
+	} else { 
+		tipoCliente = ClsConstants.TIPO_CLIENTE_NOCOLEGIADO;
+	}
+	
+	// Obteniendo Caracter
+	String [] caracterParam = new String[1];
+	caracterParam[0] = tipoCliente;
+
+	
+	// Calculando estilos generalesen funcion de Ver o Editar
+	String estiloCaja; // para los textos
+	String readonly;  // para el combo
+	boolean breadonly;  // para lo que no es combo
+	String checkreadonly; // para el check
+	boolean bConsultaPersona; // para los campos de persona que dependeran de la institucion tb (ver mas abajo)
+	if (formulario.getAccion().equals("ver")) {
+		// caso de consulta
+		estiloCaja = "boxConsulta";
+		readonly = "true";
+		breadonly = true;
+		checkreadonly = " disabled ";
+		bConsultaPersona = true;
+	} else {
+		estiloCaja = "box";
+		readonly = "false";
+		breadonly = false;
+		checkreadonly = " ";
+		bConsultaPersona = false;
+	}
+	
+	// Calculando estilo del Check de Foto
+	String checkreadonlyFoto = " ";
+	if (user.isLetrado()) {
+		checkreadonlyFoto = " ";
+	}else{ 
+		if (formulario.getAccion().equals("ver")) {
+			checkreadonlyFoto = " disabled ";
+		}else{
+			checkreadonlyFoto = " ";
+		}
+	}
+	
+	// Calculando estilos para controlar edicion de datos generales de persona
+	boolean bDatosGeneralesEditables = ((String) request.getAttribute("BDATOSGENERALESEDITABLES")).equals("true") ? true : false;
+	
+	String consultaPersona = (String) request.getAttribute("CenDatosPersonalesOtraInstitucion");
+		
+	
+  	/*
+  	!bConsultaPersona && bDatosGeneralesEditables
 	boolean breadonlyNif = false;
 	String estiloCajaNif = "box";
 	boolean breadonlyNombreApellidos = false;
@@ -179,11 +210,6 @@
 	String estiloCajaNombreApellidos = "box";
 	String readonlyComboNIFCIF = "false";
 	
-	idPersona=formulario.getIdPersona();
-    String sTipo = (String) request.getAttribute("TIPO");
-	
-	if (sTipo == null)
-		sTipo = "";
 		
 	if (formulario.getAccion().equals("ver")) {
 		breadonlyNif = true;
@@ -239,19 +265,7 @@
 	}
 				
 	
-// CONTROL DE TIPO	
-String tipoCliente="";
-if (bColegiado) { 
-	tipoCliente=ClsConstants.TIPO_CLIENTE_COLEGIADO;
-} else {
-	if (sTipo.equalsIgnoreCase("LETRADO")) {
-		tipoCliente=ClsConstants.TIPO_CLIENTE_LETRADO;
-	} else { 
-		tipoCliente=ClsConstants.TIPO_CLIENTE_NOCOLEGIADO;
-	}  
-}  
-String [] caracterParam = new String[1];
-caracterParam[0] = tipoCliente;
+	*/
 	
 %>
 	   	
@@ -1038,36 +1052,17 @@ function str_replace(search, replace, subject) {
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.tipoIdentificacion"/>&nbsp;(*)
 					</td>				
 					<td colspan="4">
-					<% if ( formulario.getAccion().equalsIgnoreCase("nuevo")) { %>
+					<% if (!bConsultaPersona && bDatosGeneralesEditables) { %>
 							<siga:ComboBD nombre = "tipoIdentificacion" tipo="cmbTipoIdentificacionSinCIF" clase="box" obligatorio="true" elementoSel="<%=tipoIdentificacionSel%>" />						
-					<% } else { 
-						if (bResidente) { %>
-							<siga:ComboBD nombre = "tipoIdentificacion" tipo="cmbTipoIdentificacionSinCIF" clase="<%=estiloCajaNif%>" obligatorio="true" elementoSel="<%=tipoIdentificacionSel%>"  readonly="<%=readonlyComboNIFCIF%>"/>						
-						<% } else {%>
+					<% } else { %>
 							<siga:ComboBD nombre = "tipoIdentificacion" tipo="cmbTipoIdentificacionConCIF" clase="boxConsulta" obligatorio="true" elementoSel="<%=tipoIdentificacionSel%>" readonly="true"/>
-						<% } %>
 					<% } %>
 					&nbsp;
-				 <% if ( formulario.getAccion().equalsIgnoreCase("nuevo")) { %>
-				      <html:text name="datosGeneralesForm" property="numIdentificacion" size="15" styleClass="<%=estiloCajaNif%>" value="<%=nIdentificacion %>" onfocus="generaNumOtro();" onBlur="formatearDocumento();"></html:text>&nbsp;
-				      <input type="button" name="idButton" value='<siga:Idioma key="censo.nif.letra.letranif" />' onclick="generarLetra();" style="align:right" class="button">
-				 <% }else{ %>
-				     <% if(formulario.getAccion().equalsIgnoreCase("editar")){ %> 
-				         <% if(!pintaComboSexo){ %>
-							<html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="boxConsulta" value="<%=nIdentificacion %>" readonly="true" onBlur="formatearDocumento();"></html:text>
-				         <%}else{ %>
-				            <%if (bResidente){%>
-									<html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="<%=estiloCajaNif%>" value="<%=nIdentificacion %>"  onBlur="formatearDocumento();"></html:text>&nbsp;
-								    <input type="button" name="idButton" value='<siga:Idioma key="censo.nif.letra.letranif" />' onclick="generarLetra();" style="align:right" class="button">
-							<% }else{ %>
-								<!-- Necesario para el validation.xml -->
-								<html:text name="datosGeneralesForm" property="numIdentificacion" styleClass="boxConsulta" value="<%=nIdentificacion %>" />
-							<% } %>
-					    <% } %>
-					<% }else{ %>
-						<html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="boxConsulta" value="<%=nIdentificacion %>" readonly="true" onBlur="formatearDocumento();"></html:text>
+					<% if (!bConsultaPersona && bDatosGeneralesEditables) { %>
+				      <html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="box" value="<%=nIdentificacion %>" onfocus="generaNumOtro();" onBlur="formatearDocumento();"></html:text>&nbsp;
+					<% } else { %>
+					  <html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="boxConsulta" value="<%=nIdentificacion %>" readonly="true" onBlur="formatearDocumento();"></html:text>
 					<% } %>
-				 <% } %>
 					</td>
 				</tr>
 				</table>
@@ -1094,15 +1089,11 @@ function str_replace(search, replace, subject) {
 					
 					<!-- NOMBRE -->
 					<td>
-				<% if ( formulario.getAccion().equalsIgnoreCase("nuevo")) { %>	
-				       <html:text name="datosGeneralesForm" property="nombre" size="20" maxlength="100" styleClass="<%=estiloCajaNombreApellidos %>" style='width:190px;' value="<%=nombre %>"  ></html:text>
-				<%}else{
-				       if (!bResidente || bConsultaPersona) { %>
-							<html:text name="datosGeneralesForm" property="nombre" size="20" maxlength="100" styleClass="boxConsulta" style='width:190px;' value="<%=nombre %>" readonly="true" ></html:text>
+					<% if (!bConsultaPersona && bDatosGeneralesEditables) { %>
+						<html:text name="datosGeneralesForm" property="nombre" size="20" maxlength="100" styleClass="box" style='width:190px;' value="<%=nombre %>"  ></html:text>
 					<% } else { %>
-							<html:text name="datosGeneralesForm" property="nombre" size="20" maxlength="100" styleClass="<%=estiloCajaNombreApellidos %>" style='width:190px;' value="<%=nombre %>" readonly="<%=breadonlyNombreApellidos %>" ></html:text>
-					<% } 
-				  } %>
+						<html:text name="datosGeneralesForm" property="nombre" size="20" maxlength="100" styleClass="boxConsulta" style='width:190px;' value="<%=nombre %>" readonly="true" ></html:text>
+					<% } %>
 					</td>
 				</tr>
 				<tr>
@@ -1111,15 +1102,11 @@ function str_replace(search, replace, subject) {
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.apellido1"/>&nbsp;(*)
 					</td>				
 					<td>
-				<% if ( formulario.getAccion().equalsIgnoreCase("nuevo")) { %>	
-				      <html:text name="datosGeneralesForm" property="apellido1" size="20" maxlength="100" styleClass="<%=estiloCajaNombreApellidos %>" style='width:190px;' value="<%=apellido1 %>" ></html:text>
-			    <% }else{
-				       if (!bResidente || bConsultaPersona) { %>
-							<html:text name="datosGeneralesForm" property="apellido1" size="20" maxlength="100" styleClass="boxConsulta" style='width:190px;' value="<%=apellido1 %>" readonly="true" ></html:text>
+					<% if (!bConsultaPersona && bDatosGeneralesEditables) { %>
+						<html:text name="datosGeneralesForm" property="apellido1" size="20" maxlength="100" styleClass="box" style='width:190px;' value="<%=apellido1 %>" ></html:text>
 					<% } else { %>
-							<html:text name="datosGeneralesForm" property="apellido1" size="20" maxlength="100" styleClass="<%=estiloCajaNombreApellidos %>" style='width:190px;' value="<%=apellido1 %>" readonly="<%=breadonlyNombreApellidos %>" ></html:text>
-					<% }
-				   }  %>
+						<html:text name="datosGeneralesForm" property="apellido1" size="20" maxlength="100" styleClass="boxConsulta" style='width:190px;' value="<%=apellido1 %>" readonly="true" ></html:text>
+					<% } %>
 					</td> 
 					
 					<!-- APELLIDO2 -->
@@ -1127,15 +1114,11 @@ function str_replace(search, replace, subject) {
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.apellido2"/>
 					</td>				
 					<td>
-				 <% if ( formulario.getAccion().equalsIgnoreCase("nuevo")) { %>		
-				    <html:text name="datosGeneralesForm" property="apellido2" size="20" maxlength="100" styleClass="<%=estiloCajaNombreApellidos %>" style='width:190px;' value="<%=apellido2 %>" ></html:text>
-				 <% }else{
-				       if (!bResidente || bConsultaPersona) { %>
-							<html:text name="datosGeneralesForm" property="apellido2" size="20" maxlength="100" styleClass="boxConsulta" style='width:190px;' value="<%=apellido2 %>" readonly="true" ></html:text>
+					<% if (!bConsultaPersona && bDatosGeneralesEditables) { %>
+				    	<html:text name="datosGeneralesForm" property="apellido2" size="20" maxlength="100" styleClass="box" style='width:190px;' value="<%=apellido2 %>" ></html:text>
 					<% } else { %>
-							<html:text name="datosGeneralesForm" property="apellido2" size="20" maxlength="100" styleClass="<%=estiloCajaNombreApellidos %>" style='width:190px;' value="<%=apellido2 %>" readonly="<%=breadonlyNombreApellidos %>" ></html:text>
-					<% } 
-					} %>
+						<html:text name="datosGeneralesForm" property="apellido2" size="20" maxlength="100" styleClass="boxConsulta" style='width:190px;' value="<%=apellido2 %>" readonly="true" ></html:text>
+					<% } %>
 					</td>
 				</tr>
 				<tr>
@@ -1144,14 +1127,11 @@ function str_replace(search, replace, subject) {
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.fechaNacimiento"/>&nbsp;
 					</td>				
 					<td>
-					<% if (breadonly || bConsultaPersona || !pintaCalendario || !bResidente) { %>
-					<siga:Fecha  nombreCampo= "fechaNacimiento" valorInicial="<%=fechaNacimiento %>" disabled="true"/>
-					
-					<% } else { %>
+					<% if (!bConsultaPersona && bDatosGeneralesEditables) { %>
 					<siga:Fecha  nombreCampo= "fechaNacimiento" valorInicial="<%=fechaNacimiento %>"/>
-
-					<% }  %>
-					
+					<% } else { %>
+					<siga:Fecha  nombreCampo= "fechaNacimiento" valorInicial="<%=fechaNacimiento %>" disabled="true"/>
+					<% } %>
 					</td>
 				
 					<!-- LUGAR NACIMIENTO -->
@@ -1159,11 +1139,11 @@ function str_replace(search, replace, subject) {
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.nacido"/>
 					</td>				
 					<td>
-					<% if (bConsultaPersona || !bResidente) { %>
-							<html:text name="datosGeneralesForm" property="lugarNacimiento" size="20" maxlength="100" styleClass="boxConsulta" style='width:190px;' value="<%=nacido %>" readonly="true" ></html:text>
+					<% if (!bConsultaPersona && bDatosGeneralesEditables) { %>
+						<html:text name="datosGeneralesForm" property="lugarNacimiento" size="20" maxlength="100" styleClass="box" style='width:190px;' value="<%=nacido %>"></html:text>
 					<% } else { %>
-							<html:text name="datosGeneralesForm" property="lugarNacimiento" size="20" maxlength="100" styleClass="<%=estiloCajaNombreApellidos %>" style='width:190px;' value="<%=nacido %>" readonly="<%=breadonlyNombreApellidos%>" ></html:text>
-					<% }  %>
+						<html:text name="datosGeneralesForm" property="lugarNacimiento" size="20" maxlength="100" styleClass="boxConsulta" style='width:190px;' value="<%=nacido %>" readonly="true" ></html:text>
+					<% } %>
 					</td>
 				</tr>
 				<tr>
@@ -1172,11 +1152,11 @@ function str_replace(search, replace, subject) {
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.estadoCivil"/>
 					</td>				
 					<td>
-					<% if (bConsultaPersona || !bResidente) { %>
-							<siga:ComboBD nombre = "estadoCivil" tipo="estadoCivil" clase="boxConsulta" obligatorio="false" elementoSel="<%=estadoCivilSel %>" readonly="true"/>						
+					<% if (!bConsultaPersona && bDatosGeneralesEditables) { %>
+							<siga:ComboBD nombre = "estadoCivil" tipo="estadoCivil" clase="box" obligatorio="false" elementoSel="<%=estadoCivilSel %>"/>						
 					<% } else { %>
-							<siga:ComboBD nombre = "estadoCivil" tipo="estadoCivil" clase="<%=estiloCajaNombreApellidos %>" obligatorio="false" elementoSel="<%=estadoCivilSel %>" readonly="<%=readonlyComboNIFCIF %>"/>						
-					<% }  %>
+							<siga:ComboBD nombre = "estadoCivil" tipo="estadoCivil" clase="boxConsulta" obligatorio="false" elementoSel="<%=estadoCivilSel %>" readonly="true"/>						
+					<% } %>
 					</td>
 				
 					<!-- SEXO -->
@@ -1185,32 +1165,20 @@ function str_replace(search, replace, subject) {
 					</td>				
 					<td>
 					<% 
-							String ssexo = "";
-							if (sexo.equals(ClsConstants.TIPO_SEXO_HOMBRE)) ssexo = UtilidadesString.getMensajeIdioma(user, "censo.sexo.hombre");
-							if (sexo.equals(ClsConstants.TIPO_SEXO_MUJER)) ssexo = UtilidadesString.getMensajeIdioma(user, "censo.sexo.mujer");
-						if (breadonly || bConsultaPersona || !bResidente) { 
-							
-							if (bConsultaPersona || !pintaComboSexo || !bResidente) { 
+						String ssexo = "";
+						if (sexo.equals(ClsConstants.TIPO_SEXO_HOMBRE)) ssexo = UtilidadesString.getMensajeIdioma(user, "censo.sexo.hombre");
+						if (sexo.equals(ClsConstants.TIPO_SEXO_MUJER)) ssexo = UtilidadesString.getMensajeIdioma(user, "censo.sexo.mujer");
 					%>
-								<!-- MAV 7/9/2005 Incorporo atributo ssexo para solventar incidencia -->
-								<html:hidden  name="datosGeneralesForm" property="sexo" value="<%=sexo %>"/>
-								<html:text name="datosGeneralesForm" property="ssexo" size="20" styleClass="boxConsulta" value="<%=ssexo %>" readonly="true" ></html:text>
-					<% 		} else { %>
-								<html:hidden  name="datosGeneralesForm" property="sexo" value="<%=sexo %>"/>
-								<html:text name="datosGeneralesForm" property="ssexo" size="20" styleClass="<%=estiloCaja %>" value="<%=ssexo %>" readonly="<%=breadonly %>" ></html:text>
-					<% 		} %>
-					<% } else { 
-					       if(pintaComboSexo){%>
-							<!-- option select -->
-							<html:select name="datosGeneralesForm" property="sexo" style = "null" styleClass = "<%=estiloCaja %>" value="<%=sexo %>"  readonly="<%=breadonly %>" >
-							    <html:option value="0" >&nbsp;</html:option>
-								<html:option value="<%=ClsConstants.TIPO_SEXO_HOMBRE %>" ><siga:Idioma key="censo.sexo.hombre"/></html:option>
-								<html:option value="<%=ClsConstants.TIPO_SEXO_MUJER %>" ><siga:Idioma key="censo.sexo.mujer"/></html:option>
-							</html:select>						
-						<%}else{%>	
-								<html:hidden  name="datosGeneralesForm" property="sexo" value="<%=sexo %>"/>
-								<html:text name="datosGeneralesForm" property="ssexo" size="20" styleClass="boxConsulta" value="<%=ssexo %>" readonly="true" ></html:text>
-					<% } %>
+					<% if (!bConsultaPersona && bDatosGeneralesEditables) { %>
+						<!-- option select -->
+						<html:select name="datosGeneralesForm" property="sexo" style = "null" styleClass = "<%=estiloCaja %>" value="<%=sexo %>" >
+						    <html:option value="0" >&nbsp;</html:option>
+							<html:option value="<%=ClsConstants.TIPO_SEXO_HOMBRE %>" ><siga:Idioma key="censo.sexo.hombre"/></html:option>
+							<html:option value="<%=ClsConstants.TIPO_SEXO_MUJER %>" ><siga:Idioma key="censo.sexo.mujer"/></html:option>
+						</html:select>						
+					<% } else { %>
+						<html:hidden  name="datosGeneralesForm" property="sexo" value="<%=sexo %>"/>
+						<html:text name="datosGeneralesForm" property="ssexo" size="20" styleClass="boxConsulta" value="<%=ssexo %>" readonly="true" ></html:text>
 					<% } %>
 					</td>
 				
@@ -1221,6 +1189,11 @@ function str_replace(search, replace, subject) {
 					</td>				
 					<td class="boxConsulta">
 						<%=edad%>
+					</td>
+					<td class="labelText" colspan="4">
+						<% if (!bDatosGeneralesEditables) { %> 
+							<img src="<%=app%>/html/imagenes/help.gif" alt="Consulte al Administrador si necesita editar los datos generales de esta persona"/> 
+						<% } %>
 					</td>
 				</tr>
 				</table>

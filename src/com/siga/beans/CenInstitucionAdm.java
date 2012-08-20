@@ -232,32 +232,52 @@ public class CenInstitucionAdm extends MasterBeanAdministrador {
 	}
 
 	
+	/**
+	 * Funcion que devuelve el identificador de la persona
+	 * @param	String idInstitucion
+	 * @return	String ident persona
+	 * @exception ClsExceptions  En cualquier caso de error
+	 */
+	public String getIdPersona(String idInstitucion) throws ClsExceptions, SIGAException
+	{
+		String idPersona = "";
+		Hashtable hash = new Hashtable();
+
+		try {
+			hash.put(CenInstitucionBean.C_IDINSTITUCION, idInstitucion);
+			Vector vInstitucion = this.select(hash);
+			CenInstitucionBean instBean = (CenInstitucionBean) vInstitucion.elementAt(0);
+			idPersona = instBean.getIdPersona().toString();
+		} catch (ClsExceptions e) {
+			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Elemento nulo");
+		}
+		return idPersona;
+	}
+	
 	/** 
 	 * Funcion que devuelve el identificador de la persona
 	 * @param  String idInstitucion 
 	 * @return String ident persona
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	public String getIdPersona(String idInstitucion)
-			throws ClsExceptions,SIGAException {
-		
-		String idPersona="";
+	public String getIdInstitucion(String idPersona) throws ClsExceptions, SIGAException
+	{
+		String idInstitucion = "";
 		Hashtable hash = new Hashtable();
-		try{
-			hash.put(CenInstitucionBean.C_IDINSTITUCION,idInstitucion);
+
+		try {
+			hash.put(CenInstitucionBean.C_IDPERSONA, idPersona);
 			Vector vInstitucion = this.select(hash);
-			CenInstitucionBean instBean = (CenInstitucionBean)vInstitucion.elementAt(0);
-			idPersona=instBean.getIdPersona().toString();
+			CenInstitucionBean instBean = (CenInstitucionBean) vInstitucion.elementAt(0);
+			idInstitucion = instBean.getIdInstitucion().toString();
+		} catch (ClsExceptions e) {
+			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Elemento nulo");
 		}
-//		catch (SIGAException e) {
-//			throw e;
-//		}
-		catch(ClsExceptions e){
-			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
-		}catch(Exception e){
-			throw new ClsExceptions (e,"Elemento nulo");
-		}
-		return idPersona;
+		return idInstitucion;
 	}
 	
 	public boolean tieneSIGA(Integer idInstitucion) throws ClsExceptions,SIGAException {
@@ -445,47 +465,47 @@ public class CenInstitucionAdm extends MasterBeanAdministrador {
 		}
 		return fechaProduccion;
 	}
-	  public static boolean esConsejoGeneral(Object idInstitucion){
-		  boolean esConsejoGeneral = false;	  
-		  String strInstitucion = idInstitucion.toString();
-		  if(strInstitucion.length()==6){
-			  strInstitucion = strInstitucion.substring(2);
-		  }
-		  int institucionNumber = Integer.parseInt(strInstitucion); 
-		  if (institucionNumber == ClsConstants.INSTITUCION_CONSEJOGENERAL){ // General
-			  esConsejoGeneral = true;
-		  }
-		  
-		  return esConsejoGeneral;
-	  }
-
-	   public static  boolean esConsejoColegio(Object idInstitucion){
-		  boolean esConsejoColegio = false;
-		  String strInstitucion = idInstitucion.toString().substring(2);
-		  int institucionNumber = Integer.parseInt(strInstitucion); 
-		  
-		  if (institucionNumber > ClsConstants.INSTITUCION_CONSEJO){ // Consejo de Colegio
-			  esConsejoColegio = true;
-		  }
-		  
-		  return esConsejoColegio;
-	  }
-	   
-	   public static  boolean esColegio(Object idInstitucion){
-		  boolean esColegio = false;
-		  String strInstitucion = idInstitucion.toString().substring(2);
-		  int institucionNumber = Integer.parseInt(strInstitucion); 
-		  
-		  if (institucionNumber > ClsConstants.INSTITUCION_CONSEJOGENERAL && institucionNumber < ClsConstants.INSTITUCION_CONSEJO){ 
-			  esColegio = true;
-		  }
-		  
-		  return esColegio;
-	  }
-	   
-	  	public static String getIdInstitucionGeneral(String idInstitucion){
-			String profesion = idInstitucion.substring(0,2);
-			return profesion + ClsConstants.INSTITUCION_CONSEJOGENERAL;
+	public static boolean esConsejoGeneral(Object idInstitucion){
+		boolean esConsejoGeneral = false;	  
+		String strInstitucion = idInstitucion.toString();
+		if(strInstitucion.length()==6){
+			strInstitucion = strInstitucion.substring(2);
 		}
+		int institucionNumber = Integer.parseInt(strInstitucion); 
+		if (institucionNumber == ClsConstants.INSTITUCION_CONSEJOGENERAL){ // General
+			esConsejoGeneral = true;
+		}
+		
+		return esConsejoGeneral;
+	}
+	
+	public static  boolean esConsejoColegio(Object idInstitucion){
+		boolean esConsejoColegio = false;
+		String strInstitucion = idInstitucion.toString().substring(2);
+		int institucionNumber = Integer.parseInt(strInstitucion); 
+		
+		if (institucionNumber > ClsConstants.INSTITUCION_CONSEJO){ // Consejo de Colegio
+			esConsejoColegio = true;
+		}
+		
+		return esConsejoColegio;
+	}
+	
+	public static  boolean esColegio(Object idInstitucion){
+		boolean esColegio = false;
+		String strInstitucion = idInstitucion.toString().substring(2);
+		int institucionNumber = Integer.parseInt(strInstitucion); 
+		
+		if (institucionNumber > ClsConstants.INSTITUCION_CONSEJOGENERAL && institucionNumber < ClsConstants.INSTITUCION_CONSEJO){ 
+			esColegio = true;
+		}
+		
+		return esColegio;
+	}
+	
+	public static String getIdInstitucionGeneral(String idInstitucion){
+		String profesion = idInstitucion.substring(0,2);
+		return profesion + ClsConstants.INSTITUCION_CONSEJOGENERAL;
+	}
 
 }
