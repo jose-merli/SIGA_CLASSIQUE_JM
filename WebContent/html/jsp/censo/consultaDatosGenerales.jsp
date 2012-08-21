@@ -163,22 +163,19 @@
 	// Calculando estilos generalesen funcion de Ver o Editar
 	String estiloCaja; // para los textos
 	String readonly;  // para el combo
-	boolean breadonly;  // para lo que no es combo
+	boolean breadonly;  // para lo que no es combo y en general indica si es modo lectura o no
 	String checkreadonly; // para el check
-	boolean bConsultaPersona; // para los campos de persona que dependeran de la institucion tb (ver mas abajo)
 	if (formulario.getAccion().equals("ver")) {
 		// caso de consulta
 		estiloCaja = "boxConsulta";
 		readonly = "true";
 		breadonly = true;
 		checkreadonly = " disabled ";
-		bConsultaPersona = true;
 	} else {
 		estiloCaja = "box";
 		readonly = "false";
 		breadonly = false;
 		checkreadonly = " ";
-		bConsultaPersona = false;
 	}
 	
 	// Calculando estilo del Check de Foto
@@ -195,77 +192,6 @@
 	
 	// Calculando estilos para controlar edicion de datos generales de persona
 	boolean bDatosGeneralesEditables = ((String) request.getAttribute("BDATOSGENERALESEDITABLES")).equals("true") ? true : false;
-	
-	String consultaPersona = (String) request.getAttribute("CenDatosPersonalesOtraInstitucion");
-		
-	
-  	/*
-  	!bConsultaPersona && bDatosGeneralesEditables
-	boolean breadonlyNif = false;
-	String estiloCajaNif = "box";
-	boolean breadonlyNombreApellidos = false;
-	boolean pintaCalendario=true;
-	boolean pintaComboSexo=true;
-	
-	String estiloCajaNombreApellidos = "box";
-	String readonlyComboNIFCIF = "false";
-	
-		
-	if (formulario.getAccion().equals("ver")) {
-		breadonlyNif = true;
-		estiloCajaNif = "boxConsulta";
-		breadonlyNombreApellidos = true;
-		estiloCajaNombreApellidos = "boxConsulta";
-		readonlyComboNIFCIF = "true";
-	} else {//solo miramos si la persona ha sido dada de alta en el colegio por el mismo colegio o por otro cuando es NO COLEGIADO
-		if (idPersona.length()>4) {
-			if ((!idPersona.substring(0,4).equals(user.getLocation())) && (!bColegiado) && !(sTipo.equals("LETRADO")) ){
-			 
-				breadonlyNif = true;
-				estiloCajaNif = "boxConsulta";
-				breadonlyNombreApellidos = true;
-				estiloCajaNombreApellidos = "boxConsulta";
-				readonlyComboNIFCIF = "true";
-				pintaCalendario=false;
-				pintaComboSexo=false;
-			}   
-		} 
-	}
-	
-	boolean bResidente = false;
-	String residente = (String) request.getAttribute("RESIDENTE");
-	String residenteInstiProduccion = (String) ses.getAttribute("BRESIDENTE");
-	if (bColegiado){//para los COLEGIADOS tiene sentido mirar el check de residente para habilitar y deshabilitar los campos nif, nombre y apellidos
-    	if (residente != null && residente.equals(ClsConstants.DB_TRUE) && residenteInstiProduccion !=null && residenteInstiProduccion.equals("0"))
-	    	bResidente = true;
-    	else
-    		bResidente = false;
-    }else{
-    	if(residenteInstiProduccion !=null && residenteInstiProduccion.equals("0"))
-	   		bResidente = true;
-    	else
-    		bResidente = false;
-	  //bResidente = true;
-	  // Solo se podra modificar el tipo de identificacion si el colegiado es la propia institucion y nos encontramos en dicha institucion o si el  colegiado
-		// ha sido dado de alta por la institucion donde nos encontramos.
-		
-		            CenInstitucionAdm insAdm= new CenInstitucionAdm(user);
-					Hashtable hashIns= new Hashtable();
-					hashIns.put(CenInstitucionBean.C_IDINSTITUCION,user.getLocation());
-					Vector v2 = insAdm.selectByPK(hashIns);
-					String idPersonaInstitucionUserBean="";
-					if (v2!=null && v2.size()>0) {
-						CenInstitucionBean insBean = (CenInstitucionBean) v2.get(0);
-						idPersonaInstitucionUserBean=insBean.getIdPersona().toString();
-					}	
-					
-					if (consultaPersona!=null && consultaPersona.equals(ClsConstants.DB_TRUE) && ((!idPersonaInstitucionUserBean.equals(formulario.getIdPersona()) && formulario.getIdPersona().length()<4)) ) {
-					  bConsultaPersona=true;
-					}
-	}
-				
-	
-	*/
 	
 %>
 	   	
@@ -1052,13 +978,13 @@ function str_replace(search, replace, subject) {
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.tipoIdentificacion"/>&nbsp;(*)
 					</td>				
 					<td colspan="4">
-					<% if (!bConsultaPersona && bDatosGeneralesEditables) { %>
+					<% if (!breadonly && bDatosGeneralesEditables) { %>
 							<siga:ComboBD nombre = "tipoIdentificacion" tipo="cmbTipoIdentificacionSinCIF" clase="box" obligatorio="true" elementoSel="<%=tipoIdentificacionSel%>" />						
 					<% } else { %>
 							<siga:ComboBD nombre = "tipoIdentificacion" tipo="cmbTipoIdentificacionConCIF" clase="boxConsulta" obligatorio="true" elementoSel="<%=tipoIdentificacionSel%>" readonly="true"/>
 					<% } %>
 					&nbsp;
-					<% if (!bConsultaPersona && bDatosGeneralesEditables) { %>
+					<% if (!breadonly && bDatosGeneralesEditables) { %>
 				      <html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="box" value="<%=nIdentificacion %>" onfocus="generaNumOtro();" onBlur="formatearDocumento();"></html:text>&nbsp;
 					<% } else { %>
 					  <html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="boxConsulta" value="<%=nIdentificacion %>" readonly="true" onBlur="formatearDocumento();"></html:text>
@@ -1089,7 +1015,7 @@ function str_replace(search, replace, subject) {
 					
 					<!-- NOMBRE -->
 					<td>
-					<% if (!bConsultaPersona && bDatosGeneralesEditables) { %>
+					<% if (!breadonly && bDatosGeneralesEditables) { %>
 						<html:text name="datosGeneralesForm" property="nombre" size="20" maxlength="100" styleClass="box" style='width:190px;' value="<%=nombre %>"  ></html:text>
 					<% } else { %>
 						<html:text name="datosGeneralesForm" property="nombre" size="20" maxlength="100" styleClass="boxConsulta" style='width:190px;' value="<%=nombre %>" readonly="true" ></html:text>
@@ -1102,7 +1028,7 @@ function str_replace(search, replace, subject) {
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.apellido1"/>&nbsp;(*)
 					</td>				
 					<td>
-					<% if (!bConsultaPersona && bDatosGeneralesEditables) { %>
+					<% if (!breadonly && bDatosGeneralesEditables) { %>
 						<html:text name="datosGeneralesForm" property="apellido1" size="20" maxlength="100" styleClass="box" style='width:190px;' value="<%=apellido1 %>" ></html:text>
 					<% } else { %>
 						<html:text name="datosGeneralesForm" property="apellido1" size="20" maxlength="100" styleClass="boxConsulta" style='width:190px;' value="<%=apellido1 %>" readonly="true" ></html:text>
@@ -1114,7 +1040,7 @@ function str_replace(search, replace, subject) {
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.apellido2"/>
 					</td>				
 					<td>
-					<% if (!bConsultaPersona && bDatosGeneralesEditables) { %>
+					<% if (!breadonly && bDatosGeneralesEditables) { %>
 				    	<html:text name="datosGeneralesForm" property="apellido2" size="20" maxlength="100" styleClass="box" style='width:190px;' value="<%=apellido2 %>" ></html:text>
 					<% } else { %>
 						<html:text name="datosGeneralesForm" property="apellido2" size="20" maxlength="100" styleClass="boxConsulta" style='width:190px;' value="<%=apellido2 %>" readonly="true" ></html:text>
@@ -1127,7 +1053,7 @@ function str_replace(search, replace, subject) {
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.fechaNacimiento"/>&nbsp;
 					</td>				
 					<td>
-					<% if (!bConsultaPersona && bDatosGeneralesEditables) { %>
+					<% if (!breadonly && bDatosGeneralesEditables) { %>
 					<siga:Fecha  nombreCampo= "fechaNacimiento" valorInicial="<%=fechaNacimiento %>"/>
 					<% } else { %>
 					<siga:Fecha  nombreCampo= "fechaNacimiento" valorInicial="<%=fechaNacimiento %>" disabled="true"/>
@@ -1139,7 +1065,7 @@ function str_replace(search, replace, subject) {
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.nacido"/>
 					</td>				
 					<td>
-					<% if (!bConsultaPersona && bDatosGeneralesEditables) { %>
+					<% if (!breadonly && bDatosGeneralesEditables) { %>
 						<html:text name="datosGeneralesForm" property="lugarNacimiento" size="20" maxlength="100" styleClass="box" style='width:190px;' value="<%=nacido %>"></html:text>
 					<% } else { %>
 						<html:text name="datosGeneralesForm" property="lugarNacimiento" size="20" maxlength="100" styleClass="boxConsulta" style='width:190px;' value="<%=nacido %>" readonly="true" ></html:text>
@@ -1152,7 +1078,7 @@ function str_replace(search, replace, subject) {
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.estadoCivil"/>
 					</td>				
 					<td>
-					<% if (!bConsultaPersona && bDatosGeneralesEditables) { %>
+					<% if (!breadonly && bDatosGeneralesEditables) { %>
 							<siga:ComboBD nombre = "estadoCivil" tipo="estadoCivil" clase="box" obligatorio="false" elementoSel="<%=estadoCivilSel %>"/>						
 					<% } else { %>
 							<siga:ComboBD nombre = "estadoCivil" tipo="estadoCivil" clase="boxConsulta" obligatorio="false" elementoSel="<%=estadoCivilSel %>" readonly="true"/>						
@@ -1169,7 +1095,7 @@ function str_replace(search, replace, subject) {
 						if (sexo.equals(ClsConstants.TIPO_SEXO_HOMBRE)) ssexo = UtilidadesString.getMensajeIdioma(user, "censo.sexo.hombre");
 						if (sexo.equals(ClsConstants.TIPO_SEXO_MUJER)) ssexo = UtilidadesString.getMensajeIdioma(user, "censo.sexo.mujer");
 					%>
-					<% if (!bConsultaPersona && bDatosGeneralesEditables) { %>
+					<% if (!breadonly && bDatosGeneralesEditables) { %>
 						<!-- option select -->
 						<html:select name="datosGeneralesForm" property="sexo" style = "null" styleClass = "<%=estiloCaja %>" value="<%=sexo %>" >
 						    <html:option value="0" >&nbsp;</html:option>
