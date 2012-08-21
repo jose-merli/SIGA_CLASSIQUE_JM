@@ -255,8 +255,9 @@ public class DatosGeneralesAction extends MasterAction {
 						request.setAttribute("BDATOSGENERALESEDITABLES", "true");
 					} else if (clienteOtraInstitucion < CenClienteAdm.TIPOCLIENTE_PROD_COLPRO) { // No esta colegiado en otros colegios
 						request.setAttribute("BDATOSGENERALESEDITABLES", "true");
-						// Si estamos en un Colegio, entonces lo podra editar (y el CGAE no podra pq ya esta en un colegio)
-						// Si estamos en CGAE, lo podra editar siempre que no este activo en ningun colegio en produccion
+					} else if (clienteOtraInstitucion == CenClienteAdm.TIPOCLIENTE_PROD_COLPRO && // No esta residente en ningun colegio
+							Integer.parseInt(idInstitucion) == ClsConstants.INSTITUCION_CGAE) { // Y estamos en CGAE
+						request.setAttribute("BDATOSGENERALESEDITABLES", "true");
 					}
 				}
 			}
