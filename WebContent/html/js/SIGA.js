@@ -504,14 +504,86 @@ function finsubicono(identificador) {
  *  }
  */
 
-function sub(msg){
-	if(!msg)msg='';
+function sub(w){
+	
+	if(w == undefined) {
+		w = this.top;
+	}
+	try {
+		// disable links in current frame
+		var links = w.document.getElementsByTagName("a");
+		for ( var l = 0; l < links.length; l++) {
+			if (!jQuery(links[l]).hasClass("disabled")) {
+				jQuery(links[l]).addClass("disabled");
+			}
+		}
+	} catch (e) {
+		// TODO: handle exception
+	}
+	try {
+		// disable buttons in current frame
+		var buts = w.document.getElementsByTagName("input");
+		for ( var b = 0; b < buts.length; b++) {
+			if (buts[b].type == 'button') {
+				jQuery(buts[b]).attr("disabled", "disabled");
+			}
+		}
+	} catch (e) {
+		// TODO: handle exception
+	}
+	try {
+		// Go to child frames
+		var framess = w.frames;
+		for(var f=0; f < framess.length; f++){
+			sub(framess[f]);
+		}
+	} catch (e) {
+		// TODO: handle exception
+	}
 	var windowTop=window.top;
-	windowTop.mainSub(msg);
+	windowTop.mainSub();
 	return true;
 }
 
 function fin(w){
+	
+	var jQuery = window.top.jQuery;
+	if(w == undefined) {
+		w = this.top;
+	}
+	try {
+		// enable links and buttons in current frame
+		var links = w.document.getElementsByTagName("a");
+		for ( var l = 0; l < links.length; l++) {
+			if (jQuery(links[l]).hasClass("disabled")) {
+				jQuery(links[l]).removeClass("disabled");
+			}
+		}
+	} catch (e) {
+		// TODO: handle exception
+		//alert("Error habilitando links. Continuo.");
+	}
+	try {
+		var buts = w.document.getElementsByTagName("input");
+		for ( var b = 0; b < buts.length; b++) {
+			if (buts[b].type == 'button') {
+				jQuery(buts[b]).removeAttr("disabled");
+			}
+		}
+	} catch (e) {
+		// TODO: handle exception
+		//alert("Error habilitando botones. Continuo.");
+	}
+	try {
+			// Go to child frames
+		var framess = w.frames;
+		for(var f=0; f < framess.length; f++){
+			fin(framess[f]);
+		}
+	} catch (e) {
+		// TODO: handle exception
+		//alert("Error procesando frame. Continuo.");
+	}
 	var windowTop=window.top;
 	if(windowTop.bloqueado)
 		windowTop.mainFin();

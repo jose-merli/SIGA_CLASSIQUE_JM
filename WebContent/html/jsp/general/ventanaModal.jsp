@@ -52,6 +52,7 @@
 		<script type="text/javascript">
 		
 			jQuery.noConflict();
+			var bloqueado=false;
 			
 			function cargaContenidoModal() {
 				var datos = window.dialogArguments;
@@ -77,28 +78,24 @@
 			}		
 			
 			function mainSub(msg){
-				jQuery(document).ready(
-					function() { 
-						jQuery.blockUI({
-							message: '<span class="labelText">'+msg+'</span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/><span id="barraBloqueante">&nbsp;</span>', 
-							css:{border:0,left:'300px', background:'transparent'},
-							overlayCSS: { backgroundColor:'#000', opacity: .0} }); 
-						jQuery("#barraBloqueante").click(function() { 
-							jQuery.unblockUI(); 
-						});
-					}
-				)
-				bloqueado=true; 
+				if(!bloqueado){
+// 					jQuery.blockUI({
+//						message: '<span class="labelText">'+msg+'</span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/><span id="barraBloqueante">&nbsp;</span>', 
+//						css:{border:0,left:'300px', background:'transparent'},
+//						overlayCSS: { backgroundColor:'#000', opacity: .0} }); 
+//					jQuery("#barraBloqueante").click(function() { 
+//						jQuery.unblockUI(); 
+//					}); 
+					jQuery("#divEspera").show();
+					bloqueado=true;
+				}
 			}
 
 			function mainFin(){
 				if(bloqueado){
-					jQuery(document).ready(
-						function() { 
-					    	jQuery.unblockUI(); 
-						}
-					)
-					bloqueado=false;
+// 					jQuery.unblockUI(); 
+					jQuery("#divEspera").hide();
+					bloqueado=false; 
 				} 
 			}
 			
@@ -130,6 +127,10 @@
 					marginwidth="0";					 
 					style="position:absolute; width:100%; height:100%; z-index:2; top: 0px; left: 0px">
 	</iframe>
-
+	
+	<div id="divEspera" title="SIGA" style="z-index:100; position:absolute;vertical-align: center;display:none; top:45%; left:45%">
+		<span class="labelText"></span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/><span id="barraBloqueante">&nbsp;</span>
+	</div>
+	
 	</body>
 </html>

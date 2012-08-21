@@ -112,7 +112,7 @@
 
 <script language="JavaScript" type="text/javascript">
 
-			var user, psswd, profile, loc, bloqueado;
+			var user, psswd, profile, loc, bloqueado=false;
 			user='<%=userBean.getUserName()%>';
 			psswd='clavecita';
 			loc='<%=userBean.getLocation()%>';
@@ -190,28 +190,24 @@
 			}
 
 			function mainSub(msg){
-				jQuery(document).ready(
-					function() { 
-						jQuery.blockUI({
-							message: '<span class="labelText">'+msg+'</span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/><span id="barraBloqueante">&nbsp;</span>', 
-							css:{border:0,left:'300px', background:'transparent'},
-							overlayCSS: { backgroundColor:'#000', opacity: .0} }); 
-						jQuery("#barraBloqueante").click(function() { 
-							jQuery.unblockUI(); 
-						});
-					}
-				)
-				bloqueado=true; 
+				if(!bloqueado){
+// 					jQuery.blockUI({
+//						message: '<span class="labelText">'+msg+'</span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/><span id="barraBloqueante">&nbsp;</span>', 
+//						css:{border:0,left:'300px', background:'transparent'},
+//						overlayCSS: { backgroundColor:'#000', opacity: .0} }); 
+//					jQuery("#barraBloqueante").click(function() { 
+//						jQuery.unblockUI(); 
+//					}); 
+					jQuery("#divEspera").show();
+					bloqueado=true;
+				}
 			}
 
 			function mainFin(){
 				if(bloqueado){
-					jQuery(document).ready(
-						function() { 
-					    	jQuery.unblockUI(); 
-						}
-					)
-					bloqueado=false;
+// 					jQuery.unblockUI(); 
+					jQuery("#divEspera").hide();
+					bloqueado=false; 
 				} 
 			}
 			
@@ -354,5 +350,10 @@
 	}
 	
 </script>
+
+	<div id="divEspera" title="SIGA" style="z-index:100; position:absolute;vertical-align: center;display:none; top:45%; left:450px">
+		<span class="labelText"></span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/><span id="barraBloqueante">&nbsp;</span>
+	</div>
+	
 </body>
 </html>
