@@ -8,9 +8,9 @@
 
 <!-- TAGLIBS -->
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
-<%@ taglib uri = "struts-bean.tld" prefix="bean"%>
-<%@ taglib uri = "struts-html.tld" prefix="html"%>
-<%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="struts-html.tld" prefix="html"%>
+<%@ taglib uri="struts-logic.tld" prefix="logic"%>
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
@@ -160,7 +160,7 @@
 	caracterParam[0] = tipoCliente;
 
 	
-	// Calculando estilos generalesen funcion de Ver o Editar
+	// Calculando estilos generales en funcion de Ver o Editar
 	String estiloCaja; // para los textos
 	String readonly;  // para el combo
 	boolean breadonly;  // para lo que no es combo y en general indica si es modo lectura o no

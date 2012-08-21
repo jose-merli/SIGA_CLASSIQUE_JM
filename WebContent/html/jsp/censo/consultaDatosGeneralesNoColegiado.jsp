@@ -34,6 +34,76 @@
 
 <!-- JSP -->
 <% 
+	// Controles generales
+	String app = request.getContextPath();
+	HttpSession ses = request.getSession();
+	Properties src = (Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
+	UsrBean user = (UsrBean) ses.getAttribute("USRBEAN");
+	
+	// Datos formulario y sesion
+	DatosGeneralesForm formulario = (DatosGeneralesForm)request.getAttribute("datosGeneralesForm");
+	String modo = (String)request.getAttribute("modoPestanha");
+	boolean bOcultarHistorico = user.getOcultarHistorico();
+	String mostrarMensaje = (String) request.getSession().getAttribute("MOSTRARMENSAJE");
+	String mostrarMensajeNifCif = (String) request.getSession().getAttribute("MOSTRARMENSAJECIFNIF");
+	
+	// para saber hacia donde volver
+	String busquedaVolver = (String) request.getSession().getAttribute("CenBusquedaClientesTipo");
+	if (busquedaVolver==null) {
+		busquedaVolver = "volverNo";
+	}
+	
+	// Obteniendo varias cosas
+	ArrayList gruposSel = new ArrayList();
+	String cliente = "";
+	String numeroColegiado = "";
+	boolean bColegiado = false;
+	boolean bfCertificado=true;
+	String fechaCertificado = "";
+	Vector resultado = null;
+	String [] institucionParam = new String[1];
+	String primeraLetraCif = "";
+	
+	try {
+		primeraLetraCif = (String)request.getAttribute("primeraLetraCif");
+
+		if (!formulario.getIdPersona().equals("")) {
+			// modo != nuevo	
+			// atributos
+			resultado = (Vector) request.getAttribute("CenResultadoDatosGenerales");
+		
+			String[] arrayGruposSel = formulario.getGrupos();
+			if (arrayGruposSel!=null) {
+				for (int j=0;j<arrayGruposSel.length;j++) {
+					gruposSel.add(arrayGruposSel[j]);
+				}
+			}
+		
+			String colegiado = (String) request.getAttribute("CenDatosGeneralesColegiado");
+			cliente = UtilidadesString.getMensajeIdioma(user, colegiado);
+	
+			numeroColegiado = (String) request.getAttribute("CenDatosGeneralesNoColegiado");
+			if (numeroColegiado!=null) {
+				bColegiado=true;
+			} 
+			fechaCertificado = (String) request.getAttribute("CenDatosGeneralesCertificado");
+			if (fechaCertificado==null || fechaCertificado.equals("")) {
+				fechaCertificado=UtilidadesString.getMensajeIdioma(user, "censo.ConsultaDatosGenerales.mensaje.NoCertificado");
+				bfCertificado=false;
+			}
+	
+		} // del if de nuevo
+		
+		// Obteniendo idinstitucion
+		if (formulario.getIdInstitucion()!= null && !formulario.getIdInstitucion().equals(""))
+	   		institucionParam[0] = formulario.getIdInstitucion();
+	   	else
+		   	institucionParam[0] = user.getLocation();
+	} catch (Exception e){
+	
+	}
+
+	// Definicion de variables a usar en la JSP
 	String nuevoNumRegistro = null;
 	String idInstitucion = "";
 	String idPersona = "";
@@ -55,160 +125,16 @@
 	String estadoCivil = "";
 	String caracter = "";
 	String tipoi = "";
-	String modo = null;
-	String busquedaVolver = "";
 	String tipoOriginal = "";
-	
-	String primeraLetraCif ="";
-	
 	String tipoDisabled = "false";
-
-	ArrayList gruposSel = new ArrayList();	
-	String cliente = "";
-	String numeroColegiado = "";
-	boolean bColegiado = false;
-	boolean bfCertificado=true;
-	String fechaCertificado = "";
-	Vector resultado = null;
-	String consultaPersona = null;
-	boolean bConsultaPersona = false;
-	String colegiado = null;
-
-	String estiloCaja="", estiloCombo="";
-	String readonly = "false";  // para el combo
-	boolean breadonly = false;  // para lo que no es combo
-	String checkreadonly = " "; // para el check
-	
-	String [] institucionParam = new String[1];
-	
 	// seleccion de combos
 	ArrayList tratamientoSel = new ArrayList();
-	//ArrayList tipoIdentificacionSel = new ArrayList();
 	String tipoIdentificacionSel = "20";
 	ArrayList estadoCivilSel = new ArrayList();
 	ArrayList idiomaSel = new ArrayList();
 	ArrayList caracterSel = new ArrayList();
-	ArrayList actividadSel = new ArrayList();
 	
-	
-	
-	Hashtable hDatosNoColegiado=(Hashtable)request.getSession().getAttribute("hashNoColegiadoOriginal");
-	String valorSociedadSJ=UtilidadesHash.getString(hDatosNoColegiado,CenNoColegiadoBean.C_SOCIEDADSJ);
-	String valorSociedadSP=UtilidadesHash.getString(hDatosNoColegiado,CenNoColegiadoBean.C_SOCIEDADSP);
-	String app = null;
-	HttpSession ses = null;
-	Properties src = null;
-	UsrBean user = null;
-	DatosGeneralesForm formulario = null;
-	boolean bOcultarHistorico = false;
-	boolean tipoIdentif=false;
-	try {
-		app=request.getContextPath();
-		ses=request.getSession();
-		src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
-		user = (UsrBean) ses.getAttribute("USRBEAN");
-		bOcultarHistorico = user.getOcultarHistorico();
-	
-		formulario = (DatosGeneralesForm)request.getAttribute("datosGeneralesForm");
-//		modo = formulario.getModo();
-		modo = (String)request.getAttribute("modoPestanha");
-		
-		primeraLetraCif = (String)request.getAttribute("primeraLetraCif");
-	
-		// para saber hacia donde volver
-		busquedaVolver = (String) request.getSession().getAttribute("CenBusquedaClientesTipo");
-		if (busquedaVolver==null) {
-			busquedaVolver = "volverNo";
-		}
-	
-		
-		
-		
-		
-		// RGG 24-06-2005 cambio para controlar acceso a datos persona otra institucion que la creadora
-		consultaPersona = (String) request.getAttribute("CenDatosPersonalesOtraInstitucion");
-
-		// Solo se podra modificar el tipo de identificacion si el no colegiado es la propia institucion y nos encontramos en dicha institucion o si el no colegiado
-		// ha sido dado de alta por la institucion donde nos encontramos.
-		
-		            CenInstitucionAdm insAdm= new CenInstitucionAdm(user);
-					Hashtable hashIns= new Hashtable();
-					hashIns.put(CenInstitucionBean.C_IDINSTITUCION,user.getLocation());
-					Vector v2 = insAdm.selectByPK(hashIns);
-					String idPersonaInstitucionUserBean="";
-					if (v2!=null && v2.size()>0) {
-						CenInstitucionBean insBean = (CenInstitucionBean) v2.get(0);
-						idPersonaInstitucionUserBean=insBean.getIdPersona().toString();
-					}	
-					
-		
-		if (consultaPersona!=null && consultaPersona.equals(ClsConstants.DB_TRUE) && ((!idPersonaInstitucionUserBean.equals(formulario.getIdPersona()) && formulario.getIdPersona().length()<4)) ) {
-			bConsultaPersona = true;
-		}
-
-
-
-		
-		if (!formulario.getIdPersona().equals("")) {
-			// modo != nuevo	
-			// atributos
-			resultado = (Vector) request.getAttribute("CenResultadoDatosGenerales");
-		
-			String[] arrayGruposSel = formulario.getGrupos();
-			if (arrayGruposSel!=null) {
-				for (int j=0;j<arrayGruposSel.length;j++) {
-					gruposSel.add(arrayGruposSel[j]);
-				}
-			}
-		
-			colegiado = (String) request.getAttribute("CenDatosGeneralesColegiado");
-			cliente = UtilidadesString.getMensajeIdioma(user, colegiado);
-	
-			numeroColegiado = (String) request.getAttribute("CenDatosGeneralesNoColegiado");
-			if (numeroColegiado!=null) {
-				bColegiado=true;
-			} 
-			fechaCertificado = (String) request.getAttribute("CenDatosGeneralesCertificado");
-			if (fechaCertificado==null || fechaCertificado.equals("")) {
-				fechaCertificado=UtilidadesString.getMensajeIdioma(user, "censo.ConsultaDatosGenerales.mensaje.NoCertificado");
-				bfCertificado=false;
-			}
-	
-		} // del if de nuevo
-		
-		
-		//  tratamiento de readonly
-		estiloCaja = "";
-		readonly = "false";  // para el combo
-		breadonly = false;  // para lo que no es combo
-		checkreadonly = " "; // para el check
-		
-		// caso de accion 
-		if (formulario.getAccion().equalsIgnoreCase("VER") ) {
-			// caso de consulta
-			estiloCaja = "boxConsulta";
-			estiloCombo = "boxConsulta";
-			readonly = "true";
-			breadonly = true;
-			checkreadonly = " disabled ";
-		} else {
-			estiloCaja = "box";
-			estiloCombo = "boxCombo";
-			readonly = "false";
-			breadonly = false;
-			checkreadonly = " ";
-		}
-		
-		//Toma los de la institucion:
-		if (formulario.getIdInstitucion()!= null && !formulario.getIdInstitucion().equals(""))
-	   		institucionParam[0] = formulario.getIdInstitucion();
-	   	else
-		   	institucionParam[0] = user.getLocation();
-	} catch (Exception e){
-	
-	}
-
-	// No estamos en nuevo: recuperamos los datos
+	// Si no es un registro nuevo, todos los datos anteriores se obtienen del formulario
 	if (!modo.equalsIgnoreCase("NUEVASOCIEDAD")) {
 		// SOLO VA A TENER UN REGISTRO 
 		Hashtable registro = (Hashtable) resultado.get(0);
@@ -268,76 +194,52 @@
 		idiomaSel.add((String) registro.get(CenClienteBean.C_IDLENGUAJE));
 		caracterSel.add((String) registro.get(CenClienteBean.C_CARACTER));
 		
-		
 	} // Fin de recuperar datos si no estamos en Nuevo
 	
-	//TIPO:
-	String tipo = formulario.getTipo();
+	// Obteniendo si es sociedad SJ o SP
+	Hashtable hDatosNoColegiado=(Hashtable)request.getSession().getAttribute("hashNoColegiadoOriginal");
+	String valorSociedadSJ=UtilidadesHash.getString(hDatosNoColegiado,CenNoColegiadoBean.C_SOCIEDADSJ);
+	String valorSociedadSP=UtilidadesHash.getString(hDatosNoColegiado,CenNoColegiadoBean.C_SOCIEDADSP);
 	
+	// Obteniendo tipo
+	String tipo = formulario.getTipo();
 	String tipoJY = formulario.getTipo();
-		
-	if(tipo == null)
-	{
+	if(tipo == null)	{
 		tipo ="";
 		tipoJY ="";
 	}
-		
 	String [] tipoParam = new String[1];
 	tipoParam[0] = user.getLanguage();
 	ArrayList tipoSel = new ArrayList();
 	tipoSel.add(tipo);
 	tipoOriginal = tipo;
+	String tipoCliente=ClsConstants.TIPO_CLIENTE_NOCOLEGIADO;
+	String [] caracterParam = new String[1];
+	caracterParam[0] = tipoCliente;
 	
-	
-//	String salidaTipo = "";
-//	if (tipo!=null && !tipo.equals("")) {
-//		if (tipo.equals(ClsConstants.COMBO_TIPO_SOCIEDAD_CIVIL))
-//			salidaTipo = "censo.general.literal.SociedadCivil";
-//		else if(tipo.equals(ClsConstants.COMBO_TIPO_SOCIEDAD_LIMITADA))
-//					salidaTipo = "censo.general.literal.SociedadLimitada";
-//		else if(tipo.equals(ClsConstants.COMBO_TIPO_SOCIEDAD_ANONIMA))
-//					salidaTipo = "censo.general.literal.SociedadAnonima";
-//		else if(tipo.equals(ClsConstants.COMBO_TIPO_PERSONAL))
-//					salidaTipo = "censo.general.literal.Personal";
-//		else if(tipo.equals(ClsConstants.COMBO_TIPO_OTROS))
-//					salidaTipo = "censo.general.literal.Otros";
-//	}
-	
-	// Numero de Registro:
-	/*String numeroRegistro = "";
-	if (formulario.getNumeroRegistro()!=null && !formulario.getNumeroRegistro().equals(""))
-		numeroRegistro = formulario.getNumeroRegistro();*/
 
-	boolean breadonlyNif = false;
-	String estiloCajaNif = "box";
-	boolean breadonlyNombreApellidos = false;
-	String estiloCajaNombreApellidos = "box";
-		
-	if (formulario.getAccion().equals("ver")) {
-		breadonlyNif = true;
-		estiloCajaNif = "boxConsulta";
-		breadonlyNombreApellidos = true;
-		estiloCajaNombreApellidos = "boxConsulta";
+	// Calculando estilos generales en funcion de Ver o Editar
+	String estiloCaja="", estiloCombo="";
+	String readonly = "false";  // para el combo
+	boolean breadonly = false;  // para lo que no es combo
+	String checkreadonly = " "; // para el check
+	if (formulario.getAccion().equalsIgnoreCase("VER") ) {
+		// caso de consulta
+		estiloCaja = "boxConsulta";
+		estiloCombo = "boxConsulta";
+		readonly = "true";
+		breadonly = true;
+		checkreadonly = " disabled ";
 	} else {
-	
-		if (idPersona.length()>4) {
-			if (!idPersona.substring(0,4).equals(user.getLocation())) {
-				breadonlyNif = true;
-				estiloCajaNif = "boxConsulta";
-				breadonlyNombreApellidos = true;
-				estiloCajaNombreApellidos = "boxConsulta";
-				tipoIdentif=true;
-			}   
-		} 
+		estiloCaja = "box";
+		estiloCombo = "boxCombo";
+		readonly = "false";
+		breadonly = false;
+		checkreadonly = " ";
 	}
-
-
-
-// CONTROL DE TIPO	
-String tipoCliente=ClsConstants.TIPO_CLIENTE_NOCOLEGIADO;
-String [] caracterParam = new String[1];
-caracterParam[0] = tipoCliente;
 	
+	// Calculando estilos para controlar edicion de datos generales de persona
+	boolean bDatosGeneralesEditables = ((String) request.getAttribute("BDATOSGENERALESEDITABLES")).equals("true") ? true : false;
 
 %>
 
@@ -802,28 +704,26 @@ caracterParam[0] = tipoCliente;
 										<td class="labelText" colspan="2" width="40%">
 											<siga:Idioma key="censo.fichaCliente.literal.identificacion"/>&nbsp;(*)
 
-											<% if (bConsultaPersona) { %>
-													<html:text name="datosGeneralesForm" property="numIdentificacion" styleId="numIdentificacion" size="11" style="width:70px" styleClass="boxConsulta" value="<%=nIdentificacion %>" readonly="true" ></html:text>
+											<% if (!breadonly && bDatosGeneralesEditables) { %>
+												<input type="hidden" name="tipoIdentificacionBloqueada" value="<%=tipoIdentificacionSel%>"/>
+												<html:text name="datosGeneralesForm" property="numIdentificacion" styleId="numIdentificacion" size="11" style="width:70px" styleClass="box" value="<%=nIdentificacion %>" onblur="cambioTipo();"></html:text>
 											<% } else { %>
-													<input type="hidden" name="tipoIdentificacionBloqueada" value="<%=tipoIdentificacionSel%>"/>
-													<html:text name="datosGeneralesForm" property="numIdentificacion" styleId="numIdentificacion" size="11" style="width:70px" styleClass="<%=estiloCajaNif %>" value="<%=nIdentificacion %>" readonly="<%=breadonlyNif %>" onblur="cambioTipo();"></html:text>
+												<html:text name="datosGeneralesForm" property="numIdentificacion" styleId="numIdentificacion" size="11" style="width:70px" styleClass="boxConsulta" value="<%=nIdentificacion %>" readonly="true" ></html:text>
 											<% }  %>
 												
-											 <%if (bConsultaPersona || modo.equalsIgnoreCase("VER")||tipoIdentif) { %>
-											  <html:hidden name="datosGeneralesForm" property="tipoIdentificacion" styleId="tipoIdentificacion" value="<%=tipoIdentificacionSel%>"/>
+											<% if (!breadonly && bDatosGeneralesEditables) { %>
+												<html:select name="datosGeneralesForm" property="tipoIdentificacion" value="<%=tipoIdentificacionSel%>" styleId="tipoIdentificacion"  styleClass="boxCombo" disabled="true">													
+													<html:option value="<%=OTRO%>"> <siga:Idioma key="censo.fichaCliente.literal.otro"/></html:option>	
+													<html:option value="<%=CIF%>" > <siga:Idioma key="censo.fichaCliente.literal.cif"/></html:option>
+												</html:select>
+											<% } else { %>
+												<html:hidden name="datosGeneralesForm" property="tipoIdentificacion" styleId="tipoIdentificacion" value="<%=tipoIdentificacionSel%>"/>
 												<% if (tipoIdentificacionSel.equals(CIF)) { %>
 												<siga:Idioma key="censo.fichaCliente.literal.cif"/>
 												<% } else if (tipoIdentificacionSel.equals(OTRO)) { %>
 												<siga:Idioma key="censo.fichaCliente.literal.otro"/>
 												<% } %>
-										
-											<% } else { %>
-													
-													<html:select name="datosGeneralesForm" property="tipoIdentificacion" value="<%=tipoIdentificacionSel%>" styleId="tipoIdentificacion"  styleClass="boxCombo" disabled="true">													
-														<html:option value="<%=OTRO%>"> <siga:Idioma key="censo.fichaCliente.literal.otro"/></html:option>	
-														<html:option value="<%=CIF%>" > <siga:Idioma key="censo.fichaCliente.literal.cif"/></html:option>
-													</html:select>
-											<% }  %>	
+											<% }  %>
 												
 											
 										</td>
@@ -938,14 +838,22 @@ caracterParam[0] = tipoCliente;
 											<siga:Idioma key="censo.consultaDatosGenerales.literal.denominacion"/>&nbsp;(*)
 										</td>
 										<td style="width:240px">
-											<html:text name="datosGeneralesForm" property="denominacion" styleId="denominacion" size="40" maxlength="100" styleClass="<%=estiloCajaNombreApellidos %>" readonly="<%=breadonlyNombreApellidos %>" ></html:text>
+											<% if (!breadonly && bDatosGeneralesEditables) { %>
+												<html:text name="datosGeneralesForm" property="denominacion" styleId="denominacion" size="40" maxlength="100" styleClass="box"></html:text>
+											<% } else { %>
+												<html:text name="datosGeneralesForm" property="denominacion" styleId="denominacion" size="40" maxlength="100" styleClass="boxConsulta" readonly="true" ></html:text>
+											<% }  %>
 										</td>
 										<td class="labelText">
 											<!-- Abreviatura -->
 											<siga:Idioma key="censo.fichaCliente.literal.abreviatura"/>&nbsp;
 										</td>
 										<td  class="labelText">
-											<html:text name="datosGeneralesForm" property="abreviatura" styleId="abreviatura" size="15" maxlength="100" styleClass="<%=estiloCajaNombreApellidos %>" readonly="<%=breadonlyNombreApellidos %>" ></html:text>
+											<% if (!breadonly && bDatosGeneralesEditables) { %>
+												<html:text name="datosGeneralesForm" property="abreviatura" styleId="abreviatura" size="15" maxlength="100" styleClass="box"></html:text>
+											<% } else { %>
+												<html:text name="datosGeneralesForm" property="abreviatura" styleId="abreviatura" size="15" maxlength="100" styleClass="boxConsulta" readonly="true" ></html:text>
+											<% }  %>
 										</td>
 									</tr>
 									<tr>
@@ -1144,13 +1052,13 @@ caracterParam[0] = tipoCliente;
     	}//fin método 
 			
 
-		<!-- Asociada al boton SolicitarModificacion -->
+		// Asociada al boton SolicitarModificacion
 		function accionSolicitarModificacion() {		
 			document.forms[0].modo.value="abrirSolicitud";
 			ventaModalGeneral(document.forms[0].name,'P');
 		}
 
-		<!-- Asociada al boton Restablecer -->
+		// Asociada al boton Restablecer
 		function accionRestablecer() {		
 			document.forms[0].reset();	
 		}
@@ -1159,10 +1067,9 @@ caracterParam[0] = tipoCliente;
 			//Valido el formulario:
 			if (validateDatosGeneralesNoColegiadoForm(document.forms[0])) {
 						   			
-			<% 	if (!(bConsultaPersona || modo.equalsIgnoreCase("VER")) ) {  
-			%>
-			    	// Se compruba si el Cif s valido para poner el tipo de identificación a CIF o Otros según corresponda
-			    	if ((validarCIF(document.forms[0].numIdentificacion.value)))
+				<% if (!breadonly && bDatosGeneralesEditables) { %>
+					// Se compruba si el Cif s valido para poner el tipo de identificación a CIF o Otros según corresponda
+					if ((validarCIF(document.forms[0].numIdentificacion.value)))
 					{
 						// Si el CIF no es valido en el campo tipoIdentificacion se pone OTROS
 						document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>";
@@ -1191,104 +1098,104 @@ caracterParam[0] = tipoCliente;
 						}
 						else
 						{
-								//Validamos el formato del CIF:
-								var tipo = document.forms[0].tipos.value;
-								var tipoJY = document.forms[0].tiposJY.value;								
-								var numIdentificacion = document.forms[0].numIdentificacion.value.charAt(0);
-								
-								//Esta validacion comprueba que el identificador pertenece al Tipo Identificador en este caso de CIF
-								if(numIdentificacion.toUpperCase() !='A' && numIdentificacion.toUpperCase() !='B' 
-									&& numIdentificacion.toUpperCase() !='F' && numIdentificacion.toUpperCase() !='G'
-										&& numIdentificacion.toUpperCase() !='J')
+							//Validamos el formato del CIF:
+							var tipo = document.forms[0].tipos.value;
+							var tipoJY = document.forms[0].tiposJY.value;								
+							var numIdentificacion = document.forms[0].numIdentificacion.value.charAt(0);
+							
+							//Esta validacion comprueba que el identificador pertenece al Tipo Identificador en este caso de CIF
+							if(numIdentificacion.toUpperCase() !='A' && numIdentificacion.toUpperCase() !='B' 
+								&& numIdentificacion.toUpperCase() !='F' && numIdentificacion.toUpperCase() !='G'
+									&& numIdentificacion.toUpperCase() !='J')
+							{
+								alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');									
+								return false;
+							}
+						
+							<% if (tipoDisabled.equals("false")) { %>
+							if((numIdentificacion.toUpperCase() != tipo))
+							{
+								if(!((numIdentificacion.toUpperCase()=='J') && (tipo == 'J' || tipo == 'Y')))
 								{
-									alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');									
+									alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');
 									return false;
 								}
-							
-								<% if (tipoDisabled.equals("false")) { %>
-								if((numIdentificacion.toUpperCase() != tipo))
+							}
+							<%}%>
+																							
+							//si el usuario ha elegido el tipo de CIF otros, se debe comprobar que el cif no se corresponde con
+							//ninguno de los otros tipos definidos en la lista
+							if ( tipo=="<%=ClsConstants.COMBO_TIPO_OTROS%>")
+							{
+								var i = 0;
+								var esTipoPredefinido = false;
+								while ((i < document.forms[0].tipos.length) && (esTipoPredefinido == false))
 								{
-									if(!((numIdentificacion.toUpperCase()=='J') && (tipo == 'J' || tipo == 'Y')))
+									if (numIdentificacion == document.forms[0].tipos[i].value)
 									{
-										alert('<siga:Idioma key="censo.fichaCliente.literal.errorTipoIdent"/>');
-										return false;
+										esTipoPredefinido = true;
 									}
-								}
-								<%}%>
-																								
-								//si el usuario ha elegido el tipo de CIF otros, se debe comprobar que el cif no se corresponde con
-								//ninguno de los otros tipos definidos en la lista
-								if ( tipo=="<%=ClsConstants.COMBO_TIPO_OTROS%>")
-								{
-									var i = 0;
-									var esTipoPredefinido = false;
-									while ((i < document.forms[0].tipos.length) && (esTipoPredefinido == false))
-									{
-										if (numIdentificacion == document.forms[0].tipos[i].value)
-										{
-											esTipoPredefinido = true;
-										}
-										i++;
-									} 
-									if (esTipoPredefinido)
-									{
-										alert('<siga:Idioma key="censo.fichaCliente.literal.avisoOtrosCIF"/>');
-										return false;
-									}
-									else
-										return true;
-								}			
-																		
-								//El tipo debe ser igual a la primera letra del cif 
-								else if  (tipo!="<%=ClsConstants.COMBO_TIPO_OTROS%>" && (tipo.toUpperCase()==numIdentificacion.toUpperCase()) ) 
-								{
-									return true;
+									i++;
 								} 
-								else 
+								if (esTipoPredefinido)
 								{
-									if(!document.forms[0].modo.value == "editar")
-									{
-										alert ('<siga:Idioma key="censo.fichaCliente.literal.errorCIF"/>');
-										return false;
-									}									
-									document.forms[0].tipoOriginal.value=document.forms[0].numIdentificacion.value.charAt(0).toUpperCase();									  									
-									return true;
+									alert('<siga:Idioma key="censo.fichaCliente.literal.avisoOtrosCIF"/>');
+									return false;
 								}
+								else
+									return true;
+							}			
+																	
+							//El tipo debe ser igual a la primera letra del cif 
+							else if  (tipo!="<%=ClsConstants.COMBO_TIPO_OTROS%>" && (tipo.toUpperCase()==numIdentificacion.toUpperCase()) ) 
+							{
+								return true;
+							} 
+							else 
+							{
+								if(!document.forms[0].modo.value == "editar")
+								{
+									alert ('<siga:Idioma key="censo.fichaCliente.literal.errorCIF"/>');
+									return false;
+								}									
+								document.forms[0].tipoOriginal.value=document.forms[0].numIdentificacion.value.charAt(0).toUpperCase();									  									
+								return true;
+							}
 						}
 					} 
 					else // Si el tipoIdentificacion es OTROS
+					{
+						if ((validarCIF(document.forms[0].numIdentificacion.value)))
 						{
-							if ((validarCIF(document.forms[0].numIdentificacion.value)))
-							{
-								// Si el CIF no es valido en el campo tipoIdentificacion se pone OTROS
-								document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>";
-								document.forms[0].tipoIdentificacionBloqueada.value = "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>";
+							// Si el CIF no es valido en el campo tipoIdentificacion se pone OTROS
+							document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>";
+							document.forms[0].tipoIdentificacionBloqueada.value = "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>";
 
-								return true;
-							}
-																	
+							return true;
+						}
+																
 
-							
-							if (document.forms[0].tipoIdentificacion.value != "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>") 
-							{
-								alert ('<siga:Idioma key="censo.fichaCliente.literal.avisoCIF"/>');
-								return false;
-							} 
-							else
-							{
-								document.forms[0].tipoIdentificacionBloqueada.value = "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>";
-					    		document.forms[0].tipoBloqueado.value = "0";
-								return true;
-							}	
+						
+						if (document.forms[0].tipoIdentificacion.value != "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>") 
+						{
+							alert ('<siga:Idioma key="censo.fichaCliente.literal.avisoCIF"/>');
+							return false;
+						} 
+						else
+						{
+							document.forms[0].tipoIdentificacionBloqueada.value = "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>";
+				    		document.forms[0].tipoBloqueado.value = "0";
+							return true;
+						}	
 					}
-				<% } // if VER  %>				  
+				<% } // if EDITAR  %>				  
 				return true;
 			} else {
 				return false;
 			}
 		}
 		
-		<!-- Asociada al boton Guardar -->
+		// Asociada al boton Guardar
 		function accionGuardar() {		
 			//Valido el formulario:			
 			sub();
