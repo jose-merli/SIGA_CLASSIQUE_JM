@@ -1192,7 +1192,7 @@ function str_replace(search, replace, subject) {
 					</td>
 					<td class="labelText" colspan="4">
 						<% if (!bDatosGeneralesEditables) { %> 
-							<img src="<%=app%>/html/imagenes/help.gif" alt="Consulte al Administrador si necesita editar los datos generales de esta persona"/> 
+							<img src="<%=app%>/html/imagenes/help.gif" alt="<siga:Idioma key='censo.consultaDatosGenerales.mensaje.noEditable'/>"/> 
 						<% } %>
 					</td>
 				</tr>
