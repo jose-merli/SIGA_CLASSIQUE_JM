@@ -27,25 +27,35 @@ try {
 	
  	boolean buscar = false;
  	String path = (String)request.getParameter("path");
+ 	String patron = (String)request.getParameter("patron");
+ 	
  	if (path==null) {
 		path = (String)request.getSession().getAttribute("path");
 		request.getSession().removeAttribute("path");
 	}
+ 	
+ 	if (patron==null) {
+		patron = (String)request.getSession().getAttribute("patron");
+		request.getSession().removeAttribute("patron");
+	}
+
 	if (path != null && !path.trim().equals("") && !path.trim().equalsIgnoreCase("null")) {
 		if (path.startsWith("C:")) {
 			// windows
 			path = path.substring(2,path.length());
 			path = UtilidadesString.replaceAllIgnoreCase(path,"\\","/");
 		}
-		if (path.startsWith(pathBase)){
+		if (patron!=null && !patron.equalsIgnoreCase("") && path.startsWith(pathBase)){
+			vDatos = InfoDirectorio.busqueda(path, patron);
+		}else if (path.startsWith(pathBase)){
 			vDatos = InfoDirectorio.getInfoDirectorio(path);
 		}else{
 			path=pathBase;
 		}
-	}
-	else {
+	} else {
 		path=pathBase;
 	}
+	String pathUP=path.substring(0, path.lastIndexOf("/"));
 	
 	String accion = "";
 	if (request.getParameter("accion")!=null)  {
@@ -77,11 +87,47 @@ try {
 
 <%@page import="com.siga.Utilidades.UtilidadesString"%><html>
 <head>
-    <title>Info Direcciones</title>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.1.min.js"></script>
+    <title>SIGA Directorios</title>
     <style>
-    	td {border:solid 1px #DDDDDD}
+	body {
+		font: normal 9px auto "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+		color: #4f6b72;
+		background: #eeeeee;
+	}
+	
+	a {
+		color: #c75f3e;
+	}
+	
+	h2 {
+		padding: 0 0 5px 0;
+		width: 700px;	 
+		font: italic 16px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+		text-align: left;
+	}
+
+
+	td {
+		border-right: 1px solid #C1DAD7;
+		border-bottom: 1px solid #C1DAD7;
+		background: #fff;
+		font: 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+		padding: 6px 6px 6px 12px;
+		color: #4f6b72;
+	}
+	
+	
+	td.alt {
+		background: #F5FAFA;
+		color: #797268;
+	}
+   
+    .dir{color:blue; font: 12px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;cursor:hand}
+    .dirSans{color:blue; font: 13px italic "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;}
+
     </style>
-</head>
+
 <script>
 	function fDescargar (fichero, path) 
 	{
@@ -110,23 +156,43 @@ try {
 		}
 	}
 	
+	function dNavegar (directorio)
+	{	
+		document.consulta.path.value = unescape(directorio);
+		document.consulta.submit();
+	}
+	
+	function mostrarFiltro(){
+		jQuery("#filtro").show();
+		jQuery("#filtroMSG").show();
+		jQuery("#boton").hide();
+	}
+		
 </script>
+<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
+</head>
 <body style="font-family:verdana;" <% if (buscar) out.println("onLoad='document.consulta.submit();'"); %>>
-	<h2>Path siga</h2>
+	<h2>infoDirectorio</h2>
 	<table>
 		<form name="consulta" action="<%=app%>/html/jsp/general/infoDirectorio.jsp" method="POST">
 			<tr>
-				<td>Path: </td>
-				<td><input type="text" size="50"  name="path" value="<%=path%>"/></td>
+				<td>Ruta</td>
+				<td><input type="text" size="70"  name="path" value="<%=path%>"/></td>
+				<td><input type="submit" id="boton" name="ejecutar" value="Acceder"/></td>
 			</tr>
-			
-			<tr>
-				<td><input type="reset" name="limpiar" value="Limpiar"/></td>
-				<td><input type="submit" name="ejecutar" value="Ejecutar"/></td>
+			<tr id="filtro" style="display:none">
+				<td>Filtro </td>
+				<td><input type="text" size="70"  name="patron" value=""/></td>
+				<td><input type="submit" id="boton" name="ejecutar" value="Buscar"/></td>
+			</tr>
+			<tr id="filtroMSG" style="display:none">
+				<td colspan="3" style="color:red">El uso del filtro de busqueda no debe realizarse sin especificar una ruta. <br> Se comprobara el nombre de TODAS las carpetas y ficheros de forma recursiva, lo que puede producir una sobrecarga del sístema.</td>
 			</tr>
 			
 		</form>
 	</table>
+	
+	<b style="position:absolute;top:0px;right:0px" onclick="mostrarFiltro();">+</b>
 
 <% if (vDatos != null && vDatos.size() > 0) { %>
 
@@ -135,8 +201,6 @@ try {
 		<input type="hidden" name="rutaFichero"   value=""/>
 		<input type="hidden" name="accion"        value=""/>
 		<input type="hidden" name="borrarFichero" value=""/>
-		
-		
 	</form>
 
 	<form name="borrar" action="<%=app%>/html/jsp/general/infoDirectorio.jsp" method="POST">
@@ -145,9 +209,17 @@ try {
 		<input type="hidden" name="accion"        value="borrar"/>
 	</form>
 
-	<p><b>Resultados:</b></p>
+	
+	
+
 	<table border="0">
 	
+		<tr>
+			<td colspan="5">
+			<B class="dir" onclick="dNavegar('<%=pathUP%>')">..</B>
+			</td>
+		</tr>
+
 <% 	for (int i = 0; i < vDatos.size(); i++) { 
 		Hashtable h = (Hashtable)vDatos.get(i);
 		String nombre = (String)h.get("nombre");
@@ -159,32 +231,34 @@ try {
 		
 	%>
 		<tr>
-		   <td>
-		   
-		   <% for (int j = 0; j < nivel; j++) { %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% } %>
-		   <% if(tipo.equals("d")) { %><B><%}%>
-		   <%=nombre%>
-		   <% if(tipo.equals("d")) { %></B><%}%>
+		   <td width="400px">
+			   <% for (int j = 0; j < nivel; j++) { %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% } %>
+			   <% if(tipo.startsWith("dd")) { %>
+			   		<B class="dir" onclick="dNavegar('<%=path2%>')"><%=nombre%></B>
+			   <%}else if(tipo.startsWith("d")) { %>
+			   		<B class="dirSans"><%=path%></B>
+			   <%}else{%>
+			   		<%=nombre%>
+			   <%}%>
 		   </td>
 		   <td width="80px"><%=acceso%></td>
 		   <td width="200px"><%=fecha%></td>
-		   <td><% if(!tipo.equals("d")) {%><a name="<%=i%>" href="#" onclick="fDescargar('<%=nombre%>', '<%=path2%>')">Descargar</a> <%}%> </td>
-		   <td><% if(!tipo.equals("d")) {%><a name="<%=i%>" href="#" onclick="fBorrar('<%=nombre%>', '<%=path2%>')">Eliminar</a> <%}%> </td>
-		   <% if(tipo.equals("d")){
-			   
-		   %>
-		   <td>	  
-		   		<form name="subir_<%=i%>" action="<%=app%>/ServletDescargaFichero.svrl"  method="POST" enctype="multipart/form-data">
-					<input type="hidden" name="nombreFichero" value=""/>
-					<input type="hidden" name="rutaFichero"   value=""/>
-					<input type="hidden" name="accion"        value=""/>
-					<input type="hidden" name="borrarFichero" value=""/>					
-					<INPUT type="file" name="archivo" value="" />
-					<input type="button" value="add" onclick="fSubir(archivo.value, '<%=path2%>', 'subir_<%=i%>')" />
-				</form>
-		   </td> 
-			   
-			   
+		   <% if(tipo.equals("d")){%>
+			   <td colspan="2">	  
+			   		<form name="subir_<%=i%>" action="<%=app%>/ServletDescargaFichero.svrl"  method="POST" enctype="multipart/form-data">
+						<input type="hidden" name="nombreFichero" value=""/>
+						<input type="hidden" name="rutaFichero"   value=""/>
+						<input type="hidden" name="accion"        value=""/>
+						<input type="hidden" name="borrarFichero" value=""/>	
+						<input type="file" id="fileUpload" name="archivo" />
+						<input type="button" value="Subir archivo" onclick="fSubir(archivo.value, '<%=path2%>', 'subir_<%=i%>')" />
+					</form>
+			   </td> 
+		   <% }else if(tipo.equals("dd")){%>  
+		   		<td colspan="2">&nbsp;</td>
+		   <% }else{ %>
+			   <td><% if(!tipo.startsWith("d")) {%><a name="<%=i%>" href="#" onclick="fDescargar('<%=nombre%>', '<%=path2%>')">Descargar</a> <%}%> </td>
+			   <td><% if(!tipo.startsWith("d")) {%><a name="<%=i%>" href="#" onclick="fBorrar('<%=nombre%>', '<%=path2%>')">Eliminar</a> <%}%> </td>
 		   <% }%>  
 		</tr>
 
