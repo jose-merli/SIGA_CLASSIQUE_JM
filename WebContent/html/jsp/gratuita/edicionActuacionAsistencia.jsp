@@ -77,7 +77,7 @@
 
 </head>
 
-<body onload="inicio();">
+<body onload="inicio();cambioComisaria();cambioJuzgado();">
 	<bean:define id="usrBean" name="USRBEAN" scope="session"
 		type="com.atos.utils.UsrBean" />
 	<bean:define id="botones" name="botones" scope="request" />
@@ -613,7 +613,9 @@
 		if (document.getElementById("codComisaria").value!=""){
 			document.MantenimientoComisariaForm.codigoExtBusqueda.value=document.getElementById("codComisaria").value;
 			document.MantenimientoComisariaForm.submit();
-			cambioComisaria();		
+			
+			document.getElementById("idJuzgado").value="";
+			document.getElementById("codJuzgado").value="";	
 		 }
 	}
 	//			
@@ -627,19 +629,60 @@
 	}
 	
 	function cambioComisaria(){
-		document.getElementById("idJuzgado").value="";
-	}
+		var comboComisaria = document.getElementById("idComisaria");
+		if(comboComisaria.value!=""){
+			document.getElementById("idJuzgado").value="";
+			document.getElementById("codJuzgado").value="";			
+		
+			jQuery.ajax({ //Comunicación jQuery hacia JSP  
+	   			type: "POST",
+				url: "/SIGA/JGR_MantenimientoComisarias.do?modo=getAjaxComisaria2",
+				data: "idCombo="+comboComisaria.value,
+				dataType: "json",
+				success: function(json){		
+		       		document.getElementById("codComisaria").value = json.codigoExt;      		
+					fin();
+				},
+				error: function(e){
+					alert('Error de comunicación: ' + e);
+					fin();
+				}
+			});
+		}
+	}		
 	
 	function obtenerJuzgado() { 
 	  	if (document.getElementById("codJuzgado").value!=""){
 			document.MantenimientoJuzgadoForm.codigoExt2.value=document.getElementById("codJuzgado").value;
 		   	document.MantenimientoJuzgadoForm.submit();	
-		   	cambioJuzgado();	
+		   	
+			document.getElementById("idComisaria").value="";
+			document.getElementById("codComisaria").value="";	
 	 	}
 	}
 	
-	function cambioJuzgado(){
-		document.getElementById("idComisaria").value="";
+	function cambioJuzgado(){			
+		var comboJuzgado = document.getElementById("idJuzgado");	
+		
+		if(comboJuzgado.value!=""){
+			document.getElementById("idComisaria").value="";
+			document.getElementById("codComisaria").value="";
+		
+			jQuery.ajax({ //Comunicación jQuery hacia JSP  
+	   			type: "POST",
+				url: "/SIGA/JGR_MantenimientoJuzgados.do?modo=getAjaxJuzgado3",
+				data: "idCombo="+comboJuzgado.value,
+				dataType: "json",
+				success: function(json){		
+		       		document.getElementById("codJuzgado").value = json.codigoExt2;      		
+					fin();
+				},
+				error: function(e){
+					alert('Error de comunicación: ' + e);
+					fin();
+				}
+			});
+		}		
 	}
 	
 	function traspasoDatos(resultado){
