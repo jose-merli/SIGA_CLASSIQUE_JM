@@ -1118,7 +1118,10 @@ function str_replace(search, replace, subject) {
 					</td>
 					<td class="labelText" colspan="4">
 						<% if (!bDatosGeneralesEditables) { %> 
-							<img src="<%=app%>/html/imagenes/help.gif" alt="<siga:Idioma key='censo.consultaDatosGenerales.mensaje.noEditable'/>"/> 
+							<img src="<%=app%>/html/imagenes/help.gif" 
+								alt="<siga:Idioma key='censo.consultaDatosGenerales.mensaje.noEditable'/>" 
+								onclick="alertaNoEditable();"
+								style="cursor: hand;"/> 
 						<% } %>
 					</td>
 				</tr>
@@ -1363,13 +1366,18 @@ function str_replace(search, replace, subject) {
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 
-		<!-- Asociada al boton SolicitarModificacion -->
+		// Muestra alerta de no editables los datos generales
+		function alertaNoEditable() {
+			alert('<siga:Idioma key="censo.consultaDatosGenerales.mensaje.noEditable"/>', 'info');
+		}
+		
+		// Asociada al boton SolicitarModificacion
 		function accionSolicitarModificacion() 	{
 			document.forms[0].modo.value="abrirSolicitud";
 			ventaModalGeneral(document.forms[0].name,'P');
 		}
 
-		<!-- Asociada al boton Restablecer -->
+		// Asociada al boton Restablecer
 		function accionRestablecer() {
 			document.forms[0].reset();	
 		}
@@ -1399,53 +1407,52 @@ function str_replace(search, replace, subject) {
 			}			
 		}
 		
-
-	function validarFormulario() {
-
-		
-		if (datosGeneralesForm.sexo.value=='0'){
-			alert ('<siga:Idioma key="censo.fichaCliente.literal.sexo"/>');
-		   	return false;
-		}
-		if (validateDatosGeneralesForm(document.forms[0]))
-		{
-			var rc	= true;
-			var tipoIden = document.datosGeneralesForm.tipoIdentificacion.value;
-			
-			if ((tipoIden == <%=tipoIdenNIF%>))
-			{
-				rc = validarNIFCIF(tipoIden, document.datosGeneralesForm.numIdentificacion.value);
+		function validarFormulario() {
+	
+			if (datosGeneralesForm.sexo.value=='0'){
+				alert ('<siga:Idioma key="censo.fichaCliente.literal.sexo"/>');
+			   	return false;
 			}
-			else if((tipoIden == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") )
+			if (validateDatosGeneralesForm(document.forms[0]))
 			{
-				rc=validaNIE(document.datosGeneralesForm.numIdentificacion.value);
-			}
-			else if((tipoIden == "<%=ClsConstants.TIPO_IDENTIFICACION_PASAPORTE%>") && (document.forms[0].numIdentificacion.value=="") )
-			{
-				alert ('<siga:Idioma key="messages.pasaporte.comprobacion.error"/>');
-				rc=false;
-			}
-			else if((tipoIden == "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>") && (document.forms[0].numIdentificacion.value=="") )
-			{	
-				alert ('<siga:Idioma key="messages.otro.comprobacion.error"/>');
-				rc=false;
-			}
-			else if((document.forms[0].tipoIdentificacion.value== "") && (document.forms[0].numIdentificacion.value==""))
-			{
-				if((document.forms[0].cliente.valyue== "Letrado") || (document.forms[0].cliente.value=="Ejerciente"))
+				var rc	= true;
+				var tipoIden = document.datosGeneralesForm.tipoIdentificacion.value;
+				
+				if ((tipoIden == <%=tipoIdenNIF%>))
 				{
-					alert('<siga:Idioma key="messages.tipoIdenNumIden.comprobacion.error"/>');
+					rc = validarNIFCIF(tipoIden, document.datosGeneralesForm.numIdentificacion.value);
+				}
+				else if((tipoIden == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") )
+				{
+					rc=validaNIE(document.datosGeneralesForm.numIdentificacion.value);
+				}
+				else if((tipoIden == "<%=ClsConstants.TIPO_IDENTIFICACION_PASAPORTE%>") && (document.forms[0].numIdentificacion.value=="") )
+				{
+					alert ('<siga:Idioma key="messages.pasaporte.comprobacion.error"/>');
 					rc=false;
 				}
+				else if((tipoIden == "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>") && (document.forms[0].numIdentificacion.value=="") )
+				{	
+					alert ('<siga:Idioma key="messages.otro.comprobacion.error"/>');
+					rc=false;
+				}
+				else if((document.forms[0].tipoIdentificacion.value== "") && (document.forms[0].numIdentificacion.value==""))
+				{
+					if((document.forms[0].cliente.valyue== "Letrado") || (document.forms[0].cliente.value=="Ejerciente"))
+					{
+						alert('<siga:Idioma key="messages.tipoIdenNumIden.comprobacion.error"/>');
+						rc=false;
+					}
+				}
+				return rc;	
 			}
-			return rc;	
+			else
+			{			
+			  return false;
+			}
 		}
-		else
-		{			
-		  return false;
-		}
-	}
-		<!-- Asociada al boton Guardar -->
+	
+		// Asociada al boton Guardar
 		function accionGuardar() {		
 			sub();
 			<%if (cliente.equals("") || cliente.equals("No Colegiado")){%>

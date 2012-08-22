@@ -855,6 +855,14 @@
 												<html:text name="datosGeneralesForm" property="abreviatura" styleId="abreviatura" size="15" maxlength="100" styleClass="boxConsulta" readonly="true" ></html:text>
 											<% }  %>
 										</td>
+										<td class="labelText">
+											<% if (!bDatosGeneralesEditables) { %> 
+												<img src="<%=app%>/html/imagenes/help.gif" 
+													alt="<siga:Idioma key='censo.consultaDatosGenerales.mensaje.noEditable'/>" 
+													onclick="alertaNoEditable();"
+													style="cursor: hand;"/> 
+											<% } %>
+										</td>
 									</tr>
 									<tr>
 
@@ -994,6 +1002,11 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script type="text/javascript">
 
+		// Muestra alerta de no editables los datos generales
+		function alertaNoEditable() {
+			alert('<siga:Idioma key="censo.consultaDatosGenerales.mensaje.noEditable"/>', 'info');
+		}
+		
 		//Método que valida el CIF de una nueva sociedad
 		function validarCIF(cif)
 		{
