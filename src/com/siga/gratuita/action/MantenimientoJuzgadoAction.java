@@ -74,15 +74,19 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 			} else if (accion.equalsIgnoreCase("recargarJuzgadoModal")){
 				mapDestino = recargarJuzgadoModal(mapping, miForm, request, response);
 			}else if (accion.equalsIgnoreCase("buscarJuzgado")){
-			    mapDestino = buscarJuzgado(mapping, miForm, request, response);
-			    
-			}else if (accion.equalsIgnoreCase("getAjaxJuzgado2")){
-				getAjaxJuzgado2(mapping, miForm, request, response);
-			    return null;			    
+			    mapDestino = buscarJuzgado(mapping, miForm, request, response);			   			    
 		    	
 			}else if (accion.equalsIgnoreCase("getAjaxJuzgado")){
 			    getAjaxJuzgado(mapping, miForm, request, response);
 			    return null;
+			    
+			}else if (accion.equalsIgnoreCase("getAjaxJuzgado2")){
+				getAjaxJuzgado2(mapping, miForm, request, response);
+			    return null;
+			    
+			}else if (accion.equalsIgnoreCase("getAjaxJuzgado3")){
+				getAjaxJuzgado3(mapping, miForm, request, response);
+			    return null;			    
 		    	
 			} else {
 				return super.executeInternal(mapping,
@@ -558,4 +562,35 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 	     response.setHeader("X-JSON", json.toString());
 		 response.getWriter().write(json.toString()); 		
 	}
+	
+	@SuppressWarnings("unchecked")
+	protected void getAjaxJuzgado3 (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
+		{
+		//Sacamos las guardias si hay algo selccionado en el turno
+		String idCombo = request.getParameter("idCombo");
+		
+		
+		MantenimientoJuzgadoForm miform = (MantenimientoJuzgadoForm)formulario;
+		ScsJuzgadoAdm juzgadoAdm= new ScsJuzgadoAdm(this.getUserBean(request));
+		String where = " WHERE IDJUZGADO='"+idCombo+"'"+
+				"AND IDINSTITUCION="+this.getUserBean(request).getLocation();
+		Vector resultadoJuzgado = juzgadoAdm.select(where);
+		String codigoExt2 ="";
+		if (resultadoJuzgado!=null && resultadoJuzgado.size()>0) {
+			ScsJuzgadoBean juzgadoBean = (ScsJuzgadoBean) resultadoJuzgado.get(0);
+			codigoExt2 = juzgadoBean.getCodigoExt2();
+		}
+				
+		JSONObject json = new JSONObject();		
+		json.put("codigoExt2", codigoExt2);
+		
+		 response.setContentType("text/x-json;charset=ISO-8859-15");
+		 response.setHeader("Cache-Control", "no-cache");
+		 response.setHeader("Content-Type", "application/json");
+	     response.setHeader("X-JSON", json.toString());
+		 response.getWriter().write(json.toString()); 		
+	}	
 }
