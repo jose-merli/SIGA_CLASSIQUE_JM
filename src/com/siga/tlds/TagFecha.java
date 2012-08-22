@@ -185,7 +185,6 @@ public class TagFecha extends TagSupport {
 					out.println("		class = 'box' ");
 			}else{
 				out.println("		class = 'box' ");
-				
 			}
 			if ((this.readOnly != null && this.readOnly.equals("true")) || (this.disabled != null  && this.disabled.equals("true"))){
 					out.println("readOnly='true' />");
@@ -198,8 +197,8 @@ public class TagFecha extends TagSupport {
 				}else{
 					out.println("	onblur=\"return validaFecha"+ this.nombreCampo +"(" + this.nombreCampo + ");\"/>");
 				}
-				out.println("<a href='javascript://'onClick=\"return showCalendarGeneral("+ this.nombreCampo +");\"><img src=\"/SIGA/html/imagenes/calendar.gif\" border=\"0\"></a>");
 			}
+			out.println("<a href='javascript://'onClick=\"return showCalendarGeneral("+ this.nombreCampo +");\"><img src=\"/SIGA/html/imagenes/calendar.gif\" border=\"0\"></a>");
 			out.println(""); // Linea vacia por legibilidad del codigo
 		}catch (Exception e){
 			e.printStackTrace();
