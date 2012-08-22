@@ -351,7 +351,7 @@
 	
 </script>
 
-	<div id="divEspera" title="SIGA" style="z-index:100; position:absolute;vertical-align: center;display:none; top:45%; left:450px">
+	<div id="divEspera" title="Espere por favor" style="z-index:100; position:absolute;vertical-align: center;display:none; top:45%; left:450px">
 		<span class="labelText"></span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/><span id="barraBloqueante">&nbsp;</span>
 	</div>
 	

@@ -505,9 +505,20 @@ function finsubicono(identificador) {
  */
 
 function sub(w){
-	
+	var jQuery = window.top.jQuery;
 	if(w == undefined) {
 		w = this.top;
+	}
+	try {
+		// disable links in current frame
+		var imgs = w.document.getElementsByTagName("img");
+		for ( var l = 0; l < imgs.length; l++) {
+			if (!imgs(links[l]).hasClass("disabled")) {
+				imgs(links[l]).addClass("disabled");
+			}
+		}
+	} catch (e) {
+		// TODO: handle exception
 	}
 	try {
 		// disable links in current frame

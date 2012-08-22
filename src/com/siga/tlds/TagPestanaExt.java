@@ -164,6 +164,7 @@ public class TagPestanaExt extends TagSupport {
 			
 			out.println("function activateLink(objLink) {");
 			out.println("   var links=document.getElementsByTagName('a');");
+			out.println("   sub();");
 			out.println("   for(i=0; i<links.length;i++) {");
 			out.println("       var lnk=links[i];");
 			out.println("       if(lnk==objLink) {");

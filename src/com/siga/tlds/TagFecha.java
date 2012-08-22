@@ -160,7 +160,7 @@ public class TagFecha extends TagSupport {
 			if(anchoTextField!=null && !anchoTextField.equals("")){
 				out.println("	size=\""+anchoTextField+"\""+" maxlength=\"10\" class=\"box\" ");
 			}else{
-				out.println("	size=\"10\" maxlength=\"10\" class=\"box\" ");
+				out.println("	size=\"10\" maxlength=\"10\" ");
 			}
 			if ((this.valorInicial != "")&&(this.valorInicial != null)){
 				out.println("		alert(this.valorInicial); ");
@@ -188,17 +188,18 @@ public class TagFecha extends TagSupport {
 				
 			}
 			if ((this.readOnly != null && this.readOnly.equals("true")) || (this.disabled != null  && this.disabled.equals("true"))){
-					out.println("readOnly='true' ");
-			}
-			if(this.getPreFunction()!=null && !this.getPreFunction().equals("")){
-				out.println("   onfocus=\"return "+	this.getPreFunction()+"\"");
-			}
-			if(this.getPostFunction()!=null && !this.getPostFunction().equals("")){
-				out.println("	onblur=\""+	this.getPostFunction()+"return validaFecha"+ this.nombreCampo +"(" + this.nombreCampo + ");\"/> ");
+					out.println("readOnly='true' />");
 			}else{
-				out.println("	onblur=\"return validaFecha"+ this.nombreCampo +"(" + this.nombreCampo + ");\"/>");
+				if(this.getPreFunction()!=null && !this.getPreFunction().equals("")){
+					out.println("   onfocus=\"return "+	this.getPreFunction()+"\"");
+				}
+				if(this.getPostFunction()!=null && !this.getPostFunction().equals("")){
+					out.println("	onblur=\""+	this.getPostFunction()+"return validaFecha"+ this.nombreCampo +"(" + this.nombreCampo + ");\"/> ");
+				}else{
+					out.println("	onblur=\"return validaFecha"+ this.nombreCampo +"(" + this.nombreCampo + ");\"/>");
+				}
+				out.println("<a href='javascript://'onClick=\"return showCalendarGeneral("+ this.nombreCampo +");\"><img src=\"/SIGA/html/imagenes/calendar.gif\" border=\"0\"></a>");
 			}
-			out.println("<a href='javascript://'onClick=\"return showCalendarGeneral("+ this.nombreCampo +");\"><img src=\"/SIGA/html/imagenes/calendar.gif\" border=\"0\"></a>");
 			out.println(""); // Linea vacia por legibilidad del codigo
 		}catch (Exception e){
 			e.printStackTrace();
