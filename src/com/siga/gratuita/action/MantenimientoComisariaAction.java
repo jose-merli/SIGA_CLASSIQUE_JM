@@ -51,7 +51,11 @@ public class MantenimientoComisariaAction extends MasterAction {
 				    
 				}else if (accion.equalsIgnoreCase("getAjaxComisaria")){
 					getAjaxComisaria(mapping, miForm, request, response);
-				    return null;			    				    
+				    return null;	
+				    
+				}else if (accion.equalsIgnoreCase("getAjaxComisaria2")){
+					getAjaxComisaria2(mapping, miForm, request, response);
+				    return null;
 			    	
 				} else {
 					return super.executeInternal(mapping,
@@ -326,5 +330,34 @@ public class MantenimientoComisariaAction extends MasterAction {
 		 response.setHeader("Content-Type", "application/json");
 	     response.setHeader("X-JSON", json.toString());
 		 response.getWriter().write(json.toString()); 			
-	}	
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected void getAjaxComisaria2 (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
+		{
+		String codigoExt = "";
+		
+		String idCombo = request.getParameter("idCombo");
+		
+		String sql = "SELECT SC.CODIGOEXT FROM SCS_COMISARIA SC WHERE SC.IDCOMISARIA = '"+idCombo+"'"+
+				"AND SC.IDINSTITUCION="+this.getUserBean(request).getLocation();
+			
+		ScsComisariaAdm comisariaAdm= new ScsComisariaAdm(this.getUserBean(request));		
+		Vector resultadoComisaria = comisariaAdm.selectGenerico(sql);
+		
+		if (resultadoComisaria!=null && resultadoComisaria.size()>0)
+			codigoExt =  (String)((Hashtable)resultadoComisaria.get(0)).get("CODIGOEXT");
+				
+		JSONObject json = new JSONObject();		
+		json.put("codigoExt", codigoExt);
+		
+		 response.setContentType("text/x-json;charset=ISO-8859-15");
+		 response.setHeader("Cache-Control", "no-cache");
+		 response.setHeader("Content-Type", "application/json");
+	     response.setHeader("X-JSON", json.toString());
+		 response.getWriter().write(json.toString()); 			
+	}		
 }
