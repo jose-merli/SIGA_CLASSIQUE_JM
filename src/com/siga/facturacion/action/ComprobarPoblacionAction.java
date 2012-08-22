@@ -9,7 +9,7 @@
 
 package com.siga.facturacion.action;
 
-import java.util.List;
+import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,12 +19,15 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.CenPoblacionesAdm;
@@ -103,16 +106,49 @@ public class ComprobarPoblacionAction extends MasterAction{
 		poblacionBean.setidProvincia(idProvincia);
 		poblacionBean.setNombre((String)request.getParameter("filtroPoblacion"));			
 				
-		List<CenPoblacionesBean> listaPoblaciones = poblacionesAdm.getPoblacionesProvincia(usr, poblacionBean);
+		String txtHtml="";
+		Integer numPoblaciones = 0;
+		RowsContainer rc = poblacionesAdm.getPoblacionesProvincia(poblacionBean);
 		
-		JSONObject json = new JSONObject();
-		JSONArray lbJsonArray = new JSONArray();
-		
-		for (int i=0;i<listaPoblaciones.size();i++) {
-			lbJsonArray.put(listaPoblaciones.get(i).getJSONObject());
+		if (rc!=null && rc.size()<=1000) {				
+			txtHtml="<option value=''>"+UtilidadesString.getMensajeIdioma(usr,"general.combo.seleccionar")+"</option>";
+			numPoblaciones=rc.size()+1;
+			
+			Boolean bGuiones=true;
+			Boolean bPrioridad = false;
+			Boolean bSeleccionado = false;
+			
+			for (int i = 0; i < rc.size(); i++)	{
+				Row fila = (Row) rc.get(i);
+				Hashtable registro = (Hashtable)fila.getRow(); 
+				
+				if (registro != null) { 
+					Integer prioridad = UtilidadesHash.getInteger(registro,CenPoblacionesBean.C_PRIORIDAD);
+					
+					if(bGuiones&&bPrioridad&&prioridad==null) {
+						txtHtml+="<option value=''>-------------------------------------------------------------------------</option>";
+						bGuiones=false;
+						numPoblaciones++;
+					}
+					
+					if (!bSeleccionado && UtilidadesHash.getInteger(registro,CenPoblacionesBean.C_SELECCIONADO)==0) {
+						bSeleccionado=true;
+						txtHtml+="<option selected value='"+UtilidadesHash.getString(registro,CenPoblacionesBean.C_IDPOBLACION)+"'>"+
+								UtilidadesHash.getString(registro,CenPoblacionesBean.C_NOMBRE)+"</option>";
+					}
+					else
+						txtHtml+="<option value='"+UtilidadesHash.getString(registro,CenPoblacionesBean.C_IDPOBLACION)+"'>"+
+							UtilidadesHash.getString(registro,CenPoblacionesBean.C_NOMBRE)+"</option>";
+					  	   	
+		   			if (!bPrioridad)				 
+ 						bPrioridad = (prioridad!=null);  	  	   						
+				}
+			}
 		}		
 		
-		json.put("listaPoblaciones", lbJsonArray);
+		JSONObject json = new JSONObject();		
+		json.put("listaPoblaciones", txtHtml);
+		json.put("numPoblaciones", numPoblaciones);
 		
 		// json.
 		 response.setContentType("text/x-json;charset=ISO-8859-15");

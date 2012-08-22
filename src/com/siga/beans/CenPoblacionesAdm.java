@@ -16,7 +16,6 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
 
 /**
@@ -192,21 +191,19 @@ public class CenPoblacionesAdm extends MasterBeanAdministrador {
 		
 	}
 	
- 	public List<CenPoblacionesBean> getPoblacionesProvincia(UsrBean usuario, CenPoblacionesBean poblBean) throws ClsExceptions{
- 		List<CenPoblacionesBean> listaPoblaciones = null; 		
+ 	public RowsContainer getPoblacionesProvincia(CenPoblacionesBean poblBean) throws ClsExceptions{		
 		Hashtable codigosBind = new Hashtable();
-		Boolean sinFiltro = false;
+		RowsContainer rc = null;
 		
 		try{
     		
-		    String sql = " SELECT "+CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_IDPROVINCIA+", "+
-		    		CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_IDPOBLACION+", "+
+		    String sql = " SELECT "+CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_IDPOBLACION+", "+
 		    		CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_NOMBRE+", "+
 		    		CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_PRIORIDAD;
 		    
 		    if (poblBean.getNombre()==null||poblBean.getNombre().trim().equalsIgnoreCase("")) {
+		    	sql+=", -1 AS "+CenPoblacionesBean.C_SELECCIONADO;
 		    	codigosBind.put(1,'*');
-		    	sinFiltro=true;
 		    }
 		    	
 		    else {		    	
@@ -224,45 +221,13 @@ public class CenPoblacionesAdm extends MasterBeanAdministrador {
 
 		    codigosBind.put(2,poblBean.getIdProvincia());
 		    
-		    RowsContainer rc = new RowsContainer();
+		    rc = new RowsContainer();
 
-            rc.findNLSBind(sql,codigosBind);
-                                
- 			if (rc!=null) { 				 				
- 				listaPoblaciones = new ArrayList<CenPoblacionesBean>();
- 				CenPoblacionesBean poblacionBean = new CenPoblacionesBean();
- 				poblacionBean.setNombre(UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar"));
- 				poblacionBean.setIdPoblacion("");
- 				poblacionBean.setPriodidad(0);
- 				listaPoblaciones.add(poblacionBean);
- 				
-				for (int i = 0; i < rc.size(); i++)	{
-					Row fila = (Row) rc.get(i);
-					Hashtable registro = (Hashtable)fila.getRow(); 
-					if (registro != null) { 
-						poblacionBean = new CenPoblacionesBean();
-						poblacionBean.setNombre(UtilidadesHash.getString(registro,poblacionBean.C_NOMBRE));
-						poblacionBean.setIdPoblacion(UtilidadesHash.getString(registro,poblacionBean.C_IDPOBLACION));
-						poblacionBean.setidProvincia(UtilidadesHash.getString(registro,poblacionBean.C_IDPROVINCIA));
-						
-						if (UtilidadesHash.getInteger(registro,poblacionBean.C_PRIORIDAD)!=null)
-							poblacionBean.setPriodidad(UtilidadesHash.getInteger(registro,poblacionBean.C_PRIORIDAD));
-						else
-							poblacionBean.setPriodidad(-1);
-						
-						if (sinFiltro)
-							poblacionBean.setSeleccionado(false);
-						else
-							poblacionBean.setSeleccionado(UtilidadesHash.getInteger(registro,poblacionBean.C_SELECCIONADO)==0);
-						
-						listaPoblaciones.add(poblacionBean);
-					}
-				}
-			}
+            rc.findNLSBind(sql,codigosBind);    
 		}
 		catch(Exception e) {
 			throw new ClsExceptions (e, "Error en getPoblacionesProvincia");
 		}
-		return listaPoblaciones;
+		return rc;
 	}    	
 }

@@ -576,7 +576,7 @@
 
 </head>
 
-<body  class="tablaCentralCampos" onLoad="cargaPais(<%=datosPersonales.getIdPais() %>);cargarChecksCuenta();comprobarTipoIdent();ajusteAlto('divDocumentoAPresentar');cargarPoblaciones();cargarBancos();">
+<body  class="tablaCentralCampos" onLoad="cargaPais(<%=datosPersonales.getIdPais() %>);cargarPoblaciones();cargarChecksCuenta();comprobarTipoIdent();ajusteAlto('divDocumentoAPresentar');cargarBancos();">
 
 
 <bean:define id="isPosibilidadSolicitudAlta" name="isPosibilidadSolicitudAlta"  scope="request" />
@@ -808,7 +808,7 @@
 				<input name="txtFiltroPoblacion" type="text" style="width:300px;" value="" onblur="onBlurFiltro();" onkeydown="onKeyFiltro(event);" onkeyup="onKeyUpFiltro();" onfocus="onFocusFiltro();">
 				<div id="divPoblaciones">
 					<select class="<%=estiloCombo%>" style="width:300px;" id="selPoblacion" onblur="onBlurCombo();" onchange="seleccionarPoblacion();" onclick="onClickCombo();" onkeypress="onKeyPressCombo(event);" onkeydown="onKeyCombo(event);" onmousedown="onMouseCombo();">																		
-					</select>
+					</select>					
 				</div>				
 			<%}%>
 			</td> 
@@ -1424,17 +1424,17 @@
 	var cteGuiones="-------------------------------------------------------------------------";
 	var cteSeleccionar="<siga:Idioma key='general.combo.seleccionar'/>";		
 	var msgControl="";
-	var longitudCombo=20;
+	var longitudCombo=22;
 	
 	function cargarPoblaciones () {		
 		//msgControl=msgControl+"cargarPoblaciones()\n";alert(msgControl);		
-		<%if (!readonly){ %>								
+		<%if (!readonly){ %>	
 			var pos = jQuery("#selPoblacion").offset();             
    			jQuery("#selPoblacion").css("position", "absolute");             
    			jQuery("#selPoblacion").css("zIndex", 9999);             
    			jQuery("#selPoblacion").offset(pos); 	
 			jQuery("#divPoblaciones").hide();  		
-		
+											
 			<%if (esEspana&&!readonly){ %>		
 				SolicitudIncorporacionForm.txtFiltroPoblacion.value="<%=poblacion%>";
 				cambiarPoblacion(SolicitudIncorporacionForm.txtFiltroPoblacion.value, false);				
@@ -1457,7 +1457,7 @@
 	function seleccionarProvincia() {
 		//msgControl=msgControl+"seleccionarProvincia()\n";alert(msgControl);	
 		SolicitudIncorporacionForm.txtFiltroPoblacion.value=cteSeleccionar;
-		jQuery("#selPoblacion option").remove();
+		jQuery("#selPoblacion")[0].innerHTML="";
 		controlFiltro=cteControl;
 	}	   		
 	
@@ -1621,61 +1621,31 @@
 					data: "idProvincia="+idProvincia+"&filtroPoblacion="+filtroPoblacion,
 					dataType: "json",
 					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-					success: function(json){		
-						var listPoblaciones = json.listaPoblaciones;					
-						var bPrioridad = false;
-		 				var bGuiones = true;
- 						var seleccionado = false;
- 					
- 						jQuery("#selPoblacion").val([]); // Elimino la seleccion   						 
- 						jQuery("#selPoblacion option").remove();
-
-				   		jQuery.each(listPoblaciones, function(i,itemPoblacion) {
-							if(itemPoblacion.nombre==cteSeleccionar)
-  	   							jQuery("#selPoblacion").append("<option value=''>"+itemPoblacion.nombre+"</option>");  
-		   	   		
-				   	   		else  { 
-								if(bGuiones&&bPrioridad&&itemPoblacion.prioridad==-1) {
-									jQuery("#selPoblacion").append("<option value=''>"+cteGuiones+"</option>");
-									bGuiones=false;
-								}	   		   		   			
-																	
-								if (!seleccionado&&itemPoblacion.seleccionado==1){
-									seleccionado=true;
-  									jQuery("#selPoblacion").append("<option selected value='"+itemPoblacion.idPoblacion+"'>"+itemPoblacion.nombre+"</option>");  							
-	  							}
-  								else
-  									jQuery("#selPoblacion").append("<option value='"+itemPoblacion.idPoblacion+"'>"+itemPoblacion.nombre+"</option>");
-  						  	   	
-  						  	   	if (!bPrioridad)				 
-		  	   						bPrioridad = (itemPoblacion.prioridad!=-1);  	   							
-	  	   					}  	   							  	
-			    		});		  			  	
+					success: function(json){					
+						
+						if (filtroPoblacion==SolicitudIncorporacionForm.txtFiltroPoblacion.value) {
+							var htmlFinal=jQuery("#divPoblaciones")[0].innerHTML;
+							htmlFinal=htmlFinal.substring(0, htmlFinal.indexOf('>')+1);
+							jQuery("#divPoblaciones")[0].innerHTML=htmlFinal+json.listaPoblaciones+"</SELECT>";						
 	        	        	        						
-			        	var len = jQuery("#selPoblacion option").length;
+			    	    	var len = json.numPoblaciones;
     	        	    				
-		    	    	if (len<2)
-    		    			jQuery("#divPoblaciones").hide();
+		    	    		if (len<2) {
+    		    				jQuery("#divPoblaciones").hide();
 	        	
-	        			else {    	    		        	    	
-        	    			if (len>longitudCombo)
-        	    				len=longitudCombo;    					    				
-		    				jQuery("#selPoblacion").attr("size", len);
+		        			} else {    	    		        	    	
+    	    	    			if (len>longitudCombo)
+        		    				len=longitudCombo;   
+        	    				 					    				
+		    					jQuery("#selPoblacion").attr("size", len);
 		    				
-		    				if (len==2) {
-		    					var optionSelected = jQuery("#selPoblacion").prop("selectedIndex");
-								if (optionSelected<0)
-		    						jQuery("#selPoblacion option").eq(1).attr('selected', 'selected'); 
-		    				}
+		    					if (len==2)
+		    						jQuery("#selPoblacion option").eq(1).attr('selected', 'selected');
 		    				
-		    				if (bMuestraDiv)
-    							jQuery("#divPoblaciones").show();
-    					}   		    	
-			    	       		       				       				    		
-						fin();
-					},
-					error: function(e){
-						alert('Error de comunicación: ' + e);
+		    					if (bMuestraDiv)
+    								jQuery("#divPoblaciones").show();
+	    					}   		    	
+						}				    	       		       				       				    		
 						fin();
 					}
 				});
