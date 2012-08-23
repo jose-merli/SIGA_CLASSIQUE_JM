@@ -1,5 +1,6 @@
 package com.siga.general;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 import javax.servlet.http.HttpServletResponse;
@@ -162,8 +163,10 @@ public class ComboAutocomplete {
 			}
 		}		
 		
+		ArrayList arrayHtml = new ArrayList(); 
+		arrayHtml.add(htmlOptions);
 		JSONObject json = new JSONObject();		
-		json.put("htmlOptions", htmlOptions);
+		json.put("htmlOptions", arrayHtml);
 		json.put("numOptions", numOptions);
 		
 		// json.

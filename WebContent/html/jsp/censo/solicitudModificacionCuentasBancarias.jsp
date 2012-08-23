@@ -298,14 +298,7 @@
 		url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBancos",
 		contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 		success: function(json){		
-			var listBancos = json.listaBancos;
-
-       		jQuery.each(listBancos, function(i,itemBanco){
-       			if(cuentasBancariasSolicForm.cbo_Codigo.value!=null && itemBanco.idCodigo == cuentasBancariasSolicForm.cbo_Codigo.value)
-       				jQuery("#banco").append("<option selected value='"+itemBanco.idCodigo+"'>"+itemBanco.nombre+"</option>");
-       			else
-       				jQuery("#banco").append("<option value='"+itemBanco.idCodigo+"'>"+itemBanco.nombre+"</option>");       			
-       		});											
+			jQuery("#banco").append(json.listaBancos[0]);
 			fin();
 		},
 		error: function(e){

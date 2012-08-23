@@ -335,7 +335,7 @@
 						// Pinta el combo con el contenido devuelto por ajax
 						var htmlFinal=elementoDiv[0].innerHTML;
 						htmlFinal=htmlFinal.substring(0, htmlFinal.indexOf('>')+1);
-						elementoDiv[0].innerHTML=htmlFinal+json.htmlOptions+"</SELECT>";						
+						elementoDiv[0].innerHTML=htmlFinal+json.htmlOptions[0]+"</SELECT>";						
 	                	        		
 						// Recupera el numero de optiones
 						numOpciones = json.numOptions;
