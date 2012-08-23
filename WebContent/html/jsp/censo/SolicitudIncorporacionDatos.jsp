@@ -185,7 +185,8 @@
 	<script src="<html:rewrite page='/html/js/jquery-ui.js'/>" type="text/javascript"></script>
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>	
-	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>	
+	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/comboAutoComplete.js" type="text/javascript"></script>	
 	
 	<title><siga:Idioma key="censo.SolicitudIncorporacionDatos.titulo"/></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
@@ -264,7 +265,10 @@
 			   			errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.provincia'/>" + '\n';
 			       	}
 			       	
-			       	recuperarPoblacion();
+			       	<%if (esEspana&&!readonly){ %>
+			       		recuperaValorCombo();	
+					<%}%>	
+			       	
 			   		if (document.SolicitudIncorporacionForm.poblacion.value == "") {
 			   			errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.poblacion'/>" + '\n';
 			       	}
@@ -591,8 +595,7 @@
 	<html:hidden property="idSolicitudAceptadaPlanProfesional"/>
 	<html:hidden property="idSolicitudSeguroUniversal"/>
 	<input type="hidden" id="numeroIdentificacionBBDD" value ="<%=datosPersonales.getNumeroIdentificador()%>" /> 
-	<input type="hidden" id="fechaNacimientoBBDD" value ="<%=datosPersonales.getFechaNacimiento()%>" />
-	<html:hidden property="poblacion" value="<%=idPobl%>"/>
+	<input type="hidden" id="fechaNacimientoBBDD" value ="<%=datosPersonales.getFechaNacimiento()%>" />	
 	
 	<table align="center" width="100%">
 	<tr>
@@ -795,7 +798,7 @@
 			<%if(readonly && !esEspana){%>
 				<td colspan="2" class="labelTextValor"><%=provincia%></td>
 			<%}else{%>
-				<td colspan="2"><siga:ComboBD nombre="provincia" tipo="provincia" clase="<%=estiloCombo%>" elementoSel="<%=selProvincia %>" readOnly="<%=sreadonly%>" obligatorio="true" pestana="true" accion="seleccionarProvincia();"/></td>
+				<td colspan="2"><siga:ComboBD nombre="provincia" tipo="provincia" clase="<%=estiloCombo%>" elementoSel="<%=selProvincia %>" readOnly="<%=sreadonly%>" obligatorio="true" pestana="true" accion="seleccionaComboPadre();"/></td>
 			<%}%>
 		</tr>
 		<tr>
@@ -807,9 +810,10 @@
 			<%}else{%> 
 				<input name="txtFiltroPoblacion" type="text" style="width:300px;" value="" onblur="onBlurFiltro();" onkeydown="onKeyFiltro(event);" onkeyup="onKeyUpFiltro();" onfocus="onFocusFiltro();">
 				<div id="divPoblaciones">
-					<select class="<%=estiloCombo%>" style="width:300px;" id="selPoblacion" onblur="onBlurCombo();" onchange="seleccionarPoblacion();" onclick="onClickCombo();" onkeypress="onKeyPressCombo(event);" onkeydown="onKeyCombo(event);" onmousedown="onMouseCombo();">																		
+					<select class="<%=estiloCombo%>" style="width:300px;" id="selPoblacion" onblur="onBlurCombo();" onchange="seleccionaCombo();" onclick="onClickCombo();" onkeypress="onKeyPressCombo(event);" onkeydown="onKeyCombo(event);" onmousedown="onMouseCombo();">																		
 					</select>					
-				</div>				
+				</div>		
+				<html:hidden property="poblacion" value="<%=idPobl%>"/>
 			<%}%>
 			</td> 
 			
@@ -1411,249 +1415,15 @@
 			});
 		<%}%>
 	}
-
-	//
-	// Código para el filtro de las poblaciones
-	//
 	
-	var bControl=false;
-	var bControlKey=false;
-	var bFocoCombo=false;
-	var controlFiltro=cteControl;	
-	var cteControl="controlFiltro";
-	var cteGuiones="-------------------------------------------------------------------------";
-	var cteSeleccionar="<siga:Idioma key='general.combo.seleccionar'/>";		
-	var msgControl="";
-	var longitudCombo=22;
-	
-	function cargarPoblaciones () {		
-		//msgControl=msgControl+"cargarPoblaciones()\n";alert(msgControl);		
 		<%if (!readonly){ %>	
-			var pos = jQuery("#selPoblacion").offset();             
-   			jQuery("#selPoblacion").css("position", "absolute");             
-   			jQuery("#selPoblacion").css("zIndex", 9999);             
-   			jQuery("#selPoblacion").offset(pos); 	
-			jQuery("#divPoblaciones").hide();  		
-											
-			<%if (esEspana&&!readonly){ %>		
-				SolicitudIncorporacionForm.txtFiltroPoblacion.value="<%=poblacion%>";
-				cambiarPoblacion(SolicitudIncorporacionForm.txtFiltroPoblacion.value, false);				
-			<%}%>
+			loadAutocomplete("txtFiltroPoblacion", "divPoblaciones", "selPoblacion", "poblacion", "provincia", "domicilio", "/SIGA/FAC_ComprobarPoblacion.do?modo=getAjaxPoblaciones", 22, 1000, 73, "<siga:Idioma key='general.combo.seleccionar'/>");
+		<%}%>	
+	
+
+	function cargarPoblaciones () {		
+		<%if (!readonly){ %>	
+			cargaInicial ("<%=poblacion%>", <%=esEspana%>);
 		<%}%>		
-	}	
-	
-	function recuperarPoblacion() {
-		//msgControl=msgControl+"recuperarPoblacion()\n";alert(msgControl);		
-		<%if (esEspana&&!readonly){ %>	
-			var optionSelected=jQuery("#selPoblacion").prop("selectedIndex");			
-			
-			if (optionSelected<0)
-				SolicitudIncorporacionForm.poblacion.value="";
-			else
-				SolicitudIncorporacionForm.poblacion.value = jQuery("#selPoblacion").val();								
-		<%}%>		
-	}	
-	
-	function seleccionarProvincia() {
-		//msgControl=msgControl+"seleccionarProvincia()\n";alert(msgControl);	
-		SolicitudIncorporacionForm.txtFiltroPoblacion.value=cteSeleccionar;
-		jQuery("#selPoblacion")[0].innerHTML="";
-		controlFiltro=cteControl;
-	}	   		
-	
-	function seleccionarPoblacion() {
-		//msgControl=msgControl+"seleccionarPoblacion()\n";alert(msgControl);					
-		var optionSelected=jQuery("#selPoblacion").prop("selectedIndex");
-		
-		// 0: Si ha seleccionado el elemento "--Seleccionar"
-		if (optionSelected<0) // -1: Si no hay nada seleccionado
-			SolicitudIncorporacionForm.txtFiltroPoblacion.value=cteSeleccionar;
-			
-		else {
-			var texto=jQuery("#selPoblacion option:selected").text();
-			if (texto==cteGuiones)
-				texto=cteSeleccionar;	
-			
-			if (SolicitudIncorporacionForm.txtFiltroPoblacion.value!=texto)
-				SolicitudIncorporacionForm.txtFiltroPoblacion.value=texto;						
-		}		
-	}
-	
-	function onClickCombo() { //Siempre seleccionarPoblacion
-		//msgControl=msgControl+"onClickCombo()\n";alert(msgControl);
-		bControl=true;
-		SolicitudIncorporacionForm.txtFiltroPoblacion.focus(); //Invoca onBlurCombo() + onFocusFiltro()		 
-	}
-	
-	// Se realiza cuando pones el cursor del ratón encima del combo de poblaciones
-	function onMouseCombo() {
-		//msgControl=msgControl+"onMouseCombo()\n";alert(msgControl);
-		
-		if (!bFocoCombo) {			
-			bFocoCombo=true;		
-			bControl=true;
-			jQuery("#selPoblacion").focus(); //Invoca onBlurFiltro()
-		}
-	}		
-	
-	// Se realiza cuando abandona el foco del combo
-	function onBlurCombo() {	
-		//msgControl=msgControl+"onBlurCombo()\n";alert(msgControl);			
-		bFocoCombo=false;
-		jQuery("#divPoblaciones").hide();
-		seleccionarPoblacion();
-	}	
-	
-	function onKeyCombo(e) {
-		//msgControl=msgControl+"onKeyCombo(e)\n";alert(msgControl);
-		var tecla = (document.all) ? e.keyCode : e.which; 
-		//msgControl=msgControl+"Tecla:"+tecla+"\n";alert(msgControl);
-		
-		switch(tecla) {
-			case 13: //TECLA INTRO
-				bControl=true;				
-				SolicitudIncorporacionForm.txtFiltroPoblacion.focus(); //Invoca onBlurCombo() + onFocusFiltro()
-				break;
-			
-		  	case 8: //BACKSPACE
-		  		e.returnValue = false; 
-		  		e.cancelBubble = true; 
-		  		return false;		  		
-  				break;
-  		}		
-	}
-	
-	// Necesario para firefox
-	function onKeyPressCombo(e) {
-		//msgControl=msgControl+"onKeyCombo(e)\n";alert(msgControl);
-		var tecla = (document.all) ? e.keyCode : e.which; 
-		//msgControl=msgControl+"Tecla:"+tecla+"\n";alert(msgControl);
-		
-		switch(tecla) {			
-		  	case 8: //BACKSPACE
-		  		e.returnValue = false; 
-		  		e.cancelBubble = true; 
-		  		return false;		  		
-  				break;
-  		}		
-	}									
-	
-	// Se realiza cuando obtiene el foco del filtro
-	function onFocusFiltro() {
-		//msgControl=msgControl+"onFocusFiltro()\n";alert(msgControl);
-		if (SolicitudIncorporacionForm.txtFiltroPoblacion.value==cteSeleccionar)
-			SolicitudIncorporacionForm.txtFiltroPoblacion.value="";
-		
-		if (bControl)
-			bControl=false;
-		else
-			cambiarPoblacion(SolicitudIncorporacionForm.txtFiltroPoblacion.value, true);
-	}			
-		
-	// Se realiza cuando abandona el foco del filtro
-	function onBlurFiltro() {	
-		//msgControl=msgControl+"onBlurFiltro()\n";alert(msgControl);	
-		if (bControl)
-			bControl=false;
-			
-		else {
-			jQuery("#divPoblaciones").hide();
-			seleccionarPoblacion();						
-		}
-	}
-	
-	function onKeyUpFiltro(e) {
-		if (bControlKey) {
-			bControlKey=false;
-			cambiarPoblacion(SolicitudIncorporacionForm.txtFiltroPoblacion.value, true);
-		}
-	}		
-	
-	function onKeyFiltro(e) {		
-		//msgControl=msgControl+"onKeyFiltro(e)\n";alert(msgControl);
-		var tecla = (document.all) ? e.keyCode : e.which;
-		//msgControl=msgControl+"Tecla:"+tecla+"\n";alert(msgControl);				
-		
-		switch(tecla) {
-			case 38: //CURSOR ABAJO
-				var len = jQuery("#selPoblacion option").length;
-				cambiarPoblacion(SolicitudIncorporacionForm.txtFiltroPoblacion.value, true);
-				if (len>1) {					
-					bFocoCombo=true;		
-					bControl=true;
-					jQuery("#selPoblacion").focus(); //Invoca onBlurFiltro()
-				}
-  				break;		
-		
-			case 40: //CURSOR ABAJO
-				var len = jQuery("#selPoblacion option").length;
-				cambiarPoblacion(SolicitudIncorporacionForm.txtFiltroPoblacion.value, true);
-				if (len>1) {					
-					bFocoCombo=true;		
-					bControl=true;
-					jQuery("#selPoblacion").focus(); //Invoca onBlurFiltro()
-				}
-  				break;
-  				
-  			case 9: //TABULADOR
-  				jQuery("#divPoblaciones").hide();
-  				jQuery("#domicilio").focus(); //Invoca onBlurFiltro()  				
-  				break;  
-  				
-  			default:
-  				bControlKey=true;
-  				break;				
-  		}
-	}		
-			 	
-	// Se realiza cuando pulsa una tecla en el filtro
-	// Se realiza cuando obtiene el foco del filtro
-	function cambiarPoblacion(filtroPoblacion, bMuestraDiv){
-		//msgControl=msgControl+"cambiarPoblacion("+filtroPoblacion+","+bMuestraDiv+")\n";alert(msgControl);		
-		if (controlFiltro!=filtroPoblacion) {			
-			controlFiltro=filtroPoblacion;			 				 	
-		 	var idProvincia = document.SolicitudIncorporacionForm.provincia.value;	 		 		
-	 		
-	 		if (idProvincia!=undefined&&idProvincia!="") {
-				jQuery.ajax({ 
-					type: "POST",
-					url: "/SIGA/FAC_ComprobarPoblacion.do?modo=getAjaxPoblaciones",				
-					data: "idProvincia="+idProvincia+"&filtroPoblacion="+filtroPoblacion,
-					dataType: "json",
-					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-					success: function(json){					
-						
-						if (filtroPoblacion==SolicitudIncorporacionForm.txtFiltroPoblacion.value) {
-							var htmlFinal=jQuery("#divPoblaciones")[0].innerHTML;
-							htmlFinal=htmlFinal.substring(0, htmlFinal.indexOf('>')+1);
-							jQuery("#divPoblaciones")[0].innerHTML=htmlFinal+json.listaPoblaciones+"</SELECT>";						
-	        	        	        						
-			    	    	var len = json.numPoblaciones;
-    	        	    				
-		    	    		if (len<2) {
-    		    				jQuery("#divPoblaciones").hide();
-	        	
-		        			} else {    	    		        	    	
-    	    	    			if (len>longitudCombo)
-        		    				len=longitudCombo;   
-        	    				 					    				
-		    					jQuery("#selPoblacion").attr("size", len);
-		    				
-		    					if (len==2)
-		    						jQuery("#selPoblacion option").eq(1).attr('selected', 'selected');
-		    				
-		    					if (bMuestraDiv)
-    								jQuery("#divPoblaciones").show();
-	    					}   		    	
-						}				    	       		       				       				    		
-						fin();
-					}
-				});
-			}
-		} else {
-			var len = jQuery("#selPoblacion option").length;
-			if (len>1&&bMuestraDiv)
-				jQuery("#divPoblaciones").show();
-		} 
-	}	
+	}										
 </script>

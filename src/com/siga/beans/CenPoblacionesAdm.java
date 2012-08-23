@@ -189,45 +189,5 @@ public class CenPoblacionesAdm extends MasterBeanAdministrador {
        }
        return alPoblaciones;
 		
-	}
-	
- 	public RowsContainer getPoblacionesProvincia(CenPoblacionesBean poblBean) throws ClsExceptions{		
-		Hashtable codigosBind = new Hashtable();
-		RowsContainer rc = null;
-		
-		try{
-    		
-		    String sql = " SELECT "+CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_IDPOBLACION+", "+
-		    		CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_NOMBRE+", "+
-		    		CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_PRIORIDAD;
-		    
-		    if (poblBean.getNombre()==null||poblBean.getNombre().trim().equalsIgnoreCase("")) {
-		    	sql+=", -1 AS "+CenPoblacionesBean.C_SELECCIONADO;
-		    	codigosBind.put(1,'*');
-		    }
-		    	
-		    else {		    	
-		    	
-		    	sql+=", LENGTH(FILTRO.VALOR)-LENGTH("+CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_NOMBRE+") AS "+CenPoblacionesBean.C_SELECCIONADO;
-		    	codigosBind.put(1,poblBean.getNombre());
-		    }		    
-		    		
-		    sql+=	" FROM " + CenPoblacionesBean.T_NOMBRETABLA+
-		    		" , (SELECT :1 AS VALOR FROM DUAL) FILTRO "+
-		    		" WHERE "+CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_IDPROVINCIA+"=:2 "+
-		    		" AND REGEXP_LIKE("+CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_NOMBRE+", FILTRO.VALOR) "+
-		    		" ORDER BY "+CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_PRIORIDAD+" ASC, "+
-		    		CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_NOMBRE+" ASC ";	    
-
-		    codigosBind.put(2,poblBean.getIdProvincia());
-		    
-		    rc = new RowsContainer();
-
-            rc.findNLSBind(sql,codigosBind);    
-		}
-		catch(Exception e) {
-			throw new ClsExceptions (e, "Error en getPoblacionesProvincia");
-		}
-		return rc;
-	}    	
+	}	
 }

@@ -9,7 +9,6 @@
 
 package com.siga.facturacion.action;
 
-import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,19 +18,16 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.json.JSONObject;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
-import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.UtilidadesHash;
-import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.CenPoblacionesAdm;
 import com.siga.beans.CenPoblacionesBean;
+import com.siga.general.ComboAutocomplete;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -93,69 +89,21 @@ public class ComprobarPoblacionAction extends MasterAction{
 	protected void getAjaxPoblaciones (ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception {
-
-		UsrBean usr = this.getUserBean(request);		
-		CenPoblacionesAdm poblacionesAdm = new CenPoblacionesAdm(usr);
-		CenPoblacionesBean poblacionBean = new CenPoblacionesBean();
+			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception {		
 		
-		String idProvincia = (String)request.getParameter("idProvincia");
+		String idProvincia = request.getParameter("codigoPadre");
 		if (idProvincia==null||idProvincia.trim().equalsIgnoreCase(""))
 			throw new SIGAException("Falta el identificador de la provincia");				
 		
-		poblacionBean.setidProvincia(idProvincia);
-		poblacionBean.setNombre((String)request.getParameter("filtroPoblacion"));			
-				
-		String txtHtml="";
-		Integer numPoblaciones = 0;
-		RowsContainer rc = poblacionesAdm.getPoblacionesProvincia(poblacionBean);
+		String filtro = request.getParameter("valorFiltro");
+		String guiones = request.getParameter("valorGuiones");
+		Integer numOpciones = Integer.parseInt(request.getParameter("numeroMaximoOpciones"));
 		
-		if (rc!=null && rc.size()<=1000) {				
-			txtHtml="<option value=''>"+UtilidadesString.getMensajeIdioma(usr,"general.combo.seleccionar")+"</option>";
-			numPoblaciones=rc.size()+1;
-			
-			Boolean bGuiones=true;
-			Boolean bPrioridad = false;
-			Boolean bSeleccionado = false;
-			
-			for (int i = 0; i < rc.size(); i++)	{
-				Row fila = (Row) rc.get(i);
-				Hashtable registro = (Hashtable)fila.getRow(); 
-				
-				if (registro != null) { 
-					Integer prioridad = UtilidadesHash.getInteger(registro,CenPoblacionesBean.C_PRIORIDAD);
-					
-					if(bGuiones&&bPrioridad&&prioridad==null) {
-						txtHtml+="<option value=''>-------------------------------------------------------------------------</option>";
-						bGuiones=false;
-						numPoblaciones++;
-					}
-					
-					if (!bSeleccionado && UtilidadesHash.getInteger(registro,CenPoblacionesBean.C_SELECCIONADO)==0) {
-						bSeleccionado=true;
-						txtHtml+="<option selected value='"+UtilidadesHash.getString(registro,CenPoblacionesBean.C_IDPOBLACION)+"'>"+
-								UtilidadesHash.getString(registro,CenPoblacionesBean.C_NOMBRE)+"</option>";
-					}
-					else
-						txtHtml+="<option value='"+UtilidadesHash.getString(registro,CenPoblacionesBean.C_IDPOBLACION)+"'>"+
-							UtilidadesHash.getString(registro,CenPoblacionesBean.C_NOMBRE)+"</option>";
-					  	   	
-		   			if (!bPrioridad)				 
- 						bPrioridad = (prioridad!=null);  	  	   						
-				}
-			}
-		}		
-		
-		JSONObject json = new JSONObject();		
-		json.put("listaPoblaciones", txtHtml);
-		json.put("numPoblaciones", numPoblaciones);
-		
-		// json.
-		 response.setContentType("text/x-json;charset=ISO-8859-15");
-		 response.setHeader("Cache-Control", "no-cache");
-		 response.setHeader("Content-Type", "application/json");
-	     response.setHeader("X-JSON", json.toString());
-		 response.getWriter().write(json.toString()); 
+		ComboAutocomplete.getAjaxPoblaciones(
+			response, this.getUserBean(request), 
+			CenPoblacionesBean.T_NOMBRETABLA, CenPoblacionesBean.C_PRIORIDAD, CenPoblacionesBean.C_IDPOBLACION, 
+			CenPoblacionesBean.C_IDPROVINCIA, CenPoblacionesBean.C_NOMBRE, 
+			guiones, filtro, idProvincia, numOpciones);		
 	}	
 	
 

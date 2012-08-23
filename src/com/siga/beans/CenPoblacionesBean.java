@@ -6,9 +6,6 @@
  */
 package com.siga.beans;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.siga.Utilidades.AjaxXMLBuilderAnnotation;
 import com.siga.Utilidades.AjaxXMLBuilderNameAnnotation;
 import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
@@ -23,9 +20,8 @@ import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
 public class CenPoblacionesBean extends MasterBean {
 
 	/* Variables */
-	private Integer idPartido, prioridad;
+	private Integer idPartido;
 	private String 	idPoblacion, idProvincia, nombre, ine, idPoblacionMunicipio;
-	private Boolean seleccionado;
 
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "CEN_POBLACIONES";
@@ -50,7 +46,6 @@ public class CenPoblacionesBean extends MasterBean {
 	static public final String C_INE     					= "INE";
 	static public final String C_IDPOBLACIONMUNICIPIO       = "IDPOBLACIONMUNICIPIO";
 	static public final String C_PRIORIDAD       			= "PRIORIDAD";
-	static public final String C_SELECCIONADO    			= "SELECCIONADO";
 	
 	// Metodos SET
 	public void setIdPartido (Integer id) 			{ this.idPartido = id; }
@@ -59,8 +54,6 @@ public class CenPoblacionesBean extends MasterBean {
 	public void setNombre (String s)				{ this.nombre = s; }
 	public void setIne (String s)				    { this.ine = s; }
 	public void setIdPoblacionMunicipio (String s)	{ this.idPoblacionMunicipio = s; }
-	public void setPriodidad (Integer num)			{ this.prioridad = num; }
-	public void setSeleccionado (Boolean booleano)		{ this.seleccionado = booleano; }
 
 	// Metodos GET
 	public Integer getIdPartido 		  ()	{ return this.idPartido; }
@@ -71,20 +64,4 @@ public class CenPoblacionesBean extends MasterBean {
 	public String getNombre 			  ()	{ return this.nombre; }
 	public String getIne    			  ()	{ return this.ine; }
 	public String getIdPoblacionMunicipio ()	{ return this.idPoblacionMunicipio; }
-	public Integer getPrioridad 		  ()	{ return this.prioridad; }
-	public Boolean getSeleccionado 		  ()	{ return this.seleccionado; }
-	
-	public JSONObject getJSONObject() {
-        JSONObject obj = new JSONObject();
-        try {
-            obj.put("idPoblacion", this.idPoblacion);
-            obj.put("idProvincia", this.idProvincia);
-            obj.put("nombre", this.nombre);
-            obj.put("prioridad", this.prioridad);
-            obj.put("seleccionado", this.seleccionado);
-        } 
-        catch (JSONException e) {
-        }
-        return obj;
-    }	
 }
