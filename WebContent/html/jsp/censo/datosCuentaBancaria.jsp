@@ -433,19 +433,14 @@ VERSIONES: -->
 
 <script>
 	jQuery.ajax({ //Comunicación jQuery hacia JSP  
-   		type: "GET",
+   		type: "POST",
 		url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBancos",
 		dataType: "json",
-		success: function(json){		
-			var listBancos = json.listaBancos;
-
-       		jQuery.each(listBancos, function(i,itemBanco){
-       			if(cuentasBancariasForm.cbo_Codigo.value!=null && itemBanco.idCodigo == cuentasBancariasForm.cbo_Codigo.value)
-       				jQuery("#banco").append("<option selected value='"+itemBanco.idCodigo+"'>"+itemBanco.nombre+"</option>");
-       			else
-       				jQuery("#banco").append("<option value='"+itemBanco.idCodigo+"'>"+itemBanco.nombre+"</option>");       			
-       		});									
-       		document.getElementById("banco").disabled=<%=String.valueOf(desactivado)%>;       		
+		contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+		success: function(json){
+			jQuery("#banco").append(json.listaBancos[0]);
+			       		       		
+       		document.getElementById("banco").disabled=<%=String.valueOf(desactivado)%>;       		       	
 			fin();
 		},
 		error: function(e){

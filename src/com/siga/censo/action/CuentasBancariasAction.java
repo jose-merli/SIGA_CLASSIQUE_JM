@@ -6,8 +6,8 @@
  */
 package com.siga.censo.action;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,11 +17,12 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
@@ -85,9 +86,11 @@ public class CuentasBancariasAction extends MasterAction{
 					mapDestino = solicitarModificacion(mapping, miForm, request, response);
 				} else if(accion.equalsIgnoreCase("insertarModificacion")){
 					mapDestino = insertarModificacion(mapping, miForm, request, response);
+					
 				} else if ( accion.equalsIgnoreCase("getAjaxBancos")){
 					getAjaxBancos (mapping, miForm, request, response);
-					return null;					
+					return null;	
+					
 				} else if ( accion.equalsIgnoreCase("getAjaxBanco")){
 					getAjaxBanco (mapping, miForm, request, response);
 					return null;
@@ -664,23 +667,38 @@ public class CuentasBancariasAction extends MasterAction{
 	protected void getAjaxBancos (ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception {
+			HttpServletResponse response) throws Exception {
 		
-		CenBancosAdm bancosAdm = new CenBancosAdm(this.getUserBean(request));
+		UsrBean usuario = this.getUserBean(request);		
+		CenBancosAdm bancosAdm = new CenBancosAdm(usuario);
+						
+		String html="";		
+		RowsContainer rc = null;
+		
+	    String sql = " SELECT "+CenBancosBean.T_NOMBRETABLA+"."+CenBancosBean.C_CODIGO+
+	    		","+CenBancosBean.T_NOMBRETABLA+"."+CenBancosBean.C_NOMBRE +
+	    		" FROM " + CenBancosBean.T_NOMBRETABLA +
+	    		" ORDER BY 2 ASC";
+
+        rc = bancosAdm.find(sql);
+        
+		if (rc!=null) { 				
+			html="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";				
+			
+			for (int i = 0; i < rc.size(); i++)	{
+				Row fila = (Row) rc.get(i);
+				Hashtable registro = (Hashtable)fila.getRow();
 				
-		List<CenBancosBean> listaBancos = bancosAdm.getBancos(this.getUserBean(request));
+				if (registro != null) {
+					html+="<option value='"+UtilidadesHash.getString(registro,CenBancosBean.C_CODIGO)+"'>"+UtilidadesHash.getString(registro,CenBancosBean.C_NOMBRE)+"</option>";
+				}
+			}			
+		}
 		
-		JSONObject json = new JSONObject();
-		JSONObject jsonAux = new JSONObject();
-		JSONArray lbJsonArray = new JSONArray();
-		
-		for (int i=0;i<listaBancos.size();i++) {
-			jsonAux = listaBancos.get(i).getJSONObject();
-			jsonAux.put("iPrioridad", i);
-			lbJsonArray.put(jsonAux);
-		}		
-		
-		json.put("listaBancos", lbJsonArray);
+		ArrayList arrayHtml = new ArrayList(); 
+		arrayHtml.add(html);
+		JSONObject json = new JSONObject();				
+		json.put("listaBancos", arrayHtml);
 		
 		// json.
 		 response.setContentType("text/x-json;charset=ISO-8859-15");
