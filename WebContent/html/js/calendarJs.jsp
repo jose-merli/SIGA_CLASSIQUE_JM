@@ -194,6 +194,7 @@ function showCalendarGeneral(inputElement){
 	var resultado = showModalDialog("<%=app%>/html/jsp/general/calendarGeneral.jsp?valor="+inputElement.value,inputElement,"dialogHeight:275px;dialogWidth:400px;help:no;scroll:no;status:no;");	
 	if (resultado) {
 		inputElement.value = resultado;
+		jQuery(inputElement).blur();
 	} 
 	return false;
 }	
