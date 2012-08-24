@@ -671,6 +671,8 @@ public class CuentasBancariasAction extends MasterAction{
 		
 		UsrBean usuario = this.getUserBean(request);		
 		CenBancosAdm bancosAdm = new CenBancosAdm(usuario);
+		
+		String idBanco = (String)request.getParameter("idBanco");
 						
 		String html="";		
 		RowsContainer rc = null;
@@ -690,7 +692,13 @@ public class CuentasBancariasAction extends MasterAction{
 				Hashtable registro = (Hashtable)fila.getRow();
 				
 				if (registro != null) {
-					html+="<option value='"+UtilidadesHash.getString(registro,CenBancosBean.C_CODIGO)+"'>"+UtilidadesHash.getString(registro,CenBancosBean.C_NOMBRE)+"</option>";
+					String identificadorBanco = UtilidadesHash.getString(registro,CenBancosBean.C_CODIGO);
+					String nombreBanco = UtilidadesHash.getString(registro,CenBancosBean.C_NOMBRE);
+					
+					if (identificadorBanco.equals(idBanco))
+						html+="<option selected value='"+identificadorBanco+"'>"+nombreBanco+"</option>";
+					else
+						html+="<option value='"+identificadorBanco+"'>"+nombreBanco+"</option>";
 				}
 			}			
 		}

@@ -1372,8 +1372,8 @@
 
 <script>	
 	function cargarBancos() {
-		<%if(readonly){%>
-			var idBanco = SolicitudIncorporacionForm.cbo_Codigo.value;
+		var idBanco = SolicitudIncorporacionForm.cbo_Codigo.value;
+		<%if(readonly){%>			
 			if (idBanco!=undefined&&idBanco!="") {
 				jQuery.ajax({ //Comunicación jQuery hacia JSP  
    					type: "POST",
@@ -1396,7 +1396,9 @@
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
    				type: "POST",
 				url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBancos",
+				data: "idBanco="+idBanco,
 				dataType: "json",
+				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 				success: function(json){		
 					jQuery("#banco").append(json.listaBancos[0]);
 					fin();

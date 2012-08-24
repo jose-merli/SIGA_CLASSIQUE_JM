@@ -437,8 +437,8 @@ VERSIONES: -->
 
 <script>
 	function cargarBancos() {
-		<%if(desactivado){%>
-			var idBanco = cuentasBancariasForm.cbo_Codigo.value;
+		var idBanco = cuentasBancariasForm.cbo_Codigo.value;
+		<%if(desactivado){%>			
 			if (idBanco!=undefined&&idBanco!="") {
 				jQuery.ajax({ //Comunicación jQuery hacia JSP  
    					type: "POST",
@@ -461,6 +461,7 @@ VERSIONES: -->
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
    				type: "POST",
 				url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBancos",
+				data: "idBanco="+idBanco,
 				dataType: "json",
 				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 				success: function(json){

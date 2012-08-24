@@ -182,7 +182,7 @@
 	<!-- INICIO: TITULO Y LOCALIZACION 	-->	
 
 </head>
-<body onLoad="rellenarCampos()">
+<body onLoad="rellenarCampos(); cargarBancos();">
 <!-- Barra de titulo actualizable desde los mantenimientos -->
 		<table class="tablaTitulo" cellspacing="0" heigth="32">
 			<tr>
@@ -293,17 +293,22 @@
 </html>
 
 <script>
-	jQuery.ajax({ //Comunicación jQuery hacia JSP  
-   		type: "GET",
-		url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBancos",
-		contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-		success: function(json){		
-			jQuery("#banco").append(json.listaBancos[0]);
-			fin();
-		},
-		error: function(e){
-			alert('Error de comunicación: ' + e);
-			fin();
-		}
-	});
+	function cargarBancos() {
+		var idBanco = cuentasBancariasSolicForm.cbo_Codigo.value;
+		jQuery.ajax({ //Comunicación jQuery hacia JSP  
+	   		type: "POST",
+			url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBancos",
+			data: "idBanco="+idBanco,
+			dataType: "json",
+			contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+			success: function(json){		
+				jQuery("#banco").append(json.listaBancos[0]);
+				fin();
+			},
+			error: function(e){
+				alert('Error de comunicación: ' + e);
+				fin();
+			}
+		});
+	}
 </script>
