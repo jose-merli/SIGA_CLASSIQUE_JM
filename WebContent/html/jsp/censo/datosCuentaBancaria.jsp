@@ -283,7 +283,7 @@ VERSIONES: -->
 	</script>	
 </head>
 
-<body>
+<body onLoad="cargarBancos();">
 		<!-- TITULO -->
 		<table class="tablaTitulo" cellspacing="0" heigth="32">
 			<tr>
@@ -372,8 +372,12 @@ VERSIONES: -->
 							<tr>
 								<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.banco"/></td>
 								<td class="labelText" COLSPAN="3">
-									<select style="width:500px;" id="banco" class="claseCombo" onchange="cuentasBancariasForm.cbo_Codigo.value=this.value">																		
-									</select>							
+									<%if(desactivado){%>
+										<input type="text" id="banco" style="width:500px;" class="boxConsulta" readonly></input>
+									<%}else{%> 
+										<select style="width:500px;" id="banco" class="claseCombo" onchange="cuentasBancariasForm.cbo_Codigo.value=this.value">																		
+										</select>
+									<%}%>
 								</td>
 							</tr>
 
@@ -432,20 +436,42 @@ VERSIONES: -->
 </html>
 
 <script>
-	jQuery.ajax({ //Comunicación jQuery hacia JSP  
-   		type: "POST",
-		url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBancos",
-		dataType: "json",
-		contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-		success: function(json){
-			jQuery("#banco").append(json.listaBancos[0]);
-			       		       		
-       		document.getElementById("banco").disabled=<%=String.valueOf(desactivado)%>;       		       	
-			fin();
-		},
-		error: function(e){
-			alert('Error de comunicación: ' + e);
-			fin();
-		}
-	});
+	function cargarBancos() {
+		<%if(desactivado){%>
+			var idBanco = cuentasBancariasForm.cbo_Codigo.value;
+			if (idBanco!=undefined&&idBanco!="") {
+				jQuery.ajax({ //Comunicación jQuery hacia JSP  
+   					type: "POST",
+					url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBanco",
+					data: "idBanco="+idBanco,
+					dataType: "json",
+					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+					success: function(json){		
+						cuentasBancariasForm.banco.value=json.banco.nombre;
+						fin();
+					},
+					error: function(e){
+						alert('Error de comunicación: ' + e);
+						fin();
+					}
+				});
+			}	
+				
+		<%}else{%> 
+			jQuery.ajax({ //Comunicación jQuery hacia JSP  
+   				type: "POST",
+				url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBancos",
+				dataType: "json",
+				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+				success: function(json){
+					jQuery("#banco").append(json.listaBancos[0]);    		       	
+					fin();
+				},
+				error: function(e){
+					alert('Error de comunicación: ' + e);
+					fin();
+				}
+			});				
+		<%}%>
+	}
 </script>
