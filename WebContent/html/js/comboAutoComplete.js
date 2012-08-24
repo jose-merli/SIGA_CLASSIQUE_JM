@@ -2,6 +2,7 @@
 	var bControl=false;
 	var bControlKey=false;
 	var bFocoCombo=false;
+	var bFocoFiltro=true;
 	var controlFiltro=cteControl; 
 	var cteControl="controlFiltro";
 	var cteSeleccionar="--Seleccionar";
@@ -188,24 +189,24 @@
 		var elementoFiltro = document.getElementById(idFiltro);
 		var elementoCombo = jQuery("#"+idCombo);
 		
-		switch(tecla) {
+		switch(tecla) {		
+	  		case 8: //BACKSPACE: Anulamos la acción del retroceso en el combo
+	  			e.returnValue = false; 
+	  			e.cancelBubble = true; 
+	  			return false;		  		
+	  			break;
+		
+			case 13: //INTRO: Paso el foco al filtro
+				bControl=true;				
+				elementoFiltro.focus(); //Invoca onBlurCombo() + onFocusFiltro()
+				break;
+				
 			case 27: //ESC: Paso el foco al filtro
 				elementoCombo.val([]); // Elimino los elementos seleccionados del combo
 				
 				bControl=true;				
 				elementoFiltro.focus(); //Invoca onBlurCombo() + onFocusFiltro()
-				break;
-				
-			case 13: //INTRO: Paso el foco al filtro
-				bControl=true;				
-				elementoFiltro.focus(); //Invoca onBlurCombo() + onFocusFiltro()
-				break;
-			
-		  	case 8: //BACKSPACE: Anulamos la acción del retroceso en el combo
-		  		e.returnValue = false; 
-		  		e.cancelBubble = true; 
-		  		return false;		  		
-  				break;
+				break;							
   		}		
 	}
 	
@@ -226,6 +227,7 @@
 	// Se realiza cuando obtiene el foco del filtro
 	function onFocusFiltro() {
 		//msgControl=msgControl+"onFocusFiltro()\n";alert(msgControl);
+		bFocoFiltro=true;
 		
 		// Obtiene los elementos que vamos a utilizar
 		var elementoFiltro = document.getElementById(idFiltro);
@@ -243,7 +245,8 @@
 		
 	// Se realiza cuando abandona el foco del filtro
 	function onBlurFiltro() {
-		//msgControl=msgControl+"onBlurFiltro()\n";alert(msgControl);	
+		//msgControl=msgControl+"onBlurFiltro()\n";alert(msgControl);
+		bFocoFiltro=false;
 		
 		// Obtiene los elementos que vamos a utilizar
 		var elementoDiv = jQuery("#"+idDiv);
@@ -282,7 +285,22 @@
 		var elementoCombo = jQuery("#"+idCombo);
 		var elementoNext = jQuery("#"+idNext);
 		
-		switch(tecla) {
+		switch(tecla) {		  				
+  			case 9: //TABULADOR
+  				elementoDiv.hide();
+  				elementoNext.focus(); //Invoca onBlurFiltro()  				
+  				break;  
+  				
+			case 13: //INTRO: Paso el foco al filtro
+				elementoDiv.hide();
+				break;  				
+  				
+			case 27: //ESC: Paso el foco al filtro
+				elementoCombo.val([]); // Elimino los elementos seleccionados del combo
+				elementoDiv.hide();
+				elementoFiltro.value="";
+				break;  
+				
 			case 38: //CURSOR ARRIBA
 			case 40: //CURSOR ABAJO
 				actualizarCombo(elementoFiltro.value, true);
@@ -291,12 +309,7 @@
 					bControl=true;
 					elementoCombo.focus(); //Invoca onBlurFiltro()
 				}
-  				break;		
-		  				
-  			case 9: //TABULADOR
-  				elementoDiv.hide();
-  				elementoNext.focus(); //Invoca onBlurFiltro()  				
-  				break;  
+  				break;					
   				
   			default:
   				bControlKey=true;
@@ -319,7 +332,7 @@
 		}		
 		
 		if (controlFiltro!=valorFiltro) {			
-			controlFiltro=valorFiltro;		
+			controlFiltro=valorFiltro;								
 	 		
 			jQuery.ajax({ 
 				type: "POST",
@@ -330,15 +343,17 @@
 				success: function(json){					
 						
 					// Con esta comparacion y por hacer AJAX, nos evitamos hacer codigo
-					if (valorFiltro==elementoFiltro.value) {
+					if (valorFiltro==controlFiltro) {
+					
+						//msgControl=msgControl+"Paso01("+valorFiltro+","+controlFiltro+","+elementoFiltro.value+")\n";alert(msgControl);
 						
 						// Pinta el combo con el contenido devuelto por ajax
 						var htmlFinal=elementoDiv[0].innerHTML;
 						htmlFinal=htmlFinal.substring(0, htmlFinal.indexOf('>')+1);
-						elementoDiv[0].innerHTML=htmlFinal+json.htmlOptions[0]+"</SELECT>";						
+						elementoDiv[0].innerHTML=htmlFinal+json.htmlOptions[0]+"</SELECT>";		
 	                	        		
 						// Recupera el numero de optiones
-						numOpciones = json.numOptions;
+						numOpciones = json.numOptions;						
 						
 						var elementoCombo = jQuery("#"+idCombo);
     	        	    
@@ -358,9 +373,13 @@
 		    					elementoCombo[0].options[1].selected=true;//jQuery("#"+idCombo+" option").eq(1).attr('selected', 'selected');		    					
 		    				
 		    				// Control de si se debe mostrar el combo
-	    					if (bMuestraDiv)
+	    					if (bMuestraDiv&&bFocoFiltro)
 	    						elementoDiv.show();
     					}   		    	
+		        		
+						// Controlo que haya perdido el foltro el filtro y no sea la carga inicial
+						if (!bFocoFiltro&&bMuestraDiv)
+							seleccionaCombo();
 					}				    	       		       				       				    		
 					fin();
 				}

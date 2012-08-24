@@ -796,10 +796,15 @@
 			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.provincia"/>&nbsp;(*)</td>
 			
 			<%if(readonly && !esEspana){%>
-				<td colspan="2" class="labelTextValor"><%=provincia%></td>
+				<td class="labelTextValor"><%=provincia%></td>
 			<%}else{%>
-				<td colspan="2"><siga:ComboBD nombre="provincia" tipo="provincia" clase="<%=estiloCombo%>" elementoSel="<%=selProvincia %>" readOnly="<%=sreadonly%>" obligatorio="true" pestana="true" accion="seleccionaComboPadre();"/></td>
+				<td><siga:ComboBD nombre="provincia" tipo="provincia" clase="<%=estiloCombo%>" elementoSel="<%=selProvincia %>" readOnly="<%=sreadonly%>" obligatorio="true" pestana="true" accion="seleccionaComboPadre();"/></td>
 			<%}%>
+			
+			<td class="labelText" >
+				CP&nbsp;(*)
+				<html:text property="CP" styleClass="<%=estiloBox%>" size="5" maxlength="5" value="<%=datosPersonales.getCodigoPostal()%>" readOnly="<%=readonly%>"></html:text>
+			</td>
 		</tr>
 		<tr>
 
@@ -822,13 +827,7 @@
 			</td>
 				
 			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.domicilio"/>&nbsp;(*)</td>
-			<td><html:text property="domicilio" size="30" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getDomicilio()%>" readOnly="<%=readonly%>"></html:text></td>
-			
-			<td class="labelText" >CP&nbsp;(*)
-			<html:text property="CP" styleClass="<%=estiloBox%>" size="5" maxlength="5" value="<%=datosPersonales.getCodigoPostal()%>" readOnly="<%=readonly%>"></html:text></td>
-		</tr>
-		<tr>
-			
+			<td colspan="2"><html:text property="domicilio" size="62" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getDomicilio()%>" readOnly="<%=readonly%>"></html:text></td>						
 		</tr>
 		<tr>
 			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono1"/>&nbsp;(*)</td>
