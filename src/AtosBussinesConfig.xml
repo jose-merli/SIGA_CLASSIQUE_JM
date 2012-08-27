@@ -30,7 +30,9 @@
 			<property name="MybatisConfigURL">/SqlMyBatisConfig.xml</property>
 		</transactionManager>
    				
-		<service interface="org.redabogacia.sigaservices.app.services.EcomColaService" 	 implementation="org.redabogacia.sigaservices.app.services.impl.EcomColaServiceImpl"/>	
+		<service interface="org.redabogacia.sigaservices.app.services.EcomColaService" 	 implementation="org.redabogacia.sigaservices.app.services.impl.EcomColaServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.SigaLog4jService" 	 implementation="org.redabogacia.sigaservices.app.services.impl.SigaLog4jServiceImpl"/>
+			
 		
 	</context>
 </configuration> 
