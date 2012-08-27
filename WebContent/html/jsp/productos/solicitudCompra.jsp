@@ -767,14 +767,14 @@
 						  accion="actualizarInstitucionPresentador(this);" readonly="<%=soloLectura%>"/>																								
 					</td>
 										
-					<td id="campoBlancoPresentador" width="215px">&nbsp;</td>
+					<td id="campoBlancoPresentador">&nbsp;</td>
 					<td id="campoBlanco" width="602px">&nbsp;</td>
 																																																							
-					<td align=left id="nombreProducto" width="300px">
+					<td align=left id="nombreProducto" width="302px">
 						<html:text name="solicitudCompraForm" property="nombreProducto" style="width:300px" maxlength="100"
 						  styleClass="box" readonly="false" onKeyPress="return disableEnterKey(event)"/>
 					</td>					
-					<td align=left id="solicitarServicio1" width="68px">
+					<td align=left id="solicitarServicio1" width="70px">
 						<html:button property="idButton" onclick="return buscarProducto();" styleClass="button">
 							<siga:Idioma key="general.boton.search" />
 						</html:button>
@@ -916,7 +916,7 @@ function muestra(id)
 function mostrarColegio()
 {		
 	<%
-	if (esConsejo && user.getStrutsTrans().equals("PYS_SolicitarCertificado")){	%>
+	if (!esConsejo && user.getStrutsTrans().equals("PYS_SolicitarCertificado")){	%>
 		document.getElementById("campoBlanco").style.display="none";
 		document.getElementById("campoBlancoPresentador").style.display="block";
 		document.getElementById("comboPresentador").style.display="block";
