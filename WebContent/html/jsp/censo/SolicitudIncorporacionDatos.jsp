@@ -785,9 +785,9 @@
 	</table>
 	</siga:ConjCampos>
 	<siga:ConjCampos>
-	<table>
+	<table border="0">
 		<tr>
-			<td class="labelText" ><siga:Idioma key="censo.datosDireccion.literal.pais2"/></td>
+			<td class="labelText" width="90px"><siga:Idioma key="censo.datosDireccion.literal.pais2"/></td>
 			<%if(readonly){%>
 				<td colspan="2" class="labelTextValor"><%=pais%></td>
 			<%}else{%>
@@ -801,9 +801,9 @@
 				<td><siga:ComboBD nombre="provincia" tipo="provincia" clase="<%=estiloCombo%>" elementoSel="<%=selProvincia %>" readOnly="<%=sreadonly%>" obligatorio="true" pestana="true" accion="seleccionaComboPadre();"/></td>
 			<%}%>
 			
-			<td class="labelText" >
-				CP&nbsp;(*)
-				<html:text property="CP" styleClass="<%=estiloBox%>" size="5" maxlength="5" value="<%=datosPersonales.getCodigoPostal()%>" readOnly="<%=readonly%>"></html:text>
+			<td align="right">
+				<label class="labelText">CP&nbsp;(*)</label>
+				<html:text property="CP" styleClass="<%=estiloBox%>" size="4" maxlength="5" value="<%=datosPersonales.getCodigoPostal()%>" readOnly="<%=readonly%>"></html:text>				
 			</td>
 		</tr>
 		<tr>
@@ -813,7 +813,7 @@
 			<%if(readonly){%>
 				<input type="text" value="<%=poblacion%>" size="30" maxlength="100" class="boxConsulta" readonly></input>
 			<%}else{%> 
-				<input name="txtFiltroPoblacion" type="text" style="width:300px;" value="" onblur="onBlurFiltro();" onkeydown="onKeyFiltro(event);" onkeyup="onKeyUpFiltro();" onfocus="onFocusFiltro();">
+				<input class="<%=estiloBox%>" name="txtFiltroPoblacion" type="text" style="width:300px;" value="" onblur="onBlurFiltro();" onkeydown="onKeyFiltro(event);" onkeyup="onKeyUpFiltro();" onfocus="onFocusFiltro();">
 				<div id="divPoblaciones">
 					<select class="<%=estiloCombo%>" style="width:300px;" id="selPoblacion" onblur="onBlurCombo();" onchange="seleccionaCombo();" onclick="onClickCombo();" onkeypress="onKeyPressCombo(event);" onkeydown="onKeyCombo(event);" onmousedown="onMouseCombo();">																		
 					</select>					
@@ -827,14 +827,20 @@
 			</td>
 				
 			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.domicilio"/>&nbsp;(*)</td>
-			<td colspan="2"><html:text property="domicilio" size="62" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getDomicilio()%>" readOnly="<%=readonly%>"></html:text></td>						
+			<td colspan="3"><html:text property="domicilio" size="64" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getDomicilio()%>" readOnly="<%=readonly%>"></html:text></td>						
 		</tr>
+	</table>
+	<table border="0">		
 		<tr>
-			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono1"/>&nbsp;(*)</td>
+			<td class="labelText" width="90px"><siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono1"/>&nbsp;(*)</td>
 			<td><html:text property="telefono1" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getTelefono1()%>" readOnly="<%=readonly%>"></html:text></td>
 			
-			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono2"/></td>
+			<td width="25px">&nbsp;</td>
+			
+			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono2"/></td>
 			<td><html:text property="telefono2" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getTelefono2()%>" readOnly="<%=readonly%>"></html:text></td>
+			
+			<td width="25px">&nbsp;</td>
 			
 			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono3"/></td>
 			<td><html:text property="telefono3" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getMovil()%>" readOnly="<%=readonly%>"></html:text></td>
@@ -844,11 +850,15 @@
 			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.fax1"/></td>
 			<td><html:text property="fax1" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getFax1()%>" readOnly="<%=readonly%>"></html:text></td>
 			
+			<td>&nbsp;</td>
+			
 			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.fax2"/></td>
 			<td><html:text property="fax2" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getFax2()%>" readOnly="<%=readonly%>"></html:text></td>
+			
+			<td>&nbsp;</td>
 					
 			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.email"/>&nbsp;(*)</td>
-			<td><html:text property="mail" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getCorreoElectronico()%>" readOnly="<%=readonly%>"></html:text></td>
+			<td><html:text property="mail" size="28" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getCorreoElectronico()%>" readOnly="<%=readonly%>"></html:text></td>
 		</tr>
 		
 		
