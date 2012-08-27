@@ -787,7 +787,7 @@
 	<siga:ConjCampos>
 	<table border="0">
 		<tr>
-			<td class="labelText" width="90px"><siga:Idioma key="censo.datosDireccion.literal.pais2"/></td>
+			<td class="labelText" width="93px"><siga:Idioma key="censo.datosDireccion.literal.pais2"/></td>
 			<%if(readonly){%>
 				<td colspan="2" class="labelTextValor"><%=pais%></td>
 			<%}else{%>
@@ -832,7 +832,7 @@
 	</table>
 	<table border="0">		
 		<tr>
-			<td class="labelText" width="90px"><siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono1"/>&nbsp;(*)</td>
+			<td class="labelText" width="93px"><siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono1"/>&nbsp;(*)</td>
 			<td><html:text property="telefono1" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getTelefono1()%>" readOnly="<%=readonly%>"></html:text></td>
 			
 			<td width="25px">&nbsp;</td>
