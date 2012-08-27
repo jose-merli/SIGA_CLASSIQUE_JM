@@ -671,7 +671,7 @@
 					<td class="labelText" valign="top"><siga:Idioma key="pys.solicitudCompra.literal.catalogo" />&nbsp;(*)</td>
 					<td>
 						<siga:ComboBD nombre="catalogo" tipo="cmbCatalogo"
-						  clase="boxCombo" obligatorio="true" ancho="110"
+						  clase="boxCombo" obligatorio="true" ancho="118"
 						  accion="mostrarCombos();" elementoSel="<%=elementoSel0%>" />
 					</td>
 					
@@ -758,31 +758,30 @@
 		</table>
 		<table class="tablaCampos" align="center" border="0">
 			<tr>																					
-					<td id ="presentador" class="labelText">
+					<td id ="presentador" class="labelText" width="142px">
 							<siga:Idioma key="pys.solicitudCompra.literal.presentador"/>
 					</td>
-					<td id = "comboPresentador">									
-						<siga:ComboBD nombre="idInstitucionPresentador" tipo="cmbInstitucionesAbreviadas" 
+					<td id = "comboPresentador" width="240px">									
+						<siga:ComboBD nombre="idInstitucionPresentador" tipo="cmbInstitucionesAbreviadas" ancho="240"
 						  clase="<%=estiloComboInstitucionPresentador%>" elementoSel ="<%=idInstitucionPresentador%>"
 						  accion="actualizarInstitucionPresentador(this);" readonly="<%=soloLectura%>"/>																								
 					</td>
-					<td id="campoBlancoPresentador" style="width:190px">&nbsp;</td>
-					
-					<td id="campoBlanco" style="width:605px">&nbsp;</td>
-																																																									
-					<td align=left id="nombreProducto">
-						<html:text name="solicitudCompraForm" property="nombreProducto" size="44" maxlength="100"
+										
+					<td id="campoBlancoPresentador" width="215px">&nbsp;</td>
+					<td id="campoBlanco" width="602px">&nbsp;</td>
+																																																							
+					<td align=left id="nombreProducto" width="300px">
+						<html:text name="solicitudCompraForm" property="nombreProducto" style="width:300px" maxlength="100"
 						  styleClass="box" readonly="false" onKeyPress="return disableEnterKey(event)"/>
-					</td>
-					<td align=left id="solicitarServicio1">
+					</td>					
+					<td align=left id="solicitarServicio1" width="68px">
 						<html:button property="idButton" onclick="return buscarProducto();" styleClass="button">
 							<siga:Idioma key="general.boton.search" />
 						</html:button>
 					</td>
 			</tr>
-		</table>
-			</td>
-			
+		</table>		
+			</td>											
 		</tr>
 		<!-- FILA -->
 	</html:form>
