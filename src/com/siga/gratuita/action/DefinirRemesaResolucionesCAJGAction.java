@@ -27,6 +27,9 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
+import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
+import org.redabogacia.sigaservices.app.services.EcomColaService;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
@@ -56,6 +59,8 @@ import com.siga.informes.MasterWords;
 import com.siga.ws.CajgConfiguracion;
 import com.siga.ws.i2055.DesignacionProcuradorAsigna;
 import com.siga.ws.i2055.ResolucionesAsigna;
+
+import es.satec.businessManager.BusinessManager;
 
 
 
@@ -155,8 +160,23 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 		request.getSession().removeAttribute("DATAPAGINADOR");
 	
 		try {
-			ResolucionesAsigna resolucionesAsigna = new ResolucionesAsigna();
-			int numeroResoluciones = resolucionesAsigna.obtenerResoluciones(getUserBean(request), getIDInstitucion(request).toString());
+			
+			int numeroResoluciones = 0;
+			
+			int tipoCAJG = CajgConfiguracion.getTipoCAJG(getIDInstitucion(request));
+			
+			if (tipoCAJG == CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA) {
+				ResolucionesAsigna resolucionesAsigna = new ResolucionesAsigna();
+				numeroResoluciones = resolucionesAsigna.obtenerResoluciones(getUserBean(request), getIDInstitucion(request).toString());	
+			} else if (tipoCAJG == CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO) {
+				EcomColaService ecomColaService = (EcomColaService) BusinessManager.getInstance().getService(EcomColaService.class);
+				
+				EcomCola ecomCola = new EcomCola();
+				ecomCola.setIdinstitucion(Short.valueOf(getUserBean(request).getLocation()));
+				ecomCola.setIdoperacion(AppConstants.OPERACION.XUNTA_RESOLUCIONES.getId());
+				ecomColaService.insert(ecomCola);				
+			}
+			
 			String mensaje = null;
 			if (numeroResoluciones == 0) {//no se han obtenido nuevas resoluciones
 				mensaje = "message.remesaResolucion.asigna.noResoluciones";
