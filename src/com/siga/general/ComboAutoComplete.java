@@ -88,11 +88,11 @@ public class ComboAutocomplete {
 
         rc.findNLS(sql);    
 
-		String htmlOptions="";
+        ArrayList arrayHtml = new ArrayList(); 		
 		Integer numOptions = 0;
 		
 		if (rc!=null) {			
-			htmlOptions="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
+			arrayHtml.add("<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>");
 			numOptions=rc.size()+1;
 			
 			Boolean bGuiones=true;
@@ -109,7 +109,7 @@ public class ComboAutocomplete {
 						Integer prioridad = UtilidadesHash.getInteger(registro, campoPrioridad);
 						
 						if(bGuiones&&bPrioridad&&prioridad==null) {
-							htmlOptions+="<option value=''>"+guiones+"</option>";
+							arrayHtml.add("<option value=''>"+guiones+"</option>");
 							bGuiones=false;
 							numOptions++;
 						}
@@ -120,12 +120,12 @@ public class ComboAutocomplete {
 					
 					if (!bSeleccionado && UtilidadesHash.getInteger(registro, "SELECCIONADO")==0) {
 						bSeleccionado=true;
-						htmlOptions+="<option selected value='"+UtilidadesHash.getString(registro, campoIdentificador)+"'>"+
-								UtilidadesHash.getString(registro, campoNombre)+"</option>";
+						arrayHtml.add("<option selected value='"+UtilidadesHash.getString(registro, campoIdentificador)+"'>"+
+								UtilidadesHash.getString(registro, campoNombre)+"</option>");
 					}
 					else {
-						htmlOptions+="<option value='"+UtilidadesHash.getString(registro, campoIdentificador)+"'>"+
-							UtilidadesHash.getString(registro, campoNombre)+"</option>";
+						arrayHtml.add("<option value='"+UtilidadesHash.getString(registro, campoIdentificador)+"'>"+
+							UtilidadesHash.getString(registro, campoNombre)+"</option>");
 					}
 					  	   	
 		   			  	   						
@@ -133,8 +133,6 @@ public class ComboAutocomplete {
 			}
 		}		
 		
-		ArrayList arrayHtml = new ArrayList(); 
-		arrayHtml.add(htmlOptions);
 		JSONObject json = new JSONObject();		
 		json.put("htmlOptions", arrayHtml);
 		json.put("numOptions", numOptions);

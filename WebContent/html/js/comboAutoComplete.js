@@ -342,17 +342,22 @@
 					if (valorFiltro==controlFiltro) {					
 						//msgControl=msgControl+"Paso01("+valorFiltro+","+controlFiltro+","+elementoFiltro.value+")\n";alert(msgControl);
 						
-						// Pinta el combo con el contenido devuelto por ajax
-						var elementoDiv = jQuery("#"+idDiv);
-						var htmlFinal=elementoDiv[0].innerHTML;
-						htmlFinal.replace("\"","'");
-						htmlFinal=htmlFinal.substring(0, htmlFinal.indexOf('>')+1);
-						elementoDiv[0].innerHTML=htmlFinal+json.htmlOptions[0]+"</SELECT>";		
-	                	        		
 						// Recupera el numero de optiones
-						numOpciones = json.numOptions;											
+						numOpciones = json.numOptions;	
 						
+						var elementoDiv = jQuery("#"+idDiv);
 						var elementoCombo = jQuery("#"+idCombo);
+						
+						jQuery("#"+idCombo+ " option").remove();
+						for (var i=0; i<numOpciones; i++) {
+							elementoCombo.append(json.htmlOptions[i]);
+						}
+						
+						// Pinta el combo con el contenido devuelto por ajax
+						//var htmlFinal=elementoDiv[0].innerHTML;
+						//htmlFinal.replace("\"","'");
+						//htmlFinal=htmlFinal.substring(0, htmlFinal.indexOf('>')+1);
+						//elementoDiv[0].innerHTML=htmlFinal+json.htmlOptions[0]+"</SELECT>";														
     	        	    
 			   	    	// Si solo tiene el elemento de seleccion, oculta el combo
 		        		if (numOpciones<2) {
