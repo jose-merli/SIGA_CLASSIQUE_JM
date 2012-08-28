@@ -580,7 +580,7 @@
 
 </head>
 
-<body  class="tablaCentralCampos" onLoad="cargaPais(<%=datosPersonales.getIdPais() %>);cargarPoblaciones();cargarChecksCuenta();comprobarTipoIdent();ajusteAlto('divDocumentoAPresentar');cargarBancos();">
+<body  class="tablaCentralCampos" onLoad="cargaPais(<%=datosPersonales.getIdPais() %>);cargarChecksCuenta();comprobarTipoIdent();ajusteAlto('divDocumentoAPresentar');cargarBancos();">
 
 
 <bean:define id="isPosibilidadSolicitudAlta" name="isPosibilidadSolicitudAlta"  scope="request" />
@@ -1425,13 +1425,7 @@
 	}
 	
 		<%if (!readonly){ %>	
-			loadAutocomplete("txtFiltroPoblacion", "divPoblaciones", "selPoblacion", "poblacion", "provincia", "domicilio", "/SIGA/FAC_ComprobarPoblacion.do?modo=getAjaxPoblaciones", 22, 100, 73, "<siga:Idioma key='general.combo.seleccionar'/>");
-		<%}%>	
-	
-
-	function cargarPoblaciones () {		
-		<%if (!readonly){ %>	
+			loadAutocomplete("txtFiltroPoblacion", "divPoblaciones", "selPoblacion", "poblacion", "provincia", "domicilio", "/SIGA/FAC_ComprobarPoblacion.do?modo=getAjaxPoblaciones", 22, 500, 73, "<siga:Idioma key='general.combo.seleccionar'/>");
 			cargaInicial ("<%=poblacion%>", <%=esEspana%>);
 		<%}%>		
-	}										
 </script>

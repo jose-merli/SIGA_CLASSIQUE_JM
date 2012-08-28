@@ -321,10 +321,6 @@
 	function actualizarCombo(valorFiltro, bMuestraDiv){
 		//msgControl=msgControl+"actualizarCombo("+valorFiltro+","+bMuestraDiv+")\n";alert(msgControl);
 		
-		// Obtiene los elementos que vamos a utilizar
-		var elementoFiltro = document.getElementById(idFiltro);
-		var elementoDiv = jQuery("#"+idDiv);		
-		
 		// Controlo si tiene padre
 		if (idPadre!="") {
 			var elementoPadre = document.getElementById(idPadre);
@@ -343,17 +339,18 @@
 				success: function(json){					
 						
 					// Con esta comparacion y por hacer AJAX, nos evitamos hacer codigo
-					if (valorFiltro==controlFiltro) {
-					
+					if (valorFiltro==controlFiltro) {					
 						//msgControl=msgControl+"Paso01("+valorFiltro+","+controlFiltro+","+elementoFiltro.value+")\n";alert(msgControl);
 						
 						// Pinta el combo con el contenido devuelto por ajax
+						var elementoDiv = jQuery("#"+idDiv);
 						var htmlFinal=elementoDiv[0].innerHTML;
+						htmlFinal.replace("\"","'");
 						htmlFinal=htmlFinal.substring(0, htmlFinal.indexOf('>')+1);
 						elementoDiv[0].innerHTML=htmlFinal+json.htmlOptions[0]+"</SELECT>";		
 	                	        		
 						// Recupera el numero de optiones
-						numOpciones = json.numOptions;						
+						numOpciones = json.numOptions;											
 						
 						var elementoCombo = jQuery("#"+idCombo);
     	        	    
@@ -387,7 +384,9 @@
 			
 		// Si no ha cambiado el filtro, lo muestro cuando tenga elementos
 		} else {
-			if (numOpciones>1&&bMuestraDiv)
+			if (numOpciones>1&&bMuestraDiv) {
+				var elementoDiv = jQuery("#"+idDiv);	
 				elementoDiv.show();
+			}
 		} 
 	}	
