@@ -1046,7 +1046,7 @@
 
 
 
-<body class="tablaCentralCampos" onload="ajusteAlto('resultado');recargar();comprobarTipoPersona();">
+<body class="tablaCentralCampos" onload="ajusteAlto('resultado');recargar();comprobarTipoPersona();proFechaNac();">
 
 	<!-- TITULO -->
 	<table class="tablaTitulo" cellspacing="0" heigth="38">
