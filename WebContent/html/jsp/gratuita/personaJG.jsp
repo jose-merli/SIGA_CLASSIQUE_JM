@@ -515,8 +515,13 @@
 					
 				<%} else {%>
 					if (sFechaNac=="") {
-						document.forms[0].edad.className="box";
-						document.forms[0].edad.readOnly=false;
+						<%if (readonly) {%>									
+							document.forms[0].edad.className="boxConsulta";
+							document.forms[0].edad.readOnly=true;							
+						<%} else {%>
+							document.forms[0].edad.className="box";
+							document.forms[0].edad.readOnly=false;
+						<%}%>		
 					}
 					else {
 						document.forms[0].edad.value = numEdad;		
