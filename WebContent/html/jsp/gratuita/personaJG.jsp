@@ -468,7 +468,10 @@
 			}							
 	
 			function proFechaNac(){
-				var sFechaNac = document.forms[0].fechaNac.value;								
+				var sFechaNac = document.forms[0].fechaNac.value;
+				
+				if (sFechaNac==undefined)
+					sFechaNac = document.getElementById("fechaNac").value;										
 				
 				if(!validarFecha2(sFechaNac))
 					return false;
