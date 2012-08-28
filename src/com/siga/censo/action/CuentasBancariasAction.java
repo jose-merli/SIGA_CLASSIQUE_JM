@@ -674,7 +674,8 @@ public class CuentasBancariasAction extends MasterAction{
 		
 		String idBanco = (String)request.getParameter("idBanco");
 						
-		String html="";		
+		ArrayList arrayHtml = new ArrayList();	
+		Integer numBancos = 0;
 		RowsContainer rc = null;
 		
 	    String sql = " SELECT "+CenBancosBean.T_NOMBRETABLA+"."+CenBancosBean.C_CODIGO+
@@ -685,7 +686,8 @@ public class CuentasBancariasAction extends MasterAction{
         rc = bancosAdm.find(sql);
         
 		if (rc!=null) { 				
-			html="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";				
+			arrayHtml.add("<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>");
+			numBancos=rc.size()+1;
 			
 			for (int i = 0; i < rc.size(); i++)	{
 				Row fila = (Row) rc.get(i);
@@ -696,17 +698,16 @@ public class CuentasBancariasAction extends MasterAction{
 					String nombreBanco = UtilidadesHash.getString(registro,CenBancosBean.C_NOMBRE);
 					
 					if (identificadorBanco.equals(idBanco))
-						html+="<option selected value='"+identificadorBanco+"'>"+nombreBanco+"</option>";
+						arrayHtml.add("<option selected value='"+identificadorBanco+"'>"+nombreBanco+"</option>");
 					else
-						html+="<option value='"+identificadorBanco+"'>"+nombreBanco+"</option>";
+						arrayHtml.add("<option value='"+identificadorBanco+"'>"+nombreBanco+"</option>");
 				}
 			}			
 		}
-		
-		ArrayList arrayHtml = new ArrayList(); 
-		arrayHtml.add(html);
+
 		JSONObject json = new JSONObject();				
 		json.put("listaBancos", arrayHtml);
+		json.put("numBancos", numBancos);
 		
 		// json.
 		 response.setContentType("text/x-json;charset=ISO-8859-15");

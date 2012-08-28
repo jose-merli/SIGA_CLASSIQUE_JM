@@ -465,7 +465,9 @@ VERSIONES: -->
 				dataType: "json",
 				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 				success: function(json){
-					jQuery("#banco").append(json.listaBancos[0]);    		       	
+					numBancos = json.numBancos;	
+					for (var i=0; i<numBancos; i++)
+						jQuery("#banco").append(json.listaBancos[i]);    		       	
 					fin();
 				},
 				error: function(e){
