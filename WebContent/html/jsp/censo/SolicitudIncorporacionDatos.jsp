@@ -1425,7 +1425,7 @@
 	}
 	
 		<%if (!readonly){ %>	
-			loadAutocomplete("txtFiltroPoblacion", "divPoblaciones", "selPoblacion", "poblacion", "provincia", "domicilio", "/SIGA/FAC_ComprobarPoblacion.do?modo=getAjaxPoblaciones", 22, 1000, 73, "<siga:Idioma key='general.combo.seleccionar'/>");
+			loadAutocomplete("txtFiltroPoblacion", "divPoblaciones", "selPoblacion", "poblacion", "provincia", "domicilio", "/SIGA/FAC_ComprobarPoblacion.do?modo=getAjaxPoblaciones", 22, 100, 73, "<siga:Idioma key='general.combo.seleccionar'/>");
 		<%}%>	
 	
 
