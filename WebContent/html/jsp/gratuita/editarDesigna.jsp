@@ -679,7 +679,7 @@
 		<tr>
 			<td valign="top">
 			<siga:ConjCampos leyenda="gratuita.busquedaDesignas.literal.turno">
-				<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" width="100%" border="0">
+				<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" width="100%" border="">
 					<tr>
 						<%
 						String claveDesigna="";
@@ -709,7 +709,7 @@
 						<td colspan="4"></td>
 					</tr>
 					</table>
-					<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" width="100%" border="0">
+					<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" width="100%" border="1">
 					<tr>
 						<td class="labelText">
 							<siga:Idioma key="gratuita.busquedaSOJ.literal.turno" />
@@ -732,7 +732,9 @@
 						<%}%>
 						<!-- JBD 16/2/2009 INC-5682-SIGA -->
 						<%if(art27.equals("1")){ %>
-							<td class="labelText" nowrap="nowrap"><siga:Idioma key="gratuita.editarDesigna.literal.art27Texto"/></td>
+							<td class="labelText>
+								<siga:Idioma key="gratuita.editarDesigna.literal.art27Texto"/>&nbsp;
+							</td>
 						<%}%>
 					</tr>
 				</table>
