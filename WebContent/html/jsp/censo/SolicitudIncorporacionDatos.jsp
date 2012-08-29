@@ -906,19 +906,14 @@
 			<tr>					
 				<td class="labelText" nowrap>Cuenta</td>	
 				<td class="labelText">
-				      <html:text size="4"  maxlength="4" property="cbo_Codigo"     value="<%=cbo_Codigo%>" 				styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" onChange="SolicitudIncorporacionForm.banco.value=SolicitudIncorporacionForm.cbo_Codigo.value"></html:text>
+				      <html:text size="4"  maxlength="4" property="cbo_Codigo"     value="<%=cbo_Codigo%>" 				styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" onChange="cargarBancos();"></html:text>
 					- <html:text size="4"  maxlength="4" property="codigoSucursal" value="<%=cuentaCodigoSucursal%>" 	styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"></html:text>
 					- <html:text size="2"  maxlength="2" property="digitoControl"  value="<%=cuentaDigitoControl%>" 	styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"></html:text>
 					- <html:text size="10" maxlength="10" property="numeroCuenta"  value="<%=cuentaNumeroCuenta%>" 		styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"></html:text></td>
 				
 				<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.banco"/></td>
 				<td class="labelText">
-					<%if(readonly){%>
-						<input type="text" id="banco" style="width:450px;" class="boxConsulta" readonly></input>
-					<%}else{%> 
-						<select style="width:450px;" id="banco" class="boxCombo" onchange="SolicitudIncorporacionForm.cbo_Codigo.value=this.value">																		
-						</select>
-					<%}%>
+					<input type="text" id="banco" style="width:450px;" class="boxConsulta" readonly></input>
 				</td>
 			</tr>
 		</table>
@@ -1385,37 +1380,17 @@
 
 <script>	
 	function cargarBancos() {
-		var idBanco = SolicitudIncorporacionForm.cbo_Codigo.value;
-		<%if(readonly){%>			
-			if (idBanco!=undefined&&idBanco!="") {
-				jQuery.ajax({ //Comunicación jQuery hacia JSP  
-   					type: "POST",
-					url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBanco",
-					data: "idBanco="+idBanco,
-					dataType: "json",
-					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-					success: function(json){		
-						var txtBanco = json.banco.nombre;
-						SolicitudIncorporacionForm.banco.value=txtBanco;
-						fin();
-					},
-					error: function(e){
-						alert('Error de comunicación: ' + e);
-						fin();
-					}
-				});
-			}		
-		<%}else{%> 
+		var idBanco = SolicitudIncorporacionForm.cbo_Codigo.value;	
+		if (idBanco!=undefined&&idBanco!="") {
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
    				type: "POST",
-				url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBancos",
+				url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBanco",
 				data: "idBanco="+idBanco,
 				dataType: "json",
 				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 				success: function(json){		
-					numBancos = json.numBancos;	
-					for (var i=0; i<numBancos; i++)
-						jQuery("#banco").append(json.listaBancos[i]);		
+					var txtBanco = json.banco.nombre;
+					SolicitudIncorporacionForm.banco.value=txtBanco;
 					fin();
 				},
 				error: function(e){
@@ -1423,7 +1398,7 @@
 					fin();
 				}
 			});
-		<%}%>
+		}		
 	}
 	
 		<%if (!readonly){ %>	

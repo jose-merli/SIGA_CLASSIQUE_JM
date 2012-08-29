@@ -391,7 +391,7 @@ VERSIONES: -->
 							
 							<!-- FILA -->
 							<tr>						
-								<td class="labelText"><html:text size="4"  maxlength="4" name="cuentasBancariasForm" property="cbo_Codigo"     value="<%=cbo_Codigo%>" 				styleClass="<%=clase%>" readOnly="<%=desactivado%>" onChange="cuentasBancariasForm.banco.value=this.value"></html:text></td>
+								<td class="labelText"><html:text size="4"  maxlength="4" name="cuentasBancariasForm" property="cbo_Codigo"     value="<%=cbo_Codigo%>" 				styleClass="<%=clase%>" readOnly="<%=desactivado%>" onChange="cargarBancos();"></html:text></td>
 								<td class="labelText"><html:text size="4"  maxlength="4" name="cuentasBancariasForm" property="codigoSucursal" value="<%=cuentaCodigoSucursal%>" 	styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></td>
 								<td class="labelText"><html:text size="5"  maxlength="2" name="cuentasBancariasForm" property="digitoControl"  value="<%=cuentaDigitoControl%>" 	styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></td>
 								<td class="labelText"><html:text size="10" maxlength="10" name="cuentasBancariasForm" property="numeroCuenta"  value="<%=cuentaNumeroCuenta%>" 		styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></td>
@@ -437,44 +437,23 @@ VERSIONES: -->
 
 <script>
 	function cargarBancos() {
-		var idBanco = cuentasBancariasForm.cbo_Codigo.value;
-		<%if(desactivado){%>			
-			if (idBanco!=undefined&&idBanco!="") {
-				jQuery.ajax({ //Comunicación jQuery hacia JSP  
-   					type: "POST",
-					url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBanco",
-					data: "idBanco="+idBanco,
-					dataType: "json",
-					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-					success: function(json){		
-						cuentasBancariasForm.banco.value=json.banco.nombre;
-						fin();
-					},
-					error: function(e){
-						alert('Error de comunicación: ' + e);
-						fin();
-					}
-				});
-			}	
-				
-		<%}else{%> 
+		var idBanco = cuentasBancariasForm.cbo_Codigo.value;		
+		if (idBanco!=undefined&&idBanco!="") {
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
    				type: "POST",
-				url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBancos",
+				url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBanco",
 				data: "idBanco="+idBanco,
 				dataType: "json",
 				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-				success: function(json){
-					numBancos = json.numBancos;	
-					for (var i=0; i<numBancos; i++)
-						jQuery("#banco").append(json.listaBancos[i]);    		       	
+				success: function(json){		
+					cuentasBancariasForm.banco.value=json.banco.nombre;
 					fin();
 				},
 				error: function(e){
 					alert('Error de comunicación: ' + e);
 					fin();
 				}
-			});				
-		<%}%>
+			});
+		}	
 	}
 </script>

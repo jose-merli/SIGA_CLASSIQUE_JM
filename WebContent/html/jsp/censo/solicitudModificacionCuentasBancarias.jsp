@@ -253,7 +253,7 @@
 								<td class="labelText"><siga:Idioma key="censo.datosCuentaBancaria.literal.cuenta"/>&nbsp;(*)</td>			
 							</tr>
 							<tr>										
-								<td class="labelText"><html:text name="cuentasBancariasSolicForm" property="cbo_Codigo" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_CBO_CODIGO))%>"         size="4"  maxlength="4"  styleClass="box" onChange="cuentasBancariasSolicForm.banco.value=this.value"></html:text></td>
+								<td class="labelText"><html:text name="cuentasBancariasSolicForm" property="cbo_Codigo" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_CBO_CODIGO))%>"         size="4"  maxlength="4"  styleClass="box" onChange="cargarBancos();"></html:text></td>
 								<td class="labelText"><html:text name="cuentasBancariasSolicForm" property="codigoSucursal" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_CODIGOSUCURSAL))%>" size="4"  maxlength="4"  styleClass="box"></html:text></td>
 								<td class="labelText"><html:text name="cuentasBancariasSolicForm" property="digitoControl" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_DIGITOCONTROL))%>"   size="2"  maxlength="2"  styleClass="box"></html:text></td>						
 								<td class="labelText"><html:text name="cuentasBancariasSolicForm" property="numeroCuenta" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_NUMEROCUENTA))%>"     size="10" maxlength="10" styleClass="box"></html:text></td>
@@ -294,23 +294,24 @@
 
 <script>
 	function cargarBancos() {
-		var idBanco = cuentasBancariasSolicForm.cbo_Codigo.value;
-		jQuery.ajax({ //Comunicación jQuery hacia JSP  
-	   		type: "POST",
-			url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBancos",
-			data: "idBanco="+idBanco,
-			dataType: "json",
-			contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-			success: function(json){		
-				numBancos = json.numBancos;	
-				for (var i=0; i<numBancos; i++)
-					jQuery("#banco").append(json.listaBancos[i]);			
-				fin();
-			},
-			error: function(e){
-				alert('Error de comunicación: ' + e);
-				fin();
-			}
-		});
+		var idBanco = SolicitudIncorporacionForm.cbo_Codigo.value;	
+		if (idBanco!=undefined&&idBanco!="") {
+			jQuery.ajax({ //Comunicación jQuery hacia JSP  
+   				type: "POST",
+				url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBanco",
+				data: "idBanco="+idBanco,
+				dataType: "json",
+				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+				success: function(json){		
+					var txtBanco = json.banco.nombre;
+					SolicitudIncorporacionForm.banco.value=txtBanco;
+					fin();
+				},
+				error: function(e){
+					alert('Error de comunicación: ' + e);
+					fin();
+				}
+			});
+		}
 	}
 </script>

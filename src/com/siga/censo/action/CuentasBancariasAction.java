@@ -6,7 +6,6 @@
  */
 package com.siga.censo.action;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -21,8 +20,6 @@ import org.json.JSONObject;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.Row;
-import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
@@ -86,10 +83,6 @@ public class CuentasBancariasAction extends MasterAction{
 					mapDestino = solicitarModificacion(mapping, miForm, request, response);
 				} else if(accion.equalsIgnoreCase("insertarModificacion")){
 					mapDestino = insertarModificacion(mapping, miForm, request, response);
-					
-				} else if ( accion.equalsIgnoreCase("getAjaxBancos")){
-					getAjaxBancos (mapping, miForm, request, response);
-					return null;	
 					
 				} else if ( accion.equalsIgnoreCase("getAjaxBanco")){
 					getAjaxBanco (mapping, miForm, request, response);
@@ -652,69 +645,6 @@ public class CuentasBancariasAction extends MasterAction{
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);
 		}
 		return null;
-	}
-	
-	/**
-	 * 
-	 * @param mapping
-	 * @param formulario
-	 * @param request
-	 * @param response
-	 * @throws ClsExceptions
-	 * @throws SIGAException
-	 * @throws Exception
-	 */
-	protected void getAjaxBancos (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws Exception {
-		
-		UsrBean usuario = this.getUserBean(request);		
-		CenBancosAdm bancosAdm = new CenBancosAdm(usuario);
-		
-		String idBanco = (String)request.getParameter("idBanco");
-						
-		ArrayList arrayHtml = new ArrayList();	
-		Integer numBancos = 0;
-		RowsContainer rc = null;
-		
-	    String sql = " SELECT "+CenBancosBean.T_NOMBRETABLA+"."+CenBancosBean.C_CODIGO+
-	    		","+CenBancosBean.T_NOMBRETABLA+"."+CenBancosBean.C_NOMBRE +
-	    		" FROM " + CenBancosBean.T_NOMBRETABLA +
-	    		" ORDER BY 2 ASC";
-
-        rc = bancosAdm.find(sql);
-        
-		if (rc!=null) { 				
-			arrayHtml.add("<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>");
-			numBancos=rc.size()+1;
-			
-			for (int i = 0; i < rc.size(); i++)	{
-				Row fila = (Row) rc.get(i);
-				Hashtable registro = (Hashtable)fila.getRow();
-				
-				if (registro != null) {
-					String identificadorBanco = UtilidadesHash.getString(registro,CenBancosBean.C_CODIGO);
-					String nombreBanco = UtilidadesHash.getString(registro,CenBancosBean.C_NOMBRE);
-					
-					if (identificadorBanco.equals(idBanco))
-						arrayHtml.add("<option selected value='"+identificadorBanco+"'>"+nombreBanco+"</option>");
-					else
-						arrayHtml.add("<option value='"+identificadorBanco+"'>"+nombreBanco+"</option>");
-				}
-			}			
-		}
-
-		JSONObject json = new JSONObject();				
-		json.put("listaBancos", arrayHtml);
-		json.put("numBancos", numBancos);
-		
-		// json.
-		 response.setContentType("text/x-json;charset=ISO-8859-15");
-		 response.setHeader("Cache-Control", "no-cache");
-		 response.setHeader("Content-Type", "application/json");
-	     response.setHeader("X-JSON", json.toString());
-		 response.getWriter().write(json.toString()); 
 	}
 	
 	/**
