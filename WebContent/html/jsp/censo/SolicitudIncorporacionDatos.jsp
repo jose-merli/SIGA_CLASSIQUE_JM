@@ -80,15 +80,15 @@
 	
 	ArrayList selPais = new ArrayList();
 	ArrayList selProvincia = new ArrayList();
+	ArrayList selPoblacion = new ArrayList();
 	ArrayList selIdent = new ArrayList();
 	ArrayList selTratamiento = new ArrayList();
 	ArrayList selEstadoCiv = new ArrayList();
-	String idPobl = "";
 	selPais.add(datosPersonales.getIdPais());
 	boolean esEspana=datosPersonales.getIdPais().equalsIgnoreCase(ClsConstants.ID_PAIS_ESPANA)||datosPersonales.getIdPais().equalsIgnoreCase("");
 	if (esEspana){	
 		selProvincia.add(datosPersonales.getIdProvincia());
-		idPobl=datosPersonales.getIdPoblacion();
+		selPoblacion.add(datosPersonales.getIdPoblacion());
 	}
 	selEstadoCiv.add(datosPersonales.getIdEstadoCivil());
 	selTratamiento.add(datosPersonales.getIdTratamiento());
@@ -185,8 +185,7 @@
 	<script src="<html:rewrite page='/html/js/jquery-ui.js'/>" type="text/javascript"></script>
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>	
-	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-	<script src="<%=app%>/html/js/comboAutoComplete.js" type="text/javascript"></script>	
+	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>	
 	
 	<title><siga:Idioma key="censo.SolicitudIncorporacionDatos.titulo"/></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
@@ -800,7 +799,7 @@
 			<%if(readonly && !esEspana){%>
 				<td class="labelTextValor"><%=provincia%></td>
 			<%}else{%>
-				<td><siga:ComboBD nombre="provincia" tipo="provincia" ancho="200" clase="<%=estiloCombo%>" elementoSel="<%=selProvincia %>" readOnly="<%=sreadonly%>" obligatorio="true" pestana="true" accion="seleccionaComboPadre();"/></td>
+				<td colspan="2"><siga:ComboBD nombre="provincia" tipo="provincia" clase="<%=estiloCombo%>" elementoSel="<%=selProvincia %>" readOnly="<%=sreadonly%>" obligatorio="true" accion="Hijo:poblacion" pestana="true"/></td>
 			<%}%>
 			
 			<td align="right">
@@ -815,12 +814,7 @@
 			<%if(readonly){%>
 				<input type="text" value="<%=poblacion%>" width="300px" maxlength="100" class="boxConsulta" readonly></input>
 			<%}else{%> 
-				<input class="<%=estiloBox%>" name="txtFiltroPoblacion" type="text" style="width:300px;" value="" onblur="onBlurFiltro();" onkeydown="onKeyFiltro(event);" onkeyup="onKeyUpFiltro();" onfocus="onFocusFiltro();">
-				<div id="divPoblaciones">
-					<select class="<%=estiloCombo%>" style="width:300px" id="selPoblacion" onblur="onBlurCombo();" onchange="seleccionaCombo();" onclick="onClickCombo();" onkeypress="onKeyPressCombo(event);" onkeydown="onKeyCombo(event);" onmousedown="onMouseCombo();">																		
-					</select>					
-				</div>		
-				<html:hidden property="poblacion" value="<%=idPobl%>"/>
+				<siga:ComboBD nombre="poblacion" tipo="poblacion" clase="<%=estiloCombo%>" elementoSel="<%=selPoblacion %>" readOnly="<%=sreadonly%>" obligatorio="true" hijo="t" ancho="300"/>
 			<%}%>
 			</td> 
 			
@@ -1400,9 +1394,4 @@
 			});
 		}		
 	}
-	
-		<%if (!readonly){ %>	
-			loadAutocomplete("txtFiltroPoblacion", "divPoblaciones", "selPoblacion", "poblacion", "provincia", "domicilio", "/SIGA/FAC_ComprobarPoblacion.do?modo=getAjaxPoblaciones", 22, 100, 73, "<siga:Idioma key='general.combo.seleccionar'/>");
-			cargaInicial ("<%=poblacion%>", <%=esEspana%>);
-		<%}%>		
 </script>
