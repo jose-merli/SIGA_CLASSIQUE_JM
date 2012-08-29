@@ -265,7 +265,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 	
 </head>
 
-<body >
+<body onload="cargarComboModulo();">
 
     <table class="tablaTitulo" align="center" cellspacing=0>
 		<tr>
@@ -1123,6 +1123,13 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 				}
 			});
 		}
+	}	
+	
+	function cargarComboModulo() {
+		<% if (!modo.equalsIgnoreCase("ver")) { %>
+			document.getElementById("juzgado").onchange();
+			document.getElementById("comisaria").onchange();	
+		<% } %>	
 	}	
 		
 		actualizarTdNumeroDiligencia();
