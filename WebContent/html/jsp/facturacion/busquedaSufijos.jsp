@@ -60,7 +60,7 @@
 								<td class="labelText">
 									<siga:Idioma key="facturacion.sufijos.literal.sufijo"/>
 									&nbsp;
-									<html:text name="sufijosForm" property="sufijo" size="5" maxlength="5" styleClass="box"/>
+									<html:text name="sufijosForm" property="sufijo" size="5" maxlength="3" styleClass="box"/>
 								</td>
 								<td class="labelText">
 									<siga:Idioma key="facturacion.datosGenerales.literal.descripcion"/>
