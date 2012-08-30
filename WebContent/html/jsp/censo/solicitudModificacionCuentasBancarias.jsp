@@ -293,7 +293,7 @@
 
 <script>
 	function cargarBancos() {
-		var idBanco = SolicitudIncorporacionForm.cbo_Codigo.value;	
+		var idBanco = cuentasBancariasSolicForm.cbo_Codigo.value;	
 		if (idBanco!=undefined&&idBanco!="") {
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
    				type: "POST",
@@ -303,7 +303,7 @@
 				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 				success: function(json){		
 					var txtBanco = json.banco.nombre;
-					SolicitudIncorporacionForm.banco.value=txtBanco;
+					cuentasBancariasSolicForm.banco.value=txtBanco;
 					fin();
 				},
 				error: function(e){
@@ -312,7 +312,7 @@
 				}
 			});
 		} else {
-			SolicitudIncorporacionForm.banco.value="";
+			cuentasBancariasSolicForm.banco.value="";
 		}
 	}
 </script>
