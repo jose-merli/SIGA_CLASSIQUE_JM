@@ -241,8 +241,7 @@
 									<siga:Idioma key="censo.datosCuentaBancaria.literal.banco"/>
 								</td>
 								<td class="labelText" COLSPAN="3">
-									<select style="width:500px;" id="banco" class="boxCombo" onchange="cuentasBancariasSolicForm.cbo_Codigo.value=this.value">																		
-									</select>									
+									<input type="text" id="banco" style="width:500px;" class="boxConsulta" readonly></input>
 					   			</td>
 							</tr>
 							<!-- FILA -->
