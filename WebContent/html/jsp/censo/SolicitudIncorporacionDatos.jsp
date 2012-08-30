@@ -1392,6 +1392,8 @@
 					fin();
 				}
 			});
-		}		
+		} else {
+			SolicitudIncorporacionForm.banco.value="";
+		}
 	}
 </script>

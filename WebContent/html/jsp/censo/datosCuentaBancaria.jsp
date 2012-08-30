@@ -454,6 +454,8 @@ VERSIONES: -->
 					fin();
 				}
 			});
-		}	
+		} else {
+			cuentasBancariasForm.banco.value="";
+		}
 	}
 </script>
