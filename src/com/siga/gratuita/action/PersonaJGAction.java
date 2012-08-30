@@ -7,9 +7,9 @@ package com.siga.gratuita.action;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1837,10 +1837,16 @@ public class PersonaJGAction extends MasterAction {
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_NOMBRE,miform.getNombre());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_APELLIDO1,miform.getApellido1());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_APELLIDO2,miform.getApellido2());
-			if ((miform.getFechaNac()==null)||(miform.getFechaNac().equalsIgnoreCase("")))
+			
+			if ((miform.getFechaNac()==null)||(miform.getFechaNac().equalsIgnoreCase(""))) {
 				UtilidadesHash.set(persona,ScsPersonaJGBean.C_FECHANACIMIENTO,"");
-			else
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_EDAD,miform.getEdad());				
+			}
+			else {
 				UtilidadesHash.set(persona,ScsPersonaJGBean.C_FECHANACIMIENTO,GstDate.getApplicationFormatDate("",miform.getFechaNac()));
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_EDAD,"");
+			}
+			
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPROFESION,miform.getProfesion());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDMINUSVALIA,miform.getMinusvalia());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_ESTADOCIVIL,miform.getEstadoCivil());
@@ -1852,8 +1858,7 @@ public class PersonaJGAction extends MasterAction {
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDREPRESENTANTEJG,miform.getIdRepresentanteJG());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_SEXO,miform.getSexo());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDIOMA,miform.getIdioma());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_HIJOS,miform.getHijos());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_EDAD,miform.getEdad());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_HIJOS,miform.getHijos());			
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPAIS,miform.getNacionalidad());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_FAX,miform.getFax());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_CORREOELECTRONICO,miform.getCorreoElectronico());
