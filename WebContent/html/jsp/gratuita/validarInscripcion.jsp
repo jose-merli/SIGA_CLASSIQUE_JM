@@ -33,8 +33,8 @@
 	<script type="text/javascript">
 	
 		function mostrarFechaSolicitud() {
-			if(document.getElementById("invokefechaCheck"))
-				document.getElementById("invokefechaCheck").style.visibility="hidden";
+			if(document.getElementById("fechaCheck"))
+				document.getElementById("fechaCheck").style.visibility="hidden";
 			if(document.getElementById("fechaSolicitud").value==''||document.getElementById("fechaSolicitudBaja").value=='') {
 				if(document.getElementById("fechaSol")){
 					fechaActual = getFechaActualDDMMYYYY();
@@ -76,7 +76,7 @@
 					fechaActual = getFechaActualDDMMYYYY();
 					document.getElementById('fechaCheck').value = fechaActual;
 					document.InscripcionTGForm.denegar.checked = false;
-					document.getElementById("invokefechaCheck").style.visibility="visible";
+					document.getElementById("fechaCheck").style.visibility="visible";
 					if(document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vbtComprobarValidar'){
 						document.getElementById('observacionesValidacion').style.display = "block";
 					}
@@ -91,7 +91,7 @@
 					// if(document.getElementById('asterisco'))
 						// document.getElementById('asterisco').innerHTML = '';
 					document.getElementById('fechaCheck').value = "";
-					document.getElementById("invokefechaCheck").style.visibility="hidden";
+					document.getElementById("fechaCheck").style.visibility="hidden";
 					if(document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vbtComprobarValidar'){
 						document.getElementById('observacionesValidacion').style.display = "block";
 					}
@@ -114,7 +114,7 @@
 						// document.getElementById('asterisco').innerHTML = '(*)';
 					document.getElementById('fechaCheck').value = fechaActual;
 					document.getElementById('validar').checked = false;
-					document.getElementById("invokefechaCheck").style.visibility="visible";
+					document.getElementById("fechaCheck").style.visibility="visible";
 					if(document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vbtComprobarValidar'||document.InscripcionTGForm.modo.value=='vmbtComprobarValidar'||document.InscripcionTGForm.modo.value=='vmbgComprobarValidar' || document.InscripcionTGForm.modo.value=='sbtComprobarInsertar' || document.InscripcionTGForm.modo.value=='smbtInsertarBaja' || document.InscripcionTGForm.modo.value=='sbgComprobarInsertar'){
 	
 						document.InscripcionTGForm.syc[0].checked=false;
@@ -130,7 +130,7 @@
 					// if(document.getElementById('asterisco'))
 						// document.getElementById('asterisco').innerHTML = '';
 					document.getElementById('fechaCheck').value = "";
-					document.getElementById("invokefechaCheck").style.visibility="hidden";
+					document.getElementById("fechaCheck").style.visibility="hidden";
 					if(document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vbtComprobarValidar'){
 						document.getElementById('observacionesValidacion').style.display = "block";
 					}					
@@ -687,7 +687,7 @@
 										</td>
 										<td>
 											<input type="checkbox" id="denegar" name="denegar" value="no"
-												onClick="obtenerFecha('denegar');document.getElementById('invokefechaCheck').style.visibility='hidden';document.getElementById('divGuardiaGrupo').style.display = 'none';" />
+												onClick="obtenerFecha('denegar');document.getElementById('fechaCheck').style.visibility='hidden';document.getElementById('divGuardiaGrupo').style.display = 'none';" />
 										</td>
 										<td>&nbsp;</td>
 									</c:when>
@@ -702,7 +702,7 @@
 										</td>
 										<td>
 											<input type="checkbox" name="denegar" value="no"
-												onClick="obtenerFecha('denegar');document.getElementById('invokefechaCheck').style.visibility='hidden';document.getElementById('divGuardiaGrupo').style.display = 'none';" />
+												onClick="obtenerFecha('denegar');document.getElementById('fechaCheck').style.visibility='hidden';document.getElementById('divGuardiaGrupo').style.display = 'none';" />
 										</td>
 										<td class="labelText">
 											<div id="capa1" style="visibility: hidden">								
