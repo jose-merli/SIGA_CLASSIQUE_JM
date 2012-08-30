@@ -23,6 +23,11 @@ public class CenBancosBean extends MasterBean {
 	/* Nombre campos de la tabla */
 	static public final String C_CODIGO		= "CODIGO";
 	static public final String C_NOMBRE		= "NOMBRE";
+	
+	CenBancosBean() {
+		this.codigo = "";
+		this.nombre = "";
+	}
 
 	// Metodos SET
 	public void setCodigo(String codigo) {this.codigo = codigo;}	

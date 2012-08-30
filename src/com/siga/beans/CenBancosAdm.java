@@ -96,11 +96,11 @@ public class CenBancosAdm extends MasterBeanAdministrador
     		
 		    String sql = " SELECT "+CenBancosBean.T_NOMBRETABLA+"."+CenBancosBean.C_NOMBRE +
 			 " FROM " + CenBancosBean.T_NOMBRETABLA +			 
-			 " WHERE "+CenBancosBean.T_NOMBRETABLA+"."+CenBancosBean.C_CODIGO+"="+idBanco;
+			 " WHERE "+CenBancosBean.T_NOMBRETABLA+"."+CenBancosBean.C_CODIGO+"='"+idBanco + "'";
 
             rc = this.find(sql);
             
- 			if (rc!=null) { 	
+ 			if (rc!=null&&rc.size()>0) { 	
  				Row fila = (Row) rc.get(0);
 				Hashtable registro = (Hashtable)fila.getRow(); 
 				if (registro != null) { 					
