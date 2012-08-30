@@ -231,7 +231,9 @@ public class DatosGeneralesAction extends MasterAction {
 			
 			// Control de edicion de datos generales de persona
 			request.setAttribute("BDATOSGENERALESEDITABLES", "false");
-			if (accionPestanha!=null && accionPestanha.equalsIgnoreCase("NUEVO")) {
+			if (idPersona == null || idPersona.equalsIgnoreCase("")) {
+				request.setAttribute("BDATOSGENERALESEDITABLES", "true");
+			} else if (accionPestanha!=null && accionPestanha.equalsIgnoreCase("NUEVO")) {
 				request.setAttribute("BDATOSGENERALESEDITABLES", "true");
 			} else {
 				int clienteOtraInstitucion = cliAdm.getTipoClienteOtraInstitucionProduccion(Long.parseLong(idPersona), Integer.parseInt(idInstitucion));
