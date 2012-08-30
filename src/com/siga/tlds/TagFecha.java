@@ -187,7 +187,11 @@ public class TagFecha extends TagSupport {
 				out.println("		class = 'box' ");
 			}
 			if ((this.readOnly != null && this.readOnly.equals("true")) || (this.disabled != null  && this.disabled.equals("true"))){
+				if(this.getPostFunction()!=null && !this.getPostFunction().equals("")){
+					out.println("	onblur=\""+	this.getPostFunction()+ "\" readOnly='true' /> ");
+				}else{
 					out.println("readOnly='true' />");
+				}
 			}else{
 				if(this.getPreFunction()!=null && !this.getPreFunction().equals("")){
 					out.println("   onfocus=\"return "+	this.getPreFunction()+"\"");
@@ -198,7 +202,9 @@ public class TagFecha extends TagSupport {
 					out.println("	onblur=\"return validaFecha"+ this.nombreCampo +"(" + this.nombreCampo + ");\"/>");
 				}
 			}
-			out.println("<a href='javascript://'onClick=\"return showCalendarGeneral("+ this.nombreCampo +");\"><img src=\"/SIGA/html/imagenes/calendar.gif\" border=\"0\"></a>");
+			if ((this.disabled == null)||((this.disabled != null)&&this.disabled.equals("false"))){
+				out.println(" <a href='javascript://'onClick=\"return showCalendarGeneral("+ this.nombreCampo +");\"><img src=\"/SIGA/html/imagenes/calendar.gif\" border=\"0\"></a>");
+			}
 			out.println(""); // Linea vacia por legibilidad del codigo
 		}catch (Exception e){
 			e.printStackTrace();
