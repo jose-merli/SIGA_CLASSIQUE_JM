@@ -141,6 +141,7 @@ public class BusquedaTurnosAction extends MasterAction {
 			
 			if(form.getIdTipoTurno()!=null&&!form.getIdTipoTurno().trim().equalsIgnoreCase("")){
 				where+=	" AND turnos.IDTIPOTURNO = "+form.getIdTipoTurno();
+				hash.put("IDTIPOTURNO", form.getIdTipoTurno());
 			}
 
 			request.getSession().setAttribute("DATOSFORMULARIO",hash);
