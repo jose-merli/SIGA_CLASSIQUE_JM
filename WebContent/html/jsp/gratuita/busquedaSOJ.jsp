@@ -311,7 +311,10 @@
    			if(window.frames.resultado.ObjArray){
  				window.frames.resultado.accionGenerarCarta();
 			}
-
+			else {
+				alert("<siga:Idioma key='general.message.seleccionar'/>");
+				fin();
+			}	
 		} 	
 		
 	</script>
