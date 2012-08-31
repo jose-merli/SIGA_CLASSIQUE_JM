@@ -264,10 +264,6 @@
 			   			errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.provincia'/>" + '\n';
 			       	}
 			       	
-			       	<%if (esEspana&&!readonly){ %>
-			       		recuperaValorCombo();	
-					<%}%>	
-			       	
 			   		if (document.SolicitudIncorporacionForm.poblacion.value == "") {
 			   			errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.poblacion'/>" + '\n';
 			       	}
@@ -643,9 +639,9 @@
 				</table>
 				<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.observaciones"/></td>
 				<%if(readonly){ %>
-					<td><textarea rows="3" name="observaciones" class="boxConsulta" style="width:300" readonly><%=datosPersonales.getObservaciones()%></textarea></td>
+					<td><textarea rows="3" name="observaciones" class="boxConsulta" style="width:300px" readonly><%=datosPersonales.getObservaciones()%></textarea></td>
 				<%}else{%>
-					<td><textarea cols="120" rows="3" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" name="observaciones" style="overflow:hidden;width:300px" class="box" ><%=datosPersonales.getObservaciones()%></textarea></td>
+					<td><textarea cols="120" rows="3" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" name="observaciones" style="width:300px" class="box" ><%=datosPersonales.getObservaciones()%></textarea></td>
 				<%}%>
 			</td>
 			</tr>
