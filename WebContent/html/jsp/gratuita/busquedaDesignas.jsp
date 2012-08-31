@@ -514,14 +514,37 @@ String[] getdatos = { usr.getLocation() };
 			}
 		}
 		
+		var comboJuzgado ="";
 		// Funcion que obtiene el juzgado buscando por codigo externo	
 		function obtenerJuzgado(codigo, combo) { 
 			if (codigo.value!=""){
+				comboJuzgado=combo;
 				document.MantenimientoJuzgadoForm.codigoExt2.value=codigo.value;
 				document.MantenimientoJuzgadoForm.nombreObjetoDestino.value=combo;		
 				document.MantenimientoJuzgadoForm.submit();		
 			}
+			else
+				seleccionComboSiga(combo,-1);
 		}
+			
+		function traspasoDatos(resultado){		
+			if (comboJuzgado=="juzgado") {
+				if (resultado[0]==undefined) {
+					seleccionComboSiga("juzgado",-1);
+					document.getElementById("codigoExtJuzgado").value = "";
+				} 
+				else
+					seleccionComboSiga("juzgado",resultado[0]);					
+			}
+			else {
+				if (resultado[0]==undefined) {
+					seleccionComboSiga("juzgadoActu",-1);
+					document.getElementById("codigoExtJuzgadoActu").value = "";
+				} 
+				else
+					seleccionComboSiga("juzgadoActu",resultado[0]);						
+			} 
+		}			
 		
 	function cambiarJuzgado(comboJuzgado, codigo) {
 		if(comboJuzgado.value!=""){
@@ -540,18 +563,9 @@ String[] getdatos = { usr.getLocation() };
 				}
 			});
 		}
-	}		
-					
-	//		
-		function traspasoDatos(resultado){
-		
-			if(resultado[1] && resultado[1]!=""){
-				if(resultado[1]=="juzgado")
-					 seleccionComboSiga("juzgado",resultado[0]);
-				else
-					 seleccionComboSiga("juzgadoActu",resultado[0]);
-			}	 
-		}	
+		else
+			document.getElementById(codigo).value = "";
+	}					
 		
 		function refrescarLocal()
 		{
