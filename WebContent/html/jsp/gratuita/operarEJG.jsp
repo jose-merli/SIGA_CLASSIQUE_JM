@@ -377,31 +377,6 @@
 			}			 	
 		}
 		
-	// Funcion que obtiene el juzgado buscando por codigo externo	
-		function obtenerJuzgado() { 
-			if (document.forms[0].codigoExtJuzgado.value!=""){
-				document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[0].codigoExtJuzgado.value;
-				document.MantenimientoJuzgadoForm.submit();		
-			}
-		}
-	
-	// Funcion que obtiene la comisaria buscando por codigo externo	
-		function obtenerComisaria() { 
-			if (document.forms[0].codigoExtComisaria.value!=""){
-				document.MantenimientoComisariaForm.codigoExtBusqueda.value=document.forms[0].codigoExtComisaria.value;
-				document.MantenimientoComisariaForm.submit();		
-			}
-		}
-	
-	//		
-		function traspasoDatosComisaria(resultado) {
-		 	seleccionComboSiga("vistaComisaria",resultado[0]);
-		}	
-					
-		function traspasoDatos(resultado) {
-		 	seleccionComboSiga("vistaJuzgado",resultado[0]);
-		}
-		
 		function generarExpediente(){
 			if(<%=tipoExpedienteRepetido%>)
 				alert("Tiene repetidos el tipo de Expediente de Insostenibilidad.");
