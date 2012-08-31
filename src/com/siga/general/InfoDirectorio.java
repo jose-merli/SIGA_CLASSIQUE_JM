@@ -5,6 +5,7 @@ import java.io.File;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -65,6 +66,9 @@ public class InfoDirectorio {
 				traza (f.getName(), f.getAbsolutePath(), "d", acceso, fecha, nivel, v);
 				
 				String[] children = f.list();
+				
+				Arrays.sort(children);
+				
 			    ArrayList directorios = new ArrayList();
 				for (int i = 0; i<children.length; i++) {
 				    File aux = new File(f, children[i]);
