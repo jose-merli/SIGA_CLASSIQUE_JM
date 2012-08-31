@@ -2675,8 +2675,12 @@ function limpiarPersonaContrario() {
 			if(document.forms[0].NIdentificacion.value=="") 
 				document.forms[0].tipoId.value = "";
 			
-			if(!comprobarFecha(document.getElementById('fechaNac').value)){
-				alert("<siga:Idioma key='fecha.error.valida'/>");				
+			if(!comprobarFecha(document.getElementById('fechaNac').value)){			
+				if (<%=obligatorioFechaNac%>&&document.getElementById('fechaNac').value=="")
+					alert("<siga:Idioma key='fecha.error.campo.necesario'/>");
+					
+				else 
+					alert("<siga:Idioma key='fecha.error.valida'/>");
 				fin();
 				return false;
 			}
@@ -2818,7 +2822,11 @@ function limpiarPersonaContrario() {
 				document.forms[0].tipoId.value = "";
 				
 			if(!comprobarFecha(document.getElementById('fechaNac').value)){
-				alert("<siga:Idioma key='fecha.error.valida'/>");				
+				if (<%=obligatorioFechaNac%>&&document.getElementById('fechaNac').value=="")
+					alert("<siga:Idioma key='fecha.error.campo.necesario'/>");
+					
+				else 
+					alert("<siga:Idioma key='fecha.error.valida'/>");		
 				fin();
 				return false;
 			}
