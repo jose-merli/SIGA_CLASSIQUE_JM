@@ -210,15 +210,22 @@
 		}
 
 		function obtenerJuzgado() { 
-			  if (document.getElementById("codigoExtJuzgadoActu").value!=""){
-  				   document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgado";	
-				   document.MantenimientoJuzgadoForm.codigoExt2.value=document.getElementById("codigoExtJuzgadoActu").value;
-				   document.MantenimientoJuzgadoForm.submit();		
+			 if (document.getElementById("codigoExtJuzgadoActu").value!=""){
+  				document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgado";	
+				document.MantenimientoJuzgadoForm.codigoExt2.value=document.getElementById("codigoExtJuzgadoActu").value;
+				document.MantenimientoJuzgadoForm.submit();		
 			 }
+			 else
+		 		seleccionComboSiga("juzgado",-1);
 		}		
 			
 		function traspasoDatos(resultado){
-			seleccionComboSiga("juzgado",resultado[0]);
+			if (resultado[0]==undefined) {
+				seleccionComboSiga("juzgado",-1);
+				document.getElementById("codigoExtJuzgadoActu").value = "";
+			} 
+			else
+				seleccionComboSiga("juzgado",resultado[0]);
 		}
 		
 	function cambiarJuzgado(comboJuzgado) {
@@ -238,6 +245,8 @@
 				}
 			});
 		}
+		else
+			document.getElementById("codigoExtJuzgadoActu").value = "";
 	}			
 
 	</script>
@@ -403,7 +412,7 @@
 					<siga:Idioma key="gratuita.mantAsistencias.literal.juzgado"/>
 				</td>
 				<td class="labelText" colspan="3">
-					<input type="text" name="codigoExtJuzgadoActu" class="box" size="5"  style="margin-top:3px;" maxlength="10" onChange="obtenerJuzgado();" />
+					<input type="text" name="codigoExtJuzgadoActu" class="box" size="5"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />
 					<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="680" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  hijo="t" elementoSel="<%=juzgadoActu%>" parametro="<%=dato%>" accion="parent.cambiarJuzgado(this);" />           	   
 				</td>
 			</tr>

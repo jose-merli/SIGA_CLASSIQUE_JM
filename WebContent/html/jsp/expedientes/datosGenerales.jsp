@@ -316,10 +316,6 @@
 	
 		var jsEstadoViejo="";
 		var jsEstadoNuevo="";
-		 
-		function traspasoDatos(resultado){
-		 seleccionComboSiga("juzgado",resultado[0]);
-		}	
 		
 		<!-- Asociada al boton Volver -->
 		function accionVolver() 
@@ -551,7 +547,18 @@
 			   	document.MantenimientoJuzgadoForm.codigoExt2.value=document.getElementById("codigoExtJuzgado").value;
 				document.MantenimientoJuzgadoForm.submit();		
 		 	}
+		 	else
+		 		seleccionComboSiga("juzgado",-1);
 		}
+		
+		function traspasoDatos(resultado){
+		 	if (resultado[0]==undefined) {
+				seleccionComboSiga("juzgado",-1);
+				document.getElementById("codigoExtJuzgado").value = "";
+			} 
+			else
+				seleccionComboSiga("juzgado",resultado[0]);	
+		}	
 		
 	function cambiarJuzgado(comboJuzgado) {
 		if(comboJuzgado.value!=""){
@@ -570,6 +577,8 @@
 				}
 			});
 		}
+		else
+			document.getElementById("codigoExtJuzgado").value = "";
 	}			
 		
 		function getPlazo(){
@@ -1492,7 +1501,7 @@
 				<%
 					if (bEditable) {
 				%>
-				 	  <input type="text" name="codigoExtJuzgado" class="box" size="3"  style="margin-top:3px;" maxlength="10" onChange="obtenerJuzgado();" />
+				 	  <input type="text" name="codigoExtJuzgado" class="box" size="3"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />
 				 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateriaExp" ancho="330" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" elementoSel="<%=juzgadoSel%>" hijo="t" accion="Hijo:procedimiento" readonly="false" accion="parent.cambiarJuzgado(this);" />           	   
 				<%
            	   					} else {
