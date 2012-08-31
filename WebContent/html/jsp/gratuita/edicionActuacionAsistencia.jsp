@@ -663,12 +663,28 @@
 	function obtenerJuzgado() { 
 	  	if (document.getElementById("codJuzgado").value!=""){
 			document.MantenimientoJuzgadoForm.codigoExt2.value=document.getElementById("codJuzgado").value;
-		   	document.MantenimientoJuzgadoForm.submit();	
-		   	
-			document.getElementById("idComisaria").value="";
-			document.getElementById("codComisaria").value="";	
+		   	document.MantenimientoJuzgadoForm.submit();			   					
 	 	}
+	 	else
+	 		document.getElementById("idJuzgado").value=-1;
+	 	
+	 	document.getElementById("idComisaria").value="";
+		document.getElementById("codComisaria").value="";
 	}
+	
+	function traspasoDatos(resultado){
+		if (resultado[0]==undefined) {
+			document.getElementById("idJuzgado").value=-1;
+			document.getElementById("codJuzgado").value = "";
+		} 
+		else {
+			if(resultado && resultado.length > 0){
+				var fin = resultado[0].indexOf(',');
+				if (fin != -1) 
+					document.getElementById("idJuzgado").value=resultado[0].substring(0,fin);
+			}
+		}	
+	}		
 	
 	function cambioJuzgado(){			
 		var comboJuzgado = document.getElementById("idJuzgado");	
@@ -692,16 +708,9 @@
 				}
 			});
 		}		
+		else
+			document.getElementById("codJuzgado").value = "";
 	}
-	
-	function traspasoDatos(resultado){
-		if(resultado && resultado.length > 0){
-			var fin = resultado[0].indexOf(',');
-			if (fin != -1) { 
-				document.getElementById("idJuzgado").value=resultado[0].substring(0,fin);
-			}
-		}	
-	}	
 	
 	function inicio() {
 		//Para que se rellene el combo de costes
