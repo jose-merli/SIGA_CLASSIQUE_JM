@@ -612,20 +612,27 @@
 	function obtenerComisaria() { 
 		if (document.getElementById("codComisaria").value!=""){
 			document.MantenimientoComisariaForm.codigoExtBusqueda.value=document.getElementById("codComisaria").value;
-			document.MantenimientoComisariaForm.submit();
-			
-			document.getElementById("idJuzgado").value="";
-			document.getElementById("codJuzgado").value="";	
+			document.MantenimientoComisariaForm.submit();			
 		 }
+		 else
+				document.getElementById("idComisaria").value=-1;
+				
+		document.getElementById("idJuzgado").value="";
+		document.getElementById("codJuzgado").value="";	
 	}
-	//			
+		
 	function traspasoDatosComisaria(resultado){
-		if(resultado && resultado.length > 0){
-			var fin = resultado[0].indexOf(',');
-			if (fin != -1) { 
-				document.getElementById("idComisaria").value=resultado[0].substring(0,fin);
+		if (resultado[0]==undefined) {
+			document.getElementById("idComisaria").value=-1;
+			document.getElementById("codComisaria").value = "";
+		} 
+		else {
+			if(resultado && resultado.length > 0){
+				var fin = resultado[0].indexOf(',');
+				if (fin != -1) 
+					document.getElementById("idComisaria").value=resultado[0].substring(0,fin);
 			}
-		}		
+		}
 	}
 	
 	function cambioComisaria(){
@@ -649,6 +656,8 @@
 				}
 			});
 		}
+		else
+			document.getElementById("codComisaria").value = "";
 	}		
 	
 	function obtenerJuzgado() { 

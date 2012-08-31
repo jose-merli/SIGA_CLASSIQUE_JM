@@ -492,7 +492,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			<td class="labelText" style="vertical-align:text-top;text-align: right">
 			<siga:Idioma key='gratuita.mantenimientoTablasMaestra.literal.codigoext'/>
 			&nbsp;
-			<input type="text" name="codigoExtComisaria" class="box" size="8"  maxlength="10" onChange="obtenerComisaria();" />
+			<input type="text" name="codigoExtComisaria" class="box" size="8"  maxlength="10" onBlur="obtenerComisaria();" />
 			<%}%>
 			<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="420" obligatorio="false" parametro="<%=parametroComisaria%>" elementoSel="<%=comisariaSel%>" clase="<%=estilo%>" readonly="<%=readOnly%>" accion="actualizarTdNumeroDiligencia(); cambiarComisaria(this);"/>
 			</td>
@@ -1069,11 +1069,17 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 				document.MantenimientoComisariaForm.codigoExtBusqueda.value=document.forms[0].codigoExtComisaria.value;
 				document.MantenimientoComisariaForm.submit();	
 			}
+			else
+		 		document.getElementById("comisaria").value=-1;
 		}
 			 
-		//			
 		function traspasoDatosComisaria(resultado) {
-			document.getElementById("comisaria").value=resultado[0];	
+			if (resultado[0]==undefined) {
+				document.getElementById("comisaria").value=-1;
+				document.getElementById("codigoExtComisaria").value = "";
+			} 
+			else
+				document.getElementById("comisaria").value=resultado[0];	
 		}			
 		
 	function cambiarComisaria(comboComisaria) {
@@ -1093,6 +1099,8 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 				}
 			});
 		}
+		else
+			document.getElementById("codigoExtComisaria").value = "";
 	}	
 	
 		function obtenerJuzgado() { 

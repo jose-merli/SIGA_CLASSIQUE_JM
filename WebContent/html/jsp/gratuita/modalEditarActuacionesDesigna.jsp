@@ -333,11 +333,17 @@
 				document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[0].codigoExtJuzgado.value;
 				document.MantenimientoJuzgadoForm.submit();		
 			 }
+			else
+		 		seleccionComboSiga("juzgado",-1);
 		}
-
-		//					
+		
 		function traspasoDatos(resultado){
-		 	document.getElementById("juzgado").value=resultado[0];
+			if (resultado[0]==undefined) {
+				seleccionComboSiga("juzgado",-1);
+				document.getElementById("codigoExtJuzgado").value = "";
+			} 
+			else
+				seleccionComboSiga("juzgado",resultado[0]);	
 		}
 		
 	function cambiarJuzgado(comboJuzgado) {
@@ -357,6 +363,8 @@
 				}
 			});
 		}
+		else
+			document.getElementById("codigoExtJuzgado").value = "";
 	}		
 	</script>		
 </head>
@@ -533,7 +541,7 @@
 					</td>
 					<%}else{%>
 					  <td colspan="5" >
-							<input type="text" name="codigoExtJuzgado" class="box" size="8"  style="margin-top:0px;" maxlength="10" onChange="obtenerJuzgado();" />
+							<input type="text" name="codigoExtJuzgado" class="box" size="8"  style="margin-top:0px;" maxlength="10" onBlur="obtenerJuzgado();" />
 							<siga:ComboBD nombre="juzgado" ancho="430" tipo="<%=comboJuzgados%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>"  accion="Hijo:procedimiento; cambiarJuzgado(this);"/>
 					</td>
 			<%}%>

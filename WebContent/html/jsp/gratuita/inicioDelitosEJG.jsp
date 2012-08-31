@@ -366,7 +366,7 @@
 						<td colspan="4" class="labelText" ><siga:Idioma key='gratuita.mantAsistencias.literal.c.Detencion'/></td>
 							<td colspan="23">
 							<%if(modopestanha.equals("editar")){%>
-							 	<input type="text" name="codigoExtComisaria" class="box" size="3"  style="margin-top:3px;" maxlength="10" onChange="obtenerComisaria();"/>
+							 	<input type="text" name="codigoExtComisaria" class="box" size="3"  style="margin-top:3px;" maxlength="10" onBlur="obtenerComisaria();"/>
 								<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="505" obligatorio="false" parametro="<%=datosCom%>" elementoSel="<%=comisariaSel%>" clase="<%=estilo%>" hijo="t" readonly="false" accion="parent.cambiarComisaria(this);"/>
 							<%}else{%>
 									<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="555" obligatorio="false" parametro="<%=datosCom%>" elementoSel="<%=comisariaSel%>" clase="boxConsulta" hijo="t" readonly="true"/>
@@ -760,14 +760,19 @@
 			   document.MantenimientoComisariaForm.codigoExtBusqueda.value=document.getElementById("codigoExtComisaria").value;
 			   document.MantenimientoComisariaForm.submit();	  
 			}			  
+			else
+		 		seleccionComboSiga("comisaria",-1);
 		 }
 		
 		function traspasoDatosComisaria(resultado) {
-		 	seleccionComboSiga("comisaria",resultado[0]);
+			if (resultado[0]==undefined) {
+				seleccionComboSiga("comisaria",-1);
+				document.getElementById("codigoExtComisaria").value = "";
+			} 
+			else
+				seleccionComboSiga("comisaria",resultado[0]);	
 		}
 
-
-	
 	function cambiarComisaria(comboComisaria) {
 		if(comboComisaria.value!=""){
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
@@ -785,5 +790,7 @@
 				}
 			});
 		}
+		else
+			document.getElementById("codigoExtComisaria").value = "";
 	}	
 </script>
