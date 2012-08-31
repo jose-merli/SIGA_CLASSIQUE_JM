@@ -555,10 +555,17 @@
  			    document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[0].codigoExtJuzgado.value;
 				document.MantenimientoJuzgadoForm.submit();
 			}
+			else {
+				document.getElementById("juzgado").value=-1;
+			}
 		}
 	
 		function traspasoDatos(resultado){
-		 	document.getElementById("juzgado").value=resultado[0];
+			if (resultado[0]==undefined) {
+				document.getElementById("juzgado").value=-1;
+				document.getElementById("codigoExtJuzgado").value = "";
+			} else
+				document.getElementById("juzgado").value=resultado[0];
 		}
 		
 	function cambiarJuzgado(comboJuzgado) {
@@ -733,14 +740,14 @@
 						<!-- JBD 16/2/2009 INC-5682-SIGA -->
 						<%if(art27.equals("1")){ %>
 							<td class="labelText">
-								<siga:Idioma key="gratuita.editarDesigna.literal.art27Texto"/>&nbsp;
+								<siga:Idioma key="gratuita.editarDesigna.literal.art27Texto"/>
 							</td>
 						<%}%>
 					</tr>
 				</table>
 			</siga:ConjCampos> 
 			<siga:ConjCampos leyenda="gratuita.busquedaDesignas.literal.designa">
-				<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" width="100%" border="0">
+				<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" width="100%" border="1">
 					<tr>
 						<td class="labelText" width="15%">
 							<siga:Idioma key="gratuita.editarDesigna.literal.tipo" />
@@ -853,7 +860,7 @@
 											<%}%>
 										</td>
 										<td class="labelText" width="10%">
-											<input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onChange="obtenerJuzgado();" />&nbsp;
+											<input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();" />&nbsp;
 										</td>
 										<td>&nbsp;</td>
 									<% } %>
