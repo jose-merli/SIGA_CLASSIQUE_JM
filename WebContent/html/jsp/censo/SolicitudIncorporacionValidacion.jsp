@@ -124,7 +124,7 @@
 
 <script>
 	if (<%=errorCodigo%>) {
-		var mensaje = "<siga:Idioma key='messages.censo.solicitudIncorporacion.errorNoExisteSolicitud'/>;
+		var mensaje = "<siga:Idioma key='messages.censo.solicitudIncorporacion.errorNoExisteSolicitud'/>";
 		alert(mensaje);
 	}
 </script>
