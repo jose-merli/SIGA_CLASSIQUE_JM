@@ -219,8 +219,8 @@ public class EnvioInformesGenericos extends MasterReport {
 			
 			if(total!=null)
 			{
-				if(total.size()>1)
-					htDatosInforme.put("region", total.get("vInformeComp"));
+				if(total.size()>0)
+					htDatosInforme.put("componentes", total.get("vInformeComp"));
 				htDatosInforme.put("row", total.get("vInforme"));
 			}
 			else			
@@ -3401,6 +3401,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			}
 		}
 
+		
 		return ficheroSalida;
 	} // getInformeGenerico()
 

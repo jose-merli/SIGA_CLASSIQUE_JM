@@ -305,10 +305,8 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 		CenCuentasBancariasAdm admCuentasBancarias = new CenCuentasBancariasAdm(usrbean);
 		try {
 			//Se recogen los componentes si los hubiera de BBDD
-			//if(usrBean!=null){
-				CenComponentesAdm componentesAdm = new CenComponentesAdm(usrbean);
-				v= componentesAdm.selectComponentes(new Long(idPersona), new Integer(idInstitucion));									
-			//}
+			CenComponentesAdm componentesAdm = new CenComponentesAdm(usrbean);
+			v= componentesAdm.selectComponentes(new Long(idPersona), new Integer(idInstitucion));									
 												
 			//Se recogen los datos paa el informe del No Colegiado
 			vInforme = getDatosInformeNoColegiado(idInstitucion, idPersona, idioma, isInforme); 
@@ -343,10 +341,14 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 						else
 							registro.put("EJERCIENTE", "");
 				
-						if(((String)registroContenido.get(CenComponentesBean.C_SOCIEDAD)).equals(ClsConstants.DB_FALSE)){
-							registro.put("PARTICIPACION_SOCIEDAD_%",UtilidadesString.getMensajeIdioma(usrbean,"general.no"));
+						if(!((String)registroContenido.get(CenComponentesBean.C_SOCIEDAD)).equals("")){
+							if(((String)registroContenido.get(CenComponentesBean.C_SOCIEDAD)).equals(ClsConstants.DB_FALSE)){
+								registro.put("PARTICIPACION_SOCIEDAD_%",UtilidadesString.getMensajeIdioma(usrbean,"general.no"));
+							}else{
+								registro.put("PARTICIPACION_SOCIEDAD_%",UtilidadesString.getMensajeIdioma(usrbean,"general.yes"));							   	 				
+							}
 						}else{
-							registro.put("PARTICIPACION_SOCIEDAD_%",UtilidadesString.getMensajeIdioma(usrbean,"general.yes"));							   	 				
+							registro.put("PARTICIPACION_SOCIEDAD_%","");
 						}
 						vInformeComp.add(registro);
 					}//fin for

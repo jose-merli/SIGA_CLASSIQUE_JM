@@ -176,7 +176,7 @@ public class CenComponentesAdm extends MasterBeanAdministrador {
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CODIGOSUCURSAL,		
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_DIGITOCONTROL,	
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA,
-							"TO_CHAR(CEN_COMPONENTES.FECHACARGO, 'dd-mm-yyyy') AS FECHACARGOINFORME",
+							"TO_CHAR(CEN_COMPONENTES.FECHACARGO, 'dd/mm/yyyy') AS FECHACARGOINFORME",
 							"DECODE(f_siga_gettipocliente(CEN_COMPONENTES.CEN_CLIENTE_IDPERSONA,CEN_COMPONENTES.CEN_CLIENTE_IDINSTITUCION,SYSDATE),20,1,0) AS EJERCIENTE"};
 		return campos;
 	}
@@ -236,7 +236,7 @@ public class CenComponentesAdm extends MasterBeanAdministrador {
 	 * @param idInstitucion, es el identificador de la institucion de la persona de la que vamos a obtener los datos. 
 	 */	
 	public Vector selectComponentes(Long idPersona, Integer idInstitucion)  throws ClsExceptions, SIGAException{
-		Vector v = null;
+		Vector v = new Vector();
 		RowsContainer rc = null;
 		String where = " WHERE " + CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_IDPERSONA + " = " + idPersona +
 					   " AND "   + CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_IDINSTITUCION + " = " + idInstitucion; 
@@ -248,13 +248,27 @@ public class CenComponentesAdm extends MasterBeanAdministrador {
 			sql += where;
 			sql += UtilidadesBDAdm.sqlOrderBy(this.getOrdenComponentes());
 			if (rc.query(sql)) {
-				v = new Vector();
 				for (int i = 0; i < rc.size(); i++)	{
 					Row fila = (Row) rc.get(i);
 					Hashtable registro = (Hashtable)fila.getRow(); 
 					if (registro != null) 
 						v.add(registro);
 				}
+			} else {
+				Hashtable registro = new Hashtable();
+				registro.put("NIF_COMPONENTE", "");
+				registro.put("NOMBRE_COMPONENTE", "");
+				registro.put("CARGO", "");
+				registro.put("FECHACARGO", "");
+				registro.put("EJERCIENTE", "");
+				registro.put("PARTICIPACION_SOCIEDAD_%", "");
+				registro.put("NIFCIF","");
+				registro.put("NOMBRE","");
+				registro.put("APELLIDOS1","");
+				registro.put("APELLIDOS2","");
+				registro.put("FECHACARGOINFORME","");
+				registro.put("SOCIEDAD","");
+				v.add(registro);
 			}
 		}
 		catch(ClsExceptions e){
