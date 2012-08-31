@@ -1109,16 +1109,16 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 				document.MantenimientoJuzgadoForm.submit();	
 			 }
 			 else
-		 		seleccionComboSiga("juzgado",-1);
+			 	document.getElementById("juzgado").value=-1;
 		}
 		
 		function traspasoDatos(resultado){
 			if (resultado[0]==undefined) {
-				seleccionComboSiga("juzgado",-1);
+				document.getElementById("juzgado").value=-1;
 				document.getElementById("codigoExtJuzgado").value = "";
 			} 
 			else
-				seleccionComboSiga("juzgado",resultado[0]);				 
+				document.getElementById("juzgado").value=resultado[0];
 		}		
 	
 	function cambiarJuzgado(comboJuzgado) {

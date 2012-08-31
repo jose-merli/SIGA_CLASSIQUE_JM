@@ -721,7 +721,7 @@
 			 	document.MantenimientoJuzgadoForm.submit();
 		 	}
 		 	else
-				document.getElementById("juzgado").value=-1;
+		 		seleccionComboSiga("juzgado",-1);	
 		}
 		
 		function traspasoDatos(resultado){
