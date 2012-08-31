@@ -25,6 +25,8 @@
 	String app = request.getContextPath(); 
 	HttpSession ses=request.getSession();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
+	
+	Boolean errorCodigo = (Boolean)request.getAttribute("errorCodigo");
 %>
 
 <html>
@@ -34,11 +36,8 @@
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
 
-<link id="default" rel="stylesheet" type="text/css"
-	href="<%=app%>/html/jsp/general/stylesheet.jsp" />
-<link rel="stylesheet"
-	href="<%=app%>/html/js/themes/base/jquery.ui.all.css" />
-
+<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp" />
+<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css" />
 
 <script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
@@ -46,8 +45,7 @@
 <!-- Escribe el título y localización en la barra de título del frame principal -->
 <!--siga:Titulo titulo="censo.solicitudIncorporacion.localizacion" 
  		         localizacion="censo.solicitudIncorporacion.localizacion"/-->
-<siga:TituloExt titulo="censo.solicitudIncorporacion.titulo"
-	localizacion="censo.solicitudIncorporacion.localizacion" />
+<siga:TituloExt titulo="censo.solicitudIncorporacion.titulo" localizacion="censo.solicitudIncorporacion.localizacion" />
 <!-- FIN: TITULO Y LOCALIZACION -->
 
 <script language="JavaScript">
@@ -55,14 +53,14 @@
 			sub();
 			
 			if (SolicitudIncorporacionForm.clave.value=="") {
-				var mensaje = "<siga:Idioma key='censo.SolicitudIncorporacion.literal.clave'/> <siga:Idioma key='messages.campoObligatorio.error'/>";
+				var mensaje = "<siga:Idioma key='censo.SolicitudIncorporacion.codigo'/> <siga:Idioma key='messages.campoObligatorio.error'/>";
 				alert (mensaje);
 				fin();
 			 	return false;
   			}  						
 			
 			if (isNaN(document.SolicitudIncorporacionForm.clave.value)) {
-				var mensaje = "<siga:Idioma key="censo.SolicitudIncorporacion.literal.clave"/> <siga:Idioma key="messages.campoNumerico.error"/>";
+				var mensaje = "<siga:Idioma key='censo.SolicitudIncorporacion.codigo'/> <siga:Idioma key='messages.campoNumerico.error'/>";
 				alert (mensaje);
 				fin();
 			 	return false;
@@ -85,38 +83,48 @@
 		<table style="width: 964;" align="center" cellspacing=0>
 
 			<tr>
-				<td class="titulitosDatos"><siga:Idioma
-						key="censo.SolicitudIncorporacion.cabecera4" /></td>
+				<td class="titulitosDatos">
+					<siga:Idioma key="censo.SolicitudIncorporacion.cabecera4" />
+				</td>
 			</tr>
 			<tr>
-				<td class="labelTextValor"><br> <siga:Idioma
-						key="censo.SolicitudIncorporacion.frase1" /> <br></td>
+				<td class="labelTextValor">
+					<br> <siga:Idioma key="censo.SolicitudIncorporacion.frase1" /> <br>
+				</td>
 			</tr>
 			<tr>
-				<td class="labelTextValor"><html:submit styleClass="button"
-						onclick="modo.value='nuevo'">
+				<td class="labelTextValor">
+					<html:submit styleClass="button" onclick="modo.value='nuevo'">
 						<siga:Idioma key="general.boton.new" />
-					</html:submit> <br>
-				<br></td>
+					</html:submit> 
+					<br><br>
+				</td>
 			</tr>
 			<tr>
-				<td class="titulitosDatos"><siga:Idioma
-						key="censo.SolicitudIncorporacion.cabecera5" /></td>
+				<td class="titulitosDatos">
+					<siga:Idioma key="censo.SolicitudIncorporacion.cabecera5" />
+				</td>
 			</tr>
 			<tr>
-				<td class="labelTextValor"><br> <siga:Idioma
-						key="censo.SolicitudIncorporacion.frase2" /> <br></td>
+				<td class="labelTextValor">
+					<br> <siga:Idioma key="censo.SolicitudIncorporacion.frase2" /> <br>
+				</td>
 			</tr>
 			<tr>
-				<td class="labelTextValor"><input type="password" class="box"
-					name="clave" maxlength="10"> <html:hidden property="modo"
-						value="" /> <input type="button" class="button" id="idButton"
-					onClick="validaClave();"
-					value='<siga:Idioma key="general.boton.consultar" />' /> <br>
-				<br></td>
+				<td class="labelTextValor">
+					<input type="password" class="box" name="clave" maxlength="10"> <html:hidden property="modo" value="" /> 
+					<input type="button" class="button" id="idButton" onClick="validaClave();" value='<siga:Idioma key="general.boton.consultar" />' /> 
+					<br><br>
+				</td>
 			</tr>
 		</table>
 	</html:form>
 </body>
-
 </html>
+
+<script>
+	if (<%=errorCodigo%>) {
+		var mensaje = "<siga:Idioma key='messages.censo.solicitudIncorporacion.errorNoExisteSolicitud'/>;
+		alert(mensaje);
+	}
+</script>

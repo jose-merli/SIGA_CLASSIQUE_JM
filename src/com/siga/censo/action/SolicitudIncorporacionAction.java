@@ -211,10 +211,13 @@ public class SolicitudIncorporacionAction extends MasterAction
 			Vector datosSelect = solicitudAdm.selectByPK(hash);
 			if ((datosSelect != null) && (datosSelect.size() > 0)) {
 				bean = (CenSolicitudIncorporacionBean) datosSelect.get(0);
+				request.setAttribute("SOLINC", hash);
+				forward="SolicitudIncorporacionInicio";				
 			}
-			//forward = this.mostrarDatosSolicitud(request, bean, miFormulario);
-			
-			request.setAttribute("SOLINC", hash);
+			else {
+				request.setAttribute("errorCodigo", true);
+				forward="inicio";
+			}						
 			
 			//Vemos si vamos a una modal o no:
 			String esmodal = miFormulario.getEsModal();
@@ -226,7 +229,7 @@ public class SolicitudIncorporacionAction extends MasterAction
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
 		}
-		return "SolicitudIncorporacionInicio"; 
+		return forward; 
 	} //ver()
 	
 	protected String nuevo(ActionMapping mapping, 
