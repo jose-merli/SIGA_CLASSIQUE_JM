@@ -555,16 +555,16 @@
  			    document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[0].codigoExtJuzgado.value;
 				document.MantenimientoJuzgadoForm.submit();
 			}
-			else {
+			else
 				document.getElementById("juzgado").value=-1;
-			}
 		}
 	
 		function traspasoDatos(resultado){
 			if (resultado[0]==undefined) {
 				document.getElementById("juzgado").value=-1;
 				document.getElementById("codigoExtJuzgado").value = "";
-			} else
+			} 
+			else
 				document.getElementById("juzgado").value=resultado[0];
 		}
 		
@@ -585,6 +585,8 @@
 				}
 			});
 		}
+		else
+			document.getElementById("codigoExtJuzgado").value = "";
 	}		
 		
 		function generarCarta() {

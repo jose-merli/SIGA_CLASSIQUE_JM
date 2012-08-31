@@ -546,25 +546,32 @@
 		{
 			
 		}
-			
-		function obtenerJuzgado() 
-		{ 
-		  	if (document.getElementById("codigoExtJuzgado").value!=""){
-			 	document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgado";	
-			   	document.MantenimientoJuzgadoForm.codigoExt2.value=document.getElementById("codigoExtJuzgado").value;
-				document.MantenimientoJuzgadoForm.submit();		
-		 	}
-		}		
-
-		function traspasoDatos(resultado){
-			 seleccionComboSiga("juzgado",resultado[0]);
-		}	
 		
 		function consultas() 
 		{		
 			document.RecuperarConsultasForm.submit();
 		
 		}
+		
+		function obtenerJuzgado() 
+		{ 
+		  	if (document.getElementById("codigoExtJuzgado").value!=""){
+			 	document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgado";	
+			   	document.MantenimientoJuzgadoForm.codigoExt2.value=document.getElementById("codigoExtJuzgado").value;
+				document.MantenimientoJuzgadoForm.submit();		
+		 	} 
+		 	else
+		 		seleccionComboSiga("juzgado",-1);
+		}		
+
+		function traspasoDatos(resultado){
+			if (resultado[0]==undefined) {
+				seleccionComboSiga("juzgado",-1);
+				document.getElementById("codigoExtJuzgado").value = "";
+			} 
+			else
+				seleccionComboSiga("juzgado",resultado[0]);				 
+		}			
 		
 	function cambiarJuzgado(comboJuzgado) {
 		if(comboJuzgado.value!=""){
@@ -583,6 +590,8 @@
 				}
 			});
 		}
+		else
+			document.getElementById("codigoExtJuzgado").value = "";
 	}			
 </script>
 <!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
