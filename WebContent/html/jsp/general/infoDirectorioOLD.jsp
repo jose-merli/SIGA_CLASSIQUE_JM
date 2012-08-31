@@ -1,5 +1,6 @@
 <!-- infoDirectorioOLD.jsp -->
 
+<%@page import="com.siga.general.InfoDirectorio"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -7,7 +8,7 @@
 
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp" %>
 
-<%@ page import="com.siga.general.infoDirectorioOLD"%>
+<%@ page import="com.siga.general.InfoDirectorio"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.siga.*"%>
 <%@ page import="java.io.File" %>
@@ -38,7 +39,7 @@ try {
 			path = UtilidadesString.replaceAllIgnoreCase(path,"\\","/");
 		}
 		if (path.startsWith(pathBase)){
-			vDatos = infoDirectorioOLD.getinfoDirectorioOLD(path);
+			vDatos = InfoDirectorio.getInfoDirectorio(path);
 		}else{
 			path=pathBase;
 		}
