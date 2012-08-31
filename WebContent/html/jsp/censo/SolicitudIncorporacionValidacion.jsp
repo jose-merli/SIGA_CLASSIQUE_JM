@@ -53,12 +53,21 @@
 <script language="JavaScript">
 		function validaClave () {
 			sub();
+			
+			if (SolicitudIncorporacionForm.clave.value=="") {
+				var mensaje = "<siga:Idioma key='censo.SolicitudIncorporacion.literal.clave'/> <siga:Idioma key='messages.campoObligatorio.error'/>";
+				alert (mensaje);
+				fin();
+			 	return false;
+  			}  						
+			
 			if (isNaN(document.SolicitudIncorporacionForm.clave.value)) {
 				var mensaje = "<siga:Idioma key="censo.SolicitudIncorporacion.literal.clave"/> <siga:Idioma key="messages.campoNumerico.error"/>";
 				alert (mensaje);
 				fin();
 			 	return false;
   			}
+  			
 			document.SolicitudIncorporacionForm.modo.value="VER";
 			document.SolicitudIncorporacionForm.submit();
 	 	}
