@@ -520,7 +520,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 				<td class="labelText" style="vertical-align:text-top;text-align: right">	
 				   <siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext"/>
 				   &nbsp;
-				   <input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onChange="obtenerJuzgado();"/>
+				   <input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();"/>
 				<%}%>
 				<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="420" obligatorio="false" parametro="<%=parametroJuzgado%>" elementoSel="<%=juzgadoSel%>" clase="<%=estilo%>" readonly="<%=readOnly%>" accion="actualizarTdNumeroProcedimiento(); cambiarJuzgado(this);"/>
 				</td>   
@@ -1029,30 +1029,6 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 				document.forms[0].submit();
 			}
 		}
-		
-		 function obtenerJuzgado() { 
-			 if (document.forms[0].codigoExtJuzgado.value!=""){
- 			    document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[0].codigoExtJuzgado.value;
-				document.MantenimientoJuzgadoForm.submit();	
-			 }
-		}
-		
-		function traspasoDatos(resultado) {	
-		 	document.getElementById("juzgado").value=resultado[0];	
-		}
-		
-		// Funcion que obtiene la comisaria buscando por codigo externo	
-		function obtenerComisaria() { 
-			if (document.forms[0].codigoExtComisaria.value!=""){
-				document.MantenimientoComisariaForm.codigoExtBusqueda.value=document.forms[0].codigoExtComisaria.value;
-				document.MantenimientoComisariaForm.submit();	
-			}
-		}
-			 
-		//			
-		function traspasoDatosComisaria(resultado) {
-			document.getElementById("comisaria").value=resultado[0];	
-		}	
 
 		<!-- Asociada al boton Nuevo-->
 		function accionNuevo()
@@ -1087,6 +1063,19 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			}
 		}
 		
+		// Funcion que obtiene la comisaria buscando por codigo externo	
+		function obtenerComisaria() { 
+			if (document.forms[0].codigoExtComisaria.value!=""){
+				document.MantenimientoComisariaForm.codigoExtBusqueda.value=document.forms[0].codigoExtComisaria.value;
+				document.MantenimientoComisariaForm.submit();	
+			}
+		}
+			 
+		//			
+		function traspasoDatosComisaria(resultado) {
+			document.getElementById("comisaria").value=resultado[0];	
+		}			
+		
 	function cambiarComisaria(comboComisaria) {
 		if(comboComisaria.value!=""){
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
@@ -1104,7 +1093,25 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 				}
 			});
 		}
-	}		
+	}	
+	
+		function obtenerJuzgado() { 
+			 if (document.forms[0].codigoExtJuzgado.value!=""){
+ 			    document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[0].codigoExtJuzgado.value;
+				document.MantenimientoJuzgadoForm.submit();	
+			 }
+			 else
+		 		seleccionComboSiga("juzgado",-1);
+		}
+		
+		function traspasoDatos(resultado){
+			if (resultado[0]==undefined) {
+				seleccionComboSiga("juzgado",-1);
+				document.getElementById("codigoExtJuzgado").value = "";
+			} 
+			else
+				seleccionComboSiga("juzgado",resultado[0]);				 
+		}		
 	
 	function cambiarJuzgado(comboJuzgado) {
 		if(comboJuzgado.value!=""){
@@ -1123,6 +1130,8 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 				}
 			});
 		}
+		else
+			document.getElementById("codigoExtJuzgado").value = "";
 	}	
 	
 	function cargarComboModulo() {

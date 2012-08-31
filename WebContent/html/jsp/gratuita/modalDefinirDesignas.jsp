@@ -187,10 +187,17 @@
  				document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[1].codigoExtJuzgado.value;
 				document.MantenimientoJuzgadoForm.submit();	
 			 }
+			 else
+		 		seleccionComboSiga("juzgado",-1);
 		}
 		
 		function traspasoDatos(resultado) {
-			seleccionComboSiga("juzgado",resultado[0]);
+			if (resultado[0]==undefined) {
+				seleccionComboSiga("juzgado",-1);
+				document.getElementById("codigoExtJuzgado").value = "";
+			} 
+			else
+				seleccionComboSiga("juzgado",resultado[0]);	
 		}
 		
 	function cambiarJuzgado(comboJuzgado) {
@@ -210,6 +217,8 @@
 				}
 			});
 		}
+		else
+			document.getElementById("codigoExtJuzgado").value = "";
 	}		
 	</script>
 
@@ -300,7 +309,7 @@
 					   <siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext"/>
 					</td>	 
 					<td class="labelText" width="10%" >	
-					   <input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onChange="obtenerJuzgado();"/>&nbsp;
+					   <input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();"/>&nbsp;
 					</td>	 
 					<td> &nbsp;</td>	
 					<td>

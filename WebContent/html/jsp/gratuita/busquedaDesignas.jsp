@@ -332,7 +332,7 @@ String[] getdatos = { usr.getLocation() };
 				<td class="labelText">
 					<siga:Idioma key="gratuita.mantAsistencias.literal.juzgado" /></td>
 				<td class="labelText">
-					<input type="text" name="codigoExtJuzgado" class="box" size="7" style="margin-top: 3px;" maxlength="10" onChange="obtenerJuzgado(this, 'juzgado');" />
+					<input type="text" name="codigoExtJuzgado" class="box" size="7" style="margin-top: 3px;" maxlength="10" onBlur="obtenerJuzgado(this, 'juzgado');" />
 				</td>
 				<td class="labelText" colspan="3">
 					<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="450" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" hijo="t" elementoSel="<%=juzgado%>" parametro="<%=dato%>" accion="parent.cambiarJuzgado(this,'codigoExtJuzgado');"/>
@@ -384,7 +384,7 @@ String[] getdatos = { usr.getLocation() };
 				<siga:Idioma key="gratuita.mantAsistencias.literal.juzgado"/>
 			</td>
 			<td class="labelText" >
-				<input type="text" name="codigoExtJuzgadoActu" class="box" size="8"  style="margin-top:3px;" maxlength="10" onChange="obtenerJuzgado(this, 'juzgadoActu');" />
+				<input type="text" name="codigoExtJuzgadoActu" class="box" size="8"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado(this, 'juzgadoActu');" />
 				<siga:ComboBD nombre="juzgadoActu" tipo="comboJuzgados" ancho="680" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  hijo="t" elementoSel="<%=juzgadoActu%>" parametro="<%=dato%>" accion="parent.cambiarJuzgado(this,'codigoExtJuzgadoActu');"/>           	   
 			</td>
 		</tr>
