@@ -334,16 +334,16 @@
 				document.MantenimientoJuzgadoForm.submit();		
 			 }
 			else
-		 		seleccionComboSiga("juzgado",-1);
+				document.getElementById("juzgado").value=-1;
 		}
 		
 		function traspasoDatos(resultado){
 			if (resultado[0]==undefined) {
-				seleccionComboSiga("juzgado",-1);
+				document.getElementById("juzgado").value=-1;
 				document.getElementById("codigoExtJuzgado").value = "";
 			} 
 			else
-				seleccionComboSiga("juzgado",resultado[0]);	
+				document.getElementById("juzgado").value=resultado[0];
 		}
 		
 	function cambiarJuzgado(comboJuzgado) {
@@ -496,7 +496,7 @@
 						<html:text name="ActuacionesDesignasForm" property="nactuacion" size="10" value="<%=nactuacion%>" styleClass="boxConsulta" readonly="true"></html:text>
 					</td>
 					<td class="labelText">
-						<siga:Idioma key="gratuita.modalActuacionesDesigna.literal.anulacion"/> 
+						<siga:Idioma key="gratuita.modalActuacionesDesigna.literal.anulacion"/>
 					</td>
 					<td>
 						<% if (!modoAnterior.equalsIgnoreCase("VER")) { 
