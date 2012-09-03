@@ -394,7 +394,7 @@
 		function accionRestablecer() 
 		{		
 			document.forms[0].reset();
-			document.getElementById("juzgado").value=-1;
+			cambiarJuzgado(document.getElementById("juzgado"));
 		}
 		
 		//<!-- Asociada al boton Guardar -->
