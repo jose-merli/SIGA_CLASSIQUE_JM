@@ -444,6 +444,7 @@
 		function accionRestablecer() 
 		{		
 			document.forms[1].reset();
+			seleccionComboSiga("juzgado",-1);
 		}
 		
 		<!-- Funcion asociada a boton buscar -->
