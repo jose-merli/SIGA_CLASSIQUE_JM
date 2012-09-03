@@ -194,7 +194,7 @@
 		function accionGuardarCerrar(){
 			sub();
 			var errores = "";
-			alert("LLEGO AQUI");
+			alert("Realizando...");
 			var error = false;
 			if(document.ActaComisionForm.numeroActa.value=="" || 
 			   document.ActaComisionForm.anioActa.value==""){

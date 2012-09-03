@@ -100,7 +100,7 @@
 		
 		function accionGuardarCerrar(){
 			sub();
-			alert("LLEGO AQUI");
+			alert("Realizando...");
 			var errores = "";
 			var error = false;
 			if(document.ActaComisionForm.numeroActa.value=="" || 
