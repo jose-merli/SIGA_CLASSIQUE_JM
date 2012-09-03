@@ -2236,6 +2236,11 @@ public class DatosGeneralesAction extends MasterAction {
 		    	tipoComboOriginal = tipoIdentificacionBloqueada;
 		    }
 		    
+		    //No entiendo que significa bloqueada u original.....
+		    if(tipoIdentificacionBloqueada==null || tipoIdentificacionBloqueada.equals("")){
+		    	tipoIdentificacionBloqueada = tipoComboOriginal;
+		    }				    
+		    
 		    if(miForm.getTipo()!= null && miForm.getTipo().equals("Y"))
 		    	tipoOriginal="Y";
 		    else if(miForm.getTipo()!= null && miForm.getTipo().equals("J"))
