@@ -668,7 +668,9 @@
 			<table class="tablaCampos" align="center" border="0">
 				<!-- FILA -->
 				<tr>
-					<td class="labelText" valign="top"><siga:Idioma key="pys.solicitudCompra.literal.catalogo" />&nbsp;(*)</td>
+					<td class="labelText">
+						<siga:Idioma key="pys.solicitudCompra.literal.catalogo" />&nbsp;(*)
+					</td>
 					<td>
 						<siga:ComboBD nombre="catalogo" tipo="cmbCatalogo"
 						  clase="boxCombo" obligatorio="true" ancho="118"
@@ -678,13 +680,13 @@
 					<td class="labelText" id="filaNaranja"><p>></p></td>
 					<td id="tipoProducto1">
 						<siga:ComboBD nombre="tipoProducto"  tipo="cmbTipoProducto" 
-						  clase="boxCombo" obligatorio="false" ancho="140" 
+						  clase="boxCombo" obligatorio="false" ancho="120" 
 						  accion="Hijo:categoriaProducto;compruebaComboSigaPadre();"
 						  elementoSel="<%=elementoSel1%>"  />
 					</td>
 					<td id="tipoServicio1" style="display: none">
 						<siga:ComboBD nombre="tipoServicio" tipo="cmbTipoServicio_1" 
-						  clase="boxCombo" obligatorio="false" ancho="140"
+						  clase="boxCombo" obligatorio="false" ancho="120"
 						  accion="Hijo:categoriaServicio;compruebaComboSigaPadre()"
 						  elementoSel="<%=elementoSel4%>" />
 					</td>
@@ -692,7 +694,7 @@
 					<td class="labelText"><p>></p></td>
 					<td id="categoriaProducto1">
 						<siga:ComboBD nombre="categoriaProducto" tipo="cmbProducto_1" 
-						  clase="boxCombo" ancho="150" parametro="<%=parametroCombo%>"
+						  clase="boxCombo" ancho="140" parametro="<%=parametroCombo%>"
 						  accion="Hijo:producto;" hijo="t" elementoSel="<%=elementoSel2%>"/>
 					</td>
 					<td id="categoriaServicio1" style="display: none">
@@ -755,8 +757,8 @@
 					</td>
 
 				</tr>
-			<tr>																					
-					<td id ="presentador" class="labelText" width="142px">
+				<tr>																					
+					<td id ="presentador" class="labelText" width="50px">
 							<siga:Idioma key="pys.solicitudCompra.literal.presentador"/>
 					</td>
 					<td id = "comboPresentador" colspan="5">									
@@ -772,12 +774,12 @@
 						<html:text name="solicitudCompraForm" property="nombreProducto" style="width:300px" maxlength="100"
 						  styleClass="box" readonly="false" onKeyPress="return disableEnterKey(event)"/>
 					</td>					
-					<td align=left id="solicitarServicio1" width="70px">
+					<td align=left id="solicitarServicio1">
 						<html:button property="idButton" onclick="return buscarProducto();" styleClass="button">
 							<siga:Idioma key="general.boton.search" />
 						</html:button>
 					</td>
-			</tr>
+				</tr>
 		</table>		
 			</td>											
 		</tr>
