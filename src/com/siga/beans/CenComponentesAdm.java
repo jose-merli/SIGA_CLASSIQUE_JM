@@ -254,22 +254,7 @@ public class CenComponentesAdm extends MasterBeanAdministrador {
 					if (registro != null) 
 						v.add(registro);
 				}
-			} else {
-				Hashtable registro = new Hashtable();
-				registro.put("NIF_COMPONENTE", "");
-				registro.put("NOMBRE_COMPONENTE", "");
-				registro.put("CARGO", "");
-				registro.put("FECHACARGO", "");
-				registro.put("EJERCIENTE", "");
-				registro.put("PARTICIPACION_SOCIEDAD_%", "");
-				registro.put("NIFCIF","");
-				registro.put("NOMBRE","");
-				registro.put("APELLIDOS1","");
-				registro.put("APELLIDOS2","");
-				registro.put("FECHACARGOINFORME","");
-				registro.put("SOCIEDAD","");
-				v.add(registro);
-			}
+			} 
 		}
 		catch(ClsExceptions e){
 			throw new ClsExceptions (e, "Error en selectComponentes");

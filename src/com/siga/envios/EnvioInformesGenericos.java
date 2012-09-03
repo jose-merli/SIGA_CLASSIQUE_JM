@@ -217,28 +217,32 @@ public class EnvioInformesGenericos extends MasterReport {
 					Integer.parseInt(idInstitucion), Long.parseLong(idPersona),
 					htDatosInforme);
 			
+			//Si no hubiese componenentes
+			Hashtable registro = new Hashtable();
+			registro.put("NIF_COMPONENTE", "");
+			registro.put("NOMBRE_COMPONENTE", "");
+			registro.put("CARGO", "");
+			registro.put("FECHACARGO", "");
+			registro.put("EJERCIENTE", "");
+			registro.put("PARTICIPACION_SOCIEDAD_%", "");
+			registro.put("NIFCIF","");
+			registro.put("NOMBRE","");
+			registro.put("APELLIDOS1","");
+			registro.put("APELLIDOS2","");
+			registro.put("FECHACARGOINFORME","");
+			registro.put("SOCIEDAD","");
+			Vector vInformeCompAux = new Vector();
+			vInformeCompAux.add(registro);
+			
 			if(total!=null) {
-				if(total.size()>0)
+				if(total.size()>0 && total.get("vInformeComp") != null)
 					htDatosInforme.put("componentes", total.get("vInformeComp"));
+				else
+					htDatosInforme.put("componentes", vInformeCompAux);
 				htDatosInforme.put("row", total.get("vInforme"));
 			} else{		
 				htDatosInforme.put("row", vDatosInformeFinal);
-				Hashtable registro = new Hashtable();
-				registro.put("NIF_COMPONENTE", "");
-				registro.put("NOMBRE_COMPONENTE", "");
-				registro.put("CARGO", "");
-				registro.put("FECHACARGO", "");
-				registro.put("EJERCIENTE", "");
-				registro.put("PARTICIPACION_SOCIEDAD_%", "");
-				registro.put("NIFCIF","");
-				registro.put("NOMBRE","");
-				registro.put("APELLIDOS1","");
-				registro.put("APELLIDOS2","");
-				registro.put("FECHACARGOINFORME","");
-				registro.put("SOCIEDAD","");
-				Vector vInformeComp = new Vector();
-				vInformeComp.add(registro);
-				htDatosInforme.put("componentes",vInformeComp);
+				htDatosInforme.put("componentes",vInformeCompAux);
 			}
 
 		} else if (idTipoInforme
