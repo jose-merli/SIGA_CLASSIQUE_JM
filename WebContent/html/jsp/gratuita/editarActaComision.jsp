@@ -84,7 +84,7 @@
 
 <body>
 <input type="hidden" id= "informeUnico" value="<%=informeUnico%>">
-	<html:form action="/JGR_ActasComisionEd" method="POST" target="submitArea">
+	<html:form action="/JGR_ActasComision" method="POST" target="submitArea">
 		<html:hidden property = "modo" value = ""/>
 		<html:hidden property = "idInstitucion" value = ""/>
 		<html:hidden property = "idActa" value = "<%=idActa %>"/>
@@ -194,6 +194,7 @@
 		function accionGuardarCerrar(){
 			sub();
 			var errores = "";
+			alert("LLEGO AQUI");
 			var error = false;
 			if(document.ActaComisionForm.numeroActa.value=="" || 
 			   document.ActaComisionForm.anioActa.value==""){
