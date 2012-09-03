@@ -30,6 +30,7 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
 	<script type="text/javascript" src="<%=app%>/html/js/calendarJs.jsp"></script>
 	<script type="text/javascript" src="<%=app%>/html/js/validation.js"></script>	
+	<script type="text/javascript" src="<%=app%>/html/jsp/general/validacionSIGA.jsp"></script>
 	
 	<siga:Titulo titulo="sjcs.actas.titulo" localizacion="sjcs.actas.localizacion"  />
 </head>
