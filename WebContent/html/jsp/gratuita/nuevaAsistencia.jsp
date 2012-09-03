@@ -65,14 +65,12 @@
 	ArrayList juzgadoSel = new ArrayList();
 	if (comisaria!=null && !comisaria.equalsIgnoreCase("")){
 		comisariaSel.add(0,comisaria);
-		datoCom[1] = comisaria;
 	}
 	
 	
 	
 	if (juzgado!=null && !juzgado.equalsIgnoreCase("")) {
 		juzgadoSel.add(0,juzgado);
-	   	datoJuzg[1]=juzgado;	
 	}
 	if (turno!=null && !turno.equalsIgnoreCase("")) idTurno.add(0,usr.getLocation()+","+turno);
 	if (guardia!=null && !guardia.equalsIgnoreCase("")) idGuardia.add(0,usr.getLocation()+","+guardia);
