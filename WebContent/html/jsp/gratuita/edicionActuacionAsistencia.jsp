@@ -998,6 +998,7 @@
 		if(document.ActuacionAsistenciaFormEdicion.validada.value != "1"){ 
 			inicio();
 		}
+		cambioComisaria();
 		cambioJuzgado();
 	}
 </script>
