@@ -1,7 +1,6 @@
 package com.siga.gratuita.action;
-import java.util.Date;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -17,16 +16,13 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
-import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxCollectionXmlBuilder;
 import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.Utilidades.paginadores.PaginadorBind;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsActuacionDesignaAdm;
 import com.siga.beans.ScsAsistenciasAdm;
@@ -43,7 +39,6 @@ import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsJuzgadoAdm;
 import com.siga.beans.ScsJuzgadoBean;
 import com.siga.beans.ScsJuzgadoProcedimientoAdm;
-import com.siga.beans.ScsProcedimientosAdm;
 import com.siga.beans.ScsProcedimientosBean;
 import com.siga.beans.ScsProcuradorAdm;
 import com.siga.beans.ScsProcuradorBean;
@@ -55,12 +50,7 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.BuscarDesignasForm;
-import com.siga.gratuita.form.BusquedaDesignasForm;
-import com.siga.gratuita.form.DefinirEJGForm;
-import com.siga.gratuita.form.DefinirMantenimientoEJGForm;
-import com.siga.gratuita.form.DesignaForm;
 import com.siga.gratuita.form.MaestroDesignasForm;
-import com.siga.gratuita.form.VolantesExpressForm;
 import com.siga.ws.CajgConfiguracion;
 
 
@@ -647,16 +637,22 @@ public class MaestroDesignasAction extends MasterAction {
 						Integer idJuzgado, idInstitucionJuzgado;
 						idJuzgado = null;
 						idInstitucionJuzgado = null;			
-						String[] juzgado = ((String)datosEntrada.get("JUZGADO")).split(",");
-						if (juzgado[0]!=null && !juzgado[0].equals("")){
-							idJuzgado = new Integer(juzgado[0]);
-							idInstitucionJuzgado = new Integer(juzgado[1]);
-							designaNueva.put(ScsDesignaBean.C_IDJUZGADO, idJuzgado);
-							designaNueva.put(ScsDesignaBean.C_IDINSTITUCIONJUZGADO, idInstitucionJuzgado);
+						String sJuzgado=((String)datosEntrada.get("JUZGADO"));
+						if (sJuzgado==null) {
+							String[] juzgado =sJuzgado.split(",");
+							if (juzgado[0]!=null && !juzgado[0].equals("")){
+								idJuzgado = new Integer(juzgado[0]);
+								idInstitucionJuzgado = new Integer(juzgado[1]);
+								designaNueva.put(ScsDesignaBean.C_IDJUZGADO, idJuzgado);
+								designaNueva.put(ScsDesignaBean.C_IDINSTITUCIONJUZGADO, idInstitucionJuzgado);
+							} else {
+								designaNueva.put(ScsDesignaBean.C_IDJUZGADO, "");
+								designaNueva.put(ScsDesignaBean.C_IDINSTITUCIONJUZGADO, "");
+							}	
 						} else {
 							designaNueva.put(ScsDesignaBean.C_IDJUZGADO, "");
 							designaNueva.put(ScsDesignaBean.C_IDINSTITUCIONJUZGADO, "");
-						}			
+						}
 						
 						if (miform.getNumeroProcedimiento() != null) {
 						    UtilidadesHash.set(designaNueva, ScsDesignaBean.C_NUMPROCEDIMIENTO, miform.getNumeroProcedimiento());
