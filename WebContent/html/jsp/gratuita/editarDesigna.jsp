@@ -749,7 +749,7 @@
 				</table>
 			</siga:ConjCampos> 
 			<siga:ConjCampos leyenda="gratuita.busquedaDesignas.literal.designa">
-				<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" width="100%" border="1">
+				<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" width="100%" border="0">
 					<tr>
 						<td class="labelText" width="15%">
 							<siga:Idioma key="gratuita.editarDesigna.literal.tipo" />
