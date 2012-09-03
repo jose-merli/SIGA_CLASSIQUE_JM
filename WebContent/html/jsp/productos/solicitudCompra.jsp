@@ -916,7 +916,7 @@ function muestra(id)
 function mostrarColegio()
 {		
 	<%
-	if (!esConsejo && user.getStrutsTrans().equals("PYS_SolicitarCertificado")){	%>
+	if (esConsejo && user.getStrutsTrans().equals("PYS_SolicitarCertificado")){	%>
 		document.getElementById("campoBlanco").style.display="none";
 		document.getElementById("campoBlancoPresentador").style.display="block";
 		document.getElementById("comboPresentador").style.display="block";
