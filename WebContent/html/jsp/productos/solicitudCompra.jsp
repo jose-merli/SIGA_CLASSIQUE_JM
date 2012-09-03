@@ -694,12 +694,12 @@
 					<td class="labelText"><p>></p></td>
 					<td id="categoriaProducto1">
 						<siga:ComboBD nombre="categoriaProducto" tipo="cmbProducto_1" 
-						  clase="boxCombo" ancho="140" parametro="<%=parametroCombo%>"
+						  clase="boxCombo" ancho="120" parametro="<%=parametroCombo%>"
 						  accion="Hijo:producto;" hijo="t" elementoSel="<%=elementoSel2%>"/>
 					</td>
 					<td id="categoriaServicio1" style="display: none">
 						<siga:ComboBD nombre="categoriaServicio" tipo="cmbServicio_1" 
-						  clase="boxCombo" ancho="150" parametro="<%=parametroCombo%>"
+						  clase="boxCombo" ancho="120" parametro="<%=parametroCombo%>"
 						  accion="Hijo:servicio;" hijo="t" elementoSel="<%=elementoSel5%>"/>
 					</td>
 
