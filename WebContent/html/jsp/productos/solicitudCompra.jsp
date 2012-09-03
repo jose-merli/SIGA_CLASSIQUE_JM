@@ -755,22 +755,20 @@
 					</td>
 
 				</tr>
-		</table>
-		<table class="tablaCampos" align="center" border="0">
 			<tr>																					
 					<td id ="presentador" class="labelText" width="142px">
 							<siga:Idioma key="pys.solicitudCompra.literal.presentador"/>
 					</td>
-					<td id = "comboPresentador" width="240px">									
+					<td id = "comboPresentador" colspan="5">									
 						<siga:ComboBD nombre="idInstitucionPresentador" tipo="cmbInstitucionesAbreviadas" ancho="240"
 						  clase="<%=estiloComboInstitucionPresentador%>" elementoSel ="<%=idInstitucionPresentador%>"
 						  accion="actualizarInstitucionPresentador(this);" readonly="<%=soloLectura%>"/>																								
 					</td>
 										
 					<td id="campoBlancoPresentador">&nbsp;</td>
-					<td id="campoBlanco" width="602px">&nbsp;</td>
+					<td id="campoBlanco" colspan="7">&nbsp;</td>
 																																																							
-					<td align=left id="nombreProducto" width="302px">
+					<td align=left id="nombreProducto">
 						<html:text name="solicitudCompraForm" property="nombreProducto" style="width:300px" maxlength="100"
 						  styleClass="box" readonly="false" onKeyPress="return disableEnterKey(event)"/>
 					</td>					
