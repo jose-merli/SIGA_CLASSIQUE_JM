@@ -217,14 +217,29 @@ public class EnvioInformesGenericos extends MasterReport {
 					Integer.parseInt(idInstitucion), Long.parseLong(idPersona),
 					htDatosInforme);
 			
-			if(total!=null)
-			{
+			if(total!=null) {
 				if(total.size()>0)
 					htDatosInforme.put("componentes", total.get("vInformeComp"));
 				htDatosInforme.put("row", total.get("vInforme"));
-			}
-			else			
+			} else{		
 				htDatosInforme.put("row", vDatosInformeFinal);
+				Hashtable registro = new Hashtable();
+				registro.put("NIF_COMPONENTE", "");
+				registro.put("NOMBRE_COMPONENTE", "");
+				registro.put("CARGO", "");
+				registro.put("FECHACARGO", "");
+				registro.put("EJERCIENTE", "");
+				registro.put("PARTICIPACION_SOCIEDAD_%", "");
+				registro.put("NIFCIF","");
+				registro.put("NOMBRE","");
+				registro.put("APELLIDOS1","");
+				registro.put("APELLIDOS2","");
+				registro.put("FECHACARGOINFORME","");
+				registro.put("SOCIEDAD","");
+				Vector vInformeComp = new Vector();
+				vInformeComp.add(registro);
+				htDatosInforme.put("componentes",vInformeComp);
+			}
 
 		} else if (idTipoInforme
 				.equals(EnvioInformesGenericos.comunicacionesPagoColegiados)) {
