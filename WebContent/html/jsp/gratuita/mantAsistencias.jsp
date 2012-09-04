@@ -1069,8 +1069,10 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 				document.MantenimientoComisariaForm.codigoExtBusqueda.value=document.forms[0].codigoExtComisaria.value;
 				document.MantenimientoComisariaForm.submit();	
 			}
-			else
+			else {
 		 		document.getElementById("comisaria").value=-1;
+		 		actualizarTdNumeroDiligencia();
+		 	}
 		}
 			 
 		function traspasoDatosComisaria(resultado) {
@@ -1080,28 +1082,32 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			} 
 			else
 				document.getElementById("comisaria").value=resultado[0];	
+				
+			actualizarTdNumeroDiligencia();
 		}			
 		
-	function cambiarComisaria(comboComisaria) {
-		if(comboComisaria.value!=""){
-			jQuery.ajax({ //Comunicación jQuery hacia JSP  
-	   			type: "POST",
-				url: "/SIGA/JGR_MantenimientoComisarias.do?modo=getAjaxComisaria",
-				data: "idCombo="+comboComisaria.value,
-				dataType: "json",
-				success: function(json){		
-		       		document.getElementById("codigoExtComisaria").value = json.codigoExt;      		
-					fin();
-				},
-				error: function(e){
-					alert('Error de comunicación: ' + e);
-					fin();
-				}
-			});
-		}
-		else
-			document.getElementById("codigoExtComisaria").value = "";
-	}	
+		function cambiarComisaria(comboComisaria) {
+			if(comboComisaria.value!=""){
+				jQuery.ajax({ //Comunicación jQuery hacia JSP  
+	   				type: "POST",
+					url: "/SIGA/JGR_MantenimientoComisarias.do?modo=getAjaxComisaria",
+					data: "idCombo="+comboComisaria.value,
+					dataType: "json",
+					success: function(json){		
+			       		document.getElementById("codigoExtComisaria").value = json.codigoExt;      		
+						fin();
+					},
+					error: function(e){
+						alert('Error de comunicación: ' + e);
+						fin();
+					}
+				});
+			}
+			else
+				document.getElementById("codigoExtComisaria").value = "";
+				
+			actualizarTdNumeroDiligencia();
+		}	
 	
 		function obtenerJuzgado() { 
 			 if (document.forms[0].codigoExtJuzgado.value!=""){
