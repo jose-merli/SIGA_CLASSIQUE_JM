@@ -557,11 +557,11 @@
  			    document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[0].codigoExtJuzgado.value;
 				document.MantenimientoJuzgadoForm.submit();
 			}
-			else
-				document.getElementById("juzgado").value=-1;
-				
-			bJuzgado=true;
-			document.getElementById("juzgado").onchange();
+			else {
+				document.getElementById("juzgado").value=-1;				
+				bJuzgado=true;
+				document.getElementById("juzgado").onchange();
+			}
 		}
 	
 		function traspasoDatos(resultado){
@@ -571,6 +571,9 @@
 			} 
 			else
 				document.getElementById("juzgado").value=resultado[0];
+				
+			bJuzgado=true;
+			document.getElementById("juzgado").onchange();
 		}
 		
 		function cambiarJuzgado(comboJuzgado) {

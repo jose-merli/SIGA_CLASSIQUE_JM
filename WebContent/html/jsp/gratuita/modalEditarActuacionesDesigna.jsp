@@ -327,14 +327,18 @@
 			;
 		}
 		
+		var bJuzgado=false;
 		// Funcion que obtiene el juzgado buscando por codigo externo	
 		function obtenerJuzgado() { 
 			if (document.forms[0].codigoExtJuzgado.value!=""){
 				document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[0].codigoExtJuzgado.value;
 				document.MantenimientoJuzgadoForm.submit();		
 			 }
-			else
-				document.getElementById("juzgado").value=-1;
+			else {
+				document.getElementById("juzgado").value=-1;			
+				bJuzgado=true;
+				document.getElementById("juzgado").onchange();
+			}
 		}
 		
 		function traspasoDatos(resultado){
@@ -344,28 +348,38 @@
 			} 
 			else
 				document.getElementById("juzgado").value=resultado[0];
+			
+			bJuzgado=true;
+			document.getElementById("juzgado").onchange();
 		}
 		
-	function cambiarJuzgado(comboJuzgado) {
-		if(comboJuzgado.value!=""){
-			jQuery.ajax({ //Comunicación jQuery hacia JSP  
-	   			type: "POST",
-				url: "/SIGA/JGR_MantenimientoJuzgados.do?modo=getAjaxJuzgado2",
-				data: "idCombo="+comboJuzgado.value,
-				dataType: "json",
-				success: function(json){		
-		       		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;    		
-					fin();
-				},
-				error: function(e){
-					alert('Error de comunicación: ' + e);
-					fin();
+		function cambiarJuzgado(comboJuzgado) {
+			if (bJuzgado)
+				bJuzgado=false;
+			else {
+				if(comboJuzgado.value!=""){
+					jQuery.ajax({ //Comunicación jQuery hacia JSP  
+	   					type: "POST",
+						url: "/SIGA/JGR_MantenimientoJuzgados.do?modo=getAjaxJuzgado2",
+						data: "idCombo="+comboJuzgado.value,
+						dataType: "json",
+						success: function(json){		
+				       		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;    		
+							fin();
+						},
+						error: function(e){
+							alert('Error de comunicación: ' + e);
+							fin();
+						}
+					});
 				}
-			});
-		}
-		else
-			document.getElementById("codigoExtJuzgado").value = "";
-	}		
+				else
+					document.getElementById("codigoExtJuzgado").value = "";
+				
+				bJuzgado=true;
+				document.getElementById("juzgado").onchange();
+			}
+		}		
 	</script>		
 </head>
 

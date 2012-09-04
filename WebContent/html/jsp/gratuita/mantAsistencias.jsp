@@ -1108,8 +1108,10 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
  			    document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[0].codigoExtJuzgado.value;
 				document.MantenimientoJuzgadoForm.submit();	
 			 }
-			 else
+			 else {
 			 	document.getElementById("juzgado").value=-1;
+			 	actualizarTdNumeroProcedimiento();
+			 }
 		}
 		
 		function traspasoDatos(resultado){
@@ -1119,28 +1121,32 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			} 
 			else
 				document.getElementById("juzgado").value=resultado[0];
+				
+			actualizarTdNumeroProcedimiento();
 		}		
 	
-	function cambiarJuzgado(comboJuzgado) {
-		if(comboJuzgado.value!=""){
-			jQuery.ajax({ //Comunicación jQuery hacia JSP  
-	   			type: "POST",
-				url: "/SIGA/JGR_MantenimientoJuzgados.do?modo=getAjaxJuzgado2",
-				data: "idCombo="+comboJuzgado.value,
-				dataType: "json",
-				success: function(json){		
-		       		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;      		
-					fin();
-				},
-				error: function(e){
-					alert('Error de comunicación: ' + e);
-					fin();
-				}
-			});
-		}
-		else
-			document.getElementById("codigoExtJuzgado").value = "";
-	}	
+		function cambiarJuzgado(comboJuzgado) {
+			if(comboJuzgado.value!=""){
+				jQuery.ajax({ //Comunicación jQuery hacia JSP  
+	   				type: "POST",
+					url: "/SIGA/JGR_MantenimientoJuzgados.do?modo=getAjaxJuzgado2",
+					data: "idCombo="+comboJuzgado.value,
+					dataType: "json",
+					success: function(json){		
+		    	   		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;      		
+						fin();
+					},
+					error: function(e){
+						alert('Error de comunicación: ' + e);
+						fin();
+					}
+				});
+			}
+			else
+				document.getElementById("codigoExtJuzgado").value = "";
+			
+			actualizarTdNumeroProcedimiento();
+		}	
 	
 	function cargarComboModulo() {
 		<% if (!modo.equalsIgnoreCase("ver")) { %>
