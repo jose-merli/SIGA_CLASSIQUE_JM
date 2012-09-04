@@ -314,7 +314,7 @@ public class MaestroDesignasAction extends MasterAction {
 			if (hayDatos==true){				 
 				 estado = miform.getEstado();				 
 			}else {
-				estado= (String)visibles.get(5);
+				estado= (String)visibles.get(4);
 			}			
 
 			String modoaction="";
