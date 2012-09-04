@@ -776,7 +776,7 @@
 							String s1 = (String) resultado.get(ScsTipoDesignaColegioBean.C_IDTIPODESIGNACOLEGIADO);
 							vTipo.add(s1 == null || s1 == "-1" ? "0" : s1);
 						%>
-						<td colspan="6">
+						<td colspan="7">
 						<% if (!modo.equalsIgnoreCase("ver")) { %> 
 							<siga:ComboBD  pestana="true" nombre="tipo" tipo="tipoDesignaColegio" estilo="true" clase="boxCombo" elementoSel="<%=vTipo%>" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" />
 						<% } else { %> 
@@ -865,7 +865,7 @@
 							<html:text name="MaestroDesignasForm" property="numeroProcedimiento" style="width:100" maxlength="<%=maxLenghtProc%>" styleClass="boxConsulta" value="<%=numeroProcedimiento%>" readonly="true"></html:text> 
 						<% } %>
 						</td>
-						<td colspan="5"><!-- Busqueda automatica de juzgados--> 						
+						<td colspan="6"><!-- Busqueda automatica de juzgados--> 						
 						<siga:ConjCampos leyenda="gratuita.mantenimientoTablasMaestra.literal.juzgado">
 							<table>
 								<tr>
@@ -901,7 +901,7 @@
 					<tr>
 						<td class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/>
 						</td>
-						<td > 
+						<td colspan="7"> 
 							<% if (!modo.equalsIgnoreCase("ver")) { %>
 							 	<input name="nig" size="15" type="text" value="<%=nig%>" class="<%=estilo%>" maxlength="50"/>
 							<%}else{%>
