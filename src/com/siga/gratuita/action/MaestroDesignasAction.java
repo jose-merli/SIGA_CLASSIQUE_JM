@@ -638,7 +638,7 @@ public class MaestroDesignasAction extends MasterAction {
 						idJuzgado = null;
 						idInstitucionJuzgado = null;			
 						String sJuzgado=((String)datosEntrada.get("JUZGADO"));
-						if (sJuzgado==null) {
+						if (sJuzgado!=null) {
 							String[] juzgado =sJuzgado.split(",");
 							if (juzgado[0]!=null && !juzgado[0].equals("")){
 								idJuzgado = new Integer(juzgado[0]);
