@@ -558,8 +558,7 @@
 				document.MantenimientoJuzgadoForm.submit();
 			}
 			else
-				jQuery("#juzgado").val([""]);
-				//document.getElementById("juzgado").value=-1;
+				document.getElementById("juzgado").value=-1;
 				
 			bJuzgado=true;
 			document.getElementById("juzgado").onchange();
@@ -567,8 +566,7 @@
 	
 		function traspasoDatos(resultado){
 			if (resultado[0]==undefined) {
-				//document.getElementById("juzgado").value=-1;
-				jQuery("#juzgado").val([""]);
+				document.getElementById("juzgado").value=-1;
 				document.getElementById("codigoExtJuzgado").value = "";
 			} 
 			else

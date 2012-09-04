@@ -1121,7 +1121,7 @@
 			<td COLSPAN="3">
 				<%if(bEditable){%>
 				 	  <input type="text" name="codigoExtJuzgado" class="box" size="3"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />
-				 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateriaExp" ancho="330" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" elementoSel="<%=juzgadoSel%>" hijo="t" accion="Hijo:procedimiento" readonly="false" accion="parent.cambiarJuzgado(this);" />           	   
+				 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateriaExp" ancho="330" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" elementoSel="<%=juzgadoSel%>" hijo="t" accion="Hijo:procedimiento;parent.cambiarJuzgado(this);" readonly="false"/>           	   
 				<%}else{%>
 						<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateriaExp" ancho="330" clase="boxConsulta" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" elementoSel="<%=juzgadoSel%>" hijo="t" accion="Hijo:procedimiento" readonly="true"/>           	   
 				<%}%>							
