@@ -728,9 +728,8 @@
 							<siga:Idioma key='sjcs.designa.general.letrado' />
 						</td>
 						<td>
-							<input type="text" class="boxConsulta" value="<%=nume_colegiado%>  <%=nombre_letrado%>" readOnly="true" style="width: 600">
+							<input type="text" class="boxConsulta" value="<%=nume_colegiado%>  <%=nombre_letrado%>" readOnly="true" style="width:500px; border: 1px black solid">
 						</td>
-						<td colspan="4"></td>
 					</tr>
 					</table>
 					<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" width="100%" border="0">
