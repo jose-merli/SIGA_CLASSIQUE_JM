@@ -728,7 +728,7 @@
 							<siga:Idioma key='sjcs.designa.general.letrado' />
 						</td>
 						<td>
-							<input type="text" class="boxConsulta" value="<%=nume_colegiado%>  <%=nombre_letrado%>" readOnly="true" style="width:500px; border: 1px black solid">
+							<input type="text" class="boxConsulta" value="<%=nume_colegiado%>  <%=nombre_letrado%>" readOnly="true" style="width:500px">
 						</td>
 					</tr>
 					</table>
@@ -883,11 +883,11 @@
 
 									<% if (!modo.equalsIgnoreCase("ver")) { %> 
 										<td width="80%">
-											<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="500" pestana="t" accion="Hijo:idProcedimiento; cambiarJuzgado(this);"/>
+											<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="400" pestana="t" accion="Hijo:idProcedimiento; cambiarJuzgado(this);"/>
 										</td> 
 									<% } else { %> 
 										<td width="100%">
-									 		<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="" clase="boxComboConsulta" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="700" pestana="t" accion="Hijo:idProcedimiento" readonly="true" />
+									 		<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="" clase="boxComboConsulta" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="400" pestana="t" accion="Hijo:idProcedimiento" readonly="true" />
 										</td> 
 									<% } %>
 								</tr>
