@@ -26,7 +26,7 @@ oCMenu.menuPlacement="0"
 
 oCMenu.onlineRoot="<%=app%>"
 oCMenu.resizeCheck=1
-oCMenu.wait=0
+oCMenu.wait=2000
 oCMenu.fillImg="cm_fill.gif"
 oCMenu.zIndex=0
 
