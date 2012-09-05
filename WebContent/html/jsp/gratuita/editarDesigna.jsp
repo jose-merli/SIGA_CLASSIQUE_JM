@@ -885,26 +885,22 @@
 								<table>
 									<tr>
 										<% if (!modo.equalsIgnoreCase("ver")) { %>
-											<td class="labelText" width="16%">
+											<td class="labelText">
 												<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext" />
 												<% if (obligatoriojuzgado){ %>
 													<%= asterisco %>
 												<%}%>
 											</td>
 										
-											<td class="labelText" width="10%">
+											<td class="labelText">
 												<input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();" />&nbsp;
 											</td>
-										
-											<td>&nbsp;</td>
-										<% } %>
 
-										<% if (!modo.equalsIgnoreCase("ver")) { %> 
-											<td width="80%">
+											<td>
 												<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="500" pestana="t" accion="Hijo:idProcedimiento; cambiarJuzgado(this);"/>
 											</td> 
 										<% } else { %> 
-											<td width="100%">
+											<td>
 									 			<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="" clase="boxComboConsulta" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="500" pestana="t" accion="Hijo:idProcedimiento" readonly="true" />
 											</td> 
 										<% } %>
