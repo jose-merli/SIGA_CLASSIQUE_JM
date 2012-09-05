@@ -731,8 +731,8 @@
 							<input type="text" class="boxConsulta" value="<%=nume_colegiado%>  <%=nombre_letrado%>" readOnly="true" style="width:500px">
 						</td>
 					</tr>
-					</table>
-					<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" width="100%" border="0">
+				</table>
+				<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" width="100%" border="0">
 					<tr>
 						<td class="labelText">
 							<siga:Idioma key="gratuita.busquedaSOJ.literal.turno" />
@@ -762,6 +762,7 @@
 					</tr>
 				</table>
 			</siga:ConjCampos> 
+			
 			<siga:ConjCampos leyenda="gratuita.busquedaDesignas.literal.designa">
 				<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" width="100%" border="0">
 					<tr>
@@ -771,135 +772,155 @@
 						 		<%= asterisco %>
 							<%}%>
 						</td>
+						
 						<%
 							ArrayList vTipo = new ArrayList();
 							String s1 = (String) resultado.get(ScsTipoDesignaColegioBean.C_IDTIPODESIGNACOLEGIADO);
 							vTipo.add(s1 == null || s1 == "-1" ? "0" : s1);
 						%>
+						
 						<td colspan="7">
-						<% if (!modo.equalsIgnoreCase("ver")) { %> 
-							<siga:ComboBD  pestana="true" nombre="tipo" tipo="tipoDesignaColegio" estilo="true" clase="boxCombo" elementoSel="<%=vTipo%>" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" />
-						<% } else { %> 
-							<siga:ComboBD pestana="true" nombre="tipo" tipo="tipoDesignaColegio" estilo="true" clase="boxConsulta" elementoSel="<%=vTipo%>" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="true" />
-						<% } %>
+							<% if (!modo.equalsIgnoreCase("ver")) { %> 
+								<siga:ComboBD  pestana="true" nombre="tipo" tipo="tipoDesignaColegio" estilo="true" clase="boxCombo" elementoSel="<%=vTipo%>" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" />
+							<% } else { %> 
+								<siga:ComboBD pestana="true" nombre="tipo" tipo="tipoDesignaColegio" estilo="true" clase="boxConsulta" elementoSel="<%=vTipo%>" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="true" />
+							<% } %>
 						</td>
 					</tr>
+
 					<tr>
 						<td class="labelText">
 							<siga:Idioma key="gratuita.editarDesigna.literal.estado" />
 						</td>
+						
 						<td>
-						<% if (!modo1.equalsIgnoreCase("ver")) { %> 
-						<Select name="estado"
-							class="boxCombo">
-							<option value='V'
-								<%if((estado!=null)&&(estado.equalsIgnoreCase("V"))){%> 
-									selected
-								<%}%>
-								><siga:Idioma key="gratuita.designa.estado.abierto" />
-							</option>
-							<option value='F'
-								<%if((estado!=null)&&(estado.equalsIgnoreCase("F"))){%> 
-									selected
-								<%}%>
-								><siga:Idioma key="gratuita.designa.estado.finalizado" />
-							</option>
-							<option value='A'
-								<%if((estado!=null)&&(estado.equalsIgnoreCase("A"))){%> 
-									selected
-								<%}%>
-								><siga:Idioma key="gratuita.designa.estado.anulado" />
-							</option>
-						</Select> 
-						<% } else { %> 
-						 	<% String valorEstado = "";
-								if ((estado != null) && (estado.equalsIgnoreCase("V")))
-									valorEstado = "Activo";
-								else {
-									if ((estado != null)
-											&& (estado.equalsIgnoreCase("F")))
-										valorEstado = "Finalizado";
+							<% if (!modo1.equalsIgnoreCase("ver")) { %> 
+								<select name="estado" class="boxCombo">
+									<option value='V'
+										<%if((estado!=null)&&(estado.equalsIgnoreCase("V"))){%> 
+											selected
+										<%}%>
+									>
+										<siga:Idioma key="gratuita.designa.estado.abierto" />
+									</option>								
+									<option value='F'
+										<%if((estado!=null)&&(estado.equalsIgnoreCase("F"))){%> 
+											selected
+										<%}%>
+									>
+										<siga:Idioma key="gratuita.designa.estado.finalizado" />
+									</option>
+									<option value='A'
+										<%if((estado!=null)&&(estado.equalsIgnoreCase("A"))){%> 
+											selected
+										<%}%>
+										><siga:Idioma key="gratuita.designa.estado.anulado" />
+									</option>
+								</Select> 
+						
+							<% } else { %> 
+						 		<% String valorEstado = "";
+									if ((estado != null) && (estado.equalsIgnoreCase("V")))
+										valorEstado = "Activo";
 									else {
-										if ((estado != null)
-												&& (estado.equalsIgnoreCase("A")))
-											valorEstado = "Anulado";
-									}
-								} %> 
- 							<html:text name="MaestroDesignasForm" property="estado" maxlength="10" styleClass="boxConsulta" value="<%=valorEstado%>" readonly="true"></html:text> 
-						<%}%> 
+										if ((estado != null) && (estado.equalsIgnoreCase("F")))
+											valorEstado = "Finalizado";
+										else {
+											if ((estado != null) && (estado.equalsIgnoreCase("A")))
+												valorEstado = "Anulado";
+										}
+									} %> 
+ 								<html:text name="MaestroDesignasForm" property="estado" maxlength="10" styleClass="boxConsulta" value="<%=valorEstado%>" readonly="true"></html:text> 
+							<%}%> 
 							<html:hidden name="MaestroDesignasForm" property="estadoOriginal" value="<%=estado%>"></html:hidden>
 						</td>
 
 						<td class="labelText">
 							<siga:Idioma key="gratuita.editarDesigna.literal.fechaEstado" />
 						</td>
+						
 						<td>
 							<html:text name="MaestroDesignasForm" property="fechaEstado" size="10" maxlength="10" styleClass="boxConsulta" value="<%=fechaEstado%>" readonly="true"></html:text>
 						</td>
+						
 						<td class="labelText" id="tdTextoAnulacion" style="text-align: rigth; display: none">
 							<siga:Idioma key="gratuita.editarDesigna.literal.fechaAnulacion" />
 						</td>
+						
 						<td id="tdFechaAnulacion" style="text-align: rigth; display: none">
 							<html:text name="MaestroDesignasForm" property="fechaAnulacion" size="10" maxlength="10" styleClass="boxConsulta" value="<%=fechaAnulacion%>" readonly="true"></html:text> &nbsp;
 						</td>
+						
 						<td class="labelText">
 							<siga:Idioma key="gratuita.editarDesigna.literal.fechaCierre" />
 						</td>
+						
 						<td>
-						<% if (!modo.equalsIgnoreCase("ver")) {%> 
-							<siga:Fecha nombreCampo="fechaCierre"   valorInicial="<%=fecha%>" />
-							 
-						<%} else { %>
-							<siga:Fecha nombreCampo="fechaCierre"   valorInicial="<%=fecha%>" disabled="true" readOnly="true" />  							
- 						<% } %>
+							<% if (!modo.equalsIgnoreCase("ver")) {%> 
+								<siga:Fecha nombreCampo="fechaCierre"   valorInicial="<%=fecha%>" />							 
+							<%} else { %>
+								<siga:Fecha nombreCampo="fechaCierre"   valorInicial="<%=fecha%>" disabled="true" readOnly="true" />  							
+ 							<%}%>
 						</td>
 					</tr>
+					
 					<tr>
 						<td class="labelText" style="vertical-align: middle;">
 							<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento" />
 						</td>
-						<td style="vertical-align: middle;">
-						<% if (!modo.equalsIgnoreCase("ver")) { %> 
-							<html:text name="MaestroDesignasForm" property="numeroProcedimiento" style="width:100" maxlength="<%=maxLenghtProc%>" styleClass="box" value="<%=numeroProcedimiento%>"></html:text> 
-						<% } else { %> 
-							<html:text name="MaestroDesignasForm" property="numeroProcedimiento" style="width:100" maxlength="<%=maxLenghtProc%>" styleClass="boxConsulta" value="<%=numeroProcedimiento%>" readonly="true"></html:text> 
-						<% } %>
-						</td>
-						<td colspan="6"><!-- Busqueda automatica de juzgados--> 						
-						<siga:ConjCampos leyenda="gratuita.mantenimientoTablasMaestra.literal.juzgado">
-							<table>
+						
+						<td colspan="7">
+							<table align="center" cellpadding="0" cellpadding="0" width="100%" border="0">
 								<tr>
-									<% if (!modo.equalsIgnoreCase("ver")) { %>
-										<td class="labelText" width="16%"><siga:Idioma
-											key="gratuita.mantenimientoTablasMaestra.literal.codigoext" /><% if (obligatoriojuzgado){ %>
-											<%= asterisco %>
-											<%}%>
-										</td>
-										<td class="labelText" width="10%">
-											<input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();" />&nbsp;
-										</td>
-										<td>&nbsp;</td>
-									<% } %>
-
-									<% if (!modo.equalsIgnoreCase("ver")) { %> 
-										<td width="80%">
-											<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="500" pestana="t" accion="Hijo:idProcedimiento; cambiarJuzgado(this);"/>
-										</td> 
-									<% } else { %> 
-										<td width="100%">
-									 		<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="" clase="boxComboConsulta" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="500" pestana="t" accion="Hijo:idProcedimiento" readonly="true" />
-										</td> 
-									<% } %>
-								</tr>
-							</table>
-						</siga:ConjCampos> 
-<!------------------> <%-- Juzgado --%>
+						<td style="vertical-align: middle;">
+							<% if (!modo.equalsIgnoreCase("ver")) { %> 
+								<html:text name="MaestroDesignasForm" property="numeroProcedimiento" style="width:100" maxlength="<%=maxLenghtProc%>" styleClass="box" value="<%=numeroProcedimiento%>"></html:text> 
+							<% } else { %> 
+								<html:text name="MaestroDesignasForm" property="numeroProcedimiento" style="width:100" maxlength="<%=maxLenghtProc%>" styleClass="boxConsulta" value="<%=numeroProcedimiento%>" readonly="true"></html:text> 
+							<% } %>	
 						</td>
+						
+						<td colspan="6"><!-- Busqueda automatica de juzgados--> 						
+							<siga:ConjCampos leyenda="gratuita.mantenimientoTablasMaestra.literal.juzgado">
+								<table>
+									<tr>
+										<% if (!modo.equalsIgnoreCase("ver")) { %>
+											<td class="labelText" width="16%">
+												<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext" />
+												<% if (obligatoriojuzgado){ %>
+													<%= asterisco %>
+												<%}%>
+											</td>
+										
+											<td class="labelText" width="10%">
+												<input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();" />&nbsp;
+											</td>
+										
+											<td>&nbsp;</td>
+										<% } %>
 
+										<% if (!modo.equalsIgnoreCase("ver")) { %> 
+											<td width="80%">
+												<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="500" pestana="t" accion="Hijo:idProcedimiento; cambiarJuzgado(this);"/>
+											</td> 
+										<% } else { %> 
+											<td width="100%">
+									 			<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="" clase="boxComboConsulta" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="500" pestana="t" accion="Hijo:idProcedimiento" readonly="true" />
+											</td> 
+										<% } %>
+									</tr>
+								</table>
+							</siga:ConjCampos> 
+						<!------------------> <%-- Juzgado --%>
+						</td>
+								</tr>
+							</table>	
+						</td>
 					</tr>
 					
 					<tr>
-						<td class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/>
+						<td class="labelText">
+							<siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/>
 						</td>
 						<td colspan="7"> 
 							<% if (!modo.equalsIgnoreCase("ver")) { %>
@@ -911,33 +932,37 @@
 					</tr>					
 					
 					<tr>
-						<td class="labelText"><siga:Idioma
-							key="gratuita.actuacionesDesigna.literal.modulo" /> 
+						<td class="labelText">
+							<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo" /> 
 							<%if (obligatorioModulo){ %>
 								<%= asterisco %>
 							<%}%>
 						</td>
+						
 						<td colspan="7">
-						<%-- Procedimiento --%> 
-						<% if (!modo.equalsIgnoreCase("ver")) { %>
-							<siga:ComboBD nombre="idProcedimiento" tipo="<%=comboModulos%>" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" ancho="750" obligatorio="false" elementoSel="<%=procedimientoSel%>" hijo="t" pestana="t" /> 
-						<% } else { %>
-							<siga:ComboBD nombre="idProcedimiento" tipo="<%=comboModulos%>" estilo="true" clase="boxComboConsulta" filasMostrar="1" seleccionMultiple="false" ancho="750" obligatorio="false" readonly="true"  elementoSel="<%=procedimientoSel%>" hijo="t" pestana="t" /> 
-						<% } %>
+							<%-- Procedimiento --%> 
+							<% if (!modo.equalsIgnoreCase("ver")) { %>
+								<siga:ComboBD nombre="idProcedimiento" tipo="<%=comboModulos%>" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" ancho="750" obligatorio="false" elementoSel="<%=procedimientoSel%>" hijo="t" pestana="t" /> 
+							<% } else { %>
+								<siga:ComboBD nombre="idProcedimiento" tipo="<%=comboModulos%>" estilo="true" clase="boxComboConsulta" filasMostrar="1" seleccionMultiple="false" ancho="750" obligatorio="false" readonly="true"  elementoSel="<%=procedimientoSel%>" hijo="t" pestana="t" /> 
+							<% } %>
 						</td>
 					</tr>
+					
 					<tr>
-						<td class="labelText"><siga:Idioma
-							key="gratuita.editarDesigna.literal.asunto" />
+						<td class="labelText">
+							<siga:Idioma key="gratuita.editarDesigna.literal.asunto" />
 						</td>
+						
 						<td colspan="7">
-						<% if (!modo.equalsIgnoreCase("ver")) { %> 
-							<html:text name="MaestroDesignasForm" property="asunto" maxlength="100" styleClass="box" value="<%=(String)resultado.get(ScsDesignaBean.C_RESUMENASUNTO)%>" style="width:740"></html:text> 
-						<% } else { %> 
-							<html:text name="MaestroDesignasForm" property="asunto" maxlength="100" styleClass="boxConsulta" value="<%=(String)resultado.get(ScsDesignaBean.C_RESUMENASUNTO)%>" readonly="true" style="width:740"></html:text> 
-						<% } %>
+							<% if (!modo.equalsIgnoreCase("ver")) { %> 
+								<html:text name="MaestroDesignasForm" property="asunto" maxlength="100" styleClass="box" value="<%=(String)resultado.get(ScsDesignaBean.C_RESUMENASUNTO)%>" style="width:740"></html:text> 
+							<% } else { %> 
+								<html:text name="MaestroDesignasForm" property="asunto" maxlength="100" styleClass="boxConsulta" value="<%=(String)resultado.get(ScsDesignaBean.C_RESUMENASUNTO)%>" readonly="true" style="width:740"></html:text> 
+							<% } %>
 						</td>
 					</tr>
+					
 					<!-- JBD 16/2/2009 INC-5739-SIGA -->
 					<tr>
 						<td class="labelText">	
@@ -946,6 +971,7 @@
 								<%= asterisco %>
 							<%} %>
 						</td>	
+						
 						<td  colspan="7">
 							<%if(modo.equals("editar")){%>
 								<siga:ComboBD nombre="idPretension" tipo="comboPretensiones" ancho="380" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false" parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="false"/>           	   
@@ -954,9 +980,11 @@
 							<%}%>
 						</td>
 					</tr>
+					
 					<!-- JBD 16/2/2009 INC-5739-SIGA -->
 				</table>
 			</siga:ConjCampos> <siga:ConjCampos leyenda="gratuita.busquedaDesignas.literal.juicio">
+			
 				<table class="tablaCampos" align="center" cellpadding="0"
 					cellpadding="0" width="100%">
 					<tr>
