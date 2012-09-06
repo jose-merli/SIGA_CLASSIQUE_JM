@@ -86,6 +86,10 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 			    
 			}else if (accion.equalsIgnoreCase("getAjaxJuzgado3")){
 				getAjaxJuzgado3(mapping, miForm, request, response);
+			    return null;	
+			    
+			}else if (accion.equalsIgnoreCase("getAjaxJuzgado4")){
+				getAjaxJuzgado4(mapping, miForm, request, response);
 			    return null;			    
 		    	
 			} else {
@@ -505,6 +509,7 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 		}
 		return "buscarJuzgado";
 	}
+	
 	@SuppressWarnings("unchecked")
 	protected void getAjaxJuzgado (ActionMapping mapping, 		
 			MasterForm formulario, 
@@ -534,26 +539,28 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected void getAjaxJuzgado2 (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
-		{
-		//Sacamos las guardias si hay algo selccionado en el turno
-		String idCombo = request.getParameter("idCombo");
-		
-		
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	protected void getAjaxJuzgado2 (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MantenimientoJuzgadoForm miform = (MantenimientoJuzgadoForm)formulario;
+		String idCombo = request.getParameter("idCombo");		
 		ScsJuzgadoAdm juzgadoAdm= new ScsJuzgadoAdm(this.getUserBean(request));
-		String where = " WHERE UPPER(IDJUZGADO||','||IDINSTITUCION) = UPPER('"+idCombo+"')";
-		Vector resultadoJuzgado = juzgadoAdm.select(where);
 		String codigoExt2 ="";
+		JSONObject json = new JSONObject();	
+		
+		String where = " WHERE UPPER(IDJUZGADO||','||IDINSTITUCION)=UPPER('"+idCombo+"')";
+		Vector resultadoJuzgado = juzgadoAdm.select(where);
+		
 		if (resultadoJuzgado!=null && resultadoJuzgado.size()>0) {
 			ScsJuzgadoBean juzgadoBean = (ScsJuzgadoBean) resultadoJuzgado.get(0);
 			codigoExt2 = juzgadoBean.getCodigoExt2();
-		}
-				
-		JSONObject json = new JSONObject();		
+		}						
 		json.put("codigoExt2", codigoExt2);
 		
 		 response.setContentType("text/x-json;charset=ISO-8859-15");
@@ -564,27 +571,29 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected void getAjaxJuzgado3 (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
-		{
-		//Sacamos las guardias si hay algo selccionado en el turno
-		String idCombo = request.getParameter("idCombo");
-		
-		
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	protected void getAjaxJuzgado3 (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MantenimientoJuzgadoForm miform = (MantenimientoJuzgadoForm)formulario;
+		String idCombo = request.getParameter("idCombo");
 		ScsJuzgadoAdm juzgadoAdm= new ScsJuzgadoAdm(this.getUserBean(request));
+		String codigoExt2 ="";
+		JSONObject json = new JSONObject();
+		
 		String where = " WHERE IDJUZGADO='"+idCombo+"'"+
 				"AND IDINSTITUCION="+this.getUserBean(request).getLocation();
 		Vector resultadoJuzgado = juzgadoAdm.select(where);
-		String codigoExt2 ="";
+		
 		if (resultadoJuzgado!=null && resultadoJuzgado.size()>0) {
 			ScsJuzgadoBean juzgadoBean = (ScsJuzgadoBean) resultadoJuzgado.get(0);
 			codigoExt2 = juzgadoBean.getCodigoExt2();
 		}
-				
-		JSONObject json = new JSONObject();		
 		json.put("codigoExt2", codigoExt2);
 		
 		 response.setContentType("text/x-json;charset=ISO-8859-15");
@@ -593,4 +602,38 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 	     response.setHeader("X-JSON", json.toString());
 		 response.getWriter().write(json.toString()); 		
 	}	
+	
+	@SuppressWarnings("unchecked")
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	protected void getAjaxJuzgado4 (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		MantenimientoJuzgadoForm miform = (MantenimientoJuzgadoForm)formulario;
+		String codigoExt2 = request.getParameter("codigo");
+		ScsJuzgadoAdm juzgadoAdm= new ScsJuzgadoAdm(this.getUserBean(request));
+		String idJuzgado="";
+		JSONObject json = new JSONObject();	
+		
+		
+		String where = " WHERE UPPER(CODIGOEXT2)=UPPER('"+codigoExt2+"')" +
+				"AND IDINSTITUCION="+this.getUserBean(request).getLocation();
+		Vector resultadoJuzgado = juzgadoAdm.select(where);
+		
+		if (resultadoJuzgado!=null && resultadoJuzgado.size()>0) {
+			ScsJuzgadoBean juzgadoBean = (ScsJuzgadoBean) resultadoJuzgado.get(0);
+			idJuzgado = juzgadoBean.getIdJuzgado().toString();
+		}
+		json.put("idJuzgado", idJuzgado);
+		
+		 response.setContentType("text/x-json;charset=ISO-8859-15");
+		 response.setHeader("Cache-Control", "no-cache");
+		 response.setHeader("Content-Type", "application/json");
+	     response.setHeader("X-JSON", json.toString());
+		 response.getWriter().write(json.toString()); 		
+	}
 }

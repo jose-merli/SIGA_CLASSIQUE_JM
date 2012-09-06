@@ -56,7 +56,7 @@
 									<input type="text" id="codComisaria_<bean:write name='index'/>" class="box" size="8"  style="width:20;margin-top:2px;" maxlength="10" onBlur="obtenerComisaria(<bean:write name='index'/>);" />
 								</td> 			
 								<td>
-									<select class="boxCombo" id="comisaria_<bean:write name='index'/>" style="width:220px;margin-top:2px;" name="comisaria_<bean:write name='index'/>" > 
+									<select class="boxCombo" id="comisaria_<bean:write name='index'/>" style="width:220px;margin-top:2px;" name="comisaria_<bean:write name='index'/>" onchange="cambiarComisaria(<bean:write name='index'/>);"> 
 										<bean:define id="comisarias" name="VolantesExpressForm" property="comisarias" type="java.util.List" />
 											<logic:iterate id="comisaria" name="comisarias">
 												<option value='<bean:write name="comisaria" property="idComisaria"/>' >
@@ -80,7 +80,7 @@
 			      		<input type="text" id="codJuzgado_<bean:write name='index'/>" class="box" size="8" style="width:20;margin-top:2px;" maxlength="10" onBlur="obtenerJuzgado(<bean:write name='index'/>);"/> 			
 						</td> 			
 						<td>
-						<select class="boxCombo" id="juzgado_<bean:write name='index'/>" style="width:220px;margin-top:2px;" name="juzgado_<bean:write name='index'/>" > 
+						<select class="boxCombo" id="juzgado_<bean:write name='index'/>" style="width:220px;margin-top:2px;" name="juzgado_<bean:write name='index'/>" onchange="cambiarJuzgado(<bean:write name='index'/>);"> 
 						<bean:define id="juzgados" name="VolantesExpressForm" property="juzgados" type="java.util.List" />
 							<logic:iterate id="juzgado" name="juzgados">
 								<option value='<bean:write name="juzgado" property="idJuzgado"/>' >
