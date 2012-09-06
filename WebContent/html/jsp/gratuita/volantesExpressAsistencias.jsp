@@ -65,38 +65,43 @@
 											</logic:iterate> 
 									</select>
 								</td>
-						</tr>
+							</tr>
 						</table>
-						<script>
-						if(${asistencia.comisaria!=null} && ${asistencia.comisaria!='-1'})
-							document.getElementById("comisaria_<bean:write name='index'/>").value ='<bean:write name="asistencia" property="comisaria"/>'; 
 						
+						<script>
+							if(${asistencia.comisaria!=null} && ${asistencia.comisaria!='-1'}) {
+								document.getElementById("comisaria_<bean:write name='index'/>").value ='<bean:write name="asistencia" property="comisaria"/>';
+								cambiarComisaria(<bean:write name='index'/>);
+							} 						
 						</script>
 					</c:if>
+					
 					<c:if test="${VolantesExpressForm.lugar == 'juzgado'}">
 			      		<table>
 							<tr>
 								<td>	
-			      		<input type="text" id="codJuzgado_<bean:write name='index'/>" class="box" size="8" style="width:20;margin-top:2px;" maxlength="10" onBlur="obtenerJuzgado(<bean:write name='index'/>);"/> 			
-						</td> 			
-						<td>
-						<select class="boxCombo" id="juzgado_<bean:write name='index'/>" style="width:220px;margin-top:2px;" name="juzgado_<bean:write name='index'/>" onchange="cambiarJuzgado(<bean:write name='index'/>);"> 
-						<bean:define id="juzgados" name="VolantesExpressForm" property="juzgados" type="java.util.List" />
-							<logic:iterate id="juzgado" name="juzgados">
-								<option value='<bean:write name="juzgado" property="idJuzgado"/>' >
-									<bean:write name="juzgado" property="nombre"/>
-								</option>					
-								</logic:iterate> 
-								
-						</select>
-						</td>
-						</tr>
+			      					<input type="text" id="codJuzgado_<bean:write name='index'/>" class="box" size="8" style="width:20;margin-top:2px;" maxlength="10" onBlur="obtenerJuzgado(<bean:write name='index'/>);"/> 			
+								</td>
+								 			
+								<td>
+									<select class="boxCombo" id="juzgado_<bean:write name='index'/>" style="width:220px;margin-top:2px;" name="juzgado_<bean:write name='index'/>" onchange="cambiarJuzgado(<bean:write name='index'/>);"> 
+										<bean:define id="juzgados" name="VolantesExpressForm" property="juzgados" type="java.util.List" />
+										<logic:iterate id="juzgado" name="juzgados">
+											<option value='<bean:write name="juzgado" property="idJuzgado"/>' >
+												<bean:write name="juzgado" property="nombre"/>
+											</option>					
+										</logic:iterate> 								
+									</select>
+								</td>
+							</tr>
 						</table>
+						
 						<script>
-						 if(${asistencia.juzgado!=null} && ${asistencia.juzgado!='-1'})
-							document.getElementById("juzgado_<bean:write name='index'/>").value ='<bean:write name="asistencia" property="juzgado"/>'; 
-						</script>
-			
+						 	if(${asistencia.juzgado!=null} && ${asistencia.juzgado!='-1'}) {
+								document.getElementById("juzgado_<bean:write name='index'/>").value ='<bean:write name="asistencia" property="juzgado"/>';
+								cambiarJuzgado(<bean:write name='index'/>);
+							} 
+						</script>			
 					</c:if>	
 										
 				
