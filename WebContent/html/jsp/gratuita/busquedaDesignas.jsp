@@ -335,7 +335,7 @@ String[] getdatos = { usr.getLocation() };
 					<input type="text" name="codigoExtJuzgado" class="box" size="7" style="margin-top: 3px;" maxlength="10" onBlur="obtenerJuzgado(this, 'juzgado');" />
 				</td>
 				<td class="labelText" colspan="3">
-					<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="450" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" hijo="t" elementoSel="<%=juzgado%>" parametro="<%=dato%>" accion="parent.cambiarJuzgado(this,'codigoExtJuzgado');"/>
+					<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="450" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" hijo="t" elementoSel="<%=juzgado%>" parametro="<%=dato%>" accion="if(parent.comboJuzgado!=undefined)parent.cambiarJuzgado(this,'codigoExtJuzgado');"/>
 				</td>
 		</tr>
 		<tr>
@@ -385,7 +385,7 @@ String[] getdatos = { usr.getLocation() };
 			</td>
 			<td class="labelText" >
 				<input type="text" name="codigoExtJuzgadoActu" class="box" size="8"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado(this, 'juzgadoActu');" />
-				<siga:ComboBD nombre="juzgadoActu" tipo="comboJuzgados" ancho="680" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  hijo="t" elementoSel="<%=juzgadoActu%>" parametro="<%=dato%>" accion="parent.cambiarJuzgado(this,'codigoExtJuzgadoActu');"/>           	   
+				<siga:ComboBD nombre="juzgadoActu" tipo="comboJuzgados" ancho="680" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  hijo="t" elementoSel="<%=juzgadoActu%>" parametro="<%=dato%>" accion="if(parent.comboJuzgado!=undefined)parent.cambiarJuzgado(this,'codigoExtJuzgadoActu');"/>           	   
 			</td>
 		</tr>
 		
@@ -546,26 +546,26 @@ String[] getdatos = { usr.getLocation() };
 			} 
 		}			
 		
-	function cambiarJuzgado(comboJuzgado, codigo) {
-		if(comboJuzgado.value!=""){
-			jQuery.ajax({ //Comunicación jQuery hacia JSP  
-	   			type: "POST",
-				url: "/SIGA/JGR_MantenimientoJuzgados.do?modo=getAjaxJuzgado2",
-				data: "idCombo="+comboJuzgado.value,
-				dataType: "json",
-				success: function(json){		
-		       		document.getElementById(codigo).value = json.codigoExt2;      		
-					fin();
-				},
-				error: function(e){
-					alert('Error de comunicación: ' + e);
-					fin();
-				}
-			});
-		}
-		else
-			document.getElementById(codigo).value = "";
-	}					
+		function cambiarJuzgado(comboJuzgado, codigo) {
+			if(comboJuzgado.value!=""){
+				jQuery.ajax({ //Comunicación jQuery hacia JSP  
+		   			type: "POST",
+					url: "/SIGA/JGR_MantenimientoJuzgados.do?modo=getAjaxJuzgado2",
+					data: "idCombo="+comboJuzgado.value,
+					dataType: "json",
+					success: function(json){		
+			       		document.getElementById(codigo).value = json.codigoExt2;      		
+						fin();
+					},
+					error: function(e){
+						alert('Error de comunicación: ' + e);
+						fin();
+					}
+				});
+			}
+			else
+				document.getElementById(codigo).value = "";
+		}		
 		
 		function refrescarLocal()
 		{
