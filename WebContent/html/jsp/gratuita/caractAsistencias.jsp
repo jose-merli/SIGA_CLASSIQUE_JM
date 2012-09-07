@@ -197,20 +197,55 @@ else
 
 <script language="JavaScript">
 
-
-function postAccionCodigoExtJuzgado()
-{
-	if(document.getElementById('idJuzgado').value!='')
-	{		
-		document.getElementById('idJuzgado').onchange();
+function cambiarJuzgado() {
+	var combo = document.getElementById("idJuzgado").value;
+	
+	if(combo!="-1"){
+		jQuery.ajax({ //Comunicación jQuery hacia JSP  
+					type: "POST",
+			url: "/SIGA/JGR_MantenimientoJuzgados.do?modo=getAjaxJuzgado3",
+			data: "idCombo="+combo,
+			dataType: "json",
+			success: function(json){		
+    	   		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;      		
+				fin();
+			},
+			error: function(e){
+				alert('Error de comunicación: ' + e);
+				fin();
+			}
+		});
 	}
 	else
-	{
-		// juzgados		
-		document.getElementById("juzgados").selectedIndex = '0';
-		document.getElementById('idJuzgado').onchange();		
-	}	
-}
+		document.getElementById("codigoExtJuzgado").value = "";
+}		
+
+function obtenerJuzgado() { 
+	var codigo = document.getElementById("codigoExtJuzgado").value;
+	
+	if(codigo!=""){
+		jQuery.ajax({ //Comunicación jQuery hacia JSP  
+					type: "POST",
+			url: "/SIGA/JGR_MantenimientoJuzgados.do?modo=getAjaxJuzgado4",
+			data: "codigo="+codigo,
+			dataType: "json",
+			success: function(json){		
+				if (json.idJuzgado=="") {
+					document.getElementById("idJuzgado").value = "-1";
+					document.getElementById("codigoExtJuzgado").value = "";
+				} else
+    	   			document.getElementById("idJuzgado").value = json.idJuzgado;      		
+				fin();
+			},
+			error: function(e){
+				alert('Error de comunicación: ' + e);
+				fin();
+			}
+		});
+	}
+	else
+		document.getElementById("idJuzgado").value = "-1";
+}	
 
 function preAccionColegiado()
 {	
@@ -443,6 +478,7 @@ function accionGuardar()
 //se ejecuta cuando se carga la pagina
 function inicializar() 
 {		
+	cambiarJuzgado();
 	document.CaracteristicasForm.colegiadoNumero.value="";
 	<%if(idOrigenContacto.equals("9")){%>
 		document.CaracteristicasForm.otroDescripcionOrigenContacto.readOnly = false;
@@ -819,17 +855,17 @@ function bloquearDesbloquear(o)
 					</td>
 				
 					<td class="labelText">&nbsp;&nbsp;
-						<input type="text" name="codigoExtJuzgado" styleId="codigoExtJuzgado" class="<%=estilo%>" size="8" maxlength="10" />
+						<input type="text" name="codigoExtJuzgado" styleId="codigoExtJuzgado" class="<%=estilo%>" size="8" maxlength="10" onBlur="obtenerJuzgado();"/>
 					</td>
 					<td class="labelTextValor">
-					<%if(!modo.equals("ver")){%>
-						<html:select styleId="juzgados" styleClass="boxCombo" style="width:500px;" property="idJuzgado">
-							<bean:define id="juzgados" name="CaracteristicasForm" property="juzgados" type="java.util.Collection" />
-							<html:optionsCollection name="juzgados" value="idJuzgado" label="nombre" />
-						</html:select>
-					<%}else{%>
-							<%=descripcionJuzgado%>           	   
-					<%}%>
+						<%if(!modo.equals("ver")){%>
+							<html:select styleId="juzgados" styleClass="boxCombo" style="width:500px;" property="idJuzgado" onchange="cambiarJuzgado();">
+								<bean:define id="juzgados" name="CaracteristicasForm" property="juzgados" type="java.util.Collection" />
+								<html:optionsCollection name="juzgados" value="idJuzgado" label="nombre" />
+							</html:select>
+						<%}else{%>
+								<%=descripcionJuzgado%>           	   
+						<%}%>
 					</td> 					
 				</tr>
 			</table>
@@ -874,14 +910,6 @@ function bloquearDesbloquear(o)
 	preFunction="preAccionColegiado"
 	postFunction="postAccionColegiado"
 />
-	
-<ajax:updateFieldFromField 
-	baseUrl="/SIGA/JGR_CaracteristicasAsistenciaLetrado.do?modo=getAjaxJuzgado"
-    source="codigoExtJuzgado" target="idJuzgado"
-	parameters="codigoExtJuzgado={codigoExtJuzgado}"
-	preFunction="preAccionColegiado" 
-	postFunction="postAccionCodigoExtJuzgado"
-/>	
 		
 </html:form>
 </table>
