@@ -36,6 +36,61 @@
 	<link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
 
 <script>
+
+	function cambiarJuzgado() {
+		var combo = document.getElementById("idJuzgado").value;
+		
+		if(combo!="-1"){
+			jQuery.ajax({ //Comunicación jQuery hacia JSP  
+						type: "POST",
+				url: "/SIGA/JGR_MantenimientoJuzgados.do?modo=getAjaxJuzgado3",
+				data: "idCombo="+combo,
+				dataType: "json",
+				success: function(json){		
+	    	   		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;      		
+					fin();
+				},
+				error: function(e){
+					alert('Error de comunicación: ' + e);
+					fin();
+				}
+			});
+		}
+		else
+			document.getElementById("codigoExtJuzgado").value = "";
+	}		
+	
+	function obtenerJuzgado() { 
+		var codigo = document.getElementById("codigoExtJuzgado").value;
+		
+		if(codigo!=""){
+			jQuery.ajax({ //Comunicación jQuery hacia JSP  
+						type: "POST",
+				url: "/SIGA/JGR_MantenimientoJuzgados.do?modo=getAjaxJuzgado4",
+				data: "codigo="+codigo,
+				dataType: "json",
+				success: function(json){		
+					if (json.idJuzgado=="") {
+						document.getElementById("idJuzgado").value = "-1";
+						document.getElementById("codigoExtJuzgado").value = "";
+					} else {
+	    	   			document.getElementById("idJuzgado").value = json.idJuzgado;
+	    	   			if (document.getElementById("idJuzgado").value=="") {
+							document.getElementById("idJuzgado").value = "-1";
+							document.getElementById("codigoExtJuzgado").value = "";
+						}
+					}
+					fin();
+				},
+				error: function(e){
+					alert('Error de comunicación: ' + e);
+					fin();
+				}
+			});
+		}
+		else
+			document.getElementById("idJuzgado").value = "-1";
+	}	
 				
 	function accionCerrar() 
 	{		
@@ -58,17 +113,14 @@
 	}	
 	
 	function onload(){
-	
 		if(document.MaestroDesignasForm.idJuzgado.value!=''){
 			document.getElementById('idJuzgado').onchange();
 		}
-		
-		
-		
-		
-
 	}
+	
 	function postAccionJuzgados(){
+		cambiarJuzgado();
+		
 		var idProcedimiento = document.MaestroDesignasForm.procedimiento.value;
 		var optionsProcedimientos = document.getElementById("modulos");
 		var encontrado;
@@ -115,7 +167,7 @@
 </script>
 </head>
 
-<body onload=onload();>
+<body onload="onload();">
 
 <table class="tablaTitulo" cellspacing="0" heigth="38">
 	<tr>
@@ -123,7 +175,7 @@
 			<siga:Idioma key="gratuita.actuacionesDesigna.literal.actualizarDesigna" />
 		</td>
 	</tr>
-	</table>
+</table>
 
 
 <!-- INICIO: CAMPOS DE BUSQUEDA-->
@@ -186,16 +238,12 @@
 										key="gratuita.mantenimientoTablasMaestra.literal.juzgado" />
 									</td>
 									<td class="labelText" width="10%">
-										<input type="text"
-										name="codigoExtJuzgado" styleId="codigoExtJuzgado" class="box" size="8" maxlength="10"/>
-										&nbsp;</td>
+										<input type="text" name="codigoExtJuzgado" styleId="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();"/>&nbsp;
+									</td>
 									<td width="40%">
-										<html:select styleId="juzgados" styleClass="boxCombo" style="width:500px;"
-											property="idJuzgado">
-											<bean:define id="juzgados" name="MaestroDesignasForm"
-												property="juzgados" type="java.util.Collection" />
-													<html:optionsCollection name="juzgados" value="idJuzgado"
-														label="nombre" />
+										<html:select styleId="juzgados" styleClass="boxCombo" style="width:500px;" property="idJuzgado">
+											<bean:define id="juzgados" name="MaestroDesignasForm" property="juzgados" type="java.util.Collection" />
+											<html:optionsCollection name="juzgados" value="idJuzgado" label="nombre" />
 										</html:select>
 									</td>
 						
@@ -348,12 +396,12 @@
 									<tr>
 										<td class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligencia'/></td>
 										<td class="labelTextValue">
-										<c:out		value="${ejg2.numeroDiligencia}" />	
+										<c:out value="${ejg2.numeroDiligencia}" />	
 										
 										</td> 
 										<td class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.centroDetencion'/></td>
 										<td  class="labelTextValue" >	
-												<c:out		value="${ejg2.descripcionComisaria}" />
+												<c:out value="${ejg2.descripcionComisaria}" />
 										</td>
 										
 									</tr>
@@ -417,20 +465,15 @@
 			</td>
 		</tr>
 	</table>
-
-<ajax:select
-	baseUrl="/SIGA/JGR_MantenimientoDesignas.do?modo=getAjaxModulos"
-	source="juzgados" target="modulos" parameters="idJuzgado={idJuzgado},procedimiento={procedimiento},fecha={fecha}"
-	postFunction="postAccionJuzgados"
-	/>
-<ajax:updateFieldFromField 
-	baseUrl="/SIGA/JGR_MantenimientoJuzgados.do?modo=getAjaxJuzgado"
-    source="codigoExtJuzgado" target="idJuzgado"
-	parameters="codigoExtJuzgado={codigoExtJuzgado}" postFunction="postAccionCodigoExtJuzgado"/>
 </html:form>
 
-<html:form action="/JGR_MantenimientoJuzgados" method="POST"
-		target="submitArea">
+	<ajax:select
+		baseUrl="/SIGA/JGR_MantenimientoDesignas.do?modo=getAjaxModulos"
+		source="juzgados" target="modulos" parameters="idJuzgado={idJuzgado},procedimiento={procedimiento},fecha={fecha}"
+		postFunction="postAccionJuzgados"
+		/>
+	
+	<html:form action="/JGR_MantenimientoJuzgados" method="POST" target="submitArea">
 		<html:hidden property="codigoExt2" value="" />
 		<html:hidden property="idJuzgado" value="" />
 	</html:form>
