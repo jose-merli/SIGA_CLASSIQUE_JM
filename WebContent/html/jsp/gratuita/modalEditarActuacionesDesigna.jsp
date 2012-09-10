@@ -389,11 +389,11 @@
 <!-- TITULO -->
 <!-- Barra de titulo actualizable desde los mantenimientos -->
 <table class="tablaTitulo" cellspacing="0" heigth="32">
-<tr>
-	<td id="titulo" class="titulitosDatos">
-			<siga:Idioma key="gratuita.actuacionesDesigna.literal.titulo"/>
-	</td>
-</tr>
+	<tr>
+		<td id="titulo" class="titulitosDatos">
+				<siga:Idioma key="gratuita.actuacionesDesigna.literal.titulo"/>
+		</td>
+	</tr>
 </table>
 
 	<!-- Comienzo del formulario con los campos -->	
@@ -405,410 +405,383 @@
 		    aDonde="/JGR_ActuacionesDesigna.do";
 		} %>	
 		
-	<html:form action="<%=aDonde%>" method="post" target="submitArea">
-		<html:hidden property = "modo" value= ""/>
-		<html:hidden property = "deDonde" value="<%=deDonde%>"/>
-		<html:hidden property = "actuacionValidada" value="<%=actuacionValidada%>"/>
+<html:form action="<%=aDonde%>" method="post" target="submitArea">
+	<html:hidden property = "modo" value= ""/>
+	<html:hidden property = "deDonde" value="<%=deDonde%>"/>
+	<html:hidden property = "actuacionValidada" value="<%=actuacionValidada%>"/>
 
-		<html:hidden property = "idPersona" value="<%=idPersona%>" />
-		<html:hidden property = "idTurno" value= "<%=idTurno%>"/>
-		<html:hidden property = "anio" value="<%=anio%>" />	
-		<html:hidden property = "numero" value="<%=numero%>" />
-	
+	<html:hidden property = "idPersona" value="<%=idPersona%>" />
+	<html:hidden property = "idTurno" value= "<%=idTurno%>"/>
+	<html:hidden property = "anio" value="<%=anio%>" />	
+	<html:hidden property = "numero" value="<%=numero%>" />
 		
+<!-- INICIO: CAMPOS -->
+<!-- Zona de campos de busqueda o filtro -->
+<table class="tablaCentralCampos" align="center" >
 		
-		
-		<!-- INICIO: CAMPOS -->
-		<!-- Zona de campos de busqueda o filtro -->
-		<table class="tablaCentralCampos" align="center" >
-		<!-- INICIO: CAMPOS DEL REGISTRO -->
-		<tr>			
-			<td>
-				<!-- SUBCONJUNTO DE DATOS -->
-				<siga:ConjCampos leyenda="gratuita.busquedaDesignas.literal.Designacion">
+	<!-- INICIO: CAMPOS DEL REGISTRO -->
+	<tr>			
+		<td>
+			<!-- SUBCONJUNTO DE DATOS -->
+			<siga:ConjCampos leyenda="gratuita.busquedaDesignas.literal.Designacion">
 				<table width="100%" >
-				<tr>
-					<td class="labelText">
-						<siga:Idioma key="gratuita.busquedaSOJ.literal.turno"/>
-					</td>
-					<td>
-						<html:text name="ActuacionesDesignasForm" property="turno" size="60" styleClass="boxConsulta" value="<%=turno%>" readonly="true"></html:text>
-					</td>
-					<td class="labelText">
-						<siga:Idioma key="gratuita.busquedaEJG.literal.anyo"/>
-					</td>
-					<td>
-						<html:text name="ActuacionesDesignasForm" property="anio" size="5" styleClass="boxConsulta" value="<%=anio%>" readonly="true"></html:text>
-					</td>					
-					<td class="labelText" style="display:none" >
-						<siga:Idioma key="gratuita.listadoAsistencias.literal.numero"/>
-					</td>					
-					<td style="display:none" >
-				    	<html:text name="ActuacionesDesignasForm" property="numero" size="5" styleClass="boxConsulta" value="<%=numero%>" readonly="true"></html:text>
-					</td>					
-					<td class="labelText">
-						<siga:Idioma key="gratuita.listadoAsistencias.literal.numero"/>
-					</td>
-					<td>
-					<html:text name="ActuacionesDesignasForm" property="codigo" size="5" styleClass="boxConsulta" value="<%=codigo%>" readonly="true"></html:text>
-					</td>
-					<td class="labelText">
-						<siga:Idioma key="gratuita.inicio_PestanaCalendarioGuardias.literal.fechaDesigna"/>
-					</td>
-					<td>
-						<html:text name="ActuacionesDesignasForm" property="fecha" size="10" styleClass="boxConsulta" value="<%=fecha%>" readonly="true"></html:text>
-					</td>
-				</tr>
+					<tr>
+						<td class="labelText">
+							<siga:Idioma key="gratuita.busquedaSOJ.literal.turno"/>
+						</td>
+						<td>
+							<html:text name="ActuacionesDesignasForm" property="turno" size="60" styleClass="boxConsulta" value="<%=turno%>" readonly="true" />
+						</td>
+						
+						<td class="labelText">
+							<siga:Idioma key="gratuita.busquedaEJG.literal.anyo"/>
+						</td>
+						<td>
+							<html:text name="ActuacionesDesignasForm" property="anio" size="5" styleClass="boxConsulta" value="<%=anio%>" readonly="true" />
+						</td>	
+										
+						<td class="labelText" style="display:none" >
+							<siga:Idioma key="gratuita.listadoAsistencias.literal.numero"/>
+						</td>					
+						<td style="display:none" >
+					    	<html:text name="ActuacionesDesignasForm" property="numero" size="5" styleClass="boxConsulta" value="<%=numero%>" readonly="true" />
+						</td>		
+									
+						<td class="labelText">
+							<siga:Idioma key="gratuita.listadoAsistencias.literal.numero"/>
+						</td>
+						<td>
+							<html:text name="ActuacionesDesignasForm" property="codigo" size="5" styleClass="boxConsulta" value="<%=codigo%>" readonly="true" />
+						</td>
+						
+						<td class="labelText">
+							<siga:Idioma key="gratuita.inicio_PestanaCalendarioGuardias.literal.fechaDesigna"/>
+						</td>
+						<td>
+							<html:text name="ActuacionesDesignasForm" property="fecha" size="10" styleClass="boxConsulta" value="<%=fecha%>" readonly="true" />
+						</td>
+					</tr>
 				</table>
-				</siga:ConjCampos>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<siga:ConjCampos leyenda="gratuita.busquedaDesignas.literal.letrado">
+			</siga:ConjCampos>
+		</td>
+	</tr>
+	
+	<tr>
+		<td>
+			<siga:ConjCampos leyenda="gratuita.busquedaDesignas.literal.letrado">
 				<table width="100%">
-				<tr>
-					<td class="labelText" width="15%">
-						<siga:Idioma key="gratuita.busquedaAsistencias.literal.ncolegiado"/>
-					</td>
-					<td width="5%">
-						<html:text name="ActuacionesDesignasForm" property="ncolegiado" size="5" styleClass="boxConsulta" value="<%=ncolegiado%>" readonly="true"></html:text>
-					</td>
-					<td class="labelText" width="15%">
-						<siga:Idioma key="gratuita.busquedaAsistencias.literal.nombre"/>
-					</td>
-					<td class="labelTextValor" colspan="5">
-						<%=nombre%> <%=apellido1%> <%=apellido2%>
-					</td>
-				</tr>
+					<tr>
+						<td class="labelText" width="15%">
+							<siga:Idioma key="gratuita.busquedaAsistencias.literal.ncolegiado"/>
+						</td>
+						<td width="5%">
+							<html:text name="ActuacionesDesignasForm" property="ncolegiado" size="5" styleClass="boxConsulta" value="<%=ncolegiado%>" readonly="true" />
+						</td>
+						
+						<td class="labelText" width="15%">
+							<siga:Idioma key="gratuita.busquedaAsistencias.literal.nombre"/>
+						</td>
+						<td class="labelTextValor" colspan="5">
+							<%=nombre%> <%=apellido1%> <%=apellido2%>
+						</td>
+					</tr>
 				</table>
-				</siga:ConjCampos>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<siga:ConjCampos leyenda="gratuita.actuacionesDesigna.literal.titulo">
+			</siga:ConjCampos>
+		</td>
+	</tr>
+	
+	<tr>
+		<td>
+			<siga:ConjCampos leyenda="gratuita.actuacionesDesigna.literal.titulo">
 				<table width="100%" border="0">
-				<tr>
-					
-					<td class="labelText">
-						<siga:Idioma key="gratuita.actuacionesAsistencia.literal.fechaActuacion"/>&nbsp;(*)
-					</td>
-					<td>
-						<% if (!modoAnterior.equalsIgnoreCase("VER")) { %>
-							<html:text name="ActuacionesDesignasForm" property="fechaActuacion" size="10" styleClass="box" value="<%=fechaActuacion%>" readonly="true"></html:text>
+					<tr>				
+						<td class="labelText" nowrap>
+							<siga:Idioma key="gratuita.actuacionesAsistencia.literal.fechaActuacion"/>&nbsp;(*)
+						</td>
+						<td>
+							<% if (!modoAnterior.equalsIgnoreCase("VER")) { %>
+								<html:text name="ActuacionesDesignasForm" property="fechaActuacion" size="10" styleClass="box" value="<%=fechaActuacion%>" readonly="true" />
+								&nbsp;
+								<a onClick="return showCalendarGeneral(fechaActuacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+							<% } else { %>
+								<html:text name="ActuacionesDesignasForm" property="fechaActuacion" size="10" styleClass="boxConsulta" value="<%=fechaActuacion%>" readonly="true"/>
+							<% } %>
+						</td>
+							
+						<td class="labelText" nowrap>
+							<siga:Idioma key="gratuita.actuacionesAsistencia.literal.nactuacion"/>
+						</td>
+						<td>
+							<html:text name="ActuacionesDesignasForm" property="nactuacion" size="10" value="<%=nactuacion%>" styleClass="boxConsulta" readonly="true"/>
+						</td>
+							
+						<td class="labelText" nowrap>
+							<siga:Idioma key="gratuita.modalActuacionesDesigna.literal.anulacion"/>
 							&nbsp;
-							<a onClick="return showCalendarGeneral(fechaActuacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-						<% } else { %>
-							<html:text name="ActuacionesDesignasForm" property="fechaActuacion" size="10" styleClass="boxConsulta" value="<%=fechaActuacion%>" readonly="true"></html:text>
-						<% } %>
-					</td>
-					<td class="labelText">
-						<siga:Idioma key="gratuita.actuacionesAsistencia.literal.nactuacion"/>
-					</td>
-					<td>
-						<html:text name="ActuacionesDesignasForm" property="nactuacion" size="10" value="<%=nactuacion%>" styleClass="boxConsulta" readonly="true"></html:text>
-					</td>
-					<td class="labelText">
-						<siga:Idioma key="gratuita.modalActuacionesDesigna.literal.anulacion"/>
-					</td>
-					<td>
-						<% if (!modoAnterior.equalsIgnoreCase("VER")) { 
-								if(!fechaAnulacion.equals(""))
-								{
-						%>
-									<INPUT NAME="anulacion" TYPE=CHECKBOX <%if((anulacion!=null)&&(anulacion).equalsIgnoreCase("1")){%>checked<%}%> disabled>
-						<% 		} else{ %>	
-									<INPUT NAME="anulacion" TYPE=CHECKBOX <%if((anulacion!=null)&&(anulacion).equalsIgnoreCase("1")){%>checked<%}%>>
-						
-						<%		} %>
-						
-						<%}else{%>
-							<INPUT NAME="anulacion" TYPE=CHECKBOX <%if((anulacion!=null)&&(anulacion).equalsIgnoreCase("1")){%>checked<%}%> disabled>
-						<%}%>
-					</td>
-				<tr>
-				
-				<td class="labelText" style="vertical-align: middle;">
+							<% if (!modoAnterior.equalsIgnoreCase("VER")) { 
+									if(!fechaAnulacion.equals("")) {
+							%>
+										<INPUT NAME="anulacion" TYPE=CHECKBOX <%if((anulacion!=null)&&(anulacion).equalsIgnoreCase("1")){%>checked<%}%> disabled>
+							<% 		} else{ %>	
+										<INPUT NAME="anulacion" TYPE=CHECKBOX <%if((anulacion!=null)&&(anulacion).equalsIgnoreCase("1")){%>checked<%}%>>
+							
+							<%		} %>
+							
+							<%}else{%>
+								<INPUT NAME="anulacion" TYPE=CHECKBOX <%if((anulacion!=null)&&(anulacion).equalsIgnoreCase("1")){%>checked<%}%> disabled>
+							<%}%>
+						</td>
+					</tr>
+					
+					<tr>			
+						<td class="labelText" nowrap>
 							<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento" /><%=(obligatorioNumeroProcedimiento?asterisco:"")%>
 						</td>
-						<td style="vertical-align: middle;">
-						<% if (!modoAnterior.equalsIgnoreCase("VER")) { %> 
-							<html:text name="ActuacionesDesignasForm" property="numeroProcedimiento" style="width:100" maxlength="<%=maxLenghtProc%>" styleClass="box" value="<%=numeroProcedimiento%>"></html:text> 
-						<% } else { %> 
-							<html:text name="ActuacionesDesignasForm" property="numeroProcedimiento" style="width:100" maxlength="<%=maxLenghtProc%>" styleClass="boxConsulta" value="<%=numeroProcedimiento%>" readonly="true"></html:text> 
-						<% } %>
+						<td>
+							<% if (!modoAnterior.equalsIgnoreCase("VER")) { %> 
+								<html:text name="ActuacionesDesignasForm" property="numeroProcedimiento" style="width:100px" maxlength="<%=maxLenghtProc%>" styleClass="box" value="<%=numeroProcedimiento%>"/> 
+							<% } else { %> 
+								<html:text name="ActuacionesDesignasForm" property="numeroProcedimiento" style="width:100px" maxlength="<%=maxLenghtProc%>" styleClass="boxConsulta" value="<%=numeroProcedimiento%>" readonly="true"/> 
+							<% } %>
 						</td>
-				
-				
-              <td class="labelText">	
-				 <siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/>
-				 <%if(!modoAnterior.equalsIgnoreCase("VER")){%>
-				    &nbsp;/&nbsp;<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext"/>
-				 <%}%>
-				 &nbsp;(*)
-			  </td>	 
-		
-			<% if (esLetrado||modoAnterior.equalsIgnoreCase("VER")){%>
-					<td colspan="6" >
-							<siga:ComboBD nombre="juzgado" ancho="530" tipo="<%=comboJuzgados%>"estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>" accion="Hijo:procedimiento"/>
-					</td>
-					<%}else{%>
-					  <td colspan="5" >
-							<input type="text" name="codigoExtJuzgado" class="box" size="8"  style="margin-top:0px;" maxlength="10" onBlur="obtenerJuzgado();" />
-							<siga:ComboBD nombre="juzgado" ancho="430" tipo="<%=comboJuzgados%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>"  accion="Hijo:procedimiento; cambiarJuzgado(this);"/>
-					</td>
-			<%}%>
-				
-			 </tr>	
-			 <tr>
-				<td class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/>
-				</td>
-				<td > 
-					<% if (!modoAnterior.equalsIgnoreCase("VER")) { %> 
-					 	<html:text name="ActuacionesDesignasForm" property="nig"  value="<%=nig%>" styleClass="<%=estiloCombo%>" maxlength="50"/>
-					<%}else{%>
-						<html:text name="ActuacionesDesignasForm" property="nig"  value="<%=nig%>" styleClass="boxConsulta"/>
-					<%}%>						
-				</td>
-			 </tr>	
-				<tr>
-				
-					<td class="labelText">
-						<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo"/>&nbsp;(*)
-					</td>
-					<%if (modoJustificacion!=null && modoJustificacion.equals("editarJustificacion")){ %>
-					<td colspan="7">
-						
-							<html:text name="ActuacionesDesignasForm"  style="width:600px" property="procedimiento1" styleClass="boxConsulta" readOnly="true" value="<%=nombreProcedimiento%>"/>
-					</td>
-					<td  style="display:none">
-                            <siga:ComboBD ancho="600" nombre="procedimiento" tipo="<%=comboJuzgados%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
-					</td>
-					<%} else if (modoJustificacion!=null && modoJustificacion.equals("nuevoJustificacion")){%>
-						<td  colspan="7">
-                            	<siga:ComboBD ancho="600" nombre="procedimiento" tipo="<%=comboJuzgadosJustificacion%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
-						</td>
-					
-					<%} else if ((esLetrado||modoAnterior.equalsIgnoreCase("VER"))){%>
-					<td colspan="7">						
-							<html:text name="ActuacionesDesignasForm"  style="width:600px" property="procedimiento1" styleClass="boxConsulta" readOnly="true" value="<%=nombreProcedimiento%>"/>
-					</td>
-					<td  style="display:none">
-                            <siga:ComboBD ancho="600" nombre="procedimiento" tipo="<%=comboModulos%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>"  />
-					</td>
-					
-					
-					<%}else { %>
-					<td  colspan="7">
-                            <siga:ComboBD ancho="600" nombre="procedimiento" tipo="<%=comboModulos%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
-					</td>
-					<%}%>
-					
-				<tr>
-				
-					<td class="labelText">
-						<siga:Idioma key="gratuita.procedimientos.literal.acreditacion"/>&nbsp;(*)
-					</td>
-					<td  colspan="7">
-						<%if (modoJustificacion!=null && modoJustificacion.equals("nuevoJustificacion")){%>
-							<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>"  hijo="t" elementoSel="<%=acreditacionSel%>" />
-						<%}else if (modoAnterior.equalsIgnoreCase("VER")) { %>
-							<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="true"   parametro="<%=paramAcreditacion%>" elementoSel="<%=acreditacionSel%>" />
-						
+									
+			            <td class="labelText" nowrap>	
+						 	<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/>&nbsp;(*)
+					  	</td>
+					  	<td colspan="2">	 
+							<% if (esLetrado||modoAnterior.equalsIgnoreCase("VER")){%>							
+									<siga:ComboBD nombre="juzgado" ancho="500" tipo="<%=comboJuzgados%>"estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>" accion="Hijo:procedimiento"/>
 							
-						<% } else { 
-						  
-						%>
-						<%     if (esLetrado){%>
-							<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>"   parametro="<%=paramAcreditacion%>" elementoSel="<%=acreditacionSel%>" />
-						<%    }else{%>	
-						   	<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>"  hijo="t" elementoSel="<%=acreditacionSel%>" />
-						<%    }%>
-						
-						<% } %>
-					</td>
-
-				</tr>
-				<tr>
-					<td class="labelText">
-						<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.prision"/>
-					</td>
-					<td colspan="7">
-						<siga:ComboBD  ancho="300" nombre="prision" tipo="comboPrisiones"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=param%>" elementoSel="<%=prisionSel%>" />
-					 
-						<font class="labelTextValor">
-							&nbsp;&nbsp;&nbsp;<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.prisionCompletar"/>
-						</font>
-					</td>
-				</tr>
-				<tr>
-					<td class="labelText">
-						<siga:Idioma key="gratuita.actuacionesDesigna.literal.pretensiones"/><%=(obligatorioProcedimiento?asterisco:"")%>
-					</td>
-					<td colspan="7">
-						<siga:ComboBD  ancho="300" nombre="pretension" tipo="comboPretensiones"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" />										 
-					<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA) { %>
-						<font class="labelText"><siga:Idioma key="gratuita.altaGuardia.literal.motivoCambio"/></font>
-						<siga:ComboBD  ancho="300" nombre="idMotivoCambio" tipo="cmbActuacionDesignaMotivoCambio"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=paramMotivoCambio%>" elementoSel="<%=motCambioSel%>" />
-					<% } else {%>
-						<html:hidden property = "idMotivoCambio" value="<%=idMotivoCambio%>"/>
-					<% } %>
-					</td>					
-				</tr>
+							<%}else{%>
+								<input type="text" name="codigoExtJuzgado" class="box" size="8"  style="margin-top:0px;" maxlength="10" onBlur="obtenerJuzgado();" />
+								<siga:ComboBD nombre="juzgado" ancho="400" tipo="<%=comboJuzgados%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>"  accion="Hijo:procedimiento; cambiarJuzgado(this);"/>
+							<%}%>
+						</td>														
+					</tr>	
 					
-				<tr>
-					<td class="labelText">
-						<siga:Idioma key="gratuita.altaGuardia.literal.observaciones"/>
-					</td>
-					<td  colspan="7">
-						<% if (!modoAnterior.equalsIgnoreCase("VER")) { %>
-							<textarea class="box" scroll="none" name="observaciones" rows="2" cols="150"><%=observaciones%></textarea>
-						<% } else { %>
-							<textarea class="boxConsulta" scroll="none" name="observaciones" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" rows="2" cols="150" readonly="true"><%=observaciones%></textarea>
-						<%}%>
-						<font class="labelText">
-						&nbsp;&nbsp;&nbsp;<siga:Idioma key="gratuita.actuacionesDesigna.literal.talonario"/>&nbsp;/&nbsp;
-					    <siga:Idioma key="gratuita.actuacionesDesigna.literal.talon"/>					     
-						</font>
-						
-						 <%if(!modoAnterior.equalsIgnoreCase("VER")){%>
-						 <font class="labelTextValor">	
-							<html:text name="ActuacionesDesignasForm" property="talonario" size="20" maxlength="20" styleClass="box" ></html:text>
-							&nbsp;/&nbsp;
-					     	<html:text name="ActuacionesDesignasForm" property="talon" size="20"  maxlength="20" styleClass="box"></html:text>
-					     </font>
-					     <%}else{%>	
-					    	 <font class="labelTextValor">
+					<tr>
+						<td class="labelText" nowrap>
+							<siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/>
+						</td>				
+						<td colspan="4"> 
+							<% if (!modoAnterior.equalsIgnoreCase("VER")) { %> 
+								<html:text name="ActuacionesDesignasForm" property="nig"  value="<%=nig%>" styleClass="<%=estiloCombo%>" maxlength="50"/>
+							<%}else{%>
+								<html:text name="ActuacionesDesignasForm" property="nig"  value="<%=nig%>" styleClass="boxConsulta"/>
+							<%}%>						
+						</td>
+					</tr>	
+							
+					<tr>
+						<td class="labelText" nowrap>
+							<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo"/>&nbsp;(*)			
+						</td>						
+						<td colspan="4">											
+							<%if (modoJustificacion!=null && modoJustificacion.equals("nuevoJustificacion")){%>
+			                	Opcion2<siga:ComboBD ancho="600" nombre="procedimiento" tipo="<%=comboJuzgadosJustificacion%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
+								
+							<%} else if ((esLetrado||modoAnterior.equalsIgnoreCase("VER"))){%>
+								Opcion3<html:text name="ActuacionesDesignasForm" style="width:600px" property="procedimiento1" styleClass="boxConsulta" readOnly="true" value="<%=nombreProcedimiento%>"/>
+								
+							<%} else { %>				
+			                	Opcion4<siga:ComboBD ancho="600" nombre="procedimiento" tipo="<%=comboModulos%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
+							<%}%>
+						</td>
+					</tr>		
+					
+					<tr>
+						<td class="labelText" nowrap>
+							<siga:Idioma key="gratuita.procedimientos.literal.acreditacion"/>&nbsp;(*)
+						</td>			
+						<td  colspan="4">
+							<%if (modoJustificacion!=null && modoJustificacion.equals("nuevoJustificacion")){%>
+								<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>"  hijo="t" elementoSel="<%=acreditacionSel%>" />
+							<%}else if (modoAnterior.equalsIgnoreCase("VER")) { %>
+								<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="true"   parametro="<%=paramAcreditacion%>" elementoSel="<%=acreditacionSel%>" />	
+							<% } else { 
+								if (esLetrado){%>
+									<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>"   parametro="<%=paramAcreditacion%>" elementoSel="<%=acreditacionSel%>" />
+								<%} else {%>	
+									<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>"  hijo="t" elementoSel="<%=acreditacionSel%>" />
+								<%}
+							}%>
+						</td>
+					</tr>
+					
+					<tr>
+						<td class="labelText" nowrap>
+							<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.prision"/>
+						</td>
+						<td colspan="4">
+							<siga:ComboBD  ancho="300" nombre="prision" tipo="comboPrisiones"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=param%>" elementoSel="<%=prisionSel%>" />
+						 
+							<font class="labelTextValor" style="vertical-align: middle;">
+								<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.prisionCompletar"/>
+							</font>
+						</td>
+					</tr>
+					
+					<tr>
+						<td class="labelText" nowrap>
+							<siga:Idioma key="gratuita.actuacionesDesigna.literal.pretensiones"/><%=(obligatorioProcedimiento?asterisco:"")%>
+						</td>
+						<td colspan="4">
+							<siga:ComboBD  ancho="300" nombre="pretension" tipo="comboPretensiones"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" />										 
+							<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA) { %>
+								<font class="labelText">
+									<siga:Idioma key="gratuita.altaGuardia.literal.motivoCambio"/>
+								</font>
+								<siga:ComboBD  ancho="300" nombre="idMotivoCambio" tipo="cmbActuacionDesignaMotivoCambio"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=paramMotivoCambio%>" elementoSel="<%=motCambioSel%>" />
+							<%} else {%>
+								<html:hidden property = "idMotivoCambio" value="<%=idMotivoCambio%>"/>
+							<%}%>
+						</td>					
+					</tr>
+								
+					<tr>
+						<td class="labelText" nowrap style="vertical-align: middle;">
+							<siga:Idioma key="gratuita.altaGuardia.literal.observaciones"/>
+						</td>
+						<td  colspan="4">
+							<% if (!modoAnterior.equalsIgnoreCase("VER")) { %>
+								<textarea class="box" name="observaciones"
+									onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" style="overflow=auto;width=600;height=45" 
+								><%=observaciones%></textarea>
+							<% } else { %>
+								<textarea class="boxConsulta" name="observaciones" readonly="true"
+									style="overflow=auto;width=600;height=40"
+								><%=observaciones%></textarea>
+							<%}%>							
+						</td>
+					</tr>
+					
+					<tr>
+						<td class="labelText" nowrap>
+							<siga:Idioma key="gratuita.actuacionesDesigna.literal.talonario"/>&nbsp;/&nbsp;
+							<siga:Idioma key="gratuita.actuacionesDesigna.literal.talon"/>					     
+						</td>
+						<td  colspan="4">	
+							 <%if(!modoAnterior.equalsIgnoreCase("VER")){%>
+								<html:text name="ActuacionesDesignasForm" property="talonario" size="20" maxlength="20" styleClass="box" />
+								&nbsp;/&nbsp;
+					     		<html:text name="ActuacionesDesignasForm" property="talon" size="20"  maxlength="20" styleClass="box" />
+						     <%}else{%>	
 					     		<html:text name="ActuacionesDesignasForm" property="talonario" size="20" styleClass="boxConsulta" readOnly="true"/>
 					     		&nbsp;/&nbsp;
 					     		<html:text name="ActuacionesDesignasForm" property="talon" size="20" styleClass="boxConsulta" readOnly="true"/>
-					    	 </font>	
-					     <%}%>	
-					     
-					</td>
-					
-				</tr>
+						     <%}%>				     
+						</td>			
+					</tr>
 				</table>
-				</siga:ConjCampos>			
-			</td>
-		</tr>
-		
-		<tr>
-			<td>
-							
-				<siga:ConjCampos leyenda="gratuita.actuacionesDesigna.literal.justificacion">
-				<table width="100%">
-						<tr>
-							<td class="labelText">	
-								<siga:Idioma key="gratuita.inicio_PestanaCalendarioGuardias.literal.fecha"/>
-							</td>
-								<%if(!modoAnterior.equals("VER")&&(!actuacionValidada.equals("1"))) {%>	
-									<td>	
-										<html:text name="ActuacionesDesignasForm" property="fechaJustificacion" size="10" maxlength="10" styleClass="box" value="<%=fechaJustificacion%>"  readOnly="true"></html:text>
-										<%if(!modoAnterior.equals("VER")&&!deDonde.equals("/JGR_PestanaDesignas")) {%>
-											&nbsp;&nbsp;<a name="calendarioTd" style="visibility:visible" onClick="showCalendarGeneral(fechaJustificacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-										<%}else if(!modoAnterior.equals("VER")&&deDonde.equals("/JGR_PestanaDesignas")){%>
-											&nbsp;&nbsp;<a name="calendarioTd" style="visibility:hidden" onClick="showCalendarGeneral(fechaJustificacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>	
-										<%}%>
-									</td>
-								<%}else{%>
-									<td class="labelTextValor">	
-										<html:text name="ActuacionesDesignasForm" property="fechaJustificacion" size="10" maxlength="10" styleClass="boxConsulta" value="<%=fechaJustificacion%>" readOnly="true" ></html:text>
-										<%if(!modoAnterior.equals("VER")) {%>
-											&nbsp;&nbsp;<a name="calendarioTd" style="visibility:hidden" onClick="showCalendarGeneral(fechaJustificacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-										<%}%>
-									</td>
-								<%}%>								
-
-							<td class="labelText">
-
-								&nbsp;&nbsp;
-
-
-				<% if(!modoAnterior.equals("VER")) {%>
-						<% if (!usr.isLetrado()&&!deDonde.equals("/JGR_PestanaDesignas")) { // Agente %>
-							<% if ((facturada != null) && (!facturada.equals("1"))) {%>
-									<input type="button" id="idButton" alt="<siga:Idioma key='gratuita.altaTurnos.literal.validacion'/>" id="bValidarActuacion" onclick="validarJustificacion();" class="button" value="<siga:Idioma key='gratuita.altaTurnos.literal.validacion'/>">
-							<%}%>
-						<%} %>
-				<% }     // if modo consulta %>
-	
-							</td>
-							<td class="labelText">
-								<%if(actuacionValidada.equals("1")) {%>	
-								<input name="estadoActuacion" type="text" class="boxConsulta" value='<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>' readonly="true" >
-								<% }else{ %>
-								<input name="estadoActuacion" type="text" class="boxConsulta" value="<siga:Idioma key='gratuita.mantActuacion.literal.actuacionPteValidar'/>" readonly="true" >
-								<% } %>
-							</td>
-
-							<td class="labelText">
-								<siga:Idioma key="gratuita.altaGuardia.literal.observaciones"/>
-							</td>
-							<td>
-									<% if (!modoAnterior.equalsIgnoreCase("VER") && !usr.isLetrado() && validarJustificaciones.equalsIgnoreCase("S")) { %>
-										<textarea class="box" scroll="none" name="observacionesJustificacion" rows="3" cols="100"><%=observacionesJustificacion%></textarea>
-									<%}else{%>
-										<textarea class="boxConsulta" scroll="none" name="observacionesJustificacion" rows="3" cols="100" readonly="true"><%=observacionesJustificacion%></textarea>
-									<%}%>
-							</td>
-						</tr>
-		<%if(anioEJG!=null && !anioEJG.equals("")){ //si la designa tiene EJG asociad... %>
-			
-			<tr>
-				<td class="labelText" colspan="2">
-					<siga:Idioma key="gratuita.operarRatificacion.literal.tipoRatificacion"/>:
-				</td>	
-			<%if (vTipoRatificacion!=null && vTipoRatificacion.size()>0){%>	
-				<td>
-					<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucion" ancho="200" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vTipoRatificacion%>" readOnly="true"/>
-				
-				</td>
-			 <%}%>	
-			</tr>
-			
-	
-	<tr>
-		<td class="labelText" colspan="2">
-			<siga:Idioma key="gratuita.operarRatificacion.literal.fechaNotificacion"/>:
+			</siga:ConjCampos>			
 		</td>
-	 <%if (fechaNotificacion!=null && !fechaNotificacion.equals("")){%>			
+	</tr>
+		
+	<tr>
 		<td>
-			<html:text name="DefinirEJGForm" property="fechaNotificacion" size="10" styleClass="boxConsulta" value="<%=fechaNotificacion%>" disabled="false" readonly="true"></html:text>
-		</td>
-	 <%}%>	
-	</tr>
-	
-	
-	<tr>
-	<td class="labelText" colspan="2">
-		<siga:Idioma key="gratuita.operarRatificacion.literal.fechaRatificacion"/>:
-	</td>	
-	<%if (fechaRatificacion!=null && !fechaRatificacion.equals("")){%>
-	<td>
-		
-			<html:text name="DefinirEJGForm" property="fechaRatificacion" size="10" styleClass="boxConsulta" value="<%=fechaRatificacion%>" disabled="false" readonly="true"></html:text>
-		
-	</td>
-	<%}%>
-	</tr>
-	
-<%}%>
-					</table>
-				</siga:ConjCampos>
+			<siga:ConjCampos leyenda="gratuita.actuacionesDesigna.literal.justificacion">
+				<table width="100%" border="0">
+					<tr>
+						<td class="labelText">	
+							<siga:Idioma key="gratuita.inicio_PestanaCalendarioGuardias.literal.fecha"/>
+						</td>
+						<td>
+							<%if(!modoAnterior.equals("VER")&&!actuacionValidada.equals("1")&&!deDonde.equals("/JGR_PestanaDesignas")) {%>
+									<html:text name="ActuacionesDesignasForm" property="fechaJustificacion" size="10" maxlength="10" styleClass="box" value="<%=fechaJustificacion%>" />
+									&nbsp;&nbsp;<a name="calendarioTd" style="visibility:visible" onClick="showCalendarGeneral(fechaJustificacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key='gratuita.listadoCalendario.literal.seleccionarFecha'/>" border="0"></a>
+							<%}else{%>
+								<html:text name="ActuacionesDesignasForm" property="fechaJustificacion" size="10" maxlength="10" styleClass="boxConsulta" value="<%=fechaJustificacion%>" readOnly="true" />									
+								&nbsp;&nbsp;<a name="calendarioTd" style="visibility:hidden" onClick="showCalendarGeneral(fechaJustificacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key='gratuita.listadoCalendario.literal.seleccionarFecha'/>" border="0"></a>
+							<%}%>		
+						</td>						
+
+						<td>
+							<%if(!modoAnterior.equals("VER")&&!usr.isLetrado()&&!deDonde.equals("/JGR_PestanaDesignas")&&(facturada != null) && (!facturada.equals("1"))) {%>
+								<input type="button" id="idButton" alt="<siga:Idioma key='gratuita.altaTurnos.literal.validacion'/>" id="bValidarActuacion" onclick="validarJustificacion();" class="button" value="<siga:Idioma key='gratuita.altaTurnos.literal.validacion'/>">
+							<%}%>
+						</td>
+						
+						<td class="labelText">
+							<%if(actuacionValidada.equals("1")) {%>	
+								<input name="estadoActuacion" type="text" class="boxConsulta" value='<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>' readonly="true" style="width:400px; border:0px solid">
+							<%} else {%>
+								<input name="estadoActuacion" type="text" class="boxConsulta" value="<siga:Idioma key='gratuita.mantActuacion.literal.actuacionPteValidar'/>" readonly="true" style="width:400px; border:px solid">
+							<%}%>
+						</td>
+					</tr>
+					<tr>
+						<td class="labelText" width="130px" style="vertical-align: middle;">
+							<siga:Idioma key="gratuita.altaGuardia.literal.observaciones"/>
+						</td>
+						<td colspan="3">
+							<% if (!modoAnterior.equalsIgnoreCase("VER") && !usr.isLetrado() && validarJustificaciones.equalsIgnoreCase("S")) { %>
+								<textarea class="box" name="observacionesJustificacion"
+									onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" style="overflow=auto;width=600;height=45"
+								><%=observacionesJustificacion%></textarea>
+							<%}else{%>
+								<textarea class="boxConsulta" name="observacionesJustificacion" readonly="true" 
+									style="overflow=auto;width=600;height=40" 
+								><%=observacionesJustificacion%></textarea>
+							<%}%>
+						</td>
+					</tr>
 				</table>
-			</td>
-		</tr>
-		<%if (nombreFacturacion!=null && !nombreFacturacion.equals("")){%>
+		
+				<table width="100%" border="0">
+					<%if(anioEJG!=null && !anioEJG.equals("")){ //si la designa tiene EJG asociad... %>
+						<tr>
+							<td class="labelText">
+								<siga:Idioma key="gratuita.operarRatificacion.literal.tipoRatificacion"/>
+							</td>	
+			
+							<%if (vTipoRatificacion!=null && vTipoRatificacion.size()>0){%>	
+								<td>
+									<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucion" ancho="200" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vTipoRatificacion%>" readOnly="true"/>				
+								</td>
+			 				<%}%>	
+						</tr>
+			
+	
+						<tr>
+							<td class="labelText">
+								<siga:Idioma key="gratuita.operarRatificacion.literal.fechaNotificacion"/>
+							</td>
+							
+							 <%if (fechaNotificacion!=null && !fechaNotificacion.equals("")){%>			
+								<td>
+									<html:text name="DefinirEJGForm" property="fechaNotificacion" size="10" styleClass="boxConsulta" value="<%=fechaNotificacion%>" disabled="false" readonly="true"/>
+								</td>
+							 <%}%>	
+						</tr>
+	
+	
+						<tr>
+							<td class="labelText">
+								<siga:Idioma key="gratuita.operarRatificacion.literal.fechaRatificacion"/>
+							</td>
+								
+							<%if (fechaRatificacion!=null && !fechaRatificacion.equals("")){%>
+								<td>
+									<html:text name="DefinirEJGForm" property="fechaRatificacion" size="10" styleClass="boxConsulta" value="<%=fechaRatificacion%>" disabled="false" readonly="true"/>			
+								</td>
+							<%}%>
+						</tr>
+					<%}%>
+				</table>
+			</siga:ConjCampos>		
+		</td>
+	</tr>
+	
+	<%if (nombreFacturacion!=null && !nombreFacturacion.equals("")){%>
 		<tr>
 			<td>
 				<siga:ConjCampos leyenda="gratuita.actuacionesDesigna.literal.facturacion">
 					<table width="100%">
 						<tr>
-						<td width="15%">&nbsp; </td>
-						<td width="85%">&nbsp;
+							<td width="15%">&nbsp; </td>
+							<td width="85%">&nbsp; </td>
 						</tr>
+						
 						<tr>
 							<td class="labelText" width="15%">
 								<siga:Idioma key="gratuita.actuacionesDesigna.literal.facturacion"/>:
@@ -818,33 +791,32 @@
 							</td>
 						</tr>
 						<tr>
-						<td>&nbsp; </td>
-						<td>&nbsp;
+							<td>&nbsp; </td>
+							<td>&nbsp;
 						</tr>
 					</table>
 				</siga:ConjCampos>
 			</td>
 		</tr>
-		<%} %>
-	
-		</table>
+	<%}%>	
+</table>
 
 </html:form>
 	
-    <html:form action = "/JGR_MantenimientoJuzgados.do" method="POST" target="submitArea">
-		<input type="hidden" name="modo"        value="buscarJuzgado">
-		<html:hidden property = "codigoExt2" value=""/>
-	</html:form>	
+   <html:form action = "/JGR_MantenimientoJuzgados.do" method="POST" target="submitArea">
+	<input type="hidden" name="modo"        value="buscarJuzgado">
+	<html:hidden property = "codigoExt2" value=""/>
+</html:form>	
 
 <% if (modoAnterior.equalsIgnoreCase("VER")) { %>
-		<siga:ConjBotonesAccion botones="C" modal="G"/>
+	<siga:ConjBotonesAccion botones="C" modal="G"/>
 <% } else { %>
-		<siga:ConjBotonesAccion botones="Y,C" modal="G"/>
+	<siga:ConjBotonesAccion botones="Y,C" modal="G"/>
 <% } %>
 	
 
-	<!-- INICIO: SCRIPTS BOTONES -->
-	<script language="JavaScript">
+<!-- INICIO: SCRIPTS BOTONES -->
+<script language="JavaScript">
 	
 		//Asociada al boton Cerrar -->
 		function accionGuardarCerrar() 
