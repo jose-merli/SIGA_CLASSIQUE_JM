@@ -3263,6 +3263,12 @@
 		</action>
 		
 		<action path="/JGR_ActasComisionEd" type="com.siga.gratuita.action.ActaComisionAction" input="/html/jsp/general/errorActionErrors.jsp" name="ActaComisionForm" scope="session" validate="true">
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaActasComision.jsp"/>
+			<forward name="nuevo" path="/html/jsp/gratuita/nuevaActaComision.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/editarActaComision.jsp"/>
+			<forward name="resultado" path="/html/jsp/gratuita/listadoActasComision.jsp"/>
+			<forward name="edicionMasiva" path="/html/jsp/gratuita/edicionMasivaActa.jsp"/>
+			<forward name="edicionMasivaModal" path="/html/jsp/gratuita/edicionMasivaActaModal.jsp"/>
 		</action>
 		
 		<action path="/JGR_CaracteristicasAsistenciaLetrado" type="com.siga.gratuita.action.CaracteristicasAsistenciaAction" name="CaracteristicasForm">
