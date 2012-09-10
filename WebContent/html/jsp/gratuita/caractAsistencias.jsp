@@ -233,8 +233,13 @@ function obtenerJuzgado() {
 				if (json.idJuzgado=="") {
 					document.getElementById("idJuzgado").value = "-1";
 					document.getElementById("codigoExtJuzgado").value = "";
-				} else
-    	   			document.getElementById("idJuzgado").value = json.idJuzgado;      		
+				} else {
+    	   			document.getElementById("idJuzgado").value = json.idJuzgado;     
+					if (document.getElementById("idJuzgado").value=="") {
+						document.getElementById("idJuzgado").value = "-1";
+						document.getElementById("codigoExtJuzgado").value = "";
+		   			}
+				}
 				fin();
 			},
 			error: function(e){

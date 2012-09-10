@@ -1094,7 +1094,9 @@
 	}		
 	
 	function obtenerComisaria(fila) { 
-		var codigo = document.getElementById("codComisaria_"+fila).value;
+		var txtCodigoComisaria="codComisaria_"+fila;
+		var txtComboComisaria="comisaria_"+fila;		
+		var codigo = document.getElementById(txtCodigoComisaria).value;
 		
 		if(codigo!=""){
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
@@ -1104,10 +1106,15 @@
 				dataType: "json",
 				success: function(json){		
 					if (json.idComisaria=="") {
-						document.getElementById("comisaria_"+fila).value = "-1";
-						document.getElementById("codComisaria_"+fila).value = "";
-					} else
-	    	   			document.getElementById("comisaria_"+fila).value = json.idComisaria;      		
+						document.getElementById(txtComboComisaria).value = "-1";
+						document.getElementById(txtCodigoComisaria).value = "";
+					} else {
+	    	   			document.getElementById(txtComboComisaria).value = json.idComisaria;    
+						if (document.getElementById(txtComboComisaria).value=="") {
+							document.getElementById(txtComboComisaria).value = "-1";
+							document.getElementById(txtCodigoComisaria).value = "";
+	    	   			}
+					}
 					fin();
 				},
 				error: function(e){
@@ -1117,7 +1124,7 @@
 			});
 		}
 		else
-			document.getElementById("comisaria_"+fila).value = "-1";
+			document.getElementById(txtComboComisaria).value = "-1";
 	}	
 	
 	function cambiarJuzgado(fila) {
@@ -1144,7 +1151,9 @@
 	}		
 	
 	function obtenerJuzgado(fila) { 
-		var codigo = document.getElementById("codJuzgado_"+fila).value;
+		var txtCodigoJuzgado="codJuzgado_"+fila;
+		var txtComboJuzgado="juzgado_"+fila;
+		var codigo = document.getElementById(txtCodigoJuzgado).value;
 		
 		if(codigo!=""){
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
@@ -1154,10 +1163,15 @@
 				dataType: "json",
 				success: function(json){		
 					if (json.idJuzgado=="") {
-						document.getElementById("juzgado_"+fila).value = "-1";
-						document.getElementById("codJuzgado_"+fila).value = "";
-					} else
-	    	   			document.getElementById("juzgado_"+fila).value = json.idJuzgado;      		
+						document.getElementById(txtComboJuzgado).value = "-1";
+						document.getElementById(txtCodigoJuzgado).value = "";
+					} else {
+	    	   			document.getElementById(txtComboJuzgado).value = json.idJuzgado;
+	    	   			if (document.getElementById(txtComboJuzgado).value=="") {
+							document.getElementById(txtComboJuzgado).value = "-1";
+							document.getElementById(txtCodigoJuzgado).value = "";
+	    	   			}
+					}
 					fin();
 				},
 				error: function(e){
@@ -1167,7 +1181,7 @@
 			});
 		}
 		else
-			document.getElementById("juzgado_"+fila).value = "-1";
+			document.getElementById(txtComboJuzgado).value = "-1";
 	}		
 		
 	function obtenerPersona (fila) 
