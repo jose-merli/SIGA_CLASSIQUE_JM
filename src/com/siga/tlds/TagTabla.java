@@ -468,20 +468,22 @@ public class TagTabla extends TagSupport {
 			//out.println("</SCRIPT>");
 			
 			out.println("<script language='JavaScript'>");
+			out.println("jQuery(document).ready(function() {jQuery(\"#" + this.nombre + "Div\").show(); validarAncho_" + this.nombre + "();");
+			out.println("});");
 			if (this.ajusteAlto) {
 				
 				int espacioMenos= 0;
-				if (this.ajustePaginador) {
-					espacioMenos += 20; 
-				}
-				if (this.ajusteBotonera) {
-					espacioMenos += 32; 
-				}
-				if (!this.ajuste.equals("0")) {
-					espacioMenos += new Integer(this.ajuste).intValue(); 
-				}
+//				if (this.ajustePaginador) {
+//					espacioMenos += 20; 
+//				}
+//				if (this.ajusteBotonera) {
+//					espacioMenos += 32; 
+//				}
+//				if (!this.ajuste.equals("0")) {
+//					espacioMenos += new Integer(this.ajuste).intValue(); 
+//				}
 				out.println("");
-				out.println(" document.body.onLoad=ajusteAltoMain('" + this.nombre + "Div',"+espacioMenos+");");
+				out.println("jQuery(document).ready(function() {validarAncho_" + this.nombre + "(); ajusteAltoMain('" + this.nombre + "Div',"+espacioMenos+");});");
 				out.println("");
 			}
 			out.println("");
@@ -514,7 +516,6 @@ public class TagTabla extends TagSupport {
 			out.println(" } else {");
 			out.println(" 	validarAncho_" + this.nombre + "();");
 			out.println(" } ");
-			out.println("jQuery(document).ready(function() {jQuery('#" + this.nombre + "Div').show();validarAncho_" + this.nombre + "();});");
 			out.println("</script>");
 			
 
