@@ -451,7 +451,7 @@ public class ActaComisionAction extends MasterAction{
 			throw new SIGAException("Error al modificar el acta.",e);
 		}
 		
-		return exitoModal("messages.updated.success", request);
+		return exito("messages.updated.success", request);
 	}
 	
 	

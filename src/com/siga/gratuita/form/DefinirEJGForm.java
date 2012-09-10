@@ -996,6 +996,8 @@ import com.siga.general.MasterForm;
 		
 		public String getIdActa() 	{return UtilidadesHash.getString(this.datos, ScsEJGBean.C_IDACTA);}
 		public void setIdActa(String valor)	{this.datos.put(ScsEJGBean.C_IDACTA, valor);}
+		public String getNumeroActa() 	{return UtilidadesHash.getString(this.datos, "NUMEROACTA");}
+		public void setNumeroActa(String valor)	{this.datos.put("NUMEROACTA", valor);}
 		
 		public String getAnioActa() 	{return UtilidadesHash.getString(this.datos, ScsEJGBean.C_ANIOACTA);}
 		public void setAnioActa(String valor)	{this.datos.put(ScsEJGBean.C_ANIOACTA, valor);}

@@ -63,6 +63,7 @@
 	ArrayList juzgado = new ArrayList();
 	ArrayList idTurno = new ArrayList(), idGuardia = new ArrayList(), idTipoEJG = new ArrayList(), idTipoEJGColegio = new ArrayList(), idEstado = new ArrayList();
 	String cajgAnio="", cajgNumero ="";
+	String anioActa="", numActa ="";
 	String idRenuncia="";
 	ArrayList renunciaSel = new ArrayList();
 	String ventanaCajg = request.getParameter("ventanaCajg");
@@ -118,6 +119,12 @@
 			}
 			if (miHash.get(ScsEJGBean.C_NUMERO_CAJG) != null) {
 				cajgNumero=miHash.get(ScsEJGBean.C_NUMERO_CAJG).toString();
+			}
+			if (miHash.get(ScsEJGBean.C_ANIOACTA) != null) {
+				anioActa=miHash.get(ScsEJGBean.C_ANIOACTA).toString();
+			}
+			if (miHash.get("NUMEROACTA") != null) {
+				numActa=miHash.get("NUMEROACTA").toString();
 			}
 			if (miHash.get(ScsEJGBean.C_IDRENUNCIA)!= null){
 				idRenuncia=miHash.get(ScsEJGBean.C_IDRENUNCIA).toString();
@@ -408,10 +415,10 @@
 				<td class="labelText">
 					<siga:Idioma key="gratuita.busquedaEJG.dictamen"/>
 				</td>
-				<td > 
+				<td> 
 					<siga:ComboBD nombre="idTipoDictamenEJG" tipo="dictamenEJG" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" obligatorio="false" ancho="140" />
 				</td>
-				<td class="labelText" style="width:160">
+				<td class="labelText" style="width:160px">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.fechaDictamenDesde" /></td>
 				<td>
 					<siga:Fecha nombreCampo="fechaDictamenDesde" valorInicial="<%=fechaDictamenDesde%>" /> 
@@ -435,6 +442,15 @@
 					</html:text>
 				</td>
 							
+				<td class="labelText" >
+					<siga:Idioma key='gratuita.operarEJG.literal.acta'/> 
+					<siga:Idioma key='gratuita.operarEJG.literal.anio'/>/<siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/>
+				</td>
+				<td colspan="3">
+					<html:text name="<%=formulario%>" styleClass="box" property="anioActa"  style="width:40" maxlength="4" value="<%=anioActa%>"></html:text>&nbsp;/&nbsp;
+					<html:text name="<%=formulario%>" styleClass="box" property="numeroActa" value="<%=numActa%>" size="8" maxlength="10">
+					</html:text>
+				</td>
 				
 			</tr>
 			</table>

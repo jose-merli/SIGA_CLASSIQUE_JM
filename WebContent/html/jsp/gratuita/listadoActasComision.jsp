@@ -108,7 +108,6 @@
 		   nombreCol="sjcs.actas.numeroActa, sjcs.actas.fechaResolucion, sjcs.actas.fechaReunion, sjcs.actas.presidente, sjcs.actas.secretario,"
 		   tamanoCol="10,15,15,25,25,10"
 		   alto="100%"
-		   modal="G" 
 		   ajustePaginador="true"
 		   activarFilaSel="true" >
 		   

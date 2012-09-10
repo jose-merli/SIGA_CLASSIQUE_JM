@@ -329,8 +329,8 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		consulta.append(", tur."+ScsTurnoBean.C_NOMBRE + " as TURNO");
 		consulta.append(", gua."+ScsGuardiasTurnoBean.C_NOMBRE  + " as GUARDIA");
 		consulta.append(", sol."+ScsPersonaJGBean.C_NOMBRE+"||' '||sol."+ScsPersonaJGBean.C_APELLIDO1+"||' '||sol."+ScsPersonaJGBean.C_APELLIDO2 + " as SOLICITANTE ");
-		consulta.append(", ejg."+ScsEJGBean.C_NUMERO + " as NUMERO");
-		consulta.append(", ejg."+ScsEJGBean.C_IDINSTITUCION + " as IDINTITUCION");
+		consulta.append(", ejg."+ScsEJGBean.C_NUMERO + " as NUM");
+		consulta.append(", ejg."+ScsEJGBean.C_IDINSTITUCION + " as IDINSTITUCION");
 		consulta.append(", ejg."+ScsEJGBean.C_IDTIPOEJG + " as IDTIPOEJG");
 
 		consulta.append(" from " + ScsEJGBean.T_NOMBRETABLA +" ejg");
@@ -449,7 +449,7 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		consulta.append(", gua."+ScsGuardiasTurnoBean.C_NOMBRE  + " as GUARDIA");
 		consulta.append(", sol."+ScsPersonaJGBean.C_NOMBRE+"||' '||sol."+ScsPersonaJGBean.C_APELLIDO1+"||' '||sol."+ScsPersonaJGBean.C_APELLIDO2 + " as SOLICITANTE ");
 		consulta.append(", ejg."+ScsEJGBean.C_NUMERO + " as NUMERO");
-		consulta.append(", ejg."+ScsEJGBean.C_IDINSTITUCION + " as IDINTITUCION");
+		consulta.append(", ejg."+ScsEJGBean.C_IDINSTITUCION + " as IDINSTITUCION");
 		consulta.append(", ejg."+ScsEJGBean.C_IDTIPOEJG + " as IDTIPOEJG");
 		consulta.append(", ejg."+ScsEJGBean.C_RATIFICACIONDICTAMEN + " as DICTAMEN");
 		consulta.append(", f_siga_getrecurso(fun."+ScsTipoFundamentosBean.C_DESCRIPCION+",1) as FUNDAMENTO");
@@ -533,7 +533,7 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		consulta.append(", gua."+ScsGuardiasTurnoBean.C_NOMBRE  + " as GUARDIA");
 		consulta.append(", sol."+ScsPersonaJGBean.C_NOMBRE+"||' '||sol."+ScsPersonaJGBean.C_APELLIDO1+"||' '||sol."+ScsPersonaJGBean.C_APELLIDO2 + " as SOLICITANTE ");
 		consulta.append(", ejg."+ScsEJGBean.C_NUMERO + " as NUMERO");
-		consulta.append(", ejg."+ScsEJGBean.C_IDINSTITUCION + " as IDINTITUCION");
+		consulta.append(", ejg."+ScsEJGBean.C_IDINSTITUCION + " as IDINSTITUCION");
 		consulta.append(", ejg."+ScsEJGBean.C_IDTIPOEJG + " as IDTIPOEJG");
 		consulta.append(", ejg."+ScsEJGBean.C_RATIFICACIONDICTAMEN + " as DICTAMEN");
 		consulta.append(", f_siga_getrecurso(fun."+ScsTipoFundamentosBean.C_DESCRIPCION+",1) as FUNDAMENTO");

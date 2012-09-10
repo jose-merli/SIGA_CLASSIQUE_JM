@@ -25,7 +25,7 @@
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>" />
 	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
 		
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery-1.7.1.js'/>" ></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>" ></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
 	<script type="text/javascript" src="<%=app%>/html/js/calendarJs.jsp"></script>
@@ -45,11 +45,11 @@
 		<siga:ConjCampos leyenda="general.criterios">	
 			<table class="tablaCampos" border="0" align="left">
 			<tr>
-				<td class="labelText" width="18%"><siga:Idioma key="sjcs.actas.numeroActa" />/<siga:Idioma key="sjcs.actas.anio" /> (*)</td>
+				<td class="labelText" width="18%"><siga:Idioma key="sjcs.actas.anio" />/<siga:Idioma key="sjcs.actas.numeroActa" /> (*)</td>
 				<td>
-					<html:text name="ActaComisionForm" property="numeroActa" size="4" maxlength="8" styleClass="box"></html:text>
+					<html:text name="ActaComisionForm" property="anioActa" style="width:40px" maxlength="4" styleClass="box" onkeypress="return soloDigitos(event)"></html:text>
 					&nbsp;/&nbsp;
-					<html:text name="ActaComisionForm" property="anioActa" size="2" maxlength="4" styleClass="box" onkeypress="return soloDigitos(event)"></html:text>
+					<html:text name="ActaComisionForm" property="numeroActa" style="width:60px" maxlength="8" styleClass="box"></html:text>
 				</td>
 				<td class="labelText"><siga:Idioma key="sjcs.actas.fechaResolucion" /> (*)</td>
 				<td>
@@ -101,7 +101,6 @@
 		
 		function accionGuardarCerrar(){
 			sub();
-			alert("Realizando...");
 			var errores = "";
 			var error = false;
 			if(document.ActaComisionForm.numeroActa.value=="" || 

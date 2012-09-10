@@ -1916,6 +1916,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			ScsEJGBean.T_NOMBRETABLA + " ejg,"  + 
 			ScsTipoEJGBean.T_NOMBRETABLA + " tipoejg," + 
 			CenColegiadoBean.T_NOMBRETABLA + " colegiado" ;
+		
+		// Si se filtra por acta necesitamos la tabla
+		if (((miHash.containsKey("NUMEROACTA")) && (!miHash.get("NUMEROACTA").toString().equals("")))|| 
+			((miHash.containsKey("NUMEROACTA")) && (!miHash.get("NUMEROACTA").toString().equals("")))){
+			consulta += "," +  ScsActaComisionBean.T_NOMBRETABLA + " acta "; 
+		}
 
 		// Se filtra por renuncia
 		if (miForm.getIdRenuncia()!=null && !miForm.getIdRenuncia().trim().equalsIgnoreCase("")) {
@@ -1996,6 +2002,26 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			contador++;
 			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"ANIO"));
 			consulta += " and ejg.ANIO = :" + contador;
+		}
+		if (((miHash.containsKey("NUMEROACTA")) && (!miHash.get("NUMEROACTA").toString().equals("")))|| 
+			((miHash.containsKey("NUMEROACTA")) && (!miHash.get("NUMEROACTA").toString().equals("")))){
+			
+			// Cruzamos la tabla de actas
+			consulta += " and acta." + ScsActaComisionBean.C_ANIOACTA+ " = ejg."+ ScsEJGBean.C_ANIOACTA;
+			consulta += " and acta." + ScsActaComisionBean.C_IDACTA+ " = ejg." + ScsEJGBean.C_IDACTA;
+			consulta += " and acta." + ScsActaComisionBean.C_IDINSTITUCION+ " = ejg."+ ScsEJGBean.C_IDINSTITUCIONACTA;
+			
+			if ((miHash.containsKey("ANIOACTA")) && (!miHash.get("ANIOACTA").toString().equals(""))) {
+				contador++;
+				codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"ANIOACTA"));
+				consulta += " and acta." + ScsActaComisionBean.C_ANIOACTA+ " = :"+contador;
+			}
+			
+			if ((miHash.containsKey("NUMEROACTA")) && (!miHash.get("NUMEROACTA").toString().equals(""))) {
+				contador++;
+				codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"NUMEROACTA"));
+				consulta += " and acta." + ScsActaComisionBean.C_NUMEROACTA+ " = :"+contador;
+			}
 		}
 
 		if ((miHash.containsKey("CREADODESDE")) && (!miHash.get("CREADODESDE").toString().equals(""))) {

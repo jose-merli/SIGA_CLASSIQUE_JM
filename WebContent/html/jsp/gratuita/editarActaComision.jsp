@@ -72,7 +72,7 @@
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>" />
 	<link rel="stylesheet" href="<html:rewrite page='/html/js/themes/base/jquery.ui.all.css'/>" />
 		
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery-1.7.1.js'/>" ></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
 	<script type="text/javascript" src="<%=app%>/html/js/calendarJs.jsp"></script>
@@ -84,20 +84,25 @@
 
 <body>
 <input type="hidden" id= "informeUnico" value="<%=informeUnico%>">
-	<html:form action="/JGR_ActasComision" method="POST" target="submitArea">
+	<html:form action="/JGR_EJG.do?noReset=true" method="post" target="mainWorkArea" style="display:none">
+		<input type="hidden" name="modo"  id="modo"  value="">
+		<input type="hidden" name="actionModal"  id="actionModal"  value="">
+	</html:form>
+	
+	<html:form action="/JGR_ActasComisionEd" method="POST" target="submitArea">
 		<html:hidden property = "modo" value = ""/>
 		<html:hidden property = "idInstitucion" value = ""/>
 		<html:hidden property = "idActa" value = "<%=idActa %>"/>
 		<html:hidden property = "actionModal" value = ""/>
+		<html:hidden property="anioActa" value="<%=anioActa%>"/>
+		<html:hidden property="numeroActa" value="<%=numeroActa%>"/>
 
 		<siga:ConjCampos leyenda="general.criterios">	
 			<table class="tablaCampos" border="0" align="left">
 			<tr>
-				<td class="labelText" width="18%"><siga:Idioma key="sjcs.actas.numeroActa" />/<siga:Idioma key="sjcs.actas.anio" /> (*)</td>
-				<td class="labelText">
-					<html:text name="ActaComisionForm" property="anioActa" size="2" maxlength="4" styleClass="boxConsulta" readonly="true" onkeypress="return soloDigitos(event)" value="<%=anioActa%>"></html:text>
-					&nbsp;/&nbsp;
-					<html:text name="ActaComisionForm" property="numeroActa" size="4" maxlength="8" styleClass="boxConsulta" readonly="true" value="<%=numeroActa%>"></html:text>
+				<td class="labelText" width="18%"><siga:Idioma key="sjcs.actas.anio" />/<siga:Idioma key="sjcs.actas.numeroActa" />(*)</td>
+				<td class="labelTextValue">
+					<%=anioActa %>/<%=numeroActa%>
 				</td>
 				<td class="labelText"><siga:Idioma key="sjcs.actas.fechaResolucion" /> (*)</td>
 				<td>
@@ -105,7 +110,6 @@
 					<html:text property="fechaResolucion" size="10" styleClass="boxConsulta" value="<%=fechaResolucionCAJG%>" disabled="false" readonly="true"></html:text>
 				<%}else{%>
 					<siga:Fecha nombreCampo="fechaResolucion" valorInicial="<%=fechaResolucionCAJG%>"/> 
-					
 				<%}%>					
 				</td>
 			</tr>
@@ -116,12 +120,11 @@
 					<html:text property="fechaReunion" size="10" styleClass="boxConsulta" value="<%=fechaReunion%>" disabled="false" readonly="true"></html:text>
 				<%}else{%>
 					<siga:Fecha nombreCampo="fechaReunion" valorInicial="<%=fechaReunion%>"/> 
-					
 				<%}%>
 				</td>
-				<td class="labelText"><siga:Idioma key="sjcs.actas.horaInicio" /></td>
+				<td class="labelText"><siga:Idioma key="sjcs.actas.horaInicio"/></td>
 				<td class="labelText"><html:text name="ActaComisionForm" property="horaIni" value="<%=horaInicioReunion %>" readonly="<%=readOnly%>" maxlength="2" styleClass="<%=estilo%>" style="text-align:right; width:25px" onkeypress="return soloDigitos(event)"></html:text> : <html:text name="ActaComisionForm" property="minuIni" value="<%=minInicioReunion %>" readonly="<%=readOnly%>" maxlength="2" styleClass="<%=estilo%>" style="text-align:left; width:25px"  onkeypress="return soloDigitos(event)"></html:text></td>
-				<td class="labelText"><siga:Idioma key="sjcs.actas.horaFin" /></td>
+				<td class="labelText"><siga:Idioma key="sjcs.actas.horaFin"/></td>
 				<td class="labelText"><html:text name="ActaComisionForm" property="horaFin" value="<%=horaFinReunion %>" readonly="<%=readOnly%>" maxlength="2" styleClass="<%=estilo%>" style="text-align:right; width:25px" onkeypress="return soloDigitos(event)"></html:text> : <html:text name="ActaComisionForm" property="minuFin"  value="<%=minFinReunion %>" readonly="<%=readOnly%>" maxlength="2" styleClass="<%=estilo%>" style="text-align:left; width:25px"  onkeypress="return soloDigitos(event)"></html:text></td>
 			</tr>
 			<tr>
@@ -134,44 +137,51 @@
 			</tr>
 			<tr>
 				<td class="labelText"><siga:Idioma key="sjcs.actas.miembrosComision"/></td>
-				<td colspan="5"><html:textarea styleClass="<%=claseTextArea%>" property="miembros" style="width:700; height:60" value="<%=miembrosComision%>" readonly="<%=readOnly%>"></html:textarea></td>
+				<td colspan="5"><html:textarea styleClass="<%=claseTextArea%>" property="miembros" style="width:700px; height:60px" value="<%=miembrosComision%>" readonly="<%=readOnly%>"></html:textarea></td>
 			</tr>
 			<tr>
 				<td class="labelText"><siga:Idioma key="sjcs.actas.observaciones"/></td>
-				<td colspan="5"><html:textarea styleClass="<%=claseTextArea%>" property="observaciones" style="width:700; height:60" value="<%=observaciones%>" readonly="<%=readOnly%>"></html:textarea></td>
+				<td colspan="5"><html:textarea styleClass="<%=claseTextArea%>" property="observaciones" style="width:700px; height:60px" value="<%=observaciones%>" readonly="<%=readOnly%>"></html:textarea></td>
 			</tr>
 			</table>
 		</siga:ConjCampos>	
 		
-			<siga:TablaCabecerasFijas 		   
+		<siga:TablaCabecerasFijas 		   
 			   nombre="listadoActas"
 			   borde="1"
 			   clase="tableTitle"		   
-			   nombreCol="gratuita.busquedaEJG.literal.anyo, gratuita.busquedaEJG.literal.codigo, gratuita.busquedaEJG.literal.turnoGuardiaEJG, gratuita.listadoActuacionesAsistencia.literal.fecha, gratuita.busquedaEJG.literal.solicitante"
-			   tamanoCol="8,8,40,14,20"
+			   nombreCol="gratuita.busquedaEJG.literal.anyo, gratuita.busquedaEJG.literal.codigo, gratuita.busquedaEJG.literal.turnoGuardiaEJG, gratuita.listadoActuacionesAsistencia.literal.fecha, gratuita.busquedaEJG.literal.solicitante,"
+			   tamanoCol="8,8,40,14,20,"
 			   alto="100%"
 			   ajusteBotonera="true" >
 		   <%Row fila;%>
 		   <%Hashtable hash;%>
+		   <%String filaSt; %>
+		   <%String botones = readOnly?"C":"C,E";%>
 		   <%for(int i=0;i<ejgs.size();i++){%>
-			   <%fila=(Row)ejgs.get(i);%>
-			   <%hash=(Hashtable)fila.getRow();%>
-			   <tr class="<%=((i+1)%2==0?"filaTablaPar":"filaTablaImpar")%>" style="padding:5px;">
+		   		<%filaSt=""+(i+1);%>
+			   	<%fila=(Row)ejgs.get(i);%>
+			   	<%hash=(Hashtable)fila.getRow();%>
+			   <siga:FilaConIconos fila="<%=filaSt%>" botones="<%=botones%>" clase="listaNonEdit" visibleBorrado="no" >
+			   		<input type="hidden" name="oculto<%=filaSt%>_1" id="oculto<%=filaSt%>_1" value="<%=hash.get("IDTIPOEJG")%>">
+					<input type="hidden" name="oculto<%=filaSt%>_2" id="oculto<%=filaSt%>_2" value="<%=hash.get("IDINSTITUCION")%>">
+					<input type="hidden" name="oculto<%=filaSt%>_3" id="oculto<%=filaSt%>_3" value="<%=hash.get("ANIO")%>">
+					<input type="hidden" name="oculto<%=filaSt%>_4" id="oculto<%=filaSt%>_4" value="<%=hash.get("NUM")%>">
 				   <td><%=hash.get("ANIO")%>&nbsp;</td>
 				   <td><%=hash.get("NUMERO")%>&nbsp;</td>
 				   <td><%=hash.get("TURNO")%> / <%=hash.get("GUARDIA")%>&nbsp;</td>
 				   <td><%=UtilidadesString.formatoFecha((String)hash.get("FECHAAPERTURA"), ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH)%>&nbsp;</td>
 				   <td><%=hash.get("SOLICITANTE")%>&nbsp;</td>
-			   </tr>
+			   </siga:FilaConIconos>
 		   <%}%>
 		   </siga:TablaCabecerasFijas>
 
 	
 	</html:form>
 	<%if(readOnly){%>
-		<siga:ConjBotonesAccion botones="C,GA" modal="G"/>		
+		<siga:ConjBotonesAccion botones="V,GA" modal="G"/>		
 	<%}else{%>
-		<siga:ConjBotonesAccion botones="Y,C,GA" modal="G"/>		
+		<siga:ConjBotonesAccion botones="V,G,GA" modal="G"/>		
 	<%}%>
 
 <html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
@@ -182,32 +192,42 @@
 	<html:hidden property="datosInforme"/>
 	<html:hidden property="modo" value = "preSeleccionInformes"/>
 	<input type='hidden' name='actionModal'>
-</html:form>				
+</html:form>		
+
+
 <!-- Formulario para la edicion del envio -->
 
 
 	<script language="JavaScript">
+	
+		function accionVolver(){
+			document.forms['ActaComisionForm'].action="./JGR_ActasComision.do";
+			document.forms['ActaComisionForm'].target="mainWorkArea";
+			document.forms['ActaComisionForm'].modo.value="";
+			document.forms['ActaComisionForm'].submit();
+		}
+		
 		function accionCerrar(){
 			window.top.close();
 		}
 		
-		function accionGuardarCerrar(){
+		function accionGuardar(){
 			sub();
 			var errores = "";
-			alert("Realizando...");
 			var error = false;
 			if(document.ActaComisionForm.numeroActa.value=="" || 
 			   document.ActaComisionForm.anioActa.value==""){
 				error = true;
 				errores += "<siga:Idioma key='errors.required' arg0='sjcs.actas.numeroActa'/>"+ '\n';
-			}if (document.ActaComisionForm.fechaResolucion.value==""){
+			}
+			if (document.ActaComisionForm.fechaResolucion.value==""){
 				error = true;
 				errores += "<siga:Idioma key='errors.required' arg0='sjcs.actas.fechaResolucion'/>"+ '\n';
-			}if (document.ActaComisionForm.fechaResolucion.value!=""&&document.ActaComisionForm.fechaReunion.value!=""&&validarFecha(document.ActaComisionForm.fechaReunion.value)&&validarFecha(document.ActaComisionForm.fechaResolucion.value)&&compararFecha(document.ActaComisionForm.fechaReunion.value, document.ActaComisionForm.fechaResolucion.value)==1){
+			}
+			if (document.ActaComisionForm.fechaResolucion.value!=""&&document.ActaComisionForm.fechaReunion.value!=""&&validarFecha(document.ActaComisionForm.fechaReunion.value)&&validarFecha(document.ActaComisionForm.fechaResolucion.value)&&compararFecha(document.ActaComisionForm.fechaReunion.value, document.ActaComisionForm.fechaResolucion.value)==1){
 				error = true;
 				errores += "<siga:Idioma key='sjcs.actas.fechasErroneas'/>"+ '\n';
 			}
-			
 			if(document.ActaComisionForm.horaIni.value!=""){
 				if(document.ActaComisionForm.horaIni.value>23){
 					error = true;
@@ -228,7 +248,6 @@
 					}
 				}	
 			}
-			
 			if(document.ActaComisionForm.horaFin.value!=""){
 				if(document.ActaComisionForm.horaFin.value>23){
 					error = true;
@@ -249,20 +268,6 @@
 					}
 				}	
 			}					
-			
-			//if(document.ActaComisionForm.horaIni.value!=""&&document.ActaComisionForm.minuIni.value!=""&&document.ActaComisionForm.horaFin.value!=""&&document.ActaComisionForm.minuFin.value!=""){
-			//	if (document.ActaComisionForm.horaIni.value>document.ActaComisionForm.horaFin.value){
-			//		error = true;
-			//		//errores += "<siga:Idioma key='sjcs.actas.XXX'/>"+ '\n';
-			//	}
-			//	else {
-			//		if (document.ActaComisionForm.horaIni.value==document.ActaComisionForm.horaFin.value&&document.ActaComisionForm.minuIni.value>document.ActaComisionForm.minuFin.value){
-			//			error = true;
-			//			//errores += "<siga:Idioma key='sjcs.actas.XXX'/>"+ '\n';
-			//		}
-			//	}
-			//}				
-			
 			if(error==false){
 				document.ActaComisionForm.target.value="submitArea";
 				document.ActaComisionForm.modo.value="modificar";
@@ -275,14 +280,12 @@
 		
 		function generarActa() {
 			sub();
-			//idInstitucion  = document.MaestroDesignasForm.idInstitucion;
 			var idInstitucion  = <%=idInstitucion%>;
 			var datos = "idInstitucion=="+<%=idInstitucion%>+"##idActa=="+<%=idActa%>+"##anioActa=="+<%=anioActa%>+"##numeroActa=="+<%=numeroActa%>;
 			document.InformesGenericosForm.datosInforme.value =datos;
 			if(document.getElementById("informeUnico").value=='1'){
 				document.InformesGenericosForm.submit();
 			}else{
-			
 				var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
 				if (arrayResultado==undefined||arrayResultado[0]==undefined){
 				   		fin();
@@ -291,7 +294,6 @@
 			   		fin();
 			   	}
 			}
-
 		} 	
 		
 	</script>

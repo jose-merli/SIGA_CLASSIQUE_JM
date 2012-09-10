@@ -208,7 +208,7 @@
 	  <tr>
 		<%if(accesoActas){%>
 			<td class="labelText">
-				<siga:Idioma key="sjcs.actas.numeroActa" />/<siga:Idioma key="sjcs.actas.anio" /> - <siga:Idioma key="sjcs.actas.fechaResolucion" />
+				<siga:Idioma key="sjcs.actas.anio" />/<siga:Idioma key="sjcs.actas.numeroActa" /> - <siga:Idioma key="sjcs.actas.fechaResolucion" />
 			</td>
 			<td>
 			<%if (accion.equalsIgnoreCase("ver")){%>
