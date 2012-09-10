@@ -424,7 +424,7 @@ public class TagTabla extends TagSupport {
 			if(estilo!=null && !estilo.equals("")){
 				out.println("<div id='" + this.nombre + "Div' style='" + this.estilo +"'>");		
 			}else{
-				out.println("<div id='" + this.nombre + "Div' style='height:" + this.alto + "; width:100%; overflow-y:auto'>");
+				out.println("<div id='" + this.nombre + "Div' style='display:none; height:" + this.alto + "; width:100%; overflow-y:auto'>");
 			}
 			out.println("<table id='" + this.nombre + "' border='" + this.borde + 
 						"' align='center' width='100%' cellspacing='0' cellpadding='0'  style='table-layout:fixed; margin:0px;'>"); 
@@ -514,7 +514,7 @@ public class TagTabla extends TagSupport {
 			out.println(" } else {");
 			out.println(" 	validarAncho_" + this.nombre + "();");
 			out.println(" } ");
-			out.println("");
+			out.println("jQuery(document).ready(function() {jQuery('#" + this.nombre + "Div').show();validarAncho_" + this.nombre + "();});");
 			out.println("</script>");
 			
 
