@@ -99,8 +99,7 @@
 		<html:hidden property="seleccionarTodos"  styleId="seleccionarTodos" />
 	</html:form>	
 		
-<div id="mainDiv" style="display:none">		
-		<siga:TablaCabecerasFijas 		   
+	<siga:TablaCabecerasFijas 		   
 		   nombre="listadoEJG"
 		   borde="1"
 		   clase="tableTitle"		   
@@ -228,7 +227,6 @@
 															
 	
 	 <%}%>	
- </div>
 <html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
 	<html:hidden property="idInstitucion" value = "<%=idInstitucion%>"/>
 	<html:hidden property="idTipoInforme" value='<%= usr.isComision() ?"CAJG":"EJG"%>'/>
@@ -495,10 +493,6 @@
 		fin();
 		//formu.submit();
 	}
-   	$(document).ready(function() {
-		$("#mainDiv").show();
-		//jQuery("#mainDiv").show();
-	});
 	</script>
 </body>	
 </html>
