@@ -645,11 +645,11 @@
 						<td  colspan="4">
 							<% if (!modoAnterior.equalsIgnoreCase("VER")) { %>
 								<textarea class="box" name="observaciones"
-									onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" style="overflow=auto;width=600;height=45" 
+									onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" style="overflow:auto;width:600px;height:45px" 
 								><%=observaciones%></textarea>
 							<% } else { %>
 								<textarea class="boxConsulta" name="observaciones" readonly="true"
-									style="overflow=auto;width=600;height=40"
+									style="overflow:auto;width:600px;height:40px"
 								><%=observaciones%></textarea>
 							<%}%>							
 						</td>
