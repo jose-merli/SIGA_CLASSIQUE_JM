@@ -716,11 +716,11 @@
 						<td colspan="3">
 							<% if (!modoAnterior.equalsIgnoreCase("VER") && !usr.isLetrado() && validarJustificaciones.equalsIgnoreCase("S")) { %>
 								<textarea class="box" name="observacionesJustificacion"
-									onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" style="overflow=auto;width=600;height=45"
+									onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" style="overflow:auto;width:600px;height:45px"
 								><%=observacionesJustificacion%></textarea>
 							<%}else{%>
 								<textarea class="boxConsulta" name="observacionesJustificacion" readonly="true" 
-									style="overflow=auto;width=600;height=40" 
+									style="overflow:auto;width:600px;height:40px" 
 								><%=observacionesJustificacion%></textarea>
 							<%}%>
 						</td>
