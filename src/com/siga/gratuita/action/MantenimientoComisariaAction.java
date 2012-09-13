@@ -292,7 +292,7 @@ public class MantenimientoComisariaAction extends MasterAction {
 			
 			String sql = "Select C.IDCOMISARIA || ',' || C.IDINSTITUCION as IDCOMISARIA from scs_comisaria c "+ 
 						 " where upper(c.codigoext) = upper ('"+codigoExt+"')" +
-					     " and c.idinstitucion="+this.getUserBean(request).getLocation();
+					     " and (c.idinstitucion="+this.getUserBean(request).getLocation() + " OR C.IDINSTITUCION=2000)";;
 			Vector resultadoComisaria = comisariaAdm.selectGenerico(sql);
 			if (resultadoComisaria!=null && resultadoComisaria.size()>0) {
 				 comisariaID =  (String)((Hashtable)resultadoComisaria.get(0)).get("IDCOMISARIA");
@@ -354,7 +354,7 @@ public class MantenimientoComisariaAction extends MasterAction {
 		String sql = "SELECT SC.CODIGOEXT "+
 				" FROM SCS_COMISARIA SC "+
 				" WHERE SC.IDCOMISARIA = '"+idCombo+"' "+
-				" AND SC.IDINSTITUCION="+this.getUserBean(request).getLocation();
+				" AND (SC.IDINSTITUCION="+this.getUserBean(request).getLocation() + " OR SC.IDINSTITUCION=2000)";;
 		Vector resultadoComisaria = comisariaAdm.selectGenerico(sql);
 		
 		if (resultadoComisaria!=null && resultadoComisaria.size()>0)
@@ -387,7 +387,7 @@ public class MantenimientoComisariaAction extends MasterAction {
 		String sql = "SELECT SC.IDCOMISARIA "+
 				" FROM SCS_COMISARIA SC "+
 				" WHERE UPPER(SC.CODIGOEXT)=UPPER('"+idCodigo+"') "+
-				" AND SC.IDINSTITUCION="+this.getUserBean(request).getLocation();
+				" AND (SC.IDINSTITUCION="+this.getUserBean(request).getLocation() + " OR SC.IDINSTITUCION=2000)";;
 		Vector resultadoComisaria = comisariaAdm.selectGenerico(sql);
 		
 		if (resultadoComisaria!=null && resultadoComisaria.size()>0)
