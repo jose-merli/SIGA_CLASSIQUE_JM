@@ -499,7 +499,7 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 			ScsJuzgadoAdm juzgadoAdm= new ScsJuzgadoAdm(this.getUserBean(request));
 			String codigoExt2 = miform.getCodigoExt2().toUpperCase();
 			String where = " where upper(codigoext2) = upper ('"+codigoExt2+"')" +
-					       " and idinstitucion="+this.getUserBean(request).getLocation();
+					       " and (idinstitucion="+this.getUserBean(request).getLocation() + " OR IDINSTITUCION=2000)";
 			Vector resultadoJuzgado = juzgadoAdm.select(where);
 			request.setAttribute("resultadoJuzgado",resultadoJuzgado);
 			request.setAttribute("nombreObjetoDestino",miform.getNombreObjetoDestino());
@@ -523,7 +523,7 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 		MantenimientoJuzgadoForm miform = (MantenimientoJuzgadoForm)formulario;
 		ScsJuzgadoAdm juzgadoAdm= new ScsJuzgadoAdm(this.getUserBean(request));
 		String where = " where upper(codigoext2) = upper ('"+codigoExt2+"')" +
-				       " and idinstitucion="+this.getUserBean(request).getLocation();
+				       " and (idinstitucion="+this.getUserBean(request).getLocation() + " OR IDINSTITUCION=2000)";
 		Vector resultadoJuzgado = juzgadoAdm.select(where);
 		String idJuzgado ="";
 		if (resultadoJuzgado!=null && resultadoJuzgado.size()>0) {
@@ -587,7 +587,7 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 		JSONObject json = new JSONObject();
 		
 		String where = " WHERE IDJUZGADO='"+idCombo+"'"+
-				"AND IDINSTITUCION="+this.getUserBean(request).getLocation();
+				"AND (IDINSTITUCION="+this.getUserBean(request).getLocation() + " OR IDINSTITUCION=2000)";
 		Vector resultadoJuzgado = juzgadoAdm.select(where);
 		
 		if (resultadoJuzgado!=null && resultadoJuzgado.size()>0) {
@@ -621,7 +621,7 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 		
 		
 		String where = " WHERE UPPER(CODIGOEXT2)=UPPER('"+codigoExt2+"')" +
-				"AND IDINSTITUCION="+this.getUserBean(request).getLocation();
+				"AND IDINSTITUCION="+this.getUserBean(request).getLocation() + " OR IDINSTITUCION=2000)";;
 		Vector resultadoJuzgado = juzgadoAdm.select(where);
 		
 		if (resultadoJuzgado!=null && resultadoJuzgado.size()>0) {
