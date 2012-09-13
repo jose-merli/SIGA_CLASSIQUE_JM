@@ -35,8 +35,7 @@ import com.siga.eejg.ws.SolicitudPeticionInfoAAPP.SolicitudPeticionInfoAAPP;
 public class SolicitudesEEJG {
 	private String urlWS;	
 	private String idSistema;
-	private static EngineConfiguration engineConfiguration = null;
-
+	
 	public SolicitudesEEJG() throws ClsExceptions {
 		super();
 		init();
@@ -52,10 +51,7 @@ public class SolicitudesEEJG {
 	}
 
 	private EngineConfiguration createClientConfig() {
-		if (engineConfiguration == null) {
-			engineConfiguration = new FileProvider(SolicitudesEEJG.class.getResourceAsStream("/siga-eejg.wsdd"));
-		}
-		return engineConfiguration;
+		return new FileProvider(SolicitudesEEJG.class.getResourceAsStream("/siga-eejg.wsdd"));		
 	} 
 
 	public String solicitudPeticionInfoAAPP(ScsEejgPeticionesBean scsEejgPeticionesBean) throws Exception {
