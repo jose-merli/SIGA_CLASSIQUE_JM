@@ -1483,6 +1483,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			}
 			request.setAttribute("nombreFichero", file.getName());
 			request.setAttribute("rutaFichero", file.getAbsolutePath());
+			request.setAttribute("accion", "");
+			
 
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
