@@ -68,6 +68,7 @@ public interface PCAJGConstantes {
 	public final String PR_SEGUNDOAPELLIDO = "PR_SEGUNDOAPELLIDO";
 	public final String PR_RENUNCIA_PROCURADOR = "PR_RENUNCIA_PROCURADOR";
 	public final String OBSERVACIONES = "OBSERVACIONES";
+	public final String REP_TIENE_REPRESENTANTE = "REP_TIENE_REPRESENTANTE";
 	public final String REP_NOME = "REP_NOME";
 	public final String REP_PRIMERAPELLIDO = "REP_PRIMERAPELLIDO";
 	public final String REP_SEGUNDOAPELLIDO = "REP_SEGUNDOAPELLIDO";
