@@ -138,7 +138,7 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 					rellenaDocumentosAdjuntos(anexoIType, mapExp);
 					anexoIType.setOBSERVACIONS(mapExp.get(OBSERVACIONES));
 					
-					if ("1".equals(mapExp.get(REP_TIENE_REPRESENTANTE))) {
+					if (TRUE.equals(mapExp.get(REP_TIENE_REPRESENTANTE))) {
 						rellenaRepresentanteLegal(anexoIType.addNewREPRESENTANTELEGAL(), mapExp);
 					}
 					AUTORIZACIONESTYPE autorizacionestype = anexoIType.addNewAUTORIZACIONES();
