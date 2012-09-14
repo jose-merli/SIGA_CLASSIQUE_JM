@@ -1041,7 +1041,7 @@
 	if (pantalla.equals("P")) {
 %>
 
-<body class="tablaCentralCampos" onload="recargar();comprobarTipoPersona();comprobarTipoIdent();proFechaNac();">
+<body class="tablaCentralCampos" onload="recargar();comprobarTipoPersona();comprobarTipoIdent();">
 
 <!-- capa principal -->
 <div id="camposRegistro"  align="center">
