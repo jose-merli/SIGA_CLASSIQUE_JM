@@ -162,7 +162,9 @@
 		
 		function inicio(){
 			document.getElementById('idButtonB').disabled=false;
-			document.getElementById('idButtonGuardar').disabled=true;
+
+			if(document.getElementById('idButtonGuardar'))
+				document.getElementById('idButtonGuardar').disabled=true;
 		}
 		
 		function buscarDesignados (){
@@ -233,7 +235,8 @@
 				ponerIconoIdentPersona(true);
 		      	document.getElementById("textomod").className="ocultar";
 		      	document.getElementById("textomod").style.display="none";
-				document.getElementById('idButtonGuardar').disabled=false;
+		      	if(document.getElementById('idButtonGuardar'))
+					document.getElementById('idButtonGuardar').disabled=false;
 				document.getElementById('idButtonB').disabled=true;
 				document.getElementById("tdadicional").style.display="block";
 				document.getElementById("tddireccion").style.display="block";		      	
@@ -798,7 +801,8 @@
 				datosGeneralesForm.numIdentificacion.onchange();
 			}else{
 				//Aparecen los menus de abajo y se deja el NIF introducido
-				document.getElementById('idButtonGuardar').disabled=false;
+				if(document.getElementById('idButtonGuardar'))
+					document.getElementById('idButtonGuardar').disabled=false;
 				document.getElementById("tdadicional").style.display="block";
 				document.getElementById("tddireccion").style.display="block";
 				document.getElementById('idButtonB').disabled=true;
@@ -854,7 +858,8 @@
 					}
 	
 					//Aparecen los menus de abajo
-					document.getElementById('idButtonGuardar').disabled=false;
+					if(document.getElementById('idButtonGuardar'))
+						document.getElementById('idButtonGuardar').disabled=false;
 					document.getElementById("tdadicional").style.display="block";
 					document.getElementById("tddireccion").style.display="block";
 					document.getElementById('idButtonB').disabled=true;
@@ -883,7 +888,8 @@
 				if(datosGeneralesForm.numIdentificacion.value != null && datosGeneralesForm.numIdentificacion.value != ""){
 					//Aparecen los menus de abajo
 					document.getElementById('idButtonB').disabled=true;
-					document.getElementById('idButtonGuardar').disabled=false;
+					if(document.getElementById('idButtonGuardar'))
+						document.getElementById('idButtonGuardar').disabled=false;
 					document.getElementById("tdadicional").style.display="block";
 					document.getElementById("tddireccion").style.display="block";
 	
@@ -1370,23 +1376,8 @@
 <% 
 	// BOTONES
 	String botonesAccion = "";
-	if (new Long(user.getIdPersona()).toString().equals(idPersona) && user.isLetrado()) { 
-		botonesAccion+="SM,";
-	}
 	if (modo.equals("nuevo") || modo.equals("editar")) { 
-		botonesAccion+="G,R,";
-	}
-	if (!user.isLetrado() && !modo.equals("nuevo")) { 
-	  
-	
-	  if (!bColegiado && !sTipo.trim().toUpperCase().equalsIgnoreCase("LETRADO")) { //Para los no colegiados hacemos que aparezca el boton colegiar
-	   	botonesAccion+="BA,";
-	  }
-	}
-	
-	// le quito la coma final
-	if (botonesAccion.length()>0) {
-		botonesAccion=botonesAccion.substring(0,botonesAccion.length()-1);
+		botonesAccion="G,R";
 	}
 	
 %>
@@ -1411,7 +1402,8 @@
 			document.getElementById("tdadicional").style.display="none";
 			document.getElementById("tddireccion").style.display="none";
 			document.getElementById("textomod").style.display="none";
-			document.getElementById('idButtonGuardar').disabled=true;
+			if(document.getElementById('idButtonGuardar'))
+				document.getElementById('idButtonGuardar').disabled=true;
 
 			//Se desbloquea los campos de direccion
 			document.getElementById("domicilio").disabled=false;
