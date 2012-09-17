@@ -42,7 +42,7 @@ public class ScsHitoFacturableGuardiaAdm extends MasterBeanAdministrador
 				ScsHitoFacturableGuardiaBean.C_IDHITO,
 				ScsHitoFacturableGuardiaBean.C_IDINSTITUCION,
 				ScsHitoFacturableGuardiaBean.C_IDTURNO,
-				ScsHitoFacturableGuardiaBean.C_PAGOFACTURACION,
+				//ScsHitoFacturableGuardiaBean.C_PAGOFACTURACION,
 				ScsHitoFacturableGuardiaBean.C_PRECIOHITO,
 				ScsHitoFacturableGuardiaBean.C_DIASAPLICABLES,
 				ScsHitoFacturableGuardiaBean.C_AGRUPAR,
@@ -63,8 +63,8 @@ public class ScsHitoFacturableGuardiaAdm extends MasterBeanAdministrador
 				ScsHitoFacturableGuardiaBean.C_IDINSTITUCION,
 				ScsHitoFacturableGuardiaBean.C_IDTURNO,
 				ScsHitoFacturableGuardiaBean.C_IDGUARDIA,
-				ScsHitoFacturableGuardiaBean.C_IDHITO,
-				ScsHitoFacturableGuardiaBean.C_PAGOFACTURACION
+				ScsHitoFacturableGuardiaBean.C_IDHITO
+				//ScsHitoFacturableGuardiaBean.C_PAGOFACTURACION
 		};
 		return campos;
 	} //getClavesBean ()
@@ -83,7 +83,7 @@ public class ScsHitoFacturableGuardiaAdm extends MasterBeanAdministrador
 			bean.setIdHito			(UtilidadesHash.getInteger	(hash, ScsHitoFacturableGuardiaBean.C_IDHITO));
 			bean.setIdInstitucion	(UtilidadesHash.getInteger	(hash, ScsHitoFacturableGuardiaBean.C_IDINSTITUCION));
 			bean.setIdTurno			(UtilidadesHash.getInteger	(hash, ScsHitoFacturableGuardiaBean.C_IDTURNO));
-			bean.setPagoFacturacion	(UtilidadesHash.getString	(hash, ScsHitoFacturableGuardiaBean.C_PAGOFACTURACION));
+			//bean.setPagoFacturacion	(UtilidadesHash.getString	(hash, ScsHitoFacturableGuardiaBean.C_PAGOFACTURACION));
 			bean.setPrecioHito		(UtilidadesHash.getFloat	(hash, ScsHitoFacturableGuardiaBean.C_PRECIOHITO).floatValue ());
 			bean.setDiasAplicables	(UtilidadesHash.getString	(hash, ScsHitoFacturableGuardiaBean.C_DIASAPLICABLES));
 			bean.setAgrupar			(UtilidadesHash.getBoolean	(hash, ScsHitoFacturableGuardiaBean.C_AGRUPAR).booleanValue ());
@@ -112,7 +112,7 @@ public class ScsHitoFacturableGuardiaAdm extends MasterBeanAdministrador
 			hash.put (ScsHitoFacturableGuardiaBean.C_IDHITO,			String.valueOf (b.getIdHito ()));
 			hash.put (ScsHitoFacturableGuardiaBean.C_IDINSTITUCION,		String.valueOf (b.getIdInstitucion ()));
 			hash.put (ScsHitoFacturableGuardiaBean.C_IDTURNO,			String.valueOf (b.getIdTurno ()));
-			hash.put (ScsHitoFacturableGuardiaBean.C_PAGOFACTURACION,	b.getPagoFacturacion ());
+		//	hash.put (ScsHitoFacturableGuardiaBean.C_PAGOFACTURACION,	b.getPagoFacturacion ());
 			hash.put (ScsHitoFacturableGuardiaBean.C_PRECIOHITO,		String.valueOf (b.getPrecioHito ()));
 			hash.put (ScsHitoFacturableGuardiaBean.C_DIASAPLICABLES,	b.getDiasAplicables ());
 			hash.put (ScsHitoFacturableGuardiaBean.C_AGRUPAR,			b.getAgrupar () ? "1" : "0");
@@ -193,12 +193,12 @@ public class ScsHitoFacturableGuardiaAdm extends MasterBeanAdministrador
 		sql.append(" = :");
 		sql.append(contador);
 		htCodigos.put(new Integer(contador), idGuardia);
-		sql.append(" AND ");
+	/*	sql.append(" AND ");
 		sql.append(ScsHitoFacturableGuardiaBean.C_PAGOFACTURACION);
 		contador++;
 		sql.append(" = :");
 		sql.append(contador);
-		htCodigos.put(new Integer(contador), "F");
+		htCodigos.put(new Integer(contador), "F");*/
 		sql.append(" AND NVL(");
 		sql.append(ScsHitoFacturableGuardiaBean.C_AGRUPAR);
 		sql.append(" ,0) ");

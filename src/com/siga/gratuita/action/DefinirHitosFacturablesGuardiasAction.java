@@ -206,15 +206,15 @@ public class DefinirHitosFacturablesGuardiasAction extends MasterAction {
 					+ "       hg.idinstitucion IDINSTITUCION, "
 					+ "       hg.idturno IDTURNO, "
 					+ "       hg.idguardia IDGUARDIA, "
-					+ "       hg.idhito IDHITO, "
-					+ "       hg.pagoofacturacion PAGOFACTURACION"
+					+ "       hg.idhito IDHITO "
+		//			+ "       hg.pagoofacturacion PAGOFACTURACION"
 					+ "  from scs_hitofacturable h, "
 					+ "       scs_hitofacturableguardia hg"
 					+ " where h.idhito = hg.idhito"
 					+ "   and hg.idinstitucion = " + usr.getLocation()
 					+ "   and hg.idturno =" + (String) hash1.get("IDTURNO")
-					+ "   and hg.idguardia =" + (String) hash1.get("IDGUARDIA")
-					+ "   and hg.pagoofacturacion = 'F'";
+					+ "   and hg.idguardia =" + (String) hash1.get("IDGUARDIA");
+				//	+ "   and hg.pagoofacturacion = 'F'";
 
 			Vector vHitos = (Vector) hFact.ejecutaSelect(consulta);
 
@@ -824,8 +824,8 @@ public class DefinirHitosFacturablesGuardiasAction extends MasterAction {
 				String[] claves = {
 						ScsHitoFacturableGuardiaBean.C_IDINSTITUCION,
 						ScsHitoFacturableGuardiaBean.C_IDTURNO,
-						ScsHitoFacturableGuardiaBean.C_IDGUARDIA,
-						ScsHitoFacturableGuardiaBean.C_PAGOFACTURACION };
+						ScsHitoFacturableGuardiaBean.C_IDGUARDIA };
+						//ScsHitoFacturableGuardiaBean.C_PAGOFACTURACION };
 
 				row.delete(ScsHitoFacturableGuardiaBean.T_NOMBRETABLA, claves);
 			} catch (Exception e) {

@@ -47,14 +47,14 @@ public class DefinirHitosPagosGuardiasAction extends MasterAction {
 			Hashtable hash = (Hashtable)guardia.getOriginalHash();
 			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 			ScsHitoFacturableGuardiaAdm hFact = new ScsHitoFacturableGuardiaAdm (this.getUserBean(request));
-			String consulta= " select "+UtilidadesMultidioma.getCampoMultidioma("h.descripcion",this.getUserBean(request).getLanguage()) + " , hg.preciohito, hg.idinstitucion IDINSTITUCION, hg.idturno IDTURNO, hg.idguardia IDGUARDIA, hg.idhito IDHITO, hg.pagoofacturacion PAGOFACTURACION"+
+			String consulta= " select "+UtilidadesMultidioma.getCampoMultidioma("h.descripcion",this.getUserBean(request).getLanguage()) + " , hg.preciohito, hg.idinstitucion IDINSTITUCION, hg.idturno IDTURNO, hg.idguardia IDGUARDIA, hg.idhito IDHITO"+
 							 " from  scs_hitofacturable h,"+
 							 " scs_hitofacturableguardia hg"+
 							 " where h.idhito = hg.idhito"+						 
 							 " and hg.idinstitucion = "+usr.getLocation()+
 							 " and hg.idturno ="+(String)hash.get("IDTURNO")+
-							 " and hg.idguardia ="+(String)hash.get("IDGUARDIA")+
-							 " and hg.pagoofacturacion = 'P'";
+							 " and hg.idguardia ="+(String)hash.get("IDGUARDIA");
+						//	 " and hg.pagoofacturacion = 'P'";
 			Vector vHitos = (Vector)hFact.ejecutaSelect(consulta);
 			request.getSession().setAttribute("pagos","si");
 			request.getSession().setAttribute("vHitos",vHitos);
@@ -91,7 +91,7 @@ public class DefinirHitosPagosGuardiasAction extends MasterAction {
 			hash.put("IDTURNO",(String)hashGuardia.get("IDTURNO"));
 			hash.put("IDGUARDIA",(String)hashGuardia.get("IDGUARDIA"));
 			hash.put("IDHITO",(String)vOcultos.get(0)); //el IDHITO
-			hash.put("PAGOOFACTURACION","P");
+			//hash.put("PAGOOFACTURACION","P");
 			ScsHitoFacturableGuardiaAdm hitoAdm = new ScsHitoFacturableGuardiaAdm (this.getUserBean(request));
 			Vector vElegido = hitoAdm.select(hash);
 			ScsHitoFacturableGuardiaBean hito = (ScsHitoFacturableGuardiaBean)vElegido.get(0);
@@ -164,7 +164,7 @@ public class DefinirHitosPagosGuardiasAction extends MasterAction {
 				hash.put("IDINSTITUCION",usr.getLocation());
 				hash.put("IDTURNO",guardia.getIdTurno().toString());
 				hash.put("IDGUARDIA",guardia.getIdGuardia().toString());
-				hash.put("PAGOOFACTURACION","P");
+				//hash.put("PAGOOFACTURACION","P");
 			
 				try {
 					hitoAdm.insert(hash);
@@ -203,7 +203,7 @@ public class DefinirHitosPagosGuardiasAction extends MasterAction {
 			elegido = (ScsHitoFacturableGuardiaBean)request.getSession().getAttribute("HITO");
 			hash = (Hashtable)miForm.getDatos();
 			
-			hash.put("PAGOOFACTURACION","P");
+		//	hash.put("PAGOOFACTURACION","P");
 			hash.put("IDINSTITUCION",usr.getLocation());
 			hash.put("IDGUARDIA",elegido.getIdGuardia());
 			hash.put("IDTURNO",elegido.getIdTurno());
@@ -246,7 +246,7 @@ public class DefinirHitosPagosGuardiasAction extends MasterAction {
 			hash.put("IDTURNO",guardia.getIdTurno().toString());
 			hash.put("IDGUARDIA",guardia.getIdGuardia().toString());
 			hash.put("IDHITO",((Vector)formulario.getDatosTablaOcultos(0)).get(0));
-			hash.put("PAGOOFACTURACION","P");
+			//hash.put("PAGOOFACTURACION","P");
 
 			try {
 				hitoAdm.delete(hash);

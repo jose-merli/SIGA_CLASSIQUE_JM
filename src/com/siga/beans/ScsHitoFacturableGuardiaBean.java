@@ -19,7 +19,7 @@ public class ScsHitoFacturableGuardiaBean extends MasterBean
 	static public final String	C_IDTURNO			= "IDTURNO";
 	static public final String	C_IDGUARDIA			= "IDGUARDIA";
 	static public final String	C_IDHITO			= "IDHITO";
-	static public final String 	C_PAGOFACTURACION	= "PAGOOFACTURACION";
+	//static public final String 	C_PAGOFACTURACION	= "PAGOOFACTURACION";
 	static public final String 	C_PRECIOHITO		= "PRECIOHITO";
 	static public final String 	C_DIASAPLICABLES	= "DIASAPLICABLES";
 	static public final String 	C_AGRUPAR			= "AGRUPAR";
@@ -32,7 +32,7 @@ public class ScsHitoFacturableGuardiaBean extends MasterBean
 	private Integer	idTurno;
 	private Integer	idGuardia;
 	private Integer	idHito;
-	private String	pagoFacturacion;
+	//private String	pagoFacturacion;
 	private float	precioHito;
 	private String	diasAplicables;
 	private boolean	agrupar;
@@ -44,7 +44,7 @@ public class ScsHitoFacturableGuardiaBean extends MasterBean
 	public void setIdTurno 			(Integer	valor) {this.idTurno			= valor;}
 	public void setIdGuardia		(Integer	valor) {this.idGuardia			= valor;}
 	public void setIdHito			(Integer	valor) {this.idHito				= valor;}
-	public void setPagoFacturacion	(String		valor) {this.pagoFacturacion	= valor;}
+	//public void setPagoFacturacion	(String		valor) {this.pagoFacturacion	= valor;}
 	public void setPrecioHito		(float		valor) {this.precioHito			= valor;}
 	public void setDiasAplicables	(String		valor) {this.diasAplicables		= valor;}
 	public void setAgrupar			(boolean	valor) {this.agrupar			= valor;}
@@ -56,7 +56,7 @@ public class ScsHitoFacturableGuardiaBean extends MasterBean
 	public Integer	getIdTurno 			() {return this.idTurno;			}
 	public Integer	getIdGuardia		() {return this.idGuardia;			}
 	public Integer	getIdHito			() {return this.idHito;				}
-	public String	getPagoFacturacion	() {return this.pagoFacturacion;	}
+	//public String	getPagoFacturacion	() {return this.pagoFacturacion;	}
 	public float	getPrecioHito		() {return this.precioHito;			}
 	public String	getDiasAplicables	() {return this.diasAplicables;		}
 	public boolean	getAgrupar			() {return this.agrupar;			}
