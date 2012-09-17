@@ -10,7 +10,8 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import com.atos.utils.ClsConstants;
+import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -154,7 +155,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 					" and estado.anio = estadoEJG.anio" +
 					" and estado.numero = estadoEJG.numero" +
 					" and estado.idtipoejg = estadoEJG.idtipoejg)" +
-					" and estado.idestadoporejg <> " + ClsConstants.REMITIDO_COMISION;
+					" and estado.idestadoporejg <> " + ESTADOS_EJG.REMITIDO_COMISION.getCodigo();
 			
 			
 			//Consulta:
@@ -401,7 +402,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 	 * @param idEstado
 	 * @throws ClsExceptions
 	 */
-	public void nuevoEstadoEJGRemitidoComision(UsrBean usr, String idInstitucion, String idRemesa, String idEstado) throws ClsExceptions {
+	public void nuevoEstadoEJGRemitidoComision(UsrBean usr, String idInstitucion, String idRemesa, ESTADOS_EJG estadoEJG) throws ClsExceptions {
 		
 		String sqlMaxIdEstadoPorEJG = "SELECT NVL(MAX(IDESTADOPOREJG), 0) + 1" +
 				" FROM SCS_ESTADOEJG E" +
@@ -412,7 +413,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 		
 		String sqlInsertEstadoEJG = "insert into scs_estadoejg (idinstitucion, idtipoejg, anio, numero, idestadoejg" +
 				", fechainicio, fechamodificacion, usumodificacion, observaciones, idestadoporejg, automatico)" +
-				" SELECT ER.IDINSTITUCION, ER.IDTIPOEJG, ER.ANIO, ER.NUMERO, '" + idEstado + "'" +
+				" SELECT ER.IDINSTITUCION, ER.IDTIPOEJG, ER.ANIO, ER.NUMERO, '" + estadoEJG.getCodigo() + "'" +
 				", TRUNC(SYSDATE), SYSDATE, " + usr.getUserName() + ", NULL, (" + sqlMaxIdEstadoPorEJG + "), 1" +
 				" FROM CAJG_EJGREMESA ER" +
 				" WHERE ER.IDEJGREMESA NOT IN (SELECT RER.IDEJGREMESA FROM CAJG_RESPUESTA_EJGREMESA RER)" +
