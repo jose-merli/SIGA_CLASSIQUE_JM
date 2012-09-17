@@ -11,10 +11,8 @@ import java.util.Map;
 import java.util.Vector;
 
 import javax.transaction.UserTransaction;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
+
+import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -1248,7 +1246,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 						ClsLogging.writeFileLog(String.format("El identificador del intercambio es %s", idIntercambioLong), 3);
 						int idIntercambio = (int)idIntercambioLong/10;
 						guardarIdIntercambioRemesa(usr, idIntercambio);
-						cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), ClsConstants.REMITIDO_COMISION);
+						cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), ESTADOS_EJG.REMITIDO_COMISION);
 						
 						//vuelvo a hacer el mismo update del idintercambio porque a veces falla la capa de bdd y no hace el commit (no se pq)
 						CajgRemesaAdm cajgRemesaAdm = new CajgRemesaAdm(usr);

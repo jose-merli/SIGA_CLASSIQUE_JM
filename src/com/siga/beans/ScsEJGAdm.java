@@ -2,6 +2,8 @@ package com.siga.beans;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ComodinBusquedas;
@@ -1946,7 +1948,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			consulta +=" AND (f_siga_get_idultimoestadoejg(ejg.idinstitucion,ejg.idtipoejg, ejg.anio, ejg.numero)" +
 			" NOT IN (7, 8, 9, 10, 11) OR f_siga_get_idultimoestadoejg(ejg.idinstitucion,ejg.idtipoejg, ejg.anio, ejg.numero) IS NULL) ";			
 		} else if (TipoVentana.BUSQUEDA_ANIADIR_REMESA.equals(tipoVentana)) {
-			consulta += " AND F_SIGA_GET_IDULTIMOESTADOEJG(ejg.IDINSTITUCION, ejg.IDTIPOEJG, ejg.ANIO, ejg.NUMERO) IN (" + ClsConstants.ESTADO_LISTO_COMISION + ", " + ClsConstants.ESTADO_LISTO_COMISION_ACTUALIZAR_DESIGNACION + ")";
+			consulta += " AND F_SIGA_GET_IDULTIMOESTADOEJG(ejg.IDINSTITUCION, ejg.IDTIPOEJG, ejg.ANIO, ejg.NUMERO) IN (" + ESTADOS_EJG.LISTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.ESTADO_LISTO_COMISION_ACTUALIZAR_DESIGNACION.getCodigo() + ")";
 		}
 		
 		// Se filtra por numero cajg

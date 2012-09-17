@@ -31,6 +31,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.services.EcomColaService;
@@ -808,14 +809,19 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		ScsEstadoEJGAdm beanEstado = new ScsEstadoEJGAdm(this.getUserBean(request));
 		Hashtable idanterior = beanEstado.getEstadoAnterior(hashtable);
 
-		if (idanterior.get(ScsEstadoEJGBean.C_IDESTADOEJG) != null && idanterior.get(ScsEstadoEJGBean.C_IDESTADOEJG).equals(ClsConstants.GENERADO_EN_REMESA)) {
-			Hashtable hashEstado = new Hashtable();
-			hashEstado.put(ScsEJGBean.C_IDINSTITUCION, hashtable.get(ScsEJGBean.C_IDINSTITUCION));
-			hashEstado.put(ScsEJGBean.C_ANIO, hashtable.get(ScsEJGBean.C_ANIO));
-			hashEstado.put(ScsEJGBean.C_NUMERO, hashtable.get(ScsEJGBean.C_NUMERO));
-			hashEstado.put(ScsEJGBean.C_IDTIPOEJG, hashtable.get(ScsEJGBean.C_IDTIPOEJG));
-			hashEstado.put(ScsEstadoEJGBean.C_IDESTADOPOREJG, idanterior.get(ScsEstadoEJGBean.C_IDESTADOPOREJG));
-			beanEstado.delete(hashEstado);			
+		if (idanterior.get(ScsEstadoEJGBean.C_IDESTADOEJG) != null) {
+			
+			String estadoEJG = idanterior.get(ScsEstadoEJGBean.C_IDESTADOEJG).toString(); 
+			
+			if (estadoEJG.equals(String.valueOf(ESTADOS_EJG.GENERADO_EN_REMESA.getCodigo()))) {
+				Hashtable hashEstado = new Hashtable();
+				hashEstado.put(ScsEJGBean.C_IDINSTITUCION, hashtable.get(ScsEJGBean.C_IDINSTITUCION));
+				hashEstado.put(ScsEJGBean.C_ANIO, hashtable.get(ScsEJGBean.C_ANIO));
+				hashEstado.put(ScsEJGBean.C_NUMERO, hashtable.get(ScsEJGBean.C_NUMERO));
+				hashEstado.put(ScsEJGBean.C_IDTIPOEJG, hashtable.get(ScsEJGBean.C_IDTIPOEJG));
+				hashEstado.put(ScsEstadoEJGBean.C_IDESTADOPOREJG, idanterior.get(ScsEstadoEJGBean.C_IDESTADOPOREJG));
+				beanEstado.delete(hashEstado);			
+			}
 		}
 
 	}
@@ -1051,7 +1057,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				
 				String sqlInsertEstadoEJG = new String("insert into scs_estadoejg (idinstitucion, idtipoejg, anio, numero, idestadoejg" +
 						", fechainicio, fechamodificacion, usumodificacion, observaciones, idestadoporejg, automatico)" +
-						" SELECT EJG.IDINSTITUCION, EJG.IDTIPOEJG, EJG.ANIO, EJG.NUMERO, '" + ClsConstants.GENERADO_EN_REMESA + "'" +
+						" SELECT EJG.IDINSTITUCION, EJG.IDTIPOEJG, EJG.ANIO, EJG.NUMERO, '" + ESTADOS_EJG.GENERADO_EN_REMESA.getCodigo() + "'" +
 						", TRUNC(SYSDATE), SYSDATE, " + getUserBean(request).getUserName() + ", '" + numRemesa + "', (" + sqlMaxIdEstadoPorEJG + "), 1" +
 						" FROM CAJG_EJGREMESA EJG" +
 						" WHERE EJG.IDINSTITUCION = " + getIDInstitucion(request) +
@@ -1447,7 +1453,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(usr);
 
 		if (cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIDInstitucion(request), Integer.valueOf(miForm.getIdRemesa()), ClsConstants.ESTADO_REMESA_ENVIADA)) {
-			cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, getIDInstitucion(request).toString(), miForm.getIdRemesa(), ClsConstants.REMITIDO_COMISION);
+			cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, getIDInstitucion(request).toString(), miForm.getIdRemesa(), ESTADOS_EJG.REMITIDO_COMISION);
 		}
 
 		tx.commit();

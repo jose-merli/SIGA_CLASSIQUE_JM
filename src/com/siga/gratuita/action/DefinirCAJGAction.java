@@ -19,6 +19,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -35,7 +36,6 @@ import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmLenguajesAdm;
-import com.siga.beans.BusquedaClientesFiltrosAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.ScsAsistenciasAdm;
@@ -79,10 +79,8 @@ import com.siga.certificados.Plantilla;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.gratuita.InscripcionGuardia;
 import com.siga.gratuita.form.BusquedaCAJG_EJGForm;
 import com.siga.gratuita.form.DefinirEJGForm;
-import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 import com.siga.informes.InformeDefinirEJG;
 
 
@@ -1486,7 +1484,7 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 				
 				String sqlInsertEstadoEJG = new String("insert into scs_estadoejg (idinstitucion, idtipoejg, anio, numero, idestadoejg" +
 						", fechainicio, fechamodificacion, usumodificacion, observaciones, idestadoporejg, automatico)" +
-						" SELECT EJG.IDINSTITUCION, EJG.IDTIPOEJG, EJG.ANIO, EJG.NUMERO, '" + ClsConstants.ESTADO_LISTO_COMISION + "'" +
+						" SELECT EJG.IDINSTITUCION, EJG.IDTIPOEJG, EJG.ANIO, EJG.NUMERO, '" + ESTADOS_EJG.LISTO_COMISION.getCodigo() + "'" +
 						", TRUNC(SYSDATE), SYSDATE, " + getUserBean(request).getUserName() + ", NULL, (" + sqlMaxIdEstadoPorEJG + "), 0" +
 						" FROM SCS_EJG EJG" +
 						" WHERE EJG.IDINSTITUCION = " + getIDInstitucion(request) + 

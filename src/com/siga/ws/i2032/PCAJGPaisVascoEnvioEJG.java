@@ -7,6 +7,9 @@ import java.util.Map;
 
 import javax.transaction.UserTransaction;
 
+import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
+import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_REMESA;
+
 import com.atos.utils.ClsConstants;
 import com.siga.Utilidades.AxisObjectSerializerDeserializer;
 import com.siga.beans.CajgEJGRemesaAdm;
@@ -46,7 +49,9 @@ public class PCAJGPaisVascoEnvioEJG extends PCAJGPaisVascoComun {
 	
 	
 	@Override
-	public void execute() throws Exception {		
+	public void execute() throws Exception {	
+		
+		//TODO ESTO SE HA PASADO A ECOM. SOLAMENTE HAY QUE INSERTAR EN ECOM_COLA CON ID 13 SI ES UNA SIMULACION O CON 14 SI ES EL ENVIO !!!
 		
 		UserTransaction tx = getUsrBean().getTransaction();
 		CajgRespuestaEJGRemesaAdm cajgRespuestaEJGRemesaAdm = new CajgRespuestaEJGRemesaAdm(getUsrBean());
@@ -69,9 +74,15 @@ public class PCAJGPaisVascoEnvioEJG extends PCAJGPaisVascoComun {
 			cajgRespuestaEJGRemesaAdm.insertaErrorEJGnoEnviados(getIdInstitucion(), getIdRemesa(), getUsrBean(), PCAJGConstantes.V_WS_2032_EJG);
 			
 			EnvioSolicitudesImplServiceLocator locator;
-			EnvioSolicitudesImplPortBindingStub stub;	
+			EnvioSolicitudesImplPortBindingStub stub = null;	
 			
 			boolean enviado = false;
+			
+			if (!isSimular()) {
+				String mensajeLog = "Envío y recepción webservice del colegio " + getIdInstitucion() + " de la remesa " + getIdRemesa() + " para el expediente " + anio + "/" + numejg;
+				locator = new EnvioSolicitudesImplServiceLocator(createClientConfig(getUsrBean(), String.valueOf(getIdInstitucion()), mensajeLog));
+				stub = new EnvioSolicitudesImplPortBindingStub(new java.net.URL(getUrlWS()), locator);
+			}
 			
 			for (int i = 0; i < listDtExpedientes.size(); i++) {
 								
@@ -81,14 +92,11 @@ public class PCAJGPaisVascoEnvioEJG extends PCAJGPaisVascoComun {
 				numero = mapExp.get(NUMERO);
 				idTipoEJG = mapExp.get(IDTIPOEJG);
 				
-				String mensajeLog = "Envío y recepción webservice del colegio " + getIdInstitucion() + " de la remesa " + getIdRemesa() + " para el expediente " + anio + "/" + numejg;
-				locator = new EnvioSolicitudesImplServiceLocator(createClientConfig(getUsrBean(), String.valueOf(getIdInstitucion()), mensajeLog));
-				stub = new EnvioSolicitudesImplPortBindingStub(new java.net.URL(getUrlWS()), locator);
-				
-				escribeLogRemesa("Enviando información del expediente " + anio + "/" + numejg);				
+				escribeLogRemesa("Validando la información del expediente " + anio + "/" + numejg);				
 				RemitirDatosSolicitudesDocument remitirDatosSolicitudesDocument = getDatosSolicitudes(mapExp);
 								
 				if(validateXML_EJG(remitirDatosSolicitudesDocument, anio, numejg, numero, idTipoEJG)) {
+					escribeLogRemesa(String.format("El expediente %s/%s se ha validado correctamente", anio, numejg));
 					
 					com.siga.ws.i2032.xsd.ejg.RemSolicitudesEnt remSolicitudesEntXSD = remitirDatosSolicitudesDocument.getRemitirDatosSolicitudes().getArg0();
 					RemSolicitudesEnt remSolicitudesEnt = new RemSolicitudesEnt();
@@ -105,7 +113,7 @@ public class PCAJGPaisVascoEnvioEJG extends PCAJGPaisVascoComun {
 						}
 						remSolicitudesEnt.setSolicitudes(solicitudes);
 						
-						if (!isSimular()) {							
+						if (!isSimular() && stub != null) {							
 							RemSolicitudesSal remSolicitudesSal = stub.remitirDatosSolicitudes(remSolicitudesEnt);
 							enviado = true;
 							SolicitudesRemitidas solicitudesRemitidas = remSolicitudesSal.getSolicitudes();
@@ -130,6 +138,8 @@ public class PCAJGPaisVascoEnvioEJG extends PCAJGPaisVascoComun {
 							}
 						}
 					}
+				} else {
+					escribeLogRemesa(String.format("El expediente %s/%s no se ha validado correctamente", anio, numejg));
 				}
 			}
 			
@@ -141,9 +151,9 @@ public class PCAJGPaisVascoEnvioEJG extends PCAJGPaisVascoComun {
 				// Marcar como generada
 				cajgRemesaEstadosAdm.nuevoEstadoRemesa(getUsrBean(), getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_GENERADA);
 	
-				if (cajgRemesaEstadosAdm.nuevoEstadoRemesa(getUsrBean(), getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_ENVIADA)) {
+				if (cajgRemesaEstadosAdm.nuevoEstadoRemesa(getUsrBean(), getIdInstitucion(), getIdRemesa(), (int)ESTADOS_REMESA.ESTADO_REMESA_ENVIADA.getCodigo())) {
 					//MARCAMOS COMO ENVIADA
-					cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(getUsrBean(), String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), ClsConstants.REMITIDO_COMISION);
+					cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(getUsrBean(), String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), ESTADOS_EJG.REMITIDO_COMISION);
 				}				
 			}
 			tx.commit();
@@ -153,6 +163,11 @@ public class PCAJGPaisVascoEnvioEJG extends PCAJGPaisVascoComun {
 		}
 	}
 
+	/**
+	 * Rellena los datos del xml
+	 * @param mapExp
+	 * @return
+	 */
 	private RemitirDatosSolicitudesDocument getDatosSolicitudes(Map<String, String> mapExp) {
 		RemitirDatosSolicitudesDocument remitirDatosSolicitudesDocument = RemitirDatosSolicitudesDocument.Factory.newInstance();		
 		com.siga.ws.i2032.xsd.ejg.RemSolicitudesEnt remSolicitudesEnt = remitirDatosSolicitudesDocument.addNewRemitirDatosSolicitudes().addNewArg0();
@@ -169,6 +184,11 @@ public class PCAJGPaisVascoEnvioEJG extends PCAJGPaisVascoComun {
 	}
 
 	
+	/**
+	 * Rellena los datos de los profesionales designados
+	 * @param solicitud
+	 * @param key
+	 */
 	private void rellenaDatosProfesionalesDesignados(com.siga.ws.i2032.xsd.ejg.Solicitud solicitud, String key) {
 		List<Map<String, String>> list = htCargaDtProfesionalesDesignados.get(key);		
 		
@@ -191,6 +211,11 @@ public class PCAJGPaisVascoEnvioEJG extends PCAJGPaisVascoComun {
 		}
 	}
 	
+	/**
+	 * Rellena datos del solicitante, pareja e hijos
+	 * @param solicitud
+	 * @param key
+	 */
 	private void rellenaDatosSolicitanteParejaHijos(com.siga.ws.i2032.xsd.ejg.Solicitud solicitud, String key) {
 		List<Map<String, String>> list = htCargaDtUnidadFamiliar.get(key);		
 		
@@ -299,6 +324,11 @@ public class PCAJGPaisVascoEnvioEJG extends PCAJGPaisVascoComun {
 		
 	}
 
+	/**
+	 * Rellena los datos económicos 
+	 * @param datosEconomicosIRPF20
+	 * @param map
+	 */
 	private void rellenaDatosEconomicosIRPF20(DatosEconomicosIRPF20 datosEconomicosIRPF20, Map<String, String> map) {
 		datosEconomicosIRPF20.setDescripcion(map.get(I2_DESCRIPCION));
 		datosEconomicosIRPF20.setEjercicio(map.get(I2_EJERCICIO));
@@ -375,6 +405,7 @@ public class PCAJGPaisVascoEnvioEJG extends PCAJGPaisVascoComun {
 		parteContraria.setTipoActividad(mapExp.get(PC_TIPOACTIVIDAD));
 		parteContraria.setTipoIdentificador(mapExp.get(PC_TIPOIDENTIFICADOR));
 		parteContraria.setTipoImplicacion(mapExp.get(PC_TIPOIMPLICACION));
+		parteContraria.setTipoIntervencion(mapExp.get(PC_TIPOINTERVENCION));
 		parteContraria.setTipoPersona(mapExp.get(PC_TIPOPERSONA));
 		parteContraria.setTipoVia(mapExp.get(PC_TIPOVIA));
 	}

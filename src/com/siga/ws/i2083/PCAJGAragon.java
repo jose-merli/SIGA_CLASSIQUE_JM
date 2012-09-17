@@ -24,6 +24,7 @@ import org.apache.axis.configuration.SimpleProvider;
 import org.apache.axis.transport.http.HTTPSender;
 import org.apache.axis.transport.http.HTTPTransport;
 import org.apache.xmlbeans.XmlOptions;
+import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsLogging;
@@ -1575,7 +1576,7 @@ public class PCAJGAragon extends SIGAWSClientAbstract implements PCAJGConstantes
 				if (!SUBTIPOCAJGAragon.DESCARGA_FICHERO.equals(subTipoCAJG)
 							&& cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_ENVIADA)) {
 					//MARCAMOS COMO ENVIADA
-					cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), ClsConstants.REMITIDO_COMISION);
+					cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), ESTADOS_EJG.REMITIDO_COMISION);
 					//cuando se envía el intercambio se envía * 10
 					guardarIdIntercambioRemesa(usr, (int)intercambioDocument.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().getIdentificadorIntercambio()/10);
 				}
