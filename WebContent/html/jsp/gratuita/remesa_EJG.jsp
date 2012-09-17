@@ -208,6 +208,7 @@
 		}
 		
 		function envioWS(){
+			document.DefinicionRemesas_CAJG_Form.simular.value=0;
 			document.DefinicionRemesas_CAJG_Form.modo.value="envioWS";
 			document.DefinicionRemesas_CAJG_Form.idRemesa.value=document.forms[0].idRemesa.value;	
 			document.DefinicionRemesas_CAJG_Form.idInstitucion.value=document.forms[0].idInstitucion.value;	
