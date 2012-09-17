@@ -9,6 +9,9 @@
 
 package com.siga.facturacion.action;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,13 +24,16 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
+import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.AjaxCollectionXmlBuilder;
+import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
-import com.siga.beans.CenPoblacionesAdm;
 import com.siga.beans.CenPoblacionesBean;
-import com.siga.general.ComboAutocomplete;
+import com.siga.general.ComboAutoComplete;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -62,7 +68,12 @@ public class ComprobarPoblacionAction extends MasterAction{
 
 			if ( accion.equalsIgnoreCase("getAjaxPoblaciones")){
 				getAjaxPoblaciones (mapping, miForm, request, response);
-				return null;					
+				return null;
+				
+			} else if ( accion.equalsIgnoreCase("getAjaxPoblacionesFiltro")){
+				getAjaxPoblacionesFiltro (mapping, miForm, request, response);
+				return null;
+				
 			} else {
 				return super.executeInternal(mapping,
 						      formulario,
@@ -75,6 +86,77 @@ public class ComprobarPoblacionAction extends MasterAction{
 			throw new SIGAException("Error en la Aplicación",e);
 		}
 	}
+	
+	protected void getAjaxPoblacionesFiltro (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		UsrBean usuario=this.getUserBean(request);
+		String campoTabla=CenPoblacionesBean.T_NOMBRETABLA;
+		String campoPrioridad=CenPoblacionesBean.C_PRIORIDAD;
+		String campoIdentificador=CenPoblacionesBean.C_IDPOBLACION;
+		String campoIdentificadorPadre=CenPoblacionesBean.C_IDPROVINCIA;
+		String campoNombre=CenPoblacionesBean.C_NOMBRE;			
+		String guiones="---";
+		String valorFiltro=request.getParameter("poblacion_input"); //Recogemos el parametro enviado por ajax
+		String valorIdentificadorPadre=request.getParameter("provincia"); //Recogemos el parametro enviado por ajax
+		Integer numeroMaximoOpciones=1000;
+		if (valorFiltro==null||valorFiltro.trim().equalsIgnoreCase(""))	valorFiltro="*";     		    
+	    		
+	    String fromSql=" FROM " + campoTabla+
+	    	" WHERE REGEXP_LIKE("+campoTabla+"."+campoNombre+", '"+valorFiltro+"') "+
+	    	" AND "+campoTabla+"."+campoIdentificadorPadre+"='"+valorIdentificadorPadre+"' ";
+	        	    	    
+	    String sql = " SELECT "+campoTabla+"."+campoIdentificador+", "+
+		    	campoTabla+"."+campoNombre+", "+
+		    	campoTabla+"."+campoPrioridad+
+		    	fromSql;	   
+	    String countSql="(SELECT COUNT(*) AS CONTADOR "+fromSql+") ";
+	    
+    	sql+=" AND ("+numeroMaximoOpciones+">="+countSql+" OR "+campoTabla+"."+campoPrioridad+" IS NOT NULL) "+
+    		" ORDER BY "+campoTabla+"."+campoPrioridad+" ASC, "+
+	    	campoTabla+"."+campoNombre+" ASC ";
+		    
+    	RowsContainer rc = null;
+		rc = new RowsContainer();
+
+        rc.findNLS(sql);    
+
+        List<CenPoblacionesBean> poblaciones = new ArrayList<CenPoblacionesBean>();		
+			
+		if (rc!=null) {
+			CenPoblacionesBean poblacionBean = new CenPoblacionesBean();
+			poblacionBean.setNombre(UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar"));
+			poblacionBean.setIdPoblacion("");
+			poblaciones.add(poblacionBean);
+			
+			Boolean bGuiones=true;
+			Boolean bPrioridad = false;
+			
+			for (int i = 0; i < rc.size(); i++)	{
+				Row fila = (Row) rc.get(i);
+				Hashtable registro = (Hashtable)fila.getRow(); 
+				
+				if (registro != null) { 
+					Integer prioridad = UtilidadesHash.getInteger(registro, campoPrioridad);
+					
+					if(bGuiones&&bPrioridad&&prioridad==null) {
+						poblacionBean = new CenPoblacionesBean();
+						poblacionBean.setNombre(guiones);
+						poblacionBean.setIdPoblacion("");
+						poblaciones.add(poblacionBean);
+						bGuiones=false;
+					}
+					
+					if (!bPrioridad)				 
+ 						bPrioridad = (prioridad!=null);  	
+					
+					poblacionBean = new CenPoblacionesBean();
+					poblacionBean.setNombre(UtilidadesHash.getString(registro, campoNombre));
+					poblacionBean.setIdPoblacion(UtilidadesHash.getString(registro, campoIdentificador));
+					poblaciones.add(poblacionBean);
+				}
+			}
+		}		
+	    respuestaAjax(new AjaxCollectionXmlBuilder<CenPoblacionesBean>(), poblaciones, response);
+	}	
 	
 	/**
 	 * 
@@ -99,7 +181,7 @@ public class ComprobarPoblacionAction extends MasterAction{
 		String guiones = request.getParameter("valorGuiones");
 		Integer numOpciones = Integer.parseInt(request.getParameter("numeroMaximoOpciones"));
 		
-		ComboAutocomplete.getAjaxPoblaciones(
+		ComboAutoComplete.getAjaxPoblaciones(
 			response, this.getUserBean(request), 
 			CenPoblacionesBean.T_NOMBRETABLA, CenPoblacionesBean.C_PRIORIDAD, CenPoblacionesBean.C_IDPOBLACION, 
 			CenPoblacionesBean.C_IDPROVINCIA, CenPoblacionesBean.C_NOMBRE, 
