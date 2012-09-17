@@ -522,8 +522,8 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 		
 		MantenimientoJuzgadoForm miform = (MantenimientoJuzgadoForm)formulario;
 		ScsJuzgadoAdm juzgadoAdm= new ScsJuzgadoAdm(this.getUserBean(request));
-		String where = " where upper(codigoext2) = upper ('"+codigoExt2+"')" +
-				       " and (idinstitucion="+this.getUserBean(request).getLocation() + " OR IDINSTITUCION=2000)";
+		String where = " where upper(codigoext2) = upper ('"+codigoExt2+"') " +
+				       " and (idinstitucion="+this.getUserBean(request).getLocation() + " OR IDINSTITUCION=2000) ";
 		Vector resultadoJuzgado = juzgadoAdm.select(where);
 		String idJuzgado ="";
 		if (resultadoJuzgado!=null && resultadoJuzgado.size()>0) {
@@ -554,7 +554,7 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 		String codigoExt2 ="";
 		JSONObject json = new JSONObject();	
 		
-		String where = " WHERE UPPER(IDJUZGADO||','||IDINSTITUCION)=UPPER('"+idCombo+"')";
+		String where = " WHERE UPPER(IDJUZGADO||','||IDINSTITUCION)=UPPER('"+idCombo+"') ";
 		Vector resultadoJuzgado = juzgadoAdm.select(where);
 		
 		if (resultadoJuzgado!=null && resultadoJuzgado.size()>0) {
@@ -586,8 +586,8 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 		String codigoExt2 ="";
 		JSONObject json = new JSONObject();
 		
-		String where = " WHERE IDJUZGADO='"+idCombo+"'"+
-				"AND (IDINSTITUCION="+this.getUserBean(request).getLocation() + " OR IDINSTITUCION=2000)";
+		String where = " WHERE IDJUZGADO='"+idCombo+"' "+
+				" AND (IDINSTITUCION="+this.getUserBean(request).getLocation() + " OR IDINSTITUCION=2000) ";
 		Vector resultadoJuzgado = juzgadoAdm.select(where);
 		
 		if (resultadoJuzgado!=null && resultadoJuzgado.size()>0) {
@@ -620,8 +620,8 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 		JSONObject json = new JSONObject();	
 		
 		
-		String where = " WHERE UPPER(CODIGOEXT2)=UPPER('"+codigoExt2+"')" +
-				"AND IDINSTITUCION="+this.getUserBean(request).getLocation() + " OR IDINSTITUCION=2000)";;
+		String where = " WHERE UPPER(CODIGOEXT2)=UPPER('"+codigoExt2+"') " +
+				" AND (IDINSTITUCION="+this.getUserBean(request).getLocation() + " OR IDINSTITUCION=2000) ";
 		Vector resultadoJuzgado = juzgadoAdm.select(where);
 		
 		if (resultadoJuzgado!=null && resultadoJuzgado.size()>0) {
