@@ -425,7 +425,6 @@
 		<html:hidden styleId="nuevo" property="nuevo" value="1"/> 
 		<html:hidden styleId="idTipoColegio" name="componentesJuridicosForm" property="idTipoColegio" value="<%=tipo%>"/>
 		<input type="hidden" id="actionModal" name="actionModal" value="" />
-		<input type="hidden" id="fechaCargo" name="fechaCargo" value="" />
 
 	<siga:ConjCampos leyenda="censo.busquedaClientes.literal.datosIdentificacion">
 	<table class="tablaCampos" align="center" border="0">
