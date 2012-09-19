@@ -498,12 +498,15 @@ public String getTienePermisoArchivación(String idInstitucion,
 				"           And Usu2.Idusuario = Usu.Idusuario " +
 				"           And Tip2.Derechoacceso = '1') ";
 
-			if (rc.find(sql)) {
-				for (int i = 0; i < rc.size(); i++) {
-					Row fila = (Row) rc.get(i);
-					Hashtable resultado = fila.getRow();
-					permiso = (String) resultado.get("TIENEPERMISO");
-				}
+			if (rc.find(sql) && rc.size() == 1) {
+				Row fila = (Row) rc.get(0);
+				Hashtable resultado = fila.getRow();
+				permiso = (String) resultado.get("TIENEPERMISO");
+				if (Integer.parseInt(permiso) > 1)
+					permiso = "1";
+			}
+			else {
+				permiso = "0";
 			}
 		} catch (Exception e) {
 			throw new ClsExceptions(e, "Error al ejecutar consulta.");
