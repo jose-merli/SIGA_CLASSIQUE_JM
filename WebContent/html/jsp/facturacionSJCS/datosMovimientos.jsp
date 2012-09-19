@@ -275,7 +275,7 @@
 
 <%
 	String bot = "C";
-	if (!accion.equalsIgnoreCase("ver"))	{
+	if (!modo.equalsIgnoreCase("consulta"))	{
 		bot += ",Y,R";
 	}	
 %>
