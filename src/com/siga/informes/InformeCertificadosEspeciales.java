@@ -490,10 +490,10 @@ public class InformeCertificadosEspeciales extends MasterReport
 		sql.append(" no.OBJETOSOCIAL as OBJETOSOCIAL, ");
 		sql.append(" no.RESENA as RESENA_SOCIEDAD, ");
 		sql.append(" no.fechafin as FECHAFIN_SOCIEDAD, ");		
-		sql.append(" nvl(no.prefijo_numsspp,no.prefijo_numreg)|| nvl(LPAD(NO.contador_numsspp,");		
-		sql.append(""+contador);
+		sql.append(" nvl(no.prefijo_numsspp,no.prefijo_numreg)|| nvl(LPAD(NO.contador_numsspp,");
+		sql.append("'"+contador+"'");
 		sql.append(",'0'),LPAD(NO.contador_numreg,");
-		sql.append(""+contador);
+		sql.append("'"+contador+"'");
 		sql.append(",'0')) || nvl(no.SUFIJO_NUMSSPP,no.SUFIJO_NUMREG) as NUMEROREGISTRO, ");
 		sql.append(" (select pe.nombre from cen_persona pe where pe.idpersona= no.idpersonanotario) AS NOMBRENOTARIO, ");
 		sql.append(" (select pe.apellidos1 from cen_persona pe where pe.idpersona= no.idpersonanotario) AS APELLIDOS1_NOTARIO, ");
