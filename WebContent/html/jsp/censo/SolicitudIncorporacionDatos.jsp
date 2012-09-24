@@ -345,7 +345,7 @@
 							<siga:Idioma key="censo.consultaDatosColegiacion.literal.residente"/>
 						</td>
 						<td>
-							<html:checkbox property="residente" <%if (readonly) {%>disabled<%}%> />
+							<html:checkbox property="residente" disabled="<%=readonly%>"/>
 						</td>
 					
 						<td class="labelText">
@@ -353,7 +353,7 @@
 						</td>
 						<td>
 							<%if(!readonly && (nColegiado==null || nColegiado.equalsIgnoreCase(""))){%>
-								<html:text styleId="numColBox" property="numeroColegiado" style="width:100" maxlength="20" styleClass="boxDisabled" disabled />
+								<html:text styleId="numColBox" property="numeroColegiado" style="width:100" maxlength="20" styleClass="boxDisabled" disabled="true"/>
 								<img id="botonNCol" src="<html:rewrite page='/html/imagenes/candado.gif'/>" border="0" onclick="editarNColegiado()" style="cursor:hand;align:left" style="display:inline;" title="<siga:Idioma key='censo.SolicitudIncorporacion.message.desbloqueoNcolegiado'/>">
 							<%}else{%>
 								<html:text styleId="numColBox" property="numeroColegiado" style="width:100" maxlength="20" styleClass="<%=estiloBox%>" value="<%=nColegiado%>"  readOnly="<%=readonly%>" />
@@ -649,15 +649,15 @@
 								<tr>
 									<td class="labelText">
 										<siga:Idioma key="censo.tipoCuenta.cargo"/>
-										<html:checkbox property="cuentaCargo" <%if (readonly) {%>disabled<%}%> />
+										<html:checkbox property="cuentaCargo"  disabled="<%=readonly%>"/>
 									</td>	
 									<td class="labelText">
 										<siga:Idioma key="censo.tipoCuenta.abono"/>
-										<html:checkbox property="cuentaAbono" <%if (readonly) {%>disabled<%}%> onClick="validaAbonoSJCS()"/>
+										<html:checkbox property="cuentaAbono" disabled="<%=readonly%>" onClick="validaAbonoSJCS()"/>
 									</td>
 									<td class="labelText">
 										<siga:Idioma key="censo.datosCuentaBancaria.literal.abonoSJCS"/>
-										<html:checkbox property="abonoSJCS" <%if (readonly) {%>disabled<%}%> onClick="validaAbonoSJCS()" />
+										<html:checkbox property="abonoSJCS" disabled="<%=readonly%>" onClick="validaAbonoSJCS()" />
 									</td>
 								</tr>
 							</table>
