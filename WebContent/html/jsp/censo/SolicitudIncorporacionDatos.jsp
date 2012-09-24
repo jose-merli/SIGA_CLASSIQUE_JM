@@ -1,4 +1,5 @@
 <!-- SolicitudIncorporacionDatos.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-15"%>
@@ -8,28 +9,26 @@
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
-<%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
-<%@ taglib uri = "struts-bean.tld" prefix="bean"%>
-<%@ taglib uri = "struts-html.tld" prefix="html"%>
-<%@ taglib uri = "struts-logic.tld" prefix="logic"%>
-<%@ taglib uri="c.tld" prefix="c"%>
+<%@ taglib uri = "libreria_SIGA.tld" 	prefix="siga"%>
+<%@ taglib uri = "struts-bean.tld" 		prefix="bean"%>
+<%@ taglib uri = "struts-html.tld" 		prefix="html"%>
+<%@ taglib uri = "struts-logic.tld" 	prefix="logic"%>
+<%@ taglib uri = "c.tld" 					prefix="c"%>
+
 <!-- IMPORTS -->
+<%@ page import="com.atos.utils.UsrBean"%>
+<%@ page import="com.siga.censo.form.SolicitudIncorporacionForm" %>
+<%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.beans.CenDocumentacionSolicitudInstituBean" %>
-
-<%@ page import="com.siga.administracion.SIGAConstants"%>
-
-<%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
-<%@ page import="java.util.Properties"%>
-<%@ page import="java.util.Hashtable"%>
 <%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Hashtable"%>
+<%@ page import="java.util.Properties"%>
 <%@ page import="utils.system"%>
-<%@ page import="com.siga.censo.form.SolicitudIncorporacionForm" %>
 
 <%
-	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	UsrBean user = (UsrBean) ses.getAttribute("USRBEAN");
 
@@ -64,8 +63,7 @@
 	else {
 		idEstadoSolicitud = new ArrayList();
 		idEstadoSolicitud.add(datosPersonales.getIdEstado().toString());
-	}
-	
+	}	
 	
 	String sexo  = datosPersonales.getSexo();
 	String ssexo = "";
@@ -78,19 +76,22 @@
 	if (editar!=null && editar.equalsIgnoreCase("true"))
 		altoTabla = "75%";
 	
+	String idProvincia = "";
+	String idPoblacion = "";
 	ArrayList selPais = new ArrayList();
-	ArrayList selProvincia = new ArrayList();
-	ArrayList selIdent = new ArrayList();
-	ArrayList selTratamiento = new ArrayList();
-	ArrayList selEstadoCiv = new ArrayList();
 	selPais.add(datosPersonales.getIdPais());
 	boolean esEspana=datosPersonales.getIdPais().equalsIgnoreCase(ClsConstants.ID_PAIS_ESPANA)||datosPersonales.getIdPais().equalsIgnoreCase("");
 	if (esEspana){	
-		selProvincia.add(datosPersonales.getIdProvincia());
+		idPoblacion = datosPersonales.getIdPoblacion();
+		idProvincia = datosPersonales.getIdProvincia();
 	}
+	
+	ArrayList selEstadoCiv = new ArrayList();
+	ArrayList selIdent = new ArrayList();
+	ArrayList selTratamiento = new ArrayList();
 	selEstadoCiv.add(datosPersonales.getIdEstadoCivil());
-	selTratamiento.add(datosPersonales.getIdTratamiento());
 	selIdent.add(datosPersonales.getIdTipoIdentificacion());
+	selTratamiento.add(datosPersonales.getIdTratamiento());	
 				
 	String estiloBox = "box";
 	String estiloBoxNumber = "boxNumber";
@@ -118,7 +119,6 @@
 	modalidadParam[0] = user.getLocation();
 	
 	//Para la cuenta bancaria
-
 	String titular = datosPersonales.getTitular();
 	String cbo_Codigo = datosPersonales.getCbo_Codigo();
 	String cuentaCodigoSucursal = datosPersonales.getCodigoSucursal();
@@ -159,971 +159,1069 @@
 	selSolicitud.add(datosPersonales.getIdTipoSolicitud());
 	
 	boolean residente = datosPersonales.getResidente();
-
-
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 
-<head>
-	<style>
-		.ocultar {
-			display:none
-		}
-	</style>
-	
+<head>	
 	<html:javascript formName="SolicitudIncorporacionForm" staticJavascript="false" />  	
   	
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>">
 	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-	<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
-	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
-	<script src="<html:rewrite page='/html/js/jquery-ui.js'/>" type="text/javascript"></script>
-	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
-	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>	
-	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery-ui.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
+	<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/validation.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery-1.7.1.js'/>" ></script>
 	
 	<title><siga:Idioma key="censo.SolicitudIncorporacionDatos.titulo"/></title>
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-
-	
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">	
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo titulo="censo.solicitudIncorporacion.cabecera3" 
-							 localizacion="censo.solicitudIncorporacion.localizacion"/>
+	<siga:Titulo titulo="censo.solicitudIncorporacion.cabecera3" localizacion="censo.solicitudIncorporacion.localizacion"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->
-	
-	<script language="JavaScript">
-		function editarNColegiado(){
-			var numeroCol = document.getElementById("numColBox");
-			var botNumeroCol = document.getElementById("botonNCol"); 
-			if (numeroCol.disabled){
-				numeroCol.className="box";
-				numeroCol.disabled=false;
-				botNumeroCol.style.visibility ="hidden";
-			}
-		}
+</head>
+
+<body  class="tablaCentralCampos" onLoad="cargaPais(<%=datosPersonales.getIdPais() %>);cargarChecksCuenta();comprobarTipoIdent();ajusteAlto('divDocumentoAPresentar');cargarBancos();">
+	<bean:define id="isPosibilidadSolicitudAlta" name="isPosibilidadSolicitudAlta"  scope="request" />
+	<bean:define id="mostrarSolicitudAlta" name="mostrarSolicitudAlta"  scope="request" />
+	<bean:define id="motivoSolicitudAlta" name="motivoSolicitudAlta"  scope="request" />
+
+	<html:form action="/CEN_MantenimientoSolicitudesIncorporacion.do" method="POST" target="mainWorkArea">
+		<html:hidden property="idSolicitudPlanProfesional"/>
+		<html:hidden property="idSolicitudAceptadaSeguroUniversal"/>
+		<html:hidden property="idSolicitudAceptadaPlanProfesional"/>
+		<html:hidden property="idSolicitudSeguroUniversal"/>
+		<input type="hidden" id="numeroIdentificacionBBDD" value ="<%=datosPersonales.getNumeroIdentificador()%>" /> 
+		<input type="hidden" id="fechaNacimientoBBDD" value ="<%=datosPersonales.getFechaNacimiento()%>" />	
 		
-		function restablecerNColegiado(){
-			var numeroCol = document.getElementById("numColBox");
-			var botNumeroCol = document.getElementById("botonNCol");
-			<%if(nColegiado==null || nColegiado.equalsIgnoreCase("")){%>
-				numeroCol.className = "boxDisabled";
-				numeroCol.disabled = true;
-				botNumeroCol.style.visibility ="visible";
-			<%}else{%>
-				numeroCol.className = "box";
-				numeroCol.value=<%=nColegiado%>;
-				botNumeroCol.style.visibility ="hidden";
-			<%}%>
+		<table align="center" width="100%">
+			<tr>
+				<td class="labelText" >
+					<center>
+							<siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.numeroSolicitud"/>:
+							&nbsp;&nbsp;
+							<% if(datosPersonales.getIdSolicitud()!=null)
+									out.print(UtilidadesString.mostrarDatoJSP(datosPersonales.getIdSolicitud()));
+							%>
+							&nbsp;&nbsp;
+							<siga:Idioma key="messages.censo.solicitudIncorporacion.guardarCodigo"/>	
+					</center>
+				</td>
+			</tr>
+		</table>
+		
+		<div>
+			<siga:ConjCampos>
+				<center>
+					<table border="0" width="100%">
+						<tr>
+							<td>
+								<table border="0">
+									<tr>
+										<td class="labelText" nowrap>
+											<siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.estado"/>
+										</td>
+										<%if (readonly || datosPersonales.getIdEstado().intValue()==ClsConstants.ESTADO_SOLICITUD_APROBADA) {%>
+											<td class="labelTextValor" >
+												<%=UtilidadesString.mostrarDatoJSP(estadoSolicitud)%>
+												<html:hidden property="editarEstadoSolicitud" value="<%=datosPersonales.getIdEstado().toString()%>"  />
+											</td>
+										<%} else {%>
+											<td>
+												<siga:ComboBD nombre = "editarEstadoSolicitud" tipo="estadoSolicitud" clase="<%=estiloCombo%>" elementoSel="<%=idEstadoSolicitud%>" obligatorioSinTextoSeleccionar="true" />
+											</td>
+										<%}%>
+						
+										<td class="labelText" nowrap>
+											<siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.fechaEstado"/>
+										</td>
+										<td>
+											<html:text property="fechaSolicitud" size="10" styleClass="boxConsulta"  readOnly="true" value="<%=datosPersonales.getFechaEstado()%>"/>
+										</td>
+									</tr>
+						
+									<tr>
+										<td colspan="2">&nbsp;</td>
+										<td class="labelText" nowrap>
+											<siga:Idioma key="censo.SolicitudIncorporacion.literal.fechaSolicitud"/>
+										</td>
+										<td>
+											<html:text property="fechaSolicitud" size="10" styleClass="boxConsulta"  readOnly="true" value="<%=datosPersonales.getFechaSolicitud()%>"/>
+										</td>
+									</tr>
+								</table>
+							</td>
+							
+							<td class="labelText" nowrap>
+								<siga:Idioma key="censo.SolicitudIncorporacion.literal.observaciones"/>
+							</td>
+
+							<td width="250px">
+								<textarea class="<%=estiloBox%>" name="observaciones" 
+									<%if (readonly) {%> 
+										readonly 
+									<%} else {%>
+										onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"
+									<%}%>	
+									style="overflow:auto;width:250px;height:50px;resize:none;"
+								><%=datosPersonales.getObservaciones()%></textarea>
+							</td>
+						</tr>
+					</table>
+				</center>
+			<!-- TABLA -->
+			</siga:ConjCampos>
+			
+			<siga:ConjCampos leyenda="censo.SolicitudIncorporacionDatos.titulo">
+				<table border="0" width="100%">
+					<html:hidden property = "modo" value = ""/>
+					<html:hidden property = "editarIdSolicitud" value = "<%=datosPersonales.getIdSolicitud().toString()%>"/>
+					<html:hidden property = "continuarAprobacion" value = ""/>
+					<html:hidden property = "continuarInsercionColegiado" value = ""/>
+			
+					<tr>
+						<td class="labelText" >
+							<siga:Idioma key="censo.SolicitudIncorporacion.literal.solicitudDe"/>&nbsp;(*)
+						</td>
+						<%if(readonly){ %>
+							<td class="labelTextValor">
+								<%=UtilidadesString.mostrarDatoJSP(tipoSolicitud)%>
+							</td>
+						<%}else{%>
+							<td>
+								<siga:ComboBD nombre = "tipoSolicitud" tipo="solicitud" clase="boxCombo" elementoSel="<%=selSolicitud%>" obligatorio="true"/>
+							</td>
+						<%}%>
+						
+						<td class="labelText">
+							<siga:Idioma key="censo.SolicitudIncorporacion.literal.tipoColegiacion"/>&nbsp;(*)
+						</td>
+						<%if(readonly){ %>
+							<td class="labelTextValor">
+								<%=UtilidadesString.mostrarDatoJSP(tipoColegiacion)%>
+							</td>
+						<%}else{%>
+							<td>
+								<siga:ComboBD nombre = "tipoColegiacion" ancho="100" tipo="colegiacion" clase="boxCombo" elementoSel="<%=selColegiacion%>" obligatorio="true"/>
+							</td>
+						<%}%>
+						
+						<td class="labelText">
+							<siga:Idioma key="censo.SolicitudIncorporacion.literal.documentacion"/>
+						</td>
+						<%if(readonly){ %>
+							<td class="labelTextValor">
+								<%=UtilidadesString.mostrarDatoJSP(modalidadDocumentacion)%>
+							</td>
+						<%}else{%>
+							<td>
+								<siga:ComboBD nombre = "tipoModalidadDocumentacion" tipo="modalidadDocumentacion" clase="boxCombo" obligatorio="true" elementoSel="<%=modalidadSel%>" parametro="<%=modalidadParam%>"/>
+							</td>
+						<%}%>
+					</tr>
+					
+					<tr>
+						<td class="labelText">
+							<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaIncorporacion"/>
+						</td>
+						<%if(readonly){%>
+							<td class="labelTextValor">
+								<%=UtilidadesString.mostrarDatoJSP(datosPersonales.getFechaEstadoColegial())%>
+							</td>
+						<%}else{%>
+							<td>
+								<siga:Fecha nombreCampo="fechaEstadoColegial" valorInicial="<%=datosPersonales.getFechaEstadoColegial() %>" />
+							</td>
+						<%}%>
+						
+						<td class="labelText">
+							<siga:Idioma key="censo.consultaDatosColegiacion.literal.residente"/>
+						</td>
+						<td>
+							<html:checkbox property="residente" <%if (readonly) {%>disabled<%}%> />
+						</td>
+					
+						<td class="labelText">
+							<siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.nColegiado"/>
+						</td>
+						<td>
+							<%if(!readonly && (nColegiado==null || nColegiado.equalsIgnoreCase(""))){%>
+								<html:text styleId="numColBox" property="numeroColegiado" style="width:100" maxlength="20" styleClass="boxDisabled" disabled />
+								<img id="botonNCol" src="<html:rewrite page='/html/imagenes/candado.gif'/>" border="0" onclick="editarNColegiado()" style="cursor:hand;align:left" style="display:inline;" title="<siga:Idioma key='censo.SolicitudIncorporacion.message.desbloqueoNcolegiado'/>">
+							<%}else{%>
+								<html:text styleId="numColBox" property="numeroColegiado" style="width:100" maxlength="20" styleClass="<%=estiloBox%>" value="<%=nColegiado%>"  readOnly="<%=readonly%>" />
+								<img id="botonNCol" src="<html:rewrite page='/html/imagenes/candado.gif'/>" border="0" onclick="editarNColegiado()" style="cursor:hand;align:left" style="visibility:hidden;display:inline;" title="<siga:Idioma key='censo.SolicitudIncorporacion.message.desbloqueoNcolegiado'/>">
+							<%}%>
+						</td>
+					</tr>
+				</table>
+			</siga:ConjCampos>
+			
+			<siga:ConjCampos>
+				<table border="0" width="100%">
+					<tr>
+						<td class="labelText" nowrap><siga:Idioma key="censo.SolicitudIncorporacion.literal.nifcif"/>&nbsp;(*)</td>
+						<%if(readonly){%>
+							<td class="labelTextValor">
+								<siga:ComboBD nombre = "tipoIdentificacion" tipo="cmbTipoIdentificacion"  ancho="80" clase="<%=estiloCombo%>" elementoSel="<%=selIdent%>" readOnly="<%=sreadonly%>" obligatorio="true"/>
+							</td>
+		
+						<%}else{%>
+							<td nowrap>
+								<siga:ComboBD nombre = "tipoIdentificacion" tipo="identificacionSolicitud"  ancho="80" clase="<%=estiloCombo%>" elementoSel="<%=selIdent%>" readOnly="<%=sreadonly%>" obligatorio="true" accion="comprobarTipoIdent();"/>
+								<html:text property="NIFCIF" styleClass="box" size="8" maxlength="20" value="<%=datosPersonales.getNumeroIdentificador() %>"/>
+								<img id="idButtonNif" src="<html:rewrite page='/html/imagenes/comprobar.gif'/>" border="0" onclick="obtenerLetra();" style="cursor:hand;align:left" style="display:inline;visibility: hidden;">
+							</td>
+						<%}%>
+						
+						<td class="labelText" nowrap><siga:Idioma key="censo.consultaDatosGenerales.literal.sexo"/>&nbsp;(*)</td>
+						<%if (readonly){%>
+							<td class="labelTextValor">
+								<%if(datosPersonales.getSexo()!=null)out.print(UtilidadesString.mostrarDatoJSP(ssexo));%>
+							</td>
+						<%}else{%>
+							<td>
+								<html:select name="SolicitudIncorporacionForm" property="sexo" style = "null"  value="<%=datosPersonales.getSexo()%>"   styleClass = "box" >
+							        <html:option value="0" >&nbsp;</html:option>
+									<html:option value="<%=ClsConstants.TIPO_SEXO_HOMBRE%>"><siga:Idioma key="censo.sexo.hombre"/></html:option>
+									<html:option value="<%=ClsConstants.TIPO_SEXO_MUJER%>"><siga:Idioma key="censo.sexo.mujer"/></html:option>
+								</html:select>	
+							</td>
+						<%}%>
+						
+						<td class="labelText" nowrap>
+							<siga:Idioma key="censo.SolicitudIncorporacion.literal.tratamiento"/>&nbsp;(*)
+						</td>
+						<td>
+							<siga:ComboBD nombre="tipoDon" tipo="tratamiento" clase="<%=estiloCombo%>" readOnly="<%=sreadonly%>"  obligatorio="true" elementoSel="<%=selTratamiento %>"/>
+						</td>
+					</tr>
+					
+					<tr>
+						<td class="labelText">
+							<siga:Idioma key="censo.SolicitudIncorporacion.literal.nombre"/>&nbsp;(*)
+						</td>
+						<td>
+							<html:text property="nombre" style="width:180" maxlength="100" value="<%=datosPersonales.getNombre()%>" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>"/>
+						</td>
+			
+						<td class="labelText">
+							<siga:Idioma key="censo.SolicitudIncorporacion.literal.apellido1"/>&nbsp;(*)
+						</td>
+						<td>
+							<html:text property="apellido1"  style="width:180" maxlength="100" value="<%=datosPersonales.getApellido1()%>" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"/>
+						</td>
+						
+						<td class="labelText">
+							<siga:Idioma key="censo.SolicitudIncorporacion.literal.apellido2"/>
+						</td>
+						<td>
+							<html:text property="apellido2"  style="width:180" maxlength="100" value="<%=datosPersonales.getApellido2()%>" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"/>
+						</td>
+					</tr>
+					
+					<tr>
+						<td class="labelText" >
+							<siga:Idioma key="censo.SolicitudIncorporacion.literal.fechaNacimiento"/>&nbsp;(*)
+						</td>
+						<%if(readonly){%>
+							<td class="labelTextValor"><%=UtilidadesString.mostrarDatoJSP(datosPersonales.getFechaNacimiento())%></td>
+						<%}else{%>
+							<td>
+								<siga:Fecha nombreCampo="fechaNacimiento" valorInicial="<%=datosPersonales.getFechaNacimiento() %>" />
+							</td>
+						<%}%>
+						
+						<td class="labelText">
+							<siga:Idioma key="censo.SolicitudIncorporacion.literal.naturalDe"/>
+						</td>
+						<td>
+							<html:text property="natural" style="width:180" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" value="<%= datosPersonales.getNaturalDe() %>"/>
+						</td>
+						
+						<td class="labelText">
+							<siga:Idioma key="censo.SolicitudIncorporacion.literal.estadoCivil"/>
+						</td>
+						<td>
+							<siga:ComboBD nombre = "estadoCivil" tipo="estadoCivil" clase="<%=estiloCombo%>" readOnly="<%=sreadonly%>" elementoSel="<%=selEstadoCiv%>"/>
+						</td>
+					</tr>
+				</table>
+			</siga:ConjCampos>
+			
+			<siga:ConjCampos>
+				<table border="0" width="100%">
+					<tr>
+						<td class="labelText" nowrap>
+							<siga:Idioma key="censo.datosDireccion.literal.pais2"/>
+						</td>
+						
+						<td>
+							<table border="0">
+								<tr>									
+									<%if(readonly){%>
+										<td class="labelTextValor">
+											<%=pais%>
+										</td>
+									<%}else{%>
+										<td>
+											<siga:ComboBD nombre="pais" tipo="pais" ancho="300" clase="<%=estiloCombo%>" obligatorio="false" elementoSel="<%=selPais%>" readOnly="<%=sreadonly%>" accion="cargaPais(this.value);"/>
+										</td>
+									<%}%>
+									
+									<td width="30px">&nbsp;</td>																								
+								
+									<td class="labelText" nowrap>
+										<siga:Idioma key="censo.SolicitudIncorporacion.literal.domicilio"/>&nbsp;(*)
+									</td>
+								
+									<td>
+										<textarea class="<%=estiloBox%>" name="domicilio" 
+											<%if (readonly) {%> 
+												readonly 
+											<%} else {%>
+												onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)"
+											<%}%>											 
+											style="overflow:auto;width:400px;height:40px" 
+  										><%=datosPersonales.getDomicilio()%></textarea>
+									</td>																										
+								</tr>
+							</table>					
+						</td>														
+					</tr>						
+					
+					<tr>
+						<td class="labelText" nowrap>
+							CP&nbsp;(*)
+						</td>
+						
+						<td>
+							<table border="0">
+								<tr>
+									<td>	
+										<div id="cpEspanol">									
+											<html:text property="CP" style="width:50px" styleClass="<%=estiloBox%>" maxlength="5" value="<%=datosPersonales.getCodigoPostal()%>" readOnly="<%=readonly%>"
+												onkeypress="return soloDigitos(event);" onkeydown="onKeyDownCP();" onkeyup="onKeyUpCP();"/>
+										</div>	
+										<div style="display:none" id="cpExtranjero">
+											<html:text property="CPExt" style="width:200px" styleClass="<%=estiloBox%>" maxlength="20" value="<%=datosPersonales.getCodigoPostal()%>" readOnly="<%=readonly%>"/>
+										</div>
+									</td>			
+									
+									<td width="30px">&nbsp;</td>				
+								
+									<td class="labelText" nowrap>
+										<siga:Idioma key="censo.SolicitudIncorporacion.literal.poblacion"/>&nbsp;(*)
+									</td>																		
+															
+									<td id="poblacionEspanola">
+										<%if(readonly){%>
+											<input type="text" value="<%=poblacion%>" width="300px" maxlength="100" class="boxConsulta" readonly />
+										<%}else{%>
+											<html:hidden property="poblacion" value="<%=idPoblacion%>"/>
+											<input class="box" id="poblacion_input" type="text" style="width:300px;" value="<%=poblacion%>" maxlength="100"
+												onblur="onBlurPoblacionInput();" onkeydown="onKeyDownPoblacionInput(event);" onkeyup="onKeyUpPoblacionInput();" 
+												onfocus="onFocusPoblacionInput();" />
+											<div id="poblacion_div">
+												<select class="box" style="width:300px" id="poblacion_select"
+													onblur="onBlurPoblacionSelect();" onchange="onChangePoblacionSelect();" onclick="onClickPoblacionSelect();" 
+													onkeypress="onKeyPressPoblacionSelect(event);" onkeydown="onKeyDownPoblacionSelect(event);" onmousedown="onMouseDownPoblacionSelect();">																		
+												</select>					
+											</div>	
+										<%}%>
+									</td> 																				
+						
+									<td style="display:none" id="poblacionExtranjera">
+										<html:text styleId="poblacionExt" property="poblacionExt" style="width:300" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getPoblacionExtranjera()%>" readOnly="<%=readonly%>"/>
+									</td>
+						
+									<td width="30px">&nbsp;</td>
+						
+									<td class="labelText" nowrap>
+										<div id="provincia_literal">
+											<siga:Idioma key="censo.SolicitudIncorporacion.literal.provincia"/>
+										</div>
+									</td>			
+						
+									<td>
+										<html:hidden property="provincia" value="<%=idProvincia%>"/>
+										<div id="provincia_valor">											
+											<input name="provincia_input" type="text" class="boxConsulta" value="<%=provincia%>" readonly tabindex="-1" />
+										</div>										
+									</td>
+								</tr>
+							</table>
+						</td>			
+					</tr>
+			
+					<tr>
+						<td class="labelText" nowrap>
+							<siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono1"/>&nbsp;(*)
+						</td>
+						
+						<td>
+							<table border="0">
+								<tr>
+									<td>
+										<html:text property="telefono1" style="width:150px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getTelefono1()%>" readOnly="<%=readonly%>"/>
+									</td>
+									
+									<td width="20px">&nbsp;</td>
+									
+									<td class="labelText" nowrap>
+										<siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono2"/>
+									</td>
+									<td>
+										<html:text property="telefono2" style="width:150px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getTelefono2()%>" readOnly="<%=readonly%>"/>
+									</td>
+									
+									<td width="20px">&nbsp;</td>
+									
+									<td class="labelText" nowrap>
+										<siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono3"/>
+									</td>
+									<td>
+										<html:text property="telefono3" style="width:150px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getMovil()%>" readOnly="<%=readonly%>"/>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					
+					<tr>
+						<td class="labelText" nowrap>
+							<siga:Idioma key="censo.SolicitudIncorporacion.literal.fax1"/>
+						</td>
+									
+						<td>
+							<table border="0">
+								<tr>
+									<td>
+										<html:text property="fax1" style="width:150px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getFax1()%>" readOnly="<%=readonly%>"/>
+									</td>
+									
+									<td width="20px">&nbsp;</td>
+									
+									<td class="labelText" nowrap>
+										<siga:Idioma key="censo.SolicitudIncorporacion.literal.fax2"/>
+									</td>
+									<td>
+										<html:text property="fax2" style="width:150px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getFax2()%>" readOnly="<%=readonly%>"/>
+									</td>
+									
+									<td width="20px">&nbsp;</td>
+											
+									<td class="labelText" nowrap>
+										<siga:Idioma key="censo.SolicitudIncorporacion.literal.email"/>&nbsp;(*)</td>
+									<td>
+										<html:text property="mail" style="width:200px" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getCorreoElectronico()%>" readOnly="<%=readonly%>"/>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					
+					<!-- RGG: cambio a formularios ligeros -->
+					<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD" />
+					<input type="hidden" name="actionModal" value="" />
+				</table>
+			</siga:ConjCampos>
+				
+			<siga:ConjCampos leyenda="censo.consultaDatosBancarios.cabecera">
+				<table class="tablaCampos" border="0" width="100%">	
+					<tr>		
+						<td class="labelText">
+							<siga:Idioma key="censo.datosCuentaBancaria.literal.titular"/>
+						</td>
+						<td>
+							<html:text property="titular" value="<%=titular%>" size="50" styleClass="<%=estiloBox%>" maxlength="100" readOnly="<%=readonly%>"/>
+						</td>
+						
+						<td colspan="2">
+							<table>
+								<tr>
+									<td class="labelText">
+										<siga:Idioma key="censo.tipoCuenta.cargo"/>
+										<html:checkbox property="cuentaCargo" <%if (readonly) {%>disabled<%}%> />
+									</td>	
+									<td class="labelText">
+										<siga:Idioma key="censo.tipoCuenta.abono"/>
+										<html:checkbox property="cuentaAbono" <%if (readonly) {%>disabled<%}%> onClick="validaAbonoSJCS()"/>
+									</td>
+									<td class="labelText">
+										<siga:Idioma key="censo.datosCuentaBancaria.literal.abonoSJCS"/>
+										<html:checkbox property="abonoSJCS" <%if (readonly) {%>disabled<%}%> onClick="validaAbonoSJCS()" />
+									</td>
+								</tr>
+							</table>
+						</td>
+					<tr>
+		
+				
+					<!-- FILA -->
+					<tr>					
+						<td class="labelText" nowrap>Cuenta</td>	
+						<td class="labelText">
+							<html:text size="4"  maxlength="4" property="cbo_Codigo"     value="<%=cbo_Codigo%>" 				styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" onChange="cargarBancos();"/>
+							- <html:text size="4"  maxlength="4" property="codigoSucursal" value="<%=cuentaCodigoSucursal%>" 	styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"/>
+							- <html:text size="2"  maxlength="2" property="digitoControl"  value="<%=cuentaDigitoControl%>" 	styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"/>
+							- <html:text size="10" maxlength="10" property="numeroCuenta"  value="<%=cuentaNumeroCuenta%>" 		styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"/>
+						</td>
+						
+						<td class="labelText" nowrap>
+							<siga:Idioma key="censo.datosCuentaBancaria.literal.banco"/>
+						</td>
+						<td class="labelText">
+							<input type="text" id="banco" style="width:400px;" class="boxConsulta" readonly />
+						</td>
+					</tr>
+				</table>
+			</siga:ConjCampos>
+			
+			<c:if test="${ModoAnterior=='Editar'||ModoAnterior=='VER'||ModoAnterior=='editar' }">
+				<c:choose>
+					<c:when test="${mostrarSolicitudAlta==true}">
+						<siga:ConjCampos>
+							<c:choose>
+								<c:when test="${isPosibilidadSolicitudAlta==true }">
+									<table class="tablaCampos" align="left" >		
+										<tr>
+											<td class="labelText" >
+												<html:button property="idButton" onclick="return accionSolicitarAltaAlterMutua();" styleClass="button">
+													<siga:Idioma key="general.boton.solicitarCompra" />
+												</html:button>
+												<siga:Idioma key="censo.SolicitudIncorporacionDatos.mutualidad.literal.planProfesional"/>
+											</td>
+											
+											<c:choose>
+												<c:when test="${SolicitudIncorporacionForm.idSolicitudPlanProfesional==null||SolicitudIncorporacionForm.idSolicitudPlanProfesional==''}">
+													<td id="tdBotonSolicitudPlanProfesional" >
+														<%if(modoAnterior.equalsIgnoreCase("Editar")){ %>
+															<html:button property="idButton" onclick="return accionSolicitarAltaMutualidad('P');" styleClass="button">
+																<siga:Idioma key="general.boton.solicitarCompra" />
+															</html:button>
+														<%}else{ %>
+															<html:button property="idButton" styleClass="button">
+																<siga:Idioma key="general.boton.solicitarCompra" />
+															</html:button>
+														<%} %>
+													</td>
+													
+													<td id="tdTextoNSolicitudPlanProfesional" style="display:none" class="labelText" >Nº&nbsp;Solicitud:</td>
+													<td id="tdIdSolicitudPlanProfesional" class="labelTextValor">&nbsp;</td> 
+													<td id="tdEstadoSolicitudPlanProfesional" class="labelTextValor" style="color:blue;">&nbsp;</td>
+													<td id="tdBotonEstadoSolicitudPlanProfesional" style="display:none" > 
+														<html:button property="idButton" onclick="return accionComprobarEstadoMutualidad('P');" styleClass="button">Comprobar Estado</html:button>
+													</td>
+								
+												</c:when>
+												
+												<c:otherwise>
+													<td class="labelText" >Nº&nbsp;Solicitud:</td>
+													<td class="labelTextValor">						
+														<c:choose>
+															<c:when test="${SolicitudIncorporacionForm.idSolicitudAceptadaPlanProfesional!=null}">
+																<c:out value="${SolicitudIncorporacionForm.idSolicitudAceptadaPlanProfesional}" />
+															</c:when>
+															
+															<c:otherwise>
+																<c:out value="${SolicitudIncorporacionForm.idSolicitudPlanProfesional}" />
+															</c:otherwise>
+														</c:choose>						
+													</td>
+							
+													<td id="tdEstadoSolicitudPlanProfesional" class="labelTextValor" style="color:blue;"><c:out value="${SolicitudIncorporacionForm.estadoSolicitudPlanProfesional}" /></td>
+													<td id="tdBotonEstadoSolicitudPlanProfesional">
+														<html:button property="idButton" onclick="return accionComprobarEstadoMutualidad('P');" styleClass="button"> Comprobar Estado</html:button>
+													</td>
+												</c:otherwise>
+											</c:choose>
+										</tr>
+						
+										<tr>
+											<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacionDatos.mutualidad.literal.seguroAccidentes"/></td>
+						
+											<c:choose>
+												<c:when test="${SolicitudIncorporacionForm.idSolicitudSeguroUniversal==null||SolicitudIncorporacionForm.idSolicitudSeguroUniversal==''}">
+													<td id="tdBotonSolicitudSeguroUniversal">
+														<%if(modoAnterior.equalsIgnoreCase("Editar")){ %>
+															<html:button id="botonSolicitarAltaSeguro" property="idButton"onclick="return accionSolicitarAltaMutualidad('S');" styleClass="button">
+																<siga:Idioma key="general.boton.solicitarCompra" />
+															</html:button>
+														<%}else{ %>
+															<html:button property="idButton" styleClass="button">
+																<siga:Idioma key="general.boton.solicitarCompra" />
+															</html:button>
+														<%} %>
+													</td>
+													<td id="tdTextoNSolicitudSeguroUniversal"  style="display:none" class="labelText" >Nº&nbsp;Solicitud:</td>
+													<td id="tdIdSolicitudSeguroUniversal" class="labelTextValor">&nbsp;</td>
+													<td id="tdEstadoSolicitudSeguroUniversal" class="labelTextValor" style="color:blue;">&nbsp;</td>
+													<td id="tdBotonEstadoSolicitudSeguroUniversal" style="display:none">
+														<html:button property="idButton" onclick="return accionComprobarEstadoMutualidad('S');" styleClass="button">Comprobar Estado</html:button>
+													</td>
+													<td colspan="2">&nbsp;</td>
+												</c:when>
+											
+												<c:otherwise>
+													<td class="labelText" >Nº&nbsp;Solicitud:</td>
+													<td class="labelTextValor" >
+														<c:choose>
+															<c:when test="${SolicitudIncorporacionForm.idSolicitudAceptadaSeguroUniversal!=null}">
+																<c:out value="${SolicitudIncorporacionForm.idSolicitudAceptadaSeguroUniversal}" />
+															</c:when>
+															
+															<c:otherwise>
+																<c:out value="${SolicitudIncorporacionForm.idSolicitudSeguroUniversal}" />
+															</c:otherwise>
+														</c:choose>						
+													</td>
+													
+													<td id="tdEstadoSolicitudSeguroUniversal" class="labelTextValor" style="color:blue;"><c:out value="${SolicitudIncorporacionForm.estadoSolicitudSeguroUniversal}" /></td>
+													<td id="tdBotonEstadoSolicitudSeguroUniversal">
+														<html:button property="idButton" onclick="return accionComprobarEstadoMutualidad('S');" styleClass="button">Comprobar Estado</html:button>
+													</td>
+													<td colspan="2">&nbsp;</td>
+												</c:otherwise>
+											</c:choose>
+										</tr>
+									</table>
+								</c:when>
+				
+								<c:otherwise>
+									<table>
+										<tr>
+											<td class="labelText">
+												<siga:Idioma key="censo.SolicitudIncorporacionDatos.mutualidad.literal.planProfesional"/>
+											</td>
+											<td class="labelTextValor" style="color:red;"><c:out value="${motivoSolicitudAlta}" /></td>			
+										</tr>
+										
+										<tr>
+											<td class="labelText">
+												<siga:Idioma key="censo.SolicitudIncorporacionDatos.mutualidad.literal.seguroAccidentes"/>
+											</td>
+											<td class="labelTextValor" style="color:red;"><c:out value="${motivoSolicitudAlta}" /></td>
+										</tr>
+									</table>
+								</c:otherwise>
+							</c:choose>
+						</siga:ConjCampos>	
+					</c:when>
+				
+					<c:otherwise>
+					</c:otherwise>
+				</c:choose>
+			</c:if>
+		</div>
+	
+		<div id='divDocumentoAPresentar' style="overflow-y: scroll">
+			<table id='documentoAPresentar' border='1' width='100%' cellspacing='0' cellpadding='0'>
+				<tr class = 'tableTitle'>
+					<td align='center' width='10%'><siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.estado"/></td>
+					<td align='center' width='90%'><siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.documento"/></td>
+				</tr>
+		
+				<% if (documentos != null) {
+					 for (int i = 0; i < documentos.size(); i++){ 
+					 		Vector v = (Vector) documentos.get(i);
+					 		if (v != null) {
+					 	  		CenDocumentacionSolicitudInstituBean documento = (CenDocumentacionSolicitudInstituBean) v.get(0); 
+								String estado = (String) v.get(1);
+				%>
+				   <tr class="listaNonEdit">
+				   		<td align="center">
+				   			<input type="hidden" id="oculto<%=(i+1)%>_1" value="<%=documento.getDocumentacionSolicitud().getIdDocumentacion()%>" />
+				   			<input type="checkbox" <%if (editar.equalsIgnoreCase("false")) { out.print(" disabled "); } %><%if(estado.equalsIgnoreCase("true"))out.print("checked");%> />
+				   		</td>
+				   		<td>
+				   			<%if(documento.getDocumentacionSolicitud().getDescripcion()!=null)out.print(UtilidadesString.mostrarDatoJSP(documento.getDocumentacionSolicitud().getDescripcion()));%>
+				   		</td>
+				   </tr>
+			  <%			} // if
+			   		} // for
+			    }else{%>
+			 		<br>
+			   		 <p class="titulitos" style="text-align:center" >
+			   		 	<!-- PENDIENTE No tiene documentos adjuntos. Pendiente de Validar-->
+			   		 	<siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.aviso"/>
+			   		 </p>
+			 		<br>
+			  <%}%>
+			</table>	
+		</div>
+	
+		<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
+		<%if (editar!=null && !editar.equalsIgnoreCase("false")) {%>
+			<siga:ConjBotonesAccion botones="G,V" clase="botonesDetalle" />
+		<%}else{%>
+			<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
+		<%}%>
+	
+	<!-- FIN: BOTONES REGISTRO -->
+	</html:form>
+	
+	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display:none"></iframe>	
+</body>
+</html>
+	
+<script language="JavaScript">
+
+	function editarNColegiado(){
+		var numeroCol = document.getElementById("numColBox");
+		var botNumeroCol = document.getElementById("botonNCol"); 
+		if (numeroCol.disabled){
+			numeroCol.className="box";
+			jQuery("#numColBox").removeAttr('disabled'); //numeroCol.disabled=false;
+			botNumeroCol.style.visibility ="hidden";
 		}
+	}
+	
+	function restablecerNColegiado(){
+		var numeroCol = document.getElementById("numColBox");
+		var botNumeroCol = document.getElementById("botonNCol");
+		<%if(nColegiado==null || nColegiado.equalsIgnoreCase("")){%>
+			numeroCol.className = "boxDisabled";
+			jQuery("#numColBox").attr('disabled', 'disabled'); //numeroCol.disabled = true;			
+			botNumeroCol.style.visibility ="visible";
+		<%}else{%>
+			numeroCol.className = "box";
+			numeroCol.value=<%=nColegiado%>;
+			botNumeroCol.style.visibility ="hidden";
+		<%}%>
+	}
 
-
-
-		function validaAbonoSJCS() {
-			if (document.SolicitudIncorporacionForm.abonoSJCS.checked) {
-				if (!document.SolicitudIncorporacionForm.cuentaAbono.checked) {
-					var mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.cuentaSJCS"/>";
-					alert (mensaje);
-					document.SolicitudIncorporacionForm.abonoSJCS.checked = false;
-					return false;
-				}
+	function validaAbonoSJCS(){
+		if (document.SolicitudIncorporacionForm.abonoSJCS.checked) {
+			if (!document.SolicitudIncorporacionForm.cuentaAbono.checked) {
+				var mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.cuentaSJCS"/>";
+				alert (mensaje);
+				document.SolicitudIncorporacionForm.abonoSJCS.checked = false;
+				return false;
 			}
 		}
+	}
 
-		function datosValidos(){
-			var errores = "";
+	function datosValidos(){
+		var errores = "";
 
-			if(validaNumeroIdentificacion()){
+		if(validaNumeroIdentificacion()){
 
-				if(document.SolicitudIncorporacionForm.tipoIdentificacion.value==""){
-					errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.nifcif'/>"+ '\n';
-				}
-				if(document.SolicitudIncorporacionForm.tipoDon.value==""){
-					errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.tratamiento'/>" + '\n';
-				}
-				if(document.SolicitudIncorporacionForm.nombre.value==""){
-					errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.nombre'/>" + '\n';
-				}
-				if(document.SolicitudIncorporacionForm.apellido1.value==""){
-					errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.apellido1'/>" + '\n';
-				}
-				if(document.SolicitudIncorporacionForm.fechaNacimiento.value==""){
-					errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.fechaNacimiento'/>" + '\n';
-				}
-				if(document.SolicitudIncorporacionForm.sexo.value=="0"){
-					errores += "<siga:Idioma key='errors.required' arg0='censo.consultaDatosGenerales.literal.sexo'/>" + '\n';
-				}
-				if (document.SolicitudIncorporacionForm.pais.value == "" || document.SolicitudIncorporacionForm.pais.value == "<%=ClsConstants.ID_PAIS_ESPANA%>") {
-			   		if (document.SolicitudIncorporacionForm.provincia.value == "") {
-			   			errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.provincia'/>" + '\n';
-			       	}
-
-			   		var poblFrame = document.getElementById("poblacionFrame");
-			   		var docFrame = (poblFrame.contentWindow || poblFrame.contentDocument || poblFrame.contentWindow.document || poblFrame.document);			   		
-			   		document.SolicitudIncorporacionForm.poblacion.value=docFrame.recuperaValorCombo();
-			   		
-			   		if (document.SolicitudIncorporacionForm.poblacion.value == "") {
-			   			errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.poblacion'/>" + '\n';
-			       	}
-			    } else {
-			   		if (document.SolicitudIncorporacionForm.poblacionExt.value == "") {
-			   			errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.poblacion'/>" + '\n';
-			       	}
-				}
-				if(document.SolicitudIncorporacionForm.domicilio.value==""){
-					errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.domicilio'/>" + '\n';
-				}
+			if(document.SolicitudIncorporacionForm.tipoIdentificacion.value==""){
+				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.nifcif'/>"+ '\n';
+			}
+			if(document.SolicitudIncorporacionForm.tipoDon.value==""){
+				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.tratamiento'/>" + '\n';
+			}
+			if(document.SolicitudIncorporacionForm.nombre.value==""){
+				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.nombre'/>" + '\n';
+			}
+			if(document.SolicitudIncorporacionForm.apellido1.value==""){
+				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.apellido1'/>" + '\n';
+			}
+			if(document.SolicitudIncorporacionForm.fechaNacimiento.value==""){
+				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.fechaNacimiento'/>" + '\n';
+			}
+			if(document.SolicitudIncorporacionForm.sexo.value=="0"){
+				errores += "<siga:Idioma key='errors.required' arg0='censo.consultaDatosGenerales.literal.sexo'/>" + '\n';
+			}
+			if(document.SolicitudIncorporacionForm.domicilio.value==""){
+				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.domicilio'/>" + '\n';
+			}			
+			if (document.SolicitudIncorporacionForm.pais.value == "" || document.SolicitudIncorporacionForm.pais.value == "<%=ClsConstants.ID_PAIS_ESPANA%>") {
 				if(document.SolicitudIncorporacionForm.CP.value==""){
 					errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.codigoPostal'/>" + '\n';
+				}			
+				else if (!validaCP(document.SolicitudIncorporacionForm.CP.value)) {
+					errores += "<siga:Idioma key='errors.invalid' arg0='censo.SolicitudIncorporacion.literal.codigoPostal'/>" + '\n';
 				}
-				if(document.SolicitudIncorporacionForm.telefono1.value==""){
-					errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.telefono1'/>" + '\n';
+					   		
+		   		if (document.SolicitudIncorporacionForm.poblacion.value == "") {
+		   			errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.poblacion'/>" + '\n';
+		       	}
+		    } else {
+				if(document.SolicitudIncorporacionForm.CPExt.value==""){
+					errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.codigoPostal'/>" + '\n';
+				}		    	
+				else {
+					document.SolicitudIncorporacionForm.CP.value=document.SolicitudIncorporacionForm.CPExt.value;
 				}
-				if(document.SolicitudIncorporacionForm.mail.value==""){
-					errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.email'/>" + '\n';
-				}
-
-				
-				if(!calcularDigito()){
-					fin();
-					return false;
-				}		
-				
-				if (errores != ""){
-					alert(errores);
-				}else{
-					if(validateSolicitudIncorporacionForm(document.SolicitudIncorporacionForm))
-						return true;
-				}
+		   		if (document.SolicitudIncorporacionForm.poblacionExt.value == "") {
+		   			errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.poblacion'/>" + '\n';
+		       	}
 			}
-			return false;
-		}
-
-		function comprobarTipoIdent(){
-			<%if(!readonly){%>
-				// Solo se genera el NIF o CIF de la persona
-				if((SolicitudIncorporacionForm.tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")||
-					(SolicitudIncorporacionForm.tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")){
-					document.getElementById("idButtonNif").style.visibility="visible";
-				}	else{
-					document.getElementById("idButtonNif").style.visibility="hidden";
-				}
-			<%}%>
-		}	
-
-
-
-		function cambioModalidad(){
+			if(document.SolicitudIncorporacionForm.telefono1.value==""){
+				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.telefono1'/>" + '\n';
+			}
+			if(document.SolicitudIncorporacionForm.mail.value==""){
+				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.email'/>" + '\n';
+			}
 			
-			var selMod = document.getElementById("tipoModalidadDocumentacion");
-			var strMod = <%=datosPersonales.getIdModalidadDocumentacion()%>;
-			var selSol = document.getElementById("tipoSolicitud");
-			var strSol = <%=datosPersonales.getIdTipoSolicitud()%>;
-			var selCol = document.getElementById("tipoColegiacion");
-			var strCol = <%=datosPersonales.getIdTipoColegiacion()%>;
-			if((selMod.value!=strMod)||(selCol.value!=strCol)||(selSol.value!=strSol)){
-				if(!confirm('<siga:Idioma key="messages.confirm.cambioModalidad"/>')){
-					for (var i=0; i<selMod.options.length; i++) {
-						if (selMod.options[i].value == strMod) {
-							selMod.selectedIndex = i;
-						}
-					}
-					for (i=0; i<selSol.options.length; i++) {
-						if (selSol.options[i].value == strSol) {
-							selSol.selectedIndex = i;
-						}
-					}
-					for (i=0; i<selCol.options.length; i++) {
-						if (selCol.options[i].value == strCol) {
-							selCol.selectedIndex = i;
-						}
-					}
-					return false;
-				}
+			if(!calcularDigito()){
+				fin();
+				return false;
+			}		
+			
+			if (errores != ""){
+				alert(errores);
+			}else{
+				if(validateSolicitudIncorporacionForm(document.SolicitudIncorporacionForm))
+					return true;
 			}
-			return true;	
 		}
-		
-		function obtenerLetra(){
-			if (generarLetra()) {
-				var tipoIdentificacion = document.getElementById("tipoIdentificacion").value;
-				if(tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")
-					alert("<siga:Idioma key='messages.nifcif.comprobacion.correcto'/>");
-				else
-					if(tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")
-						alert("<siga:Idioma key='messages.nie.comprobacion.correcto'/>");
-			}
+		return false;
+	}
 
-		}
-	
-		function generarLetra() {
-			var numId = document.getElementById("NIFCIF").value;
-			var tipoIdentificacion = document.getElementById("tipoIdentificacion").value;
-		  	var letra='TRWAGMYFPDXBNJZSQVHLCKET';
-			if(numId.length==0) {
-				return false;		
+	function comprobarTipoIdent(){
+		<%if(!readonly){%>
+			// Solo se genera el NIF o CIF de la persona
+			if((SolicitudIncorporacionForm.tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")||
+				(SolicitudIncorporacionForm.tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")){
+				document.getElementById("idButtonNif").style.visibility="visible";
+			}	else{
+				document.getElementById("idButtonNif").style.visibility="hidden";
 			}
-			if(tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>"){
-				if(numId.length==8){
-					if(isNumero(numId)==true){
-					 	numero = numId;
-					 	numero = numero % 23;
-					 	letra=letra.substring(numero,numero+1);
-					 	document.getElementById("NIFCIF").value = numId+letra;
+		<%}%>
+	}	
+
+	function cambioModalidad(){		
+		var selMod = document.getElementById("tipoModalidadDocumentacion");
+		var strMod = <%=datosPersonales.getIdModalidadDocumentacion()%>;
+		var selSol = document.getElementById("tipoSolicitud");
+		var strSol = <%=datosPersonales.getIdTipoSolicitud()%>;
+		var selCol = document.getElementById("tipoColegiacion");
+		var strCol = <%=datosPersonales.getIdTipoColegiacion()%>;
+		if((selMod.value!=strMod)||(selCol.value!=strCol)||(selSol.value!=strSol)){
+			if(!confirm('<siga:Idioma key="messages.confirm.cambioModalidad"/>')){
+				for (var i=0; i<selMod.options.length; i++) {
+					if (selMod.options[i].value == strMod) {
+						selMod.selectedIndex = i;
 					}
-					else
+				}
+				for (i=0; i<selSol.options.length; i++) {
+					if (selSol.options[i].value == strSol) {
+						selSol.selectedIndex = i;
+					}
+				}
+				for (i=0; i<selCol.options.length; i++) {
+					if (selCol.options[i].value == strCol) {
+						selCol.selectedIndex = i;
+					}
+				}
+				return false;
+			}
+		}
+		return true;	
+	}
+	
+	function obtenerLetra(){
+		if (generarLetra()) {
+			var tipoIdentificacion = document.getElementById("tipoIdentificacion").value;
+			if(tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")
+				alert("<siga:Idioma key='messages.nifcif.comprobacion.correcto'/>");
+			else
+				if(tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")
+					alert("<siga:Idioma key='messages.nie.comprobacion.correcto'/>");
+		}
+
+	}
+
+	function generarLetra(){
+		var numId = document.getElementById("NIFCIF").value;
+		var tipoIdentificacion = document.getElementById("tipoIdentificacion").value;
+	  	var letra='TRWAGMYFPDXBNJZSQVHLCKET';
+		if(numId.length==0) {
+			return false;		
+		}
+		if(tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>"){
+			if(numId.length==8){
+				if(isNumero(numId)==true){
+				 	numero = numId;
+				 	numero = numero % 23;
+				 	letra=letra.substring(numero,numero+1);
+				 	document.getElementById("NIFCIF").value = numId+letra;
+				}
+				else
+					return validaNumeroIdentificacion(tipoIdentificacion, numId);					
+			} 
+			else
+				return validaNumeroIdentificacion(tipoIdentificacion, numId);
+		} 
+		else
+			if((tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") ){
+				if(numId.length==8){
+					var dnie = document.getElementById("NIFCIF").value;
+					letIni = numId.substring(0,1);
+					primeraLetra = letIni;
+					if  (letIni.toUpperCase()=='Y')
+			 			letIni = '1';
+			 		else {
+			 			if  (letIni.toUpperCase()=='Z')
+			 				letIni = '2';
+			 			else
+			 				letIni = '0';
+			 		}
+			 
+					num = letIni+numId.substring(1,8);
+					if(primeraLetra.match('[X|Y|Z]') && isNumero(num)){
+						var posicion = num % 23;
+						letras='TRWAGMYFPDXBNJZSQVHLCKET';
+						var letra=letras.substring(posicion,posicion+1);
+						numero = dnie + letra;
+						document.getElementById("NIFCIF").value = numero;
+					} 
+					else 
 						return validaNumeroIdentificacion(tipoIdentificacion, numId);					
 				} 
 				else
 					return validaNumeroIdentificacion(tipoIdentificacion, numId);
-			} 
-			else
-				if((tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") ){
-					if(numId.length==8){
-						var dnie = document.getElementById("NIFCIF").value;
-						letIni = numId.substring(0,1);
-						primeraLetra = letIni;
-						if  (letIni.toUpperCase()=='Y')
-				 			letIni = '1';
-				 		else {
-				 			if  (letIni.toUpperCase()=='Z')
-				 				letIni = '2';
-				 			else
-				 				letIni = '0';
-				 		}
-				 
-						num = letIni+numId.substring(1,8);
-						if(primeraLetra.match('[X|Y|Z]') && isNumero(num)){
-							var posicion = num % 23;
-							letras='TRWAGMYFPDXBNJZSQVHLCKET';
-							var letra=letras.substring(posicion,posicion+1);
-							numero = dnie + letra;
-							document.getElementById("NIFCIF").value = numero;
-						} 
-						else 
-							return validaNumeroIdentificacion(tipoIdentificacion, numId);					
-					} 
-					else
-						return validaNumeroIdentificacion(tipoIdentificacion, numId);
-				}
-							
-			// Caso1: Se han realizado las modificaciones necesarias sin encontrar errores 
-			// Caso2: no es nif ni nie no hay generacion de letra	
-			return true;
-		}	
+			}
+						
+		// Caso1: Se han realizado las modificaciones necesarias sin encontrar errores 
+		// Caso2: no es nif ni nie no hay generacion de letra	
+		return true;
+	}	
 
-		function validaNumeroIdentificacion(){
-			var errorNIE = false;
-			var errorNIF = false;
-			var valido = true;
+	function validaNumeroIdentificacion(){
+		var errorNIE = false;
+		var errorNIF = false;
+		var valido = true;
 
-			if(SolicitudIncorporacionForm.tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>"){
-				var numero = SolicitudIncorporacionForm.NIFCIF.value;
-				if(numero.length==9){
-					letIn = numero.substring(8,9);
-					num = numero.substring(0,8);
-					var posicion = num % 23;
-					letras='TRWAGMYFPDXBNJZSQVHLCKET';
-					var letra=letras.substring(posicion,posicion+1);
-					if (letra!=letIn) {
-						errorNIF=true;
-					}
-				}else{
+		if(SolicitudIncorporacionForm.tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>"){
+			var numero = SolicitudIncorporacionForm.NIFCIF.value;
+			if(numero.length==9){
+				letIn = numero.substring(8,9);
+				num = numero.substring(0,8);
+				var posicion = num % 23;
+				letras='TRWAGMYFPDXBNJZSQVHLCKET';
+				var letra=letras.substring(posicion,posicion+1);
+				if (letra!=letIn) {
 					errorNIF=true;
 				}
+			}else{
+				errorNIF=true;
 			}
-			if(SolicitudIncorporacionForm.tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>"){
-				var dnie = SolicitudIncorporacionForm.NIFCIF.value;
-				if(dnie.length==9){
-					letIni = dnie.substring(0,1);
-					primera=letIni;
-					if  (letIni.toUpperCase()=='Y')
-				 		letIni = '1';
-				 	else if  (letIni.toUpperCase()=='Z')
-				 		letIni = '2';
-				 	else{
-				 		letIni = '0';
-				 	}
-					num = letIni + dnie.substring(1,8);
-					letFin = dnie.substring(8,9);
-					var posicion = num % 23;
-					letras='TRWAGMYFPDXBNJZSQVHLCKET';
-					var letra=letras.substring(posicion,posicion+1);
-					if (!primera.match('[X|Y|Z]')||letra!=letFin) {
-						errorNIE=true;
-					}
-				}else{
+		}
+		if(SolicitudIncorporacionForm.tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>"){
+			var dnie = SolicitudIncorporacionForm.NIFCIF.value;
+			if(dnie.length==9){
+				letIni = dnie.substring(0,1);
+				primera=letIni;
+				if  (letIni.toUpperCase()=='Y')
+			 		letIni = '1';
+			 	else if  (letIni.toUpperCase()=='Z')
+			 		letIni = '2';
+			 	else{
+			 		letIni = '0';
+			 	}
+				num = letIni + dnie.substring(1,8);
+				letFin = dnie.substring(8,9);
+				var posicion = num % 23;
+				letras='TRWAGMYFPDXBNJZSQVHLCKET';
+				var letra=letras.substring(posicion,posicion+1);
+				if (!primera.match('[X|Y|Z]')||letra!=letFin) {
 					errorNIE=true;
 				}
+			}else{
+				errorNIE=true;
 			}
-			if (errorNIF){
-				valido = false;
-				alert("<siga:Idioma key="messages.nif.comprobacion.digitos.error"/>");
-			}
-			if (errorNIE){
-				valido = false;
-				alert("<siga:Idioma key="messages.nie.comprobacion.digitos.error"/>");
-			}
-			return valido;
 		}
+		if (errorNIF){
+			valido = false;
+			alert("<siga:Idioma key="messages.nif.comprobacion.digitos.error"/>");
+		}
+		if (errorNIE){
+			valido = false;
+			alert("<siga:Idioma key="messages.nie.comprobacion.digitos.error"/>");
+		}
+		return valido;
+	}
 
-		function cargarChecksCuenta(){
-			document.SolicitudIncorporacionForm.cuentaCargo.checked = <%=cargo%>;
-			document.SolicitudIncorporacionForm.cuentaAbono.checked = <%=abono%>;
-			document.SolicitudIncorporacionForm.abonoSJCS.checked = <%=abonoSJCS%>;
-			document.SolicitudIncorporacionForm.residente.checked = <%= residente%>;
-		}
+	function cargarChecksCuenta(){
+		document.SolicitudIncorporacionForm.cuentaCargo.checked = <%=cargo%>;
+		document.SolicitudIncorporacionForm.cuentaAbono.checked = <%=abono%>;
+		document.SolicitudIncorporacionForm.abonoSJCS.checked = <%=abonoSJCS%>;
+		document.SolicitudIncorporacionForm.residente.checked = <%= residente%>;
+	}
 
-		function cargaPais(valor) {      
-			<%if(!readonly){%>
-			   if (valor!=null && valor!="" && valor!=<%=ClsConstants.ID_PAIS_ESPANA%>) {			   					    
-			   		document.getElementById("provincia").value="";
-				   	document.getElementById("provincia").disabled=true;
-					document.getElementById("poblacionEspanola").className="ocultar";
-					document.getElementById("poblacionExtranjera").className="";
-		       } else {
-			   		document.getElementById("poblacionExt").value="";
-					document.getElementById("provincia").disabled=false;
-					document.getElementById("poblacionEspanola").className="";
-					document.getElementById("poblacionExtranjera").className="ocultar";
-					recargar();
-		       }
-			<%}%>
-		}
-	 
-		function recargar(){			
-			<%if (esEspana){ %>
-			var tmp1 = document.getElementsByName("provincia");
-			if (tmp1){
-				var tmp2 = tmp1[0];
-				if (tmp2) {
-					tmp2.onchange();
-				} 
+	// Funciones para obtener el d¡gito de control de la Cuenta
+	function obtenerDigito(valor){	
+	  valores = new Array(1, 2, 4, 8, 5, 10, 9, 7, 3, 6);
+	  control = 0;
+	  for (var i=0; i<=9; i++)
+	    control += parseInt(valor.charAt(i)) * valores[i];		  
+	  control = 11 - (control % 11);
+	  if (control == 11) control = 0;
+	  else if (control == 10) control = 1;
+	  return control;
+	}
+	
+	function numerico(valor){
+		cad = valor.toString();
+		for (var i=0; i<cad.length; i++) {
+			var caracter = cad.charAt(i);
+			if (caracter<"0"||caracter>"9"){					
+				return false;
 			}
-			<%}%>
 		}
-
-		// Funciones para obtener el d¡gito de control de la Cuenta
-		function obtenerDigito(valor){	
-		  valores = new Array(1, 2, 4, 8, 5, 10, 9, 7, 3, 6);
-		  control = 0;
-		  for (var i=0; i<=9; i++)
-		    control += parseInt(valor.charAt(i)) * valores[i];		  
-		  control = 11 - (control % 11);
-		  if (control == 11) control = 0;
-		  else if (control == 10) control = 1;
-		  return control;
+		return true;
+	}
+	
+	function calcularDigito(){
+		mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.errorCuentaBancaria"/>";
+	
+		f = document.SolicitudIncorporacionForm;		
+		if (f.cbo_Codigo.value    == ""  && f.codigoSucursal.value == "" && f.digitoControl.value == ""  && f.numeroCuenta.value   == "" ){ 
+			 return true;
 		}
-		
-		function numerico(valor){
-			cad = valor.toString();
-			for (var i=0; i<cad.length; i++) {
-				var caracter = cad.charAt(i);
-				if (caracter<"0"||caracter>"9"){					
-					return false;
-				}
+		else{
+			if(f.banco.value==""){
+				alert(mensaje);
+				return false;
 			}
-			return true;
-		}
-		
-		function calcularDigito(){
-
-			mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.errorCuentaBancaria"/>";
-		
-			f = document.SolicitudIncorporacionForm;		
-			if (f.cbo_Codigo.value    == ""  && f.codigoSucursal.value == "" && f.digitoControl.value == ""  && f.numeroCuenta.value   == "" ){ 
-				 return true;
-			}
-			else{
-				if(f.banco.value==""){
+			if(f.cbo_Codigo.value.length != 4 || f.codigoSucursal.value.length != 4 || f.digitoControl.value.length != 2 || f.numeroCuenta.value.length != 10){
+				alert(mensaje);
+				return false;
+			}else{
+				if(!numerico(f.cbo_Codigo.value) || !numerico(f.codigoSucursal.value) || !numerico(f.digitoControl.value) || !numerico(f.numeroCuenta.value)){
 					alert(mensaje);
 					return false;
 				}
-				if(f.cbo_Codigo.value.length != 4 || f.codigoSucursal.value.length != 4 || f.digitoControl.value.length != 2 || f.numeroCuenta.value.length != 10){
-					alert(mensaje);
-					return false;
-				}else{
-					if(!numerico(f.cbo_Codigo.value) || !numerico(f.codigoSucursal.value) || !numerico(f.digitoControl.value) || !numerico(f.numeroCuenta.value)){
+				else {
+				  if(f.digitoControl.value != obtenerDigito("00" + f.cbo_Codigo.value + f.codigoSucursal.value) + "" + obtenerDigito(f.numeroCuenta.value)){
 						alert(mensaje);
 						return false;
 					}
-					else {
-					  if(f.digitoControl.value != obtenerDigito("00" + f.cbo_Codigo.value + f.codigoSucursal.value) + "" + obtenerDigito(f.numeroCuenta.value)){
-							alert(mensaje);
-							return false;
-						}
-					}
 				}
 			}
-			
-			return true;  
-		}	
-		
-		function quitarBotonesAlta(){
-			<%if(!modoAnterior.equalsIgnoreCase("Editar")){%>
-				if(document.getElementById("tdBotonSolicitudPlanProfesional")){
-					document.getElementById("tdBotonSolicitudPlanProfesional").disabled=true;
-				}
-				if(document.getElementById("tdBotonSolicitudSeguroUniversal")){
-					document.getElementById("tdBotonSolicitudSeguroUniversal").disabled=true;
-				}
-			<%}%>
 		}
-	</script>
-
-</head>
-
-<body  class="tablaCentralCampos" onLoad="cargaPais(<%=datosPersonales.getIdPais() %>);cargarChecksCuenta();comprobarTipoIdent();ajusteAlto('divDocumentoAPresentar');cargarBancos();">
-
-<bean:define id="isPosibilidadSolicitudAlta" name="isPosibilidadSolicitudAlta"  scope="request" />
-<bean:define id="mostrarSolicitudAlta" name="mostrarSolicitudAlta"  scope="request" />
-<bean:define id="motivoSolicitudAlta" name="motivoSolicitudAlta"  scope="request" />
-
-<html:form action="/CEN_MantenimientoSolicitudesIncorporacion.do" method="POST" target="mainWorkArea">
-	<html:hidden property="idSolicitudPlanProfesional"/>
-	<html:hidden property="idSolicitudAceptadaSeguroUniversal"/>
-	<html:hidden property="idSolicitudAceptadaPlanProfesional"/>
-	<html:hidden property="idSolicitudSeguroUniversal"/>
-	<input type="hidden" id="numeroIdentificacionBBDD" value ="<%=datosPersonales.getNumeroIdentificador()%>" /> 
-	<input type="hidden" id="fechaNacimientoBBDD" value ="<%=datosPersonales.getFechaNacimiento()%>" />	
-	
-	<table align="center" width="100%">
-		<tr>
-			<td class="labelText" >
-				<center>
-						<siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.numeroSolicitud"/>:
-						&nbsp;&nbsp;
-						<% if(datosPersonales.getIdSolicitud()!=null)
-								out.print(UtilidadesString.mostrarDatoJSP(datosPersonales.getIdSolicitud()));
-						%>
-						&nbsp;&nbsp;
-						<siga:Idioma key="messages.censo.solicitudIncorporacion.guardarCodigo"/>
-	
-				</center>
-			</td>
-		</tr>
-	</table>
-	
-	<div>
-	<siga:ConjCampos>
-		<center>
-			<table border="0" width="100%">
-				<tr>
-					<td>
-						<table border="0">
-							<tr>
-								<td class="labelText" nowrap>
-									<siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.estado"/>
-								</td>
-								<%if (readonly || datosPersonales.getIdEstado().intValue()==ClsConstants.ESTADO_SOLICITUD_APROBADA) {%>
-									<td class="labelTextValor" >
-										<%=UtilidadesString.mostrarDatoJSP(estadoSolicitud)%>
-										<html:hidden property="editarEstadoSolicitud" value="<%=datosPersonales.getIdEstado().toString()%>"  />
-									</td>
-								<%} else {%>
-									<td>
-										<siga:ComboBD nombre = "editarEstadoSolicitud" tipo="estadoSolicitud" clase="<%=estiloCombo%>" elementoSel="<%=idEstadoSolicitud%>" obligatorioSinTextoSeleccionar="true" />
-									</td>
-								<%}%>
-				
-								<td class="labelText" nowrap>
-									<siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.fechaEstado"/>
-								</td>
-								<td>
-									<html:text property="fechaSolicitud" size="10" styleClass="boxConsulta"  readOnly="true" value="<%=datosPersonales.getFechaEstado()%>"/>
-								</td>
-							</tr>
-				
-							<tr>
-								<td colspan="2">&nbsp;</td>
-								<td class="labelText" nowrap>
-									<siga:Idioma key="censo.SolicitudIncorporacion.literal.fechaSolicitud"/>
-								</td>
-								<td>
-									<html:text property="fechaSolicitud" size="10" styleClass="boxConsulta"  readOnly="true" value="<%=datosPersonales.getFechaSolicitud()%>"/>
-								</td>
-							</tr>
-						</table>
-					</td>
-					
-					<td class="labelText" nowrap>
-						<siga:Idioma key="censo.SolicitudIncorporacion.literal.observaciones"/>
-					</td>
-					<%if(readonly){ %>
-						<td width="300px">
-							<textarea rows="3" name="observaciones" class="boxConsulta" style="width:300px" readonly><%=datosPersonales.getObservaciones()%></textarea>
-						</td>
-					<%}else{%>
-						<td width="250px">
-							<textarea class="box" name="observaciones" 
-								onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"  
-								style="overflow:auto;width:250px;height:50px;resize:none"
-							><%=datosPersonales.getObservaciones()%></textarea>
-						</td>
-					<%}%>
-				</tr>
-			</table>
-		</center>
-	<!-- TABLA -->
-	</siga:ConjCampos>
-	
-	<siga:ConjCampos leyenda="censo.SolicitudIncorporacionDatos.titulo">
-		<table width="100%" border="0" >
-			<html:hidden property = "modo" value = ""/>
-			<html:hidden property = "editarIdSolicitud" value = "<%=datosPersonales.getIdSolicitud().toString()%>"/>
-			<html:hidden property = "continuarAprobacion" value = ""/>
-			<html:hidden property = "continuarInsercionColegiado" value = ""/>
-	
-			<tr>
-				<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.solicitudDe"/>&nbsp;(*)</td>
-				<!-- <td width="27%"><siga:ComboBD nombre = "tipoSolicitud" tipo="solicitud" clase="boxCombo" obligatorio="true"/></td> -->
-				<%if(readonly){ %>
-					<td class="labelTextValor"><%=UtilidadesString.mostrarDatoJSP(tipoSolicitud)%></td>
-				<%}else{%>
-					<td><siga:ComboBD nombre = "tipoSolicitud" tipo="solicitud" clase="boxCombo" elementoSel="<%=selSolicitud%>" obligatorio="true"/></td>
-				<%}%>
-				
-				<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.tipoColegiacion"/>&nbsp;(*)</td>
-				<%if(readonly){ %>
-					<td class="labelTextValor"><%=UtilidadesString.mostrarDatoJSP(tipoColegiacion)%></td>
-				<%}else{%>
-					<td><siga:ComboBD nombre = "tipoColegiacion" ancho="100" tipo="colegiacion" clase="boxCombo" elementoSel="<%=selColegiacion%>" obligatorio="true"/></td>
-				<%}%>
-				
-				<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.documentacion"/></td>
-				<%if(readonly){ %>
-					<td class="labelTextValor"><%=UtilidadesString.mostrarDatoJSP(modalidadDocumentacion)%></td>
-				<%}else{%>
-					<td><siga:ComboBD nombre = "tipoModalidadDocumentacion" tipo="modalidadDocumentacion" clase="boxCombo" obligatorio="true" elementoSel="<%=modalidadSel%>" parametro="<%=modalidadParam%>"/></td>
-				<%}%>
-			</tr>
-			
-			<tr>
-				<td class="labelText"><siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaIncorporacion"/></td>
-				<%if(readonly){%>
-					<td class="labelTextValor"><%=UtilidadesString.mostrarDatoJSP(datosPersonales.getFechaEstadoColegial())%></td>
-				<%}else{%>
-					<td>
-						<siga:Fecha nombreCampo="fechaEstadoColegial" valorInicial="<%=datosPersonales.getFechaEstadoColegial() %>" />
-						<%--<a href='javascript://'onClick="return showCalendarGeneral(fechaEstadoColegial);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a> --%>
-					</td>
-				<%}%>
-				
-				<td class="labelText"><siga:Idioma key="censo.consultaDatosColegiacion.literal.residente"/></td>
-				<td><html:checkbox property="residente" disabled="<%=readonly%>"/></td>
-			
-				<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.nColegiado"/></td>
-				<td>
-					<%if(!readonly && (nColegiado==null || nColegiado.equalsIgnoreCase(""))){%>
-						<html:text styleId="numColBox" property="numeroColegiado" style="width:100" maxlength="20" styleClass="boxDisabled" disabled="true"></html:text>
-						<img id="botonNCol" src="<%=app%>/html/imagenes/candado.gif" border="0" onclick="editarNColegiado()" style="cursor:hand;align:left" style="display:inline;" title="<siga:Idioma key='censo.SolicitudIncorporacion.message.desbloqueoNcolegiado'/>">
-					<%}else{%>
-						<html:text styleId="numColBox" property="numeroColegiado" style="width:100" maxlength="20" styleClass="<%=estiloBox%>" value="<%=nColegiado%>"  readOnly="<%=readonly%>" ></html:text>
-						<img id="botonNCol" src="<%=app%>/html/imagenes/candado.gif" border="0" onclick="editarNColegiado()" style="cursor:hand;align:left" style="visibility:hidden;display:inline;" title="<siga:Idioma key='censo.SolicitudIncorporacion.message.desbloqueoNcolegiado'/>">
-					<%}%>
-				</td>
-			</tr>
-		</table>
-	</siga:ConjCampos>
-	
-	<siga:ConjCampos>
-		<table border="0">
-			<tr>
-				<td class="labelText" nowrap><siga:Idioma key="censo.SolicitudIncorporacion.literal.nifcif"/>&nbsp;(*)</td>
-				<%if(readonly){%>
-					<td class="labelTextValor">
-						<siga:ComboBD nombre = "tipoIdentificacion" tipo="cmbTipoIdentificacion"  ancho="80" clase="<%=estiloCombo%>" elementoSel="<%=selIdent%>" readOnly="<%=sreadonly%>" obligatorio="true"/>
-					</td>
-
-				<%}else{%>
-					<td nowrap>
-						<siga:ComboBD nombre = "tipoIdentificacion" tipo="identificacionSolicitud"  ancho="80" clase="<%=estiloCombo%>" elementoSel="<%=selIdent%>" readOnly="<%=sreadonly%>" obligatorio="true" accion="comprobarTipoIdent();"/>
-						<html:text property="NIFCIF" styleClass="box" size="8" maxlength="20" value="<%=datosPersonales.getNumeroIdentificador() %>"></html:text>
-						<img id="idButtonNif" src="<%=app%>/html/imagenes/comprobar.gif" border="0" onclick="obtenerLetra();" style="cursor:hand;align:left" style="display:inline;visibility: hidden;">
-					</td>
-				<%}%>
-				
-				<td class="labelText" nowrap><siga:Idioma key="censo.consultaDatosGenerales.literal.sexo"/>&nbsp;(*)</td>
-				<%if (readonly){%>
-					<td class="labelTextValor">
-						<%if(datosPersonales.getSexo()!=null)out.print(UtilidadesString.mostrarDatoJSP(ssexo));%>
-					</td>
-				<%}else{%>
-					<td>
-						<html:select name="SolicitudIncorporacionForm" property="sexo" style = "null"  value="<%=datosPersonales.getSexo()%>"   styleClass = "box" >
-					        <html:option value="0" >&nbsp;</html:option>
-							<html:option value="<%=ClsConstants.TIPO_SEXO_HOMBRE%>"><siga:Idioma key="censo.sexo.hombre"/></html:option>
-							<html:option value="<%=ClsConstants.TIPO_SEXO_MUJER%>"><siga:Idioma key="censo.sexo.mujer"/></html:option>
-						</html:select>	
-					</td>
-				<%}%>
-				
-				<td class="labelText" nowrap><siga:Idioma key="censo.SolicitudIncorporacion.literal.tratamiento"/>&nbsp;(*)</td>
-				<td><siga:ComboBD nombre="tipoDon" tipo="tratamiento" clase="<%=estiloCombo%>" readOnly="<%=sreadonly%>"  obligatorio="true" elementoSel="<%=selTratamiento %>"/></td>
-			</tr>
-			
-			<tr>
-				<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.nombre"/>&nbsp;(*)</td>
-				<td><html:text property="nombre" style="width:180" maxlength="100" value="<%=datosPersonales.getNombre()%>" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" ></html:text></td>
-	
-				<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.apellido1"/>&nbsp;(*)</td>
-				<td><html:text property="apellido1"  style="width:180" maxlength="100" value="<%=datosPersonales.getApellido1()%>" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" ></html:text></td>
-				
-				<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.apellido2"/></td>
-				<td><html:text property="apellido2"  style="width:180" maxlength="100" value="<%=datosPersonales.getApellido2()%>" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"  ></html:text></td>
-			</tr>
-			
-			<tr>
-				<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.fechaNacimiento"/>&nbsp;(*)</td>
-				<%if(readonly){%>
-					<td class="labelTextValor"><%=UtilidadesString.mostrarDatoJSP(datosPersonales.getFechaNacimiento())%></td>
-				<%}else{%>
-					<td>
-						<siga:Fecha nombreCampo="fechaNacimiento" valorInicial="<%=datosPersonales.getFechaNacimiento() %>" />
-	<%-- 					<a href='javascript://'onClick="return showCalendarGeneral(fechaNacimiento);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a> --%>
-					</td>
-				<%}%>
-				
-				<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.naturalDe"/></td>
-				<td><html:text property="natural" style="width:180" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" value="<%= datosPersonales.getNaturalDe() %>"></html:text></td>
-				
-				<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.estadoCivil"/></td>
-				<td><siga:ComboBD nombre = "estadoCivil" tipo="estadoCivil" clase="<%=estiloCombo%>" readOnly="<%=sreadonly%>" elementoSel="<%=selEstadoCiv%>" /></td>
-			</tr>
-		</table>
-	</siga:ConjCampos>
-	
-	<siga:ConjCampos>
-		<table border="0">
-			<tr>
-				<td class="labelText" nowrap><siga:Idioma key="censo.datosDireccion.literal.pais2"/></td>
-				<%if(readonly){%>
-					<td colspan="2" class="labelTextValor"><%=pais%></td>
-				<%}else{%>
-					<td colspan="2"><siga:ComboBD nombre="pais" tipo="pais" ancho="300" clase="<%=estiloCombo%>" obligatorio="false" elementoSel="<%=selPais%>" readOnly="<%=sreadonly%>" accion="cargaPais(this.value);"/></td>
-				<%}%>
-				
-				<td width="10px">&nbsp;</td>
-				
-				<td class="labelText" nowrap><siga:Idioma key="censo.SolicitudIncorporacion.literal.provincia"/>&nbsp;(*)</td>			
-				<%if(readonly && !esEspana){%>
-					<td class="labelTextValor"><%=provincia%></td>
-				<%}else{%>
-					<td colspan="2"><siga:ComboBD nombre="provincia" tipo="provincia" clase="<%=estiloCombo%>" elementoSel="<%=selProvincia %>" readOnly="<%=sreadonly%>" obligatorio="true" pestana="true"/></td>
-				<%}%>
-				
-				<td align="right">
-					<label class="labelText">CP&nbsp;(*)</label>
-					<html:text property="CP" style="width:50px" styleClass="<%=estiloBox%>" maxlength="5" value="<%=datosPersonales.getCodigoPostal()%>" readOnly="<%=readonly%>"></html:text>				
-				</td>
-			</tr>						
-			
-			<tr>
-				<td class="labelText" nowrap><siga:Idioma key="censo.SolicitudIncorporacion.literal.poblacion"/>&nbsp;(*)</td>
-				<td id="poblacionEspanola" colspan="2">
-				<%if(readonly){%>
-					<input type="text" value="<%=poblacion%>" width="300px" maxlength="100" class="boxConsulta" readonly></input>
-				<%}else{%>
-					<html:hidden property="poblacion" value=""/>	
-					<iframe name="poblacionFrame" scrolling="no" frameborder="0" AllowTransparency
-						style="width:310;height:400px;position:absolute;z-index:9999"				
-						src="<%=app%>/html/jsp/general/comboAutoComplete.jsp?nombre=poblacion&ancho=300&valorCombo=<%=poblacion%>&condicion=<%=esEspana%>&idPadre=provincia&numeroGuiones=73&numeroLineasCombo=20&numeroMaximoOpciones=1000&url=/SIGA/FAC_ComprobarPoblacion.do?modo=getAjaxPoblaciones"></iframe>
-				<%}%>
-				</td> 
-				
-				<td width="10px">&nbsp;</td>
-				
-				<td class="ocultar" colspan="2" id="poblacionExtranjera">
-					<html:text styleId="poblacionExt" property="poblacionExt" style="width:300" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getPoblacionExtranjera()%>" readOnly="<%=readonly%>"></html:text>
-				</td>
-					
-				<td class="labelText" width="90px"><siga:Idioma key="censo.SolicitudIncorporacion.literal.domicilio"/>&nbsp;(*)</td>
-				<td colspan="3"><html:text property="domicilio" style="width:400px" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getDomicilio()%>" readOnly="<%=readonly%>"></html:text></td>						
-			</tr>
-		</table>
 		
-		<table border="0">		
-			<tr>
-				<td class="labelText" nowrap><siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono1"/>&nbsp;(*)</td>
-				<td><html:text property="telefono1" style="width:150px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getTelefono1()%>" readOnly="<%=readonly%>"></html:text></td>
-				
-				<td width="30px">&nbsp;</td>
-				
-				<td class="labelText" nowrap><siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono2"/></td>
-				<td><html:text property="telefono2" style="width:150px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getTelefono2()%>" readOnly="<%=readonly%>"></html:text></td>
-				
-				<td width="30px">&nbsp;</td>
-				
-				<td class="labelText" nowrap><siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono3"/></td>
-				<td><html:text property="telefono3" style="width:150px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getMovil()%>" readOnly="<%=readonly%>"></html:text></td>
-			</tr>
-			
-			<tr>
-				<td class="labelText" nowrap><siga:Idioma key="censo.SolicitudIncorporacion.literal.fax1"/></td>
-				<td><html:text property="fax1" style="width:150px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getFax1()%>" readOnly="<%=readonly%>"></html:text></td>
-				
-				<td>&nbsp;</td>
-				
-				<td class="labelText" nowrap><siga:Idioma key="censo.SolicitudIncorporacion.literal.fax2"/></td>
-				<td><html:text property="fax2" style="width:150px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getFax2()%>" readOnly="<%=readonly%>"></html:text></td>
-				
-				<td>&nbsp;</td>
-						
-				<td class="labelText" nowrap><siga:Idioma key="censo.SolicitudIncorporacion.literal.email"/>&nbsp;(*)</td>
-				<td><html:text property="mail" style="width:200px" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getCorreoElectronico()%>" readOnly="<%=readonly%>"></html:text></td>
-			</tr>
-			
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
-		</table>
-	</siga:ConjCampos>
-		
-	<siga:ConjCampos leyenda="censo.consultaDatosBancarios.cabecera">
-		<table class="tablaCampos" align="left" border="0" style="width:80%">	
-			<tr align="left">		
-				<td class="labelText"><siga:Idioma key="censo.datosCuentaBancaria.literal.titular"/></td>
-				<td class="labelText">
-					<html:text property="titular" value="<%=titular%>" size="50" styleClass="<%=estiloBox%>" maxlength="100" readOnly="<%=readonly%>"></html:text>
-				</td>
-				<td colspan="2">
-					<table>
-					<tr>
-						<td class="labelText">
-							<siga:Idioma key="censo.tipoCuenta.cargo"/>
-							<html:checkbox property="cuentaCargo"  disabled="<%=readonly%>"/>
-						</td>	
-						<td class="labelText">
-							<siga:Idioma key="censo.tipoCuenta.abono"/>
-							<html:checkbox property="cuentaAbono" disabled="<%=readonly%>" onClick="validaAbonoSJCS()"/>
-						</td>
-						<td class="labelText">
-							<siga:Idioma key="censo.datosCuentaBancaria.literal.abonoSJCS"/>
-							<html:checkbox property="abonoSJCS" disabled="<%=readonly%>" onClick="validaAbonoSJCS()" />
-						</td>
-					</tr>
-					</table>
-				</td>
-			<tr>
-
-		
-			<!-- FILA -->
-			<tr>					
-				<td class="labelText" nowrap>Cuenta</td>	
-				<td class="labelText">
-				      <html:text size="4"  maxlength="4" property="cbo_Codigo"     value="<%=cbo_Codigo%>" 				styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" onChange="cargarBancos();"></html:text>
-					- <html:text size="4"  maxlength="4" property="codigoSucursal" value="<%=cuentaCodigoSucursal%>" 	styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"></html:text>
-					- <html:text size="2"  maxlength="2" property="digitoControl"  value="<%=cuentaDigitoControl%>" 	styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"></html:text>
-					- <html:text size="10" maxlength="10" property="numeroCuenta"  value="<%=cuentaNumeroCuenta%>" 		styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"></html:text></td>
-				
-				<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.banco"/></td>
-				<td class="labelText">
-					<input type="text" id="banco" style="width:400px;" class="boxConsulta" readonly></input>
-				</td>
-			</tr>
-		</table>
-	</siga:ConjCampos>
-	<c:if test="${ModoAnterior=='Editar'||ModoAnterior=='VER'||ModoAnterior=='editar' }">
+		return true;  
+	}	
 	
-	
-	<c:choose >
-		<c:when test="${mostrarSolicitudAlta==true}">
-		<siga:ConjCampos>
-		<c:choose >
+	function quitarBotonesAlta(){
+		<%if(!modoAnterior.equalsIgnoreCase("Editar")){%>
+			if(document.getElementById("tdBotonSolicitudPlanProfesional")){
+				jQuery("#tdBotonSolicitudPlanProfesional").attr('disabled', 'disabled'); //document.getElementById("tdBotonSolicitudPlanProfesional").disabled=true;
+			}
+			if(document.getElementById("tdBotonSolicitudSeguroUniversal")){
+				jQuery("#tdBotonSolicitudSeguroUniversal").attr('disabled', 'disabled'); //document.getElementById("tdBotonSolicitudSeguroUniversal").disabled=true;
+			}
+		<%}%>
+	}	
 
-		<c:when test="${isPosibilidadSolicitudAlta==true }">
-		<table class="tablaCampos" align="left" >
-		
-			<tr>
-				<td class="labelText" >
-				<html:button property="idButton" onclick="return accionSolicitarAltaAlterMutua();" styleClass="button">
-								<siga:Idioma key="general.boton.solicitarCompra" />
-							</html:button>
-				<siga:Idioma key="censo.SolicitudIncorporacionDatos.mutualidad.literal.planProfesional"/>
-				</td>
-				<c:choose>
-					<c:when test="${SolicitudIncorporacionForm.idSolicitudPlanProfesional==null||SolicitudIncorporacionForm.idSolicitudPlanProfesional==''}">
-						<td id="tdBotonSolicitudPlanProfesional" >
-						<%if(modoAnterior.equalsIgnoreCase("Editar")){ %>
-							<html:button property="idButton" onclick="return accionSolicitarAltaMutualidad('P');" styleClass="button">
-								<siga:Idioma key="general.boton.solicitarCompra" />
-							</html:button>
-						<%}else{ %>
-							<html:button property="idButton" styleClass="button">
-								<siga:Idioma key="general.boton.solicitarCompra" />
-							</html:button>
-						<%} %>
-						</td>
-						<td id="tdTextoNSolicitudPlanProfesional" style="display:none" class="labelText" >Nº&nbsp;Solicitud:</td>
-						<td id="tdIdSolicitudPlanProfesional" class="labelTextValor">&nbsp;</td> 
-						<td id="tdEstadoSolicitudPlanProfesional" class="labelTextValor" style="color:blue;">&nbsp;</td>
-						<td id="tdBotonEstadoSolicitudPlanProfesional" style="display:none" > 
-							<html:button property="idButton" onclick="return accionComprobarEstadoMutualidad('P');" styleClass="button">Comprobar Estado</html:button>
-						</td>
-						
-					</c:when>
-					<c:otherwise>
-						<td class="labelText" >Nº&nbsp;Solicitud:</td>
-						<td class="labelTextValor">
-						
-						<c:choose>
-						<c:when test="${SolicitudIncorporacionForm.idSolicitudAceptadaPlanProfesional!=null}">
-							<c:out value="${SolicitudIncorporacionForm.idSolicitudAceptadaPlanProfesional}" />
-						</c:when>
-						<c:otherwise>
-							<c:out value="${SolicitudIncorporacionForm.idSolicitudPlanProfesional}" />
-						</c:otherwise>
-						</c:choose>
-						
-						</td>
-						<td id="tdEstadoSolicitudPlanProfesional" class="labelTextValor" style="color:blue;"><c:out value="${SolicitudIncorporacionForm.estadoSolicitudPlanProfesional}" /></td>
-						<td id="tdBotonEstadoSolicitudPlanProfesional">
-							<html:button property="idButton" onclick="return accionComprobarEstadoMutualidad('P');" styleClass="button"> Comprobar Estado</html:button>
-						</td>
-					</c:otherwise>
-				</c:choose>
-				
-				
-			</tr>
-				<tr>
-				<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacionDatos.mutualidad.literal.seguroAccidentes"/></td>
-				
-				<c:choose>
-					<c:when test="${SolicitudIncorporacionForm.idSolicitudSeguroUniversal==null||SolicitudIncorporacionForm.idSolicitudSeguroUniversal==''}">
-						<td id="tdBotonSolicitudSeguroUniversal">
-						<%if(modoAnterior.equalsIgnoreCase("Editar")){ %>
-							<html:button id="botonSolicitarAltaSeguro" property="idButton"onclick="return accionSolicitarAltaMutualidad('S');" styleClass="button">
-								<siga:Idioma key="general.boton.solicitarCompra" />
-							</html:button>
-						<%}else{ %>
-							<html:button property="idButton" styleClass="button">
-								<siga:Idioma key="general.boton.solicitarCompra" />
-							</html:button>
-						<%} %>
-						</td>
-						<td id="tdTextoNSolicitudSeguroUniversal"  style="display:none" class="labelText" >Nº&nbsp;Solicitud:</td>
-						<td id="tdIdSolicitudSeguroUniversal" class="labelTextValor">&nbsp;</td>
-						<td id="tdEstadoSolicitudSeguroUniversal" class="labelTextValor" style="color:blue;">&nbsp;</td>
-						<td id="tdBotonEstadoSolicitudSeguroUniversal" style="display:none">
-							<html:button property="idButton" onclick="return accionComprobarEstadoMutualidad('S');" styleClass="button">Comprobar Estado</html:button>
-						</td>
-						<td colspan="2"></td>
-					</c:when>
-					<c:otherwise>
-						<td class="labelText" >Nº&nbsp;Solicitud:</td>
-						<td class="labelTextValor" >
-						<c:choose>
-						<c:when test="${SolicitudIncorporacionForm.idSolicitudAceptadaSeguroUniversal!=null}">
-							<c:out value="${SolicitudIncorporacionForm.idSolicitudAceptadaSeguroUniversal}" />
-						</c:when>
-						<c:otherwise>
-							<c:out value="${SolicitudIncorporacionForm.idSolicitudSeguroUniversal}" />
-						</c:otherwise>
-						</c:choose>
-						</td>
-						<td id="tdEstadoSolicitudSeguroUniversal" class="labelTextValor" style="color:blue;"><c:out value="${SolicitudIncorporacionForm.estadoSolicitudSeguroUniversal}" /></td>
-						<td id="tdBotonEstadoSolicitudSeguroUniversal">
-							<html:button property="idButton" onclick="return accionComprobarEstadoMutualidad('S');" styleClass="button">Comprobar Estado</html:button>
-						</td>
-						<td colspan="2"></td>
-					</c:otherwise>
-				</c:choose>
-			</tr>
-		</table>
-		</c:when>
-		<c:otherwise>
-		
-		<table>
-		
-			<tr>
-				<td class="labelText" ><siga:Idioma
-				 key="censo.SolicitudIncorporacionDatos.mutualidad.literal.planProfesional"/>
-				</td>
-				<td class="labelTextValor" style="color:red;"><c:out value="${motivoSolicitudAlta}" /></td>
-				
-			</tr>
-				<tr>
-				<td class="labelText" ><siga:Idioma
-				 key="censo.SolicitudIncorporacionDatos.mutualidad.literal.seguroAccidentes"/></td>
-				<td class="labelTextValor" style="color:red;"><c:out value="${motivoSolicitudAlta}" /></td>
-			</tr>
-		</table>
-		
-		
-		</c:otherwise>
-		</c:choose>
-		</siga:ConjCampos>	
-		</c:when>
-		<c:otherwise>
-		</c:otherwise>
-	</c:choose>
-</c:if>
-</div>
-
-<div id='divDocumentoAPresentar' style="overflow-y: scroll">
-
-<table id='documentoAPresentar' border='1' width='100%' cellspacing='0' cellpadding='0'>
-	<tr class = 'tableTitle'>
-		<td align='center' width='10%'><siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.estado"/></td>
-		<td align='center' width='90%'><siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.documento"/></td>
-	</tr>
-
-		<% if (documentos != null) {
-			 for (int i = 0; i < documentos.size(); i++){ 
-			 		Vector v = (Vector) documentos.get(i);
-			 		if (v != null) {
-			 	  	CenDocumentacionSolicitudInstituBean documento = (CenDocumentacionSolicitudInstituBean) v.get(0); 
-						String estado = (String) v.get(1);
-		%>
-		   <tr class="listaNonEdit">
-		   		<td align="center">
-		   			<input type="hidden" id="oculto<%=(i+1)%>_1" value="<%=documento.getDocumentacionSolicitud().getIdDocumentacion()%>">
-		   			<input type="checkbox" <%if (editar.equalsIgnoreCase("false")) { out.print(" disabled "); } %><%if(estado.equalsIgnoreCase("true"))out.print("checked");%>>
-		   		</td>
-		   		<td>
-		   			<%if(documento.getDocumentacionSolicitud().getDescripcion()!=null)out.print(UtilidadesString.mostrarDatoJSP(documento.getDocumentacionSolicitud().getDescripcion()));%>
-		   		</td>
-		   </tr>
-	  <%			} // if
-	   		} // for
-	    }else{%>
-	 		<br>
-	   		 <p class="titulitos" style="text-align:center" >
-	   		 	<!-- PENDIENTE No tiene documentos adjuntos. Pendiente de Validar-->
-	   		 	<siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.aviso"/>
-	   		 </p>
-	 		<br>
-	  <%}%>
-	</tr>
-	</table>
-	
-	</div>
-
-	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-	<%if (editar!=null && !editar.equalsIgnoreCase("false")) {%>
-		<siga:ConjBotonesAccion botones="G,V" clase="botonesDetalle" />
-	<%}else{%>
-		<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
-	<%}%>
-	<!-- FIN: BOTONES REGISTRO -->
-	</html:form>
-	
-	<!-- INICIO: SCRIPTS BOTONES -->
-	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
-	<script language="JavaScript">
-
-	
-
-	function accionVolver() {		
+	function accionVolver(){		
 		document.forms[0].action="./CEN_SolicitudesIncorporacion.do";	
 		document.forms[0].target="mainWorkArea";
 		document.forms[0].submit();
 	}
-
  
 	function accionRestablecer(){
 		if(confirm('<siga:Idioma key="messages.confirm.cancel"/>')) {
@@ -1135,8 +1233,7 @@
 		}
 	}
 	
-	function refrescarLocal()
-	{
+	function refrescarLocal(){
 		document.forms[0].modo.value = "abrir";
 		document.forms[0].target = "mainPestanas";
 		document.forms[0].submit();
@@ -1194,9 +1291,7 @@
 		//top.cierraConParametros("MODIFICADO");
 	}
 	
-	function accionSolicitarAltaAlterMutua()
-	{
-		
+	function accionSolicitarAltaAlterMutua(){
 		document.AlterMutuaForm.modo.value="nuevo";
 		
 		document.AlterMutuaForm.domicilio.value  = document.SolicitudIncorporacionForm.domicilio.value;
@@ -1234,8 +1329,7 @@
 */
 	}
 	
-	function accionSolicitarAltaMutualidad(idTipoSolicitud)
-	{
+	function accionSolicitarAltaMutualidad(idTipoSolicitud){
 		
 		document.MutualidadForm.modo.value="nuevo";
 		document.MutualidadForm.tipoIdentificacion.value = document.SolicitudIncorporacionForm.tipoIdentificacion.options[document.SolicitudIncorporacionForm.tipoIdentificacion.selectedIndex].text;
@@ -1294,8 +1388,8 @@
 	    	actualizaDatosMutualidad(idTipoSolicitud,resultado);
 	    }
 	}
-	function actualizaDatosMutualidad(idTipoSolicitud,resultado)
-	{
+	
+	function actualizaDatosMutualidad(idTipoSolicitud,resultado){
 		document.MutualidadForm.idSolicitud.value = resultado[0];
 		document.MutualidadForm.idSolicitudAceptada.value = resultado[1];
 		document.MutualidadForm.idEstado.value = resultado[3];
@@ -1305,9 +1399,9 @@
 			else
 				document.getElementById("tdIdSolicitudPlanProfesional").innerHTML = resultado[0];
 	    	document.getElementById("tdEstadoSolicitudPlanProfesional").innerHTML = resultado[2];
-	    	document.getElementById("tdBotonSolicitudPlanProfesional").style.display="none";
-	    	document.getElementById("tdBotonEstadoSolicitudPlanProfesional").style.display="";
-	    	document.getElementById("tdTextoNSolicitudPlanProfesional").style.display="";
+	    	jQuery("#tdBotonSolicitudPlanProfesional").hide();
+	    	jQuery("#tdBotonEstadoSolicitudPlanProfesional").show();
+	    	jQuery("#tdTextoNSolicitudPlanProfesional").show();
 	    	
 		}else{
 			if(resultado[1]!='0'&&resultado[1]!='')
@@ -1315,15 +1409,13 @@
 			else
 				document.getElementById("tdIdSolicitudSeguroUniversal").innerHTML = resultado[0];
 	    	document.getElementById("tdEstadoSolicitudSeguroUniversal").innerHTML = resultado[2];
-	    	document.getElementById("tdBotonSolicitudSeguroUniversal").style.display="none";
-	    	document.getElementById("tdBotonEstadoSolicitudSeguroUniversal").style.display="";
-	    	document.getElementById("tdTextoNSolicitudSeguroUniversal").style.display="";
+	    	jQuery("#tdBotonSolicitudSeguroUniversal").hide();
+	    	jQuery("#tdBotonEstadoSolicitudSeguroUniversal").show();
+	    	jQuery("#tdTextoNSolicitudSeguroUniversal").show();
 		}
 	}
 	
-	
-	function accionComprobarEstadoMutualidad(idTipoSolicitud)
-	{
+	function accionComprobarEstadoMutualidad(idTipoSolicitud){
 		 if(idTipoSolicitud=='P'){
 			 if(document.MutualidadForm.idSolicitud.value==''){
 				document.MutualidadForm.idSolicitud.value = document.SolicitudIncorporacionForm.idSolicitudPlanProfesional.value;
@@ -1351,43 +1443,87 @@
 			if(ruta && ruta.length>0 && confirm('¿Desea descargar el documento asociado a la solicitud?')){
 				
 				var formu=document.createElement("<form method='POST' name='descargar'  action='/SIGA/ServletDescargaFichero.svrl' target='submitArea'>");
-				formu.appendChild(document.createElement("<input type='hidden' name='rutaFichero'   value=''/>"));
-				formu.appendChild(document.createElement("<input type='hidden' name='nombreFichero'   value=''/>"));
-				formu.appendChild(document.createElement("<input type='hidden' name='accion'   value=''/>"));
+				formu.appendChild(document.createElement("<input type='hidden' name='rutaFichero'   value='' />"));
+				formu.appendChild(document.createElement("<input type='hidden' name='nombreFichero'   value='' />"));
+				formu.appendChild(document.createElement("<input type='hidden' name='accion'   value='' />"));
 				document.appendChild(formu);
 				formu.rutaFichero.value=ruta;
 				formu.nombreFichero.value='Solicitud.pdf';
 				formu.accion.value = "";
-				formu.submit();
-				
-			}
-			
+				formu.submit();				
+			}			
 		}
-		
 	}
-	function accionComprobarEstadoMutualista()
-	{
+	
+	function accionComprobarEstadoMutualista(){
 		document.MutualidadForm.idSolicitudAceptada.value =document.SolicitudIncorporacionForm.idSolicitudAceptadaPlanProfesional.value;
 		document.MutualidadForm.modo.value = "actualizaEstadoMutualista";
 		document.MutualidadForm.numeroIdentificacion.value = document.getElementById('numeroIdentificacionBBDD').value;
 		document.MutualidadForm.fechaNacimiento.value  = document.getElementById('fechaNacimientoBBDD').value;
 		var resultado = ventaModalGeneral(document.MutualidadForm.name,"0",'<siga:Idioma	key="censo.mutualidad.aviso.espera" />');
-	
 	}
 
 	quitarBotonesAlta();
 	
-	</script>
+	var primeravez=true;
+	function cargaPais(valor){      		
+		<%if(!readonly){%>
+			if (valor!=null && valor!="" && valor!=<%=ClsConstants.ID_PAIS_ESPANA%>) {
+				jQuery("#provincia_literal").hide();
+				jQuery("#provincia_valor").hide();
+				jQuery("#poblacionEspanola").hide();
+				jQuery("#cpEspanol").hide();
+				jQuery("#cpExtranjero").show();
+				jQuery("#poblacionExtranjera").show();
+				if (primeravez) {
+					primeravez=false;
+					cargaInicial (20, 20, 73);
+				}
+				else {
+					document.getElementById("CPExt").value="";
+					document.getElementById("poblacionExt").value="";
+				}
+	       } else {
+				jQuery("#provincia_literal").show();
+				jQuery("#provincia_valor").show();
+				jQuery("#poblacionEspanola").show();
+				jQuery("#cpEspanol").show();
+				jQuery("#cpExtranjero").hide();
+				jQuery("#poblacionExtranjera").hide();	    	   
+				if (primeravez) {
+					primeravez=false;
+					cargaInicial (20, 20, 73);
+				}
+				else {
+					document.getElementById("CP").value="";
+					cambiaCodigoPostal();					
+				}
+	       }
+			
+		<%}else{%>
+			if (valor!=null && valor!="" && valor!=<%=ClsConstants.ID_PAIS_ESPANA%>) {
+				jQuery("#provincia_literal").hide();
+				jQuery("#provincia_valor").hide();
+				jQuery("#poblacionEspanola").hide();
+				jQuery("#cpEspanol").hide();
+				jQuery("#cpExtranjero").show();
+				jQuery("#poblacionExtranjera").show();
+	       } else {
+	    	   	jQuery("#provincia_literal").show();
+				jQuery("#provincia_valor").show();
+				jQuery("#poblacionEspanola").show();
+				jQuery("#cpEspanol").show();
+				jQuery("#cpExtranjero").hide();
+				jQuery("#poblacionExtranjera").hide();	
+	       }			
+		<%}%>
+	}	
 	
-	<!-- FIN: SCRIPTS BOTONES -->
-	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
+	// --------------------------------------------------------------------------------------------------------------
+	//		BANCOS
+	// --------------------------------------------------------------------------------------------------------------
 	
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>	
-</body>
-</html>
-
-<script>	
-	function cargarBancos() {
+	function cargarBancos(){
 		var idBanco = SolicitudIncorporacionForm.cbo_Codigo.value;	
 		if (idBanco!=undefined&&idBanco!="") {
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
@@ -1410,4 +1546,498 @@
 			SolicitudIncorporacionForm.banco.value="";
 		}
 	}
+	
+	// --------------------------------------------------------------------------------------------------------------
+	//		FILTRO DE POBLACIONES
+	// --------------------------------------------------------------------------------------------------------------
+	
+	var bControl=false;	
+	var bControlKey=false;
+	var bFocoCombo=false;
+	var bFocoFiltro=false;	
+	var cteControl="controlFiltro";
+	var controlCP="";
+	var controlFiltro=cteControl; 
+	var cteSeleccionar="<siga:Idioma key='general.combo.seleccionar'/>";
+	var msgControl="";
+	var numLineasSelectPoblaciones=20; // Siempre debe ser menor o igual que numMaximoSelectPoblaciones
+	var numMaximoSelectPoblaciones=20; // Siempre debe ser mayor o igual que numLineasSelectPoblaciones
+	var numPoblaciones=1;
+	var tiempoEspera=1000;
+	var txtTabulador="";
+	var valorGuiones="";	
+	
+	// Funcion para cargar el autocomplete 
+	function cargaInicial (numLineasSelectPoblacionesAux, numMaximoSelectPoblacionesAux, numeroGuiones) {		
+		//msgControl=msgControl+"cargaInicial("+numLineasSelectPoblacionesAux+","+numMaximoSelectPoblacionesAux+","+numeroGuiones+")\n";alert(msgControl);
+		
+		if (numLineasSelectPoblacionesAux>0) {
+			numLineasSelectPoblaciones=numLineasSelectPoblacionesAux;
+		}
+		
+		if (numMaximoSelectPoblacionesAux>0) {
+			numMaximoSelectPoblaciones=numMaximoSelectPoblacionesAux;
+		}
+		
+		if (numeroGuiones>0) {
+			valorGuiones="";
+			while(valorGuiones.length<numeroGuiones) {
+				valorGuiones=valorGuiones+"-";
+			}
+		}
+		
+		// Obtiene los elementos que vamos a utilizar
+		var elementoPoblacionSelect = jQuery("#poblacion_select");
+		var elementoPoblacionDiv = jQuery("#poblacion_div");
+		
+		var pos = elementoPoblacionSelect.offset();             
+		elementoPoblacionSelect.css("position", "absolute");             
+		elementoPoblacionSelect.css("zIndex", 9999);             
+		elementoPoblacionSelect.offset(pos);
+		elementoPoblacionDiv.hide(); 
+	}	
+	
+	// Cambia el codigo postal
+	function cambiaCodigoPostal() {
+		//msgControl=msgControl+"cambiaCodigoPostal()\n";alert(msgControl);
+		
+		// Obtiene los elementos que vamos a utilizar
+		var elementoPoblacionSelect = jQuery("#poblacion_select");
+		var elementoPoblacionDiv 	= jQuery("#poblacion_div");
+		var elementoPoblacionInput 	= document.getElementById("poblacion_input");		
+		var elementoPoblacionHidden = document.getElementById("poblacion");
+		var elementoProvinciaHidden = document.getElementById("provincia");
+		var elementoProvincia 		= document.getElementById("provincia_input");
+		var codigoPostal	 		= document.getElementById("CP").value;			
+		
+		elementoPoblacionHidden.value="";
+		elementoPoblacionInput.value="";
+		elementoPoblacionSelect[0].innerHTML="";
+		elementoPoblacionDiv.hide();
+		elementoProvinciaHidden.value="";
+		elementoProvincia.value="";			
+		controlFiltro=cteControl;
+	}
+	
+	// Sea realiza despues de cargar la letra del cp
+	function onKeyUpCP() {
+		//msgControl=msgControl+"onKeyUpCP()\n";alert(msgControl);
+		
+		if (controlCP!=document.getElementById("CP").value) {
+			cambiaCodigoPostal(); 
+			actualizarPoblacionesCP();		
+		}
+	}	
+	
+	
+	// Sea realiza antes de cargar la letra del cp
+	function onKeyDownCP() {
+		//msgControl=msgControl+"onKeyDownCP()\n";alert(msgControl);
+		
+		controlCP = document.getElementById("CP").value;	
+	}	
+	
+	// Selecciona un elemento del combo
+	function onChangePoblacionSelect() {
+		//msgControl=msgControl+"onChangePoblacionSelect()\n";alert(msgControl);	
+		
+		// Obtiene los elementos que vamos a utilizar
+		var elementoPoblacionSelect = jQuery("#poblacion_select");
+		var elementoPoblacionInput 	= document.getElementById("poblacion_input");		
+		var elementoPoblacionHidden = document.getElementById("poblacion");
+		var elementoProvinciaHidden = document.getElementById("provincia");
+		var elementoProvinciaInput 	= document.getElementById("provincia_input");
+		var elementoCP 				= document.getElementById("CP");
+		
+		// Vamos a mostrar el elemento seleccionado del combo en el filtro
+		var poblacionSelected=elementoPoblacionSelect[0].selectedIndex;
+		
+		// 0: Si ha seleccionado el elemento "--Seleccionar"
+		if (poblacionSelected<0) { // -1: Si no hay nada seleccionado
+			elementoPoblacionInput.value="";
+			elementoPoblacionHidden.value="";
+			
+		} else {					
+			// Obtengo el valor de la poblacion
+			var valorPoblacionSelect = elementoPoblacionSelect.val(); 
+			if (valorPoblacionSelect!="") { // Seleccion y guiones tienen valor ""
+				var arrayDatos = valorPoblacionSelect.split("#"); // Otras poblaciones tienen valor "IdPoblacion#IdProvincia#NombreProvincia"
+				elementoPoblacionHidden.value=arrayDatos[0];
+				elementoProvinciaHidden.value=arrayDatos[1];
+				elementoProvinciaInput.value=arrayDatos[2];
+				elementoPoblacionInput.value=elementoPoblacionSelect[0].options[poblacionSelected].text;
+			}
+			else {
+				elementoPoblacionHidden.value="";
+				elementoPoblacionInput.value="";
+				
+				if (elementoCP.value=="") {
+					elementoProvinciaHidden.value="";
+					elementoProvinciaInput.value="";
+				}
+			}
+		}
+	}
+	
+	// Pulsa una opcion del combo
+	function onClickPoblacionSelect() {
+		//msgControl=msgControl+"onClickPoblacionSelect()\n";alert(msgControl);
+		
+		// Obtiene los elementos que vamos a utilizar
+		var elementoPoblacionInput = document.getElementById("poblacion_input");
+		
+		bControl=true; // Inhabilita onFocusPoblacionInput()
+		elementoPoblacionInput.focus(); //Invoca onBlurPoblacionSelect() + onFocusPoblacionInput()		 
+	}
+	
+	// Este método es necesario para cuando va a realizar una accion en el combo sin tener el foco
+	function onMouseDownPoblacionSelect() {
+		//msgControl=msgControl+"onMouseDownPoblacionSelect()\n";alert(msgControl);
+		
+		// Obtiene los elementos que vamos a utilizar
+		var elementoPoblacionSelect = jQuery("#poblacion_select");
+		
+		// Para hacer esto tiene que tener el foco poblacion_input
+		if (bFocoFiltro) {			
+			bFocoCombo=true;		
+			bControl=true; // Inhabilita onBlurPoblacionInput()
+			elementoPoblacionSelect.focus(); //Invoca onBlurPoblacionInput()
+		}
+	}		
+	
+	// Se realiza cuando abandona el foco del combo
+	function onBlurPoblacionSelect() {	
+		//msgControl=msgControl+"onBlurPoblacionSelect()\n";alert(msgControl);		
+		
+		// Obtiene los elementos que vamos a utilizar
+		var elementoPoblacionDiv = jQuery("#poblacion_div");
+		
+		// Oculto el combo y recalculo el valor del filtro
+		bFocoCombo=false;
+		elementoPoblacionDiv.hide();
+		onChangePoblacionSelect();
+	}	
+	
+	// Se realiza cuando pulsa una letra en el combo
+	function onKeyDownPoblacionSelect(e) {
+		var tecla = (document.all) ? e.keyCode : e.which;
+		//msgControl=msgControl+"onKeyDownPoblacionSelect("+tecla+")\n";alert(msgControl);
+		
+		// Obtiene los elementos que vamos a utilizar
+		var elementoPoblacionInput = document.getElementById("poblacion_input");
+		var elementoPoblacionSelect = jQuery("#poblacion_select");
+		
+		switch(tecla) {		
+	  		case 8: //BACKSPACE: Anulamos la acción del retroceso en el combo
+	  			e.returnValue = false; 
+	  			e.cancelBubble = true; 
+	  			return false;		  		
+	  			break;
+		
+			case 13: //INTRO: Paso el foco al filtro
+				bControl=true; // Inhabilita onFocusPoblacionInput()				
+				elementoPoblacionInput.focus(); //Invoca onBlurPoblacionSelect() + onFocusPoblacionInput()
+				break;
+				
+			case 27: //ESC: Paso el foco al filtro
+				elementoPoblacionSelect.val([]); // Elimino los elementos seleccionados del combo
+				
+				bControl=true; // Inhabilita onFocusPoblacionInput()				
+				elementoPoblacionInput.focus(); //Invoca onBlurPoblacionSelect() + onFocusPoblacionInput()
+				break;							
+  		}		
+	}
+	
+	// Necesario para firefox
+	function onKeyPressPoblacionSelect(e) {
+		var tecla = (document.all) ? e.keyCode : e.which; 
+		//msgControl=msgControl+"onKeyPressPoblacionSelect("+tecla+")\n";alert(msgControl);
+		
+		switch(tecla) {			
+		  	case 8: //BACKSPACE: Anulamos la acción del retroceso en el combo
+		  		e.returnValue = false; 
+		  		e.cancelBubble = true; 
+		  		return false;		  		
+  				break;
+  		}		
+	}									
+	
+	// Se realiza cuando obtiene el foco del filtro
+	function onFocusPoblacionInput() {
+		//msgControl=msgControl+"onFocusPoblacionInput()\n";alert(msgControl);
+		bFocoFiltro=true;
+		
+		// Obtiene los elementos que vamos a utilizar
+		var elementoPoblacionInput = document.getElementById("poblacion_input");
+		
+		// Un control y actualizo el combo segun el contenido del filtro
+		if (bControl) {
+			bControl=false;
+		} else {
+			actualizarPoblacionesCPPoblacion(elementoPoblacionInput.value, true);
+		}
+	}			
+		
+	// Se realiza cuando abandona el foco del filtro
+	function onBlurPoblacionInput() {
+		//msgControl=msgControl+"onBlurPoblacionInput()\n";alert(msgControl);
+		bFocoFiltro=false;
+		
+		// Obtiene los elementos que vamos a utilizar
+		var elementoPoblacionDiv = jQuery("#poblacion_div");
+		
+		// Un control, ocultro el filtro y calculo el valor final del filtro
+		if (bControl) {
+			bControl=false;			
+		} else {
+			elementoPoblacionDiv.hide();
+			onChangePoblacionSelect();						
+		}
+	}
+	
+	// Se realiza cuando termina de cargar la letra en el filtro
+	function onKeyUpPoblacionInput() {
+		//msgControl=msgControl+"onKeyUpPoblacionInput()\n";alert(msgControl);
+		
+		// Obtiene los elementos que vamos a utilizar
+		var elementoPoblacionInput = document.getElementById("poblacion_input");
+		
+		var valorFiltro = elementoPoblacionInput.value;
+		
+		// Un control y actualizo el combo segun el contenido del filtro
+		if (bControlKey) {
+			bControlKey=false;
+			setTimeout(function(){controlarPoblacion(valorFiltro);},tiempoEspera,"Javascript");
+		}
+	}	
+	
+	// Sea realiza antes de cargar la letra en el filtro
+	function onKeyDownPoblacionInput(e) {		
+		var tecla = (document.all) ? e.keyCode : e.which;
+		//msgControl=msgControl+"onKeyDownPoblacionInput("+tecla+")\n";alert(msgControl);
+		
+		// Obtiene los elementos que vamos a utilizar
+		var elementoPoblacionInput = document.getElementById("poblacion_input");
+		var elementoPoblacionDiv = jQuery("#poblacion_div");
+		var elementoPoblacionSelect = jQuery("#poblacion_select");
+		
+		txtTabulador="";
+		
+		switch(tecla) {		  				
+  			case 9: //TABULADOR
+  				txtTabulador=elementoPoblacionInput.value;
+  				elementoPoblacionDiv.hide();   				
+  				break;  
+  				
+			case 13: //INTRO: Paso el foco al filtro
+				elementoPoblacionDiv.hide();
+				break;  				
+  				
+			case 27: //ESC: Paso el foco al filtro
+				elementoPoblacionSelect.val([]); // Elimino los elementos seleccionados del combo
+				elementoPoblacionDiv.hide();
+				elementoPoblacionInput.value="";
+				break;  
+				
+			case 38: //CURSOR ARRIBA
+			case 40: //CURSOR ABAJO
+				if (numPoblaciones>1) {					
+					bFocoCombo=true;		
+					bControl=true;  // Inhabilita onBlurPoblacionInput()
+					elementoPoblacionDiv.show();
+					elementoPoblacionSelect.focus(); //Invoca onBlurPoblacionInput()					
+				}
+  				break;					
+  				
+  			default:
+  				bControlKey=true; // Inhabilita onKeyUpPoblacionInput() 
+  				break;				
+  		}
+	}		
+	
+	// Controla el estado tras un tiempo de espera
+	function controlarPoblacion(filtroAntiguo) {
+		//msgControl=msgControl+"controlPoblacion("+filtroAntiguo+")\n";alert(msgControl);
+
+		
+		// Obtiene los elementos que vamos a utilizar
+		var elementoPoblacionInput = document.getElementById("poblacion_input");
+		
+		if (filtroAntiguo==elementoPoblacionInput.value || filtroAntiguo==txtTabulador) {
+			actualizarPoblacionesCPPoblacion(filtroAntiguo, true);
+		}
+	}			
+	
+	// Control del codigo postal
+	function validaCP(codigoPostal){
+		//msgControl=msgControl+"validaCP("+codigoPostal+")\n";alert(msgControl);
+		
+		if (codigoPostal.length!=5) {
+			return false;
+		}
+		
+		var strProvincia = codigoPostal.substring(0, 2);
+		var intProvincia = parseInt(strProvincia,10);			
+		var tresUltimosDigitos = codigoPostal.substring(2);
+		
+		if (tresUltimosDigitos=="000" || intProvincia<1 || intProvincia>52) {
+			return false;
+		}
+		
+		return true;
+	}	
+			 	
+	// Actualizo el combo segun el contenido del filtro y del codigo postal
+	function actualizarPoblacionesCPPoblacion(valorPoblacion, bMuestraDiv){
+		//msgControl=msgControl+"actualizarPoblacionesCPPoblacion("+valorPoblacion+", "+bMuestraDiv+")\n";alert(msgControl);
+		
+		var valorCP = document.getElementById("CP").value;
+		
+		//if (valorPoblacion.length>=3 && (valorCP==""||validaCP(valorCP))) {
+		if (valorPoblacion.length>=3 && validaCP(valorCP)) {	 
+			if (controlFiltro!=valorPoblacion) {			
+				controlFiltro=valorPoblacion;								
+		 		
+				jQuery.ajax({ 
+					type: "POST",
+					url: "/SIGA/FAC_ComprobarPoblacion.do?modo=getAjaxPoblacionesCPFiltro",				
+					data: "valorCP="+valorCP+"&valorPoblacion="+valorPoblacion+"&valorGuiones="+valorGuiones+"&numMaxPoblaciones="+numMaximoSelectPoblaciones,
+					dataType: "json",
+					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+					success: function(json){					
+							
+						// Con esta comparacion y por hacer AJAX, nos evitamos hacer codigo
+						if (valorPoblacion==controlFiltro) {					
+							
+							// Recupera el numero de poblaciones
+							numPoblaciones = json.numPoblaciones;	
+							
+							var elementoDiv = jQuery("#poblacion_div");						
+							
+							// Pinta el combo con el contenido devuelto por ajax
+							var htmlFinal=elementoDiv[0].innerHTML;
+							htmlFinal.replace("\"","'");
+							htmlFinal=htmlFinal.substring(0, htmlFinal.indexOf('>')+1);
+							elementoDiv[0].innerHTML=htmlFinal+json.htmlPoblaciones[0]+"</SELECT>";
+							
+							var elementoCombo = jQuery("#poblacion_select");
+	    	        	    
+				   	    	// Si solo tiene el elemento de seleccion, oculta el combo
+			        		if (numPoblaciones<2) {
+			        			elementoDiv.hide();
+		        	
+			        		} else {    	    		      
+			       				// Cargo el numero de lineas que tiene que mostrar el combo
+	    	        			if (numPoblaciones>numLineasSelectPoblaciones) {
+	    	        				elementoCombo[0].size=numLineasSelectPoblaciones;
+	    	        			} else {
+	    	        				elementoCombo[0].size=numPoblaciones;
+	    	        			}
+			    			
+	    	        			// Si solo hay un elemento, quitando el de seleccion, lo selecciono
+			    				if (numPoblaciones==2) {
+			    					elementoCombo[0].options[1].selected=true;
+			    				}
+			    				
+			    				// Control de si se debe mostrar el combo
+		    					if (bMuestraDiv&&bFocoFiltro) {
+		    						elementoDiv.show();
+		    					}
+	    					}   		    	
+			        		
+							// Controlo que haya perdido el foco del filtro y no sea la carga inicial
+							if (bMuestraDiv && !bFocoFiltro) {
+								onChangePoblacionSelect();
+							}
+						}				    	       		       				       				    		
+						fin();
+					},
+					error: function(e){
+						alert('Error de comunicación: ' + e);
+						fin();
+					}
+				});
+				
+			// Si no ha cambiado el filtro, lo muestro cuando tenga elementos
+			} else {
+				if (numPoblaciones>1 && bMuestraDiv) {
+					jQuery("#poblacion_div").show();	
+				}		
+			} 
+		} else {
+			jQuery("#poblacion_div").hide();
+		}	
+	}	
+	
+	// Actualizo el combo segun el contenido del codigo postal
+	function actualizarPoblacionesCP(){
+		//msgControl=msgControl+"actualizarPoblacionesCP()\n";alert(msgControl);
+
+		var valorCP = document.getElementById("CP").value;	
+		var elementoPoblacionInput = document.getElementById("poblacion_input");
+		
+		if (validaCP(valorCP) && controlFiltro!=valorCP) {			
+			controlFiltro=valorCP;					
+			jQuery("#poblacion_input").removeAttr('disabled');
+			elementoPoblacionInput.className="box";
+	 		
+			jQuery.ajax({ 
+				type: "POST",
+				url: "/SIGA/FAC_ComprobarPoblacion.do?modo=getAjaxPoblacionesCP",				
+				data: "valorCP="+valorCP,
+				dataType: "json",
+				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+				success: function(json){							
+						
+					// Recupera el numero de poblaciones
+					numPoblaciones = json.numPoblaciones;	
+					
+					var elementoPoblacionDiv = jQuery("#poblacion_div");						
+					
+					// Pinta el combo con el contenido devuelto por ajax
+					var htmlFinal=elementoPoblacionDiv[0].innerHTML;
+					htmlFinal.replace("\"","'");
+					htmlFinal=htmlFinal.substring(0, htmlFinal.indexOf('>')+1);
+					elementoPoblacionDiv[0].innerHTML=htmlFinal+json.htmlPoblaciones[0]+"</SELECT>";
+					
+					// Obtiene los elementos que vamos a utilizar
+					var elementoPoblacionSelect = jQuery("#poblacion_select");
+					elementoPoblacionInput = document.getElementById("poblacion_input");
+					
+					document.getElementById("provincia").value = json.idProvinciaCp;
+					document.getElementById("provincia_input").value = json.nombreProvinciaCp;						
+   	        	    
+		   	    	// Si solo tiene el elemento de seleccion, oculta el combo
+	        		if (numPoblaciones<2) {
+	        			elementoPoblacionDiv.hide();
+        		        		
+	       			} else {
+	       				if (numPoblaciones==2) {
+	    					elementoPoblacionSelect[0].options[1].selected=true;	 
+	    					elementoPoblacionInput.value=elementoPoblacionSelect[0].options[elementoPoblacionSelect[0].selectedIndex].text;
+	    					elementoPoblacionDiv.hide();
+		        		
+		       			} else {    	    		      
+		       				// Cargo el numero de lineas que tiene que mostrar el combo
+	   	        			if (numPoblaciones>numLineasSelectPoblaciones)
+	   	        				elementoPoblacionSelect[0].size=numLineasSelectPoblaciones;
+	   	        			else
+	   	        				elementoPoblacionSelect[0].size=numPoblaciones;    	        				
+		    				
+	   						elementoPoblacionDiv.show();
+	   					}
+	       			}
+					fin();
+				},
+				error: function(e){
+					alert('Error de comunicación: ' + e);
+					fin();
+				}
+			});
+		} 
+		else {
+			jQuery("#poblacion_input").attr('disabled', 'disabled');
+			elementoPoblacionInput.className="boxDisabled";
+		}			
+	}		
 </script>
