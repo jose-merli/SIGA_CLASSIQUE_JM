@@ -56,7 +56,7 @@ public class ResolucionesAsigna {
 			Writer fw = new FileWriter(resolFile);
 			BufferedWriter bw = new BufferedWriter(fw);
 			
-			File logFile = DefinirRemesaResolucionesCAJGAction.getLogFile(resolFile, nombreFichero);
+			File logFile = DefinirRemesaResolucionesCAJGAction.getLogFile(resolFile.getParentFile(), nombreFichero);
 			Writer logFw = new FileWriter(logFile);
 			BufferedWriter logBw = new BufferedWriter(logFw);
 			
