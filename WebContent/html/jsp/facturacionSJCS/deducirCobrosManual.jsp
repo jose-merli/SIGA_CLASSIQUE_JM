@@ -63,7 +63,6 @@ color:black;
 		<input type="hidden" name="idsParaEnviar" value="" />
 		
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
 	</html:form>	
 		
@@ -154,7 +153,7 @@ color:black;
 			document.forms[0].modo.value="cerrarPagoManual";
 			
 			// con pantalla de espera
-			document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.factSJCS.procesandoPago';
+			window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.factSJCS.procesandoPago';
 		}		
 
 		//Asociada al boton Cerrar

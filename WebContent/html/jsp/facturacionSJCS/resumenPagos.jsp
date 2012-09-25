@@ -121,7 +121,7 @@
 					 {
 					 	f.modo.value="descargaFicheros";
 					 	f.target = "submitArea";
-					 	document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.factSJCS.procesandoInforme';
+					 	window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.factSJCS.procesandoInforme';
 					 }
 			}
 

@@ -39,7 +39,7 @@
 <!---------- HEAD ---------->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -224,7 +224,7 @@
 			sub ();
 			
 			//obteniendo los checks
-			var oCheck = document.frames.resultado.document.getElementsByName
+			var oCheck =  window.frames.resultado.document.getElementsByName
 			    ("chkInc");
 			
 			//separando checks activados de desactivados
@@ -249,7 +249,7 @@
 		   	document.forms[0].modo.value = 'editar';
 			var f = document.forms[0].name;	
 			document.forms[0].target = "submitArea2";
-		    document.frames.submitArea2.location = 
+			 window.frames.submitArea2.location = 
 		        '/SIGA/html/jsp/general/loadingWindowOpener.jsp?formName=' +
 		        f + '&msg=messages.wait';
 		    

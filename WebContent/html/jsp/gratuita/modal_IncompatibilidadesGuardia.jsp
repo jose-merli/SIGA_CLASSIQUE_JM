@@ -38,7 +38,7 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -216,13 +216,13 @@
 			}else{
 			  var datos = "";
 			  var encontrarCheck="0";
-			  var ele = document.frames.resultado.document.getElementsByName("chkGuardia");
+			  var ele =  window.frames.resultado.document.getElementsByName("chkGuardia");
 				
 				for (i = 0; i < ele.length; i++) {
 					if (ele[i].checked) {
 					
-					  datos = datos + document.frames.resultado.document.getElementById("oculto" + ele[i].value + "_1").value + "#_#" + 	// idTurno Incompatible
-							          document.frames.resultado.document.getElementById("oculto" + ele[i].value + "_2").value + "#;#" ;		// idGuardia Incompatible
+					  datos = datos +  window.frames.resultado.document.getElementById("oculto" + ele[i].value + "_1").value + "#_#" + 	// idTurno Incompatible
+					  		  window.frames.resultado.document.getElementById("oculto" + ele[i].value + "_2").value + "#;#" ;		// idGuardia Incompatible
 					  encontrarCheck="1";				  
 					}
 					

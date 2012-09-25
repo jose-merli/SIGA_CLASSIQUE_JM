@@ -73,7 +73,7 @@
   <!---------------------------------------------------------->
   
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 	<style type="text/css">
 	    .box {
 	      font-family: <%=src.get("font.style")%>;
@@ -127,10 +127,10 @@
       //segun este el campo activo
       if (DefinirHitosFacturablesGuardiasForm.radioA[0].checked) {
         document.getElementById("hitoPrecio[4]").value="0";
-        document.getElementById("hitoPrecio[4]").disabled=true;
+        jQuery("#hitoPrecio[4]").attr("disabled","disabled");
       } else {
         document.getElementById("hitoPrecio[2]").value="0";
-        document.getElementById("hitoPrecio[2]").disabled=true;
+        jQuery("#hitoPrecio[2]").attr("disabled","disabled");
       }
       with (DefinirHitosFacturablesGuardiasForm) {
         target = "submitArea";
@@ -169,6 +169,7 @@
     
     function consultarAsist (importeMax)
     {
+      alert("llega");
       DefinirHitosFacturablesGuardiasForm.modo.value="consultar";
       DefinirHitosFacturablesGuardiasForm.tipoConsulta.value="asistencia";
       DefinirHitosFacturablesGuardiasForm.importeMax.value=importeMax;
@@ -651,9 +652,10 @@
       if (DefinirHitosFacturablesGuardiasForm.checkC.checked)
       {
         //Check de Aplicar tipos
-        DefinirHitosFacturablesGuardiasForm.chNoGuardias.disabled=false;
+		jQuery("#chNoGuardias").removeAttr("disabled");
         //Check de Maximos de actuaciones fuera de guardia
-        DefinirHitosFacturablesGuardiasForm.chActFG.disabled=false;
+        jQuery("#chActFG").removeAttr("disabled");
+
         
         //Si se paga por actuaciones
         if (DefinirHitosFacturablesGuardiasForm.radioA[1].checked)
@@ -695,10 +697,10 @@
       {
         //Check de Aplicar tipos
         DefinirHitosFacturablesGuardiasForm.chNoGuardias.checked=false;
-        DefinirHitosFacturablesGuardiasForm.chNoGuardias.disabled=true;
+		jQuery("#chNoGuardias").attr("disabled","disabled");
         //Check de Maximos de actuaciones fuera de guardia
         DefinirHitosFacturablesGuardiasForm.chActFG.checked=false;
-        DefinirHitosFacturablesGuardiasForm.chActFG.disabled=true;
+		jQuery("#chActFG").attr("disabled","disabled");
         //Precio actuaciones fuera de guardia
         inhabilitarCuadroTexto (document.getElementById("hitoPrecio[9]"));
         //Boton de tipos para precio de actuaciones fuera de guardia
@@ -1098,8 +1100,8 @@
                 <td colspan="7" width="50%">
                   <table>
                     <tr><td class="labelText"
-                            style="text-align:LEFT; vertical-align:top">
-                      <html:checkbox name="DefinirHitosFacturablesGuardiasForm"
+                            style="text-align:LEFT; vertical-align:top"> 
+                      <html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="checkB1" 
                                      property="checkB1" value="0"
                                      onclick="cambiarCheckB1 ();" />
                       <siga:Idioma key="gratuita.confGuardia.literal.pagaguardia"/>
@@ -1114,14 +1116,14 @@
                   <table>
                     <tr><td class="labelText"
                             style="text-align:LEFT; vertical-align:top">
-                      <html:checkbox name="DefinirHitosFacturablesGuardiasForm"
+                      <html:checkbox name="DefinirHitosFacturablesGuardiasForm"   styleId="checkB2" 
                                      property="checkB2" value="1"
                                      onclick="cambiarCheckB2 ();" />
                       <siga:Idioma key="gratuita.confGuardia.literal.nopagaguardia"/>
                     </td></tr>
                     <tr><td class="labelText"
                             style="text-align:LEFT; vertical-align:top">
-                      <html:checkbox name="DefinirHitosFacturablesGuardiasForm"
+                      <html:checkbox name="DefinirHitosFacturablesGuardiasForm"  styleId="chGuardias"
                                      property="chGuardias"
                                      onclick="aplicaGuardias()"/>
                       <siga:Idioma key="gratuita.confGuardia.literal.aplicartipos"/>
@@ -1147,72 +1149,72 @@
               </tr>
               <tr>
                 <td align="center">
-                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"
+                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="chPagaGuardiaLunes"
                                  property="chPagaGuardiaLunes"
                                  onclick="pagaGuardiaLunes()" />
                 </td>
                 <td align="center">
-                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"
+                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"   styleId="chPagaGuardiaMartes"
                                  property="chPagaGuardiaMartes"
                                  onclick="pagaGuardiaMartes()" />
                 </td>
                 <td align="center">
-                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"
+                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"   styleId="chPagaGuardiaMiercoles"
                                  property="chPagaGuardiaMiercoles"
                                  onclick="pagaGuardiaMiercoles()" />
                 </td>
                 <td align="center">
-                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"
+                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"  styleId="chPagaGuardiaJueves"
                                  property="chPagaGuardiaJueves"
                                  onclick="pagaGuardiaJueves()" />
                 </td>
-                <td align="center">
-                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"
+                <td align="center"> 
+                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="chPagaGuardiaViernes"
                                  property="chPagaGuardiaViernes"
                                  onclick="pagaGuardiaViernes()" />
                 </td>
                 <td align="center">
-                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"
+                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"     styleId="chPagaGuardiaSabado"
                                  property="chPagaGuardiaSabado"
                                  onclick="pagaGuardiaSabado()" />
                 </td>
                 <td align="center">
-                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"
+                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="chPagaGuardiaDomingo"
                                  property="chPagaGuardiaDomingo"
                                  onclick="pagaGuardiaDomingo()" />
                 </td>
                 <td align="center">
-                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"
+                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"     styleId="chNoPagaGuardiaLunes"
                                  property="chNoPagaGuardiaLunes"
                                  onclick="noPagaGuardiaLunes()" />
                 </td>
                 <td align="center">
-                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"
+                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"   styleId="chNoPagaGuardiaMartes"
                                  property="chNoPagaGuardiaMartes"
                                  onclick="noPagaGuardiaMartes()" />
                 </td>
                 <td align="center">
-                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"
+                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"   styleId="chNoPagaGuardiaMiercoles"
                                  property="chNoPagaGuardiaMiercoles"
                                  onclick="noPagaGuardiaMiercoles()" />
                 </td>
                 <td align="center">
-                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"
+                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"  styleId="chNoPagaGuardiaJueves"
                                  property="chNoPagaGuardiaJueves"
                                  onclick="noPagaGuardiaJueves()" />
                 </td>
                 <td align="center">
-                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"
+                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"   styleId="chNoPagaGuardiaViernes"
                                  property="chNoPagaGuardiaViernes"
                                  onclick="noPagaGuardiaViernes()" />
                 </td>
                 <td align="center">
-                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"
+                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"  styleId="chNoPagaGuardiaSabado"
                                  property="chNoPagaGuardiaSabado"
                                  onclick="noPagaGuardiaSabado()" />
                 </td>
                 <td align="center">
-                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"
+                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"   styleId="chNoPagaGuardiaDomingo"
                                  property="chNoPagaGuardiaDomingo"
                                  onclick="noPagaGuardiaDomingo()" />
                 </td>
@@ -1220,7 +1222,7 @@
               <tr>
                 <td colspan="7" class="labelText"
                     style="text-align:LEFT; vertical-align:top">
-                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"
+                  <html:checkbox name="DefinirHitosFacturablesGuardiasForm"  styleId="chPagaGuardiaPorDia"
                                  property="chPagaGuardiaPorDia"/>
                   <siga:Idioma key="fcs.criteriosFacturacion.guardia.porDia"/>
                 </td>
@@ -1237,13 +1239,13 @@
             <table>
               <tr><td class="labelText"
                       style="text-align:LEFT; vertical-align:top">
-                <html:checkbox name="DefinirHitosFacturablesGuardiasForm"
+                <html:checkbox name="DefinirHitosFacturablesGuardiasForm"  styleId="checkC"
                                property="checkC" onclick="initC();"/>
                 <siga:Idioma key="gratuita.confGuardia.literal.fueraguardia"/>
               </td></tr>
               <tr><td class="labelText"
                       style="text-align:LEFT; vertical-align:top">
-                <html:checkbox name="DefinirHitosFacturablesGuardiasForm"
+                <html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="chNoGuardias"
                                property="chNoGuardias"
                                onclick="aplicaFueraGuardias()"/>
                 <siga:Idioma key="gratuita.confGuardia.literal.aplicartipos"/>
@@ -1251,6 +1253,7 @@
             </table>
           </td>
         </tr>
+
         
         <!-- Primera linea -->
         <tr>
@@ -1261,7 +1264,7 @@
             <siga:Idioma key="fcs.criteriosFacturacion.asistencia.diaGuardia"/>
           </td>
           <td width="20%" class="labelTextValue" style="text-align:LEFT; vertical-align:middle">
-            <html:text name="DefinirHitosFacturablesGuardiasForm"
+            <html:text name="DefinirHitosFacturablesGuardiasForm" styleId="hitoPrecio[1]"
                        property="hitoPrecio[1]" maxlength="10"
                        onkeypress="filterChars(this,false,true);"
                        onkeyup="filterCharsUp(this);"
@@ -1280,7 +1283,7 @@
         <tr>
           <td class="labelText" style="text-align:LEFT">
             <html:radio name="DefinirHitosFacturablesGuardiasForm"
-                        property="radioA" value="0"
+                        property="radioA"   styleId="radioA" value="0"
                         onclick="initAB();"/>
             <br>
             <siga:Idioma key="fcs.criteriosFacturacion.asistencia.porAsistencias"/>
@@ -1294,7 +1297,7 @@
                 </td>
                 <td width="24%" class="labelTextValue" style="text-align:LEFT; vertical-align:middle">
                   <html:text name="DefinirHitosFacturablesGuardiasForm"
-                             property="hitoPrecio[2]" maxlength="10"
+                             property="hitoPrecio[2]"  styleId="hitoPrecio[2]" maxlength="10"
                              onkeypress="filterChars(this,false,true);"
                              onkeyup="filterCharsUp(this);"
                              onblur="filterCharsNaN(this);" styleClass="box" />
@@ -1318,7 +1321,7 @@
                 </td>
                 <td class="labelTextValue" style="text-align:LEFT; vertical-align:middle">
                   <html:text name="DefinirHitosFacturablesGuardiasForm"
-                             property="hitoPrecio[5]" maxlength="10"
+                             property="hitoPrecio[5]" styleId="hitoPrecio[5]" maxlength="10"
                              onkeypress="filterChars(this,false,true);"
                              onkeyup="filterCharsUp(this);"
                              onblur="filterCharsNaN(this);" styleClass="box" />
@@ -1566,7 +1569,7 @@
           <td class="labelText" style="text-align:left; vertical-align:middle">
             <siga:Idioma key="fcs.criteriosFacturacion.asistencia.maxActuacionFueraGuardia"/>
             &nbsp;
-            <html:checkbox name="DefinirHitosFacturablesGuardiasForm"
+            <html:checkbox name="DefinirHitosFacturablesGuardiasForm"   styleId="chActFG" 
                            property="chActFG" onclick="habilitarFG();"/>
           </td>
           <td class="labelTextValue" style="text-align:LEFT; vertical-align:middle">

@@ -32,7 +32,7 @@
 <html>
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
 			
 		
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -56,8 +56,7 @@
 		<html:form action="/ADM_Contadores.do" method="POST" target="submitArea">
 			<input type="hidden" id="modo"  name="modo" value="modificar">
 			<input type="hidden" id="datosModificados" name="datosModificados"  value="">
-			<input type="hidden" id="actionModal" name="actionModal" value="">
-			
+		
 		</html:form>	
 		
 		<siga:TablaCabecerasFijas 

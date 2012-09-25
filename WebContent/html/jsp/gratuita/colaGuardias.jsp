@@ -61,7 +61,7 @@
 	<head>
 
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
 			
 		
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -71,30 +71,30 @@
 	<SCRIPT>
 		function validaTabla(){
 			  //Ajusto tablas de letrados en cola:
-			  if (document.all.tablaLetrados.clientHeight < document.all.tablaLetradosDiv.clientHeight) {
-				   document.all.tituloTablaLetrados.width='100%';
-				   document.all.tablaLetradosCabeceras.width='100%';
+			  if (document.getElementById("tablaLetrados").clientHeight < document.getElementById("tablaLetradosDiv").clientHeight) {
+				  document.getElementById("tituloTablaLetrados").width='100%';
+				  document.getElementById("tablaLetradosCabeceras").width='100%';
 			  } else {
-				   document.all.tituloTablaLetrados.width='96.5%';
-				   document.all.tablaLetradosCabeceras.width='96.5%';
+				  document.getElementById("tituloTablaLetrados").width='96.5%';
+				  document.getElementById("tablaLetradosCabeceras").width='96.5%';
 			  }
 		
 			  //Ajusto tabla de compensaciones:
-			  if (document.all.tablaCompensaciones.clientHeight < document.all.tablaCompensacionesDiv.clientHeight) {
-				   document.all.tituloTablaCompensaciones.width='100%';
-				   document.all.tablaCompensacionesCabeceras.width='100%';
+			  if (document.getElementById("tablaCompensaciones").clientHeight < document.getElementById("tablaCompensacionesDiv").clientHeight) {
+				  document.getElementById("tituloTablaCompensaciones").width='100%';
+				  document.getElementById("tablaCompensacionesCabeceras").width='100%';
 			  } else {
-				   document.all.tituloTablaCompensaciones.width='96.5%';
-				   document.all.tablaCompensacionesCabeceras.width='96.5%';
+				  document.getElementById("tituloTablaCompensaciones").width='96.5%';
+				  document.getElementById("tablaCompensacionesCabeceras").width='96.5%';
 			  }
 			  
 			  //Ajusto tabla de saltos:
-			  if (document.all.tablaSaltos.clientHeight < document.all.tablaSaltosDiv.clientHeight) {
-				   document.all.tituloTablaSaltos.width='100%';
-				   document.all.tablaSaltosCabeceras.width='100%';
+			  if ( document.getElementById("tablaSaltos").clientHeight <  document.getElementById("tablaSaltosDiv").clientHeight) {
+				  document.getElementById("tituloTablaSaltos").width='100%';
+				  document.getElementById("tablaSaltosCabeceras").width='100%';
 			  } else {
-				   document.all.tituloTablaSaltos.width='96.5%';
-				   document.all.tablaSaltosCabeceras.width='96.5%';
+				  document.getElementById("tituloTablaSaltos").width='96.5%';
+				  document.getElementById("tablaSaltosCabeceras").width='96.5%';
 			  }	  		  
 		}
 
@@ -103,7 +103,7 @@
 			document.location = document.location;
 		}
 			
-		function buscarLetradoEnColaLetrado () 
+		function buscarLetradoEnColaLetrado()
 		{
 			s = document.getElementById("buscarLetrado").value;
 			if (s) {
@@ -243,7 +243,7 @@
  	<html:form action="/JGR_ColaGuardias" method="get" >
 		<!-- RGG: cambio a formularios ligeros -->
 		<input type="hidden" name="modo">
-		<input type="hidden" name="tablaDatosDinamicosD">
+		
 		<input type="hidden" name="actionModal" value="">
 		<input type="hidden" name="idPersona" >
 		<input type="hidden" name="fechaSuscripcion" >
@@ -316,9 +316,9 @@
 				%>
 				<td width='22%'>
 					<input id="buscarLetrado" type="text" class="box" size="8" value="<%=literalNColegiado%>"
-						onfocus="limpiarTexto(this, 1);" onblur="limpiarTexto(this, 0);buscarLetradoEnColaLetrado();">
+						onfocus="limpiarTexto(this, 1);" onblur="limpiarTexto(this, 0);buscarLetradoEnColaLetrado();"/>
 					<img src="<%=app%>/html/imagenes/bconsultar_off.gif"
-						style="cursor: hand;" onClick="buscarLetradoEnColaLetrado();" alt="<%=buscarLetrado%>">
+						style="cursor: hand;" onClick="buscarLetradoEnColaLetrado();" alt="<%=buscarLetrado%>"/>
 				</td>
 				<%
 					if (porGrupos) {
@@ -410,22 +410,22 @@
   					</td>
   					
 					<td>
-						<input type="text" value="<%=grupo%>" id="grupo_<%=i + 1%>" disabled size="1">
-						<input type="hidden" value="<%=grupo%>" id="grupoOriginal_<%=i + 1%>" >
+						<input type="text" value="<%=grupo%>" id="grupo_<%=i + 1%>" disabled size="1"/>
+						<input type="hidden" value="<%=grupo%>" id="grupoOriginal_<%=i + 1%>" />
 					</td>
 					
 					<td>
-						<input type="text" value="<%=ordenGrupo%>" id="orden_<%=i + 1%>" disabled size="1" maxlength="4">
-						<input type="hidden" value="<%=ordenGrupo%>" id="ordenOriginal_<%=i + 1%>" >
+						<input type="text" value="<%=ordenGrupo%>" id="orden_<%=i + 1%>" disabled size="1" maxlength="4"/>
+						<input type="hidden" value="<%=ordenGrupo%>" id="ordenOriginal_<%=i + 1%>" />
 					</td>
 				<%
 					}
 				%>	
 				<td id="colegiado_<%=i%>">
-					<input name="numeroColegiadoBusqueda" type="hidden" class="box" size="10" value="<%=numeroColegiadoBusqueda%>" >
-					<input name="idPersona_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=idPersona%>" >
-					<input name="fechaSuscripcion_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=fechaSuscripcion%>" >
-					<input name="idGrupoGuardiaColegiado_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=idGrupoGuardiaColegiado%>" >
+					<input name="numeroColegiadoBusqueda" type="hidden" class="box" size="10" value="<%=numeroColegiadoBusqueda%>" />
+					<input name="idPersona_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=idPersona%>" />
+					<input name="fechaSuscripcion_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=fechaSuscripcion%>" />
+					<input name="idGrupoGuardiaColegiado_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=idGrupoGuardiaColegiado%>" />
 					<%=ncolegiado%>
 				</td>
 				<td id="nombre_<%=i%>">
@@ -462,9 +462,9 @@
 				</td>
 			
 				<td id="iconos_<%=i%>" align="center">
-					<img src="<%=app%>/html/imagenes/bcambiarusuario.gif" name="bcambiarusuario" style="cursor:hand;" onClick="fijarUltimoLetrado(<%=i + 1%>)" alt="<%=literalFijarUltimoLetrado%>">
+					<img src="<%=app%>/html/imagenes/bcambiarusuario.gif" id="bcambiarusuario" name="bcambiarusuario" style="cursor:hand;" onClick="fijarUltimoLetrado(<%=i + 1%>)" alt="<%=literalFijarUltimoLetrado%>"/>
 					<% if (porGrupos) {	%>
-						<img src="<%=app%>/html/imagenes/icono+.gif" name="banadirlinea" style="cursor:hand;" onClick="anadirFilaLetrado(<%=i%>)" alt="<%=literalAnadirFila%>">
+						<img src="<%=app%>/html/imagenes/icono+.gif"  id="banadirlinea" name="banadirlinea" style="cursor:hand;" onClick="anadirFilaLetrado(<%=i%>)" alt="<%=literalAnadirFila%>"/>
 					<% } %>	
 				</td>
 			</tr>		
@@ -761,26 +761,27 @@
   <script>
   	function habilitarCambiarUsuario(valor){
   		var bcambiarusuario =document.getElementsByName("bcambiarusuario");
-		for (i=0;i<bcambiarusuario.length;i++) {
-			bcambiarusuario[i].disabled=valor;
-		}
+  		if(valor)
+  		   	jQuery("#bcambiarusuario").attr("disabled","disabled");
+  		else
+			jQuery("#bcambiarusuario").removeAttr("disabled");
+
 	}
 	habilitarCambiarUsuario(document.getElementById('fechaConsulta').value=='');
 
 	function modificaParametro(o){
-		valorGrupo = document.getElementById("grupo_" + o.value);
-		valorOrden = document.getElementById("orden_" + o.value);
 		if (o.checked) {
-			valorGrupo.disabled = false;
-			valorOrden.disabled=false;
+			jQuery("#grupo_" + o.value).removeAttr("disabled");
+			jQuery("#orden_" + o.value).removeAttr("disabled");			
 		}
 		else {
 			var mensaje = "<siga:Idioma key="administracion.parametrosGenerales.alert.restaurarValor"/>";
 			if(confirm(mensaje)) {						
 				valorGrupo.value = document.getElementById("grupoOriginal_" + o.value).value;
-				valorGrupo.disabled = true;
+				jQuery("#grupoOriginal_" + o.value).attr("disabled","disabled");
 				valorOrden.value = document.getElementById("ordenOriginal_" + o.value).value;
-				valorOrden.disabled = true;
+				jQuery("#ordenOriginal_" + o.value).attr("disabled","disabled");
+				
 			}else{
 				o.checked = true;
 			}

@@ -42,7 +42,7 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -61,7 +61,7 @@
 			<!-- Campo obligatorio -->
 			<html:hidden property = "modo" value = "abrirAvanzada"/>
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
+			
 			<input type="hidden" name="actionModal" value="">
 			<input type="hidden" name="orden" value="">
 			<input type="hidden" name="anio" value="<%=anio%>">
@@ -115,8 +115,8 @@
 				<siga:FilaConIconos fila='<%=String.valueOf(contador)%>' visibleBorrado="no" botones="<%=botones%>" clase="listaNonEdit">
 				<td><input type='hidden' name='oculto<%=String.valueOf(contador)%>_1' value='<%=hash.get("IDTURNO")%>'><%=hash.get("NCOLEGIADO")%>&nbsp;</td>
 				<td><%=hash.get("NOMBRECOLEGIADO")%> <%=hash.get("AP1")%> <%=hash.get("AP2")%>&nbsp;</td>
-				<td><%=hash.get("ANIO")%>&nbsp;</td>
-				<td><%=hash.get("NUMERODES")%>&nbsp;</td>
+				<td><%=hash.get("ANIO")%></td>
+				<td><%=hash.get("NUMERODES")%></td>
 				<td><%=hash.get("CODIGO")%>&nbsp;</td>
 				<td><%=GstDate.getFormatedDateShort("",(String)hash.get("FECHAENTRADA"))%>&nbsp;</td>
 				<% if (hash.get("ESTADO").equals("V")){%>

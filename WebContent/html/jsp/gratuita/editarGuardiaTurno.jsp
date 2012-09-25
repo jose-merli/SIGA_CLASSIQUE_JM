@@ -338,14 +338,14 @@
 				<tr>
 					<td class="labelText" style="width: 100px;"><siga:Idioma
 							key="censo.SolicitudIncorporacion.literal.nombre" />&nbsp;(*)</td>
-					<td><html:text name="DefinirGuardiasTurnosForm"
+					<td><html:text name="DefinirGuardiasTurnosForm" styleId="nombreGuardia"
 							property="nombreGuardia" size="40" maxlength="30"
 							styleClass="<%=estiloText%>" value="<%=nombreGuardia%>"
 							readonly="<%=soloLectura%>"></html:text></td>
 					<td class="labelText"><siga:Idioma
 							key="gratuita.maestroTurnos.literal.descripcion" />&nbsp;(*)</td>
 					<td><html:text name="DefinirGuardiasTurnosForm"
-							property="descripcion" size="40" maxlength="1024"
+							property="descripcion"  styleId="descripcion"  size="40" maxlength="1024"
 							styleClass="<%=estiloText%>" value="<%=descripcionGuardia%>"
 							readonly="<%=soloLectura%>"></html:text></td>
 				</tr>
@@ -354,14 +354,14 @@
 					<td class="labelText"><siga:Idioma
 							key="gratuita.maestroGuardias.literal.descripcionFacturacion" /></td>
 					<td><html:textarea name="DefinirGuardiasTurnosForm"
-							onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)"
+							onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" styleId="descripcionFacturacion" 
 							property="descripcionFacturacion" rows="3" cols="80" style="width: 300px;"
 							readOnly="<%=soloLectura%>" styleClass="<%=estiloText%>"
 							value="<%=descripcionFacturacion%>" /></td>
 					<td class="labelText"><siga:Idioma
 							key="gratuita.maestroGuardias.literal.descripcionPago" /></td>
 					<td><html:textarea name="DefinirGuardiasTurnosForm"
-							onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)"
+							onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" 	styleId="descripcionPago" 
 							property="descripcionPago" rows="3" cols="80"  style="width: 300px;"
 							readOnly="<%=soloLectura%>" styleClass="<%=estiloText%>"
 							value="<%=descripcionPago%>" /></td>
@@ -394,7 +394,7 @@
 								key="gratuita.guardiasTurno.literal.turnoPrincipal" /></td>
 						<td>
 							<html:select styleId="turnosPrincipales"
-								styleClass="boxCombo" style="width:200px;"
+								styleClass="boxCombo" style="width:200px;" 
 								property="idTurnoPrincipal">
 								<bean:define id="turnosPrincipales"
 									name="DefinirGuardiasTurnosForm" property="turnosPrincipales"
@@ -783,18 +783,18 @@
 						&nbsp; <siga:Idioma
 							key="gratuita.calendarioGuardias.literal.periodo" /></td>
 					<td><html:text name="DefinirGuardiasTurnosForm"
-							property="diasPeriodo" size="4" maxlength="4"
+							property="diasPeriodo" styleId="diasPeriodo" size="4" maxlength="4"
 							styleClass="<%=estiloNumber%>" value="<%=diasPeriodo%>"
 							readonly="<%=soloLectura%>" /> &nbsp; <%
 					if (modoPestanha.equalsIgnoreCase("ver")) {
 				%> <html:text name="DefinirGuardiasTurnosForm"
-							property="tipoDiasPeriodo" readOnly="true"
+							property="tipoDiasPeriodo" styleId="tipoDiasPeriodo" readOnly="true"
 							styleClass="boxConsulta"
 							value="<%=DefinirGuardiasTurnosAction.obtenerTipoDiaPeriodo(tipoDiasPeriodo, usr)%>" />
 						<%
 					} else {
 				%> <html:select name="DefinirGuardiasTurnosForm"
-							property="tipoDiasPeriodo" size="1" value="<%=tipoDiasPeriodo%>"
+							property="tipoDiasPeriodo" styleId="tipoDiasPeriodo" size="1" value="<%=tipoDiasPeriodo%>"
 							styleClass="boxCombo">
 							<html:option
 								value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_DIAS_NATURALES%>"
@@ -983,8 +983,9 @@ function init()
 {
 	var modo="<%=modoPestanha%>";		
 	if (modo=="VER"){
-		document.getElementById("turnosPrincipales").disabled= true;
-		document.getElementById("guardiasPrincipales").disabled= true;	
+		jQuery("#turnosPrincipales").attr("disabled","disabled");
+		jQuery("#guardiasPrincipales").attr("disabled","disabled");
+
 	}
 	
 
@@ -1001,13 +1002,16 @@ function init()
 	function modificarDiasPeriodo ()
 	{
 		if (document.DefinirGuardiasTurnosForm.checkDiasPeriodo.checked) {
-			document.DefinirGuardiasTurnosForm.diasPeriodo.disabled = false;
-			document.DefinirGuardiasTurnosForm.tipoDiasPeriodo.disabled = false;
+			jQuery("#diasPeriodo").removeAttr("disabled");
+			jQuery("#tipoDiasPeriodo").removeAttr("disabled");
+
 		} else {
 			document.DefinirGuardiasTurnosForm.diasPeriodo.value = "0";
-			document.DefinirGuardiasTurnosForm.diasPeriodo.disabled = true;
+			jQuery("#diasPeriodo").attr("disabled","disabled");
 			document.DefinirGuardiasTurnosForm.tipoDiasPeriodo.value = "";
-			document.DefinirGuardiasTurnosForm.tipoDiasPeriodo.disabled = true;				
+			jQuery("#tipoDiasPeriodo").attr("disabled","disabled");
+
+				
 		}
 	} //modificarDiasPeriodo ()
 	
@@ -1183,12 +1187,14 @@ function init()
 					document.DefinirGuardiasTurnosForm.all[i].disabled = !deshabilitar;
 				}
 			}
-			document.DefinirGuardiasTurnosForm.idTurnoPrincipal.disabled = false;
-			document.DefinirGuardiasTurnosForm.idGuardiaPrincipal.disabled = false;
-			document.DefinirGuardiasTurnosForm.nombreGuardia.disabled = false;
-			document.DefinirGuardiasTurnosForm.descripcion.disabled = false;
-			document.DefinirGuardiasTurnosForm.descripcionFacturacion.disabled = false;
-			document.DefinirGuardiasTurnosForm.descripcionPago.disabled = false;
+			jQuery("#turnosPrincipales").removeAttr("disabled");
+			jQuery("#guardiasPrincipales").removeAttr("disabled");
+			jQuery("#nombreGuardia").removeAttr("disabled");
+			jQuery("#descripcion").removeAttr("disabled");
+			jQuery("#descripcionFacturacion").removeAttr("disabled");
+			jQuery("#descripcionPago").removeAttr("disabled");
+			
+
 		}
 		
 	}

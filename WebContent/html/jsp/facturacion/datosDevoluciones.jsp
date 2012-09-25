@@ -130,7 +130,7 @@
 					<html:hidden property="idInstitucion" value="<%=idInstitucion%>"/>
 
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
+			
 			<input type="hidden" name="actionModal" value="">
 
 		</html:form>

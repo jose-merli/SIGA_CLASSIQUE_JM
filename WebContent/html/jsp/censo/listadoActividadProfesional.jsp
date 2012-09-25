@@ -91,7 +91,6 @@
 		<html:hidden styleId="idInstitucion"  property="idInstitucion" />
 		<html:hidden styleId="modoAnterior"  property="modoAnterior" />
 		<!-- RGG: cambio a formularios ligeros -->
-		<input type="hidden" name="actionModal"  id="actionModal" value="" />
 	</html:form>
 
 	<!-- INICIO TABLA DE GRUPOS -->

@@ -91,7 +91,7 @@
 			<table class="tablaCentralCampos" align="center">
 				<form action="/SIGA/ENV_DefinirPlantillas.do" method="POST" target="mainWorkArea" name="MyForm">
 					<input type="hidden" name="modo" value="Editar">
-					<input type="hidden" name="tablaDatosDinamicosD">
+
 				</form>
 				
 				<html:form action="/ENV_DefinirPlantillas.do" method="POST" target="resultado">

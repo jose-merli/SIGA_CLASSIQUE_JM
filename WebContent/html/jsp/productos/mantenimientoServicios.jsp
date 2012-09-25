@@ -285,7 +285,7 @@
  			 
 			
 			 /*var f = document.forms[0].name;	
-             document.frames.submitArea.location = '/SIGA/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=messages.wait';*/
+             window.frames.submitArea.location = '/SIGA/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=messages.wait';*/
 			 //document.forms[0].submit();
 			}
 
@@ -533,12 +533,12 @@
 															<td class="labelText" width="100%">
 																<siga:Idioma key="productos.mantenimientoProductos.literal.bajaLogica"/>&nbsp;&nbsp;
 																<% if (modo=="insertar") {	%>
-																	<input type="checkbox" name="bajaLogica" value="1" disabled >
+																	<input type="checkbox" name="bajaLogica" id="bajaLogica" value="1" disabled >
 																<% } else {
 																	if (fechaBaja!=null) {%>
-																	<input type="checkbox" name="bajaLogica" value="1" checked>
+																	<input type="checkbox" name="bajaLogica" id="bajaLogica" value="1" checked>
 																<% } else { %>
-																	<input type="checkbox" name="bajaLogica" value="1">
+																	<input type="checkbox" name="bajaLogica" id="bajaLogica" value="1">
 																<% }} %>
 															</td>
 														</tr>
@@ -725,9 +725,7 @@
 							</siga:ConjCampos>
 						</td>
 					</tr>
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+
 		</html:form>						
 			</table>
 
@@ -894,7 +892,7 @@
 			<!-- DCG  ini -->
 			<% if (modo.equalsIgnoreCase("Consulta"))	{%>
 			<script>
-				document.forms[0].bajaLogica.disabled = true;
+			    jQuery("#bajaLogica").attr("disabled","disabled");
 			</script>
 			<% } %>
 			<!-- DCG  fin -->
@@ -984,7 +982,7 @@
 									// Abro la ventana de las tuercas:
 									var f = document.forms[0].name;											  
 									var m = "pys.mantenimientoServicios.cabecera.tuercas.realizarBajaLogica";
-									document.frames.submitArea.location = '/SIGA/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=messages.wait';
+									window.frames.submitArea.location = '/SIGA/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=messages.wait';
 								} 
 								
 								fin();
@@ -1008,7 +1006,7 @@
 										// Abro la ventana de las tuercas:
 										var f = document.forms[0].name;	
 										var m = "pys.mantenimientoServicios.cabecera.tuercas.suscripcionAutomaticaATodos";
-										document.frames.submitArea.location = '/SIGA/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=messages.wait';
+										window.frames.submitArea.location = '/SIGA/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=messages.wait';
 									}
 									
 									fin();

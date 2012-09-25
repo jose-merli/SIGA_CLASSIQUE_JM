@@ -49,7 +49,7 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -123,7 +123,7 @@
 		<input type="hidden" name="idTurno" />
 		<input type="hidden" name="fechaSolicitud"/>
 		<input type="hidden" name="observacionesSolicitud"/>
-		<input type="hidden" name="tablaDatosDinamicosD">
+		
 		<input type="hidden" name="actionModal" value="">
 
 	<tr>

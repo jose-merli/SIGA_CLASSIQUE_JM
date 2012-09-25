@@ -33,7 +33,7 @@
 	<head>
 
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
 			
 		
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -82,27 +82,14 @@
 				}
 			}
 		}
-		function accionCalendario() 
-		{
-			// Abrimos el calendario 
-			document.ColaGuardiasForm.target="areaDatos";
-			var resultado = showModalDialog("<html:rewrite page='/html/jsp/general/calendarGeneral.jsp'/>?valor="+ document.ColaGuardiasForm.fechaConsulta.value, document.ColaGuardiasForm.fechaConsulta,"dialogHeight:275px;dialogWidth:400px;help:no;scroll:no;status:no;");
-			window.top.focus();
-			if (resultado) {				 
-				 document.ColaGuardiasForm.fechaConsulta.value = resultado;
-				 document.getElementById('fechaConsulta').value = resultado;
-				 document.ColaGuardiasForm.modo.value = 'ver';				 
-				 document.ColaGuardiasForm.submit();				
-		 	} else {
-					if(document.ColaGuardiasForm.fechaConsulta.value==''){
-						document.getElementById('fechaConsulta').value = '';
-						document.ColaGuardiasForm.fechaConsulta.value = '';
-						document.ColaGuardiasForm.modo.value = 'ver';
-						document.ColaGuardiasForm.submit();
-					}
-			} 
-		}
 		
+		function postAccionCalendario() 
+		{
+			document.ColaGuardiasForm.target="areaDatos";
+			window.top.focus();
+			document.ColaGuardiasForm.modo.value = 'ver';
+			document.ColaGuardiasForm.submit();
+		}
 		function mostrarFechaActual() {		
 			fechaActual = getFechaActualDDMMYYYY();
 			document.getElementById("fechaConsulta").value = fechaActual;		
@@ -134,16 +121,8 @@ parametros[1] = (String)turnoElegido.get("IDTURNO");	// turno
 			
 					<td class="labelText"><siga:Idioma key="gratuita.gestionInscripciones.fechaConsulta"/></td>
 					<td >
-					<html:text id="fechaConsulta" name="ColaGuardiasForm" property="fechaConsulta" size="10" maxlength="10" styleClass="box" ></html:text>
-					&nbsp;&nbsp;<a
-						id="calendarioTd" 
-						onClick="accionCalendario();"
-						onMouseOut="MM_swapImgRestore();"
-						onMouseOver="MM_swapImage('Calendario','','<html:rewrite page='/html/imagenes/calendar.gif'/>',1);"><img
-						src="<html:rewrite page='/html/imagenes/calendar.gif'/>"
-						alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"
-						border="0"></a>
-					</td>
+					<siga:Fecha nombreCampo="fechaConsulta" postFunction="postAccionCalendario();"></siga:Fecha>
+
 				</tr>
 			
 			

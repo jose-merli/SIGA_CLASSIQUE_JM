@@ -163,7 +163,6 @@
 			<input type='hidden' id="idInstitucion"  name="idInstitucion" value="<%=String.valueOf((Integer)request.getAttribute("idInstitucion"))%>" />
 			<input type='hidden' id="accion"  name="accion" value="<%=accion%>" />
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" id="actionModal"  name="actionModal" value="">
 			<input type="hidden" id="incluirRegistrosConBajaLogica"  name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>">
 		</html:form>
 

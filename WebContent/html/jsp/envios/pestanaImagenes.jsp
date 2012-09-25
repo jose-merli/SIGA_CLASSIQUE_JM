@@ -117,9 +117,7 @@
 			<html:hidden property="volverModo"/>
 			<html:hidden property="editable"/>
 			<html:hidden property="idPlantillaEnvios"/>
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+
 		</html:form>
 
 	<table class="tablaTitulo" align="center" height="20" cellpadding="0" cellspacing="0">

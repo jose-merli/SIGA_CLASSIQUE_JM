@@ -40,7 +40,7 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -92,7 +92,7 @@
 		<siga:Idioma key="gratuita.operarEJG.literal.fechaLimitePresentacion"/>&nbsp;(*)
 	</td>
 	<td >
-		<html:text name="DatosDocumentacionSOJForm" property="fechaLimite" size="10" styleClass="box" value="" readonly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaLimite);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+	<siga:Fecha nombreCampo="fechaLimite" readOnly="true"></siga:Fecha>
 	</td>
 	</tr>
 	<tr>
@@ -100,7 +100,7 @@
 		<siga:Idioma key="gratuita.operarEJG.literal.fechaPresentacion"/>
 	</td>
 	<td >
-		<html:text name="DatosDocumentacionSOJForm" property="fechaEntrega" size="10" styleClass="box" value="" readonly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaEntrega);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+		<siga:Fecha nombreCampo="fechaEntrega" readOnly="true"></siga:Fecha>
 	</td>
 	</tr>
 	

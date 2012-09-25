@@ -158,12 +158,12 @@
 			sub();
 			var aDatos = new Array();
 				
-			var oCheck = document.frames.resultado.document.getElementsByName("chkPDF");
+			var oCheck =  window.frames.resultado.document.getElementsByName("chkPDF");
 			var preguntar=false;
 				
 			for(i=0; i<oCheck.length; i++) {
 				// Obtengo el estado
-				var estados=document.frames.resultado.document.getElementsByName("oculto"+(i+1)+"_10");
+				var estados= window.frames.resultado.document.getElementsByName("oculto"+(i+1)+"_10");
 				var estado="";
 				if (estados!=undefined && estados[0]!=undefined) {
 					estado = estados[0].value;
@@ -195,7 +195,7 @@
 				SolicitudesCertificadosForm.modo.value="generarVariosPDF";
 				var f = SolicitudesCertificadosForm.name;	
 				SolicitudesCertificadosForm.target="submitArea2";
-			    document.frames.submitArea2.location = '<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=messages.wait';
+				 window.frames.submitArea2.location = '<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=messages.wait';
 				// RGG como las meigas no dejaban que funcionara con submitArea, hemos creado submitArea2 y funciona.
 			}
 		}
@@ -205,7 +205,7 @@
 			sub();
 			var aDatos = new Array();
 				
-			var oCheck = document.frames.resultado.document.getElementsByName("chkPDF");
+			var oCheck =  window.frames.resultado.document.getElementsByName("chkPDF");
 			
 			for(i=0; i<oCheck.length; i++) {
 				if (oCheck[i].checked) {
@@ -243,7 +243,7 @@
 			sub();
 			var aDatos = new Array();
 				
-			var oCheck = document.frames.resultado.document.getElementsByName("chkPDF");
+			var oCheck =  window.frames.resultado.document.getElementsByName("chkPDF");
 				
 			for(i=0; i<oCheck.length; i++) {
 				if (oCheck[i].checked) {
@@ -269,7 +269,7 @@
 				document.forms[0].modo.value='finalizarCertificados';
 				var f = SolicitudesCertificadosForm.name;	
 				SolicitudesCertificadosForm.target="submitArea2";
-			    document.frames.submitArea2.location = '<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=messages.wait';
+				 window.frames.submitArea2.location = '<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=messages.wait';
 			}
 		}
 

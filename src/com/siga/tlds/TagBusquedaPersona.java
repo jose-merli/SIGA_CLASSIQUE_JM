@@ -3,6 +3,7 @@ package com.siga.tlds;
 
 import java.io.PrintWriter;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.tagext.TagSupport;
 
@@ -137,7 +138,7 @@ public class TagBusquedaPersona extends TagSupport
 			out.println("	<input type=\"text\" id=\"numeroNifTagBusquedaPersonas\" name=\"numeroNifTagBusquedaPersonas\" size="+this.anchoNum+" maxlength=\"9\" class=\"box\" onBlur=\""+ getPreFunction()+"obtenerPersonas();\"/>");				
 			out.println("</td>");
 			out.println("<td>");
-			out.println("	<input type=\"text\" name=\"nombrePersona\" size="+this.anchoDesc+" maxlength=\"50\" class=\"box\" readonly=\"true\"/>");							
+			out.println("	<input type=\"text\" id=\"nombrePersona\" name=\"nombrePersona\" size="+this.anchoDesc+" maxlength=\"50\" class=\"box\" readonly=\"true\"/>");							
 			out.println("</td>");
 			out.println("<td>");
 									
@@ -165,13 +166,44 @@ public class TagBusquedaPersona extends TagSupport
 			out.println("			if(vForm==null){");
 			out.println("				var app=busquedaClientesModalForm.action;");
 			out.println("				app=app.substring(0,app.substr(1).indexOf('/')+1);");
-			out.println("				var formu=document.createElement(\"<form name='busquedaClientesModalForm' action='\"+app+\"/CEN_BusquedaClientesModal.do'>\");");
-			out.println("				formu.appendChild(document.createElement(\"<input type='hidden' name='actionModal' value=''>\"));");			
-			out.println("				formu.appendChild(document.createElement(\"<input type='hidden' name='modo' value=''>\"));");
-			out.println("				formu.appendChild(document.createElement(\"<input type='hidden' name='tipoBus' value='"+this.tipo+"'>\"));");
-			out.println("				formu.appendChild(document.createElement(\"<input type='hidden' name='numeroNif' value=''>\"));");
-			out.println("				document.appendChild(formu);");
+			out.println("");			
+			out.println("				var formu=document.createElement('form');");
+			out.println("				formu.setAttribute('name','busquedaClientesModalForm');");			
+			out.println("				formu.setAttribute('id','busquedaClientesModalForm');");
+			String contextPath = ((HttpServletRequest)pageContext.getRequest()).getContextPath();
+			out.println("formu.setAttribute('action', '"+contextPath+"/CEN_BusquedaClientesModal.do');");
+			
+			out.println("");			
+			out.println("				var myinput =document.createElement('input');");			
+			out.println("				myinput.setAttribute('type','hidden');");
+			out.println("				myinput.setAttribute('id','actionModal');");			
+			out.println("				myinput.setAttribute('name','actionModal');");
+			out.println("				myinput.setAttribute('value','');");		
+			out.println("				formu.appendChild(myinput);");
+			out.println("");			
+			out.println("				var myinput2 =document.createElement('input');");			
+			out.println("				myinput2.setAttribute('type','hidden');");
+			out.println("				myinput2.setAttribute('id','modo');");			
+			out.println("				myinput2.setAttribute('name','modo');");
+			out.println("				myinput2.setAttribute('value','');");		
+			out.println("				formu.appendChild(myinput2);");	
+			out.println("");			
+			out.println("				var myinput3 =document.createElement('input');");			
+			out.println("				myinput3.setAttribute('type','hidden');");
+			out.println("				myinput3.setAttribute('id','tipoBus');");			
+			out.println("				myinput3.setAttribute('name','tipoBus');");
+			out.println("				myinput3.setAttribute('value','"+this.tipo+"');");		
+			out.println("				formu.appendChild(myinput3);");
+			out.println("");			
+			out.println("				var myinput4 =document.createElement('input');");			
+			out.println("				myinput4.setAttribute('type','hidden');");
+			out.println("				myinput4.setAttribute('id','numeroNif');");			
+			out.println("				myinput4.setAttribute('name','numeroNif');");
+			out.println("				myinput4.setAttribute('value','');");		
+			out.println("				formu.appendChild(myinput4);");		
+			out.println("				document.body.appendChild(formu);");	
 			out.println("				vForm=formu;");
+			
 			out.println("			}");
 			out.println("			return vForm;");
 			out.println("		}");		
@@ -249,7 +281,7 @@ public class TagBusquedaPersona extends TagSupport
 			out.println("			   vForm.target=\"submitArea\";");
 			out.println("			   vForm.numeroNif.value=document.getElementById('numeroNifTagBusquedaPersonas').value;");
 			out.println("			   vForm.modo.value=\"tagBusquedaPersona\";");	
-			out.println("			   vForm.submit();");	
+			out.println("			   	vForm.submit();");	
 			out.println("			}");
 			out.println("			else{fin();");
 			out.println("				limpiarPersona();");

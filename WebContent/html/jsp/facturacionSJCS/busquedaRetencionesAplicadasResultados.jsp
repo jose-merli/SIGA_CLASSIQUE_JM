@@ -54,8 +54,6 @@
 			<html:hidden property="fechaDesdePago"  />
 			<html:hidden property="fechaHastaPago" />
 			
-		
-			<input type="hidden" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
 			
 			

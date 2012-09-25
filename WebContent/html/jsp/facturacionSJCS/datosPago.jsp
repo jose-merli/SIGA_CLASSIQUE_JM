@@ -472,7 +472,7 @@
 		 */
 		function ocultarConceptos(){
 			for (i=0;i<4;i++){					
-				document.getElementById("fila"+conceptos[i]).style.display = "none";
+				document.getElementById("fila"+conceptos[i]).style.display="none";
 			}
 		}
 
@@ -502,7 +502,7 @@
 
 </head>
 
-<body onload="<%=scriptOnLoad%>">
+<body  onload="<%=scriptOnLoad%>">
 
 <!-- ******* BOTONES Y CAMPOS ****** -->
 	<!-- TITULO -->
@@ -638,7 +638,7 @@
 				</tr>
 				
 				<!-- OFICIO -->
-				<tr id="filaOficio" style="display:block">				
+				<tr id="filaOficio" style="visibility:visible;">		
 					<td class="labelText">
 						<siga:Idioma key="factSJCS.datosPagos.literal.Oficio"/>
 					</td>				
@@ -667,7 +667,7 @@
 					</td>
 				</tr>
 				<!-- GUARDIAS -->
-				<tr id="filaGuardias" style="display:block">				
+				<tr id="filaGuardias" style="visibility:visible;">		
 					<td class="labelText">
 						<siga:Idioma key="factSJCS.datosPagos.literal.Guardias"/>
 					</td>				
@@ -698,7 +698,7 @@
 					</td>
 				</tr>
 				<!-- EJG -->
-				<tr id="filaEJG" style="display:block">				
+				<tr id="filaEJG" style="visibility:visible;">				
 					<td class="labelText">
 						<siga:Idioma key="factSJCS.datosPagos.literal.EJG"/>
 					</td>				
@@ -727,7 +727,7 @@
 					</td>
 				</tr>
 				<!-- SOJ -->
-				<tr id="filaSOJ" style="display:block">	
+				<tr id="filaSOJ" style="visibility:visible;">
 					<td class="labelText">
 						<siga:Idioma key="factSJCS.datosPagos.literal.SOJ"/>
 					</td>				
@@ -852,7 +852,7 @@
 				if (eval("total"+conceptos[i])==0)
 					document.getElementById("fila"+conceptos[i]).style.display = "none";
 				else{
-					document.getElementById("fila"+conceptos[i]).style.display = "inline";				
+					document.getElementById("fila"+conceptos[i]).style.visibility="visible";				
 					document.getElementById("txtTotal"+conceptos[i]).value = convertirAFormato(eval("total"+conceptos[i])+"") + '\u20AC';
 					document.getElementById("txtPendiente"+conceptos[i]).value = convertirAFormato(eval("importePend"+conceptos[i])+"") + '\u20AC (' + convertirAFormato(eval("porcentajePend"+conceptos[i])+"") + '%)';
 					document.getElementById("txtRestante"+conceptos[i]).value = convertirAFormato(eval("importePend"+conceptos[i])+"") + '\u20AC (' + convertirAFormato(eval("porcentajePend"+conceptos[i])+"") + '%)';
@@ -954,7 +954,7 @@
 
 				var fname = document.getElementById("datosGeneralesPagoForm").name;
 				// con pantalla de espera
-				document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.factSJCS.procesandoFacturacion';				
+				window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.factSJCS.procesandoFacturacion';				
 		}
 
 		/**
@@ -1063,7 +1063,7 @@
 			var fname = document.getElementById("datosGeneralesPagoForm").name;
 			// con pantalla de espera
 			<%if (cobroAutomatico.equalsIgnoreCase("si")){%>
-				document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.factSJCS.procesandoPago';
+			window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.factSJCS.procesandoPago';
 			<%}else{%>
 				f.target="submitArea";
 				var resultado=ventaModalGeneral(fname,"G");

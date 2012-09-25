@@ -47,9 +47,9 @@
 	<!-- Zona de campos de busqueda o filtro -->
 
 	<html:form action="/FAC_Sufijos.do" method="POST" target="resultado">
-		<html:hidden name="sufijosForm" property="modo" value = ""/>
-		<html:hidden name="sufijosForm" property="actionModal" value = ""/>
-		<input type="hidden" name="limpiarFilaSeleccionada" value="">
+		<html:hidden name="sufijosForm" property="modo"  styleId="modo" value = ""/>
+		<html:hidden name="sufijosForm" property="actionModal" styleId="actionModal" value = ""/>
+		<input type="hidden" name="limpiarFilaSeleccionada"  id="limpiarFilaSeleccionada" value="">
 	
 		<table class="tablaCentralCampos" align="center">
 			<tr>
@@ -65,7 +65,7 @@
 								<td class="labelText">
 									<siga:Idioma key="facturacion.datosGenerales.literal.descripcion"/>
 									&nbsp;
-									<html:text name="sufijosForm" property="concepto" size="100" maxlength="100" styleClass="box"/>
+									<html:text name="sufijosForm" property="concepto" styleId="concepto" size="100" maxlength="100" styleClass="box"/>
 								</td>
 							</tr>
 						</table>

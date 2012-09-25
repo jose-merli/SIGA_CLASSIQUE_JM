@@ -157,10 +157,12 @@
 				<siga:Idioma key="expedientes.auditoria.literal.fechaFinEstado"/>
 			</td>
 			<td>
-				<html:text name="ExpSeguimientoForm" property="fechaFinEstado" size="10" styleClass="<%=boxStyleFecha%>" readonly="true" />
+				
 				<% if (!bLectura && !bEdicion){
 				%>
-					<a href='javascript://'onClick="return showCalendarGeneral(fechaFinEstado);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+					<siga:Fecha nombreCampo="fechaFinEstado" posicionY="100" posicionX="200"></siga:Fecha>
+				<%}else{%>
+					<html:text name="ExpSeguimientoForm" property="fechaFinEstado" size="10" styleClass="<%=boxStyleFecha%>" readonly="true" />
 				<%}%>
 			</td>
 		</tr>	
@@ -183,10 +185,13 @@
 				<siga:Idioma key="expedientes.auditoria.literal.fechaAnotacion"/> (*)
 			</td>
 			<td>
-				<html:text name="ExpSeguimientoForm" property="fecha" size="10" styleClass="<%=boxStyleFecha%>" readonly="true" />
+				
 				<% if (!bLectura && !bEdicion){
 				%>
-					<a href='javascript://'onClick="return showCalendarGeneral(fecha);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+					
+					<siga:Fecha nombreCampo="fecha" posicionY="100" posicionX="200"></siga:Fecha>
+				<%}else{%>
+					<html:text name="ExpSeguimientoForm" property="fecha" size="10" styleClass="<%=boxStyleFecha%>" readonly="true" />
 				<%}%>
 			</td>
 		</tr>	

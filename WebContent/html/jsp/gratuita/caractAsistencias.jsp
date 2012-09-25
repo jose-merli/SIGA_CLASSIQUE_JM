@@ -170,7 +170,7 @@ else
 <html>
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -387,12 +387,12 @@ function fOtras(o)
 	if (o.checked) 
 	{	
 		document.CaracteristicasForm.otras.value = "1";		
-		document.CaracteristicasForm.otrasDescripcion.disabled = false; 
+		jQuery("#otrasDescripcion").removeAttr("disabled");
 	}
 	else 	
 	{	
 		document.CaracteristicasForm.otras.value = "0";
-		document.CaracteristicasForm.otrasDescripcion.disabled = true; 
+	   	jQuery("#otrasDescripcion").attr("disabled","disabled");
 	}			
 }
 
@@ -510,11 +510,11 @@ function bloquearDesbloquear(o)
 	if(indice=="9")
 	{	
 		document.CaracteristicasForm.otroDescripcionOrigenContacto.readOnly = false;
-		document.CaracteristicasForm.otroDescripcionOrigenContacto.disabled = false;
+		jQuery("#otroDescripcionOrigenContacto").removeAttr("disabled");
 	}
 	else
 	{	
-		document.CaracteristicasForm.otroDescripcionOrigenContacto.disabled = true;
+		jQuery("#otroDescripcionOrigenContacto").attr("disabled","disabled");		
 		document.CaracteristicasForm.otroDescripcionOrigenContacto.value = "";
 	}	
 }
@@ -595,7 +595,7 @@ function bloquearDesbloquear(o)
 				<%}else{%>
 			<siga:ComboBD  nombre = "idOrigenContacto" tipo="cmbOrigenContacto" clase="boxCombo" obligatorio="false" accion="bloquearDesbloquear(this);" elementoSel="<%=conectadoLetradoSel%>"  parametro="<%=dato%>"/>
 			<%}%>			
-			<html:text name="CaracteristicasForm" property="otroDescripcionOrigenContacto" size="50" maxlength="100" styleClass="box" value="<%=otroDescripcionOrigenContacto%>" readOnly="<%=readonly%>"></html:text>&nbsp;&nbsp;			
+			<html:text name="CaracteristicasForm" styleId="otroDescripcionOrigenContacto" property="otroDescripcionOrigenContacto" size="50" maxlength="100" styleClass="box" value="<%=otroDescripcionOrigenContacto%>" readOnly="<%=readonly%>"></html:text>&nbsp;&nbsp;			
 		</td>		
 	</tr>
 	<tr>
@@ -700,7 +700,7 @@ function bloquearDesbloquear(o)
 		<td colspan ="2" class="labelText">
 			<input type="checkbox" name="cOtras" onclick="fOtras(this);" <%=(otras.equals("1"))?"checked":""%> <%=(readonly==true)?"disabled":""%>>
 			<siga:Idioma key="gratuita.caracteristicas.literal.otrasEspecificar"/>&nbsp;				
-			<html:text name="CaracteristicasForm" property="otrasDescripcion" size="50" maxlength="100"  value="<%=otrasDescripcion%>" styleClass="box"  readOnly="<%=readonly%>"></html:text>&nbsp;&nbsp;
+			<html:text name="CaracteristicasForm" styleId="otrasDescripcion" property="otrasDescripcion" size="50" maxlength="100"  value="<%=otrasDescripcion%>" styleClass="box"  readOnly="<%=readonly%>"></html:text>&nbsp;&nbsp;
 		</td>
 	</tr>
 	<tr>

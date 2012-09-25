@@ -168,14 +168,14 @@
 
 		<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="submitArea" style="display:hidden">
 		<!-- Campo obligatorio -->
-		<html:hidden property = "modo" value = "" />
+		<html:hidden styleId = "modo" property = "modo"  value = "" />
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
-			<html:hidden property="nif" value=""/>
-			<html:hidden property="nombrePersona" value=""/>
-			<html:hidden property="apellido1" value=""/>
-			<html:hidden property="apellido2" value=""/>
+			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
+			<input type="hidden" id="actionModal" name="actionModal" value="">
+			<html:hidden styleId="nif" property="nif"  value=""/>
+			<html:hidden styleId="nombrePersona" property="nombrePersona" value=""/>
+			<html:hidden styleId="apellido1" property="apellido1"  value=""/>
+			<html:hidden styleId="apellido2" property="apellido2"  value=""/>
 		</html:form>
 
 
@@ -304,12 +304,12 @@
 				<td>
 
 					<!-- campos hidden -->
-					<input type="hidden" name="oculto<%=cont %>_1" value="<%=idPersona %>">
-					<input type="hidden" name="oculto<%=cont %>_2" value="<%=idInstitucion %>">
-					<input type="hidden" name="oculto<%=cont %>_3" value="<%=nif %>">
-					<input type="hidden" name="oculto<%=cont %>_4" value="<%=nombre %>">
-					<input type="hidden" name="oculto<%=cont %>_5" value="<%=apellido1 %>">
-					<input type="hidden" name="oculto<%=cont %>_6" value="<%=apellido2 %>">
+					<input type="hidden" id="oculto<%=cont %>_1" name="oculto<%=cont %>_1" value="<%=idPersona %>">
+					<input type="hidden" id="oculto<%=cont %>_2" name="oculto<%=cont %>_2" value="<%=idInstitucion %>">
+					<input type="hidden" id="oculto<%=cont %>_3" name="oculto<%=cont %>_3" value="<%=nif %>">
+					<input type="hidden" id="oculto<%=cont %>_4" name="oculto<%=cont %>_4" value="<%=nombre %>">
+					<input type="hidden" id="oculto<%=cont %>_5" name="oculto<%=cont %>_5" value="<%=apellido1 %>">
+					<input type="hidden" id="oculto<%=cont %>_6" name="oculto<%=cont %>_6" value="<%=apellido2 %>">
 
 					<%=nif %>
 				</td>

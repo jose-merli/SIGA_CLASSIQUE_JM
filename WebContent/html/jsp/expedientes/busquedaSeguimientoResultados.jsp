@@ -62,8 +62,7 @@
 			<html:hidden property = "numeroExpediente" />
 			<html:hidden property = "anioExpediente" />
 			<html:hidden property = "editable" />
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+
 		</html:form>
 		
 			<siga:TablaCabecerasFijas 

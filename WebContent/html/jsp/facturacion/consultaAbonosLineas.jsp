@@ -149,7 +149,6 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 				<html:hidden property="idAbono"  styleId="idAbono"  value="<%=idAbono%>"/> 				
 				<html:hidden property="idInstitucion"  styleId="idInstitucion"  value="<%=idInstitucion%>"/>	
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="actionModal" id="actionModal"  value="">
 		</html:form>
 
 						<siga:TablaCabecerasFijas 

@@ -36,7 +36,7 @@
 
 		<script>
 			function setPlazo() {
-				parent.ExpDatosGeneralesForm.fechaFinal.value='<%=fechaFinal%>';
+				parent.document.getElementById("fechaFinal").value='<%=fechaFinal%>';
 			}
 		</script>
 

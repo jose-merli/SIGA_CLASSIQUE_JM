@@ -65,7 +65,7 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -84,14 +84,11 @@
 <body class="tablaCentralCampos">
 	
 	<html:form action="/JGR_EstadosEJG" method="post" target="mainPestanas" style="display:none">
-	<input type="hidden" name="modo" value="<%=accion%>">
-	<input type="hidden" name="idTipoEJG" value="<%=idTipoEJG%>">
-	<input type="hidden" name="anio" value="<%=anio%>">
-	<input type="hidden" name="numero" value="<%=numero%>">
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
-		</html:form>	
+		<input type="hidden" name="modo" value="<%=accion%>">
+		<input type="hidden" name="idTipoEJG" value="<%=idTipoEJG%>">
+		<input type="hidden" name="anio" value="<%=anio%>">
+		<input type="hidden" name="numero" value="<%=numero%>">
+	</html:form>	
 	
 	
 	<tr>				

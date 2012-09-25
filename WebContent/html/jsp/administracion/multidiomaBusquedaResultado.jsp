@@ -32,7 +32,7 @@
 <html>
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
 			
 		
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -45,6 +45,7 @@
 			{
 				var datos = "";
 				var ele = document.getElementsByName("checkParametrosGenerales");
+				
 				for (i = 0; i < ele.length; i++) {
 					if (ele[i].checked) {
 					
@@ -72,6 +73,7 @@
 			function modificaParametro(o, bMostrarAlert)
 			{
 				valor = document.getElementById("valor_" + o.value);
+				
 				if (o.checked) {
 					jQuery("#valor_" + o.value).removeAttr("disabled");
 					
@@ -90,7 +92,9 @@
 			
 			function marcarDesmarcarTodos(o) 
 			{
+
 				var ele = document.getElementsByName("checkParametrosGenerales");
+				
 				for (i = 0; i < ele.length; i++) {
 					ele[i].checked = o.checked;
 					modificaParametro(ele[i], (i==0?true:false));
@@ -106,16 +110,15 @@
 		
 	</head>
 	
-	<body onLoad="validarAncho_cabecera();">	
+	<body>	
 		<html:form action="/ADM_GestionarMultiidiomaEtiquetas.do" method="POST" target="submitArea">
 		
-			<input type="hidden" name="datosModificados" value="">
-			<input type="hidden" name="esCatalogo" value="<%=bCatalogos%>">
+			<input type="hidden" name="datosModificados" value=""/>
+			<input type="hidden" name="esCatalogo" value="<%=bCatalogos%>"/>
 		
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
-			<input type="hidden" name="modo" value="">
+			<input type="hidden" name="actionModal" value=""/>
+			<input type="hidden" name="modo" value=""/>
 		</html:form>	
 		
 		<siga:TablaCabecerasFijas 
@@ -123,7 +126,7 @@
   				borde="2"
   				estilo=""
 	   			clase="tableTitle"
-  				nombreCol="<input type='checkbox' onclick='marcarDesmarcarTodos(this)'/>,
+  				nombreCol="<input type='checkbox' name='checkParamGenerales' onclick='marcarDesmarcarTodos(this);'/>,
   				           administracion.multidioma.etiquetas.literal.descripcionInstitucion,
   				           administracion.multidioma.etiquetas.literal.descripcionIdiomaSeleccionado" 
    				tamanoCol="5,45,50"
@@ -148,19 +151,19 @@
 			 
 				<tr class="listaNonEdit" >
 					<td align="center">
-						<input type=checkbox id="checkParametrosGenerales" value="<%=i%>" onclick="modificaParametro(this, true)"/>
+						<input type=checkbox id="checkParametrosGenerales" name="checkParametrosGenerales" value="<%=i%>" onclick="modificaParametro(this, true)"/>
 						
-						<input type="hidden" value="<%=idRecurso%>"  id="oculto<%=i%>_1" >
-						<input type="hidden" value="<%=idiomaTraducir%>" id="oculto<%=i%>_2" >
-						<input type="hidden" value="<%=descripcion.substring(0, (descripcion.length()<50?descripcion.length():50))%>" id="oculto<%=i%>_3" >
+						<input type="hidden" value="<%=idRecurso%>"  id="oculto<%=i%>_1" />
+						<input type="hidden" value="<%=idiomaTraducir%>" id="oculto<%=i%>_2" />
+						<input type="hidden" value="<%=descripcion.substring(0, (descripcion.length()<50?descripcion.length():50))%>" id="oculto<%=i%>_3" />
 					</td>
 					<td>
 						<%=UtilidadesString.mostrarDatoJSP(descripcion)%>
 					</td>
 					<td align="center">
 						<siga:ToolTip id='<%=(""+i)%>' imagen='<%=nombreImagen%>' texto='<%=ayuda%>' />
-						<input type="hidden" value="<%=UtilidadesString.mostrarDatoJSP(descripcionTraducir)%>" id="valorOriginal_<%=i%>" >
-						<input type="text"   value="<%=UtilidadesString.mostrarDatoJSP(descripcionTraducir)%>" id="valor_<%=i%>" disabled size="70">
+						<input type="hidden" value="<%=UtilidadesString.mostrarDatoJSP(descripcionTraducir)%>" id="valorOriginal_<%=i%>" />
+						<input type="text"   value="<%=UtilidadesString.mostrarDatoJSP(descripcionTraducir)%>" id="valor_<%=i%>" disabled size="70"/>
 					</td>
 				</tr>
 				

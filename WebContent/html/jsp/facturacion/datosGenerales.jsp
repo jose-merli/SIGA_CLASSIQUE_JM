@@ -198,11 +198,12 @@
 			{
 				if (document.forms[0].envioFacturas.checked==true) {
 					document.forms[0].generarPDF.checked=true;
-					document.forms[0].generarPDF.disabled=true;
-					document.forms[0].idTipoPlantillaMail.disabled=false;
+					jQuery("#generarPDF").attr("disabled","disabled");
+					jQuery("#idTipoPlantillaMail").removeAttr("disabled");
 				} else {
-					document.forms[0].idTipoPlantillaMail.disabled=true;
-					document.forms[0].generarPDF.disabled=false;
+					jQuery("#generarPDF").removeAttr("disabled");
+					jQuery("#idTipoPlantillaMail").attr("disabled","disabled");
+
 				}
 				return false;
 			}
@@ -227,13 +228,15 @@
 
 			function comprobarNuevo() {
 				if (document.forms[0].contadorExistente.value=="") {
-					document.forms[0].prefijo_nuevo.disabled=false;
-					document.forms[0].contador_nuevo.disabled=false;
-					document.forms[0].sufijo_nuevo.disabled=false;
+					jQuery("#prefijo_nuevo").removeAttr("disabled");
+					jQuery("#contador_nuevo").removeAttr("disabled");
+					jQuery("#sufijo_nuevo").removeAttr("disabled");
+
 				} else {
-					document.forms[0].prefijo_nuevo.disabled=true;
-					document.forms[0].contador_nuevo.disabled=true;
-					document.forms[0].sufijo_nuevo.disabled=true;
+					jQuery("#prefijo_nuevo").attr("disabled","disabled");
+					jQuery("#contador_nuevo").attr("disabled","disabled");
+					jQuery("#sufijo_nuevo").attr("disabled","disabled");
+
 				}					
 			}
 			
@@ -273,9 +276,9 @@
 									</td>
 									<td>
 										<%if (!bEditable){%>
-											<html:text name="DatosGeneralesForm" property="nombreAbreviado" size="20" maxlength="20" styleClass="boxConsulta" value="<%=sAbreviatura%>" readonly="true"></html:text>
+											<html:text name="DatosGeneralesForm" styleId="nombreAbreviado"  property="nombreAbreviado" size="20" maxlength="20" styleClass="boxConsulta" value="<%=sAbreviatura%>" readonly="true"></html:text>
 										<%} else {%>
-											<html:text name="DatosGeneralesForm" property="nombreAbreviado" size="20" maxlength="20" styleClass="boxMayuscula" value="<%=sAbreviatura%>" readonly="false"></html:text>
+											<html:text name="DatosGeneralesForm" styleId="nombreAbreviado"  property="nombreAbreviado"  size="20" maxlength="20" styleClass="boxMayuscula" value="<%=sAbreviatura%>" readonly="false"></html:text>
 										<%}%>
 									</td>
 								</tr>
@@ -286,9 +289,9 @@
 									</td>
 									<td>
 										<%if (!bEditable){%>
-											<html:text name="DatosGeneralesForm" property="descripcion" size="100" maxlength="100" styleClass="boxConsulta" value="<%=sDescripcion%>" readonly="true"></html:text>
+											<html:text name="DatosGeneralesForm"  styleId="descripcion"  property="descripcion" size="100" maxlength="100" styleClass="boxConsulta" value="<%=sDescripcion%>" readonly="true"></html:text>
 										<%} else {%>
-											<html:text name="DatosGeneralesForm" property="descripcion" size="100" maxlength="100" styleClass="boxCombo" value="<%=sDescripcion%>" readonly="false"></html:text>
+											<html:text name="DatosGeneralesForm" styleId="descripcion"  property="descripcion" size="100" maxlength="100" styleClass="boxCombo" value="<%=sDescripcion%>" readonly="false"></html:text>
 										<%}%>
 									</td>
 								</tr>
@@ -299,7 +302,7 @@
 									</td>
 									<td>
 										<%if (!bEditable){%>
-											<html:text name="DatosGeneralesForm" property="plantilla" size="100" maxlength="100" styleClass="boxComboConsulta" value="<%=sPlantilla%>" readonly="true"></html:text>
+											<html:text name="DatosGeneralesForm" styleId="plantilla"  property="plantilla" size="100" maxlength="100" styleClass="boxComboConsulta" value="<%=sPlantilla%>" readonly="true"></html:text>
 										<%} else {
 											String dato[] = new String[1];
 											dato[0] = idInstitucion;
@@ -315,18 +318,18 @@
 										<td class="labelText" style="text-align:left" >
 											<siga:Idioma key="facturacion.datosGenerales.literal.generaPDF"/>&nbsp;&nbsp;
 											<% if ((enviarFacturas != null) && (enviarFacturas.equals("1"))) { %>
-													<input type="checkbox" name="generarPDF" checked disabled>
+													<input type="checkbox"  id="generarPDF"  name="generarPDF" checked disabled>
 											<% } else if ((generarPDF != null) && (generarPDF.equals("1"))) { %>
-													<input type="checkbox" name="generarPDF" <%=(accion.equals("ver"))?"disabled":"" %> checked>
+													<input type="checkbox" id="generarPDF" name="generarPDF" <%=(accion.equals("ver"))?"disabled":"" %> checked>
 											<% } else { %>
-													<input type="checkbox" name="generarPDF" <%=(accion.equals("ver"))?"disabled":"" %> >
+													<input type="checkbox"  id="generarPDF" name="generarPDF" <%=(accion.equals("ver"))?"disabled":"" %> >
 											<% } %>
 													&nbsp;&nbsp;&nbsp;
 											<siga:Idioma key="facturacion.datosGenerales.literal.envioFacturas"/>&nbsp;&nbsp;
 											<% if ((enviarFacturas != null) && (enviarFacturas.equals("1"))) { %>
-													<input type="checkbox" name="envioFacturas" onclick="actualiza();" <%=(accion.equals("ver"))?"disabled":"" %> checked>
+													<input type="checkbox" name="envioFacturas"  id="envioFacturas"  onclick="actualiza();" <%=(accion.equals("ver"))?"disabled":"" %> checked>
 											<% } else { %>
-													<input type="checkbox" name="envioFacturas" onclick="actualiza();" <%=(accion.equals("ver"))?"disabled":"" %> >
+													<input type="checkbox" name="envioFacturas"  id="envioFacturas"  onclick="actualiza();" <%=(accion.equals("ver"))?"disabled":"" %> >
 											<% } %>
 										</td>
 										
@@ -345,9 +348,9 @@
 									</td>
 									<td colspan="4">
 										<%if (!bEditable){%>
-											<html:textarea name="DatosGeneralesForm" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" property="observaciones" style="width:630px;"  rows="3" onkeydown="cuenta(this,4000);" styleClass="boxConsulta" value="<%=observaciones%>" readonly="true"/>
+											<html:textarea name="DatosGeneralesForm" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" styleId="observaciones" property="observaciones" style="width:630px;"  rows="3" onkeydown="cuenta(this,4000);" styleClass="boxConsulta" value="<%=observaciones%>" readonly="true"/>
 										<%} else {%>
-											<html:textarea name="DatosGeneralesForm" property="observaciones"  style="width:630px;"  rows="3" onkeydown="cuenta(this,4000)" onChange="cuenta(this,4000)" styleClass="box" value="<%=observaciones%>" readonly="false"/>
+											<html:textarea name="DatosGeneralesForm" property="observaciones"  styleId="observaciones"  style="width:630px;"  rows="3" onkeydown="cuenta(this,4000)" onChange="cuenta(this,4000)" styleClass="box" value="<%=observaciones%>" readonly="false"/>
 										<%}%>
 									</td>
 								
@@ -379,7 +382,7 @@
 										<siga:Idioma key="facturacion.datosGenerales.literal.nombreContador"/>&nbsp;
 									</td>
 									<td  class="labelTextValue" >
-										<html:text name="DatosGeneralesForm" property="idContador" size="20" maxlength="20" styleClass="boxConsulta" value="<%=idContador%>" readonly="true"></html:text>
+										<html:text name="DatosGeneralesForm" property="idContador" styleId="idContador" size="20" maxlength="20" styleClass="boxConsulta" value="<%=idContador%>" readonly="true"></html:text>
 									</td>
 									</tr>
 									<tr>
@@ -387,9 +390,9 @@
 										<siga:Idioma key="facturacion.datosGenerales.literal.contadorGenerico"/>&nbsp;
 									</td>
 									<td  class="labelTextValue" >
-										<html:text name="DatosGeneralesForm" property="prefijo" size="8" maxlength="10" styleClass="box" value="<%=prefijo%>" disabled="true"></html:text>
-										<html:text name="DatosGeneralesForm" property="contador" size="15" maxlength="15" styleClass="box" value="<%=contador%>" disabled="true"></html:text>
-										<html:text name="DatosGeneralesForm" property="sufijo" size="8" maxlength="10" styleClass="box" value="<%=sufijo%>"  disabled="true"></html:text>
+										<html:text name="DatosGeneralesForm" styleId="prefijo" property="prefijo"  size="8" maxlength="10" styleClass="box" value="<%=prefijo%>" disabled="true"></html:text>
+										<html:text name="DatosGeneralesForm" styleId="contador" property="contador"  size="15" maxlength="15" styleClass="box" value="<%=contador%>" disabled="true"></html:text>
+										<html:text name="DatosGeneralesForm" styleId="sufijo" property="sufijo"  size="8" maxlength="10" styleClass="box" value="<%=sufijo%>"  disabled="true"></html:text>
 									</td>
 								</tr>
 								<tr>
@@ -406,7 +409,7 @@
 										<siga:Idioma key="facturacion.datosGenerales.literal.configurarContador"/>&nbsp;
 									</td>
 									<td  class="labelTextValue">
-										<input type="checkbox" name="configurarContador" onclick="configuraContador();"/>
+										<input type="checkbox" name="configurarContador" id="configurarContador" onclick="configuraContador();"/>
 									</td>
 								<% }  %>																
 								</tr>
@@ -423,9 +426,9 @@
 										<siga:Idioma key="facturacion.datosGenerales.literal.nuevoContador"/>&nbsp;
 									</td>
 									<td  class="labelTextValue">
-										<html:text name="DatosGeneralesForm" property="prefijo_nuevo" size="8" maxlength="10" styleClass="box" value="<%=prefijo_nuevo%>" disabled="true"></html:text>
-										<html:text name="DatosGeneralesForm" property="contador_nuevo" size="15" maxlength="15" styleClass="box" value="<%=contador_nuevo%>" disabled="true"></html:text>
-										<html:text name="DatosGeneralesForm" property="sufijo_nuevo" size="8" maxlength="10" styleClass="box" value="<%=sufijo_nuevo%>" disabled="true"></html:text>
+										<html:text name="DatosGeneralesForm" styleId="prefijo_nuevo" property="prefijo_nuevo" size="8" maxlength="10" styleClass="box" value="<%=prefijo_nuevo%>" disabled="true"></html:text>
+										<html:text name="DatosGeneralesForm" styleId="contador_nuevo" property="contador_nuevo" size="15" maxlength="15" styleClass="box" value="<%=contador_nuevo%>" disabled="true"></html:text>
+										<html:text name="DatosGeneralesForm" styleId="sufijo_nuevo" property="sufijo_nuevo" size="8" maxlength="10" styleClass="box" value="<%=sufijo_nuevo%>" disabled="true"></html:text>
 									</td>
 								</tr>
 						
@@ -433,7 +436,7 @@
 
 						</siga:ConjCampos>
 					</td>
-			<td style="width:40%"><!-- SUBCONJUNTO DE DATOS --> <!-- Conjunto de campos recuadrado y con titulo -->
+			<td style="width:45%"><!-- SUBCONJUNTO DE DATOS --> <!-- Conjunto de campos recuadrado y con titulo -->
 			<siga:ConjCampos leyenda="facturacion.serios.literal.formaPago">
 				<table align="center" border="0">
 					<tr>
@@ -684,9 +687,9 @@
 							  pintarespacio='no'
 							  >
 						  		
-								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=row.getString("IDINSTITUCION")%>">
-								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=row.getString("COD_BANCO")%>">
-								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=row.getString("IDSERIEFACTURACION")%>">
+								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_1" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=row.getString("IDINSTITUCION")%>">
+								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_2" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=row.getString("COD_BANCO")%>">
+								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_3" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=row.getString("IDSERIEFACTURACION")%>">
 							<td>
 								
 								<input type="checkbox" value="<%=row.getString("BANCOS_CODIGO")%>" name="chk" <%=(accion.equals("nuevo") || bsel)?"checked":"" %> <%=(accion.equals("ver"))?"disabled":"" %> >

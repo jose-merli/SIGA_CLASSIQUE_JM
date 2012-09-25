@@ -47,7 +47,6 @@
 <body>
 		<html:form action="/FAC_Sufijos.do" method="POST" target="submitArea">
 			<html:hidden name="sufijosForm" styleId="modo"  property="modo" value = ""/>
-			<input type="hidden" name="actionModal"  id="actionModal" value="">
 		</html:form>
 		
 

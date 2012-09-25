@@ -208,7 +208,7 @@
 			<input type="hidden" name="modo" 				value="abrirBusquedaModal">		
 			<html:hidden name="solicitudBajaForm" property="idPersona" value="<%=idPersona%>"/>			 
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
+			
 			<input type="hidden" name="actionModal" value="">
 		</html:form>	
 		

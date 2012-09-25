@@ -57,16 +57,18 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>/javascript"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
-	<script>
+	<script language="JavaScript">
 		//Refresco del iframe 	
 	 	function refrescarLocal()
 		{
-			parent.refrescarLocal()
+			parent.refrescarLocal();
 		}
 		//Guardo los campos seleccionados
 		function seleccionarFila(fila){
@@ -84,7 +86,7 @@
 		function eliminarPoblacion(fila) 
 		{		
 			//Datos del elemento seleccionado:
-			seleccionarFila(fila)			
+			seleccionarFila(fila);			
 			
 			//Submito
 			document.forms[0].modo.value = "eliminarPoblacion";
@@ -104,10 +106,7 @@
 		<html:hidden property = "accion" value = "<%=accion%>"/>
 		<html:hidden property = "idPartido" />
 		<html:hidden property = "idPoblacion" />
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
-		</html:form>	
+	</html:form>	
 		
 	<!-- INICIO: RESULTADO -->
 
@@ -139,8 +138,8 @@
 			-->
 	       	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="" elementos='<%=elems%>' clase="listaNonEdit" visibleConsulta="no" visibleEdicion="no" visibleBorrado="no" pintarEspacio="false" modo="<%=accion%>" >
 
-				<td><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idpartido%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=miHash.get("IDPOBLACION")%>'>
+				<td><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idpartido%>'/>
+				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=miHash.get("IDPOBLACION")%>'/>
 				<%=miHash.get("POBLACION")%></td>
 			</siga:FilaConIconos>
 			<% 			recordNumber++; %>

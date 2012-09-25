@@ -107,8 +107,6 @@
 	<html:hidden property = "idEnvio" value="${idEnvio}"/>
 	<html:hidden property = "idTipoEnvio" value="${idTipoEnvio}"/>
 	<html:hidden property = "idTipoExpediente" value="${idTipoExpediente}"/>
-	<input type="hidden" name="tablaDatosDinamicosD">
-	<input type="hidden" name="actionModal" value="">
 </html:form>
 	
 				

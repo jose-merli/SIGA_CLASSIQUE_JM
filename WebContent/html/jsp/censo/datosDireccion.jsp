@@ -314,12 +314,12 @@
 		   if (valor!="" && valor!=idEspana) {
 		   		document.getElementById("poblacion").value="";
 		   		document.getElementById("provincia").value="";
-			   	document.getElementById("provincia").disabled=true;
+			   	jQuery("#provincia").attr("disabled","disabled");
 				document.getElementById("poblacionEspanola").className="ocultar";
 				document.getElementById("poblacionExtranjera").className="";
 	       } else {
 		   		document.getElementById("poblacionExt").value="";
-				document.getElementById("provincia").disabled=false;
+				jQuery("#provincia").removeAttr("disabled");
 				document.getElementById("poblacionEspanola").className="";
 				document.getElementById("poblacionExtranjera").className="ocultar";
 	       }

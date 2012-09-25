@@ -89,11 +89,11 @@ function informeGenerico(){
 
 function ajustarCabeceraTabla(){
 	
-	if (document.all.listadoInformeJustificacion.clientHeight < document.all.listadoInformeJustificacionDiv.clientHeight) {
-		   document.all.listadoInformeJustificacionCab.width='100%';
+	if (document.getElementById("listadoInformeJustificacion").clientHeight < document.getElementById("listadoInformeJustificacionDiv").clientHeight) {
+		document.getElementById("listadoInformeJustificacionCab").width='100%';
 		   
 	  } else {
-		   document.all.listadoInformeJustificacionCab.width='98.43%';
+		  document.getElementById("listadoInformeJustificacionCab").width='98.43%';
 		   
 	  }
 }
@@ -440,15 +440,14 @@ function onCheckAcreditacion(elementoPulsado){
 			var idAcreditacionProcedimiento = idsProcedimiento[4];
 			if(elementoPulsado.checked){
 				if(idAcreditacion!=idAcreditacionProcedimiento){
-					document.getElementById(elementoProcedimiento).disabled ="disabled";
-					document.getElementById(elementoValidacion).disabled ="disabled";
-					
+					jQuery("#"+elementoProcedimiento).attr("disabled","disabled");
+					jQuery("#"+elementoValidacion).attr("disabled","disabled");					
 				}
 			}else{
 				if(idAcreditacion!=idAcreditacionProcedimiento){
-					document.getElementById(elementoProcedimiento).disabled ="";
+					jQuery("#"+elementoProcedimiento).removeAttr("disabled");
 					if(document.InformeJustificacionMasivaForm.fichaColegial.value=='false'&&actuacionValidarJustificaciones=='S'){
-						document.getElementById(elementoValidacion).disabled ="";
+						jQuery("#"+elementoValidacion).removeAttr("disabled");
 					}
 					
 				}
@@ -553,36 +552,36 @@ function onCheckAcreditacion(elementoPulsado){
 					
 					if(auxIdTipoAcreditacion=='1'){
 						if(idTipoAcreditacion=='3'){
-							document.getElementById(idProcedimiento).disabled ="disabled";
-							document.getElementById(elementoValidacion).disabled ="disabled";
+							jQuery("#"+idProcedimiento).attr("disabled","disabled");
+							jQuery("#"+elementoValidacion).attr("disabled","disabled");
 						}
 					}else if(auxIdTipoAcreditacion=='2'){
 						
 						
 						if(idTipoAcreditacion=='3'){
-							document.getElementById(idProcedimiento).disabled ="disabled";
-							document.getElementById(elementoValidacion).disabled ="disabled";
+							jQuery("#"+idProcedimiento).attr("disabled","disabled");
+							jQuery("#"+elementoValidacion).attr("disabled","disabled");
 						}
 					
 					}else if(auxIdTipoAcreditacion=='3'){
 						if(idTipoAcreditacion=='1'||idTipoAcreditacion=='2'||(idTipoAcreditacion=='3'&&idAcreditacion!=auxIdAcreditacion)){
-							document.getElementById(idProcedimiento).disabled ="disabled";
-							document.getElementById(elementoValidacion).disabled ="disabled";
+							jQuery("#"+idProcedimiento).attr("disabled","disabled");
+							jQuery("#"+elementoValidacion).attr("disabled","disabled");
 						}
 					}
 				}else{
 					if(auxIdTipoAcreditacion=='1'||auxIdTipoAcreditacion=='2'){
 						if(idTipoAcreditacion=='3'){
-							document.getElementById(idProcedimiento).disabled ="";
+							jQuery("#"+idProcedimiento).removeAttr("disabled");
 							if(document.InformeJustificacionMasivaForm.fichaColegial.value=='false'&&actuacionValidarJustificaciones=='S'){
-								document.getElementById(elementoValidacion).disabled ="";
+								jQuery("#"+elementoValidacion).removeAttr("disabled");
 							}
 						}
 					}else if(auxIdTipoAcreditacion=='3'){
 						if(((idTipoAcreditacion=='1'||idTipoAcreditacion=='2')||(idTipoAcreditacion=='3'&&idAcreditacion!=auxIdAcreditacion))&&!isCheckAlgunaInicioOFin){
-							document.getElementById(idProcedimiento).disabled ="";
+							jQuery("#"+idProcedimiento).removeAttr("disabled");
 							if(document.InformeJustificacionMasivaForm.fichaColegial.value=='false'&&actuacionValidarJustificaciones=='S'){
-								document.getElementById(elementoValidacion).disabled ="";
+								jQuery("#"+elementoValidacion).removeAttr("disabled");
 							}
 						}
 					}
@@ -598,11 +597,10 @@ function inicio(){
 	//si tiene permiso para los botons existira, si no estara oculto
 	if(document.getElementById("idInformeJustificacion")){
 		if(document.InformeJustificacionMasivaForm.mostrarTodas.value=='true'){
-			
-			document.getElementById("idInformeJustificacion").disabled =""; 
+	  		jQuery("#idInformeJustificacion").removeAttr("disabled");
 		}else{
 			//document.getElementById("idInformeJustificacion").disabled ="disabled";
-			document.getElementById("idInformeJustificacion").disabled ="";
+	  		jQuery("#idInformeJustificacion").removeAttr("disabled");
 		}
 	}
 }

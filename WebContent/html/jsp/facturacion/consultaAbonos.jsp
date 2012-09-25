@@ -135,12 +135,12 @@
 			   	
 			   	document.DefinirEnviosForm.modo.value='envioModal';		   	
 			   	var resultado = ventaModalGeneral("DefinirEnviosForm","P");
-			   	if (resultado==undefined||resultado[0]==undefined){			   		
+ 			   	if (resultado==undefined||resultado[0]==undefined||resultado[0]=="M"){			   		
 			   	} else {
 			   		var idEnvio = resultado[0];
 				    var idTipoEnvio = resultado[1];
 				    var nombreEnvio = resultado[2];				    
-				    
+					//alert(idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio);
 				   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
 				   	document.DefinirEnviosForm.modo.value='editar';
 				   	document.DefinirEnviosForm.submit();
@@ -268,7 +268,7 @@
 		<html:hidden property = "actionModal" value = ""/>
 		<html:hidden property = "modo" value = ""/>
 		<html:hidden property = "tablaDatosDinamicosD" value = ""/>
-		
+		<html:hidden property = "filaSelD" value = ""/>		
 		<html:hidden property = "idSolicitud" value = ""/>
 		<html:hidden property = "idPersona" value = ""/>
 		<html:hidden property = "descEnvio" value = ""/>

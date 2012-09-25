@@ -22,10 +22,9 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
-	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
-		
-	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>" ></script>
-	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
+	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>	
+	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery.js"/>" ></script>
+	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery.custom.js"/>" ></script>
 	<!-- Calendario -->
 	<script src="<html:rewrite page="/html/js/calendarJs.jsp"/>" type="text/javascript"></script>
 	<script src="<html:rewrite page="/html/jsp/general/validacionSIGA.jsp"/>" type="text/javascript"></script>
@@ -78,14 +77,9 @@
 						<tr>
 							<td class="labelText"><siga:Idioma
 								key="gratuita.gestionInscripciones.fechaValidacion" />(*)</td>
-							<td><html:text name="InscripcionTGForm"
-								property="fechaValidacion" size="10"
-						maxlength="10" styleClass="box" readonly="true">
-								
-								</html:text> <a href='javascript://'
-								onClick="return showCalendarGeneral(fechaValidacion);"><img
-								src="<html:rewrite page="/html/imagenes/calendar.gif"/>"
-								border="0"></a></td>
+							<td>
+								<siga:Fecha nombreCampo="fechaValidacion"></siga:Fecha>
+							</td>
 						</tr>
 						<tr>
 							<td class="labelText"><siga:Idioma

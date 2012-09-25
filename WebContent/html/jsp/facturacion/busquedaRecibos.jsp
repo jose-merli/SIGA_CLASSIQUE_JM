@@ -123,7 +123,7 @@
 		<html:hidden property="banco"/>		
 
 		<input type="hidden" name="limpiarFilaSeleccionada" value="">
-		<input type="hidden" name="tablaDatosDinamicosD">		
+				
 	    <input type="hidden" name="actionModal" value="">
 		
 			<siga:ConjCampos leyenda="facturacion.devolucionManual.criterios">	
@@ -258,8 +258,8 @@
 			<!-- Asociada al boton MarcarTodos -->
 			function accionMarcarTodos() 
 			{		
-				if (document.frames.resultado.document.getElementById("sel")!=null){
-					var dd = document.frames.resultado.document.getElementsByName("sel");
+				if (window.frames.resultado.document.getElementById("sel")!=null){
+					var dd =  window.frames.resultado.document.getElementsByName("sel");
 					if (dd.type != 'checkbox') {
 						for (i = 0; i < dd.length; i++){
 							dd[i].checked=1;		
@@ -274,8 +274,8 @@
 			<!-- Asociada al boton DesmarcarTodos -->
 			function accionDesmarcarTodos() 
 			{		
-				if (document.frames.resultado.document.getElementById("sel")!=null){
-					var dd = document.frames.resultado.document.getElementsByName("sel");
+				if (window.frames.resultado.document.getElementById("sel")!=null){
+					var dd =  window.frames.resultado.document.getElementsByName("sel");
 					if (dd.type != 'checkbox') {
 						for (i = 0; i < dd.length; i++){
 							dd[i].checked=0;		
@@ -293,8 +293,8 @@
 				var aDatos = new Array();
 				document.DevolucionesManualesForm.recibos.value="";
 				
-				var oCheck = document.frames.resultado.document.getElementsByName("sel");
-				var oCheck2 = document.frames.resultado.document.getElementsByName("motivoDevolucion");
+				var oCheck =  window.frames.resultado.document.getElementsByName("sel");
+				var oCheck2 =  window.frames.resultado.document.getElementsByName("motivoDevolucion");
 
 				/* RGG 08/01/2007 */
 				for(i=0; i<oCheck.length; i++)

@@ -41,7 +41,7 @@
 
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
 			
 		
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -53,10 +53,10 @@
 			function accionGuardarCerrar() 
 			{
 				sub();
-				if (!validateAuditoriaUsuariosForm(document.auditoriaUsuariosForm))
+				if (!validateAuditoriaUsuariosForm(document.auditoriaUsuariosForm)){
 					fin();
 					return;
-				
+				}
 				auditoriaUsuariosForm.modo.value = "modificar";
 				auditoriaUsuariosForm.submit();
 			}
@@ -116,7 +116,7 @@
 					<% if (estilo.equals("box")) {%>
 						<siga:Fecha  nombreCampo= "fechaEntrada" valorInicial="<%=fechaEntrada%>"/>
 					<% }else{ %>
-						<siga:Fecha  nombreCampo= "fechaEntrada" valorInicial="<%=fechaEntrada%>" disabled="false"/>
+						<siga:Fecha  nombreCampo= "fechaEntrada" valorInicial="<%=fechaEntrada%>" disabled="true" readOnly="true"/>
 					<% } %>						
 				</td>
 			</tr>
@@ -132,7 +132,7 @@
 					<% if (estilo.equals("box")) {%>
 					<siga:Fecha  nombreCampo= "fechaEfectiva" valorInicial="<%=fechaEfectiva%>"/>
 					<% }else{ %>
-					<siga:Fecha  nombreCampo= "fechaEfectiva" valorInicial="<%=fechaEfectiva%>" disabled="false"/>
+					<siga:Fecha  nombreCampo= "fechaEfectiva" valorInicial="<%=fechaEfectiva%>" disabled="true"  readOnly="true"/>
 					<% } %>
 				</td>
 			</tr>

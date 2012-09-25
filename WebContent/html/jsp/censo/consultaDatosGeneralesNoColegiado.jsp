@@ -308,8 +308,8 @@
 		 <%if (modo.equalsIgnoreCase("EDITAR") || modo.equalsIgnoreCase("VER")) {%>  
 		  <% if(valorSociedadSP.equals("1")){%>
 		    document.forms[0].sociedadSP.checked=true;
-			document.getElementById("sociedadSJ").disabled=true;
-			document.getElementById("sociedadSP").disabled=true;
+			jQuery("#sociedadSJ").attr("disabled","disabled");
+			jQuery("#sociedadSP").attr("disabled","disabled");
 			document.getElementById("contadorSP").style.display="block";
 			document.getElementById("contadorSJ").style.display="none";			    
 		  <% }
@@ -332,9 +332,8 @@
 			 <%if (modo.equalsIgnoreCase("EDITAR") || modo.equalsIgnoreCase("VER")) {  
 			   	if(valorSociedadSP.equals("1")){%>
 			     	document.forms[0].sociedadSP.checked=true;
-			
-					  document.getElementById("sociedadSJ").disabled=true;
-					  document.getElementById("sociedadSP").disabled=true;
+					jQuery("#sociedadSJ").attr("disabled","disabled");
+					jQuery("#sociedadSP").attr("disabled","disabled");
 					  document.getElementById("contadorSP").style.display="block";
 					  document.getElementById("contadorSJ").style.display="none";			    
 			 <%}
@@ -348,11 +347,11 @@
 			   			if (document.getElementById("sociedadSP").checked){
 			   				document.getElementById("sociedadSJ").checked=false;
 			   			}
-			   			document.getElementById("sociedadSJ").disabled=true;
+						jQuery("#sociedadSJ").attr("disabled","disabled");
 			   		}
 					<%if (modo.equalsIgnoreCase("VER")) {%>
-		   				document.getElementById("sociedadSP").disabled=true;
-		   				document.getElementById("sociedadSJ").disabled=true;
+						jQuery("#sociedadSJ").attr("disabled","disabled");
+						jQuery("#sociedadSP").attr("disabled","disabled");
 			   		<%}%>
 				<%}%>
 				
@@ -372,9 +371,9 @@
 					     document.getElementById("contadorSJ").style.display="none";
 						 document.getElementById("contadorSP").style.display="block";
 						 document.getElementById("numeroRegistro").style.display="block";
-						 document.getElementById("prefijoNumRegSP").disabled=true;
-						 document.getElementById("sufijoNumRegSP").disabled=true;
-						 document.getElementById("contadorNumRegSP").disabled=true;
+						 jQuery("#prefijoNumRegSP").attr("disabled","disabled");
+						 jQuery("#sufijoNumRegSP").attr("disabled","disabled");
+						 jQuery("#contadorNumRegSP").attr("disabled","disabled");
 						 document.getElementById("etiquetaNumReg").style.display="block";			 		
 		  		} else {// si el modo de sociedad es Histórico
 						document.getElementById("contadorSJ").style.display="none";
@@ -390,9 +389,9 @@
 					     document.getElementById("contadorSJ").style.display="block";
 						 document.getElementById("contadorSP").style.display="none";
 						 document.getElementById("numeroRegistro").style.display="block";
-						 document.getElementById("prefijoNumRegSJ").disabled=true;
-						 document.getElementById("sufijoNumRegSJ").disabled=true;
-						 document.getElementById("contadorNumRegSJ").disabled=true;
+						 jQuery("#prefijoNumRegSP").attr("disabled","disabled");
+						 jQuery("#sufijoNumRegSP").attr("disabled","disabled");
+						 jQuery("#contadorNumRegSP").attr("disabled","disabled");
 						 document.getElementById("etiquetaNumReg").style.display="block";				 		
 		  			} else {// si el modo de sociedad es Histórico
 						document.getElementById("contadorSJ").style.display="block";
@@ -416,9 +415,9 @@
 		   			document.getElementById("nombrenumregistro").style.display="block";
 		   			//document.getElementById("sociedadSJ").disabled=true;			   			
 		   			<%if (modo.equalsIgnoreCase("VER")) {%>
-		   				document.getElementById("sociedadSP").disabled=true;
-		   				document.getElementById("sociedadSJ").disabled=true;
-		   			<%}%>
+		   			   jQuery("#sociedadSP").attr("disabled","disabled");
+					   jQuery("#sociedadSJ").attr("disabled","disabled");
+					<%}%>
 		   		}					
 			<%}%>
 			
@@ -437,9 +436,9 @@
 					document.getElementById("contadorSJ").style.display="none";
 					document.getElementById("contadorSP").style.display="block";
 					document.getElementById("numeroRegistro").style.display="block";
-					document.getElementById("prefijoNumRegSP").disabled=true;
-					document.getElementById("sufijoNumRegSP").disabled=true;
-					document.getElementById("contadorNumRegSP").disabled=true;
+					 jQuery("#prefijoNumRegSP").attr("disabled","disabled");
+					 jQuery("#sufijoNumRegSP").attr("disabled","disabled");
+					 jQuery("#contadorNumRegSP").attr("disabled","disabled");
 					document.getElementById("etiquetaNumReg").style.display="block";			 		
 		  		} else {// si el modo de sociedad es Histórico
 					document.getElementById("contadorSJ").style.display="none";
@@ -455,9 +454,9 @@
 					    document.getElementById("contadorSJ").style.display="block";
 						document.getElementById("contadorSP").style.display="none";
 						document.getElementById("numeroRegistro").style.display="block";
-						document.getElementById("prefijoNumRegSJ").disabled=true;
-						document.getElementById("sufijoNumRegSJ").disabled=true;
-						document.getElementById("contadorNumRegSJ").disabled=true;
+						 jQuery("#prefijoNumRegSP").attr("disabled","disabled");
+						 jQuery("#sufijoNumRegSP").attr("disabled","disabled");
+						 jQuery("#contadorNumRegSP").attr("disabled","disabled");
 						document.getElementById("etiquetaNumReg").style.display="block";			 		
 		  			} else {// si el modo de sociedad es Histórico
 						document.getElementById("contadorSJ").style.display="block";
@@ -1249,16 +1248,16 @@
 						document.forms[0].modo.value="modificarSociedad";
 						//document.forms[0].tipo.value = document.forms[0].tipos.value;
 						if (document.getElementById("sociedadSP").checked) {
-							document.getElementById("prefijoNumRegSP").disabled=false;
-		 					document.getElementById("sufijoNumRegSP").disabled=false;
-	          			    document.getElementById("contadorNumRegSP").disabled=false;
-		                    document.getElementById("sociedadSP").disabled=false;
+							 jQuery("#prefijoNumRegSP").removeAttr("disabled");
+							 jQuery("#sufijoNumRegSP").removeAttr("disabled");
+							 jQuery("#contadorNumRegSP").removeAttr("disabled");
+							 jQuery("#sociedadSP").removeAttr("disabled");
 						}
 						if (document.getElementById("sociedadSJ").checked) {
-		                    document.getElementById("prefijoNumRegSJ").disabled=false;
-		 					document.getElementById("sufijoNumRegSJ").disabled=false;
-	          			    document.getElementById("contadorNumRegSJ").disabled=false;
-		                    document.getElementById("sociedadSJ").disabled=false;
+							 jQuery("#prefijoNumRegSP").removeAttr("disabled");
+							 jQuery("#sufijoNumRegSP").removeAttr("disabled");
+							 jQuery("#contadorNumRegSP").removeAttr("disabled");
+							 jQuery("#sociedadSP").removeAttr("disabled");
 						}						
 						document.forms[0].submit();	
 					} else {
@@ -1268,18 +1267,19 @@
 			<%	} else { %>			
 					if (document.getElementById("sociedadSP")){
 					    if (document.datosGeneralesForm.modoSociedadSP.value==0){// cuando estamos en modo registro antes de enviar los datos los inicializamos a blanco porque 
-																			   // si no se produce un error de inserccion.					  
-						    document.getElementById("prefijoNumRegSP").disabled=false;
-						    document.getElementById("sufijoNumRegSP").disabled=false;
-						 	document.getElementById("contadorNumRegSP").disabled=false;				 	
+																			   // si no se produce un error de inserccion.		
+							 jQuery("#prefijoNumRegSP").removeAttr("disabled");
+							 jQuery("#sufijoNumRegSP").removeAttr("disabled");
+							 jQuery("#contadorNumRegSP").removeAttr("disabled");																			   
+		 	
 						 }
 					} 
 					if (document.getElementById("sociedadSJ")){
 					  	if (document.getElementById("modoSociedadSJ").value==0){// cuando estamos en modo registro antes de enviar los datos los inicializamos a blanco porque 
-																		   // si no se produce un error de inserccion.					  
-						    document.getElementById("prefijoNumRegSJ").disabled=false;
-						    document.getElementById("sufijoNumRegSJ").disabled=false;
-						 	document.getElementById("contadorNumRegSJ").disabled=false;				 	
+																		   // si no se produce un error de inserccion.
+							 jQuery("#prefijoNumRegSP").removeAttr("disabled");
+							 jQuery("#sufijoNumRegSP").removeAttr("disabled");
+							 jQuery("#contadorNumRegSP").removeAttr("disabled");																			   
 					  	}		
 				 	}					
 					document.forms[0].target="submitArea2";

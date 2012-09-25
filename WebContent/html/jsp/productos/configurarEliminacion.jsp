@@ -38,21 +38,20 @@
  <script language="JavaScript">
    function init(){
     MantenimientoServiciosForm.radioAlta.value=0;
-	MantenimientoServiciosForm.chkSolicitudBaja.disabled=true;
+    jQuery("#chkSolicitudBaja").attr("disabled","disabled");
 	
    }
    function habilitarCheck(check){
  
     if (check.value=="1"){
-	 MantenimientoServiciosForm.chkSolicitudBaja.disabled=false;
+     jQuery("#chkSolicitudBaja").removeAttr("disabled");
 	 MantenimientoServiciosForm.fechaAlta.value="";
-	 MantenimientoServiciosForm.fechaAlta.disabled=true;
-	 
+	 jQuery("#fechaAlta").attr("disabled","disabled");
+ 
 	}else{
      MantenimientoServiciosForm.chkSolicitudBaja.checked=false;
-	 MantenimientoServiciosForm.chkSolicitudBaja.disabled=true;
-	 MantenimientoServiciosForm.fechaAlta.disabled=false;
-	 
+     jQuery("#chkSolicitudBaja").attr("disabled","disabled");
+	 jQuery("#fechaAlta").removeAttr("disabled");
 	}
    }
    function accionGuardar(){
@@ -66,7 +65,7 @@
     document.forms[0].modo.value = "eliminarSuscripcion";
    	var f = document.forms[0].name;	
 	
-    document.frames.submitArea.location = '/SIGA/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=messages.wait';
+   	window.frames.submitArea.location = '/SIGA/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=messages.wait';
 	document.forms[0].target='submitArea';
 
    }
@@ -150,7 +149,7 @@
 											<siga:Idioma key="pys.busquedaServicios.Fecha"/>
 										</td>	
 										<td align="left" width="140px">
-											 <html:text  name="MantenimientoServiciosForm" property="fechaAlta" styleClass="box" size="10" readonly="true" />
+											 <html:text  name="MantenimientoServiciosForm" property="fechaAlta" styleId="fechaAlta" styleClass="box" size="10" readonly="true" />
 											 <a href='javascript://'onClick="return showCalendarGeneral(fechaAlta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
 										</td>	
 										
@@ -167,7 +166,7 @@
 											<siga:Idioma key="pys.busquedaServicios.Manuales"/>
 										</td>	
 										<td align="left">
-											 <html:checkbox  name="MantenimientoServiciosForm" property="chkSolicitudBaja" />
+											 <html:checkbox  name="MantenimientoServiciosForm" property="chkSolicitudBaja"  styleId="chkSolicitudBaja"/>
 										</td>	
 									</tr>	
 									

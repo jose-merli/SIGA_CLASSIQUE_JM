@@ -21,7 +21,7 @@
 		<title><siga:Idioma key="index.title"/></title>
 		
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
 			
 		
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -34,7 +34,7 @@
 				//if(menu.options[menu.selectedIndex].action!='')
 				//{
 				//alert("Espera");
-				  	document.all.editar.src='<%=app%>/html/jsp/general/blank.jsp';
+				  	document.getElementById("editar").src='<%=app%>/html/jsp/general/blank.jsp';
 				  	document.frmGestion.action="/SIGA" + menu.options[menu.selectedIndex].action;
 				  	//alert(document.frmGestion.action);
 				  	document.frmGestion.submit();

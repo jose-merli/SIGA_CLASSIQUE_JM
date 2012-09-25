@@ -23,7 +23,7 @@
 <!-- HEAD -->
 <head>
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>" />
-<link rel="stylesheet" href="<html:rewrite page='/html/js/themes/base/jquery.ui.all.css'/>" />
+
 	
 <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>" ></script>
 <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
@@ -51,6 +51,7 @@
 <siga:TituloExt titulo="menu.sjcs.bajasTemporales"	localizacion="censo.bajastemporales.gestion.localizacion" />
 
 <script type="text/javascript">
+jQuery.noConflict();
 	function preAccionBusqueda(){
 		if (document.BajasTemporalesForm.fechaDesde.value=='') {
 				var campo = '<siga:Idioma key="censo.bajastemporales.filtro.fechaDesde"/>';
@@ -210,33 +211,27 @@
 			</td>
 			</tr>
 			<tr>	
-				<td colspan= "4">
+				<td colspan= "6">
 					<table>
 						<tr>		
 							<td class="labelText" style="width:15%"><siga:Idioma key="censo.bajastemporales.tipo"/></td>
-							<td class="labelText" style="width:40%">
+							<td class="labelText" style="width:30%">
 							<html:select property="tipo" styleClass="boxCombo">
-							<html:option value=""><siga:Idioma key="general.combo.seleccionar"/>
-								</html:option>
-							
-							
-								<html:option value="V"><siga:Idioma key="censo.bajastemporales.tipo.vacaciones"/>
-								</html:option>
+								<html:option value=""><siga:Idioma key="general.combo.seleccionar"/></html:option>
+								<html:option value="V"><siga:Idioma key="censo.bajastemporales.tipo.vacaciones"/></html:option>
 								<html:option value="B"><siga:Idioma key="censo.bajastemporales.tipo.baja"/></html:option>
 								<html:option value="M"><siga:Idioma key="censo.bajastemporales.tipo.maternidad"/></html:option>
 								<html:option value="S"><siga:Idioma key="censo.bajastemporales.tipo.suspension"/></html:option>
-								</html:select>
+							</html:select>
 							</td>
-							<td class="labelText" style="width:15%"><siga:Idioma key="censo.bajastemporales.filtro.fechaDesde"/></td>
-							<td>
+							<td class="labelText" style="width:18%"><siga:Idioma key="censo.bajastemporales.filtro.fechaDesde"/></td>
+							<td class="labelText" >
 								<siga:Fecha  nombreCampo= "fechaDesde" campoCargarFechaDesde="fechaHasta"/>
 							</td>
 				
 							<td class="labelText"><siga:Idioma key="censo.bajastemporales.filtro.fechaHasta"/></td>
-							<td>
+							<td class="labelText" >
 							<siga:Fecha  nombreCampo= "fechaHasta"/>
-							
-
 							</td>
 						</tr>
 					</table>

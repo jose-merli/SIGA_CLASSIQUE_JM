@@ -72,13 +72,15 @@
 	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
-
+	<script>
+	jQuery.noConflict();
+	</script>
 </head>
 
 <body>
@@ -141,9 +143,8 @@
 				<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensaciones.literal.fecha"/>&nbsp;(*)
 			</td>		
 			<td>
-				<html:text property="fecha" size="10" styleClass="box" readOnly="true" />
-				&nbsp;
-				<a id="iconoCalendarioA" onClick="return showCalendarGeneral(fecha);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="general.literal.seleccionarFecha"/>'  border="0"></a>
+			 	<siga:Fecha nombreCampo="fecha" readOnly="true" posicionX="50" posicionY="50"></siga:Fecha>
+				
 			</td>
 			<td class="labelText" colspan="2">
 				<html:radio name="SaltosYCompensacionesForm" property="salto" value="S"></html:radio>				
@@ -241,10 +242,12 @@
 				<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.fecha"/> (*)
 			</td>
 			<td>
-				<html:text name="SaltosYCompensacionesForm" property="fecha" size="10" styleClass="<%=estilo %>" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fecha)%>" readOnly="true"></html:text>
+				
 				&nbsp;
 				<% if(modo.equalsIgnoreCase("EDITAR")) { %>
-					<a onClick="return showCalendarGeneral(fecha);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="general.literal.seleccionarFecha"/>'  border="0"></a>
+					<siga:Fecha nombreCampo="fecha" posicionY="100" posicionX="100" readOnly="true"  valorInicial="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fecha)%>"></siga:Fecha>
+				<% }else{  %>
+					<siga:Fecha nombreCampo="fecha" posicionY="100" posicionX="100" readOnly="true" disabled="true" valorInicial="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fecha)%>"></siga:Fecha>
 				<% }  %>
 			</td>
 			<td class="labelText">

@@ -61,7 +61,7 @@
 			<html:hidden property="editable" />
 		
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
+			
 			<input type="hidden" name="actionModal" value="">
 			<table class="tablaTitulo" align="center" cellspacing="0">
 				<tr>

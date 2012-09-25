@@ -51,14 +51,13 @@
 	String idInstitucion=usr.getLocation();
 	
 	boolean bCGAE = false;
-	if (idInstitucion.equals("2000"))
-	{
+	if (ClsConstants.esConsejoGeneral(idInstitucion)){ // General
 		// Es CGAE
 		bCGAE = true;
 		
 		if (accion.equalsIgnoreCase("nuevo"))
 		{
-			aInstitucionPropietario.add("2000");
+			aInstitucionPropietario.add(ClsConstants.INSTITUCION_CGAE);
 		}
 		
 		else
@@ -94,16 +93,17 @@
 	
 %>
 
+<%@page import="com.atos.utils.ClsConstants"%>
 <html>
-
 <!-- HEAD -->
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
-		
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->
@@ -117,7 +117,8 @@
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
 		<!-- Para el refresco: refrescarLocal() -->
-	<script>
+	<script language="JavaScript">
+		jQuery.noConflict(); 
 		function refrescarLocal() {
 			document.forms[0].target="mainWorkArea";	
 			document.forms[0].modo.value="editar";	
@@ -167,8 +168,7 @@
 		</td>
 	</tr>
 	</html:form>
-	</table>	
-	</fieldset>
+
 	
 	<!-- FIN: CAMPOS DE BUSQUEDA-->	
 
@@ -197,9 +197,7 @@
 				
 			}
 		}
-	</script>
 
-	<script language="JavaScript">
 
 		<!-- Asociada al boton Guardar -->
 		function accionGuardar() 
@@ -254,14 +252,15 @@
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 		<% if (modo.equals("nuevo") || modo.equals("ver")) { %>
 			<siga:ConjBotonesBusqueda  modal="G" titulo=""/>
-		<% }else if (idInstitucion.equals("2000") || idInstitucion.equals(idInstitucionPropietario)){%>
+		<% }else if (ClsConstants.esConsejoGeneral(idInstitucion) || idInstitucion.equals(idInstitucionPropietario)){%>
 		<siga:ConjBotonesBusqueda botones="AN"  modal="G" titulo=""/>
 		<% } else {%>
 		<siga:ConjBotonesBusqueda  modal="G" titulo="" />
 		<% }%>
-
+	</table>	
+	</fieldset>
 	<!-- INICIO: IFRAME LISTA RESULTADOS -->
-	<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
+	<iframe  src="<%=app%>/html/jsp/general/blank.jsp"
 					id="resultado"
 					name="resultado" 
 					scrolling="no"

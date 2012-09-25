@@ -73,7 +73,7 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -157,15 +157,13 @@
 						<td class="labelText"><siga:Idioma
 							key="gratuita.procedimientos.literal.fechainicio" />&nbsp;(*)</td>
 						<td class="labelText">
-							<html:text name="MantenimientoProcedimientosForm" property="fechaDesdeVigor" styleClass="box" readonly="true" style='width:70px;' value="<%=fechaInicio%>"></html:text>
-							<a href='javascript://'onClick="return showCalendarGeneral(fechaDesdeVigor);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+							<siga:Fecha nombreCampo="fechaDesdeVigor" valorInicial="<%=fechaInicio%>" posicionX="100" posicionY="100"></siga:Fecha>
+							
 						</td>
 						
 						<td class="labelText"><siga:Idioma
-							key="gratuita.procedimientos.literal.fechafin" /></td>
-						<td class="labelText">
-							<html:text name="MantenimientoProcedimientosForm" property="fechaHastaVigor" styleClass="box" readonly="true" style='width:70px;' value="<%=fechaFin%>"></html:text>
-							<a href='javascript://'onClick="return showCalendarGeneral(fechaHastaVigor);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+							key="gratuita.procedimientos.literal.fechafin" />&nbsp;
+							<siga:Fecha nombreCampo="fechaHastaVigor" valorInicial="<%=fechaFin%>" posicionX="100" posicionY="100"></siga:Fecha>
 						</td>
 
 					</tr>
@@ -194,10 +192,7 @@
 
 	</td> 
 	</tr>
-			
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+
 		</html:form>	
 	</table>
 	

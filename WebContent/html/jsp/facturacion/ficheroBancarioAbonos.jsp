@@ -101,7 +101,7 @@
 				}			
 			document.all.ficheroBancarioAbonosForm.modo.value = "generarFichero";
 			var f = document.all.ficheroBancarioAbonosForm.name;	
-			document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=facturacion.ficheroBancarioAbonos.mensaje.generandoFicheros';
+			window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=facturacion.ficheroBancarioAbonos.mensaje.generandoFicheros';
 		}
 
 
@@ -151,10 +151,6 @@
 		<html:form action="/FAC_EnvioAbonosABanco.do" method="POST" target="submitArea" style="display:none">		
 			<!-- Campo obligatorio -->
 			<html:hidden property = "modo" value = ""/>				
-
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
 			<% if (abonosSJCS){ %>
 				<input type="hidden" name="sjcs" value="<%=sjcs %>">
 			<%} else { %>

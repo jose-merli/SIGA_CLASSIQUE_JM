@@ -168,7 +168,7 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -287,7 +287,6 @@
 	<html:form action="/JGR_E-Comunicaciones_Gestion.do?noReset=true" method="post" target="mainWorkArea" style="display:none">
 		<input type="hidden" name="modo" value="">
 		<!-- RGG: cambio a formularios ligeros -->
-		<input type="hidden" name="tablaDatosDinamicosD">
 		<input type="hidden" name="actionModal" value="">
 		<input type="hidden" name="idRemesa" value="">
 		<html:hidden property="idInstitucion" value = ""/>
@@ -309,6 +308,7 @@
 		<!-- Campo obligatorio -->
 		<!-- RGG: cambio a formularios ligeros -->
 		<input type="hidden" name="tablaDatosDinamicosD">
+		<input type="hidden" name="filaSelD">
 		<input type="hidden" name="actionModal" value="">
 	</html:form>
 	

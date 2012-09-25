@@ -132,7 +132,8 @@
 			   	
 			   	document.DefinirEnviosForm.modo.value='envioModal';		   	
 			   	var resultado = ventaModalGeneral("DefinirEnviosForm","P");
-			   	if (resultado==undefined||resultado[0]==undefined){			   		
+			   	
+			   	if (!resultado||!resultado[0]||resultado[0]=="M"){			   		
 			   	} else {
 			   		var idEnvio = resultado[0];
 				    var idTipoEnvio = resultado[1];
@@ -140,7 +141,7 @@
 				    
 				   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
 				   	document.DefinirEnviosForm.modo.value='editar';
-				   	document.DefinirEnviosForm.submit();
+				   	//document.DefinirEnviosForm.submit();
 			   	}
 			}
 	

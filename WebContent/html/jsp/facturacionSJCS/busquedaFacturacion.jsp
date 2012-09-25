@@ -75,7 +75,9 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	<!-- Calendario -->
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
@@ -155,14 +157,14 @@
 		<siga:Idioma key="factSJCS.datosFacturacion.literal.fechaInicio"/>
 	</td>
 	<td>
-		<html:text name="mantenimientoFacturacionForm" property="fechaIni" style="width:80px" maxlength="10" styleClass="box" readonly="true"/><a href="javascript://" onClick="return showCalendarGeneral(fechaIni);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+		<siga:Fecha nombreCampo="fechaIni" readOnly="true"></siga:Fecha>
 	</td>
 
 	<td class="labelText">
 		<siga:Idioma key="factSJCS.datosFacturacion.literal.fechaFin"/>
 	</td>				
 	<td>
-		<html:text name="mantenimientoFacturacionForm" property="fechaFin" style="width:80px" maxlength="10" styleClass="box" readonly="true"/><a href="javascript://" onClick="return showCalendarGeneral(fechaFin);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+	<siga:Fecha nombreCampo="fechaFin" readOnly="true"></siga:Fecha>
 	</td>
 
 	</tr>

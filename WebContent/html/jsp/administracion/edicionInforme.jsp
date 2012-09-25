@@ -311,7 +311,7 @@ function onChangeTipoenvio() {
 					<input type="radio" name="destinatariosCheck" value="C" ><siga:Idioma key="administracion.informes.destinatarios.colegiados"/>
 					<input type="radio" name="destinatariosCheck" value="S" ><siga:Idioma key="administracion.informes.destinatarios.solicitantes"/>
 					<input type="radio" name="destinatariosCheck" value="P" ><siga:Idioma key="administracion.informes.destinatarios.procurador"/>
-					<!-- <input type="radio" name="destinatariosCheck" value="J" ><siga:Idioma key="administracion.informes.destinatarios.juzgado"/> -->
+					<input type="radio" name="destinatariosCheck" value="J" ><siga:Idioma key="administracion.informes.destinatarios.juzgado"/> 
 			</td>
 		</tr>
 			<tr id="trEnvios">
@@ -452,13 +452,13 @@ function onChangeIdTipoInforme()
 	idDirectorioTipoInforme = 'directorioTipoInforme_'+indiceTipoInforme;
 	claseTipoInforme =  document.getElementById(idClaseTipoInforme).value;
 	directorioTipoInforme =  document.getElementById(idDirectorioTipoInforme).value;
-	document.getElementById("directorio").disabled = "";
+	jQuery("#directorio").removeAttr("disabled");
 	document.InformeFormEdicion.directorio.value = directorioTipoInforme;
-	document.getElementById("directorio").disabled = "disabled";
+   	jQuery("#directorio").attr("disabled","disabled");
 	if(claseTipoInforme=='P'||claseTipoInforme=='C'){
-		document.getElementById("tipoFormato").disabled="";
+		jQuery("#tipoFormato").removeAttr("disabled");
 	}else{
-		document.getElementById("tipoFormato").disabled="disabled";	
+	   	jQuery("#tipoFormato").attr("disabled","disabled");
 	}
 	
 	if(document.InformeFormEdicion.idTipoInforme.value=='CON'){
@@ -486,18 +486,16 @@ function inicio()
 		}
 	}
 	if(document.InformeForm.claseTipoInforme.value=='P'||document.InformeForm.claseTipoInforme.value=='C'){
-		document.getElementById("tipoFormato").disabled="";
+		jQuery("#tipoFormato").removeAttr("disabled");
 	}else{
-		document.getElementById("tipoFormato").disabled="disabled";	
-	
+	   	jQuery("#tipoFormato").attr("disabled","disabled");
 	}
 	document.getElementById("directorio").disabled="disabled";
 	
 	if(document.InformeForm.modo.value=='modificar'){
-		document.getElementById("idInstitucion").disabled="disabled";
-		document.getElementById("idPlantilla").disabled="disabled";
-		//document.getElementById("tipoFormato").disabled="disabled";
-		document.getElementById("idTipoInforme").disabled="disabled";
+	   	jQuery("#idInstitucion").attr("disabled","disabled");
+	   	jQuery("#idPlantilla").attr("disabled","disabled");
+	   	jQuery("#idTipoInforme").attr("disabled","disabled");
 		
 				
 	}else if(document.InformeForm.modo.value=='consultar'){
@@ -506,6 +504,7 @@ function inicio()
 		for(var i = 0 ; i <inputs.length ; i++) {
 			input = inputs[i];
 			if(input.value!="Cerrar")
+				
 				input.disabled =  "disabled"; 
 		}
 		selects = document.getElementsByTagName("select");
@@ -523,18 +522,16 @@ function inicio()
 	}else if(document.InformeForm.modo.value=='insertar'){
 		document.getElementById ("titulo").innerHTML = '<siga:Idioma key='administracion.informes.nuevo.titulo'  />';
 		if(document.getElementById("location").value=='2000'){
-			document.getElementById("idInstitucion").disabled="";
-			document.getElementById("idPlantilla").disabled="";
-			document.getElementById("idTipoInforme").disabled="";
-			
-			// document.getElementById("tipoFormato").disabled="";
+			jQuery("#idInstitucion").removeAttr("disabled");
+			jQuery("#idPlantilla").removeAttr("disabled");
+			jQuery("#idTipoInforme").removeAttr("disabled");
 		}else{
 			//Mostramos la propia institcion(0 seleciona , 1 pordefecto, 2 intitucion)
 			document.getElementById("idInstitucion").selectedIndex = "2";
-			document.getElementById("idInstitucion").disabled="disabled";
-			document.getElementById("idPlantilla").disabled="";
-			document.getElementById("idTipoInforme").disabled="";
-			// document.getElementById("tipoFormato").disabled="";
+		   	jQuery("#idInstitucion").attr("disabled","disabled");
+			jQuery("#idPlantilla").removeAttr("disabled");
+			jQuery("#idTipoInforme").removeAttr("disabled");
+
 		}
 	
 	}
@@ -587,12 +584,10 @@ function accionGuardar()
 		}
 	}
 
-	document.getElementById("directorio").disabled="";
-	document.getElementById("idInstitucion").disabled="";
-	document.getElementById("idPlantilla").disabled="";
-	document.getElementById("idTipoInforme").disabled="";
-	// document.getElementById("tipoFormato").disabled="";
-	
+	jQuery("#directorio").removeAttr("disabled");
+	jQuery("#idInstitucion").removeAttr("disabled");
+	jQuery("#idPlantilla").removeAttr("disabled");
+	jQuery("#idTipoInforme").removeAttr("disabled");
 	
 	
 	if (document.InformeForm.modo.value=='insertar'){
@@ -644,10 +639,12 @@ function accionGuardar()
 			error = "<siga:Idioma key='errors.required' arg0='administracion.informes.literal.destinatarios' />";
 			alert(error);
 			fin();
-			document.getElementById("idInstitucion").disabled="disabled";
-			document.getElementById("idPlantilla").disabled="disabled";
-			document.getElementById("idTipoInforme").disabled="disabled";
-			document.getElementById("directorio").disabled="disabled";
+
+		   	jQuery("#idInstitucion").attr("disabled","disabled");
+		   	jQuery("#idPlantilla").attr("disabled","disabled");
+		   	jQuery("#idTipoInforme").attr("disabled","disabled");
+		   	jQuery("#directorio").attr("disabled","disabled");
+
 			return false;
 		}
 		document.InformeFormEdicion.destinatarios.value = destinatarios;
@@ -658,7 +655,8 @@ function accionGuardar()
 	}
 	
 	document.InformeFormEdicion.modo.value = document.InformeForm.modo.value; 
-	document.getElementById("directorio").disabled = "";
+	jQuery("#directorio").removeAttr("disabled");
+
 	 if (validateInformeFormEdicion(document.InformeFormEdicion)){
 			 
 	 
@@ -671,11 +669,10 @@ function accionGuardar()
 	 }else{
 	 	fin();
  	}
-	document.getElementById("idInstitucion").disabled="disabled";
-	document.getElementById("idPlantilla").disabled="disabled";
-	document.getElementById("idTipoInforme").disabled="disabled";
-	// document.getElementById("tipoFormato").disabled="disabled";
-	document.getElementById("directorio").disabled = "disabled";
+	   	jQuery("#idInstitucion").attr("disabled","disabled");
+	 	jQuery("#idPlantilla").attr("disabled","disabled");
+	 	jQuery("#idTipoInforme").attr("disabled","disabled");
+	 	jQuery("#directorio").attr("disabled","disabled");
 }
 function formatearFormulario(formulario)
 {
@@ -720,7 +717,7 @@ function accionCerrar()
 function gestionarDatosConsultas() 
 {		
 	document.getElementsByName("idTipoInforme")[0].disabled =  "disabled";
-	document.getElementById("alias").disabled =  "disabled";
+   	jQuery("#alias").attr("disabled","disabled");
 	document.getElementById("ocultarSolicitantes").style.display =  "none";
 	//document.getElementById("ocultarOrden").style.display =  "none";
 	document.getElementById("ocultarLabelPreseleccionado").style.display =  "none";

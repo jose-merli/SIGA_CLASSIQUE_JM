@@ -61,16 +61,16 @@
 			var auxActivarAlertas=document.getElementById("activarAlertas");
 			if (auxActivarAlertas.checked) {
 				auxDiasAntelacion.readonly=false;
-				auxDiasAntelacion.disabled=false;
+				jQuery("#diasAntelacion").removeAttr("disabled");				
 				auxMensaje.readonly=false;
-				auxMensaje.disabled=false;
+				jQuery("#mensaje").removeAttr("disabled");						
 				auxMensaje.className="box";
 				auxDiasAntelacion.className="box";
 			} else {
 				auxDiasAntelacion.readonly=true;
-				auxDiasAntelacion.disabled=true;
+			   	jQuery("#diasAntelacion").attr("disabled","disabled");
 				auxMensaje.readonly=true;
-				auxMensaje.disabled=true;
+			   	jQuery("#mensaje").attr("disabled","disabled");
 				auxMensaje.value="";
 				auxDiasAntelacion.value="";
 				auxMensaje.className="boxConsulta";
@@ -619,8 +619,8 @@
 	
 
  function validarAncho_tablaDatos() {
-  if (document.all.tablaPlazos.clientHeight < document.all.tablaDatosDiv.clientHeight) {
-   document.all.tablaDatosCabeceras.width='100%';
+  if (document.getElementById("tablaPlazos").clientHeight < document.getElementById("tablaDatosDiv").clientHeight) {
+	  document.getElementById("tablaDatosCabeceras").width='100%';
   }
 
  }

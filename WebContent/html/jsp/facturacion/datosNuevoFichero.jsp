@@ -80,7 +80,7 @@
 			} else {
 				if (validateDevolucionesForm(document.DevolucionesForm)){
 					document.forms[0].modo.value="insertar";
-					document.frames.submitArea.location="<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName="+
+					window.frames.submitArea.location="<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName="+
 														document.forms[0].name+
 														"&msg=facturacion.nuevoFichero.literal.generandoDevoluciones";
 					//document.forms[0].submit();

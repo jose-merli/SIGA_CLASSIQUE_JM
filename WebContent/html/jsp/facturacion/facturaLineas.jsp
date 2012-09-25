@@ -69,7 +69,7 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -99,7 +99,6 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 
 		<html:form action="<%=path%>" method="POST" target="submitArea" style="display:none">
 			<html:hidden styleId="modo"  property="modo" value = ""/>
-			<input type="hidden" id="actionModal"  name="actionModal" value=""/>
 		</html:form>
 		
 			<siga:TablaCabecerasFijas 

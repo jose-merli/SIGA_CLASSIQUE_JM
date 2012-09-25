@@ -47,7 +47,7 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -98,7 +98,6 @@
 			<input type="hidden" name="accionE" id="accionE" value="nuevo">
 			<input type="hidden" name="actionE" id="actionE" value="<%=sAction%>">
 			<input type="hidden" id="pantallaE" name="pantallaE" value="M">
-			<input type="hidden" name="actionModal" id="actionModal" value="" />
 		</html:form>	
 		
 

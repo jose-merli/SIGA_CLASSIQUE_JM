@@ -360,11 +360,11 @@ function IsNum( numstr ) {
 			{
 				if (document.forms[0].enviarFacturas.checked==true) {
 					document.forms[0].generarPDF.checked=true;
-					document.forms[0].generarPDF.disabled=true;
-					document.forms[0].idTipoPlantillaMail.disabled=false;
+				   	jQuery("#generarPDF").attr("disabled","disabled");
+					jQuery("#idTipoPlantillaMail").removeAttr("disabled");					
 				} else {
-					document.forms[0].generarPDF.disabled=false;
-					document.forms[0].idTipoPlantillaMail.disabled=true;
+					jQuery("#generarPDF").removeAttr("disabled");	
+					jQuery("#idTipoPlantillaMail").attr("disabled","disabled");
 				}
 				return false;
 			}
@@ -373,10 +373,10 @@ function IsNum( numstr ) {
 			{
 				if (document.forms[0].enviarFacturas.checked==true) {
 					if(document.forms[0].idTipoPlantillaMail)
-						document.forms[0].idTipoPlantillaMail.disabled=false;
+						jQuery("#idTipoPlantillaMail").removeAttr("disabled");
 				} else {
 					if(document.forms[0].idTipoPlantillaMail)
-						document.forms[0].idTipoPlantillaMail.disabled=true;
+					   	jQuery("#idTipoPlantillaMail").attr("disabled","disabled");
 				}
 			}
 			
@@ -618,19 +618,19 @@ function IsNum( numstr ) {
 										<siga:Idioma key="facturacion.datosGenerales.literal.generaPDF"/>&nbsp;&nbsp;
 										<% if (modoAction.equals("editar")) {%>
 										<% if ((enviarFacturas != null) && (enviarFacturas.equals("1"))) { %>
-												<input type="checkbox" name="generarPDF" checked disabled>
+												<input type="checkbox" id="generarPDF" name="generarPDF" checked disabled>
 										<%} else if ((generarPDF != null) && (generarPDF.equals("1"))) { %>
-												<input type="checkbox" name="generarPDF" checked>
+												<input type="checkbox" id="generarPDF" name="generarPDF" checked>
 										<%} else { %>
-												<input type="checkbox" name="generarPDF" >
+												<input type="checkbox" id="generarPDF" name="generarPDF" >
 										<%}%>
 										<%}else{ %>
 											<%if ((enviarFacturas != null) && (enviarFacturas.equals("1"))) {%>
-												<input type="checkbox" name="generarPDF" checked disabled>
+												<input type="checkbox" id="generarPDF" name="generarPDF" checked disabled>
 										<%} else if ((generarPDF != null) && (generarPDF.equals("1"))) { %>
-												<input type="checkbox" name="generarPDF" checked disabled>
+												<input type="checkbox" id="generarPDF" name="generarPDF" checked disabled>
 										<% }else { %>
-												<input type="checkbox" name="generarPDF" disabled >
+												<input type="checkbox" id="generarPDF" name="generarPDF" disabled >
 										<% } %>
 										<%}%>
 									</td>
@@ -638,15 +638,15 @@ function IsNum( numstr ) {
 										<siga:Idioma key="facturacion.datosGenerales.literal.envioFacturas"/>&nbsp;&nbsp;
 										<% if (modoAction.equals("editar")) { %>
 											<%  if ((enviarFacturas != null) && (enviarFacturas.equals("1"))) { %>
-													<input type="checkbox" name="enviarFacturas" onclick="actualiza();" checked>
+													<input type="checkbox" id="enviarFacturas" name="enviarFacturas" onclick="actualiza();" checked>
 											<% } else { %>
-													<input type="checkbox" name="enviarFacturas" onclick="actualiza();">
+													<input type="checkbox" id="enviarFacturas" name="enviarFacturas" onclick="actualiza();">
 											<% } %>
 										<%} else{ %>
 										<% if ((enviarFacturas != null) && (enviarFacturas.equals("1"))) { %>
-												<input type="checkbox" name="enviarFacturas" onclick="actualiza();" checked disabled>
+												<input type="checkbox" id="enviarFacturas"  name="enviarFacturas" onclick="actualiza();" checked disabled>
 										<% } else { %>
-												<input type="checkbox" name="enviarFacturas" onclick="actualiza();" disabled>
+												<input type="checkbox" id="enviarFacturas"  name="enviarFacturas" onclick="actualiza();" disabled>
 										<% } %>
 										<%} %>
 									</td>

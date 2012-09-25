@@ -125,7 +125,7 @@
 				sub();
 				ProgramacionForm.modo.value = "descargar";
 				var fname = document.getElementById("ProgramacionForm").name;
-				document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.wait';
+				window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.wait';
 				
 			   	//ProgramacionForm.submit();
 			   	//ProgramacionForm.modo.value = "modificar";
@@ -142,7 +142,7 @@
 				sub();
 				ProgramacionForm.modo.value = "generarEtiquetas";
 				var fname = document.getElementById("ProgramacionForm").name;
-				document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.wait';
+				window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.wait';
 
 			}
 			
@@ -161,7 +161,7 @@
 			{
 
 
-				jQuery("#invokefechaProgramada").hide();
+				jQuery("#fechaProgramada").hide();
 				ProgramacionForm.horas.readOnly=true;
 				ProgramacionForm.minutos.readOnly=true;
 				ProgramacionForm.fechaProgramada.readOnly=true;
@@ -173,7 +173,7 @@
 			else
 			{ 
 
-				jQuery("#invokefechaProgramada").show();
+				jQuery("#fechaProgramada").show();
 				ProgramacionForm.horas.readOnly=false;
 				ProgramacionForm.minutos.readOnly=false;
 				ProgramacionForm.fechaProgramada.readOnly=false;

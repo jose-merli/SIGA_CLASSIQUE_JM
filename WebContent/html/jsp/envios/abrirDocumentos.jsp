@@ -147,9 +147,6 @@
 			<html:hidden property="idInstitucion"/>
 			<html:hidden property="idEnvio"/>			
 
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
 		</html:form>
 
 

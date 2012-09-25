@@ -58,11 +58,11 @@ function preAccionBuscarCalendarios (){
 	//document.CalendariosForm.target = 'mainPestanas';
 }
 function ajustarCabeceraCalendario(){
-	if (document.all.listadoCalendarios.clientHeight < document.all.listadoCalendariosDiv.clientHeight) {
-		   document.all.listadoCalendariosCab.width='100%';
+	if (document.getElementById("listadoCalendarios").clientHeight < document.getElementById("listadoCalendariosDiv").clientHeight) {
+		document.getElementById("listadoCalendariosCab").width='100%';
 		   
 	  } else {
-		   document.all.listadoCalendariosCab.width='98.43%';
+		  document.getElementById("listadoCalendariosCab").width='98.43%';
 		   
 	  }
 }

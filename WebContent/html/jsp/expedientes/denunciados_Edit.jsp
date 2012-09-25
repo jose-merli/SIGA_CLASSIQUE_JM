@@ -280,6 +280,7 @@ if (accion.equals("nuevo")||accion.equals("edicionDenunciado")){
 			<input type='hidden' name="accion" value= "">
 			<!-- RGG: cambio a formularios ligeros -->
 			<input type="hidden" name="tablaDatosDinamicosD">
+			<input type="hidden" name="filaSelD">
 			<input type="hidden" name="actionModal" value="">
 			<html:hidden property = "vieneDe" value=""/>
 			

@@ -42,7 +42,7 @@
 
 		
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
 		
 		
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -54,18 +54,22 @@
 			jQuery.noConflict();
 			var bloqueado=false;
 			
+		
 			function cargaContenidoModal() {
-				var datos = window.dialogArguments;
+				var datos = window.top.dialogArguments;
+				
 				var formu = document.createElement('form');
 				formu.setAttribute('method', 'POST');
 				formu.setAttribute('target', 'modal');
 				for (var i=0;i<datos.length;i++) {
 					if (datos[i].value) {
+						
 						if (datos[i].name=='actionModal') {
 							formu.setAttribute('action', datos[i].value);
+							
 						} else {						
 							var el = document.createElement("input");
-							el.setAttribute("type", "hidden")
+							el.setAttribute("type", "hidden");
 							el.setAttribute("name", datos[i].name);
 							el.setAttribute("id", datos[i].name);
 							el.setAttribute("value", datos[i].value);

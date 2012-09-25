@@ -76,10 +76,8 @@
 	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
-	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
-		
-	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>" ></script>
-	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
+
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
 	<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
 	
@@ -95,7 +93,9 @@
 	  <link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />
 	  <link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
 
-	
+		<script>
+		jQuery.noConflict();
+		</script>
 </head>
 
 <body>
@@ -173,9 +173,7 @@
 				<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensaciones.literal.fecha"/>&nbsp;(*)
 			</td>		
 			<td>
-				<html:text property="fecha" size="10" styleClass="box" readOnly="true" />
-				&nbsp;
-				<a id="iconoCalendarioA" onClick="return showCalendarGeneral(fecha);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="general.literal.seleccionarFecha"/>'  border="0"></a>
+				<siga:Fecha nombreCampo="fecha" posicionY="50" posicionX="50" readOnly="true" ></siga:Fecha>
 			</td>
 			<td class="labelText" colspan="2">
 				<html:radio name="SaltosYCompensacionesForm" property="salto" value="S"></html:radio>				

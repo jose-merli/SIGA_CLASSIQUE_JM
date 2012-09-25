@@ -34,7 +34,7 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -142,14 +142,11 @@
 		function accionGuardarCerrar44() 
 		{		
 			
-			alert("top.frames[0].document="+top.frames[0].document);
-			var frameCombo=top.frames[0].document.getElementById("combo_poblacionesFrame");
-			alert("frame="+top.frames[0]);
+
+			var frameCombo=window.top.frames[0].document.getElementById("combo_poblacionesFrame");
 			var comboPoblacion=document.forms[0].combo_poblaciones;
-			alert("combo ="+comboPoblacion);
 			
 			//alert("comboOptions ="+comboPoblacion.options);
-			alert("comboOptionsLength ="+comboPoblacion.options.length);
 			var indice = document.forms[0].combo_provincias.selectedIndex;
 			if (indice == 0)
 				confirm('<siga:Idioma key="gratuita.modalPJ.literal.introducir"/>');

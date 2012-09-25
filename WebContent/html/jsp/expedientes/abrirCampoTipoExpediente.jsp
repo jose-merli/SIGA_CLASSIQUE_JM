@@ -63,7 +63,7 @@
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 		
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"> </script>
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	
 		<!-- Validaciones en Cliente -->
 		<html:javascript formName="camposForm" staticJavascript="false" />  
@@ -178,38 +178,39 @@
 				var boton1=document.getElementById("botonPestana1");
 				if (chk1.checked && !bLectura) {
 					caja1.readonly=false;
-					boton1.disabled=false;
+					jQuery("#botonPestana1").removeAttr("disabled");
 					caja1.className="box";
 				} else {
 					caja1.readonly=true;
-					boton1.disabled=true;
+					jQuery("#botonPestana1").attr("disabled","disabled");
 					caja1.className="boxConsulta";
 				}
-				if (bLectura) boton1.disabled=false;
+				
+				if (bLectura) jQuery("#botonPestana1").removeAttr("disabled");
 				
 				var chk2=document.getElementById("chkPestanaConf2");
 				var caja2=document.getElementById("pestanaConf2");
 				var boton2=document.getElementById("botonPestana2");
 				if (chk2.checked  && !bLectura) {
 					caja2.readonly=false;
-					boton2.disabled=false;
+					jQuery("#botonPestana2").removeAttr("disabled");
 					caja2.className="box";
 				} else {
 					caja2.readonly=true;
-					boton2.disabled=true;
+					jQuery("#botonPestana2").attr("disabled","disabled");
 					caja2.className="boxConsulta";
 				}
-				if (bLectura) boton2.disabled=false;
+				
+				if (bLectura)	jQuery("#botonPestana2").removeAttr("disabled"); 
 				if (document.camposForm.enviarAvisos.value == "1"){
 					document.getElementById("checkEnviarAvisos").checked = "checked";
-					document.getElementById("comboPlantillaEnvio").disabled = "";
+					jQuery("#comboPlantillaEnvio").removeAttr("disabled");
 					document.getElementById("comboPlantillaEnvio").onchange();
-					document.getElementById("idPlantillaGeneracion").disabled = "";
+					jQuery("#idPlantillaGeneracion").removeAttr("disabled");
 				}else{
 					document.getElementById("checkEnviarAvisos").checked = "";
-					document.getElementById("comboPlantillaEnvio").disabled = "disabled";
-					document.getElementById("idPlantillaGeneracion").disabled = "disabled";
-					
+					jQuery("#comboPlantillaEnvio").attr("disabled","disabled");
+					jQuery("#idPlantillaGeneracion").attr("disabled","disabled");
 				}
 				
 				
@@ -220,11 +221,11 @@
 				var boton1=document.getElementById("botonPestana1");
 				if (obj.checked) {
 					caja1.readonly=false;
-					boton1.disabled=false;
+					jQuery("#botonPestana1").removeAttr("disabled");
 					caja1.className="box";
 				} else {
 					caja1.readonly=true;
-					boton1.disabled=true;
+					jQuery("#botonPestana1").attr("disabled","disabled");
 					caja1.className="boxConsulta";
 				}
 			}
@@ -234,11 +235,11 @@
 				var boton2=document.getElementById("botonPestana2");
 				if (obj.checked) {
 					caja2.readonly=false;
-					boton2.disabled=false;
+					jQuery("#botonPestana2").removeAttr("disabled");
 					caja2.className="box";
 				} else {
 					caja2.readonly=true;
-					boton2.disabled=true;
+					jQuery("#botonPestana2").attr("disabled","disabled");
 					caja2.className="boxConsulta";
 				}
 			}
@@ -264,8 +265,8 @@
 				
 				if(document.getElementById("checkEnviarAvisos").checked==true){
 					
-					document.getElementById("idPlantillaGeneracion").disabled = "";
-					document.getElementById("comboPlantillaEnvio").disabled = "";
+					jQuery("#idPlantillaGeneracion").removeAttr("disabled");
+					jQuery("#comboPlantillaEnvio").removeAttr("disabled");
 					document.getElementById("comboPlantillaEnvio").value = "";
 					document.getElementById("comboPlantillaEnvio").onchange();
 					//document.getElementById("idPlantillaGeneracion").value = "";
@@ -275,8 +276,8 @@
 					//document.getElementById("idPlantillaGeneracion").value = "";
 					document.getElementById("comboPlantillaEnvio").value = "";
 					document.getElementById("comboPlantillaEnvio").onchange();
-					document.getElementById("comboPlantillaEnvio").disabled = "disabled";
-					document.getElementById("idPlantillaGeneracion").disabled = "disabled";
+				   	jQuery("#comboPlantillaEnvio").attr("disabled","disabled");
+				   	jQuery("#idPlantillaGeneracion").attr("disabled","disabled");
 					
 				}
 
@@ -292,10 +293,10 @@
 			function onclickCheckAbrirExp() {
 				
 				if(document.getElementById("relacionExpediente").checked){
-					document.getElementById("comboTipoExpediente").disabled = "";
+					jQuery("#comboTipoExpediente").removeAttr("disabled");
 					document.getElementById("comboTipoExpediente").value = "";
 				}else{
-					document.getElementById("comboTipoExpediente").disabled  = "disabled";
+				   	jQuery("#comboTipoExpediente").attr("disabled","disabled");
 					document.getElementById("comboTipoExpediente").value = "";	
 				}					
 

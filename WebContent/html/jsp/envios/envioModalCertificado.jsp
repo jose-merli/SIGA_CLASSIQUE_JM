@@ -220,7 +220,7 @@
 					document.DefinirEnviosForm.acuseRecibo.value = "0";
 				
 				var f = document.DefinirEnviosForm.name;
-				document.frames.submitArea.location = '<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=messages.wait';
+				window.frames.submitArea.location = '<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=messages.wait';
 			} else {
 				fin();
 			}
@@ -259,12 +259,10 @@
 			
 			//alert("i "+idTipoEnvio);
 			if(idTipoEnvio!='1'){
-				document.getElementById("idCheckAcuseRecibo").disabled="disabled";
-					
-		      	
+			   	jQuery("#idCheckAcuseRecibo").attr("disabled","disabled");
 				
 			}else{
-				document.getElementById("idCheckAcuseRecibo").disabled="";
+				jQuery("#idCheckAcuseRecibo").removeAttr("disabled");
 			}
 			
 		} 

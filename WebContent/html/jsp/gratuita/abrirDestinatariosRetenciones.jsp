@@ -27,7 +27,7 @@
 <html>
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
 			
 		
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -64,7 +64,6 @@
 			<table class="tablaCentralCampos" align="center">
 				<html:form action="/JGR_MantenimientoDestinatariosRetenciones.do" method="POST" target="resultado">
 					<input type="hidden" name="modo" value="inicio">
-					<input type="hidden" name="tablaDatosDinamicosD">
 					<input type="hidden" name="actionModal" value="">
 					<tr>				
 						<td class="labelText" width="150">

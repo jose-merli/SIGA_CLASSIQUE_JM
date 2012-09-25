@@ -263,7 +263,6 @@
 
 			<!-- RGG: cambio a formularios ligeros -->
 			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
-			<input type="hidden" id="actionModal" name="actionModal" value="">
 			<input type="hidden" id="incluirRegistrosConBajaLogica" name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>">
 			</html:form>
 

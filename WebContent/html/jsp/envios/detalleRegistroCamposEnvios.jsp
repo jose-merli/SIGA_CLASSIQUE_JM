@@ -96,7 +96,7 @@
 				if (miSplitVar=='S' || "<%=sCapturarDatos%>"=='S')
 				{
 					PlantillasEnviosCamposForm.valor.readOnly=false;
-					PlantillasEnviosCamposForm.valor.disabled=false;
+					jQuery("#valor").removeAttr("disabled");
 					PlantillasEnviosCamposForm.valor.cols="125";
 					PlantillasEnviosCamposForm.valor.rows="12";
 					PlantillasEnviosCamposForm.valor.className="box";
@@ -106,7 +106,7 @@
 				{
 					//alert('<siga:Idioma key="certificados.mantenimiento.literal.aviso"/>');
 					PlantillasEnviosCamposForm.valor.value="";
-					PlantillasEnviosCamposForm.valor.disabled=true;
+					jQuery("#valor").attr("disabled","disabled");
 					PlantillasEnviosCamposForm.valor.readOnly=true;
 					PlantillasEnviosCamposForm.valor.cols="1";
 					PlantillasEnviosCamposForm.valor.rows="11";
@@ -221,7 +221,7 @@
 <%
 										boolean bReadOnly=sCapturarDatos.equals("S") ? bEditable ? false : true : true;
 %>
-											<html:textarea property="valor" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" value="" style="width=600px" styleClass="boxCombo" cols="125" rows="12" value="<%=sValor%>" readonly="<%=bReadOnly%>"/>
+											<html:textarea property="valor" styleId="valor" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" value="" style="width=600px" styleClass="boxCombo" cols="125" rows="12" value="<%=sValor%>" readonly="<%=bReadOnly%>"/>
 										</td>
 									</tr>
 								</table>

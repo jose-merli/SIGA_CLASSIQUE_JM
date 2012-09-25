@@ -36,7 +36,7 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -187,15 +187,14 @@
 		 
 		 if (!valorCheck.checked){
 		   document.getElementById('numeroNifTagBusquedaPersonas').readOnly=false;
-		   document.getElementById("busquedaLetrado").disabled=false;
-		   document.getElementById("idButton").disabled=false;
+			jQuery("#busquedaLetrado").removeAttr("disabled");
+			jQuery("#idButton").removeAttr("disabled");
 		   
 		 }else{
 		   limpiarPersona();
-		 document.getElementById('numeroNifTagBusquedaPersonas').readOnly=true;
-		 document.getElementById("busquedaLetrado").disabled=true;
-		 document.getElementById("idButton").disabled=true;
-		   
+			document.getElementById('numeroNifTagBusquedaPersonas').readOnly=true;
+		   	jQuery("#busquedaLetrado").attr("disabled","disabled");
+		   	jQuery("#idButton").attr("disabled","disabled");
 		 }
 		}
 	</script>

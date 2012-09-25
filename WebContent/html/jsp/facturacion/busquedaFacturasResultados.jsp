@@ -4,7 +4,6 @@
 <meta http-equiv="Cache-Control" content="no-cache">
 
 <%@taglib uri	="struts-tiles.tld" 			prefix="tiles" 		%>
-<%@taglib uri	="struts-bean.tld" 			prefix="bean" 		%>
 <%@taglib uri = "struts-html.tld" 			prefix="html" 		%>
 <%@taglib uri = "libreria_SIGA.tld" 		prefix="siga"			%>
 
@@ -107,7 +106,7 @@ else{
 	   	document.DefinirEnviosForm.modo.value='envioModal';		   	
 	   	document.DefinirEnviosForm.subModo.value='envioFactura';		   	
 	   	var resultado = ventaModalGeneral("DefinirEnviosForm","P");
-	   	if (resultado==undefined||resultado[0]==undefined){
+	   	if (resultado==undefined||resultado[0]==undefined||resultado[0]=="M"){
 	   				   		
 	   	} 
 	   	else {

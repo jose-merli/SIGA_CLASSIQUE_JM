@@ -33,10 +33,9 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
-	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
-		
-	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>" ></script>
 	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
+	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery.js"/>" ></script>
+	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery.custom.js"/>" ></script>	
 	<script src="<html:rewrite page="/html/js/calendarJs.jsp"/>" type="text/javascript"></script>	
 	<script src="<html:rewrite page="/html/jsp/general/validacionSIGA.jsp"/>" type="text/javascript"></script>	
 	
@@ -130,26 +129,17 @@
 									</tr>
 									<tr>
 										<td class="labelText">
-			
-												<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.fecha.Justif"/>&nbsp;<siga:Idioma key="general.literal.desde"/>
-			
+											<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.fecha.Justif"/>&nbsp;<siga:Idioma key="general.literal.desde"/>
 										</td>
 										<td>
-											<html:text property="fechaJustificacionDesde"  size="10" styleClass="box" readOnly="true" />
-											&nbsp;
-											<a id="iconoCalendarioA" onClick="return showCalendarGeneral(fechaJustificacionDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<html:rewrite page="/html/imagenes/calendar_hi.gif"/>',1);"><img src="<html:rewrite page="/html/imagenes/calendar.gif"/>" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-									
+											<siga:Fecha nombreCampo="fechaJustificacionDesde"  readOnly="true"></siga:Fecha>
 										</td>
 										<td class="labelText">
 											<siga:Idioma key="general.literal.hasta"/>
 										</td>
 										<td>
-											<html:text property="fechaJustificacionHasta"  size="10" styleClass="box" readOnly="true" />
-												&nbsp;
-												<a id="iconoCalendarioA" onClick="return showCalendarGeneral(fechaJustificacionHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<html:rewrite page="/html/imagenes/calendar_hi.gif"/>',1);"><img src="<html:rewrite page="/html/imagenes/calendar.gif"/>" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+											<siga:Fecha nombreCampo="fechaJustificacionHasta"  readOnly="true"></siga:Fecha>
 										</td>
-										
-										
 										<td class="labelText" >
 												<siga:Idioma key="gratuita.editarDesigna.literal.estado"/>
 										</td>
@@ -215,27 +205,17 @@
 							<tr>
 								
 								<td class="labelText">
-
 									<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.fechaSalida"/>&nbsp;<siga:Idioma key="general.literal.desde"/>
-
 								</td>
 								<td>
-									<html:text property="fechaDesde"  size="10" styleClass="box" readOnly="true" />
-									&nbsp;
-									<a id="iconoCalendarioA" onClick="return showCalendarGeneral(fechaDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<html:rewrite page="/html/imagenes/calendar_hi.gif"/>',1);"><img src="<html:rewrite page="/html/imagenes/calendar.gif"/>" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-						
+									<siga:Fecha nombreCampo="fechaDesde"  readOnly="true"></siga:Fecha>
 								</td>
 								<td class="labelText">
 									<siga:Idioma key="general.literal.hasta"/>
 								</td>
 								<td>
-									<html:text property="fechaHasta"  size="10" styleClass="box" readOnly="true" />
-									&nbsp;
-									<a id="iconoCalendarioA" onClick="return showCalendarGeneral(fechaHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<html:rewrite page="/html/imagenes/calendar_hi.gif"/>',1);"><img src="<html:rewrite page="/html/imagenes/calendar.gif"/>" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+									<siga:Fecha nombreCampo="fechaHasta"  readOnly="true"></siga:Fecha>								
 								</td>
-							
-								
-								
 								<td class="labelText">
 									<siga:Idioma key="expedientes.auditoria.literal.nombre"/>
 								</td>

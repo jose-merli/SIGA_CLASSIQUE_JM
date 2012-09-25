@@ -357,16 +357,14 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script type="text/javascript" src="<%=app%>/html/js/SIGA.js"></script>
 	<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
 	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery-ui.js'/>"></script>
 	<script type="text/javascript" src="<%=app%>/html/js/calendarJs.jsp"></script>
 	<script type="text/javascript" src="<%=app%>/html/jsp/general/validacionSIGA.jsp"></script>
-
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<siga:TituloExt titulo="gratuita.editarDesigna.literal.titulo" localizacion="gratuita.editarDesigna.literal.location"/>
 	

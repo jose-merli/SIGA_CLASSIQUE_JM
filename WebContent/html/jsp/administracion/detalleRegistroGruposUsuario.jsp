@@ -86,7 +86,7 @@
 <html>
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
 			
 		
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -145,13 +145,13 @@
 			function accionGuardarCerrar() 
 			{
 				sub();
-				if (document.all.perfil.value == ''){
+				if (document.getElementById("perfil").value == ''){
 					var mensaje = '<siga:Idioma key="administracion.grupos.literal.id"/> <siga:Idioma key="messages.campoObligatorio.error"/>';
 					alert(mensaje);
 					fin();	
 					return false;
 				}else{
-					if (document.all.descripcion.value == ''){
+					if (document.getElementById("perfil").value == ''){
 						alert('<siga:Idioma key="messages.consultas.error.descripcion"/>');
 						fin();
 						return false;	

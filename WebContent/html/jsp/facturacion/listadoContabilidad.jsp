@@ -111,7 +111,7 @@
 		<input type="hidden" name="fichero" />
 		<input type="hidden" name="idContabilidad" />
 		<!-- RGG: cambio a formularios ligeros -->
-		<input type="hidden" name="tablaDatosDinamicosD">
+		
 		<input type="hidden" name="actionModal" value="">
 	</html:form>
 		

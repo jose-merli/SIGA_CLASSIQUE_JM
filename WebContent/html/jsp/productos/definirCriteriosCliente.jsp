@@ -68,7 +68,7 @@
 		<!-- Formulario de la lista de detalle multiregistro -->
 		<html:form action="/PYS_MantenimientoServicios.do" method="POST" target="mainWorkArea" style="display:none">
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
+			
 			<input type="hidden" name="actionModal" value="">
 		</html:form>	
 		

@@ -95,7 +95,7 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -149,14 +149,14 @@
 			  document.getElementById("busquedaLetrado").style.display="none";
 		      limpiarPersona();
 			  <%}else{%>
-			  document.getElementById("checkEsDeTurno").disabled=true;
+			   	jQuery("#checkEsDeTurno").attr("disabled","disabled");
 			  <%}%>
 		  <%}else{%>
 		     document.getElementById("checkEsDeTurno").checked=false;
 			 <%if (!accion.equalsIgnoreCase("ver")&&!accion.equalsIgnoreCase("modificar")){%>
 			 document.getElementById("busquedaLetrado").style.display="block";
 			 <%}else{%>
-			  document.getElementById("checkEsDeTurno").disabled=true;
+			   	jQuery("#checkEsDeTurno").attr("disabled","disabled");
 			  <%}%>
 		  <%}%>
 		  <%if (!accion.equalsIgnoreCase("ver")&&!accion.equalsIgnoreCase("modificar")){%>
@@ -279,20 +279,24 @@
 		<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.fechaInicioRJ"/>&nbsp;(*)
 	</td>				
 	<td class="labelText">
-		<html:text name="MantenimientoRetencionesJudicialesForm" property="fechaInicio" size="10" maxlength="10" styleClass="<%=estiloCalendario%>" value="<%=fechaInicio%>" readonly="true"></html:text>
+		
+		
 		<%  // Si se entra en modo consulta, los botones del calendario desaparecen
 			if (!accion.equalsIgnoreCase("ver")&&!accion.equalsIgnoreCase("modificar")){%>
-			&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaInicio);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt='<%=UtilidadesString.getMensajeIdioma(usr,"gratuita.listadoCalendario.literal.seleccionarFecha")%>'  border="0"></a>
+				<siga:Fecha nombreCampo="fechaInicio" valorInicial="<%=fechaInicio%>"  readonly="true"></siga:Fecha>
+		<%}else{%>
+				<html:text name="MantenimientoRetencionesJudicialesForm" property="fechaInicio" size="10" maxlength="10" styleClass="<%=estiloCalendario%>" value="<%=fechaInicio%>" readonly="true"></html:text>
 		<%}%>
 	</td>
 	<td class="labelText">
 		<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.fechaFin"/>
 	</td>
 	<td class="labelText">
-		<html:text name="MantenimientoRetencionesJudicialesForm" property="fechaFin" size="10" styleClass="<%=estiloFechaFin%>" value="<%=fechaFin%>" readonly="true"></html:text>
 		<%   // Si se entra en modo consulta, los botones del calendario desaparecen
 			if (!accion.equalsIgnoreCase("ver")){%>
-			&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaFin);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt='<%=UtilidadesString.getMensajeIdioma(usr,"gratuita.listadoCalendario.literal.seleccionarFecha")%>'  border="0"></a>
+			<siga:Fecha nombreCampo="fechaFin" valorInicial="<%=fechaFin%>"  readonly="true"></siga:Fecha>
+		<%}else{%>
+			<html:text name="MantenimientoRetencionesJudicialesForm" property="fechaFin" size="10" styleClass="<%=estiloFechaFin%>" value="<%=fechaFin%>" readonly="true"></html:text>
 		<%}%>
 	</td>	
 	</tr>

@@ -117,10 +117,14 @@
 
 				<tr>				
 					<td class="labelText"><siga:Idioma key="pys.gestionSolicitudes.literal.fechaDesde"/></td>
-					<td><html:text styleClass="box" property="buscarFechaDesde" maxlength="10" readonly="true" value="<%=fechaDesde%>"/><a href='javascript://'onClick="return showCalendarGeneral(buscarFechaDesde);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a></td>
+					<td>
+					<siga:Fecha nombreCampo="buscarFechaDesde" valorInicial="<%=fechaDesde%>"></siga:Fecha>
+					</td>
 		
 					<td class="labelText"><siga:Idioma key="pys.gestionSolicitudes.literal.fechaHasta"/></td>
-					<td><html:text styleClass="box" property="buscarFechaHasta" maxlength="10" readonly="true" value="<%=fechaHasta%>"/><a href='javascript://'onClick="return showCalendarGeneral(buscarFechaHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a></td>
+					<td>
+					<siga:Fecha nombreCampo="buscarFechaHasta" valorInicial="<%=fechaHasta%>"></siga:Fecha>
+					</td>
 					
 				</tr>
 		

@@ -74,20 +74,20 @@
 	}
 	function ajustarCabeceraConf(){
 		
-		if (document.all.listadoConf.clientHeight < document.all.listadoConfDiv.clientHeight) {
-			   document.all.listadoConfCab.width='100%';
+		if ( document.getElementById("listadoConf").clientHeight < document.getElementById("listadoConfDiv").clientHeight) {
+			document.getElementById("listadoConfCab").width='100%';
 			   
 		  } else {
-			   document.all.listadoConfCab.width='98.43%';
+			  document.getElementById("listadoConfCab").width='98.43%';
 			   
 		  }
 	}
 	function ajustarCabeceraHcoProgramacion(){
-		if (document.all.listadoHcoProgramacion.clientHeight < document.all.listadoHcoProgramacionDiv.clientHeight) {
-			   document.all.listadoHcoProgramacionCab.width='100%';
+		if (document.getElementById("listadoHcoProgramacion").clientHeight < document.getElementById("listadoHcoProgramacionDiv").clientHeight) {
+			document.getElementById("listadoHcoProgramacionCab").width='100%';
 			   
 		  } else {
-			   document.all.listadoHcoProgramacionCab.width='98.43%';
+			  document.getElementById("listadoHcoProgramacionCab").width='98.43%';
 			   
 		  }
 	}
@@ -332,7 +332,8 @@
 
 		if(ProgrCalendariosFormEdicion.modo.value == 'consultarProgrCalendarios'){
 			document.getElementById("titulo").innerHTML = '<siga:Idioma key="gratuita.calendarios.programacion.modal.consulta"/>';
-			document.getElementById("idConjuntoGuardia").disabled = "disabled";
+			jQuery("#idConjuntoGuardia").attr("disabled","disabled");
+
 			inicioHistorico();
 			
 		}else{

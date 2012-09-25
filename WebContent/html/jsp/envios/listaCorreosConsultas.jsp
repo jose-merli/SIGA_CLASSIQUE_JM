@@ -65,9 +65,6 @@
 			<html:hidden property = "hiddenFrame" value = "1"/>
 			<html:hidden property = "borrarConsulta" value = "true"/>
 
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
 		</html:form>
 
 

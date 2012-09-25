@@ -234,15 +234,14 @@
 										<td>
 										 <%
  	if (isEditarEnvio) {
- %>
-									<html:checkbox name="DefinirEnviosForm" property="editarEnvio"
-										value="true" /> <%
+ %>								<input		type="checkbox" id="idEditarEnvio" >
+									 <%
  	} else {
- %> <html:checkbox
-										name="DefinirEnviosForm" property="editarEnvio" value="true"
-										disabled="true" /> <%
+ %>  							<input	type="checkbox" id="idEditarEnvio" disabled="disabled">
+	 <%
  	}
  %>
+ 	<html:hidden	name="DefinirEnviosForm" property="editarEnvio"/>
 								</td>
 							</tr>
 						</table>
@@ -298,7 +297,7 @@
 		function accionGuardarCerrar() 
 		{		
 		    sub();
-		    
+		  
 			if (validateDefinirEnviosForm(document.DefinirEnviosForm)){
 				var insTipoEnvio = document.forms[0].comboTipoEnvio.value;
 				var opcion_array=insTipoEnvio.split(",");
@@ -307,7 +306,11 @@
 					document.DefinirEnviosForm.acuseRecibo.value = "1";
 				else
 					document.DefinirEnviosForm.acuseRecibo.value = "0";
-				
+				if(document.getElementById("idEditarEnvio").checked)
+					document.DefinirEnviosForm.editarEnvio.value = "true";
+				else
+					document.DefinirEnviosForm.editarEnvio.value = "false";
+				  
 				DefinirEnviosForm.submit();
 			} else {
 				fin();
@@ -318,9 +321,6 @@
 		    sub();
 			document.InformesGenericosForm.datosInforme.value=document.DefinirEnviosForm.datosEnvios.value;
 			document.InformesGenericosForm.submit();
-		
-			
-			
 		}
 		
 
@@ -343,9 +343,7 @@
 		}
 		function inicio() {
 			if(document.DefinirEnviosForm.idTipoEnvio.value=="4" ||document.DefinirEnviosForm.idTipoEnvio.value=="5"){
-				 document.getElementById("comboTipoEnvio").disabled="disabled";
-				 
-				 
+				jQuery("#comboTipoEnvio").attr("disabled","disabled"); 
 			}
 			
 		}
@@ -377,12 +375,11 @@
 			
 			//alert("i "+idTipoEnvio);
 			if(idTipoEnvio!='1'){
-				document.getElementById("idCheckAcuseRecibo").disabled="disabled";
-					
+				jQuery("#idCheckAcuseRecibo").attr("disabled","disabled");	
 		      	
 				
 			}else{
-				document.getElementById("idCheckAcuseRecibo").disabled="";
+				jQuery("#idCheckAcuseRecibo").removeAttr("disabled");
 			}
 			
 		} 

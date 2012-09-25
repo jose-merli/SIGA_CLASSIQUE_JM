@@ -50,15 +50,15 @@
 			}
 			document.ActuacionAsistenciaForm.idTipoAsistencia.value = document.ActuacionAsistenciaFormEdicion.idTipoAsistencia.value;
 		}
-		
 		function postAccionTipoActuacion() {	
 			//alert("postAccionTipoActuacion");
 			document.getElementById('idCosteFijoActuacion').value = document.getElementById('auxIdCosteFijoActuacion').value ;
 			document.getElementById('auxIdCosteFijoActuacion').value = '';
 			if(document.ActuacionAsistenciaForm.modo.value =='ver' || document.ActuacionAsistenciaFormEdicion.validada.value==1 ||  document.ActuacionAsistenciaFormEdicion.anulacion.value==1){
-				document.getElementById('idCosteFijoActuacion').disabled ="disabled";
+				jQuery("#idCosteFijoActuacion").attr("disabled","disabled");
 			} else {
-				document.getElementById('idCosteFijoActuacion').disabled ="";
+				jQuery("#idCosteFijoActuacion").removeAttr("disabled");
+
 			}
 			if(document.ActuacionAsistenciaForm.modo.value=='ver' ){
 				tdTiposCosteFijoAct = document.getElementById('tdSelectTiposCosteFijo');
@@ -724,15 +724,15 @@
 			document.getElementById('fechaJustificacion').className="boxConsulta";
 			if(document.getElementById("tdValidada"))
 				document.getElementById("tdValidada").innerHTML = '<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>';
-			if(document.getElementById("invokefechaJustificacion"))
-				document.getElementById("invokefechaJustificacion").style.visibility="hidden";
+			if(document.getElementById("fechaJustificacion"))
+				document.getElementById("fechaJustificacion").style.visibility="hidden";
 		} else {
 			document.getElementById('fechaJustificacion').className="box";
 			if(document.getElementById("tdValidada")) {
 				document.getElementById("tdValidada").innerHTML = "";
 			}
-			if(document.getElementById("invokefechaJustificacion")) {
-				document.getElementById("invokefechaJustificacion").style.visibility="visible";
+			if(document.getElementById("fechaJustificacion")) {
+				document.getElementById("fechaJustificacion").style.visibility="visible";
 			}
 		}
 		
@@ -744,11 +744,10 @@
 				if(document.ActuacionAsistenciaFormEdicion.anulacion.value=="1") {
 					habilitarCampos(false);
 					document.getElementById('fechaJustificacion').className="boxConsulta";
-					if(document.getElementById("invokefechaJustificacion")) 
-						document.getElementById("invokefechaJustificacion").style.visibility="hidden";
+					if(document.getElementById("fechaJustificacion")) 
+						document.getElementById("fechaJustificacion").style.visibility="hidden";
 					document.getElementById("idValidacion").style.visibility="hidden";
-					
-					document.getElementById("checkAnulacion").disabled = "";
+					jQuery("#checkAnulacion").removeAttr("disabled");
 				} else if(document.ActuacionAsistenciaFormEdicion.validada.value=="1") {
 					habilitarCampos(false);						
 				}				
@@ -947,14 +946,14 @@
 			document.getElementById('fechaJustificacion').className="box";
 			document.ActuacionAsistenciaFormEdicion.validada.value="0";
 			document.getElementById("tdValidada").innerHTML = '';
-			if(document.getElementById("invokefechaJustificacion")) 
-				document.getElementById("invokefechaJustificacion").style.visibility="visible";
+			if(document.getElementById("fechaJustificacion")) 
+				document.getElementById("fechaJustificacion").style.visibility="visible";
 			document.getElementById('fechaJustificacion').value="";			
 		} else {
 			document.getElementById('fechaJustificacion').className="boxConsulta";
 			document.ActuacionAsistenciaFormEdicion.validada.value="1";
-			if(document.getElementById("invokefechaJustificacion")) 
-				document.getElementById("invokefechaJustificacion").style.visibility="hidden";
+			if(document.getElementById("fechaJustificacion")) 
+				document.getElementById("fechaJustificacion").style.visibility="hidden";
 			document.getElementById("tdValidada").innerHTML = '<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>';
 			if(document.ActuacionAsistenciaFormEdicion.fechaJustificacion.value==''){	
 				document.getElementById('fechaJustificacion').value=getFechaActualDDMMYYYY();

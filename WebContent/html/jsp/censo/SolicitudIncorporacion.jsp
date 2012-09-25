@@ -109,13 +109,13 @@
 		   if (valor!=null && valor!="" && valor!=<%=ClsConstants.ID_PAIS_ESPANA%>) {
 			    document.getElementById("poblacion").value="";
 		   		document.getElementById("provincia").value="";
-			   	document.getElementById("provincia").disabled=true;
-				document.getElementById("poblacionEspanola").className="ocultar";
+		   		jQuery("#provincia").attr("disabled","disabled");
+			   	document.getElementById("poblacionEspanola").className="ocultar";
 				document.getElementById("poblacionExtranjera").className="";
 	       } else {
 		   		document.getElementById("poblacionExt").value="";
-				document.getElementById("provincia").disabled=false;
-				document.getElementById("poblacionEspanola").className="";
+				jQuery("#provincia").removeAttr("disabled");
+		   		document.getElementById("poblacionEspanola").className="";
 				document.getElementById("poblacionExtranjera").className="ocultar";
 	       }
 		}

@@ -72,19 +72,19 @@
 				sModo="consultar";
 			}	
 %>
-				<html:hidden property="modo" value="<%=sModo%>"/>
-				<html:hidden property="hiddenFrame" value="1"/>
-				<html:hidden property="actionModal" value=""/>
+				<html:hidden styleId="modo"  property="modo" value="<%=sModo%>"/>
+				<html:hidden styleId="hiddenFrame" property="hiddenFrame" value="1"/>
+				<html:hidden styleId="actionModal" property="actionModal" value=""/>
 				
-				<html:hidden property="idInstitucion" value="<%=idInstitucion%>"/>
-				<html:hidden property="idTipoProducto" value="<%=idTipoProducto%>"/>
-				<html:hidden property="idProducto" value="<%=idProducto%>"/>
-				<html:hidden property="idProductoInstitucion" value="<%=idProductoInstitucion%>"/>
+				<html:hidden styleId="idInstitucion" property="idInstitucion" value="<%=idInstitucion%>"/>
+				<html:hidden styleId="idTipoProducto" property="idTipoProducto"  value="<%=idTipoProducto%>"/>
+				<html:hidden styleId="idProducto"  property="idProducto" value="<%=idProducto%>"/>
+				<html:hidden styleId="idProductoInstitucion" property="idProductoInstitucion" value="<%=idProductoInstitucion%>"/>
 				
-				<html:hidden property="certificado" value="<%=sCertificado%>"/>
-				<html:hidden property="editable" value="<%=sEditable%>"/>
+				<html:hidden styleId="certificado"  property="certificado" value="<%=sCertificado%>"/>
+				<html:hidden styleId="editable"  property="editable" value="<%=sEditable%>"/>
 				
-				<html:hidden property="descripcionCertificado" value="<%=descCertificado%>"/>
+				<html:hidden styleId="descripcionCertificado"  property="descripcionCertificado" value="<%=descCertificado%>"/>
 
 				<siga:PestanasExt pestanaId="CERTIFIC" target="mainPestanas" parametros="htDatos" elementoactivo="1"/>
 			</html:form> 

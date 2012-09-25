@@ -138,11 +138,11 @@
 <script type="text/javascript">
 function ajustarCabeceraTabla(){
 	
-	if (document.all.listadoInformes.clientHeight < document.all.listadoInformesDiv.clientHeight) {
-		   document.all.listadoInformesCab.width='100%';
+	if (document.getElementById("listadoInformes").clientHeight < document.getElementById("listadoInformesDiv").clientHeight) {
+		document.getElementById("listadoInformesCab").width='100%';
 		   
 	  } else {
-		   document.all.listadoInformesCab.width='98.43%';
+		  document.getElementById("listadoInformesCab").width='98.43%';
 		   
 	  }
 }

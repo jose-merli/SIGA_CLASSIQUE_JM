@@ -40,7 +40,7 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -60,10 +60,7 @@
 		<html:hidden name="pestanaDelitoDesignaForm" property="anio" />
 		<html:hidden name="pestanaDelitoDesignaForm" property="numero" />
 		<html:hidden name="pestanaDelitoDesignaForm" property="idTurno" />
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
-		</html:form>	
+	</html:form>	
 		
 		
 	<!-- INICIO: RESULTADO -->

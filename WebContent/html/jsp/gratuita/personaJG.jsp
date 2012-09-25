@@ -368,36 +368,39 @@
 	   <%}
 			}%>
 		}
-	
-		function desabilitarDomicilio (o) {	
- 			if (o.checked) {
-				document.getElementById("desaparece").style.display="none";
-				document.getElementById("desaparecePr").style.display="none";
-				document.getElementById("desapareceCp").style.display="none";
-				document.getElementById("desaparecePo").style.display="none";
-				document.forms[0].existeDom.checked = true;
-	 			document.PersonaJGForm.existeDomicilio.value = "N";
-	 			document.PersonaJGForm.direccion.value = "";
-	 			document.PersonaJGForm.cp.value = "";
-				document.forms[0].provincia.value = "";
-				document.forms[0].provincia.onchange();
-	 			document.PersonaJGForm.direccion.disabled = "disabled";
-	 			document.PersonaJGForm.cp.disabled = "disabled";
-				document.forms[0].provincia.disabled = "disabled";
-				document.forms[0].poblacion.disabled = "disabled";
-			}else {
-				document.getElementById("desaparece").style.display="inline";
-				document.getElementById("desaparecePr").style.display="inline";
-				document.getElementById("desapareceCp").style.display="inline";
-				document.getElementById("desaparecePo").style.display="inline";
-	 			document.PersonaJGForm.direccion.disabled = "";
-	 			document.PersonaJGForm.cp.disabled = "";
-				document.forms[0].provincia.disabled = "";
-				document.forms[0].poblacion.disabled = "";
-	 			document.forms[0].existeDom.checked = false;
-	 			document.PersonaJGForm.existeDomicilio.value = "S";
-			}
- 		}
+	function desabilitarDomicilio (o) {	
+			if (o.checked) {
+			document.getElementById("desaparece").style.display="none";
+			document.getElementById("desaparecePr").style.display="none";
+			document.getElementById("desapareceCp").style.display="none";
+			document.getElementById("desaparecePo").style.display="none";
+			document.forms[0].existeDom.checked = true;
+ 			document.PersonaJGForm.existeDomicilio.value = "N";
+ 			document.PersonaJGForm.direccion.value = "";
+ 			document.PersonaJGForm.cp.value = "";
+			document.forms[0].provincia.value = "";
+			document.forms[0].provincia.onchange();
+			jQuery("#direccion").attr("disabled","disabled");
+			jQuery("#cp").attr("disabled","disabled");
+			jQuery("#bisResolucion").removeAttr("disabled");
+			jQuery("#sociedadesCliente").attr("disabled","disabled");
+
+			jQuery("#provincia").attr("disabled","disabled");
+			jQuery("#poblacion").attr("disabled","disabled");
+		}else {
+			document.getElementById("desaparece").style.display="inline";
+			document.getElementById("desaparecePr").style.display="inline";
+			document.getElementById("desapareceCp").style.display="inline";
+			document.getElementById("desaparecePo").style.display="inline";
+			jQuery("#direccion").removeAttr("disabled");
+			jQuery("#cp").removeAttr("disabled");
+			jQuery("#provincia").removeAttr("disabled");
+			jQuery("#poblacion").removeAttr("disabled");
+ 			document.forms[0].existeDom.checked = false;
+ 			document.PersonaJGForm.existeDomicilio.value = "S";
+		}
+	}
+
 	</script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->

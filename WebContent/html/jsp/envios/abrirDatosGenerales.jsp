@@ -50,7 +50,9 @@
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 		
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
+		<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 		<script src="<html:rewrite page="/html/js/validacionStruts.js"/>" type="text/javascript"></script>
 		<script language="JavaScript">
 			var bPrimeraVez=true;
@@ -161,7 +163,7 @@
 			   	//ProgramacionForm.modo.value = "modificar";
 			}
 		</script>
-
+<html:javascript formName="EnviosDatosGeneralesForm" staticJavascript="false" />
 		<siga:Titulo
 			titulo="envios.definirEnvios.datosGenerales.cabecera" 
 			localizacion="envios.definirEnvios.localizacion"
@@ -170,9 +172,9 @@
 </head>
 
 <body onLoad="recargarCombos();mensaje();">
-<html:javascript formName="EnviosDatosGeneralesForm" staticJavascript="false" />
 
-			<html:form action="/ENV_Datos_Generales" method="POST" target="submitArea">
+
+			<html:form action="/ENV_Datos_Generales.do" method="POST" target="submitArea">
 				<html:hidden property = "modo" styleId = "modo" value = ""/>
 				<html:hidden property = "accion" styleId = "accion"  value = ""/>
 				<html:hidden property = "idEnvio" styleId = "idEnvio"  value = "<%=idEnvio%>"/>
@@ -270,7 +272,8 @@
 					
 
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="actionModal" id="actionModal" value=""/>
+
+			
 		</html:form>
 
 				</table>

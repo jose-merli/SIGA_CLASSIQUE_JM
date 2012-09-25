@@ -347,7 +347,7 @@ function onClickMostrarJustificacionesPendientes ()
 }
 
 function ajustarDivListadoResultados(){
-	documentResultado =document.frames['resultado'];
+	documentResultado = window.frames['resultado'];
 	try
   	{
 		documentResultado.ajusteDivListado();

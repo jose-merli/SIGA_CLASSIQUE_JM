@@ -87,7 +87,7 @@
 		<html:form action="/FAC_GruposDinamicos.do" method="POST" target="submitArea" style="display:none">
 			<html:hidden property="modo" value=""/>
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
+			
 			<input type="hidden" name="actionModal" value="">
 		</html:form>
 		

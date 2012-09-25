@@ -77,7 +77,6 @@
 	<body class="tablaCentralCampos">
 		<html:form action="/PYS_MantenimientoProductos.do" method="post" target="">
 			<html:hidden property="modo" styleId="modo" value=""/>				
-			<input type="hidden" name="actionModal"  id="actionModal" value="">
 		</html:form>	
 		
 			<siga:TablaCabecerasFijas 

@@ -34,14 +34,15 @@
 %>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	<script type="text/javascript">		
 		function reloadPage() {				
-
+		
+				
 				<%  if (modal!=null){%>
 						<%  	if (sinrefresco!=null){%>
 									window.top.returnValue=""; 
@@ -54,7 +55,7 @@
 								window.top.close();
 				<%  }else{%>	
 						<%  	if (sinrefresco==null){%>						
-									parent.refrescarLocal();
+									window.parent.refrescarLocal();
 						<%  	} %>
 				<%  } %>
 				
@@ -67,7 +68,7 @@
 								estilo="success";
 							} 
 				%>
-							alert(unescape("<%=msg %>"),"<%=estilo%>");
+					alert(unescape("<%=msg %>"),"<%=estilo%>");
 							
 				<%  } %>
 				return false;

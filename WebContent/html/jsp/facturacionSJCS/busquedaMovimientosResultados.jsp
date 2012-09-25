@@ -82,7 +82,7 @@
 
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -113,8 +113,7 @@
 	    <html:form action="${path}?noReset=true" method="POST" target="<%=elTarget%>"  style="display:none">
 			<!-- Campo obligatorio -->
 			<html:hidden property = "modo" value = "" />
-			<input type="hidden" id="actionModal"  name="actionModal" value="">
-			
+		
 			<input type="hidden"  id="checkHistoricoMovimiento"  name="checkHistoricoMovimiento" value="">
 		</html:form>	
 		

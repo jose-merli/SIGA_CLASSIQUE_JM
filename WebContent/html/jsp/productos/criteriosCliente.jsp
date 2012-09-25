@@ -149,30 +149,30 @@
 			}	
 
 			function revisarCheckPrecioDefecto()  {
-				if(document.all.precioDefecto.checked) {
+				if(document.getElementById("precioDefecto").checked) {
 					// borro los criterios
 					global = "";
 					document.frameResultado.location.href="<%=app%>/html/jsp/productos/definirCriteriosCliente.jsp?resultado=\""+global+"\"";
 					// inhabilito los combos
-					document.all.conector.disabled=true;
-					document.all.conector.className="boxConsulta"
-					document.all.conector.value="";
-					document.all.campo.disabled=true;
-					document.all.campo.className="boxConsulta"
-					document.all.campo.value="";
-					document.getElementById("idButton").disabled=true;
+					jQuery("#conector").attr("disabled","disabled");
+					document.getElementById("conector").className="boxConsulta"
+						document.getElementById("conector").value="";
+					jQuery("#campo").attr("disabled","disabled");
+					document.getElementById("campo").className="boxConsulta"
+					document.getElementById("campo").value="";
+					jQuery("#idButton").attr("disabled","disabled");
 					document.frameOperadorValor.location.href="<%=app%>/html/jsp/productos/criteriosClienteFrame.jsp";
 
 				} else {
 
 					// habilito los combos
-					document.all.conector.disabled=false;
-					document.all.conector.className="boxCombo"
-					document.all.conector.value="";
-					document.all.campo.disabled=false;
-					document.all.campo.className="boxCombo"
-					document.all.campo.value="";
-					document.getElementById("idButton").disabled=false;
+					jQuery("#conector").removeAttr("disabled");
+					document.getElementById("conector").className="boxCombo"
+					document.getElementById("conector").value="";
+					jQuery("#campo").removeAttr("disabled");
+					document.getElementById("campo").className="boxCombo"
+					document.getElementById("campo").value="";
+					jQuery("#idButton").removeAttr("disabled");
 					document.frameOperadorValor.location.href="<%=app%>/html/jsp/productos/criteriosClienteFrame.jsp";
 				
 				}
@@ -431,12 +431,12 @@
 					if ((global!="")&&(document.forms[0].conector.selectedIndex==0)){
 						alert('<siga:Idioma key="pys.mantenimientoServicios.literal.conector"/> <siga:Idioma key="messages.campoObligatorio.error"/>');
 					}else{
-						var operador = document.frames["frameOperadorValor"].document.all.item("operador");
+						var operador =  window.frames["frameOperadorValor"].document.all.item("operador");
 						var operadorT = operador[operador.selectedIndex].text;
 						var operadorV = operador[operador.selectedIndex].value;
 
-						document.frames["frameOperadorValor"].document.all.item("valor").value = document.frames["frameOperadorValor"].document.all.item("valor").value.replace(/,/,".");
-						var valor = document.frames["frameOperadorValor"].document.all.item("valor");
+						 window.frames["frameOperadorValor"].document.all.item("valor").value =  window.frames["frameOperadorValor"].document.all.item("valor").value.replace(/,/,".");
+						var valor =  window.frames["frameOperadorValor"].document.all.item("valor");
 						//valor.value = valor.value.replace(/,/,".");
 						if (valor.tagName=="SELECT"){
 				  			valorT = valor.options[valor.selectedIndex].text;

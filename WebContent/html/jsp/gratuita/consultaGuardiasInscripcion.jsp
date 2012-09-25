@@ -62,16 +62,17 @@
 		var ele = document.getElementsByName("chkGuardia");
 		for (i = 0; i < ele.length; i++) {
 			ele[i].checked = o.checked;
-			if(deshabilitarSinRestriccion){
-				ele[i].disabled=true;				
+				
+		}
+		if(deshabilitarSinRestriccion){
+		   	jQuery("#chkGuardia").attr("disabled","disabled");
+		} else {
+			if(document.InscripcionTGForm.tipoGuardias.value==0|| document.InscripcionTGForm.tipoGuardias.value==1){ 
+			  jQuery("#chkGuardia").attr("disabled","disabled");
 			} else {
-				if(document.InscripcionTGForm.tipoGuardias.value==0|| document.InscripcionTGForm.tipoGuardias.value==1){ 
-				  ele[i].disabled=true;				 
-				} else {
-				  ele[i].disabled=false;				 
-				}
-			}			
-		}				
+				jQuery("#chkGuardia").removeAttr("disabled");				 
+			}
+		}		
 	}
 	
    	function marcarTodos(){
@@ -97,24 +98,24 @@
 	function activarDesactivarCheck(fechaSolicitud,tipoGuardias){
    		if((!document.InscripcionTGForm.fechaSolicitud || document.InscripcionTGForm.fechaSolicitud.value=='')&&document.InscripcionTGForm.idGuardia.value==''){//alta
    			if(document.InscripcionTGForm.tipoGuardias.value==0){//obligatorias
-   				document.getElementById("chkGeneral").disabled=true;
+   				jQuery("#chkGeneral").attr("disabled","disabled");
  	  			marcarTodos();
    			} else if(document.InscripcionTGForm.tipoGuardias.value==1) {
-   				document.getElementById("chkGeneral").disabled=false;
+   				jQuery("#chkGeneral").removeAttr("disabled");				 
    				if(document.getElementById("guardiasTodos")){
-	   				document.getElementById("guardiasTodos").disabled=false;
-		  			document.getElementById("guardiasNinguno").disabled=false;
+   					jQuery("#guardiasTodos").removeAttr("disabled");				 
+   					jQuery("#guardiasNinguno").removeAttr("disabled");				 
 	  			}
 				desmarcarTodos();   			
    			} else if(document.InscripcionTGForm.tipoGuardias.value==2){
-   				document.getElementById("chkGeneral").disabled=false;
-				desmarcarTodos();
+   				jQuery("#chkGeneral").removeAttr("disabled");				 
+   				desmarcarTodos();
    			}
  		} else {
- 			document.getElementById("chkGeneral").disabled=true;
+ 			jQuery("#chkGuardia").attr("disabled","disabled");
  			if(document.getElementById("guardiasTodos")){
-	 			document.getElementById("guardiasTodos").disabled=true;
-		  		document.getElementById("guardiasNinguno").disabled=true;
+ 				jQuery("#guardiasTodos").attr("disabled","disabled");
+ 				jQuery("#guardiasNinguno").attr("disabled","disabled");
 	  		}
  			var eleGeneral = document.getElementById("chkGeneral");
 	  		eleGeneral.checked=true;
@@ -179,7 +180,7 @@
 						botones=""  clase="listaNonEdit">
 						<td align='center'>
 							<input type="hidden" id="guardia_<%=String.valueOf(index)%>" name="guardia_<%=String.valueOf(index)%>" value="${inscripcionGuardia.guardia.idGuardia}" />
-					   		<input type="checkbox" value="<%=String.valueOf(index)%>" name="chkGuardia"  /> 						
+					   		<input type="checkbox" value="<%=String.valueOf(index)%>" id="chkGuardia" name="chkGuardia"  /> 						
  						</td>
 						<td align='left' ><c:out
 							value="${inscripcionGuardia.guardia.nombre}"></c:out></td>

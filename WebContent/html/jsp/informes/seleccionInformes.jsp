@@ -359,8 +359,8 @@ function accionDownload()
 					error = 'ko';
 					break;
 				}
-				var acuseRecibo = objPlantillaEnvio.options[objPlantillaEnvio.selectedIndex].acuseRecibo;
-
+				//var acuseRecibo = objPlantillaEnvio.options[objPlantillaEnvio.selectedIndex].acuseRecibo;
+				var acuseRecibo = jQuery('#idPlantillaEnvio_'+ids[0]+' option:selected').attr('acuseRecibo');
 				//meter validacion si esto es vacio
 				idsInformes += idTipoEnvio+","+idPlantillaEnvio+","+ids[1]+","+ids[2]+","+acuseRecibo+"##";	
 			}

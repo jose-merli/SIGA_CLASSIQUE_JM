@@ -38,7 +38,6 @@
 <body>
 		<html:form action="/PYS_MantenimientoCategoriasServicios.do" method="POST" target="submitArea">
 			<html:hidden property = "modo"  styleId = "modo"  value = ""/>
-			<input type="hidden" id="actionModal"  name="actionModal" value="">
 		</html:form>	
 		
 			<siga:TablaCabecerasFijas 

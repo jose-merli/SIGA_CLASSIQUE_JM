@@ -115,15 +115,13 @@
 				<siga:Idioma key="envios.definir.literal.fechadesde"/>
 			</td>				
 			<td width="20%">
-				<html:text name="DefinirEnviosForm" property="fechaDesde" size="9" maxlength="10" styleClass="box" readonly="true"></html:text>
-				<a href='javascript://'onClick="return showCalendarGeneral(fechaDesde);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+				<siga:Fecha nombreCampo="fechaDesde" readonly="true"></siga:Fecha>
 			</td>
 			<td class="labelText" width="12%">
 				<siga:Idioma key="envios.definir.literal.fechahasta"/>
 			</td>
 			<td width="15%">
-				<html:text name="DefinirEnviosForm" property="fechaHasta" size="9" maxlength="10" styleClass="box" readonly="true"></html:text>
-				<a href='javascript://'onClick="return showCalendarGeneral(fechaHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+				<siga:Fecha nombreCampo="fechaHasta" readonly="true"></siga:Fecha>
 			</td>
 		</tr>	
 	</table>

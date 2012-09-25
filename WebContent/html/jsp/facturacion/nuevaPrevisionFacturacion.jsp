@@ -198,7 +198,9 @@
 			<!-- Asociada al boton GuardarCerrar -->
 			function accionGuardarCerrar() 
 			{
+				
 				sub();
+				
 				var fechaOk =  false;
 				
 				//Chequeo las fechas:
@@ -209,13 +211,16 @@
 					fechaOk =  false;
 
 				if (validatePrevisionesFacturacionForm(document.PrevisionesFacturacionForm)){
+					
 					  if (fechaOk) {
 							if(confirm('<siga:Idioma key="messages.confirm.updateData"/>')) 
 							{
 								document.forms[0].modo.value="insertar";
-								var f = document.forms[0].name;				
-								document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=facturacion.mensaje.generandoPrevision';
+								var f = document.forms[0].name;	
+								//document.frames.submitArea.location
+								window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=facturacion.mensaje.generandoPrevision';
 								//document.forms[0].submit();
+
 							} else {
 								fin();
 							}

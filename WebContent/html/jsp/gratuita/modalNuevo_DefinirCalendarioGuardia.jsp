@@ -51,7 +51,7 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -142,16 +142,12 @@
 			<td class="labelText">
 				<siga:Idioma key="gratuita.modalNuevo_DefinirCalendarioGuardia.literal.fechaDesde"/>:
 				&nbsp;(*)&nbsp;&nbsp;&nbsp;
-				<html:text name="DefinirCalendarioGuardiaForm" property="fechaDesde" size="10" styleClass="box" value="" readonly="true"></html:text>
-				&nbsp;&nbsp;
-				<a onClick="return showCalendarGeneral(fechaDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="general.literal.seleccionarFecha"/>'  border="0"></a>
+				<siga:Fecha nombreCampo="fechaDesde"  readOnly="true"  posicionY="100"  posicionX="200"></siga:Fecha>
 			</td>
 			<td class="labelText">
 				<siga:Idioma key="gratuita.modalNuevo_DefinirCalendarioGuardia.literal.fechaHasta"/>:
 				&nbsp;(*)&nbsp;&nbsp;&nbsp;
-				<html:text name="DefinirCalendarioGuardiaForm" property="fechaHasta" size="10" styleClass="box" value="" readonly="true"></html:text>
-				&nbsp;&nbsp;
-				<a onClick="return showCalendarGeneral(fechaHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="general.literal.seleccionarFecha"/>'  border="0"></a>
+				<siga:Fecha nombreCampo="fechaHasta" readOnly="true" posicionY="100"  posicionX="200"></siga:Fecha>
 			</td>
 		</tr>
 		<tr>

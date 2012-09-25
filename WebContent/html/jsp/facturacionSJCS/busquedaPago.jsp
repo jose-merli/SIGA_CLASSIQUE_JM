@@ -59,7 +59,7 @@
 
 	//InstitucionesVisibles
 	String institucionesVisibles = (String) request.getAttribute("SJCSInstitucionesVisibles");
-	if (institucionesVisibles==null) institucionesVisibles="";
+	if (institucionesVisibles==null) institucionçesVisibles="";
 	/*String institucionParam[] = new String[1];
 	institucionParam[0] = institucionesVisibles;*/
 	
@@ -74,7 +74,9 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 	<!-- Calendario -->
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
@@ -154,14 +156,14 @@
 		<siga:Idioma key="factSJCS.datosPagos.literal.fechaInicio"/>
 	</td>
 	<td >
-		<html:text name="mantenimientoPagoForm" property="fechaIni" maxlength="10" styleClass="box" readonly="true"/><a href="javascript://" onClick="return showCalendarGeneral(fechaIni);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+		<siga:Fecha nombreCampo="fechaIni" readonly="true"></siga:Fecha>
 	</td>
 
 	<td class="labelText">
 		<siga:Idioma key="factSJCS.datosPagos.literal.fechaFin"/>
 	</td>				
 	<td>
-		<html:text name="mantenimientoPagoForm" property="fechaFin" maxlength="10" styleClass="box" readonly="true"/><a href="javascript://" onClick="return showCalendarGeneral(fechaFin);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+		<siga:Fecha nombreCampo="fechaFin" readonly="true"></siga:Fecha>
 	</td>
 
 	</tr>

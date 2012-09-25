@@ -115,7 +115,6 @@
 	
 		<html:form action="/CEN_Censo_DocumentacionRegTel.do?noReset=true" method="post" target="mainWorkArea" style="display:none">
 			<input type="hidden" name="modo" value="<%=modo%>">			
-			<input type="hidden" name="tablaDatosDinamicosD">				
 			<input type="hidden" name="identificadorDs" value="<%=identificadorDS%>">
 			<input type="hidden" name="titleDs" value="">
 			<input type="hidden" name="posicionDs" value="">

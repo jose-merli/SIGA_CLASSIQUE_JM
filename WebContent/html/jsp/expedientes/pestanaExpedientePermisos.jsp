@@ -36,7 +36,7 @@
 			<!-- Funcion asociada a boton buscar -->
 			function buscar() 
 			{
-				document.frames["mainPestanas"].location.href=document.frames["mainPestanas"].location.href;
+				 window.frames["mainPestanas"].location.href= window.frames["mainPestanas"].location.href;
 			}
 
 </script>

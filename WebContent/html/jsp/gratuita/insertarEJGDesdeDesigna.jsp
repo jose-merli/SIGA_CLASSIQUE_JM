@@ -52,7 +52,7 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -125,7 +125,7 @@
 	</script>	
 </head>
 
-<body>
+<body id="aarrr">
 
 	<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
 		<table class="tablaTitulo" align="center" cellspacing="0" heigth="32">
@@ -217,8 +217,7 @@
 					<siga:Idioma key="gratuita.busquedaEJG.literal.fechaApertura"/>&nbsp;(*)
 				</td>
 				<td class="labelText">		
-					<html:text name="DefinirEJGForm" property="fechaApertura" onchange="" size="10" maxlength="10" styleClass="box"  value="<%=fecha%>" readOnly="true"></html:text>
-					<a onClick="showCalendarGeneral(fechaApertura);actualizarFecha();rellenarComboGuardia();" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
+					<siga:Fecha nombreCampo="fechaApertura" valorInicial="<%=fecha%>" readOnly="true" posicionX="10"  posicionY="10" postFunction="actualizarFecha();rellenarComboGuardia();"></siga:Fecha>
 				</td>
 			<!--	
 				<td class="labelText" colspan="2">

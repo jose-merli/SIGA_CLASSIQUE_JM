@@ -28,7 +28,7 @@
 <html>
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
 			
 		
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -45,8 +45,8 @@
 	 		function buscar()
 	 		{
 	 			multidiomasForm.target="resultado";
-		 		multidiomasForm.modo.value="buscar";
-				multidiomasForm.submit();
+	 			multidiomasForm.modo.value="buscar";
+	 			multidiomasForm.submit();
 	 		}
 	 		
 	 		function generarRecursos()
@@ -57,7 +57,7 @@
 					multidiomasForm.modo.value="generarFicheroRecursos";
 					multidiomasForm.target="submitArea3";
 		 			var f = multidiomasForm.name;	
-					document.frames.submitArea3.location = '/SIGA/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=messages.wait';
+		 			window.frames.submitArea3.location = '/SIGA/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=messages.wait';
 					
 				} 
 	 		}
@@ -115,6 +115,6 @@
 		         scrolling="no" frameborder="0" marginheight="0" marginwidth="0"; class="frameGeneral">
 		</iframe>
 
-		<iframe name="submitArea3" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+		<iframe name="submitArea3" id="submitArea3" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	</body>
 </html>

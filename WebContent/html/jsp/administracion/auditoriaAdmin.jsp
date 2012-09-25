@@ -31,7 +31,7 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -41,7 +41,7 @@
 		function buscar() 
 		{
 			sub();		
-			document.all.modo.value="buscar";						
+			document.getElementById("modo").value="buscar";						
 			auditoriaAdminForm.submit();
 					
 		}
@@ -49,7 +49,7 @@
 		function borrarLog() 
 		{
 			if(confirm('<siga:Idioma key="messages.deleteConfirmation"/>')){
-				document.all.modo.value="borrar";	
+				document.getElementById("modo").value="borrar";	
 				auditoriaAdminForm.submit();
 				}
 			return false;

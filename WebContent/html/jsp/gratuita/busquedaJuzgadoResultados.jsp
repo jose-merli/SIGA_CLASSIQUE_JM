@@ -36,7 +36,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -53,7 +53,6 @@
 <body>
 		<html:form action="/JGR_MantenimientoJuzgados.do" method="POST" target="submitArea" style="display:none">
 			<html:hidden property = "modo"  styleId = "modo"  value = ""/>
-			<input type="hidden" id="actionModal"  name="actionModal"  value="">
 		</html:form>	
 		
 			<siga:TablaCabecerasFijas 

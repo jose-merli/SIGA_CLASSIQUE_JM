@@ -209,11 +209,11 @@
 							document.getElementById("cuenta"+j).value = idcuenta.value;								
 						}
 					}else{
-						document.getElementById("cuenta"+j).disabled="disabled";
+					   	jQuery("#cuenta"+j).attr("disabled","disabled");
 						document.getElementById("cuenta"+j).style.display ='none';						
 					}
 				}else{
-					document.getElementById("cuenta"+j).disabled="disabled";
+				   	jQuery("#cuenta"+j).attr("disabled","disabled");
 					document.getElementById("cuenta"+j).style.display ='none';
 				}
 			}		   
@@ -227,8 +227,8 @@
 			pago=eval("f.formaPago" + fila);
 			cuentaelegida=eval("f.oculto" + fila +"_8");	
 			idcuenta=eval("f.oculto" + fila +"_9");
-			if(pago.value==<%=factura%>){				
-				document.getElementById("cuenta" + fila).disabled="";	
+			if(pago.value==<%=factura%>){	
+			   	jQuery("#cuenta"+fila).removeAttr("disabled");
 				document.getElementById("cuenta" + fila).style.display ='block';
 				alert("Seleccione una Cuenta Bancaria en Nº de Cuenta");
 				cuenta.value=idcuenta.value;
@@ -239,7 +239,7 @@
 					document.getElementById("cuenta"+fila).value = idcuenta.value;
 				}
 			}else{
-				document.getElementById("cuenta" + fila).disabled="disabled";			
+				jQuery("#cuenta"+fila).attr("disabled","disabled");			
 				document.getElementById("cuenta" + fila).style.display ='none';
 				cuenta.value="";
 				numeroCuenta.value="";								
@@ -255,8 +255,8 @@
 			pago=eval("f.formaPago" + fila);
 			cuentaelegida=eval("f.oculto" + fila +"_8");	
 			idcuenta=eval("f.oculto" + fila +"_9");
-			if(pago.value==<%=factura%>){				
-				document.getElementById("cuenta" + fila).disabled="";	
+			if(pago.value==<%=factura%>){	
+				jQuery("#cuenta"+fila).removeAttr("disabled");
 				document.getElementById("cuenta" + fila).style.display ='block';
 				cuenta.value=idcuenta.value;
 				numeroCuenta.value=cuentaelegida.value;		
@@ -266,7 +266,7 @@
 					document.getElementById("cuenta"+fila).value = idcuenta.value;
 				}				
 			} else {
-				document.getElementById("cuenta" + fila).disabled="disabled";			
+				jQuery("#cuenta"+fila).attr("disabled","disabled");		
 				document.getElementById("cuenta" + fila).style.display ='none';
 				cuenta.value="";
 				numeroCuenta.value="";								
@@ -768,11 +768,13 @@
 			  				<td>
 			  					<input type='text' name='iva<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sIva)%>" class=listaNonEdit readOnly=true style="border:none; background-color:transparent" size="2">% 
 			  				</td>
-			  				<%if(!user.isLetrado()&& aprobarSolicitud.equals("S")){ %>
+			  				<%if(!user.isLetrado()&& aprobarSolicitud.equals("S")){ 
+			  				
+								String fechaEfectiva="fechaEfectivaCompra" +fila;				
+			  				%>
 				  				<td class="labelText">
-
-									<input type='text' name='fechaEfectivaCompra<%=String.valueOf(fila)%>' style="width:75px" class="box"  maxlength="10" value="<%=fecha%>" readonly="true"/>
-									<a href='javascript://'onClick="return showCalendarGeneral(fechaEfectivaCompra<%=String.valueOf(fila)%>);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
+									<siga:Fecha nombreCampo="<%=fechaEfectiva%>" valorInicial="<%=fecha%>" readOnly="true"></siga:Fecha>
+									
 								</td>
 							<% }%>
 							</siga:FilaConIconos>

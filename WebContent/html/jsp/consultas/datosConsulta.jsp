@@ -181,8 +181,8 @@
 		  	//var select = document.frames("campoFrame").document.all.item("campoSel");	
 		  
 		  	var tema=document.forms[0].tema;
-		  	var tipoCampo=document.frames("tipoCampoFrame").document.all.item("tipoCampoSel");
-		    var campo=document.frames("campoFrame").document.all.item("campoSel");	
+		  	var tipoCampo= window.frames("tipoCampoFrame").document.all.item("tipoCampoSel");
+		    var campo= window.frames("campoFrame").document.all.item("campoSel");	
 		    var cabecera=document.forms[0].cabecera.value;
 		    
 		    tipoCampoT = tipoCampo.options[tipoCampo.selectedIndex].text;
@@ -325,14 +325,14 @@
 		  
 		  function ponerCriterio(refSelect) {
 
-		  	var operacion = document.frames("frameOperacionValor").document.all.item("operacion");
+		  	var operacion =  window.frames("frameOperacionValor").document.all.item("operacion");
 		  	if (operacion.length==0){
 		  		return;
 		  	}
 		  	operacionT = operacion.options[operacion.selectedIndex].text;
 		  	operacionV = operacion.options[operacion.selectedIndex].value;	
 		  	
-		  	var valor = document.frames("frameOperacionValor").document.all.item("valor");
+		  	var valor =  window.frames("frameOperacionValor").document.all.item("valor");
 
 		  	//Si valor es un combo:
 		  	if (valor.tagName=="SELECT"){
@@ -368,18 +368,18 @@
 				  	valorT = valor.value;
 			  		valorV = valor.value;
 				}		  		
-			  	var numerico = document.frames("frameOperacionValor").document.all.item("numerico");
+			  	var numerico =  window.frames("frameOperacionValor").document.all.item("numerico");
 			  	if (numerico.value=="true"){	  				  	
-			  		var enteros = document.frames("frameOperacionValor").document.all.item("enteros");
-			  		var decimales = document.frames("frameOperacionValor").document.all.item("decimales");
+			  		var enteros =  window.frames("frameOperacionValor").document.all.item("enteros");
+			  		var decimales =  window.frames("frameOperacionValor").document.all.item("decimales");
 		  			if(valorT!='' && !checkFloat(valorT,enteros.value,decimales.value)){
 						return;
 		  			}
 			  	}
 		  	}		  	
 		    
-		    var tipoCampo=document.frames("tipoCampoFrame").document.all.item("tipoCampoSel");
-		    var campo=document.frames("campoFrame").document.all.item("campoSel");	
+		    var tipoCampo= window.frames("tipoCampoFrame").document.all.item("tipoCampoSel");
+		    var campo= window.frames("campoFrame").document.all.item("campoSel");	
 		    
 		    tipoCampoT = tipoCampo.options[tipoCampo.selectedIndex].text;
 		    tipoCampoV = tipoCampo.options[tipoCampo.selectedIndex].value;
@@ -749,7 +749,7 @@
 					
 		function setCabecera() 
 		{		
-			var select = document.frames("campoFrame").document.all.item("campoSel");	
+			var select =  window.frames("campoFrame").document.all.item("campoSel");	
 			document.forms[0].campo.value=select.options[select.selectedIndex].value;
 			document.forms[0].cabecera.value=select.options[select.selectedIndex].text;
 			if(document.forms[0].campo.value.length!=0){
@@ -759,7 +759,7 @@
 		
 		function setOperacionValor() 
 		{		
-			var select = document.frames("campoFrame").document.all.item("campoSel");	
+			var select =  window.frames("campoFrame").document.all.item("campoSel");	
 			document.forms[0].campo.value=select.options[select.selectedIndex].value;
 			if(document.forms[0].campo.value.length!=0){
 				document.forms[0].target="frameOperacionValor";

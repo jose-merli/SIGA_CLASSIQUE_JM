@@ -485,7 +485,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				
 				//letrado sustituido
 				registros = cabecerasAdm.selectGenerico(cabecerasAdm.getDatosSustituto(solicitanteHash));
-				if(registros!=null || registros.size()>0){
+				if(registros!=null && registros.size()>0){
 					if((String)((Hashtable)registros.get(0)).get("LETRADOSUSTITUIDO")!=null && !((String)((Hashtable)registros.get(0)).get("LETRADOSUSTITUIDO")).equals("")){					
 						String nombresustitucion=UtilidadesHash.getString((Hashtable)registros.get(0),"LETRADOSUSTITUIDO");						                       
 						 letradoSustituido= cabecerasAdm.selectGenerico(cabecerasAdm.getnombresustituto(nombresustitucion, idInstitucion));						

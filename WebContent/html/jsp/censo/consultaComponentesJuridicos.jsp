@@ -119,7 +119,6 @@
 			<input type='hidden' id="idPersona" name="idPersona" value="<%=idPersona%>" />	
 			<input type='hidden' id="idInstitucion" name="idInstitucion" value="<%=institucion%>" />
 			<input type='hidden' id="accion" name="accion" value="<%=modo%>" />		
-			<input type="hidden" id="actionModal" name="actionModal" value="" />
 			<input type="hidden" id="fechaCargo" name="fechaCargo" value="" />
 		</html:form>
 		

@@ -197,7 +197,7 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script type="text/javascript" src="<%=app%>/html/js/SIGA.js"></script>
@@ -294,8 +294,8 @@
 		<html:hidden property = "idRemesa" value = "<%=idremesa%>"/>
 		<input type="hidden" name="volver" value="">
 		<html:hidden property="seleccionarTodos" />
-	
-		
+		<input type="hidden" id="tablaDatosDinamicosD" />	
+		<input type="hidden" id="filaSelD" />			
 
 	<siga:ConjCampos leyenda="gratuita.busquedaEJG.literal.EJG">
 
@@ -817,8 +817,8 @@
 		}
 		function aniadirARemesa(){
 			<%if(ventanaCajg.equalsIgnoreCase("2")){%>
-				if(document.frames.resultado.document.<%=formulario%>) {
-					var datos1 = document.frames.resultado.document.<%=formulario%>.selDefinitivo;
+				if( window.frames.resultado.document.<%=formulario%>) {
+					var datos1 =  window.frames.resultado.document.<%=formulario%>.selDefinitivo;
 					if(datos1.value) {
 				    	document.forms[1].selDefinitivo.value=datos1.value;
 				    	document.forms[1].idRemesa.value=<%=idremesa%>;
@@ -848,14 +848,14 @@
 		{
 			try{
 			    var dat = "";
-			    var datos1 = document.frames.resultado.document.<%=formulario%>.selDefinitivo;
+			    var datos1 = window.frames.resultado.document.<%=formulario%>.selDefinitivo;
 			    document.forms[1].selDefinitivo.value=datos1.value;
 			    
 			  	document.forms[1].modo.value = "listosParaComision";
 			  	var f = document.forms[1].name;	
 			  	//Para quien se encargue del marrón de la ruedecita, con mucho cariño para ....
 			  	//(JTA)Saludos tambien de mi parte. si quieres ponerlo aqui mira en accionGenerarCarta() de listadoEJG.jspi
-							//document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=bot que pasa';
+							//window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=bot que pasa';
 	
 			    document.forms[1].submit();
 			}

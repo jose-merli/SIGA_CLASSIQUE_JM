@@ -56,9 +56,6 @@
 		<html:hidden property="accionE" value="nuevo"/>
 		<html:hidden property="actionE" value="/JGR_UnidadFamiliarPerJG.do"/>
 		<html:hidden property="pantallaE" value="M"/>
-			<!-- RGG: cambio a formularios ligeros -->
-		<input type="hidden" name="tablaDatosDinamicosD"/>
-		<input type="hidden" name="actionModal" value=""/>
 </html:form>
 		
 <html:form action="/JGR_UnidadFamiliarEJG"  method="post" target="submitArea">
@@ -709,30 +706,28 @@
 	
    	}
 	function ajustarCabeceraTabla(){
-		if(document.all.listadoPeticiones){
+		if(document.getElementById("listadoPeticiones")){
 			ajusteAlto("listadoUnidadFamiliarDiv");
 			ajusteAlto("listadoPeticionesDiv");
 			
 			
-			if (document.all.listadoUnidadFamiliar.clientHeight < document.all.listadoUnidadFamiliarDiv.clientHeight) {
-							document.all.listadoUnidadFamiliarCabeceras.width='100%';
+			if (document.getElementById("listadoUnidadFamiliar").clientHeight < document.getElementById("listadoUnidadFamiliarDiv").clientHeight) {
+				document.getElementById("listadoUnidadFamiliarCabeceras").width='100%';
 		  	} else {
 			  
-			  document.all.listadoUnidadFamiliarCabeceras.width='98.43%';
+		  		document.getElementById("listadoUnidadFamiliarCabeceras").width='98.43%';
 			  
 			   
 			   
 			   
 		  	}
 			
-				if (document.all.listadoPeticiones.clientHeight < document.all.listadoPeticionesDiv.clientHeight) {
-					document.all.listadoPeticionesCabeceras.width='100%';
+				if (document.getElementById("listadoPeticiones").clientHeight < document.getElementById("listadoPeticionesDiv").clientHeight) {
+					document.getElementById("listadoPeticionesCabeceras").width='100%';
 					 
 				  } else {
-					  document.all.listadoPeticionesCabeceras.width='98.43%';
+					  document.getElementById("listadoPeticionesCabeceras").width='98.43%';
 					  
-					  
-					   
 					   
 				  }
 				

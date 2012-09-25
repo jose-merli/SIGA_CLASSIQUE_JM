@@ -70,7 +70,7 @@
 			} else {
 				if (validateDevolucionesManualesForm(document.DevolucionesManualesForm)){
 					document.forms[0].modo.value="insertar";
-					document.frames.submitArea.location="<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName="+
+					window.frames.submitArea.location="<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName="+
 														document.forms[0].name+
 														"&msg=facturacion.nuevoFichero.literal.generandoDevoluciones";
 				}	
@@ -109,7 +109,8 @@
 									<siga:Idioma key="facturacion.devolucionManual.fechaDevolucion"/>&nbsp;(*)
 								</td>
 								<td>
-									<html:text styleClass="box" property="fechaDevolucion" maxlength="10" style="width:75px" readonly="true"/><a href='javascript://'onClick="return showCalendarGeneral(fechaDevolucion);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
+									<siga:Fecha nombreCampo="fechaDevolucion" readOnly="true" posicionX="10" posicionY="10"></siga:Fecha>
+									
 								</td>
 							</tr>
 							<tr>

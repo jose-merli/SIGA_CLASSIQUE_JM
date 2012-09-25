@@ -87,7 +87,7 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -172,21 +172,11 @@
 							</td>
 							<td class="labelText">
 								<%if(accion.equalsIgnoreCase("ver")){%> 
-									<html:text
-										name="DefinirDictamenEJGForm" property="fechaDictamen" size="10"
-										styleClass="boxConsulta" value="<%=fechaDictamen%>"
-										readonly="true" disabled="false"></html:text> 
+									<siga:Fecha nombreCampo="fechaDictamen" readOnly="true" disabled="true"  valorInicial="<%=fechaDictamen%>"></siga:Fecha>
+									
 								<%}else{%> 
-									<html:text
-										name="DefinirDictamenEJGForm" property="fechaDictamen" size="10"
-										styleClass="box" value="<%=fechaDictamen%>" readonly="true"
-										disabled="false"></html:text>&nbsp;&nbsp;<a
-										onClick="return showCalendarGeneral(fechaDictamen);"
-										onMouseOut="MM_swapImgRestore();"
-										onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img
-										src="<%=app%>/html/imagenes/calendar.gif"
-										alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"
-										border="0"></a> 
+									<siga:Fecha nombreCampo="fechaDictamen" readOnly="true"  valorInicial="<%=fechaDictamen%>"></siga:Fecha>
+									
 								<%}%>
 							</td>
 							<td class="labelText"><siga:Idioma key="gratuita.operarDictamen.literal.tipoDictamen" />

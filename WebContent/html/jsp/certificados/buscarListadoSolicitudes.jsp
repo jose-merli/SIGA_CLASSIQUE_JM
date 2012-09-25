@@ -513,7 +513,6 @@
 			<input type="hidden" id="idProducto"  name="idProducto" value="">
 			<input type="hidden" id="idTipoProducto"  name="idTipoProducto"  value="">
 			<input type="hidden" id="idProductoInstitucion"  name="idProductoInstitucion"  value="">
-			<input type="hidden" id="actionModal"  name="actionModal"  value="">
 		</html:form>
 
 		<!-- Formulario para la búsqueda de clientes -->

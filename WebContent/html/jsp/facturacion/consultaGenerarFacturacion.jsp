@@ -65,6 +65,7 @@
 	<script language="JavaScript">
 		
 		function generarFactura(fila) {		
+				
 				subicono('iconoboton_generarFactura'+fila);
 				var datos;
 				datos = document.getElementById('tablaDatosDinamicosD');
@@ -84,9 +85,8 @@
 				datos.value = datos.value + "%";
 				document.generarFacturacionForm.modo.value = "generarFactura";
 				var f = document.generarFacturacionForm.name;				
-				document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=facturacion.generarFacturacion.mensaje.generandoFactura';
-				
-//		   	document.generarFacturacionForm.submit();
+				 window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=facturacion.generarFacturacion.mensaje.generandoFactura';
+		   	//document.generarFacturacionForm.submit();
 		 }
 		
 		function refrescarLocal() {
@@ -110,10 +110,6 @@
 			<!-- Formulario de la lista de detalle multiregistro -->
 		<html:form action="/FAC_GenerarFacturacion.do" method="POST" target="submitArea">
 			<input type="hidden" name="modo" value="">
-
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
 		</html:form>
 
 			

@@ -90,7 +90,7 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -164,12 +164,9 @@
 			</td>
 			<td>
 				<%if (accion.equalsIgnoreCase("ver")) {%>
-					<html:text name="DefinirEJGForm" property="fechaAuto" size="10" styleClass="boxConsulta" value="<%=fechaAuto%>" disabled="false" readonly="true"></html:text>
+					<siga:Fecha nombreCampo="fechaAuto" valorInicial="<%=fechaAuto%>" disabled="true" readonly="true"></siga:Fecha>
 				<%}else{%>
-					<html:text name="DefinirEJGForm" property="fechaAuto" size="10" styleClass="box" value="<%=fechaAuto%>" disabled="false" readonly="true"></html:text>
-					<a onClick="return showCalendarGeneral(fechaAuto);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-					<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
-					</a>
+					<siga:Fecha nombreCampo="fechaAuto" valorInicial="<%=fechaAuto%>" readonly="true"></siga:Fecha>
 				<%}%>
 			</td>
 			<td class="labelText">
@@ -208,13 +205,11 @@
 			</td>
 			<td>			
 				<%if (accion.equalsIgnoreCase("ver")) {%>
-					<html:text name="DefinirEJGForm" property="fechaPublicacion" size="10" styleClass="boxConsulta" value="<%=fechaPublicacion%>" disabled="false" readonly="true"></html:text>
+					<siga:Fecha nombreCampo="fechaPublicacion" valorInicial="<%=fechaPublicacion%>" disabled="true" readonly="true"></siga:Fecha>
+					
 				<%}else{%>
-					<html:text name="DefinirEJGForm" property="fechaPublicacion" size="10" styleClass="box" value="<%=fechaPublicacion%>" disabled="false" readonly="true"></html:text>
-					&nbsp;
-					<a onClick="return showCalendarGeneral(fechaPublicacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-					<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
-					</a>
+					<siga:Fecha nombreCampo="fechaPublicacion" valorInicial="<%=fechaPublicacion%>" readonly="true"></siga:Fecha>
+					
 				<%}%>
 			</td>
 			<!-- Fin Código Crear nuevos campos en la pestaña de impugnaciones del EJG -->
@@ -238,10 +233,12 @@
 					<html:text name="DefinirEJGForm"  property="numeroResolucion" onkeypress="javascript:return soloDigitos(event)" onblur="habilitarBisResolucion();" size="11" maxlength="11"  styleClass="boxNumber"  value="<%=numeroResolucion%>" ></html:text> / 
                 	<html:text name="DefinirEJGForm"  property="anioResolucion"   onkeypress="javascript:return soloDigitos(event)" onblur="habilitarBisResolucion();" size="4" maxlength="4"    styleClass="boxNumber"  value="<%=anioResolucion%>"></html:text>
                 	<siga:Idioma key="gratuita.operarRatificacion.literal.bisResolucion"/>&nbsp;&nbsp;
-                	<input type="Checkbox" name="bisResolucion"  <%=(requiereBis?"checked":"")%>>
+                	<input type="Checkbox" name="bisResolucion"  id="bisResolucion"  <%=(requiereBis?"checked":"")%>>
 				<%}%>
 	  		</td>
 	  	</tr>
+
+
 		
 		<tr>
 			<td class="labelText" colspan="1">
@@ -312,13 +309,14 @@
 		//Método que habilita o deshabilita el check de Bis 
 		function habilitarBisResolucion()
 		{
+
 			if (document.forms[0].numeroResolucion.value!="" || document.forms[0].anioResolucion.value!="") 
 				{
-					document.forms[0].bisResolucion.disabled=false;				
+				jQuery("#bisResolucion").removeAttr("disabled");				
 				} 
 				else
 				{
-					document.forms[0].bisResolucion.disabled=true;			
+					jQuery("#bisResolucion").attr("disabled","disabled");	
 				}
 		}
 	</script>

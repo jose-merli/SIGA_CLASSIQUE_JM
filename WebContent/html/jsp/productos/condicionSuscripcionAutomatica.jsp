@@ -297,11 +297,11 @@
 						alert('<siga:Idioma key="pys.mantenimientoServicios.literal.conector"/> <siga:Idioma key="messages.campoObligatorio.error"/>');
 					}else{
 					
-						var operador = document.frames["frameOperadorValor"].document.all.item("operador");
+						var operador =  window.frames["frameOperadorValor"].document.all.item("operador");
 						var operadorT = operador[operador.selectedIndex].text;
 						var operadorV = operador[operador.selectedIndex].value;
-						document.frames["frameOperadorValor"].document.all.item("valor").value = document.frames["frameOperadorValor"].document.all.item("valor").value.replace(/,/,".");
-						var valor = document.frames["frameOperadorValor"].document.all.item("valor");
+						 window.frames["frameOperadorValor"].document.all.item("valor").value =  window.frames["frameOperadorValor"].document.all.item("valor").value.replace(/,/,".");
+						var valor =  window.frames["frameOperadorValor"].document.all.item("valor");
 						//valor.value = valor.value.replace(/,/,".");
 						if (valor.tagName=="SELECT"){
 				  			valorT = valor.options[valor.selectedIndex].text;

@@ -110,7 +110,7 @@
 	    	if (validateMantenimientoInformesForm(f)) {
 				f.modo.value="generarCertificadoPago";
 				// con pantalla de espera
-				document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.factSJCS.procesandoInforme';
+				window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.factSJCS.procesandoInforme';
 			} else {
 				fin();
 				return false;

@@ -420,7 +420,7 @@ public class TagComboBD extends TagSupport {
 							//aux += "\r\nvar destino_" + this.nombre + contador + "=window.parent.document.all." + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame.src;\r\n";
 							if (this.pestana!=null){
 								if(UtilidadesString.stringToBoolean(this.pestana)){
-									aux += "\r\n var destino_" + this.nombre + contador + "=top.frames[0].document.frames[0].document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame').src;\r\n";
+									aux += "\r\n var destino_" + this.nombre + contador + "=document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame').src;\r\n";
 								
 								}else if(isNumber(this.pestana)){
 									String formulario = ".document.frames[0]";
@@ -428,17 +428,17 @@ public class TagComboBD extends TagSupport {
 									for(int i=0; i < nivel-1; i++){
 										formulario = formulario + ".document.frames[0]";
 									}
-									aux += "\r\n var destino_" + this.nombre + contador + "=top.frames[0]"+formulario+".document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame').src;\r\n";
+									aux += "\r\n var destino_" + this.nombre + contador + "=window.top.frames[0]"+formulario+".document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame').src;\r\n";
 
 								}else{
 									aux += "\r\nvar destino_" + this.nombre + contador + "='';";
-									aux += "if(top.frames[0].document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame')){";
-									aux += "\r\n destino_" + this.nombre + contador + "=top.frames[0].document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame').src;}\r\n";
+									aux += "if(window.top.frames[0].document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame')){";
+									aux += "\r\n destino_" + this.nombre + contador + "=window.top.frames[0].document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame').src;}\r\n";
 								}
 							}else{
 								aux += "\r\nvar destino_" + this.nombre + contador + "='';";
-								aux += "if(top.frames[0].document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame')){";
-								aux += "\r\n destino_" + this.nombre + contador + "=top.frames[0].document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame').src;}\r\n";
+								aux += "if(window.top.frames[0].document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame')){";
+								aux += "\r\n destino_" + this.nombre + contador + "=window.top.frames[0].document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame').src;}\r\n";
 							}
 							
 							aux += "var tam_" + this.nombre + contador + " = destino_" + this.nombre + contador + ".indexOf('&id=');\r\n";
@@ -451,19 +451,19 @@ public class TagComboBD extends TagSupport {
 							
 							if (this.pestana!=null){
 								if(this.pestana.equalsIgnoreCase("t") || this.pestana.equalsIgnoreCase("true")){
-									aux += "top.frames[0].document.frames[0].document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame').src=destino_" + this.nombre + contador + ";\r\n";
+									aux += "document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame').src=destino_" + this.nombre + contador + ";\r\n";
 								}else if(isNumber(this.pestana)){
 									String formulario = ".document.frames[0]";
 									int nivel = Integer.parseInt(this.pestana);
 									for(int i=0; i < nivel-1; i++){
 										formulario = formulario + ".document.frames[0]";
 									}
-									aux += "top.frames[0]"+formulario+".document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame').src=destino_" + this.nombre + contador + ";\r\n";
+									aux += "window.top.frames[0]"+formulario+".document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame').src=destino_" + this.nombre + contador + ";\r\n";
 								}else{
-									aux += "if(top.frames[0].document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame')){ top.frames[0].document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame').src=destino_" + this.nombre + contador + ";}\r\n";
+									aux += "if(window.top.frames[0].document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame')){  window.top.frames[0].document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame').src=destino_" + this.nombre + contador + ";}\r\n";
 								}
 							}else{
-								aux += "if(top.frames[0].document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame')){ top.frames[0].document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame').src=destino_" + this.nombre + contador + ";}\r\n";
+								aux += "if(window.top.frames[0].document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame')){ window.top.frames[0].document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame').src=destino_" + this.nombre + contador + ";}\r\n";
 							}
 		
 							/*aux += "var destino_" + this.nombre + contador + "=document.all." + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame.src;";
@@ -492,23 +492,23 @@ public class TagComboBD extends TagSupport {
 							//aux += "\r\nvar destino_" + this.nombre + contador + "=window.parent.document.all." + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame.src;\r\n";
 							if (this.pestana!=null){
 								if(UtilidadesString.stringToBoolean(this.pestana)){
-									aux += "\r\n var destino_" + this.nombre + contador + "=top.frames[0].document.frames[0].document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame').src;\r\n";
+									aux += "\r\n var destino_" + this.nombre + contador + "=document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame').src;\r\n";
 								}else if(isNumber(this.pestana)){
 									String formulario = ".document.frames[0]";
 									int nivel = Integer.parseInt(this.pestana);
 									for(int i=0; i < nivel-1; i++){
 										formulario = formulario + ".document.frames[0]";
 									}
-									aux += "\r\n var destino_" + this.nombre + contador + "=top.frames[0]"+formulario+".document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame').src;\r\n";
+									aux += "\r\n var destino_" + this.nombre + contador + "=window.top.frames[0]"+formulario+".document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame').src;\r\n";
 								}else{
 									aux += "\r\nvar destino_" + this.nombre + contador + "='';";
-									aux += "if(top.frames[0].document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame')){";
-									aux += "\r\n destino_" + this.nombre + contador + "=top.frames[0].document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame').src;}\r\n";
+									aux += "if(window.top.frames[0].document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame')){";
+									aux += "\r\n destino_" + this.nombre + contador + "=window.top.frames[0].document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame').src;}\r\n";
 								}
 							}else{
 								aux += "\r\nvar destino_" + this.nombre + contador + "='';";
-								aux += "if(top.frames[0].document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame')){";
-								aux += "\r\n destino_" + this.nombre + contador + "=top.frames[0].document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame').src;}\r\n";
+								aux += "if(window.top.frames[0].document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame')){";
+								aux += "\r\n destino_" + this.nombre + contador + "=window.top.frames[0].document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame').src;}\r\n";
 							}
 							
 							aux += "var tam_" + this.nombre + contador + " = destino_" + this.nombre + contador + ".indexOf('&id=');\r\n";
@@ -521,19 +521,19 @@ public class TagComboBD extends TagSupport {
 							
 							if (this.pestana!=null){
 								if(this.pestana.equalsIgnoreCase("t") || this.pestana.equalsIgnoreCase("true")){
-									aux += "top.frames[0].document.frames[0].document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame').src=destino_" + this.nombre + contador + ";\r\n";
+									aux += "document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame').src=destino_" + this.nombre + contador + ";\r\n";
 								}else if(isNumber(this.pestana)){
 									String formulario = ".document.frames[0]";
 									int nivel = Integer.parseInt(this.pestana);
 									for(int i=0; i < nivel-1; i++){
 										formulario = formulario + ".document.frames[0]";
 									}
-									aux += "top.frames[0]"+formulario+".document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame').src=destino_" + this.nombre + contador + ";\r\n";								
+									aux += "window.top.frames[0]"+formulario+".document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame').src=destino_" + this.nombre + contador + ";\r\n";								
 								}else{
-									aux += "if(top.frames[0].document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame')){ top.frames[0].document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame').src=destino_" + this.nombre + contador + ";}\r\n";
+									aux += "if(window.top.frames[0].document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame')){ window.top.frames[0].document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame').src=destino_" + this.nombre + contador + ";}\r\n";
 								}
 							}else{
-								aux += "if(top.frames[0].document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame')){ top.frames[0].document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame').src=destino_" + this.nombre + contador + ";}\r\n";
+								aux += "if(window.top.frames[0].document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame')){ window.top.frames[0].document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame').src=destino_" + this.nombre + contador + ";}\r\n";
 							}
 		
 							/*aux += "var destino_" + this.nombre + contador + "=document.all." + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame.src;";

@@ -811,12 +811,12 @@
 		   if (pais!=null && pais!="" && pais!='191'){
 			    document.getElementById("idPoblacion").value="";
 		   		document.getElementById("idProvincia").value="";
-			   	document.getElementById("idProvincia").disabled=true;
+			   	jQuery("#idProvincia").attr("disabled","disabled");
 				document.getElementById("tdPoblacionEspanola").className="ocultar";
 				document.getElementById("tdPoblacionExtranjera").className="";
 	       } else {
 		   		document.getElementById("poblacionExtranjera").value="";
-				document.getElementById("idProvincia").disabled=false;
+				jQuery("#idProvincia").removeAttr("disabled");		   		
 				document.getElementById("tdPoblacionEspanola").className="";
 				document.getElementById("tdPoblacionExtranjera").className="ocultar";
 				//if(document.getElementById("idProvincia").onchange)

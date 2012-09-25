@@ -93,7 +93,7 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -223,13 +223,9 @@
 			</td>
 			<td>
 			<%if (accion.equalsIgnoreCase("ver")){%>
-				<html:text name="DefinirEJGForm" property="fechaResolucionCAJG" size="10" styleClass="boxConsulta" value="<%=fechaResolucionCAJG%>" disabled="false" readonly="true"></html:text>
+				<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="<%=fechaResolucionCAJG%>" disabled="true" readonly="true"></siga:Fecha>
 			<%} else {%>
-				<html:text name="DefinirEJGForm" property="fechaResolucionCAJG" size="10" styleClass="box" value="<%=fechaResolucionCAJG%>" disabled="false" readonly="true"></html:text>
-				&nbsp;
-				<a onClick="return showCalendarGeneral(fechaResolucionCAJG);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-				<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
-				</a>
+				<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="<%=fechaResolucionCAJG%>" readonly="true"></siga:Fecha>
 			<%}%>
 			</td>
 		<%}%>
@@ -278,13 +274,9 @@
 		</td>
 		<td>
 			<%if (accion.equalsIgnoreCase("ver")){%>
-				<html:text name="DefinirEJGForm" property="fechaNotificacion" size="10" styleClass="boxConsulta" value="<%=fechaNotificacion%>" disabled="false" readonly="true"></html:text>
+				<siga:Fecha nombreCampo="fechaNotificacion" valorInicial="<%=fechaNotificacion%>" disabled="true" readonly="true"></siga:Fecha>
 			<%} else {%>
-				<html:text name="DefinirEJGForm" property="fechaNotificacion" size="10" styleClass="box" value="<%=fechaNotificacion%>" disabled="false" readonly="true"></html:text>
-				&nbsp;
-				<a onClick="return showCalendarGeneral(fechaNotificacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-				<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
-				</a>
+				<siga:Fecha nombreCampo="fechaNotificacion" valorInicial="<%=fechaNotificacion%>" readonly="true"></siga:Fecha>
 			<%}%>
 		</td>
 		<td class="labelText">
@@ -305,13 +297,9 @@
 		</td>	
 		<td>
 		<%if (accion.equalsIgnoreCase("ver")){%>
-			<html:text name="DefinirEJGForm" property="fechaRatificacion" size="10" styleClass="boxConsulta" value="<%=fechaRatificacion%>" disabled="false" readonly="true"></html:text>
+			<siga:Fecha nombreCampo="fechaRatificacion" valorInicial="<%=fechaRatificacion%>" disabled="true" readonly="true"></siga:Fecha>
 		<%} else {%>
-			<html:text name="DefinirEJGForm" property="fechaRatificacion" size="10" styleClass="box" value="<%=fechaRatificacion%>" disabled="false" readonly="true"></html:text>
-			&nbsp;
-			<a onClick="return showCalendarGeneral(fechaRatificacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-			<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
-			</a>
+			<siga:Fecha nombreCampo="fechaRatificacion" valorInicial="<%=fechaRatificacion%>" readonly="true"></siga:Fecha>
 		<%}%>
 		</td>	
 	</tr>

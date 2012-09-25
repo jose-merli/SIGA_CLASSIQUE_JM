@@ -167,7 +167,6 @@
 			<input type='hidden' name="idPersona" id="idPersona" value="<%=idPersona%>" /> 
 			<input type='hidden' name="idInstitucion" id="idInstitucion" value="<%=institucion%>" /> 
 			<input type='hidden' name="accion"  id="accion" value="<%=String.valueOf(request.getAttribute("accion"))%>" />
-			<input type="hidden" name="actionModal" id="actionModal"  value="" />
 			<input type="hidden" name="incluirRegistrosConBajaLogica" id="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>" />
 		</form>
 		<tr>

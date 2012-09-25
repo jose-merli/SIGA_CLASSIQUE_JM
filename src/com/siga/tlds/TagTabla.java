@@ -193,10 +193,8 @@ public class TagTabla extends TagSupport {
 */			
 			
 			// RGG 07-12-04 se introduce el campo para hacer modal la ventana que se abra.
-			if (!this.modal.equals("")) {
-				out.println("<input type=\"hidden\" name=\"actionModal\" id=\"actionModal\">");
-			}
 
+			
 			//out.println("<input type=\"hidden\" name=\"tablaDatosDinamicosD\" id=\"tablaDatosDinamicosD\" >");
 			//out.println("<input type=\"hidden\" name=\"filaSelD\" id=\"filaSelD\" >");
 			
@@ -213,8 +211,11 @@ public class TagTabla extends TagSupport {
 			out.println(" jQuery(document).ready(function() { ");
 			out.println("    jQuery('form:first',document).append('<input type=\"hidden\" name=\"tablaDatosDinamicosD\" id=\"tablaDatosDinamicosD\" />');");
 			out.println("  ");
-			out.println("    jQuery('form:first',document).append('<input type=\"hidden\" name=\"filaSelD\" id=\"filaSelD\" />')  ");
+			out.println("    jQuery('form:first',document).append('<input type=\"hidden\" name=\"filaSelD\" id=\"filaSelD\" />');  ");
 			out.println("  ");
+			if (!this.modal.equals("")) {
+				out.println("    jQuery('form:first',document).append('<input type=\"hidden\" name=\"actionModal\" id=\"actionModal\">');  ");
+			}
 			out.println("     });  ");
 			
 			out.println("");

@@ -100,7 +100,7 @@
 				else
 				{
 					MantenimientoCertificadosCamposForm.valor.value="";
-					MantenimientoCertificadosCamposForm.valor.disabled=true;
+				   	jQuery("#valor").attr("disabled","disabled");
 					MantenimientoCertificadosCamposForm.valor.className="boxConsulta";
 					MantenimientoCertificadosCamposForm.valor.rows="11";
 					MantenimientoCertificadosCamposForm.valor.cols="100";
@@ -219,7 +219,7 @@
 <%
 											boolean bReadOnly=sCapturarDatos.equals("S") ? bEditable ? false : true : true;
 %>
-											<html:textarea property="valor" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" value="" styleClass="boxCombo" cols="125" rows="12" value="<%=sValor%>" readonly="<%=bReadOnly%>"/>
+											<html:textarea  styleId="valor" property="valor" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" value="" styleClass="boxCombo" cols="125" rows="12" value="<%=sValor%>" readonly="<%=bReadOnly%>"/>
 										</td>
 									</tr>
 								</table>

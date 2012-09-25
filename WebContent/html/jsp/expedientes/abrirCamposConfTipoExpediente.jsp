@@ -109,8 +109,6 @@
 	<table class="tablaTitulo" align="center" height="20" cellpadding="0" cellspacing="0">
 		<html:form action="/EXP_TiposExpedientes_CamposConf.do" method="POST" target="submitArea">
 				<html:hidden property = "hiddenFrame" value = "1"/>
-				<input type="hidden" name="tablaDatosDinamicosD">
-				<html:hidden property = "actionModal" value = ""/>
 				<html:hidden property = "idInstitucion" />
 				<html:hidden property = "accion" />
 				<html:hidden property = "idTipoExpediente" />

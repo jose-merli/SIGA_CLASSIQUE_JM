@@ -101,29 +101,30 @@
 		// validarAnchoTabla();
 		fin();
 		// cambiarCabeceraTabla();
-		
+
+
 		var estadoBusqueda = document.getElementById("estadoBusqueda").value;
 		if(estadoBusqueda=='S'){
-			document.getElementById("bAccion").disabled = true;
+			jQuery("#bAccion").attr("disabled","disabled");
 			document.getElementById("bAccion").style.display ='none';
 			ocultaBotonesFila();
 			
 		}else if(estadoBusqueda=='P'){
 			document.getElementById("bAccion").style.display ='block';
-			document.getElementById("bAccion").disabled = false;
+			jQuery("#bAccion").removeAttr("disabled");
 			document.getElementById("bAccion").value = '<siga:Idioma key="general.boton.validarSolicitud"/>';
 			document.getElementById("bAccion").alt.value = '<siga:Idioma key="general.boton.validarSolicitud"/>';
 			
 		}
 		else if(estadoBusqueda=='C'){
 			document.getElementById("bAccion").style.display ='block';
-			document.getElementById("bAccion").disabled = false;
+			jQuery("#bAccion").removeAttr("disabled");
 			document.getElementById("bAccion").value = '<siga:Idioma key="general.boton.cambiarFechaEfectiva"/>';
 			document.getElementById("bAccion").alt.value = '<siga:Idioma key="general.boton.cambiarFechaEfectiva"/>';
 		
 		}else if(estadoBusqueda=='D'){
 			document.getElementById("bAccion").style.display ='none';
-			document.getElementById("bAccion").disabled = true;
+			jQuery("#bAccion").attr("disabled","disabled");
 			ocultaBotonesFila();
 		
 		}
@@ -153,7 +154,7 @@
 	
 	function validarAnchoTabla () 
 	{
-		if (document.all.inscripciones.clientHeight <= document.all.divInscripciones.clientHeight) {
+		if (document.getElementById("inscripciones").clientHeight <= document.getElementById("divInscripciones").clientHeight) {
 			//  alert("100");
 			//document.all.tabInscripcionesCabeceras.width='100%';
 			 // document.all.inscripciones.width='98.30%';

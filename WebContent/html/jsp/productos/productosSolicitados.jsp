@@ -61,20 +61,20 @@
 					
 					if (tipoCertificado.value=="C") {
 					 existe=1;
-					 parent.solicitudCompraForm.deCertificado.value="1";
+					 parent.document.solicitudCompraForm.deCertificado.value="1";
 					}
 				}
 				
-				if (existe==1 && (parent.solicitudCompraForm.idInstitucionPresentador.value=="" ||parent.solicitudCompraForm.idInstitucionPresentador.value==0)){
+				if (existe==1 && (parent.document.solicitudCompraForm.idInstitucionPresentador.value=="" ||parent.document.solicitudCompraForm.idInstitucionPresentador.value==0)){
 				var mensaje = "<siga:Idioma key="messages.certificado.error.noExisteColegio"/>" ;
 					alert(mensaje);
 				  	fin();
 				  	return false;
 				}
 			
-					parent.solicitudCompraForm.modo.value = "continuar";	
-					parent.solicitudCompraForm.target="mainWorkArea";					
-					parent.solicitudCompraForm.submit();				
+					parent.document.solicitudCompraForm.modo.value = "continuar";	
+					parent.document.solicitudCompraForm.target="mainWorkArea";					
+					parent.document.solicitudCompraForm.submit();				
 			}			
 		
 		function refrescarLocal(){

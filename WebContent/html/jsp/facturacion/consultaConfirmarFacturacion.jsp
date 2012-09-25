@@ -300,7 +300,7 @@
 			// Abro la ventana de las tuercas:
 			document.confirmarFacturacionForm.modo.value = "confirmacionInmediata";
 			var f = document.confirmarFacturacionForm.name;	
-			document.frames.submitArea.location = '/SIGA/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=facturacion.confirmarFacturacion.literal.confirmandoFacturacion';
+			window.frames.submitArea.location = '/SIGA/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=facturacion.confirmarFacturacion.literal.confirmandoFacturacion';
 		}
 
 		//Funcion asociada al boton Consultar
@@ -347,7 +347,6 @@
 			<html:hidden name="confirmarFacturacionForm" property="modo" styleId="modo" value = ""/>
 			<html:hidden name="confirmarFacturacionForm" property="fechaCargo" styleId="fechaCargo" value = ""/>
 			<html:hidden name="confirmarFacturacionForm" property="generarEnvios" styleId="generarEnvios" value = ""/>
-			<input type="hidden" name="actionModal" id="actionModal" value="">
 		</html:form>
 		
 

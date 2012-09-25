@@ -82,7 +82,7 @@
 				//MantenimientoCertificadosPlantillasForm.submit();
 				
 				var fname = document.getElementById("MantenimientoCertificadosPlantillasForm").name;
-				document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.wait';
+				window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.wait';
 				
 				window.top.returnValue="MODIFICADO";
 			}

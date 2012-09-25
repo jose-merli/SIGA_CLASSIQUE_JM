@@ -221,11 +221,11 @@ function refrescarLocal()
 
 function ajustarCabeceraTabla(){
 	
-		if (document.all.listadoArchivos.clientHeight < document.all.listadoArchivosDiv.clientHeight) {
-		   document.all.listadoArchivosCab.width='100%';
+		if (document.getElementById("listadoArchivos").clientHeight < document.all.listadoArchivosDiv.clientHeight) {
+			document.getElementById("listadoArchivosCab").width='100%';
 		   
 	  } else {
-		   document.all.listadoArchivosCab.width='98.43%';
+		  document.getElementById("listadoArchivosCab").width='98.43%';
 		   
 	  }
 }

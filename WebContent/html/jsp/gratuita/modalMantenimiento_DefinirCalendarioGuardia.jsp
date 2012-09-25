@@ -73,7 +73,7 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -105,7 +105,7 @@
 			document.DefinirCalendarioGuardiaForm.modo.value="buscarPor";
 			document.DefinirCalendarioGuardiaForm.target="guardias";
 			var f =  document.getElementById("DefinirCalendarioGuardiaForm").name;				
-			document.frames.guardias.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=messages.wait';
+			window.frames.guardias.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=messages.wait';
 		}
 
 		//Busqueda de colegiados de guardias y reservas 	
@@ -204,26 +204,20 @@
 			</td>
 			<td class="labelTextValor">
 			<% if (modo.equalsIgnoreCase("VER")||tieneGuardias) { %>
-					<html:text name="DefinirCalendarioGuardiaForm" property="fechaDesde" size="10" styleClass="boxConsulta" value="<%=fechaDesde%>" readonly="true"></html:text>
+					<siga:Fecha nombreCampo="fechaDesde" readOnly="true" disabled="true" valorInicial="<%=fechaDesde%>" ></siga:Fecha>
 				<% } else { %>
-					<html:text name="DefinirCalendarioGuardiaForm" property="fechaDesde" size="10" styleClass="box" value="<%=fechaDesde%>" readonly="true">
-					
-					</html:text>
-					<a href='javascript://'onClick="return showCalendarGeneral(fechaDesde);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
+					<siga:Fecha nombreCampo="fechaDesde" readOnly="true"  valorInicial="<%=fechaDesde%>"  posicionX="50" posicionY="50"></siga:Fecha>
 				<% } %>
 			
-			
-				
 			</td>
 			<td class="labelText">
 				<siga:Idioma key="gratuita.modalNuevo_DefinirCalendarioGuardia.literal.fechaHasta"/>
 			</td>
 			<td class="labelTextValor">
 			<% if (modo.equalsIgnoreCase("VER")||tieneGuardias) { %>
-					<html:text name="DefinirCalendarioGuardiaForm" property="fechaHasta" size="10" styleClass="boxConsulta" value="<%=fechaHasta%>" readonly="true"></html:text>
+					<siga:Fecha nombreCampo="fechaHasta" readOnly="true" disabled="true" valorInicial="<%=fechaHasta%>"></siga:Fecha>
 				<% } else { %>
-					<html:text name="DefinirCalendarioGuardiaForm" property="fechaHasta" size="10" styleClass="box" value="<%=fechaHasta%>" readonly="true"></html:text>
-					<a href='javascript://'onClick="return showCalendarGeneral(fechaHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
+					<siga:Fecha nombreCampo="fechaHasta" readOnly="true"  valorInicial="<%=fechaHasta%>"></siga:Fecha>
 				<% } %>
 			
 		
@@ -253,10 +247,16 @@
 					<td width="5"><html:text name="DefinirCalendarioGuardiaForm" styleClass="box" property="buscarColegiado" maxlength="20" size="5" /></td>
 
 					<td width="140" class="labelText"><siga:Idioma key="facturacion.buscarFactura.literal.FechaDesde"/></td>
-					<td width="140"><html:text name="DefinirCalendarioGuardiaForm" styleClass="box" property="buscarFechaDesde" size="8" maxlength="10" readonly="true"/><a href='javascript://'onClick="return showCalendarGeneral(buscarFechaDesde);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a></td>
+					<td width="140">
+						<siga:Fecha nombreCampo="buscarFechaDesde" readOnly="true"></siga:Fecha>
+									 
+					 </td>
 		
 					<td width="120" class="labelText"><siga:Idioma key="facturacion.buscarFactura.literal.FechaHasta"/></td>
-					<td><html:text name="DefinirCalendarioGuardiaForm" styleClass="box" property="buscarFechaHasta" size="8" maxlength="10" readonly="true"/><a href='javascript://'onClick="return showCalendarGeneral(buscarFechaHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a></td>
+					<td>
+						<siga:Fecha nombreCampo="buscarFechaHasta" readOnly="true"></siga:Fecha>
+					
+					 </td>
 					
 				</tr>
 			
@@ -346,14 +346,14 @@
 			//Control de la fecha de generacion:
 			if (esFechaAnteriorHoy()){
 				if (confirm('<siga:Idioma key="general.aviso.generarCalendarioFechasAnteriorHoy"/>'))
-					document.frames.submitAreaPrincipal.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.gratuita.generandoCalendario';
+					 window.frames.submitAreaPrincipal.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.gratuita.generandoCalendario';
 				else{
 					calendarioCreado=1;
 					fin();
 					return false;
 				}
 			} else
-				document.frames.submitAreaPrincipal.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.gratuita.generandoCalendario';
+				 window.frames.submitAreaPrincipal.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.gratuita.generandoCalendario';
 		}
 		
 		//Asociada al boton GuardarCerrar

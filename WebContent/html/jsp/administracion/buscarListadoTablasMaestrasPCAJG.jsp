@@ -76,7 +76,7 @@
 <html>
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
 			
 		
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -104,7 +104,6 @@
 			<input type="hidden" id="nombreTablaMaestra"  name="nombreTablaMaestra" value="<%=beanTablaMaestra.getIdentificador()%>">
 			<input type="hidden" id="tablaRelacion"  name="tablaRelacion" value="<%=beanTablaMaestra.getTablaRelacion()%>">
 			<input type="hidden" id="aliasTabla" name="aliasTabla" value="<%=beanTablaMaestra.getAliasTabla()%>">
-			<input type="hidden" id="actionModal" value="">
 		</html:form>	
 		
 			

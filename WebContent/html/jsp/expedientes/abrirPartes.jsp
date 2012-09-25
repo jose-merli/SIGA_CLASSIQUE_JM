@@ -81,12 +81,11 @@
 	</head>
 
 	<body >
-	
+	<table class="tablaTitulo" align="center" cellspacing="0">
 		<html:form action="/EXP_Auditoria_Partes.do" method="POST" target="submitArea">
 			<html:hidden property = "modo" value = ""/>
 			<html:hidden property = "hiddenFrame" value = "1"/>
 		
-		<table class="tablaTitulo" align="center" cellspacing="0">
 			<tr>
 				<td id="titulo" class="titulitosDatos">
 					<%ExpPartesForm f = (ExpPartesForm)request.getAttribute("ExpPartesForm");%>
@@ -95,8 +94,8 @@
 				</td>
 			</tr>
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			
+			
 		</html:form>
 		
 		</table>

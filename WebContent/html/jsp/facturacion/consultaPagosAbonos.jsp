@@ -193,9 +193,6 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 				<html:hidden property="idInstitucion" value="<%=idInstitucion%>"/>
 				<html:hidden property="pagoPendiente" value="<%=pendiente%>"/>
 
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
 		</html:form>
 		
 

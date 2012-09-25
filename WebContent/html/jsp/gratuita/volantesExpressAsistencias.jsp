@@ -107,9 +107,10 @@
 				
 				 </td>
 				<td align='center' width='36%'>
-						<table>
+						<table >
 							<tr>
-								<td><input type="text" id="dni_<bean:write name='index'/>" class="box" style="width:70;margin-top:2px;margin-rigth:1px;" value="<bean:write name="asistencia" property="asistidoNif" />" maxlength="20" onBlur="obtenerPersona(<bean:write name='index'/>);"/>-</td>
+								<td><input type="text" id="dni_<bean:write name='index'/>" class="box" style="width:70;margin-top:2px;margin-rigth:1px;" value="<bean:write name="asistencia" property="asistidoNif" />" maxlength="20" onBlur="obtenerPersona(<bean:write name='index'/>);"/></td>
+								<td>-</td>
 								<td><input type="text" id="nombre_<bean:write name='index'/>" class="box" style="width:80;margin-top:2px;margin-rigth:1px;" value="<bean:write name="asistencia" property="asistidoNombre" />" maxlength="80"/></td>
 			        			<td><input type="text" id="apellido1_<bean:write name='index'/>" class="box" style="width:80;margin-top:2px;margin-rigth:1px;" value="<bean:write name="asistencia" property="asistidoApellido1" />" maxlength="80"/></td>
 			        			<td><input type="text" id="apellido2_<bean:write name='index'/>" class="box" style="width:80;margin-top:2px;" value="<bean:write name="asistencia" property="asistidoApellido2" />" maxlength="80"/></td>
@@ -117,15 +118,12 @@
 			        			<td><input type="hidden" id="idPersona_<bean:write name='index'/>" class="box" value="<bean:write name="asistencia" property="idPersonaJG" />"/></td>
 			        		</tr>
 			        	</table>
-			        	
+			   </td>     	
 			      	<script>
-			      	
 			      		if(document.getElementById("dni_<bean:write name='index'/>")&&document.getElementById("dni_<bean:write name='index'/>").value!=''){
 			      			ponerIconoIdentPersona (<bean:write name='index'/>, true);
 			      		}
 			      	</script>
-			        
-				</td>
 				<c:if test="${VolantesExpressForm.lugar == 'centro'}">
 				<td align='center' width='8%'>
 					<input type="text" id="diligencia_<bean:write name='index'/>" class="box" maxlength="20" style="width:70;margin-top:2px;" value="<bean:write name="asistencia" property="numeroDiligencia" />"/>
@@ -139,7 +137,9 @@
 				<td align='center' width='14%'>
 				
 				<c:if test="${VolantesExpressForm.delito==true}">
+				<table><tr><td>
 					<input type="hidden" id="observaciones_<bean:write name='index'/>" value="">
+					
 					<select class="boxCombo" id="idDelito_<bean:write name='index'/>" style="width:247px;margin-top:2px;" name="idDelito_<bean:write name='index'/>" > 
 						<bean:define id="delitos" name="VolantesExpressForm" property="delitos" type="java.util.List" />
 							<logic:iterate id="delito" name="delitos">
@@ -149,12 +149,14 @@
 								</logic:iterate> 
 								
 					</select>
+						
+						
 					<script>
 					
 						if(${asistencia.idDelito!=null})
 							document.getElementById("idDelito_<bean:write name='index'/>").value ='<bean:write name="asistencia" property="idDelito"/>'; 
 						</script>
-					
+					</td></tr></table>
 				</c:if>
 				
 				<c:if test="${VolantesExpressForm.delito==false}">

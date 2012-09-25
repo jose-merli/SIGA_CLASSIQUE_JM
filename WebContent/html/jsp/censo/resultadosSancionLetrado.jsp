@@ -184,7 +184,6 @@
 			<html:hidden styleId="mostrarSanciones"  property="mostrarSanciones" />					
 			<html:hidden styleId="fechaInicioArchivada" property="fechaInicioArchivada"/>
 			<html:hidden styleId="fechaFinArchivada" property="fechaFinArchivada"/>
-			<input type="hidden" id="actionModal" name="actionModal" value="">
 		</html:form>
  
    			<%String tamanosCol = "";

@@ -64,9 +64,9 @@
 		//automatico=(String)resultado.getAutomatico();
 		
 		  if (automatico!=null && automatico.equals("1")){
-	      estilo="boxConsulta";
-	      estiloCombo="boxConsulta";
-	      bReadOnly=true;
+		      estilo="boxConsulta";
+		      estiloCombo="boxConsulta";
+		      bReadOnly=true;
 		  }
 	}
 	catch(Exception e){};
@@ -77,9 +77,7 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
-		
-	
+
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<html:javascript formName="SancionesLetradoForm" staticJavascript="false" />  
   	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>		
@@ -134,9 +132,11 @@
 		<siga:Idioma key="gratuita.insertarArchivo.literal.fechaarchivo"/>&nbsp;(*)
 	</td>
 	<td>
-		<html:textarea property="fechaArchivada" styleclass="box" style="width:100;overflow:hidden" rows="1" value="<%=fechaInicio%>" readOnly="true"/>
+		
 		<%if (automatico!=null && !automatico.equals("1")){%>
-			<a onClick="return showCalendarGeneral(fechaArchivada);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+		 	<siga:Fecha nombreCampo="fechaArchivada" posicionX="30" posicionY="30"></siga:Fecha>
+		<%}else{%>
+		<html:textarea property="fechaArchivada" styleclass="box" style="width:100;overflow:hidden" rows="1" value="<%=fechaInicio%>" readOnly="true"/>
 		<%}%>
 		
 	</td>

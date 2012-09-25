@@ -25,7 +25,7 @@
 <html>
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
 		<script src="<%=app%>/html/js/jquery.js" type="text/javascript"></script>
 		<script src="<%=app%>/html/js/jquery.blockUI.js" type="text/javascript"></script>
 		<script src="<%=app%>/html/js/jquery.notice.js" type="text/javascript"></script>

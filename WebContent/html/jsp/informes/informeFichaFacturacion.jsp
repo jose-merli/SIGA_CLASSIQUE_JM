@@ -119,7 +119,7 @@
   			    if (validateMantenimientoInformesFacturacionesForm(f)) {
 					f.modo.value="generarFichaFacturacion";
 					// con pantalla de espera
-				    document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.factSJCS.procesandoInforme';
+				    window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.factSJCS.procesandoInforme';
 				}else{
 				
 					fin();

@@ -102,7 +102,7 @@ function eliminiarfact(fila) {
    	document.forms[0].target="submitArea";
    	document.forms[0].modo.value = "Borrar";
 	var f = document.forms[0].name;				
-	document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=facturacion.mensaje.eliminandoFacturacion';
+	window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=facturacion.mensaje.eliminandoFacturacion';
    	//document.forms[0].submit();
    	//document.forms[0].target=auxTarget;
  	}
@@ -126,7 +126,7 @@ function eliminiarfact(fila) {
 		<input type=hidden name=modo value="">
 
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
+
 			<input type="hidden" name="actionModal" value="">
 		</html:form>
 		

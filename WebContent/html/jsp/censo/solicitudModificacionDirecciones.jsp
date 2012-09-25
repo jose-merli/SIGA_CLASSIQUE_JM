@@ -66,7 +66,7 @@
 </style>	
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -92,12 +92,12 @@
 		   if (valor!="" && valor!=idEspana) {
 		   		document.getElementById("poblacion").value="";
 		   		document.getElementById("provincia").value="";
-			   	document.getElementById("provincia").disabled=true;
+		   	  	jQuery("#provincia").attr("disabled","disabled");
 				document.getElementById("poblacionEspanola").className="ocultar";
 				document.getElementById("poblacionExtranjera").className="";
 	       } else {
 		   		document.getElementById("poblacionExt").value="";
-				document.getElementById("provincia").disabled=false;
+				jQuery("#provincia").removeAttr("disabled");
 				document.getElementById("poblacionEspanola").className="";
 				document.getElementById("poblacionExtranjera").className="ocultar";
 	       }

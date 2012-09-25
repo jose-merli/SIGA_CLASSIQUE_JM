@@ -78,7 +78,7 @@
 				for (i = 0; i < 2; i++) 
 				{
   						var tabla;
-  						tabla = document.getElementById('tabladatos');
+  						tabla = document.getElementById('tablaDatos');
   						if (i == 0)
   						{
     						var flag = true;
@@ -121,18 +121,14 @@
 
 	<body class="detallePestanas">
 		<html:form action="/CER_Plantillas.do" method="POST" target="mainWorkArea">
-			<html:hidden property="modo" value=""/>
+			<html:hidden styleId="modo" property="modo" value=""/>
 
-			<html:hidden property="idInstitucion" value="<%=sIdInstitucion%>"/>
-			<html:hidden property="idTipoProducto" value="<%=sIdTipoProducto%>"/>
-			<html:hidden property="idProducto" value="<%=sIdProducto%>"/>
-			<html:hidden property="idProductoInstitucion" value="<%=sIdProductoInstitucion%>"/>
+			<html:hidden styleId="idInstitucion" property="idInstitucion"  value="<%=sIdInstitucion%>"/>
+			<html:hidden styleId="idTipoProducto" property="idTipoProducto"  value="<%=sIdTipoProducto%>"/>
+			<html:hidden styleId="idProducto"  property="idProducto" value="<%=sIdProducto%>"/>
+			<html:hidden styleId="idProductoInstitucion"  property="idProductoInstitucion" value="<%=sIdProductoInstitucion%>"/>
 			
-			<html:hidden property="certificado" value="<%=sCertificado%>"/>
-
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+			<html:hidden styleId="certificado"  property="certificado" value="<%=sCertificado%>"/>
 		</html:form>
 
 	<!-- TITULO INFORMATIVO -->
@@ -178,13 +174,13 @@
 %>
 	  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=sBotones%>" elementos='<%=elems%>' clase="listaNonEdit" visibleConsulta="no">
 					<td>
-						<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=bean.getIdInstitucion()%>">
-						<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=bean.getIdTipoProducto()%>">
-						<input type="hidden" name="oculto<%=""+(i+1)%>_3" value="<%=bean.getIdProducto()%>">
-						<input type="hidden" name="oculto<%=""+(i+1)%>_4" value="<%=bean.getIdProductoInstitucion()%>">
-						<input type="hidden" name="oculto<%=""+(i+1)%>_5" value="<%=bean.getIdPlantilla()%>">
-						<input type="hidden" name="oculto<%=""+(i+1)%>_6" value="<%=bean.getDescripcion()%>">
-						<input type="hidden" name="oculto<%=""+(i+1)%>_7" value="<%=bean.getPorDefecto()%>">
+						<input type="hidden" id="oculto<%=""+(i+1)%>_1" name="oculto<%=""+(i+1)%>_1" value="<%=bean.getIdInstitucion()%>">
+						<input type="hidden" id="oculto<%=""+(i+1)%>_2" name="oculto<%=""+(i+1)%>_2" value="<%=bean.getIdTipoProducto()%>">
+						<input type="hidden" id="oculto<%=""+(i+1)%>_3" name="oculto<%=""+(i+1)%>_3" value="<%=bean.getIdProducto()%>">
+						<input type="hidden" id="oculto<%=""+(i+1)%>_4" name="oculto<%=""+(i+1)%>_4" value="<%=bean.getIdProductoInstitucion()%>">
+						<input type="hidden" id="oculto<%=""+(i+1)%>_5" name="oculto<%=""+(i+1)%>_5" value="<%=bean.getIdPlantilla()%>">
+						<input type="hidden" id="oculto<%=""+(i+1)%>_6" name="oculto<%=""+(i+1)%>_6" value="<%=bean.getDescripcion()%>">
+						<input type="hidden" id="oculto<%=""+(i+1)%>_7" name="oculto<%=""+(i+1)%>_7" value="<%=bean.getPorDefecto()%>">
 						
 						<%=bean.getDescripcion()%>
 					</td>

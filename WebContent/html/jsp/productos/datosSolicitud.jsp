@@ -205,8 +205,7 @@
 	   var idTipoproducto=document.getElementById(aux);
 	   document.forms[0].idSolicitud.value=oculto.value;
 	   document.forms[0].concepto.value=nombre.value;
-	  
-       cierraConParametros(document.forms[0].concepto.value+"#@#"+idproducto.value+"#@#"+idproductoInstitucion.value+"#@#"+idTipoproducto.value);
+	   cierraConParametros("@#@#"+document.forms[0].concepto.value+"#@#"+idproducto.value+"#@#"+idproductoInstitucion.value+"#@#"+idTipoproducto.value);
 	   
 	 }
      
@@ -278,7 +277,7 @@
 			<html:hidden property = "idPersona" value = "<%=idPersona%>"/>
 			
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
+			
 			<input type="hidden" name="actionModal" value="">
 			<input type="hidden" name="fechaEfectiva" value="<%=fechaEfectiva%>">
 		</html:form>	

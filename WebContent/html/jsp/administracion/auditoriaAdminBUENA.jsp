@@ -30,20 +30,20 @@
 
 	<!-- ESTILOS Y JAVASCRIPT -->
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 
 	<script language="JavaScript">
 
 	function buscar() 
 	{		
-		document.all.modo.value="buscar";						
+		document.getElementById("modo").value="buscar";						
 		auditoriaAdminForm.submit();		
 	}
 	
 	function borrarLog() 
 	{
 		if(confirm('<siga:Idioma key="messages.deleteConfirmation"/>')){
-			document.all.modo.value="borrar";	
+			document.getElementById("modo").value="borrar";	
 			auditoriaAdminForm.submit();
 			}
 		return false;
@@ -52,8 +52,8 @@
 	function limpiar()
 	{
 		auditoriaAdminForm.reset();
-		document.all.modo.value="";
-		document.all.resultado.src="<%=app%>/html/jsp/general/blank.jsp";	
+		document.getElementById("modo").value="";
+		document.getElementById("resultado").src="<%=app%>/html/jsp/general/blank.jsp";	
 	}	
 	
 	

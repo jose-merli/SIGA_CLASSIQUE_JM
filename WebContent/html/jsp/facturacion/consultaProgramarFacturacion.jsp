@@ -104,7 +104,6 @@
 		<html:form action="/FAC_ProgramarFacturacion.do" method="POST" style="display:none"> 		
 			<!-- Campo obligatorio -->
 			<html:hidden property = "modo" styleId = "modo" value = ""/>			
-			<input type="hidden" name="actionModal"  id="actionModal" value="">
 		</html:form>
 		
 			<!-- INICIO: LISTA DE VALORES -->

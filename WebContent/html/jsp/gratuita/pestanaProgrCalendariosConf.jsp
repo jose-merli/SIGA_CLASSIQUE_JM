@@ -155,11 +155,11 @@ function checkTodos(chkGeneral){
 
 
 function ajustarCabeceraTabla(){
-	if (document.all.listadoConf.clientHeight < document.all.listadoConfDiv.clientHeight) {
-		   document.all.listadoConfCab.width='100%';
+	if (document.getElementById("listadoConf").clientHeight < document.getElementById("listadoConfDiv").clientHeight) {
+		document.getElementById("listadoConfCab").width='100%';
 		   
 	  } else {
-		   document.all.listadoConfCab.width='98.43%';
+		  document.getElementById("listadoConfCab").width='98.43%';
 		   
 	  }
 }
@@ -229,14 +229,14 @@ function onClickMostrarSoloGuardiasConfiguradas() {
 } 
 function onclickCheckConfiguracion(fila) {
 	if(document.getElementById("checkConfiguracion_"+fila).checked){
-		document.getElementById("orden_"+fila).disabled = '';
+		jQuery("#orden_"+fila).removeAttr("disabled");	
 	}
 	else{
 		var mensaje = "<siga:Idioma key='gratuita.calendarios.confirma.restaurarValor'/>";
 		if(confirm(mensaje)) {
 			document.getElementById("orden_"+fila).value = document.getElementById("ordenOld_"+fila).value;
-			document.getElementById("orden_"+fila).disabled = 'disabled';					
-			
+			jQuery("#orden_"+fila).attr("disabled","disabled");	
+
 		}
 		else {
 			

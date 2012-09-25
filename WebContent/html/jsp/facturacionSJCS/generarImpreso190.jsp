@@ -112,8 +112,8 @@
 			document.forms[0].modo.value="generar";
 			var f = document.forms[0].name;
 			// con pantalla de espera
-//			document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=messages.factSJCS.generandoImpreso190';
-			document.frames.resultado.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=messages.factSJCS.generandoImpreso190';
+//			window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=messages.factSJCS.generandoImpreso190';
+			 window.frames.resultado.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=messages.factSJCS.generandoImpreso190';
 		}else{
 		
 			fin();

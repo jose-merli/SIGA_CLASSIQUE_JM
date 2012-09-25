@@ -51,7 +51,7 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -72,10 +72,7 @@
 	<html:form action="/DefinirAreasMateriasAction.do" method="post" target="submitArea"	 style="display:none">
 		<input type="hidden" name="modo" value="">
 		<input type="hidden" name="accion" value="materia">
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
-		</html:form>	
+	</html:form>	
 		
 
 		<siga:TablaCabecerasFijas

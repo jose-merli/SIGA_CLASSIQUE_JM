@@ -339,7 +339,7 @@
 		}
 	
 		function limpiarCombo(nombre) {
-			iframeCombo = top.frames[0].document.getElementById(nombre + "Frame");
+			iframeCombo = window.top.frames[0].document.getElementById(nombre + "Frame");
 			cadenaInicial = iframeCombo.src;
 	
 			if (cadenaInicial.indexOf("&elementoSel=[0]") > 1) {

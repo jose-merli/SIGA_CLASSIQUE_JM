@@ -44,7 +44,7 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -74,7 +74,7 @@
   
 	<%if (nombreObjetoDestino != null && !nombreObjetoDestino.equals("")&& !nombreObjetoDestino.equals("DOSFRAMES")) { %>//venimos de una ventana principañ
 	
-  	  top.frames[0].traspasoDatos(aux);
+	window.top.frames[0].traspasoDatos(aux);
 	 <%}else{
 	    if (nombreObjetoDestino != null && !nombreObjetoDestino.equals("")&& nombreObjetoDestino.equals("DOSFRAMES")){%>
 	        window.parent.parent.traspasoDatos(aux);

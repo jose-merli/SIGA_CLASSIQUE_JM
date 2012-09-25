@@ -78,7 +78,7 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -95,7 +95,7 @@
 
 	<html:form action="/JGR_ActasComision.do?noReset=true" target="mainWorkArea" method="post">
 		<input type="hidden" name="modo"  id="modo" value="">
-		<input type="hidden" name="actionModal"  id="actionModal"  value="">
+
 		<html:hidden styleId="registrosSeleccionados"  property="registrosSeleccionados" />
 		<html:hidden styleId="datosPaginador"  property="datosPaginador" />
 		<html:hidden styleId="seleccionarTodos"  property="seleccionarTodos" />

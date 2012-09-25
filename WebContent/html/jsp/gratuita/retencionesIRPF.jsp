@@ -77,7 +77,7 @@
 	<head>
 	<title><siga:Idioma key="gratuita.retencionesIRPF.literal.title"/></title>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-		<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+		
 			
 		
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -181,7 +181,7 @@
 	  	if(<%=bloquea%>){
 	  		//alert('rellenarCampos: bloquea');
 			if(<%=bloqueachec%>){
-				document.forms[0].sociedadesCliente.disabled=true;
+				jQuery("#sociedadesCliente").attr("disabled","disabled");
 			}
 			if($("#idSJCSSociedad", this.document).attr("disabled") == undefined ){
 				$("#idSJCSSociedad", this.document).attr("disabled","disabled");
@@ -252,9 +252,9 @@
 						</td>
 						
 						<td>
-							<html:checkbox  property="sociedadesCliente" disabled="<%=desactivado%>" onclick="cuenta();traeDatos()"/>
+							<html:checkbox  property="sociedadesCliente"  styleId="sociedadesCliente" disabled="<%=desactivado%>" onclick="cuenta();traeDatos()"/>
 						</td>
-					</tr>
+					</tr>	
 					<tr>
 					<%
 						String parametro[] = new String[2];
@@ -301,7 +301,6 @@
 		<input type="hidden" id="idPersona" name="idPersona" value="<bean:write name='idPersona'/>" />
 		
 		<input type="hidden" id="modo" name="modo" />
-		<input type="hidden" id="actionModal" name="actionModal" value="">
 		<input type="hidden" id="desdeFicha" name="desdeFicha" value="1" />
 		<script>
 			rellenarCampos();

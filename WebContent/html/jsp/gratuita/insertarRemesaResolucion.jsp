@@ -43,7 +43,7 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -127,8 +127,7 @@
 					<siga:Idioma key="gratuita.BusquedaResolucionCAJG.literal.fResolucion"/>&nbsp;(*)
 				</td>
 				<td class="labelText">
-					<html:text   property="fechaResolucion" size="10" maxlength="10" styleClass="box"  value="<%=fecha%>" readOnly="true"></html:text>
-					<a onClick="return showCalendarGeneral(fechaResolucion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
+					<siga:Fecha nombreCampo="fechaResolucion"   valorInicial="<%=fecha%>" readOnly="true"/>
 				</td>
 		
 			</tr>
@@ -194,7 +193,7 @@
 
 				f.modo.value="Insertar";								
 				//document.forms[0].submit();				
-				document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f.name+'&msg=messages.gratuita.actualizadonResoluciones';
+				window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f.name+'&msg=messages.gratuita.actualizadonResoluciones';
 				
 				window.top.returnValue="MODIFICADO";
 				

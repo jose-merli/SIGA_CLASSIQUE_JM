@@ -121,7 +121,7 @@
 			
 					document.all.ficheroBancarioPagosForm.modo.value = "generarFichero";
 					var f = document.all.ficheroBancarioPagosForm.name;	
-			      	document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=facturacion.ficheroBancarioPagos.mensaje.generandoFicheros';
+					window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=facturacion.ficheroBancarioPagos.mensaje.generandoFicheros';
 			}else{
 		
 			 fin();
@@ -175,10 +175,6 @@
 		<html:form action="/FAC_DisqueteCargos.do" method="POST" target="submitArea" style="display:none">		
 			<html:hidden property = "modo" value = ""/>
 			<html:hidden name="ficheroBancarioPagosForm" property="fechaCargo" value = ""/>
-
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
 		</html:form>
 
 			<!-- INICIO: LISTA DE VALORES -->

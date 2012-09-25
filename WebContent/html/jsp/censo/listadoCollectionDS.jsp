@@ -133,7 +133,7 @@
 	
 		<html:form action="/CEN_Censo_DocumentacionRegTel.do?noReset=true" method="post" target="_self" style="display:none">
 			<input type="hidden" name="modo" value="<%=modo%>">			
-			<input type="hidden" name="tablaDatosDinamicosD">				
+							
 			<input type="hidden" name="identificadorDS" value="">
 			
 		</html:form>

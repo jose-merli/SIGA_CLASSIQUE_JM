@@ -12,7 +12,7 @@ public class ScsJuzgadoBean extends MasterBean{
 	
 	private Integer	idInstitucion, idJuzgado ;
 	private String	nombre=null, direccion=null, codigoPostal=null, idProvincia=null, idPoblacion=null, 
-					telefono1=null, telefono2=null, fax1=null,codProcurador="", email=null, visible="", movil="";
+					telefono1=null, telefono2=null, fax1=null,codProcurador="", email="", visible="", movil="";
 	
 	private String fechabaja;
 	

@@ -174,9 +174,9 @@ public class TagFecha extends TagSupport {
 				}
 			}
 			if ((this.styleId != null)&&(this.styleId.equals(""))){
-				out.println("		styleId=\"" + this.styleId + "\" ");
+				out.println("		id=\"" + this.styleId + "\" ");
 			}else{
-				out.println("		styleId=\"" + this.nombreCampo + "\" ");
+				out.println("		id=\"" + this.nombreCampo + "\" ");
 			}
 			if ((this.disabled != null)){
 				if(this.disabled.equals("true"))

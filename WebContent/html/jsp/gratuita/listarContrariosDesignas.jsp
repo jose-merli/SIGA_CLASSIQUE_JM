@@ -46,7 +46,7 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -97,8 +97,6 @@
 			<input type="hidden" id="accionE"  name="accionE" value="nuevo">
 			<input type="hidden" id="actionE" name="actionE" value="/JGR_ContrariosDesignasPerJG.do">
 			<input type="hidden" id="pantallaE" name="pantallaE" value="M">
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="actionModal" value="">
 		</html:form>	
 		
        <table class="tablaTitulo" cellspacing="0" heigth="38">

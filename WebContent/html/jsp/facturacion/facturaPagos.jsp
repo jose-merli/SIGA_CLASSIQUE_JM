@@ -159,7 +159,7 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -220,8 +220,6 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 			<html:hidden styleId = "idFactura"  property = "idFactura"		value = "<%=idFactura%>"/>
 			<html:hidden styleId = "idInstitucion" property = "idInstitucion" value = "<%=String.valueOf(idInstitucion)%>"/>
 			<html:hidden styleId = "numeroFactura"  property = "numeroFactura" value = "<%=numeroFactura%>"/>
-			<input type="hidden" name="actionModal"  id="actionModal" value="" />
-
  			<html:hidden styleId = "datosPagosCajaImportePendiente"  property = "datosPagosCajaImportePendiente" value = "<%=String.valueOf(pendiente)%>"/>
 			
 		</html:form>

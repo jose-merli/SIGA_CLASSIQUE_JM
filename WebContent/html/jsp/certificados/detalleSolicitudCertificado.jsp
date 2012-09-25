@@ -238,14 +238,14 @@
 				{
 					SolicitudesCertificadosForm.fechaCobro.value="";
 				    <% if (tipoCertificado.equals("C")){%>
-				       SolicitudesCertificadosForm.idInstitucionDestino.disabled="";
+				       jQuery("#idInstitucionDestino").removeAttr("disabled");
   				    <%}%>	  
 				}
 				else
 				{
 				    <% if (tipoCertificado.equals("C")){%>
 				       SolicitudesCertificadosForm.idInstitucionDestino.value="";
-				       SolicitudesCertificadosForm.idInstitucionDestino.disabled="disabled";
+					   jQuery("#idInstitucionDestino").attr("disabled","disabled");
   				    <%}%>	  
 /*					var fFecha = new Date();
 					var dia=fFecha.getDate();
@@ -276,13 +276,13 @@
 				if (!SolicitudesCertificadosForm.checkCobro.checked)	
 				{
 				    <% if (tipoCertificado.equals("C")){%>
-				       SolicitudesCertificadosForm.idInstitucionDestino.disabled="";
-  				    <%}%>	  
+				       jQuery("#idInstitucionDestino").removeAttr("disabled");
+ 				    <%}%>	  
 				}
 				else
 				{
 				    <% if (tipoCertificado.equals("C")){%>
-				       SolicitudesCertificadosForm.idInstitucionDestino.disabled="disabled";
+					   jQuery("#idInstitucionDestino").attr("disabled","disabled");
   				    <%}%>	  
 				}
 			}

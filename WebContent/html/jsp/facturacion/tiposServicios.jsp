@@ -85,11 +85,11 @@
 
 		<!-- Formulario de la lista de detalle multiregistro -->
 		<html:form action="/FAC_TiposServicios.do" method="POST"  target="submitArea" style="display:none">
-			<html:hidden property="modo" value=""/>
+			<html:hidden styleId="modo" property="modo" value=""/>
 			
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
+
+			<input type="hidden" name="actionModal" id="actionModal" value="">
 		</html:form>			
 			<%
 			if (vDatosTServ==null || vDatosTServ.size()==0)
@@ -137,10 +137,10 @@
 					
 							<tr class="listaNonEdit">
 								<td>
-									<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=miHash.get("IDINSTITUCION")%>">
-									<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=miHash.get("IDSERIEFACTURACION")%>">
-									<input type="hidden" name="oculto<%=""+(i+1)%>_3" value="<%=miHash.get("IDTIPOSERVICIOS")%>">
-									<input type="hidden" name="oculto<%=""+(i+1)%>_4" value="<%=miHash.get("IDSERVICIO")%>">
+									<input type="hidden" name="oculto<%=""+(i+1)%>_1"  id="oculto<%=""+(i+1)%>_1" value="<%=miHash.get("IDINSTITUCION")%>">
+									<input type="hidden" name="oculto<%=""+(i+1)%>_2"  id="oculto<%=""+(i+1)%>_2" value="<%=miHash.get("IDSERIEFACTURACION")%>">
+									<input type="hidden" name="oculto<%=""+(i+1)%>_3"  id="oculto<%=""+(i+1)%>_3" value="<%=miHash.get("IDTIPOSERVICIOS")%>">
+									<input type="hidden" name="oculto<%=""+(i+1)%>_4"  id="oculto<%=""+(i+1)%>_4" value="<%=miHash.get("IDSERVICIO")%>">
 									<%=miHash.get("DESCRIPCIONSERVICIO")%>
 								</td>
 							</tr>
@@ -175,10 +175,10 @@
 						
 							<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="B" clase="listaNonEdit" visibleConsulta="no" visibleEdicion="no" >
 								<td>
-									<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=miHash.get("IDINSTITUCION")%>">
-									<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=miHash.get("IDSERIEFACTURACION")%>">
-									<input type="hidden" name="oculto<%=""+(i+1)%>_3" value="<%=miHash.get("IDTIPOSERVICIOS")%>">
-									<input type="hidden" name="oculto<%=""+(i+1)%>_4" value="<%=miHash.get("IDSERVICIO")%>">
+									<input type="hidden" name="oculto<%=""+(i+1)%>_1" id="oculto<%=""+(i+1)%>_1" value="<%=miHash.get("IDINSTITUCION")%>">
+									<input type="hidden" name="oculto<%=""+(i+1)%>_2" id="oculto<%=""+(i+1)%>_2" value="<%=miHash.get("IDSERIEFACTURACION")%>">
+									<input type="hidden" name="oculto<%=""+(i+1)%>_3" id="oculto<%=""+(i+1)%>_3" value="<%=miHash.get("IDTIPOSERVICIOS")%>">
+									<input type="hidden" name="oculto<%=""+(i+1)%>_4" id="oculto<%=""+(i+1)%>_4" value="<%=miHash.get("IDSERVICIO")%>">
 									<%=miHash.get("DESCRIPCIONSERVICIO")%>
 								</td>
 							</siga:FilaConIconos>

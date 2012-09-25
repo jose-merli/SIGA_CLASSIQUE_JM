@@ -234,7 +234,7 @@
 				document.getElementById("filaNaranja").focus();	// Por problemas de repintado de pantalla
 			}
 			function ocultarCombosServicio(){
-			    document.getElementById("tipoProducto1").style.display="block";
+			    //document.getElementById("tipoProducto1").style.display="block";
 				document.getElementById("categoriaProducto1").style.display="block";
 				document.getElementById("producto1").style.display="block";
 				document.getElementById("solicitarProducto1").style.display="block";
@@ -258,8 +258,8 @@
 				if (deCertificado.equals("1") ){
 				   
 				%>
-				     
-				   document.getElementById("catalogo").disabled=true;
+				    jQuery("#catalogo").attr("disabled","disabled");  
+				   
 				   <%if(esLetrado)	{%>//Si venimos de la solicitud de certificados cambiamos el tipo del combo producto para que solo filtre por certificados
 				 
 			            cambiarTipoComboSiga('producto','cmbCertificadoInstitucionLetrado');
@@ -282,7 +282,8 @@
 					 
 						<%}
 					}%>
-					document.getElementById("catalogo").disabled=false;
+					jQuery("#catalogo").removeAttr("disabled");
+					
 			   <%}	%>	
 					
 				   
@@ -293,7 +294,8 @@
 				
 				//Seleccion de los combos de Productos:
 			 if (document.solicitudCompraForm.catalogo.value=='P'||document.solicitudCompraForm.catalogo.value==''||document.solicitudCompraForm.catalogo.value=='C'){	
-			    ocultarCombosServicio();
+			    
+				 ocultarCombosServicio();
 			    
 			 
 				var cmb1 = document.getElementsByName("tipoProducto");
@@ -317,8 +319,6 @@
 				
 				
 			}	
-				
-				
 				//Seleccion de los combos de Servicios:			
 				//var tmp1 = document.getElementsByName("tipoServicio");
 				//var tmp2 = tmp1[0]; 
@@ -327,9 +327,9 @@
 
 			function actualizarCliente() {
 			     
-					document.all.solicitudCompraForm.target = "mainWorkArea";
-					document.all.solicitudCompraForm.modo.value = "actualizarCliente";
-					//document.all.solicitudCompraForm.submit();
+					document.solicitudCompraForm.target = "mainWorkArea";
+					document.solicitudCompraForm.modo.value = "actualizarCliente";
+					//document.solicitudCompraForm.submit();
 								   		   
 			}		  
 		
@@ -337,55 +337,55 @@
 					if (mostrarMensaje) {
 						var mensaje = "<siga:Idioma key="messages.pys.solicitudCompra.cambioInstitucion"/>";
 						if(confirm(mensaje)) {						
-								document.all.solicitudCompraForm.idInstitucion.value = document.busquedaClientesModalForm.idInstitucion.value;
-								document.all.solicitudCompraForm.target = "mainWorkArea";
-								document.all.solicitudCompraForm.modo.value = "borrarCarrito";						
-							    document.all.solicitudCompraForm.submit();
+								document.solicitudCompraForm.idInstitucion.value = document.busquedaClientesModalForm.idInstitucion.value;
+								document.solicitudCompraForm.target = "mainWorkArea";
+								document.solicitudCompraForm.modo.value = "borrarCarrito";						
+							    document.solicitudCompraForm.submit();
 						}
 						else {
 							document.busquedaClientesModalForm.reset();
 						}
 					} 
 					else {
-							document.all.solicitudCompraForm.idInstitucion.value = <%=user.getLocation()%>;
-							document.all.solicitudCompraForm.target = "mainWorkArea";
-							document.all.solicitudCompraForm.modo.value = "borrarCarrito";						
-						    document.all.solicitudCompraForm.submit();
+							document.solicitudCompraForm.idInstitucion.value = <%=user.getLocation()%>;
+							document.solicitudCompraForm.target = "mainWorkArea";
+							document.solicitudCompraForm.modo.value = "borrarCarrito";						
+						    document.solicitudCompraForm.submit();
 					}
 			}		  
 		  
 			function buscarCliente() {
 			
 			 	var resultado = ventaModalGeneral("busquedaClientesModalForm","G");			
-			 	//document.all.busquedaClientesModalForm.submit();
+			 	//document.busquedaClientesModalForm.submit();
 			 	// Si he recuperado datos y el nuevo idpersona es distinto de la anterior persona
 				if((resultado    != undefined) && 
 					 (resultado[0] != undefined) && 
-					 (resultado[0] != document.all.solicitudCompraForm.idPersona.value)) {
+					 (resultado[0] != document.solicitudCompraForm.idPersona.value)) {
 					
 						
-						if(document.all.solicitudCompraForm.idPersona.value != resultado[0]) {
+						if(document.solicitudCompraForm.idPersona.value != resultado[0]) {
 							var mensaje = "<siga:Idioma key="messages.pys.solicitudCompra.vaciarCarrito"/>";
 							
-							if (document.all.solicitudCompraForm.idPersona.value != "") {
+							if (document.solicitudCompraForm.idPersona.value != "") {
                              
 								if(confirm(mensaje)) {						
 
-										document.all.solicitudCompraForm.idPersona.value = resultado[0];
-										document.all.solicitudCompraForm.numeroColegiado.value = resultado[2];
-										document.all.solicitudCompraForm.nif.value = resultado[3];
-										document.all.solicitudCompraForm.nombrePersona.value = resultado[4] + " " + resultado[5] +  " " + resultado[6];
-										if (resultado[3]!="") document.all.solicitudCompraForm.nombrePersona.value = document.all.solicitudCompraForm.nombrePersona.value + " - "+resultado[3]+"";
-										if (resultado[2]!="") document.all.solicitudCompraForm.nombrePersona.value = "Num. Col: "+resultado[2]+" - " + document.all.solicitudCompraForm.nombrePersona.value;
+										document.solicitudCompraForm.idPersona.value = resultado[0];
+										document.solicitudCompraForm.numeroColegiado.value = resultado[2];
+										document.solicitudCompraForm.nif.value = resultado[3];
+										document.solicitudCompraForm.nombrePersona.value = resultado[4] + " " + resultado[5] +  " " + resultado[6];
+										if (resultado[3]!="") document.solicitudCompraForm.nombrePersona.value = document.solicitudCompraForm.nombrePersona.value + " - "+resultado[3]+"";
+										if (resultado[2]!="") document.solicitudCompraForm.nombrePersona.value = "Num. Col: "+resultado[2]+" - " + document.solicitudCompraForm.nombrePersona.value;
 	
 									 	document.busquedaClientesModalForm.numeroColegiado.value = resultado[2];
 									 	document.busquedaClientesModalForm.nif.value = resultado[3];
 									 	document.busquedaClientesModalForm.nombrePersona.value =resultado[4] + " " + resultado[5] +  " " + resultado[6];	
-										if (resultado[3]!="") document.all.busquedaClientesModalForm.nombrePersona.value = document.all.busquedaClientesModalForm.nombrePersona.value + " - "+resultado[3]+"";
-										if (resultado[2]!="") document.all.busquedaClientesModalForm.nombrePersona.value =  "Num. Col: "+resultado[2]+" - " + document.all.busquedaClientesModalForm.nombrePersona.value;
+										if (resultado[3]!="") document.busquedaClientesModalForm.nombrePersona.value = document.busquedaClientesModalForm.nombrePersona.value + " - "+resultado[3]+"";
+										if (resultado[2]!="") document.busquedaClientesModalForm.nombrePersona.value =  "Num. Col: "+resultado[2]+" - " + document.busquedaClientesModalForm.nombrePersona.value;
 
 										// copiamos el valor del idInstitucionPresentador
-										document.all.solicitudCompraForm.idInstitucionPresentador.value = document.all.busquedaClientesModalForm.idInstitucionPresentador.value;
+										document.solicitudCompraForm.idInstitucionPresentador.value = document.busquedaClientesModalForm.idInstitucionPresentador.value;
 										
 									 	//Borramos el carro ya que hemos cambiado de Cliente:
 										borrarCarrito(false);							
@@ -393,24 +393,24 @@
 								}						
 
 							} else {
-								document.all.solicitudCompraForm.idPersona.value = resultado[0];
-								document.all.solicitudCompraForm.numeroColegiado.value = resultado[2];
-								document.all.solicitudCompraForm.nif.value = resultado[3];
-								document.all.solicitudCompraForm.nombrePersona.value = resultado[4] + " " + resultado[5] +  " " + resultado[6];	
-								if (resultado[3]!="") document.all.solicitudCompraForm.nombrePersona.value = document.all.solicitudCompraForm.nombrePersona.value + " - "+resultado[3]+"";
-								if (resultado[2]!="") document.all.solicitudCompraForm.nombrePersona.value =  "Num. Col: "+resultado[2]+" - " + document.all.solicitudCompraForm.nombrePersona.value;
+								document.solicitudCompraForm.idPersona.value = resultado[0];
+								document.solicitudCompraForm.numeroColegiado.value = resultado[2];
+								document.solicitudCompraForm.nif.value = resultado[3];
+								document.solicitudCompraForm.nombrePersona.value = resultado[4] + " " + resultado[5] +  " " + resultado[6];	
+								if (resultado[3]!="") document.solicitudCompraForm.nombrePersona.value = document.solicitudCompraForm.nombrePersona.value + " - "+resultado[3]+"";
+								if (resultado[2]!="") document.solicitudCompraForm.nombrePersona.value =  "Num. Col: "+resultado[2]+" - " + document.solicitudCompraForm.nombrePersona.value;
 
 							 	document.busquedaClientesModalForm.numeroColegiado.value = resultado[2];
 							 	document.busquedaClientesModalForm.nif.value = resultado[3];
 							 	document.busquedaClientesModalForm.nombrePersona.value =resultado[4] + " " + resultado[5] +  " " + resultado[6];	
-								if (resultado[3]!="") document.all.busquedaClientesModalForm.nombrePersona.value = document.all.busquedaClientesModalForm.nombrePersona.value + " - "+resultado[3]+"";
-								if (resultado[2]!="") document.all.busquedaClientesModalForm.nombrePersona.value =  "Num. Col: "+resultado[2]+" - " + document.all.busquedaClientesModalForm.nombrePersona.value;
+								if (resultado[3]!="") document.busquedaClientesModalForm.nombrePersona.value = document.busquedaClientesModalForm.nombrePersona.value + " - "+resultado[3]+"";
+								if (resultado[2]!="") document.busquedaClientesModalForm.nombrePersona.value =  "Num. Col: "+resultado[2]+" - " + document.busquedaClientesModalForm.nombrePersona.value;
 
 								//Institucion:
-								document.all.solicitudCompraForm.idInstitucion.value = resultado[1];
+								document.solicitudCompraForm.idInstitucion.value = resultado[1];
 
 								// copiamos el valor del idInstitucionPresentador
-								document.all.solicitudCompraForm.idInstitucionPresentador.value = document.all.busquedaClientesModalForm.idInstitucionPresentador.value;
+								document.solicitudCompraForm.idInstitucionPresentador.value = document.busquedaClientesModalForm.idInstitucionPresentador.value;
 							
 								actualizarCliente();
 								
@@ -421,7 +421,7 @@
 			}
 
 			function actualizarInstitucionPresentador(objeto) {
-				document.all.solicitudCompraForm.idInstitucionPresentador.value = objeto.value;
+				document.solicitudCompraForm.idInstitucionPresentador.value = objeto.value;
 
 				actualizarCliente();
 			}
@@ -429,6 +429,7 @@
 			
 			function solicitar(tipo){
 				sub();
+				
 				f = document.solicitudCompraForm;
 				if(f.idPersona.value == ""){
 					var mensaje = "<siga:Idioma key="messages.pys.solicitudCompra.seleccionCliente"/>";
@@ -463,17 +464,18 @@
 			function cambiarTipoComboSiga(idCombo,tipoNew){// se utliza para cambiar el tipo del combo productos segun seleccionemos en el combo catalogo productos o 
 			                                               // certificados
 
-  				var cadena = top.frames[0].document.getElementById(idCombo+'Frame').src;
+  				var cadena = window.top.frames[0].document.getElementById(idCombo+'Frame').src;
+				
 				var ini = cadena.indexOf('cmb');
 				if (ini == -1) {
 					return;
 				}
 				var fin = cadena.indexOf('&', ini+1);
 				if (fin == -1) { 
-					top.frames[0].document.getElementById(idCombo+'Frame').src = cadena.substring(0,ini) + tipoNew;
+					window.top.frames[0].document.getElementById(idCombo+'Frame').src = cadena.substring(0,ini) + tipoNew;
 				return;
 				}
-				top.frames[0].document.getElementById(idCombo+'Frame').src = cadena.substring(0,ini) + tipoNew + cadena.substring(fin);
+					window.top.frames[0].document.getElementById(idCombo+'Frame').src = cadena.substring(0,ini) + tipoNew + cadena.substring(fin);
 				
 			}
 			
@@ -562,20 +564,22 @@
 		   if (document.getElementById("producto1").style.display=="block"  && valor.name=='productoSel'){
 		    
 		    if (valorAuxp==''||valorAuxp==0){
-			  document.solicitudCompraForm.nombreProducto.disabled=false;
+			  
+			  jQuery("#nombreProducto").removeAttr("disabled");
 			}else{
 			  document.solicitudCompraForm.nombreProducto.value='';
-			  document.solicitudCompraForm.nombreProducto.disabled=true;
+			  jQuery("#nombreProducto").attr("disabled","disabled");
 			}
 		  }	
 		  
 		  if (document.getElementById("servicio1").style.display=="block" && valor.name=='servicioSel'){
 		    
 		    if (valorAuxp==''||valorAuxp==0){
-			  document.solicitudCompraForm.nombreProducto.disabled=false;
+		    	
+			  jQuery("#nombreProducto").removeAttr("disabled");
 			}else{
 			  document.solicitudCompraForm.nombreProducto.value='';
-			  document.solicitudCompraForm.nombreProducto.disabled=true;
+			  jQuery("#nombreProducto").attr("disabled","disabled");
 			}
 		  }	
 		}
@@ -597,13 +601,13 @@
 					<siga:ConjCampos leyenda="pys.solicitudCompra.leyenda.datosSolicitud">		
 						<table class="tablaCampos" align="center" border=0>
 						<html:form action="/CEN_BusquedaClientesModal" method="POST" target="submitArea" type="">
-		  				<input type="hidden" name="actionModal" value="">
-		  				<input type="hidden" name="modo" value="abrirBusquedaModal">
-		  				<input type="hidden" name="ventana" 		value="solicitud">
-						<input type="hidden" name="deCertificado"	value="<%=deCertificado%>">
-						<input type="hidden" name="clientes"	value="1">
-						<html:hidden name="busquedaClientesModalForm" property="numeroColegiado" value="<%=numero%>" size="10" ></html:hidden>
-						<html:hidden name="busquedaClientesModalForm" property="nif" value="<%=nif%>"></html:hidden>
+		  				<input type="hidden" id="numeroColegiado"  name="actionModal" value="">
+		  				<input type="hidden" id="modo" name="modo" value="abrirBusquedaModal">
+		  				<input type="hidden" id="ventana"  name="ventana" 		value="solicitud">
+						<input type="hidden" id="deCertificado" name="deCertificado"	value="<%=deCertificado%>">
+						<input type="hidden" id="clientes" name="clientes"	value="1">
+						<html:hidden name="busquedaClientesModalForm" property="numeroColegiado" styleId="numeroColegiado"  value="<%=numero%>" size="10" ></html:hidden>
+						<html:hidden name="busquedaClientesModalForm" property="nif" value="<%=nif%>" styleId="nif"></html:hidden>
 						 <tr>	
 							<%
 							if (esConsejo){
@@ -661,7 +665,7 @@
 			value="<%=nif%>" />
 		<html:hidden name="solicitudCompraForm" property="idInstitucion"
 			value="<%=String.valueOf(idInstitucion.get(0))%>" />								 
-		<input type="hidden" name="deCertificado" value="<%=deCertificado%>">
+	    <input type="hidden" id="deCertificado" name="deCertificado"	value="<%=deCertificado%>">
 		<tr>
 			<td>
 
@@ -885,17 +889,17 @@ function compruebaComboSigaHijo (valor, tipo)
 
 function limpiarSeleccionComboSiga (idCombo) 
 {
-	var cadena = top.frames[0].document.getElementById(idCombo+'Frame').src;
+	var cadena = window.top.frames[0].document.getElementById(idCombo+'Frame').src;
 	var ini = cadena.indexOf('&elementoSel=[');
 	if (ini == -1) {
 		return;
 	}
 	var fin = cadena.indexOf('&', ini+1);
 	if (fin == -1) { 
-		top.frames[0].document.getElementById(idCombo+'Frame').src = cadena.substring(0,ini) + "&elementoSel=";
+		window.top.frames[0].document.getElementById(idCombo+'Frame').src = cadena.substring(0,ini) + "&elementoSel=";
 		return;
 	}
-	top.frames[0].document.getElementById(idCombo+'Frame').src = cadena.substring(0,ini) + "&elementoSel=" + cadena.substring(fin);
+	window.top.frames[0].document.getElementById(idCombo+'Frame').src = cadena.substring(0,ini) + "&elementoSel=" + cadena.substring(fin);
 
 }
 
@@ -922,8 +926,8 @@ function mostrarColegio()
 		document.getElementById("comboPresentador").style.display="block";
 		document.getElementById("presentador").style.display="block";
 		<%if (request.getSession().getAttribute("volver") != null && request.getSession().getAttribute("volver").equals("s")) {%>
-		document.solicitudCompraForm.catalogo.disabled=true;
-		document.solicitudCompraForm.idInstitucionPresentador.disabled=true;
+		jQuery("#catalogo").attr("disabled","disabled");
+		jQuery("#idInstitucionPresentador").attr("disabled","disabled");
 		
 		<%request.getSession().setAttribute("volver","");}%>		
 	<%}else
@@ -934,12 +938,11 @@ function mostrarColegio()
 		document.getElementById("comboPresentador").style.display="none";
 		document.getElementById("presentador").style.display="none";
 		<%if (request.getSession().getAttribute("volver") != null && request.getSession().getAttribute("volver").equals("s")) {%>
-			document.solicitudCompraForm.catalogo.disabled=true;
+			jQuery("#catalogo").attr("disabled","disabled");
 		<%}%>
 	<%request.getSession().setAttribute("volver","");}%>
 	
 }
-
 
 </script>
 

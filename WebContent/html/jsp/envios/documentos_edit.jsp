@@ -64,7 +64,7 @@
 						var f=document.getElementById("DocumentosForm");
 		    			var fname = document.getElementById("DocumentosForm").name;
 		    			//Ventana de espera:
-					    document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.wait';
+					    window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.wait';
 					}
 				}else{
 					fin();

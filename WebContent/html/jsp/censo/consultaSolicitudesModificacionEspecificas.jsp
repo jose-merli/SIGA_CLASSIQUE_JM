@@ -104,7 +104,7 @@
 			   	
 			   	document.DefinirEnviosForm.modo.value='envioModal';		   	
 			   	var resultado = ventaModalGeneral("DefinirEnviosForm","P");
-			   	if (resultado==undefined||resultado[0]==undefined){			   		
+			   	if (resultado==undefined||resultado[0]==undefined ||resultado[0]=="M"){			   		
 			   	} else {
 			   		var idEnvio = resultado[0];
 				    var idTipoEnvio = resultado[1];
@@ -136,7 +136,6 @@
 			<html:hidden styleId = "solicitudes" property = "solicitudes"/>
 			<html:hidden styleId = "solicitudesTipoModif" property = "solicitudesTipoModif"/>
 			<html:hidden styleId = "tipoModifEspec"  property = "tipoModifEspec" value ="<%=tipoModificacion%>"/>			
-			<input type="hidden" id="actionModal"  name="actionModal" value="">
 		</html:form>
 					
 			<!-- EN FUNCION DEL TIPO DE MODIFICACION SOLICITADA SE ABRE UNA VENTANA DE UN TAMAÑO U OTRO -->

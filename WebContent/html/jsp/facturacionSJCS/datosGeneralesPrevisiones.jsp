@@ -197,7 +197,7 @@
 			var f = document.forms[0].name;
 				 
 			// con pantalla de espera
-			document.frames.submitArea2.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=messages.factSJCS.procesandoPrevision';
+			 window.frames.submitArea2.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=messages.factSJCS.procesandoPrevision';
 		}
 
 		function accionDescargas()

@@ -68,10 +68,10 @@
 			{
 				if(varPagoAsociado.value ==''){
 					document.getElementById("idCheckHistorico").checked = '';
-					document.getElementById("idCheckHistorico").disabled = '';
+					jQuery("#idCheckHistorico").removeAttr("disabled");
 				}else{
 					document.getElementById("idCheckHistorico").checked = 'checked';
-					document.getElementById("idCheckHistorico").disabled = 'disabled';
+				   	jQuery("#idCheckHistorico").attr("disabled","disabled");
 				}
 			}
 			
@@ -83,7 +83,7 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>

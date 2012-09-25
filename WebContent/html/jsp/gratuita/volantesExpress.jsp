@@ -51,6 +51,7 @@
 <siga:TituloExt titulo="gratuita.volantesExpres.literal.titulo"	localizacion="gratuita.volantesExpres.literal.localizacion" />
 
 <script type="text/javascript">
+jQuery.noConflict();
 		function init() {
 			
 		   	jQuery("#colegiadosSustituidos").attr("disabled","disabled");
@@ -470,11 +471,11 @@
 		if(table.rows.length>0){
 			
 			numFila = table.rows.length;
-			tr = table.insertRow();
+			tr = table.insertRow(numFila);
 			tr.id = "fila_" + numFila;
 			tr.align = "center";
 	
-			td = tr.insertCell();
+			td = tr.insertCell(0);
 			td.setAttribute("width", "5%");
 			td.setAttribute("align", "center");
 			td.className = "";
@@ -491,7 +492,7 @@
 	
 			
 			// centro detencion	/ Juzgado
-			td = tr.insertCell(); 
+			td = tr.insertCell(1); 
 			td.setAttribute("width", "26%");
 			td.className = "";
 			//Centro detencion
@@ -512,10 +513,10 @@
 				 td.innerHTML = aux;
 			}
 			// asistido (dni - nombre apellido1 apellido2)
-			td = tr.insertCell(); 
+			td = tr.insertCell(2); 
 			td.setAttribute("width", "36%");
 			td.className = "";
-			td.innerHTML ='<table><tr><td><input type="text" id="dni_' + numFila + '" class="box" style="width:70;margin-top:2px;margin-rigth:1px;" value="" maxlength="20" onBlur="obtenerPersona(' + numFila + ');" />-</td>' +
+			td.innerHTML ='<table><tr><td><input type="text" id="dni_' + numFila + '" class="box" style="width:70;margin-top:2px;margin-rigth:1px;" value="" maxlength="20" onBlur="obtenerPersona(' + numFila + ');" /></td><td>-</td> ' +
 			                 '<td><input type="text" id="nombre_' + numFila + '" class="box" style="width:80;margin-top:2px;margin-rigth:1px;" value="" maxlength="80"/></td>' + 
 			                 '<td><input type="text" id="apellido1_' + numFila + '" class="box" style="width:80;margin-top:2px;margin-rigth:1px;" value="" maxlength="80"/></td>' +
 			                 '<td><input type="text" id="apellido2_' + numFila + '" class="box" style="width:80;margin-top:2px;" value="" maxlength="80"/></td>' +
@@ -525,22 +526,22 @@
 			                 ;
 		
 			// numero diligencia (num diligencia / anio)
-			td = tr.insertCell(); 
+			td = tr.insertCell(3); 
 			td.setAttribute("width", "8%");
 			td.className = "";
 			td.innerHTML ='<input type="text" id="diligencia_' + numFila + '" class="box" maxlength="20" style="width:70;margin-top:2px;" value=""/> ';
 	
 			// delitos
 			
-			td = tr.insertCell(); 
+			td = tr.insertCell(4); 
 			td.setAttribute("width", "14%");
 			td.className = "";
 			//if(isDelitosVE.booleanValue()%>){
 			if(document.VolantesExpressForm.delito && document.VolantesExpressForm.delito.value=='true'){
 				aux = '';
 				// Delitos
-				aux = '<select class="boxCombo" id="idDelito_' + numFila + '" style="width:247px;margin-top:2px;" name="idDelito_' + numFila + '" >'+ 
-    					'</select>';
+				aux = '<table><tr><td><select class="boxCombo" id="idDelito_' + numFila + '" style="width:100px;margin-top:2px;" name="idDelito_' + numFila + '" >'+ 
+    					'</select></td></tr></table>';
 				
 				td.innerHTML = aux;
 			}else{
@@ -549,7 +550,7 @@
 			}
 			
 			// boton borrar
-			td = tr.insertCell(); 
+			td = tr.insertCell(5); 
 			td.setAttribute("width", "11%");
 			td.setAttribute("align", "left");
 			td.className = "";			

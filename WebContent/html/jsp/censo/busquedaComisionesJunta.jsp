@@ -94,7 +94,7 @@
 			jQuery("#cargos").removeAttr("disabled");
 			jQuery("#idInstitucionCargo").removeAttr("disabled");
 			jQuery("#fechaCargo").removeAttr("disabled");
-			jQuery("#invokefechaCargo").show();
+			jQuery("#fechaCargo").show();
 			
 				
 			if(document.getElementById("idInstitucionCargo").value==null || document.getElementById("idInstitucionCargo").value==""){
@@ -182,7 +182,7 @@
 	   	jQuery("#idInstitucionCargo").attr("disabled","disabled");
 	   	jQuery("#fechaCargo").attr("disabled","disabled");
 	   	//jQuery('#fechaCargo').datepicker("disable");
-	   	jQuery("#invokefechaCargo").hide();
+	   	jQuery("#fechaCargo").hide();
 		crearFila();
 		jQuery("#idInsertarCargo").attr("disabled","disabled");
 	}
@@ -741,7 +741,7 @@
 		</tr>
 	</table>
 	</div>
-	<div id="divCargos" style='height:530px;position:absolute;width:100%;  overflow-y:auto' >
+	<div id="divCargos" style='height:480px;position:absolute;width:100%;  overflow-y:auto' >
 	<table id='cargostabla' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>
 		
 	</table>
@@ -806,6 +806,7 @@
 	<html:hidden property="idCV" 						value=""/> 
 	<html:hidden property="idInstitucion" 	value=""/> 
 	<html:hidden property="idInstitucionCargo" 	value=""/> 
+			<input type="hidden" name="filaSelD">
 			<input type="hidden" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
 			<input type="hidden" name="incluirRegistrosConBajaLogica" value="">

@@ -673,7 +673,7 @@ function pintaToolTipDac(ver, id) {
 		// o.style.width = 100;
 		// o.style.height = 100;
 		// o.style.zIndex = 0;
-		o.style.display = "block";
+		o.style.display = "inline";
 	} else {
 		// o.style.height = 1;
 		// o.style.width = 1;
@@ -1026,6 +1026,7 @@ function submitItemAction(id, formName, accion) {
  *            PK del registro sobre el que se va a realizar la accion
  */
 function consultar(id, formName) {
+	alert("aayy"+formName);
 	submitItemAction(id, formName, "ver");
 }
 

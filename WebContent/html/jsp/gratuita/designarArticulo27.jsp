@@ -161,10 +161,10 @@
 		jQuery.noConflict();
 		
 		function inicio(){
-			document.getElementById('idButtonB').disabled=false;
+		if(document.getElementById('idButtonGuardar'))
+			jQuery("#idButtonGuardar").attr("disabled","disabled");
 
-			if(document.getElementById('idButtonGuardar'))
-				document.getElementById('idButtonGuardar').disabled=true;
+		jQuery("#idButtonB").removeAttr("disabled");
 		}
 		
 		function buscarDesignados (){
@@ -236,8 +236,8 @@
 		      	document.getElementById("textomod").className="ocultar";
 		      	document.getElementById("textomod").style.display="none";
 		      	if(document.getElementById('idButtonGuardar'))
-					document.getElementById('idButtonGuardar').disabled=false;
-				document.getElementById('idButtonB').disabled=true;
+			      	jQuery("#idButtonGuardar").removeAttr("disabled");
+		      	jQuery("#idButtonB").attr("disabled","disabled");
 				document.getElementById("tdadicional").style.display="block";
 				document.getElementById("tddireccion").style.display="block";		      	
 				datosGeneralesForm.idPersona.value       = resultado[0];
@@ -261,7 +261,7 @@
 				//Datos direcciones
 				if(resultado[1] != "<%=idInstitucionActual%>"){
 					limpiarDireccion();
-					datosGeneralesForm.direcciones.disabled="disabled";   
+					jQuery("#direcciones").attr("disabled","disabled");
 					document.getElementById("correoElectronico").value 	= resultado[13];
 					document.getElementById("fax1").value 	= resultado[16];
 					document.getElementById("telefono1").value 			= resultado[12];
@@ -287,20 +287,22 @@
 				}
 
 				// SE DESHABILITAN LOS DATOS GENERALES
-				datosGeneralesForm.tipoIdentificacion.disabled="disabled";
-				datosGeneralesForm.numIdentificacion.disabled="disabled";
-				datosGeneralesForm.idInstitucion.disabled="disabled";
-				datosGeneralesForm.colegiadoen.disabled="disabled";  
-				datosGeneralesForm.nColegiado.disabled="disabled";   
-				datosGeneralesForm.nombre.disabled="disabled";      
-				datosGeneralesForm.apellido1.disabled="disabled";   
-				datosGeneralesForm.apellido2.disabled="disabled"; 
-
-				// SE DESHABILITAN LOS DATOS DE INFORMACIÓN ADICIONAL
-				datosGeneralesForm.sexo.disabled="disabled";      
-				datosGeneralesForm.estadoCivil.disabled="disabled";   
-				datosGeneralesForm.lugarNacimiento.disabled="disabled";
-				datosGeneralesForm.fechaNacimiento.disabled="disabled";
+					jQuery("#idButtonB").removeAttr("disabled");
+					
+					jQuery("#tipoIdentificacion").attr("disabled","disabled");
+					jQuery("#numIdentificacion").attr("disabled","disabled");
+					jQuery("#idInstitucion").attr("disabled","disabled");
+					jQuery("#colegiadoen").attr("disabled","disabled");
+					jQuery("#nColegiado").attr("disabled","disabled");
+					jQuery("#nombre").attr("disabled","disabled");
+					jQuery("#apellido1").attr("disabled","disabled");
+					jQuery("#apellido2").attr("disabled","disabled");
+					// SE DESHABILITAN LOS DATOS DE INFORMACIÓN ADICIONAL
+					jQuery("#sexo").attr("disabled","disabled");
+					jQuery("#estadoCivil").attr("disabled","disabled");
+					jQuery("#lugarNacimiento").attr("disabled","disabled");
+					jQuery("#fechaNacimiento").attr("disabled","disabled");
+				
 				document.getElementById("iconoFecha").style.display="none"; 				
 			}							
 		}		
@@ -314,19 +316,21 @@
 		document.getElementById('nombre').value = "";
 		document.getElementById('apellido1').value = "";
 		document.getElementById('apellido2').value = "";
-		datosGeneralesForm.tipoIdentificacion.disabled="";
-		datosGeneralesForm.numIdentificacion.disabled="";
-		datosGeneralesForm.tratamiento.disabled="";
-		datosGeneralesForm.sexo.disabled="";
-		datosGeneralesForm.estadoCivil.disabled="";   
-		datosGeneralesForm.lugarNacimiento.disabled="";
-		datosGeneralesForm.fechaNacimiento.disabled="";		
-		datosGeneralesForm.idInstitucion.disabled="";
-		datosGeneralesForm.colegiadoen.disabled="";  
-		datosGeneralesForm.nColegiado.disabled="";   
-		datosGeneralesForm.nombre.disabled="";      
-		datosGeneralesForm.apellido1.disabled="";   
-		datosGeneralesForm.apellido2.disabled=""; 
+		jQuery("#tipoIdentificacion").removeAttr("disabled");
+		jQuery("#numIdentificacion").removeAttr("disabled");
+		jQuery("#idInstitucion").removeAttr("disabled");
+		jQuery("#colegiadoen").removeAttr("disabled");
+		jQuery("#nColegiado").removeAttr("disabled");
+		jQuery("#nombre").removeAttr("disabled");
+		jQuery("#apellido1").removeAttr("disabled");
+		jQuery("#apellido2").removeAttr("disabled");
+		// SE DESHABILITAN LOS DATOS DE INFORMACIÓN ADICIONAL
+		jQuery("#sexo").removeAttr("disabled");
+		jQuery("#estadoCivil").removeAttr("disabled");
+		jQuery("#lugarNacimiento").removeAttr("disabled");
+		jQuery("#fechaNacimiento").removeAttr("disabled");
+		jQuery("#tratamiento").removeAttr("disabled");
+
 		ponerIconoIdentPersona(false);
 	}	
 			
@@ -447,7 +451,7 @@
 	} 	
 
 	function bloquearBuscar(){
-		document.getElementById('idButtonB').disabled=true;
+	   	jQuery("#idButtonB").attr("disabled","disabled");
 	}	
 		
 	function rellenarComboIden(){
@@ -460,7 +464,7 @@
 		}
 
 		if(datosGeneralesForm.numIdentificacion.value == null || datosGeneralesForm.numIdentificacion.value == ""){
-			document.getElementById('idButtonB').disabled=false;
+			jQuery("#idButtonB").removeAttr("disabled");
 		}
 	}
 	
@@ -604,35 +608,35 @@
 	function bloquearDireccion(){
 
 		//Datos direccion
-		document.getElementById("domicilio").disabled=true;
-		document.getElementById("codigoPostal").disabled=true;
-		document.getElementById("pais").disabled=true;
-		document.getElementById("provincia").disabled=true;
-		document.getElementById("poblacion").disabled=true;
-		document.getElementById("movil").disabled=true;
-		document.getElementById("telefono1").disabled=true;
-		document.getElementById("telefono2").disabled=true;
-		document.getElementById("fax1").disabled=true;
-		document.getElementById("fax2").disabled=true;
-		document.getElementById("correoElectronico").disabled=true;
-		document.getElementById("paginaWeb").disabled=true;
-		document.getElementById("poblacionExt").disabled=true;
-
+		jQuery("#domicilio").attr("disabled","disabled");
+	   	jQuery("#codigoPostal").attr("disabled","disabled");
+	   	jQuery("#pais").attr("disabled","disabled");
+	   	jQuery("#provincia").attr("disabled","disabled");
+	   	jQuery("#poblacion").attr("disabled","disabled");
+	   	jQuery("#movil").attr("disabled","disabled");
+	   	jQuery("#telefono1").attr("disabled","disabled");
+	   	jQuery("#telefono2").attr("disabled","disabled");
+	   	jQuery("#fax1").attr("disabled","disabled");
+	   	jQuery("#fax2").attr("disabled","disabled");
+	   	jQuery("#correoElectronico").attr("disabled","disabled");
+	   	jQuery("#paginaWeb").attr("disabled","disabled");
+	   	jQuery("#poblacionExt").attr("disabled","disabled");
+	   	
 		//Preferencia
-		document.datosGeneralesForm.preferenteMail.disabled=true;
-		document.datosGeneralesForm.preferenteCorreo.disabled=true;
-		document.datosGeneralesForm.preferenteFax.disabled=true;
-		document.datosGeneralesForm.preferenteSms.disabled=true;
+		jQuery("#preferenteMail").attr("disabled","disabled");
+	   	jQuery("#preferenteCorreo").attr("disabled","disabled");
+	   	jQuery("#preferenteFax").attr("disabled","disabled");
+	   	jQuery("#preferenteSms").attr("disabled","disabled");
 
 		//Tipo Direccion
-		document.getElementById("checkTipoDireccion_1").disabled=true;
-		document.getElementById("checkTipoDireccion_2").disabled=true;
-		document.getElementById("checkTipoDireccion_3").disabled=true;
-		document.getElementById("checkTipoDireccion_4").disabled=true;
-		document.getElementById("checkTipoDireccion_5").disabled=true;
-		document.getElementById("checkTipoDireccion_6").disabled=true;
-		document.getElementById("checkTipoDireccion_7").disabled=true;
-		document.getElementById("checkTipoDireccion_8").disabled=true;
+		jQuery("#checkTipoDireccion_1").attr("disabled","disabled");
+	   	jQuery("#checkTipoDireccion_2").attr("disabled","disabled");
+	   	jQuery("#checkTipoDireccion_3").attr("disabled","disabled");
+	   	jQuery("#checkTipoDireccion_4").attr("disabled","disabled");
+	   	jQuery("#checkTipoDireccion_5").attr("disabled","disabled");
+	   	jQuery("#checkTipoDireccion_6").attr("disabled","disabled");
+	   	jQuery("#checkTipoDireccion_7").attr("disabled","disabled");
+	   	jQuery("#checkTipoDireccion_8").attr("disabled","disabled");
 
 	}	
 	  		
@@ -641,7 +645,7 @@
 
 		//Combo Direccioens
 		document.getElementById("direcciones").value 		= "-1";
-		document.getElementById("direcciones").disabled		="disabled";
+		jQuery("#direcciones").attr("disabled","disabled");
 		 
 		//Datos direccion
 		document.getElementById("domicilio").value 			= "";
@@ -675,36 +679,37 @@
 		document.getElementById("checkTipoDireccion_7").checked = "";
 		document.getElementById("checkTipoDireccion_8").checked = "";
 
-		//Se desbloquea los campos
-		document.getElementById("domicilio").disabled=false;
-		document.getElementById("codigoPostal").disabled=false;
-		document.getElementById("pais").disabled=false;
-		document.getElementById("provincia").disabled=false;
-		document.getElementById("poblacion").disabled=false;
-		document.getElementById("movil").disabled=false;
-		document.getElementById("telefono1").disabled=false;
-		document.getElementById("telefono2").disabled=false;
-		document.getElementById("fax1").disabled=false;
-		document.getElementById("fax2").disabled=false;
-		document.getElementById("correoElectronico").disabled=false;
-		document.getElementById("paginaWeb").disabled=false;
-		document.getElementById("poblacionExt").disabled=false;
-
+		//Datos direccion
+		jQuery("#domicilio").removeAttr("disabled");
+	   	jQuery("#codigoPostal").removeAttr("disabled");
+	   	jQuery("#pais").removeAttr("disabled");
+	   	jQuery("#provincia").removeAttr("disabled");
+	   	jQuery("#poblacion").removeAttr("disabled");
+	   	jQuery("#movil").removeAttr("disabled");
+	   	jQuery("#telefono1").removeAttr("disabled");
+	   	jQuery("#telefono2").removeAttr("disabled");
+	   	jQuery("#fax1").removeAttr("disabled");
+	   	jQuery("#fax2").removeAttr("disabled");
+	   	jQuery("#correoElectronico").removeAttr("disabled");
+	   	jQuery("#paginaWeb").removeAttr("disabled");
+	   	jQuery("#poblacionExt").removeAttr("disabled");
+	   	
 		//Preferencia
-		document.datosGeneralesForm.preferenteMail.disabled=false;
-		document.datosGeneralesForm.preferenteCorreo.disabled=false;
-		document.datosGeneralesForm.preferenteFax.disabled=false;
-		document.datosGeneralesForm.preferenteSms.disabled=false;
+		jQuery("#preferenteMail").removeAttr("disabled");
+	   	jQuery("#preferenteCorreo").removeAttr("disabled");
+	   	jQuery("#preferenteFax").removeAttr("disabled");
+	   	jQuery("#preferenteSms").removeAttr("disabled");
 
 		//Tipo Direccion
-		document.getElementById("checkTipoDireccion_1").disabled=false;
-		document.getElementById("checkTipoDireccion_2").disabled=false;
-		document.getElementById("checkTipoDireccion_3").disabled=false;
-		document.getElementById("checkTipoDireccion_4").disabled=false;
-		document.getElementById("checkTipoDireccion_5").disabled=false;
-		document.getElementById("checkTipoDireccion_6").disabled=false;
-		document.getElementById("checkTipoDireccion_7").disabled=false;
-		document.getElementById("checkTipoDireccion_8").disabled=false;
+		jQuery("#checkTipoDireccion_1").removeAttr("disabled");
+	   	jQuery("#checkTipoDireccion_2").removeAttr("disabled");
+	   	jQuery("#checkTipoDireccion_3").removeAttr("disabled");
+	   	jQuery("#checkTipoDireccion_4").removeAttr("disabled");
+	   	jQuery("#checkTipoDireccion_5").removeAttr("disabled");
+	   	jQuery("#checkTipoDireccion_6").removeAttr("disabled");
+	   	jQuery("#checkTipoDireccion_7").removeAttr("disabled");
+	   	jQuery("#checkTipoDireccion_8").removeAttr("disabled");
+
 
 	}
 
@@ -713,8 +718,9 @@
 		var acceso = poblacionFrame.document.getElementsByTagName("select");
 		acceso[0].value = poblacionSeleccionada;
 		document.datosGeneralesForm.poblacion.value = poblacionSeleccionada;
-		document.getElementById("poblacion").disabled=true;
+		jQuery("#poblacion").attr("disabled","disabled");
 	}
+
 
 	function postAccionDirecciones() {	
 			
@@ -731,7 +737,7 @@
 			document.getElementById("provincia").onchange();
 			window.setTimeout("recargarComboHijo()",750,"Javascript");	
 			document.getElementById("poblacion").value = datosGeneralesForm.poblacion.value;
-			document.getElementById("poblacion").disabled=true;		
+			jQuery("#poblacion").attr("disabled","disabled");	
 		}
 
 		if(document.datosGeneralesForm.preferente.value != null && document.datosGeneralesForm.preferente.value != ""){
@@ -800,16 +806,17 @@
 			if(confirm('El nº de identificación ya se encuentra registrado, Pulse "Aceptar" para recuperar y sustituir los datos actuales o "Cancelar" para modificarlo')) {
 				datosGeneralesForm.numIdentificacion.onchange();
 			}else{
+
 				//Aparecen los menus de abajo y se deja el NIF introducido
 				if(document.getElementById('idButtonGuardar'))
-					document.getElementById('idButtonGuardar').disabled=false;
+					jQuery("#idButtonGuardar").removeAttr("disabled");
 				document.getElementById("tdadicional").style.display="block";
 				document.getElementById("tddireccion").style.display="block";
-				document.getElementById('idButtonB').disabled=true;
-				datosGeneralesForm.sexo.disabled="";      
-				datosGeneralesForm.estadoCivil.disabled="";   
-				datosGeneralesForm.lugarNacimiento.disabled="";
-				datosGeneralesForm.fechaNacimiento.disabled="";
+				jQuery("#idButtonB").attr("disabled","disabled");
+				jQuery("#sexo").removeAttr("disabled");
+				jQuery("#estadoCivil").removeAttr("disabled");
+				jQuery("#lugarNacimiento").removeAttr("disabled");
+				jQuery("#fechaNacimiento").removeAttr("disabled");
 				document.getElementById("iconoFecha").style.display=""; 
 				document.busquedaCensoModalForm.existeNIF.value = "";
 			}
@@ -820,10 +827,10 @@
 				if(document.busquedaCensoModalForm.multiple.value != null && document.busquedaCensoModalForm.multiple.value != "S"){ //UNICO REGISTRO
 					ponerIconoIdentPersona(true);
 					formatearDocumento();
-				
+
 					//Datos direcciones
 					if(datosGeneralesForm.idInstitucion.value != "<%=idInstitucionActual%>"){
-						datosGeneralesForm.direcciones.disabled="disabled";   
+						jQuery("#direcciones").attr("disabled","disabled");
 						document.getElementById("correoElectronico").value 	= document.busquedaCensoModalForm.mail.value;
 						document.getElementById("telefono1").value 			= document.busquedaCensoModalForm.telefono.value;
 						document.getElementById("domicilio").value 			= document.busquedaCensoModalForm.direccion.value;
@@ -847,29 +854,30 @@
 			
 					if(datosGeneralesForm.numIdentificacion.value != null && datosGeneralesForm.numIdentificacion.value != ""){		
 						//SE DESHABILITAN LOS DATOS DE IDENTIFICACIÓN 
-						datosGeneralesForm.tipoIdentificacion.disabled="disabled";
-						datosGeneralesForm.numIdentificacion.disabled="disabled";
-						datosGeneralesForm.idInstitucion.disabled="disabled";
-						datosGeneralesForm.colegiadoen.disabled="disabled";  
-						datosGeneralesForm.nColegiado.disabled="disabled";   
-						datosGeneralesForm.nombre.disabled="disabled";      
-						datosGeneralesForm.apellido1.disabled="disabled";   
-						datosGeneralesForm.apellido2.disabled="disabled";
+						
+						jQuery("#tipoIdentificacion").attr("disabled","disabled");
+						jQuery("#numIdentificacion").attr("disabled","disabled");
+						jQuery("#idInstitucion").attr("disabled","disabled");
+						jQuery("#colegiadoen").attr("disabled","disabled");
+						jQuery("#nColegiado").attr("disabled","disabled");
+						jQuery("#nombre").attr("disabled","disabled");
+						jQuery("#apellido1").attr("disabled","disabled");
+						jQuery("#apellido2").attr("disabled","disabled");
+
 					}
 	
 					//Aparecen los menus de abajo
 					if(document.getElementById('idButtonGuardar'))
-						document.getElementById('idButtonGuardar').disabled=false;
+						jQuery("#idButtonGuardar").removeAttr("disabled");
 					document.getElementById("tdadicional").style.display="block";
 					document.getElementById("tddireccion").style.display="block";
-					document.getElementById('idButtonB').disabled=true;
-					
+					jQuery("#idButtonB").attr("disabled","disabled");
 					if(datosGeneralesForm.numIdentificacion.value != null && datosGeneralesForm.numIdentificacion.value != ""){	
 						// SE DESHABILITAN LOS DATOS DE INFORMACIÓN ADICIONAL
-						datosGeneralesForm.sexo.disabled="disabled";      
-						datosGeneralesForm.estadoCivil.disabled="disabled";   
-						datosGeneralesForm.lugarNacimiento.disabled="disabled";
-						datosGeneralesForm.fechaNacimiento.disabled="disabled";
+					jQuery("#sexo").attr("disabled","disabled");
+					jQuery("#estadoCivil").attr("disabled","disabled");
+					jQuery("#lugarNacimiento").attr("disabled","disabled");
+					jQuery("#fechaNacimiento").attr("disabled","disabled");
 						document.getElementById("iconoFecha").style.display="none"; 
 					}
 					
@@ -885,11 +893,12 @@
 					alert(document.busquedaCensoModalForm.textoAlerta.value);
 				}
 	
+				
 				if(datosGeneralesForm.numIdentificacion.value != null && datosGeneralesForm.numIdentificacion.value != ""){
 					//Aparecen los menus de abajo
-					document.getElementById('idButtonB').disabled=true;
-					if(document.getElementById('idButtonGuardar'))
-						document.getElementById('idButtonGuardar').disabled=false;
+					jQuery("#idButtonB").attr("disabled","disabled");
+					jQuery("#idButtonGuardar").removeAttr("disabled");
+
 					document.getElementById("tdadicional").style.display="block";
 					document.getElementById("tddireccion").style.display="block";
 	
@@ -899,8 +908,9 @@
 
 				datosGeneralesForm.nColegiado.value="";  
 				datosGeneralesForm.colegiadoen.value="";  
-				datosGeneralesForm.colegiadoen.disabled="disabled";  
-				datosGeneralesForm.nColegiado.disabled="disabled";   						
+				jQuery("#colegiadoen").attr("disabled","disabled");
+				jQuery("#nColegiado").attr("disabled","disabled");
+					
 			}
 	
 			//Reseteamos el texto de alerta
@@ -943,15 +953,15 @@
 	<!------------------------------->
 	<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" >
 		<html:form  action="/CEN_DatosGenerales" method="POST" target="submitArea"  enctype="multipart/form-data">
-			<html:hidden  name="datosGeneralesForm" property="modo"/>
-			<html:hidden  name="datosGeneralesForm" property="idInstitucion"/>
-			<html:hidden  name="datosGeneralesForm" property="idPersona"/>
-			<html:hidden  name="datosGeneralesForm" property="accion"/>
-			<html:hidden name="datosGeneralesForm" property="motivo"/>
-			<html:hidden name="datosGeneralesForm" property="abono" value="B" />
-			<html:hidden name="datosGeneralesForm" property="cargo" value="B" />
-			<html:hidden name="datosGeneralesForm" property="idTipoDireccion" value=""/>
-			<html:hidden name="datosGeneralesForm" property="preferente" />
+			<html:hidden  name="datosGeneralesForm" property="modo"  styleId="modo"/>
+			<html:hidden  name="datosGeneralesForm" property="idInstitucion" styleId="idInstitucion"/>
+			<html:hidden  name="datosGeneralesForm" property="idPersona"  styleId="idPersona"/>
+			<html:hidden  name="datosGeneralesForm" property="accion" styleId="accion"/>
+			<html:hidden name="datosGeneralesForm" property="motivo" styleId="motivo"/>
+			<html:hidden name="datosGeneralesForm" property="abono"  styleId="abono" value="B" />
+			<html:hidden name="datosGeneralesForm" property="cargo" styleId="cargo" value="B" />
+			<html:hidden name="datosGeneralesForm" property="idTipoDireccion" styleId="idTipoDireccion" value=""/>
+			<html:hidden name="datosGeneralesForm" property="preferente" styleId="preferente" />
 			<html:hidden property="actionModal" value=""/>
 			<html:hidden property="tipo" value="<%=sTipo%>"/>
  
@@ -985,7 +995,7 @@
 					
 					<!-- Nº COLEGIADO -->
 					<td>
-				       <html:text name="datosGeneralesForm" property="nColegiado" size="10" maxlength="20" styleClass="<%=estiloCajaNombreApellidos %>"  value="<%=nombre %>"  ></html:text>
+				       <html:text name="datosGeneralesForm" styleId="nColegiado" property="nColegiado" size="10" maxlength="20" styleClass="<%=estiloCajaNombreApellidos %>"  value="<%=nombre %>"  ></html:text>
 					</td>
 					<td>
 						<!-- Boton para buscar un Colegiado -->
@@ -999,7 +1009,7 @@
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.nombre"/>&nbsp;(*)
 					</td>
 					<td>
-				       <html:text name="datosGeneralesForm" property="nombre" size="20" maxlength="80" styleClass="<%=estiloCajaNombreApellidos %>" style='width:160px;' value="<%=nombre %>"  ></html:text>
+				       <html:text name="datosGeneralesForm" styleId="nombre" property="nombre" size="20" maxlength="80" styleClass="<%=estiloCajaNombreApellidos %>" style='width:160px;' value="<%=nombre %>"  ></html:text>
 					</td>
 
 					<!-- APELLIDOS -->
@@ -1009,9 +1019,9 @@
 					
 					<td>
 					<!-- APELLIDO 1 -->	
-				      <html:text name="datosGeneralesForm" property="apellido1" size="20" maxlength="80" styleClass="<%=estiloCajaNombreApellidos %>" style='width:160px;' value="<%=apellido1 %>" ></html:text>
+				      <html:text name="datosGeneralesForm" styleId="apellido1" property="apellido1" size="20" maxlength="80" styleClass="<%=estiloCajaNombreApellidos %>" style='width:160px;' value="<%=apellido1 %>" ></html:text>
 					<!-- APELLIDO2 -->
-					  <html:text name="datosGeneralesForm" property="apellido2" size="20" maxlength="80" styleClass="<%=estiloCajaNombreApellidos %>" style='width:160px;' value="<%=apellido2 %>" ></html:text>
+					  <html:text name="datosGeneralesForm" styleId="apellido2" property="apellido2" size="20" maxlength="80" styleClass="<%=estiloCajaNombreApellidos %>" style='width:160px;' value="<%=apellido2 %>" ></html:text>
 					</td>
 				</tr>
 				</table>
@@ -1030,7 +1040,7 @@
 							<siga:Idioma key="censo.consultaDatosGenerales.literal.fechaNacimiento"/>&nbsp;
 						</td>				
 						<td>
-							<html:text name="datosGeneralesForm" property="fechaNacimiento" styleClass="<%=estiloCaja %>" readonly="true" style='width:80px;' value="<%=fechaNacimiento %>" >
+							<html:text name="datosGeneralesForm" property="fechaNacimiento" styleId="fechaNacimiento" styleClass="<%=estiloCaja %>" readonly="true" style='width:80px;' value="<%=fechaNacimiento %>" >
 							</html:text>
 							<a id="iconoFecha" href='javascript://'onClick="return showCalendarGeneral(fechaNacimiento);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
 						</td>
@@ -1040,7 +1050,7 @@
 							<siga:Idioma key="censo.consultaDatosGenerales.literal.nacido"/>
 						</td>	
 						<td>			
-							<html:text name="datosGeneralesForm" property="lugarNacimiento" size="20" maxlength="100" styleClass="box" style='width:190px;' value="<%=nacido %>" ></html:text>
+							<html:text name="datosGeneralesForm"  property="lugarNacimiento"  styleId="lugarNacimiento" size="20" maxlength="100" styleClass="box" style='width:190px;' value="<%=nacido %>" ></html:text>
 						</td>
 					</tr>
 					<tr>
@@ -1062,7 +1072,7 @@
 							if (sexo.equals(ClsConstants.TIPO_SEXO_HOMBRE)) ssexo = UtilidadesString.getMensajeIdioma(user, "censo.sexo.hombre");
 							if (sexo.equals(ClsConstants.TIPO_SEXO_MUJER)) ssexo = UtilidadesString.getMensajeIdioma(user, "censo.sexo.mujer"); %>
 							<!-- option select -->
-							<html:select name="datosGeneralesForm" property="sexo" style = "null" styleClass = "<%=estiloCaja %>" value="<%=sexo %>"  readonly="<%=breadonly %>" >
+							<html:select name="datosGeneralesForm" property="sexo" styleId="sexo" style = "null" styleClass = "<%=estiloCaja %>" value="<%=sexo %>"  readonly="<%=breadonly %>" >
 							    <html:option value="0" >&nbsp;</html:option>
 								<html:option value="<%=ClsConstants.TIPO_SEXO_HOMBRE %>" ><siga:Idioma key="censo.sexo.hombre"/></html:option>
 								<html:option value="<%=ClsConstants.TIPO_SEXO_MUJER %>" ><siga:Idioma key="censo.sexo.mujer"/></html:option>
@@ -1155,7 +1165,7 @@
 							<siga:Idioma key="censo.datosDireccion.literal.direccion" />&nbsp;(*)
 						</td>
 						<td>
-							<html:textarea cols="70" rows="2" name="datosGeneralesForm" property="domicilio"
+							<html:textarea cols="70" rows="2" name="datosGeneralesForm" property="domicilio" styleId="domicilio"
 							onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)" styleClass="box"></html:textarea>
 						</td>
 						<td class="labelText" id="cpSinAsterisco" nowrap>
@@ -1165,7 +1175,7 @@
 							key="censo.datosDireccion.literal.cp" />&nbsp;(*)
 						</td>
 						<td>
-							<html:text name="datosGeneralesForm" property="codigoPostal" maxlength="5" size="5" styleClass="box"></html:text>
+							<html:text name="datosGeneralesForm" styleId="codigoPostal" property="codigoPostal" maxlength="5" size="5" styleClass="box"></html:text>
 						</td>
 					</tr>
 
@@ -1206,7 +1216,7 @@
 						</td>
 						<td class="ocultar" id="poblacionExtranjera">
 							<html:text
-							name="datosGeneralesForm" property="poblacionExt" size="25"
+							name="datosGeneralesForm" property="poblacionExt" styleId="poblacionExt" size="25"
 							styleClass="box"></html:text>
 						</td>
 					</tr>
@@ -1218,14 +1228,14 @@
 							key="censo.datosDireccion.literal.telefono1" />&nbsp;(*)</td>
 						<td>
 							<html:text name="datosGeneralesForm"
-							property="telefono1" maxlength="20" size="10" styleClass="box"></html:text>
+							property="telefono1" styleId="telefono1" maxlength="20" size="10" styleClass="box"></html:text>
 						</td>
 						<td class="labelText">
 							<siga:Idioma
 							key="censo.datosDireccion.literal.telefono2" />&nbsp;
 						</td>
 						<td><html:text name="datosGeneralesForm"
-							property="telefono2" maxlength="20" size="10" styleClass="box"></html:text>
+							property="telefono2" styleId="telefono2" maxlength="20" size="10" styleClass="box"></html:text>
 						</td>
 					</tr>
 
@@ -1234,7 +1244,7 @@
 							<siga:Idioma
 							key="censo.datosDireccion.literal.movil" />&nbsp;
 						</td>
-						<td ><html:text name="datosGeneralesForm" property="movil"
+						<td ><html:text name="datosGeneralesForm" property="movil" styleId="movil"
 							maxlength="20" size="10" styleClass="box"></html:text>
 						</td>
 					</tr>
@@ -1245,7 +1255,7 @@
 							key="censo.datosDireccion.literal.fax1" />&nbsp;
 						</td>
 						<td>
-							<html:text name="datosGeneralesForm" property="fax1"
+							<html:text name="datosGeneralesForm" property="fax1" styleId="fax1"
 							maxlength="20" size="10" styleClass="box"></html:text>
 						</td>
 						<td class="labelText">
@@ -1253,7 +1263,7 @@
 							key="censo.datosDireccion.literal.fax2" />&nbsp;
 						</td>
 						<td>
-							<html:text name="datosGeneralesForm" property="fax2"
+							<html:text name="datosGeneralesForm" property="fax2" styleId="fax2"
 							maxlength="20" size="10" styleClass="box"></html:text>
 						</td>
 					</tr>
@@ -1262,7 +1272,7 @@
 						<td class="labelText"><siga:Idioma
 							key="censo.datosDireccion.literal.correo" />&nbsp;
 						</td>
-						<td nowrap="nowrap"><html:text name="datosGeneralesForm"
+						<td nowrap="nowrap"><html:text name="datosGeneralesForm" styleId="correoElectronico"
 							property="correoElectronico" maxlength="100" size="50"
 							styleClass="box"></html:text>
 						</td>
@@ -1272,7 +1282,7 @@
 						</td>
 						<td>
 							<html:text name="datosGeneralesForm"
-							property="paginaWeb" maxlength="100" size="25" styleClass="box"></html:text>
+							property="paginaWeb" styleId="paginaWeb" maxlength="100" size="25" styleClass="box"></html:text>
 						</td>
 					</tr>
 
@@ -1281,10 +1291,10 @@
 							<siga:Idioma key="censo.datosDireccion.literal.preferente" />
 						</td>
 						<td class="labelText">
-							<siga:Idioma key="censo.preferente.mail" /><input type="checkbox" name="preferenteMail">&nbsp;&nbsp;&nbsp; 
-							<siga:Idioma key="censo.preferente.correo" /><input type="checkbox"	name="preferenteCorreo">&nbsp;&nbsp;&nbsp;
-							<siga:Idioma key="censo.preferente.fax" /><input type="checkbox" name="preferenteFax">&nbsp;&nbsp;&nbsp; 
-							<siga:Idioma key="censo.preferente.sms" /><input type="checkbox" name="preferenteSms">
+							<siga:Idioma key="censo.preferente.mail" /><input type="checkbox"  name="preferenteMail" id="preferenteMail">&nbsp;&nbsp;&nbsp; 
+							<siga:Idioma key="censo.preferente.correo" /><input type="checkbox"	name="preferenteCorreo" id="preferenteCorreo">&nbsp;&nbsp;&nbsp;
+							<siga:Idioma key="censo.preferente.fax" /><input type="checkbox" name="preferenteFax" id="preferenteFax">&nbsp;&nbsp;&nbsp; 
+							<siga:Idioma key="censo.preferente.sms" /><input type="checkbox" name="preferenteSms" id="preferenteSms">
 						</td>
 					</tr>
 				</table>
@@ -1376,8 +1386,23 @@
 <% 
 	// BOTONES
 	String botonesAccion = "";
+	if (new Long(user.getIdPersona()).toString().equals(idPersona) && user.isLetrado()) { 
+		botonesAccion+="SM,";
+	}
 	if (modo.equals("nuevo") || modo.equals("editar")) { 
-		botonesAccion="G,R";
+		botonesAccion+="G,R,";
+	}
+	if (!user.isLetrado() && !modo.equals("nuevo")) { 
+	  
+	
+	  if (!bColegiado && !sTipo.trim().toUpperCase().equalsIgnoreCase("LETRADO")) { //Para los no colegiados hacemos que aparezca el boton colegiar
+	   	botonesAccion+="BA,";
+	  }
+	}
+	
+	// le quito la coma final
+	if (botonesAccion.length()>0) {
+		botonesAccion=botonesAccion.substring(0,botonesAccion.length()-1);
 	}
 	
 %>
@@ -1398,39 +1423,46 @@
 			
 			//NUEVAS MEJORAS
 			document.getElementById("iconoFecha").style.display="block";
-			document.getElementById('idButtonB').disabled=false;
+			jQuery("#idButtonB").removeAttr("disabled");
 			document.getElementById("tdadicional").style.display="none";
 			document.getElementById("tddireccion").style.display="none";
 			document.getElementById("textomod").style.display="none";
 			if(document.getElementById('idButtonGuardar'))
-				document.getElementById('idButtonGuardar').disabled=true;
+				jQuery("#idButtonGuardar").attr("disabled","disabled");
 
-			//Se desbloquea los campos de direccion
-			document.getElementById("domicilio").disabled=false;
-			document.getElementById("codigoPostal").disabled=false;
-			document.getElementById("pais").disabled=false;
-			document.getElementById("provincia").disabled=false;
-			document.getElementById("poblacion").disabled=false;
-			document.getElementById("movil").disabled=false;
-			document.getElementById("telefono1").disabled=false;
-			document.getElementById("telefono2").disabled=false;
-			document.getElementById("fax1").disabled=false;
-			document.getElementById("fax2").disabled=false;
-			document.getElementById("correoElectronico").disabled=false;
-			document.getElementById("paginaWeb").disabled=false;
-			document.getElementById("poblacionExt").disabled=false;
-			document.datosGeneralesForm.preferenteMail.disabled=false;
-			document.datosGeneralesForm.preferenteCorreo.disabled=false;
-			document.datosGeneralesForm.preferenteFax.disabled=false;
-			document.datosGeneralesForm.preferenteSms.disabled=false;
-			document.getElementById("checkTipoDireccion_1").disabled=false;
-			document.getElementById("checkTipoDireccion_2").disabled=false;
-			document.getElementById("checkTipoDireccion_3").disabled=false;
-			document.getElementById("checkTipoDireccion_4").disabled=false;
-			document.getElementById("checkTipoDireccion_5").disabled=false;
-			document.getElementById("checkTipoDireccion_6").disabled=false;
-			document.getElementById("checkTipoDireccion_7").disabled=false;
-			document.getElementById("checkTipoDireccion_8").disabled=false;
+			//Datos direccion
+			jQuery("#domicilio").removeAttr("disabled");
+		   	jQuery("#codigoPostal").removeAttr("disabled");
+		   	jQuery("#pais").removeAttr("disabled");
+		   	jQuery("#provincia").removeAttr("disabled");
+		   	jQuery("#poblacion").removeAttr("disabled");
+		   	jQuery("#movil").removeAttr("disabled");
+		   	jQuery("#telefono1").removeAttr("disabled");
+		   	jQuery("#telefono2").removeAttr("disabled");
+		   	jQuery("#fax1").removeAttr("disabled");
+		   	jQuery("#fax2").removeAttr("disabled");
+		   	jQuery("#correoElectronico").removeAttr("disabled");
+		   	jQuery("#paginaWeb").removeAttr("disabled");
+		   	jQuery("#poblacionExt").removeAttr("disabled");
+		   	
+			//Preferencia
+			jQuery("#preferenteMail").removeAttr("disabled");
+		   	jQuery("#preferenteCorreo").removeAttr("disabled");
+		   	jQuery("#preferenteFax").removeAttr("disabled");
+		   	jQuery("#preferenteSms").removeAttr("disabled");
+
+			//Tipo Direccion
+			jQuery("#checkTipoDireccion_1").removeAttr("disabled");
+		   	jQuery("#checkTipoDireccion_2").removeAttr("disabled");
+		   	jQuery("#checkTipoDireccion_3").removeAttr("disabled");
+		   	jQuery("#checkTipoDireccion_4").removeAttr("disabled");
+		   	jQuery("#checkTipoDireccion_5").removeAttr("disabled");
+		   	jQuery("#checkTipoDireccion_6").removeAttr("disabled");
+		   	jQuery("#checkTipoDireccion_7").removeAttr("disabled");
+		   	jQuery("#checkTipoDireccion_8").removeAttr("disabled");
+
+			
+
 		}
 
 	
@@ -1607,12 +1639,12 @@
 		   if (valor!="" && valor!=idEspana) {
 		   		document.getElementById("poblacion").value="";
 		   		document.getElementById("provincia").value="";
-			   	document.getElementById("provincia").disabled=true;
+				jQuery("#provincia").attr("disabled","disabled");
 				document.getElementById("poblacionEspanola").className="ocultar";
 				document.getElementById("poblacionExtranjera").className="";
 	       } else {
 		   		document.getElementById("poblacionExt").value="";
-				document.getElementById("provincia").disabled=false;
+				jQuery("#provincia").removeAttr("disabled");
 				document.getElementById("poblacionEspanola").className="";
 				document.getElementById("poblacionExtranjera").className="ocultar";
 	       }

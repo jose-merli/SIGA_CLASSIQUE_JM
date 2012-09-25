@@ -51,7 +51,7 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>
+	
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
@@ -101,7 +101,7 @@
 		<siga:Idioma key="gratuita.listadoCalendario.literal.fecha"/>&nbsp;(*)
 	</td>				
 	<td>
-		<html:text name="CalendarioLaboralForm" property="fecha" size="10" styleClass="box" value="<%=fechaFormateada%>" disabled="false"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fecha);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+		<siga:Fecha nombreCampo="fecha" posicionX="50" posicionY="50" valorInicial="<%=fechaFormateada%>"></siga:Fecha>
 	</td>
 	</tr>
 	

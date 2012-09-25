@@ -141,7 +141,7 @@
 	<html:hidden property="hiddenFrame" value="1" />
 	<html:hidden property="idTipoExpediente" />
 	<!-- RGG: cambio a formularios ligeros -->
-	<input type="hidden" name="tablaDatosDinamicosD">
+	
 	<input type="hidden" name="actionModal" value="">
 <fieldset>
 <table class="tablaCampos" align="center" border="0">

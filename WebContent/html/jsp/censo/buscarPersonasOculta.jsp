@@ -67,7 +67,7 @@
 <%
 	}
 %>
-	top.frames[0].traspasoDatosPersonaTag(aux);
+	window.top.frames[0].traspasoDatosPersonaTag(aux);
 	
 	</script>
 </head>

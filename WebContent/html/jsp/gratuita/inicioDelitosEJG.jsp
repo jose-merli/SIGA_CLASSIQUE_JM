@@ -501,7 +501,7 @@
 			                             <%   if (modopestanha.equals("ver")) {%>
 				                             <input type="text" class="boxConsulta" value="<%=FECHAPROCURADOR%>" readOnly="true">
 			                             <%	} else { %>
-											  <input type="text" name="fechaProc1" class="box" size="10" value="<%=FECHAPROCURADOR%>" readOnly="true">&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaProc1);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+			                             <siga:Fecha nombreCampo="fechaProc1" valorInicial="<%=FECHAPROCURADOR%>" readOnly="true"></siga:Fecha>
 			                             <%}%>
 			                            </td>
 										<td>

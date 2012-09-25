@@ -125,9 +125,6 @@
 			<html:hidden name="DatosDetallePagoForm" property="idInstitucion" value = "<%=idInstitucion%>" />
 			<html:hidden name="DatosDetallePagoForm" property="estadoPago" value = "<%=estadoPago%>" />
 			<html:hidden name="DatosDetallePagoForm" property="modoOriginal" value = "<%=modoOriginal%>" />
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
 		</html:form>	
 		
 			

@@ -78,11 +78,11 @@ function accionNuevaProgrCalendarios(){
 }
 
 function ajustarCabeceraTabla(){
-	if (document.all.listadoProgr.clientHeight < document.all.listadoProgrDiv.clientHeight) {
-		   document.all.listadoProgrCab.width='100%';
+	if (document.getElementById("listadoProgr").clientHeight < document.getElementById("listadoProgrDiv").clientHeight) {
+		document.getElementById("listadoProgrCab").width='100%';
 		   
 	  } else {
-		   document.all.listadoProgrCab.width='98.43%';
+		  document.getElementById("listadoProgrCab").width='98.43%';
 		   
 	  }
 }

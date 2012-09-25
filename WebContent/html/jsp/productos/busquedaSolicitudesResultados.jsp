@@ -113,8 +113,10 @@
 	   	
 	   	document.DefinirEnviosForm.modo.value='envioModal';		   	
 	   	var resultado = ventaModalGeneral("DefinirEnviosForm","P");
-	   	if (resultado==undefined||resultado[0]==undefined){			   		
+		
+	   	if (resultado==undefined||resultado[0]==undefined ||resultado[0]=="M"){			   		
 	   	} else {
+	   		
 	   		var idEnvio = resultado[0];
 		    var idTipoEnvio = resultado[1];
 		    var nombreEnvio = resultado[2];				    
@@ -153,8 +155,10 @@
    document.forms[0].modo.value = "Editar";
    
    var resultado = ventaModalGeneral(document.forms[0].name,"G");
+
    if (resultado) {
-  	 	if (resultado[0]) {
+  	 	if (resultado[0] && resultado[0]!="@") {
+  	 		
    		refrescarLocalArray(resultado);
    } else 
     	if (resultado=="MODIFICADO")
@@ -162,10 +166,10 @@
       		refrescarLocal();
    	    }else{
 		  var listaValores = resultado.split("#@#");//nombreCertificado #@# idproducto #@# idptoductoInstitucion #@# idTipoProducto
-			  document.forms[0].concepto.value=listaValores[0];
-			  document.forms[0].idProducto.value=listaValores[1];
-			  document.forms[0].idProductoInstitucion.value=listaValores[2];
-			  document.forms[0].idTipoProducto.value=listaValores[3];
+			  document.forms[0].concepto.value=listaValores[1];
+			  document.forms[0].idProducto.value=listaValores[2];
+			  document.forms[0].idProductoInstitucion.value=listaValores[3];
+			  document.forms[0].idTipoProducto.value=listaValores[4];
 		
 		
 		 var aux = 'oculto' + fila + '_1'; 
