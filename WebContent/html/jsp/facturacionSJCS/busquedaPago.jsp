@@ -59,7 +59,7 @@
 
 	//InstitucionesVisibles
 	String institucionesVisibles = (String) request.getAttribute("SJCSInstitucionesVisibles");
-	if (institucionesVisibles==null) institucionçesVisibles="";
+	if (institucionesVisibles==null) institucionesVisibles="";
 	/*String institucionParam[] = new String[1];
 	institucionParam[0] = institucionesVisibles;*/
 	
