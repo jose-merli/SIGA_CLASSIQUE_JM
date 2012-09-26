@@ -270,7 +270,7 @@
 									<%} else {%>
 										onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"
 									<%}%>	
-									style="overflow:auto;width:250px;height:50px;resize:none;"
+									style="overflow-y:auto;overflow-x:hidden;width:250px;height:50px;resize:none;"
 								><%=datosPersonales.getObservaciones()%></textarea>
 							</td>
 						</tr>
@@ -489,7 +489,7 @@
 											<%} else {%>
 												onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)"
 											<%}%>											 
-											style="overflow:auto;width:400px;height:40px" 
+											style="overflow-y:auto;overflow-x:hidden;width:400px;height:40px;" 
   										><%=datosPersonales.getDomicilio()%></textarea>
 									</td>																										
 								</tr>
@@ -508,7 +508,8 @@
 									<td>	
 										<div id="cpEspanol">									
 											<html:text property="CP" style="width:50px" styleClass="<%=estiloBox%>" maxlength="5" value="<%=datosPersonales.getCodigoPostal()%>" readOnly="<%=readonly%>"
-												onkeypress="return soloDigitos(event);" onkeydown="onKeyDownCP();" onkeyup="onKeyUpCP();"/>
+												onkeypress="return soloDigitos(event);" onkeydown="onKeyDownCP();" onkeyup="onKeyUpCP();"
+												onblur="onBlurCP();" onfocus="onFocusCP();"/>
 										</div>	
 										<div style="display:none" id="cpExtranjero">
 											<html:text property="CPExt" style="width:200px" styleClass="<%=estiloBox%>" maxlength="20" value="<%=datosPersonales.getCodigoPostal()%>" readOnly="<%=readonly%>"/>
@@ -1526,7 +1527,7 @@
 	function cargarBancos(){
 		var idBanco = SolicitudIncorporacionForm.cbo_Codigo.value;	
 		if (idBanco!=undefined&&idBanco!="") {
-			jQuery.ajax({ //Comunicación jQuery hacia JSP  
+			jQuery.ajax({ //Comunicacion jQuery hacia JSP  
    				type: "POST",
 				url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBanco",
 				data: "idBanco="+idBanco,
@@ -1534,7 +1535,7 @@
 				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 				success: function(json){		
 					var txtBanco = json.banco.nombre;
-					SolicitudIncorporacionForm.banco.value=txtBanco;
+					document.getElementById("banco").value=txtBanco;
 					fin();
 				},
 				error: function(e){
@@ -1543,7 +1544,7 @@
 				}
 			});
 		} else {
-			SolicitudIncorporacionForm.banco.value="";
+			document.getElementById("banco").value="";
 		}
 	}
 	
@@ -1553,8 +1554,8 @@
 	
 	var bControl=false;	
 	var bControlKey=false;
-	var bFocoCombo=false;
-	var bFocoFiltro=false;	
+	var bFocoCP=false;
+	var bFocoPoblacionInput=false;	
 	var cteControl="controlFiltro";
 	var controlCP="";
 	var controlFiltro=cteControl; 
@@ -1562,8 +1563,9 @@
 	var msgControl="";
 	var numLineasSelectPoblaciones=20; // Siempre debe ser menor o igual que numMaximoSelectPoblaciones
 	var numMaximoSelectPoblaciones=20; // Siempre debe ser mayor o igual que numLineasSelectPoblaciones
-	var numPoblaciones=1;
-	var tiempoEspera=1000;
+	var numMinLetrasFiltro=3;
+	var numPoblaciones=0;
+	var tiempoEspera=500;
 	var txtTabulador="";
 	var valorGuiones="";	
 	
@@ -1588,7 +1590,7 @@
 		
 		// Obtiene los elementos que vamos a utilizar
 		var elementoPoblacionSelect = jQuery("#poblacion_select");
-		var elementoPoblacionDiv = jQuery("#poblacion_div");
+		var elementoPoblacionDiv 	= jQuery("#poblacion_div");
 		
 		var pos = elementoPoblacionSelect.offset();             
 		elementoPoblacionSelect.css("position", "absolute");             
@@ -1601,55 +1603,83 @@
 	function cambiaCodigoPostal() {
 		//msgControl=msgControl+"cambiaCodigoPostal()\n";alert(msgControl);
 		
-		// Obtiene los elementos que vamos a utilizar
+		// Obtiene los elementos que vamos a utilizar		
 		var elementoPoblacionSelect = jQuery("#poblacion_select");
 		var elementoPoblacionDiv 	= jQuery("#poblacion_div");
-		var elementoPoblacionInput 	= document.getElementById("poblacion_input");		
 		var elementoPoblacionHidden = document.getElementById("poblacion");
+		var elementoPoblacionInput 	= document.getElementById("poblacion_input");		
 		var elementoProvinciaHidden = document.getElementById("provincia");
-		var elementoProvincia 		= document.getElementById("provincia_input");
-		var codigoPostal	 		= document.getElementById("CP").value;			
+		var elementoProvinciaInput	= document.getElementById("provincia_input");			
+		
+		elementoPoblacionSelect[0].innerHTML="";
+		elementoPoblacionDiv.hide();
 		
 		elementoPoblacionHidden.value="";
 		elementoPoblacionInput.value="";
-		elementoPoblacionSelect[0].innerHTML="";
-		elementoPoblacionDiv.hide();
+		
 		elementoProvinciaHidden.value="";
-		elementoProvincia.value="";			
+		elementoProvinciaInput.value="";
+							
 		controlFiltro=cteControl;
+		numPoblaciones=0;
 	}
 	
-	// Sea realiza despues de cargar la letra del cp
+	// Se realiza cuando pierde el foco el campo codigo postal
+	function onBlurCP() {
+		//msgControl=msgControl+"onBlurCP()\n";alert(msgControl);
+		
+
+		// Obtiene los elementos que vamos a utilizar		
+		var elementoPoblacionDiv = jQuery("#poblacion_div");
+		
+		bFocoCP=false;
+		elementoPoblacionDiv.hide();
+	}
+	
+	// Se realiza cuando obtiene el foco el campo codigo postal
+	function onFocusCP() {
+		//msgControl=msgControl+"onFocusCP()\n";alert(msgControl);
+		
+		// Obtiene los elementos que vamos a utilizar
+		var elementoPoblacionInput = document.getElementById("poblacion_input");
+		
+		bFocoCP=true;
+		if (elementoPoblacionInput.value=="")
+			actualizarPoblacionesCP(true);
+	}	
+	
+	// Se realiza despues de cargar la letra del cp
 	function onKeyUpCP() {
 		//msgControl=msgControl+"onKeyUpCP()\n";alert(msgControl);
 		
+		// Control que comprueba si ha modificado el codigo postal
 		if (controlCP!=document.getElementById("CP").value) {
 			cambiaCodigoPostal(); 
-			actualizarPoblacionesCP();		
+			actualizarPoblacionesCP(true);		
 		}
 	}	
 	
 	
-	// Sea realiza antes de cargar la letra del cp
+	// Se realiza antes de cargar la letra del cp
 	function onKeyDownCP() {
 		//msgControl=msgControl+"onKeyDownCP()\n";alert(msgControl);
 		
 		controlCP = document.getElementById("CP").value;	
 	}	
 	
-	// Selecciona un elemento del combo
+	// Selecciona un elemento del desplegable
 	function onChangePoblacionSelect() {
 		//msgControl=msgControl+"onChangePoblacionSelect()\n";alert(msgControl);	
 		
 		// Obtiene los elementos que vamos a utilizar
 		var elementoPoblacionSelect = jQuery("#poblacion_select");
-		var elementoPoblacionInput 	= document.getElementById("poblacion_input");		
 		var elementoPoblacionHidden = document.getElementById("poblacion");
+		var elementoPoblacionInput 	= document.getElementById("poblacion_input");				
 		var elementoProvinciaHidden = document.getElementById("provincia");
 		var elementoProvinciaInput 	= document.getElementById("provincia_input");
 		var elementoCP 				= document.getElementById("CP");
 		
-		// Vamos a mostrar el elemento seleccionado del combo en el filtro
+		// Vamos a mostrar el elemento seleccionado del desplegable en el filtro
 		var poblacionSelected=elementoPoblacionSelect[0].selectedIndex;
 		
 		// 0: Si ha seleccionado el elemento "--Seleccionar"
@@ -1662,10 +1692,15 @@
 			var valorPoblacionSelect = elementoPoblacionSelect.val(); 
 			if (valorPoblacionSelect!="") { // Seleccion y guiones tienen valor ""
 				var arrayDatos = valorPoblacionSelect.split("#"); // Otras poblaciones tienen valor "IdPoblacion#IdProvincia#NombreProvincia"
-				elementoPoblacionHidden.value=arrayDatos[0];
-				elementoProvinciaHidden.value=arrayDatos[1];
-				elementoProvinciaInput.value=arrayDatos[2];
-				elementoPoblacionInput.value=elementoPoblacionSelect[0].options[poblacionSelected].text;
+				elementoPoblacionHidden.value=arrayDatos[0]; // IdPoblacion
+				elementoProvinciaHidden.value=arrayDatos[1]; // IdProvincia
+				elementoProvinciaInput.value=arrayDatos[2]; // NombreProvincia
+				
+				var nombrePoblacion = elementoPoblacionSelect[0].options[poblacionSelected].text;
+				
+				if (nombrePoblacion!=elementoPoblacionInput.value) {
+					elementoPoblacionInput.value = nombrePoblacion; // NombrePoblacion
+				}
 			}
 			else {
 				elementoPoblacionHidden.value="";
@@ -1679,7 +1714,7 @@
 		}
 	}
 	
-	// Pulsa una opcion del combo
+	// Pulsa una opcion del desplegable
 	function onClickPoblacionSelect() {
 		//msgControl=msgControl+"onClickPoblacionSelect()\n";alert(msgControl);
 		
@@ -1690,7 +1725,7 @@
 		elementoPoblacionInput.focus(); //Invoca onBlurPoblacionSelect() + onFocusPoblacionInput()		 
 	}
 	
-	// Este método es necesario para cuando va a realizar una accion en el combo sin tener el foco
+	// Este metodo es necesario para cuando va a realizar una accion en el desplegable sin tener el foco
 	function onMouseDownPoblacionSelect() {
 		//msgControl=msgControl+"onMouseDownPoblacionSelect()\n";alert(msgControl);
 		
@@ -1698,27 +1733,25 @@
 		var elementoPoblacionSelect = jQuery("#poblacion_select");
 		
 		// Para hacer esto tiene que tener el foco poblacion_input
-		if (bFocoFiltro) {			
-			bFocoCombo=true;		
+		if (bFocoPoblacionInput) {				
 			bControl=true; // Inhabilita onBlurPoblacionInput()
 			elementoPoblacionSelect.focus(); //Invoca onBlurPoblacionInput()
 		}
 	}		
 	
-	// Se realiza cuando abandona el foco del combo
+	// Se realiza cuando abandona el foco del desplegable
 	function onBlurPoblacionSelect() {	
 		//msgControl=msgControl+"onBlurPoblacionSelect()\n";alert(msgControl);		
 		
 		// Obtiene los elementos que vamos a utilizar
 		var elementoPoblacionDiv = jQuery("#poblacion_div");
 		
-		// Oculto el combo y recalculo el valor del filtro
-		bFocoCombo=false;
+		// Oculto el desplegable y recalculo el valor del filtro
 		elementoPoblacionDiv.hide();
 		onChangePoblacionSelect();
 	}	
 	
-	// Se realiza cuando pulsa una letra en el combo
+	// Se realiza cuando pulsa una letra en el desplegable
 	function onKeyDownPoblacionSelect(e) {
 		var tecla = (document.all) ? e.keyCode : e.which;
 		//msgControl=msgControl+"onKeyDownPoblacionSelect("+tecla+")\n";alert(msgControl);
@@ -1728,7 +1761,7 @@
 		var elementoPoblacionSelect = jQuery("#poblacion_select");
 		
 		switch(tecla) {		
-	  		case 8: //BACKSPACE: Anulamos la acción del retroceso en el combo
+	  		case 8: //BACKSPACE: Anulamos la accion del retroceso en el desplegable
 	  			e.returnValue = false; 
 	  			e.cancelBubble = true; 
 	  			return false;		  		
@@ -1740,7 +1773,7 @@
 				break;
 				
 			case 27: //ESC: Paso el foco al filtro
-				elementoPoblacionSelect.val([]); // Elimino los elementos seleccionados del combo
+				elementoPoblacionSelect.val([]); // Elimino los elementos seleccionados del desplegable
 				
 				bControl=true; // Inhabilita onFocusPoblacionInput()				
 				elementoPoblacionInput.focus(); //Invoca onBlurPoblacionSelect() + onFocusPoblacionInput()
@@ -1754,7 +1787,7 @@
 		//msgControl=msgControl+"onKeyPressPoblacionSelect("+tecla+")\n";alert(msgControl);
 		
 		switch(tecla) {			
-		  	case 8: //BACKSPACE: Anulamos la acción del retroceso en el combo
+		  	case 8: //BACKSPACE: Anulamos la accion del retroceso en el desplegable
 		  		e.returnValue = false; 
 		  		e.cancelBubble = true; 
 		  		return false;		  		
@@ -1765,14 +1798,15 @@
 	// Se realiza cuando obtiene el foco del filtro
 	function onFocusPoblacionInput() {
 		//msgControl=msgControl+"onFocusPoblacionInput()\n";alert(msgControl);
-		bFocoFiltro=true;
+		bFocoPoblacionInput=true;
 		
 		// Obtiene los elementos que vamos a utilizar
 		var elementoPoblacionInput = document.getElementById("poblacion_input");
 		
-		// Un control y actualizo el combo segun el contenido del filtro
+		// Un control y actualizo el desplegable segun el contenido del filtro
 		if (bControl) {
 			bControl=false;
+			
 		} else {
 			actualizarPoblacionesCPPoblacion(elementoPoblacionInput.value, true);
 		}
@@ -1781,15 +1815,16 @@
 	// Se realiza cuando abandona el foco del filtro
 	function onBlurPoblacionInput() {
 		//msgControl=msgControl+"onBlurPoblacionInput()\n";alert(msgControl);
-		bFocoFiltro=false;
-		
-		// Obtiene los elementos que vamos a utilizar
-		var elementoPoblacionDiv = jQuery("#poblacion_div");
+		bFocoPoblacionInput=false;
 		
 		// Un control, ocultro el filtro y calculo el valor final del filtro
 		if (bControl) {
-			bControl=false;			
+			bControl=false;
+			
 		} else {
+			// Obtiene los elementos que vamos a utilizar
+			var elementoPoblacionDiv = jQuery("#poblacion_div");
+			
 			elementoPoblacionDiv.hide();
 			onChangePoblacionSelect();						
 		}
@@ -1804,7 +1839,7 @@
 		
 		var valorFiltro = elementoPoblacionInput.value;
 		
-		// Un control y actualizo el combo segun el contenido del filtro
+		// Un control y actualizo el desplegable segun el contenido del filtro
 		if (bControlKey) {
 			bControlKey=false;
 			setTimeout(function(){controlarPoblacion(valorFiltro);},tiempoEspera,"Javascript");
@@ -1834,18 +1869,19 @@
 				break;  				
   				
 			case 27: //ESC: Paso el foco al filtro
-				elementoPoblacionSelect.val([]); // Elimino los elementos seleccionados del combo
+				elementoPoblacionSelect.val([]); // Elimino los elementos seleccionados del desplegable
 				elementoPoblacionDiv.hide();
 				elementoPoblacionInput.value="";
 				break;  
 				
 			case 38: //CURSOR ARRIBA
 			case 40: //CURSOR ABAJO
-				if (numPoblaciones>1) {					
-					bFocoCombo=true;		
-					bControl=true;  // Inhabilita onBlurPoblacionInput()
-					elementoPoblacionDiv.show();
-					elementoPoblacionSelect.focus(); //Invoca onBlurPoblacionInput()					
+				actualizarPoblacionesCPPoblacion(elementoPoblacionInput.value, true);
+				if (numPoblaciones>1) {						
+					bControl=true;  // Inhabilita onBlurPoblacionInput()					
+					//elementoPoblacionDiv.show();
+					//elementoPoblacionSelect.focus(); //Invoca onBlurPoblacionInput()
+					setTimeout(function(){elementoPoblacionDiv.show();elementoPoblacionSelect.focus();},50,"Javascript");
 				}
   				break;					
   				
@@ -1887,157 +1923,222 @@
 		return true;
 	}	
 			 	
-	// Actualizo el combo segun el contenido del filtro y del codigo postal
+	// Actualizo el desplegable segun el contenido del filtro y del codigo postal
 	function actualizarPoblacionesCPPoblacion(valorPoblacion, bMuestraDiv){
 		//msgControl=msgControl+"actualizarPoblacionesCPPoblacion("+valorPoblacion+", "+bMuestraDiv+")\n";alert(msgControl);
 		
+		// Obtiene los elementos que vamos a utilizar
+		var elementoPoblacionDiv = jQuery("#poblacion_div");
 		var valorCP = document.getElementById("CP").value;
 		
-		//if (valorPoblacion.length>=3 && (valorCP==""||validaCP(valorCP))) {
-		if (valorPoblacion.length>=3 && validaCP(valorCP)) {	 
-			if (controlFiltro!=valorPoblacion) {			
-				controlFiltro=valorPoblacion;								
+		// Si no tiene filtro, lanzo la busqeuda por codigo postal
+		if (valorPoblacion=="" && validaCP(valorCP)) {
+			actualizarPoblacionesCP(bMuestraDiv);
+
+		} else {		
+			// Controlo una longitud minima de caracteres y el valor del codigo postal
+			//if (valorPoblacion.length>=numMinLetrasFiltro && (valorCP=="" || validaCP(valorCP))) {
+			if (valorPoblacion.length>=numMinLetrasFiltro && validaCP(valorCP)) {	 
+								
+				// Control de repeticion
+				if (controlFiltro!=valorPoblacion) {			
+					controlFiltro=valorPoblacion;
+			 		
+					jQuery.ajax({ 
+						type: "POST",
+						url: "/SIGA/FAC_ComprobarPoblacion.do?modo=getAjaxPoblacionesCPFiltro",				
+						data: "valorCP="+valorCP+"&valorPoblacion="+valorPoblacion+"&valorGuiones="+valorGuiones+"&numMaxPoblaciones="+numMaximoSelectPoblaciones,
+						dataType: "json",
+						contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+						success: function(json){					
+								
+							// Con esta comparacion y por hacer AJAX, nos evitamos hacer codigo
+							if (valorPoblacion==controlFiltro) {					
+								
+								// Recupera el numero de poblaciones
+								numPoblaciones = json.numPoblaciones;		
+								
+								// Vuelvo a obtener el objeto
+								elementoPoblacionDiv = jQuery("#poblacion_div");
+								
+								// Pinta el desplegable con el contenido devuelto por ajax
+								var htmlFinal=elementoPoblacionDiv[0].innerHTML;
+								htmlFinal.replace("\"","'");
+								htmlFinal=htmlFinal.substring(0, htmlFinal.indexOf('>')+1);
+								elementoPoblacionDiv[0].innerHTML=htmlFinal+json.htmlPoblaciones[0]+"</SELECT>";
+								
+								// Vuelvo a obtener el objeto
+								var elementoPoblacionSelect = jQuery("#poblacion_select");
+		    	        	    
+					   	    	// Si solo tiene el elemento de seleccion, oculta el desplegable
+				        		if (numPoblaciones<2) {
+				        			elementoPoblacionDiv.hide();
+			        	
+				        		} else {    	    		      
+				       				// Cargo el numero de lineas que tiene que mostrar el desplegable
+		    	        			if (numPoblaciones>numLineasSelectPoblaciones) {
+		    	        				elementoPoblacionSelect[0].size=numLineasSelectPoblaciones;
+		    	        			} else {
+		    	        				elementoPoblacionSelect[0].size=numPoblaciones;
+		    	        			}
+				    			
+		    	        			// Si solo hay un elemento, quitando el de seleccion, lo selecciono
+				    				if (numPoblaciones==2) {
+				    					elementoPoblacionSelect[0].options[1].selected=true;
+				    				}
+				    				
+				    				// Control de si se debe mostrar el desplegable
+			    					if (bMuestraDiv && bFocoPoblacionInput) {
+			    						elementoPoblacionDiv.show();
+			    					} else {
+			    						elementoPoblacionDiv.hide();
+			    					}
+		    					}   		    	
+				        		
+								// Controlo que haya perdido el foco del filtro y no sea la carga inicial
+								if (bMuestraDiv && !bFocoPoblacionInput) {
+									onChangePoblacionSelect();
+								}
+							}				    	       		       				       				    		
+							fin();
+						},
+						error: function(e){
+							alert('Error de ajax');
+							fin();
+						}
+					});
+					
+				// Si no ha cambiado el filtro, lo muestro cuando tenga elementos
+				} else {
+					if (numPoblaciones>1 && bMuestraDiv && bFocoPoblacionInput) {
+						elementoPoblacionDiv.show();	
+					} else {
+						elementoPoblacionDiv.hide();
+					}		
+				}
+				
+			} else {	
+				
+				// Obtiene los elementos que vamos a utilizar
+				var elementoPoblacionSelect = jQuery("#poblacion_select");
+				var elementoPoblacionHidden = document.getElementById("poblacion");	
+				var elementoCP 				= document.getElementById("CP");
+				
+				elementoPoblacionDiv.hide();
+				elementoPoblacionSelect[0].innerHTML="";							
+				elementoPoblacionHidden.value="";
+				
+				controlFiltro=valorPoblacion;
+				numPoblaciones=0;
+
+				if (elementoCP.value=="") {
+					var elementoProvinciaHidden = document.getElementById("provincia");
+					var elementoProvinciaInput	= document.getElementById("provincia_input");
+
+					elementoProvinciaHidden.value="";
+					elementoProvinciaInput.value="";
+				}				
+													
+			}	
+		}
+	}	
+	
+	// Actualizo el desplegable segun el contenido del codigo postal
+	function actualizarPoblacionesCP(bMuestraDiv){
+		//msgControl=msgControl+"actualizarPoblacionesCP("+bMuestraDiv+")\n";alert(msgControl);
+
+		var valorCP = document.getElementById("CP").value;	
+		var elementoPoblacionInput = jQuery("#poblacion_input");
+		var elementoPoblacionDiv = jQuery("#poblacion_div");	
+		
+		if (validaCP(valorCP)) {		
+			
+			// Control de repeticion
+			if (controlFiltro!=valorCP) {
+				controlFiltro=valorCP;
+				
+				if (elementoPoblacionInput[0].isDisabled) {
+					elementoPoblacionInput.removeAttr('disabled');
+					elementoPoblacionInput.removeClass().addClass('box');
+				}
 		 		
 				jQuery.ajax({ 
 					type: "POST",
-					url: "/SIGA/FAC_ComprobarPoblacion.do?modo=getAjaxPoblacionesCPFiltro",				
-					data: "valorCP="+valorCP+"&valorPoblacion="+valorPoblacion+"&valorGuiones="+valorGuiones+"&numMaxPoblaciones="+numMaximoSelectPoblaciones,
+					url: "/SIGA/FAC_ComprobarPoblacion.do?modo=getAjaxPoblacionesCP",				
+					data: "valorCP="+valorCP,
 					dataType: "json",
 					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-					success: function(json){					
+					success: function(json){							
 							
-						// Con esta comparacion y por hacer AJAX, nos evitamos hacer codigo
-						if (valorPoblacion==controlFiltro) {					
-							
-							// Recupera el numero de poblaciones
-							numPoblaciones = json.numPoblaciones;	
-							
-							var elementoDiv = jQuery("#poblacion_div");						
-							
-							// Pinta el combo con el contenido devuelto por ajax
-							var htmlFinal=elementoDiv[0].innerHTML;
-							htmlFinal.replace("\"","'");
-							htmlFinal=htmlFinal.substring(0, htmlFinal.indexOf('>')+1);
-							elementoDiv[0].innerHTML=htmlFinal+json.htmlPoblaciones[0]+"</SELECT>";
-							
-							var elementoCombo = jQuery("#poblacion_select");
-	    	        	    
-				   	    	// Si solo tiene el elemento de seleccion, oculta el combo
-			        		if (numPoblaciones<2) {
-			        			elementoDiv.hide();
-		        	
-			        		} else {    	    		      
-			       				// Cargo el numero de lineas que tiene que mostrar el combo
-	    	        			if (numPoblaciones>numLineasSelectPoblaciones) {
-	    	        				elementoCombo[0].size=numLineasSelectPoblaciones;
-	    	        			} else {
-	    	        				elementoCombo[0].size=numPoblaciones;
-	    	        			}
-			    			
-	    	        			// Si solo hay un elemento, quitando el de seleccion, lo selecciono
-			    				if (numPoblaciones==2) {
-			    					elementoCombo[0].options[1].selected=true;
-			    				}
-			    				
-			    				// Control de si se debe mostrar el combo
-		    					if (bMuestraDiv&&bFocoFiltro) {
-		    						elementoDiv.show();
-		    					}
-	    					}   		    	
+						// Recupera el numero de poblaciones
+						numPoblaciones = json.numPoblaciones;		
+						
+						// Vuelvo a obtener el objeto
+						elementoPoblacionDiv = jQuery("#poblacion_div");
+						
+						// Pinta el desplegable con el contenido devuelto por ajax
+						var htmlFinal=elementoPoblacionDiv[0].innerHTML;
+						htmlFinal.replace("\"","'");
+						htmlFinal=htmlFinal.substring(0, htmlFinal.indexOf('>')+1);
+						elementoPoblacionDiv[0].innerHTML=htmlFinal+json.htmlPoblaciones[0]+"</SELECT>";
+						
+						// Vuelvo a obtener el objeto
+						var elementoPoblacionSelect = jQuery("#poblacion_select");												
+						elementoPoblacionInput = document.getElementById("poblacion_input");
+						
+						document.getElementById("provincia").value = json.idProvinciaCp;
+						document.getElementById("provincia_input").value = json.nombreProvinciaCp;						
+	   	        	    
+			   	    	// Si solo tiene el elemento de seleccion, oculta el desplegable
+		        		if (numPoblaciones<2) {
+		        			elementoPoblacionDiv.hide();
+	        		        		
+		       			} else {
+		       				if (numPoblaciones==2 && !bFocoPoblacionInput) {
+		    					elementoPoblacionSelect[0].options[1].selected=true;	
+		    					elementoPoblacionSelect[0].size=numPoblaciones;
+		    					
+	    						elementoPoblacionInput.value=elementoPoblacionSelect[0].options[elementoPoblacionSelect[0].selectedIndex].text;
+	    						elementoPoblacionDiv.hide();
 			        		
-							// Controlo que haya perdido el foco del filtro y no sea la carga inicial
-							if (bMuestraDiv && !bFocoFiltro) {
-								onChangePoblacionSelect();
-							}
-						}				    	       		       				       				    		
+			       			} else {    	    		      
+			       				// Cargo el numero de lineas que tiene que mostrar el desplegable
+		   	        			if (numPoblaciones>numLineasSelectPoblaciones) {
+		   	        				elementoPoblacionSelect[0].size=numLineasSelectPoblaciones;
+		   	        			} else {
+		   	        				elementoPoblacionSelect[0].size=numPoblaciones;
+		   	        			}
+			    				
+			       				if (bMuestraDiv && (bFocoCP || bFocoPoblacionInput)) {
+		   							elementoPoblacionDiv.show();
+			       				} else {
+			       					elementoPoblacionDiv.hide();
+			       				}
+		   					}
+		       			}
 						fin();
 					},
 					error: function(e){
-						alert('Error de comunicación: ' + e);
+						alert('Error de ajax');
 						fin();
 					}
 				});
-				
-			// Si no ha cambiado el filtro, lo muestro cuando tenga elementos
+			
+				// Si no ha cambiado el filtro, lo muestro cuando tenga elementos
 			} else {
-				if (numPoblaciones>1 && bMuestraDiv) {
-					jQuery("#poblacion_div").show();	
+				if (numPoblaciones>1 && bMuestraDiv && (bFocoCP || bFocoPoblacionInput)) {
+					elementoPoblacionDiv.show();	
+				} else {
+					elementoPoblacionDiv.hide();
 				}		
 			} 
-		} else {
-			jQuery("#poblacion_div").hide();
-		}	
-	}	
-	
-	// Actualizo el combo segun el contenido del codigo postal
-	function actualizarPoblacionesCP(){
-		//msgControl=msgControl+"actualizarPoblacionesCP()\n";alert(msgControl);
-
-		var valorCP = document.getElementById("CP").value;	
-		var elementoPoblacionInput = document.getElementById("poblacion_input");
-		
-		if (validaCP(valorCP) && controlFiltro!=valorCP) {			
-			controlFiltro=valorCP;					
-			jQuery("#poblacion_input").removeAttr('disabled');
-			elementoPoblacionInput.className="box";
-	 		
-			jQuery.ajax({ 
-				type: "POST",
-				url: "/SIGA/FAC_ComprobarPoblacion.do?modo=getAjaxPoblacionesCP",				
-				data: "valorCP="+valorCP,
-				dataType: "json",
-				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-				success: function(json){							
-						
-					// Recupera el numero de poblaciones
-					numPoblaciones = json.numPoblaciones;	
-					
-					var elementoPoblacionDiv = jQuery("#poblacion_div");						
-					
-					// Pinta el combo con el contenido devuelto por ajax
-					var htmlFinal=elementoPoblacionDiv[0].innerHTML;
-					htmlFinal.replace("\"","'");
-					htmlFinal=htmlFinal.substring(0, htmlFinal.indexOf('>')+1);
-					elementoPoblacionDiv[0].innerHTML=htmlFinal+json.htmlPoblaciones[0]+"</SELECT>";
-					
-					// Obtiene los elementos que vamos a utilizar
-					var elementoPoblacionSelect = jQuery("#poblacion_select");
-					elementoPoblacionInput = document.getElementById("poblacion_input");
-					
-					document.getElementById("provincia").value = json.idProvinciaCp;
-					document.getElementById("provincia_input").value = json.nombreProvinciaCp;						
-   	        	    
-		   	    	// Si solo tiene el elemento de seleccion, oculta el combo
-	        		if (numPoblaciones<2) {
-	        			elementoPoblacionDiv.hide();
-        		        		
-	       			} else {
-	       				if (numPoblaciones==2) {
-	    					elementoPoblacionSelect[0].options[1].selected=true;	 
-	    					elementoPoblacionInput.value=elementoPoblacionSelect[0].options[elementoPoblacionSelect[0].selectedIndex].text;
-	    					elementoPoblacionDiv.hide();
-		        		
-		       			} else {    	    		      
-		       				// Cargo el numero de lineas que tiene que mostrar el combo
-	   	        			if (numPoblaciones>numLineasSelectPoblaciones)
-	   	        				elementoPoblacionSelect[0].size=numLineasSelectPoblaciones;
-	   	        			else
-	   	        				elementoPoblacionSelect[0].size=numPoblaciones;    	        				
-		    				
-	   						elementoPoblacionDiv.show();
-	   					}
-	       			}
-					fin();
-				},
-				error: function(e){
-					alert('Error de comunicación: ' + e);
-					fin();
-				}
-			});
 		} 
-		else {
-			jQuery("#poblacion_input").attr('disabled', 'disabled');
-			elementoPoblacionInput.className="boxDisabled";
+		
+		else {			
+			if (!elementoPoblacionInput[0].isDisabled) {
+				elementoPoblacionInput.attr('disabled', 'disabled');
+				elementoPoblacionInput.removeClass().addClass('boxDisabled');
+			}
 		}			
 	}		
 </script>
