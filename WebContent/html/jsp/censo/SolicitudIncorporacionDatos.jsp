@@ -528,7 +528,7 @@
 											<div id="poblacion_div">
 												<select class="box" style="width:300px" id="poblacion_select"
 													onblur="onBlurPoblacionSelect();" onchange="onChangePoblacionSelect(true);" onclick="onClickPoblacionSelect();" 
-													onkeypress="onKeyPressPoblacionSelect(event);" onkeydown="onKeyDownPoblacionSelect(event);" onmousedown="onMouseDownPoblacionSelect();">																		
+													onkeypress="onKeyPressPoblacionSelect(event);" onkeydown="onKeyDownPoblacionSelect(event);" onmouseover="onMouseDownPoblacionSelect();" onmousedown="onMouseDownPoblacionSelect();">																		
 												</select>					
 											</div>	
 										<%}%>
@@ -1624,24 +1624,28 @@
 	function onBlurCP() {
 		//msgControl=msgControl+"onBlurCP()\n";alert(msgControl);
 		
-
-		// Obtiene los elementos que vamos a utilizar		
-		var elementoPoblacionDiv = jQuery("#poblacion_div");
-		
 		bFocoCP=false;
-		elementoPoblacionDiv.hide();
+		
+		if (bControl) {
+			bControl=false;
+			
+		} else {						
+			jQuery("#poblacion_div").hide();
+		}
 	}
 	
 	// Se realiza cuando obtiene el foco el campo codigo postal
 	function onFocusCP() {
 		//msgControl=msgControl+"onFocusCP()\n";alert(msgControl);
 		
-		// Obtiene los elementos que vamos a utilizar
-		var elementoPoblacionInput = document.getElementById("poblacion_input");
-		
 		bFocoCP=true;
-		if (elementoPoblacionInput.value=="")
+		
+		// Obtiene los elementos que vamos a utilizar
+		var elementoPoblacionInput = document.getElementById("poblacion_input");		
+		
+		if (elementoPoblacionInput.value=="") {
 			actualizarPoblacionesCP(true);
+		}
 	}	
 	
 	// Se realiza despues de cargar la letra del cp
@@ -1740,9 +1744,9 @@
 		var elementoPoblacionSelect = jQuery("#poblacion_select");
 		
 		// Para hacer esto tiene que tener el foco poblacion_input
-		if (bFocoPoblacionInput) {				
-			bControl=true; // Inhabilita onBlurPoblacionInput()
-			elementoPoblacionSelect.focus(); //Invoca onBlurPoblacionInput()
+		if (bFocoPoblacionInput || bFocoCP) {				
+			bControl=true; // Inhabilita onBlurPoblacionInput() o onBlurCP()
+			elementoPoblacionSelect.focus(); //Invoca onBlurPoblacionInput() o onBlurCP()
 		}
 	}		
 	
@@ -1938,10 +1942,12 @@
 		
 		// Obtiene los elementos que vamos a utilizar
 		var elementoPoblacionDiv = jQuery("#poblacion_div");
+		var elementoPoblacionSelect = jQuery("#poblacion_select");
 		var valorCP = document.getElementById("CP").value;
 		
 		// Si no tiene filtro, lanzo la busqeuda por codigo postal
 		if (valorPoblacion=="" && validaCP(valorCP)) {
+			elementoPoblacionSelect.val([]); // Elimino los elementos seleccionados del desplegable
 			actualizarPoblacionesCP(false);
 
 		} else {		
@@ -1977,7 +1983,7 @@
 								elementoPoblacionDiv[0].innerHTML=htmlFinal+json.htmlPoblaciones[0]+"</SELECT>";
 								
 								// Vuelvo a obtener el objeto
-								var elementoPoblacionSelect = jQuery("#poblacion_select");
+								elementoPoblacionSelect = jQuery("#poblacion_select");
 		    	        	    
 					   	    	// Si solo tiene el elemento de seleccion, oculta el desplegable
 				        		if (numPoblaciones<2) {

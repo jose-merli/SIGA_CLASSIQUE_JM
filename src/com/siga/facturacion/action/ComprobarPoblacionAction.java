@@ -211,7 +211,7 @@ public class ComprobarPoblacionAction extends MasterAction{
 				" POBLACIONES."+campoPoblacionesNombre+", " +
 				" PERSONA."+campoPersonaJGIdProvincia+", " +
 				" PROVINCIAS."+campoProvinciasNombre+
-				" ORDER BY 1 DESC";
+				" ORDER BY 1 DESC, 3 ASC";
 			
 			// Control de numero de poblaciones
 			sql="SELECT * FROM ("+sql+") WHERE ROWNUM < "+numMaxPoblaciones;
@@ -246,8 +246,11 @@ public class ComprobarPoblacionAction extends MasterAction{
 			}			
 		}
 		
-		// Control de numero de poblaciones
-		numMaxPoblaciones=numMaxPoblaciones-numPoblaciones;		
+		if (numPoblaciones>1) {
+			// Control de numero de poblaciones
+			numMaxPoblaciones=numMaxPoblaciones-numPoblaciones;
+		}
+		
 		if (numMaxPoblaciones>1) {
 		
 			// ---------------------------------------------------------
@@ -411,7 +414,7 @@ public class ComprobarPoblacionAction extends MasterAction{
 			" POBLACIONES."+campoPoblacionesNombre+", " +
 			" PERSONA."+campoPersonaJGIdProvincia+", " +
 			" PROVINCIAS."+campoProvinciasNombre+
-			" ORDER BY 1 DESC";				
+			" ORDER BY 1 DESC, 3 ASC";				
 
 		ArrayList arrayHtml = new ArrayList();
 		JSONObject json = new JSONObject();
