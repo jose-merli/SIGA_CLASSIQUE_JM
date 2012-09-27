@@ -201,7 +201,7 @@
 		<input type="hidden" id="numeroIdentificacionBBDD" value ="<%=datosPersonales.getNumeroIdentificador()%>" /> 
 		<input type="hidden" id="fechaNacimientoBBDD" value ="<%=datosPersonales.getFechaNacimiento()%>" />	
 		
-		<table align="center" width="100%">
+		<table align="center" width="100%" border="0" cellpadding="0" cellspacing="2">
 			<tr>
 				<td class="labelText" >
 					<center>
@@ -220,10 +220,10 @@
 		<div>
 			<siga:ConjCampos>
 				<center>
-					<table border="0" width="100%">
+					<table width="100%" border="0" cellpadding="0" cellspacing="2">
 						<tr>
 							<td>
-								<table border="0">
+								<table width="100%" border="0" cellpadding="0" cellspacing="2">
 									<tr>
 										<td class="labelText" nowrap>
 											<siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.estado"/>
@@ -280,7 +280,7 @@
 			</siga:ConjCampos>
 			
 			<siga:ConjCampos leyenda="censo.SolicitudIncorporacionDatos.titulo">
-				<table border="0" width="100%">
+				<table width="100%" border="0" cellpadding="0" cellspacing="2">
 					<html:hidden property = "modo" value = ""/>
 					<html:hidden property = "editarIdSolicitud" value = "<%=datosPersonales.getIdSolicitud().toString()%>"/>
 					<html:hidden property = "continuarAprobacion" value = ""/>
@@ -365,7 +365,7 @@
 			</siga:ConjCampos>
 			
 			<siga:ConjCampos>
-				<table border="0" width="100%">
+				<table width="100%" border="0" cellpadding="0" cellspacing="2">
 					<tr>
 						<td class="labelText" nowrap><siga:Idioma key="censo.SolicitudIncorporacion.literal.nifcif"/>&nbsp;(*)</td>
 						<%if(readonly){%>
@@ -457,14 +457,14 @@
 			</siga:ConjCampos>
 			
 			<siga:ConjCampos>
-				<table border="0" width="100%">
+				<table width="100%" border="0" cellpadding="0" cellspacing="2">
 					<tr>
 						<td class="labelText" nowrap>
 							<siga:Idioma key="censo.datosDireccion.literal.pais2"/>
 						</td>
 						
 						<td>
-							<table border="0">
+							<table width="100%" border="0" cellpadding="0" cellspacing="2">
 								<tr>									
 									<%if(readonly){%>
 										<td class="labelTextValor">
@@ -489,7 +489,7 @@
 											<%} else {%>
 												onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)"
 											<%}%>											 
-											style="overflow-y:auto;overflow-x:hidden;width:400px;height:40px;" 
+											style="overflow-y:auto;overflow-x:hidden;width:400px;height:40px;resize:none;" 
   										><%=datosPersonales.getDomicilio()%></textarea>
 									</td>																										
 								</tr>
@@ -503,17 +503,12 @@
 						</td>
 						
 						<td>
-							<table border="0">
-								<tr>
+							<table border="0" cellpadding="0" cellspacing="2"> <!-- No poner width="100%" -->
+								<tr id="trEspanol">
 									<td>	
-										<div id="cpEspanol">									
-											<html:text property="CP" style="width:50px" styleClass="<%=estiloBox%>" maxlength="5" value="<%=datosPersonales.getCodigoPostal()%>" readOnly="<%=readonly%>"
-												onkeypress="return soloDigitos(event);" onkeydown="onKeyDownCP();" onkeyup="onKeyUpCP();"
-												onblur="onBlurCP();" onfocus="onFocusCP();"/>
-										</div>	
-										<div style="display:none" id="cpExtranjero">
-											<html:text property="CPExt" style="width:200px" styleClass="<%=estiloBox%>" maxlength="20" value="<%=datosPersonales.getCodigoPostal()%>" readOnly="<%=readonly%>"/>
-										</div>
+										<html:text property="CP" style="width:50px" styleClass="<%=estiloBox%>" maxlength="5" value="<%=datosPersonales.getCodigoPostal()%>" readOnly="<%=readonly%>"
+											onkeypress="return soloDigitos(event);" onkeydown="onKeyDownCP();" onkeyup="onKeyUpCP();"
+											onblur="onBlurCP();" onfocus="onFocusCP();"/>
 									</td>			
 									
 									<td width="30px">&nbsp;</td>				
@@ -522,7 +517,7 @@
 										<siga:Idioma key="censo.SolicitudIncorporacion.literal.poblacion"/>&nbsp;(*)
 									</td>																		
 															
-									<td id="poblacionEspanola">
+									<td>
 										<%if(readonly){%>
 											<input type="text" value="<%=poblacion%>" width="300px" maxlength="100" class="boxConsulta" readonly />
 										<%}else{%>
@@ -532,17 +527,13 @@
 												onfocus="onFocusPoblacionInput();" />
 											<div id="poblacion_div">
 												<select class="box" style="width:300px" id="poblacion_select"
-													onblur="onBlurPoblacionSelect();" onchange="onChangePoblacionSelect();" onclick="onClickPoblacionSelect();" 
+													onblur="onBlurPoblacionSelect();" onchange="onChangePoblacionSelect(true);" onclick="onClickPoblacionSelect();" 
 													onkeypress="onKeyPressPoblacionSelect(event);" onkeydown="onKeyDownPoblacionSelect(event);" onmousedown="onMouseDownPoblacionSelect();">																		
 												</select>					
 											</div>	
 										<%}%>
 									</td> 																				
-						
-									<td style="display:none" id="poblacionExtranjera">
-										<html:text styleId="poblacionExt" property="poblacionExt" style="width:300" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getPoblacionExtranjera()%>" readOnly="<%=readonly%>"/>
-									</td>
-						
+											
 									<td width="30px">&nbsp;</td>
 						
 									<td class="labelText" nowrap>
@@ -558,23 +549,40 @@
 										</div>										
 									</td>
 								</tr>
+								
+								<tr id="trExtranjero" style="display:none">
+									<td>	
+										<html:text property="CPExt" style="width:50px" styleClass="<%=estiloBox%>" maxlength="5" value="<%=datosPersonales.getCodigoPostal()%>" readOnly="<%=readonly%>"/>
+									</td>			
+									
+									<td width="30px">&nbsp;</td>				
+								
+									<td class="labelText" nowrap>
+										<siga:Idioma key="censo.SolicitudIncorporacion.literal.poblacion"/>&nbsp;(*)
+									</td>																																				
+						
+									<td>
+										<html:text styleId="poblacionExt" property="poblacionExt" style="width:300" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getPoblacionExtranjera()%>" readOnly="<%=readonly%>"/>
+									</td>
+								</tr>
+								
 							</table>
 						</td>			
 					</tr>
 			
 					<tr>
-						<td class="labelText" nowrap>
-							<siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono1"/>&nbsp;(*)
-						</td>
-						
-						<td>
-							<table border="0">
+						<td colspan="2">
+							<table width="100%" border="0" cellpadding="0" cellspacing="0"> <!-- No poner cellspacing="2" -->
 								<tr>
+									<td class="labelText" nowrap>
+										<siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono1"/>&nbsp;(*)
+									</td>
+									
 									<td>
 										<html:text property="telefono1" style="width:150px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getTelefono1()%>" readOnly="<%=readonly%>"/>
 									</td>
 									
-									<td width="20px">&nbsp;</td>
+									<td width="10px">&nbsp;</td>
 									
 									<td class="labelText" nowrap>
 										<siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono2"/>
@@ -583,7 +591,7 @@
 										<html:text property="telefono2" style="width:150px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getTelefono2()%>" readOnly="<%=readonly%>"/>
 									</td>
 									
-									<td width="20px">&nbsp;</td>
+									<td width="10px">&nbsp;</td>
 									
 									<td class="labelText" nowrap>
 										<siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono3"/>
@@ -592,23 +600,17 @@
 										<html:text property="telefono3" style="width:150px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getMovil()%>" readOnly="<%=readonly%>"/>
 									</td>
 								</tr>
-							</table>
-						</td>
-					</tr>
-					
-					<tr>
-						<td class="labelText" nowrap>
-							<siga:Idioma key="censo.SolicitudIncorporacion.literal.fax1"/>
-						</td>
-									
-						<td>
-							<table border="0">
+								
 								<tr>
+									<td class="labelText" nowrap>
+										<siga:Idioma key="censo.SolicitudIncorporacion.literal.fax1"/>
+									</td>
+									
 									<td>
 										<html:text property="fax1" style="width:150px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getFax1()%>" readOnly="<%=readonly%>"/>
 									</td>
 									
-									<td width="20px">&nbsp;</td>
+									<td width="10px">&nbsp;</td>
 									
 									<td class="labelText" nowrap>
 										<siga:Idioma key="censo.SolicitudIncorporacion.literal.fax2"/>
@@ -617,7 +619,7 @@
 										<html:text property="fax2" style="width:150px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getFax2()%>" readOnly="<%=readonly%>"/>
 									</td>
 									
-									<td width="20px">&nbsp;</td>
+									<td width="10px">&nbsp;</td>
 											
 									<td class="labelText" nowrap>
 										<siga:Idioma key="censo.SolicitudIncorporacion.literal.email"/>&nbsp;(*)</td>
@@ -636,7 +638,7 @@
 			</siga:ConjCampos>
 				
 			<siga:ConjCampos leyenda="censo.consultaDatosBancarios.cabecera">
-				<table class="tablaCampos" border="0" width="100%">	
+				<table width="100%" border="0" cellpadding="0" cellspacing="2">	
 					<tr>		
 						<td class="labelText">
 							<siga:Idioma key="censo.datosCuentaBancaria.literal.titular"/>
@@ -646,7 +648,7 @@
 						</td>
 						
 						<td colspan="2">
-							<table>
+							<table width="100%" border="0" cellpadding="0" cellspacing="2">	
 								<tr>
 									<td class="labelText">
 										<siga:Idioma key="censo.tipoCuenta.cargo"/>
@@ -692,7 +694,7 @@
 						<siga:ConjCampos>
 							<c:choose>
 								<c:when test="${isPosibilidadSolicitudAlta==true }">
-									<table class="tablaCampos" align="left" >		
+									<table class="tablaCampos" align="left">		
 										<tr>
 											<td class="labelText" >
 												<html:button property="idButton" onclick="return accionSolicitarAltaAlterMutua();" styleClass="button">
@@ -947,6 +949,7 @@
 		   		if (document.SolicitudIncorporacionForm.poblacion.value == "") {
 		   			errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.poblacion'/>" + '\n';
 		       	}
+		   		
 		    } else {
 				if(document.SolicitudIncorporacionForm.CPExt.value==""){
 					errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.codigoPostal'/>" + '\n';
@@ -954,6 +957,7 @@
 				else {
 					document.SolicitudIncorporacionForm.CP.value=document.SolicitudIncorporacionForm.CPExt.value;
 				}
+				
 		   		if (document.SolicitudIncorporacionForm.poblacionExt.value == "") {
 		   			errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.poblacion'/>" + '\n';
 		       	}
@@ -1470,12 +1474,6 @@
 	function cargaPais(valor){      		
 		<%if(!readonly){%>
 			if (valor!=null && valor!="" && valor!=<%=ClsConstants.ID_PAIS_ESPANA%>) {
-				jQuery("#provincia_literal").hide();
-				jQuery("#provincia_valor").hide();
-				jQuery("#poblacionEspanola").hide();
-				jQuery("#cpEspanol").hide();
-				jQuery("#cpExtranjero").show();
-				jQuery("#poblacionExtranjera").show();
 				if (primeravez) {
 					primeravez=false;
 					cargaInicial (20, 20, 73);
@@ -1484,13 +1482,10 @@
 					document.getElementById("CPExt").value="";
 					document.getElementById("poblacionExt").value="";
 				}
+				jQuery("#trEspanol").hide();
+				jQuery("#trExtranjero").show();				
+				
 	       } else {
-				jQuery("#provincia_literal").show();
-				jQuery("#provincia_valor").show();
-				jQuery("#poblacionEspanola").show();
-				jQuery("#cpEspanol").show();
-				jQuery("#cpExtranjero").hide();
-				jQuery("#poblacionExtranjera").hide();	    	   
 				if (primeravez) {
 					primeravez=false;
 					cargaInicial (20, 20, 73);
@@ -1499,23 +1494,18 @@
 					document.getElementById("CP").value="";
 					cambiaCodigoPostal();					
 				}
+				jQuery("#trEspanol").show();
+				jQuery("#trExtranjero").hide();
 	       }
 			
 		<%}else{%>
 			if (valor!=null && valor!="" && valor!=<%=ClsConstants.ID_PAIS_ESPANA%>) {
-				jQuery("#provincia_literal").hide();
-				jQuery("#provincia_valor").hide();
-				jQuery("#poblacionEspanola").hide();
-				jQuery("#cpEspanol").hide();
-				jQuery("#cpExtranjero").show();
-				jQuery("#poblacionExtranjera").show();
+				jQuery("#trEspanol").hide();
+				jQuery("#trExtranjero").show();				
+				
 	       } else {
-	    	   	jQuery("#provincia_literal").show();
-				jQuery("#provincia_valor").show();
-				jQuery("#poblacionEspanola").show();
-				jQuery("#cpEspanol").show();
-				jQuery("#cpExtranjero").hide();
-				jQuery("#poblacionExtranjera").hide();	
+	    	   	jQuery("#trEspanol").show();
+				jQuery("#trExtranjero").hide();	
 	       }			
 		<%}%>
 	}	
@@ -1622,6 +1612,12 @@
 							
 		controlFiltro=cteControl;
 		numPoblaciones=0;
+		
+		elementoPoblacionInput = jQuery("#poblacion_input");
+		if (!elementoPoblacionInput[0].disabled) {
+			elementoPoblacionInput.attr('disabled', 'disabled');
+			elementoPoblacionInput.removeClass().addClass('boxDisabled');
+		}
 	}
 	
 	// Se realiza cuando pierde el foco el campo codigo postal
@@ -1657,8 +1653,7 @@
 			cambiaCodigoPostal(); 
 			actualizarPoblacionesCP(true);		
 		}
-	}	
-	
+	}		
 	
 	// Se realiza antes de cargar la letra del cp
 	function onKeyDownCP() {
@@ -1668,8 +1663,8 @@
 	}	
 	
 	// Selecciona un elemento del desplegable
-	function onChangePoblacionSelect() {
-		//msgControl=msgControl+"onChangePoblacionSelect()\n";alert(msgControl);	
+	function onChangePoblacionSelect(editaPoblacionInput) {
+		//msgControl=msgControl+"onChangePoblacionSelect("+editaPoblacionInput+")\n";alert(msgControl);	
 		
 		// Obtiene los elementos que vamos a utilizar
 		var elementoPoblacionSelect = jQuery("#poblacion_select");
@@ -1684,8 +1679,15 @@
 		
 		// 0: Si ha seleccionado el elemento "--Seleccionar"
 		if (poblacionSelected<0) { // -1: Si no hay nada seleccionado
-			elementoPoblacionInput.value="";
+			if (editaPoblacionInput) {
+				elementoPoblacionInput.value="";
+			}
 			elementoPoblacionHidden.value="";
+			
+			if (elementoCP.value=="") {
+				elementoProvinciaHidden.value="";
+				elementoProvinciaInput.value="";
+			}
 			
 		} else {					
 			// Obtengo el valor de la poblacion
@@ -1696,15 +1698,20 @@
 				elementoProvinciaHidden.value=arrayDatos[1]; // IdProvincia
 				elementoProvinciaInput.value=arrayDatos[2]; // NombreProvincia
 				
-				var nombrePoblacion = elementoPoblacionSelect[0].options[poblacionSelected].text;
+				if (editaPoblacionInput) {
+					var nombrePoblacion = elementoPoblacionSelect[0].options[poblacionSelected].text;
 				
-				if (nombrePoblacion!=elementoPoblacionInput.value) {
-					elementoPoblacionInput.value = nombrePoblacion; // NombrePoblacion
+					// Este control evita perder el foco, si el nombre es identico
+					if (nombrePoblacion!=elementoPoblacionInput.value) {
+						elementoPoblacionInput.value = nombrePoblacion; // NombrePoblacion
+					}
 				}
 			}
 			else {
+				if (editaPoblacionInput) {
+					elementoPoblacionInput.value="";
+				}
 				elementoPoblacionHidden.value="";
-				elementoPoblacionInput.value="";
 				
 				if (elementoCP.value=="") {
 					elementoProvinciaHidden.value="";
@@ -1748,7 +1755,7 @@
 		
 		// Oculto el desplegable y recalculo el valor del filtro
 		elementoPoblacionDiv.hide();
-		onChangePoblacionSelect();
+		onChangePoblacionSelect(true);
 	}	
 	
 	// Se realiza cuando pulsa una letra en el desplegable
@@ -1808,7 +1815,7 @@
 			bControl=false;
 			
 		} else {
-			actualizarPoblacionesCPPoblacion(elementoPoblacionInput.value, true);
+			actualizarPoblacionesCPPoblacion(elementoPoblacionInput.value);
 		}
 	}			
 		
@@ -1826,7 +1833,7 @@
 			var elementoPoblacionDiv = jQuery("#poblacion_div");
 			
 			elementoPoblacionDiv.hide();
-			onChangePoblacionSelect();						
+			onChangePoblacionSelect(true);						
 		}
 	}
 	
@@ -1876,12 +1883,14 @@
 				
 			case 38: //CURSOR ARRIBA
 			case 40: //CURSOR ABAJO
-				actualizarPoblacionesCPPoblacion(elementoPoblacionInput.value, true);
+				//actualizarPoblacionesCPPoblacion(elementoPoblacionInput.value); // No esta claro que sea necesario
 				if (numPoblaciones>1) {						
 					bControl=true;  // Inhabilita onBlurPoblacionInput()					
+					
+					// Esto es util, para evitar KeyDown en el desplegable
+					setTimeout(function(){elementoPoblacionDiv.show();elementoPoblacionSelect.focus();},10,"Javascript");
 					//elementoPoblacionDiv.show();
 					//elementoPoblacionSelect.focus(); //Invoca onBlurPoblacionInput()
-					setTimeout(function(){elementoPoblacionDiv.show();elementoPoblacionSelect.focus();},50,"Javascript");
 				}
   				break;					
   				
@@ -1900,7 +1909,7 @@
 		var elementoPoblacionInput = document.getElementById("poblacion_input");
 		
 		if (filtroAntiguo==elementoPoblacionInput.value || filtroAntiguo==txtTabulador) {
-			actualizarPoblacionesCPPoblacion(filtroAntiguo, true);
+			actualizarPoblacionesCPPoblacion(filtroAntiguo);
 		}
 	}			
 	
@@ -1924,8 +1933,8 @@
 	}	
 			 	
 	// Actualizo el desplegable segun el contenido del filtro y del codigo postal
-	function actualizarPoblacionesCPPoblacion(valorPoblacion, bMuestraDiv){
-		//msgControl=msgControl+"actualizarPoblacionesCPPoblacion("+valorPoblacion+", "+bMuestraDiv+")\n";alert(msgControl);
+	function actualizarPoblacionesCPPoblacion(valorPoblacion){
+		//msgControl=msgControl+"actualizarPoblacionesCPPoblacion("+valorPoblacion+")\n";alert(msgControl);
 		
 		// Obtiene los elementos que vamos a utilizar
 		var elementoPoblacionDiv = jQuery("#poblacion_div");
@@ -1933,7 +1942,7 @@
 		
 		// Si no tiene filtro, lanzo la busqeuda por codigo postal
 		if (valorPoblacion=="" && validaCP(valorCP)) {
-			actualizarPoblacionesCP(bMuestraDiv);
+			actualizarPoblacionesCP(false);
 
 		} else {		
 			// Controlo una longitud minima de caracteres y el valor del codigo postal
@@ -1988,17 +1997,15 @@
 				    				}
 				    				
 				    				// Control de si se debe mostrar el desplegable
-			    					if (bMuestraDiv && bFocoPoblacionInput) {
+			    					if (bFocoPoblacionInput) {
 			    						elementoPoblacionDiv.show();
 			    					} else {
 			    						elementoPoblacionDiv.hide();
 			    					}
 		    					}   		    	
 				        		
-								// Controlo que haya perdido el foco del filtro y no sea la carga inicial
-								if (bMuestraDiv && !bFocoPoblacionInput) {
-									onChangePoblacionSelect();
-								}
+					   	    	// Actualizo los datos seleccionados
+								onChangePoblacionSelect(!bFocoPoblacionInput);
 							}				    	       		       				       				    		
 							fin();
 						},
@@ -2010,7 +2017,7 @@
 					
 				// Si no ha cambiado el filtro, lo muestro cuando tenga elementos
 				} else {
-					if (numPoblaciones>1 && bMuestraDiv && bFocoPoblacionInput) {
+					if (numPoblaciones>1 && bFocoPoblacionInput) {
 						elementoPoblacionDiv.show();	
 					} else {
 						elementoPoblacionDiv.hide();
@@ -2018,7 +2025,6 @@
 				}
 				
 			} else {	
-				
 				// Obtiene los elementos que vamos a utilizar
 				var elementoPoblacionSelect = jQuery("#poblacion_select");
 				var elementoPoblacionHidden = document.getElementById("poblacion");	
@@ -2037,15 +2043,14 @@
 
 					elementoProvinciaHidden.value="";
 					elementoProvinciaInput.value="";
-				}				
-													
+				}												
 			}	
 		}
 	}	
 	
 	// Actualizo el desplegable segun el contenido del codigo postal
-	function actualizarPoblacionesCP(bMuestraDiv){
-		//msgControl=msgControl+"actualizarPoblacionesCP("+bMuestraDiv+")\n";alert(msgControl);
+	function actualizarPoblacionesCP(bCP){
+		//msgControl=msgControl+"actualizarPoblacionesCP("+bCP+")\n";alert(msgControl);
 
 		var valorCP = document.getElementById("CP").value;	
 		var elementoPoblacionInput = jQuery("#poblacion_input");
@@ -2057,7 +2062,7 @@
 			if (controlFiltro!=valorCP) {
 				controlFiltro=valorCP;
 				
-				if (elementoPoblacionInput[0].isDisabled) {
+				if (elementoPoblacionInput[0].disabled) {
 					elementoPoblacionInput.removeAttr('disabled');
 					elementoPoblacionInput.removeClass().addClass('box');
 				}
@@ -2094,7 +2099,9 @@
 		        			elementoPoblacionDiv.hide();
 	        		        		
 		       			} else {
-		       				if (numPoblaciones==2 && !bFocoPoblacionInput) {
+		       				// Si viene por introducir un codigo postal debe seleccionarse
+		       				// Si tengo estoy en el filtro y borro el nombre de la poblacion ... no debe seleccionarse, porque si solo tiene una no puedo borrar
+		       				if (numPoblaciones==2 && bCP) {
 		    					elementoPoblacionSelect[0].options[1].selected=true;	
 		    					elementoPoblacionSelect[0].size=numPoblaciones;
 		    					
@@ -2109,13 +2116,16 @@
 		   	        				elementoPoblacionSelect[0].size=numPoblaciones;
 		   	        			}
 			    				
-			       				if (bMuestraDiv && (bFocoCP || bFocoPoblacionInput)) {
+			       				if (bFocoCP || bFocoPoblacionInput) {
 		   							elementoPoblacionDiv.show();
 			       				} else {
 			       					elementoPoblacionDiv.hide();
 			       				}
-		   					}
+		   					}		       						       				
 		       			}
+			   	    	
+		        		// Actualizo los datos seleccionados
+						onChangePoblacionSelect(false);
 						fin();
 					},
 					error: function(e){
@@ -2126,7 +2136,7 @@
 			
 				// Si no ha cambiado el filtro, lo muestro cuando tenga elementos
 			} else {
-				if (numPoblaciones>1 && bMuestraDiv && (bFocoCP || bFocoPoblacionInput)) {
+				if (numPoblaciones>1 && (bFocoCP || bFocoPoblacionInput)) {
 					elementoPoblacionDiv.show();	
 				} else {
 					elementoPoblacionDiv.hide();
@@ -2135,7 +2145,7 @@
 		} 
 		
 		else {			
-			if (!elementoPoblacionInput[0].isDisabled) {
+			if (!elementoPoblacionInput[0].disabled) {
 				elementoPoblacionInput.attr('disabled', 'disabled');
 				elementoPoblacionInput.removeClass().addClass('boxDisabled');
 			}
