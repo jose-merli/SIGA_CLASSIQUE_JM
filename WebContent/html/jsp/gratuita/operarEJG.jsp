@@ -630,8 +630,8 @@
 			<%} else {%>
 			  <td  class="labelText">	
 					<html:text name="DefinirMantenimientoEJGForm"  onkeypress="filterChars(this,false,true);"
-                             onkeyup="filterCharsUp(this);"  onblur="filterCharsNaN(this);" property="anioCAJG" size="4" maxlength="4" styleClass="boxNumber"  value="<%=anioCAJG%>" ></html:text> / <html:text name="DefinirMantenimientoEJGForm" property="numeroCAJG" size="10" maxlength="20" onkeypress="filterChars(this,false,true);"
-                             onkeyup="filterCharsUp(this);"  onblur="filterCharsNaN(this);"  styleClass="boxNumber" value="<%=numeroCAJG%>"></html:text>
+                             onkeyup="filterCharsUp(this);"  onblur="filterCharsNaN(this);" property="anioCAJG" size="4" maxlength="4" styleClass="boxNumber"  value="<%=anioCAJG%>" ></html:text> / <html:text name="DefinirMantenimientoEJGForm" 
+                             property="numeroCAJG" size="10" maxlength="20" styleClass="boxNumber" value="<%=numeroCAJG%>"></html:text>
 			  </td>
 				
 			<%}%>
