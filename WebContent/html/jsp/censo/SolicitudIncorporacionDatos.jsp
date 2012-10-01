@@ -341,7 +341,7 @@
 							</td>
 						<%}else{%>
 							<td>
-								<siga:ComboBD nombre="tipoModalidadDocumentacion" tipo="modalidadDocumentacion" ancho="180" 
+								<siga:ComboBD nombre="tipoModalidadDocumentacion" tipo="modalidadDocumentacion" ancho="170" 
 									clase="boxCombo" obligatorio="true" elementoSel="<%=modalidadSel%>" parametro="<%=modalidadParam%>"/>
 							</td>
 						<%}%>
@@ -545,7 +545,7 @@
 										</td>
 									<%}else{%>
 										<td>
-											<siga:ComboBD nombre="pais" tipo="pais" ancho="440" clase="<%=estiloCombo%>" obligatorio="false" elementoSel="<%=selPais%>" readOnly="<%=sreadonly%>" accion="cargaPais(this.value);"/>
+											<siga:ComboBD nombre="pais" tipo="pais" ancho="420" clase="<%=estiloCombo%>" obligatorio="false" elementoSel="<%=selPais%>" readOnly="<%=sreadonly%>" accion="cargaPais(this.value);"/>
 										</td>
 									<%}%>
 								</tr>
@@ -557,7 +557,7 @@
 									</td>									
 									<td>
 										<html:text styleClass="<%=estiloBox%>" property="domicilio" readOnly="<%=readonly%>"
-											 style="width:440px" maxlength="100" value="<%=datosPersonales.getDomicilio()%>"/>
+											 style="width:420px" maxlength="100" value="<%=datosPersonales.getDomicilio()%>"/>
 									</td>															
 								</tr>						
 								
@@ -581,14 +581,14 @@
 																		
 												<td>
 													<%if(readonly){%>
-														<input type="text" value="<%=poblacion%>" width="330px" maxlength="100" class="boxConsulta" readonly />
+														<input type="text" value="<%=poblacion%>" width="310px" maxlength="100" class="boxConsulta" readonly />
 													<%}else{%>
 														<html:hidden property="poblacion" value="<%=idPoblacion%>"/>
-														<input class="box" id="poblacion_input" type="text" style="width:330px;" value="<%=poblacion%>" maxlength="100"
+														<input class="box" id="poblacion_input" type="text" style="width:310px;" value="<%=poblacion%>" maxlength="100"
 															onblur="onBlurPoblacionInput();" onkeydown="onKeyDownPoblacionInput(event);" onkeyup="onKeyUpPoblacionInput();" 
 															onfocus="onFocusPoblacionInput();" />
 														<div id="poblacion_div">
-															<select class="box" style="width:330px" id="poblacion_select"
+															<select class="box" style="width:310px" id="poblacion_select"
 																onblur="onBlurPoblacionSelect();" onchange="onChangePoblacionSelect(true);" onclick="onClickPoblacionSelect();" 
 																onkeypress="onKeyPressPoblacionSelect(event);" onkeydown="onKeyDownPoblacionSelect(event);" onmouseover="onMouseDownPoblacionSelect();" onmousedown="onMouseDownPoblacionSelect();">																		
 															</select>					
@@ -606,7 +606,7 @@
 														value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.provincia'/>" />											
 												</td>
 												<td>
-													<input id="provincia_input" class="boxConsulta" type="text" style="width:330px"  
+													<input id="provincia_input" class="boxConsulta" type="text" style="width:310px"  
 														value="<%=provincia%>" readonly tabindex="-1" />
 												</td>
 											</tr>
@@ -624,7 +624,7 @@
 														value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.poblacion'/>" />&nbsp;(*)
 												</td>																																													
 												<td>
-													<html:text styleId="poblacionExt" property="poblacionExt" style="width:330px" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getPoblacionExtranjera()%>" readOnly="<%=readonly%>"/>
+													<html:text styleId="poblacionExt" property="poblacionExt" style="width:310px" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getPoblacionExtranjera()%>" readOnly="<%=readonly%>"/>
 												</td>
 											</tr>								
 										</table>
