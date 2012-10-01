@@ -165,26 +165,31 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 			
 			int tipoCAJG = CajgConfiguracion.getTipoCAJG(getIDInstitucion(request));
 			
+			String mensaje = null;
+			
 			if (tipoCAJG == CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA) {
 				ResolucionesAsigna resolucionesAsigna = new ResolucionesAsigna();
-				numeroResoluciones = resolucionesAsigna.obtenerResoluciones(getUserBean(request), getIDInstitucion(request).toString());	
-			} else if (tipoCAJG == CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO) {
-				EcomColaService ecomColaService = (EcomColaService) BusinessManager.getInstance().getService(EcomColaService.class);
+				numeroResoluciones = resolucionesAsigna.obtenerResoluciones(getUserBean(request), getIDInstitucion(request).toString());
 				
+				if (numeroResoluciones == 0) {//no se han obtenido nuevas resoluciones
+					mensaje = "message.remesaResolucion.asigna.noResoluciones";
+					mensaje = UtilidadesString.getMensajeIdioma(getUserBean(request), mensaje);
+				} else {
+					mensaje = "message.remesaResolucion.asigna.numeroResoluciones";			
+					mensaje = UtilidadesString.getMensaje(mensaje, new String[]{String.valueOf(numeroResoluciones)}, getUserBean(request).getLanguage());
+				}
+			} else if (tipoCAJG == CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO) {
+								
+				mensaje = UtilidadesString.getMensajeIdioma(getUserBean(request), "message.remesaResolucion.consultaLanzada");
+				EcomColaService ecomColaService = (EcomColaService) BusinessManager.getInstance().getService(EcomColaService.class);				
 				EcomCola ecomCola = new EcomCola();
 				ecomCola.setIdinstitucion(Short.valueOf(getUserBean(request).getLocation()));
 				ecomCola.setIdoperacion(AppConstants.OPERACION.XUNTA_RESOLUCIONES.getId());
 				ecomColaService.insert(ecomCola);				
 			}
 			
-			String mensaje = null;
-			if (numeroResoluciones == 0) {//no se han obtenido nuevas resoluciones
-				mensaje = "message.remesaResolucion.asigna.noResoluciones";
-				mensaje = UtilidadesString.getMensajeIdioma(getUserBean(request), mensaje);
-			} else {
-				mensaje = "message.remesaResolucion.asigna.numeroResoluciones";			
-				mensaje = UtilidadesString.getMensaje(mensaje, new String[]{String.valueOf(numeroResoluciones)}, getUserBean(request).getLanguage());
-			}
+			
+			
 			request.setAttribute("mensajeUsuario", mensaje);
 			
 		} catch (Exception e) {

@@ -63,8 +63,11 @@
 				botones = "ODP,B,L,CON";
 			}
 		}
+	} else if (pcajgActivo == CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO) {
+		if ("1".equals(idTipoRemesa)) {
+			botones = "OR,B,L,CON";//obtener remesa
+		}
 	}
-	
 	
 	
 	

@@ -10,6 +10,7 @@ import java.util.Hashtable;
 
 import javax.servlet.ServletContextEvent;
 
+import org.redabogacia.sigaservices.app.services.ParametersService;
 import org.redabogacia.sigaservices.app.services.SigaLog4jService;
 
 import com.aspose.words.License;
@@ -57,6 +58,12 @@ public final class SIGASvlInicializacionesSecundarias extends SIGAContextListene
 	    // this.inicializarCrystal();
 	    this.inicializarWords();
 	    this.inicializarLog4j();
+	    this.inicializarParametros();
+	}
+
+	private void inicializarParametros() {
+		ParametersService parametersService = (ParametersService) BusinessManager.getInstance().getService(ParametersService.class);
+		parametersService.initParameters();		
 	}
 
 	private void inicializarLog4j() {

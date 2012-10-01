@@ -663,16 +663,20 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 					ecomCola.setIdoperacion(AppConstants.OPERACION.XUNTA_FICHERO_RESPUESTA.getId());
 					ecomColaService.insert(ecomCola);
 					cajgRemesaBean.setIdecomcola(ecomCola.getIdecomcola());
+					log.debug("Se ha insertado en la cola correctamente para el colegio " + idInstitucion);
 					
-					File parentFile = SIGAServicesHelper.getDirectorioRespuesta(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa), ecomCola.getIdecomcola());
+					File parentFile = SIGAServicesHelper.getDirectorioRespuesta(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa), ecomCola.getIdecomcola());					
 					File file = new File(parentFile, formFile.getFileName());
+					log.debug("La ruta donde se va a guardar el fichero es: " + parentFile.getAbsolutePath());
 					OutputStream os = new FileOutputStream(file);
 					InputStream is = formFile.getInputStream();
 					byte[] bytes = new byte[is.available()];
-					is.read(bytes);
+					is.read(bytes);					
 					os.write(bytes);
 					os.flush();
 					os.close();
+					is.close();
+					log.debug("El fichero se ha copiado a la ruta correctamente. Ruta del fichero: " + parentFile.getAbsolutePath());
 				}
 				
 				tx = usr.getTransaction();
