@@ -244,5 +244,30 @@ public class ExpTipoExpedienteAdm extends MasterBeanAdministrador {
 		}
 		return salida;
 	}
+	
+	/** Funcion getNewIdTipoExpediente (UsrBean _usr)
+	 * Genera el id de un nuevo tipo de expediente
+	 * @param usrBean
+	 * @return nuevo idTipoExpediente
+	 * */
+    public Integer getImporteCaducidad(String idInstitucion,String idTipoExpediente) throws ClsExceptions{
+        RowsContainer rows = new RowsContainer();
+        String sql="SELECT " + ExpTipoExpedienteBean.C_TIEMPOCADUCIDAD + 
+        		" AS CADUCIDAD FROM " + ExpTipoExpedienteBean.T_NOMBRETABLA + 
+        		" WHERE " + ExpTipoExpedienteBean.C_IDINSTITUCION + "="+ idInstitucion +
+        		" AND " + ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE + "="+ idTipoExpediente;
+        int valor=0; // Si no hay registros, es el valor que tomará
+        if(rows.find(sql)){
+            Hashtable htRow=((Row)rows.get(0)).getRow();
+            // El valor devuelto será "" Si no hay registros
+            if(!((String)htRow.get("CADUCIDAD")).equals("")) {
+                valor=Integer.valueOf((String)htRow.get("CADUCIDAD")).intValue();
+            }
+            
+        }
+        return new Integer(valor);        
+    }	
+	
+	
 
 }

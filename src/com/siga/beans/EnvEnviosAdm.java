@@ -897,8 +897,12 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 
 							}
 	    	    			htDatosEnvio.put("EXP_TIPO", expAlertaBean.getTipoExpediente().getNombre());
-	    	    			htDatosEnvio.put("EXP_FASE", expAlertaBean.getFase().getNombre());
-	    	    			htDatosEnvio.put("EXP_ESTADO", expAlertaBean.getEstado().getNombre());
+	    	    			if (expAlertaBean.getFase() != null){
+	    	    				htDatosEnvio.put("EXP_FASE", expAlertaBean.getFase().getNombre());
+	    	    			}
+	    	    			if (expAlertaBean.getEstado() != null){
+	    	    				htDatosEnvio.put("EXP_ESTADO", expAlertaBean.getEstado().getNombre());
+	    	    			}
 	    	    			
 	    	    		}
 	    	    		
@@ -925,8 +929,12 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 								
 							}
 	    	    			htDatosEnvio.put("EXP_TIPO", expAlertaBean.getTipoExpediente().getNombre());
-	    	    			htDatosEnvio.put("EXP_FASE", expAlertaBean.getFase().getNombre());
-	    	    			htDatosEnvio.put("EXP_ESTADO", expAlertaBean.getEstado().getNombre());
+	    	    			if (expAlertaBean.getFase() != null){
+	    	    				htDatosEnvio.put("EXP_FASE", expAlertaBean.getFase().getNombre());
+	    	    			}
+	    	    			if (expAlertaBean.getEstado() != null){
+	    	    				htDatosEnvio.put("EXP_ESTADO", expAlertaBean.getEstado().getNombre());
+	    	    			}
 	    	    				
 	    	    		}
 	    	    		

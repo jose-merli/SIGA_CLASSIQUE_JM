@@ -2859,14 +2859,17 @@ public class EnvioInformesGenericos extends MasterReport {
 			ExpEstadosAdm estadosAdm = new ExpEstadosAdm(usrBean);
 			ExpTipoExpedienteAdm tipoExpedienteAdm = new ExpTipoExpedienteAdm(
 					usrBean);
-			hashAlerta.put(ExpAlertaBean.C_IDFASE, alertaBean.getIdFase());
-			Vector faseVector = fasesAdm.selectByPK(hashAlerta);
-			hashAlerta.put(ExpAlertaBean.C_IDESTADO, alertaBean.getIdEstado());
-			Vector estadoVector = estadosAdm.selectByPK(hashAlerta);
+			if (alertaBean.getIdFase() != null) {
+				hashAlerta.put(ExpAlertaBean.C_IDFASE, alertaBean.getIdFase());
+				Vector faseVector = fasesAdm.selectByPK(hashAlerta);
+				alertaBean.setFase((ExpFasesBean) faseVector.get(0));
+			}
+			if (alertaBean.getIdEstado() != null) {
+				hashAlerta.put(ExpAlertaBean.C_IDESTADO, alertaBean.getIdEstado());
+				Vector estadoVector = estadosAdm.selectByPK(hashAlerta);
+				alertaBean.setEstado((ExpEstadosBean) estadoVector.get(0));
+			}
 			Vector tipoExpVector = tipoExpedienteAdm.selectByPK(hashAlerta);
-
-			alertaBean.setFase((ExpFasesBean) faseVector.get(0));
-			alertaBean.setEstado((ExpEstadosBean) estadoVector.get(0));
 			alertaBean.setTipoExpediente((ExpTipoExpedienteBean) tipoExpVector
 					.get(0));
 

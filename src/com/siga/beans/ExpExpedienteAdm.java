@@ -1505,13 +1505,15 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 				    " E.ANIOEXPEDIENTE, "+
 				    " E.NUMEROEXPEDIENTE, "+
 				    " ES.NOMBRE "+
-				    " FROM   EXP_EXPEDIENTE E, EXP_ESTADO ES "+
+				    " FROM   EXP_EXPEDIENTE E, EXP_ESTADO ES, exp_tipoexpediente tipo "+
 				    " WHERE  E.IDESTADO = ES.IDESTADO (+) "+
 				    " AND    E.IDFASE = ES.IDFASE (+) "+
 				    " AND    E.IDINSTITUCION_TIPOEXPEDIENTE = ES.IDINSTITUCION (+) "+
 				    " AND    E.IDTIPOEXPEDIENTE = ES.IDTIPOEXPEDIENTE (+) "+
+				    " AND    e.idinstitucion = tipo.idinstitucion(+) "+
+				    " AND    e.idtipoexpediente = tipo.idtipoexpediente(+) "+
 				    " AND    E.ALERTAGENERADACAD <> 'S' "+ // COMPRUEBA QUE NO SE HA ANOTADO LA CADUCIDAD.
-				    " AND    E.FECHACADUCIDAD <= SYSDATE "+
+				    " AND    nvl(e.fechacaducidad, e.fecha + tipo.TIEMPOCADUCIDAD) <= SYSDATE "+
 				    " AND    ES.ESTADOFINAL(+) = 'N'";
 			
 			rc1 = new RowsContainer();
@@ -1790,7 +1792,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 					" WHERE  E.IDINSTITUCION_TIPOEXPEDIENTE = T.IDINSTITUCION "+
 					" AND    E.IDTIPOEXPEDIENTE = T.IDTIPOEXPEDIENTE "+
 					" AND    E.ALERTACADUCIDADGENERADA = 'N'  "+
-					" AND    E.FECHACADUCIDAD - nvl(T.DIASANTELACIONCAD,0) <  SYSDATE" +
+					" AND    nvl(E.FECHACADUCIDAD, e.fecha + t.TIEMPOCADUCIDAD) - nvl(T.DIASANTELACIONCAD,0) <  SYSDATE" +
 					" and    nvl(T.DIASANTELACIONCAD,0)>0";
 			
 			rc1 = new RowsContainer();

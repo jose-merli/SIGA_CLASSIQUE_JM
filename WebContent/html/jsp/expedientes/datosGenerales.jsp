@@ -50,6 +50,10 @@
 	if (request.getAttribute("tipoExpedienteEjg") != null)
 		tieneEjgRelacionado = ((Boolean) request
 				.getAttribute("tipoExpedienteEjg")).booleanValue();
+	
+	String tiempoCaducidad = (String) request
+			.getAttribute("tiempoCaducidad");
+
 
 	
 	String totalMinuta = (String) request.getAttribute("totalMinuta");
@@ -817,9 +821,57 @@
 				
 			}
 
+		//Funcion asociada al cambio de foco de la fecha incial necesaria
+		//para calcular la fecha de caducidad	
+	
 			
-				
+		function generarFechaCaducidad() {
+			<%if (!(tiempoCaducidad.equals("")) && !(tiempoCaducidad.equals("0"))){%>
+			
+			var fFecha = document.forms[0].fecha.value;
 
+			var dt1  = fFecha.substring(0,2);
+
+			var dt2  = fFecha.substring(3,5);
+			var dt3  = fFecha.substring(6,10);
+
+			var mes = parseInt (dt2) - 1;
+
+
+			var Fecha= new Date(fFecha);
+			var iYear = Fecha.getFullYear();	
+			
+			var hoy= new Date();
+			hoy.setDate(dt1);
+			hoy.setMonth(mes.toString());
+			hoy.setFullYear(dt3);
+
+
+			var sumarDias=parseInt('<%=tiempoCaducidad%>');
+			var luego = hoy.addDays(sumarDias);
+
+			
+			if ((luego.getMonth()+1) < 10)
+				iMonth = '0' + ((luego.getMonth()+1).toString())
+				else iMonth = ((luego.getMonth()+1).toString()); 
+			if (luego.getDate() < 10)
+				iDay = '0' + luego.getDate().toString()
+				else iDay = luego.getDate().toString();
+
+			document.forms[0].fechaCaducidad.value = iDay + "/" + iMonth + "/" + luego.getFullYear();
+
+			<%}%>
+		}
+
+		Date.prototype.addDays = function (dias){
+			var fecha1 = new Date(2011, 1,20);
+			var fecha2 = new Date(2011, 1,21);
+			var diferencia = fecha2.getTime() - fecha1.getTime();
+			var luego = new Date();
+			
+			luego.setTime( this.getTime() + (dias * diferencia ) );
+			return luego; 
+		} 
 
 
 	</script>
@@ -897,7 +949,7 @@
 			if (accion.equals("nuevo") || copia.equals("s")) 
 			{
 		%>
-		 <siga:Fecha nombreCampo="fecha" valorInicial="<%=fechaApertura%>" />
+		 <siga:Fecha nombreCampo="fecha" valorInicial="<%=fechaApertura%>"  postFunction="generarFechaCaducidad();" preFunction="generarFechaCaducidad();" />
 		
 		<%
 			} 
@@ -1075,17 +1127,27 @@
 	<%
 			if (bEditable) 
 			{
-	%> 
-				<siga:Fecha nombreCampo="fechaCaducidad" valorInicial="<%=form.getFechaCaducidad()%>" /> 
+				if 	(tiempoCaducidad.equalsIgnoreCase("0")) { 
+	%>
+				<siga:Fecha nombreCampo="fechaCaducidad" valorInicial="<%=form.getFechaCaducidad()%>" />
 	<%
-			} 
+			} else {
+	%>
+				<html:text name="ExpDatosGeneralesForm" property="fechaCaducidad" size="10" maxlength="10" styleClass="<%=boxStyle%>" readonly="true"></html:text>					 
+				 
+	<%
+			} }
+				
 			else 
 			{
 	%>
-				<html:text name="ExpDatosGeneralesForm" property="fechaCaducidad" size="10" maxlength="10" styleClass="<%=boxStyle%>" readonly="true"></html:text> 
-	<%
-			}
-	%>
+
+				<html:text name="ExpDatosGeneralesForm" property="fechaCaducidad" size="10" maxlength="10" styleClass="<%=boxStyle%>" readonly="true"></html:text>
+				
+	<% 			
+
+		}
+	%>	
 			</td>
 			<td class="labelText"><siga:Idioma 	key="expedientes.auditoria.literal.asunto" />&nbsp(*)</td>
 			<td colspan="3"><html:text name="ExpDatosGeneralesForm"
@@ -1093,6 +1155,7 @@
 											styleClass="<%=boxStyle%>" readonly="<%=!bEditable%>"></html:text>
 			</td>
 		</tr>
+		
 
 		<tr>
 			<td class="labelText"><siga:Idioma key="expedientes.auditoria.literal.observaciones" /></td>

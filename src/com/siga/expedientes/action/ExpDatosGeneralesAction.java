@@ -90,8 +90,14 @@ public class ExpDatosGeneralesAction extends MasterAction
 		UsrBean usr = this.getUserBean(request);
 		ExpCampoTipoExpedienteAdm adm = new ExpCampoTipoExpedienteAdm(usr);
 		
+		ExpTipoExpedienteAdm tipoAdm = new ExpTipoExpedienteAdm(this.getUserBean(request));
+		
 		Vector v;
 		Hashtable h;
+		
+		String tiempoCaducidad;
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("DD/MM/yyyy");
 
 		try {
 			// Buscando idTipoExpediente
@@ -218,9 +224,11 @@ public class ExpDatosGeneralesAction extends MasterAction
 					request.setAttribute("datosCamposPestanasLongitud", null);
 					request.setAttribute("nombresLongitud", null);
 				}
-			}//fin if de accion!=nuevo
+			}//fin if de accion!=nuevo	
 			
-			
+			tiempoCaducidad = tipoAdm.getImporteCaducidad(this.getIDInstitucion(request).toString() , idTipoExpediente).toString();
+			request.setAttribute("tiempoCaducidad", tiempoCaducidad );
+			ExpDatosGeneralesForm formExpediente = (ExpDatosGeneralesForm)formulario;			
 			
 			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_MINUTA_INICIAL));
 			v = adm.select(h);
