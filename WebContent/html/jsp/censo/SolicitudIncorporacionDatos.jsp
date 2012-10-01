@@ -30,7 +30,7 @@
 
 <%
 	HttpSession ses=request.getSession();
-	UsrBean user = (UsrBean) ses.getAttribute("USRBEAN");
+	UsrBean user = (UsrBean) ses.getAttribute("USRBEAN");	
 
 	Vector documentos = (Vector) request.getAttribute("datosDocumentacion");
 	CenSolicitudIncorporacionBean datosPersonales = (CenSolicitudIncorporacionBean) request.getAttribute("datosPersonales");
@@ -201,7 +201,7 @@
 		<input type="hidden" id="numeroIdentificacionBBDD" value ="<%=datosPersonales.getNumeroIdentificador()%>" /> 
 		<input type="hidden" id="fechaNacimientoBBDD" value ="<%=datosPersonales.getFechaNacimiento()%>" />	
 		
-		<table align="center" width="100%" border="0" cellpadding="0" cellspacing="2">
+		<table align="center" width="100%" border="0" cellpadding="0" cellspacing="0">
 			<tr>
 				<td class="labelText" >
 					<center>
@@ -219,137 +219,172 @@
 		
 		<div>
 			<siga:ConjCampos>
-				<center>
-					<table width="100%" border="0" cellpadding="0" cellspacing="2">
-						<tr>
+				<table border="0" cellpadding="5" cellspacing="0">
+					<tr>
+						<td class="boxLabel">
+							<input class="boxLabel" type="text" style="width:50px" tabindex="-1"
+								value="<siga:Idioma key='censo.SolicitudIncorporacionDatos.literal.estado'/>" />
+						</td>
+						<%if (readonly || datosPersonales.getIdEstado().intValue()==ClsConstants.ESTADO_SOLICITUD_APROBADA) {%>
+							<td class="labelTextValor" >
+								<%=UtilidadesString.mostrarDatoJSP(estadoSolicitud)%>
+								<html:hidden property="editarEstadoSolicitud" value="<%=datosPersonales.getIdEstado().toString()%>"  />
+							</td>
+						<%} else {%>
 							<td>
-								<table width="100%" border="0" cellpadding="0" cellspacing="2">
-									<tr>
-										<td class="labelText" nowrap>
-											<siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.estado"/>
-										</td>
-										<%if (readonly || datosPersonales.getIdEstado().intValue()==ClsConstants.ESTADO_SOLICITUD_APROBADA) {%>
-											<td class="labelTextValor" >
-												<%=UtilidadesString.mostrarDatoJSP(estadoSolicitud)%>
-												<html:hidden property="editarEstadoSolicitud" value="<%=datosPersonales.getIdEstado().toString()%>"  />
-											</td>
-										<%} else {%>
-											<td>
-												<siga:ComboBD nombre = "editarEstadoSolicitud" tipo="estadoSolicitud" clase="<%=estiloCombo%>" elementoSel="<%=idEstadoSolicitud%>" obligatorioSinTextoSeleccionar="true" />
-											</td>
-										<%}%>
-						
-										<td class="labelText" nowrap>
-											<siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.fechaEstado"/>
-										</td>
-										<td>
-											<html:text property="fechaSolicitud" size="10" styleClass="boxConsulta"  readOnly="true" value="<%=datosPersonales.getFechaEstado()%>"/>
-										</td>
-									</tr>
-						
-									<tr>
-										<td colspan="2">&nbsp;</td>
-										<td class="labelText" nowrap>
-											<siga:Idioma key="censo.SolicitudIncorporacion.literal.fechaSolicitud"/>
-										</td>
-										<td>
-											<html:text property="fechaSolicitud" size="10" styleClass="boxConsulta"  readOnly="true" value="<%=datosPersonales.getFechaSolicitud()%>"/>
-										</td>
-									</tr>
-								</table>
+								<siga:ComboBD nombre = "editarEstadoSolicitud" tipo="estadoSolicitud" clase="<%=estiloCombo%>" elementoSel="<%=idEstadoSolicitud%>" obligatorioSinTextoSeleccionar="true" />
 							</td>
-							
-							<td class="labelText" nowrap>
-								<siga:Idioma key="censo.SolicitudIncorporacion.literal.observaciones"/>
-							</td>
+						<%}%>	
+						
+						<td style="width:10px">&nbsp;</td>
+						
+						<td class="boxLabel">
+							<input class="boxLabel" type="text" style="width:92px" tabindex="-1"
+								value="<siga:Idioma key='censo.SolicitudIncorporacionDatos.literal.fechaEstado'/>" />
+						</td>
+						<td>
+							<html:text property="fechaSolicitud" size="10" styleClass="boxConsulta" tabindex="-1"
+								readOnly="true" value="<%=datosPersonales.getFechaEstado()%>"/>
+						</td>	
+						
+						<td style="width:10px">&nbsp;</td>
+						
+						<td class="boxLabel">
+							<input class="boxLabel" type="text" style="width:100px" tabindex="-1"
+								value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.observaciones'/>" />
+						</td>
 
-							<td width="250px">
-								<textarea class="<%=estiloBox%>" name="observaciones" 
-									<%if (readonly) {%> 
-										readonly 
-									<%} else {%>
-										onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"
-									<%}%>	
-									style="overflow-y:auto;overflow-x:hidden;width:250px;height:50px;resize:none;"
-								><%=datosPersonales.getObservaciones()%></textarea>
-							</td>
-						</tr>
-					</table>
-				</center>
-			<!-- TABLA -->
+						<td rowspan="2">
+							<textarea class="<%=estiloBox%>" name="observaciones" 
+								<%if (readonly) {%> 
+									readonly 
+								<%} else {%>
+									onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"
+								<%}%>	
+								style="overflow-y:auto;overflow-x:hidden;width:360px;height:45px;resize:none;"
+							><%=datosPersonales.getObservaciones()%></textarea>
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="3"> &nbsp;</td>
+						
+						<td class="boxLabel">
+							<input class="boxLabel" type="text" style="width:125px" tabindex="-1"
+								value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.fechaSolicitud'/>" />
+						</td>
+						<td>
+							<html:text property="fechaSolicitud" size="10" styleClass="boxConsulta" tabindex="-1" 
+								readOnly="true" value="<%=datosPersonales.getFechaSolicitud()%>"/>
+						</td>												
+					</tr>
+				</table>
 			</siga:ConjCampos>
 			
 			<siga:ConjCampos leyenda="censo.SolicitudIncorporacionDatos.titulo">
-				<table width="100%" border="0" cellpadding="0" cellspacing="2">
+				<table border="0" cellpadding="5" cellspacing="0">
 					<html:hidden property = "modo" value = ""/>
 					<html:hidden property = "editarIdSolicitud" value = "<%=datosPersonales.getIdSolicitud().toString()%>"/>
 					<html:hidden property = "continuarAprobacion" value = ""/>
 					<html:hidden property = "continuarInsercionColegiado" value = ""/>
 			
 					<tr>
-						<td class="labelText" >
-							<siga:Idioma key="censo.SolicitudIncorporacion.literal.solicitudDe"/>&nbsp;(*)
+						<td style="padding:0px">
+							<table border="0" cellpadding="5" cellspacing="0">
+								<tr>
+									<td class="boxLabel">
+										<input class="boxLabel" type="text" style="width:80px" tabindex="-1"
+											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.solicitudDe'/>" />&nbsp;(*)
+									</td>
+									<%if(readonly){ %>
+										<td class="labelTextValor">
+											<%=UtilidadesString.mostrarDatoJSP(tipoSolicitud)%>
+										</td>
+									<%}else{%>
+										<td>
+											<siga:ComboBD nombre="tipoSolicitud" tipo="solicitud" ancho="200" 
+												clase="boxCombo" elementoSel="<%=selSolicitud%>" obligatorio="true"/>
+										</td>
+									<%}%>
+								</tr>
+							</table>
 						</td>
-						<%if(readonly){ %>
-							<td class="labelTextValor">
-								<%=UtilidadesString.mostrarDatoJSP(tipoSolicitud)%>
-							</td>
-						<%}else{%>
-							<td>
-								<siga:ComboBD nombre = "tipoSolicitud" tipo="solicitud" clase="boxCombo" elementoSel="<%=selSolicitud%>" obligatorio="true"/>
-							</td>
-						<%}%>
 						
-						<td class="labelText">
-							<siga:Idioma key="censo.SolicitudIncorporacion.literal.tipoColegiacion"/>&nbsp;(*)
-						</td>
-						<%if(readonly){ %>
-							<td class="labelTextValor">
-								<%=UtilidadesString.mostrarDatoJSP(tipoColegiacion)%>
-							</td>
-						<%}else{%>
-							<td>
-								<siga:ComboBD nombre = "tipoColegiacion" ancho="100" tipo="colegiacion" clase="boxCombo" elementoSel="<%=selColegiacion%>" obligatorio="true"/>
-							</td>
-						<%}%>
-						
-						<td class="labelText">
-							<siga:Idioma key="censo.SolicitudIncorporacion.literal.documentacion"/>
-						</td>
+						<td style="padding:0px">
+							<table border="0" cellpadding="5" cellspacing="0">
+								<tr>
+									<td class="boxLabel">
+										<input class="boxLabel" type="text" style="width:130px" tabindex="-1"
+											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.tipoColegiacion'/>" />&nbsp;(*)
+									</td>
+									<%if(readonly){ %>
+										<td class="labelTextValor">
+											<%=UtilidadesString.mostrarDatoJSP(tipoColegiacion)%>
+										</td>
+									<%}else{%>
+										<td>
+											<siga:ComboBD nombre="tipoColegiacion" tipo="colegiacion" ancho="130" 
+												clase="boxCombo" elementoSel="<%=selColegiacion%>" obligatorio="true"/>
+										</td>
+									<%}%>
+								</tr>
+							</table>
+						</td>									
+
+						<td class="boxLabel">
+							<input class="boxLabel" type="text" style="width:173px" tabindex="-1"
+								value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.documentacion'/>" />
+						</td>						
 						<%if(readonly){ %>
 							<td class="labelTextValor">
 								<%=UtilidadesString.mostrarDatoJSP(modalidadDocumentacion)%>
 							</td>
 						<%}else{%>
 							<td>
-								<siga:ComboBD nombre = "tipoModalidadDocumentacion" tipo="modalidadDocumentacion" clase="boxCombo" obligatorio="true" elementoSel="<%=modalidadSel%>" parametro="<%=modalidadParam%>"/>
+								<siga:ComboBD nombre="tipoModalidadDocumentacion" tipo="modalidadDocumentacion" ancho="180" 
+									clase="boxCombo" obligatorio="true" elementoSel="<%=modalidadSel%>" parametro="<%=modalidadParam%>"/>
 							</td>
 						<%}%>
 					</tr>
-					
+
 					<tr>
-						<td class="labelText">
-							<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaIncorporacion"/>
+						<td style="padding:0px">
+							<table border="0" cellpadding="5" cellspacing="0">
+								<tr>
+									<td class="boxLabel">
+										<input class="boxLabel" type="text" style="width:158px" tabindex="-1"
+											value="<siga:Idioma key='censo.busquedaClientesAvanzada.literal.fechaIncorporacion'/>" />
+									</td>
+									<%if(readonly){%>
+										<td class="labelTextValor">
+											<%=UtilidadesString.mostrarDatoJSP(datosPersonales.getFechaEstadoColegial())%>
+										</td>
+									<%}else{%>
+										<td>
+											<siga:Fecha nombreCampo="fechaEstadoColegial" valorInicial="<%=datosPersonales.getFechaEstadoColegial() %>" />
+										</td>
+									<%}%>
+								</tr>
+							</table>
 						</td>
-						<%if(readonly){%>
-							<td class="labelTextValor">
-								<%=UtilidadesString.mostrarDatoJSP(datosPersonales.getFechaEstadoColegial())%>
-							</td>
-						<%}else{%>
-							<td>
-								<siga:Fecha nombreCampo="fechaEstadoColegial" valorInicial="<%=datosPersonales.getFechaEstadoColegial() %>" />
-							</td>
-						<%}%>
 						
-						<td class="labelText">
-							<siga:Idioma key="censo.consultaDatosColegiacion.literal.residente"/>
-						</td>
-						<td>
-							<html:checkbox property="residente" disabled="<%=readonly%>"/>
-						</td>
+						<td style="padding:0px">
+							<table border="0" cellpadding="5" cellspacing="0">
+								<tr>						
+									<td class="boxLabel">
+										<input class="boxLabel" type="text" style="width:70px" tabindex="-1"
+											value="<siga:Idioma key='censo.consultaDatosColegiacion.literal.residente'/>" />
+									</td>
+									<td>
+										<html:checkbox property="residente" disabled="<%=readonly%>"/>
+									</td>
+								</tr>
+							</table>
+						</td>									
 					
-						<td class="labelText">
-							<siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.nColegiado"/>
+						<td class="boxLabel">
+							<input class="boxLabel" type="text" style="width:90px" tabindex="-1"
+								value="<siga:Idioma key='censo.SolicitudIncorporacionDatos.literal.nColegiado'/>" />
 						</td>
 						<td>
 							<%if(!readonly && (nColegiado==null || nColegiado.equalsIgnoreCase(""))){%>
@@ -365,268 +400,310 @@
 			</siga:ConjCampos>
 			
 			<siga:ConjCampos>
-				<table width="100%" border="0" cellpadding="0" cellspacing="2">
+				<table width="100%" border="0" cellpadding="5" cellspacing="0">
 					<tr>
-						<td class="labelText" nowrap><siga:Idioma key="censo.SolicitudIncorporacion.literal.nifcif"/>&nbsp;(*)</td>
-						<%if(readonly){%>
-							<td class="labelTextValor">
-								<siga:ComboBD nombre = "tipoIdentificacion" tipo="cmbTipoIdentificacion"  ancho="80" clase="<%=estiloCombo%>" elementoSel="<%=selIdent%>" readOnly="<%=sreadonly%>" obligatorio="true"/>
-							</td>
-		
-						<%}else{%>
-							<td nowrap>
-								<siga:ComboBD nombre = "tipoIdentificacion" tipo="identificacionSolicitud"  ancho="80" clase="<%=estiloCombo%>" elementoSel="<%=selIdent%>" readOnly="<%=sreadonly%>" obligatorio="true" accion="comprobarTipoIdent();"/>
-								<html:text property="NIFCIF" styleClass="box" size="8" maxlength="20" value="<%=datosPersonales.getNumeroIdentificador() %>"/>
-								<img id="idButtonNif" src="<html:rewrite page='/html/imagenes/comprobar.gif'/>" border="0" onclick="obtenerLetra();" style="cursor:hand;align:left" style="display:inline;visibility: hidden;">
-							</td>
-						<%}%>
-						
-						<td class="labelText" nowrap><siga:Idioma key="censo.consultaDatosGenerales.literal.sexo"/>&nbsp;(*)</td>
-						<%if (readonly){%>
-							<td class="labelTextValor">
-								<%if(datosPersonales.getSexo()!=null)out.print(UtilidadesString.mostrarDatoJSP(ssexo));%>
-							</td>
-						<%}else{%>
-							<td>
-								<html:select name="SolicitudIncorporacionForm" property="sexo" style = "null"  value="<%=datosPersonales.getSexo()%>"   styleClass = "box" >
-							        <html:option value="0" >&nbsp;</html:option>
-									<html:option value="<%=ClsConstants.TIPO_SEXO_HOMBRE%>"><siga:Idioma key="censo.sexo.hombre"/></html:option>
-									<html:option value="<%=ClsConstants.TIPO_SEXO_MUJER%>"><siga:Idioma key="censo.sexo.mujer"/></html:option>
-								</html:select>	
-							</td>
-						<%}%>
-						
-						<td class="labelText" nowrap>
-							<siga:Idioma key="censo.SolicitudIncorporacion.literal.tratamiento"/>&nbsp;(*)
+						<td class="boxLabel">
+							<input class="boxLabel" type="text" style="width:58px" tabindex="-1"
+								value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.nifcif'/>" />&nbsp;(*)
+						</td>
+						<td colspan="6" style="padding:0px">
+							<table border="0" cellpadding="5" cellspacing="0">
+								<tr>									
+									<%if(readonly){%>	
+										<td style="vertical-align: middle;">						
+											<siga:ComboBD nombre="tipoIdentificacion" tipo="cmbTipoIdentificacion" ancho="100" 
+												clase="<%=estiloCombo%>" elementoSel="<%=selIdent%>" 
+												readOnly="<%=sreadonly%>" obligatorio="true"/>
+										</td>	
+									<%}else{%>
+										<td style="vertical-align: middle;">
+											<siga:ComboBD nombre = "tipoIdentificacion" tipo="identificacionSolicitud" ancho="100"
+												clase="<%=estiloCombo%>" elementoSel="<%=selIdent%>" 
+												readOnly="<%=sreadonly%>" obligatorio="true" accion="comprobarTipoIdent();"/>
+										</td>
+										<td style="vertical-align: middle;">
+											<html:text property="NIFCIF" styleClass="box" size="25" maxlength="20" value="<%=datosPersonales.getNumeroIdentificador() %>"/>
+										</td>
+										<td style="vertical-align: middle;">
+											<img id="idButtonNif" src="<html:rewrite page='/html/imagenes/comprobar.gif'/>" border="0" onclick="obtenerLetra();" style="cursor:hand;align:left" style="display:inline;visibility: hidden;">
+										</td>
+									<%}%>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					
+					<tr>		
+						<td class="boxLabel">
+							<input class="boxLabel" type="text" style="width:85px" tabindex="-1"
+								value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.tratamiento'/>" />&nbsp;(*)
 						</td>
 						<td>
-							<siga:ComboBD nombre="tipoDon" tipo="tratamiento" clase="<%=estiloCombo%>" readOnly="<%=sreadonly%>"  obligatorio="true" elementoSel="<%=selTratamiento %>"/>
+							<siga:ComboBD nombre="tipoDon" tipo="tratamiento" ancho="100"
+								clase="<%=estiloCombo%>" elementoSel="<%=selTratamiento %>" 
+								readOnly="<%=sreadonly%>"  obligatorio="true" />
+						</td>
+						
+						<td class="boxLabel">
+							<input class="boxLabel" type="text" style="width:55px" tabindex="-1"
+								value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.nombre'/>" />&nbsp;(*)
+						</td>
+						<td>
+							<html:text property="nombre" style="width:170" maxlength="100" value="<%=datosPersonales.getNombre()%>" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>"/>
+						</td>		
+						
+						<td class="boxLabel">
+							<input class="boxLabel" type="text" style="width:65px" tabindex="-1"
+								value="<siga:Idioma key='censo.consultaDatosGenerales.literal.apellidos'/>" />&nbsp;(*)
+						</td>
+						<td>
+							<html:text property="apellido1"  style="width:170" maxlength="100" value="<%=datosPersonales.getApellido1()%>" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"/>
+						</td>
+						<td>
+							<html:text property="apellido2"  style="width:170" maxlength="100" value="<%=datosPersonales.getApellido2()%>" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"/>
 						</td>
 					</tr>
 					
 					<tr>
-						<td class="labelText">
-							<siga:Idioma key="censo.SolicitudIncorporacion.literal.nombre"/>&nbsp;(*)
-						</td>
-						<td>
-							<html:text property="nombre" style="width:180" maxlength="100" value="<%=datosPersonales.getNombre()%>" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>"/>
-						</td>
+						<td colspan="7" style="padding:0px">
+							<table border="0" cellpadding="5" cellspacing="0">
+								<tr>			
+									<td class="boxLabel">
+										<input class="boxLabel" type="text" style="width:140px" tabindex="-1"
+											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.fechaNacimiento'/>" />&nbsp;(*)
+									</td>						
+									<%if(readonly){%>
+										<td class="labelTextValor"><%=UtilidadesString.mostrarDatoJSP(datosPersonales.getFechaNacimiento())%></td>
+									<%}else{%>
+										<td>
+											<siga:Fecha nombreCampo="fechaNacimiento" valorInicial="<%=datosPersonales.getFechaNacimiento() %>" />
+										</td>
+									<%}%>				
+									
+									<td style="width:13px">&nbsp;</td>												
+												
+									<td class="boxLabel">
+										<input class="boxLabel" type="text" style="width:37px" tabindex="-1"
+											value="<siga:Idioma key='censo.consultaDatosGenerales.literal.sexo'/>" />&nbsp;(*)
+									</td>
+									<%if (readonly){%>
+										<td class="labelTextValor">
+											<%if(datosPersonales.getSexo()!=null)out.print(UtilidadesString.mostrarDatoJSP(ssexo));%>
+										</td>
+									<%}else{%>
+										<td>
+											<html:select name="SolicitudIncorporacionForm" property="sexo" value="<%=datosPersonales.getSexo()%>" 
+												style="width:75px" styleClass="box" >
+										        <html:option value="0" >&nbsp;</html:option>
+												<html:option value="<%=ClsConstants.TIPO_SEXO_HOMBRE%>"><siga:Idioma key="censo.sexo.hombre"/></html:option>
+												<html:option value="<%=ClsConstants.TIPO_SEXO_MUJER%>"><siga:Idioma key="censo.sexo.mujer"/></html:option>
+											</html:select>	
+										</td>
+									<%}%>
+									
+									<td style="width:13px">&nbsp;</td>
+									
+									<td class="boxLabel">
+										<input class="boxLabel" type="text" style="width:81px" tabindex="-1"
+											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.estadoCivil'/>" />
+									</td>
+									<td>
+										<siga:ComboBD nombre="estadoCivil" tipo="estadoCivil" ancho="100"
+											clase="<%=estiloCombo%>" readOnly="<%=sreadonly%>" elementoSel="<%=selEstadoCiv%>"/>
+									</td>
+									
+									<td style="width:13px">&nbsp;</td>
 			
-						<td class="labelText">
-							<siga:Idioma key="censo.SolicitudIncorporacion.literal.apellido1"/>&nbsp;(*)
-						</td>
-						<td>
-							<html:text property="apellido1"  style="width:180" maxlength="100" value="<%=datosPersonales.getApellido1()%>" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"/>
-						</td>
-						
-						<td class="labelText">
-							<siga:Idioma key="censo.SolicitudIncorporacion.literal.apellido2"/>
-						</td>
-						<td>
-							<html:text property="apellido2"  style="width:180" maxlength="100" value="<%=datosPersonales.getApellido2()%>" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"/>
-						</td>
-					</tr>
-					
-					<tr>
-						<td class="labelText" >
-							<siga:Idioma key="censo.SolicitudIncorporacion.literal.fechaNacimiento"/>&nbsp;(*)
-						</td>
-						<%if(readonly){%>
-							<td class="labelTextValor"><%=UtilidadesString.mostrarDatoJSP(datosPersonales.getFechaNacimiento())%></td>
-						<%}else{%>
-							<td>
-								<siga:Fecha nombreCampo="fechaNacimiento" valorInicial="<%=datosPersonales.getFechaNacimiento() %>" />
-							</td>
-						<%}%>
-						
-						<td class="labelText">
-							<siga:Idioma key="censo.SolicitudIncorporacion.literal.naturalDe"/>
-						</td>
-						<td>
-							<html:text property="natural" style="width:180" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" value="<%= datosPersonales.getNaturalDe() %>"/>
-						</td>
-						
-						<td class="labelText">
-							<siga:Idioma key="censo.SolicitudIncorporacion.literal.estadoCivil"/>
-						</td>
-						<td>
-							<siga:ComboBD nombre = "estadoCivil" tipo="estadoCivil" clase="<%=estiloCombo%>" readOnly="<%=sreadonly%>" elementoSel="<%=selEstadoCiv%>"/>
-						</td>
+									<td class="boxLabel">
+										<input class="boxLabel" type="text" style="width:73px" tabindex="-1"
+											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.naturalDe'/>" />
+									</td>
+									<td>
+										<html:text property="natural" style="width:180" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" value="<%= datosPersonales.getNaturalDe() %>"/>
+									</td>
+								</tr>
+							</table>
+						</td>						
 					</tr>
 				</table>
 			</siga:ConjCampos>
 			
 			<siga:ConjCampos>
-				<table width="100%" border="0" cellpadding="0" cellspacing="2">
+				<table border="0" cellpadding="0" cellspacing="0">
 					<tr>
-						<td class="labelText" nowrap>
-							<siga:Idioma key="censo.datosDireccion.literal.pais2"/>
-						</td>
-						
-						<td>
-							<table width="100%" border="0" cellpadding="0" cellspacing="2">
-								<tr>									
+						<td>				
+							<table border="0" cellpadding="5" cellspacing="0">
+								<tr>
+									<td class="boxLabel">
+										<input class="boxLabel" type="text" style="width:32px" tabindex="-1"
+											value="<siga:Idioma key='censo.datosDireccion.literal.pais2'/>" />
+									</td>	
+																
 									<%if(readonly){%>
-										<td class="labelTextValor">
+										<td class="labelTextValor" nowrap style="vertical-align: middle;">
 											<%=pais%>
 										</td>
 									<%}else{%>
 										<td>
-											<siga:ComboBD nombre="pais" tipo="pais" ancho="300" clase="<%=estiloCombo%>" obligatorio="false" elementoSel="<%=selPais%>" readOnly="<%=sreadonly%>" accion="cargaPais(this.value);"/>
+											<siga:ComboBD nombre="pais" tipo="pais" ancho="440" clase="<%=estiloCombo%>" obligatorio="false" elementoSel="<%=selPais%>" readOnly="<%=sreadonly%>" accion="cargaPais(this.value);"/>
 										</td>
 									<%}%>
-									
-									<td width="30px">&nbsp;</td>																								
-								
-									<td class="labelText" nowrap>
-										<siga:Idioma key="censo.SolicitudIncorporacion.literal.domicilio"/>&nbsp;(*)
-									</td>
-								
-									<td>
-										<textarea class="<%=estiloBox%>" name="domicilio" 
-											<%if (readonly) {%> 
-												readonly 
-											<%} else {%>
-												onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)"
-											<%}%>											 
-											style="overflow-y:auto;overflow-x:hidden;width:400px;height:40px;resize:none;" 
-  										><%=datosPersonales.getDomicilio()%></textarea>
-									</td>																										
 								</tr>
-							</table>					
-						</td>														
-					</tr>						
-					
-					<tr>
-						<td class="labelText" nowrap>
-							CP&nbsp;(*)
+								
+								<tr>
+									<td  class="boxLabel">
+										<input class="boxLabel" type="text" style="width:64px" tabindex="-1"
+											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.domicilio'/>" />&nbsp;(*)
+									</td>									
+									<td>
+										<html:text styleClass="<%=estiloBox%>" property="domicilio" readOnly="<%=readonly%>"
+											 style="width:440px" maxlength="100" value="<%=datosPersonales.getDomicilio()%>"/>
+									</td>															
+								</tr>						
+								
+								<tr>
+									<td colspan="2" style="padding:0px">
+										<table border="0" cellpadding="5" cellspacing="0">
+											<tr id="trEspanol1">
+												<td class="boxLabel">
+													CP&nbsp;(*)
+												</td>
+												<td>	
+													<html:text property="CP" style="width:50px" styleClass="<%=estiloBox%>" maxlength="5" value="<%=datosPersonales.getCodigoPostal()%>" readOnly="<%=readonly%>"
+														onkeypress="return soloDigitos(event);" onkeydown="onKeyDownCP();" onkeyup="onKeyUpCP();"
+														onblur="onBlurCP();" onfocus="onFocusCP();"/>
+												</td>					
+											
+												<td class="boxLabel">
+													<input class="boxLabel" type="text" style="width:68px" tabindex="-1"
+														value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.poblacion'/>" />&nbsp;(*)
+												</td>																		
+																		
+												<td>
+													<%if(readonly){%>
+														<input type="text" value="<%=poblacion%>" width="330px" maxlength="100" class="boxConsulta" readonly />
+													<%}else{%>
+														<html:hidden property="poblacion" value="<%=idPoblacion%>"/>
+														<input class="box" id="poblacion_input" type="text" style="width:330px;" value="<%=poblacion%>" maxlength="100"
+															onblur="onBlurPoblacionInput();" onkeydown="onKeyDownPoblacionInput(event);" onkeyup="onKeyUpPoblacionInput();" 
+															onfocus="onFocusPoblacionInput();" />
+														<div id="poblacion_div">
+															<select class="box" style="width:330px" id="poblacion_select"
+																onblur="onBlurPoblacionSelect();" onchange="onChangePoblacionSelect(true);" onclick="onClickPoblacionSelect();" 
+																onkeypress="onKeyPressPoblacionSelect(event);" onkeydown="onKeyDownPoblacionSelect(event);" onmouseover="onMouseDownPoblacionSelect();" onmousedown="onMouseDownPoblacionSelect();">																		
+															</select>					
+														</div>	
+													<%}%>
+												</td>
+											</tr>
+											
+											<tr id="trEspanol2">
+												<html:hidden property="provincia" value="<%=idProvincia%>"/>
+												<td colspan="2">&nbsp;</td>  																																								
+
+												<td class="boxLabel">
+													<input class="boxLabel" type="text" style="width:68px" tabindex="-1"
+														value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.provincia'/>" />											
+												</td>
+												<td>
+													<input id="provincia_input" class="boxConsulta" type="text" style="width:330px"  
+														value="<%=provincia%>" readonly tabindex="-1" />
+												</td>
+											</tr>
+											
+											<tr id="trExtranjero" style="display:none">
+												<td class="boxLabel">
+													CP&nbsp;(*)
+												</td>											
+												<td>	
+													<html:text property="CPExt" style="width:50px" styleClass="<%=estiloBox%>" maxlength="5" value="<%=datosPersonales.getCodigoPostal()%>" readOnly="<%=readonly%>"/>
+												</td>						
+											
+												<td class="boxLabel">
+													<input class="boxLabel" type="text" style="width:68px" tabindex="-1"
+														value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.poblacion'/>" />&nbsp;(*)
+												</td>																																													
+												<td>
+													<html:text styleId="poblacionExt" property="poblacionExt" style="width:330px" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getPoblacionExtranjera()%>" readOnly="<%=readonly%>"/>
+												</td>
+											</tr>								
+										</table>
+									</td>			
+								</tr>
+							</table>
 						</td>
 						
-						<td>
-							<table border="0" cellpadding="0" cellspacing="2"> <!-- No poner width="100%" -->
-								<tr id="trEspanol">
-									<td>	
-										<html:text property="CP" style="width:50px" styleClass="<%=estiloBox%>" maxlength="5" value="<%=datosPersonales.getCodigoPostal()%>" readOnly="<%=readonly%>"
-											onkeypress="return soloDigitos(event);" onkeydown="onKeyDownCP();" onkeyup="onKeyUpCP();"
-											onblur="onBlurCP();" onfocus="onFocusCP();"/>
-									</td>			
-									
-									<td width="30px">&nbsp;</td>				
-								
-									<td class="labelText" nowrap>
-										<siga:Idioma key="censo.SolicitudIncorporacion.literal.poblacion"/>&nbsp;(*)
-									</td>																		
-															
-									<td>
-										<%if(readonly){%>
-											<input type="text" value="<%=poblacion%>" width="300px" maxlength="100" class="boxConsulta" readonly />
-										<%}else{%>
-											<html:hidden property="poblacion" value="<%=idPoblacion%>"/>
-											<input class="box" id="poblacion_input" type="text" style="width:300px;" value="<%=poblacion%>" maxlength="100"
-												onblur="onBlurPoblacionInput();" onkeydown="onKeyDownPoblacionInput(event);" onkeyup="onKeyUpPoblacionInput();" 
-												onfocus="onFocusPoblacionInput();" />
-											<div id="poblacion_div">
-												<select class="box" style="width:300px" id="poblacion_select"
-													onblur="onBlurPoblacionSelect();" onchange="onChangePoblacionSelect(true);" onclick="onClickPoblacionSelect();" 
-													onkeypress="onKeyPressPoblacionSelect(event);" onkeydown="onKeyDownPoblacionSelect(event);" onmouseover="onMouseDownPoblacionSelect();" onmousedown="onMouseDownPoblacionSelect();">																		
-												</select>					
-											</div>	
-										<%}%>
-									</td> 																				
-											
-									<td width="30px">&nbsp;</td>
+						<td>&nbsp;</td>
 						
-									<td class="labelText" nowrap>
-										<div id="provincia_literal">
-											<siga:Idioma key="censo.SolicitudIncorporacion.literal.provincia"/>
-										</div>
-									</td>			
-						
-									<td>
-										<html:hidden property="provincia" value="<%=idProvincia%>"/>
-										<div id="provincia_valor">											
-											<input name="provincia_input" type="text" class="boxConsulta" value="<%=provincia%>" readonly tabindex="-1" />
-										</div>										
-									</td>
-								</tr>
-								
-								<tr id="trExtranjero" style="display:none">
-									<td>	
-										<html:text property="CPExt" style="width:50px" styleClass="<%=estiloBox%>" maxlength="5" value="<%=datosPersonales.getCodigoPostal()%>" readOnly="<%=readonly%>"/>
-									</td>			
-									
-									<td width="30px">&nbsp;</td>				
-								
-									<td class="labelText" nowrap>
-										<siga:Idioma key="censo.SolicitudIncorporacion.literal.poblacion"/>&nbsp;(*)
-									</td>																																				
-						
-									<td>
-										<html:text styleId="poblacionExt" property="poblacionExt" style="width:300" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getPoblacionExtranjera()%>" readOnly="<%=readonly%>"/>
-									</td>
-								</tr>
-								
+						<td style="vertical-align: middle;">							
+							<table>
+								<tr>
+									<td style="height:80px;" class="linea">&nbsp;</td>
+								</tr>								
 							</table>
-						</td>			
-					</tr>
-			
-					<tr>
-						<td colspan="2">
-							<table width="100%" border="0" cellpadding="0" cellspacing="0"> <!-- No poner cellspacing="2" -->
+						</td>
+
+						<td>
+							<table border="0" cellpadding="5" cellspacing="0">
 								<tr>
-									<td class="labelText" nowrap>
-										<siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono1"/>&nbsp;(*)
-									</td>
-									
+									<td  class="boxLabel">
+										<input class="boxLabel" type="text" style="width:74px" tabindex="-1"
+											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.telefono1'/>" />&nbsp;(*)
+									</td>									
 									<td>
-										<html:text property="telefono1" style="width:150px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getTelefono1()%>" readOnly="<%=readonly%>"/>
+										<html:text property="telefono1" style="width:110px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getTelefono1()%>" readOnly="<%=readonly%>"/>
 									</td>
 									
-									<td width="10px">&nbsp;</td>
-									
-									<td class="labelText" nowrap>
-										<siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono2"/>
-									</td>
+									<td  class="boxLabel">
+										<input class="boxLabel" type="text" style="width:74px" tabindex="-1"
+											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.telefono2'/>" />
+									</td>									
 									<td>
-										<html:text property="telefono2" style="width:150px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getTelefono2()%>" readOnly="<%=readonly%>"/>
-									</td>
-									
-									<td width="10px">&nbsp;</td>
-									
-									<td class="labelText" nowrap>
-										<siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono3"/>
-									</td>
-									<td>
-										<html:text property="telefono3" style="width:150px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getMovil()%>" readOnly="<%=readonly%>"/>
+										<html:text property="telefono2" style="width:110px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getTelefono2()%>" readOnly="<%=readonly%>"/>
 									</td>
 								</tr>
 								
 								<tr>
-									<td class="labelText" nowrap>
-										<siga:Idioma key="censo.SolicitudIncorporacion.literal.fax1"/>
-									</td>
-									
+									<td  class="boxLabel">
+										<input class="boxLabel" type="text" style="width:45px" tabindex="-1"
+											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.fax1'/>" />
+									</td>									
 									<td>
-										<html:text property="fax1" style="width:150px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getFax1()%>" readOnly="<%=readonly%>"/>
+										<html:text property="fax1" style="width:110px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getFax1()%>" readOnly="<%=readonly%>"/>
 									</td>
 									
-									<td width="10px">&nbsp;</td>
-									
-									<td class="labelText" nowrap>
-										<siga:Idioma key="censo.SolicitudIncorporacion.literal.fax2"/>
+									<td  class="boxLabel">
+										<input class="boxLabel" type="text" style="width:45px" tabindex="-1"
+											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.fax2'/>" />
 									</td>
 									<td>
-										<html:text property="fax2" style="width:150px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getFax2()%>" readOnly="<%=readonly%>"/>
-									</td>
-									
-									<td width="10px">&nbsp;</td>
-											
-									<td class="labelText" nowrap>
-										<siga:Idioma key="censo.SolicitudIncorporacion.literal.email"/>&nbsp;(*)</td>
-									<td>
-										<html:text property="mail" style="width:200px" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getCorreoElectronico()%>" readOnly="<%=readonly%>"/>
-									</td>
+										<html:text property="fax2" style="width:110px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getFax2()%>" readOnly="<%=readonly%>"/>
+									</td>		
 								</tr>
+								
+								<tr>
+									<td  class="boxLabel">
+										<input class="boxLabel" type="text" style="width:45px" tabindex="-1"
+											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.telefono3'/>" />								
+									</td>
+									<td colspan="3">
+										<html:text property="telefono3" style="width:110px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getMovil()%>" readOnly="<%=readonly%>"/>
+									</td>	
+								</tr>
+								
+								<tr>
+									<td colspan="4" style="padding:0px;">
+										<table border="0" cellpadding="5" cellspacing="0">
+											<td  class="boxLabel">
+												<input class="boxLabel" type="text" style="width:126px" tabindex="-1"
+													value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.email'/>" />&nbsp;(*)		
+											</td>
+											<td>
+												<html:text property="mail" style="width:270px" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getCorreoElectronico()%>" readOnly="<%=readonly%>"/>
+											</td>
+										</table>
+									</td>
+								</tr>				
 							</table>
 						</td>
 					</tr>
@@ -638,51 +715,80 @@
 			</siga:ConjCampos>
 				
 			<siga:ConjCampos leyenda="censo.consultaDatosBancarios.cabecera">
-				<table width="100%" border="0" cellpadding="0" cellspacing="2">	
+				<table border="0" cellpadding="5" cellspacing="0">	
 					<tr>		
-						<td class="labelText">
-							<siga:Idioma key="censo.datosCuentaBancaria.literal.titular"/>
-						</td>
+						<td class="boxLabel">
+							<input class="boxLabel" type="text" style="width:50px" tabindex="-1"
+								value="<siga:Idioma key='censo.datosCuentaBancaria.literal.titular'/>" />
+						</td>																
 						<td>
 							<html:text property="titular" value="<%=titular%>" size="50" styleClass="<%=estiloBox%>" maxlength="100" readOnly="<%=readonly%>"/>
 						</td>
+													
+						<td style="width:20px">&nbsp;</td>
+					
+						<td class="boxLabel">
+							<input class="boxLabel" type="text" style="width:42px" tabindex="-1"
+								value="<siga:Idioma key='censo.tipoCuenta.cargo'/>" />
+						</td>
 						
-						<td colspan="2">
-							<table width="100%" border="0" cellpadding="0" cellspacing="2">	
+						<td style="padding:0px">
+							<table border="0" cellpadding="5" cellspacing="0">
 								<tr>
-									<td class="labelText">
-										<siga:Idioma key="censo.tipoCuenta.cargo"/>
+									<td>
 										<html:checkbox property="cuentaCargo"  disabled="<%=readonly%>"/>
 									</td>	
-									<td class="labelText">
-										<siga:Idioma key="censo.tipoCuenta.abono"/>
+									
+									<td style="width:20px">&nbsp;</td>								
+																						
+									<td class="boxLabel">
+										<input class="boxLabel" type="text" style="width:45px" tabindex="-1"
+											value="<siga:Idioma key='censo.tipoCuenta.abono'/>" />
+									</td>									
+									<td>
 										<html:checkbox property="cuentaAbono" disabled="<%=readonly%>" onClick="validaAbonoSJCS()"/>
 									</td>
-									<td class="labelText">
-										<siga:Idioma key="censo.datosCuentaBancaria.literal.abonoSJCS"/>
+									
+									<td style="width:20px">&nbsp;</td>
+									
+									<td class="boxLabel">
+										<input class="boxLabel" type="text" style="width:85px" tabindex="-1"
+											value="<siga:Idioma key='censo.datosCuentaBancaria.literal.abonoSJCS'/>" />
+									</td>									
+									<td>
 										<html:checkbox property="abonoSJCS" disabled="<%=readonly%>" onClick="validaAbonoSJCS()" />
 									</td>
 								</tr>
 							</table>
 						</td>
-					<tr>
-		
-				
-					<!-- FILA -->
+					</tr>
+
 					<tr>					
-						<td class="labelText" nowrap>Cuenta</td>	
-						<td class="labelText">
-							<html:text size="4"  maxlength="4" property="cbo_Codigo"     value="<%=cbo_Codigo%>" 				styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" onChange="cargarBancos();"/>
-							- <html:text size="4"  maxlength="4" property="codigoSucursal" value="<%=cuentaCodigoSucursal%>" 	styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"/>
-							- <html:text size="2"  maxlength="2" property="digitoControl"  value="<%=cuentaDigitoControl%>" 	styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"/>
-							- <html:text size="10" maxlength="10" property="numeroCuenta"  value="<%=cuentaNumeroCuenta%>" 		styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"/>
+						<td class="boxLabel">
+							Cuenta
+						</td>						
+						<td style="padding:0px">
+							<table border="0" cellpadding="5" cellspacing="0">
+								<tr>								
+									<td>
+										<html:text size="4"  maxlength="4" property="cbo_Codigo"     value="<%=cbo_Codigo%>" 				styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" onChange="cargarBancos();"/>
+										- <html:text size="4"  maxlength="4" property="codigoSucursal" value="<%=cuentaCodigoSucursal%>" 	styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"/>
+										- <html:text size="2"  maxlength="2" property="digitoControl"  value="<%=cuentaDigitoControl%>" 	styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"/>
+										- <html:text size="10" maxlength="10" property="numeroCuenta"  value="<%=cuentaNumeroCuenta%>" 		styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"/>
+									</td>
+								</tr>
+							</table>
 						</td>
 						
-						<td class="labelText" nowrap>
-							<siga:Idioma key="censo.datosCuentaBancaria.literal.banco"/>
+						<td style="width:20px">&nbsp;</td>
+						
+						<td class="boxLabel">
+							<input class="boxLabel" type="text" style="width:45px" tabindex="-1"
+								value="<siga:Idioma key='censo.datosCuentaBancaria.literal.banco'/>" />
 						</td>
-						<td class="labelText">
-							<input type="text" id="banco" style="width:400px;" class="boxConsulta" readonly />
+						<td>
+							<input id="banco" type="text" style="width:400px;" class="boxConsulta" 
+								readonly tabindex="-1" />
 						</td>
 					</tr>
 				</table>
@@ -1482,7 +1588,8 @@
 					document.getElementById("CPExt").value="";
 					document.getElementById("poblacionExt").value="";
 				}
-				jQuery("#trEspanol").hide();
+				jQuery("#trEspanol1").hide();
+				jQuery("#trEspanol2").hide();
 				jQuery("#trExtranjero").show();				
 				
 	       } else {
@@ -1494,17 +1601,20 @@
 					document.getElementById("CP").value="";
 					cambiaCodigoPostal();					
 				}
-				jQuery("#trEspanol").show();
+				jQuery("#trEspanol1").show();
+				jQuery("#trEspanol2").show();
 				jQuery("#trExtranjero").hide();
 	       }
 			
 		<%}else{%>
 			if (valor!=null && valor!="" && valor!=<%=ClsConstants.ID_PAIS_ESPANA%>) {
-				jQuery("#trEspanol").hide();
+				jQuery("#trEspanol1").hide();
+				jQuery("#trEspanol2").hide();
 				jQuery("#trExtranjero").show();				
 				
 	       } else {
-	    	   	jQuery("#trEspanol").show();
+	    	   	jQuery("#trEspanol1").show();
+				jQuery("#trEspanol2").show();
 				jQuery("#trExtranjero").hide();	
 	       }			
 		<%}%>

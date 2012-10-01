@@ -420,6 +420,25 @@ a.disabled {
 	padding-bottom: 1px;
 }
 
+.linea {
+	border-left: 1px solid #<%=src.get("color.button.border")%>;
+}
+
+.boxLabel { 
+	font-family: <%=src.get("font.style")%>;
+	font-size: <%=fontSize%>;
+	font-weight: bold;
+	margin-top: 0px;
+	margin-left: 0px;
+	text-align: left;
+	color:#<%=src.get("color.labelText")%>;
+	background-color: #<%=src.get("color.background")%>;
+	border: 0px solid #<%=src.get("color.button.border")%>;
+	padding-top: 1px;
+	padding-bottom: 1px;
+	vertical-align: middle;	
+}
+
 .boxConsulta { 
 	font-family: <%=src.get("font.style")%>;
 	font-size: <%=fontSize%>;
