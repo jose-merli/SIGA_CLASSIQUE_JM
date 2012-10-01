@@ -439,6 +439,21 @@ a.disabled {
 	vertical-align: middle;	
 }
 
+.boxLabelReadOnly { 
+	font-family: <%=src.get("font.style")%>;
+	font-size: <%=fontSize%>;
+	font-weight: normal;
+	margin-top: 0px;
+	margin-left: 0px;
+	text-align: left;
+	color:#<%=src.get("color.labelText")%>;
+	background-color: #<%=src.get("color.background")%>;
+	border: 0px solid #<%=src.get("color.button.border")%>;
+	padding-top: 1px;
+	padding-bottom: 1px;
+	vertical-align: middle;	
+}
+
 .boxConsulta { 
 	font-family: <%=src.get("font.style")%>;
 	font-size: <%=fontSize%>;

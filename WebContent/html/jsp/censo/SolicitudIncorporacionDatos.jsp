@@ -226,7 +226,7 @@
 								value="<siga:Idioma key='censo.SolicitudIncorporacionDatos.literal.estado'/>" />
 						</td>
 						<%if (readonly || datosPersonales.getIdEstado().intValue()==ClsConstants.ESTADO_SOLICITUD_APROBADA) {%>
-							<td class="labelTextValor" >
+							<td class="boxLabelReadOnly">
 								<%=UtilidadesString.mostrarDatoJSP(estadoSolicitud)%>
 								<html:hidden property="editarEstadoSolicitud" value="<%=datosPersonales.getIdEstado().toString()%>"  />
 							</td>
@@ -257,7 +257,7 @@
 						<td rowspan="2">
 							<textarea class="<%=estiloBox%>" name="observaciones" 
 								<%if (readonly) {%> 
-									readonly 
+									readonly
 								<%} else {%>
 									onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"
 								<%}%>	
@@ -297,7 +297,7 @@
 											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.solicitudDe'/>" />&nbsp;(*)
 									</td>
 									<%if(readonly){ %>
-										<td class="labelTextValor">
+										<td class="boxLabelReadOnly">
 											<%=UtilidadesString.mostrarDatoJSP(tipoSolicitud)%>
 										</td>
 									<%}else{%>
@@ -318,7 +318,7 @@
 											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.tipoColegiacion'/>" />&nbsp;(*)
 									</td>
 									<%if(readonly){ %>
-										<td class="labelTextValor">
+										<td class="boxLabelReadOnly">
 											<%=UtilidadesString.mostrarDatoJSP(tipoColegiacion)%>
 										</td>
 									<%}else{%>
@@ -336,7 +336,7 @@
 								value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.documentacion'/>" />
 						</td>						
 						<%if(readonly){ %>
-							<td class="labelTextValor">
+							<td class="boxLabelReadOnly">
 								<%=UtilidadesString.mostrarDatoJSP(modalidadDocumentacion)%>
 							</td>
 						<%}else{%>
@@ -356,7 +356,7 @@
 											value="<siga:Idioma key='censo.busquedaClientesAvanzada.literal.fechaIncorporacion'/>" />
 									</td>
 									<%if(readonly){%>
-										<td class="labelTextValor">
+										<td class="boxLabelReadOnly">
 											<%=UtilidadesString.mostrarDatoJSP(datosPersonales.getFechaEstadoColegial())%>
 										</td>
 									<%}else{%>
@@ -388,10 +388,10 @@
 						</td>
 						<td>
 							<%if(!readonly && (nColegiado==null || nColegiado.equalsIgnoreCase(""))){%>
-								<html:text styleId="numColBox" property="numeroColegiado" style="width:100" maxlength="20" styleClass="boxDisabled" disabled="true"/>
+								<html:text styleId="numColBox" property="numeroColegiado" style="vertical-align:middle;width:100" maxlength="20" styleClass="boxDisabled" disabled="true"/>
 								<img id="botonNCol" src="<html:rewrite page='/html/imagenes/candado.gif'/>" border="0" onclick="editarNColegiado()" style="cursor:hand;align:left" style="display:inline;" title="<siga:Idioma key='censo.SolicitudIncorporacion.message.desbloqueoNcolegiado'/>">
 							<%}else{%>
-								<html:text styleId="numColBox" property="numeroColegiado" style="width:100" maxlength="20" styleClass="<%=estiloBox%>" value="<%=nColegiado%>"  readOnly="<%=readonly%>" />
+								<html:text styleId="numColBox" property="numeroColegiado" style="vertical-align:middle;width:100" maxlength="20" styleClass="<%=estiloBox%>" value="<%=nColegiado%>"  readOnly="<%=readonly%>" />
 								<img id="botonNCol" src="<html:rewrite page='/html/imagenes/candado.gif'/>" border="0" onclick="editarNColegiado()" style="cursor:hand;align:left" style="visibility:hidden;display:inline;" title="<siga:Idioma key='censo.SolicitudIncorporacion.message.desbloqueoNcolegiado'/>">
 							<%}%>
 						</td>
@@ -400,7 +400,7 @@
 			</siga:ConjCampos>
 			
 			<siga:ConjCampos>
-				<table width="100%" border="0" cellpadding="5" cellspacing="0">
+				<table border="0" cellpadding="5" cellspacing="0">
 					<tr>
 						<td class="boxLabel">
 							<input class="boxLabel" type="text" style="width:58px" tabindex="-1"
@@ -410,10 +410,11 @@
 							<table border="0" cellpadding="5" cellspacing="0">
 								<tr>									
 									<%if(readonly){%>	
-										<td style="vertical-align: middle;">						
+										<td class="boxLabelReadOnly">						
 											<siga:ComboBD nombre="tipoIdentificacion" tipo="cmbTipoIdentificacion" ancho="100" 
 												clase="<%=estiloCombo%>" elementoSel="<%=selIdent%>" 
-												readOnly="<%=sreadonly%>" obligatorio="true"/>
+												readOnly="<%=sreadonly%>" obligatorio="true"/>	
+											<%=UtilidadesString.mostrarDatoJSP(datosPersonales.getNumeroIdentificador())%>											
 										</td>	
 									<%}else{%>
 										<td style="vertical-align: middle;">
@@ -438,11 +439,18 @@
 							<input class="boxLabel" type="text" style="width:85px" tabindex="-1"
 								value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.tratamiento'/>" />&nbsp;(*)
 						</td>
-						<td>
-							<siga:ComboBD nombre="tipoDon" tipo="tratamiento" ancho="100"
-								clase="<%=estiloCombo%>" elementoSel="<%=selTratamiento %>" 
-								readOnly="<%=sreadonly%>"  obligatorio="true" />
-						</td>
+						
+						<%if(readonly){%>
+							<td class="boxLabelReadOnly">
+								<%=UtilidadesString.mostrarDatoJSP(tipoTratamiento)%>
+							</td>
+						<%}else{%>
+							<td>
+								<siga:ComboBD nombre="tipoDon" tipo="tratamiento" ancho="100"
+									clase="<%=estiloCombo%>" elementoSel="<%=selTratamiento %>" 
+									readOnly="<%=sreadonly%>"  obligatorio="true" />
+							</td>
+						<%}%>						
 						
 						<td class="boxLabel">
 							<input class="boxLabel" type="text" style="width:55px" tabindex="-1"
@@ -473,7 +481,7 @@
 											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.fechaNacimiento'/>" />&nbsp;(*)
 									</td>						
 									<%if(readonly){%>
-										<td class="labelTextValor"><%=UtilidadesString.mostrarDatoJSP(datosPersonales.getFechaNacimiento())%></td>
+										<td class="boxLabelReadOnly"><%=UtilidadesString.mostrarDatoJSP(datosPersonales.getFechaNacimiento())%></td>
 									<%}else{%>
 										<td>
 											<siga:Fecha nombreCampo="fechaNacimiento" valorInicial="<%=datosPersonales.getFechaNacimiento() %>" />
@@ -487,7 +495,7 @@
 											value="<siga:Idioma key='censo.consultaDatosGenerales.literal.sexo'/>" />&nbsp;(*)
 									</td>
 									<%if (readonly){%>
-										<td class="labelTextValor">
+										<td class="boxLabelReadOnly">
 											<%if(datosPersonales.getSexo()!=null)out.print(UtilidadesString.mostrarDatoJSP(ssexo));%>
 										</td>
 									<%}else{%>
@@ -507,10 +515,17 @@
 										<input class="boxLabel" type="text" style="width:81px" tabindex="-1"
 											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.estadoCivil'/>" />
 									</td>
-									<td>
-										<siga:ComboBD nombre="estadoCivil" tipo="estadoCivil" ancho="100"
-											clase="<%=estiloCombo%>" readOnly="<%=sreadonly%>" elementoSel="<%=selEstadoCiv%>"/>
-									</td>
+									
+									<%if(readonly){%>
+										<td class="boxLabelReadOnly">
+											<%=UtilidadesString.mostrarDatoJSP(tipoEstadoCivil)%>
+										</td>											
+									<%}else{%>
+										<td>
+											<siga:ComboBD nombre="estadoCivil" tipo="estadoCivil" ancho="100"
+												clase="<%=estiloCombo%>" readOnly="<%=sreadonly%>" elementoSel="<%=selEstadoCiv%>"/>
+										</td>
+									<%}%>									
 									
 									<td style="width:13px">&nbsp;</td>
 			
@@ -540,8 +555,8 @@
 									</td>	
 																
 									<%if(readonly){%>
-										<td class="labelTextValor" nowrap style="vertical-align: middle;">
-											<%=pais%>
+										<td class="boxLabelReadOnly">
+											<%=UtilidadesString.mostrarDatoJSP(pais)%>
 										</td>
 									<%}else{%>
 										<td>
@@ -569,9 +584,13 @@
 													CP&nbsp;(*)
 												</td>
 												<td>	
-													<html:text property="CP" style="width:50px" styleClass="<%=estiloBox%>" maxlength="5" value="<%=datosPersonales.getCodigoPostal()%>" readOnly="<%=readonly%>"
-														onkeypress="return soloDigitos(event);" onkeydown="onKeyDownCP();" onkeyup="onKeyUpCP();"
-														onblur="onBlurCP();" onfocus="onFocusCP();"/>
+													<%if(readonly){%>
+														<input type="text" value="<%=datosPersonales.getCodigoPostal()%>" style="width:50px" class="boxConsulta" readonly />
+													<%}else{%>
+														<html:text property="CP" style="width:50px" styleClass="<%=estiloBox%>" maxlength="5" value="<%=datosPersonales.getCodigoPostal()%>" readOnly="<%=readonly%>"
+															onkeypress="return soloDigitos(event);" onkeydown="onKeyDownCP();" onkeyup="onKeyUpCP();"
+															onblur="onBlurCP();" onfocus="onFocusCP();"/>
+													<%}%>
 												</td>					
 											
 												<td class="boxLabel">
@@ -581,7 +600,7 @@
 																		
 												<td>
 													<%if(readonly){%>
-														<input type="text" value="<%=poblacion%>" width="310px" maxlength="100" class="boxConsulta" readonly />
+														<input type="text" value="<%=poblacion%>" style="width:310px;" class="boxConsulta" readonly />
 													<%}else{%>
 														<html:hidden property="poblacion" value="<%=idPoblacion%>"/>
 														<input class="box" id="poblacion_input" type="text" style="width:310px;" value="<%=poblacion%>" maxlength="100"
@@ -984,25 +1003,25 @@
 <script language="JavaScript">
 
 	function editarNColegiado(){
-		var numeroCol = document.getElementById("numColBox");
+		var numeroCol = jQuery("#numColBox");
 		var botNumeroCol = document.getElementById("botonNCol"); 
-		if (numeroCol.disabled){
-			numeroCol.className="box";
-			jQuery("#numColBox").removeAttr('disabled'); //numeroCol.disabled=false;
+		if (numeroCol[0].disabled){
+			numeroCol.removeAttr('disabled');
+			numeroCol.removeClass().addClass('box');			
 			botNumeroCol.style.visibility ="hidden";
 		}
 	}
 	
 	function restablecerNColegiado(){
-		var numeroCol = document.getElementById("numColBox");
+		var numeroCol = jQuery("#numColBox");
 		var botNumeroCol = document.getElementById("botonNCol");
 		<%if(nColegiado==null || nColegiado.equalsIgnoreCase("")){%>
-			numeroCol.className = "boxDisabled";
-			jQuery("#numColBox").attr('disabled', 'disabled'); //numeroCol.disabled = true;			
+			numeroCol.attr('disabled', 'disabled');
+			numeroCol.removeClass().addClass('boxDisabled');
 			botNumeroCol.style.visibility ="visible";
 		<%}else{%>
-			numeroCol.className = "box";
-			numeroCol.value=<%=nColegiado%>;
+			numeroCol.removeClass().addClass('box');
+			numeroCol[0].value=<%=nColegiado%>;
 			botNumeroCol.style.visibility ="hidden";
 		<%}%>
 	}
@@ -1320,10 +1339,10 @@
 	function quitarBotonesAlta(){
 		<%if(!modoAnterior.equalsIgnoreCase("Editar")){%>
 			if(document.getElementById("tdBotonSolicitudPlanProfesional")){
-				jQuery("#tdBotonSolicitudPlanProfesional").attr('disabled', 'disabled'); //document.getElementById("tdBotonSolicitudPlanProfesional").disabled=true;
+				jQuery("#tdBotonSolicitudPlanProfesional").attr('disabled', 'disabled');
 			}
 			if(document.getElementById("tdBotonSolicitudSeguroUniversal")){
-				jQuery("#tdBotonSolicitudSeguroUniversal").attr('disabled', 'disabled'); //document.getElementById("tdBotonSolicitudSeguroUniversal").disabled=true;
+				jQuery("#tdBotonSolicitudSeguroUniversal").attr('disabled', 'disabled');
 			}
 		<%}%>
 	}	
