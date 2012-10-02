@@ -6,6 +6,7 @@ package com.siga.ws.mutualidad;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Hashtable;
@@ -21,6 +22,7 @@ import org.apache.axis.message.addressing.handler.AddressingHandler;
 import org.apache.axis.transport.http.HTTPSender;
 import org.apache.axis.transport.http.HTTPTransport;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
@@ -119,7 +121,6 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
             	respuesta.setCorrecto(false);
             	respuesta.setPosibleAlta(false);
             	respuesta.setValorRespuesta("");
-            	respuesta.setRutaPDF("");
             }
            
         } catch (Exception e) {
@@ -358,7 +359,7 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 		return ds;
 	}
 		
-	private Integracion_Persona rellenarDatosPersona(Hashtable<String, String> ht) {
+	private Integracion_Persona rellenarDatosPersona(Hashtable<String, String> ht) throws Exception {
 		Integracion_Persona dp = new Integracion_Persona();
 		
 		dp.setApellido1(ht.get("apellido1"));
@@ -389,15 +390,20 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 		dp.setEstadoCivil(parseaEstadoCivil(ht.get("estadoCivil")));
 		
 		if(ht.get("fechaNacimiento")!=null && !ht.get("fechaNacimiento").equalsIgnoreCase("")){
-			Calendar fechaNacimientoCal = Calendar.getInstance();
-			fechaNacimientoCal.setTime(UtilidadesFecha.stringToCalendar(ht.get("fechaNacimiento")).getTime());
-			dp.setFNacimiento(fechaNacimientoCal);
+		    Calendar cal = Calendar.getInstance();
+		    SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+		    cal.setTime(sdf.parse(ht.get("fechaNacimiento")));
+		    cal.set(Calendar.HOUR_OF_DAY, 12);
+			dp.setFNacimiento(cal);
 		}
 		
-		if(ht.get("fechaNacimientoConyuge")!=null && !ht.get("fechaNacimientoConyuge").equalsIgnoreCase("")){
-			Calendar fechaNacimientoConyugeCal = Calendar.getInstance();
-			fechaNacimientoConyugeCal.setTime(UtilidadesFecha.stringToCalendar(ht.get("fechaNacimientoConyuge")).getTime());
-			dp.setFNacimientoConyuge(fechaNacimientoConyugeCal);
+		if(ht.get("fechaNacimientoConyuge")!=null && !ht.get("fechaNacimientoConyuge").equalsIgnoreCase("")){		
+			Calendar cal = Calendar.getInstance();
+		    SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+		    cal.setTime(sdf.parse(ht.get("fechaNacimientoConyuge")));
+		    cal.set(Calendar.HOUR_OF_DAY, 12);
+			dp.setFNacimientoConyuge(cal);
+			
 		}
 		return dp;
 	}
