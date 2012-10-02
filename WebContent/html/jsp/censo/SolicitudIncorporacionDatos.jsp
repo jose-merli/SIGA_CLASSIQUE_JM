@@ -261,7 +261,7 @@
 								<%} else {%>
 									onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"
 								<%}%>	
-								style="overflow-y:auto;overflow-x:hidden;width:360px;height:45px;resize:none;"
+								style="overflow-y:auto;overflow-x:hidden;width:350px;height:45px;resize:none;"
 							><%=datosPersonales.getObservaciones()%></textarea>
 						</td>
 					</tr>
