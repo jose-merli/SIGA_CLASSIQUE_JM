@@ -420,7 +420,7 @@ public class TagComboBD extends TagSupport {
 							//aux += "\r\nvar destino_" + this.nombre + contador + "=window.parent.document.all." + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame.src;\r\n";
 							if (this.pestana!=null){
 								if(UtilidadesString.stringToBoolean(this.pestana)){
-									aux += "\r\n var destino_" + this.nombre + contador + "=document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame').src;\r\n";
+									aux += "\r\n var destino_" + this.nombre + contador + "=window.top.frames[0].document.frames[0].document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame').src;\r\n";
 								
 								}else if(isNumber(this.pestana)){
 									String formulario = ".document.frames[0]";
@@ -451,7 +451,7 @@ public class TagComboBD extends TagSupport {
 							
 							if (this.pestana!=null){
 								if(this.pestana.equalsIgnoreCase("t") || this.pestana.equalsIgnoreCase("true")){
-									aux += "document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame').src=destino_" + this.nombre + contador + ";\r\n";
+									aux += "window.top.frames[0].document.frames[0].document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame').src=destino_" + this.nombre + contador + ";\r\n";
 								}else if(isNumber(this.pestana)){
 									String formulario = ".document.frames[0]";
 									int nivel = Integer.parseInt(this.pestana);
@@ -492,7 +492,7 @@ public class TagComboBD extends TagSupport {
 							//aux += "\r\nvar destino_" + this.nombre + contador + "=window.parent.document.all." + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame.src;\r\n";
 							if (this.pestana!=null){
 								if(UtilidadesString.stringToBoolean(this.pestana)){
-									aux += "\r\n var destino_" + this.nombre + contador + "=document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame').src;\r\n";
+									aux += "\r\n var destino_" + this.nombre + contador + "=window.top.frames[0].document.frames[0].document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame').src;\r\n";
 								}else if(isNumber(this.pestana)){
 									String formulario = ".document.frames[0]";
 									int nivel = Integer.parseInt(this.pestana);
@@ -521,7 +521,7 @@ public class TagComboBD extends TagSupport {
 							
 							if (this.pestana!=null){
 								if(this.pestana.equalsIgnoreCase("t") || this.pestana.equalsIgnoreCase("true")){
-									aux += "document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame').src=destino_" + this.nombre + contador + ";\r\n";
+									aux += "window.top.frames[0].document.frames[0].document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame').src=destino_" + this.nombre + contador + ";\r\n";
 								}else if(isNumber(this.pestana)){
 									String formulario = ".document.frames[0]";
 									int nivel = Integer.parseInt(this.pestana);
