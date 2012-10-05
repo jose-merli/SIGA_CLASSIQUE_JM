@@ -32,6 +32,7 @@
    				
 		<service interface="org.redabogacia.sigaservices.app.services.EcomColaService" 	 implementation="org.redabogacia.sigaservices.app.services.impl.EcomColaServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.SigaLog4jService" 	 implementation="org.redabogacia.sigaservices.app.services.impl.SigaLog4jServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.ParametersService" 	 implementation="org.redabogacia.sigaservices.app.services.impl.ParametersServiceImpl"/>		
 			
 		
 	</context>
