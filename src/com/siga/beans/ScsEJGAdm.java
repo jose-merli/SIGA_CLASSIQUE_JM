@@ -1921,7 +1921,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		
 		// Si se filtra por acta necesitamos la tabla
 		if (((miHash.containsKey("NUMEROACTA")) && (!miHash.get("NUMEROACTA").toString().equals("")))|| 
-			((miHash.containsKey("NUMEROACTA")) && (!miHash.get("NUMEROACTA").toString().equals("")))){
+			((miHash.containsKey("ANIOACTA")) && (!miHash.get("ANIOACTA").toString().equals("")))){
 			consulta += "," +  ScsActaComisionBean.T_NOMBRETABLA + " acta "; 
 		}
 
@@ -2006,7 +2006,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			consulta += " and ejg.ANIO = :" + contador;
 		}
 		if (((miHash.containsKey("NUMEROACTA")) && (!miHash.get("NUMEROACTA").toString().equals("")))|| 
-			((miHash.containsKey("NUMEROACTA")) && (!miHash.get("NUMEROACTA").toString().equals("")))){
+			((miHash.containsKey("ANIOACTA")) && (!miHash.get("ANIOACTA").toString().equals("")))){
 			
 			// Cruzamos la tabla de actas
 			consulta += " and acta." + ScsActaComisionBean.C_ANIOACTA+ " = ejg."+ ScsEJGBean.C_ANIOACTA;
