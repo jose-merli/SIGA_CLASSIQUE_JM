@@ -169,7 +169,7 @@
     
     function consultarAsist (importeMax)
     {
-      alert("llega");
+//      alert("llega");
       DefinirHitosFacturablesGuardiasForm.modo.value="consultar";
       DefinirHitosFacturablesGuardiasForm.tipoConsulta.value="asistencia";
       DefinirHitosFacturablesGuardiasForm.importeMax.value=importeMax;
