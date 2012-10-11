@@ -828,37 +828,43 @@
 		function generarFechaCaducidad() {
 			<%if (!(tiempoCaducidad.equals("")) && !(tiempoCaducidad.equals("0"))){%>
 			
-			var fFecha = document.forms[0].fecha.value;
-
-			var dt1  = fFecha.substring(0,2);
-
-			var dt2  = fFecha.substring(3,5);
-			var dt3  = fFecha.substring(6,10);
-
-			var mes = parseInt (dt2) - 1;
-
-
-			var Fecha= new Date(fFecha);
-			var iYear = Fecha.getFullYear();	
-			
-			var hoy= new Date();
-			hoy.setDate(dt1);
-			hoy.setMonth(mes.toString());
-			hoy.setFullYear(dt3);
-
-
-			var sumarDias=parseInt('<%=tiempoCaducidad%>');
-			var luego = hoy.addDays(sumarDias);
-
-			
-			if ((luego.getMonth()+1) < 10)
-				iMonth = '0' + ((luego.getMonth()+1).toString())
-				else iMonth = ((luego.getMonth()+1).toString()); 
-			if (luego.getDate() < 10)
-				iDay = '0' + luego.getDate().toString()
-				else iDay = luego.getDate().toString();
-
-			document.forms[0].fechaCaducidad.value = iDay + "/" + iMonth + "/" + luego.getFullYear();
+				if (document.forms[0].fecha.value.length==0){
+					document.forms[0].fechaCaducidad.value = "";
+				}  else {
+	
+						var fFecha = document.forms[0].fecha.value;
+						
+				var dt1  = fFecha.substring(0,2);
+	
+				var dt2  = fFecha.substring(3,5);
+				var dt3  = fFecha.substring(6,10);
+	
+				var mes = parseInt (dt2) - 1;
+	
+	
+				var Fecha= new Date(fFecha);
+				var iYear = Fecha.getFullYear();	
+				
+				var hoy= new Date();
+				hoy.setDate(dt1);
+				hoy.setMonth(mes.toString());
+				hoy.setFullYear(dt3);
+	
+	
+				var sumarDias=parseInt('<%=tiempoCaducidad%>');
+				var luego = hoy.addDays(sumarDias);
+	
+				
+				if ((luego.getMonth()+1) < 10)
+					iMonth = '0' + ((luego.getMonth()+1).toString())
+					else iMonth = ((luego.getMonth()+1).toString()); 
+				if (luego.getDate() < 10)
+					iDay = '0' + luego.getDate().toString()
+					else iDay = luego.getDate().toString();
+	
+				document.forms[0].fechaCaducidad.value = iDay + "/" + iMonth + "/" + luego.getFullYear();
+	
+				}
 
 			<%}%>
 		}
