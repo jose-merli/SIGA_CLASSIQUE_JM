@@ -482,7 +482,7 @@
 					document.getElementById("idMateria").value='<%=userBean.getLocation() + "," + idArea + ","
 							+ idMateria + "," + datosJuzgado[3]%>';
 					document.getElementById("idMateria").onchange();
-					window.setTimeout('recargarComboJuzgado()',1000,"JavaScript");
+					//window.setTimeout('recargarComboJuzgado()',1000,"JavaScript");
 					
 				<%}%>
 			
