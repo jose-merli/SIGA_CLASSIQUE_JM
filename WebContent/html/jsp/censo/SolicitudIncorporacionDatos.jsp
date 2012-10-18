@@ -222,7 +222,7 @@
 				<table border="0" cellpadding="5" cellspacing="0">
 					<tr>
 						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:50px" tabindex="-1"
+							<input class="boxLabel" type="text" style="width:50px" tabindex="-1" readonly
 								value="<siga:Idioma key='censo.SolicitudIncorporacionDatos.literal.estado'/>" />
 						</td>
 						<%if (readonly || datosPersonales.getIdEstado().intValue()==ClsConstants.ESTADO_SOLICITUD_APROBADA) {%>
@@ -239,18 +239,18 @@
 						<td style="width:10px">&nbsp;</td>
 						
 						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:92px" tabindex="-1"
+							<input class="boxLabel" type="text" style="width:92px" tabindex="-1" readonly
 								value="<siga:Idioma key='censo.SolicitudIncorporacionDatos.literal.fechaEstado'/>" />
 						</td>
 						<td>
-							<html:text property="fechaSolicitud" size="10" styleClass="boxConsulta" tabindex="-1"
-								readOnly="true" value="<%=datosPersonales.getFechaEstado()%>"/>
+							<html:text property="fechaSolicitud" size="10" styleClass="boxConsulta" tabindex="-1" readonly="true"
+								value="<%=datosPersonales.getFechaEstado()%>"/>
 						</td>	
 						
 						<td style="width:10px">&nbsp;</td>
 						
 						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:100px" tabindex="-1"
+							<input class="boxLabel" type="text" style="width:100px" tabindex="-1" readonly
 								value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.observaciones'/>" />
 						</td>
 
@@ -270,12 +270,12 @@
 						<td colspan="3"> &nbsp;</td>
 						
 						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:125px" tabindex="-1"
+							<input class="boxLabel" type="text" style="width:125px" tabindex="-1" readonly
 								value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.fechaSolicitud'/>" />
 						</td>
 						<td>
-							<html:text property="fechaSolicitud" size="10" styleClass="boxConsulta" tabindex="-1" 
-								readOnly="true" value="<%=datosPersonales.getFechaSolicitud()%>"/>
+							<html:text property="fechaSolicitud" size="10" styleClass="boxConsulta" tabindex="-1" readonly="true"
+								value="<%=datosPersonales.getFechaSolicitud()%>"/>
 						</td>												
 					</tr>
 				</table>
@@ -293,7 +293,7 @@
 							<table border="0" cellpadding="5" cellspacing="0">
 								<tr>
 									<td class="boxLabel">
-										<input class="boxLabel" type="text" style="width:80px" tabindex="-1"
+										<input class="boxLabel" type="text" style="width:80px" tabindex="-1" readonly
 											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.solicitudDe'/>" />&nbsp;(*)
 									</td>
 									<%if(readonly){ %>
@@ -314,7 +314,7 @@
 							<table border="0" cellpadding="5" cellspacing="0">
 								<tr>
 									<td class="boxLabel">
-										<input class="boxLabel" type="text" style="width:130px" tabindex="-1"
+										<input class="boxLabel" type="text" style="width:130px" tabindex="-1" readonly
 											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.tipoColegiacion'/>" />&nbsp;(*)
 									</td>
 									<%if(readonly){ %>
@@ -332,7 +332,7 @@
 						</td>									
 
 						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:173px" tabindex="-1"
+							<input class="boxLabel" type="text" style="width:173px" tabindex="-1" readonly
 								value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.documentacion'/>" />
 						</td>						
 						<%if(readonly){ %>
@@ -352,7 +352,7 @@
 							<table border="0" cellpadding="5" cellspacing="0">
 								<tr>
 									<td class="boxLabel">
-										<input class="boxLabel" type="text" style="width:158px" tabindex="-1"
+										<input class="boxLabel" type="text" style="width:158px" tabindex="-1" readonly
 											value="<siga:Idioma key='censo.busquedaClientesAvanzada.literal.fechaIncorporacion'/>" />
 									</td>
 									<%if(readonly){%>
@@ -372,7 +372,7 @@
 							<table border="0" cellpadding="5" cellspacing="0">
 								<tr>						
 									<td class="boxLabel">
-										<input class="boxLabel" type="text" style="width:70px" tabindex="-1"
+										<input class="boxLabel" type="text" style="width:70px" tabindex="-1" readonly
 											value="<siga:Idioma key='censo.consultaDatosColegiacion.literal.residente'/>" />
 									</td>
 									<td>
@@ -383,7 +383,7 @@
 						</td>									
 					
 						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:90px" tabindex="-1"
+							<input class="boxLabel" type="text" style="width:90px" tabindex="-1" readonly
 								value="<siga:Idioma key='censo.SolicitudIncorporacionDatos.literal.nColegiado'/>" />
 						</td>
 						<td>
@@ -403,7 +403,7 @@
 				<table border="0" cellpadding="5" cellspacing="0">
 					<tr>
 						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:58px" tabindex="-1"
+							<input class="boxLabel" type="text" style="width:58px" tabindex="-1" readonly
 								value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.nifcif'/>" />&nbsp;(*)
 						</td>
 						<td colspan="6" style="padding:0px">
@@ -436,7 +436,7 @@
 					
 					<tr>		
 						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:85px" tabindex="-1"
+							<input class="boxLabel" type="text" style="width:85px" tabindex="-1" readonly
 								value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.tratamiento'/>" />&nbsp;(*)
 						</td>
 						
@@ -453,7 +453,7 @@
 						<%}%>						
 						
 						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:55px" tabindex="-1"
+							<input class="boxLabel" type="text" style="width:55px" tabindex="-1" readonly
 								value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.nombre'/>" />&nbsp;(*)
 						</td>
 						<td>
@@ -461,7 +461,7 @@
 						</td>		
 						
 						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:65px" tabindex="-1"
+							<input class="boxLabel" type="text" style="width:65px" tabindex="-1" readonly
 								value="<siga:Idioma key='censo.consultaDatosGenerales.literal.apellidos'/>" />&nbsp;(*)
 						</td>
 						<td>
@@ -477,7 +477,7 @@
 							<table border="0" cellpadding="5" cellspacing="0">
 								<tr>			
 									<td class="boxLabel">
-										<input class="boxLabel" type="text" style="width:140px" tabindex="-1"
+										<input class="boxLabel" type="text" style="width:140px" tabindex="-1" readonly
 											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.fechaNacimiento'/>" />&nbsp;(*)
 									</td>						
 									<%if(readonly){%>
@@ -491,7 +491,7 @@
 									<td style="width:13px">&nbsp;</td>												
 												
 									<td class="boxLabel">
-										<input class="boxLabel" type="text" style="width:37px" tabindex="-1"
+										<input class="boxLabel" type="text" style="width:37px" tabindex="-1" readonly
 											value="<siga:Idioma key='censo.consultaDatosGenerales.literal.sexo'/>" />&nbsp;(*)
 									</td>
 									<%if (readonly){%>
@@ -512,7 +512,7 @@
 									<td style="width:13px">&nbsp;</td>
 									
 									<td class="boxLabel">
-										<input class="boxLabel" type="text" style="width:81px" tabindex="-1"
+										<input class="boxLabel" type="text" style="width:81px" tabindex="-1" readonly
 											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.estadoCivil'/>" />
 									</td>
 									
@@ -530,7 +530,7 @@
 									<td style="width:13px">&nbsp;</td>
 			
 									<td class="boxLabel">
-										<input class="boxLabel" type="text" style="width:73px" tabindex="-1"
+										<input class="boxLabel" type="text" style="width:73px" tabindex="-1" readonly
 											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.naturalDe'/>" />
 									</td>
 									<td>
@@ -550,7 +550,7 @@
 							<table border="0" cellpadding="5" cellspacing="0">
 								<tr>
 									<td class="boxLabel">
-										<input class="boxLabel" type="text" style="width:32px" tabindex="-1"
+										<input class="boxLabel" type="text" style="width:32px" tabindex="-1" readonly
 											value="<siga:Idioma key='censo.datosDireccion.literal.pais2'/>" />
 									</td>	
 																
@@ -567,7 +567,7 @@
 								
 								<tr>
 									<td  class="boxLabel">
-										<input class="boxLabel" type="text" style="width:64px" tabindex="-1"
+										<input class="boxLabel" type="text" style="width:64px" tabindex="-1" readonly
 											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.domicilio'/>" />&nbsp;(*)
 									</td>									
 									<td>
@@ -594,7 +594,7 @@
 												</td>					
 											
 												<td class="boxLabel">
-													<input class="boxLabel" type="text" style="width:68px" tabindex="-1"
+													<input class="boxLabel" type="text" style="width:68px" tabindex="-1" readonly
 														value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.poblacion'/>" />&nbsp;(*)
 												</td>																		
 																		
@@ -621,7 +621,7 @@
 												<td colspan="2">&nbsp;</td>  																																								
 
 												<td class="boxLabel">
-													<input class="boxLabel" type="text" style="width:68px" tabindex="-1"
+													<input class="boxLabel" type="text" style="width:68px" tabindex="-1" readonly
 														value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.provincia'/>" />											
 												</td>
 												<td>
@@ -639,7 +639,7 @@
 												</td>						
 											
 												<td class="boxLabel">
-													<input class="boxLabel" type="text" style="width:68px" tabindex="-1"
+													<input class="boxLabel" type="text" style="width:68px" tabindex="-1" readonly
 														value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.poblacion'/>" />&nbsp;(*)
 												</td>																																													
 												<td>
@@ -666,7 +666,7 @@
 							<table border="0" cellpadding="5" cellspacing="0">
 								<tr>
 									<td  class="boxLabel">
-										<input class="boxLabel" type="text" style="width:74px" tabindex="-1"
+										<input class="boxLabel" type="text" style="width:74px" tabindex="-1" readonly
 											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.telefono1'/>" />&nbsp;(*)
 									</td>									
 									<td>
@@ -674,7 +674,7 @@
 									</td>
 									
 									<td  class="boxLabel">
-										<input class="boxLabel" type="text" style="width:74px" tabindex="-1"
+										<input class="boxLabel" type="text" style="width:74px" tabindex="-1" readonly
 											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.telefono2'/>" />
 									</td>									
 									<td>
@@ -684,7 +684,7 @@
 								
 								<tr>
 									<td  class="boxLabel">
-										<input class="boxLabel" type="text" style="width:45px" tabindex="-1"
+										<input class="boxLabel" type="text" style="width:45px" tabindex="-1" readonly
 											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.fax1'/>" />
 									</td>									
 									<td>
@@ -692,7 +692,7 @@
 									</td>
 									
 									<td  class="boxLabel">
-										<input class="boxLabel" type="text" style="width:45px" tabindex="-1"
+										<input class="boxLabel" type="text" style="width:45px" tabindex="-1" readonly
 											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.fax2'/>" />
 									</td>
 									<td>
@@ -702,7 +702,7 @@
 								
 								<tr>
 									<td  class="boxLabel">
-										<input class="boxLabel" type="text" style="width:45px" tabindex="-1"
+										<input class="boxLabel" type="text" style="width:45px" tabindex="-1" readonly
 											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.telefono3'/>" />								
 									</td>
 									<td colspan="3">
@@ -714,7 +714,7 @@
 									<td colspan="4" style="padding:0px;">
 										<table border="0" cellpadding="5" cellspacing="0">
 											<td  class="boxLabel">
-												<input class="boxLabel" type="text" style="width:126px" tabindex="-1"
+												<input class="boxLabel" type="text" style="width:126px" tabindex="-1" readonly
 													value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.email'/>" />&nbsp;(*)		
 											</td>
 											<td>
@@ -737,7 +737,7 @@
 				<table border="0" cellpadding="5" cellspacing="0">	
 					<tr>		
 						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:50px" tabindex="-1"
+							<input class="boxLabel" type="text" style="width:50px" tabindex="-1" readonly
 								value="<siga:Idioma key='censo.datosCuentaBancaria.literal.titular'/>" />
 						</td>																
 						<td>
@@ -747,7 +747,7 @@
 						<td style="width:20px">&nbsp;</td>
 					
 						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:42px" tabindex="-1"
+							<input class="boxLabel" type="text" style="width:42px" tabindex="-1" readonly
 								value="<siga:Idioma key='censo.tipoCuenta.cargo'/>" />
 						</td>
 						
@@ -761,7 +761,7 @@
 									<td style="width:20px">&nbsp;</td>								
 																						
 									<td class="boxLabel">
-										<input class="boxLabel" type="text" style="width:45px" tabindex="-1"
+										<input class="boxLabel" type="text" style="width:45px" tabindex="-1" readonly
 											value="<siga:Idioma key='censo.tipoCuenta.abono'/>" />
 									</td>									
 									<td>
@@ -771,7 +771,7 @@
 									<td style="width:20px">&nbsp;</td>
 									
 									<td class="boxLabel">
-										<input class="boxLabel" type="text" style="width:85px" tabindex="-1"
+										<input class="boxLabel" type="text" style="width:85px" tabindex="-1" readonly
 											value="<siga:Idioma key='censo.datosCuentaBancaria.literal.abonoSJCS'/>" />
 									</td>									
 									<td>
@@ -802,7 +802,7 @@
 						<td style="width:20px">&nbsp;</td>
 						
 						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:45px" tabindex="-1"
+							<input class="boxLabel" type="text" style="width:45px" tabindex="-1" readonly
 								value="<siga:Idioma key='censo.datosCuentaBancaria.literal.banco'/>" />
 						</td>
 						<td>
