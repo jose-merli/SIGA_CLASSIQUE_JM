@@ -563,11 +563,11 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 		}						
 		json.put("codigoExt2", codigoExt2);
 		
-		 response.setContentType("text/x-json;charset=ISO-8859-15");
-		 response.setHeader("Cache-Control", "no-cache");
-		 response.setHeader("Content-Type", "application/json");
-	     response.setHeader("X-JSON", json.toString());
-		 response.getWriter().write(json.toString()); 		
+		response.setContentType("text/x-json;charset=UTF-8");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Content-Type", "application/json");
+	    response.setHeader("X-JSON", json.toString());
+		response.getWriter().write(json.toString()); 		
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -596,11 +596,11 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 		}
 		json.put("codigoExt2", codigoExt2);
 		
-		 response.setContentType("text/x-json;charset=ISO-8859-15");
-		 response.setHeader("Cache-Control", "no-cache");
-		 response.setHeader("Content-Type", "application/json");
-	     response.setHeader("X-JSON", json.toString());
-		 response.getWriter().write(json.toString()); 		
+		response.setContentType("text/x-json;charset=UTF-8");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Content-Type", "application/json");
+	    response.setHeader("X-JSON", json.toString());
+		response.getWriter().write(json.toString()); 		
 	}	
 	
 	@SuppressWarnings("unchecked")
@@ -630,10 +630,10 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 		}
 		json.put("idJuzgado", idJuzgado);
 		
-		 response.setContentType("text/x-json;charset=ISO-8859-15");
-		 response.setHeader("Cache-Control", "no-cache");
-		 response.setHeader("Content-Type", "application/json");
-	     response.setHeader("X-JSON", json.toString());
-		 response.getWriter().write(json.toString()); 		
+		response.setContentType("text/x-json;charset=UTF-8");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Content-Type", "application/json");
+	    response.setHeader("X-JSON", json.toString());
+		response.getWriter().write(json.toString()); 		
 	}
 }

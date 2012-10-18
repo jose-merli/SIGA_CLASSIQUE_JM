@@ -293,7 +293,7 @@ public class ComprobarPoblacionAction extends MasterAction{
 					sHtml="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
 					numPoblaciones=rc.size()+1;
 				} else {
-					sHtml+="<option value=''>"+valorGuiones+"</option>";
+					sHtml+="<option value='' disabled>"+valorGuiones+"</option>";
 					numPoblaciones+=rc.size()+1;
 				}
 				
@@ -326,11 +326,11 @@ public class ComprobarPoblacionAction extends MasterAction{
 		json.put("numPoblaciones", numPoblaciones);		
 		
 		// json.
-		 response.setContentType("text/x-json;charset=ISO-8859-15");
-		 response.setHeader("Cache-Control", "no-cache");
-		 response.setHeader("Content-Type", "application/json");
-	     response.setHeader("X-JSON", json.toString());
-		 response.getWriter().write(json.toString()); 		
+		response.setContentType("text/x-json;charset=UTF-8");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Content-Type", "application/json");
+		response.setHeader("X-JSON", json.toString());
+		response.getWriter().write(json.toString()); 		
 	}			
 	
 	/**
@@ -453,11 +453,11 @@ public class ComprobarPoblacionAction extends MasterAction{
 		json.put("idProvinciaCp", idProvinciaCP);
 		
 		// json.
-		 response.setContentType("text/x-json;charset=ISO-8859-15");
-		 response.setHeader("Cache-Control", "no-cache");
-		 response.setHeader("Content-Type", "application/json");
-	     response.setHeader("X-JSON", json.toString());
-		 response.getWriter().write(json.toString()); 		
+		response.setContentType("text/x-json;charset=UTF-8");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Content-Type", "application/json");
+	    response.setHeader("X-JSON", json.toString());
+		response.getWriter().write(json.toString()); 		
 	}		
 
 	/** 

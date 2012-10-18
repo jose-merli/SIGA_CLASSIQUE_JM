@@ -674,7 +674,7 @@ public class CuentasBancariasAction extends MasterAction{
 		json.put("banco", bancoBean.getJSONObject());
 		
 		// json.
-		 response.setContentType("text/x-json;charset=ISO-8859-15");
+		response.setContentType("text/x-json;charset=UTF-8");
 		 response.setHeader("Cache-Control", "no-cache");
 		 response.setHeader("Content-Type", "application/json");
 	     response.setHeader("X-JSON", json.toString());

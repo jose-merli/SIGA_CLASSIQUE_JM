@@ -2,9 +2,9 @@
 
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
-<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-15"%>
+<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
@@ -1651,7 +1651,7 @@
 				url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBanco",
 				data: "idBanco="+idBanco,
 				dataType: "json",
-				//contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 				success: function(json){		
 					var txtBanco = json.banco.nombre;
 					document.getElementById("banco").value=txtBanco;
@@ -2120,7 +2120,7 @@
 							url: "/SIGA/FAC_ComprobarPoblacion.do?modo=getAjaxPoblacionesCPFiltro",				
 							data: "valorCP="+valorCP+"&valorPoblacion="+valorPoblacion+"&valorGuiones="+valorGuiones+"&numMaxPoblaciones="+numMaximoSelectPoblaciones,
 							dataType: "json",
-							//contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+							contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 							success: function(json){					
 									
 								// Con esta comparacion y por hacer AJAX, nos evitamos hacer codigo
@@ -2239,7 +2239,7 @@
 				url: "/SIGA/FAC_ComprobarPoblacion.do?modo=getAjaxPoblacionesCP",				
 				data: "valorCP="+valorCP,
 				dataType: "json",
-				//contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 				success: function(json){							
 						
 					// Recupera el numero de poblaciones
