@@ -121,7 +121,7 @@ public class TagComboBDExt extends TagSupport {
 			Hashtable codigos = new Hashtable();
 			Vector almacenBD = new Vector();
 			int contador = 1;
-		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.COMBO);
+		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.QUERY);
 //			ReadProperties p = new ReadProperties ("Combo.properties");
 			String consultaSQL = p.returnProperty(this.tipo, true);
 			if (consultaSQL == null) {

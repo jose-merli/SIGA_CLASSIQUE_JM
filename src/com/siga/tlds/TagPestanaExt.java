@@ -51,7 +51,7 @@ public class TagPestanaExt extends TagSupport {
 	protected int tipoAcceso=0xffffffff;
 	private Hashtable htParametros=null;
 	private Element elements[]=null;
-	public static final String SQL_KEY="sql";
+	public static final String SQL_KEY="pestana";
 	//public static final String PROPERTIES_FILE="Pestana.properties";
 	private static final String parametroWhere = "@parametro@";
 	private static final String PROCESS_KEY="PROCESS";
@@ -249,7 +249,7 @@ public class TagPestanaExt extends TagSupport {
 	
 	private void executeConsulta(UsrBean usrbean) throws Exception  {
 		int rc = 0;
-	    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.PESTANA);
+	    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.QUERY);
 		//ReadProperties p = new ReadProperties (PROPERTIES_FILE);
 		String consultaSQL = p.returnProperty(SQL_KEY, true);
 		if (consultaSQL != null) {

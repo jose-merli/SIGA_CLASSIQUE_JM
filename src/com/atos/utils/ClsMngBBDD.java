@@ -456,7 +456,7 @@ public final class ClsMngBBDD {
       int size=inParameters.length;
       //output Parameters (only 1)
       //cs.registerOutParameter(1,oracle.jdbc.driver.OracleTypes.CURSOR);
-      cs.registerOutParameter(1,oracle.jdbc.driver.OracleTypes.CURSOR);
+      cs.registerOutParameter(1,oracle.jdbc.OracleTypes.CURSOR);
       //input Parameters
       for(int i=0;i<size;i++){
         ClsLogging.writeFileLogWithoutSession("PARAM_"+i+": "+inParameters[i], 3);

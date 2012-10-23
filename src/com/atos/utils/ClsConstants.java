@@ -18,8 +18,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Hashtable;
-import java.util.ResourceBundle;
+import java.util.Properties;
 import java.util.Vector;
+
+import com.siga.Utilidades.SIGAReferences.RESOURCE_FILES;
 
 
 public class ClsConstants {
@@ -288,16 +290,17 @@ public class ClsConstants {
 	
 	
 //	public static final String initPropsFile=System.getProperty("slbutils.initprops");	
-	public static final String initPropsFile="SIGA";	
-	public static final ResourceBundle initProperties=ResourceBundle.getBundle(initPropsFile);
+	public static final String initPropsFile="INIT";	
+	//public static final ResourceBundle initProperties=ResourceBundle.getBundle(initPropsFile);
+	public static final Properties initProperties=PropertyReader.getProperties(RESOURCE_FILES.INIT);
 
 	public static final String USER_DIR = System.getProperty("user.dir");
 //	public static final String RES_DIR = "C://eclipse//workspace//SIGA92//WebContent";
-	public static final String RES_DIR = initProperties.getString("init.application.path");
+	public static final String RES_DIR = initProperties.getProperty("init.application.path");
 
-	public static final String APPLICATION_NAME = initProperties.getString("init.application.name");
-  	public static final String DEFAULT_LANGUAGE= initProperties.getString("init.default.language");
-	public static final String PATH_DOMAIN = initProperties.getString("init.application.domain");
+	public static final String APPLICATION_NAME = initProperties.getProperty("init.application.name");
+  	public static final String DEFAULT_LANGUAGE= initProperties.getProperty("init.default.language");
+	public static final String PATH_DOMAIN = initProperties.getProperty("init.application.domain");
 	
 	//Mascara para valores numericos obtenidos en informes
 	public static final String FORMATONUMERO 	= "99999999999999999990D09";
@@ -307,15 +310,15 @@ public class ClsConstants {
       "config" + FILE_SEP + PATH_DOMAIN + FILE_SEP +
       "applications";
 */
-  public static final String RES_PROP_DOMAIN=initProperties.getString("init.path.resprop.domain").replaceAll(SEP_PATTERN, REPLACE_PATTERN);
-  public static final String RES_APP_PATH = initProperties.getString("init.path.res.app").replaceAll(SEP_PATTERN, REPLACE_PATTERN);
+  public static final String RES_PROP_DOMAIN=initProperties.getProperty("init.path.resprop.domain").replaceAll(SEP_PATTERN, REPLACE_PATTERN);
+  public static final String RES_APP_PATH = initProperties.getProperty("init.path.res.app").replaceAll(SEP_PATTERN, REPLACE_PATTERN);
 
-	  public static final String PROPERTIES = initProperties.getString("init.path.resources").replaceAll(SEP_PATTERN, REPLACE_PATTERN);
+	  public static final String PROPERTIES = initProperties.getProperty("init.path.resources").replaceAll(SEP_PATTERN, REPLACE_PATTERN);
 //	  public static final String RESOURCES_DIR_STRUTS = RES_DIR + RES_PROP_DOMAIN + RES_APP_PATH;
 //	  public static final String RESOURCES_DIR = RES_DIR + RES_PROP_DOMAIN + PROPERTIES;
 	
-	  public static final String FOP_FONTS = initProperties.getString("init.path.fop.fonts").replaceAll(SEP_PATTERN, REPLACE_PATTERN);
-	  public static final String FOP_FILE = initProperties.getString("init.fop.config").replaceAll(SEP_PATTERN, REPLACE_PATTERN);
+	  public static final String FOP_FONTS = initProperties.getProperty("init.path.fop.fonts").replaceAll(SEP_PATTERN, REPLACE_PATTERN);
+	  public static final String FOP_FILE = initProperties.getProperty("init.fop.config").replaceAll(SEP_PATTERN, REPLACE_PATTERN);
 //	  public static final String FOP_FONTS_DIR = RES_DIR + RES_PROP_DOMAIN + FOP_FONTS;
 //	  public static final String FOP_CONFIG_FILE = RES_DIR + RES_PROP_DOMAIN + PROPERTIES + FOP_FILE;
 	  
@@ -323,12 +326,12 @@ public class ClsConstants {
 	  public static final String IMAGESVIDEOUPLOAD = "";
 		
 	  //Database Constants
-	  public static final String DB_TRUE=initProperties.getString("init.database.flag.true");
-	  public static final String DB_FALSE=initProperties.getString("init.database.flag.false");
-	  public static final String defaultORADateFormat=initProperties.getString("init.database.date.format.default");
-	  public static final String defaultORALongDateFormat=initProperties.getString("init.database.date.format.long");
-	  public static final String DATE_FORMAT_SQL=initProperties.getString("init.database.sql.date.format");
-	  public static final String TIMESTAMP_FORMAT_SQL=initProperties.getString("init.database.sql.timestamp.format");
+	  public static final String DB_TRUE=initProperties.getProperty("init.database.flag.true");
+	  public static final String DB_FALSE=initProperties.getProperty("init.database.flag.false");
+	  public static final String defaultORADateFormat=initProperties.getProperty("init.database.date.format.default");
+	  public static final String defaultORALongDateFormat=initProperties.getProperty("init.database.date.format.long");
+	  public static final String DATE_FORMAT_SQL=initProperties.getProperty("init.database.sql.date.format");
+	  public static final String TIMESTAMP_FORMAT_SQL=initProperties.getProperty("init.database.sql.timestamp.format");
 	  // RGG 29-12-2004
 	  public static final String TIPO_PERSONA_FISICA="F";
 	  public static final String TIPO_PERSONA_JURIDICA="J";
@@ -406,16 +409,15 @@ public class ClsConstants {
 	   * Standard intern date format :
 	   *    yyyy/MM/dd HH:mm:ss
 	   */
-	  public static final String DATE_FORMAT_JAVA=			 initProperties.getString("init.java.date.format"); 				// HH:mm:ss
-	  public static final String TIME_FORMAT_JAVA =			 initProperties.getString("init.java.time.format"); 				// yyyy/MM/dd HH:mm:ss
-	  public static final String TIMESTAMP_FORMAT_JAVA = 	 initProperties.getString("init.java.timestamp.format"); 			// yyyy/MM/dd HH:mm:ss.SSS
-	  public static final String DATE_FORMAT_SHORT_ENGLISH = initProperties.getString("init.java.date.format.short.english"); 	// dd/MM/yyyy
-	  public static final String DATE_FORMAT_SHORT_SPANISH = initProperties.getString("init.java.date.format.short.spanish"); 	// dd/MM/yyyy
-	  public static final String DATE_FORMAT_MEDIUM_ENGLISH= initProperties.getString("init.java.date.format.medium.english"); 	// dd/MM/yyyy HH:mm
-	  public static final String DATE_FORMAT_MEDIUM_SPANISH= initProperties.getString("init.java.date.format.medium.spanish"); 	// dd/MM/yyyy HH:mm
-	  public static final String DATE_FORMAT_LONG_ENGLISH =  initProperties.getString("init.java.date.format.long.english"); 	// dd/MM/yyyy HH:mm:ss
-	  public static final String DATE_FORMAT_LONG_SPANISH =  initProperties.getString("init.java.date.format.long.spanish"); 	// dd/MM/yyyy HH:mm:ss
-
+	  public static final String DATE_FORMAT_JAVA=			 "yyyy/MM/dd HH:mm:ss";
+	  public static final String TIME_FORMAT_JAVA =			 "HH:mm:ss";
+	  public static final String TIMESTAMP_FORMAT_JAVA = 	 "yyyy/MM/dd HH:mm:ss.SSS";
+	  public static final String DATE_FORMAT_SHORT_ENGLISH = "dd/MM/yyyy";
+	  public static final String DATE_FORMAT_SHORT_SPANISH = "dd/MM/yyyy";
+	  public static final String DATE_FORMAT_MEDIUM_ENGLISH= "dd/MM/yyyy HH:mm";
+	  public static final String DATE_FORMAT_MEDIUM_SPANISH= "dd/MM/yyyy HH:mm";
+	  public static final String DATE_FORMAT_LONG_ENGLISH =  "dd/MM/yyyy HH:mm:ss";
+	  public static final String DATE_FORMAT_LONG_SPANISH =  "dd/MM/yyyy HH:mm:ss";
 
 /*
 HTML Hyper Text Markup Language

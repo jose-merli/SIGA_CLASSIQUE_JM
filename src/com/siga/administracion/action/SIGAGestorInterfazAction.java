@@ -1,23 +1,5 @@
 package com.siga.administracion.action;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.upload.FormFile;
-
-import com.atos.utils.CLSAdminLog;
-import com.atos.utils.ReadProperties;
-import com.atos.utils.UsrBean;
-import com.atos.utils.ClsExceptions;
-import com.siga.Utilidades.SIGAReferences;
-import com.siga.administracion.SIGAConstants;
-import com.siga.administracion.SIGAGestorInterfaz;
-import com.siga.administracion.form.SIGAGestorInterfazForm;
-import com.siga.beans.GenParametrosAdm;
-import com.siga.general.*;
-
-import javax.transaction.UserTransaction;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -26,7 +8,24 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Random;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.UserTransaction;
+
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.upload.FormFile;
+
+import com.atos.utils.CLSAdminLog;
 import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.ReadProperties;
+import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
+import com.siga.administracion.SIGAConstants;
+import com.siga.administracion.SIGAGestorInterfaz;
+import com.siga.administracion.form.SIGAGestorInterfazForm;
+import com.siga.beans.GenParametrosAdm;
+import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 
@@ -90,7 +89,8 @@ public class SIGAGestorInterfazAction extends MasterAction {
 			    // obtencion del path app desde tabla parametros
 			    GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
 				
-			    pathImagenes = paramAdm.getValor(user.getLocation(),ClsConstants.MODULO_CENSO,ClsConstants.PATH_APP,null);
+			    ReadProperties rpSIGA= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			    pathImagenes = rpSIGA.returnProperty("directorios.carpeta.logos")+ File.separator;
 			    
 			    /* RGG 13/03/2005 cambiado por la funcion de arriba 
 			    Hashtable hashParams = new Hashtable();
@@ -101,7 +101,7 @@ public class SIGAGestorInterfazAction extends MasterAction {
 				pathImagenes = ((GenParametrosBean)auxV.get(0)).getValor();
 				*/
 				
-				pathImagenes += File.separator + ClsConstants.RELATIVE_PATH_LOGOS + File.separator;
+				//pathImagenes += File.separator + ClsConstants.RELATIVE_PATH_LOGOS + File.separator;
 			    
 			    if(theFile.getFileSize()>0){
 			    	contentType=theFile.getContentType();

@@ -30,9 +30,11 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.GstDate;
+import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxCollectionXmlBuilder;
 import com.siga.Utilidades.GestorContadores;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.PaginadorBind;
@@ -897,8 +899,11 @@ public class DatosGeneralesAction extends MasterAction {
 		    
 		    // obtencion del path app desde tabla parametros
 		    GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));    
-		    pathImagenes = paramAdm.getValor(miForm.getIdInstitucion(),ClsConstants.MODULO_CENSO,ClsConstants.PATH_APP, null);
-			pathImagenes += File.separator + ClsConstants.RELATIVE_PATH_FOTOS;
+		    //pathImagenes = paramAdm.getValor(miForm.getIdInstitucion(),ClsConstants.MODULO_CENSO,ClsConstants.PATH_APP, null);
+			//pathImagenes += File.separator + ClsConstants.RELATIVE_PATH_FOTOS;
+			
+			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			pathImagenes = rp.returnProperty("directorios.carpeta.fotos"); 
 		    
 		    
 		    FormFile foto = miForm.getFoto();

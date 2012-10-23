@@ -24,8 +24,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 import com.siga.Utilidades.SIGAReferences;
+import com.siga.Utilidades.SIGAReferences.RESOURCE_FILES;
 import com.siga.eejg.SchedulerException;
 import com.sun.mail.smtp.SMTPAddressFailedException;
 
@@ -38,8 +40,9 @@ public class ClsLogging{
 	private static int loglevel=10;
 	private static long nLastMod = 0;
 	
+	private static boolean iniciado=false;
 	private static boolean bStoreFile; //Indica si se escribirá en el fichero de log de la capa básica.
-	private static boolean bConsole;   //Indica si se escribirá en la consola. 
+	private static boolean bConsole=true;   //Indica si se escribirá en la consola. 
 	private static boolean bLog4j;     //Indica si se escribirá en el fichero de log de log4j.
 	private static boolean bLogXeMail;     //Indica si se escribirá en el fichero de log de log4j.
 	
@@ -54,17 +57,19 @@ public class ClsLogging{
 	 */
 	private static synchronized void init() {
 		//File f = new File(ClsConstants.RESOURCES_DIR+ClsConstants.FILE_SEP+"SIGA.properties");
-		long lst=0;
-		try {
-			File f = SIGAReferences.getFileReference(SIGAReferences.RESOURCE_FILES.SIGA);
-			if (f!=null)
-				lst = f.lastModified();
-		} catch (Exception e){
-		}
-		if(nLastMod != lst) {
-			nLastMod = lst;
-			ClsLogging.writeFileLog("CLSLOGGING INIT() SE EJECUTA",3);
-		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		long lst=0;
+//		try {
+//			File f = SIGAReferences.getFileReference(SIGAReferences.RESOURCE_FILES.INIT);
+//			if (f!=null)
+//				lst = f.lastModified();
+//		} catch (Exception e){
+//		}
+//		if(nLastMod != lst) {
+//			nLastMod = lst;
+		if(!iniciado) {
+			iniciado=true;
+			//ClsLogging.writeFileLog("CLSLOGGING INIT() SE EJECUTA",3);
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.INIT);
 //			ReadProperties rp=new ReadProperties("SIGA.properties");
 
 			//LMS 29/08/2006
@@ -91,6 +96,7 @@ public class ClsLogging{
 			}
 			
 			try{
+				PropertyConfigurator.configure(PropertyReader.getProperties(RESOURCE_FILES.SIGA.LOG4J));
 				logger = Logger.getLogger("SIGA");
 			}catch(Exception e){
 				logger=null;
@@ -114,6 +120,11 @@ public class ClsLogging{
 			ClsLogging.writeFileLog("- LogXeMail:   " + (bLogXeMail?"ACTIVADO":"DESACTIVADO"),3);
 			ClsLogging.writeFileLog("--------------------",3);
 		}
+	}
+	
+	public static void reset(){
+		iniciado = false;
+		init();
 	}
 	
 	public static void writeFileLog(String s, int i) {
@@ -300,7 +311,7 @@ public class ClsLogging{
 				}
 				
 				if (bLog4j && logger!=null)
-				{
+				{			
 					logger.info(trace2.toString());
 				}
 				if (bLogXeMail && logXeMail!=null && !isErrorUser)

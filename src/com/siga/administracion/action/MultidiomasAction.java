@@ -12,7 +12,9 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngProperties;
+import com.atos.utils.PropertyReader;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.form.MultidiomasForm;
 import com.siga.beans.GenRecursosAdm;
@@ -182,6 +184,8 @@ public class MultidiomasAction extends MasterAction
         */
 
 		ClsMngProperties.initProperties();
+		PropertyReader.cleanProperties();
+		ClsLogging.reset();
         UtilidadesString.recargarFicherosIdiomasEnCaliente();
         return this.exito("messages.updated.success",request);
 

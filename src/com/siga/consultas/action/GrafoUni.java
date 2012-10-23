@@ -1,9 +1,15 @@
 
 package com.siga.consultas.action;
 
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
-import com.atos.utils.*;
+import com.atos.utils.ClsLogging;
+import com.atos.utils.ReadProperties;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.SIGAException;
 
@@ -69,8 +75,8 @@ public class GrafoUni implements Grafo
 
 			rc = new RowsContainer(); 
 
-			ResourceBundle rp=ResourceBundle.getBundle("SIGA");
-			String dbuser = rp.getString("db.esquema.owner");
+			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			String dbuser = rp.returnProperty("db.esquema.owner");
 			
 			
 			String select = " SELECT C1.table_name AS MADRE, C2.table_name AS HIJA " +

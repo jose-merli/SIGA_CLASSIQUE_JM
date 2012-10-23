@@ -1,18 +1,26 @@
 package com.siga.consultas.action;
 
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 
 import com.atos.utils.ClsLogging;
+import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.SIGAException;
 
+import edu.uci.ics.jung.algorithms.shortestpath.UnweightedShortestPath;
 import edu.uci.ics.jung.exceptions.ConstraintViolationException;
-import edu.uci.ics.jung.graph.impl.*;
+import edu.uci.ics.jung.graph.impl.SimpleSparseVertex;
+import edu.uci.ics.jung.graph.impl.UndirectedSparseEdge;
+import edu.uci.ics.jung.graph.impl.UndirectedSparseGraph;
 import edu.uci.ics.jung.utils.Pair;
 import edu.uci.ics.jung.utils.UserDataContainer;
-import edu.uci.ics.jung.algorithms.shortestpath.*;
 
 public class GrafoBi implements Grafo
 {
@@ -46,8 +54,8 @@ public class GrafoBi implements Grafo
 			RowsContainer rc = null;
 			rc = new RowsContainer(); 
 	        
-			ResourceBundle rp=ResourceBundle.getBundle("SIGA");
-			String dbuser = rp.getString("db.esquema.owner");
+			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			String dbuser = rp.returnProperty("db.esquema.owner");
 			
 			String select = " SELECT C1.table_name AS MADRE, C2.table_name AS HIJA " +
 				            " FROM all_constraints C1, all_constraints C2 " +

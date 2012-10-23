@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Hashtable;
-import java.util.ResourceBundle;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +23,9 @@ import org.apache.struts.upload.FormFile;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.LogFileWriter;
+import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenClienteAdm;
@@ -144,8 +145,8 @@ public class CargaProductosAction extends MasterAction {
 			FormFile file = form.getFichero();			
 		    String nombre ="";
 		    
-		    ResourceBundle rp=ResourceBundle.getBundle("SIGA");
-		    String pathTemporal = rp.getString("facturacion.directorioFisicoTemporalFacturasJava") + File.separator + "tmp" + File.separator + idInstitucion;
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		    String pathTemporal = rp.returnProperty("facturacion.directorioFisicoTemporalFacturasJava") + File.separator + "tmp" + File.separator + idInstitucion;
 		    
 			if(file==null || file.getFileSize()<1){
 		    	throw new SIGAException("messages.general.error.ficheroNoExiste");

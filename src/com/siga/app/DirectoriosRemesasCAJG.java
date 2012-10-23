@@ -1,7 +1,9 @@
 package com.siga.app;
 
 import java.io.File;
-import java.util.ResourceBundle;
+
+import com.atos.utils.ReadProperties;
+import com.siga.Utilidades.SIGAReferences;
 
 
 public class DirectoriosRemesasCAJG {
@@ -12,8 +14,8 @@ public class DirectoriosRemesasCAJG {
 	public static void main(String[] args) throws Exception {
 		System.out.println("/****** Este script mueve los ficheros de la remesas a subdirectorios. ******/");	
 		
-		ResourceBundle rp = ResourceBundle.getBundle("SIGA");
-	 	String pathCAJG = rp.getString("cajg.directorioFisicoCAJG") + rp.getString("cajg.directorioCAJGJava");
+		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+	 	String pathCAJG = rp.returnProperty("cajg.directorioFisicoCAJG") + rp.returnProperty("cajg.directorioCAJGJava");
 	 	
 		File dirCajg = new File(pathCAJG);	
 //		File dirCajg = new File("C:\\Datos\\ficheros\\CAJG");

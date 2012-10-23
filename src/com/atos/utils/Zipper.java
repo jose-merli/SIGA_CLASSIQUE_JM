@@ -257,7 +257,7 @@ public class Zipper {
 
 
 //	 ReadProperties prop= new ReadProperties("Upload.properties" , req);
-    ReadProperties prop= new ReadProperties(SIGAReferences.RESOURCE_FILES.UPLOAD, req);
+    ReadProperties prop= new ReadProperties(SIGAReferences.RESOURCE_FILES.UPLOAD);
 
 	String sDrive=prop.returnProperty("UPLOAD.drive");
 
