@@ -1,5 +1,6 @@
 <!-- busquedaModalPorTipoSJCS.jsp -->
 <!-- CABECERA JSP -->
+<%@page import="com.atos.utils.ReadProperties"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -18,6 +19,7 @@
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
  <%@ page import="java.util.Properties"%>
+ <%@page import="com.siga.Utilidades.SIGAReferences"%>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();
@@ -51,8 +53,8 @@
 		leyenda = "gratuita.busquedaPorTipoSJCS.SOJ.literal.leyenda";
 	}
 
-	java.util.ResourceBundle rp=java.util.ResourceBundle.getBundle("SIGA");
-	String idordinario = rp.getString("codigo.general.scstipoejg.ordinarios");
+	ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+	String idordinario = rp.returnProperty("codigo.general.scstipoejg.ordinarios");
 	String datoTipoOrdinario[]={idordinario,idordinario};	
 
 %>	

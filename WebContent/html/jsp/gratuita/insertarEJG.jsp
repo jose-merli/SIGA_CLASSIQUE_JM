@@ -1,5 +1,6 @@
 <!-- insertarEJG.jsp -->
 <!-- CABECERA JSP -->
+<%@page import="com.atos.utils.ReadProperties"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -14,6 +15,7 @@
 <!-- IMPORTS -->
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
+<%@page import="com.siga.Utilidades.SIGAReferences"%>
 
 <!-- JSP -->
 <% 
@@ -35,8 +37,8 @@ String app=request.getContextPath();
 	
 	String fecha = UtilidadesBDAdm.getFechaBD("");
 	
-	java.util.ResourceBundle rp=java.util.ResourceBundle.getBundle("SIGA");
-	String idordinario = rp.getString("codigo.general.scstipoejg.ordinarios");
+	ReadProperties rp=new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+	String idordinario = rp.returnProperty("codigo.general.scstipoejg.ordinarios");
 	String datoTipoOrdinario[]={idordinario,idordinario};	
 	
 %>

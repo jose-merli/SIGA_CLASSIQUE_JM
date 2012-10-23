@@ -13,6 +13,7 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.atos.utils.Row"%>
 <%@ page import="com.atos.utils.ClsLogging" %>
+<%@ page import="com.siga.Utilidades.UtilidadesString" %>
 
 <%@ page import="java.util.*"%>
 
@@ -27,7 +28,6 @@
    	ArrayList idADM = new ArrayList();
    	idADM.add(0,"ADG");
 %>
-
 <html>
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">

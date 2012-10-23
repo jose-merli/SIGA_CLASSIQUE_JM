@@ -16,10 +16,12 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
+<%@ page import="com.atos.utils.ReadProperties"%>
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
 <%@ page import="java.util.Hashtable"%>
 <%@ page import="java.util.ArrayList"%>
+<%@page import="com.siga.Utilidades.SIGAReferences"%>
 <!-- JSP -->
 <%	String app=request.getContextPath(); 
 	HttpSession ses=request.getSession(true);
@@ -58,8 +60,8 @@
 	String fecha = UtilidadesBDAdm.getFechaBD("");
 	String datoGuardia[] = {(String)usr.getLocation(),(String)miHash.get("IDTURNO")};	
 	
-	java.util.ResourceBundle rp=java.util.ResourceBundle.getBundle("SIGA");
-	String idordinario = rp.getString("codigo.general.scstipoejg.ordinarios");
+	ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+	String idordinario = rp.returnProperty("codigo.general.scstipoejg.ordinarios");
 	String datoTipoOrdinario[]={idordinario,idordinario};	
 	
 %>

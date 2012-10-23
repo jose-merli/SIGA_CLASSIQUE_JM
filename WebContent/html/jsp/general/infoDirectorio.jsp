@@ -1,5 +1,7 @@
 <!-- infoDirectorio.jsp -->
 
+<%@page import="com.atos.utils.ReadProperties"%>
+<%@page import="com.siga.Utilidades.SIGAReferences"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -19,8 +21,8 @@
 try {
 
 	Vector vDatos = null;
-	ResourceBundle rp=ResourceBundle.getBundle("SIGA");
-	String pathBase = rp.getString("facturacion.directorioFisicoPagosBancosJava");
+	ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+	String pathBase = rp.returnProperty("facturacion.directorioFisicoPagosBancosJava");
 	pathBase = pathBase.substring(0,pathBase.lastIndexOf("/ficheros"));
 	
 

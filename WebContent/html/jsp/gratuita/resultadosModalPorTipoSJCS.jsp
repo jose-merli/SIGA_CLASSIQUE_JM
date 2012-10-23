@@ -6,6 +6,7 @@
 	 
  
 <!-- CABECERA JSP -->
+<%@page import="com.atos.utils.ReadProperties"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -26,6 +27,7 @@
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="java.util.Vector"%>
 <%@ page import="java.util.Hashtable"%>
+<%@page import="com.siga.Utilidades.SIGAReferences"%>
 
 <%@ page import="com.siga.tlds.FilaExtElement"%>
  <%@ page import="java.util.Properties"%>
@@ -41,8 +43,8 @@
 	
 	BusquedaPorTipoSJCSForm formulario = (BusquedaPorTipoSJCSForm)request.getAttribute("BusquedaPorTipoSJCSForm");
 
-	java.util.ResourceBundle rp=java.util.ResourceBundle.getBundle("SIGA");
-	String idordinario = rp.getString("codigo.general.scstipoejg.ordinarios");
+	com.atos.utils.ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+	String idordinario = rp.returnProperty("codigo.general.scstipoejg.ordinarios");
 	String datoTipoOrdinario[]={idordinario,idordinario};	
 
 	String tipo = formulario.getTipo();

@@ -247,8 +247,8 @@
 %>
 
 <siga:TablaCabecerasFijas nombre="tablaDatos"
-	nombreCol="<%=nombresCol %>" tamanoCol="<%=tamanosCol %>"
-	alto="<%=alto%>" ajustePaginador="true" activarFilaSel="true" ajusteBotonera="true">
+	nombreCol="<%=nombresCol %>" tamanoCol="<%=tamanosCol %>" 
+	alto="100%" ajustePaginador="true" activarFilaSel="true" ajusteBotonera="true">
 
 	<!-- INICIO: ZONA DE REGISTROS -->
 	<!-- Aqui se iteran los diferentes registros de la lista -->
@@ -258,8 +258,7 @@
 	%>
 	<br>
 	<br>
-	<p class="titulitos" style="text-align: center"><siga:Idioma
-		key="messages.noRecordFound" /></p>
+	<p class="titulitos" style="text-align: center"><siga:Idioma key="messages.noRecordFound" /></p>
 	<br>
 	<br>
 	<%
