@@ -9,14 +9,15 @@
 	<!--************ Seguridad de Certificados INI ************-->
 
 	<context-param>
-		<param-name>client-cert-proxy-enabled</param-name>
+		<param-name>weblogic.httpd.clientCertProxy</param-name>
 		<param-value>true</param-value>
 	</context-param>
-
+	
 	<filter>
 		<filter-name>ResponseOverrideFilter</filter-name>
 		<filter-class>org.displaytag.filter.ResponseOverrideFilter</filter-class>
 	</filter>
+
 	<filter>
 		<filter-name>HttpsFilter</filter-name>
 		<filter-class>com.pra.core.filters.security.HttpsFilter</filter-class>
@@ -42,7 +43,7 @@
 		<filter-name>ResponseOverrideFilter</filter-name>
 		<url-pattern>*.jsp</url-pattern>
 	</filter-mapping>
-
+ 
 	<filter-mapping>
 		<filter-name>HttpsFilter</filter-name>
 		<url-pattern>/sigainit.do</url-pattern>
@@ -96,8 +97,6 @@
 
 	<!--************ Seguridad de Certificados FIN ************-->
 
-
-	<!--
 		<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoCenso</listener-class></listener>
 		<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoServicios</listener-class></listener>
 		<listener><listener-class>com.siga.servlets.SIGASvlInicializacionesSecundarias</listener-class></listener>
@@ -108,18 +107,18 @@
 		<listener><listener-class>com.siga.ws.cat.RespuestasResolucionesFTPListener</listener-class></listener>
 		<listener><listener-class>com.siga.ws.i2055.ResolucionesListener</listener-class></listener>
     	<listener><listener-class>com.siga.ws.i2055.DesignacionProcuradorListener</listener-class></listener>
-	-->
+
 	<listener>
 		<listener-class>com.siga.general.BusinessManagerListener</listener-class>
 	</listener>
 
 <listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoGeneracionCalendarios</listener-class></listener>
 
-	<!--
+
 		<servlet> <servlet-name>SIGASvlProcesoAutomaticoEnvios</servlet-name>
 		<servlet-class>com.siga.servlets.SIGASvlProcesoAutomaticoEnvios</servlet-class>
 		<load-on-startup>3</load-on-startup> </servlet>
-	-->
+
 	<servlet>
 		<servlet-name>SIGATest</servlet-name>
 		<servlet-class>com.siga.servlets.SIGASvlConectarBaseDatos</servlet-class>
@@ -130,12 +129,12 @@
 		<servlet-class>com.siga.servlets.SIGASvlProcesoEnvios</servlet-class>
 	</servlet>
 
-	<!--
+
 		<servlet>
 		<servlet-name>SIGASvlProcesoAutomaticoFacturacion</servlet-name>
 		<servlet-class>com.siga.servlets.SIGASvlProcesoAutomaticoFacturacion</servlet-class>
 		<load-on-startup>4</load-on-startup> </servlet>
-	-->
+
 	<servlet>
 		<servlet-name>SIGASvlProcesoFacturacion</servlet-name>
 		<servlet-class>com.siga.servlets.SIGASvlProcesoFacturacion</servlet-class>
@@ -269,22 +268,18 @@
 		<servlet-name>SIGATest</servlet-name>
 		<url-pattern>SIGATest.svrl</url-pattern>
 	</servlet-mapping>
-	<!--
 		<servlet-mapping>
 		<servlet-name>SIGASvlProcesoAutomaticoEnvios</servlet-name>
 		<url-pattern>SIGASvlProcesoAutomaticoEnvios.svrl</url-pattern>
 		</servlet-mapping>
-	-->
 	<servlet-mapping>
 		<servlet-name>SIGASvlProcesoEnvios</servlet-name>
 		<url-pattern>SIGASvlProcesoEnvios.svrl</url-pattern>
 	</servlet-mapping>
-	<!--
 		<servlet-mapping>
 		<servlet-name>SIGASvlProcesoAutomaticoFacturacion</servlet-name>
 		<url-pattern>SIGASvlProcesoAutomaticoFacturacion.svrl</url-pattern>
 		</servlet-mapping>
-	-->
 
 	<servlet-mapping>
 		<servlet-name>SIGASvlProcesoFacturacion</servlet-name>
