@@ -1293,7 +1293,7 @@
 							</tr>
 							
 							<tr>
-								<td  class="boxLabel">
+								<td class="boxLabel">
 									<input class="boxLabel" type="text" style="width:45px" tabindex="-1" readonly
 										value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.telefono3'/>" />								
 								</td>
@@ -1319,7 +1319,6 @@
 					</td>
 				</tr>
 				
-				<!-- RGG: cambio a formularios ligeros -->
 				<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD" />
 				<input type="hidden" name="actionModal" value="" />
 			</table>
@@ -1327,19 +1326,21 @@
 
 
 		<siga:ConjCampos>
-			<table style="width:100%;">
-				<tr>
-					<td class="labelText">
-						<siga:Idioma key="censo.SolicitudIncorporacion.literal.observaciones" /></td>
-					<td style="width:80%; padding-right: 10px;">
-						<textarea cols="120" rows="2" onKeyDown="cuenta(this,255)"
-							onChange="cuenta(this,255)" name="observaciones" id="observaciones"
-							style="overflow: hidden;" class="box" ></textarea>
+			<table border="0" cellpadding="5" cellspacing="0">
+				<tr>				
+					<td class="boxLabel">
+						<input class="boxLabel" type="text" style="width:100px" tabindex="-1" readonly
+								value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.observaciones'/>" />
+					</td>
+					<td>
+						<textarea class="<%=estiloBox%>" name="observaciones" 
+							onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"	
+							style="overflow-y:auto;overflow-x:hidden;width:850px;height:50px;resize:none;"
+						></textarea>
 					</td>
 				</tr>
 			</table>
 		</siga:ConjCampos>
-		<!-- TABLA -->
 	</html:form>
 
 	<siga:ConjBotonesAccion botones="V,G,R" clase="botonesDetalle" />
