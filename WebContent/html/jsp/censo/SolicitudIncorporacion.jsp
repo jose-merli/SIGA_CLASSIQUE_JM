@@ -27,6 +27,7 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.util.ArrayList"%>
+<%@ page import="com.siga.Utilidades.UtilidadesString"%>
 
 <!-- JSP -->
 <%
@@ -1038,7 +1039,7 @@
 						<input class="boxLabel" type="text" style="width:125px" tabindex="-1" readonly
 							value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.fechaSolicitud'/>" />
 					</td>
-					<td colspan="3">
+					<td colspan="3" class="boxLabel">
 						<input value="<%=fechaSol%>" type="text" id="fechaSolicitud" name="fechaSolicitud" class="boxConsulta" readonly tabindex="-1" />
 					</td>
 				</tr>
@@ -1211,13 +1212,15 @@
 										
 										<tr id="trEspanol2">
 											<html:hidden property="provincia" value=""/>
-											<td colspan="2">&nbsp;</td>  																																								
+											<td colspan="2" style="height:38px">
+												<siga:ToolTip id='idAyudaPoblaciones' imagen="/SIGA/html/imagenes/botonAyuda.gif" texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(user, "censo.SolicitudIncorporacion.ayudaPoblaciones"))%>' />
+											</td>  																																								
 
 											<td class="boxLabel">
 												<input class="boxLabel" type="text" style="width:68px" tabindex="-1" readonly
 													value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.provincia'/>" />											
 											</td>
-											<td>
+											<td class="boxLabel">
 												<input id="provincia_input" class="boxConsulta" type="text" style="width:310px" value="" readonly tabindex="-1" />
 											</td>
 										</tr>

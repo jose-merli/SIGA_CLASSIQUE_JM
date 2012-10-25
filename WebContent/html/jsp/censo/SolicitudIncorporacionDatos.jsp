@@ -1563,8 +1563,8 @@
 							<input class="boxLabel" type="text" style="width:92px" tabindex="-1" readonly
 								value="<siga:Idioma key='censo.SolicitudIncorporacionDatos.literal.fechaEstado'/>" />
 						</td>
-						<td>
-							<html:text property="fechaSolicitud" size="10" styleClass="boxConsulta" tabindex="-1" readonly="true"
+						<td class="boxLabel">
+							<html:text property="fechaEstado" size="10" styleClass="boxConsulta" tabindex="-1" readonly="true"
 								value="<%=datosPersonales.getFechaEstado()%>"/>
 						</td>	
 						
@@ -1594,7 +1594,7 @@
 							<input class="boxLabel" type="text" style="width:125px" tabindex="-1" readonly
 								value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.fechaSolicitud'/>" />
 						</td>
-						<td>
+						<td class="boxLabel">
 							<html:text property="fechaSolicitud" size="10" styleClass="boxConsulta" tabindex="-1" readonly="true"
 								value="<%=datosPersonales.getFechaSolicitud()%>"/>
 						</td>												
@@ -1937,15 +1937,17 @@
 												</td>
 											</tr>
 											
-											<tr id="trEspanol2">
+											<tr id="trEspanol2" style="height:38px">
 												<html:hidden property="provincia" value="<%=idProvincia%>"/>
-												<td colspan="2">&nbsp;</td>  																																								
+												<td colspan="2">
+													<siga:ToolTip id='idAyudaPoblaciones' imagen="/SIGA/html/imagenes/botonAyuda.gif" texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(user, "censo.SolicitudIncorporacion.ayudaPoblaciones"))%>' />
+												</td>  																																								
 
 												<td class="boxLabel">
 													<input class="boxLabel" type="text" style="width:68px" tabindex="-1" readonly
 														value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.provincia'/>" />											
 												</td>
-												<td>
+												<td class="boxLabel">
 													<input id="provincia_input" class="boxConsulta" type="text" style="width:310px"  
 														value="<%=provincia%>" readonly tabindex="-1" />
 												</td>
