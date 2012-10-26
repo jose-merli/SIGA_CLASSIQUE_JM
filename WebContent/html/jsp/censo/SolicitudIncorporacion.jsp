@@ -1178,7 +1178,7 @@
 								</td>															
 							</tr>						
 							
-							<tr>
+							<tr>								
 								<td colspan="2" style="padding:0px">
 									<table border="0" cellpadding="5" cellspacing="0">
 										<tr id="trEspanol1">
@@ -1208,7 +1208,7 @@
 													</select>					
 												</div>	
 											</td>
-										</tr>
+										</tr>																			
 										
 										<tr id="trEspanol2">
 											<html:hidden property="provincia" value=""/>
