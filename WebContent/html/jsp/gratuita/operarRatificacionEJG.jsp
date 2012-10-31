@@ -188,10 +188,10 @@
 	   	<td width="200">	
 			<% if (accion.equalsIgnoreCase("ver")) {%>
 			  	<html:text name="DefinirEJGForm"  onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);"  onblur="filterCharsNaN(this);" property="anioCAJG" size="4" maxlength="4" styleClass="boxConsulta"  value="<%=anioCAJG%>" readonly="true"></html:text> / 
-                <html:text name="DefinirEJGForm" property="numeroCAJG" size="6" maxlength="20" styleClass="boxConsulta" value="<%=numeroCAJG%>" readonly="true"></html:text>
+                <html:text name="DefinirEJGForm" property="numeroCAJG" size="10" maxlength="20" styleClass="boxConsulta" value="<%=numeroCAJG%>" readonly="true"></html:text>
 			<%} else {%>
 				<html:text name="DefinirEJGForm"  onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);"  onblur="filterCharsNaN(this);" property="anioCAJG" size="4" maxlength="4" styleClass="boxNumber"  value="<%=anioCAJG%>" ></html:text> / 
-                <html:text name="DefinirEJGForm" property="numeroCAJG" size="6" maxlength="20" styleClass="boxNumber" value="<%=numeroCAJG%>"></html:text>
+                <html:text name="DefinirEJGForm" property="numeroCAJG" size="10" maxlength="20" styleClass="boxNumber" value="<%=numeroCAJG%>"></html:text>
 			<%}%>
 	  	</td>
 		<td class="labelText">	
