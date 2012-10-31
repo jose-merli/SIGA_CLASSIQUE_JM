@@ -29,7 +29,7 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
-import org.redabogacia.sigaservices.app.services.EcomColaService;
+import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
@@ -160,35 +160,21 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 		request.getSession().removeAttribute("DATAPAGINADOR");
 	
 		try {
-			
-			int numeroResoluciones = 0;
-			
+						
 			int tipoCAJG = CajgConfiguracion.getTipoCAJG(getIDInstitucion(request));
 			
-			String mensaje = null;
+			String mensaje = UtilidadesString.getMensajeIdioma(getUserBean(request), "message.remesaResolucion.consultaLanzada");
 			
 			if (tipoCAJG == CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA) {
 				ResolucionesAsigna resolucionesAsigna = new ResolucionesAsigna();
-				numeroResoluciones = resolucionesAsigna.obtenerResoluciones(getUserBean(request), getIDInstitucion(request).toString());
-				
-				if (numeroResoluciones == 0) {//no se han obtenido nuevas resoluciones
-					mensaje = "message.remesaResolucion.asigna.noResoluciones";
-					mensaje = UtilidadesString.getMensajeIdioma(getUserBean(request), mensaje);
-				} else {
-					mensaje = "message.remesaResolucion.asigna.numeroResoluciones";			
-					mensaje = UtilidadesString.getMensaje(mensaje, new String[]{String.valueOf(numeroResoluciones)}, getUserBean(request).getLanguage());
-				}
+				resolucionesAsigna.obtenerResoluciones(getIDInstitucion(request).toString());
 			} else if (tipoCAJG == CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO) {
-								
-				mensaje = UtilidadesString.getMensajeIdioma(getUserBean(request), "message.remesaResolucion.consultaLanzada");
 				EcomColaService ecomColaService = (EcomColaService) BusinessManager.getInstance().getService(EcomColaService.class);				
 				EcomCola ecomCola = new EcomCola();
-				ecomCola.setIdinstitucion(Short.valueOf(getUserBean(request).getLocation()));
+				ecomCola.setIdinstitucion(Short.valueOf(getIDInstitucion(request).toString()));
 				ecomCola.setIdoperacion(AppConstants.OPERACION.XUNTA_RESOLUCIONES.getId());
-				ecomColaService.insert(ecomCola);				
+				ecomColaService.insertaColaConsultaResoluciones(ecomCola);				
 			}
-			
-			
 			
 			request.setAttribute("mensajeUsuario", mensaje);
 			

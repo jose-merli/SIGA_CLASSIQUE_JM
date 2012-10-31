@@ -15,13 +15,13 @@ import com.siga.beans.ScsEJGDESIGNABean;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsPersonaJGBean;
 import com.siga.beans.ScsTurnoBean;
-import com.siga.general.MasterForm;
+import com.siga.censo.form.DatosRegTelForm;
 
 
 /**
 * Maneja el formulario que mantiene la tabla SCS_EJGFORM
 */
- public class DefinirEJGForm extends MasterForm{
+ public class DefinirEJGForm extends DatosRegTelForm {
  	
 	 	
 	/*
@@ -941,21 +941,8 @@ import com.siga.general.MasterForm;
 			UtilidadesHash.set(this.datos, ScsEJGBean.C_IDORIGENCAJG, origen);
 		}
 	
-		private String urlDocumentacionDS;
-
-
-		/**
-		 * @return the urlDocumentacionDS
-		 */
-		public String getUrlDocumentacionDS() {
-			return urlDocumentacionDS;
-		}
-		/**
-		 * @param urlDocumentacionDS the urlDocumentacionDS to set
-		 */
-		public void setUrlDocumentacionDS(String urlDocumentacionDS) {
-			this.urlDocumentacionDS = urlDocumentacionDS;
-		}
+		
+		
 		public String getNumeroCAJG() {
 			return UtilidadesHash.getString(datos, ScsEJGBean.C_NUMERO_CAJG);
 		}

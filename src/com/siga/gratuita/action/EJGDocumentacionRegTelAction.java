@@ -26,7 +26,7 @@ import com.siga.gratuita.form.DefinirEJGForm;
 /**
  * Action de la documentación de un expediente
  */
-public class EJGDocumentacionRegTelAction extends MasterAction {
+public class EJGDocumentacionRegTelAction extends DocumentacionRegTelAction {
 
 	/* (non-Javadoc)
 	 * @see com.siga.general.MasterAction#abrir(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -35,6 +35,8 @@ public class EJGDocumentacionRegTelAction extends MasterAction {
 		String salto = null;
 
 		DefinirEJGForm form = (DefinirEJGForm) formulario;
+		
+		request.getSession().removeAttribute("DATAPAGINADOR");
 
 		request.getSession().removeAttribute("DATABACKUP");
 
@@ -72,9 +74,13 @@ public class EJGDocumentacionRegTelAction extends MasterAction {
 			if (scsEJGBean.getIdentificadorDS() == null || scsEJGBean.getIdentificadorDS().trim().equals("")) {
 				throw new SIGAException("expedientes.docushare.error.faltaColeccion");				
 			}
-			form.setUrlDocumentacionDS(getURLdocumentacionDS(docuShareHelper, scsEJGBean.getIdentificadorDS()));
-
+			
 			request.getSession().setAttribute("DATABACKUP", admEJG.beanToHashTable((ScsEJGBean) v.get(0)));
+			
+			request.setAttribute("IDENTIFICADORDS", scsEJGBean.getIdentificadorDS());	
+						
+			request.getSession().removeAttribute("MIGAS_DS");						
+			request.getSession().setAttribute("accion","ver");
 
 			salto = "inicioDS";
 

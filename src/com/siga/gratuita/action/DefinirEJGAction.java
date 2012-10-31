@@ -696,6 +696,15 @@ public class DefinirEJGAction extends MasterAction
 						
 			ScsSOJBean sojBean=null;
 			ScsDefinirSOJAdm sojAdm = new ScsDefinirSOJAdm (this.getUserBean(request));
+			
+			
+			if (miHash.get(ScsEJGBean.C_ANIO) != null && miHash.get(ScsEJGBean.C_NUMEJG) != null) {
+				String identificadorDS = getIdentificadorDocuShare(getUserBean(request), miHash.get(ScsEJGBean.C_ANIO).toString(), miHash.get(ScsEJGBean.C_NUMEJG).toString());
+				if (identificadorDS != null) {
+					miHash.put(ScsEJGBean.C_IDENTIFICADORDS, identificadorDS);
+				}
+			}
+			
 
 			// Desde SOJ o nuevo EJG
 			if (((miForm.getDesignaAnio()    == null || miForm.getDesignaAnio().equals("")) &&
@@ -734,12 +743,7 @@ public class DefinirEJGAction extends MasterAction
 				miHash.put(ScsEJGBean.C_USUCREACION,new Integer (usr.getUserName()));
 				miHash.put(ScsEJGBean.C_FECHACREACION,"sysdate");
 				
-				if (miHash.get(ScsEJGBean.C_ANIO) != null && miHash.get(ScsEJGBean.C_NUMEJG) != null) {
-					String identificadorDS = getIdentificadorDocuShare(getUserBean(request), miHash.get(ScsEJGBean.C_ANIO).toString(), miHash.get(ScsEJGBean.C_NUMEJG).toString());
-					if (identificadorDS != null) {
-						miHash.put(ScsEJGBean.C_IDENTIFICADORDS, identificadorDS);
-					}
-				}
+				
 				
 				// 1. Insertamos el EJG
 				if (!ejgAdm.insert(miHash)) {
@@ -1269,7 +1273,14 @@ public class DefinirEJGAction extends MasterAction
 		String valor = parametrosAdm.getValor(usrBean.getLocation(), ClsConstants.MODULO_GENERAL, "REGTEL", "0");
 		if (valor!=null && valor.equals("1")){
 			DocuShareHelper docuShareHelper = new DocuShareHelper(usrBean);
-			identificadorDS = docuShareHelper.createCollectionEJG(collectionTitle);			
+			
+			//primero buscamos si ya existe una collection con el mismo nombre			
+			identificadorDS = docuShareHelper.buscaCollectionEJG(collectionTitle);
+			
+			//si no existe la collection la creamos
+			if (identificadorDS == null || identificadorDS.trim().equals("")) {
+				identificadorDS = docuShareHelper.createCollectionEJG(collectionTitle);
+			}
 		}
 		return identificadorDS;
 	}
