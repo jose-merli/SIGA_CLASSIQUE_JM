@@ -92,23 +92,6 @@
 			document.forms[0].submit();	
 		}
 
-
-		function accionDownload(idDoc) {			
-			document.forms[0].modo.value="download";				
-			document.forms[0].target="submitArea";
-			document.forms[0].identificadorDs.value=idDoc;
-			document.forms[0].submit();
-		}
-
-		function accionConsultaCollection(posicion, identificador, title) {
-			document.forms[0].modo.value="ver";
-			document.forms[0].target="resultado1";
-			document.forms[0].identificadorDs.value=identificador;
-			document.forms[0].posicionDs.value=posicion;
-			
-			document.forms[0].titleDs.value=title;
-			document.forms[0].submit();
-		}
 	</script>
 
 	<body onload="cargarCollection()">

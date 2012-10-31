@@ -26,7 +26,7 @@
 <%@page import="java.text.DecimalFormat"%>
 
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
-<%@ page import="com.siga.censo.form.DatosColegialesForm"%>
+<%@ page import="com.siga.censo.form.DatosRegTelForm"%>
 <%@ page import="com.siga.tlds.FilaExtElement"%>
 <%@ page import="com.siga.Utilidades.paginadores.PaginadorVector"%>
 
@@ -37,7 +37,7 @@
 	String app = request.getContextPath();
 	HttpSession ses = request.getSession();
 	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
-	DatosColegialesForm form = (DatosColegialesForm) request.getAttribute("DatosColegialesForm");
+	DatosRegTelForm form = (DatosRegTelForm) request.getAttribute("DatosRegTelForm");
 		
 	List<DocuShareObjectVO> migas = (List<DocuShareObjectVO>)request.getSession().getAttribute("MIGAS_DS");
 	
@@ -87,7 +87,8 @@
 		registrosPorPagina = "0";
 	}
 	
-	String action=app+"/CEN_Censo_DocumentacionRegTel.do?noReset=true";
+	String action=app+request.getAttribute("javax.servlet.forward.servlet_path")+"?noReset=true";
+	
 	String modo=(String)request.getSession().getAttribute("accion");
 	
 	String botones = "";
@@ -113,30 +114,29 @@
 	
 	</head>
 	
-	<script type="text/javascript">
-		function download(fila) {			
-			var idDoc = document.getElementById('oculto' + fila + '_1');
-			if (idDoc) {			
-				parent.accionDownload(idDoc.value);
-			}
-		}
-
-		function consultaCollection(posicion, identificador, title) {
-			var objHidd = document.getElementById(identificador);
-			if (objHidd) {
-				parent.accionConsultaCollection(posicion, objHidd.value, title);
-			}
-		}
-	</script>
+	
 
 	<body>
 	
-		<html:form action="/CEN_Censo_DocumentacionRegTel.do?noReset=true" method="post" target="_self" style="display:none">
-			<input type="hidden" name="modo" value="<%=modo%>">			
-							
-			<input type="hidden" name="identificadorDS" value="">
-			
-		</html:form>
+		
+		
+		<script type="text/javascript">
+		
+		
+			function download(fila) {			
+				var idDoc = document.getElementById('oculto' + fila + '_1');
+				if (idDoc) {			
+					accionDownload(idDoc.value);
+				}
+			}
+	
+			function consultaCollection(posicion, identificador, title) {
+				var objHidd = document.getElementById(identificador);
+				if (objHidd) {
+					accionConsultaCollection(posicion, objHidd.value, title);
+				}
+			}
+		</script>
 		
 		<table>
 			<tr>
@@ -185,32 +185,32 @@
 		   activarFilaSel="true">		
 		   
 		   	<%
-		   				if (resultado != null && resultado.size() > 0) {
-		   					for (int i=0; i<resultado.size(); i++) {
-		  						DocuShareObjectVO dsObj = (DocuShareObjectVO)resultado.get(i);
-		  		
-				   		   		FilaExtElement[] elems = null;
-				   		   		botones = null;
-				   		   		String visibleConsulta = null;
-				   		   		String size = "&nbsp;";
-				   		   		String srcImage = "";
-				   		   		
-				   		   		if (DocuShareObjectVO.DocuShareTipo.COLLECTION.equals(dsObj.getTipo())) {
-				   		   			botones = "C";			
-				   		   			elems = new FilaExtElement[0];
-				   		   			visibleConsulta = "true";
-				   		   			srcImage = app + "/html/imagenes/ico_collection_ds.png";
-				   		   		} else if (DocuShareObjectVO.DocuShareTipo.DOCUMENT.equals(dsObj.getTipo())) {
-				   		   			botones = "";			
-			   		   				elems = new FilaExtElement[1];
-			   		   				elems[0] = new FilaExtElement("download", "download", SIGAConstants.ACCESS_READ);
-			   		   				visibleConsulta = "false";
-			   		   				size = DecimalFormat.getInstance().format(dsObj.getSizeKB()) + " KB";
-			   		   				srcImage = app + "/html/imagenes/ico_document_ds.png";
-				   		   		}
-				   		   		
-				   		   		
-				   		   	%>
+   				if (resultado != null && resultado.size() > 0) {
+   					for (int i=0; i<resultado.size(); i++) {
+  						DocuShareObjectVO dsObj = (DocuShareObjectVO)resultado.get(i);
+  		
+		   		   		FilaExtElement[] elems = null;
+		   		   		botones = null;
+		   		   		String visibleConsulta = null;
+		   		   		String size = "&nbsp;";
+		   		   		String srcImage = "";
+		   		   		
+		   		   		if (DocuShareObjectVO.DocuShareTipo.COLLECTION.equals(dsObj.getTipo())) {
+		   		   			botones = "C";			
+		   		   			elems = new FilaExtElement[0];
+		   		   			visibleConsulta = "true";
+		   		   			srcImage = app + "/html/imagenes/ico_collection_ds.png";
+		   		   		} else if (DocuShareObjectVO.DocuShareTipo.DOCUMENT.equals(dsObj.getTipo())) {
+		   		   			botones = "";			
+	   		   				elems = new FilaExtElement[1];
+	   		   				elems[0] = new FilaExtElement("download", "download", SIGAConstants.ACCESS_READ);
+	   		   				visibleConsulta = "false";
+	   		   				size = DecimalFormat.getInstance().format(dsObj.getSizeKB()) + " KB";
+	   		   				srcImage = app + "/html/imagenes/ico_document_ds.png";
+		   		   		}
+		   		   		
+		   		   		
+		   		   	%>
 		   		<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' elementos="<%=elems%>" visibleBorrado="false" visibleEdicion="false" visibleConsulta="<%=visibleConsulta%>" pintarEspacio="no" botones="<%=botones%>" clase="listaNonEdit">
 					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=dsObj.getId()%>">
 					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_2" value="<%=dsObj.getTitle()%>">
@@ -250,9 +250,26 @@
 			 		var objHiddDes = document.getElementById('oculto' + fila + '_2');
 			 		
 					if (objHiddId && objHiddDes) {
-						parent.accionConsultaCollection('', objHiddId.value, objHiddDes.value);
+						accionConsultaCollection('', objHiddId.value, objHiddDes.value);
 					}
 					
+				}
+			 	
+			 	function accionDownload(idDoc) {			
+			 		parent.document.forms[0].modo.value="download";				
+			 		parent.document.forms[0].target="submitArea";
+			 		parent.document.forms[0].identificadorDs.value=idDoc;
+			 		parent.document.forms[0].submit();
+				}
+
+				function accionConsultaCollection(posicion, identificador, title) {					
+					parent.document.forms[0].modo.value="ver";
+					parent.document.forms[0].target="resultado1";
+					parent.document.forms[0].identificadorDs.value=identificador;
+					parent.document.forms[0].posicionDs.value=posicion;
+					
+					parent.document.forms[0].titleDs.value=title;
+					parent.document.forms[0].submit();
 				}
 			 </script>
 		

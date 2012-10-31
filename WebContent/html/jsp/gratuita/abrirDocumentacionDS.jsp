@@ -53,6 +53,8 @@
 	numero = miHash.get("NUMERO").toString();
 	idTipoEJG = miHash.get("IDTIPOEJG").toString();
 
+	String identificadorDS = (String) request.getAttribute("IDENTIFICADORDS");
+	
 %>	
 
 <html>
@@ -74,13 +76,27 @@
 		<!-- FIN: TITULO Y LOCALIZACION -->
 	
 	</head>
+	
+	<script type="text/javascript">
+		function cargarCollection() {			
+			document.forms[0].modo.value="buscarPor";
+			document.forms[0].target="resultado1";	
+			document.forms[0].submit();	
+		}
+		
+		
+	</script>
 
-	<body class="detallePestanas">
+	<body class="detallePestanas" onload="cargarCollection()">	
 
 		<table class="tablaTitulo" align="center" cellspacing="0">
-		<html:form action="/EXP_Auditoria_Documentacion.do" method="POST" target="submitArea">
+		<html:form action="/JGR_EJG_DocumentacionRegTel.do?noReset=true" method="POST" target="submitArea">
 			<html:hidden property = "modo" value = ""/>
 			<html:hidden property = "hiddenFrame" value = "1"/>
+			
+			<input type="hidden" name="identificadorDs" value="<%=identificadorDS%>">
+			<input type="hidden" name="titleDs" value="">
+			<input type="hidden" name="posicionDs" value="">
 			
 			<tr>
 				<td id="titulo" class="titulitosDatos">					
@@ -115,7 +131,19 @@
 
 		</table>
 	
-		<iframe src="<%=f.getUrlDocumentacionDS()%>" name="docuShareIFrame" style="width:100%;height:100%;" frameborder="0"></iframe>
+		<!-- INICIO: IFRAME LISTA RESULTADOS -->
+			<iframe align="left" src="<%=app%>/html/jsp/general/blank.jsp"
+							id="resultado1"
+							name="resultado1"
+							scrolling="no"
+							frameborder="0"
+							marginheight="0"
+							marginwidth="0";					 
+							style="width:100%; height:100%;">
+			</iframe>
+			<!-- FIN: IFRAME LISTA RESULTADOS -->
+			
+			
 
 		<siga:ConjBotonesAccion botones="<%=botones2%>" clase="botonesDetalle"  />
 
