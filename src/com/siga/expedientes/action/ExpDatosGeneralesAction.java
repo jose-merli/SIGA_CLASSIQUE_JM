@@ -1877,7 +1877,15 @@ public class ExpDatosGeneralesAction extends MasterAction
 	 */
 	private String obtenerIdentificadorDS(UsrBean usrBean, String collectionTitle) throws SIGAException, ClsExceptions, DSException {
 		DocuShareHelper docuShareHelper = new DocuShareHelper(usrBean);
-		return docuShareHelper.createCollectionExpedientes(collectionTitle);		
+		
+		String idDS = docuShareHelper.buscaCollectionExpedientes(collectionTitle);
+		
+		if (idDS == null || idDS.trim().equals(idDS)) {
+			idDS = docuShareHelper.createCollectionExpedientes(collectionTitle);	
+		} 
+			
+		return idDS;
+				
 	}	
 	/**
 	 * Método que realiza la sincronia a la hora de insertar un nuevo registro y retorna el num.expediente

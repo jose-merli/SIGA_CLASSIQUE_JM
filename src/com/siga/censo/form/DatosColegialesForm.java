@@ -12,22 +12,18 @@
 
 package com.siga.censo.form;
 
-import com.siga.general.MasterForm;
-import com.siga.beans.*;
-import com.siga.censo.vos.ColegiadoVO;
+import com.siga.beans.CenColegiadoBean;
+import com.siga.beans.CenDatosColegialesEstadoBean;
 import com.siga.comun.vos.Vo;
 	
 
-public class DatosColegialesForm extends MasterForm{
+public class DatosColegialesForm extends DatosRegTelForm {
 	private static final long serialVersionUID = 7503641391569060315L;
 
 	private String idPersona=""; 		// Identificador persona
 	private String idInstitucion="";	// Identificador institucion
 	private String motivo="";			// Motivo (para el historico)
-	private String urlDocumentacionDS="";
-	private String identificadorDs;
-	private String titleDs;
-	private String posicionDs;
+	
 	
 	// Metodos set
 	
@@ -211,12 +207,7 @@ public class DatosColegialesForm extends MasterForm{
 		return (String)datos.get(CenDatosColegialesEstadoBean.C_IDESTADO);
 	}	
 
-	public String getUrlDocumentacionDS(){
-		return urlDocumentacionDS;
-	}	
-	public void setUrlDocumentacionDS(String urlDocumentacionDS){
-		this.urlDocumentacionDS=urlDocumentacionDS;
-	}
+	
 	
 	public String getNMutualista(){
 		return (String)datos.get(CenColegiadoBean.C_NMUTUALISTA);
@@ -226,28 +217,6 @@ public class DatosColegialesForm extends MasterForm{
 		return getIdPersona() + Vo.PK_SEPARATOR + getIdInstitucion();
 	}
 
-	public String getIdentificadorDs() {
-		return identificadorDs;
-	}
-
-	public void setIdentificadorDs(String identificadorDs) {
-		this.identificadorDs = identificadorDs;
-	}
-
-	public String getTitleDs() {
-		return titleDs;
-	}
-
-	public void setTitleDs(String titleDs) {
-		this.titleDs = titleDs;
-	}
-
-	public String getPosicionDs() {
-		return posicionDs;
-	}
-
-	public void setPosicionDs(String posicionDs) {
-		this.posicionDs = posicionDs;
-	}
+	
 
 }

@@ -6,12 +6,12 @@
  */
 package com.siga.expedientes.form;
 
-import com.siga.general.MasterForm;
+import com.siga.censo.form.DatosRegTelForm;
 
 /**
  * Formulario para la documentación de un expediente
  */
-public class ExpDocumentacionForm extends MasterForm {
+public class ExpDocumentacionForm extends DatosRegTelForm {
 	
 //    private String modo="";
     private String modal="";    
@@ -23,8 +23,7 @@ public class ExpDocumentacionForm extends MasterForm {
     private String ruta="";    
     private String regentrada="";    
     private String regsalida=""; 
-    private String urlDocumentacionDS;
-
+    
     
 	public String getIdEstado() {
 		return idEstado;
@@ -101,16 +100,5 @@ public class ExpDocumentacionForm extends MasterForm {
     public void setTituloVentana(String tituloVentana) {
         this.tituloVentana = tituloVentana;
     }
-	/**
-	 * @return the urlDocumentacionDS
-	 */
-	public String getUrlDocumentacionDS() {
-		return urlDocumentacionDS;
-	}
-	/**
-	 * @param urlDocumentacionDS the urlDocumentacionDS to set
-	 */
-	public void setUrlDocumentacionDS(String urlDocumentacionDS) {
-		this.urlDocumentacionDS = urlDocumentacionDS;
-	}
+	
 }

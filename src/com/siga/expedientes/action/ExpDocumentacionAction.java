@@ -38,11 +38,12 @@ import com.siga.expedientes.form.ExpDocumentacionForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.action.DocumentacionRegTelAction;
 
 /**
  * Action de la documentación de un expediente
  */
-public class ExpDocumentacionAction extends MasterAction {
+public class ExpDocumentacionAction extends DocumentacionRegTelAction {
 	
 	/* (non-Javadoc)
 	 * @see com.siga.general.MasterAction#abrir(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)

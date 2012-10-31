@@ -5,13 +5,11 @@
  */
 package com.siga.expedientes.action;
 
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.ActionMapping;
 
@@ -19,32 +17,25 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.DocuShareHelper;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.ExpCampoTipoExpedienteAdm;
 import com.siga.beans.ExpCampoTipoExpedienteBean;
-import com.siga.beans.ExpDocumentosAdm;
-import com.siga.beans.ExpDocumentosBean;
-import com.siga.beans.ExpEstadosAdm;
-import com.siga.beans.ExpEstadosBean;
 import com.siga.beans.ExpExpedienteAdm;
 import com.siga.beans.ExpExpedienteBean;
-import com.siga.beans.ExpFasesAdm;
-import com.siga.beans.ExpFasesBean;
 import com.siga.beans.ExpTipoExpedienteAdm;
 import com.siga.beans.ExpTipoExpedienteBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.expedientes.form.ExpDocumentacionForm;
-import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.action.DocumentacionRegTelAction;
 
 /**
  * Action de la documentación de un expediente
  */
-public class ExpDocumentacionRegTelAction extends MasterAction {
+public class ExpDocumentacionRegTelAction extends DocumentacionRegTelAction {
 	
 	/* (non-Javadoc)
 	 * @see com.siga.general.MasterAction#abrir(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -53,6 +44,9 @@ public class ExpDocumentacionRegTelAction extends MasterAction {
     	String salto=null;
     	
         try{
+        	
+        	request.getSession().removeAttribute("DATAPAGINADOR");
+        	
 	        ExpDocumentacionForm form = (ExpDocumentacionForm)formulario;
 	        
 			//Datos generales para todas las pestanhas
@@ -126,10 +120,14 @@ public class ExpDocumentacionRegTelAction extends MasterAction {
 	        		}
 		        }
 			}
-	        
-	        form.setUrlDocumentacionDS(getURLdocumentacionDS(getUserBean(request), expExpedienteBean.getIdentificadorDS()));
+	        	        	        
+			request.setAttribute("IDENTIFICADORDS", expExpedienteBean.getIdentificadorDS());	
+						
+			request.getSession().removeAttribute("MIGAS_DS");						
+			request.getSession().setAttribute("accion","ver");
+
 			salto = "inicioDS";
-	        
+			
         }catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,null); 
         }
