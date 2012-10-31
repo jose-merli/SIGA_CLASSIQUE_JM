@@ -30,7 +30,7 @@ public interface PCAJGConstantes {
 	public final String ANIO_ASISTENCIA = "ANIO_ASISTENCIA";
 	public final String NUMERO_ASISTENCIA = "NUMERO_ASISTENCIA";
 	public final String A_CODCOLEGIADO = "A_CODCOLEGIADO";
-	public final String A_FECHA = "A_FECHA";
+	public final String A_FECHAACTUACION = "A_FECHAACTUACION";
 	public final String A_SOX_ANO = "A_SOX_ANO";
 	public final String A_SOX_NUMERO = "A_SOX_NUMERO";
 	public final String A_EXP_CONS = "A_EXP_CONS";
@@ -38,6 +38,7 @@ public interface PCAJGConstantes {
 	public final String A_EXP_ANO = "A_EXP_ANO";
 	public final String A_EXP_NUM = "A_EXP_NUM";
 	public final String A_EXP_PROV = "A_EXP_PROV";
+	public final String A_FECHARESOLAXG = "A_FECHARESOLAXG";
 	public final String A_U_DESC_UNIDADE = "A_U_DESC_UNIDADE";
 	public final String A_U_COD_UNIDADE = "A_U_COD_UNIDADE";
 	public final String A_U_ANO_ATESTADO = "A_U_ANO_ATESTADO";
@@ -65,7 +66,7 @@ public interface PCAJGConstantes {
 	public final String ANIO_DESIGNA = "ANIO_DESIGNA";
 	public final String NUMERO_DESIGNA = "NUMERO_DESIGNA";
 	public final String TO_CODCOLEGIADO = "TO_CODCOLEGIADO";
-	public final String TO_FECHA = "TO_FECHA";
+	public final String TO_FECHAACTUACION = "TO_FECHAACTUACION";
 	public final String TO_SOX_ANO = "TO_SOX_ANO";
 	public final String TO_SOX_NUMERO = "TO_SOX_NUMERO";
 	public final String TO_EXP_CONS = "TO_EXP_CONS";
@@ -73,6 +74,7 @@ public interface PCAJGConstantes {
 	public final String TO_EXP_ANO = "TO_EXP_ANO";
 	public final String TO_EXP_NUM = "TO_EXP_NUM";
 	public final String TO_EXP_PROV = "TO_EXP_PROV";
+	public final String TO_FECHARESOLAXG = "TO_FECHARESOLAXG";
 	public final String TO_J_NUMEROSALASECCION = "TO_J_NUMEROSALASECCION";
 	public final String TO_J_PARTIDOXUDICIAL = "TO_J_PARTIDOXUDICIAL";
 	public final String TO_J_COD_ORGANO = "TO_J_COD_ORGANO";

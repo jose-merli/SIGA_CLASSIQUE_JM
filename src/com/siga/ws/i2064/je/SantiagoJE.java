@@ -35,31 +35,31 @@ import com.siga.ws.i2064.je.xsd.ATESTADOTYPE;
 import com.siga.ws.i2064.je.xsd.COMISARIATYPE;
 import com.siga.ws.i2064.je.xsd.DATOSXUDICIAISTYPE;
 import com.siga.ws.i2064.je.xsd.DOCIDENTIFICADORTYPE;
+import com.siga.ws.i2064.je.xsd.DOCIDENTIFICADORTYPE.DOCUMENTADO;
+import com.siga.ws.i2064.je.xsd.DOCIDENTIFICADORTYPE.DOCUMENTADO.TIPOIDENTIFICADOR;
+import com.siga.ws.i2064.je.xsd.DOCIDENTIFICADORTYPE.INDOCUMENTADO;
 import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument;
+import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones;
+import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias;
+import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado;
+import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado.Asuntos;
+import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado.Asuntos.Datosatestado;
+import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado.Asuntos.Datosatestado.OrganoJudicial;
+import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado.Asuntos.Datosatestado.UnidadYJuzgado;
+import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado.Asuntos.Datosatestado.UnidadYJuzgado.Juzgado;
+import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado.Asuntos.Datosatestado.UnidadYJuzgado.UnidadPolicial;
+import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado.Asuntos.IDExpAXG;
+import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado.Asuntos.IDExpAXG.Prov;
+import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Periodo;
+import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.TurnoOficio;
 import com.siga.ws.i2064.je.xsd.IMPORTETYPE;
 import com.siga.ws.i2064.je.xsd.NOMEAPELIDOSTYPE;
 import com.siga.ws.i2064.je.xsd.ORGANOXUDICIALTYPE;
 import com.siga.ws.i2064.je.xsd.PERSOATYPE;
 import com.siga.ws.i2064.je.xsd.PROCBAREMOTYPE;
+import com.siga.ws.i2064.je.xsd.PROCBAREMOTYPE.PROCPORCENTUAL;
 import com.siga.ws.i2064.je.xsd.SOXCLAVETYPE;
 import com.siga.ws.i2064.je.xsd.TRIMESTRETYPE;
-import com.siga.ws.i2064.je.xsd.DOCIDENTIFICADORTYPE.DOCUMENTADO;
-import com.siga.ws.i2064.je.xsd.DOCIDENTIFICADORTYPE.INDOCUMENTADO;
-import com.siga.ws.i2064.je.xsd.DOCIDENTIFICADORTYPE.DOCUMENTADO.TIPOIDENTIFICADOR;
-import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones;
-import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias;
-import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Periodo;
-import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.TurnoOficio;
-import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado;
-import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado.Asuntos;
-import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado.Asuntos.Datosatestado;
-import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado.Asuntos.IDExpAXG;
-import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado.Asuntos.Datosatestado.OrganoJudicial;
-import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado.Asuntos.Datosatestado.UnidadYJuzgado;
-import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado.Asuntos.Datosatestado.UnidadYJuzgado.Juzgado;
-import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado.Asuntos.Datosatestado.UnidadYJuzgado.UnidadPolicial;
-import com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado.Asuntos.IDExpAXG.Prov;
-import com.siga.ws.i2064.je.xsd.PROCBAREMOTYPE.PROCPORCENTUAL;
 import com.siga.ws.i2064.je.xsd.resposta.CargaAsunto;
 
 public class SantiagoJE extends InformeXML implements PCAJGConstantes {
@@ -113,7 +113,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 					colegiadoAsistencia.setCodColegiado(codColegiado); 
 				}			
 				Asuntos asuntos = colegiadoAsistencia.addNewAsuntos();
-				asuntos.setFecha(SigaWSHelper.getCalendar(hash.get(A_FECHA)));
+				asuntos.setFechaActuacion(SigaWSHelper.getCalendar(hash.get(A_FECHAACTUACION)));
 				
 				rellenaSoxClaveType(asuntos.addNewSOXCLAVE(), SigaWSHelper.getInteger("sox año", hash.get(A_SOX_ANO)), SigaWSHelper.getBigInteger("sox número", hash.get(A_SOX_NUMERO)));
 				
@@ -125,6 +125,8 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 				idExpAXG.setNum(SigaWSHelper.getBigInteger("número exp AXG", hash.get(A_EXP_NUM)));
 				in = SigaWSHelper.getInteger("prov exp AXG", hash.get(A_EXP_PROV));
 				if (in != null) idExpAXG.setProv(Prov.Enum.forInt(in+1));//El enumerado empieza en 1
+				
+				asuntos.setFechaResolAXG(SigaWSHelper.getCalendar(hash.get(A_FECHARESOLAXG)));
 				
 				Datosatestado datosatestado = asuntos.addNewDatosatestado();
 				
@@ -166,7 +168,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 					colegiadoTurnoOficio.setCodColegiado(codColegiado);
 				}
 				com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.TurnoOficio.Colegiado.Asuntos asuntos = colegiadoTurnoOficio.addNewAsuntos();
-				asuntos.setFecha(SigaWSHelper.getCalendar(hash.get(TO_FECHA)));
+				asuntos.setFechaActuacion(SigaWSHelper.getCalendar(hash.get(TO_FECHAACTUACION)));
 				
 				rellenaSoxClaveType(asuntos.addNewSOXCLAVE(), SigaWSHelper.getInteger("sox año", hash.get(TO_SOX_ANO)), SigaWSHelper.getBigInteger("sox número", hash.get(TO_SOX_NUMERO)));
 				
@@ -177,7 +179,11 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 				if (in != null) idExpAXG.setAno(in);
 				idExpAXG.setNum(SigaWSHelper.getBigInteger("número exp AXG", hash.get(TO_EXP_NUM)));
 				in = SigaWSHelper.getInteger("prov exp AXG", hash.get(TO_EXP_PROV));
-				idExpAXG.setProv(com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.TurnoOficio.Colegiado.Asuntos.IDExpAXG.Prov.Enum.forInt(in+1));//El enumerado empieza en 1
+				if (in != null) {
+					idExpAXG.setProv(com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.TurnoOficio.Colegiado.Asuntos.IDExpAXG.Prov.Enum.forInt(in+1));//El enumerado empieza en 1
+				}
+								
+				asuntos.setFechaResolAXG(SigaWSHelper.getCalendar(hash.get(TO_FECHARESOLAXG)));
 				
 				rellenaDatosJudiciales(asuntos.addNewDatosxudiciais(), hash);
 				rellenaPersonaType(asuntos.addNewSolicitante(), hash.get(TO_S_NOME), hash.get(TO_S_PRIMER_APELLIDO), hash.get(TO_S_SEGUNDO_APELLIDO), hash.get(TO_S_TIPOIDENTIFICADOR), hash.get(TO_S_NIF));
@@ -410,6 +416,9 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 				mapa.put(datosJustificacionesDocument.getDatosJustificaciones().getDomNode().getNamespaceURI(), "");
 				xmlOptions.setSaveSuggestedPrefixes(mapa);
 				
+				String xml = "<?xml version=\"1.0\" encoding=\"ISO8859-1\"?>" + datosJustificacionesDocument.xmlText(xmlOptions);
+				ClsLogging.writeFileLog("Fichero justificación económica de la Xunta del colegio " + idInstitucion + ":\n" + xml, 3);
+				
 				if (closeLogFile()) {					
 					throw new ErrorValidacionXML("El fichero xml generado no ha sido validado correctamente para la institución " + idInstitucion);
 				}		
@@ -425,7 +434,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 				String usuario = admParametros.getValor(idInstitucion, MODULO_SCS, PCAJG_JE_USUARIO, "");
 				
 				try {
-					resposta = stub.envioJustificacion(codAplicacion, usuario, "<?xml version=\"1.0\" encoding=\"ISO8859-1\"?>" + datosJustificacionesDocument.xmlText(xmlOptions));
+					resposta = stub.envioJustificacion(codAplicacion, usuario, xml);
 				} catch (Exception e) {
 					String s = "Se ha producido un error en el envío de WebService de Justificación económica para la institución " + idInstitucion;
 					ClsLogging.writeFileLogError(s, e, 3);

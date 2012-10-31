@@ -8,7 +8,7 @@ public class ResolucionesListener extends SIGAListenerAbstract {
 	@Override
 	protected void execute(UsrBean usrBean, String idInstitucion) throws Exception {				
 		ResolucionesAsigna resolucionesAsigna = new ResolucionesAsigna();
-		resolucionesAsigna.obtenerResoluciones(usrBean, idInstitucion);
+		resolucionesAsigna.obtenerResoluciones(idInstitucion);
 	}
 
 	@Override

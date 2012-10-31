@@ -10,8 +10,8 @@ import java.util.Hashtable;
 
 import javax.servlet.ServletContextEvent;
 
-import org.redabogacia.sigaservices.app.services.ParametersService;
 import org.redabogacia.sigaservices.app.services.SigaLog4jService;
+import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 
 import com.aspose.words.License;
 import com.atos.utils.ClsLogging;
@@ -62,7 +62,7 @@ public final class SIGASvlInicializacionesSecundarias extends SIGAContextListene
 	}
 
 	private void inicializarParametros() {
-		ParametersService parametersService = (ParametersService) BusinessManager.getInstance().getService(ParametersService.class);
+		GenParametrosService parametersService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
 		parametersService.initParameters();		
 	}
 

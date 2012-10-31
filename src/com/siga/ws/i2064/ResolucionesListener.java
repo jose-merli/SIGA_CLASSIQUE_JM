@@ -2,7 +2,7 @@ package com.siga.ws.i2064;
 
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
-import org.redabogacia.sigaservices.app.services.EcomColaService;
+import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 
 import com.atos.utils.UsrBean;
 import com.siga.general.SIGAListenerAbstract;
@@ -19,7 +19,7 @@ public class ResolucionesListener extends SIGAListenerAbstract {
 		EcomCola ecomCola = new EcomCola();
 		ecomCola.setIdinstitucion(Short.valueOf(idInstitucion));
 		ecomCola.setIdoperacion(AppConstants.OPERACION.XUNTA_RESOLUCIONES.getId());
-		ecomColaService.insert(ecomCola);
+		ecomColaService.insertaColaConsultaResoluciones(ecomCola);
 	}
 
 	@Override

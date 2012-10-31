@@ -35,8 +35,8 @@ public class GeneraConstantesXSD {
 //		String[] vistas = new String[]{"v_ws_2055_archivo","v_ws_2055_ejg","v_ws_2055_persona"};
 		
 		//SANTIAGO 2064
-		String[] vistas = new String[]{"V_WS_2064_EJG", "V_WS_2064_PERSONA", "V_WS_2064_CONTRARIOS", "V_WS_2064_DOCUMENTO"};
-//		String[] vistas = new String[]{"V_WS_JE_2064", "V_WS_JE_2064_ASIS", "V_WS_JE_2064_DESIGNA"};
+//		String[] vistas = new String[]{"V_WS_2064_EJG", "V_WS_2064_PERSONA", "V_WS_2064_CONTRARIOS", "V_WS_2064_DOCUMENTO"};
+		String[] vistas = new String[]{"V_WS_JE_2064", "V_WS_JE_2064_ASIS", "V_WS_JE_2064_DESIGNA"};
 		
 		//PAIS VASCO GUIPUZKOA
 //		String[] vistas = new String[]{"V_WS_2032_EJG", "V_WS_2032_SOLICITANTES", "V_WS_2032_PROFDESIG"};

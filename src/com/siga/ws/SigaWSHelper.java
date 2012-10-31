@@ -210,9 +210,12 @@ public class SigaWSHelper {
 	}
 	
 	private static List<String> validate(XmlObject xmlObject, boolean deleteEmptyNode) throws Exception {
+		ClsLogging.writeFileLog("Validando el xml contra el esquema: " + xmlObject.xmlText(), 3);
 		if (deleteEmptyNode) {
 			deleteEmptyNode(xmlObject.getDomNode());
+			ClsLogging.writeFileLog("Borrado de los nodos vacíos del xml para validar: " + xmlObject.xmlText(), 3);
 		}
+		
 		List<String> list = new ArrayList<String>();
 		XmlOptions xmlOptions = new XmlOptions();
 		List<XmlValidationError> errores = new ArrayList<XmlValidationError>();

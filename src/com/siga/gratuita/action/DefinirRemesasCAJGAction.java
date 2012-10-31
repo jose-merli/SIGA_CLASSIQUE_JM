@@ -34,7 +34,7 @@ import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
-import org.redabogacia.sigaservices.app.services.EcomColaService;
+import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 
 import weblogic.management.timer.Timer;
 

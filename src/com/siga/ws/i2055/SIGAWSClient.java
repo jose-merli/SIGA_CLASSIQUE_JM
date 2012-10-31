@@ -29,7 +29,7 @@ import org.redabogacia.sigaservices.app.AppConstants.EEJG_ESTADO;
 import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
 import org.redabogacia.sigaservices.app.AppConstants.OPERACION;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
-import org.redabogacia.sigaservices.app.services.EcomColaService;
+import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -58,9 +58,9 @@ import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes;
 import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.DtArchivos;
 import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.DtIntervinientes;
 import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.DtPretensionesDefender;
+import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.DtPretensionesDefender.Procedimiento;
 import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.DtSolicitante;
 import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.TurnadoAbogado;
-import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.DtPretensionesDefender.Procedimiento;
 
 import es.satec.businessManager.BusinessException;
 import es.satec.businessManager.BusinessManager;

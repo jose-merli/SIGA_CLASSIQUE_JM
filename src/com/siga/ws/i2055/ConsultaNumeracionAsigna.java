@@ -5,7 +5,7 @@ import java.util.Vector;
 
 import org.redabogacia.sigaservices.app.AppConstants.OPERACION;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
-import org.redabogacia.sigaservices.app.services.EcomColaService;
+import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
