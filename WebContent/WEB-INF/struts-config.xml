@@ -1559,11 +1559,13 @@
 			<forward name="mostrar" path="/html/jsp/expedientes/documentacion_Edit.jsp"/>
 		</action>
 		<action path="/EXP_Auditoria_DocumentacionRegTel" type="com.siga.expedientes.action.ExpDocumentacionRegTelAction" name="ExpDocumentacionForm" scope="request">
-			<forward name="inicioDS" path="/html/jsp/expedientes/abrirDocumentacionDS.jsp"/>			
+			<forward name="inicioDS" path="/html/jsp/expedientes/abrirDocumentacionDS.jsp"/>	
+			<forward name="listadoCollection" path="/html/jsp/censo/listadoCollectionDS.jsp"/>		
 		</action>
 		
 		<action path="/JGR_EJG_DocumentacionRegTel" type="com.siga.gratuita.action.EJGDocumentacionRegTelAction" name="DefinirEJGForm" scope="request">
-			<forward name="inicioDS" path="/html/jsp/gratuita/abrirDocumentacionDS.jsp"/>			
+			<forward name="inicioDS" path="/html/jsp/gratuita/abrirDocumentacionDS.jsp"/>		
+			<forward name="listadoCollection" path="/html/jsp/censo/listadoCollectionDS.jsp"/>	
 		</action>
 		
 		<action path="/CEN_Censo_DocumentacionRegTel" type="com.siga.censo.action.CensoDocumentacionRegTelAction" name="DatosColegialesForm" scope="request">
