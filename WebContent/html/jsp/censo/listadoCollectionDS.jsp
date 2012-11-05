@@ -93,6 +93,18 @@
 	
 	String botones = "";
 	
+	Boolean creaCollection = (Boolean)request.getAttribute("CREACOLLECTION");
+	
+	if (creaCollection == null) {
+		creaCollection = Boolean.FALSE;
+	}
+	
+	boolean accionVer = false;
+	String accion = (String) request.getSession().getAttribute("accion");
+	if (accion != null && accion.equals("ver")) {
+		accionVer = true;
+	}
+	
 	
 %>	
 
@@ -114,13 +126,7 @@
 	
 	</head>
 	
-	
-
-	<body>
-	
-		
-		
-		<script type="text/javascript">
+	<script type="text/javascript">
 		
 		
 			function download(fila) {			
@@ -136,7 +142,23 @@
 					accionConsultaCollection(posicion, objHidd.value, title);
 				}
 			}
-		</script>
+			
+			function preguntaCrearCollection() {
+				
+				if (<%=!accionVer%> && <%=creaCollection%> && confirm('<siga:Idioma key="messages.creaCollection"/>')) {
+					parent.document.forms[0].modo.value="buscarPor";
+					parent.document.forms[0].target="resultado1";
+					parent.document.forms[0].creaCollection.value=true;	
+					parent.document.forms[0].submit();
+				} else {
+					parent.document.forms[0].creaCollection.value=false;
+				}
+			}
+			
+	</script>
+
+	<body onload="preguntaCrearCollection()">	
+		
 		
 		<table>
 			<tr>
@@ -271,6 +293,8 @@
 					parent.document.forms[0].titleDs.value=title;
 					parent.document.forms[0].submit();
 				}
+				
+				
 			 </script>
 		
 

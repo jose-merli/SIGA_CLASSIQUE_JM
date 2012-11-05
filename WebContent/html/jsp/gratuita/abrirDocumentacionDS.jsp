@@ -78,10 +78,10 @@
 	</head>
 	
 	<script type="text/javascript">
-		function cargarCollection() {			
+		function cargarCollection() {
 			document.forms[0].modo.value="buscarPor";
 			document.forms[0].target="resultado1";	
-			document.forms[0].submit();	
+			document.forms[0].submit();		
 		}
 		
 		
@@ -97,6 +97,8 @@
 			<input type="hidden" name="identificadorDs" value="<%=identificadorDS%>">
 			<input type="hidden" name="titleDs" value="">
 			<input type="hidden" name="posicionDs" value="">
+			<input type="hidden" name="creaCollection" value="false">
+			
 			
 			<tr>
 				<td id="titulo" class="titulitosDatos">					

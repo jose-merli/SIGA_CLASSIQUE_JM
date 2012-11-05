@@ -36,6 +36,8 @@
 	DatosColegialesForm form = (DatosColegialesForm) request.getAttribute("DatosColegialesForm");
 	String nombre = (String) request.getAttribute("NOMBRE"); // Obtengo el nombre completo de la persona
 	String numero = (String) request.getAttribute("NUMERO"); // Obtengo el numero de colegiado de la persona	
+	String idPersona = (String) request.getAttribute("IDPERSONA"); // Obtengo el numero de colegiado de la persona
+	
 	
 	String identificadorDS = (String) request.getAttribute("IDENTIFICADORDS");
 
@@ -91,7 +93,6 @@
 			document.forms[0].target="resultado1";	
 			document.forms[0].submit();	
 		}
-
 	</script>
 
 	<body onload="cargarCollection()">
@@ -101,6 +102,9 @@
 			<input type="hidden" name="identificadorDs" value="<%=identificadorDS%>">
 			<input type="hidden" name="titleDs" value="">
 			<input type="hidden" name="posicionDs" value="">
+			
+			<input type="hidden" name="creaCollection" value="false">
+			<input type="hidden" name="idPersona" value="<%=idPersona%>">
 			
 			
 		</html:form>

@@ -87,6 +87,8 @@
 			<input type="hidden" name="titleDs" value="">
 			<input type="hidden" name="posicionDs" value="">
 			
+			<input type="hidden" name="creaCollection" value="false">
+			
 			<tr>
 				<td id="titulo" class="titulitosDatos">					
 					<%=f.getTituloVentana()%>
