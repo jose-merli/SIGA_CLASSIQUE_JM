@@ -14,9 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
-import com.atos.utils.ClsExceptions;
 import com.atos.utils.DocuShareHelper;
-import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
@@ -46,6 +44,7 @@ public class ExpDocumentacionRegTelAction extends DocumentacionRegTelAction {
         try{
         	
         	request.getSession().removeAttribute("DATAPAGINADOR");
+        	request.getSession().removeAttribute("DATABACKUP");
         	
 	        ExpDocumentacionForm form = (ExpDocumentacionForm)formulario;
 	        
@@ -54,7 +53,9 @@ public class ExpDocumentacionRegTelAction extends DocumentacionRegTelAction {
 			String idInstitucion_TipoExpediente = request.getParameter("idInstitucion_TipoExpediente");
 			String idTipoExpediente = request.getParameter("idTipoExpediente");
 			String numExpediente = request.getParameter("numeroExpediente");
-			String anioExpediente = request.getParameter("anioExpediente");							
+			String anioExpediente = request.getParameter("anioExpediente");	
+			
+			
 	               
 			
 	        //Recuperamos el nombre del denunciado
@@ -64,7 +65,8 @@ public class ExpDocumentacionRegTelAction extends DocumentacionRegTelAction {
 			hash.put(ExpExpedienteBean.C_IDTIPOEXPEDIENTE,idTipoExpediente);
 			hash.put(ExpExpedienteBean.C_NUMEROEXPEDIENTE,numExpediente);
 			hash.put(ExpExpedienteBean.C_ANIOEXPEDIENTE,anioExpediente);
-	
+			
+			
 	        ExpExpedienteAdm expAdm = new ExpExpedienteAdm(this.getUserBean(request));
 	        Vector vExp = expAdm.selectByPK(hash);        
 	        CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));
@@ -99,7 +101,7 @@ public class ExpDocumentacionRegTelAction extends DocumentacionRegTelAction {
 	        			 .append(": ").append((String)request.getParameter("anioExpediente")).append(" / ").append((String)request.getParameter("numeroExpediente"));
 
 	        form.setTituloVentana(tituloVentana.toString());
-	        
+	        	        
 	        if (expExpedienteBean.getIdentificadorDS() == null || expExpedienteBean.getIdentificadorDS().trim().equals("")) {
 	        	GenParametrosAdm parametrosAdm = new GenParametrosAdm(this.getUserBean(request));
 		        String valor = parametrosAdm.getValor(this.getUserBean(request).getLocation(), ClsConstants.MODULO_GENERAL, "REGTEL", "0");
@@ -121,7 +123,8 @@ public class ExpDocumentacionRegTelAction extends DocumentacionRegTelAction {
 		        }
 			}
 	        	        	        
-			request.setAttribute("IDENTIFICADORDS", expExpedienteBean.getIdentificadorDS());	
+			request.setAttribute("IDENTIFICADORDS", expExpedienteBean.getIdentificadorDS());
+			request.getSession().setAttribute("DATABACKUP", hash);
 						
 			request.getSession().removeAttribute("MIGAS_DS");						
 			request.getSession().setAttribute("accion","ver");
@@ -134,23 +137,33 @@ public class ExpDocumentacionRegTelAction extends DocumentacionRegTelAction {
         
         return salto;
 	}
-    
-	
-	
-	/**
-	 * Obtiene la url del DocuShare para el identificador de la colección pasada por parémtro
-	 * @param usrBean
-	 * @param identificadorDS
-	 * @return
-	 * @throws ClsExceptions
-	 * @throws SIGAException
-	 */
-	private String getURLdocumentacionDS(UsrBean usrBean, String identificadorDS) throws ClsExceptions, SIGAException {
-		if (identificadorDS == null || identificadorDS.trim().equals("")) {
-			//El expediente no tiene Documentación asociada
-			throw new SIGAException("expedientes.docushare.error.sinIdentificador");
-		}
-		DocuShareHelper docuShareHelper = new DocuShareHelper(usrBean);
-		return docuShareHelper.getURLCollection(identificadorDS);
+
+
+
+	@Override
+	protected String createCollection(MasterForm formulario, HttpServletRequest request) throws Exception {		
+		Hashtable hash = (Hashtable) request.getSession().getAttribute("DATABACKUP");
+		String idDS = null;
+		
+		ExpExpedienteAdm expAdm = new ExpExpedienteAdm(this.getUserBean(request));
+        Vector vExp = expAdm.selectByPK(hash);
+        ExpExpedienteBean expExpedienteBean = (ExpExpedienteBean)vExp.elementAt(0);
+        
+        if (expExpedienteBean != null && expExpedienteBean.getIdInstitucion_tipoExpediente() != null && expExpedienteBean.getIdTipoExpediente() != null) {
+        	ExpTipoExpedienteAdm expTipoExpedienteAdm = new ExpTipoExpedienteAdm(getUserBean(request));
+			Vector v = expTipoExpedienteAdm.select(expExpedienteBean.getIdInstitucion_tipoExpediente().toString(), expExpedienteBean.getIdTipoExpediente().toString());
+			if (v != null && v.size() == 1) {
+				ExpTipoExpedienteBean expTipoExpedienteBean = (ExpTipoExpedienteBean) v.get(0);
+				String title = DocuShareHelper.getTitleExpedientes(expTipoExpedienteBean.getNombre(), expExpedienteBean.getAnioExpediente().toString(), expExpedienteBean.getNumeroExpediente().toString());
+				
+				DocuShareHelper docuShareHelper = new DocuShareHelper(getUserBean(request));
+				idDS = docuShareHelper.createCollectionEJG(title);
+				expExpedienteBean.setIdentificadorDS(idDS);
+				expAdm.updateDirect(expExpedienteBean);
+			}
+        }
+		
+		request.getSession().removeAttribute("DATABACKUP");
+		return idDS;
 	}
 }

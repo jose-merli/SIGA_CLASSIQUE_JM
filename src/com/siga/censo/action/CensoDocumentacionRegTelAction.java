@@ -1,13 +1,10 @@
 package com.siga.censo.action;
 
-import java.io.File;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts.action.ActionMapping;
 
-import com.atos.utils.ClsExceptions;
 import com.atos.utils.DocuShareHelper;
 import com.atos.utils.UsrBean;
 import com.siga.beans.CenColegiadoAdm;
@@ -49,6 +46,7 @@ public class CensoDocumentacionRegTelAction extends DocumentacionRegTelAction {
 			nombre = personaAdm.obtenerNombreApellidos(String.valueOf(miForm.getIdPersona()));
 			request.setAttribute("NOMBRE", nombre);
 			request.setAttribute("NUMERO", numero);
+			request.setAttribute("IDPERSONA", miForm.getIdPersona());
 
 			DocuShareHelper docuShareHelper = new DocuShareHelper(userBean);
 
@@ -63,10 +61,6 @@ public class CensoDocumentacionRegTelAction extends DocumentacionRegTelAction {
 					colegiadoBean.setIdentificadorDS(idDS);
 					colegiadoAdm.updateDirect(colegiadoBean);
 				}
-			}
-
-			if (colegiadoBean.getIdentificadorDS() == null || colegiadoBean.getIdentificadorDS().trim().equals("")) {
-				throw new SIGAException("messages.censo.docushare.faltaColeccion");				
 			}
 		
 			
@@ -84,24 +78,27 @@ public class CensoDocumentacionRegTelAction extends DocumentacionRegTelAction {
 		return salto;
 	}
 	
-	
-	
 
 
-	/**
-	 * Obtiene la url del DocuShare para el identificador de la colección pasada por parametro
-	 * @param docuShareHelper
-	 * @param identificadorDS
-	 * @return
-	 * @throws ClsExceptions
-	 * @throws SIGAException
-	 */
-	private String getURLdocumentacionDS(DocuShareHelper docuShareHelper, String identificadorDS) throws ClsExceptions, SIGAException {
-		if (identificadorDS == null || identificadorDS.trim().equals("")) {
-			//El colegiado no tiene Documentación asociada
-			throw new SIGAException("messages.censo.docushare.sinIdentificador");
+	@Override
+	protected String createCollection(MasterForm formulario, HttpServletRequest request) throws Exception {
+		CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm (this.getUserBean(request));
+		DatosColegialesForm miForm = (DatosColegialesForm) formulario;
+		
+		CenColegiadoBean colegiadoBean = colegiadoAdm.getDatosColegiales(new Long(miForm.getIdPersona()), getIDInstitucion(request));
+		
+		String title = null;
+		if (colegiadoBean.getComunitario()!=null && colegiadoBean.getComunitario().equals("1")){
+			title = colegiadoBean.getNComunitario();
+		} else {
+			title = colegiadoBean.getNColegiado();
 		}
-
-		return docuShareHelper.getURLCollection(identificadorDS);
+		DocuShareHelper docuShareHelper = new DocuShareHelper(getUserBean(request));
+		String idDS = docuShareHelper.createCollectionCenso(title);
+		colegiadoBean.setIdentificadorDS(idDS);		
+		
+		colegiadoAdm.updateDirect(colegiadoBean);
+		
+		return idDS;
 	}
 }

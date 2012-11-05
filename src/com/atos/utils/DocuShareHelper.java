@@ -61,8 +61,12 @@ public class DocuShareHelper {
 	
 	private static String ID_DOCUSHARE_EXPEDIENTES = "ID_DOCUSHARE_EXPEDIENTES";
 	private static String ID_DOCUSHARE_EJG = "ID_DOCUSHARE_EJG";
+	private static String ID_DOCUSHARE_CENSO = "ID_DOCUSHARE_CENSO";
+	
 	
 	private static String PATH_DOCUSHARE = "PATH_DOCUSHARE";
+	
+	private static String PATH_DOCUSHARE_DEBUG = "c:/ds";
 
 	private UsrBean usrBean;
 	private DSServer server;
@@ -174,6 +178,17 @@ public class DocuShareHelper {
 	 * @throws SIGAException
 	 * @throws ClsExceptions
 	 */
+	public String createCollectionCenso(String collectionTitle) throws SIGAException, ClsExceptions, DSException {
+		return createCollection(ID_DOCUSHARE_CENSO, collectionTitle);
+	}
+	
+	/**
+	 * 
+	 * @param collectionTitle Nombre de la carpeta o collecion que se quiere crear
+	 * @return
+	 * @throws SIGAException
+	 * @throws ClsExceptions
+	 */
 	public String createCollectionEJG(String collectionTitle) throws SIGAException, ClsExceptions, DSException {
 		return createCollection(ID_DOCUSHARE_EJG, collectionTitle);
 	}	
@@ -199,7 +214,7 @@ public class DocuShareHelper {
 	private String createCollection(String ID_DOCUSHARE, String collectionTitle) throws SIGAException, ClsExceptions, DSException {
 
 		if (MODO_DEBUG_LOCAL) {
-			return createCollectionMODO_DEBUG_LOCAL();
+			return createCollectionMODO_DEBUG_LOCAL(collectionTitle);
 		}
 		
 		String identificadorDS = null;				
@@ -231,8 +246,10 @@ public class DocuShareHelper {
 		return identificadorDS;
 	}
 	
-	private String createCollectionMODO_DEBUG_LOCAL() {
-		return "Collection-11";
+	private String createCollectionMODO_DEBUG_LOCAL(String collectionTitle) {
+		File file = new File(PATH_DOCUSHARE_DEBUG, collectionTitle);
+		file.mkdirs();
+		return file.getAbsolutePath();
 	}
 	
 	/**
@@ -243,6 +260,12 @@ public class DocuShareHelper {
 	 * @throws Exception
 	 */
 	private String buscaCollection(String pathRecibido, String title) throws ClsExceptions, DSException, SIGAException {
+		
+		if (MODO_DEBUG_LOCAL) {
+			return buscaCollectionMODO_DEBUG_LOCAL(PATH_DOCUSHARE_DEBUG, title);
+		}
+		
+		
 		String idColl = null;
 
 		createSession();
@@ -270,6 +293,15 @@ public class DocuShareHelper {
 		return idColl;
 	}
 	
+	private String buscaCollectionMODO_DEBUG_LOCAL(String parent, String title) {
+		File file = new File(parent, title);
+		if (file != null && file.exists()) {
+			return file.getAbsolutePath();
+		} else {
+			return null;
+		}
+	}
+
 	/**
 	 * Busca un nombre de collection sobre el path de la collection de expedientes
 	 * @param title

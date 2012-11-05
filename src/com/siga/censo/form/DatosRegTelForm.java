@@ -7,8 +7,17 @@ public class DatosRegTelForm extends MasterForm {
 	private String identificadorDs;
 	private String titleDs;
 	private String posicionDs;
+	private boolean creaCollection = false;
 	
 		
+	public boolean isCreaCollection() {
+		return creaCollection;
+	}
+
+	public void setCreaCollection(boolean creaCollection) {
+		this.creaCollection = creaCollection;
+	}
+
 	public String getIdentificadorDs() {
 		return identificadorDs;
 	}
