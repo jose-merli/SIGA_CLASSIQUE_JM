@@ -17,8 +17,6 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.DocuShareHelper;
-import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenPersonaAdm;
@@ -38,12 +36,11 @@ import com.siga.expedientes.form.ExpDocumentacionForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.gratuita.action.DocumentacionRegTelAction;
 
 /**
  * Action de la documentación de un expediente
  */
-public class ExpDocumentacionAction extends DocumentacionRegTelAction {
+public class ExpDocumentacionAction extends MasterAction {
 	
 	/* (non-Javadoc)
 	 * @see com.siga.general.MasterAction#abrir(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -428,21 +425,5 @@ public class ExpDocumentacionAction extends DocumentacionRegTelAction {
 	    return exitoModal("messages.inserted.success",request);
 	    
 	}
-	
-	/**
-	 * Obtiene la url del DocuShare para el identificador de la colección pasada por parémtro
-	 * @param usrBean
-	 * @param identificadorDS
-	 * @return
-	 * @throws ClsExceptions
-	 * @throws SIGAException
-	 */
-	private String getURLdocumentacionDS(UsrBean usrBean, String identificadorDS) throws ClsExceptions, SIGAException {
-		if (identificadorDS == null || identificadorDS.trim().equals("")) {
-			//El expediente no tiene Documentación asociada
-			throw new SIGAException("expedientes.docushare.error.sinIdentificador");
-		}
-		DocuShareHelper docuShareHelper = new DocuShareHelper(usrBean);
-		return docuShareHelper.getURLCollection(identificadorDS);
-	}
+
 }

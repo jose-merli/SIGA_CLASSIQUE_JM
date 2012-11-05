@@ -65,22 +65,25 @@ public class EJGDocumentacionRegTelAction extends DocumentacionRegTelAction {
 				if (scsEJGBean.getAnio() != null) {
 					String title = DocuShareHelper.getTitleEJG(scsEJGBean.getAnio().toString(), scsEJGBean.getNumEJG());
 					String idDS = docuShareHelper.buscaCollectionEJG(title);
+										
 					if (idDS != null) {
 						scsEJGBean.setIdentificadorDS(idDS);
 						admEJG.updateDirect(scsEJGBean);
 					}
 				}
 			}
-			if (scsEJGBean.getIdentificadorDS() == null || scsEJGBean.getIdentificadorDS().trim().equals("")) {
-				throw new SIGAException("expedientes.docushare.error.faltaColeccion");				
-			}
+//			if (scsEJGBean.getIdentificadorDS() == null || scsEJGBean.getIdentificadorDS().trim().equals("")) {
+//				throw new SIGAException("expedientes.docushare.error.faltaColeccion");				
+//			}
 			
 			request.getSession().setAttribute("DATABACKUP", admEJG.beanToHashTable((ScsEJGBean) v.get(0)));
 			
-			request.setAttribute("IDENTIFICADORDS", scsEJGBean.getIdentificadorDS());	
+			request.setAttribute("IDENTIFICADORDS", scsEJGBean.getIdentificadorDS());
+			
+			
 						
 			request.getSession().removeAttribute("MIGAS_DS");						
-			request.getSession().setAttribute("accion","ver");
+			
 
 			salto = "inicioDS";
 
@@ -92,20 +95,19 @@ public class EJGDocumentacionRegTelAction extends DocumentacionRegTelAction {
 		return salto;
 	}
 
-	/**
-	 * Obtiene la url del DocuShare para el identificador de la colección pasada por parémtro
-	 * @param usrBean
-	 * @param identificadorDS
-	 * @return
-	 * @throws ClsExceptions
-	 * @throws SIGAException
-	 */
-	private String getURLdocumentacionDS(DocuShareHelper docuShareHelper, String identificadorDS) throws ClsExceptions, SIGAException {
-		if (identificadorDS == null || identificadorDS.trim().equals("")) {
-			//El expediente no tiene Documentación asociada
-			throw new SIGAException("expedientes.docushare.error.sinIdentificador");
-		}
 
-		return docuShareHelper.getURLCollection(identificadorDS);
+	@Override
+	protected String createCollection(MasterForm formulario, HttpServletRequest request) throws Exception {
+		Hashtable hashtable = (Hashtable)request.getSession().getAttribute("DATABACKUP");
+		
+		String title = DocuShareHelper.getTitleEJG(hashtable.get(ScsEJGBean.C_ANIO).toString(), hashtable.get(ScsEJGBean.C_NUMEJG).toString());
+		DocuShareHelper docuShareHelper = new DocuShareHelper(getUserBean(request));
+		String idDS = docuShareHelper.createCollectionEJG(title);
+		hashtable.put(ScsEJGBean.C_IDENTIFICADORDS, idDS);
+		
+		ScsEJGAdm admEJG = new ScsEJGAdm(this.getUserBean(request));
+		admEJG.updateDirect(admEJG.hashTableToBean(hashtable));
+		
+		return idDS;
 	}
 }

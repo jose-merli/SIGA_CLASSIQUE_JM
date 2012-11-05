@@ -21,9 +21,14 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 
-public class DocumentacionRegTelAction extends MasterAction {
+public abstract class DocumentacionRegTelAction extends MasterAction {
 
 	
+	protected abstract String createCollection(MasterForm formulario, HttpServletRequest request) throws Exception;
+	
+	/**
+	 * 
+	 */
 	protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {	
 		
 		try {
@@ -51,7 +56,19 @@ public class DocumentacionRegTelAction extends MasterAction {
 				databackup.put("paginador", paginador);
 				databackup.put("datos", datos);
 
-			} else {
+			} else {	
+				
+				String accion = (String)request.getSession().getAttribute("accion");
+				boolean accionVer = false;
+				if (accion != null && accion.trim().equals("ver")) {
+					accionVer = true;
+				}
+				
+				if (miForm.isCreaCollection() && !accionVer && !getUserBean(request).isComision()) {
+					String idDS = createCollection(formulario, request);
+					miForm.setIdentificadorDs(idDS);	
+					request.getSession().removeAttribute("MIGAS_DS");
+				} 
 
 				List<DocuShareObjectVO> migas = (List<DocuShareObjectVO>) request.getSession().getAttribute("MIGAS_DS");
 				
@@ -74,7 +91,13 @@ public class DocumentacionRegTelAction extends MasterAction {
 					//dsObjectVO.setTitle("HOME");
 					migas.add(dsObjectVO);
 					request.getSession().setAttribute("MIGAS_DS", migas);
-				}
+					
+					boolean preguntaCreaCollection = false;
+					if (!accionVer && (miForm.getIdentificadorDs() == null || miForm.getIdentificadorDs().trim().equals("")) && !getUserBean(request).isComision()) {
+						preguntaCreaCollection = true;
+					}
+					request.setAttribute("CREACOLLECTION", Boolean.valueOf(preguntaCreaCollection));
+				}			
 				
 				
 				databackup = new HashMap();				
@@ -97,13 +120,14 @@ public class DocumentacionRegTelAction extends MasterAction {
 				}
 
 			}
-			request.getSession().setAttribute("accion","ver");
+			
 				
 		} catch (Exception e) {
 			throwExcp("messages.general.error", e, null);
 		}
 		return "listadoCollection";		
 	}
+	
 
 	/**
 	 * 
@@ -135,4 +159,5 @@ public class DocumentacionRegTelAction extends MasterAction {
 		
 		return "descargaFichero";
 	}
+	
 }
