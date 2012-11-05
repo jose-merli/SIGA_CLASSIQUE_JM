@@ -72,7 +72,7 @@ public class GestionMutualidadAction extends MasterAction {
 						mapDestino = abrir (mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("actualizaEstado")){
 						mapDestino = actualizaEstado (mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("editar")){
+					}else if ( accion.equalsIgnoreCase("editar") || accion.equalsIgnoreCase("ver") ){
 						mapDestino = inicioSolicitud(mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("actualizaEstadoMutualista")){
 						mapDestino = actualizaEstadoMutualista (mapping, miForm, request, response);
