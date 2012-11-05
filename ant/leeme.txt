@@ -1,0 +1,5 @@
+Para poder hacer entregas a nuevoDesa hace falta crear las siguientes unidades de red 
+
+v:\ que acceda a 	\\10.60.3.77\Datos        	[root@desarrollo]
+
+y:\ que acceda a 	\\10.60.3.82\iisiga     	[Administrador@desarrollo]

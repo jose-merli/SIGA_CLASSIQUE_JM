@@ -1,0 +1,337 @@
+﻿
+<project name="SIGA" default="Desplegar nueva versión" basedir=".">
+	
+	
+	<!-- ************************************************* PROPIEDADES ************************************************ -->
+	<property file="build.properties"/>
+	
+	<property name="home"  		value="${proyecto.home}"/>
+	<property name="bin.home"	value="${home}/bin"/>			
+
+	<property name="descriptors.home"    value="${home}/etc"/>	
+	<property name="conf.home"           value="${home}/conf"/>
+	<property name="lib.home"   		value="${home}/lib-web"/>
+	<property name="html.home"   		value="${home}/html"/>
+
+	<property name="classes.lib.deploy.home"	value="${web.deploy.home}/WEB-INF/classes"/>
+	<property name="tlds.deploy.home"			value="${web.deploy.home}/WEB-INF/tlds"/>
+	<property name="fopFonts.deploy.home"    	value="${web.deploy.home}/WEB-INF/fopFonts"/>
+	<property name="properties.deploy.home" 	value="${web.deploy.home}/WEB-INF/properties"/>
+	<property name="web.lib.deploy.home"   		value="${web.deploy.home}/WEB-INF/lib"/>			
+	<property name="html.deploy.home"   		value="${web.deploy.home}/html"/>			
+
+	<property name="destinoapplet" value="${home}/html/jsp/administracion/processTree/AppletPermisos.jar"/>
+	<property name="destinoappletIP" value="${home}/html/jsp/general/AppletDireccionIP.jar"/>
+	<property name="destinoIIS" value="${htm.deploy.home}"/>
+	<property name="origenIIS" value="${descriptors.home}/iis"/>
+	
+
+<!-- ##########################################################################################################-->	
+
+	<!-- Creación directorios -->
+		<target name="01.CrearEstructuraAplicacion">
+					<!-- - - - - - - - - - - - - - - - - - 
+						Creacion de la estructura de una aplicacion
+							- - - - - - - - - - - - - - - - - -->
+
+					<mkdir dir="${deploy.home}" />
+					<mkdir dir="${deploy.home}/comun" />
+					<mkdir dir="${deploy.home}/${redeploy.version}" />
+					<mkdir dir="${web.deploy.home}/html" />
+			      	<mkdir dir="${web.deploy.home}/WEB-INF" />
+			      	<mkdir dir="${web.deploy.home}/WEB-INF/classes" />
+			      	<mkdir dir="${web.deploy.home}/WEB-INF/fopFonts" />
+			      	<mkdir dir="${web.deploy.home}/WEB-INF/lib" />
+		    	  	<mkdir dir="${web.deploy.home}/WEB-INF/properties" />
+			      	<mkdir dir="${web.deploy.home}/WEB-INF/tlds" />
+				</target> 
+
+	<!-- Generación de Applets -->
+		<target name="02.CreaAppletPermisos" >
+				<echo message="Compilando applet de permisos ..."/>
+				<jar destfile="${destinoapplet}">
+					<zipfileset dir="${bin.home}/com/siga/gui/processTree" prefix="com/siga/gui/processTree"/>
+					<zipfileset file="${bin.home}/com/siga/administracion/SIGAConstants.class" prefix="com/siga/administracion"/>
+				</jar>
+			</target>
+		<target name="03.CreaAppletIP" >
+			<echo message="Compilando applet de IP ..."/>
+			<jar destfile="${destinoappletIP}">
+				<zipfileset file="${bin.home}/com/siga/Utilidades/AppletDireccionIP.class" prefix="com/siga/Utilidades"/>
+			</jar>
+		</target>
+
+	<!-- Desplegar toda la aplicación -->
+		<target name="04.ActualizacionDescriptores">
+			<!-- - - - - - - - - - - - - - - - - - 
+				Actualiza descriptores aplicativo. struts-config.xml web.xml weblogic.xml
+					- - - - - - - - - - - - - - - - - -->
+
+			<echo message="Copiando descriptor: struts-config.xml"/>
+	    	<copy file="${descriptors.home}/struts-config.xml"
+	            todir="${web.deploy.home}/WEB-INF"  /> 
+
+			<echo message="Copiando descriptor: web.xml "/>
+	    	<copy file="${descriptors.home}/web.xml" 
+	            todir="${web.deploy.home}/WEB-INF"  />
+
+	   		<echo message="Copiando descriptor: weblogic.xml "/>
+	       	<copy file="${descriptors.home}/weblogic.xml" 
+		        todir="${web.deploy.home}/WEB-INF" overwrite="true" />
+
+			<echo message="Copiando directorio tlds"/>
+			<copy todir="${tlds.deploy.home}" >
+				<fileset dir="${descriptors.home}/tlds">
+			  		<patternset>
+			   			<include name="**/*.*"/>
+			   		</patternset>
+				</fileset>
+			</copy>	
+
+			<echo message="Copiando directorio fopFonts"/>
+			<copy todir="${fopFonts.deploy.home}" >
+				<fileset dir="${descriptors.home}/fopFonts">
+			  		<patternset>
+			   			<include name="**/*.*"/>
+			   		</patternset>
+				</fileset>
+			</copy>				
+			
+		</target>
+		<target name="05.ActualizacionProperties">
+			<!-- - - - - - - - - - - - - - - - - - 
+				Actualiza todos los properties
+					- - - - - - - - - - - - - - - - - -->
+
+			<echo message="Copiando properties nucleo"/>
+		    <copy todir="${properties.deploy.home}" >
+	    		<fileset dir="${conf.home}">
+		  			<patternset>
+			   			<include name="*.properties"/>
+		  				<include name="*.xml"/>
+		   			</patternset>
+		    	</fileset>
+	    	</copy>
+		</target>
+		<target name="06.ActualizacionClases">
+			<!-- - - - - - - - - - - - - - - - - - 
+				Actualiza todas las clases y elementos de src
+					- - - - - - - - - - - - - - - - - -->
+			
+			<echo message="Copiando properties nucleo"/>
+			<copy todir="${classes.lib.deploy.home}" >
+					<fileset dir="${home}/bin">
+				  		<patternset>
+				   			<include name="**/*.*"/>
+				   		</patternset>
+					</fileset>
+				</copy>	
+		</target>
+		<target name="07.ActualizacionLib">		
+			<!-- - - - - - - - - - - - - - - - - - 
+				Actualiza el jar en el lib del web-inf
+					- - - - - - - - - - - - - - - - - -->
+			<echo message="Actualizando librerías"/>
+			<copy todir="${web.lib.deploy.home}" >
+		    	<fileset dir="${lib.home}">
+		  			<patternset>
+			   			<include name="*.jar"/>
+			   			<include name="*.zip"/>
+			   			<include name="*.lic"/>
+	   				</patternset>
+	    		</fileset>
+	    	</copy>
+		</target>
+		<target name="08.ActualizacionHtml">		
+		<!-- - - - - - - - - - - - - - - - - - 
+			Actualiza recursos web
+				- - - - - - - - - - - - - - - - - -->
+		<echo message="Copiando recursos web ..."/>
+			<copy todir="${html.deploy.home}" includeEmptyDirs="yes"  overwrite="yes">
+			<fileset dir="${html.home}">
+			  <include name="**/*"/>
+			</fileset>
+			</copy>
+		</target>
+		<target name="09.ActualizacionElementosFrontEnd">
+			<!-- - - - - - - - - - - - - - - - - - 
+					Actualiza recursos FrontEnd
+						- - - - - - - - - - - - - - - - - -->
+			<echo message="Copiando recursos web de front-end ..."/>		
+				<copy file="${destinoappletIP}" todir="${destinoIIS}" overwrite="yes">
+				</copy>
+				<copy file="${origenIIS}/certificadoNoValido.htm" todir="${destinoIIS}" overwrite="yes">
+				</copy>
+				<copy file="${origenIIS}/certificadoRevocado.htm" todir="${destinoIIS}" overwrite="yes">
+				</copy>
+				<copy file="${origenIIS}/fondo.jpg" todir="${destinoIIS}" overwrite="yes">
+				</copy>
+				<copy file="${origenIIS}/httpsKO.htm" todir="${destinoIIS}" overwrite="yes">
+				</copy>
+				<copy file="${origenIIS}/noHayCertificado.htm" todir="${destinoIIS}" overwrite="yes">
+				</copy>
+				<copy file="${origenIIS}/mantenimiento/loadingAnt.gif" todir="${destinoIIS}/mantenimiento" overwrite="yes">
+				</copy>
+				<copy file="${origenIIS}/mantenimiento/logoSIGA.png" todir="${destinoIIS}/mantenimiento" overwrite="yes">
+				</copy>
+		</target>
+	
+		<target name="50.GeneracionTodoPortal">
+			<!-- - - - - - - - - - - - - - - - - -
+				Generacion completa del portal
+					- - - - - - - - - - - - - - - - - -->				
+
+			<antcall target="01.CrearEstructuraAplicacion" />
+			<antcall target="02.CreaAppletPermisos" />
+			<antcall target="03.CreaAppletIP" />
+			<antcall target="04.ActualizacionDescriptores" />
+			<antcall target="05.ActualizacionProperties" />
+			<antcall target="06.ActualizacionClases" />
+			<antcall target="07.ActualizacionLib" />
+			<antcall target="08.ActualizacionHtml" />
+			<antcall target="09.ActualizacionElementosFrontEnd" />
+			
+		</target> 
+
+		<target name="Desplegar nueva versión" description="Despliega aplicación con la versión seleccionada">
+			<antcall target="50.GeneracionTodoPortal" />
+			<antcall target="63.RedeployNewVersionApplication" />
+		</target>
+
+		<taskdef name="wldeploy" classname="weblogic.ant.taskdefs.management.WLDeploy" classpath="${eclipse.weblogic.jar}"/>
+
+		
+	<!-- Despliegues de Aplicaciones en modo normal -->
+
+		<target name="61.RedeployModuleApplicationSIGA" description="Actualiza aplicación con la versión seleccionada">	 	
+			<wldeploy action="redeploy" 
+				verbose="true" 
+				debug="true"
+				name="${redeploy.name}" 
+				user="${eclipse.redeploy.user}" 
+				password="${eclipse.redeploy.password.siga}"
+				targets="${redeploy.modulo.siga}"  	 		
+				adminurl="${eclipse.redeploy.adminurl.siga}"		 		
+			/>
+		</target>
+		<target name="62.RedeployApplication">	 	
+		 	<wldeploy action="redeploy" 
+		  		verbose="true" 
+	      		debug="true"
+	      		name="${redeploy.name}" 
+	      		user="${eclipse.redeploy.user}" 
+	      		password="${eclipse.redeploy.password.siga}"
+	      		targets="${redeploy.targets}"  	 		
+	      		adminurl="${eclipse.redeploy.adminurl.siga}"		 			  
+		 	/>
+		 </target>
+		<target name="63.RedeployNewVersionApplication">    	 	
+	 		<wldeploy action="redeploy" 
+			  	verbose="true" 
+		      	debug="true"
+		      	name="${redeploy.name}" 
+			  	source="${redeploy.source}"
+		      	user="${eclipse.redeploy.user}" 
+		      	password="${eclipse.redeploy.password.siga}"
+		      	adminurl="${eclipse.redeploy.adminurl.siga}"
+		      	targets="${redeploy.targets}"  
+			  	appversion="${redeploy.version}"
+	 			retiretimeout="${redeploy.retiretimeout}"    	
+			  	remote="true"	 		
+			/>
+		 </target>
+		<target name="64.UndeployApplication" description="Retira aplicación con la versión seleccionada">	 	
+		 	<wldeploy action="undeploy" 
+		 		verbose="true" 
+		      	debug="true"
+		      	name="${redeploy.name}" 
+		      	user="${eclipse.redeploy.user}" 
+		      	password="${eclipse.redeploy.password.siga}"
+		      	adminurl="${eclipse.redeploy.adminurl.siga}"
+		  		appversion="${undeploy.version}"
+			/>
+		 </target>
+		<target name="65.DistributeApplication">	 	
+			<wldeploy action="distribute" 
+			  	verbose="true" 
+	    	  	debug="true"
+	      		name="${redeploy.name}" 
+	      		user="${eclipse.redeploy.user}" 
+	      		password="${eclipse.redeploy.password.siga}"
+	      		targets="${redeploy.targets}"  	 		
+	      		adminurl="${eclipse.redeploy.adminurl.siga}"
+		  		appversion="${redeploy.version}"	 		
+		  		source="${redeploy.source}"
+		  		remote="true"
+			/>
+		</target>
+		<target name="66.StartApplication">	 	 			 	
+	 		<wldeploy action="start" 
+		  		verbose="true" 
+	      		debug="true"
+	      		name="${redeploy.name}" 
+	      		user="${eclipse.redeploy.user}" 
+	      		password="${eclipse.redeploy.password.siga}"
+	      		targets="${redeploy.targets}"  	 		
+		  		adminurl="${eclipse.redeploy.adminurl.siga}"
+	      		appversion="${redeploy.version}"  
+			/>
+		</target>
+		<target name="67.RedeployModuleApplication">	 	
+	 		<wldeploy action="redeploy" 
+		  		verbose="true" 
+	      		debug="true"
+	      		name="${redeploy.name}" 
+	      		user="${eclipse.redeploy.user}" 
+	      		password="${eclipse.redeploy.password.siga}"
+	      		targets="${redeploy.modulo}"  	 		
+	      		adminurl="${redeploy.adminurl}"
+			/>
+		</target>
+
+	<!-- Despliegues a Producción -->
+		<target name="Pasar fuentes a Producción" description="Subida de los fuentes a producción">
+			
+			<echo message="Limpiando datos de la aplicación en Producción"/>
+				<mkdir dir="${portal.home.pro}/backup_version" />
+				<move todir="${portal.home.pro}/backup_version"> 
+					<fileset dir="${portal.home.pro}/"> 
+						<patternset>
+						<exclude name=".project"/>
+						<exclude name="ant/build.properties"/>
+						<exclude name="backup_version/**"/>
+						</patternset>
+					</fileset>
+				</move>
+			
+			<echo message="Realizando copia de seguridad de la aplicación"/>
+				<copy todir="${portal.home.pro}/backup_version"> 
+					<fileset dir="${portal.home.pro}/"> 
+						<patternset>
+							<include name=".project"/>
+							<include name="ant/build.properties"/>
+						</patternset>
+					</fileset>
+				</copy>
+				<mkdir dir="${distribucion.home}/${redeploy.version}"/>
+			    <tstamp>
+				   	<format property="FECHA_NOMBRE_ENTREGA" pattern="yyyy_MM_dd_hh_mm_ss" locale="es"/>
+		  		</tstamp>
+				<zip destfile="${distribucion.home}/${redeploy.version}/${FECHA_NOMBRE_ENTREGA}-${dis.name}-${user.name}-src.zip" basedir="${portal.home.pro}/backup_version" includes="**" />
+				<echo message="Copia de seguridad realizada en ${distribucion.home}/${redeploy.version}/${FECHA_NOMBRE_ENTREGA}-${dis.name}-${user.name}-src.zip"/>
+			
+			<echo message="Copiando de PRE a Producción"/>
+			<copy todir="${portal.home.pro}" overwrite="true">
+			   		<fileset dir="${portal.home}">
+			  			<patternset>
+			   			<exclude name="ant/build.properties"/>
+			   			<exclude name=".project"/>
+			   			</patternset>
+			    	</fileset>
+			</copy>
+			<delete dir="${portal.home.pro}/backup_version"/>
+			
+		</target>
+
+		
+</project>
