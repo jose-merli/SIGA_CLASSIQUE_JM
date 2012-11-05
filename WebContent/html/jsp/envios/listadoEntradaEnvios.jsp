@@ -163,10 +163,6 @@
 				document.forms['DefinirEnviosForm'].target="submitArea";	   	
 				document.forms['DefinirEnviosForm'].modo.value='respuestaTelematica';
 				document.forms['DefinirEnviosForm'].submit();
-	
-				//Se recarga la pagina de nuevo
-				document.forms['EntradaEnviosForm'].modo.value = 'finalizar';
-				document.forms['EntradaEnviosForm'].submit();
 			}
 
 			function download(fila){

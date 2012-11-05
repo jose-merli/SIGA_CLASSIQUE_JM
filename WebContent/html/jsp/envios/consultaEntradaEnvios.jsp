@@ -564,6 +564,10 @@
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 		
 		<script language="JavaScript">		
+			function refrescarLocal(){			
+				document.forms['EntradaEnviosForm'].modo.value = 'ver';
+				document.forms['EntradaEnviosForm'].submit();		
+			}	
 
 			function accionComunicar(){			
 				document.forms['DefinirEnviosForm'].idTipoEnvio.value='6';
@@ -571,10 +575,6 @@
 				document.forms['DefinirEnviosForm'].target="submitArea";	   	
 				document.forms['DefinirEnviosForm'].modo.value='respuestaTelematica';
 				document.forms['DefinirEnviosForm'].submit();
-
-// 				//Se recarga la pagina de nuevo
-// 				document.forms['EntradaEnviosForm'].modo.value = 'finalizar';
-// 				document.forms['EntradaEnviosForm'].submit();
 			}
 
 			function inicio(){

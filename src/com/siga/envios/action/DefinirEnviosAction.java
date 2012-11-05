@@ -2088,6 +2088,8 @@ public class DefinirEnviosAction extends MasterAction {
 				SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoGeneracionEnvio);
 			}
 			
+			request.setAttribute("idEnvioRelacionado", form.getIdEnvio());
+			
 		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
 		}
