@@ -51,10 +51,6 @@ public class DocuShareHelper {
 	private static String DOCUSHARE_USER = "DOCUSHARE_USER";
 	private static String DOCUSHARE_PASSWORD = "DOCUSHARE_PASSWORD";
 	
-	private static String DOCUSHARE_USER_ENCRYP = "DOCUSHARE_USER_ENCRYP";
-	private static String DOCUSHARE_PASSWORD_ENCRYP = "DOCUSHARE_PASSWORD_ENCRYP";
-	
-
 	private static String PATH_DOCUSHARE_EXPEDIENTES = "PATH_DOCUSHARE_EXPEDIENTES";
 	private static String PATH_DOCUSHARE_EJG = "PATH_DOCUSHARE_EJG";
 	private static String PATH_DOCUSHARE_CENSO = "PATH_DOCUSHARE_CENSO";
@@ -62,10 +58,7 @@ public class DocuShareHelper {
 	private static String ID_DOCUSHARE_EXPEDIENTES = "ID_DOCUSHARE_EXPEDIENTES";
 	private static String ID_DOCUSHARE_EJG = "ID_DOCUSHARE_EJG";
 	private static String ID_DOCUSHARE_CENSO = "ID_DOCUSHARE_CENSO";
-	
-	
-	private static String PATH_DOCUSHARE = "PATH_DOCUSHARE";
-	
+		
 	private static String PATH_DOCUSHARE_DEBUG = "/ds";
 
 	private UsrBean usrBean;
