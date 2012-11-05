@@ -66,7 +66,7 @@ public class DocuShareHelper {
 	
 	private static String PATH_DOCUSHARE = "PATH_DOCUSHARE";
 	
-	private static String PATH_DOCUSHARE_DEBUG = "c:/ds";
+	private static String PATH_DOCUSHARE_DEBUG = "/ds";
 
 	private UsrBean usrBean;
 	private DSServer server;

@@ -10,10 +10,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts.action.ActionMapping;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.DocuShareHelper;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.paginadores.PaginadorVector;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.censo.form.DatosRegTelForm;
 import com.siga.censo.vos.DocuShareObjectVO;
 import com.siga.censo.vos.DocuShareObjectVO.DocuShareTipo;
@@ -58,13 +61,28 @@ public abstract class DocumentacionRegTelAction extends MasterAction {
 
 			} else {	
 				
+				GenParametrosAdm parametrosAdm = new GenParametrosAdm(this.getUserBean(request));
+				String regtel = parametrosAdm.getValor(this.getUserBean(request).getLocation(), ClsConstants.MODULO_GENERAL, "REGTEL", "0");
+		        
+				boolean parametroRegtel = false;
+	        	if (regtel!=null && regtel.equals("1")){
+	        		parametroRegtel = true;
+	        	}
+				
 				String accion = (String)request.getSession().getAttribute("accion");
 				boolean accionVer = false;
 				if (accion != null && accion.trim().equals("ver")) {
 					accionVer = true;
 				}
 				
-				if (miForm.isCreaCollection() && !accionVer && !getUserBean(request).isComision()) {
+				ClsLogging.writeFileLog("Valor de parametroRegtel = " + parametroRegtel, 3);
+				ClsLogging.writeFileLog("Valor de creaCollection = " + miForm.isCreaCollection(), 3);
+				ClsLogging.writeFileLog("Valor de accionVer = " + accionVer, 3);
+				ClsLogging.writeFileLog("Valor de idComision = " + getUserBean(request).isComision(), 3);
+				ClsLogging.writeFileLog("Valor de identificadorDs() = " + miForm.getIdentificadorDs(), 3);
+				
+				
+				if (parametroRegtel && miForm.isCreaCollection() && !accionVer && !getUserBean(request).isComision()) {
 					String idDS = createCollection(formulario, request);
 					miForm.setIdentificadorDs(idDS);	
 					request.getSession().removeAttribute("MIGAS_DS");
@@ -92,10 +110,13 @@ public abstract class DocumentacionRegTelAction extends MasterAction {
 					migas.add(dsObjectVO);
 					request.getSession().setAttribute("MIGAS_DS", migas);
 					
+					
+		        	
 					boolean preguntaCreaCollection = false;
-					if (!accionVer && (miForm.getIdentificadorDs() == null || miForm.getIdentificadorDs().trim().equals("")) && !getUserBean(request).isComision()) {
+					if (parametroRegtel && !accionVer && (miForm.getIdentificadorDs() == null || miForm.getIdentificadorDs().trim().equals("")) && !getUserBean(request).isComision()) {
 						preguntaCreaCollection = true;
 					}
+					ClsLogging.writeFileLog("Valor de preguntaCreaCollection = " + preguntaCreaCollection, 3);
 					request.setAttribute("CREACOLLECTION", Boolean.valueOf(preguntaCreaCollection));
 				}			
 				
