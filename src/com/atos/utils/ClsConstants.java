@@ -401,6 +401,8 @@ public class ClsConstants {
 	  public static final String PLANTILLA_FO_SOLICITUDASISTENCIA="solicitudAsistencia";
 	  
 	  
+	  public static final String TIPO_IDTIPOENVIO_TELEMATICO = "6";
+	  
 
 	  
 	  //Java Date format constants 

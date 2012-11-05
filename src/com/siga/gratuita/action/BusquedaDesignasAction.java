@@ -816,10 +816,24 @@ public class BusquedaDesignasAction extends MasterAction {
 			// Se cierra la transacción
 //			tx.commit();
 
-			request.setAttribute("NUMERO",numeroSJCS);
+			if(numeroSJCS!= null && !numeroSJCS.equals("")){
+				request.setAttribute("NUMERO",numeroSJCS);				
+			}else{
+				request.setAttribute("NUMERO",nuevaDesigna.get(ScsDesignaBean.C_NUMERO));
+			}
+			
 			request.setAttribute("IDTURNO",idTurnoSJCS);
 			request.setAttribute("INSTITUCION",idInstitucionSJCS);
-			request.setAttribute("ANIO",anioSJCS);
+
+			if(anioSJCS != null && !anioSJCS.equals("")){
+				request.setAttribute("ANIO",anioSJCS);
+			}else{
+				request.setAttribute("ANIO",nuevaDesigna.get(ScsDesignaBean.C_ANIO));				
+			}			
+			
+			request.setAttribute("IDLETRADODES",idPersonaSel);
+			request.setAttribute("FECHADES", (String)nuevaDesigna.get("FECHAENTRADAINICIO"));
+			
 		}catch (SIGAException e) {
 			try {
 //				tx.rollback();

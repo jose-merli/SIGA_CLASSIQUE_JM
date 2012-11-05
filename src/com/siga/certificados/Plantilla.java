@@ -6,7 +6,6 @@
  */
 package com.siga.certificados;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -17,7 +16,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
@@ -32,20 +30,8 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.stream.StreamSource;
-
-import org.apache.fop.apps.Driver;
-import org.apache.fop.apps.FOPException;
-import org.apache.fop.apps.Options;
-
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
@@ -212,97 +198,7 @@ public class Plantilla {
 	
 	
 	
-	/**
-     * Converts an FO file to a PDF file using FOP
-     * @param fo the FO file
-     * @param pdf the target PDF file
-     * @throws IOException In case of an I/O problem
-     * @throws FOPException In case of a FOP problem
-     */
-    public void convertFO2PDF(File fo, File pdf) 
-    throws IOException, FOPException, ClsExceptions
-    {
-    	convertFO2PDF(fo, pdf, fo.getPath());
-    }
-    
-    public synchronized  void convertFO2PDF(File fo, File pdf, String sBaseDir) 
-    throws IOException, FOPException, ClsExceptions
-    {
-    	OutputStream out = null;
-    	FileOutputStream fileOut = null;
-    	
-        try {
-        	    		
-        	ClsLogging.writeFileLog(">>> baseDir:" + sBaseDir,10);
-        	
-            org.apache.fop.configuration.Configuration.put("baseDir", sBaseDir);
-            org.apache.fop.configuration.Configuration.put("fontBaseDir", SIGAReferences.getReference(SIGAReferences.RESOURCE_FILES.FOP_DIR.getFileName()));
-//            new Options(new File(ClsConstants.FOP_CONFIG_FILE));
-            new Options(SIGAReferences.getInputReference(SIGAReferences.RESOURCE_FILES.FOP));
-
-            ClsLogging.writeFileLog(">>> org.apache.fop.configuration.Configuration",10);
-            // Construct driver and setup output format
-            Driver driver = new Driver();
-            ClsLogging.writeFileLog(">>> Driver driver",10);
-            
-            driver.setRenderer(Driver.RENDER_PDF);
-            ClsLogging.writeFileLog(">>> driver.setRenderer",10);
-            
-    		ClsLogging.writeFileLog("CONVERT: driver creado.",10);
-            
-            // Setup output stream.  Note: Using BufferedOutputStream
-            // for performance reasons (helpful with FileOutputStreams).
-            fileOut = new FileOutputStream(pdf);
-            out = new BufferedOutputStream(fileOut);
-            driver.setOutputStream(out);
-
-    		ClsLogging.writeFileLog("CONVERT: stream creado.",10);
-
-            // Setup JAXP using identity transformer
-            TransformerFactory factory = TransformerFactory.newInstance();
-            //System.out.println(factory.getClass().getName());
-            
-            Transformer transformer = factory.newTransformer(); // identity transformer
-
-    		ClsLogging.writeFileLog("CONVERT: transformer creado.",10);
-            
-            // Setup input stream
-            Source src = new StreamSource(fo);
-            //Source src = new StreamSource(foFormateado);
-
-    		ClsLogging.writeFileLog("CONVERT: source creado.",10);
-
-            // Resulting SAX events (the generated FO) must be piped through to FOP
-            Result res = new SAXResult(driver.getContentHandler());
-
-    		ClsLogging.writeFileLog("CONVERT: result creado.",10);
-
-            // Start XSLT transformation and FOP processing
-            transformer.transform(src, res);
-            
-    		ClsLogging.writeFileLog("CONVERT: PDF creado.",10);
-            
-            //Borramos la cache de ficheros:
-            org.apache.fop.image.FopImageFactory.resetCache();
-    		ClsLogging.writeFileLog("CONVERT: cache borrada. TODO OK.",10);
-    		ClsLogging.writeFileLog("CONVERT: El fichero se almacenara en "+pdf,10);
-
-        } 
-        catch (Exception e) {
-        	if (this.userbean!=null) {
-        	    ClsLogging.writeFileLogError("Error transformando PDF desde FOP - Fichero:"+sBaseDir+" - Mensaje:" +e.getLocalizedMessage(),e,this.userbean,3);
-        	} else {
-        	    ClsLogging.writeFileLogError("Error transformando PDF desde FOP - Fichero:"+sBaseDir+" - Mensaje:" +e.getLocalizedMessage(),e,3);
-        } 
-            throw new ClsExceptions (e, "Error transformando PDF desde FOP - Fichero:"+sBaseDir+" - Mensaje:" +e.getLocalizedMessage());
-        } 
-        finally {
-        	try {
-	            out.close();
-	            fileOut.close();
-        	} catch (Exception e) {}
-        }
-    }
+	
     
 	/**  
 	 * Obtienen los distintos modelos de factura asociados a una institucion determinada

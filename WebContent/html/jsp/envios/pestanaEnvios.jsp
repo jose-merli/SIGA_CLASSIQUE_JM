@@ -30,6 +30,7 @@
 	
 	Hashtable htDatos = (Hashtable)request.getAttribute("envio");
 	String idTipoEnvio=(String)htDatos.get("idTipoEnvio");
+	int elementoActivo = 1;
 %>	
 
 <html>
@@ -87,15 +88,18 @@
 	/>--%>
 
 <%
-	String[] lista = new String[4];
+	String[] lista = new String[6];
 	if (idTipoEnvio.equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO)) {
 		lista[0] = "73i";
+		lista[1] = "73k";
 	}else if(idTipoEnvio.equals(EnvTipoEnviosAdm.K_ENVIOTELEMATICO)){
 		lista[0]="73i";
 		lista[1]="73j";
 		lista[2]="73c";
 		lista[3]="73f";
-
+		lista[4]="73h";
+		lista[5]="73a";
+		elementoActivo = 2;
 		
 	}else {
 		lista[0] = "73j";
@@ -105,7 +109,8 @@
 		} else {
 			lista[1] = "73h";
 			lista[2] = "73i";
-		} 
+		}
+		lista[3] = "73k";
 	}
 	
 	
@@ -115,7 +120,7 @@
 			pestanaId="ENVIOS" 
 			target="mainPestanas"
 			parametros="envio"
-			elementoactivo="1"
+			elementoactivo="<%=elementoActivo%>"
 			procesosinvisibles="<%=lista%>"
 	/>
 	

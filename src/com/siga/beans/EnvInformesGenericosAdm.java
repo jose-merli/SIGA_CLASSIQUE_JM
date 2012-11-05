@@ -222,7 +222,9 @@ public class EnvInformesGenericosAdm extends MasterBeanAdministrador {
 					salida.setNombreSalida		((String)ht.get(AdmInformeBean.C_NOMBRESALIDA));
 					salida.setPreseleccionado	((String)ht.get(AdmInformeBean.C_PRESELECCIONADO));
 					salida.setVisible			((String)ht.get(AdmInformeBean.C_VISIBLE));
-					salida.setASolicitantes		((String)ht.get(AdmInformeBean.C_ASOLICITANTES));	
+					salida.setASolicitantes		((String)ht.get(AdmInformeBean.C_ASOLICITANTES));
+					if(ht.get(AdmInformeBean.C_IDTIPOINTERCAMBIOTELEMATICO)!=null)
+						salida.setIdTipoIntercambioTelematico((String)ht.get(AdmInformeBean.C_IDTIPOINTERCAMBIOTELEMATICO));
 					salida.setDestinatarios((String)ht.get(AdmInformeBean.C_DESTINATARIOS));
 					vSalida.add(salida);
 				}

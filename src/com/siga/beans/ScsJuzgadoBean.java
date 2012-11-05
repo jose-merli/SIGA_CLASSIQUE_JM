@@ -14,7 +14,7 @@ public class ScsJuzgadoBean extends MasterBean{
 	private String	nombre=null, direccion=null, codigoPostal=null, idProvincia=null, idPoblacion=null, 
 					telefono1=null, telefono2=null, fax1=null,codProcurador="", email="", visible="", movil="";
 	
-	private String fechabaja;
+	private String fechabaja, isCodigoEjis;
 	
 	/* Nombre de Tabla*/
 	
@@ -44,6 +44,8 @@ public class ScsJuzgadoBean extends MasterBean{
 	private String codigoExt2;
 	static public final String C_CODIGOEXT = "CODIGOEXT";
 	static public final String C_CODIGOEXT2 = "CODIGOEXT2";
+	static public final String C_ISCODIGOEJIS = "ISCODIGOEJIS";
+	
 	public void setCodigoExt (String valor)
 	{
 		this.codigoExt = valor;
@@ -234,6 +236,12 @@ public class ScsJuzgadoBean extends MasterBean{
 	 */
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	public String getIsCodigoEjis() {
+		return isCodigoEjis;
+	}
+	public void setIsCodigoEjis(String isCodigoEjis) {
+		this.isCodigoEjis = isCodigoEjis;
 	}	
 	
 

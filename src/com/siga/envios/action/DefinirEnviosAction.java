@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +29,7 @@ import org.apache.struts.action.ActionMapping;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.redabogacia.sigaservices.app.AppConstants.TipoIntercambioEnum;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -40,6 +40,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.service.InformesService;
+import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.AdmInformeBean;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenClienteBean;
@@ -53,7 +54,6 @@ import com.siga.beans.CenSolicitudIncorporacionAdm;
 import com.siga.beans.CenSolicitudIncorporacionBean;
 import com.siga.beans.CerSolicitudCertificadosAdm;
 import com.siga.beans.CerSolicitudCertificadosBean;
-import com.siga.beans.EnvComunicacionMorososAdm;
 import com.siga.beans.EnvDestinatariosBean;
 import com.siga.beans.EnvEnviosAdm;
 import com.siga.beans.EnvEnviosBean;
@@ -76,6 +76,9 @@ import com.siga.envios.Documento;
 import com.siga.envios.Envio;
 import com.siga.envios.EnvioInformesGenericos;
 import com.siga.envios.form.DefinirEnviosForm;
+import com.siga.envios.service.IntercambiosService;
+import com.siga.envios.service.IntercambiosServiceDispatcher;
+import com.siga.envios.service.ca_sigp.IntercambiosInService;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -117,9 +120,12 @@ public class DefinirEnviosAction extends MasterAction {
 				{
 					getJQueryPlantillasEnvio(mapping, miForm, request, response);
 					return null;
-				} 
-				else if (accion.equalsIgnoreCase("envioModal"))
-				{
+				
+				} else if (accion.equalsIgnoreCase("getJQueryTiposIntercambioTelematico"))	{
+					getJQueryTiposIntercambioTelematico(mapping, miForm, request, response);
+					return null;
+				
+				} else if (accion.equalsIgnoreCase("envioModal")){
 					mapDestino = envioModal(mapping, miForm, request, response);
 				} 
 				
@@ -154,8 +160,17 @@ public class DefinirEnviosAction extends MasterAction {
 				else if (accion.equalsIgnoreCase("descargarEstadistica"))
 				{
 					mapDestino = descargarEstadistica(mapping, miForm, request, response);
+				
+				} else if (accion.equalsIgnoreCase("verRelacionEnvio")){
+					mapDestino = verRelacionEnvio(mapping, miForm, request, response);
+				
+				} else if (accion.equalsIgnoreCase("editarRelacionEnvio")){
+					mapDestino = editarRelacionEnvio(mapping, miForm, request, response);
+				
+				} else if (accion.equalsIgnoreCase("respuestaTelematica")){
+					mapDestino = respuestaTelematica(mapping, miForm, request, response);
 				}
-
+				
 				/*else if (accion.equalsIgnoreCase("procesarCorreoOrdinario"))
 	            {
 	                mapDestino = procesarCorreoOrdinario(mapping, miForm, request, response);
@@ -483,12 +498,19 @@ public class DefinirEnviosAction extends MasterAction {
 		Vector vOcultos = form.getDatosTablaOcultos(0);		
 		String idEnvio = (String)vOcultos.elementAt(0);
 		String idTipoEnvio = (String)vOcultos.elementAt(1);
-
+		String idIntercambio = (String)vOcultos.elementAt(2);
+		
 		//Anhadimos parametros para las pestanhas
 		Hashtable htParametros=new Hashtable();
 		htParametros.put("idEnvio",idEnvio);
 		htParametros.put("idTipoEnvio",idTipoEnvio);
 		htParametros.put("acceso",bEditable?"editar":"ver");
+		if(Integer.parseInt(idTipoEnvio)==EnvEnviosAdm.TIPO_TELEMATICO){
+			htParametros.put("idIntercambio",idIntercambio);
+		}else{
+			htParametros.put("idIntercambio","");
+		}
+		
 		request.setAttribute("envio", htParametros);    
 
 
@@ -762,9 +784,22 @@ public class DefinirEnviosAction extends MasterAction {
 				tx.commit();
 				if(isEnvioBatch){
 					SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoGeneracionEnvio);
-					return exitoModal("messages.inserted.success",request);
-				}
-				else{
+					
+					//Comunicaciones designaciones a juzgados sin codigo EJIS
+					if(form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesDesigna) &&
+						form.getIsCodigoEjis() != null && form.getIsCodigoEjis().equals("0")){
+						//throw new ClsExceptions("Existe un registro en el cual no hay codigo EJIS");
+						String[] datosEnvio = form.getDatosEnvios().split(",");
+						request.setAttribute("mensajeDescarga", "Algunos destinatarios no admiten el envío telemático. ¿Desea descargar los documentos asociados? (Desde el módulo de envíos también se pueden descargar)");
+						request.setAttribute("idsInforme",datosEnvio[2]+","+datosEnvio[3]);
+						request.setAttribute("datosInforme",form.getDatosInforme());
+						return "descargarEnvioTelematico";	
+					
+					}else{
+						return exitoModal("messages.inserted.success",request);
+					}
+				
+				}else{
 					if(form.getIdEnvio()!=null&&!form.getIdEnvio().equals("")){
 						Hashtable htEnvio = new Hashtable();
 						htEnvio.put(EnvEnviosBean.C_IDTIPOENVIOS,form.getIdTipoEnvio());
@@ -1520,28 +1555,45 @@ public class DefinirEnviosAction extends MasterAction {
 			DefinirEnviosForm form = (DefinirEnviosForm)formulario;
 			String idInstitucion = userBean.getLocation();	
 			String idEnvio = form.getIdEnvio();
-
+			String idTipoEnvio = form.getIdTipoEnvio();
+			String idEstadoEnvio = form.getIdEstado();
+			
+			EnvEnviosAdm envioAdm = new EnvEnviosAdm(this.getUserBean(request));
 			Hashtable htPk = new Hashtable();
 			htPk.put(EnvEnviosBean.C_IDINSTITUCION,idInstitucion);
 			htPk.put(EnvEnviosBean.C_IDENVIO,idEnvio);
-			
 			//obtengo el envio
-			EnvEnviosBean envBean = (EnvEnviosBean)envAdm.selectByPKForUpdate(htPk).firstElement();
+			EnvEnviosBean envBean = (EnvEnviosBean)envAdm.selectByPKForUpdate(htPk).elementAt(0);
 			
-			if(envBean.getIdEstado().compareTo(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESANDO)==0){
+			if(envBean.getIdEstado().compareTo(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESANDO)==0)
 				throw new SIGAException("messages.envios.procesandoEnvio");
-				
-			}else{
-				envBean.setIdEstado(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESANDO);
-                envAdm.updateDirect(envBean);
-                
-				
-			}
 			
-			Envio envio = new Envio(envBean, userBean);
-			// lo proceso
-			envio.procesarEnvio(tx);
-			idEstadoEnvioFinal = envBean.getIdEstado();
+			if(Integer.parseInt(idTipoEnvio)==EnvEnviosAdm.TIPO_TELEMATICO ){
+				if(idEstadoEnvio.equals(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES )){
+					IntercambiosInService intercambiosService = (IntercambiosInService) IntercambiosServiceDispatcher.getService(getBusinessManager(),envBean.getIdTipoIntercambioTelematico().toString());
+					intercambiosService.reprocesarIntercambio(idEnvio, idInstitucion,Integer.parseInt(userBean.getUserName()));
+					idEstadoEnvioFinal = EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESANDO;
+				}else if(idEstadoEnvio.equals(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADO )){
+					throw new SIGAException("El envio ya esta procesado, edite el envio para ver el resultado de la comunicación");
+				}
+			}else{
+				
+				
+				if(envBean.getIdEstado().compareTo(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESANDO)==0){
+					throw new SIGAException("messages.envios.procesandoEnvio");
+					
+				}else{
+					envBean.setIdEstado(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESANDO);
+	                envAdm.updateDirect(envBean);
+	                
+					
+				}
+				
+				Envio envio = new Envio(envBean, userBean);
+				// lo proceso
+				envio.procesarEnvio(tx);
+				idEstadoEnvioFinal = envBean.getIdEstado();
+			}
 
 		}catch (Exception e){
 			this.throwExcp("messages.general.error",new String[] {"modulo.envios"},e,tx);
@@ -1574,15 +1626,37 @@ public class DefinirEnviosAction extends MasterAction {
 			Vector vOcultos = form.getDatosTablaOcultos(0);		
 			sIdInstitucion = user.getLocation();  
 			sIdEnvio = (String)vOcultos.elementAt(0);
-			EnvEnviosAdm envioAdm = new EnvEnviosAdm(this.getUserBean(request));
+			String idTipoEnvio = (String)vOcultos.elementAt(1);
+			String idEstadoEnvio = (String)vOcultos.elementAt(3);
 
-			sFicheroLog = envioAdm.getPathEnvio(sIdInstitucion,sIdEnvio) + File.separator + "informeEnvio" + ".log.xls";
-			File fichero = new File(sFicheroLog);
-			if(fichero==null || !fichero.exists()){
-				throw new SIGAException("messages.general.error.ficheroNoExiste"); 
+			EnvEnviosAdm envioAdm = new EnvEnviosAdm(this.getUserBean(request));
+			File fichero = null;
+			if(Integer.parseInt(idTipoEnvio)==EnvEnviosAdm.TIPO_TELEMATICO && idEstadoEnvio.equals(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES )){
+				Hashtable htPk = new Hashtable();
+				htPk.put(EnvEnviosBean.C_IDINSTITUCION,sIdInstitucion);
+				htPk.put(EnvEnviosBean.C_IDENVIO,sIdEnvio);
+				//obtengo el envio
+				EnvEnviosBean envBean = (EnvEnviosBean)envioAdm.selectByPKForUpdate(htPk).elementAt(0);
+				
+				IntercambiosService intercambiosService = (IntercambiosService) IntercambiosServiceDispatcher.getService(getBusinessManager(),envBean.getIdTipoIntercambioTelematico().toString());
+				fichero = intercambiosService.getFicheroLog(sIdEnvio, sIdInstitucion);
+				request.setAttribute("borrarFichero", "true");
+				
+			}else{
+				sFicheroLog = envioAdm.getPathEnvio(sIdInstitucion,sIdEnvio) + File.separator + "informeEnvio" + ".log.xls";
+				fichero = new File(sFicheroLog);
+				if(fichero==null || !fichero.exists()){
+					throw new SIGAException("messages.general.error.ficheroNoExiste"); 
+				}
+				
 			}
+			
+			
+			
+			
 			request.setAttribute("nombreFichero", fichero.getName());
 			request.setAttribute("rutaFichero", fichero.getPath());
+			
 
 		} catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
@@ -1882,7 +1956,6 @@ public class DefinirEnviosAction extends MasterAction {
 			plantillasEnviosJsonArray.put(plantillasEnviosBeans.get(i).getJSONObject());
 		}
 
-		
 		json.put("plantillasEnvio", plantillasEnviosJsonArray);
 		
 		// json.
@@ -1893,6 +1966,37 @@ public class DefinirEnviosAction extends MasterAction {
 		 response.getWriter().write(json.toString()); 
 		
 	}
+	
+	protected void getJQueryTiposIntercambioTelematico (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, JSONException, IOException
+			{
+		UsrBean usr = this.getUserBean(request);
+		String idTipoEnvio = request.getParameter("idTipoEnvio");
+		JSONObject json = new JSONObject();
+		BusinessManager bm = getBusinessManager();
+		JSONArray tiposIntercambioJsonArray = new JSONArray();
+		
+		if(idTipoEnvio.equals(ClsConstants.TIPO_IDTIPOENVIO_TELEMATICO)){
+			for (TipoIntercambioEnum tipoIntercambioEnum: TipoIntercambioEnum.values()) {
+				JSONObject obj = new JSONObject();
+				obj.put("idTipoIntercambioTelematico", tipoIntercambioEnum.getCodigo());
+	            obj.put("nombre", tipoIntercambioEnum.getDescripcion().split(":")[1]);
+				tiposIntercambioJsonArray.put(obj);
+			}
+		}
+		
+		json.put("tiposIntercambio", tiposIntercambioJsonArray);
+		
+		response.setContentType("text/x-json;charset=ISO-8859-15");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Content-Type", "application/json");
+	    response.setHeader("X-JSON", json.toString());
+		response.getWriter().write(json.toString()); 
+		
+	}
+	
 	protected void getJQueryTiposEnvioPermitido (ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
@@ -1924,6 +2028,71 @@ public class DefinirEnviosAction extends MasterAction {
 		
 	}
 
+	protected String editarRelacionEnvio(ActionMapping mapping, MasterForm formulario,
+			HttpServletRequest request, HttpServletResponse response)
+	throws ClsExceptions {
 
+		return relacionarEnvioDesdeEntrada(mapping,formulario,request,response,true);		
+	}
+	
+	
+		protected String verRelacionEnvio(ActionMapping mapping, MasterForm formulario,
+			HttpServletRequest request, HttpServletResponse response)
+	throws ClsExceptions {
+
+		return relacionarEnvioDesdeEntrada(mapping,formulario,request,response,false);		
+	}
+	
+	
+	protected String relacionarEnvioDesdeEntrada(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response, boolean editable) throws ClsExceptions{
+
+		DefinirEnviosForm form = (DefinirEnviosForm)formulario;
+		String idEnvio = form.getIdEnvio();
+		
+		//Anhadimos parametros para las pestanhas
+		Hashtable htParametros=new Hashtable();
+		htParametros.put("idEnvio",idEnvio);
+		htParametros.put("idTipoEnvio",""+EnvEnviosAdm.TIPO_TELEMATICO);
+		htParametros.put("acceso",editable?"editar":"ver");
+		htParametros.put("idIntercambio","");
+
+		
+		request.setAttribute("envio", htParametros);    
+
+
+		request.setAttribute("nuevo", "false");	    
+		request.setAttribute("buscarEnvios","true");
+
+		return "editar";
+	}
+	
+	protected String respuestaTelematica(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException{
+
+		DefinirEnviosForm form = (DefinirEnviosForm)formulario;
+		UsrBean usr = this.getUserBean(request);
+		String datosEnvios = "";
+		AdmInformeAdm informeAdm = new AdmInformeAdm(usr);
+		SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+		
+		try {
+			Hashtable result = informeAdm.getInformeTelematico(usr.getLocation(), form.getIdTipoEnvio()); 
+			datosEnvios = form.getIdTipoEnvio()+","+(String)result.get("IDPLANTILLAENVIODEF")+","+(String)result.get("IDPLANTILLA")+","+usr.getLocation()+",0##";	
+			form.setDatosEnvios(datosEnvios);
+			form.setFechaProgramada(sdf.format(Calendar.getInstance().getTime()));
+			form.setNombre(TipoIntercambioEnum.ICA_SGP_ENV_SOL_SUSP_PROC.getDescripcion().split(":")[1]);
+			form.setIdTipoInforme((String)result.get("IDTIPOINFORME"));
+			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
+			envioInformesGenericos.gestionarComunicacionDesignas(form,  request.getLocale(), usr);
+			boolean isEnvioBatch = envioInformesGenericos.isEnvioBatch();
+			if(isEnvioBatch){
+				SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoGeneracionEnvio);
+			}
+			
+		} catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
+		}
+		
+		return "finalizar";
+	}	
 
 }

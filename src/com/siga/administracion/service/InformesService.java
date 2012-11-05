@@ -40,5 +40,5 @@ public interface InformesService extends BusinessService{
 	public List<EnvTipoEnviosBean> getTiposEnvio(List<String> excluidosList, UsrBean usrBean) throws ClsExceptions;
 	public List<EnvPlantillasEnviosBean> getPlantillasEnvio(String idTipoEnvio, String idInstitucion, UsrBean usrBean) throws ClsExceptions;
 	public List<EnvTipoEnviosBean> getTiposEnvioPermitidos(AdmInformeBean informeBean, UsrBean usrBean) throws ClsExceptions;
-	
+	public void duplicarFicherosAsociados(InformeForm form) throws SIGAException;
 }

@@ -18,6 +18,7 @@ public class DefinirEnviosForm extends MasterForm
 	// Atributos
 	private String tipoFecha = EnvEnviosAdm.FECHA_CREACION;
 	private String idTipoInforme;
+	private String isCodigoEjis;
 
 	List<EnvPlantillasEnviosBean> plantillasEnvio;
 	// GETTERS
@@ -116,8 +117,11 @@ public class DefinirEnviosForm extends MasterForm
 	public void setIdTipoInforme(String idTipoInforme) {
 		this.idTipoInforme = idTipoInforme;
 	}
-	
-	
-	
+	public String getIsCodigoEjis() {
+		return isCodigoEjis;
+	}
+	public void setIsCodigoEjis(String isCodigoEjis) {
+		this.isCodigoEjis = isCodigoEjis;
+	}
 	
 }

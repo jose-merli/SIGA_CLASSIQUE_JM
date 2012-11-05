@@ -6,7 +6,6 @@
 	 
  
 <!-- CABECERA JSP -->
-<%@page import="com.atos.utils.ReadProperties"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -27,11 +26,11 @@
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="java.util.Vector"%>
 <%@ page import="java.util.Hashtable"%>
-<%@page import="com.siga.Utilidades.SIGAReferences"%>
 
 <%@ page import="com.siga.tlds.FilaExtElement"%>
  <%@ page import="java.util.Properties"%>
  <%@ page import="java.util.ArrayList"%>
+ <%@ page import="com.atos.utils.*"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
@@ -43,32 +42,33 @@
 	
 	BusquedaPorTipoSJCSForm formulario = (BusquedaPorTipoSJCSForm)request.getAttribute("BusquedaPorTipoSJCSForm");
 
-	com.atos.utils.ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-	String idordinario = rp.returnProperty("codigo.general.scstipoejg.ordinarios");
+	java.util.ResourceBundle rp=java.util.ResourceBundle.getBundle("SIGA");
+	String idordinario = rp.getString("codigo.general.scstipoejg.ordinarios");
 	String datoTipoOrdinario[]={idordinario,idordinario};	
 
 	String tipo = formulario.getTipo();
 	if (tipo == null) {
 		tipo = new String ("");
 	}
-
+	
 %>
  
 <html>
 
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
+	<link rel="stylesheet" href="<html:rewrite page="html/js/themes/base/jquery.ui.all.css"/>" ></script>
 		
-	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery.js"/>" ></script>
+	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery.custom.js"/>" ></script>
+	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->
 		<!-- El nombre del formulario se obtiene del struts-config -->
 		<html:javascript formName="BusquedaPorTipoSJCSForm" staticJavascript="false" />  
-		<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	  	<script src="<html:rewrite page="/html/js/validacionStruts.js"/>" type="text/javascript"></script>
 	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
  	
 	<!-- SCRIPTS LOCALES -->
@@ -109,7 +109,7 @@
 		<!-- Formulario de la lista de detalle multiregistro -->
 		<html:form action="/JGR_BusquedaPorTipoSJCS.do" method="POST" target="submitArea"  style="display:none">
 			<html:hidden name="BusquedaPorTipoSJCSForm" property = "modo" value = ""/>
-			
+			<input type="hidden" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
 			<html:hidden name="BusquedaPorTipoSJCSForm" property="idInstitucion" />
 			<html:hidden name="BusquedaPorTipoSJCSForm" property="tipo" />
@@ -117,19 +117,20 @@
 
 
 <%
-	String tamanosCol="";
 	String nombresCol="";
+	String tamCol="";
 	
-	tamanosCol="40,27,27,6";
-
 	if (tipo.equalsIgnoreCase("EJG")) {
-		nombresCol="gratuita.busquedaPorTipoSJCS.literal.tipo,gratuita.busquedaPorTipoSJCS.literal.anio,gratuita.busquedaPorTipoSJCS.literal.numero,";
+		nombresCol="gratuita.busquedaEJG.literal.turnoGuardiaEJG, gratuita.busquedaEJG.literal.turnoDesignacion, gratuita.busquedaEJG.literal.anyo, gratuita.busquedaEJG.literal.codigo, gratuita.busquedaEJG.literal.letradoDesignacion, gratuita.listadoActuacionesAsistencia.literal.fecha, gratuita.busquedaEJG.literal.estadoEJG, gratuita.busquedaEJG.literal.solicitante,";
+		tamCol = "14,14,6,7,17,10,11,15,6";
 	}
 	if (tipo.equalsIgnoreCase("DESIGNA")) {
-		nombresCol="gratuita.busquedaPorTipoSJCS.literal.turno,gratuita.busquedaPorTipoSJCS.literal.anio,gratuita.busquedaPorTipoSJCS.literal.numero,";
+		nombresCol="gratuita.listarGuardias.literal.turno,facturacion.ano,gratuita.busquedaDesignas.literal.codigo,gratuita.listadoCalendario.literal.fecha,gratuita.listadoCalendario.literal.estado,gratuita.listarDesignasTurno.literal.nColegiado,expedientes.auditoria.literal.nombreyapellidos,pestana.justiciagratuitaejg.interesado,gratuita.busquedaDesignas.literal.validada,";
+		tamCol = "12,5,6,8,6,11,14,15,6,6";
 	}
 	if (tipo.equalsIgnoreCase("SOJ")) {
 		nombresCol="gratuita.busquedaSOJ.literal.tipoSOJ,gratuita.busquedaPorTipoSJCS.literal.anio,gratuita.busquedaPorTipoSJCS.literal.numero,";
+		tamCol ="40,27,27,6";
 	}
 %>
 		<siga:TablaCabecerasFijas 
@@ -137,7 +138,7 @@
 		   borde="1"
 		   clase="tableTitle"
 		   nombreCol="<%=nombresCol%>"
-		   tamanoCol="<%=tamanosCol%>"
+		   tamanoCol="<%=tamCol%>"
 		   alto="100%"
 		  >
 			
@@ -145,89 +146,122 @@
 	 		<br>
 	   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
 	 		<br>
-<%	} 
-	else { 
-
-		FilaExtElement[] elems=new FilaExtElement[1];
-		elems[0]=new FilaExtElement("seleccionar","seleccionar",SIGAConstants.ACCESS_READ);  	
-
-		String modo = "", anio = "", numero = "", idTipoEJG = "", idTipoSOJ = "", codigo = "", turno= "";
-		String idInstitucion = usrbean.getLocation();
-
-		// recorro el resultado
-		for (int i=0;i<vResultado.size();i++) {
-
-			String cont = new Integer(i+1).toString();
-		
-			ArrayList elementoSel = new ArrayList();
+	 		
+<%	} else { 		
+			String modo = "", anio = "", numero = "", idTipoEJG = "", idTipoSOJ = "", codigo = "", turno= "";
+			String idInstitucion = usrbean.getLocation();
+			String defendidos="";
+	    	String estado = "";
+			String turnoGuardia = " ", CODIGO = "";
+			int cont=1;			   	
+	    	FilaExtElement[] elems=new FilaExtElement[1];
+			elems[0]=new FilaExtElement("seleccionar","seleccionar",SIGAConstants.ACCESS_READ);  	
 			
-			if (tipo.equalsIgnoreCase("EJG")) {
-				ScsEJGBean registro	= (ScsEJGBean) vResultado.get(i);
-				anio   = UtilidadesString.mostrarDatoJSP(registro.getAnio());
-				numero = UtilidadesString.mostrarDatoJSP(registro.getNumero());
-				codigo = UtilidadesString.mostrarDatoJSP(registro.getNumEJG());
-				idTipoEJG = "" + registro.getIdTipoEJG();
-				elementoSel.add(idTipoEJG);
-			}
-			
-			if (tipo.equalsIgnoreCase("DESIGNA")) {
-				ScsDesignaBean registro	= (ScsDesignaBean) vResultado.get(i);
-				anio   = UtilidadesString.mostrarDatoJSP(registro.getAnio());
-				numero = UtilidadesString.mostrarDatoJSP(registro.getNumero());
-				codigo = UtilidadesString.mostrarDatoJSP(registro.getCodigo());
-				turno  = "" + registro.getIdTurno();
-				elementoSel.add(idInstitucion+","+turno);
-			}
-			if (tipo.equalsIgnoreCase("SOJ")) {
-				ScsSOJBean registro	= (ScsSOJBean) vResultado.get(i);
-				anio   = UtilidadesString.mostrarDatoJSP(registro.getAnio());
-				numero = UtilidadesString.mostrarDatoJSP(registro.getNumero());
-				codigo = UtilidadesString.mostrarDatoJSP(registro.getNumSOJ());
-				idTipoSOJ = "" + registro.getIdTipoSOJ();
-				elementoSel.add(idTipoSOJ);
-			}
+			while (cont-1 < vResultado.size()){			
+			  
+			    Hashtable registro = (Hashtable) vResultado.get(cont-1);
+				
+				if (tipo.equalsIgnoreCase("EJG")) {					
+					anio = (String)registro.get(ScsEJGBean.C_ANIO);
+					numero = (String)registro.get(ScsEJGBean.C_NUMERO);
+					idTipoEJG = (String)registro.get(ScsEJGBean.C_IDTIPOEJG);
+					
+					// Comprobamos el estado del idfacturacion
+			    	ScsEJGAdm scsEJGAdm = new ScsEJGAdm(usrbean);
+						
+					// Creamos el Turno/Guardia EJG
+					turno = ScsTurnoAdm.getNombreTurnoJSP(usrbean.getLocation(),(String)registro.get("GUARDIATURNO_IDTURNO"));
+					String guardia = ScsGuardiasTurnoAdm.getNombreGuardiaJSP(usrbean.getLocation(),(String)registro.get("GUARDIATURNO_IDTURNO"),(String)registro.get("GUARDIATURNO_IDGUARDIA")) ;
+					
+					if ((turno!="")||(guardia!="")){
+						turnoGuardia = turno + "/ " + guardia ;
+					}
+					
+					if(registro.get(ScsEJGBean.C_NUMEJG)==null||registro.get(ScsEJGBean.C_NUMEJG).equals(""))
+						CODIGO="&nbsp;";
+					else
+						CODIGO=(String)registro.get(ScsEJGBean.C_NUMEJG);
+				
+				}else if (tipo.equalsIgnoreCase("DESIGNA")) {					
+					defendidos = (String) registro.get("DEFENDIDOS");
+					estado = (String) registro.get("ESTADO");
+					anio = (String)registro.get(ScsDesignaBean.C_ANIO);
+					numero = (String)registro.get(ScsDesignaBean.C_NUMERO);
+					turno = (String)registro.get(ScsDesignaBean.C_IDTURNO);					
+					if (estado!=null){
+						if (estado.equalsIgnoreCase("V")) estado = UtilidadesString.getMensajeIdioma(usrbean, "gratuita.designa.estado.abierto");
+						else if (estado.equalsIgnoreCase("F")) estado = UtilidadesString.getMensajeIdioma(usrbean, "gratuita.designa.estado.finalizado");
+					 	else if(estado.equalsIgnoreCase("A")) estado = UtilidadesString.getMensajeIdioma(usrbean, "gratuita.designa.estado.anulado");
+						else estado="";
+					}
+					
+				}else if (tipo.equalsIgnoreCase("SOJ")) {
+					ScsSOJBean registroSOJ	= (ScsSOJBean) vResultado.get(cont);
+					anio   = UtilidadesString.mostrarDatoJSP(registroSOJ.getAnio());
+					numero = UtilidadesString.mostrarDatoJSP(registroSOJ.getNumero());
+					codigo = UtilidadesString.mostrarDatoJSP(registroSOJ.getNumSOJ());
+					idTipoSOJ = "" + registroSOJ.getIdTipoSOJ();
+				}
 %>
-			<siga:FilaConIconos fila="<%=cont %>" botones="" modo="<%=modo %>" elementos="<%=elems%>" visibleBorrado="no" visibleEdicion="no" visibleConsulta="no" clase="listaNonEdit" pintarEspacio="no">
+			<siga:FilaConIconos fila="<%=String.valueOf(cont) %>" botones="" modo="<%=modo %>" elementos="<%=elems%>" visibleBorrado="no" visibleEdicion="no" visibleConsulta="no" clase="listaNonEdit" pintarEspacio="no">
 			
-				<td>
 				  	<% if (tipo.equalsIgnoreCase("EJG")) { %>
-						<input type="hidden" name="oculto<%=cont%>_1" value="<%=anio%>">
-						<input type="hidden" name="oculto<%=cont%>_2" value="<%=numero%>">
-						<input type="hidden" name="oculto<%=cont%>_3" value="<%=idTipoEJG%>">
-						<siga:ComboBD nombre="" tipo="tipoEJG" parametro="<%=datoTipoOrdinario%>"  ancho="350" clase="boxComboEnTabla" readOnly="true" elementoSel="<%=elementoSel%>"/>
-					<% } %>
-				  	<% if (tipo.equalsIgnoreCase("DESIGNA")) { 
-				  		String[] dato = {idInstitucion};
-				  	%>
-						<input type="hidden" name="oculto<%=cont%>_1" value="<%=anio%>">
-						<input type="hidden" name="oculto<%=cont%>_2" value="<%=numero%>">
-						<input type="hidden" name="oculto<%=cont%>_3" value="<%=turno%>">
-						<siga:ComboBD nombre="" tipo="turnos" ancho="350" clase="boxComboEnTabla" readOnly="true" elementoSel="<%=elementoSel%>" parametro="<%=dato%>" />
-					<% } %>
-				 	<% if (tipo.equalsIgnoreCase("SOJ")) { %>
-						<input type="hidden" name="oculto<%=cont%>_1" value="<%=anio%>">
-						<input type="hidden" name="oculto<%=cont%>_2" value="<%=numero%>">
-						<input type="hidden" name="oculto<%=cont%>_3" value="<%=idTipoSOJ%>">
-						<siga:ComboBD nombre="" tipo="tipoSOJ" ancho="350" clase="boxComboEnTabla" readOnly="true" elementoSel="<%=elementoSel%>"/>
+						<input type="hidden" id="oculto<%=cont%>_1" name="oculto<%=cont%>_1" value="<%=anio%>">
+						<input type="hidden" id="oculto<%=cont%>_2" name="oculto<%=cont%>_2" value="<%=numero%>">
+						<input type="hidden" id="oculto<%=cont%>_3" name="oculto<%=cont%>_3" value="<%=idTipoEJG%>">
+						
+						<td><%=turnoGuardia%>&nbsp;</td>
+						<td><%=registro.get("TURNODESIGNA")%></td>
+						<td><%=registro.get(ScsEJGBean.C_ANIO)%></td>
+						 <% if (registro.get("SUFIJO")!=null && !registro.get("SUFIJO").equals("")){ %>
+							<td><%=CODIGO%>-<%=(String)registro.get(ScsEJGBean.C_SUFIJO)%></td>
+							<%}else{%>
+							<td><%=CODIGO%></td>
+						<% }%>
+						
+						<td><%=registro.get("LETRADODESIGNA")%></td>
+						<td><%=GstDate.getFormatedDateShort("",registro.get(ScsEJGBean.C_FECHAAPERTURA))%>&nbsp;</td>
+						<td><%=UtilidadesMultidioma.getDatoMaestroIdioma((String)registro.get("DESC_ESTADO"), usrbean) %>&nbsp;</td>
+						<td><%=ScsEJGAdm.getUnidadEJG(usrbean.getLocation(),(String)registro.get(ScsEJGBean.C_IDTIPOEJG),(String)registro.get(ScsEJGBean.C_ANIO),(String)registro.get(ScsEJGBean.C_NUMERO)) %>&nbsp;</td>
+						
+					<% } else if (tipo.equalsIgnoreCase("DESIGNA")) { %>				  		
+						<input type="hidden" id="oculto<%=cont%>_1" name="oculto<%=cont%>_1" value="<%=anio%>">
+						<input type="hidden" id="oculto<%=cont%>_2" name="oculto<%=cont%>_2" value="<%=numero%>">
+						<input type="hidden" id="oculto<%=cont%>_3" name="oculto<%=cont%>_3" value="<%=turno%>">
+						
+						
+						<td><%=registro.get("TURNODESIG")%>&nbsp;</td>
+						<td><%=registro.get("ANIO")%>&nbsp;</td>
+				        <% if (registro.get("SUFIJO")!=null && !registro.get("SUFIJO").equals("")){ %>
+						<td><%=registro.get("CODIGO")%>-<%=registro.get("SUFIJO")%>&nbsp;</td>
+						<%}else{%>
+						<td><%=registro.get("CODIGO")%>&nbsp;</td>
+						<% }%>
+						<td><%=registro.get("FECHAENTRADA")%>&nbsp;</td>
+						<td><%=estado%></td>
+						<td><%=registro.get("NCOLEGIADO")%>&nbsp;</td>
+						<td><%=registro.get("LETRADODESIG")%>&nbsp;</td>
+						<td><%=UtilidadesString.mostrarDatoJSP(defendidos)%>&nbsp;</td>
+						<td><%=registro.get("ACTNOVALIDA")%>&nbsp;</td>
+					
+					
+					<% } else if (tipo.equalsIgnoreCase("SOJ")) { %>
+						<input type="hidden" id="oculto<%=cont%>_1" name="oculto<%=cont%>_1" value="<%=anio%>">
+						<input type="hidden" id="oculto<%=cont%>_2" name="oculto<%=cont%>_2" value="<%=numero%>">
+						<input type="hidden" id="oculto<%=cont%>_3" name="oculto<%=cont%>_3" value="<%=idTipoSOJ%>">
 					<% } %>
 				  	
-				</td>
-				<td>
-					<%=anio%>
-				</td>
-				<td>
-					<%=codigo%>
-				</td>
 			</siga:FilaConIconos>		
 
 			<!-- FIN REGISTRO -->
-<%		} // del for %>			
+			<% 	cont++;		   
+			} // fin del while%> 		
 
 <%	} // del if %>			
 
 		</siga:TablaCabecerasFijas>
 	
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 
 	</body>
 </html>

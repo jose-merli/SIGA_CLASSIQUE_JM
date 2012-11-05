@@ -11,22 +11,24 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import javax.transaction.UserTransaction;
+
+import org.redabogacia.sigaservices.app.autogen.model.EcomDesignaprovisionalWithBLOBs;
+import org.redabogacia.sigaservices.app.autogen.model.EcomSolsusprocedimientoWithBLOBs;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
-import com.jcraft.jsch.HASH;
 import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.CerSolicitudCertificadosAdm;
 import com.siga.beans.CerSolicitudCertificadosBean;
-import com.siga.beans.EnvCamposEnviosAdm;
 import com.siga.beans.EnvComunicacionMorososAdm;
 import com.siga.beans.EnvComunicacionMorososBean;
 import com.siga.beans.EnvDestinatariosAdm;
@@ -40,7 +42,6 @@ import com.siga.beans.EnvEstadoEnvioAdm;
 import com.siga.beans.EnvListaCorreosBean;
 import com.siga.beans.EnvListaCorreosEnviosAdm;
 import com.siga.beans.EnvListaCorreosEnviosBean;
-import com.siga.beans.EnvPlantillaGeneracionAdm;
 import com.siga.beans.ExpAnotacionAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.PysProductosInstitucionAdm;
@@ -52,8 +53,11 @@ import com.siga.beans.ScsPersonaJGBean;
 import com.siga.beans.ScsProcuradorAdm;
 import com.siga.beans.ScsProcuradorBean;
 import com.siga.beans.ScsTelefonosPersonaJGBean;
-import com.siga.certificados.Plantilla;
+import com.siga.envios.service.ca_sigp.DesignaProvisionalService;
+import com.siga.envios.service.ca_sigp.SolSusProcedimientoService;
 import com.siga.general.SIGAException;
+
+import es.satec.businessManager.BusinessManager;
 
 
 /**
@@ -183,7 +187,173 @@ public class Envio
             throw new SIGAException("messages.general.error",e1);
         }
     }
+    
+    
+    
+    
     */
+    /**
+     * @return devuelve null si no es necesaio crear el destinatario
+     */
+public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinatario) throws SIGAException{
+	EnvDestinatariosBean destBean = null;
+        try{
+            EnvDestinatariosAdm destAdm = new EnvDestinatariosAdm(this.usrBean);
+            
+	        boolean crearDestinatario;
+	        //
+            if (!destAdm.existeDestinatario(String.valueOf(enviosBean.getIdEnvio()),
+                    						String.valueOf(enviosBean.getIdInstitucion()),
+                    						idPersona)){                
+            
+	            
+	            destBean = new EnvDestinatariosBean();
+		        destBean.setIdEnvio(enviosBean.getIdEnvio());
+		        destBean.setIdInstitucion(enviosBean.getIdInstitucion());
+		        destBean.setIdPersona(Long.valueOf(idPersona));
+		        destBean.setTipoDestinatario(tipoDestinatario);
+		        
+	            Vector direcciones = null;
+	            if(tipoDestinatario.equals(EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA)){
+	            	EnvEnviosAdm enviosAdm = new EnvEnviosAdm(this.usrBean);
+	            	direcciones = enviosAdm.getDirecciones(String.valueOf(enviosBean.getIdInstitucion()),
+							  idPersona,
+							  String.valueOf(enviosBean.getIdTipoEnvios()));
+	            	
+					CenPersonaAdm personaAdm = new CenPersonaAdm(this.usrBean);
+					Hashtable htPersona = new Hashtable();
+					htPersona.put(CenPersonaBean.C_IDPERSONA, idPersona);
+					CenPersonaBean persona= (CenPersonaBean) ((Vector)personaAdm.selectByPK(htPersona)).get(0);
+					destBean.setApellidos1(persona.getApellido1());
+			        destBean.setApellidos2(persona.getApellido2());
+			        destBean.setNombre(persona.getNombre());
+			        
+					
+			        if (direcciones!=null && direcciones.size()>0) {
+		            	Hashtable htDir = (Hashtable)direcciones.firstElement();
+				        destBean.setDomicilio((String)htDir.get(CenDireccionesBean.C_DOMICILIO));
+				        destBean.setIdPoblacion((String)htDir.get(CenDireccionesBean.C_IDPOBLACION));
+				        destBean.setPoblacionExtranjera((String)htDir.get(CenDireccionesBean.C_POBLACIONEXTRANJERA));
+				        destBean.setIdProvincia((String)htDir.get(CenDireccionesBean.C_IDPROVINCIA));
+				        destBean.setIdPais((String)htDir.get(CenDireccionesBean.C_IDPAIS));
+				        if (destBean.getIdPais().equals("")) destBean.setIdPais(ClsConstants.ID_PAIS_ESPANA); 
+				        destBean.setCodigoPostal((String)htDir.get(CenDireccionesBean.C_CODIGOPOSTAL));
+				        destBean.setCorreoElectronico((String)htDir.get(CenDireccionesBean.C_CORREOELECTRONICO));
+				        destBean.setFax1((String)htDir.get(CenDireccionesBean.C_FAX1));
+				        destBean.setFax2((String)htDir.get(CenDireccionesBean.C_FAX2));
+				        destBean.setMovil((String)htDir.get(CenDireccionesBean.C_MOVIL));
+			        }
+
+	    			
+	    		}else if(tipoDestinatario.equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG)){
+	    			ScsPersonaJGAdm personaJGAdm = new ScsPersonaJGAdm(this.usrBean);
+	    			ScsPersonaJGBean personaJGBean =  personaJGAdm.getPersonaJG(new Long(idPersona),enviosBean.getIdInstitucion());
+
+					destBean.setApellidos1(personaJGBean.getApellido1());
+			        destBean.setApellidos2(personaJGBean.getApellido2());
+			        destBean.setNombre(personaJGBean.getNombre());
+			        destBean.setNifcif(personaJGBean.getNif());
+			        
+			        destBean.setDomicilio(personaJGBean.getDireccion());
+			        destBean.setIdPoblacion(personaJGBean.getIdPoblacion());
+			        destBean.setIdProvincia(personaJGBean.getIdProvincia());
+			        destBean.setIdPais(personaJGBean.getIdPais());
+			        if (destBean.getIdPais().equals("")) destBean.setIdPais(ClsConstants.ID_PAIS_ESPANA); 
+			        destBean.setCodigoPostal(personaJGBean.getCodigoPostal());
+			        destBean.setCorreoElectronico(personaJGBean.getCorreoElectronico());
+			        destBean.setFax1(personaJGBean.getFax());
+			        Vector vTelefonos = personaJGBean.getTelefonos();
+			        if(vTelefonos!=null && vTelefonos.size()>0){
+				        for (int i = 0; i < vTelefonos.size(); i++) {
+				        	ScsTelefonosPersonaJGBean telefono = (ScsTelefonosPersonaJGBean)vTelefonos.get(i);
+				        	if(telefono.getpreferenteSms()!=null && telefono.getpreferenteSms().equals("1")){
+				        		destBean.setMovil(telefono.getNumeroTelefono());
+				        		break;
+				        	}
+						}
+			        }
+			        
+	    			
+	    			
+	    			
+	    		}else if(tipoDestinatario.equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR)){
+	    			ScsProcuradorAdm procuradorAdm = new ScsProcuradorAdm(usrBean);
+	    			Vector procuradorVector = procuradorAdm.busquedaProcurador(enviosBean.getIdInstitucion().toString(),idPersona);
+	    			Hashtable procuradorHashtable = (Hashtable) procuradorVector.get(0);
+	    			
+					destBean.setApellidos1((String)procuradorHashtable.get(ScsProcuradorBean.C_APELLIDO1));
+			        destBean.setApellidos2((String)procuradorHashtable.get(ScsProcuradorBean.C_APELLIDO2));
+			        destBean.setNombre((String)procuradorHashtable.get(ScsProcuradorBean.C_NOMBRE));
+			        destBean.setNifcif("");
+			        
+			        destBean.setDomicilio((String)procuradorHashtable.get(ScsProcuradorBean.C_DIRECCION));
+			        destBean.setIdPoblacion((String)procuradorHashtable.get(ScsProcuradorBean.C_IDPOBLACION));
+			        destBean.setIdProvincia((String)procuradorHashtable.get(ScsProcuradorBean.C_IDPROVINCIA));
+			        destBean.setIdPais(ClsConstants.ID_PAIS_ESPANA);
+			         
+			        destBean.setCodigoPostal((String)procuradorHashtable.get(ScsProcuradorBean.C_CODIGOPOSTAL));
+			        destBean.setCorreoElectronico((String)procuradorHashtable.get(ScsProcuradorBean.C_EMAIL));
+			        destBean.setFax1((String)procuradorHashtable.get(ScsProcuradorBean.C_FAX1));
+			        destBean.setFax2((String)procuradorHashtable.get(ScsProcuradorBean.C_FAX1));
+			        destBean.setMovil((String)procuradorHashtable.get(ScsProcuradorBean.C_TELEFONO1));
+			        
+	    			
+	    			
+	    			
+	    		}else if(tipoDestinatario.equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO)){
+	    			ScsJuzgadoAdm juzgadoAdm = new ScsJuzgadoAdm(usrBean);
+	    			Vector juzgadoVector = juzgadoAdm.busquedaJuzgado(enviosBean.getIdInstitucion().toString(),idPersona);
+	    			Hashtable juzgadoHashtable = (Hashtable) juzgadoVector.get(0);
+	    			
+			        destBean.setNombre((String)juzgadoHashtable.get(ScsJuzgadoBean.C_NOMBRE));
+					destBean.setApellidos1("");
+			        destBean.setApellidos2("");	
+			        destBean.setNifcif("");
+			        
+			        destBean.setDomicilio((String)juzgadoHashtable.get(ScsJuzgadoBean.C_DIRECCION));
+			        destBean.setIdPoblacion((String)juzgadoHashtable.get(ScsJuzgadoBean.C_IDPOBLACION));
+			        destBean.setIdProvincia((String)juzgadoHashtable.get(ScsJuzgadoBean.C_IDPROVINCIA));
+			        destBean.setIdPais(ClsConstants.ID_PAIS_ESPANA);
+			         
+			        destBean.setCorreoElectronico((String)juzgadoHashtable.get(ScsJuzgadoBean.C_EMAIL)); 
+			        destBean.setCodigoPostal((String)juzgadoHashtable.get(ScsJuzgadoBean.C_CODIGOPOSTAL));
+			        destBean.setFax1((String)juzgadoHashtable.get(ScsJuzgadoBean.C_FAX1));
+			        destBean.setFax2((String)juzgadoHashtable.get(ScsJuzgadoBean.C_FAX1));
+			        destBean.setMovil((String)juzgadoHashtable.get(ScsJuzgadoBean.C_TELEFONO1));
+	    		}
+	            
+			    crearDestinatario=true;
+
+            } else {
+                
+            	Hashtable htDest = new Hashtable();
+                htDest.put(EnvDestinatariosBean.C_IDENVIO,enviosBean.getIdEnvio());
+                htDest.put(EnvDestinatariosBean.C_IDINSTITUCION,enviosBean.getIdInstitucion());
+                htDest.put(EnvDestinatariosBean.C_IDPERSONA,idPersona);
+                destBean = (EnvDestinatariosBean)destAdm.selectByPK(htDest).firstElement();                
+                crearDestinatario=false;
+                
+            }
+            
+	       
+	        
+	        if (crearDestinatario){
+	            
+	                destAdm.insert(destBean);
+	                return destBean;
+	            
+	           }
+
+
+        } catch (SIGAException e1) {
+            throw e1;
+        } catch (Exception e1) {
+            throw new SIGAException("messages.general.error",e1);
+        }  
+        return null;
+        
+    }
+    
     /**
      * Método que adjunta una serie de documentos a un destinatario.
      * Si el destinatario no existe, lo crea.
@@ -548,6 +718,57 @@ public class Envio
 			addDocumentosDestinatario(idPersona,EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO,documentos);
 			
 		}               
+                
+    }
+    public void generarIntercambioTelematico(EnvEnviosBean enviosBean,Hashtable htPersonas, List<Object> listObjetosTelematicos) throws SIGAException,ClsExceptions
+	{
+        EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
+        envAdm.insert(enviosBean);
+
+        // Copiamos los datos la plantilla, incluidos los remitentes
+        envAdm.copiarCamposPlantilla(enviosBean.getIdInstitucion(), 
+				enviosBean.getIdEnvio(), 
+				enviosBean.getIdTipoEnvios(),
+				enviosBean.getIdPlantillaEnvios());
+        Vector <EnvDestinatariosBean> destinatariosBeans =  new Vector<EnvDestinatariosBean>(); 
+        Iterator itePersona = htPersonas.keySet().iterator();
+        while (itePersona.hasNext()) {
+			String idPersona = (String) itePersona.next();
+			
+			EnvDestinatariosBean destinatariosBean = addDestinatario(idPersona, (String) htPersonas.get(idPersona));
+			
+			if(destinatariosBean!=null)
+				destinatariosBeans.add(destinatariosBean);
+			
+			
+		}
+        
+        for (Object object : listObjetosTelematicos) {
+        	if(object instanceof EcomDesignaprovisionalWithBLOBs){
+        		
+        		EcomDesignaprovisionalWithBLOBs designaProvisionalBean = (EcomDesignaprovisionalWithBLOBs)object;
+				designaProvisionalBean.setIdenvio(new Long(enviosBean.getIdEnvio()));
+				BusinessManager businessManager =  BusinessManager.getInstance();
+				DesignaProvisionalService designaProvisionalService = (DesignaProvisionalService) businessManager.getService(DesignaProvisionalService.class);
+				designaProvisionalService.insertaIntercambioTelematico(designaProvisionalBean,(int)this.usrBean.getIdPersona());
+        		
+        		
+        	}else  if(object instanceof EcomSolsusprocedimientoWithBLOBs){
+        		EcomSolsusprocedimientoWithBLOBs ecomSolSusProcedimientoBean = (EcomSolsusprocedimientoWithBLOBs)object;
+        		ecomSolSusProcedimientoBean.setIdenvio(new Long(enviosBean.getIdEnvio()));
+        		BusinessManager businessManager =  BusinessManager.getInstance();
+				SolSusProcedimientoService solSusProcedimientoService = (SolSusProcedimientoService) businessManager.getService(SolSusProcedimientoService.class);
+				solSusProcedimientoService.insertaIntercambioTelematico(ecomSolSusProcedimientoBean,(int)usrBean.getIdPersona());
+        		
+        		
+        	}
+        	enviosBean.setIdEstado(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESANDO);
+            envAdm.updateDirect(enviosBean);
+			
+		}
+        envAdm.generarLogEnvioHT(destinatariosBeans,null,"", new Hashtable(), enviosBean);
+        
+                    
                 
     }
     

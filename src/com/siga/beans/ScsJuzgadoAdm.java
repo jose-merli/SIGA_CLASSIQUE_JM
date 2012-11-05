@@ -51,7 +51,7 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 							ScsJuzgadoBean.C_TELEFONO2, ScsJuzgadoBean.C_FAX1,ScsJuzgadoBean.C_FECHABAJA,
 							ScsJuzgadoBean.C_USUMODIFICACION, ScsJuzgadoBean.C_FECHAMODIFICACION,
 							ScsJuzgadoBean.C_CODPROCURADOR, ScsJuzgadoBean.C_VISIBLE, ScsJuzgadoBean.C_MOVIL,
-							ScsJuzgadoBean.C_EMAIL, ScsJuzgadoBean.C_CODIGOEXT2};
+							ScsJuzgadoBean.C_EMAIL, ScsJuzgadoBean.C_CODIGOEXT2, ScsJuzgadoBean.C_ISCODIGOEJIS};
 		return campos;
 	}	
 	
@@ -94,7 +94,8 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 			bean.setFechaMod(UtilidadesHash.getString(hash, ScsJuzgadoBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,ScsJuzgadoBean.C_USUMODIFICACION));
 			bean.setMovil(UtilidadesHash.getString(hash,ScsJuzgadoBean.C_MOVIL));
-			bean.setEmail(UtilidadesHash.getString(hash,ScsJuzgadoBean.C_EMAIL));
+			bean.setIsCodigoEjis(UtilidadesHash.getString(hash,ScsJuzgadoBean.C_ISCODIGOEJIS));
+			//bean.setEmail(UtilidadesHash.getString(hash,ScsJuzgadoBean.C_EMAIL));
 		}
 		catch(Exception e){
 			bean = null;
@@ -132,7 +133,8 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 			hash.put(ScsJuzgadoBean.C_USUMODIFICACION, String.valueOf(b.getUsuMod()));
 			hash.put(ScsJuzgadoBean.C_FECHAMODIFICACION, b.getFechaMod());
 			hash.put(ScsJuzgadoBean.C_MOVIL, b.getMovil());
-			hash.put(ScsJuzgadoBean.C_EMAIL, b.getEmail());
+			hash.put(ScsJuzgadoBean.C_ISCODIGOEJIS, b.getIsCodigoEjis());
+			//hash.put(ScsJuzgadoBean.C_EMAIL, b.getEmail());
 		}
 		catch (Exception e){
 			hash = null;
@@ -264,7 +266,7 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 		// Acceso a BBDD	
 		try { 
 			RowsContainer rc = new RowsContainer(); 	
-			if (rc.queryNLS(consulta)) {
+			if (rc.query(consulta)) {
 				for (int i = 0; i < rc.size(); i++)	{		
 					Row fila = (Row) rc.get(i);
 					Hashtable registro = (Hashtable)fila.getRow();
@@ -330,6 +332,7 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 			select += " , juzgado."+ScsJuzgadoBean.C_VISIBLE;
 			select += " , juzgado."+ScsJuzgadoBean.C_MOVIL;
 			select += " , juzgado."+ScsJuzgadoBean.C_EMAIL;
+			select += " , juzgado."+ScsJuzgadoBean.C_ISCODIGOEJIS;
 			select += " , (SELECT provincia."+CenProvinciaBean.C_NOMBRE+
 					  "    FROM "+CenProvinciaBean.T_NOMBRETABLA +" provincia "+
 					  "    WHERE provincia."+CenProvinciaBean.C_IDPROVINCIA+"=juzgado."+ScsJuzgadoBean.C_IDPROVINCIA+

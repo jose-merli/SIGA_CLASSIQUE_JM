@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import org.apache.struts.util.RequestUtils;
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
@@ -87,6 +89,7 @@ public class TagBusquedaPersona extends TagSupport
 	{
 		try {
 			HttpSession session = pageContext.getSession();
+			
 			UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
 			if (this.anchoDesc ==null ||this.anchoDesc.equals("")){
 				this.anchoDesc="45";
@@ -158,7 +161,7 @@ public class TagBusquedaPersona extends TagSupport
 			if (this.titulo!=null && !this.titulo.equals("")) { 
 				out.println("</fieldset>");
 			}
-			
+			//request
 			out.println("<script language=\"JavaScript\">	");
 			out.println("");
 			out.println("		function creaForm() {");
@@ -166,43 +169,66 @@ public class TagBusquedaPersona extends TagSupport
 			out.println("			if(vForm==null){");
 			out.println("				var app=busquedaClientesModalForm.action;");
 			out.println("				app=app.substring(0,app.substr(1).indexOf('/')+1);");
-			out.println("");			
-			out.println("				var formu=document.createElement('form');");
-			out.println("				formu.setAttribute('name','busquedaClientesModalForm');");			
-			out.println("				formu.setAttribute('id','busquedaClientesModalForm');");
+//			////////////////////////////////////////////////////////////////////////////////////////////////////////
+			
+			
+			//out.println("				var formu=document.createElement(\"<form name='busquedaClientesModalForm' action='\"+app+\"/CEN_BusquedaClientesModal.do'>\");");
+			
+			out.println("var formu = document.createElement('form'); ");
+			out.println("formu.setAttribute('name', 'busquedaClientesModalForm');");
+			out.println("formu.setAttribute('id', 'busquedaClientesModalForm');");
+//			out.println("formu.setAttribute('method', 'POST');");
+			//String contextPath = pageContext.getRequest().getc
 			String contextPath = ((HttpServletRequest)pageContext.getRequest()).getContextPath();
+			
 			out.println("formu.setAttribute('action', '"+contextPath+"/CEN_BusquedaClientesModal.do');");
 			
-			out.println("");			
-			out.println("				var myinput =document.createElement('input');");			
-			out.println("				myinput.setAttribute('type','hidden');");
-			out.println("				myinput.setAttribute('id','actionModal');");			
-			out.println("				myinput.setAttribute('name','actionModal');");
-			out.println("				myinput.setAttribute('value','');");		
-			out.println("				formu.appendChild(myinput);");
-			out.println("");			
-			out.println("				var myinput2 =document.createElement('input');");			
-			out.println("				myinput2.setAttribute('type','hidden');");
-			out.println("				myinput2.setAttribute('id','modo');");			
-			out.println("				myinput2.setAttribute('name','modo');");
-			out.println("				myinput2.setAttribute('value','');");		
-			out.println("				formu.appendChild(myinput2);");	
-			out.println("");			
-			out.println("				var myinput3 =document.createElement('input');");			
-			out.println("				myinput3.setAttribute('type','hidden');");
-			out.println("				myinput3.setAttribute('id','tipoBus');");			
-			out.println("				myinput3.setAttribute('name','tipoBus');");
-			out.println("				myinput3.setAttribute('value','"+this.tipo+"');");		
-			out.println("				formu.appendChild(myinput3);");
-			out.println("");			
-			out.println("				var myinput4 =document.createElement('input');");			
-			out.println("				myinput4.setAttribute('type','hidden');");
-			out.println("				myinput4.setAttribute('id','numeroNif');");			
-			out.println("				myinput4.setAttribute('name','numeroNif');");
-			out.println("				myinput4.setAttribute('value','');");		
-			out.println("				formu.appendChild(myinput4);");		
-			out.println("				document.body.appendChild(formu);");	
-			out.println("				vForm=formu;");
+			
+			
+			// out.println("				formu.appendChild(document.createElement(\"<input type='hidden' name='actionModal' value=''>\"));");
+			out.println("                var myinput =document.createElement('input');");
+            out.println("  myinput.setAttribute('type','hidden');");
+            out.println("  myinput.setAttribute('id','actionModal');");
+            out.println("  myinput.setAttribute('name','actionModal');");
+            out.println("  myinput.setAttribute('value','');");
+            out.println("  formu.appendChild(myinput);");
+            out.println(""); 
+			
+			
+			
+			//out.println("				formu.appendChild(document.createElement(\"<input type='hidden' name='modo' value=''>\"));");
+            out.println("                var myinput2 =document.createElement('input');");
+            out.println("  myinput2.setAttribute('type','hidden');");
+            out.println("  myinput2.setAttribute('id','modo');");
+            out.println("  myinput2.setAttribute('name','modo');");
+            out.println("  myinput2.setAttribute('value','');");
+            out.println("  formu.appendChild(myinput2);");
+            out.println(""); 
+            
+            
+			//out.println("				formu.appendChild(document.createElement(\"<input type='hidden' name='tipoBus' value='"+this.tipo+"'>\"));");
+            out.println("                var myinput3 =document.createElement('input');");
+            out.println("  myinput3.setAttribute('type','hidden');");
+            out.println("  myinput3.setAttribute('id','tipoBus');");
+            out.println("  myinput3.setAttribute('name','tipoBus');");
+            out.println("  myinput3.setAttribute('value','"+this.tipo+"');");
+            out.println("  formu.appendChild(myinput3);");
+            
+            
+			//out.println("				formu.appendChild(document.createElement(\"<input type='hidden' name='numeroNif' value=''>\"));");
+            out.println("");
+            out.println("  var myinput4 =document.createElement('input');");
+            out.println("  myinput4.setAttribute('type','hidden');");
+            out.println("  myinput4.setAttribute('id','numeroNif');");
+            out.println("  myinput4.setAttribute('name','numeroNif');");
+            out.println("  myinput4.setAttribute('value','');"); 
+            out.println("  formu.appendChild(myinput4);"); 
+            
+			
+			
+//			////////////////////////////////////////////////////////////////////////////////////////////////////////
+            out.println("  document.body.appendChild(formu);");
+            out.println("				vForm=formu;");		
 			
 			out.println("			}");
 			out.println("			return vForm;");

@@ -38,6 +38,7 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirListaGuardiasForm;
+import com.siga.informes.MasterReport;
 
 
 /**
@@ -940,7 +941,8 @@ public class DefinirListaGuardiasAction extends MasterAction {
 					if (correcto){
 						nombreFicheroPDF="listaGuardias_"+UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","_").replaceAll(":","_").replaceAll(" ","_")+".pdf";
 						ficPDF=new File(rutaServidor+barra+nombreFicheroPDF); 
-						plantilla.convertFO2PDF(ficFOP, ficPDF, rutaPlantilla+File.separator+institucion);
+						MasterReport masterReport = new  MasterReport();
+						masterReport.convertFO2PDF(ficFOP, ficPDF, rutaPlantilla+File.separator+institucion);
 						ficFOP.delete();
 					}
 					else{

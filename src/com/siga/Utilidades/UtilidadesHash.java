@@ -6,6 +6,7 @@
  */
 package com.siga.Utilidades;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -118,6 +119,14 @@ public class UtilidadesHash {
 			return null;
 		}
 	}
+	static public BigDecimal getBigDecimal (Hashtable hash, String key){// throws ClsExceptions {
+		try {
+			return new BigDecimal((String)hash.get(key));
+		}
+		catch (Exception e) {
+			return null;
+		}
+	}
 
 	static public Boolean getBoolean (Hashtable hash, String key) { // throws ClsExceptions {
 		try {
@@ -143,6 +152,15 @@ public class UtilidadesHash {
 	}
 
 	static public void set (Hashtable hash, String key, String valor) {
+		try {
+			if (key==null || valor==null) return;
+			hash.put (key, valor);
+		}
+		catch (Exception e) { 	
+		    return;
+		}
+	}
+	static public void set (Hashtable hash, String key, BigDecimal valor) {
 		try {
 			if (key==null || valor==null) return;
 			hash.put (key, valor);

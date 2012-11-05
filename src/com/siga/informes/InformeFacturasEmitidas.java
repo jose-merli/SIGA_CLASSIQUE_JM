@@ -10,6 +10,7 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.xmlbeans.XmlOptions;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.XMLOutputter;
@@ -43,52 +44,6 @@ public class InformeFacturasEmitidas extends MasterReport
 	public InformeFacturasEmitidas(UsrBean usuario) {
 		super(usuario);
 	}
-
-	protected String reemplazarDatos(HttpServletRequest request, String plantillaFO, Hashtable datosBase) throws ClsExceptions, SIGAException 
-	{
-		String institucion = this.getUsuario().getLocation();
-		String fDesde = UtilidadesHash.getString(datosBase, "FECHA_DESDE");
-		String fHasta = UtilidadesHash.getString(datosBase, "FECHA_HASTA");
-		
-		// Colocamos los registros
-		FacFacturaAdm adm = new FacFacturaAdm(this.getUsuario());
-		Hashtable auxFac = adm.getFacturasEmitidas(institucion, fDesde, fHasta);
-		ClsLogging.writeFileLog("INFORMEFACTURAS: Despues de ejecutar la consulta Facturas Emitidas",10);
-		Vector vDatos = (Vector)auxFac.get("REGISTROS");
-		if (vDatos != null){
-			ClsLogging.writeFileLog("INFORMEFACTURAS: ANTES DE REEMPLAZAR VARIABLE REGISTROS",10);
-			plantillaFO = this.reemplazaRegistros(plantillaFO, vDatos, null, "FACTURA_EMITIDA");
-		}	
-		ClsLogging.writeFileLog("INFORMEFACTURAS: DESPUES DE REEMPLAZAR VARIABLE REGISTROS",10);
-		// Colocamos los totales
-		Vector vTotalesXiva = (Vector)auxFac.get("TOTALES_X_IVA");
-		if (vTotalesXiva != null){
-			ClsLogging.writeFileLog("INFORMEFACTURAS: ANTES DE REEMPLAZAR VARIABLE TOTALES_X_IVA",10);
-			plantillaFO = this.reemplazaRegistros(plantillaFO, vTotalesXiva, null, "TOTAL_POR_IVA");
-		}	
-		ClsLogging.writeFileLog("INFORMEFACTURAS: DESPUES DE REEMPLAZAR VARIABLE TOTALES_X_IVA",10);
-		// Colocamos datos fijos (cabeceras, etc)
-		CenInstitucionAdm admInstitucion= new CenInstitucionAdm (this.getUsuario());
-		Hashtable hDatosFijos = admInstitucion.getDatosInformeFacturasEmitidas(institucion);
-		ClsLogging.writeFileLog("INFORMEFACTURAS: Despues de ejecutar la consulta de Datos Informe Facturas Emitidas",10);
-		UtilidadesHash.set(hDatosFijos, "FECHA_DESDE", fDesde);
-		UtilidadesHash.set(hDatosFijos, "FECHA_HASTA", fHasta);
-		if (vDatos != null && vDatos.size() > 0) {
-			Hashtable aux = (Hashtable)vDatos.get(vDatos.size()-1);
-			UtilidadesHash.set(hDatosFijos, "TOTAL_IVA", UtilidadesHash.getString(aux, "TOTAL_ACUMULADO_IVA"));
-			UtilidadesHash.set(hDatosFijos, "TOTAL_TOTAL_FACTURA", UtilidadesHash.getString(aux, "TOTAL_ACUMULADO_TOTAL_FACTURA"));
-			UtilidadesHash.set(hDatosFijos, "TOTAL_BASE_IMPONIBLE", UtilidadesHash.getString(aux, "TOTAL_ACUMULADO_BASE_IMPONIBLE"));
-		}
-		ClsLogging.writeFileLog("NFORMEFACTURAS:Antes de reemplazar las variables del informe",10);
-		plantillaFO = this.reemplazaVariables(hDatosFijos, plantillaFO);
-		ClsLogging.writeFileLog("NFORMEFACTURAS:Despues de reemplazar las variables del informe",10);
-
-		return plantillaFO;
-	}
-
-	
-	
-	
 	public File generarListadoFacturasEmitidasOld (HttpServletRequest request, Hashtable datos) throws ClsExceptions,SIGAException 
 	{
 		String resultado="exito";
@@ -161,6 +116,52 @@ public class InformeFacturasEmitidas extends MasterReport
 		}
         return fPdf;
 	}
+	protected String reemplazarDatos(HttpServletRequest request, String plantillaFO, Hashtable datosBase) throws ClsExceptions, SIGAException 
+	{
+		String institucion = this.getUsuario().getLocation();
+		String fDesde = UtilidadesHash.getString(datosBase, "FECHA_DESDE");
+		String fHasta = UtilidadesHash.getString(datosBase, "FECHA_HASTA");
+		
+		// Colocamos los registros
+		FacFacturaAdm adm = new FacFacturaAdm(this.getUsuario());
+		Hashtable auxFac = adm.getFacturasEmitidas(institucion, fDesde, fHasta);
+		ClsLogging.writeFileLog("INFORMEFACTURAS: Despues de ejecutar la consulta Facturas Emitidas",10);
+		Vector vDatos = (Vector)auxFac.get("REGISTROS");
+		if (vDatos != null){
+			ClsLogging.writeFileLog("INFORMEFACTURAS: ANTES DE REEMPLAZAR VARIABLE REGISTROS",10);
+			plantillaFO = this.reemplazaRegistros(plantillaFO, vDatos, null, "FACTURA_EMITIDA");
+		}	
+		ClsLogging.writeFileLog("INFORMEFACTURAS: DESPUES DE REEMPLAZAR VARIABLE REGISTROS",10);
+		// Colocamos los totales
+		Vector vTotalesXiva = (Vector)auxFac.get("TOTALES_X_IVA");
+		if (vTotalesXiva != null){
+			ClsLogging.writeFileLog("INFORMEFACTURAS: ANTES DE REEMPLAZAR VARIABLE TOTALES_X_IVA",10);
+			plantillaFO = this.reemplazaRegistros(plantillaFO, vTotalesXiva, null, "TOTAL_POR_IVA");
+		}	
+		ClsLogging.writeFileLog("INFORMEFACTURAS: DESPUES DE REEMPLAZAR VARIABLE TOTALES_X_IVA",10);
+		// Colocamos datos fijos (cabeceras, etc)
+		CenInstitucionAdm admInstitucion= new CenInstitucionAdm (this.getUsuario());
+		Hashtable hDatosFijos = admInstitucion.getDatosInformeFacturasEmitidas(institucion);
+		ClsLogging.writeFileLog("INFORMEFACTURAS: Despues de ejecutar la consulta de Datos Informe Facturas Emitidas",10);
+		UtilidadesHash.set(hDatosFijos, "FECHA_DESDE", fDesde);
+		UtilidadesHash.set(hDatosFijos, "FECHA_HASTA", fHasta);
+		if (vDatos != null && vDatos.size() > 0) {
+			Hashtable aux = (Hashtable)vDatos.get(vDatos.size()-1);
+			UtilidadesHash.set(hDatosFijos, "TOTAL_IVA", UtilidadesHash.getString(aux, "TOTAL_ACUMULADO_IVA"));
+			UtilidadesHash.set(hDatosFijos, "TOTAL_TOTAL_FACTURA", UtilidadesHash.getString(aux, "TOTAL_ACUMULADO_TOTAL_FACTURA"));
+			UtilidadesHash.set(hDatosFijos, "TOTAL_BASE_IMPONIBLE", UtilidadesHash.getString(aux, "TOTAL_ACUMULADO_BASE_IMPONIBLE"));
+		}
+		ClsLogging.writeFileLog("NFORMEFACTURAS:Antes de reemplazar las variables del informe",10);
+		plantillaFO = this.reemplazaVariables(hDatosFijos, plantillaFO);
+		ClsLogging.writeFileLog("NFORMEFACTURAS:Despues de reemplazar las variables del informe",10);
+
+		return plantillaFO;
+	}
+
+	
+	
+	
+	
 	/**
 	 * 
 	 * Metodo publico que llamaremos desde el Action encargado de generar el informe de facturas emitidas en pdf
@@ -378,6 +379,7 @@ public class InformeFacturasEmitidas extends MasterReport
 					  totalAcumuladoBaseImponible = 0.0d;
 
         		Element root = new Element("Report");
+        		
         		Element empresa = new Element("empresa").setText(institucion);
         		Element fecha = new Element("fechaGeneracion").setText(fechaGeneracion);
         		Element eFechaDesde = new Element("fechaDesde").setText( fDesde );
@@ -445,7 +447,7 @@ public class InformeFacturasEmitidas extends MasterReport
             	Element totalBaseImponible=new Element("totalBaseImponible").setText(UtilidadesNumero.formato(totalAcumuladoBaseImponible));
         		Element totalCuotaIva=new Element("totalCuotaIva").setText(UtilidadesNumero.formato(totalAcumuladoIVA));
         		Element totalImporteFacturas=new Element("totalImporteFacturas").setText(UtilidadesNumero.formato(totalAcumuladoTotalFactura));
-        		 
+        		
         		
         		
         		root.addContent(totalBaseImponible);
@@ -458,6 +460,7 @@ public class InformeFacturasEmitidas extends MasterReport
          	    //Vamos a almacenarlo en un fichero y ademas lo sacaremos por pantalla
             	 file = new File(pathXml);
          	     XMLOutputter out=new XMLOutputter("  ",true);
+         	     out.setEncoding("ISO-8859-1");
          	     FileOutputStream fileOut=new FileOutputStream(file);
          	     out.output(doc,fileOut);
          	     fileOut.flush();
@@ -554,7 +557,7 @@ public class InformeFacturasEmitidas extends MasterReport
 	}  
 	
 	
-	
-	
+   
+    
 	
 }

@@ -1,6 +1,7 @@
 package com.siga.Utilidades;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.SequenceInputStream;
@@ -58,6 +59,14 @@ public class UtilidadesFicheros {
 			}
 		}
 		return dir.delete();
+	}
+	public static String getString(File file) throws IOException{
+		FileInputStream inputStream =  new FileInputStream(file);
+		byte [] bytes = new byte[inputStream.available()];
+		inputStream.read(bytes);
+		inputStream.close();
+		
+		return new String(bytes);
 	}
 
 	

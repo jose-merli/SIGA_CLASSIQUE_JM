@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Tue Jun 19 10:00:36 CEST 2012-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.siga.envios.service.ca_sigp.mapper.SolDesignacionProvisionalMapper">
+	
+	<select id="getDatosSolDesignaProvisional" parameterType="Map" resultType="org.redabogacia.sigaservices.app.autogen.model.EcomSoldesignaprovisional">
+		SELECT
+			SDP.EJGNEWIDTIPO,
+			SDP.EJGNEWANIO,
+			SDP.EJGNEWNUMERO,
+			SDP.DESIGNANEWIDTURNO, 
+			SDP.DESIGNANEWANIO,
+			SDP.DESIGNANEWNUMERO,
+			SDP.DESIGNANEWFECHA,
+			SDP.DESIGNANEWIDTIPODESCOL,
+			SDP.DESIGNANEWDLETRADO,
+			SDP.DESIGNANEWIDINSTLETRADO,
+			SDP.EJGSELIDTIPO,
+			SDP.EJGSELANIO,
+			SDP.EJGSELNUMERO,
+			SDP.DESIGNASELIDTURNO,
+			SDP.DESIGNASELANIO,
+			SDP.DESIGNASELNUMERO,
+			SDP.CASO
+		
+		FROM 
+			ECOM_SOLDESIGNAPROVISIONAL SDP, SCS_DESIGNA D, SCS_DESIGNAPROCURADOR DP
+		
+		WHERE 
+			SDP.IDINSTITUCION = D.IDINSTITUCION(+) 
+			AND SDP.DESIGNASELIDTURNO = D.IDTURNO(+) 
+			AND SDP.DESIGNASELANIO = D.ANIO(+) 
+			AND SDP.DESIGNASELNUMERO = D.NUMERO(+) 
+			AND D.IDINSTITUCION = DP.IDINSTITUCION(+) 
+			AND D.IDTURNO = DP.IDTURNO(+) 
+			AND D.NUMERO = DP.NUMERO(+) 
+			AND D.ANIO = DP.ANIO(+) 
+			AND DP.FECHARENUNCIA IS NULL
+  			AND SDP.IDINSTITUCION = #{idInstitucion}
+  			AND SDP.IDENVIO = #{idEnvio}
+	</select>
+	
+	<resultMap id="datosDesignasRelacionadasResult" type="com.siga.envios.service.ca_sigp.vos.TipoDesignaLetradoProcurador">
+		<result property="idInstitucion" column="IDINSTITUCION"/>
+		<result property="anio" column="ANIO"/>
+		<result property="numero" column="NUMERO"/>
+		<result property="idTurno" column="IDTURNO"/>
+		<result property="codigo" column="CODIGO"/>
+		<result property="idLetrado" column="IDLETRADO"/>
+		<result property="descripcionLetrado" column="DESCRIPCIONLETRADO"/>		
+		<result property="idProcurador" column="IDPROCURADOR"/>
+		<result property="idInstitucionProcur" column="IDINSTITUCION_PROCUR"/>
+		<result property="descripcionProcurador" column="DESCRIPCIONPROCURADOR"/>
+		
+	</resultMap>
+	
+	<select id="getDesignasEJGRelacionadas" parameterType="Map" resultMap="datosDesignasRelacionadasResult">
+			SELECT
+              	DES.IDINSTITUCION IDINSTITUCION,
+              	DES.ANIO ANIO,
+              	DES.NUMERO NUMERO,
+             	DES.IDTURNO IDTURNO,
+             	DES.CODIGO CODIGO,              
+              	DESLET.IDPERSONA IDLETRADO,
+              	(PER.NOMBRE ||' ' || PER.APELLIDOS1 ||' ' || PER.APELLIDOS2) DESCRIPCIONLETRADO,
+             	DESPROC.IDPROCURADOR IDPROCURADOR,
+             	DESPROC.IDINSTITUCION_PROC IDINSTITUCION_PROCUR,
+              	(PROC.NOMBRE ||' ' || PROC.APELLIDOS1 ||' ' || PROC.APELLIDOS2) DESCRIPCIONPROCURADOR
+          	
+          	FROM
+          		SCS_EJG EJG, SCS_EJGDESIGNA EJGD, SCS_DESIGNA DES, SCS_DESIGNASLETRADO DESLET, CEN_PERSONA PER, SCS_DESIGNAPROCURADOR DESPROC, SCS_PROCURADOR PROC
+         	
+         	WHERE 
+	           	EJGD.ANIOEJG = EJG.ANIO
+	           	AND EJGD.NUMEROEJG = EJG.NUMERO
+	          	AND EJGD.IDTIPOEJG = EJG.IDTIPOEJG
+	           	AND EJGD.IDINSTITUCION = EJG.IDINSTITUCION
+				AND DES.ANIO = EJGD.ANIODESIGNA
+           		AND DES.NUMERO= EJGD.NUMERODESIGNA
+           		AND DES.IDTURNO = EJGD.IDTURNO
+           		AND DES.IDINSTITUCION = EJGD.IDINSTITUCION	
+              
+             	AND DESLET.ANIO = DES.ANIO 
+           		AND DESLET.NUMERO= DES.NUMERO
+           		AND DESLET.IDTURNO = DES.IDTURNO
+           		AND DESLET.IDINSTITUCION = DES.IDINSTITUCION	              
+             	AND DESLET.FECHARENUNCIA IS NULL
+             	AND DESLET.IDPERSONA = PER.IDPERSONA	   
+                         
+            	AND DESPROC.ANIO (+)= DES.ANIO 
+           		AND DESPROC.NUMERO (+)= DES.NUMERO
+           		AND DESPROC.IDTURNO (+)= DES.IDTURNO
+           		AND DESPROC.IDINSTITUCION (+)= DES.IDINSTITUCION	
+              	AND DESPROC.FECHARENUNCIA IS NULL
+              
+              	AND PROC.IDPROCURADOR (+)= DESPROC.IDPROCURADOR
+              	AND PROC.IDINSTITUCION (+)= DESPROC.IDINSTITUCION_PROC
+        	
+         		AND EJG.ANIO = #{anio}
+           		AND EJG.NUMERO = #{numero}
+	           	AND EJG.IDTIPOEJG = #{idTipoEJG}
+	           	AND EJG.IDINSTITUCION = #{idInstitucion}	           	
+	</select>
+	
+	<resultMap id="datosDesignaSeleccionadaResult" type="com.siga.envios.service.ca_sigp.vos.TipoDesignaLetradoProcurador">
+		<result property="codigo" column="CODIGO"/>
+		<result property="idLetrado" column="IDLETRADO"/>
+		<result property="descripcionLetrado" column="DESCRIPCIONLETRADO"/>		
+		<result property="idProcurador" column="IDPROCURADOR"/>
+		<result property="idInstitucionProcur" column="IDINSTITUCION_PROCUR"/>
+		<result property="descripcionProcurador" column="DESCRIPCIONPROCURADOR"/>
+		
+	</resultMap>
+	
+	<select id="getDesignaSeleccionada" parameterType="Map" resultMap="datosDesignaSeleccionadaResult">
+			SELECT         
+              	DES.CODIGO CODIGO,   
+              	DESLET.IDPERSONA IDLETRADO,
+              	(PER.NOMBRE ||' ' || PER.APELLIDOS1 ||' ' || PER.APELLIDOS2) DESCRIPCIONLETRADO,
+             	DESPROC.IDPROCURADOR IDPROCURADOR,
+             	DESPROC.IDINSTITUCION_PROC IDINSTITUCION_PROCUR,
+              	(PROC.NOMBRE ||' ' || PROC.APELLIDOS1 ||' ' || PROC.APELLIDOS2) DESCRIPCIONPROCURADOR
+          	
+          	FROM
+          		SCS_DESIGNA DES, SCS_DESIGNASLETRADO DESLET, CEN_PERSONA PER, SCS_DESIGNAPROCURADOR DESPROC, SCS_PROCURADOR PROC
+         	
+         	WHERE 
+             	DESLET.ANIO = DES.ANIO 
+           		AND DESLET.NUMERO= DES.NUMERO
+           		AND DESLET.IDTURNO = DES.IDTURNO
+           		AND DESLET.IDINSTITUCION = DES.IDINSTITUCION	              
+             	AND DESLET.FECHARENUNCIA IS NULL
+             	AND DESLET.IDPERSONA = PER.IDPERSONA	   
+                         
+            	AND DESPROC.ANIO (+)= DES.ANIO 
+           		AND DESPROC.NUMERO (+)= DES.NUMERO
+           		AND DESPROC.IDTURNO (+)= DES.IDTURNO
+           		AND DESPROC.IDINSTITUCION (+)= DES.IDINSTITUCION	
+              	AND DESPROC.FECHARENUNCIA IS NULL
+              
+              	AND PROC.IDPROCURADOR (+)= DESPROC.IDPROCURADOR
+              	AND PROC.IDINSTITUCION (+)= DESPROC.IDINSTITUCION_PROC
+        		
+        		AND DES.ANIO =#{anio}
+           		AND DES.NUMERO= #{numero}
+           		AND DES.IDTURNO = #{idTurno}
+           		AND DES.IDINSTITUCION = #{idInstitucion}	
+           	
+	</select>	
+	
+</mapper>

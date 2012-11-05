@@ -22,6 +22,7 @@ public class EnvEnviosBean extends MasterBean {
 	private Integer idTipoEnvios;
 	private String consulta;
 	private String acuseRecibo;
+	private String idTipoIntercambioTelematico;
 	
 	// Nombre campos de la tabla 
 	static public final String C_IDINSTITUCION = "IDINSTITUCION";
@@ -38,7 +39,7 @@ public class EnvEnviosBean extends MasterBean {
 	static public final String C_IDTIPOENVIOS = "IDTIPOENVIOS";
 	static public final String C_CONSULTA = "CONSULTA";
 	static public final String C_ACUSERECIBO = "ACUSERECIBO";
-	
+	static public final String C_IDTIPOINTERCAMBIOTELEMATICO = "IDTIPOINTERCAMBIOTELEMATICO";
 	static public final String SEQ_ENV_ENVIOS = "SEQ_ENV_ENVIOS";
 	
 	static public final String T_NOMBRETABLA = "ENV_ENVIOS";	
@@ -126,5 +127,11 @@ public class EnvEnviosBean extends MasterBean {
 	}
 	public void setAcuseRecibo(String acuseRecibo) {
 		this.acuseRecibo = acuseRecibo;
+	}
+	public String getIdTipoIntercambioTelematico() {
+		return idTipoIntercambioTelematico;
+	}
+	public void setIdTipoIntercambioTelematico(String idTipoIntercambioTelematico) {
+		this.idTipoIntercambioTelematico = idTipoIntercambioTelematico;
 	}
 }

@@ -1,5 +1,8 @@
 package com.siga.informes;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -7,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -23,9 +27,11 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.avalon.framework.ExceptionUtil;
@@ -33,6 +39,7 @@ import org.apache.avalon.framework.logger.ConsoleLogger;
 import org.apache.avalon.framework.logger.Logger;
 import org.apache.fop.apps.Driver;
 import org.apache.fop.apps.FOPException;
+import org.apache.fop.apps.Options;
 import org.apache.fop.messaging.MessageHandler;
 import org.xml.sax.XMLReader;
 
@@ -266,8 +273,8 @@ public class MasterReport
 					+ rutaFicheroPDF, 7);
 
 			// 3.2. convirtiendo FOP a PDF
-			Plantilla plantilla = new Plantilla(this.usuario);
-			plantilla.convertFO2PDF(ficheroFOP, ficheroPDF,
+//			Plantilla plantilla = new Plantilla(this.usuario);
+			this.convertFO2PDF(ficheroFOP, ficheroPDF,
 					rutaServidorPlantillas);
 
 			// 3.3. borrando fichero intermedio FOP generado
@@ -356,8 +363,8 @@ public class MasterReport
 			ficheroPDF = new File(rutaServidorDescargas+ClsConstants.FILE_SEP+nombreFicheroPDF+".pdf");
 			
 			//Clase para la conversion de FOP a PDF con un directorio base para usar rutas relativas:
-			Plantilla plantilla = new Plantilla(this.usuario);
-			plantilla.convertFO2PDF(ficheroFOP, ficheroPDF, rutaServidorTmp);
+//			Plantilla plantilla = new Plantilla(this.usuario);
+			this.convertFO2PDF(ficheroFOP, ficheroPDF, rutaServidorTmp);
 			
 			// Borramos el .FOP que hemos generado para este usuario:
 			ficheroFOP.delete();
@@ -398,8 +405,8 @@ public class MasterReport
 			ficheroPDF = new File(rutaServidorDescargas+ClsConstants.FILE_SEP+nombreFicheroPDF+".pdf");
 			
 			//Clase para la conversion de FOP a PDF con un directorio base para usar rutas relativas:
-			Plantilla plantilla = new Plantilla(this.usuario);
-			plantilla.convertFO2PDF(ficheroFOP, ficheroPDF, rutaServidorTmp);
+//			Plantilla plantilla = new Plantilla(this.usuario);
+			this.convertFO2PDF(ficheroFOP, ficheroPDF, rutaServidorTmp);
 			
 			// Borramos el .FOP que hemos generado para este usuario:
 			ficheroFOP.delete();
@@ -408,29 +415,6 @@ public class MasterReport
 		}
 		return ficheroPDF;
 	}
-	
-	/**
-	 * 
-	 * @param pathXml Es el path donde se va a crear el fichero que va a ser la fuente de datos 
-	 * @param datosFormulario Hash con los valores del formulario necesario para el acceso a BBDD
-	 * @return el metodo genera el fichero xml que, aplicandole la un xsl generara un pdf
-	 * @throws ClsExceptions
-	 * @throws SIGAException
-	 */
-	protected File getXmlFileToReportWithXslFo(String pathXml, Hashtable datosFormulario) throws ClsExceptions, SIGAException{
-		 return null;
-	 }
-
-	/**
-	 * 
-	 * @param pathXml Path donde esta la fuente de datos(fichero xml)
-	 * @param xslDir Directorio donde se encuentra el fichero xsl
-	 * @param xslName Nombre del fichero xsl que se aplicara al xml para transfromarlo a pdf
-	 * @param pdfDir Directorio donde se ubicara el fichero pdf generado
-	 * @param pdfName Nombre del pdf generado
-	 * @param datosFormulario  Hash con los valores del formulario necesario para el acceso a BBDD
-	 * @return Devuelve el archivo pdf generado
-	 */
 	public File generarInformePdfFromXmlToFoXsl(String pathXml,String xslDir,String xslName,
 			String pdfDir,String pdfName, Hashtable datosFormulario) throws SIGAException{
 		File pdfFile = null;
@@ -477,16 +461,7 @@ public class MasterReport
 		return pdfFile;
 
 	}
-	/***
-	 * 
-	 * @param xml Fichero xml a transfomar en pdf
-	 * @param xslt Fichero xsl que transforma el xml a pdf
-	 * @param pdf Fichero pdf que se convertira en el pdf deseado
-	 * @return Fichero pdf generado
-	 * @throws IOException
-	 * @throws FOPException
-	 * @throws TransformerException
-	 */
+	
 	private File convertXML2PDF(File xml, File xslt, File pdf)
 	throws IOException, FOPException, TransformerException {
 //		Construct driver
@@ -528,128 +503,32 @@ public class MasterReport
 		return convertXML2PDF(xml, new FileInputStream(xslt),pdf);
 		
 	}
+	/**
+	 * 
+	 * @param pathXml Path donde esta la fuente de datos(fichero xml)
+	 * @param xslDir Directorio donde se encuentra el fichero xsl
+	 * @param xslName Nombre del fichero xsl que se aplicara al xml para transfromarlo a pdf
+	 * @param pdfDir Directorio donde se ubicara el fichero pdf generado
+	 * @param pdfName Nombre del pdf generado
+	 * @param datosFormulario  Hash con los valores del formulario necesario para el acceso a BBDD
+	 * @return Devuelve el archivo pdf generado
+	 */
+	
 	protected File convertXML2PDF(InputStream xml, File xslt, File pdf,Map<String, String> mapParameters)
 	throws IOException, FOPException, TransformerException {
 		InputStream inputXslt = new FileInputStream(xslt);
 		return convertXML2PDF(xml,inputXslt ,pdf,mapParameters);
 		
 	}
-	
-	/*III. XML a RTF XML to RTF 
-xml a la conversión rtf hay algunos pocos problemas, no tenemos un XML a RTF directa de la API, vamos a utilizar la API de JFOR aún no se ha integrado en el FOP xml to rtf conversion there are some little trouble, we do not have a direct XML to RTF from the API, we will use the JFor API has not yet integrated into the FOP 
-
-Ir. Go. JFOR API se puede lograr desde el caso de los documentos a la conversión de archivos RTF, sino que también ofrece una interfaz CONSLE. JFor API can be achieved from the FO documents to RTF file conversion, it also offers consle interface. 
-
-Podemos www.jfor.org obtenidos a partir de la información pertinente JFOR. We can www.jfor.org obtained from jfor relevant information. 
-
-A partir de documentos XML a la conversión de archivos RTF se pueden dividir en dos pasos: From XML documents to the RTF file conversion can be divided into two steps: 
-
-1. 1. Xml con FOP para convertir a Xml using FOP to convert fo 
-
-2. 2. JFOR con RTF se convertirá en la JFor with RTF will be converted into fo 
-
-3.1 con FOP a xml para convertir 3.1 with FOP to xml convert fo 
-
-Este paso se puede utilizar el método descrito anteriormente, el código XML siguiente para la realización de la conversión, todavía puede utilizar el documento XML utilizado anteriormente en This step we can easily use the method described above, the following xml to the realization of fo conversion, they may still use the above xml document used in 
-
-Y el documento XSL-FO. And xsl-fo document. 
-
-OutputStream foOut = new FileOutputStream (fofile); OutputStream foOut = new FileOutputStream (fofile); 
-TransformerFactory fábrica = TransformerFactory.newInstance (); TransformerFactory factory = TransformerFactory.newInstance (); 
-Transformador = factory.newTransformer (nuevo StreamSource ( Transformer transformer = factory.newTransformer (new StreamSource ( 
-xsltfile)); xsltfile)); 
-Fuente src = new StreamSource (archivo_xml); Source src = new StreamSource (xmlfile); 
-res Resultado = StreamResult nueva (foOut); Result res = new StreamResult (foOut); 
-transformer.transform (resolución src); transformer.transform (src, res); 
-foOut.close (); foOut.close (); 
-
-3.2 con JFOR convertir RTF a la 3.2 with JFor convert RTF to fo 
-
-Serlvet sólo tiene que conseguir como un ejemplo: Serlvet only needs to achieve as an example: 
-
-InputStream foInput = new FileInputStream (fofile); InputStream foInput = new FileInputStream (fofile); 
-InputSource InputSource = new InputSource (foInput); InputSource inputSource = new InputSource (foInput); 
-
-a cabo ByteArrayOutputStream = new ByteArrayOutputStream (); ByteArrayOutputStream out = new ByteArrayOutputStream (); 
-Escritor de salida = new OutputStreamWriter (fuera); Writer output = new OutputStreamWriter (out); 
-
-response.setContentType ("application / pdf"); response.setContentType ( "application / msword"); 
-
-nuevo convertidor (InputSource, la producción, Converter.createConverterOption ()); new Converter (inputSource, output, Converter.createConverterOption ()); 
-output.flush (); output.flush (); 
-
-bytes de contenido] [= out.toByteArray (); byte [] content = out.toByteArray (); 
-
-System.out.println (out.toString ()); System.out.println (out.toString ()); 
-
-response.setContentLength (content.length); response.setContentLength (content.length); 
-response.getOutputStream (). response.getOutputStream (). escribir (contenido); write (content); 
-response.getOutputStream (). response.getOutputStream (). flush (); flush (); 
-
-foInput.close (); foInput.close (); 
-salida.close (); output.close (); 
-out.close (); out.close (); 
-
-
-Así que hemos logrado convertirse en el documento en formato RTF xml. So that we successfully converted into RTF format xml document. 
-
-*/
-	
-	/***
+	/**
 	 * 
-	 * @param xml Fichero xml a transfomar en pdf
-	 * @param xslt Fichero xsl que transforma el xml a pdf
-	 * @param pdf Fichero pdf que se convertira en el pdf deseado
-	 * @return Fichero pdf generado
-	 * @throws IOException
-	 * @throws FOPException
-	 * @throws TransformerException
-	 */
-	private File convertXML2PDF(InputStream xml, InputStream xslt, File pdf)
-	throws IOException, FOPException, TransformerException {
-//		Construct driver
-		Driver driver = new Driver();
-
-//		Setup logger
-		Logger logger = new ConsoleLogger(ConsoleLogger.LEVEL_INFO);
-		driver.setLogger(logger);
-		MessageHandler.setScreenLogger(logger);
-
-//		Setup Renderer (output format)        
-		driver.setRenderer(Driver.RENDER_PDF);
-
-//		Setup output
-		OutputStream out = new java.io.FileOutputStream(pdf);
-		try {
-			driver.setOutputStream(out);
-
-//			Setup XSLT
-			TransformerFactory factory = TransformerFactory.newInstance();
-			Transformer transformer = factory.newTransformer(new StreamSource(xslt));
-//			Setup input for XSLT transformation
-			Source src = new StreamSource(xml);
-			
-
-//			Resulting SAX events (the generated FO) must be piped through to FOP
-			Result res = new SAXResult(driver.getContentHandler());
-
-//			Start XSLT transformation and FOP processing
-			transformer.transform(src, res);
-		} finally {
-			out.close();
-		}
-		return pdf;
-	}
-	
-	/***
-	 * 
-	 * @param xml Fichero xml a transfomar en pdf
-	 * @param xslt Fichero xsl que transforma el xml a pdf
-	 * @param pdf Fichero pdf que se convertira en el pdf deseado
-	 * @return Fichero pdf generado
-	 * @throws IOException
-	 * @throws FOPException
-	 * @throws TransformerException
+	 * @param pathXml Path donde esta la fuente de datos(fichero xml)
+	 * @param xslDir Directorio donde se encuentra el fichero xsl
+	 * @param xslName Nombre del fichero xsl que se aplicara al xml para transfromarlo a pdf
+	 * @param pdfDir Directorio donde se ubicara el fichero pdf generado
+	 * @param pdfName Nombre del pdf generado
+	 * @param datosFormulario  Hash con los valores del formulario necesario para el acceso a BBDD
+	 * @return Devuelve el archivo pdf generado
 	 */
 	protected File convertXML2PDF(InputStream xml, InputStream xslt, File pdf,Map<String, String> mapParameters)
 	throws IOException, FOPException, TransformerException {
@@ -715,6 +594,128 @@ Así que hemos logrado convertirse en el documento en formato RTF xml. So that we
 		return pdf;
 	}
 	
+	/***
+	 * 
+	 * @param xml Fichero xml a transfomar en pdf
+	 * @param xslt Fichero xsl que transforma el xml a pdf
+	 * @param pdf Fichero pdf que se convertira en el pdf deseado
+	 * @return Fichero pdf generado
+	 * @throws IOException
+	 * @throws FOPException
+	 * @throws TransformerException
+	 */
+	public static File convertXML2PDF(InputStream xml, InputStream xslt, File pdf)
+	throws IOException, FOPException, TransformerException {
+//		Construct driver
+		Driver driver = new Driver();
+
+//		Setup logger
+		Logger logger = new ConsoleLogger(ConsoleLogger.LEVEL_INFO);
+		driver.setLogger(logger);
+		MessageHandler.setScreenLogger(logger);
+
+//		Setup Renderer (output format)        
+		driver.setRenderer(Driver.RENDER_PDF);
+
+//		Setup output
+		OutputStream out = new java.io.FileOutputStream(pdf);
+		try {
+			driver.setOutputStream(out);
+
+//			Setup XSLT
+			TransformerFactory factory = TransformerFactory.newInstance();
+			Transformer transformer = factory.newTransformer(new StreamSource(xslt));
+//			Setup input for XSLT transformation
+			Source src = new StreamSource(xml);
+			
+
+//			Resulting SAX events (the generated FO) must be piped through to FOP
+			Result res = new SAXResult(driver.getContentHandler());
+
+//			Start XSLT transformation and FOP processing
+			transformer.transform(src, res);
+		} finally {
+			out.close();
+		}
+		return pdf;
+	}
+	
+	/**
+	 * 
+	 * @param pathXml Es el path donde se va a crear el fichero que va a ser la fuente de datos 
+	 * @param datosFormulario Hash con los valores del formulario necesario para el acceso a BBDD
+	 * @return el metodo genera el fichero xml que, aplicandole la un xsl generara un pdf
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	protected File getXmlFileToReportWithXslFo(String pathXml, Hashtable datosFormulario) throws ClsExceptions, SIGAException{
+		 return null;
+	 }
+
+	
+	
+	
+	/*III. XML a RTF XML to RTF 
+xml a la conversión rtf hay algunos pocos problemas, no tenemos un XML a RTF directa de la API, vamos a utilizar la API de JFOR aún no se ha integrado en el FOP xml to rtf conversion there are some little trouble, we do not have a direct XML to RTF from the API, we will use the JFor API has not yet integrated into the FOP 
+
+Ir. Go. JFOR API se puede lograr desde el caso de los documentos a la conversión de archivos RTF, sino que también ofrece una interfaz CONSLE. JFor API can be achieved from the FO documents to RTF file conversion, it also offers consle interface. 
+
+Podemos www.jfor.org obtenidos a partir de la información pertinente JFOR. We can www.jfor.org obtained from jfor relevant information. 
+
+A partir de documentos XML a la conversión de archivos RTF se pueden dividir en dos pasos: From XML documents to the RTF file conversion can be divided into two steps: 
+
+1. 1. Xml con FOP para convertir a Xml using FOP to convert fo 
+
+2. 2. JFOR con RTF se convertirá en la JFor with RTF will be converted into fo 
+
+3.1 con FOP a xml para convertir 3.1 with FOP to xml convert fo 
+
+Este paso se puede utilizar el método descrito anteriormente, el código XML siguiente para la realización de la conversión, todavía puede utilizar el documento XML utilizado anteriormente en This step we can easily use the method described above, the following xml to the realization of fo conversion, they may still use the above xml document used in 
+
+Y el documento XSL-FO. And xsl-fo document. 
+
+OutputStream foOut = new FileOutputStream (fofile); OutputStream foOut = new FileOutputStream (fofile); 
+TransformerFactory fábrica = TransformerFactory.newInstance (); TransformerFactory factory = TransformerFactory.newInstance (); 
+Transformador = factory.newTransformer (nuevo StreamSource ( Transformer transformer = factory.newTransformer (new StreamSource ( 
+xsltfile)); xsltfile)); 
+Fuente src = new StreamSource (archivo_xml); Source src = new StreamSource (xmlfile); 
+res Resultado = StreamResult nueva (foOut); Result res = new StreamResult (foOut); 
+transformer.transform (resolución src); transformer.transform (src, res); 
+foOut.close (); foOut.close (); 
+
+3.2 con JFOR convertir RTF a la 3.2 with JFor convert RTF to fo 
+
+Serlvet sólo tiene que conseguir como un ejemplo: Serlvet only needs to achieve as an example: 
+
+InputStream foInput = new FileInputStream (fofile); InputStream foInput = new FileInputStream (fofile); 
+InputSource InputSource = new InputSource (foInput); InputSource inputSource = new InputSource (foInput); 
+
+a cabo ByteArrayOutputStream = new ByteArrayOutputStream (); ByteArrayOutputStream out = new ByteArrayOutputStream (); 
+Escritor de salida = new OutputStreamWriter (fuera); Writer output = new OutputStreamWriter (out); 
+
+response.setContentType ("application / pdf"); response.setContentType ( "application / msword"); 
+
+nuevo convertidor (InputSource, la producción, Converter.createConverterOption ()); new Converter (inputSource, output, Converter.createConverterOption ()); 
+output.flush (); output.flush (); 
+
+bytes de contenido] [= out.toByteArray (); byte [] content = out.toByteArray (); 
+
+System.out.println (out.toString ()); System.out.println (out.toString ()); 
+
+response.setContentLength (content.length); response.setContentLength (content.length); 
+response.getOutputStream (). response.getOutputStream (). escribir (contenido); write (content); 
+response.getOutputStream (). response.getOutputStream (). flush (); flush (); 
+
+foInput.close (); foInput.close (); 
+salida.close (); output.close (); 
+out.close (); out.close (); 
+
+
+Así que hemos logrado convertirse en el documento en formato RTF xml. So that we successfully converted into RTF format xml document. 
+
+*/
+	
+	
 	
 	
 	/**
@@ -757,9 +758,9 @@ Así que hemos logrado convertirse en el documento en formato RTF xml. So that we
 			ficheroPDF = new File(rutaServidorDescargas+ClsConstants.FILE_SEP+nombreFicheroPDF+".pdf");
 			ClsLogging.writeFileLog("RUTA DONDE SE UBICARÁ EL INFORME. "+ficheroPDF,10);
 			//Clase para la conversion de FOP a PDF con un directorio base para usar rutas relativas:
-			Plantilla plantilla = new Plantilla(this.usuario);
+//			Plantilla plantilla = new Plantilla(this.usuario);
 			ClsLogging.writeFileLog("ANTES DE GENERAR EL PDF.",10);
-			plantilla.convertFO2PDF(ficheroFOP, ficheroPDF, rutaTmp.getParent());
+			this.convertFO2PDF(ficheroFOP, ficheroPDF, rutaTmp.getParent());
 			ClsLogging.writeFileLog("PDF GENERADO.",10);
 			
 		} catch (Exception e){
@@ -977,5 +978,564 @@ Así que hemos logrado convertirse en el documento en formato RTF xml. So that we
 		
 		return ficZip;
 	}
+	 public void convertFO2PDF(File fo, File pdf) 
+	    throws IOException, FOPException, ClsExceptions
+	    {
+	    	convertFO2PDF(fo, pdf, fo.getPath());
+	    }
+	    
+	   public synchronized  void convertFO2PDF(File fo, File pdf, String sBaseDir) 
+	    throws IOException, FOPException, ClsExceptions
+	    {
+	    	OutputStream out = null;
+	    	FileOutputStream fileOut = null;
+	    	
+	        try {
+	        	    		
+	        	ClsLogging.writeFileLog(">>> baseDir:" + sBaseDir,10);
+	        	
+	            org.apache.fop.configuration.Configuration.put("baseDir", sBaseDir);
+	            org.apache.fop.configuration.Configuration.put("fontBaseDir", SIGAReferences.getReference(SIGAReferences.RESOURCE_FILES.FOP_DIR.getFileName()));
+//	            new Options(new File(ClsConstants.FOP_CONFIG_FILE));
+	            new Options(SIGAReferences.getInputReference(SIGAReferences.RESOURCE_FILES.FOP));
+
+	            ClsLogging.writeFileLog(">>> org.apache.fop.configuration.Configuration",10);
+	            // Construct driver and setup output format
+	            Driver driver = new Driver();
+	            ClsLogging.writeFileLog(">>> Driver driver",10);
+	            
+	            driver.setRenderer(Driver.RENDER_PDF);
+	            ClsLogging.writeFileLog(">>> driver.setRenderer",10);
+	            
+	    		ClsLogging.writeFileLog("CONVERT: driver creado.",10);
+	            
+	            // Setup output stream.  Note: Using BufferedOutputStream
+	            // for performance reasons (helpful with FileOutputStreams).
+	            fileOut = new FileOutputStream(pdf);
+	            out = new BufferedOutputStream(fileOut);
+	            driver.setOutputStream(out);
+
+	    		ClsLogging.writeFileLog("CONVERT: stream creado.",10);
+
+	            // Setup JAXP using identity transformer
+	            TransformerFactory factory = TransformerFactory.newInstance();
+	            //System.out.println(factory.getClass().getName());
+	            
+	            Transformer transformer = factory.newTransformer(); // identity transformer
+
+	    		ClsLogging.writeFileLog("CONVERT: transformer creado.",10);
+	            
+	            // Setup input stream
+	            Source src = new StreamSource(fo);
+	            //Source src = new StreamSource(foFormateado);
+
+	    		ClsLogging.writeFileLog("CONVERT: source creado.",10);
+
+	            // Resulting SAX events (the generated FO) must be piped through to FOP
+	            Result res = new SAXResult(driver.getContentHandler());
+
+	    		ClsLogging.writeFileLog("CONVERT: result creado.",10);
+
+	            // Start XSLT transformation and FOP processing
+	            transformer.transform(src, res);
+	            
+	    		ClsLogging.writeFileLog("CONVERT: PDF creado.",10);
+	            
+	            //Borramos la cache de ficheros:
+	            org.apache.fop.image.FopImageFactory.resetCache();
+	    		ClsLogging.writeFileLog("CONVERT: cache borrada. TODO OK.",10);
+	    		ClsLogging.writeFileLog("CONVERT: El fichero se almacenara en "+pdf,10);
+
+	        } 
+	        catch (Exception e) {
+	        	
+	        	    ClsLogging.writeFileLogError("Error transformando PDF desde FOP - Fichero:"+sBaseDir+" - Mensaje:" +e.getLocalizedMessage(),e,3);
+	        
+	            throw new ClsExceptions (e, "Error transformando PDF desde FOP - Fichero:"+sBaseDir+" - Mensaje:" +e.getLocalizedMessage());
+	        } 
+	        finally {
+	        	try {
+		            out.close();
+		            fileOut.close();
+	        	} catch (Exception e) {}
+	        }
+	    }
+	   
+	
+	   
+	   public static ByteArrayOutputStream convertXML2PDF(InputStream xml, InputStream xslt) throws IOException, FOPException, TransformerException{
+		   Driver driver = new Driver();
+
+//			Setup logger
+			Logger logger = new ConsoleLogger(ConsoleLogger.LEVEL_INFO);
+			driver.setLogger(logger);
+			MessageHandler.setScreenLogger(logger);
+
+//			Setup Renderer (output format)        
+			driver.setRenderer(Driver.RENDER_PDF);
+//			Setup output
+			ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+			try {
+				driver.setOutputStream(outStream);
+
+
+//				Setup XSLT
+				TransformerFactory factory = TransformerFactory.newInstance();
+				Transformer transformer = factory.newTransformer(new StreamSource(xslt));
+//				Setup input for XSLT transformation
+				Source src = new StreamSource(xml);
+				
+
+//				Resulting SAX events (the generated FO) must be piped through to FOP
+				Result res = new SAXResult(driver.getContentHandler());
+
+//				Start XSLT transformation and FOP processing
+				transformer.transform(src, res);
+			} finally {
+				outStream.close();
+			}
+
+			return outStream;
+
+
+		}
+	   public static InputStream getInputStream(String texto, String encoding) throws IOException{
+			return new ByteArrayInputStream(texto.getBytes(encoding));
+		}
+	   
+	   public static String convertXML2HTML(InputStream xmlOrigen, InputStream xslOrigen) throws TransformerException 
+	    {
+	        Source xmlSource = new StreamSource(xmlOrigen);
+	        Source xsltSource = new StreamSource(xslOrigen);
+	        StringWriter cadenaSalida = new StringWriter();
+	        Result bufferResultado = new StreamResult(cadenaSalida);
+	        TransformerFactory factoriaTrans = TransformerFactory.newInstance();
+	        Transformer transformador = null;;
+			transformador = factoriaTrans.newTransformer(xsltSource);
+			transformador.transform(xmlSource, bufferResultado);
+			return cadenaSalida.toString();
+	    }
+	   
+	   public static String convertXML2HTML(InputStream xmlOrigen, File xslOrigen) throws TransformerException 
+	    {
+	        Source xmlSource = new StreamSource(xmlOrigen);
+	        Source xsltSource = new StreamSource(xslOrigen);
+	        StringWriter cadenaSalida = new StringWriter();
+	        Result bufferResultado = new StreamResult(cadenaSalida);
+	        TransformerFactory factoriaTrans = TransformerFactory.newInstance();
+	        Transformer transformador = null;;
+			transformador = factoriaTrans.newTransformer(xsltSource);
+			transformador.transform(xmlSource, bufferResultado);
+			return cadenaSalida.toString();
+	    }
+	   public static String convertXML2HTML(File xmlOrigen, File xslOrigen) throws TransformerException 
+	    {
+	        Source xmlSource = new StreamSource(xmlOrigen);
+	        Source xsltSource = new StreamSource(xslOrigen);
+	        StringWriter cadenaSalida = new StringWriter();
+	        Result bufferResultado = new StreamResult(cadenaSalida);
+	        TransformerFactory factoriaTrans = TransformerFactory.newInstance();
+	        Transformer transformador = null;;
+			transformador = factoriaTrans.newTransformer(xsltSource);
+			transformador.transform(xmlSource, bufferResultado);
+			return cadenaSalida.toString();
+	    }
+	   
+	/**
+	 * 
+	 * @param xml
+	 * @param xslt
+	 * @return
+	 * @throws IOException
+	 * @throws FOPException
+	 * @throws TransformerException
+	 */
+	/*
+	public static ByteArrayOutputStream convertXML2PDF_095(InputStream xml, InputStream xslt) throws IOException, FOPException, TransformerException{
+
+
+		// the XSL FO file
+		//File xsltfile = new File("HelloWorld.xsl");
+		// the XML file from which we take the name
+		//StreamSource source = new StreamSource(new File("Hello.xml"));
+		Source source = new StreamSource(xml);
+		// creation of transform source
+
+		StreamSource transformSource = new StreamSource(xslt);
+		// create an instance of fop factory
+		FopFactory fopFactory = FopFactory.newInstance();
+		// a user agent is needed for transformation
+		FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
+		// to store output
+		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+
+		Transformer xslfoTransformer;
+
+		TransformerFactory factory = TransformerFactory.newInstance();
+		//xslfoTransformer =  getTransformer(transformSource); 
+		xslfoTransformer = factory.newTransformer(transformSource);
+		// Construct fop with desired output format
+		Fop fop;
+
+		fop = fopFactory.newFop	(MimeConstants.MIME_PDF, foUserAgent, outStream);
+		// Resulting SAX events (the generated FO) 
+		// must be piped through to FOP
+		Result res = new SAXResult(fop.getDefaultHandler());
+
+		// Start XSLT transformation and FOP processing
+
+		// everything will happen here..
+		xslfoTransformer.transform(source, res);
+	
+
+		return outStream;
+
+
+	}
+	*/
+	/***
+	 * 
+	 * @param xml Fichero xml a transfomar en pdf
+	 * @param xslt Fichero xsl que transforma el xml a pdf
+	 * @param pdf Fichero pdf que se convertira en el pdf deseado
+	 * @return Fichero pdf generado
+	 * @throws IOException
+	 * @throws FOPException
+	 * @throws TransformerException
+	 */
+	
+	/*protected File convertXML2PDF_095(InputStream xml, InputStream xslt, File pdf,Map<String, String> mapParameters)
+	throws IOException, FOPException, TransformerException {
+
+		Source source = new StreamSource(xml);
+		// creation of transform source
+
+		StreamSource transformSource = new StreamSource(xslt);
+		// create an instance of fop factory
+		FopFactory fopFactory = FopFactory.newInstance();
+		// a user agent is needed for transformation
+		FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
+		// to store output
+		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+
+		Transformer xslfoTransformer;
+
+		TransformerFactory factory = TransformerFactory.newInstance();
+		//xslfoTransformer =  getTransformer(transformSource); 
+		xslfoTransformer = factory.newTransformer(transformSource);
+		
+		for (Map.Entry<String, String> entrada:mapParameters.entrySet()){
+			
+			xslfoTransformer.setParameter(entrada.getKey(), entrada.getValue());
+		}
+		
+		// Construct fop with desired output format
+		Fop fop;
+
+		fop = fopFactory.newFop	(MimeConstants.MIME_PDF, foUserAgent, outStream);
+		// Resulting SAX events (the generated FO) 
+		// must be piped through to FOP
+		Result res = new SAXResult(fop.getDefaultHandler());
+
+		// Start XSLT transformation and FOP processing
+
+		// everything will happen here..
+		xslfoTransformer.transform(source, res);
+		// if you want to get the PDF bytes, use the following code
+		//return outStream.toByteArray();
+
+		// if you want to save PDF file use the following code
+
+//		OutputStream out = new java.io.FileOutputStream(pdfFile);
+//		out = new java.io.BufferedOutputStream(out);
+		FileOutputStream str = new FileOutputStream(pdf);
+		str.write(outStream.toByteArray());
+		str.close();
+		outStream.close();
+
+		// to write the content to out put stream
+//		byte[] pdfBytes = outStream.toByteArray();
+//	                        response.setContentLength(pdfBytes.length);
+//	                        response.setContentType("application/pdf");
+//	                        response.addHeader("Content-Disposition", 
+//						"attachment;filename=pdffile.pdf");
+//	                        response.getOutputStream().write(pdfBytes);
+//	                        response.getOutputStream().flush();
+
+
+		return pdf;
+	}
+	*/
+	/***
+	 * 
+	 * @param xml Fichero xml a transfomar en pdf
+	 * @param xslt Fichero xsl que transforma el xml a pdf
+	 * @param pdf Fichero pdf que se convertira en el pdf deseado
+	 * @return Fichero pdf generado
+	 * @throws IOException
+	 * @throws FOPException
+	 * @throws TransformerException
+	 */
+	/*private File convertXML2PDF_095(File xml, File xslt, File pdf)
+	throws IOException, FOPException, TransformerException {
+		Source source = new StreamSource(xml);
+		// creation of transform source
+
+		StreamSource transformSource = new StreamSource(xslt);
+		// create an instance of fop factory
+		FopFactory fopFactory = FopFactory.newInstance();
+		// a user agent is needed for transformation
+		FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
+		// to store output
+		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+
+		Transformer xslfoTransformer;
+
+		TransformerFactory factory = TransformerFactory.newInstance();
+		//xslfoTransformer =  getTransformer(transformSource); 
+		xslfoTransformer = factory.newTransformer(transformSource);
+		
+		
+		
+		// Construct fop with desired output format
+		Fop fop;
+
+		fop = fopFactory.newFop	(MimeConstants.MIME_PDF, foUserAgent, outStream);
+		// Resulting SAX events (the generated FO) 
+		// must be piped through to FOP
+		Result res = new SAXResult(fop.getDefaultHandler());
+
+		// Start XSLT transformation and FOP processing
+
+		// everything will happen here..
+		xslfoTransformer.transform(source, res);
+		// if you want to get the PDF bytes, use the following code
+		//return outStream.toByteArray();
+
+		// if you want to save PDF file use the following code
+
+//		OutputStream out = new java.io.FileOutputStream(pdfFile);
+//		out = new java.io.BufferedOutputStream(out);
+		FileOutputStream str = new FileOutputStream(pdf);
+		str.write(outStream.toByteArray());
+		str.close();
+		outStream.close();
+
+		// to write the content to out put stream
+//		byte[] pdfBytes = outStream.toByteArray();
+//	                        response.setContentLength(pdfBytes.length);
+//	                        response.setContentType("application/pdf");
+//	                        response.addHeader("Content-Disposition", 
+//						"attachment;filename=pdffile.pdf");
+//	                        response.getOutputStream().write(pdfBytes);
+//	                        response.getOutputStream().flush();
+
+
+		return pdf;
+	}*/
+	/***
+	 * 
+	 * @param xml Fichero xml a transfomar en pdf
+	 * @param xslt Fichero xsl que transforma el xml a pdf
+	 * @param pdf Fichero pdf que se convertira en el pdf deseado
+	 * @return Fichero pdf generado
+	 * @throws IOException
+	 * @throws FOPException
+	 * @throws TransformerException
+	 */
+	/*private File convertXML2PDF_095(InputStream xml, InputStream xslt, File pdf)
+	throws IOException, FOPException, TransformerException {
+		Source source = new StreamSource(xml);
+		// creation of transform source
+
+		StreamSource transformSource = new StreamSource(xslt);
+		// create an instance of fop factory
+		FopFactory fopFactory = FopFactory.newInstance();
+		// a user agent is needed for transformation
+		FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
+		// to store output
+		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+
+		Transformer xslfoTransformer;
+
+		TransformerFactory factory = TransformerFactory.newInstance();
+		//xslfoTransformer =  getTransformer(transformSource); 
+		xslfoTransformer = factory.newTransformer(transformSource);
+		
+		
+		
+		// Construct fop with desired output format
+		Fop fop;
+
+		fop = fopFactory.newFop	(MimeConstants.MIME_PDF, foUserAgent, outStream);
+		// Resulting SAX events (the generated FO) 
+		// must be piped through to FOP
+		Result res = new SAXResult(fop.getDefaultHandler());
+
+		// Start XSLT transformation and FOP processing
+
+		// everything will happen here..
+		xslfoTransformer.transform(source, res);
+		// if you want to get the PDF bytes, use the following code
+		//return outStream.toByteArray();
+
+		// if you want to save PDF file use the following code
+
+//		OutputStream out = new java.io.FileOutputStream(pdfFile);
+//		out = new java.io.BufferedOutputStream(out);
+		FileOutputStream str = new FileOutputStream(pdf);
+		str.write(outStream.toByteArray());
+		str.close();
+		outStream.close();
+
+		// to write the content to out put stream
+//		byte[] pdfBytes = outStream.toByteArray();
+//	                        response.setContentLength(pdfBytes.length);
+//	                        response.setContentType("application/pdf");
+//	                        response.addHeader("Content-Disposition", 
+//						"attachment;filename=pdffile.pdf");
+//	                        response.getOutputStream().write(pdfBytes);
+//	                        response.getOutputStream().flush();
+
+
+		return pdf;
+	}*/
+	
+	/*protected File convertXML2PDF_095(InputStream xml, File xslt, File pdf)
+	throws IOException, FOPException, TransformerException {
+		return convertXML2PDF_095(xml, new FileInputStream(xslt),pdf);
+		
+	}*/
+	/*protected File convertXML2PDF_095(InputStream xml, File xslt, File pdf,Map<String, String> mapParameters)
+	throws IOException, FOPException, TransformerException {
+		InputStream inputXslt = new FileInputStream(xslt);
+		return convertXML2PDF_095(xml,inputXslt ,pdf,mapParameters);
+		
+	}*/
+	/*public File generarInformePdfFromXmlToFoXsl_095(String pathXml,String xslDir,String xslName,
+			String pdfDir,String pdfName, Hashtable datosFormulario) throws SIGAException{
+		File pdfFile = null;
+		File xmlFile = null;
+		try {
+			
+			ClsLogging.writeFileLog("Generando fichero XML para informe XSL-FO...",10);
+			xmlFile = getXmlFileToReportWithXslFo(pathXml,datosFormulario);
+			ClsLogging.writeFileLog("Fichero XML generado.",10);
+			
+			
+			//Setup directories
+			File fileBaseDir = new File(xslDir);
+			File filePdfDir = new File(pdfDir);
+			File outDir = new File(pdfDir);
+			outDir.mkdirs();
+
+			//Setup input and output files            
+			File xsltFile = new File(fileBaseDir, xslName);
+			pdfFile = new File(filePdfDir, pdfName);
+
+			ClsLogging.writeFileLog("Input xml:"+xmlFile,10);
+			ClsLogging.writeFileLog("Stylesheet xsl:"+xsltFile,10);
+			ClsLogging.writeFileLog("Output pdf:"+pdfFile,10);
+			
+			ClsLogging.writeFileLog("Convirtiendo xml a pdf...",10);
+
+			convertXML2PDF_095(xmlFile, xsltFile, pdfFile);
+			ClsLogging.writeFileLog("Pdf creado. ",10);
+
+		} catch (SIGAException e) {
+			throw e;	
+		} catch (Exception e) {
+			System.err.println(ExceptionUtil.printStackTrace(e));
+			//System.exit(-1);
+		}finally{
+			if(xmlFile!=null && xmlFile.exists()){
+				ClsLogging.writeFileLog("Eliminando xml generado...",10);
+				xmlFile.delete();
+				ClsLogging.writeFileLog("Fichero xml eliminado.",10);
+			}
+			
+		}
+		return pdfFile;
+
+	}*/
+	
+	/**
+     * Converts an FO file to a PDF file using FOP
+     * @param fo the FO file
+     * @param pdf the target PDF file
+     * @throws IOException In case of an I/O problem
+     * @throws FOPException In case of a FOP problem
+     */
+  /* public void convertFO2PDF_095(File fo, File pdf) 
+    throws IOException, FOPException, ClsExceptions
+    {
+    	convertFO2PDF_095(fo, pdf, fo.getPath());
+    }*/
+    /*
+    public synchronized  void convertFO2PDF_095(File fo, File pdf, String sBaseDir) 
+    throws IOException, FOPException, ClsExceptions
+    {
+    	ClsLogging.writeFileLog(">>> StreamSource",10);
+    	Source source = new StreamSource(fo);
+		// creation of transform source
+
+		
+		// create an instance of fop factory
+		FopFactory fopFactory = FopFactory.newInstance();
+		// a user agent is needed for transformation
+		FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
+		// to store output
+		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+
+		Transformer xslfoTransformer = null;
+
+		TransformerFactory factory = TransformerFactory.newInstance();
+		//xslfoTransformer =  getTransformer(transformSource); 
+		try {
+			xslfoTransformer = factory.newTransformer();
+		} catch (TransformerConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		// Construct fop with desired output format
+		Fop fop;
+
+		fop = fopFactory.newFop	(MimeConstants.MIME_PDF, foUserAgent, outStream);
+		// Resulting SAX events (the generated FO) 
+		// must be piped through to FOP
+		Result res = new SAXResult(fop.getDefaultHandler());
+
+		// Start XSLT transformation and FOP processing
+
+		// everything will happen here..
+		try {
+			xslfoTransformer.transform(source, res);
+		} catch (TransformerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// if you want to get the PDF bytes, use the following code
+		//return outStream.toByteArray();
+
+		// if you want to save PDF file use the following code
+
+//		OutputStream out = new java.io.FileOutputStream(pdfFile);
+//		out = new java.io.BufferedOutputStream(out);
+		FileOutputStream str = new FileOutputStream(pdf);
+		str.write(outStream.toByteArray());
+		str.close();
+		outStream.close();
+		ClsLogging.writeFileLog("CONVERT: cache borrada. TODO OK.",10);
+		ClsLogging.writeFileLog("CONVERT: El fichero se almacenara en "+pdf,10);
+		// to write the content to out put stream
+		
+
+
+    
+    }
+    */
 	
 }

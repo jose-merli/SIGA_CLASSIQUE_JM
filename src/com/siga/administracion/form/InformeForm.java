@@ -57,7 +57,10 @@ public class InformeForm extends MasterForm {
 	String idTipoEnvio;
 	private String idPlantillaEnvio;
 	private String idPlantillaGeneracion;
+	private String idTipoIntercambioTelem;
 	private List<EnvTipoEnviosBean> tiposEnvioPermitidos;
+	String plantilla;
+	
 	public String getIdConsulta() {
 		return idConsulta;
 	}
@@ -287,7 +290,9 @@ public class InformeForm extends MasterForm {
 		informeVO.setTipoformato(tipoFormato);
 		informeVO.setUsrBean(usrBean);
 		informeVO.setOrden(orden);
-		
+		if(idTipoIntercambioTelem!=null && !idTipoIntercambioTelem.equals(""))
+			informeVO.setIdTipoIntercambioTelematico(idTipoIntercambioTelem);
+		informeVO.setPlantilla(plantilla);
 		
 		return informeVO;
 
@@ -311,7 +316,7 @@ public class InformeForm extends MasterForm {
 		directorioFile = null;
 		lenguaje = null;
 		orden = null;
-
+		
 	}
 
 	public List<CenInstitucionBean> getInstituciones() {
@@ -434,8 +439,20 @@ public class InformeForm extends MasterForm {
 		this.tiposEnvioPermitidos = tiposEnvioPermitidos;
 	}
 
-	
+	public String getIdTipoIntercambioTelem() {
+		return idTipoIntercambioTelem;
+	}
 
-	
-	
+	public void setIdTipoIntercambioTelem(String idTipoIntercambioTelem) {
+		this.idTipoIntercambioTelem = idTipoIntercambioTelem;
+	}
+
+	public String getPlantilla() {
+		return plantilla;
+	}
+
+	public void setPlantilla(String plantilla) {
+		this.plantilla = plantilla;
+	}
+
 }

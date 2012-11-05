@@ -4,6 +4,7 @@ package com.siga.Utilidades;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
@@ -35,7 +36,25 @@ public class UtilidadesMultidioma
 		}
 		return key;
 	}
-
+	static public String getDatoMaestroIdioma (String key, String idioma) 
+	{
+		AdmLenguajesAdm a = new AdmLenguajesAdm(new UsrBean());
+		Vector v;
+		Hashtable codigos = new Hashtable();
+		try {
+		    codigos.put(new Integer(1),key);
+		    codigos.put(new Integer(2),idioma);
+            v = a.findBind("SELECT F_SIGA_GETRECURSO(:1,:2) AS VALOR FROM DUAL",codigos).getAll();
+        } catch (ClsExceptions e) {
+            e.printStackTrace();
+            return key;
+        }
+        if (v!=null&&v.size()>0) {
+            Row ht = (Row) v.get(0);
+		    return (String)ht.getValue("VALOR");
+		}
+		return key;
+	}
 	static public String getCampoMultidioma (String campo, String idioma) 
 	{
 		if ((campo == null) || campo.equals("")) return "";

@@ -1,6 +1,10 @@
 package com.siga.envios.action;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -14,21 +18,23 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 
-import com.aspose.words.Document;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
-import com.lowagie.text.pdf.PdfWriter;
 import com.siga.Utilidades.UtilidadesBDAdm;
-import com.siga.beans.*;
+import com.siga.beans.EnvDestinatariosBean;
+import com.siga.beans.EnvDocumentosAdm;
+import com.siga.beans.EnvDocumentosBean;
+import com.siga.beans.EnvEnviosAdm;
+import com.siga.beans.EnvEnviosBean;
+import com.siga.beans.EnvTipoEnviosAdm;
+import com.siga.beans.EnvTipoEnviosBean;
 import com.siga.certificados.Plantilla;
-import com.siga.envios.Envio;
 import com.siga.envios.form.DocumentosForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gui.processTree.SIGAPTConstants;
-import com.siga.informes.MasterWords;
 
 public class DocumentosAction extends MasterAction
 {
@@ -83,52 +89,72 @@ public class DocumentosAction extends MasterAction
     	} 
 	}
 
-	protected String download(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
-	{
-	    File fDocumento = null;
-	    try 
-		{
-			DocumentosForm form = (DocumentosForm)formulario;
-			EnvDocumentosAdm docAdm = new EnvDocumentosAdm(this.getUserBean(request));	
-					
-		  	
-			Vector vOcultos = form.getDatosTablaOcultos(0);
+    protected String download(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
+    {
+    	File fDocumento = null;
+    	try 
+    	{
+    		UsrBean usrBean = this.getUserBean(request);
+    		DocumentosForm form = (DocumentosForm)formulario;
+    		String idInstitucion = this.getUserBean(request).getLocation();
+            String idEnvio = (String)request.getParameter("idEnvio");
+    		Hashtable htPk = new Hashtable();
+    		htPk.put(EnvDestinatariosBean.C_IDINSTITUCION,idInstitucion);
+    		htPk.put(EnvDestinatariosBean.C_IDENVIO,idEnvio);        
 
-			String idInstitucion = (String)vOcultos.elementAt(0);
-			String idEnvio = (String)vOcultos.elementAt(1);
-			String idDocumento = (String)vOcultos.elementAt(2);			
-			String nombreOriginal = (String)vOcultos.elementAt(3);			
-			String pathDocumentosAdjuntos = "";		
-			EnvEnviosAdm envioAdm = new EnvEnviosAdm(this.getUserBean(request));	
-			try {
-			   pathDocumentosAdjuntos = envioAdm.getPathEnvio(idInstitucion,idEnvio);
-		  	} catch (Exception e) {
-		   		new ClsExceptions (e, "Error al recuperar el envio");
-		   	}
-		  	String rutaAlm = pathDocumentosAdjuntos + ClsConstants.FILE_SEP;				
-		  	
-			fDocumento = docAdm.getFile(idInstitucion,idEnvio,idDocumento);
-			File fdocumento1 = new File(rutaAlm+nombreOriginal);
-			if(fDocumento==null || !fDocumento.exists()){
-				 if(!fdocumento1.exists()){
-					throw new SIGAException("messages.general.error.ficheroNoExiste");
-				 }else{
-					 request.setAttribute("rutaFichero", fdocumento1.getPath());
-					 request.setAttribute("nombreFichero", nombreOriginal);
-				 }
-			}else{
-				request.setAttribute("rutaFichero", fDocumento.getPath());
-				request.setAttribute("nombreFichero", nombreOriginal);
-			}
-			
-			
-		} 		
-		catch (Exception e) { 
-            throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
-		}
-				
-		return "descargaFichero";
-	}
+    		//Recupero el bean del envio para mostrar el nombre y el tipo
+    		EnvEnviosAdm envioAdm = new EnvEnviosAdm (usrBean);
+    		EnvTipoEnviosAdm tipoAdm = new EnvTipoEnviosAdm (usrBean);
+    		Vector envio = envioAdm.selectByPK(htPk);        
+    		EnvEnviosBean envioBean = (EnvEnviosBean)envio.get(0);
+
+
+    		/*if(envioBean.getIdTipoEnvios().intValue()==EnvEnviosAdm.TIPO_TELEMATICO ){
+    			BusinessManager bm = getBusinessManager();
+    			AtosEnviosService enviosService = (AtosEnviosService)bm.getService(AtosEnviosService.class);
+    			File pdfIntercambio =  enviosService.getPdfIntercambio(idEnvio, idInstitucion, usrBean);
+    			request.setAttribute("rutaFichero", pdfIntercambio.getPath());
+				request.setAttribute("nombreFichero", pdfIntercambio.getName());
+				request.setAttribute("borrarFichero", "true");
+
+    		}else{
+*/
+
+    			EnvDocumentosAdm docAdm = new EnvDocumentosAdm(usrBean);	
+
+
+    			Vector vOcultos = form.getDatosTablaOcultos(0);
+    			String idDocumento = (String)vOcultos.elementAt(2);			
+    			String nombreOriginal = (String)vOcultos.elementAt(3);			
+    			String pathDocumentosAdjuntos = "";		
+    			try {
+    				pathDocumentosAdjuntos = envioAdm.getPathEnvio(idInstitucion,idEnvio);
+    			} catch (Exception e) {
+    				new ClsExceptions (e, "Error al recuperar el envio");
+    			}
+    			String rutaAlm = pathDocumentosAdjuntos + ClsConstants.FILE_SEP;				
+
+    			fDocumento = docAdm.getFile(idInstitucion,idEnvio,idDocumento);
+    			File fdocumento1 = new File(rutaAlm+nombreOriginal);
+    			if(fDocumento==null || !fDocumento.exists()){
+    				if(!fdocumento1.exists()){
+    					throw new SIGAException("messages.general.error.ficheroNoExiste");
+    				}else{
+    					request.setAttribute("rutaFichero", fdocumento1.getPath());
+    					request.setAttribute("nombreFichero", nombreOriginal);
+    				}
+    			}else{
+    				request.setAttribute("rutaFichero", fDocumento.getPath());
+    				request.setAttribute("nombreFichero", nombreOriginal);
+    			}
+//    		}
+    	} 		
+    	catch (Exception e) { 
+    		throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
+    	}
+
+    	return "descargaFichero";
+    }
 	
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
 	{
@@ -154,24 +180,43 @@ public class DocumentosAction extends MasterAction
         EnvEnviosAdm envioAdm = new EnvEnviosAdm (this.getUserBean(request));
         EnvTipoEnviosAdm tipoAdm = new EnvTipoEnviosAdm (this.getUserBean(request));
         Vector envio, tipo, datos;
+        
         try {
-            envio = envioAdm.selectByPK(htPk);        
+        	envio = envioAdm.selectByPK(htPk);        
 	        EnvEnviosBean envioBean = (EnvEnviosBean)envio.firstElement();
 	        request.setAttribute("nombreEnv", envioBean.getDescripcion());
-	        
 	        Hashtable htTipo = new Hashtable();
 	        htTipo.put(EnvTipoEnviosBean.C_IDTIPOENVIOS,envioBean.getIdTipoEnvios());
 	        tipo = tipoAdm.selectByPK(htTipo);
 	        EnvTipoEnviosBean tipoBean = (EnvTipoEnviosBean)tipo.firstElement();	        
 	        request.setAttribute("tipo", tipoBean.getNombre());
-	        //request.setAttribute("idTipoEnvio", tipoBean.getIdTipoEnvios());
+        	
+	        /*if(tipoBean.getIdTipoEnvios().intValue()==EnvEnviosAdm.TIPO_TELEMATICO ){
+				if(envioBean.getIdEstado().toString().equals(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADO )){
+//					BusinessManager bm = getBusinessManager();
+//					AtosEnviosService enviosService = (AtosEnviosService)bm.getService(AtosEnviosService.class);
+					
+					EnvDocumentosBean  documentosBean = new EnvDocumentosBean();
+					documentosBean.setIdInstitucion(new Integer(idInstitucion));
+					documentosBean.setIdEnvio(new Integer(idEnvio));
+					documentosBean.setIdDocumento(new Integer(idEnvio));
+					documentosBean.setPathDocumento("");
+					documentosBean.setDescripcion("Archivo pdf de Intercambio");
+					datos = new Vector();
+					datos.add(documentosBean);
+					request.setAttribute("datos", datos);
+				}
+			}else{*/
+		        //request.setAttribute("idTipoEnvio", tipoBean.getIdTipoEnvios());
+		        
+		        //recupero los documentos y las paso a la jsp
+		        EnvDocumentosAdm documentosAdm = new EnvDocumentosAdm(this.getUserBean(request));
+		        String where = " WHERE " + EnvDocumentosBean.C_IDINSTITUCION + " = " + idInstitucion +
+		        			   " AND " + EnvDocumentosBean.C_IDENVIO + " = " + idEnvio;
+		        datos = documentosAdm.select(where);
+		        request.setAttribute("datos", datos);
+//			}
 	        
-	        //recupero los documentos y las paso a la jsp
-	        EnvDocumentosAdm documentosAdm = new EnvDocumentosAdm(this.getUserBean(request));
-	        String where = " WHERE " + EnvDocumentosBean.C_IDINSTITUCION + " = " + idInstitucion +
-	        			   " AND " + EnvDocumentosBean.C_IDENVIO + " = " + idEnvio;
-	        datos = documentosAdm.select(where);
-	        request.setAttribute("datos", datos); 
 	        
         } catch (Exception e) {
             throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);

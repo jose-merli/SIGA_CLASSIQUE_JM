@@ -21,6 +21,10 @@ public class AdmInformeBean extends MasterBean {
 	private String idPlantilla, descripcion, alias, nombreFisico, directorio, idTipoInforme, visible, nombreSalida,
 			preseleccionado, aSolicitantes, destinatarios, tipoformato,codigo,orden, claseJava;
 	private Integer idInstitucion;
+	private String idTipoIntercambioTelematico;
+	
+	
+	private String plantilla;
 	
 	static public final String TIPODESTINATARIO_CENPERSONA = "C";
 	static public final String TIPODESTINATARIO_SCSPERSONAJG = "S";
@@ -54,7 +58,8 @@ public class AdmInformeBean extends MasterBean {
 	static public final String C_CODIGO = "CODIGO";
 	static public final String C_ORDEN = "ORDEN";
 	static public final String C_CLASEJAVA = "CLASEJAVA";
-	
+	static public final String C_IDTIPOINTERCAMBIOTELEMATICO  = "IDTIPOINTERCAMBIOTELEMATICO";
+	static public final String C_PLANTILLA = "PLANTILLA";
 
 	
 	// Metodos SET
@@ -103,6 +108,14 @@ public class AdmInformeBean extends MasterBean {
 		return getInforme(new InformeForm());
 			
 	}
+	
+	public String getIdTipoIntercambioTelematico() {
+		return idTipoIntercambioTelematico;
+	}
+	public void setIdTipoIntercambioTelematico(String idTipoIntercambioTelematico) {
+		this.idTipoIntercambioTelematico = idTipoIntercambioTelematico;
+	}
+	
 	public InformeForm getInforme(InformeForm informeForm) {
 		if(informeForm == null)
 			informeForm = new InformeForm();
@@ -121,9 +134,18 @@ public class AdmInformeBean extends MasterBean {
 		informeForm.setTipoFormato(tipoformato);
 		informeForm.setOrden(orden);
 		informeForm.setUsrBean(usrBean);
-		
+		informeForm.setPlantilla(plantilla);
+		if(idTipoIntercambioTelematico!=null && !idTipoIntercambioTelematico.equals("")){
+			informeForm.setIdTipoIntercambioTelem(idTipoIntercambioTelematico.toString());
+		}
 		return informeForm;
 		
+	}
+	public String getPlantilla() {
+		return plantilla;
+	}
+	public void setPlantilla(String plantilla) {
+		this.plantilla = plantilla;
 	}
 	
 	

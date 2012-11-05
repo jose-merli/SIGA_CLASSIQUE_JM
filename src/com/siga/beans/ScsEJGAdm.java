@@ -2180,11 +2180,11 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			consulta += " and "+ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("NIG")).trim(),"ejg.NIG", contador, codigos);
 		}		
 
-		if (miForm.getCalidad()!=null && !miForm.getCalidad().trim().equalsIgnoreCase("")) {
+		/*if (miForm.getCalidad()!=null && !miForm.getCalidad().trim().equalsIgnoreCase("")) {
 			contador++;
 			codigos.put(new Integer(contador),miForm.getCalidad());		
 			 consulta += " and ejg.Idtipoencalidad = :" + contador;
-		}
+		}*/
 		
 		if ((miHash.containsKey("ESTADOEJG")) && (!miHash.get("ESTADOEJG").toString().equals(""))) {
 			contador++;
@@ -3534,7 +3534,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			
 			sql.append(" SELECT ");
 			
-			sql.append(" let.Idpersona IDPERSONA_DESIGNA,let.IDINSTITUCION IDINSTITUCION_LETDESIGNA , ");
+			sql.append(" let.Idpersona IDPERSONA_DESIGNA,let.IDINSTITUCION IDINSTITUCION_LETDESIGNA ,let.IDINSTITUCIONORIGEN IDINSTITUCIONORIGEN_LETDESIGNA , ");
 			sql.append(" DES.IDINSTITUCION_JUZG IDINSTITUCION_JUZGDESIGNA ,DES.IDJUZGADO IDJUZGADODESIGNA, ");
 			sql.append(" DES.NUMPROCEDIMIENTO AS AUTOS, ");
 			sql.append(" TO_CHAR(DES.FECHAJUICIO, 'dd/MM/yyyy') AS FECHA_JUICIO, ");
@@ -4987,6 +4987,11 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 								htFuncion.put(new Integer(5), idioma);
 								helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
 										htFuncion, "F_SIGA_GETDELITOS_DESIGNA", "DELITOS"));
+								
+								
+								if(registro.get("IDINSTITUCIONORIGEN_LETDESIGNA")!=null && !((String)registro.get("IDINSTITUCIONORIGEN_LETDESIGNA")).equals("")){
+									registro.put("IDINSTITUCION_LETDESIGNA", (String)registro.get("IDINSTITUCIONORIGEN_LETDESIGNA"));
+								}
 								String idInstitucionLetradoDesigna  = (String)registro.get("IDINSTITUCION_LETDESIGNA");
 								String idLetradoDesigna  = (String)registro.get("IDPERSONA_DESIGNA");								 
 								if(idLetradoDesigna!=null && !idLetradoDesigna.trim().equals("")){
@@ -5117,6 +5122,37 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			return registro;
 		
 	}
-	
+	public Long getIdJuzgadoEjg(String institucion, String anio, String numero, String idTipoEJG) throws ClsExceptions,SIGAException {
+		Long idJuzgado = null;
+		try {
+			
+			StringBuffer sql = new StringBuffer();
+			sql.append(" select e.juzgado  ");
+			sql.append(" from SCS_EJG e  ");
+ 
+			sql.append(" WHERE e.idinstitucion = ");
+			sql.append(institucion);
+			sql.append(" AND e.ANIO = ");
+			sql.append(anio);
+			sql.append(" and e.NUMERO =  ");
+			sql.append(numero);
+			
+			sql.append(" and e.IDTIPOEJG = ");
+			sql.append(idTipoEJG);
+			RowsContainer rc = new RowsContainer(); 
+			if (rc.find(sql.toString())) {
+				Row fila = (Row) rc.get(0);
+				if(fila.getString("JUZGADO") != null && !fila.getString("JUZGADO").equals("")){
+					idJuzgado = Long.parseLong((String)fila.getString("JUZGADO"));
+				}
+			} 
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion sobre el idjuzgado de un ejg.");
+		}
+		return idJuzgado;                        
+	}
+
+		
 }
 

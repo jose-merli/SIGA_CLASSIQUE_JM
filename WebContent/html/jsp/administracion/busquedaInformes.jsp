@@ -108,6 +108,7 @@
 										<html:option value="C"><siga:Idioma key="administracion.informes.destinatarios.colegiados"/></html:option>
 										<html:option value="S"><siga:Idioma key="administracion.informes.destinatarios.solicitantes"/></html:option>
 										<html:option value="P"><siga:Idioma key="administracion.informes.destinatarios.procurador"/></html:option>
+										<html:option value="J"><siga:Idioma key="administracion.informes.destinatarios.juzgado"/></html:option>
 									</html:select>		
 								</td>		
 								<td class="labelText" colspan="2">

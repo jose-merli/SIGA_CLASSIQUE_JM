@@ -180,6 +180,19 @@ public class GstDate {
 		}
 		return dat;
 	}
+	public static String getFormatedDateLong(String lang, Date date)
+	throws ClsExceptions {
+		String dat = "";
+		SimpleDateFormat sdf = new SimpleDateFormat(
+		ClsConstants.DATE_FORMAT_JAVA);
+		if (lang.equalsIgnoreCase("EN")) {
+			sdf.applyPattern(ClsConstants.DATE_FORMAT_LONG_ENGLISH);
+		} else {
+			sdf.applyPattern(ClsConstants.DATE_FORMAT_LONG_SPANISH);
+		}
+		dat = sdf.format(date);
+		return dat;
+	}
 
 	public static String getFormatedDateMedium(String lang, String date)
 			throws ClsExceptions {

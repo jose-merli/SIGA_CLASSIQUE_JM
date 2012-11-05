@@ -158,6 +158,7 @@
 		<form-bean name="ProgramacionForm" type="com.siga.envios.form.ProgramacionForm"/>
 		<form-bean name="DocumentosForm" type="com.siga.envios.form.DocumentosForm"/>
 		<form-bean name="PlantillasEnviosForm" type="com.siga.envios.form.SIGAPlantillasEnviosForm"/>
+		<form-bean name="EntradaEnviosForm" type="com.siga.envios.form.EntradaEnviosForm"/>
 		<form-bean name="PlantillasEnviosCamposForm" type="com.siga.envios.form.SIGAPlantillasEnviosCamposForm"/>
 		<form-bean name="PlantillasEnviosPlantillasForm" type="com.siga.envios.form.SIGAPlantillasEnviosPlantillasForm"/>
 		<form-bean name="PlantillasEnviosCorreoElectronicoForm" type="com.siga.envios.form.SIGAPlantillasEnviosCorreoElectronicoForm"/>
@@ -167,6 +168,7 @@
 		<form-bean name="EnviosCorreoElectronicoForm" type="com.siga.envios.form.SIGAEnviosCorreoElectronicoForm"/>
 		<form-bean name="TextoSMSForm" type="com.siga.envios.form.TextoSMSForm"/>
 		<form-bean name="TextoEnviosSMSForm" type="com.siga.envios.form.TextoEnviosSMSForm"/>
+		<form-bean name="IntercambioTelematicoForm" type="com.siga.envios.form.IntercambioTelematicoForm"/>
 
 
     	<!-- ************************** FORMS ADMINISTRACIÓN *************************
@@ -1763,6 +1765,16 @@
 			<forward name="preguntaDireccionEnvio" path="/html/jsp/certificados/preguntaDireccionEnvio.jsp"/>
 			<forward name="export" path="/SIGASvlVectorToClientFile.svrl"/>
 			<forward name="confirmar" path="/html/jsp/general/msjConfirmar.jsp"/>
+			<forward name="descargarEnvioTelematico" path="/html/jsp/general/exitoTelematicoSinEJIS.jsp"/>
+			<forward name="finalizar" path="/ENV_EntradaEnvios.do"/>
+		</action>
+		
+				<!-- ***** Envíos a Grupos / Bandeja de Entrada ***** -->
+		<action path="/ENV_EntradaEnvios" type="com.siga.envios.action.EntradaEnviosAction" name="EntradaEnviosForm" scope="session">
+			<forward name="inicio" path="/html/jsp/envios/busquedaEntradaEnvios.jsp"/>
+			<forward name="resultado" path="/html/jsp/envios/listadoEntradaEnvios.jsp"/>
+			<forward name="consulta" path="/html/jsp/envios/consultaEntradaEnvios.jsp"/>
+			<forward name="abrirModalOpcionBorrado" path="/html/jsp/envios/modalOpcionBorrado.jsp"/>
 		</action>
 
 		<!-- ***** Envíos a Grupos / Definir Plantillas ***** -->
@@ -1794,6 +1806,12 @@
 			<forward name="abrir" path="/html/jsp/envios/pestanaImagenes.jsp"/>
 			<forward name="mostrar" path="/html/jsp/envios/detalleImagenPlantilla.jsp"/>
 		</action>
+		<action path="/ENV_IntercambioTelematico" type="com.siga.envios.action.IntercambioTelematicoAction" name="IntercambioTelematicoForm" scope="request">
+			<forward name="abrir" path="/html/jsp/envios/pestanaIntercambioTelematico.jsp"/>
+		</action>
+		
+		
+		
 
 		<!-- ***** Envíos a Grupos / Seleccionar Remitentes ***** -->
 		<action path="/ENV_RemitentesPlantilla" type="com.siga.envios.action.RemitentesPlantillasAction" name="RemitentesPlantillasForm" scope="request">

@@ -14,6 +14,7 @@ import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CerPlantillasAdm;
 import com.siga.general.SIGAException;
 import com.siga.informes.InformeCertificadosEspeciales;
+import com.siga.informes.MasterReport;
 
 public class Certificado
 {
@@ -70,7 +71,8 @@ public class Certificado
 	            plantilla.sustituirEtiquetas(htDatos, fIn);
 	            
 	            // proceso de generacion
-	            plantilla.convertFO2PDF(fIn, fOut, sBaseDir);
+	            MasterReport masterReport = new  MasterReport();
+	            masterReport.convertFO2PDF(fIn, fOut, sBaseDir);
             }else{
             		htParametros.put("TIPOCERTIFICADO",certEspecial);
             		htParametros.put("IDPLANTILLA",idPlantilla);

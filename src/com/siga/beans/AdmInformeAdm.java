@@ -48,7 +48,9 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 				AdmInformeBean.C_TIPOFORMATO,
 				AdmInformeBean.C_CODIGO,
 				AdmInformeBean.C_ORDEN,
-				AdmInformeBean.C_CLASEJAVA
+				AdmInformeBean.C_IDTIPOINTERCAMBIOTELEMATICO,
+				AdmInformeBean.C_CLASEJAVA,
+				AdmInformeBean.C_PLANTILLA
 				
 				
 		};
@@ -97,7 +99,9 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 			bean.setTipoformato		(UtilidadesHash.getString(hash, AdmInformeBean.C_TIPOFORMATO));
 			bean.setCodigo	(UtilidadesHash.getString(hash, AdmInformeBean.C_CODIGO));
 			bean.setOrden	(UtilidadesHash.getString(hash, AdmInformeBean.C_ORDEN));
+			bean.setIdTipoIntercambioTelematico(UtilidadesHash.getString(hash, AdmInformeBean.C_IDTIPOINTERCAMBIOTELEMATICO));
 			bean.setClaseJava	(UtilidadesHash.getString(hash, AdmInformeBean.C_CLASEJAVA));
+			bean.setPlantilla		(UtilidadesHash.getString(hash, AdmInformeBean.C_PLANTILLA));
 			
 		}
 		catch (Exception e) { 
@@ -130,7 +134,9 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(htData, AdmInformeBean.C_TIPOFORMATO, 		b.getTipoformato());
 			UtilidadesHash.set(htData, AdmInformeBean.C_CODIGO, 		b.getCodigo());
 			UtilidadesHash.set(htData, AdmInformeBean.C_ORDEN, 		b.getOrden());
+			UtilidadesHash.set(htData, AdmInformeBean.C_IDTIPOINTERCAMBIOTELEMATICO, 		b.getIdTipoIntercambioTelematico());
 			UtilidadesHash.set(htData, AdmInformeBean.C_CLASEJAVA, 		b.getClaseJava());
+			UtilidadesHash.set(htData, AdmInformeBean.C_PLANTILLA, 		b.getPlantilla());
 			
 		}
 		catch (Exception e) {
@@ -173,6 +179,8 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 				"       "+AdmInformeBean.C_TIPOFORMATO+", " +
 				"       "+AdmInformeBean.C_CODIGO+", " +
 				"       "+AdmInformeBean.C_ORDEN+", " +
+				"       "+AdmInformeBean.C_IDTIPOINTERCAMBIOTELEMATICO+", " +
+				"       "+AdmInformeBean.C_PLANTILLA+", " +
 				"       "+AdmInformeBean.C_CLASEJAVA+" " +
 				"  FROM "+AdmInformeBean.T_NOMBRETABLA+" " +
 				" WHERE "+AdmInformeBean.C_IDPLANTILLA+" = '"+idInforme+"' " +
@@ -203,7 +211,10 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 				salida.setTipoformato		((String)ht.get(AdmInformeBean.C_TIPOFORMATO));
 				salida.setCodigo		((String)ht.get(AdmInformeBean.C_CODIGO));
 				salida.setOrden		((String)ht.get(AdmInformeBean.C_ORDEN));
+				if(ht.get(AdmInformeBean.C_IDTIPOINTERCAMBIOTELEMATICO) != null && !ht.get(AdmInformeBean.C_IDTIPOINTERCAMBIOTELEMATICO).equals(""))
+					salida.setIdTipoIntercambioTelematico((String)ht.get(AdmInformeBean.C_IDTIPOINTERCAMBIOTELEMATICO));
 				salida.setClaseJava((String)ht.get(AdmInformeBean.C_CLASEJAVA));
+				salida.setPlantilla((String)ht.get(AdmInformeBean.C_PLANTILLA));
 				
 			}
 		}
@@ -521,5 +532,29 @@ public class AdmInformeAdm extends MasterBeanAdministrador
     	return informeList;
     }
 
-	
+	public Hashtable getInformeTelematico(String idInstitucion, String idTipoEnvio)throws ClsExceptions{
+		StringBuffer sql = new StringBuffer();
+		Hashtable<String, Object> htFila = null;
+    	sql.append(" SELECT * ");
+    	sql.append(" FROM ADM_INFORME I,ADM_ENVIOINFORME EI ");
+    	sql.append(" WHERE i.idtipointercambiotelematico = 10 ");
+	    sql.append(" AND i.idinstitucion = "+idInstitucion);
+	    sql.append(" AND ei.idplantilla = i.idplantilla ");
+	    sql.append(" AND ei.idinstitucion = i.idinstitucion ");
+	    sql.append(" AND ei.idtipoenvios = "+idTipoEnvio);
+		sql.append(" and ei.idplantillaenviodef is not null ");
+		sql.append(" and rownum = 1 ");
+	    	
+    	try {
+			RowsContainer rc = new RowsContainer(); 
+			if (rc.find(sql.toString())) {				
+				Row fila = (Row) rc.get(0);
+				htFila=fila.getRow();
+			} 
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar consulta.");
+		}
+
+    	return htFila;
+    }	
 }

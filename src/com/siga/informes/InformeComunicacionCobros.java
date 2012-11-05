@@ -270,8 +270,8 @@ public class InformeComunicacionCobros extends MasterReport
 			ficheroPDF = new File(rutaServidorDescargas+ClsConstants.FILE_SEP+nombreFicheroPDF+".pdf");
 			
 			//Clase para la conversion de FOP a PDF con un directorio base para usar rutas relativas:
-			Plantilla plantilla = new Plantilla(this.getUsuario());
-			plantilla.convertFO2PDF(ficheroFOP, ficheroPDF, rutaPlantilla);
+			MasterReport masterReport = new  MasterReport();
+			masterReport.convertFO2PDF(ficheroFOP, ficheroPDF, rutaPlantilla);
 			
 			// Borramos el .FOP que hemos generado para este usuario:
 			ficheroFOP.delete();

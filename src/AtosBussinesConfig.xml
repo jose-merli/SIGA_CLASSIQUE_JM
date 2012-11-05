@@ -13,6 +13,8 @@
 		<service interface="com.siga.censo.service.MutualidadService" implementation="com.siga.censo.service.impl.AtosMutualidadService"/>
 		<service interface="com.siga.expedientes.service.ExpedientesService" implementation="com.siga.expedientes.service.impl.AtosExpedientesService"/>
 		<service interface="com.siga.censo.service.AlterMutuaService" implementation="com.siga.censo.service.impl.AtosAlterMutuaService"/>
+		
+		<!--  <service interface="com.siga.envios.service.AtosEnviosService" implementation="com.siga.envios.service.impl.SolSusProcedimientoService"/>-->
 	</context>
 	<!-- 
 	<context id="letrados">
@@ -30,10 +32,23 @@
 			<property name="MybatisConfigURL">/SqlMyBatisConfig.xml</property>
 		</transactionManager>
    				
-		<service interface="org.redabogacia.sigaservices.app.services.ecom.EcomColaService" 	 implementation="org.redabogacia.sigaservices.app.services.ecom.impl.EcomColaServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.SigaLog4jService" 	 implementation="org.redabogacia.sigaservices.app.services.impl.SigaLog4jServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.gen.GenParametrosService" 	 implementation="org.redabogacia.sigaservices.app.services.gen.impl.GenParametrosServiceImpl"/>		
 			
+		
+		<service interface="com.siga.envios.service.EntradaEnviosService" 							implementation="com.siga.envios.service.impl.EntradaEnviosServiceImpl"/>
+		<service interface="com.siga.envios.service.sigp_ca.RespuestaSolSusProcedimientoService" 	implementation="com.siga.envios.service.sigp_ca.impl.RespuestaSolSusProcedimientoServiceImpl"/>
+   		<service interface="com.siga.envios.service.sigp_ca.SolicitudDesignaProvisionalService" 	implementation="com.siga.envios.service.sigp_ca.impl.SolicitudDesignaProvisionalServiceImpl"/>
+   		<service interface="com.siga.envios.service.ca_sigp.DesignaProvisionalService" 				implementation="com.siga.envios.service.ca_sigp.impl.DesignaProvisionalServiceImpl"/>
+   		<service interface="com.siga.envios.service.ca_sigp.SolSusProcedimientoService" 			implementation="com.siga.envios.service.ca_sigp.impl.SolSusProcedimientoServiceImpl"/>
+   		
+		<service interface="org.redabogacia.sigaservices.app.services.ecom.EcomColaService" 	 implementation="org.redabogacia.sigaservices.app.services.ecom.impl.EcomColaServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgService" 	 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsDesignasLetradoService" 	implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsDesignasLetradoServiceImpl"/>	
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsDesignaService" 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsDesignaServiceImpl"/>			
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsJuzgadoService" 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsJuzgadoServiceImpl"/>		
+		
+		
 		
 	</context>
 </configuration> 

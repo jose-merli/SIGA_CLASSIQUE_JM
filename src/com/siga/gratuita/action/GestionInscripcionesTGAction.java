@@ -2579,6 +2579,9 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			String turnosSel = miForm.getTurnosSel();
 			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
 			boolean existenErrores = false;
+			boolean isTodasOninguna = false;
+			List<String> turnosTodosoNingunoList = new ArrayList<String>();
+			//cuando es todas o ninguna solo es necesario lllamr al proceso de validadcion una vez ya que este se encraga de validarlas todas a la vez
 			while (st1.hasMoreTokens()) {
 				String registro = st1.nextToken();
 				String d[]= registro.split("##");
@@ -2590,6 +2593,16 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				Integer idGuardia = null;
 				if(Integer.parseInt(tipoGuardias)==ScsTurnoBean.TURNO_GUARDIAS_ELEGIR)
 					idGuardia = new Integer(d[3]);
+				
+				if(Integer.parseInt(tipoGuardias)==ScsTurnoBean.TURNO_GUARDIAS_TODAS0NINGUNA){
+					if(turnosTodosoNingunoList.contains(idTurno))
+						continue;
+					else
+						turnosTodosoNingunoList.add(idTurno);
+				}
+				
+					 
+				
 				
 //				String validarInscripciones = d[5];
 

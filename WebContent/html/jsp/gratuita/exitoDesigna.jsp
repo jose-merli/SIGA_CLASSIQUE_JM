@@ -37,6 +37,8 @@
 	                (String)request.getAttribute("ANIO")
 	                };
 	 
+	String idLetradoDes =  (String)request.getAttribute("IDLETRADODES");
+	String fechaDes =  (String)request.getAttribute("FECHADES");
 %>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
@@ -58,13 +60,14 @@
 								window.top.returnValue=""; 
 								
 					<%  	} else {%>
-								var array =new Array(5);
+								var array =new Array(6);
 								array[0]="<%=datos[0]%>";
 								array[1]="<%=datos[1]%>";
 								array[2]="<%=datos[2]%>";
 								array[3]="<%=datos[3]%>";
 								array[4]="<%=datos[4]%>";
-
+								array[5]="<%=idLetradoDes%>";
+								array[6]="<%=fechaDes%>";
 								window.top.returnValue=array; 
 								
 					<%  	} %>

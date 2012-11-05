@@ -92,8 +92,8 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 		
 		informeAdm.delete(informeVo);
 		
-		
-		if(!isNombreFisicoComun)
+		//Si se trata de la institucion 2000, se dejan los archivos asociados
+		if(!isNombreFisicoComun && informeVo.getIdInstitucion()!=2000)
 			eliminaFicherosAsociados(getDirectorio(informeForm),informeForm.getNombreFisico());
 		
 	}
@@ -520,7 +520,7 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
    	   			{
    	   				bos.write(buffer, 0, bytesRead);
    	   			}
-			} catch (FileNotFoundException e) {
+			} catch (FileNotFoundException e) { 
 				throw new SIGAException("error.messages.fileNotFound");
 			} catch (IOException e) {
 				throw new SIGAException("error.messages.io");
@@ -538,6 +538,37 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
    			
    			
 	}
+	
+	public void duplicarFicherosAsociados(InformeForm form)throws  SIGAException{	
+		try {
+			String path = getDirectorio(form);
+			String pathNuevo = path.replace("2000", form.getIdInstitucion());
+			
+			File directorioFileNew = new File (pathNuevo);
+			if (!directorioFileNew.exists()) {
+				directorioFileNew.mkdir();
+			}
+			
+			FileInforme directorio = form.getDirectorioFile();
+			File directorioFileOld= directorio.getFile();
+
+			if (directorioFileOld.isDirectory()) {				
+				String[] children = directorioFileOld.list();
+				FileInforme fileInforme = null;
+				for (int i = 0; i<children.length; i++) {
+					 if(children[i].indexOf(".")!=-1 && form.getNombreFisico().equalsIgnoreCase(children[i].substring(0, children[i].indexOf(".")-3))){
+						 File informeFile = new File(directorioFileOld, children[i]);	
+						 informeFile.renameTo(new File(directorioFileNew,children[i]));
+						 informeFile.createNewFile();
+					 }
+				}
+			}
+
+		} catch (Exception e) {
+			throw new SIGAException("error.messages.io");
+		}
+	}	
+	
 	public List<InformeForm> getInformesConsulta(ConConsultaBean consulta,
 			InformeForm informeForm, UsrBean usrBean) throws ClsExceptions {
 		AdmInformeAdm informeAdm = new AdmInformeAdm(usrBean);

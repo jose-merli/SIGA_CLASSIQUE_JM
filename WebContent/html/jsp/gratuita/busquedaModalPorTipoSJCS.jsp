@@ -1,6 +1,5 @@
 <!-- busquedaModalPorTipoSJCS.jsp -->
 <!-- CABECERA JSP -->
-<%@page import="com.atos.utils.ReadProperties"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -12,6 +11,7 @@
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
+<%@ taglib uri = "c.tld" 			prefix="c"%>
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
@@ -19,69 +19,65 @@
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
  <%@ page import="java.util.Properties"%>
- <%@page import="com.siga.Utilidades.SIGAReferences"%>
+ <%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
-	
-
-	BusquedaPorTipoSJCSForm formulario = (BusquedaPorTipoSJCSForm)request.getAttribute("BusquedaPorTipoSJCSForm");
-
-	String tipo = formulario.getTipo();
-	String titu = "", busc = "", leyenda = "";
-	
-	// EJG
-	if (tipo != null && tipo.equalsIgnoreCase("EJG")) {
-		titu    = "gratuita.busquedaPorTipoSJCS.EJG.literal.titulo";
-		busc    = "gratuita.busquedaPorTipoSJCS.EJG.literal.titulo";
-		leyenda = "gratuita.busquedaPorTipoSJCS.EJG.literal.leyenda";
-	}
-	
-	// Designa
-	if (tipo != null && tipo.equalsIgnoreCase("DESIGNA")) {
-		titu    = "gratuita.busquedaPorTipoSJCS.Designa.literal.titulo";
-		busc    = "gratuita.busquedaPorTipoSJCS.Designa.literal.titulo";
-		leyenda = "gratuita.busquedaPorTipoSJCS.Designa.literal.leyenda";
-	}
-	//SOJ
-	if (tipo != null && tipo.equalsIgnoreCase("SOJ")) {
-		titu    = "gratuita.busquedaPorTipoSJCS.SOJ.literal.titulo";
-		busc    = "gratuita.busquedaPorTipoSJCS.SOJ.literal.titulo";
-		leyenda = "gratuita.busquedaPorTipoSJCS.SOJ.literal.leyenda";
-	}
-
+	String[] dato = {usr.getLocation()};
 	ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 	String idordinario = rp.returnProperty("codigo.general.scstipoejg.ordinarios");
 	String datoTipoOrdinario[]={idordinario,idordinario};	
+	
+	String anioFiltro = UtilidadesBDAdm.getYearBD("");
 
 %>	
+	<bean:define id="formulario" name="BusquedaPorTipoSJCSForm"  scope="request"/>
 
 <html>
 
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
+	<link rel="stylesheet" href="<html:rewrite page="html/js/themes/base/jquery.ui.all.css"/>" ></script>
 		
-	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery.js"/>" ></script>
+	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery.custom.js"/>" ></script>
+	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
+
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo
-		titulo="<%=titu%>" 
-		localizacion="<%=titu%>"/>
+		<c:choose>
+			<c:when test="${not empty formulario.tipo && formulario.tipo=='EJG'}">
+				<c:set var="titu" value="gratuita.busquedaPorTipoSJCS.EJG.literal.titulo" />
+				<c:set var="busc" value="gratuita.busquedaPorTipoSJCS.EJG.literal.titulo" />
+				<c:set var="leyenda" value="gratuita.busquedaPorTipoSJCS.EJG.literal.leyenda" />				
+			</c:when>
+			
+			<c:when test="${not empty formulario.tipo && formulario.tipo=='SOJ'}">
+				<c:set var="titu" value="gratuita.busquedaPorTipoSJCS.SOJ.literal.titulo" />
+				<c:set var="busc" value="gratuita.busquedaPorTipoSJCS.SOJ.literal.titulo" />
+				<c:set var="leyenda" value="gratuita.busquedaPorTipoSJCS.SOJ.literal.leyenda" />	
+			</c:when>
+			
+			<c:when test="${not empty formulario.tipo && formulario.tipo=='DESIGNA'}">
+				<c:set var="titu" value="gratuita.busquedaPorTipoSJCS.Designa.literal.titulo" />
+				<c:set var="busc" value="gratuita.busquedaPorTipoSJCS.Designa.literal.titulo" />
+				<c:set var="leyenda" value="gratuita.busquedaPorTipoSJCS.Designa.literal.leyenda" />	
+			</c:when>			
+		</c:choose>
+	<siga:Titulo titulo="${titu}" localizacion="${titu}"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->
 	<!-- El nombre del formulario se obtiene del struts-config -->
-		<html:javascript formName="BusquedaPersonaJGForm" staticJavascript="false" />  
-	  	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+		<html:javascript formName="BusquedaPersonaJGForm" staticJavascript="false" />  		
+	  	<script src="<html:rewrite page="/html/js/validacionStruts.js"/>" type="text/javascript"></script>
 	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	
 
 </head>
@@ -93,79 +89,178 @@
 	<table class="tablaTitulo" cellspacing="0" heigth="38">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
-				<siga:Idioma key="<%=titu%>"/>
+				<siga:Idioma key="${titu}"/>
 			</td>
 		</tr>
 	</table>
 
-	<table  class="tablaCentralCampos"  align="center">
-		<tr>				
-			<td>
-		
-			<siga:ConjCampos leyenda="<%=leyenda%>">
-		
-				<table class="tablaCampos" align="center">
-			
-					<html:form action="/JGR_BusquedaPorTipoSJCS.do" method="POST" target="resultadoModal">
-						<html:hidden name="BusquedaPorTipoSJCSForm" property="modo" value = ""/>
-						<html:hidden name="BusquedaPorTipoSJCSForm" property="tipo" />
-						<html:hidden name="BusquedaPorTipoSJCSForm" property="idInstitucion" />
+	<html:form action="/JGR_BusquedaPorTipoSJCS.do" method="POST" target="resultadoModal">
+		<html:hidden name="BusquedaPorTipoSJCSForm" property="modo" value = ""/>
+		<html:hidden name="BusquedaPorTipoSJCSForm" property="tipo" />
+		<html:hidden name="BusquedaPorTipoSJCSForm" property="idInstitucion" />
 
-						<!-- FILA -->
-						<tr>				
-							
-					<% 	if (tipo != null && tipo.equalsIgnoreCase("EJG")) { %>
-							<td class="labelText">
-								<siga:Idioma key="gratuita.busquedaPorTipoSJCS.literal.tipo"/>
-							</td>				
-							<td>
-								<siga:ComboBD nombre="idTipoEJG" tipo="tipoEJG"  parametro="<%=datoTipoOrdinario%>" clase="boxCombo" obligatorio="false"/>
-							</td>
-					<% } %>
-					<% if (tipo != null && tipo.equalsIgnoreCase("DESIGNA")) { 
-							String[] dato = {usr.getLocation()};
-					%>
-							<td class="labelText">
-								<siga:Idioma key="gratuita.busquedaPorTipoSJCS.literal.turno"/>
-							</td>				
-							<td>
- 								<siga:ComboBD nombre="turnoDesigna" tipo="turnos" clase="boxCombo" parametro="<%=dato%>" obligatorio="false" ancho="550"/>
-							</td>
-					<% } %>
-					<% 	if (tipo != null && tipo.equalsIgnoreCase("SOJ")) { %>
-							<td class="labelText">
-								<siga:Idioma key="gratuita.busquedaSOJ.literal.tipoSOJ"/>
-							</td>				
-							<td>
-								<siga:ComboBD nombre="idTipoSOJ" tipo="tipoSOJ" clase="boxCombo" obligatorio="false"/>
-							</td>
-					<% } %>
-					
-							<td class="labelText">
-								<siga:Idioma key="gratuita.busquedaPorTipoSJCS.literal.anio"/>
-							</td>				
-							<td>
-								<html:text name="BusquedaPorTipoSJCSForm" property="anio" size="10" styleClass="box"></html:text>
-							</td>
-						
-							<td class="labelText">
-								<siga:Idioma key="gratuita.busquedaPorTipoSJCS.literal.numero"/>
-							</td>				
-							<td>
-								<html:text name="BusquedaPorTipoSJCSForm" property="numero" size="10" styleClass="box"></html:text>
-							</td>
-
-						</tr>
+		<!-- FILA -->
+		<tr>		
+			<c:choose>
+				<c:when test="${not empty formulario.tipo && formulario.tipo=='EJG'}">	
+					<siga:ConjCampos leyenda="${leyenda}">									
+						<table align="center" width="100%" border="0" >
+							<tr>
+								<td class="labelText" width="16%">
+									<siga:Idioma key="gratuita.busquedaEJG.literal.anyo" />/<siga:Idioma key="gratuita.busquedaEJG.literal.codigo" /></td>
+								<td width="15%">
+									<html:text name="BusquedaPorTipoSJCSForm" styleClass="box" property="anio" style="width:40" maxlength="4" value="<%=anioFiltro%>"></html:text>
+									&nbsp;/&nbsp;<html:text name="BusquedaPorTipoSJCSForm" styleClass="box" property="numero" size="8" maxlength="10"> </html:text>
+								</td>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.busquedaEJG.literal.tipoEJG" />
+								</td>
+								<td class="labelText">
+									<siga:ComboBD nombre="idTipoEJG" tipo="tipoEJG" parametro="<%=datoTipoOrdinario%>"clase="boxCombo" obligatorio="false" ancho="200"/>
+								</td>
+								</td>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.busquedaEJG.literal.EJGColegio" />
+								</td>
+								<td class="labelText">
+									<siga:ComboBD nombre="idTipoEJGColegio" tipo="tipoEJGColegio" clase="boxCombo" obligatorio="false" parametro="<%=dato%>" ancho="200"/>
+								</td>
+							</tr>
+						</table>	
+					</siga:ConjCampos>		
+					<siga:ConjCampos leyenda="gratuita.busquedaEJG.literal.solicitante">						
+						<table align="center" width="100%">
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.busquedaEJG.literal.nif" />
+								</td>
+								<td class="labelText">
+									<html:text name="BusquedaPorTipoSJCSForm" property="nif" size="10" maxlength="20" styleClass="box"></html:text>
+								</td>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.busquedaEJG.literal.nombre" /> <html:text name="BusquedaPorTipoSJCSForm" property="nombre" size="26" maxlength="100" styleClass="box" ></html:text>
+								</td>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.busquedaAsistencias.literal.apellido1" /> <html:text name="BusquedaPorTipoSJCSForm" property="apellido1" size="26" maxlength="100" styleClass="box" ></html:text>
+								</td>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.busquedaAsistencias.literal.apellido2" /> <html:text name="BusquedaPorTipoSJCSForm" property="apellido2" size="26" maxlength="100" styleClass="box" ></html:text>
+								</td>
+							</tr>
+						</table>
+					</siga:ConjCampos>								
+				</c:when>
 				
-					</html:form>
-				</table>
-		
-			</siga:ConjCampos>
-		
-			</td>
-		</tr>
-	</table>
-
+				<c:when test="${not empty formulario.tipo && formulario.tipo=='SOJ'}">
+					<siga:ConjCampos leyenda="${leyenda}">
+						<table  align="center" width="100%" border="0">  		
+							<tr>	
+								<td class="labelText"  width="100" >
+									<siga:Idioma key="gratuita.busquedaSOJ.literal.anyo"/> / <siga:Idioma key="gratuita.busquedaSOJ.literal.codigo"/>	
+								</td>
+								<td colspan="3">		
+									<html:text name="BusquedaPorTipoSJCSForm" property="anio" size="4" maxlength="4" styleClass="box" value="<%=anioFiltro%>"></html:text> / <html:text name="BusquedaPorTipoSJCSForm" property="numero" size="5" maxlength="10" styleClass="box"></html:text>
+								</td>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.busquedaSOJ.literal.tipoSOJ"/>
+								</td>				
+								<td>
+									<siga:ComboBD nombre="idTipoSOJ" tipo="tipoSOJ" clase="boxCombo" obligatorio="false"/>
+								</td>	
+							</tr>
+						</table>
+					</siga:ConjCampos>	
+					<siga:ConjCampos leyenda="gratuita.busquedaSOJ.literal.solicitante">
+						<table  align="center" width="100%">
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.busquedaSOJ.literal.nif"/>		
+								</td>
+								<td class="labelText">
+									<html:text name="BusquedaPorTipoSJCSForm" property="nif" size="10" maxlength="20" styleClass="box" ></html:text>
+								</td>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.busquedaSOJ.literal.nombre"/>
+								</td>
+								<td class="labelText">
+									<html:text name="BusquedaPorTipoSJCSForm" property="nombre" size="15" maxlength="100" styleClass="box"></html:text>
+								</td>
+								<td class="labelText">	
+									<siga:Idioma key="gratuita.busquedaSOJ.literal.apellido1"/>
+								</td>		
+								<td class="labelText">
+									<html:text name="BusquedaPorTipoSJCSForm" property="apellido1" size="15" maxlength="100" styleClass="box"></html:text>
+								</td>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.busquedaSOJ.literal.apellido2"/>
+								</td>
+								<td class="labelText"  colspan="2">
+									<html:text name="BusquedaPorTipoSJCSForm" property="apellido2" size="15" maxlength="100" styleClass="box"></html:text>
+								</td>	
+							</tr>	
+						</table>
+					</siga:ConjCampos>						
+				</c:when>
+				
+				<c:when test="${not empty formulario.tipo && formulario.tipo=='DESIGNA'}">
+					<siga:ConjCampos leyenda="${leyenda}">
+						<table width="100%" border="0" >
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.busquedaSOJ.literal.anyo"/> / <siga:Idioma key="gratuita.busquedaSOJ.literal.codigo"/>
+								</td>
+								<td>	
+									<html:text name="BusquedaPorTipoSJCSForm" property="anio"  style="width:40" maxlength="4" styleClass="box" value="<%=anioFiltro%>"></html:text> / <html:text name="BusquedaPorTipoSJCSForm" property="numero" size="5" maxlength="10" styleClass="box"></html:text> 
+								</td>
+								<td class="labelText">
+									&nbsp;
+								</td>
+								<td class="labelText" >	
+									&nbsp;
+								</td>	
+								<td class="labelText">
+									<siga:Idioma key="gratuita.busquedaPorTipoSJCS.literal.turno"/>
+								</td>				
+								<td>
+	 								<siga:ComboBD nombre="turnoDesigna" tipo="turnos" clase="boxCombo" parametro="<%=dato%>" obligatorio="false" ancho="550"/>
+								</td>
+							</tr>
+						</table>
+					</siga:ConjCampos>	
+					<siga:ConjCampos leyenda="gratuita.busquedaDesignas.literal.defendido">
+						<table width="100%">
+							<tr>
+								<td class="labelText">	
+									<siga:Idioma key="expedientes.auditoria.literal.nif"/>
+								</td>	
+								<td>
+									<html:text name="BusquedaPorTipoSJCSForm" property="nif" size="10" maxlength="10" styleClass="box"></html:text>
+								</td>
+								<td class="labelText">
+									<siga:Idioma key="expedientes.auditoria.literal.nombre"/>
+								</td>
+								<td>	
+									<html:text name="BusquedaPorTipoSJCSForm" property="nombre" size="15" maxlength="100" styleClass="box"></html:text>
+								</td>	
+								<td class="labelText">
+									<siga:Idioma key="expedientes.auditoria.literal.primerapellido"/>
+								</td>
+								<td >	
+									<html:text name="BusquedaPorTipoSJCSForm" property="apellido1" size="15" maxlength="100" styleClass="box"></html:text>
+								</td>	
+								<td class="labelText">	
+									<siga:Idioma key="expedientes.auditoria.literal.segundoapellido"/>
+								</td>
+								<td>
+									<html:text name="BusquedaPorTipoSJCSForm" property="apellido2" size="15" maxlength="100" styleClass="box"></html:text>
+								</td>
+							</tr>
+						</table>
+					</siga:ConjCampos>									
+				</c:when>			
+			</c:choose>						
+		</tr>				
+	</html:form>
 
 	<!-- FIN: CAMPOS DE BUSQUEDA-->
 
@@ -176,7 +271,7 @@
 		 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
 	-->
 
-		<siga:ConjBotonesBusqueda botones="B"  modal="G" titulo="<%=busc%>" />
+		<siga:ConjBotonesBusqueda botones="B"  modal="G" titulo="${busc}" />
 
 	<!-- FIN: BOTONES BUSQUEDA -->
 
@@ -192,7 +287,7 @@
 			document.forms[0].submit();			
 		}
 
-		<!-- Asociada al boton Cerrar -->
+		
 		function accionCerrar() 
 		{		
 			var aux = new Array();
@@ -204,7 +299,7 @@
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 
 	<!-- INICIO: IFRAME LISTA RESULTADOS -->
-	<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
+	<iframe align="center" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" 
 					id="resultadoModal"
 					name="resultadoModal" 
 					scrolling="no"
@@ -217,7 +312,7 @@
 
 	<siga:ConjBotonesAccion botones="C" modal="G" clase="botonesDetalle"/>
 
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 
 </body>
 </html>

@@ -25,7 +25,7 @@
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
 		
-	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery.js"/>" ></script>
+	<script src="<html:rewrite page="/html/js/jquery.js"/>" type="text/javascript" ></script>
 	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
 	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
 	<script	src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
@@ -35,6 +35,7 @@
 	
 </head>
 <script type="text/javascript">
+jQuery.noConflict();
 
 function inicioPlantillasEnvio() {
 	var comboTiposEnvio = document.getElementById('idTipoEnvioDefecto');
@@ -42,7 +43,7 @@ function inicioPlantillasEnvio() {
 	
 	if(comboPlantilla.options.length>0&&comboTiposEnvio.value!=''){
 	
-	$.ajax({ //Comunicación jQuery hacia JSP  
+	jQuery.ajax({ //Comunicación jQuery hacia JSP  
            type: "POST",
            url: "/SIGA/ENV_DefinirEnvios.do?modo=getJQueryPlantillasEnvio",
            data: "idTipoEnvio="+comboTiposEnvio.value,
@@ -55,13 +56,13 @@ function inicioPlantillasEnvio() {
        				var valueComboPlantilla = optionComboPlantilla[0].value;
        				//vaciamos la listas
 					optionComboPlantilla.length = 0;
-					$("#idPlantillaEnvioDefecto").append("<option  value=''>&nbsp;</option>");
-       				$.each(plantillasEnvio, function(i,item2){
+					jQuery("#idPlantillaEnvioDefecto").append("<option  value=''>&nbsp;</option>");
+       				jQuery.each(plantillasEnvio, function(i,item2){
            				var selected = "";
            				if(valueComboPlantilla!='' && valueComboPlantilla==item2.idPlantillaEnvios){
            					selected = "selected";
        					}
-                        $("#idPlantillaEnvioDefecto").append("<option "+selected+" value='"+item2.idPlantillaEnvios+"'>"+item2.nombre+"</option>");
+                        jQuery("#idPlantillaEnvioDefecto").append("<option "+selected+" value='"+item2.idPlantillaEnvios+"'>"+item2.nombre+"</option>");
                     });
        			}
 	           			
@@ -72,8 +73,50 @@ function inicioPlantillasEnvio() {
         });
 
 	}else{
-		$("#idPlantillaEnvioDefecto").append("<option  value=''>&nbsp;</option>");
-		
+		jQuery("#idPlantillaEnvioDefecto").append("<option  value=''>&nbsp;</option>");
+
+	}
+
+}
+
+function inicioTiposIntercambioTelematico() {
+	var comboEnviosPermitidos = document.getElementById('comboTipoEnvioPermitidos');
+	var tiposEnvio = comboEnviosPermitidos.options;
+	var comboTiposIntercambioTelematico = document.getElementById('idTipoIntercambioTelematico');
+	
+	if(tiposEnvio.options.length>0 && tipoTelematicoSeleccionado(comboEnviosPermitidos)){
+	
+		jQuery.ajax({ //Comunicación jQuery hacia JSP  
+           type: "POST",
+           url: "/SIGA/ENV_DefinirEnvios.do?modo=getJQueryTiposIntercambioTelematico",
+           data: "idTipoEnvio=6",
+           dataType: "json",
+           success:  function(json) {
+       			var tiposIntercambio = json.tiposIntercambio;
+       			var optionComboTiposIntercambioTelematico = comboTiposIntercambioTelematico.options;
+       			//Si tiene opciones el valor es el que iene que estar seleccioando
+       			if(comboTiposIntercambioTelematico){
+       				var valueComboTiposIntercambioTelematico = comboTiposIntercambioTelematico[0].value;
+       				//vaciamos la listas
+					comboTiposIntercambioTelematico.length = 0;
+					jQuery("#idTipoIntercambioTelematico").append("<option  value=''>&nbsp;</option>");
+       				jQuery.each(tiposIntercambio, function(i,item2){
+           				var selected = "";
+           				if(valueComboTiposIntercambioTelematico !='' && valueComboTiposIntercambioTelematico==item2.idTipoIntercambioTelematico){
+           					selected = "selected";
+       					}
+                        jQuery("#idTipoIntercambioTelematico").append("<option "+selected+" value='"+item2.idTipoIntercambioTelematico+"'>"+item2.nombre+"</option>");
+                    });
+       			}       			
+	           			
+           },
+           error: function(xml,msg){
+        	   alert("Error: "+msg);//$("span#ap").text(" Error");
+           }
+        });
+
+	}else{
+		jQuery("#idTipoIntercambioTelematico").append("<option  value=''>&nbsp;</option>");
 	}
 
 }
@@ -82,7 +125,7 @@ function onChangeTipoenvio() {
 	var comboTiposEnvio = document.getElementById('idTipoEnvioDefecto');
 	var comboPlantilla = document.getElementById('idPlantillaEnvioDefecto');
 	if(comboTiposEnvio.value!=''){			
-	$.ajax({ //Comunicación jQuery hacia JSP  
+	jQuery.ajax({ //Comunicación jQuery hacia JSP  
            type: "POST",
            url: "/SIGA/ENV_DefinirEnvios.do?modo=getJQueryPlantillasEnvio",
            data: "idTipoEnvio="+comboTiposEnvio.value,
@@ -90,14 +133,17 @@ function onChangeTipoenvio() {
            success:  function(json) {
        			var plantillasEnvio = json.plantillasEnvio;
        			var optionComboPlantilla = comboPlantilla.options;
-       			optionComboPlantilla.length = 0;
-       			$("#idPlantillaEnvioDefecto").append("<option  value=''>&nbsp;</option>");
-       				$.each(plantillasEnvio, function(i,item2){
-           				var selected = "";
-                        $("#idPlantillaEnvioDefecto").append("<option "+selected+" value='"+item2.idPlantillaEnvios+"'>"+item2.nombre+"</option>");
-                    });
        			
-	           			
+       			optionComboPlantilla.length = 0;
+       			jQuery("#idPlantillaEnvioDefecto").append("<option  value=''>&nbsp;</option>");
+
+       				jQuery.each(plantillasEnvio, function(i,item2){
+           				var selected = "";
+                        jQuery("#idPlantillaEnvioDefecto").append("<option "+selected+" value='"+item2.idPlantillaEnvios+"'>"+item2.nombre+"</option>");
+                    });
+
+
+           			
            },
            error: function(xml,msg){
         	   alert("Error: "+msg);//$("span#ap").text(" Error");
@@ -105,9 +151,55 @@ function onChangeTipoenvio() {
         });
 	}else{
 		comboPlantilla.options.length = 0;
-		
+
 	}
 }
+
+function tipoTelematicoSeleccionado(comboEnviosPermitidos){
+	var selected = ""; 
+	for (var i = 0; i < comboEnviosPermitidos.options.length; i++) {
+		if (comboEnviosPermitidos.options[i].selected) {
+			selected = comboEnviosPermitidos.options[i].value.split(',')[1];
+			if(selected =='6'){
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+function onChangeTipoIntercambio() {
+	var comboTiposIntercambioTelematico = document.getElementById('idTipoIntercambioTelematico');
+	var comboEnviosPermitidos = document.getElementById('comboTipoEnvioPermitidos');
+
+	if(tipoTelematicoSeleccionado(comboEnviosPermitidos)){
+	
+		jQuery.ajax({ //Comunicación jQuery hacia JSP  
+           type: "POST",
+           url: "/SIGA/ENV_DefinirEnvios.do?modo=getJQueryTiposIntercambioTelematico",
+           data: "idTipoEnvio=6",
+           dataType: "json",
+           success:  function(json) {
+       			var tiposIntercambio = json.tiposIntercambio;
+        		jQuery("#idTipoIntercambioTelematico").empty();
+        		jQuery("#idTipoIntercambioTelematico").append("<option  value=''>&nbsp;</option>");   
+    			jQuery.each(tiposIntercambio, function(i,item2){
+              		var selected = "";
+                    jQuery("#idTipoIntercambioTelematico").append("<option "+selected+" value='"+item2.idTipoIntercambioTelematico+"'>"+item2.nombre+"</option>");
+                });
+           },
+           error: function(xml,msg){
+        	   alert("Error: "+msg);
+           }
+        });
+
+	}else{
+		jQuery("#idTipoIntercambioTelematico").empty();
+		jQuery("#idTipoIntercambioTelematico").append("<option  value=''>&nbsp;</option>");
+	}
+}
+
 </script>
 <body onload="cargarListadoArchivos();inicio();">
 
@@ -135,6 +227,7 @@ function onChangeTipoenvio() {
 	<html:hidden styleId="idTiposEnvio" property="idTiposEnvio"/>
 	<html:hidden styleId="idTipoEnvio" property="idTipoEnvio"/>
 	<html:hidden styleId="idPlantillaEnvio" property="idPlantillaEnvio"/>
+	<html:hidden styleId="idTipoIntercambioTelem" property="idTipoIntercambioTelem"/>
 	
 	<input type="hidden"  id="location"  name="location" value="${InformeFormEdicion.usrBean.location}"/>
 	<input type="hidden"  id="actionModal" name="actionModal" />
@@ -144,18 +237,20 @@ function onChangeTipoenvio() {
 	<bean:define id="comboTipoEnvio" name="comboTipoEnvio"  scope="request"/>
 	<bean:define id="idTipoEnvioDef" name="idTipoEnvioDef"  scope="request"/>
 	<bean:define id="idPlantillaEnvioDef" name="idPlantillaEnvioDef"  scope="request"/>
+	<bean:define id="idTipoIntercambioTelem" name="idTipoIntercambioTelem"  scope="request"/>
+	<bean:define id="intercambioTelematico" name="intercambioTelematico"  scope="request"/>
 	<input type="hidden" id="comboTipoEnvioHidden" value="${comboTipoEnvio}" />
-	<% String[] parametrosComboEnvios = (String[])request.getAttribute("parametrosComboEnvios"); 
+	<%  String[] parametrosComboEnvios = (String[])request.getAttribute("parametrosComboEnvios"); 
 		ArrayList idTipoEnvioSeleccionado = (ArrayList)request.getAttribute("idTipoEnvioSeleccionado");
 		ArrayList idPlantillaEnvioSeleccionado = (ArrayList)request.getAttribute("idPlantillaEnvioSeleccionado");
 	
 	%>
 	
-	
-	
-	
-	
-	
+
+
+
+
+
 	<table width="100%" border="0">
 		<tr>
 			<td width="15%"></td>
@@ -311,7 +406,7 @@ function onChangeTipoenvio() {
 					<input type="radio" name="destinatariosCheck" value="C" ><siga:Idioma key="administracion.informes.destinatarios.colegiados"/>
 					<input type="radio" name="destinatariosCheck" value="S" ><siga:Idioma key="administracion.informes.destinatarios.solicitantes"/>
 					<input type="radio" name="destinatariosCheck" value="P" ><siga:Idioma key="administracion.informes.destinatarios.procurador"/>
-					<input type="radio" name="destinatariosCheck" value="J" ><siga:Idioma key="administracion.informes.destinatarios.juzgado"/> 
+					<input type="radio" name="destinatariosCheck" value="J" ><siga:Idioma key="administracion.informes.destinatarios.juzgado"/>
 			</td>
 		</tr>
 			<tr id="trEnvios">
@@ -347,7 +442,7 @@ function onChangeTipoenvio() {
 						
 							<td class="labelText"><siga:Idioma
 									key="administracion.informes.literal.tipoEnvioDefecto" /></td>
-							<td ><select  style="width:132px;" id="idTipoEnvioDefecto" onchange="onChangeTipoenvio();">
+							<td><select  style="width:132px;" id="idTipoEnvioDefecto" onchange="onChangeTipoenvio();">
 									<option  value=""></option>
 									<c:forEach items="${tipoEnviosBeans}" var="tipoEnvio">
 										<c:set var="envioSeleccionado" value="" />
@@ -364,23 +459,38 @@ function onChangeTipoenvio() {
 							<td class="labelText"><siga:Idioma
 									key="administracion.informes.literal.plantillaEnvioDefecto" /></td>
 
-							<td ><select style="width:202px;" id="idPlantillaEnvioDefecto">
+							<td><select style="width:202px;" id="idPlantillaEnvioDefecto">
 									
 										<option value="${idPlantillaEnvioDef}"><c:out value="${idPlantillaEnvioDef}" /></option>
 									
 								</select>
-								<script>
-							inicioPlantillasEnvio();
-					</script>
+								<script type="text/javascript">
+									inicioPlantillasEnvio();
+								</script>	
 							</td>
 							
 						</tr>
+
+
+
+
+
+							<td colspan = "2"></td>
+							<td class="labelText"><siga:Idioma
+									key="administracion.informes.literal.tipointercambio" /></td>
+
+							<td colspan = "3"><select style="width:460px;" id="idTipoIntercambioTelematico">
+									<option value="${idTipoIntercambioTelem}"><c:out value="${idTipoIntercambioTelem}" /></option>
+								</select>
+								<script type="text/javascript">
+								inicioTiposIntercambioTelematico();
+								</script>								
+							</td>						
+						<tr>
+						
+						</tr>
 					</table>
-					
-					</td>
-
-
-
+				</td>
 			</tr>
 
 
@@ -389,8 +499,8 @@ function onChangeTipoenvio() {
 
 
 			<tr>
-			<td colspan = "4" >&nbsp;</td>
-		</tr>
+				<td colspan = "4" >&nbsp;</td>
+			</tr>
 	</table>
 </html:form>	
 <iframe align="center" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
@@ -421,9 +531,9 @@ function cargarListadoArchivos(){
 	
 	document.InformeFormEdicion.target = "resultado";
 	document.InformeFormEdicion.modoInterno.value = document.InformeForm.modo.value;
-	//if(document.InformeForm.modo.value=='modificar'||document.InformeForm.modo.value=='consultar'){
+
 		
-	if((document.InformeForm.modo.value=='modificar'||document.InformeForm.modo.value=='consultar') ){
+	if(document.InformeForm.modo.value=='modificar' || document.InformeForm.modo.value=='modificarTelematico' || document.InformeForm.modo.value=='consultar'){
 
 		document.InformeFormEdicion.modo.value = "listadoArchivosInforme";
 		document.InformeFormEdicion.submit();
@@ -452,13 +562,13 @@ function onChangeIdTipoInforme()
 	idDirectorioTipoInforme = 'directorioTipoInforme_'+indiceTipoInforme;
 	claseTipoInforme =  document.getElementById(idClaseTipoInforme).value;
 	directorioTipoInforme =  document.getElementById(idDirectorioTipoInforme).value;
-	jQuery("#directorio").removeAttr("disabled");
+	document.getElementById("directorio").disabled = "";
 	document.InformeFormEdicion.directorio.value = directorioTipoInforme;
-   	jQuery("#directorio").attr("disabled","disabled");
+	document.getElementById("directorio").disabled = "disabled";
 	if(claseTipoInforme=='P'||claseTipoInforme=='C'){
-		jQuery("#tipoFormato").removeAttr("disabled");
+		document.getElementById("tipoFormato").disabled="";
 	}else{
-	   	jQuery("#tipoFormato").attr("disabled","disabled");
+		document.getElementById("tipoFormato").disabled="disabled";	
 	}
 	
 	if(document.InformeFormEdicion.idTipoInforme.value=='CON'){
@@ -486,27 +596,66 @@ function inicio()
 		}
 	}
 	if(document.InformeForm.claseTipoInforme.value=='P'||document.InformeForm.claseTipoInforme.value=='C'){
-		jQuery("#tipoFormato").removeAttr("disabled");
+		document.getElementById("tipoFormato").disabled="";
 	}else{
-	   	jQuery("#tipoFormato").attr("disabled","disabled");
+		document.getElementById("tipoFormato").disabled="disabled";	
+	
 	}
 	document.getElementById("directorio").disabled="disabled";
 	
 	if(document.InformeForm.modo.value=='modificar'){
-	   	jQuery("#idInstitucion").attr("disabled","disabled");
-	   	jQuery("#idPlantilla").attr("disabled","disabled");
-	   	jQuery("#idTipoInforme").attr("disabled","disabled");
+
+
+
+		if(${intercambioTelematico} == '0'){
+			document.getElementById("idInstitucion").disabled="disabled";
+			document.getElementById("idPlantilla").disabled="disabled";
+			//document.getElementById("tipoFormato").disabled="disabled";
+			document.getElementById("idTipoInforme").disabled="disabled";
+
+		}else if (${intercambioTelematico} == '1'){
+			inputs = document.getElementsByTagName("input");
+			for(var i = 0 ; i <inputs.length ; i++) {
+				input = inputs[i];
+				input.disabled =  "disabled"; 
+			}
+
+			selects = document.getElementsByTagName("select");
+			for(var i = 0 ; i <selects.length ; i++) {
+				select = selects[i];
+				select.disabled =  "disabled"; 
+			}
+			textareas = document.getElementsByTagName("textarea");
+			for(var i = 0 ; i <textareas.length ; i++) {
+				textarea = textareas[i];
+				textarea.disabled =  "disabled"; 
+			}
+			document.getElementById ("titulo").innerHTML = '<siga:Idioma key='administracion.informes.consulta.titulo'  />';
+			jQuery('#idTipoEnvioDefecto').removeAttr("disabled");
+			jQuery('#idPlantillaEnvioDefecto').removeAttr("disabled");
+			jQuery('#modo').removeAttr("disabled");
+			jQuery('#idButton').removeAttr("disabled");
+			jQuery('#idButtonGuardar').removeAttr("disabled");
+			jQuery('#modoInterno').removeAttr("disabled");
+		}	
+
+		if(document.InformeFormEdicion.idInstitucion.value == '0'){
+			document.getElementById("idTipoEnvioDefecto").disabled="disabled";
+			document.getElementById("idPlantillaEnvioDefecto").disabled="disabled";
+		}
 		
-				
+
 	}else if(document.InformeForm.modo.value=='consultar'){
 	
 		inputs = document.getElementsByTagName("input");
 		for(var i = 0 ; i <inputs.length ; i++) {
 			input = inputs[i];
-			if(input.value!="Cerrar")
-				
-				input.disabled =  "disabled"; 
+
+
+
+			input.disabled =  "disabled"; 
 		}
+		jQuery('#idButton').removeAttr("disabled");
 		selects = document.getElementsByTagName("select");
 		for(var i = 0 ; i <selects.length ; i++) {
 			select = selects[i];
@@ -518,20 +667,27 @@ function inicio()
 			textarea.disabled =  "disabled"; 
 		}
 		document.getElementById ("titulo").innerHTML = '<siga:Idioma key='administracion.informes.consulta.titulo'  />';
-				
+
+		
+
 	}else if(document.InformeForm.modo.value=='insertar'){
 		document.getElementById ("titulo").innerHTML = '<siga:Idioma key='administracion.informes.nuevo.titulo'  />';
 		if(document.getElementById("location").value=='2000'){
-			jQuery("#idInstitucion").removeAttr("disabled");
-			jQuery("#idPlantilla").removeAttr("disabled");
-			jQuery("#idTipoInforme").removeAttr("disabled");
+			document.getElementById("idInstitucion").disabled="";
+			document.getElementById("idPlantilla").disabled="";
+
+			document.getElementById("idTipoInforme").disabled="";
+			
+			// document.getElementById("tipoFormato").disabled="";
 		}else{
 			//Mostramos la propia institcion(0 seleciona , 1 pordefecto, 2 intitucion)
 			document.getElementById("idInstitucion").selectedIndex = "2";
-		   	jQuery("#idInstitucion").attr("disabled","disabled");
-			jQuery("#idPlantilla").removeAttr("disabled");
-			jQuery("#idTipoInforme").removeAttr("disabled");
+			document.getElementById("idInstitucion").disabled="disabled";
+			document.getElementById("idPlantilla").disabled="";
 
+
+			document.getElementById("idTipoInforme").disabled="";
+			// document.getElementById("tipoFormato").disabled="";
 		}
 	
 	}
@@ -551,9 +707,10 @@ function inicio()
 				
 			}
 		}
+
 	}
 
-	
+
 }
 
 
@@ -584,10 +741,17 @@ function accionGuardar()
 		}
 	}
 
-	jQuery("#directorio").removeAttr("disabled");
-	jQuery("#idInstitucion").removeAttr("disabled");
-	jQuery("#idPlantilla").removeAttr("disabled");
-	jQuery("#idTipoInforme").removeAttr("disabled");
+	document.getElementById("directorio").disabled="";
+	document.getElementById("idInstitucion").disabled="";
+	document.getElementById("idPlantilla").disabled="";
+
+	document.getElementById("idTipoInforme").disabled="";
+	// document.getElementById("tipoFormato").disabled="";
+	
+	jQuery('#idTiposEnvio').removeAttr("disabled");
+	jQuery('#idTipoIntercambioTelem').removeAttr("disabled");
+	jQuery('#idTipoEnvio').removeAttr("disabled");
+	jQuery('#idPlantillaEnvio').removeAttr("disabled");
 	
 	
 	if (document.InformeForm.modo.value=='insertar'){
@@ -626,6 +790,7 @@ function accionGuardar()
 	document.InformeFormEdicion.idTiposEnvio.value = tiposEnvioSeleccionados;
 	document.InformeFormEdicion.idTipoEnvio.value = document.getElementById("idTipoEnvioDefecto").value;
 	document.InformeFormEdicion.idPlantillaEnvio.value = document.getElementById("idPlantillaEnvioDefecto").value;
+	document.InformeFormEdicion.idTipoIntercambioTelem.value = document.getElementById("idTipoIntercambioTelematico").value;
 	sub();
 	if(document.InformeFormEdicion.idTipoInforme.value!='CON'){ 
 		listaDestinatarios = document.getElementsByName("destinatariosCheck");
@@ -640,10 +805,10 @@ function accionGuardar()
 			alert(error);
 			fin();
 
-		   	jQuery("#idInstitucion").attr("disabled","disabled");
-		   	jQuery("#idPlantilla").attr("disabled","disabled");
-		   	jQuery("#idTipoInforme").attr("disabled","disabled");
-		   	jQuery("#directorio").attr("disabled","disabled");
+			document.getElementById("idInstitucion").disabled="disabled";
+			document.getElementById("idPlantilla").disabled="disabled";
+			document.getElementById("idTipoInforme").disabled="disabled";
+			document.getElementById("directorio").disabled="disabled";
 
 			return false;
 		}
@@ -655,7 +820,7 @@ function accionGuardar()
 	}
 	
 	document.InformeFormEdicion.modo.value = document.InformeForm.modo.value; 
-	jQuery("#directorio").removeAttr("disabled");
+	document.getElementById("directorio").disabled = "";
 
 	 if (validateInformeFormEdicion(document.InformeFormEdicion)){
 			 
@@ -669,10 +834,14 @@ function accionGuardar()
 	 }else{
 	 	fin();
  	}
-	   	jQuery("#idInstitucion").attr("disabled","disabled");
-	 	jQuery("#idPlantilla").attr("disabled","disabled");
-	 	jQuery("#idTipoInforme").attr("disabled","disabled");
-	 	jQuery("#directorio").attr("disabled","disabled");
+	document.getElementById("idInstitucion").disabled="disabled";
+	document.getElementById("idPlantilla").disabled="disabled";
+
+	document.getElementById("idTipoInforme").disabled="disabled";
+	// document.getElementById("tipoFormato").disabled="disabled";
+	document.getElementById("directorio").disabled = "disabled";
+	document.getElementById("idTiposEnvio").disabled="disabled";
+	document.getElementById("idTipoIntercambioTelem").disabled="disabled";
 }
 function formatearFormulario(formulario)
 {
@@ -717,7 +886,7 @@ function accionCerrar()
 function gestionarDatosConsultas() 
 {		
 	document.getElementsByName("idTipoInforme")[0].disabled =  "disabled";
-   	jQuery("#alias").attr("disabled","disabled");
+	document.getElementById("alias").disabled =  "disabled";
 	document.getElementById("ocultarSolicitantes").style.display =  "none";
 	//document.getElementById("ocultarOrden").style.display =  "none";
 	document.getElementById("ocultarLabelPreseleccionado").style.display =  "none";
@@ -733,7 +902,7 @@ function accionComboTipoEnvio(index) {
 
 	var tiposEnvio = document.getElementById("comboTipoEnvioPermitidos").options;
 	var findDefecto = false;
-	$("#idTipoEnvioDefecto").append("<option  value=''>&nbsp;</option>");
+	jQuery("#idTipoEnvioDefecto").append("<option  value=''>&nbsp;</option>");
 	for ( var i = 0; i < tiposEnvio.length; i++) {
 		var optionTipoEnvio =tiposEnvio[i];
 		if(optionTipoEnvio.selected){
@@ -741,15 +910,18 @@ function accionComboTipoEnvio(index) {
 			if(!findDefecto && idTipoEnvio==envioDefectoSeleccionado){
 				findDefecto = true;
 			}
-			$("#idTipoEnvioDefecto").append("<option  value='"+idTipoEnvio+"'>"+optionTipoEnvio.text+"</option>");
+			jQuery("#idTipoEnvioDefecto").append("<option  value='"+idTipoEnvio+"'>"+optionTipoEnvio.text+"</option>");
 		}
 	}
 	document.getElementById("idTipoEnvioDefecto").value = envioDefectoSeleccionado;
 	if(!findDefecto){
 		onChangeTipoenvio();
-		
+
 	}
-		
+
+
+	if(index != -1)
+		onChangeTipoIntercambio();
 
 }
 /*function accionComboTipoEnvio(index) {
@@ -785,9 +957,9 @@ function accionRestablecer()
 	document.InformeFormEdicion.reset();
 }
 
-$(document).ready(function () {
+jQuery(document).ready(function () {
 
-	accionComboTipoEnvio(0);
+	accionComboTipoEnvio(-1);
 });
 
 </script>

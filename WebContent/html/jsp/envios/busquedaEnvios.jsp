@@ -123,6 +123,7 @@
 			<html:hidden styleId = "idEnvio" property = "idEnvio"/>
 			<html:hidden styleId = "idTipoEnvio"  property = "idTipoEnvio"/>
 			<html:hidden styleId = "idImpresora"  property = "idImpresora"/>
+			<html:hidden styleId = "idEstadoEnvio" property = "idEstado"/>
 			<input type="hidden" id="actionModal"  name="actionModal" value="">
 		</html:form>
 
@@ -227,6 +228,7 @@
 						<input type="hidden" name="oculto<%=""+(i+1)%>_1" id="oculto<%=""+(i+1)%>_1" value="<%=fila.getString("IDENVIO")%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_2" id="oculto<%=""+(i+1)%>_2" value="<%=fila.getString("IDTIPOENVIOS")%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_3" id="oculto<%=""+(i+1)%>_3" value="<%=pathFechaCreacion%>">
+						<input type="hidden" name="oculto<%=""+(i+1)%>_4" id="oculto<%=""+(i+1)%>_4" value="<%=fila.getString("IDESTADO")%>">
 											
 					<td><%=UtilidadesString.mostrarDatoJSP(fila.getString(EnvEnviosBean.C_IDENVIO))%></td>
 					<td><%=UtilidadesString.mostrarDatoJSP(fila.getString(EnvEnviosBean.C_DESCRIPCION))%></td>
@@ -284,9 +286,12 @@
 			
 			var auxTipoEnv = 'oculto' + fila + '_2';
 			var idTipoEnv = document.getElementById(auxTipoEnv);			          		
+			var auxEstadoEnv = 'oculto' + fila + '_4';
+			var idEstadoEnv = document.getElementById(auxEstadoEnv);
 			
 			document.forms[0].idEnvio.value=idEnv.value;
 			document.forms[0].idTipoEnvio.value=idTipoEnv.value;
+			document.forms[0].idEstado.value=idEstadoEnv.value;
 			
 			document.forms[0].target="submitArea";	   	
 			document.forms[0].modo.value='procesarEnvio';

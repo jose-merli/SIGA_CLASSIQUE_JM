@@ -407,12 +407,31 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 					apellido2="";
 				}
 				
-				perBean.setExisteDatos(true);	
-		
+				// Compruebo que los nombre y apellidos son iguales 2 a 2:
+				//-Nombre con Apellido1
+				//-Nombre con Apellido2
+				//-Apellido1 con Apellido2
+			 // Solo se hace la comprobacion si el usuario decide continuar
+				if (continuar==null || continuar.equals("")){	
+				if ( ( ComodinBusquedas.sustituirVocales(nombrePersona).equals(ComodinBusquedas.sustituirVocales(nombre.toUpperCase())) && ComodinBusquedas.sustituirVocales(apellido1Persona).equals(ComodinBusquedas.sustituirVocales(apellido1.toUpperCase())) ) || 
+					 ( ComodinBusquedas.sustituirVocales(nombrePersona).equals(ComodinBusquedas.sustituirVocales(nombre.toUpperCase())) && ComodinBusquedas.sustituirVocales(apellido2Persona).equals(ComodinBusquedas.sustituirVocales(apellido2.toUpperCase())) ) ||
+					 ( ComodinBusquedas.sustituirVocales(apellido1Persona).equals(ComodinBusquedas.sustituirVocales(apellido1.toUpperCase())) && ComodinBusquedas.sustituirVocales(apellido2Persona).equals(ComodinBusquedas.sustituirVocales((""+apellido2).toUpperCase())) ) 
+					) { 
+					/**Signifia que es la misma persona y que hay datos**/
+					perBean.setExisteDatos(true);
+					// No hacemos nada (es el mismo y los devolvemos				
+				} else {								
+					throw new SIGAException(UtilidadesString.getMensajeIdioma(this.getLenguaje(), "messages.censo.nifcifExiste4", new String[]{nifcif}));
+				}
 			}
-			return perBean;
 		
-		} catch (Exception e) {
+		}
+			return perBean;
+		}
+		catch (SIGAException e) {
+			throw e;
+		}
+		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al comprobar existencia de NIF/CIF");
 		}
 	}
@@ -1316,7 +1335,7 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 	 * @param idInstitucion
 	 * @return
 	 */
-	public CenPersonaBean getPersonaColegiado (Long idPersona, Integer idInstitucion) 
+	public CenPersonaBean getPersonaColegiado (Long idPersona, Integer idInstitucion) throws ClsExceptions
 	{
 	    Hashtable codigos = new Hashtable();
 	    
@@ -1344,12 +1363,10 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 				
 			}
 		} 
-		catch (ClsExceptions e) {
-			e.printStackTrace();
+		catch (Exception e) {
+			throw new ClsExceptions(e,"Error al obtener los datos de la persona");
 		} 
-		catch (SIGAException e) {
-			e.printStackTrace();
-		}
+		
 		return personaBean;
 	}
 	

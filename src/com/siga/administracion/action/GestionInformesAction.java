@@ -2,8 +2,10 @@ package com.siga.administracion.action;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +21,8 @@ import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.form.InformeForm;
 import com.siga.administracion.service.InformesService;
 import com.siga.beans.AdmConsultaInformeBean;
+import com.siga.beans.AdmEnvioInformeAdm;
+import com.siga.beans.AdmEnvioInformeBean;
 import com.siga.beans.AdmInformeBean;
 import com.siga.beans.AdmTipoInformeBean;
 import com.siga.beans.CenInstitucionBean;
@@ -302,13 +306,12 @@ public class GestionInformesAction extends MasterAction {
 		comprobarComboSms(request);
 		request.setAttribute("parametrosComboEnvios", new String[]{usrBean.getLocation()});
 		
-		
-			
 		request.setAttribute("idTipoEnvioSeleccionado",new ArrayList());
 		request.setAttribute("tipoEnviosBeans", new ArrayList());
 		request.setAttribute("idTipoEnvioDef", "");
 		request.setAttribute("idPlantillaEnvioDef","");
-		
+		request.setAttribute("idTipoIntercambioTelem", "");	
+		request.setAttribute("intercambioTelematico", "0");
 		
 		request.setAttribute("InformeFormEdicion", informeFormEdicion);
 		
@@ -322,6 +325,7 @@ public class GestionInformesAction extends MasterAction {
 		
 		InformeForm informeForm = (InformeForm) formulario;
 		UsrBean usrBean = this.getUserBean(request);
+		boolean intercambioTelematico = false;
 		try {
 			//Si no estuviera todo en el formulario accederiamos a ello de la manera que comento
 			BusinessManager bm = getBusinessManager();
@@ -330,6 +334,10 @@ public class GestionInformesAction extends MasterAction {
 			InformeForm informeFormEdicion = informeBean.getInforme();
 			informeFormEdicion.setLenguajes(informeForm.getLenguajes());
 			informeFormEdicion.setClaseTipoInforme(informeForm.getClaseTipoInforme());
+			String idInstitucion = informeFormEdicion.getIdInstitucion();
+			/*if(idInstitucion.equals(""+ClsConstants.INSTITUCION_CGAE)){ NO ME ACUERDO POR QUE PUSE ESTO
+				idInstitucion="0";
+			}*/ 
 			
 			request.setAttribute("InformeFormEdicion", informeFormEdicion);
 			
@@ -344,6 +352,10 @@ public class GestionInformesAction extends MasterAction {
 			List alIdsTipoEnvio = new ArrayList();
 			String idTipoEnvioDefecto = "";
 			String idPlantillaEnvioDefecto = "";
+			String idTipoIntercambioTelem = "";
+			if(informeFormEdicion.getIdTipoIntercambioTelem() != null){
+				idTipoIntercambioTelem = informeFormEdicion.getIdTipoIntercambioTelem();
+			}
 			
 			for (EnvTipoEnviosBean envTipoEnviosBean : tipoEnviosBeans) {
 				if(envTipoEnviosBean.getDefecto()!=null&&envTipoEnviosBean.getDefecto().equals(ClsConstants.DB_TRUE)){
@@ -351,16 +363,25 @@ public class GestionInformesAction extends MasterAction {
 					idTipoEnvioDefecto = envTipoEnviosBean.getIdTipoEnvios().toString();
 					if(envTipoEnviosBean.getIdPlantillaDefecto()!=null&&!envTipoEnviosBean.getIdPlantillaDefecto().equals(""))
 						idPlantillaEnvioDefecto = envTipoEnviosBean.getIdPlantillaDefecto();
-					//alIdsPlantillaEnvio.add(+","+informeFormEdicion.getIdInstitucion()+","+informeFormEdicion.getIdTipoEnvio());
 				}
-				alIdsTipoEnvio.add(usrBean.getLocation()+","+envTipoEnviosBean.getIdTipoEnvios());					
+				alIdsTipoEnvio.add(idInstitucion+","+envTipoEnviosBean.getIdTipoEnvios());
+				
+				if(envTipoEnviosBean.getIdTipoEnvios().toString().equals(ClsConstants.TIPO_IDTIPOENVIO_TELEMATICO)){
+					intercambioTelematico = true;
+				}
 			}
 			request.setAttribute("idTipoEnvioSeleccionado",alIdsTipoEnvio);
 			request.setAttribute("tipoEnviosBeans", tipoEnviosBeans);
 			request.setAttribute("idTipoEnvioDef", idTipoEnvioDefecto);
+			request.setAttribute("idTipoIntercambioTelem", idTipoIntercambioTelem);
 			request.setAttribute("idPlantillaEnvioDef",idPlantillaEnvioDefecto);
-				
-			
+
+			if(intercambioTelematico && !usrBean.getLocation().equals(ClsConstants.INSTITUCION_CGAE+"")){
+				request.setAttribute("intercambioTelematico", "1");
+			}else{
+				request.setAttribute("intercambioTelematico", "0");
+			}
+
 			informeForm.setModo("modificar");
 		}catch (Exception e){
 			throwExcp("messages.general.errorExcepcion", e, null); 			
@@ -443,14 +464,16 @@ public class GestionInformesAction extends MasterAction {
 			List alIdsTipoEnvio = new ArrayList();
 			String idTipoEnvioDefecto = "";
 			String idPlantillaEnvioDefecto = "";
+			String idTipoIntercambioTelem = "";
+			if(informeFormEdicion.getIdTipoIntercambioTelem() != null){
+				idTipoIntercambioTelem = informeFormEdicion.getIdTipoIntercambioTelem();
+			}			
 			
 			for (EnvTipoEnviosBean envTipoEnviosBean : tipoEnviosBeans) {
 				if(envTipoEnviosBean.getDefecto()!=null&&envTipoEnviosBean.getDefecto().equals(ClsConstants.DB_TRUE)){
-				
 					idTipoEnvioDefecto = envTipoEnviosBean.getIdTipoEnvios().toString();
 					if(envTipoEnviosBean.getIdPlantillaDefecto()!=null&&!envTipoEnviosBean.getIdPlantillaDefecto().equals(""))
 						idPlantillaEnvioDefecto = envTipoEnviosBean.getIdPlantillaDefecto();
-					//alIdsPlantillaEnvio.add(+","+informeFormEdicion.getIdInstitucion()+","+informeFormEdicion.getIdTipoEnvio());
 				}
 				alIdsTipoEnvio.add(usrBean.getLocation()+","+envTipoEnviosBean.getIdTipoEnvios());					
 			}
@@ -458,6 +481,8 @@ public class GestionInformesAction extends MasterAction {
 			request.setAttribute("tipoEnviosBeans", tipoEnviosBeans);
 			request.setAttribute("idTipoEnvioDef", idTipoEnvioDefecto);
 			request.setAttribute("idPlantillaEnvioDef",idPlantillaEnvioDefecto);
+			request.setAttribute("idTipoIntercambioTelem", idTipoIntercambioTelem);	
+			request.setAttribute("intercambioTelematico", "0");
 			
 			
 			request.setAttribute("InformeFormEdicion", informeFormEdicion);
@@ -518,7 +543,8 @@ public class GestionInformesAction extends MasterAction {
 
 		InformeForm informeForm = (InformeForm) formulario;
 		UsrBean usrBean = this.getUserBean(request);
-		informeForm.setIdInstitucion(usrBean.getLocation());
+		String idInstitucion = usrBean.getLocation();
+		informeForm.setIdInstitucion(idInstitucion);
 		String forward="exception";
 		try {
 			
@@ -535,10 +561,38 @@ public class GestionInformesAction extends MasterAction {
 			informeForm.setOrden(informeBean.getOrden());
 			informeForm.setVisible(informeBean.getVisible());
 			informeForm.setPreseleccionado(informeBean.getPreseleccionado());
-			informeForm.setIdTipoInforme(informeBean.getIdTipoInforme());		
+			informeForm.setIdTipoInforme(informeBean.getIdTipoInforme());
+			informeForm.setPlantilla(informeBean.getPlantilla());
+			if(informeBean.getIdTipoIntercambioTelematico()!=null)
+				informeForm.setIdTipoIntercambioTelem(informeBean.getIdTipoIntercambioTelematico().toString());
+			
+			//Realizamos el parseo de los tipos de envios permitidos
+			AdmEnvioInformeAdm envioInformeAdm = new AdmEnvioInformeAdm(usrBean);
+			String idTipoEnvios = "";
+			Hashtable tiposEnvioHashtable = new Hashtable();
+			tiposEnvioHashtable.put(AdmEnvioInformeBean.C_IDINSTITUCION, "0");
+			tiposEnvioHashtable.put(AdmEnvioInformeBean.C_IDPLANTILLA, informeBean.getIdPlantilla());
+			Vector permitidos = envioInformeAdm.select(tiposEnvioHashtable);
+			if(permitidos!=null && permitidos.size() > 0){
+				for (int i = 0; i < permitidos.size(); i++) {
+					AdmEnvioInformeBean envBean = (AdmEnvioInformeBean)permitidos.get(i);
+					idTipoEnvios = idInstitucion + "," + envBean.getIdTipoEnvios() + "##" + idTipoEnvios;
+				}
+			}
+			informeForm.setIdTiposEnvio(idTipoEnvios);
 
 			boolean isNombreFisicoUnico = informeService.isNombreFisicoUnico(informeForm,true,this.getUserBean(request));			
 			informeService.insertaInforme(informeForm, usrBean);
+			
+			//Se duplica los archivos adjuntos si tuviera o tuviese
+			InformeForm informeFormGeneral = informeForm;
+			informeFormGeneral.setIdInstitucion("0");
+			FileInforme directorio = informeService.getFileDirectorio(informeFormGeneral,true);
+			if(directorio != null && directorio.getFiles().size()>0){
+				informeForm.setDirectorioFile(directorio);
+				informeForm.setIdInstitucion(idInstitucion);
+				informeService.duplicarFicherosAsociados(informeForm);
+			}
 			
 			if(isNombreFisicoUnico)
 				forward = exitoRefresco("messages.duplicated.success",request);

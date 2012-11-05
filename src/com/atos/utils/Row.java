@@ -20,6 +20,7 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 
 import es.satec.siga.util.SigaSequence;
+import com.siga.Utilidades.SIGAReferences;
 
 
 
@@ -1898,20 +1899,30 @@ public class Row implements Serializable
 		{
 			ClsLogging.writeFileLog("SQL BIND UPDATE: " + ClsMngBBDD.getSQLBindInformation(sql,codigos), 10);
 			connec = ClsMngBBDD.getConnection();
+			
+			ReadProperties properties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+        	String timeOut = properties.returnProperty("general.sql.timeout");
 			/*
 			st = connec.createStatement();
 			updatedRecords = st.executeUpdate(sql);
 			*/
 			st = connec.prepareStatement(sql);
-	   	     Enumeration e = codigos.keys();
-	   	     while (e.hasMoreElements()) {
+            st.setQueryTimeout(Integer.parseInt(timeOut));
+
+            Enumeration e = codigos.keys();
+	   	    while (e.hasMoreElements()) {
 	   	         Integer key = (Integer)e.nextElement();
 	   	         st.setString(key.intValue(), (String)codigos.get(key));
 	   	     }
            try {
                updatedRecords = st.executeUpdate();
            } catch (SQLException exce) {
-          	 throw exce;
+          	 	if(exce.getMessage().contains("ORA-01013")){
+            		throw new ClsExceptions(exce, "Error en find BIND: La consulta ha superado los " + st.getQueryTimeout() + " segundos de ejecucion y ha sido cancelada. SQL:"+ ClsMngBBDD.getSQLBindInformation(sql,codigos));
+            	}else{
+	           	 	// RGG control de errores
+	           	 	 throw exce;
+            	}
            }
 			
 		} 

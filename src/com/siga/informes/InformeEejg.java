@@ -165,7 +165,7 @@ public class InformeEejg extends MasterReport
 			
 			File fPdf = new File(pdfRuta+pdfNombre+".tmp");
 			
-			fPdf = this.convertXML2PDF(inputXml,fileXsl,fPdf ,mapParameters);
+			//fPdf = this.convertXML2PDF(inputXml,fileXsl,fPdf ,mapParameters);
 			fileFirmado = firmarPDF(fPdf,pdfRuta+pdfNombre);
 			if(fPdf.exists())
 				fPdf.delete();

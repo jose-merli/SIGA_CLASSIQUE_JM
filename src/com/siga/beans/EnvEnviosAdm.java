@@ -77,6 +77,7 @@ import com.siga.envios.ZetaFax;
 import com.siga.envios.form.ImagenPlantillaForm;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
+import com.siga.informes.MasterReport;
 import com.siga.informes.MasterWords;
 import com.sun.mail.smtp.SMTPAddressFailedException;
 import com.siga.envios.Envio;
@@ -95,6 +96,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
   public final static int TIPO_FAX = 3;
   public final static int TIPO_SMS = 4;
   public final static int TIPO_BUROSMS = 5;
+  public final static int TIPO_TELEMATICO = 6;
 
   public final static String NO_GENERAR = "N";
   public final static String GENERAR_ETIQUETAS = "G";
@@ -130,6 +132,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
             	EnvEnviosBean.C_IDPLANTILLA,
             	EnvEnviosBean.C_IDIMPRESORA,
             	EnvEnviosBean.C_IDTIPOENVIOS,
+            	EnvEnviosBean.C_IDTIPOINTERCAMBIOTELEMATICO,
             	EnvEnviosBean.C_CONSULTA,
             	EnvEnviosBean.C_ACUSERECIBO,
             	EnvEnviosBean.C_FECHAMODIFICACION,
@@ -179,6 +182,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			bean.setIdPlantilla(UtilidadesHash.getInteger(hash, EnvEnviosBean.C_IDPLANTILLA));
 			bean.setIdImpresora(UtilidadesHash.getInteger(hash, EnvEnviosBean.C_IDIMPRESORA));
 			bean.setIdTipoEnvios(UtilidadesHash.getInteger(hash, EnvEnviosBean.C_IDTIPOENVIOS));
+			bean.setIdTipoIntercambioTelematico(UtilidadesHash.getString(hash, EnvEnviosBean.C_IDTIPOINTERCAMBIOTELEMATICO));
+			
 			bean.setConsulta(UtilidadesHash.getString(hash, EnvEnviosBean.C_CONSULTA));
 			bean.setAcuseRecibo(UtilidadesHash.getString(hash, EnvEnviosBean.C_ACUSERECIBO));
 
@@ -217,6 +222,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, EnvEnviosBean.C_IDPLANTILLA, b.getIdPlantilla());
 			UtilidadesHash.set(htData, EnvEnviosBean.C_IDIMPRESORA, b.getIdImpresora());
 			UtilidadesHash.set(htData, EnvEnviosBean.C_IDTIPOENVIOS, b.getIdTipoEnvios());
+			UtilidadesHash.set(htData, EnvEnviosBean.C_IDTIPOINTERCAMBIOTELEMATICO, b.getIdTipoIntercambioTelematico());
 			UtilidadesHash.set(htData, EnvEnviosBean.C_CONSULTA, b.getConsulta());
 			UtilidadesHash.set(htData, EnvEnviosBean.C_ACUSERECIBO, b.getAcuseRecibo());
 
@@ -3204,7 +3210,10 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	            */
 	            sLinea += sIdEnvio + separador;
 	            sLinea += envBean.getDescripcion() + separador;
-	            sLinea += GstDate.getFormatedDateLong("", envBean.getFechaCreacion())  + separador;
+	            if(envBean.getFechaCreacion().equalsIgnoreCase("SYSDATE"))
+	            	sLinea += GstDate.getHoyJava() + separador;
+	            else
+	            	sLinea += GstDate.getFormatedDateLong("", envBean.getFechaCreacion())  + separador;
 	            if(remitente!=null)
 	            	sLinea += txtRemitente + separador;
 	            
@@ -4205,8 +4214,9 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				if (correcto){
 					
 					nombrePDF=rutaEtiquetas+institucion+"_"+UtilidadesString.formatea(envio,8,true) +"_"+"ETIQ.pdf";
-					File ficPDF=new File(nombrePDF); 
-					plantilla.convertFO2PDF(ficFOP, ficPDF);
+					File ficPDF=new File(nombrePDF);
+					MasterReport masterReport = new MasterReport();
+					masterReport.convertFO2PDF(ficFOP, ficPDF);
 					ficFOP.delete();
 					
 					// AQUI COPIA EL FICHERO GENERADO DE ETIQUETAS (ficPDF)
@@ -5468,7 +5478,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	            // El path base para los recursos será al path donde se almacena la plantilla
 	            
 	            try {
-	            	plantilla.convertFO2PDF(fIn, ficheroSalida, fPlantilla.getParent());
+	            	MasterReport masterReport = new  MasterReport();
+	            	masterReport.convertFO2PDF(fIn, ficheroSalida, fPlantilla.getParent());
 	            } catch (Exception e) {
 	        		ClsLogging.writeFileLogError("Error convirtiendo PDF.  Mensaje:" + e.getLocalizedMessage(),e,3);
 	            	throw new ClsExceptions(e,"Error al convertir a PDF");

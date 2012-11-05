@@ -22,8 +22,11 @@ import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.envios.form.DesignaProvisionalForm;
+import com.siga.envios.form.IntercambioTelematicoForm;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.form.DesignaForm;
 import com.siga.gratuita.form.MaestroDesignasForm;
 
 /**
@@ -1528,6 +1531,268 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	}
 	
 	
+	public Vector getBusquedaDesignaRelacionada(String idInstitucion, Hashtable miHash) throws ClsExceptions , SIGAException{
+		
+		String consulta = "";
+		Hashtable codigosBind = new Hashtable();
+		int contador=0;
+	  	
+	  	// Acceso a BBDD
+		int totalRegistros=0;
+		
+		
+		
+		try {
+			//String bBusqueda = formulario.getChkBusqueda();
+			consulta=" select des.estado estado, des.anio anio, des.numero numero, des.fechaentrada fechaentrada,des.idturno idturno, des.codigo||'' codigo, des.sufijo sufijo,des.idinstitucion idinstitucion ";
+			
+			consulta+=" from scs_designa des";
+			contador++;
+			codigosBind.put(new Integer(contador),idInstitucion);
+			consulta+=" where des.idinstitucion =:"+contador;
+			
+			 if ((UtilidadesHash.getString(miHash,"IDTURNO") != null)&&(UtilidadesHash.getString(miHash,"IDTURNO") != "-1")&&!UtilidadesHash.getString(miHash,"IDTURNO").equals("")){
+			 	contador++;
+				codigosBind.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"IDTURNO"));
+			 	consulta+=" and des.idTurno = :"+contador;
+			 }
+			 	
+			 	
+
+			if(UtilidadesHash.getString(miHash,"NCOLEGIADO")!=null && !((String)UtilidadesHash.getString(miHash,"NCOLEGIADO")).equals("") ){
+				contador++;
+			    codigosBind.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"NCOLEGIADO"));
+			    
+			    consulta += " and :"+contador+"= (select max(L.IDPERSONA) from SCS_DESIGNASLETRADO L where l.idinstitucion =des.idinstitucion ";
+			    consulta += " and l.idturno =des.idturno ";
+			    consulta += " and l.anio =des.anio "; 
+			    consulta += " and l.numero =des.numero ";
+			    consulta += " and (L.Fechadesigna is null or";
+			    consulta += " L.Fechadesigna = (SELECT MAX(LET2.Fechadesigna) FROM SCS_DESIGNASLETRADO LET2";
+			    consulta += " WHERE L.IDINSTITUCION = LET2.IDINSTITUCION AND L.IDTURNO = LET2.IDTURNO";
+			    consulta += " AND L.ANIO = LET2.ANIO AND L.NUMERO = LET2.NUMERO";
+			    consulta += " AND TRUNC(LET2.Fechadesigna) <= TRUNC(SYSDATE))))";
+			    
+			    //consulta += " and F_SIGA_GETIDLETRADO_DESIGNA(des.idinstitucion,des.idturno,des.anio,des.numero) = :"+contador;
+			}
+			if (UtilidadesHash.getString(miHash,"ANIO") != null && !UtilidadesHash.getString(miHash,"ANIO").equalsIgnoreCase("")) {
+				
+			    if (UtilidadesHash.getString(miHash,"ANIO").indexOf('*') >= 0){
+			    	
+				    contador++;
+				    consulta += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind((String)UtilidadesHash.getString(miHash,"ANIO").trim(),"des.anio",contador,codigosBind );
+				    
+			    }    
+			    else{
+			    	contador++;
+				    codigosBind.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"ANIO").trim());
+			    	consulta += " AND des.anio = :" + contador;
+			    }	
+			}
+
+			if (UtilidadesHash.getString(miHash,"CODIGO") != null && !UtilidadesHash.getString(miHash,"CODIGO").equalsIgnoreCase("")) {
+				
+				
+			    if (ComodinBusquedas.hasComodin(UtilidadesHash.getString(miHash,"CODIGO")))	{
+			    	contador++;
+			    	consulta += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(UtilidadesHash.getString(miHash,"CODIGO"),"des.codigo",contador,codigosBind ); 
+			    	
+			    }else {
+			    	contador++;
+				    codigosBind.put(new Integer(contador),UtilidadesHash.getString(miHash,"CODIGO").trim());
+			    	consulta += " AND ltrim(des.codigo,'0') = ltrim(:" + contador+",'0')" ; 
+			    }
+			}
+			if (UtilidadesHash.getString(miHash,"JUZGADO") != null && !UtilidadesHash.getString(miHash,"JUZGADO").equalsIgnoreCase("")) {
+				contador++;
+				String a[]=((String)UtilidadesHash.getString(miHash,"JUZGADO")).split(",");
+				codigosBind.put(new Integer(contador),a[0].trim());
+				consulta += " AND des.idjuzgado = :" + contador ;
+			}
+			if (UtilidadesHash.getString(miHash,"ASUNTO") != null && !UtilidadesHash.getString(miHash,"ASUNTO").equalsIgnoreCase("")) {
+				contador++;
+				codigosBind.put(new Integer(contador),UtilidadesHash.getString(miHash,"ASUNTO").trim());
+				consulta += " AND des.resumenasunto = :" + contador ;
+			}
+			if (UtilidadesHash.getString(miHash,"ESTADO") != null && !UtilidadesHash.getString(miHash,"ESTADO").equalsIgnoreCase("")&& !UtilidadesHash.getString(miHash,"ESTADO").equalsIgnoreCase("N")) {
+				contador++;
+				codigosBind.put(new Integer(contador),UtilidadesHash.getString(miHash,"ESTADO").trim());
+				consulta += " AND des.estado = :" + contador ;
+			}
+			if (UtilidadesHash.getString(miHash,"PROCEDIMIENTO") != null && !UtilidadesHash.getString(miHash,"PROCEDIMIENTO").equalsIgnoreCase("")) {
+				contador++;
+				codigosBind.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"PROCEDIMIENTO").trim());
+				consulta += " AND des.numprocedimiento = :" + contador;
+			}
+			if (UtilidadesHash.getString(miHash,"NIG2") != null && !UtilidadesHash.getString(miHash,"NIG2").equalsIgnoreCase("")) {
+				contador++;
+				codigosBind.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"NIG2").trim());
+				consulta += " AND des.nig = :" + contador;
+			}			
+			String actuacionesPendientes = UtilidadesHash.getString(miHash,"ACTUACIONES_PENDIENTES") ;
+			if (actuacionesPendientes!= null && !actuacionesPendientes.equalsIgnoreCase("")&& (actuacionesPendientes.equalsIgnoreCase("NO")||actuacionesPendientes.equalsIgnoreCase("SI")||actuacionesPendientes.equalsIgnoreCase("SINACTUACIONES"))) {
+				if(actuacionesPendientes.equalsIgnoreCase("SINACTUACIONES")){
+					actuacionesPendientes="";
+					// contador ++;
+				    // codigos.put(new Integer(contador),actuacionesPendientes.trim());
+					consulta += " and upper(F_SIGA_ACTUACIONESDESIG(des.idinstitucion,des.idturno,des.anio,des.numero)) is null";
+				}else{
+				contador++;
+				    codigosBind.put(new Integer(contador),actuacionesPendientes.trim());
+				    consulta += " and upper(F_SIGA_ACTUACIONESDESIG(des.idinstitucion,des.idturno,des.anio,des.numero))=upper(:" + contador + ")";
+				}
+			}
+			
+			//Mostrar ART 27
+			String mostarArt27 = UtilidadesHash.getString(miHash,"MOSTRAR_ART27") ;
+			if (mostarArt27!= null && !mostarArt27.equalsIgnoreCase("") && !mostarArt27.equalsIgnoreCase("T")) {
+				if(mostarArt27.equalsIgnoreCase("S")){
+					consulta += " AND des.art27 = 1";
+				}else if(mostarArt27.equalsIgnoreCase("N")){
+				    consulta += " AND des.art27 = 0";
+				}
+			}
+			
+			if (UtilidadesHash.getString(miHash,"CALIDAD") != null && !UtilidadesHash.getString(miHash,"CALIDAD").equalsIgnoreCase("")) {
+				contador++;
+				codigosBind.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"CALIDAD").trim());
+				consulta += " and (select count(1)"+
+				"    from SCS_DEFENDIDOSDESIGNA def"+
+				" where"+
+				" def.ANIO = des.anio"+
+				" and def.NUMERO = des.numero"+
+				" and def.IDINSTITUCION = des.idinstitucion"+
+				" and def.IDTURNO = des.idturno"+
+				" and def.idtipoencalidad= :" + contador+ ") > 0";
+				
+			}
+			
+			if ((miHash.containsKey("FECHAENTRADAINICIO") && !UtilidadesHash.getString(miHash,"FECHAENTRADAINICIO").equalsIgnoreCase(""))
+				||
+				(miHash.containsKey("FECHAENTRADAFIN")&& !UtilidadesHash.getString(miHash,"FECHAENTRADAFIN").equalsIgnoreCase(""))
+				){
+				
+				Vector vCondicion=GstDate.dateBetweenDesdeAndHastaBind("des.fechaentrada",
+	                    GstDate.getApplicationFormatDate("",(String)UtilidadesHash.getString(miHash,"FECHAENTRADAINICIO").trim()),
+						  GstDate.getApplicationFormatDate("",(String)UtilidadesHash.getString(miHash,"FECHAENTRADAFIN").trim()),
+						  contador,
+						  codigosBind);
+				
+				contador=new Integer(vCondicion.get(0).toString()).intValue();
+				
+				consulta +=" and " + vCondicion.get(1);
+			}
+			if((UtilidadesHash.getString(miHash,"IDTIPODESIGNACOLEGIO") != null)&&(!UtilidadesHash.getString(miHash,"IDTIPODESIGNACOLEGIO").equalsIgnoreCase(""))){
+				contador++;
+				codigosBind.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"IDTIPODESIGNACOLEGIO").trim());
+				consulta+=" and des.IDTIPODESIGNACOLEGIO =:"+contador;
+			}
+			
+			boolean isFiltrado = false;
+			String subConsulta1="";
+			// jbd // Cambiamos la consulta de la vista por una mas ligera con la tabla de defendidos
+			/*subConsulta1+=" AND (select count(1) from V_SIGA_DEFENDIDOS_DESIGNA VDEF";
+			subConsulta1+=" where VDEF.idInstitucion = des.idinstitucion";
+			subConsulta1+=" and VDEF.anio = des.anio";
+			subConsulta1+=" and VDEF.numero = des.numero";
+			subConsulta1+=" and VDEF.IDTURNO = des.idturno";*/
+			subConsulta1+=" AND (SELECT count(1)";
+			subConsulta1+="   FROM SCS_DEFENDIDOSDESIGNA DEF, SCS_PERSONAJG PER";
+			subConsulta1+="  WHERE DEF.IDINSTITUCION = PER.IDINSTITUCION";
+			subConsulta1+="    AND DEF.IDPERSONA = PER.IDPERSONA";
+			subConsulta1+="    AND DEF.IDINSTITUCION = des.idInstitucion";
+			subConsulta1+="    AND DEF.ANIO = des.ANIO";
+			subConsulta1+="    AND DEF.IDTURNO = des.idTURNO";
+			subConsulta1+="    AND DEF.NUMERO = des.NUMERO";
+			if(UtilidadesHash.getString(miHash,"NIF") != null && !UtilidadesHash.getString(miHash,"NIF").equalsIgnoreCase("")){
+				isFiltrado = true;
+				subConsulta1+=" and ";
+				if (ComodinBusquedas.hasComodin(miHash.get("NIF").toString())){	
+				contador++;
+				subConsulta1+=ComodinBusquedas.prepararSentenciaCompletaBind((String)UtilidadesHash.getString(miHash,"NIF").trim(),"PER.NIF",contador,codigosBind);
+				}else{
+					contador++;
+					subConsulta1 +=ComodinBusquedas.prepararSentenciaNIFBind(miHash.get("NIF").toString(),"PER.NIF",contador, codigosBind);
+				}
+			}
+			if(UtilidadesHash.getString(miHash,"NOMBRE") != null && !UtilidadesHash.getString(miHash,"NOMBRE").equalsIgnoreCase("")){
+				isFiltrado = true;
+				subConsulta1+=" and ";
+				contador++;
+				subConsulta1+=ComodinBusquedas.prepararSentenciaCompletaBind((String)UtilidadesHash.getString(miHash,"NOMBRE").trim(),"PER.NOMBRE",contador, codigosBind);
+			}
+			if(UtilidadesHash.getString(miHash,"APELLIDO1") != null && !UtilidadesHash.getString(miHash,"APELLIDO1").equalsIgnoreCase("")){
+				isFiltrado = true;
+				subConsulta1+=" and ";
+				contador++;
+				subConsulta1+=ComodinBusquedas.prepararSentenciaCompletaBind((String)UtilidadesHash.getString(miHash,"APELLIDO1").trim(),"PER.APELLIDO1",contador,codigosBind);
+			}
+			if(UtilidadesHash.getString(miHash,"APELLIDO2") != null && !UtilidadesHash.getString(miHash,"APELLIDO2").equalsIgnoreCase("")){
+				isFiltrado = true;
+				subConsulta1+=" and ";
+				contador++;
+				subConsulta1+=ComodinBusquedas.prepararSentenciaCompletaBind((String)UtilidadesHash.getString(miHash,"APELLIDO2").trim(),"PER.APELLIDO2",contador,codigosBind);
+			}
+			
+			subConsulta1+=" )>0 ";
+			if (isFiltrado){
+				consulta+=subConsulta1;
+			}
+			
+			
+			boolean tiene_juzg=UtilidadesHash.getString(miHash,"JUZGADOACTU") != null && !UtilidadesHash.getString(miHash,"JUZGADOACTU").equalsIgnoreCase("");
+			boolean tiene_asunto=UtilidadesHash.getString(miHash,"ASUNTOACTUACION") != null && !UtilidadesHash.getString(miHash,"ASUNTOACTUACION").equalsIgnoreCase("");
+			boolean tiene_acreditacion=UtilidadesHash.getString(miHash,"ACREDITACION") != null && !UtilidadesHash.getString(miHash,"ACREDITACION").equalsIgnoreCase("");
+			boolean tiene_modulo=UtilidadesHash.getString(miHash,"MODULO") != null && !UtilidadesHash.getString(miHash,"MODULO").equalsIgnoreCase("");
+			String subConsulta2="";
+			if (tiene_juzg||tiene_asunto||tiene_acreditacion||tiene_modulo){
+				subConsulta2+=	" and (des.idinstitucion, des.idturno, des.anio, des.numero) in"+
+									" (select act.idinstitucion, act.idturno, act.anio, act.numero"+
+									" from scs_actuaciondesigna act"+
+									" where des.idinstitucion = act.idinstitucion"+
+									" and des.idturno = act.idturno"+
+									" and des.anio = act.anio"+
+									" and des.numero = act.numero ";
+				if (tiene_juzg) {
+					String a[]=((String)UtilidadesHash.getString(miHash,"JUZGADOACTU")).split(",");
+					contador++;
+					codigosBind.put(new Integer(contador),a[0].trim());
+					subConsulta2 += " AND act.idjuzgado = :" + contador;
+				}
+				if (tiene_asunto) {
+					contador++;
+					codigosBind.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"ASUNTOACTUACION").trim());
+					subConsulta2 += " AND act.numeroasunto = :" + contador;
+				}
+				if (tiene_acreditacion) {
+		        	contador++;
+					codigosBind.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"ACREDITACION").trim());
+					subConsulta2 += " AND act.idacreditacion = :" + contador;
+				}
+				if (tiene_modulo) {
+					contador++;
+					codigosBind.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"MODULO").trim());
+					subConsulta2 += " AND act.idprocedimiento = :" + contador;
+				}
+				subConsulta2+=")";
+			}
+			
+			
+			
+			
+			if (!subConsulta2.equals("")){
+				consulta+=subConsulta2;
+			}
+			// jbd // inc7744 // Cambiamos el order by porque parece que afecta a la query cuando se busca por colegiado
+			// consulta+=" order by des.idturno, des.anio desc, des.numero desc";
+			consulta+=" order by des.anio desc, des.codigo desc";
+
+			return this.selectGenericoBind(consulta, codigosBind);	
+      
+		} catch (Exception e) { 	
+			throw new ClsExceptions(e,"Error obteniendo clientes colegiados"); 
+		}
+	}
 	
 	
 	
@@ -1541,7 +1806,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			h.put(new Integer(4), numero);
 
 			String sql = "SELECT "+
-
+			
 			" PROC.NOMBRE || ' ' || PROC.APELLIDOS1 || ' ' || PROC.APELLIDOS2 AS PROCURADOR,"+
 			" PROC.DOMICILIO as DOMICILIO_PROCURADOR,"+
 			" PROC.IDPROVINCIA ID_PROVINCIA_PROCURADOR, PROC.IDPOBLACION AS ID_POBLACION_PROCURADOR,"+
@@ -1549,7 +1814,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			//-- as PROVINCIA_PROCURADOR
 			" PROC.CODIGOPOSTAL as CP_PROCURADOR,"+
 			" PROC.TELEFONO1 as TELEFONO1_PROCURADOR,"+
-			" TO_CHAR(DESPROC.FECHADESIGNA,'dd-mm-yyyy') as FECHADESIGNA_PROCURADOR"+
+			" TO_CHAR(DESPROC.FECHADESIGNA,'dd-mm-yyyy') as FECHADESIGNA_PROCURADOR,"+
+			" PROC.IDPROCURADOR AS IDPROCURADORDESIGNA"+
 			" FROM SCS_DESIGNAPROCURADOR DESPROC, SCS_PROCURADOR PROC"+
 			" WHERE DESPROC.IDINSTITUCION_PROC = PROC.IDINSTITUCION"+
 			" AND DESPROC.IDPROCURADOR = PROC.IDPROCURADOR"+
@@ -2897,6 +3163,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		        sql.append(" select  ejg.aniocajg || '/' || ejg.numero_cajg as ANIONUMEROCAJG, ejg.numero_cajg  || '/' || ejg.aniocajg as NUMEROANIOCAJG, ejg.aniocajg as ANIOCAJG, ejg.numero_cajg as NUMEROCAJG, ejg.idpersona as IDPERSONA ");
 		        sql.append(" ,ejg.anio || '/' || ejg.numejg ANIONUMEROEJG,ejg.numejg || '/' || ejg.anio NUMEROANIOEJG, ");
 		        sql.append(" PROCU.NOMBRE || ' ' || PROCU.APELLIDOS1 || ' ' || PROCU.APELLIDOS2 AS PROCURADOR_EJG ");
+		        sql.append(" ,ejg.anio ANIOEJG, ejg.numero NUMEROEJG, ejg.idtipoejg IDTIPOEJG ");
+		        
 		        sql.append(" from scs_ejg ejg, scs_designa des, ");
 		        sql.append(" scs_turno tur, scs_tipoejg tip, ");
 		        sql.append(" scs_tipodictamenejg tdic, scs_ejgdesigna ejgDes,scs_procurador procu ");
@@ -3018,6 +3286,19 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				String procuradorEjg="";				
 												
 				Vector Vtramitador=null;
+				if(ejgsdesingna!=null && ejgsdesingna.size()==1 ){
+			    	String idTipoEJG = (String)((Hashtable) ejgsdesingna.get(0)).get("IDTIPOEJG"); 
+				    String anioEJG = (String)((Hashtable) ejgsdesingna.get(0)).get("ANIOEJG");
+				    String numeroEJG = (String)((Hashtable) ejgsdesingna.get(0)).get("NUMEROEJG");
+				    registro.put("IDTIPOEJG", idTipoEJG);
+				    registro.put("ANIOEJG", anioEJG);
+				    registro.put("NUMEROEJG", numeroEJG);
+			    	
+			    }else{
+			    	registro.put("IDTIPOEJG", "");
+				    registro.put("ANIOEJG","");
+				    registro.put("NUMEROEJG","");
+			    }
 				for (int i = 0; i < ejgsdesingna.size(); i++) {					
 					Hashtable registroejg = (Hashtable) ejgsdesingna.get(i);				
 				    String idLetradoEjg  = (String)registroejg.get("IDPERSONA");
@@ -3027,6 +3308,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				    String anionumerocajg = (String)registroejg.get("ANIONUMEROCAJG");
 				    String numeroAnioEjg = (String)registroejg.get("NUMEROANIOEJG"); 
 				    String anioNumeroEjg = (String)registroejg.get("ANIONUMEROEJG");
+				    
+				    
 				    if(procuradorEjg.equals(""))
 				    	procuradorEjg = (String)registroejg.get("PROCURADOR_EJG");
 				    else
@@ -3493,4 +3776,62 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		}
 		return idJuzgado;                        
 	}
+	/*public ScsDesignaBean geDesigna(Short idInstitucion,Integer idTurno,Integer anio, Integer numero)throws ClsExceptions{
+    	Hashtable codigosHashtable = new Hashtable();
+    	int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		
+		sql.append("SELECT DC.DESCRIPCION,TD.NOMBRE,TD.ABREVIATURA,D.* "); 
+		sql.append("FROM SCS_DESIGNA D, SCS_TIPODESIGNACOLEGIO DC, SCS_TURNO TD ");
+		sql.append("WHERE D.IDINSTITUCION = DC.IDINSTITUCION(+) ");
+		sql.append("AND D.IDTIPODESIGNACOLEGIO = DC.IDTIPODESIGNACOLEGIO(+) ");
+		sql.append("AND D.IDTURNO = TD.IDTURNO ");
+		sql.append("AND D.IDINSTITUCION = TD.IDINSTITUCION ");
+		sql.append("AND D.IDINSTITUCION =  ");
+		contador++;
+		sql.append(contador);
+		codigosHashtable.put(new Integer(contador),idInstitucion);
+		sql.append("AND D.IDTURNO =  :");
+		contador++;
+		sql.append(contador);
+		codigosHashtable.put(new Integer(contador),idTurno);
+		sql.append("AND D.ANIO =  :");
+		contador++;
+		sql.append(contador);
+		codigosHashtable.put(new Integer(contador),anio);
+		sql.append("AND D.NUMERO =  :");
+		contador++;
+		sql.append(contador);
+		codigosHashtable.put(new Integer(contador),numero);
+		
+    	try {
+			RowsContainer rc = new RowsContainer();
+			
+						
+			if (rc.findBind(sql.toString(),codigosHashtable)) {
+				if(rc.size()>0){
+					Row fila = (Row) rc.get(0);
+					Hashtable<String, Object> htFila=fila.getRow();
+					ScsDesignaBean designaBean =  (ScsDesignaBean)this.hashTableToBean(htFila);
+					
+					designaBean.get
+					scsDesignaAdm.getDatosCartaDesigna(institucion, turno, epoca, numero)
+					
+					intercambioTelematicoForm = designaProvisionalBean.getIntercambioTelematicoForm();
+					
+				}
+			}else{
+				throw new SIGAException("No se ha encontrado datos de ecom_designaprovisional del envio telematico");
+			} 
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar consulta.");
+		}
+
+    	return intercambioTelematicoForm;
+    }
+	*/
+	
+
+	
+	
 }

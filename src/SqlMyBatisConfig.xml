@@ -20,7 +20,9 @@
 
 	
 	<mappers>	
-  		<package name="org.redabogacia.sigaservices.app.autogen.mapper"/>  		
+		<package name="com.siga.envios.service.ca_sigp.mapper"/>
+  		<package name="org.redabogacia.sigaservices.app.autogen.mapper"/>
+  		<package name="org.redabogacia.sigaservices.app.mapper"/>  	
 	</mappers>
 	
 </configuration>
