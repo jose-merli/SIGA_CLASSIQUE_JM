@@ -130,46 +130,6 @@ public class DocuShareHelper {
 		}
 		
 	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public String getURLCollection(String handle) throws SIGAException, ClsExceptions {
-
-		String url = null;
-		ClsLogging.writeFileLog("Buscando la url de la collection " + handle, 3);
-		if (MODO_DEBUG_LOCAL) {
-			return "https://documentacion.redabogacia.org/docushare/dsweb/LoginObj/wmke/wmke/Collection-3918";
-		}
-		createSession();
-		
-		try {		
-			String idInstitucion = usrBean.getLocation();
-			DSCollection dsCollection = (DSCollection) dssession.getObject(new DSHandle(handle));
-			ClsLogging.writeFileLog("Collection encontrada " + dsCollection.getHandle(), 3);
-			GenParametrosAdm genParametrosAdm = new GenParametrosAdm(usrBean);
-			String pathDS = genParametrosAdm.getValor(idInstitucion, idModulo, PATH_DOCUSHARE, null);
-			String userEncrypted = genParametrosAdm.getValor(idInstitucion, idModulo, DOCUSHARE_USER_ENCRYP, null);
-			String passwordEncrypted = genParametrosAdm.getValor(idInstitucion, idModulo, DOCUSHARE_PASSWORD_ENCRYP, null);
-
-			ClsLogging.writeFileLog("PATH_DOCUSHARE=" + pathDS, 3);
-			ClsLogging.writeFileLog("DOCUSHARE_USER_ENCRYP=" + userEncrypted, 3);
-			ClsLogging.writeFileLog("DOCUSHARE_PASSWORD_ENCRYP=" + passwordEncrypted, 3);
-			
-			if (!pathDS.endsWith("/")) {
-				pathDS += "/";
-			}
-			url = pathDS + userEncrypted + "/" + passwordEncrypted + "/" + dsCollection.toString();
-			ClsLogging.writeFileLog("url="+url,7);
-			
-			close();
-
-		} catch (Exception e) {
-			throw new SIGAException("expedientes.docushare.error.obtenerColeccion",e);
-		}
-		return url;
-	}
 	
 	/**
 	 * 
