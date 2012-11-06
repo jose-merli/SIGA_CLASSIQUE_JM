@@ -157,7 +157,7 @@ public class ExpDocumentacionRegTelAction extends DocumentacionRegTelAction {
 				String title = DocuShareHelper.getTitleExpedientes(expTipoExpedienteBean.getNombre(), expExpedienteBean.getAnioExpediente().toString(), expExpedienteBean.getNumeroExpediente().toString());
 				
 				DocuShareHelper docuShareHelper = new DocuShareHelper(getUserBean(request));
-				idDS = docuShareHelper.createCollectionEJG(title);
+				idDS = docuShareHelper.createCollectionExpedientes(title);
 				expExpedienteBean.setIdentificadorDS(idDS);
 				expAdm.updateDirect(expExpedienteBean);
 			}
