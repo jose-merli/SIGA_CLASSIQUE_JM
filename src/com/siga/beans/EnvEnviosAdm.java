@@ -1589,7 +1589,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 
 			if (consulta==null)
 			{
-			    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.QUERY);
 				//ReadProperties rp = new ReadProperties("SIGA.properties");
 				if(CenPersonaAdm.K_PERSONA_GENERICA.equals(idPersona)){
 		        	sSQL = rp.returnProperty("envios.consulta.sinPersona");
