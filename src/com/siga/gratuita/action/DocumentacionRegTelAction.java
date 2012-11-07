@@ -123,7 +123,12 @@ public abstract class DocumentacionRegTelAction extends MasterAction {
 				
 				databackup = new HashMap();				
 				DocuShareHelper docuShareHelper = new DocuShareHelper(this.getUserBean(request));
-				List<DocuShareObjectVO> datos = docuShareHelper.getContenidoCollection(miForm.getIdentificadorDs());											
+				
+				List<DocuShareObjectVO> datos = null;
+				
+				if (miForm.getIdentificadorDs() != null && !miForm.getIdentificadorDs().trim().equals("")) {
+					datos = docuShareHelper.getContenidoCollection(miForm.getIdentificadorDs());	
+				}															
 				
 				PaginadorVector<DocuShareObjectVO> paginador = new PaginadorVector(datos);
 				int totalRegistros = paginador.getNumeroTotalRegistros();

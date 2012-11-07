@@ -127,8 +127,7 @@ public class ExpDocumentacionRegTelAction extends DocumentacionRegTelAction {
 			request.getSession().setAttribute("DATABACKUP", hash);
 						
 			request.getSession().removeAttribute("MIGAS_DS");						
-			request.getSession().setAttribute("accion","ver");
-
+			
 			salto = "inicioDS";
 			
         }catch(Exception e){

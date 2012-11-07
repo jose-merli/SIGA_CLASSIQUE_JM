@@ -68,8 +68,6 @@ public class CensoDocumentacionRegTelAction extends DocumentacionRegTelAction {
 			
 			request.getSession().removeAttribute("MIGAS_DS");			
 			
-			request.getSession().setAttribute("accion","ver");
-
 			salto = "inicioDS";
 
 		} catch (Exception e) {

@@ -345,6 +345,10 @@ public class DocuShareHelper {
 	 */
 	public List<DocuShareObjectVO> getContenidoCollection(String collection) throws Exception {
 		
+		if (collection == null || collection.trim().equals("")) {
+			throw new IllegalArgumentException("El nombre de la colección no puede ser nula o vacía");
+		}
+		
 		if (MODO_DEBUG_LOCAL) {
 			return getContenidoCollectionMODO_DEBUG_LOCAL(collection);
 		}
