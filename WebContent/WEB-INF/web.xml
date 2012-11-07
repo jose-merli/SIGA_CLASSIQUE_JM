@@ -97,6 +97,7 @@
 
 	<!--************ Seguridad de Certificados FIN ************-->
 
+		<listener><listener-class>com.siga.general.BusinessManagerListener</listener-class></listener>
 		<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoCenso</listener-class></listener>
 		<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoServicios</listener-class></listener>
 		<listener><listener-class>com.siga.servlets.SIGASvlInicializacionesSecundarias</listener-class></listener>
@@ -108,9 +109,6 @@
 		<listener><listener-class>com.siga.ws.i2055.ResolucionesListener</listener-class></listener>
     	<listener><listener-class>com.siga.ws.i2055.DesignacionProcuradorListener</listener-class></listener>
 
-	<listener>
-		<listener-class>com.siga.general.BusinessManagerListener</listener-class>
-	</listener>
 
 <listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoGeneracionCalendarios</listener-class></listener>
 
