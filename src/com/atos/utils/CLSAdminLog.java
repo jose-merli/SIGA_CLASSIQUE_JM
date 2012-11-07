@@ -36,28 +36,22 @@ public class CLSAdminLog {
 	private static final String nomFich = "LogAdmin.out";
 	private static File ficLog;
 	private static boolean bStoreFile;
-	private static long nLastMod = 0;
 	private static int contadorLineas = 0;
 	private static int numentradas; // Número máximo de entradas en el archivo de log
 	private static String comandoshell=null;
+	
+	private static boolean iniciado=false;
 	
 	/**
 	 * Inicializa el log de la administración según los parámetros establecidos en
 	 * Log.properties. Si no existe el archivo de log, lo crea.
 	 */
 	public static synchronized void init(){
-		long lst=0;
-		//File f = new File(ClsConstants.RESOURCES_DIR+ClsConstants.FILE_SEP+"SIGA.properties");
-		try {
-			File f = SIGAReferences.getFileReference(SIGAReferences.RESOURCE_FILES.SIGA);
-			lst = f.lastModified();
-		} catch (Exception e){
-		}
-		if(nLastMod != lst){
-			nLastMod = lst;
+		
+		if(!iniciado) {
+			iniciado=true;
 			ClsLogging.writeFileLog("Inicializando Log ...",7);		 	
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//			ReadProperties rp=new ReadProperties("SIGA.properties");
 			bStoreFile=rp.returnProperty("LogAdmin.run").equals("1");
 			fileName=rp.returnProperty("LogAdmin.archivo");
 			numentradas=Integer.parseInt(rp.returnProperty("LogAdmin.numentradas"));  
