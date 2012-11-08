@@ -19,6 +19,7 @@ public class SIGAReferences {
 //		JSP("/html/jsp/"),
 		WEB_INF_DIR("/WEB-INF/"),
 		PROPERTIES_DIR("/WEB-INF/properties"),
+		RECURSOS_DIR("/WEB-INF/classes"),
 		LOG_DIR("/WEB-INF/Log"),
 		CDS_DIR("/WEB-INF/properties/cds"),
 		FOP_DIR("/WEB-INF/fopFonts"),		

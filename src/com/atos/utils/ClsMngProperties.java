@@ -110,7 +110,7 @@ public class ClsMngProperties {
 				usr.setLanguage("1");
         		AdmLenguajesAdm a = new AdmLenguajesAdm(usr);
         		String lenguajeExt=a.getLenguajeExt(lang);
-        		outputStream= new FileOutputStream(SIGAReferences.getDirectoryReference(SIGAReferences.RESOURCE_FILES.PROPERTIES_DIR)+"/ApplicationResources_"+lenguajeExt.toLowerCase()+".properties");
+        		outputStream= new FileOutputStream(SIGAReferences.getDirectoryReference(SIGAReferences.RESOURCE_FILES.RECURSOS_DIR)+"/ApplicationResources_"+lenguajeExt.toLowerCase()+".properties");
 				outputStreamWriter=new OutputStreamWriter(outputStream);
 				bufferedWriter = new BufferedWriter(outputStreamWriter);
 				Iterator itResources=lhm.orderedKeys();

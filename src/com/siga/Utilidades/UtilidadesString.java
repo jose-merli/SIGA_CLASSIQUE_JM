@@ -176,7 +176,7 @@ public class UtilidadesString {
     			Properties aux = new Properties();
     			try {
     				StringBuilder strBld = new StringBuilder();
-    				strBld.append(SIGAReferences.getDirectoryReference(SIGAReferences.RESOURCE_FILES.PROPERTIES_DIR))
+    				strBld.append(SIGAReferences.getDirectoryReference(SIGAReferences.RESOURCE_FILES.RECURSOS_DIR))
     						.append("/ApplicationResources_")
     						.append(b.getCodigoExt().toLowerCase())
     						.append(".properties");
