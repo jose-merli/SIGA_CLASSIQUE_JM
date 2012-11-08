@@ -41,9 +41,8 @@
 	Vector vResultado = (Vector) request.getAttribute("resultado");
 	
 	BusquedaPorTipoSJCSForm formulario = (BusquedaPorTipoSJCSForm)request.getAttribute("BusquedaPorTipoSJCSForm");
-
-	java.util.ResourceBundle rp=java.util.ResourceBundle.getBundle("SIGA");
-	String idordinario = rp.getString("codigo.general.scstipoejg.ordinarios");
+	ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+	String idordinario = rp.returnProperty("codigo.general.scstipoejg.ordinarios");
 	String datoTipoOrdinario[]={idordinario,idordinario};	
 
 	String tipo = formulario.getTipo();
