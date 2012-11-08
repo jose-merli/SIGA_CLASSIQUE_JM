@@ -1,5 +1,7 @@
 <!-- busquedaModalPorTipoSJCS.jsp -->
 <!-- CABECERA JSP -->
+
+
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -14,6 +16,8 @@
 <%@ taglib uri = "c.tld" 			prefix="c"%>
 
 <!-- IMPORTS -->
+<%@page import="com.siga.Utilidades.SIGAReferences"%>
+<%@page import="com.atos.utils.ReadProperties"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.gratuita.form.BusquedaPorTipoSJCSForm"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
