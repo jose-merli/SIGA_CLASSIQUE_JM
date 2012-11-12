@@ -2277,8 +2277,10 @@ public class DatosGeneralesAction extends MasterAction {
 		    
 		    // obtencion del path app desde tabla parametros
 		    GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request)); 
-		    pathImagenes = paramAdm.getValor(miForm.getIdInstitucion(),ClsConstants.MODULO_CENSO,ClsConstants.PATH_APP, null);
-			pathImagenes += File.separator + ClsConstants.RELATIVE_PATH_FOTOS;
+		    //pathImagenes = paramAdm.getValor(miForm.getIdInstitucion(),ClsConstants.MODULO_CENSO,ClsConstants.PATH_APP, null);
+			//pathImagenes += File.separator + ClsConstants.RELATIVE_PATH_FOTOS;
+			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			pathImagenes = rp.returnProperty("directorios.carpeta.fotos"); 
 		    
 		    
 		    FormFile foto = miForm.getFoto();
