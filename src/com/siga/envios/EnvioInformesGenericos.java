@@ -2375,250 +2375,282 @@ public class EnvioInformesGenericos extends MasterReport {
 		}
 
 	}
-	public void enviarInformeGenericoTelematico(UsrBean usrBean,
-			Vector vDestProgramInfBean, EnvProgramInformesBean programInfBean,
-			Vector vPlantillasInforme,
-			EnvEnvioProgramadoBean envioProgramadoBean) throws ClsExceptions,
-			SIGAException {
-
-		Envio envio = new Envio(usrBean, envioProgramadoBean.getNombre());
-		
-		if (envio.getEnviosBean() != null)
-			envio.getEnviosBean().setIdEstado(
-					new Integer(EnvEnviosAdm.ESTADO_PENDIENTE_AUTOMATICO));
-		
-		// Bean envio
-		EnvEnviosBean enviosBean = envio.getEnviosBean();
-//		enviosBean.setDescripcion(enviosBean.getIdEnvio() + " "
-//				+ enviosBean.getDescripcion());
-		// Preferencia del tipo de envio si el usuario tiene uno:
-		enviosBean.setIdTipoEnvios(envioProgramadoBean.getIdTipoEnvios());
-		
-		enviosBean.setIdPlantillaEnvios(envioProgramadoBean
-				.getIdPlantillaEnvios());
-		if (envioProgramadoBean.getIdPlantilla() != null
-				&& !envioProgramadoBean.getIdPlantilla().equals("")) {
-			enviosBean.setIdPlantilla(envioProgramadoBean.getIdPlantilla());
-		} else {
-			enviosBean.setIdPlantilla(null);
-		}
-		Hashtable htPersonas = new Hashtable();
-		List<Object> listObjetosTelematicos = new ArrayList<Object>();
-		for (int j = 0; j < vDestProgramInfBean.size(); j++) {
-			EnvDestProgramInformesBean destProgramInfBean = (EnvDestProgramInformesBean) vDestProgramInfBean
-					.get(j);
-		
-
-			String idPersona = destProgramInfBean.getIdPersona().toString();
-			
-			StringBuffer descripcionEnvios = new StringBuffer(
-					enviosBean.getDescripcion());
-			
-			if (destProgramInfBean.getTipoDestinatario().equals(
-					EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA)) {
-				htPersonas.put(idPersona, EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA);
-
-				CenPersonaAdm persAdm = new CenPersonaAdm(this.getUsuario());
-				descripcionEnvios.append(" ");
-				descripcionEnvios.append(persAdm
-						.obtenerNombreApellidos(destProgramInfBean.getIdPersona()
-								.toString()));
-
-			} else if (destProgramInfBean.getTipoDestinatario().equals(
-					EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG)) {
-				htPersonas.put(idPersona, EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG);
-				ScsPersonaJGAdm persJGAdm = new ScsPersonaJGAdm(this.getUsuario());
-				descripcionEnvios.append(" ");
-				descripcionEnvios.append(persJGAdm.getNombreApellidos(
-						destProgramInfBean.getIdPersona().toString(),
-						destProgramInfBean.getIdInstitucion().toString()));
-
-			} else if (destProgramInfBean.getTipoDestinatario().equals(
-					EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR)) {
-				
-				ScsProcuradorAdm procuradorAdm = new ScsProcuradorAdm(
-						this.getUsuario());
-				descripcionEnvios.append(" ");
-				Vector procuradorVector = procuradorAdm.busquedaProcurador(
-						destProgramInfBean.getIdInstitucion().toString(),
-						destProgramInfBean.getIdPersona().toString());
-				Hashtable procuradorHashtable = (Hashtable) procuradorVector.get(0);
-				descripcionEnvios.append(procuradorHashtable.get("NOMBRE"));
-				descripcionEnvios.append(" ");
-				descripcionEnvios.append(procuradorHashtable.get("APELLIDOS1"));
-				descripcionEnvios.append(" ");
-				descripcionEnvios.append(procuradorHashtable.get("APELLIDOS2"));
-
-			} else if (destProgramInfBean.getTipoDestinatario().equals(
-					EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO)) {
-				htPersonas.put(idPersona, EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO);
-				ScsJuzgadoAdm juzgadoAdm = new ScsJuzgadoAdm(this.getUsuario());
-				descripcionEnvios.append(" ");
-				Vector juzgadoVector = juzgadoAdm.busquedaJuzgado(
-						destProgramInfBean.getIdInstitucion().toString(),
-						destProgramInfBean.getIdPersona().toString());
-				Hashtable procuradorHashtable = (Hashtable) juzgadoVector.get(0);
-				descripcionEnvios.append(procuradorHashtable.get("NOMBRE"));
-			}
-
-			enviosBean.setDescripcion(descripcionEnvios.toString());
-			
-			
-			
-
-		
+	
+	
+	public void enviarInformeGenericoTelematico(UsrBean usrBean,Vector vDestProgramInfBean, EnvProgramInformesBean programInfBean,Vector vPlantillasInforme,EnvEnvioProgramadoBean envioProgramadoBean) throws ClsExceptions,SIGAException {
+		for (int j = 0; j < vDestProgramInfBean.size(); j++) {//Se recorren los destinatarios (aunque en principio siempre será único para envios telematicos)
+			EnvDestProgramInformesBean destProgramInfBean = (EnvDestProgramInformesBean) vDestProgramInfBean.get(j);
 			ArrayList alClavesDestinatario = destProgramInfBean.getClavesDestinatario();
-			Hashtable htClavesProgramacion = (Hashtable) alClavesDestinatario.get(0);
 			
-			//Por definicion de envio telematico solo puede existir una plantilla por de envio telematico por tipo de envio.
-			//Esto es IdTipoInforme = 'OFICI', idTipoEnvio ='6'(telematico), idTipointercambioTelematico='Designacion provisional de abogado y procurtador' es unico
-			//Por lo que solo nos vendra una plantilla
-			AdmInformeBean beanInforme = (AdmInformeBean) vPlantillasInforme.get(0);
-			
-			enviosBean.setIdTipoIntercambioTelematico(beanInforme.getIdTipoIntercambioTelematico());
-			
-			if(programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesDesigna)){
-				ScsDesignaAdm designaAdm = new ScsDesignaAdm(usrBean);
-				String idInstitucion = (String) htClavesProgramacion.get("idInstitucion");
-				String idTurnoDesigna = (String) htClavesProgramacion.get("idTurno");
-				String anioDesigna= (String) htClavesProgramacion.get("anio");
-				String numeroDesigna = (String) htClavesProgramacion.get("numero");
-				Vector designaVector = designaAdm.getDatosSalidaOficio(idInstitucion, idTurnoDesigna, anioDesigna, numeroDesigna, null, false, null, usrBean.getLanguageInstitucion());
-				Hashtable designaHash = (Hashtable) designaVector.get(0);
-				
-				if(beanInforme.getIdTipoIntercambioTelematico().toString().equals(TipoIntercambioEnum.ICA_SGP_COM_DES_PROV_ABG_PRO.getCodigo())){
+			for (int k = 0; k < alClavesDestinatario.size(); k++) {//Para cada destinatario se recorrer sus claves de itreacion
+				Hashtable htClavesProgramacion = (Hashtable) alClavesDestinatario.get(k);
+		
+				for (int i = 0; i < vPlantillasInforme.size(); i++) {//Por ultimo se recorren las posible plantillas de cada registro de destinatario
+					AdmInformeBean beanInforme = (AdmInformeBean) vPlantillasInforme.get(i);	
+					Envio envio = new Envio(usrBean, envioProgramadoBean.getNombre());
 					
-					EcomDesignaprovisionalWithBLOBs ecomDesignaprovisional = new EcomDesignaprovisionalWithBLOBs();
-					ecomDesignaprovisional.setIdinstitucion(UtilidadesHash.getShort(designaHash,ScsDesignaBean.C_IDINSTITUCION));           
-					ecomDesignaprovisional.setIdturno(UtilidadesHash.getInteger(designaHash,ScsDesignaBean.C_IDTURNO));             
-					ecomDesignaprovisional.setAnio(UtilidadesHash.getShort(designaHash,"ANIO_DESIGNA"));                 
-					ecomDesignaprovisional.setNumero(UtilidadesHash.getLong(designaHash,ScsDesignaBean.C_NUMERO));                
+					if (envio.getEnviosBean() != null)
+						envio.getEnviosBean().setIdEstado(new Integer(EnvEnviosAdm.ESTADO_PENDIENTE_AUTOMATICO));
 					
-					ecomDesignaprovisional.setIdjuzgado(destProgramInfBean.getIdPersona());                
-					ecomDesignaprovisional.setIdinstitucionJuzg(Short.parseShort(destProgramInfBean.getIdInstitucion().toString()));   
-					if(UtilidadesHash.getInteger(designaHash,"IDTIPOEJG")!=null){
-						ecomDesignaprovisional.setIdtipoejg(UtilidadesHash.getShort(designaHash,"IDTIPOEJG"));                    
-						ecomDesignaprovisional.setAnioejg(UtilidadesHash.getShort(designaHash,"ANIOEJG")); 
-						ecomDesignaprovisional.setNumeroejg(UtilidadesHash.getLong(designaHash,"NUMEROEJG"));
+					// Bean envio
+					EnvEnviosBean enviosBean = envio.getEnviosBean();
+					// Preferencia del tipo de envio si el usuario tiene uno:
+					enviosBean.setIdTipoEnvios(envioProgramadoBean.getIdTipoEnvios());
+					enviosBean.setIdPlantillaEnvios(envioProgramadoBean.getIdPlantillaEnvios());
+					
+					if (envioProgramadoBean.getIdPlantilla() != null && !envioProgramadoBean.getIdPlantilla().equals("")) {
+						enviosBean.setIdPlantilla(envioProgramadoBean.getIdPlantilla());
+					} else {
+						enviosBean.setIdPlantilla(null);
 					}
+					
+					Hashtable htPersonas = new Hashtable();
+					List<Object> listObjetosTelematicos = new ArrayList<Object>();
+				
+					String idPersona = destProgramInfBean.getIdPersona().toString();
+					StringBuffer descripcionEnvios = new StringBuffer(enviosBean.getDescripcion());
+				
+					if (destProgramInfBean.getTipoDestinatario().equals(EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA)) {
+						htPersonas.put(idPersona, EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA);
+						CenPersonaAdm persAdm = new CenPersonaAdm(this.getUsuario());
+						descripcionEnvios.append(" ");
+						descripcionEnvios.append(persAdm.obtenerNombreApellidos(destProgramInfBean.getIdPersona().toString()));
+		
+					} else if (destProgramInfBean.getTipoDestinatario().equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG)) {
+						htPersonas.put(idPersona, EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG);
+						ScsPersonaJGAdm persJGAdm = new ScsPersonaJGAdm(this.getUsuario());
+						descripcionEnvios.append(" ");
+						descripcionEnvios.append(persJGAdm.getNombreApellidos(destProgramInfBean.getIdPersona().toString(),destProgramInfBean.getIdInstitucion().toString()));
+		
+					} else if (destProgramInfBean.getTipoDestinatario().equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR)) {
+						ScsProcuradorAdm procuradorAdm = new ScsProcuradorAdm(this.getUsuario());
+						descripcionEnvios.append(" ");
+						Vector procuradorVector = procuradorAdm.busquedaProcurador(destProgramInfBean.getIdInstitucion().toString(),destProgramInfBean.getIdPersona().toString());
+						Hashtable procuradorHashtable = (Hashtable) procuradorVector.get(0);
+						descripcionEnvios.append(procuradorHashtable.get("NOMBRE"));
+						descripcionEnvios.append(" ");
+						descripcionEnvios.append(procuradorHashtable.get("APELLIDOS1"));
+						descripcionEnvios.append(" ");
+						descripcionEnvios.append(procuradorHashtable.get("APELLIDOS2"));
+		
+					} else if (destProgramInfBean.getTipoDestinatario().equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO)) {
+						htPersonas.put(idPersona, EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO);
+						ScsJuzgadoAdm juzgadoAdm = new ScsJuzgadoAdm(this.getUsuario());
+						descripcionEnvios.append(" ");
+						Vector juzgadoVector = juzgadoAdm.busquedaJuzgado(destProgramInfBean.getIdInstitucion().toString(),	destProgramInfBean.getIdPersona().toString());
+						Hashtable procuradorHashtable = (Hashtable) juzgadoVector.get(0);
+						descripcionEnvios.append(procuradorHashtable.get("NOMBRE"));
+					}
+		
+					enviosBean.setDescripcion(descripcionEnvios.toString());
+					enviosBean.setIdTipoIntercambioTelematico(beanInforme.getIdTipoIntercambioTelematico());
+					
+					if(programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesDesigna)){
+	                    ScsDesignaAdm designaAdm = new ScsDesignaAdm(usrBean);
+	                    String idInstitucion = (String) htClavesProgramacion.get("idInstitucion");
+	                    String idTurnoDesigna = (String) htClavesProgramacion.get("idTurno");
+	                    String anioDesigna= (String) htClavesProgramacion.get("anio");
+	                    String numeroDesigna = (String) htClavesProgramacion.get("numero");
+	                    Vector designaVector = designaAdm.getDatosSalidaOficio(idInstitucion, idTurnoDesigna, anioDesigna, numeroDesigna, null, false, null, usrBean.getLanguageInstitucion());
+	                    Hashtable designaHash = (Hashtable) designaVector.get(0);
+	                   
+	                    if(beanInforme.getIdTipoIntercambioTelematico().toString().equals(TipoIntercambioEnum.ICA_SGP_COM_DES_PROV_ABG_PRO.getCodigo())){	                       
+	                        EcomDesignaprovisionalWithBLOBs ecomDesignaprovisional = new EcomDesignaprovisionalWithBLOBs();
+	                        ecomDesignaprovisional.setIdinstitucion(UtilidadesHash.getShort(designaHash,ScsDesignaBean.C_IDINSTITUCION));          
+	                        ecomDesignaprovisional.setIdturno(UtilidadesHash.getInteger(designaHash,ScsDesignaBean.C_IDTURNO));            
+	                        ecomDesignaprovisional.setAnio(UtilidadesHash.getShort(designaHash,"ANIO_DESIGNA"));                
+	                        ecomDesignaprovisional.setNumero(UtilidadesHash.getLong(designaHash,ScsDesignaBean.C_NUMERO));               
+	                        ecomDesignaprovisional.setIdjuzgado(destProgramInfBean.getIdPersona());               
+	                        ecomDesignaprovisional.setIdinstitucionJuzg(Short.parseShort(destProgramInfBean.getIdInstitucion().toString()));
 
-					//					El id envio se setea despues
-					
-					if(UtilidadesHash.getShort(designaHash,"IDINSTITUCIONORIGEN")!=null)
-						ecomDesignaprovisional.setIdinstitucionLetrado(UtilidadesHash.getShort(designaHash,"IDINSTITUCIONORIGEN"));
-					else
-						ecomDesignaprovisional.setIdinstitucionLetrado(UtilidadesHash.getShort(designaHash,"IDINSTITUCION"));
-					
-					ecomDesignaprovisional.setIdpersona(UtilidadesHash.getLong(designaHash,ScsDesignasLetradoBean.C_IDPERSONA)); 
-					if(designaHash.get("IDPROCURADORDESIGNA")!=null)
-						ecomDesignaprovisional.setIdprocurador(UtilidadesHash.getLong(designaHash,"IDPROCURADORDESIGNA"));
-					
-					ecomDesignaprovisional.setIdplantilla(new Integer(beanInforme.getIdPlantilla())); 
-					ecomDesignaprovisional.setIdinstitucionPlantilla(new Short(beanInforme.getIdInstitucion().shortValue()));
-//					ecomDesignaprovisional.setFechapeticion("sysdate");
-					
-					//Se van añadiendo a la lista para despues setearles el envio
-					listObjetosTelematicos.add(ecomDesignaprovisional);
-					enviosBean.setDescripcion(TipoIntercambioEnum.ICA_SGP_COM_DES_PROV_ABG_PRO.getDescripcion().split(":")[1]+" - "+anioDesigna+"/"+designaHash.get("CODIGO"));
-					
-					
-					
-				}
-				
-			}else if(programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesEjg)){
-				ScsEJGAdm ejgAdm = new ScsEJGAdm(usrBean);
-				String idInstitucion = (String) htClavesProgramacion.get("idInstitucion");
-				
-				String idTipoEJG = (String) htClavesProgramacion.get("idTipoEJG");
-				String anioEJG = (String) htClavesProgramacion.get("anio");
-				String numeroEJG = (String) htClavesProgramacion.get("numero");
-				Vector ejgVector = ejgAdm.getDatosInformeEjg(
-						usrBean.getLocation(), idTipoEJG, anioEJG, numeroEJG,
-						usrBean.getLanguageInstitucion(), false, null);
-				
-				Hashtable ejgHash = (Hashtable) ejgVector.get(0);
-				
-				if(beanInforme.getIdTipoIntercambioTelematico().toString().equals(TipoIntercambioEnum.ICA_SGP_COM_DES_PROV_ABG_PRO.getCodigo())){
-					
-					EcomDesignaprovisionalWithBLOBs designaProvisionalBean = new EcomDesignaprovisionalWithBLOBs();
-					designaProvisionalBean.setIdinstitucion(UtilidadesHash.getShort(ejgHash,"DES_INSTITUCION"));           
-					designaProvisionalBean.setIdturno(UtilidadesHash.getInteger(ejgHash,"DES_IDTURNO"));             
-					designaProvisionalBean.setAnio(UtilidadesHash.getShort(ejgHash,"DES_ANIO"));                 
-					designaProvisionalBean.setNumero(UtilidadesHash.getLong(ejgHash,"DES_NUMERO"));                
+	                        //Caso en el que hay un unico ejg
+	                        if(UtilidadesHash.getInteger(designaHash,"IDTIPOEJG")!=null){
+	                            ecomDesignaprovisional.setIdtipoejg(UtilidadesHash.getShort(designaHash,"IDTIPOEJG"));                   
+	                            ecomDesignaprovisional.setAnioejg(UtilidadesHash.getShort(designaHash,"ANIOEJG"));
+	                            ecomDesignaprovisional.setNumeroejg(UtilidadesHash.getLong(designaHash,"NUMEROEJG"));
+	                        }else if(UtilidadesHash.getString(designaHash,"LISTAANIONUMEROEJGS")!=null && !UtilidadesHash.getString(designaHash,"LISTAANIONUMEROEJGS").equals("")){
+	                            String listaEJGS = UtilidadesHash.getString(designaHash,"LISTAANIONUMEROEJGS");
+	                            String[] ejgs = listaEJGS.split(",");
+	                            if(ejgs!= null && ejgs.length>0){
+                                    for (int p = 0; p < ejgs.length; p++) {
+                                        String[] anyoNumero =ejgs[p].split("/");
+                                        String anyoEjg = anyoNumero[0];
+                                        String numeroEjg = anyoNumero[1];
+                                    }
+	                                     
+	                            }
+	                           
+	                        /* 
+	                         * Este es el caso en el que hay mas de un ejg para la designacion hay que enviar un envio por cada interesado de la designacion
+	                         * que tenga EJG asociado(hay que comparar con el solicitante principal de cada EJG)
+	                         * Caso 1. Todo coincide
+	                         *       Ejemplo. Designacion con dos interesados y dos ejgs relacionados cada uno de ellos con un interesado que coinciden con los de la designa
+	                         * Caso 2.
+	                         *		 Ejemplo. Designacion con dos interesados y un ejg relacionado con un interesado que coincide con el de la designa
+                           */
+	                           
+	                        }
+	   
+	                        // El id envio se setea despues
+	                       
+	                        if(UtilidadesHash.getShort(designaHash,"IDINSTITUCIONORIGEN")!=null)
+	                            ecomDesignaprovisional.setIdinstitucionLetrado(UtilidadesHash.getShort(designaHash,"IDINSTITUCIONORIGEN"));
+	                        else
+	                            ecomDesignaprovisional.setIdinstitucionLetrado(UtilidadesHash.getShort(designaHash,"IDINSTITUCION"));
+	                       
+	                        ecomDesignaprovisional.setIdpersona(UtilidadesHash.getLong(designaHash,ScsDesignasLetradoBean.C_IDPERSONA));
+	                       
+	                        if(designaHash.get("IDPROCURADORDESIGNA")!=null)
+	                            ecomDesignaprovisional.setIdprocurador(UtilidadesHash.getLong(designaHash,"IDPROCURADORDESIGNA"));
+	                       
+	                        ecomDesignaprovisional.setIdplantilla(new Integer(beanInforme.getIdPlantilla()));
+	                        ecomDesignaprovisional.setIdinstitucionPlantilla(new Short(beanInforme.getIdInstitucion().shortValue()));
+	    //                    ecomDesignaprovisional.setFechapeticion("sysdate");
+	                       
+	                        //Se van añadiendo a la lista para despues setearles el envio
+	                        listObjetosTelematicos.add(ecomDesignaprovisional);
+	                       
+	                        StringBuffer descripcion = new StringBuffer();
+	                        descripcion.append(TipoIntercambioEnum.ICA_SGP_COM_DES_PROV_ABG_PRO.getDescripcion().split(":")[1]);
+	                        descripcion.append(" - ");
+	                        descripcion.append("Nº OFICIO:");
+	                        descripcion.append(anioDesigna);
+	                        descripcion.append("/");
+	                        descripcion.append(designaHash.get("CODIGO"));
+	                        descripcion.append(" ");     
+	                           
+	                        if(UtilidadesHash.getString(designaHash,"ANIOEJG")!=null &&  !UtilidadesHash.getString(designaHash,"ANIOEJG").equals("")){
+	                            descripcion.append("Nº EJG:");
+	                            descripcion.append(UtilidadesHash.getString(designaHash,"ANIOEJG"));
+	                            descripcion.append("/");
+	                            descripcion.append(UtilidadesHash.getString(designaHash,"NUMEROEJG"));
+	                        }else if(UtilidadesHash.getString(designaHash,"LISTAANIONUMEROEJGS")!=null && !UtilidadesHash.getString(designaHash,"LISTAANIONUMEROEJGS").equals("")){
+	                            String listaEJGS = UtilidadesHash.getString(designaHash,"LISTAANIONUMEROEJGS");
+	                            String[] ejgs = listaEJGS.split(",");
+	                            if(ejgs!= null && ejgs.length>0){
+	                                descripcion.append("Nº EJG:");
+	                                descripcion.append(ejgs[0]);
+	                            }
+	                        }
 
-//					designaProvisionalBean.setIdEstado(Integer.valueOf((short)EcomColaBean.EstadosCola.INICIAL.getId()));                
+	                        enviosBean.setDescripcion(descripcion.toString());
+	                    }
+	                   
+	                }else if(programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesEjg)){
+	                	
+	                    ScsEJGAdm ejgAdm = new ScsEJGAdm(usrBean);
+	                    String idInstitucion = (String) htClavesProgramacion.get("idInstitucion");
+	                    String idTipoEJG = (String) htClavesProgramacion.get("idTipoEJG");
+	                    String anioEJG = (String) htClavesProgramacion.get("anio");
+	                    String numeroEJG = (String) htClavesProgramacion.get("numero");
+	                    Vector ejgVector = ejgAdm.getDatosInformeEjg(usrBean.getLocation(), idTipoEJG, anioEJG, numeroEJG,usrBean.getLanguageInstitucion(), false, null);
+	                    Hashtable ejgHash = (Hashtable) ejgVector.get(0);
+	                   
+	                    if(beanInforme.getIdTipoIntercambioTelematico().toString().equals(TipoIntercambioEnum.ICA_SGP_COM_DES_PROV_ABG_PRO.getCodigo())){
+	                       
+	                        EcomDesignaprovisionalWithBLOBs designaProvisionalBean = new EcomDesignaprovisionalWithBLOBs();
+	                        designaProvisionalBean.setIdinstitucion(UtilidadesHash.getShort(ejgHash,"DES_INSTITUCION"));          
+	                        designaProvisionalBean.setIdturno(UtilidadesHash.getInteger(ejgHash,"DES_IDTURNO"));            
+	                        designaProvisionalBean.setAnio(UtilidadesHash.getShort(ejgHash,"DES_ANIO"));                
+	                        designaProvisionalBean.setNumero(UtilidadesHash.getLong(ejgHash,"DES_NUMERO"));               
+	   
+	    //                   designaProvisionalBean.setIdEstado(Integer.valueOf((short)EcomColaBean.EstadosCola.INICIAL.getId()));               
+	                       
+	                        designaProvisionalBean.setIdjuzgado(destProgramInfBean.getIdPersona());               
+	                        designaProvisionalBean.setIdinstitucionJuzg(new Short(destProgramInfBean.getIdInstitucion().shortValue()));  
+	                        if(designaProvisionalBean.getIdinstitucion()==null)
+	                            designaProvisionalBean.setIdinstitucion(new Short(idInstitucion));
+	                        
+	                        designaProvisionalBean.setIdtipoejg(new Short(idTipoEJG));                   
+	                        designaProvisionalBean.setAnioejg(new Short(anioEJG));
+	                        designaProvisionalBean.setNumeroejg(new Long(numeroEJG));
+	   
+	                        // El id envio se setea despues
+	                       
+	                        designaProvisionalBean.setIdinstitucionLetrado(UtilidadesHash.getShort(ejgHash,"IDINSTITUCION_LETDESIGNA"));
+	                        designaProvisionalBean.setIdpersona(UtilidadesHash.getLong(ejgHash,"IDPERSONA_DESIGNA"));
+	                        if(UtilidadesHash.getLong(ejgHash,"IDPROCURADOR")!=null)
+	                            designaProvisionalBean.setIdprocurador(UtilidadesHash.getLong(ejgHash,"IDPROCURADOR"));
+	                       
+	                        designaProvisionalBean.setIdplantilla(new Integer(beanInforme.getIdPlantilla()));
+	                        designaProvisionalBean.setIdinstitucionPlantilla(new Short(beanInforme.getIdInstitucion().shortValue()));
+	    //                    designaProvisionalBean.setFechaPeticion("sysdate");
+	                       
+	                        //Se van añadiendo a la lista para despues setearles el envio
+	                        listObjetosTelematicos.add(designaProvisionalBean);
+	                        StringBuffer descripcion = new StringBuffer();
+	                        descripcion.append(TipoIntercambioEnum.ICA_SGP_COM_DES_PROV_ABG_PRO.getDescripcion().split(":")[1]);
+	                        descripcion.append(" - ");
+	                        descripcion.append("Nº EJG:");
+	                        descripcion.append(anioEJG);
+	                        descripcion.append("/");
+	                        descripcion.append(UtilidadesHash.getString(ejgHash,"NUMERO"));
+	                        descripcion.append(" ");
+	                        if(designaProvisionalBean.getAnio()!=null){
+	                            descripcion.append("Nº OFICIO:");
+	                            descripcion.append(designaProvisionalBean.getAnio());
+	                            descripcion.append("/");
+	                            descripcion.append(designaProvisionalBean.getNumero());
+	                        }else{
+	                            throw new SIGAException("No se puede comunicar una designacion provisional desde EJG sin designacion asociada!!"+descripcion);
+	                           
+	                        }
+	
+	                        enviosBean.setDescripcion(descripcion.toString());
+	                       
+	                       
+	                    }else if(beanInforme.getIdTipoIntercambioTelematico().toString().equals(TipoIntercambioEnum.ICA_SGP_ENV_SOL_SUSP_PROC.getCodigo())){
+	                       
+	                        EcomSolsusprocedimientoWithBLOBs solSusProcedimientoBean = new EcomSolsusprocedimientoWithBLOBs();
+	                        solSusProcedimientoBean.setIdjuzgado(destProgramInfBean.getIdPersona());               
+	                        solSusProcedimientoBean.setIdinstitucionJuzg(new Short(destProgramInfBean.getIdInstitucion().shortValue()));  
+	                        solSusProcedimientoBean.setIdinstitucion(new Short(idInstitucion));
+	                        solSusProcedimientoBean.setIdtipoejg(new Short(idTipoEJG));                   
+	                        solSusProcedimientoBean.setAnioejg(new Short(anioEJG));
+	                        solSusProcedimientoBean.setNumeroejg(new Long(numeroEJG));
+	                        solSusProcedimientoBean.setIdplantilla(new Integer(beanInforme.getIdPlantilla()));
+	                        solSusProcedimientoBean.setIdinstitucionPlantilla(new Short(beanInforme.getIdInstitucion().shortValue()));
+	    //                  solSusProcedimientoBean.setFechaPeticion("sysdate");
+	                       
+	                        //Se van añadiendo a la lista para despues setearles el envio
+	                        listObjetosTelematicos.add(solSusProcedimientoBean);
+	                       
+	                        StringBuffer descripcion = new StringBuffer();
+	                        descripcion.append(TipoIntercambioEnum.ICA_SGP_ENV_SOL_SUSP_PROC.getDescripcion().split(":")[1]);
+	                        descripcion.append(" - ");
+	                        descripcion.append("Nº EJG:");
+	                        descripcion.append(anioEJG);
+	                        descripcion.append("/");
+	                        descripcion.append(UtilidadesHash.getString(ejgHash,"NUMERO"));
+	                       
+	                        enviosBean.setDescripcion(descripcion.toString());
+	                    }
+                    }
+		
+					envio.generarIntercambioTelematico(envio.getEnviosBean(), htPersonas ,listObjetosTelematicos);
+	
+					//Si hubiese relacion con bandeja de entrada, se actualiza el idenviorel
+					BusinessManager businessManager =  BusinessManager.getInstance();
+					EntradaEnviosService entradaEnviosService = (EntradaEnviosService) businessManager.getService(EntradaEnviosService.class);
+					EnvEntradaEnviosExample entradaEnviosExample = new EnvEntradaEnviosExample();
 					
-					designaProvisionalBean.setIdjuzgado(destProgramInfBean.getIdPersona());                
-					designaProvisionalBean.setIdinstitucionJuzg(new Short(destProgramInfBean.getIdInstitucion().shortValue()));   
+					//Se van añadiendo los criterios para relaizar la query de busqueda
+					Criteria criteria =  entradaEnviosExample.createCriteria(); 
+					criteria.andIdenviorelprogramadoEqualTo(Long.valueOf(envioProgramadoBean.getIdEnvio()));
 					
-					designaProvisionalBean.setIdtipoejg(new Short(idTipoEJG));                    
-					designaProvisionalBean.setAnioejg(new Short(anioEJG)); 
-					designaProvisionalBean.setNumeroejg(new Long(numeroEJG));
-					
-
-					//					El id envio se setea despues
-					
-					designaProvisionalBean.setIdinstitucionLetrado(UtilidadesHash.getShort(ejgHash,"IDINSTITUCION_LETDESIGNA"));
-					designaProvisionalBean.setIdpersona(UtilidadesHash.getLong(ejgHash,"IDPERSONA_DESIGNA")); 
-					if(UtilidadesHash.getLong(ejgHash,"IDPROCURADOR")!=null)
-						designaProvisionalBean.setIdprocurador(UtilidadesHash.getLong(ejgHash,"IDPROCURADOR"));
-					
-					designaProvisionalBean.setIdplantilla(new Integer(beanInforme.getIdPlantilla())); 
-					designaProvisionalBean.setIdinstitucionPlantilla(new Short(beanInforme.getIdInstitucion().shortValue()));
-//					designaProvisionalBean.setFechaPeticion("sysdate");
-					
-					//Se van añadiendo a la lista para despues setearles el envio
-					listObjetosTelematicos.add(designaProvisionalBean);
-					enviosBean.setDescripcion(TipoIntercambioEnum.ICA_SGP_COM_DES_PROV_ABG_PRO.getDescripcion().split(":")[1]+" - "+designaProvisionalBean.getAnio()+"/"+designaProvisionalBean.getNumero());
-					
-					
-				}else if(beanInforme.getIdTipoIntercambioTelematico().toString().equals(TipoIntercambioEnum.ICA_SGP_ENV_SOL_SUSP_PROC.getCodigo())){
-					
-					EcomSolsusprocedimientoWithBLOBs solSusProcedimientoBean = new EcomSolsusprocedimientoWithBLOBs();
-                
-					
-					solSusProcedimientoBean.setIdjuzgado(destProgramInfBean.getIdPersona());                
-					solSusProcedimientoBean.setIdinstitucionJuzg(new Short(destProgramInfBean.getIdInstitucion().shortValue()));   
-					
-					solSusProcedimientoBean.setIdinstitucion(new Short(idInstitucion));
-					solSusProcedimientoBean.setIdtipoejg(new Short(idTipoEJG));                    
-					solSusProcedimientoBean.setAnioejg(new Short(anioEJG)); 
-					solSusProcedimientoBean.setNumeroejg(new Long(numeroEJG));
-					
-					solSusProcedimientoBean.setIdplantilla(new Integer(beanInforme.getIdPlantilla())); 
-					solSusProcedimientoBean.setIdinstitucionPlantilla(new Short(beanInforme.getIdInstitucion().shortValue()));
-//					solSusProcedimientoBean.setFechaPeticion("sysdate");
-					
-					//Se van añadiendo a la lista para despues setearles el envio
-					listObjetosTelematicos.add(solSusProcedimientoBean);
-					enviosBean.setDescripcion(TipoIntercambioEnum.ICA_SGP_ENV_SOL_SUSP_PROC.getDescripcion().split(":")[1]+" - "+ejgHash.get("NUMERO_EJG"));
-					
-					
-				}
+					EnvEntradaEnviosWithBLOBs entradaEnviosWithBLOBs = entradaEnviosService.getEntradaEnvios(entradaEnviosExample);
+					if(entradaEnviosWithBLOBs!=null){
+						entradaEnviosWithBLOBs.setIdenviorel(Long.valueOf(enviosBean.getIdEnvio()));
+						entradaEnviosService.actualizarEntradaEnvios(entradaEnviosExample, entradaEnviosWithBLOBs);
+					}
 				
-				
-			}
-		}
+				} //Fin for plantillas
+			
+			}//Fin for claves destinatarios
 		
-		envio.generarIntercambioTelematico(envio.getEnviosBean(), htPersonas ,listObjetosTelematicos);
-		
-		//Si hubiese relacion con bandeja de entrada, se actualiza el idenviorel
-		BusinessManager businessManager =  BusinessManager.getInstance();
-		EntradaEnviosService entradaEnviosService = (EntradaEnviosService) businessManager.getService(EntradaEnviosService.class);
-		EnvEntradaEnviosExample entradaEnviosExample = new EnvEntradaEnviosExample();
-		
-		//Se van añadiendo los criterios para relaizar la query de busqueda
-		Criteria criteria =  entradaEnviosExample.createCriteria(); 
-		criteria.andIdenviorelprogramadoEqualTo(Long.valueOf(envioProgramadoBean.getIdEnvio()));
-		
-		EnvEntradaEnviosWithBLOBs entradaEnviosWithBLOBs = entradaEnviosService.getEntradaEnvios(entradaEnviosExample);
-		if(entradaEnviosWithBLOBs!=null){
-			entradaEnviosWithBLOBs.setIdenviorel(Long.valueOf(enviosBean.getIdEnvio()));
-			entradaEnviosService.actualizarEntradaEnvios(entradaEnviosExample, entradaEnviosWithBLOBs);
-		}
-		
-
-	}
+		}//Fin for destinatarios
+	}	
+	
 	public void enviarInformeGenericoSms(UsrBean usrBean,
 			EnvDestProgramInformesBean destProgramInfBean,
 			EnvProgramInformesBean programInfBean, Vector vPlantillasInforme,
@@ -5959,65 +5991,57 @@ public class EnvioInformesGenericos extends MasterReport {
 
 	}
 
-	public void setPersonasEjg(Vector vCampos, UsrBean userBean)
-			throws ClsExceptions, SIGAException {
-		ScsEJGAdm ejgAdm = new ScsEJGAdm(userBean);
-		ScsDesignaAdm designaAdm = new ScsDesignaAdm(userBean);
-		ScsUnidadFamiliarEJGAdm unidadFamiliarEJGAdm = new ScsUnidadFamiliarEJGAdm(
-				userBean);
-		String idTipoEJG = null;
-		String idInstitucion = null;
-		String anio = null;
-		String numero = null;
-		List auxiliar = new ArrayList();
-		Iterator iteCampos = vCampos.iterator();
-		while (iteCampos.hasNext()) {
-			Hashtable ht = (Hashtable) iteCampos.next();
-			idInstitucion = (String) ht.get("idinstitucion");
-			String idPersonaJG = (String) ht.get("idPersonaJG");
-			anio = (String) ht.get("anio");
-			if ((String) ht.get("idtipo") != null) {
-				idTipoEJG = (String) ht.get("idtipo");
-			} else {
-				idTipoEJG = (String) ht.get("idTipoEJG");
-			}
-			numero = (String) ht.get("numero");
-			Vector solicitantesEjg = null;
-			if (idPersonaJG != null) {
-				// Si viene persona jg //Lo añadimos
-				solicitantesEjg = new Vector();
-				Hashtable personaJGHashtable = new Hashtable();
-				personaJGHashtable.put("IDPERSONA", idPersonaJG);
-				solicitantesEjg.add(personaJGHashtable);
-				ht.put("solicitantesEjg", solicitantesEjg);
+	public void setPersonasEjg(Vector vCampos, UsrBean userBean) throws ClsExceptions, SIGAException {
+        ScsEJGAdm ejgAdm = new ScsEJGAdm(userBean);
+        ScsDesignaAdm designaAdm = new ScsDesignaAdm(userBean);
+        ScsUnidadFamiliarEJGAdm unidadFamiliarEJGAdm = new ScsUnidadFamiliarEJGAdm(userBean);
+        String idTipoEJG = null;
+        String idInstitucion = null;
+        String anio = null;
+        String numero = null;
+        List auxiliar = new ArrayList();
+        Iterator iteCampos = vCampos.iterator();
+        
+        while (iteCampos.hasNext()) {
+            Hashtable ht = (Hashtable) iteCampos.next();
+            idInstitucion = (String) ht.get("idinstitucion");
+            String idPersonaJG = (String) ht.get("idPersonaJG");
+            anio = (String) ht.get("anio");
+            if ((String) ht.get("idtipo") != null) {
+                idTipoEJG = (String) ht.get("idtipo");
+            } else {
+                idTipoEJG = (String) ht.get("idTipoEJG");
+            }
+            numero = (String) ht.get("numero");
+            Vector solicitantesEjg = null;
+            
+            if (idPersonaJG != null) {
+                // Si viene persona jg //Lo añadimos
+                solicitantesEjg = new Vector();
+                Hashtable personaJGHashtable = new Hashtable();
+                personaJGHashtable.put("IDPERSONA", idPersonaJG);
+                solicitantesEjg.add(personaJGHashtable);
+                ht.put("solicitantesEjg", solicitantesEjg);
 
-			} else {
-				// Este netodo nos debe devolver un vector de hashtable con las
-				// personas de las designaciones relacionadas
-				Vector personasDesignasEjg = designaAdm
-						.getPersonasDesignadasEjg(new Integer(idInstitucion),
-								new Integer(idTipoEJG), new Integer(anio),
-								new Integer(numero));
-				solicitantesEjg = unidadFamiliarEJGAdm.getSolicitantesEjg(
-						new Integer(idInstitucion), new Integer(idTipoEJG),
-						new Integer(anio), new Integer(numero));
-				if (solicitantesEjg != null)
-					ht.put("solicitantesEjg", solicitantesEjg);
-				if (personasDesignasEjg != null)
-					ht.put("personasDesignasEjg", personasDesignasEjg);
+            } else {
+                // Este netodo nos debe devolver un vector de hashtable con las
+                // personas de las designaciones relacionadas
+                Vector personasDesignasEjg = designaAdm.getPersonasDesignadasEjg(new Integer(idInstitucion),new Integer(idTipoEJG), new Integer(anio),new Integer(numero));
+                solicitantesEjg = unidadFamiliarEJGAdm.getSolicitantesEjg(new Integer(idInstitucion), new Integer(idTipoEJG),new Integer(anio), new Integer(numero));
+                if (solicitantesEjg != null)
+                    ht.put("solicitantesEjg", solicitantesEjg);
+                if (personasDesignasEjg != null)
+                    ht.put("personasDesignasEjg", personasDesignasEjg);
 
-				if (personasDesignasEjg == null
-						|| personasDesignasEjg.size() == 0
-						&& (solicitantesEjg == null || solicitantesEjg.size() == 0))
-					iteCampos.remove();
-			}
-			Long idJuzgado = ejgAdm.getIdJuzgadoEjg(idInstitucion,anio,numero,idTipoEJG);
-			if (idJuzgado != null && !idJuzgado.equals(""))
-				ht.put("idJuzgado", idJuzgado.toString());
-
-		}
-
-	}
+                Long idJuzgado = ejgAdm.getIdJuzgadoEjg(idInstitucion,anio,numero,idTipoEJG);
+                if (idJuzgado != null && !idJuzgado.equals(""))
+                    ht.put("idJuzgado", idJuzgado.toString());
+               
+                if (personasDesignasEjg == null || personasDesignasEjg.size() == 0 && (solicitantesEjg == null || solicitantesEjg.size() == 0) &&(idJuzgado == null || idJuzgado.equals("")))
+                    iteCampos.remove();
+            }
+        }
+    }
 
 	private List getSolicitantesDesignas(Vector vCampos, UsrBean userBean)
 			throws ClsExceptions, SIGAException {
@@ -8101,8 +8125,12 @@ public class EnvioInformesGenericos extends MasterReport {
 											String isCodigoEJIS = (String)procuradorHashtable.get("ISCODIGOEJIS"); 
 											if(isCodigoEJIS.equals("1")){
  												//Tiene codigo ejis
-												envioInformeGenerico.enviarInformeGenericoTelematico(usr,vDestinatarios,programInfGenericoBean,vPlantillas, 
-																	programInfGenericoBean.getEnvioProgramado());
+												try {
+                                                    envioInformeGenerico.enviarInformeGenericoTelematico(usr,vDestinatarios,programInfGenericoBean,vPlantillas, programInfGenericoBean.getEnvioProgramado());   
+                                                
+												} catch (SIGAException e) {
+                                                    ClsLogging.writeFileLogWithoutSession(" ----------ERROR ENVIO DE INFORMES GENERICOS PENDIENTES IDPERSONA: "	+ destProgramInfBean.getIdPersona() + " " + e.getLiteral(), 3);
+                                                }
 												
 											}else if(isCodigoEJIS.equals("0")){
 												//No tiene codigo ejis
