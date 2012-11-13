@@ -2523,7 +2523,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	                            descripcion.append("Nº EJG:");
 	                            descripcion.append(UtilidadesHash.getString(designaHash,"ANIOEJG"));
 	                            descripcion.append("/");
-	                            descripcion.append(UtilidadesHash.getString(designaHash,"NUMEROEJG"));
+	                            descripcion.append(UtilidadesHash.getString(designaHash,"NUMEJG"));
 	                        }else if(UtilidadesHash.getString(designaHash,"LISTAANIONUMEROEJGS")!=null && !UtilidadesHash.getString(designaHash,"LISTAANIONUMEROEJGS").equals("")){
 	                            String listaEJGS = UtilidadesHash.getString(designaHash,"LISTAANIONUMEROEJGS");
 	                            String[] ejgs = listaEJGS.split(",");
