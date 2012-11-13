@@ -158,16 +158,20 @@ public class DesignaProvisionalServiceImpl extends MyBatisBusinessServiceTemplat
 		EcomCola ecomCola = ecomColaMapper.selectByPrimaryKey(ecomDesignaProvisional.getIdecomcola());
 		
 		DesignaProvisionalForm designaProvisionalForm =  new  DesignaProvisionalForm(ecomDesignaProvisional);
-
-		ScsDesignaMapper scsDesignaMapper = getMyBatisSqlSessionManager().getMapper(ScsDesignaMapper.class);
-		ScsDesignaKey scsDesignaKey = new ScsDesignaKey();
-		scsDesignaKey.setIdinstitucion(ecomDesignaProvisional.getIdinstitucion());
-		scsDesignaKey.setIdturno(ecomDesignaProvisional.getIdturno());
-		scsDesignaKey.setAnio(ecomDesignaProvisional.getAnio());
-		scsDesignaKey.setNumero(ecomDesignaProvisional.getNumero());
-		ScsDesigna scsDesigna = scsDesignaMapper.selectByPrimaryKey(scsDesignaKey);
-
-		designaProvisionalForm.setDesignaCodigo(scsDesigna.getAnio()+"/"+scsDesigna.getCodigo());
+		if(ecomDesignaProvisional.getAnio()!=null && !ecomDesignaProvisional.getAnio().equals("")){
+			ScsDesignaMapper scsDesignaMapper = getMyBatisSqlSessionManager().getMapper(ScsDesignaMapper.class);
+			ScsDesignaKey scsDesignaKey = new ScsDesignaKey();
+			scsDesignaKey.setIdinstitucion(ecomDesignaProvisional.getIdinstitucion());
+			scsDesignaKey.setIdturno(ecomDesignaProvisional.getIdturno());
+			scsDesignaKey.setAnio(ecomDesignaProvisional.getAnio());
+			scsDesignaKey.setNumero(ecomDesignaProvisional.getNumero());
+			ScsDesigna scsDesigna = scsDesignaMapper.selectByPrimaryKey(scsDesignaKey);
+	
+			designaProvisionalForm.setDesignaCodigo(scsDesigna.getAnio()+"/"+scsDesigna.getCodigo());
+		}else{
+			designaProvisionalForm.setDesignaCodigo("");
+			
+		}
 		
 		if(ecomDesignaProvisional.getAnioejg()!=null){
 			
@@ -180,30 +184,31 @@ public class DesignaProvisionalServiceImpl extends MyBatisBusinessServiceTemplat
 			ScsEjg scsEjg = scsEjgMapper.selectByPrimaryKey(scsEjgKey);
 			designaProvisionalForm.setEjgCodigo(scsEjg.getAnio()+"/"+scsEjg.getNumejg());
 		}
-		
-		
-		CenPersonaMapper cenPersonaMapper = getMyBatisSqlSessionManager().getMapper(CenPersonaMapper.class);
-		CenPersona cenPersona = cenPersonaMapper.selectByPrimaryKey(ecomDesignaProvisional.getIdpersona());
-		CenColegiadoMapper cenColegiadoMapper = getMyBatisSqlSessionManager().getMapper(CenColegiadoMapper.class);
-		CenColegiadoKey cenColegiadoKey = new CenColegiadoKey();
-		cenColegiadoKey.setIdpersona(ecomDesignaProvisional.getIdpersona());
-		cenColegiadoKey.setIdinstitucion(ecomDesignaProvisional.getIdinstitucion());
-		CenColegiado cenColegiado = cenColegiadoMapper.selectByPrimaryKey(cenColegiadoKey);
-		
-		
 		StringBuffer abogadoDesignado = new StringBuffer();
-		if(cenColegiado.getNcomunitario()!=null && cenColegiado.equals("1"))
-			abogadoDesignado.append(cenColegiado.getNcomunitario());
-		else
-			abogadoDesignado.append(cenColegiado.getNcolegiado());
-		
-		abogadoDesignado.append(" ");
-		abogadoDesignado.append(cenPersona.getNombre());
-		abogadoDesignado.append(" ");
-		abogadoDesignado.append(cenPersona.getApellidos1());
-		abogadoDesignado.append(" ");
-		abogadoDesignado.append(cenPersona.getApellidos2());
+		if(ecomDesignaProvisional.getIdpersona()!=null && !ecomDesignaProvisional.getIdpersona().equals("")){
+			CenPersonaMapper cenPersonaMapper = getMyBatisSqlSessionManager().getMapper(CenPersonaMapper.class);
+			CenPersona cenPersona = cenPersonaMapper.selectByPrimaryKey(ecomDesignaProvisional.getIdpersona());
+			CenColegiadoMapper cenColegiadoMapper = getMyBatisSqlSessionManager().getMapper(CenColegiadoMapper.class);
+			CenColegiadoKey cenColegiadoKey = new CenColegiadoKey();
+			cenColegiadoKey.setIdpersona(ecomDesignaProvisional.getIdpersona());
+			cenColegiadoKey.setIdinstitucion(ecomDesignaProvisional.getIdinstitucion());
+			CenColegiado cenColegiado = cenColegiadoMapper.selectByPrimaryKey(cenColegiadoKey);
+			
+			if(cenColegiado.getNcomunitario()!=null && cenColegiado.equals("1"))
+				abogadoDesignado.append(cenColegiado.getNcomunitario());
+			else
+				abogadoDesignado.append(cenColegiado.getNcolegiado());
+			
+			abogadoDesignado.append(" ");
+			abogadoDesignado.append(cenPersona.getNombre());
+			abogadoDesignado.append(" ");
+			abogadoDesignado.append(cenPersona.getApellidos1());
+			abogadoDesignado.append(" ");
+			abogadoDesignado.append(cenPersona.getApellidos2());
+		}
+	
 		designaProvisionalForm.setAbogadoDesignado(abogadoDesignado.toString());
+	
 		
 		
 		if(ecomDesignaProvisional.getIdprocurador()!=null){
