@@ -3237,28 +3237,13 @@ public class Row implements Serializable
 		String salida ="";
 		ByteArrayOutputStream os = null;
 		try {
-			os = new ByteArrayOutputStream();
 			if (dbClob!=null) {
-				
-					MngClob.readClob(dbClob, os);
-				
+				salida=dbClob.getSubString(1, (int)dbClob.length());
 			}
-			if(os!=null)
-				salida = os.toString("ISO-8859-15");
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new ClsExceptions(e,"Exception extracting OutputStream from clob field");
-		} catch (SQLException e) {
-			throw new ClsExceptions(e,"Exception extracting OutputStream from clob field");		}
-		finally{
-			if(os!=null)
-				try {
-					os.close();
-				} catch (IOException e) {
-					throw new ClsExceptions(e,"Exception extracting OutputStream from clob field");
-				}
 		}
-
-
+		
 		return salida;
 
 	}

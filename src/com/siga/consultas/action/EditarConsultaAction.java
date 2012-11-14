@@ -297,7 +297,8 @@ public class EditarConsultaAction extends MasterAction {
 				Hashtable h = new Hashtable();
 				h.put(ConConsultaBean.C_IDINSTITUCION,idInstitucion);
 				h.put(ConConsultaBean.C_IDCONSULTA,idConsulta);				
-				ConConsultaBean cBean = (ConConsultaBean)cAdm.selectByPK(h).firstElement();
+				ConConsultaBean cBean = (ConConsultaBean)cAdm.selectByPKForUpdate(h).firstElement();
+				
 				form.setDescripcion(cBean.getDescripcion()!=null?cBean.getDescripcion():"");
 				form.setGeneral(cBean.getGeneral().equals(ConConsultaAdm.CONS_GENERAL_SI)?true:false);
 				if (cBean.getIdModulo()!=null){
