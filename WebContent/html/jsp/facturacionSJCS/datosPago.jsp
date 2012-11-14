@@ -638,7 +638,7 @@
 				</tr>
 				
 				<!-- OFICIO -->
-				<tr id="filaOficio" style="visibility:visible;">		
+				<tr id="filaOficio" style="display:block">				
 					<td class="labelText">
 						<siga:Idioma key="factSJCS.datosPagos.literal.Oficio"/>
 					</td>				
@@ -667,7 +667,7 @@
 					</td>
 				</tr>
 				<!-- GUARDIAS -->
-				<tr id="filaGuardias" style="visibility:visible;">		
+				<tr id="filaGuardias" style="display:block">				
 					<td class="labelText">
 						<siga:Idioma key="factSJCS.datosPagos.literal.Guardias"/>
 					</td>				
@@ -698,7 +698,7 @@
 					</td>
 				</tr>
 				<!-- EJG -->
-				<tr id="filaEJG" style="visibility:visible;">				
+				<tr id="filaEJG" style="display:block">				
 					<td class="labelText">
 						<siga:Idioma key="factSJCS.datosPagos.literal.EJG"/>
 					</td>				
@@ -727,7 +727,7 @@
 					</td>
 				</tr>
 				<!-- SOJ -->
-				<tr id="filaSOJ" style="visibility:visible;">
+				<tr id="filaSOJ" style="display:block">	
 					<td class="labelText">
 						<siga:Idioma key="factSJCS.datosPagos.literal.SOJ"/>
 					</td>				
@@ -852,7 +852,7 @@
 				if (eval("total"+conceptos[i])==0)
 					document.getElementById("fila"+conceptos[i]).style.display = "none";
 				else{
-					document.getElementById("fila"+conceptos[i]).style.visibility="visible";				
+					document.getElementById("fila"+conceptos[i]).style.display = "inline";				
 					document.getElementById("txtTotal"+conceptos[i]).value = convertirAFormato(eval("total"+conceptos[i])+"") + '\u20AC';
 					document.getElementById("txtPendiente"+conceptos[i]).value = convertirAFormato(eval("importePend"+conceptos[i])+"") + '\u20AC (' + convertirAFormato(eval("porcentajePend"+conceptos[i])+"") + '%)';
 					document.getElementById("txtRestante"+conceptos[i]).value = convertirAFormato(eval("importePend"+conceptos[i])+"") + '\u20AC (' + convertirAFormato(eval("porcentajePend"+conceptos[i])+"") + '%)';
