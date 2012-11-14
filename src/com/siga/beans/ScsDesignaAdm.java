@@ -3163,7 +3163,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		        sql.append(" select  ejg.aniocajg || '/' || ejg.numero_cajg as ANIONUMEROCAJG, ejg.numero_cajg  || '/' || ejg.aniocajg as NUMEROANIOCAJG, ejg.aniocajg as ANIOCAJG, ejg.numero_cajg as NUMEROCAJG, ejg.idpersona as IDPERSONA ");
 		        sql.append(" ,ejg.anio || '/' || ejg.numejg ANIONUMEROEJG,ejg.numejg || '/' || ejg.anio NUMEROANIOEJG, ");
 		        sql.append(" PROCU.NOMBRE || ' ' || PROCU.APELLIDOS1 || ' ' || PROCU.APELLIDOS2 AS PROCURADOR_EJG ");
-		        sql.append(" ,ejg.anio ANIOEJG, ejg.numero NUMEROEJG, ejg.idtipoejg IDTIPOEJG ");
+		        sql.append(" ,ejg.anio ANIOEJG, ejg.numero NUMEROEJG, ejg.numejg NUMEJG, ejg.idtipoejg IDTIPOEJG ");
 		        
 		        sql.append(" from scs_ejg ejg, scs_designa des, ");
 		        sql.append(" scs_turno tur, scs_tipoejg tip, ");
@@ -3290,14 +3290,17 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			    	String idTipoEJG = (String)((Hashtable) ejgsdesingna.get(0)).get("IDTIPOEJG"); 
 				    String anioEJG = (String)((Hashtable) ejgsdesingna.get(0)).get("ANIOEJG");
 				    String numeroEJG = (String)((Hashtable) ejgsdesingna.get(0)).get("NUMEROEJG");
+				    String numEJG = (String)((Hashtable) ejgsdesingna.get(0)).get("NUMEJG");
 				    registro.put("IDTIPOEJG", idTipoEJG);
 				    registro.put("ANIOEJG", anioEJG);
 				    registro.put("NUMEROEJG", numeroEJG);
+				    registro.put("NUMEJG", numEJG);
 			    	
 			    }else{
 			    	registro.put("IDTIPOEJG", "");
 				    registro.put("ANIOEJG","");
 				    registro.put("NUMEROEJG","");
+				    registro.put("NUMEJG", "");
 			    }
 				for (int i = 0; i < ejgsdesingna.size(); i++) {					
 					Hashtable registroejg = (Hashtable) ejgsdesingna.get(i);				
