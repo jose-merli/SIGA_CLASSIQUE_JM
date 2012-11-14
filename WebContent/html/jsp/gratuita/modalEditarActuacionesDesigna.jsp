@@ -383,7 +383,7 @@
 	</script>		
 </head>
 
-<body> <!-- onload="rellenarCombos()"> -->
+<body onload="rellenarCombos()">
 
 
 <!-- TITULO -->
