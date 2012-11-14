@@ -1959,7 +1959,7 @@ public class DefinirEnviosAction extends MasterAction {
 		json.put("plantillasEnvio", plantillasEnviosJsonArray);
 		
 		// json.
-		 response.setContentType("text/x-json;charset=ISO-8859-15");
+		 response.setContentType("text/x-json;charset=UTF-8");
 		 response.setHeader("Cache-Control", "no-cache");
 		 response.setHeader("Content-Type", "application/json");
 	     response.setHeader("X-JSON", json.toString());

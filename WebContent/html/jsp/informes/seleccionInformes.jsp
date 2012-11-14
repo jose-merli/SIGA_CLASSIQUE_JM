@@ -55,6 +55,7 @@ jQuery.noConflict();
 			           type: "POST",
 			           url: "/SIGA/ENV_DefinirEnvios.do?modo=getJQueryPlantillasEnvio",
 			           data: "idTipoEnvio="+comboTiposEnvio.value,
+			           contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 			           dataType: "json",
 			           success:  function(json) {
 		           			var plantillasEnvio = json.plantillasEnvio;
