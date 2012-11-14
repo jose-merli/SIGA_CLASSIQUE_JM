@@ -1651,7 +1651,7 @@
         </var> 
     </field>
 
-    <field property = "nombre" depends = "required,maxlength"> 
+    <field property = "descripcion" depends = "required,maxlength"> 
         <arg0 key="pys.mantenimientoServicios.literal.servicio"/> 
         <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
         <var>

@@ -72,6 +72,7 @@
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
 		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>			
+		<script src="<%=app%>/html/js/jquery.notice.js" type="text/javascript"></script>
 		
 		<script language="JavaScript">
 		
@@ -103,6 +104,14 @@
 				}					
 				return envio;				
 			}	
+			
+			function growl(msg,type){
+				jQuery('.notice-item-wrapper').remove();
+				jQuery.noticeAdd({
+					text: msg,
+					type: type
+				});
+			}
 				
 		</script>		
 

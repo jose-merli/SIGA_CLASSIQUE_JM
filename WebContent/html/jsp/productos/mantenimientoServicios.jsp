@@ -172,9 +172,11 @@
 
 		</style>
 
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
-		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>			
+		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+		<script type="text/javascript" src="<%=app%>/html/js/SIGA.js"></script>
+		<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
+		<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+		<script type="text/javascript" src="<%=app%>/html/jsp/general/validacionSIGA.jsp"></script>			
 
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		<!-- Validaciones en Cliente -->
@@ -233,7 +235,6 @@
 						}
 					}
 				}				
-
 				if (!envio){
 					alert(mensaje);
 				}
@@ -282,11 +283,6 @@
 			   document.forms[0].target='submitArea';
 			  ventaModalGeneral(document.forms[0].name,"P");
 			  return;
- 			 
-			
-			 /*var f = document.forms[0].name;	
-             window.frames.submitArea.location = '/SIGA/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=messages.wait';*/
-			 //document.forms[0].submit();
 			}
 
 
@@ -314,7 +310,6 @@
 					<html:hidden property="modo" value="<%=modo%>"/>
 					<html:hidden property="precio" value=""/>
 					<html:hidden property="periodicidad" value=""/>
-					<html:hidden property="descripcion" value=""/>
 					<html:hidden property="refresco" value=""/>
 					<html:hidden property="comprobarCondicion" value=""/>
 					<html:hidden property="comprobarCondicionBaja" value="<%=new Boolean(bFechaBaja).toString() %>"/>
@@ -410,12 +405,12 @@
 										</td>
 										<td class="labelText">
 											<% if (modo=="insertar"){%>
-									  			<html:text property="nombre" styleClass="box" size="30"></html:text>
+									  			<html:text property="descripcion" styleClass="box" size="30"></html:text>
 									  		<% } else { %>
 												<% if (modo=="modificar"){ %>
-													<html:text property="nombre" styleClass="box" size="30" value="<%=row.getString(PysServiciosInstitucionBean.C_DESCRIPCION)%>"></html:text>
+													<html:text property="descripcion" styleClass="box" size="30" value="<%=row.getString(PysServiciosInstitucionBean.C_DESCRIPCION)%>"></html:text>
 												<%}else{%>
-													<html:text property="nombre" styleClass="boxConsulta" size="30" value="<%=row.getString(PysServiciosInstitucionBean.C_DESCRIPCION)%>" readOnly="true"></html:text>
+													<html:text property="descripcion" styleClass="boxConsulta" size="30" value="<%=row.getString(PysServiciosInstitucionBean.C_DESCRIPCION)%>" readOnly="true"></html:text>
 												<% } %>
 									  		<% } %>
 									  	</td>
@@ -725,7 +720,9 @@
 							</siga:ConjCampos>
 						</td>
 					</tr>
-
+			<!-- RGG: cambio a formularios ligeros -->
+			<input type="hidden" name="tablaDatosDinamicosD">
+			<input type="hidden" name="actionModal" value="">
 		</html:form>						
 			</table>
 
@@ -926,7 +923,6 @@
 			if (validateMantenimientoServiciosForm(document.MantenimientoServiciosForm)){				
 					if (validacionPosterior()){					
 						<% if (modo.equalsIgnoreCase("modificar")){ %>
-						
 							document.forms[0].modo.value="modificar";
 							document.forms[0].target='submitArea';
 //							document.forms[0].submit();
@@ -949,7 +945,6 @@
 									// Asigno el precio y la periodicidad obtenidos en la ventana modal
 									document.forms[0].precio.value=datos[1];
 									document.forms[0].periodicidad.value=datos[2];
-									document.forms[0].descripcion.value=datos[3];
 									
 									// Redirigimos al lugar adecuado
 									document.forms[0].modo.value="insertar";
