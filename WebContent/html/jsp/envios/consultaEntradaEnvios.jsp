@@ -558,7 +558,8 @@
 		<html:hidden styleId = "actionModal" 		property ="actionModal" value = ""/>
 		<html:hidden styleId = "ncolegiado" 		property="ncolegiado" name="BuscarDesignasForm" value=""/>
 		<html:hidden styleId = "seleccionarTodos" 	property="seleccionarTodos" />
-		<input type="hidden" name="limpiarFilaSeleccionada" value="">
+		<input type="hidden" name ="idjuzgadoEJG"  			 value ="${entradaEnvio.remitente},${entradaEnvio.idInstitucion}"	/>
+		<input type="hidden" name ="limpiarFilaSeleccionada" value="">
 	</html:form>		
 
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>

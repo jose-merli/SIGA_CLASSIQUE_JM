@@ -84,6 +84,9 @@
 	
 	String juzgadoAsistencia = (String)request.getAttribute("juzgadoAsistencia");
 	String juzgadoEJG = (String)request.getAttribute("idjuzgadoEJG");
+	if(juzgadoEJG == null || juzgadoEJG.equals("")){
+		juzgadoEJG = (String)request.getParameter("idjuzgadoEJG");
+	}
 	
 	ArrayList elementoSelJuzgado = new ArrayList();
 	

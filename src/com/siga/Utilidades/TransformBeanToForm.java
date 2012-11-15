@@ -42,7 +42,10 @@ public class TransformBeanToForm {
 			obj.setIdinstitucion(entrada.getRemitenteIdinstitucion());
 			ScsJuzgadoService juzgadoService = (ScsJuzgadoService) BusinessManager.getInstance().getService(ScsJuzgadoService.class);
 			obj = juzgadoService.get(obj);
-			formulario.setDescripcionRemitente(obj.getNombre());
+			if(obj!= null){
+				formulario.setDescripcionRemitente(obj.getNombre());
+				formulario.setRemitente(obj.getIdjuzgado().toString());
+			}
 		}
 		
 		
