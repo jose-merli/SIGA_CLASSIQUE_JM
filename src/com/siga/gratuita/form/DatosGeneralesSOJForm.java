@@ -19,12 +19,12 @@ import java.util.Hashtable;
 	
 	
 	
-	public void  setAnioEJG				(String anioEJG)							{ this.datos.put(ScsEJGBean.C_ANIO, anioEJG);	anio=anioEJG;																			}
+	public void  setAnioEJG				(String anioEJG)							{ this.ejg.put(ScsEJGBean.C_ANIO, anioEJG);	anio=anioEJG;																			}
 
 	/**
 	 * @return Numero EJG
 	 */
-	public void  setNumeroEJG				(String numeroEJG)							{ this.datos.put(ScsEJGBean.C_NUMEJG, numeroEJG);	num=numeroEJG;	
+	public void  setNumeroEJG				(String numeroEJG)							{ this.ejg.put(ScsEJGBean.C_NUMEJG, numeroEJG);	num=numeroEJG;	
 	
 	}
 	
@@ -32,7 +32,7 @@ import java.util.Hashtable;
 	/**
 	 * @return Tipo EJG
 	 */
-	public void  setTipoEJG				(String tipoEJG)							{this.datos.put(ScsEJGBean.C_IDTIPOEJG, tipoEJG);	tipo=tipoEJG;					}
+	public void  setTipoEJG				(String tipoEJG)							{this.ejg.put(ScsEJGBean.C_IDTIPOEJG, tipoEJG);	tipo=tipoEJG;					}
 	// Metodos Set (Formulario (*.jsp))
  	
  	/**
