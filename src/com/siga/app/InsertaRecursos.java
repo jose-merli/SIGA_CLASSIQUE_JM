@@ -13,12 +13,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-//import java.text.SimpleDateFormat;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.Vector;
 
 
 //import javax.servlet.http.HttpServletRequest;
@@ -38,7 +40,7 @@ public class InsertaRecursos {
     private static ResultSet rs = null;
     private static Statement st = null;
     
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException {
      
 	try {
      	
@@ -116,16 +118,19 @@ public class InsertaRecursos {
 		}
 	} catch (Exception ex) {
 		ex.printStackTrace(System.out);
+	} finally {
+		if (con != null) {
+			con.close();
+		}
 	}
 	}
 	
 
-	private static void conecta () throws Exception {
-	 	ResourceBundle rp=ResourceBundle.getBundle("SIGA");
-	 	String claseConexion = rp.getString("directorios.bd.clase");
-	 	String cadenaConexion = rp.getString("directorios.bd.cadenaConexion");
-	 	String usuario = rp.getString("directorios.bd.usu");
-	 	String clave = rp.getString("directorios.bd.pwd");
+	private static void conecta () throws Exception {	 	
+	 	String claseConexion = "oracle.jdbc.driver.OracleDriver";
+	 	String cadenaConexion = "jdbc:oracle:thin:@192.168.11.55:1521:SIGADES";
+	 	String usuario = "uscgae2";
+	 	String clave = "uscgae2";
 
         con = null;
         Class.forName(claseConexion);
