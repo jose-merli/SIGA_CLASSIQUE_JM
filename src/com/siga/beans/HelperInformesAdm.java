@@ -569,8 +569,7 @@ public class HelperInformesAdm  {
 	{	
 		try { 
 			 
-			Hashtable codigos = null;
-			
+			Hashtable codigos = null;			
 
 			for (int j=0;j<datos.size();j++) {
 				Hashtable dato = (Hashtable) datos.get(j);
@@ -588,7 +587,7 @@ public class HelperInformesAdm  {
 				codigos.put(new Integer(10), numero);
 
 				StringBuffer sql = new StringBuffer();
-				sql.append(" select pe.nombre || ' ' || pe.apellidos1 || ' ' || pe.apellidos2 as NOMBRE "); 
+				sql.append(" select INITCAP(pe.nombre) || ' ' || INITCAP(pe.apellidos1) || ' ' || INITCAP(pe.apellidos2) as NOMBRE "); 
 				sql.append(" from exp_denunciado d, cen_persona pe ");
 				sql.append(" where d.idpersona = pe.idpersona ");
 				sql.append(" and   d.idinstitucion =:1 ");
@@ -597,7 +596,7 @@ public class HelperInformesAdm  {
 				sql.append(" and   d.anioexpediente=:4 ");
 				sql.append(" and   d.numeroexpediente=:5 ");
 				sql.append(" union ");
-				sql.append(" select pe.nombre || ' ' || pe.apellidos1 || ' ' || pe.apellidos2 as NOMBRE "); 
+				sql.append(" select INITCAP(pe.nombre) || ' ' || INITCAP(pe.apellidos1) || ' ' || INITCAP(pe.apellidos2) as NOMBRE "); 
 				sql.append(" from exp_expediente ex, cen_persona pe ");
 				sql.append(" where ex.idpersona = pe.idpersona ");
 				sql.append(" and   ex.idinstitucion =:6 ");
@@ -615,6 +614,7 @@ public class HelperInformesAdm  {
 				}
 				if (campoDenunciados.length()>0) campoDenunciados = campoDenunciados.substring(0,campoDenunciados.length()-2);
 				dato.put("DENUNCIADOS", campoDenunciados);
+				dato.put("DENUNCIADOS_MAYUS", campoDenunciados.toUpperCase());
 
 				codigos = new Hashtable();
 				codigos.put(new Integer(1), idInstitucion);
@@ -624,7 +624,7 @@ public class HelperInformesAdm  {
 				codigos.put(new Integer(5), numero);
 				
 				sql = new StringBuffer();
-				sql.append(" select pe.nombre || ' ' || pe.apellidos1 || ' ' || pe.apellidos2 as NOMBRE "); 
+				sql.append(" select INITCAP(pe.nombre) || ' ' || INITCAP(pe.apellidos1) || ' ' || INITCAP(pe.apellidos2) as NOMBRE "); 
 				sql.append(" from exp_denunciante d, cen_persona pe ");
 				sql.append(" where d.idpersona = pe.idpersona ");
 				sql.append(" and   d.idinstitucion =:1 ");
@@ -643,6 +643,7 @@ public class HelperInformesAdm  {
 				}
 				if (campoDenunciantes.length()>0) campoDenunciantes = campoDenunciantes.substring(0,campoDenunciantes.length()-2);
 				dato.put("DENUNCIANTES", campoDenunciantes);
+				dato.put("DENUNCIANTES_MAYUS", campoDenunciantes.toUpperCase());
 
 				//datos.add(j, dato);
 				
@@ -673,7 +674,7 @@ public class HelperInformesAdm  {
 
 				
 				StringBuffer sql = new StringBuffer();
-				sql.append(" select pe.nombre || ' ' || pe.apellidos1 || ' ' || pe.apellidos2 as NOMBRE, f_siga_getrecurso(r.nombre,:1) as NOMBREROL "); 
+				sql.append(" select INITCAP(pe.nombre) || ' ' || INITCAP(pe.apellidos1) || ' ' || INITCAP(pe.apellidos2) as NOMBRE, f_siga_getrecurso(r.nombre,:1) as NOMBREROL "); 
 				sql.append(" from exp_parte d, cen_persona pe, exp_rolparte r ");
 				sql.append(" where d.idpersona = pe.idpersona ");
 				sql.append(" and   d.idrol = r.idrol ");
@@ -695,6 +696,7 @@ public class HelperInformesAdm  {
 				}
 				if (campoPartes.length()>0) campoPartes = campoPartes.substring(0,campoPartes.length()-2);
 				dato.put("PARTES", campoPartes);
+				dato.put("PARTES_MAYUS", campoPartes.toUpperCase());
 
 				//datos.add(j, dato);
 				
@@ -760,9 +762,9 @@ public class HelperInformesAdm  {
 				sql.append("        (select po.nombre from cen_poblaciones po where po.idpoblacion = dir.idpoblacion) as NOMBRE_POBLACION, ");
 				sql.append("        (select pr.nombre from cen_provincias pr where pr.idprovincia = dir.idprovincia) as NOMBRE_PROVINCIA, ");
 				sql.append("        (select f_siga_getrecurso(pa.nombre,:1) from cen_pais pa where pa.idpais = dir.idpais) as NOMBRE_PAIS, ");
-				sql.append("        pe.nombre as NOMBRE, ");
-				sql.append("        pe.apellidos1 as APELLIDO1, ");
-				sql.append("        pe.apellidos2 as APELLIDO2, ");
+				sql.append("        INITCAP(pe.nombre) as NOMBRE, ");
+				sql.append("        INITCAP(pe.apellidos1) as APELLIDO1, ");
+				sql.append("        INITCAP(pe.apellidos2) as APELLIDO2, ");
 				sql.append("        pe.sexo AS SEXO, ");
 				sql.append("        DECODE(pe.SEXO, 'H','o','a') AS O_A, ");
 				sql.append("        DECODE(pe.SEXO, 'H','el','la') AS EL_LA ");
@@ -788,8 +790,11 @@ public class HelperInformesAdm  {
 					datoNuevo.putAll(datoActual);
 
 					datoNuevo.put("NOMBRE_DEST", (String) reg.get("NOMBRE"));
+					datoNuevo.put("NOMBRE_DEST_MAYUS", ((String) reg.get("NOMBRE")).toUpperCase());
 					datoNuevo.put("APELLIDO1_DEST", (String) reg.get("APELLIDO1"));
+					datoNuevo.put("APELLIDO1_DEST_MAYUS", ((String) reg.get("APELLIDO1")).toUpperCase());
 					datoNuevo.put("APELLIDO2_DEST", (String) reg.get("APELLIDO2"));
+					datoNuevo.put("APELLIDO2_DEST_MAYUS", ((String) reg.get("APELLIDO2")).toUpperCase());
 					datoNuevo.put("SEXO_DEST", (String) reg.get("SEXO"));
 					datoNuevo.put("O_A_DEST", (String) reg.get("O_A"));
 					datoNuevo.put("EL_LA_DEST", (String) reg.get("EL_LA"));
@@ -844,9 +849,9 @@ public class HelperInformesAdm  {
 					sql.append("        (select po.nombre from cen_poblaciones po where po.idpoblacion = dir.idpoblacion) as NOMBRE_POBLACION, ");
 					sql.append("        (select pr.nombre from cen_provincias pr where pr.idprovincia = dir.idprovincia) as NOMBRE_PROVINCIA, ");
 					sql.append("        (select f_siga_getrecurso(pa.nombre,:1) from cen_pais pa where pa.idpais = dir.idpais) as NOMBRE_PAIS, ");
-					sql.append("        pe.nombre as NOMBRE, ");
-					sql.append("        pe.apellidos1 as APELLIDO1, ");
-					sql.append("        pe.apellidos2 as APELLIDO2, ");
+					sql.append("        INITCAP(pe.nombre) as NOMBRE, ");
+					sql.append("        INITCAP(pe.apellidos1) as APELLIDO1, ");
+					sql.append("        INITCAP(pe.apellidos2) as APELLIDO2, ");
 					sql.append("        pe.sexo AS SEXO, ");
 					sql.append("        DECODE(pe.SEXO, 'H','o','a') AS O_A, ");
 					sql.append("        DECODE(pe.SEXO, 'H','el','la') AS EL_LA ");
@@ -872,8 +877,11 @@ public class HelperInformesAdm  {
 						datoNuevo.putAll(datoActual);
 
 						datoNuevo.put("NOMBRE_DEST", (String) reg.get("NOMBRE"));
+						datoNuevo.put("NOMBRE_DEST_MAYUS", ((String) reg.get("NOMBRE")).toUpperCase());
 						datoNuevo.put("APELLIDO1_DEST", (String) reg.get("APELLIDO1"));
+						datoNuevo.put("APELLIDO1_DEST_MAYUS", ((String) reg.get("APELLIDO1")).toUpperCase());
 						datoNuevo.put("APELLIDO2_DEST", (String) reg.get("APELLIDO2"));
+						datoNuevo.put("APELLIDO2_DEST_MAYUS", ((String) reg.get("APELLIDO2")).toUpperCase());
 						datoNuevo.put("TRATAMIENTO_DEST", (String) reg.get("TRATAMIENTO"));
 						datoNuevo.put("NIFCIF_DEST", (String) reg.get("NIFCIF"));
 						datoNuevo.put("SEXO_DEST", (String) reg.get("SEXO"));
@@ -928,9 +936,9 @@ public class HelperInformesAdm  {
 					sql.append("        (select po.nombre from cen_poblaciones po where po.idpoblacion = dir.idpoblacion) as NOMBRE_POBLACION, ");
 					sql.append("        (select pr.nombre from cen_provincias pr where pr.idprovincia = dir.idprovincia) as NOMBRE_PROVINCIA, ");
 					sql.append("        (select f_siga_getrecurso(pa.nombre,:1) from cen_pais pa where pa.idpais = dir.idpais) as NOMBRE_PAIS, ");
-					sql.append("        pe.nombre as NOMBRE, ");
-					sql.append("        pe.apellidos1 as APELLIDO1, ");
-					sql.append("        pe.apellidos2 as APELLIDO2, ");
+					sql.append("        INITCAP(pe.nombre) as NOMBRE, ");
+					sql.append("        INITCAP(pe.apellidos1) as APELLIDO1, ");
+					sql.append("        INITCAP(pe.apellidos2) as APELLIDO2, ");
 					sql.append("        pe.sexo AS SEXO, ");
 					sql.append("        DECODE(pe.SEXO, 'H','o','a') AS O_A, ");
 					sql.append("        DECODE(pe.SEXO, 'H','el','la') AS EL_LA ");
@@ -956,8 +964,11 @@ public class HelperInformesAdm  {
 						datoNuevo.putAll(datoActual);
 						
 						datoNuevo.put("NOMBRE_DEST", (String) reg.get("NOMBRE"));
+						datoNuevo.put("NOMBRE_DEST_MAYUS", ((String) reg.get("NOMBRE")).toUpperCase());
 						datoNuevo.put("APELLIDO1_DEST", (String) reg.get("APELLIDO1"));
+						datoNuevo.put("APELLIDO1_DEST_MAYUS", ((String) reg.get("APELLIDO1")).toUpperCase());
 						datoNuevo.put("APELLIDO2_DEST", (String) reg.get("APELLIDO2"));
+						datoNuevo.put("APELLIDO2_DEST_MAYUS", ((String) reg.get("APELLIDO2")).toUpperCase());
 						datoNuevo.put("TRATAMIENTO_DEST", (String) reg.get("TRATAMIENTO"));
 						datoNuevo.put("NIFCIF_DEST", (String) reg.get("NIFCIF"));
 						datoNuevo.put("SEXO_DEST", (String) reg.get("SEXO"));
@@ -1012,9 +1023,9 @@ public class HelperInformesAdm  {
 					sql.append("        (select po.nombre from cen_poblaciones po where po.idpoblacion = dir.idpoblacion) as NOMBRE_POBLACION, ");
 					sql.append("        (select pr.nombre from cen_provincias pr where pr.idprovincia = dir.idprovincia) as NOMBRE_PROVINCIA, ");
 					sql.append("        (select f_siga_getrecurso(pa.nombre,:1) from cen_pais pa where pa.idpais = dir.idpais) as NOMBRE_PAIS, ");
-					sql.append("        pe.nombre as NOMBRE, ");
-					sql.append("        pe.apellidos1 as APELLIDO1, ");
-					sql.append("        pe.apellidos2 as APELLIDO2, ");
+					sql.append("        INITCAP(pe.nombre) as NOMBRE, ");
+					sql.append("        INITCAP(pe.apellidos1) as APELLIDO1, ");
+					sql.append("        INITCAP(pe.apellidos2) as APELLIDO2, ");
 					sql.append("        f_siga_getrecurso(r.nombre, :2) as NOMBREROL, ");
 					sql.append("        pe.sexo AS SEXO, ");
 					sql.append("        DECODE(pe.SEXO, 'H','o','a') AS O_A, ");
@@ -1044,8 +1055,11 @@ public class HelperInformesAdm  {
 						datoNuevo.putAll(datoActual);
 						
 						datoNuevo.put("NOMBRE_DEST", (String) reg.get("NOMBRE"));
+						datoNuevo.put("NOMBRE_DEST_MAYUS", ((String) reg.get("NOMBRE")).toUpperCase());
 						datoNuevo.put("APELLIDO1_DEST", (String) reg.get("APELLIDO1"));
+						datoNuevo.put("APELLIDO1_DEST_MAYUS", ((String) reg.get("APELLIDO1")).toUpperCase());
 						datoNuevo.put("APELLIDO2_DEST", (String) reg.get("APELLIDO2"));
+						datoNuevo.put("APELLIDO2_DEST_MAYUS", ((String) reg.get("APELLIDO2")).toUpperCase());
 						datoNuevo.put("TRATAMIENTO_DEST", (String) reg.get("TRATAMIENTO"));
 						datoNuevo.put("NIFCIF_DEST", (String) reg.get("NIFCIF"));
 						datoNuevo.put("SEXO_DEST", (String) reg.get("SEXO"));
