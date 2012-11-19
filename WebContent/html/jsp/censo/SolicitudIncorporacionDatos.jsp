@@ -1314,7 +1314,7 @@
 				 		
 						jQuery.ajax({ 
 							type: "POST",
-							url: "/SIGA/FAC_ComprobarPoblacion.do?modo=getAjaxPoblacionesCPFiltro",				
+							url: "/SIGA/CEN_Poblaciones.do?modo=getAjaxPoblacionesCPFiltro",				
 							data: "valorCP="+valorCP+"&valorPoblacion="+valorPoblacion+"&valorGuiones="+valorGuiones+"&numMaxPoblaciones="+numMaximoSelectPoblaciones,
 							dataType: "json",
 							contentType: "application/x-www-form-urlencoded;charset=UTF-8",
@@ -1433,7 +1433,7 @@
 	 		
 			jQuery.ajax({ 
 				type: "POST",
-				url: "/SIGA/FAC_ComprobarPoblacion.do?modo=getAjaxPoblacionesCP",				
+				url: "/SIGA/CEN_Poblaciones.do?modo=getAjaxPoblacionesCP",				
 				data: "valorCP="+valorCP,
 				dataType: "json",
 				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
