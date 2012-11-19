@@ -3295,6 +3295,9 @@
 			<forward name="abrir" path="/html/jsp/gratuita/caractAsistencias.jsp"/>		
 		</action>
 		
+		<action path="/CEN_Poblaciones" type="com.siga.censo.action.PoblacionesAction" scope="request">
+		</action>		
+		
 
 		<!-- ****************************************************************************
 -->
