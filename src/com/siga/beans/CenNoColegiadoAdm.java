@@ -149,7 +149,11 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 			sql.append(" ");
 			sql.append(" SELECT PER.NOMBRE, PER.APELLIDOS1, PER.APELLIDOS2, ");
 			sql.append(" PER.NIFCIF, PER.IDTIPOIDENTIFICACION, TO_CHAR(PER.FECHANACIMIENTO, 'dd-mm-yyyy') FECHANACIMIENTO, ");
-			sql.append(" PER.IDESTADOCIVIL,PER.NATURALDE, PER.FALLECIDO, PER.SEXO, ");  
+			sql.append(" PER.IDESTADOCIVIL,PER.NATURALDE, PER.FALLECIDO, PER.SEXO, "); 
+			sql.append(" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO,'H','o','a'),"+idioma+") as O_A,");
+			sql.append(" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO,'H','o','a'),"+idioma+") as A_O,");
+			sql.append(" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO,'H','el','la'),"+idioma+") as EL_LA,");
+			sql.append(" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO,'H','del','dela'),"+idioma+") as DEL_DELA,");			
 
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idioma);
@@ -229,11 +233,6 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 			sql.append(" AND CLINOT.IDINSTITUCION(+) =  NCOL.IDINSTITUCION ");
 			sql.append(" AND CLINOT.IDPERSONA(+) = NCOL.IDPERSONANOTARIO ");
 			sql.append(" AND CLINOT.IDPERSONA = PERNOT.IDPERSONA(+) ");
-			
-			
-			
-			
-			
 			 
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idPersona);
@@ -266,51 +265,40 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 		}
 		return datos;
 	}
+	
 	public Vector getInformeNoColegiado (String idInstitucion, String idPersona,String idioma,boolean isInforme)throws ClsExceptions {
 		Vector vInforme = null;
-		HelperInformesAdm helperInformes = new HelperInformesAdm();
-		CenDireccionesAdm admDirecciones = null;
-		try {
-			
+		
+		try {			
 			vInforme = getDatosInformeNoColegiado(idInstitucion, idPersona, idioma, isInforme); 
 
 			Hashtable registro = null;
 			if(isInforme){
 				registro = (Hashtable) vInforme.get(0);	
-			}else{
+			} else {
 				registro = ((Row) vInforme.get(0)).getRow();
 			}
 			
-
-			
-			//Añadimos los campos de la direccion preferente para el tipo de envio
-			//AQUI TENGO DUDAS, NO SE SI ES ESTO LO QUE PIDEN. EN TAL CASO ME TENDRE QUE TRAER EL IDTIPOENVIO.
-			//AHORA SE LO METO A PELO
-			admDirecciones = new CenDireccionesAdm(usrbean);
-			helperInformes.completarHashSalida(registro,admDirecciones.getDireccionPreferente(idInstitucion, idPersona, "1"));
+			CenColegiadoAdm admColegiado = new CenColegiadoAdm(usrbean);
+			admColegiado.getDatosInforme(idInstitucion, idPersona, registro, idioma);	
 			
 		}catch (Exception e) {
-			throw new ClsExceptions (e, "Error ScsEJGAdm.getInformeNoColegiado.");
+			throw new ClsExceptions (e, "Error CenNoColegiadoAdm.getInformeNoColegiado.");
 		}
-	return vInforme;
-
-}
+		return vInforme;
+	}
+	
 	public Hashtable getInformeNoColegiadoInforme (String idInstitucion, String idPersona,String idioma,boolean isInforme)throws ClsExceptions {
 		Vector vInforme = null;
 		Vector v= null;
-		Vector vCuentabancaria= null;
 		Hashtable total=new Hashtable();
-		HelperInformesAdm helperInformes = new HelperInformesAdm();
-		CenDireccionesAdm admDirecciones = null;
-		CenCuentasBancariasAdm admCuentasBancarias = new CenCuentasBancariasAdm(usrbean);
 		try {
 			//Se recogen los componentes si los hubiera de BBDD
 			CenComponentesAdm componentesAdm = new CenComponentesAdm(usrbean);
 			v= componentesAdm.selectComponentes(new Long(idPersona), new Integer(idInstitucion));									
 												
 			//Se recogen los datos paa el informe del No Colegiado
-			vInforme = getDatosInformeNoColegiado(idInstitucion, idPersona, idioma, isInforme); 
-			
+			vInforme = getDatosInformeNoColegiado(idInstitucion, idPersona, idioma, isInforme); 			
 			
 			Hashtable registro = null;
 			Hashtable registroContenido = null;
@@ -318,10 +306,8 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 			if(isInforme){
 				//registro = (Hashtable) vInforme.get(0);
 
-				if(v!=null && v.size()!=0)
-				{
-					for(int i=0;i<v.size();i++)
-					{
+				if(v!=null && v.size()!=0) {
+					for(int i=0;i<v.size();i++) {
 
 						registroContenido = (Hashtable) v.get(i);
 						registro = new Hashtable();
@@ -344,55 +330,36 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 						if(!((String)registroContenido.get(CenComponentesBean.C_SOCIEDAD)).equals("")){
 							if(((String)registroContenido.get(CenComponentesBean.C_SOCIEDAD)).equals(ClsConstants.DB_FALSE)){
 								registro.put("PARTICIPACION_SOCIEDAD_%",UtilidadesString.getMensajeIdioma(usrbean,"general.no"));
-							}else{
+							} else {
 								registro.put("PARTICIPACION_SOCIEDAD_%",UtilidadesString.getMensajeIdioma(usrbean,"general.yes"));							   	 				
 							}
-						}else{
+						}else {
 							registro.put("PARTICIPACION_SOCIEDAD_%","");
 						}
 						vInformeComp.add(registro);
 					}//fin for
-				}
-				else
+				} else
 					registro = (Hashtable) vInforme.get(0);	
 								
-			}else{
+			} else {
 				registro = ((Row) vInforme.get(0)).getRow();
 			}
-						
+									
+			CenColegiadoAdm admColegiado = new CenColegiadoAdm(usrbean);
+			admColegiado.getDatosInforme(idInstitucion, idPersona, registro, idioma);												
 			
-			//Añadimos los campos de la direccion preferente para el tipo de envio
-			//AQUI TENGO DUDAS, NO SE SI ES ESTO LO QUE PIDEN. EN TAL CASO ME TENDRE QUE TRAER EL IDTIPOENVIO.
-			//AHORA SE LO METO A PELO
-			admDirecciones = new CenDireccionesAdm(usrbean);
-			helperInformes.completarHashSalida(registro,admDirecciones.getDireccionPreferente(idInstitucion, idPersona, "1"));
-												
-			helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteAbono(idInstitucion, idPersona));
-			if(registro.get("CUENTABANCARIA_ABONO")==null)
-				registro.put("CUENTABANCARIA_ABONO", "");
-			helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteCargo(idInstitucion, idPersona));
-			if(registro.get("CUENTABANCARIA_CARGO")==null)
-				registro.put("CUENTABANCARIA_CARGO", "");
-			helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteSJCS(idInstitucion, idPersona));
-			if(registro.get("CUENTABANCARIA_SJCS")==null)
-				registro.put("CUENTABANCARIA_SJCS", "");
-												
-			
-			if(vInformeComp.size()!=0)
-			{
+			if(vInformeComp.size()!=0) {
 				total.put("vInformeComp", vInformeComp);
 			}
 			
-			if(registro.size()!=0)
-			{
+			if(registro.size()!=0) {
 				total.put("vInforme", registro);
 			}
 		}catch (Exception e) {
-			throw new ClsExceptions (e, "Error ScsEJGAdm.getInformeNoColegiado.");
+			throw new ClsExceptions (e, "Error CenNoColegiadoAdm.getInformeNoColegiadoInforme.");
 		}
-		return total;
-					
-}
+		return total;					
+	}
 	
 		/**
 	 * Comprueba si existe un colegiado

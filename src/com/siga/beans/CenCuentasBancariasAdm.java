@@ -17,7 +17,7 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.general.*;
+import com.siga.general.SIGAException;
 
 /**
  * @author nuria.rgonzalez
@@ -919,13 +919,14 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 			rc = new RowsContainer(); 
 			String sql = "";
 			                      
-            sql = "SELECT ' ' ||'nº ' || cuen.cbo_codigo || '-' || cuen.codigosucursal ||'-' ||cuen.digitocontrol ||'-' || LPAD(SUBSTR(cuen.numerocuenta, 7), 10, '*') as CUENTABANCARIA_ABONO "; 
-            sql +=" FROM cen_cuentasbancarias cuen";
-            sql +=" WHERE cuen.abonocargo IN ('A', 'T')";
-            sql +=" AND cuen.idinstitucion = "+idInstitucion;
-            sql +=" AND cuen.idpersona = "+idPersona;
-            sql +=" AND (cuen.FECHABAJA is null or cuen.fechabaja > sysdate)";
-            sql += " order by fechamodificacion desc";       
+            sql = "SELECT ' nº ' || cuen.cbo_codigo || '-' || cuen.codigosucursal ||'-' ||cuen.digitocontrol ||'-' || LPAD(SUBSTR(cuen.numerocuenta, 7), 10, '*') as CUENTABANCARIA_ABONO, "
+            	+ " ' nº ' || cuen.cbo_codigo || '-' || cuen.codigosucursal ||'-' ||cuen.digitocontrol ||'-' || cuen.numerocuenta as CUENTABANCARIA_ABONO_ABIERTA "
+            	+ " FROM cen_cuentasbancarias cuen"
+            	+ " WHERE cuen.abonocargo IN ('A', 'T')"
+            	+ " AND cuen.idinstitucion = " + idInstitucion
+            	+ " AND cuen.idpersona = " + idPersona
+            	+ " AND (cuen.FECHABAJA is null or cuen.fechabaja > sysdate)"
+            	+ " order by fechamodificacion desc";       
             
          // RGG cambio visibilidad
 			rc = this.find(sql);
@@ -952,13 +953,14 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 			rc = new RowsContainer(); 
 			String sql = "";
 			                      
-            sql = "SELECT ' ' ||'nº ' || cuen.cbo_codigo || '-' || cuen.codigosucursal ||'-' ||cuen.digitocontrol ||'-' || LPAD(SUBSTR(cuen.numerocuenta, 7), 10, '*') as CUENTABANCARIA_CARGO ";
-            sql +=" FROM cen_cuentasbancarias cuen";
-            sql +=" WHERE cuen.abonocargo IN ('C', 'T')";
-            sql +=" AND cuen.idinstitucion = "+idInstitucion;
-            sql +=" AND cuen.idpersona = "+idPersona;
-            sql +=" AND (cuen.FECHABAJA is null or cuen.fechabaja > sysdate)";
-            sql += " order by fechamodificacion desc";       
+            sql = "SELECT ' nº ' || cuen.cbo_codigo || '-' || cuen.codigosucursal ||'-' ||cuen.digitocontrol ||'-' || LPAD(SUBSTR(cuen.numerocuenta, 7), 10, '*') as CUENTABANCARIA_CARGO, "
+            	+ " ' nº ' || cuen.cbo_codigo || '-' || cuen.codigosucursal ||'-' ||cuen.digitocontrol ||'-' || cuen.numerocuenta as CUENTABANCARIA_CARGO_ABIERTA "
+            	+ " FROM cen_cuentasbancarias cuen"
+            	+ " WHERE cuen.abonocargo IN ('C', 'T')"
+            	+ " AND cuen.idinstitucion = " + idInstitucion
+            	+ " AND cuen.idpersona = " + idPersona
+            	+ " AND (cuen.FECHABAJA is null or cuen.fechabaja > sysdate)"
+            	+ " order by fechamodificacion desc";       
             
          // RGG cambio visibilidad
 			rc = this.find(sql);
@@ -985,13 +987,14 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 			rc = new RowsContainer(); 
 			String sql = "";
 			                      
-            sql = "SELECT ' ' ||'nº ' || cuen.cbo_codigo || '-' || cuen.codigosucursal ||'-' ||cuen.digitocontrol ||'-' || LPAD(SUBSTR(cuen.numerocuenta, 7), 10, '*') as CUENTABANCARIA_SJCS ";
-            sql +=" FROM cen_cuentasbancarias cuen";
-            sql +=" WHERE ( cuen.abonosjcs = 1 OR (cuen.abonosjcs = 0 AND cuen.abonocargo IN ('A', 'T')))";
-            sql +=" AND cuen.idinstitucion = "+idInstitucion;
-            sql +=" AND cuen.idpersona = "+idPersona;
-            sql +=" AND (cuen.FECHABAJA is null or cuen.fechabaja > sysdate)";
-            sql += " order by abonosjcs desc, fechamodificacion desc";       
+            sql = "SELECT ' nº ' || cuen.cbo_codigo || '-' || cuen.codigosucursal ||'-' ||cuen.digitocontrol ||'-' || LPAD(SUBSTR(cuen.numerocuenta, 7), 10, '*') as CUENTABANCARIA_SJCS, "
+            	+ " ' nº ' || cuen.cbo_codigo || '-' || cuen.codigosucursal ||'-' ||cuen.digitocontrol ||'-' || cuen.numerocuenta as CUENTABANCARIA_SJCS_ABIERTA "	
+            	+ " FROM cen_cuentasbancarias cuen"
+            	+ " WHERE ( cuen.abonosjcs = 1 OR (cuen.abonosjcs = 0 AND cuen.abonocargo IN ('A', 'T')))"
+            	+ " AND cuen.idinstitucion = " + idInstitucion
+            	+ " AND cuen.idpersona = " + idPersona
+            	+ " AND (cuen.FECHABAJA is null or cuen.fechabaja > sysdate)"
+            	+ " order by abonosjcs desc, fechamodificacion desc";       
             
          // RGG cambio visibilidad
 			rc = this.find(sql);

@@ -1459,84 +1459,102 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 		return direccion;
 	}
 	
-	public Vector getDireccionPreferente (String idInstitucion, String idPersona, String idTipoEnvio) throws ClsExceptions  
-	{
+	public Vector getDireccionResidencia (String idInstitucion, String idPersona) throws ClsExceptions { 
+		Vector datos = null;
+		try {		
+			HelperInformesAdm helperInformes = new HelperInformesAdm();
+			Hashtable htCodigos = new Hashtable();
+			
+			int keyContador = 0;
+			
+			String sql = "SELECT * FROM ( "
+					+ " SELECT DIR.DOMICILIO AS DOMICILIORESIDENCIA, "
+					+ " NVL(DIR.TELEFONO1, DIR.TELEFONO2) AS TELEFONORESIDENCIA, "
+        			+ " DIR.MOVIL AS MOVILRESIDENCIA, "
+        			+ " NVL(DIR.FAX1, DIR.FAX2) AS FAXRESIDENCIA, "
+        			+ " DIR.CORREOELECTRONICO AS EMAILRESIDENCIA, "
+        			+ " DIR.CODIGOPOSTAL AS CPRESIDENCIA, "
+        			+ " CASE " 
+        				+ " WHEN (PAIS.IDPAIS IS NULL OR PAIS.IDPAIS = 191) THEN "
+        					+ " F_SIGA_GETRECURSO(POBL.NOMBRE,"+this.usrbean.getLanguage()+") "
+        				+ " ELSE "
+        					+ " DIR.POBLACIONEXTRANJERA "
+        			+ " END POBLACIONRESIDENCIA, "
+        			+ " F_SIGA_GETRECURSO(PROV.NOMBRE,"+this.usrbean.getLanguage()+") PROVINCIARESIDENCIA, "
+        			+ " F_SIGA_GETRECURSO(PAIS.NOMBRE,"+this.usrbean.getLanguage()+") PAISRESIDENCIA "
+    			+ " FROM CEN_DIRECCIONES DIR, " 
+        			+ " CEN_DIRECCION_TIPODIRECCION TIPO, " 
+        			+ " CEN_PAIS PAIS, " 
+        			+ " CEN_POBLACIONES POBL, " 
+        			+ " CEN_PROVINCIAS PROV "
+    			+ " WHERE DIR.IDPERSONA = :1 "
+        			+ " AND DIR.IDINSTITUCION = :2 "
+        			+ " AND DIR.FECHABAJA IS NULL "
+        			+ " AND TIPO.IDINSTITUCION(+) = DIR.IDINSTITUCION "
+        			+ " AND TIPO.IDPERSONA(+) = DIR.IDPERSONA " 
+        			+ " AND TIPO.IDDIRECCION(+) = DIR.IDDIRECCION "
+        			+ " AND TIPO.IDTIPODIRECCION = 1 "
+        			+ " AND PROV.IDPROVINCIA(+) = DIR.IDPROVINCIA "
+        			+ " AND POBL.IDPOBLACION(+) = DIR.IDPOBLACION "
+        			+ " AND PAIS.IDPAIS(+) = DIR.IDPAIS "
+    			+ " ORDER BY DIR.FECHAMODIFICACION DESC "
+			+ " ) WHERE ROWNUM=1";
+
+			htCodigos.put(1, idPersona);
+			htCodigos.put(2, idInstitucion);
+			
+			datos = helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos); 			
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la dirección de la residencia");
+		}
+		return datos;
+	}	
+	
+	public Vector getDireccionPreferente (String idInstitucion, String idPersona, String idTipoEnvio) throws ClsExceptions {
 		Vector datos = null;
 		try {
 			HelperInformesAdm helperInformes = new HelperInformesAdm();
 			Hashtable htFuncion = new Hashtable();
 			htFuncion.put(new Integer(1), idInstitucion);
 			htFuncion.put(new Integer(2), idPersona);
-			// jbd inc-6812 Si llamamos a una funcion de envios solo funcionara para direcciones con ese campo
-			// Este metodo solo se llama desde los getInformeX (letrado, colegiado y no colegiado)
-			//htFuncion.put(new Integer(3), idTipoEnvio);
-			//Vector vSalida = helperInformes.ejecutaFuncionSalida(htFuncion, "F_SIGA_GETDIRECCION", "IDDIRECCIONPREFERENTE");
 			htFuncion.put(new Integer(3), "2"); // Preferiblemente la de despacho
 			htFuncion.put(new Integer(4), "3"); // Si no la de censo
 			Vector vSalida = helperInformes.ejecutaFuncionSalida(htFuncion, "F_SIGA_GETIDDIRECCION_TIPOPRE2", "IDDIRECCIONPREFERENTE");
 			Hashtable registro = (Hashtable) vSalida.get(0);
 			String idDireccionPreferente = (String)registro.get("IDDIRECCIONPREFERENTE");
 			
+			String sql = "SELECT DIR.DOMICILIO, "
+					+ " DIR.CODIGOPOSTAL, "
+        			+ " DIR.TELEFONO1, "
+        			+ " DIR.TELEFONO2, "
+        			+ " DIR.MOVIL, "
+        			+ " DIR.FAX1, "
+        			+ " DIR.FAX2, "
+        			+ " DIR.CORREOELECTRONICO, "
+        			+ " DIR.PAGINAWEB, "
+        			+ " DIR.POBLACIONEXTRANJERA, "
+        			+ " F_SIGA_GETRECURSO(POB.NOMBRE,"+this.usrbean.getLanguage()+") POBLACION, "
+        			+ " F_SIGA_GETRECURSO(PRO.NOMBRE,"+this.usrbean.getLanguage()+") PROVINCIA, "
+        			+ " F_SIGA_GETRECURSO(PA.NOMBRE,"+this.usrbean.getLanguage()+") PAIS "
+    			+ " FROM CEN_DIRECCIONES DIR, "  
+        			+ " CEN_PAIS PA, " 
+        			+ " CEN_POBLACIONES POB, " 
+        			+ " CEN_PROVINCIAS PRO "
+    			+ " WHERE DIR.IDPERSONA = :1 "
+        			+ " AND DIR.IDDIRECCION = :2 "
+        			+ " AND DIR.IDINSTITUCION = :3 "
+        			+ " AND DIR.FECHABAJA IS NULL"
+        			+ " AND PRO.IDPROVINCIA(+) = DIR.IDPROVINCIA "
+        			+ " AND POB.IDPOBLACION(+) = DIR.IDPOBLACION "
+        			+ " AND PA.IDPAIS(+) = DIR.IDPAIS ";
+			
 			Hashtable htCodigos = new Hashtable();
+			htCodigos.put(1, idPersona);
+			htCodigos.put(2, idDireccionPreferente);
+			htCodigos.put(3, idInstitucion);
 			
-			int keyContador = 0;
-
-				
-			
-			StringBuffer sql = new StringBuffer();
-			sql.append(" ");
-			sql.append(" SELECT DIR.DOMICILIO,       DIR.CODIGOPOSTAL, ");
-			sql.append(" DIR.TELEFONO1,       DIR.TELEFONO2, ");
-			sql.append(" DIR.MOVIL,       DIR.FAX1, ");
-			sql.append(" DIR.FAX2,       DIR.CORREOELECTRONICO, ");
-			sql.append(" DIR.PAGINAWEB,  ");
-			sql.append(" DIR.POBLACIONEXTRANJERA, F_SIGA_GETRECURSO(POB.NOMBRE,1) POBLACION, ");
-			sql.append(" F_SIGA_GETRECURSO(PRO.NOMBRE,1) PROVINCIA, ");
-			sql.append(" F_SIGA_GETRECURSO(PA.NOMBRE,1) PAIS ");
-			sql.append(" FROM CEN_DIRECCIONES DIR,CEN_PAIS PA,CEN_POBLACIONES POB,CEN_PROVINCIAS PRO ");
-			sql.append(" WHERE   PRO.IDPROVINCIA(+) = DIR.IDPROVINCIA ");
-			sql.append(" AND   POB.IDPOBLACION(+) = DIR.IDPOBLACION ");
-			sql.append(" AND  PA.IDPAIS(+) = DIR.IDPAIS ");
-			sql.append(" AND DIR.IDPERSONA = :");
-			sql.append(keyContador);
-			keyContador++;
-			htCodigos.put(new Integer(keyContador), idPersona);
-			sql.append(" AND DIR.IDDIRECCION = :");
-			sql.append(keyContador);
-
-			keyContador++;
-			htCodigos.put(new Integer(keyContador), idDireccionPreferente);
-			sql.append(" AND DIR.IDINSTITUCION = :");
-			sql.append(keyContador);
-			
-			keyContador++;
-			htCodigos.put(new Integer(keyContador), idInstitucion);
-			sql.append(" AND DIR.FECHABAJA IS NULL ");
-
-			
-			datos = helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos); 
-			
-		}
-		catch (Exception e) {
-			throw new ClsExceptions (e, "Error al obtener la informacion getDireccionPreferente");
-		}
-		return datos;
-	}
-	
-	public Vector getDatosCV (String idInstitucion, String idPersona) throws ClsExceptions  
-	{
-		Vector datos = null;
-		try {
-			HelperInformesAdm helperInformes = new HelperInformesAdm();
-			Hashtable htFuncion = new Hashtable();
-			htFuncion.put(new Integer(1), idInstitucion);
-			htFuncion.put(new Integer(2), idPersona);
-							
-			
-			
-			
-			//datos = helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos); 
-			
+			datos = helperInformes.ejecutaConsultaBind(sql, htCodigos); 			
 		}
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al obtener la informacion getDireccionPreferente");
