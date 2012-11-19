@@ -837,8 +837,23 @@
 		if(document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>"){
 			var numero = document.forms[0].NIdentificacion.value;
 			if(numero.length==9){
+				num="";
+				for(var x=0; x<8; x++) {
+					var letra = numero.substring(x,x+1);
+					if (new RegExp('^[0-9]$').test(letra)) {
+						num+=letra;
+					}
+				}
+				
+				while (num.length<8){
+					num="0"+num;
+				}								
+				
+				//num = numero.substring(0,8);
 				letIn = numero.substring(8,9);
-				num = numero.substring(0,8);
+				
+				document.forms[0].NIdentificacion.value = num + letIn;
+				
 				var posicion = num % 23;
 				letras='TRWAGMYFPDXBNJZSQVHLCKET';
 				var letra=letras.substring(posicion,posicion+1);
