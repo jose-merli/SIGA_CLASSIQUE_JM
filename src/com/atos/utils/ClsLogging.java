@@ -69,7 +69,7 @@ public class ClsLogging{
 		if(!iniciado) {
 			iniciado=true;
 			//ClsLogging.writeFileLog("CLSLOGGING INIT() SE EJECUTA",3);
-		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.INIT);
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 //			ReadProperties rp=new ReadProperties("SIGA.properties");
 
 			//LMS 29/08/2006
