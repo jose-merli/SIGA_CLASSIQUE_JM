@@ -201,7 +201,7 @@
 	<script language="JavaScript">
 	
 		function accionVolver(){
-			document.forms['ActaComisionForm'].action="./JGR_ActasComision.do";
+			document.forms['ActaComisionForm'].action="./JGR_ActasComisionEd.do";
 			document.forms['ActaComisionForm'].target="mainWorkArea";
 			document.forms['ActaComisionForm'].modo.value="";
 			document.forms['ActaComisionForm'].submit();

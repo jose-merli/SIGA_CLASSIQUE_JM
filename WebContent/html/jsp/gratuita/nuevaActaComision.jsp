@@ -37,7 +37,7 @@
 
 <body>
 
-	<html:form action="/JGR_ActasComision" method="POST" target="submitArea">
+	<html:form action="/JGR_ActasComisionEd" method="POST" target="submitArea">
 		<html:hidden property = "modo" value = ""/>
 		<html:hidden property = "idInstitucion" value = ""/>
 		<html:hidden property = "actionModal" value = ""/>
