@@ -3172,6 +3172,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" EJG.ANIO AS ANIO_EJG, ");
 			sql.append(" to_char(EJG.FECHAAPERTURA, 'dd/mm/yyyy') AS FECHAAPERTURA_EJG, ");
 			sql.append(" EJG.OBSERVACIONES AS OBSERVACIONES, ");
+			sql.append(" EJG.OBSERVACIONES AS ASUNTO_EJG, ");
 		    sql.append(" (select observaciones from scs_designa des where des.IDINSTITUCION = EJGD.Idinstitucion and des.IDTURNO = EJGD.Idturno and des.ANIO = ejgd.aniodesigna and des.NUMERO = EJGD.Numerodesigna) as OBSERVACIONES_DESIGNA, ");			
 			sql.append(" TO_CHAR(SYSDATE, 'dd') AS DIA_ACTUAL, ");
 			sql.append(" TO_CHAR(SYSDATE, 'dd/mm/yyyy') AS MESACTUAL, ");
@@ -3196,6 +3197,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" EJG.ANIOCAJG AS ANIO_CAJG_DEFENSA_JURIDICA, ");
 			sql.append(" EJG.NUMERODILIGENCIA AS NUMDILIGENCIA_DEFENSA_JURIDICA, ");
 			sql.append(" EJG.NUMEROPROCEDIMIENTO AS NUMPROCED_DEFENSA_JURIDICA, ");
+			sql.append(" EJG.NUMEROPROCEDIMIENTO AS NUM_PROCEDIMIENTO_EJG, ");
 			sql.append(" EJG.NIG ");
 			sql.append(" ,TO_CHAR(EJG.FECHA_DES_PROC,'dd-mm-yyyy') AS  FECHAEJG_PROCURADOR ");
 			sql.append(" ,EJG.NUMERODESIGNAPROC AS  NUMDESIGNA_PROCURADOR ");
@@ -3234,7 +3236,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
             sql.append(" , to_char(EJG.FECHAAPERTURA,'dd/mm/yyyy') AS FECHAAPERTURA_EJGLETRA ");
             sql.append(" , to_char(SYSDATE,'dd/mm/yyyy') AS FECHAACTUALLETRA ");
             sql.append(" , FUND.TEXTOPLANTILLA AS FUNDAMENTOJURIDICO ");
-		   			sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGD, SCS_TIPOFUNDAMENTOS FUND");
+            sql.append(" , F_SIGA_GETRECURSO (FUND.DESCRIPCION, "+idioma+")  AS FUNDAMENTO_JURIDICO ");
+		   	sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGD, SCS_TIPOFUNDAMENTOS FUND");
 			sql.append(" WHERE  ");
 
    
@@ -3536,7 +3539,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			
 			sql.append(" let.Idpersona IDPERSONA_DESIGNA,let.IDINSTITUCION IDINSTITUCION_LETDESIGNA ,let.IDINSTITUCIONORIGEN IDINSTITUCIONORIGEN_LETDESIGNA , ");
 			sql.append(" DES.IDINSTITUCION_JUZG IDINSTITUCION_JUZGDESIGNA ,DES.IDJUZGADO IDJUZGADODESIGNA, ");
-			sql.append(" DES.NUMPROCEDIMIENTO AS AUTOS, ");
+			sql.append(" DES.NUMPROCEDIMIENTO AS AUTOS, "); 
 			sql.append(" TO_CHAR(DES.FECHAJUICIO, 'dd/MM/yyyy') AS FECHA_JUICIO, ");
 			sql.append(" TO_CHAR(DES.FECHAJUICIO, 'HH24:MI') AS HORA_JUICIO, ");
 			sql.append(" DES.IDPROCEDIMIENTO  AS IDPROCEDIMIENTO,");
@@ -4608,10 +4611,10 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							htFuncion.put(new Integer(2), "m");
 							htFuncion.put(new Integer(3), idioma);
 
-				     		helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-													htFuncion, "PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHAENLETRA", "MES_ACTUAL"));
+				     		helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htFuncion, "PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHAENLETRA", "MES_ACTUAL"));
 
 				     		registro.put("MES_ACTUAL", registro.get("MES_ACTUAL").toString().toUpperCase());
+				     		registro.put("MES_ACTUAL_MINUS", registro.get("MES_ACTUAL").toString().toLowerCase());
 
 				     					
 							//Aniadimos los contrarios de la defensa juridica
