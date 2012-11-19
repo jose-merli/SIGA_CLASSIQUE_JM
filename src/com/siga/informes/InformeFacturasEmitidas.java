@@ -10,7 +10,6 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.xmlbeans.XmlOptions;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.XMLOutputter;
@@ -26,6 +25,7 @@ import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmInformeBean;
 import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.CenInstitucionAdm;
@@ -424,7 +424,7 @@ public class InformeFacturasEmitidas extends MasterReport
             	Iterator iteIva = tmTotalesIva.keySet().iterator();
             	Element desgloseIva = null;
             	//Miramo se es el primer registro para poner el titulo
-            	String textoDesgloseIva = "SUMA SUBTOTAL POR TIPO DE IVA";
+            	String textoDesgloseIva = UtilidadesString.getMensajeIdioma(this.getUsuario(), "facturacion.facturas.emitidas.desgloseiva");
             	while (iteIva.hasNext()) {
 					Float keyPorcentajeIva = (Float) iteIva.next();
 					Hashtable htTotalIva = (Hashtable)tmTotalesIva.get(keyPorcentajeIva);
