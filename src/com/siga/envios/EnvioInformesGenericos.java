@@ -24,7 +24,7 @@ import org.redabogacia.sigaservices.app.autogen.model.EcomSolsusprocedimientoWit
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosExample;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosExample.Criteria;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosWithBLOBs;
-import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
+import org.redabogacia.sigaservices.app.services.EcomColaService;
 
 import com.aspose.words.Document;
 import com.atos.utils.ClsConstants;
@@ -103,7 +103,6 @@ import com.siga.beans.ScsProcuradorAdm;
 import com.siga.beans.ScsUnidadFamiliarEJGAdm;
 import com.siga.certificados.Plantilla;
 import com.siga.envios.form.DefinirEnviosForm;
-import com.siga.envios.service.EntradaEnviosService;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.AcreditacionForm;
@@ -216,8 +215,8 @@ public class EnvioInformesGenericos extends MasterReport {
 				break;
 
 			case 1: // Caso de colegiados
-				vDatosInformeFinal = colegiadoAdm.getInformeColegiado(
-						idInstitucion, idPersona, idioma, true);
+				
+				vDatosInformeFinal = colegiadoAdm.getInformeColegiado(idInstitucion, idPersona, idioma, true, htDatosInforme);	
 				break;
 
 			case 2: // Caso de letrados
@@ -226,6 +225,18 @@ public class EnvioInformesGenericos extends MasterReport {
 				break;
 
 			}
+			
+			if (htDatosInforme.size()==0) {
+				Vector vEstadosColegiales = new Vector();
+				
+				Hashtable registroEstadosColegiales = new Hashtable();
+				registroEstadosColegiales.put("ESTADO_DESCRIPCION", "");
+				registroEstadosColegiales.put("ESTADO_FECHA", "");
+				registroEstadosColegiales.put("ESTADO_OBSERVACIONES", "");
+				vEstadosColegiales.add(registroEstadosColegiales);	
+				
+				htDatosInforme.put("EstadosColegiales", vEstadosColegiales);	
+			}		
 
 			datosCVAdm.updateInformeDatosCV(usrBean,
 					Integer.parseInt(idInstitucion), Long.parseLong(idPersona),
@@ -5616,11 +5627,8 @@ public class EnvioInformesGenericos extends MasterReport {
 					f = (Hashtable) list.elementAt(tam);
 					String nombre = "";
 
-					fila.put("LETRADO", (String) htCol.get("APELLIDO1_LETRADO")
-							+ " " + (String) htCol.get("APELLIDO2_LETRADO")
-							+ ", " + (String) htCol.get("N_LETRADO"));
-					fila.put("GUARDIA_DIA_TEXTO",
-							(String) f.get("DIA_FECHA_INICIO"));
+					fila.put("LETRADO", (String) f.get("LETRADO"));
+					fila.put("GUARDIA_DIA_TEXTO", (String) f.get("DIA_FECHA_INICIO"));
 					fila.put("GUARDIA", (String) f.get("GUARDIA"));
 					Date fecha_inicio = new Date((String) f.get("FECHA_INICIO"));
 					SimpleDateFormat formateador = new SimpleDateFormat(
@@ -5640,6 +5648,8 @@ public class EnvioInformesGenericos extends MasterReport {
 					fila.put("FAX1", (String) htCol.get("FAX1"));
 					fila.put("NCOLEGIADO",
 							(String) htCol.get("NCOLEGIADO_LETRADO"));
+					fila.put("NUM_COLEGIADO_COMPA", (String) f.get("NUM_COLEGIADO_COMPA"));
+					fila.put("NOMBRE_COMPA", (String) f.get("NOMBRE_COMPA"));
 					// ScsCabeceraGuardiasAdm admCab = new
 					// ScsCabeceraGuardiasAdm(usrBean);
 					// Integer posicion =
@@ -5810,8 +5820,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 			ScsGuardiasTurnoAdm admGT = new ScsGuardiasTurnoAdm(usrBean);
 
-			datos = admGT.getDatosListaGuardias(idInstitucion, idlista,
-					guardias, fechaInicio, fechaFin);
+			datos = admGT.getDatosListaGuardias(idInstitucion, idlista, guardias, fechaInicio, fechaFin, null);
 			lista = calcularPersonasTotal(datos);
 
 		} catch (SIGAException e) {

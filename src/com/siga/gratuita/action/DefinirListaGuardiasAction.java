@@ -849,7 +849,7 @@ public class DefinirListaGuardiasAction extends MasterAction {
 				}
 
 				// RGG
-				datos = admGT.getDatosListaGuardias(institucion,idlista,guardias,fechaInicio,fechaFin);  
+				datos = admGT.getDatosListaGuardias(institucion,idlista,guardias,fechaInicio,fechaFin,null);  
 				
 
 				Hashtable listaPorUsu;
