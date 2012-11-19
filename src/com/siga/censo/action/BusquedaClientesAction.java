@@ -21,7 +21,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import net.sourceforge.ajaxtags.xml.AjaxXmlBuilder;
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
@@ -37,11 +37,9 @@ import com.siga.beans.CenNoColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.EnvEnviosAdm;
-import com.siga.beans.ExpExpedienteBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsProcuradorAdm;
 import com.siga.censo.form.BusquedaClientesForm;
-import com.siga.facturacion.form.ConsultaMorososForm;
 import com.siga.general.CenVisibilidad;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -1833,7 +1831,7 @@ public class BusquedaClientesAction extends MasterAction {
 				case 1:
 					if(colegiadoAdm == null)
 						colegiadoAdm = new CenColegiadoAdm(user);
-					datosTabla = colegiadoAdm.getInformeColegiado(idInstitucionPersona,idPersona,user.getLanguageInstitucion(),false);	
+					datosTabla = colegiadoAdm.getInformeColegiado(idInstitucionPersona,idPersona,user.getLanguageInstitucion(),false, null);	
 					break;
 				case 2:
 					

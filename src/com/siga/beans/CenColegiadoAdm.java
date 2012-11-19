@@ -1180,68 +1180,230 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 		if(rc!=null && rc.size()==1){
 			ht=((Row)rc.get(0)).getRow();
 		}
-		return ht;
-		
+		return ht;		
 	}
-	public Vector getInformeColegiado (String idInstitucion, String idPersona,String idioma,boolean isInforme)throws ClsExceptions {
-			Vector vInforme = null;
-			HelperInformesAdm helperInformes = new HelperInformesAdm();
-			CenEstadoColegialAdm admEstadoCol = null;
-			CenDireccionesAdm admDirecciones = null;
-			CenDatosCVAdm admDatosCV = null;
-			CenTiposCVAdm admTiposCV = null;
-			CenTiposCVSubtipo1Adm admSubtipo1CV = null;
-			CenTiposCVSubtipo2Adm admSubtipo2CV = null;
-			CenCuentasBancariasAdm admCuentasBancarias = new CenCuentasBancariasAdm(usrbean);
+	
+	public Vector getInformeLetrado (String idInstitucion, String idPersona, String idioma, boolean isInforme) throws ClsExceptions {
+		Vector vInforme = null;		
+		
+		try {
 			
-			try {
-				
-				vInforme = getDatosInformeColegiado(idInstitucion, idPersona, idioma, isInforme); 
+			vInforme = this.getDatosInformeLetrado(idInstitucion, idPersona, idioma, isInforme);
+			Hashtable registro = null;
+			if(isInforme){
+				registro = (Hashtable) vInforme.get(0);	
+			}else{
+				registro = ((Row) vInforme.get(0)).getRow();
+			}
+			
+			HelperInformesAdm helperInformes = new HelperInformesAdm();
+			CenEstadoColegialAdm admEstadoCol = new CenEstadoColegialAdm(usrbean);
+			
+			helperInformes.completarHashSalida(registro,admEstadoCol.getEstadoColegial(idInstitucion, idPersona, idioma));
+			
+			this.getDatosInforme(idInstitucion, idPersona, registro, idioma);
+			
+		}catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener los datos del informe del letrado");
+		}
+		return vInforme;					
+	}	
+	
+	public Vector getInformeColegiado (String idInstitucion, String idPersona, String idioma, boolean isInforme, Hashtable hEstadosColegiales) throws ClsExceptions {
+			Vector vInforme = null;			
+			
+			try {				
+				vInforme = this.getDatosInformeColegiado(idInstitucion, idPersona, idioma, isInforme); 
 
 				Hashtable registro = null;
 				if(isInforme){
 					registro = (Hashtable) vInforme.get(0);	
 				}else{
 					registro = ((Row) vInforme.get(0)).getRow();
+				}		
+				
+				HelperInformesAdm helperInformes = new HelperInformesAdm();
+				CenEstadoColegialAdm admEstadoCol = new CenEstadoColegialAdm(usrbean);
+				
+				helperInformes.completarHashSalida(registro,admEstadoCol.getEstadoColegial(idInstitucion, idPersona, idioma));			
+
+				if (hEstadosColegiales!=null) { 
+					Vector vEstadosColegiales = admEstadoCol.getEstadosColegiales(idInstitucion, idPersona, idioma);
+						
+					if (vEstadosColegiales.size()==0) {
+						Hashtable registroEstadosColegiales = new Hashtable();
+						registroEstadosColegiales.put("ESTADO_DESCRIPCION", "");
+						registroEstadosColegiales.put("ESTADO_FECHA", "");
+						registroEstadosColegiales.put("ESTADO_OBSERVACIONES", "");
+						vEstadosColegiales.add(registroEstadosColegiales);	
+					}
+					
+					hEstadosColegiales.put("EstadosColegiales", vEstadosColegiales);
 				}
 				
-
-				//Aniadimos los datos del colegiado del ejg
-				admEstadoCol = new CenEstadoColegialAdm(usrbean);
-				//Añadimos el estado Colegial
-				helperInformes.completarHashSalida(registro,admEstadoCol.getEstadoColegial(idInstitucion, idPersona, idioma));
-				//Añadimos los campos de la direccion preferente para el tipo de envio
-				//AQUI TENGO DUDAS, NO SE SI ES ESTO LO QUE PIDEN. EN TAL CASO ME TENDRE QUE TRAER EL IDTIPOENVIO.
-				//AHORA SE LO METO A PELO
-				admDirecciones = new CenDireccionesAdm(usrbean);
-				helperInformes.completarHashSalida(registro,admDirecciones.getDireccionPreferente(idInstitucion, idPersona, "1"));
-				
-				helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteAbono(idInstitucion, idPersona));
-				if(registro.get("CUENTABANCARIA_ABONO")==null)
-					registro.put("CUENTABANCARIA_ABONO", "");
-				helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteCargo(idInstitucion, idPersona));
-				if(registro.get("CUENTABANCARIA_CARGO")==null)
-					registro.put("CUENTABANCARIA_CARGO", "");
-				helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteSJCS(idInstitucion, idPersona));
-				if(registro.get("CUENTABANCARIA_SJCS")==null)
-					registro.put("CUENTABANCARIA_SJCS", "");
+				this.getDatosInforme(idInstitucion, idPersona, registro, idioma);
 								
-			}catch (Exception e) {
-				throw new ClsExceptions (e, "Error ScsEJGAdm.getInformeColegiado.");
+			} catch (Exception e) {
+				throw new ClsExceptions (e, "Error al obtener los datos del informe del colegiado");
 			}
-		return vInforme;
-						
+		return vInforme;						
 	}
 	
-	private Vector getDatosInformeColegiado (String idInstitucion, String idPersona,String idioma,boolean isInforme
-	) throws ClsExceptions  
-	{
+	public void getDatosInforme (String idInstitucion, String idPersona, Hashtable registro, String idioma) throws Exception {
+		
+		if(registro.get("FECHAPRESENTACION_DD")==null)
+			registro.put("FECHAPRESENTACION_DD", "");
+		if(registro.get("FECHAPRESENTACION_DDD")==null)
+			registro.put("FECHAPRESENTACION_DDD", "");
+		if(registro.get("FECHAPRESENTACION_MM")==null)
+			registro.put("FECHAPRESENTACION_MM", "");
+		if(registro.get("FECHAPRESENTACION_MMM")==null)
+			registro.put("FECHAPRESENTACION_MMM", "");
+		if(registro.get("FECHAPRESENTACION_YYYY")==null)
+			registro.put("FECHAPRESENTACION_YYYY", "");
+		if(registro.get("FECHAPRESENTACION_YYY")==null)
+			registro.put("FECHAPRESENTACION_YYY", "");
+		if(registro.get("FECHAPRESENTACION_DDMMYYYY")==null)
+			registro.put("FECHAPRESENTACION_DDMMYYYY", "");
+		if(registro.get("FECHAPRESENTACION_DDMMMYYYY")==null)
+			registro.put("FECHAPRESENTACION_DDMMMYYYY", "");
+		if(registro.get("FECHAPRESENTACION_DDDMMMYYY")==null)
+			registro.put("FECHAPRESENTACION_DDDMMMYYY", "");
+		
+		if(registro.get("FECHAINCORPORACION_DD")==null)
+			registro.put("FECHAINCORPORACION_DD", "");
+		if(registro.get("FECHAINCORPORACION_DDD")==null)
+			registro.put("FECHAINCORPORACION_DDD", "");
+		if(registro.get("FECHAINCORPORACION_MM")==null)
+			registro.put("FECHAINCORPORACION_MM", "");
+		if(registro.get("FECHAINCORPORACION_MMM")==null)
+			registro.put("FECHAINCORPORACION_MMM", "");
+		if(registro.get("FECHAINCORPORACION_YYYY")==null)
+			registro.put("FECHAINCORPORACION_YYYY", "");
+		if(registro.get("FECHAINCORPORACION_YYY")==null)
+			registro.put("FECHAINCORPORACION_YYY", "");
+		if(registro.get("FECHAINCORPORACION_DDMMYYYY")==null)
+			registro.put("FECHAINCORPORACION_DDMMYYYY", "");
+		if(registro.get("FECHAINCORPORACION_DDMMMYYYY")==null)
+			registro.put("FECHAINCORPORACION_DDMMMYYYY", "");
+		if(registro.get("FECHAINCORPORACION_DDDMMMYYY")==null)
+			registro.put("FECHAINCORPORACION_DDDMMMYYY", "");			
+		
+		if(registro.get("O_A")==null)
+			registro.put("O_A", "");
+		if(registro.get("A_O")==null)
+			registro.put("A_O", "");
+		if(registro.get("EL_LA")==null)
+			registro.put("EL_LA", "");
+		if(registro.get("DEL_DELA")==null)
+			registro.put("DEL_DELA", "");		
+		
+		CenDireccionesAdm admDirecciones = new CenDireccionesAdm(usrbean);
+		CenCuentasBancariasAdm admCuentasBancarias = new CenCuentasBancariasAdm(usrbean);
+		HelperInformesAdm helperInformes = new HelperInformesAdm();
+		
+		helperInformes.completarHashSalida(registro,admDirecciones.getDireccionPreferente(idInstitucion, idPersona, "1"));			
+		if(registro.get("DOMICILIO")==null)
+			registro.put("DOMICILIO", "");
+		if(registro.get("CODIGOPOSTAL")==null)
+			registro.put("CODIGOPOSTAL", "");
+		if(registro.get("TELEFONO1")==null)
+			registro.put("TELEFONO1", "");
+		if(registro.get("TELEFONO2")==null)
+			registro.put("TELEFONO2", "");
+		if(registro.get("MOVIL")==null)
+			registro.put("MOVIL", "");
+		if(registro.get("FAX1")==null)
+			registro.put("FAX1", "");
+		if(registro.get("FAX2")==null)
+			registro.put("FAX2", "");
+		if(registro.get("CORREOELECTRONICO")==null)
+			registro.put("CORREOELECTRONICO", "");
+		if(registro.get("PAGINAWEB")==null)
+			registro.put("PAGINAWEB", "");
+		if(registro.get("POBLACIONEXTRANJERA")==null)
+			registro.put("POBLACIONEXTRANJERA", "");
+		if(registro.get("POBLACION")==null)
+			registro.put("POBLACION", "");
+		if(registro.get("PROVINCIA")==null)
+			registro.put("PROVINCIA", "");
+		if(registro.get("PAIS")==null)
+			registro.put("PAIS", "");		
+		
+		helperInformes.completarHashSalida(registro,admDirecciones.getDireccionResidencia(idInstitucion, idPersona));
+		if(registro.get("DOMICILIORESIDENCIA")==null)
+			registro.put("DOMICILIORESIDENCIA", "");
+		if(registro.get("TELEFONORESIDENCIA")==null)
+			registro.put("TELEFONORESIDENCIA", "");
+		if(registro.get("MOVILRESIDENCIA")==null)
+			registro.put("MOVILRESIDENCIA", "");
+		if(registro.get("FAXRESIDENCIA")==null)
+			registro.put("FAXRESIDENCIA", "");
+		if(registro.get("EMAILRESIDENCIA")==null)
+			registro.put("EMAILRESIDENCIA", "");
+		if(registro.get("CPRESIDENCIA")==null)
+			registro.put("CPRESIDENCIA", "");
+		if(registro.get("POBLACIONRESIDENCIA")==null)
+			registro.put("POBLACIONRESIDENCIA", "");
+		if(registro.get("PROVINCIARESIDENCIA")==null)
+			registro.put("PROVINCIARESIDENCIA", "");
+		if(registro.get("PAISRESIDENCIA")==null)
+			registro.put("PAISRESIDENCIA", "");
+		
+		helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteAbono(idInstitucion, idPersona));
+		if(registro.get("CUENTABANCARIA_ABONO")==null)
+			registro.put("CUENTABANCARIA_ABONO", "");
+		if(registro.get("CUENTABANCARIA_ABONO_ABIERTA")==null)
+			registro.put("CUENTABANCARIA_ABONO_ABIERTA", "");
+		
+		helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteCargo(idInstitucion, idPersona));
+		if(registro.get("CUENTABANCARIA_CARGO")==null)
+			registro.put("CUENTABANCARIA_CARGO", "");
+		if(registro.get("CUENTABANCARIA_CARGO_ABIERTA")==null)
+			registro.put("CUENTABANCARIA_CARGO_ABIERTA", "");		
+		
+		helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteSJCS(idInstitucion, idPersona));
+		if(registro.get("CUENTABANCARIA_SJCS")==null)
+			registro.put("CUENTABANCARIA_SJCS", "");
+		if(registro.get("CUENTABANCARIA_SJCS_ABIERTA")==null)
+			registro.put("CUENTABANCARIA_SJCS_ABIERTA", "");
+		
+		String strFechaActual = this.getFechaActual(idioma);
+		if(strFechaActual==null)
+			registro.put("FECHAACTUAL_LETRAYDIA", "");
+		else
+			registro.put("FECHAACTUAL_LETRAYDIA", strFechaActual);
+	}			
+	
+	public String getFechaActual (String idioma) throws ClsExceptions {
+
+		RowsContainer rc = null;
+		try { 
+			rc = new RowsContainer(); 						
+			
+			String sql = "SELECT F_SIGA_GETRECURSO_ETIQUETA('calendario.literal.semana.'||TO_CHAR(SYSDATE, 'd'),"+idioma+") || ', ' || PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(SYSDATE, 'M', "+this.usrbean.getLanguage()+") "
+					+ " FECHAACTUAL_LETRAYDIA FROM DUAL";
+			
+			rc = this.find(sql);
+			if (rc!=null) {
+				if (rc.size() >= 1) {
+					Row fila = (Row) rc.get(0);
+					return fila.getString("FECHAACTUAL_LETRAYDIA");
+				}
+			}
+		} 
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la fecha actual en formato de letra");
+		}
+		return null;
+	}	
+	
+	private Vector getDatosInformeColegiado (String idInstitucion, String idPersona,String idioma, boolean isInforme) throws ClsExceptions {
 		Vector datos = null;
 		try {
 			Hashtable htCodigos = new Hashtable();
 			
 			int keyContador = 0;
-
 
 			StringBuffer sql = new StringBuffer();
 			sql.append(" ");
@@ -1249,14 +1411,15 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			sql.append(" SELECT PER.NOMBRE, PER.APELLIDOS1, PER.APELLIDOS2, ");
 			sql.append(" PER.NIFCIF, PER.IDTIPOIDENTIFICACION, TO_CHAR(PER.FECHANACIMIENTO, 'dd-mm-yyyy') FECHANACIMIENTO, ");
 			sql.append(" PER.IDESTADOCIVIL,PER.NATURALDE, PER.FALLECIDO, PER.SEXO,"); 
-			sql.append(" DECODE(PER.SEXO,'H','o','a') as O_A,");
-			sql.append(" DECODE(PER.SEXO,'H','el','la') as EL_LA,");
+			sql.append(" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO,'H','o','a'),"+idioma+") as O_A,");
+			sql.append(" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO,'H','o','a'),"+idioma+") as A_O,");
+			sql.append(" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO,'H','el','la'),"+idioma+") as EL_LA,");
+			sql.append(" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO,'H','del','dela'),"+idioma+") as DEL_DELA,");
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idioma);
 			sql.append(" F_SIGA_GETRECURSO(EC.DESCRIPCION, :");
 			sql.append(keyContador);
-			sql.append(") DESC_ESTADOCIVIL, ");
-			
+			sql.append(") DESC_ESTADOCIVIL, ");			
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idioma);
@@ -1296,8 +1459,26 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			htCodigos.put(new Integer(keyContador), idioma);
 			sql.append(" F_SIGA_GETRECURSO(SEG.NOMBRE, :");
 			sql.append(keyContador);
-			sql.append(") DESC_TIPOSEGURO ");
+			sql.append(") DESC_TIPOSEGURO, ");
 			
+			sql.append( "TO_CHAR(COL.FECHAPRESENTACION, 'dd') FECHAPRESENTACION_DD, "
+        			+ " PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHAENLETRA(COL.FECHAPRESENTACION, 'D', "+idioma+") FECHAPRESENTACION_DDD, "
+        			+ " TO_CHAR(COL.FECHAPRESENTACION, 'mm') FECHAPRESENTACION_MM, "
+        			+ " PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHAENLETRA(COL.FECHAPRESENTACION, 'M', "+idioma+") FECHAPRESENTACION_MMM, "
+        			+ " TO_CHAR(COL.FECHAPRESENTACION, 'yyyy') FECHAPRESENTACION_YYYY, "
+        			+ " PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHAENLETRA(COL.FECHAPRESENTACION, 'A', "+idioma+") FECHAPRESENTACION_YYY, "
+        			+ " TO_CHAR(COL.FECHAPRESENTACION, 'dd/mm/yyyy') FECHAPRESENTACION_DDMMYYYY, "
+        			+ " PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(COL.FECHAPRESENTACION, 'M', "+idioma+") FECHAPRESENTACION_DDMMMYYYY, "
+        			+ " PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(COL.FECHAPRESENTACION, 'DMA', "+idioma+") FECHAPRESENTACION_DDDMMMYYY, "
+        			+ " TO_CHAR(COL.FECHAINCORPORACION, 'dd') FECHAINCORPORACION_DD, "
+        			+ " PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHAENLETRA(COL.FECHAINCORPORACION, 'D', "+idioma+") FECHAINCORPORACION_DDD, "
+        			+ " TO_CHAR(COL.FECHAINCORPORACION, 'mm') FECHAINCORPORACION_MM, "
+        			+ " PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHAENLETRA(COL.FECHAINCORPORACION, 'M', "+idioma+") FECHAINCORPORACION_MMM, "
+        			+ " TO_CHAR(COL.FECHAINCORPORACION, 'yyyy') FECHAINCORPORACION_YYYY, "
+        			+ " PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHAENLETRA(COL.FECHAINCORPORACION, 'A', "+idioma+") FECHAINCORPORACION_YYY, "
+        			+ " TO_CHAR(COL.FECHAINCORPORACION, 'dd/mm/yyyy') FECHAINCORPORACION_DDMMYYYY, "
+        			+ " PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(COL.FECHAINCORPORACION, 'M', "+idioma+") FECHAINCORPORACION_DDMMMYYYY, "
+        			+ " PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(COL.FECHAINCORPORACION, 'DMA', "+idioma+") FECHAINCORPORACION_DDDMMMYYY ");
 			
 		//	sql.append(" F_SIGA_GETTIPOCLIENTE(COL.IDPERSONA, COL.IDINSTITUCION, SYSDATE) ESTADO_COLEGIAL, ");
 		//	sql.append(" F_SIGA_GETDIRECCION(COL.IDINSTITUCION, COL.IDPERSONA, 2) DIRECION_PREFERENTE ");
@@ -1318,8 +1499,7 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			sql.append(" AND PER.IDESTADOCIVIL = EC.IDESTADOCIVIL(+) ");
 			sql.append(" AND CLI.IDTRATAMIENTO = TRA.IDTRATAMIENTO ");
 			sql.append(" AND CLI.IDLENGUAJE = LEN.IDLENGUAJE ");
-			sql.append(" AND COL.IDTIPOSSEGURO = SEG.IDTIPOSSEGURO(+) ");
-			
+			sql.append(" AND COL.IDTIPOSSEGURO = SEG.IDTIPOSSEGURO(+) ");			
 			 
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idPersona);
@@ -1344,36 +1524,33 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 					
 				}
 			}
-
-				
-			
-
 		}
 		catch (Exception e) {
-			throw new ClsExceptions (e, "Error ScsEJGAdm.getInformeColegiado.");
+			throw new ClsExceptions (e, "Error al obtener los datos del informe del colegiado");
 		}
 		return datos;
 	}
-	private Vector getDatosInformeLetrado (String idInstitucion, String idPersona, String idioma,boolean isInforme
-	) throws ClsExceptions  
-	{
+	
+	private Vector getDatosInformeLetrado (String idInstitucion, String idPersona, String idioma, boolean isInforme) throws ClsExceptions {
 		Vector datos = null;
 		try {
 			Hashtable htCodigos = new Hashtable();
 			int keyContador = 0;
 
-
 			StringBuffer sql = new StringBuffer();
 			sql.append(" SELECT PER.NOMBRE, PER.APELLIDOS1, PER.APELLIDOS2, ");
 			sql.append(" PER.NIFCIF, PER.IDTIPOIDENTIFICACION, TO_CHAR(PER.FECHANACIMIENTO, 'dd-mm-yyyy') FECHANACIMIENTO, ");
 			sql.append(" PER.IDESTADOCIVIL,PER.NATURALDE, PER.FALLECIDO, PER.SEXO, ");  
+			sql.append(" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO,'H','o','a'),"+idioma+") as O_A,");
+			sql.append(" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO,'H','o','a'),"+idioma+") as A_O,");
+			sql.append(" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO,'H','el','la'),"+idioma+") as EL_LA,");
+			sql.append(" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO,'H','del','dela'),"+idioma+") as DEL_DELA,");			
 
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idioma);
 			sql.append(" F_SIGA_GETRECURSO(EC.DESCRIPCION, :");
 			sql.append(keyContador);
-			sql.append(") DESC_ESTADOCIVIL, ");
-			
+			sql.append(") DESC_ESTADOCIVIL, ");		
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idioma);
@@ -1416,8 +1593,6 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			sql.append(" AND PER.IDESTADOCIVIL = EC.IDESTADOCIVIL(+) ");
 			sql.append(" AND CLI.IDTRATAMIENTO = TRA.IDTRATAMIENTO ");
 			sql.append(" AND CLI.IDLENGUAJE = LEN.IDLENGUAJE ");
-		
-			
 			 
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idPersona);
@@ -1445,52 +1620,9 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 
 		}
 		catch (Exception e) {
-			throw new ClsExceptions (e, "Error CenColegiadoAdm.getDatosInformeLetrado.");
+			throw new ClsExceptions (e, "Error al obtener los datos del informe del letrado");
 		}
 		return datos;
-	}
-	public Vector getInformeLetrado (String idInstitucion, String idPersona,String idioma,boolean isInforme)throws ClsExceptions {
-		Vector vInforme = null;
-		HelperInformesAdm helperInformes = new HelperInformesAdm();
-		CenEstadoColegialAdm admEstadoCol = null;
-		CenDireccionesAdm admDirecciones = null;
-		CenCuentasBancariasAdm admCuentasBancarias = new CenCuentasBancariasAdm(usrbean);
-		try {
-			
-			vInforme = getDatosInformeLetrado(idInstitucion, idPersona, idioma, isInforme);
-			Hashtable registro = null;
-			if(isInforme){
-				registro = (Hashtable) vInforme.get(0);	
-			}else{
-				registro = ((Row) vInforme.get(0)).getRow();
-			}
-			
-
-			//Aniadimos los datos del colegiado del ejg
-			admEstadoCol = new CenEstadoColegialAdm(usrbean);
-			//Añadimos el estado Colegial
-			helperInformes.completarHashSalida(registro,admEstadoCol.getEstadoColegial(idInstitucion, idPersona, idioma));
-			//Añadimos los campos de la direccion preferente para el tipo de envio
-			//AQUI TENGO DUDAS, NO SE SI ES ESTO LO QUE PIDEN. EN TAL CASO ME TENDRE QUE TRAER EL IDTIPOENVIO.
-			//AHORA SE LO METO A PELO
-			admDirecciones = new CenDireccionesAdm(usrbean);
-			helperInformes.completarHashSalida(registro,admDirecciones.getDireccionPreferente(idInstitucion, idPersona, "1"));
-			
-			helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteAbono(idInstitucion, idPersona));
-			if(registro.get("CUENTABANCARIA_ABONO")==null)
-				registro.put("CUENTABANCARIA_ABONO", "");
-			helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteCargo(idInstitucion, idPersona));
-			if(registro.get("CUENTABANCARIA_CARGO")==null)
-				registro.put("CUENTABANCARIA_CARGO", "");
-			helperInformes.completarHashSalida(registro,admCuentasBancarias.getCuentaCorrienteSJCS(idInstitucion, idPersona));
-			if(registro.get("CUENTABANCARIA_SJCS")==null)
-				registro.put("CUENTABANCARIA_SJCS", "");
-			
-		}catch (Exception e) {
-			throw new ClsExceptions (e, "Error ScsEJGAdm.getInformeLetrado.");
-		}
-	return vInforme;
-					
 	}
 	
 	/** 
