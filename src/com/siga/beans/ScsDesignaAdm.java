@@ -2425,7 +2425,9 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				"       To_Char(Letant.Fecharenuncia,'dd/mm/yyyy') AS FECHARENUNCIAENLETRA, "		+		
 				"       Letant.Fecharenunciasolicita Fecha_Solicitudrenuncia, " +
 				"       To_Char(Letant.Fecharenunciasolicita,'dd/mm/yyyy') AS FECHASOLICITUDRENUNCIA, " +				
-				" Des.Idpretension AS Idpretension "+
+				" 		Des.Idpretension AS Idpretension, " + 
+				"		Letant.OBSERVACIONES AS OBSERVACIONES_ULTIMOLETRADO, " +
+				"		Let.OBSERVACIONES AS OBSERVACIONES_CAMBIOLETRADO "+
 				"  From Scs_Designa         Des, " +
 				"       Scs_Designasletrado Let, " +
 				"       Cen_Persona         p, " +
