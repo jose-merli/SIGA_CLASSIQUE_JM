@@ -183,4 +183,34 @@ public class CenEstadoColegialAdm extends MasterBeanAdministrador {
 		}
 	}
 
+		public Vector getEstadosColegiales (String idInstitucion, String idPersona, String idioma) throws ClsExceptions {
+		Vector datos = new Vector();
+		
+		try {
+			String sql = " SELECT f_siga_getrecurso(ec.descripcion, " + idioma + ") ESTADO_DESCRIPCION, "
+					+ " to_char(dce.fechaestado, 'dd/mm/yyyy') ESTADO_FECHA, "
+					+ " dce.observaciones ESTADO_OBSERVACIONES "
+					+ " from cen_datoscolegialesestado dce, "
+					+ " cen_estadocolegial ec "
+					+ " where dce.idestado = ec.idestado "
+					+ " and dce.idinstitucion = " + idInstitucion
+					+ " and dce.idpersona = " + idPersona
+					+ " ORDER BY dce.fechaestado DESC";
+					
+			RowsContainer rc = new RowsContainer(); 
+			if (rc.find(sql)) {
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable) fila.getRow(); 
+					if (registro != null) 
+						datos.add(registro);
+				}
+			}					
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion sobre estados colegiales");
+		}
+		
+		return datos;
+	}
 }
