@@ -747,7 +747,7 @@
 								}%>
 							</td>
 			  				<td>
-								<input type='text' name='cantidad<%=String.valueOf(fila)%>' value="<%=sCantidad%>" maxlength="5" class="box" styleClass="box" size="3" <%=desactivado%> onBlur="<%=validarCantidad%>,this)">
+								<input type='text' name='cantidad<%=String.valueOf(fila)%>' value="<%=sCantidad%>" maxlength="5" class="box" styleClass="box" style="text-align:right;" size="3" <%=desactivado%> onBlur="<%=validarCantidad%>,this)">
 			  				</td>
 			  				<td align="right">
 								<% // Producto
@@ -766,15 +766,14 @@
 			  					<%=sPeriodicidad%>
 			  				</td>
 			  				<td>
-			  					<input type='text' name='iva<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sIva)%>" class=listaNonEdit readOnly=true style="border:none; background-color:transparent" size="2">% 
+			  					<input type='text' name='iva<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sIva)%>" class=listaNonEdit style="text-align:right;" readOnly=true style="border:none; background-color:transparent" size="2">% 
 			  				</td>
 			  				<%if(!user.isLetrado()&& aprobarSolicitud.equals("S")){ 
 			  				
 								String fechaEfectiva="fechaEfectivaCompra" +fila;				
 			  				%>
 				  				<td class="labelText">
-									<siga:Fecha nombreCampo="<%=fechaEfectiva%>" valorInicial="<%=fecha%>" readOnly="true"></siga:Fecha>
-									
+									<siga:Fecha nombreCampo="<%=fechaEfectiva%>" valorInicial="<%=fecha%>" readOnly="true" anchoTextField="7"></siga:Fecha>									
 								</td>
 							<% }%>
 							</siga:FilaConIconos>

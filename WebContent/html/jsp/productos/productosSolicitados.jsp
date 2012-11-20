@@ -152,7 +152,7 @@
 			  				<td>
 			  					<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%> 
 			  				</td>
-			  				<td>
+			  				<td align="right">
 							    <%=UtilidadesString.mostrarDatoJSP(String.valueOf(a.getCantidad()))%> 
 							</td> 										
 							</siga:FilaConIconos>
