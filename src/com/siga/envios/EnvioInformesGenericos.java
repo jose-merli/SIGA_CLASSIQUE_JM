@@ -24,7 +24,7 @@ import org.redabogacia.sigaservices.app.autogen.model.EcomSolsusprocedimientoWit
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosExample;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosExample.Criteria;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosWithBLOBs;
-import org.redabogacia.sigaservices.app.services.EcomColaService;
+import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 
 import com.aspose.words.Document;
 import com.atos.utils.ClsConstants;
@@ -103,6 +103,7 @@ import com.siga.beans.ScsProcuradorAdm;
 import com.siga.beans.ScsUnidadFamiliarEJGAdm;
 import com.siga.certificados.Plantilla;
 import com.siga.envios.form.DefinirEnviosForm;
+import com.siga.envios.service.EntradaEnviosService;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.AcreditacionForm;
@@ -5750,8 +5751,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 			ScsGuardiasTurnoAdm admGT = new ScsGuardiasTurnoAdm(usrBean);
 
-			datos = admGT.getDatosListaGuardiasPersona(idInstitucion, idlista,
-					guardias, fechaInicio, fechaFin, idPersona);
+			datos = admGT.getDatosListaGuardias(idInstitucion, idlista, guardias, fechaInicio, fechaFin, idPersona);
 			listaPorUsu = calcularPersona(datos);
 
 		} catch (SIGAException e) {
