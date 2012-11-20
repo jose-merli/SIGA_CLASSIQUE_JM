@@ -200,13 +200,8 @@
 				fin();
 				return false;
 			} else {
-				/*document.forms[0].target = "submitArea";
-				document.forms[0].submit();
-				//window.top.returnValue="MODIFICADO"; */
 				document.forms[0].setAttribute("action","<%=app%>/JGR_PestanaRetencionesIRPF.do");
 				document.forms[0].submit();
-				window.top.returnValue="MODIFICADO";
-				window.top.close();
 			}
 		}
 </script>

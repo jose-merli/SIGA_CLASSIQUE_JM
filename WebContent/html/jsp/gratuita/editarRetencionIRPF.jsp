@@ -164,8 +164,6 @@
 		}
 		document.forms[0].setAttribute("action","<%=app%>/JGR_PestanaRetencionesIRPF.do");
 		document.forms[0].submit();
-		window.top.returnValue="MODIFICADO";
-		window.top.close();
 	}
 </script>
 </body>
