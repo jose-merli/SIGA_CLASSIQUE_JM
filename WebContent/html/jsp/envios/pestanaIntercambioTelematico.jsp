@@ -211,6 +211,26 @@
 		
 	</tr>
 	
+		<c:if test="${IntercambioTelematicoForm.idEstado=='5'}">
+			
+		
+		
+	
+		<tr>
+			<td></td>
+			<td class="labelText">Acuse</td>
+			<td class="labelTextValor" >
+				<c:out		value="${IntercambioTelematicoForm.idAcuse}" />
+			</td><td>&nbsp;</td>
+			<td class="labelText">Fecha Respuesta</td>
+			<td class="labelTextValor" ><c:out
+						value="${IntercambioTelematicoForm.fechaRespuesta}" /></td>
+			<td></td>
+			
+		</tr>
+	</c:if>
+	
+	
 </table>	
 	
 		

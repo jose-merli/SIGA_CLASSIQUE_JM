@@ -95,11 +95,19 @@
 							<c:out value="${listEntradaEnviosForm.fechaPeticion}"/>
 						</td>
 						<td align="center">
-						<c:out value="${listEntradaEnviosForm.descripcionRemitente}"/>
+							<c:choose>
+								<c:when test="${listEntradaEnviosForm.descripcionRemitente != null && listEntradaEnviosForm.descripcionRemitente != ''}">
+									<c:out value="${listEntradaEnviosForm.descripcionRemitente}"/>
+								</c:when>
+								<c:otherwise>
+									Pendiente recuperar mensaje
+								</c:otherwise>
+							</c:choose>	
 						</td>
 						<td align="center">
 							<c:out value="${listEntradaEnviosForm.asunto}"/>
 						</td>
+							
 						<td align="center">
 							<c:choose>
 								<c:when test="${listEntradaEnviosForm.fechaRespuesta != null && listEntradaEnviosForm.fechaRespuesta != ''}">

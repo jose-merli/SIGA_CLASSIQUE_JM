@@ -44,6 +44,7 @@ import org.redabogacia.sigaservices.app.autogen.model.ScsProcuradorKey;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.beans.EnvEstadoEnvioAdm;
 import com.siga.envios.form.DesignaProvisionalForm;
@@ -247,6 +248,14 @@ public class DesignaProvisionalServiceImpl extends MyBatisBusinessServiceTemplat
 		intercambioTelematicoForm.setIdEstado(ecomCola.getIdestadocola().toString());
 		intercambioTelematicoForm.setDesignaProvisional(designaProvisionalForm);
 		intercambioTelematicoForm.setFechaPeticion(designaProvisionalForm.getFechaPeticion());
+		if(ecomDesignaProvisional.getFecharespuesta()!=null){
+			try {
+				intercambioTelematicoForm.setFechaRespuesta(GstDate.getFormatedDateLong("", ecomDesignaProvisional.getFecharespuesta()));
+			} catch (ClsExceptions e) {
+				e.printStackTrace();
+			}
+		}
+		intercambioTelematicoForm.setIdAcuse(ecomDesignaProvisional.getIdacuse());
 		
 		return intercambioTelematicoForm;
 	}

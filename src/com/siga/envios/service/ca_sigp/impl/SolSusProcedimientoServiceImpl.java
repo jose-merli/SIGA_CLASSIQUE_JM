@@ -33,6 +33,7 @@ import org.redabogacia.sigaservices.app.autogen.model.ScsEjgKey;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.beans.EnvEstadoEnvioAdm;
 import com.siga.envios.form.IntercambioTelematicoForm;
@@ -168,7 +169,14 @@ public class SolSusProcedimientoServiceImpl extends MyBatisBusinessServiceTempla
 		intercambioTelematicoForm.setIdEstado(ecomCola.getIdestadocola().toString());
 		intercambioTelematicoForm.setSolSusProcedimiento(solSusProcedimientoForm);
 		intercambioTelematicoForm.setFechaPeticion(solSusProcedimientoForm.getFechaPeticion());
-		
+		if(ecomSolsusprocedimiento.getFecharespuesta()!=null){
+			try {
+				intercambioTelematicoForm.setFechaRespuesta(GstDate.getFormatedDateLong("", ecomSolsusprocedimiento.getFecharespuesta()));
+			} catch (ClsExceptions e) {
+				e.printStackTrace();
+			}
+		}
+		intercambioTelematicoForm.setIdAcuse(ecomSolsusprocedimiento.getIdacuse());
 		return intercambioTelematicoForm;
 	}
 	

@@ -26,8 +26,26 @@ public class IntercambioTelematicoForm extends MasterForm
     private String plantilla;
     
     private String	fechaPeticion;
+    private String	fechaRespuesta;
+    private String	idAcuse;
     
-    private String envioTipo;
+    public String getFechaRespuesta() {
+		return fechaRespuesta;
+	}
+
+	public void setFechaRespuesta(String fechaRespuesta) {
+		this.fechaRespuesta = fechaRespuesta;
+	}
+
+	public String getIdAcuse() {
+		return idAcuse;
+	}
+
+	public void setIdAcuse(String idAcuse) {
+		this.idAcuse = idAcuse;
+	}
+
+	private String envioTipo;
     private String envioNombre;
 
     DesignaProvisionalForm designaProvisional;
