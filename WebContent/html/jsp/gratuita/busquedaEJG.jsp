@@ -54,9 +54,13 @@
 	// fechaApertura=UtilidadesBDAdm.getFechaBD("");
 	String nColegiado = request.getAttribute("nColegiado") == null ? "" : (String) request.getAttribute("nColegiado");
 	String nombreColegiado = request.getAttribute("nombreColegiado") == null ? "" : (String) request.getAttribute("nombreColegiado");
-
-	Hashtable miHash = (Hashtable) ses.getAttribute("DATOSFORMULARIO");
-	ses.removeAttribute("DATOSFORMULARIO");
+	
+	Hashtable miHash = new Hashtable();
+	if (ses.getAttribute("DATOSFORMULARIO") instanceof Hashtable) {
+		miHash = (Hashtable) ses.getAttribute("DATOSFORMULARIO");
+		ses.removeAttribute("DATOSFORMULARIO");
+    }
+	
 	anio = UtilidadesBDAdm.getYearBD("");
 
 	String anio2 = "";
