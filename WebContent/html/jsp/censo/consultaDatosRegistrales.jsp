@@ -42,6 +42,8 @@
 	DatosRegistralesForm formulario = null;
 	boolean bOcultarHistorico = false;
 	String modo = null;
+	String fechaFin = null;
+	String fechaConstitucion = null;
 	
 	String estiloCaja="", estiloCombo="";
 	String readonly = "false";  // para el combo
@@ -64,6 +66,8 @@
 		formulario = (DatosRegistralesForm)request.getAttribute("DatosRegistralesForm");
 		String nif=formulario.getNumIdentificacion();
 		modo = (String)request.getAttribute("accion");
+		fechaFin=formulario.getfecha_fin();
+		fechaConstitucion=formulario.getFechaConstitucion();
 		
 	//  tratamiento de readonly
 		estiloCaja = "";
@@ -632,9 +636,9 @@
 									</td>
 									<td style="width:60%;">
 										<% if (!breadonly) { %>
-										<siga:Fecha nombreCampo= "fechaConstitucion"/>
+										<siga:Fecha nombreCampo= "fechaConstitucion" valorInicial="<%=fechaConstitucion%>"/>
 										<% }else{ %>
-										<siga:Fecha nombreCampo= "fechaConstitucion" disabled="true"/>
+										<siga:Fecha nombreCampo= "fechaConstitucion" disabled="true" valorInicial="<%=fechaConstitucion%>"/>
 										<% } %>
 									</td>
 									<!-- FECHA FIN -->
@@ -643,9 +647,9 @@
 									</td>
 									<td colspan="1" style="width:auto;">
 										<% if (!breadonly) { %>
-										<siga:Fecha  nombreCampo= "fecha_fin"/>
+										<siga:Fecha  nombreCampo= "fecha_fin" valorInicial="<%=fechaFin%>"/>
 										<% }else{ %>
-										<siga:Fecha  nombreCampo= "fecha_fin" disabled="true"/>
+										<siga:Fecha  nombreCampo= "fecha_fin" disabled="true" valorInicial="<%=fechaFin%>"/>
 										<% } %>
 									</td>
 								</tr>
