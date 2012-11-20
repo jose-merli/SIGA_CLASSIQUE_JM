@@ -96,10 +96,13 @@ public class SolicitudRetencionAction extends MasterAction {
 			request.getSession().setAttribute("accion",formulario.getModo());
 			
 			Hashtable miHash = new Hashtable();
-			miHash.put(ScsRetencionesBean.C_IDRETENCION,(ocultos.get(0)));	
+			miHash.put(ScsRetencionesBean.C_IDRETENCION,(ocultos.get(0)));
 			
-			Vector resultado = admBean.selectPorClave(miHash);
-			ScsRetencionesBean retencion = (ScsRetencionesBean)resultado.get(0);
+			// Volvemos a obtener de base de datos la información, para que se la más actúal que hay en la base de datos
+			ScsRetencionesBean retencion = admBean.getRetencion(miHash,this.getUserBean(request).getLanguage());
+			
+			//Vector resultado = admBean.selectPorClave(miHash);
+			//ScsRetencionesBean retencion = (ScsRetencionesBean)resultado.get(0);
 					
 			request.getSession().setAttribute("elegido",admBean.beanToHashTable(retencion));
 			request.getSession().setAttribute("DATABACKUP",admBean.beanToHashTable(retencion));
