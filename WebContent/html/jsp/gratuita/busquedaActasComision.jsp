@@ -86,7 +86,6 @@
 		}
 		
 		function buscar(){
-			alert('pepe');
 			sub();		
 			document.ActaComisionForm.modo.value = "buscar";
 			document.ActaComisionForm.submit();
