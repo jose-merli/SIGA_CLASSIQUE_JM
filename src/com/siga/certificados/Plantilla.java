@@ -722,21 +722,13 @@ public class Plantilla {
 				
 		}
 			if(etiqueta.equalsIgnoreCase("CP_ETIQUETA")){
-				if(datos.getCodigoPostal()==null){
-					
+				if(datos.getCodigoPostal()==null){					
 					resultado="";
-					
-					
 				}else{
 					
 					resultado = datos.getCodigoPostal();
-					
-					
 				}
-				
-				
-			}
-			
+			}			
 			
 			if (etiqueta.equalsIgnoreCase("PROVINCIA_ETIQUETA")){
 				if (((String)datos.getIdPais()).equals(ClsConstants.ID_PAIS_ESPANA) || ((String)datos.getIdPais()).equals("")) {
@@ -747,14 +739,8 @@ public class Plantilla {
 						String provincia = admProv.getDescripcion(datos.getIdProvincia());
 						resultado=provincia;
 					}									
-				} else {
-					if (datos.getIdPais()==null){
-						resultado="";	
-					}else{
-						CenPaisAdm admPais = new CenPaisAdm(usr);
-						String pais = admPais.getDescripcion(datos.getIdPais());
-						resultado=pais;
-					}									
+				}else{
+					resultado="";
 				}
 			}
 
