@@ -1,5 +1,6 @@
 <!-- modalMantenimiento_SaltosYCompensaciones.jsp -->
 <!-- CABECERA JSP -->
+<%@page import="com.siga.Utilidades.UtilidadesFecha"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -44,6 +45,9 @@
 	String idPersona = UtilidadesHash.getString(datosIniciales,ScsSaltosCompensacionesBean.C_IDPERSONA);
 	String salto = UtilidadesHash.getString(datosIniciales,ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION);
 	String fecha = UtilidadesHash.getString(datosIniciales,ScsSaltosCompensacionesBean.C_FECHA);	
+	if(fecha==null || fecha.equalsIgnoreCase("")){
+		fecha=GstDate.getHoyJsp();
+	}
 	String motivos = UtilidadesHash.getString(datosIniciales,ScsSaltosCompensacionesBean.C_MOTIVOS);
 	String fechaCumplimiento = UtilidadesHash.getString(datosIniciales,ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO);
 	if (fechaCumplimiento!=null && !fechaCumplimiento.equals(""))
@@ -143,7 +147,7 @@
 				<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensaciones.literal.fecha"/>&nbsp;(*)
 			</td>		
 			<td>
-			 	<siga:Fecha nombreCampo="fecha" readOnly="true" posicionX="50" posicionY="50"></siga:Fecha>
+			 	<siga:Fecha nombreCampo="fecha" valorInicial="<%=fecha%>" readOnly="true" posicionX="50" posicionY="50"></siga:Fecha>
 				
 			</td>
 			<td class="labelText" colspan="2">
