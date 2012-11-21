@@ -761,7 +761,8 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 				       "    t."+CenDatosCVBean.C_IDTIPOCV+","+
 				       "    TO_CHAR(T."+CenDatosCVBean.C_FECHAINICIO+",'DD/MM/YYYY') AS FECHAINICIO, "+
 				       "    TO_CHAR(T."+CenDatosCVBean.C_FECHAFIN+",'DD/MM/YYYY')  AS FECHAFIN "+
-				       "  from "+CenDatosCVBean.T_NOMBRETABLA+" t "+
+				       "  from "+CenDatosCVBean.T_NOMBRETABLA+" t, "+
+				       		CenTiposCVSubtipo1Bean.T_NOMBRETABLA + " TIPO1 "+
 			           " where T."+CenDatosCVBean.C_IDTIPOCV+"="+IDTIPOCV_JUNTASGOBIERNO+" "+
 			           "   AND T."+CenDatosCVBean.C_FECHABAJA+" IS NULL ";
 			          // "   AND T."+CenDatosCVBean.C_FECHAFIN+" IS NULL ";//+
@@ -792,11 +793,15 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 					        " AND T."+CenDatosCVBean.C_IDINSTITUCION_SUBT1+" = "+idInstitucionSubtipo1;
 			    	
 			    }
-			    //if (formulario.getIdInstitucionCargo()!=null && !formulario.getIdInstitucionCargo().equals("")){
+			    
+			   //if (formulario.getIdInstitucionCargo()!=null && !formulario.getIdInstitucionCargo().equals("")){
 			   // 	 select+= "  and T."+CenDatosCVBean.C_IDINSTITUCIONCARGO+"="+formulario.getIdInstitucionCargo();
-			    //}
-
-			    select+= " ORDER BY APELLIDOS ASC";
+			   //}
+			    
+			   select +=" AND TIPO1."+CenTiposCVSubtipo1Bean.C_IDTIPOCV+"(+)= T."+CenDatosCVBean.C_IDTIPOCV+
+				   " AND TIPO1."+CenTiposCVSubtipo1Bean.C_IDTIPOCVSUBTIPO1+"(+)= T."+CenDatosCVBean.C_IDTIPOCVSUBTIPO1+
+				   " AND TIPO1."+CenTiposCVSubtipo1Bean.C_IDINSTITUCION+"(+)= T."+CenDatosCVBean.C_IDINSTITUCION_SUBT1+
+				   " ORDER BY TIPO1."+CenTiposCVSubtipo1Bean.C_CODIGOEXT+" ASC, T."+CenDatosCVBean.C_FECHAINICIO+" DESC";	
 			
 				registros = selectGenericoList(select);
 			
