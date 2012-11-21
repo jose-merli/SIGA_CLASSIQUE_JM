@@ -252,10 +252,10 @@
 														 if ("&nbsp".equals(UtilidadesString.mostrarDatoJSP(sDescripcion))) {%>
 															<html:text property="descripcion" styleClass="box" size="29" maxlength="100" value=""></html:text>
 														<%}else{%>
-															<html:text property="descripcion" styleClass="box" size="29" maxlength="100" value="<%=UtilidadesString.mostrarDatoJSP(sDescripcion)%>"></html:text>
+															<html:text property="descripcion" styleClass="box" size="29" maxlength="100" value="<%=sDescripcion%>"></html:text>
 														<% } %>	
 													<%}else{%>
-														<html:text property="descripcion" styleClass="boxConsulta" size="29" value="<%=UtilidadesString.mostrarDatoJSP(sDescripcion)%>" readOnly="true"></html:text>
+														<html:text property="descripcion" styleClass="boxConsulta" size="29" value="<%=sDescripcion%>" readOnly="true"></html:text>
 													<% } %>								  		
 										  		<% } %>
 											</td>	
