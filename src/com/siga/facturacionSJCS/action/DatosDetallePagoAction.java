@@ -378,26 +378,35 @@ public class DatosDetallePagoAction extends MasterAction {
 					String nombreColegiado = UtilidadesHash.getString(fila, "NOMBREPERSONA");
 					String ncolegiado      = UtilidadesHash.getString(fila, "NCOLEGIADO");	
 					String tipoIrpf        = UtilidadesHash.getString(fila, "TIPOIRPF");
-					String irpf            = UtilidadesNumero.redondea(UtilidadesHash.getString(fila, "TOTALIMPORTEIRPF"),2);
-					String importeRetenciones = UtilidadesNumero.redondea(UtilidadesHash.getString(fila, "IMPORTETOTALRETENCIONES"),2);
-					String importeTotalSJCS   = UtilidadesNumero.redondea(UtilidadesHash.getString(fila, "TOTALIMPORTESJCS"),2);
-					String importeTotalMovimientoVarios = UtilidadesNumero.redondea(UtilidadesHash.getString(fila, "IMPORTETOTALMOVIMIENTOS"),2);
+					
+					double dIrpf = Double.parseDouble(UtilidadesHash.getString(fila, "TOTALIMPORTEIRPF"));
+					String irpf = UtilidadesString.formatoImporte(UtilidadesNumero.redondea(dIrpf, 2));
+
+					double dImporteRetenciones = Double.parseDouble(UtilidadesHash.getString(fila, "IMPORTETOTALRETENCIONES"));
+					String importeRetenciones = UtilidadesString.formatoImporte(UtilidadesNumero.redondea(dImporteRetenciones, 2));
+					
+					double dImporteTotalSJCS = Double.parseDouble(UtilidadesHash.getString(fila, "TOTALIMPORTESJCS"));
+					String importeTotalSJCS = UtilidadesString.formatoImporte(UtilidadesNumero.redondea(dImporteTotalSJCS, 2));
+					
+					double dIimporteTotalMovimientoVarios = Double.parseDouble(UtilidadesHash.getString(fila, "IMPORTETOTALMOVIMIENTOS"));
+					String importeTotalMovimientoVarios = UtilidadesString.formatoImporte(UtilidadesNumero.redondea(dIimporteTotalMovimientoVarios, 2));
+					
+					
 					String destinatario = UtilidadesHash.getString(fila, "DESTINATARIO");
 					String formaPago    = UtilidadesHash.getString(fila, "FORMADEPAGO");
 					String banco    = UtilidadesHash.getString(fila, "NOMBREBANCO");
 					String codigoCuenta    = UtilidadesHash.getString(fila, "NUMEROCUENTA");
-					float totalBrutos = Float.parseFloat(importeTotalSJCS) + Float.parseFloat(importeTotalMovimientoVarios);
-					if (totalBrutos<0) totalBrutos=0; 
-					float totalTotal = Float.parseFloat(importeTotalSJCS) + Float.parseFloat(importeTotalMovimientoVarios)+Float.parseFloat(irpf)+Float.parseFloat(importeRetenciones);
-					if (totalTotal<0) totalTotal=0; 
 					
+					double dTotalBrutos = dImporteTotalSJCS + dIimporteTotalMovimientoVarios;
+					String totalBruto = UtilidadesString.formatoImporte(UtilidadesNumero.redondea(dTotalBrutos, 2));
 					
+					if (dTotalBrutos<0) dTotalBrutos=0; 
+					double dTotalTotal = dImporteTotalSJCS + dIimporteTotalMovimientoVarios + dIrpf + dImporteRetenciones;
+					String totalTotal = UtilidadesString.formatoImporte(UtilidadesNumero.redondea(dTotalTotal, 2));
 					
-					/*cadena = ncolegiado + "\t" + nombreColegiado + "\t" + importeTotalSJCS + " € \t" + importeTotalMovimientoVarios + " € \t" + importeRetenciones + " € \t" + totalBrutos + " € \t" + irpf + " € \n";*/
-					cadena = ncolegiado + "\t" + nombreColegiado + "\t" + importeTotalSJCS.replace('.',',') + "\t" + importeTotalMovimientoVarios.replace('.',',') + "\t" + UtilidadesNumero.redondea(String.valueOf(totalBrutos),2).replace('.',',') + "\t" + tipoIrpf.replace('.',',') + "\t" + irpf.replace('.',',') + "\t" + importeRetenciones.replace('.',',') + "\t" + UtilidadesNumero.redondea(String.valueOf(totalTotal),2).replace('.',',') +"\t" + destinatario + "\t" + formaPago + "\t" + banco + "\t"+ codigoCuenta + "\t";
-					// cambio a formato DOS
-					cadena += "\r\n";
-					
+					if (dTotalTotal<0) dTotalTotal=0; 
+					cadena = ncolegiado + "\t" + nombreColegiado + "\t" + importeTotalSJCS.replace('.',',') + "\t" + importeTotalMovimientoVarios.replace('.',',') + "\t" + totalBruto.replace('.',',') + "\t" + tipoIrpf.replace('.',',') + "\t" + irpf.replace('.',',') + "\t" + importeRetenciones.replace('.',',') + "\t" + totalTotal.replace('.',',') +"\t" + destinatario + "\t" + formaPago + "\t" + banco + "\t"+ codigoCuenta + "\t";
+					cadena += "\r\n";					
 					bw.write(cadena);
 				}
 			}
@@ -484,7 +493,7 @@ public class DatosDetallePagoAction extends MasterAction {
 						existeMV=true;
 					}
 		
-					float aux = Float.parseFloat(UtilidadesHash.getString(fila, "TOTALIMPORTESJCS")) + Float.parseFloat(UtilidadesHash.getString(fila, "IMPORTETOTALMOVIMIENTOS")) + Float.parseFloat(UtilidadesHash.getString(fila, "TOTALIMPORTEIRPF"))  + Float.parseFloat(UtilidadesHash.getString(fila, "IMPORTETOTALRETENCIONES"));
+					double aux = Double.parseDouble(UtilidadesHash.getString(fila, "TOTALIMPORTESJCS")) + Double.parseDouble(UtilidadesHash.getString(fila, "IMPORTETOTALMOVIMIENTOS")) + Double.parseDouble(UtilidadesHash.getString(fila, "TOTALIMPORTEIRPF"))  + Double.parseDouble(UtilidadesHash.getString(fila, "IMPORTETOTALRETENCIONES"));
 					importeTotalTotal = UtilidadesNumero.redondea((new Double(aux)),2);
 		
 					totalBrutos = importeTotalSJCS + importeTotalMovimientoVarios;

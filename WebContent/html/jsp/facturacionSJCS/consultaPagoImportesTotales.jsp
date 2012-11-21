@@ -90,27 +90,27 @@
 			<siga:Idioma key='<%=(datosConcepto==null?"":UtilidadesHash.getString(datosConcepto, "" + ClsConstants.HITO_GENERAL_TURNO))%>'/>
 			</td>
 			<td class="labelTextNum">
-			<%=(datosFacturacion==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(UtilidadesHash.getString(datosFacturacion, FcsFacturacionJGBean.C_IMPORTEOFICIO),2)))%>&nbsp;&euro;
+			<%=(datosFacturacion==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(new Double(UtilidadesHash.getString(datosFacturacion, FcsFacturacionJGBean.C_IMPORTEOFICIO)),2)))%>&nbsp;&euro;
 			</td>
 			<td class="labelTextNum">
-			<%=(datosPagoRealizado==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(UtilidadesHash.getString(datosPagoRealizado, FcsPagosJGBean.C_IMPORTEOFICIO),2)))%>&nbsp;&euro;
+			<%=(datosPagoRealizado==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(new Double(UtilidadesHash.getString(datosPagoRealizado, FcsPagosJGBean.C_IMPORTEOFICIO)),2)))%>&nbsp;&euro;
 			</td>
 			<td class="labelTextNum">
-			<%=(datosPagoActual==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(UtilidadesHash.getString(datosPagoActual, FcsPagosJGBean.C_IMPORTEOFICIO),2)))%>&nbsp;&euro;
+			<%=(datosPagoActual==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(new Double(UtilidadesHash.getString(datosPagoActual, FcsPagosJGBean.C_IMPORTEOFICIO)),2)))%>&nbsp;&euro;
 			</td>
 		</tr>
 		<tr>
 			<td class="labelText">
 			<siga:Idioma key='<%=(datosConcepto==null?"":UtilidadesHash.getString(datosConcepto, "" + ClsConstants.HITO_GENERAL_GUARDIA))%>'/>
+			</td>	
+			<td class="labelTextNum">
+			<%=(datosFacturacion==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(new Double(UtilidadesHash.getString(datosFacturacion, FcsPagosJGBean.C_IMPORTEGUARDIA)),2)))%>&nbsp;&euro;
 			</td>
 			<td class="labelTextNum">
-			<%=(datosFacturacion==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(UtilidadesHash.getString(datosFacturacion, FcsFacturacionJGBean.C_IMPORTEGUARDIA),2)))%>&nbsp;&euro;
+			<%=(datosPagoRealizado==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(new Double(UtilidadesHash.getString(datosPagoRealizado, FcsPagosJGBean.C_IMPORTEGUARDIA)),2)))%>&nbsp;&euro;
 			</td>
 			<td class="labelTextNum">
-			<%=(datosPagoRealizado==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(UtilidadesHash.getString(datosPagoRealizado, FcsPagosJGBean.C_IMPORTEGUARDIA),2)))%>&nbsp;&euro;
-			</td>
-			<td class="labelTextNum">
-			<%=(datosPagoActual==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(UtilidadesHash.getString(datosPagoActual, FcsPagosJGBean.C_IMPORTEGUARDIA),2)))%>&nbsp;&euro;
+			<%=(datosPagoActual==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(new Double(UtilidadesHash.getString(datosPagoActual, FcsPagosJGBean.C_IMPORTEGUARDIA)),2)))%>&nbsp;&euro;
 			</td>
 		</tr>
 		<tr>
@@ -118,13 +118,13 @@
 			<siga:Idioma key='<%=(datosConcepto==null?"":UtilidadesHash.getString(datosConcepto, "" + ClsConstants.HITO_GENERAL_SOJ))%>'/>
 			</td>
 			<td class="labelTextNum">
-			<%=(datosFacturacion==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(UtilidadesHash.getString(datosFacturacion, FcsFacturacionJGBean.C_IMPORTESOJ),2)))%>&nbsp;&euro;
+			<%=(datosFacturacion==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(new Double(UtilidadesHash.getString(datosFacturacion, FcsFacturacionJGBean.C_IMPORTESOJ)),2)))%>&nbsp;&euro;
 			</td>
 			<td class="labelTextNum">
-			<%=(datosPagoRealizado==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(UtilidadesHash.getString(datosPagoRealizado, FcsPagosJGBean.C_IMPORTESOJ),2)))%>&nbsp;&euro;
+			<%=(datosPagoRealizado==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(new Double(UtilidadesHash.getString(datosPagoRealizado, FcsPagosJGBean.C_IMPORTESOJ)),2)))%>&nbsp;&euro;
 			</td>
 			<td class="labelTextNum">
-			<%=(datosPagoActual==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(UtilidadesHash.getString(datosPagoActual, FcsPagosJGBean.C_IMPORTESOJ),2)))%>&nbsp;&euro;
+			<%=(datosPagoActual==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(new Double(UtilidadesHash.getString(datosPagoActual, FcsPagosJGBean.C_IMPORTESOJ)),2)))%>&nbsp;&euro;
 			</td>
 		</tr>
 		<tr>
@@ -132,13 +132,13 @@
 			<siga:Idioma key='<%=(datosConcepto==null?"":UtilidadesHash.getString(datosConcepto, "" + ClsConstants.HITO_GENERAL_EJG))%>'/>
 			</td>
 			<td class="labelTextNum">
-			<%=(datosFacturacion==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(UtilidadesHash.getString(datosFacturacion, FcsFacturacionJGBean.C_IMPORTEEJG),2)))%>&nbsp;&euro;
+			<%=(datosFacturacion==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(new Double(UtilidadesHash.getString(datosFacturacion, FcsFacturacionJGBean.C_IMPORTEEJG)),2)))%>&nbsp;&euro;
 			</td>
 			<td class="labelTextNum">
-			<%=(datosPagoRealizado==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(UtilidadesHash.getString(datosPagoRealizado, FcsPagosJGBean.C_IMPORTEEJG),2)))%>&nbsp;&euro;
+			<%=(datosPagoRealizado==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(new Double(UtilidadesHash.getString(datosPagoRealizado, FcsPagosJGBean.C_IMPORTEEJG)),2)))%>&nbsp;&euro;
 			</td>
 			<td class="labelTextNum">
-			<%=(datosPagoActual==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(UtilidadesHash.getString(datosPagoActual, FcsPagosJGBean.C_IMPORTEEJG),2)))%>&nbsp;&euro;
+			<%=(datosPagoActual==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(new Double(UtilidadesHash.getString(datosPagoActual, FcsPagosJGBean.C_IMPORTEEJG)),2)))%>&nbsp;&euro;
 			</td>
 		</tr>
 	</table>
@@ -150,19 +150,19 @@
 			<td width="25%" class="labelTextNum">
 				<B>
 						<siga:Idioma key="factSJCS.datosFacturacion.literal.total"/>&nbsp;&nbsp;
-						<%=(datosFacturacion==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(UtilidadesHash.getString(datosFacturacion, FcsFacturacionJGBean.C_IMPORTETOTAL),2)))%>&nbsp;&euro;
+						<%=(datosFacturacion==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(new Double(UtilidadesHash.getString(datosFacturacion, FcsFacturacionJGBean.C_IMPORTETOTAL)),2)))%>&nbsp;&euro;
 				</B>
 			</td>
 			<td width="25%" class="labelTextNum">
 				<B>
 					<siga:Idioma key="factSJCS.datosFacturacion.literal.total"/>&nbsp;&nbsp;
-					<%=(datosFacturacion==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(UtilidadesHash.getString(datosPagoRealizado, FcsPagosJGBean.C_IMPORTEPAGADO),2)))%>&nbsp;&euro;
+					<%=(datosFacturacion==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(new Double(UtilidadesHash.getString(datosPagoRealizado, FcsPagosJGBean.C_IMPORTEPAGADO)),2)))%>&nbsp;&euro;
 				</B>
 			</td>
 			<td width="25%" class="labelTextNum">
 				<B>
 					<siga:Idioma key="factSJCS.datosFacturacion.literal.total"/>&nbsp;&nbsp;
-					<%=(datosFacturacion==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(UtilidadesHash.getString(datosPagoActual, FcsPagosJGBean.C_IMPORTEPAGADO),2)))%>&nbsp;&euro;
+					<%=(datosFacturacion==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(new Double(UtilidadesHash.getString(datosPagoActual, FcsPagosJGBean.C_IMPORTEPAGADO)),2)))%>&nbsp;&euro;
 				</B>
 			</td>
 		</tr>

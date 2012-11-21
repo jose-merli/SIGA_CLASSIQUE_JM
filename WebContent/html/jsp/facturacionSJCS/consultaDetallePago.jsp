@@ -1,9 +1,9 @@
 <!-- consultaDetallePago.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
-<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
+<meta http-equiv="Pragma" content="no-cache"> 
 <meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=EUC-JP" >
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
@@ -67,7 +67,7 @@
 	String botones="";
 
 	//para el importe total de la facturacion
-	float total = 0, totalIrpf = 0, totalBrutos = 0, totalRetencion=0, totalTotal=0;
+	double total = 0, totalIrpf = 0, totalBrutos = 0, totalRetencion=0, totalTotal=0;
 	
 	//Importe de Retenciones y Total SJCS:
 	String importeTotalSJCS="", importeRetenciones="", importeTotalMovimientoVarios="",importeTotalTotal="";
@@ -176,45 +176,45 @@
 			nombreColegiado    = UtilidadesString.mostrarDatoJSP(fila.get("NOMBREPERSONA"));
 			ncolegiado         = UtilidadesString.mostrarDatoJSP(fila.get("NCOLEGIADO"));
 			
-			irpf               = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea(UtilidadesHash.getString(fila, "TOTALIMPORTEIRPF"),2));
+			irpf               = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea(new Double (UtilidadesHash.getString(fila, "TOTALIMPORTEIRPF")),2));
 			idPersona          = UtilidadesString.mostrarDatoJSP(fila.get("IDPERSONASJCS"));
 
-			importeRetenciones = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea(UtilidadesHash.getString(fila, "IMPORTETOTALRETENCIONES"),2));
-			importeTotalSJCS   = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea(UtilidadesHash.getString(fila, "TOTALIMPORTESJCS"),2));
-			importeTotalMovimientoVarios = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea(UtilidadesHash.getString(fila, "IMPORTETOTALMOVIMIENTOS"),2));
+			importeRetenciones = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea(new Double (UtilidadesHash.getString(fila, "IMPORTETOTALRETENCIONES")),2));
+			importeTotalSJCS   = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea(new Double (UtilidadesHash.getString(fila, "TOTALIMPORTESJCS")),2));
+			importeTotalMovimientoVarios = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea(new Double (UtilidadesHash.getString(fila, "IMPORTETOTALMOVIMIENTOS")),2));
 
 
-			float aux = Float.parseFloat(UtilidadesHash.getString(fila, "TOTALIMPORTESJCS")) + Float.parseFloat(UtilidadesHash.getString(fila, "IMPORTETOTALMOVIMIENTOS")) + Float.parseFloat(UtilidadesHash.getString(fila, "TOTALIMPORTEIRPF"))  + Float.parseFloat(UtilidadesHash.getString(fila, "IMPORTETOTALRETENCIONES"));
-			importeTotalTotal = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea((new Float(aux)).toString(),2));
+			double aux = Double.parseDouble(UtilidadesHash.getString(fila, "TOTALIMPORTESJCS")) + Double.parseDouble(UtilidadesHash.getString(fila, "IMPORTETOTALMOVIMIENTOS")) + Double.parseDouble(UtilidadesHash.getString(fila, "TOTALIMPORTEIRPF"))  + Double.parseDouble(UtilidadesHash.getString(fila, "IMPORTETOTALRETENCIONES"));
+			importeTotalTotal = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea((new Double(aux)),2));
 			
 			// total     += Float.parseFloat(importe);
 			//totalBrutos = Float.parseFloat(importeRetenciones) + Float.parseFloat(importeTotalSJCS) + Float.parseFloat(importeTotalMovimientoVarios);
-			totalBrutos = Float.parseFloat(importeTotalSJCS) + Float.parseFloat(importeTotalMovimientoVarios);
+			totalBrutos = Double.parseDouble(importeTotalSJCS) + Double.parseDouble(importeTotalMovimientoVarios);
 			if (totalBrutos<0) totalBrutos=0;
 			total      += totalBrutos;
-			totalIrpf  += Float.parseFloat(irpf);
-			totalRetencion  += Float.parseFloat(importeRetenciones);
-			if ( Float.parseFloat(importeTotalTotal)<0) importeTotalTotal="0";
-			totalTotal  += Float.parseFloat(importeTotalTotal);
+			totalIrpf  += Double.parseDouble(irpf);
+			totalRetencion  += Double.parseDouble(importeRetenciones);
+			if ( Double.parseDouble(importeTotalTotal)<0) importeTotalTotal="0";
+			totalTotal  += new Double(importeTotalTotal);
 %>
 
   		<tr class="<%=((cont+1)%2==0?"filaTablaPar":"filaTablaImpar")%>">
 				<td><input type="hidden" name="oculto<%=cont%>_1" value="<%=idPersona%>"><%=ncolegiado%></td>
 				<td><%=nombreColegiado%></td>
 				<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_EJECUTADO)) { %>
-					<td align="right"><%=UtilidadesString.formatoImporte(importeTotalSJCS)%>&nbsp;&euro;</td>				
-					<td align="right"><%=UtilidadesString.formatoImporte(importeTotalMovimientoVarios)%>&nbsp;&euro;</td>				
+					<td align="right"><%=UtilidadesString.formatoImporte(UtilidadesNumero.redondea(Double.parseDouble(importeTotalSJCS.toString()),2))%>&nbsp;&euro;</td>				
+					<td align="right"><%=UtilidadesString.formatoImporte(UtilidadesNumero.redondea(Double.parseDouble (importeTotalMovimientoVarios.toString()),2))%>&nbsp;&euro;</td>				
 				<% } %>
 				<td align="right"><%=UtilidadesString.formatoImporte(totalBrutos)%>&nbsp;&euro;</td>
 				<td align="right">
 				<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_EJECUTADO)) { %>
-					<%=UtilidadesString.formatoImporte(irpf)%>&nbsp;&euro;
+					<%=UtilidadesString.formatoImporte(UtilidadesNumero.redondea(Double.parseDouble(irpf.toString()),2))%>&nbsp;&euro;
 				<% } else { %>
 					<siga:Idioma key="factSJCS.datosFacturacion.literal.IRPFSinCalcular"/>
 				<% } %>
 				<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_EJECUTADO)) { %>
-					<td align="right"><%=UtilidadesString.formatoImporte(importeRetenciones)%>&nbsp;&euro;</td>
-					<td align="right"><%=UtilidadesString.formatoImporte(importeTotalTotal)%>&nbsp;&euro;</td>
+					<td align="right"><%=UtilidadesString.formatoImporte(UtilidadesNumero.redondea(Double.parseDouble(importeRetenciones.toString()),2))%>&nbsp;&euro;</td>
+					<td align="right"><%=UtilidadesString.formatoImporte(UtilidadesNumero.redondea((new Double(aux)),2))%>&nbsp;&euro;</td>
 				<% } %>
 				</td>
   		</tr>
@@ -257,11 +257,11 @@
 		      <td width="<%=tamIni%>%"></td>
 
 				<td width="<%=tamA%>%" class="labelTextNum" align="right">
-					<%=UtilidadesString.formatoImporte(valorFinal)%>&nbsp;&euro;
+					<%=(totales.get("totalBruto")==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(Double.parseDouble(valorFinal.toString()),2)))%>&nbsp;&euro;
 				</td>
 				<td width="<%=tamA%>%" class="labelTextNum" align="right">
 						<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_EJECUTADO)) { %>
-							<%=UtilidadesString.formatoImporte(valorFinalIrpf)%>&nbsp;&euro;
+							<%=(totales.get("totalBruto")==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(Double.parseDouble(valorFinalIrpf.toString()),2)))%>&nbsp;&euro;
 						<% } else {	%>
 							-
 						<% } %>
@@ -269,14 +269,14 @@
 				<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_EJECUTADO)) { %>
 				<td width="<%=tamA%>%" class="labelTextNum" align="right">
 					<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_EJECUTADO)) { %>
-						<%=UtilidadesString.formatoImporte(valorFinalRetencion)%>&nbsp;&euro;
+						<%=(totales.get("totalBruto")==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(Double.parseDouble(valorFinalRetencion.toString()),2)))%>&nbsp;&euro;
 					<% } else {	%>
 						-
 					<% } %>
 				</td>
 				<td width="<%=tamA%>%" class="labelTextNum" align="right">
 					<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_EJECUTADO)) { %>
-						<%=UtilidadesString.formatoImporte(valorFinalTotal)%>&nbsp;&euro;
+						<%=(totales.get("totalBruto")==null?"":UtilidadesString.formatoImporte(UtilidadesNumero.redondea(Double.parseDouble(valorFinalTotal.toString()),2)))%>&nbsp;&euro;
 					<% } else {	%>
 						-
 					<% } %>

@@ -299,10 +299,11 @@
 		{
 			numero = convertirAFormato(n);
 		
-			for (;numero.toString().indexOf(".", 0) != -1;)
+		/*	for (;numero.toString().indexOf(".", 0) != -1;)
 			{			
 				numero = numero.replace(".","");					
-			}											
+			}								
+			*/
 			numero = numero.replace(",",".");
 			return numero;			
 		}
@@ -585,7 +586,8 @@
 				<siga:Idioma key="factSJCS.datosPagos.literal.importeFacturado"/>
 			</td>
 			<td class="labelText">
-				<html:text name="datosGeneralesPagoForm" property="importeFacturado" value="<%=UtilidadesNumero.formatoCampo(importeFacturado)%>" size="20" styleClass="boxConsultaNumber" readOnly="true"></html:text>
+				<html:text name="datosGeneralesPagoForm" property="importeFacturado" value="<%= UtilidadesString.formatoImporte(UtilidadesNumero.redondea(Double.parseDouble(importeFacturado.toString()),2)) %>"
+				size="20" styleClass="boxConsultaNumber" readOnly="true"></html:text>
 				&nbsp;&euro;
 			</td>				
 			
@@ -601,7 +603,8 @@
 				<siga:Idioma key="factSJCS.datosFacturacion.literal.totalPagado"/>
 			</td>
 			<td class="labelText">
-				<html:text name="datosGeneralesPagoForm" property="importePagado" value="<%=UtilidadesNumero.formatoCampo(importePagado)%>" size="20" styleClass="boxConsultaNumber" readonly="<%=b_lectura%>" />
+				<html:text name="datosGeneralesPagoForm" property="importePagado" value="<%= UtilidadesString.formatoImporte(UtilidadesNumero.redondea(Double.parseDouble(importePagado.toString()),2)) %>" 
+				size="20" styleClass="boxConsultaNumber" readonly="<%=b_lectura%>" />
 				&nbsp;&euro;
 			</td>
 		
@@ -638,7 +641,7 @@
 				</tr>
 				
 				<!-- OFICIO -->
-				<tr id="filaOficio" style="display:block">				
+				<tr id="filaOficio" style="display:block">	
 					<td class="labelText">
 						<siga:Idioma key="factSJCS.datosPagos.literal.Oficio"/>
 					</td>				
@@ -667,7 +670,7 @@
 					</td>
 				</tr>
 				<!-- GUARDIAS -->
-				<tr id="filaGuardias" style="display:block">				
+				<tr id="filaGuardias" style="display:block">		
 					<td class="labelText">
 						<siga:Idioma key="factSJCS.datosPagos.literal.Guardias"/>
 					</td>				
@@ -830,6 +833,7 @@
 					objImporte.value = objImporte.value.replace(/,/,".");
 					objPorcentaje.value = objPorcentaje.value.replace(/,/,".");
 				}
+
 			}
 		}
 		
@@ -965,6 +969,7 @@
 		{						
 			var f=document.getElementById("datosGeneralesPagoForm");
 
+
 			//Obtener la suma del importe a repartir 
 			var importeRepartirTotal = 0;
 
@@ -972,7 +977,9 @@
 			
 			for (i=0;i<4;i++){
 				var objImporte = document.getElementById("importe"+conceptos[i]);
+				
 				var importe = convertirANumeroGuardar(objImporte.value);
+			
 				
 				//Copia del importe restante para recuperarla tras enviar el formulario
 				restantes[i] = document.getElementById("txtRestante"+conceptos[i]).value;
@@ -986,8 +993,10 @@
 					var objPorcentaje = document.getElementById("porcentaje"+conceptos[i]);
 					var porcentaje = convertirANumero(objPorcentaje.value);
 					importeRepartirTotal = parseFloat(importeRepartirTotal) + parseFloat(importe);
+					
 				}
-			} 
+			}
+			
 			// Guarda los valores de los importes a repartir y pagado
 			// para recuperarlos una vez enviados al guardar si 
 			// se esta editando el pago en el estado ABIERTO
