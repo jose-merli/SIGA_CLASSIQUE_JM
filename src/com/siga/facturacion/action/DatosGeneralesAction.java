@@ -531,26 +531,32 @@ public class DatosGeneralesAction extends MasterAction{
 				correctoEliminar=admSerie.delete(hash);
 			}
 			
-			pagoSec=formDGen.getFormaPagoAutomática();
+	    	pagoSec=formDGen.getFormaPagoAutomática();
+	    	
+			
 			
 			for (int i=0;i<pagoSec.length;i++) {
 				formaPago.add(pagoSec[i]);
 			}	
 					
+					
 			if (!formaPago.isEmpty()){			
 				int i=0;
-				while(i<formaPago.size()){
+				while((i<formaPago.size()) && (formaPago.get(i).toString().length() > 0) && (formaPago.get(i) != null)){
 					if (((String)formaPago.get(i)).compareToIgnoreCase("-1")!=0){							
 						hashAux.put(beanFac.C_IDINSTITUCION,idInstitucion);																					
-						hashAux.put(beanFac.C_IDSERIEFACTURACION,idSerieFacturacionActual.toString());				
-						hashAux.put(beanForma.C_IDFORMAPAGO,(String)formaPago.get(i));
-						hashAux.put(ConCriterioConsultaBean.C_USUMODIFICACION, (String)user.getUserName());
-						hashAux.put(ConCriterioConsultaBean.C_FECHAMODIFICACION, "sysdate");
-						correctoInsercion=admSerie.insert(hashAux);					
-					}	
-					i++;							
+						hashAux.put(beanFac.C_IDSERIEFACTURACION,idSerieFacturacionActual.toString());
+							hashAux.put(beanForma.C_IDFORMAPAGO,(String)formaPago.get(i));
+							
+							hashAux.put(ConCriterioConsultaBean.C_USUMODIFICACION, (String)user.getUserName());
+							hashAux.put(ConCriterioConsultaBean.C_FECHAMODIFICACION, "sysdate");
+							correctoInsercion=admSerie.insert(hashAux);
+							
+						}
+					i++;
+					}						
 				}
-			}					
+
 			
 			request.setAttribute("container_S", formaPago);
 			
