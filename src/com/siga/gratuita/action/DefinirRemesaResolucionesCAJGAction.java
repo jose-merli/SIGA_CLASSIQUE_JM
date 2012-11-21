@@ -145,7 +145,7 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 	
 		try {
 			DesignacionProcuradorAsigna designacionProcuradorAsigna = new DesignacionProcuradorAsigna();
-			designacionProcuradorAsigna.obtenerDesignaciones(getUserBean(request), getIDInstitucion(request));
+			designacionProcuradorAsigna.obtenerDesignaciones(getIDInstitucion(request).shortValue());
 			String mensaje = "message.remesaDesignaProcurador.asigna.esperando";
 			request.setAttribute("mensajeUsuario", UtilidadesString.getMensajeIdioma(getUserBean(request), mensaje));
 			

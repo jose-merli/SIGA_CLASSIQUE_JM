@@ -81,7 +81,6 @@ import com.siga.gratuita.form.DefinicionRemesas_CAJG_Form;
 import com.siga.gratuita.form.DefinirEJGForm;
 import com.siga.informes.MasterWords;
 import com.siga.ws.CajgConfiguracion;
-import com.siga.ws.PCAJG;
 import com.siga.ws.SIGAWSClientAbstract;
 import com.siga.ws.SIGAWSListener;
 
@@ -865,7 +864,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 	}
 	
 	public static File getFicheroXML(String idInstitucion, String idRemesa) throws SIGAException {
-		return new File(PCAJG.getRutaFicheroZIP(Integer.parseInt(idInstitucion), Integer.parseInt(idRemesa)));
+		return new File(SIGAWSClientAbstract.getRutaFicheroZIP(Integer.parseInt(idInstitucion), Integer.parseInt(idRemesa)));
 	}
 	
 	

@@ -1,6 +1,7 @@
 package com.siga.ws.i2055;
 
-import com.atos.utils.UsrBean;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.siga.general.SIGAListenerAbstract;
 
 public class DesignacionProcuradorListener extends SIGAListenerAbstract {
@@ -12,13 +13,13 @@ public class DesignacionProcuradorListener extends SIGAListenerAbstract {
 	}
 
 	@Override
-	protected void execute(UsrBean usrBean, String idInstitucionSt) throws Exception {
-		DesignacionProcuradorAsigna designacionProcuradorAsigna = new DesignacionProcuradorAsigna();
-		Integer idInstitucion = null;
-		if (idInstitucionSt != null) {
-			idInstitucion = Integer.valueOf(idInstitucionSt);
+	protected void execute(Short idInstitucion) {
+		DesignacionProcuradorAsigna designacionProcuradorAsigna = new DesignacionProcuradorAsigna();		
+		try {
+			designacionProcuradorAsigna.obtenerDesignaciones(idInstitucion);
+		} catch (ClsExceptions e) {
+			ClsLogging.writeFileLogError("Error al insertar en la cola ecom", e, 3);
 		}
-		designacionProcuradorAsigna.obtenerDesignaciones(usrBean, idInstitucion);
 	}
 
 	@Override

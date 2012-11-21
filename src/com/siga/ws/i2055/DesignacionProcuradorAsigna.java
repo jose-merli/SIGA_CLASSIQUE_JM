@@ -5,16 +5,15 @@ import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.UsrBean;
 
 import es.satec.businessManager.BusinessManager;
 
 public class DesignacionProcuradorAsigna {
 	
-	public void obtenerDesignaciones(UsrBean usrBean, Integer idInstitucion) throws ClsExceptions {
+	public void obtenerDesignaciones(Short idInstitucion) throws ClsExceptions {
 				
 		EcomCola ecomCola = new EcomCola();
-		ecomCola.setIdinstitucion(Short.valueOf(idInstitucion.toString()));
+		ecomCola.setIdinstitucion(idInstitucion);
 		ecomCola.setIdoperacion(OPERACION.ASIGNA_OBTENER_PROCURADOR.getId());			
 		EcomColaService ecomColaService = (EcomColaService)BusinessManager.getInstance().getService(EcomColaService.class);
 								

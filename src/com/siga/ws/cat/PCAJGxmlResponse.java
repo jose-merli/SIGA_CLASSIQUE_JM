@@ -104,17 +104,17 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 			for (String fileName : vectorFiles) {								
 				if (fileName.startsWith(comienzoFicheroIEE_GEN) || fileName.startsWith(comienzoFicheroIR_GEN)){					
 					ClsLogging.writeFileLog("Encontrado fichero " + fileName, 3);					
+					File file = null;
 					
 					if (fileName.startsWith(comienzoFicheroIEE_GEN)) {
-						File fileIEE = getRespuestaFile(getIdInstitucion(), String.valueOf(getIdRemesa()), fileName);					
-						fileOutputStream = new FileOutputStream(fileIEE);
-						filesIEE.add(fileIEE);
+						file = getRespuestaFile(getIdInstitucion(), String.valueOf(getIdRemesa()), fileName);
+						filesIEE.add(file);
 					} else if (fileName.startsWith(comienzoFicheroIR_GEN)) {
-						File fileIR = getResolucionIRFile(getIdInstitucion(), fileName);
-						fileOutputStream = new FileOutputStream(fileIR);
-						filesIR.add(fileIR);
+						file = getResolucionIRFile(getIdInstitucion(), fileName);						
+						filesIR.add(file);
 					}
 					
+					fileOutputStream = new FileOutputStream(file);
 					ftpPcajgAbstract.download(fileName, fileOutputStream);
 					fileOutputStream.flush();
 					fileOutputStream.close();
@@ -168,7 +168,14 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				map.put("", namespace);
 				xmlOptions.setLoadSubstituteNamespaces(map);
 				
-				IntercambioDocument intercambioIRDoc = IntercambioDocument.Factory.parse(file, xmlOptions);
+				IntercambioDocument intercambioIRDoc = null;				
+				try {					
+					intercambioIRDoc = IntercambioDocument.Factory.parse(file, xmlOptions);
+				} catch (XmlException e) {
+					escribeLogRemesa("El xml " + file.getName() + " no es un fichero de \"Intercambio\" válido.");
+					throw e;
+				}
+				
 				if (SigaWSHelper.validate(intercambioIRDoc).size() > 0) {					
 					throw new ClsExceptions("El xml " + file.getName() + " no es válido");
 				}
@@ -446,7 +453,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				map.put("", namespace);
 				xmlOptions.setLoadSubstituteNamespaces(map);
 				IntercambioDocument intercambioRespuestaDoc = null;
-				try {
+				try {					
 					intercambioRespuestaDoc = IntercambioDocument.Factory.parse(file, xmlOptions);
 				} catch (XmlException e) {
 					escribeLogRemesa("El xml " + file.getName() + " no es un fichero de \"Intercambio\" válido.");

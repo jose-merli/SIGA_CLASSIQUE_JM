@@ -9,7 +9,7 @@ import es.satec.businessManager.BusinessManager;
 public class ResolucionesAsigna {
 	
 	
-	public void obtenerResoluciones(String idInstitucion) throws Exception {	
+	public void obtenerResoluciones(String idInstitucion) {	
 		EcomCola ecomCola = new EcomCola();
 		if (idInstitucion != null) {
 			ecomCola.setIdinstitucion(Short.valueOf(idInstitucion));

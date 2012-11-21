@@ -1,14 +1,13 @@
 package com.siga.ws.i2055;
 
-import com.atos.utils.UsrBean;
 import com.siga.general.SIGAListenerAbstract;
 
 public class ResolucionesListener extends SIGAListenerAbstract {
 
 	@Override
-	protected void execute(UsrBean usrBean, String idInstitucion) throws Exception {				
+	protected void execute(Short idInstitucion) {				
 		ResolucionesAsigna resolucionesAsigna = new ResolucionesAsigna();
-		resolucionesAsigna.obtenerResoluciones(idInstitucion);
+		resolucionesAsigna.obtenerResoluciones(String.valueOf(idInstitucion));
 	}
 
 	@Override

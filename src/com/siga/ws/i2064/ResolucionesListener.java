@@ -4,7 +4,6 @@ import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 
-import com.atos.utils.UsrBean;
 import com.siga.general.SIGAListenerAbstract;
 
 import es.satec.businessManager.BusinessManager;
@@ -12,12 +11,12 @@ import es.satec.businessManager.BusinessManager;
 public class ResolucionesListener extends SIGAListenerAbstract {
 
 	@Override
-	protected void execute(UsrBean usrBean, String idInstitucion) throws Exception {				
+	protected void execute(Short idInstitucion) {				
 		//INSERTAR EN ECOM_COLA
 		EcomColaService ecomColaService = (EcomColaService) BusinessManager.getInstance().getService(EcomColaService.class);
 		
 		EcomCola ecomCola = new EcomCola();
-		ecomCola.setIdinstitucion(Short.valueOf(idInstitucion));
+		ecomCola.setIdinstitucion(idInstitucion);
 		ecomCola.setIdoperacion(AppConstants.OPERACION.XUNTA_RESOLUCIONES.getId());
 		ecomColaService.insertaColaConsultaResoluciones(ecomCola);
 	}
