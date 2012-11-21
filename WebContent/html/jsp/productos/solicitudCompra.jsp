@@ -234,7 +234,7 @@
 				document.getElementById("filaNaranja").focus();	// Por problemas de repintado de pantalla
 			}
 			function ocultarCombosServicio(){
-			    //document.getElementById("tipoProducto1").style.display="block";
+			    document.getElementById("tipoProducto1").style.display="block";
 				document.getElementById("categoriaProducto1").style.display="block";
 				document.getElementById("producto1").style.display="block";
 				document.getElementById("solicitarProducto1").style.display="block";
