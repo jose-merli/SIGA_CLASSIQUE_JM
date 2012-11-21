@@ -107,6 +107,8 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 				criteria.andIdtipointercambiotelematicoEqualTo(entradaEnviosForm.getIdTipoIntercambioTelematico());
 			}
 			
+			entradaEnviosExample.setOrderByClause("FECHAPETICION DESC");
+			
 			entradaEnvios = envEntradaEnviosMapper.selectByExample(entradaEnviosExample);
 		
 		} catch (Exception e) {
