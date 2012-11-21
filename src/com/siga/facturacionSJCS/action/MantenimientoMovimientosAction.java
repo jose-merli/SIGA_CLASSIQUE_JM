@@ -328,8 +328,11 @@ public class MantenimientoMovimientosAction extends MasterAction {
 			
 			String checkHistoricoMovimiento = miform.getCheckHistorico();
 			
-			if (checkHistoricoMovimiento != null) {
-				datos.put("CHECKHISTORICO",checkHistoricoMovimiento.toString());
+			String check = (String) miform.getCheckHistoricoMovimiento();
+
+			
+			if (check != null) {
+				datos.put("CHECKHISTORICO",check);
 			}
 
 			// Si vengo desde la ficha colegial
@@ -366,7 +369,7 @@ public class MantenimientoMovimientosAction extends MasterAction {
 				request.getSession().setAttribute("entrada","2");
 			}
 			
-			request.getSession().setAttribute("checkHistoricoMovimiento", checkHistoricoMovimiento);
+			request.getSession().setAttribute("checkHistoricoMovimiento", check);
 			request.getSession().setAttribute("checkHistorico", checkHistoricoMovimiento);
 			
 			//el mapping correcto

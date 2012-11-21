@@ -70,9 +70,11 @@
 		}
 
 		function comprobarCheckHistorico(valorCheck){
-			if (!valorCheck.checked){
+			if (valorCheck.checked){
+				document.forms[0].checkHistoricoMovimiento.value="true";
+			} else {
 				document.forms[0].checkHistoricoMovimiento.value="false";
-			} else document.forms[0].checkHistoricoMovimiento.value="true";
+			}
 
 			document.forms[0].modo.value = "abrir";
 			
@@ -180,6 +182,21 @@
 	
 
 		</siga:TablaCabecerasFijas>	
+		
+		<div style="position:absolute; left:200px;bottom:50px;z-index:2;">
+			<table align="center" border="0">
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal"/>
+							<% if (checkHistoricoMovimiento != null && checkHistoricoMovimiento.equals("true")) { %>
+								<input type="checkbox" id="idCheckHistorico" name="checkHistorico" onclick="comprobarCheckHistorico(this);"checked>
+							<% } else { %>
+								<input type="checkbox" id="idCheckHistorico" name="checkHistorico" onclick="comprobarCheckHistorico(this);">
+							<% } %>										
+					</td>
+				</tr>
+			</table>
+		</div>			
 	
 	<%} else {%>	
 
@@ -247,25 +264,6 @@
 		
 <%}%>		
 
-<% if(esFicha != null && esFicha.equalsIgnoreCase("1")){%>
-			<!-- Introducción del check de histórico -->
-	
-		<div style="position:absolute; left:200px;bottom:50px;z-index:2;">
-			<table align="center" border="0">
-				<tr>
-					<td class="labelText">
-						<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal"/>
-							<% if (checkHistoricoMovimiento != null && checkHistoricoMovimiento.equals("true")) { %>
-								<input type="checkbox" name="checkHistorico" property="checkHistorico" onclick="comprobarCheckHistorico(this);" checked>
-							<% } else { %>						
-						<input type="checkbox" name="checkHistorico" property="checkHistorico" onclick="comprobarCheckHistorico(this);">
-							<% } %>										
-					</td>
-				</tr>
-			</table>
-		</div>	
-	
-	<%}%>		
 
 		<!-- FIN: LISTA DE VALORES -->
 	
