@@ -62,8 +62,8 @@ public class AlcalaJE extends InformeXML implements PCAJGConstantes {
 	}
 	
 	@Override
-	public void envioWS(String idInstitucion, String idFacturacion,	UsrBean usrBean) throws ErrorValidacionXML, ErrorNegocioWS,	Exception {		
-		throw new Exception("Funcionalidad no implementada.");
+	public void envioWS(String idInstitucion, String idFacturacion) {		
+		throw new IllegalArgumentException("Funcionalidad no implementada.");
 		
 	}
 	

@@ -124,7 +124,7 @@ public class ScsEjgServiceImpl extends MyBatisBusinessServiceTemplate implements
 		GenParametrosMapper genParametrosMapper = getMyBatisSqlSessionManager().getMapper(GenParametrosMapper.class);
 		GenParametrosKey key = new GenParametrosKey();
 		key.setIdinstitucion(scsEjg.getIdinstitucion());
-		key.setModulo(AppConstants.SCS_MODULO.GEN.toString());
+		key.setModulo(AppConstants.MODULO.GEN.toString());
 		key.setParametro(AppConstants.PARAMETRO.REGTEL.toString());
 		GenParametros genParametros = genParametrosMapper.selectByPrimaryKey(key);
 		

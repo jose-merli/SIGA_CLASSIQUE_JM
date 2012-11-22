@@ -386,7 +386,7 @@ public class DocuShareHelper {
 			    			dsObj.setId(dsObject.getHandle().toString());
 			    			dsObj.setTitle(dsObject.getTitle());
 			    			dsObj.setFechaModificacion(dsObject.getModifiedDate());	
-			    			int size = ((DSDocument) dsObject).getSize();
+			    			long size = ((DSDocument) dsObject).getSize();
 			    			if (size > 0) {
 			    				dsObj.setSizeKB(size / 1024);
 			    			}
