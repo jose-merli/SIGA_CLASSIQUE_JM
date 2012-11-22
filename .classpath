@@ -32,7 +32,7 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/DatabaseConnectors.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/displaytag-1.2.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/displaytag-export-poi-1.2.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/ds4api-4.0.1_7.jar"/>
+		<classpathentry kind="lib" path="WebContent/WEB-INF/lib/ds6api.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/fop.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/geronimo-stax-api_1.0_spec-1.0.1.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/iaik_jce_full.jar"/>
@@ -58,7 +58,6 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/Mutualidad-axis.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/Mutualidad-xmlBeans.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/mybatis-3.1.1.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/PCAJG.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/PCAJG_xmlBeans_Aragon.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/PCAJG-Generalitat.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/PCAJG-PaisVasco_EJGs.jar"/>
