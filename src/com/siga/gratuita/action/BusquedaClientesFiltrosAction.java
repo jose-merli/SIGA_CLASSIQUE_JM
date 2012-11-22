@@ -173,7 +173,7 @@ public class BusquedaClientesFiltrosAction extends MasterAction
 			String fecha = miFormulario.getFecha();
 			if (fecha != null && fecha.length() > 0)
 				fecha = GstDate.getApplicationFormatDate(idioma, fecha);
-			String fechaFomateada = (fecha == null || fecha.equals("")) ? "sysdate" : GstDate.getFormatedDateShort("", fecha);
+			String fechaFomateada = (fecha == null || fecha.equals("")) ? GstDate.getHoyJsp() : GstDate.getFormatedDateShort("", fecha);
 			int idFiltro;
 			try {
 				idFiltro = Integer.parseInt(filtro);
