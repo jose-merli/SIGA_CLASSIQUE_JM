@@ -2292,7 +2292,8 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 							FacFacturaBean.T_NOMBRETABLA + "."  + FacFacturaBean.C_IMPTOTALPAGADOSOLOCAJA	+ " AS POR_SOLOCAJA, " +							
 							FacFacturaBean.T_NOMBRETABLA + "."  + FacFacturaBean.C_IMPTOTALPAGADOSOLOTARJETA	+ " AS POR_SOLOTARJETA, " +							
 							FacFacturaBean.T_NOMBRETABLA + "."  + FacFacturaBean.C_IMPTOTALPORPAGAR	+ " AS PENDIENTE_PAGAR, " +							
-							"lpad(substr("+CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA + ",7),10,'*') NUMEROCUENTA " +
+							"lpad(substr("+CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA + ",7),10,'*') NUMEROCUENTA, " +
+							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_TITULAR + 
 /*					        "PKG_SIGA_TOTALESFACTURA.TOTAL(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL_FACTURA, " +
 							"PKG_SIGA_TOTALESFACTURA.TOTALANTICIPADO(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL_ANTICIPADO, " + 
 							"PKG_SIGA_TOTALESFACTURA.TOTALCOMPENSADO(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL_COMPENSADO, " + 
@@ -2496,6 +2497,8 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 				  }else{
 					
 					resultado=factura.get(CenCuentasBancariasBean.C_CBO_CODIGO)+(String)factura.get("NUMEROCUENTA");
+					
+					nuevo.put("TITULARCUENTA",(String)factura.get(CenCuentasBancariasBean.C_TITULAR));
 				  }
 				}  
 				nuevo.put("FORMA_PAGO_FACTURA",resultado);
