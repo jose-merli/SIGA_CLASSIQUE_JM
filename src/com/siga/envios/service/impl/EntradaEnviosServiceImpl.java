@@ -688,6 +688,7 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 			
 			// Se procede a la actualización del estado
 			envEntradaEnvios.setIdenviorelprogramado(idEnvioRelacionado);	
+			envEntradaEnvios.setFecharespuesta(Calendar.getInstance().getTime());
 			envEntradaEnviosMapper.updateByExampleSelective(envEntradaEnvios, entradaEnviosExample);
 			
 		} catch (Exception e) {

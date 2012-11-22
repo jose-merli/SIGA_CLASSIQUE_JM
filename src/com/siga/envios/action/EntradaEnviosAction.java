@@ -315,7 +315,7 @@ public class EntradaEnviosAction extends MasterAction {
 			BusinessManager businessManager =  BusinessManager.getInstance();
 			EntradaEnviosService entradaEnviosService = (EntradaEnviosService) businessManager.getService(EntradaEnviosService.class);
 			entradaEnviosService.relacionarEnvio(new Long(entradaEnviosForm.getIdEnvio()), new Short(entradaEnviosForm.getIdInstitucion()),new Long(idEnvioRelacionado));
-			entradaEnviosService.actualizarEstado(new Long(entradaEnviosForm.getIdEnvio()), new Short(entradaEnviosForm.getIdInstitucion()),EstadosEntradaEnviosEnum.ESTADO_FINALIZADO.getCodigo());			
+			entradaEnviosService.actualizarEstado(new Long(entradaEnviosForm.getIdEnvio()), new Short(entradaEnviosForm.getIdInstitucion()),EstadosEntradaEnviosEnum.ESTADO_FINALIZADO.getCodigo());
 			return exitoRefresco("Comunicación realizada correctamente",request);
 
 		}catch (Exception e){
