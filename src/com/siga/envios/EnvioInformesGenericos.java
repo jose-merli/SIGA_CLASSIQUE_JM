@@ -2476,11 +2476,13 @@ public class EnvioInformesGenericos extends MasterReport {
 	                        ecomDesignaprovisional.setIdjuzgado(destProgramInfBean.getIdPersona());               
 	                        ecomDesignaprovisional.setIdinstitucionJuzg(Short.parseShort(destProgramInfBean.getIdInstitucion().toString()));
 
+	                        Vector ejgAsociado = designaAdm.getDatosEJG(idInstitucion, numeroDesigna, idTurnoDesigna, anioDesigna);	        
+	                        Hashtable ejgAsociadoHash = (Hashtable)ejgAsociado.get(0);
 	                        //Caso en el que hay un unico ejg
-	                        if(UtilidadesHash.getInteger(designaHash,"IDTIPOEJG")!=null){
-	                            ecomDesignaprovisional.setIdtipoejg(UtilidadesHash.getShort(designaHash,"IDTIPOEJG"));                   
-	                            ecomDesignaprovisional.setAnioejg(UtilidadesHash.getShort(designaHash,"ANIOEJG"));
-	                            ecomDesignaprovisional.setNumeroejg(UtilidadesHash.getLong(designaHash,"NUMEROEJG"));
+	                        if(UtilidadesHash.getInteger(ejgAsociadoHash,"TIPO_EJG")!=null){
+	                            ecomDesignaprovisional.setIdtipoejg(UtilidadesHash.getShort(ejgAsociadoHash,"TIPO_EJG"));                   
+	                            ecomDesignaprovisional.setAnioejg(UtilidadesHash.getShort(ejgAsociadoHash,"ANIO_EJG"));
+	                            ecomDesignaprovisional.setNumeroejg(UtilidadesHash.getLong(ejgAsociadoHash,"NUMERO_EJG"));
 	                        }else if(UtilidadesHash.getString(designaHash,"LISTAANIONUMEROEJGS")!=null && !UtilidadesHash.getString(designaHash,"LISTAANIONUMEROEJGS").equals("")){
 	                            String listaEJGS = UtilidadesHash.getString(designaHash,"LISTAANIONUMEROEJGS");
 	                            String[] ejgs = listaEJGS.split(",");
