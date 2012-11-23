@@ -585,11 +585,23 @@
 			<td class="labelText">
 				<siga:Idioma key="factSJCS.datosPagos.literal.importeFacturado"/>
 			</td>
+			<%
+			if (esVerEditar) {
+			%>
 			<td class="labelText">
-				<html:text name="datosGeneralesPagoForm" property="importeFacturado" value="<%= UtilidadesString.formatoImporte(UtilidadesNumero.redondea(Double.parseDouble(importeFacturado.toString()),2)) %>"
+				<html:text name="datosGeneralesPagoForm" property="importeFacturado" value="<%= (UtilidadesString.formatoImporte(UtilidadesNumero.redondea(Double.parseDouble(importeFacturado.toString()),2))) %>"
 				size="20" styleClass="boxConsultaNumber" readOnly="true"></html:text>
 				&nbsp;&euro;
 			</td>				
+			<% } else { 
+			%>
+			<td class="labelText">
+				<html:text name="datosGeneralesPagoForm" property="importeFacturado" value=""
+				size="20" styleClass="boxConsultaNumber" readOnly="true"></html:text>
+				&nbsp;&euro;
+			</td>			
+			<% } 
+			%>
 			
 			<td class="labelText">
 				<siga:Idioma key="factSJCS.datosPagos.literal.fechaInicio"/>
@@ -602,11 +614,23 @@
 			<td class="labelText">
 				<siga:Idioma key="factSJCS.datosFacturacion.literal.totalPagado"/>
 			</td>
+			<%
+			if (esVerEditar) {
+			%>
 			<td class="labelText">
-				<html:text name="datosGeneralesPagoForm" property="importePagado" value="<%= UtilidadesString.formatoImporte(UtilidadesNumero.redondea(Double.parseDouble(importePagado.toString()),2)) %>" 
+				<html:text name="datosGeneralesPagoForm" property="importePagado" value="<%= (UtilidadesString.formatoImporte(UtilidadesNumero.redondea(Double.parseDouble(importePagado.toString()),2))) %>" 
 				size="20" styleClass="boxConsultaNumber" readonly="<%=b_lectura%>" />
 				&nbsp;&euro;
 			</td>
+			<% } else { 
+			%>	
+			<td class="labelText">
+				<html:text name="datosGeneralesPagoForm" property="importePagado" value="" 
+				size="20" styleClass="boxConsultaNumber" readonly="<%=b_lectura%>" />
+				&nbsp;&euro;
+			</td>			
+			<% } 
+			%>					
 		
 			<td class="labelText">
 				<siga:Idioma key="factSJCS.datosPagos.literal.fechaFin"/>
