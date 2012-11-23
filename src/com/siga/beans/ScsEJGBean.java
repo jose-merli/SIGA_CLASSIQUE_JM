@@ -115,6 +115,15 @@ public class ScsEJGBean extends MasterBean{
 	private String idActa;
 	private String idInstitucionActa;
 	private Long idEcomCola;
+	
+	protected Integer	usuarioCreacion;
+	protected String	fechaCreacion;
+	
+	public void setUsuarioCreacion (Integer usuario) 	{ this.usuarioCreacion = usuario; }
+	public void setFechaCreacion (String fecha) 	{ this.fechaCreacion = fecha; }
+
+	public Integer getUsuarioCreacion	() 	{ return this.usuarioCreacion; }
+	public String getFechaCreacion		() 	{ return this.fechaCreacion; }	
     
     public String getDescripcionOrigen() {
 		return descripcionOrigen;
