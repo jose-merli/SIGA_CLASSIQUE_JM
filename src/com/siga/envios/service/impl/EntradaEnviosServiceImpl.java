@@ -44,6 +44,7 @@ import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 import org.redabogacia.sigaservices.app.services.scs.ScsDesignaService;
 import org.redabogacia.sigaservices.app.services.scs.ScsEjgService;
 import org.redabogacia.sigaservices.app.vo.Designacion;
+import org.redabogacia.sigaservices.app.vo.Ejg;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.UsrBean;
@@ -532,7 +533,7 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 				//Se borra el registro del EJG
 				if(entradaEnviosForm.getAnioEJGNew()!=null && !entradaEnviosForm.getAnioEJGNew().equals("")){
 					ScsEjgService ejgService = (ScsEjgService) BusinessManager.getInstance().getService(ScsEjgService.class);
-					ScsEjg obj = new ScsEjg();
+					Ejg obj = new Ejg();
 					obj.setAnio(new Short(entradaEnviosForm.getAnioEJGNew()));
 					obj.setIdinstitucion(new Short(entradaEnviosForm.getIdInstitucion()));
 					obj.setNumero(new Long(entradaEnviosForm.getNumeroEJGNew()));
@@ -582,7 +583,7 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 					ScsDesignaService designaService = (ScsDesignaService) BusinessManager.getInstance().getService(ScsDesignaService.class);
 					
 					//Primero se borra la designacion del letrado
-					ScsDesignasletrado letradoDesigna = new ScsDesignasletrado();  
+					/*ScsDesignasletrado letradoDesigna = new ScsDesignasletrado();  
 					letradoDesigna.setAnio(new Short(entradaEnviosForm.getAnioDesignaNew()));
 					letradoDesigna.setIdinstitucion(new Short(entradaEnviosForm.getIdInstitucion()));
 					letradoDesigna.setNumero(new Long(entradaEnviosForm.getNumeroDesignaNew()));
@@ -619,6 +620,7 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 					designacion.setDesignaprocurador(designaprocurador);
 					
 					designaService.delete(designacion);
+					*/
 				}				
 				
 				//Actualizamos el estado. 
