@@ -469,8 +469,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 //			bean.setSOJ_anio(UtilidadesHash.getInteger(hash,ScsEJGBean.C_SOJ_ANIO));			
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,ScsEJGBean.C_USUMODIFICACION));		
 			bean.setFechaMod(UtilidadesHash.getString(hash,ScsEJGBean.C_FECHAMODIFICACION));
-			bean.setUsuarioCreacion(UtilidadesHash.getInteger(hash,ScsEJGBean.C_USUCREACION));		
-			bean.setFechaCreacion(UtilidadesHash.getString(hash,ScsEJGBean.C_FECHACREACION));
+			//bean.setUsuarioCreacion(UtilidadesHash.getInteger(hash,ScsEJGBean.C_USUCREACION));		
+			//bean.setFechaCreacion(UtilidadesHash.getString(hash,ScsEJGBean.C_FECHACREACION));
 			//bean.setDesignaIdTurno(UtilidadesHash.getInteger(hash,ScsEJGBean.C_DESIGNA_IDTURNO));
 			//bean.setDesignaNumero(UtilidadesHash.getInteger(hash,ScsEJGBean.C_DESIGNA_NUMERO));
 			//bean.setDesignaAnio(UtilidadesHash.getInteger(hash,ScsEJGBean.C_DESIGNA_ANIO));
@@ -572,8 +572,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 //			UtilidadesHash.set(htData,ScsEJGBean.C_SOJ_ANIO, b.getSOJ_anio());	
 			UtilidadesHash.set(htData,ScsEJGBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(htData,ScsEJGBean.C_USUMODIFICACION, String.valueOf(b.getUsuMod()));
-			UtilidadesHash.set(htData,ScsEJGBean.C_FECHACREACION, b.getFechaCreacion());
-			UtilidadesHash.set(htData,ScsEJGBean.C_USUCREACION, String.valueOf(b.getUsuarioCreacion()));
+			//UtilidadesHash.set(htData,ScsEJGBean.C_FECHACREACION, b.getFechaCreacion());
+			//UtilidadesHash.set(htData,ScsEJGBean.C_USUCREACION, String.valueOf(b.getUsuarioCreacion()));
 			//UtilidadesHash.set(htData,ScsEJGBean.C_DESIGNA_IDTURNO, b.getDesignaIdTurno());
 			//UtilidadesHash.set(htData,ScsEJGBean.C_DESIGNA_NUMERO, b.getDesignaNumero());
 			//UtilidadesHash.set(htData,ScsEJGBean.C_DESIGNA_ANIO, b.getDesignaAnio());
