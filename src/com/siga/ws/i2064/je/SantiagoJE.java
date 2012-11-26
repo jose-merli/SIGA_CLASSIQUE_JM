@@ -17,6 +17,10 @@ import org.apache.axis.configuration.SimpleProvider;
 import org.apache.axis.transport.http.HTTPSender;
 import org.apache.axis.transport.http.HTTPTransport;
 import org.apache.xmlbeans.XmlOptions;
+import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
+import org.redabogacia.sigaservices.app.autogen.model.FcsFacturacionjgKey;
+import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
@@ -61,6 +65,8 @@ import com.siga.ws.i2064.je.xsd.PROCBAREMOTYPE.PROCPORCENTUAL;
 import com.siga.ws.i2064.je.xsd.SOXCLAVETYPE;
 import com.siga.ws.i2064.je.xsd.TRIMESTRETYPE;
 import com.siga.ws.i2064.je.xsd.resposta.CargaAsunto;
+
+import es.satec.businessManager.BusinessManager;
 
 public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 
@@ -396,9 +402,30 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 		return clientConfig;
 	}	
 	
-
-
 	@Override
+	public void envioWS(String idInstitucion, String idFacturacion) {
+		FcsFacturacionjgKey fcsFacturacionjgKey = new FcsFacturacionjgKey();
+		fcsFacturacionjgKey.setIdinstitucion(Short.valueOf(idInstitucion));
+		fcsFacturacionjgKey.setIdfacturacion(Integer.valueOf(idFacturacion));
+		
+		EcomCola ecomCola = new EcomCola();
+		ecomCola.setIdinstitucion(Short.valueOf(idInstitucion));		
+		ecomCola.setIdoperacion(AppConstants.OPERACION.XUNTA_JE.getId());
+		
+		EcomColaService ecomColaService = (EcomColaService) BusinessManager.getInstance().getService(EcomColaService.class);
+		ecomColaService.insertaColaFcsFacturacionJG(ecomCola, fcsFacturacionjgKey);
+	}
+	
+	/**
+	 * Método antiguo que ejecutaba el envío por webservice pero ahora lo hará ecom
+	 * @param idInstitucion
+	 * @param idFacturacion
+	 * @param usrBean
+	 * @throws ErrorValidacionXML
+	 * @throws ErrorNegocioWS
+	 * @throws ErrorEnvioWS
+	 * @throws Exception
+	 */
 	public void envioWS(String idInstitucion, String idFacturacion, UsrBean usrBean) throws ErrorValidacionXML, ErrorNegocioWS, ErrorEnvioWS, Exception {
 		
 			try {
