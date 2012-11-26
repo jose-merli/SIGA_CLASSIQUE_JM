@@ -10,9 +10,9 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 
 import org.apache.commons.lang.StringUtils;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
-import com.atos.utils.ReadProperties;
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesString;
 
 

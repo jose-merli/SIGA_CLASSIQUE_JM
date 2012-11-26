@@ -2,7 +2,8 @@ package com.siga.servlets;
 
 import javax.servlet.http.HttpServlet;
 
-import com.siga.Utilidades.SIGAReferences;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 
 public class SIGAServletAdapter extends HttpServlet {
 	private static final long serialVersionUID = -9054121018377626641L;

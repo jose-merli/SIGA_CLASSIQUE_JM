@@ -18,10 +18,11 @@ import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.exceptions.SIGAServiceException;
+import org.redabogacia.sigaservices.app.helper.DocuShareHelper;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.DocuShareHelper;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
@@ -62,7 +63,6 @@ import com.siga.expedientes.form.ExpDatosGeneralesForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.xerox.docushare.DSException;
 
 /**
  * Action Datos Generales de un Expediente
@@ -1609,8 +1609,8 @@ public class ExpDatosGeneralesAction extends MasterAction
 			/* Sólo se intentará la Conexion al DocuShare si el parámetro general para la institucion=1*/	
 			GenParametrosAdm parametrosAdm = new GenParametrosAdm(user);
 			String valor = parametrosAdm.getValor(this.getUserBean(request).getLocation(), ClsConstants.MODULO_GENERAL, "REGTEL", "0");
-			if (valor!=null && valor.equals("1")){
-			  expBean.setIdentificadorDS(obtenerIdentificadorDS(user, collectionTitle));
+			if (valor!=null && valor.equals("1")){				
+				expBean.setIdentificadorDS(obtenerIdentificadorDS(getIDInstitucion(request).shortValue(), collectionTitle));
 			}
 			
 			//Comprobamos que coincide con los propuestos al presionar en 'nuevo', si no, informamos de los nuevos valores
@@ -1872,11 +1872,13 @@ public class ExpDatosGeneralesAction extends MasterAction
 	 * @param usrBean
 	 * @param collectionTitle
 	 * @return
+	 * @throws SIGAServiceException 
 	 * @throws SIGAException
 	 * @throws ClsExceptions
 	 */
-	private String obtenerIdentificadorDS(UsrBean usrBean, String collectionTitle) throws SIGAException, ClsExceptions, DSException {
-		DocuShareHelper docuShareHelper = new DocuShareHelper(usrBean);
+	private String obtenerIdentificadorDS(short idInstitucion, String collectionTitle) throws SIGAServiceException {
+			
+		DocuShareHelper docuShareHelper = new DocuShareHelper(idInstitucion);
 		
 		String idDS = docuShareHelper.buscaCollectionExpedientes(collectionTitle);
 		

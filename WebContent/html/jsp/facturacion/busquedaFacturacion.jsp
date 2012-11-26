@@ -105,7 +105,7 @@
 
 <% if (tieneHijos) {  %>
 
-	<html:hidden name="mantenimientoFacturacionForm" property="estado" value="<%=Integer.toString(ClsConstants.ESTADO_FACTURACION_LISTA_CONSEJO)%>" />
+	<html:hidden name="mantenimientoFacturacionForm" property="estado" value="<%=Integer.toString(ESTADO_FACTURACION.ESTADO_FACTURACION_LISTA_CONSEJO.getCodigo())%>" />
 
 	<td class="labelText">
 		<siga:Idioma key="factSJCS.datosFacturacion.literal.institucion"/>

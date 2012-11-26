@@ -24,6 +24,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.general.*"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
+<%@ page import="org.redabogacia.sigaservices.app.AppConstants.ESTADO_FACTURACION"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.atos.utils.GstDate"%>
 <%@ page import="com.atos.utils.UsrBean"%>
@@ -206,11 +207,12 @@
 				borrar = "S";
 			}
 			
-			if (idInstitucion.equals(usrbean.getLocation()) && (idestado.equals(new Integer(ClsConstants.ESTADO_FACTURACION_ABIERTA).toString()) 
-					|| idestado.equals(new Integer(ClsConstants.ESTADO_FACTURACION_EJECUTADA).toString())
-					|| idestado.equals(new Integer(ClsConstants.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA).toString())
-					|| idestado.equals(new Integer(ClsConstants.ESTADO_FACTURACION_ENVIO_NO_DISPONIBLE).toString())
-					|| idestado.equals(new Integer(ClsConstants.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO).toString()))) {
+			if (idInstitucion.equals(usrbean.getLocation()) && (idestado.equals(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_ABIERTA.getCodigo()).toString()) 
+					|| idestado.equals(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_EJECUTADA.getCodigo()).toString())
+					|| idestado.equals(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_ENVIO_EN_PROCESO.getCodigo()).toString())					
+					|| idestado.equals(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA.getCodigo()).toString())
+					|| idestado.equals(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_ENVIO_NO_DISPONIBLE.getCodigo()).toString())
+					|| idestado.equals(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO.getCodigo()).toString()))) {
 				permisos += ",E";
 			}
 			

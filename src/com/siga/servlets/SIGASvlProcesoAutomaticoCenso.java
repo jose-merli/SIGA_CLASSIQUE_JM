@@ -5,6 +5,10 @@ import javax.servlet.*;
 import com.atos.utils.*;
 import com.siga.beans.*;
 import javax.management.*;
+
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 import com.siga.Utilidades.*;
 
 import weblogic.management.timer.Timer;

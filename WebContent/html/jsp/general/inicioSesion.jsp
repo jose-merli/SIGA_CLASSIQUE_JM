@@ -11,7 +11,7 @@
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.atos.utils.ReadProperties"%>
+<%@ page import="org.redabogacia.sigaservices.app.util.ReadProperties"%>
 <%@ page import="com.atos.utils.BotonesMenu"%>
 <%@ page import="java.util.Properties"%>
 

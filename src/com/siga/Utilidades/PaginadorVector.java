@@ -6,10 +6,12 @@ package com.siga.Utilidades;
 
 import java.util.Vector;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.ReadProperties;
 
 
 import java.io.Serializable;
+
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 /**
  * Paginador no sensitivo a mayusculas/minusculas y acentos. Utiliza un Pool configurado

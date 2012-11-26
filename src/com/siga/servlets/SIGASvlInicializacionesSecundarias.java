@@ -12,10 +12,10 @@ import javax.servlet.ServletContextEvent;
 
 import org.redabogacia.sigaservices.app.services.SigaLog4jService;
 import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.aspose.words.License;
 import com.atos.utils.ClsLogging;
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.informes.CrystalReportMaster;
 import com.siga.informes.MasterWords;

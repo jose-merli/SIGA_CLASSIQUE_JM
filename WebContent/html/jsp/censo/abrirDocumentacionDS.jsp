@@ -70,7 +70,7 @@
 %>	
 
 
-<%@page import="com.siga.censo.vos.DocuShareObjectVO"%><html>
+<%@page import="org.redabogacia.sigaservices.app.vo.DocuShareObjectVO"%><html>
 
 <!-- HEAD -->
 	<head>

@@ -9,13 +9,15 @@ import java.util.Hashtable;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import com.atos.utils.ReadProperties;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 
 
 import java.io.Serializable;
+
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 /**
  * Paginador no sensitivo a mayusculas/minusculas y acentos. Utiliza un Pool configurado

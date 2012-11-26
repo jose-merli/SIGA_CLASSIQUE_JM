@@ -16,8 +16,8 @@
 <%@ taglib uri = "c.tld" 			prefix="c"%>
 
 <!-- IMPORTS -->
-<%@page import="com.siga.Utilidades.SIGAReferences"%>
-<%@page import="com.atos.utils.ReadProperties"%>
+<%@page import="org.redabogacia.sigaservices.app.util.SIGAReferences"%>
+<%@page import="org.redabogacia.sigaservices.app.util.ReadProperties"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.gratuita.form.BusquedaPorTipoSJCSForm"%>
 <%@ page import="com.atos.utils.ClsConstants"%>

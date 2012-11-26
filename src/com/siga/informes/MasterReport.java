@@ -41,13 +41,14 @@ import org.apache.fop.apps.Driver;
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.Options;
 import org.apache.fop.messaging.MessageHandler;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import org.xml.sax.XMLReader;
 
 import com.atos.utils.*;
 import com.siga.envios.form.DefinirEnviosForm;
 import com.siga.general.SIGAException;
 import com.siga.informes.form.InformesGenericosForm;
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmInformeAdm;

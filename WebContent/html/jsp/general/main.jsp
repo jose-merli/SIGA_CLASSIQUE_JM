@@ -26,10 +26,10 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.beans.CenInstitucionAdm"%>
-<%@ page import="com.atos.utils.ReadProperties"%>
+<%@ page import="org.redabogacia.sigaservices.app.util.ReadProperties"%>
 <%@ page import="com.atos.utils.BotonesMenu"%>
 <%@ page import="java.util.Properties"%>
-<%@ page import="com.siga.Utilidades.SIGAReferences"%>
+<%@ page import="org.redabogacia.sigaservices.app.util.SIGAReferences"%>
 
 <!-- JSP -->
 <%

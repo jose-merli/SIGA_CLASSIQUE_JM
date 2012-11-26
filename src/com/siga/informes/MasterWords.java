@@ -12,13 +12,14 @@ import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 import com.aspose.words.Document;
 import com.aspose.words.DocumentBuilder;
 import com.aspose.words.SaveFormat;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.general.SIGAException;
 
 

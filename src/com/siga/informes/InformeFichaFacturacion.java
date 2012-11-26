@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants.ESTADO_FACTURACION;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -153,7 +154,7 @@ public class InformeFichaFacturacion extends MasterReport {
 				}
 				
 				//validada=SI <= Estado==Lista para Consejo
-				String validada = (Integer.parseInt(idEstado)==ClsConstants.ESTADO_FACTURACION_LISTA_CONSEJO?"SI":"NO");
+				String validada = (Integer.parseInt(idEstado)==ESTADO_FACTURACION.ESTADO_FACTURACION_LISTA_CONSEJO.getCodigo()?"SI":"NO");
 				hashDatos.put("VALIDADA_FACTURACION",validada);
 				
 			}	

@@ -3,8 +3,10 @@ package com.siga.pki;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import com.atos.utils.ReadProperties;
-import com.siga.Utilidades.SIGAReferences;
+
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 
 
 public class SIGAPkiStore

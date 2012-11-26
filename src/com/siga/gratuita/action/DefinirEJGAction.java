@@ -21,18 +21,19 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.exceptions.SIGAServiceException;
+import org.redabogacia.sigaservices.app.helper.DocuShareHelper;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
-import com.atos.utils.DocuShareHelper;
 import com.atos.utils.GstDate;
-import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxCollectionXmlBuilder;
 import com.siga.Utilidades.PaginadorBind;
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
@@ -699,7 +700,8 @@ public class DefinirEJGAction extends MasterAction
 			
 			
 			if (miHash.get(ScsEJGBean.C_ANIO) != null && miHash.get(ScsEJGBean.C_NUMEJG) != null) {
-				String identificadorDS = getIdentificadorDocuShare(getUserBean(request), miHash.get(ScsEJGBean.C_ANIO).toString(), miHash.get(ScsEJGBean.C_NUMEJG).toString());
+				short idInstitucionShort = getIDInstitucion(request).shortValue();
+				String identificadorDS = getIdentificadorDocuShare(getUserBean(request), idInstitucionShort, miHash.get(ScsEJGBean.C_ANIO).toString(), miHash.get(ScsEJGBean.C_NUMEJG).toString());
 				if (identificadorDS != null) {
 					miHash.put(ScsEJGBean.C_IDENTIFICADORDS, identificadorDS);
 				}
@@ -1260,11 +1262,12 @@ public class DefinirEJGAction extends MasterAction
 	 * @param anio
 	 * @param numejg
 	 * @return
+	 * @throws SIGAServiceException 
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 * @throws DSException
 	 */
-	private String getIdentificadorDocuShare(UsrBean usrBean, String anio, String numejg) throws ClsExceptions, SIGAException, DSException {
+	private String getIdentificadorDocuShare(UsrBean usrBean, short idInstitucion, String anio, String numejg) throws SIGAServiceException, ClsExceptions {
 		String identificadorDS = null;
 		String collectionTitle = DocuShareHelper.getTitleEJG(anio, numejg);
 		
@@ -1272,7 +1275,7 @@ public class DefinirEJGAction extends MasterAction
 		GenParametrosAdm parametrosAdm = new GenParametrosAdm(usrBean);
 		String valor = parametrosAdm.getValor(usrBean.getLocation(), ClsConstants.MODULO_GENERAL, "REGTEL", "0");
 		if (valor!=null && valor.equals("1")){
-			DocuShareHelper docuShareHelper = new DocuShareHelper(usrBean);
+			DocuShareHelper docuShareHelper = new DocuShareHelper(idInstitucion);
 			
 			//primero buscamos si ya existe una collection con el mismo nombre			
 			identificadorDS = docuShareHelper.buscaCollectionEJG(collectionTitle);

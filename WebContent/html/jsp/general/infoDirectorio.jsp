@@ -1,7 +1,7 @@
 <!-- infoDirectorio.jsp -->
 
-<%@page import="com.atos.utils.ReadProperties"%>
-<%@page import="com.siga.Utilidades.SIGAReferences"%>
+<%@page import="org.redabogacia.sigaservices.app.util.ReadProperties"%>
+<%@page import="org.redabogacia.sigaservices.app.util.SIGAReferences"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">

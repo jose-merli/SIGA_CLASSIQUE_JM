@@ -4,8 +4,9 @@ import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-import com.atos.utils.ReadProperties;
-import com.siga.Utilidades.SIGAReferences;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 
 
 public class ServletPruebaACA extends HttpServlet

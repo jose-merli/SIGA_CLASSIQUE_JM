@@ -8,11 +8,12 @@ import javax.management.NotificationListener;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 import weblogic.management.timer.Timer;
 
 import com.atos.utils.ClsLogging;
-import com.atos.utils.ReadProperties;
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.gratuita.service.ProgramacionCalendariosService;
 
 import es.satec.businessManager.BusinessManager;

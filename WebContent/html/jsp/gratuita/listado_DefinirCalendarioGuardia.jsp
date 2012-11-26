@@ -20,8 +20,8 @@
 <%@ page import="java.util.*"%>
 <%@ page import="com.atos.utils.GstDate"%>
 <%@ page import="java.io.File" %>
-<%@ page import="com.atos.utils.ReadProperties" %>
-<%@ page import="com.siga.Utilidades.SIGAReferences" %>
+<%@ page import="org.redabogacia.sigaservices.app.util.ReadProperties" %>
+<%@ page import="org.redabogacia.sigaservices.app.util.SIGAReferences" %>
 <%@ page import="com.siga.gratuita.action.DefinirCalendarioGuardiaAction"%>
 
 <!-- JSP --> 

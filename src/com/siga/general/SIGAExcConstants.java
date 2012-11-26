@@ -9,7 +9,8 @@ package com.siga.general;
 import java.io.InputStream;
 import java.util.Properties;
 
-import com.siga.Utilidades.SIGAReferences;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 
 
 /**

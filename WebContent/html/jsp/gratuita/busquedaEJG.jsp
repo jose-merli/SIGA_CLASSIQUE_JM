@@ -31,12 +31,12 @@
 <%@ page import="com.siga.beans.ScsTipoEJGBean"%>
 <%@ page import="com.siga.beans.ScsTipoEJGColegioBean"%>
 <%@ page import="com.siga.beans.ScsTurnoBean"%>
-<%@ page import="com.siga.Utilidades.SIGAReferences"%>
+<%@ page import="org.redabogacia.sigaservices.app.util.SIGAReferences"%>
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
 <%@ page import="java.util.*"%>
-<%@ page import="com.atos.utils.ReadProperties"%>
+<%@ page import="org.redabogacia.sigaservices.app.util.ReadProperties"%>
 
 
 

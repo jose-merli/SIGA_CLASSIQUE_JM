@@ -9,16 +9,15 @@ import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 import com.atos.utils.ClsConstants;
-import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenClienteAdm;
-import com.siga.beans.CenColegiadoAdm;
-import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenCuentasBancariasAdm;
 import com.siga.beans.CenCuentasBancariasBean;
 import com.siga.beans.CenDireccionesAdm;
@@ -26,7 +25,6 @@ import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenEstadoColegialAdm;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenPaisAdm;
-import com.siga.beans.CenPaisBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPoblacionesAdm;
 import com.siga.beans.CenSolicitudAlterMutuaAdm;

@@ -60,7 +60,12 @@ public class AlcalaJE extends InformeXML implements PCAJGConstantes {
 		this.obligatorios.put(DAC1_TIPO_ACTUACION_SUPLEM, "Debe indicar el tipo de actuación o suplemento");
 		this.obligatorios.put(DAC2_FECHA_ACTUACION_SUPLEM, "Debe indicar la fecha de actuación o suplemento");
 	}
-
+	
+	@Override
+	public void envioWS(String idInstitucion, String idFacturacion) {		
+		throw new IllegalArgumentException("Funcionalidad no implementada.");
+		
+	}
 	
 	@Override
 	public File execute(String directorio, String nombreSalida, String idInstitucion, String idFacturacion, UsrBean usrBean) throws Exception {
@@ -195,15 +200,6 @@ public class AlcalaJE extends InformeXML implements PCAJGConstantes {
 		bw.flush();
 		bw.close();
 		fw.close();
-	}
-
-
-	@Override
-	public void envioWS(String idInstitucion, String idFacturacion,
-			UsrBean usrBean) throws ErrorValidacionXML, ErrorNegocioWS,
-			Exception {
-		// TODO Auto-generated method stub
-		
 	}
 	
 }

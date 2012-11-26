@@ -12,13 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.exceptions.SIGAServiceException;
+import org.redabogacia.sigaservices.app.helper.DocuShareHelper;
 
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.DocuShareHelper;
 import com.atos.utils.UsrBean;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
-import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirEJGForm;
@@ -58,8 +58,10 @@ public class EJGDocumentacionRegTelAction extends DocumentacionRegTelAction {
 				throw new SIGAException("expedientes.docushare.error.EJGNoEncontrado");
 			}
 			ScsEJGBean scsEJGBean = (ScsEJGBean) v.get(0);
+			
+			short idInstitucion = getIDInstitucion(request).shortValue();
 
-			DocuShareHelper docuShareHelper = new DocuShareHelper(getUserBean(request));
+			DocuShareHelper docuShareHelper = new DocuShareHelper(idInstitucion);
 
 			if (scsEJGBean.getIdentificadorDS() == null || scsEJGBean.getIdentificadorDS().trim().equals("")) {
 				if (scsEJGBean.getAnio() != null) {
@@ -97,11 +99,12 @@ public class EJGDocumentacionRegTelAction extends DocumentacionRegTelAction {
 
 
 	@Override
-	protected String createCollection(MasterForm formulario, HttpServletRequest request) throws Exception {
+	protected String createCollection(MasterForm formulario, HttpServletRequest request) throws SIGAServiceException, ClsExceptions {
 		Hashtable hashtable = (Hashtable)request.getSession().getAttribute("DATABACKUP");
 		
 		String title = DocuShareHelper.getTitleEJG(hashtable.get(ScsEJGBean.C_ANIO).toString(), hashtable.get(ScsEJGBean.C_NUMEJG).toString());
-		DocuShareHelper docuShareHelper = new DocuShareHelper(getUserBean(request));
+		short idInstitucion = getIDInstitucion(request).shortValue();
+		DocuShareHelper docuShareHelper = new DocuShareHelper(idInstitucion);
 		String idDS = docuShareHelper.createCollectionEJG(title);
 		hashtable.put(ScsEJGBean.C_IDENTIFICADORDS, idDS);
 		

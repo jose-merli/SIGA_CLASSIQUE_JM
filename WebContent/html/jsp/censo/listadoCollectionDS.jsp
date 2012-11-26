@@ -21,8 +21,8 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="java.util.*"%>
-<%@page import="com.siga.censo.vos.DocuShareObjectVO"%>
-<%@page import="com.siga.censo.vos.DocuShareObjectVO.DocuShareTipo"%>
+<%@page import="org.redabogacia.sigaservices.app.vo.DocuShareObjectVO"%>
+<%@page import="org.redabogacia.sigaservices.app.vo.DocuShareObjectVO.DocuShareTipo"%>
 <%@page import="java.text.DecimalFormat"%>
 
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>

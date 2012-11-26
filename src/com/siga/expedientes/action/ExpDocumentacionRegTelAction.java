@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.helper.DocuShareHelper;
 
 import com.atos.utils.ClsConstants;
-import com.atos.utils.DocuShareHelper;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
@@ -112,7 +112,8 @@ public class ExpDocumentacionRegTelAction extends DocumentacionRegTelAction {
 	        			Vector v = expTipoExpedienteAdm.select(expExpedienteBean.getIdInstitucion_tipoExpediente().toString(), expExpedienteBean.getIdTipoExpediente().toString());
 	        			if (v != null && v.size() == 1) {
 	        				ExpTipoExpedienteBean expTipoExpedienteBean = (ExpTipoExpedienteBean) v.get(0);
-	        				DocuShareHelper docuShareHelper = new DocuShareHelper(getUserBean(request));
+	        				short idInstitucionShort = getIDInstitucion(request).shortValue();
+	        				DocuShareHelper docuShareHelper = new DocuShareHelper(idInstitucionShort);
 	        				String identificadorDS = docuShareHelper.buscaCollectionExpedientes(DocuShareHelper.getTitleExpedientes(expTipoExpedienteBean.getNombre(), anioExpediente, numExpediente));
 	        				if (identificadorDS != null && !identificadorDS.trim().equals("")) {
 	        					expExpedienteBean.setIdentificadorDS(identificadorDS);
@@ -155,7 +156,9 @@ public class ExpDocumentacionRegTelAction extends DocumentacionRegTelAction {
 				ExpTipoExpedienteBean expTipoExpedienteBean = (ExpTipoExpedienteBean) v.get(0);
 				String title = DocuShareHelper.getTitleExpedientes(expTipoExpedienteBean.getNombre(), expExpedienteBean.getAnioExpediente().toString(), expExpedienteBean.getNumeroExpediente().toString());
 				
-				DocuShareHelper docuShareHelper = new DocuShareHelper(getUserBean(request));
+				short idInstitucionShort = getIDInstitucion(request).shortValue();
+				
+				DocuShareHelper docuShareHelper = new DocuShareHelper(idInstitucionShort);
 				idDS = docuShareHelper.createCollectionExpedientes(title);
 				expExpedienteBean.setIdentificadorDS(idDS);
 				expAdm.updateDirect(expExpedienteBean);

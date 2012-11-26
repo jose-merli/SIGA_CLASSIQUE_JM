@@ -8,6 +8,8 @@ import javax.transaction.UserTransaction;
 
 
 import org.apache.struts.action.*;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.*;
 import com.siga.beans.*;

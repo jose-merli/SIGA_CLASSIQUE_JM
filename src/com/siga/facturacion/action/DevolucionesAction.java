@@ -17,9 +17,10 @@ import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.*;
 import org.apache.struts.upload.FormFile;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.*;
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.*;
 import com.siga.general.*;

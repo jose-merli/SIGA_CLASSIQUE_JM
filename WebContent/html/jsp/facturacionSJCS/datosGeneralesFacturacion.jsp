@@ -21,6 +21,7 @@
 <!-- IMPORTS -->
 
 <%@ page import = "com.atos.utils.ClsConstants"%>
+<%@ page import="org.redabogacia.sigaservices.app.AppConstants.ESTADO_FACTURACION"%>
 <%@ page import = "com.siga.administracion.SIGAConstants"%>
 <%@ page import = "com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import = "com.siga.beans.*"%>
@@ -127,7 +128,7 @@
 	}
 	
 	if ((idEstado!=null) && ( 
-			idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_LISTA_CONSEJO)) {
+			idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_LISTA_CONSEJO.getCodigo())) {
 		consulta = true;
 		desactivado = "true";
 		readonly = true;
@@ -136,8 +137,8 @@
 		botones ="GM";
 	}
 	else if ((idEstado!=null) && (
-			idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_PROGRAMADA || 
-			idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_EN_EJECUCION)) {
+			idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_PROGRAMADA.getCodigo() || 
+			idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_EN_EJECUCION.getCodigo())) {
 		consulta = true;
 		desactivado = "true";
 		readonly = true;
@@ -146,7 +147,7 @@
 		botones ="";
 	}
 	else if ((idEstado!=null) && (
-			idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_ABIERTA)) {
+			idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_ABIERTA.getCodigo())) {
 		botones = "G,R,EF";
 		
 		if (!bRegularizacion) botonesAbajo = "V,N"; 
@@ -155,10 +156,11 @@
 		if (bYaHaSidoEjecutada) botones += ",LF";
 	}
 	else if ((idEstado!=null) && (
-			idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_EJECUTADA)
-			|| idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA
-			|| idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_ENVIO_NO_DISPONIBLE
-			|| idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO
+			idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_EJECUTADA.getCodigo())
+			//|| idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_ENVIO_EN_PROCESO.getCodigo()
+			|| idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA.getCodigo()
+			|| idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_ENVIO_NO_DISPONIBLE.getCodigo()
+			|| idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO.getCodigo()
 			) {
 		if (strutTrans.equalsIgnoreCase("FCS_MantenimientoPrevisiones")) {
 			botones = "EF,GM"; //en las previsiones ejecutadas se permite reejecutar y descargar el informe
@@ -172,14 +174,14 @@
 			//en las facturaciones ejecutadas se permite reejecutar y descargar el informe			
 			if (CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) {
 				botones = "LC2,GM";
-				if (idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA
-						|| idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO) {				
+				if (idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA.getCodigo()
+						|| idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO.getCodigo()) {				
 					botonesAbajo = "V,II";
 				}
 			} else {
 				botones = "LC,GM";
 			}
-			if(idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_EJECUTADA && bBorrar)
+			if(idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_EJECUTADA.getCodigo() && bBorrar)
 				botones += ",EF";
 			 
 		}

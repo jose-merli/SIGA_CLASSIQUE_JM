@@ -11,10 +11,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
-import com.atos.utils.ReadProperties;
-import com.siga.Utilidades.SIGAReferences;
 
 /**
  * <p>Title: </p>

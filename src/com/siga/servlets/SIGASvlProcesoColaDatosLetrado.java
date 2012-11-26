@@ -4,11 +4,13 @@ import java.util.*;
 import javax.servlet.*;
 
 import com.atos.utils.*;
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.beans.*;
 
 
 import javax.management.*;
+
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import weblogic.management.timer.Timer;
 

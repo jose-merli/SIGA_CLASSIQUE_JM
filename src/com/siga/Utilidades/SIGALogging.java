@@ -17,10 +17,12 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ExceptionManager;
-import com.atos.utils.ReadProperties;
 
 
 public class SIGALogging

@@ -4,8 +4,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.helper.DocuShareHelper;
 
-import com.atos.utils.DocuShareHelper;
 import com.atos.utils.UsrBean;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
@@ -47,8 +47,10 @@ public class CensoDocumentacionRegTelAction extends DocumentacionRegTelAction {
 			request.setAttribute("NOMBRE", nombre);
 			request.setAttribute("NUMERO", numero);
 			request.setAttribute("IDPERSONA", miForm.getIdPersona());
+			
+			short idInstitucion = Short.parseShort(miForm.getIdInstitucion());
 
-			DocuShareHelper docuShareHelper = new DocuShareHelper(userBean);
+			DocuShareHelper docuShareHelper = new DocuShareHelper(idInstitucion);
 
 			if (colegiadoBean.getIdentificadorDS() == null || colegiadoBean.getIdentificadorDS().trim().equals("")) {
 				String idDS = null;
@@ -91,7 +93,8 @@ public class CensoDocumentacionRegTelAction extends DocumentacionRegTelAction {
 		} else {
 			title = colegiadoBean.getNColegiado();
 		}
-		DocuShareHelper docuShareHelper = new DocuShareHelper(getUserBean(request));
+		short idInstitucion = getIDInstitucion(request).shortValue();
+		DocuShareHelper docuShareHelper = new DocuShareHelper(idInstitucion);
 		String idDS = docuShareHelper.createCollectionCenso(title);
 		colegiadoBean.setIdentificadorDS(idDS);		
 		

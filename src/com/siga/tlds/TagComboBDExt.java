@@ -14,6 +14,9 @@ import com.siga.Utilidades.*;
 
 import javax.servlet.jsp.tagext.*;
 
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 /**
  * Este combo solamente se utiliza para casos de combos anidados donde el combo hijo
  * es de selección multiple. Con este tag no funciona el tercer nivel de anidamiento.

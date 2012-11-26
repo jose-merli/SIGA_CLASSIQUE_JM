@@ -3,7 +3,8 @@ package com.siga.servlets;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import com.siga.Utilidades.SIGAReferences;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 
 public abstract class SIGAContextListenerAdapter implements ServletContextListener {
 

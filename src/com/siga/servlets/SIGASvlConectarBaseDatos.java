@@ -1,31 +1,13 @@
 package com.siga.servlets;
 
-import java.io.*;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.io.PrintWriter;
 
-import javax.management.InstanceNotFoundException;
-import javax.management.Notification;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import weblogic.management.timer.Timer;
-
-import com.atos.utils.ClsExceptions;
-import com.atos.utils.ClsLogging;
-import com.atos.utils.ClsMngBBDD;
-import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
-import com.siga.Utilidades.UtilidadesBDAdm;
-import com.siga.beans.CenInstitucionBean;
-import com.siga.beans.GenParametrosBean;
-import com.siga.beans.MasterBean;
 
 public class SIGASvlConectarBaseDatos extends HttpServlet
 {  

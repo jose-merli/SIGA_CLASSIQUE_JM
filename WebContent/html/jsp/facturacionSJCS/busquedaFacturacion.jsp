@@ -21,6 +21,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.facturacionSJCS.form.MantenimientoFacturacionForm"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
+<%@ page import="org.redabogacia.sigaservices.app.AppConstants.ESTADO_FACTURACION"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="java.util.ArrayList" %>
@@ -127,7 +128,7 @@
 
 <% if (tieneHijos) {  %>
 
-	<html:hidden name="mantenimientoFacturacionForm" property="estado" value='<%=new Integer(ClsConstants.ESTADO_FACTURACION_LISTA_CONSEJO).toString() %>' />
+	<html:hidden name="mantenimientoFacturacionForm" property="estado" value='<%=new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_LISTA_CONSEJO.getCodigo()).toString() %>' />
 
 	<td class="labelText">
 		<siga:Idioma key="factSJCS.datosFacturacion.literal.institucion"/>

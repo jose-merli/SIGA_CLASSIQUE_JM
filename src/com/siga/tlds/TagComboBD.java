@@ -15,6 +15,9 @@ import com.siga.Utilidades.*;
 
 import javax.servlet.jsp.tagext.*;
 
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 /**
  * @author daniel.campos
  */

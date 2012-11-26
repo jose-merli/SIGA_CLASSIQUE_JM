@@ -9,17 +9,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.helper.DocuShareHelper;
+import org.redabogacia.sigaservices.app.vo.DocuShareObjectVO;
+import org.redabogacia.sigaservices.app.vo.DocuShareObjectVO.DocuShareTipo;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
-import com.atos.utils.DocuShareHelper;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.paginadores.PaginadorVector;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.censo.form.DatosRegTelForm;
-import com.siga.censo.vos.DocuShareObjectVO;
-import com.siga.censo.vos.DocuShareObjectVO.DocuShareTipo;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -121,8 +121,10 @@ public abstract class DocumentacionRegTelAction extends MasterAction {
 				}			
 				
 				
-				databackup = new HashMap();				
-				DocuShareHelper docuShareHelper = new DocuShareHelper(this.getUserBean(request));
+				databackup = new HashMap();		
+				
+				short idInstitucion = getIDInstitucion(request).shortValue();				
+				DocuShareHelper docuShareHelper = new DocuShareHelper(idInstitucion);
 				
 				List<DocuShareObjectVO> datos = null;
 				
@@ -172,7 +174,8 @@ public abstract class DocumentacionRegTelAction extends MasterAction {
 		
 		DatosRegTelForm miForm = (DatosRegTelForm) formulario;
 		try {
-			DocuShareHelper docuShareHelper = new DocuShareHelper(this.getUserBean(request));
+			short idInstitucion = getIDInstitucion(request).shortValue();
+			DocuShareHelper docuShareHelper = new DocuShareHelper(idInstitucion);
 		
 			File file = docuShareHelper.getDocument(miForm.getIdentificadorDs());
 			request.setAttribute("nombreFichero", file.getName());

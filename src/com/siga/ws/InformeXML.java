@@ -5,12 +5,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
-import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.ws.i2064.je.error.ErrorNegocioWS;
@@ -101,7 +102,7 @@ public abstract class InformeXML {
 	}
 	
 	public abstract File execute(String directorio, String nombreSalida, String idInstitucion, String idFacturacion, UsrBean usrBean) throws Exception;
-	public abstract void envioWS(String idInstitucion, String idFacturacion, UsrBean usrBean) throws ErrorValidacionXML, ErrorNegocioWS, Exception;
+	public abstract void envioWS(String idInstitucion, String idFacturacion);
 
 	protected String getCabeceraLog() {
 		return cabeceraLog;

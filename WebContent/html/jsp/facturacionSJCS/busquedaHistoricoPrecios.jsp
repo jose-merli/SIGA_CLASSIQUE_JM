@@ -19,6 +19,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
+<%@ page import="org.redabogacia.sigaservices.app.AppConstants.ESTADO_FACTURACION"%>
 
 <!-- JSP -->
 
@@ -27,7 +28,7 @@
 	HttpSession ses=request.getSession();	
 	String facturacionParams[] = new String[2];
 	facturacionParams[0] = usr.getLocation();
-   	facturacionParams[1] = String.valueOf(ClsConstants.ESTADO_FACTURACION_LISTA_CONSEJO);
+   	facturacionParams[1] = String.valueOf(ESTADO_FACTURACION.ESTADO_FACTURACION_LISTA_CONSEJO.getCodigo());
 %>
 
 <html>

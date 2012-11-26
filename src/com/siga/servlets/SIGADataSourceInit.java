@@ -8,11 +8,11 @@ import javax.servlet.ServletException;
 
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.config.ModuleConfig;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngProperties;
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.general.CenVisibilidad;
 
 
@@ -49,7 +49,7 @@ public class SIGADataSourceInit extends ActionServlet {
         catch(ClsExceptions e) 
         {
             ClsLogging.writeFileLogWithoutSession(" > Ficheros Properties de Idiomas generados ERROR.\r\n" + e,1);
-            throw new ServletException("Error al generar los ficheros de Idiomas: "+ e.toString());
+            throw new ServletException("Error al generar los ficheros de Idiomas: "+ e.toString(), e);
         }
 
         // RGG 28-12-2004

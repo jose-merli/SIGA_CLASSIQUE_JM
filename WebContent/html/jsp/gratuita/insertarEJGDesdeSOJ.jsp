@@ -16,12 +16,12 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
-<%@ page import="com.atos.utils.ReadProperties"%>
+<%@ page import="org.redabogacia.sigaservices.app.util.ReadProperties"%>
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
 <%@ page import="java.util.Hashtable"%>
 <%@ page import="java.util.ArrayList"%>
-<%@page import="com.siga.Utilidades.SIGAReferences"%>
+<%@page import="org.redabogacia.sigaservices.app.util.SIGAReferences"%>
 <!-- JSP -->
 <%	String app=request.getContextPath(); 
 	HttpSession ses=request.getSession(true);
