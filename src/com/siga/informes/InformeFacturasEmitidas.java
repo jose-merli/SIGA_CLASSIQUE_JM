@@ -10,9 +10,11 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.output.XMLOutputter;
+import org.w3c.dom.Element; 
+import org.w3c.dom.Document; 
+import weblogic.xml.dom.DocumentImpl;
+import weblogic.apache.xml.serialize.XMLSerializer;
+import weblogic.apache.xml.serialize.OutputFormat;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -378,21 +380,30 @@ public class InformeFacturasEmitidas extends MasterReport
 					  totalAcumuladoTotalFactura = 0.0d,
 					  totalAcumuladoBaseImponible = 0.0d;
 
-        		Element root = new Element("Report");
+
+            	Document xmlDoc = new DocumentImpl();
+            	
+        		Element root = xmlDoc.createElement("Report");
+        		Element empresa = xmlDoc.createElement("empresa");
+        		empresa.appendChild(xmlDoc.createTextNode(institucion));
+        		Element fecha = xmlDoc.createElement("fechaGeneracion");
+        		fecha.appendChild(xmlDoc.createTextNode(fechaGeneracion));
+        		Element eFechaDesde = xmlDoc.createElement("fechaDesde");
+        		eFechaDesde.appendChild(xmlDoc.createTextNode(fDesde));
+        		Element eFechaHasta = xmlDoc.createElement("fechaHasta");
+        		eFechaHasta.appendChild(xmlDoc.createTextNode(fHasta));
         		
-        		Element empresa = new Element("empresa").setText(institucion);
-        		Element fecha = new Element("fechaGeneracion").setText(fechaGeneracion);
-        		Element eFechaDesde = new Element("fechaDesde").setText( fDesde );
-        		Element eFechaHasta = new Element("fechaHasta").setText( fHasta );
-        		root.addContent(empresa);
-        		root.addContent(fecha);
-        		root.addContent(eFechaDesde);
-        		root.addContent(eFechaHasta);
+        		root.appendChild(empresa);
+        		root.appendChild(fecha);
+        		root.appendChild(eFechaDesde);
+        		root.appendChild(eFechaHasta);
+
+        		
         		TreeMap tmTotalesIva = new TreeMap();
             	for (int i = 0; i < rc.size(); i++){
             		Hashtable fila = ((Row)rc.get(i)).getRow();
-            		Element lineaFactura= getLineaFacturaInformeFacturasEmitidas(fila);
-            		root.addContent(lineaFactura);
+            		Element lineaFactura= getLineaFacturaInformeFacturasEmitidas(fila, xmlDoc);
+            		root.appendChild(lineaFactura);
             		
             		
             		
@@ -422,50 +433,67 @@ public class InformeFacturasEmitidas extends MasterReport
             	}
             	//Añadimos al fichero Xml los elemnetos de desglose de Iva
             	Iterator iteIva = tmTotalesIva.keySet().iterator();
-            	Element desgloseIva = null;
+            	Element desgloseIvaE = null;
             	//Miramo se es el primer registro para poner el titulo
             	String textoDesgloseIva = UtilidadesString.getMensajeIdioma(this.getUsuario(), "facturacion.facturas.emitidas.desgloseiva");
             	while (iteIva.hasNext()) {
 					Float keyPorcentajeIva = (Float) iteIva.next();
 					Hashtable htTotalIva = (Hashtable)tmTotalesIva.get(keyPorcentajeIva);
-					desgloseIva=new Element("desgloseIva");
+					desgloseIvaE = xmlDoc.createElement("desgloseIva");
 					
-				    desgloseIva.addContent(new Element("textoDesgloseIva").setText(textoDesgloseIva));
+				    //desgloseIva.addContent(new Element("textoDesgloseIva").setText(textoDesgloseIva));
+					Element textoDesglose = xmlDoc.createElement("textoDesgloseIva");
+					textoDesglose.appendChild(xmlDoc.createTextNode(textoDesgloseIva));
+					
 				    //solo queremos que ponga el titulo en el primero
 				    textoDesgloseIva = "";
 					
-					desgloseIva.addContent(new Element("ivaBaseImponible").setText(UtilidadesNumero.formato(UtilidadesHash.getString(htTotalIva, "POR_IVA_BASE_IMPONIBLE"))));
-					desgloseIva.addContent(new Element("ivaPorc").setText(UtilidadesNumero.formato(UtilidadesHash.getString(htTotalIva, "POR_IVA_IVA_PORCENTAJE"))));
-					desgloseIva.addContent(new Element("ivaCuota").setText(UtilidadesNumero.formato(UtilidadesHash.getString(htTotalIva, "POR_IVA_IVA"))));
-					desgloseIva.addContent(new Element("ivaImporteTotal").setText(UtilidadesNumero.formato(UtilidadesHash.getString(htTotalIva, "POR_IVA_TOTAL_FACTURA"))));
-					root.addContent(desgloseIva);
+				    Element ivaBaseImponibleE = xmlDoc.createElement("ivaBaseImponible");
+				    ivaBaseImponibleE.appendChild(xmlDoc.createTextNode(UtilidadesNumero.formato(UtilidadesHash.getString(htTotalIva, "POR_IVA_BASE_IMPONIBLE"))));
+				    Element ivaPorcE = xmlDoc.createElement("ivaPorc");
+				    ivaPorcE.appendChild(xmlDoc.createTextNode(UtilidadesNumero.formato(UtilidadesHash.getString(htTotalIva, "POR_IVA_IVA_PORCENTAJE"))));
+				    Element ivaCuotaE = xmlDoc.createElement("ivaCuota");
+				    ivaCuotaE.appendChild(xmlDoc.createTextNode(UtilidadesNumero.formato(UtilidadesHash.getString(htTotalIva, "POR_IVA_IVA"))));
+					Element ivaImporteTotalE = xmlDoc.createElement("ivaImporteTotal");
+					ivaImporteTotalE.appendChild(xmlDoc.createTextNode(UtilidadesNumero.formato(UtilidadesHash.getString(htTotalIva, "POR_IVA_TOTAL_FACTURA"))));
+					
+					desgloseIvaE.appendChild(ivaBaseImponibleE);
+					desgloseIvaE.appendChild(ivaPorcE);
+					desgloseIvaE.appendChild(ivaCuotaE);
+					desgloseIvaE.appendChild(ivaImporteTotalE);
+					
+					root.appendChild(desgloseIvaE);
 					
 				}
             	
             	
             	//Añadimos los elementos totales
-            	Element totalBaseImponible=new Element("totalBaseImponible").setText(UtilidadesNumero.formato(totalAcumuladoBaseImponible));
-        		Element totalCuotaIva=new Element("totalCuotaIva").setText(UtilidadesNumero.formato(totalAcumuladoIVA));
-        		Element totalImporteFacturas=new Element("totalImporteFacturas").setText(UtilidadesNumero.formato(totalAcumuladoTotalFactura));
+        		Element totalBaseImponibleE = xmlDoc.createElement("totalBaseImponible");
+			    totalBaseImponibleE.appendChild(xmlDoc.createTextNode(UtilidadesNumero.formato(totalAcumuladoBaseImponible)));
+			    Element totalCuotaIvaE = xmlDoc.createElement("totalCuotaIva");
+			    totalCuotaIvaE.appendChild(xmlDoc.createTextNode(UtilidadesNumero.formato(totalAcumuladoIVA)));
+			    Element totalImporteFacturasE = xmlDoc.createElement("totalImporteFacturas");
+			    totalImporteFacturasE.appendChild(xmlDoc.createTextNode(UtilidadesNumero.formato(totalAcumuladoTotalFactura)));
         		
         		
+        		root.appendChild(totalBaseImponibleE);
+        		root.appendChild(totalCuotaIvaE);
+        		root.appendChild(totalImporteFacturasE);
         		
-        		root.addContent(totalBaseImponible);
-        		root.addContent(totalCuotaIva);
-        		root.addContent(totalImporteFacturas);
             	
-            	
-            	 Document doc=new Document(root);//Creamos el documento
-          	   
-         	    //Vamos a almacenarlo en un fichero y ademas lo sacaremos por pantalla
-            	 file = new File(pathXml);
-         	     XMLOutputter out=new XMLOutputter("  ",true);
-         	     out.setEncoding("ISO-8859-1");
-         	     FileOutputStream fileOut=new FileOutputStream(file);
-         	     out.output(doc,fileOut);
-         	     fileOut.flush();
-         	     fileOut.close();
-            	
+            	          	   
+         	    //Vamos a almacenarlo en un fichero y ademas lo sacaremos por pantalla          	
+         	     xmlDoc.appendChild(root);
+         	     file = new File(pathXml);
+         	     FileOutputStream fos = new FileOutputStream(file);
+         	     // XERCES 1 or 2 additionnal classes.
+         	     OutputFormat of = new OutputFormat("XML","ISO-8859-1",true);
+         	     of.setIndent(1);
+         	     of.setIndenting(true);
+         	     XMLSerializer serializer = new XMLSerializer(fos,of);
+         	     serializer.asDOMSerializer();
+         	     serializer.serialize( xmlDoc.getDocumentElement() );
+         	     fos.close();
 
                
              
@@ -537,22 +565,44 @@ public class InformeFacturasEmitidas extends MasterReport
 	 * @return
 	 */
 	
-	private Element getLineaFacturaInformeFacturasEmitidas(Hashtable registro){
-		Element lineaFactura=new Element("lineaFactura");
-		lineaFactura.addContent(new Element("facturaNumero").setText(UtilidadesHash.getString(registro, "NUMERO_FACTURA")));
-		lineaFactura.addContent(new Element("facturaFecha").setText(UtilidadesHash.getString(registro, "FECHA")));
-		lineaFactura.addContent(new Element("facturaSubcuenta").setText(UtilidadesHash.getString(registro, "SUBCUENTA")));
-		lineaFactura.addContent(new Element("facturaNif").setText(UtilidadesHash.getString(registro, "NIF")));
-		lineaFactura.addContent(new Element("facturaNombre").setText(UtilidadesHash.getString(registro, "NOMBRE")));
-		lineaFactura.addContent(new Element("facturaObservaciones").setText(UtilidadesHash.getString(registro, "OBSERVACIONES")));
-		// inc7392 // La base imponible no se formateaba correctamente y salia sin decimales
-		//lineaFactura.addContent(new Element("facturaBaseImponible").setText(UtilidadesHash.getString(registro, "BASE_IMPONIBLE")));
-		lineaFactura.addContent(new Element("facturaBaseImponible").setText(UtilidadesNumero.formato(UtilidadesHash.getDouble(registro, "BASE_IMPONIBLE").doubleValue())));
-		lineaFactura.addContent(new Element("facturaPorcIva").setText(UtilidadesNumero.formato(UtilidadesHash.getDouble(registro, "IVA_PORCENTAJE").doubleValue())));
-		lineaFactura.addContent(new Element("facturaCuotaIva").setText(UtilidadesNumero.formato(UtilidadesHash.getDouble(registro, "IVA").doubleValue())));
-		lineaFactura.addContent(new Element("facturaImporteTotal").setText(UtilidadesNumero.formato(UtilidadesHash.getDouble(registro, "TOTAL_FACTURA").doubleValue())));
+	private Element getLineaFacturaInformeFacturasEmitidas(Hashtable registro, Document doc){
+		
+		Element lineaFactura = doc.createElement("lineaFactura");
+
+		Element facturaNumero = doc.createElement("facturaNumero");
+		Element facturaFecha = doc.createElement("facturaFecha");
+		Element facturaSubcuenta = doc.createElement("facturaSubcuenta");
+		Element facturaNif = doc.createElement("facturaNif");
+		Element facturaNombre = doc.createElement("facturaNombre");
+		Element facturaObservaciones = doc.createElement("facturaObservaciones");
+		Element facturaBaseImponible = doc.createElement("facturaBaseImponible");
+		Element facturaPorcIva = doc.createElement("facturaPorcIva");
+		Element facturaCuotaIva = doc.createElement("facturaCuotaIva");
+		Element facturaImporteTotal = doc.createElement("facturaImporteTotal");
+		
+		facturaNumero.appendChild(doc.createTextNode(UtilidadesHash.getString(registro, "NUMERO_FACTURA")));
+		facturaFecha.appendChild(doc.createTextNode(UtilidadesHash.getString(registro, "FECHA")));
+		facturaSubcuenta.appendChild(doc.createTextNode(UtilidadesHash.getString(registro, "SUBCUENTA")));
+		facturaNif.appendChild(doc.createTextNode(UtilidadesHash.getString(registro, "NIF")));
+		facturaNombre.appendChild(doc.createTextNode(UtilidadesHash.getString(registro, "NOMBRE")));
+		facturaObservaciones.appendChild(doc.createTextNode(UtilidadesHash.getString(registro, "OBSERVACIONES")));
+		facturaBaseImponible.appendChild(doc.createTextNode(UtilidadesNumero.formato(UtilidadesHash.getDouble(registro, "BASE_IMPONIBLE").doubleValue())));
+		facturaPorcIva.appendChild(doc.createTextNode(UtilidadesNumero.formato(UtilidadesHash.getDouble(registro, "IVA_PORCENTAJE").doubleValue())));
+		facturaCuotaIva.appendChild(doc.createTextNode(UtilidadesNumero.formato(UtilidadesHash.getDouble(registro, "IVA").doubleValue())));
+		facturaImporteTotal.appendChild(doc.createTextNode(UtilidadesNumero.formato(UtilidadesHash.getDouble(registro, "TOTAL_FACTURA").doubleValue())));
+		
+		lineaFactura.appendChild(facturaNumero);
+		lineaFactura.appendChild(facturaFecha);
+		lineaFactura.appendChild(facturaSubcuenta);
+		lineaFactura.appendChild(facturaNif);
+		lineaFactura.appendChild(facturaNombre);
+		lineaFactura.appendChild(facturaObservaciones);
+		lineaFactura.appendChild(facturaBaseImponible);
+		lineaFactura.appendChild(facturaPorcIva);
+		lineaFactura.appendChild(facturaCuotaIva);
+		lineaFactura.appendChild(facturaImporteTotal);
+		
 		return lineaFactura;
-			
 			
 	}  
 	
