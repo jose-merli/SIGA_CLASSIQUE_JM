@@ -30,15 +30,15 @@ import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
 import org.redabogacia.sigaservices.app.AppConstants.OPERACION;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
-import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AxisObjectSerializerDeserializer;
 import com.siga.Utilidades.LogBDDHandler;
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.beans.CajgEJGRemesaAdm;
 import com.siga.beans.CajgRemesaEstadosAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaAdm;
