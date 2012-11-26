@@ -384,11 +384,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							ScsEJGBean.C_IDPERSONA,					ScsEJGBean.C_IDINSTITUCION,
 							ScsEJGBean.C_IDTIPOEJG,					ScsEJGBean.C_GUARDIATURNO_IDGUARDIA,
 							ScsEJGBean.C_GUARDIATURNO_IDTURNO,		ScsEJGBean.C_IDTIPOEJGCOLEGIO,
-							ScsEJGBean.C_IDPERSONAJG,				
-							ScsEJGBean.C_USUMODIFICACION,			ScsEJGBean.C_FECHAMODIFICACION,
-							//ScsEJGBean.C_DESIGNA_IDTURNO,			ScsEJGBean.C_DESIGNA_ANIO,
-							//ScsEJGBean.C_DESIGNA_NUMERO,			
-							ScsEJGBean.C_IDTIPODICTAMENEJG,
+							ScsEJGBean.C_IDPERSONAJG,				ScsEJGBean.C_USUMODIFICACION,			
+							ScsEJGBean.C_FECHAMODIFICACION,			ScsEJGBean.C_IDTIPODICTAMENEJG,																	
 							ScsEJGBean.C_FACTURADO,		    		ScsEJGBean.C_PAGADO,
 							ScsEJGBean.C_IDFACTURACION,				ScsEJGBean.C_IDFUNDAMENTOCALIF,
 							ScsEJGBean.C_IDPROCURADOR,				ScsEJGBean.C_IDINSTITUCIONPROCURADOR,
@@ -406,16 +403,61 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							ScsEJGBean.C_FECHADESIGPROC,			ScsEJGBean.C_IDENTIFICADORDS,
 							ScsEJGBean.C_SITUACION,					ScsEJGBean.C_IDTIPOENCALIDAD,
 							ScsEJGBean.C_CALIDADIDINSTITUCION,		ScsEJGBean.C_NUMERODESIGNAPROC,
-							ScsEJGBean.C_DOCRESOLUCION,				ScsEJGBean.C_USUCREACION,
-							ScsEJGBean.C_FECHACREACION,				ScsEJGBean.C_NIG,
+							ScsEJGBean.C_DOCRESOLUCION,				ScsEJGBean.C_NIG,
+							ScsEJGBean.C_IDPONENTE,					ScsEJGBean.C_IDORIGENCAJG,
+							ScsEJGBean.C_OBSERVACIONIMPUGNACION,	ScsEJGBean.C_FECHAPUBLICACION,
+							ScsEJGBean.C_NUMERORESOLUCION,			ScsEJGBean.C_ANIORESOLUCION,
+							ScsEJGBean.C_BISRESOLUCION,				ScsEJGBean.C_IDACTA,
+							ScsEJGBean.C_IDINSTITUCIONACTA,			ScsEJGBean.C_ANIOACTA,
+							ScsEJGBean.C_IDECOMCOLA,
+							ScsEJGBean.C_USUCREACION,				ScsEJGBean.C_FECHACREACION};
+							//,ScsEJGBean.C_DESIGNA_IDTURNO,	ScsEJGBean.C_DESIGNA_ANIO, ScsEJGBean.C_DESIGNA_NUMERO
+		return campos;
+	}
+	
+	protected String[] getCamposActualizablesBean() {
+		
+		String[] campos= {	ScsEJGBean.C_ANIO,						ScsEJGBean.C_NUMERO,
+							ScsEJGBean.C_FECHAAPERTURA,				ScsEJGBean.C_ORIGENAPERTURA,
+							ScsEJGBean.C_FECHALIMITEPRESENTACION,	ScsEJGBean.C_FECHAPRESENTACION,
+							ScsEJGBean.C_PROCURADORNECESARIO,		ScsEJGBean.C_CALIDAD,
+							ScsEJGBean.C_TIPOLETRADO,				ScsEJGBean.C_OBSERVACIONES,
+							ScsEJGBean.C_DELITOS,					ScsEJGBean.C_DICTAMEN,
+							ScsEJGBean.C_FECHADICTAMEN,				ScsEJGBean.C_PROCURADOR,
+							ScsEJGBean.C_RATIFICACIONDICTAMEN,		ScsEJGBean.C_FECHARATIFICACION,							
+							ScsEJGBean.C_IDPERSONA,					ScsEJGBean.C_IDINSTITUCION,
+							ScsEJGBean.C_IDTIPOEJG,					ScsEJGBean.C_GUARDIATURNO_IDGUARDIA,
+							ScsEJGBean.C_GUARDIATURNO_IDTURNO,		ScsEJGBean.C_IDTIPOEJGCOLEGIO,
+							ScsEJGBean.C_IDPERSONAJG,				ScsEJGBean.C_USUMODIFICACION,			
+							ScsEJGBean.C_FECHAMODIFICACION,			ScsEJGBean.C_IDTIPODICTAMENEJG,																	
+							ScsEJGBean.C_FACTURADO,		    		ScsEJGBean.C_PAGADO,
+							ScsEJGBean.C_IDFACTURACION,				ScsEJGBean.C_IDFUNDAMENTOCALIF,
+							ScsEJGBean.C_IDPROCURADOR,				ScsEJGBean.C_IDINSTITUCIONPROCURADOR,
+							ScsEJGBean.C_IDTIPORATIFICACIONEJG,     ScsEJGBean.C_NUMERO_CAJG,
+							ScsEJGBean.C_FECHAAUTO,					ScsEJGBean.C_FECHANOTIFICACION,
+							ScsEJGBean.C_FECHARESOLUCIONCAJG,		ScsEJGBean.C_IDFUNDAMENTOJURIDICO,
+							ScsEJGBean.C_IDTIPORESOLAUTO,			ScsEJGBean.C_IDTIPOSENTIDOAUTO,
+							ScsEJGBean.C_TURNADOAUTO,				ScsEJGBean.C_TURNADORATIFICACION,
+							ScsEJGBean.C_ANIO_CAJG,					ScsEJGBean.C_NUMEJG,
+							ScsEJGBean.C_NUMERODILIGENCIA,			ScsEJGBean.C_NUMEROPROCEDIMIENTO,
+							ScsEJGBean.C_COMISARIA,					ScsEJGBean.C_COMISARIAIDINSTITUCION,
+							ScsEJGBean.C_JUZGADO,					ScsEJGBean.C_JUZGADOIDINSTITUCION,
+							ScsEJGBean.C_IDPRETENSION,				ScsEJGBean.C_IDPRETENSIONINSTITUCION,
+							ScsEJGBean.C_IDDICTAMEN,				ScsEJGBean.C_REFAUTO,
+							ScsEJGBean.C_FECHADESIGPROC,			ScsEJGBean.C_IDENTIFICADORDS,
+							ScsEJGBean.C_SITUACION,					ScsEJGBean.C_IDTIPOENCALIDAD,
+							ScsEJGBean.C_CALIDADIDINSTITUCION,		ScsEJGBean.C_NUMERODESIGNAPROC,
+							ScsEJGBean.C_DOCRESOLUCION,				ScsEJGBean.C_NIG,
 							ScsEJGBean.C_IDPONENTE,					ScsEJGBean.C_IDORIGENCAJG,
 							ScsEJGBean.C_OBSERVACIONIMPUGNACION,	ScsEJGBean.C_FECHAPUBLICACION,
 							ScsEJGBean.C_NUMERORESOLUCION,			ScsEJGBean.C_ANIORESOLUCION,
 							ScsEJGBean.C_BISRESOLUCION,				ScsEJGBean.C_IDACTA,
 							ScsEJGBean.C_IDINSTITUCIONACTA,			ScsEJGBean.C_ANIOACTA,
 							ScsEJGBean.C_IDECOMCOLA};
+							//,ScsEJGBean.C_USUCREACION,				ScsEJGBean.C_FECHACREACION
+							//,ScsEJGBean.C_DESIGNA_IDTURNO,	ScsEJGBean.C_DESIGNA_ANIO, ScsEJGBean.C_DESIGNA_NUMERO
 		return campos;
-	}
+	}	
 	
 	/** Funcion getClavesBean ()
 	 *  @return conjunto de datos con los nombres de todas las claves del bean
@@ -469,8 +511,6 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 //			bean.setSOJ_anio(UtilidadesHash.getInteger(hash,ScsEJGBean.C_SOJ_ANIO));			
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,ScsEJGBean.C_USUMODIFICACION));		
 			bean.setFechaMod(UtilidadesHash.getString(hash,ScsEJGBean.C_FECHAMODIFICACION));
-			//bean.setUsuarioCreacion(UtilidadesHash.getInteger(hash,ScsEJGBean.C_USUCREACION));		
-			//bean.setFechaCreacion(UtilidadesHash.getString(hash,ScsEJGBean.C_FECHACREACION));
 			//bean.setDesignaIdTurno(UtilidadesHash.getInteger(hash,ScsEJGBean.C_DESIGNA_IDTURNO));
 			//bean.setDesignaNumero(UtilidadesHash.getInteger(hash,ScsEJGBean.C_DESIGNA_NUMERO));
 			//bean.setDesignaAnio(UtilidadesHash.getInteger(hash,ScsEJGBean.C_DESIGNA_ANIO));
@@ -572,8 +612,6 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 //			UtilidadesHash.set(htData,ScsEJGBean.C_SOJ_ANIO, b.getSOJ_anio());	
 			UtilidadesHash.set(htData,ScsEJGBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(htData,ScsEJGBean.C_USUMODIFICACION, String.valueOf(b.getUsuMod()));
-			//UtilidadesHash.set(htData,ScsEJGBean.C_FECHACREACION, b.getFechaCreacion());
-			//UtilidadesHash.set(htData,ScsEJGBean.C_USUCREACION, String.valueOf(b.getUsuarioCreacion()));
 			//UtilidadesHash.set(htData,ScsEJGBean.C_DESIGNA_IDTURNO, b.getDesignaIdTurno());
 			//UtilidadesHash.set(htData,ScsEJGBean.C_DESIGNA_NUMERO, b.getDesignaNumero());
 			//UtilidadesHash.set(htData,ScsEJGBean.C_DESIGNA_ANIO, b.getDesignaAnio());
@@ -5160,6 +5198,50 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		return idJuzgado;                        
 	}
 
-		
-}
+	/** Funcion insert (MasterBean bean)
+	 *  @param bean a insertar
+	 *  @return true si todo va bien OK, false si hay algun error 
+	 * */
+	public boolean insert(MasterBean bean) throws ClsExceptions {
+		try {
+			return this.insert(this.beanToHashTable(bean));
+		}
+		catch (Exception e)	{
+			throw new ClsExceptions (e,  e.getMessage());
+		}
+	}
 
+	/** Funcion insert (Hashtable hash)
+	 *  @param hasTable con las parejas campo-valor para realizar un where en el insert 
+	 *  @return true si todo va bien OK, false si hay algun error 
+	 * */
+	public boolean insert(Hashtable hash) throws ClsExceptions {
+		try {			
+			if (!hash.containsKey(ScsEJGBean.C_USUCREACION)) {
+				UtilidadesHash.set(hash, ScsEJGBean.C_USUCREACION, this.usuModificacion);
+			}
+			if (!hash.containsKey(ScsEJGBean.C_FECHACREACION)) {
+				UtilidadesHash.set(hash, ScsEJGBean.C_FECHACREACION, "sysdate");
+			}
+			if (!hash.containsKey(ScsEJGBean.C_USUMODIFICACION)) {
+				UtilidadesHash.set(hash, ScsEJGBean.C_USUMODIFICACION, this.usuModificacion);
+			}
+			if (!hash.containsKey(ScsEJGBean.C_FECHAMODIFICACION)) {
+				UtilidadesHash.set(hash, ScsEJGBean.C_FECHAMODIFICACION, "sysdate");
+			}
+
+			Row row = new Row();
+			row.load(hash);
+
+			String [] campos = this.getCamposBean();
+			
+			if (row.add(this.nombreTabla, campos) == 1) {
+				return true;
+			}
+		}
+		catch (Exception e) {
+			throw new ClsExceptions(e,  e.getMessage());
+		}
+		return false;
+	}			
+}
