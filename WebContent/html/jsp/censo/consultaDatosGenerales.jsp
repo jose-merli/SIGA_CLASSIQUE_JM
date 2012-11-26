@@ -180,9 +180,11 @@
 	
 	// Calculando estilo del Check de Foto
 	String checkreadonlyFoto = " ";
+	boolean esLetrado = false;
 	if (user.isLetrado()) {
 		checkreadonlyFoto = " ";
-	}else{ 
+		esLetrado = true;
+	} else { 
 		if (formulario.getAccion().equals("ver")) {
 			checkreadonlyFoto = " disabled ";
 		}else{
@@ -1117,7 +1119,7 @@ function str_replace(search, replace, subject) {
 						<%=edad%>
 					</td>
 					<td class="labelText" colspan="4">
-						<% if (!bDatosGeneralesEditables) { %> 
+						<% if (!bDatosGeneralesEditables && !esLetrado) { %> 
 							<img src="<%=app%>/html/imagenes/help.gif" 
 								alt="<siga:Idioma key='censo.consultaDatosGenerales.mensaje.noEditable'/>" 
 								onclick="alertaNoEditable();"
