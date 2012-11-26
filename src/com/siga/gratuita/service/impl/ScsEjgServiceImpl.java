@@ -17,10 +17,10 @@ import org.redabogacia.sigaservices.app.autogen.model.ScsEjg;
 import org.redabogacia.sigaservices.app.autogen.model.ScsSoj;
 import org.redabogacia.sigaservices.app.autogen.model.ScsUnidadfamiliarejg;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
+import org.redabogacia.sigaservices.app.exceptions.SIGAServiceException;
 import org.redabogacia.sigaservices.app.helper.DocuShareHelper;
 
 import com.siga.gratuita.service.ScsEjgService;
-import com.xerox.docushare.DSException;
 
 import es.satec.businessManager.BusinessManager;
 import es.satec.businessManager.template.MyBatisBusinessServiceTemplate;
@@ -130,35 +130,14 @@ public class ScsEjgServiceImpl extends MyBatisBusinessServiceTemplate implements
 		
 		String valor = genParametros.getValor();
 		if (valor!=null && valor.equals("1")){
-			DocuShareHelper docuShareHelper = new DocuShareHelper(scsEjg.getIdinstitucion().intValue());
-			key.setParametro(AppConstants.PARAMETRO.DOCUSHARE_HOST.toString());
-			genParametros = genParametrosMapper.selectByPrimaryKey(key);
-
-			String host = genParametros.getValor();
-			key.setParametro(AppConstants.PARAMETRO.DOCUSHARE_PORT.toString());
-			genParametros = genParametrosMapper.selectByPrimaryKey(key);
-			String port = genParametros.getValor();
-			key.setParametro(AppConstants.PARAMETRO.DOCUSHARE_DOMAIN.toString());
-			genParametros = genParametrosMapper.selectByPrimaryKey(key);
-			String domain = genParametros.getValor();
-			key.setParametro(AppConstants.PARAMETRO.DOCUSHARE_USER.toString());
-			genParametros = genParametrosMapper.selectByPrimaryKey(key);
-			String user = genParametros.getValor();
-			key.setParametro(AppConstants.PARAMETRO.DOCUSHARE_PASSWORD.toString());
-			genParametros = genParametrosMapper.selectByPrimaryKey(key);
-			String password = genParametros.getValor();
-			
-			key.setParametro(AppConstants.PARAMETRO.ID_DOCUSHARE.toString());
-			genParametros = genParametrosMapper.selectByPrimaryKey(key);
-			String idExpedientes = genParametros.getValor();
-			
+			DocuShareHelper docuShareHelper = new DocuShareHelper(scsEjg.getIdinstitucion());
+						
 			String identificadorDS;
 			try {
-				identificadorDS = docuShareHelper.createCollectionEJG(collectionTitle,host,  port, domain,  user,
-						 password,idExpedientes);
+				identificadorDS = docuShareHelper.createCollectionEJG(collectionTitle);
 				scsEjg.setIdentificadords(identificadorDS);
-			}catch (DSException e) {
-				throw new BusinessException("Error en docushare");				
+			}catch (SIGAServiceException e) {
+				throw new BusinessException("Error en docushare");
 			}
 			scsEjgMapper.updateByPrimaryKeySelective(scsEjg);
 		}

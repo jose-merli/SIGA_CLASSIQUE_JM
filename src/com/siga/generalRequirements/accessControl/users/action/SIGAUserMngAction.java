@@ -15,8 +15,9 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.generalRequirements.accessControl.SIGAGrDDBBObject;
 import com.siga.generalRequirements.accessControl.users.SIGAUser;
 import com.siga.generalRequirements.accessControl.users.SIGAUserMng;
@@ -26,7 +27,6 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ColumnConstants;
 import com.atos.utils.Crypter;
-import com.atos.utils.ReadProperties;
 import com.atos.utils.Table;
 import com.atos.utils.TableConstants;
 

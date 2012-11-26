@@ -12,13 +12,13 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.redabogacia.sigaservices.app.AppConstants.EEJG_ESTADO;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
-import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.ScsEJGAdm;

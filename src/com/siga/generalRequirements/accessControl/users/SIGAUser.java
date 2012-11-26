@@ -7,12 +7,13 @@ import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.siga.Utilidades.SIGAReferences;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 import com.siga.generalRequirements.accessControl.SIGAGrDDBB;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ColumnConstants;
-import com.atos.utils.ReadProperties;
 import com.atos.utils.TableConstants;
 
 
