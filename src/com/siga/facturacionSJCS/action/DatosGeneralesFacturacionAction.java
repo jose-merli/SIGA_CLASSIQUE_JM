@@ -26,6 +26,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants.ESTADO_FACTURACION;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -47,18 +48,13 @@ import com.siga.beans.FcsHitoGeneralBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.facturacionSJCS.UtilidadesFacturacionSJCS;
 import com.siga.facturacionSJCS.form.DatosGeneralesFacturacionForm;
-import com.siga.facturacionSJCS.form.MantenimientoFacturacionForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.informes.InformePersonalizable;
 import com.siga.servlets.SIGASvlProcesoAutomaticoRapido;
-import com.siga.ws.CajgConfiguracion;
 import com.siga.ws.InformeXML;
 import com.siga.ws.JustificacionEconomicaWS;
-import com.siga.ws.i2064.je.error.ErrorEnvioWS;
-import com.siga.ws.i2064.je.error.ErrorNegocioWS;
-import com.siga.ws.i2064.je.error.ErrorValidacionXML;
 
 
 public class DatosGeneralesFacturacionAction extends MasterAction {
@@ -152,47 +148,30 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 								
 			FcsFactEstadosFacturacionAdm fcsFactEstadosFacturacionAdm = new FcsFactEstadosFacturacionAdm(usr);
 			String estadoActualFacturacion = fcsFactEstadosFacturacionAdm.getIdEstadoFacturacion(miform.getIdInstitucion(), idFacturacion);
+						
 			
 			//comprobamos que la facturacion se encuentra ejecutada o no validada o rechazada
-			switch (Integer.parseInt(estadoActualFacturacion)) {
-				case ClsConstants.ESTADO_FACTURACION_EJECUTADA:				
-					break;
-				case ClsConstants.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA:				
-					break;
-				case ClsConstants.ESTADO_FACTURACION_ENVIO_NO_DISPONIBLE:				
-					break;
-				case ClsConstants.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO:				
-					break;				
-				default:
-					throw new ClsExceptions("Ha ocurrido un error al cerrar la facturación. No se puede cerrar la facturación porque el estado actual no es correcto.");
+			int estadoActualFac = Integer.parseInt(estadoActualFacturacion);
+			
+			if (estadoActualFac != ESTADO_FACTURACION.ESTADO_FACTURACION_EJECUTADA.getCodigo()												
+					&& estadoActualFac != ESTADO_FACTURACION.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA.getCodigo()
+					&& estadoActualFac != ESTADO_FACTURACION.ESTADO_FACTURACION_ENVIO_NO_DISPONIBLE.getCodigo()
+					&& estadoActualFac != ESTADO_FACTURACION.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO.getCodigo()
+					) {
+				throw new ClsExceptions("Ha ocurrido un error al cerrar la facturación. No se puede cerrar la facturación porque el estado actual no es correcto.");
 			}
-			
-			tx = usr.getTransaction();
-			tx.begin();
-			
 						
-			int estadoFuturo = ClsConstants.ESTADO_FACTURACION_LISTA_CONSEJO;
+			int estadoFuturo = ESTADO_FACTURACION.ESTADO_FACTURACION_LISTA_CONSEJO.getCodigo();
 			//SI TIENE CONFIGURADO EL WEBSERVICE HACEMOS LA LLAMADA
 			InformeXML informeXML = JustificacionEconomicaWS.getInstance(miform.getIdInstitucion());
 			if (informeXML != null) {
-				try {
-					informeXML.envioWS(miform.getIdInstitucion(), idFacturacion, usr);
-				} catch (ErrorValidacionXML e) {
-					estadoFuturo = ClsConstants.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA;
-					mensajePantalla = "messages.facturacion.validacionIncorrecta";
-					ClsLogging.writeFileLogError(mensajePantalla, e, 3);
-				} catch (ErrorEnvioWS e) {
-					estadoFuturo = ClsConstants.ESTADO_FACTURACION_ENVIO_NO_DISPONIBLE;
-					mensajePantalla = "messages.facturacion.envioNoDisponible";
-					ClsLogging.writeFileLogError(mensajePantalla, e, 3);
-				} catch (ErrorNegocioWS e) {
-					estadoFuturo = ClsConstants.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO;
-					mensajePantalla = "messages.facturacion.envioNoAceptado";
-					ClsLogging.writeFileLogError(mensajePantalla, e, 3);
-				} 
+				informeXML.envioWS(miform.getIdInstitucion(), idFacturacion);
+				estadoFuturo = ESTADO_FACTURACION.ESTADO_FACTURACION_ENVIO_EN_PROCESO.getCodigo();
+				mensajePantalla = "messages.facturacion.envioEnProceso";
 			}
 			
-			
+			tx = usr.getTransaction();
+			tx.begin();			
 			
 			String idOrdenEstado = fcsFactEstadosFacturacionAdm.getIdordenestadoMaximo(miform.getIdInstitucion(), idFacturacion);
 			FcsFactEstadosFacturacionBean fcsFactEstadosFacturacionBean = new FcsFactEstadosFacturacionBean();
@@ -373,11 +352,12 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 					.getEstadoFacturacion(idInstitucion, idFacturacion))
 					.get(FcsEstadosFacturacionBean.C_IDESTADOFACTURACION);
 			
-			if (estado.equals(String.valueOf(ClsConstants.ESTADO_FACTURACION_EJECUTADA)) 
-					|| estado.equals(String.valueOf(ClsConstants.ESTADO_FACTURACION_LISTA_CONSEJO))
-					|| estado.equals(String.valueOf(ClsConstants.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA))
-					|| estado.equals(String.valueOf(ClsConstants.ESTADO_FACTURACION_ENVIO_NO_DISPONIBLE))
-					|| estado.equals(String.valueOf(ClsConstants.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO)))
+			if (estado.equals(String.valueOf(ESTADO_FACTURACION.ESTADO_FACTURACION_EJECUTADA.getCodigo())) 
+					|| estado.equals(String.valueOf(ESTADO_FACTURACION.ESTADO_FACTURACION_LISTA_CONSEJO.getCodigo()))
+					|| estado.equals(String.valueOf(ESTADO_FACTURACION.ESTADO_FACTURACION_ENVIO_EN_PROCESO.getCodigo()))
+					|| estado.equals(String.valueOf(ESTADO_FACTURACION.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA.getCodigo()))
+					|| estado.equals(String.valueOf(ESTADO_FACTURACION.ESTADO_FACTURACION_ENVIO_NO_DISPONIBLE.getCodigo()))
+					|| estado.equals(String.valueOf(ESTADO_FACTURACION.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO.getCodigo())))
 				hayDetalle = true;
 			else
 				hayDetalle = false;
@@ -494,7 +474,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			String idInstitucion = usr.getLocation();
 
 			String  estado = (String) ((Hashtable) (new FcsFacturacionJGAdm(usr)).getEstadoFacturacion(idInstitucion, idFacturacion)).get(FcsEstadosFacturacionBean.C_IDESTADOFACTURACION);
-			if (estado!=null && estado.equals(String.valueOf(ClsConstants.ESTADO_FACTURACION_EJECUTADA)) && usr.getStrutsTrans().equalsIgnoreCase("CEN_MantenimientoFacturacion")){
+			if (estado!=null && estado.equals(String.valueOf(ESTADO_FACTURACION.ESTADO_FACTURACION_EJECUTADA.getCodigo())) && usr.getStrutsTrans().equalsIgnoreCase("CEN_MantenimientoFacturacion")){
 					volverGenerarFacturacion ( mapping,  formulario,  request,  response);
 			}
 						
@@ -506,7 +486,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			beanEstado = new FcsFactEstadosFacturacionBean();
 			beanEstado.setIdInstitucion(new Integer(idInstitucion));
 			beanEstado.setIdFacturacion(new Integer(idFacturacion));
-			beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_PROGRAMADA));
+			beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_PROGRAMADA.getCodigo()));
 			beanEstado.setFechaEstado("SYSDATE");
 			beanEstado.setIdOrdenEstado(new Integer(idOrdenEstado));
 			admEstado.insert(beanEstado);
@@ -756,7 +736,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			estado.put(FcsFactEstadosFacturacionBean.C_IDFACTURACION , datos.get("IDFACTURACION"));
 			estado.put(FcsFactEstadosFacturacionBean.C_FECHAESTADO , "sysdate");
 			estado.put(FcsFactEstadosFacturacionBean.C_FECHAMODIFICACION, "sysdate");
-			estado.put(FcsFactEstadosFacturacionBean.C_IDESTADOFACTURACION, String.valueOf(ClsConstants.ESTADO_FACTURACION_ABIERTA));
+			estado.put(FcsFactEstadosFacturacionBean.C_IDESTADOFACTURACION, String.valueOf(ESTADO_FACTURACION.ESTADO_FACTURACION_ABIERTA.getCodigo()));
 			estado.put(FcsFactEstadosFacturacionBean.C_IDINSTITUCION, usr.getLocation());
 			estado.put(FcsFactEstadosFacturacionBean.C_USUMODIFICACION , usr.getUserName());
 			estado.put(FcsFactEstadosFacturacionBean.C_IDORDENESTADO , "1");//al inicio sera un uno ya que sera el primero
@@ -1062,7 +1042,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			beanEstado = new FcsFactEstadosFacturacionBean();
 			beanEstado.setIdInstitucion(new Integer(idInstitucion));
 			beanEstado.setIdFacturacion(new Integer(idFacturacion));
-			beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_PROGRAMADA));
+			beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_PROGRAMADA.getCodigo()));
 			beanEstado.setFechaEstado("SYSDATE");
 			beanEstado.setIdOrdenEstado(new Integer(idOrdenEstado));
 			admEstado.insert(beanEstado);

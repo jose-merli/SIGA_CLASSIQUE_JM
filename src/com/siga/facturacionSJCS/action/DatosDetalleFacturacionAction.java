@@ -21,6 +21,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants.ESTADO_FACTURACION;
 
 import com.atos.utils.*;
 import com.siga.Utilidades.UtilidadesNumero;
@@ -157,11 +158,12 @@ public class DatosDetalleFacturacionAction extends MasterAction {
 					.getEstadoFacturacion(idInstitucion, idFacturacion))
 					.get(FcsEstadosFacturacionBean.C_IDESTADOFACTURACION);
 			
-			if (estado.equals(String.valueOf(ClsConstants.ESTADO_FACTURACION_EJECUTADA)) 
-					|| estado.equals(String.valueOf(ClsConstants.ESTADO_FACTURACION_LISTA_CONSEJO))
-					|| estado.equals(String.valueOf(ClsConstants.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA))
-					|| estado.equals(String.valueOf(ClsConstants.ESTADO_FACTURACION_ENVIO_NO_DISPONIBLE))
-					|| estado.equals(String.valueOf(ClsConstants.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO)))
+			if (estado.equals(String.valueOf(ESTADO_FACTURACION.ESTADO_FACTURACION_EJECUTADA.getCodigo())) 
+					|| estado.equals(String.valueOf(ESTADO_FACTURACION.ESTADO_FACTURACION_LISTA_CONSEJO.getCodigo()))
+					|| estado.equals(String.valueOf(ESTADO_FACTURACION.ESTADO_FACTURACION_ENVIO_EN_PROCESO.getCodigo()))
+					|| estado.equals(String.valueOf(ESTADO_FACTURACION.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA.getCodigo()))
+					|| estado.equals(String.valueOf(ESTADO_FACTURACION.ESTADO_FACTURACION_ENVIO_NO_DISPONIBLE.getCodigo()))
+					|| estado.equals(String.valueOf(ESTADO_FACTURACION.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO.getCodigo())))
 				hayDetalle = true;
 			else
 				hayDetalle = false;

@@ -14,6 +14,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants.ESTADO_FACTURACION;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -362,7 +363,7 @@ public class MantenimientoPrevisionesAction extends MasterAction {
 				FcsFacturacionJGBean beanFac = (FcsFacturacionJGBean)v.get(0);
 				Hashtable estado = admFac.getEstadoFacturacion(idInstitucion,idFacturacion);
 				String idEstado = (String) estado.get(FcsEstadosFacturacionBean.C_IDESTADOFACTURACION);
-				if (!idEstado.equals(new Integer(ClsConstants.ESTADO_FACTURACION_ABIERTA).toString())) {
+				if (!idEstado.equals(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_ABIERTA.getCodigo()).toString())) {
 					throw new SIGAException("messages.factSJCS.error.estadoNoCorrecto");
 				} 
 				else {
@@ -465,7 +466,7 @@ public class MantenimientoPrevisionesAction extends MasterAction {
 					
 					beanEstado.setIdInstitucion(new Integer(idInstitucion));
 					beanEstado.setIdFacturacion(new Integer(idFacturacion));
-					beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_EJECUTADA));
+					beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_EJECUTADA.getCodigo()));
 					beanEstado.setFechaEstado("SYSDATE");
 					beanEstado.setIdOrdenEstado(new Integer(idOrdenEstado));
 					admEstado.insert(beanEstado);
@@ -525,7 +526,7 @@ public class MantenimientoPrevisionesAction extends MasterAction {
 		estado.put(FcsFactEstadosFacturacionBean.C_IDFACTURACION , datos.get("IDFACTURACION"));
 		estado.put(FcsFactEstadosFacturacionBean.C_FECHAESTADO , "sysdate");
 		estado.put(FcsFactEstadosFacturacionBean.C_FECHAMODIFICACION, "sysdate");
-		estado.put(FcsFactEstadosFacturacionBean.C_IDESTADOFACTURACION, String.valueOf(ClsConstants.ESTADO_FACTURACION_ABIERTA));
+		estado.put(FcsFactEstadosFacturacionBean.C_IDESTADOFACTURACION, String.valueOf(ESTADO_FACTURACION.ESTADO_FACTURACION_ABIERTA.getCodigo()));
 		estado.put(FcsFactEstadosFacturacionBean.C_IDINSTITUCION, usr.getLocation());
 		estado.put(FcsFactEstadosFacturacionBean.C_USUMODIFICACION , usr.getUserName());
 		estado.put(FcsFactEstadosFacturacionBean.C_IDORDENESTADO ,1);
