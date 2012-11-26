@@ -4,9 +4,10 @@ import java.util.Hashtable;
 import java.util.Properties;
 import java.util.Vector;
 
+import org.redabogacia.sigaservices.app.util.SIGAReferences.RESOURCE_FILES;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.SIGAReferences.RESOURCE_FILES;
 import com.siga.Utilidades.UtilidadesHash;
 
 /**
@@ -95,8 +96,7 @@ public class GenPropertiesAdm extends MasterBeanAdministrador {
 		Properties prop = new Properties();
 		
 		try {
-			Hashtable hashParams = new Hashtable();
-			UtilidadesHash.set(hashParams, GenPropertiesBean.C_FICHERO, resource.name());
+			
 			Vector auxV = this.select("WHERE FICHERO = '"+resource.name() +"'");
 			
 			if (auxV != null && auxV.size() > 0) {

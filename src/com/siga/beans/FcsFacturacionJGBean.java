@@ -15,7 +15,8 @@ public class FcsFacturacionJGBean extends MasterBean {
 	/* Variables */
 	private Integer idInstitucion, idFacturacion, idFacturacion_regulariza;
 	private Double importeTotal, importeOficio, importeGuardia, importeSOJ, importeEJG;
-	
+	private Long idecomcola;
+		
 	private String 	nombre, fechaDesde, fechaHasta, regularizacion, prevision, nombreFisico;
 
 	/* Nombre tabla */
@@ -36,6 +37,7 @@ public class FcsFacturacionJGBean extends MasterBean {
 	static public final String C_REGULARIZACION			= "REGULARIZACION";
 	static public final String C_IDFACTURACION_REGULARIZA	= "IDFACTURACION_REGULARIZA";
 	static public final String C_NOMBREFISICO			= "NOMBREFISICO";
+	static public final String C_IDECOMCOLA				= "IDECOMCOLA";
 	
 	
 	/**
@@ -200,6 +202,12 @@ public class FcsFacturacionJGBean extends MasterBean {
 	}
 	public void setNombreFisico(String nombreFisico) {
 		this.nombreFisico = nombreFisico;
+	}
+	public Long getIdecomcola() {
+		return idecomcola;
+	}
+	public void setIdecomcola(Long idecomcola) {
+		this.idecomcola = idecomcola;
 	}
 }
 

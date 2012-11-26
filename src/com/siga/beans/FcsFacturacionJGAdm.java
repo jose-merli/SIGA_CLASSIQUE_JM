@@ -26,6 +26,8 @@ import java.util.zip.ZipOutputStream;
 
 import javax.transaction.UserTransaction;
 
+import org.redabogacia.sigaservices.app.AppConstants.ESTADO_FACTURACION;
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
@@ -79,7 +81,8 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 							FcsFacturacionJGBean.C_PREVISION,
 							FcsFacturacionJGBean.C_REGULARIZACION,
 							FcsFacturacionJGBean.C_NOMBREFISICO,
-							FcsFacturacionJGBean.C_USUMODIFICACION};
+							FcsFacturacionJGBean.C_USUMODIFICACION,
+							FcsFacturacionJGBean.C_IDECOMCOLA};
 		return campos;
 	}
 
@@ -113,6 +116,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			bean.setRegularizacion(UtilidadesHash.getString(hash, FcsFacturacionJGBean.C_REGULARIZACION));
 			bean.setNombreFisico(UtilidadesHash.getString(hash, FcsFacturacionJGBean.C_NOMBREFISICO));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash, FcsFacturacionJGBean.C_USUMODIFICACION));
+			bean.setIdecomcola(UtilidadesHash.getLong(hash, FcsFacturacionJGBean.C_IDECOMCOLA));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -142,6 +146,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FcsFacturacionJGBean.C_REGULARIZACION, b.getRegularizacion());
 			UtilidadesHash.set(htData, FcsFacturacionJGBean.C_NOMBREFISICO, b.getNombreFisico());
 			UtilidadesHash.set(htData, FcsFacturacionJGBean.C_USUMODIFICACION, b.getUsuMod());
+			UtilidadesHash.set(htData, FcsFacturacionJGBean.C_IDECOMCOLA, b.getIdecomcola());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -626,7 +631,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		"         (Select Max(est2."+FcsFactEstadosFacturacionBean.C_IDORDENESTADO+") "+
 		"            from "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+" EST2 " +
 		"				   WHERE EST2."+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+"="+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+"."+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+
-		"				   AND EST2."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+"="+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+"."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+"))<>"+ClsConstants.ESTADO_FACTURACION_LISTA_CONSEJO;
+		"				   AND EST2."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+"="+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+"."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+"))<>"+ESTADO_FACTURACION.ESTADO_FACTURACION_LISTA_CONSEJO.getCodigo();
 		                          
 		try {		
 			if (rc.query(sql)) {
@@ -665,7 +670,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		"         (Select Max(est2."+FcsFactEstadosFacturacionBean.C_IDORDENESTADO+") "+
 		"            from "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+" EST2 " +
 		"				   WHERE EST2."+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+"="+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+"."+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+
-		"				   AND EST2."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+"="+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+"."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+"))="+ClsConstants.ESTADO_FACTURACION_ABIERTA;		                          
+		"				   AND EST2."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+"="+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+"."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+"))="+ESTADO_FACTURACION.ESTADO_FACTURACION_ABIERTA.getCodigo();		                          
 		try {		
 			if (rc.query(sql)) {
 				if (rc!=null && rc.size()>0) {
@@ -757,7 +762,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			beanEstado.setIdOrdenEstado(1);//al inicio sera un uno ya que sera el primero
 //			beanEstado.setFechaMod("SYSDATE");
 //			beanEstado.setUsuMod(this.usuModificacion);
-			beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_ABIERTA));		
+			beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_ABIERTA.getCodigo()));		
 			if (!admEstado.insert(beanEstado)) {
 				throw new SIGAException(this.getError());
 			}
@@ -4012,7 +4017,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			beanEstado = new FcsFactEstadosFacturacionBean();
 			beanEstado.setIdInstitucion(new Integer(idInstitucion));
 			beanEstado.setIdFacturacion(new Integer(idFacturacion));
-			beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_EN_EJECUCION));
+			beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_EN_EJECUCION.getCodigo()));
 			beanEstado.setFechaEstado("SYSDATE");			
 			beanEstado.setIdOrdenEstado(new Integer(admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion)));
 			admEstado.insert(beanEstado);
@@ -4147,7 +4152,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			beanEstado = new FcsFactEstadosFacturacionBean();
 			beanEstado.setIdInstitucion(new Integer(idInstitucion));
 			beanEstado.setIdFacturacion(new Integer(idFacturacion));
-			beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_EJECUTADA));
+			beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_EJECUTADA.getCodigo()));
 			beanEstado.setFechaEstado("SYSDATE");
 			beanEstado.setIdOrdenEstado(new Integer(admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion)));
 			Thread.sleep(1000);
@@ -4170,7 +4175,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				beanEstado = new FcsFactEstadosFacturacionBean();
 				beanEstado.setIdInstitucion(new Integer(idInstitucion));
 				beanEstado.setIdFacturacion(new Integer(idFacturacion));
-				beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_ABIERTA));
+				beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_ABIERTA.getCodigo()));
 				beanEstado.setIdOrdenEstado(new Integer(admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion)));
 				beanEstado.setFechaEstado("SYSDATE");
 				Thread.sleep(1000);
@@ -4195,7 +4200,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				beanEstado = new FcsFactEstadosFacturacionBean();
 				beanEstado.setIdInstitucion(new Integer(idInstitucion));
 				beanEstado.setIdFacturacion(new Integer(idFacturacion));
-				beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_ABIERTA));
+				beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_ABIERTA.getCodigo()));
 				beanEstado.setIdOrdenEstado(new Integer(admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion)));
 				beanEstado.setFechaEstado("SYSDATE");
 				Thread.sleep(1000);
@@ -4287,7 +4292,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			beanEstado = new FcsFactEstadosFacturacionBean();
 			beanEstado.setIdInstitucion(new Integer(idInstitucion));
 			beanEstado.setIdFacturacion(new Integer(idFacturacion));
-			beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_EN_EJECUCION));
+			beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_EN_EJECUCION.getCodigo()));
 			beanEstado.setFechaEstado("SYSDATE");
 			beanEstado.setIdOrdenEstado(new Integer(idOrdenEstado));			
 			admEstado.insert(beanEstado);
@@ -4396,7 +4401,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			beanEstado = new FcsFactEstadosFacturacionBean();
 			beanEstado.setIdInstitucion(new Integer(idInstitucion));
 			beanEstado.setIdFacturacion(new Integer(idFacturacion));
-			beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_EJECUTADA));
+			beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_EJECUTADA.getCodigo()));
 			beanEstado.setFechaEstado("SYSDATE");
 			beanEstado.setIdOrdenEstado(new Integer(idOrdenEstado));
 			Thread.sleep(1000);
@@ -4418,7 +4423,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				beanEstado = new FcsFactEstadosFacturacionBean();
 				beanEstado.setIdInstitucion(new Integer(idInstitucion));
 				beanEstado.setIdFacturacion(new Integer(idFacturacion));
-				beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_ABIERTA));
+				beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_ABIERTA.getCodigo()));
 				beanEstado.setFechaEstado("SYSDATE");
 				Thread.sleep(1000);
 				admEstado.insert(beanEstado);
@@ -4442,7 +4447,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				beanEstado = new FcsFactEstadosFacturacionBean();
 				beanEstado.setIdInstitucion(new Integer(idInstitucion));
 				beanEstado.setIdFacturacion(new Integer(idFacturacion));
-				beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_ABIERTA));
+				beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_ABIERTA.getCodigo()));
 				beanEstado.setFechaEstado("SYSDATE");
 				Thread.sleep(1000);
 				admEstado.insert(beanEstado);
@@ -4463,9 +4468,9 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 	    try {
 	    	
 			Hashtable codigos = new Hashtable();
-			codigos.put(new Integer(1),new Integer(ClsConstants.ESTADO_FACTURACION_PROGRAMADA).toString());
+			codigos.put(new Integer(1),new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_PROGRAMADA.getCodigo()).toString());
 			codigos.put(new Integer(2),idInstitucion);
-			codigos.put(new Integer(3),new Integer(ClsConstants.ESTADO_FACTURACION_EN_EJECUCION).toString());
+			codigos.put(new Integer(3),new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_EN_EJECUCION.getCodigo()).toString());
 			
 			//OJO: ESTA CONSULTA PODRIA HACER QUE SE QUEDARA BLOQUEADAS TODAS LAS FACTURACIONES SJCS
 			//POR QUE: PORQUE SI SE QUEDA UNA FACTURACION EN ESTADO 40 (EN EJECUCION),
@@ -4529,7 +4534,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 	    boolean salida=false;
 	    try {
 			Hashtable codigos = new Hashtable();
-			codigos.put(new Integer(1),new Integer(ClsConstants.ESTADO_FACTURACION_ABIERTA).toString());
+			codigos.put(new Integer(1),new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_ABIERTA.getCodigo()).toString());
 			codigos.put(new Integer(2),idInstitucion);
 			codigos.put(new Integer(3),idFacturacion);
 			String sql = "SELECT E.IDFACTURACION "+

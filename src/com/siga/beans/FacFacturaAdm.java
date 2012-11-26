@@ -17,41 +17,30 @@ import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.Vector;
-import java.util.Enumeration;
-import javax.servlet.http.HttpServletRequest;
-
-import javax.transaction.UserTransaction;
-
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.GstDate;
-import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.PaginadorCaseSensitiveBind;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
 import com.lowagie.text.pdf.PdfStamper;
 import com.siga.Utilidades.PaginadorBind;
-import com.siga.Utilidades.SIGALogging;
-import com.siga.Utilidades.SIGAReferences;
+import com.siga.Utilidades.PaginadorCaseSensitiveBind;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.certificados.Plantilla;
-import com.siga.envios.Documento;
-import com.siga.envios.Envio;
 import com.siga.facturacion.form.BusquedaFacturaForm;
 import com.siga.facturacion.form.ConsultaMorososForm;
 import com.siga.general.SIGAException;
-import com.siga.informes.InformeFactura;
 
 
 /**

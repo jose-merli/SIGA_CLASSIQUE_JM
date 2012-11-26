@@ -19,8 +19,10 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 import es.satec.siga.util.SigaSequence;
-import com.siga.Utilidades.SIGAReferences;
 
 
 

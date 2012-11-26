@@ -25,9 +25,11 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.redabogacia.sigaservices.app.util.PropertyReader;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+import org.redabogacia.sigaservices.app.util.SIGAReferences.RESOURCE_FILES;
 
-import com.siga.Utilidades.SIGAReferences;
-import com.siga.Utilidades.SIGAReferences.RESOURCE_FILES;
 import com.siga.eejg.SchedulerException;
 import com.sun.mail.smtp.SMTPAddressFailedException;
 

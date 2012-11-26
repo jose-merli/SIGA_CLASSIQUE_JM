@@ -1,20 +1,37 @@
 package com.siga.administracion.action;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Vector;
 
-import com.atos.utils.*;
-import com.siga.beans.*;
-import com.siga.general.*;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
-import org.apache.struts.action.*;
+import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
+import com.atos.utils.CLSAdminLog;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
+import com.atos.utils.ComodinBusquedas;
+import com.atos.utils.Row;
+import com.atos.utils.UsrBean;
 import com.siga.Utilidades.Paginador;
-import com.siga.Utilidades.SIGAReferences;
-import com.siga.administracion.form.*;
+import com.siga.administracion.form.SIGAListadoCertificadosForm;
+import com.siga.beans.AdmCertificadosAdm;
+import com.siga.beans.AdmCertificadosBean;
+import com.siga.beans.AdmUsuarioEfectivoAdm;
+import com.siga.beans.AdmUsuarioEfectivoBean;
+import com.siga.beans.AdmUsuariosAdm;
+import com.siga.beans.AdmUsuariosBean;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
 
 
 public class SIGAListadoCertificadosAction extends MasterAction

@@ -20,7 +20,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Properties;
 
-import com.siga.Utilidades.SIGAReferences;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 import com.siga.beans.AdmLenguajesAdm;
 
 

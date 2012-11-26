@@ -9,8 +9,10 @@ package com.siga.beans;
 import java.io.File;
 import java.util.*;
 
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 import com.atos.utils.*;
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.certificados.Plantilla;

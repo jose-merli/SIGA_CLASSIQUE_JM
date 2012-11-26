@@ -19,7 +19,9 @@ import javax.naming.NamingException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
-import com.siga.Utilidades.SIGAReferences;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.SIGAConstants;
 import com.siga.beans.AdmLenguajesAdm;

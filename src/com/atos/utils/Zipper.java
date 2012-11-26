@@ -22,7 +22,9 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 import javax.servlet.http.HttpServletRequest;
 
-import com.siga.Utilidades.SIGAReferences;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 import com.siga.Utilidades.UtilidadesString;
 //import com.siga.pki.PkiStore;
 

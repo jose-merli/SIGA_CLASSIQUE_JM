@@ -3,13 +3,11 @@ package com.siga.beans;
 
 
 import org.apache.struts.upload.FormFile;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
-import com.atos.utils.ReadProperties;
-
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.envios.form.ImagenPlantillaForm;
-import com.siga.general.SIGAException;
 
 public class EnvImagenPlantillaBean extends MasterBean
 {

@@ -21,7 +21,9 @@ import java.util.Hashtable;
 import java.util.Properties;
 import java.util.Vector;
 
-import com.siga.Utilidades.SIGAReferences.RESOURCE_FILES;
+import org.redabogacia.sigaservices.app.util.PropertyReader;
+import org.redabogacia.sigaservices.app.util.SIGAReferences.RESOURCE_FILES;
+
 
 
 public class ClsConstants {
@@ -356,16 +358,7 @@ public class ClsConstants {
 	  // RGG 07-02-2005
 	  public static final int MAX_DIAS_DOCUMENTACION_ENTREGA=365;
 	  
-	  // RGG 08-03-2005
-	  // estados por los que pasa una facturacion de SJCS
-	  public static final int ESTADO_FACTURACION_ABIERTA=10;
-	  public static final int ESTADO_FACTURACION_EJECUTADA=20;
-	  public static final int ESTADO_FACTURACION_LISTA_CONSEJO=30;
-	  public static final int ESTADO_FACTURACION_EN_EJECUCION=40;
-	  public static final int ESTADO_FACTURACION_PROGRAMADA=50;
-	  public static final int ESTADO_FACTURACION_VALIDACION_NO_CORRECTA=60;
-	  public static final int ESTADO_FACTURACION_ENVIO_NO_ACEPTADO=70;
-	  public static final int ESTADO_FACTURACION_ENVIO_NO_DISPONIBLE=80;
+	  
 	  
 	  // hitos generales de facturacion
 	  public static final int HITO_GENERAL_TURNO=10;

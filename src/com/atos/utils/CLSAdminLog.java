@@ -15,7 +15,9 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.siga.Utilidades.SIGAReferences;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmRolAdm;
 import com.siga.beans.AdmRolBean;

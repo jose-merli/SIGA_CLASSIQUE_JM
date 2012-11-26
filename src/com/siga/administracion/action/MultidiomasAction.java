@@ -10,11 +10,11 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.util.PropertyReader;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngProperties;
-import com.atos.utils.PropertyReader;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.form.MultidiomasForm;
 import com.siga.beans.GenRecursosAdm;

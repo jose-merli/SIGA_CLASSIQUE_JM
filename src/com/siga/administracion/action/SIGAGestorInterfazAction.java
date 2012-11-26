@@ -14,13 +14,13 @@ import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.CLSAdminLog;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.administracion.SIGAConstants;
 import com.siga.administracion.SIGAGestorInterfaz;
 import com.siga.administracion.form.SIGAGestorInterfazForm;

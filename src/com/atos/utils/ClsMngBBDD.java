@@ -16,7 +16,9 @@ import javax.sql.DataSource;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
-import com.siga.Utilidades.SIGAReferences;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 import com.siga.Utilidades.UtilidadesString;
 //import com.atos.utils.*;
 

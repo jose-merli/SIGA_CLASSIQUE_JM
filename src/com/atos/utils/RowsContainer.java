@@ -31,9 +31,11 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
+
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 import com.atos.utils.ClsLogging;
-import com.atos.utils.ReadProperties;
-import com.siga.Utilidades.SIGAReferences;
 
 
 

@@ -4,11 +4,12 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
 
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ColumnConstants;
 import com.atos.utils.Persistible;
 import com.atos.utils.Row;
-import com.siga.Utilidades.SIGAReferences;
 
 
 /**

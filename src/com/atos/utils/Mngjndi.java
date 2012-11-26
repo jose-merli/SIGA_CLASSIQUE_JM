@@ -8,7 +8,9 @@ import javax.naming.NamingException;
 import javax.rmi.PortableRemoteObject;
 import javax.servlet.http.HttpServletRequest;
 
-import com.siga.Utilidades.SIGAReferences;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 
 
 /**

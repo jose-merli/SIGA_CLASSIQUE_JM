@@ -48,6 +48,9 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 import service.ServiciosECOS.ServiciosECOSServiceSOAPStub;
 import service.ServiciosECOS.ServiciosECOSService_ServiceLocator;
 
@@ -58,7 +61,6 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.ExceptionManager;
 import com.atos.utils.GstDate;
-import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -66,7 +68,6 @@ import com.ecos.ws.solicitarEnvio.DatosGrandeCuentaTO;
 import com.ecos.ws.solicitarEnvio.ResultadoSolicitudEnvio;
 import com.ecos.ws.solicitarEnvio.SolicitudEnvioSMS;
 import com.siga.Utilidades.Paginador;
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;

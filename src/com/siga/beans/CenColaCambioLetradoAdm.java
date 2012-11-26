@@ -4,13 +4,14 @@ import java.util.Hashtable;
 import java.util.Vector;
 import javax.transaction.UserTransaction;
 
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.SIGALogging;
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.EjecucionPLs;
 

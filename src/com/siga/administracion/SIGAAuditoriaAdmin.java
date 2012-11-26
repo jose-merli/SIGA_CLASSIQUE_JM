@@ -11,28 +11,22 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-
 import java.util.ArrayList;
-//import java.util.Collections;
-//import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
-//import java.util.StringTokenizer;
 
-import com.atos.utils.ClsConstants;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
-
-import com.atos.utils.ReadProperties;
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenInstitucionBean;
 import com.siga.general.CenVisibilidad;
