@@ -31,6 +31,8 @@
  <%@ page import="java.util.Properties"%>
  <%@ page import="java.util.ArrayList"%>
  <%@ page import="com.atos.utils.*"%>
+ <%@ page import="org.redabogacia.sigaservices.app.util.SIGAReferences" %>
+ <%@ page import="org.redabogacia.sigaservices.app.util.ReadProperties" %>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
