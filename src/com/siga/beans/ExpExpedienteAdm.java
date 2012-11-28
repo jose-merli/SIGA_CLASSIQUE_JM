@@ -1513,7 +1513,12 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 				    " AND    e.idinstitucion = tipo.idinstitucion(+) "+
 				    " AND    e.idtipoexpediente = tipo.idtipoexpediente(+) "+
 				    " AND    E.ALERTAGENERADACAD <> 'S' "+ // COMPRUEBA QUE NO SE HA ANOTADO LA CADUCIDAD.
-				    " AND    nvl(e.fechacaducidad, e.fecha + tipo.TIEMPOCADUCIDAD) <= SYSDATE "+
+				    " AND    sysdate >" +
+				    " case when tipo.TIEMPOCADUCIDAD > 0 " +
+				    " then nvl(e.fechacaducidad, e.fecha + tipo.TIEMPOCADUCIDAD)" +
+				    " else nvl (e.fechacaducidad, sysdate)" + 
+				    " end" +
+				  //  " AND    nvl(e.fechacaducidad, e.fecha + tipo.TIEMPOCADUCIDAD) <= SYSDATE "+
 				    " AND    ES.ESTADOFINAL(+) = 'N'";
 			
 			rc1 = new RowsContainer();
