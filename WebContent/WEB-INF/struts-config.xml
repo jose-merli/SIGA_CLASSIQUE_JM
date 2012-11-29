@@ -8,7 +8,7 @@
 		<form-bean name="CensoBusquedaLetradosBean" type="es.satec.siga.util.formbeans.censo.BusquedaBean"/>
 
 
-		<!-- ************************** FORMS CENSO *************************
+		<!-- ************************** FORMS CENSO *entradaenvio************************
 -->
 		<form-bean name="busquedaClientesForm" type="com.siga.censo.form.BusquedaClientesForm"/>
 		<form-bean name="busquedaClientesAvanzadaForm" type="com.siga.censo.form.BusquedaClientesForm"/>
@@ -1766,7 +1766,7 @@
 			<forward name="export" path="/SIGASvlVectorToClientFile.svrl"/>
 			<forward name="confirmar" path="/html/jsp/general/msjConfirmar.jsp"/>
 			<forward name="descargarEnvioTelematico" path="/html/jsp/general/exitoTelematicoSinEJIS.jsp"/>
-			<forward name="finalizar" path="/ENV_EntradaEnvios.do"/>
+		<!--  	<forward name="finalizar" path="/ENV_EntradaEnvios.do"/> -->
 		</action>
 		
 				<!-- ***** Envíos a Grupos / Bandeja de Entrada ***** -->
