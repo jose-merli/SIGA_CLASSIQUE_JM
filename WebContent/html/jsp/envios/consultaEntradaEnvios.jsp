@@ -62,12 +62,12 @@
 	    <html:hidden styleId = "numeroEJGSel" 			property = "numeroEJGSel"			value="${entradaEnvio.numeroEJGSel}"/>
 	    <html:hidden styleId = "numeroDesignaSel" 		property = "numeroDesignaSel" 		value="${entradaEnvio.numeroDesignaSel}"/>
 	    <html:hidden styleId = "idTurnoDesignaNew" 		property = "idTurnoDesignaNew"/>
-	    <html:hidden styleId = "idTurnoDesignaSel" 		property = "idTurnoDesignaSel"/>
+	    <html:hidden styleId = "idTurnoDesignaSel" 		property = "idTurnoDesignaSel" value="${entradaEnvio.idTurnoDesignaSel}"/>
 	    <html:hidden styleId = "caso" 					property = "caso"  					value="${entradaEnvio.caso}"/>
 	    <html:hidden styleId = "botonesDetalle" 		property = "botonesDetalle"  		value="${entradaEnvio.botonesDetalle}"/>
 	    <html:hidden styleId = "idTipoEJGSel" 			property = "idTipoEJGSel" 			value="${entradaEnvio.idTipoEJGSel}"/>
 	    <html:hidden styleId = "descripcionSolicitante"	property = "descripcionSolicitante"/>
-	   	<html:hidden styleId = "anioDesignaSel" 		property = "anioDesignaSel" />
+	   	<html:hidden styleId = "anioDesignaSel" 		property = "anioDesignaSel" value="${entradaEnvio.anioDesignaSel}" />
 	   	<html:hidden styleId = "anioDesignaNew" 		property = "anioDesignaNew" />
 	    <html:hidden styleId = "numeroDesignaNew" 		property = "numeroDesignaNew" />
 	    <html:hidden styleId = "abogadoDesignaSel" 		property = "abogadoDesignaSel" />
@@ -565,18 +565,20 @@
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 		
 		<script language="JavaScript">		
-			function refrescarLocal(){			
+			
+			function refrescarLocal(){		
+				alert("upssss!");
 				document.forms['EntradaEnviosForm'].modo.value = 'ver';
 				document.forms['EntradaEnviosForm'].submit();		
 			}	
-
+			
 			function accionComunicar(){			
-				document.forms['DefinirEnviosForm'].idTipoEnvio.value='6';
-				document.forms['DefinirEnviosForm'].idEnvio.value=${entradaEnvio.idEnvio};
-				document.forms['DefinirEnviosForm'].target="submitArea";	   	
-				document.forms['DefinirEnviosForm'].modo.value='respuestaTelematica';
-				document.forms['DefinirEnviosForm'].submit();
+				document.forms['EntradaEnviosForm'].modo.value='comunicar';
+				document.forms['EntradaEnviosForm'].submit();
 			}
+			
+			
+			
 
 			function inicio(){
 				//Se filtra por tipo de intercambio
@@ -836,6 +838,8 @@
 					}
 				}
 			}			
+			
+			
 
 			function consultarEnvioRelacionado(){
 				document.forms['DefinirEnviosForm'].modo.value='verRelacionEnvio';

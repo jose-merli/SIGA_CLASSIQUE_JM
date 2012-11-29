@@ -532,12 +532,12 @@ public class AdmInformeAdm extends MasterBeanAdministrador
     	return informeList;
     }
 
-	public Hashtable getInformeTelematico(String idInstitucion, String idTipoEnvio)throws ClsExceptions{
+	public Hashtable getInformeTelematico(String idInstitucion, String idTipoEnvio,String idTipoIntercambio)throws ClsExceptions{
 		StringBuffer sql = new StringBuffer();
 		Hashtable<String, Object> htFila = null;
     	sql.append(" SELECT * ");
     	sql.append(" FROM ADM_INFORME I,ADM_ENVIOINFORME EI ");
-    	sql.append(" WHERE i.idtipointercambiotelematico = 10 ");
+    	sql.append(" WHERE i.idtipointercambiotelematico = "+idTipoIntercambio);
 	    sql.append(" AND i.idinstitucion = "+idInstitucion);
 	    sql.append(" AND ei.idplantilla = i.idplantilla ");
 	    sql.append(" AND ei.idinstitucion = i.idinstitucion ");

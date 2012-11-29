@@ -29,6 +29,7 @@ import org.apache.struts.action.ActionMapping;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.TipoIntercambioEnum;
 
 import com.atos.utils.ClsConstants;
@@ -1723,61 +1724,6 @@ public class DefinirEnviosAction extends MasterAction {
 		}
 		return idPersona;
 	}
-	private String getIdColegiados(DefinirEnviosForm form, HttpServletRequest request) throws ClsExceptions, SIGAException{
-		Hashtable htPersonas = new Hashtable();
-		Vector datos = new Vector();
-		Vector guardias = new Vector();
-		String fechaInicio = null;
-		String fechaFin = null;
-		String idlista = null;
-		String idPersona  = null;
-		String idInstitucion  = null;
-	
-				MasterReport masterReport = new  MasterReport(); 
-				Vector vCampos = masterReport.obtenerDatosFormulario(form);
-				if ( vCampos.size()>0) {
-					Hashtable ht = (Hashtable) vCampos.get(0); 
-					idInstitucion = (String) ht.get("idInstitucion");
-					fechaInicio = (String) ht.get("fechaIni");
-					fechaFin = (String) ht.get("fechaFin");
-					idlista = (String) ht.get("idLista");
-				}
-				ScsInclusionGuardiasEnListasAdm admIGL =new ScsInclusionGuardiasEnListasAdm(this.getUserBean(request));
-				Hashtable paramBusqueda=new Hashtable();
-				paramBusqueda.put(ScsInclusionGuardiasEnListasBean.C_IDINSTITUCION,idInstitucion);
-				paramBusqueda.put(ScsInclusionGuardiasEnListasBean.C_IDLISTA,idlista);
-				Vector listasIncluidas=admIGL.select(paramBusqueda);
-				Enumeration listaResultados=listasIncluidas.elements();
-				
-				while(listaResultados.hasMoreElements()){
-					ScsInclusionGuardiasEnListasBean fila=(ScsInclusionGuardiasEnListasBean)listaResultados.nextElement();
-					// Recopilacion datos
-					/* RGG 08/10/2007 cambio para que obtenga todas las guardias del tiron
-					 * Vector datosParciales= admGT.getDatosListaGuardias(fila.getIdInstitucion().toString(),fila.getIdTurno().toString(),fila.getIdGuardia().toString(),fechaInicio,fechaFin);
-					int i=0;
-					while (i<datosParciales.size()){
-						datos.add(datosParciales.elementAt(i));
-						i++;
-					}
-					*/
-					Vector guardia = new Vector();
-					guardia.add(fila.getIdTurno().toString());
-					guardia.add(fila.getIdGuardia().toString());
-					
-					guardias.add(guardia);
-					
-				}
-				
-				ScsGuardiasTurnoAdm admGT = new ScsGuardiasTurnoAdm(this.getUserBean(request));
-				
-				datos = admGT.getDatosPersonasGuardias(idInstitucion,idlista,guardias,fechaInicio,fechaFin);
-				idPersona = calcularPersona(datos,form);
-				
- 
-
-		return idPersona;
-	}
-	
 	protected String calcularPersona(Vector datos, DefinirEnviosForm form) throws SIGAException  
 	{
 		
@@ -1831,6 +1777,61 @@ public class DefinirEnviosAction extends MasterAction {
 		
 		
         return  idPersona;
+	}
+
+	private String getIdColegiados(DefinirEnviosForm form, HttpServletRequest request) throws ClsExceptions, SIGAException{
+		Hashtable htPersonas = new Hashtable();
+		Vector datos = new Vector();
+		Vector guardias = new Vector();
+		String fechaInicio = null;
+		String fechaFin = null;
+		String idlista = null;
+		String idPersona  = null;
+		String idInstitucion  = null;
+	
+				MasterReport masterReport = new  MasterReport(); 
+				Vector vCampos = masterReport.obtenerDatosFormulario(form);
+				if ( vCampos.size()>0) {
+					Hashtable ht = (Hashtable) vCampos.get(0); 
+					idInstitucion = (String) ht.get("idInstitucion");
+					fechaInicio = (String) ht.get("fechaIni");
+					fechaFin = (String) ht.get("fechaFin");
+					idlista = (String) ht.get("idLista");
+				}
+				ScsInclusionGuardiasEnListasAdm admIGL =new ScsInclusionGuardiasEnListasAdm(this.getUserBean(request));
+				Hashtable paramBusqueda=new Hashtable();
+				paramBusqueda.put(ScsInclusionGuardiasEnListasBean.C_IDINSTITUCION,idInstitucion);
+				paramBusqueda.put(ScsInclusionGuardiasEnListasBean.C_IDLISTA,idlista);
+				Vector listasIncluidas=admIGL.select(paramBusqueda);
+				Enumeration listaResultados=listasIncluidas.elements();
+				
+				while(listaResultados.hasMoreElements()){
+					ScsInclusionGuardiasEnListasBean fila=(ScsInclusionGuardiasEnListasBean)listaResultados.nextElement();
+					// Recopilacion datos
+					/* RGG 08/10/2007 cambio para que obtenga todas las guardias del tiron
+					 * Vector datosParciales= admGT.getDatosListaGuardias(fila.getIdInstitucion().toString(),fila.getIdTurno().toString(),fila.getIdGuardia().toString(),fechaInicio,fechaFin);
+					int i=0;
+					while (i<datosParciales.size()){
+						datos.add(datosParciales.elementAt(i));
+						i++;
+					}
+					*/
+					Vector guardia = new Vector();
+					guardia.add(fila.getIdTurno().toString());
+					guardia.add(fila.getIdGuardia().toString());
+					
+					guardias.add(guardia);
+					
+				}
+				
+				ScsGuardiasTurnoAdm admGT = new ScsGuardiasTurnoAdm(this.getUserBean(request));
+				
+				datos = admGT.getDatosPersonasGuardias(idInstitucion,idlista,guardias,fechaInicio,fechaFin);
+				idPersona = calcularPersona(datos,form);
+				
+	
+	
+		return idPersona;
 	}
 
 	private String getIdColegiadoUnicoDesignas(Vector vCampos,UsrBean userBean)throws ClsExceptions,SIGAException{
@@ -2075,7 +2076,7 @@ public class DefinirEnviosAction extends MasterAction {
 		SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
 		
 		try {
-			Hashtable result = informeAdm.getInformeTelematico(usr.getLocation(), form.getIdTipoEnvio()); 
+			Hashtable result = informeAdm.getInformeTelematico(usr.getLocation(), form.getIdTipoEnvio(),AppConstants.TipoIntercambioEnum.ICA_SGP_COM_DES_PROV_ABG_PRO.getCodigo()); 
 			datosEnvios = form.getIdTipoEnvio()+","+(String)result.get("IDPLANTILLAENVIODEF")+","+(String)result.get("IDPLANTILLA")+","+usr.getLocation()+",0##";	
 			form.setDatosEnvios(datosEnvios);
 			form.setFechaProgramada(sdf.format(Calendar.getInstance().getTime()));

@@ -51,6 +51,10 @@
 	    <html:hidden styleId = "idEnvio" 		property = "idEnvio"/>
 	    <html:hidden styleId = "idInstitucion" 	property = "idInstitucion"/>
 	    <html:hidden styleId = "idEstado" 		property = "idEstado"/>
+	    <html:hidden styleId = "anioDesignaSel" 		property = "anioDesignaSel"/>
+	    <html:hidden styleId = "idTurnoDesignaSel" 		property = "idTurnoDesignaSel"/>
+	    <html:hidden styleId = "numeroDesignaSel" 		property = "numeroDesignaSel"/>
+	    
 		<input type="hidden" id="actionModal"  name="actionModal" value="">
 	</html:form>
 
@@ -144,7 +148,7 @@
 		<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 		
 		<script language="JavaScript">		
-			function refrescarLocal(){			
+			function refrescarLocal(){		
 				parent.buscar();			
 			}
 
@@ -165,13 +169,17 @@
 				var anio = document.getElementById("anio_"+fila).value;
 				var idTurno = document.getElementById("idTurno_"+fila).value;
 				var numero = document.getElementById("numero_"+fila).value;
-				document.forms['DefinirEnviosForm'].idEnvio.value = idEnvio;
-				document.forms['DefinirEnviosForm'].idTipoEnvio.value='6';
-				document.forms['DefinirEnviosForm'].datosInforme.value="idInstitucion=="+idInstitucion+"##anio=="+anio+"##idTurno=="+idTurno+"##numero=="+numero+"##idTipoInforme==OFICI%%%";					
-				document.forms['DefinirEnviosForm'].target="submitArea";	   	
-				document.forms['DefinirEnviosForm'].modo.value='respuestaTelematica';
-				document.forms['DefinirEnviosForm'].submit();
+				document.forms['EntradaEnviosForm'].idEnvio.value = idEnvio;
+				document.forms['EntradaEnviosForm'].idInstitucion.value=idInstitucion;
+				document.forms['EntradaEnviosForm'].anioDesignaSel.value = anio;
+				document.forms['EntradaEnviosForm'].idTurnoDesignaSel.value = idTurno;
+				document.forms['EntradaEnviosForm'].numeroDesignaSel.value = numero;
+				document.forms['EntradaEnviosForm'].modo.value='comunicar';
+				document.forms['EntradaEnviosForm'].submit();
+			
 			}
+			
+			
 
 			function download(fila){
 				var idInstitucion = document.getElementById("idInstitucion_"+fila).value;
@@ -180,7 +188,8 @@
 				document.forms['EntradaEnviosForm'].idEnvio.value = idEnvio;
 				document.forms['EntradaEnviosForm'].modo.value = 'descargar';
 				document.forms['EntradaEnviosForm'].submit();
-			}			
+			}		
+			
 			
 		</script>
 		
