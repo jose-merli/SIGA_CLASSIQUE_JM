@@ -68,8 +68,6 @@ public abstract class SIGAListenerAbstract extends SIGAContextListenerAdapter im
 	private int CONFIGURACION_MINUTOS = 0;
 	
 	
-	private final static String MODULO_SCS = "SCS";
-	
 	/**
 	 * 
 	 */
