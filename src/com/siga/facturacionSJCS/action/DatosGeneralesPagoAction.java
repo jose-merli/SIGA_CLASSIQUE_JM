@@ -840,6 +840,8 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			request.setAttribute("idInstitucionRegistro", idInstitucion);
 			request.setAttribute("nombreInstitucion", nombreInstitucion);
 			request.setAttribute("formularioPagos", miform);
+			request.setAttribute("importeFacturado", null);
+			request.setAttribute("importePagado", null);
 		} catch (Exception e) {
 			throwExcp("messages.general.error",
 					new String[] { "modulo.facturacionSJCS" }, e, null);
