@@ -174,6 +174,7 @@
 				document.forms['EntradaEnviosForm'].anioDesignaSel.value = anio;
 				document.forms['EntradaEnviosForm'].idTurnoDesignaSel.value = idTurno;
 				document.forms['EntradaEnviosForm'].numeroDesignaSel.value = numero;
+				document.forms['EntradaEnviosForm'].target="submitArea";	
 				document.forms['EntradaEnviosForm'].modo.value='comunicar';
 				document.forms['EntradaEnviosForm'].submit();
 			

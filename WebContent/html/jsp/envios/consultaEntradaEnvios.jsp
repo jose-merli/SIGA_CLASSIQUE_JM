@@ -53,9 +53,10 @@
 
 <body class="tablaCentralCampos" onload="inicio()">
 	
-	<html:form action="/ENV_EntradaEnvios.do" method="POST" target="mainWorkArea" style="display:none">		
+	<html:form action="/ENV_EntradaEnvios.do?noReset=true" method="POST" target="mainWorkArea" style="display:none">		
 		<input type="hidden" id="actionModal" name="actionModal" value="">	
 	    <html:hidden styleId = "modo" 					property = "modo"/>
+	    <html:hidden styleId = "modal" 					property = "modal"/>
 	    <html:hidden styleId = "idEnvio" 				property = "idEnvio"  				value="${entradaEnvio.idEnvio}"/>
 	    <html:hidden styleId = "idInstitucion"			property = "idInstitucion"  		value="${entradaEnvio.idInstitucion}"/>
 	   	<html:hidden styleId = "anioEJGSel" 			property = "anioEJGSel" />
@@ -567,19 +568,17 @@
 		<script language="JavaScript">		
 			
 			function refrescarLocal(){		
-				alert("upssss!");
+				document.forms['EntradaEnviosForm'].target="mainWorkArea";
 				document.forms['EntradaEnviosForm'].modo.value = 'ver';
 				document.forms['EntradaEnviosForm'].submit();		
 			}	
 			
 			function accionComunicar(){			
+				document.forms['EntradaEnviosForm'].target="submitArea";
 				document.forms['EntradaEnviosForm'].modo.value='comunicar';
 				document.forms['EntradaEnviosForm'].submit();
 			}
 			
-			
-			
-
 			function inicio(){
 				//Se filtra por tipo de intercambio
 				if (${entradaEnvio.idTipoIntercambioTelematico=='06'}){ 

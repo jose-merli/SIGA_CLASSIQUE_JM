@@ -364,9 +364,7 @@ public class EntradaEnviosAction extends MasterAction {
 			entradaEnviosService.relacionarEnvio(new Long(entradaEnviosForm.getIdEnvio()), new Short(entradaEnviosForm.getIdInstitucion()),new Long(idEnvioRelacionado));
 			entradaEnviosService.actualizarEstado(new Long(entradaEnviosForm.getIdEnvio()), new Short(entradaEnviosForm.getIdInstitucion()),EstadosEntradaEnviosEnum.ESTADO_FINALIZADO.getCodigo());
 			//Si quieren que se avise hay que hacer que funcione el referescarLocal
-//			return exitoRefresco("Comunicación realizada correctamente",request);
-			return ver(mapping, formulario, request, response);
-			
+			return exitoRefresco("Comunicación realizada correctamente",request);
 
 		}catch (Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null); 
