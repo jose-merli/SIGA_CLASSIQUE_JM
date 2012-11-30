@@ -471,8 +471,8 @@ public abstract class SIGAWSClientAbstract {
 		
 		xmlOptions.setCharacterEncoding("ISO-8859-15");
 		Map<String, String> mapa = new HashMap<String, String>();
-		mapa.put(intercambioDocument.getIntercambio().getDomNode().getNamespaceURI(), "");
-		xmlOptions.setSaveSuggestedPrefixes(mapa);
+		mapa.put("", intercambioDocument.getIntercambio().getDomNode().getNamespaceURI());
+		xmlOptions.setSaveImplicitNamespaces(mapa);
 		
 		ClsLogging.writeFileLog("Guardando fichero generado xml para la Generalitat en " + file.getAbsolutePath(), 3);
 		intercambioDocument.save(file, xmlOptions);
