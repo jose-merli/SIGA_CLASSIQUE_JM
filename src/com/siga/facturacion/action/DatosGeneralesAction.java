@@ -249,11 +249,13 @@ public class DatosGeneralesAction extends MasterAction{
 					
 					pagoSec=formDGen.getFormaPagoAutomática();
 					
+					if (pagoSec != null) {
 					for (int i=1;i<pagoSec.length;i++) {
 						if (!pagoSec[i].equals("")){
 						formaPago.add(pagoSec[i]);
 						}
 					}	
+					
 					
 					if (!formaPago.isEmpty()){	
 						int i=0;
@@ -300,7 +302,7 @@ public class DatosGeneralesAction extends MasterAction{
 				return exito("facturacion.datosGenerales.literal.mensajeExisteNombreAbreviadoSerFac", request);
 			}
 		} 
-		catch (Exception e) { 
+		} catch (Exception e) { 
 		   throwExcp("messages.general.error",new String[] {"modulo.facturacion.asignacionConceptos"},e,null); 
 		} 
 		
@@ -533,11 +535,11 @@ public class DatosGeneralesAction extends MasterAction{
 			
 	    	pagoSec=formDGen.getFormaPagoAutomática();
 	    	
-			
-			
+			if (pagoSec != null) {
 			for (int i=0;i<pagoSec.length;i++) {
 				formaPago.add(pagoSec[i]);
 			}	
+			}
 					
 					
 			if (!formaPago.isEmpty()){			
