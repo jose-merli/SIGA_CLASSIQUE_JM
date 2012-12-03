@@ -405,7 +405,7 @@ public class DatosDetallePagoAction extends MasterAction {
 					String totalTotal = UtilidadesString.formatoImporte(UtilidadesNumero.redondea(dTotalTotal, 2));
 					
 					if (dTotalTotal<0) dTotalTotal=0; 
-					cadena = ncolegiado + "\t" + nombreColegiado + "\t" + importeTotalSJCS.replace('.',',') + "\t" + importeTotalMovimientoVarios.replace('.',',') + "\t" + totalBruto.replace('.',',') + "\t" + tipoIrpf.replace('.',',') + "\t" + irpf.replace('.',',') + "\t" + importeRetenciones.replace('.',',') + "\t" + totalTotal.replace('.',',') +"\t" + destinatario + "\t" + formaPago + "\t" + banco + "\t"+ codigoCuenta + "\t";
+					cadena = ncolegiado + "\t" + nombreColegiado + "\t" + importeTotalSJCS + "\t" + importeTotalMovimientoVarios + "\t" + totalBruto + "\t" + tipoIrpf + "\t" + irpf + "\t" + importeRetenciones + "\t" + totalTotal +"\t" + destinatario + "\t" + formaPago + "\t" + banco + "\t"+ codigoCuenta + "\t";
 					cadena += "\r\n";					
 					bw.write(cadena);
 				}
