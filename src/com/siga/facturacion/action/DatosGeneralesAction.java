@@ -544,7 +544,8 @@ public class DatosGeneralesAction extends MasterAction{
 					
 			if (!formaPago.isEmpty()){			
 				int i=0;
-				while((i<formaPago.size()) && (formaPago.get(i).toString().length() > 0) && (formaPago.get(i) != null)){
+				while((i<formaPago.size()) ){
+					if ((formaPago.get(i) != null) && (formaPago.get(i).toString().length() > 0)){
 					if (((String)formaPago.get(i)).compareToIgnoreCase("-1")!=0){							
 						hashAux.put(beanFac.C_IDINSTITUCION,idInstitucion);																					
 						hashAux.put(beanFac.C_IDSERIEFACTURACION,idSerieFacturacionActual.toString());
@@ -555,6 +556,7 @@ public class DatosGeneralesAction extends MasterAction{
 							correctoInsercion=admSerie.insert(hashAux);
 							
 						}
+					}
 					i++;
 					}						
 				}
