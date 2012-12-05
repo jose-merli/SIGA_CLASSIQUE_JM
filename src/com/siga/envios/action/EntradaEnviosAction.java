@@ -124,12 +124,12 @@ public class EntradaEnviosAction extends MasterAction {
 			if(entradaEnvioFormulario.getIdTipoIntercambioTelematico().equals(TipoIntercambioEnum.SGP_ICA_ENV_SOL_ABG_PRO.getCodigo())){
 				infBean.setNombreFisico("sgp_ca_env_sol_abg_pro");
 				xslTransform = informe.getPlantillaGenerica(infBean, userBean.getLanguage(), "xsl");
-				intercambio = MasterReport.convertXML2HTML(new ByteArrayInputStream(entradaEnviosWithBLOBs.getXml().getBytes("ISO-8859-15")),xslTransform);
+				intercambio = MasterReport.convertXML2HTML(new ByteArrayInputStream(entradaEnviosWithBLOBs.getXml().getBytes("UTF-8")),xslTransform);
 				entradaEnviosService.updateFormularioDatosSolDesignaProvisional(entradaEnvioFormulario);
 			} else if(entradaEnvioFormulario.getIdTipoIntercambioTelematico().equals(TipoIntercambioEnum.SGP_ICA_RESP_SOL_SUSP_PROC.getCodigo())){
 				infBean.setNombreFisico("sgp_ca_resp_sol_susp_proc");
 				xslTransform = informe.getPlantillaGenerica(infBean, userBean.getLanguage(), "xsl");
-				intercambio = MasterReport.convertXML2HTML(new ByteArrayInputStream(entradaEnviosWithBLOBs.getXml().getBytes("ISO-8859-15")), xslTransform);
+				intercambio = MasterReport.convertXML2HTML(new ByteArrayInputStream(entradaEnviosWithBLOBs.getXml().getBytes("UTF-8")), xslTransform);
 				entradaEnviosService.updateFormularioDatosRespuestaSuspensionProcedimiento(entradaEnvioFormulario);
 			}
 			

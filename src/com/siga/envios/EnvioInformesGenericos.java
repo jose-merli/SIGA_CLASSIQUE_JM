@@ -2521,6 +2521,26 @@ public class EnvioInformesGenericos extends MasterReport {
 	                        ecomDesignaprovisional.setIdplantilla(new Integer(beanInforme.getIdPlantilla()));
 	                        ecomDesignaprovisional.setIdinstitucionPlantilla(new Short(beanInforme.getIdInstitucion().shortValue()));
 	    //                    ecomDesignaprovisional.setFechapeticion("sysdate");
+	                        
+	                        
+							//Si hubiese relacion con bandeja de entrada, se actualiza el idenviorel
+							BusinessManager businessManager =  BusinessManager.getInstance();
+							EntradaEnviosService entradaEnviosService = (EntradaEnviosService) businessManager.getService(EntradaEnviosService.class);
+							EnvEntradaEnviosExample entradaEnviosExample = new EnvEntradaEnviosExample();
+							
+							//Se van añadiendo los criterios para relaizar la query de busqueda
+							Criteria criteria =  entradaEnviosExample.createCriteria(); 
+							criteria.andIdenviorelprogramadoEqualTo(Long.valueOf(envioProgramadoBean.getIdEnvio()));							
+							EnvEntradaEnviosWithBLOBs entradaEnviosWithBLOBs = entradaEnviosService.getEntradaEnvios(entradaEnviosExample);
+							if(entradaEnviosWithBLOBs!=null){
+								entradaEnviosWithBLOBs.setIdenviorel(Long.valueOf(enviosBean.getIdEnvio()));
+								entradaEnviosService.actualizarEntradaEnvios(entradaEnviosExample, entradaEnviosWithBLOBs);
+								
+								//Insertamos idIntercambioEnvioRelacionad si viniese de una respuesta a una solcitud
+								if(entradaEnviosWithBLOBs.getIdentintercambio() != null){
+									ecomDesignaprovisional.setIdintercambiorel(entradaEnviosWithBLOBs.getIdentintercambio());
+								}
+							}
 	                       
 	                        //Se van añadiendo a la lista para despues setearles el envio
 	                        listObjetosTelematicos.add(ecomDesignaprovisional);
@@ -2590,7 +2610,8 @@ public class EnvioInformesGenericos extends MasterReport {
 	                        designaProvisionalBean.setIdplantilla(new Integer(beanInforme.getIdPlantilla()));
 	                        designaProvisionalBean.setIdinstitucionPlantilla(new Short(beanInforme.getIdInstitucion().shortValue()));
 	    //                    designaProvisionalBean.setFechaPeticion("sysdate");
-	                       
+	                        
+	                        
 	                        //Se van añadiendo a la lista para despues setearles el envio
 	                        listObjetosTelematicos.add(designaProvisionalBean);
 	                        StringBuffer descripcion = new StringBuffer();
@@ -2643,21 +2664,6 @@ public class EnvioInformesGenericos extends MasterReport {
                     }
 		
 					envio.generarIntercambioTelematico(envio.getEnviosBean(), htPersonas ,listObjetosTelematicos);
-	
-					//Si hubiese relacion con bandeja de entrada, se actualiza el idenviorel
-					BusinessManager businessManager =  BusinessManager.getInstance();
-					EntradaEnviosService entradaEnviosService = (EntradaEnviosService) businessManager.getService(EntradaEnviosService.class);
-					EnvEntradaEnviosExample entradaEnviosExample = new EnvEntradaEnviosExample();
-					
-					//Se van añadiendo los criterios para relaizar la query de busqueda
-					Criteria criteria =  entradaEnviosExample.createCriteria(); 
-					criteria.andIdenviorelprogramadoEqualTo(Long.valueOf(envioProgramadoBean.getIdEnvio()));
-					
-					EnvEntradaEnviosWithBLOBs entradaEnviosWithBLOBs = entradaEnviosService.getEntradaEnvios(entradaEnviosExample);
-					if(entradaEnviosWithBLOBs!=null){
-						entradaEnviosWithBLOBs.setIdenviorel(Long.valueOf(enviosBean.getIdEnvio()));
-						entradaEnviosService.actualizarEntradaEnvios(entradaEnviosExample, entradaEnviosWithBLOBs);
-					}
 				
 				} //Fin for plantillas
 			

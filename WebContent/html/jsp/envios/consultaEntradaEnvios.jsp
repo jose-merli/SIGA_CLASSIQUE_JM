@@ -133,8 +133,8 @@
 							
 							<td class="labelText">ID. Msj. Relacionado</td>
 							<td class="labelTextValor">
+								<c:out value="${entradaEnvio.identificadorRelacionado}" />
 								<c:if test="${entradaEnvio.idEnvioRelacionado !=null && entradaEnvio.idEnvioRelacionado!=''}">
-									<c:out value="${entradaEnvio.idEnvioRelacionado}" />
 									<img id="iconoboton_consultar1" src="/SIGA/html/imagenes/bconsultar_off.gif"
 										style="cursor: hand;" alt="Consultar" name="consultar_1"
 										border="0" onClick="consultarEnvioRelacionado();"> 
@@ -430,7 +430,7 @@
 				</c:otherwise>
 			</c:choose>
 		</c:when>
-		<c:when test="${entradaEnvio.idTipoIntercambioTelematico=='05' && (entradaEnvio.idEnvioRelacionado==null || entradaEnvio.idEnvioRelacionado=='')}">		
+		<c:when test="${entradaEnvio.idTipoIntercambioTelematico=='05' && (entradaEnvio.identificadorRelacionado==null || entradaEnvio.identificadorRelacionado=='')}">		
 			<tr>
 				<td colspan="3">
 					<c:choose>
@@ -637,7 +637,7 @@
 					
 				}else{
 					if (${entradaEnvio.idEstado=='1' || entradaEnvio.idEstado=='2'}){
-						if(${entradaEnvio.idEnvioRelacionado==null || entradaEnvio.idEnvioRelacionado==''}){
+						if(${entradaEnvio.identificadorRelacionado==null || entradaEnvio.identificadorRelacionado==''}){
 							document.getElementById("nuevoEJG").checked = "checked";
 						}
 					}
