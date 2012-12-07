@@ -2477,36 +2477,40 @@ public class EnvioInformesGenericos extends MasterReport {
 	                        ecomDesignaprovisional.setIdinstitucionJuzg(Short.parseShort(destProgramInfBean.getIdInstitucion().toString()));
 
 	                        Vector ejgAsociado = designaAdm.getDatosEJG(idInstitucion, numeroDesigna, idTurnoDesigna, anioDesigna);	        
-	                        Hashtable ejgAsociadoHash = (Hashtable)ejgAsociado.get(0);
-	                        //Caso en el que hay un unico ejg
-	                        if(UtilidadesHash.getInteger(ejgAsociadoHash,"TIPO_EJG")!=null){
-	                            ecomDesignaprovisional.setIdtipoejg(UtilidadesHash.getShort(ejgAsociadoHash,"TIPO_EJG"));                   
-	                            ecomDesignaprovisional.setAnioejg(UtilidadesHash.getShort(ejgAsociadoHash,"ANIO_EJG"));
-	                            ecomDesignaprovisional.setNumeroejg(UtilidadesHash.getLong(ejgAsociadoHash,"NUMERO_EJG"));
-	                        }else if(UtilidadesHash.getString(designaHash,"LISTAANIONUMEROEJGS")!=null && !UtilidadesHash.getString(designaHash,"LISTAANIONUMEROEJGS").equals("")){
-	                            String listaEJGS = UtilidadesHash.getString(designaHash,"LISTAANIONUMEROEJGS");
-	                            String[] ejgs = listaEJGS.split(",");
-	                            if(ejgs!= null && ejgs.length>0){
-                                    for (int p = 0; p < ejgs.length; p++) {
-                                        String[] anyoNumero =ejgs[p].split("/");
-                                        String anyoEjg = anyoNumero[0];
-                                        String numeroEjg = anyoNumero[1];
-                                    }
-	                                     
-	                            }
-	                           
-	                        /* 
-	                         * Este es el caso en el que hay mas de un ejg para la designacion hay que enviar un envio por cada interesado de la designacion
-	                         * que tenga EJG asociado(hay que comparar con el solicitante principal de cada EJG)
-	                         * Caso 1. Todo coincide
-	                         *       Ejemplo. Designacion con dos interesados y dos ejgs relacionados cada uno de ellos con un interesado que coinciden con los de la designa
-	                         * Caso 2.
-	                         *		 Ejemplo. Designacion con dos interesados y un ejg relacionado con un interesado que coincide con el de la designa
-                           */
-	                           
+	                        
+	                        //Se comprueba si hay EJGs asociados
+	                        if(ejgAsociado != null && ejgAsociado.size() > 0){
+	                        	Hashtable ejgAsociadoHash = (Hashtable)ejgAsociado.get(0);
+	                        	
+		                        //Caso en el que hay un unico ejg
+		                        if(UtilidadesHash.getInteger(ejgAsociadoHash,"TIPO_EJG")!=null){
+		                            ecomDesignaprovisional.setIdtipoejg(UtilidadesHash.getShort(ejgAsociadoHash,"TIPO_EJG"));                   
+		                            ecomDesignaprovisional.setAnioejg(UtilidadesHash.getShort(ejgAsociadoHash,"ANIO_EJG"));
+		                            ecomDesignaprovisional.setNumeroejg(UtilidadesHash.getLong(ejgAsociadoHash,"NUMERO_EJG"));
+		                        }else if(UtilidadesHash.getString(designaHash,"LISTAANIONUMEROEJGS")!=null && !UtilidadesHash.getString(designaHash,"LISTAANIONUMEROEJGS").equals("")){
+		                            String listaEJGS = UtilidadesHash.getString(designaHash,"LISTAANIONUMEROEJGS");
+		                            String[] ejgs = listaEJGS.split(",");
+		                            if(ejgs!= null && ejgs.length>0){
+	                                    for (int p = 0; p < ejgs.length; p++) {
+	                                        String[] anyoNumero =ejgs[p].split("/");
+	                                        String anyoEjg = anyoNumero[0];
+	                                        String numeroEjg = anyoNumero[1];
+	                                    }
+		                                     
+		                            }
+		                           
+		                        /* 
+		                         * Este es el caso en el que hay mas de un ejg para la designacion hay que enviar un envio por cada interesado de la designacion
+		                         * que tenga EJG asociado(hay que comparar con el solicitante principal de cada EJG)
+		                         * Caso 1. Todo coincide
+		                         *       Ejemplo. Designacion con dos interesados y dos ejgs relacionados cada uno de ellos con un interesado que coinciden con los de la designa
+		                         * Caso 2.
+		                         *		 Ejemplo. Designacion con dos interesados y un ejg relacionado con un interesado que coincide con el de la designa
+	                           */
+		                           
+		                        }
 	                        }
 	   
-	                        // El id envio se setea despues
 	                       
 	                        if(UtilidadesHash.getShort(designaHash,"IDINSTITUCIONORIGEN")!=null)
 	                            ecomDesignaprovisional.setIdinstitucionLetrado(UtilidadesHash.getShort(designaHash,"IDINSTITUCIONORIGEN"));
