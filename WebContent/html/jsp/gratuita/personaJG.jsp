@@ -850,16 +850,16 @@
 				}								
 				
 				//num = numero.substring(0,8);
-				letIn = numero.substring(8,9);
-				
-				document.forms[0].NIdentificacion.value = num + letIn;
+				letIn = numero.substring(8,9);								
 				
 				var posicion = num % 23;
 				letras='TRWAGMYFPDXBNJZSQVHLCKET';
 				var letra=letras.substring(posicion,posicion+1);
 				if (letra!=letIn) {
 					errorNIF=true;
-				}
+				} else {
+					document.forms[0].NIdentificacion.value = num + letIn;
+				}				
 			}else{
 				errorNIF=true;
 			}
