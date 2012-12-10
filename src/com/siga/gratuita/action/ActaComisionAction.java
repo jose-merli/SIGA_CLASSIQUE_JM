@@ -195,6 +195,7 @@ public class ActaComisionAction extends MasterAction{
 				actaBean.setIdSecretario(Integer.valueOf(actaForm.getIdSecretario()));
 			actaBean.setMiembrosComision(actaForm.getMiembros());
 			actaBean.setObservaciones(actaForm.getObservaciones());
+			actaBean.setPendientes(actaForm.getPendientes());
 			
 			SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
 			sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
@@ -391,11 +392,18 @@ public class ActaComisionAction extends MasterAction{
 		ActaComisionForm actaForm = (ActaComisionForm) formulario;
 		ScsActaComisionBean actaBean = new ScsActaComisionBean();
 		ScsActaComisionAdm actaAdm = new ScsActaComisionAdm(usr);
-		
+		ScsEJGAdm ejgAdm = new ScsEJGAdm(usr);
+		Vector listadoEJGs = new Vector();
 		UserTransaction tx=null;
 		
 		try {
 
+			// Campos clave
+			actaBean.setIdActa(Integer.parseInt(actaForm.getIdActa()));
+			actaBean.setIdInstitucion(Integer.valueOf(usr.getLocation()));
+			actaBean.setAnioActa(Integer.valueOf(actaForm.getAnioActa()));
+			
+			
 			if(actaForm.getIdPresidente()!=null && !actaForm.getIdPresidente().equalsIgnoreCase(""))
 				actaBean.setIdPresidente(Integer.valueOf(actaForm.getIdPresidente()));
 			if(actaForm.getIdSecretario()!=null && !actaForm.getIdSecretario().equalsIgnoreCase(""))
@@ -403,6 +411,7 @@ public class ActaComisionAction extends MasterAction{
 			actaBean.setMiembrosComision(actaForm.getMiembros());
 			actaBean.setObservaciones(actaForm.getObservaciones());
 			actaBean.setNumeroActa(actaForm.getNumeroActa());
+			actaBean.setPendientes(actaForm.getPendientes());
 			
 			SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
 			sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
@@ -411,6 +420,9 @@ public class ActaComisionAction extends MasterAction{
 				!actaForm.getFechaResolucion().equalsIgnoreCase("")){
 				actaBean.setFechaResolucionCAJG(UtilidadesString.formatoFecha(actaForm.getFechaResolucion(), ClsConstants.DATE_FORMAT_SHORT_SPANISH, ClsConstants.DATE_FORMAT_JAVA) );
 			}
+			Hashtable actaOld = new Hashtable();
+			actaOld = actaAdm.getDatosActa(actaBean.getIdActa().toString(), actaBean.getAnioActa().toString(),actaBean.getIdInstitucion().toString());
+			
 			if( actaForm.getFechaReunion()!=null && 
 				!actaForm.getFechaReunion().equalsIgnoreCase("")){
 				actaBean.setFechaReunion(UtilidadesString.formatoFecha(actaForm.getFechaReunion(), ClsConstants.DATE_FORMAT_SHORT_SPANISH, ClsConstants.DATE_FORMAT_JAVA) );
@@ -432,15 +444,25 @@ public class ActaComisionAction extends MasterAction{
 				actaBean.setHoraInicioReunion(sdf.format(horaInicio.getTime()));
 			}
 			
-			// Campos clave
-			actaBean.setIdActa(Integer.parseInt(actaForm.getIdActa()));
-			actaBean.setIdInstitucion(Integer.valueOf(usr.getLocation()));
-			actaBean.setAnioActa(Integer.valueOf(actaForm.getAnioActa()));
+				
 			
 			tx = usr.getTransaction();		
 			tx.begin();
 			
 			actaAdm.updateDirect(actaBean);
+			
+			String fechaResOld = (String)actaOld.get(ScsActaComisionBean.C_FECHARESOLUCION);
+			if((fechaResOld==null||fechaResOld.equalsIgnoreCase("")) &&
+					(actaBean.getFechaResolucionCAJG()!=null&&!actaBean.getFechaResolucionCAJG().equalsIgnoreCase(""))){
+				// Hay que actualizar los EJGs del acta
+				StringBuffer sql = new StringBuffer();
+				sql.append("update " + ScsEJGBean.T_NOMBRETABLA+ " set ");
+				sql.append(ScsEJGBean.C_FECHARESOLUCIONCAJG+ " = TO_DATE('" + actaBean.getFechaResolucionCAJG() + "', 'YYYY/MM/DD HH24:MI:SS')"); 
+				sql.append(" where " + ScsEJGBean.C_IDACTA + " = " + actaBean.getIdActa());
+				sql.append(" and " + ScsEJGBean.C_IDINSTITUCIONACTA + " = " + actaBean.getIdInstitucion());
+				sql.append(" and " + ScsEJGBean.C_ANIOACTA + " = " + actaBean.getAnioActa());
+				ejgAdm.updateSQL(sql.toString());
+			}
 			
 			tx.commit();
 			

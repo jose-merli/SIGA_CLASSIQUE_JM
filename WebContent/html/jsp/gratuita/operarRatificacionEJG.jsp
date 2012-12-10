@@ -11,6 +11,7 @@
 <%@ taglib uri = "struts-bean.tld"   prefix="bean"%>
 <%@ taglib uri = "struts-html.tld"   prefix="html"%>
 <%@ taglib uri = "struts-logic.tld"  prefix="logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <!-- IMPORTS -->
 <%@ page import="java.util.*"%>
@@ -30,12 +31,12 @@
 	
 	Hashtable miHash = (Hashtable)ses.getAttribute("DATABACKUP");
 	String accion = (String)ses.getAttribute("accion");
-	String dato[] = {(String)usr.getLocation()};
-		
+	String dato[] = {(String)usr.getLocation()};	
+	String idFundamentoJuridico="";		
 	String anio= "", numero="", idTipoEJG = "", observaciones = "",refA="",docResolucion="";
-	String fechaRatificacion = "", fechaResolucionCAJG= "", fechaNotificacion= "";
+	String fechaRatificacion = "", fechaResolucionCAJG= "", fechaNotificacion= "", fechaPresentacionPonente="";
 	String numeroCAJG="", anioCAJG="";
-	boolean requiereTurnado= false;
+	boolean requiereTurnado= false,requiereNotificarProc=false;
 	ArrayList vFundamentoJuridico= new ArrayList(), vTipoRatificacion= new ArrayList(), vPonente = new ArrayList(), vActa = new ArrayList();
 	
 	ArrayList vOrigenCAJGSel = new ArrayList();
@@ -56,6 +57,7 @@
 		if (miHash.containsKey("FECHARATIFICACION")) fechaRatificacion = GstDate.getFormatedDateShort("",miHash.get("FECHARATIFICACION").toString()).toString();
 		if (miHash.containsKey("FECHARESOLUCIONCAJG")) fechaResolucionCAJG = GstDate.getFormatedDateShort("",miHash.get("FECHARESOLUCIONCAJG").toString()).toString();
 		if (miHash.containsKey("FECHANOTIFICACION")) fechaNotificacion = GstDate.getFormatedDateShort("",miHash.get("FECHANOTIFICACION").toString()).toString();
+		if (miHash.containsKey("FECHAPRESENTACIONPONENTE")) fechaPresentacionPonente = GstDate.getFormatedDateShort("",miHash.get("FECHAPRESENTACIONPONENTE").toString()).toString();
 		if (miHash.containsKey(ScsEJGBean.C_ANIO_CAJG)) anioCAJG = miHash.get(ScsEJGBean.C_ANIO_CAJG).toString();
 		if (miHash.containsKey(ScsEJGBean.C_NUMERO_CAJG)) numeroCAJG = miHash.get(ScsEJGBean.C_NUMERO_CAJG).toString();
 		if (miHash.containsKey("TURNADORATIFICACION")){
@@ -63,8 +65,14 @@
 		  requiereTurnado=true;
 		 }
 		} 
+		if (miHash.containsKey("REQUIERENOTIFICARPROC")){
+		 if (!miHash.get("REQUIERENOTIFICARPROC").toString().equals("") && !miHash.get("REQUIERENOTIFICARPROC").toString().equals("0")){
+		  requiereNotificarProc=true;
+		 }
+		} 
 		if (miHash.containsKey("IDFUNDAMENTOJURIDICO") && miHash.get("IDFUNDAMENTOJURIDICO") != "") {
-			vFundamentoJuridico.add(miHash.get("IDFUNDAMENTOJURIDICO").toString());
+			idFundamentoJuridico=miHash.get("IDFUNDAMENTOJURIDICO").toString();
+			vFundamentoJuridico.add(idFundamentoJuridico);
 		}
 		if (miHash.containsKey("IDTIPORATIFICACIONEJG") && miHash.get("IDTIPORATIFICACIONEJG") != "") {
 			vTipoRatificacion.add(miHash.get("IDTIPORATIFICACIONEJG").toString());
@@ -111,13 +119,24 @@
 			document.forms[0].target="submitArea";		   	
 			document.forms[0].submit();
 		}
+		
+		function cargarDatos() {
+			document.getElementById("idTipoRatificacionEJG").onchange();
+		}
 	</script>
 	<siga:Titulo 
 		titulo="pestana.justiciagratuitaejg.ratificacion" 
 		localizacion="gratuita.busquedaEJG.localizacion"/>
+		
+	<style type="text/css">
+		tr.borderTop td{border-top:1px solid black;}
+		tr.borderBottom td{border-bottom:1px solid black;}
+		td.left{ border-left: 1px solid black; }
+		td.right{ border-right: 1px solid black; }
+	</style>
 </head>
 
-<body>
+<body onload="cargarDatos();">
 	<table class="tablaTitulo" cellspacing="0" heigth="38">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
@@ -181,11 +200,12 @@
 	<html:hidden property = "idInstitucionActa" value =""/>
 	
 	<!-- FILA -->
-	<tr>
-		<td class="labelText"  width="300">	
+	<tr style="align:left" height="30">
+		<td class="labelText" width="300">	
 			<siga:Idioma key='gratuita.operarEJG.literal.CAJG'/> <siga:Idioma key='gratuita.operarEJG.literal.anio'/> / <siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/>
 		</td>
-	   	<td width="200">	
+	   	<td class="labelTextValue">	
+	   		<%if(usr.getLocation().equalsIgnoreCase("2027")){%>G<%} %>
 			<% if (accion.equalsIgnoreCase("ver")) {%>
 			  	<html:text name="DefinirEJGForm"  onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);"  onblur="filterCharsNaN(this);" property="anioCAJG" size="4" maxlength="4" styleClass="boxConsulta"  value="<%=anioCAJG%>" readonly="true"></html:text> / 
                 <html:text name="DefinirEJGForm" property="numeroCAJG" size="10" maxlength="20" styleClass="boxConsulta" value="<%=numeroCAJG%>" readonly="true"></html:text>
@@ -194,7 +214,7 @@
                 <html:text name="DefinirEJGForm" property="numeroCAJG" size="10" maxlength="20" styleClass="boxNumber" value="<%=numeroCAJG%>"></html:text>
 			<%}%>
 	  	</td>
-		<td class="labelText">	
+		<td class="labelText" width="200">	
 			<siga:Idioma key='gratuita.operarEJG.literal.origen'/>
 		</td>
 		<td>
@@ -205,52 +225,73 @@
 		 	<%}%>		
 		</td>
 	  </tr>
-	  <tr>
+
+
+
+	  <tr class="borderTop">
 		<%if(accesoActas){%>
-			<td class="labelText">
+			<td class="labelText left">
 				<siga:Idioma key="sjcs.actas.anio" />/<siga:Idioma key="sjcs.actas.numeroActa" /> - <siga:Idioma key="sjcs.actas.fechaResolucion" />
 			</td>
 			<td>
 			<%if (accion.equalsIgnoreCase("ver")){%>
 				<siga:ComboBD nombre="idActaComp"  tipo="cmbActaComision" clase="boxConsulta" ancho="160" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vActa %>" readonly="true"/>
 			<%}else{%>
-				<siga:ComboBD nombre="idActaComp"  tipo="cmbActaComision" clase="boxCombo" ancho="160" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vActa %>"/>
-			<%}%>
-			</td>
-		<%}else{%>
-			<td class="labelText">
-				<siga:Idioma key="gratuita.operarRatificacion.literal.fechaResolucionCAJG"/>
-			</td>
-			<td>
-			<%if (accion.equalsIgnoreCase("ver")){%>
-				<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="<%=fechaResolucionCAJG%>" disabled="true" readonly="true"></siga:Fecha>
-			<%} else {%>
-				<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="<%=fechaResolucionCAJG%>" readonly="true"></siga:Fecha>
+				<siga:ComboBD nombre="idActaComp"  tipo="cmbActaComision" clase="boxCombo" ancho="160" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vActa %>" accion="setFechaResolucionCAJG();"/>
 			<%}%>
 			</td>
 		<%}%>
+		<td class="labelText">
+		<%if(accesoActas){%>
+			<%} %><siga:Idioma key="gratuita.operarRatificacion.literal.fechaResolucionCAJG"/>
+		</td>
+		<td class="right">
+		<%if (accion.equalsIgnoreCase("ver")){%>
+			<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="<%=fechaResolucionCAJG%>" disabled="true" ></siga:Fecha>
+		<%} else {%>
+			<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="<%=fechaResolucionCAJG%>" postFunction="resetActa();"></siga:Fecha>
+		<%}%>
+		</td>
+	</tr>
+	<tr height="30" class="borderBottom">
+	<td class="labelTextValue left right" colspan="4">
+	Importante: El expediente se considera "Resuelto" cuando se consigne, al menos, la Fecha de Resolución y el sentido de la Resolución
+	</td>
+	</tr>
+
+
+	<tr>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.operarRatificacion.literal.ponente"/>
 		</td>
 		<td>
 			<%if (accion.equalsIgnoreCase("ver")){%>
-				<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" ancho="400" readOnly="true"/>
+				<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" ancho="200" readOnly="true"/>
 			<%} else {%>
-				<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxCombo"  	  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" ancho="400"/>
+				<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxCombo"  	  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" ancho="200"/>
+			<%}%>
+		</td>
+		<td class="labelText">
+			<siga:Idioma key="gratuita.operarEJG.literal.presentacionPonente"/>
+		</td>
+		<td width="300">
+			<%if (accion.equalsIgnoreCase("ver")){%>
+				<siga:Fecha nombreCampo="fechaPresentacionPonente" valorInicial="<%=fechaPresentacionPonente%>" disabled="true" readonly="true"></siga:Fecha>
+			<%} else {%>
+				<siga:Fecha nombreCampo="fechaPresentacionPonente" valorInicial="<%=fechaPresentacionPonente%>" readonly="true"></siga:Fecha>
 			<%}%>
 		</td>
 	</tr>
-	
 	
 	<tr>
 		<td class="labelText">
 		  <siga:Idioma key="gratuita.operarRatificacion.literal.tipoRatificacion"/>
 		</td>
-		<td  colspan="5">
+		<td  colspan="1">
 			<%if (accion.equalsIgnoreCase("ver")){%>
-				<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucion" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vTipoRatificacion%>" readOnly="true"/>
+				<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucion" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vTipoRatificacion%>" readOnly="true" pestana="t" accion="Hijo:idFundamentoJuridico"/>
 			<%} else {%>
-				<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucion" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vTipoRatificacion%>"/>
+				<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucion" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vTipoRatificacion%>" pestana="t" accion="Hijo:idFundamentoJuridico"/>
 			<%}%>
 		</td>
 	</tr>
@@ -260,10 +301,10 @@
 			<siga:Idioma key="gratuita.operarRatificacion.literal.fundamentoJuridico"/>
 		</td>
 		<td colspan="5">
-			<%if (accion.equalsIgnoreCase("ver")){%>
-				<siga:ComboBD nombre="idFundamentoJuridico" ancho="700" tipo="tipoFundamentos" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vFundamentoJuridico%>" readOnly="true"/>
+			<%if (accion.equalsIgnoreCase("ver")){%>				
+				<siga:ComboBD nombre="idFundamentoJuridico" ancho="700" tipo="tipoFundamentos" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vFundamentoJuridico%>" hijo="t" pestana="t" readOnly="true" />
 			<%} else {%>
-				<siga:ComboBD nombre="idFundamentoJuridico" ancho="700" tipo="tipoFundamentos" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vFundamentoJuridico%>"/>
+				<siga:ComboBD nombre="idFundamentoJuridico" ancho="700" tipo="tipoFundamentos" clase="boxCombo"     filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vFundamentoJuridico%>" hijo="t" pestana="t" />
 			<%}%>
 		</td>
 	</tr>
@@ -279,10 +320,10 @@
 				<siga:Fecha nombreCampo="fechaNotificacion" valorInicial="<%=fechaNotificacion%>" readonly="true"></siga:Fecha>
 			<%}%>
 		</td>
-		<td class="labelText">
+		<td class="labelText"  width="120">
 			<siga:Idioma key="gratuita.EJG.resolucion.refAuto"/>&nbsp;&nbsp;&nbsp;
 		</td>
-		<td colspan="2">
+		<td >
 			<%if (accion.equalsIgnoreCase("ver")){%>
 				<html:text name="DefinirEJGForm" property="refAuto" size="10" styleClass="boxConsulta" value="<%=refA%>" readonly="false" disabled="false"></html:text>
 			<%} else {%>
@@ -320,6 +361,17 @@
 				<input type="Checkbox" name="turnadoRatificacion" <%=(requiereTurnado?"checked":"")%> disabled>
 			<%} else {%>
 				<input type="Checkbox" name="turnadoRatificacion" <%=(requiereTurnado?"checked":"")%>>
+			<%}%>
+			
+		</td>
+	</tr>	
+	<tr>
+		<td class="labelText" colspan="4">
+			<siga:Idioma key="gratuita.operarRatificacion.literal.requiereNotificarProc"/>&nbsp;&nbsp;
+			<%if (accion.equalsIgnoreCase("ver")){%>
+				<input type="Checkbox" name="requiereNotificarProc" <%=(requiereNotificarProc?"checked":"")%> disabled>
+			<%} else {%>
+				<input type="Checkbox" name="requiereNotificarProc" <%=(requiereNotificarProc?"checked":"")%>>
 			<%}%>
 			
 		</td>
@@ -433,6 +485,16 @@
 			
 	
 } 	
+		
+		function setFechaResolucionCAJG(){
+			var acta =jQuery("#idActaComp option:selected").text().split(" - ");
+			jQuery("#fechaResolucionCAJG").val(acta[1]);
+		}
+		
+		function resetActa(){
+			jQuery("#idActaComp").val('');
+		}
+		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 

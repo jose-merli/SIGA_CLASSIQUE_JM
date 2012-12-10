@@ -62,6 +62,7 @@ public class ScsEJGBean extends MasterBean{
 	
 	private Integer idProcurador;
 	private Integer idInstitucionProcurador;
+	private String fechaPresentacionPonente;
 	
 	private Integer idTipoRatificacionEJG;
 
@@ -70,6 +71,7 @@ public class ScsEJGBean extends MasterBean{
 	private String fechaResolucionCAJG;
 	private String turnadoAuto;
 	private String turnadoRatificacion;
+	private String requiereNotificarProc;
 
 	private Integer idFundamentoJuridico;
 	private Integer idTipoResolAuto;
@@ -212,6 +214,7 @@ public class ScsEJGBean extends MasterBean{
 	static public final String C_IDTIPOSENTIDOAUTO= 			"IDTIPOSENTIDOAUTO";
 	static public final String C_TURNADOAUTO= 					"TURNADOAUTO";
 	static public final String C_TURNADORATIFICACION= 			"TURNADORATIFICACION";
+	static public final String C_REQUIERENOTIFICARPROC= 		"REQUIERENOTIFICARPROC";
 
 	static public final String C_JUZGADO                = "JUZGADO";
 	static public final String C_COMISARIA     		    = "COMISARIA";
@@ -249,6 +252,7 @@ public class ScsEJGBean extends MasterBean{
     static public final String C_ANIOACTA = "ANIOACTA";
     static public final String C_IDINSTITUCIONACTA = "IDINSTITUCIONACTA";
     static public final String C_IDECOMCOLA = "IDECOMCOLA";
+    static public final String C_FECHAPRESENTACIONPONENTE = "FECHAPRESENTACIONPONENTE";
 	
     public String getDeTipoEjg() {
 		return deTipoEjg;
@@ -771,6 +775,12 @@ public class ScsEJGBean extends MasterBean{
 	public void setIdProcurador(Integer idProcurador) {
 		this.idProcurador = idProcurador;
 	}
+	public String getFechaPresentacionPonente() {
+		return fechaPresentacionPonente;
+	}
+	public void setFechaPresentacionPonente(String fechaPresentacionPonente) {
+		this.fechaPresentacionPonente = fechaPresentacionPonente;
+	}
 	public Integer getIdTipoRatificacionEJG() {
 		return idTipoRatificacionEJG;
 	}
@@ -838,6 +848,12 @@ public class ScsEJGBean extends MasterBean{
 	}
 	public void setTurnadoRatificacion(String turnadoRatificacion) {
 		this.turnadoRatificacion = turnadoRatificacion;
+	}
+	public String getRequiereNotificarProc() {
+		return requiereNotificarProc;
+	}
+	public void setRequiereNotificarProc(String requiereNotificarProc) {
+		this.requiereNotificarProc = requiereNotificarProc;
 	}
 
 	public Long getComisaria() {

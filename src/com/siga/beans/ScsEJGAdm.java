@@ -409,8 +409,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							ScsEJGBean.C_NUMERORESOLUCION,			ScsEJGBean.C_ANIORESOLUCION,
 							ScsEJGBean.C_BISRESOLUCION,				ScsEJGBean.C_IDACTA,
 							ScsEJGBean.C_IDINSTITUCIONACTA,			ScsEJGBean.C_ANIOACTA,
-							ScsEJGBean.C_IDECOMCOLA,
-							ScsEJGBean.C_USUCREACION,				ScsEJGBean.C_FECHACREACION};
+							ScsEJGBean.C_IDECOMCOLA,				ScsEJGBean.C_REQUIERENOTIFICARPROC,
+							ScsEJGBean.C_USUCREACION,				ScsEJGBean.C_FECHACREACION,
+							ScsEJGBean.C_FECHAPRESENTACIONPONENTE};
 							//,ScsEJGBean.C_DESIGNA_IDTURNO,	ScsEJGBean.C_DESIGNA_ANIO, ScsEJGBean.C_DESIGNA_NUMERO
 		return campos;
 	}
@@ -453,7 +454,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							ScsEJGBean.C_NUMERORESOLUCION,			ScsEJGBean.C_ANIORESOLUCION,
 							ScsEJGBean.C_BISRESOLUCION,				ScsEJGBean.C_IDACTA,
 							ScsEJGBean.C_IDINSTITUCIONACTA,			ScsEJGBean.C_ANIOACTA,
-							ScsEJGBean.C_IDECOMCOLA};
+							ScsEJGBean.C_REQUIERENOTIFICARPROC,		ScsEJGBean.C_IDECOMCOLA,
+							ScsEJGBean.C_FECHAPRESENTACIONPONENTE};
 							//,ScsEJGBean.C_USUCREACION,				ScsEJGBean.C_FECHACREACION
 							//,ScsEJGBean.C_DESIGNA_IDTURNO,	ScsEJGBean.C_DESIGNA_ANIO, ScsEJGBean.C_DESIGNA_NUMERO
 		return campos;
@@ -529,6 +531,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			bean.setIdTipoSentidoAuto(UtilidadesHash.getInteger(hash,ScsEJGBean.C_IDTIPOSENTIDOAUTO));
 			bean.setTurnadoAuto(UtilidadesHash.getString(hash,ScsEJGBean.C_TURNADOAUTO));
 			bean.setTurnadoRatificacion(UtilidadesHash.getString(hash,ScsEJGBean.C_TURNADORATIFICACION));
+			bean.setRequiereNotificarProc(UtilidadesHash.getString(hash,ScsEJGBean.C_REQUIERENOTIFICARPROC));
+			bean.setFechaPresentacionPonente(UtilidadesHash.getString(hash,ScsEJGBean.C_FECHAPRESENTACIONPONENTE));
 			
 			bean.setIdPretension(UtilidadesHash.getString(hash,ScsEJGBean.C_IDPRETENSION));
 			bean.setIdPretensionInstitucion(UtilidadesHash.getString(hash,ScsEJGBean.C_IDPRETENSIONINSTITUCION));
@@ -630,6 +634,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,ScsEJGBean.C_IDTIPOSENTIDOAUTO,b.getIdTipoSentidoAuto());
 			UtilidadesHash.set(htData,ScsEJGBean.C_TURNADOAUTO,b.getTurnadoAuto());
 			UtilidadesHash.set(htData,ScsEJGBean.C_TURNADORATIFICACION,b.getTurnadoRatificacion());
+			UtilidadesHash.set(htData,ScsEJGBean.C_REQUIERENOTIFICARPROC,b.getRequiereNotificarProc());
 			
 			UtilidadesHash.set(htData,ScsEJGBean.C_IDPRETENSION,b.getIdPretension());
 			UtilidadesHash.set(htData,ScsEJGBean.C_IDPRETENSIONINSTITUCION,b.getIdPretensionInstitucion());
@@ -663,6 +668,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,ScsEJGBean.C_IDINSTITUCIONACTA, b.getIdInstitucionActa());			
 			UtilidadesHash.set(htData,ScsEJGBean.C_ANIOACTA, b.getAnioActa());			
 			UtilidadesHash.set(htData,ScsEJGBean.C_IDECOMCOLA, b.getIdEcomCola());
+			UtilidadesHash.set(htData,ScsEJGBean.C_FECHAPRESENTACIONPONENTE, b.getFechaPresentacionPonente());
 		}
 		catch (Exception e){
 			 throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR EL BEAN A HASHTABLE");
@@ -2227,6 +2233,20 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			codigos.put(new Integer(contador),miForm.getCalidad());		
 			 consulta += " and ejg.Idtipoencalidad = :" + contador;
 		}*/
+		if ((miForm.getFechaPresentacionPonenteDesde() != null && !miForm.getFechaPresentacionPonenteDesde().equals("")) ||
+				(miForm.getFechaPresentacionPonenteHasta() != null && !miForm.getFechaPresentacionPonenteHasta().equals(""))) {
+			Vector v = GstDate.dateBetweenDesdeAndHastaBind("ejg.FECHAPRESENTACIONPONENTE", GstDate.getApplicationFormatDate("",miForm.getFechaPresentacionPonenteDesde()),GstDate.getApplicationFormatDate("",miForm.getFechaPresentacionPonenteHasta()),contador, codigos);
+			Integer in = (Integer)v.get(0);
+			String st = (String)v.get(1);
+			contador = in.intValue();
+			consulta += " and " + st;                    
+		}
+				
+		if ((miHash.containsKey("IDPONENTE")) && (!miHash.get("IDPONENTE").toString().equals(""))){
+			contador++;
+			codigos.put(new Integer(contador), miHash.get("IDPONENTE").toString());
+			consulta += " and " +  ScsEJGBean.C_IDPONENTE + " =:" + contador ; 
+		}
 		
 		if ((miHash.containsKey("ESTADOEJG")) && (!miHash.get("ESTADOEJG").toString().equals(""))) {
 			contador++;
@@ -2292,6 +2312,13 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			contador++;
 			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"DESCRIPCIONESTADO"));
 			consulta += " and rownum = 1) = :"+contador;
+		}else{
+			if(UtilidadesString.stringToBoolean(miHash.get("ESCOMISION").toString())){
+				// Si la comision deja vacio el estado le mostramos todos los que pueden ver ellos
+				contador++;
+				codigos.put(new Integer(contador), "8");
+				consulta += " and f_siga_get_idultimoestadoejg(ejg.idinstitucion,ejg.idtipoejg, ejg.anio, ejg.numero) > :" + contador;
+			}
 		}
 
 

@@ -54,6 +54,8 @@
 	// fechaApertura=UtilidadesBDAdm.getFechaBD("");
 	String nColegiado = request.getAttribute("nColegiado") == null ? "" : (String) request.getAttribute("nColegiado");
 	String nombreColegiado = request.getAttribute("nombreColegiado") == null ? "" : (String) request.getAttribute("nombreColegiado");
+	ArrayList vPonente = new ArrayList();
+	String fechaPonenteDesde="", fechaPonenteHasta="";
 	
 	Hashtable miHash = new Hashtable();
 	if (ses.getAttribute("DATOSFORMULARIO") instanceof Hashtable) {
@@ -136,6 +138,9 @@
 				idRenuncia=miHash.get(ScsEJGBean.C_IDRENUNCIA).toString();
 				if (idRenuncia!=null)
 					renunciaSel.add(0,idRenuncia);	
+			}
+			if (miHash.get(ScsEJGBean.C_IDPONENTE)!= null && !miHash.get(ScsEJGBean.C_IDPONENTE).toString().equalsIgnoreCase("")){
+				vPonente.add(0, miHash.get(ScsEJGBean.C_IDPONENTE).toString());
 			}
 			
 			if (miHash.get(ScsEJGBean.C_IDTIPOENCALIDAD)!=null&&miHash.get(ScsEJGBean.C_IDTIPOENCALIDAD).equals("")){
@@ -364,7 +369,7 @@
 				</td>
 				<% if(esComision){%>
 					<td colspan="3" class="labelText">
-						<siga:ComboBD nombre="estadoEJG" tipo="estadosEJGComision" clase="boxCombo" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=idEstado%>" obligatorioSinTextoSeleccionar="true"/>
+						<siga:ComboBD nombre="estadoEJG" tipo="estadosEJGComision" clase="boxCombo" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=idEstado%>"/>
 					</td>
 				<% }else{ %>
 					<td colspan="3" class="labelText">
@@ -436,6 +441,23 @@
 					<siga:Fecha nombreCampo="fechaDictamenHasta" valorInicial="<%=fechaDictamenHasta%>" /> 
 				</td>
 			</tr>
+			
+			<tr>
+				<td class="labelText">
+					<siga:Idioma key="gratuita.busquedaEJG.literal.ponente"/>
+				</td>
+				<td colspan="3" class="labelText"> 
+					<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" ancho="200"/>
+				</td>
+				
+				<td class="labelText" style="text-align: left;width:160"><siga:Idioma key="gratuita.busquedaEJG.literal.presentacionPonente.desde" /></td>
+				<td><siga:Fecha nombreCampo="fechaPresentacionPonenteDesde" valorInicial="<%=fechaPonenteDesde%>" /></td>
+				
+				<td class="labelText"><siga:Idioma key="gratuita.busquedaEJG.literal.presentacionPonente.hasta" /></td>
+				<td><siga:Fecha nombreCampo="fechaPresentacionPonenteHasta" valorInicial="<%=fechaPonenteHasta%>" /> 
+				</td>			
+			</tr>	
+			
 
 			<tr>
 				<td class="labelText" >

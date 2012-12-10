@@ -41,6 +41,7 @@
 		<html:hidden property = "modo" value = ""/>
 		<html:hidden property = "idInstitucion" value = ""/>
 		<html:hidden property = "actionModal" value = ""/>
+		<html:hidden property = "pendientes" value = ""/>
 
 		<siga:ConjCampos leyenda="general.criterios">	
 			<table class="tablaCampos" border="0" align="left">
@@ -51,7 +52,7 @@
 					&nbsp;/&nbsp;
 					<html:text name="ActaComisionForm" property="numeroActa" style="width:60px" maxlength="8" styleClass="box"></html:text>
 				</td>
-				<td class="labelText"><siga:Idioma key="sjcs.actas.fechaResolucion" /> (*)</td>
+				<td class="labelText"><siga:Idioma key="sjcs.actas.fechaResolucion" /></td>
 				<td>
 					<siga:Fecha nombreCampo="fechaResolucion" valorInicial="${ActaComisionForm.fechaResolucion}"/> 
 					
@@ -107,9 +108,11 @@
 			   document.ActaComisionForm.anioActa.value==""){
 				error = true;
 				errores += "<siga:Idioma key='errors.required' arg0='sjcs.actas.numeroActa'/>"+ '\n';
+			/*
 			}if (document.ActaComisionForm.fechaResolucion.value==""){
 				error = true;
 				errores += "<siga:Idioma key='errors.required' arg0='sjcs.actas.fechaResolucion'/>"+ '\n';
+			*/
 			}if (document.ActaComisionForm.fechaResolucion.value!=""&&document.ActaComisionForm.fechaReunion.value!=""&&validarFecha(document.ActaComisionForm.fechaReunion.value)&&validarFecha(document.ActaComisionForm.fechaResolucion.value)&&compararFecha(document.ActaComisionForm.fechaReunion.value, document.ActaComisionForm.fechaResolucion.value)==1){
 				error = true;
 				errores += "<siga:Idioma key='sjcs.actas.fechasErroneas'/>"+ '\n';

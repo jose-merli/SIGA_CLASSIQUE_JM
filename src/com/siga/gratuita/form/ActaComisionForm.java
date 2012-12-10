@@ -35,6 +35,7 @@ public class ActaComisionForm extends MasterForm {
 	private String idPresidente;
 	private String idActa;
 	private String seleccionados;
+	private String pendientes;
 	
 	private String idPonente;
 	private String idTipoRatificacionEJG;
@@ -67,6 +68,7 @@ public class ActaComisionForm extends MasterForm {
 	public void setGuardaPonente(boolean valor) {this.guardaPonente = valor;}
 	public void setGuardaFundamento(boolean valor) 		{this.guardaFundamento = valor;}
 	public void setGuardaRatificacion(boolean valor)	{this.guardaRatificacion = valor;}
+	public void setPendientes(String valor)	{this.pendientes = valor;}
 	
 	public String getNumeroActa() 		{return numeroActa;}
 	public String getAnioActa() 		{return anioActa;}
@@ -90,6 +92,7 @@ public class ActaComisionForm extends MasterForm {
 	public boolean getGuardaPonente() 	{return guardaPonente;}
 	public boolean getGuardaFundamento() 	{return guardaFundamento;}
 	public boolean getGuardaRatificacion() 	{return guardaRatificacion;}
+	public String getPendientes() 	{return pendientes;}
 	
 	public void reset(){
 		numeroActa		= null;
@@ -108,6 +111,7 @@ public class ActaComisionForm extends MasterForm {
 		idActa			= null;
 		seleccionados	= null;
 		idPonente 		= null;
+		pendientes 		= null;
 		idTipoRatificacionEJG 	= null;
 		idFundamentoJuridico 	= null;
 		guardaActa 		= false;
@@ -126,9 +130,6 @@ public class ActaComisionForm extends MasterForm {
 			
 			if (this.anioActa==null || this.anioActa.equalsIgnoreCase(""))
 				errors.add(UtilidadesString.getMensajeIdioma(user, "sjcs.actas.anio"),new ActionMessage("errors.required"));
-			
-			if (this.fechaResolucion==null || this.fechaResolucion.equalsIgnoreCase(""))
-				errors.add(UtilidadesString.getMensajeIdioma(user, "sjcs.actas.fechaResolucion"),new ActionMessage("errors.required"));
 			
 			if (this.fechaResolucion!=null && !this.fechaResolucion.equalsIgnoreCase("") && this.fechaReunion!=null && !this.fechaReunion.equalsIgnoreCase("")) {
 				Validaciones validator = new Validaciones();				

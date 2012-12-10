@@ -626,15 +626,16 @@ public class EnvioInformesGenericos extends MasterReport {
 			ScsActaComisionAdm actaAdm = new ScsActaComisionAdm(usrBean);
 			Vector vDatosInformeFinal = actaAdm.getDatosInforme(idInstitucion,
 					idActa, anioActa);
-			Vector vDatosEJGs = actaAdm.getEJGsInforme(idInstitucion, idActa,
-					anioActa);
+			
+			Vector vDatosEJGs = actaAdm.getEJGsInforme(idInstitucion, idActa, anioActa);
+			htDatosInforme.put("resueltos", vDatosEJGs);
+			
 			Vector vDatosEJGPendientes = actaAdm.getEJGsPendientes(
 					idInstitucion, idActa, anioActa);
 			Vector vDatosEJGPendientesPonentes = actaAdm
 					.getEJGsPendientesPonentes(idInstitucion, idActa, anioActa);
 
 			htDatosInforme.put("row", vDatosInformeFinal);
-			htDatosInforme.put("ejgs", vDatosEJGs);
 			htDatosInforme.put("ejgspendientes", vDatosEJGPendientes);
 			htDatosInforme.put("ejgspendientesponentes",
 					vDatosEJGPendientesPonentes);

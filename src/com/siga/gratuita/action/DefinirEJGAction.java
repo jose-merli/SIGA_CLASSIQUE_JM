@@ -276,6 +276,7 @@ public class DefinirEJGAction extends MasterAction
 		DefinirEJGForm miFormulario =(DefinirEJGForm)formulario;
 		Hashtable miHash= new Hashtable();
 		miHash = miFormulario.getDatos();
+		miHash.put("ESCOMISION", this.getUserBean(request).isComision());
 		String consulta= "";
 		String idInstitucion= usr.getLocation();	
 		try {

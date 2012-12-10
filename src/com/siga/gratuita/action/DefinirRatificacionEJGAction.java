@@ -82,7 +82,11 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 			if (nuevos.get("FECHANOTIFICACION")!=null && !nuevos.get("FECHANOTIFICACION").equals(""))
 				nuevos.put("FECHANOTIFICACION", GstDate.getApplicationFormatDate("",nuevos.get("FECHANOTIFICACION").toString()));
 			
+			if (nuevos.get("FECHAPRESENTACIONPONENTE")!=null && !nuevos.get("FECHAPRESENTACIONPONENTE").equals(""))
+				nuevos.put("FECHAPRESENTACIONPONENTE", GstDate.getApplicationFormatDate("",nuevos.get("FECHAPRESENTACIONPONENTE").toString()));
+			
 			nuevos.put("TURNADORATIFICACION",(nuevos.containsKey("TURNADORATIFICACION")?nuevos.get("TURNADORATIFICACION"):ClsConstants.DB_FALSE));
+			nuevos.put("REQUIERENOTIFICARPROC",(nuevos.containsKey("REQUIERENOTIFICARPROC")?nuevos.get("REQUIERENOTIFICARPROC"):ClsConstants.DB_FALSE));
 			// Actualizamos en la base de datos
 			tx=usr.getTransaction();
 			tx.begin();

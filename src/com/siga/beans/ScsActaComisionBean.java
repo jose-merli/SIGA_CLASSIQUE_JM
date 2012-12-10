@@ -25,6 +25,7 @@ public class ScsActaComisionBean extends MasterBean{
 	private	String	horaFinReunion;
 	private	String	observaciones;
 	private	String	miembrosComision;
+	private	String	pendientes;
 
 	/* Nombre de campos de la tabla*/
 	static public final String C_IDACTA = "IDACTA";
@@ -39,6 +40,7 @@ public class ScsActaComisionBean extends MasterBean{
 	static public final String C_IDSECRETARIO = "IDSECRETARIO";
 	static public final String C_MIEMBROSCOMISION = "MIEMBROSCOMISION";
 	static public final String C_OBSERVACIONES = "OBSERVACIONES";
+	static public final String C_PENDIENTES = "PENDIENTES";
 	static public final String C_FECHAMODIFICACION = "FECHAMODIFICACION";
 	static public final String C_USUMODIFICACION = "USUMODIFICACION";
 
@@ -54,6 +56,7 @@ public class ScsActaComisionBean extends MasterBean{
 	public String getHoraInicioReunion () {return horaInicioReunion;}
 	public String getHoraFinReunion () {return horaFinReunion;}
 	public String getObservaciones () {return observaciones;}
+	public String getPendientes () {return pendientes;}
 	public String getMiembrosComision () {return miembrosComision;}
 
 	/* Setters */
@@ -68,6 +71,7 @@ public class ScsActaComisionBean extends MasterBean{
 	public void setHoraInicioReunion (String horaInicioReunion) {this.horaInicioReunion = horaInicioReunion;}
 	public void setHoraFinReunion (String horaFinReunion) {this.horaFinReunion = horaFinReunion;}
 	public void setObservaciones (String observaciones) {this.observaciones = observaciones;}
+	public void setPendientes (String pendientes) {this.pendientes = pendientes;}
 	public void setMiembrosComision (String miembrosComision) {this.miembrosComision = miembrosComision;}
 
 }

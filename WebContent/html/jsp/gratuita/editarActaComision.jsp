@@ -39,6 +39,7 @@
 	String fechaReunion = datosActa.get(ScsActaComisionBean.C_FECHAREUNION)!=null?UtilidadesString.formatoFecha((String)datosActa.get(ScsActaComisionBean.C_FECHAREUNION),ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH):"";
 	String observaciones = datosActa.get(ScsActaComisionBean.C_OBSERVACIONES)!=null?(String)datosActa.get(ScsActaComisionBean.C_OBSERVACIONES):"";
 	String miembrosComision = datosActa.get(ScsActaComisionBean.C_MIEMBROSCOMISION)!=null?(String)datosActa.get(ScsActaComisionBean.C_MIEMBROSCOMISION):"";
+	String pendientes = datosActa.get(ScsActaComisionBean.C_PENDIENTES)!=null?(String)datosActa.get(ScsActaComisionBean.C_PENDIENTES):"";
 	String horaInicioReunion = datosActa.get(ScsActaComisionBean.C_HORAINICIOREUNION)!=null?UtilidadesString.formatoFecha((String)datosActa.get(ScsActaComisionBean.C_HORAINICIOREUNION),ClsConstants.DATE_FORMAT_JAVA, "HH"):"";;
 	String minInicioReunion = datosActa.get(ScsActaComisionBean.C_HORAINICIOREUNION)!=null?UtilidadesString.formatoFecha((String)datosActa.get(ScsActaComisionBean.C_HORAINICIOREUNION),ClsConstants.DATE_FORMAT_JAVA, "mm"):"";;
 	String horaFinReunion = datosActa.get(ScsActaComisionBean.C_HORAFINREUNION)!=null?UtilidadesString.formatoFecha((String)datosActa.get(ScsActaComisionBean.C_HORAFINREUNION),ClsConstants.DATE_FORMAT_JAVA, "HH"):"";;
@@ -104,7 +105,7 @@
 				<td class="labelTextValue">
 					<%=anioActa %>/<%=numeroActa%>
 				</td>
-				<td class="labelText"><siga:Idioma key="sjcs.actas.fechaResolucion" /> (*)</td>
+				<td class="labelText"><siga:Idioma key="sjcs.actas.fechaResolucion" /></td>
 				<td>
 				<%if(readOnly){%>
 					<html:text property="fechaResolucion" size="10" styleClass="boxConsulta" value="<%=fechaResolucionCAJG%>" disabled="false" readonly="true"></html:text>
@@ -143,16 +144,18 @@
 				<td class="labelText"><siga:Idioma key="sjcs.actas.observaciones"/></td>
 				<td colspan="5"><html:textarea styleClass="<%=claseTextArea%>" property="observaciones" style="width:700px; height:60px" value="<%=observaciones%>" readonly="<%=readOnly%>"></html:textarea></td>
 			</tr>
+			<tr>
+				<td class="labelText"><siga:Idioma key="sjcs.actas.ejgsPendientes"/></td>
+				<td colspan="5"><html:textarea styleClass="<%=claseTextArea%>" property="pendientes" style="width:700px; height:60px" value="<%=pendientes%>" readonly="<%=readOnly%>"></html:textarea></td>
+			</tr>
 			</table>
 		</siga:ConjCampos>	
-		
 		<siga:TablaCabecerasFijas 		   
 			   nombre="listadoActas"
 			   borde="1"
 			   clase="tableTitle"		   
 			   nombreCol="gratuita.busquedaEJG.literal.anyo, gratuita.busquedaEJG.literal.codigo, gratuita.busquedaEJG.literal.turnoGuardiaEJG, gratuita.listadoActuacionesAsistencia.literal.fecha, gratuita.busquedaEJG.literal.solicitante,"
 			   tamanoCol="8,8,40,14,20,"
-			   alto="100%"
 			   ajusteBotonera="true" >
 		   <%Row fila;%>
 		   <%Hashtable hash;%>
@@ -175,14 +178,13 @@
 			   </siga:FilaConIconos>
 		   <%}%>
 		   </siga:TablaCabecerasFijas>
-
+			<%if(readOnly){%>
+				<siga:ConjBotonesAccion botones="V,GA" modal="G"/>		
+			<%}else{%>
+				<siga:ConjBotonesAccion botones="V,G,GA" modal="G"/>		
+			<%}%>
 	
 	</html:form>
-	<%if(readOnly){%>
-		<siga:ConjBotonesAccion botones="V,GA" modal="G"/>		
-	<%}else{%>
-		<siga:ConjBotonesAccion botones="V,G,GA" modal="G"/>		
-	<%}%>
 
 <html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
 	<html:hidden property="idInstitucion" value = "<%=idInstitucion%>"/>
@@ -220,10 +222,12 @@
 				error = true;
 				errores += "<siga:Idioma key='errors.required' arg0='sjcs.actas.numeroActa'/>"+ '\n';
 			}
+			/*
 			if (document.ActaComisionForm.fechaResolucion.value==""){
 				error = true;
 				errores += "<siga:Idioma key='errors.required' arg0='sjcs.actas.fechaResolucion'/>"+ '\n';
 			}
+			*/
 			if (document.ActaComisionForm.fechaResolucion.value!=""&&document.ActaComisionForm.fechaReunion.value!=""&&validarFecha(document.ActaComisionForm.fechaReunion.value)&&validarFecha(document.ActaComisionForm.fechaResolucion.value)&&compararFecha(document.ActaComisionForm.fechaReunion.value, document.ActaComisionForm.fechaResolucion.value)==1){
 				error = true;
 				errores += "<siga:Idioma key='sjcs.actas.fechasErroneas'/>"+ '\n';

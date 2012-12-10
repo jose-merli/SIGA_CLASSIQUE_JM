@@ -684,6 +684,9 @@ import com.siga.censo.form.DatosRegTelForm;
 	public String getFechaResolucionCAJG() 				{return UtilidadesHash.getString(this.datos, ScsEJGBean.C_FECHARESOLUCIONCAJG);		}
 	public void setFechaResolucionCAJG(String dato)		{this.datos.put(ScsEJGBean.C_FECHARESOLUCIONCAJG, dato);							}
 	
+	public String getFechaPresentacionPonente() 			{return UtilidadesHash.getString(this.datos, ScsEJGBean.C_FECHAPRESENTACIONPONENTE);		}
+	public void setFechaPresentacionPonente(String dato)	{this.datos.put(ScsEJGBean.C_FECHAPRESENTACIONPONENTE, dato);							}
+	
 	public String getIdFundamentoJuridico() 			{return UtilidadesHash.getString(this.datos, ScsEJGBean.C_IDFUNDAMENTOJURIDICO);	}
 	public void setIdFundamentoJuridico(String dato)	{this.datos.put(ScsEJGBean.C_IDFUNDAMENTOJURIDICO, dato);							}
 	
@@ -708,12 +711,17 @@ import com.siga.censo.form.DatosRegTelForm;
 	public boolean getTurnadoRatificacion() 			{return UtilidadesHash.getBoolean(this.datos, ScsEJGBean.C_TURNADORATIFICACION).booleanValue(); 	 	}
 	public void setTurnadoRatificacion(boolean dato)	{this.datos.put(ScsEJGBean.C_TURNADORATIFICACION, (dato?ClsConstants.DB_TRUE:ClsConstants.DB_FALSE));	}
 	
+	public boolean getRequiereNotificarProc() 			{return UtilidadesHash.getBoolean(this.datos, ScsEJGBean.C_REQUIERENOTIFICARPROC).booleanValue(); 	 	}
+	public void setRequiereNotificarProc(boolean dato)	{this.datos.put(ScsEJGBean.C_REQUIERENOTIFICARPROC, (dato?ClsConstants.DB_TRUE:ClsConstants.DB_FALSE));	}
+	
 	String rutaFicheroDownload, ficheroDownload, borrarFicheroDownload, idTipoTurno, idTurno, idGuardia;
 	String fechaAperturaDesde, fechaAperturaHasta, fechaLimitePresentacionDesde, fechaLimitePresentacionHasta, fechaEstadoDesde, fechaEstadoHasta, fechaDictamenDesde, fechaDictamenHasta;
 	String idRenuncia="";
 	String nig;
 	List<ScsTurnoBean> turnos;
 	List<ScsGuardiasTurnoBean> guardias;
+	private String fechaPresentacionPonenteHasta;
+	private String fechaPresentacionPonenteDesde;
 	
 
     public String getBorrarFicheroDownload() {
@@ -785,7 +793,18 @@ import com.siga.censo.form.DatosRegTelForm;
 	public void setfechaDictamenHasta(String fechaDictamenHasta) {
 		this.fechaDictamenHasta = fechaDictamenHasta;
 	}
-	
+	public String getFechaPresentacionPonenteHasta() {
+		return fechaPresentacionPonenteHasta;
+	}
+	public void setFechaPresentacionPonenteHasta(String fechaPresentacionPonente) {
+		this.fechaPresentacionPonenteHasta = fechaPresentacionPonente;
+	}
+	public String getFechaPresentacionPonenteDesde() {
+		return fechaPresentacionPonenteDesde;
+	}
+	public void setFechaPresentacionPonenteDesde(String fechaPresentacionPonente) {
+		this.fechaPresentacionPonenteDesde = fechaPresentacionPonente;
+	}
 	public String getIdTipoTurno() {
 		return idTipoTurno;
 	}

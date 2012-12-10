@@ -48,6 +48,7 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 				ScsActaComisionBean.C_IDSECRETARIO,
 				ScsActaComisionBean.C_MIEMBROSCOMISION,
 				ScsActaComisionBean.C_OBSERVACIONES,
+				ScsActaComisionBean.C_PENDIENTES,
 				ScsActaComisionBean.C_FECHAMODIFICACION,
 				ScsActaComisionBean.C_USUMODIFICACION};
 		return campos;
@@ -73,21 +74,25 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 
 	
 	protected MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions {
-		CajgEJGRemesaBean bean = null;
+		ScsActaComisionBean bean = null;
 		try{
-			bean = new CajgEJGRemesaBean();
-			bean.setIdEjgRemesa(UtilidadesHash.getInteger(hash,CajgEJGRemesaBean.C_IDEJGREMESA));
-			bean.setIdInstitucion(UtilidadesHash.getInteger(hash,CajgEJGRemesaBean.C_IDINSTITUCION));
-			bean.setAnio(UtilidadesHash.getInteger(hash,CajgEJGRemesaBean.C_ANIO));
-			bean.setNumero(UtilidadesHash.getInteger(hash,CajgEJGRemesaBean.C_NUMERO));
-			bean.setIdTipoEJG(UtilidadesHash.getInteger(hash,CajgEJGRemesaBean.C_IDTIPOEJG));
-			bean.setIdInstitucionRemesa(UtilidadesHash.getInteger(hash,CajgEJGRemesaBean.C_IDINSTITUCIONREMESA));
-			bean.setIdRemesa(UtilidadesHash.getInteger(hash, CajgEJGRemesaBean.C_IDREMESA));
-			bean.setNumeroIntercambio(UtilidadesHash.getInteger(hash, CajgEJGRemesaBean.C_NUMEROINTERCAMBIO));
-			bean.setRecibida(UtilidadesHash.getInteger(hash, CajgEJGRemesaBean.C_RECIBIDA));
+			bean = new ScsActaComisionBean();
+			bean.setIdActa (UtilidadesHash.getInteger(hash,ScsActaComisionBean.C_IDACTA));
+			bean.setIdInstitucion (UtilidadesHash.getInteger(hash,ScsActaComisionBean.C_IDINSTITUCION));
+			bean.setIdPresidente (UtilidadesHash.getInteger(hash,ScsActaComisionBean.C_IDPRESIDENTE));
+			bean.setIdSecretario (UtilidadesHash.getInteger(hash,ScsActaComisionBean.C_IDSECRETARIO));
+			bean.setAnioActa (UtilidadesHash.getInteger(hash,ScsActaComisionBean.C_ANIOACTA));
+			bean.setNumeroActa (UtilidadesHash.getString (hash,ScsActaComisionBean.C_NUMEROACTA));
+			bean.setFechaResolucionCAJG (UtilidadesHash.getString (hash,ScsActaComisionBean.C_FECHARESOLUCION));
+			bean.setFechaReunion (UtilidadesHash.getString (hash,ScsActaComisionBean.C_FECHAREUNION));
+			bean.setHoraInicioReunion (UtilidadesHash.getString (hash,ScsActaComisionBean.C_HORAINICIOREUNION));
+			bean.setHoraFinReunion (UtilidadesHash.getString (hash,ScsActaComisionBean.C_HORAFINREUNION));
+			bean.setObservaciones (UtilidadesHash.getString (hash,ScsActaComisionBean.C_OBSERVACIONES));
+			bean.setPendientes (UtilidadesHash.getString (hash,ScsActaComisionBean.C_PENDIENTES));
+			bean.setMiembrosComision (UtilidadesHash.getString (hash,ScsActaComisionBean.C_MIEMBROSCOMISION));
 			
-			bean.setFechaMod(UtilidadesHash.getString (hash,CajgRemesaBean.C_FECHAMODIFICACION));
-			bean.setUsuMod(UtilidadesHash.getInteger(hash,CajgRemesaBean.C_USUMODIFICACION));
+			bean.setFechaMod(UtilidadesHash.getString (hash,ScsActaComisionBean.C_FECHAMODIFICACION));
+			bean.setUsuMod(UtilidadesHash.getInteger(hash,ScsActaComisionBean.C_USUMODIFICACION));
 		}
 		catch(Exception e){
 			bean = null;
@@ -116,6 +121,7 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsActaComisionBean.C_FECHAREUNION, 	b.getFechaReunion());
 			UtilidadesHash.set(hash, ScsActaComisionBean.C_HORAFINREUNION, 	b.getHoraFinReunion());
 			UtilidadesHash.set(hash, ScsActaComisionBean.C_HORAINICIOREUNION, b.getHoraInicioReunion());
+			UtilidadesHash.set(hash, ScsActaComisionBean.C_PENDIENTES, b.getPendientes());
 			UtilidadesHash.set(hash, ScsActaComisionBean.C_FECHAMODIFICACION, b.getFechaMod());	
 			UtilidadesHash.set(hash, ScsActaComisionBean.C_USUMODIFICACION,	b.getUsuMod());	
 		}
@@ -289,6 +295,7 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		consulta.append(", act."+ScsActaComisionBean.C_HORAFINREUNION);
 		consulta.append(", act."+ScsActaComisionBean.C_OBSERVACIONES);
 		consulta.append(", act."+ScsActaComisionBean.C_MIEMBROSCOMISION);
+		consulta.append(", act."+ScsActaComisionBean.C_PENDIENTES);
 		consulta.append(" from " + ScsActaComisionBean.T_NOMBRETABLA +" act");
 		consulta.append(" where act." + ScsActaComisionBean.C_IDINSTITUCION + " = " + idInstitucion);
 		consulta.append(" and act." + ScsActaComisionBean.C_ANIOACTA+ " = " + anioActa);
@@ -388,6 +395,7 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		consulta.append(", to_char(act."+ScsActaComisionBean.C_HORAFINREUNION+", 'hh24:mi') as " + ScsActaComisionBean.C_HORAFINREUNION );
 		consulta.append(", act."+ScsActaComisionBean.C_OBSERVACIONES);
 		consulta.append(", act."+ScsActaComisionBean.C_MIEMBROSCOMISION);
+		consulta.append(", act."+ScsActaComisionBean.C_PENDIENTES);
 		consulta.append(", f_siga_getrecurso(pres."+ScsPonenteBean.C_NOMBRE+",1) as PRESIDENTE ");
 		consulta.append(", f_siga_getrecurso(sec."+ScsPonenteBean.C_NOMBRE+",1) as SECRETARIO ");
 		
@@ -440,6 +448,7 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		StringBuffer consulta = new StringBuffer();
 		RowsContainer rc = new RowsContainer(); 
 		Vector resultado = new Vector();
+		
 		consulta.append("select ");
 		consulta.append(" ejg."+ScsEJGBean.C_ANIO + " as ANIO");
 		consulta.append(", ejg."+ScsEJGBean.C_NUMEJG + " as NUMERO");
@@ -456,6 +465,8 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		consulta.append(", f_siga_getrecurso(res.descripcion,1) as RESOLUCION");
 		consulta.append(", f_siga_getrecurso(pon."+ScsPonenteBean.C_NOMBRE+",1) as PONENTE");
 		consulta.append(", f_siga_getrecurso(tip."+ScsTipoEJGColegioBean.C_DESCRIPCION+",1) as TIPOEJG");
+		consulta.append(", decode(ejg.requierenotificarproc,'1',f_siga_getrecurso_etiqueta('gratuita.operarRatificacion.mensaje.requiereNotificarProc',"+this.usrbean.getLanguage()+") ||");
+		consulta.append(" f_siga_getprocuradorcontr_ejg(ejg.idinstitucion, ejg.idtipoejg, ejg.anio, ejg.numero),'') as NOTIFICAR_PROCURADOR_CONTRARIO");
 
 		consulta.append(" from " + ScsEJGBean.T_NOMBRETABLA +" ejg");
 		consulta.append(" , " + ScsTurnoBean.T_NOMBRETABLA +" tur");
@@ -584,7 +595,7 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		consulta.append("  and ejg." + ScsEJGBean.C_IDACTA+ " = :");
 		consulta.append(keyContador);
 		
-		consulta.append(" order by ejg." + ScsEJGBean.C_ANIO + " desc , ejg." + ScsEJGBean.C_NUMERO + " desc");
+		consulta.append(" order by ejg." + ScsEJGBean.C_IDTIPOEJGCOLEGIO + " desc, ejg." + ScsEJGBean.C_ANIO + " desc , ejg." + ScsEJGBean.C_NUMERO + " desc");
 
 		//HelperInformesAdm helperInformes = new HelperInformesAdm();
 		//salida = helperInformes.ejecutaConsultaBind(consulta.toString(), htCodigos);
