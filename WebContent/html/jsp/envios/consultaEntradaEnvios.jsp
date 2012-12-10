@@ -727,7 +727,9 @@
 			}
 
 			function accionVolver (){			
-				history.back();
+				//history.back();
+				document.forms['EntradaEnviosForm'].modo.value = 'abrir';
+				document.forms['EntradaEnviosForm'].submit();	
 			}
 
 			function accionRadio(){			
