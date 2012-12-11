@@ -30,14 +30,13 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.redabogacia.sigaservices.app.util.ReadProperties;
-import org.redabogacia.sigaservices.app.util.SIGAReferences;
-
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
+import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
@@ -657,70 +656,27 @@ public class Plantilla {
 				}				
 			}
 			if (etiqueta.equalsIgnoreCase("CP_POBLACION_ETIQUETA")){
-				if (((String)datos.getIdPais()).equals(ClsConstants.ID_PAIS_ESPANA) || ((String)datos.getIdPais()).equals("")) {
-					if (datos.getCodigoPostal()==null){	
-						if (datos.getIdPoblacion()==null){
-							resultado="";
-						}
-						else{
-							CenPoblacionesAdm admPob = new CenPoblacionesAdm(usr);
-							String poblacion = admPob.getDescripcion(datos.getIdPoblacion());
-							resultado=poblacion;
-						}
-					}else{
-						if (datos.getIdPoblacion()==null){
-							resultado=(String)datos.getCodigoPostal();
-						}
-						else{
-							CenPoblacionesAdm admPob = new CenPoblacionesAdm(usr);
-							String poblacion = admPob.getDescripcion(datos.getIdPoblacion());
-							resultado=(String)datos.getCodigoPostal()+ " - " + poblacion;
-						}
+				if (datos.getCodigoPostal()==null||datos.getCodigoPostal().equals("")){	
+					if (datos.getIdPoblacion()==null||datos.getIdPoblacion().equals("")){
+						resultado="";
 					}
-				} else {
-					if (datos.getCodigoPostal()==null){	
-						if (datos.getPoblacionExtranjera() == null || datos.getPoblacionExtranjera().equals("") || datos.getPoblacionExtranjera().equalsIgnoreCase("null")){
-							resultado="";
-						}
-						else{
-							resultado=(String)datos.getPoblacionExtranjera();
-						}
-					}else{
-						if (datos.getPoblacionExtranjera() == null || datos.getPoblacionExtranjera().equals("") || datos.getPoblacionExtranjera().equalsIgnoreCase("null")){
-							resultado=(String)datos.getCodigoPostal();
-						}
-						else{
-							resultado=(String)datos.getCodigoPostal()+ " - " + datos.getPoblacionExtranjera();
-						}
+					else{
+						CenPoblacionesAdm admPob = new CenPoblacionesAdm(usr);
+						String poblacion = admPob.getDescripcion(datos.getIdPoblacion());
+						resultado=poblacion;
+					}
+				}else{
+					if (datos.getIdPoblacion()==null||datos.getIdPoblacion().equals("")){
+						resultado=(String)datos.getCodigoPostal();
+					}
+					else{
+						CenPoblacionesAdm admPob = new CenPoblacionesAdm(usr);
+						String poblacion = admPob.getDescripcion(datos.getIdPoblacion());
+						resultado=(String)datos.getCodigoPostal()+ " - " + poblacion;
 					}
 				}
 			}
 			
-			if (etiqueta.equalsIgnoreCase("POBLACION_ETIQUETA")){
-				if (((String)datos.getIdPais()).equals(ClsConstants.ID_PAIS_ESPANA) || ((String)datos.getIdPais()).equals("")) {
-					if(datos.getIdPoblacion()==null){
-						resultado="";
-								
-					}else{
-						
-						CenPoblacionesAdm poblacionesAdm = new CenPoblacionesAdm(usr);
-						String descripcionPoblacion = poblacionesAdm.getDescripcion(datos.getIdPoblacion());
-						resultado=descripcionPoblacion;
-					
-			
-					
-					}
-				} else {
-					if (datos.getPoblacionExtranjera() != null  &&  !datos.getPoblacionExtranjera().equalsIgnoreCase("null")){
-						resultado=(String)datos.getPoblacionExtranjera();
-					}
-					else{
-						resultado="";
-					}
-					
-				}
-				
-		}
 			if(etiqueta.equalsIgnoreCase("CP_ETIQUETA")){
 				if(datos.getCodigoPostal()==null){					
 					resultado="";
@@ -728,21 +684,27 @@ public class Plantilla {
 					
 					resultado = datos.getCodigoPostal();
 				}
+			}
+			
+			if (etiqueta.equalsIgnoreCase("POBLACION_ETIQUETA")){
+				if(datos.getIdPoblacion()==null||datos.getIdPoblacion().equals("")){
+					resultado="";								
+				} else {						
+					CenPoblacionesAdm poblacionesAdm = new CenPoblacionesAdm(usr);
+					String descripcionPoblacion = poblacionesAdm.getDescripcion(datos.getIdPoblacion());
+					resultado=descripcionPoblacion;
+				}		
 			}			
 			
 			if (etiqueta.equalsIgnoreCase("PROVINCIA_ETIQUETA")){
-				if (((String)datos.getIdPais()).equals(ClsConstants.ID_PAIS_ESPANA) || ((String)datos.getIdPais()).equals("")) {
-					if (datos.getIdProvincia()==null){
-						resultado="";	
-					}else{
-						CenProvinciaAdm admProv = new CenProvinciaAdm(usr);
-						String provincia = admProv.getDescripcion(datos.getIdProvincia());
-						resultado=provincia;
-					}									
+				if (datos.getIdProvincia()==null||datos.getIdProvincia().equals("")){
+					resultado="";	
 				}else{
-					resultado="";
-				}
-			}
+					CenProvinciaAdm admProv = new CenProvinciaAdm(usr);
+					String provincia = admProv.getDescripcion(datos.getIdProvincia());
+					resultado=provincia;
+				}									
+			}			
 
 			if (etiqueta.equalsIgnoreCase("TRATAMIENTO")){
 				CenClienteAdm admCliente = new CenClienteAdm(usr);
