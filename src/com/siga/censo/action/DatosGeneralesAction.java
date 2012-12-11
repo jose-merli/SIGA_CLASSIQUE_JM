@@ -23,8 +23,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 import org.json.JSONObject;
-import org.redabogacia.sigaservices.app.util.ReadProperties;
-import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -32,9 +30,11 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.GstDate;
+import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxCollectionXmlBuilder;
 import com.siga.Utilidades.GestorContadores;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.PaginadorBind;
@@ -1182,7 +1182,6 @@ public class DatosGeneralesAction extends MasterAction {
 			hash = this.controlFormatosCheckSolicitud(hash);
 		
 			// CAMBIO DE NOMBRE LOS CAMPOS ABONO Y CARGO
-			hash.put("ABONOS",(String)hash.get("ABONOSBANCO"));
 			hash.put("CARGOS",(String)hash.get("CARGOSBANCO"));
 						
 			hash.put("IDESTADOSOLIC",new Integer(ClsConstants.ESTADO_SOLICITUD_MODIF_PENDIENTE).toString());
