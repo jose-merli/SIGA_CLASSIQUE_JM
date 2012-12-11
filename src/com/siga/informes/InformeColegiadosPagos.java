@@ -611,7 +611,8 @@ public class InformeColegiadosPagos extends MasterReport {
 			sql.append("        acre.descripcion as ACREDITACION, ");
 			sql.append("        turno.nombre AS NOMBRE_TURNO, ");
 			sql.append("        turno.abreviatura AS ABREVIATURA_TURNO, ");
-			sql.append("        ad.numeroasunto as NUMEROASUNTO ");
+			sql.append("        ad.numeroasunto as NUMEROASUNTO, ");
+			sql.append("        DES.NIG ");
 			
 			sql.append("   from FCS_PAGO_COLEGIADO   COL, ");
 			sql.append("        SCS_ACTUACIONDESIGNA      AD, ");
