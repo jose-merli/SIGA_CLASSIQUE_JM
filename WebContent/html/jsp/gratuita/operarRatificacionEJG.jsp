@@ -11,6 +11,7 @@
 <%@ taglib uri = "struts-bean.tld"   prefix="bean"%>
 <%@ taglib uri = "struts-html.tld"   prefix="html"%>
 <%@ taglib uri = "struts-logic.tld"  prefix="logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <!-- IMPORTS -->
 <%@ page import="java.util.*"%>
@@ -33,9 +34,9 @@
 	String dato[] = {(String)usr.getLocation(),(String)usr.getLocation()};	
 	String dato2[] = new String[2];		
 	String anio= "", numero="", idTipoEJG = "", observaciones = "",refA="",docResolucion="";
-	String fechaRatificacion = "", fechaResolucionCAJG= "", fechaNotificacion= "";
+	String fechaRatificacion = "", fechaResolucionCAJG= "", fechaNotificacion= "", fechaPresentacionPonente="";
 	String numeroCAJG="", anioCAJG="";
-	boolean requiereTurnado= false;
+	boolean requiereTurnado= false,requiereNotificarProc=false;
 	ArrayList vFundamentoJuridico= new ArrayList(), vTipoRatificacion= new ArrayList(), vPonente = new ArrayList(), vActa = new ArrayList();
 	
 	ArrayList vOrigenCAJGSel = new ArrayList();
@@ -56,13 +57,19 @@
 		if (miHash.containsKey("FECHARATIFICACION")) fechaRatificacion = GstDate.getFormatedDateShort("",miHash.get("FECHARATIFICACION").toString()).toString();
 		if (miHash.containsKey("FECHARESOLUCIONCAJG")) fechaResolucionCAJG = GstDate.getFormatedDateShort("",miHash.get("FECHARESOLUCIONCAJG").toString()).toString();
 		if (miHash.containsKey("FECHANOTIFICACION")) fechaNotificacion = GstDate.getFormatedDateShort("",miHash.get("FECHANOTIFICACION").toString()).toString();
+		if (miHash.containsKey("FECHAPRESENTACIONPONENTE")) fechaPresentacionPonente = GstDate.getFormatedDateShort("",miHash.get("FECHAPRESENTACIONPONENTE").toString()).toString();
 		if (miHash.containsKey(ScsEJGBean.C_ANIO_CAJG)) anioCAJG = miHash.get(ScsEJGBean.C_ANIO_CAJG).toString();
 		if (miHash.containsKey(ScsEJGBean.C_NUMERO_CAJG)) numeroCAJG = miHash.get(ScsEJGBean.C_NUMERO_CAJG).toString();
 		if (miHash.containsKey("TURNADORATIFICACION")){
 		 if (!miHash.get("TURNADORATIFICACION").toString().equals("") && !miHash.get("TURNADORATIFICACION").toString().equals("0")){
 		  requiereTurnado=true;
 		 }
-		} 		
+		} 
+		if (miHash.containsKey("REQUIERENOTIFICARPROC")){
+		 if (!miHash.get("REQUIERENOTIFICARPROC").toString().equals("") && !miHash.get("REQUIERENOTIFICARPROC").toString().equals("0")){
+		  requiereNotificarProc=true;
+		 }
+		} 
 		if (miHash.containsKey("IDFUNDAMENTOJURIDICO")) {
 			String idFundamentoJuridico=miHash.get("IDFUNDAMENTOJURIDICO").toString();
 			vFundamentoJuridico.add(idFundamentoJuridico.equals("")? "0": idFundamentoJuridico);
@@ -72,7 +79,7 @@
 			vTipoRatificacion.add(idTipoRatificacionEjg.equals("")? "0": idTipoRatificacionEjg + "," + (String)usr.getLocation());
 			dato2[0]=(String) vTipoRatificacion.get(0);
 			dato2[1]=(String) usr.getLocation();
-		}		
+		}	
 		if (miHash.containsKey("DOCRESOLUCION") && miHash.get("DOCRESOLUCION") != null) {
 			docResolucion = miHash.get("DOCRESOLUCION").toString();
 		}
@@ -119,6 +126,12 @@
 	<siga:Titulo 
 		titulo="pestana.justiciagratuitaejg.ratificacion" 
 		localizacion="gratuita.busquedaEJG.localizacion"/>
+		
+	<style type="text/css">
+		td.bordes{border:1px solid black;border-collapse:collapse}
+		tr.sinbordes td{border: none !important;}
+		 
+	</style>
 </head>
 
 <body>
@@ -185,11 +198,12 @@
 	<html:hidden property = "idInstitucionActa" value =""/>
 	
 	<!-- FILA -->
-	<tr>
-		<td class="labelText"  width="300">	
+	<tr style="align:left">
+		<td class="labelText" width="300">	
 			<siga:Idioma key='gratuita.operarEJG.literal.CAJG'/> <siga:Idioma key='gratuita.operarEJG.literal.anio'/> / <siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/>
 		</td>
-	   	<td width="200">	
+	   	<td class="labelTextValue">	
+	   		<%if(usr.getLocation().equalsIgnoreCase("2027")){%>G<%} %>
 			<% if (accion.equalsIgnoreCase("ver")) {%>
 			  	<html:text name="DefinirEJGForm"  onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);"  onblur="filterCharsNaN(this);" property="anioCAJG" size="4" maxlength="4" styleClass="boxConsulta"  value="<%=anioCAJG%>" readonly="true"></html:text> / 
                 <html:text name="DefinirEJGForm" property="numeroCAJG" size="10" maxlength="20" styleClass="boxConsulta" value="<%=numeroCAJG%>" readonly="true"></html:text>
@@ -198,7 +212,7 @@
                 <html:text name="DefinirEJGForm" property="numeroCAJG" size="10" maxlength="20" styleClass="boxNumber" value="<%=numeroCAJG%>"></html:text>
 			<%}%>
 	  	</td>
-		<td class="labelText">	
+		<td class="labelText" width="200">	
 			<siga:Idioma key='gratuita.operarEJG.literal.origen'/>
 		</td>
 		<td>
@@ -209,6 +223,11 @@
 		 	<%}%>		
 		</td>
 	  </tr>
+
+
+<tr>
+<td colspan="5"   class="bordes">
+	<table align="center" class="sinbordes" width="100%" border="0">
 	  <tr>
 		<%if(accesoActas){%>
 			<td class="labelText">
@@ -218,39 +237,60 @@
 			<%if (accion.equalsIgnoreCase("ver")){%>
 				<siga:ComboBD nombre="idActaComp"  tipo="cmbActaComision" clase="boxConsulta" ancho="160" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vActa %>" readonly="true"/>
 			<%}else{%>
-				<siga:ComboBD nombre="idActaComp"  tipo="cmbActaComision" clase="boxCombo" ancho="160" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vActa %>"/>
-			<%}%>
-			</td>
-		<%}else{%>
-			<td class="labelText">
-				<siga:Idioma key="gratuita.operarRatificacion.literal.fechaResolucionCAJG"/>
-			</td>
-			<td>
-			<%if (accion.equalsIgnoreCase("ver")){%>
-				<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="<%=fechaResolucionCAJG%>" disabled="true" readonly="true"></siga:Fecha>
-			<%} else {%>
-				<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="<%=fechaResolucionCAJG%>" readonly="true"></siga:Fecha>
+				<siga:ComboBD nombre="idActaComp"  tipo="cmbActaComision" clase="boxCombo" ancho="160" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vActa %>" accion="setFechaResolucionCAJG();"/>
 			<%}%>
 			</td>
 		<%}%>
+		<td class="labelText">
+			<siga:Idioma key="gratuita.operarRatificacion.literal.fechaResolucionCAJG"/>
+		</td>
+		<td>
+		<%if (accion.equalsIgnoreCase("ver")){%>
+			<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="<%=fechaResolucionCAJG%>" disabled="true" ></siga:Fecha>
+		<%} else {%>
+			<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="<%=fechaResolucionCAJG%>" postFunction="resetActa();"></siga:Fecha>
+		<%}%>
+		</td>
+		<%if(!accesoActas){%>
+		<td colspan="2" width="65%">&nbsp;</td>
+		<%} %>
+	</tr>
+	<tr>
+	<td class="labelTextValue" colspan="4">
+	Importante: El expediente se considera "Resuelto" cuando se consigne, al menos, la Fecha de Resolución y el sentido de la Resolución
+	</td>
+	</tr>
+	</table>
+</td></tr>
+
+	<tr>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.operarRatificacion.literal.ponente"/>
 		</td>
 		<td>
 			<%if (accion.equalsIgnoreCase("ver")){%>
-				<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" ancho="400" readOnly="true"/>
+				<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" ancho="200" readOnly="true"/>
 			<%} else {%>
-				<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxCombo"  	  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" ancho="400"/>
+				<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxCombo"  	  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" ancho="200"/>
+			<%}%>
+		</td>
+		<td class="labelText">
+			<siga:Idioma key="gratuita.operarEJG.literal.presentacionPonente"/>
+		</td>
+		<td width="300">
+			<%if (accion.equalsIgnoreCase("ver")){%>
+				<siga:Fecha nombreCampo="fechaPresentacionPonente" valorInicial="<%=fechaPresentacionPonente%>" disabled="true" readonly="true"></siga:Fecha>
+			<%} else {%>
+				<siga:Fecha nombreCampo="fechaPresentacionPonente" valorInicial="<%=fechaPresentacionPonente%>" readonly="true"></siga:Fecha>
 			<%}%>
 		</td>
 	</tr>
-	
 	
 	<tr>
 		<td class="labelText">
 		  <siga:Idioma key="gratuita.operarRatificacion.literal.tipoRatificacion"/>
 		</td>
-		<td  colspan="5">
+		<td  colspan="1">
 			<%if (accion.equalsIgnoreCase("ver")){%>
 				<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucion2" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vTipoRatificacion%>" readOnly="true" pestana="t" accion="Hijo:idFundamentoJuridico"/>
 			<%} else {%>
@@ -283,10 +323,10 @@
 				<siga:Fecha nombreCampo="fechaNotificacion" valorInicial="<%=fechaNotificacion%>" readonly="true"></siga:Fecha>
 			<%}%>
 		</td>
-		<td class="labelText">
+		<td class="labelText"  width="120">
 			<siga:Idioma key="gratuita.EJG.resolucion.refAuto"/>&nbsp;&nbsp;&nbsp;
 		</td>
-		<td colspan="2">
+		<td >
 			<%if (accion.equalsIgnoreCase("ver")){%>
 				<html:text name="DefinirEJGForm" property="refAuto" size="10" styleClass="boxConsulta" value="<%=refA%>" readonly="false" disabled="false"></html:text>
 			<%} else {%>
@@ -324,6 +364,17 @@
 				<input type="Checkbox" name="turnadoRatificacion" <%=(requiereTurnado?"checked":"")%> disabled>
 			<%} else {%>
 				<input type="Checkbox" name="turnadoRatificacion" <%=(requiereTurnado?"checked":"")%>>
+			<%}%>
+			
+		</td>
+	</tr>	
+	<tr>
+		<td class="labelText" colspan="4">
+			<siga:Idioma key="gratuita.operarRatificacion.literal.requiereNotificarProc"/>&nbsp;&nbsp;
+			<%if (accion.equalsIgnoreCase("ver")){%>
+				<input type="Checkbox" name="requiereNotificarProc" <%=(requiereNotificarProc?"checked":"")%> disabled>
+			<%} else {%>
+				<input type="Checkbox" name="requiereNotificarProc" <%=(requiereNotificarProc?"checked":"")%>>
 			<%}%>
 			
 		</td>
@@ -437,6 +488,16 @@
 			
 	
 } 	
+		
+		function setFechaResolucionCAJG(){
+			var acta =jQuery("#idActaComp option:selected").text().split(" - ");
+			jQuery("#fechaResolucionCAJG").val(acta[1]);
+		}
+		
+		function resetActa(){
+			jQuery("#idActaComp").val('');
+		}
+		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 
