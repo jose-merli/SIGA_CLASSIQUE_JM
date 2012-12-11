@@ -280,6 +280,31 @@ VERSIONES: -->
 			}
 		}
 		
+		var mensajeGeneralError='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usr, "messages.general.error"))%>';
+
+		function cargarBancos() {
+			var idBanco = cuentasBancariasForm.cbo_Codigo.value;		
+			if (idBanco!=undefined&&idBanco!="") {
+				jQuery.ajax({ //Comunicación jQuery hacia JSP  
+	   				type: "POST",
+					url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBanco",
+					data: "idBanco="+idBanco,
+					dataType: "json",
+					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+					success: function(json){		
+						cuentasBancariasForm.banco.value=json.banco.nombre;
+						fin();
+					},
+					error: function(e){
+						alert(mensajeGeneralError);
+						fin();
+					}
+				});
+			} else {
+				cuentasBancariasForm.banco.value="";
+			}
+		}		
+		
 	</script>	
 </head>
 
@@ -429,28 +454,3 @@ VERSIONES: -->
 
 </body>
 </html>
-
-<script>
-	function cargarBancos() {
-		var idBanco = cuentasBancariasForm.cbo_Codigo.value;		
-		if (idBanco!=undefined&&idBanco!="") {
-			jQuery.ajax({ //Comunicación jQuery hacia JSP  
-   				type: "POST",
-				url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBanco",
-				data: "idBanco="+idBanco,
-				dataType: "json",
-				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-				success: function(json){		
-					cuentasBancariasForm.banco.value=json.banco.nombre;
-					fin();
-				},
-				error: function(e){
-					alert('Error de comunicación: ' + e);
-					fin();
-				}
-			});
-		} else {
-			cuentasBancariasForm.banco.value="";
-		}
-	}
-</script>

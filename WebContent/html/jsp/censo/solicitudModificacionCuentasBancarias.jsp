@@ -30,7 +30,7 @@
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
-//	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
+	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 //	String idUsr=(String)usr.getUserName();
 	String nombre=(String)request.getAttribute("nombrePersona");
 	String numero=(String)request.getAttribute("numero");
@@ -175,7 +175,33 @@
 			}
 			
 			return true;  
-		}				
+		}		
+		
+		var mensajeGeneralError='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usr, "messages.general.error"))%>';
+
+		function cargarBancos() {
+			var idBanco = cuentasBancariasSolicForm.cbo_Codigo.value;	
+			if (idBanco!=undefined&&idBanco!="") {
+				jQuery.ajax({ //Comunicación jQuery hacia JSP  
+	   				type: "POST",
+					url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBanco",
+					data: "idBanco="+idBanco,
+					dataType: "json",
+					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+					success: function(json){		
+						var txtBanco = json.banco.nombre;
+						cuentasBancariasSolicForm.banco.value=txtBanco;
+						fin();
+					},
+					error: function(e){
+						alert(mensajeGeneralError);
+						fin();
+					}
+				});
+			} else {
+				cuentasBancariasSolicForm.banco.value="";
+			}
+		}		
 		
 	</script>	
 	
@@ -290,29 +316,3 @@
 </html:form>
 </body>
 </html>
-
-<script>
-	function cargarBancos() {
-		var idBanco = cuentasBancariasSolicForm.cbo_Codigo.value;	
-		if (idBanco!=undefined&&idBanco!="") {
-			jQuery.ajax({ //Comunicación jQuery hacia JSP  
-   				type: "POST",
-				url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBanco",
-				data: "idBanco="+idBanco,
-				dataType: "json",
-				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-				success: function(json){		
-					var txtBanco = json.banco.nombre;
-					cuentasBancariasSolicForm.banco.value=txtBanco;
-					fin();
-				},
-				error: function(e){
-					alert('Error de comunicación: ' + e);
-					fin();
-				}
-			});
-		} else {
-			cuentasBancariasSolicForm.banco.value="";
-		}
-	}
-</script>

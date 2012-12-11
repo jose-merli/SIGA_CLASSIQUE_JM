@@ -68,9 +68,9 @@
 	String sexo  = datosPersonales.getSexo();
 	String ssexo = "";
 	if (sexo.equals(ClsConstants.TIPO_SEXO_HOMBRE)) 
-		ssexo = com.siga.Utilidades.UtilidadesString.getMensajeIdioma(user, "censo.sexo.hombre");
+		ssexo = UtilidadesString.getMensajeIdioma(user, "censo.sexo.hombre");
 	else 
-		ssexo = com.siga.Utilidades.UtilidadesString.getMensajeIdioma(user, "censo.sexo.mujer");
+		ssexo = UtilidadesString.getMensajeIdioma(user, "censo.sexo.mujer");
 
 	String altoTabla = "80%";		
 	if (editar!=null && editar.equalsIgnoreCase("true"))
@@ -840,6 +840,8 @@
 	//		BANCOS
 	// --------------------------------------------------------------------------------------------------------------
 	
+	var mensajeGeneralError='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(user, "messages.general.error"))%>';
+	
 	function cargarBancos(){
 		var idBanco = SolicitudIncorporacionForm.cbo_Codigo.value;	
 		if (idBanco!=undefined&&idBanco!="") {
@@ -855,7 +857,7 @@
 					fin();
 				},
 				error: function(e){
-					alert('Error de comunicación: ' + e);
+					alert(mensajeGeneralError);
 					fin();
 				}
 			});
@@ -875,9 +877,9 @@
 	var cteControl="controlFiltro";
 	var controlCP="";
 	var controlFiltro=cteControl; 
-	var controlKeyCP="";
-	var cteSeleccionar="<siga:Idioma key='general.combo.seleccionar'/>";
-	var msgControl="";
+	var controlKeyCP="";	
+	var cteSeleccionar="<siga:Idioma key='general.combo.seleccionar'/>";	
+	var msgControl="";	
 	var numLineasSelectPoblaciones=20; // Siempre debe ser menor o igual que numMaximoSelectPoblaciones
 	var numMaximoSelectPoblaciones=20; // Siempre debe ser mayor o igual que numLineasSelectPoblaciones
 	var numMinLetrasFiltro=3;
@@ -1285,7 +1287,7 @@
 			 	
 	// Actualizo el desplegable segun el contenido del filtro y del codigo postal
 	function actualizarPoblacionesCPPoblacion(valorPoblacion){
-		//msgControl=msgControl+"actualizarPoblacionesCPPoblacion("+valorPoblacion+")\n";alert(msgControl);
+		//msgControl=msgControl+"actualizarPoblacionesCPPoblacion("+valorPoblacion+")\n";alert(msgControl);			
 		
 		// Obtiene los elementos que vamos a utilizar
 		var elementoPoblacionDiv 	= jQuery("#poblacion_div");
@@ -1376,7 +1378,7 @@
 								fin();
 							},
 							error: function(e){
-								alert('Error de ajax');
+								alert(mensajeGeneralError);
 								fin();
 							}
 						});
@@ -1493,7 +1495,7 @@
 					fin();
 				},
 				error: function(e){
-					alert('Error de ajax');
+					alert(mensajeGeneralError);
 					fin();
 				}
 			});

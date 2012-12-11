@@ -336,6 +336,8 @@
 	//		FILTRO DE POBLACIONES
 	// --------------------------------------------------------------------------------------------------------------
 	
+	var mensajeGeneralError='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(user, "messages.general.error"))%>';
+	
 	var bControl=false;	
 	var bControlKey=false;
 	var bFocoCP=false;
@@ -844,7 +846,7 @@
 								fin();
 							},
 							error: function(e){
-								alert('Error de ajax');
+								alert(mensajeGeneralError);
 								fin();
 							}
 						});
@@ -961,7 +963,7 @@
 					fin();
 				},
 				error: function(e){
-					alert('Error de ajax');
+					alert(mensajeGeneralError);
 					fin();
 				}
 			});
