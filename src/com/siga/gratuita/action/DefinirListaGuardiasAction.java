@@ -17,11 +17,11 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.AdmInformeAdm;
@@ -941,7 +941,8 @@ public class DefinirListaGuardiasAction extends MasterAction {
 					if (correcto){
 						nombreFicheroPDF="listaGuardias_"+UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","_").replaceAll(":","_").replaceAll(" ","_")+".pdf";
 						ficPDF=new File(rutaServidor+barra+nombreFicheroPDF); 
-						plantilla.convertFO2PDF(ficFOP, ficPDF, rutaPlantilla+File.separator+institucion);
+						MasterReport masterReport = new  MasterReport();
+						masterReport.convertFO2PDF(ficFOP, ficPDF, rutaPlantilla+File.separator+institucion);
 						ficFOP.delete();
 					}
 					else{
