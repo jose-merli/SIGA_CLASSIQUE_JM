@@ -143,7 +143,7 @@ public class ScsRetencionesAdm extends MasterBeanAdministrador {
 		Vector datos = new Vector();
 		String sql="SELECT IDRETENCION, " +
 		   " F_SIGA_GETRECURSO(DESCRIPCION, "+lenguaje+") DESCRIPCION"+
-				", LETRANIFSOCIEDAD, RETENCION, FECHAMODIFICACION, USUMODIFICACION   FROM SCS_MAESTRORETENCIONES  ";
+		   ", LETRANIFSOCIEDAD, RETENCION, FECHAMODIFICACION, USUMODIFICACION   FROM SCS_MAESTRORETENCIONES  ";
 		
 		try { 
 			// Se comprueba si se ha introducido algún criterio de búsqueda ya que sino es así no se creará el where			
@@ -181,7 +181,7 @@ public class ScsRetencionesAdm extends MasterBeanAdministrador {
 					}		
 					sql +=")";
 			}		
-			sql +="	ORDER BY DESCRIPCION";
+			sql +=" ORDER BY PORDEFECTO  DESC, NLSSORT(DESCRIPCION, 'NLS_SORT=BINARY')";
 			datos = this.selectGenerico(sql);
 		} 
 		catch (ClsExceptions e) {
