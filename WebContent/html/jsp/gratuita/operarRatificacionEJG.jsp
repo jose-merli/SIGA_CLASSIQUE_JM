@@ -129,10 +129,9 @@
 		localizacion="gratuita.busquedaEJG.localizacion"/>
 		
 	<style type="text/css">
-		tr.borderTop td{border-top:1px solid black;}
-		tr.borderBottom td{border-bottom:1px solid black;}
-		td.left{ border-left: 1px solid black; }
-		td.right{ border-right: 1px solid black; }
+		td.bordes{border:1px solid black;border-collapse:collapse}
+		tr.sinbordes td{border: none !important;}
+		 
 	</style>
 </head>
 
@@ -200,7 +199,7 @@
 	<html:hidden property = "idInstitucionActa" value =""/>
 	
 	<!-- FILA -->
-	<tr style="align:left" height="30">
+	<tr style="align:left">
 		<td class="labelText" width="300">	
 			<siga:Idioma key='gratuita.operarEJG.literal.CAJG'/> <siga:Idioma key='gratuita.operarEJG.literal.anio'/> / <siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/>
 		</td>
@@ -227,10 +226,12 @@
 	  </tr>
 
 
-
-	  <tr class="borderTop">
+<tr>
+<td colspan="5"   class="bordes">
+	<table align="center" class="sinbordes" width="100%" border="0">
+	  <tr>
 		<%if(accesoActas){%>
-			<td class="labelText left">
+			<td class="labelText">
 				<siga:Idioma key="sjcs.actas.anio" />/<siga:Idioma key="sjcs.actas.numeroActa" /> - <siga:Idioma key="sjcs.actas.fechaResolucion" />
 			</td>
 			<td>
@@ -242,23 +243,26 @@
 			</td>
 		<%}%>
 		<td class="labelText">
-		<%if(accesoActas){%>
-			<%} %><siga:Idioma key="gratuita.operarRatificacion.literal.fechaResolucionCAJG"/>
+			<siga:Idioma key="gratuita.operarRatificacion.literal.fechaResolucionCAJG"/>
 		</td>
-		<td class="right">
+		<td>
 		<%if (accion.equalsIgnoreCase("ver")){%>
 			<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="<%=fechaResolucionCAJG%>" disabled="true" ></siga:Fecha>
 		<%} else {%>
 			<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="<%=fechaResolucionCAJG%>" postFunction="resetActa();"></siga:Fecha>
 		<%}%>
 		</td>
+		<%if(!accesoActas){%>
+		<td colspan="2" width="65%">&nbsp;</td>
+		<%} %>
 	</tr>
-	<tr height="30" class="borderBottom">
-	<td class="labelTextValue left right" colspan="4">
+	<tr>
+	<td class="labelTextValue" colspan="4">
 	Importante: El expediente se considera "Resuelto" cuando se consigne, al menos, la Fecha de Resolución y el sentido de la Resolución
 	</td>
 	</tr>
-
+	</table>
+</td></tr>
 
 	<tr>
 		<td class="labelText">
