@@ -283,6 +283,7 @@ public class EntradaEnviosAction extends MasterAction {
 	}
 	
 	protected String borrarRelacionEJG(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		
 		try{
 			UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 			EntradaEnviosForm entradaEnviosForm = (EntradaEnviosForm)formulario;
@@ -300,6 +301,7 @@ public class EntradaEnviosAction extends MasterAction {
 	}
 	
 	protected String borrarRelacionDesigna(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		
 		try{
 			UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 			EntradaEnviosForm entradaEnviosForm = (EntradaEnviosForm)formulario;
@@ -320,16 +322,14 @@ public class EntradaEnviosAction extends MasterAction {
 	
 	protected String comunicar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		EntradaEnviosForm entradaEnviosForm = (EntradaEnviosForm)formulario;
-
-		
 		UsrBean usr = this.getUserBean(request);
 		String datosEnvios = "";
 		AdmInformeAdm informeAdm = new AdmInformeAdm(usr);
 		SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
 
 		try{
-			DefinirEnviosForm definirEnviosForm = new DefinirEnviosForm();
 
+			DefinirEnviosForm definirEnviosForm = new DefinirEnviosForm();
 			Hashtable result = informeAdm.getInformeTelematico(usr.getLocation(), "6",AppConstants.TipoIntercambioEnum.ICA_SGP_COM_DES_PROV_ABG_PRO.getCodigo()); 
 			datosEnvios = "6"+","+(String)result.get("IDPLANTILLAENVIODEF")+","+(String)result.get("IDPLANTILLA")+","+usr.getLocation()+",0##";	
 			
@@ -345,8 +345,6 @@ public class EntradaEnviosAction extends MasterAction {
 			datosInforme.append("##idTipoInforme==");
 			datosInforme.append("OFICI%%%");
 			definirEnviosForm.setDatosInforme(datosInforme.toString());
-
-			
 			
 			definirEnviosForm.setDatosEnvios(datosEnvios);
 			definirEnviosForm.setFechaProgramada(sdf.format(Calendar.getInstance().getTime()));
@@ -363,6 +361,7 @@ public class EntradaEnviosAction extends MasterAction {
 			EntradaEnviosService entradaEnviosService = (EntradaEnviosService) businessManager.getService(EntradaEnviosService.class);
 			entradaEnviosService.relacionarEnvio(new Long(entradaEnviosForm.getIdEnvio()), new Short(entradaEnviosForm.getIdInstitucion()),new Long(idEnvioRelacionado));
 			entradaEnviosService.actualizarEstado(new Long(entradaEnviosForm.getIdEnvio()), new Short(entradaEnviosForm.getIdInstitucion()),EstadosEntradaEnviosEnum.ESTADO_FINALIZADO.getCodigo());
+			
 			//Si quieren que se avise hay que hacer que funcione el referescarLocal
 			return exitoRefresco("Comunicación realizada correctamente",request);
 
@@ -371,61 +370,6 @@ public class EntradaEnviosAction extends MasterAction {
 		}
 
 		return "exception";
-
-
-		/*
-
-		UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
-		DefinirEnviosForm definirEnvioForm = new DefinirEnviosForm();
-		StringBuffer datosInforme = new StringBuffer();
-		datosInforme.append("idInstitucion==");
-		datosInforme.append("2014");
-		datosInforme.append("##anio==");
-		datosInforme.append("2012");
-		datosInforme.append("##idTurno==");
-		datosInforme.append("926");
-		datosInforme.append("##numero==");
-		datosInforme.append("7");
-		datosInforme.append("##idTipoInforme==");
-		datosInforme.append("OFICI%%%");
-		definirEnvioForm.setDatosInforme(datosInforme.toString());
-
-		StringBuffer datosEnvios = new StringBuffer();
-
-		datosEnvios.append("6");
-		datosEnvios.append(",");
-		datosEnvios.append("0");
-		datosEnvios.append(",");
-		datosEnvios.append("3541");
-		datosEnvios.append(",");
-		datosEnvios.append("2014");
-		datosEnvios.append(",");
-		datosEnvios.append("0");
-		datosEnvios.append(",");
-
-		Hashtable datos = new Hashtable(); 
-		datos.put("fechaProgramada", "28/11/2012");
-		datos.put("MODO", "insertarEnvioGenerico");
-		datos.put("nombre", "Comunicaciones de Oficio");
-		datos.put("idTipoEnvio", "");
-		datos.put("datosEnvios", datosEnvios.toString());
-		definirEnvioForm.setDatos(datos);
-		try{
-			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
-			envioInformesGenericos.gestionarComunicacionDesignas(definirEnvioForm,request.getLocale(), userBean);
-
-		}catch (Exception e){
-			throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null); 
-		}
-
-		return "exception";*/
-
-
-
-
-
-
-
 
 	}
 
