@@ -20,8 +20,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.redabogacia.sigaservices.app.util.ReadProperties;
-import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.aspose.words.Document;
 import com.atos.utils.ClsConstants;
@@ -29,9 +27,11 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.GstStringTokenizer;
+import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
@@ -361,16 +361,16 @@ public class InformesGenericosAction extends MasterAction {
 			Vector datosconsulta=new Vector();
 			ScsEJGAdm ejgAdm= new ScsEJGAdm(usr);
 			String idioma=usr.getLanguageInstitucion();
-			String numero="";
-			String idTipoEJG="";					
 			Hashtable datoscomunes=new Hashtable();
 			String codigoext="";
-			String idintitucionactual=""+this.getIDInstitucion(request);
-			String anio="";
+			String idintitucionactual=""+this.getIDInstitucion(request);			
 			Vector vSalida = null;	
 			String idPersonaJG="";
 			Vector infosolicitante=new Vector();
 			String ididioma="";
+			String idTipoEJG="";
+			String anio="";
+			String numero="";
 			////////////////////////////////////////////////
 			// MODELO DE TIPO WORD: LLAMADA A ASPOSE.WORDS
 			for (int i=0;i<plantillas.size();i++) {
@@ -385,9 +385,18 @@ public class InformesGenericosAction extends MasterAction {
 							anio= (String)aux.get("anio");
 							numero= (String)aux.get("numero");						
 							HelperInformesAdm helperInformes = new HelperInformesAdm();								
-							vSalida = ejgAdm.getCalificacionEjgSalida(""+this.getIDInstitucion(request),idTipoEJG,anio, numero,idioma);
+							vSalida = ejgAdm.getCalificacionEjgSalida(idintitucionactual,idTipoEJG,anio, numero,idioma);
 							/**Como accedemos al ejg por clave primaria solo nos saldra un registro**/
 							Hashtable registro = (Hashtable) vSalida.get(0);			
+							
+							Hashtable htFuncion = new Hashtable();
+							htFuncion.put(new Integer(1), idintitucionactual);
+							htFuncion.put(new Integer(2), idTipoEJG);
+							htFuncion.put(new Integer(3), anio);
+							htFuncion.put(new Integer(4), numero);
+							helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
+									htFuncion, "F_SIGA_GETCONTRARIOS_EJG", "CONTRARIOS_DEFENSA_JURIDICA"));
+							
 							/**Aniadimos el solicitante del ejg**/
 							idPersonaJG = (String)registro.get("IDPERSONAJG");
 							infosolicitante=ejgAdm.getSolicitanteCalificacionEjgSalida(idintitucionactual,anio,idTipoEJG,numero,idPersonaJG,idioma);
