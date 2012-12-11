@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.ActionMapping;
 
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ComodinBusquedas;
@@ -2227,6 +2228,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 						
 						registro.put("CODIGOLENGUAJE", idiomainforme);	
 						registro.put("LISTA_TELEFONOS_INTERESADO", "");
+						registro.put("FECHAAPERTURA_EJG", "");
 						registro.put("NUMERO_EJG", "");
 						registro.put("NIF_DEFENDIDO", "");
 						registro.put("NOMBRE_DEFENDIDO", "");
@@ -2338,6 +2340,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					
 					registro.put("LISTA_TELEFONOS_INTERESADO", "");
 					registro.put("NUMERO_EJG", "");
+					registro.put("FECHAAPERTURA_EJG", "");
 					registro.put("NIF_DEFENDIDO", "");
 					registro.put("NOMBRE_DEFENDIDO", "");
 					registro.put("DOMICILIO_DEFENDIDO", "");
@@ -2482,10 +2485,15 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					for (int i = 0; i < defendidos.size(); i++) {
 						if(((Hashtable) defendidos.get(i)).get("ANIO_EJG") == null ||((Hashtable) defendidos.get(i)).get("ANIO_EJG").equals("")){
 							((Hashtable) defendidos.get(i)).put("ANIO_EJG", (String) ((Hashtable) datos.get(0)).get("ANIO_EJG"));
-						}else if(((Hashtable) defendidos.get(i)).get("NUMERO_EJG")== null ||((Hashtable) defendidos.get(i)).get("NUMERO_EJG").equals("")){
+						} 
+						if(((Hashtable) defendidos.get(i)).get("NUMERO_EJG")== null ||((Hashtable) defendidos.get(i)).get("NUMERO_EJG").equals("")){
 							((Hashtable) defendidos.get(i)).put("NUMERO_EJG", (String) ((Hashtable) datos.get(0)).get("NUMERO_EJG"));
-						}else if(((Hashtable) defendidos.get(i)).get("FECHARESOLUCIONCAJG")== null ||((Hashtable) defendidos.get(i)).get("FECHARESOLUCIONCAJG").equals("")){
+						} 
+						if(((Hashtable) defendidos.get(i)).get("FECHARESOLUCIONCAJG")== null ||((Hashtable) defendidos.get(i)).get("FECHARESOLUCIONCAJG").equals("")){
 							((Hashtable) defendidos.get(i)).put("FECHARESOLUCIONCAJG", (String) ((Hashtable) datos.get(0)).get("FECHARESOLUCIONCAJG"));
+						}
+						if(((Hashtable) defendidos.get(i)).get("FECHAAPERTURA_EJG")== null ||((Hashtable) defendidos.get(i)).get("FECHAAPERTURA_EJG").equals("")){
+							((Hashtable) defendidos.get(i)).put("FECHAAPERTURA_EJG", (String) ((Hashtable) datos.get(0)).get("FECHAAPERTURA_EJG"));
 						}
 					}
 				}
@@ -2798,7 +2806,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		h.put(new Integer(4), numero);
 
 		StringBuffer sql = new StringBuffer("SELECT ejg.ANIO ANIO_EJG, (ejg.ANIO || '/' || ejg.NUMEJG) AS NUMERO_EJG, ");
-		sql.append(" to_char(ejg.FECHARESOLUCIONCAJG, 'dd/mm/yyyy') AS FECHARESOLUCIONCAJG");
+		sql.append(" to_char(ejg.FECHARESOLUCIONCAJG, 'dd/mm/yyyy') AS FECHARESOLUCIONCAJG, ");
+		sql.append(" to_char(ejg.FECHAAPERTURA, 'dd/mm/yyyy') AS FECHAAPERTURA_EJG ");
 		sql.append(" FROM SCS_EJG ejg, Scs_Ejgdesigna des ");
 		sql.append(" WHERE des.IDINSTITUCION = ejg.IDINSTITUCION ");
 		sql.append(" AND des.Idtipoejg = ejg.IDTIPOEJG ");
@@ -3464,35 +3473,35 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 							registro.put("SEXO_LETRADO", "");
 				}
 				
-				 /**Fecha en Letras de la fecha del letrado actual, para que aparezcan en el idioma que se le pasa**/
 				String observacionesCambioLetrado  = (String)registro.get("OBSERVACIONES_CAMBIOLETRADO");
 				if (observacionesCambioLetrado!=null && !observacionesCambioLetrado.trim().equals("")){		
 					registro.put("OBSERVACIONES_CAMBIOLETRADO", observacionesCambioLetrado);
 				}else {
 					registro.put("OBSERVACIONES_CAMBIOLETRADO", "");
-				}				
-			
-				String fechaLetradoActual  = (String)registro.get("FECHALETRADO_ACTUAL");
-				if (fechaLetradoActual!=null && !fechaLetradoActual.trim().equals("")){		
-					htCodigo = new Hashtable();						
-					htCodigo.put(new Integer(1), fechaLetradoActual);
-					htCodigo.put(new Integer(2), "m");
-					htCodigo.put(new Integer(3), idioma);								
-					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-						htCodigo, "PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA", "FECHALETRADOACTUAL_LETRA"));
-				}else{
-					registro.put("FECHALETRADOACTUAL_LETRA", "");
-				}
-			
-			
-				Vector vPreferente = getDireccionLetradoSalidaOficioPreferente(idPersona,idInstitucion);		
-				String dir = (String)((Hashtable)vPreferente.get(0)).get("DOMICILIO_DESPACHO_LETRADO");
-				if (dir != null && !dir.trim().equals("")){
-					helperInformes.completarHashSalida(registro,vPreferente);
-				} else {
-					helperInformes.completarHashSalida(registro, getDireccionLetradoSalidaOficio(idPersona, idInstitucion));
-				}										
-
+				}					
+				
+				 /**Fecha en Letras de la fecha del letrado actual, para que aparezcan en el idioma que se le pasa**/							
+					String fechaLetradoActual  = (String)registro.get("FECHALETRADO_ACTUAL");
+					if (fechaLetradoActual!=null && !fechaLetradoActual.trim().equals("")){		
+						htCodigo = new Hashtable();						
+						htCodigo.put(new Integer(1), fechaLetradoActual);
+						htCodigo.put(new Integer(2), "m");
+						htCodigo.put(new Integer(3), idioma);								
+						helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
+												htCodigo, "PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA", "FECHALETRADOACTUAL_LETRA"));
+						}else {
+								registro.put("FECHALETRADOACTUAL_LETRA", "");
+						}
+				
+				
+					Vector vPreferente = getDireccionLetradoSalidaOficioPreferente(idPersona,idInstitucion);		
+					String dir = (String)((Hashtable)vPreferente.get(0)).get("DOMICILIO_DESPACHO_LETRADO");
+					if (dir != null && !dir.trim().equals("")){
+						helperInformes.completarHashSalida(registro,vPreferente);
+					} else {
+						helperInformes.completarHashSalida(registro, getDireccionLetradoSalidaOficio(idPersona, idInstitucion));
+					}
+				
 				String pobLetrado = (String)registro.get("POBLACION_DESPACHO_LETRADO");
 				if(pobLetrado==null ||pobLetrado.trim().equalsIgnoreCase("")){
 					String idPobLetrado = (String)registro.get("IDPOBLACION_DESPACHO_LETRADO");
@@ -3540,7 +3549,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				
 				
 				helperInformes.completarHashSalida(registro,getDireccionPersonalLetradoSalidaOficio(idPersona,idInstitucion));
-				
 				pobLetrado = (String)registro.get("POBLACION_GUARDIA_LETRADO");
 				if(pobLetrado==null ||pobLetrado.trim().equalsIgnoreCase("")){
 					String idPobLetrado = (String)registro.get("IDPOBLACION_GUARDIA_LETRADO");
@@ -3563,8 +3571,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				}
 				if (registro.get("MOVIL_GUARDIA_LETRADO")!=null) {
 					registro.put("MOVIL_LETRADO", registro.get("MOVIL_GUARDIA_LETRADO"));
-				}
-				
+				}				
 				
 				helperInformes.completarHashSalida(registro,getActuacionDesignaSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna));
 				
@@ -3632,66 +3639,66 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					registro.put("PROVINCIA_JUZGADO", " ");
 				}
 				//Sacamos el tipo ejg colegio (@cat)				
-				Vector vtipoejgcolegiodesigna=getTipoEJGColegioDesigna(idTurno, numeroDesigna, anioDesigna, idInstitucion, idioma);				
-					for (int s = 0; s < vtipoejgcolegiodesigna.size(); s++) {
-						Hashtable registropretenciones = (Hashtable) vtipoejgcolegiodesigna.get(s);
-						String tipoejgDesigna = (String)registropretenciones.get("TIPO_EJG_COLEGIO");
-						if(tipoejgDesigna!=null && !tipoejgDesigna.trim().equalsIgnoreCase("")){
-							registro.put("TIPO_EJG_COLEGIO", tipoejgDesigna);
-						}else{
+					Vector vtipoejgcolegiodesigna=getTipoEJGColegioDesigna(idTurno, numeroDesigna, anioDesigna, idInstitucion, idioma);				
+						for (int s = 0; s < vtipoejgcolegiodesigna.size(); s++) {
+							Hashtable registropretenciones = (Hashtable) vtipoejgcolegiodesigna.get(s);
+							String tipoejgDesigna = (String)registropretenciones.get("TIPO_EJG_COLEGIO");
+							if(tipoejgDesigna!=null && !tipoejgDesigna.trim().equalsIgnoreCase("")){
+								registro.put("TIPO_EJG_COLEGIO", tipoejgDesigna);
+							}else{
+								registro.put("TIPO_EJG_COLEGIO", " ");
+							}
+						}
+						if (vtipoejgcolegiodesigna.size()==0){
 							registro.put("TIPO_EJG_COLEGIO", " ");
 						}
-					}
-					if (vtipoejgcolegiodesigna.size()==0){
-						registro.put("TIPO_EJG_COLEGIO", " ");
-					}
-					
+						
 				String observacionesUltimoLetrado  = (String)registro.get("OBSERVACIONES_ULTIMOLETRADO");
 				if (observacionesUltimoLetrado!=null && !observacionesUltimoLetrado.trim().equals("")){		
 					registro.put("OBSERVACIONES_ULTIMOLETRADO", observacionesUltimoLetrado);
 				}else {
 					registro.put("OBSERVACIONES_ULTIMOLETRADO", "");
-				}
+				}						
 						
 				 /**Fechas en Letras para que aparezcan en el idioma que se le pasa**/							
-				String fechaRenuncia  = (String)registro.get("FECHARENUNCIAENLETRA");
-				if (fechaRenuncia!=null && !fechaRenuncia.trim().equals("")){		
-					htCodigo = new Hashtable();						
-					htCodigo.put(new Integer(1), fechaRenuncia);
-					htCodigo.put(new Integer(2), "m");
-					htCodigo.put(new Integer(3), idioma);								
-					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-											htCodigo, "PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA", "FECHARENUNCIA_ENLETRA"));
-					}else {
-							registro.put("FECHARENUNCIA_ENLETRA", "");
-					}
-				
-				String fechaSolicitudRenunciaLetra  = (String)registro.get("FECHASOLICITUDRENUNCIA");
-				if (fechaSolicitudRenunciaLetra!=null && !fechaSolicitudRenunciaLetra.trim().equals("")){		
-					htCodigo = new Hashtable();						
-					htCodigo.put(new Integer(1), fechaSolicitudRenunciaLetra);
-					htCodigo.put(new Integer(2), "m");
-					htCodigo.put(new Integer(3), idioma);								
-					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-											htCodigo, "PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA", "FECHA_SOLICITUDRENUNCIA_LETRA"));
-					}else {
-							registro.put("FECHA_SOLICITUDRENUNCIA_LETRA", "");
-					}			
-				
+					String fechaRenuncia  = (String)registro.get("FECHARENUNCIAENLETRA");
+					if (fechaRenuncia!=null && !fechaRenuncia.trim().equals("")){		
+						htCodigo = new Hashtable();						
+						htCodigo.put(new Integer(1), fechaRenuncia);
+						htCodigo.put(new Integer(2), "m");
+						htCodigo.put(new Integer(3), idioma);								
+						helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
+												htCodigo, "PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA", "FECHARENUNCIA_ENLETRA"));
+						}else {
+								registro.put("FECHARENUNCIA_ENLETRA", "");
+						}
 					
-				/**se muestra el mes actual en letra**/
-				htCodigo = new Hashtable();
-			    htCodigo.put(new Integer(1), (String)registro.get("MESACTUAL"));
-				htCodigo.put(new Integer(2), "m");
-				htCodigo.put(new Integer(3), idioma);
-		     	helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-												htCodigo, "PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHAENLETRA", "MES_ACTUAL"));
-		     	registro.put("MES_ACTUAL", registro.get("MES_ACTUAL").toString().toUpperCase());
-		     	registro.put("MES_ACTUAL_MINUS", registro.get("MES_ACTUAL").toString().toLowerCase());
-		     		
-				//Sacamos los datos de la ultima Actuacion
-		     	helperInformes.completarHashSalida(registro,getUltimaActuacionDesignaSalida(idInstitucion,numeroDesigna,idTurno,anioDesigna));
-		     	if(registro.containsKey("NUMASUNTO_UA") && registro.get("NUMASUNTO_UA")!=null && !((String)registro.get("NUMASUNTO_UA")).trim().equals("")){
+					String fechaSolicitudRenunciaLetra  = (String)registro.get("FECHASOLICITUDRENUNCIA");
+					if (fechaSolicitudRenunciaLetra!=null && !fechaSolicitudRenunciaLetra.trim().equals("")){		
+						htCodigo = new Hashtable();						
+						htCodigo.put(new Integer(1), fechaSolicitudRenunciaLetra);
+						htCodigo.put(new Integer(2), "m");
+						htCodigo.put(new Integer(3), idioma);								
+						helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
+												htCodigo, "PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA", "FECHA_SOLICITUDRENUNCIA_LETRA"));
+						}else {
+								registro.put("FECHA_SOLICITUDRENUNCIA_LETRA", "");
+						}		
+					
+						
+					/**se muestra el mes actual en letra**/
+					htCodigo = new Hashtable();
+				    htCodigo.put(new Integer(1), (String)registro.get("MESACTUAL"));
+					htCodigo.put(new Integer(2), "m");
+					htCodigo.put(new Integer(3), idioma);
+			     	helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
+													htCodigo, "PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHAENLETRA", "MES_ACTUAL"));
+			     	registro.put("MES_ACTUAL", registro.get("MES_ACTUAL").toString().toUpperCase());
+			     	registro.put("MES_ACTUAL_MINUS", registro.get("MES_ACTUAL").toString().toLowerCase());
+			     		
+					//Sacamos los datos de la ultima Actuacion
+			     	helperInformes.completarHashSalida(registro,getUltimaActuacionDesignaSalida(idInstitucion,numeroDesigna,idTurno,anioDesigna));
+			     	if(registro.containsKey("NUMASUNTO_UA") && registro.get("NUMASUNTO_UA")!=null && !((String)registro.get("NUMASUNTO_UA")).trim().equals("")){
 					String idProcedimientoUA =(String)registro.get("IDPROCEDIMIENTO_UA");
 					helperInformes.completarHashSalida(registro,helperInformes.getProcedimientoSalida(idInstitucion, idProcedimientoUA,"UA"));
 					
@@ -3721,69 +3728,72 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					
 				}
 							
-				htCodigo = new Hashtable();
-				htCodigo.put(new Integer(1), idInstitucion);
-				htCodigo.put(new Integer(2), numeroDesigna);
-				htCodigo.put(new Integer(3), idTurno);
-				htCodigo.put(new Integer(4), anioDesigna);
-	            htCodigo.put(new Integer(5),idioma);				                								
-	            helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETDELITOS_DESIGNA", "DELITOS"));
-				htCodigo.remove(new Integer(5));
 					
-				
-					if(Idpretension!=null && !Idpretension.trim().equalsIgnoreCase("")){			
-					Vector vpretenciones=ejgdm.getPretension(Idpretension, idInstitucion,idioma);
-					for (int s = 0; s < vpretenciones.size(); s++) {
-						Hashtable registropretenciones = (Hashtable) vpretenciones.get(s);
-						String procedimiento1 = (String)registropretenciones.get("PRETENSION");
-						if(procedimiento1!=null && !procedimiento1.trim().equalsIgnoreCase(""))
-							registro.put("PROCEDIMIENTO_DESIGNA", procedimiento1);
-						else
-							registro.put("PROCEDIMIENTO_DESIGNA", "");
-					}							
-				
-				}else	registro.put("PROCEDIMIENTO_DESIGNA", "");	
-				
-					helperInformes.completarHashSalida(registro,helperInformes.getTurnoSalida(idInstitucion,idTurno));
-					
-					//Metemos la descripcion del tipo de designa
-				Vector vtipoDesignaColegio=null;
-				if(idTipoDesigna!=null && !idTipoDesigna.trim().equals("")){
-					vtipoDesignaColegio=helperInformes.getTipoDesignaColegio(idInstitucion,idTipoDesigna,idioma);
-					for (int s = 0; s < vtipoDesignaColegio.size(); s++) {
-						Hashtable tipodesignacolegio = (Hashtable) vtipoDesignaColegio.get(s);
-						String tipodesigna = (String)tipodesignacolegio.get("DESC_TIPODESIGNA");
-						if (!tipodesigna.equals("")&& tipodesigna!=null){
-							registro.put("DESC_TIPODESIGNA", tipodesigna);
-						}else {
-							registro.put("DESC_TIPODESIGNA", " ");
-						}
-					}
-				}							
-				else{
-					registro.put("DESC_TIPODESIGNA", " ");
-				}
 							
-		       /**Sacamos la etiqueta TIPO_EJG_COLEGIO en el idioma del interesado si este no tiene idioma se saca en el idioma de la institucion**/
-				Vector vtipoejgcolegiodesigna1=getTipoEJGColegioDesigna(idTurno, numeroDesigna, anioDesigna, idInstitucion, idioma);				
-				for (int s = 0; s < vtipoejgcolegiodesigna1.size(); s++) {
-					Hashtable registropretenciones = (Hashtable) vtipoejgcolegiodesigna1.get(s);
-					String tipoejgDesigna = (String)registropretenciones.get("TIPO_EJG_COLEGIO");
-					if(tipoejgDesigna!=null && !tipoejgDesigna.trim().equalsIgnoreCase("")){
-						registro.put("TIPO_EJG_COLEGIO", tipoejgDesigna);
-					}else{
-						registro.put("TIPO_EJG_COLEGIO", " ");
-					}
-				}						
-				if (vtipoejgcolegiodesigna1.size()==0){
-					registro.put("TIPO_EJG_COLEGIO", " ");
-				}
+							
+							
+							htCodigo = new Hashtable();
+							htCodigo.put(new Integer(1), idInstitucion);
+							htCodigo.put(new Integer(2), numeroDesigna);
+							htCodigo.put(new Integer(3), idTurno);
+							htCodigo.put(new Integer(4), anioDesigna);
+				            htCodigo.put(new Integer(5),idioma);				                								
+				            helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETDELITOS_DESIGNA", "DELITOS"));
+							htCodigo.remove(new Integer(5));
+								
+							
+								if(Idpretension!=null && !Idpretension.trim().equalsIgnoreCase("")){			
+								Vector vpretenciones=ejgdm.getPretension(Idpretension, idInstitucion,idioma);
+								for (int s = 0; s < vpretenciones.size(); s++) {
+									Hashtable registropretenciones = (Hashtable) vpretenciones.get(s);
+									String procedimiento1 = (String)registropretenciones.get("PRETENSION");
+									if(procedimiento1!=null && !procedimiento1.trim().equalsIgnoreCase(""))
+										registro.put("PROCEDIMIENTO_DESIGNA", procedimiento1);
+									else
+										registro.put("PROCEDIMIENTO_DESIGNA", "");
+								}							
+							
+							}else	registro.put("PROCEDIMIENTO_DESIGNA", "");	
+							
+								helperInformes.completarHashSalida(registro,helperInformes.getTurnoSalida(idInstitucion,idTurno));
+								
+								//Metemos la descripcion del tipo de designa
+							Vector vtipoDesignaColegio=null;
+							if(idTipoDesigna!=null && !idTipoDesigna.trim().equals("")){
+								vtipoDesignaColegio=helperInformes.getTipoDesignaColegio(idInstitucion,idTipoDesigna,idioma);
+								for (int s = 0; s < vtipoDesignaColegio.size(); s++) {
+									Hashtable tipodesignacolegio = (Hashtable) vtipoDesignaColegio.get(s);
+									String tipodesigna = (String)tipodesignacolegio.get("DESC_TIPODESIGNA");
+									if (!tipodesigna.equals("")&& tipodesigna!=null){
+										registro.put("DESC_TIPODESIGNA", tipodesigna);
+									}else {
+										registro.put("DESC_TIPODESIGNA", " ");
+									}
+								}
+							}							
+							else{
+								registro.put("DESC_TIPODESIGNA", " ");
+							}
+							
+				       /**Sacamos la etiqueta TIPO_EJG_COLEGIO en el idioma del interesado si este no tiene idioma se saca en el idioma de la institucion**/
+						Vector vtipoejgcolegiodesigna1=getTipoEJGColegioDesigna(idTurno, numeroDesigna, anioDesigna, idInstitucion, idioma);				
+						for (int s = 0; s < vtipoejgcolegiodesigna1.size(); s++) {
+							Hashtable registropretenciones = (Hashtable) vtipoejgcolegiodesigna1.get(s);
+							String tipoejgDesigna = (String)registropretenciones.get("TIPO_EJG_COLEGIO");
+							if(tipoejgDesigna!=null && !tipoejgDesigna.trim().equalsIgnoreCase("")){
+								registro.put("TIPO_EJG_COLEGIO", tipoejgDesigna);
+							}else{
+								registro.put("TIPO_EJG_COLEGIO", " ");
+							}
+						}						
+						if (vtipoejgcolegiodesigna1.size()==0){
+							registro.put("TIPO_EJG_COLEGIO", " ");
+						}
 			
-		  } catch (Exception e) {
+		  }catch (Exception e) {
 			throw new ClsExceptions (e, "Error al obtener la informacion en getregistrodatosEjg");
-		  }
-		
-		  return registro;
+		}
+			return registro;
 	  }
 	  
 	  public Vector ejecutaSelectBind(String select, Hashtable codigos) throws ClsExceptions {
@@ -3807,7 +3817,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		}
 		return datos;
 	}
-	  
 	  public Vector getPersonasDesignadasEjg(Integer idInstitucion, Integer idTipoEJG, Integer anio, Integer numero) throws ClsExceptions,SIGAException {
 			Vector datos=new Vector();
 			try {
