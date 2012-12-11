@@ -153,7 +153,8 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 			sql.append(" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO,'H','o','a'),"+idioma+") as O_A,");
 			sql.append(" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO,'H','o','a'),"+idioma+") as A_O,");
 			sql.append(" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO,'H','el','la'),"+idioma+") as EL_LA,");
-			sql.append(" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO,'H','del','dela'),"+idioma+") as DEL_DELA,");			
+			sql.append(" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO,'H','del','dela'),"+idioma+") as DEL_DELA,");	
+			sql.append(" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO,'H','del.contraccion','dela.contraccion'),"+idioma+") as DEL_DELA_CONTRACCION,");
 
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idioma);
@@ -168,7 +169,7 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 			sql.append(") DESC_TIPOIDENTIFICACION, ");
 			
 			sql.append(" TO_CHAR(CLI.FECHAALTA, 'dd-mm-yyyy') FECHAALTA, CLI.CARACTER,      CLI.PUBLICIDAD, ");
-			sql.append(" CLI.GUIAJUDICIAL, CLI.ABONOSBANCO, CLI.CARGOSBANCO, ");
+			sql.append(" CLI.GUIAJUDICIAL, CLI.CARGOSBANCO, ");
 			sql.append(" CLI.COMISIONES, CLI.IDTRATAMIENTO, CLI.IDLENGUAJE, CLI.FOTOGRAFIA, ");
 			sql.append(" CLI.ASIENTOCONTABLE, TO_CHAR(CLI.FECHACARGA, 'dd-mm-yyyy') FECHACARGA, CLI.LETRADO, TO_CHAR(CLI.FECHAACTUALIZACION, 'dd-mm-yyyy') FECHAACTUALIZACION, ");
 			sql.append(" TO_CHAR(CLI.FECHAEXPORTCENSO, 'dd-mm-yyyy') FECHAEXPORTCENSO, CLI.NOENVIARREVISTA, CLI.NOAPARECERREDABOGACIA, ");
@@ -196,7 +197,7 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 			sql.append(" CLINOT.IDINSTITUCION IDINSTITUCION_NOTARIO, ");
 			sql.append(" TO_CHAR(CLINOT.FECHAALTA, 'dd-mm-yyyy') FECHAALTA_NOTARIO, CLINOT.CARACTER CARACTER_NOTARIO, ");
 			sql.append(" CLINOT.PUBLICIDAD PUBLICIDAD_NOTARIO, CLINOT.GUIAJUDICIAL GUIAJUDICIAL_NOTARIO, ");
-			sql.append(" CLINOT.ABONOSBANCO ABONOSBANCO_NOTARIO, CLINOT.CARGOSBANCO CARGOSBANCO_NOTARIO, ");
+			sql.append(" CLINOT.CARGOSBANCO CARGOSBANCO_NOTARIO, ");
 			sql.append(" CLINOT.COMISIONES COMISIONES_NOTARIO, CLINOT.IDTRATAMIENTO IDTRATAMIENTO_NOTARIO, ");
 			sql.append(" CLINOT.IDLENGUAJE IDLENGUAJE_NOTARIO, CLINOT.FOTOGRAFIA FOTOGRAFIA_NOTARIO, ");
 			sql.append(" CLINOT.ASIENTOCONTABLE ASIENTOCONTABLE_NOTARIO,TO_CHAR(CLINOT.FECHACARGA, 'dd-mm-yyyy')  FECHACARGA_NOTARIO, ");
