@@ -69,9 +69,17 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 		UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 		DefinirEJGForm miForm = (DefinirEJGForm)formulario;		
 		nuevos = miForm.getDatos();
-		ScsEJGAdm admEJG = new ScsEJGAdm(this.getUserBean(request));
+		ScsEJGAdm ejgAdm = new ScsEJGAdm(this.getUserBean(request));
 		
 		try {
+			
+			//Se realiza el nuevo parseo de IDTIPORATIFICACIONEJG
+			if (!nuevos.get("IDTIPORATIFICACIONEJG").equals("")&&nuevos.get("IDTIPORATIFICACIONEJG").toString().contains(",")) {
+				// Ponemos el IDTIPORATIFICACIONEJG en el formato correcto
+				String[] idTipoRatificacionEjg = nuevos.get("IDTIPORATIFICACIONEJG").toString().split(",");
+				nuevos.put("IDTIPORATIFICACIONEJG", idTipoRatificacionEjg[0] );
+			}			
+			
 			// Ponemos la fecha en el formato correcto
 			if (nuevos.get("FECHARATIFICACION")!=null && !nuevos.get("FECHARATIFICACION").equals(""))
 				nuevos.put("FECHARATIFICACION", GstDate.getApplicationFormatDate("",nuevos.get("FECHARATIFICACION").toString()));
@@ -90,7 +98,7 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 			// Actualizamos en la base de datos
 			tx=usr.getTransaction();
 			tx.begin();
-			admEJG.update(nuevos,(Hashtable)request.getSession().getAttribute("DATABACKUP"));
+			ejgAdm.update(nuevos,(Hashtable)request.getSession().getAttribute("DATABACKUP"));
 			tx.commit();
 			// En DATABACKUP almacenamos los datos más recientes por si se vuelve a actualizar seguidamente
 			nuevos.put("FECHAMODIFICACION", "sysdate");
@@ -132,12 +140,12 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 			throwExcp("Error al recuperar el parametro HABILITA_ACTAS_COMISION",e,null);
 		}
 		
-		ScsEJGAdm admEJG = new ScsEJGAdm(this.getUserBean(request));
+		ScsEJGAdm ejgAdm = new ScsEJGAdm(this.getUserBean(request));
 		
 		try {			
-			v = admEJG.selectPorClave(miHash);
+			v = ejgAdm.selectPorClave(miHash);
 			try{
-				request.getSession().setAttribute("DATABACKUP",admEJG.beanToHashTable((ScsEJGBean)v.get(0)));
+				request.getSession().setAttribute("DATABACKUP",ejgAdm.beanToHashTable((ScsEJGBean)v.get(0)));
 			}catch (Exception e) {
 				throwExcp("error.general.yanoexiste",e,null);
 			}

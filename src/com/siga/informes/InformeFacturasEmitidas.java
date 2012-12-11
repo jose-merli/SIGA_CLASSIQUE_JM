@@ -10,20 +10,21 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.w3c.dom.Element; 
-import org.w3c.dom.Document; 
-import weblogic.xml.dom.DocumentImpl;
-import weblogic.apache.xml.serialize.XMLSerializer;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import weblogic.apache.xml.serialize.OutputFormat;
-import org.redabogacia.sigaservices.app.util.ReadProperties;
-import org.redabogacia.sigaservices.app.util.SIGAReferences;
+import weblogic.apache.xml.serialize.XMLSerializer;
+import weblogic.xml.dom.DocumentImpl;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
@@ -46,6 +47,49 @@ public class InformeFacturasEmitidas extends MasterReport
 	public InformeFacturasEmitidas(UsrBean usuario) {
 		super(usuario);
 	}
+
+	protected String reemplazarDatos(HttpServletRequest request, String plantillaFO, Hashtable datosBase) throws ClsExceptions, SIGAException 
+	{
+		String institucion = this.getUsuario().getLocation();
+		String fDesde = UtilidadesHash.getString(datosBase, "FECHA_DESDE");
+		String fHasta = UtilidadesHash.getString(datosBase, "FECHA_HASTA");
+		
+		// Colocamos los registros
+		FacFacturaAdm adm = new FacFacturaAdm(this.getUsuario());
+		Hashtable auxFac = adm.getFacturasEmitidas(institucion, fDesde, fHasta);
+		ClsLogging.writeFileLog("INFORMEFACTURAS: Despues de ejecutar la consulta Facturas Emitidas",10);
+		Vector vDatos = (Vector)auxFac.get("REGISTROS");
+		if (vDatos != null){
+			ClsLogging.writeFileLog("INFORMEFACTURAS: ANTES DE REEMPLAZAR VARIABLE REGISTROS",10);
+			plantillaFO = this.reemplazaRegistros(plantillaFO, vDatos, null, "FACTURA_EMITIDA");
+		}	
+		ClsLogging.writeFileLog("INFORMEFACTURAS: DESPUES DE REEMPLAZAR VARIABLE REGISTROS",10);
+		// Colocamos los totales
+		Vector vTotalesXiva = (Vector)auxFac.get("TOTALES_X_IVA");
+		if (vTotalesXiva != null){
+			ClsLogging.writeFileLog("INFORMEFACTURAS: ANTES DE REEMPLAZAR VARIABLE TOTALES_X_IVA",10);
+			plantillaFO = this.reemplazaRegistros(plantillaFO, vTotalesXiva, null, "TOTAL_POR_IVA");
+		}	
+		ClsLogging.writeFileLog("INFORMEFACTURAS: DESPUES DE REEMPLAZAR VARIABLE TOTALES_X_IVA",10);
+		// Colocamos datos fijos (cabeceras, etc)
+		CenInstitucionAdm admInstitucion= new CenInstitucionAdm (this.getUsuario());
+		Hashtable hDatosFijos = admInstitucion.getDatosInformeFacturasEmitidas(institucion);
+		ClsLogging.writeFileLog("INFORMEFACTURAS: Despues de ejecutar la consulta de Datos Informe Facturas Emitidas",10);
+		UtilidadesHash.set(hDatosFijos, "FECHA_DESDE", fDesde);
+		UtilidadesHash.set(hDatosFijos, "FECHA_HASTA", fHasta);
+		if (vDatos != null && vDatos.size() > 0) {
+			Hashtable aux = (Hashtable)vDatos.get(vDatos.size()-1);
+			UtilidadesHash.set(hDatosFijos, "TOTAL_IVA", UtilidadesHash.getString(aux, "TOTAL_ACUMULADO_IVA"));
+			UtilidadesHash.set(hDatosFijos, "TOTAL_TOTAL_FACTURA", UtilidadesHash.getString(aux, "TOTAL_ACUMULADO_TOTAL_FACTURA"));
+			UtilidadesHash.set(hDatosFijos, "TOTAL_BASE_IMPONIBLE", UtilidadesHash.getString(aux, "TOTAL_ACUMULADO_BASE_IMPONIBLE"));
+		}
+		ClsLogging.writeFileLog("NFORMEFACTURAS:Antes de reemplazar las variables del informe",10);
+		plantillaFO = this.reemplazaVariables(hDatosFijos, plantillaFO);
+		ClsLogging.writeFileLog("NFORMEFACTURAS:Despues de reemplazar las variables del informe",10);
+
+		return plantillaFO;
+	}	
+	
 	public File generarListadoFacturasEmitidasOld (HttpServletRequest request, Hashtable datos) throws ClsExceptions,SIGAException 
 	{
 		String resultado="exito";
@@ -117,52 +161,7 @@ public class InformeFacturasEmitidas extends MasterReport
 			}
 		}
         return fPdf;
-	}
-	protected String reemplazarDatos(HttpServletRequest request, String plantillaFO, Hashtable datosBase) throws ClsExceptions, SIGAException 
-	{
-		String institucion = this.getUsuario().getLocation();
-		String fDesde = UtilidadesHash.getString(datosBase, "FECHA_DESDE");
-		String fHasta = UtilidadesHash.getString(datosBase, "FECHA_HASTA");
-		
-		// Colocamos los registros
-		FacFacturaAdm adm = new FacFacturaAdm(this.getUsuario());
-		Hashtable auxFac = adm.getFacturasEmitidas(institucion, fDesde, fHasta);
-		ClsLogging.writeFileLog("INFORMEFACTURAS: Despues de ejecutar la consulta Facturas Emitidas",10);
-		Vector vDatos = (Vector)auxFac.get("REGISTROS");
-		if (vDatos != null){
-			ClsLogging.writeFileLog("INFORMEFACTURAS: ANTES DE REEMPLAZAR VARIABLE REGISTROS",10);
-			plantillaFO = this.reemplazaRegistros(plantillaFO, vDatos, null, "FACTURA_EMITIDA");
-		}	
-		ClsLogging.writeFileLog("INFORMEFACTURAS: DESPUES DE REEMPLAZAR VARIABLE REGISTROS",10);
-		// Colocamos los totales
-		Vector vTotalesXiva = (Vector)auxFac.get("TOTALES_X_IVA");
-		if (vTotalesXiva != null){
-			ClsLogging.writeFileLog("INFORMEFACTURAS: ANTES DE REEMPLAZAR VARIABLE TOTALES_X_IVA",10);
-			plantillaFO = this.reemplazaRegistros(plantillaFO, vTotalesXiva, null, "TOTAL_POR_IVA");
-		}	
-		ClsLogging.writeFileLog("INFORMEFACTURAS: DESPUES DE REEMPLAZAR VARIABLE TOTALES_X_IVA",10);
-		// Colocamos datos fijos (cabeceras, etc)
-		CenInstitucionAdm admInstitucion= new CenInstitucionAdm (this.getUsuario());
-		Hashtable hDatosFijos = admInstitucion.getDatosInformeFacturasEmitidas(institucion);
-		ClsLogging.writeFileLog("INFORMEFACTURAS: Despues de ejecutar la consulta de Datos Informe Facturas Emitidas",10);
-		UtilidadesHash.set(hDatosFijos, "FECHA_DESDE", fDesde);
-		UtilidadesHash.set(hDatosFijos, "FECHA_HASTA", fHasta);
-		if (vDatos != null && vDatos.size() > 0) {
-			Hashtable aux = (Hashtable)vDatos.get(vDatos.size()-1);
-			UtilidadesHash.set(hDatosFijos, "TOTAL_IVA", UtilidadesHash.getString(aux, "TOTAL_ACUMULADO_IVA"));
-			UtilidadesHash.set(hDatosFijos, "TOTAL_TOTAL_FACTURA", UtilidadesHash.getString(aux, "TOTAL_ACUMULADO_TOTAL_FACTURA"));
-			UtilidadesHash.set(hDatosFijos, "TOTAL_BASE_IMPONIBLE", UtilidadesHash.getString(aux, "TOTAL_ACUMULADO_BASE_IMPONIBLE"));
-		}
-		ClsLogging.writeFileLog("NFORMEFACTURAS:Antes de reemplazar las variables del informe",10);
-		plantillaFO = this.reemplazaVariables(hDatosFijos, plantillaFO);
-		ClsLogging.writeFileLog("NFORMEFACTURAS:Despues de reemplazar las variables del informe",10);
-
-		return plantillaFO;
-	}
-
-	
-	
-	
+	}	
 	
 	/**
 	 * 
@@ -461,6 +460,7 @@ public class InformeFacturasEmitidas extends MasterReport
 					desgloseIvaE.appendChild(ivaPorcE);
 					desgloseIvaE.appendChild(ivaCuotaE);
 					desgloseIvaE.appendChild(ivaImporteTotalE);
+					desgloseIvaE.appendChild(textoDesglose);
 					
 					root.appendChild(desgloseIvaE);
 					
