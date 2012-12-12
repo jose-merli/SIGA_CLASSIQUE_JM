@@ -2789,42 +2789,26 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 */
 	
-	private Vector getFundamentoEjgSalida (String idInstitucion, String idFundamento,String idioma) throws ClsExceptions  
-	{
-				
+	private Vector getFundamentoEjgSalida (String idInstitucion, String idFundamento,String idioma) throws ClsExceptions {			
 		try {
 			Hashtable htCodigos = new Hashtable();
-			int keyContador = 0;
-			
-		
-			StringBuffer sql = new StringBuffer();
-			sql.append(" ");
-			sql.append(" select       f_siga_getrecurso(nvl(tf.descripcion, '-'), :");
-			keyContador++;
-			htCodigos.put(new Integer(keyContador), idioma);
-			sql.append(keyContador);
-			sql.append(") as FUNDAMENTO ");
-			sql.append(" from scs_tipofundamentocalif tf ");
-
-			sql.append(" WHERE ");
-			
-			
-			keyContador++;
-			htCodigos.put(new Integer(keyContador), idInstitucion);
-			sql.append(" tf.idinstitucion = :");
-			sql.append(keyContador);
-			
-			keyContador++;
-			htCodigos.put(new Integer(keyContador), idFundamento);
-			sql.append(" AND tf.idfundamentocalif  = :");
-			sql.append(keyContador);
-			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
+			
+			String sql = "SELECT F_SIGA_GETRECURSO(NVL(TFC.DESCRIPCION, '-'), :1) AS FUNDAMENTO, "+
+					" TEXTOPLANTILLA AS TEXTO_FUNDAMENTO_CALIFICACION "+
+					" FROM SCS_TIPOFUNDAMENTOCALIF TFC "+
+					" WHERE TFC.IDINSTITUCION = :2 "+
+					" AND TFC.IDFUNDAMENTOCALIF = :3";
+			
+			htCodigos.put(1, idioma);
+			htCodigos.put(2, idInstitucion);
+			htCodigos.put(3, idFundamento);
+						
+			return helperInformes.ejecutaConsultaBind(sql, htCodigos);
 			
 		}
 		catch (Exception e) {
-			throw new ClsExceptions (e, "Error ScsEJGAdm.getFundamentoCalificacionEjgSalida");
+			throw new ClsExceptions (e, "Error ScsEJGAdm.getFundamentoEjgSalida");
 		}
 	}
 	/**
@@ -3179,24 +3163,21 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				registro.put("JUZGADO", juzgadoDJ);
 				
 				String asuntoDJ = (String)registro.get("ASUNTO_DEFENSA_JURIDICA");
-				registro.put("ASUNTO", asuntoDJ);
-				
+				registro.put("ASUNTO", asuntoDJ);				
 			}
+			
 			//Aniadimos los datos del colegiado del ejg
 			String idPersona = (String)registro.get("IDPERSONA");
-			helperInformes.completarHashSalida(registro,getColegiadoEjgCalificacionEjgSalida(idInstitucion, 
-					idPersona));
+			helperInformes.completarHashSalida(registro,getColegiadoEjgCalificacionEjgSalida(idInstitucion, idPersona));
 			
 			//Aniadimos los datos del procurador
 			String idProcurador = (String)registro.get("IDPROCURADOR");
 			String idInstitucionProc = (String)registro.get("IDINSTITUCIONPROC");
-			helperInformes.completarHashSalida(registro,getProcuradorCalificacionEjgSalida(idInstitucionProc, 
-					idProcurador,"PROCURADOR"));
+			helperInformes.completarHashSalida(registro,getProcuradorCalificacionEjgSalida(idInstitucionProc, idProcurador,"PROCURADOR"));
 			
 			// Aniadimos el fundamento
 			String idFundamento = (String)registro.get("IDFUNDAMENTOCALIF");
-			helperInformes.completarHashSalida(registro,getFundamentoEjgSalida(idInstitucion, 
-					idFundamento,idioma));
+			helperInformes.completarHashSalida(registro,getFundamentoEjgSalida(idInstitucion, idFundamento,idioma));
 			
 			//Aniadimos el Dictamen
 			String idDictamen = (String)registro.get("IDTIPODICTAMENEJG");
@@ -3367,24 +3348,15 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			 
 			sql.append(" TO_CHAR(ASI.FECHAHORA,'DD/MM/YYYY') FECHA_ASISTENCIA, ");
 			sql.append(" PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(ASI.FECHAHORA ,'m',1) FECHA_ASISTENCIA_LETRA, ");
-			sql.append(" DECODE(ASI.NUMERODILIGENCIA, ");
-			sql.append(" NULL, ");
-			sql.append(" ASI.NUMEROPROCEDIMIENTO, ");
-			sql.append(" ASI.NUMERODILIGENCIA) AS ASUNTODILIGENCIA, ");
-			sql.append(" DECODE(ASI.COMISARIA, ");
-			sql.append(" NULL, ");
-			sql.append(" (SELECT J.NOMBRE ");
-			sql.append(" FROM SCS_JUZGADO J ");
-			sql.append(" WHERE J.IDINSTITUCION = ASI.JUZGADOIDINSTITUCION ");
-			sql.append(" AND J.IDJUZGADO = ASI.JUZGADO), ");
-			sql.append(" (SELECT C.NOMBRE ");
-			sql.append(" FROM SCS_COMISARIA C ");
-			sql.append(" WHERE C.IDINSTITUCION = ASI.COMISARIAIDINSTITUCION ");
-			sql.append(" AND C.IDCOMISARIA = ASI.COMISARIA)) AS COMISARIAJUZGADO, ");
-	 
+			sql.append(" DECODE(ASI.NUMERODILIGENCIA, NULL, ASI.NUMEROPROCEDIMIENTO, ASI.NUMERODILIGENCIA) AS ASUNTODILIGENCIA, ");
+			sql.append(" DECODE(ASI.COMISARIA, NULL, "+
+					" (SELECT J.NOMBRE FROM SCS_JUZGADO J WHERE J.IDINSTITUCION = ASI.JUZGADOIDINSTITUCION AND J.IDJUZGADO = ASI.JUZGADO), "+
+					" (SELECT C.NOMBRE FROM SCS_COMISARIA C WHERE C.IDINSTITUCION = ASI.COMISARIAIDINSTITUCION AND C.IDCOMISARIA = ASI.COMISARIA)) AS COMISARIAJUZGADO, ");
 			sql.append(" GT.NOMBRE NOMBRE_GUARDIA_ASISTENCIA, ");
 			sql.append(" PER.nombre || ' ' || PER.apellidos1 || ' ' || PER.apellidos2 AS NOMBRE_LETRADO_ASISTENCIA, ");
-			sql.append(" DECODE(COL.COMUNITARIO,'1',COL.NCOMUNITARIO, COL.NCOLEGIADO) NCOLEGIADO_LETRADO_ASISTENCIA ");
+			sql.append(" DECODE(COL.COMUNITARIO,'1',COL.NCOMUNITARIO, COL.NCOLEGIADO) NCOLEGIADO_LETRADO_ASISTENCIA, ");
+			sql.append(" ASI.IDPERSONACOLEGIADO AS IDPERSONA_LET_ASIST, ");
+			sql.append(" ASI.IDINSTITUCION AS IDINSTITUCION_LET_ASIST");
 
 			sql.append(" FROM SCS_ASISTENCIA ASI, SCS_GUARDIASTURNO GT,CEN_COLEGIADO COL, CEN_PERSONA PER ");
 			sql.append(" WHERE  ");
@@ -4712,8 +4684,33 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 										htFuncion, "f_siga_getunidadejg", "TOTAL_SOLICITANTE"));
 							
 							//Aniadimos los datos del procurador de la designa asociada a un EJG
-							helperInformes.completarHashSalida(registro,getAsistenciaEjgSalida(idInstitucion, 
-										tipoEjg,anioEjg,numeroEjg));
+							helperInformes.completarHashSalida(registro,getAsistenciaEjgSalida(idInstitucion, tipoEjg,anioEjg,numeroEjg));
+							
+							if (registro.get("ROWNUM").equals("1")) {
+								String idPersonaLetradoAsistencia  = (String)registro.get("IDPERSONA_LET_ASIST");
+								String idInstitucionLetradoAsistencia  = (String)registro.get("IDINSTITUCION_LET_ASIST");							
+								helperInformes.completarHashSalida(registro,getDireccionLetradoSalida(idPersonaLetradoAsistencia,idInstitucionLetradoAsistencia,"LET_ASIST"));
+								
+								String poblacionLetradoAsistencia = (String)registro.get("POBLACION_LET_ASIST");
+								if(poblacionLetradoAsistencia==null ||poblacionLetradoAsistencia.trim().equalsIgnoreCase("")){
+									
+									String idPoblacionLetradoAsistencia = (String)registro.get("ID_POBLACION_LET_ASIST");
+									helperInformes.completarHashSalida(registro,helperInformes.getNombrePoblacionSalida(idPoblacionLetradoAsistencia,"POBLACION_LET_ASIST"));
+									
+									String idProvinciaLetradoAsistencia = (String)registro.get("ID_PROVINCIA_LET_ASIST");
+									if(idProvinciaLetradoAsistencia!=null && !idProvinciaLetradoAsistencia.trim().equalsIgnoreCase(""))
+										helperInformes.completarHashSalida(registro,helperInformes.getNombreProvinciaSalida(idProvinciaLetradoAsistencia,"PROVINCIA_LET_ASIST"));
+									else
+										UtilidadesHash.set(registro, "PROVINCIA_LET_ASIST", "");									
+								}else{
+									UtilidadesHash.set(registro, "PROVINCIA_LET_ASIST", "");
+								}
+							} else {
+								UtilidadesHash.set(registro, "DOMICILIO_LET_ASIST", "");
+								UtilidadesHash.set(registro, "CP_LET_ASIST", "");
+								UtilidadesHash.set(registro, "POBLACION_LET_ASIST", "");
+								UtilidadesHash.set(registro, "PROVINCIA_LET_ASIST", "");
+							}
 								
 								/**sacamos el campo pretenciones de Defensa Juridica de  Ejg ***/					
 							vpretenciones=getPretensiondj(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma);
@@ -5271,4 +5268,14 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		}
 		return false;
 	}			
+	
+	public boolean updateDirect(MasterBean bean) throws ClsExceptions {
+		try {
+			return updateDirect (bean, this.getClavesBean(), this.getCamposActualizablesBean());	
+		}
+		catch (Exception e)	{
+			throw new ClsExceptions (e, e.getMessage());
+		}
+		
+	}	
 }
