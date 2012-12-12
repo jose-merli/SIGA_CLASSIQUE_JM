@@ -82,8 +82,8 @@
 		</script>
 		<!-- FIN: SCRIPTS BOTONES -->
 		<siga:Titulo
-			titulo="envios.definirTiposPlantillas.imagenes.cabecera" 
-			localizacion="envios.definirTiposPlantillas.localizacion"
+			titulo="envios.bandejaSalida.enviotelematico.titulo" 
+			localizacion="envios.definirEnvios.localizacion"
 		/>
 	</head>
 
