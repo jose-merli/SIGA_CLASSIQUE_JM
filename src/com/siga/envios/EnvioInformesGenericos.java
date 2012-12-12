@@ -36,6 +36,7 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.GstStringTokenizer;
 import com.atos.utils.UsrBean;
+import com.crystaldecisions.reports.exporters.excel.libs.biff.records.OBJ;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
@@ -2401,28 +2402,13 @@ public class EnvioInformesGenericos extends MasterReport {
 		
 				for (int i = 0; i < vPlantillasInforme.size(); i++) {//Por ultimo se recorren las posible plantillas de cada registro de destinatario
 					AdmInformeBean beanInforme = (AdmInformeBean) vPlantillasInforme.get(i);	
-					Envio envio = new Envio(usrBean, envioProgramadoBean.getNombre());
 					
-					if (envio.getEnviosBean() != null)
-						envio.getEnviosBean().setIdEstado(new Integer(EnvEnviosAdm.ESTADO_PENDIENTE_AUTOMATICO));
-					
-					// Bean envio
-					EnvEnviosBean enviosBean = envio.getEnviosBean();
-					// Preferencia del tipo de envio si el usuario tiene uno:
-					enviosBean.setIdTipoEnvios(envioProgramadoBean.getIdTipoEnvios());
-					enviosBean.setIdPlantillaEnvios(envioProgramadoBean.getIdPlantillaEnvios());
-					
-					if (envioProgramadoBean.getIdPlantilla() != null && !envioProgramadoBean.getIdPlantilla().equals("")) {
-						enviosBean.setIdPlantilla(envioProgramadoBean.getIdPlantilla());
-					} else {
-						enviosBean.setIdPlantilla(null);
-					}
 					
 					Hashtable htPersonas = new Hashtable();
 					List<Object> listObjetosTelematicos = new ArrayList<Object>();
 				
 					String idPersona = destProgramInfBean.getIdPersona().toString();
-					StringBuffer descripcionEnvios = new StringBuffer(enviosBean.getDescripcion());
+					StringBuffer descripcionEnvios = new StringBuffer(envioProgramadoBean.getNombre());
 				
 					if (destProgramInfBean.getTipoDestinatario().equals(EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA)) {
 						htPersonas.put(idPersona, EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA);
@@ -2455,9 +2441,13 @@ public class EnvioInformesGenericos extends MasterReport {
 						Hashtable procuradorHashtable = (Hashtable) juzgadoVector.get(0);
 						descripcionEnvios.append(procuradorHashtable.get("NOMBRE"));
 					}
-		
-					enviosBean.setDescripcion(descripcionEnvios.toString());
-					enviosBean.setIdTipoIntercambioTelematico(beanInforme.getIdTipoIntercambioTelematico());
+					
+					
+					
+					
+					
+					List<Object[]> listAuxiliar = new ArrayList();  
+					Object[] object = null; 
 					
 					if(programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesDesigna)){
 	                    ScsDesignaAdm designaAdm = new ScsDesignaAdm(usrBean);
@@ -2476,43 +2466,8 @@ public class EnvioInformesGenericos extends MasterReport {
 	                        ecomDesignaprovisional.setNumero(UtilidadesHash.getLong(designaHash,ScsDesignaBean.C_NUMERO));               
 	                        ecomDesignaprovisional.setIdjuzgado(destProgramInfBean.getIdPersona());               
 	                        ecomDesignaprovisional.setIdinstitucionJuzg(Short.parseShort(destProgramInfBean.getIdInstitucion().toString()));
-
-	                        Vector ejgAsociado = designaAdm.getDatosEJG(idInstitucion, numeroDesigna, idTurnoDesigna, anioDesigna);	        
 	                        
-	                        //Se comprueba si hay EJGs asociados
-	                        if(ejgAsociado != null && ejgAsociado.size() > 0){
-	                        	Hashtable ejgAsociadoHash = (Hashtable)ejgAsociado.get(0);
-	                        	
-		                        //Caso en el que hay un unico ejg
-		                        if(UtilidadesHash.getInteger(ejgAsociadoHash,"TIPO_EJG")!=null){
-		                            ecomDesignaprovisional.setIdtipoejg(UtilidadesHash.getShort(ejgAsociadoHash,"TIPO_EJG"));                   
-		                            ecomDesignaprovisional.setAnioejg(UtilidadesHash.getShort(ejgAsociadoHash,"ANIO_EJG"));
-		                            ecomDesignaprovisional.setNumeroejg(UtilidadesHash.getLong(ejgAsociadoHash,"NUMERO_EJG"));
-		                        }else if(UtilidadesHash.getString(designaHash,"LISTAANIONUMEROEJGS")!=null && !UtilidadesHash.getString(designaHash,"LISTAANIONUMEROEJGS").equals("")){
-		                            String listaEJGS = UtilidadesHash.getString(designaHash,"LISTAANIONUMEROEJGS");
-		                            String[] ejgs = listaEJGS.split(",");
-		                            if(ejgs!= null && ejgs.length>0){
-	                                    for (int p = 0; p < ejgs.length; p++) {
-	                                        String[] anyoNumero =ejgs[p].split("/");
-	                                        String anyoEjg = anyoNumero[0];
-	                                        String numeroEjg = anyoNumero[1];
-	                                    }
-		                                     
-		                            }
-		                           
-		                        /* 
-		                         * Este es el caso en el que hay mas de un ejg para la designacion hay que enviar un envio por cada interesado de la designacion
-		                         * que tenga EJG asociado(hay que comparar con el solicitante principal de cada EJG)
-		                         * Caso 1. Todo coincide
-		                         *       Ejemplo. Designacion con dos interesados y dos ejgs relacionados cada uno de ellos con un interesado que coinciden con los de la designa
-		                         * Caso 2.
-		                         *		 Ejemplo. Designacion con dos interesados y un ejg relacionado con un interesado que coincide con el de la designa
-	                           */
-		                           
-		                        }
-	                        }
-	   
-	                       
+	                        
 	                        if(UtilidadesHash.getShort(designaHash,"IDINSTITUCIONORIGEN")!=null)
 	                            ecomDesignaprovisional.setIdinstitucionLetrado(UtilidadesHash.getShort(designaHash,"IDINSTITUCIONORIGEN"));
 	                        else
@@ -2528,28 +2483,12 @@ public class EnvioInformesGenericos extends MasterReport {
 	    //                    ecomDesignaprovisional.setFechapeticion("sysdate");
 	                        
 	                        
-							//Si hubiese relacion con bandeja de entrada, se actualiza el idenviorel
-							BusinessManager businessManager =  BusinessManager.getInstance();
-							EntradaEnviosService entradaEnviosService = (EntradaEnviosService) businessManager.getService(EntradaEnviosService.class);
-							EnvEntradaEnviosExample entradaEnviosExample = new EnvEntradaEnviosExample();
 							
-							//Se van añadiendo los criterios para relaizar la query de busqueda
-							Criteria criteria =  entradaEnviosExample.createCriteria(); 
-							criteria.andIdenviorelprogramadoEqualTo(Long.valueOf(envioProgramadoBean.getIdEnvio()));							
-							EnvEntradaEnviosWithBLOBs entradaEnviosWithBLOBs = entradaEnviosService.getEntradaEnvios(entradaEnviosExample);
-							if(entradaEnviosWithBLOBs!=null){
-								entradaEnviosWithBLOBs.setIdenviorel(Long.valueOf(enviosBean.getIdEnvio()));
-								entradaEnviosService.actualizarEntradaEnvios(entradaEnviosExample, entradaEnviosWithBLOBs);
-								
-								//Insertamos idIntercambioEnvioRelacionad si viniese de una respuesta a una solcitud
-								if(entradaEnviosWithBLOBs.getIdentintercambio() != null){
-									ecomDesignaprovisional.setIdintercambiorel(entradaEnviosWithBLOBs.getIdentintercambio());
-								}
-							}
-	                       
-	                        //Se van añadiendo a la lista para despues setearles el envio
-	                        listObjetosTelematicos.add(ecomDesignaprovisional);
-	                       
+	                        
+	                        
+	                        
+	                        
+	                        Vector<Hashtable> ejgsAsociado = designaAdm.getDatosEJG(idInstitucion, numeroDesigna, idTurnoDesigna, anioDesigna);	        
 	                        StringBuffer descripcion = new StringBuffer();
 	                        descripcion.append(TipoIntercambioEnum.ICA_SGP_COM_DES_PROV_ABG_PRO.getDescripcion().split(":")[1]);
 	                        descripcion.append(" - ");
@@ -2559,21 +2498,50 @@ public class EnvioInformesGenericos extends MasterReport {
 	                        descripcion.append(designaHash.get("CODIGO"));
 	                        descripcion.append(" ");     
 	                           
-	                        if(UtilidadesHash.getString(designaHash,"ANIOEJG")!=null &&  !UtilidadesHash.getString(designaHash,"ANIOEJG").equals("")){
-	                            descripcion.append("Nº EJG:");
-	                            descripcion.append(UtilidadesHash.getString(designaHash,"ANIOEJG"));
-	                            descripcion.append("/");
-	                            descripcion.append(UtilidadesHash.getString(designaHash,"NUMEJG"));
-	                        }else if(UtilidadesHash.getString(designaHash,"LISTAANIONUMEROEJGS")!=null && !UtilidadesHash.getString(designaHash,"LISTAANIONUMEROEJGS").equals("")){
-	                            String listaEJGS = UtilidadesHash.getString(designaHash,"LISTAANIONUMEROEJGS");
-	                            String[] ejgs = listaEJGS.split(",");
-	                            if(ejgs!= null && ejgs.length>0){
-	                                descripcion.append("Nº EJG:");
-	                                descripcion.append(ejgs[0]);
-	                            }
-	                        }
-
-	                        enviosBean.setDescripcion(descripcion.toString());
+	                        
+	                        
+	                        //Se comprueba si hay EJGs asociados
+	                        if(ejgsAsociado != null && ejgsAsociado.size() > 0){
+	                        	StringBuffer ejg = null;
+	                        	for (Hashtable ejgAsociado : ejgsAsociado) {
+	                        		ecomDesignaprovisional.setIdtipoejg(UtilidadesHash.getShort(ejgAsociado,"TIPO_EJG"));                   
+		                            ecomDesignaprovisional.setAnioejg(UtilidadesHash.getShort(ejgAsociado,"ANIO_EJG"));
+		                            ecomDesignaprovisional.setNumeroejg(UtilidadesHash.getLong(ejgAsociado,"NUMERO_EJG"));
+		                            ejg = new StringBuffer();
+		                            ejg.append("Nº EJG:");
+		                            ejg.append(UtilidadesHash.getShort(ejgAsociado,"ANIO_EJG"));
+		                            ejg.append("/");
+		                            ejg.append(UtilidadesHash.getString(ejgAsociado,"NUM_EJG"));
+		                            
+		                            object = new Object[2];
+			                        object[0] = descripcion.toString() + ejg.toString();
+			                        object[1] = ecomDesignaprovisional;
+			                        listAuxiliar.add(object);
+									
+								}
+	                        
+	                        	
+	                        	
+		                       
+		                           
+		                     }else{
+		                    	 object = new Object[2];
+			                     object[0] = descripcion.toString();
+			                     object[1] = ecomDesignaprovisional;
+			                     listAuxiliar.add(object);
+		                     }
+	                        
+	   
+	                       
+	                        
+	                       
+	                        //Se van añadiendo a la lista para despues setearles el envio
+//	                        listObjetosTelematicos.add(ecomDesignaprovisional);
+	                       
+	                        
+	                        
+	                        
+	                        
 	                    }
 	                   
 	                }else if(programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesEjg)){
@@ -2618,7 +2586,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	                        
 	                        
 	                        //Se van añadiendo a la lista para despues setearles el envio
-	                        listObjetosTelematicos.add(designaProvisionalBean);
+//	                        listObjetosTelematicos.add(designaProvisionalBean);
 	                        StringBuffer descripcion = new StringBuffer();
 	                        descripcion.append(TipoIntercambioEnum.ICA_SGP_COM_DES_PROV_ABG_PRO.getDescripcion().split(":")[1]);
 	                        descripcion.append(" - ");
@@ -2637,7 +2605,13 @@ public class EnvioInformesGenericos extends MasterReport {
 	                           
 	                        }
 	
-	                        enviosBean.setDescripcion(descripcion.toString());
+	                        
+	                        object = new Object[2];
+	                        object[0] = descripcion.toString();
+	                        object[1] = designaProvisionalBean;
+	                        listAuxiliar.add(object);
+	                        
+	                        
 	                       
 	                       
 	                    }else if(beanInforme.getIdTipoIntercambioTelematico().toString().equals(TipoIntercambioEnum.ICA_SGP_ENV_SOL_SUSP_PROC.getCodigo())){
@@ -2654,7 +2628,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	    //                  solSusProcedimientoBean.setFechaPeticion("sysdate");
 	                       
 	                        //Se van añadiendo a la lista para despues setearles el envio
-	                        listObjetosTelematicos.add(solSusProcedimientoBean);
+//	                        listObjetosTelematicos.add(solSusProcedimientoBean);
 	                       
 	                        StringBuffer descripcion = new StringBuffer();
 	                        descripcion.append(TipoIntercambioEnum.ICA_SGP_ENV_SOL_SUSP_PROC.getDescripcion().split(":")[1]);
@@ -2664,11 +2638,46 @@ public class EnvioInformesGenericos extends MasterReport {
 	                        descripcion.append("/");
 	                        descripcion.append(UtilidadesHash.getString(ejgHash,"NUMERO"));
 	                       
-	                        enviosBean.setDescripcion(descripcion.toString());
+	                        
+	                        
+	                        object = new Object[2];
+	                        object[0] =descripcion.toString();
+	                        object[1] = solSusProcedimientoBean;
+	                        listAuxiliar.add(object);
 	                    }
                     }
-		
-					envio.generarIntercambioTelematico(envio.getEnviosBean(), htPersonas ,listObjetosTelematicos);
+					
+					for (int l = 0; l < listAuxiliar.size(); l++) {
+						Object[] objeto = (Object[]) listAuxiliar.get(l);
+						String descripcion = (String) objeto[0];
+						Object objetoTelematico =  objeto[1];
+						listObjetosTelematicos = new ArrayList<Object>();
+						listObjetosTelematicos.add(objetoTelematico);
+						
+						Envio envio = new Envio(usrBean, descripcion);
+						
+						if (envio.getEnviosBean() != null)
+							envio.getEnviosBean().setIdEstado(new Integer(EnvEnviosAdm.ESTADO_PENDIENTE_AUTOMATICO));
+						
+						// Bean envio
+						EnvEnviosBean enviosBean = envio.getEnviosBean();
+						// Preferencia del tipo de envio si el usuario tiene uno:
+						enviosBean.setIdTipoEnvios(envioProgramadoBean.getIdTipoEnvios());
+						enviosBean.setIdPlantillaEnvios(envioProgramadoBean.getIdPlantillaEnvios());
+						
+						if (envioProgramadoBean.getIdPlantilla() != null && !envioProgramadoBean.getIdPlantilla().equals("")) {
+							enviosBean.setIdPlantilla(envioProgramadoBean.getIdPlantilla());
+						} else {
+							enviosBean.setIdPlantilla(null);
+						}
+						
+						enviosBean.setIdTipoIntercambioTelematico(beanInforme.getIdTipoIntercambioTelematico());
+						enviosBean.setIdEnvioProgramado(Long.valueOf(envioProgramadoBean.getIdEnvio()));
+						envio.generarIntercambioTelematico(enviosBean, htPersonas ,listObjetosTelematicos);
+						
+					}
+					
+					
 				
 				} //Fin for plantillas
 			
@@ -8162,11 +8171,11 @@ public class EnvioInformesGenericos extends MasterReport {
 																	programInfGenericoBean.getEnvioProgramado());
 												
 												//Actualizar ECOM_COLA
-												EcomColaService ecomColaService = (EcomColaService) BusinessManager.getInstance().getService(EcomColaService.class);
-												EcomCola ecomCola = new EcomCola();
-												ecomCola.setIdinstitucion(Short.valueOf(programInfGenericoBean.getIdInstitucion().toString()));
-												ecomCola.setIdoperacion(AppConstants.OPERACION.EJIS_OBTENER_DESTINATARIOS.getId());
-												ecomColaService.insert(ecomCola);
+//												EcomColaService ecomColaService = (EcomColaService) BusinessManager.getInstance().getService(EcomColaService.class);
+//												EcomCola ecomCola = new EcomCola();
+//												ecomCola.setIdinstitucion(Short.valueOf(programInfGenericoBean.getIdInstitucion().toString()));
+//												ecomCola.setIdoperacion(AppConstants.OPERACION.EJIS_OBTENER_DESTINATARIOS.getId());
+//												ecomColaService.insert(ecomCola);
 											}
 										}
 								}else{	

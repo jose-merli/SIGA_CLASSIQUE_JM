@@ -18,6 +18,9 @@ import javax.transaction.UserTransaction;
 
 import org.redabogacia.sigaservices.app.autogen.model.EcomDesignaprovisionalWithBLOBs;
 import org.redabogacia.sigaservices.app.autogen.model.EcomSolsusprocedimientoWithBLOBs;
+import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosExample;
+import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosWithBLOBs;
+import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosExample.Criteria;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -53,6 +56,7 @@ import com.siga.beans.ScsPersonaJGBean;
 import com.siga.beans.ScsProcuradorAdm;
 import com.siga.beans.ScsProcuradorBean;
 import com.siga.beans.ScsTelefonosPersonaJGBean;
+import com.siga.envios.service.EntradaEnviosService;
 import com.siga.envios.service.ca_sigp.DesignaProvisionalService;
 import com.siga.envios.service.ca_sigp.SolSusProcedimientoService;
 import com.siga.general.SIGAException;
@@ -747,8 +751,28 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
         	if(object instanceof EcomDesignaprovisionalWithBLOBs){
         		
         		EcomDesignaprovisionalWithBLOBs designaProvisionalBean = (EcomDesignaprovisionalWithBLOBs)object;
-				designaProvisionalBean.setIdenvio(new Long(enviosBean.getIdEnvio()));
+        		//Si hubiese relacion con bandeja de entrada, se actualiza el idenviorel
 				BusinessManager businessManager =  BusinessManager.getInstance();
+				EntradaEnviosService entradaEnviosService = (EntradaEnviosService) businessManager.getService(EntradaEnviosService.class);
+				EnvEntradaEnviosExample entradaEnviosExample = new EnvEntradaEnviosExample();
+				
+				//Se van añadiendo los criterios para relaizar la query de busqueda
+				Criteria criteria =  entradaEnviosExample.createCriteria(); 
+								
+				criteria.andIdenviorelprogramadoEqualTo(enviosBean.getIdEnvioProgramado());							
+				EnvEntradaEnviosWithBLOBs entradaEnviosWithBLOBs = entradaEnviosService.getEntradaEnvios(entradaEnviosExample);
+				if(entradaEnviosWithBLOBs!=null){
+					entradaEnviosWithBLOBs.setIdenviorel(Long.valueOf(enviosBean.getIdEnvio()));
+					entradaEnviosService.actualizarEntradaEnvios(entradaEnviosExample, entradaEnviosWithBLOBs);
+					
+					//Insertamos idIntercambioEnvioRelacionad si viniese de una respuesta a una solcitud
+					if(entradaEnviosWithBLOBs.getIdentintercambio() != null){
+						designaProvisionalBean.setIdintercambiorel(entradaEnviosWithBLOBs.getIdentintercambio());
+					}
+				}
+				
+        		
+				designaProvisionalBean.setIdenvio(new Long(enviosBean.getIdEnvio()));
 				DesignaProvisionalService designaProvisionalService = (DesignaProvisionalService) businessManager.getService(DesignaProvisionalService.class);
 				designaProvisionalService.insertaIntercambioTelematico(designaProvisionalBean,(int)this.usrBean.getIdPersona());
         		

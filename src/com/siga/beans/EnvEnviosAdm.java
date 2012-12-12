@@ -348,7 +348,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			sql += fechaIsNull;
 
 			// RGG CAMBIO DE ORDEN sql += " ORDER BY " + EN_DESCRIPCION;
-			sql += " ORDER BY " + EN_FECHACREACION + " DESC";
+			sql += " ORDER BY " + EN_FECHACREACION + " DESC,"+EN_IDENVIO+" DESC";
 
 			ClsLogging.writeFileLog("EnvEnviosAdm -> QUERY: "+sql,10);
 

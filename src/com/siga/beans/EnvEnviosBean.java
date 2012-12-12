@@ -23,7 +23,14 @@ public class EnvEnviosBean extends MasterBean {
 	private String consulta;
 	private String acuseRecibo;
 	private String idTipoIntercambioTelematico;
+	private Long idEnvioProgramado;
 	
+	public Long getIdEnvioProgramado() {
+		return idEnvioProgramado;
+	}
+	public void setIdEnvioProgramado(Long idEnvioProgramado) {
+		this.idEnvioProgramado = idEnvioProgramado;
+	}
 	// Nombre campos de la tabla 
 	static public final String C_IDINSTITUCION = "IDINSTITUCION";
 	static public final String C_IDENVIO = "IDENVIO";
