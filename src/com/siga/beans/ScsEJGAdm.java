@@ -2313,7 +2313,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"DESCRIPCIONESTADO"));
 			consulta += " and rownum = 1) = :"+contador;
 		}else{
-			if(UtilidadesString.stringToBoolean(miHash.get("ESCOMISION").toString())){
+			if(miHash.containsKey("ESCOMISION") && UtilidadesString.stringToBoolean(miHash.get("ESCOMISION").toString())){
 				// Si la comision deja vacio el estado le mostramos todos los que pueden ver ellos
 				contador++;
 				codigos.put(new Integer(contador), "8");
