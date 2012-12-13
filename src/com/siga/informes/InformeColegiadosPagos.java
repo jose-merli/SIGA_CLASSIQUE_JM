@@ -966,7 +966,7 @@ public class InformeColegiadosPagos extends MasterReport {
 				result.putAll(r.getRow());
 				
 				fechaPago = r.getString("FECHAESTADO");
-				result.put("FECHA_PAGO",UtilidadesString.getFechaEscrita(fechaPago,"dd/MM/yyyy",usr.getLanguage()));
+				result.put("FECHA_PAGO",UtilidadesString.getFechaEscrita(fechaPago,"dd/MM/yyyy",usr.getLanguageExt()));
 			}
 		
 			//fecha de abono del disco bancario
