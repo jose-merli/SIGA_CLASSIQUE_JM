@@ -629,7 +629,7 @@ public class EnvioInformesGenericos extends MasterReport {
 					idActa, anioActa);
 			
 			Vector vDatosEJGs = actaAdm.getEJGsInforme(idInstitucion, idActa, anioActa);
-			htDatosInforme.put("resueltos", vDatosEJGs);
+			htDatosInforme.put("ejgs", vDatosEJGs);
 			
 			Vector vDatosEJGPendientes = actaAdm.getEJGsPendientes(
 					idInstitucion, idActa, anioActa);
