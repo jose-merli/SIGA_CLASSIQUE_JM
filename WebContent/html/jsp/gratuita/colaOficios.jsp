@@ -49,35 +49,6 @@
 		<siga:Titulo titulo="pestana.justiciagratuitaturno.colaOficio" localizacion="gratuita.turnos.localizacion.colaTurno.manteniento"/>
 		<script>
 		
-		// Asociada al boton Volver 
-		function accionVolver() {	
-			with(document.forms[1]){	
-		   <% String entrada = (String)ses.getAttribute("entrada");
-			  if (entrada.equalsIgnoreCase("1")){%>
-				action="JGR_DefinirTurnos.do";
-				target="mainWorkArea";
-				modo.value="abrirAvanzada";
-				submit();
-			<%}else{%>
-				action="JGR_DefinirTurnosLetrado.do";
-				target="mainPestanas";
-				modo.value="abrir";
-				submit();
-			<%}%>
-			}
-		}
-		
-		//Asociada al boton Imprimir 
-		function accionImprimir() {	
-			sub();
-			var f=document.forms[0];
-			f.action="JGR_ColaOficio.do";
-			f.target="submitArea";
-			f.modo.value="imprimir";
-			f.submit();
-			// con pantalla de espera
-			//submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f.name+'&msg=messages.wait';
-		}
 		
 		function validaTabla(){
 			  //Ajusto tablas de letrados en cola:
@@ -180,14 +151,6 @@
 			document.forms[0].submit();
 		}
 		
-		function postAccionCalendario() {
-			document.ColaOficiosForm.target="_self";
-			window.top.focus();
-			document.ColaOficiosForm.modo.value = 'ver';
-			document.ColaOficiosForm.submit();
-			 
-		}
-		
 		
 		</script>
 
@@ -197,19 +160,6 @@
 
 		<html:form action="/JGR_ColaOficio" method="get" >
 		
-			<fieldset>
-		<table border="0" style="table-layout:fixed;" cellpadding="2" cellspacing="2" width="100%" align="center">
-		  	<tr>
-					<td class="labelText"><siga:Idioma key="gratuita.gestionInscripciones.fechaConsulta"/></td>
-					<td width="70%" align="left" >
-						<siga:Fecha nombreCampo="fechaConsulta" postFunction="postAccionCalendario();"></siga:Fecha>
-					</td>
-				</tr>
-			
-			
-		  </table>
-	 	</fieldset>
-		
 		
 		
 			<html:hidden property = "modo"/>
@@ -218,6 +168,7 @@
 			<input type="hidden" name="actionModal" value="">
 			<input type="hidden" name="idPersona" value="">
 			<input type="hidden" name="fechaSuscripcion" value="">
+			<html:hidden property="fechaConsulta"/>
 			
 		</html:form>	
 		
@@ -262,7 +213,7 @@
 	  </td>
 	</tr>
   	<tr>
-	  <td rowspan="2" style="vertical-align: top; height:500px">
+	  <td rowspan="2" style="vertical-align: top; height:450px">
 	  
 	  
 <!-------------------------------------------------------------------------------------------------->	
@@ -271,13 +222,13 @@
 	
 		<table id='tituloTablaLetrados' border='1' width='100%' cellspacing='0' cellpadding='0' style="border-bottom:none">
 		  <tr class = 'tableTitle'>
-			<td align='center' width='31%'>
+			<td align='center' width='32%'>
 				<input id="buscarLetrado" type="text" class="box" size="10" value="<%=literalNColegiado%>"  
 				onfocus="limpiarTexto(this, 1);" onblur="buscarLetradoEnColaLetrado();limpiarTexto(this, 0);">
 				&nbsp;
 				<img src="<%=app%>/html/imagenes/bconsultar_off.gif" style="cursor:hand;" onClick="buscarLetradoEnColaLetrado();" alt="<%=buscarLetrado%>" >
 			</td>
-			<td align='center' width='69%'>
+			<td align='center' width='68%'>
 				<siga:Idioma key="gratuita.colaOficio.literal.letradosInscritos"/>:&nbsp;&nbsp;<%=nListad%> 
 			</td>
 		  </tr>
@@ -291,7 +242,7 @@
 		   clase="tableTitle"
 		   tamanoCol="16,38,18,18,10";
 		   nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,F.Val,F.Baja,"
-		   alto="70%"
+		   alto="50%"
 		   ajusteAlto="">
 
 			<!-- INICIO: ZONA DE REGISTROS -->
@@ -371,7 +322,7 @@
 <!-------------------------------------------------------------------------------------------------->	
 	  </td>
 	  <td rowspan="2"><!--margen--></td>
-	  <td style="vertical-align: top; height:250px">
+	  <td style="vertical-align: top; height:160px">
 	  
 	  
 <!-------------------------------------------------------------------------------------------------->	
@@ -397,7 +348,7 @@
 <%	Vector resultado = (Vector) request.getAttribute("vCompensaciones");
 	if (resultado==null || resultado.size()==0) { %>			
 	 		<tr>
-			  <td colspan="4" height="95px">
+			  <td colspan="4" height="35px">
 	   		 	<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
 			  </td>
 	 		</tr>	 		
@@ -436,13 +387,13 @@
 	  </td>
 	</tr>
   	<tr>
-	  <td style="vertical-align: top; height:250px">
+	  <td style="vertical-align: top; height:300px">
 	  
 	  
 <!-------------------------------------------------------------------------------------------------->	
 <!---------- Saltos -------------------------------------------------------------------------------->	
 <!-------------------------------------------------------------------------------------------------->	
-		<table id='tituloTablaSaltos' border='1' width='98.43%' cellspacing='0' cellpadding='0' style="border-bottom:none">
+		<table id='tituloTablaSaltos' border='1' width='10%' cellspacing='0' cellpadding='0' style="border-bottom:none">
 		  <tr class = 'tableTitle'>
 			<td align='center' width='100%'><siga:Idioma key="gratuita.turnos.literal.saltos"/></td>
 		  </tr>
@@ -453,7 +404,7 @@
 		   clase="tableTitle"
 		   tamanoCol="22,50,28"
 		   nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.saltos"
-		   alto="170"
+		   alto="100%"
 		   ajusteAlto="">
 
 			<!-- INICIO: ZONA DE REGISTROS -->
@@ -462,7 +413,7 @@
 <%	Vector resultado = (Vector) request.getAttribute("vSaltos");
 	if (resultado==null || resultado.size()==0) { %>			
 	 		<tr>
-			  <td colspan="4" height="95px">
+			  <td colspan="4" height="75px">
 	   		 	<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
 			  </td>
 	 		</tr>	 		
@@ -502,11 +453,9 @@
 	  </td>
   	</tr>
   </table>
-
-
-<siga:ConjBotonesAccion botones="V,I" />
-
-<form name="auxForm" action="aux" target="aux" method="post">
+	
+	
+	 <form name="auxForm" action="aux" target="aux" method="post">
 	<input type=hidden name="modo">
 </form>
 

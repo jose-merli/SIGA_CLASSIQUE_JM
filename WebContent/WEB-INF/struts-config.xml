@@ -2304,6 +2304,7 @@
 	  
 		<!-- ***** Justicia Gratuita / Turnos / Cola Oficios ***** -->
 		<action path="/JGR_ColaOficio" type="com.siga.gratuita.action.ColaOficiosAction" name="ColaOficiosForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/colaOficioSelect.jsp"/>
 			<forward name="ver" path="/html/jsp/gratuita/colaOficios.jsp"/>
 		</action>
 		

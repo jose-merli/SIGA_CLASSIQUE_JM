@@ -84,9 +84,9 @@ public class ColaOficiosAction extends MasterAction {
 			MasterForm formulario, 
 			HttpServletRequest request, 
 			HttpServletResponse response) throws ClsExceptions, SIGAException{
-		ColaOficiosForm coForm=(ColaOficiosForm)formulario;
-		coForm.setFechaConsulta(GstDate.getHoyJsp());
-		return ver(mapping, formulario, request, response);
+	//	ColaOficiosForm coForm=(ColaOficiosForm)formulario;
+	//	coForm.setFechaConsulta(GstDate.getHoyJsp());
+		return "inicio";
 	}
 	
 	/** 
