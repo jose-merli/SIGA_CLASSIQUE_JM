@@ -1702,7 +1702,8 @@ public class EnvioInformesGenericos extends MasterReport {
 					} else if (String.valueOf(tipoDestinatario[jta])
 							.equalsIgnoreCase(
 									AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO)) {
-						// TODO SCS_JUZGADOSJG
+						añadir = tipoDestinatarioEnvio
+								.equalsIgnoreCase(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO);
 					}
 
 				}
