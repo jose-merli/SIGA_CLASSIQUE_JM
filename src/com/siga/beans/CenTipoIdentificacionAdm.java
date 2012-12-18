@@ -154,9 +154,9 @@ public class CenTipoIdentificacionAdm extends MasterBeanAdministrador{
 		StringBuffer sql = new StringBuffer();
 		
 		sql.append("Select Decode(Idrecurso,  'gratuita.personaJG.literal.tipoJuridica', 'J',");
-		sql.append(" 'gratuita.personaJG.literal.tipoFisica','F') As IDTIPO, Descripcion ");
+		sql.append(" 'gratuita.personaJG.literal.tipoFisica','F','gratuita.personaJG.literal.otra','O') As IDTIPO, Descripcion ");
 		sql.append("  From (Select Idrecurso, Descripcion From Gen_Recursos ");
-		sql.append(" Where (Idrecurso = 'gratuita.personaJG.literal.tipoFisica' Or Idrecurso = 'gratuita.personaJG.literal.tipoJuridica')");
+		sql.append(" Where (Idrecurso = 'gratuita.personaJG.literal.tipoFisica' Or Idrecurso = 'gratuita.personaJG.literal.tipoJuridica' Or Idrecurso = 'gratuita.personaJG.literal.otra')");
         sql.append(" And Idlenguaje = "+idlenguaje+") Order By IDTIPO");
 		
 		List<CenTipoIdentificacionBean> alTipos = null;
