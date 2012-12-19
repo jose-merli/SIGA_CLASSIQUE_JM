@@ -23,7 +23,7 @@ public class ResolucionesListener extends SIGAListenerAbstract {
 
 	@Override
 	protected String getActivoParam() {		
-		return "PCAJG_XUNTA_RESOL_ACTIVO";
+		return AppConstants.PARAMETRO.PCAJG_XUNTA_RESOLUCIONES_ACTIVO.name();
 	}
 
 	@Override

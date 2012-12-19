@@ -1,25 +1,44 @@
 package com.siga.ws.i2032;
 
+import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
+import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
+
+import com.siga.general.SIGAListenerAbstract;
 import com.siga.ws.i2032.axis.ejg.EnvioSolicitudesImplPortBindingStub;
 import com.siga.ws.i2032.axis.ejg.EnvioSolicitudesImplServiceLocator;
 import com.siga.ws.i2032.axis.ejg.ObtResolucionesEnt;
 
-public class PCAJGPaisVascoResoluciones extends PCAJGPaisVascoComun {
+import es.satec.businessManager.BusinessManager;
+
+public class PCAJGPaisVascoResoluciones extends SIGAListenerAbstract {
 
 	@Override
-	public void execute() throws Exception {
-		EnvioSolicitudesImplServiceLocator locator;
-		EnvioSolicitudesImplPortBindingStub stub;
+	protected String getFechaHoraInicioParam() {		
+		return "PCAJG_GV_DIA_HORA_CONSULTA_RESOLUCIONES";
+	}
+
+	@Override
+	protected String getDiasIntervaloParam() {
+		return "PCAJG_GV_INTERVALO_DIAS_RESOLUCIONES";
+	}
+
+	@Override
+	protected String getActivoParam() {
+		return AppConstants.PARAMETRO.PCAJG_GV_RESOLUCIONES_ACTIVO.name();
+	}
+
+	@Override
+	protected void execute(Short idInstitucion) {
+		//INSERTAR EN ECOM_COLA
+		EcomColaService ecomColaService = (EcomColaService) BusinessManager.getInstance().getService(EcomColaService.class);
 		
-		String mensajeLog = "Recepción webservice de las resoluciones del colegio " + getIdInstitucion() + " de la remesa " + getIdRemesa();
-		
-		locator = new EnvioSolicitudesImplServiceLocator(createClientConfig(getUsrBean(), String.valueOf(getIdInstitucion()), mensajeLog));
-		stub = new EnvioSolicitudesImplPortBindingStub(new java.net.URL(getUrlWS()), locator);
-		
-		ObtResolucionesEnt obtResolucionesEnt = new ObtResolucionesEnt();
-//		obtResolucionesEnt.set
-		stub.obtenerResoluciones(obtResolucionesEnt);
+		EcomCola ecomCola = new EcomCola();
+		ecomCola.setIdinstitucion(idInstitucion);
+		ecomCola.setIdoperacion(AppConstants.OPERACION.GV_RESOLUCIONES.getId());
+		ecomColaService.insertaColaConsultaResoluciones(ecomCola);
 		
 	}
+
 
 }
