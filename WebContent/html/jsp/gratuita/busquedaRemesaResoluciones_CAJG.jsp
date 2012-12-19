@@ -67,6 +67,10 @@
 		if ("1".equals(idTipoRemesa)) {
 			botones = "OR,B,L,CON";//obtener remesa
 		}
+	} else if (pcajgActivo == CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAISVASCO) {
+		if ("1".equals(idTipoRemesa)) {
+			botones = "OR,B,L,CON";//obtener remesa
+		}
 	}
 	
 	

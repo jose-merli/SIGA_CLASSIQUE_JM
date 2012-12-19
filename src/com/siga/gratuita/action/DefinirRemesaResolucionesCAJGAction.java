@@ -174,7 +174,14 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 				ecomCola.setIdinstitucion(Short.valueOf(getIDInstitucion(request).toString()));
 				ecomCola.setIdoperacion(AppConstants.OPERACION.XUNTA_RESOLUCIONES.getId());
 				ecomColaService.insertaColaConsultaResoluciones(ecomCola);				
+			} else if (tipoCAJG == CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAISVASCO) {
+				EcomColaService ecomColaService = (EcomColaService) BusinessManager.getInstance().getService(EcomColaService.class);				
+				EcomCola ecomCola = new EcomCola();
+				ecomCola.setIdinstitucion(Short.valueOf(getIDInstitucion(request).toString()));
+				ecomCola.setIdoperacion(AppConstants.OPERACION.GV_RESOLUCIONES.getId());
+				ecomColaService.insertaColaConsultaResoluciones(ecomCola);				
 			}
+			
 			
 			request.setAttribute("mensajeUsuario", mensaje);
 			
