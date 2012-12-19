@@ -268,18 +268,30 @@ function onChangeTipoIntercambio() {
 				<td class="labelText">
 					<html:select styleClass="boxCombo" style="width:200px;"
 						name="InformeFormEdicion" property="idTipoInforme" onchange="onChangeIdTipoInforme();"  >
-						<bean:define id="tiposInforme" name="InformeForm"
-							property="tiposInforme" type="java.util.Collection" />
-							<html:optionsCollection  name="tiposInforme" value="idTipoInforme"
-									label="descripcion" />
+
+						<bean:define id="tiposInforme" name="InformeForm" property="tiposInforme" type="java.util.Collection" />
+						<html:optionsCollection  name="tiposInforme" value="idTipoInforme"	label="descripcion" />
+
 					</html:select>
 					<logic:notEmpty name="InformeForm" property="tiposInforme">
-							<logic:iterate name="InformeForm" property="tiposInforme"
-								id="tipoInforme" indexId="index">
-								<input type="hidden" name="claseTipoInforme_${index}" value="${tipoInforme.clase}">
-								<input type="hidden" name="directorioTipoInforme_${index}" value="${tipoInforme.directorio}">
-							</logic:iterate>
-						</logic:notEmpty>
+						<c:set var="consulta" value="0" />
+						<logic:iterate name="InformeForm" property="tiposInforme" id="tipoInforme" indexId="index">
+							<c:if test="${tipoInforme.idTipoInforme == 'CON'}">
+								<c:set var="consulta" value="1" />
+							</c:if> 
+							<c:choose>
+								<c:when test="${consulta == '1' && tipoInforme.idTipoInforme != 'CON'}">
+
+									<input type="hidden" name="claseTipoInforme_${index-1}" value="${tipoInforme.clase}">
+									<input type="hidden" name="directorioTipoInforme_${index-1}" value="${tipoInforme.directorio}">
+								</c:when>
+								<c:when test="${consulta == '0' && tipoInforme.idTipoInforme != 'CON'}">
+									<input type="hidden" name="claseTipoInforme_${index}" value="${tipoInforme.clase}">
+									<input type="hidden" name="directorioTipoInforme_${index}" value="${tipoInforme.directorio}">
+								</c:when>
+							</c:choose>								
+						</logic:iterate>
+					</logic:notEmpty>
 				</td>
 				
 				<td class="labelText" >
@@ -896,6 +908,7 @@ function gestionarDatosConsultas()
 	
 	
 }
+
 function accionComboTipoEnvio(index) {
 	var envioDefectoSeleccionado = document.getElementById("idTipoEnvioDefecto").value;
 	document.getElementById("idTipoEnvioDefecto").options.length = 0;
@@ -924,32 +937,6 @@ function accionComboTipoEnvio(index) {
 		onChangeTipoIntercambio();
 
 }
-/*function accionComboTipoEnvio(index) {
-	var envioDefectoSeleccionado = document.getElementById("idTipoEnvioDefecto").value;
-	document.getElementById("idTipoEnvioDefecto").options.length = 0;
-
-	var tiposEnvio = document.getElementById("comboTipoEnvioPermitidos").options;
-	boolean findDefecto = false;
-	for ( var i = 0; i < tiposEnvio.length; i++) {
-		var optionTipoEnvio =tiposEnvio[i];
-		if(optionTipoEnvio.selected){
-			var idTipoEnvio = optionTipoEnvio.value.split(',')[1];
-			if(!findDefecto && idTipoEnvio==envioDefectoSeleccionado){
-				findDefecto = true;
-			}
-			$("#idTipoEnvioDefecto").append("<option  value='"+idTipoEnvio+"'>"+optionTipoEnvio.text+"</option>");
-		}
-	}
-	document.getElementById("idTipoEnvioDefecto").value = envioDefectoSeleccionado;
-	if(!findDefecto){
-		//onChangeTipoenvio();
-	
-	}
-		
-
-}*/
-
-
 
 <!-- Asociada al boton Restablecer -->
 function accionRestablecer() 
@@ -961,6 +948,8 @@ jQuery(document).ready(function () {
 
 	accionComboTipoEnvio(-1);
 });
+
+ //a.b();
 
 </script>
 
