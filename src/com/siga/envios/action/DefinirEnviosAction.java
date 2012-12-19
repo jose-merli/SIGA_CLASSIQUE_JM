@@ -1976,7 +1976,6 @@ public class DefinirEnviosAction extends MasterAction {
 		UsrBean usr = this.getUserBean(request);
 		String idTipoEnvio = request.getParameter("idTipoEnvio");
 		JSONObject json = new JSONObject();
-		BusinessManager bm = getBusinessManager();
 		JSONArray tiposIntercambioJsonArray = new JSONArray();
 		
 		if(idTipoEnvio.equals(ClsConstants.TIPO_IDTIPOENVIO_TELEMATICO)){
@@ -1990,7 +1989,7 @@ public class DefinirEnviosAction extends MasterAction {
 		
 		json.put("tiposIntercambio", tiposIntercambioJsonArray);
 		
-		response.setContentType("text/x-json;charset=ISO-8859-15");
+		response.setContentType("text/x-json;charset=UTF-8");
 		response.setHeader("Cache-Control", "no-cache");
 		response.setHeader("Content-Type", "application/json");
 	    response.setHeader("X-JSON", json.toString());
@@ -2021,7 +2020,7 @@ public class DefinirEnviosAction extends MasterAction {
 		
 		json.put("tiposEnvioPermitidos", tiposEnvioJsonArray);
 		// json.
-		 response.setContentType("text/x-json;charset=ISO-8859-15");
+		 response.setContentType("text/x-json;charset=UTF-8");
 		 response.setHeader("Cache-Control", "no-cache");
 		 response.setHeader("Content-Type", "application/json");
 	     response.setHeader("X-JSON", json.toString());
