@@ -49,9 +49,23 @@
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsDesignasLetradoService" 	implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsDesignasLetradoServiceImpl"/>	
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsDesignaService" 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsDesignaServiceImpl"/>			
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsJuzgadoService" 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsJuzgadoServiceImpl"/>		
-		
-		
-		
+				
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosBienesInmueblesService"						implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgDatosEconomicosBienesInmueblesServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosBienesMueblesService"						implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgDatosEconomicosBienesMueblesServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosCargaEconomicaService"						implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgDatosEconomicosCargaEconomicaServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosEjerciciosService"							implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgDatosEconomicosEjerciciosServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosIngresosService"								implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgDatosEconomicosIngresosServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosIrpf20Service"								implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgDatosEconomicosIrpf20ServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosOrigenesValoracionesBienesInmueblesService"	implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgDatosEconomicosOrigenesValoracionesBienesInmueblesServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosOrigenesValoracionesBienesMueblesService"	implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgDatosEconomicosOrigenesValoracionesBienesMueblesServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosPeriodicidadesService"						implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgDatosEconomicosPeriodicidadesServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosTiposCargasEconomicasService"				implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgDatosEconomicosTiposCargasEconomicasServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosTiposIngresosService"						implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgDatosEconomicosTiposIngresosServiceImpl"/>		
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosTiposInmueblesService"						implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgDatosEconomicosTiposInmueblesServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosTiposMueblesService"							implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgDatosEconomicosTiposMueblesServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosTiposRendimientosService"					implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgDatosEconomicosTiposRendimientosServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosTiposViviendasService"						implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgDatosEconomicosTiposViviendasServiceImpl"/>
+
 	</context>
 </configuration> 
 	

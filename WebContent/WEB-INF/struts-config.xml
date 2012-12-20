@@ -245,6 +245,7 @@
 		<form-bean name="DefinirMantenimDictamenesEJGForm" type="com.siga.gratuita.form.DefinirMantenimDictamenesEJGForm"/>
 		<form-bean name="DefinirInteresadoEJGForm" type="com.siga.gratuita.form.DefinirInteresadoEJGForm"/>
 		<form-bean name="DefinirUnidadFamiliarEJGForm" type="com.siga.gratuita.form.DefinirUnidadFamiliarEJGForm"/>
+		<form-bean name="DatosEconomicosEJGForm" type="com.siga.gratuita.form.DatosEconomicosEJGForm"/>
 		<form-bean name="DefinirEstadosEJGForm" type="com.siga.gratuita.form.DefinirEstadosEJGForm"/>
 		<form-bean name="DefinirDocumentacionEJGForm" type="com.siga.gratuita.form.DefinirDocumentacionEJGForm"/>
 		<form-bean name="Asistencias1Form" type="com.siga.gratuita.form.AsistenciasForm"/>
@@ -3299,6 +3300,14 @@
 		<action path="/CEN_Poblaciones" type="com.siga.censo.action.PoblacionesAction" scope="request">
 		</action>		
 		
+		<action path="/JGR_DatosEconomicosEJG" type="com.siga.gratuita.action.DatosEconomicosEJGAction" name="DatosEconomicosEJGForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/datosEconomicos.jsp"/>
+			<forward name="ingresos" path="/html/jsp/gratuita/datosEconomicosIngresos.jsp"/>
+			<forward name="bieninmueble" path="/html/jsp/gratuita/datosEconomicosBienInmueble.jsp"/>
+			<forward name="bienmueble" path="/html/jsp/gratuita/datosEconomicosBienMueble.jsp"/>
+			<forward name="cargaeconomica" path="/html/jsp/gratuita/datosEconomicosCargaEconomica.jsp"/>
+			<forward name="irpf20" path="/html/jsp/gratuita/datosEconomicosIrpf20.jsp"/>	
+		</action>				
 
 		<!-- ****************************************************************************
 -->

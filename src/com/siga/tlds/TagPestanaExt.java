@@ -11,6 +11,9 @@
 package com.siga.tlds;
 
 import java.io.PrintWriter;
+import java.util.Enumeration;
+import java.util.Hashtable;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -27,10 +30,6 @@ import com.siga.administracion.SIGAConstants;
 import com.siga.beans.ExpCampoTipoExpedienteAdm;
 import com.siga.beans.ExpPestanaConfAdm;
 
-
-import java.util.Enumeration;
-import java.util.Hashtable;
-
 /**
  * @author Carmen.Garcia
  *
@@ -46,7 +45,7 @@ public class TagPestanaExt extends TagSupport {
 	protected String idTipoExpediente=null;
 	protected String idInstitucionTipoExpediente=null;
 	protected String target=null;
-	protected String parametros=null;
+	protected String parametros=null;	
 	protected int elementoactivo=1;
 	protected int idinstitucionCliente=-1;
 	protected int tipoAcceso=0xffffffff;
@@ -68,7 +67,14 @@ public class TagPestanaExt extends TagSupport {
 	private final String PESTANADENUNCIADOS="312";
 	private final String CAMPODENUNCIADOS="16";
 	
+	protected String modos=null;
+	private String[] aModos=null;
+	
 //	private UsrBean usrbean=null;
+	
+	public void setModos(String _modos) {
+		this.modos=_modos;
+	}
 
 	public void setProcesosinvisibles(String[] invisibles){
 	    this.procesosinvisibles=invisibles;
@@ -134,6 +140,7 @@ public class TagPestanaExt extends TagSupport {
 			HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 			String path = request.getContextPath(); 
 			if(parametros!=null) htParametros=(Hashtable)request.getAttribute(parametros);
+			if(modos!=null) aModos=(String [])request.getAttribute(modos);
 			UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
 			PrintWriter out = pageContext.getResponse().getWriter();
 			String hidden= "";
@@ -216,6 +223,9 @@ public class TagPestanaExt extends TagSupport {
 							temp++;
 							out.print((String)parametro+"="+(String)htParametros.get(parametro)+(size>temp?"&":""));
 						}
+					}					
+					if(modos!=null){
+						out.print("&modo="+aModos[i]);
 					}
 					out.println("\" onClick=\"sub();return pulsar(this,'" + target + "')\">");
 					out.println(UtilidadesString.getMensajeIdioma(usrbean, elements[i].name));

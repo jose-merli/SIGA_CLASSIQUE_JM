@@ -780,8 +780,13 @@
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
-        <attribute>
+    <attribute>
       <name>parametros</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>modos</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
