@@ -31,10 +31,6 @@
 		anchoTabla="879px";
 		botones = "G,V";
 	}
-	
-	//UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");
-	//String idioma = usuario.getLanguage();
-	
 %>	
 
 <html>
@@ -45,6 +41,10 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>		
+	<script type="text/javascript" src="<html:rewrite page='/html/js/validation.js?ver=1.7'/>"></script>
+	
+	<title><siga:Idioma key="gratuita.datoseconomicos.ingresos.titulo"/></title>		
+	<siga:Titulo titulo="gratuita.datoseconomicos.ingresos.cabcecera" localizacion="gratuita.datoseconomicos.ingresos.localizacion"/>		
 </head>
 
 <body>

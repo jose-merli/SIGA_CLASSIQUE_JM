@@ -12,6 +12,21 @@
 <%@ taglib uri="struts-html.tld" 	prefix="html"%>
 <%@ taglib uri="libreria_SIGA.tld" 	prefix="siga"%>
 
+<%@ page import = "com.atos.utils.UsrBean"%>
+<%@ page import = "java.util.Hashtable"%>
+
+<% 	
+	String idtipoejg = (String) request.getParameter("IDTIPOEJG");
+	String anio = (String) request.getParameter("ANIO");
+	String numero = (String) request.getParameter("NUMERO");	
+	
+	Hashtable htParametros = new Hashtable();
+	htParametros.put("idtipoejg", idtipoejg);
+	htParametros.put("anio", anio);
+	htParametros.put("numero", numero);
+	request.setAttribute("EJG", htParametros);
+%>	
+
 <html>
 
 <head> 	
@@ -23,12 +38,14 @@
 </head>
 
 <body onload="ajusteAlto('mainPestanasDatosEconomicos');return activarPestana();">
+	
 	<siga:PestanasExt 
 		pestanaId="DATOSECONO" 
 		target="mainPestanasDatosEconomicos"
 		modos="modosDatosEconomicosEJG" 
+		parametros="EJG"
 	/>
-	
+		
 	<iframe src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" id="mainPestanasDatosEconomicos" name="mainPestanasDatosEconomicos" scrolling="no" frameborder="0" class="framePestanas"></iframe>
 	
 	<iframe name="submitAreaDatosEconomicos" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display:none"></iframe>

@@ -53,6 +53,14 @@ public class DatosEconomicosEJGAction extends MasterAction {
 					} else if (accion.equalsIgnoreCase("cargaeconomica")){
 						mapDestino = adm.listarDatosEconomicosCargaEconomica(mapping, formDatosEconomicosEJG, request, response);
 						break;
+						
+					} else if (accion.equalsIgnoreCase("borrarCargaEconomica")){
+						mapDestino = adm.borrarDatosEconomicosCargaEconomica(mapping, formDatosEconomicosEJG, request, response);
+						break;
+						
+					} else if (accion.equalsIgnoreCase("guardarCargaEconomica")){
+						mapDestino = adm.guardarDatosEconomicosCargaEconomica(mapping, formDatosEconomicosEJG, request, response);
+						break;						
 
 					} else if (accion.equalsIgnoreCase("irpf20")){
 						mapDestino = adm.listarDatosEconomicosIrpf20(mapping, formDatosEconomicosEJG, request, response);

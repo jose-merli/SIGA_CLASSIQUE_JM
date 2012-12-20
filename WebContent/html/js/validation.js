@@ -818,6 +818,16 @@ function soloDigitos(event)
  	return true;
 }
 
-
-
-
+function soloNumerosDecimales(event) {			
+ 	var key;
+ 	if(window.event) { // para navegadores IE 	
+  		key = event.keyCode;
+ 	}
+ 	else if(event.which) {// para navegadores Firefox/Opera/Netscape 	
+  		key = event.which;
+ 	}
+ 	if ((key >= 48 && key <= 57) || key == 46 || key == 44) { 	
+    	 return true;
+ 	}
+ 	return false;
+}

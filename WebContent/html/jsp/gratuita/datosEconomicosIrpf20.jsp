@@ -41,6 +41,10 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>		
+	<script type="text/javascript" src="<html:rewrite page='/html/js/validation.js?ver=1.7'/>"></script>
+		
+	<title><siga:Idioma key="gratuita.datoseconomicos.irpf20.titulo"/></title>		
+	<siga:Titulo titulo="gratuita.datoseconomicos.irpf20.cabcecera" localizacion="gratuita.datoseconomicos.irpf20.localizacion"/>	
 </head>
 
 <body>

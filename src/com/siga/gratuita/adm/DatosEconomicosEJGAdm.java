@@ -20,12 +20,12 @@ import org.redabogacia.sigaservices.app.autogen.model.ScsDeCargaeconomica;
 import org.redabogacia.sigaservices.app.autogen.model.ScsDeCargaeconomicaExample;
 import org.redabogacia.sigaservices.app.autogen.model.ScsDeIngresos;
 import org.redabogacia.sigaservices.app.autogen.model.ScsDeIrpf20;
-import org.redabogacia.sigaservices.app.autogen.model.ScsDeIrpf20Example;
 import org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosBienesInmueblesService;
 import org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosBienesMueblesService;
 import org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosCargaEconomicaService;
 import org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosIngresosService;
 import org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosIrpf20Service;
+import org.redabogacia.sigaservices.app.vo.ScsDeCargaEconomicaExtends;
 import org.redabogacia.sigaservices.app.vo.ScsDeIngresosExtends;
 import org.redabogacia.sigaservices.app.vo.ScsDeIrpf20Extends;
 
@@ -56,11 +56,18 @@ public class DatosEconomicosEJGAdm {
 			String idioma = usuario.getLanguage();
 			
 			// 1. LISTA DE INGRESOS
+			//parametrosMap.put("idioma", idioma);
+			//parametrosMap.put("idinstitucion", shortIdInstitucion);
+			//parametrosMap.put("idtipoejg", UtilidadesHash.getShort(hash,"IDTIPOEJG"));
+			//parametrosMap.put("anio", UtilidadesHash.getShort(hash,"ANIO"));
+			//parametrosMap.put("numero", UtilidadesHash.getLong(hash,"NUMERO"));
+			
+			
 			parametrosMap.put("idioma", idioma);
 			parametrosMap.put("idinstitucion", shortIdInstitucion);
-			parametrosMap.put("idtipoejg", UtilidadesHash.getShort(hash,"IDTIPOEJG"));
-			parametrosMap.put("anio", UtilidadesHash.getShort(hash,"ANIO"));
-			parametrosMap.put("numero", UtilidadesHash.getLong(hash,"NUMERO"));			
+			parametrosMap.put("idtipoejg", (String)request.getParameter("idtipoejg"));
+			parametrosMap.put("anio", (String)request.getParameter("anio"));
+			parametrosMap.put("numero", (String)request.getParameter("numero"));
 													
 			ScsEjgDatosEconomicosIngresosService datosEconomicosService = (ScsEjgDatosEconomicosIngresosService) businessManager.getService(ScsEjgDatosEconomicosIngresosService.class);
 					
@@ -113,7 +120,7 @@ public class DatosEconomicosEJGAdm {
 			trNuevas+=tdsNuevas[2]+"</td>";
 			
 			trNuevas+="<td align='right' width='150px'>";
-			tdsNuevas[3]="<input type='text' id='input_Importe_1' class='box' style='width:140' value='' maxlength='13' onChange='cambiaFila(1)'/>";
+			tdsNuevas[3]="<input type='text' id='input_Importe_1' class='boxNumber' style='width:140' value='' maxlength='13' onChange='cambiaFila(1)' onkeypress='return soloNumerosDecimales(event)'/>";
 			trNuevas+=tdsNuevas[3]+"</td>";
 			
 			trNuevas+="<td align='center' width='50px'>";
@@ -237,7 +244,7 @@ public class DatosEconomicosEJGAdm {
 		return "bienmueble";		
 	}	
 	
-	public String listarDatosEconomicosCargaEconomica (ActionMapping mapping, DatosEconomicosEJGForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	public String listarDatosEconomicosCargaEconomica2 (ActionMapping mapping, DatosEconomicosEJGForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {
 			BusinessManager businessManager =  BusinessManager.getInstance();		
 			ScsEjgDatosEconomicosCargaEconomicaService datosEconomicosService = (ScsEjgDatosEconomicosCargaEconomicaService) businessManager.getService(ScsEjgDatosEconomicosCargaEconomicaService.class);
@@ -259,31 +266,154 @@ public class DatosEconomicosEJGAdm {
 		return "cargaeconomica";		
 	}	
 	
-	public String listarDatosEconomicosIrpf202 (ActionMapping mapping, DatosEconomicosEJGForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	public String listarDatosEconomicosCargaEconomica (ActionMapping mapping, DatosEconomicosEJGForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		try {		
+			UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");			
+			Hashtable hash = (Hashtable) request.getSession().getAttribute("DATABACKUP");
+			Map<String, Object> parametrosMap = new HashMap<String, Object>();
+			BusinessManager businessManager = BusinessManager.getInstance();
+			
+			String idInstitucion = usuario.getLocation();
+			Short shortIdInstitucion = new Short(idInstitucion);
+			String idioma = usuario.getLanguage();
+			
+			// 1. LISTA DE CARGAS ECONOMICAS
+			parametrosMap.put("idioma", idioma);
+			parametrosMap.put("idinstitucion", shortIdInstitucion);
+			parametrosMap.put("idtipoejg", (String)request.getParameter("idtipoejg"));
+			parametrosMap.put("anio", (String)request.getParameter("anio"));
+			parametrosMap.put("numero", (String)request.getParameter("numero"));	
+													
+			ScsEjgDatosEconomicosCargaEconomicaService datosEconomicosService = (ScsEjgDatosEconomicosCargaEconomicaService) businessManager.getService(ScsEjgDatosEconomicosCargaEconomicaService.class);
+					
+			List<ScsDeCargaEconomicaExtends> listaCargasEconomicas = datosEconomicosService.obtenerListaCargasEconomicasTotal(parametrosMap);
+			// FIN LISTA DE CARGAS ECONOMICAS			
+			
+			
+			// 2. OBTENER LISTAS AUXILIARES		
+			List<ScsDeCargaEconomicaExtends> listaTiposCargasEconomicas = datosEconomicosService.obtenerListaTiposCargasEconomicasTotal(parametrosMap);
+			List<ScsDeCargaEconomicaExtends> listaPeriodicidades = datosEconomicosService.obtenerListaPeriodicidadesTotal(parametrosMap);
+			List<ScsDeCargaEconomicaExtends> listaTitulares = datosEconomicosService.obtenerListaTitularesTotal(parametrosMap);
+			// FIN LISTAS AUXILIARES
+			
+			String claseFila;
+			if((listaCargasEconomicas.size()+2)%2==0)
+		   		claseFila = "filaTablaPar";
+		   	else
+		   		claseFila = "filaTablaImpar";
+			
+			String trNuevas = "<tr class='"+claseFila+"' id='fila_1'><td align='left' width='250px'>";
+			String[] tdsNuevas = new String[5];
+					
+			tdsNuevas[0] = "<select class='boxCombo' style='width:240px' id='select_TiposCargasEconomicas_1' value='' onChange='cambiaFila(1)'>";
+			tdsNuevas[0]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
+			for (int i=0; i<listaTiposCargasEconomicas.size(); i++) {
+				ScsDeCargaEconomicaExtends dato = (ScsDeCargaEconomicaExtends) listaTiposCargasEconomicas.get(i);
+				tdsNuevas[0]+="<option value='"+dato.getIdtipocargaeconomica()+"'>"+dato.getDescripciontipocargaeconomica()+"</option>";
+			}				
+			tdsNuevas[0]+="</select>";
+			trNuevas+=tdsNuevas[0]+"</td>";
+			
+			trNuevas+="<td align='left' width='150px'>";
+			tdsNuevas[1]="<select class='boxCombo' style='width:140px' id='select_Periodicidades_1' value='' onChange='cambiaFila(1)'>";
+			tdsNuevas[1]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
+			for (int i=0; i<listaPeriodicidades.size(); i++) {
+				ScsDeCargaEconomicaExtends dato = (ScsDeCargaEconomicaExtends) listaPeriodicidades.get(i);
+				tdsNuevas[1]+="<option value='"+dato.getIdperiodicidad()+"'>"+dato.getDescripcionperiodicidad()+"</option>";
+			}				
+			tdsNuevas[1]+="</select>";
+			trNuevas+=tdsNuevas[1]+"</td>";
+			
+			trNuevas+="<td align='left' width='250px'>";
+			tdsNuevas[2]="<select class='boxCombo' style='width:240px' id='select_Titulares_1' value='' onChange='cambiaFila(1)'>";
+			tdsNuevas[2]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
+			for (int i=0; i<listaTitulares.size(); i++) {
+				ScsDeCargaEconomicaExtends dato = (ScsDeCargaEconomicaExtends) listaTitulares.get(i);
+				tdsNuevas[2]+="<option value='"+dato.getIdpersona()+"'>"+dato.getTitular()+"</option>";
+			}				
+			tdsNuevas[2]+="</select>";
+			trNuevas+=tdsNuevas[2]+"</td>";
+			
+			trNuevas+="<td align='right' width='150px'>";
+			tdsNuevas[3]="<input type='text' id='input_Importe_1' class='boxNumber' style='width:140' value='' maxlength='13' onChange='cambiaFila(1)' onkeypress='return soloNumerosDecimales(event)'/>";
+			trNuevas+=tdsNuevas[3]+"</td>";
+			
+			trNuevas+="<td align='center' width='50px'>";
+			tdsNuevas[4]="<img src='/SIGA/html/imagenes/bborrar_off.gif' style='cursor:pointer;' title='"+UtilidadesString.getMensajeIdioma(usuario,"general.boton.borrar")+"' alt='"+UtilidadesString.getMensajeIdioma(usuario,"general.boton.borrar")+"' name='' border='0' "+ 
+				" onclick='borrarFila(1)'>";
+			trNuevas+=tdsNuevas[4]+"</td></tr>";
+						
+			request.setAttribute("LISTA_CARGASECONOMICAS", listaCargasEconomicas);
+			request.setAttribute("TR_NEW", trNuevas);
+			request.setAttribute("TDS_NEW", tdsNuevas);
+						
+		}catch (Exception exc){
+			throw new SIGAException("messages.general.error", exc, new String[] {"modulo.gratuita"});
+		}		
+
+		return "cargaeconomica";		
+	}
+	
+	public String borrarDatosEconomicosCargaEconomica (ActionMapping mapping, DatosEconomicosEJGForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {
 			BusinessManager businessManager =  BusinessManager.getInstance();		
-			ScsEjgDatosEconomicosIrpf20Service datosEconomicosService = (ScsEjgDatosEconomicosIrpf20Service) businessManager.getService(ScsEjgDatosEconomicosIrpf20Service.class);
+			ScsEjgDatosEconomicosCargaEconomicaService datosEconomicosService = (ScsEjgDatosEconomicosCargaEconomicaService) businessManager.getService(ScsEjgDatosEconomicosCargaEconomicaService.class);
 			
-			ScsDeIrpf20 irpf = new ScsDeIrpf20();
-			ScsDeIrpf20Example example = new ScsDeIrpf20Example();
-			org.redabogacia.sigaservices.app.autogen.model.ScsDeIrpf20Example.Criteria criteria = example.createCriteria();
-			criteria.andIdtipoejgEqualTo(irpf.getIdtipoejg());
-			criteria.andIdinstitucionEqualTo(irpf.getIdinstitucion());
-			criteria.andAnioEqualTo(irpf.getAnio());
-			criteria.andNumeroEqualTo(irpf.getNumero());
+			ScsDeCargaeconomica cargaeconomica = new ScsDeCargaeconomica();
+			cargaeconomica.setIdcargaeconomica(new Long(formulario.getId()));				
 			
-			List<ScsDeIrpf20> listaIrpfs = datosEconomicosService.obtenerListaIrpfs(example);
-			
+			if (datosEconomicosService.delete(cargaeconomica) < 1) {
+				throw new SIGAException("Error al borrar una carga económica");
+			}
+		
 		}catch (Exception exc){
 			throw new SIGAException("messages.general.error", exc, new String[] {"modulo.gratuita"});
 		}	
-			
-		return "irpf20";		
+		
+		return this.listarDatosEconomicosCargaEconomica(mapping, formulario, request, response);	
 	}		
 	
-	
-
-	
+	public String guardarDatosEconomicosCargaEconomica (ActionMapping mapping, DatosEconomicosEJGForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		try {
+			BusinessManager businessManager =  BusinessManager.getInstance();		
+			ScsEjgDatosEconomicosCargaEconomicaService datosEconomicosService = (ScsEjgDatosEconomicosCargaEconomicaService) businessManager.getService(ScsEjgDatosEconomicosCargaEconomicaService.class);
+			
+			String listaCargasEconomicas = formulario.getId();			
+			String[] arrayCargasEconomicas = listaCargasEconomicas.split("%%%");					
+			ArrayList arrayListaCargasEconomicas = new ArrayList();
+			
+			UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");			
+			Hashtable hash = (Hashtable) request.getSession().getAttribute("DATABACKUP");						
+			
+			for (int i=0; i<arrayCargasEconomicas.length; i++)  {
+				String[] arrayCargaEconomica = arrayCargasEconomicas[i].split("---");
+				
+				ScsDeCargaeconomica cargaeconomica = new ScsDeCargaeconomica();
+				cargaeconomica.setIdinstitucion(new Short(usuario.getLocation()));
+				cargaeconomica.setIdtipoejg(UtilidadesHash.getShort(hash,"IDTIPOEJG"));
+				cargaeconomica.setAnio(UtilidadesHash.getShort(hash,"ANIO"));
+				cargaeconomica.setNumero(UtilidadesHash.getLong(hash,"NUMERO"));
+				cargaeconomica.setFechamodificacion(Calendar.getInstance().getTime());
+				cargaeconomica.setUsumodificacion(new Integer(usuario.getUserName()));
+				
+				cargaeconomica.setIdtipocargaeconomica(new Integer(arrayCargaEconomica[0]));
+				cargaeconomica.setIdperiodicidad(new Integer(arrayCargaEconomica[1]));
+				cargaeconomica.setIdpersona(new Long(arrayCargaEconomica[2]));
+				cargaeconomica.setImporte(new BigDecimal(arrayCargaEconomica[3]));
+				
+				arrayListaCargasEconomicas.add(cargaeconomica);
+			}
+			
+			if (!datosEconomicosService.insertTotal(arrayListaCargasEconomicas)) {
+				throw new SIGAException("Error al insertar las cargas económicas");
+			}				
+					
+		}catch (Exception exc){
+			throw new SIGAException("messages.general.error", exc, new String[] {"modulo.gratuita"});
+		}	
+		
+		return this.listarDatosEconomicosCargaEconomica(mapping, formulario, request, response);	
+	}				
 	
 	public String listarDatosEconomicosIrpf20 (ActionMapping mapping, DatosEconomicosEJGForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {		
@@ -299,9 +429,9 @@ public class DatosEconomicosEJGAdm {
 			// 1. LISTA DE IRPF
 			parametrosMap.put("idioma", idioma);
 			parametrosMap.put("idinstitucion", shortIdInstitucion);
-			parametrosMap.put("idtipoejg", UtilidadesHash.getShort(hash,"IDTIPOEJG"));
-			parametrosMap.put("anio", UtilidadesHash.getShort(hash,"ANIO"));
-			parametrosMap.put("numero", UtilidadesHash.getLong(hash,"NUMERO"));			
+			parametrosMap.put("idtipoejg", (String)request.getParameter("idtipoejg"));
+			parametrosMap.put("anio", (String)request.getParameter("anio"));
+			parametrosMap.put("numero", (String)request.getParameter("numero"));		
 													
 			ScsEjgDatosEconomicosIrpf20Service datosEconomicosService = (ScsEjgDatosEconomicosIrpf20Service) businessManager.getService(ScsEjgDatosEconomicosIrpf20Service.class);
 					
@@ -354,7 +484,7 @@ public class DatosEconomicosEJGAdm {
 			trNuevas+=tdsNuevas[2]+"</td>";
 			
 			trNuevas+="<td align='right' width='150px'>";
-			tdsNuevas[3]="<input type='text' id='input_Importe_1' class='box' style='width:140' value='' maxlength='13' onChange='cambiaFila(1)'/>";
+			tdsNuevas[3]="<input type='text' id='input_Importe_1' class='boxNumber' style='width:140' value='' maxlength='13' onChange='cambiaFila(1)' onkeypress='return soloNumerosDecimales(event)'/>";
 			trNuevas+=tdsNuevas[3]+"</td>";
 			
 			trNuevas+="<td align='center' width='50px'>";
