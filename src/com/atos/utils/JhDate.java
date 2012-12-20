@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.redabogacia.sigaservices.app.util.JhFormat;
+
 /**
  * Clase utilizada para realizar varias operaciones de formateo de fechas.<br>
  * @version: 1.0

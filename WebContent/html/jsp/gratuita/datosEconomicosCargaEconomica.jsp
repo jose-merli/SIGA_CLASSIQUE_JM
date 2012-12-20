@@ -24,11 +24,11 @@
 	String accion = (String)request.getSession().getAttribute("accion");
 	
 	boolean editable = false;			
-	String anchoTabla = "867px";		
+	String anchoTabla = "817px";		
 	String botones = "V";
 	if (accion!=null && accion.equals("editar")) {
 		editable=true;
-		anchoTabla="929px";
+		anchoTabla="879px";
 		botones = "G,V";
 	}
 %>	
@@ -55,7 +55,7 @@
 		<br>		
 		<table border="1" cellspacing="0" cellpadding="5">
 			<tr class="tableTitle">
-				<td align="center" width="250px">
+				<td align="center" width="200px">
 					<b><siga:Idioma key="gratuita.datoseconomicos.tipocargaeconomica"/></b>
 				</td>
 				<td align="center" width="150px">
@@ -84,7 +84,7 @@
 		   		 				claseFila = "filaTablaImpar";
 				%>				
 					<tr class="<%=claseFila%>">
-						<td align="left" width="250px">
+						<td align="left" width="200px">
 							<%=dato.getDescripciontipocargaeconomica()%>						
 						</td>
 						<td align="left" width="150px">
@@ -142,7 +142,7 @@
 		tr.id = "fila_" + numMaxFilaNueva;
 		
 		td = tr.insertCell(0);		
-		td.setAttribute("width", "250px");
+		td.setAttribute("width", "200px");
 		td.setAttribute("align", "left");		
 		var tdNew ="<%=tdsNew[0]%>";
 		tdNew = tdNew.replace("select_TiposCargasEconomicas_1", "select_TiposCargasEconomicas_"+numMaxFilaNueva);

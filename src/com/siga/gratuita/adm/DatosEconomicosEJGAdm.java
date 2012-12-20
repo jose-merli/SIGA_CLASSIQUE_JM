@@ -302,10 +302,10 @@ public class DatosEconomicosEJGAdm {
 		   	else
 		   		claseFila = "filaTablaImpar";
 			
-			String trNuevas = "<tr class='"+claseFila+"' id='fila_1'><td align='left' width='250px'>";
+			String trNuevas = "<tr class='"+claseFila+"' id='fila_1'><td align='left' width='200px'>";
 			String[] tdsNuevas = new String[5];
 					
-			tdsNuevas[0] = "<select class='boxCombo' style='width:240px' id='select_TiposCargasEconomicas_1' value='' onChange='cambiaFila(1)'>";
+			tdsNuevas[0] = "<select class='boxCombo' style='width:190px' id='select_TiposCargasEconomicas_1' value='' onChange='cambiaFila(1)'>";
 			tdsNuevas[0]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
 			for (int i=0; i<listaTiposCargasEconomicas.size(); i++) {
 				ScsDeCargaEconomicaExtends dato = (ScsDeCargaEconomicaExtends) listaTiposCargasEconomicas.get(i);
