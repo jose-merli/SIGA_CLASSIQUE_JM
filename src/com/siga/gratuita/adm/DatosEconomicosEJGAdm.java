@@ -55,22 +55,14 @@ public class DatosEconomicosEJGAdm {
 			Short shortIdInstitucion = new Short(idInstitucion);
 			String idioma = usuario.getLanguage();
 			
-			// 1. LISTA DE INGRESOS
-			//parametrosMap.put("idioma", idioma);
-			//parametrosMap.put("idinstitucion", shortIdInstitucion);
-			//parametrosMap.put("idtipoejg", UtilidadesHash.getShort(hash,"IDTIPOEJG"));
-			//parametrosMap.put("anio", UtilidadesHash.getShort(hash,"ANIO"));
-			//parametrosMap.put("numero", UtilidadesHash.getLong(hash,"NUMERO"));
-			
-			
+			// 1. LISTA DE INGRESOS			
 			parametrosMap.put("idioma", idioma);
 			parametrosMap.put("idinstitucion", shortIdInstitucion);
 			parametrosMap.put("idtipoejg", (String)request.getParameter("idtipoejg"));
 			parametrosMap.put("anio", (String)request.getParameter("anio"));
 			parametrosMap.put("numero", (String)request.getParameter("numero"));
 													
-			ScsEjgDatosEconomicosIngresosService datosEconomicosService = (ScsEjgDatosEconomicosIngresosService) businessManager.getService(ScsEjgDatosEconomicosIngresosService.class);
-					
+			ScsEjgDatosEconomicosIngresosService datosEconomicosService = (ScsEjgDatosEconomicosIngresosService) businessManager.getService(ScsEjgDatosEconomicosIngresosService.class);					
 			List<ScsDeIngresosExtends> listaIngresos = datosEconomicosService.obtenerListaIngresosTotal(parametrosMap);
 			// FIN LISTA DE INGRESOS			
 			
@@ -285,7 +277,6 @@ public class DatosEconomicosEJGAdm {
 			parametrosMap.put("numero", (String)request.getParameter("numero"));	
 													
 			ScsEjgDatosEconomicosCargaEconomicaService datosEconomicosService = (ScsEjgDatosEconomicosCargaEconomicaService) businessManager.getService(ScsEjgDatosEconomicosCargaEconomicaService.class);
-					
 			List<ScsDeCargaEconomicaExtends> listaCargasEconomicas = datosEconomicosService.obtenerListaCargasEconomicasTotal(parametrosMap);
 			// FIN LISTA DE CARGAS ECONOMICAS			
 			
@@ -433,8 +424,7 @@ public class DatosEconomicosEJGAdm {
 			parametrosMap.put("anio", (String)request.getParameter("anio"));
 			parametrosMap.put("numero", (String)request.getParameter("numero"));		
 													
-			ScsEjgDatosEconomicosIrpf20Service datosEconomicosService = (ScsEjgDatosEconomicosIrpf20Service) businessManager.getService(ScsEjgDatosEconomicosIrpf20Service.class);
-					
+			ScsEjgDatosEconomicosIrpf20Service datosEconomicosService = (ScsEjgDatosEconomicosIrpf20Service) businessManager.getService(ScsEjgDatosEconomicosIrpf20Service.class);					
 			List<ScsDeIrpf20Extends> listaIrpfs = datosEconomicosService.obtenerListaIrpfsTotal(parametrosMap);
 			// FIN LISTA DE IRPF			
 			
