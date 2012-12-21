@@ -24,11 +24,11 @@
 	String accion = (String)request.getSession().getAttribute("accion");
 	
 	boolean editable = false;			
-	String anchoTabla = "1817px";		
+	String anchoTabla = "929px";		
 	String botones = "V";
 	if (accion!=null && accion.equals("editar")) {
 		editable=true;
-		anchoTabla="1879px";
+		anchoTabla="991px";
 		botones = "G,V";
 	}
 	
@@ -65,7 +65,7 @@
 				<td align="center" width="120px">
 					<b><siga:Idioma key="gratuita.datoseconomicos.origenvaloracion"/></b>
 				</td>
-				<td align="center" width="200px">
+				<td align="center" width="260px">
 					<b><siga:Idioma key="gratuita.datoseconomicos.tipovivienda"/></b>
 				</td>
 				<td align="center" width="150px">
@@ -74,7 +74,7 @@
 				<td align="center" width="200px">
 					<b><siga:Idioma key="gratuita.datoseconomicos.titular"/></b>
 				</td>
-				<td align="center" width="150px">
+				<td align="center" width="120px">
 					<b><siga:Idioma key="gratuita.datoseconomicos.valoracion"/></b>
 				</td>				
 			</tr>
@@ -92,21 +92,26 @@
 		   	 	 				claseFila = "filaTablaPar";
 		   	 				else
 		   		 				claseFila = "filaTablaImpar";
+							
+							String idTipoInmueble = "&nbsp;";
+							if (dato.getDescripciontipoinmueble() != null) {
+								idTipoInmueble = dato.getDescripciontipoinmueble();
+							}
 				%>				
 					<tr class="<%=claseFila%>">
 						<td align="left" width="120px">
 							<%=dato.getDescripcionorigenvaloracion()%>						
 						</td>
-						<td align="left" width="200px">
+						<td align="left" width="260px">
 							<%=dato.getDescripciontipovivienda()%>						
 						</td>
 						<td align="left" width="150px">
-							<%=dato.getDescripciontipoinmueble()%>						
+							<%=idTipoInmueble%>						
 						</td>
 						<td align="left" width="200px">
 							<%=dato.getTitular()%>
 						</td>
-						<td align="right" width="150px">
+						<td align="right" width="120px">
 							<%=dato.getValoracionFormateada()%> &#8364;
 						</td>		
 						
@@ -163,7 +168,7 @@
 		td.innerHTML=tdNew;
 		
 		td = tr.insertCell(1);		
-		td.setAttribute("width", "200px");
+		td.setAttribute("width", "260px");
 		td.setAttribute("align", "left");		
 		tdNew ="<%=tdsNew[1]%>";
 		tdNew = tdNew.replace("select_TiposViviendas_1", "select_TiposViviendas_"+numMaxFilaNueva);
@@ -187,7 +192,7 @@
 		td.innerHTML=tdNew;
 		
 		td = tr.insertCell(4);		
-		td.setAttribute("width", "150px");
+		td.setAttribute("width", "120px");
 		td.setAttribute("align", "right");		
 		tdNew ="<%=tdsNew[4]%>";
 		tdNew = tdNew.replace("input_Valoracion_1", "input_Valoracion_"+numMaxFilaNueva);

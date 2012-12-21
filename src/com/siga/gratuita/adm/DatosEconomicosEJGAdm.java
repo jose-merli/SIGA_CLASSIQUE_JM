@@ -241,8 +241,8 @@ public class DatosEconomicosEJGAdm {
 			
 
 			
-			trNuevas+="<td align='left' width='200px'>";
-			tdsNuevas[1]="<select class='boxCombo' style='width:190px' id='select_TiposViviendas_1' value='' onChange='cambiaFila(1)'>";
+			trNuevas+="<td align='left' width='260px'>";
+			tdsNuevas[1]="<select class='boxCombo' style='width:250px' id='select_TiposViviendas_1' value='' onChange='cambiaFila(1)'>";
 			tdsNuevas[1]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
 			for (int i=0; i<listaTiposViviendas.size(); i++) {
 				ScsDeBienInmuebleExtends dato = (ScsDeBienInmuebleExtends) listaTiposViviendas.get(i);
@@ -267,8 +267,8 @@ public class DatosEconomicosEJGAdm {
 			tdsNuevas[3]+="</select>";
 			trNuevas+=tdsNuevas[3]+"</td>";
 			
-			trNuevas+="<td align='right' width='150px'>";
-			tdsNuevas[4]="<input type='text' id='input_Valoracion_1' class='boxNumber' style='width:140' value='' maxlength='13' onChange='cambiaFila(1)' onkeypress='return soloNumerosDecimales(event)'/>";
+			trNuevas+="<td align='right' width='120px'>";
+			tdsNuevas[4]="<input type='text' id='input_Valoracion_1' class='boxNumber' style='width:100' value='' maxlength='13' onChange='cambiaFila(1)' onkeypress='return soloNumerosDecimales(event)'/>";
 			trNuevas+=tdsNuevas[4]+"</td>";
 			
 			trNuevas+="<td align='center' width='50px'>";
