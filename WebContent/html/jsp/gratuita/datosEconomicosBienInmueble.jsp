@@ -13,6 +13,7 @@
 <%@ taglib uri = "libreria_SIGA.tld" 	prefix="siga"%>
 
 <%@page import="java.util.List"%>
+<%@page import="java.util.Hashtable"%>
 <%@page import="org.redabogacia.sigaservices.app.vo.ScsDeBienInmuebleExtends"%>
 
 <% 	
@@ -20,6 +21,7 @@
 	List listaBienes = (List) request.getAttribute("LISTA_BIENES");
 	String trNew = (String) request.getAttribute("TR_NEW");
 	String[] tdsNew = (String[]) request.getAttribute("TDS_NEW");
+	String selectsTiposInmuebles = (String) request.getAttribute("SELECTS_TIPOS_INMUEBLES");	
 	
 	String accion = (String)request.getSession().getAttribute("accion");
 	
@@ -46,6 +48,7 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>		
 	<script type="text/javascript" src="<html:rewrite page='/html/js/validation.js?ver=1.7'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery-1.7.1.js'/>" ></script>
 	
 	<title><siga:Idioma key="gratuita.datoseconomicos.bienesinmuebles.titulo"/></title>		
 	<siga:Titulo titulo="gratuita.datoseconomicos.bienesinmuebles.cabecera" localizacion="gratuita.datoseconomicos.bienesinmuebles.localizacion"/>
@@ -126,6 +129,7 @@
 				
 				<% if (editable) { %>	
 					<%=trNew%>
+					<%=selectsTiposInmuebles%>
 				<% } %>
 			</table>
 		</div>
@@ -173,6 +177,7 @@
 		tdNew ="<%=tdsNew[1]%>";
 		tdNew = tdNew.replace("select_TiposViviendas_1", "select_TiposViviendas_"+numMaxFilaNueva);
 		tdNew = tdNew.replace("cambiaFila(1)", "cambiaFila("+numMaxFilaNueva+")");
+		tdNew = tdNew.replace("CambiarTipoVivienda(1", "CambiarTipoVivienda("+numMaxFilaNueva);
 		td.innerHTML=tdNew;
 		
 		td = tr.insertCell(2);		
@@ -212,7 +217,18 @@
 			crearFila();
 		}
 	}	
-
+		
+	function CambiarTipoVivienda(idFila, idTipoVivienda){
+		var selectAux = document.getElementById("select_TiposInmuebles_AUX_"+idTipoVivienda);
+		
+		jQuery("#select_TiposInmuebles_"+idFila+" option").remove();
+		if (selectAux != null) {
+			jQuery("#select_TiposInmuebles_AUX_"+idTipoVivienda+" option").clone().appendTo("#select_TiposInmuebles_"+idFila);	
+		} else {
+			jQuery("#select_TiposInmuebles_AUX option").clone().appendTo("#select_TiposInmuebles_"+idFila);
+		}
+	}
+		
 	function borrarFila(idFila){			
 		if (numFilasNuevas>1) {
 			var tabla = document.getElementById("tablaPrincipal");

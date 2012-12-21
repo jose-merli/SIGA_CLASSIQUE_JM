@@ -3,6 +3,7 @@ package com.siga.gratuita.adm;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -229,9 +230,10 @@ public class DatosEconomicosEJGAdm {
 			
 			String trNuevas = "<tr class='"+claseFila+"' id='fila_1'><td align='left' width='120px'>";
 			String[] tdsNuevas = new String[6];
+			String opcionSeleccionar = "<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
 					
 			tdsNuevas[0] = "<select class='boxCombo' style='width:110px' id='select_OrigenValoraciones_1' value='' onChange='cambiaFila(1)'>";
-			tdsNuevas[0]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
+			tdsNuevas[0] += opcionSeleccionar;
 			for (int i=0; i<listaOrigenValoraciones.size(); i++) {
 				ScsDeBienInmuebleExtends dato = (ScsDeBienInmuebleExtends) listaOrigenValoraciones.get(i);
 				tdsNuevas[0]+="<option value='"+dato.getIdorigenvalbi()+"'>"+dato.getDescripcionorigenvaloracion()+"</option>";
@@ -242,8 +244,8 @@ public class DatosEconomicosEJGAdm {
 
 			
 			trNuevas+="<td align='left' width='260px'>";
-			tdsNuevas[1]="<select class='boxCombo' style='width:250px' id='select_TiposViviendas_1' value='' onChange='cambiaFila(1)'>";
-			tdsNuevas[1]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
+			tdsNuevas[1]="<select class='boxCombo' style='width:250px' id='select_TiposViviendas_1' value='' onChange='cambiaFila(1);CambiarTipoVivienda(1,this.value)'>";
+			tdsNuevas[1] += opcionSeleccionar;
 			for (int i=0; i<listaTiposViviendas.size(); i++) {
 				ScsDeBienInmuebleExtends dato = (ScsDeBienInmuebleExtends) listaTiposViviendas.get(i);
 				tdsNuevas[1]+="<option value='"+dato.getIdtipovivienda()+"'>"+dato.getDescripciontipovivienda()+"</option>";
@@ -252,14 +254,35 @@ public class DatosEconomicosEJGAdm {
 			trNuevas+=tdsNuevas[1]+"</td>";
 			
 			trNuevas+="<td align='left' width='150px'>";
-			tdsNuevas[2]="<select class='boxCombo' style='width:140px' id='select_TiposInmuebles_1' value='' onChange='cambiaFila(1)'>"+
-						"<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>"+
-					"</select>";
+			tdsNuevas[2]="<select class='boxCombo' style='width:140px' id='select_TiposInmuebles_1' value='' onChange='cambiaFila(1)'>"+opcionSeleccionar+"</select>";
 			trNuevas+=tdsNuevas[2]+"</td>";
+			
+			Hashtable hashTipoInmuebles = new Hashtable();			
+			for (int i=0; i<listaTiposInmuebles.size(); i++) {
+				ScsDeBienInmuebleExtends dato = (ScsDeBienInmuebleExtends) listaTiposInmuebles.get(i);
+				String idTipoVivienda = dato.getIdtipovivienda().toString();
+				
+				String opcionTipoInmueble ="<option value='"+dato.getIdtipoinmueble()+"'>"+dato.getDescripciontipoinmueble()+"</option>";
+				
+				if (hashTipoInmuebles.containsKey(idTipoVivienda)) {
+					hashTipoInmuebles.put(idTipoVivienda,hashTipoInmuebles.get(idTipoVivienda)+opcionTipoInmueble);
+				} else {
+					hashTipoInmuebles.put(idTipoVivienda,opcionSeleccionar+opcionTipoInmueble);
+				}				
+			}		
+			
+			String selectTiposInmuebles = "";
+			Enumeration clavesInmuebles = hashTipoInmuebles.keys();     
+			while(clavesInmuebles.hasMoreElements()) {
+				String clave = (String) clavesInmuebles.nextElement();
+				selectTiposInmuebles += "<select id='select_TiposInmuebles_AUX_"+clave+"' style='display:none'>"+hashTipoInmuebles.get(clave)+"</select>";
+			}
+			selectTiposInmuebles += "<select id='select_TiposInmuebles_AUX' style='display:none'>"+opcionSeleccionar+"</select>";
+			
 			
 			trNuevas+="<td align='left' width='200px'>";
 			tdsNuevas[3]="<select class='boxCombo' style='width:190px' id='select_Titulares_1' value='' onChange='cambiaFila(1)'>";
-			tdsNuevas[3]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
+			tdsNuevas[3] += opcionSeleccionar;
 			for (int i=0; i<listaTitulares.size(); i++) {
 				ScsDeBienInmuebleExtends dato = (ScsDeBienInmuebleExtends) listaTitulares.get(i);
 				tdsNuevas[3]+="<option value='"+dato.getIdpersona()+"'>"+dato.getTitular()+"</option>";
@@ -279,6 +302,7 @@ public class DatosEconomicosEJGAdm {
 			request.setAttribute("LISTA_BIENES", listaBienesInmuebles);
 			request.setAttribute("TR_NEW", trNuevas);
 			request.setAttribute("TDS_NEW", tdsNuevas);
+			request.setAttribute("SELECTS_TIPOS_INMUEBLES", selectTiposInmuebles);
 						
 		}catch (Exception exc){
 			throw new SIGAException("messages.general.error", exc, new String[] {"modulo.gratuita"});
