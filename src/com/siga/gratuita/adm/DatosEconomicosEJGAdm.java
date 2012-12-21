@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.autogen.model.ScsDeBieninmueble;
-import org.redabogacia.sigaservices.app.autogen.model.ScsDeBieninmuebleExample;
 import org.redabogacia.sigaservices.app.autogen.model.ScsDeBienmueble;
 import org.redabogacia.sigaservices.app.autogen.model.ScsDeCargaeconomica;
 import org.redabogacia.sigaservices.app.autogen.model.ScsDeIngresos;
@@ -23,6 +22,7 @@ import org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosBienes
 import org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosCargaEconomicaService;
 import org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosIngresosService;
 import org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosIrpf20Service;
+import org.redabogacia.sigaservices.app.vo.ScsDeBienInmuebleExtends;
 import org.redabogacia.sigaservices.app.vo.ScsDeBienMuebleExtends;
 import org.redabogacia.sigaservices.app.vo.ScsDeCargaEconomicaExtends;
 import org.redabogacia.sigaservices.app.vo.ScsDeIngresosExtends;
@@ -192,26 +192,164 @@ public class DatosEconomicosEJGAdm {
 	}		
 	
 	public String listarDatosEconomicosBienInmueble (ActionMapping mapping, DatosEconomicosEJGForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		try {		
+			UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");			
+			Hashtable hash = (Hashtable) request.getSession().getAttribute("DATABACKUP");
+			Map<String, Object> parametrosMap = new HashMap<String, Object>();
+			BusinessManager businessManager = BusinessManager.getInstance();
+			
+			String idInstitucion = usuario.getLocation();
+			Short shortIdInstitucion = new Short(idInstitucion);
+			String idioma = usuario.getLanguage();
+			
+			// 1. LISTA DE BIENES INMUEBLES
+			parametrosMap.put("idioma", idioma);
+			parametrosMap.put("idinstitucion", shortIdInstitucion);
+			parametrosMap.put("idtipoejg", (String)request.getParameter("idtipoejg"));
+			parametrosMap.put("anio", (String)request.getParameter("anio"));
+			parametrosMap.put("numero", (String)request.getParameter("numero"));		
+													
+			ScsEjgDatosEconomicosBienesInmueblesService datosEconomicosService = (ScsEjgDatosEconomicosBienesInmueblesService) businessManager.getService(ScsEjgDatosEconomicosBienesInmueblesService.class);					
+			List<ScsDeBienInmuebleExtends> listaBienesInmuebles = datosEconomicosService.obtenerListaBienesInmueblesTotal(parametrosMap);
+			// FIN LISTA DE BIENES INMUEBLES			
+			
+			
+			// 2. OBTENER LISTAS AUXILIARES		
+			List<ScsDeBienInmuebleExtends> listaOrigenValoraciones = datosEconomicosService.obtenerListaOrigenValoracionesTotal(parametrosMap);
+			List<ScsDeBienInmuebleExtends> listaTiposViviendas = datosEconomicosService.obtenerListaTiposViviendasTotal(parametrosMap);
+			List<ScsDeBienInmuebleExtends> listaTiposInmuebles = datosEconomicosService.obtenerListaTiposInmueblesTotal(parametrosMap);
+			List<ScsDeBienInmuebleExtends> listaTitulares = datosEconomicosService.obtenerListaTitularesTotal(parametrosMap);
+			// FIN LISTAS AUXILIARES
+			
+			String claseFila;
+			if((listaBienesInmuebles.size()+2)%2==0)
+		   		claseFila = "filaTablaPar";
+		   	else
+		   		claseFila = "filaTablaImpar";
+			
+			String trNuevas = "<tr class='"+claseFila+"' id='fila_1'><td align='left' width='120px'>";
+			String[] tdsNuevas = new String[6];
+					
+			tdsNuevas[0] = "<select class='boxCombo' style='width:110px' id='select_OrigenValoraciones_1' value='' onChange='cambiaFila(1)'>";
+			tdsNuevas[0]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
+			for (int i=0; i<listaOrigenValoraciones.size(); i++) {
+				ScsDeBienInmuebleExtends dato = (ScsDeBienInmuebleExtends) listaOrigenValoraciones.get(i);
+				tdsNuevas[0]+="<option value='"+dato.getIdorigenvalbi()+"'>"+dato.getDescripcionorigenvaloracion()+"</option>";
+			}				
+			tdsNuevas[0]+="</select>";
+			trNuevas+=tdsNuevas[0]+"</td>";
+			
+
+			
+			trNuevas+="<td align='left' width='200px'>";
+			tdsNuevas[1]="<select class='boxCombo' style='width:190px' id='select_TiposViviendas_1' value='' onChange='cambiaFila(1)'>";
+			tdsNuevas[1]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
+			for (int i=0; i<listaTiposViviendas.size(); i++) {
+				ScsDeBienInmuebleExtends dato = (ScsDeBienInmuebleExtends) listaTiposViviendas.get(i);
+				tdsNuevas[1]+="<option value='"+dato.getIdtipovivienda()+"'>"+dato.getDescripciontipovivienda()+"</option>";
+			}				
+			tdsNuevas[1]+="</select>";
+			trNuevas+=tdsNuevas[1]+"</td>";
+			
+			trNuevas+="<td align='left' width='150px'>";
+			tdsNuevas[2]="<select class='boxCombo' style='width:140px' id='select_TiposInmuebles_1' value='' onChange='cambiaFila(1)'>"+
+						"<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>"+
+					"</select>";
+			trNuevas+=tdsNuevas[2]+"</td>";
+			
+			trNuevas+="<td align='left' width='200px'>";
+			tdsNuevas[3]="<select class='boxCombo' style='width:190px' id='select_Titulares_1' value='' onChange='cambiaFila(1)'>";
+			tdsNuevas[3]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
+			for (int i=0; i<listaTitulares.size(); i++) {
+				ScsDeBienInmuebleExtends dato = (ScsDeBienInmuebleExtends) listaTitulares.get(i);
+				tdsNuevas[3]+="<option value='"+dato.getIdpersona()+"'>"+dato.getTitular()+"</option>";
+			}				
+			tdsNuevas[3]+="</select>";
+			trNuevas+=tdsNuevas[3]+"</td>";
+			
+			trNuevas+="<td align='right' width='150px'>";
+			tdsNuevas[4]="<input type='text' id='input_Valoracion_1' class='boxNumber' style='width:140' value='' maxlength='13' onChange='cambiaFila(1)' onkeypress='return soloNumerosDecimales(event)'/>";
+			trNuevas+=tdsNuevas[4]+"</td>";
+			
+			trNuevas+="<td align='center' width='50px'>";
+			tdsNuevas[5]="<img src='/SIGA/html/imagenes/bborrar_off.gif' style='cursor:pointer;' title='"+UtilidadesString.getMensajeIdioma(usuario,"general.boton.borrar")+"' alt='"+UtilidadesString.getMensajeIdioma(usuario,"general.boton.borrar")+"' name='' border='0' "+ 
+				" onclick='borrarFila(1)'>";
+			trNuevas+=tdsNuevas[5]+"</td></tr>";
+						
+			request.setAttribute("LISTA_BIENES", listaBienesInmuebles);
+			request.setAttribute("TR_NEW", trNuevas);
+			request.setAttribute("TDS_NEW", tdsNuevas);
+						
+		}catch (Exception exc){
+			throw new SIGAException("messages.general.error", exc, new String[] {"modulo.gratuita"});
+		}		
+
+		return "bieninmueble";		
+	}
+	
+	public String borrarDatosEconomicosBienInmueble (ActionMapping mapping, DatosEconomicosEJGForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {
 			BusinessManager businessManager =  BusinessManager.getInstance();		
 			ScsEjgDatosEconomicosBienesInmueblesService datosEconomicosService = (ScsEjgDatosEconomicosBienesInmueblesService) businessManager.getService(ScsEjgDatosEconomicosBienesInmueblesService.class);
 			
-			ScsDeBieninmueble bi = new ScsDeBieninmueble();
-			ScsDeBieninmuebleExample example = new ScsDeBieninmuebleExample();
-			org.redabogacia.sigaservices.app.autogen.model.ScsDeBieninmuebleExample.Criteria criteria = example.createCriteria();
-			criteria.andIdtipoejgEqualTo(bi.getIdtipoejg());
-			criteria.andIdinstitucionEqualTo(bi.getIdinstitucion());
-			criteria.andAnioEqualTo(bi.getAnio());
-			criteria.andNumeroEqualTo(bi.getNumero());
+			ScsDeBieninmueble bienInmueble = new ScsDeBieninmueble();
+			bienInmueble.setIdbieninmueble(new Long(formulario.getId()));				
 			
-			List<ScsDeBieninmueble> listaBienesInmuebles = datosEconomicosService.obtenerListaBienesInmuebles(example);
+			if (datosEconomicosService.delete(bienInmueble) < 1) {
+				throw new SIGAException("Error al borrar un bien inmueble");
+			}
 		
 		}catch (Exception exc){
 			throw new SIGAException("messages.general.error", exc, new String[] {"modulo.gratuita"});
 		}	
 		
-		return "bieninmueble";		
-	}	
+		return this.listarDatosEconomicosBienInmueble(mapping, formulario, request, response);	
+	}		
+	
+	public String guardarDatosEconomicosBienInmueble (ActionMapping mapping, DatosEconomicosEJGForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		try {
+			BusinessManager businessManager =  BusinessManager.getInstance();		
+			ScsEjgDatosEconomicosBienesInmueblesService datosEconomicosService = (ScsEjgDatosEconomicosBienesInmueblesService) businessManager.getService(ScsEjgDatosEconomicosBienesInmueblesService.class);
+			
+			String listaBienes = formulario.getId();			
+			String[] arrayBienes = listaBienes.split("%%%");					
+			ArrayList arrayListBienes = new ArrayList();
+			
+			UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");			
+			Hashtable hash = (Hashtable) request.getSession().getAttribute("DATABACKUP");						
+			
+			for (int i=0; i<arrayBienes.length; i++)  {
+				String[] arrayBien = arrayBienes[i].split("---");
+				
+				ScsDeBieninmueble bienInmueble = new ScsDeBieninmueble();
+				bienInmueble.setIdinstitucion(new Short(usuario.getLocation()));
+				bienInmueble.setIdtipoejg(UtilidadesHash.getShort(hash,"IDTIPOEJG"));
+				bienInmueble.setAnio(UtilidadesHash.getShort(hash,"ANIO"));
+				bienInmueble.setNumero(UtilidadesHash.getLong(hash,"NUMERO"));
+				bienInmueble.setFechamodificacion(Calendar.getInstance().getTime());
+				bienInmueble.setUsumodificacion(new Integer(usuario.getUserName()));
+				
+				bienInmueble.setIdorigenvalbi(new Integer(arrayBien[0]));
+				bienInmueble.setIdtipovivienda(new Integer(arrayBien[1]));
+				if (!arrayBien[2].equals("")) {
+					bienInmueble.setIdtipoinmueble(new Integer(arrayBien[2]));
+				}
+				bienInmueble.setIdpersona(new Long(arrayBien[3]));
+				bienInmueble.setValoracion(new BigDecimal(arrayBien[4]));
+				
+				arrayListBienes.add(bienInmueble);
+			}
+			
+			if (!datosEconomicosService.insertTotal(arrayListBienes)) {
+				throw new SIGAException("Error al insertar los bienes inmuebles");
+			}				
+					
+		}catch (Exception exc){
+			throw new SIGAException("messages.general.error", exc, new String[] {"modulo.gratuita"});
+		}	
+		
+		return this.listarDatosEconomicosBienInmueble(mapping, formulario, request, response);	
+	}				
 	
 	public String listarDatosEconomicosBienMueble (ActionMapping mapping, DatosEconomicosEJGForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {		

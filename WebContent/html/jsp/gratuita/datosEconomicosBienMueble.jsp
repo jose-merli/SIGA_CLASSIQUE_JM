@@ -66,7 +66,7 @@
 					<b><siga:Idioma key="gratuita.datoseconomicos.origenvaloracion"/></b>
 				</td>
 				<td align="center" width="150px">
-					<b><siga:Idioma key="gratuita.datoseconomicos.tipoMueble"/></b>
+					<b><siga:Idioma key="gratuita.datoseconomicos.tipomueble"/></b>
 				</td>
 				<td align="center" width="250px">
 					<b><siga:Idioma key="gratuita.datoseconomicos.titular"/></b>
