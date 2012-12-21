@@ -15,9 +15,7 @@ import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.autogen.model.ScsDeBieninmueble;
 import org.redabogacia.sigaservices.app.autogen.model.ScsDeBieninmuebleExample;
 import org.redabogacia.sigaservices.app.autogen.model.ScsDeBienmueble;
-import org.redabogacia.sigaservices.app.autogen.model.ScsDeBienmuebleExample;
 import org.redabogacia.sigaservices.app.autogen.model.ScsDeCargaeconomica;
-import org.redabogacia.sigaservices.app.autogen.model.ScsDeCargaeconomicaExample;
 import org.redabogacia.sigaservices.app.autogen.model.ScsDeIngresos;
 import org.redabogacia.sigaservices.app.autogen.model.ScsDeIrpf20;
 import org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosBienesInmueblesService;
@@ -25,6 +23,7 @@ import org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosBienes
 import org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosCargaEconomicaService;
 import org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosIngresosService;
 import org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosIrpf20Service;
+import org.redabogacia.sigaservices.app.vo.ScsDeBienMuebleExtends;
 import org.redabogacia.sigaservices.app.vo.ScsDeCargaEconomicaExtends;
 import org.redabogacia.sigaservices.app.vo.ScsDeIngresosExtends;
 import org.redabogacia.sigaservices.app.vo.ScsDeIrpf20Extends;
@@ -215,48 +214,152 @@ public class DatosEconomicosEJGAdm {
 	}	
 	
 	public String listarDatosEconomicosBienMueble (ActionMapping mapping, DatosEconomicosEJGForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		try {		
+			UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");			
+			Hashtable hash = (Hashtable) request.getSession().getAttribute("DATABACKUP");
+			Map<String, Object> parametrosMap = new HashMap<String, Object>();
+			BusinessManager businessManager = BusinessManager.getInstance();
+			
+			String idInstitucion = usuario.getLocation();
+			Short shortIdInstitucion = new Short(idInstitucion);
+			String idioma = usuario.getLanguage();
+			
+			// 1. LISTA DE BIENES MUEBLES
+			parametrosMap.put("idioma", idioma);
+			parametrosMap.put("idinstitucion", shortIdInstitucion);
+			parametrosMap.put("idtipoejg", (String)request.getParameter("idtipoejg"));
+			parametrosMap.put("anio", (String)request.getParameter("anio"));
+			parametrosMap.put("numero", (String)request.getParameter("numero"));		
+													
+			ScsEjgDatosEconomicosBienesMueblesService datosEconomicosService = (ScsEjgDatosEconomicosBienesMueblesService) businessManager.getService(ScsEjgDatosEconomicosBienesMueblesService.class);					
+			List<ScsDeBienMuebleExtends> listaBienesMuebles = datosEconomicosService.obtenerListaBienesMueblesTotal(parametrosMap);
+			// FIN LISTA DE BIENES MUEBLES			
+			
+			
+			// 2. OBTENER LISTAS AUXILIARES		
+			List<ScsDeBienMuebleExtends> listaOrigenValoraciones = datosEconomicosService.obtenerListaOrigenValoracionesTotal(parametrosMap);
+			List<ScsDeBienMuebleExtends> listaTiposMuebles = datosEconomicosService.obtenerListaTiposMueblesTotal(parametrosMap);
+			List<ScsDeBienMuebleExtends> listaTitulares = datosEconomicosService.obtenerListaTitularesTotal(parametrosMap);
+			// FIN LISTAS AUXILIARES
+			
+			String claseFila;
+			if((listaBienesMuebles.size()+2)%2==0)
+		   		claseFila = "filaTablaPar";
+		   	else
+		   		claseFila = "filaTablaImpar";
+			
+			String trNuevas = "<tr class='"+claseFila+"' id='fila_1'><td align='left' width='200px'>";
+			String[] tdsNuevas = new String[5];
+					
+			tdsNuevas[0] = "<select class='boxCombo' style='width:190px' id='select_OrigenValoraciones_1' value='' onChange='cambiaFila(1)'>";
+			tdsNuevas[0]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
+			for (int i=0; i<listaOrigenValoraciones.size(); i++) {
+				ScsDeBienMuebleExtends dato = (ScsDeBienMuebleExtends) listaOrigenValoraciones.get(i);
+				tdsNuevas[0]+="<option value='"+dato.getIdorigenvalbm()+"'>"+dato.getDescripcionorigenvaloracion()+"</option>";
+			}				
+			tdsNuevas[0]+="</select>";
+			trNuevas+=tdsNuevas[0]+"</td>";
+			
+			trNuevas+="<td align='left' width='150px'>";
+			tdsNuevas[1]="<select class='boxCombo' style='width:140px' id='select_TiposMuebles_1' value='' onChange='cambiaFila(1)'>";
+			tdsNuevas[1]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
+			for (int i=0; i<listaTiposMuebles.size(); i++) {
+				ScsDeBienMuebleExtends dato = (ScsDeBienMuebleExtends) listaTiposMuebles.get(i);
+				tdsNuevas[1]+="<option value='"+dato.getIdtipomueble()+"'>"+dato.getDescripciontipomueble()+"</option>";
+			}				
+			tdsNuevas[1]+="</select>";
+			trNuevas+=tdsNuevas[1]+"</td>";
+			
+			trNuevas+="<td align='left' width='250px'>";
+			tdsNuevas[2]="<select class='boxCombo' style='width:240px' id='select_Titulares_1' value='' onChange='cambiaFila(1)'>";
+			tdsNuevas[2]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
+			for (int i=0; i<listaTitulares.size(); i++) {
+				ScsDeBienMuebleExtends dato = (ScsDeBienMuebleExtends) listaTitulares.get(i);
+				tdsNuevas[2]+="<option value='"+dato.getIdpersona()+"'>"+dato.getTitular()+"</option>";
+			}				
+			tdsNuevas[2]+="</select>";
+			trNuevas+=tdsNuevas[2]+"</td>";
+			
+			trNuevas+="<td align='right' width='150px'>";
+			tdsNuevas[3]="<input type='text' id='input_Valoracion_1' class='boxNumber' style='width:140' value='' maxlength='13' onChange='cambiaFila(1)' onkeypress='return soloNumerosDecimales(event)'/>";
+			trNuevas+=tdsNuevas[3]+"</td>";
+			
+			trNuevas+="<td align='center' width='50px'>";
+			tdsNuevas[4]="<img src='/SIGA/html/imagenes/bborrar_off.gif' style='cursor:pointer;' title='"+UtilidadesString.getMensajeIdioma(usuario,"general.boton.borrar")+"' alt='"+UtilidadesString.getMensajeIdioma(usuario,"general.boton.borrar")+"' name='' border='0' "+ 
+				" onclick='borrarFila(1)'>";
+			trNuevas+=tdsNuevas[4]+"</td></tr>";
+						
+			request.setAttribute("LISTA_BIENES", listaBienesMuebles);
+			request.setAttribute("TR_NEW", trNuevas);
+			request.setAttribute("TDS_NEW", tdsNuevas);
+						
+		}catch (Exception exc){
+			throw new SIGAException("messages.general.error", exc, new String[] {"modulo.gratuita"});
+		}		
+
+		return "bienmueble";		
+	}
+	
+	public String borrarDatosEconomicosBienMueble (ActionMapping mapping, DatosEconomicosEJGForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {
 			BusinessManager businessManager =  BusinessManager.getInstance();		
 			ScsEjgDatosEconomicosBienesMueblesService datosEconomicosService = (ScsEjgDatosEconomicosBienesMueblesService) businessManager.getService(ScsEjgDatosEconomicosBienesMueblesService.class);
 			
-			ScsDeBienmueble bm = new ScsDeBienmueble();
-			ScsDeBienmuebleExample example = new ScsDeBienmuebleExample();
-			org.redabogacia.sigaservices.app.autogen.model.ScsDeBienmuebleExample.Criteria criteria = example.createCriteria();
-			criteria.andIdtipoejgEqualTo(bm.getIdtipoejg());
-			criteria.andIdinstitucionEqualTo(bm.getIdinstitucion());
-			criteria.andAnioEqualTo(bm.getAnio());
-			criteria.andNumeroEqualTo(bm.getNumero());
+			ScsDeBienmueble bienMueble = new ScsDeBienmueble();
+			bienMueble.setIdbienmueble(new Long(formulario.getId()));				
 			
-			List<ScsDeBienmueble> listaBienesInmuebles = datosEconomicosService.obtenerListaBienesMuebles(example);
+			if (datosEconomicosService.delete(bienMueble) < 1) {
+				throw new SIGAException("Error al borrar un bien mueble");
+			}
 		
 		}catch (Exception exc){
 			throw new SIGAException("messages.general.error", exc, new String[] {"modulo.gratuita"});
 		}	
-			
-		return "bienmueble";		
-	}	
+		
+		return this.listarDatosEconomicosBienMueble(mapping, formulario, request, response);	
+	}		
 	
-	public String listarDatosEconomicosCargaEconomica2 (ActionMapping mapping, DatosEconomicosEJGForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	public String guardarDatosEconomicosBienMueble (ActionMapping mapping, DatosEconomicosEJGForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {
 			BusinessManager businessManager =  BusinessManager.getInstance();		
-			ScsEjgDatosEconomicosCargaEconomicaService datosEconomicosService = (ScsEjgDatosEconomicosCargaEconomicaService) businessManager.getService(ScsEjgDatosEconomicosCargaEconomicaService.class);
+			ScsEjgDatosEconomicosBienesMueblesService datosEconomicosService = (ScsEjgDatosEconomicosBienesMueblesService) businessManager.getService(ScsEjgDatosEconomicosBienesMueblesService.class);
 			
-			ScsDeCargaeconomica ce = new ScsDeCargaeconomica();
-			ScsDeCargaeconomicaExample example = new ScsDeCargaeconomicaExample();
-			org.redabogacia.sigaservices.app.autogen.model.ScsDeCargaeconomicaExample.Criteria criteria = example.createCriteria();
-			criteria.andIdtipoejgEqualTo(ce.getIdtipoejg());
-			criteria.andIdinstitucionEqualTo(ce.getIdinstitucion());
-			criteria.andAnioEqualTo(ce.getAnio());
-			criteria.andNumeroEqualTo(ce.getNumero());
+			String listaBienes = formulario.getId();			
+			String[] arrayBienes = listaBienes.split("%%%");					
+			ArrayList arrayListBienes = new ArrayList();
 			
-			List<ScsDeCargaeconomica> listaCargasEconomicas = datosEconomicosService.obtenerListaCargasEconomicas(example);
+			UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");			
+			Hashtable hash = (Hashtable) request.getSession().getAttribute("DATABACKUP");						
 			
+			for (int i=0; i<arrayBienes.length; i++)  {
+				String[] arrayBien = arrayBienes[i].split("---");
+				
+				ScsDeBienmueble bienMueble = new ScsDeBienmueble();
+				bienMueble.setIdinstitucion(new Short(usuario.getLocation()));
+				bienMueble.setIdtipoejg(UtilidadesHash.getShort(hash,"IDTIPOEJG"));
+				bienMueble.setAnio(UtilidadesHash.getShort(hash,"ANIO"));
+				bienMueble.setNumero(UtilidadesHash.getLong(hash,"NUMERO"));
+				bienMueble.setFechamodificacion(Calendar.getInstance().getTime());
+				bienMueble.setUsumodificacion(new Integer(usuario.getUserName()));
+				
+				bienMueble.setIdorigenvalbm(new Integer(arrayBien[0]));
+				bienMueble.setIdtipomueble(new Integer(arrayBien[1]));
+				bienMueble.setIdpersona(new Long(arrayBien[2]));
+				bienMueble.setValoracion(new BigDecimal(arrayBien[3]));
+				
+				arrayListBienes.add(bienMueble);
+			}
+			
+			if (!datosEconomicosService.insertTotal(arrayListBienes)) {
+				throw new SIGAException("Error al insertar los bienes muebles");
+			}				
+					
 		}catch (Exception exc){
 			throw new SIGAException("messages.general.error", exc, new String[] {"modulo.gratuita"});
 		}	
 		
-		return "cargaeconomica";		
-	}	
+		return this.listarDatosEconomicosBienMueble(mapping, formulario, request, response);	
+	}			
 	
 	public String listarDatosEconomicosCargaEconomica (ActionMapping mapping, DatosEconomicosEJGForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {		
@@ -519,7 +622,7 @@ public class DatosEconomicosEJGAdm {
 			
 			String listaIrpf = formulario.getId();			
 			String[] arrayIrpf = listaIrpf.split("%%%");					
-			ArrayList arrayScsIrpf = new ArrayList();
+			ArrayList arrayListIrpf = new ArrayList();
 			
 			UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");			
 			Hashtable hash = (Hashtable) request.getSession().getAttribute("DATABACKUP");						
@@ -540,10 +643,10 @@ public class DatosEconomicosEJGAdm {
 				irpf.setIdpersona(new Long(arrayDatosIrpf[2]));
 				irpf.setImporte(new BigDecimal(arrayDatosIrpf[3]));
 				
-				arrayScsIrpf.add(irpf);
+				arrayListIrpf.add(irpf);
 			}
 			
-			if (!datosEconomicosService.insertTotal(arrayScsIrpf)) {
+			if (!datosEconomicosService.insertTotal(arrayListIrpf)) {
 				throw new SIGAException("Error al insertar los irpf");
 			}				
 					

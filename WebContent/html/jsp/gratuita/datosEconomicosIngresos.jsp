@@ -31,6 +31,10 @@
 		anchoTabla="879px";
 		botones = "G,V";
 	}
+	
+	String idtipoejg = (String) request.getParameter("idtipoejg");
+	String anio = (String) request.getParameter("anio");
+	String numero = (String) request.getParameter("numero");		
 %>	
 
 <html>
@@ -44,13 +48,16 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/validation.js?ver=1.7'/>"></script>
 	
 	<title><siga:Idioma key="gratuita.datoseconomicos.ingresos.titulo"/></title>		
-	<siga:Titulo titulo="gratuita.datoseconomicos.ingresos.cabcecera" localizacion="gratuita.datoseconomicos.ingresos.localizacion"/>		
+	<siga:Titulo titulo="gratuita.datoseconomicos.ingresos.cabecera" localizacion="gratuita.datoseconomicos.ingresos.localizacion"/>		
 </head>
 
 <body>
 	<html:form action="/JGR_DatosEconomicosEJG.do" styleId="DatosEconomicosEJGForm" method="POST" target="mainWorkArea">
 		<html:hidden property="modo" value=""/>
 		<html:hidden property="id" value=""/>	
+		<html:hidden property="idtipoejg" value="<%=idtipoejg%>"/>	
+		<html:hidden property="anio" value="<%=anio%>"/>	
+		<html:hidden property="numero" value="<%=numero%>"/>			
 	
 		<br>		
 		<table border="1" cellspacing="0" cellpadding="5">

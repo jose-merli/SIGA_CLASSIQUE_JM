@@ -49,6 +49,14 @@ public class DatosEconomicosEJGAction extends MasterAction {
 					} else if (accion.equalsIgnoreCase("bienmueble")){
 						mapDestino = adm.listarDatosEconomicosBienMueble(mapping, formDatosEconomicosEJG, request, response);
 						break;
+						
+					} else if (accion.equalsIgnoreCase("borrarMueble")){
+						mapDestino = adm.borrarDatosEconomicosBienMueble(mapping, formDatosEconomicosEJG, request, response);
+						break;
+						
+					} else if (accion.equalsIgnoreCase("guardarMueble")){
+						mapDestino = adm.guardarDatosEconomicosBienMueble(mapping, formDatosEconomicosEJG, request, response);
+						break;							
 
 					} else if (accion.equalsIgnoreCase("cargaeconomica")){
 						mapDestino = adm.listarDatosEconomicosCargaEconomica(mapping, formDatosEconomicosEJG, request, response);
