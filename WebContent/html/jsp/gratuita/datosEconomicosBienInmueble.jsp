@@ -157,7 +157,7 @@
 	   	else
 	   		claseFila = "filaTablaImpar";
 
-	   	var tr = tabla.insertRow();	   
+	   	var tr = tabla.insertRow(-1);	   
 	   	numMaxFilaNueva++;
 		numFilasNuevas++;	   		   	
 		tr.className=claseFila;	
