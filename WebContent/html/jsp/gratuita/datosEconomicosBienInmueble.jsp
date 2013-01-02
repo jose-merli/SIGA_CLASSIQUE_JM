@@ -14,6 +14,7 @@
 
 <%@page import="java.util.List"%>
 <%@page import="java.util.Hashtable"%>
+<%@page import="java.util.Enumeration"%>
 <%@page import="org.redabogacia.sigaservices.app.vo.ScsDeBienInmuebleExtends"%>
 
 <% 	
@@ -21,7 +22,7 @@
 	List listaBienes = (List) request.getAttribute("LISTA_BIENES");
 	String trNew = (String) request.getAttribute("TR_NEW");
 	String[] tdsNew = (String[]) request.getAttribute("TDS_NEW");
-	String selectsTiposInmuebles = (String) request.getAttribute("SELECTS_TIPOS_INMUEBLES");	
+	Hashtable hashTipoInmuebles = (Hashtable) request.getAttribute("HASH_TIPOS_INMUEBLES");	
 	
 	String accion = (String)request.getSession().getAttribute("accion");
 	
@@ -129,7 +130,6 @@
 				
 				<% if (editable) { %>	
 					<%=trNew%>
-					<%=selectsTiposInmuebles%>
 				<% } %>
 			</table>
 		</div>
@@ -219,14 +219,28 @@
 	}	
 		
 	function CambiarTipoVivienda(idFila, idTipoVivienda){
-		var selectAux = document.getElementById("select_TiposInmuebles_AUX_"+idTipoVivienda);
+		var encontrado = false;
+		var opcionesTipoInmueble = "";
 		
+		<%
+			Enumeration clavesInmuebles = hashTipoInmuebles.keys();     
+			while(clavesInmuebles.hasMoreElements()) {
+				String clave = (String) clavesInmuebles.nextElement();
+		%>
+				if (idTipoVivienda == "<%=clave%>") {		
+					opcionesTipoInmueble = "<%=hashTipoInmuebles.get(clave)%>";
+					encontrado = true;
+				}
+		<%
+			}
+		%>
+		
+		if (!encontrado) {
+			opcionesTipoInmueble = "<option value=''><siga:Idioma key='general.combo.seleccionar'/></option>";;
+		}		
+
 		jQuery("#select_TiposInmuebles_"+idFila+" option").remove();
-		if (selectAux != null) {
-			jQuery("#select_TiposInmuebles_AUX_"+idTipoVivienda+" option").clone().appendTo("#select_TiposInmuebles_"+idFila);	
-		} else {
-			jQuery("#select_TiposInmuebles_AUX option").clone().appendTo("#select_TiposInmuebles_"+idFila);
-		}
+		jQuery("#select_TiposInmuebles_"+idFila).append(opcionesTipoInmueble);
 	}
 		
 	function borrarFila(idFila){			

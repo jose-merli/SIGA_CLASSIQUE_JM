@@ -3,7 +3,6 @@ package com.siga.gratuita.adm;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -269,16 +268,7 @@ public class DatosEconomicosEJGAdm {
 				} else {
 					hashTipoInmuebles.put(idTipoVivienda,opcionSeleccionar+opcionTipoInmueble);
 				}				
-			}		
-			
-			String selectTiposInmuebles = "";
-			Enumeration clavesInmuebles = hashTipoInmuebles.keys();     
-			while(clavesInmuebles.hasMoreElements()) {
-				String clave = (String) clavesInmuebles.nextElement();
-				selectTiposInmuebles += "<select id='select_TiposInmuebles_AUX_"+clave+"' style='display:none'>"+hashTipoInmuebles.get(clave)+"</select>";
-			}
-			selectTiposInmuebles += "<select id='select_TiposInmuebles_AUX' style='display:none'>"+opcionSeleccionar+"</select>";
-			
+			}					
 			
 			trNuevas+="<td align='left' width='200px'>";
 			tdsNuevas[3]="<select class='boxCombo' style='width:190px' id='select_Titulares_1' value='' onChange='cambiaFila(1)'>";
@@ -302,7 +292,7 @@ public class DatosEconomicosEJGAdm {
 			request.setAttribute("LISTA_BIENES", listaBienesInmuebles);
 			request.setAttribute("TR_NEW", trNuevas);
 			request.setAttribute("TDS_NEW", tdsNuevas);
-			request.setAttribute("SELECTS_TIPOS_INMUEBLES", selectTiposInmuebles);
+			request.setAttribute("HASH_TIPOS_INMUEBLES", hashTipoInmuebles);
 						
 		}catch (Exception exc){
 			throw new SIGAException("messages.general.error", exc, new String[] {"modulo.gratuita"});
