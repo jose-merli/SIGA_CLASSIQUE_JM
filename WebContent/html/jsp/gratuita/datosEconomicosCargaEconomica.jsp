@@ -72,7 +72,7 @@
 					<b><siga:Idioma key="gratuita.datoseconomicos.titular"/></b>
 				</td>
 				<td align="center" width="150px">
-					<b><siga:Idioma key="gratuita.datoseconomicos.valoracion"/></b>
+					<b><siga:Idioma key="gratuita.datoseconomicos.importe"/></b>
 				</td>				
 			</tr>
 		</table>
@@ -262,24 +262,24 @@
 				var idTipoCargaEconomica = tabla.rows[i].cells[0].children[0].value;
 				var idPeriodicidad = tabla.rows[i].cells[1].children[0].value;
 				var idTitular = tabla.rows[i].cells[2].children[0].value;
-				var valoracion = tabla.rows[i].cells[3].children[0].value;
+				var importe = tabla.rows[i].cells[3].children[0].value;
 				
-				if (idTipoCargaEconomica!="" && idPeriodicidad!="" && idTitular!="" && valoracion!="") {
-					if (!regImporte.test(valoracion)){
-						alert("<siga:Idioma key='gratuita.datoseconomicos.valoracion.errorFormato'/>");
+				if (idTipoCargaEconomica!="" && idPeriodicidad!="" && idTitular!="" && importe!="") {
+					if (!regImporte.test(importe)){
+						alert("<siga:Idioma key='gratuita.datoseconomicos.importe.errorFormato'/>");
 						return "";
 					}			
 					
-					valoracion = valoracion.replace(",", ".");
+					importe = importe.replace(",", ".");
 					
 					if (resultado=="") {
-						resultado=""+idTipoCargaEconomica+"---"+idPeriodicidad+"---"+idTitular+"---"+valoracion;
+						resultado=""+idTipoCargaEconomica+"---"+idPeriodicidad+"---"+idTitular+"---"+importe;
 					} else {
-						resultado+="%%%"+idTipoCargaEconomica+"---"+idPeriodicidad+"---"+idTitular+"---"+valoracion;				
+						resultado+="%%%"+idTipoCargaEconomica+"---"+idPeriodicidad+"---"+idTitular+"---"+importe;				
 					}
 				
 				} else {
-					if ((idTipoCargaEconomica=="" || idEjercicio=="" || idTitular=="" || valoracion=="") && (idTipoCargaEconomica!="" || idPeriodicidad!="" || idTitular!="" || valoracion!="")) {
+					if ((idTipoCargaEconomica=="" || idEjercicio=="" || idTitular=="" || importe=="") && (idTipoCargaEconomica!="" || idPeriodicidad!="" || idTitular!="" || importe!="")) {
 						alert("<siga:Idioma key='gratuita.datoseconomicos.lineasIncompletas'/>");
 						return "";
 					}

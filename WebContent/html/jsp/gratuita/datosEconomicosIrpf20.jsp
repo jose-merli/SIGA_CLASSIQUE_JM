@@ -72,7 +72,7 @@
 					<b><siga:Idioma key="gratuita.datoseconomicos.titular"/></b>
 				</td>
 				<td align="center" width="150px">
-					<b><siga:Idioma key="gratuita.datoseconomicos.valoracion"/></b>
+					<b><siga:Idioma key="gratuita.datoseconomicos.importe"/></b>
 				</td>				
 			</tr>
 		</table>
@@ -262,24 +262,24 @@
 				var idTipoRendimiento = tabla.rows[i].cells[0].children[0].value;
 				var idEjercicio = tabla.rows[i].cells[1].children[0].value;
 				var idTitular = tabla.rows[i].cells[2].children[0].value;
-				var valoracion = tabla.rows[i].cells[3].children[0].value;
+				var importe = tabla.rows[i].cells[3].children[0].value;
 				
-				if (idTipoRendimiento!="" && idEjercicio!="" && idTitular!="" && valoracion!="") {
-					if (!regImporte.test(valoracion)){
-						alert("<siga:Idioma key='gratuita.datoseconomicos.valoracion.errorFormato'/>");
+				if (idTipoRendimiento!="" && idEjercicio!="" && idTitular!="" && importe!="") {
+					if (!regImporte.test(importe)){
+						alert("<siga:Idioma key='gratuita.datoseconomicos.importe.errorFormato'/>");
 						return "";
 					}			
 					
-					valoracion = valoracion.replace(",", ".");
+					importe = importe.replace(",", ".");
 					
 					if (resultado=="") {
-						resultado=""+idTipoRendimiento+"---"+idEjercicio+"---"+idTitular+"---"+valoracion;
+						resultado=""+idTipoRendimiento+"---"+idEjercicio+"---"+idTitular+"---"+importe;
 					} else {
-						resultado+="%%%"+idTipoRendimiento+"---"+idEjercicio+"---"+idTitular+"---"+valoracion;				
+						resultado+="%%%"+idTipoRendimiento+"---"+idEjercicio+"---"+idTitular+"---"+importe;				
 					}
 				
 				} else {
-					if ((idTipoRendimiento=="" || idEjercicio=="" || idTitular=="" || valoracion=="") && (idTipoRendimiento!="" || idEjercicio!="" || idTitular!="" || valoracion!="")) {
+					if ((idTipoRendimiento=="" || idEjercicio=="" || idTitular=="" || importe=="") && (idTipoRendimiento!="" || idEjercicio!="" || idTitular!="" || importe!="")) {
 						alert("<siga:Idioma key='gratuita.datoseconomicos.lineasIncompletas'/>");
 						return "";
 					}
