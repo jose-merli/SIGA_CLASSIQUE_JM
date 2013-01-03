@@ -51,7 +51,7 @@
 	<siga:Titulo titulo="gratuita.datoseconomicos.bienesmuebles.cabecera" localizacion="gratuita.datoseconomicos.bienesmuebles.localizacion"/>
 </head>
 
-<body>
+<body onload="calcularAltura();">
 	<html:form action="/JGR_DatosEconomicosEJG.do" styleId="DatosEconomicosEJGForm" method="POST" target="mainWorkArea">
 		<html:hidden property="modo" value=""/>
 		<html:hidden property="id" value=""/>
@@ -77,7 +77,7 @@
 			</tr>
 		</table>
 		
-		<div style="height:590px; overflow-y:auto; position:absolute; width:<%=anchoTabla%>">
+		<div style="overflow-y:auto; position:absolute; width:<%=anchoTabla%>" id="divTablaIngresos">
 			<table border="1" cellspacing="0" cellpadding="5" id='tablaPrincipal'>
 				<% 
 					if (listaBienes != null && listaBienes.size()>0) {
@@ -132,6 +132,11 @@
 <script language="JavaScript">
 	var numFilasNuevas = 1;
 	var numMaxFilaNueva = 1;
+	
+	function calcularAltura() {		
+		var altura = document.getElementById("divTablaIngresos").offsetParent.offsetHeight;
+		document.getElementById("divTablaIngresos").style.height=altura-70;
+	}	
 	
 	function crearFila() {  		
 		var tabla = document.getElementById("tablaPrincipal");
