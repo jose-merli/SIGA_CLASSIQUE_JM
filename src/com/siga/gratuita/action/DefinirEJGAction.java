@@ -21,7 +21,6 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.redabogacia.sigaservices.app.exceptions.SIGAServiceException;
 import org.redabogacia.sigaservices.app.helper.DocuShareHelper;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -91,7 +90,6 @@ import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirEJGForm;
 import com.siga.informes.InformeDefinirEJG;
-import com.xerox.docushare.DSException;
 
 
 
@@ -701,11 +699,17 @@ public class DefinirEJGAction extends MasterAction
 			
 			
 			if (miHash.get(ScsEJGBean.C_ANIO) != null && miHash.get(ScsEJGBean.C_NUMEJG) != null) {
-				short idInstitucionShort = getIDInstitucion(request).shortValue();
-				String identificadorDS = getIdentificadorDocuShare(getUserBean(request), idInstitucionShort, miHash.get(ScsEJGBean.C_ANIO).toString(), miHash.get(ScsEJGBean.C_NUMEJG).toString());
-				if (identificadorDS != null) {
-					miHash.put(ScsEJGBean.C_IDENTIFICADORDS, identificadorDS);
+				try {
+					short idInstitucionShort = getIDInstitucion(request).shortValue();
+					DocuShareHelper docuShareHelper = new DocuShareHelper(idInstitucionShort);
+					String identificadorDS = docuShareHelper.getIdentificadorDocuShare(miHash.get(ScsEJGBean.C_ANIO).toString(),  miHash.get(ScsEJGBean.C_NUMEJG).toString());
+					if (identificadorDS != null) {
+						miHash.put(ScsEJGBean.C_IDENTIFICADORDS, identificadorDS);
+					}	
+				} catch (Exception e) {
+					ClsLogging.writeFileLog("No se ha podico crear la carpeta de REGTEl del expediente "+miHash.get(ScsEJGBean.C_ANIO)+"/"+ miHash.get(ScsEJGBean.C_NUMEJG)+":"+e.toString(),10);
 				}
+				
 			}
 			
 
@@ -1257,37 +1261,7 @@ public class DefinirEJGAction extends MasterAction
 		return exitoModal("messages.inserted.success",request);
 	}
 
-	/**
-	 * Crea una nueva collection en docushare y devuelve su identificador
-	 * @param usrBean
-	 * @param anio
-	 * @param numejg
-	 * @return
-	 * @throws SIGAServiceException 
-	 * @throws ClsExceptions
-	 * @throws SIGAException
-	 * @throws DSException
-	 */
-	private String getIdentificadorDocuShare(UsrBean usrBean, short idInstitucion, String anio, String numejg) throws SIGAServiceException, ClsExceptions {
-		String identificadorDS = null;
-		String collectionTitle = DocuShareHelper.getTitleEJG(anio, numejg);
-		
-		/* Sólo se intentará la Conexion al DocuShare si el parámetro general para la institucion=1*/	
-		GenParametrosAdm parametrosAdm = new GenParametrosAdm(usrBean);
-		String valor = parametrosAdm.getValor(usrBean.getLocation(), ClsConstants.MODULO_GENERAL, "REGTEL", "0");
-		if (valor!=null && valor.equals("1")){
-			DocuShareHelper docuShareHelper = new DocuShareHelper(idInstitucion);
-			
-			//primero buscamos si ya existe una collection con el mismo nombre			
-			identificadorDS = docuShareHelper.buscaCollectionEJG(collectionTitle);
-			
-			//si no existe la collection la creamos
-			if (identificadorDS == null || identificadorDS.trim().equals("")) {
-				identificadorDS = docuShareHelper.createCollectionEJG(collectionTitle);
-			}
-		}
-		return identificadorDS;
-	}
+	
 
 	protected String exitoModal(String mensaje, HttpServletRequest request) 
 	{
