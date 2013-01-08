@@ -29,7 +29,6 @@ import org.redabogacia.sigaservices.app.vo.ScsDeIngresosExtends;
 import org.redabogacia.sigaservices.app.vo.ScsDeIrpf20Extends;
 
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DatosEconomicosEJGForm;
@@ -46,7 +45,6 @@ public class DatosEconomicosEJGAdm {
 	public String listarDatosEconomicosIngresos (ActionMapping mapping, DatosEconomicosEJGForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {		
 			UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");			
-			Hashtable hash = (Hashtable) request.getSession().getAttribute("DATABACKUP");
 			Map<String, Object> parametrosMap = new HashMap<String, Object>();
 			BusinessManager businessManager = BusinessManager.getInstance();
 			
@@ -158,17 +156,16 @@ public class DatosEconomicosEJGAdm {
 			String[] arrayIngresos = listaIngresos.split("%%%");					
 			ArrayList arrayScsIngresos = new ArrayList();
 			
-			UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");			
-			Hashtable hash = (Hashtable) request.getSession().getAttribute("DATABACKUP");						
+			UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");									
 			
 			for (int i=0; i<arrayIngresos.length; i++)  {
 				String[] arrayDatosIngreso = arrayIngresos[i].split("---");
 				
 				ScsDeIngresos ingreso = new ScsDeIngresos();
 				ingreso.setIdinstitucion(new Short(usuario.getLocation()));
-				ingreso.setIdtipoejg(UtilidadesHash.getShort(hash,"IDTIPOEJG"));
-				ingreso.setAnio(UtilidadesHash.getShort(hash,"ANIO"));
-				ingreso.setNumero(UtilidadesHash.getLong(hash,"NUMERO"));
+				ingreso.setIdtipoejg(new Short((String)request.getParameter("idtipoejg")));
+				ingreso.setAnio(new Short((String)request.getParameter("anio")));
+				ingreso.setNumero(new Long((String)request.getParameter("numero")));
 				ingreso.setFechamodificacion(Calendar.getInstance().getTime());
 				ingreso.setUsumodificacion(new Integer(usuario.getUserName()));
 				
@@ -194,7 +191,6 @@ public class DatosEconomicosEJGAdm {
 	public String listarDatosEconomicosBienInmueble (ActionMapping mapping, DatosEconomicosEJGForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {		
 			UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");			
-			Hashtable hash = (Hashtable) request.getSession().getAttribute("DATABACKUP");
 			Map<String, Object> parametrosMap = new HashMap<String, Object>();
 			BusinessManager businessManager = BusinessManager.getInstance();
 			
@@ -329,17 +325,16 @@ public class DatosEconomicosEJGAdm {
 			String[] arrayBienes = listaBienes.split("%%%");					
 			ArrayList arrayListBienes = new ArrayList();
 			
-			UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");			
-			Hashtable hash = (Hashtable) request.getSession().getAttribute("DATABACKUP");						
+			UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");							
 			
 			for (int i=0; i<arrayBienes.length; i++)  {
 				String[] arrayBien = arrayBienes[i].split("---");
 				
 				ScsDeBieninmueble bienInmueble = new ScsDeBieninmueble();
 				bienInmueble.setIdinstitucion(new Short(usuario.getLocation()));
-				bienInmueble.setIdtipoejg(UtilidadesHash.getShort(hash,"IDTIPOEJG"));
-				bienInmueble.setAnio(UtilidadesHash.getShort(hash,"ANIO"));
-				bienInmueble.setNumero(UtilidadesHash.getLong(hash,"NUMERO"));
+				bienInmueble.setIdtipoejg(new Short((String)request.getParameter("idtipoejg")));
+				bienInmueble.setAnio(new Short((String)request.getParameter("anio")));
+				bienInmueble.setNumero(new Long((String)request.getParameter("numero")));
 				bienInmueble.setFechamodificacion(Calendar.getInstance().getTime());
 				bienInmueble.setUsumodificacion(new Integer(usuario.getUserName()));
 				
@@ -368,7 +363,6 @@ public class DatosEconomicosEJGAdm {
 	public String listarDatosEconomicosBienMueble (ActionMapping mapping, DatosEconomicosEJGForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {		
 			UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");			
-			Hashtable hash = (Hashtable) request.getSession().getAttribute("DATABACKUP");
 			Map<String, Object> parametrosMap = new HashMap<String, Object>();
 			BusinessManager businessManager = BusinessManager.getInstance();
 			
@@ -480,17 +474,16 @@ public class DatosEconomicosEJGAdm {
 			String[] arrayBienes = listaBienes.split("%%%");					
 			ArrayList arrayListBienes = new ArrayList();
 			
-			UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");			
-			Hashtable hash = (Hashtable) request.getSession().getAttribute("DATABACKUP");						
+			UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");								
 			
 			for (int i=0; i<arrayBienes.length; i++)  {
 				String[] arrayBien = arrayBienes[i].split("---");
 				
 				ScsDeBienmueble bienMueble = new ScsDeBienmueble();
 				bienMueble.setIdinstitucion(new Short(usuario.getLocation()));
-				bienMueble.setIdtipoejg(UtilidadesHash.getShort(hash,"IDTIPOEJG"));
-				bienMueble.setAnio(UtilidadesHash.getShort(hash,"ANIO"));
-				bienMueble.setNumero(UtilidadesHash.getLong(hash,"NUMERO"));
+				bienMueble.setIdtipoejg(new Short((String)request.getParameter("idtipoejg")));
+				bienMueble.setAnio(new Short((String)request.getParameter("anio")));
+				bienMueble.setNumero(new Long((String)request.getParameter("numero")));
 				bienMueble.setFechamodificacion(Calendar.getInstance().getTime());
 				bienMueble.setUsumodificacion(new Integer(usuario.getUserName()));
 				
@@ -516,7 +509,6 @@ public class DatosEconomicosEJGAdm {
 	public String listarDatosEconomicosCargaEconomica (ActionMapping mapping, DatosEconomicosEJGForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {		
 			UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");			
-			Hashtable hash = (Hashtable) request.getSession().getAttribute("DATABACKUP");
 			Map<String, Object> parametrosMap = new HashMap<String, Object>();
 			BusinessManager businessManager = BusinessManager.getInstance();
 			
@@ -628,17 +620,16 @@ public class DatosEconomicosEJGAdm {
 			String[] arrayCargasEconomicas = listaCargasEconomicas.split("%%%");					
 			ArrayList arrayListaCargasEconomicas = new ArrayList();
 			
-			UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");			
-			Hashtable hash = (Hashtable) request.getSession().getAttribute("DATABACKUP");						
+			UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");							
 			
 			for (int i=0; i<arrayCargasEconomicas.length; i++)  {
 				String[] arrayCargaEconomica = arrayCargasEconomicas[i].split("---");
 				
 				ScsDeCargaeconomica cargaeconomica = new ScsDeCargaeconomica();
 				cargaeconomica.setIdinstitucion(new Short(usuario.getLocation()));
-				cargaeconomica.setIdtipoejg(UtilidadesHash.getShort(hash,"IDTIPOEJG"));
-				cargaeconomica.setAnio(UtilidadesHash.getShort(hash,"ANIO"));
-				cargaeconomica.setNumero(UtilidadesHash.getLong(hash,"NUMERO"));
+				cargaeconomica.setIdtipoejg(new Short((String)request.getParameter("idtipoejg")));
+				cargaeconomica.setAnio(new Short((String)request.getParameter("anio")));
+				cargaeconomica.setNumero(new Long((String)request.getParameter("numero")));
 				cargaeconomica.setFechamodificacion(Calendar.getInstance().getTime());
 				cargaeconomica.setUsumodificacion(new Integer(usuario.getUserName()));
 				
@@ -664,7 +655,6 @@ public class DatosEconomicosEJGAdm {
 	public String listarDatosEconomicosIrpf20 (ActionMapping mapping, DatosEconomicosEJGForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {		
 			UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");			
-			Hashtable hash = (Hashtable) request.getSession().getAttribute("DATABACKUP");
 			Map<String, Object> parametrosMap = new HashMap<String, Object>();
 			BusinessManager businessManager = BusinessManager.getInstance();
 			
@@ -776,17 +766,16 @@ public class DatosEconomicosEJGAdm {
 			String[] arrayIrpf = listaIrpf.split("%%%");					
 			ArrayList arrayListIrpf = new ArrayList();
 			
-			UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");			
-			Hashtable hash = (Hashtable) request.getSession().getAttribute("DATABACKUP");						
+			UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");							
 			
 			for (int i=0; i<arrayIrpf.length; i++)  {
 				String[] arrayDatosIrpf = arrayIrpf[i].split("---");
 				
 				ScsDeIrpf20 irpf = new ScsDeIrpf20();
 				irpf.setIdinstitucion(new Short(usuario.getLocation()));
-				irpf.setIdtipoejg(UtilidadesHash.getShort(hash,"IDTIPOEJG"));
-				irpf.setAnio(UtilidadesHash.getShort(hash,"ANIO"));
-				irpf.setNumero(UtilidadesHash.getLong(hash,"NUMERO"));
+				irpf.setIdtipoejg(new Short((String)request.getParameter("idtipoejg")));
+				irpf.setAnio(new Short((String)request.getParameter("anio")));
+				irpf.setNumero(new Long((String)request.getParameter("numero")));
 				irpf.setFechamodificacion(Calendar.getInstance().getTime());
 				irpf.setUsumodificacion(new Integer(usuario.getUserName()));
 				
