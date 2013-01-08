@@ -62,7 +62,7 @@
 	<siga:TituloExt titulo="censo.comisiones.literal.comisiones" localizacion="censo.comisiones.localizacion"/>
 </head>
 
-<body onload="validarAnchoTabla();" >
+<body onload="calcularAltura();validarAnchoTabla();" >
 
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
@@ -313,6 +313,16 @@
 	}
 	 		
 	function validarDatosMinimos () {		
+		if(document.getElementById("idInstitucionCargo").value==null || document.getElementById("idInstitucionCargo").value==""){
+			alert("<siga:Idioma key='censo.comisiones.colObligatorio'/>");
+			return false;
+		} 	
+		
+		if(document.getElementById("fechaCargo").value==null || document.getElementById("fechaCargo").value==""){
+			alert("<siga:Idioma key='censo.comisiones.cargoObligatorio'/>");
+			return false;	
+		}		
+		
 		if(document.getElementById ("vacio")!=null)
 			document.getElementById ("vacio").style.display="none";
 		
@@ -689,6 +699,11 @@
 			}
 		}
 	}
+	
+	function calcularAltura() {		
+		var altura = document.getElementById("divCargos").offsetParent.offsetHeight;
+		document.getElementById("divCargos").style.height=altura-155;
+	}	
 
 	function validarAnchoTabla() {
 		if (document.getElementById("cargostabla").clientHeight < document.getElementById("divCargos").clientHeight) {
