@@ -26,18 +26,17 @@
 	
 	String accion = (String)request.getSession().getAttribute("accion");
 	
-	boolean editable = false;			
-	String anchoTabla = "929px";		
+	boolean editable = false;				
 	String botones = "V";
 	if (accion!=null && accion.equals("editar")) {
 		editable=true;
-		anchoTabla="991px";
 		botones = "G,V";
 	}
 	
 	String idtipoejg = (String) request.getParameter("idtipoejg");
 	String anio = (String) request.getParameter("anio");
 	String numero = (String) request.getParameter("numero");	
+	String datoEJG = (String) request.getParameter("datoEJG");
 %>	
 
 <html>
@@ -61,31 +60,42 @@
 		<html:hidden property="id" value=""/>
 		<html:hidden property="idtipoejg" value="<%=idtipoejg%>"/>	
 		<html:hidden property="anio" value="<%=anio%>"/>	
-		<html:hidden property="numero" value="<%=numero%>"/>		
+		<html:hidden property="numero" value="<%=numero%>"/>	
+		<html:hidden property="datoEJG" value="<%=datoEJG%>"/>	
 	
+		<table class="tablaTitulo" cellspacing="0" heigth="38">
+			<tr>
+				<td id="titulo" class="titulitosDatos">
+					<%=datoEJG%>
+				</td>
+			</tr>
+		</table>	
 		<br>		
-		<table border="1" cellspacing="0" cellpadding="5">
+		<table border="1" cellspacing="0" cellpadding="5" id='cabeceraTabla' width="100%">
 			<tr class="tableTitle">
-				<td align="center" width="120px">
+				<td align="center" width="14%">
 					<b><siga:Idioma key="gratuita.datoseconomicos.origenvaloracion"/></b>
 				</td>
-				<td align="center" width="260px">
+				<td align="center" width="27%">
 					<b><siga:Idioma key="gratuita.datoseconomicos.tipovivienda"/></b>
 				</td>
-				<td align="center" width="150px">
+				<td align="center" width="15%">
 					<b><siga:Idioma key="gratuita.datoseconomicos.tipoinmueble"/></b>
 				</td>				
-				<td align="center" width="200px">
+				<td align="center" width="23%">
 					<b><siga:Idioma key="gratuita.datoseconomicos.titular"/></b>
 				</td>
-				<td align="center" width="120px">
+				<td align="center" width="16%">
 					<b><siga:Idioma key="gratuita.datoseconomicos.valoracion"/></b>
-				</td>				
+				</td>	
+				<td align="center" width="5%">
+					<b>&nbsp;</b>
+				</td>			
 			</tr>
 		</table>
 		
-		<div style="overflow-y:auto; position:absolute; width:<%=anchoTabla%>" id="divTablaIngresos">
-			<table border="1" cellspacing="0" cellpadding="5" id='tablaPrincipal'>
+		<div style="overflow-y:auto; position:absolute;width:100%;" id="divDatosTabla">
+			<table border="1" cellspacing="0" cellpadding="5" id='datosTabla' width="100%">
 				<% 
 					if (listaBienes != null && listaBienes.size()>0) {
 						for (int i=0; i<listaBienes.size(); i++) {
@@ -103,24 +113,24 @@
 							}
 				%>				
 					<tr class="<%=claseFila%>">
-						<td align="left" width="120px">
+						<td align="left" width="14%">
 							<%=dato.getDescripcionorigenvaloracion()%>						
 						</td>
-						<td align="left" width="260px">
+						<td align="left" width="27%">
 							<%=dato.getDescripciontipovivienda()%>						
 						</td>
-						<td align="left" width="150px">
+						<td align="left" width="15%">
 							<%=idTipoInmueble%>						
 						</td>
-						<td align="left" width="200px">
+						<td align="left" width="23%">
 							<%=dato.getTitular()%>
 						</td>
-						<td align="right" width="120px">
+						<td align="right" width="16%">
 							<%=dato.getValoracionFormateada()%> &#8364;
 						</td>		
 						
 						<% if (editable) { %>		
-							<td align="center" width="50px">
+							<td align="center" width="5%">
 								<img src="/SIGA/html/imagenes/bborrar_off.gif" style="cursor:pointer;" title="<siga:Idioma key='general.boton.borrar'/>" alt="<siga:Idioma key='general.boton.borrar'/>" name="" border="0" 
 									onclick="borrarBien(<%=dato.getIdbieninmueble()%>)">
 							</td>
@@ -149,12 +159,23 @@
 	var numMaxFilaNueva = 1;
 	
 	function calcularAltura() {		
-		var altura = document.getElementById("divTablaIngresos").offsetParent.offsetHeight;
-		document.getElementById("divTablaIngresos").style.height=altura-70;
+		var altura = document.getElementById("divDatosTabla").offsetParent.offsetHeight;
+		document.getElementById("divDatosTabla").style.height=altura-90;
+		
+		validarAnchoTabla();
 	}	
 	
+	function validarAnchoTabla() {
+		if (document.getElementById("datosTabla").clientHeight < document.getElementById("divDatosTabla").clientHeight) {
+			document.getElementById("cabeceraTabla").width='100%';
+		}
+		else {
+			document.getElementById("cabeceraTabla").width='98.30%';
+		}
+	}		
+	
 	function crearFila() {  		
-		var tabla = document.getElementById("tablaPrincipal");
+		var tabla = document.getElementById("datosTabla");
 		
 		var claseFila ="filaTablaPar";
 	   	if((tabla.rows.length+2)%2==0)
@@ -169,7 +190,7 @@
 		tr.id = "fila_" + numMaxFilaNueva;
 		
 		td = tr.insertCell(0);		
-		td.setAttribute("width", "120px");
+		td.setAttribute("width", "14%");
 		td.setAttribute("align", "left");		
 		var tdNew ="<%=tdsNew[0]%>";
 		tdNew = tdNew.replace("select_OrigenValoraciones_1", "select_OrigenValoraciones_"+numMaxFilaNueva);
@@ -177,7 +198,7 @@
 		td.innerHTML=tdNew;
 		
 		td = tr.insertCell(1);		
-		td.setAttribute("width", "260px");
+		td.setAttribute("width", "27%");
 		td.setAttribute("align", "left");		
 		tdNew ="<%=tdsNew[1]%>";
 		tdNew = tdNew.replace("select_TiposViviendas_1", "select_TiposViviendas_"+numMaxFilaNueva);
@@ -186,7 +207,7 @@
 		td.innerHTML=tdNew;
 		
 		td = tr.insertCell(2);		
-		td.setAttribute("width", "150px");
+		td.setAttribute("width", "15%");
 		td.setAttribute("align", "left");		
 		tdNew ="<%=tdsNew[2]%>";
 		tdNew = tdNew.replace("select_TiposInmuebles_1", "select_TiposInmuebles_"+numMaxFilaNueva);
@@ -194,7 +215,7 @@
 		td.innerHTML=tdNew;		
 		
 		td = tr.insertCell(3);		
-		td.setAttribute("width", "200px");
+		td.setAttribute("width", "23%");
 		td.setAttribute("align", "left");		
 		tdNew ="<%=tdsNew[3]%>";
 		tdNew = tdNew.replace("select_Titulares_1", "select_Titulares_"+numMaxFilaNueva);
@@ -202,7 +223,7 @@
 		td.innerHTML=tdNew;
 		
 		td = tr.insertCell(4);		
-		td.setAttribute("width", "120px");
+		td.setAttribute("width", "16%");
 		td.setAttribute("align", "right");		
 		tdNew ="<%=tdsNew[4]%>";
 		tdNew = tdNew.replace("input_Valoracion_1", "input_Valoracion_"+numMaxFilaNueva);
@@ -210,11 +231,13 @@
 		td.innerHTML=tdNew;
 		
 		td = tr.insertCell(5);		
-		td.setAttribute("width", "50px");
+		td.setAttribute("width", "5%");
 		td.setAttribute("align", "center");		
 		tdNew ="<%=tdsNew[5]%>";
 		tdNew = tdNew.replace("borrarFila(1)", "borrarFila("+numMaxFilaNueva+")");
 		td.innerHTML=tdNew;
+		
+		validarAnchoTabla();
 	}	
 	
 	function cambiaFila(idFila){
@@ -250,7 +273,7 @@
 		
 	function borrarFila(idFila){			
 		if (numFilasNuevas>1) {
-			var tabla = document.getElementById("tablaPrincipal");
+			var tabla = document.getElementById("datosTabla");
 			var encontrado = false;
 			var numEncontrado = 0;
 			var sFila = "fila_"+idFila;			
@@ -275,6 +298,8 @@
 				var idMaximoFila = tabla.rows[tabla.rows.length-1].id;
 				numMaxFilaNueva = parseInt(idMaximoFila.split("_")[1],10);
 			}
+			
+			validarAnchoTabla();
 		
 		} else {
 			var objeto = document.getElementById("select_OrigenValoraciones_"+idFila);
@@ -307,7 +332,7 @@
 	}	
 	
 	function obtenerDatos () {
-		var tabla = document.getElementById("tablaPrincipal");
+		var tabla = document.getElementById("datosTabla");
 		var resultado = "";		
 		var regImporte = /^[0-9]{1,10}([,.][0-9]{0,2})?$/;
 

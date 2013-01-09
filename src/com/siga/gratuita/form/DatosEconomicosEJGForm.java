@@ -3,8 +3,21 @@ package com.siga.gratuita.form;
 
 import com.siga.general.MasterForm;
 
-public class DatosEconomicosEJGForm extends MasterForm {
+public class DatosEconomicosEJGForm extends MasterForm {	
+	private String anio;
+	private String datoEJG;
 	private String idtipoejg;
+	private String numero;		
+	private String[] modos = {"ingresos","bieninmueble","bienmueble","cargaeconomica","irpf20"};
+	
+	public String getDatoEJG() {
+		return datoEJG;
+	}
+
+	public void setDatoEJG(String datoEJG) {
+		this.datoEJG = datoEJG;
+	}	
+	
 	public String getIdtipoejg() {
 		return idtipoejg;
 	}
@@ -27,11 +40,7 @@ public class DatosEconomicosEJGForm extends MasterForm {
 
 	public void setNumero(String numero) {
 		this.numero = numero;
-	}
-
-	private String anio;
-	private String numero;		
-	private String[] modos = {"ingresos","bieninmueble","bienmueble","cargaeconomica","irpf20"};
+	}	
 
 	public String[] getModos () {return this.modos;}
 }

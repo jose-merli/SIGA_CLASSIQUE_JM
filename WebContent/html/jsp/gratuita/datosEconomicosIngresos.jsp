@@ -23,18 +23,17 @@
 	
 	String accion = (String)request.getSession().getAttribute("accion");
 	
-	boolean editable = false;			
-	String anchoTabla = "817px";	
+	boolean editable = false;				
 	String botones = "V";
 	if (accion!=null && accion.equals("editar")) {
 		editable=true;
-		anchoTabla="879px";
 		botones = "G,V";
 	}
 	
 	String idtipoejg = (String) request.getParameter("idtipoejg");
 	String anio = (String) request.getParameter("anio");
-	String numero = (String) request.getParameter("numero");		
+	String numero = (String) request.getParameter("numero");
+	String datoEJG = (String) request.getParameter("datoEJG");
 %>	
 
 <html>
@@ -57,28 +56,39 @@
 		<html:hidden property="id" value=""/>	
 		<html:hidden property="idtipoejg" value="<%=idtipoejg%>"/>	
 		<html:hidden property="anio" value="<%=anio%>"/>	
-		<html:hidden property="numero" value="<%=numero%>"/>			
-	
-		<br>		
-		<table border="1" cellspacing="0" cellpadding="5">
+		<html:hidden property="numero" value="<%=numero%>"/>
+		<html:hidden property="datoEJG" value="<%=datoEJG%>"/>
+		
+		<table class="tablaTitulo" cellspacing="0" heigth="38">
+			<tr>
+				<td id="titulo" class="titulitosDatos">
+					<%=datoEJG%>
+				</td>
+			</tr>
+		</table>		
+		<br>
+		<table border="1" cellspacing="0" cellpadding="5" id='cabeceraTabla' width="100%">
 			<tr class="tableTitle">
-				<td align="center" width="200px">
+				<td align="center" width="22%">
 					<b><siga:Idioma key="gratuita.datoseconomicos.tipoingreso"/></b>
 				</td>
-				<td align="center" width="150px">
+				<td align="center" width="22%">
 					<b><siga:Idioma key="gratuita.datoseconomicos.periodicidad"/></b>
 				</td>
-				<td align="center" width="250px">
+				<td align="center" width="35%">
 					<b><siga:Idioma key="gratuita.datoseconomicos.perceptor"/></b>
 				</td>
-				<td align="center" width="150px">
+				<td align="center" width="16%">
 					<b><siga:Idioma key="gratuita.datoseconomicos.importe"/></b>
 				</td>				
+				<td align="center" width="5%">
+					<b>&nbsp;</b>
+				</td>
 			</tr>
 		</table>
 		
-		<div style="overflow-y:auto; position:absolute; width:<%=anchoTabla%>" id="divTablaIngresos">
-			<table border="1" cellspacing="0" cellpadding="5" id='ingresostabla'>
+		<div style="overflow-y:auto; position:absolute;width:100%;" id="divDatosTabla">
+			<table border="1" cellspacing="0" cellpadding="5" id='datosTabla' width="100%">
 				<% 
 					if (listaIngresos != null && listaIngresos.size()>0) {
 						for (int i=0; i<listaIngresos.size(); i++) {
@@ -91,21 +101,21 @@
 		   		 				claseFila = "filaTablaImpar";
 				%>				
 					<tr class="<%=claseFila%>">
-						<td align="left" width="200px">
+						<td align="left" width="22%">
 							<%=datoIngreso.getDescripcionTipoIngreso()%>						
 						</td>
-						<td align="left" width="150px">
+						<td align="left" width="22%">
 							<%=datoIngreso.getDescripcionPeriodicidad()%>						
 						</td>
-						<td align="left" width="250px">
+						<td align="left" width="35%">
 							<%=datoIngreso.getPerceptor()%>
 						</td>
-						<td align="right" width="150px">
+						<td align="right" width="16%">
 							<%=datoIngreso.getImporteFormateado()%> &#8364;
 						</td>		
 						
 						<% if (editable) { %>		
-							<td align="center" width="50px">
+							<td align="center" width="5%">
 								<img src="/SIGA/html/imagenes/bborrar_off.gif" style="cursor:pointer;" title="<siga:Idioma key='general.boton.borrar'/>" alt="<siga:Idioma key='general.boton.borrar'/>" name="" border="0" 
 									onclick="borrarIngreso(<%=datoIngreso.getIddeingresos()%>)">
 							</td>
@@ -134,12 +144,23 @@
 	var numMaxFilaNueva = 1;
 	
 	function calcularAltura() {		
-		var altura = document.getElementById("divTablaIngresos").offsetParent.offsetHeight;
-		document.getElementById("divTablaIngresos").style.height=altura-70;
+		var altura = document.getElementById("divDatosTabla").offsetParent.offsetHeight;
+		document.getElementById("divDatosTabla").style.height=altura-90;
+		
+		validarAnchoTabla();
 	}
 	
+	function validarAnchoTabla() {
+		if (document.getElementById("datosTabla").clientHeight < document.getElementById("divDatosTabla").clientHeight) {
+			document.getElementById("cabeceraTabla").width='100%';
+		}
+		else {
+			document.getElementById("cabeceraTabla").width='98.30%';
+		}
+	}	
+	
 	function crearFila() {  		
-		var tabla = document.getElementById("ingresostabla");
+		var tabla = document.getElementById("datosTabla");
 		
 		var claseFila ="filaTablaPar";
 	   	if((tabla.rows.length+2)%2==0)
@@ -154,7 +175,7 @@
 		tr.id = "fila_" + numMaxFilaNueva;
 		
 		td = tr.insertCell(0);		
-		td.setAttribute("width", "200px");
+		td.setAttribute("width", "22%");
 		td.setAttribute("align", "left");		
 		var tdNew ="<%=tdsNew[0]%>";
 		tdNew = tdNew.replace("select_TiposIngresos_1", "select_TiposIngresos_"+numMaxFilaNueva);
@@ -162,7 +183,7 @@
 		td.innerHTML=tdNew;
 		
 		td = tr.insertCell(1);		
-		td.setAttribute("width", "150px");
+		td.setAttribute("width", "22%");
 		td.setAttribute("align", "left");		
 		tdNew ="<%=tdsNew[1]%>";
 		tdNew = tdNew.replace("select_Periodicidades_1", "select_Periodicidades_"+numMaxFilaNueva);
@@ -170,7 +191,7 @@
 		td.innerHTML=tdNew;
 		
 		td = tr.insertCell(2);		
-		td.setAttribute("width", "250px");
+		td.setAttribute("width", "35%");
 		td.setAttribute("align", "left");		
 		tdNew ="<%=tdsNew[2]%>";
 		tdNew = tdNew.replace("select_Perceptores_1", "select_Perceptores_"+numMaxFilaNueva);
@@ -178,7 +199,7 @@
 		td.innerHTML=tdNew;
 		
 		td = tr.insertCell(3);		
-		td.setAttribute("width", "150px");
+		td.setAttribute("width", "16%");
 		td.setAttribute("align", "right");		
 		tdNew ="<%=tdsNew[3]%>";
 		tdNew = tdNew.replace("input_Importe_1", "input_Importe_"+numMaxFilaNueva);
@@ -186,11 +207,13 @@
 		td.innerHTML=tdNew;
 		
 		td = tr.insertCell(4);		
-		td.setAttribute("width", "50px");
+		td.setAttribute("width", "5%");
 		td.setAttribute("align", "center");		
 		tdNew ="<%=tdsNew[4]%>";
 		tdNew = tdNew.replace("borrarFila(1)", "borrarFila("+numMaxFilaNueva+")");
 		td.innerHTML=tdNew;
+		
+		validarAnchoTabla();
 	}	
 	
 	function cambiaFila(idFila){
@@ -201,7 +224,7 @@
 
 	function borrarFila(idFila){			
 		if (numFilasNuevas>1) {
-			var tabla = document.getElementById("ingresostabla");
+			var tabla = document.getElementById("datosTabla");
 			var encontrado = false;
 			var numEncontrado = 0;
 			var sFila = "fila_"+idFila;			
@@ -226,6 +249,8 @@
 				var idMaximoFila = tabla.rows[tabla.rows.length-1].id;
 				numMaxFilaNueva = parseInt(idMaximoFila.split("_")[1],10);
 			}
+			
+			validarAnchoTabla();
 		
 		} else {
 			var objeto = document.getElementById("select_TiposIngresos_"+idFila);
@@ -256,7 +281,7 @@
 	}	
 	
 	function obtenerDatos () {
-		var tabla = document.getElementById("ingresostabla");
+		var tabla = document.getElementById("datosTabla");
 		var resultado = "";		
 		var regImporte = /^[0-9]{1,10}([,.][0-9]{0,2})?$/;
 

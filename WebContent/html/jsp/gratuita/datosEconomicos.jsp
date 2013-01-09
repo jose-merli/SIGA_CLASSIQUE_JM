@@ -18,12 +18,14 @@
 <% 	
 	String idtipoejg = (String) request.getParameter("IDTIPOEJG");
 	String anio = (String) request.getParameter("ANIO");
-	String numero = (String) request.getParameter("NUMERO");	
+	String numero = (String) request.getParameter("NUMERO");
+	String datoEJG = (String) request.getAttribute("datoEJG");
 	
 	Hashtable htParametros = new Hashtable();
 	htParametros.put("idtipoejg", idtipoejg);
 	htParametros.put("anio", anio);
 	htParametros.put("numero", numero);
+	htParametros.put("datoEJG", datoEJG);
 	request.setAttribute("EJG", htParametros);
 %>	
 

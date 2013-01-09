@@ -22,6 +22,7 @@ import org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosBienes
 import org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosCargaEconomicaService;
 import org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosIngresosService;
 import org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosIrpf20Service;
+import org.redabogacia.sigaservices.app.services.scs.ScsEjgUnidadesFamiliaresService;
 import org.redabogacia.sigaservices.app.vo.ScsDeBienInmuebleExtends;
 import org.redabogacia.sigaservices.app.vo.ScsDeBienMuebleExtends;
 import org.redabogacia.sigaservices.app.vo.ScsDeCargaEconomicaExtends;
@@ -38,7 +39,32 @@ import es.satec.businessManager.BusinessManager;
 public class DatosEconomicosEJGAdm {
 	
 	public String verDatosEconomicos (ActionMapping mapping, DatosEconomicosEJGForm formulario, HttpServletRequest request, HttpServletResponse response) {
+		BusinessManager businessManager = BusinessManager.getInstance();				
+		
+		String anio = (String) request.getParameter("ANIO");
+		String numero = (String) request.getParameter("NUMERO");
+		
+		Map<String, Object> parametrosMap = new HashMap<String, Object>();
+		
+		parametrosMap.put("idpersona",(String) request.getParameter("idPersonaJG"));
+		parametrosMap.put("idinstitucion",(String) request.getParameter("idInstitucionJG"));
+		parametrosMap.put("idtipoejg",(String) request.getParameter("IDTIPOEJG"));
+		parametrosMap.put("anio", anio);
+		parametrosMap.put("numero", numero);
+		
+		ScsEjgUnidadesFamiliaresService datosEconomicosService = (ScsEjgUnidadesFamiliaresService) businessManager.getService(ScsEjgUnidadesFamiliaresService.class);
+		
+		String nombre = datosEconomicosService.obtenerPersonaEJG(parametrosMap);
+		
+		while (numero.length()<5) {
+			numero = "0" + numero;
+		}
+		
+		String datoEJG = anio + "/" + numero + " - " + nombre;
+		
 		request.setAttribute("modosDatosEconomicosEJG", formulario.getModos());
+		request.setAttribute("datoEJG", datoEJG);
+		
 		return "inicio";		
 	}	
 
@@ -76,10 +102,10 @@ public class DatosEconomicosEJGAdm {
 		   	else
 		   		claseFila = "filaTablaImpar";
 			
-			String trNuevas = "<tr class='"+claseFila+"' id='fila_1'><td align='left' width='200px'>";
+			String trNuevas = "<tr class='"+claseFila+"' id='fila_1'><td align='left' width='22%'>";
 			String[] tdsNuevas = new String[5];
 					
-			tdsNuevas[0] = "<select class='boxCombo' style='width:190px' id='select_TiposIngresos_1' value='' onChange='cambiaFila(1)'>";
+			tdsNuevas[0] = "<select class='boxCombo' style='width:200px' id='select_TiposIngresos_1' value='' onChange='cambiaFila(1)'>";
 			tdsNuevas[0]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
 			for (int i=0; i<listaTiposIngresos.size(); i++) {
 				ScsDeIngresosExtends dato = (ScsDeIngresosExtends) listaTiposIngresos.get(i);
@@ -88,8 +114,8 @@ public class DatosEconomicosEJGAdm {
 			tdsNuevas[0]+="</select>";
 			trNuevas+=tdsNuevas[0]+"</td>";
 			
-			trNuevas+="<td align='left' width='150px'>";
-			tdsNuevas[1]="<select class='boxCombo' style='width:140px' id='select_Periodicidades_1' value='' onChange='cambiaFila(1)'>";
+			trNuevas+="<td align='left' width='22%'>";
+			tdsNuevas[1]="<select class='boxCombo' style='width:200px' id='select_Periodicidades_1' value='' onChange='cambiaFila(1)'>";
 			tdsNuevas[1]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
 			for (int i=0; i<listaPeriodicidades.size(); i++) {
 				ScsDeIngresosExtends dato = (ScsDeIngresosExtends) listaPeriodicidades.get(i);
@@ -98,8 +124,8 @@ public class DatosEconomicosEJGAdm {
 			tdsNuevas[1]+="</select>";
 			trNuevas+=tdsNuevas[1]+"</td>";
 			
-			trNuevas+="<td align='left' width='250px'>";
-			tdsNuevas[2]="<select class='boxCombo' style='width:240px' id='select_Perceptores_1' value='' onChange='cambiaFila(1)'>";
+			trNuevas+="<td align='left' width='35%'>";
+			tdsNuevas[2]="<select class='boxCombo' style='width:330px' id='select_Perceptores_1' value='' onChange='cambiaFila(1)'>";
 			tdsNuevas[2]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
 			for (int i=0; i<listaPerceptores.size(); i++) {
 				ScsDeIngresosExtends dato = (ScsDeIngresosExtends) listaPerceptores.get(i);
@@ -108,11 +134,11 @@ public class DatosEconomicosEJGAdm {
 			tdsNuevas[2]+="</select>";
 			trNuevas+=tdsNuevas[2]+"</td>";
 			
-			trNuevas+="<td align='right' width='150px'>";
+			trNuevas+="<td align='right' width='16%'>";
 			tdsNuevas[3]="<input type='text' id='input_Importe_1' class='boxNumber' style='width:140' value='' maxlength='13' onChange='cambiaFila(1)' onkeypress='return soloNumerosDecimales(event)'/>";
 			trNuevas+=tdsNuevas[3]+"</td>";
 			
-			trNuevas+="<td align='center' width='50px'>";
+			trNuevas+="<td align='center' width='5%'>";
 			tdsNuevas[4]="<img src='/SIGA/html/imagenes/bborrar_off.gif' style='cursor:pointer;' title='"+UtilidadesString.getMensajeIdioma(usuario,"general.boton.borrar")+"' alt='"+UtilidadesString.getMensajeIdioma(usuario,"general.boton.borrar")+"' name='' border='0' "+ 
 				" onclick='borrarFila(1)'>";
 			trNuevas+=tdsNuevas[4]+"</td></tr>";
@@ -223,11 +249,11 @@ public class DatosEconomicosEJGAdm {
 		   	else
 		   		claseFila = "filaTablaImpar";
 			
-			String trNuevas = "<tr class='"+claseFila+"' id='fila_1'><td align='left' width='120px'>";
+			String trNuevas = "<tr class='"+claseFila+"' id='fila_1'><td align='left' width='14%'>";
 			String[] tdsNuevas = new String[6];
 			String opcionSeleccionar = "<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
 					
-			tdsNuevas[0] = "<select class='boxCombo' style='width:110px' id='select_OrigenValoraciones_1' value='' onChange='cambiaFila(1)'>";
+			tdsNuevas[0] = "<select class='boxCombo' style='width:120px' id='select_OrigenValoraciones_1' value='' onChange='cambiaFila(1)'>";
 			tdsNuevas[0] += opcionSeleccionar;
 			for (int i=0; i<listaOrigenValoraciones.size(); i++) {
 				ScsDeBienInmuebleExtends dato = (ScsDeBienInmuebleExtends) listaOrigenValoraciones.get(i);
@@ -238,7 +264,7 @@ public class DatosEconomicosEJGAdm {
 			
 
 			
-			trNuevas+="<td align='left' width='260px'>";
+			trNuevas+="<td align='left' width='27%'>";
 			tdsNuevas[1]="<select class='boxCombo' style='width:250px' id='select_TiposViviendas_1' value='' onChange='cambiaFila(1);CambiarTipoVivienda(1,this.value)'>";
 			tdsNuevas[1] += opcionSeleccionar;
 			for (int i=0; i<listaTiposViviendas.size(); i++) {
@@ -248,8 +274,8 @@ public class DatosEconomicosEJGAdm {
 			tdsNuevas[1]+="</select>";
 			trNuevas+=tdsNuevas[1]+"</td>";
 			
-			trNuevas+="<td align='left' width='150px'>";
-			tdsNuevas[2]="<select class='boxCombo' style='width:140px' id='select_TiposInmuebles_1' value='' onChange='cambiaFila(1)'>"+opcionSeleccionar+"</select>";
+			trNuevas+="<td align='left' width='15%'>";
+			tdsNuevas[2]="<select class='boxCombo' style='width:130px' id='select_TiposInmuebles_1' value='' onChange='cambiaFila(1)'>"+opcionSeleccionar+"</select>";
 			trNuevas+=tdsNuevas[2]+"</td>";
 			
 			Hashtable hashTipoInmuebles = new Hashtable();			
@@ -266,8 +292,8 @@ public class DatosEconomicosEJGAdm {
 				}				
 			}					
 			
-			trNuevas+="<td align='left' width='200px'>";
-			tdsNuevas[3]="<select class='boxCombo' style='width:190px' id='select_Titulares_1' value='' onChange='cambiaFila(1)'>";
+			trNuevas+="<td align='left' width='23%'>";
+			tdsNuevas[3]="<select class='boxCombo' style='width:210px' id='select_Titulares_1' value='' onChange='cambiaFila(1)'>";
 			tdsNuevas[3] += opcionSeleccionar;
 			for (int i=0; i<listaTitulares.size(); i++) {
 				ScsDeBienInmuebleExtends dato = (ScsDeBienInmuebleExtends) listaTitulares.get(i);
@@ -276,11 +302,11 @@ public class DatosEconomicosEJGAdm {
 			tdsNuevas[3]+="</select>";
 			trNuevas+=tdsNuevas[3]+"</td>";
 			
-			trNuevas+="<td align='right' width='120px'>";
-			tdsNuevas[4]="<input type='text' id='input_Valoracion_1' class='boxNumber' style='width:100' value='' maxlength='13' onChange='cambiaFila(1)' onkeypress='return soloNumerosDecimales(event)'/>";
+			trNuevas+="<td align='right' width='16%'>";
+			tdsNuevas[4]="<input type='text' id='input_Valoracion_1' class='boxNumber' style='width:140' value='' maxlength='13' onChange='cambiaFila(1)' onkeypress='return soloNumerosDecimales(event)'/>";
 			trNuevas+=tdsNuevas[4]+"</td>";
 			
-			trNuevas+="<td align='center' width='50px'>";
+			trNuevas+="<td align='center' width='5%'>";
 			tdsNuevas[5]="<img src='/SIGA/html/imagenes/bborrar_off.gif' style='cursor:pointer;' title='"+UtilidadesString.getMensajeIdioma(usuario,"general.boton.borrar")+"' alt='"+UtilidadesString.getMensajeIdioma(usuario,"general.boton.borrar")+"' name='' border='0' "+ 
 				" onclick='borrarFila(1)'>";
 			trNuevas+=tdsNuevas[5]+"</td></tr>";
@@ -394,10 +420,10 @@ public class DatosEconomicosEJGAdm {
 		   	else
 		   		claseFila = "filaTablaImpar";
 			
-			String trNuevas = "<tr class='"+claseFila+"' id='fila_1'><td align='left' width='200px'>";
+			String trNuevas = "<tr class='"+claseFila+"' id='fila_1'><td align='left' width='22%'>";
 			String[] tdsNuevas = new String[5];
 					
-			tdsNuevas[0] = "<select class='boxCombo' style='width:190px' id='select_OrigenValoraciones_1' value='' onChange='cambiaFila(1)'>";
+			tdsNuevas[0] = "<select class='boxCombo' style='width:200px' id='select_OrigenValoraciones_1' value='' onChange='cambiaFila(1)'>";
 			tdsNuevas[0]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
 			for (int i=0; i<listaOrigenValoraciones.size(); i++) {
 				ScsDeBienMuebleExtends dato = (ScsDeBienMuebleExtends) listaOrigenValoraciones.get(i);
@@ -406,8 +432,8 @@ public class DatosEconomicosEJGAdm {
 			tdsNuevas[0]+="</select>";
 			trNuevas+=tdsNuevas[0]+"</td>";
 			
-			trNuevas+="<td align='left' width='150px'>";
-			tdsNuevas[1]="<select class='boxCombo' style='width:140px' id='select_TiposMuebles_1' value='' onChange='cambiaFila(1)'>";
+			trNuevas+="<td align='left' width='22%'>";
+			tdsNuevas[1]="<select class='boxCombo' style='width:200px' id='select_TiposMuebles_1' value='' onChange='cambiaFila(1)'>";
 			tdsNuevas[1]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
 			for (int i=0; i<listaTiposMuebles.size(); i++) {
 				ScsDeBienMuebleExtends dato = (ScsDeBienMuebleExtends) listaTiposMuebles.get(i);
@@ -416,8 +442,8 @@ public class DatosEconomicosEJGAdm {
 			tdsNuevas[1]+="</select>";
 			trNuevas+=tdsNuevas[1]+"</td>";
 			
-			trNuevas+="<td align='left' width='250px'>";
-			tdsNuevas[2]="<select class='boxCombo' style='width:240px' id='select_Titulares_1' value='' onChange='cambiaFila(1)'>";
+			trNuevas+="<td align='left' width='35%'>";
+			tdsNuevas[2]="<select class='boxCombo' style='width:330px' id='select_Titulares_1' value='' onChange='cambiaFila(1)'>";
 			tdsNuevas[2]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
 			for (int i=0; i<listaTitulares.size(); i++) {
 				ScsDeBienMuebleExtends dato = (ScsDeBienMuebleExtends) listaTitulares.get(i);
@@ -426,11 +452,11 @@ public class DatosEconomicosEJGAdm {
 			tdsNuevas[2]+="</select>";
 			trNuevas+=tdsNuevas[2]+"</td>";
 			
-			trNuevas+="<td align='right' width='150px'>";
+			trNuevas+="<td align='right' width='16%'>";
 			tdsNuevas[3]="<input type='text' id='input_Valoracion_1' class='boxNumber' style='width:140' value='' maxlength='13' onChange='cambiaFila(1)' onkeypress='return soloNumerosDecimales(event)'/>";
 			trNuevas+=tdsNuevas[3]+"</td>";
 			
-			trNuevas+="<td align='center' width='50px'>";
+			trNuevas+="<td align='center' width='5%'>";
 			tdsNuevas[4]="<img src='/SIGA/html/imagenes/bborrar_off.gif' style='cursor:pointer;' title='"+UtilidadesString.getMensajeIdioma(usuario,"general.boton.borrar")+"' alt='"+UtilidadesString.getMensajeIdioma(usuario,"general.boton.borrar")+"' name='' border='0' "+ 
 				" onclick='borrarFila(1)'>";
 			trNuevas+=tdsNuevas[4]+"</td></tr>";
@@ -540,10 +566,10 @@ public class DatosEconomicosEJGAdm {
 		   	else
 		   		claseFila = "filaTablaImpar";
 			
-			String trNuevas = "<tr class='"+claseFila+"' id='fila_1'><td align='left' width='200px'>";
+			String trNuevas = "<tr class='"+claseFila+"' id='fila_1'><td align='left' width='22%'>";
 			String[] tdsNuevas = new String[5];
 					
-			tdsNuevas[0] = "<select class='boxCombo' style='width:190px' id='select_TiposCargasEconomicas_1' value='' onChange='cambiaFila(1)'>";
+			tdsNuevas[0] = "<select class='boxCombo' style='width:200px' id='select_TiposCargasEconomicas_1' value='' onChange='cambiaFila(1)'>";
 			tdsNuevas[0]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
 			for (int i=0; i<listaTiposCargasEconomicas.size(); i++) {
 				ScsDeCargaEconomicaExtends dato = (ScsDeCargaEconomicaExtends) listaTiposCargasEconomicas.get(i);
@@ -552,8 +578,8 @@ public class DatosEconomicosEJGAdm {
 			tdsNuevas[0]+="</select>";
 			trNuevas+=tdsNuevas[0]+"</td>";
 			
-			trNuevas+="<td align='left' width='150px'>";
-			tdsNuevas[1]="<select class='boxCombo' style='width:140px' id='select_Periodicidades_1' value='' onChange='cambiaFila(1)'>";
+			trNuevas+="<td align='left' width='22%'>";
+			tdsNuevas[1]="<select class='boxCombo' style='width:200px' id='select_Periodicidades_1' value='' onChange='cambiaFila(1)'>";
 			tdsNuevas[1]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
 			for (int i=0; i<listaPeriodicidades.size(); i++) {
 				ScsDeCargaEconomicaExtends dato = (ScsDeCargaEconomicaExtends) listaPeriodicidades.get(i);
@@ -562,8 +588,8 @@ public class DatosEconomicosEJGAdm {
 			tdsNuevas[1]+="</select>";
 			trNuevas+=tdsNuevas[1]+"</td>";
 			
-			trNuevas+="<td align='left' width='250px'>";
-			tdsNuevas[2]="<select class='boxCombo' style='width:240px' id='select_Titulares_1' value='' onChange='cambiaFila(1)'>";
+			trNuevas+="<td align='left' width='35%'>";
+			tdsNuevas[2]="<select class='boxCombo' style='width:330px' id='select_Titulares_1' value='' onChange='cambiaFila(1)'>";
 			tdsNuevas[2]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
 			for (int i=0; i<listaTitulares.size(); i++) {
 				ScsDeCargaEconomicaExtends dato = (ScsDeCargaEconomicaExtends) listaTitulares.get(i);
@@ -572,11 +598,11 @@ public class DatosEconomicosEJGAdm {
 			tdsNuevas[2]+="</select>";
 			trNuevas+=tdsNuevas[2]+"</td>";
 			
-			trNuevas+="<td align='right' width='150px'>";
+			trNuevas+="<td align='right' width='16%'>";
 			tdsNuevas[3]="<input type='text' id='input_Importe_1' class='boxNumber' style='width:140' value='' maxlength='13' onChange='cambiaFila(1)' onkeypress='return soloNumerosDecimales(event)'/>";
 			trNuevas+=tdsNuevas[3]+"</td>";
 			
-			trNuevas+="<td align='center' width='50px'>";
+			trNuevas+="<td align='center' width='5%'>";
 			tdsNuevas[4]="<img src='/SIGA/html/imagenes/bborrar_off.gif' style='cursor:pointer;' title='"+UtilidadesString.getMensajeIdioma(usuario,"general.boton.borrar")+"' alt='"+UtilidadesString.getMensajeIdioma(usuario,"general.boton.borrar")+"' name='' border='0' "+ 
 				" onclick='borrarFila(1)'>";
 			trNuevas+=tdsNuevas[4]+"</td></tr>";
@@ -686,10 +712,10 @@ public class DatosEconomicosEJGAdm {
 		   	else
 		   		claseFila = "filaTablaImpar";
 			
-			String trNuevas = "<tr class='"+claseFila+"' id='fila_1'><td align='left' width='250px'>";
+			String trNuevas = "<tr class='"+claseFila+"' id='fila_1'><td align='left' width='27%'>";
 			String[] tdsNuevas = new String[5];
 					
-			tdsNuevas[0] = "<select class='boxCombo' style='width:240px' id='select_TiposRendimientos_1' value='' onChange='cambiaFila(1)'>";
+			tdsNuevas[0] = "<select class='boxCombo' style='width:250px' id='select_TiposRendimientos_1' value='' onChange='cambiaFila(1)'>";
 			tdsNuevas[0]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
 			for (int i=0; i<listaTiposRendimientos.size(); i++) {
 				ScsDeIrpf20Extends dato = (ScsDeIrpf20Extends) listaTiposRendimientos.get(i);
@@ -698,8 +724,8 @@ public class DatosEconomicosEJGAdm {
 			tdsNuevas[0]+="</select>";
 			trNuevas+=tdsNuevas[0]+"</td>";
 			
-			trNuevas+="<td align='left' width='150px'>";
-			tdsNuevas[1]="<select class='boxCombo' style='width:140px' id='select_Ejercicios_1' value='' onChange='cambiaFila(1)'>";
+			trNuevas+="<td align='left' width='17%'>";
+			tdsNuevas[1]="<select class='boxCombo' style='width:150px' id='select_Ejercicios_1' value='' onChange='cambiaFila(1)'>";
 			tdsNuevas[1]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
 			for (int i=0; i<listaEjercicios.size(); i++) {
 				ScsDeIrpf20Extends dato = (ScsDeIrpf20Extends) listaEjercicios.get(i);
@@ -708,8 +734,8 @@ public class DatosEconomicosEJGAdm {
 			tdsNuevas[1]+="</select>";
 			trNuevas+=tdsNuevas[1]+"</td>";
 			
-			trNuevas+="<td align='left' width='250px'>";
-			tdsNuevas[2]="<select class='boxCombo' style='width:240px' id='select_Titulares_1' value='' onChange='cambiaFila(1)'>";
+			trNuevas+="<td align='left' width='35%'>";
+			tdsNuevas[2]="<select class='boxCombo' style='width:330px' id='select_Titulares_1' value='' onChange='cambiaFila(1)'>";
 			tdsNuevas[2]+="<option value=''>"+UtilidadesString.getMensajeIdioma(usuario,"general.combo.seleccionar")+"</option>";
 			for (int i=0; i<listaTitulares.size(); i++) {
 				ScsDeIrpf20Extends dato = (ScsDeIrpf20Extends) listaTitulares.get(i);
@@ -718,11 +744,11 @@ public class DatosEconomicosEJGAdm {
 			tdsNuevas[2]+="</select>";
 			trNuevas+=tdsNuevas[2]+"</td>";
 			
-			trNuevas+="<td align='right' width='150px'>";
+			trNuevas+="<td align='right' width='16%'>";
 			tdsNuevas[3]="<input type='text' id='input_Importe_1' class='boxNumber' style='width:140' value='' maxlength='13' onChange='cambiaFila(1)' onkeypress='return soloNumerosDecimales(event)'/>";
 			trNuevas+=tdsNuevas[3]+"</td>";
 			
-			trNuevas+="<td align='center' width='50px'>";
+			trNuevas+="<td align='center' width='5%'>";
 			tdsNuevas[4]="<img src='/SIGA/html/imagenes/bborrar_off.gif' style='cursor:pointer;' title='"+UtilidadesString.getMensajeIdioma(usuario,"general.boton.borrar")+"' alt='"+UtilidadesString.getMensajeIdioma(usuario,"general.boton.borrar")+"' name='' border='0' "+ 
 				" onclick='borrarFila(1)'>";
 			trNuevas+=tdsNuevas[4]+"</td></tr>";
