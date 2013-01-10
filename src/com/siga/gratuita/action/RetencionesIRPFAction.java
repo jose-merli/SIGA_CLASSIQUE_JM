@@ -30,8 +30,6 @@ import com.siga.beans.CenComponentesAdm;
 import com.siga.beans.CenComponentesBean;
 import com.siga.beans.CenNoColegiadoAdm;
 import com.siga.beans.CenPersonaAdm;
-import com.siga.beans.ScsActuacionAsistCosteFijoAdm;
-import com.siga.beans.ScsActuacionAsistenciaBean;
 import com.siga.beans.ScsRetencionesAdm;
 import com.siga.beans.ScsRetencionesBean;
 import com.siga.beans.ScsRetencionesIRPFAdm;
@@ -41,7 +39,6 @@ import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.gratuita.form.ActuacionAsistenciaForm;
 import com.siga.gratuita.form.RetencionesIRPFForm;
 
 
@@ -211,6 +208,12 @@ public class RetencionesIRPFAction extends MasterAction {
 			
 			tx.commit();
 		} 
+		catch (SIGAException se) 
+		{
+			se.prepare(request);
+			request.setAttribute("mensaje", se.getLiteral());
+			return "exito"; 
+		} 		
 		catch (Exception e) 
 		{
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
