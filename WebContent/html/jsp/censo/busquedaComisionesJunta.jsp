@@ -27,14 +27,34 @@
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.siga.beans.CenInstitucionAdm"%>
 <%@ page import="java.util.Properties" %>
+<%@ page import="com.siga.administracion.SIGAGestorInterfaz"%>
 
 <!-- JSP -->
 <% 	
+	HttpSession ses=request.getSession();
+	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	if (src==null) {
+	  SIGAGestorInterfaz interfazGestor=new SIGAGestorInterfaz("2000");
+	  src=interfazGestor.getInterfaceOptions();	  
+	}	
+	
+	Integer alturaDatosTabla = 0;
+	String tipoLetra = "";
+	if (((String)src.get("font.style")).indexOf("Times")!=-1) {
+		alturaDatosTabla = 155;
+		tipoLetra = "Times";
+	} else if (((String)src.get("font.style")).indexOf("Arial")>=0) {
+		alturaDatosTabla = 155;
+		tipoLetra = "Arial";
+	} else {
+	    alturaDatosTabla = 148;
+	    tipoLetra = "Helvetica";
+	} 
+	
 	// para ver si tengo que buscar tras mostrar la pantalla
 	String buscar = (String)request.getAttribute("buscar");
 	
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
-	HttpSession ses=request.getSession();
 	String parametro[] = new String[2];
 	parametro[0] = (String)usr.getLocation();
 	parametro[1] = (String)usr.getLanguage().toUpperCase();
@@ -702,7 +722,7 @@
 	
 	function calcularAltura() {		
 		var altura = document.getElementById("divCargos").offsetParent.offsetHeight;
-		document.getElementById("divCargos").style.height=altura-155;
+		document.getElementById("divCargos").style.height=altura-<%=alturaDatosTabla%>;
 	}	
 
 	function validarAnchoTabla() {
