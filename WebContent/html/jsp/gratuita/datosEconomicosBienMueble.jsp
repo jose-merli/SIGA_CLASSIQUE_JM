@@ -15,7 +15,31 @@
 <%@page import="java.util.List"%>
 <%@page import="org.redabogacia.sigaservices.app.vo.ScsDeBienMuebleExtends"%>
 
+<%@ page import="com.siga.administracion.SIGAConstants"%>
+<%@ page import="com.siga.administracion.SIGAGestorInterfaz"%>
+<%@ page import="java.util.Properties"%>
+
 <% 	
+	HttpSession ses=request.getSession();
+	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	if (src==null) {
+	  SIGAGestorInterfaz interfazGestor=new SIGAGestorInterfaz("2000");
+	  src=interfazGestor.getInterfaceOptions();	  
+	}	
+	
+	Integer alturaDatosTabla = 0;
+	String tipoLetra = "";
+	if (((String)src.get("font.style")).indexOf("Times")!=-1) {
+		alturaDatosTabla = 98;
+		tipoLetra = "Times";
+	} else if (((String)src.get("font.style")).indexOf("Arial")>=0) {
+		alturaDatosTabla = 96;
+		tipoLetra = "Arial";
+	} else {
+	    alturaDatosTabla = 92;
+	    tipoLetra = "Helvetica";
+	} 
+	
 	// para ver si tengo que buscar tras mostrar la pantalla
 	List listaBienes = (List) request.getAttribute("LISTA_BIENES");
 	String trNew = (String) request.getAttribute("TR_NEW");
@@ -145,7 +169,7 @@
 	
 	function calcularAltura() {		
 		var altura = document.getElementById("divDatosTabla").offsetParent.offsetHeight;
-		document.getElementById("divDatosTabla").style.height=altura-90;
+		document.getElementById("divDatosTabla").style.height=altura-<%=alturaDatosTabla%>;
 		
 		validarAnchoTabla();
 	}	
