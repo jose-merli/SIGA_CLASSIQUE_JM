@@ -148,13 +148,13 @@
 				  					<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%>&nbsp;
 			  						<%=UtilidadesString.mostrarDatoJSP(a.getDescripcionPrecio())%>
 				  				</td>					  				
-				  				<td>
+				  				<td align="right">
 				  					<%=a.getCantidad()%>
 				  				</td>
-				  				<td>
+				  				<td align="right">
 				  					<%=UtilidadesNumero.formatoCampo(sPrecio)%>&nbsp;&euro;&nbsp;<%=sPeriodicidad%>
 				  				</td>
-				  				<td>
+				  				<td align="right">
 				  					<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(a.getValorIva().floatValue()))%>&nbsp;% 
 				  				</td>					  				
 		  				 </tr>							
@@ -248,13 +248,13 @@
 					  					<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%>&nbsp;
 			  							<%=UtilidadesString.mostrarDatoJSP(a.getDescripcionPrecio())%>
 					  				</td>					  				
-					  				<td>
+					  				<td align="right">
 					  					<%=a.getCantidad()%>
 					  				</td>
-					  				<td>
+					  				<td align="right">
 					  					<%=UtilidadesNumero.formatoCampo(sPrecio)%>&nbsp;&euro;&nbsp;<%=sPeriodicidad%>
 					  				</td>
-					  				<td>
+					  				<td align="right">
 					  					<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(a.getValorIva().floatValue()))%>&nbsp;%  
 					  				</td>					  				
 			  				 </tr>							
