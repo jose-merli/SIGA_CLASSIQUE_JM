@@ -152,13 +152,13 @@
 			  				<td>
 			  					<%=cuenta%>
 			  				</td>
-			  				<td>
+			  				<td align="right">
 			  					<%=cantidad%>
 			  				</td>
-			  				<td>
+			  				<td align="right">
 			  					<%=UtilidadesNumero.formato(precio)%>&nbsp;&euro;
 			  				</td>
-			  				<td>
+			  				<td align="right">
 			  					<%=UtilidadesNumero.formato(iva)%>&nbsp;% 
 			  				</td>
 			  				<td>
@@ -214,13 +214,13 @@
 			  				<td>
 			  					<%=cuenta%>
 			  				</td>
-			  				<td>
+			  				<td align="right">
 			  					<%=cantidad%>
 			  				</td>
-			  				<td>
+			  				<td align="right">
 			  					<%=UtilidadesNumero.formato(precio)%>&nbsp;&euro;&nbsp;/&nbsp;<%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "PERIODICIDAD"))%> 
 			  				</td>
-			  				<td>
+			  				<td align="right">
 			  					<%=UtilidadesNumero.formato(iva)%>&nbsp;% 
 			  				</td>
 			  				<td>

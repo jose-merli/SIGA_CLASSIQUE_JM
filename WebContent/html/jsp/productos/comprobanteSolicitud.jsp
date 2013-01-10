@@ -370,10 +370,10 @@
 			  				<td>
 			  					<%=cuenta%>
 			  				</td>
-			  				<td>
+			  				<td align="right">
 			  					<%=cantidad%>
 			  				</td>
-			  				<td>
+			  				<td align="right">
 			  					<%=UtilidadesNumero.formatoCampo(precio)%>&nbsp;&euro;&nbsp;/&nbsp;<%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "PERIODICIDAD"))%> 
 			  				</td>
 			  				<td align="right">
