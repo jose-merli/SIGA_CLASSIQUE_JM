@@ -834,31 +834,28 @@
 		var errorDatos = false;
 		var valido = true;
 
-		if(document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>"){
-			var numero = document.forms[0].NIdentificacion.value;
-			if(numero.length==9){
-				num="";
-				for(var x=0; x<8; x++) {
-					var letra = numero.substring(x,x+1);
-					if (new RegExp('^[0-9]$').test(letra)) {
-						num+=letra;
-					}
-				}
+		if(document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>"){			
+			var nif = document.forms[0].NIdentificacion.value;
+			
+			while (nif.indexOf(" ") != -1) {
+				nif = nif.replace(" ","");
+			}
+
+			while (nif.length<9){
+				nif="0"+nif;
+			}						
+
+			if (new RegExp('^[0-9]{8}[A-Za-z]$').test(nif)) {
+				var letraNif = nif.substring(8,9).toUpperCase();								
 				
-				while (num.length<8){
-					num="0"+num;
-				}								
-				
-				//num = numero.substring(0,8);
-				letIn = numero.substring(8,9);								
-				
-				var posicion = num % 23;
-				letras='TRWAGMYFPDXBNJZSQVHLCKET';
+				var numero = nif.substring(0,8);
+				var posicion = numero % 23;
+				var letras='TRWAGMYFPDXBNJZSQVHLCKET';
 				var letra=letras.substring(posicion,posicion+1);
-				if (letra!=letIn) {
+				if (letra!=letraNif) {
 					errorNIF=true;
 				} else {
-					document.forms[0].NIdentificacion.value = num + letIn;
+					document.forms[0].NIdentificacion.value = nif;
 				}				
 			}else{
 				errorNIF=true;
