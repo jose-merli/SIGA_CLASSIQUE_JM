@@ -110,7 +110,7 @@ public class EntradaEnviosAction extends MasterAction {
 			EnvioInformesGenericos informe = new EnvioInformesGenericos();
 			AdmInformeBean infBean = new AdmInformeBean();
 			File xslTransform = null;
-			infBean.setDirectorio("carta_oficio");
+			infBean.setDirectorio("sigp_ca");
 			String intercambio="";
 			
 			//Si el estado fuera SIN LEER se actualiza directamente a LEIDO
