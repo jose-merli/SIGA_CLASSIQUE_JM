@@ -115,16 +115,13 @@
 			</tr>
 	</table>						
 	<div  style="position:relative;width=100%;height:200px;">
-					<siga:TablaCabecerasFijasExt 
+					<siga:TablaCabecerasFijas
 	  				nombre="tarjeta"
 	  				borde="2"
 	  				clase="tableTitle"
 	  				nombreCol="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.iva"  
 	   				tamanoCol="50,20,20,10"
-				    alto="160"
-	   				ajusteAlto="false"
-	   				variasTablasEnLaMismaPagina="true"
-	   				>
+	   				alto="100">
 <%				
  						for (int i = 0; i < vArticulos.size(); i++) {
 							Articulo a = (Articulo) vArticulos.get(i);
@@ -162,7 +159,7 @@
 <%						}
 	 					}
 %>  			
-	  			</siga:TablaCabecerasFijasExt>		
+	  			</siga:TablaCabecerasFijas>		
 	</div>
 
 	<%
@@ -214,14 +211,13 @@
 							</tr>
 						</table>								
 						
-						<siga:TablaCabecerasFijasExt
+						<siga:TablaCabecerasFijas
 		  				nombre="otro"
 		  				borde="2"
 				   		clase="tableTitle"
 		  				nombreCol="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.iva"  
 		   				tamanoCol="50,20,20,10"
-		   				ajuste="90"
-	   					variasTablasEnLaMismaPagina="true">
+		   				alto="100">
 	<%				
 	 						for (int i = 0; i < vArticulos.size(); i++) {
 								Articulo a = (Articulo) vArticulos.get(i);		
@@ -262,7 +258,7 @@
 	<%						}
 		 					}
 	%>  			
-		  			</siga:TablaCabecerasFijasExt>					
+		  			</siga:TablaCabecerasFijas>					
 
 				<div style="position:absolute;bottom:30px;width:100%; height:60; z-index:2;" align="center">
 <%

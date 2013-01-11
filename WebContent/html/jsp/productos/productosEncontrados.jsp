@@ -91,7 +91,7 @@
 			}else{
   			  f.concepto.value="Servicio";
 			}
-			fpadre.catalogo.disabled=true;
+			//fpadre.catalogo.disabled=true;
 			parent.document.all.solicitudCompraForm.idInstitucionPresentador.disabled=true;
 			f.submit();
 		}
@@ -126,14 +126,13 @@
 		 </table>
 		
 			<siga:TablaCabecerasFijas 
-			nombre="tablaDatos"
-			borde="1"
-			estilo=""
-	   		clase="tableTitle"
-			nombreCol="pys.solicitudCompra.literal.tipo,pys.solicitudCompra.literal.categoria,pys.solicitudCompra.literal.concepto,"  
-			tamanoCol="30,30,30,10"
-			   alto="100%"
-			   		   
+				nombre="tablaDatos"
+				borde="1"
+				estilo=""
+		   		clase="tableTitle"
+				nombreCol="pys.solicitudCompra.literal.tipo,pys.solicitudCompra.literal.categoria,pys.solicitudCompra.literal.concepto,"  
+				tamanoCol="30,30,30,10"
+				alto="160" 
 			>
 
 <%

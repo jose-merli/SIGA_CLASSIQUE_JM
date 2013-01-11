@@ -918,7 +918,7 @@ function muestra(id)
 }
 
 function mostrarColegio()
-{		
+{			
 	<%
 	if (esConsejo && user.getStrutsTrans().equals("PYS_SolicitarCertificado")){	%>
 		document.getElementById("campoBlanco").style.display="none";
@@ -926,7 +926,7 @@ function mostrarColegio()
 		document.getElementById("comboPresentador").style.display="block";
 		document.getElementById("presentador").style.display="block";
 		<%if (request.getSession().getAttribute("volver") != null && request.getSession().getAttribute("volver").equals("s")) {%>
-		jQuery("#catalogo").attr("disabled","disabled");
+		//jQuery("#catalogo").attr("disabled","disabled");
 		jQuery("#idInstitucionPresentador").attr("disabled","disabled");
 		
 		<%request.getSession().setAttribute("volver","");}%>		
@@ -938,7 +938,7 @@ function mostrarColegio()
 		document.getElementById("comboPresentador").style.display="none";
 		document.getElementById("presentador").style.display="none";
 		<%if (request.getSession().getAttribute("volver") != null && request.getSession().getAttribute("volver").equals("s")) {%>
-			jQuery("#catalogo").attr("disabled","disabled");
+			//jQuery("#catalogo").attr("disabled","disabled");
 		<%}%>
 	<%request.getSession().setAttribute("volver","");}%>
 	

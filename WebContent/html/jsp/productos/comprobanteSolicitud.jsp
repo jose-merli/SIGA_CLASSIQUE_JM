@@ -21,12 +21,9 @@
 <%@ page import = "com.siga.Utilidades.*"%>
 <%@ page import = "com.atos.utils.*"%>
 <%@ page import = "com.siga.general.*"%>
-<%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
-<%@ page import="com.siga.tlds.FilaExtElement"%>
-<%@ page import="java.util.Properties"%>
-<%@ page import="java.util.Enumeration"%>
-<%@ page import="java.util.Hashtable"%>
-<%@ page import="java.util.Vector"%>
+<%@ page import = "com.siga.tlds.FilaExtElement"%>
+<%@ page import = "java.util.*"%>
+
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
@@ -106,7 +103,7 @@
  		
  		function accionImprimirApaisado(){
 			document.solicitudCompraForm.modo.value = "imprimirCompra";
-		 	var resultado = ventaModalGeneral("solicitudCompraForm","M");			
+		 	var resultado = ventaModalGeneralScrollAuto("solicitudCompraForm","G");			
 		 	//document.solicitudCompraForm.submit();
  		}
  		
@@ -174,7 +171,7 @@
 <body onLoad="resultado();">
 <%  //INICIO DE LA PARTE DE ERROR O KO
 	if (!error.equals("NO")) { %>
-<div id="titulo" style="width=100%; z-index: 5">
+<div id="titulo" style="width:100%; z-index: 5">
 	<table align="center" height="20" cellpadding="0" cellspacing="0">
 		<tr>
 			<td class="labelText">
@@ -231,9 +228,8 @@
 		  				estilo=""
 				   		clase="tableTitle"
 		  				nombreCol="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.iva,pys.solicitudCompra.literal.estadoPago,pys.solicitudCompra.literal.importeAnticipado,"  
-		   				tamanoCol="20,15,17,8,8,6,10,11,5"
-					   alto="100%"
-					   ajuste="160"					   
+		   				tamanoCol="20,15,17,8,8,6,10,11,5"					   
+					   	ajuste="75"					   
 				>
 
 				

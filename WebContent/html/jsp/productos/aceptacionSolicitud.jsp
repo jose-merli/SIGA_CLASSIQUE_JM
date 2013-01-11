@@ -20,12 +20,10 @@
 <%@ page import = "com.atos.utils.*"%>
 <%@ page import = "com.siga.general.*"%>
 <%@ page import = "com.siga.tlds.FilaExtElement"%>
-<%@ page import = "com.siga.Utilidades.UtilidadesNumero"%>
-<%@ page import = "com.siga.Utilidades.UtilidadesBDAdm"%>
-<%@ page import="java.util.Properties"%>
-<%@ page import="java.util.Vector"%>
-<%@ page import="java.util.Hashtable"%>
-<%@ page import="java.util.ArrayList"%>
+<%@ page import = "java.util.Properties"%>
+<%@ page import = "java.util.Vector"%>
+<%@ page import = "java.util.Hashtable"%>
+<%@ page import = "java.util.ArrayList"%>
 
 <!-- JSP -->
 <% 
@@ -563,21 +561,22 @@
 
   				if(!user.isLetrado()&&aprobarSolicitud.equals("S"))  { 
   					nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva,pys.solicitudCompra.literal.fechaEfectiva,";  
-  					tamanoCol1="12,20,20,6,8,8,6,12,8";
+  					tamanoCol1="10,19,20,6,8,8,7,14,8";
 				}else{
 				   	nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva,"  ;	  				
-				   	tamanoCol1="18,20,26,6,8,8,6,8";
+				   	tamanoCol1="24,19,20,6,8,8,7,8";
 				}%>
 
    					<siga:TablaCabecerasFijas 
-	  				nombre="cabecera"
-	  				borde="2"
-	  				estilo=""
-			   		clase="tableTitle"
-					nombreCol="<%=nombrecol1%>"
-	  				tamanoCol="<%=tamanoCol1%>"
-					alto="100%"
-				   	ajuste="160" >
+		  				nombre="cabecera"
+		  				borde="2"
+		  				estilo=""
+				   		clase="tableTitle"
+						nombreCol="<%=nombrecol1%>"
+		  				tamanoCol="<%=tamanoCol1%>"
+		  				ajuste="75" 
+		  				alto="100"
+				   	>
 
 <% 					if(vArticulos == null || vArticulos.size()<1 ) 					{ 	
   							botones = "V"; 

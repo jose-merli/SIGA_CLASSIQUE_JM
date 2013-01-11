@@ -21,11 +21,8 @@
 <%@ page import = "com.siga.Utilidades.*"%>
 <%@ page import = "com.atos.utils.*"%>
 <%@ page import = "com.siga.general.*"%>
-<%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
-<%@ page import="java.util.Properties"%>
-<%@ page import="java.util.Hashtable"%>
-<%@ page import="java.util.Vector"%>
-<%@ page import="java.util.Enumeration"%>
+<%@ page import = "java.util.*"%>
+<%@ page import = "com.siga.tlds.FilaExtElement"%>
 
 <!-- JSP -->
 <% 
@@ -115,36 +112,57 @@
 					</table>
 				</siga:ConjCampos>
 
-
-<!-- 1. Pintamos la cabecera de la tabla con los contenidos -->
-<table id='cabeceraCabeceras' border='2' width='100%' cellspacing='0' cellpadding='0'>
-	<tr class = 'tableTitle'>
-<td align='center' width='30%'><siga:Idioma key="pys.solicitudCompra.literal.concepto"/></td>
-<td align='center' width='15%'><siga:Idioma key="pys.solicitudCompra.literal.formaPago"/></td>
-<td align='center' width='19%'><siga:Idioma key="pys.solicitudCompra.literal.nCuenta"/></td>
-<td align='center' width='8%'><siga:Idioma key="pys.solicitudCompra.literal.cantidad"/></td>
-<td align='center' width='11%'><siga:Idioma key="pys.solicitudCompra.literal.precio"/></td>
-<td align='center' width='7%'><siga:Idioma key="pys.solicitudCompra.literal.iva"/></td>
-<td align='center' width='10%'><siga:Idioma key="pys.solicitudCompra.literal.estadoPago"/></td>
-	</tr>
-
-<% 				if(vProductos != null && vProductos.size()>0 ) 
-				{
- 						Enumeration en = vProductos.elements();		 							
-						while(en.hasMoreElements()){
-							Hashtable hash = (Hashtable)en.nextElement();  
-							String cuenta=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_CUENTA"));
-														
-							double precio = UtilidadesHash.getDouble(hash, PysProductosSolicitadosBean.C_VALOR).doubleValue();
-							//float iva = UtilidadesHash.getFloat(hash, PysProductosSolicitadosBean.C_PORCENTAJEIVA).floatValue();
-							float iva = UtilidadesHash.getFloat(hash, "VALORIVA").floatValue();
-							int cantidad = UtilidadesHash.getInteger(hash, PysProductosSolicitadosBean.C_CANTIDAD).intValue();
-							varIvaTotal = varIvaTotal +  (cantidad * ((float)(precio / 100)) * iva);
-							varPrecioTotal = varPrecioTotal + (cantidad * (precio * (1 + (iva / 100))));
-				%>
-							<tr class="listaNonEdit">
-								<td>
-			  					<%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_ARTICULO"))%>  						  								
+				<siga:TablaCabecerasFijas 
+		  				nombre="cabecera"
+		  				borde="2"
+		  				estilo="width:100%"
+				   		clase="tableTitle"
+		  				nombreCol="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.iva,pys.solicitudCompra.literal.estadoPago"  
+		   				tamanoCol="30,15,19,8,11,7,10"
+		   				scrollModal="false"		
+		   				modal = "G"			   
+				>
+				
+					<% 				
+						int i = -1;
+						if(vProductos != null && vProductos.size()>0 ) 
+						{
+		 						Enumeration en = vProductos.elements();
+		
+								while(en.hasMoreElements()){
+									i++;
+									Hashtable hash = (Hashtable)en.nextElement();  
+									String cuenta=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_CUENTA"));
+																
+									double precio = UtilidadesHash.getDouble(hash, PysProductosSolicitadosBean.C_VALOR).doubleValue();
+									
+									//float iva = UtilidadesHash.getFloat(hash, PysProductosSolicitadosBean.C_PORCENTAJEIVA).floatValue();
+									float iva = UtilidadesHash.getFloat(hash,"VALORIVA").floatValue();
+									
+									
+									int cantidad = UtilidadesHash.getInteger(hash, PysProductosSolicitadosBean.C_CANTIDAD).intValue();
+		
+									if((UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDFORMAPAGO))!=null){
+										varIvaTotal = varIvaTotal +  (cantidad * ((float)(precio / 100)) * iva);
+										varPrecioTotal = varPrecioTotal + (cantidad * (precio * (1 + (iva / 100))));
+									}
+		
+									//recupera el flag para mostrar/ocultar el botón de anticipar y el importe anticipado
+									boolean anticipar = UtilidadesHash.getBoolean(hash, "ANTICIPAR").booleanValue();
+									Double aux = UtilidadesHash.getDouble(hash, "IMPORTEANTICIPADO");
+									double importeAnticipado = aux != null ? aux.doubleValue() : 0.0;
+									FilaExtElement[] elementos=new FilaExtElement[1];
+									if(anticipar){
+										elementos[0]=new FilaExtElement("anticiparImporte", "anticiparImporte", SIGAConstants.ACCESS_FULL);
+									}
+									else{
+										elementos = null;
+									}
+					%>				
+						<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="" clase="listaNonEdit" elementos='<%=elementos%>' visibleConsulta='no' visibleEdicion='no' visibleBorrado='no' pintarEspacio='no'>
+							
+							<td>
+			  					<%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_ARTICULO"))%>						  								
 			  				</td>
 			  				<td>
 									<%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_FORMAPAGO"))%> 
@@ -156,41 +174,38 @@
 			  					<%=cantidad%>
 			  				</td>
 			  				<td align="right">
-			  					<%=UtilidadesNumero.formato(precio)%>&nbsp;&euro;
+			  					<%=UtilidadesNumero.formatoCampo(precio)%>&nbsp;&euro;
 			  				</td>
 			  				<td align="right">
-			  					<%=UtilidadesNumero.formato(iva)%>&nbsp;% 
+			  					<%=UtilidadesNumero.formatoCampo(iva)%>&nbsp;% 
 			  				</td>
 			  				<td>
-	<%
-							String formapago = UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDFORMAPAGO);
-							if (formapago == null) {
-	%>
-								&nbsp;
-	<%
-							} else {
-								int estado = Integer.parseInt(formapago); 
-								if(estado==tarjeta) {
-	%>
-								<siga:Idioma key="pys.estadoPago.pagado"/>
-	<%
-								} else {
-	%>
-								<siga:Idioma key="pys.estadoPago.pendiente"/>
-	<%
-								} 
-							}
-	%>
+	
+							<%try{
+								int estado = Integer.parseInt(UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDFORMAPAGO));%> 
+								<%if(estado==tarjeta) { %>
+										<siga:Idioma key="pys.estadoPago.pagado"/>
+								<%} else { %>
+										<siga:Idioma key="pys.estadoPago.pendiente"/>
+								<%} %>
+							<%}catch(Exception e){%>
+								<siga:Idioma key="pys.estadoPago.noFacturable"/>	
+							<%}%>
 			  				</td>
-	  				 </tr>
+			  				<td align="right">
+		  						<%=UtilidadesNumero.formatoCampo(importeAnticipado)%>&nbsp;&euro;
+		  					</td>
+			  				
+						</siga:FilaConIconos>						
 
-	 <%		}
-	 }
+	 			<% }}
 
 					if(vServicios != null && vServicios.size()>0 ) 
  					{
- 							Enumeration en = vServicios.elements();		 							
-							while(en.hasMoreElements()){
+ 						Enumeration en = vServicios.elements();	
+
+ 						while(en.hasMoreElements()){
+ 							i++;
 							Hashtable hash = (Hashtable)en.nextElement();  
 							
 							String cuenta = UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_CUENTA"));
@@ -198,15 +213,30 @@
 							// Modificacion MAV 24/08/2005 muestra correctamente el IVA
 							// float iva = 1;//UtilidadesHash.getFloat(hash, "IVA").floatValue();
 							//float iva = UtilidadesHash.getFloat(hash, PysServiciosInstitucionBean.C_PORCENTAJEIVA).floatValue();
-							float iva = UtilidadesHash.getFloat(hash, "VALORIVA").floatValue();
+							float iva = UtilidadesHash.getFloat(hash,"VALORIVA").floatValue();
 							int cantidad = UtilidadesHash.getInteger(hash, PysServiciosSolicitadosBean.C_CANTIDAD).intValue();
-							varIvaTotal = varIvaTotal +  (cantidad * ((float)(precio / 100)) * iva);
-							varPrecioTotal = varPrecioTotal + (cantidad * (precio * (1 + (iva / 100))));						
-					%>
-							<tr class="listaNonEdit">
-								<td>
+							if((UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDFORMAPAGO))!=null){
+								varIvaTotal = varIvaTotal +  (cantidad * ((float)(precio / 100)) * iva);
+								varPrecioTotal = varPrecioTotal + (cantidad * (precio * (1 + (iva / 100))));						
+							}
+							
+							//recupera el flag para mostrar/ocultar el botón de anticipar y el importe anticipado
+							boolean anticipar = UtilidadesHash.getBoolean(hash, "ANTICIPAR").booleanValue();
+							Double aux = UtilidadesHash.getDouble(hash, "IMPORTEANTICIPADO");
+							double importeAnticipado = aux != null ? aux.doubleValue() : 0.0;
+							FilaExtElement[] elementos=new FilaExtElement[1];
+							if(anticipar){
+								elementos[0]=new FilaExtElement("anticiparImporte", "anticiparImporte", SIGAConstants.ACCESS_FULL);
+							}
+							else{
+								elementos = null;
+							}
+				%>					
+				
+						<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="" clase="listaNonEdit" elementos='<%=elementos%>' visibleConsulta='no' visibleEdicion='no' visibleBorrado='no' pintarEspacio='no'>
+							<td>
 			  					<%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_ARTICULO"))%>&nbsp;
-			  					<%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "SERVICIO_DESCRIPCION_PRECIO"))%>  						  								
+			  						<%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "SERVICIO_DESCRIPCION_PRECIO"))%>				  								
 			  				</td>
 			  				<td>	
 								<%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_FORMAPAGO"))%> 
@@ -218,49 +248,59 @@
 			  					<%=cantidad%>
 			  				</td>
 			  				<td align="right">
-			  					<%=UtilidadesNumero.formato(precio)%>&nbsp;&euro;&nbsp;/&nbsp;<%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "PERIODICIDAD"))%> 
+			  					<%=UtilidadesNumero.formatoCampo(precio)%>&nbsp;&euro;&nbsp;/&nbsp;<%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "PERIODICIDAD"))%> 
 			  				</td>
 			  				<td align="right">
-			  					<%=UtilidadesNumero.formato(iva)%>&nbsp;% 
+			  					<%=UtilidadesNumero.formatoCampo(iva)%>&nbsp;% 
 			  				</td>
 			  				<td>
-	<%
-							int estado = Integer.parseInt(UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDFORMAPAGO)); 
-							if(estado==tarjeta) { %>
-									<siga:Idioma key="pys.estadoPago.pagado"/>
-	<%						} else { %>
-									<siga:Idioma key="pys.estadoPago.pendiente"/>
-	<%						} %>
+		<%
+							try{
+								int estado = Integer.parseInt(UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDFORMAPAGO)); 
+								
+								if(estado==tarjeta) { %>
+										<siga:Idioma key="pys.estadoPago.pagado"/>
+		<%						} else { %>
+										<siga:Idioma key="pys.estadoPago.pendiente"/>
+		<%						} 
+							}catch(Exception e){ %>
+								<siga:Idioma key="pys.estadoPago.noFacturable"/>
+							
+		<%					}%>
 			  				</td>
-	  				 </tr>
-	 <%		}
-	 } %>
-
-	  			</table>
-
-	<div id="camposRegistro2" style="position:absolute; width:280; height:70; z-index:2; bottom: 70px; left:200px" align="center">
+			  				<td align="right">
+	  							<%=UtilidadesNumero.formatoCampo(importeAnticipado)%>&nbsp;&euro;
+	  						</td>
+						</siga:FilaConIconos>
+					<% }} %>
+	  			</siga:TablaCabecerasFijas>
 
 	<%
 		varIvaTotal = UtilidadesNumero.redondea (varIvaTotal, 2);
 		varPrecioTotal = UtilidadesNumero.redondea (varPrecioTotal, 2); 
 	%>
-		<fieldset>
-			<table align="center">
-				<tr>
-					<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.totalIVA"/></td>
-					<td class="labelTextValue" >					
-						<input type='text' name='ivaTotal' value="<%=UtilidadesNumero.formato(varIvaTotal)%>&nbsp;&euro;" class="boxConsultaNumber" readOnly=true size="20">
-					</td>
-				</tr>
-				<tr>
-					<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.total"/></td>
-					<td class="labelTextValue">
-						<input type='text' name='precioTotal' value="<%=UtilidadesNumero.formato(varPrecioTotal)%>&nbsp;&euro;" class="boxConsultaNumber" readOnly=true size="20">
-					</td>
-				</tr>
-			</table>
-		</fieldset>
-	</div>
+	<table width="280px" align="center">
+		<tr>
+			<td>
+				<fieldset>
+					<table>						
+						<tr>
+							<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.totalIVA"/></td>
+							<td class="labelTextValue" >					
+								<input type='text' name='ivaTotal' value="<%=UtilidadesNumero.formato(varIvaTotal)%>&nbsp;&euro;" class="boxConsultaNumber" readOnly=true size="20">
+							</td>
+						</tr>
+						<tr>
+							<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.total"/></td>
+							<td class="labelTextValue">
+								<input type='text' name='precioTotal' value="<%=UtilidadesNumero.formato(varPrecioTotal)%>&nbsp;&euro;" class="boxConsultaNumber" readOnly=true size="20">
+							</td>
+						</tr>
+					</table>
+				</fieldset>
+			</td>
+		</tr>
+	</table>
 	
 	<table width="100%" align="center">
 		<tr>
