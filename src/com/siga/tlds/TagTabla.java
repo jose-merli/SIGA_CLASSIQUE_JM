@@ -480,9 +480,9 @@ public class TagTabla extends TagSupport {
 //				if (this.ajusteBotonera) {
 //					espacioMenos += 32; 
 //				}
-//				if (!this.ajuste.equals("0")) {
-//					espacioMenos += new Integer(this.ajuste).intValue(); 
-//				}
+				if (!this.ajuste.equals("0")) {
+					espacioMenos += new Integer(this.ajuste).intValue(); 
+				}
 				out.println("");
 				out.println("jQuery(document).ready(function() {validarAncho_" + this.nombre + "(); ajusteAltoMain('" + this.nombre + "Div',"+espacioMenos+");});");
 				out.println("");
