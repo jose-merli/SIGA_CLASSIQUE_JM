@@ -103,7 +103,8 @@ public class SIGASvlProcesoAutomaticoRapido extends SIGAServletAdapter implement
 			if (timer!=null) {
 				if (timer.isActive())
 					timer.stop();
-				timer.removeNotification(idNotificacion);
+				if(idNotificacion!=null)
+					timer.removeNotification(idNotificacion);
 			}
 
 			ClsLogging.writeFileLogWithoutSession("    - Notificación \"" + sNombreProceso + "\" parada.", 3);
