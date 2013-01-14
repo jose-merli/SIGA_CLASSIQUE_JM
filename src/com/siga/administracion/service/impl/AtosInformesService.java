@@ -1,6 +1,7 @@
 package com.siga.administracion.service.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -544,30 +545,101 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 			String path = getDirectorio(form);
 			String pathNuevo = path.replace("2000", form.getIdInstitucion());
 			
-			File directorioFileNew = new File (pathNuevo);
-			if (!directorioFileNew.exists()) {
-				directorioFileNew.mkdir();
-			}
+			File directorioDestino = new File (pathNuevo);
+//			if (!directorioFileNew.exists()) {
+//				directorioFileNew.mkdir();
+//			}
 			
 			FileInforme directorio = form.getDirectorioFile();
-			File directorioFileOld= directorio.getFile();
-
-			if (directorioFileOld.isDirectory()) {				
-				String[] children = directorioFileOld.list();
-				FileInforme fileInforme = null;
-				for (int i = 0; i<children.length; i++) {
-					 if(children[i].indexOf(".")!=-1 && form.getNombreFisico().equalsIgnoreCase(children[i].substring(0, children[i].indexOf(".")-3))){
-						 File informeFile = new File(directorioFileOld, children[i]);	
-						 informeFile.renameTo(new File(directorioFileNew,children[i]));
-						 informeFile.createNewFile();
-					 }
-				}
-			}
+			File directorioOrigen= directorio.getFile();
+			
+			copiarDirectorio(directorioOrigen,directorioDestino,form);
+			
+			
+			
+			
+			
+			
+//			if (directorioFileOld.isDirectory()) {				
+//				String[] children = directorioFileOld.list();
+//				FileInforme fileInforme = null;
+//				for (int i = 0; i<children.length; i++) {
+//					 if(children[i].indexOf(".")!=-1 && form.getNombreFisico().equalsIgnoreCase(children[i].substring(0, children[i].indexOf(".")-3))){
+//						 File informeFile = new File(directorioFileOld, children[i]);
+//						 informeFile.renameTo(new File(directorioFileNew,children[i]));
+//						 informeFile.createNewFile();
+//					 }
+//				}
+//			}
 
 		} catch (Exception e) {
 			throw new SIGAException("error.messages.io");
 		}
 	}	
+	
+	public void copiarDirectorio(File dirOrigen, File dirDestino,InformeForm form) throws Exception { 
+		try {
+			if (dirOrigen.isDirectory()) { 
+				if (!dirDestino.exists())
+					dirDestino.mkdir(); 
+	 
+				String[] hijos = dirOrigen.list(); 
+				for (int i=0; i < hijos.length; i++) { 
+					if(hijos[i].indexOf(".")!=-1 && form.getNombreFisico().equalsIgnoreCase(hijos[i].substring(0, hijos[i].indexOf(".")-3))){
+						copiarDirectorio(new File(dirOrigen, hijos[i]),	new File(dirDestino, hijos[i]),form); 
+					}
+				} // end for
+			} else { 
+				copiar(dirOrigen, dirDestino); 
+			} // end if
+		} catch (Exception e) {
+			throw e;
+		} // end try
+	} // end CopiarDirectorio
+	 
+	public void copiar(File dirOrigen, File dirDestino) throws Exception { 
+	 
+		InputStream in = new FileInputStream(dirOrigen); 
+		OutputStream out = new FileOutputStream(dirDestino); 
+	 
+		byte[] buffer = new byte[1024];
+		int len;
+	 
+		try {
+			// recorrer el array de bytes y recomponerlo
+			while ((len = in.read(buffer)) > 0) { 
+				out.write(buffer, 0, len); 
+			} // end while
+			out.flush();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			in.close(); 
+			out.close(); 
+		} // end ty
+	} // end Copiar
+	 
+	public void copiar(String dirOrigen, String dirDestino) throws Exception { 
+		InputStream in = new FileInputStream(dirOrigen); 
+		OutputStream out = new FileOutputStream(dirDestino); 
+	 
+		byte[] buffer = new byte[1024];
+		int len;
+	 
+		try {
+			// recorrer el array de bytes y recomponerlo
+			while ((len = in.read(buffer)) > 0) { 
+				out.write(buffer, 0, len); 
+			} // end while
+			out.flush();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			in.close(); 
+			out.close(); 
+		} // end ty
+	} // end Copiar
+	
 	
 	public List<InformeForm> getInformesConsulta(ConConsultaBean consulta,
 			InformeForm informeForm, UsrBean usrBean) throws ClsExceptions {
