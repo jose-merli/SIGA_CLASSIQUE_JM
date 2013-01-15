@@ -627,7 +627,7 @@
 			%>	
 			<td class="labelText">
 				<html:text name="datosGeneralesPagoForm" property="importePagado" value="" 
-				size="20" styleClass="boxConsultaNumber" readonly="<%=b_lectura%>" />
+				size="20" styleClass="boxConsultaNumber" readonly="true" />
 				&nbsp;&euro;
 			</td>			
 			<% } 
@@ -674,16 +674,16 @@
 						<input name="txtTotalOficio" id="txtTotalOficio" size="18" class="boxConsultaNumber" readonly="true" />
 					</td>
 					<td class="labelTextNum">
-						<input name="txtPendienteOficio" id="txtPendienteOficio" size="18" class="boxConsultaNumber" readonly="true" />	
+						<input name="txtPendienteOficio" id="txtPendienteOficio" size="25" class="boxConsultaNumber" readonly="true" />	
 					</td>
 					<td class="labelTextNum" >
 						<% if (esNuevo || (esEdicion && estadoAbierto)){ %>
 							<input name="radioAPagarOficio" id="radioImporteOficio" value="importe" type="radio" onclick="cambiar('Oficio');" Checked/>
-							<input name="importeOficio" id="importeOficio" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('Oficio', totalOficio, importePendOficio, porcentajePendOficio);" onfocus="backup('importeOficio')" />						
-							<span style="vertical-align:40%">&euro;	&nbsp;</span>
+							<input name="importeOficio" id="importeOficio" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('Oficio', totalOficio, importePendOficio, porcentajePendOficio);" onfocus="backup('importeOficio')" />&euro;	&nbsp;						
+							
 						  	<input name="radioApagarOficio" id="radioPorcentajeOficio" value="porcentaje" type="radio" onclick="cambiar('Oficio');" />
-							<input name="porcentajeOficio" id="porcentajeOficio" style="width:15%" maxlength="6" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('Oficio', totalOficio, importePendOficio, porcentajePendOficio);"	onfocus="backup('porcentajeOficio');" />						
-							<span style="vertical-align:40%">&#37;</span>
+							<input name="porcentajeOficio" id="porcentajeOficio" style="width:15%" maxlength="6" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('Oficio', totalOficio, importePendOficio, porcentajePendOficio);"	onfocus="backup('porcentajeOficio');" />&#37;				
+							
 						<% } else {%>
 							<input name="txtAPagarOficio" id="txtAPagarOficio" style="width:100%" class="boxConsultaNumber" readonly="true"/>
 							<input type="hidden" name="importeOficio" id="importeOficio"/>
@@ -691,7 +691,7 @@
 						<% } %>
 					</td>
 					<td class="labelTextNum">
-						<input name="txtRestanteOficio" id="txtRestanteOficio" style="width:100%" class="boxConsultaNumber" readonly="true" />
+						<input name="txtRestanteOficio" id="txtRestanteOficio" size="25" style="width:100%" class="boxConsultaNumber" readonly="true" />
 					</td>
 				</tr>
 				<!-- GUARDIAS -->
@@ -703,18 +703,18 @@
 						<input name="txtTotalGuardias" id="txtTotalGuardias" size="18" class="boxConsultaNumber" readonly="true"/>
 					</td>
 					<td class="labelTextNum">
-						<input name="txtPendienteGuardias" id="txtPendienteGuardias" size="18" class="boxConsultaNumber" readonly="true"/>	
+						<input name="txtPendienteGuardias" id="txtPendienteGuardias" size="25" class="boxConsultaNumber" readonly="true"/>	
 					</td>
 					<td class="labelTextNum" >
 						<% if (esNuevo || (esEdicion && estadoAbierto)){ %>
 							<input name="radioAPagarGuardias" id="radioImporteGuardias" value="importe" type="radio" onclick="cambiar('Guardias');" Checked/>
-							<input name="importeGuardias" id="importeGuardias" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('Guardias', totalGuardias, importePendGuardias, porcentajePendGuardias);" onfocus="backup('importeGuardias');" />						
-							<span style="vertical-align:40%">&euro;	&nbsp;</span>
+							<input name="importeGuardias" id="importeGuardias" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('Guardias', totalGuardias, importePendGuardias, porcentajePendGuardias);" onfocus="backup('importeGuardias');" />&euro;	&nbsp;						
+							
 						  	<input name="radioAPagarGuardias" id="radioPorcentajeGuardias" value="porcentaje" type="radio" onclick="cambiar('Guardias');"/>
 							<input name="porcentajeGuardias" id="porcentajeGuardias" style="width:15%" maxlength="6" class="boxConsultaNumber" readonly="true"  									
 										onblur="actualizaConcepto('Guardias', totalGuardias, importePendGuardias, porcentajePendGuardias);"
-										onfocus="backup('porcentajeGuardias');" />						
-							<span style="vertical-align:40%">&#37;</span>
+										onfocus="backup('porcentajeGuardias');" />&#37;						
+
 						<% } else {%>
 							<input name="txtAPagarGuardias" id="txtAPagarGuardias" size="18" class="boxConsultaNumber" readonly="true"/>
 							<input type="hidden" name="importeGuardias" id="importeGuardias"/>
@@ -722,7 +722,7 @@
 						<% } %>
 					</td>
 					<td class="labelTextNum">
-						<input name="txtRestanteGuardias" id="txtRestanteGuardias" size="18" class="boxConsultaNumber" readonly="true"/>
+						<input name="txtRestanteGuardias" id="txtRestanteGuardias" size="25" class="boxConsultaNumber" readonly="true"/>
 					</td>
 				</tr>
 				<!-- EJG -->
@@ -734,16 +734,16 @@
 						<input name="txtTotalEJG" id="txtTotalEJG" size="18" class="boxConsultaNumber" readonly="true"/>
 					</td>
 					<td class="labelTextNum">
-						<input name="txtPendienteEJG" id="txtPendienteEJG" size="18" class="boxConsultaNumber" readonly="true"/>	
+						<input name="txtPendienteEJG" id="txtPendienteEJG" size="25" class="boxConsultaNumber" readonly="true"/>	
 					</td>
 					<td class="labelTextNum" >
 						<% if (esNuevo || (esEdicion && estadoAbierto)){ %>
 							<input name="radioAPagarEJG" id="radioImporteEJG" value="importe" type="radio" onclick="cambiar('EJG');" Checked/>
-							<input name="importeEJG" id="importeEJG" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('EJG', totalEJG, importePendEJG, porcentajePendEJG);" onfocus="backup('importeEJG');" />						
-							<span style="vertical-align:40%">&euro;	&nbsp;</span>
+							<input name="importeEJG" id="importeEJG" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('EJG', totalEJG, importePendEJG, porcentajePendEJG);" onfocus="backup('importeEJG');" />&euro;	&nbsp;						
+
 						  	<input name="radioAPagarEJG" id="radioPorcentajeEJG" value="porcentaje" type="radio" onclick="cambiar('EJG');"/>
-							<input name="porcentajeEJG" id="porcentajeEJG" style="width:15%" maxlength="6" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('EJG', totalEJG, importePendEJG, porcentajePendEJG);" onfocus="backup('porcentajeEJG');" />						
-							<span style="vertical-align:40%">&#37;</span>
+							<input name="porcentajeEJG" id="porcentajeEJG" style="width:15%" maxlength="6" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('EJG', totalEJG, importePendEJG, porcentajePendEJG);" onfocus="backup('porcentajeEJG');" />&#37;						
+							
 						<% } else {%>
 							<input name="txtAPagarEJG" id="txtAPagarEJG" size="18" class="boxConsultaNumber" readonly="true"/>
 							<input type="hidden" name="importeEJG" id="importeEJG"/>
@@ -751,7 +751,7 @@
 						<% } %>
 					</td>
 					<td class="labelTextNum">
-						<input name="txtRestanteEJG" id="txtRestanteEJG" size="18" class="boxConsultaNumber" readonly="true"/>
+						<input name="txtRestanteEJG" id="txtRestanteEJG" size="25" class="boxConsultaNumber" readonly="true"/>
 					</td>
 				</tr>
 				<!-- SOJ -->
@@ -763,16 +763,16 @@
 						<input name="txtTotalSOJ" id="txtTotalSOJ" size="18" class="boxConsultaNumber" readonly="true"/>
 					</td>
 					<td class="labelTextNum">
-						<input name="txtPendienteSOJ" id="txtPendienteSOJ" size="18" class="boxConsultaNumber" readonly="true"/>	
+						<input name="txtPendienteSOJ" id="txtPendienteSOJ" size="25" class="boxConsultaNumber" readonly="true"/>	
 					</td>
 					<td class="labelTextNum" >
 						<% if (esNuevo || (esEdicion && estadoAbierto)){ %>
 							<input name="radioAPagarSOJ" id="radioImporteSOJ" value="importe" type="radio" onclick="cambiar('SOJ');" Checked/>
-							<input name="importeSOJ" id="importeSOJ" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('SOJ', totalSOJ, importePendSOJ, porcentajePendSOJ);" onfocus="backup('importeSOJ');" />						
-							<span style="vertical-align:40%">&euro;	&nbsp;</span>
+							<input name="importeSOJ" id="importeSOJ" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('SOJ', totalSOJ, importePendSOJ, porcentajePendSOJ);" onfocus="backup('importeSOJ');" />&euro;	&nbsp;						
+							
 						  	<input name="radioAPagarSOJ" id="radioPorcentajeSOJ" value="porcentaje" type="radio" onclick="cambiar('SOJ');"/>
-							<input name="porcentajeSOJ" id="porcentajeSOJ" style="width:15%" maxlength="6" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('SOJ', totalSOJ, importePendSOJ, porcentajePendSOJ);" onfocus="backup('porcentajeSOJ');" />						
-							<span style="vertical-align:40%">&#37;</span>
+							<input name="porcentajeSOJ" id="porcentajeSOJ" style="width:15%" maxlength="6" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('SOJ', totalSOJ, importePendSOJ, porcentajePendSOJ);" onfocus="backup('porcentajeSOJ');" />&#37;						
+							
 						<% } else {%>
 							<input name="txtAPagarSOJ" id="txtAPagarSOJ" size="18" class="boxConsultaNumber" readonly="true"/>
 							<input type="hidden" name="importeSOJ" id="importeSOJ"/>
@@ -780,7 +780,7 @@
 						<% } %>
 					</td>
 					<td class="labelTextNum">
-						<input name="txtRestanteSOJ" id="txtRestanteSOJ" size="18" class="boxConsultaNumber" readonly="true"/>
+						<input name="txtRestanteSOJ" id="txtRestanteSOJ" size="25" class="boxConsultaNumber" readonly="true"/>
 					</td>
 				</tr>
 				
