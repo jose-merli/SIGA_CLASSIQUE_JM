@@ -197,9 +197,6 @@
 	if(request.getAttribute("idremesa")!=null)
 		idremesa =(String) request.getAttribute("idremesa");
 	
-	if(esComision && idEstado.isEmpty()){
-		idEstado.add("9");
-	}
 %>
 
 <html>
