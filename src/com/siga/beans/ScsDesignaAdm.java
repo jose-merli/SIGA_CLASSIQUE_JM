@@ -3211,7 +3211,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 						+ " WHERE ACTA.IDACTA = EJG.IDACTA "
 						+ " AND ACTA.IDINSTITUCION =  EJG.IDINSTITUCION "
 						+ " AND ACTA.ANIOACTA =  EJG.ANIOACTA "        
-						+ " ), NULL) AS FECHARESOLUCIONCAJG ");	
+						+ " ),  EJG.FECHARESOLUCIONCAJG) AS FECHARESOLUCIONCAJG ");	
 			        sql.append(" from scs_ejg ejg, scs_designa des, ");
 			        sql.append(" scs_turno tur, scs_tipoejg tip, ");
 			        sql.append(" scs_tipodictamenejg tdic, scs_ejgdesigna ejgDes,scs_procurador procu ");
