@@ -4375,16 +4375,21 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	    Hashtable aux = new Hashtable();
 		try {
 		    Hashtable codigos = new Hashtable();
-		    String sql = "SELECT P.IDPERSONA,  P.NOMBRE || ' ' || P.APELLIDOS1 || ' ' || P.APELLIDOS2 as NOMCOLEGIADO, P.NOMBRE as NOMBRECOLEGIADO, P.APELLIDOS1 || ' ' || P.APELLIDOS2 as APECOLEGIADO, COL.NCOLEGIADO FROM CEN_PERSONA P, CEN_CLIENTE C, CEN_COLEGIADO COL" +
-		        	" WHERE P.IDPERSONA=C.IDPERSONA" +
+		    String sql = "SELECT distinct P.IDPERSONA, P.NOMBRE || ' ' || P.APELLIDOS1 || ' ' || P.APELLIDOS2 as NOMCOLEGIADO, "+
+		    		" P.NOMBRE as NOMBRECOLEGIADO, "+
+		    		" P.APELLIDOS1 || ' ' || P.APELLIDOS2 as APECOLEGIADO, " +
+		    		"	DECODE(COL.COMUNITARIO,1,COL.NCOMUNITARIO,COL.NCOLEGIADO) NCOLEGIADO, "+
+		    		" DCE.IDESTADO "+
+		    	" FROM CEN_PERSONA P, "+
+		    		" CEN_CLIENTE C, "+
+		    		" CEN_COLEGIADO COL," +
+		    		" CEN_DATOSCOLEGIALESESTADO DCE "+
+		        " WHERE P.IDPERSONA=C.IDPERSONA" +
 		        	" AND C.IDPERSONA=COL.IDPERSONA" +
 		        	" AND C.IDINSTITUCION=COL.IDINSTITUCION" +
-		            " AND (select idestado " +
-		        	"       from cen_datoscolegialesestado e2 " +
-		        	"        where e2.idinstitucion = C.IDINSTITUCION " +
-		        	"          and e2.idpersona = C.IDPERSONA " +
-		        	"          and e2.fechaestado = (select max(e.fechaestado) from cen_datoscolegialesestado e where e.idinstitucion=e2.idinstitucion and e.idpersona=e2.idpersona) " +
-		        	"          ) not in ('30', '40') " +
+		        	" AND DCE.IDINSTITUCION = C.IDINSTITUCION "+
+		        	" AND DCE.IDPERSONA = C.IDPERSONA "+
+		        	" AND DCE.FECHAESTADO = (SELECT MAX(AUX.FECHAESTADO) FROM CEN_DATOSCOLEGIALESESTADO AUX WHERE AUX.IDINSTITUCION=DCE.IDINSTITUCION AND AUX.IDPERSONA=DCE.IDPERSONA) "+
 		        	" AND C.IDINSTITUCION=:1";
 		    		codigos.put(new Integer(1),idInstitucion);
 		    		if(nombreColegiado!=null && !nombreColegiado.trim().equals("")){
@@ -4413,6 +4418,52 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	    }
 	    return salida;
 	}
+	
+	public Vector getClientePorNColegiado2(String idInstitucion, String nColegiado)  throws ClsExceptions,SIGAException {
+	    
+	    Vector salida = new Vector();
+	    Hashtable aux = new Hashtable();
+	    try {
+	   
+	    	
+		    String sql = "SELECT distinct P.IDPERSONA, P.NOMBRE || ' ' || P.APELLIDOS1 || ' ' || P.APELLIDOS2 as NOMCOLEGIADO, "+
+		    		" P.NOMBRE as NOMBRECOLEGIADO, "+
+		    		" P.APELLIDOS1 || ' ' || P.APELLIDOS2 as APECOLEGIADO, " +
+		    		"	DECODE(COL.COMUNITARIO,1,COL.NCOMUNITARIO,COL.NCOLEGIADO) NCOLEGIADO, "+
+		    		" DCE.IDESTADO "+
+		    	" FROM CEN_PERSONA P, "+
+		    		" CEN_CLIENTE C, "+
+		    		" CEN_COLEGIADO COL," +
+		    		" CEN_DATOSCOLEGIALESESTADO DCE "+
+		        " WHERE P.IDPERSONA=C.IDPERSONA "+
+		        	" AND C.IDPERSONA=COL.IDPERSONA "+
+		        	" AND C.IDINSTITUCION=COL.IDINSTITUCION "+
+		        	" AND DCE.IDINSTITUCION = C.IDINSTITUCION "+
+		        	" AND DCE.IDPERSONA = C.IDPERSONA "+
+		        	" AND DCE.FECHAESTADO = (SELECT MAX(AUX.FECHAESTADO) FROM CEN_DATOSCOLEGIALESESTADO AUX WHERE AUX.IDINSTITUCION=DCE.IDINSTITUCION AND AUX.IDPERSONA=DCE.IDPERSONA) "+
+		        	" AND C.IDINSTITUCION=:1 "+
+		        	" AND F_SIGA_CALCULONCOLEGIADO(C.IDINSTITUCION,C.IDPERSONA)=:2";
+		    Hashtable codigos = new Hashtable();
+		    codigos.put(new Integer(1),idInstitucion);
+		    codigos.put(new Integer(2),nColegiado);
+		    
+			RowsContainer rc = new RowsContainer(); 
+				if (rc.queryBind(sql,codigos)) {
+
+					for (int i=0 ;i<rc.size();i++){
+						aux = (Hashtable)((Row) rc.get(i)).getRow();
+						salida.add(aux);
+					}
+				}
+			
+		}
+
+	    catch (Exception e) {
+	        throw new ClsExceptions(e,"Error al buscar al cliente por numero de colegiado");
+	    }
+	    return salida;
+	}	
+	
 	public Vector getClientePorNColegiado(String idInstitucion, String nColegiado)  throws ClsExceptions,SIGAException {
 	    
 	    Vector salida = new Vector();
