@@ -148,6 +148,12 @@ public class BuscarDesignasForm extends MasterForm {
 	public String getNumProcedimiento	()	{
 		return (String)this.datos.get("NUMPROCEDIMIENTO");
 	}
+	public void setAnioProcedimiento	(String valor)	{
+		this.datos.put("ANIOPROCEDIMIENTO", valor);
+	}
+	public String getAnioProcedimiento	()	{
+		return (String)this.datos.get("ANIOPROCEDIMIENTO");
+	}	
 	public void setJuzgadoInstitucionAsi	(String valor)	{
 		this.datos.put("JUZGADOINSTITUCIONASI", valor);
 	}

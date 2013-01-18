@@ -42,6 +42,7 @@ public class ScsDesignaBean extends MasterBean {
 	private String  fechaAlta;
 	private String art27;
 	private String NIG;
+	private Integer anioProcedimiento;
 	
 	// Nombre de Tabla
 	static public String T_NOMBRETABLA = "SCS_DESIGNA";
@@ -77,6 +78,7 @@ public class ScsDesignaBean extends MasterBean {
 	static public final String	C_FECHAALTA 			= 	"FECHAALTA";
 	static public final String	C_ART27 				= 	"ART27";
 	static public final String  C_NIG   				= 	"NIG";
+	static public final String  C_ANIOPROCEDIMIENTO		= 	"ANIOPROCEDIMIENTO";
 	
 	
 
@@ -424,6 +426,12 @@ public void setIdTipoDesignaColegio(Integer idTipoDesignaColegio) {
 	}
 	public void setNIG(String nIG) {
 		NIG = nIG;
+	}
+	public Integer getAnioProcedimiento() {
+		return anioProcedimiento;
+	}
+	public void setAnioProcedimiento(Integer anioProcedimiento) {
+		this.anioProcedimiento = anioProcedimiento;
 	}
 	
 }

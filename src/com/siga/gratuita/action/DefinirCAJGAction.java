@@ -655,6 +655,8 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 					UtilidadesHash.set(miHash, ScsEJGBean.C_JUZGADO,     				designaBean.getIdJuzgado());
 					UtilidadesHash.set(miHash, ScsEJGBean.C_JUZGADOIDINSTITUCION,     	designaBean.getIdInstitucionJuzgado());
 					UtilidadesHash.set(miHash, ScsEJGBean.C_NUMEROPROCEDIMIENTO,     	designaBean.getNumProcedimiento());
+					if(designaBean.getAnioProcedimiento() != null)
+						UtilidadesHash.set(miHash, ScsEJGBean.C_ANIOPROCEDIMIENTO,     		designaBean.getAnioProcedimiento());
 															
 					//obtengo la calidad del interesado (Del EJG) mediante la clave de designa y idPersonaJG en defendidos designa
 					Hashtable bus = new Hashtable();

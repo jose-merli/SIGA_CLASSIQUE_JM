@@ -65,7 +65,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 							ScsDesignaBean.C_IDPROCEDIMIENTO,       ScsDesignaBean.C_FECHAESTADO,
 							ScsDesignaBean.C_SUFIJO,				ScsDesignaBean.C_FECHAOFICIOJUZGADO,
 							ScsDesignaBean.C_FECHARECEPCIONCOLEGIO, ScsDesignaBean.C_ART27,
-							ScsDesignaBean.C_FECHAALTA, 			ScsDesignaBean.C_NIG};
+							ScsDesignaBean.C_FECHAALTA, 			ScsDesignaBean.C_NIG,
+							ScsDesignaBean.C_ANIOPROCEDIMIENTO};
 		return campos;
 	}
 	/** Funcion getClavesBean ()
@@ -119,6 +120,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			bean.setFechaAlta(UtilidadesHash.getString(hash,ScsDesignaBean.C_FECHAALTA));
 			bean.setArt27(UtilidadesHash.getString(hash,ScsDesignaBean.C_ART27));
 			bean.setNIG(UtilidadesHash.getString(hash,ScsDesignaBean.C_NIG));
+			bean.setAnioProcedimiento(UtilidadesHash.getInteger(hash,ScsDesignaBean.C_ANIOPROCEDIMIENTO));
 		}
 		catch(Exception e){
 			bean = null;
@@ -226,6 +228,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsDesignaBean.C_FECHAALTA,b.getFechaAlta());
 			UtilidadesHash.set(hash, ScsDesignaBean.C_ART27,b.getArt27());
 			UtilidadesHash.set(hash, ScsDesignaBean.C_NIG,b.getNIG());
+			UtilidadesHash.set(hash, ScsDesignaBean.C_ANIOPROCEDIMIENTO ,b.getAnioProcedimiento());
 			return hash;
 		}
 		catch (Exception e){

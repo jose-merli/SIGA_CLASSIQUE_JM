@@ -28,6 +28,11 @@
 	Properties src = (Properties) ses
 			.getAttribute(SIGAConstants.STYLESHEET_REF);
 	
+	int ejisActivo = 0;
+	if (request.getAttribute("EJIS_ACTIVO")!=null){
+		ejisActivo = Integer.parseInt(request.getAttribute("EJIS_ACTIVO").toString());
+	}		
+	
 	Integer PCAJG_ACTIVADO =(Integer) (request.getAttribute("PCAJG_ACTIVO"));
 	String pintarAsterisco="&nbsp;(*)";
 	boolean tipoEJGColegioObligatorio = PCAJG_ACTIVADO!=null && (PCAJG_ACTIVADO.intValue() == 2 || PCAJG_ACTIVADO.intValue() == 3 || PCAJG_ACTIVADO.intValue() == 4 || PCAJG_ACTIVADO.intValue() == 5);  
@@ -241,6 +246,8 @@
 			.get(ScsEJGBean.C_NUMERODILIGENCIA);
 	String numeroProcedimientoAsi = (String) hash
 			.get(ScsEJGBean.C_NUMEROPROCEDIMIENTO);
+	String anioProcedimientoAsi = (String) hash
+			.get(ScsEJGBean.C_ANIOPROCEDIMIENTO);	
 
 	// Datos del Juzgado seleccionado:
 	String juzgadoAsi = (String) hash.get(ScsEJGBean.C_JUZGADO);
@@ -668,9 +675,17 @@
 			</tr>
 			<tr>
 				<td class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/></td>
+	 <%if (ejisActivo>0){%>							
 				<td>
+					<input name="numeroProcedimiento" type="text" value="<%=numeroProcedimientoAsi%>" size="7" class="boxConsulta" readonly="true"/>/
+					<input name="anioProcedimiento" type="text" value="<%=anioProcedimientoAsi%>" size="4" class="boxConsulta" readonly="true"/>
+				</td>
+	 <%}else{%>			
+	 			<td>
 					<input name="numeroProcedimiento" type="text" value="<%=numeroProcedimientoAsi%>" class="boxConsulta" readonly="true"/>
 				</td>
+	  <%}%>	
+				
 				<td class="labelText"  width="15%">	
 				 <siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/>
 				 <%if (!modo.equals("ver")) {%>
@@ -884,6 +899,7 @@
 		<html:hidden property ="juzgadoAsi"  value= "<%=juzgadoAsi%>"/>
 		<html:hidden property ="juzgadoInstitucionAsi"  value= "<%=juzgadoInstitucionAsi%>"/>
 		<html:hidden property ="numProcedimiento"  value= "<%=numeroProcedimientoAsi%>"/>
+		<html:hidden property ="anioProcedimiento"   value = "<%=anioProcedimientoAsi%>"/>
 		<html:hidden property ="numero" value = ""/>
 		<html:hidden property ="idTurno" value = ""/>
 		<html:hidden property ="anio" value = ""/>
@@ -964,6 +980,7 @@
 		<html:hidden property ="nombreSolicitante"     value = "<%=NOMBRECOMPLETOASISTIDO%>" />
 		<html:hidden property ="idInstitucion_TipoExpediente" value= "<%=usr.getLocation()%>"/>	
 		<html:hidden property ="numeroProcedimiento"   value = "<%=numeroProcedimientoAsi%>"/>
+		<html:hidden property ="anioProcedimiento"   value = "<%=anioProcedimientoAsi%>"/>
 		<html:hidden property ="asunto"     value = "<%=OBSERVACIONES%>"/>
 		<html:hidden property ="juzgado"   value = "<%=juzgadoAsi%>"/>
 		<html:hidden property ="juzgadoInstitucion"   value = "<%= juzgadoInstitucionAsi%>"/>

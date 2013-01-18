@@ -854,6 +854,8 @@ public class DefinirEJGAction extends MasterAction
 					UtilidadesHash.set(miHash, ScsEJGBean.C_JUZGADO,     				designaBean.getIdJuzgado());
 					UtilidadesHash.set(miHash, ScsEJGBean.C_JUZGADOIDINSTITUCION,     	designaBean.getIdInstitucionJuzgado());
 					UtilidadesHash.set(miHash, ScsEJGBean.C_NUMEROPROCEDIMIENTO,     	designaBean.getNumProcedimiento());
+					if(designaBean.getAnioProcedimiento() != null)
+						UtilidadesHash.set(miHash, ScsEJGBean.C_ANIOPROCEDIMIENTO,     		designaBean.getAnioProcedimiento());
 					UtilidadesHash.set(miHash, ScsEJGBean.C_NIG,     					designaBean.getNIG());
 					UtilidadesHash.set(miHash, ScsEJGBean.C_OBSERVACIONES,     			designaBean.getResumenAsunto());
 					UtilidadesHash.set(miHash, ScsEJGBean.C_IDPRETENSION,     			designaBean.getIdPretension());

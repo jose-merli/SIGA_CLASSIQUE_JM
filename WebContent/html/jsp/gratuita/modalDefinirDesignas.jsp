@@ -32,7 +32,14 @@
 	String letradoSeleccionado = (String) request.getAttribute("letradoSeleccionado");
 	String hayDatos = (String)request.getAttribute("hayDatos");
 	String numProcedimiento = (String)request.getAttribute("numProcedimiento");
-	
+	String anioProcedimiento ="";
+	int ejisActivo = 0;
+	if (request.getAttribute("EJIS_ACTIVO")!=null){
+		ejisActivo = Integer.parseInt(request.getAttribute("EJIS_ACTIVO").toString());
+	}	
+	if (ejisActivo>0){
+		anioProcedimiento = (String)request.getAttribute("anioProcedimiento");
+	}
 	
 	BuscarDesignasForm miform = (BuscarDesignasForm) ses.getAttribute("BuscarDesignasForm");
 	String desdeEJG = miform.getDesdeEjg();
@@ -256,7 +263,9 @@
 	<html:hidden property ="anioAsistencia" value = "<%=anioAsistencia%>"/>
 	<html:hidden property ="anioEjg" value = "<%=anioEJG%>"/>
 	<html:hidden property ="numProcedimiento" value = "<%=numProcedimiento%>"/>
-	
+<%if (ejisActivo>0){%>
+	<html:hidden property ="anioProcedimiento" value = "<%=anioProcedimiento%>"/>
+<%}%>
 	<html:hidden property = "diligencia"     value="<%=diligenciaAsi%>"/>
 	<html:hidden property = "procedimiento"     value="<%=procedimientoAsi%>"/>
 	<html:hidden property = "comisaria"     value="<%=comisariaAsi%>"/>

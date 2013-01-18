@@ -433,6 +433,13 @@ public class MaestroDesignasForm extends MasterForm {
 		return UtilidadesHash.getString(this.datos, "NUMERO_PROCEDIMIENTO");
 	}
 	
+	public void setAnioProcedimiento(String v){
+		UtilidadesHash.set(this.datos, "ANIO_PROCEDIMIENTO", v);
+	}
+	public String getAnioProcedimiento(){
+		return UtilidadesHash.getString(this.datos, "ANIO_PROCEDIMIENTO");
+	}	
+	
 	/**
 	 * @return
 	 */

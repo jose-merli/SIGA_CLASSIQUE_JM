@@ -55,7 +55,7 @@
 	
 	String OBSERVACIONES = "", DELITOS = "", PROCURADOR = "", PROCURADORNECESARIO ="",idProcurador="", idInstitucionProcurador="", idcalidad="", FECHAPROCURADOR="",  
 		   procuradorNombreCompleto = "", procuradorNumColegiado = "", procuradorSel = "",idTurno = "", nombreCompleto="";	
-   	String numeroDiligenciaAsi    = "",numeroProcedimientoAsi = "", juzgadoAsi="", juzgadoInstitucionAsi="", comisariaAsi="", comisariaInstitucionAsi="";
+   	String numeroDiligenciaAsi    = "",numeroProcedimientoAsi = "", anioProcedimientoAsi = "", juzgadoAsi="", juzgadoInstitucionAsi="", comisariaAsi="", comisariaInstitucionAsi="";
    	String idPretension    = "", idPretensionInstitucion="",pretension="", idPreceptivo="", idSituacion="", numeroDesignaProc="";
    	
    	String idRenuncia="", nig = "";
@@ -88,6 +88,7 @@
 		
 		if (hash.containsKey(ScsEJGBean.C_NUMERODILIGENCIA)) numeroDiligenciaAsi					  			=  hash.get(ScsEJGBean.C_NUMERODILIGENCIA).toString();
 		if (hash.containsKey(ScsEJGBean.C_NUMEROPROCEDIMIENTO)) numeroProcedimientoAsi					  			=  hash.get(ScsEJGBean.C_NUMEROPROCEDIMIENTO).toString();
+		if (hash.containsKey(ScsEJGBean.C_ANIOPROCEDIMIENTO)) anioProcedimientoAsi					  			=  hash.get(ScsEJGBean.C_ANIOPROCEDIMIENTO).toString();
 	
 	// Datos pretensiones seleccionado:
 		if (hash.containsKey(ScsEJGBean.C_IDPRETENSION)) idPretension					  		=  hash.get(ScsEJGBean.C_IDPRETENSION).toString();
@@ -170,6 +171,12 @@
 	if (request.getAttribute("PCAJG_ACTIVO")!=null){
 		pcajgActivo = Integer.parseInt(request.getAttribute("PCAJG_ACTIVO").toString());
 	}
+	
+	int ejisActivo = 0;
+	if (request.getAttribute("EJIS_ACTIVO")!=null){
+		ejisActivo = Integer.parseInt(request.getAttribute("EJIS_ACTIVO").toString());
+	}		
+	
 	boolean obligatorioPreceptivo = false;
 	boolean obligatorioNumProcedimiento = false;
 	boolean obligatorioProcurador = false;
@@ -254,6 +261,7 @@
 		<html:hidden property = "juzgado" value=""/>
 		<html:hidden property = "numeroDilegencia" value="<%=numeroDiligenciaAsi%>"/>
 		<html:hidden property = "numeroProcedimiento" value="<%=numeroProcedimientoAsi%>"/>		
+		<html:hidden property = "anioProcedimiento" value="<%=anioProcedimientoAsi%>"/>		
 		<html:hidden property = "delitos" value="<%=DELITOS%>"/>
 		<html:hidden property = "pretension" value=""/>
 		<html:hidden property = "idPreceptivo" value="<%=idPreceptivo%>"/>
@@ -379,6 +387,21 @@
 							<%= asterisco %> 
 						<%}%>
 						</td>
+						
+				 <%if (ejisActivo>0){%>			
+						
+						<td colspan="6"> 
+							<%if(modopestanha.equals("editar")){%>
+							 	<input name="numeroProcedimiento2" size="7" maxlength="7" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>" />/
+							 	<input name="anioProcedimiento2" size="4" maxlength="4" type="text" value="<%=anioProcedimientoAsi%>" class="<%=estilo%>" />
+							<%}else{%>
+							 	<input name="numeroProcedimiento2" size="7" maxlength="7" type="text" value="<%=numeroProcedimientoAsi%>" class="boxConsulta" />/
+							 	<input name="anioProcedimiento2" size="4" maxlength="4" type="text" value="<%=anioProcedimientoAsi%>" class="boxConsulta" />
+							<%}%>						
+						</td>
+						
+				<%}else{%>		
+						
 						<td colspan="6"> 
 							<%if(modopestanha.equals("editar")){%>
 							 	<input name="numeroProcedimiento2" size="10" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>" maxlength="<%=maximaLongitud%>"/>
@@ -386,9 +409,25 @@
 								<input name="numeroProcedimiento2" size="10" type="text" value="<%=numeroProcedimientoAsi%>" class="boxConsulta"/>
 							<%}%>						
 						</td>
+									
+				<%}%>			
+						
 						<td colspan="4" class="labelText"><siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/><% if (obligatoriojuzgado){ %>
 											<%= asterisco %>
 											<%}%></td>	 
+				<%if (ejisActivo>0){%>							
+											
+						<td colspan="23">	
+							<%if(modopestanha.equals("editar")){%>
+							 	  <input type="text" name="codigoExtJuzgado" class="box" size="3"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />							 	  
+							 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosEJG" ancho="505" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuz%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="false" accion="Hijo:pretensiones2; parent.cambiarJuzgado(this);" />           	   
+							<%}else{%>
+									<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosEJG" ancho="555" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuz%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="true"/>           	   
+							<%}%>							
+						</td>
+						
+				<%}else{%>		
+
 						<td colspan="23">	
 							<%if(modopestanha.equals("editar")){%>
 							 	  <input type="text" name="codigoExtJuzgado" class="box" size="3"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />							 	  
@@ -396,8 +435,12 @@
 							<%}else{%>
 									<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosEJG" ancho="555" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuz%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="true"/>           	   
 							<%}%>							
-						</td>	
+						</td>						
+						
+				<%}%>		
+							
 					</tr>
+					
 					<tr>
 						<td colspan="4" class="labelText">
 							<siga:Idioma key='gratuita.operarEJG.literal.observacionesAsunto'/>
@@ -440,6 +483,17 @@
 								<%=asterisco %> 
 							<%}%>	
 						</td>	
+				<%if (ejisActivo>0){%>	
+						
+						<td  colspan="15">
+							<%if(modopestanha.equals("editar")){%>
+								<siga:ComboBD nombre="pretensiones2" tipo="comboPretensionesEjis" ancho="345" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=paramPretension%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="false"/>           	   
+							<%}else{%>
+								<siga:ComboBD nombre="pretensiones2" tipo="comboPretensionesEjis" ancho="345" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=paramPretension%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="true"/>           	   
+							<%}%>	
+							
+						</td>
+				<%}else{%>	
 						<td  colspan="15">
 							<%if(modopestanha.equals("editar")){%>
 								<siga:ComboBD nombre="pretensiones2" tipo="comboPretensiones" ancho="345" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=paramPretension%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="false"/>           	   
@@ -448,6 +502,9 @@
 							<%}%>	
 							
 						</td>
+				
+				<% } %>		
+						
 					</tr>
 					
 					<tr>
@@ -615,10 +672,13 @@
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.pretensiones'/>"+ '\n';
 				if (<%=obligatorioProcurador%> && document.getElementById("nColegiadoProcurador").value=="")
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.datosProcurador.literal.procurador'/>"+ '\n';
+		 <%if (ejisActivo==0){%>
 				if(<%=validarProcedimiento%>){
 					if(!validaProcedimiento(document.getElementById("numeroProcedimiento2").value))
 					error += "<siga:Idioma key='gratuita.procedimientos.numero.formato'/>"+ '\n';
 				}
+		<%}%>				
+				
 				if(document.getElementById("calidad2").value==""){
 					  error += "<siga:Idioma key='gratuita.personaJG.literal.mensajecalidad'/>"+ '\n';
 					}
@@ -636,6 +696,22 @@
 					return false;
 				}
 		 	<%}%> 
+		 	
+		 <%if (ejisActivo>0){%>
+		 	
+			if(document.getElementById("numeroProcedimiento2").value != "" || document.getElementById("anioProcedimiento2").value != ""){
+				if(document.getElementById("numeroProcedimiento2").value == "" || !validaProcedimiento(document.getElementById("numeroProcedimiento2").value))
+					error += "<siga:Idioma key='gratuita.procedimientos.numero.formato'/>"+ '\n';
+				if(document.getElementById("anioProcedimiento2").value == "" || !validarAnioProcedimiento(document.getElementById("anioProcedimiento2").value))	
+					error += "<siga:Idioma key='gratuita.procedimientos.anio.formato'/>"+ '\n';
+					
+				if(error!=""){
+					alert(error);
+					fin();
+					return false;
+				}	
+			}		 	
+		<%}%>
 			if (observaciones.length <= 1024) {
 				document.DefinirMantenimientoEJGForm.modo.value = "modificarDefensa";
 				document.DefinirMantenimientoEJGForm.target = "submitArea";				
@@ -646,7 +722,10 @@
 				document.DefinirMantenimientoEJGForm.comisaria.value				=	document.getElementById("comisaria").value	;
 				document.DefinirMantenimientoEJGForm.juzgado.value					=	document.getElementById("juzgado").value	;				
 				document.DefinirMantenimientoEJGForm.numeroDilegencia.value			=	document.getElementById("numeroDilegencia2").value	;
-				document.DefinirMantenimientoEJGForm.numeroProcedimiento.value		=	document.getElementById("numeroProcedimiento2").value;					
+				document.DefinirMantenimientoEJGForm.numeroProcedimiento.value		=	document.getElementById("numeroProcedimiento2").value;
+			<%if (ejisActivo>0){%>
+				document.DefinirMantenimientoEJGForm.anioProcedimiento.value		=	document.getElementById("anioProcedimiento2").value;
+			<%}%> 		
 				document.DefinirMantenimientoEJGForm.observaciones.value			=	document.getElementById("observaciones2").value;
 				document.DefinirMantenimientoEJGForm.delitos.value					=	document.getElementById("delitos2").value;
 				document.DefinirMantenimientoEJGForm.pretension.value				=	document.getElementById("pretensiones2").value;
@@ -667,13 +746,14 @@
 				 return false;
 				}
 				document.DefinirMantenimientoEJGForm.submit();
-			}
-			else  {
+			
+			} else  {
 				alert('<siga:Idioma key="gratuita.operarEJG.message.lontigudObservaciones"/>');	
 				fin();
 				return false;
 			}
 		}
+		
 		function limpiarProcurador()
 		{
 			document.getElementById("nombreCompleto").value = '';
@@ -683,12 +763,30 @@
 			document.getElementById("numDesignaProc").value = '';
 		}
 
-		// <!-- Valida el numero de procedimiento (n/aaaa) -->
+		
+	<%if (ejisActivo>0){%>
+		//<!-- Valida el numero de procedimiento (n/aaaa) -->
+		function validaProcedimiento( strValue ) 
+		{
+			var objRegExp  = /^([0-9]{7})?$/;
+			return objRegExp.test(strValue);
+		}
+		
+		function validarAnioProcedimiento( strValue ) 
+		{
+			var objRegExp  = /^([0-9]{4})?$/;
+			return objRegExp.test(strValue);
+		}	
+		
+	<%}else{%>
+		//<!-- Valida el numero de procedimiento (n/aaaa) -->
 		function validaProcedimiento( strValue ) 
 		{
 			var objRegExp  = /^([0-9]+\/[0-9]{4})?$/;
 			return objRegExp.test(strValue);
-		}
+		}		
+		
+	<%}%>
 
 			
 		function buscarProcurador() 

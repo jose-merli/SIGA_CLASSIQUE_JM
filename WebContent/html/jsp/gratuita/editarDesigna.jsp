@@ -107,7 +107,7 @@
 	ArrayList pretensionesSel = new ArrayList();
 	String idJuzgado = null, idInstitucionJuzgado = null, idProcedimiento = "-1";
 
-	String idTurno = "", anio = "", numero = "", codigo = "", numeroProcedimiento = "", sufijo="";
+	String idTurno = "", anio = "", numero = "", codigo = "", numeroProcedimiento = "",anioProcedimiento = "", sufijo="";
 	boolean anulada = false;
 
 	// Designa consultada:
@@ -129,6 +129,7 @@
 	String filtrarModulos = "N";
 	String comboJuzgados ="", comboModulos="";
 	String art27 = "";
+	
 	 
 	try {
 
@@ -221,6 +222,7 @@
 			numero = beanDesigna.getNumero().toString();
 			codigo = beanDesigna.getCodigo().toString();
 			numeroProcedimiento = beanDesigna.getNumProcedimiento().toString();
+			
 			if (numeroProcedimiento == null)
 				numeroProcedimiento = new String("");
 			
@@ -237,6 +239,11 @@
 					datoJuzgado[0]=idProcedimiento;
 			}
 
+			anioProcedimiento = new String("");
+			if (beanDesigna.getAnioProcedimiento() != null)
+				anioProcedimiento = beanDesigna.getAnioProcedimiento().toString();			
+			
+			
 			procedimientoSel.add(0, idProcedimiento + "," + usr.getLocation());
 		}
 
@@ -311,6 +318,12 @@
 	if (request.getAttribute("PCAJG_ACTIVO")!=null){
 		pcajgActivo = Integer.parseInt(request.getAttribute("PCAJG_ACTIVO").toString());
 	}
+	
+	int ejisActivo = 0;
+	if (request.getAttribute("EJIS_ACTIVO")!=null){
+		ejisActivo = Integer.parseInt(request.getAttribute("EJIS_ACTIVO").toString());
+	}	
+	
 	boolean validarProcedimiento = false;
 	boolean obligatorioProcedimiento = false;
 	boolean obligatoriojuzgado=false;	
@@ -371,12 +384,30 @@
 	<script language="JavaScript">
 
 	
+	<%if (ejisActivo>0){%>
+		//<!-- Valida el numero de procedimiento (n/aaaa) -->
+		function validaProcedimiento( strValue ) 
+		{
+			var objRegExp  = /^([0-9]{7})?$/;
+			return objRegExp.test(strValue);
+		}
+		
+		function validarAnioProcedimiento( strValue ) 
+		{
+			var objRegExp  = /^([0-9]{4})?$/;
+			return objRegExp.test(strValue);
+		}	
+		
+	<%}else{%>
 		//<!-- Valida el numero de procedimiento (n/aaaa) -->
 		function validaProcedimiento( strValue ) 
 		{
 			var objRegExp  = /^([0-9]+\/[0-9]{4})?$/;
 			return objRegExp.test(strValue);
-		}
+		}		
+		
+	<%}%>
+			
 	
 		//<!-- Asociada al boton Volver -->
 		function accionVolver() 
@@ -413,12 +444,14 @@
 					
 				if (<%=obligatorioProcedimiento%> && document.getElementById("idPretension").value=="")
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.pretensiones'/>"+ '\n';
-				if(<%=validarProcedimiento%>){
-					if(!validaProcedimiento(document.getElementById("numeroProcedimiento").value))
-						error += "<siga:Idioma key='gratuita.procedimientos.numero.formato'/>"+ '\n';
-				}
 				
-
+				 <%if (ejisActivo==0){%>
+					if(<%=validarProcedimiento%>){
+						if(!validaProcedimiento(document.getElementById("numeroProcedimiento").value))
+							error += "<siga:Idioma key='gratuita.procedimientos.numero.formato'/>"+ '\n';
+					}
+				<%}%>
+				
 				
 				if(error!=""){
 					alert(error);
@@ -426,6 +459,24 @@
 					return false;
 				}
 		 	<%}%>
+		 	
+		 <%if (ejisActivo>0){%>
+		 	
+			if(document.getElementById("numeroProcedimiento").value != "" || document.getElementById("anioProcedimiento").value != ""){
+				if(document.getElementById("numeroProcedimiento").value == "" || !validaProcedimiento(document.getElementById("numeroProcedimiento").value))
+					error += "<siga:Idioma key='gratuita.procedimientos.numero.formato'/>"+ '\n';
+				if(document.getElementById("anioProcedimiento").value == "" || !validarAnioProcedimiento(document.getElementById("anioProcedimiento").value))	
+					error += "<siga:Idioma key='gratuita.procedimientos.anio.formato'/>"+ '\n';
+					
+				if(error!=""){
+					alert(error);
+					fin();
+					return false;
+				}	
+			}
+			
+		 <%}%>
+		 	
 			var estado = trim(document.forms[0].estado.value); // Cogemos el estado de la designa del formulario
 			var estadoOriginal = trim(document.forms[0].estadoOriginal.value); // Cogemos el estado original 
 			if ((estado == "A") && (estadoOriginal != "A")){// Si es un cambio a anulacion (V,F -> A)...
@@ -870,6 +921,21 @@
 						<td colspan="7">
 							<table align="center" cellpadding="0" cellpadding="0" width="100%" border="0">
 								<tr>
+				 <%if (ejisActivo>0){%>					
+																
+						<td style="vertical-align: middle;">						
+							<% if (!modo.equalsIgnoreCase("ver")) { %> 
+								<html:text name="MaestroDesignasForm" property="numeroProcedimiento" size="7" maxlength="7" styleClass="box" value="<%=numeroProcedimiento%>"></html:text>/
+								<html:text name="MaestroDesignasForm" property="anioProcedimiento" size="4" maxlength="4" styleClass="box" value="<%=anioProcedimiento%>" ></html:text>
+								 
+							<% } else { %> 
+								<html:text name="MaestroDesignasForm" property="numeroProcedimiento"  size="7" maxlength="7" styleClass="boxConsulta" value="<%=numeroProcedimiento%>" readonly="true"></html:text>/
+								<html:text name="MaestroDesignasForm" property="anioProcedimiento" size="4" maxlength="4" styleClass="boxConsulta" value="<%=anioProcedimiento%>"  readonly="true"></html:text>
+							<% } %>	
+						</td>
+						
+				<% } else { %> 	
+				
 						<td style="vertical-align: middle;">
 							<% if (!modo.equalsIgnoreCase("ver")) { %> 
 								<html:text name="MaestroDesignasForm" property="numeroProcedimiento" style="width:100" maxlength="<%=maxLenghtProc%>" styleClass="box" value="<%=numeroProcedimiento%>"></html:text> 
@@ -877,10 +943,15 @@
 								<html:text name="MaestroDesignasForm" property="numeroProcedimiento" style="width:100" maxlength="<%=maxLenghtProc%>" styleClass="boxConsulta" value="<%=numeroProcedimiento%>" readonly="true"></html:text> 
 							<% } %>	
 						</td>
+				
+				<% } %>		
 						
 						<td colspan="6"><!-- Busqueda automatica de juzgados--> 						
 							<siga:ConjCampos leyenda="gratuita.mantenimientoTablasMaestra.literal.juzgado">
 								<table>
+								
+							<%if (ejisActivo>0){%>		 				
+								
 									<tr>
 										<% if (!modo.equalsIgnoreCase("ver")) { %>
 											<td class="labelText">
@@ -893,16 +964,46 @@
 											<td class="labelText">
 												<input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();" />&nbsp;
 											</td>
-
+											
 											<td>
-												<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="500" pestana="t" accion="Hijo:idProcedimiento; cambiarJuzgado(this);"/>
-											</td> 
+												<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="500" pestana="t" accion="Hijo:idProcedimiento, Hijo:idPretension; cambiarJuzgado(this);"/>
+											</td>
+											
 										<% } else { %> 
 											<td>
-									 			<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="" clase="boxComboConsulta" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="500" pestana="t" accion="Hijo:idProcedimiento" readonly="true" />
+									 			<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="" clase="boxComboConsulta" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="500" pestana="t" accion="Hijo:idProcedimiento, Hijo:idPretension;" readonly="true" />
 											</td> 
 										<% } %>
 									</tr>
+									
+						<% } else { %>			
+									
+									<tr>
+										<% if (!modo.equalsIgnoreCase("ver")) { %>
+											<td class="labelText">
+												<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext" />
+												<% if (obligatoriojuzgado){ %>
+													<%= asterisco %>
+												<%}%>
+											</td>
+										
+											<td class="labelText">
+												<input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();" />&nbsp;
+											</td>
+											
+											<td>
+												<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="500" pestana="t" accion="Hijo:idProcedimiento; cambiarJuzgado(this);"/>
+											</td>	
+											
+										<% } else { %> 
+											<td>
+									 			<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="" clase="boxComboConsulta" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="500" pestana="t" accion="Hijo:idProcedimiento;" readonly="true" />
+											</td> 
+										<% } %>
+									</tr>									
+									
+									
+						<% } %>				
 								</table>
 							</siga:ConjCampos> 
 						<!------------------> <%-- Juzgado --%>
@@ -965,14 +1066,23 @@
 								<%= asterisco %>
 							<%} %>
 						</td>	
-						
+				<%if (ejisActivo>0){%>		
+						<td  colspan="7">
+							<%if(modo.equals("editar")){%>
+								<siga:ComboBD nombre="idPretension" tipo="comboPretensionesEjisModulos" ancho="380" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false" parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="false"/>           	   
+							<%}else{%>
+								<siga:ComboBD nombre="idPretension" tipo="comboPretensionesEjisModulos" ancho="380" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="true"/>           	   
+							<%}%>
+						</td>
+				<%}else{%>		
 						<td  colspan="7">
 							<%if(modo.equals("editar")){%>
 								<siga:ComboBD nombre="idPretension" tipo="comboPretensiones" ancho="380" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false" parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="false"/>           	   
 							<%}else{%>
 								<siga:ComboBD nombre="idPretension" tipo="comboPretensiones" ancho="380" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="true"/>           	   
 							<%}%>
-						</td>
+						</td>	
+				<%} %>											
 					</tr>
 					
 					<!-- JBD 16/2/2009 INC-5739-SIGA -->

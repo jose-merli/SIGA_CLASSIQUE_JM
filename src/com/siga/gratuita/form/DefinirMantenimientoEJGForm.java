@@ -16,6 +16,7 @@ import com.siga.general.MasterForm;
  {
 	String numeroDilegencia = "";
 	String numeroProcedimiento = "";
+	String anioProcedimiento = "";
 	String comisaria = "";
 	String juzgado = ""; 
 	String designa_anio= "";
@@ -374,7 +375,13 @@ import com.siga.general.MasterForm;
 	public void setNIG(String nIG) {
 		NIG = nIG;
 	}
-	
-	
+
+	public String getAnioProcedimiento() {
+		return anioProcedimiento;
+	}
+
+	public void setAnioProcedimiento(String anioProcedimiento) {
+		this.anioProcedimiento = anioProcedimiento;
+	}
 	
 }

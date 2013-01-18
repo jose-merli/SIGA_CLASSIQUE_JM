@@ -600,6 +600,12 @@ public class BusquedaDesignasAction extends MasterAction {
 					request.setAttribute("anioEJG", miform.getAnioEjg());
 					request.setAttribute("turnoEJG", this.getIDInstitucion(request) + "," + miform.getIdTurnoEJG());
 					request.setAttribute("idjuzgadoEJG", miform.getJuzgadoAsi()+ "," + miform.getJuzgadoInstitucionAsi());
+					//TEMPORAL!!!
+					UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+					GenParametrosAdm admParametros = new GenParametrosAdm(usr);		
+					String ejisActivo = admParametros.getValor(usr.getLocation(), "ECOM", "EJIS_ACTIVO", "0");
+					request.setAttribute("EJIS_ACTIVO", ejisActivo);			
+					request.setAttribute("anioProcedimiento",miform.getAnioProcedimiento()); 
 					request.setAttribute("numProcedimiento",miform.getNumProcedimiento()); 
 
 					hashAux=ejgAdm.procedeDeAsistencia((String)miform.getIdTipoEjg(),(String)miform.getNumeroEjg(),miform.getAnioEjg());
@@ -749,6 +755,7 @@ public class BusquedaDesignasAction extends MasterAction {
 					ScsEJGAdm ejgAdm = new ScsEJGAdm(this.getUserBean(request));
 					ScsEJGBean ejgBean = (ScsEJGBean)((Vector)ejgAdm.selectByPK(datos)).get(0);
 					UtilidadesHash.set(nuevaDesigna, ScsDesignaBean.C_NUMPROCEDIMIENTO, miform.getNumProcedimiento());
+					UtilidadesHash.set(nuevaDesigna, ScsDesignaBean.C_ANIOPROCEDIMIENTO, miform.getAnioProcedimiento());
 					UtilidadesHash.set(nuevaDesigna, "SOLICITANTE", miform.getIdSolicitante());
 
 
@@ -991,7 +998,10 @@ public class BusquedaDesignasAction extends MasterAction {
 				designaBean.setIdInstitucionJuzgado(new Integer(UtilidadesHash.getString(datosDesigna, ScsDesignaBean.C_IDINSTITUCIONJUZGADO)));
 
 			if (datosDesigna.get(ScsDesignaBean.C_NUMPROCEDIMIENTO)!=null && !((String)datosDesigna.get(ScsDesignaBean.C_NUMPROCEDIMIENTO)).equals(""))
-				designaBean.setNumProcedimiento(UtilidadesHash.getString(datosDesigna, ScsDesignaBean.C_NUMPROCEDIMIENTO));			
+				designaBean.setNumProcedimiento(UtilidadesHash.getString(datosDesigna, ScsDesignaBean.C_NUMPROCEDIMIENTO));		
+			
+			if (datosDesigna.get(ScsDesignaBean.C_ANIOPROCEDIMIENTO)!=null)
+				designaBean.setAnioProcedimiento(UtilidadesHash.getInteger(datosDesigna, ScsDesignaBean.C_ANIOPROCEDIMIENTO));					
 
 			ScsDesignaAdm designaAdm = new ScsDesignaAdm (usuario);
 			designaBean.setFechaAlta("SYSDATE");
@@ -1172,6 +1182,7 @@ public class BusquedaDesignasAction extends MasterAction {
 			designaBean.setNIG(ejgBean.getNIG());
 			designaBean.setArt27(UtilidadesHash.getString(datosHash, ScsDesignaBean.C_ART27));
 			designaBean.setNumProcedimiento(UtilidadesHash.getString(datosHash, ScsDesignaBean.C_NUMPROCEDIMIENTO));
+			designaBean.setAnioProcedimiento(UtilidadesHash.getInteger(datosHash, ScsDesignaBean.C_ANIOPROCEDIMIENTO));
 			//designaBean.setFechaEntrada(UtilidadesHash.getString(datosHash, ScsDesignaBean.C_FECHAENTRADA));
 			String idPretension =  ejgBean.getIdPretension();
 			if ((idPretension!=null)&&(!idPretension.equalsIgnoreCase(""))){ 

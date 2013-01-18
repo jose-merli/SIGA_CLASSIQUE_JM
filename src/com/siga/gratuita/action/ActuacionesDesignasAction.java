@@ -534,6 +534,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 								" des."+ScsDesignaBean.C_IDJUZGADO+","+
 								" des."+ScsDesignaBean.C_IDPROCEDIMIENTO+","+
 								" des."+ScsDesignaBean.C_NUMPROCEDIMIENTO+","+
+								" des."+ScsDesignaBean.C_ANIOPROCEDIMIENTO+","+
 								" des."+ScsDesignaBean.C_NIG+","+
 								" des."+ScsDesignaBean.C_IDPRETENSION+","+
 								" per."+CenPersonaBean.C_IDPERSONA+" AS IDPERSONA, "+

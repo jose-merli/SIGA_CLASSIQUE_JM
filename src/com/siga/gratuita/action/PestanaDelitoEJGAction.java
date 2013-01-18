@@ -13,6 +13,7 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsDelitosEJGAdm;
 import com.siga.beans.ScsDelitosEJGBean;
 import com.siga.beans.ScsEJGAdm;
@@ -49,6 +50,10 @@ public class PestanaDelitoEJGAction extends MasterAction {
 			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 			
+			//TEMPORAL!!!
+			GenParametrosAdm admParametros = new GenParametrosAdm(usr);		
+			String ejisActivo = admParametros.getValor(usr.getLocation(), "ECOM", "EJIS_ACTIVO", "0");
+			request.setAttribute("EJIS_ACTIVO", ejisActivo);
 			
 			Vector v = new Vector ();
 			Hashtable miHash = new Hashtable();		
@@ -77,7 +82,7 @@ public class PestanaDelitoEJGAction extends MasterAction {
                               "  And Tipcal.Idinstitucion = Ejg.Calidadidinstitucion) as calidad, Ejg.Idtipoencalidad,Ejg.calidadidinstitucion as CALIDADIDINSTITUCION, "+                              
                             " ejg.guardiaturno_idturno IDTURNO, ejg.IDPRETENSION as IDPRETENSION, ejg.IDPRETENSIONINSTITUCION as IDPRETENSIONINSTITUCION, " +
 					        " ejg.OBSERVACIONES, ejg.DELITOS, ejg.NIG, ejg.IDPROCURADOR, ejg.NUMERODESIGNAPROC, ejg.IDINSTITUCION_PROC, ejg.NUMERO_CAJG," +
-					        " ejg.ANIOCAJG, ejg.NUMERODILIGENCIA NUMERODILIGENCIA, ejg.NUMEROPROCEDIMIENTO NUMEROPROCEDIMIENTO, ejg.JUZGADO JUZGADO," +
+					        " ejg.ANIOCAJG, ejg.NUMERODILIGENCIA NUMERODILIGENCIA, ejg.NUMEROPROCEDIMIENTO NUMEROPROCEDIMIENTO,ejg.ANIOPROCEDIMIENTO ANIOPROCEDIMIENTO, ejg.JUZGADO JUZGADO," +
 					        " ejg.JUZGADOIDINSTITUCION JUZGADOIDINSTITUCION, ejg.COMISARIA COMISARIA, ejg.COMISARIAIDINSTITUCION COMISARIAIDINSTITUCION," +
 					        " ejg.FECHA_DES_PROC,ejg.IDPRECEPTIVO, ejg.IDSITUACION, ejg.IDRENUNCIA "+
 					        "  from scs_ejg Ejg " ;
@@ -144,7 +149,7 @@ public class PestanaDelitoEJGAction extends MasterAction {
                               "  And Tipcal.Idinstitucion = ejg.Calidadidinstitucion) as calidad, ejg.Idtipoencalidad,ejg.calidadidinstitucion, "+
 			" ejg.guardiaturno_idturno IDTURNO, "+
 			" ejg.OBSERVACIONES, ejg.DELITOS, ejg.IDPROCURADOR, ejg.IDINSTITUCION_PROC, ejg.NUMERO_CAJG," +
-			" ejg.ANIOCAJG, ejg.NUMERODILIGENCIA NUMERODILIGENCIA, ejg.NUMEROPROCEDIMIENTO NUMEROPROCEDIMIENTO, ejg.JUZGADO JUZGADO," +
+			" ejg.ANIOCAJG, ejg.NUMERODILIGENCIA NUMERODILIGENCIA, ejg.NUMEROPROCEDIMIENTO NUMEROPROCEDIMIENTO, ejg.ANIOPROCEDIMIENTO ANIOPROCEDIMIENTO, ejg.JUZGADO JUZGADO," +
 			" ejg.JUZGADOIDINSTITUCION JUZGADOIDINSTITUCION, ejg.COMISARIA COMISARIA, ejg.COMISARIAIDINSTITUCION COMISARIAIDINSTITUCION" +
 			"  from scs_ejg            ejg" ;
 			consulta += " where "+

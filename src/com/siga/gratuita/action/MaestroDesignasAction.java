@@ -149,6 +149,11 @@ public class MaestroDesignasAction extends MasterAction {
 			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 			
+			//TEMPORAL!!!
+			GenParametrosAdm admParametros = new GenParametrosAdm(usr);		
+			String ejisActivo = admParametros.getValor(usr.getLocation(), "ECOM", "EJIS_ACTIVO", "0");
+			request.setAttribute("EJIS_ACTIVO", ejisActivo);			
+			
 			GenParametrosAdm adm = new GenParametrosAdm (this.getUserBean(request));
 			String filtrarModulos = adm.getValor((String)usr.getLocation(),"SCS","FILTRAR_MODULOS_PORFECHA_DESIGNACION", "");
 			request.setAttribute("filtrarModulos", filtrarModulos);
@@ -660,6 +665,12 @@ public class MaestroDesignasAction extends MasterAction {
 							 UtilidadesHash.set(designaNueva, ScsDesignaBean.C_NUMPROCEDIMIENTO, "");
 						}	
 						
+						if (miform.getAnioProcedimiento() != null) {
+						    UtilidadesHash.set(designaNueva, ScsDesignaBean.C_ANIOPROCEDIMIENTO, miform.getAnioProcedimiento());
+						}else{
+							 UtilidadesHash.set(designaNueva, ScsDesignaBean.C_ANIOPROCEDIMIENTO, "");
+						}							
+						
 						if (miform.getNig() != null) {
 						    UtilidadesHash.set(designaNueva, ScsDesignaBean.C_NIG, miform.getNig());
 						}else{
@@ -928,6 +939,7 @@ public class MaestroDesignasAction extends MasterAction {
 		miform.setTurno(turnoBean.getDescripcion());
 		ScsDesignaBean beanDesigna = (ScsDesignaBean)vDesignas.get(0);
 		miform.setNumeroProcedimiento(beanDesigna.getNumProcedimiento());
+		miform.setAnioProcedimiento(beanDesigna.getAnioProcedimiento().toString());
 		
 		List<ScsJuzgadoBean> alJuzgados = null;
 		ScsJuzgadoAdm admJuzgados = new ScsJuzgadoAdm(usr);
@@ -959,13 +971,14 @@ public class MaestroDesignasAction extends MasterAction {
 			ScsDesignaAdm designaAdm = new ScsDesignaAdm (this.getUserBean(request));
 			String clavesDesigna[] = { ScsDesignaBean.C_ANIO, ScsDesignaBean.C_NUMERO,
 					ScsDesignaBean.C_IDINSTITUCION, ScsDesignaBean.C_IDTURNO };
-			String camposDesigna[]={ScsDesignaBean.C_IDINSTITUCIONJUZGADO,ScsDesignaBean.C_IDJUZGADO,ScsDesignaBean.C_IDPROCEDIMIENTO,ScsDesignaBean.C_NUMPROCEDIMIENTO};
+			String camposDesigna[]={ScsDesignaBean.C_IDINSTITUCIONJUZGADO,ScsDesignaBean.C_IDJUZGADO,ScsDesignaBean.C_IDPROCEDIMIENTO,ScsDesignaBean.C_NUMPROCEDIMIENTO,ScsDesignaBean.C_ANIOPROCEDIMIENTO};
 			Hashtable<String, String> htDesigna = new Hashtable<String, String>();
 			htDesigna.put(ScsDesignaBean.C_IDINSTITUCION,usr.getLocation());
 			htDesigna.put(ScsDesignaBean.C_ANIO,miform.getAnio());
 			htDesigna.put(ScsDesignaBean.C_IDTURNO,miform.getIdTurno());
 			htDesigna.put(ScsDesignaBean.C_NUMERO,miform.getNumero());
 			htDesigna.put(ScsDesignaBean.C_NUMPROCEDIMIENTO,miform.getNumeroProcedimiento());
+			htDesigna.put(ScsDesignaBean.C_ANIOPROCEDIMIENTO,miform.getAnioProcedimiento());
 			if(miform.getIdProcedimiento()!=null && !miform.getIdProcedimiento().equals("")&& !miform.getIdProcedimiento().equals("-1"))
 				htDesigna.put(ScsDesignaBean.C_IDPROCEDIMIENTO,miform.getIdProcedimiento());
 			if(miform.getIdJuzgado()!=null && !miform.getIdJuzgado().equals("")&& !miform.getIdJuzgado().equals("-1")){
@@ -1038,6 +1051,12 @@ public class MaestroDesignasAction extends MasterAction {
 			
 			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
+			
+			//TEMPORAL!!!
+			GenParametrosAdm admParametros = new GenParametrosAdm(usr);		
+			String ejisActivo = admParametros.getValor(usr.getLocation(), "ECOM", "EJIS_ACTIVO", "0");
+			request.setAttribute("EJIS_ACTIVO", ejisActivo);			
+			
 			// Recuperamos los datos de la clave del EJG. Pueden venir de la request si accedemos por primera vez a esa pestanha
 				miHash.put(ScsEJGBean.C_IDINSTITUCION,usr.getLocation());
 				miHash.put(ScsEJGBean.C_NUMERO,numero);
@@ -1065,6 +1084,7 @@ public class MaestroDesignasAction extends MasterAction {
 							  ",ejg."+ScsEJGBean.C_ANIO_CAJG +
 							  ",ejg."+ScsEJGBean.C_NUMERODILIGENCIA + " " + ScsEJGBean.C_NUMERODILIGENCIA +
 							  ",ejg."+ScsEJGBean.C_NUMEROPROCEDIMIENTO + " " + ScsEJGBean.C_NUMEROPROCEDIMIENTO +
+							  ",ejg."+ScsEJGBean.C_ANIOPROCEDIMIENTO + " " + ScsEJGBean.C_ANIOPROCEDIMIENTO +
 							  ",ejg."+ScsEJGBean.C_JUZGADO + " " + ScsEJGBean.C_JUZGADO +
 							  ",ejg."+ScsEJGBean.C_JUZGADOIDINSTITUCION + " " + ScsEJGBean.C_JUZGADOIDINSTITUCION +
 							  ",ejg."+ScsEJGBean.C_COMISARIA + " " + ScsEJGBean.C_COMISARIA +
@@ -1135,7 +1155,7 @@ public class MaestroDesignasAction extends MasterAction {
 			}catch (Exception e) {
 				throwExcp("error.general.yanoexiste",e,null);
 			}
-			String estado = "", nombre="",apellido1="",apellido2="",nombreSolicita="",observa = "",calidad="",nproc="",numDili="";
+			String estado = "", nombre="",apellido1="",apellido2="",nombreSolicita="",observa = "",calidad="",nproc="",numDili="", anioproc ="";;
 			if (!resultado.isEmpty()) {apellido1 =(String) ((Hashtable)resultado.get(0)).get("APELLIDO1ASISTIDO");}		
 			if (!resultado.isEmpty()) {apellido2 = (String)((Hashtable)resultado.get(0)).get("APELLIDO2ASISTIDO");}		
 			if (!resultado.isEmpty()) {nombre = (String) ((Hashtable)resultado.get(0)).get("NOMBREASISTIDO");}	
@@ -1151,6 +1171,7 @@ public class MaestroDesignasAction extends MasterAction {
 			if (!resultado.isEmpty()) {sufijo = (String)((Hashtable)resultado.get(0)).get("SUFIJO");}	
 			if (!resultado.isEmpty()) {calidad = (String)((Hashtable)resultado.get(0)).get("CALIDAD");}			
 			if (!resultado.isEmpty()) {nproc = (String)((Hashtable)resultado.get(0)).get("NUMEROPROCEDIMIENTO");}
+			if (!resultado.isEmpty()) {anioproc = (String)((Hashtable)resultado.get(0)).get("ANIOPROCEDIMIENTO");}
 			if (!resultado.isEmpty()) {numDili = (String)((Hashtable)resultado.get(0)).get("NUMERODILIGENCIA");}
 			if (!resultado.isEmpty()) {observaciones = (String)((Hashtable)resultado.get(0)).get("OBSERVACIONES");}
 			if (!resultado.isEmpty()) {idpreten = (String)((Hashtable)resultado.get(0)).get("IDPRETENSION");}			
@@ -1272,6 +1293,10 @@ public class MaestroDesignasAction extends MasterAction {
 				ejg.put(ScsEJGBean.C_CALIDAD,calidad);
 			if(nproc!=null)
 				ejg.put(ScsEJGBean.C_NUMEROPROCEDIMIENTO,nproc);
+			
+			if(anioproc!=null)
+				ejg.put(ScsEJGBean.C_ANIOPROCEDIMIENTO,anioproc);			
+			
 			if(numDili!=null)
 				ejg.put(ScsEJGBean.C_NUMERODILIGENCIA,numDili);
 			

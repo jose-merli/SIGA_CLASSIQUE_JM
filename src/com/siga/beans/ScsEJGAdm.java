@@ -411,7 +411,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							ScsEJGBean.C_IDINSTITUCIONACTA,			ScsEJGBean.C_ANIOACTA,
 							ScsEJGBean.C_IDECOMCOLA,				ScsEJGBean.C_REQUIERENOTIFICARPROC,
 							ScsEJGBean.C_USUCREACION,				ScsEJGBean.C_FECHACREACION,
-							ScsEJGBean.C_FECHAPRESENTACIONPONENTE};
+							ScsEJGBean.C_FECHAPRESENTACIONPONENTE,	ScsEJGBean.C_ANIOPROCEDIMIENTO};
 							//,ScsEJGBean.C_DESIGNA_IDTURNO,	ScsEJGBean.C_DESIGNA_ANIO, ScsEJGBean.C_DESIGNA_NUMERO
 		return campos;
 	}
@@ -455,7 +455,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							ScsEJGBean.C_BISRESOLUCION,				ScsEJGBean.C_IDACTA,
 							ScsEJGBean.C_IDINSTITUCIONACTA,			ScsEJGBean.C_ANIOACTA,
 							ScsEJGBean.C_REQUIERENOTIFICARPROC,		ScsEJGBean.C_IDECOMCOLA,
-							ScsEJGBean.C_FECHAPRESENTACIONPONENTE};
+							ScsEJGBean.C_FECHAPRESENTACIONPONENTE,	ScsEJGBean.C_ANIOPROCEDIMIENTO};
 							//,ScsEJGBean.C_USUCREACION,				ScsEJGBean.C_FECHACREACION
 							//,ScsEJGBean.C_DESIGNA_IDTURNO,	ScsEJGBean.C_DESIGNA_ANIO, ScsEJGBean.C_DESIGNA_NUMERO
 		return campos;
@@ -566,6 +566,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			bean.setIdInstitucionActa(UtilidadesHash.getString(hash,ScsEJGBean.C_IDINSTITUCIONACTA));
 			bean.setAnioActa(UtilidadesHash.getString(hash,ScsEJGBean.C_ANIOACTA));
 			bean.setIdEcomCola(UtilidadesHash.getLong(hash,ScsEJGBean.C_IDECOMCOLA));
+			bean.setAnioProcedimiento(UtilidadesHash.getInteger(hash,ScsEJGBean.C_ANIOPROCEDIMIENTO));
 		}
 		catch (Exception e){
 			throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR HASHTABLE A BEAN");
@@ -669,6 +670,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,ScsEJGBean.C_ANIOACTA, b.getAnioActa());			
 			UtilidadesHash.set(htData,ScsEJGBean.C_IDECOMCOLA, b.getIdEcomCola());
 			UtilidadesHash.set(htData,ScsEJGBean.C_FECHAPRESENTACIONPONENTE, b.getFechaPresentacionPonente());
+			UtilidadesHash.set(htData, ScsEJGBean.C_ANIOPROCEDIMIENTO, b.getAnioProcedimiento());
 		}
 		catch (Exception e){
 			 throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR EL BEAN A HASHTABLE");
