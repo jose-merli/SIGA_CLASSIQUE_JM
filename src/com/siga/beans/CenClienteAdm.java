@@ -2245,18 +2245,20 @@ public class CenClienteAdm extends MasterBeanAdmVisible
                    "'Letrado' AS ESTADOCOLEGIAL, "+
 				   "'1' AS COLEGIACION"+
 				   " ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOAPARECERREDABOGACIA+"  " +
-           " FROM  (("+CenPersonaBean.T_NOMBRETABLA+" INNER JOIN  "+CenClienteBean.T_NOMBRETABLA+" ON "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+")";
+           " FROM  (("+CenPersonaBean.T_NOMBRETABLA+" INNER JOIN  "+CenClienteBean.T_NOMBRETABLA+" ON "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+"))";
 	       
-	       if (formulario.getObtenerColegiados().trim().equals("true".trim())) {
-	    	   sqlClientes+= " INNER JOIN "+CenColegiadoBean.T_NOMBRETABLA+" ON "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" AND "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+") " ;
-	       } else {
-	    	   sqlClientes+= " LEFT JOIN "+CenColegiadoBean.T_NOMBRETABLA+" ON "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" AND "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+") " ;	    	   
-	       }
 	       contador++;
 	       codigos.put(new Integer(contador),idInstitucion);
 	       sqlClientes+=" WHERE "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" = :"+contador+
 		                  " AND "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_LETRADO+"= 1";
+
 	       
+	       if (formulario.getObtenerColegiados().trim().equals("true".trim())) {
+	    	   sqlClientes+= " AND EXISTS " ;
+	       } else {
+	    	   sqlClientes+= " AND NOT EXISTS " ;	    	   
+	       }	
+	       sqlClientes+= " (SELECT * FROM "+CenColegiadoBean.T_NOMBRETABLA+" WHERE "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" AND "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+") " ;
 	       
 //	  	 2  
 	       if (formulario.getNumeroColegiado()!=null && !formulario.getNumeroColegiado().trim().equals("")) {
