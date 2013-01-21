@@ -4525,12 +4525,14 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 		        	" WHERE P.IDPERSONA=CEN_CLIENTE.IDPERSONA" +
 		        	" AND CEN_CLIENTE.IDPERSONA=COL.IDPERSONA" +
 		        	" AND CEN_CLIENTE.IDINSTITUCION=COL.IDINSTITUCION" +
+		        	/*
 		            " AND (select idestado " +
 		        	"       from cen_datoscolegialesestado e2 " +
 		        	"        where e2.idinstitucion = CEN_CLIENTE.IDINSTITUCION " +
 		        	"          and e2.idpersona = CEN_CLIENTE.IDPERSONA " +
 		        	"          and e2.fechaestado = (select max(e.fechaestado) from cen_datoscolegialesestado e where e.idinstitucion=e2.idinstitucion and e.idpersona=e2.idpersona) " +
 		        	"          ) not in ('30', '40') " +
+		        	*/
 		        	" AND CEN_CLIENTE.IDINSTITUCION=:1"+
 		        	" AND f_siga_calculoncolegiado(CEN_CLIENTE.IDINSTITUCION,CEN_CLIENTE.IDPERSONA)=:2";
 		    
@@ -4572,12 +4574,15 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 		        	" WHERE P.IDPERSONA=CEN_CLIENTE.IDPERSONA" +
 		        	" AND CEN_CLIENTE.IDPERSONA=COL.IDPERSONA" +
 		        	" AND CEN_CLIENTE.IDINSTITUCION=COL.IDINSTITUCION" +
+		        	/*
 		            " AND (select idestado " +
 		        	"       from cen_datoscolegialesestado e2 " +
 		        	"        where e2.idinstitucion = CEN_CLIENTE.IDINSTITUCION " +
 		        	"          and e2.idpersona = CEN_CLIENTE.IDPERSONA " +
 		        	"          and e2.fechaestado = (select max(e.fechaestado) from cen_datoscolegialesestado e where e.idinstitucion=e2.idinstitucion and e.idpersona=e2.idpersona) " +
 		        	"          ) not in ('30', '40') " +
+		        	
+		        	*/
 		        	" AND CEN_CLIENTE.IDINSTITUCION=:1";
 		    		codigos.put(new Integer(1),idInstitucion);
 		    		if(nombreColegiado!=null && !nombreColegiado.trim().equals("")){
