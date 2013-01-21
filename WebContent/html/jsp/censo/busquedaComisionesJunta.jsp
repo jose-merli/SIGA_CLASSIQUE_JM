@@ -28,6 +28,7 @@
 <%@ page import="com.siga.beans.CenInstitucionAdm"%>
 <%@ page import="java.util.Properties" %>
 <%@ page import="com.siga.administracion.SIGAGestorInterfaz"%>
+<%@ page import = "com.siga.Utilidades.*"%>
 
 <!-- JSP -->
 <% 	
@@ -136,7 +137,7 @@
 						<siga:Idioma key="censo.busquedaComisiones.literal.fechaCargo"/> (*)
 					</td>
 					<td class="labelText">
-						<siga:Fecha nombreCampo="fechaCargo"/>
+						<siga:Fecha nombreCampo="fechaCargo" valorInicial='<%=UtilidadesBDAdm.getFechaBD("")%>'/>
 					</td>
 				
 					<td>
