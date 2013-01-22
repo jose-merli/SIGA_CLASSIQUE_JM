@@ -2258,14 +2258,19 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	       } else {
 	    	   sqlClientes+= " AND NOT EXISTS " ;	    	   
 	       }	
-	       sqlClientes+= " (SELECT * FROM "+CenColegiadoBean.T_NOMBRETABLA+" WHERE "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" AND "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+") " ;
-	       
+	       sqlClientes+= " (SELECT * " +
+	    		   	" FROM " + CenColegiadoBean.T_NOMBRETABLA +
+	    		   	" WHERE "+ CenColegiadoBean.T_NOMBRETABLA + "."+ CenColegiadoBean.C_IDPERSONA + " = " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDPERSONA +
+	    		   	" AND " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_IDINSTITUCION + " = " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDINSTITUCION;
 //	  	 2  
 	       if (formulario.getNumeroColegiado()!=null && !formulario.getNumeroColegiado().trim().equals("")) {
 	       	contador++;
           	codigos.put(new Integer(contador),formulario.getNumeroColegiado().trim());
-	   			sqlClientes += " AND LTRIM(DECODE(CEN_COLEGIADO.COMUNITARIO,'1',CEN_COLEGIADO.NCOMUNITARIO, CEN_COLEGIADO.NCOLEGIADO),'0') = LTRIM(:"+contador+",'0') " ;
+	   			sqlClientes += " AND LTRIM(DECODE(" + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_COMUNITARIO + ",'1', " +
+	   							 CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_NCOMUNITARIO + ", " +  CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_NCOLEGIADO+ "),'0') = LTRIM(:"+contador+",'0') ";
 	       }
+
+	        sqlClientes+=" ) ";	       
 	       
 //	 3
 	       if (!formulario.getNombrePersona().trim().equals("")) {
