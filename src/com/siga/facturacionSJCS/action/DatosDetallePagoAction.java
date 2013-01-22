@@ -9,15 +9,23 @@
 
 package com.siga.facturacionSJCS.action;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -345,9 +353,258 @@ public class DatosDetallePagoAction extends MasterAction {
 			// Generarmos el fichero XSL
 			GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
 			String nombreFichero = paramAdm.getValor("" + idInstitucion, "FCS", "PATH_PREVISIONES", null);
-			nombreFichero += File.separator + "PAGOS_LETRADO_" + idInstitucion + "_" + idFacturacion + "_" + idPago + ".XLS";
+			nombreFichero += File.separator + "PAGOS_LETRADO_" + idInstitucion + "_" + idFacturacion + "_" + idPago + ".XLS";			
+
+			// ***************************
+			// * INICIO GENERACION EXCEL *
+			// ***************************
+			HSSFWorkbook libro = new HSSFWorkbook();						
+			HSSFDataFormat df = libro.createDataFormat();			
+
 			
-			BufferedWriter bw = new BufferedWriter(new FileWriter(nombreFichero));
+			// GESTION DE FUENTES
+			HSSFFont fuenteCabeceras = libro.createFont();
+			HSSFFont fuenteNormal = libro.createFont();
+			
+			fuenteCabeceras.setFontHeightInPoints((short) 10);
+			fuenteCabeceras.setColor((short) HSSFFont.COLOR_NORMAL);
+			fuenteCabeceras.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+
+			fuenteNormal.setFontHeightInPoints((short) 10);
+			fuenteNormal.setColor((short) HSSFFont.COLOR_NORMAL);
+			fuenteNormal.setBoldweight(HSSFFont.BOLDWEIGHT_NORMAL);
+
+			
+			// GESTION DE ESTILOS
+			HSSFCellStyle estiloCeldaMoneda = libro.createCellStyle();
+			HSSFCellStyle estiloCeldaPorcentaje = libro.createCellStyle();
+			HSSFCellStyle estiloCeldaTexto = libro.createCellStyle();
+			HSSFCellStyle estiloCeldaTitulo = libro.createCellStyle();
+			
+			//estiloCeldaMoneda.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+			//estiloCeldaMoneda.setBorderTop(HSSFCellStyle.BORDER_THIN);
+			//estiloCeldaMoneda.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+			//estiloCeldaMoneda.setBorderRight(HSSFCellStyle.BORDER_THIN);
+			estiloCeldaMoneda.setFont(fuenteNormal);
+			estiloCeldaMoneda.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
+			estiloCeldaMoneda.setDataFormat(df.getFormat("###,###,##0.00 €"));
+			
+			//estiloCeldaPorcentaje.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+			//estiloCeldaPorcentaje.setBorderTop(HSSFCellStyle.BORDER_THIN);
+			//estiloCeldaPorcentaje.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+			//estiloCeldaPorcentaje.setBorderRight(HSSFCellStyle.BORDER_THIN);
+			estiloCeldaPorcentaje.setFont(fuenteNormal);
+			estiloCeldaPorcentaje.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
+			estiloCeldaPorcentaje.setDataFormat(df.getFormat("##0.00 %"));
+
+			//estiloCeldaTexto.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+			//estiloCeldaTexto.setBorderTop(HSSFCellStyle.BORDER_THIN);
+			//estiloCeldaTexto.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+			//estiloCeldaTexto.setBorderRight(HSSFCellStyle.BORDER_THIN);
+			estiloCeldaTexto.setFont(fuenteNormal);
+			estiloCeldaTexto.setDataFormat(HSSFDataFormat.getBuiltinFormat("text"));			
+			
+			//estiloCeldaTitulo.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+			//estiloCeldaTitulo.setBorderTop(HSSFCellStyle.BORDER_THIN);
+			//estiloCeldaTitulo.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+			//estiloCeldaTitulo.setBorderRight(HSSFCellStyle.BORDER_THIN);
+			estiloCeldaTitulo.setFont(fuenteCabeceras);
+			estiloCeldaTitulo.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+			estiloCeldaTitulo.setDataFormat(HSSFDataFormat.getBuiltinFormat("text"));
+			estiloCeldaTitulo.setFillPattern((short) HSSFCellStyle.SOLID_FOREGROUND);
+			estiloCeldaTitulo.setFillForegroundColor(new HSSFColor.GREY_25_PERCENT().getIndex()); 						
+
+			
+			// GESTION DATOS
+			HSSFSheet hoja = libro.createSheet();
+			libro.setSheetName(0, "Pago");
+
+			HSSFRow filas = null;
+			HSSFCell celdas = null;
+			
+			filas = hoja.createRow(0);
+			
+			celdas = filas.createCell(0);
+			celdas.setCellValue(new HSSFRichTextString(UtilidadesString.getMensajeIdioma(usuario, "factSJCS.detalleFacturacion.literal.nColegiado")));
+			celdas.setCellStyle(estiloCeldaTitulo);
+			celdas.setCellType(HSSFCell.CELL_TYPE_STRING);
+			
+			celdas = filas.createCell(1);
+			celdas.setCellValue(new HSSFRichTextString(UtilidadesString.getMensajeIdioma(usuario, "factSJCS.detalleFacturacion.literal.colegiado")));
+			celdas.setCellStyle(estiloCeldaTitulo);
+			celdas.setCellType(HSSFCell.CELL_TYPE_STRING);
+			
+			celdas = filas.createCell(2);
+			celdas.setCellValue(new HSSFRichTextString(UtilidadesString.getMensajeIdioma(usuario, "factSJCS.datosPagos.literal.importeSJCS")));
+			celdas.setCellStyle(estiloCeldaTitulo);
+			celdas.setCellType(HSSFCell.CELL_TYPE_STRING);
+			
+			celdas = filas.createCell(3);
+			celdas.setCellValue(new HSSFRichTextString(UtilidadesString.getMensajeIdioma(usuario, "factSJCS.datosPagos.literal.importeMovimientosVarios")));
+			celdas.setCellStyle(estiloCeldaTitulo);
+			celdas.setCellType(HSSFCell.CELL_TYPE_STRING);
+			
+			celdas = filas.createCell(4);
+			celdas.setCellValue(new HSSFRichTextString(UtilidadesString.getMensajeIdioma(usuario, "factSJCS.datosFacturacion.literal.importeBruto")));
+			celdas.setCellStyle(estiloCeldaTitulo);
+			celdas.setCellType(HSSFCell.CELL_TYPE_STRING);
+			
+			celdas = filas.createCell(5);
+			celdas.setCellValue(new HSSFRichTextString(UtilidadesString.getMensajeIdioma(usuario, "factSJCS.detalleFacturacion.literal.tipoIRPF")));
+			celdas.setCellStyle(estiloCeldaTitulo);
+			celdas.setCellType(HSSFCell.CELL_TYPE_STRING);
+			
+			celdas = filas.createCell(6);
+			celdas.setCellValue(new HSSFRichTextString(UtilidadesString.getMensajeIdioma(usuario, "factSJCS.detalleFacturacion.literal.importeIRPF")));
+			celdas.setCellStyle(estiloCeldaTitulo);
+			celdas.setCellType(HSSFCell.CELL_TYPE_STRING);
+			
+			celdas = filas.createCell(7);
+			celdas.setCellValue(new HSSFRichTextString(UtilidadesString.getMensajeIdioma(usuario, "factSJCS.datosPagos.literal.importeRetenciones")));
+			celdas.setCellStyle(estiloCeldaTitulo);
+			celdas.setCellType(HSSFCell.CELL_TYPE_STRING);
+			
+			celdas = filas.createCell(8);
+			celdas.setCellValue(new HSSFRichTextString(UtilidadesString.getMensajeIdioma(usuario, "factSJCS.detalleFacturacion.literal.importe")));
+			celdas.setCellStyle(estiloCeldaTitulo);
+			celdas.setCellType(HSSFCell.CELL_TYPE_STRING);
+			
+			celdas = filas.createCell(9);
+			celdas.setCellValue(new HSSFRichTextString(UtilidadesString.getMensajeIdioma(usuario, "factSJCS.datosPagos.literal.destinatario")));
+			celdas.setCellStyle(estiloCeldaTitulo);
+			celdas.setCellType(HSSFCell.CELL_TYPE_STRING);
+			
+			celdas = filas.createCell(10);
+			celdas.setCellValue(new HSSFRichTextString(UtilidadesString.getMensajeIdioma(usuario, "factSJCS.detalleFacturacion.literal.formadepago")));
+			celdas.setCellStyle(estiloCeldaTitulo);
+			celdas.setCellType(HSSFCell.CELL_TYPE_STRING);
+			
+			celdas = filas.createCell(11);
+			celdas.setCellValue(new HSSFRichTextString(UtilidadesString.getMensajeIdioma(usuario, "facturacion.pagosFactura.MedioPago.Banco")));
+			celdas.setCellStyle(estiloCeldaTitulo);
+			celdas.setCellType(HSSFCell.CELL_TYPE_STRING);
+			
+			celdas = filas.createCell(12);
+			celdas.setCellValue(new HSSFRichTextString(UtilidadesString.getMensajeIdioma(usuario, "censo.datosCuentaBancaria.literal.cuenta")));
+			celdas.setCellStyle(estiloCeldaTitulo);
+			celdas.setCellType(HSSFCell.CELL_TYPE_STRING);
+						
+			for (int i = 0; i < resultado.size(); i++) {										
+					Hashtable fila = (Hashtable) resultado.get(i);
+					String nombreColegiado = UtilidadesHash.getString(fila, "NOMBREPERSONA");
+					String ncolegiado      = UtilidadesHash.getString(fila, "NCOLEGIADO");
+					double dcolegiado      = Double.parseDouble(ncolegiado);	
+					
+					double dTipoIrpf = Double.parseDouble(UtilidadesHash.getString(fila, "TIPOIRPF"));
+					String tipoIrpf  = UtilidadesString.formatoImporte(UtilidadesNumero.redondea(dTipoIrpf, 2));
+					
+					double dIrpf = Double.parseDouble(UtilidadesHash.getString(fila, "TOTALIMPORTEIRPF"));
+					String irpf = UtilidadesString.formatoImporte(UtilidadesNumero.redondea(dIrpf, 2));
+
+					double dImporteRetenciones = Double.parseDouble(UtilidadesHash.getString(fila, "IMPORTETOTALRETENCIONES"));
+					String importeRetenciones = UtilidadesString.formatoImporte(UtilidadesNumero.redondea(dImporteRetenciones, 2));
+					
+					double dImporteTotalSJCS = Double.parseDouble(UtilidadesHash.getString(fila, "TOTALIMPORTESJCS"));
+					String importeTotalSJCS = UtilidadesString.formatoImporte(UtilidadesNumero.redondea(dImporteTotalSJCS, 2));
+					
+					double dIimporteTotalMovimientoVarios = Double.parseDouble(UtilidadesHash.getString(fila, "IMPORTETOTALMOVIMIENTOS"));
+					String importeTotalMovimientoVarios = UtilidadesString.formatoImporte(UtilidadesNumero.redondea(dIimporteTotalMovimientoVarios, 2));
+					
+					String destinatario = UtilidadesHash.getString(fila, "DESTINATARIO");
+					String formaPago    = UtilidadesHash.getString(fila, "FORMADEPAGO");
+					String banco    = UtilidadesHash.getString(fila, "NOMBREBANCO");
+					String codigoCuenta    = UtilidadesHash.getString(fila, "NUMEROCUENTA");
+					
+					double dTotalBrutos = dImporteTotalSJCS + dIimporteTotalMovimientoVarios;
+					String totalBruto = UtilidadesString.formatoImporte(UtilidadesNumero.redondea(dTotalBrutos, 2));
+					
+					if (dTotalBrutos<0) dTotalBrutos=0; 
+					double dTotalTotal = dImporteTotalSJCS + dIimporteTotalMovimientoVarios + dIrpf + dImporteRetenciones;
+					String totalTotal = UtilidadesString.formatoImporte(UtilidadesNumero.redondea(dTotalTotal, 2));
+					
+					if (dTotalTotal<0) dTotalTotal=0; 
+					
+					filas = hoja.createRow(1+i);
+					
+					celdas = filas.createCell(0);
+					celdas.setCellValue(dcolegiado);
+					celdas.setCellStyle(estiloCeldaTexto);
+					
+					celdas = filas.createCell(1);
+					celdas.setCellValue(new HSSFRichTextString(nombreColegiado));					
+					celdas.setCellStyle(estiloCeldaTexto);
+					celdas.setCellType(HSSFCell.CELL_TYPE_STRING);
+					
+					celdas = filas.createCell(2);
+					celdas.setCellValue(dImporteTotalSJCS);					
+					celdas.setCellStyle(estiloCeldaMoneda);
+					celdas.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+
+					celdas = filas.createCell(3);
+					celdas.setCellValue(dIimporteTotalMovimientoVarios);
+					celdas.setCellStyle(estiloCeldaMoneda);
+					celdas.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+					
+					celdas = filas.createCell(4);
+					celdas.setCellValue(dTotalBrutos);
+					celdas.setCellStyle(estiloCeldaMoneda);
+					celdas.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+					
+					celdas = filas.createCell(5);
+					celdas.setCellValue(dTipoIrpf/100);
+					celdas.setCellStyle(estiloCeldaPorcentaje);
+					celdas.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+					
+					celdas = filas.createCell(6);
+					celdas.setCellValue(dIrpf);
+					celdas.setCellStyle(estiloCeldaMoneda);
+					celdas.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+					
+					celdas = filas.createCell(7);
+					celdas.setCellValue(dImporteRetenciones);
+					celdas.setCellStyle(estiloCeldaMoneda);
+					celdas.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+					
+					celdas = filas.createCell(8);
+					celdas.setCellValue(dTotalTotal);
+					celdas.setCellStyle(estiloCeldaMoneda);
+					celdas.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+					
+					celdas = filas.createCell(9);
+					celdas.setCellValue(new HSSFRichTextString(destinatario));
+					celdas.setCellStyle(estiloCeldaTexto);
+					celdas.setCellType(HSSFCell.CELL_TYPE_STRING);
+					
+					celdas = filas.createCell(10);
+					celdas.setCellValue(new HSSFRichTextString(formaPago));
+					celdas.setCellStyle(estiloCeldaTexto);
+					celdas.setCellType(HSSFCell.CELL_TYPE_STRING);
+					
+					celdas = filas.createCell(11);
+					celdas.setCellValue(new HSSFRichTextString(banco));
+					celdas.setCellStyle(estiloCeldaTexto);
+					celdas.setCellType(HSSFCell.CELL_TYPE_STRING);
+					
+					celdas = filas.createCell(12);
+					celdas.setCellValue(new HSSFRichTextString(codigoCuenta));
+					celdas.setCellStyle(estiloCeldaTexto);
+					celdas.setCellType(HSSFCell.CELL_TYPE_STRING);
+				}
+			
+			for (short i=0; i<13; i++)
+				hoja.autoSizeColumn(i);
+
+			FileOutputStream out = new FileOutputStream(nombreFichero);
+			libro.write(out);
+			out.close();
+			
+			// ************************
+			// * FIN GENERACION EXCEL *
+			// ************************
+			
+			/*
+			FileWriter fw = new FileWriter(nombreFichero);
+			BufferedWriter bw = new BufferedWriter(fw);
 			
 			String cadena = UtilidadesString.getMensajeIdioma(usuario, "factSJCS.detalleFacturacion.literal.nColegiado") + "\t" +
 			UtilidadesString.getMensajeIdioma(usuario, "factSJCS.detalleFacturacion.literal.colegiado") + "\t" +
@@ -410,7 +667,10 @@ public class DatosDetallePagoAction extends MasterAction {
 					bw.write(cadena);
 				}
 			}
+			
 			bw.close();
+			fw.close();
+			*/
 			
 			// Descargamos el fichero
 			File fichero = new File(nombreFichero);
