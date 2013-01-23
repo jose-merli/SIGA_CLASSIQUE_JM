@@ -63,7 +63,7 @@
 				  <siga:Idioma key="gratuita.operarRatificacion.literal.tipoRatificacion"/>
 				</td>
 				<td colspan="4">
-					<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucion" clase="boxCombo" ancho="500" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>"/>
+					<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucion" clase="boxCombo" ancho="500" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>"  accion="Hijo:idFundamentoJuridico"/>
 				</td>
 			</tr>
 			<tr>
@@ -72,7 +72,7 @@
 					<siga:Idioma key="gratuita.operarRatificacion.literal.fundamentoJuridico"/>
 				</td>
 				<td colspan="4">
-					<siga:ComboBD nombre="idFundamentoJuridico" tipo="tipoFundamentos" clase="boxCombo" ancho="500" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>"/>
+					<siga:ComboBD nombre="idFundamentoJuridico" tipo="tipoFundamentos" clase="boxCombo" ancho="500" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" hijo="t"/>
 				</td>
 			</tr>
 			</table>
@@ -90,22 +90,27 @@
 
 		function accionGuardarCerrar(){
 			sub();
-
-			if(document.ActaComisionForm.guardaActa.checked ||
-				document.ActaComisionForm.guardaPonente.checked ||
-				document.ActaComisionForm.guardaFundamento.checked ||
-				document.ActaComisionForm.guardaRatificacion.checked){
-
-				if(document.getElementById("idActaComp").value!=""){
-					var actaComp= document.getElementById("idActaComp").value.split(',');
-					document.ActaComisionForm.idInstitucion.value=actaComp[0];
-					document.ActaComisionForm.anioActa.value=actaComp[1];
-					document.ActaComisionForm.idActa.value=actaComp[2];
-				}
-				document.ActaComisionForm.submit();
-			}else{
-				alert("<siga:Idioma key="sjcs.actas.seleccioneCampos"/>");
+			
+			if (document.ActaComisionForm.guardaFundamento.checked && !document.ActaComisionForm.guardaRatificacion.checked) {
+				alert("<siga:Idioma key='sjcs.actas.checkfundamentojuridico'/>");
 				fin();
+			} else {
+				if(document.ActaComisionForm.guardaActa.checked ||
+					document.ActaComisionForm.guardaPonente.checked ||
+					document.ActaComisionForm.guardaRatificacion.checked ||
+					document.ActaComisionForm.guardaFundamento.checked){
+	
+					if(document.getElementById("idActaComp").value!=""){
+						var actaComp= document.getElementById("idActaComp").value.split(',');
+						document.ActaComisionForm.idInstitucion.value=actaComp[0];
+						document.ActaComisionForm.anioActa.value=actaComp[1];
+						document.ActaComisionForm.idActa.value=actaComp[2];
+					}
+					document.ActaComisionForm.submit();
+				}else{
+					alert("<siga:Idioma key='sjcs.actas.seleccioneCampos'/>");
+					fin();
+				}
 			}
 		}
 	</script>
