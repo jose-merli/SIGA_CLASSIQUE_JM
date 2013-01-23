@@ -236,15 +236,28 @@
 				<td class="labelText">
 					<siga:Idioma key="factSJCS.datosMovimientos.literal.descripcion"/>&nbsp;(*)
 				</td>
+				<%if ((modo!=null)&&(modo.equals("consulta"))){%>
+				<td class="labelText" width="80">
+					<html:text name="MantenimientoMovimientosForm" property="descripcion" size= "30" maxlength="100" styleClass="<%=clase%>" readonly="true" value="<%=descripcion%>"/>
+				</td>
+				<%} else {%>
 				<td class="labelText" width="80">
 					<html:text name="MantenimientoMovimientosForm" property="descripcion" size= "30" maxlength="100" styleClass="<%=clase%>" readonly="false" value="<%=descripcion%>"/>
-				</td>
+				</td>				
+				<%}%>
+				
 				<td class="labelText"  width="80">
 					<siga:Idioma key="factSJCS.datosMovimientos.literal.cantidad"/>&nbsp;(*)
 				</td>
+				<%if ((modo!=null)&&(modo.equals("consulta"))){%>
+				<td class="labelText">
+					<html:text name="MantenimientoMovimientosForm" property="cantidad" size= "11" maxlength="11" styleClass="<%=claseNum%>" readonly="true"  value="<%=UtilidadesNumero.formatoCampo(cantidad)%>"/>&nbsp;&euro;
+				</td>
+				<%} else {%>
 				<td class="labelText">
 					<html:text name="MantenimientoMovimientosForm" property="cantidad" size= "11" maxlength="11" styleClass="<%=claseNum%>" readonly="false"  value="<%=UtilidadesNumero.formatoCampo(cantidad)%>"/>&nbsp;&euro;
-				</td>
+				</td>				
+				<%}%>
 			</tr>
 			<%if ((modo!=null)&&(!modo.equals("nuevo"))){%>
 			<tr>
@@ -260,9 +273,15 @@
 				<td class="labelText">
 					<siga:Idioma key="factSJCS.datosMovimientos.literal.motivo"/>
 				</td>
+				<%if ((modo!=null)&&(modo.equals("consulta"))){%>
 				<td class="labelText" colspan="3">
-					<html:textarea name="MantenimientoMovimientosForm" property="motivo" cols="60" rows="4" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" styleClass="<%=clase%>" value="<%=motivo%>"/>
+					<html:textarea name="MantenimientoMovimientosForm" property="motivo" cols="60" rows="4" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" styleClass="<%=clase%>" readonly="true" value="<%=motivo%>"/>
 				</td>
+				<%} else {%>
+				<td class="labelText" colspan="3">
+					<html:textarea name="MantenimientoMovimientosForm" property="motivo" cols="60" rows="4" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" styleClass="<%=clase%>" readonly="false" value="<%=motivo%>"/>
+				</td>				
+				<%}%>	
 			</tr>			
 		</table>
 		</siga:ConjCampos>
