@@ -16,7 +16,6 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -100,6 +99,21 @@ public class InsertaRecursos {
 	    	    }
 	    	}
 	    }
+	    try {
+		    if (args[1]!=null) {
+			    PrintWriter printer = new PrintWriter(new BufferedWriter(new FileWriter(args[1], false)));
+		        printer.println(trace.toString());
+		        printer.flush();
+		        printer.close();
+		    } else {
+		    	System.out.println("NO EXISTE FICHERO DE SALIDA");
+		    	System.out.println(trace.toString());
+		    }
+		
+	    } catch (IOException e) {
+	    	System.out.println(e.toString());
+	    	throw e;
+        }
 	    
 	    System.out.println(trace);
 	    System.out.println("fin correcto");
