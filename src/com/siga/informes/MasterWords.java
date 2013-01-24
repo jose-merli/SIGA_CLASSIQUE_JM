@@ -317,6 +317,7 @@ public class MasterWords
 		try {
 			doc = new Document(pathPlantilla);
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new ClsExceptions(e,"Error al generar informe");
 		}
 		return doc;
