@@ -3610,17 +3610,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				}
 				if (registro.get("MOVIL_GUARDIA_LETRADO")!=null) {
 					registro.put("MOVIL_LETRADO", registro.get("MOVIL_GUARDIA_LETRADO"));
-				}
-				
-				String parrafoLetrado = "";
-				if (registro.containsKey("NOMBRE_LETRADO")  && registro.get("NOMBRE_LETRADO")!=null && !((String)registro.get("NOMBRE_LETRADO")).trim().equals("") ) {
-					parrafoLetrado = UtilidadesString.getMensajeIdioma(idioma, "informes.cartaOficio.parrafo.letrado") + " " + (String)registro.get("NOMBRE_LETRADO");
-					
-					if (registro.containsKey("TELEFONO1_GUARDIA_LETRADO")  && registro.get("TELEFONO1_GUARDIA_LETRADO")!=null && !((String)registro.get("TELEFONO1_GUARDIA_LETRADO")).trim().equals("") ) {
-						parrafoLetrado += " " + UtilidadesString.getMensajeIdioma(idioma, "informes.cartaOficio.parrafo.telefono")  + " " + (String)registro.get("TELEFONO1_GUARDIA_LETRADO");
-					}
-				}	
-				//registro.put("PARRAFO_LETRADO", parrafoLetrado);
+				}				
 				
 				helperInformes.completarHashSalida(registro,getActuacionDesignaSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna));
 				
@@ -3665,17 +3655,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					helperInformes.completarHashSalida(registro,helperInformes.getProcedimientoSalida(idInstitucion,idProcedimiento,""));
 				}
 				helperInformes.completarHashSalida(registro,getProcuradorSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna));
-								
-				String parrafoProcurador = "";
-				if (registro.containsKey("PROCURADOR")  && registro.get("PROCURADOR")!=null && !((String)registro.get("PROCURADOR")).trim().equals("") ) {
-					parrafoProcurador = UtilidadesString.getMensajeIdioma(idioma, "informes.cartaOficio.parrafo.procurador") + " " + (String)registro.get("PROCURADOR");
-					
-					if (registro.containsKey("TELEFONO1_PROCURADOR")  && registro.get("TELEFONO1_PROCURADOR")!=null && !((String)registro.get("TELEFONO1_PROCURADOR")).trim().equals("") ) {
-						parrafoProcurador +=  " " + UtilidadesString.getMensajeIdioma(idioma, "informes.cartaOficio.parrafo.telefono")  + " " + (String)registro.get("TELEFONO1_PROCURADOR");
-					}
-				}				
-				//registro.put("PARRAFO_PROCURADOR", parrafoProcurador);								
-				registro.put("PARRAFO_LETRADO_PROCURADOR", parrafoLetrado+"\r"+parrafoProcurador);
 				
 				// RGG más descripciones 
 				if(registro.containsKey("ID_POBLACION_PROCURADOR") && registro.get("ID_POBLACION_PROCURADOR")!=null && !((String)registro.get("ID_POBLACION_PROCURADOR")).trim().equals("")){
