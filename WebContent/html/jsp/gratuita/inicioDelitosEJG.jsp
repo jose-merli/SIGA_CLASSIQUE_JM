@@ -391,7 +391,7 @@
 						
 				 <%if (ejisActivo>0){%>			
 						
-						<td class="labelText" colspan="6"> 
+						<td  colspan="6"> 
 							<%if(modopestanha.equals("editar")){%>
 							 	<input name="numeroProcedimiento2" size="7" maxlength="7" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>" />/
 							 	<input name="anioProcedimiento2" size="4" maxlength="4" type="text" value="<%=anioProcedimientoAsi%>" class="<%=estilo%>" />
@@ -416,7 +416,7 @@
 						<td colspan="4" class="labelText"><siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/><% if (obligatoriojuzgado){ %>
 											<%= asterisco %>
 											<%}%></td>	 
-				<%if (ejisActivo>0){%>							
+				<%if (ejisActivo>0 || pcajgActivo == 4){%>							
 											
 						<td colspan="23">	
 							<%if(modopestanha.equals("editar")){%>
@@ -484,7 +484,7 @@
 								<%=asterisco %> 
 							<%}%>	
 						</td>	
-				<%if (ejisActivo>0){%>	
+				<%if (ejisActivo>0 || pcajgActivo == 4){%>	
 						
 						<td  colspan="15">
 							<%if(modopestanha.equals("editar")){%>

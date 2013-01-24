@@ -951,7 +951,7 @@
 								<tr>
 				 <%if (ejisActivo>0){%>					
 																
-						<td style="vertical-align: middle;" class="labelText">						
+						<td style="vertical-align: middle;">						
 							<% if (!modo.equalsIgnoreCase("ver")) { %> 
 								<html:text name="MaestroDesignasForm" property="numeroProcedimiento" size="7" maxlength="7" styleClass="box" value="<%=numeroProcedimiento%>"></html:text>/
 								<html:text name="MaestroDesignasForm" property="anioProcedimiento" size="4" maxlength="4" styleClass="box" value="<%=anioProcedimiento%>" ></html:text>
@@ -978,7 +978,7 @@
 							<siga:ConjCampos leyenda="gratuita.mantenimientoTablasMaestra.literal.juzgado">
 								<table>
 								
-							<%if (ejisActivo>0){%>		 				
+							<%if (ejisActivo>0 || pcajgActivo == 4){%>		 				
 								
 									<tr>
 										<% if (!modo.equalsIgnoreCase("ver")) { %>
@@ -1094,7 +1094,7 @@
 								<%= asterisco %>
 							<%} %>
 						</td>	
-				<%if (ejisActivo>0){%>		
+				<%if (ejisActivo>0 || pcajgActivo == 4){%>		
 						<td  colspan="7">
 							<%if(modo.equals("editar")){%>
 								<siga:ComboBD nombre="idPretension" tipo="comboPretensionesEjisModulos" ancho="380" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false" parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="false"/>           	   

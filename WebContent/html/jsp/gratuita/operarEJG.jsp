@@ -318,9 +318,24 @@
 	//String[] datos2 = { usr.getLocation(), usr.getLanguage() };
 	
 	//datos2 es para idPresentacion
-	String[] datos2={usr.getLocation(),usr.getLanguage(),"-1"};
-	if(idPretension!=null && (!idPretension.equals("")))
-		datos2[1]= idPretension;
+	String[] datos2={usr.getLocation(),"-1","-1","-1"};
+	
+	if (ejisActivo>0 || PCAJG_ACTIVADO.intValue() == 4){
+		
+		if(!juzgadoAsi.equals(""))
+			datos2[0] = juzgadoAsi;
+		
+			datos2[1]= usr.getLocation();
+			datos2[2]= usr.getLocation();
+		
+		if(idPretension!=null && (!idPretension.equals("")))
+			datos2[3]= idPretension;
+		
+	}else{
+		
+		if(idPretension!=null && (!idPretension.equals("")))
+			datos2[1]= idPretension;
+	}
 	
 	boolean obligatorioFechaPresentacion = false;
 	if (PCAJG_ACTIVADO!=null && PCAJG_ACTIVADO==4){
@@ -683,7 +698,7 @@
 			<tr>
 				<td class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/></td>
 	 <%if (ejisActivo>0){%>							
-				<td class="labelText">
+				<td >
 					<input name="numeroProcedimiento" type="text" value="<%=numeroProcedimientoAsi%>" size="7" class="boxConsulta" readonly="true"/>/
 					<input name="anioProcedimiento" type="text" value="<%=anioProcedimientoAsi%>" size="4" class="boxConsulta" readonly="true"/>
 				</td>
@@ -698,10 +713,20 @@
 				 <%if (!modo.equals("ver")) {%>
 				 	&nbsp;/&nbsp;<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext"/>
 				 <%}%>
-				</td>	 
+				</td>
+				
+			<%if (ejisActivo>0 || PCAJG_ACTIVADO.intValue() == 4){%>		
+					 
+				<td  colspan="3">	
+					<siga:ComboBD nombre="vistaJuzgado" tipo="comboJuzgadosEJG" ancho="480" clase="boxComboConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuz%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="true" accion="Hijo:pretensiones2"/>          	   
+				</td>	
+				
+			<%}else{%>	
 				<td  colspan="3">	
 					<siga:ComboBD nombre="vistaJuzgado" tipo="comboJuzgadosEJG" ancho="480" clase="boxComboConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuz%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="true"/>          	   
-				</td>	
+				</td>
+			
+			 <%}%>	
 			</tr>
 			<tr>
 				<td class="labelText">
@@ -731,10 +756,20 @@
 			
 				<td class="labelText">	
 					<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/>
-				</td>	
-				<td colspan="3">
-					<siga:ComboBD nombre="pretensiones2" tipo="comboPretensiones" ancho="500" clase="boxComboConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="true"/>           	   
 				</td>
+				
+				<%if (ejisActivo>0 || PCAJG_ACTIVADO.intValue() == 4){%>	
+	
+					<td colspan="3">
+						<siga:ComboBD nombre="pretensiones2" tipo="comboPretensionesEjis" ancho="500" clase="boxComboConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="true"/>           	   
+					</td>
+	
+				<%}else{%>	
+						
+					<td colspan="3">
+						<siga:ComboBD nombre="pretensiones2" tipo="comboPretensiones" ancho="500" clase="boxComboConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="true"/>           	   
+					</td>
+				<%}%>
 			</tr>
 			<tr>
 				<td class="labelText">	
