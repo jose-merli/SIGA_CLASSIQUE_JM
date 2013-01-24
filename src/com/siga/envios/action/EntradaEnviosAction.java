@@ -25,15 +25,14 @@ import org.json.JSONObject;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.EstadosEntradaEnviosEnum;
 import org.redabogacia.sigaservices.app.AppConstants.TipoIntercambioEnum;
-import org.redabogacia.sigaservices.app.autogen.model.EcomSoldesignaprovisional;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnvios;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosWithBLOBs;
-import org.redabogacia.sigaservices.app.autogen.model.ScsDesigna;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.TransformBeanToForm;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.AdmInformeBean;
 import com.siga.envios.EnvioInformesGenericos;
@@ -43,7 +42,6 @@ import com.siga.envios.service.EntradaEnviosService;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.gratuita.form.DefinirEJGForm;
 import com.siga.informes.MasterReport;
 import com.siga.servlets.SIGASvlProcesoAutomaticoRapido;
 
@@ -363,7 +361,7 @@ public class EntradaEnviosAction extends MasterAction {
 			entradaEnviosService.actualizarEstado(new Long(entradaEnviosForm.getIdEnvio()), new Short(entradaEnviosForm.getIdInstitucion()),EstadosEntradaEnviosEnum.ESTADO_FINALIZADO.getCodigo());
 			
 			//Si quieren que se avise hay que hacer que funcione el referescarLocal
-			return exitoRefresco("Comunicación realizada correctamente",request);
+			return exitoRefresco(UtilidadesString.getMensajeIdioma(usr, "comunicacione.info.ok"),request);
 
 		}catch (Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null); 
@@ -378,10 +376,13 @@ public class EntradaEnviosAction extends MasterAction {
 			UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 			EntradaEnviosForm entradaEnviosForm = (EntradaEnviosForm)formulario;
 			String mensaje = "";
+			
+					
+			
 			if(entradaEnviosForm.getCaso()!= null && entradaEnviosForm.getCaso().equals("1")){
-				request.setAttribute("mensajeradio","Eliminar la asignación y el EJG que se ha creado.");
+				request.setAttribute("mensajeradio",UtilidadesString.getMensajeIdioma(userBean, "comunicaciones.etiqueta.borrarAsignacionyEjg"));
 			}else{
-				request.setAttribute("mensajeradio","Eliminar la asignación y la designación que se ha creado.");
+				request.setAttribute("mensajeradio",UtilidadesString.getMensajeIdioma(userBean, "comunicaciones.etiqueta.borrarAsignacionyDesigna"));
 			}
 			
 			return "abrirModalOpcionBorrado";

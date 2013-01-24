@@ -62,11 +62,14 @@
 	   	      nombre="tablaDatos"
 	   		  borde="1"
 	   		  clase="tableTitle"
-	   		  nombreCol="envios.definir.literal.fechaeentrada, 
-	   		  	envios.definir.literal.remitente,
-	   		  	envios.definir.literal.asunto,
-	   		  	envios.definir.literal.fecharespuesta,
-	   		  	envios.definir.literal.estado,"
+	   		  
+									
+	   		  
+	   		  nombreCol='<bean:message key="general.etiqueta.fecha" />,
+	   		  <bean:message	key="comunicaciones.etiqueta.remitente" />,
+	   		  <bean:message	key="comunicaciones.etiqueta.asunto" />,
+	   		  <bean:message	key="comunicaciones.etiqueta.fecha" />&nbsp;<bean:message	key="comunicaciones.etiqueta.respuesta" />,
+	   		  <bean:message	key="comunicaciones.etiqueta.estado" />,'
 	   		  tamanoCol="10,20,35,10,13,12"
 	   		  alto="333" 
 			  ajustePaginador="true"
@@ -104,7 +107,7 @@
 									<c:out value="${listEntradaEnviosForm.descripcionRemitente}"/>
 								</c:when>
 								<c:otherwise>
-									Pendiente recuperar mensaje
+									<bean:message	key="comunicaciones.aviso.remitente.pendiente" />
 								</c:otherwise>
 							</c:choose>	
 						</td>

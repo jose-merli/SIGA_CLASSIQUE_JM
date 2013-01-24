@@ -86,21 +86,26 @@ jQuery.noConflict();
 					<table class="tablaCampos" align="center">
 						<tr>
 							<td class="labelText" >
-								<siga:Idioma key="envios.definir.literal.fechaeentrada"/>&nbsp;desde
+								<bean:message
+									key="general.etiqueta.fecha" />&nbsp;<bean:message
+									key="general.etiqueta.desde" /> 
 							</td>				
 							<td width="20%">
 								<siga:Fecha nombreCampo="fechaDesde"/>
 							</td>
 				
 							<td class="labelText" width="12%">
-								<siga:Idioma key="envios.definir.literal.fechahasta"/>
+								<bean:message
+									key="general.etiqueta.fecha" />&nbsp;<bean:message
+									key="general.etiqueta.hasta" /> 
 							</td>
 							<td width="15%">
 								<siga:Fecha nombreCampo="fechaHasta"/>
 							</td>
 							
 							<td class="labelText">
-								<siga:Idioma key="envios.definir.literal.remitente"/>
+								<bean:message
+									key="comunicaciones.etiqueta.remitente" />
 							</td>
 							
 							<td >
@@ -114,24 +119,27 @@ jQuery.noConflict();
 	
 						<tr>	
 							<td class="labelText" >
-								<siga:Idioma key="envios.definir.literal.asunto"/>
+								<bean:message
+									key="comunicaciones.etiqueta.asunto" />
 							</td>
 							<td width="7%">
 								<html:text name="EntradaEnviosForm" property="asunto" size="20" styleClass="box"></html:text>
 							</td>
 												
 							<td class="labelText" width="8%">
-								<siga:Idioma key="envios.definir.literal.estado"/>
+								<bean:message
+									key="comunicaciones.etiqueta.estado" />
 							</td>
 							<td width="20%">
-								<select id="estado"/>
+								<select id="estado" class="box"/>
 							</td>	
 							
 							<td class="labelText">
-								<siga:Idioma key="envios.definir.literal.tipo"/>
+								<bean:message
+									key="comunicaciones.etiqueta.tipo" />
 							</td>
 							<td width="20%" colspan="2">
-								<select id="tipoIntercambioTelematico" style="width:250px;"/>
+								<select id="tipoIntercambioTelematico" class="box" style="width:250px;"/>
 								<script type="text/javascript">
 									cargarCombos();
 								</script>

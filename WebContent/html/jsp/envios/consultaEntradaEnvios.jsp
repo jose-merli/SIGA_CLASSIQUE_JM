@@ -19,21 +19,7 @@
 <%@ taglib uri = "c.tld" 			prefix="c"%>
 
 <!-- IMPORTS -->
-<%@ page import="com.siga.administracion.SIGAConstants" %>
-<%@ page import="java.util.*"%>
-<%@ page import="com.atos.utils.*"%>
-<%@ page import="com.siga.Utilidades.UtilidadesString"%>
-<%@ page import="com.siga.Utilidades.UtilidadesMultidioma"%>
-<%@ page import="com.siga.beans.*"%>
-<%@ page import="com.siga.tlds.FilaExtElement"%>
-<%@ page import="java.text.*"%>
-<%@ page import="com.atos.utils.GstDate"%>
-<%@ page import="com.siga.Utilidades.Paginador"%>
-<%@ page import="com.atos.utils.Row"%>
-<%@ page import="java.io.File" %>
-<!-- JSP -->
 
-<%@page import="java.io.File"%>
 <html>
 
 <!-- HEAD -->
@@ -89,7 +75,7 @@
 		<tr>
 			<td colspan="3">
 			
-			<siga:ConjCampos leyenda="Datos entrada">
+			<siga:ConjCampos leyenda="comunicaciones.leyenda.datosEntrada">
 					<table class="tablaCampos" align="center">
 						<tr>
 							<td width="10%"></td>
@@ -104,34 +90,38 @@
 							<td width="10%"></td>
 						</tr>
 						<tr>
-							<td class="labelText">Asunto</td>
+							<td class="labelText"><bean:message
+									key="comunicaciones.etiqueta.asunto" /></td>
 							<td class="labelTextValor" colspan="4"><c:out
 									value="${entradaEnvio.asunto}" /></td>
 							<td class="labelText"><bean:message
-									key="envios.definir.literal.remitente" /></td>
+									key="comunicaciones.etiqueta.remitente" /></td>
 							<td class="labelTextValor" colspan="4"><c:out
 									value="${entradaEnvio.descripcionRemitente}" /></td>
 						</tr>
 						<tr>
 							<td class="labelText"><bean:message
-									key="envios.definir.literal.estado" /></td>
+									key="comunicaciones.etiqueta.estado" /></td>
 							<td class="labelTextValor"><c:out
 									value="${entradaEnvio.descripcionEstado}" />
 							</td>
-							<td class="labelText">ID. Msj.</td>
+							<td class="labelText"><bean:message
+									key="comunicaciones.etiqueta.idMensaje" /></td>
 							<td class="labelTextValor"><c:out
 									value="${entradaEnvio.identificador}" /></td>
 							<td class="labelText"><bean:message
-									key="envios.definir.literal.fechaeentrada" /></td>
+									key="general.etiqueta.fecha" /></td>
 							<td class="labelTextValor" ><c:out
 									value="${entradaEnvio.fechaPeticion}" /></td>
 						
 							<td class="labelText"><bean:message
-									key="envios.definir.literal.fecharespuesta" /></td>
+									key="general.etiqueta.fecha" />&nbsp;<bean:message
+									key="comunicaciones.etiqueta.respuesta" /> </td>
 							<td class="labelTextValor"><c:out
 									value="${entradaEnvio.fechaRespuesta}" /></td>
 							
-							<td class="labelText">ID. Msj. Relacionado</td>
+							<td class="labelText"><bean:message
+									key="comunicaciones.etiqueta.idMensajeRelacionado" /></td>
 							<td class="labelTextValor">
 								<c:out value="${entradaEnvio.identificadorRelacionado}" />
 								<c:if test="${entradaEnvio.idEnvioRelacionado !=null && entradaEnvio.idEnvioRelacionado!=''}">
@@ -150,7 +140,7 @@
 		</tr>
 		<tr>
 			<td colspan="3" >
-			<siga:ConjCampos leyenda="Informacion Intercambio">
+			<siga:ConjCampos leyenda="comunicaciones.leyenda.informacionIntercambio">
 				<table>
 					${intercambio}
 				</table>
@@ -164,7 +154,7 @@
 				<!-- Para los estados SIN_LEER, LEIDO y PTE. ENVIAR -->
 				<tr>
 					<td colspan="3">
-						<siga:ConjCampos leyenda="Acciones">
+						<siga:ConjCampos leyenda="comunicaciones.leyenda.acciones">
 							<table class="tablaCampos" align="center">
 								<tr>
 									<td width="10%"></td>
@@ -179,7 +169,8 @@
 		
 								<tr>
 									<td colspan="6" class="labelText">
-										<input type="radio" id="radioAccionEJG" name='radioAccion' value="0" onclick="accionRadio()"/>EJG y designación
+										<input type="radio" id="radioAccionEJG" name='radioAccion' value="0" onclick="accionRadio()"/><bean:message
+									key="comunicaciones.etiqueta.ejgydes" />
 									</td>
 								</tr>
 								
@@ -187,9 +178,8 @@
 									<td></td>
 									<td colspan="5" class="labelTextValor">
 										<i>
-										Seleccione "Nuevo EJG" para abrir Expediente JG con los datos de la solicitud y pulse en Guardar. 
-										
-										O bien, seleccione un  EJG existente y pulse Guardar.
+										<bean:message
+									key="comunicaciones.etiqueta.ejgydes.informacion" />
 										</i>
 									</td>
 								</tr>							
@@ -197,19 +187,20 @@
 								<tr>
 									<td></td>
 									<td  class="labelText">
-										<input type="checkbox" id="nuevoEJG" name="nuevoEJG" onclick="accionNuevoEJG()"/>Nuevo EJG 
+										<input type="checkbox" id="nuevoEJG" name="nuevoEJG" onclick="accionNuevoEJG()"/><bean:message
+									key="comunicaciones.etiqueta.nuevoEjg" /> 
 									</td>
 									
 									<c:if test="${entradaEnvio.anioEJGNew != null && entradaEnvio.numeroEJGNew != null}">								
 										<td class="labelTextValor">
-											<c:out value="${entradaEnvio.anioEJGNew}" />/<c:out value="${entradaEnvio.numEJGNew}" />
+											<c:out value="${entradaEnvio.anioEJGNew}" />&nbsp;/&nbsp;<c:out value="${entradaEnvio.numEJGNew}" />
 										</td>	
 									</c:if>								
-									<td  class="labelText">o Seleccionar EJG</td>
-									<td>
-										<html:text styleId="anioEJGSelText" property="anioEJGSelText" size="7" maxlength="10" styleClass="box" style="margin-top: 3px;" value="${entradaEnvio.anioEJGSel}" disabled="true" readonly="true"></html:text>
-										 /
-										<html:text styleId="numeroEJGSelText" property="numeroEJGSelText" size="7" maxlength="10" styleClass="box" style="margin-top: 3px;" value="${entradaEnvio.numEJGSel}" disabled="true" readonly="true"></html:text>
+									<td  class="labelText">o <bean:message
+									key="comunicaciones.etiqueta.seleccionaEjg" /> </td>
+									<td class="labelText">
+										<html:text styleId="anioEJGSelText" property="anioEJGSelText" size="7" maxlength="10" styleClass="box" style="margin-top: 3px;" value="${entradaEnvio.anioEJGSel}" disabled="true" readonly="true"></html:text>&nbsp;/&nbsp;<html:text
+										 styleId="numeroEJGSelText" property="numeroEJGSelText" size="7" maxlength="10" styleClass="box" style="margin-top: 3px;" value="${entradaEnvio.numEJGSel}" disabled="true" readonly="true"></html:text>
 									</td>
 									<td  class="labelText">
 										<input type="button" class="button" id="buscarEJG" name="buscarEJG" value='Buscar' onClick="buscarEJG();">
@@ -220,11 +211,12 @@
 									<tr>
 										<td colspan="1" ></td>
 										<td colspan="5" >
-										<siga:ConjCampos leyenda="Datos respuesta">
+										<siga:ConjCampos leyenda="comunicaciones.leyenda.datosRespuesta">
 											<table class="tablaCampos" align="center">
 												<tr>
 													<td></td>
-													<td  class="labelText">EJG
+													<td  class="labelText"><bean:message
+														key="comunicaciones.etiqueta.ejg" /> 
 													</td>
 													<td  class="labelTextValor"><c:out value="${entradaEnvio.anioEJGSel}" />/<c:out value="${entradaEnvio.numEJGSel}" /></td>
 													<td class="labelTextValor"><c:out value="${entradaEnvio.descripcionSolicitante}"/></td>
@@ -242,9 +234,10 @@
 												<c:when test="${entradaEnvio.anioDesignaSel != null}">									
 													<tr>
 														<td></td>
-														<td  class="labelText">DESIGNACION
+														<td  class="labelText"><bean:message
+															key="comunicaciones.etiqueta.designacion" /> 
 														</td>
-														<td class="labelTextValor"><c:out value="${entradaEnvio.anioDesignaSel}"/>/<c:out value="${entradaEnvio.codSelDesigna}"/></td>
+														<td class="labelTextValor"><c:out value="${entradaEnvio.anioDesignaSel}"/>&nbsp;/&nbsp;<c:out value="${entradaEnvio.codSelDesigna}"/></td>
 															<td class="labelTextValor"><c:out value="${entradaEnvio.descripcionSolicitante}"/></td>
 															<td>
 															<img id="iconoboton_editarDesigna1" src="/SIGA/html/imagenes/beditar_off.gif"
@@ -259,7 +252,8 @@
 															<td></td>
 															<td  class="labelText">
 															</td>
-															<td  class="labelText">Abogado</td>
+															<td  class="labelText"><bean:message
+																key="comunicaciones.etiqueta.letrado" /> </td>
 															<td class="labelTextValor"><c:out value="${entradaEnvio.abogadoDesignaSel}"/></td>
 															<td></td>
 															<td></td>
@@ -270,7 +264,8 @@
 															<td></td>
 															<td  class="labelText">
 															</td>
-															<td  class="labelText">Procurador</td>
+															<td  class="labelText"><bean:message
+																key="comunicaciones.etiqueta.procurador" /></td>
 															<td class="labelTextValor"><c:out value="${entradaEnvio.procuradorDesignaSel}"/></td>
 															<td></td>
 															<td></td>
@@ -280,13 +275,15 @@
 												<c:when test="${empty entradaEnvio.ejgSelDesignas}">
 													<tr>
 														<td></td>
-														<td class="labelTextValor" colspan="6">Necesita crear una designación. Pulse editar EJG para coninuar el proceso.</td>
+														<td class="labelTextValor" colspan="6"><bean:message
+																key="comunicaciones.info.necesariaDesignacion" /></td>
 													</tr>
 												</c:when>
 												<c:otherwise>
 													<tr>
 														<td></td>
-														<td class="labelTextValor" colspan="6">Seleccione una designacion y pulse guardar para continuar el proceso y el combo de designaciones.</td>
+														<td class="labelTextValor" colspan="6"><bean:message
+																key="comunicaciones.info.seleccioneDesignacion" /></td>
 														<td colspan="2">
 															<select id="designacionesRelacionadas"/>
 															<script type="text/javascript">
@@ -308,16 +305,16 @@
 									</td>
 								</c:if>
 								<tr>
-									<td colspan="6" class="labelText"><input type="radio" id='radioAccionDesigna' name='radioAccion' value="1" onclick="accionRadio()"/>Excepción: Designación sin EJG</td> 
+									<td colspan="6" class="labelText"><input type="radio" id='radioAccionDesigna' name='radioAccion' value="1" onclick="accionRadio()"/><bean:message
+																key="comunicaciones.etiqueta.excepcion" /></td> 
 								</tr>
 								
 								<tr>
 									<td></td>
 									<td colspan="5" class="labelTextValor">
 										<i>
-										Para el caso de una designación SIN EJG asociado, pulse en "Nueva designación" para abrir una nueva con los datos de la solicitud y pulse Guardar.
-		
-										O bien, seleccione una designación existente y pulse Guardar.
+										<bean:message
+																key="comunicaciones.etiqueta.excepcion.informacion" />
 										</i>
 									</td>
 								</tr>	
@@ -325,18 +322,18 @@
 								<tr>
 									<td></td>
 									<td  class="labelText">
-										<input type="checkbox" id="nuevaDesigna" name="nuevaDesigna" value="1">Nueva designación </input>
+										<input type="checkbox" id="nuevaDesigna" name="nuevaDesigna" value="1"><bean:message
+																key="comunicaciones.etiqueta.nuevaDes" /></input>
 									</td>
 									<c:if test="${entradaEnvio.anioDesignaNew != null && entradaEnvio.numeroDesignaNew != null}">								
 										<td class="labelTextValor">
 											<c:out value="${entradaEnvio.anioDesignaNew}" />/<c:out value="${entradaEnvio.codNewDesigna}" />
 										</td>	
 									</c:if>									
-									<td  class="labelText">o Seleccionar Designación</input></td>
-									<td>
-									 	<html:text styleId="anioDesignaSelText" property="anioDesignaSelText" size="7" maxlength="10" styleClass="box" style="margin-top: 3px;" value="${entradaEnvio.anioDesignaSel}" disabled="true" readonly="true"></html:text>
-									 	/
-										<html:text styleId="numeroDesignaSelText" property="numeroDesignaSelText" size="7" maxlength="10" styleClass="box" style="margin-top: 3px;" value="${entradaEnvio.codSelDesigna}" disabled="true" readonly="true"></html:text>
+									<td  class="labelText">o <bean:message
+																key="comunicaciones.etiqueta.seleccionaDes" /></input></td>
+									<td class="labelText">
+									 	<html:text styleId="anioDesignaSelText" property="anioDesignaSelText" size="7" maxlength="10" styleClass="box" style="margin-top: 3px;" value="${entradaEnvio.anioDesignaSel}" disabled="true" readonly="true"></html:text>&nbsp;/&nbsp;<html:text styleId="numeroDesignaSelText" property="numeroDesignaSelText" size="7" maxlength="10" styleClass="box" style="margin-top: 3px;" value="${entradaEnvio.codSelDesigna}" disabled="true" readonly="true"></html:text>
 									</td>
 									<td class="labelText">
 										<input type="button" class="button" id="buscarDesignacion" name="buscarDesignacion" value='Buscar' onClick="buscarDesignacion();">
@@ -348,12 +345,13 @@
 									<tr>
 										<td colspan="1" ></td>
 										<td colspan="5" >
-										<siga:ConjCampos leyenda="Datos respuesta">
+										<siga:ConjCampos leyenda="comunicaciones.leyenda.datosRespuesta">
 											<table class="tablaCampos" align="center">
 												<c:if test="${entradaEnvio.anioDesignaSel != null}">									
 													<tr>
 														<td></td>
-														<td  class="labelText">DESIGNACION
+														<td  class="labelText"><bean:message
+															key="comunicaciones.etiqueta.designacion" />
 														</td>
 														<td class="labelTextValor"><c:out value="${entradaEnvio.anioDesignaSel}"/>/<c:out value="${entradaEnvio.codSelDesigna}"/></td>
 															<td class="labelTextValor"><c:out value="${entradaEnvio.descripcionSolicitante}"/></td>
@@ -372,7 +370,8 @@
 															<td></td>
 															<td  class="labelText">
 															</td>
-															<td  class="labelText">Abogado</td>
+															<td  class="labelText"><bean:message
+															key="comunicaciones.etiqueta.letrado" /></td>
 															<td class="labelTextValor"><c:out value="${entradaEnvio.abogadoDesignaSel}"/></td>
 															<td></td>
 															<td></td>
@@ -383,7 +382,8 @@
 															<td></td>
 															<td  class="labelText">
 															</td>
-															<td  class="labelText">Procurador</td>
+															<td  class="labelText"><bean:message
+															key="comunicaciones.etiqueta.procurador" /></td>
 															<td class="labelTextValor"><c:out value="${entradaEnvio.procuradorDesignaSel}"/></td>
 															<td></td>
 															<td></td>
@@ -408,7 +408,9 @@
 						<tr>
 							<td class="labelText">
 								<i>
-								SE ESTÁ PROCENSANDO LA SOLICITUD, INTÉNTELO DE NUEVO EN UNOS MINUTOS.
+								<bean:message key="comunicaciones.info.procesandoSolicitud" />
+								
+								
 								</i>
 							</td>
 						</tr>
@@ -417,12 +419,12 @@
 				<c:otherwise>	
 					<!-- Para el estado FINALIZADO -->
 					<table align="center">	
-						<tr></tr><tr></tr><tr></tr><tr></tr>
-						<tr></tr><tr></tr><tr></tr><tr></tr>
+						<br>
+						<br>
 						<tr>
 							<td class="labelText">
 								<i>
-									FINALIZADO
+									<bean:message key="comunicaciones.aviso.finalizado" />
 								</i>
 							</td>
 						</tr>
@@ -450,16 +452,14 @@
 									<tr>
 										<td colspan="5" class="labelTextValor">
 											<i>
-											Seleccione "Nuevo EJG" para abrir Expediente JG con los datos de la solicitud y pulse en Guardar. 
-											
-											O bien, seleccione un  EJG existente y pulse Guardar.
+										<bean:message key="comunicaciones.etiqueta.ejgydes.informacion" />
 											</i>
 										</td>
 									</tr>							
 			
 									<tr>
 										<td  class="labelText">
-											<input type="checkbox" id="nuevoEJG" name="nuevoEJG" onclick="accionNuevoEJG()"/>Nuevo EJG 
+											<input type="checkbox" id="nuevoEJG" name="nuevoEJG" onclick="accionNuevoEJG()"/><bean:message key="comunicaciones.etiqueta.nuevoEjg" />
 										</td>
 										
 										<c:if test="${entradaEnvio.anioEJGNew != null && entradaEnvio.numeroEJGNew != null}">								
@@ -467,11 +467,9 @@
 												<c:out value="${entradaEnvio.anioEJGNew}" />/<c:out value="${entradaEnvio.numEJGNew}" />
 											</td>	
 										</c:if>								
-										<td  class="labelText">o Seleccionar EJG</td>
-										<td>
-											<html:text styleId="anioEJGSelText" property="anioEJGSelText" size="7" maxlength="10" styleClass="box" style="margin-top: 3px;" value="${entradaEnvio.anioEJGSel}" disabled="true" readonly="true"></html:text>
-											 /
-											<html:text styleId="numeroEJGSelText" property="numeroEJGSelText" size="7" maxlength="10" styleClass="box" style="margin-top: 3px;" value="${entradaEnvio.numEJGSel}" disabled="true" readonly="true"></html:text>
+										<td  class="labelText">o <bean:message key="comunicaciones.etiqueta.seleccionaEjg" /></td>
+										<td class="labelText">
+											<html:text styleId="anioEJGSelText" property="anioEJGSelText" size="7" maxlength="10" styleClass="box" style="margin-top: 3px;" value="${entradaEnvio.anioEJGSel}" disabled="true" readonly="true"></html:text> &nbsp;/&nbsp;<html:text styleId="numeroEJGSelText" property="numeroEJGSelText" size="7" maxlength="10" styleClass="box" style="margin-top: 3px;" value="${entradaEnvio.numEJGSel}" disabled="true" readonly="true"></html:text>
 										</td>
 										<td  class="labelText">
 											<input type="button" class="button" id="buscarEJG" name="buscarEJG" value='Buscar' onClick="buscarEJG();">
@@ -489,7 +487,7 @@
 								<tr>
 									<td class="labelText">
 										<i>
-										SE ESTÁ PROCENSANDO LA RESPUESTA, INTÉNTELO DE NUEVO EN UNOS MINUTOS.
+										<bean:message key="comunicaciones.info.procesandoRespuesta" />
 										</i>
 									</td>
 								</tr>
@@ -650,7 +648,7 @@
 					if(document.getElementById("radioAccionEJG").checked){ //CASO 1
 						document.forms['EntradaEnviosForm'].caso.value = "1";
 						if(document.getElementById("nuevoEJG").checked){ //Camino 1
-							alert("La petición de Nuevo EJG se está procesando, vuelva a acceder en breves minutos");
+							alert("<bean:message key='comunicaciones.info.procesandoNuevoEjg' />");
 							document.forms['EntradaEnviosForm'].modo.value = 'procesar';
 							document.forms['EntradaEnviosForm'].submit();
 						}else{	//Camino 2-> avisar si no se ha seleccionado ningun EJG(campos vacios)									
@@ -669,7 +667,7 @@
 								document.forms['EntradaEnviosForm'].submit();
 	
 							}else{
-								alert("Debe seleccionar un EJG para poder procesar la solicitud");	
+								alert("<bean:message key='comunicaciones.alerta.seleccionaEjg' />");
 							}
 						}
 	
@@ -685,7 +683,7 @@
 								document.forms['EntradaEnviosForm'].anioDesignaNew.value = resultado[4];
 								document.forms['EntradaEnviosForm'].abogadoDesignaSel.value = resultado[5];
 								document.forms['EntradaEnviosForm'].fechaApertura.value = resultado[6];
-								alert("La petición de Nueva Designación se está procesando, vuelva a acceder en breves minutos");
+								alert("<bean:message key='comunicaciones.info.procesandoProcesandoNuevaDesigna' />");
 								document.forms['EntradaEnviosForm'].modo.value = 'procesar';
 								document.forms['EntradaEnviosForm'].submit();
 							}
@@ -697,14 +695,14 @@
 								document.forms['EntradaEnviosForm'].codSelDesigna.value = document.getElementById("numeroDesignaSelText").value;	
 								document.forms['EntradaEnviosForm'].submit();
 							}else{
-								alert("Debe seleccionar una designación para poder procesar la solicitud");	
+								alert("<bean:message key='comunicaciones.alerta.seleccionaDesigna' />");
 							}
 						}
 					}
 
 				} else if (${entradaEnvio.idTipoIntercambioTelematico=='05'}){
 					if(document.getElementById("nuevoEJG").checked){ //Camino 1
-						alert("La petición de Nuevo EJG se está procesando, vuelva a acceder en breves minutos");
+						alert("<bean:message key='comunicaciones.info.procesandoNuevoEjg' />");
 						document.forms['EntradaEnviosForm'].modo.value = 'procesar';
 						document.forms['EntradaEnviosForm'].submit();
 					}else{										
@@ -715,7 +713,7 @@
 							document.forms['EntradaEnviosForm'].submit();
 
 						}else{
-							alert("Debe seleccionar un EJG para poder procesar la solicitud");	
+							alert("<bean:message key='comunicaciones.alerta.seleccionaEjg' />");
 						}
 					}
 				} 
@@ -832,7 +830,8 @@
 						document.forms['EntradaEnviosForm'].submit();
 					}
 				}else{
-					var type = '¿Desea eliminar la relación con el EJG (no se borrará el registro del EJG, solamente la relación)?';
+					
+					var type = "<bean:message key='comunicaciones.confirma.borrarSoloRelacionEjg' />"
 					if(confirm(type)){
 						document.forms['EntradaEnviosForm'].modo.value = 'borrarRelacionEJG';
 						document.forms['EntradaEnviosForm'].submit();
@@ -875,7 +874,7 @@
 						document.forms['EntradaEnviosForm'].submit();
 					}
 				}else{
-					var type = '¿Desea eliminar la relación con la designación (no se borrará el registro de la designación, solamente la relación)?';
+					var type = "<bean:message key='comunicaciones.confirma.borrarSoloRelacionDesigna' />"
 					if(confirm(type)){				
 						document.forms['EntradaEnviosForm'].modo.value='borrarRelacionDesigna';
 						document.forms['EntradaEnviosForm'].submit();

@@ -12,31 +12,16 @@
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
-<!-- IMPORTS -->
-<%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.atos.utils.ClsConstants"%>
-<%@ page import="java.util.Properties"%>
-<%@ page import="com.siga.Utilidades.*"%>
-<%@ page import="java.util.*"%>
 <!-- JSP -->
 
 <html>
 
 <!-- HEAD -->
 <head>
-
-	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>"/>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
-	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery.js"/>" ></script>
-	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery.custom.js"/>" ></script>
+	
 	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
-
-
-	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
-	<!-- Validaciones en Cliente -->
-	<!-- El nombre del formulario se obtiene del struts-config -->
-
-	  	<script src="<html:rewrite page="/html/js/validacionStruts.js"/>" type="text/javascript"></script>
+  	<script src="<html:rewrite page="/html/js/validacionStruts.js"/>" type="text/javascript"></script>
 	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	
 
 </head>
@@ -49,12 +34,12 @@
 			<table>
 				<tr>
 					<td class="labelText" style="width:490px">
-						Confirme la acción de eliminar que se requiere:
+						<bean:message key="comunicaciones.etiqueta.confirmarAccionEliminar"/>
 					</td>
 				</tr>
 				<tr>
 					<td class="labelText" width="470px">
-						<input type="radio" id="act" name="accionG" value="1" checked><label for="act">Eliminar la asignación solamente. </input></label>
+						<input type="radio" id="act" name="accionG" value="1" checked><label for="act"><bean:message key="comunicaciones.etiqueta.borrarSoloAsignacion"/></input></label>
 						<br>
 						<input type="radio" id="cre" name="accionG" value="0"><label for="cre">${mensajeradio}</input></label>
 						<br>
