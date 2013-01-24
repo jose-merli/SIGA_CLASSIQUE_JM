@@ -223,8 +223,9 @@
 	<script type="text/javascript" src="<%=app%>/html/js/SIGA.js"></script>
 	<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
 	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.maskedinput.js"></script>	
 	<script type="text/javascript" src="<%=app%>/html/jsp/general/validacionSIGA.jsp"></script>
-	<script type="text/javascript" src="<%=app%>/html/js/calendarJs.jsp"></script>	
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script src="<html:rewrite page='/html/js/jquery-ui.js'/>" type="text/javascript"></script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
@@ -512,9 +513,9 @@
 						</td>
 						<td colspan="20"> 
 							<%if(modopestanha.equals("editar")){%>
-							 	<input name="nig2" size="28" type="text" value="<%=nig%>" class="<%=estilo%>" maxlength="50"/>
+							 	<input id="nig2" name="nig2" size="28" type="text" value="<%=nig%>" class="<%=estilo%>" maxlength="19"/>
 							<%}else{%>
-								<input name="nig2" size="28" type="text" value="<%=nig%>" class="boxConsulta"/>
+								<input id="nig2" name="nig2" size="28" type="text" value="<%=nig%>" class="boxConsulta"/>
 							<%}%>						
 						</td>
 					</tr>
@@ -625,6 +626,11 @@
 		
 	<!-- INICIO: SCRIPTS BOTONES ACCION -->
 	<script language="JavaScript">
+	
+	jQuery.noConflict();
+	
+
+	
 
 		// Funcion asociada a boton buscar
 		function refrescarLocal() 
@@ -697,6 +703,8 @@
 				}
 		 	<%}%> 
 		 	
+		 	var nigAux = document.getElementById("nig2").value;
+		 	
 		 <%if (ejisActivo>0){%>
 		 	
 			if(document.getElementById("numeroProcedimiento2").value != "" || document.getElementById("anioProcedimiento2").value != ""){
@@ -710,7 +718,20 @@
 					fin();
 					return false;
 				}	
-			}		 	
+			}		
+			
+			nigAux = replaceAll(nigAux,' ','');
+			if(nigAux == "" || !validarNig(nigAux)){	
+				error += "<siga:Idioma key='gratuita.nig.formato'/>"+ '\n';
+				
+				if(error!=""){
+					alert(error);
+					fin();
+					return false;
+				}				
+		 	}
+			
+			
 		<%}%>
 			if (observaciones.length <= 1024) {
 				document.DefinirMantenimientoEJGForm.modo.value = "modificarDefensa";
@@ -732,7 +753,7 @@
 				document.DefinirMantenimientoEJGForm.fechaProc.value				=	document.getElementById("fechaProc1").value;				
 				document.DefinirMantenimientoEJGForm.idRenuncia.value               =   document.getElementById("renuncia").value;
 				document.DefinirMantenimientoEJGForm.numeroDesignaProc.value        =   document.getElementById("numDesignaProc").value;
-				document.DefinirMantenimientoEJGForm.NIG.value        				=   document.getElementById("nig2").value;
+				document.DefinirMantenimientoEJGForm.NIG.value        				=   nigAux;
 
 //				alert("observaciones->"+document.DefinirMantenimientoEJGForm.observaciones.value+"<observaciones2->"+document.getElementById("observaciones").value);							
 //				alert("Procedimiento->"+document.DefinirMantenimientoEJGForm.numeroProcedimiento.value+"<Procedimiento2->"+document.getElementById("numeroProcedimiento").value);											
@@ -765,6 +786,11 @@
 
 		
 	<%if (ejisActivo>0){%>
+	
+		jQuery(function($){
+			jQuery("#nig2").mask("99999 99 9 9999 9999999",{placeholder:" "}); //10037 41 1 2012 0022668
+		});
+	
 		//<!-- Valida el numero de procedimiento (n/aaaa) -->
 		function validaProcedimiento( strValue ) 
 		{
@@ -777,6 +803,13 @@
 			var objRegExp  = /^([0-9]{4})?$/;
 			return objRegExp.test(strValue);
 		}	
+		
+		function validarNig( strValue ) 
+		{
+			var objRegExp  = /^([0-9]{19})?$/;
+			return objRegExp.test(strValue);
+		}			
+		
 		
 	<%}else{%>
 		//<!-- Valida el numero de procedimiento (n/aaaa) -->

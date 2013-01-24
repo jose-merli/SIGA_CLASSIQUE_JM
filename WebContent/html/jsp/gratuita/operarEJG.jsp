@@ -353,6 +353,7 @@
 		
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.maskedinput.js"></script>	
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	<script src="<%=app%>/html/js/validation.js" type="text/javascript"></script>
@@ -360,6 +361,12 @@
 	
 	<script type="text/javascript">
 
+		jQuery.noConflict();
+		
+		jQuery(function($){
+			jQuery("#nig2").mask("99999 99 9 9999 9999999",{placeholder:" "}); //10037 41 1 2012 0022668
+		});	
+		
 
 		function cargarComboTipoColegio(){
 			
@@ -735,7 +742,7 @@
 				</td>		
 				
 				<td class="labelText" colspan="3">					
-					<input type="text" style="width:500px" class="boxConsulta" value="<%=NIG%>" readOnly="true">										
+					<input id="nig2" type="text" style="width:500px" class="boxConsulta" value="<%=NIG%>" readOnly="true">										
 				</td>	
 			</tr>
 			<tr>

@@ -370,20 +370,20 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	
 		
-	
 	<script type="text/javascript" src="<%=app%>/html/js/SIGA.js"></script>
 	<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
 	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.maskedinput.js"></script>
 	<script type="text/javascript" src="<%=app%>/html/js/calendarJs.jsp"></script>
 	<script type="text/javascript" src="<%=app%>/html/jsp/general/validacionSIGA.jsp"></script>
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<siga:TituloExt titulo="gratuita.editarDesigna.literal.titulo" localizacion="gratuita.editarDesigna.literal.location"/>
 	
 	<script language="JavaScript">
-
 	
+		jQuery.noConflict();
+		
 	<%if (ejisActivo>0){%>
 		//<!-- Valida el numero de procedimiento (n/aaaa) -->
 		function validaProcedimiento( strValue ) 
@@ -397,6 +397,16 @@
 			var objRegExp  = /^([0-9]{4})?$/;
 			return objRegExp.test(strValue);
 		}	
+		
+		function validarNig( strValue ) 
+		{
+			var objRegExp  = /^([0-9]{19})?$/;
+			return objRegExp.test(strValue);
+		}		
+		
+		jQuery(function($){
+			jQuery("#nig").mask("99999 99 9 9999 9999999",{placeholder:" "}); //10037 41 1 2012 0022668
+		});			
 		
 	<%}else{%>
 		//<!-- Valida el numero de procedimiento (n/aaaa) -->
@@ -460,6 +470,8 @@
 				}
 		 	<%}%>
 		 	
+		 	var nigAux = document.getElementById("nig").value;	
+		 	
 		 <%if (ejisActivo>0){%>
 		 	
 			if(document.getElementById("numeroProcedimiento").value != "" || document.getElementById("anioProcedimiento").value != ""){
@@ -474,6 +486,22 @@
 					return false;
 				}	
 			}
+			
+			nigAux = replaceAll(nigAux,' ','');
+			if(nigAux == "" || !validarNig(nigAux)){	
+				error += "<siga:Idioma key='gratuita.nig.formato'/>"+ '\n';
+				
+				if(error!=""){
+					alert(error);
+					fin();
+					return false;
+				}				
+		 	
+			}else{
+				document.getElementById("nig").value = nigAux;
+			}	
+			
+			
 			
 		 <%}%>
 		 	
@@ -1019,9 +1047,9 @@
 						</td>
 						<td colspan="7"> 
 							<% if (!modo.equalsIgnoreCase("ver")) { %>
-							 	<input name="nig" size="15" type="text" value="<%=nig%>" class="<%=estilo%>" maxlength="50"/>
+							 	<input id="nig" name="nig" size="20" type="text" value="<%=nig%>" class="<%=estilo%>" maxlength="19"/>
 							<%}else{%>
-								<input name="nig" size="15" type="text" value="<%=nig%>" class="boxConsulta"/>
+								<input id="nig" name="nig" size="20" type="text" value="<%=nig%>" class="boxConsulta"/>
 							<%}%>						
 						</td>
 					</tr>					

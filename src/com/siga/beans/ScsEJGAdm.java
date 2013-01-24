@@ -2410,6 +2410,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" EJG.OBSERVACIONES AS ASUNTO_DEFENSA_JURIDICA, ");
 			sql.append(" EJG.NUMERODILIGENCIA AS NUMDILIGENCIA_DEFENSA_JURIDICA, ");
 			sql.append(" EJG.NUMEROPROCEDIMIENTO AS NUMPROCED_DEFENSA_JURIDICA ");
+			sql.append(" , EJG.ANIOPROCEDIMIENTO AS ANIOPROCED_DEFENSA_JURIDICA ");
 			sql.append(" ,TO_CHAR(EJG.FECHAPRESENTACION, 'dd-mm-yyyy') as FECHAPRESENTACION");
 			sql.append(" ,TO_CHAR(EJG.FECHALIMITEPRESENTACION, 'dd-mm-yyyy') as FECHALIMITEPRESENTACION, ");
 			
@@ -3158,8 +3159,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				//idem asunto
 				
 				String numProcedDJ = (String)registro.get("NUMPROCED_DEFENSA_JURIDICA");
-				if(numProcedDJ!=null && !numProcedDJ.trim().equals("")){
-					registro.put("AUTO", numProcedDJ);
+				String anioProcedDJ = (String)registro.get("ANIOPROCED_DEFENSA_JURIDICA");
+				if(numProcedDJ!=null && !numProcedDJ.trim().equals("") && anioProcedDJ!=null && !anioProcedDJ.trim().equals("")){
+					registro.put("AUTO", numProcedDJ+"/"+anioProcedDJ);
 				}
 				String juzgadoDJ = (String)registro.get("JUZGADO_DEFENSA_JURIDICA");
 				registro.put("JUZGADO", juzgadoDJ);
@@ -3249,6 +3251,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" EJG.ANIOCAJG AS ANIO_CAJG_DEFENSA_JURIDICA, ");
 			sql.append(" EJG.NUMERODILIGENCIA AS NUMDILIGENCIA_DEFENSA_JURIDICA, ");
 			sql.append(" EJG.NUMEROPROCEDIMIENTO AS NUMPROCED_DEFENSA_JURIDICA, ");
+			sql.append(" EJG.ANIOPROCEDIMIENTO AS ANIOPROCED_DEFENSA_JURIDICA, ");
 			sql.append(" EJG.NUMEROPROCEDIMIENTO AS NUM_PROCEDIMIENTO_EJG, ");
 			sql.append(" EJG.NIG ");
 			sql.append(" ,TO_CHAR(EJG.FECHA_DES_PROC,'dd-mm-yyyy') AS  FECHAEJG_PROCURADOR ");
