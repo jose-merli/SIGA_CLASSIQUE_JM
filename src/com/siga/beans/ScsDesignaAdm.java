@@ -2226,13 +2226,14 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 							case 4:  idiomainforme="GL"; break;
 						}
 						
-						
-						
+						registro.put("FECHARESOLUCIONCAJG", "");
+						registro.put("FECHARESOLUCIONCAJGLETRA", "");
+						registro.put("NUMERO_EJG", "");
+						registro.put("FECHAAPERTURA_EJG", "");
+						registro.put("FECHAAPERTURA_EJG_LETRA", "");
 						
 						registro.put("CODIGOLENGUAJE", idiomainforme);	
-						registro.put("LISTA_TELEFONOS_INTERESADO", "");
-						registro.put("FECHAAPERTURA_EJG", "");
-						registro.put("NUMERO_EJG", "");
+						registro.put("LISTA_TELEFONOS_INTERESADO", "");						
 						registro.put("NIF_DEFENDIDO", "");
 						registro.put("NOMBRE_DEFENDIDO", "");
 						registro.put("DOMICILIO_DEFENDIDO", "");
@@ -2492,12 +2493,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 						if(((Hashtable) defendidos.get(i)).get("NUMERO_EJG")== null ||((Hashtable) defendidos.get(i)).get("NUMERO_EJG").equals("")){
 							((Hashtable) defendidos.get(i)).put("NUMERO_EJG", (String) ((Hashtable) datos.get(0)).get("NUMERO_EJG"));
 						} 
-						if(((Hashtable) defendidos.get(i)).get("FECHARESOLUCIONCAJG")== null ||((Hashtable) defendidos.get(i)).get("FECHARESOLUCIONCAJG").equals("")){
-							((Hashtable) defendidos.get(i)).put("FECHARESOLUCIONCAJG", (String) ((Hashtable) datos.get(0)).get("FECHARESOLUCIONCAJG"));
-						}
-						if(((Hashtable) defendidos.get(i)).get("FECHAAPERTURA_EJG")== null ||((Hashtable) defendidos.get(i)).get("FECHAAPERTURA_EJG").equals("")){
-							((Hashtable) defendidos.get(i)).put("FECHAAPERTURA_EJG", (String) ((Hashtable) datos.get(0)).get("FECHAAPERTURA_EJG"));
-						}
 					}
 				}
 				return defendidos;
@@ -2808,9 +2803,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		h.put(new Integer(3), anio);
 		h.put(new Integer(4), numero);
 
-		StringBuffer sql = new StringBuffer("SELECT ejg.ANIO ANIO_EJG, (ejg.ANIO || '/' || ejg.NUMEJG) AS NUMERO_EJG, ");
-		sql.append(" to_char(ejg.FECHARESOLUCIONCAJG, 'dd/mm/yyyy') AS FECHARESOLUCIONCAJG, ");
-		sql.append(" to_char(ejg.FECHAAPERTURA, 'dd/mm/yyyy') AS FECHAAPERTURA_EJG ");
+		StringBuffer sql = new StringBuffer("SELECT ejg.ANIO ANIO_EJG, (ejg.ANIO || '/' || ejg.NUMEJG) AS NUMERO_EJG ");
 		sql.append(" FROM SCS_EJG ejg, Scs_Ejgdesigna des ");
 		sql.append(" WHERE des.IDINSTITUCION = ejg.IDINSTITUCION ");
 		sql.append(" AND des.Idtipoejg = ejg.IDTIPOEJG ");
@@ -3195,50 +3188,64 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	  }
 	  
 	  
-	  public Vector getejgsdesigna(String idturno, String numero, String anio, String idinstitucion) throws ClsExceptions{
+	  public Vector getejgsdesigna(String idturno, String  numero, String anio, String idinstitucion) throws ClsExceptions{
 		
 	  		Vector datos=new Vector();
 	       try {
 	            RowsContainer rc = new RowsContainer();
-		        StringBuffer sql = new StringBuffer();		 
-		        sql.append(" SELECT TABLA.*, "
-	        		+ " PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(TABLA.FECHARESOLUCIONCAJG, 'DMA', "+this.usrbean.getLanguage()+") AS FECHARESOLUCIONCAJGLETRA "
-        			+ " FROM ( ");
-			        sql.append(" select  ejg.aniocajg || '/' || ejg.numero_cajg as ANIONUMEROCAJG, ejg.numero_cajg  || '/' || ejg.aniocajg as NUMEROANIOCAJG, ejg.aniocajg as ANIOCAJG, ejg.numero_cajg as NUMEROCAJG, ejg.idpersona as IDPERSONA ");
-			        sql.append(", ejg.anio || '/' || ejg.numejg ANIONUMEROEJG,ejg.numejg || '/' || ejg.anio NUMEROANIOEJG ");
-			        sql.append(", PROCU.NOMBRE || ' ' || PROCU.APELLIDOS1 || ' ' || PROCU.APELLIDOS2 AS PROCURADOR_EJG ");
-			        sql.append(", ejg.anio ANIOEJG, ejg.numero NUMEROEJG, ejg.numejg NUMEJG, ejg.idtipoejg IDTIPOEJG ");
-			        sql.append(", NVL2(EJG.IDACTA, ( "
-						+ " SELECT TO_CHAR(ACTA.FECHARESOLUCION, 'dd/mm/yyyy') "
-						+ " FROM SCS_ACTACOMISION ACTA "
-						+ " WHERE ACTA.IDACTA = EJG.IDACTA "
-						+ " AND ACTA.IDINSTITUCION =  EJG.IDINSTITUCION "
-						+ " AND ACTA.ANIOACTA =  EJG.ANIOACTA "        
-						+ " ),  EJG.FECHARESOLUCIONCAJG) AS FECHARESOLUCIONCAJG ");	
-			        sql.append(" from scs_ejg ejg, scs_designa des, ");
-			        sql.append(" scs_turno tur, scs_tipoejg tip, ");
-			        sql.append(" scs_tipodictamenejg tdic, scs_ejgdesigna ejgDes,scs_procurador procu ");
-			        sql.append(" where ejgDes.Aniodesigna = des.anio ");
-			        sql.append(" and ejgDes.Numerodesigna = des.numero");
-			        sql.append(" and ejgDes.Idturno = des.idturno ");		        
-			        sql.append(" and ejgDes.Idinstitucion = des.idinstitucion ");
-			        sql.append(" and ejgDes.Idinstitucion = ejg.idinstitucion ");
-			        sql.append(" and ejgDes.Anioejg = ejg.anio ");
-			        sql.append(" and ejgDes.Numeroejg = ejg.numero ");
-	                sql.append(" and ejgDes.Idtipoejg = ejg.idtipoejg ");
-	                sql.append(" and tip.idtipoejg = ejg.idtipoejg "); 
-			        sql.append(" and tdic.idtipodictamenejg(+) = ejg.idtipodictamenejg ");
-	                sql.append(" and tdic.idtipodictamenejg(+) = ejg.idinstitucion");
-	                sql.append(" and tur.idinstitucion(+) = ejg.idinstitucion ");
-	                sql.append(" and tur.idturno(+) = ejg.guardiaturno_idturno ");
-	                sql.append(" and procu.idprocurador(+)= ejg.idprocurador ");
-	                sql.append(" and procu.idinstitucion(+) = "+idinstitucion);
-	                sql.append(" and des.anio = "+anio);
-	                sql.append(" and des.numero = "+numero);
-	                sql.append(" and des.idturno = "+idturno);
-	                sql.append(" and des.idinstitucion = "+idinstitucion);
-                 sql.append(" ) TABLA ");
-               if (rc.find(sql.toString())) {
+	            String sql = " SELECT TABLA.*, " +
+	            		" PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(TABLA.FECHARESOLUCIONCAJG, 'DMA', "+this.usrbean.getLanguage()+") AS FECHARESOLUCIONCAJGLETRA, " +
+	            		" PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(TABLA.FECHAAPERTURA_EJG, 'DMA', "+this.usrbean.getLanguage()+") AS FECHAAPERTURA_EJG_LETRA " +
+        			" FROM ( " +
+		            	" SELECT  EJG.aniocajg || '/' || EJG.numero_cajg as ANIONUMEROCAJG, " + 
+		        			" EJG.numero_cajg  || '/' || EJG.aniocajg as NUMEROANIOCAJG, " + 
+			            	" EJG.aniocajg as ANIOCAJG, " + 
+		        			" EJG.numero_cajg as NUMEROCAJG, " + 
+			            	" EJG.idpersona as IDPERSONA, " +
+		        			" TO_CHAR(EJG.FECHAAPERTURA, 'dd/mm/yyyy') AS FECHAAPERTURA_EJG, " +
+		        			" EJG.anio || '/' || EJG.numejg ANIONUMEROEJG, " +
+			            	" EJG.numejg || '/' || EJG.anio NUMEROANIOEJG, " +
+		        			" PROCU.NOMBRE || ' ' || PROCU.APELLIDOS1 || ' ' || PROCU.APELLIDOS2 AS PROCURADOR_EJG, " +
+			            	" EJG.anio ANIOEJG, " + 
+		        			" EJG.numero NUMEROEJG, " + 
+			            	" EJG.numejg NUMEJG, " + 
+		        			" EJG.idtipoejg IDTIPOEJG, " +
+		        			" NVL2(EJG.IDACTA, ( " +
+								" SELECT TO_CHAR(ACTA.FECHARESOLUCION, 'dd/mm/yyyy') " +
+								" FROM SCS_ACTACOMISION ACTA " +
+								" WHERE ACTA.IDACTA = EJG.IDACTA " +
+								" AND ACTA.IDINSTITUCION =  EJG.IDINSTITUCION " +
+								" AND ACTA.ANIOACTA =  EJG.ANIOACTA " +        
+								" ),  TO_CHAR(EJG.FECHARESOLUCIONCAJG, 'dd/mm/yyyy')) AS FECHARESOLUCIONCAJG " +
+						" FROM SCS_EJG EJG, " +
+							" SCS_DESIGNA DES, " +
+							" SCS_TURNO TUR, " +
+							" SCS_TIPOEJG TIP, " +	
+					        " SCS_TIPODICTAMENEJG TDIC, " +
+							" SCS_EJGDESIGNA EJGDES, " +
+					        " SCS_PROCURADOR PROCU " +
+				        " WHERE EJGDES.Aniodesigna = DES.anio " +
+					       	" AND EJGDES.Numerodesigna = DES.numero" +
+					       	" AND EJGDES.Idturno = DES.idturno " +		        
+					        " AND EJGDES.Idinstitucion = DES.idinstitucion " +
+					        " AND EJGDES.Idinstitucion = EJG.idinstitucion " +
+					        " AND EJGDES.Anioejg = EJG.anio " +
+					        " AND EJGDES.Numeroejg = EJG.numero " +
+			                " AND EJGDES.Idtipoejg = EJG.idtipoejg " +
+			                " AND TIP.idtipoejg = EJG.idtipoejg " +
+					        " AND TDIC.idtipodictamenejg(+) = EJG.idtipodictamenejg " +
+			                " AND TDIC.idtipodictamenejg(+) = EJG.idinstitucion" +
+			                " AND TUR.idinstitucion(+) = EJG.idinstitucion " +
+			                " AND TUR.idturno(+) = EJG.guardiaturno_idturno " +
+			                " AND PROCU.idprocurador(+)= EJG.idprocurador " +
+			                " AND PROCU.idinstitucion(+) = " + idinstitucion +
+			                " AND DES.anio = " + anio +
+			                " AND DES.numero = " + numero +
+			                " AND DES.idturno = " + idturno +
+			                " AND DES.idinstitucion = " + idinstitucion +
+                 	" ) TABLA ";
+	            
+               if (rc.find(sql)) {
 		               for (int i = 0; i < rc.size(); i++){
 		                  Row fila = (Row) rc.get(i);
 		                  Hashtable resultado=fila.getRow();	                  
@@ -3329,12 +3336,15 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				int tamanio= ejgsdesingna.size();
 				String Listadotramitador="";				
 				String Listadoanionumerocajg="";
-				String Listadonumeroaniocajg="";
-				String sListadoFechaResolucionCajg="";
-				String sListadoFechaResolucionCajgLetra="";
-				
+				String Listadonumeroaniocajg="";								
 				String listadoAnioNumeroEjg="";
 				String listadoNumeroAnioEjg="";
+				
+				String sListadoFechaResolucionCajg="";
+				String sListadoFechaResolucionCajgLetra="";
+				String sListadoNumeroEjg="";
+				String sListadoFechaAperturaEjg="";
+				String sListadoFechaAperturaEjgLetra="";
 				
 				//Guarda el nombre del procurador del EJG
 				String procuradorEjg="";											
@@ -3351,19 +3361,24 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				    String anioNumeroEjg = (String)registroejg.get("ANIONUMEROEJG");
 				    String sFechaResolucionCajg = (String)registroejg.get("FECHARESOLUCIONCAJG");
 				    String sFechaResolucionCajgLetra = (String)registroejg.get("FECHARESOLUCIONCAJGLETRA");
+				    String sFechaAperturaEJG = (String)registroejg.get("FECHAAPERTURA_EJG");
+				    String sFechaAperturaEJGLetra = (String)registroejg.get("FECHAAPERTURA_EJG_LETRA");
 				    
 				    if(procuradorEjg.equals(""))
 				    	procuradorEjg = (String)registroejg.get("PROCURADOR_EJG");
 				    else
 				    	procuradorEjg = procuradorEjg +","+(String)registroejg.get("PROCURADOR_EJG");
+				    
 				    if (!numeroaniocajg.equals("/") && (!anionumerocajg.equals("/"))){
 				    	Listadoanionumerocajg+=","+anionumerocajg;
 				    	Listadonumeroaniocajg+=","+numeroaniocajg;
 				    }
+				    
 				    if (!numeroAnioEjg.equals("/") && (!anioNumeroEjg.equals("/"))){
 				    	listadoAnioNumeroEjg+=","+anioNumeroEjg;
 				    	listadoNumeroAnioEjg+=","+numeroAnioEjg;
 				    }
+				    
 					if(idLetradoEjg!=null && !idLetradoEjg.trim().equalsIgnoreCase("")){
 							Vtramitador=ejgadm.getColegiadoSalida(idInstitucion,idLetradoEjg,"TRAMITADOR_EGJ");							
 							for (int l = 0; l < Vtramitador.size(); l++) {							  
@@ -3388,10 +3403,31 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 							sListadoFechaResolucionCajgLetra += "," + sFechaResolucionCajgLetra;
 						}						
 					}
+					
+					if (anioNumeroEjg != null) {
+						if (sListadoNumeroEjg.equals("")) {
+							sListadoNumeroEjg = anioNumeroEjg;
+						} else {
+							sListadoNumeroEjg += "," + anioNumeroEjg;
+						}						
+					}
+					
+					if (sFechaAperturaEJG != null) {
+						if (sListadoFechaAperturaEjg.equals("")) {
+							sListadoFechaAperturaEjg = sFechaAperturaEJG;
+							sListadoFechaAperturaEjgLetra = sFechaAperturaEJGLetra;
+						} else {
+							sListadoFechaAperturaEjg += "," + sFechaAperturaEJG;
+							sListadoFechaAperturaEjgLetra += "," + sFechaAperturaEJGLetra;
+						}						
+					}
 				}//FIN FOR
 				
 				UtilidadesHash.set(registro, "FECHARESOLUCIONCAJG", sListadoFechaResolucionCajg);
 				UtilidadesHash.set(registro, "FECHARESOLUCIONCAJGLETRA", sListadoFechaResolucionCajgLetra);
+				UtilidadesHash.set(registro, "NUMERO_EJG", sListadoNumeroEjg);
+				UtilidadesHash.set(registro, "FECHAAPERTURA_EJG", sListadoFechaAperturaEjg);
+				UtilidadesHash.set(registro, "FECHAAPERTURA_EJG_LETRA", sListadoFechaAperturaEjgLetra);
 				
 				
 				if (procuradorEjg!=null && !procuradorEjg.equals("")){
