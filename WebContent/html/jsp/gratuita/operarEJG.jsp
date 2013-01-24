@@ -683,12 +683,12 @@
 			<tr>
 				<td class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/></td>
 	 <%if (ejisActivo>0){%>							
-				<td>
+				<td class="labelText">
 					<input name="numeroProcedimiento" type="text" value="<%=numeroProcedimientoAsi%>" size="7" class="boxConsulta" readonly="true"/>/
 					<input name="anioProcedimiento" type="text" value="<%=anioProcedimientoAsi%>" size="4" class="boxConsulta" readonly="true"/>
 				</td>
 	 <%}else{%>			
-	 			<td>
+	 			<td class="labelText">
 					<input name="numeroProcedimiento" type="text" value="<%=numeroProcedimientoAsi%>" class="boxConsulta" readonly="true"/>
 				</td>
 	  <%}%>	

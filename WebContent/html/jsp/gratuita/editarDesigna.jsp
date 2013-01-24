@@ -951,7 +951,7 @@
 								<tr>
 				 <%if (ejisActivo>0){%>					
 																
-						<td style="vertical-align: middle;">						
+						<td style="vertical-align: middle;" class="labelText">						
 							<% if (!modo.equalsIgnoreCase("ver")) { %> 
 								<html:text name="MaestroDesignasForm" property="numeroProcedimiento" size="7" maxlength="7" styleClass="box" value="<%=numeroProcedimiento%>"></html:text>/
 								<html:text name="MaestroDesignasForm" property="anioProcedimiento" size="4" maxlength="4" styleClass="box" value="<%=anioProcedimiento%>" ></html:text>

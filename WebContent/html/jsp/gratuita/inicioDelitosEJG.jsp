@@ -391,7 +391,7 @@
 						
 				 <%if (ejisActivo>0){%>			
 						
-						<td colspan="6"> 
+						<td class="labelText" colspan="6"> 
 							<%if(modopestanha.equals("editar")){%>
 							 	<input name="numeroProcedimiento2" size="7" maxlength="7" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>" />/
 							 	<input name="anioProcedimiento2" size="4" maxlength="4" type="text" value="<%=anioProcedimientoAsi%>" class="<%=estilo%>" />
