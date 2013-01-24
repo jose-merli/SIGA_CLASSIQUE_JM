@@ -91,25 +91,31 @@
 		function accionGuardarCerrar(){
 			sub();
 			
-			if (document.ActaComisionForm.guardaFundamento.checked && !document.ActaComisionForm.guardaRatificacion.checked) {
-				alert("<siga:Idioma key='sjcs.actas.checkfundamentojuridico'/>");
+			if (document.ActaComisionForm.guardaRatificacion.checked && !document.ActaComisionForm.guardaFundamento.checked) {
+				alert("<siga:Idioma key='sjcs.actas.checkresolucion'/>");
 				fin();
 			} else {
-				if(document.ActaComisionForm.guardaActa.checked ||
-					document.ActaComisionForm.guardaPonente.checked ||
-					document.ActaComisionForm.guardaRatificacion.checked ||
-					document.ActaComisionForm.guardaFundamento.checked){
-	
-					if(document.getElementById("idActaComp").value!=""){
-						var actaComp= document.getElementById("idActaComp").value.split(',');
-						document.ActaComisionForm.idInstitucion.value=actaComp[0];
-						document.ActaComisionForm.anioActa.value=actaComp[1];
-						document.ActaComisionForm.idActa.value=actaComp[2];
-					}
-					document.ActaComisionForm.submit();
-				}else{
-					alert("<siga:Idioma key='sjcs.actas.seleccioneCampos'/>");
+			
+				if (document.ActaComisionForm.guardaFundamento.checked && !document.ActaComisionForm.guardaRatificacion.checked) {
+					alert("<siga:Idioma key='sjcs.actas.checkfundamentojuridico'/>");
 					fin();
+				} else {
+					if(document.ActaComisionForm.guardaActa.checked ||
+						document.ActaComisionForm.guardaPonente.checked ||
+						document.ActaComisionForm.guardaRatificacion.checked ||
+						document.ActaComisionForm.guardaFundamento.checked){
+		
+						if(document.getElementById("idActaComp").value!=""){
+							var actaComp= document.getElementById("idActaComp").value.split(',');
+							document.ActaComisionForm.idInstitucion.value=actaComp[0];
+							document.ActaComisionForm.anioActa.value=actaComp[1];
+							document.ActaComisionForm.idActa.value=actaComp[2];
+						}
+						document.ActaComisionForm.submit();
+					}else{
+						alert("<siga:Idioma key='sjcs.actas.seleccioneCampos'/>");
+						fin();
+					}
 				}
 			}
 		}
