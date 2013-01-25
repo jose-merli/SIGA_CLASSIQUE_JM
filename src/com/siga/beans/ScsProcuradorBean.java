@@ -12,7 +12,7 @@ public class ScsProcuradorBean extends MasterBean{
 	
 	private Integer	idInstitucion, idProcurador;
 	private String	nombre=null, apellido1=null, apellido2=null,ncolegiado=null, direccion=null, codigoPostal=null, idProvincia=null, idPoblacion=null, 
-					telefono1=null, telefono2=null, fax1=null, email=null,codProcurador="";
+					telefono1=null, telefono2=null, fax1=null, email=null,codProcurador="", idColProcurador=null;
 	
 	/* Nombre de Tabla*/
 	
@@ -23,6 +23,7 @@ public class ScsProcuradorBean extends MasterBean{
 	static public final String 	C_IDINSTITUCION = 			"IDINSTITUCION";
 	static public final String 	C_IDPROCURADOR = 			"IDPROCURADOR";
 	static public final String 	C_NCOLEGIADO = 				"NCOLEGIADO";
+	static public final String 	C_IDCOLPROCURADOR = 		"IDCOLPROCURADOR";
 	static public final String 	C_NOMBRE = 					"NOMBRE";
 	static public final String 	C_APELLIDO1 = 				"APELLIDOS1";
 	static public final String 	C_APELLIDO2 = 				"APELLIDOS2";
@@ -220,4 +221,13 @@ public class ScsProcuradorBean extends MasterBean{
 	public void setCodProcurador(String codProcurador) {
 		this.codProcurador = codProcurador;
 	}
+
+	public String getIdColProcurador() {
+		return idColProcurador;
+	}
+
+	public void setIdColProcurador(String idColProcurador) {
+		this.idColProcurador = idColProcurador;
+	}
+	
 }

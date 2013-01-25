@@ -28,6 +28,7 @@
 
 		ArrayList provinciaSel = new ArrayList();
 		ArrayList poblacionSel = new ArrayList();
+		ArrayList colegioSel = new ArrayList();
 		String parametro[] = new String[1];
 		Integer PCAJG_ACTIVADO =(Integer) (request.getAttribute("PCAJG_ACTIVO"));
 		String pintarAsterisco="";
@@ -48,6 +49,7 @@
 			// Datos seleccionados de los combos:
 			provinciaSel.add(formulario.getIdProvincia());
 			poblacionSel.add(formulario.getIdPoblacion());
+			colegioSel.add(formulario.getIdColProcurador());
 			parametro[0] = formulario.getIdProvincia();
 		} else {
 				if (modo.equalsIgnoreCase("NUEVO")) {
@@ -63,6 +65,7 @@
 						// Datos seleccionados de los combos:
 						provinciaSel.add(formulario.getIdProvincia());
 						poblacionSel.add(formulario.getIdPoblacion());
+						colegioSel.add(formulario.getIdColProcurador());
 						parametro[0] = formulario.getIdProvincia();
 				}
 		}
@@ -180,6 +183,15 @@
 								</td>
 							</tr>
 
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.colegioprocurador"/><%=pintarAsterisco%>
+								</td>
+								<td colspan="5">
+									<siga:ComboBD nombre="idColProcurador" tipo="comboColegioProcuradores"  clase="<%=estiloCombo%>" obligatorio="true" elementoSel="<%=colegioSel%>"/>						
+								</td>						
+							</tr>
+								
 							<tr>
 								<td class="labelText">
 									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.colegiado"/><%=pintarAsterisco%>

@@ -49,7 +49,7 @@ public class ScsProcuradorAdm extends MasterBeanAdministrador {
 				ScsProcuradorBean.C_TELEFONO1,			ScsProcuradorBean.C_TELEFONO2, 
 				ScsProcuradorBean.C_FAX1,				ScsProcuradorBean.C_EMAIL,
 				ScsProcuradorBean.C_USUMODIFICACION,	ScsProcuradorBean.C_FECHAMODIFICACION,
-				ScsProcuradorBean.C_CODPROCURADOR
+				ScsProcuradorBean.C_CODPROCURADOR,		ScsProcuradorBean.C_IDCOLPROCURADOR
 		};
 		return campos;
 	}	
@@ -77,6 +77,8 @@ public class ScsProcuradorAdm extends MasterBeanAdministrador {
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash,ScsProcuradorBean.C_IDINSTITUCION));
 			bean.setIdProcurador(UtilidadesHash.getInteger(hash,ScsProcuradorBean.C_IDPROCURADOR));
 			bean.setNColegiado(UtilidadesHash.getString(hash,ScsProcuradorBean.C_NCOLEGIADO));
+			bean.setIdColProcurador(UtilidadesHash.getString(hash,ScsProcuradorBean.C_IDCOLPROCURADOR));
+			
 			bean.setNombre(UtilidadesHash.getString(hash,ScsProcuradorBean.C_NOMBRE));
 			bean.setApellido1(UtilidadesHash.getString(hash,ScsProcuradorBean.C_APELLIDO1));
 			bean.setApellido2(UtilidadesHash.getString(hash,ScsProcuradorBean.C_APELLIDO2));
@@ -112,6 +114,7 @@ public class ScsProcuradorAdm extends MasterBeanAdministrador {
 			hash.put(ScsProcuradorBean.C_IDINSTITUCION, String.valueOf(b.getIdInstitucion()));
 			hash.put(ScsProcuradorBean.C_IDPROCURADOR, String.valueOf(b.getIdProcurador()));
 			hash.put(ScsProcuradorBean.C_NCOLEGIADO, b.getNColegiado());
+			hash.put(ScsProcuradorBean.C_IDCOLPROCURADOR, b.getIdColProcurador());
 			hash.put(ScsProcuradorBean.C_NOMBRE, b.getNombre());
 			hash.put(ScsProcuradorBean.C_APELLIDO1, b.getApellido1());
 			hash.put(ScsProcuradorBean.C_APELLIDO2, b.getApellido2());
@@ -297,6 +300,7 @@ public class ScsProcuradorAdm extends MasterBeanAdministrador {
 		try {
 			select  = " SELECT procurador."+ScsProcuradorBean.C_NOMBRE;
 			select += " , procurador."+ScsProcuradorBean.C_NCOLEGIADO;
+			select += " , procurador."+ScsProcuradorBean.C_IDCOLPROCURADOR;
 			select += " , procurador."+ScsProcuradorBean.C_APELLIDO1;
 			select += " , procurador."+ScsProcuradorBean.C_APELLIDO2;
 			select += " , procurador."+ScsProcuradorBean.C_IDPROCURADOR;
