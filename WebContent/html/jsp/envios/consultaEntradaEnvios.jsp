@@ -264,8 +264,7 @@
 															<td></td>
 															<td  class="labelText">
 															</td>
-															<td  class="labelText"><bean:message
-																key="comunicaciones.etiqueta.procurador" /></td>
+															<td  class="labelText">Procurador</td>
 															<td class="labelTextValor"><c:out value="${entradaEnvio.procuradorDesignaSel}"/></td>
 															<td></td>
 															<td></td>
@@ -382,8 +381,7 @@
 															<td></td>
 															<td  class="labelText">
 															</td>
-															<td  class="labelText"><bean:message
-															key="comunicaciones.etiqueta.procurador" /></td>
+															<td  class="labelText">Procurador</td>
 															<td class="labelTextValor"><c:out value="${entradaEnvio.procuradorDesignaSel}"/></td>
 															<td></td>
 															<td></td>
