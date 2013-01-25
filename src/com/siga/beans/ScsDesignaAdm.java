@@ -2108,9 +2108,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			vSalida = new Vector();	
 			Vector vDesigna = getDesignaSalidaOficio(idInstitucion,idturno, anio, numero, codigoDesigna); 
 			
-			
-			
-			
 			String idiomainforme="";
 			Hashtable htCodigo = new Hashtable();
 			for (int j = 0; j < vDesigna.size(); j++) {
@@ -2124,8 +2121,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				String idInstitucionOrigen = (String)registro.get("IDINSTITUCIONORIGEN");
 								
 				Vector vDefendidos = getDefendidosDesignaSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna,idPersonaJG, idPersona);
-				if(isSolicitantes){						
-					
+				if(isSolicitantes){											
 					if(vDefendidos!=null && vDefendidos.size()>0){
 						for (int k = 0; k < vDefendidos.size(); k++) {
 							Hashtable clone = (Hashtable) registro.clone();							
@@ -2140,11 +2136,11 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 								si no tiene idioma se imprime en el idioma del usuario. y los delitos también salen en el idioma del interesado.								
 							***/							
 							String idLenguaje="";							
-								if (idpersonainteresado!=null && !idpersonainteresado.trim().equals("")){
-										idLenguaje=(String)registroDefendido.get("IDLENGUAJE_DEFENDIDO");
-								}else{
-										idLenguaje=idioma;
-								}
+							if (idpersonainteresado!=null && !idpersonainteresado.trim().equals("")){
+									idLenguaje=(String)registroDefendido.get("IDLENGUAJE_DEFENDIDO");
+							}else{
+									idLenguaje=idioma;
+							}
 							/**Depende del idioma del defendido se tiene que imprimir la carta del defendido, si no tiene idioma se imprime en el idioma de la institución.**/
 							String 	idiomaExt="";
 							switch (Integer.parseInt(idLenguaje)) {
@@ -2156,8 +2152,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 							/**Llama a la funcion para recuperar los valores con el idioma que le pasamos.**/
 							registroDefendido  = getregistrodatosDesigna(registro, idInstitucion,idLenguaje);
 							/**Para saaber en que idioma se tiene que imprimer la carta de oficio**/
-							registroDefendido.put("CODIGOLENGUAJE", idiomaExt);
-							
+							registroDefendido.put("CODIGOLENGUAJE", idiomaExt);							
 							
 							htCodigo = new Hashtable();
 							String sexoDefendico="";
@@ -2209,11 +2204,10 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 								estadoCivilDefendido = (String) ((Hashtable)estadodCivilDefendidoVector.get(0)).get("ESTADOCIVIL_DEFENDIDO");
 							}
 							registroDefendido.put("ESTADOCIVIL_DEFENDIDO", estadoCivilDefendido);
-							
-							
+														
 							clone.putAll(registroDefendido);						
 							vSalida.add(clone);
-						}
+						}  // END FOR
 					}else{
 						if (idiomaletrado != null && !idiomaletrado.equals("")) {
 							idioma = idiomaletrado;
@@ -2231,6 +2225,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 						registro.put("NUMERO_EJG", "");
 						registro.put("FECHAAPERTURA_EJG", "");
 						registro.put("FECHAAPERTURA_EJG_LETRA", "");
+						registro.put("PARRAFO_LETRADO_PROCURADOR", "");
 						
 						registro.put("CODIGOLENGUAJE", idiomainforme);	
 						registro.put("LISTA_TELEFONOS_INTERESADO", "");						
@@ -2263,9 +2258,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 							case 2:  idiomainforme="CA"; break;
 							case 3:  idiomainforme="EU"; break;
 							case 4:  idiomainforme="GL"; break;	
-					}
-					registro.put("CODIGOLENGUAJE", idiomainforme);					
-					
+					}					
 					
 					if(vDefendidos!=null && vDefendidos.size()>0){
 						for (int k = 0; k < vDefendidos.size(); k++) {
@@ -2332,19 +2325,21 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 								estadoCivilDefendido = (String) ((Hashtable)estadodCivilDefendidoVector.get(0)).get("ESTADOCIVIL_DEFENDIDO");
 							}
 							registroDefendido.put("ESTADOCIVIL_DEFENDIDO", estadoCivilDefendido);
-							
-							
-							
-						}
-						registro.put("defendido", vDefendidos);
-						
+						} // END FOR
+						registro.put("defendido", vDefendidos);						
 					}else{
 						//registro.put("defendido","");
 					}
 					
-					registro.put("LISTA_TELEFONOS_INTERESADO", "");
+					registro.put("FECHARESOLUCIONCAJG", "");
+					registro.put("FECHARESOLUCIONCAJGLETRA", "");
 					registro.put("NUMERO_EJG", "");
 					registro.put("FECHAAPERTURA_EJG", "");
+					registro.put("FECHAAPERTURA_EJG_LETRA", "");
+					registro.put("PARRAFO_LETRADO_PROCURADOR", "");
+
+					registro.put("CODIGOLENGUAJE", idiomainforme);
+					registro.put("LISTA_TELEFONOS_INTERESADO", "");
 					registro.put("NIF_DEFENDIDO", "");
 					registro.put("NOMBRE_DEFENDIDO", "");
 					registro.put("DOMICILIO_DEFENDIDO", "");
@@ -3276,584 +3271,575 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		  
 		  String idTipoDesigna="";
 		  Hashtable htCodigo = new Hashtable();
-		  try{
+		  
+		  try{			  
+			if(numeroDesigna==null||numeroDesigna.trim().equals(""))
+				throw new ClsExceptions("Excepcion Controlada. Seguramente no tenga letrado");				
 			  
-				if(numeroDesigna==null||numeroDesigna.trim().equals(""))
-					throw new ClsExceptions("Excepcion Controlada. Seguramente no tenga letrado");				
-			  
-			  	//Metemos la descripcion del turno
-				helperInformes.completarHashSalida(registro,helperInformes.getTurnoSalida(idInstitucion,idTurno));
-				
-				idTipoDesigna  = (String)registro.get("IDTIPODESIGNACOLEGIO");
-				//Metemos la descripcion del tipo de designa
-				if(idTipoDesigna!=null && !idTipoDesigna.trim().equals(""))
-					helperInformes.completarHashSalida(registro,helperInformes.getTipoDesignaColegio(idInstitucion,idTipoDesigna,idioma));
-				else
-					registro.put("DESC_TIPODESIGNA", " ");							
-			  
-				//metemos el numero de colegiado
-				if(registro.containsKey("IDPERSONA") && registro.get("IDPERSONA")!=null && !((String)registro.get("IDPERSONA")).trim().equals("")){
-					Hashtable htCodigo2 = new Hashtable();
-					htCodigo2.put(new Integer(1), idInstitucion);
-					htCodigo2.put(new Integer(2), (String)registro.get("IDPERSONA"));
-					if(institucionOrigen!=null && !institucionOrigen.trim().equals("")){
-						htCodigo2.put(new Integer(1), institucionOrigen);
-						htCodigo2.put(new Integer(2), (String)registro.get("IDPERSONA"));
-						helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo2, "f_siga_calculoncolegiado", "NCOLEGIADO_LETRADO"));
-					}else{
-						helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo2, "f_siga_calculoncolegiado", "NCOLEGIADO_LETRADO"));
-					}	
-				} else {
-					registro.put("NCOLEGIADO_LETRADO", " ");
-				}
-				
-				htCodigo = new Hashtable();
-				htCodigo.put(new Integer(1), idTurno);
-				htCodigo.put(new Integer(2), idInstitucion);
-				//metemos el nombre de partdo
-				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_NOMBRE_PARTIDO", "NOMBRE_PARTIDO"));
-				htCodigo.put(new Integer(1), idInstitucion);				
-				htCodigo.put(new Integer(2), idTurno);
-				htCodigo.put(new Integer(3), anioDesigna);
-				htCodigo.put(new Integer(4), numeroDesigna);
-				
-				//metemos los procuradores
-				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETPROCURADORCONT_DESIG", "PROCURADOR_CONTRARIOS"));
-
-				//metemos los contrarios
-				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETCONTRARIOS_DESIGNA", "CONTRARIOS"));
-				
-				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETABOGADOCONTRARIO_DES", "ABOGADOS_CONTRARIOS"));
-				
-				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETREPRESENTANTE_DES", "REPRESENTANTES_CONTRARIOS"));
-				
-				/**
-				 * Se Saca el nombre del tramitador de la EJG relacionada con la designa, si hay mas de una EJG relacionado se saca
-				 * un listado de los tramitadores de cada EJG relacionada con la designa y entre parentesis el anio/numero cajg
-				 * **/
-				Vector ejgsdesingna=getejgsdesigna(idTurno, numeroDesigna, anioDesigna, idInstitucion);				
-				ScsEJGAdm ejgadm = new ScsEJGAdm(this.usrbean);
-				int tamanio= ejgsdesingna.size();
-				String Listadotramitador="";				
-				String Listadoanionumerocajg="";
-				String Listadonumeroaniocajg="";								
-				String listadoAnioNumeroEjg="";
-				String listadoNumeroAnioEjg="";
-				
-				String sListadoFechaResolucionCajg="";
-				String sListadoFechaResolucionCajgLetra="";
-				String sListadoNumeroEjg="";
-				String sListadoFechaAperturaEjg="";
-				String sListadoFechaAperturaEjgLetra="";
-				
-				//Guarda el nombre del procurador del EJG
-				String procuradorEjg="";											
-												
-				Vector Vtramitador=null;
-				for (int i = 0; i < ejgsdesingna.size(); i++) {					
-					Hashtable registroejg = (Hashtable) ejgsdesingna.get(i);				
-				    String idLetradoEjg  = (String)registroejg.get("IDPERSONA");
-				    String aniocajg = (String)registroejg.get("ANIOCAJG");
-				    String numerocajg = (String)registroejg.get("NUMEROCAJG");	
-				    String numeroaniocajg = (String)registroejg.get("NUMEROANIOCAJG"); 
-				    String anionumerocajg = (String)registroejg.get("ANIONUMEROCAJG");
-				    String numeroAnioEjg = (String)registroejg.get("NUMEROANIOEJG"); 
-				    String anioNumeroEjg = (String)registroejg.get("ANIONUMEROEJG");
-				    String sFechaResolucionCajg = (String)registroejg.get("FECHARESOLUCIONCAJG");
-				    String sFechaResolucionCajgLetra = (String)registroejg.get("FECHARESOLUCIONCAJGLETRA");
-				    String sFechaAperturaEJG = (String)registroejg.get("FECHAAPERTURA_EJG");
-				    String sFechaAperturaEJGLetra = (String)registroejg.get("FECHAAPERTURA_EJG_LETRA");
-				    
-				    if(procuradorEjg.equals(""))
-				    	procuradorEjg = (String)registroejg.get("PROCURADOR_EJG");
-				    else
-				    	procuradorEjg = procuradorEjg +","+(String)registroejg.get("PROCURADOR_EJG");
-				    
-				    if (!numeroaniocajg.equals("/") && (!anionumerocajg.equals("/"))){
-				    	Listadoanionumerocajg+=","+anionumerocajg;
-				    	Listadonumeroaniocajg+=","+numeroaniocajg;
-				    }
-				    
-				    if (!numeroAnioEjg.equals("/") && (!anioNumeroEjg.equals("/"))){
-				    	listadoAnioNumeroEjg+=","+anioNumeroEjg;
-				    	listadoNumeroAnioEjg+=","+numeroAnioEjg;
-				    }
-				    
-					if(idLetradoEjg!=null && !idLetradoEjg.trim().equalsIgnoreCase("")){
-							Vtramitador=ejgadm.getColegiadoSalida(idInstitucion,idLetradoEjg,"TRAMITADOR_EGJ");							
-							for (int l = 0; l < Vtramitador.size(); l++) {							  
-								Hashtable registrotramitador = (Hashtable) Vtramitador.get(l);
-								String nombretramitador = (String)registrotramitador.get("NOMBRE_TRAMITADOR_EGJ");									
-								if(nombretramitador!=null && !nombretramitador.trim().equalsIgnoreCase("")){										
-									if (((aniocajg==null || aniocajg.equals(""))&&(numerocajg==null || numerocajg.equals("")))||(tamanio==1)){
-										Listadotramitador+=","+nombretramitador;
-									}else{	
-										Listadotramitador+=","+nombretramitador+"("+aniocajg+"/"+numerocajg+")";
-									}
-								}
-						   }							
-				    }
-					
-					if (sFechaResolucionCajg != null) {
-						if (sListadoFechaResolucionCajg.equals("")) {
-							sListadoFechaResolucionCajg = sFechaResolucionCajg;
-							sListadoFechaResolucionCajgLetra = sFechaResolucionCajgLetra;
-						} else {
-							sListadoFechaResolucionCajg += "," + sFechaResolucionCajg;
-							sListadoFechaResolucionCajgLetra += "," + sFechaResolucionCajgLetra;
-						}						
-					}
-					
-					if (anioNumeroEjg != null) {
-						if (sListadoNumeroEjg.equals("")) {
-							sListadoNumeroEjg = anioNumeroEjg;
-						} else {
-							sListadoNumeroEjg += "," + anioNumeroEjg;
-						}						
-					}
-					
-					if (sFechaAperturaEJG != null) {
-						if (sListadoFechaAperturaEjg.equals("")) {
-							sListadoFechaAperturaEjg = sFechaAperturaEJG;
-							sListadoFechaAperturaEjgLetra = sFechaAperturaEJGLetra;
-						} else {
-							sListadoFechaAperturaEjg += "," + sFechaAperturaEJG;
-							sListadoFechaAperturaEjgLetra += "," + sFechaAperturaEJGLetra;
-						}						
-					}
-				}//FIN FOR
-				
-				UtilidadesHash.set(registro, "FECHARESOLUCIONCAJG", sListadoFechaResolucionCajg);
-				UtilidadesHash.set(registro, "FECHARESOLUCIONCAJGLETRA", sListadoFechaResolucionCajgLetra);
-				UtilidadesHash.set(registro, "NUMERO_EJG", sListadoNumeroEjg);
-				UtilidadesHash.set(registro, "FECHAAPERTURA_EJG", sListadoFechaAperturaEjg);
-				UtilidadesHash.set(registro, "FECHAAPERTURA_EJG_LETRA", sListadoFechaAperturaEjgLetra);
-				
-				
-				if (procuradorEjg!=null && !procuradorEjg.equals("")){
-					UtilidadesHash.set(registro, "PROCURADOR_EJG", procuradorEjg);
-				}else{
-					UtilidadesHash.set(registro, "PROCURADOR_EJG", "");
-				}
-				
-				if (Listadotramitador!=null && !Listadotramitador.equals("")){
-					Listadotramitador =Listadotramitador.substring(1);					
-					UtilidadesHash.set(registro, "NOMBRE_TRAMITADOR_EJG", Listadotramitador);
-				}else{
-					UtilidadesHash.set(registro, "NOMBRE_TRAMITADOR_EJG", "");
-				}
-				if (Listadoanionumerocajg!=null && !Listadoanionumerocajg.equals("")){
-					Listadoanionumerocajg=Listadoanionumerocajg.substring(1);
-					UtilidadesHash.set(registro, "LISTAANIONUMEROCAJ", Listadoanionumerocajg);					
-				}else{
-					UtilidadesHash.set(registro, "LISTAANIONUMEROCAJ", "");
-				}
-				
-				if (Listadonumeroaniocajg!=null && !Listadonumeroaniocajg.equals("")){
-					Listadonumeroaniocajg=Listadonumeroaniocajg.substring(1);
-					UtilidadesHash.set(registro, "LISTANUMEROANIOCAJ", Listadonumeroaniocajg);					
-				}else{
-					UtilidadesHash.set(registro, "LISTANUMEROANIOCAJ", "");
-				}
-				
-				//LISTADO ANIO NUMERO EJG				
-				if (listadoAnioNumeroEjg!=null && !listadoAnioNumeroEjg.equals("")){
-					listadoAnioNumeroEjg=listadoAnioNumeroEjg.substring(1);
-					UtilidadesHash.set(registro, "LISTAANIONUMEROEJGS", listadoAnioNumeroEjg);					
-				}else{
-					UtilidadesHash.set(registro, "LISTAANIONUMEROEJGS", "");
-				}
-				
-				if (listadoNumeroAnioEjg!=null && !listadoNumeroAnioEjg.equals("")){
-					listadoNumeroAnioEjg=listadoNumeroAnioEjg.substring(1);
-					UtilidadesHash.set(registro, "LISTANUMEROANIOEJGS", listadoNumeroAnioEjg);					
-				}else{
-					UtilidadesHash.set(registro, "LISTANUMEROANIOEJGS", "");
-				}
-				
-				
-				htCodigo.put(new Integer(2), anioDesigna);
-				htCodigo.put(new Integer(3), idTurno);
-				htCodigo.put(new Integer(4), numeroDesigna);			
-				
-				//metemos la lista actuaciones 
-				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETACTUACIONESDESIGNA", "LISTA_ACTUACIONES_DESIGNA"));
-				//metemos la primera actuacion				
-				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETFIRSTASISDESIGNA", "FECHA_ASISTENCIA"));
-				
-				htCodigo.put(new Integer(5), "0");
-				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETINTERESADOSDESIGNA", "LISTA_INTERESADOS_DESIGNA"));
-
-				if(idPersona==null ||idPersona.trim().equalsIgnoreCase("")){
-				    idPersona="-33"; // forzamos que no encuentre datos, en lugar de dar error
-				}
-				htCodigo = new Hashtable();
-				htCodigo.put(new Integer(1), idInstitucion);				
-				htCodigo.put(new Integer(2), idTurno);
-				htCodigo.put(new Integer(3), anioDesigna);
-				htCodigo.put(new Integer(4), numeroDesigna);
-				htCodigo.put(new Integer(5), idPersona);
-				
-				//Si no se encuentra info en cen_colegiado (Art.27) se busca en cen_nocolegiado
-				//if(registro.get("NCOLEGIADO_LETRADO") != null && !((String)registro.get("NCOLEGIADO_LETRADO")).equals("")){
-				if(institucionOrigen!=null && !institucionOrigen.trim().equals("")){
-					helperInformes.completarHashSalida(registro,getLetradoSalidaOficioArt27(htCodigo));
-				}else{
-					helperInformes.completarHashSalida(registro,getLetradoSalidaOficio(htCodigo));
-				}
-				String sexoLetrado  = (String)registro.get("SEXO_LETRADO_SINTRADUCIR");				
-				if (sexoLetrado!=null && !sexoLetrado.trim().equals("")){
-							htCodigo = new Hashtable();
-							htCodigo.put(new Integer(1), sexoLetrado);
-							htCodigo.put(new Integer(2), idioma);				
-							helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-							htCodigo, "F_SIGA_GETRECURSO_ETIQUETA", "SEXO_LETRADO"));
-				}else{
-							registro.put("SEXO_LETRADO", "");
-				}
-				
-				String observacionesCambioLetrado  = (String)registro.get("OBSERVACIONES_CAMBIOLETRADO");
-				if (observacionesCambioLetrado!=null && !observacionesCambioLetrado.trim().equals("")){		
-					registro.put("OBSERVACIONES_CAMBIOLETRADO", observacionesCambioLetrado);
-				}else {
-					registro.put("OBSERVACIONES_CAMBIOLETRADO", "");
-				}					
-				
-				 /**Fecha en Letras de la fecha del letrado actual, para que aparezcan en el idioma que se le pasa**/							
-					String fechaLetradoActual  = (String)registro.get("FECHALETRADO_ACTUAL");
-					if (fechaLetradoActual!=null && !fechaLetradoActual.trim().equals("")){		
-						htCodigo = new Hashtable();						
-						htCodigo.put(new Integer(1), fechaLetradoActual);
-						htCodigo.put(new Integer(2), "m");
-						htCodigo.put(new Integer(3), idioma);								
-						helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-												htCodigo, "PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA", "FECHALETRADOACTUAL_LETRA"));
-						}else {
-								registro.put("FECHALETRADOACTUAL_LETRA", "");
-						}
-				
-				
-					Vector vPreferente = getDireccionLetradoSalidaOficioPreferente(idPersona,idInstitucion);		
-					String dir = (String)((Hashtable)vPreferente.get(0)).get("DOMICILIO_DESPACHO_LETRADO");
-					if (dir != null && !dir.trim().equals("")){
-						helperInformes.completarHashSalida(registro,vPreferente);
-					} else {
-						helperInformes.completarHashSalida(registro, getDireccionLetradoSalidaOficio(idPersona, idInstitucion));
-					}
-				
-				String pobLetrado = (String)registro.get("POBLACION_DESPACHO_LETRADO");
-				if(pobLetrado==null ||pobLetrado.trim().equalsIgnoreCase("")){
-					String idPobLetrado = (String)registro.get("IDPOBLACION_DESPACHO_LETRADO");
-					helperInformes.completarHashSalida(registro,helperInformes.getNombrePoblacionSalida(idPobLetrado,"POBLACION_DESPACHO_LETRADO"));
-					String idProvLetrado = (String)registro.get("IDPROVINCIA_DESPACHO_LETRADO");
-					if(idProvLetrado!=null && !idProvLetrado.equalsIgnoreCase(""))
-						helperInformes.completarHashSalida(registro,helperInformes.getNombreProvinciaSalida(idProvLetrado,"PROVINCIA_DESPACHO_LETRADO"));
-					else
-						UtilidadesHash.set(registro, "PROVINCIA_DESPACHO_LETRADO", "");	
-					
-				}else{
-					UtilidadesHash.set(registro, "PROVINCIA_DESPACHO_LETRADO", "");									
-				}
-				
-				if (registro.get("DOMICILIO_DESPACHO_LETRADO")!=null) {
-					registro.put("DOMICILIO_LETRADO", registro.get("DOMICILIO_DESPACHO_LETRADO"));
-				}
-				if (registro.get("CP_DESPACHO_LETRADO")!=null) {
-					registro.put("CP_LETRADO", registro.get("CP_DESPACHO_LETRADO"));
-				}
-				if (registro.get("IDPOBLACION_DESPACHO_LETRADO")!=null) {
-					registro.put("ID_POBLACION_LETRADO", registro.get("IDPOBLACION_DESPACHO_LETRADO"));
-				}
-				if (registro.get("POBLACION_DESPACHO_LETRADO")!=null) {
-					registro.put("POBLACION_LETRADO", registro.get("POBLACION_DESPACHO_LETRADO"));
-				}
-				if (registro.get("IDPROVINCIA_DESPACHO_LETRADO")!=null) {
-					registro.put("ID_PROVINCIA_LETRADO", registro.get("IDPROVINCIA_DESPACHO_LETRADO"));
-				}
-				if (registro.get("PROVINCIA_DESPACHO_LETRADO")!=null) {
-					registro.put("PROVINCIA_LETRADO", registro.get("PROVINCIA_DESPACHO_LETRADO"));
-				}
-				if (registro.get("TELEFONO1_DESPACHO_LETRADO")!=null) {
-					registro.put("TELEFONODESPACHO_LET", registro.get("TELEFONO1_DESPACHO_LETRADO"));
-				}
-				if (registro.get("FAX1_DESPACHO_LETRADO")!=null) {
-					registro.put("FAX_LETRADO", registro.get("FAX1_DESPACHO_LETRADO"));
-				}
-				if (registro.get("EMAIL_DESPACHO_LETRADO")!=null) {
-					registro.put("EMAIL_LETRADO", registro.get("EMAIL_DESPACHO_LETRADO"));
-				}
-				if (registro.get("MOVIL_DESPACHO_LETRADO")!=null) {
-					registro.put("MOVILDESPACHO_LET", registro.get("MOVIL_DESPACHO_LETRADO"));
-				}
-				
-				
-				helperInformes.completarHashSalida(registro,getDireccionPersonalLetradoSalidaOficio(idPersona,idInstitucion));
-				pobLetrado = (String)registro.get("POBLACION_GUARDIA_LETRADO");
-				if(pobLetrado==null ||pobLetrado.trim().equalsIgnoreCase("")){
-					String idPobLetrado = (String)registro.get("IDPOBLACION_GUARDIA_LETRADO");
-					helperInformes.completarHashSalida(registro,helperInformes.getNombrePoblacionSalida(idPobLetrado,"POBLACION_GUARDIA_LETRADO"));
-					String idProvLetrado = (String)registro.get("IDPROVINCIA_GUARDIA_LETRADO");
-					if(idProvLetrado!=null && !idProvLetrado.equalsIgnoreCase(""))
-						helperInformes.completarHashSalida(registro,helperInformes.getNombreProvinciaSalida(idProvLetrado,"PROVINCIA_GUARDIA_LETRADO"));
-					else
-						UtilidadesHash.set(registro, "PROVINCIA_GUARDIA_LETRADO", "");	
-					
-				}else{
-					UtilidadesHash.set(registro, "PROVINCIA_GUARDIA_LETRADO", "");									
-				}				
-				
-				if (registro.get("TELEFONO1_GUARDIA_LETRADO")!=null) {
-					registro.put("TELEFONO1_LETRADO", registro.get("TELEFONO1_GUARDIA_LETRADO"));
-				}
-				if (registro.get("TELEFONO2_GUARDIA_LETRADO")!=null) {
-					registro.put("TELEFONO2_LETRADO", registro.get("TELEFONO2_GUARDIA_LETRADO"));
-				}
-				if (registro.get("MOVIL_GUARDIA_LETRADO")!=null) {
-					registro.put("MOVIL_LETRADO", registro.get("MOVIL_GUARDIA_LETRADO"));
-				}
-				
-				String parrafoLetrado = "";
-				if (registro.containsKey("NOMBRE_LETRADO")  && registro.get("NOMBRE_LETRADO")!=null && !((String)registro.get("NOMBRE_LETRADO")).trim().equals("") ) {
-					parrafoLetrado = UtilidadesString.getMensajeIdioma(idioma, "informes.cartaOficio.parrafo.letrado") + " " + (String)registro.get("NOMBRE_LETRADO");
-					
-					if (registro.containsKey("TELEFONO1_GUARDIA_LETRADO")  && registro.get("TELEFONO1_GUARDIA_LETRADO")!=null && !((String)registro.get("TELEFONO1_GUARDIA_LETRADO")).trim().equals("") ) {
-						parrafoLetrado += " " + UtilidadesString.getMensajeIdioma(idioma, "informes.cartaOficio.parrafo.telefono")  + " " + (String)registro.get("TELEFONO1_GUARDIA_LETRADO");
-					}
-				}	
-				//registro.put("PARRAFO_LETRADO", parrafoLetrado);
-				
-				helperInformes.completarHashSalida(registro,getActuacionDesignaSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna));
-				
-				String idJuzgado = (String)registro.get("IDJUZGADO");				
-				String idInstJuzgado = (String)registro.get("IDINSTITUCION_JUZG");				
-				if(idJuzgado==null ||idJuzgado.trim().equalsIgnoreCase("")){
-				    idJuzgado="-33"; // forzamos que no encuentre datos, en lugar de dar error
-				    idInstJuzgado = "0";
-				}
-				helperInformes.completarHashSalida(registro,helperInformes.getJuzgadoSalida(idInstJuzgado,idJuzgado,""));		
+		  	//Metemos la descripcion del turno
+			helperInformes.completarHashSalida(registro,helperInformes.getTurnoSalida(idInstitucion,idTurno));
 			
-				String Idpretension  = (String)registro.get("IDPRETENSION");
-				ScsEJGAdm ejgdm = new ScsEJGAdm(this.usrbean);				
-				if(Idpretension!=null && !Idpretension.trim().equalsIgnoreCase("")){			
-						Vector vpretenciones=ejgdm.getPretension(Idpretension, idInstitucion,idioma);
-						for (int s = 0; s < vpretenciones.size(); s++) {
-							Hashtable registropretenciones = (Hashtable) vpretenciones.get(s);
-							String procedimiento = (String)registropretenciones.get("PRETENSION");
-							if(procedimiento!=null && !procedimiento.trim().equalsIgnoreCase(""))
-								registro.put("PROCEDIMIENTO_DESIGNA", procedimiento);
-							else
-								UtilidadesHash.set(registro, "PROCEDIMIENTO_DESIGNA", "");
-						}							
-							
-				}else	UtilidadesHash.set(registro, "PROCEDIMIENTO_DESIGNA", "");
+			idTipoDesigna  = (String)registro.get("IDTIPODESIGNACOLEGIO");
+			//Metemos la descripcion del tipo de designa
+			if(idTipoDesigna!=null && !idTipoDesigna.trim().equals(""))
+				helperInformes.completarHashSalida(registro,helperInformes.getTipoDesignaColegio(idInstitucion,idTipoDesigna,idioma));
+			else
+				registro.put("DESC_TIPODESIGNA", " ");							
+			  
+			//metemos el numero de colegiado
+			if(registro.containsKey("IDPERSONA") && registro.get("IDPERSONA")!=null && !((String)registro.get("IDPERSONA")).trim().equals("")){
+				Hashtable htCodigo2 = new Hashtable();
+				htCodigo2.put(new Integer(1), idInstitucion);
+				htCodigo2.put(new Integer(2), (String)registro.get("IDPERSONA"));
+				if(institucionOrigen!=null && !institucionOrigen.trim().equals("")){
+					htCodigo2.put(new Integer(1), institucionOrigen);
+					htCodigo2.put(new Integer(2), (String)registro.get("IDPERSONA"));
+					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo2, "f_siga_calculoncolegiado", "NCOLEGIADO_LETRADO"));
+				} else {
+					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo2, "f_siga_calculoncolegiado", "NCOLEGIADO_LETRADO"));
+				}	
+			} else {
+				registro.put("NCOLEGIADO_LETRADO", " ");
+			}
 				
-				String lugar = (String)registro.get("LUGAR");
-				if(lugar==null || lugar.trim().equalsIgnoreCase("")){
-					if(registro.get("JUZGADO")!=null && !((String)registro.get("JUZGADO")).trim().equals(""))
-						registro.put("LUGAR", registro.get("JUZGADO"));
-					else
-						registro.put("LUGAR", "");					
-				}
-				
-				String procedimiento = (String)registro.get("PROCEDIMIENTO");
+			htCodigo = new Hashtable();
+			htCodigo.put(new Integer(1), idTurno);
+			htCodigo.put(new Integer(2), idInstitucion);
+			//metemos el nombre de partdo
+			helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_NOMBRE_PARTIDO", "NOMBRE_PARTIDO"));
+			htCodigo.put(new Integer(1), idInstitucion);				
+			htCodigo.put(new Integer(2), idTurno);
+			htCodigo.put(new Integer(3), anioDesigna);
+			htCodigo.put(new Integer(4), numeroDesigna);
+			
+			//metemos los procuradores
+			helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETPROCURADORCONT_DESIG", "PROCURADOR_CONTRARIOS"));
 
-				if(procedimiento==null || procedimiento.trim().equalsIgnoreCase("")){
-					String idProcedimiento = (String)registro.get("IDPROCEDIMIENTO");
-					if(idProcedimiento==null || idProcedimiento.trim().equalsIgnoreCase("")){
-					    idProcedimiento="-33"; // forzamos que no encuentre datos, en lugar de dar error
-					}
-					helperInformes.completarHashSalida(registro,helperInformes.getProcedimientoSalida(idInstitucion,idProcedimiento,""));
-				}
-				helperInformes.completarHashSalida(registro,getProcuradorSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna));
+			//metemos los contrarios
+			helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETCONTRARIOS_DESIGNA", "CONTRARIOS"));
+			
+			helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETABOGADOCONTRARIO_DES", "ABOGADOS_CONTRARIOS"));
+			
+			helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETREPRESENTANTE_DES", "REPRESENTANTES_CONTRARIOS"));
+			
+			/**
+			 * Se Saca el nombre del tramitador de la EJG relacionada con la designa, si hay mas de una EJG relacionado se saca
+			 * un listado de los tramitadores de cada EJG relacionada con la designa y entre parentesis el anio/numero cajg
+			 * **/
+			Vector ejgsdesingna=getejgsdesigna(idTurno, numeroDesigna, anioDesigna, idInstitucion);				
+			ScsEJGAdm ejgadm = new ScsEJGAdm(this.usrbean);
+			int tamanio= ejgsdesingna.size();
+			String Listadotramitador="";				
+			String Listadoanionumerocajg="";
+			String Listadonumeroaniocajg="";								
+			String listadoAnioNumeroEjg="";
+			String listadoNumeroAnioEjg="";
+			
+			String sListadoFechaResolucionCajg="";
+			String sListadoFechaResolucionCajgLetra="";
+			String sListadoNumeroEjg="";
+			String sListadoFechaAperturaEjg="";
+			String sListadoFechaAperturaEjgLetra="";
 				
-				String parrafoProcurador = "";
-				if (registro.containsKey("PROCURADOR")  && registro.get("PROCURADOR")!=null && !((String)registro.get("PROCURADOR")).trim().equals("") ) {
-					parrafoProcurador = UtilidadesString.getMensajeIdioma(idioma, "informes.cartaOficio.parrafo.procurador") + " " + (String)registro.get("PROCURADOR");
-					
-					if (registro.containsKey("TELEFONO1_PROCURADOR")  && registro.get("TELEFONO1_PROCURADOR")!=null && !((String)registro.get("TELEFONO1_PROCURADOR")).trim().equals("") ) {
-						parrafoProcurador +=  " " + UtilidadesString.getMensajeIdioma(idioma, "informes.cartaOficio.parrafo.telefono")  + " " + (String)registro.get("TELEFONO1_PROCURADOR");
-					}
-				}				
-				//registro.put("PARRAFO_PROCURADOR", parrafoProcurador);								
-				registro.put("PARRAFO_LETRADO_PROCURADOR", parrafoLetrado+"\r"+parrafoProcurador);
-				
-				// RGG más descripciones 
-				if(registro.containsKey("ID_POBLACION_PROCURADOR") && registro.get("ID_POBLACION_PROCURADOR")!=null && !((String)registro.get("ID_POBLACION_PROCURADOR")).trim().equals("")){
-					helperInformes.completarHashSalida(registro,helperInformes.getNombrePoblacionSalida((String)registro.get("ID_POBLACION_PROCURADOR"), "POBLACION_PROCURADOR"));
-				} else {
-					registro.put("POBLACION_PROCURADOR", " ");
-				}
-				if(registro.containsKey("ID_PROVINCIA_PROCURADOR") && registro.get("ID_PROVINCIA_PROCURADOR")!=null && !((String)registro.get("ID_PROVINCIA_PROCURADOR")).trim().equals("")){
-					helperInformes.completarHashSalida(registro,helperInformes.getNombreProvinciaSalida((String)registro.get("ID_PROVINCIA_PROCURADOR"), "PROVINCIA_PROCURADOR"));
-				} else {
-					registro.put("PROVINCIA_PROCURADOR", " ");
-				}
-				if(registro.containsKey("ID_POBLACION_JUZGADO") && registro.get("ID_POBLACION_JUZGADO")!=null && !((String)registro.get("ID_POBLACION_JUZGADO")).trim().equals("")){
-					helperInformes.completarHashSalida(registro,helperInformes.getNombrePoblacionSalida((String)registro.get("ID_POBLACION_JUZGADO"), "POBLACION_JUZGADO"));
-				} else {
-					registro.put("POBLACION_JUZGADO", " ");
-				}
-				if(registro.containsKey("ID_PROVINCIA_JUZGADO") && registro.get("ID_PROVINCIA_JUZGADO")!=null && !((String)registro.get("ID_PROVINCIA_JUZGADO")).trim().equals("")){
-					helperInformes.completarHashSalida(registro,helperInformes.getNombreProvinciaSalida((String)registro.get("ID_PROVINCIA_JUZGADO"), "PROVINCIA_JUZGADO"));
-				} else {
-					registro.put("PROVINCIA_JUZGADO", " ");
-				}
-				//Sacamos el tipo ejg colegio (@cat)				
-					Vector vtipoejgcolegiodesigna=getTipoEJGColegioDesigna(idTurno, numeroDesigna, anioDesigna, idInstitucion, idioma);				
-						for (int s = 0; s < vtipoejgcolegiodesigna.size(); s++) {
-							Hashtable registropretenciones = (Hashtable) vtipoejgcolegiodesigna.get(s);
-							String tipoejgDesigna = (String)registropretenciones.get("TIPO_EJG_COLEGIO");
-							if(tipoejgDesigna!=null && !tipoejgDesigna.trim().equalsIgnoreCase("")){
-								registro.put("TIPO_EJG_COLEGIO", tipoejgDesigna);
-							}else{
-								registro.put("TIPO_EJG_COLEGIO", " ");
+			//Guarda el nombre del procurador del EJG
+			String procuradorEjg="";											
+											
+			Vector Vtramitador=null;
+			for (int i = 0; i < ejgsdesingna.size(); i++) {					
+				Hashtable registroejg = (Hashtable) ejgsdesingna.get(i);				
+			    String idLetradoEjg  = (String)registroejg.get("IDPERSONA");
+			    String aniocajg = (String)registroejg.get("ANIOCAJG");
+			    String numerocajg = (String)registroejg.get("NUMEROCAJG");	
+			    String numeroaniocajg = (String)registroejg.get("NUMEROANIOCAJG"); 
+			    String anionumerocajg = (String)registroejg.get("ANIONUMEROCAJG");
+			    String numeroAnioEjg = (String)registroejg.get("NUMEROANIOEJG"); 
+			    String anioNumeroEjg = (String)registroejg.get("ANIONUMEROEJG");
+			    String sFechaResolucionCajg = (String)registroejg.get("FECHARESOLUCIONCAJG");
+			    String sFechaResolucionCajgLetra = (String)registroejg.get("FECHARESOLUCIONCAJGLETRA");
+			    String sFechaAperturaEJG = (String)registroejg.get("FECHAAPERTURA_EJG");
+			    String sFechaAperturaEJGLetra = (String)registroejg.get("FECHAAPERTURA_EJG_LETRA");
+			    
+			    if(procuradorEjg.equals(""))
+			    	procuradorEjg = (String)registroejg.get("PROCURADOR_EJG");
+			    else
+			    	procuradorEjg = procuradorEjg +","+(String)registroejg.get("PROCURADOR_EJG");
+			    
+			    if (!numeroaniocajg.equals("/") && (!anionumerocajg.equals("/"))){
+			    	Listadoanionumerocajg+=","+anionumerocajg;
+			    	Listadonumeroaniocajg+=","+numeroaniocajg;
+			    }
+			    
+			    if (!numeroAnioEjg.equals("/") && (!anioNumeroEjg.equals("/"))){
+			    	listadoAnioNumeroEjg+=","+anioNumeroEjg;
+			    	listadoNumeroAnioEjg+=","+numeroAnioEjg;
+			    }
+			    
+				if(idLetradoEjg!=null && !idLetradoEjg.trim().equalsIgnoreCase("")){
+					Vtramitador=ejgadm.getColegiadoSalida(idInstitucion,idLetradoEjg,"TRAMITADOR_EGJ");							
+					for (int l = 0; l < Vtramitador.size(); l++) {							  
+						Hashtable registrotramitador = (Hashtable) Vtramitador.get(l);
+						String nombretramitador = (String)registrotramitador.get("NOMBRE_TRAMITADOR_EGJ");									
+						if(nombretramitador!=null && !nombretramitador.trim().equalsIgnoreCase("")){										
+							if (((aniocajg==null || aniocajg.equals(""))&&(numerocajg==null || numerocajg.equals("")))||(tamanio==1)){
+								Listadotramitador+=","+nombretramitador;
+							} else {	
+								Listadotramitador+=","+nombretramitador+"("+aniocajg+"/"+numerocajg+")";
 							}
 						}
-						if (vtipoejgcolegiodesigna.size()==0){
-							registro.put("TIPO_EJG_COLEGIO", " ");
-						}
-						
-				String observacionesUltimoLetrado  = (String)registro.get("OBSERVACIONES_ULTIMOLETRADO");
-				if (observacionesUltimoLetrado!=null && !observacionesUltimoLetrado.trim().equals("")){		
-					registro.put("OBSERVACIONES_ULTIMOLETRADO", observacionesUltimoLetrado);
-				}else {
-					registro.put("OBSERVACIONES_ULTIMOLETRADO", "");
-				}						
-						
-				 /**Fechas en Letras para que aparezcan en el idioma que se le pasa**/							
-					String fechaRenuncia  = (String)registro.get("FECHARENUNCIAENLETRA");
-					if (fechaRenuncia!=null && !fechaRenuncia.trim().equals("")){		
-						htCodigo = new Hashtable();						
-						htCodigo.put(new Integer(1), fechaRenuncia);
-						htCodigo.put(new Integer(2), "m");
-						htCodigo.put(new Integer(3), idioma);								
-						helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-												htCodigo, "PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA", "FECHARENUNCIA_ENLETRA"));
-						}else {
-								registro.put("FECHARENUNCIA_ENLETRA", "");
-						}
-					
-					String fechaSolicitudRenunciaLetra  = (String)registro.get("FECHASOLICITUDRENUNCIA");
-					if (fechaSolicitudRenunciaLetra!=null && !fechaSolicitudRenunciaLetra.trim().equals("")){		
-						htCodigo = new Hashtable();						
-						htCodigo.put(new Integer(1), fechaSolicitudRenunciaLetra);
-						htCodigo.put(new Integer(2), "m");
-						htCodigo.put(new Integer(3), idioma);								
-						helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-												htCodigo, "PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA", "FECHA_SOLICITUDRENUNCIA_LETRA"));
-						}else {
-								registro.put("FECHA_SOLICITUDRENUNCIA_LETRA", "");
-						}		
-					
-						
-					/**se muestra el mes actual en letra**/
-					htCodigo = new Hashtable();
-				    htCodigo.put(new Integer(1), (String)registro.get("MESACTUAL"));
-					htCodigo.put(new Integer(2), "m");
-					htCodigo.put(new Integer(3), idioma);
-			     	helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-													htCodigo, "PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHAENLETRA", "MES_ACTUAL"));
-			     	registro.put("MES_ACTUAL", registro.get("MES_ACTUAL").toString().toUpperCase());
-			     	registro.put("MES_ACTUAL_MINUS", registro.get("MES_ACTUAL").toString().toLowerCase());
-			     		
-					//Sacamos los datos de la ultima Actuacion
-			     	helperInformes.completarHashSalida(registro,getUltimaActuacionDesignaSalida(idInstitucion,numeroDesigna,idTurno,anioDesigna));
-			     	if(registro.containsKey("NUMASUNTO_UA") && registro.get("NUMASUNTO_UA")!=null && !((String)registro.get("NUMASUNTO_UA")).trim().equals("")){
-					String idProcedimientoUA =(String)registro.get("IDPROCEDIMIENTO_UA");
-					helperInformes.completarHashSalida(registro,helperInformes.getProcedimientoSalida(idInstitucion, idProcedimientoUA,"UA"));
-					
-					String idJuzgadoUA =(String)registro.get("IDJUZGADO_UA");
-					helperInformes.completarHashSalida(registro,helperInformes.getJuzgadoSalida(idInstitucion, idJuzgadoUA,"UA"));
-					
-					if(registro.containsKey("ID_POBLACION_JUZGADO_UA") && registro.get("ID_POBLACION_JUZGADO_UA")!=null && !((String)registro.get("ID_POBLACION_JUZGADO_UA")).trim().equals("")){
-						helperInformes.completarHashSalida(registro,helperInformes.getNombrePoblacionSalida((String)registro.get("ID_POBLACION_JUZGADO_UA"), "POBLACION_JUZGADO_UA"));
+					}							
+			    }
+				
+				if (sFechaResolucionCajg != null) {
+					if (sListadoFechaResolucionCajg.equals("")) {
+						sListadoFechaResolucionCajg = sFechaResolucionCajg;
+						sListadoFechaResolucionCajgLetra = sFechaResolucionCajgLetra;
 					} else {
-						registro.put("POBLACION_JUZGADO_UA", " ");
-					}
-				}else{					
-					registro.put("IDJUZGADO_UA", " ");
-					registro.put("JUZGADO_UA", " ");
-					registro.put("DIR_JUZGADO_UA", " ");
-					registro.put("CP_JUZGADO_UA", " ");
-					registro.put("ID_PROVINCIA_JUZGADO_UA", " ");
-					registro.put("ID_POBLACION_JUZGADO_UA", " ");
-					registro.put("POBLACION_JUZGADO_UA", " ");
-					registro.put("IDPROCEDIMIENTO_UA", " ");
-					registro.put("PROCEDIMIENTO_UA", " ");
-					registro.put("CATEGORIA_UA", " ");
-					registro.put("IDJURISDICCION_UA", " ");
-					registro.put("IDINSTITUCION_JUZG_UA", " ");
-					registro.put("COMPLEMENTO_UA", " ");	
-					registro.put("NUMEROPROCEDIMIENTO_UA", " ");
-					
+						sListadoFechaResolucionCajg += "," + sFechaResolucionCajg;
+						sListadoFechaResolucionCajgLetra += "," + sFechaResolucionCajgLetra;
+					}						
 				}
-							
+				
+				if (anioNumeroEjg != null) {
+					if (sListadoNumeroEjg.equals("")) {
+						sListadoNumeroEjg = anioNumeroEjg;
+					} else {
+						sListadoNumeroEjg += "," + anioNumeroEjg;
+					}						
+				}
+				
+				if (sFechaAperturaEJG != null) {
+					if (sListadoFechaAperturaEjg.equals("")) {
+						sListadoFechaAperturaEjg = sFechaAperturaEJG;
+						sListadoFechaAperturaEjgLetra = sFechaAperturaEJGLetra;
+					} else {
+						sListadoFechaAperturaEjg += "," + sFechaAperturaEJG;
+						sListadoFechaAperturaEjgLetra += "," + sFechaAperturaEJGLetra;
+					}						
+				}
+			}//FIN FOR
+			
+			UtilidadesHash.set(registro, "FECHARESOLUCIONCAJG", sListadoFechaResolucionCajg);
+			UtilidadesHash.set(registro, "FECHARESOLUCIONCAJGLETRA", sListadoFechaResolucionCajgLetra);
+			UtilidadesHash.set(registro, "NUMERO_EJG", sListadoNumeroEjg);
+			UtilidadesHash.set(registro, "FECHAAPERTURA_EJG", sListadoFechaAperturaEjg);
+			UtilidadesHash.set(registro, "FECHAAPERTURA_EJG_LETRA", sListadoFechaAperturaEjgLetra);				
+			
+			if (procuradorEjg!=null && !procuradorEjg.equals("")){
+				UtilidadesHash.set(registro, "PROCURADOR_EJG", procuradorEjg);
+			} else {
+				UtilidadesHash.set(registro, "PROCURADOR_EJG", "");
+			}
+				
+			if (Listadotramitador!=null && !Listadotramitador.equals("")){
+				Listadotramitador =Listadotramitador.substring(1);					
+				UtilidadesHash.set(registro, "NOMBRE_TRAMITADOR_EJG", Listadotramitador);
+			} else {
+				UtilidadesHash.set(registro, "NOMBRE_TRAMITADOR_EJG", "");
+			}
+				
+			if (Listadoanionumerocajg!=null && !Listadoanionumerocajg.equals("")){
+				Listadoanionumerocajg=Listadoanionumerocajg.substring(1);
+				UtilidadesHash.set(registro, "LISTAANIONUMEROCAJ", Listadoanionumerocajg);					
+			} else {
+				UtilidadesHash.set(registro, "LISTAANIONUMEROCAJ", "");
+			}
+			
+			if (Listadonumeroaniocajg!=null && !Listadonumeroaniocajg.equals("")){
+				Listadonumeroaniocajg=Listadonumeroaniocajg.substring(1);
+				UtilidadesHash.set(registro, "LISTANUMEROANIOCAJ", Listadonumeroaniocajg);					
+			} else {
+				UtilidadesHash.set(registro, "LISTANUMEROANIOCAJ", "");
+			}
+			
+			//LISTADO ANIO NUMERO EJG				
+			if (listadoAnioNumeroEjg!=null && !listadoAnioNumeroEjg.equals("")){
+				listadoAnioNumeroEjg=listadoAnioNumeroEjg.substring(1);
+				UtilidadesHash.set(registro, "LISTAANIONUMEROEJGS", listadoAnioNumeroEjg);					
+			} else {
+				UtilidadesHash.set(registro, "LISTAANIONUMEROEJGS", "");
+			}
+			
+			if (listadoNumeroAnioEjg!=null && !listadoNumeroAnioEjg.equals("")){
+				listadoNumeroAnioEjg=listadoNumeroAnioEjg.substring(1);
+				UtilidadesHash.set(registro, "LISTANUMEROANIOEJGS", listadoNumeroAnioEjg);					
+			} else {
+				UtilidadesHash.set(registro, "LISTANUMEROANIOEJGS", "");
+			}				
+				
+			htCodigo.put(new Integer(2), anioDesigna);
+			htCodigo.put(new Integer(3), idTurno);
+			htCodigo.put(new Integer(4), numeroDesigna);			
+			
+			//metemos la lista actuaciones 
+			helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETACTUACIONESDESIGNA", "LISTA_ACTUACIONES_DESIGNA"));
+			//metemos la primera actuacion				
+			helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETFIRSTASISDESIGNA", "FECHA_ASISTENCIA"));
+			
+			htCodigo.put(new Integer(5), "0");
+			helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETINTERESADOSDESIGNA", "LISTA_INTERESADOS_DESIGNA"));
+
+			if(idPersona==null ||idPersona.trim().equalsIgnoreCase("")){
+			    idPersona="-33"; // forzamos que no encuentre datos, en lugar de dar error
+			}
+			htCodigo = new Hashtable();
+			htCodigo.put(new Integer(1), idInstitucion);				
+			htCodigo.put(new Integer(2), idTurno);
+			htCodigo.put(new Integer(3), anioDesigna);
+			htCodigo.put(new Integer(4), numeroDesigna);
+			htCodigo.put(new Integer(5), idPersona);
+			
+			//Si no se encuentra info en cen_colegiado (Art.27) se busca en cen_nocolegiado
+			//if(registro.get("NCOLEGIADO_LETRADO") != null && !((String)registro.get("NCOLEGIADO_LETRADO")).equals("")){
+			if(institucionOrigen!=null && !institucionOrigen.trim().equals("")){
+				helperInformes.completarHashSalida(registro,getLetradoSalidaOficioArt27(htCodigo));
+			} else {
+				helperInformes.completarHashSalida(registro,getLetradoSalidaOficio(htCodigo));
+			}
+			String sexoLetrado  = (String)registro.get("SEXO_LETRADO_SINTRADUCIR");				
+			if (sexoLetrado!=null && !sexoLetrado.trim().equals("")){
+					htCodigo = new Hashtable();
+					htCodigo.put(new Integer(1), sexoLetrado);
+					htCodigo.put(new Integer(2), idioma);				
+					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
+					htCodigo, "F_SIGA_GETRECURSO_ETIQUETA", "SEXO_LETRADO"));
+			} else {
+						registro.put("SEXO_LETRADO", "");
+			}
+			
+			String observacionesCambioLetrado  = (String)registro.get("OBSERVACIONES_CAMBIOLETRADO");
+			if (observacionesCambioLetrado!=null && !observacionesCambioLetrado.trim().equals("")){		
+				registro.put("OBSERVACIONES_CAMBIOLETRADO", observacionesCambioLetrado);
+			} else {
+				registro.put("OBSERVACIONES_CAMBIOLETRADO", "");
+			}					
+			
+			/**Fecha en Letras de la fecha del letrado actual, para que aparezcan en el idioma que se le pasa**/							
+			String fechaLetradoActual  = (String)registro.get("FECHALETRADO_ACTUAL");
+			if (fechaLetradoActual!=null && !fechaLetradoActual.trim().equals("")){		
+				htCodigo = new Hashtable();						
+				htCodigo.put(new Integer(1), fechaLetradoActual);
+				htCodigo.put(new Integer(2), "m");
+				htCodigo.put(new Integer(3), idioma);								
+				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA", "FECHALETRADOACTUAL_LETRA"));
+			} else {
+				registro.put("FECHALETRADOACTUAL_LETRA", "");
+			}
+		
+		
+			Vector vPreferente = getDireccionLetradoSalidaOficioPreferente(idPersona,idInstitucion);		
+			String dir = (String)((Hashtable)vPreferente.get(0)).get("DOMICILIO_DESPACHO_LETRADO");
+			if (dir != null && !dir.trim().equals("")){
+				helperInformes.completarHashSalida(registro,vPreferente);
+			} else {
+				helperInformes.completarHashSalida(registro, getDireccionLetradoSalidaOficio(idPersona, idInstitucion));
+			}
+			
+			String pobLetrado = (String)registro.get("POBLACION_DESPACHO_LETRADO");
+			if(pobLetrado==null ||pobLetrado.trim().equalsIgnoreCase("")){
+				String idPobLetrado = (String)registro.get("IDPOBLACION_DESPACHO_LETRADO");
+				helperInformes.completarHashSalida(registro,helperInformes.getNombrePoblacionSalida(idPobLetrado,"POBLACION_DESPACHO_LETRADO"));
+				String idProvLetrado = (String)registro.get("IDPROVINCIA_DESPACHO_LETRADO");
+				if(idProvLetrado!=null && !idProvLetrado.equalsIgnoreCase(""))
+					helperInformes.completarHashSalida(registro,helperInformes.getNombreProvinciaSalida(idProvLetrado,"PROVINCIA_DESPACHO_LETRADO"));
+				else
+					UtilidadesHash.set(registro, "PROVINCIA_DESPACHO_LETRADO", "");	
+				
+			} else {
+				UtilidadesHash.set(registro, "PROVINCIA_DESPACHO_LETRADO", "");									
+			}
+				
+			if (registro.get("DOMICILIO_DESPACHO_LETRADO")!=null) {
+				registro.put("DOMICILIO_LETRADO", registro.get("DOMICILIO_DESPACHO_LETRADO"));
+			}
+			if (registro.get("CP_DESPACHO_LETRADO")!=null) {
+				registro.put("CP_LETRADO", registro.get("CP_DESPACHO_LETRADO"));
+			}
+			if (registro.get("IDPOBLACION_DESPACHO_LETRADO")!=null) {
+				registro.put("ID_POBLACION_LETRADO", registro.get("IDPOBLACION_DESPACHO_LETRADO"));
+			}
+			if (registro.get("POBLACION_DESPACHO_LETRADO")!=null) {
+				registro.put("POBLACION_LETRADO", registro.get("POBLACION_DESPACHO_LETRADO"));
+			}
+			if (registro.get("IDPROVINCIA_DESPACHO_LETRADO")!=null) {
+				registro.put("ID_PROVINCIA_LETRADO", registro.get("IDPROVINCIA_DESPACHO_LETRADO"));
+			}
+			if (registro.get("PROVINCIA_DESPACHO_LETRADO")!=null) {
+				registro.put("PROVINCIA_LETRADO", registro.get("PROVINCIA_DESPACHO_LETRADO"));
+			}
+			if (registro.get("TELEFONO1_DESPACHO_LETRADO")!=null) {
+				registro.put("TELEFONODESPACHO_LET", registro.get("TELEFONO1_DESPACHO_LETRADO"));
+			}
+			if (registro.get("FAX1_DESPACHO_LETRADO")!=null) {
+				registro.put("FAX_LETRADO", registro.get("FAX1_DESPACHO_LETRADO"));
+			}
+			if (registro.get("EMAIL_DESPACHO_LETRADO")!=null) {
+				registro.put("EMAIL_LETRADO", registro.get("EMAIL_DESPACHO_LETRADO"));
+			}
+			if (registro.get("MOVIL_DESPACHO_LETRADO")!=null) {
+				registro.put("MOVILDESPACHO_LET", registro.get("MOVIL_DESPACHO_LETRADO"));
+			}				
+				
+			helperInformes.completarHashSalida(registro,getDireccionPersonalLetradoSalidaOficio(idPersona,idInstitucion));
+			pobLetrado = (String)registro.get("POBLACION_GUARDIA_LETRADO");
+			if(pobLetrado==null ||pobLetrado.trim().equalsIgnoreCase("")){
+				String idPobLetrado = (String)registro.get("IDPOBLACION_GUARDIA_LETRADO");
+				helperInformes.completarHashSalida(registro,helperInformes.getNombrePoblacionSalida(idPobLetrado,"POBLACION_GUARDIA_LETRADO"));
+				String idProvLetrado = (String)registro.get("IDPROVINCIA_GUARDIA_LETRADO");
+				if(idProvLetrado!=null && !idProvLetrado.equalsIgnoreCase(""))
+					helperInformes.completarHashSalida(registro,helperInformes.getNombreProvinciaSalida(idProvLetrado,"PROVINCIA_GUARDIA_LETRADO"));
+				else
+					UtilidadesHash.set(registro, "PROVINCIA_GUARDIA_LETRADO", "");	
+				
+			} else {
+				UtilidadesHash.set(registro, "PROVINCIA_GUARDIA_LETRADO", "");									
+			}				
+			
+			if (registro.get("TELEFONO1_GUARDIA_LETRADO")!=null) {
+				registro.put("TELEFONO1_LETRADO", registro.get("TELEFONO1_GUARDIA_LETRADO"));
+			}
+			if (registro.get("TELEFONO2_GUARDIA_LETRADO")!=null) {
+				registro.put("TELEFONO2_LETRADO", registro.get("TELEFONO2_GUARDIA_LETRADO"));
+			}
+			if (registro.get("MOVIL_GUARDIA_LETRADO")!=null) {
+				registro.put("MOVIL_LETRADO", registro.get("MOVIL_GUARDIA_LETRADO"));
+			}
+			
+			String parrafoLetrado = "";
+			if (registro.containsKey("NOMBRE_LETRADO")  && registro.get("NOMBRE_LETRADO")!=null && !((String)registro.get("NOMBRE_LETRADO")).trim().equals("") ) {
+				parrafoLetrado = UtilidadesString.getMensajeIdioma(idioma, "informes.cartaOficio.parrafo.letrado") + " " + (String)registro.get("NOMBRE_LETRADO");
+				
+				if (registro.containsKey("TELEFONO1_GUARDIA_LETRADO")  && registro.get("TELEFONO1_GUARDIA_LETRADO")!=null && !((String)registro.get("TELEFONO1_GUARDIA_LETRADO")).trim().equals("") ) {
+					parrafoLetrado += " " + UtilidadesString.getMensajeIdioma(idioma, "informes.cartaOficio.parrafo.telefono")  + " " + (String)registro.get("TELEFONO1_GUARDIA_LETRADO");
+				}
+			}	
+			//registro.put("PARRAFO_LETRADO", parrafoLetrado);
+			
+			helperInformes.completarHashSalida(registro,getActuacionDesignaSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna));
+			
+			String idJuzgado = (String)registro.get("IDJUZGADO");				
+			String idInstJuzgado = (String)registro.get("IDINSTITUCION_JUZG");				
+			if(idJuzgado==null ||idJuzgado.trim().equalsIgnoreCase("")){
+			    idJuzgado="-33"; // forzamos que no encuentre datos, en lugar de dar error
+			    idInstJuzgado = "0";
+			}
+			helperInformes.completarHashSalida(registro,helperInformes.getJuzgadoSalida(idInstJuzgado,idJuzgado,""));		
+		
+			String Idpretension  = (String)registro.get("IDPRETENSION");
+			ScsEJGAdm ejgdm = new ScsEJGAdm(this.usrbean);				
+			if(Idpretension!=null && !Idpretension.trim().equalsIgnoreCase("")){			
+				Vector vpretenciones=ejgdm.getPretension(Idpretension, idInstitucion,idioma);
+				for (int s = 0; s < vpretenciones.size(); s++) {
+					Hashtable registropretenciones = (Hashtable) vpretenciones.get(s);
+					String procedimiento = (String)registropretenciones.get("PRETENSION");
+					if(procedimiento!=null && !procedimiento.trim().equalsIgnoreCase(""))
+						registro.put("PROCEDIMIENTO_DESIGNA", procedimiento);
+					else
+						UtilidadesHash.set(registro, "PROCEDIMIENTO_DESIGNA", "");
+				}							
+						
+			} else	
+				UtilidadesHash.set(registro, "PROCEDIMIENTO_DESIGNA", "");
+			
+			String lugar = (String)registro.get("LUGAR");
+			if(lugar==null || lugar.trim().equalsIgnoreCase("")){
+				if(registro.get("JUZGADO")!=null && !((String)registro.get("JUZGADO")).trim().equals(""))
+					registro.put("LUGAR", registro.get("JUZGADO"));
+				else
+					registro.put("LUGAR", "");					
+			}
+			
+			String procedimiento = (String)registro.get("PROCEDIMIENTO");
+
+			if(procedimiento==null || procedimiento.trim().equalsIgnoreCase("")){
+				String idProcedimiento = (String)registro.get("IDPROCEDIMIENTO");
+				if(idProcedimiento==null || idProcedimiento.trim().equalsIgnoreCase("")){
+				    idProcedimiento="-33"; // forzamos que no encuentre datos, en lugar de dar error
+				}
+				helperInformes.completarHashSalida(registro,helperInformes.getProcedimientoSalida(idInstitucion,idProcedimiento,""));
+			}
+			helperInformes.completarHashSalida(registro,getProcuradorSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna));
+			
+			String parrafoProcurador = "";
+			if (registro.containsKey("PROCURADOR")  && registro.get("PROCURADOR")!=null && !((String)registro.get("PROCURADOR")).trim().equals("") ) {
+				parrafoProcurador = UtilidadesString.getMensajeIdioma(idioma, "informes.cartaOficio.parrafo.procurador") + " " + (String)registro.get("PROCURADOR");
+				
+				if (registro.containsKey("TELEFONO1_PROCURADOR")  && registro.get("TELEFONO1_PROCURADOR")!=null && !((String)registro.get("TELEFONO1_PROCURADOR")).trim().equals("") ) {
+					parrafoProcurador +=  " " + UtilidadesString.getMensajeIdioma(idioma, "informes.cartaOficio.parrafo.telefono")  + " " + (String)registro.get("TELEFONO1_PROCURADOR");
+				}
+			}				
+			//registro.put("PARRAFO_PROCURADOR", parrafoProcurador);								
+			registro.put("PARRAFO_LETRADO_PROCURADOR", parrafoLetrado+"\r"+parrafoProcurador);
+			
+			// RGG más descripciones 
+			if(registro.containsKey("ID_POBLACION_PROCURADOR") && registro.get("ID_POBLACION_PROCURADOR")!=null && !((String)registro.get("ID_POBLACION_PROCURADOR")).trim().equals("")){
+				helperInformes.completarHashSalida(registro,helperInformes.getNombrePoblacionSalida((String)registro.get("ID_POBLACION_PROCURADOR"), "POBLACION_PROCURADOR"));
+			} else {
+				registro.put("POBLACION_PROCURADOR", " ");
+			}
+			if(registro.containsKey("ID_PROVINCIA_PROCURADOR") && registro.get("ID_PROVINCIA_PROCURADOR")!=null && !((String)registro.get("ID_PROVINCIA_PROCURADOR")).trim().equals("")){
+				helperInformes.completarHashSalida(registro,helperInformes.getNombreProvinciaSalida((String)registro.get("ID_PROVINCIA_PROCURADOR"), "PROVINCIA_PROCURADOR"));
+			} else {
+				registro.put("PROVINCIA_PROCURADOR", " ");
+			}
+			if(registro.containsKey("ID_POBLACION_JUZGADO") && registro.get("ID_POBLACION_JUZGADO")!=null && !((String)registro.get("ID_POBLACION_JUZGADO")).trim().equals("")){
+				helperInformes.completarHashSalida(registro,helperInformes.getNombrePoblacionSalida((String)registro.get("ID_POBLACION_JUZGADO"), "POBLACION_JUZGADO"));
+			} else {
+				registro.put("POBLACION_JUZGADO", " ");
+			}
+			if(registro.containsKey("ID_PROVINCIA_JUZGADO") && registro.get("ID_PROVINCIA_JUZGADO")!=null && !((String)registro.get("ID_PROVINCIA_JUZGADO")).trim().equals("")){
+				helperInformes.completarHashSalida(registro,helperInformes.getNombreProvinciaSalida((String)registro.get("ID_PROVINCIA_JUZGADO"), "PROVINCIA_JUZGADO"));
+			} else {
+				registro.put("PROVINCIA_JUZGADO", " ");
+			}
+			
+			//Sacamos el tipo ejg colegio (@cat)				
+			Vector vtipoejgcolegiodesigna=getTipoEJGColegioDesigna(idTurno, numeroDesigna, anioDesigna, idInstitucion, idioma);				
+			for (int s = 0; s < vtipoejgcolegiodesigna.size(); s++) {
+				Hashtable registropretenciones = (Hashtable) vtipoejgcolegiodesigna.get(s);
+				String tipoejgDesigna = (String)registropretenciones.get("TIPO_EJG_COLEGIO");
+				if(tipoejgDesigna!=null && !tipoejgDesigna.trim().equalsIgnoreCase("")){
+					registro.put("TIPO_EJG_COLEGIO", tipoejgDesigna);
+				} else {
+					registro.put("TIPO_EJG_COLEGIO", " ");
+				}
+			}
+			if (vtipoejgcolegiodesigna.size()==0){
+				registro.put("TIPO_EJG_COLEGIO", " ");
+			}
 					
+			String observacionesUltimoLetrado  = (String)registro.get("OBSERVACIONES_ULTIMOLETRADO");
+			if (observacionesUltimoLetrado!=null && !observacionesUltimoLetrado.trim().equals("")){		
+				registro.put("OBSERVACIONES_ULTIMOLETRADO", observacionesUltimoLetrado);
+			} else {
+				registro.put("OBSERVACIONES_ULTIMOLETRADO", "");
+			}						
+						
+			/**Fechas en Letras para que aparezcan en el idioma que se le pasa**/							
+			String fechaRenuncia  = (String)registro.get("FECHARENUNCIAENLETRA");
+			if (fechaRenuncia!=null && !fechaRenuncia.trim().equals("")){		
+				htCodigo = new Hashtable();						
+				htCodigo.put(new Integer(1), fechaRenuncia);
+				htCodigo.put(new Integer(2), "m");
+				htCodigo.put(new Integer(3), idioma);								
+				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA", "FECHARENUNCIA_ENLETRA"));
+			} else {
+				registro.put("FECHARENUNCIA_ENLETRA", "");
+			}
+			
+			String fechaSolicitudRenunciaLetra  = (String)registro.get("FECHASOLICITUDRENUNCIA");
+			if (fechaSolicitudRenunciaLetra!=null && !fechaSolicitudRenunciaLetra.trim().equals("")){		
+				htCodigo = new Hashtable();						
+				htCodigo.put(new Integer(1), fechaSolicitudRenunciaLetra);
+				htCodigo.put(new Integer(2), "m");
+				htCodigo.put(new Integer(3), idioma);								
+				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA", "FECHA_SOLICITUDRENUNCIA_LETRA"));
+			} else {
+				registro.put("FECHA_SOLICITUDRENUNCIA_LETRA", "");
+			}		
+					
+						
+			/**se muestra el mes actual en letra**/
+			htCodigo = new Hashtable();
+		    htCodigo.put(new Integer(1), (String)registro.get("MESACTUAL"));
+			htCodigo.put(new Integer(2), "m");
+			htCodigo.put(new Integer(3), idioma);
+	     	helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHAENLETRA", "MES_ACTUAL"));
+	     	registro.put("MES_ACTUAL", registro.get("MES_ACTUAL").toString().toUpperCase());
+	     	registro.put("MES_ACTUAL_MINUS", registro.get("MES_ACTUAL").toString().toLowerCase());
+	     		
+			//Sacamos los datos de la ultima Actuacion
+	     	helperInformes.completarHashSalida(registro,getUltimaActuacionDesignaSalida(idInstitucion,numeroDesigna,idTurno,anioDesigna));
+	     	if(registro.containsKey("NUMASUNTO_UA") && registro.get("NUMASUNTO_UA")!=null && !((String)registro.get("NUMASUNTO_UA")).trim().equals("")){
+				String idProcedimientoUA =(String)registro.get("IDPROCEDIMIENTO_UA");
+				helperInformes.completarHashSalida(registro,helperInformes.getProcedimientoSalida(idInstitucion, idProcedimientoUA,"UA"));
+				
+				String idJuzgadoUA =(String)registro.get("IDJUZGADO_UA");
+				helperInformes.completarHashSalida(registro,helperInformes.getJuzgadoSalida(idInstitucion, idJuzgadoUA,"UA"));
+					
+				if(registro.containsKey("ID_POBLACION_JUZGADO_UA") && registro.get("ID_POBLACION_JUZGADO_UA")!=null && !((String)registro.get("ID_POBLACION_JUZGADO_UA")).trim().equals("")){
+					helperInformes.completarHashSalida(registro,helperInformes.getNombrePoblacionSalida((String)registro.get("ID_POBLACION_JUZGADO_UA"), "POBLACION_JUZGADO_UA"));
+				} else {
+					registro.put("POBLACION_JUZGADO_UA", " ");
+				}			
+	     	}else{					
+				registro.put("IDJUZGADO_UA", " ");
+				registro.put("JUZGADO_UA", " ");
+				registro.put("DIR_JUZGADO_UA", " ");
+				registro.put("CP_JUZGADO_UA", " ");
+				registro.put("ID_PROVINCIA_JUZGADO_UA", " ");
+				registro.put("ID_POBLACION_JUZGADO_UA", " ");
+				registro.put("POBLACION_JUZGADO_UA", " ");
+				registro.put("IDPROCEDIMIENTO_UA", " ");
+				registro.put("PROCEDIMIENTO_UA", " ");
+				registro.put("CATEGORIA_UA", " ");
+				registro.put("IDJURISDICCION_UA", " ");
+				registro.put("IDINSTITUCION_JUZG_UA", " ");
+				registro.put("COMPLEMENTO_UA", " ");	
+				registro.put("NUMEROPROCEDIMIENTO_UA", " ");				
+			}
+
+	     	htCodigo = new Hashtable();
+			htCodigo.put(new Integer(1), idInstitucion);
+			htCodigo.put(new Integer(2), numeroDesigna);
+			htCodigo.put(new Integer(3), idTurno);
+			htCodigo.put(new Integer(4), anioDesigna);
+            htCodigo.put(new Integer(5),idioma);				                								
+            helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETDELITOS_DESIGNA", "DELITOS"));
+			htCodigo.remove(new Integer(5));
+															
+			if(Idpretension!=null && !Idpretension.trim().equalsIgnoreCase("")){			
+				Vector vpretenciones=ejgdm.getPretension(Idpretension, idInstitucion,idioma);
+				for (int s = 0; s < vpretenciones.size(); s++) {
+					Hashtable registropretenciones = (Hashtable) vpretenciones.get(s);
+					String procedimiento1 = (String)registropretenciones.get("PRETENSION");
+					if(procedimiento1!=null && !procedimiento1.trim().equalsIgnoreCase(""))
+						registro.put("PROCEDIMIENTO_DESIGNA", procedimiento1);
+					else
+						registro.put("PROCEDIMIENTO_DESIGNA", "");
+				}							
+			} else	
+				registro.put("PROCEDIMIENTO_DESIGNA", "");	
 							
-							
-							
-							htCodigo = new Hashtable();
-							htCodigo.put(new Integer(1), idInstitucion);
-							htCodigo.put(new Integer(2), numeroDesigna);
-							htCodigo.put(new Integer(3), idTurno);
-							htCodigo.put(new Integer(4), anioDesigna);
-				            htCodigo.put(new Integer(5),idioma);				                								
-				            helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETDELITOS_DESIGNA", "DELITOS"));
-							htCodigo.remove(new Integer(5));
+			helperInformes.completarHashSalida(registro,helperInformes.getTurnoSalida(idInstitucion,idTurno));
 								
+			//Metemos la descripcion del tipo de designa
+			Vector vtipoDesignaColegio=null;
+			if(idTipoDesigna!=null && !idTipoDesigna.trim().equals("")){
+				vtipoDesignaColegio=helperInformes.getTipoDesignaColegio(idInstitucion,idTipoDesigna,idioma);
+				for (int s = 0; s < vtipoDesignaColegio.size(); s++) {
+					Hashtable tipodesignacolegio = (Hashtable) vtipoDesignaColegio.get(s);
+					String tipodesigna = (String)tipodesignacolegio.get("DESC_TIPODESIGNA");
+					if (!tipodesigna.equals("")&& tipodesigna!=null){
+						registro.put("DESC_TIPODESIGNA", tipodesigna);
+					} else {
+						registro.put("DESC_TIPODESIGNA", " ");
+					}
+				}
+			} else {
+				registro.put("DESC_TIPODESIGNA", " ");
+			}
 							
-								if(Idpretension!=null && !Idpretension.trim().equalsIgnoreCase("")){			
-								Vector vpretenciones=ejgdm.getPretension(Idpretension, idInstitucion,idioma);
-								for (int s = 0; s < vpretenciones.size(); s++) {
-									Hashtable registropretenciones = (Hashtable) vpretenciones.get(s);
-									String procedimiento1 = (String)registropretenciones.get("PRETENSION");
-									if(procedimiento1!=null && !procedimiento1.trim().equalsIgnoreCase(""))
-										registro.put("PROCEDIMIENTO_DESIGNA", procedimiento1);
-									else
-										registro.put("PROCEDIMIENTO_DESIGNA", "");
-								}							
-							
-							}else	registro.put("PROCEDIMIENTO_DESIGNA", "");	
-							
-								helperInformes.completarHashSalida(registro,helperInformes.getTurnoSalida(idInstitucion,idTurno));
-								
-								//Metemos la descripcion del tipo de designa
-							Vector vtipoDesignaColegio=null;
-							if(idTipoDesigna!=null && !idTipoDesigna.trim().equals("")){
-								vtipoDesignaColegio=helperInformes.getTipoDesignaColegio(idInstitucion,idTipoDesigna,idioma);
-								for (int s = 0; s < vtipoDesignaColegio.size(); s++) {
-									Hashtable tipodesignacolegio = (Hashtable) vtipoDesignaColegio.get(s);
-									String tipodesigna = (String)tipodesignacolegio.get("DESC_TIPODESIGNA");
-									if (!tipodesigna.equals("")&& tipodesigna!=null){
-										registro.put("DESC_TIPODESIGNA", tipodesigna);
-									}else {
-										registro.put("DESC_TIPODESIGNA", " ");
-									}
-								}
-							}							
-							else{
-								registro.put("DESC_TIPODESIGNA", " ");
-							}
-							
-				       /**Sacamos la etiqueta TIPO_EJG_COLEGIO en el idioma del interesado si este no tiene idioma se saca en el idioma de la institucion**/
-						Vector vtipoejgcolegiodesigna1=getTipoEJGColegioDesigna(idTurno, numeroDesigna, anioDesigna, idInstitucion, idioma);				
-						for (int s = 0; s < vtipoejgcolegiodesigna1.size(); s++) {
-							Hashtable registropretenciones = (Hashtable) vtipoejgcolegiodesigna1.get(s);
-							String tipoejgDesigna = (String)registropretenciones.get("TIPO_EJG_COLEGIO");
-							if(tipoejgDesigna!=null && !tipoejgDesigna.trim().equalsIgnoreCase("")){
-								registro.put("TIPO_EJG_COLEGIO", tipoejgDesigna);
-							}else{
-								registro.put("TIPO_EJG_COLEGIO", " ");
-							}
-						}						
-						if (vtipoejgcolegiodesigna1.size()==0){
-							registro.put("TIPO_EJG_COLEGIO", " ");
-						}
+	       /**Sacamos la etiqueta TIPO_EJG_COLEGIO en el idioma del interesado si este no tiene idioma se saca en el idioma de la institucion**/
+			Vector vtipoejgcolegiodesigna1=getTipoEJGColegioDesigna(idTurno, numeroDesigna, anioDesigna, idInstitucion, idioma);				
+			for (int s = 0; s < vtipoejgcolegiodesigna1.size(); s++) {
+				Hashtable registropretenciones = (Hashtable) vtipoejgcolegiodesigna1.get(s);
+				String tipoejgDesigna = (String)registropretenciones.get("TIPO_EJG_COLEGIO");
+				if(tipoejgDesigna!=null && !tipoejgDesigna.trim().equalsIgnoreCase("")){
+					registro.put("TIPO_EJG_COLEGIO", tipoejgDesigna);
+				} else {
+					registro.put("TIPO_EJG_COLEGIO", " ");
+				}
+			}						
+			
+			if (vtipoejgcolegiodesigna1.size()==0){
+				registro.put("TIPO_EJG_COLEGIO", " ");
+			}
 			
 		  }catch (Exception e) {
 			throw new ClsExceptions (e, "Error al obtener la informacion en getregistrodatosEjg");
-		}
-			return registro;
+		  }
+			
+		  return registro;
 	  }
 	  
 	  public Vector ejecutaSelectBind(String select, Hashtable codigos) throws ClsExceptions {
