@@ -3403,8 +3403,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	}
 	
 	
-	private Vector getProcuradorEjgSalida (String idInstitucion, String tipoEjg,
-			String anio, String numero) throws ClsExceptions  
+	private Vector getProcuradorEjgSalida (String idInstitucion, String tipoEjg, String anio, String numero, String anioDesigna, String turnoDesigna, String numeroDesigna) throws ClsExceptions  
 	{
 		try {
 			Hashtable htCodigos = new Hashtable();
@@ -3440,6 +3439,23 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			htCodigos.put(new Integer(keyContador), numero);
 			sql.append(" and PROC.NUMERO = :");
 			sql.append(keyContador);
+			
+			if (anioDesigna!=null && !anioDesigna.trim().equalsIgnoreCase("") && turnoDesigna!=null && !turnoDesigna.trim().equalsIgnoreCase("") && numeroDesigna!=null && !numeroDesigna.trim().equalsIgnoreCase("")) {
+				keyContador++;
+				htCodigos.put(new Integer(keyContador), anioDesigna);
+				sql.append(" and PROC.ANIODESIGNA = :");
+				sql.append(keyContador);
+				
+				keyContador++;
+				htCodigos.put(new Integer(keyContador), turnoDesigna);
+				sql.append(" and PROC.IDTURNO = :");
+				sql.append(keyContador);
+				
+				keyContador++;
+				htCodigos.put(new Integer(keyContador), numeroDesigna);
+				sql.append(" and PROC.NUMERODESIGNA = :");
+				sql.append(keyContador);
+			}
 			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
 			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
@@ -4147,24 +4163,24 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 								case 4:  idiomainforme="GL"; break;	
 						}	
 						
-						registro.put("PARRAFO_LETRADO_PROCURADOR", "");
-						
-						registro.put("CODIGOLENGUAJE", idiomainforme);
-						registro.put("NIF_DEFENDIDO", "");
-						registro.put("NOMBRE_DEFENDIDO", "");
-						registro.put("FECHANAC_DEFENDIDO", "");
-						registro.put("ESTADOCIVIL_DEFENDIDO", "");
-						registro.put("DOMICILIO_DEFENDIDO", "");
-						registro.put("CP_DEFENDIDO", "");
-						registro.put("POBLACION_DEFENDIDO", "");
-						registro.put("TELEFONO1_DEFENDIDO", "");
-						registro.put("PROVINCIA_DEFENDIDO", "");
-						registro.put("SEXO_INTERESADO", "");
-						registro.put("LENGUAJE_INTERESADO", "");
-						registro.put("CALIDAD_INTERESADO", "");
-						registro.put("CODIGOLENGUAJE", "");
-						registro.put("PROFESION_DEFENDIDO", "");
-						registro.put("REGIMENCONYUGAL_DEFENDIDO", "");
+					registro.put("PARRAFO_LETRADO_PROCURADOR", "");
+					
+					registro.put("CODIGOLENGUAJE", idiomainforme);
+					registro.put("NIF_DEFENDIDO", "");
+					registro.put("NOMBRE_DEFENDIDO", "");
+					registro.put("FECHANAC_DEFENDIDO", "");
+					registro.put("ESTADOCIVIL_DEFENDIDO", "");
+					registro.put("DOMICILIO_DEFENDIDO", "");
+					registro.put("CP_DEFENDIDO", "");
+					registro.put("POBLACION_DEFENDIDO", "");
+					registro.put("TELEFONO1_DEFENDIDO", "");
+					registro.put("PROVINCIA_DEFENDIDO", "");
+					registro.put("SEXO_INTERESADO", "");
+					registro.put("LENGUAJE_INTERESADO", "");
+					registro.put("CALIDAD_INTERESADO", "");
+					registro.put("CODIGOLENGUAJE", "");
+					registro.put("PROFESION_DEFENDIDO", "");
+					registro.put("REGIMENCONYUGAL_DEFENDIDO", "");
 						
 						vSalida.add(registro);
 					}	
@@ -4727,7 +4743,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			}									
 				
 			// procuradorde la designa relacionada con Ejg
-			vprocuradorEjg = getProcuradorEjgSalida(idInstitucion,tipoEjg,anioEjg,numeroEjg);	
+			vprocuradorEjg = getProcuradorEjgSalida(idInstitucion,tipoEjg,anioEjg,numeroEjg, (String)registro.get("DES_ANIO"), (String)registro.get("DES_IDTURNO"), (String)registro.get("DES_NUMERO"));	
 			String procurador = "";
 			String ProProcurador = "";
 			String PobProcurador = "";							
