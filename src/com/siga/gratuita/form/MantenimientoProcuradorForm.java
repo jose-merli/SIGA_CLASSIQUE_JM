@@ -22,7 +22,9 @@ public class MantenimientoProcuradorForm extends MasterForm {
 	public void setNColegiado(String dato) {
 		UtilidadesHash.set(this.datos, ScsProcuradorBean.C_NCOLEGIADO , dato);
 	}
-
+	public void setIdColProcurador(String dato) {
+		UtilidadesHash.set(this.datos, ScsProcuradorBean.C_IDCOLPROCURADOR , dato);
+	}	
 	public void setNombre(String dato) {
 		UtilidadesHash.set(this.datos, ScsProcuradorBean.C_NOMBRE , dato);
 	}
@@ -78,7 +80,9 @@ public class MantenimientoProcuradorForm extends MasterForm {
 	public String getNColegiado() {
 		return UtilidadesHash.getString(this.datos, ScsProcuradorBean.C_NCOLEGIADO);
 	}
-
+	public String getIdColProcurador() {
+		return UtilidadesHash.getString(this.datos, ScsProcuradorBean.C_IDCOLPROCURADOR);
+	}
 	public String getNombre() {
 		return UtilidadesHash.getString(this.datos, ScsProcuradorBean.C_NOMBRE);
 	}
