@@ -2005,7 +2005,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		if (miForm.getNumeroCAJG()!=null && !miForm.getNumeroCAJG().trim().equalsIgnoreCase("")) {
 			contador++;
 			codigos.put(new Integer(contador),miForm.getNumeroCAJG());
-			consulta += " and ejg.Numero_Cajg = :" + contador;
+			consulta += " AND LTRIM(ejg.Numero_Cajg,'0')  = LTRIM(:" + contador + ",'0') ";
 		}
 		
 		// Se filtra por anio cajg

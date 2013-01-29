@@ -370,7 +370,19 @@ public class DefinirEJGAction extends MasterAction
 
 				//resultado = admBean.selectGenerico(consulta);
 				//request.getSession().setAttribute("resultado",v);
-			}
+			}			
+			
+			miHash.put(ScsEJGBean.C_FECHAAPERTURA,miFormulario.getFechaAperturaDesde());
+			miHash.put(ScsEJGBean.C_FECHAAPERTURA+"_HASTA",miFormulario.getFechaAperturaHasta());
+			miHash.put("FECHAESTADO",miFormulario.getfechaEstadoDesde());
+			miHash.put("FECHAESTADO_HASTA",miFormulario.getfechaEstadoHasta());
+			miHash.put(ScsEJGBean.C_FECHALIMITEPRESENTACION,miFormulario.getFechaLimitePresentacionDesde());
+			miHash.put(ScsEJGBean.C_FECHALIMITEPRESENTACION+"_HASTA",miFormulario.getFechaLimitePresentacionHasta());
+			miHash.put(ScsEJGBean.C_FECHADICTAMEN,miFormulario.getfechaDictamenDesde());
+			miHash.put(ScsEJGBean.C_FECHADICTAMEN+"_HASTA",miFormulario.getfechaDictamenHasta());
+			miHash.put(ScsEJGBean.C_FECHAPRESENTACIONPONENTE,miFormulario.getFechaPresentacionPonenteDesde());
+			miHash.put(ScsEJGBean.C_FECHAPRESENTACIONPONENTE+"_HASTA",miFormulario.getFechaPresentacionPonenteHasta());
+			miHash.put(ScsEJGBean.C_IDRENUNCIA,miFormulario.getIdRenuncia());
 		
 			// En "DATOSFORMULARIO" almacenamos el identificador del letrado			
 			miHash.put("BUSQUEDAREALIZADA","1");
