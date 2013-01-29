@@ -67,6 +67,7 @@
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosTiposViviendasService"						implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgDatosEconomicosTiposViviendasServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgUnidadesFamiliaresService"									implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgUnidadesFamiliaresServiceImpl"/>
 
+<service interface="org.redabogacia.sigaservices.app.services.scs.ScsPreceptivoService" 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsPreceptivoServiceImpl"/>
 	</context>
 </configuration> 
 	

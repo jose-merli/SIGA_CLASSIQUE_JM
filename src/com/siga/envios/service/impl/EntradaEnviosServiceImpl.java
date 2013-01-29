@@ -32,11 +32,6 @@ import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosExample;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosExample.Criteria;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosKey;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosWithBLOBs;
-import org.redabogacia.sigaservices.app.autogen.model.ScsContrariosdesigna;
-import org.redabogacia.sigaservices.app.autogen.model.ScsDefendidosdesigna;
-import org.redabogacia.sigaservices.app.autogen.model.ScsDesigna;
-import org.redabogacia.sigaservices.app.autogen.model.ScsDesignaprocurador;
-import org.redabogacia.sigaservices.app.autogen.model.ScsDesignasletrado;
 import org.redabogacia.sigaservices.app.autogen.model.ScsEjg;
 import org.redabogacia.sigaservices.app.autogen.model.ScsEjgKey;
 import org.redabogacia.sigaservices.app.log4j.SatecLogger;
@@ -73,7 +68,8 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
+	
 	public List<EnvEntradaEnvios> getEntradaEnvios(EntradaEnviosForm entradaEnviosForm) throws BusinessException {
 		List<EnvEntradaEnvios>  entradaEnvios = null;
 		EnvEntradaEnviosMapper envEntradaEnviosMapper = getMyBatisSqlSessionManager().getMapper(EnvEntradaEnviosMapper.class);
@@ -407,6 +403,8 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 						scsEjgKey.setAnio(solDesProv.getEjgnewanio());
 						scsEjgKey.setNumero(solDesProv.getEjgnewnumero());
 						scsEjg = ejgMapper.selectByPrimaryKey(scsEjgKey);
+						
+						
 						entradaEnviosForm.setNumEJGNew(scsEjg.getNumejg());
 					}
 					
@@ -422,6 +420,8 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 						if(scsEjg.getNumejg()!=null && !scsEjg.getNumejg().equals("")){
 							entradaEnviosForm.setNumEJGSel(scsEjg.getNumejg());
 						}
+						
+						
 						
 						if(solDesProv.getDesignaselanio() != null){ //Se comprueba si ya se ha seleccionado la designa
 							entradaEnviosForm.setAnioDesignaSel(solDesProv.getDesignaselanio().toString());
@@ -463,12 +463,22 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 										
 									}
 									entradaEnviosForm.setEjgSelDesignas(ejgSelDesignas);
+									
+									
+									
+									
 								}
 							}
 						}
 					}
+					BusinessManager businessManager =  BusinessManager.getInstance();
+					ScsEjgService ejgService = (ScsEjgService) businessManager.getService(ScsEjgService.class);
+					boolean isPreceptivoProcurador = ejgService.isProcuradorPreceptivo(scsEjg);
+					entradaEnviosForm.setPreceptivoProcurador(isPreceptivoProcurador);
 					
 				}else if(solDesProv.getCaso() == 2){ //CASO 2
+					//En este caso LP decide que siempre sea preceptivo(Se puede hacer configurable)
+					entradaEnviosForm.setPreceptivoProcurador(true);
 					if(solDesProv.getDesignanewanio() != null){
 						entradaEnviosForm.setAnioDesignaNew(solDesProv.getDesignanewanio().toString());
 						entradaEnviosForm.setNumeroDesignaNew(solDesProv.getDesignanewnumero().toString());
@@ -494,6 +504,7 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 			}
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			log.error("Se ha producido un error al rellenar datos del formulario correspondiente a la zona de solicitud de designa", e);
 		}
 	}

@@ -35,7 +35,13 @@ public class EntradaEnviosForm extends MasterForm
 	private String procuradorDesignaSel, abogadoDesignaSel;
 	private JSONArray ejgSelDesignas;
 	private String idTipoDesignacionColegio;
-	
+	boolean preceptivoProcurador = false;
+	public boolean isPreceptivoProcurador() {
+		return preceptivoProcurador;
+	}
+	public void setPreceptivoProcurador(boolean preceptivoProcurador) {
+		this.preceptivoProcurador = preceptivoProcurador;
+	}
 	public String getFechaApertura() {
 		return fechaApertura;
 	}
@@ -241,7 +247,7 @@ public class EntradaEnviosForm extends MasterForm
 					botonesDetalle = "v,d";
 				}else if(idEstado.equals("4")){
 					//si el tramitado ha sido por seleccion de ejg pondremos el boton tramitar datos
-					if(this.getProcuradorDesignaSel() != null && !this.getProcuradorDesignaSel().equals("")){
+					if(!preceptivoProcurador || (this.getProcuradorDesignaSel() != null && !this.getProcuradorDesignaSel().equals(""))){
 						botonesDetalle = "v,d,g,COM";
 					}else{
 						botonesDetalle = "v,d,g";
@@ -281,7 +287,7 @@ public class EntradaEnviosForm extends MasterForm
 		FilaExtElement[] elementosFila = null;
 		if(getIdEstado().equals(""+EstadosEntradaEnviosEnum.ESTADO_ERROR.getCodigo())){
 			elementosFila = null;
-		}else if(getIdEstado().equals(""+EstadosEntradaEnviosEnum.ESTADO_PENDIENTE_ENVIAR.getCodigo()) && this.getProcuradorDesignaSel() != null && !this.getProcuradorDesignaSel().equals("")){
+		}else if(getIdEstado().equals(""+EstadosEntradaEnviosEnum.ESTADO_PENDIENTE_ENVIAR.getCodigo()) && (!preceptivoProcurador ||( this.getProcuradorDesignaSel() != null && !this.getProcuradorDesignaSel().equals("")))){
 			elementosFila = new FilaExtElement[3];
 			elementosFila[1] = new FilaExtElement("download", "download","general.boton.download",	SIGAConstants.ACCESS_READ);
 			elementosFila[2] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);

@@ -499,14 +499,16 @@ public class DefinirEnviosAction extends MasterAction {
 		Vector vOcultos = form.getDatosTablaOcultos(0);		
 		String idEnvio = (String)vOcultos.elementAt(0);
 		String idTipoEnvio = (String)vOcultos.elementAt(1);
-		String idIntercambio = (String)vOcultos.elementAt(2);
+		String idIntercambio = null;
+		if(vOcultos.size()>1)
+			idIntercambio = (String)vOcultos.elementAt(2);
 		
 		//Anhadimos parametros para las pestanhas
 		Hashtable htParametros=new Hashtable();
 		htParametros.put("idEnvio",idEnvio);
 		htParametros.put("idTipoEnvio",idTipoEnvio);
 		htParametros.put("acceso",bEditable?"editar":"ver");
-		if(Integer.parseInt(idTipoEnvio)==EnvEnviosAdm.TIPO_TELEMATICO){
+		if(idIntercambio!=null && Integer.parseInt(idTipoEnvio)==EnvEnviosAdm.TIPO_TELEMATICO){
 			htParametros.put("idIntercambio",idIntercambio);
 		}else{
 			htParametros.put("idIntercambio","");

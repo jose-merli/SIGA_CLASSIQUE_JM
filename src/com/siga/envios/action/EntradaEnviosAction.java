@@ -241,7 +241,9 @@ public class EntradaEnviosAction extends MasterAction {
 					entradaEnviosService.updateFormularioDatosSolDesignaProvisional(entradaEnvioFormulario);
 				} else if(entradaEnvioFormulario.getIdTipoIntercambioTelematico()!=null && entradaEnvioFormulario.getIdTipoIntercambioTelematico().equals(TipoIntercambioEnum.SGP_ICA_RESP_SOL_SUSP_PROC.getCodigo())){
 					entradaEnviosService.updateFormularioDatosRespuestaSuspensionProcedimiento(entradaEnvioFormulario);
-				}				
+				}
+				
+				
 				listEntradaEnviosForm.add(entradaEnvioFormulario);
 			}
 

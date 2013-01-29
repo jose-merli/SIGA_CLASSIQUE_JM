@@ -7,6 +7,7 @@ import org.redabogacia.sigaservices.app.autogen.model.EcomSoldesignaprovisional;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnvios;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosExample;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosWithBLOBs;
+import org.redabogacia.sigaservices.app.autogen.model.ScsEjg;
 
 import com.atos.utils.UsrBean;
 import com.siga.envios.form.EntradaEnviosForm;
@@ -28,4 +29,5 @@ public interface EntradaEnviosService{
 	public void relacionarEnvio(Long idEnvio, Short idInstitucion, Long idEnvioRelacionado) throws BusinessException;
 	public EnvEntradaEnviosWithBLOBs getEntradaEnvios(EnvEntradaEnviosExample entradaEnviosExample) throws BusinessException;
 	public void actualizarEntradaEnvios(EnvEntradaEnviosExample entradaEnviosExample, EnvEntradaEnviosWithBLOBs envEntradaEnvios)throws BusinessException;
+	
 }

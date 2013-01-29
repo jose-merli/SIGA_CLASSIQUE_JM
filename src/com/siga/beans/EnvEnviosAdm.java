@@ -706,7 +706,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
      		    String correoElectronico = (String)htDir.get(CenDireccionesBean.C_CORREOELECTRONICO);
                 if (correoElectronico!=null && !correoElectronico.equals("")){
                 	String preferente = (String)htDir.get(CenDireccionesBean.C_PREFERENTE); 
-         		    if(preferente!=null){
+         		    if(preferente!=null && !preferente.equals("")){
          		    	if(preferente.contains(ClsConstants.TIPO_PREFERENTE_CORREOELECTRONICO)&&!foundPrimeraPreferente){
          		    		foundPrimeraPreferente = true;
          		    		direccionesTipo.add(0,htDir);
