@@ -17,7 +17,8 @@ public class ExpCampoConfBean extends MasterBean {
 	private Integer idPestanaConf;
 	private Integer idCampoConf;
 	private Integer seleccionado;
-	private String tipo;
+	private Integer maxLong;
+	private Integer tipo;
 	private String nombre;
 	private Integer orden;
 	private Integer general;
@@ -28,6 +29,7 @@ public class ExpCampoConfBean extends MasterBean {
 	static public final String C_IDPESTANACONF = "IDPESTANACONF";
 	static public final String C_IDCAMPOCONF="IDCAMPOCONF";
 	static public final String C_SELECCIONADO = "SELECCIONADO";
+	static public final String C_MAXLONG = "MAXLONG";
 	static public final String C_TIPO = "TIPO";
 	static public final String C_NOMBRE = "NOMBRE";
 	static public final String C_ORDEN = "ORDEN";
@@ -86,10 +88,10 @@ public class ExpCampoConfBean extends MasterBean {
         this.orden = valor;
     }
 
-    public String getTipo() {
+    public Integer getTipo() {
         return tipo;
     }
-    public void setTipo(String valor) {
+    public void setTipo(Integer valor) {
         this.tipo = valor;
     }
 
@@ -106,4 +108,11 @@ public class ExpCampoConfBean extends MasterBean {
 	public void setGeneral(Integer valor) {
 		this.general = valor;
 	}
+	public Integer getMaxLong() {
+		return maxLong;
+	}
+	public void setMaxLong(Integer maxLong) {
+		this.maxLong = maxLong;
+	}
+	
 }

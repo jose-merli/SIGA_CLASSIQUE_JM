@@ -39,6 +39,7 @@ public class ExpCampoConfAdm extends MasterBeanAdministrador {
 				ExpCampoConfBean.C_NOMBRE,
 				ExpCampoConfBean.C_FECHAMODIFICACION,
             	ExpCampoConfBean.C_USUMODIFICACION,
+            	ExpCampoConfBean.C_MAXLONG,
             	ExpCampoConfBean.C_GENERAL  
 				};
 
@@ -65,11 +66,8 @@ public class ExpCampoConfAdm extends MasterBeanAdministrador {
         String[] orden = {ExpCampoConfBean.C_ORDEN};
         return orden;
     }
-
-    /* (non-Javadoc)
-     * @see com.siga.beans.MasterBeanAdministrador#hashTableToBean(java.util.Hashtable)
-     */
-    protected MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions {
+        
+    public MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions {
         ExpCampoConfBean bean = null;
 
 		try
@@ -83,7 +81,8 @@ public class ExpCampoConfAdm extends MasterBeanAdministrador {
 			bean.setIdCampoConf(UtilidadesHash.getInteger(hash, ExpCampoConfBean.C_IDCAMPOCONF));
 			bean.setSeleccionado(UtilidadesHash.getInteger(hash, ExpCampoConfBean.C_SELECCIONADO));
 			bean.setOrden(UtilidadesHash.getInteger(hash, ExpCampoConfBean.C_ORDEN));
-			bean.setTipo(UtilidadesHash.getString(hash, ExpCampoConfBean.C_TIPO));
+			bean.setTipo(UtilidadesHash.getInteger(hash, ExpCampoConfBean.C_TIPO));
+			bean.setMaxLong(UtilidadesHash.getInteger(hash, ExpCampoConfBean.C_MAXLONG));
 			bean.setNombre(UtilidadesHash.getString(hash, ExpCampoConfBean.C_NOMBRE));
 			bean.setGeneral(UtilidadesHash.getInteger(hash, ExpCampoConfBean.C_GENERAL));
 			
@@ -119,6 +118,7 @@ public class ExpCampoConfAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ExpCampoConfBean.C_SELECCIONADO, b.getSeleccionado());
 			UtilidadesHash.set(htData, ExpCampoConfBean.C_ORDEN, b.getOrden());
 			UtilidadesHash.set(htData, ExpCampoConfBean.C_TIPO, b.getTipo());
+			UtilidadesHash.set(htData, ExpCampoConfBean.C_MAXLONG, b.getMaxLong());
 			UtilidadesHash.set(htData, ExpCampoConfBean.C_NOMBRE, b.getNombre());
 			UtilidadesHash.set(htData, ExpCampoConfBean.C_GENERAL, b.getGeneral());
 		}
@@ -227,7 +227,7 @@ public class ExpCampoConfAdm extends MasterBeanAdministrador {
 		catch(Exception e) { e.printStackTrace(); }
 		
 		try {		
-			String sql = " select cc.nombre as ETIQUETA, cc.idcampoconf as IDCAMPOCONF, v.idcampo as IDCAMPO, v.valor as VALOR " +
+			String sql = " select cc.nombre as ETIQUETA, cc.idcampoconf as IDCAMPOCONF, v.idcampo as IDCAMPO, v.valor as VALOR, cc.tipo as TIPO, cc.maxlong as MAXLONG " +
 				" from exp_campoconf cc, exp_camposvalor v " +
 			    " where cc.idinstitucion = v.idinstitucion_tipoexpediente (+) " +
 			    " and   cc.idtipoexpediente = v.idtipoexpediente (+)  " +
