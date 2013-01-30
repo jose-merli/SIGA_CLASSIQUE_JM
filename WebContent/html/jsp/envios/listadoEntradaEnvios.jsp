@@ -62,14 +62,11 @@
 	   	      nombre="tablaDatos"
 	   		  borde="1"
 	   		  clase="tableTitle"
-	   		  
-									
-	   		  
-	   		  nombreCol='<bean:message key="general.etiqueta.fecha" />,
-	   		  <bean:message	key="comunicaciones.etiqueta.remitente" />,
-	   		  <bean:message	key="comunicaciones.etiqueta.asunto" />,
-	   		  <bean:message	key="comunicaciones.etiqueta.fecha" />&nbsp;<bean:message	key="comunicaciones.etiqueta.respuesta" />,
-	   		  <bean:message	key="comunicaciones.etiqueta.estado" />,'
+	   		  nombreCol='general.etiqueta.fecha,
+	   		  comunicaciones.etiqueta.remitente,
+	   		  comunicaciones.etiqueta.asunto,
+	   		  comunicaciones.etiqueta.respuesta,
+	   		  comunicaciones.etiqueta.estado,'
 	   		  tamanoCol="10,20,35,10,13,12"
 	   		  alto="333" 
 			  ajustePaginador="true"
