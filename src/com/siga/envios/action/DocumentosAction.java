@@ -38,6 +38,8 @@ import com.siga.gui.processTree.SIGAPTConstants;
 
 public class DocumentosAction extends MasterAction
 {
+	private static final Integer FILENAME_MAX_LENGTH = 260;
+	
     public ActionForward executeInternal (ActionMapping mapping, ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
 	{
     	String mapDestino = "exception";
@@ -271,11 +273,15 @@ public class DocumentosAction extends MasterAction
 	protected String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
 	{
 	    try {
+	    	DocumentosForm form = (DocumentosForm)formulario;
+	    	String sPathDocumento = form.getTheFile().getFileName();
+	    	if (sPathDocumento == null || sPathDocumento.length() > FILENAME_MAX_LENGTH){
+	    		return this.exito("messages.upload.nameError",request);
+	    	}
 	    	boolean grabarOK = grabar(mapping, formulario, request, response);
 	    	if (!grabarOK)
 	    		return exito("messages.upload.error",request);
-	    		
-	        DocumentosForm form = (DocumentosForm)formulario;
+	    			        
 	        EnvDocumentosBean docBean = new EnvDocumentosBean();
 	        docBean.setIdInstitucion(Integer.valueOf(form.getIdInstitucion()));
 	        docBean.setIdEnvio(Integer.valueOf(form.getIdEnvio()));
@@ -302,6 +308,10 @@ public class DocumentosAction extends MasterAction
         String idDocumento = form.getIdDocumento();
         
 	    try{    
+	    	String sPathDocumento = form.getTheFile().getFileName();
+	    	if (sPathDocumento == null || sPathDocumento.length() > FILENAME_MAX_LENGTH){
+	    		return this.exito("messages.upload.nameError",request);
+	    	}
 	        Hashtable htPk = new Hashtable();
 	        htPk.put(EnvDocumentosBean.C_IDINSTITUCION,idInstitucion);
 	        htPk.put(EnvDocumentosBean.C_IDENVIO,idEnvio);
@@ -310,6 +320,7 @@ public class DocumentosAction extends MasterAction
 	        EnvDocumentosAdm docAdm = new EnvDocumentosAdm(this.getUserBean(request));
 	        EnvDocumentosBean docBean = (EnvDocumentosBean)docAdm.selectByPKForUpdate(htPk).firstElement();
 	        boolean grabarOK = false;
+	    	
 	        if (form.getTheFile().getFileSize()>0){
 	            docBean.setPathDocumento(form.getTheFile().getFileName());
 	            grabarOK = grabar(mapping, formulario, request, response);

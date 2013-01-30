@@ -463,13 +463,19 @@ public class DatosColegialesAction extends MasterAction {
 				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_SUSPENSION));
 				break;
 			}
-
+			
+			boolean bDesdeCGAE = false;
+			if (this.getIDInstitucion(request) == 2000){
+				beanHis.setIdInstitucion(2000);
+				bDesdeCGAE = true;
+			}
+			
 			// iniciando transaccion
 			tx = usr.getTransactionPesada();
 			tx.begin();
 
 			// 1 y 2. guardando estado e historico
-			if (admEstados.insercionConHistorico(hashEstado, beanHis, idioma)) {
+			if (admEstados.insercionConHistorico(hashEstado, beanHis, idioma, bDesdeCGAE)) {
 				revisionesPorCambioEstadoColegial(idinstitucion, idpersona, Integer.toString(estado), miForm
 						.getFechaEstado(), usr); // OJO: se pasa la fecha sin hora
 
@@ -537,7 +543,12 @@ public class DatosColegialesAction extends MasterAction {
 			//cargando una nueva tabla hash para insertar en la tabla de historico
 			Hashtable hashHist = new Hashtable();
 			hashHist.put(CenHistoricoBean.C_IDPERSONA, miForm.getIdPersona());
-			hashHist.put(CenHistoricoBean.C_IDINSTITUCION, miForm.getIdInstitucion());
+			//BEGIN BNS FILA 300
+			if (this.getIDInstitucion(request) == 2000)
+				hashHist.put(CenHistoricoBean.C_IDINSTITUCION, "2000");
+			else
+			//END BNS FILA 300
+				hashHist.put(CenHistoricoBean.C_IDINSTITUCION, miForm.getIdInstitucion());
 			hashHist.put(CenHistoricoBean.C_MOTIVO, miForm.getMotivo());
 			hashHist.put(CenHistoricoBean.C_IDTIPOCAMBIO, new Integer
 					(ClsConstants.TIPO_CAMBIO_HISTORICO_DATOS_COLEGIALES).toString());
@@ -751,6 +762,11 @@ public class DatosColegialesAction extends MasterAction {
 				
 			 
 		   }	
+			 boolean bDesdeGGAE = false;
+			 if (this.getIDInstitucion(request) == 2000){
+				 hashHist.put(CenHistoricoBean.C_IDINSTITUCION, 2000);
+				 bDesdeGGAE = true;
+			 }
 			// Comienzo control de transacciones
 			tx = usr.getTransactionPesada();
 			tx.begin();	
@@ -758,7 +774,7 @@ public class DatosColegialesAction extends MasterAction {
 			// Asigno el IDHISTORICO			
 			hashHist.put(CenHistoricoBean.C_IDHISTORICO, adminHist.getNuevoID(hash).toString());			
 			
-			if (admin.modificacionConHistorico(hash,original,hashHist, this.getLenguaje(request))){
+			if (admin.modificacionConHistorico(hash,original,hashHist, this.getLenguaje(request), bDesdeGGAE)){
 
 			    // Lanzamos el proceso de revision de ANTICIPOS 
 				String resultado1[] = EjecucionPLs.ejecutarPL_RevisionAnticiposLetrado(miForm.getIdInstitucion(),
@@ -849,6 +865,11 @@ public class DatosColegialesAction extends MasterAction {
 			Hashtable hashHist = new Hashtable();
 			hashHist.put(CenHistoricoBean.C_IDPERSONA, idpersona);
 			hashHist.put(CenHistoricoBean.C_IDINSTITUCION, idinstitucion);
+			boolean bDesdeCGAE = false;
+			if (this.getIDInstitucion(request) == 2000){
+				bDesdeCGAE = true;
+				hashHist.put(CenHistoricoBean.C_IDINSTITUCION, 2000);
+			}			
 			hashHist.put(CenHistoricoBean.C_MOTIVO, ClsConstants.HISTORICO_REGISTRO_ELIMINADO);
 			hashHist.put(CenHistoricoBean.C_IDTIPOCAMBIO, new Integer(
 					ClsConstants.TIPO_CAMBIO_HISTORICO_DATOS_COLEGIALES).toString());
@@ -859,7 +880,7 @@ public class DatosColegialesAction extends MasterAction {
 			tx.begin();
 
 			// 1 y 2. borrando estado e insertando historico
-			if (admEstados.borrarConHistorico(hash, hashHist, idioma)) {
+			if (admEstados.borrarConHistorico(hash, hashHist, idioma, bDesdeCGAE)) {
 				// obteniendo ultimo estado colegial
 				Vector<Row> vEstados = admColegiado.getEstadosColegiales(new Long(idpersona), new Integer(idinstitucion), idioma);
 				if (vEstados != null && vEstados.size() > 0) {

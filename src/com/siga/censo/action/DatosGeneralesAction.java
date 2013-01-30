@@ -2609,7 +2609,14 @@ public class DatosGeneralesAction extends MasterAction {
 		
 		try {
 			DatosGeneralesForm miform = (DatosGeneralesForm)formulario;
+			String sColegiadoEn = miform.getColegiadoen();
+			String sNumIdentificacion = (String) miform.getDatos().get("NIFCIF");
+			String sIdDireccion = miform.getIdDireccion();
 			miform.reset(mapping,request);
+			miform.getDatos().remove("NIFCIF");
+			miform.setColegiadoen(null);
+			miform.setIdDireccion(null);
+			miform.setNumIdentificacion(null);
 						
 			CenTipoDireccionAdm cenTipoDirAdm = new CenTipoDireccionAdm (this.getUserBean(request));
 			Vector vTipos = new Vector();
@@ -2640,6 +2647,17 @@ public class DatosGeneralesAction extends MasterAction {
 
 			miform.setDirecciones(list);
 			user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			
+			if (sNumIdentificacion != null && !"".equals(sNumIdentificacion)){				
+				miform.setNumIdentificacion(sNumIdentificacion);
+				//miform.setColegiadoen(null);
+				if (sColegiadoEn != null){
+					Hashtable ht = miform.getDatos();
+					ht.put("idInstitucionOrigen", sColegiadoEn);
+					miform.setDatos(ht);
+				}
+				miform.setIdDireccion(sIdDireccion);
+			}
 			
 			forward = "designarArt27";
 

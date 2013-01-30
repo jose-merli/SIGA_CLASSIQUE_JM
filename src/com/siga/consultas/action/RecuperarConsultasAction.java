@@ -348,7 +348,7 @@ public class RecuperarConsultasAction extends MasterAction {
 			HashMap databackup =
 				(HashMap) request.getSession ().getAttribute ("DATABACKUP");
 			
-			//obteniendo datos de la consulta 			
+			//obteniendo datos de la consulta
 			ConConsultaBean conBean = (ConConsultaBean) databackup.get ("datosParticulares");
 			String sentencia = conBean.getSentencia().toUpperCase(); 
 			String tipoEnvio = form.getTipoEnvio();
@@ -356,6 +356,24 @@ public class RecuperarConsultasAction extends MasterAction {
 			
 			ConConsultaAdm conAdm = new ConConsultaAdm(userBean);
 			Hashtable ht = conAdm.procesarEjecutarConsulta(tipoEnvio, conBean, criteriosDinamicos, true);
+			
+			// BEGIN BNS 12/12/2012 INCIDENCIA 140: Eliminaba parte de la query si existían subquerys con order by y
+			//										la query principal no tenía order by.
+			//										Añadimos comprobación de que el último order by no es parte de una
+			//										subquery buscando por el paréntesis. Esto falla cuando dentro del 
+			//										propio order by existe una subquery pero lo mantenemos por compatibilidad y 
+			//										porque ya está funcionando en todos los casos excepto en consultas expertas.
+			//										Para que no se produzcan errores en la consulta experta se da la posibilidad
+			//										de suministrar la query del count sin el order by que se elimina antes de 
+			//										tratar las etiquetas de la consulta experta
+			if (sentencia.indexOf(ClsConstants.ETIQUETASORDERBYCLOSE) != -1)
+				conBean.setSentencia(sentencia.substring(0, sentencia.indexOf(ClsConstants.ETIQUETAORDERBYOPEN) + ClsConstants.ETIQUETAORDERBYOPEN.length()) + sentencia.substring(sentencia.indexOf(ClsConstants.ETIQUETASORDERBYCLOSE)));
+			else
+				conBean.setSentencia(sentencia);
+			Hashtable htSinOrder = conAdm.procesarEjecutarConsulta(tipoEnvio, conBean, criteriosDinamicos, true);			
+			String sentenciaSinOrder = (String) htSinOrder.get("sentencia");
+			conBean.setSentencia(sentencia);
+			//END BNS
 			
 			sentencia = (String) ht.get("sentencia");
 			String[] cabeceras = (String[]) ht.get("cabeceras");
@@ -370,11 +388,19 @@ public class RecuperarConsultasAction extends MasterAction {
 		    tx.begin();
 		    
 		    try {
-//			PaginadorBind paginador =
-//				new PaginadorBind (sentencia, codigosBind);				
+		    	// BEGIN BNS 12/12/2012 INCIDENCIA 140: Eliminaba parte de la query si existían subquerys con order by y
+		    	//										la query principal no tenía order by.
+		    	//										Añadimos comprobación de que el último order by no es parte de una
+		    	//										subquery buscando por el paréntesis. Esto falla cuando dentro del 
+		    	//										propio order by existe una subquery pero lo mantenemos por compatibilidad y 
+		    	//										porque ya está funcionando en todos los casos excepto en consultas expertas.
+		    	//										Para que no se produzcan errores en la consulta experta se da la posibilidad
+		    	//										de suministrar la query del count sin el order by que se elimina antes de 
+		    	//										tratar las etiquetas de la consulta experta
 				PaginadorCaseSensitiveBind paginador =
-				new PaginadorCaseSensitiveBind (sentencia, cabeceras, codigosOrdenados);				
-	
+				new PaginadorCaseSensitiveBind (sentencia, sentenciaSinOrder, cabeceras, codigosOrdenados);				
+				//END BNS
+				
 				int totalRegistros = paginador.getNumeroTotalRegistros ();
 				request.setAttribute ("descripcion", conBean.getDescripcion ());
 				if (totalRegistros==0) {

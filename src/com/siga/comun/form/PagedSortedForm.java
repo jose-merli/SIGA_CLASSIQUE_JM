@@ -2,8 +2,10 @@ package com.siga.comun.form;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -168,6 +170,10 @@ public abstract class PagedSortedForm extends BaseForm{
 		if (parameters!=null && parameters.length!=0){
 			selectedElements.addAll(Arrays.asList(parameters));
 		}
+		//BEGIN BNS ELIMINA DUPLICADOS POR SI ACASO
+		Set<String> mySet = new HashSet<String>(selectedElements);
+		selectedElements = new ArrayList<String>(mySet);
+		//END BNS
 	}
 
 	public List<String> getSelectedElements() {
@@ -184,7 +190,13 @@ public abstract class PagedSortedForm extends BaseForm{
 	
 	public SortedVo toSortedVo(){
 		SortedVo vo=new SortedVo();
-		vo.setCriteria(this.getSortColumn(), this.getOrderDirection());
+		String[] multiColumnSort = this.getSortColumn().split(",");
+		if (multiColumnSort.length > 1){
+			for(String column : multiColumnSort){
+				vo.setCriteria(column.trim(), this.getOrderDirection());
+			}
+		} else
+			vo.setCriteria(this.getSortColumn(), this.getOrderDirection());
 		for(String columna : getColumnTranslation()){
 			if (columna != null && !columna.equals("") && !columna.equals(this.getSortColumn())){
 				vo.setCriteria(columna, this.getOrderDirection());

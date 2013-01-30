@@ -681,8 +681,13 @@ public class DatosColegiacionAction extends MasterAction {
 			Hashtable hashHist = new Hashtable();			
 
 			// Cargo los valores obtenidos del formulario referentes al historico			
-			hashHist.put(CenHistoricoBean.C_IDPERSONA, camposOcultos.get(0));			
-			hashHist.put(CenHistoricoBean.C_IDINSTITUCION, camposOcultos.get(1));			
+			hashHist.put(CenHistoricoBean.C_IDPERSONA, camposOcultos.get(0));
+			boolean bDesdeCGAE = false;
+			if (this.getIDInstitucion(request) == 2000){
+				bDesdeCGAE = true;
+				hashHist.put(CenHistoricoBean.C_IDINSTITUCION, "2000");
+			}else
+				hashHist.put(CenHistoricoBean.C_IDINSTITUCION, camposOcultos.get(1));			
 			hashHist.put(CenHistoricoBean.C_MOTIVO, ClsConstants.HISTORICO_REGISTRO_ELIMINADO);
 			hashHist.put(CenHistoricoBean.C_IDTIPOCAMBIO, new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_DATOS_COLEGIALES).toString());
 			
@@ -702,7 +707,7 @@ public class DatosColegiacionAction extends MasterAction {
 			// Asigno el IDHISTORICO			
 			hashHist.put(CenHistoricoBean.C_IDHISTORICO, adminHist.getNuevoID(hash).toString());			
 
-			if (admin.borrarConHistorico(hash,hashHist, this.getLenguaje(request))){
+			if (admin.borrarConHistorico(hash,hashHist, this.getLenguaje(request), bDesdeCGAE)){
 				tx.commit();
 				result=exitoRefresco("messages.deleted.success",request);
 			}	

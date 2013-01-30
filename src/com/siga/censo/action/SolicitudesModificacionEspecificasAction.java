@@ -679,7 +679,7 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 			       	//i=0;
 					//while(i<solicitudes.length){
 						tx.begin();					
-						correcto=adminCB.procesarSolicitud(solicitudes[i],this.getUserName(request), this.getLenguaje(request));
+						correcto=adminCB.procesarSolicitud(solicitudes[i],this.getUserName(request), this.getUserBean(request), this.getLenguaje(request));
 						if (correcto){
 							procesados++;
 							tx.commit();

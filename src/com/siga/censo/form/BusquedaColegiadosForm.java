@@ -3,6 +3,8 @@ package com.siga.censo.form;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.displaytag.decorator.DisplaytagColumnDecorator;
 
 import com.siga.Utilidades.UtilidadesFecha;
@@ -22,7 +24,7 @@ public class BusquedaColegiadosForm extends PagedSortedForm{
 	 * Identificador de la tabla en la pagina html
 	 */
 	private static final String TABLE_NAME = "tablaColegiados";
-	private static final Integer DEFAULT_PAGE_SIZE = 22;
+	private static final Integer DEFAULT_PAGE_SIZE = 20;
 	private static final String DEFAULT_SORT_COLUMN = "3";
 	
 	private String tipoBusqueda;
@@ -34,6 +36,10 @@ public class BusquedaColegiadosForm extends PagedSortedForm{
 		this.tipoBusqueda = tipoBusqueda;
 	}
 
+	public void updateRequest (HttpServletRequest request){
+		setSelectedElements(request.getParameterValues(getSelectParameterName()));
+	}
+	
 	//Campos de la busqueda simple
 	private List<InstitucionVO> instituciones;
 	private String idInstitucion;
@@ -377,7 +383,7 @@ public class BusquedaColegiadosForm extends PagedSortedForm{
 	public BusquedaColegiadosForm(){
 		setPageSize(DEFAULT_PAGE_SIZE);
 		//mapeo de las columnas por las cuales se puede ordenar la lista de resultados
-		setColumnTranslation("","","nifCif","nColegiado","apellidos1","nombre","fechaIncorporacion",
+		setColumnTranslation("","","nifCif","nColegiado","apellidos","nombre","fechaIncorporacion",
 				"idInstitucion","","","fechaNacimiento");
 		//id de la tabla en la pagina html
 		setTableName(TABLE_NAME);

@@ -9,7 +9,7 @@ import org.displaytag.exception.DecoratorException;
 import org.displaytag.properties.MediaTypeEnum;
 
 public class CheckboxDecorator implements DisplaytagColumnDecorator {
-	private static final String checkbox="<input type=\"checkbox\" name=\"%s\" value=\"%s\" %s onclick=\"desmarcarCheckCabecera(this.checked, this.value);\"/>";
+	private static final String checkbox="<input type=\"checkbox\" name=\"%s\" id=\"%s\" value=\"%s\" %s onclick=\"pulsarCheck(this)\"/>";
 	private static final String checked="checked";
 	private static final String vacio="";
 	private static final String deshabilitado="disabled";
@@ -33,7 +33,7 @@ public class CheckboxDecorator implements DisplaytagColumnDecorator {
 				seleccionado = deshabilitado;
 			else if (selected != null)
 				seleccionado=selected.contains(value) || allSelected ? checked : vacio;
-			strbuff.append(String.format(checkbox, checkboxName, (value==null)?"":value.toString(), seleccionado));
+			strbuff.append(String.format(checkbox, checkboxName, checkboxName, (value==null)?"":value.toString(), seleccionado));
 		}
 
 		return strbuff.toString();

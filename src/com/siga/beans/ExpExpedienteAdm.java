@@ -13,6 +13,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.transaction.UserTransaction;
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
@@ -447,15 +448,19 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 
 		//join de las tablas EXPEDIENTE E, TIPOEXPEDIENTE T, PERSONA P, ESTADOS ES, INSTITUCION I
 		where += (institucion!=null && !institucion.equals("")) ? " E." + ExpExpedienteBean.C_IDINSTITUCION + " = " + institucion : " E." + ExpExpedienteBean.C_IDINSTITUCION + " IN (" +instMenorRango+ ")";
+		//BEGIN BNS
+		/*
 		where += " AND E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE+" = "+T_IDINSTITUCION+"(+)";
 		where += " AND E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE+" = "+T_IDTIPOEXPEDIENTE+"(+)";
 
+		where += " AND E."+ExpExpedienteBean.C_IDINSTITUCION+" = "+I_IDINSTITUCION+"(+)";
+		*/
+		//END BNS
+		
 		if (esGeneral){
 			where += " AND T."+ExpTipoExpedienteBean.C_ESGENERAL+"='S'";
 		}
-
-		where += " AND E."+ExpExpedienteBean.C_IDINSTITUCION+" = "+I_IDINSTITUCION+"(+)";
-
+		
 		if (hayPartes){
 			where += " AND E."+ExpExpedienteBean.C_IDINSTITUCION+" = "+PA_IDINSTITUCION+"(+)";
 			where += " AND E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE+" = "+PA_IDINSTITUCION_TIPOEXPEDIENTE+"(+)";
@@ -463,7 +468,26 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			where += " AND E."+ExpExpedienteBean.C_NUMEROEXPEDIENTE+" = "+PA_NUMEROEXPEDIENTE+"(+)";
 			where += " AND E."+ExpExpedienteBean.C_ANIOEXPEDIENTE+" = "+PA_ANIOEXPEDIENTE+"(+)";
 		}
-		
+		where += " AND E."+ExpExpedienteBean.C_IDINSTITUCION+" = EJG."+ScsEJGBean.C_IDINSTITUCION+"(+) "+
+				 " AND E."+ExpExpedienteBean.C_ANIOEJG+" = EJG."+ScsEJGBean.C_ANIO+"(+) "+
+				 " AND E."+ExpExpedienteBean.C_NUMEROEJG+" = EJG."+ScsEJGBean.C_NUMERO+"(+) "+
+				 " AND E."+ExpExpedienteBean.C_IDTIPOEJG+" = EJG."+ScsEJGBean.C_IDTIPOEJG+"(+) "+
+				 " AND E."+ExpExpedienteBean.C_IDINSTITUCION+" = D."+ExpDenunciadoBean.C_IDINSTITUCION+"(+) "+
+				 " AND E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE+" = D."+ExpDenunciadoBean.C_IDINSTITUCION_TIPOEXPEDIENTE+"(+) "+
+				 " AND E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE+" = D."+ExpDenunciadoBean.C_IDTIPOEXPEDIENTE+"(+) "+
+				 " AND E."+ExpExpedienteBean.C_NUMEROEXPEDIENTE+" = D."+ExpDenunciadoBean.C_NUMEROEXPEDIENTE+"(+) "+
+				 " AND E."+ExpExpedienteBean.C_ANIOEXPEDIENTE+" = D."+ExpDenunciadoBean.C_ANIOEXPEDIENTE+"(+) "+
+				 " AND 1 = D."+ExpDenunciadoBean.C_IDDENUNCIADO+"(+) "+
+				 " AND E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE+" = T."+ExpTipoExpedienteBean.C_IDINSTITUCION+
+			     " AND E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE+" = T."+ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE+
+			     " AND E."+ExpExpedienteBean.C_IDINSTITUCION+" = I."+CenInstitucionBean.C_IDINSTITUCION+
+			     " AND E."+ExpExpedienteBean.C_IDFASE+" = F."+ExpFasesBean.C_IDFASE+"(+) "+
+			     " AND E."+ExpExpedienteBean.C_IDINSTITUCION+" = F."+ExpFasesBean.C_IDINSTITUCION+"(+) "+
+			     " AND E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE+" = F."+ExpFasesBean.C_IDTIPOEXPEDIENTE+"(+) "+
+			     " AND E."+ExpExpedienteBean.C_IDFASE+" = ES."+ExpEstadosBean.C_IDFASE+"(+) "+
+			     " AND E."+ExpExpedienteBean.C_IDINSTITUCION+" = ES."+ExpEstadosBean.C_IDINSTITUCION+"(+) "+
+			     " AND E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE+" = ES."+ExpEstadosBean.C_IDTIPOEXPEDIENTE+"(+) "+
+			     " AND E."+ExpExpedienteBean.C_IDESTADO+" = ES."+ExpEstadosBean.C_IDESTADO+"(+) ";
 		//where += (form.getJuzgado()!=null && !form.getJuzgado().equals("")) ? " AND E."+ExpExpedienteBean.C_IDINSTITUCION_JUZGADO+" = juz." + ScsJuzgadoBean.C_IDINSTITUCION+"(+)": "";
 
 		//campos de búsqueda
@@ -512,7 +536,8 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			 String hay_nombre_denunciado = (nombreDenunciado!=null && !nombreDenunciado.equals("")) ?  ComodinBusquedas.prepararSentenciaCompleta(nombreDenunciado.trim(),"per.nombre" ): "";
 			 String hay_ap1_denunciado = (ap1Denunciado!=null && !ap1Denunciado.equals("")) ?  ComodinBusquedas.prepararSentenciaCompleta(ap1Denunciado.trim(),"per.apellidos1" ): "";
 			 String hay_ap2_denunciado = (ap2Denunciado!=null && !ap2Denunciado.equals("")) ?  ComodinBusquedas.prepararSentenciaCompleta(ap2Denunciado.trim(),"per.apellidos2" ): "";
-			 
+			 //BEGIN BNS
+			 /*
 			 sqlDenunciado.append(" AND (E.");
 			 sqlDenunciado.append(ExpExpedienteBean.C_IDPERSONA);
 			 sqlDenunciado.append(" IN (SELECT ");
@@ -528,6 +553,9 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			 
 			 
 			 sqlDenunciado.append(" or (select count(*) ");
+			 */
+			 //END BNS
+			 sqlDenunciado.append(" and (select count(*) ");
 			 sqlDenunciado.append(" from exp_denunciado ddo,cen_persona per ");
 			 sqlDenunciado.append(" where ddo.IDINSTITUCION = E.IDINSTITUCION ");
 			 sqlDenunciado.append(" and ddo.IDINSTITUCION_TIPOEXPEDIENTE =  E.IDINSTITUCION_TIPOEXPEDIENTE ");
@@ -631,7 +659,10 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		String I_ABREVIATURA = "I."+CenInstitucionBean.C_ABREVIATURA;
 		
 		//JOINS ESPECIALES
-		String SEL_DENUNCIADO = "( SELECT PE.NOMBRE||' '||PE.APELLIDOS1||' '||PE.APELLIDOS2 FROM CEN_PERSONA PE WHERE PE.IDPERSONA= E.IDPERSONA) AS DENUNCIADO";
+		//BEGIN BNS
+		//String SEL_DENUNCIADO = "( SELECT PE.NOMBRE||' '||PE.APELLIDOS1||' '||PE.APELLIDOS2 FROM CEN_PERSONA PE WHERE PE.IDPERSONA= E.IDPERSONA) AS DENUNCIADO";
+		String SEL_DENUNCIADO = "( SELECT PE.NOMBRE||' '||PE.APELLIDOS1||' '||PE.APELLIDOS2 FROM CEN_PERSONA PE WHERE PE.IDPERSONA= D.IDPERSONA) AS DENUNCIADO";
+		//END BNS
 		
 		// Acceso a BBDD
 		
@@ -643,29 +674,43 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 	        String sql = "SELECT  ";
 	        //todos los campos de la tabla exp_expediente separados por coma
 		    for(int i=0;i<fields.length; i++){
-			  sql += "E."+fields[i]+", ";
+		    	//BEGIN BNS		    	
+		    	if (ExpExpedienteBean.C_IDPERSONA.equalsIgnoreCase(fields[i])){
+		    		sql += "D."+ExpDenunciadoBean.C_IDPERSONA+", ";
+		    	} else
+		    	//END BNS
+		    		sql += "E."+fields[i]+", ";
 			}
 		    
 		   // sql += T_IDINSTITUCION+", ";	
 		    //sql += T_IDTIPOEXPEDIENTE+", ";	
+		    sql += "F."+ExpFasesBean.C_NOMBRE+" NOMBREFASE, ";
 		    sql += T_NOMBRETIPOEXPEDIENTE+", ";
 		    sql += SEL_DENUNCIADO+", ";
 		    //sql += SEL_PARTE+", ";
 		    //sql += SEL_IDROL+", ";
 		    //sql += SEL_NOMBREROL+", ";
 		    sql += I_ABREVIATURA+", ";
+		    //sql += "nvl2((select decode(nvl(ejg."+ScsEJGBean.C_ANIO+",'')||'/'||nvl(ejg."+ScsEJGBean.C_NUMEJG+",''),'/',null,ejg."+ScsEJGBean.C_ANIO+"||'/'||ejg."+ScsEJGBean.C_NUMEJG+") from "+ScsEJGBean.T_NOMBRETABLA+" ejg where ejg."+ScsEJGBean.C_IDINSTITUCION+"=E."+ExpExpedienteBean.C_IDINSTITUCION+" AND ejg."+ScsEJGBean.C_ANIO+" =E."+ExpExpedienteBean.C_ANIOEJG+" AND ejg."+ScsEJGBean.C_NUMERO+" = E."+ExpExpedienteBean.C_NUMEROEJG+" AND ejg."+ScsEJGBean.C_IDTIPOEJG+" = e."+ExpExpedienteBean.C_IDTIPOEJG+")"++" EXPRELACIONADO,";
+		    sql += " case when T."+ExpTipoExpedienteBean.C_RELACIONEJG+" != 0 then decode(nvl(ejg."+ScsEJGBean.C_ANIO+",'')||'/'||nvl(ejg."+ScsEJGBean.C_NUMEJG+",''),'/','',ejg."+ScsEJGBean.C_ANIO+"||'/'||ejg."+ScsEJGBean.C_NUMEJG+") else decode(nvl(E."+ExpExpedienteBean.C_ANIOEXPDISCIPLINARIO+",'')||'/'||nvl(E."+ExpExpedienteBean.C_NUMEXPDISCIPLINARIO+",''),'/','',E."+ExpExpedienteBean.C_ANIOEXPDISCIPLINARIO+"||'/'||E."+ExpExpedienteBean.C_NUMEXPDISCIPLINARIO+") end EXPRELACIONADO, ";
 //		    PDM INC-3319: Se añade como campo de salida el nombre del estado de expediente
-		    sql += "(select ex.nombre "+
+		    sql += "es. "+ExpEstadosBean.C_NOMBRE+" NOMBREESTADO";
+		    /*
+		    sql += "(select ex. "+ExpEstadosBean.C_NOMBRE+
 		    	   " from "+ExpEstadosBean.T_NOMBRETABLA+" ex "+
 				   " where "+ ExpEstadosBean.C_IDINSTITUCION+" = E.idinstitucion"+
 				   "  and "+ExpEstadosBean.C_IDFASE+" = E.idfase"+
 				   "  and "+ExpEstadosBean.C_IDESTADO+" = E.idestado"+
 				   "  and "+ExpEstadosBean.C_IDTIPOEXPEDIENTE+" = T.idtipoexpediente) NOMBREESTADO";
-		    
+		    */
 		    //LMS 08/08/2006
 			//Se añade la relación con la tabla de permisos de expedientes.
 			sql += " FROM ";
-		    sql += ExpExpedienteBean.T_NOMBRETABLA+" E, "+CenInstitucionBean.T_NOMBRETABLA+" I, "+ExpTipoExpedienteBean.T_NOMBRETABLA+" T " ;//+ExpPermisosTiposExpedientesBean.T_NOMBRETABLA+" X";
+			//BEGIN BNS			
+		    //sql += ExpExpedienteBean.T_NOMBRETABLA+" E, "+CenInstitucionBean.T_NOMBRETABLA+" I, "+ExpTipoExpedienteBean.T_NOMBRETABLA+" T " ;//+ExpPermisosTiposExpedientesBean.T_NOMBRETABLA+" X";
+			sql += ExpExpedienteBean.T_NOMBRETABLA+" E,"+ScsEJGBean.T_NOMBRETABLA+" EJG, "+ExpDenunciadoBean.T_NOMBRETABLA+" D, "+ExpTipoExpedienteBean.T_NOMBRETABLA+" T, "+CenInstitucionBean.T_NOMBRETABLA+" I," + ExpFasesBean.T_NOMBRETABLA+" F, " +ExpEstadosBean.T_NOMBRETABLA+" ES";
+					
+			//END BNS
 		    //sql += (form.getJuzgado()!=null && !form.getJuzgado().equals("")) ? ", " + ScsJuzgadoBean.T_NOMBRETABLA + " juz" : "";
 		    
 		    if (hayPartes){
@@ -695,14 +740,16 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 					sql += " ORDER BY E."+ExpExpedienteBean.C_IDINSTITUCION+",DENUNCIADO  "+ascOdesc+" ,NOMBRETIPOEXPEDIENTE";
 					break;
 				case 3:
-					sql += " ORDER BY E."+ExpExpedienteBean.C_IDINSTITUCION+",E."+ExpExpedienteBean.C_ANIOEXPEDIENTE +" "+ascOdesc+",E."+ExpExpedienteBean.C_NUMEROEXPEDIENTE+" "+ascOdesc ;
+					sql += " ORDER BY E."+ExpExpedienteBean.C_IDINSTITUCION;
 					break;
 					
 
 			default:
-				sql += " ORDER BY E."+ExpExpedienteBean.C_IDINSTITUCION+",NOMBRETIPOEXPEDIENTE,E."+ExpExpedienteBean.C_ANIOEXPEDIENTE+",E."+ExpExpedienteBean.C_NUMEROEXPEDIENTE;
+				sql += " ORDER BY E."+ExpExpedienteBean.C_IDINSTITUCION+",NOMBRETIPOEXPEDIENTE";
 			}
-			
+			//BEGIN BNS
+			sql += ",E."+ExpExpedienteBean.C_ANIOEXPEDIENTE+" desc,E."+ExpExpedienteBean.C_NUMEROEXPEDIENTE+" desc";
+			//END BNS
 
 			Paginador paginador = new Paginador(sql);				
 			int totalRegistros = paginador.getNumeroTotalRegistros();
@@ -950,6 +997,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			  sql += "E."+fields[i]+", ";
 			}
 		    
+		    sql += "T."+ExpTipoExpedienteBean.C_RELACIONEJG+", ";	
 		    sql += "T."+ExpTipoExpedienteBean.C_IDINSTITUCION+", ";	
 		    sql += "T."+ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE+", ";	
 		    sql += "T."+ExpTipoExpedienteBean.C_NOMBRE+" AS NOMBRETIPOEXPEDIENTE, ";
@@ -1515,7 +1563,12 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 				    " AND    E.ALERTAGENERADACAD <> 'S' "+ // COMPRUEBA QUE NO SE HA ANOTADO LA CADUCIDAD.
 				    " AND    sysdate >" +
 				    " case when tipo.TIEMPOCADUCIDAD > 0 " +
+				  //BEGIN BNS COMPROBAR QUE DEBERÍA SER ASÍ
+				    //SI SE CAMBIA EL TIPO DE EXPEDIENTE Y SE LE PONE TIEMPO DE CADUCIDAD A UNO QUE NO TENÍA, LOS
+				  // EXPEDIENTES CON FECHA DE CADUCIDAD SEGUIRAN CON ESA FECHA
+				    //" then nvl(e.fecha, sysdate) + tipo.TIEMPOCADUCIDAD)" +
 				    " then nvl(e.fechacaducidad, e.fecha + tipo.TIEMPOCADUCIDAD)" +
+				  //END BNS
 				    " else nvl (e.fechacaducidad, sysdate)" + 
 				    " end" +
 				  //  " AND    nvl(e.fechacaducidad, e.fecha + tipo.TIEMPOCADUCIDAD) <= SYSDATE "+
@@ -2064,8 +2117,10 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			}
 			
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDTIPOIVA, b.getIdTipoIVA());
-			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDRESULTADOJUNTAGOBIERNO, b.getIdResultadoJuntaGobierno());
-
+			if (b.getIdResultadoJuntaGobierno() != null)
+				UtilidadesHash.set(htData, ExpExpedienteBean.C_IDRESULTADOJUNTAGOBIERNO, b.getIdResultadoJuntaGobierno());
+			else
+				UtilidadesHash.set(htData, ExpExpedienteBean.C_IDRESULTADOJUNTAGOBIERNO, "");
 		} catch (Exception e) {
 			htData = null;
 			throw new ClsExceptions (e, "Error al crear el hashTable a partir del bean");
@@ -2088,7 +2143,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			htCodigos.put(new Integer(4), this.usrbean.getLanguage());
 			keyContador=4;
 			
-
 			StringBuffer sql = new StringBuffer();
 			sql.append(" SELECT SUBSTR (mate.nombre, 0, 25) || ' ('|| SUBSTR (area.nombre, 0, 25) || ')' AS MATERIA, "
 					+ " TO_CHAR(SYSDATE, 'dd-mm-yyyy') AS FECHAACTUAL, "
@@ -2116,7 +2170,9 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 					+ " EXP.ANIOEJG,EXP.NUMEROEJG, EXP.IDTIPOEJG, "		       
 					+ " EXP.NUMASUNTO, "
 					+ " TO_CHAR(EXP.FECHAINICIALESTADO, 'dd-mm-yyyy') AS FECHAINICIALESTADO, "
+					+ " nvl2(EXP.FECHAINICIALESTADO, PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(EXP.FECHAINICIALESTADO, 'M', "+this.usrbean.getLanguage()+"), '') AS FECHAINICIALESTADOLETRA, "
 					+ " TO_CHAR(EXP.FECHAFINALESTADO, 'dd-mm-yyyy') AS FECHAFINALESTADO, "
+					+ " nvl2(EXP.FECHAFINALESTADO, PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(EXP.FECHAFINALESTADO, 'M', "+this.usrbean.getLanguage()+"), '') AS FECHAFINALESTADOLETRA, "
 					+ " TO_CHAR(EXP.FECHAPRORROGAESTADO, 'dd-mm-yyyy') AS FECHAPRORROGAESTADO, "
 					+ " EXP.DESCRIPCIONRESOLUCION, "
 					+ " TO_CHAR(EXP.FECHARESOLUCION, 'dd-mm-yyyy') AS FECHARESOLUCION, "

@@ -3,31 +3,31 @@ package com.siga.censo.action;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.atos.utils.ActionButtonsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.ClsMngBBDD;
-import com.atos.utils.Row;
 import com.atos.utils.SearchButtonsConstants;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxMultipleCollectionXmlBuilder;
-import com.siga.beans.CenClienteBean;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.censo.form.BusquedaClientesForm;
 import com.siga.censo.form.BusquedaColegiadosForm;
-import com.siga.censo.form.BusquedaLetradosForm;
 import com.siga.censo.service.CensoService;
 import com.siga.censo.service.ColegiadoService;
 import com.siga.censo.vos.ColegiadoVO;
 import com.siga.censo.vos.NombreVO;
 import com.siga.comun.action.PagedSortedAction;
+import com.siga.comun.form.PagedSortedForm;
 import com.siga.comun.vos.InstitucionVO;
 import com.siga.comun.vos.PagedVo;
 import com.siga.comun.vos.SortedVo;
@@ -46,6 +46,56 @@ public class ColegiadoAction extends PagedSortedAction {
 	private static final String RES_BUSQ_AVANZADA="resBusqAvanzada";
 	private static final String AVANZADA="AVANZADA";
 	private static final String SIMPLE="SIMPLE";
+
+	@Override
+	public ActionForward executeInternal(ActionMapping mapping,
+			ActionForm formulario, HttpServletRequest request,
+			HttpServletResponse response) throws SIGAException {
+		PagedSortedForm miForm = null;
+
+		try { 
+			miForm = (PagedSortedForm) formulario;
+
+			if (miForm != null)  {
+				String accion = miForm.getAccion();
+
+				if (accion.equalsIgnoreCase("getJQueryAllSearchedPKs")) {
+					getJQueryAllSearchedPKs(mapping, miForm, request, response);
+					return null;
+				}
+			}
+		} catch (SIGAException es) { 
+				throw es;		
+		} catch (Exception e) { 
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.envios"});
+		} 
+		return super.executeInternal(mapping, formulario, request, response);
+	}
+	
+	private void getJQueryAllSearchedPKs(ActionMapping mapping,
+			PagedSortedForm formulario, HttpServletRequest request,
+			HttpServletResponse response) throws ClsExceptions, JSONException, IOException, SIGAException {
+		List<Vo> listAllPKs = getAllPk((BusquedaColegiadosForm)formulario, request);
+		JSONObject json = new JSONObject();
+		
+		JSONArray allPKsJsonArray = new JSONArray();
+		for (int i=0;i<listAllPKs.size();i++) {			
+			JSONObject obj = new JSONObject();
+			ColegiadoVO vo = (ColegiadoVO) listAllPKs.get(i);	
+			if (!"1".equals(vo.getNoAparecerRedAbogacia())){
+				obj.put("id", vo.getId());
+				allPKsJsonArray.put(obj);
+			}
+		}
+		
+		json.put("allSearchedPKs", allPKsJsonArray);
+		// json.
+		//response.setContentType("text/x-json;charset=ISO-8859-15");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Content-Type", "application/json");
+	    response.setHeader("X-JSON", json.toString());
+		response.getWriter().write(json.toString());
+	}
 
 	/**
 	 * 
@@ -253,28 +303,14 @@ public class ColegiadoAction extends PagedSortedAction {
 
 		StringBuffer datosBuf = new StringBuffer();
 		ColegiadoVO colegiado = new ColegiadoVO();
-		if (BusquedaLetradosForm.SELECT_ALL_TRUE.equals(formulario.getSelectAll())){
-			List<Vo> lista = getAllPk(formulario, request);
-			for(Vo vo: lista){
-				colegiado = (ColegiadoVO)vo; 
-				datosBuf.append(colegiado.getIdPersona());
-				datosBuf.append(",");
-				datosBuf.append(colegiado.getIdInstitucion());
-				datosBuf.append(",");
-				datosBuf.append("2");
-				datosBuf.append("#");
-			}				
-		}
-		else{
-			for(String pk: formulario.getSelectedElements()){
-				colegiado.setId(pk);
-				datosBuf.append(colegiado.getIdPersona());
-				datosBuf.append(",");
-				datosBuf.append(colegiado.getIdInstitucion());
-				datosBuf.append(",");
-				datosBuf.append("2");
-				datosBuf.append("#");
-			}
+		for(String pk: formulario.getSelectedElements()){
+			colegiado.setId(pk);
+			datosBuf.append(colegiado.getIdPersona());
+			datosBuf.append(",");
+			datosBuf.append(colegiado.getIdInstitucion());
+			datosBuf.append(",");
+			datosBuf.append("1");
+			datosBuf.append("#");
 		}
 
 		BusquedaClientesForm clientesForm = new BusquedaClientesForm();
@@ -416,7 +452,9 @@ public class ColegiadoAction extends PagedSortedAction {
 		//Obtiene el servicio que se va a ejecutar
 		ColegiadoService service = (ColegiadoService) getBusinessManager().getService(ColegiadoService.class);
 		//llama el metodo del servicio
-		List<Vo> lista = service.buscar(formulario.toVO(), 
+		ColegiadoVO colegiadoVO = (ColegiadoVO) formulario.toVO();
+		colegiadoVO.setIdInstitucion(getUserBean(request).getLocation());
+		List<Vo> lista = service.buscar(colegiadoVO, 
 				getUserBean(request).getLanguage(), getUserBean(request).getLocation());
 		return lista;
 	}
