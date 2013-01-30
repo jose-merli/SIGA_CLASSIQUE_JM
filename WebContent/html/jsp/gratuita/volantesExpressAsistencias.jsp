@@ -140,7 +140,7 @@
 				<table><tr><td>
 					<input type="hidden" id="observaciones_<bean:write name='index'/>" value="">
 					
-					<select class="boxCombo" id="idDelito_<bean:write name='index'/>" style="width:247px;margin-top:2px;" name="idDelito_<bean:write name='index'/>" > 
+					<select class="boxCombo" id="idDelito_<bean:write name='index'/>" style="width:130px;margin-top:2px;" name="idDelito_<bean:write name='index'/>" > 
 						<bean:define id="delitos" name="VolantesExpressForm" property="delitos" type="java.util.List" />
 							<logic:iterate id="delito" name="delitos">
 								<option value='<bean:write name="delito" property="idDelito"/>' >

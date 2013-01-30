@@ -540,7 +540,7 @@ jQuery.noConflict();
 			if(document.VolantesExpressForm.delito && document.VolantesExpressForm.delito.value=='true'){
 				aux = '';
 				// Delitos
-				aux = '<table><tr><td><select class="boxCombo" id="idDelito_' + numFila + '" style="width:100px;margin-top:2px;" name="idDelito_' + numFila + '" >'+ 
+				aux = '<table><tr><td><select class="boxCombo" id="idDelito_' + numFila + '" style="width:130px;margin-top:2px;" name="idDelito_' + numFila + '" >'+ 
     					'</select></td></tr></table>';
 				
 				td.innerHTML = aux;
