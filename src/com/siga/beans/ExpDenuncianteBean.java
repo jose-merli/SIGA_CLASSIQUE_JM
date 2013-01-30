@@ -20,6 +20,7 @@ public class ExpDenuncianteBean extends MasterBean {
 	private String fechaModificacion;
 	private Integer usuModificacion;
 	private Long idPersona, idDireccion;
+	private Integer idInstitucionOrigen;
 	
 	// Nombre campos de la tabla 
 	static public final String C_IDINSTITUCION ="IDINSTITUCION";
@@ -32,10 +33,15 @@ public class ExpDenuncianteBean extends MasterBean {
 	static public final String C_USUMODIFICACION ="USUMODIFICACION";
 	static public final String C_IDPERSONA ="IDPERSONA";
 	static public final String C_IDDIRECCION ="IDDIRECCION";
+	static public final String C_IDINSTITUCIONORIGEN ="IDINSTITUCIONORIGEN";
 		
 	
 	static public final String T_NOMBRETABLA = "EXP_DENUNCIANTE";
 	
+	/**
+	 * El siguiente id sirve para distinguir al denunciante principal de los demas denunciantes guardados en la misma tabla 
+	 */
+	static public final Integer ID_DENUNCIANTE_PRINCIPAL = 1;
 	
 	public Integer getIdInstitucion_TipoExpediente() {
 		return idInstitucion_TipoExpediente;
@@ -111,4 +117,11 @@ public class ExpDenuncianteBean extends MasterBean {
     public void setIdPersona(Long idPersona) {
         this.idPersona = idPersona;
     }
+	public Integer getIdInstitucionOrigen() {
+		return idInstitucionOrigen;
+	}
+	public void setIdInstitucionOrigen(Integer idInstitucionOrigen) {
+		this.idInstitucionOrigen = idInstitucionOrigen;
+	}
+    
 }

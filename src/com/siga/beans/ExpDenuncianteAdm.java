@@ -8,6 +8,7 @@
 package com.siga.beans;
 
 import java.util.Hashtable;
+import java.util.List;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
@@ -39,7 +40,8 @@ public class ExpDenuncianteAdm extends MasterBeanAdministrador {
 				ExpDenuncianteBean.C_IDPERSONA,
 				ExpDenuncianteBean.C_IDDIRECCION,
 				ExpDenuncianteBean.C_FECHAMODIFICACION,
-				ExpDenuncianteBean.C_USUMODIFICACION};
+				ExpDenuncianteBean.C_USUMODIFICACION,
+				ExpDenuncianteBean.C_IDINSTITUCIONORIGEN};
 			return campos;
 	}
 
@@ -83,7 +85,7 @@ public class ExpDenuncianteAdm extends MasterBeanAdministrador {
 			bean.setIdDireccion(UtilidadesHash.getLong(hash, ExpDenuncianteBean.C_IDDIRECCION));
 			bean.setFechaModificacion(UtilidadesHash.getString(hash, ExpDenuncianteBean.C_FECHAMODIFICACION));			
 			bean.setUsuModificacion(UtilidadesHash.getInteger(hash, ExpDenuncianteBean.C_USUMODIFICACION));
-		
+			bean.setIdInstitucionOrigen(UtilidadesHash.getInteger(hash, ExpDenuncianteBean.C_IDINSTITUCIONORIGEN));
 		}
 		catch (Exception e)	{
 			bean = null;
@@ -112,6 +114,7 @@ public class ExpDenuncianteAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ExpDenuncianteBean.C_IDDIRECCION, b.getIdDireccion());
 			UtilidadesHash.set(htData, ExpDenuncianteBean.C_FECHAMODIFICACION, b.getFechaModificacion());
 			UtilidadesHash.set(htData, ExpDenuncianteBean.C_USUMODIFICACION, b.getUsuModificacion());
+			UtilidadesHash.set(htData, ExpDenuncianteBean.C_IDINSTITUCIONORIGEN, b.getIdInstitucionOrigen());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -159,5 +162,50 @@ public class ExpDenuncianteAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
 		}
 		return new Integer (nuevoIdDenunciante);
+	}
+	
+	public List getDenunciantes(ExpExpedienteBean beanExp) throws ClsExceptions {
+		try {
+				Hashtable htCodigos = new Hashtable();
+				int keyContador = 0;
+				StringBuffer where = new StringBuffer(" WHERE ");
+			
+				where.append(ExpDenuncianteBean.C_IDINSTITUCION);
+				keyContador++;
+				htCodigos.put(new Integer(keyContador), beanExp.getIdInstitucion());
+				where.append("=:");
+				where.append(keyContador);
+				where.append(" AND ");
+				
+				
+				where.append(ExpDenuncianteBean.C_IDINSTITUCION_TIPOEXPEDIENTE);
+				keyContador++;
+				htCodigos.put(new Integer(keyContador), beanExp.getIdInstitucion_tipoExpediente());
+				where.append("=:");
+				where.append(keyContador);
+				where.append(" AND ");
+				where.append(ExpDenuncianteBean.C_IDTIPOEXPEDIENTE);
+				keyContador++;
+				htCodigos.put(new Integer(keyContador), beanExp.getIdTipoExpediente());
+				where.append("=:");
+				where.append(keyContador);
+				where.append(" AND ");
+				where.append(ExpDenuncianteBean.C_NUMEROEXPEDIENTE);
+				keyContador++;
+				htCodigos.put(new Integer(keyContador), beanExp.getNumeroExpediente());
+				where.append("=:");
+				where.append(keyContador);
+				where.append(" AND ");
+				where.append(ExpDenuncianteBean.C_ANIOEXPEDIENTE);
+				keyContador++;
+				htCodigos.put(new Integer(keyContador), beanExp.getAnioExpediente());
+				where.append("=:");
+				where.append(keyContador);
+			
+				return selectBind(where.toString(), htCodigos);
+				
+			} catch (Exception e) {
+				throw new ClsExceptions (e, "Error ExpDenuncianteAdm.getDenunciantes.");
+			}
 	}
 }

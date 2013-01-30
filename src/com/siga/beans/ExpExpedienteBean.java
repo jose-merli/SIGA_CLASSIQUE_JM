@@ -20,6 +20,9 @@ public class ExpExpedienteBean extends MasterBean {
 	private Integer numeroExpediente;
 	private Integer anioExpediente;
 	private Long idPersona;
+	private Long colOrigen;
+	private Long idPersonaDenunciante;
+	private Long colOrigenDenunciante;
 	private Integer numExpDisciplinario;
 	private Integer anioExpDisciplinario;
 	private Integer tipoExpDisciplinario;	
@@ -74,6 +77,7 @@ public class ExpExpedienteBean extends MasterBean {
 	
 	private String identificadorDS;
 	private String idDireccion;
+	private String idDireccionDenunciante;
 	
 
 	// Nombre campos de la tabla 
@@ -509,4 +513,29 @@ public class ExpExpedienteBean extends MasterBean {
 	public Integer getTipoExpDisciplinario() {
 		return tipoExpDisciplinario;
 	}
+	public Long getColOrigen() {
+		return colOrigen;
+	}
+	public void setColOrigen(Long colOrigen) {
+		this.colOrigen = colOrigen;
+	}
+	public Long getIdPersonaDenunciante() {
+		return idPersonaDenunciante;
+	}
+	public void setIdPersonaDenunciante(Long idPersonaDenunciante) {
+		this.idPersonaDenunciante = idPersonaDenunciante;
+	}
+	public Long getColOrigenDenunciante() {
+		return colOrigenDenunciante;
+	}
+	public void setColOrigenDenunciante(Long colOrigenDenunciante) {
+		this.colOrigenDenunciante = colOrigenDenunciante;
+	}
+	public String getIdDireccionDenunciante() {
+		return idDireccionDenunciante;
+	}
+	public void setIdDireccionDenunciante(String idDireccionDenunciante) {
+		this.idDireccionDenunciante = idDireccionDenunciante;
+	}
+	
 }

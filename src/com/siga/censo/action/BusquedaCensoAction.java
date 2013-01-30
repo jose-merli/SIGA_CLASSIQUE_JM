@@ -315,6 +315,8 @@ public class BusquedaCensoAction extends MasterAction {
 				}	
 				request.setAttribute("colegioOrigen",colOrigen);
 				request.setAttribute("nColegiado",miForm.getNumeroColegiado());
+				request.setAttribute("nif",miForm.getNif());
+				request.setAttribute("idDireccion",miForm.getIdDireccion());								
 				forward = "exitoInsercionNoColegiadoArt27";
 			}	
 			
@@ -414,7 +416,8 @@ public class BusquedaCensoAction extends MasterAction {
 			}	
 			request.setAttribute("colegioOrigen",colOrigen);
 			request.setAttribute("nColegiado",miForm.getNumeroColegiado());
-		
+			request.setAttribute("nif",miForm.getNif());
+			request.setAttribute("idDireccion",miForm.getIdDireccion());
 		} catch (SIGAException e) {
 			throw e;		
 	    } catch (Exception e) {
@@ -1328,7 +1331,26 @@ public class BusquedaCensoAction extends MasterAction {
 				}else{
 					miForm.setExisteNIF("");
 					Long idPersona = perBean.getIdPersona();
-					if(colAdm.getNumeroColegiaciones(idPersona) > 1){ //Se debe realizar una búsqueda multiple		
+					Vector vColegiaciones = colAdm.getColegiaciones(idPersona.toString());
+					boolean bColegiadoEnActual = false;
+					boolean bMultiple = false;
+					if(vColegiaciones.size() > 1 && (colegiadoen == null || colegiadoen.equals("")))
+						bMultiple = true;
+					else if (vColegiaciones.size() > 1){
+						// Comprobamos si está colegiado en colegiadoen
+						boolean bEncontrado = false;
+						int i = 0;
+						while (i < vColegiaciones.size() && !(bEncontrado && bColegiadoEnActual)){
+							String colegiacion = vColegiaciones.get(i).toString();
+							if (colegiacion != null && colegiacion.equals(colegiadoen))
+								bEncontrado = true;
+							if (colegiacion != null && colegiacion.equals(idInstitucion))
+								bColegiadoEnActual = true;
+							i++;
+						}
+						bMultiple = !bEncontrado || !bColegiadoEnActual;
+					}
+					if(bMultiple){ //Se debe realizar una búsqueda multiple		
 						miForm.setMultiple("S");
 						miForm.setNif(nif);
 						miForm.setNumeroColegiado(ncol);
@@ -1336,7 +1358,10 @@ public class BusquedaCensoAction extends MasterAction {
 						miForm.setLugarNacimiento("");
 					}else{ 
 						VleLetradosSigaAdm cliente = new VleLetradosSigaAdm(this.getUserBean(request));
-						Hashtable infoCliente = cliente.getBusquedPorNIF(nif, idInstitucion);		
+						String idInstitucionBuscar = idInstitucion;
+						if (!bColegiadoEnActual && colegiadoen != null && !"".equals(colegiadoen))
+							idInstitucionBuscar = colegiadoen;
+						Hashtable infoCliente = cliente.getBusquedPorNIF(nif, idInstitucionBuscar);		
 						
 						if(infoCliente != null){ //Existe un registro en el CENSO						
 							miForm.setIdPersona((String)infoCliente.get("ID_LETRADO"));

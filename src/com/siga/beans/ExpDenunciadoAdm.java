@@ -41,7 +41,8 @@ public class ExpDenunciadoAdm extends MasterBeanAdministrador {
 				ExpDenunciadoBean.C_IDPERSONA,
 				ExpDenunciadoBean.C_IDDIRECCION,
 				ExpDenunciadoBean.C_FECHAMODIFICACION,
-				ExpDenunciadoBean.C_USUMODIFICACION};
+				ExpDenunciadoBean.C_USUMODIFICACION,
+				ExpDenunciadoBean.C_IDINSTITUCIONORIGEN};
 			return campos;
 	}
 
@@ -85,7 +86,7 @@ public class ExpDenunciadoAdm extends MasterBeanAdministrador {
 			bean.setIdDireccion(UtilidadesHash.getLong(hash, ExpDenunciadoBean.C_IDDIRECCION));
 			bean.setFechaModificacion(UtilidadesHash.getString(hash, ExpDenunciadoBean.C_FECHAMODIFICACION));			
 			bean.setUsuModificacion(UtilidadesHash.getInteger(hash, ExpDenunciadoBean.C_USUMODIFICACION));
-		
+			bean.setIdInstitucionOrigen(UtilidadesHash.getInteger(hash, ExpDenunciadoBean.C_IDINSTITUCIONORIGEN));
 		}
 		catch (Exception e)	{
 			bean = null;
@@ -114,6 +115,7 @@ public class ExpDenunciadoAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ExpDenunciadoBean.C_IDDIRECCION, b.getIdDireccion());
 			UtilidadesHash.set(htData, ExpDenunciadoBean.C_FECHAMODIFICACION, b.getFechaModificacion());
 			UtilidadesHash.set(htData, ExpDenunciadoBean.C_USUMODIFICACION, b.getUsuModificacion());
+			UtilidadesHash.set(htData, ExpDenunciadoBean.C_IDINSTITUCIONORIGEN, b.getIdInstitucionOrigen());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -163,8 +165,7 @@ public class ExpDenunciadoAdm extends MasterBeanAdministrador {
 		return new Integer (nuevoIdDenunciado);
 	}
 	
-	public List getDenunciados(ExpExpedienteBean beanExp) throws ClsExceptions  
-	{
+	public List getDenunciados(ExpExpedienteBean beanExp) throws ClsExceptions {
 		try {
 			Hashtable htCodigos = new Hashtable();
 			int keyContador = 0;
@@ -201,20 +202,13 @@ public class ExpDenunciadoAdm extends MasterBeanAdministrador {
 			htCodigos.put(new Integer(keyContador), beanExp.getAnioExpediente());
 			where.append("=:");
 			where.append(keyContador);
-			
-			
-			
-						
-
-			
-				
+		
 			return selectBind(where.toString(), htCodigos);
 			
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error ExpDenunciadoAdm.getDenunciados.");
 		}
-		}
+	}
 }
 /*
  * --mIGRAMOS LOS DATOS DE LOS DENUNCIADOS DEL EXPEDIENTE A LA TABLA DE DENUNCIADOS
