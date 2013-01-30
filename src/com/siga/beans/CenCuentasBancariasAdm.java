@@ -17,6 +17,7 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
 
 /**
@@ -449,6 +450,93 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 		return null;
 	}	
 
+	/**
+	 * Inserta los datos de una cuenta manteniendo el registro anterior con fecha de baja.
+	 * Además incluye en la tabla de históricos el alta y la baja que se han producido.
+	 * @author BNS 11-12-12
+	 * @version 1	 
+	 * @param beanCuentas datos de la cuenta
+	 * @param beanHis con el motivo y el tipo, para almacenar en el Historico
+	 * @param usrBean 
+	 * @param idioma idioma actual
+	 * @param string 
+	 * @return int indicando el resultado de la operacion:
+	 * 				-1: Error
+	 * 				 0: OK
+	 * 				 1: OK messages.updated.borrarCuenta
+	 * 				 2: OK messages.updated.actualizarCuenta
+	 */
+	public int updateConHistoricoYfecBaj(CenCuentasBancariasBean beanCuentas, CenHistoricoBean beanHis, Integer userName, UsrBean usrBean, String abonoCargoOrig, String idioma) throws ClsExceptions, SIGAException {
+		int iResult = 0;
+		Hashtable clavesCuenta = new Hashtable();
+		try{
+			UtilidadesHash.set (clavesCuenta, CenCuentasBancariasBean.C_IDINSTITUCION, beanCuentas.getIdInstitucion());
+			UtilidadesHash.set (clavesCuenta, CenCuentasBancariasBean.C_IDPERSONA, beanCuentas.getIdPersona());
+			UtilidadesHash.set (clavesCuenta, CenCuentasBancariasBean.C_IDCUENTA, beanCuentas.getIdCuenta());
+			
+			// Insertamos un nuevo registro con los datos actualizados
+			if (!insertarConHistorico(beanCuentas, beanHis, idioma)){
+				throw new ClsExceptions("Error al insertar el nuevo registro");
+			}
+			// Damos de baja el registro anterior
+			if (!deleteConHistorico(clavesCuenta, beanHis, idioma)){
+				throw new ClsExceptions("Error al borrar el registro anterior");
+			}
+			
+			// Lanzamos el proceso de revision de suscripciones del letrado 
+			String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(""+UtilidadesHash.getInteger(clavesCuenta, CenCuentasBancariasBean.C_IDINSTITUCION),
+																					  ""+UtilidadesHash.getLong(clavesCuenta, CenCuentasBancariasBean.C_IDPERSONA),
+																					  "",
+																					  ""+userName);
+			if ((resultado == null) || (!resultado[0].equals("0"))){
+				throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
+			}
+			
+			
+			CenCuentasBancariasAdm cuentaAdm = new CenCuentasBancariasAdm (usrBean);
+			
+			String where=" WHERE "+CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_IDINSTITUCION+"="+UtilidadesHash.getInteger(clavesCuenta, CenCuentasBancariasBean.C_IDINSTITUCION)+
+			             " and "+CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_IDPERSONA+"="+UtilidadesHash.getLong(clavesCuenta, CenCuentasBancariasBean.C_IDPERSONA)+
+						 " and "+CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_FECHABAJA+" is null "+
+						 " AND "+CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_ABONOCARGO +" IN ('T','C')";
+			Vector v = cuentaAdm.select(where);
+			
+			if( (abonoCargoOrig.equals(ClsConstants.TIPO_CUENTA_ABONO_CARGO)||abonoCargoOrig.equals(ClsConstants.TIPO_CUENTA_CARGO)) 
+				 && (beanCuentas.getAbonoCargo().equals(ClsConstants.TIPO_CUENTA_ABONO))){
+			  if (v.size() == 0) {//si ya no hay cuenta de cargo o de abonoCargo se pone la forma de pago en metalico
+	
+				String resultado1[] = EjecucionPLs.ejecutarPL_RevisionCuentaBanco(""+UtilidadesHash.getInteger(clavesCuenta, CenCuentasBancariasBean.C_IDINSTITUCION),
+						  ""+UtilidadesHash.getLong(clavesCuenta, CenCuentasBancariasBean.C_IDPERSONA),
+						  ""+userName);
+				if ((resultado1 == null) || (!resultado1[0].equals("0"))){
+					throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_CUENTABANCO");
+				}
+				
+				iResult = 1;
+			  }else{// Si hay cuenta de cargo o de abonoCargo se actualizara con la mas reciente
+			  	String resultado1[] = EjecucionPLs.ejecutarPL_ActualizarCuentaBanco(""+UtilidadesHash.getInteger(clavesCuenta, CenCuentasBancariasBean.C_IDINSTITUCION),
+						  ""+UtilidadesHash.getLong(clavesCuenta, CenCuentasBancariasBean.C_IDPERSONA),
+						  ""+UtilidadesHash.getInteger(clavesCuenta, CenCuentasBancariasBean.C_IDCUENTA),
+						  ""+userName);
+				if ((resultado1 == null) || (!resultado1[0].equals("0"))){
+					throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_ACTUALIZAR_CUENTABANCO");
+				}				
+				iResult = 2;
+			  }
+			}
+		} catch (SIGAException e) {
+			iResult = -1;
+			throw e;
+		} catch (ClsExceptions e) {
+			iResult = -1;
+			throw e;
+		} catch (Exception e){
+			iResult = -1;
+			throw new ClsExceptions (e, "Se ha producido un error al ejecutar la acción");
+		}
+		return iResult;
+	}
+	
 	/**
 	 * Actualiza los datos de una cuenta y rellena la tabla de historicos (CEN_HISTORICO)
 	 * @author daniel.campos 21-01-05
@@ -1011,7 +1099,6 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 			throw new ClsExceptions (e, "Error al recuperar los datos de getCuentaCorrienteSJCS()");
 		}		
 		return datos;
-	}
-	
+	}	
 	
 }

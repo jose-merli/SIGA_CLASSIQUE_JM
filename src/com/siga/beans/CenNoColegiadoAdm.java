@@ -108,27 +108,31 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 		Hashtable hash = null;
 		try{
 			hash = new Hashtable();
-			CenNoColegiadoBean b = (CenNoColegiadoBean) bean;
-			UtilidadesHash.set(hash, CenNoColegiadoBean.C_FECHAMODIFICACION, b.getFechaMod());
-			UtilidadesHash.set(hash, CenNoColegiadoBean.C_IDINSTITUCION, b.getIdInstitucion());
-			UtilidadesHash.set(hash, CenNoColegiadoBean.C_IDPERSONA, b.getIdPersona());
-			UtilidadesHash.set(hash, CenNoColegiadoBean.C_ANOTACIONES, b.getAnotaciones());
-			UtilidadesHash.set(hash, CenNoColegiadoBean.C_SOCIEDADSJ, b.getSociedadSJ());
-			UtilidadesHash.set(hash, CenNoColegiadoBean.C_TIPO, b.getTipo());
-			UtilidadesHash.set(hash, CenNoColegiadoBean.C_USUMODIFICACION, b.getUsuMod());	
-			UtilidadesHash.set(hash, CenNoColegiadoBean.C_CONTADOR_NUMREG, b.getContadorNumReg());
-			UtilidadesHash.set(hash, CenNoColegiadoBean.C_PREFIJO_NUMREG, b.getPrefijoNumReg());
-			UtilidadesHash.set(hash, CenNoColegiadoBean.C_SUFIJO_NUMREG, b.getSufijoNumReg());
-			UtilidadesHash.set(hash, CenNoColegiadoBean.C_FECHAFIN, b.getFechaFin());
-			UtilidadesHash.set(hash, CenNoColegiadoBean.C_RESENA, b.getResena());
-			UtilidadesHash.set(hash, CenNoColegiadoBean.C_OBJETOSOCIAL, b.getObjetoSocial());
-			UtilidadesHash.set(hash, CenNoColegiadoBean.C_IDPERSONANOTARIO, b.getIdPersonaNotario());
-			UtilidadesHash.set(hash, CenNoColegiadoBean.C_SOCIEDADSP, b.getSociedadSP());
-			UtilidadesHash.set(hash, CenNoColegiadoBean.C_CONTADOR_NUMREGSP, b.getContadorNumRegSP());
-			UtilidadesHash.set(hash, CenNoColegiadoBean.C_PREFIJO_NUMREGSP, b.getPrefijoNumRegSP());
-			UtilidadesHash.set(hash, CenNoColegiadoBean.C_SUFIJO_NUMREGSP, b.getSufijoNumRegSP());
-			UtilidadesHash.set(hash, CenNoColegiadoBean.C_NOPOLIZA, b.getNoPoliza());
-			UtilidadesHash.set(hash, CenNoColegiadoBean.C_COMPANIASEG, b.getCompaniaSeg());
+			if (bean != null){
+				CenNoColegiadoBean b = (CenNoColegiadoBean) bean;
+				if (b != null){
+					UtilidadesHash.set(hash, CenNoColegiadoBean.C_FECHAMODIFICACION, b.getFechaMod());
+					UtilidadesHash.set(hash, CenNoColegiadoBean.C_IDINSTITUCION, b.getIdInstitucion());
+					UtilidadesHash.set(hash, CenNoColegiadoBean.C_IDPERSONA, b.getIdPersona());
+					UtilidadesHash.set(hash, CenNoColegiadoBean.C_ANOTACIONES, b.getAnotaciones());
+					UtilidadesHash.set(hash, CenNoColegiadoBean.C_SOCIEDADSJ, b.getSociedadSJ());
+					UtilidadesHash.set(hash, CenNoColegiadoBean.C_TIPO, b.getTipo());
+					UtilidadesHash.set(hash, CenNoColegiadoBean.C_USUMODIFICACION, b.getUsuMod());	
+					UtilidadesHash.set(hash, CenNoColegiadoBean.C_CONTADOR_NUMREG, b.getContadorNumReg());
+					UtilidadesHash.set(hash, CenNoColegiadoBean.C_PREFIJO_NUMREG, b.getPrefijoNumReg());
+					UtilidadesHash.set(hash, CenNoColegiadoBean.C_SUFIJO_NUMREG, b.getSufijoNumReg());
+					UtilidadesHash.set(hash, CenNoColegiadoBean.C_FECHAFIN, b.getFechaFin());
+					UtilidadesHash.set(hash, CenNoColegiadoBean.C_RESENA, b.getResena());
+					UtilidadesHash.set(hash, CenNoColegiadoBean.C_OBJETOSOCIAL, b.getObjetoSocial());
+					UtilidadesHash.set(hash, CenNoColegiadoBean.C_IDPERSONANOTARIO, b.getIdPersonaNotario());
+					UtilidadesHash.set(hash, CenNoColegiadoBean.C_SOCIEDADSP, b.getSociedadSP());
+					UtilidadesHash.set(hash, CenNoColegiadoBean.C_CONTADOR_NUMREGSP, b.getContadorNumRegSP());
+					UtilidadesHash.set(hash, CenNoColegiadoBean.C_PREFIJO_NUMREGSP, b.getPrefijoNumRegSP());
+					UtilidadesHash.set(hash, CenNoColegiadoBean.C_SUFIJO_NUMREGSP, b.getSufijoNumRegSP());
+					UtilidadesHash.set(hash, CenNoColegiadoBean.C_NOPOLIZA, b.getNoPoliza());
+					UtilidadesHash.set(hash, CenNoColegiadoBean.C_COMPANIASEG, b.getCompaniaSeg());
+				}
+			}
 		}
 		catch (Exception e){
 			hash = null;

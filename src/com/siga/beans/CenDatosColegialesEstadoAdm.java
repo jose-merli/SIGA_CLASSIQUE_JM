@@ -184,7 +184,10 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 	 * @return  Boolean - Resultado de la operacion  
 	 * @exception  ClsExceptions  En cualquier caso de error 
 	 */
-	public boolean modificacionConHistorico (Hashtable modificacion, Hashtable original, Hashtable entHistorico, String idioma) throws ClsExceptions, SIGAException 
+	public boolean modificacionConHistorico (Hashtable modificacion, Hashtable original, Hashtable entHistorico, String idioma) throws ClsExceptions, SIGAException{
+		return modificacionConHistorico (modificacion, original, entHistorico, idioma, false);
+	}
+	public boolean modificacionConHistorico (Hashtable modificacion, Hashtable original, Hashtable entHistorico, String idioma, boolean bDesdeCGAE) throws ClsExceptions, SIGAException 
 	{
 
 		boolean resultado=false;
@@ -220,7 +223,7 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 				// entHistorico.put(CenHistoricoBean.C_FECHAENTRADA, fechaNewBD);
 				
 				CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
-				if (admHis.insertCompleto(entHistorico, beanDatos, CenHistoricoAdm.ACCION_UPDATE, idioma)) {
+				if (admHis.insertCompleto(entHistorico, beanDatos, CenHistoricoAdm.ACCION_UPDATE, idioma, bDesdeCGAE)) {
 					resultado=true;
 				}	
 			}		 
@@ -525,7 +528,10 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 	 * @return  Boolean - Resultado de la operacion  
 	 * @exception  ClsExceptions  En cualquier caso de error 
 	 */
-	public boolean insercionConHistorico (Hashtable nuevo, CenHistoricoBean entHistorico, String idioma) throws ClsExceptions, SIGAException 
+	public boolean insercionConHistorico (Hashtable nuevo, CenHistoricoBean entHistorico, String idioma) throws ClsExceptions, SIGAException{
+		return  insercionConHistorico (nuevo, entHistorico, idioma, false);
+	}
+	public boolean insercionConHistorico (Hashtable nuevo, CenHistoricoBean entHistorico, String idioma, boolean bDesdeCGAE) throws ClsExceptions, SIGAException 
 	{
 		boolean resultado = false;
 		
@@ -533,7 +539,7 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 			CenDatosColegialesEstadoBean beanDatos = (CenDatosColegialesEstadoBean) this.hashTableToBean(nuevo);
 			if (this.insert(beanDatos)) {
 				CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
-				if (admHis.insertCompleto(entHistorico, beanDatos, CenHistoricoAdm.ACCION_INSERT, idioma)) {
+				if (admHis.insertCompleto(entHistorico, beanDatos, CenHistoricoAdm.ACCION_INSERT, idioma, bDesdeCGAE)) {
 					resultado=true;
 				}	
 			}					
@@ -551,13 +557,16 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 	 * @return  Boolean - Resultado de la operacion  
 	 * @exception  ClsExceptions  En cualquier caso de error 
 	 */
-	public boolean borrarConHistorico (Hashtable entrada, Hashtable entHistorico, String idioma) throws ClsExceptions, SIGAException 
+	public boolean borrarConHistorico (Hashtable entrada, Hashtable entHistorico, String idioma) throws ClsExceptions, SIGAException{
+		return borrarConHistorico (entrada, entHistorico, idioma, false);
+	}
+	public boolean borrarConHistorico (Hashtable entrada, Hashtable entHistorico, String idioma, boolean bDesdeCGAE) throws ClsExceptions, SIGAException 
 	{
 		try {
 			CenDatosColegialesEstadoBean beanDatos = (CenDatosColegialesEstadoBean) this.selectByPK(entrada).get(0);
 			if (this.delete(entrada)) {
 				CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
-				if (admHis.insertCompleto(entHistorico, beanDatos, CenHistoricoAdm.ACCION_DELETE, idioma)) {
+				if (admHis.insertCompleto(entHistorico, beanDatos, CenHistoricoAdm.ACCION_DELETE, idioma, bDesdeCGAE)) {
 					return true;
 				}	
 			}					
