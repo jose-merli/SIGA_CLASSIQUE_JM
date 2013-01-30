@@ -338,10 +338,11 @@ public class CenSolicModiCuentasAdm extends MasterBeanAdministrador {
 	 * y se actualiza el registro adecuado con la informacion suministrada, además de la entrada <br/>
 	 * pertinente en el historico) 
 	 * @param  solicitud - solicitud a procesar
+	 * @param usrBean 
 	 * @return  boolean - resultado de la operacion  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */	
-	public boolean procesarSolicitud(String solicitud, Integer usuario, String idioma) throws ClsExceptions, SIGAException {
+	public boolean procesarSolicitud(String solicitud, Integer usuario, UsrBean usrBean, String idioma) throws ClsExceptions, SIGAException {
 
 		boolean correcto=true;
 		Vector original = new Vector();		
@@ -372,7 +373,8 @@ public class CenSolicModiCuentasAdm extends MasterBeanAdministrador {
 				else{
 					// Obtengo el registro a modificar de la tabla cliente y preparo el bean correspondiente
 					CenCuentasBancariasAdm adminCuentas = new CenCuentasBancariasAdm(this.usrbean);					
-					cuentaOriginal=adminCuentas.getEntradaCuenta((String)hash.get(CenCuentasBancariasBean.C_IDPERSONA),(String)hash.get(CenCuentasBancariasBean.C_IDINSTITUCION),(String)hash.get(CenCuentasBancariasBean.C_IDCUENTA));					
+					cuentaOriginal=adminCuentas.getEntradaCuenta((String)hash.get(CenCuentasBancariasBean.C_IDPERSONA),(String)hash.get(CenCuentasBancariasBean.C_IDINSTITUCION),(String)hash.get(CenCuentasBancariasBean.C_IDCUENTA));
+					String abonoCargoOrig = (String) cuentaOriginal.get(CenCuentasBancariasBean.C_ABONOCARGO);
 					cuentaModificada.setIdPersona(new Long((String)cuentaOriginal.get(CenCuentasBancariasBean.C_IDPERSONA)));
 					cuentaModificada.setIdInstitucion(new Integer((String)cuentaOriginal.get(CenCuentasBancariasBean.C_IDINSTITUCION)));
 					cuentaModificada.setIdCuenta(new Integer((String)cuentaOriginal.get(CenCuentasBancariasBean.C_IDCUENTA)));					
@@ -385,9 +387,13 @@ public class CenSolicModiCuentasAdm extends MasterBeanAdministrador {
 					cuentaModificada.setTitular((String)hash.get(CenSolicModiCuentasBean.C_TITULAR));
 					cuentaModificada.setFechaBaja((String)cuentaOriginal.get(CenCuentasBancariasBean.C_FECHABAJA));
 					cuentaModificada.setCuentaContable((String)cuentaOriginal.get(CenCuentasBancariasBean.C_CUENTACONTABLE));
-					cuentaModificada.setOriginalHash(cuentaOriginal);					
+					cuentaModificada.setOriginalHash(cuentaOriginal);
 					// Fijamos los datos del Historico
-					beanHist.setMotivo((String)hash.get(CenSolicModiCuentasBean.C_MOTIVO));			
+					beanHist.setMotivo((String)hash.get(CenSolicModiCuentasBean.C_MOTIVO));		
+					//BEGIN BNS 11/12/12 INCIDENCIA INC_08950_SIGA
+					if (adminCuentas.updateConHistoricoYfecBaj(cuentaModificada, beanHist, usuario, usrBean, abonoCargoOrig, idioma) <0)
+						correcto = false;
+					/*
 					// Actualizo el registro Cuentas con historico				
 					if (!adminCuentas.updateConHistorico(cuentaModificada,beanHist, idioma)){
 						correcto=false;
@@ -403,6 +409,8 @@ public class CenSolicModiCuentasAdm extends MasterBeanAdministrador {
 						if ((resultado == null) || (!resultado[0].equals("0")))
 							throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
 					}
+					*/
+					//END BNS
 				}				
 			}	
        }

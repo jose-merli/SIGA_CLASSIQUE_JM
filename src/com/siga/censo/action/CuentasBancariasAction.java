@@ -83,7 +83,10 @@ public class CuentasBancariasAction extends MasterAction{
 					mapDestino = solicitarModificacion(mapping, miForm, request, response);
 				} else if(accion.equalsIgnoreCase("insertarModificacion")){
 					mapDestino = insertarModificacion(mapping, miForm, request, response);
-					
+			//BEGIN BNS 11/12/12 INCIDENCIA INC_08950_SIGA
+				} else if(accion.equalsIgnoreCase("guardarInsertarHistorico")){
+					mapDestino = guardarInsertarHistorico(mapping, miForm, request, response);
+			//END BNS
 				} else if ( accion.equalsIgnoreCase("getAjaxBanco")){
 					getAjaxBanco (mapping, miForm, request, response);
 					return null;
@@ -107,7 +110,7 @@ public class CuentasBancariasAction extends MasterAction{
 			throw new SIGAException("Error en la Aplicación",e);
 		}
 
-	}
+	}	
 
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 
@@ -330,6 +333,89 @@ public class CuentasBancariasAction extends MasterAction{
 		return exitoModal("messages.inserted.success", request);
 	}
 
+	//BEGIN BNS 11/12/12 INCIDENCIA INC_08950_SIGA
+	/*
+	 * Método que guarda la modificación como un nuevo registro en la tabla de cuentas alimentando el histórico
+	 * y mantiene el anterior con fecha de baja alimentando también el histórico
+	 * @author BNS 11-12-12
+	 * @version 1
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 * @exception  SIGAException  Errores de aplicación
+	 */
+	private String guardarInsertarHistorico(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException{
+		String sResult = null;
+		UserTransaction t = null;
+		try{
+			t = this.getUserBean(request).getTransactionPesada();
+			CuentasBancariasForm miForm = (CuentasBancariasForm) formulario;
+			
+			// Comprobamos si el cliente ya tiene una cuenta de tipo SJCS
+			CenCuentasBancariasAdm cuentasAdm = new CenCuentasBancariasAdm (this.getUserBean(request));
+			if ((miForm.getAbonoSJCS().booleanValue()) &&
+				(cuentasAdm.existeCuentaAbonoSJCS(miForm.getIdPersona(), miForm.getIdInstitucion(), miForm.getIdCuenta()))) {
+				sResult = exito("messages.censo.existeAbonoSJCS", request);
+			} else {
+				// Fijamos los datos de la direccion
+				CenCuentasBancariasBean beanCuentas = new CenCuentasBancariasBean();
+				if(miForm.getAbonoSJCS().booleanValue())
+					beanCuentas.setAbonoSJCS(ClsConstants.DB_TRUE);			
+				else
+					beanCuentas.setAbonoSJCS(ClsConstants.DB_FALSE);
+				beanCuentas.setAbonoCargo(this.validarTipoCuenta(miForm.getCuentaAbono(), miForm.getCuentaCargo()));
+				beanCuentas.setCbo_Codigo(miForm.getCbo_Codigo());
+				beanCuentas.setCodigoSucursal(miForm.getCodigoSucursal());
+				beanCuentas.setCuentaContable(miForm.getCuentaContable());
+				beanCuentas.setDigitoControl(miForm.getDigitoControl());
+				beanCuentas.setFechaBaja(null);
+				beanCuentas.setIdCuenta(miForm.getIdCuenta());
+				beanCuentas.setIdInstitucion(miForm.getIdInstitucion());
+				beanCuentas.setIdPersona(miForm.getIdPersona());
+				beanCuentas.setNumeroCuenta(miForm.getNumeroCuenta());
+				beanCuentas.setTitular(miForm.getTitular());
+				beanCuentas.setOriginalHash((Hashtable)request.getSession().getAttribute("DATABACKUP"));
+				String abonoCargoOrig=(String)request.getParameter("abonoCargoOrig");
+				
+				// Fijamos los datos del Historico
+				CenHistoricoBean beanHis = new CenHistoricoBean();
+				beanHis.setMotivo(miForm.getMotivo());	
+				
+				t.begin();
+				int iUpdateConHistoricoYfecBajResult = cuentasAdm.updateConHistoricoYfecBaj(beanCuentas, beanHis, this.getUserName(request), this.getUserBean(request), abonoCargoOrig, this.getLenguaje(request));
+				if (iUpdateConHistoricoYfecBajResult < 0) {
+					throw new SIGAException (cuentasAdm.getError());
+				}
+				
+				t.commit();
+				
+				if (iUpdateConHistoricoYfecBajResult == 1)
+					sResult = exitoModal("messages.updated.borrarCuenta", request);
+				else if (iUpdateConHistoricoYfecBajResult == 2)
+					sResult = exitoModal("messages.updated.actualizarCuenta", request);
+				else 
+					sResult = exitoModal("messages.updated.success", request);
+			}
+		} catch (ClsExceptions e){
+			try {
+				if (t!=null) {
+					t.rollback();
+				}
+			} catch (Exception el) {
+				e.printStackTrace();
+			}			
+				throw new SIGAException("messages.censo.cuentasBancarias.errorSucursal");			
+		}catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, t);
+		}
+
+		return sResult;
+	}
+	// END BNS
+	
 	/* (non-Javadoc)
 	 * @see com.siga.general.MasterAction#modificar(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
