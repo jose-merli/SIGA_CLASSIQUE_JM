@@ -448,7 +448,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			sql.append("' ) ");
 			
 			sql.append(" UNION ");
-			sql.append(" (SELECT  D.NOMBRE || ' ' || D.APELLIDOS1 || ' ' || D.APELLIDOS2 AS NOMBREYAPELLIDOS,D.NIFCIF,null,D.IDPERSONA ");
+			sql.append(" (SELECT  D.NOMBRE || ' ' || D.APELLIDOS1 || ' ' || D.APELLIDOS2 AS NOMBREYAPELLIDOS,null,D.NIFCIF,D.IDPERSONA ");
 			sql.append(", D.TIPODESTINATARIO");
 			sql.append(" FROM ENV_DESTINATARIOS D ");
 			sql.append(" WHERE D.IDINSTITUCION = ");
@@ -460,7 +460,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			sql.append("') ");
 			
 			sql.append(" UNION ");
-			sql.append(" (SELECT  D.NOMBRE || ' ' || D.APELLIDOS1 || ' ' || D.APELLIDOS2 AS NOMBREYAPELLIDOS,D.NIFCIF,null,D.IDPERSONA ");
+			sql.append(" (SELECT  D.NOMBRE || ' ' || D.APELLIDOS1 || ' ' || D.APELLIDOS2 AS NOMBREYAPELLIDOS,null,D.NIFCIF,D.IDPERSONA ");
 			sql.append(", D.TIPODESTINATARIO");
 			sql.append(" FROM ENV_DESTINATARIOS D ");
 			sql.append(" WHERE D.IDINSTITUCION = ");
@@ -472,7 +472,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			sql.append("') ");
 
 			sql.append(" UNION ");
-			sql.append(" (SELECT  D.NOMBRE || ' ' || D.APELLIDOS1 || ' ' || D.APELLIDOS2 AS NOMBREYAPELLIDOS,D.NIFCIF,null,D.IDPERSONA ");
+			sql.append(" (SELECT  D.NOMBRE || ' ' || D.APELLIDOS1 || ' ' || D.APELLIDOS2 AS NOMBREYAPELLIDOS,null,D.NIFCIF,D.IDPERSONA ");
 			sql.append(", D.TIPODESTINATARIO");
 			sql.append(" FROM ENV_DESTINATARIOS D ");
 			sql.append(" WHERE D.IDINSTITUCION = ");
@@ -499,7 +499,6 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		}
 		return datos;
     }
-
 
     /**
      * @author juan.grau
