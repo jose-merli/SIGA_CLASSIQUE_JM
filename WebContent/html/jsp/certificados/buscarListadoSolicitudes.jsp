@@ -544,9 +544,8 @@
 		   		  			certificados.solicitudes.literal.institucionDestino,
 		   		  			certificados.solicitudes.literal.estadocertificado,
 		   		  			certificados.solicitudes.literal.fechaEmision,"
-		   		   tamanoCol="3,7,8,11,10,10,10,7,7,27"
-		   		  alto="100%"
-		   		  modal="G"
+		   		   tamanoCol="3,7,8,11,10,9,9,7,7,27"
+		   		  alto  = "100%"			   	  
 	   		  	  activarFilaSel="true" 
 				  ajustePaginador="true">
 <%

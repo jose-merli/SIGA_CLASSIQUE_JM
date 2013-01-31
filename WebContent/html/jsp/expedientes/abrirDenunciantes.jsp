@@ -93,6 +93,11 @@
 			<html:hidden property = "modo" value = ""/>
 			<html:hidden property = "hiddenFrame" value = "1"/>
 			
+			<html:hidden property = "idPersona" />
+			<html:hidden property = "idDireccion"/>
+			<html:hidden property = "numColegiado"/>
+			<html:hidden property = "idInstitucionOrigen"/>
+			
 			<html:hidden property = "idInstitucion"    value = "<%=idInstitucion%>"/>
 			<html:hidden property = "idTipoExpediente" value = "<%=idTipoExpediente%>"/>
 			<html:hidden property = "numExpediente"    value = "<%=numExpediente%>"/>
@@ -182,6 +187,13 @@
 		</html:form>
 
 	
+		<html:form action="/CEN_DatosGenerales" method="POST" target="mainWorkArea">
+			<input type="hidden" name="actionModal" value="1">
+			<input type="hidden" name="modo" value="designarArt27">
+			<input type="hidden" name="numIdentificacion">
+			<input type="hidden" name="colegiadoen">
+			<input type="hidden" name="idDireccion">
+		</html:form>
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
@@ -218,9 +230,15 @@
 		//Asociada al boton Nuevo -->
 		function accionNuevo() 
 		{		
-			document.forms[0].modo.value = "nuevo";
-			var resultado=ventaModalGeneral(document.forms[0].name,"M");
-			if(resultado=='MODIFICADO'){
+			var resultado=ventaModalGeneral("datosGeneralesForm","G");
+			if (resultado!=undefined && resultado[0]!=undefined ){
+				document.ExpDenuncianteForm.idPersona.value=resultado[0];
+				document.ExpDenuncianteForm.numColegiado.value=resultado[1];
+				document.ExpDenuncianteForm.idInstitucionOrigen.value=resultado[5];
+				document.ExpDenuncianteForm.idDireccion.value=resultado[7];
+				document.ExpDenuncianteForm.modo.value="insertar";
+				
+				document.ExpDenuncianteForm.submit();
 				refrescarLocal();
 			}
 		}

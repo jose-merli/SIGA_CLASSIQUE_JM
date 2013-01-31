@@ -27,6 +27,8 @@
 	String nombre=(String)request.getAttribute("nombre");
 	String apellido1=(String)request.getAttribute("apellido1");
 	String apellido2=(String)request.getAttribute("apellido2");
+	String nif=(String)request.getAttribute("nif");
+	String idDireccion=(String)request.getAttribute("idDireccion");
 	
 %>
 
@@ -40,7 +42,9 @@
 			aux[2]="<%=UtilidadesString.cambiarDoblesComillas(nombre) %>";
 			aux[3]="<%=UtilidadesString.cambiarDoblesComillas(apellido1) %>";
 			aux[4]="<%=UtilidadesString.cambiarDoblesComillas(apellido2) %>";	
-			aux[5]="<%=UtilidadesString.cambiarDoblesComillas(colegioOrigen) %>";				
+			aux[5]="<%=UtilidadesString.cambiarDoblesComillas(colegioOrigen) %>";
+			aux[6]="<%=UtilidadesString.cambiarDoblesComillas(nif) %>";
+			aux[7]="<%=idDireccion %>";
 				
 			top.cierraConParametros(aux);
 				

@@ -74,7 +74,9 @@
 		   		  nombreCol="consultas.recuperarconsulta.literal.modulo,
 		   		  consultas.recuperarconsulta.literal.descripcion,"
 		   		  tamanoCol="15,72,13"
-		   		  alto="100%" 
+		   		  alto="100%"
+		   		  ajusteBotonera="true"
+		   		  scrollModal = "true" 
 		   		  activarFilaSel="true" >
 	   		     		    		  
 		   		  

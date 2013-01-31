@@ -83,6 +83,7 @@ VERSIONES: -->
 		if (modo.equals("editar")) {
 			desactivado  = false;
 			editarCampos = true;	
+			botones += ",GAH";
 		}
 		else {
 			desactivado = true;
@@ -134,9 +135,24 @@ VERSIONES: -->
 			}						
 		}			
 
+		<!-- Asociada al boton Guardar y añadir al histórico -->
+		function accionGuardarAnyadirHistorico() {
+			var modo = "guardarInsertarHistorico";
+			guardar(modo);
+		}
+		
 		<!-- Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() {		
-         // Validamos los errores ///////////
+			<%if (modo.equals("editar")) {%>
+			var modo = "modificar";
+			<%}	else { %>
+			var modo = "insertar";
+			<%}%>
+			guardar(modo);
+		}
+		
+		function guardar(modo){
+			// Validamos los errores ///////////
 			sub();
 			if ((!document.all.cuentasBancariasForm.cuentaAbono.checked) && 
 			    (!document.all.cuentasBancariasForm.cuentaCargo.checked)) {
@@ -175,18 +191,14 @@ VERSIONES: -->
 			
 			if (datos[0] == 1) { // Boton Guardar
 				document.cuentasBancariasForm.motivo.value = datos[1];
-				<%if (modo.equals("editar")) {%>
-					document.cuentasBancariasForm.modo.value = "modificar";
-				<%}	else { %>
-					document.cuentasBancariasForm.modo.value = "insertar";
-				<%}%>
+				document.cuentasBancariasForm.modo.value = modo;				
 				document.cuentasBancariasForm.target = "submitArea";
 				document.cuentasBancariasForm.submit();
 			}else{
 				fin();
 				return false;
 			}
-		}		
+		}
 		<!-- Selecciona los valores de los campos check y combo dependiendo de los valores del Hashtable -->
 		function rellenarCampos(){
 			<%if (htData != null) {%>

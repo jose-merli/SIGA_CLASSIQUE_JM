@@ -65,11 +65,11 @@
 		    			var fname = document.getElementById("DocumentosForm").name;
 		    			//Ventana de espera:
 					    window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.wait';
+					    window.top.returnValue="MODIFICADO";
 					}
 				}else{
 					fin();
-				}
-				window.top.returnValue="MODIFICADO";
+				}				
 				
 			}
 			
@@ -112,7 +112,7 @@
 											<siga:Idioma key="envios.definir.literal.descripcion"/>&nbsp(*)
 										</td>
 										<td>
-											<html:text name="DocumentosForm" property="descripcion" size="30" maxlength="50" styleClass="boxCombo"/>
+											<html:text name="DocumentosForm" property="descripcion" size="30" maxlength="100" styleClass="boxCombo"/>
 										</td>
 									</tr>
 									<tr>				

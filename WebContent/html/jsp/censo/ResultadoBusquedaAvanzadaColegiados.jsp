@@ -20,6 +20,7 @@
 
 <html:html>
 <head>
+	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
 	<meta http-equiv="Content-Type" 	content="text/html; charset=ISO-8859-1">
 	<meta http-equiv="Expires" 			content="0">
 	<meta http-equiv="Pragma" 			content="no-cache">

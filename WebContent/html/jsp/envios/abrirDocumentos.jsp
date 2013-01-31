@@ -37,6 +37,8 @@
 	String idInstitucion = (String)request.getAttribute("idInstitucion");
 
 	UsrBean userBean = (UsrBean)request.getSession().getAttribute("USRBEAN");
+	
+	String mensaje       = (String)request.getAttribute("mensaje");
 %>	
 
 <html>
@@ -58,13 +60,20 @@
 				var resultado=ventaModalGeneral("DocumentosForm","P");
 				
 				if (resultado=="MODIFICADO")
-				{
-					document.location.reload();
+				{				
+					alert('<siga:Idioma key="messages.updated.success"/>', 'success');
+					refrescarLocal();
 				}
 			}
 
 			function refrescarLocal()
 			{
+				<%if (mensaje!=null){%>
+						var type = '<siga:Idioma key="<%=mensaje%>"/>';
+						alert(type);
+				<%
+				}
+				%>
 				document.location.reload();
 			}
 
@@ -128,6 +137,9 @@
 					document.forms[0].target = "mainWorkArea";
 				}
 			}
+			<%if (mensaje != null && !mensaje.equals("")){%>
+			$(document).ready(function(){alert("<%=mensaje%>");});
+			<%}%>
 		</script>
 		
 		

@@ -16,6 +16,7 @@
   <cb:checkboxDecorator
 	formBean="${BusquedaColegiadosForm}" formName="displ"
 	submitUrl="/SIGA/CEN_BusquedaColegiados.do"
+	selectAllAjaxUrl="/SIGA/CEN_BusquedaColegiados.do?accion=getJQueryAllSearchedPKs"
 	decoratorName="checkboxDecorator" checkboxName="_chk"
 	selectAllName="${BusquedaColegiadosForm.selectAllName}"
 	selectAllPagesName="${BusquedaColegiadosForm.selectAllPagesName}"
@@ -37,23 +38,22 @@
 		<display:column property="id" class="hidden" headerClass="hidden" />
 		
 		<display:column property="id" title="<input type='checkbox' name='${BusquedaColegiadosForm.selectAllName}' id='${BusquedaColegiadosForm.selectAllName}'/>"
-			decorator="checkboxDecorator" style="width:15px;" />
+			decorator="checkboxDecorator" />
 		
 		<display:column property="nif" titleKey="censo.busquedaClientesAvanzada.literal.nif" 
-				sortable="true" nulls="false" style="width:115px;" />
+				sortable="true" nulls="false" />
 		
 		<display:column property="nColegiado" titleKey="censo.busquedaClientesAvanzada.literal.nColegiado" 
-				sortable="true" nulls="false" style="width:80px;" />
+				sortable="true" nulls="false" />
 		
 		<display:column property="apellidos" titleKey="gratuita.turnos.literal.apellidosSolo" 
-				sortable="true" nulls="false" style="width:125px; white-space: nowrap;" />
+				sortable="true" nulls="false" maxLength="40" />
 		
 		<display:column property="nombre" titleKey="censo.busquedaClientesAvanzada.literal.nombre" 
-				sortable="true" nulls="false" style="width:110px; white-space: nowrap;" />
+				sortable="true" nulls="false" maxLength="20"/>
 		
 		<display:column property="fechaIncorporacionDesde" titleKey="censo.busquedaClientesAvanzada.literal.fechaIngreso" 
-				sortable="true" nulls="false" style="width:90px; white-space: nowrap;" 
-				decorator="com.siga.comun.decorator.ShortDateDecorator" />
+				sortable="true" nulls="false" decorator="com.siga.comun.decorator.ShortDateDecorator" />
 		
 		<!-- Si la lista de instituciones esta vacia significa que estamos en un colegio -->
 		<logic:empty property="instituciones" name="BusquedaColegiadosForm">
@@ -61,30 +61,28 @@
 		</logic:empty>
 		<logic:notEmpty property="instituciones" name="BusquedaColegiadosForm">
 			<display:column property="nombreInstitucion" titleKey="censo.busquedaClientes.literal.institucion" 
-				sortable="true" nulls="false" style="width:115px; white-space: nowrap;" />
+				sortable="true" nulls="false" />
 		</logic:notEmpty>
 		
 		<display:column property="estadoFechaColegial" titleKey="censo.busquedaClientesAvanzada.literal.estadoColegial" 
-			sortable="false" nulls="false" style="width:95px; white-space: nowrap;" />
+			sortable="false" nulls="false" />
 		
 		<display:column property="residente" titleKey="censo.busquedaClientesAvanzada.literal.residente" 
-				sortable="false" nulls="false" style="width:70px; white-space: nowrap;" 
-				decorator="com.siga.comun.decorator.SiNoDecorator" />/>
+				sortable="false" nulls="false" decorator="com.siga.comun.decorator.SiNoDecorator" />/>
 		
 		<logic:empty property="instituciones" name="BusquedaColegiadosForm">
 			<display:column property="fechaNacimiento" class="hidden" headerClass="hidden" />
 			<display:column property="telefonoFijoMovil" titleKey="censo.busquedaClientesAvanzada.literal.tlfn1movil" 
-				sortable="false" nulls="false" style="width:180px; white-space: nowrap;" />
+				sortable="false" nulls="false" />
 		</logic:empty>
 		<logic:notEmpty property="instituciones" name="BusquedaColegiadosForm">
 			<display:column property="fechaNacimiento" titleKey="censo.busquedaClientesAvanzada.literal.fechaNacimiento" 
-				sortable="true" nulls="false" style="width:90px; white-space: nowrap;" 
-				decorator="com.siga.comun.decorator.ShortDateDecorator" />
+				sortable="true" nulls="false" decorator="com.siga.comun.decorator.ShortDateDecorator" />
 			<display:column property="telefonoFijoMovil" class="hidden" headerClass="hidden" />
 		</logic:notEmpty>
 		
 		
-		<display:column property="actions" title="" nulls="false" style="text-align:left;" />
+		<display:column property="actions" title="" nulls="false" style="white-space: nowrap; text-align:left;" />
 	</display:table>
   </cb:checkboxDecorator>
 </div>

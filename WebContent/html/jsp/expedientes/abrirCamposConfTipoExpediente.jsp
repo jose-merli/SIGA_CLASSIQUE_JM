@@ -5,6 +5,8 @@
 -->
 
 <!-- CABECERA JSP -->
+<%@page import="com.siga.beans.GenTipoCampoBean"%>
+<%@page import="com.siga.beans.GenTipoCampoAdm"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -131,10 +133,10 @@
 		   	      nombre="tablaDatos"
 		   		  borde="1"
 		   		  clase="tableTitle"
-		   		  nombreCol="expedientes.literal.tipoExpediente.campoConf.seleccionado,expedientes.tipoExpediente.ecicion.literal.general,expedientes.literal.tipoExpediente.campoConf.nombre,expedientes.literal.tipoExpediente.campoConf.orden,"		   		  
-		   		  tamanoCol="15,15,50,10"
-		   			alto="100%"
-		   			ajusteBotonera="true"		
+		   		  nombreCol="expedientes.literal.tipoExpediente.campoConf.seleccionado,expedientes.tipoExpediente.ecicion.literal.general,expedientes.literal.tipoExpediente.campoConf.nombre,expedientes.auditoria.literal.tipo,expedientes.auditoria.literal.maxlong,expedientes.literal.tipoExpediente.campoConf.orden,"		   		  
+		   		  tamanoCol="5,10,35,24,8,8"
+		   		  alto="100%"
+		   		  ajusteBotonera="true"		
 		   		  modal="P"
 		   		  >
 
@@ -150,6 +152,7 @@
 
 				else
 				{
+					GenTipoCampoAdm tipoCampoAdm = new GenTipoCampoAdm(user);
 			 		for (int i=0; i<vDatos.size(); i++)
 			   		{
 				  		ExpCampoConfBean bean = (ExpCampoConfBean)vDatos.elementAt(i);
@@ -172,7 +175,19 @@
 
 					<td>
 						<%=UtilidadesString.mostrarDatoJSP(bean.getNombre())%>
-					</td>					
+					</td>
+					<td>
+					<% GenTipoCampoBean tipoCampo = null;
+						if (bean.getTipo() != null){
+						tipoCampo = tipoCampoAdm.getTipoCampoById(bean.getTipo());
+						if (tipoCampo != null && tipoCampo.getDescripcion() !=null){
+						%>
+						<%=UtilidadesString.getMensajeIdioma(user,tipoCampo.getDescripcion())%>
+					<%}} %>
+					</td>
+					<td>
+						<%=bean.getMaxLong() %>
+					</td>
 					<td align="right">
 						<%=UtilidadesString.mostrarDatoJSP(bean.getOrden())%>
 					</td>					

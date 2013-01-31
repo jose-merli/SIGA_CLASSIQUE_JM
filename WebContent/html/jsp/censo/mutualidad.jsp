@@ -495,28 +495,34 @@
 					
 					<c:choose>
 						<c:when test="${MutualidadForm.modo=='insertar'}">
-							<td colspan = "4" class="labelTextValor">
+							<td colspan = "5" class="labelTextValor">
 							<html:select styleClass="${estiloCombo}" name="MutualidadForm" property="idBeneficiario" style="width:700px;" onchange="onchangeBeneficiario();">
 								<bean:define id="beneficiarios" name="MutualidadForm" property="beneficiarios" type="java.util.List" />
 								<html:optionsCollection name="beneficiarios" value="key" label="value" />
 							</html:select>
 							<html:hidden property="beneficiario"/>
 							</td>
-							<td colspan = "1" class="labelText" >
+						</tr>
+						<tr align="left">	
+							<td></td>					
+							<td colspan = "5" class="labelText" >
 								<html:text property="otrosBeneficiarios"  size="40" styleClass="${estiloText}" style="display:none" />
 							</td>
+						</tr>
 						</c:when>
 						<c:otherwise>
-							<td colspan = "4" class="labelTextValor">
+							<td colspan = "5" class="labelTextValor">
 								<c:out value="${MutualidadForm.beneficiario}"></c:out>
 							</td>
-							<td colspan = "1" class="labelTextValor">
-								<c:out value="${MutualidadForm.otrosBeneficiarios}"></c:out>
-							</td>
+							<tr align="left">
+								<td></td>
+								<td colspan = "5" class="labelTextValor">
+									<c:out value="${MutualidadForm.otrosBeneficiarios}"></c:out>
+								</td>
+							</tr>
 						</c:otherwise>
 					</c:choose>
 					
-				</tr>
 				<tr align="left">
 					<td class="labelText"><siga:Idioma key="censo.mutualidad.literal.asistenciaSanitaria" /></td>
 					<td colspan= "5" class="labelTextValor">
