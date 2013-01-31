@@ -17,6 +17,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.beans.ExpCampoConfAdm;
 import com.siga.beans.ExpCampoConfBean;
+import com.siga.beans.GenTipoCampoAdm;
 import com.siga.expedientes.form.CamposConfigurablesForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -46,6 +47,13 @@ public class CamposConfigurablesAction extends MasterAction {
 	    
 	    ExpCampoConfAdm admCampo = new ExpCampoConfAdm(this.getUserBean(request));
 	    Vector campos = admCampo.getCamposPlantilla(userBean.getLocation(),form.getIdTipoExpediente(),form.getIdCampo(),form.getIdPestanaConf());
+	    GenTipoCampoAdm admTipoCampo = new GenTipoCampoAdm(this.getUserBean(request));
+	    form.setTiposcampo(admTipoCampo.select());
+	    if (campos != null && campos.size() > 0){
+	    	ExpCampoConfBean campoConfBean = (ExpCampoConfBean) campos.get(0);
+	    	form.setTipo(campoConfBean.getTipo());
+	    	form.setMaxLong(campoConfBean.getMaxLong());
+	    }
 	    request.setAttribute("datos",campos);
         
         return "abrir";
@@ -75,6 +83,10 @@ public class CamposConfigurablesAction extends MasterAction {
             form.setOrden(bean.getOrden().toString());
             form.setSeleccionado(bean.getSeleccionado().toString());
             form.setIdCampoConf(idCampo);
+            GenTipoCampoAdm admTipoCampo = new GenTipoCampoAdm(this.getUserBean(request));
+            form.setTiposcampo(admTipoCampo.select());
+            form.setTipo(bean.getTipo());
+	    	form.setMaxLong(bean.getMaxLong());
             //El objeto "general" indica si se debe mostrar ese campo en la ventana de Datos Generales
             //Si su valor es 1 si se muestra en Datos Generales
             //Si su valor es 0 no se muestra en Datos Generales
@@ -96,7 +108,8 @@ public class CamposConfigurablesAction extends MasterAction {
         ses.removeAttribute("DATABACKUP_CAMPOCONF");
         CamposConfigurablesForm form = (CamposConfigurablesForm)formulario;
         form.setAccion("insertar");
-        
+        GenTipoCampoAdm admTipoCampo = new GenTipoCampoAdm(this.getUserBean(request));
+        form.setTiposcampo(admTipoCampo.select());
         return "editar";
 	}
     
@@ -126,6 +139,8 @@ public class CamposConfigurablesAction extends MasterAction {
 	            bean.setSeleccionado((form.getSeleccionado()!=null && form.getSeleccionado().equals("1"))?new Integer(1):new Integer(0));
 	            bean.setOrden(new Integer(form.getOrden()));
 	            bean.setGeneral((form.getGeneral()!=null && form.getGeneral().equals("1"))?new Integer(1):new Integer(0));
+	            bean.setTipo(form.getTipo());
+	            bean.setMaxLong(form.getMaxLong());
 	            if (adm.ordenRepetido(bean)){
 	            	if (tx!=null)
 	            		tx.rollback();
@@ -179,6 +194,8 @@ public class CamposConfigurablesAction extends MasterAction {
             bean.setSeleccionado((form.getSeleccionado()!=null && form.getSeleccionado().equals("1"))?new Integer(1):new Integer(0));
             bean.setOrden(new Integer(form.getOrden()));
             bean.setGeneral((form.getGeneral()!=null && form.getGeneral().equals("1"))?new Integer(1):new Integer(0));
+            bean.setTipo(form.getTipo());
+            bean.setMaxLong(form.getMaxLong());
             if (adm.ordenRepetido(bean)){
             	if (tx!=null)
             		tx.rollback();
