@@ -105,7 +105,7 @@
 	<sql id="ordenacion">
 		<dynamic prepend="ORDER BY">
 			<iterate conjunction="," property="ordenacion.criteria">
-				$ordenacion.criteria[].key$ $ordenacion.criteria[].value$
+				UPPER($ordenacion.criteria[].key$) $ordenacion.criteria[].value$
 			</iterate>
 		</dynamic>
 	</sql>
@@ -231,6 +231,21 @@
 				</isNotEmpty>
 
 				<!-- APELLIDOS -->
+				<!-- BNS INCIDENCIAS 23 -->								
+				<isNotEmpty prepend="AND" property="colegiado.apellidos1">
+					<isNotEmpty property="colegiado.apellidos2">
+						regexp_like(nvl(p.apellidos1, '') || ' ' || nvl(p.apellidos2, ''),'(^|\s)' || #colegiado.apellidos1# || '((\s(\s|\S)+)*?)'||'\s' || #colegiado.apellidos2# || '(\s|$$)' ,'i')
+					</isNotEmpty>
+					<isEmpty property="colegiado.apellidos2">
+						regexp_like(p.apellidos1, '(^|\s)' || #colegiado.apellidos1# || '(\s|$$)', 'i')
+					</isEmpty>					
+				</isNotEmpty>
+				<isEmpty property="colegiado.apellidos1">
+					<isNotEmpty prepend="AND" property="colegiado.apellidos2">
+						regexp_like(p.apellidos2, '(^|\s)' || #colegiado.apellidos2# || '(\s|$$)', 'i')
+					</isNotEmpty>
+				</isEmpty>
+				<!-- 
 				<isNotEmpty prepend="AND" property="colegiado.apellidos1">
 					(p.apellidos1=#colegiado.apellidos1#
 					<isNotEmpty prepend="OR" property="colegiado.apellidos2">
@@ -244,7 +259,8 @@
 						(p.apellidos2=#colegiado.apellidos2# OR regexp_like(p.apellidos1,#colegiado.apellidos2#))
 					</isNotEmpty>
 				</isEmpty>
-
+				 -->
+				 
 				<isNotEmpty prepend="AND" property="colegiado.nif">
 					p.nifcif=#colegiado.nif#
 				</isNotEmpty>
@@ -266,6 +282,29 @@
 				</isNotEmpty>
 
 				<!-- APELLIDOS -->
+				<!-- BNS INCIDENCIAS 23 -->
+				<isNotEmpty prepend="AND" property="colegiado.apellidos1">
+					(
+					regexp_like(p.apellidos1,#colegiado.apellidos1#)
+					<isNotEmpty prepend="OR" property="colegiado.apellidos2">
+						(
+						regexp_like(p.apellidos1,#colegiado.apellidos1#)
+						AND
+							(
+							regexp_like(p.apellidos2,#colegiado.apellidos2#)
+							OR
+							regexp_like(p.apellidos1,'\s(((\s|\S)+)*?)' || #colegiado.apellidos2#, 'i')
+							)
+						)
+					</isNotEmpty>
+					)
+				</isNotEmpty>
+				<isEmpty property="colegiado.apellidos1">
+					<isNotEmpty prepend="AND" property="colegiado.apellidos2">
+						regexp_like(p.apellidos2,#colegiado.apellidos2#)
+					</isNotEmpty>
+				</isEmpty>
+				<!-- 
 				<isNotEmpty prepend="AND" property="colegiado.apellidos1">
 					(
 					regexp_like(p.apellidos1,#colegiado.apellidos1#)
@@ -283,16 +322,17 @@
 						regexp_like(p.apellidos2,#colegiado.apellidos2#)
 					</isNotEmpty>
 				</isEmpty>
-
+				 -->
+				 
 				<isNotEmpty prepend="AND" property="colegiado.nif">
 					regexp_like(p.nifcif,#colegiado.nif#)
 				</isNotEmpty>
 
 				<isNotEmpty prepend="AND" property="colegiado.nColegiado">
-           			LTRIM(DECODE(col.COMUNITARIO, 
+           			regexp_like(LTRIM(DECODE(col.COMUNITARIO, 
            						 '1',
-                            	 col.NCOMUNITARIO,
-                            	 col.NCOLEGIADO), '0') = LTRIM(#colegiado.nColegiado#, '0')
+                            	 col.NCOMUNITARIO,                            	 
+                            	 col.NCOLEGIADO), '0'),LTRIM(#colegiado.nColegiado#, '0'))
                 </isNotEmpty>
 
 				<isNotEmpty prepend="AND" property="colegiado.gruposFijosIdGrupo">
@@ -455,7 +495,6 @@
                         and IDESTADO in (#colegiado.estadoColegial#))	
                     </isNotEqual>
                 </isNotEmpty>				
-							
 			</isNotEqual>
 		</dynamic>
 	</sql>
@@ -474,6 +513,7 @@
             p.nombre,
             p.apellidos1,
             p.apellidos2,
+            UPPER(p.apellidos1|| ' ' || nvl(p.apellidos2, '')) AS apellidos,
             p.fechanacimiento,
             col.fechaincorporacion,
             col.idpersona,
@@ -559,7 +599,7 @@
 		from (select a.*, rownum rnum
 		from (
 		<include refid="Censo.selectColegiados" />
-		<include refid="Censo.ordenacion" />
+		<include refid="Censo.ordenacion" />		
 		)a 
 		where rownum &lt;= #paginador.lastRecord#
 		)
