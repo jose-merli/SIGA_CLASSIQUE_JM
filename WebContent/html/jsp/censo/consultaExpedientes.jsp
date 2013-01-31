@@ -162,7 +162,7 @@
 			 <%		
 			 		}
 			 	else
-			 		{	
+			 		{			 		
 			 		Enumeration en = vDatos.elements();
 					int recordNumber=0;
 					String botonesMostrados="";
@@ -173,7 +173,7 @@
 						// Control icono solicitud modificacion
 						FilaExtElement[] elementos=new FilaExtElement[1];
 						if(idPersona.equals(idUsr)){
-		  		 			elementos[0]=new FilaExtElement("solicitar","solicitar",SIGAConstants.ACCESS_READ);
+		  		 			elementos[0]=new FilaExtElement("solicitar","solicitar",SIGAConstants.ACCESS_FULL);
 						}
 			%>
 						<siga:FilaConIconos
