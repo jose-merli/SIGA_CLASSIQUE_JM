@@ -126,35 +126,35 @@ public class ExpDenunciadoAction extends MasterAction {
 			hash.put(ExpExpedienteBean.C_ANIOEXPEDIENTE,anioExpediente);
 	        Vector datos = DenunciadoAdm.select(hash);
 
+	        String nombrePersona = "";
 	        Vector datosPersonas = new Vector();
 	        CenPersonaAdm personaAdm = new CenPersonaAdm (this.getUserBean(request));
             CenClienteAdm clienteAdm = new CenClienteAdm (this.getUserBean(request));
 	        for (int i = 0; i < datos.size(); i++) {
-	            ExpDenunciadoBean denuncinante = (ExpDenunciadoBean)datos.get(i);
-	            datosPersonas.add(personaAdm.getIdentificador(denuncinante.getIdPersona()));
+	            ExpDenunciadoBean denunciado = (ExpDenunciadoBean)datos.get(i);
+	            datosPersonas.add(personaAdm.getIdentificador(denunciado.getIdPersona()));
 	            
 	            String telefono = " ";
-	            Hashtable h = clienteAdm.getDirecciones(denuncinante.getIdPersona(),denuncinante.getIdInstitucion(), denuncinante.getIdDireccion());
+	            Hashtable h = clienteAdm.getDirecciones(denunciado.getIdPersona(),denunciado.getIdInstitucion(), denunciado.getIdDireccion());
 	            if (h != null){
 		            telefono = (String)h.get(CenDireccionesBean.C_TELEFONO1);
 		            if (telefono == null || telefono.equals("")) telefono = (String)h.get(CenDireccionesBean.C_MOVIL);
 		            if (telefono == null) telefono = new String(" ");
 	            }
 	            datosPersonas.add(telefono);
+	            if (ExpDenunciadoBean.ID_DENUNCIADO_PRINCIPAL.equals(denunciado.getIdDenunciado())){
+	            	// Obtenemos los datos personales		        	
+		        	Hashtable hashIdPers = new Hashtable();		
+					hashIdPers.put(CenPersonaBean.C_IDPERSONA,denunciado.getIdPersona());
+					Vector vPersona = personaAdm.selectByPK(hashIdPers);
+					CenPersonaBean personaBean = (CenPersonaBean) vPersona.elementAt(0);					
+					nombrePersona = personaBean.getNombreCompleto();
+			        request.setAttribute("denunciado", nombrePersona);
+	            }
 	        }
 	        
 	        request.setAttribute("datos", datos);
-	        request.setAttribute("datosPersonas", datosPersonas);
-	           
-	        //Recuperamos el nombre del denunciado
-	        ExpExpedienteAdm expAdm = new ExpExpedienteAdm(this.getUserBean(request));
-	        Vector vExp = expAdm.selectByPK(hash);        
-	        Hashtable hashIdPers = new Hashtable();		
-			hashIdPers.put(CenPersonaBean.C_IDPERSONA,((ExpExpedienteBean)vExp.elementAt(0)).getIdPersona());
-	        Vector vPersona = personaAdm.selectByPK(hashIdPers);
-	        CenPersonaBean personaBean = (CenPersonaBean) vPersona.elementAt(0);
-	        String nombrePersona = personaBean.getNombre() + " " + personaBean.getApellido1() + " " + personaBean.getApellido2();
-	        request.setAttribute("denunciado", nombrePersona);
+	        request.setAttribute("datosPersonas", datosPersonas);	        
 	        
 	        String denunciado="";
 			//Chapuza para identificar si se llama denunciado o impugando
@@ -432,24 +432,31 @@ public class ExpDenunciadoAction extends MasterAction {
 	 */
 	protected String borrar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
 	{
+		boolean bPrincipal = true;
 		try{
 			ExpDenunciadoForm form = (ExpDenunciadoForm)formulario;
 		    ExpDenunciadoAdm expAdm = new ExpDenunciadoAdm (this.getUserBean(request));
 		    
 		    Vector vOcultos = form.getDatosTablaOcultos(0);
-		    Hashtable hash = new Hashtable();
-		    hash.put(ExpDenunciadoBean.C_IDINSTITUCION, (String)vOcultos.elementAt(0));
-		    hash.put(ExpDenunciadoBean.C_IDINSTITUCION_TIPOEXPEDIENTE, (String)vOcultos.elementAt(1));
-		    hash.put(ExpDenunciadoBean.C_IDTIPOEXPEDIENTE, (String)vOcultos.elementAt(2));	    
-		    hash.put(ExpDenunciadoBean.C_NUMEROEXPEDIENTE, (String)vOcultos.elementAt(3));
-		    hash.put(ExpDenunciadoBean.C_ANIOEXPEDIENTE, (String)vOcultos.elementAt(4));
-		    hash.put(ExpDenunciadoBean.C_IDDENUNCIADO, (String)vOcultos.elementAt(5));    
-		    expAdm.delete(hash);
+		    if (!ExpDenunciadoBean.ID_DENUNCIADO_PRINCIPAL.toString().equals((String)vOcultos.elementAt(5))){
+		    	bPrincipal = false;
+			    Hashtable hash = new Hashtable();
+			    hash.put(ExpDenunciadoBean.C_IDINSTITUCION, (String)vOcultos.elementAt(0));
+			    hash.put(ExpDenunciadoBean.C_IDINSTITUCION_TIPOEXPEDIENTE, (String)vOcultos.elementAt(1));
+			    hash.put(ExpDenunciadoBean.C_IDTIPOEXPEDIENTE, (String)vOcultos.elementAt(2));	    
+			    hash.put(ExpDenunciadoBean.C_NUMEROEXPEDIENTE, (String)vOcultos.elementAt(3));
+			    hash.put(ExpDenunciadoBean.C_ANIOEXPEDIENTE, (String)vOcultos.elementAt(4));
+			    hash.put(ExpDenunciadoBean.C_IDDENUNCIADO, (String)vOcultos.elementAt(5));    
+			    expAdm.delete(hash);
+		    }
 		}
 		catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,null); 
 		}
-		return exitoRefresco("messages.deleted.success",request);
+		if (bPrincipal){
+			return exito("expedientes.auditoria.denunciados.borrarDenunciadoPpal.error", request);
+		} else
+			return exitoRefresco("messages.deleted.success",request);
 	
 	}
 	

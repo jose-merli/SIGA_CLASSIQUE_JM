@@ -10,7 +10,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
+
+import javassist.bytecode.Descriptor.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,9 +34,11 @@ import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenClienteBean;
+import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenInstitucionBean;
+import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.ExpCampoConfAdm;
 import com.siga.beans.ExpCampoConfBean;
@@ -43,6 +48,8 @@ import com.siga.beans.ExpCamposValorAdm;
 import com.siga.beans.ExpCamposValorBean;
 import com.siga.beans.ExpClasificacionesAdm;
 import com.siga.beans.ExpClasificacionesBean;
+import com.siga.beans.ExpDenunciadoAdm;
+import com.siga.beans.ExpDenunciadoBean;
 import com.siga.beans.ExpDenuncianteAdm;
 import com.siga.beans.ExpDenuncianteBean;
 import com.siga.beans.ExpEstadosAdm;
@@ -115,6 +122,9 @@ public class ExpDatosGeneralesAction extends MasterAction
 			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDINSTITUCION, this.getIDInstitucion(request));
 			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDTIPOEXPEDIENTE, idTipoExpediente);
 
+			String numExpediente = request.getParameter("numeroExpediente");
+			String anioExpediente = request.getParameter("anioExpediente");
+			
 			if(!accion.equals("nuevo"))
 			{
 				//Se buscan los campos configurados en exp_campoconf para extraer sus nombres de campo
@@ -133,9 +143,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 					ExpPestanaConfAdm expPestanaConfAdm = new ExpPestanaConfAdm(usr);
 					String nombreCampo = expPestanaConfAdm.obtenerNombrePetanaGeneral(this.getIDInstitucion(request).toString(), idTipoExpediente);
 			
-					//Se buscan los valores configurados en exp_camposvalor para extraer sus valores de campo
-					String numExpediente = request.getParameter("numeroExpediente");
-					String anioExpediente = request.getParameter("anioExpediente");
+					//Se buscan los valores configurados en exp_camposvalor para extraer sus valores de campo					
 					if(numExpediente==null || numExpediente.equals(""))
 				           numExpediente = (String) request.getSession().getAttribute("numeroExpedienteSession");
 				   
@@ -150,7 +158,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 					{
 						//Inicializamos el vector de datos a "" para que aquellos campos que no tengan valor
 						//por lo menos tengan cadena vacia
-						nombres.add("");
+						nombres.add(new ExpCampoConfBean());
 						datosCamposPestanas.add("");
 						nombresLongitud.add(new Integer(0));
 						//El tamaño de la caja de texto en la jsp por defecto será de 15
@@ -164,10 +172,11 @@ public class ExpDatosGeneralesAction extends MasterAction
 					for (int i =0; i<vecExpCamConfAdm.size();i++)
 					{
 						Hashtable auxHash = (Hashtable)vecExpCamConfAdm.get(i);
+						ExpCampoConfBean bean = (ExpCampoConfBean)expCamConfAdm.hashTableToBean((Hashtable)vecExpCamConfAdm.get(i));
 						Integer orden= new Integer(i);
 						String longitud = (String)auxHash.get("NOMBRE");
 						nombresLongitud.set((orden.intValue()),longitud.length());
-						nombres.set((orden.intValue()),(String)auxHash.get("NOMBRE"));										
+						nombres.set((orden.intValue()),bean);
 					}
 					
 					//Se carga en el vector datosCamposPestanas los valores q llevan asociados los campos de las pestañas
@@ -304,8 +313,8 @@ public class ExpDatosGeneralesAction extends MasterAction
 				if (nombreAux2 == null || nombreAux2.equals(""))
 					nombreAux2 = ExpCampoTipoExpedienteBean.NUMEXPEDIENTE;
 			}
-			request.setAttribute("tituloExpDisciplinario", nombreAux2);
-
+			request.setAttribute("tituloExpDisciplinario", nombreAux2);			
+			
 			if (accion != null && accion.equals("nuevo")) {
 				return abrirNuevo(mapping, formulario, request, response);
 			} else {
@@ -389,9 +398,9 @@ public class ExpDatosGeneralesAction extends MasterAction
 			ExpDatosGeneralesForm form = (ExpDatosGeneralesForm)formulario;
 			ExpExpedienteAdm expAdm = new ExpExpedienteAdm(this.getUserBean(request));
 			ExpTipoExpedienteAdm tipoAdm = new ExpTipoExpedienteAdm(this.getUserBean(request));
-			HttpSession ses = request.getSession();
-			UsrBean user = (UsrBean)ses.getAttribute("USRBEAN");
-			ses.removeAttribute("DATABACKUP");
+			HttpSession session = request.getSession();
+			UsrBean user = (UsrBean)session.getAttribute("USRBEAN");
+			session.removeAttribute("DATABACKUP");
 			String idTipoExpediente = "";
 			String idInstitucion_TipoExpediente = "";
 			String idInstitucion = user.getLocation();
@@ -437,8 +446,8 @@ public class ExpDatosGeneralesAction extends MasterAction
 
 			
 			//permitimos que desde las pestanhas, pueda volver a la búsqueda
-			if (request.getSession().getAttribute("volverAuditoriaExpedientes")==null){
-				request.getSession().setAttribute("volverAuditoriaExpedientes","N"); // busqueda normal	
+			if (session.getAttribute("volverAuditoriaExpedientes")==null){
+				session.setAttribute("volverAuditoriaExpedientes","N"); // busqueda normal	
 			}
 			 metodo = (String)request.getParameter("metodo");
 					
@@ -491,7 +500,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 				form.setIdMateria(idInstitucion+","+area.toString()+","+mat);
 				form.setIdArea(area.toString());
 				String idpersona= (String)request.getParameter("nombreDesignado");
-				form.setIdPersona(idpersona);
+				form.setIdPersonaDenunciado(idpersona);
 				form.setNumColegiado((String)request.getParameter("numColDesignado"));
 				//form.setIdPersona(numCol);
 				CenClienteBean cliente = null;
@@ -499,28 +508,28 @@ public class ExpDatosGeneralesAction extends MasterAction
 				Vector v = clienteAdm.getDatosPersonales(new Long(idpersona),new Integer(idInstitucion));
 				if (v!=null && v.size()>0) {
 					Hashtable registro =  (Hashtable)v.get(0);
-					if (registro.get("NOMBRE")!=null) form.setNombre((String) registro.get("NOMBRE") ); 
-					if (registro.get("APELLIDOS1")!=null && !registro.get("APELLIDOS1").equals("#NA")) form.setPrimerApellido((String) registro.get("APELLIDOS1")); 
-					if (registro.get("APELLIDOS2")!=null) form.setSegundoApellido((String) registro.get("APELLIDOS2")); 
-					if (registro.get("NIFCIF")!=null) form.setNif((String) registro.get("NIFCIF")); 
+					if (registro.get("NOMBRE")!=null) form.setNombreDenunciado((String) registro.get("NOMBRE") ); 
+					if (registro.get("APELLIDOS1")!=null && !registro.get("APELLIDOS1").equals("#NA")) form.setPrimerApellidoDenunciado((String) registro.get("APELLIDOS1")); 
+					if (registro.get("APELLIDOS2")!=null) form.setSegundoApellidoDenunciado((String) registro.get("APELLIDOS2")); 
+					if (registro.get("NIFCIF")!=null) form.setNifDenunciado((String) registro.get("NIFCIF")); 
 					
 				}
 				
 			}
 			
 			request.setAttribute("accion","nuevo");
-			ses.setAttribute("DATABACKUP",hash);
+			session.setAttribute("DATABACKUP",hash);
 			
 			//Se pasa la fecha del sistema al campo Fecha de Apertura
 			request.setAttribute("fechaApertura",(String)GstDate.getHoyJsp());
 			
 			//Se inicializa los campos numeroExpedienteSession y anioExpedienteSession a ""
-			request.getSession().setAttribute("numeroExpedienteSession", "");
-			request.getSession().setAttribute("anioExpedienteSession", "");
-			request.getSession().setAttribute("institucionSession","");
-			request.getSession().setAttribute("institucionExpeSession","");
-			request.getSession().setAttribute("nombreExpedienteSession", "");
-			request.getSession().setAttribute("tipoExpedienteSession", "");
+			session.setAttribute("numeroExpedienteSession", "");
+			session.setAttribute("anioExpedienteSession", "");
+			session.setAttribute("institucionSession","");
+			session.setAttribute("institucionExpeSession","");
+			session.setAttribute("nombreExpedienteSession", "");
+			session.setAttribute("tipoExpedienteSession", "");
 
 		}catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,null); 
@@ -681,67 +690,28 @@ public class ExpDatosGeneralesAction extends MasterAction
 				datosExpediente.put("datosGenerales",datosGenerales);
 				request.getSession().setAttribute("DATABACKUP",datosExpediente);
 				
-			}					
+			}
 	
 	        
-	        //PRIMERA SELECT: EXP_EXPEDIENTE--------------------------
-	        
-	        
-	        String whereCount = " WHERE ";
-	        int numeroCount = 0;
-	        
-			whereCount += " DEN."+ExpDenuncianteBean.C_IDPERSONA+" = PER."+CenPersonaBean.C_IDPERSONA+"(+)";
-			whereCount += "AND DEN."+ExpDenuncianteBean.C_IDINSTITUCION + " = '" + idInstitucion + "' AND ";
-			whereCount += "DEN."+ExpDenuncianteBean.C_IDINSTITUCION_TIPOEXPEDIENTE + " = '" + idInstitucion_TipoExpediente + "' AND ";
-			whereCount += "DEN."+ExpDenuncianteBean.C_IDTIPOEXPEDIENTE + " = '" + idTipoExpediente + "' AND ";	
-			whereCount += "DEN."+ExpDenuncianteBean.C_NUMEROEXPEDIENTE + " = '" + numExpediente + "' AND ";
-			whereCount += "DEN."+ExpDenuncianteBean.C_ANIOEXPEDIENTE + " = '" + anioExpediente + "' ";			
-			
-			numeroCount = expAdm.getNumeroDenunciantes(whereCount); 
+	        //PRIMERA SELECT: EXP_EXPEDIENTE--------------------------	        	        	        
 			
 			String where = " WHERE ";
 			
-			if ( numeroCount > 0) {
+			//join de las tablas EXPEDIENTE E, TIPOEXPEDIENTE T, PERSONA P, COLEGIADO C, INSTITUCION I
+			where += "E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE+" = T."+ExpTipoExpedienteBean.C_IDINSTITUCION+"(+)";
+			where += " AND E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE+" = T."+ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE+"(+)";
+			where += " AND E."+ExpExpedienteBean.C_IDINSTITUCION+" = I."+CenInstitucionBean.C_IDINSTITUCION+"(+)";
+			//where += " AND E."+ExpExpedienteBean.C_IDPERSONA+" = P."+CenPersonaBean.C_IDPERSONA+"(+)";
+			//where += " AND E."+ExpExpedienteBean.C_IDINSTITUCION+" = C."+CenColegiadoBean.C_IDINSTITUCION+"(+)";
+			//where += " AND E."+ExpExpedienteBean.C_IDPERSONA+" = C."+CenColegiadoBean.C_IDPERSONA+"(+)";
 			
-				//join de las tablas EXPEDIENTE E, TIPOEXPEDIENTE T, PERSONA P, COLEGIADO C, INSTITUCION I
-				where += "E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE+" = T."+ExpTipoExpedienteBean.C_IDINSTITUCION+"(+)";
-				where += " AND E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE+" = T."+ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE+"(+)";
-				where += " AND E."+ExpExpedienteBean.C_IDINSTITUCION+" = I."+CenInstitucionBean.C_IDINSTITUCION+"(+)";
-				where += " AND E."+ExpExpedienteBean.C_IDPERSONA+" = P."+CenPersonaBean.C_IDPERSONA+"(+)";
-				where += " AND E."+ExpExpedienteBean.C_IDINSTITUCION+" = C."+CenColegiadoBean.C_IDINSTITUCION+"(+)";
-				where += " AND E."+ExpExpedienteBean.C_IDPERSONA+" = C."+CenColegiadoBean.C_IDPERSONA+"(+)";
-				where += " AND DEN."+ExpDenuncianteBean.C_IDPERSONA+" = PER."+CenPersonaBean.C_IDPERSONA+"(+)";
-				where += " AND DEN."+ExpDenuncianteBean.C_IDPERSONA+" = CDEN."+CenColegiadoBean.C_IDPERSONA+"(+)";
-	        	where += " AND DEN."+ExpDenuncianteBean.C_IDINSTITUCION+" = CDEN."+CenColegiadoBean.C_IDINSTITUCION+"(+)";
+			where += "AND E."+ExpExpedienteBean.C_IDINSTITUCION + " = '" + idInstitucion + "' AND ";
+			where += "E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE + " = '" + idInstitucion_TipoExpediente + "' AND ";
+			where += "E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE + " = '" + idTipoExpediente + "' AND ";
+			where += "E."+ExpExpedienteBean.C_NUMEROEXPEDIENTE + " = '" + numExpediente + "' AND ";
+			where += "E."+ExpExpedienteBean.C_ANIOEXPEDIENTE + " = '" + anioExpediente + "' ";
 				
-				
-				where += "AND E."+ExpExpedienteBean.C_IDINSTITUCION + " = '" + idInstitucion + "' AND ";
-				where += "E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE + " = '" + idInstitucion_TipoExpediente + "' AND ";
-				where += "E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE + " = '" + idTipoExpediente + "' AND ";
-				where += "E."+ExpExpedienteBean.C_NUMEROEXPEDIENTE + " = '" + numExpediente + "' AND ";
-				where += "E."+ExpExpedienteBean.C_ANIOEXPEDIENTE + " = '" + anioExpediente + "' AND ";
-				where += "DEN."+ExpDenuncianteBean.C_IDINSTITUCION + " = '" + idInstitucion + "' AND ";
-				where += "DEN."+ExpDenuncianteBean.C_IDINSTITUCION_TIPOEXPEDIENTE + " = '" + idInstitucion_TipoExpediente + "' AND ";
-				where += "DEN."+ExpDenuncianteBean.C_IDTIPOEXPEDIENTE + " = '" + idTipoExpediente + "' AND ";	
-				where += "DEN."+ExpDenuncianteBean.C_NUMEROEXPEDIENTE + " = '" + numExpediente + "' AND ";
-				where += "DEN."+ExpDenuncianteBean.C_ANIOEXPEDIENTE + " = '" + anioExpediente + "' ";
-			} else {
-				//join de las tablas EXPEDIENTE E, TIPOEXPEDIENTE T, PERSONA P, COLEGIADO C, INSTITUCION I
-				where += "E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE+" = T."+ExpTipoExpedienteBean.C_IDINSTITUCION+"(+)";
-				where += " AND E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE+" = T."+ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE+"(+)";
-				where += " AND E."+ExpExpedienteBean.C_IDINSTITUCION+" = I."+CenInstitucionBean.C_IDINSTITUCION+"(+)";
-				where += " AND E."+ExpExpedienteBean.C_IDPERSONA+" = P."+CenPersonaBean.C_IDPERSONA+"(+)";
-				where += " AND E."+ExpExpedienteBean.C_IDINSTITUCION+" = C."+CenColegiadoBean.C_IDINSTITUCION+"(+)";
-				where += " AND E."+ExpExpedienteBean.C_IDPERSONA+" = C."+CenColegiadoBean.C_IDPERSONA+"(+)";
-				
-				where += "AND E."+ExpExpedienteBean.C_IDINSTITUCION + " = '" + idInstitucion + "' AND ";
-				where += "E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE + " = '" + idInstitucion_TipoExpediente + "' AND ";
-				where += "E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE + " = '" + idTipoExpediente + "' AND ";
-				where += "E."+ExpExpedienteBean.C_NUMEROEXPEDIENTE + " = '" + numExpediente + "' AND ";
-				where += "E."+ExpExpedienteBean.C_ANIOEXPEDIENTE + " = '" + anioExpediente + "' ";				
-			}
-				
-			datosExp = expAdm.selectDatosGenerales(where, numeroCount);
+			datosExp = expAdm.selectDatosGenerales(where);
 			Row fila = (Row)datosExp.elementAt(0);
 			if(copia!=null && copia.trim().equalsIgnoreCase("s")){
 				idTipoExpediente=idTipoExpedienteNew;
@@ -752,7 +722,8 @@ public class ExpDatosGeneralesAction extends MasterAction
 			form.setTipoExpediente(fila.getString(C_NOMBRETIPOEXPEDIENTE));
 			form.setNumExpediente(fila.getString(ExpExpedienteBean.C_NUMEROEXPEDIENTE));
 			form.setAnioExpediente(fila.getString(ExpExpedienteBean.C_ANIOEXPEDIENTE));
-			if(fila.getString(ExpExpedienteBean.C_IDTIPOEJG)!=null&&!fila.getString(ExpExpedienteBean.C_IDTIPOEJG).equals("")){
+			if(fila.getString(ExpTipoExpedienteBean.C_RELACIONEJG)!=null&&!fila.getString(ExpTipoExpedienteBean.C_RELACIONEJG).equals("")&&
+					!fila.getString(ExpTipoExpedienteBean.C_RELACIONEJG).equals("0")){
 				form.setNumExpDisciplinario(fila.getString(ExpExpedienteBean.C_NUMEROEJG));
 				form.setAnioExpDisciplinario(fila.getString(ExpExpedienteBean.C_ANIOEJG));
 				form.setTipoExpDisciplinario(fila.getString(ExpExpedienteBean.C_IDTIPOEJG));
@@ -786,12 +757,128 @@ public class ExpDatosGeneralesAction extends MasterAction
 			form.setFecha(GstDate.getFormatedDateShort("",fila.getString(ExpExpedienteBean.C_FECHA)));
 			form.setInstitucion(fila.getString(C_NOMBREINSTITUCION));
 			form.setAsunto(fila.getString(ExpExpedienteBean.C_ASUNTO));
-			form.setIdPersona(fila.getString(ExpExpedienteBean.C_IDPERSONA));
-			form.setIdDireccion(fila.getString(ExpExpedienteBean.C_IDDIRECCION));
-			form.setNombre(fila.getString(C_NOMBREPERSONA));
-			form.setPrimerApellido(fila.getString(CenPersonaBean.C_APELLIDOS1));
-			form.setSegundoApellido(fila.getString(CenPersonaBean.C_APELLIDOS2));
-			form.setNif(fila.getString(CenPersonaBean.C_NIFCIF));
+			//BEGIN BNS
+			// Cargamos el denunciado de la tabla de denunciante con ID 1
+			if (this.getIDInstitucion(request) != null && idTipoExpediente != null && request.getParameter("idInstitucion_TipoExpediente") != null &&
+					numExpediente != null && anioExpediente != null){
+				if (request.getAttribute("mostrarDenunciado") != null && "S".equalsIgnoreCase((String)request.getAttribute("mostrarDenunciado"))){
+					// Obtenemos los datos del denunciado
+					ExpDenunciadoAdm DenunciadoAdm = new ExpDenunciadoAdm (this.getUserBean(request));				
+					Hashtable hash = new Hashtable();
+					hash.put(ExpDenunciadoBean.C_IDINSTITUCION, this.getIDInstitucion(request));
+					hash.put(ExpDenunciadoBean.C_IDTIPOEXPEDIENTE, idTipoExpediente);
+					hash.put(ExpDenunciadoBean.C_IDINSTITUCION_TIPOEXPEDIENTE, request.getParameter("idInstitucion_TipoExpediente"));
+					hash.put(ExpDenunciadoBean.C_NUMEROEXPEDIENTE, numExpediente);
+					hash.put(ExpDenunciadoBean.C_ANIOEXPEDIENTE, anioExpediente);
+					hash.put(ExpDenunciadoBean.C_IDDENUNCIADO, ExpDenunciadoBean.ID_DENUNCIADO_PRINCIPAL);
+					
+			        Vector datos = DenunciadoAdm.select(hash);
+			        if (datos != null && datos.size() > 0){
+			        	ExpDenunciadoBean denunciado = (ExpDenunciadoBean)datos.get(0);
+			        	form.setIdPersonaDenunciado(denunciado.getIdPersona().toString());
+			        	if (denunciado.getIdDireccion() != null)
+			        		form.setIdDireccionDenunciado(denunciado.getIdDireccion().toString());
+			        	String idInstitucionOrigen = this.getIDInstitucion(request).toString();		        	
+			        	if (denunciado.getIdInstitucionOrigen() != null)
+			        		idInstitucionOrigen = denunciado.getIdInstitucionOrigen().toString();
+			        	
+			        	form.setIdInstitucionOrigenDenunciado(idInstitucionOrigen);
+			        	
+			        	// Obtenemos los datos personales
+			        	CenPersonaAdm personaAdm = new CenPersonaAdm (this.getUserBean(request));
+			        	Hashtable hashIdPers = new Hashtable();		
+						hashIdPers.put(CenPersonaBean.C_IDPERSONA,denunciado.getIdPersona());
+						Vector vPersona = personaAdm.selectByPK(hashIdPers);
+						CenPersonaBean personaBean = (CenPersonaBean) vPersona.elementAt(0);					
+						form.setNombreDenunciado(personaBean.getNombre());
+						form.setPrimerApellidoDenunciado(personaBean.getApellido1());
+						form.setSegundoApellidoDenunciado(personaBean.getApellido2());
+						form.setNifDenunciado(personaBean.getNIFCIF());
+						
+						// Obtenemos datos del colegiado de la institución del expediente
+						form.setnColDenunciado("");
+				        Hashtable hashCol = new Hashtable();
+				        CenColegiadoAdm colAdm = new CenColegiadoAdm (this.getUserBean(request));
+				        hashCol.put(CenColegiadoBean.C_IDINSTITUCION,this.getIDInstitucion(request).toString());
+				        hashCol.put(CenColegiadoBean.C_IDPERSONA,denunciado.getIdPersona());
+				        Vector datosCol = colAdm.select(hashCol);			        
+				        if(datosCol!=null && datosCol.size()>0){
+				        	CenColegiadoBean cBean = (CenColegiadoBean)datosCol.elementAt(0);
+				        	form.setnColDenunciado(cBean.getNColegiado());
+				        }
+				        else if (!idInstitucionOrigen.equals(this.getIDInstitucion(request).toString())){
+				        	// Si no existe, buscamos en la institución origen
+				        	hashCol.put(CenColegiadoBean.C_IDINSTITUCION,idInstitucionOrigen);
+					        hashCol.put(CenColegiadoBean.C_IDPERSONA,denunciado.getIdPersona());
+					        datosCol = colAdm.select(hashCol);			        
+					        if(datosCol!=null && datosCol.size()>0){
+					        	CenColegiadoBean cBean = (CenColegiadoBean)datosCol.elementAt(0);
+					        	form.setnColDenunciado(cBean.getNColegiado());
+					        }
+				        }			        	
+						
+			        }
+				}
+				if (request.getAttribute("mostrarDenunciante") != null &&  ((String)request.getAttribute("mostrarDenunciante")).equalsIgnoreCase("S")){
+					// Obtenemos los datos del denunciante
+					ExpDenuncianteAdm DenuncianteAdm = new ExpDenuncianteAdm (this.getUserBean(request));				
+					Hashtable hash = new Hashtable();
+					hash.put(ExpDenuncianteBean.C_IDINSTITUCION, this.getIDInstitucion(request));
+					hash.put(ExpDenuncianteBean.C_IDTIPOEXPEDIENTE, idTipoExpediente);
+					hash.put(ExpDenuncianteBean.C_IDINSTITUCION_TIPOEXPEDIENTE, request.getParameter("idInstitucion_TipoExpediente"));
+					hash.put(ExpDenuncianteBean.C_NUMEROEXPEDIENTE, numExpediente);
+					hash.put(ExpDenuncianteBean.C_ANIOEXPEDIENTE, anioExpediente);
+					hash.put(ExpDenuncianteBean.C_IDDENUNCIANTE, ExpDenuncianteBean.ID_DENUNCIANTE_PRINCIPAL);
+					
+			        Vector datos = DenuncianteAdm.select(hash);
+			        if (datos != null && datos.size() > 0){
+			        	ExpDenuncianteBean denunciante = (ExpDenuncianteBean)datos.get(0);
+			        	form.setIdPersonaDenunciante(denunciante.getIdPersona().toString());
+			        	if (denunciante.getIdDireccion() != null)
+			        		form.setIdDireccionDenunciante(denunciante.getIdDireccion().toString());
+			        	String idInstitucionOrigen = this.getIDInstitucion(request).toString();
+			        	if (denunciante.getIdInstitucionOrigen() != null)
+			        		idInstitucionOrigen = denunciante.getIdInstitucionOrigen().toString();
+			        	form.setIdInstitucionOrigenDenunciado(idInstitucionOrigen);
+			        	
+			        	// Obtenemos los datos personales
+			        	CenPersonaAdm personaAdm = new CenPersonaAdm (this.getUserBean(request));
+			        	Hashtable hashIdPers = new Hashtable();		
+						hashIdPers.put(CenPersonaBean.C_IDPERSONA,denunciante.getIdPersona());
+						Vector vPersona = personaAdm.selectByPK(hashIdPers);
+						CenPersonaBean personaBean = (CenPersonaBean) vPersona.elementAt(0);					
+						form.setNombreDenunciante(personaBean.getNombre());
+						form.setPrimerApellidoDenunciante(personaBean.getApellido1());
+						form.setSegundoApellidoDenunciante(personaBean.getApellido2());
+						form.setNifDenunciante(personaBean.getNIFCIF());
+						
+						// Obtenemos datos del colegiado en la institución del expediente
+						form.setnColDenunciante("");
+				        Hashtable hashCol = new Hashtable();
+				        CenColegiadoAdm colAdm = new CenColegiadoAdm (this.getUserBean(request));
+				        hashCol.put(CenColegiadoBean.C_IDINSTITUCION,this.getIDInstitucion(request).toString());
+				        hashCol.put(CenColegiadoBean.C_IDPERSONA,denunciante.getIdPersona());
+				        Vector datosCol = colAdm.select(hashCol);			        
+				        if(datosCol!=null && datosCol.size()>0){
+				        	CenColegiadoBean cBean = (CenColegiadoBean)datosCol.elementAt(0);
+				        	form.setnColDenunciante(cBean.getNColegiado());
+				        }
+				        else if (!idInstitucionOrigen.equals(this.getIDInstitucion(request).toString())){
+				        	// Si no existe, buscamos en la institución origen
+				        	hashCol.put(CenColegiadoBean.C_IDINSTITUCION,idInstitucionOrigen);
+					        hashCol.put(CenColegiadoBean.C_IDPERSONA,denunciante.getIdPersona());
+					        datosCol = colAdm.select(hashCol);			        
+					        if(datosCol!=null && datosCol.size()>0){
+					        	CenColegiadoBean cBean = (CenColegiadoBean)datosCol.elementAt(0);
+					        	form.setnColDenunciante(cBean.getNColegiado());
+					        }
+				        }			        	
+						
+			        }
+				}
+			}
+			
+			/*
 			if (fila.getString(C_NOMBREDENUNCIANTE).equalsIgnoreCase("null")) {
 				form.setNombreDenunciante("");
 			} else {
@@ -823,6 +910,8 @@ public class ExpDatosGeneralesAction extends MasterAction
 				form.setnColDenunciante(fila.getString(C_NCOLDENUNCIANTE));	
 			}	
 			form.setNumColegiado(fila.getString(CenColegiadoBean.C_NCOLEGIADO));
+			*/
+			//END BNS
 			form.setIdAreaSolo(fila.getString(ExpExpedienteBean.C_IDAREA));
 			form.setIdMateriaSolo(fila.getString(ExpExpedienteBean.C_IDMATERIA));
 			form.setJuzgado(fila.getString(ExpExpedienteBean.C_JUZGADO));
@@ -1067,9 +1156,9 @@ public class ExpDatosGeneralesAction extends MasterAction
 	        expBean.setIdMateria(form.getIdMateria().equals("")?null:Integer.valueOf(form.getIdMateria()));
 	        //expBean.setTipoExpDisciplinario(form.getTipoExpDisciplinario());
 	        //expBean.setIdEstado(form.getEstado().equals("")?null:Integer.valueOf(form.getEstado()));
-	        expBean.setIdPersona(Long.valueOf(form.getIdPersona()));
+	        //expBean.setIdPersona(Long.valueOf(form.getIdPersona()));
 	        //if(form.getIdDireccion()!=null && !form.getIdDireccion().trim().equals(""))
-	        	expBean.setIdDireccion(form.getIdDireccion());
+	        	//expBean.setIdDireccion(form.getIdDireccion());
 	       // else
 	        //	expBean.setIdDireccion(null);
 	        	
@@ -1316,7 +1405,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 				            }
 						}// fin del if encontrado==false
 					}// fin del else															        																						        			        	
-		        }// fin del for
+		        }// fin del for		        
 		        tra.commit();		               
 		    } 
 		    catch (Exception e) 
@@ -1374,7 +1463,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 		            	if (estBeanNew.getEjecucionSancion().equals("S")){
 		            		Hashtable hEjSancion = new Hashtable();
 		            		hEjSancion.put("idInstitucion",userBean.getLocation());
-		            		hEjSancion.put("idPersona",form.getIdPersona());
+		            		hEjSancion.put("idPersona",form.getIdPersonaDenunciado());
 		            		request.getSession().setAttribute("ejecucionSancion",hEjSancion);
 		            		forward = "ejecucionSancion"; 
 		            		
@@ -1382,6 +1471,20 @@ public class ExpDatosGeneralesAction extends MasterAction
 		            }
 		        	
 		        }
+		        
+		        //BEGIN BNS
+		        // Guardamos el denunciante y denunciado principal (id=1) en sus tablas correspondientes
+		        if (form.getIdPersonaDenunciado() != null && !"".equals(form.getIdPersonaDenunciado()) && 
+		        	form.getIdDireccionDenunciado() != null && !"".equals(form.getIdDireccionDenunciado())){
+		        	guardarDenunciadoPrincipal(form,request,expBean.getIdInstitucion_tipoExpediente(), expBean.getIdTipoExpediente());
+		        }
+		        if (form.getIdPersonaDenunciante() != null && !"".equals(form.getIdPersonaDenunciante()) && 
+			        	form.getIdDireccionDenunciante() != null && !"".equals(form.getIdDireccionDenunciante())){
+		        	guardarDenunciantePrincipal(form,request,expBean.getIdInstitucion_tipoExpediente(), expBean.getIdTipoExpediente());
+		        }
+		        //END BNS
+		        
+		        
 		        tx.commit();
 		        if(forward.equals(""))
 					forward = exitoRefresco("messages.updated.success",request);
@@ -1395,6 +1498,100 @@ public class ExpDatosGeneralesAction extends MasterAction
 		return forward;
 		
 		
+	}
+	
+	private boolean guardarDenunciadoPrincipal(ExpDatosGeneralesForm form,
+			HttpServletRequest request, Integer idInstitucion_tipoExpediente, Integer idTipoExpediente) throws ClsExceptions {
+		boolean bOk = false;
+		
+		ExpDenunciadoBean denBean = new ExpDenunciadoBean();	    
+	    ExpDenunciadoAdm  denAdm  = new ExpDenunciadoAdm(this.getUserBean(request));
+	    Integer idInstitucion = this.getIDInstitucion(request);
+	    String numExpediente = form.getNumExpediente();
+	    String anioExpediente = form.getAnioExpediente();
+	    
+	    if(numExpediente==null || numExpediente.equals(""))
+	           numExpediente = (String) request.getSession().getAttribute("numeroExpedienteSession");
+	   
+		if(anioExpediente==null || anioExpediente.equals(""))
+	       anioExpediente = (String) request.getSession().getAttribute("anioExpedienteSession");
+		
+		String[] claves = {ExpDenunciadoBean.C_IDINSTITUCION,ExpDenunciadoBean.C_IDTIPOEXPEDIENTE,
+				ExpDenunciadoBean.C_IDINSTITUCION_TIPOEXPEDIENTE,ExpDenunciadoBean.C_NUMEROEXPEDIENTE,
+				ExpDenunciadoBean.C_ANIOEXPEDIENTE,ExpDenunciadoBean.C_IDDENUNCIADO};
+		
+		Hashtable hash = new Hashtable();
+		hash.put(ExpDenunciadoBean.C_IDINSTITUCION, idInstitucion);
+		hash.put(ExpDenunciadoBean.C_IDTIPOEXPEDIENTE, idTipoExpediente);
+		hash.put(ExpDenunciadoBean.C_IDINSTITUCION_TIPOEXPEDIENTE, idInstitucion_tipoExpediente);
+		hash.put(ExpDenunciadoBean.C_NUMEROEXPEDIENTE, numExpediente);
+		hash.put(ExpDenunciadoBean.C_ANIOEXPEDIENTE, anioExpediente);
+		hash.put(ExpDenunciadoBean.C_IDDENUNCIADO, ExpDenunciadoBean.ID_DENUNCIADO_PRINCIPAL);
+		
+		if (denAdm.deleteDirect(hash, claves)){			
+		    denBean.setIdInstitucion(idInstitucion);
+		    denBean.setIdTipoExpediente(idTipoExpediente);
+		    denBean.setIdInstitucion_TipoExpediente(idInstitucion_tipoExpediente);						
+		    denBean.setNumeroExpediente(Integer.valueOf(numExpediente));
+		    denBean.setAnioExpediente(Integer.valueOf(anioExpediente));
+		    denBean.setIdDenunciado(ExpDenunciadoBean.ID_DENUNCIADO_PRINCIPAL);
+		    denBean.setIdPersona(Long.valueOf(form.getIdPersonaDenunciado()));		    
+		    denBean.setIdDireccion(Long.valueOf(form.getIdDireccionDenunciado()));
+		    if (form.getIdInstitucionOrigenDenunciado() != null && !"".equals(form.getIdInstitucionOrigenDenunciado()))
+		    	denBean.setIdInstitucionOrigen(Integer.valueOf(form.getIdInstitucionOrigenDenunciado()));
+		    	    
+		    if(denAdm.insert(denBean)) {
+		    	bOk = true;
+		    }
+		}
+	    return bOk;
+	}
+	
+	private boolean guardarDenunciantePrincipal(ExpDatosGeneralesForm form,
+			HttpServletRequest request, Integer idInstitucion_tipoExpediente, Integer idTipoExpediente) throws ClsExceptions {
+		boolean bOk = false;
+		
+		ExpDenuncianteBean denBean = new ExpDenuncianteBean();	    
+	    ExpDenuncianteAdm  denAdm  = new ExpDenuncianteAdm(this.getUserBean(request));
+	    Integer idInstitucion = this.getIDInstitucion(request);
+	    String numExpediente = form.getNumExpediente();
+	    String anioExpediente = form.getAnioExpediente();
+	    
+	    if(numExpediente==null || numExpediente.equals(""))
+	           numExpediente = (String) request.getSession().getAttribute("numeroExpedienteSession");
+	   
+		if(anioExpediente==null || anioExpediente.equals(""))
+	       anioExpediente = (String) request.getSession().getAttribute("anioExpedienteSession");
+	    
+		String[] claves = {ExpDenuncianteBean.C_IDINSTITUCION,ExpDenuncianteBean.C_IDTIPOEXPEDIENTE,
+				ExpDenuncianteBean.C_IDINSTITUCION_TIPOEXPEDIENTE,ExpDenuncianteBean.C_NUMEROEXPEDIENTE,
+				ExpDenuncianteBean.C_ANIOEXPEDIENTE,ExpDenuncianteBean.C_IDDENUNCIANTE};
+		
+		Hashtable hash = new Hashtable();
+		hash.put(ExpDenuncianteBean.C_IDINSTITUCION, idInstitucion);
+		hash.put(ExpDenuncianteBean.C_IDTIPOEXPEDIENTE, idTipoExpediente);
+		hash.put(ExpDenuncianteBean.C_IDINSTITUCION_TIPOEXPEDIENTE, idInstitucion_tipoExpediente);
+		hash.put(ExpDenuncianteBean.C_NUMEROEXPEDIENTE, numExpediente);
+		hash.put(ExpDenuncianteBean.C_ANIOEXPEDIENTE, anioExpediente);
+		hash.put(ExpDenuncianteBean.C_IDDENUNCIANTE, ExpDenuncianteBean.ID_DENUNCIANTE_PRINCIPAL);
+		
+		if (denAdm.deleteDirect(hash, claves)){			
+		    denBean.setIdInstitucion(idInstitucion);
+		    denBean.setIdTipoExpediente(idTipoExpediente);
+		    denBean.setIdInstitucion_TipoExpediente(idInstitucion_tipoExpediente);
+		    denBean.setNumeroExpediente(Integer.valueOf(numExpediente));
+		    denBean.setAnioExpediente(Integer.valueOf(anioExpediente));
+		    denBean.setIdDenunciante(ExpDenuncianteBean.ID_DENUNCIANTE_PRINCIPAL);
+		    denBean.setIdPersona(Long.valueOf(form.getIdPersonaDenunciante()));
+		    denBean.setIdDireccion(Long.valueOf(form.getIdDireccionDenunciante()));
+		    if (form.getIdInstitucionOrigenDenunciante() != null && !"".equals(form.getIdInstitucionOrigenDenunciante()))
+		    	denBean.setIdInstitucionOrigen(Integer.valueOf(form.getIdInstitucionOrigenDenunciante()));
+		    
+		    if(denAdm.insert(denBean)) {
+		    	bOk = true;
+		    }
+		}
+	    return bOk;
 	}
 	
 	/* (non-Javadoc)
@@ -1411,22 +1608,42 @@ public class ExpDatosGeneralesAction extends MasterAction
 			ExpDatosGeneralesForm form = (ExpDatosGeneralesForm)formulario;
 
 
-			HttpSession ses = request.getSession();
-			UsrBean user = (UsrBean)ses.getAttribute("USRBEAN");
+			HttpSession session = request.getSession();
+			UsrBean user = (UsrBean)session.getAttribute("USRBEAN");
 			String idInstitucion = user.getLocation();
 			Hashtable hash = new Hashtable();
+			ExpExpedienteBean expDatosParticulares = null;
 			request.setAttribute("accion","nuevo");
-
-			if(request.getSession().getAttribute("DATABACKUP") instanceof Hashtable){
-				hash = (Hashtable)request.getSession().getAttribute("DATABACKUP");	  
-
-			}else if(request.getSession().getAttribute("DATABACKUP") instanceof HashMap<?, ?>){
-				HashMap hashMap = (HashMap)request.getSession().getAttribute("DATABACKUP");	  
-				hash = (Hashtable)hashMap.get("datosGenerales");
+			
+			if(session.getAttribute("DATABACKUP") != null){
+				if(session.getAttribute("DATABACKUP") instanceof Hashtable){
+					hash = (Hashtable)session.getAttribute("DATABACKUP");	  
+	
+				}else if(session.getAttribute("DATABACKUP") instanceof HashMap<?, ?>){
+					HashMap hashMap = (HashMap)session.getAttribute("DATABACKUP");	  
+					hash = (Hashtable)hashMap.get("datosGenerales");
+					expDatosParticulares = (ExpExpedienteBean)hashMap.get("datosParticulares");
+				} else {
+					throw new ClsExceptions("Se ha perdido la información de sesión (DATABACKUP no encontrado)");
+				}
+			} else {
+				throw new ClsExceptions("Se ha perdido la información de sesión (DATABACKUP no encontrado)");
 			}
 			
-			String idInstitucion_TipoExpediente = (String)hash.get(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE);
-			String idTipoExpediente = (String)hash.get(ExpExpedienteBean.C_IDTIPOEXPEDIENTE);
+			String idInstitucion_TipoExpediente = "";
+			if (hash.containsKey(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE) && 
+					!"".equals((String)hash.get(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE)))
+				idInstitucion_TipoExpediente = (String)hash.get(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE);
+			else
+				throw new ClsExceptions("Se ha perdido la información de sesión ("+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE+" no encontrado)");
+			
+			String idTipoExpediente = "";
+			if (hash.containsKey(ExpExpedienteBean.C_IDTIPOEXPEDIENTE) && 
+					!"".equals((String)hash.get(ExpExpedienteBean.C_IDTIPOEXPEDIENTE)))
+				idTipoExpediente = (String)hash.get(ExpExpedienteBean.C_IDTIPOEXPEDIENTE);
+			else
+				throw new ClsExceptions("Se ha perdido la información de sesión ("+ExpExpedienteBean.C_IDTIPOEXPEDIENTE+" no encontrado)");
+			
 
 			// obtenemos el tipo de expediente para ver el tiempo de caducidad y calcularlo
 			Hashtable hashTipo = new Hashtable();
@@ -1447,7 +1664,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			expBean.setIdInstitucion(Integer.valueOf(idInstitucion));
 			expBean.setIdInstitucion_tipoExpediente(Integer.valueOf(idInstitucion_TipoExpediente));
 			expBean.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));
-			expBean.setIdPersona(form.getIdPersona().equals("")?null:Long.valueOf(form.getIdPersona()));   
+			expBean.setIdPersona(form.getIdPersonaDenunciado().equals("")?null:Long.valueOf(form.getIdPersonaDenunciado()));   
 			expBean.setNumExpDisciplinario(form.getNumExpDisciplinario().equals("")?null:Integer.valueOf(form.getNumExpDisciplinario()));
 			expBean.setAnioExpDisciplinario(form.getAnioExpDisciplinario().equals("")?null:Integer.valueOf(form.getAnioExpDisciplinario()));
 			if(form.getTipoExpDisciplinario()!=null && !form.getTipoExpDisciplinario().trim().equals(""))
@@ -1542,7 +1759,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			expBean.setIdMateria(form.getIdMateria().equals("")?null:Integer.valueOf(form.getIdMateria()));
 			expBean.setIdPretension(form.getIdPretension().equals("")?null:Integer.valueOf(form.getIdPretension()));
 			expBean.setOtrasPretensiones(form.getOtrasPretensiones());
-			expBean.setIdDireccion(form.getIdDireccion());
+			expBean.setIdDireccion(form.getIdDireccionDenunciado());
 			expBean.setDescripcionResolucion("");
 			expBean.setActuacionesPrescritas(null);
 			expBean.setAnotacionesCanceladas(null);
@@ -1559,7 +1776,19 @@ public class ExpDatosGeneralesAction extends MasterAction
 			
 			Integer numExpAGuardar =null;
 			Integer anioExpAGuardar = null;
-			Date fechaActual = (Date)GstDate.convertirFechaDiaMesAnio(form.getFecha());
+			//BEGIN BNS Si no es obligatorio y no se rellena mete la fecha actual
+			String sFecha = form.getFecha();
+			Date fechaActual = null;
+			if (sFecha == null || sFecha.equals(""))
+				fechaActual = new Date();
+			else
+				fechaActual = (Date)GstDate.convertirFechaDiaMesAnio(sFecha);
+			//END BNS
+			
+			if (!hash.containsKey(ExpExpedienteBean.C_IDINSTITUCION) ||
+					!hash.containsKey(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE) ||
+					!hash.containsKey(ExpExpedienteBean.C_IDTIPOEXPEDIENTE))
+				throw new ClsExceptions("Se ha perdido la información de sesión ("+ExpExpedienteBean.C_IDINSTITUCION+" o "+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE+" o "+ExpExpedienteBean.C_IDTIPOEXPEDIENTE+" no encontrado)");
 			
 			Hashtable numAnioExp= expAdm.getNewNumAnioExpediente(hash,GstDate.getYear(fechaActual));
 			Integer numExp = (Integer)numAnioExp.get(ExpExpedienteBean.C_NUMEROEXPEDIENTE);
@@ -1571,31 +1800,30 @@ public class ExpDatosGeneralesAction extends MasterAction
 			expBean.setAnioExpediente(anioExpAGuardar);	
 
 			if(form.getNumExpediente()!=null && !form.getNumExpediente().trim().equalsIgnoreCase("")){
-
 				hash.put("copia","s");
-				request.getSession().setAttribute("copiaSession", "s");	
+				session.setAttribute("copiaSession", "s");	
 		    }else{
-		    	request.getSession().setAttribute("copiaSession", "");
+		    	session.setAttribute("copiaSession", "");
 		    	hash.put("copia","");
 		    }
 			form.setAnioExpediente(anioExpAGuardar.toString());
 			form.setNumExpediente(numExpAGuardar.toString());
-			request.getSession().setAttribute("anioExpedienteSession", anioExpAGuardar.toString());			
-			request.getSession().setAttribute("numeroExpedienteSession", numExp.toString());
-			request.getSession().setAttribute("institucionSession",idInstitucion);
-			request.getSession().setAttribute("institucionExpeSession",idInstitucion_TipoExpediente);
+			session.setAttribute("anioExpedienteSession", anioExpAGuardar.toString());			
+			session.setAttribute("numeroExpedienteSession", numExp.toString());
+			session.setAttribute("institucionSession",idInstitucion);
+			session.setAttribute("institucionExpeSession",idInstitucion_TipoExpediente);
 			if(form.getRelacionExpediente()!=null && !form.getRelacionExpediente().trim().equals("")){
-				request.getSession().setAttribute("nombreExpedienteSession", form.getNombreRelacionExpediente());
-				request.getSession().setAttribute("tipoExpedienteSession", form.getRelacionExpediente());
+				session.setAttribute("nombreExpedienteSession", form.getNombreRelacionExpediente());
+				session.setAttribute("tipoExpedienteSession", form.getRelacionExpediente());
 			}else{
-				request.getSession().setAttribute("nombreExpedienteSession", form.getTipoExpediente());
-				request.getSession().setAttribute("tipoExpedienteSession", idTipoExpediente);
+				session.setAttribute("nombreExpedienteSession", form.getTipoExpediente());
+				session.setAttribute("tipoExpedienteSession", idTipoExpediente);
 			}
 			//Pasar el nume y el año
 			request.setAttribute("numeroExpediente", numExp.toString());
 			request.setAttribute("anioExpediente", anioExpAGuardar.toString());
-			request.getSession().setAttribute("numeroExpediente", numExp.toString());
-			request.getSession().setAttribute("anioExpediente", anioExpAGuardar.toString());
+			session.setAttribute("numeroExpediente", numExp.toString());
+			session.setAttribute("anioExpediente", anioExpAGuardar.toString());
 
 			
 			hash.put(ExpExpedienteBean.C_ANIOEXPEDIENTE,anioExpAGuardar.toString());
@@ -1643,7 +1871,96 @@ public class ExpDatosGeneralesAction extends MasterAction
 						throw new ClsExceptions(e,"Error al cambiar el estado");
 					}
 					
-					
+					String sCopia = "N";
+					if (hash.containsKey("copia"))
+						sCopia = (String) hash.get("copia");
+					if ("S".equalsIgnoreCase(sCopia)){
+						if (expDatosParticulares != null){
+							// Obtenemos los datos del expediente orignal
+							ExpExpedienteBean oldExpBean = new ExpExpedienteBean();
+							oldExpBean.setIdInstitucion(expDatosParticulares.getIdInstitucion());
+						    oldExpBean.setIdInstitucion_tipoExpediente(expDatosParticulares.getIdInstitucion_tipoExpediente());
+						    oldExpBean.setIdTipoExpediente(expDatosParticulares.getIdTipoExpediente());  
+						    oldExpBean.setNumeroExpediente(expDatosParticulares.getNumeroExpediente());
+						    oldExpBean.setAnioExpediente(expDatosParticulares.getAnioExpediente());
+						    
+							// Insertamos todos los denunciados en el nuevo	expediente							   
+						    ExpDenunciadoAdm  denAdm  = new ExpDenunciadoAdm(this.getUserBean(request));
+						    
+						    List<ExpDenunciadoBean> denunciadosExpOld = denAdm.getDenunciados(oldExpBean);
+						    if (denunciadosExpOld != null && denunciadosExpOld.size() > 0){
+						    	java.util.Iterator<ExpDenunciadoBean> iteraDenunciadosExpOld = denunciadosExpOld.iterator();
+						    	while (iteraDenunciadosExpOld.hasNext()){
+						    		ExpDenunciadoBean denunciado = iteraDenunciadosExpOld.next();
+						    		denunciado.setIdInstitucion(Integer.valueOf(idInstitucion));
+						    		denunciado.setIdInstitucion_TipoExpediente(Integer.valueOf(idInstitucion_TipoExpediente));
+						    		denunciado.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));  
+						    		denunciado.setNumeroExpediente(Integer.valueOf(form.getNumExpediente()));
+						    		denunciado.setAnioExpediente(Integer.valueOf(form.getAnioExpediente()));
+						    		
+						    		if(!denAdm.insert(denunciado)) {
+									    return this.exitoModalSinRefresco("messages.inserted.error",request);
+						    		}
+						    	}
+						    }
+						    
+						 // Insertamos todos los denunciantes en el nuevo expediene						   
+						    ExpDenuncianteAdm  denteAdm  = new ExpDenuncianteAdm(this.getUserBean(request));						    
+						    
+						    List<ExpDenuncianteBean> denunciantesExpOld = denteAdm.getDenunciantes(oldExpBean);
+						    if (denunciantesExpOld != null && denunciantesExpOld.size() > 0){
+						    	java.util.Iterator<ExpDenuncianteBean> iteraDenunciantesExpOld = denunciantesExpOld.iterator();
+						    	while (iteraDenunciantesExpOld.hasNext()){
+						    		ExpDenuncianteBean denunciante = iteraDenunciantesExpOld.next();
+						    		denunciante.setIdInstitucion(Integer.valueOf(idInstitucion));
+						    		denunciante.setIdInstitucion_TipoExpediente(Integer.valueOf(idInstitucion_TipoExpediente));
+						    		denunciante.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));  
+						    		denunciante.setNumeroExpediente(Integer.valueOf(form.getNumExpediente()));
+						    		denunciante.setAnioExpediente(Integer.valueOf(form.getAnioExpediente()));
+						    		
+						    		if(!denteAdm.insert(denunciante)) {
+									    return this.exitoModalSinRefresco("messages.inserted.error",request);
+						    		}
+						    	}
+						    }
+						} else {
+							return this.exitoModalSinRefresco("messages.inserted.error",request);
+						}
+					} else {
+						//Se inserta el denunciado si hay
+						if (form.getIdPersonaDenunciado() != null && !form.getIdPersonaDenunciado().equals("")){
+						    ExpDenunciadoBean denBean = new ExpDenunciadoBean();	    
+						    ExpDenunciadoAdm  denAdm  = new ExpDenunciadoAdm(this.getUserBean(request));
+						    denBean.setIdInstitucion(Integer.valueOf(idInstitucion));
+						    denBean.setIdInstitucion_TipoExpediente(Integer.valueOf(idInstitucion_TipoExpediente));
+						    denBean.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));  
+						    denBean.setNumeroExpediente(Integer.valueOf(form.getNumExpediente()));
+						    denBean.setAnioExpediente(Integer.valueOf(form.getAnioExpediente()));
+						    denBean.setIdDenunciado(ExpDenunciadoBean.ID_DENUNCIADO_PRINCIPAL);
+						    denBean.setIdPersona(Long.valueOf(form.getIdPersonaDenunciado()));
+						    		    
+						    if(!denAdm.insert(denBean)) {
+							    return this.exitoModalSinRefresco("messages.inserted.error",request);
+						    }		
+						}
+						
+						//Se inserta el denunciante si hay
+						if (form.getIdPersonaDenunciante() != null && !form.getIdPersonaDenunciante().equals("")){
+						    ExpDenuncianteBean denBean = new ExpDenuncianteBean();	    
+						    ExpDenuncianteAdm  denAdm  = new ExpDenuncianteAdm(this.getUserBean(request));
+						    denBean.setIdInstitucion(Integer.valueOf(idInstitucion));
+						    denBean.setIdInstitucion_TipoExpediente(Integer.valueOf(idInstitucion_TipoExpediente));
+						    denBean.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));  
+						    denBean.setNumeroExpediente(Integer.valueOf(form.getNumExpediente()));
+						    denBean.setAnioExpediente(Integer.valueOf(form.getAnioExpediente()));
+						    denBean.setIdDenunciante(ExpDenuncianteBean.ID_DENUNCIANTE_PRINCIPAL);
+						    denBean.setIdPersona(Long.valueOf(form.getIdPersonaDenunciante()));
+						    		    
+						    if(!denAdm.insert(denBean)) {
+							    return this.exitoModalSinRefresco("messages.inserted.error",request);
+						    }		
+						}
+					}
 					Hashtable nuevo = expAdm.beanToHashTable(expBean); 
 					if (expAdm.updateDirect(nuevo,null,null)){
 						//Averiguamos si el estado tiene ESEJECUCIONSANCION='S'
@@ -1651,8 +1968,8 @@ public class ExpDatosGeneralesAction extends MasterAction
 							request.setAttribute("nuevo","true");
 							Hashtable hEjSancion = new Hashtable();
 							hEjSancion.put("idInstitucion",idInstitucion);
-							hEjSancion.put("idPersona",form.getIdPersona());
-							request.getSession().setAttribute("ejecucionSancion",hEjSancion);
+							hEjSancion.put("idPersona",form.getIdPersonaDenunciado());
+							session.setAttribute("ejecucionSancion",hEjSancion);
 							tx.commit();
 							return "ejecucionSancion";
 						}
@@ -1697,23 +2014,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 					        throw new ClsExceptions("Error al crear campos valor 2. "+admCampoVal.getError());
 					    }
 					}
-					
-					//Se inserta el denunciante si hay
-					if (form.getIdPersonaDenunciante() != null && !form.getIdPersonaDenunciante().equals("")){
-					    ExpDenuncianteBean denBean = new ExpDenuncianteBean();	    
-					    ExpDenuncianteAdm  denAdm  = new ExpDenuncianteAdm(this.getUserBean(request));
-					    denBean.setIdInstitucion(Integer.valueOf(idInstitucion));
-					    denBean.setIdInstitucion_TipoExpediente(Integer.valueOf(idInstitucion_TipoExpediente));
-					    denBean.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));  
-					    denBean.setNumeroExpediente(Integer.valueOf(form.getNumExpediente()));
-					    denBean.setAnioExpediente(Integer.valueOf(form.getAnioExpediente()));
-					    denBean.setIdDenunciante(denAdm.getNewIdDenunciante(denBean));
-					    denBean.setIdPersona(Long.valueOf(form.getIdPersonaDenunciante()));
-					    		    
-					    if(!denAdm.insert(denBean)) {
-						    return this.exitoModalSinRefresco("messages.inserted.error",request);
-					    }		
-					}
+										
 				}
 				
 				tx.commit();

@@ -26,9 +26,10 @@ import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.ExpCampoTipoExpedienteAdm;
 import com.siga.beans.ExpCampoTipoExpedienteBean;
+import com.siga.beans.ExpDenunciadoAdm;
+import com.siga.beans.ExpDenunciadoBean;
 import com.siga.beans.ExpDenuncianteAdm;
 import com.siga.beans.ExpDenuncianteBean;
-import com.siga.beans.ExpExpedienteAdm;
 import com.siga.beans.ExpExpedienteBean;
 import com.siga.expedientes.form.ExpDenuncianteForm;
 import com.siga.general.MasterAction;
@@ -91,13 +92,9 @@ public class ExpDenuncianteAction extends MasterAction {
 	        request.setAttribute("datosPersonas", datosPersonas);
 	           
 	        //Recuperamos el nombre del denunciado
-	        ExpExpedienteAdm expAdm = new ExpExpedienteAdm(this.getUserBean(request));
-	        Vector vExp = expAdm.selectByPK(hash);        
-	        Hashtable hashIdPers = new Hashtable();		
-			hashIdPers.put(CenPersonaBean.C_IDPERSONA,((ExpExpedienteBean)vExp.elementAt(0)).getIdPersona());
-	        Vector vPersona = personaAdm.selectByPK(hashIdPers);
-	        CenPersonaBean personaBean = (CenPersonaBean) vPersona.elementAt(0);
-	        String nombrePersona = personaBean.getNombre() + " " + personaBean.getApellido1() + " " + personaBean.getApellido2();
+	        ExpDenunciadoAdm denunciadoAdm = new ExpDenunciadoAdm (this.getUserBean(request));
+	        CenPersonaBean denunciadoPpal = denunciadoAdm.getPersonaDenunciadoById(Integer.valueOf(idInstitucion), Integer.valueOf(idInstitucion_TipoExpediente), Integer.valueOf(idTipoExpediente), numExpediente,Integer.valueOf(anioExpediente), ExpDenunciadoBean.ID_DENUNCIADO_PRINCIPAL);
+	        String nombrePersona = denunciadoPpal.getNombreCompleto();
 	        request.setAttribute("denunciado", nombrePersona);
 	        
 	        String denunciado="";
@@ -295,24 +292,31 @@ public class ExpDenuncianteAction extends MasterAction {
 	 */
 	protected String borrar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
 	{
+		boolean bPrincipal = true;
 		try{
 			ExpDenuncianteForm form = (ExpDenuncianteForm)formulario;
 		    ExpDenuncianteAdm expAdm = new ExpDenuncianteAdm (this.getUserBean(request));
 		    
 		    Vector vOcultos = form.getDatosTablaOcultos(0);
-		    Hashtable hash = new Hashtable();
-		    hash.put(ExpDenuncianteBean.C_IDINSTITUCION, (String)vOcultos.elementAt(0));
-		    hash.put(ExpDenuncianteBean.C_IDINSTITUCION_TIPOEXPEDIENTE, (String)vOcultos.elementAt(1));
-		    hash.put(ExpDenuncianteBean.C_IDTIPOEXPEDIENTE, (String)vOcultos.elementAt(2));	    
-		    hash.put(ExpDenuncianteBean.C_NUMEROEXPEDIENTE, (String)vOcultos.elementAt(3));
-		    hash.put(ExpDenuncianteBean.C_ANIOEXPEDIENTE, (String)vOcultos.elementAt(4));
-		    hash.put(ExpDenuncianteBean.C_IDDENUNCIANTE, (String)vOcultos.elementAt(5));    
-		    expAdm.delete(hash);
+		    if (!ExpDenuncianteBean.ID_DENUNCIANTE_PRINCIPAL.toString().equals((String)vOcultos.elementAt(5))){
+		    	bPrincipal = false;
+			    Hashtable hash = new Hashtable();
+			    hash.put(ExpDenuncianteBean.C_IDINSTITUCION, (String)vOcultos.elementAt(0));
+			    hash.put(ExpDenuncianteBean.C_IDINSTITUCION_TIPOEXPEDIENTE, (String)vOcultos.elementAt(1));
+			    hash.put(ExpDenuncianteBean.C_IDTIPOEXPEDIENTE, (String)vOcultos.elementAt(2));	    
+			    hash.put(ExpDenuncianteBean.C_NUMEROEXPEDIENTE, (String)vOcultos.elementAt(3));
+			    hash.put(ExpDenuncianteBean.C_ANIOEXPEDIENTE, (String)vOcultos.elementAt(4));
+			    hash.put(ExpDenuncianteBean.C_IDDENUNCIANTE, (String)vOcultos.elementAt(5));    
+			    expAdm.delete(hash);
+		    }
 		}
 		catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,null); 
 		}
-		return exitoRefresco("messages.deleted.success",request);
+		if (bPrincipal){
+			return exito("expedientes.auditoria.denunciantes.borrarDenunciantePpal.error", request);
+		} else
+			return exitoRefresco("messages.deleted.success",request);
 	
 	}
 	

@@ -979,7 +979,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 	 * @return vector con los datos de un expediente  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 * */
-	public Vector selectDatosGenerales(String where, int numeroCount) throws ClsExceptions 
+	public Vector selectDatosGenerales(String where) throws ClsExceptions 
 	{
 		Vector datos = new Vector();
 		
@@ -1002,6 +1002,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		    sql += "T."+ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE+", ";	
 		    sql += "T."+ExpTipoExpedienteBean.C_NOMBRE+" AS NOMBRETIPOEXPEDIENTE, ";
 		    sql += "I."+CenInstitucionBean.C_ABREVIATURA+" AS NOMBREINSTITUCION, ";
+		    /* BNS QUITO LOS DATOS DE DENUNCIANTE YA QUE SE OBTIENEN EN OTRA QUERY
 		    sql += "P."+CenPersonaBean.C_NOMBRE+" AS NOMBREPERSONA, ";
 		    sql += "P."+CenPersonaBean.C_APELLIDOS1+", ";
 		    sql += "P."+CenPersonaBean.C_APELLIDOS2+", ";
@@ -1013,21 +1014,27 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		    	sql += "PER."+CenPersonaBean.C_APELLIDOS2+" AS APELLIDO2DENUNCIANTE, ";
 		    	sql += "PER."+CenPersonaBean.C_NIFCIF+" AS NIFDENUNCIANTE, ";
 		    	sql += "CDEN.NCOLEGIADO AS NCOLDENUNCIANTE";
-		    }
-		    sql += ", C."+CenColegiadoBean.C_NCOLEGIADO+" ";	
-		    sql += ", (select IDTIPOIVA||','|| replace(VALOR,',','.')  from pys_tipoiva where idtipoiva = E.idtipoiva) VALOR_IVA ";
+		    }		    
+		    sql += ", C."+CenColegiadoBean.C_NCOLEGIADO+" ";
+		    */	
+		    sql += "(select IDTIPOIVA||','|| replace(VALOR,',','.')  from pys_tipoiva where idtipoiva = E.idtipoiva) VALOR_IVA ";
 		    
 			sql += " FROM ";
-			sql += ExpExpedienteBean.T_NOMBRETABLA+" E, "+CenInstitucionBean.T_NOMBRETABLA+" I, "+CenColegiadoBean.T_NOMBRETABLA+" C, "+ExpTipoExpedienteBean.T_NOMBRETABLA+" T, "+CenPersonaBean.T_NOMBRETABLA+" P";
+			//sql += ExpExpedienteBean.T_NOMBRETABLA+" E, "+CenInstitucionBean.T_NOMBRETABLA+" I, "+CenColegiadoBean.T_NOMBRETABLA+" C, "+ExpTipoExpedienteBean.T_NOMBRETABLA+" T, "+CenPersonaBean.T_NOMBRETABLA+" P";
+			sql += ExpExpedienteBean.T_NOMBRETABLA+" E, "+CenInstitucionBean.T_NOMBRETABLA+" I, "+ExpTipoExpedienteBean.T_NOMBRETABLA+" T";
+			/*
 			if (numeroCount > 0) {
 				sql += ", "+ExpDenuncianteBean.T_NOMBRETABLA+" DEN, "+CenPersonaBean.T_NOMBRETABLA+" PER,"+CenColegiadoBean.T_NOMBRETABLA+" CDEN ";
 			}
+			*/
 		    		    		
 			sql += " " + where;
 			sql += " ORDER BY E."+ExpExpedienteBean.C_IDINSTITUCION+", E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE+", E."+ExpExpedienteBean.C_NUMEROEXPEDIENTE+", E."+ExpExpedienteBean.C_ANIOEXPEDIENTE;
+			/*
 			if (numeroCount > 0) {
 				sql += ", DEN."+ExpDenuncianteBean.C_IDDENUNCIANTE;
 			}
+			*/
 
 			if (rc.query(sql)) {
 				for (int i = 0; i < rc.size(); i++)	{

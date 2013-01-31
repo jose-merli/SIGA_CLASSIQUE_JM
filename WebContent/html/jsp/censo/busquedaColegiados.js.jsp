@@ -1,5 +1,5 @@
-	<%@ taglib uri="libreria_SIGA.tld"	prefix="siga"%>
-	<%@ taglib uri="struts-bean.tld" 	prefix="bean"%>
+<%@ taglib uri="libreria_SIGA.tld"	prefix="siga"%>
+<%@ taglib uri="struts-bean.tld" 	prefix="bean"%>
 	
 	function refrescarLocal() {
 	}
@@ -11,7 +11,11 @@
 	}
 	function buscar(){
 		sub();
-		document.forms[0].appendChild(document.createElement("<input type='hidden' name='backupForm' value='true'>"));
+		var backupForm = document.createElement("input");
+		backupForm.type = "hidden";
+		backupForm.name = "backupForm";
+		backupForm.value = "true";
+		document.forms[0].appendChild(backupForm);
 		document.forms[0].submit();
 	}
 
@@ -46,7 +50,7 @@
 	
 	function accionGenerarExcels(){
    		sub();
-   		if (existsSelected("displ")){
+   		if (getSelected() != ""){
 			document.getElementById("displ").accion.value = 'generaExcel';
 			document.getElementById("displ").submit();
    		}
@@ -82,7 +86,7 @@
 	 * @param id PK del registro sobre el que se va a realizar la accion
 	 */
   	function accionComunicar(){
-		if (!existsSelected("displ")){
+		if (getSelected() == ""){
    			alert ('<siga:Idioma key="general.message.seleccionar"/>');
    			return;
    		}
@@ -90,8 +94,14 @@
 		var accion = document.forms[0].accion.value;
 		document.forms[0].accion.value="comunicarVarios";
 		document.forms[0].target="submitArea";
-		var backupSelectedChild = document.createElement("<input type='hidden' name='backupSelected' value='"+getSelected()+"'>");
-		var selectAllChild = document.createElement("<input type='hidden' name='selectAll' value='"+document.forms[1].selectAll.value+"'>");
+		var backupSelectedChild = document.createElement("input");
+		backupSelectedChild.type='hidden';
+		backupSelectedChild.name='backupSelected'; 
+		backupSelectedChild.value="'"+getSelected()+"'";
+		var selectAllChild = document.createElement("input");
+		selectAllChild.type='hidden'; 
+		selectAllChild.name='selectAll'; 
+		selectAllChild.value="'"+document.forms[1].selectAll.value+"'";
 		document.forms[0].appendChild(backupSelectedChild);
 		document.forms[0].appendChild(selectAllChild);
 		document.forms[0].submit();	
@@ -108,7 +118,7 @@
 		var elements = document.getElementsByName("_chk");
 		var seleccionados2 = "";
 		for (i=0; i<elements.length; i++){
-			if(elements[i].type == "checkbox" && elements[i].checked){
+			if(elements[i].type == "checkbox" && elements[i].checked && seleccionados.indexOf(elements[i].value) == -1){
 				seleccionados2 += "," + elements[i].value
 			}
 		}
