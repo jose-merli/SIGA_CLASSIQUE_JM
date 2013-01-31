@@ -1243,7 +1243,7 @@
     <field property = "comboFases" depends = "required">
         <arg0 key="expedientes.auditoria.literal.fase"/>
     </field> 
-    <field property = "idPersona" depends = "required">
+    <field property = "idPersonaDenunciado" depends = "required">
         <arg0 key="expedientes.auditoria.literal.denunciado"/>
     </field> 
 </form>

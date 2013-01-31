@@ -462,7 +462,8 @@
 				if (trim(direccion[13])=="") document.ExpPartesForm.telefono.value=direccion[14]; // el movil
 				else document.ExpPartesForm.telefono.value=direccion[13];
 			}else{
-				accionCerrar();
+				//BNS INC_09954_SIGA
+				//accionCerrar();				
 			}
 	    	
 			

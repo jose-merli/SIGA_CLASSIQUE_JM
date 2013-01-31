@@ -17,7 +17,7 @@
 <%@ page import="com.siga.administracion.*"%>
 <%@ page import="com.siga.expedientes.form.PestanaConfigurableForm"%>
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
-
+<%@ page import="com.siga.beans.GenTipoCampoBean"%>
 
 
 <% 
@@ -30,9 +30,11 @@
 	String estiloCaja = "box";
 	String nombrePestana = form.getNombrePestana();
 	String accion = form.getAccion();
+	String disabled = "false";
 	if (accion.equals("consulta")){	//pestanhas:edicion o consulta
 		bLectura=true;
 		estiloCaja = "boxConsulta";	
+		disabled = "true";
 	}
 
 	Vector vDatos= (Vector) request.getAttribute("datos");	
@@ -46,6 +48,8 @@
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
+		<script src="<%=app%>/html/js/validation.js" type="text/javascript"></script>
 		<!-- INICIO: SCRIPTS BOTONES -->
 		<script language="JavaScript">
 			//Asociada al boton Restablecer -->
@@ -125,16 +129,35 @@
 										} else {
 			 								for (int i=0; i<vDatos.size(); i++){
 				  								Hashtable registro = (Hashtable)vDatos.elementAt(i);
+				  								String tipo = (String)registro.get("TIPO");
+				  								String maxLong = (String)registro.get("MAXLONG");
+				  								String valor = (String)registro.get("VALOR");
+				  								String nombreCampo_1="oculto"+(i+1)+"_1";
+				  								String nombreCampo_2="oculto"+(i+1)+"_2";
 												%>
 													<tr>
-														<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=(String)registro.get("IDCAMPOCONF")%>">	
+														<input type="hidden" name="<%=nombreCampo_1%>" value="<%=(String)registro.get("IDCAMPOCONF")%>">	
 														<td class="labelText">
 															<%=UtilidadesString.mostrarDatoJSP((String)registro.get("ETIQUETA")) %>
 														</td>
 													</tr>
 													<tr>
 														<td>
-															<textarea name="oculto<%=""+(i+1)%>_2" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" class="<%=estiloCaja %>" style="width:700px;" cols="90" rows="6"><%=(String)registro.get("VALOR")%></textarea>
+														<%if (GenTipoCampoBean.ID_TIPO_ALFANUMERICO.toString().equals(tipo)){ %>
+															<%if (Integer.valueOf(maxLong) > 100){ %>
+																<textarea name="<%=nombreCampo_2%>" onKeyDown="cuenta(this,<%=maxLong%>)" onChange="cuenta(this,<%=maxLong%>)" class="<%=estiloCaja %>" style="width:700px;" cols="90" rows="6"><%=valor%></textarea>
+															<%} else { %>
+																<input type="text" name="<%=nombreCampo_2%>" value="<%=valor%>"  size="<%=maxLong%>" class ="<%=estiloCaja %>" maxlength="<%=maxLong%>"></input>
+															<%} %>															
+														<%} else if (GenTipoCampoBean.ID_TIPO_NUMERICO.toString().equals(tipo)){ %>
+															<input type="text" name="<%=nombreCampo_2%>" value="<%=valor%>"  size="<%=maxLong%>" class ="<%=estiloCaja %>" maxlength="<%=maxLong%>" onkeypress="return soloDigitos(event)"></input>
+														<%} else if (GenTipoCampoBean.ID_TIPO_FECHA.toString().equals(tipo)){ %>
+															<% if (valor != null && !"".equals(valor)){ %>
+																<siga:Fecha nombreCampo="<%=nombreCampo_2%>" valorInicial="<%=valor%>" disabled="<%=disabled%>" />
+															<%} else { %>
+																<siga:Fecha nombreCampo="<%=nombreCampo_2%>" disabled="<%=disabled%>" />
+															<%} %>
+														<%} %>
 														</td>
 													</tr>
 												<%

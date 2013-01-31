@@ -265,7 +265,7 @@
 		{	
 			sub();					
 			if (validateExpDatosGeneralesForm(document.ExpDatosGeneralesForm)){
-				if (document.ExpDatosGeneralesForm.idPersona.value == ""){
+				if (document.ExpDatosGeneralesForm.idPersonaDenunciado.value == ""){
 						alert('<siga:Idioma key="expedientes.auditoria.literal.denunciado"/> <siga:Idioma key="messages.campoObligatorio.error"/>');
 						fin();
 						return false;
@@ -393,6 +393,40 @@
 				document.forms[0].segundoApellido.value=resultado[6];
 				document.forms[0].idDireccion.value=resultado[7];
 
+			}
+		}
+		
+		function seleccionarDenunciado() {			
+			document.datosGeneralesForm.modo.value = "designarArt27";
+			var resultado=ventaModalGeneral("datosGeneralesForm","G");
+			
+			if (resultado!=undefined && resultado[0]!=undefined ){
+				
+				document.forms[0].idPersonaDenunciado.value=resultado[0];
+				document.forms[0].nColDenunciado.value=resultado[1];
+				document.forms[0].nombreDenunciado.value=resultado[2];
+				document.forms[0].primerApellidoDenunciado.value=resultado[3];
+				document.forms[0].segundoApellidoDenunciado.value=resultado[4];
+				document.forms[0].idInstitucionOrigenDenunciado.value=resultado[5];
+				document.forms[0].nifDenunciado.value=resultado[6];
+				document.forms[0].idDireccionDenunciado.value=resultado[7];				
+			}
+		}
+		
+		function seleccionarDenunciante() {			
+			document.datosGeneralesForm.modo.value = "designarArt27";
+			var resultado=ventaModalGeneral("datosGeneralesForm","G");
+			
+			if (resultado!=undefined && resultado[0]!=undefined ){
+				
+				document.forms[0].idPersonaDenunciante.value=resultado[0];
+				document.forms[0].nColDenunciante.value=resultado[1];
+				document.forms[0].nombreDenunciante.value=resultado[2];
+				document.forms[0].primerApellidoDenunciante.value=resultado[3];
+				document.forms[0].segundoApellidoDenunciante.value=resultado[4];
+				document.forms[0].idInstitucionOrigenDenunciante.value=resultado[5];
+				document.forms[0].nifDenunciante.value=resultado[6];
+				document.forms[0].idDireccionDenunciante.value=resultado[7];				
 			}
 		}
 		
@@ -972,27 +1006,28 @@
 	<!-- FILA -->
 		<tr>					
 			<td class="labelText">
-				<html:hidden name="ExpDatosGeneralesForm" property = "idPersona"/>
-				<html:hidden name="ExpDatosGeneralesForm" property = "idDireccion"/>
+				<html:hidden name="ExpDatosGeneralesForm" property = "idPersonaDenunciado"/>
+				<html:hidden name="ExpDatosGeneralesForm" property = "idInstitucionOrigenDenunciado"/>
+				<html:hidden name="ExpDatosGeneralesForm" property = "idDireccionDenunciado"/>
 				
 				<siga:Idioma key="expedientes.auditoria.literal.nombre"/>&nbsp(*)
 			</td>				
 			<td>
-				<html:text name="ExpDatosGeneralesForm" property="nombre" styleClass="boxConsulta" readonly="true"></html:text>
+				<html:text name="ExpDatosGeneralesForm" property="nombreDenunciado" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 		
 			<td class="labelText">
 				<siga:Idioma key="expedientes.auditoria.literal.primerapellido"/>&nbsp(*)
 			</td>
 			<td>
-				<html:text name="ExpDatosGeneralesForm" property="primerApellido" styleClass="boxConsulta" readonly="true"></html:text>				
+				<html:text name="ExpDatosGeneralesForm" property="primerApellidoDenunciado" styleClass="boxConsulta" readonly="true"></html:text>				
 			</td>
 		
 			<td class="labelText">
 				<siga:Idioma key="expedientes.auditoria.literal.segundoapellido"/>&nbsp(*)
 			</td>
 			<td>
-				<html:text name="ExpDatosGeneralesForm" property="segundoApellido" styleClass="boxConsulta" readonly="true"></html:text>				
+				<html:text name="ExpDatosGeneralesForm" property="segundoApellidoDenunciado" styleClass="boxConsulta" readonly="true"></html:text>				
 			</td>	 
 		</tr>
 	
@@ -1002,21 +1037,19 @@
 				<siga:Idioma key="expedientes.auditoria.literal.nif"/>&nbsp(*)
 			</td>				
 			<td>				
-				<html:text name="ExpDatosGeneralesForm" property="nif" styleClass="boxConsulta" readonly="true"></html:text>
+				<html:text name="ExpDatosGeneralesForm" property="nifDenunciado" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 		
 			<td class="labelText">
 				<siga:Idioma key="expedientes.auditoria.literal.ncolegiado"/>&nbsp(*)
 			</td>
 			<td>
-				<html:text name="ExpDatosGeneralesForm" property="numColegiado" styleClass="boxConsulta" readonly="true"></html:text>
+				<html:text name="ExpDatosGeneralesForm" property="nColDenunciado" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 <% if (bEditable){%>			
 			<td colspan="2" align="right">
 				
-				<input type="button" class="button" alt="<%=seleccionarPersona%>" id="newPerson" name = "idButton"  onclick="return seleccionarPersona();" value="<%=seleccionarPersona%>"/>
-				&nbsp;
-				<input type="button" class="button" alt="<%=nuevoNoCol%>" id="newPerson" name = "idButton"  onclick="return altaPersona();" value="<%=nuevoNoCol%>"/>
+				<input type="button" class="button" alt="<%=seleccionarPersona%>" id="newPerson" name = "idButton"  onclick="return seleccionarDenunciado();" value="<%=seleccionarPersona%>"/>
 			</td>	
 <%}else{%>
 			<td colspan="2"></td>

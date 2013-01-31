@@ -60,8 +60,10 @@
 	//Para el Combo de Turnos
 	String dato[] = new String[2];
 
+	boolean bLoadSelected = false;
 	String idInstitucion = "";
 	String idInstitucionActual = user.getLocation();
+	String idInstitucionSeleccionada = "";
 	String idPersona = "";
 	String nombre = "";
 	String apellido1 = "";
@@ -75,6 +77,17 @@
 	String sexo = "";
 	String idioma = "";
 	String estadoCivil = "";
+	String idDireccionSeleccionada = "";
+	if (formulario.getNumIdentificacion() != null && !"".equals(formulario.getNumIdentificacion())){
+		nIdentificacion = formulario.getNumIdentificacion();
+		if (formulario.getDatos() != null && formulario.getDatos().containsKey("idInstitucionOrigen")){
+			idInstitucionSeleccionada = formulario.getDatos().get("idInstitucionOrigen").toString();		
+		}
+		if (formulario.getIdDireccion() != null && !"".equals(formulario.getIdDireccion())){
+			idDireccionSeleccionada = formulario.getIdDireccion();
+		}
+		bLoadSelected = true;
+	}	
 	int tipoIdenNIF = ClsConstants.TIPO_IDENTIFICACION_NIF;
     int tipoIdenCIF = ClsConstants.TIPO_IDENTIFICACION_CIF;
 
@@ -159,7 +172,7 @@
 
 		<script>
 		jQuery.noConflict();
-		
+		var bLoadSelected = false;
 		function inicio(){
 		if(document.getElementById('idButtonGuardar'))
 			jQuery("#idButtonGuardar").attr("disabled","disabled");
@@ -613,6 +626,7 @@
 	   	jQuery("#pais").attr("disabled","disabled");
 	   	jQuery("#provincia").attr("disabled","disabled");
 	   	jQuery("#poblacion").attr("disabled","disabled");
+	   	jQuery("#poblacionFrame").contents().find("#poblacionSel").attr("disabled","disabled");	   	
 	   	jQuery("#movil").attr("disabled","disabled");
 	   	jQuery("#telefono1").attr("disabled","disabled");
 	   	jQuery("#telefono2").attr("disabled","disabled");
@@ -685,6 +699,7 @@
 	   	jQuery("#pais").removeAttr("disabled");
 	   	jQuery("#provincia").removeAttr("disabled");
 	   	jQuery("#poblacion").removeAttr("disabled");
+	   	jQuery("#poblacionFrame").contents().find("#poblacionSel").removeAttr("disabled");
 	   	jQuery("#movil").removeAttr("disabled");
 	   	jQuery("#telefono1").removeAttr("disabled");
 	   	jQuery("#telefono2").removeAttr("disabled");
@@ -718,7 +733,10 @@
 		var acceso = poblacionFrame.document.getElementsByTagName("select");
 		acceso[0].value = poblacionSeleccionada;
 		document.datosGeneralesForm.poblacion.value = poblacionSeleccionada;
-		jQuery("#poblacion").attr("disabled","disabled");
+		if (poblacionSeleccionada != ""){
+			jQuery("#poblacion").attr("disabled","disabled");
+			jQuery("#poblacionFrame").contents().find("#poblacionSel").attr("disabled","disabled");
+		}
 	}
 
 
@@ -738,6 +756,7 @@
 			window.setTimeout("recargarComboHijo()",750,"Javascript");	
 			document.getElementById("poblacion").value = datosGeneralesForm.poblacion.value;
 			jQuery("#poblacion").attr("disabled","disabled");	
+			jQuery("#poblacionFrame").contents().find("#poblacionSel").attr("disabled","disabled");
 		}
 
 		if(document.datosGeneralesForm.preferente.value != null && document.datosGeneralesForm.preferente.value != ""){
@@ -801,28 +820,30 @@
 		limpiarDireccion();
 	}
 	
-	function postAccionBusquedaNIF(){
+	function postAccionBusquedaNIF(){		
 		if(document.busquedaCensoModalForm.existeNIF.value != null && document.busquedaCensoModalForm.existeNIF.value == "S"){
-			if(confirm('El nº de identificación ya se encuentra registrado, Pulse "Aceptar" para recuperar y sustituir los datos actuales o "Cancelar" para modificarlo')) {
+			if (bLoadSelected){				
 				datosGeneralesForm.numIdentificacion.onchange();
-			}else{
-
-				//Aparecen los menus de abajo y se deja el NIF introducido
-				if(document.getElementById('idButtonGuardar'))
-					jQuery("#idButtonGuardar").removeAttr("disabled");
-				document.getElementById("tdadicional").style.display="block";
-				document.getElementById("tddireccion").style.display="block";
-				jQuery("#idButtonB").attr("disabled","disabled");
-				jQuery("#sexo").removeAttr("disabled");
-				jQuery("#estadoCivil").removeAttr("disabled");
-				jQuery("#lugarNacimiento").removeAttr("disabled");
-				jQuery("#fechaNacimiento").removeAttr("disabled");
-				document.getElementById("iconoFecha").style.display=""; 
-				document.busquedaCensoModalForm.existeNIF.value = "";
+			} else{
+				if(confirm('El nº de identificación ya se encuentra registrado, Pulse "Aceptar" para recuperar y sustituir los datos actuales o "Cancelar" para modificarlo')) {
+					datosGeneralesForm.numIdentificacion.onchange();
+				}else{
+	
+					//Aparecen los menus de abajo y se deja el NIF introducido
+					if(document.getElementById('idButtonGuardar'))
+						jQuery("#idButtonGuardar").removeAttr("disabled");
+					document.getElementById("tdadicional").style.display="block";
+					document.getElementById("tddireccion").style.display="block";
+					jQuery("#idButtonB").attr("disabled","disabled");
+					jQuery("#sexo").removeAttr("disabled");
+					jQuery("#estadoCivil").removeAttr("disabled");
+					jQuery("#lugarNacimiento").removeAttr("disabled");
+					jQuery("#fechaNacimiento").removeAttr("disabled");
+					document.getElementById("iconoFecha").style.display=""; 
+					document.busquedaCensoModalForm.existeNIF.value = "";
+				}
 			}
-			
-		}else{
-				
+		}else{				
 			if(datosGeneralesForm.idPersona.value != null && datosGeneralesForm.idPersona.value != ""){ //EXISTE LA PERSONA
 				if(document.busquedaCensoModalForm.multiple.value != null && document.busquedaCensoModalForm.multiple.value != "S"){ //UNICO REGISTRO
 					ponerIconoIdentPersona(true);
@@ -884,8 +905,7 @@
 				}else{ //SE ABRE VENTANA MODAL AL SER BUSQUEDA MULTIPLE
 					limpiarDireccion();
 					buscarDesignados ();
-				}
-	
+				}				
 			}else{ //NO EXISTE LA PERSONA
 				ponerIconoIdentPersona(false);
 				limpiarDireccion();
@@ -927,12 +947,28 @@
 			document.getElementById("info_existe").alt = "<siga:Idioma key='gratuita.volantesExpres.mensaje.esNuevaPersonaJG'/>";
 		}
 	} //ponerIconoIdentPersona ()
+
+	function postAccionComboDirecciones(){
+		if (bLoadSelected){			
+			bLoadSelected = false;
+			<%if (!"".equals(idDireccionSeleccionada)){%>		
+			jQuery("#direcciones").val("<%=idDireccionSeleccionada%>");
+			jQuery("#direcciones").change();
+			<%}%>
+		}		
+	}
 	
+	function loadSelected(){
+		bLoadSelected = true;		
+		jQuery("#colegiadoen").val("<%="".equals(idInstitucionSeleccionada)?idInstitucionActual:idInstitucionSeleccionada%>");
+		jQuery("#colegiadoen").change();
+		datosGeneralesForm.numIdentificacion.onchange();
+	}
 		</script>
 
 	</head>
 
-	<body onload="comprobarTelefonoAsterico();selPaisInicio();inicio();" class="tablaCentralCampos">
+	<body onload="comprobarTelefonoAsterico();selPaisInicio();inicio();<%if (bLoadSelected){%>loadSelected();<%}%>" class="tablaCentralCampos">
 
 <%
 			tipoIdentificacionSel.add(""+ClsConstants.TIPO_IDENTIFICACION_NIF);
@@ -1354,6 +1390,7 @@
 <ajax:updateSelectFromField
 	baseUrl="/SIGA/CEN_BusquedaCensoModal.do?modo=getAjaxComboDirecciones"
 	source="idPersona" target="direcciones" parameters="idInstitucion={idInstitucion},idPersona={idPersona}"
+	postFunction="postAccionComboDirecciones"
  />
 
 <ajax:updateFieldFromSelect
@@ -1436,6 +1473,7 @@
 		   	jQuery("#pais").removeAttr("disabled");
 		   	jQuery("#provincia").removeAttr("disabled");
 		   	jQuery("#poblacion").removeAttr("disabled");
+		   	jQuery("#poblacionFrame").contents().find("#poblacionSel").removeAttr("disabled");
 		   	jQuery("#movil").removeAttr("disabled");
 		   	jQuery("#telefono1").removeAttr("disabled");
 		   	jQuery("#telefono2").removeAttr("disabled");

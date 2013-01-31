@@ -65,6 +65,16 @@
 			{		
 				window.top.close();
 			}
+			
+			function comboTipoChange(){
+				if ($("#comboTipo").val()==3){
+					$("#maxLong").val("10");
+					$("#maxLong").attr("readonly", "readonly");
+				} else if ($("#maxLong").is("[readonly]")) {					
+					$("#maxLong").val("");
+					$("#maxLong").removeAttr("readonly");
+				}
+			}
 		</script>
 		<!-- FIN: SCRIPTS BOTONES -->
 		
@@ -109,6 +119,26 @@
 										</td>
 										<td>
 											<html:text  name="camposConfigurablesForm" property="nombre" styleClass="<%=estiloCaja%>" maxlength="30" readonly="<%=bLectura%>" />
+										</td>
+									</tr>
+									<tr>
+										<td class="labelText">
+											<siga:Idioma key="expedientes.auditoria.literal.tipo"/> (*)
+										</td>
+										<td>
+											<html:select name="camposConfigurablesForm" styleClass="boxCombo" property="tipo" onchange="comboTipoChange()" styleId="comboTipo">
+												<bean:define id="tiposcampo" name="camposConfigurablesForm"
+														property="tiposcampo" type="java.util.Collection" />
+												<html:optionsCollection name="tiposcampo" value="idTipoCampo" label="recursoDescripcion" />
+											</html:select>
+										</td>
+									</tr>
+									<tr>
+										<td class="labelText">
+											<siga:Idioma key="expedientes.auditoria.literal.maxlong"/> (*)
+										</td>
+										<td>
+											<html:text  name="camposConfigurablesForm" property="maxLong" styleId="maxLong" styleClass="<%=estiloCaja%>" maxlength="30" readonly="<%=bLectura%>" />
 										</td>
 									</tr>
 									<tr>

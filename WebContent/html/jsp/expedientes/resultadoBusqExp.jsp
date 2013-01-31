@@ -39,11 +39,11 @@
 	String idInstitucion = userBean.getLocation();
 	boolean isInstitucion = Integer.parseInt(idInstitucion)>2000 && Integer.parseInt(idInstitucion)<3000;
 	
-	String nombreCol = "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,expedientes.auditoria.literal.institucion, 	expedientes.auditoria.literal.tipo,expedientes.auditoria.literal.nexpediente,	expedientes.tiposexpedientes.literal.estado,expedientes.auditoria.literal.fecha, 	expedientes.auditoria.literal.nombreyapellidos,";
-	String tamanoCol="3,15,15,8,14,8,25,12";
+	String nombreCol = "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,expedientes.auditoria.literal.institucion, 	expedientes.auditoria.literal.tipo,expedientes.auditoria.literal.nexpediente,expedientes.auditoria.literal.numyanioejg,	expedientes.auditoria.literal.fase, expedientes.tiposexpedientes.literal.estado,expedientes.auditoria.literal.fecha, 	expedientes.auditoria.literal.nombreyapellidos,";
+	String tamanoCol="3,8,8,8,8,8,8,8,18,12";
 	if(isInstitucion){
-		nombreCol = "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,expedientes.auditoria.literal.tipo,expedientes.auditoria.literal.nexpediente,	expedientes.tiposexpedientes.literal.estado,expedientes.gestionarExpedientes.fechaApertura,	expedientes.auditoria.literal.nombreyapellidos,";
-		  tamanoCol="3,15,8,14,8,25,12";
+		nombreCol = "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,expedientes.auditoria.literal.tipo,expedientes.auditoria.literal.nexpediente,expedientes.auditoria.literal.numyanioejg,	expedientes.auditoria.literal.fase, expedientes.tiposexpedientes.literal.estado,expedientes.gestionarExpedientes.fechaApertura,	expedientes.auditoria.literal.nombreyapellidos,";
+		  tamanoCol="3,15,10,10,10,10,8,18,12";
 		
 	}
 	
@@ -245,6 +245,8 @@
 						</td>
 					
 					<td><%=fila.getString("ANIOEXPEDIENTE")+" / "+fila.getString("NUMEROEXPEDIENTE")%></td>
+					<td><%=("".equals(fila.getString("EXPRELACIONADO")))?"&nbsp;":fila.getString("EXPRELACIONADO")%></td>					
+					<td><%=fila.getString("NOMBREFASE").equals("")?"&nbsp;":fila.getString("NOMBREFASE") %></td>
 					<td><%=fila.getString("NOMBREESTADO").equals("")?"&nbsp;":fila.getString("NOMBREESTADO") %></td>
 					<td><%=GstDate.getFormatedDateShort("",fila.getString("FECHA"))%></td>
 					<td><%=fila.getString("DENUNCIADO")%></td>
