@@ -32,7 +32,8 @@ public class ExpDenunciadoForm extends MasterForm {
 	
 	private String idPersona = "", 
 			idDireccion = "" , 
-			idInstitucion = "", 
+			idInstitucion = "",
+			idInstitucionOrigen = "", 
 			idInstitucion_TipoExpediente = "", 
 			idTipoExpediente = "", 
 			numExpediente = "", 
@@ -211,4 +212,11 @@ public class ExpDenunciadoForm extends MasterForm {
 	public void setNumColegiado(String numColegiado) {
 		this.numColegiado = numColegiado;
 	}
+	public String getIdInstitucionOrigen() {
+		return idInstitucionOrigen;
+	}
+	public void setIdInstitucionOrigen(String idInstitucionOrigen) {
+		this.idInstitucionOrigen = idInstitucionOrigen;
+	}
+	
 }

@@ -29,16 +29,22 @@ public class ExpDatosGeneralesForm extends MasterForm {
     private String institucion="";
     private String asunto="";
     private String clasificacion="";
-    private String nombre="";
-    private String primerApellido="";
-    private String segundoApellido="";
-    private String nif="";
+    //private String nombre="";
+    //private String primerApellido="";
+    //private String segundoApellido="";
+    //private String nif="";
     private String numColegiado="";
+    private String nombreDenunciado="";
+    private String primerApellidoDenunciado="";
+    private String segundoApellidoDenunciado="";
+    private String nifDenunciado=""; 
+    private String nColDenunciado=""; 
     private String nombreDenunciante="";
     private String primerApellidoDenunciante="";
     private String segundoApellidoDenunciante="";
     private String nifDenunciante=""; 
-    private String idPersonaDenunciante=""; 
+    private String idPersonaDenunciante="";
+    private String idPersonaDenunciado=""; 
     private String nColDenunciante=""; 
     private String juzgado="";
     private String idMateria="";
@@ -57,7 +63,9 @@ public class ExpDatosGeneralesForm extends MasterForm {
     private String estadoSel="";
     private String comboFases="";
     private String comboEstados="";
-    private String idPersona="";
+    //private String idPersona="";
+    private String colegioOrigen="";
+    private String colegioOrigenDenunciante="";
     private String idPretension="";
     private String otrasPretensiones="";
      
@@ -69,7 +77,11 @@ public class ExpDatosGeneralesForm extends MasterForm {
     private String porcentajeIVA="";
     private String porcentajeIVAFinal="";
     private String idTipoIVA="";
-    private String idDireccion;
+    //private String idDireccion;
+    private String idDireccionDenunciante;
+    private String idDireccionDenunciado;
+    private String idInstitucionOrigenDenunciante;
+    private String idInstitucionOrigenDenunciado;
     private String minutaFinal="";
     private String importeIVAFinal="";
     private String importeTotalFinal="";
@@ -226,13 +238,14 @@ public class ExpDatosGeneralesForm extends MasterForm {
 	
 	
 	
-	
+	/*
 	public String getIdPersona() {
 		return idPersona;
 	}
 	public void setIdPersona(String idPersona) {
 		this.idPersona = idPersona;
 	}
+	*/
 	public String getAnioExpDisciplinario() {
 		return anioExpDisciplinario;
 	}
@@ -386,6 +399,7 @@ public class ExpDatosGeneralesForm extends MasterForm {
 //	public void setModo(String modo) {
 //		this.modo = modo;
 //	}
+	/*
 	public String getNif() {
 		return nif;
 	}
@@ -398,6 +412,7 @@ public class ExpDatosGeneralesForm extends MasterForm {
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
+	*/
 	public String getNumAsunto() {
 		return numAsunto;
 	}
@@ -422,12 +437,14 @@ public class ExpDatosGeneralesForm extends MasterForm {
 	public void setNumExpediente(String numExpediente) {
 		this.numExpediente = numExpediente;
 	}
+	/*
 	public String getPrimerApellido() {
 		return primerApellido;
 	}
 	public void setPrimerApellido(String primerApellido) {
 		this.primerApellido = primerApellido;
 	}
+	*/
 	public String getProcedimiento() {
 		return procedimiento;
 	}
@@ -461,12 +478,14 @@ public class ExpDatosGeneralesForm extends MasterForm {
 	public void setIdInstitucionProcedimiento(String idInstitucionProcedimiento) {
 		this.idInstitucionProcedimiento = idInstitucionProcedimiento;
 	}
+	/*
 	public String getSegundoApellido() {
 		return segundoApellido;
 	}
 	public void setSegundoApellido(String segundoApellido) {
 		this.segundoApellido = segundoApellido;
 	}
+	*/
 	public String getTipoExpediente() {
 		return tipoExpediente;
 	}
@@ -526,12 +545,14 @@ public class ExpDatosGeneralesForm extends MasterForm {
 	public void setClasificacion(String clasificacion) {
 		this.clasificacion = clasificacion;
 	}
+	/*
 	public String getIdDireccion() {
 		return idDireccion;
 	}
 	public void setIdDireccion(String idDireccion) {
 		this.idDireccion = idDireccion;
 	}
+	*/
 	public String getNombreDenunciante() {
 		return nombreDenunciante;
 	}
@@ -615,6 +636,80 @@ public class ExpDatosGeneralesForm extends MasterForm {
 	}
 	public void setCampo(String campo) {
 		this.campo = campo;
+	}
+	public String getIdDireccionDenunciante() {
+		return idDireccionDenunciante;
+	}
+	public void setIdDireccionDenunciante(String idDireccionDenunciante) {
+		this.idDireccionDenunciante = idDireccionDenunciante;
+	}
+	public String getColegioOrigen() {
+		return colegioOrigen;
+	}
+	public void setColegioOrigen(String colegioOrigen) {
+		this.colegioOrigen = colegioOrigen;
+	}
+	public String getColegioOrigenDenunciante() {
+		return colegioOrigenDenunciante;
+	}
+	public void setColegioOrigenDenunciante(String colegioOrigenDenunciante) {
+		this.colegioOrigenDenunciante = colegioOrigenDenunciante;
+	}
+	public String getIdPersonaDenunciado() {
+		return idPersonaDenunciado;
+	}
+	public void setIdPersonaDenunciado(String idPersonaDenunciado) {
+		this.idPersonaDenunciado = idPersonaDenunciado;
+	}
+	public String getIdDireccionDenunciado() {
+		return idDireccionDenunciado;
+	}
+	public void setIdDireccionDenunciado(String idDireccionDenunciado) {
+		this.idDireccionDenunciado = idDireccionDenunciado;
+	}
+	public String getIdInstitucionOrigenDenunciante() {
+		return idInstitucionOrigenDenunciante;
+	}
+	public void setIdInstitucionOrigenDenunciante(
+			String idInstitucionOrigenDenunciante) {
+		this.idInstitucionOrigenDenunciante = idInstitucionOrigenDenunciante;
+	}
+	public String getIdInstitucionOrigenDenunciado() {
+		return idInstitucionOrigenDenunciado;
+	}
+	public void setIdInstitucionOrigenDenunciado(
+			String idInstitucionOrigenDenunciado) {
+		this.idInstitucionOrigenDenunciado = idInstitucionOrigenDenunciado;
+	}
+	public String getNombreDenunciado() {
+		return nombreDenunciado;
+	}
+	public void setNombreDenunciado(String nombreDenunciado) {
+		this.nombreDenunciado = nombreDenunciado;
+	}
+	public String getPrimerApellidoDenunciado() {
+		return primerApellidoDenunciado;
+	}
+	public void setPrimerApellidoDenunciado(String primerApellidoDenunciado) {
+		this.primerApellidoDenunciado = primerApellidoDenunciado;
+	}
+	public String getSegundoApellidoDenunciado() {
+		return segundoApellidoDenunciado;
+	}
+	public void setSegundoApellidoDenunciado(String segundoApellidoDenunciado) {
+		this.segundoApellidoDenunciado = segundoApellidoDenunciado;
+	}
+	public String getNifDenunciado() {
+		return nifDenunciado;
+	}
+	public void setNifDenunciado(String nifDenunciado) {
+		this.nifDenunciado = nifDenunciado;
+	}
+	public String getnColDenunciado() {
+		return nColDenunciado;
+	}
+	public void setnColDenunciado(String nColDenunciado) {
+		this.nColDenunciado = nColDenunciado;
 	}
 
 }

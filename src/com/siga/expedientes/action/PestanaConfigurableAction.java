@@ -100,25 +100,9 @@ public class PestanaConfigurableAction extends MasterAction {
         Vector vExp = expAdm.selectByPK(hash);
 
         //Recuperamos el nombre del denunciado
-        CenPersonaAdm personaAdm = new CenPersonaAdm (this.getUserBean(request));
-        String nombrePersona = "";
-        ExpDenunciadoAdm DenunciadoAdm = new ExpDenunciadoAdm (this.getUserBean(request));
-        Hashtable hashDenunciado = new Hashtable();
-        hashDenunciado.put(ExpDenunciadoBean.C_IDINSTITUCION,idInstitucion);
-        hashDenunciado.put(ExpDenunciadoBean.C_IDINSTITUCION_TIPOEXPEDIENTE,idInstitucion_TipoExpediente);
-        hashDenunciado.put(ExpDenunciadoBean.C_IDTIPOEXPEDIENTE,idTipoExpediente);
-        hashDenunciado.put(ExpDenunciadoBean.C_NUMEROEXPEDIENTE,numExpediente);
-        hashDenunciado.put(ExpDenunciadoBean.C_ANIOEXPEDIENTE,anioExpediente);
-        hashDenunciado.put(ExpDenunciadoBean.C_IDDENUNCIADO,ExpDenunciadoBean.ID_DENUNCIADO_PRINCIPAL);
-        Vector datosDenunciadoPpal = DenunciadoAdm.select(hashDenunciado);
-        if (datosDenunciadoPpal != null && datosDenunciadoPpal.size() > 0){
-        	ExpDenunciadoBean denunciadoPpal = (ExpDenunciadoBean) datosDenunciadoPpal.get(0);
-        	Hashtable hashIdPers = new Hashtable();		
- 			hashIdPers.put(CenPersonaBean.C_IDPERSONA,denunciadoPpal.getIdPersona());
- 			Vector vPersona = personaAdm.selectByPK(hashIdPers);
- 			CenPersonaBean personaBean = (CenPersonaBean) vPersona.elementAt(0);
- 			nombrePersona = personaBean.getNombre() + " " + personaBean.getApellido1() + " " + personaBean.getApellido2();
-        }
+        ExpDenunciadoAdm denunciadoAdm = new ExpDenunciadoAdm (this.getUserBean(request));
+        CenPersonaBean denunciadoPpal = denunciadoAdm.getPersonaDenunciadoById(Integer.valueOf(idInstitucion), Integer.valueOf(idInstitucion_TipoExpediente), Integer.valueOf(idTipoExpediente), numExpediente,Integer.valueOf(anioExpediente), ExpDenunciadoBean.ID_DENUNCIADO_PRINCIPAL);
+        String nombrePersona = denunciadoPpal.getNombreCompleto();
         request.setAttribute("denunciado", nombrePersona);
 	    
         String denunciado="";

@@ -4,17 +4,41 @@
  */
 package com.siga.expedientes.form;
 
+import java.util.List;
+
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.GenTipoCampoBean;
 import com.siga.general.MasterForm;
 
 /**
  * Formulario para la administración de las fases de los expediente.
  */
 public class CamposConfigurablesForm extends MasterForm {
-    
-
-    public String getModo() {
+	
+	private List<GenTipoCampoBean> tiposcampo;
+	private Integer tipo;
+	private Integer maxLong;
+	
+	
+    public Integer getMaxLong() {
+		return maxLong;
+	}
+	public void setMaxLong(Integer maxLong) {
+		this.maxLong = maxLong;
+	}
+	public Integer getTipo() {
+		return tipo;
+	}
+	public void setTipo(Integer tipo) {
+		this.tipo = tipo;
+	}
+	public List<GenTipoCampoBean> getTiposcampo() {
+		return tiposcampo;
+	}
+	public void setTiposcampo(List<GenTipoCampoBean> tiposcampo) {
+		this.tiposcampo = tiposcampo;
+	}
+	public String getModo() {
         return UtilidadesHash.getString(this.datos,"Modo");
     }
     public void setModo(String valor) {

@@ -27,6 +27,8 @@ import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.ExpCampoTipoExpedienteAdm;
 import com.siga.beans.ExpCampoTipoExpedienteBean;
+import com.siga.beans.ExpDenunciadoAdm;
+import com.siga.beans.ExpDenunciadoBean;
 import com.siga.beans.ExpExpedienteAdm;
 import com.siga.beans.ExpExpedienteBean;
 import com.siga.beans.ExpPartesAdm;
@@ -91,22 +93,10 @@ public class ExpPartesAction extends MasterAction {
 	
 	        request.setAttribute("datos", datos); 
 	        
-	        //Recuperamos el nombre del denunciado
-	        Hashtable hash = new Hashtable();		
-			hash.put(ExpExpedienteBean.C_IDINSTITUCION,idInstitucion);
-			hash.put(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE,idInstitucion_TipoExpediente);
-			hash.put(ExpExpedienteBean.C_IDTIPOEXPEDIENTE,idTipoExpediente);
-			hash.put(ExpExpedienteBean.C_NUMEROEXPEDIENTE,numExpediente);
-			hash.put(ExpExpedienteBean.C_ANIOEXPEDIENTE,anioExpediente);
-	
-	        ExpExpedienteAdm expAdm = new ExpExpedienteAdm(this.getUserBean(request));
-	        Vector vExp = expAdm.selectByPK(hash);        
-	        CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));
-	        Hashtable hashIdPers = new Hashtable();		
-			hashIdPers.put(CenPersonaBean.C_IDPERSONA,((ExpExpedienteBean)vExp.elementAt(0)).getIdPersona());
-	        Vector vPersona = personaAdm.selectByPK(hashIdPers);
-	        CenPersonaBean personaBean = (CenPersonaBean) vPersona.elementAt(0);
-	        String nombrePersona = personaBean.getNombre() + " " + personaBean.getApellido1() + " " + personaBean.getApellido2();
+	      //Recuperamos el nombre del denunciado        
+	        ExpDenunciadoAdm denunciadoAdm = new ExpDenunciadoAdm (this.getUserBean(request));
+	        CenPersonaBean denunciadoPpal = denunciadoAdm.getPersonaDenunciadoById(Integer.valueOf(idInstitucion), Integer.valueOf(idInstitucion_TipoExpediente), Integer.valueOf(idTipoExpediente), numExpediente,Integer.valueOf(anioExpediente), ExpDenunciadoBean.ID_DENUNCIADO_PRINCIPAL);
+	        String nombrePersona = denunciadoPpal.getNombreCompleto();
 	        request.setAttribute("denunciado", nombrePersona);
 	        
 	        String denunciado="";

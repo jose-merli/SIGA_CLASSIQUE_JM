@@ -22,6 +22,8 @@ import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.ExpCampoTipoExpedienteAdm;
 import com.siga.beans.ExpCampoTipoExpedienteBean;
+import com.siga.beans.ExpDenunciadoAdm;
+import com.siga.beans.ExpDenunciadoBean;
 import com.siga.beans.ExpExpedienteAdm;
 import com.siga.beans.ExpExpedienteBean;
 import com.siga.expedientes.form.ExpResolucionForm;
@@ -80,12 +82,9 @@ public class ExpResolucionAction extends MasterAction {
 //			}		
 //			
 			//Recuperamos el nombre del denunciado        
-	        CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));
-	        Hashtable hashIdPers = new Hashtable();		
-			hashIdPers.put(CenPersonaBean.C_IDPERSONA,bean.getIdPersona());
-	        Vector vPersona = personaAdm.selectByPK(hashIdPers);
-	        CenPersonaBean personaBean = (CenPersonaBean) vPersona.elementAt(0);
-	        String nombrePersona = personaBean.getNombre() + " " + personaBean.getApellido1() + " " + personaBean.getApellido2();
+	        ExpDenunciadoAdm denunciadoAdm = new ExpDenunciadoAdm (this.getUserBean(request));
+	        CenPersonaBean denunciadoPpal = denunciadoAdm.getPersonaDenunciadoById(Integer.valueOf(idInstitucion), Integer.valueOf(idInstitucion_TipoExpediente), Integer.valueOf(idTipoExpediente), numExpediente,Integer.valueOf(anioExpediente), ExpDenunciadoBean.ID_DENUNCIADO_PRINCIPAL);
+	        String nombrePersona = denunciadoPpal.getNombreCompleto();
 	        request.setAttribute("denunciado", nombrePersona);
 			
 			//Hacemos los sets del formulario
@@ -155,6 +154,10 @@ public class ExpResolucionAction extends MasterAction {
 		    ExpResolucionForm form = (ExpResolucionForm)formulario;
 	        ExpExpedienteAdm expAdm = new ExpExpedienteAdm (this.getUserBean(request));
 	        
+	        //BEGIN BNS 13/12/2012 INCIDENCIA 181: El valor del select resultado informe no se actualizaba a nulo
+	        //								cambio la llamada al update por la apropiada para actualizarlo
+	        Hashtable hashExpOld = expAdm.beanToHashTableForUpdate(expBean);
+	        
 	        // Actualizamos los datos del expediente
 	        expBean.setDescripcionResolucion(form.getResDescripcion());
 	        expBean.setSancionPrescrita(form.getSancionPrescrita().equals("")?"":GstDate.getApplicationFormatDate("",form.getSancionPrescrita()));
@@ -167,13 +170,20 @@ public class ExpResolucionAction extends MasterAction {
 	        expBean.setFechaResolucion(form.getFechaResolucion().equals("")?"":GstDate.getApplicationFormatDate("",form.getFechaResolucion()));
 			if (form.getResultadoInforme()!= null && !form.getResultadoInforme().equals(""))
 				expBean.setIdResultadoJuntaGobierno(new Integer(form.getResultadoInforme()));  
+			else
+				expBean.setIdResultadoJuntaGobierno(null);
 
+			Hashtable hashExpNew = expAdm.beanToHashTableForUpdate(expBean);
 	        /*if (expAdm.update(expBean)){
 	        	return exitoRefresco("messages.updated.success",request);
 	        }else{
 	        	return exito("messages.updated.error",request);
 	        }*/
-	        expAdm.update(expBean);
+			// BNS 14/12/2012 INCIDENCIA 182 Fallaba al guardar dos veces porque la fecha de modificación era distinta.
+			//								La quitamos de la comprobación
+			hashExpOld.remove("FECHAMODIFICACION");hashExpNew.remove("FECHAMODIFICACION");
+			expAdm.update(hashExpNew, hashExpOld);
+			// END BNS
 		}
 		catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,null); 
