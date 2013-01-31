@@ -165,6 +165,41 @@ public class ExpDenunciadoAdm extends MasterBeanAdministrador {
 		return new Integer (nuevoIdDenunciado);
 	}
 	
+	/**
+	 * 
+	 * Devuelve la persona a la que hace referencia el id de denunciado
+	 * @param idInstitucion
+	 * @param idInstitucion_TipoExpediente
+	 * @param idTipoExpediente
+	 * @param numExpediente
+	 * @param anioExpediente
+	 * @param idDenunciado
+	 * @return
+	 * @throws ClsExceptions
+	 * @author borjans
+	 * @since 31/01/2013
+	 */
+	public CenPersonaBean getPersonaDenunciadoById(Integer idInstitucion, Integer idInstitucion_TipoExpediente, Integer idTipoExpediente, String numExpediente, Integer anioExpediente, Integer idDenunciado) throws ClsExceptions {
+		CenPersonaBean personaBean = null;
+		Hashtable hashDenunciado = new Hashtable();
+		hashDenunciado.put(ExpDenunciadoBean.C_IDINSTITUCION,idInstitucion);
+	    hashDenunciado.put(ExpDenunciadoBean.C_IDINSTITUCION_TIPOEXPEDIENTE,idInstitucion_TipoExpediente);
+	    hashDenunciado.put(ExpDenunciadoBean.C_IDTIPOEXPEDIENTE,idTipoExpediente);
+	    hashDenunciado.put(ExpDenunciadoBean.C_NUMEROEXPEDIENTE,numExpediente);
+	    hashDenunciado.put(ExpDenunciadoBean.C_ANIOEXPEDIENTE,anioExpediente);
+	    hashDenunciado.put(ExpDenunciadoBean.C_IDDENUNCIADO,idDenunciado);
+	    Vector datosDenunciadoPpal = select(hashDenunciado);
+	    if (datosDenunciadoPpal != null && datosDenunciadoPpal.size() > 0){
+	    	CenPersonaAdm personaAdm = new CenPersonaAdm (usrbean);
+	    	ExpDenunciadoBean denunciadoPpal = (ExpDenunciadoBean) datosDenunciadoPpal.get(0);
+	    	Hashtable hashIdPers = new Hashtable();		
+				hashIdPers.put(CenPersonaBean.C_IDPERSONA,denunciadoPpal.getIdPersona());
+				Vector vPersona = personaAdm.selectByPK(hashIdPers);
+				personaBean = (CenPersonaBean) vPersona.elementAt(0);
+	    }
+	    return personaBean;
+	}
+	
 	public List getDenunciados(ExpExpedienteBean beanExp) throws ClsExceptions {
 		try {
 			Hashtable htCodigos = new Hashtable();

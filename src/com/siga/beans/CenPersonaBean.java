@@ -101,4 +101,8 @@ public class CenPersonaBean extends MasterBean
 	public boolean isExisteDatos() {return existeDatos;}
 	public CenColegiadoBean getColegiado() {return colegiado;}
 	
+	public String getNombreCompleto(){
+		return this.getNombre() + " " + this.getApellido1() + " " + this.getApellido2();
+	}
+	
 }
