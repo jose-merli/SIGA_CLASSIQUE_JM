@@ -264,6 +264,8 @@ public class GestionInformesAction extends MasterAction {
 		request.setAttribute("tipoEnviosBeans", new ArrayList());
 		request.setAttribute("idTipoEnvioDef", "");
 		request.setAttribute("idPlantillaEnvioDef","");
+		request.setAttribute("idTipoIntercambioTelem", "");	
+		request.setAttribute("intercambioTelematico", "0");
 		
 		
 		InformeForm informeFormEdicion = new InformeForm();
@@ -427,6 +429,8 @@ public class GestionInformesAction extends MasterAction {
 				request.setAttribute("tipoEnviosBeans", new ArrayList());
 				request.setAttribute("idTipoEnvioDef", "");
 				request.setAttribute("idPlantillaEnvioDef","");
+				request.setAttribute("idTipoIntercambioTelem", "");	
+				request.setAttribute("intercambioTelematico", "0");
 				
 			
 			
@@ -527,7 +531,8 @@ public class GestionInformesAction extends MasterAction {
 			request.setAttribute("tipoEnviosBeans", new ArrayList());
 			request.setAttribute("idTipoEnvioDef", "");
 			request.setAttribute("idPlantillaEnvioDef","");
-			
+			request.setAttribute("idTipoIntercambioTelem", "");	
+			request.setAttribute("intercambioTelematico", "0");
 			request.setAttribute("InformeFormEdicion", informeFormEdicion);
 			informeForm.setModo("consultar");
 		}catch (Exception e){
