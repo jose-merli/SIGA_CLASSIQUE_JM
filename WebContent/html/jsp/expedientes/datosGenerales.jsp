@@ -21,6 +21,8 @@
 <%@ page import="com.siga.administracion.SIGAConstants,java.lang.*,com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.atos.utils.*,com.siga.expedientes.form.ExpDatosGeneralesForm,java.util.*"%>
 <%@ page import="com.siga.beans.ExpExpedienteBean"%>
+<%@ page import="com.siga.beans.GenTipoCampoBean"%>
+<%@ page import="com.siga.beans.ExpCampoConfBean"%>
 <%@ page import="com.siga.expedientes.form.ExpDatosGeneralesForm"%>
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
 <%@ page import="com.siga.beans.ScsEJGAdm"%>
@@ -70,22 +72,38 @@
 			.getAttribute("ExpDatosGeneralesForm");
 	
 	
-	String nombreTamanio=""+form.getNombre().length();
+	String nombreTamanio=""+form.getNombreDenunciado().length();
 	if(nombreTamanio.equals("0"))
-		nombreTamanio="1";
-	String ape1Tamanio=""+form.getPrimerApellido().length();
+		nombreTamanio="10";
+	String ape1Tamanio=""+form.getPrimerApellidoDenunciado().length();
 	if(ape1Tamanio.equals("0"))
-		ape1Tamanio="1";
-	String ape2Tamanio=""+form.getSegundoApellido().length();
+		ape1Tamanio="15";
+	String ape2Tamanio=""+form.getSegundoApellidoDenunciado().length();
 	if(ape2Tamanio.equals("0"))
-		ape2Tamanio="1";
-	String numColegiadoTamanio= ""+form.getNumColegiado().length();
+		ape2Tamanio="15";
+	String numColegiadoTamanio= ""+form.getnColDenunciado().length();
 	if(numColegiadoTamanio.equals("0"))
-		numColegiadoTamanio="1";
-	String nifTamanio = ""+form.getNif().length();
+		numColegiadoTamanio="6";
+	String nifTamanio = ""+form.getNifDenunciado().length();
 	if(nifTamanio.equals("0"))
-		nifTamanio="1";
+		nifTamanio="9";
 	
+	
+	String nombreDenuncianteTamanio=""+form.getNombreDenunciante().length();
+	if(nombreDenuncianteTamanio.equals("0"))
+		nombreDenuncianteTamanio="10";
+	String ape1DenuncianteTamanio=""+form.getPrimerApellidoDenunciante().length();
+	if(ape1DenuncianteTamanio.equals("0"))
+		ape1DenuncianteTamanio="15";
+	String ape2DenuncianteTamanio=""+form.getSegundoApellidoDenunciante().length();
+	if(ape2DenuncianteTamanio.equals("0"))
+		ape2DenuncianteTamanio="15";
+	String nColDenuncianteTamanio= ""+form.getnColDenunciante().length();
+	if(nColDenuncianteTamanio.equals("0"))
+		nColDenuncianteTamanio="6";
+	String nifDenuncianteTamanio = ""+form.getNifDenunciante().length();
+	if(nifDenuncianteTamanio.equals("0"))
+		nifDenuncianteTamanio="9";
 	
 	String nombreRelacion ="";
 	Boolean tieneExpeRelacionado= false;
@@ -365,7 +383,7 @@
 			sub();	
 				
 			if (validateExpDatosGeneralesForm(document.ExpDatosGeneralesForm)){
-				if (document.ExpDatosGeneralesForm.idPersona.value == ""){
+				if (document.ExpDatosGeneralesForm.idPersonaDenunciado.value == ""){
 						alert('<siga:Idioma key="expedientes.auditoria.literal.denunciado"/> <siga:Idioma key="messages.campoObligatorio.error"/>');
 						fin();
 						return false;
@@ -503,46 +521,62 @@
 			
 		
 		}
-		function altaPersona()
-		{					
+		function seleccionarDenunciado()
+		{
+			//BNS DESCOMENTAR PARA PASAR LOS DATOS A LA MODAL Y PRECARGAR EL SELECCIONADO
+			/*
+			document.datosGeneralesForm.numIdentificacion.value=document.forms[0].nifDenunciado.value;
+			document.datosGeneralesForm.colegiadoen.value=document.forms[0].idInstitucionOrigenDenunciado.value;
+			document.datosGeneralesForm.idDireccion.value=document.forms[0].idDireccionDenunciado.value;
+			*/
 			var resultado=ventaModalGeneral("datosGeneralesForm","G");
 			
 			if (resultado!=undefined && resultado[0]!=undefined ){
-				document.forms[0].idPersona.value=resultado[0];
-				document.forms[0].numColegiado.value=resultado[2];
-				document.forms[0].nif.value=resultado[3];
-				document.forms[0].nombre.value=resultado[4];
-				document.forms[0].primerApellido.value=resultado[5];
-				document.forms[0].segundoApellido.value=resultado[6];
-				document.forms[0].idDireccion.value=resultado[7];
-
-			}
-		}
-		
-		function seleccionarPersona()
-		{	
-			document.ExpDenunciadoForm.idPersona.value = document.forms[0].idPersona.value;
-			document.ExpDenunciadoForm.idDireccion.value = document.forms[0].idDireccion.value;
-			document.ExpDenunciadoForm.modal.value = "seleccion";
-			if(document.forms[0].idPersona.value)
-				document.ExpDenunciadoForm.modo.value = "editarDenunciado";
-			else
-				document.ExpDenunciadoForm.modo.value = "nuevo";
 				
-			var resultado=ventaModalGeneral("ExpDenunciadoForm","M");
-			if (resultado!=undefined && resultado[0]!=undefined ){
-				document.forms[0].idPersona.value=resultado[0];
-				document.forms[0].numColegiado.value=resultado[2];
-				document.forms[0].nif.value=resultado[3];
-				document.forms[0].nombre.value=resultado[4];
-				document.forms[0].primerApellido.value=resultado[5];
-				document.forms[0].segundoApellido.value=resultado[6];
-				document.forms[0].idDireccion.value=resultado[7];
+				document.forms[0].idPersonaDenunciado.value=resultado[0];
+				document.forms[0].nColDenunciado.value=resultado[1];
+				document.forms[0].nombreDenunciado.value=resultado[2];
+				document.forms[0].primerApellidoDenunciado.value=resultado[3];
+				document.forms[0].segundoApellidoDenunciado.value=resultado[4];
+				document.forms[0].idInstitucionOrigenDenunciado.value=resultado[5];
+				document.forms[0].nifDenunciado.value=resultado[6];
+				document.forms[0].idDireccionDenunciado.value=resultado[7];				
+			}
+			//BNS DESCOMENTAR PARA PASAR LOS DATOS A LA MODAL Y PRECARGAR EL SELECCIONADO
+			/*
+			document.datosGeneralesForm.numIdentificacion.value="";
+			document.datosGeneralesForm.colegiadoen.value="";
+			document.datosGeneralesForm.idDireccion.value="";
+			*/
+		}
+		function seleccionarDenunciante()
+		{		
+			//BNS DESCOMENTAR PARA PASAR LOS DATOS A LA MODAL Y PRECARGAR EL SELECCIONADO
+			/*
+			document.datosGeneralesForm.numIdentificacion.value=document.forms[0].nifDenunciante.value;
+			document.datosGeneralesForm.colegiadoen.value=document.forms[0].idInstitucionOrigenDenunciante.value;
+			document.datosGeneralesForm.idDireccion.value=document.forms[0].idDireccionDenunciante.value;
+			*/
+			var resultado=ventaModalGeneral("datosGeneralesForm","G");
 			
+			if (resultado!=undefined && resultado[0]!=undefined ){
 				
-				
+				document.forms[0].idPersonaDenunciante.value=resultado[0];
+				document.forms[0].nColDenunciante.value=resultado[1];
+				document.forms[0].nombreDenunciante.value=resultado[2];
+				document.forms[0].primerApellidoDenunciante.value=resultado[3];
+				document.forms[0].segundoApellidoDenunciante.value=resultado[4];
+				document.forms[0].idInstitucionOrigenDenunciante.value=resultado[5];
+				document.forms[0].nifDenunciante.value=resultado[6];
+				document.forms[0].idDireccionDenunciante.value=resultado[7];				
 			}
-		}
+			//BNS DESCOMENTAR PARA PASAR LOS DATOS A LA MODAL Y PRECARGAR EL SELECCIONADO
+			/*
+			document.datosGeneralesForm.numIdentificacion.value="";
+			document.datosGeneralesForm.colegiadoen.value="";
+			document.datosGeneralesForm.idDireccion.value="";
+			*/
+		}				
 		
 	 	function obtenerJuzgado() 
 		{ 
@@ -745,7 +779,7 @@
 		function accionComunicar()
 		{
 			
-			idPersona = '<%=form.getIdPersona()%>';
+			idPersonaDenunciado = '<%=form.getIdPersonaDenunciado()%>';
 			idInstitucion= '<%=userBean.getLocation()%>';
 			idInstitucionTipoExp= '<%=idinstitucion_tipoexpediente%>';
 			idTipoExpediente= '<%=tipoExp%>';
@@ -755,7 +789,7 @@
 
 		   	datos = "idInstitucion=="+idInstitucion +"##idInstitucionTipoExp=="+idInstitucionTipoExp +
  		   		 "##idTipoExp==" +idTipoExpediente+"##anioExpediente=="+anioExpediente 
- 		   		 +"##numeroExpediente=="+numeroExpediente +"##idPersona=="+idPersona +"##idTipoInforme==EXP%%%";
+ 		   		 +"##numeroExpediente=="+numeroExpediente +"##idPersonaDenunciado=="+idPersonaDenunciado +"##idTipoInforme==EXP%%%";
 			
 			document.InformesGenericosForm.datosInforme.value =datos;
 			var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
@@ -797,6 +831,15 @@
 			 	
 		  }
 
+		 function editarEjg(){
+			 //document.DefinirEJGForm.anio.value=document.getElementById("anioExpDisciplinario").value;
+			 //document.DefinirEJGForm.numero.value=document.getElementById("numExpDisciplinario").value;
+			// document.DefinirEJGForm.idTipoEJG.value=document.getElementById("tipoExpDisciplinario").value;
+			 document.DefinirEJGForm.modo.value='editar';
+			 document.DefinirEJGForm.submit();
+			 	
+		  }
+		 
 			function accionAbrir() 
 			{	
 				sub();	
@@ -879,6 +922,12 @@
 			return luego; 
 		} 
 
+		<%if (!(tiempoCaducidad.equals("")) && !(tiempoCaducidad.equals("0"))){%>
+		$(document).ready(function(){
+			generarFechaCaducidad();
+			$("#fechaCaducidad").attr("disabled", "disabled");
+		});
+		<%}%>
 
 	</script>
 	
@@ -1033,11 +1082,11 @@
 							<table>
 									<tr>
 										<td class="labelTextValue"><html:text name="ExpDatosGeneralesForm" property="anioExpDisciplinario" maxlength="4"
-														style="text-align:right;width:40px;"
+														style="text-align:right;width:40px;" readonly="true"
 														styleClass="boxConsulta"></html:text>&nbsp;/&nbsp;<html:text
 														name="ExpDatosGeneralesForm"
 														property="numExpDisciplinarioCalc" style="width:60px;"
-														maxlength="6" styleClass="boxConsulta"></html:text> <html:hidden
+														maxlength="6" readonly="true" styleClass="boxConsulta"></html:text> <html:hidden
 														name="ExpDatosGeneralesForm"
 														property="numExpDisciplinario" /></td>
 		<%
@@ -1050,7 +1099,7 @@
 													id="iconoboton_editar1"
 													src="/SIGA/html/imagenes/beditar_off.gif"
 													style="cursor: hand;" alt="Editar" name="editar_1"
-													border="0" onClick="relacionarConEJG();"></td>
+													border="0" onClick="editarEjg();"></td>
 		<%
 								}
 		%>
@@ -1133,13 +1182,13 @@
 	<%
 			if (bEditable) 
 			{
-				if 	(tiempoCaducidad.equalsIgnoreCase("0")) { 
+				if 	(tiempoCaducidad == null || tiempoCaducidad.equals("") || tiempoCaducidad.equalsIgnoreCase("0")) { 
 	%>
-				<siga:Fecha nombreCampo="fechaCaducidad" valorInicial="<%=form.getFechaCaducidad()%>" />
+				<siga:Fecha nombreCampo="fechaCaducidad" valorInicial="<%=form.getFechaCaducidad()%>" styleId="fechaCaducidad"/>
 	<%
 			} else {
 	%>
-				<html:text name="ExpDatosGeneralesForm" property="fechaCaducidad" size="10" maxlength="10" styleClass="<%=boxStyle%>" readonly="true"></html:text>					 
+				<html:text name="ExpDatosGeneralesForm" property="fechaCaducidad" size="10" maxlength="10" styleClass="<%=boxStyle%>" readonly="true" styleId="fechaCaducidad"></html:text>					 
 				 
 	<%
 			} }
@@ -1148,7 +1197,7 @@
 			{
 	%>
 
-				<html:text name="ExpDatosGeneralesForm" property="fechaCaducidad" size="10" maxlength="10" styleClass="<%=boxStyle%>" readonly="true"></html:text>
+				<html:text name="ExpDatosGeneralesForm" property="fechaCaducidad" size="10" maxlength="10" styleClass="<%=boxStyle%>" readonly="true" styleId="fechaCaducidad"></html:text>
 				
 	<% 			
 
@@ -1422,42 +1471,41 @@
 				<siga:Idioma key="expedientes.auditoria.literal.nif"/>&nbsp;&nbsp;&nbsp;&nbsp;(*)
 			</td>				
 			<td width="<%=nifTamanio%>">				
-				<html:text name="ExpDatosGeneralesForm" size="<%=nifTamanio%>"  property="nif" styleClass="boxConsulta" readonly="true"></html:text>
+				<html:text name="ExpDatosGeneralesForm" size="<%=nifTamanio%>"  property="nifDenunciado" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 
 			<td class="labelText"  NOWRAP >
 				<siga:Idioma key="expedientes.auditoria.literal.ncolegiado"/>			
 			</td>
 			<td width="<%=numColegiadoTamanio%>" >
-				<html:text name="ExpDatosGeneralesForm" property="numColegiado" size="<%=numColegiadoTamanio%>" styleClass="boxConsulta" readonly="true"></html:text>
+				<html:text name="ExpDatosGeneralesForm" property="nColDenunciado" size="<%=numColegiadoTamanio%>" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 
 			<td class="labelText" >
-				<html:hidden name="ExpDatosGeneralesForm" property = "idPersona"/>
-				<html:hidden name="ExpDatosGeneralesForm" property = "idDireccion"/>
+				<html:hidden name="ExpDatosGeneralesForm" property = "idPersonaDenunciado"/>
+				<html:hidden name="ExpDatosGeneralesForm" property = "idInstitucionOrigenDenunciado"/>
+				<html:hidden name="ExpDatosGeneralesForm" property = "idDireccionDenunciado"/>
 				
 				<siga:Idioma key="expedientes.auditoria.literal.nombre"/>
 			</td>				
 			
 			<td   width="<%=nombreTamanio%>">
-				<html:text name="ExpDatosGeneralesForm" property="nombre" size="<%=nombreTamanio%>" styleClass="boxConsulta" readonly="true"></html:text>																								 				 																										
+				<html:text name="ExpDatosGeneralesForm" property="nombreDenunciado" size="<%=nombreTamanio%>" styleClass="boxConsulta" readonly="true"></html:text>																								 				 																										
 			</td>		
 			
 			
 			<td  width="<%=ape1Tamanio%>">
-				<html:text name="ExpDatosGeneralesForm" property="primerApellido" size="<%=ape1Tamanio%>" styleClass="boxConsulta" readonly="true"></html:text>
+				<html:text name="ExpDatosGeneralesForm" property="primerApellidoDenunciado" size="<%=ape1Tamanio%>" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 			
-			<td   width="<%=ape1Tamanio%>">
-				<html:text name="ExpDatosGeneralesForm" property="segundoApellido" size="<%=ape2Tamanio%>"styleClass="boxConsulta" readonly="true"></html:text>
+			<td   width="<%=ape2Tamanio%>">
+				<html:text name="ExpDatosGeneralesForm" property="segundoApellidoDenunciado" size="<%=ape2Tamanio%>"styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 			
 							 			
 			<% if (bEditable) { %>			
 			<td colspan="1" align="right">				
-				<input type="button" class="button" alt="<%=seleccionarPersona%>" id="newPerson" name = "idButton"  onclick="return seleccionarPersona();" value="<%=seleccionarPersona%>"/>
-				&nbsp;
-				<input type="button" class="button" alt="<%=nuevoNoCol%>" id="newPerson" name = "idButton"  onclick="return altaPersona();" value="<%=nuevoNoCol%>"/>
+				<input type="button" class="button" alt="<%=seleccionarPersona%>" id="newPerson" name = "idButton"  onclick="return seleccionarDenunciado();" value="<%=seleccionarPersona%>"/>				
 			</td>	
 			<% } else { %>
 			<td colspan="1"></td>
@@ -1506,32 +1554,53 @@
 	<!-- FILA -->
 		<tr>
 			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.nif"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<siga:Idioma key="expedientes.auditoria.literal.nif"/>&nbsp;&nbsp;&nbsp;&nbsp;(*)
 			</td>				
-			<td>
-				<html:text name="ExpDatosGeneralesForm" size="9" property="nifDenunciante" styleClass="boxConsulta" readonly="true"></html:text>
+			<td width="<%=nifDenuncianteTamanio%>">				
+				<html:text name="ExpDatosGeneralesForm" size="<%=nifDenuncianteTamanio%>"  property="nifDenunciante" styleClass="boxConsulta" readonly="true"></html:text>
+			</td>
+
+			<td class="labelText"  NOWRAP >
+				<siga:Idioma key="expedientes.auditoria.literal.ncolegiado"/>			
+			</td>
+			<td width="<%=nColDenuncianteTamanio%>" >
+				<html:text name="ExpDatosGeneralesForm" property="nColDenunciante" size="<%=nColDenuncianteTamanio%>" styleClass="boxConsulta" readonly="true"></html:text>
+			</td>
+
+			<td class="labelText" >
 				<html:hidden name="ExpDatosGeneralesForm" property = "idPersonaDenunciante"/>
+				<html:hidden name="ExpDatosGeneralesForm" property = "idInstitucionOrigenDenunciante"/>
+				<html:hidden name="ExpDatosGeneralesForm" property = "idDireccionDenunciante"/>
 				
-			</td>
-
-			<td class="labelText" >
-				<siga:Idioma key="expedientes.auditoria.literal.ncolegiado"/>
-			</td>
-			<td>
-				<html:text name="ExpDatosGeneralesForm" size="9" property="nColDenunciante" styleClass="boxConsulta" readonly="true"></html:text>
-			</td>
-
-			<td class="labelText" >
 				<siga:Idioma key="expedientes.auditoria.literal.nombre"/>
-			</td>							
-			<td class="labelTextValor" colspan="3">
-					<%=form.getNombreDenunciante()%>
-					<%=form.getPrimerApellidoDenunciante()%>
-					<%=form.getSegundoApellidoDenunciante()%>
+			</td>				
+			
+			<td   width="<%=nombreDenuncianteTamanio%>">
+				<html:text name="ExpDatosGeneralesForm" property="nombreDenunciante" size="<%=nombreDenuncianteTamanio%>" styleClass="boxConsulta" readonly="true"></html:text>																								 				 																										
+			</td>		
+			
+			
+			<td  width="<%=ape1DenuncianteTamanio%>">
+				<html:text name="ExpDatosGeneralesForm" property="primerApellidoDenunciante" size="<%=ape1DenuncianteTamanio%>" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
-
+			
+			<td   width="<%=ape2DenuncianteTamanio%>">
+				<html:text name="ExpDatosGeneralesForm" property="segundoApellidoDenunciante" size="<%=ape2DenuncianteTamanio%>"styleClass="boxConsulta" readonly="true"></html:text>
+			</td>
+			
+							 			
+			<% if (bEditable) { %>			
+			<td colspan="1" align="right">				
+				<input type="button" class="button" alt="<%=seleccionarPersona%>" id="newPerson" name = "idButton"  onclick="return seleccionarDenunciante();" value="<%=seleccionarPersona%>"/>				
+			</td>	
+			<% } else { %>
+			<td colspan="1"></td>
+			<%
+				}
+			%>			
 		</tr>
 	</table>
+		
 	</siga:ConjCampos>
 <%
 	}
@@ -1647,12 +1716,28 @@
 				<%					
 					for(;k < vNombres.size() && vSaltoLinea.elementAt(k).equals("");k++)
 					{
-						if(!vNombres.elementAt(k).equals(""))
+						ExpCampoConfBean campoConf = (ExpCampoConfBean)vNombres.elementAt(k);
+						if(campoConf.getNombre() != null && !"".equals(campoConf.getNombre()))
 						{
 				%>										
-							<%= vNombres.elementAt(k)%>
-							&nbsp;	
-							<input type="text" name="campo<%=""+(k+1)%>" value="<%=vDatosCamposPestanas.elementAt(k)%>"  size="<%=vDatosCamposPestanasLongitud.elementAt(k)%>" class ="box"></input>
+							<%= campoConf.getNombre()%>
+							&nbsp;
+							<% String sNombreCampo = "campo"+(k+1);
+							if (GenTipoCampoBean.ID_TIPO_ALFANUMERICO.equals(campoConf.getTipo())){ %>
+								<%if (campoConf.getMaxLong() > 100){ %>
+									<textarea name="<%=sNombreCampo%>" onKeyDown="cuenta(this,<%=campoConf.getMaxLong()%>)" onChange="cuenta(this,<%=campoConf.getMaxLong()%>)" class="<%=boxStyle %>" style="width:700px;" cols="90" rows="3"><%=vDatosCamposPestanas.elementAt(k)%></textarea>
+								<%} else { %>
+									<input type="text" name="<%=sNombreCampo%>" value="<%=vDatosCamposPestanas.elementAt(k)%>"  size="<%=vDatosCamposPestanasLongitud.elementAt(k)%>" class ="<%=boxStyle %>" maxlength="<%=campoConf.getMaxLong()%>"></input>
+								<%} %>								
+							<%} else if (GenTipoCampoBean.ID_TIPO_NUMERICO.equals(campoConf.getTipo())){ %>
+								<input type="text" name="<%=sNombreCampo%>" value="<%=vDatosCamposPestanas.elementAt(k)%>"  size="<%=vDatosCamposPestanasLongitud.elementAt(k)%>" class ="<%=boxStyle %>" maxlength="<%=campoConf.getMaxLong()%>" onkeypress="return soloDigitos(event)"></input>
+							<%} else if (GenTipoCampoBean.ID_TIPO_FECHA.equals(campoConf.getTipo())){ %>	
+								<% if (!"".equals(vDatosCamposPestanas.elementAt(k))){ %>
+									<siga:Fecha nombreCampo="<%=sNombreCampo%>" valorInicial="<%=(String)vDatosCamposPestanas.elementAt(k)%>" disabled="<%=readOnlyCombo%>"/>
+								<%} else { %>
+									<siga:Fecha nombreCampo="<%=sNombreCampo%>" disabled="<%=readOnlyCombo%>"/>
+								<%} %>
+							<%} %>
 							&nbsp;																										
 				<%
 						}//fin if
@@ -1800,7 +1885,10 @@
 	</html:form>
 	<html:form action="/CEN_DatosGenerales" method="POST" target="mainWorkArea">
 		<input type="hidden" name="actionModal" value="1">
-		<input type="hidden" name="modo" value="altaNoColegiado">
+		<input type="hidden" name="modo" value="designarArt27">
+		<input type="hidden" name="numIdentificacion">
+		<input type="hidden" name="colegiadoen">
+		<input type="hidden" name="idDireccion">
 	</html:form>
 	<html:form action="/JGR_EJG" method="POST" target="mainWorkArea">
 		<html:hidden property = "modo"  />
