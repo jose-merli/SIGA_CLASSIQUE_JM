@@ -227,6 +227,7 @@
 	<script type="text/javascript" src="<%=app%>/html/jsp/general/validacionSIGA.jsp"></script>
 	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script src="<html:rewrite page='/html/js/jquery-ui.js'/>" type="text/javascript"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/calendarJs.jsp"></script>	
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
