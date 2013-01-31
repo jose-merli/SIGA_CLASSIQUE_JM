@@ -49,7 +49,7 @@ public class TagTitulo extends TagSupport {
 			PrintWriter out = pageContext.getResponse().getWriter();
 		
 			out.println("<!-- INICIO: TITULO -->"); 
-			out.println("<script>");
+			out.println("<script type=\"text/javascript\">");
 			out.println("var siga =\""+ UtilidadesString.getMensajeIdioma(usrbean, "general.ventana.cgae") + "\";");
 			out.println("var tit  =\""+ UtilidadesString.getMensajeIdioma(usrbean, this.titulo) +"\";");
 			if (this.localizacion!=null && !this.localizacion.equals("")) {

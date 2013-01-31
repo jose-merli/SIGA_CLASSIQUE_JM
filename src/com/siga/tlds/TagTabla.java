@@ -311,9 +311,14 @@ public class TagTabla extends TagSupport {
 			out.println("      } else { j = 2; }");
 			//out.println("      datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML + ',';");
 			//out.println("      if ((tabla.rows[fila].cells)[i].all[0]=null)");
-			out.println("      if ((tabla.rows[fila].cells)[i].innerHTML == \"\") ");
-			out.println("        datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';");
-			out.println("      else");
+			out.println("      if ((tabla.rows[fila].cells)[i].innerHTML == \"\") {");
+			//BNS CONTROLAMOS LA EXISTENCIA DE ALGÚN ELEMENTO EN LA CELDA Y LO DEJAMOS VACÍO SI NO EXISTE ADEMÁS SUSTITUYO .ALL POR .children QUE SOLO FUNCIONA EN EXPLORER
+			out.println("      	if ((tabla.rows[fila].cells)[i].children != undefined && (tabla.rows[fila].cells)[i].children.length > 0) {");
+			out.println("        datos.value = datos.value + (tabla.rows[fila].cells)[i].children[j-2].value + ',';");
+			out.println("      	}else{");
+			out.println("        datos.value = datos.value + ',';");
+			out.println("      	}");
+			out.println("      }else");
 			out.println("        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';");
 			out.println("   }");
 			out.println("   document.forms[0].modo.value = \"Editar\";");
@@ -473,18 +478,26 @@ public class TagTabla extends TagSupport {
 			out.println("});");
 			if (this.ajusteAlto) {
 				
-				int espacioMenos= 0;
+				//int espacioMenos= 0;
 //				if (this.ajustePaginador) {
 //					espacioMenos += 20; 
 //				}
 //				if (this.ajusteBotonera) {
 //					espacioMenos += 32; 
 //				}
+				String sAjusteBotonera = "";
+				if (this.ajusteBotonera && !this.ajustePaginador){
+					sAjusteBotonera = "var tablaBotones = undefined; if (jQuery('table.botonesDetalle').length > 0) tablaBotones = jQuery('table.botonesDetalle'); else if (jQuery('table.botonesDetalle', parent.document.body).length > 0) tablaBotones = jQuery('table.botonesDetalle', parent.document.body); if(tablaBotones != undefined){var totalDiv = (jQuery('#"+this.nombre+"Div').offset().top +jQuery('#"+this.nombre+"Div').outerHeight()); if (tablaBotones.offset().top > totalDiv) espacioMenos -= (tablaBotones.offset().top - totalDiv); else if (tablaBotones.offset().top < totalDiv) espacioMenos += (totalDiv - tablaBotones.offset().top);}";
+				}
+				/*
 				if (!this.ajuste.equals("0")) {
 					espacioMenos += new Integer(this.ajuste).intValue(); 
 				}
+				*/
+				if (this.ajuste == null || "".equals(this.ajuste))
+					this.ajuste = "0";
 				out.println("");
-				out.println("jQuery(document).ready(function() {validarAncho_" + this.nombre + "(); ajusteAltoMain('" + this.nombre + "Div',"+espacioMenos+");});");
+				out.println("jQuery(document).ready(function() {validarAncho_" + this.nombre + "(); var espacioMenos = "+this.ajuste+"; "+sAjusteBotonera+" ajusteAltoMain('" + this.nombre + "Div',espacioMenos);});");
 				out.println("");
 			}
 			out.println("");

@@ -103,11 +103,18 @@ public class PaginadorSQLBind extends PaginadorBind implements IPaginador, Seria
 	}
 	
 	protected PaginadorSQLBind(String query, String[] cabeceras, Hashtable codigos) throws ClsExceptions {
+		this(query, null, cabeceras, codigos);
+	}
+	
+	protected PaginadorSQLBind(String query, String querySinOrder, String[] cabeceras, Hashtable codigos) throws ClsExceptions {
 
 		try {
 			setCodigosInicio(codigos);
 			setQueryInicio(query);
-			inicializarBind(query, codigos);
+			if (querySinOrder != null)
+				inicializarBind(query, querySinOrder, codigos);
+			else
+				inicializarBind(query, codigos);
 			this.cabeceras = cabeceras;
 			String columnas = "";
 
@@ -126,9 +133,20 @@ public class PaginadorSQLBind extends PaginadorBind implements IPaginador, Seria
 		}
 	}
 
+	// BEGIN BNS 12/12/2012 INCIDENCIA 140: Eliminaba parte de la query si existían subquerys con order by y
+		//										la query principal no tenía order by.
+		//										Añadimos comprobación de que el último order by no es parte de una
+		//										subquery buscando por el paréntesis. Esto falla cuando dentro del 
+		//										propio order by existe una subquery pero lo mantenemos por compatibilidad y 
+		//										porque ya está funcionando en todos los casos excepto en consultas expertas.
+		//										Para que no se produzcan errores en la consulta experta se da la posibilidad
+		//										de suministrar la query del count sin el order by que se elimina antes de 
+		//										tratar las etiquetas de la consulta experta
+	protected void inicializarBind(String query, Hashtable codigos) throws ClsExceptions {
+		inicializarBind(query, null, codigos);
+	}
 	
-	
-	protected void inicializarBind(String query,Hashtable codigos) throws ClsExceptions {
+	protected void inicializarBind(String query, String queryCountSinOrder, Hashtable codigos) throws ClsExceptions {
 
 		try {
 			
@@ -141,13 +159,13 @@ public class PaginadorSQLBind extends PaginadorBind implements IPaginador, Seria
 			this.distanciaPagCache = pagCache != null ? Integer.parseInt(pagCache) : DISTANCIA_PAGINAS_CACHE;
 			this.queryOriginal = query;
 			this.setCodigosOriginal(codigos);
-			
-			int endIndex = queryOriginal.toLowerCase().lastIndexOf("order by");
-			String queryCountSinOrder ;
-			if(endIndex!=-1)
-				queryCountSinOrder = queryOriginal.substring(0,endIndex);
-			else
-				queryCountSinOrder = queryOriginal;
+			if (queryCountSinOrder == null || queryCountSinOrder.equals("")){
+				int endIndex = queryOriginal.toLowerCase().lastIndexOf("order by");			
+				if(endIndex!=-1)
+					queryCountSinOrder = queryOriginal.substring(0,endIndex);
+				else
+					queryCountSinOrder = queryOriginal;
+			}
 					
 			
 
@@ -187,7 +205,7 @@ public class PaginadorSQLBind extends PaginadorBind implements IPaginador, Seria
 			throw new ClsExceptions(e, e.getMessage());
 		}
 	}
-
+// END BNS
 	public Vector obtenerSiguientes() throws ClsExceptions, SIGAException {
 		paginaActual++;
 		try {

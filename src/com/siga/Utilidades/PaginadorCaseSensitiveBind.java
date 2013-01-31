@@ -49,13 +49,31 @@ public class PaginadorCaseSensitiveBind extends PaginadorSQLBind
 	
 
 
+	public PaginadorCaseSensitiveBind(String query,
+			String querySinOrder, String[] cabeceras,
+			Hashtable codigos) throws ClsExceptions {
+		super (query, querySinOrder, cabeceras, codigos);
+	}
 	//
 	// GETTERS
 	//
 	public String		getQueryOriginal()	{return this.queryOriginal;}
 	public Hashtable	getCodigos()		{return this.codigos;}
 	
-	protected void inicializarBind(String query,Hashtable codigos) throws ClsExceptions {
+	// BEGIN BNS 12/12/2012 INCIDENCIA 140: Eliminaba parte de la query si existían subquerys con order by y
+	//										la query principal no tenía order by.
+	//										Añadimos comprobación de que el último order by no es parte de una
+	//										subquery buscando por el paréntesis. Esto falla cuando dentro del 
+	//										propio order by existe una subquery pero lo mantenemos por compatibilidad y 
+	//										porque ya está funcionando en todos los casos excepto en consultas expertas.
+	//										Para que no se produzcan errores en la consulta experta se da la posibilidad
+	//										de suministrar la query del count sin el order by que se elimina antes de 
+	//										tratar las etiquetas de la consulta experta
+	protected void inicializarBind(String query, Hashtable codigos) throws ClsExceptions {	
+		inicializarBind(query, null, codigos);
+	}
+	
+	protected void inicializarBind(String query, String queryCountSinOrder, Hashtable codigos) throws ClsExceptions {
 
 		try {
 			this.codigos=codigos;
@@ -65,20 +83,22 @@ public class PaginadorCaseSensitiveBind extends PaginadorSQLBind
 			this.numeroRegistrosPagina = numRegistros != null ? Integer.parseInt(numRegistros) : NUM_REGISTROS;
 			String pagCache = properties.returnProperty("paginador.distanciaPaginasCache", true);
 			this.distanciaPagCache = pagCache != null ? Integer.parseInt(pagCache) : DISTANCIA_PAGINAS_CACHE;
-			this.queryOriginal = query;
+			this.queryOriginal = query;			
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 			//Viendo que el order by consume recursos y que no afecta en nada
-			//para el count lo quitamos
-			int endIndex = queryOriginal.toLowerCase().lastIndexOf("order by");
-			String queryCountSinOrder ;
-			if(endIndex!=-1)
-				queryCountSinOrder = queryOriginal.substring(0,endIndex);
-			else
-				queryCountSinOrder = queryOriginal;
-
+			//para el count lo quitamos			
+			if (queryCountSinOrder == null || queryCountSinOrder.equals("")){
+				int endIndex = queryOriginal.toLowerCase().lastIndexOf("order by");
+				
+				if(endIndex!=-1 && endIndex > queryOriginal.toLowerCase().lastIndexOf(")"))				
+					queryCountSinOrder = queryOriginal.substring(0,endIndex);
+				else
+					queryCountSinOrder = queryOriginal;
+			}
 			// Inicializar numeroTotalRegistros y ultimaPagina
 			RowsContainer rc = new RowsContainer();
 			ArrayList queryList= UtilidadesBDAdm.quitaCamposQuery(new String(queryCountSinOrder),codigos);
+			
 			String queryCountSinOrderSinCampos = (String)queryList.get(0);
 			Hashtable codigosReducido = (Hashtable)queryList.get(1);
 			String count = null;
@@ -107,7 +127,8 @@ public class PaginadorCaseSensitiveBind extends PaginadorSQLBind
 			throw new ClsExceptions(e, e.getMessage());
 		}
 	}
-
+	// END BNS 12/12/2012 INCIDENCIA 140
+	
 	//
 	// METODOS
 	//

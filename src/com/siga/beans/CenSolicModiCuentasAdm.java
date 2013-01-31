@@ -338,11 +338,10 @@ public class CenSolicModiCuentasAdm extends MasterBeanAdministrador {
 	 * y se actualiza el registro adecuado con la informacion suministrada, además de la entrada <br/>
 	 * pertinente en el historico) 
 	 * @param  solicitud - solicitud a procesar
-	 * @param usrBean 
 	 * @return  boolean - resultado de la operacion  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */	
-	public boolean procesarSolicitud(String solicitud, Integer usuario, UsrBean usrBean, String idioma) throws ClsExceptions, SIGAException {
+	public boolean procesarSolicitud(String solicitud, Integer usuario, String idioma) throws ClsExceptions, SIGAException {
 
 		boolean correcto=true;
 		Vector original = new Vector();		
@@ -391,7 +390,7 @@ public class CenSolicModiCuentasAdm extends MasterBeanAdministrador {
 					// Fijamos los datos del Historico
 					beanHist.setMotivo((String)hash.get(CenSolicModiCuentasBean.C_MOTIVO));		
 					//BEGIN BNS 11/12/12 INCIDENCIA INC_08950_SIGA
-					if (adminCuentas.updateConHistoricoYfecBaj(cuentaModificada, beanHist, usuario, usrBean, abonoCargoOrig, idioma) <0)
+					if (adminCuentas.updateConHistoricoYfecBaj(cuentaModificada, beanHist, usuario, this.usrbean, abonoCargoOrig, idioma) <0)
 						correcto = false;
 					/*
 					// Actualizo el registro Cuentas con historico				
