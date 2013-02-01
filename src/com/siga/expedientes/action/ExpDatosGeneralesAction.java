@@ -199,12 +199,15 @@ public class ExpDatosGeneralesAction extends MasterAction
 								//El orde en que se tienen que guardar los valores en los vectores datosCamposPestanasLongitud y datosCamposPestanas
 								//viene dado por el indice del vector de los nombre de los campos a los que van asignados
 								//en este caso la variable k
-								Integer orden= new Integer(k);
+								Integer orden= new Integer(k);								
+								datosCamposPestanasLongitud.set((orden.intValue()),((ExpCampoConfBean)nombres.get(orden)).getMaxLong());
+								/*
 								String longitud = (String)auxHashCamposValor.get("VALOR");
 								if(longitud.length()!=0)
 									datosCamposPestanasLongitud.set((orden.intValue()),longitud.length());
 								else
 									datosCamposPestanasLongitud.set((orden.intValue()),15);
+									*/
 								datosCamposPestanas.set((orden.intValue()),(String)auxHashCamposValor.get("VALOR"));
 								encontrado = true; 
 							}										

@@ -1725,7 +1725,7 @@
 							<% String sNombreCampo = "campo"+(k+1);
 							if (GenTipoCampoBean.ID_TIPO_ALFANUMERICO.equals(campoConf.getTipo())){ %>
 								<%if (campoConf.getMaxLong() > 100){ %>
-									<textarea name="<%=sNombreCampo%>" onKeyDown="cuenta(this,<%=campoConf.getMaxLong()%>)" onChange="cuenta(this,<%=campoConf.getMaxLong()%>)" class="<%=boxStyle %>" style="width:700px;" cols="90" rows="3"><%=vDatosCamposPestanas.elementAt(k)%></textarea>
+									<textarea name="<%=sNombreCampo%>" onKeyDown="cuenta(this,<%=campoConf.getMaxLong()%>)" onChange="cuenta(this,<%=campoConf.getMaxLong()%>)" class="<%=boxStyle %>" style="width:950;" cols="90" rows="3"><%=vDatosCamposPestanas.elementAt(k)%></textarea>
 								<%} else { %>
 									<input type="text" name="<%=sNombreCampo%>" value="<%=vDatosCamposPestanas.elementAt(k)%>"  size="<%=vDatosCamposPestanasLongitud.elementAt(k)%>" class ="<%=boxStyle %>" maxlength="<%=campoConf.getMaxLong()%>"></input>
 								<%} %>								
