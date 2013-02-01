@@ -376,7 +376,7 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 							"   when instr(f_siga_getrecurso(COS.DESCRIPCION, 1),' 50 km') > 0 then '50 km' " +
 							"   else f_siga_getrecurso(COS.DESCRIPCION, " + idioma + " ) " +
 							"   end ) ABREVIATURA_DESPLAZAMIENTO, " +
-							" JUZGADOS.NOMBRE AS JUZGADO " +
+							" NVL(JUZGADOS.NOMBRE, JUZGADOS_ASI.NOMBRE) AS JUZGADO " +
 						" FROM FCS_FACT_APUNTE FAP, FCS_FACT_ACTUACIONASISTENCIA FAAS, " +
 							" SCS_ACTUACIONASISTENCIA AAS, " +
 							" SCS_ASISTENCIA ASI, " +
@@ -385,7 +385,8 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 							" SCS_TIPOACTUACIONCOSTEFIJO TACTCOS, " +
 							" SCS_COSTEFIJO COS, " +
 							" SCS_TIPOACTUACION TA, " +
-							" SCS_JUZGADO JUZGADOS " +
+							" SCS_JUZGADO JUZGADOS, " +
+							" SCS_JUZGADO JUZGADOS_ASI " +
 						" WHERE FAP.IDINSTITUCION = FAAS.IDINSTITUCION " +
 							" and FAP.IDFACTURACION = FAAS.IDFACTURACION " +
 							" and FAP.IDAPUNTE = FAAS.IDAPUNTE " +
@@ -424,6 +425,8 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 							" and TA.idtipoactuacion = AAS.idtipoactuacion " +		
 							" AND AAS.IDINSTITUCION = JUZGADOS.IDINSTITUCION(+) " +   
 							" AND AAS.IDJUZGADO = JUZGADOS.IDJUZGADO(+) " +
+							" AND ASI.IDINSTITUCION = JUZGADOS_ASI.IDINSTITUCION(+) " +   
+							" AND ASI.JUZGADO = JUZGADOS_ASI.IDJUZGADO(+) " +
 						" ORDER BY AAS.ANIO, AAS.NUMERO, AAS.IDACTUACION, NOMBRE_ASISTIDO";
 						
 					}else{
@@ -574,7 +577,7 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 					" turno.abreviatura AS ABREVIATURA_TURNO, " +
 					" ad.numeroasunto as NUMEROASUNTO, " +	
 					" DES.NIG, " +			
-					" JUZGADOS.NOMBRE AS JUZGADO " +
+					" NVL(JUZGADOSAD.NOMBRE, JUZGADOS.NOMBRE) AS JUZGADO " +
 				" FROM SCS_ACTUACIONDESIGNA AD, " +
 					" SCS_PROCEDIMIENTOS PRO, " +
 					" SCS_DESIGNA DES, " +
@@ -584,7 +587,8 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 					" SCS_ACREDITACION acre, " +
 					" SCS_TURNO turno, " +
 					" CEN_COLEGIADO cole, " +
-					" SCS_JUZGADO JUZGADOS " +
+					" SCS_JUZGADO JUZGADOS, " +
+					" SCS_JUZGADO JUZGADOSAD " +
 				" WHERE DES.IDINSTITUCION = AD.IDINSTITUCION " +
 					" AND DES.IDTURNO = AD.IDTURNO " +
 					" AND DES.ANIO = AD.ANIO " +
@@ -613,6 +617,8 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 					" and AD.idpersonacolegiado = " + idPersona +
 					" AND DES.IDINSTITUCION = JUZGADOS.IDINSTITUCION(+) " +   
 					" AND DES.IDJUZGADO = JUZGADOS.IDJUZGADO(+) " +
+					" AND AD.IDINSTITUCION = JUZGADOSAD.IDINSTITUCION(+) " +   
+					" AND AD.IDJUZGADO = JUZGADOSAD.IDJUZGADO(+) " +
 				" ORDER BY AD.FECHA, ASIOFI, NUMEROASUNTO, PROCEDIMIENTO";
 
 			RowsContainer rc = new RowsContainer();
