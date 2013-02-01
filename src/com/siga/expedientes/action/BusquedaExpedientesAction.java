@@ -42,8 +42,7 @@ public class BusquedaExpedientesAction extends MasterAction {
 	//seguir al obtener los adtos en la jsp. Ver metodos actualizarSelecionados y aniadeClaveBusqueda(2)
 	//de la super clase(MasterAction)
 	final String[] clavesBusqueda={ExpExpedienteBean.C_IDINSTITUCION,ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE,
-			ExpExpedienteBean.C_IDTIPOEXPEDIENTE,ExpExpedienteBean.C_ANIOEXPEDIENTE,ExpExpedienteBean.C_NUMEROEXPEDIENTE,
-			ExpExpedienteBean.C_IDPERSONA};
+			ExpExpedienteBean.C_IDTIPOEXPEDIENTE,ExpExpedienteBean.C_ANIOEXPEDIENTE,ExpExpedienteBean.C_NUMEROEXPEDIENTE};
 	protected ActionForward executeInternal (ActionMapping mapping,
 			ActionForm formulario,
 			HttpServletRequest request, 

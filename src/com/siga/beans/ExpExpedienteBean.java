@@ -19,7 +19,7 @@ public class ExpExpedienteBean extends MasterBean {
 	private Integer idTipoExpediente;
 	private Integer numeroExpediente;
 	private Integer anioExpediente;
-	private Long idPersona;
+	private Long idPersonaDenunciado;
 	private Long colOrigen;
 	private Long idPersonaDenunciante;
 	private Long colOrigenDenunciante;
@@ -106,8 +106,7 @@ public class ExpExpedienteBean extends MasterBean {
 	static public final String C_USUMODIFICACION ="USUMODIFICACION";
 	static public final String C_IDINSTITUCION ="IDINSTITUCION";
 	static public final String C_ANIOEXPEDIENTE ="ANIOEXPEDIENTE";
-	static public final String C_ANIOEXPDISCIPLINARIO ="ANIOEXPDISCIPLINARIO";
-	static public final String C_IDPERSONA ="IDPERSONA";
+	static public final String C_ANIOEXPDISCIPLINARIO ="ANIOEXPDISCIPLINARIO";	
 	static public final String C_IDTIPOEXPEDIENTE ="IDTIPOEXPEDIENTE";	
 	static public final String C_IDINSTITUCION_TIPOEXPEDIENTE ="IDINSTITUCION_TIPOEXPEDIENTE";
 	static public final String C_ESVISIBLE ="ESVISIBLE";
@@ -352,11 +351,11 @@ public class ExpExpedienteBean extends MasterBean {
 			Integer idInstitucion_tipoExpediente) {
 		this.idInstitucion_tipoExpediente = idInstitucion_tipoExpediente;
 	}
-	public Long getIdPersona() {
-		return idPersona;
+	public Long getIdPersonaDenunciado() {
+		return idPersonaDenunciado;
 	}
-	public void setIdPersona(Long idPersona) {
-		this.idPersona = idPersona;
+	public void setIdPersonaDenunciado(Long idPersonaDenunciado) {
+		this.idPersonaDenunciado = idPersonaDenunciado;
 	}
 	public Integer getIdTipoExpediente() {
 		return idTipoExpediente;

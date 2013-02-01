@@ -49,7 +49,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			ExpExpedienteBean.C_IDTIPOEXPEDIENTE,
 			ExpExpedienteBean.C_NUMEROEXPEDIENTE,
 			ExpExpedienteBean.C_ANIOEXPEDIENTE,			
-			ExpExpedienteBean.C_IDPERSONA,
 			ExpExpedienteBean.C_NUMEXPDISCIPLINARIO,
 			ExpExpedienteBean.C_ANIOEXPDISCIPLINARIO,
 			ExpExpedienteBean.C_FECHA,
@@ -174,7 +173,8 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_IDINSTITUCION));
 			bean.setAnioExpediente(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_ANIOEXPEDIENTE));
 			
-			bean.setIdPersona(UtilidadesHash.getLong(hash, ExpExpedienteBean.C_IDPERSONA));
+			bean.setIdPersonaDenunciado(UtilidadesHash.getLong(hash, ExpDenunciadoBean.C_IDPERSONA));
+			bean.setIdPersonaDenunciante(UtilidadesHash.getLong(hash, ExpDenuncianteBean.C_IDPERSONA));
 			bean.setIdTipoExpediente(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_IDTIPOEXPEDIENTE));
 			bean.setIdInstitucion_tipoExpediente(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE));
 			bean.setEsVisible(UtilidadesHash.getString(hash, ExpExpedienteBean.C_ESVISIBLE));
@@ -261,7 +261,8 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_USUMODIFICACION, b.getUsuModificacion());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDINSTITUCION, b.getIdInstitucion());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_ANIOEXPEDIENTE, b.getAnioExpediente());
-			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDPERSONA, b.getIdPersona());
+			UtilidadesHash.set(htData, ExpDenuncianteBean.C_IDPERSONA, b.getIdPersonaDenunciante());
+			UtilidadesHash.set(htData, ExpDenunciadoBean.C_IDPERSONA, b.getIdPersonaDenunciado());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDTIPOEXPEDIENTE, b.getIdTipoExpediente());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE, b.getIdInstitucion_tipoExpediente());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_ESVISIBLE, b.getEsVisible());
@@ -673,15 +674,10 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 	        
 	        String sql = "SELECT  ";
 	        //todos los campos de la tabla exp_expediente separados por coma
-		    for(int i=0;i<fields.length; i++){
-		    	//BEGIN BNS		    	
-		    	if (ExpExpedienteBean.C_IDPERSONA.equalsIgnoreCase(fields[i])){
-		    		sql += "D."+ExpDenunciadoBean.C_IDPERSONA+", ";
-		    	} else
-		    	//END BNS
+		    for(int i=0;i<fields.length; i++){		    	
 		    		sql += "E."+fields[i]+", ";
 			}
-		    
+		    sql += "D."+ExpDenunciadoBean.C_IDPERSONA+", ";
 		   // sql += T_IDINSTITUCION+", ";	
 		    //sql += T_IDTIPOEXPEDIENTE+", ";	
 		    sql += "F."+ExpFasesBean.C_NOMBRE+" NOMBREFASE, ";
@@ -1107,7 +1103,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		String E_SANCIONFINALIZADA = ExpExpedienteBean.C_SANCIONFINALIZADA;
 		String E_NUMEROEXPEDIENTE = ExpExpedienteBean.C_NUMEROEXPEDIENTE;
 		String E_ANIOEXPEDIENTE = ExpExpedienteBean.C_ANIOEXPEDIENTE;
-		String E_IDPERSONA = ExpExpedienteBean.C_IDPERSONA;
 		String E_ESVISIBLEENFICHA = ExpExpedienteBean.C_ESVISIBLEENFICHA;
 		String E_IDINSTITUCION_TIPOEXPEDIENTE = ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE;
 		String E_IDFASE = ExpExpedienteBean.C_IDFASE;
@@ -1169,7 +1164,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		    		    		
 			sql += " WHERE ";
 			sql += "e." + E_IDINSTITUCION + " = " + idInstitucion + " and ";
-			sql += "e." + E_IDPERSONA + " = " + idPersona + " and ";
 			sql += "e." + E_ESVISIBLEENFICHA + " = 'S' and ";
 			sql += "e." + E_IDINSTITUCION + " = " + T_IDINSTITUCION + " and ";
 			sql += "e." + E_IDTIPOEXPEDIENTE + " = " + T_IDTIPOEXPEDIENTE + " and ";
@@ -1281,6 +1275,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		String T_EXP_EXPEDIENTES = ExpExpedienteBean.T_NOMBRETABLA + " E";
 		String T_EXP_TIPOEXPEDIENTES = ExpTipoExpedienteBean.T_NOMBRETABLA + " T";
 		String T_CEN_PERSONA = CenPersonaBean.T_NOMBRETABLA + " C";
+		String T_EXP_DENUNCIADOS = ExpDenunciadoBean.T_NOMBRETABLA + " D";
 		
 		//NOMBRES COLUMNAS PARA LA JOIN
 		
@@ -1298,7 +1293,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		String E_IDINSTITUCION = "E." + ExpExpedienteBean.C_IDINSTITUCION;
 		String E_IDINSTITUCIONTIPOEXPEDIENTE = "E." + ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE;
 		String E_IDTIPOEXPEDIENTE = "E." + ExpExpedienteBean.C_IDTIPOEXPEDIENTE;
-		String E_IDPERSONA = "E." + ExpExpedienteBean.C_IDPERSONA;
 		
 //		Tabla exp_tipoexpediente
 		String T_TIPOEXPEDIENTE = "T." + ExpTipoExpedienteBean.C_NOMBRE + " AS TIPOEXPEDIENTE ";
@@ -1310,7 +1304,8 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		try { 
 			rc = new RowsContainer(); 
 			
-			String 	sql = "SELECT ";	        
+			String 	sql = "SELECT ";	
+						sql += C_IDPERSONA + ", ";	
 					    sql += C_NOMBRE + ", ";	
 					    sql += C_APELLIDOS1 + ", ";	
 					    sql += C_APELLIDOS2 + ", ";	
@@ -1321,7 +1316,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 					    sql += E_NUMEROEXPEDIENTE;
 					    
 					sql += " FROM ";
-				    	sql += T_CEN_PERSONA + ", " + T_EXP_TIPOEXPEDIENTES + ", " + T_EXP_EXPEDIENTES;
+				    	sql += T_CEN_PERSONA + ", " + T_EXP_TIPOEXPEDIENTES + ", " + T_EXP_EXPEDIENTES+ ", " + T_EXP_DENUNCIADOS;
 				    				    	
 				    sql += " WHERE ";
 				    	sql += E_IDTIPOEXPEDIENTE + " = " + idTipoExpediente + " AND ";
@@ -1329,8 +1324,12 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 				    	sql += E_IDINSTITUCIONTIPOEXPEDIENTE + " = " + idInstitucionTipoExpediente + " AND ";
 				    	sql += E_NUMEROEXPEDIENTE + " = " + numeroExpediente + " AND ";
 				    	sql += E_ANIOEXPEDIENTE + " = " + anioExpediente + " AND ";
-				    	
-				    	sql += E_IDPERSONA + " = " + C_IDPERSONA + " AND ";
+				    	sql += " E."+ExpExpedienteBean.C_IDINSTITUCION+" = D."+ExpDenunciadoBean.C_IDINSTITUCION+"(+) "+
+								 " AND E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE+" = D."+ExpDenunciadoBean.C_IDINSTITUCION_TIPOEXPEDIENTE+"(+) "+
+								 " AND E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE+" = D."+ExpDenunciadoBean.C_IDTIPOEXPEDIENTE+"(+) "+
+								 " AND E."+ExpExpedienteBean.C_NUMEROEXPEDIENTE+" = D."+ExpDenunciadoBean.C_NUMEROEXPEDIENTE+"(+) "+
+								 " AND E."+ExpExpedienteBean.C_ANIOEXPEDIENTE+" = D."+ExpDenunciadoBean.C_ANIOEXPEDIENTE+"(+) "+
+								 " AND 1 = D."+ExpDenunciadoBean.C_IDDENUNCIADO+"(+) ";
 				    	sql += E_IDINSTITUCIONTIPOEXPEDIENTE + " = " + T_IDINSTITUCION + " AND ";
 				    	sql += E_IDTIPOEXPEDIENTE + " = " + T_IDTIPOEXPEDIENTE;
 				    	
@@ -2071,7 +2070,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_USUMODIFICACION, b.getUsuModificacion());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDINSTITUCION, b.getIdInstitucion());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_ANIOEXPEDIENTE, b.getAnioExpediente());
-			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDPERSONA, b.getIdPersona());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDDIRECCION, b.getIdDireccion());
 			
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDTIPOEXPEDIENTE, b.getIdTipoExpediente());

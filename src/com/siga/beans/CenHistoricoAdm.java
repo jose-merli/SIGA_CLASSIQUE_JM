@@ -886,7 +886,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 					hBeanAsociadoAnterior = adm.beanToHashTable(adm.hashTableToBean(beanExp.getOriginalHash()));
 					
 					beanHistorico.setIdInstitucion(beanExp.getIdInstitucion());										
-					beanHistorico.setIdPersona(beanExp.getIdPersona());												
+					beanHistorico.setIdPersona(beanExp.getIdPersonaDenunciado());											
 					beanHistorico.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_EXPEDIENTES));
 
 					// Sustituimos id's por descripciones

@@ -3762,8 +3762,9 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	    		Hashtable htFiltroSanciones = new Hashtable();
 	    		
 	    		htFiltroSanciones.put(ExpExpedienteBean.C_IDINSTITUCION,idInstitucion);
-	    		htFiltroSanciones.put(ExpExpedienteBean.C_IDPERSONA,personaCertificado);
+	    		//htFiltroSanciones.put(ExpDenunciadoBean.C_IDPERSONA,personaCertificado);
 	    		htFiltroSanciones.put(ExpExpedienteBean.C_SANCIONADO,"S");
+	    		//TODO: YA NO PUEDE SER UN SELECT?
 	    		Vector vSanciones = admExpedientes.select(htFiltroSanciones);
 	    		StringBuffer descSancion = new StringBuffer("");
 	    		if(vSanciones!=null && !vSanciones.isEmpty()){
