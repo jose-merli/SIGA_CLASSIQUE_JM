@@ -16,18 +16,11 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.TipoIntercambioEnum;
-import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
 import org.redabogacia.sigaservices.app.autogen.model.EcomDesignaprovisionalWithBLOBs;
 import org.redabogacia.sigaservices.app.autogen.model.EcomSolsusprocedimientoWithBLOBs;
-import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosExample;
-import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosExample.Criteria;
-import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosWithBLOBs;
-import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
-
 
 import com.aspose.words.Document;
 import com.atos.utils.ClsConstants;
@@ -36,7 +29,6 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.GstStringTokenizer;
 import com.atos.utils.UsrBean;
-import com.crystaldecisions.reports.exporters.excel.libs.biff.records.OBJ;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
@@ -105,7 +97,6 @@ import com.siga.beans.ScsProcuradorAdm;
 import com.siga.beans.ScsUnidadFamiliarEJGAdm;
 import com.siga.certificados.Plantilla;
 import com.siga.envios.form.DefinirEnviosForm;
-import com.siga.envios.service.EntradaEnviosService;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.AcreditacionForm;
@@ -121,8 +112,6 @@ import com.siga.informes.MasterReport;
 import com.siga.informes.MasterWords;
 import com.siga.informes.form.InformesGenericosForm;
 import com.siga.servlets.SIGASvlProcesoAutomaticoRapido;
-
-import es.satec.businessManager.BusinessManager;
 
 /**
  * 
@@ -1721,7 +1710,16 @@ public class EnvioInformesGenericos extends MasterReport {
 					} else {
 						idTipoEJG = (String) datosInforme.get("idTipoEJG");
 					}
-					String numero = (String) datosInforme.get("numero");
+					// BEGIN BNS INC_08446_SIGA SUSTITUIMOS EL ID DE LA TABLA DE EJG POR EL CÓDIGO DE EJG
+					String numero = "";
+					String id = (String) datosInforme.get("numero");
+					if (idInstitucion!=null&&!"".equals(idInstitucion)&&idTipoEJG!=null&&!"".equals(idTipoEJG)&&
+							anio!=null&&!"".equals(anio)&&id!=null&&!"".equals(id)){
+						ScsEJGAdm ejgAdm = new ScsEJGAdm(usrBean);
+						Hashtable datosEjg = ejgAdm.getDatosEjg(idInstitucion, anio, id, idTipoEJG);
+						numero = datosEjg.get("CODIGO").toString();
+					}					
+					// END BNS
 					boolean isSolicitantes = beanInforme.getASolicitantes() != null
 							&& beanInforme.getASolicitantes().equalsIgnoreCase(
 									"S");
