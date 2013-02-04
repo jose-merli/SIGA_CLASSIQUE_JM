@@ -148,7 +148,14 @@ function checkTodos(chkGeneral){
  	var ele = document.getElementsByName("chkConfiguracion");
   	for (i = 0; i < ele.length; i++) {
   	  	var obj = ele[i]; 
-  	  obj.checked = chkGeneral.checked;
+  	  	obj.checked = chkGeneral.checked;
+  	  	if(obj.checked)
+  	  		jQuery("#orden_"+i).removeAttr("disabled");
+  	  	else
+  	  		jQuery("#orden_"+i).attr("disabled","disabled");
+  				
+  	
+  	  	
 	}
 		
 }
