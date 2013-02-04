@@ -194,7 +194,7 @@
 							value="${asistencia.fechaHora}"></c:out></td>
 				</tr>
 			</table>
-			<siga:ConjCampos leyenda='gratuita.mantActuacion.literal.asistido'>
+			<siga:ConjCampos desplegable="true" oculto="false" leyenda='gratuita.mantActuacion.literal.asistido'>
 				<table width="100%">
 					<tr>
 						<td width="12%"></td>
@@ -227,7 +227,7 @@
 					</tr>
 				</table>
 			</siga:ConjCampos>
-			<siga:ConjCampos leyenda="gratuita.busquedaDesignas.literal.letrado">
+			<siga:ConjCampos desplegable="true" oculto="false" leyenda="gratuita.busquedaDesignas.literal.letrado">
 
 				<table width="100%">
 					<tr>
@@ -264,7 +264,7 @@
 			</siga:ConjCampos>
 		</siga:ConjCampos>
 
-		<siga:ConjCampos leyenda="gratuita.mantActuacion.literal.actuacion">
+		<siga:ConjCampos  leyenda="gratuita.mantActuacion.literal.actuacion">
 			<table width="100%" border="0">
 				<tr>
 					<td width="15%"></td>
@@ -468,7 +468,7 @@
 		<c:choose>
 			<c:when
 				test="${ActuacionAsistenciaFormEdicion.facturado=='1' ||ActuacionAsistenciaForm.modo=='ver'}">
-				<siga:ConjCampos
+				<siga:ConjCampos desplegable="true" oculto="false"
 					leyenda="gratuita.mantActuacion.literal.justificacion">
 					<table width="100%" border="0">
 						<tr>
