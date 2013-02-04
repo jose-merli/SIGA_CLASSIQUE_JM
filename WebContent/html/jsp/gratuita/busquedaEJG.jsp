@@ -405,7 +405,7 @@
 					<siga:Idioma key="gratuita.busquedaEJG.literal.resolucion"/>
 				</td>				
 				<td> 
-					<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="resolucionEJG" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=idioma%>" elementoSel="<%=idResolucion%>" />
+					<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucion" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=idioma%>" elementoSel="<%=idResolucion%>" />
 				</td>
 													
 				<td class="labelText" style="vertical-align:middle">
