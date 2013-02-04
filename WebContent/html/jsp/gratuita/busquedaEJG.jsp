@@ -313,14 +313,14 @@
 	<siga:ConjCampos leyenda="gratuita.busquedaEJG.literal.EJG">
 		<table align="center" width="100%" border="0" cellpadding="5" cellspacing="0">
 			<tr>
-				<td class="labelText" style="vertical-align:middle">
+				<td class="labelText" style="vertical-align:middle" width="90px">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.anyo" />/<siga:Idioma key="gratuita.busquedaEJG.literal.codigo" />
 				</td>
 				
-				<td colspan="5" style="padding:0px">
+				<td colspan="5" style="padding:0px" style="vertical-align:middle">
 					<table border="0" cellpadding="5" cellspacing="0">
 						<tr>
-							<td>
+							<td style="vertical-align:middle">
 								<html:text name="<%=formulario%>" styleClass="box" property="anio"  value="<%=anio%>" style="width:40" maxlength="4"></html:text>
 								&nbsp;/&nbsp;
 								<html:text name="<%=formulario%>" styleClass="box" property="numEJG" value="<%=numEJG%>" size="8" maxlength="10"> </html:text>
@@ -329,14 +329,14 @@
 							<td class="labelText" style="vertical-align:middle">
 								<siga:Idioma key="gratuita.busquedaEJG.literal.tipoEJG" />
 							</td>
-							<td>
+							<td style="vertical-align:middle">
 								<siga:ComboBD nombre="idTipoEJG" tipo="tipoEJG" parametro="<%=datoTipoOrdinario%>"clase="boxCombo" obligatorio="false" elementoSel="<%=idTipoEJG%>" ancho="200"/>
 							</td>
 							
 							<td class="labelText" style="vertical-align:middle">
 								<siga:Idioma key="gratuita.busquedaEJG.literal.EJGColegio" />
 							</td>
-							<td>
+							<td style="vertical-align:middle">
 								<siga:ComboBD nombre="idTipoEJGColegio" tipo="tipoEJGColegio" clase="boxCombo" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=idTipoEJGColegio%>" ancho="200"/>
 							</td>						
 						</tr>
@@ -345,10 +345,10 @@
 			</tr>
 
 			<tr>
-				<td class="labelText" style="vertical-align:middle">
+				<td class="labelText" style="vertical-align:middle" width="90px">
 					<siga:Idioma key="gratuita.busquedaSOJ.literal.creadoDesde" />
 				</td>
-				<td>
+				<td style="vertical-align:middle">
 					<select name="creadoDesde" class="box">
 						<option value=""></option>
 						<option value="A" <%if (creadoDesde.startsWith("A")) {%> selected <%}%>>ASISTENCIA</option>
@@ -358,26 +358,26 @@
 					</select>
 				</td>				
 		
-				<td class="labelText" style="vertical-align:middle">
+				<td class="labelText" style="vertical-align:middle" width="140px">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.fechaAperturaDesde" />
 				</td>
-				<td width="120px">
+				<td width="120px" style="vertical-align:middle">
 					<siga:Fecha nombreCampo="fechaAperturaDesde" valorInicial="<%=fechaApertura%>" /> 
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
 					<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta" />
 				</td>
-				<td width="120px">
+				<td width="120px" style="vertical-align:middle">
 					<siga:Fecha nombreCampo="fechaAperturaHasta" valorInicial="<%=fechaAperturaHasta%>" /> 
 				</td>
 			</tr>
 			
 			<tr>
-				<td class="labelText" style="vertical-align:middle">
+				<td class="labelText" style="vertical-align:middle" width="90px">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.estadoEJG" />
 				</td>
-				<td>
+				<td style="vertical-align:middle">
 					<% if(esComision){%>
 						<siga:ComboBD nombre="estadoEJG" tipo="estadosEJGComision" clase="boxCombo" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=idEstado%>"/>
 					<% }else{ %>
@@ -385,52 +385,52 @@
 					<% } %>
 				</td>
 				
-				<td class="labelText" style="vertical-align:middle">
+				<td class="labelText" style="vertical-align:middle" width="140px">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.fechaEstadoDesde" />
 				</td>
-				<td width="120px">
+				<td width="120px" style="vertical-align:middle">
 					<siga:Fecha nombreCampo="fechaEstadoDesde" valorInicial="<%=fechaEstadoDesde%>" /> 
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
 					<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta" />
 				</td>
-				<td width="120px">
+				<td width="120px" style="vertical-align:middle">
 					<siga:Fecha nombreCampo="fechaEstadoHasta" valorInicial="<%=fechaEstadoHasta%>" /> 
 				</td>
 			</tr>
 			
 			<tr>
-				<td class="labelText" style="vertical-align:middle">
+				<td class="labelText" style="vertical-align:middle" width="90px">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.resolucion"/>
 				</td>				
-				<td> 
-					<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucion" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=idioma%>" elementoSel="<%=idResolucion%>" />
+				<td style="vertical-align:middle"> 
+					<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucion" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=idioma%>" elementoSel="<%=idResolucion%>" ancho="375" />
 				</td>
 													
-				<td class="labelText" style="vertical-align:middle">
+				<td class="labelText" style="vertical-align:middle" width="140px">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.fechaLimiteDesde" />
 				</td>
-				<td width="120px">
+				<td width="120px" style="vertical-align:middle">
 					<siga:Fecha nombreCampo="fechaLimitePresentacionDesde" valorInicial="<%=fechaLimiteDesde%>" /> 
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
 					<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta" />
 				</td>
-				<td width="120px">
+				<td width="120px" style="vertical-align:middle">
 					<siga:Fecha nombreCampo="fechaLimitePresentacionHasta" valorInicial="<%=fechaLimiteHasta%>" /> 
 				</td>			
 			</tr>
 			
 			<tr>
-				<td class="labelText" style="vertical-align:middle">
+				<td class="labelText" style="vertical-align:middle" width="90px">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.dictaminado" />
 				</td>
-				<td style="padding:0px">
+				<td style="padding:0px" style="vertical-align:middle">
 					<table border="0" cellpadding="5" cellspacing="0">
 						<tr>
-							<td>
+							<td style="vertical-align:middle">
 								<select name="dictaminado" class="box">
 									<option value="S" <%if (sDictaminado.equalsIgnoreCase("S")) {%> selected <%}%>><siga:Idioma key="gratuita.busquedaSOJ.literal.si" /></option>
 									<option value="N" <%if (sDictaminado.equalsIgnoreCase("N")) {%> selected <%}%>><siga:Idioma key="gratuita.busquedaSOJ.literal.no" /></option>
@@ -441,66 +441,65 @@
 							<td class="labelText" style="vertical-align:middle">
 								<siga:Idioma key="gratuita.busquedaEJG.dictamen"/>
 							</td>
-							<td> 
+							<td style="vertical-align:middle"> 
 								<siga:ComboBD nombre="idTipoDictamenEJG" tipo="dictamenEJG" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" obligatorio="false" ancho="140" elementoSel="<%=idTipoDictamen%>" />
 							</td>									
 						</tr>
 					</table>
 				</td>
 				
-				<td class="labelText" style="vertical-align:middle">
+				<td class="labelText" style="vertical-align:middle" width="140px">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.fechaDictamenDesde" />
 				</td>
-				<td width="120px">
+				<td width="120px" style="vertical-align:middle">
 					<siga:Fecha nombreCampo="fechaDictamenDesde" valorInicial="<%=fechaDictamenDesde%>" /> 
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
 					<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta" />
 				</td>
-				<td width="120px"> 
+				<td width="120px" style="vertical-align:middle"> 
 					<siga:Fecha nombreCampo="fechaDictamenHasta" valorInicial="<%=fechaDictamenHasta%>" /> 
 				</td>
 			</tr>
 			
 			<tr>
-				<td class="labelText" style="vertical-align:middle">
+				<td class="labelText" style="vertical-align:middle" width="90px">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.ponente"/>
 				</td>
-				<td> 
+				<td style="vertical-align:middle"> 
 					<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" ancho="200"/>
 				</td>
 				
-				<td class="labelText" style="vertical-align:middle">
+				<td class="labelText" style="vertical-align:middle" width="140px">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.presentacionPonente.desde" />
 				</td>
-				<td width="120px">
+				<td width="120px" style="vertical-align:middle">
 					<siga:Fecha nombreCampo="fechaPresentacionPonenteDesde" valorInicial="<%=fechaPonenteDesde%>" />
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.presentacionPonente.hasta" />
 				</td>
-				<td width="120px">
+				<td width="120px" style="vertical-align:middle">
 					<siga:Fecha nombreCampo="fechaPresentacionPonenteHasta" valorInicial="<%=fechaPonenteHasta%>" /> 
 				</td>			
-			</tr>	
-			
+			</tr>				
 
 			<tr>
-				<td class="labelText" style="vertical-align:middle">
-					<siga:Idioma key='gratuita.operarEJG.literal.CAJG'/> <siga:Idioma key='gratuita.operarEJG.literal.anio'/>/<siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/>
+				<td class="labelText" style="vertical-align:middle" width="90px">
+					<siga:Idioma key='gratuita.operarEJG.literal.CAJG'/><br><siga:Idioma key='gratuita.operarEJG.literal.anio'/>/<siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/>
 				</td>
-				<td>
+				<td style="vertical-align:middle">
 					<html:text name="<%=formulario%>" styleClass="box" property="anioCAJG"  style="width:40" maxlength="4" value="<%=cajgAnio%>" />
 					&nbsp;/&nbsp;
 					<html:text name="<%=formulario%>" styleClass="box" property="numeroCAJG" value="<%=cajgNumero%>" size="8" maxlength="10" />
 				</td>
 							
-				<td class="labelText" style="vertical-align:middle">
-					<siga:Idioma key='gratuita.operarEJG.literal.acta'/> <siga:Idioma key='gratuita.operarEJG.literal.anio'/>/<siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/>
+				<td class="labelText" style="vertical-align:middle" width="140px">
+					<siga:Idioma key='gratuita.operarEJG.literal.acta'/><br><siga:Idioma key='gratuita.operarEJG.literal.anio'/>/<siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/>
 				</td>
-				<td colspan="3">
+				<td colspan="3" style="vertical-align:middle">
 					<html:text name="<%=formulario%>" styleClass="box" property="anioActa"  style="width:40" maxlength="4" value="<%=anioActa%>" />
 					&nbsp;/&nbsp;
 					<html:text name="<%=formulario%>" styleClass="box" property="numeroActa" value="<%=numActa%>" size="8" maxlength="10" />

@@ -730,20 +730,20 @@
 				<table width="100%" border="0">
 					<%if(anioEJG!=null && !anioEJG.equals("")){ //si la designa tiene EJG asociad... %>
 						<tr>
-							<td class="labelText">
+							<td class="labelText" width="160px">
 								<siga:Idioma key="gratuita.operarRatificacion.literal.tipoRatificacion"/>
 							</td>	
 			
 							<%if (vTipoRatificacion!=null && vTipoRatificacion.size()>0){%>	
 								<td>
-									<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucion" ancho="200" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vTipoRatificacion%>" readOnly="true"/>				
+									<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucion" ancho="375" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vTipoRatificacion%>" readOnly="true"/>				
 								</td>
 			 				<%}%>	
 						</tr>
 			
 	
 						<tr>
-							<td class="labelText">
+							<td class="labelText" width="160px">
 								<siga:Idioma key="gratuita.operarRatificacion.literal.fechaNotificacion"/>
 							</td>
 							
@@ -756,7 +756,7 @@
 	
 	
 						<tr>
-							<td class="labelText">
+							<td class="labelText" width="160px">
 								<siga:Idioma key="gratuita.operarRatificacion.literal.fechaRatificacion"/>
 							</td>
 								
