@@ -33,6 +33,8 @@
 		excludedParams="${BusquedaColegiadosForm.selectParameterName} ${BusquedaColegiadosForm.selectAllName} ${BusquedaColegiadosForm.selectAllPagesName} ${BusquedaColegiadosForm.backupSelectedName} page deleteForm"
 		class="dataScroll" >
 		
+		<%@ include file="/html/jsp/general/mensajesDisplayTag.jsp" %>
+		
 		<display:setProperty name="decorator.media.html" value="com.siga.censo.decorator.ColegiadoDecorator" />
 		
 		<display:column property="id" class="hidden" headerClass="hidden" />

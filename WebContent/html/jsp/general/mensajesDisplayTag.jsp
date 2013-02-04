@@ -1,0 +1,10 @@
+<display:setProperty name="paging.banner.item_name" value="${BusquedaColegiadosForm.msgElemento}" />
+<display:setProperty name="paging.banner.items_name" value="${BusquedaColegiadosForm.msgElementos}" />
+<display:setProperty name="paging.banner.no_items_found" value='<span class="pagebanner"><input type="hidden" id="_numRows" value="0"/>${BusquedaColegiadosForm.msgNoEncontrado} {0}.</span>' />
+<display:setProperty name="paging.banner.one_item_found" value='<span class="pagebanner"><input type="hidden" id="_numRows" value="1"/>${BusquedaColegiadosForm.msgEncontradoUno} {0}.</span>' />
+<display:setProperty name="paging.banner.all_items_found" value='<span class="pagebanner"><input type="hidden" id="_numRows" value="{0}"/>{0} {1} ${BusquedaColegiadosForm.msgMostrandoTodos} {2}.</span>' />
+<display:setProperty name="paging.banner.some_items_found" value='<span class="pagebanner"><input type="hidden" id="_numRows" value="{0}"/>{0} {1} ${BusquedaColegiadosForm.msgMostrandoDel} {2} ${BusquedaColegiadosForm.msgAl} {3}.</span>' />
+<display:setProperty name="paging.banner.full" value='<span class="pagelinks">[<a href="{1}">${BusquedaColegiadosForm.msgPrimero}</a>/<a href="{2}">${BusquedaColegiadosForm.msgAnterior}</a>] {0} [<a href="{3}">${BusquedaColegiadosForm.msgSiguiente}</a>/<a href="{4}">${BusquedaColegiadosForm.msgUltimo}</a>]</span>' />
+<display:setProperty name="paging.banner.first" value='<span class="pagelinks">[${BusquedaColegiadosForm.msgPrimero}/${BusquedaColegiadosForm.msgAnterior}] {0} [<a href="{3}">${BusquedaColegiadosForm.msgSiguiente}</a>/<a href="{4}">${BusquedaColegiadosForm.msgUltimo}</a>]</span>' />
+<display:setProperty name="paging.banner.last" value='<span class="pagelinks">[<a href="{1}">${BusquedaColegiadosForm.msgPrimero}</a>/<a href="{2}">${BusquedaColegiadosForm.msgAnterior}</a>] {0} [${BusquedaColegiadosForm.msgSiguiente}/${BusquedaColegiadosForm.msgUltimo}]</span>' />
+<display:setProperty name="paging.banner.page.link" value="<a href=\"{1}\" title=\"${BusquedaColegiadosForm.msgIrApagina} {0}\">{0}</a>" />

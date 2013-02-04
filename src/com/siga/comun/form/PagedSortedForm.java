@@ -15,6 +15,8 @@ import org.displaytag.properties.SortOrderEnum;
 import org.displaytag.tags.TableTagParameters;
 import org.displaytag.util.ParamEncoder;
 
+import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.comun.decorator.CheckboxDecorator;
 import com.siga.comun.vos.PagedVo;
 import com.siga.comun.vos.SortDirection;
@@ -29,22 +31,57 @@ public abstract class PagedSortedForm extends BaseForm{
 
 	private static final long serialVersionUID = 8632345372808728830L;
 	
-	//Atributos para la ordenacion
 	private static final String DEFAULT_SORT_DIRECTION="2";
 	private static final String DEFAULT_SORT_COLUMN="1";
 	private static final String DEFAULT_TABLE_NAME="tabla";
 	private static final String DEFAULT_SELECT_PARAMETER_NAME="_chk";
+	private static final String DEFAULT_MSG_IR_A_PAGINA = "Ir a página";
+	private static final String RECURSO_MSG_IR_A_PAGINA = "messages.irApagina";
+	private static final String DEFAULT_MSG_PRIMERO = "Primero";
+	private static final String RECURSO_MSG_PRIMERO = "messages.primero";
+	private static final String DEFAULT_MSG_ULTIMO = "Último";
+	private static final String RECURSO_MSG_ULTIMO = "messages.ultimo";
+	private static final String DEFAULT_MSG_SIGUIENTE = "Siguiente";
+	private static final String RECURSO_MSG_SIGUIENTE = "messages.siguiente";
+	private static final String DEFAULT_MSG_ANTERIOR = "Anterior";
+	private static final String RECURSO_MSG_ANTERIOR = "messages.anterior";
+	private static final String DEFAULT_MSG_ITEM_NAME = "elemento";
+	private static final String RECURSO_MSG_ITEM_NAME = "messages.itemName";
+	private static final String DEFAULT_MSG_ITEMS_NAME = "elementos";
+	private static final String RECURSO_MSG_ITEMS_NAME = "messages.itemsName";
+	private static final String DEFAULT_MSG_NO_ENCONTRADO = "No se han encontrado";
+	private static final String RECURSO_MSG_NO_ENCONTRADO = "messages.noEncontrado";
+	private static final String DEFAULT_MSG_ENCONTRADO_UNO = "Encontrado un";
+	private static final String RECURSO_MSG_ENCONTRADO_UNO = "messages.encontradoUno";
+	private static final String DEFAULT_MSG_MOSTRANDO_DEL = "encontrados, mostrando del";
+	private static final String RECURSO_MSG_MOSTRANDO_DEL = "messages.mostrandoDel";
+	private static final String DEFAULT_MSG_AL = "al";
+	private static final String RECURSO_MSG_AL = "messages.al";
+	private static final String DEFAULT_MSG_MOSTRANDO_TODOS = "encontrados, mostrando todos los";
+	private static final String RECURSO_MSG_MOSTRANDO_TODOS = "messages.mostrandoTodos";
 	public static final String SELECT_ALL_TRUE="on";
 	private static final String SELECT_ALL_PAGES_TRUE="on";
+	
 	private boolean ascendente=true;
 	private String sortColumn=DEFAULT_SORT_COLUMN;
 	private String tableName=DEFAULT_TABLE_NAME;
 	private String selectParameterName=DEFAULT_SELECT_PARAMETER_NAME;
-
+	private String msgIrApagina = DEFAULT_MSG_IR_A_PAGINA;
+	private String msgPrimero = DEFAULT_MSG_PRIMERO;
+	private String msgUltimo = DEFAULT_MSG_ULTIMO;
+	private String msgAnterior = DEFAULT_MSG_ANTERIOR;
+	private String msgSiguiente = DEFAULT_MSG_SIGUIENTE;
+	private String msgElemento = DEFAULT_MSG_ITEM_NAME;
+	private String msgElementos = DEFAULT_MSG_ITEMS_NAME;
+	private String msgNoEncontrado = DEFAULT_MSG_NO_ENCONTRADO;
+	private String msgEncontradoUno = DEFAULT_MSG_ENCONTRADO_UNO;
+	private String msgMostrandoDel = DEFAULT_MSG_MOSTRANDO_DEL;
+	private String msgAl = DEFAULT_MSG_AL;
+	private String msgMostrandoTodos = DEFAULT_MSG_MOSTRANDO_TODOS;
+	
 	private List<String> columnTranslation=null;
 	private List<String> selectedElements=new ArrayList<String>();
 
-	//Atributos para la paginacion
 	private static final Integer DEFAULT_PAGE_SIZE = new Integer(10);
 	private static final Integer DEFAULT_PAGE=new Integer(1);
 	private Integer pageSize=DEFAULT_PAGE_SIZE;
@@ -65,6 +102,64 @@ public abstract class PagedSortedForm extends BaseForm{
 	 * Lista donde se almacenan los resultados de las busquedas
 	 */
 	private List<Vo> table;
+	
+	/**
+	 * Este método carga los recursos de BD para los literales que se muestran
+	 * en la paginación del displayTag (por defecto está en displaytag.properties en castellano).
+	 * Para que estos mensajes surtan efecto se deben setear como propiedades en cada displaytag:table
+	 * Hay una página creada con todos /html/jsp/general/mensajesDisplayTag.jsp
+	 * @param usrbean
+	 */
+	public void updateMsg(UsrBean usrbean){
+		this.msgAl = UtilidadesString.getMensajeIdioma(usrbean, RECURSO_MSG_AL);
+		if (RECURSO_MSG_AL.equals(this.msgAl)){
+			this.msgAl = DEFAULT_MSG_AL;
+		}
+		this.msgAnterior = UtilidadesString.getMensajeIdioma(usrbean, RECURSO_MSG_ANTERIOR);
+		if (RECURSO_MSG_ANTERIOR.equals(this.msgAnterior)){
+			this.msgAnterior = DEFAULT_MSG_ANTERIOR;
+		}
+		this.msgElemento = UtilidadesString.getMensajeIdioma(usrbean, RECURSO_MSG_ITEM_NAME);
+		if (RECURSO_MSG_ITEM_NAME.equals(this.msgElemento)){
+			this.msgElemento = DEFAULT_MSG_ITEM_NAME;
+		}
+		this.msgElementos = UtilidadesString.getMensajeIdioma(usrbean, RECURSO_MSG_ITEMS_NAME);
+		if (RECURSO_MSG_ITEMS_NAME.equals(this.msgElementos)){
+			this.msgElementos = DEFAULT_MSG_ITEMS_NAME;
+		}
+		this.msgEncontradoUno = UtilidadesString.getMensajeIdioma(usrbean, RECURSO_MSG_ENCONTRADO_UNO);
+		if (RECURSO_MSG_ENCONTRADO_UNO.equals(this.msgEncontradoUno)){
+			this.msgEncontradoUno = DEFAULT_MSG_ENCONTRADO_UNO;
+		}
+		this.msgIrApagina = UtilidadesString.getMensajeIdioma(usrbean, RECURSO_MSG_IR_A_PAGINA);
+		if (RECURSO_MSG_IR_A_PAGINA.equals(this.msgIrApagina)){
+			this.msgIrApagina = DEFAULT_MSG_IR_A_PAGINA;
+		}
+		this.msgMostrandoDel = UtilidadesString.getMensajeIdioma(usrbean, RECURSO_MSG_MOSTRANDO_DEL);
+		if (RECURSO_MSG_MOSTRANDO_DEL.equals(this.msgMostrandoDel)){
+			this.msgMostrandoDel = DEFAULT_MSG_MOSTRANDO_DEL;
+		}
+		this.msgMostrandoTodos = UtilidadesString.getMensajeIdioma(usrbean, RECURSO_MSG_MOSTRANDO_TODOS);
+		if (RECURSO_MSG_MOSTRANDO_TODOS.equals(this.msgMostrandoTodos)){
+			this.msgMostrandoTodos = DEFAULT_MSG_MOSTRANDO_TODOS;
+		}
+		this.msgNoEncontrado = UtilidadesString.getMensajeIdioma(usrbean, RECURSO_MSG_NO_ENCONTRADO);
+		if (RECURSO_MSG_NO_ENCONTRADO.equals(this.msgNoEncontrado)){
+			this.msgNoEncontrado = DEFAULT_MSG_NO_ENCONTRADO;
+		}
+		this.msgPrimero = UtilidadesString.getMensajeIdioma(usrbean, RECURSO_MSG_PRIMERO);
+		if (RECURSO_MSG_PRIMERO.equals(this.msgPrimero)){
+			this.msgPrimero = DEFAULT_MSG_PRIMERO;
+		}
+		this.msgSiguiente = UtilidadesString.getMensajeIdioma(usrbean, RECURSO_MSG_SIGUIENTE);
+		if (RECURSO_MSG_SIGUIENTE.equals(this.msgSiguiente)){
+			this.msgSiguiente = DEFAULT_MSG_SIGUIENTE;
+		}
+		this.msgUltimo = UtilidadesString.getMensajeIdioma(usrbean, RECURSO_MSG_ULTIMO);
+		if (RECURSO_MSG_ULTIMO.equals(this.msgUltimo)){
+			this.msgUltimo = DEFAULT_MSG_ULTIMO;
+		}		
+	}
 	
 	public DisplaytagColumnDecorator getDecorator(String checkboxName){
 		return new CheckboxDecorator(checkboxName, selectedElements, 
@@ -324,6 +419,102 @@ public abstract class PagedSortedForm extends BaseForm{
 
 	public String getBackupSelected() {
 		return backupSelected;
+	}
+
+	public String getMsgIrApagina() {
+		return msgIrApagina;
+	}
+
+	public void setMsgIrApagina(String msgIrApagina) {
+		this.msgIrApagina = msgIrApagina;
+	}
+
+	public String getMsgPrimero() {
+		return msgPrimero;
+	}
+
+	public void setMsgPrimero(String msgPrimero) {
+		this.msgPrimero = msgPrimero;
+	}
+
+	public String getMsgUltimo() {
+		return msgUltimo;
+	}
+
+	public void setMsgUltimo(String msgUltimo) {
+		this.msgUltimo = msgUltimo;
+	}
+
+	public String getMsgAnterior() {
+		return msgAnterior;
+	}
+
+	public void setMsgAnterior(String msgAnterior) {
+		this.msgAnterior = msgAnterior;
+	}
+
+	public String getMsgSiguiente() {
+		return msgSiguiente;
+	}
+
+	public void setMsgSiguiente(String msgSiguiente) {
+		this.msgSiguiente = msgSiguiente;
+	}
+
+	public String getMsgElemento() {
+		return msgElemento;
+	}
+
+	public void setMsgElemento(String msgElemento) {
+		this.msgElemento = msgElemento;
+	}
+
+	public String getMsgElementos() {
+		return msgElementos;
+	}
+
+	public void setMsgElementos(String msgElementos) {
+		this.msgElementos = msgElementos;
+	}
+
+	public String getMsgNoEncontrado() {
+		return msgNoEncontrado;
+	}
+
+	public void setMsgNoEncontrado(String msgNoEncontrado) {
+		this.msgNoEncontrado = msgNoEncontrado;
+	}
+
+	public String getMsgEncontradoUno() {
+		return msgEncontradoUno;
+	}
+
+	public void setMsgEncontradoUno(String msgEncontradoUno) {
+		this.msgEncontradoUno = msgEncontradoUno;
+	}
+
+	public String getMsgMostrandoDel() {
+		return msgMostrandoDel;
+	}
+
+	public void setMsgMostrandoDel(String msgMostrandoDel) {
+		this.msgMostrandoDel = msgMostrandoDel;
+	}
+
+	public String getMsgAl() {
+		return msgAl;
+	}
+
+	public void setMsgAl(String msgAl) {
+		this.msgAl = msgAl;
+	}
+
+	public String getMsgMostrandoTodos() {
+		return msgMostrandoTodos;
+	}
+
+	public void setMsgMostrandoTodos(String msgMostrandoTodos) {
+		this.msgMostrandoTodos = msgMostrandoTodos;
 	}
 	
 }

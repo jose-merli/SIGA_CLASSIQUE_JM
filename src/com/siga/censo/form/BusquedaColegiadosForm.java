@@ -27,18 +27,7 @@ public class BusquedaColegiadosForm extends PagedSortedForm{
 	private static final Integer DEFAULT_PAGE_SIZE = 20;
 	private static final String DEFAULT_SORT_COLUMN = "3";
 	
-	private String tipoBusqueda;
-	public String getTipoBusqueda() {
-		return tipoBusqueda;
-	}
-
-	public void setTipoBusqueda(String tipoBusqueda) {
-		this.tipoBusqueda = tipoBusqueda;
-	}
-
-	public void updateRequest (HttpServletRequest request){
-		setSelectedElements(request.getParameterValues(getSelectParameterName()));
-	}
+	private String tipoBusqueda;	
 	
 	//Campos de la busqueda simple
 	private List<InstitucionVO> instituciones;
@@ -80,6 +69,27 @@ public class BusquedaColegiadosForm extends PagedSortedForm{
 	private List<ValueKeyVO> listaGruposFijos;
 	private String tipoColegiacion;
 	private List<ValueKeyVO> listaTipoColegiacion;
+	
+	public BusquedaColegiadosForm(){
+		setPageSize(DEFAULT_PAGE_SIZE);
+		//mapeo de las columnas por las cuales se puede ordenar la lista de resultados
+		setColumnTranslation("","","nifCif","nColegiado","apellidos","nombre","fechaIncorporacion",
+				"idInstitucion","","","fechaNacimiento");
+		//id de la tabla en la pagina html
+		setTableName(TABLE_NAME);
+	}
+	
+	public String getTipoBusqueda() {
+		return tipoBusqueda;
+	}
+
+	public void setTipoBusqueda(String tipoBusqueda) {
+		this.tipoBusqueda = tipoBusqueda;
+	}
+
+	public void updateRequest (HttpServletRequest request){
+		setSelectedElements(request.getParameterValues(getSelectParameterName()));
+	}
 	
 	public String getNombreInstitucion() {
 		return nombreInstitucion;
@@ -377,16 +387,6 @@ public class BusquedaColegiadosForm extends PagedSortedForm{
 	public void setListaTipoApunteCVSubtipo2(
 			List<ValueKeyVO> listaTipoApunteCVSubtipo2) {
 		this.listaTipoApunteCVSubtipo2 = listaTipoApunteCVSubtipo2;
-	}
-
-
-	public BusquedaColegiadosForm(){
-		setPageSize(DEFAULT_PAGE_SIZE);
-		//mapeo de las columnas por las cuales se puede ordenar la lista de resultados
-		setColumnTranslation("","","nifCif","nColegiado","apellidos","nombre","fechaIncorporacion",
-				"idInstitucion","","","fechaNacimiento");
-		//id de la tabla en la pagina html
-		setTableName(TABLE_NAME);
 	}
 
 	public Vo toVO(){

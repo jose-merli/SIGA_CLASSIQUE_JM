@@ -170,6 +170,8 @@ public class ColegiadoAction extends PagedSortedAction {
 		formulario.fromPagedVo(pagedVo);
 		formulario.fromSortedVo(sortedVo);
 
+		formulario.updateMsg(this.getUserBean(request));
+		
 		service.updateTelefonosColegiados(lista);
 		actualizaFechaEstadoColegial(lista);
 		formulario.setInstituciones(getColegiosDependientes(getUserBean(request).getLocation()));

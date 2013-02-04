@@ -74,9 +74,8 @@ public class TagCheckboxDisplaytag extends TagSupport {
 		UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
 		message = UtilidadesString.getMensajeIdioma(usrbean, message); 
 		try {
-			//TODO: [BNS] OBTENER LOS MENSAJES EN LOS IDIOMAS
-			String msgErrorSelectAll = "Se ha producido un error al intentar seleccionar todos los elementos, por favor, inténtelo de nuevo más tarde";
-			String msgRegSeleccionados = "Registros Seleccionados";
+			String msgErrorSelectAll = UtilidadesString.getMensajeIdioma(usrbean, "messages.selectAllError");
+			String msgRegSeleccionados = UtilidadesString.getMensajeIdioma(usrbean, "messages.registrosSeleccionados");
 			
 			strBuf.append(String.format(startForm, formName, formName, submitUrl));
 			strBuf.append(String.format(hiddenInputs,formBean.getPage(),selectAllPagesName,selectAllPagesName,selectAllPagesName,selectAllPagesName));
