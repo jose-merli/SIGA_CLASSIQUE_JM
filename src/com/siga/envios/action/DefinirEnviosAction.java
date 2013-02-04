@@ -500,7 +500,7 @@ public class DefinirEnviosAction extends MasterAction {
 		String idEnvio = (String)vOcultos.elementAt(0);
 		String idTipoEnvio = (String)vOcultos.elementAt(1);
 		String idIntercambio = null;
-		if(vOcultos.size()>1)
+		if(vOcultos.size()>2)
 			idIntercambio = (String)vOcultos.elementAt(2);
 		
 		//Anhadimos parametros para las pestanhas

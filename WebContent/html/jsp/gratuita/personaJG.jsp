@@ -1946,6 +1946,27 @@
 	<!-- REPRESENTANTE LEGAL -->
 <script>
 	
+function limpiarRepresentante() {
+	document.PersonaJGForm.idPersonaRepresentante.value ="";
+	document.PersonaJGForm.ncolegiadoRepresentante.value="";
+	document.PersonaJGForm.representante.value="";
+	
+	return false;
+}
+function buscarRepresentante() {
+	
+	document.representanteTutor.idPersonaJG.value=document.PersonaJGForm.idPersonaRepresentante.value;
+	document.representanteTutor.idPersonaPER.value=document.PersonaJGForm.idPersonaJG.value;
+	document.representanteTutor.idInstitucionPER.value=document.PersonaJGForm.idInstitucionJG.value;
+	var resultado = ventaModalGeneral("representanteTutor","G");			
+	if (resultado != null && resultado[0]!=null  && resultado[1]!=null)
+	{
+		document.PersonaJGForm.idPersonaRepresentante.value = resultado[0];
+		document.PersonaJGForm.representante.value = resultado[1];	
+	}		
+}
+
+
 	function limpiarPersona() {
 		document.PersonaJGForm.idPersonaRepresentante.value ="";
 		document.PersonaJGForm.ncolegiadoRepresentante.value="";
@@ -1988,6 +2009,8 @@ function limpiarPersonaContrario() {
 }
 
 
+
+
 	
 </script>
 	<siga:ConjCampos leyenda="gratuita.personaJG.literal.representantes">
@@ -2011,7 +2034,7 @@ function limpiarPersonaContrario() {
 			<%
 				if (!accion.equalsIgnoreCase("ver")) {
 			%>			
-			<input type="button" class="button" id="idButton" name="Buscar" value="<siga:Idioma key="general.boton.search" />" onClick="buscarPersona();">
+			<input type="button" class="button" id="idButton" name="Buscar" value="<siga:Idioma key="general.boton.search" />" onClick="buscarRepresentante();">
 			<%
 				}
 			%>
@@ -2020,7 +2043,7 @@ function limpiarPersonaContrario() {
 			<%
 				if (!accion.equalsIgnoreCase("ver")) {
 			%>
-			<input type="button" alt="<siga:Idioma key="gratuita.personaJG.literal.limpiar"/>" name="idButton"  onclick="return limpiarPersona();" class="button" value="<siga:Idioma key="gratuita.personaJG.literal.limpiar"/>">
+			<input type="button" alt="<siga:Idioma key="gratuita.personaJG.literal.limpiar"/>" name="idButton"  onclick="return limpiarRepresentante();" class="button" value="<siga:Idioma key="gratuita.personaJG.literal.limpiar"/>">
 			<%
 				}
 			%>						
@@ -2114,6 +2137,7 @@ function limpiarPersonaContrario() {
 		return false;
 	}
 	function buscarTutor() {
+				
 		document.representanteTutor.idPersonaJG.value=document.forms[0].idRepresentanteJG.value;
 		document.representanteTutor.idPersonaPER.value=document.forms[0].idPersonaJG.value;
 		document.representanteTutor.idInstitucionPER.value=document.forms[0].idInstitucionJG.value;
@@ -3690,6 +3714,8 @@ function accionRestablecer()
 	document.forms[0].reset();
 	// inc7269 // Refrescamos la pagina para que cargue tambien los telefonos
 	window.location.reload();
+	
+	
 }
 		
 		
@@ -3698,7 +3724,7 @@ function accionRestablecer()
 	<!-- FIN: SCRIPTS BOTONES -->
 
 
-<%if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) {
+<%if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)||conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS)) {
 	%> 
 	<!-- formulario para seleccionar representante Legal, del censo -->
 	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
@@ -3708,15 +3734,7 @@ function accionRestablecer()
 	<!-- FIN formulario para seleccionar representante Legal, del censo -->
 <%}
 	
-	if (conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS)) {%> 
-	<!-- formulario para seleccionar representante Legal, del censo -->
-	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
-		<input type="hidden" name="actionModal" value="">
-		<input type="hidden" name="modo" value="abrirBusquedaModal">
-	</html:form>
-	<!-- FIN formulario para seleccionar representante Legal, del censo -->
-<%
-	} else {
+	
 %>
 	<!-- formulario para seleccionar representante -->
 	<form id="representanteTutor" name="representanteTutor" action="<%=app + actionE%>" method="post">
@@ -3735,9 +3753,6 @@ function accionRestablecer()
 		<input type="hidden" id="repPCAJG"      name="repPCAJG" value="<%=pcajgActivo%>">
 	</form>
 	<!-- FIN formulario para seleccionar representante -->
-<%
-	}
-%> 
 
 
 	<!-- formulario para buscar personaJG-->

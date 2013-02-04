@@ -1544,15 +1544,11 @@ public class PersonaJGAction extends MasterAction {
 								}
 								miform.setIdPersonaRepresentante(ufBean.getIdRepresentanteLegal());
 								if (ufBean.getIdRepresentanteLegal()!=null && !ufBean.getIdRepresentanteLegal().equals("")) {
-									CenPersonaAdm adm = new CenPersonaAdm(this.getUserBean(request));
-									miform.setRepresentante(adm.obtenerNombreApellidos(ufBean.getIdRepresentanteLegal()));
-									Vector nColegiadoRepresentante = new Vector();
-									ScsContrariosDesignaAdm AbogadoReresententeAdm = new ScsContrariosDesignaAdm (this.getUserBean(request));									
-									nColegiadoRepresentante= AbogadoReresententeAdm.selectGenerico(AbogadoReresententeAdm.getNcolegiadoRepresentante(ufBean.getIdRepresentanteLegal()));
-									if (nColegiadoRepresentante.size()>0){
-										String numeroColegiadoRepresentante= UtilidadesHash.getString((Hashtable)nColegiadoRepresentante.get(0),"NCOLEGIADOABOGADO");										
-										miform.setNcolegiadoRepresentante(numeroColegiadoRepresentante);
-									}
+									
+									ScsPersonaJGAdm adm = new ScsPersonaJGAdm(this.getUserBean(request));
+									miform.setRepresentante(adm.getNombreApellidos(ufBean.getIdRepresentanteLegal().toString(),ufBean.getIdInstitucion().toString()));
+									miform.setNcolegiadoRepresentante("");
+
 								} else {
 										miform.setRepresentante(" ");
 										miform.setNcolegiadoRepresentante("");

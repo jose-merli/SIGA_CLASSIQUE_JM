@@ -176,7 +176,7 @@ public class ScsContrariosDesignaAdm extends MasterBeanAdministrador {
 	    		 "nvl(cd.nombrerepresentante,"+
 	    		 "pl.apellidos1||' '||pl.apellidos2||', '||pl.nombre) NOMBRE_REPRESENTANTE,"+
 	    		 "pr.apellidos1||' '||pr.apellidos2||', '||pr.nombre NOMBRE_PROCURADOR "+
-	    		 "from scs_contrariosdesigna cd, scs_personajg pc, scs_procurador pr,cen_persona pl "+
+	    		 "from scs_contrariosdesigna cd, scs_personajg pc, scs_procurador pr,scs_personajg pl "+
 	    		 "where cd.idpersona=pc.idpersona(+)"+
 	    		 "  and cd.idinstitucion=pc.idinstitucion(+)"+
 	    		 "  and cd.idrepresentantelegal=pl.idpersona(+)"+
