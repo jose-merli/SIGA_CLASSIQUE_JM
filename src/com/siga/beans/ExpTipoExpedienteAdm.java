@@ -268,6 +268,37 @@ public class ExpTipoExpedienteAdm extends MasterBeanAdministrador {
         return new Integer(valor);        
     }	
 	
-	
+    //mhg Incidencia EJGs
+    /** 
+     * Devuelve true si existe algun Tipo de expediente en la institucion pasada como primer parametro, 
+     * tal que puede relacionarse con un EJG o crearse a partir de un EJG
+     * 
+     * @param idInstitucion
+     * @return boolean
+     * @throws ClsExceptions
+     */
+	public boolean existeEJGs(String idTipoExpediente, String idInstitucion) throws ClsExceptions{
+		 
+		 boolean valor = false;
+		
+		 try {
+			ExpTipoExpedienteAdm tipoExptAdm = new ExpTipoExpedienteAdm(usrbean);
+			/*Hashtable datosTipoExp = new Hashtable();
+			datosTipoExp.put(ExpTipoExpedienteBean.C_IDINSTITUCION,idInstitucion);
+			datosTipoExp.put(ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE,idTipoExpediente);
+			datosTipoExp.put(ExpTipoExpedienteBean.C_RELACIONEJG, 1);
+			*/
+			String where = " WHERE idInstitucion = " + idInstitucion + " and idTipoExpediente <> " + idTipoExpediente + " and relacionejg = 1";
+			
+			Vector v = tipoExptAdm.select(where);
+			if (v != null && !v.isEmpty())
+				valor = true;
+		
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar el \"select\" en B.D.");
+		}
+		
+		return valor;  
+   }
 
 }
