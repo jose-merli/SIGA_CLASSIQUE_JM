@@ -213,14 +213,19 @@ public class CenSolicitudesModificacionAdm extends MasterBeanAdministrador {
 	            			CenSolicitudesModificacionBean.T_NOMBRETABLA + "." + CenSolicitudesModificacionBean.C_IDTIPOMODIFICACION + "," +
 	            			CenSolicitudesModificacionBean.T_NOMBRETABLA + "." + CenSolicitudesModificacionBean.C_FECHAALTA + "," +
 	            			CenSolicitudesModificacionBean.T_NOMBRETABLA + "." + CenSolicitudesModificacionBean.C_IDESTADOSOLIC + "," +
+	            			CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_LETRADO + " AS LETRADO ," +
 	            			UtilidadesMultidioma.getCampoMultidiomaSimple(CenTiposModificacionesBean.T_NOMBRETABLA + "." + CenTiposModificacionesBean.C_DESCRIPCION, this.usrbean.getLanguage()) + " AS MODIFICACION," +
 	            			UtilidadesMultidioma.getCampoMultidiomaSimple(CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_DESCRIPCION, this.usrbean.getLanguage()) + " AS ESTADO " +
 							" FROM " + 
-							CenSolicitudesModificacionBean.T_NOMBRETABLA +", "+ CenTiposModificacionesBean.T_NOMBRETABLA +", "+CenEstadoSolicitudModifBean.T_NOMBRETABLA+ 
+							CenSolicitudesModificacionBean.T_NOMBRETABLA +", "+ CenTiposModificacionesBean.T_NOMBRETABLA +", "+CenEstadoSolicitudModifBean.T_NOMBRETABLA+", "+CenClienteBean.T_NOMBRETABLA+ 
 							" WHERE " + 
 							CenSolicitudesModificacionBean.T_NOMBRETABLA +"."+ CenSolicitudesModificacionBean.C_IDTIPOMODIFICACION + "=" + CenTiposModificacionesBean.T_NOMBRETABLA +"."+ CenTiposModificacionesBean.C_IDTIPOMODIFICACION +
 							" AND " +
 							CenSolicitudesModificacionBean.T_NOMBRETABLA +"."+ CenSolicitudesModificacionBean.C_IDESTADOSOLIC + "=" + CenEstadoSolicitudModifBean.T_NOMBRETABLA +"."+ CenEstadoSolicitudModifBean.C_IDESTADOSOLIC +
+							" AND " +
+							CenSolicitudesModificacionBean.T_NOMBRETABLA +"."+ CenSolicitudesModificacionBean.C_IDPERSONA + "=" + CenClienteBean.T_NOMBRETABLA +"."+ CenClienteBean.C_IDPERSONA +
+							" AND " +
+							CenSolicitudesModificacionBean.T_NOMBRETABLA +"."+ CenSolicitudesModificacionBean.C_IDINSTITUCION + "=" + CenClienteBean.T_NOMBRETABLA +"."+ CenClienteBean.C_IDINSTITUCION +
 							" AND " +
 							CenSolicitudesModificacionBean.T_NOMBRETABLA +"."+ CenSolicitudesModificacionBean.C_IDINSTITUCION + "=" + institucion;	            
 							
