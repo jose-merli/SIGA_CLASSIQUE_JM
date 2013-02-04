@@ -5186,5 +5186,221 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 		
 	}
 	
+	
+	/**
+	 * mhg - INC_10323_SIGA
+	 * Metodo para insertar una Persona/Cliente/NoColegiado si no existen. Tambien creamos una dirección para los envios.
+	 * @param beanSolic
+	 * @param continuar
+	 * @return
+	 * @throws SIGAException
+	 */
+	public CenClienteBean insertarNoColegiadoParaEnvio (CenSolicitudIncorporacionBean beanSolic, 
+			String continuar, HttpServletRequest request) throws SIGAException
+	{
+		
+		// Controles de adm utilizados
+		CenPersonaAdm admPer;
+		CenClienteAdm admCliente;
+		CenNoColegiadoAdm admNoColegiado;
+		CenColegiadoAdm admColegiado;
+		CenDireccionesAdm admDirecciones;
+		CenSolicitudIncorporacionAdm admSolic;
+		
+		// Beans utilizados
+		CenPersonaBean beanPer = null;
+		CenClienteBean beanCli = null;
+		CenDireccionesBean beanDir = null;
+		CenNoColegiadoBean beanNoCol = null;
+		CenColegiadoBean beanCol = null;
+
+		// Otras variables
+		int tipoSolicitud;
+		
+		try {
+			// obteniendo los adms
+			admPer = new CenPersonaAdm(this.usrbean);
+			admCliente = new CenClienteAdm(this.usrbean);
+			admNoColegiado = new CenNoColegiadoAdm(this.usrbean);
+			admColegiado = new CenColegiadoAdm(this.usrbean);
+			admDirecciones = new CenDireccionesAdm(this.usrbean);
+			admSolic = new CenSolicitudIncorporacionAdm(this.usrbean);
+
+			// comprobando la existencia de la persona y el cliente
+			boolean existePersona = false;
+			boolean existeCliente = false;
+			boolean existeNoColegiado = false;
+			boolean existeColegiado = false;
+			
+			try {
+				
+				beanPer = admPer.existePersonaAlta(
+						beanSolic.getNumeroIdentificador(),
+						beanSolic.getNombre(), beanSolic.getApellido1(),
+						beanSolic.getApellido2(), continuar);
+
+				if (beanPer != null) {
+					existePersona = true;
+
+					Hashtable hashNoColegiado = new Hashtable();
+					hashNoColegiado.put(CenNoColegiadoBean.C_IDINSTITUCION,beanSolic.getIdInstitucion());
+					hashNoColegiado.put(CenNoColegiadoBean.C_IDPERSONA,beanPer.getIdPersona());
+					Vector vNoColegiados = admNoColegiado.select(hashNoColegiado);
+					if (!vNoColegiados.isEmpty()) {
+						existeNoColegiado = true;
+					}
+					beanCol = admColegiado.existeColegiado(beanPer.getIdPersona(), beanSolic.getIdInstitucion());
+					if(beanCol != null){
+						existeColegiado = true;
+					}
+
+					beanCli = this.existeCliente(beanPer.getIdPersona(), beanSolic.getIdInstitucion());
+					if (beanCli != null) {
+						existeCliente = true;
+					}
+				}
+			} catch (SIGAException e) {
+				throw e;
+			}
+
+			// obteniendo el tipo de solicitud de alta colegial
+			tipoSolicitud = beanSolic.getIdTipoSolicitud().intValue();
+
+			// Tratamiento de la persona
+			if (!existePersona) {
+				// rellenando los datos a insertar
+				beanPer = new CenPersonaBean();
+				beanPer.setIdPersona(admPer.getIdPersona(beanSolic
+						.getIdInstitucion()));
+				beanPer.setNombre(beanSolic.getNombre());
+				beanPer.setApellido1(beanSolic.getApellido1());
+				beanPer.setApellido2(beanSolic.getApellido2());
+				beanPer.setNIFCIF(beanSolic.getNumeroIdentificador());
+				beanPer.setNIFCIF(beanPer.getNIFCIF().toUpperCase());
+				beanPer.setFechaNacimiento(beanSolic.getFechaNacimiento());
+				beanPer.setNaturalDe(beanSolic.getNaturalDe());
+				beanPer.setIdTipoIdentificacion(beanSolic
+						.getIdTipoIdentificacion());
+				beanPer.setIdEstadoCivil(beanSolic.getIdEstadoCivil());
+				beanPer.setSexo(beanSolic.getSexo());
+				beanPer.setFallecido(ClsConstants.DB_FALSE);
+
+				// insertando la nueva persona
+				if (!admPer.insert(beanPer))
+					throw new ClsExceptions(admPer.getError());
+			} 
+			
+			if(!existeCliente){
+				// creando el bean de cliente
+				beanCli = new CenClienteBean();
+	
+				// rellenando campos para el registro de cliente
+				beanCli.setIdTratamiento(beanSolic.getIdTratamiento());
+				beanCli.setIdInstitucion(beanSolic.getIdInstitucion());
+				beanCli.setIdPersona(beanPer.getIdPersona());
+				beanCli.setFechaAlta("SYSDATE");
+				beanCli.setIdLenguaje(ClsConstants.LENGUAJE_ESP);
+				beanCli.setAbonosBanco(ClsConstants.TIPO_CARGO_BANCO);
+				beanCli.setCargosBanco(ClsConstants.TIPO_CARGO_BANCO);
+				beanCli.setPublicidad(ClsConstants.DB_FALSE);
+				beanCli.setExportarFoto("0");
+				beanCli.setGuiaJudicial(ClsConstants.DB_FALSE);
+				beanCli.setComisiones(ClsConstants.DB_FALSE);
+				beanCli.setCaracter(ClsConstants.TIPO_CARACTER_PUBLICO);
+	
+				// insertando el nuevo cliente
+				if (!this.insert(beanCli))
+					throw new SIGAException(this.getError());
+	
+				// obteniendo el tipo de colegiacion
+				int idTipoColegiacion = beanSolic.getIdTipoColegiacion()
+						.intValue();
+			}
+			
+			if(!existeNoColegiado && !existeColegiado){
+				// Inserto los datos del no colegiado en CenNoColegiado:
+				Hashtable hashNoColegiado = new Hashtable();
+				hashNoColegiado.put(CenNoColegiadoBean.C_IDINSTITUCION,beanSolic.getIdInstitucion());
+				hashNoColegiado.put(CenNoColegiadoBean.C_IDPERSONA,beanPer.getIdPersona());
+				//El tipo sera siempre Personal:
+				hashNoColegiado.put(CenNoColegiadoBean.C_TIPO,ClsConstants.COMBO_TIPO_PERSONAL);
+				//No es sociedad SJ:
+				hashNoColegiado.put(CenNoColegiadoBean.C_SOCIEDADSJ,ClsConstants.DB_FALSE);
+				hashNoColegiado.put(CenNoColegiadoBean.C_USUMODIFICACION,this.usrbean.getUserName());
+				hashNoColegiado.put(CenNoColegiadoBean.C_FECHAMODIFICACION,"SYSDATE");
+				
+	   		    admNoColegiado.insert(hashNoColegiado);
+				
+			}
+
+			// //// TRATAMIENTO DE DIRECCIONES //////
+			
+			Hashtable hashDireccion = new Hashtable();
+			if(beanSolic.getIdPersonaTemp() != null && beanSolic.getIdDireccionTemp() != null){
+				hashDireccion.put(CenDireccionesBean.C_IDPERSONA,beanSolic.getIdPersonaTemp());
+				hashDireccion.put(CenDireccionesBean.C_IDINSTITUCION,beanSolic.getIdInstitucion());
+				hashDireccion.put(CenDireccionesBean.C_IDDIRECCION,beanSolic.getIdDireccionTemp());
+				Vector vDireccion = admDirecciones.select(hashDireccion);
+				if (!vDireccion.isEmpty()) {
+					beanDir = (CenDireccionesBean)vDireccion.get(0);
+					beanDir.setFechaBaja("SYSDATE");
+					admDirecciones.update(beanDir);
+				}
+			}
+			Direccion direccion = new Direccion();
+			beanDir = new CenDireccionesBean();
+
+			// rellenando el bean de direcciones
+			beanDir.setIdPersona(beanPer.getIdPersona());
+			beanDir.setIdInstitucion(beanSolic.getIdInstitucion());
+			beanDir.setDomicilio(beanSolic.getDomicilio());
+			beanDir.setCodigoPostal(beanSolic.getCodigoPostal());
+			beanDir.setTelefono1(beanSolic.getTelefono1());
+			beanDir.setTelefono2(beanSolic.getTelefono2());
+			beanDir.setMovil(beanSolic.getMovil());
+			beanDir.setFax1(beanSolic.getFax1());
+			beanDir.setFax2(beanSolic.getFax2());
+			beanDir.setCorreoElectronico(beanSolic.getCorreoElectronico());
+			beanDir.setIdPais(beanSolic.getIdPais());
+			if (beanDir.getIdPais().equals("")) {
+				beanDir.setIdPais(ClsConstants.ID_PAIS_ESPANA);
+			}
+			if (beanDir.getIdPais().equals(ClsConstants.ID_PAIS_ESPANA)) {
+				beanDir.setIdProvincia(beanSolic.getIdProvincia());
+				beanDir.setIdPoblacion(beanSolic.getIdPoblacion());
+			} else {
+				beanDir.setIdProvincia("");
+				beanDir.setIdPoblacion("");
+			}
+			beanDir.setPoblacionExtranjera(beanSolic.getPoblacionExtranjera());
+
+			// si es una nueva incorporacion y no existe como cliente ni como
+			// persona debe tener como preferente el correo y el mail
+			if (!existePersona && !existeCliente)
+				beanDir.setPreferente(ClsConstants.TIPO_PREFERENTE_CORREO
+						+ ClsConstants.TIPO_PREFERENTE_CORREOELECTRONICO);
+
+			// estableciendo los datos del tipo de direccion guardia
+			String tiposDir = "";
+
+			// Se llama a la interfaz Direccion para actualizar una nueva
+			// direccion
+			direccion.insertar(beanDir, tiposDir, "", null, this.usrbean);
+			
+			//actualiza los campos temporales tras insertar
+			beanSolic.setIdPersonaTemp(beanDir.getIdPersona());
+			beanSolic.setIdDireccionTemp(beanDir.getIdDireccion());
+			admSolic.update(beanSolic);
+			
+		} catch (SIGAException se) {
+			throw se;
+		} catch (Exception e) {
+			throw new SIGAException("Error al insertar datos en B.D.", e);
+		}
+
+		return beanCli;
+	}
+	
+	
 
 }

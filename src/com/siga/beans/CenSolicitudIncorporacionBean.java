@@ -16,7 +16,7 @@ package com.siga.beans;
 public class CenSolicitudIncorporacionBean extends MasterBean {
 
 	/* Variables */
-	private Long 	idSolicitud;
+	private Long 	idSolicitud, idPersonaTemp, idDireccionTemp;
 	
 	private Integer idTratamiento, 
 					idTipoIdentificacion, 	idInstitucion, 
@@ -73,6 +73,9 @@ public class CenSolicitudIncorporacionBean extends MasterBean {
 	static public final String C_SEXO					= "SEXO";
 	static public final String C_IDMODALIDADDOCUMENTACION = "IDMODALIDADDOCUMENTACION";
 	static public final String C_FECHAESTADOCOLEGIAL	= "FECHAESTADOCOLEGIAL";
+	
+	static public final String C_IDPERSONATEMP 			= "IDPERSONATEMP";
+	static public final String C_IDDIRECCIONTEMP		= "IDDIRECCIONTEMP";
 	
 	static public final String C_RESIDENTE			= "RESIDENTE";
 
@@ -184,4 +187,17 @@ public class CenSolicitudIncorporacionBean extends MasterBean {
 	public void setFechaAlta(String fechaAlta) {
 		this.fechaAlta = fechaAlta;
 	}
+	public Long getIdPersonaTemp() {
+		return idPersonaTemp;
+	}
+	public void setIdPersonaTemp(Long idPersonaTemp) {
+		this.idPersonaTemp = idPersonaTemp;
+	}
+	public Long getIdDireccionTemp() {
+		return idDireccionTemp;
+	}
+	public void setIdDireccionTemp(Long idDireccionTemp) {
+		this.idDireccionTemp = idDireccionTemp;
+	}
+	
 }
