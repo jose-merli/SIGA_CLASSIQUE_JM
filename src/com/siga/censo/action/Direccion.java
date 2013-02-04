@@ -60,8 +60,10 @@ public class Direccion {
 			Long idDireccion = beanDir.getIdDireccion ();
 			
 			// Informacion sobre tipos direccion
-			String tipos[] = tiposDir.split (",");
-			
+			String tipos[] = {};
+			if(!"".equals(tiposDir)) {
+				tipos = tiposDir.split (",");
+			}
 			//Solo se utiliza el parametro request cuando se necesita confirmacion por parte del usuario
 			if(request != null){
 				String preferente = beanDir.getPreferente();

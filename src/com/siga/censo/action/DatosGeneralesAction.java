@@ -968,17 +968,16 @@ public class DatosGeneralesAction extends MasterAction {
 				isColegiado = false;
 			}
 			
-			
-			
-
-			// guardo en el hash el path de la imagen para grabar en cliente
-			if (nombreFoto!=null && !nombreFoto.equals("")) {
+			//MHG Incidencia 36
+			if (nombreFoto!=null) {
 	    		hash.put(CenClienteBean.C_FOTOGRAFIA, nombreFoto);			
 			} 
-			else {
-				hash.remove(CenClienteBean.C_FOTOGRAFIA);
+			else{
+				hash.put(CenClienteBean.C_FOTOGRAFIA, "");	
 			}
-
+			
+			hash.put(CenClienteBean.C_FECHAALTA,GstDate.getApplicationFormatDate("",miForm.getFechaAlta()));	
+			
 			// Cargo una hastable con los valores originales del registro sobre el que se realizará la modificacion						
 			hashOriginal=(Hashtable)request.getSession().getAttribute("DATABACKUP");
 			
@@ -1300,12 +1299,16 @@ public class DatosGeneralesAction extends MasterAction {
 		    }
 
 			// guardo en el hash el path de la imagen para grabar en cliente
-			if (nombreFoto!=null && !nombreFoto.equals("")) {
+		    //MHG Incidencia 36
+		    if (nombreFoto!=null) {
 	    		hash.put(CenClienteBean.C_FOTOGRAFIA, nombreFoto);			
-			} else {
-				hash.remove(CenClienteBean.C_FOTOGRAFIA);
+			} 
+			else{
+				hash.put(CenClienteBean.C_FOTOGRAFIA, "");	
 			}
     		
+		    hash.put(CenClienteBean.C_FECHAALTA,GstDate.getApplicationFormatDate("",miForm.getFechaAlta()));
+		    
 			// Comienzo control de transacciones
 			tx = usr.getTransactionPesada();
 			tx.begin();	
