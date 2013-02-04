@@ -389,6 +389,7 @@ public class GestionMutualidadAction extends MasterAction {
 		try {
 			Hashtable<String, String> datosMutualidad = new Hashtable<String, String>();
 			datosMutualidad.put("IDSOLICITUD", request.getParameter("IDSOLICITUD"));
+//			datosMutualidad.put("accion",mutualidadForm.getAccion());
 			request.setAttribute("SOLINC", datosMutualidad);
 			//mutualidadService.setMutualidadForm(mutualidadForm);
 

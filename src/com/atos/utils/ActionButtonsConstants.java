@@ -91,6 +91,9 @@ public enum ActionButtonsConstants {
 	RENEGOCIAR ("rn","general.boton.renegociar","renegociar()",78),
 	COMUNICAR_COLEGIADOS ("comc","general.boton.comunicarColegiados","accionComunicar()",79),
 	BUSCAR ("b","general.search","buscar()",80),
+	SOLICITARCOMPRA ("SC","general.boton.solicitarCompra","accionGuardar()",81),
+	
+	
 	;
 
 

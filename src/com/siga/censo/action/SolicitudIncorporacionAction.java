@@ -166,6 +166,7 @@ public class SolicitudIncorporacionAction extends MasterAction
 			}
 			UtilidadesHash.set(hash, CenSolicitudIncorporacionBean.C_IDSOLICITUD, idSolicitud);
 			UtilidadesHash.set(hash, "modo", "editar");
+//			hash.put("accion",miFormulario.getAccion());
 			
 			Vector datosSelect = solicitudAdm.selectByPK(hash);
 			if ((datosSelect != null) && (datosSelect.size() > 0)) {
@@ -207,6 +208,7 @@ public class SolicitudIncorporacionAction extends MasterAction
 			}
 			UtilidadesHash.set(hash, CenSolicitudIncorporacionBean.C_IDSOLICITUD, idSolicitud);
 			UtilidadesHash.set(hash, "modo", "ver");
+//			hash.put("accion",miFormulario.getAccion());
 			
 			Vector datosSelect = solicitudAdm.selectByPK(hash);
 			if ((datosSelect != null) && (datosSelect.size() > 0)) {

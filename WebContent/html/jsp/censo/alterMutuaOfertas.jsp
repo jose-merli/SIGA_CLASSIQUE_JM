@@ -60,7 +60,8 @@
 
 <!-- INICIO: TITULO Y LOCALIZACION -->
 	<siga:Titulo titulo="censo.alterMutua.titulo" localizacion="censo.solicitudIncorporacion.localizacion"/>
-	<%if(path.toString().contains("Ficha")){ %>
+	<%
+	if(path.toString().contains("Ficha")){ %>
 		<siga:Titulo titulo="censo.alterMutua.titulo" localizacion="censo.fichaCliente.localizacion"/>
 	<%}%>
 <!-- FIN: TITULO Y LOCALIZACION -->
@@ -299,18 +300,10 @@
 	</html:form>
 </div>
 
+<siga:ConjBotonesAccion botones="V,SC" modo="${modoAccion}" clase="botonesDetalle"/>
 
-<table class="botonesDetalle" align="center" style="display:none;">
-<tr>
-	<td class="tdBotones">
-	<input type="button" alt="Volver"  id="idButton" onclick="return accionVolver();" class="button" name="idButton" value="Volver">
-	</td>
-	<td  style="width:900px;"> &nbsp; </td>
-	<td class="tdBotones">
-		<input type="button" alt="" id="idButtonSolicitar" onclick="return accionGuardar();" class="button" name="idButton" value="<siga:Idioma key="general.boton.solicitarCompra"/>">
-	</td>
-</tr>
-</table>
+
+
 
 <div id="dialog-message" title="SIGA" style="vertical-align: top; max-height: 400px"></div>
 

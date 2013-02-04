@@ -44,7 +44,7 @@
  
 <body onload="ajusteAlto('mainPestanas');return activarPestana();">
 	<html:form action="/CEN_AlterMutua.do" method="POST">
-	<html:hidden property = "modo" value = ""/>
+	<html:hidden property = "modo" />
 	</html:form> 
 	<siga:PestanasExt 
 			pestanaId="<%=pestanaId%>" 

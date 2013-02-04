@@ -46,14 +46,14 @@ public class GestionAlterMutuaAction extends MasterAction {
 			
 			
 			do {
-				
+				request.setAttribute("modoAccion", request.getParameter("modoAccion"));
 				miForm = (MasterForm) formulario;
 				if (miForm != null) {
 					String accion = miForm.getAccion();
 					String modo = request.getParameter("modo");
 					
 					if(modo!=null) accion = modo;
-					
+//					request.setAttribute("modoPermisos", accion);
 					if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
 						mapDestino = abrir (mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("editar") || accion.equalsIgnoreCase("ver")){
@@ -98,10 +98,10 @@ public class GestionAlterMutuaAction extends MasterAction {
 		boolean mostrarSolicitud = false;
 		try {
 			Hashtable<String, String> datosAlter = new Hashtable<String, String>();
-			
 			if(request.getParameter("IDSOLICITUD")==null && request.getParameter("idPersona")!=null ){
 				CenColegiadoAdm colAmd = new CenColegiadoAdm(usrBean);
 				idPersona = request.getParameter("idPersona").toString();
+				datosAlter.put("modoAccion",alterForm.getAccion());
 				datosAlter.put("idPersona", idPersona);
 				request.setAttribute("SOLINC", datosAlter);
 				CenColegiadoBean colBean = colAmd.getDatosColegiales(Long.valueOf(idPersona), Integer.valueOf(usrBean.getLocation()));
@@ -109,6 +109,7 @@ public class GestionAlterMutuaAction extends MasterAction {
 				Vector v = alterAdm.getSolicitudes(idPersona,null);
 			}else if(request.getParameter("IDSOLICITUD")!=null){
 				datosAlter.put("IDSOLICITUD", request.getParameter("IDSOLICITUD"));
+				datosAlter.put("modoAccion",alterForm.getAccion());
 				request.setAttribute("SOLINC", datosAlter);
 				idSolicitud=request.getParameter("IDSOLICITUD");
 			}
@@ -149,6 +150,8 @@ public class GestionAlterMutuaAction extends MasterAction {
 		
 		AlterMutuaForm alterForm = (AlterMutuaForm) formulario;
 		try {
+			
+			
 			
 			if(mapping.getPath().endsWith("Alternativa"))
 				alterForm.setPropuesta(AlterMutuaHelper.TipoPropuesta.Alternativa);
