@@ -299,6 +299,7 @@
 				document.BusquedaFacturaForm.buscarFormaPago.value= "";
 				document.BusquedaFacturaForm.buscarConfirmada.value= "";
 				document.BusquedaFacturaForm.buscarContabilizada.value= "";
+				document.BusquedaFacturaForm.deudor.value= "";
 		}
 
 		//Funcion asociada a boton buscar -->

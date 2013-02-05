@@ -53,6 +53,11 @@
 			readonly="true" styleClass="box" /></td>
 
 	</tr>
+	
+	<!-- mhg Incidencia 65. Nuevo texto de aviso para los usuarios -->
+	<td colspan="4" class="labelText"><siga:Idioma
+					key="censo.bajastemporales.guardias.aviso" /></td>
+	
 	<tr class='tableTitle'>
 				<td align='center' colspan="4">
 				<siga:Idioma
@@ -165,10 +170,6 @@ function accionGenerarExcels(){
 	fin();
 
 }
-
-
-
-
 
 </script>
 

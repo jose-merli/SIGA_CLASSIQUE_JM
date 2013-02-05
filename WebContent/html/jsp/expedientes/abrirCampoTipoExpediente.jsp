@@ -302,6 +302,10 @@
 
 			}			
 
+			function comprobarEJG(){
+			    document.getElementById("modificarEJG").value="1";	
+				document.camposForm.submit();
+		    }	   
 		</script>
 		
 		<!-- FIN: SCRIPTS BOTONES -->
@@ -329,6 +333,7 @@
 				<html:hidden property = "idTipoEnvios" value="<%=idTipoEnvioCorreoElectronico%>"/>
 				<html:hidden property = "idPlantillaEnvios"/>
 				<html:hidden property = "idPlantilla"/>
+				<html:hidden property = "modificarEJG"/>
 				
 				
 				<table class="tablaTitulo" align="center"  cellspacing="0">

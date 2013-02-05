@@ -100,9 +100,12 @@
 	}
 
 	function pulsarCheck(obj){
+		//MHG Incidencia 46 
 		if (!obj.checked ){
-			ObjArray.splice(ObjArray.indexOf(obj.value),1);
-			seleccionados1=ObjArray;
+			for (i = 0; i < ObjArray.length; i++) {		
+				ObjArray.splice(ObjArray[i].indexOf(obj.value),1);
+				seleccionados1=ObjArray;
+			}
 		}else{
 			if (document.getElementById('seleccionados').value<2){
 				ObjArray.push(obj.value);

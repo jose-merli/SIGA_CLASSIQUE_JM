@@ -250,7 +250,7 @@
 					<td colspan="2"><html:text name="busquedaExpedientesForm"
 							property="asunto" size="40" maxlength="70" styleClass="box"></html:text>
 					</td>
-					<td class="labelText" colspan="2">Campo Configurado</td>
+					<td class="labelText" colspan="2"><siga:Idioma key="expedientes.gestionarExpedientes.campoConfigurado" /></td>
 					<td ><html:text name="busquedaExpedientesForm"
 							property="campoConfigurado" size="42" maxlength="40"
 							styleClass="box"></html:text>
