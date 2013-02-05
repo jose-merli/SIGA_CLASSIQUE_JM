@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
@@ -48,7 +50,7 @@ import com.siga.gui.processTree.SIGAPTConstants;
  *
  */
 public class CampoTipoExpedienteAction extends MasterAction {
-    
+	
     protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions,SIGAException
 	{	
         
@@ -181,6 +183,9 @@ public class CampoTipoExpedienteAction extends MasterAction {
 	        ExpTipoExpedienteBean tipoExp=(ExpTipoExpedienteBean)backup.elementAt(0);	 
 	        boolean isEliminarDestinatarios = tipoExp.getEnviarAvisos()!=null &&  tipoExp.getEnviarAvisos().toString().equals(ClsConstants.DB_TRUE) && form.getEnviarAvisos()!=null && form.getEnviarAvisos().equals(ClsConstants.DB_FALSE); 
 	        
+	        //mhg Incidencia EJGs
+	        boolean existe = tipoExpAdm.existeEJGs(tipoExp.getIdTipoExpediente().toString(), tipoExp.getIdInstitucion().toString());
+	        
 	        tipoExp.setNombre(form.getNombre());
 	        if (Validaciones.validaNoInformado(form.getTiempoCaducidad())) {
 		        tipoExp.setTiempoCaducidad(0);
@@ -296,11 +301,25 @@ public class CampoTipoExpedienteAction extends MasterAction {
 	        beanDerechos.setVisible(form.getDerechos()?ExpCampoTipoExpedienteBean.si:ExpCampoTipoExpedienteBean.no);
 	        campoTipoExpedienteAdm.update(beanDerechos);	        
 	        
-	        ExpCampoTipoExpedienteBean beanSolicitanteEJG = (ExpCampoTipoExpedienteBean)camposExp.elementAt(17);
-	        //  Modificamos el bean antiguo
-	        beanSolicitanteEJG.setVisible(form.getSolicitanteEJG()?ExpCampoTipoExpedienteBean.si:ExpCampoTipoExpedienteBean.no);
-	        campoTipoExpedienteAdm.update(beanSolicitanteEJG);
-
+	        //mhg Incidencia EJGs
+	        //Verificamos si existe algun otro tipo con el check de relacionados. Solo puede existir un tipo con ese check en todo el colegio.
+	        String modificarEJG = null;
+	        if (request.getParameter("modificarEJG")!=null){
+	        	modificarEJG = request.getParameter("modificarEJG");
+			}
+			
+			int valor = tipoExp.getRelacionEjg();
+	        if (valor == 1){
+	        	if(existe && !modificarEJG.equals("1")){
+	        		return "preguntaExpEJGs";
+	        	}else{
+	        		ExpCampoTipoExpedienteBean beanSolicitanteEJG = (ExpCampoTipoExpedienteBean)camposExp.elementAt(17);
+		 	        //  Modificamos el bean antiguo
+		 	        beanSolicitanteEJG.setVisible(form.getSolicitanteEJG()?ExpCampoTipoExpedienteBean.si:ExpCampoTipoExpedienteBean.no);
+		 	        campoTipoExpedienteAdm.update(beanSolicitanteEJG);
+	        	}
+			}
+	        
 	        ExpCampoTipoExpedienteBean beanResolucionInforme = (ExpCampoTipoExpedienteBean)camposExp.elementAt(11);
 	        //  Modificamos el bean antiguo
 	        beanResolucionInforme.setVisible(form.getResultadoInforme()?ExpCampoTipoExpedienteBean.si:ExpCampoTipoExpedienteBean.no);
