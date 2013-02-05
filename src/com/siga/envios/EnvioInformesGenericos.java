@@ -4517,7 +4517,11 @@ public class EnvioInformesGenericos extends MasterReport {
 					envioProgramado.setIdPlantillaEnvios(Integer.valueOf(idPlantillaEnvio));
 					
 					envioProgramado.setAcuseRecibo(acuseRecibo);
-					envioProgramado.setNombre(form.getNombre());
+					//mhg 
+					CenPersonaAdm personaAdm = new CenPersonaAdm(userBean);	
+					String nombreyapellidos = personaAdm.obtenerNombreApellidos(idPersona);
+					envioProgramado.setNombre(form.getNombre()+" "+nombreyapellidos);
+					//envioProgramado.setNombre(form.getNombre());
 					
 					envioProgramado.setEstado(ClsConstants.DB_FALSE);
 					envioProgramado.setFechaProgramada(getFechaProgramada(

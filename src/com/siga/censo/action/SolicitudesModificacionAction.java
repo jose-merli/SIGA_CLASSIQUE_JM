@@ -70,7 +70,9 @@ public class SolicitudesModificacionAction extends MasterAction {
 					mapDestino = denegarSolicitud(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("modificarDatos")){
 					mapDestino = modificarDatos(mapping, miForm, request, response);					
-				} else {
+				}else if (accion.equalsIgnoreCase("solicitarModificacionDatos")){
+					mapDestino = solicitarModificacionDatos(mapping, miForm, request, response);
+				}else {
 					return super.executeInternal(mapping,
 							      formulario,
 							      request, 
@@ -210,8 +212,8 @@ public class SolicitudesModificacionAction extends MasterAction {
 		try{
 			
 			// Obtengo el UserBean, el identificador de la institucion y el de la persona
-			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
-			String idInstitucion=user.getLocation();
+			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");	
+			//String idInstitucion=user.getLocation();
 			//Long idPersona=new Long(1000); // Para pruebas
 			Long idPersona=new Long(user.getIdPersona());
 			
@@ -220,17 +222,23 @@ public class SolicitudesModificacionAction extends MasterAction {
 
 			// Obtengo los datos del formulario
 			SolicitudesModificacionForm miForm = (SolicitudesModificacionForm)formulario;
-
+			
 			// Cargo la tabla hash con los valores del formulario para insertar en CEN_SOLICITUDESMODIFICACION
 			Hashtable hash = formulario.getDatos();
 			
-			// Anhado valores que faltan
-			hash.put("IDPERSONA",idPersona.toString());
-			hash.put("IDINSTITUCION",idInstitucion);			
+			String userBean = user.getUserName();
 			
-			// Obtengo el IDSOLICITUD
+			// Anhado idpersona e idinstitucion de la solicitud
+			if(!"".equals(miForm.getIdInstitucion()) && !user.getLocation().equals(miForm.getIdInstitucion())){
+				// este caso es el de solicitud de modificacion de datos generales que pide el colegio a CGAE
+				user.setUserName(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO));
+				hash.put("IDINSTITUCION",miForm.getIdInstitucion());
+				hash.put("IDPERSONA",miForm.getIdPersona());
+			} else {
+				hash.put("IDINSTITUCION",user.getLocation());
+				hash.put("IDPERSONA",idPersona.toString());
+			}
 			admin.prepararInsert(hash);
-			
 			// Comienzo control de transacciones
 			tx = user.getTransaction();					
 			tx.begin();		
@@ -239,6 +247,8 @@ public class SolicitudesModificacionAction extends MasterAction {
 			if (admin.insert(hash)){ 
 				result="insertar";			
 				tx.commit();
+				//Recuperamos el valor anterior del UserBean
+				user.setUserName(userBean);
 			}
 			else{
 				throw new SIGAException (admin.getError());
@@ -304,17 +314,22 @@ public class SolicitudesModificacionAction extends MasterAction {
 			// Obtengo las entradas correspondientes a la busqueda
 			vector=admin.getSolicitudes(form.getIdInstitucion(),form.getCmbTipoModificacion(),form.getEstadoSolicitudModif(),form.getFechaDesde(),form.getFechaHasta());			
 
+			//mhg Obtengo si es letrado o no la persona
+			CenClienteAdm cliente = new CenClienteAdm(this.getUserBean(request));
+			String esCliente = cliente.getEsCliente(form.getIdPersona(), form.getIdInstitucion());
+
 			// Paso la busqueda como parametro en el request 
 			request.setAttribute("container", vector);
 			request.setAttribute("IDPERSONA", form.getIdPersona());
-			request.setAttribute("IDINSTITUCION", form.getIdInstitucion());		
+			request.setAttribute("IDINSTITUCION", form.getIdInstitucion());
+			request.setAttribute("CLIENTE", esCliente);		
 			
 	        //Para volver correctamente desde envios:
 	        request.getSession().setAttribute("EnvEdicionEnvio","GMG");
 		} 
 		catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null); 
-		}		
+		}		 
 		return (result);
 	}
 	
@@ -576,5 +591,32 @@ public class SolicitudesModificacionAction extends MasterAction {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,tx); 
 		}
 		return (result);		
-	}	
+	}
+	
+	//mhg
+	/**
+	 * Método para solicitar modificación de datos generales desde un colegio hacia el CGAE.
+	 */
+	protected String solicitarModificacionDatos (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+
+		String result="solicitarModificacionDatos";
+		
+		try{
+			// Obtengo el UserBean y el identificador de la institucion
+			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
+			Long idPersona=new Long(user.getIdPersona());
+			String idInstitucion=user.getLocation();
+			
+			SolicitudesModificacionForm miForm = (SolicitudesModificacionForm)formulario;
+			miForm.setIdInstitucion(String.valueOf(ClsConstants.INSTITUCION_CGAE));
+			request.setAttribute("IDINSTITUCION", idInstitucion);
+			request.setAttribute("IDPERSONA", idPersona.toString());
+			request.setAttribute("IDPERSONASOL", miForm.getIdPersona());
+		} 
+		catch (Exception e) { 
+			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null); 
+		} 
+		return result;
+	}
+	
 }

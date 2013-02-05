@@ -34,6 +34,7 @@
 	
 	// Datos formulario y sesion
 	DatosGeneralesForm formulario = (DatosGeneralesForm)request.getAttribute("datosGeneralesForm");
+	String idPersonaSolicitud = formulario.getIdPersona();
 	String modo = formulario.getAccion();
 	boolean bOcultarHistorico = user.getOcultarHistorico();
 	String mostrarMensaje = (String) request.getSession().getAttribute("MOSTRARMENSAJE");
@@ -1127,6 +1128,13 @@ function str_replace(search, replace, subject) {
 						<% } %>
 					</td>
 				</tr>
+				<tr>
+					<td class="labelText" colspan="4">
+						<% if (!bDatosGeneralesEditables && !esLetrado) { %> 
+							<input type="button" class="button" id="mensaje" name="mensaje"  value='Comunicar CGAE' onClick="solicitarModificacionDatos();">
+						<% } %>
+					</td>
+				</tr>
 				</table>
 				</siga:ConjCampos>
 		</td>
@@ -1409,6 +1417,11 @@ function str_replace(search, replace, subject) {
 			}			
 		}
 		
+		function solicitarModificacionDatos() {
+			ventaModalGeneral(document.SolicitudesModificacionForm.name,'G');
+			document.SolicitudesModificacionForm.submit();	
+		}
+		
 		function validarFormulario() {
 	
 			if (datosGeneralesForm.sexo.value=='0'){
@@ -1502,6 +1515,11 @@ function str_replace(search, replace, subject) {
 	
 <%	} // else de "no hay datos" %>
 
+<html:form action="/CEN_ModificacionDatos.do" method="POST" target="submitArea"  style="display:none">
+		<input type="hidden" name="modo" value="solicitarModificacionDatos">
+		<html:hidden property = "actionModal" value = ""/>
+		<html:hidden property = "idPersona" value = "<%=idPersonaSolicitud%>"/>
+</html:form>
 
 <%@ include file="/html/jsp/censo/includeVolver.jspf" %>
 
