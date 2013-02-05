@@ -51,6 +51,13 @@ public class ScsPersonaJGBean extends MasterBean{
 	private String edad;	
 	private String fax;
 	private String correoElectronico;
+	private String idTipoDir;
+	private String numeroDir;
+	private String escaleraDir;
+	private String pisoDir;
+	private String puertaDir;
+	private String idTipoVia;
+
 	
 	/* Nombre de Tabla*/
 	
@@ -93,9 +100,13 @@ public class ScsPersonaJGBean extends MasterBean{
 	static public final String  C_EDAD		      =			        "EDAD";	
 	static public final String  C_FAX		      =			        "FAX";
 	static public final String  C_CORREOELECTRONICO     =	        "CORREOELECTRONICO";
+	static public final String  C_IDTIPODIR		        =			"IDTIPODIR";
+	static public final String  C_NUMERODIR			    =			"NUMERODIR";
+	static public final String  C_ESCALERADIR		    =			"ESCALERADIR";
+	static public final String  C_PISODIR		      	=			"PISODIR";
+	static public final String  C_PUERTADIR			    =			"PUERTADIR";
+	static public final String  C_IDTIPOVIA			    =			"IDTIPOVIA";
 	
-	
-		
 	
 	/*Metodos SET*/
 	/**
@@ -529,9 +540,44 @@ public class ScsPersonaJGBean extends MasterBean{
 		return telefonos;
 	}
 
-
 	public void setTelefonos(Vector<ScsTelefonosPersonaJGBean> telefonos) {
 		this.telefonos = telefonos;
 	}
-	
+	public String getIdTipoDir() {
+		return idTipoDir;
 	}
+	public void setIdTipoDir(String idTipoDir) {
+		this.idTipoDir = idTipoDir;
+	}
+	public String getNumeroDir() {
+		return numeroDir;
+	}
+	public void setNumeroDir(String numeroDir) {
+		this.numeroDir = numeroDir;
+	}
+	public String getEscaleraDir() {
+		return escaleraDir;
+	}
+	public void setEscaleraDir(String escaleraDir) {
+		this.escaleraDir = escaleraDir;
+	}
+	public String getPisoDir() {
+		return pisoDir;
+	}
+	public void setPisoDir(String pisoDir) {
+		this.pisoDir = pisoDir;
+	}
+	public String getPuertaDir() {
+		return puertaDir;
+	}
+	public void setPuertaDir(String puertaDir) {
+		this.puertaDir = puertaDir;
+	}
+	public String getIdTipoVia() {
+		return idTipoVia;
+	}
+	public void setIdTipoVia(String idTipoVia) {
+		this.idTipoVia = idTipoVia;
+	}
+
+}

@@ -1105,7 +1105,7 @@
 	<html:hidden name="PersonaJGForm" property = "lNumerosTelefonos" styleId = "lNumerosTelefonos" />
 	<html:hidden property = "idTipoenCalidad"  styleId = "idTipoenCalidad" value="<%=idcalidad%>"/>
 	<html:hidden property = "calidadIdinstitucion" styleId = "calidadIdinstitucion" value="<%=calidadIdinstitucion%>"/>
-	
+	<html:hidden name="PersonaJGForm" property = "tipoDir" styleId="tipoDir"/>
 	
 	
 <%
@@ -1410,54 +1410,142 @@
 	</tr>
 	</table>
 	</siga:ConjCampos>
-
+	
 	<siga:ConjCampos leyenda="gratuita.personaJG.literal.direccion">
 
 	<table  align="center" width="100%">
-	<tr>
-		<td class="labelText">
-			<siga:Idioma key="gratuita.personaJG.literal.direccion"/>
-			
-			<% if(opcionDireccion){
-				%>
-				<div id="desaparece">
-				<%=asterisco%> 
-				</div>
-				<%
+		<tr>
+			<td class="labelText">
+				<siga:Idioma key="gratuita.personaJG.literal.tipovia"/>
 				
-			}else	
-				if (obligatorioDireccion) {
-			%>
-				<%=asterisco%> 
-			<%
- 				}
- 			%>
-		</td>
-		<td>		
-			<html:text name="PersonaJGForm" property="direccion" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:340" ></html:text>
-		</td>
-		<td class="labelText">
-			<siga:Idioma key="gratuita.personaJG.literal.cp"/>	
-			<% if(opcionDireccion){
+				<% if(opcionDireccion){ %>				
+					<div id="desaparece">
+						<%=asterisco%> 
+					</div>
+					
+				<% }else if (obligatorioDireccion) { %>
+					<%=asterisco%> 				
+				<% } %>
+				
+			</td>
+			
+				<%
+					ArrayList selTipoVia = new ArrayList();
+						if (miform.getTipoVia() != null)
+							selTipoVia.add(miform.getTipoVia());
+						String paramTipoVia[] = { usr.getLocation() };
 				%>
+			
+			<td>		
+				<siga:ComboBD nombre = "tipoVia" tipo="comboTipoVia" clase="<%=classCombo%>" elementoSel="<%=selTipoVia%>" parametro="<%=paramTipoVia%>" readOnly="<%=sreadonly%>" estilo="width:120" />
+			</td>
+			
+			<td class="labelText">
+				<siga:Idioma key="gratuita.personaJG.literal.direccion"/>
+				
+				<% if(opcionDireccion){ %>				
+					<div id="desaparece2">
+						<%=asterisco%> 
+					</div>
+					
+				<% }else if (obligatorioDireccion) { %>
+					<%=asterisco%> 				
+				<% } %>
+				
+			</td>
+			<td>		
+				<html:text name="PersonaJGForm" property="direccion" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:280" ></html:text>
+			</td>
+			
+			<td class="labelText" >
+				<siga:Idioma key="gratuita.personaJG.literal.numdir"/>
+				
+				<% if(opcionDireccion){ %>				
+					<div id="desaparece3">
+						<%=asterisco%> 
+					</div>
+					
+				<% }else if (obligatorioDireccion) { %>
+					<%=asterisco%> 				
+				<% } %>
+				
+			</td>
+			<td>		
+				<html:text name="PersonaJGForm" property="numeroDir" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:30" ></html:text>
+			</td>
+			
+			<td class="labelText">
+				<siga:Idioma key="gratuita.personaJG.literal.escdir"/>
+				
+				<% if(opcionDireccion){ %>				
+					<div id="desaparece4">
+						<%=asterisco%> 
+					</div>
+					
+				<% }else if (obligatorioDireccion) { %>
+					<%=asterisco%> 				
+				<% } %>
+				
+			</td>
+			<td>		
+				<html:text name="PersonaJGForm" property="escaleraDir"  styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:40" ></html:text>
+			</td>
+			
+			<td class="labelText">
+				<siga:Idioma key="gratuita.personaJG.literal.pisodir"/>
+				
+				<% if(opcionDireccion){ %>				
+					<div id="desaparece5">
+						<%=asterisco%> 
+					</div>
+					
+				<% }else if (obligatorioDireccion) { %>
+					<%=asterisco%> 				
+				<% } %>
+				
+			</td>
+			<td>		
+				<html:text name="PersonaJGForm" property="pisoDir" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:30" ></html:text>
+			</td>
+			
+			<td class="labelText">
+				<siga:Idioma key="gratuita.personaJG.literal.puertadir"/>
+				
+				<% if(opcionDireccion){ %>				
+					<div id="desaparece6">
+						<%=asterisco%> 
+					</div>
+					
+				<% }else if (obligatorioDireccion) { %>
+					<%=asterisco%> 				
+				<% } %>
+				
+			</td>
+			<td>		
+				<html:text name="PersonaJGForm" property="puertaDir" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:30" ></html:text>
+			</td>															
+			
+		</tr>
+
+		
+		<tr>	
+		<td class="labelText" width="120" >
+			<siga:Idioma key="gratuita.personaJG.literal.cp"/>	
+			
+			<% if(opcionDireccion){	%>
 				<div id="desapareceCp">
 				<%=asterisco%> 
 				</div>
-				<%
-				
-			}else
-					if (obligatorioCodigoPostal) {
-				%>
+			
+			<% }else if (obligatorioCodigoPostal) {	%>
 				<%=asterisco%> 
-			<%
- 				}
- 			%>		
+			<% } %>
+					
 		</td>
-		<td colspan="2">
+		<td >
 			<html:text name="PersonaJGForm" property="cp" size="5" maxlength="5" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"  onChange="createProvince()"></html:text>
 		</td>
-	</tr>
-	<tr>
+
 		<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.provincia"/>	
 			<% if(opcionDireccion){
@@ -1506,7 +1594,7 @@
 			<siga:ComboBD pestana="<%=bPestana%>" nombre = "provincia" tipo="provincia" elementoSel="<%=selProvincia %>" clase="<%=classCombo %>" obligatorio="false" accion="<%=sHack%>" readOnly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false"/>
 		 
 		</td>
-		<td class="labelText">
+		<td class="labelText" colspan="2">
  			<siga:Idioma key="gratuita.personaJG.literal.poblacion"/>	
  			<% if(opcionDireccion){
 				%>
@@ -1523,7 +1611,7 @@
  				}
  			%>	
 		</td>
-		<td colspan="2">
+		<td colspan="6">
 			<%
 				ArrayList selPoblacion = new ArrayList();
 						if (miform.getPoblacion() != null)
@@ -1533,7 +1621,7 @@
 							String poblacion = (String) request
 									.getAttribute("poblacion");
 			%>
-		   		<html:text property="poblacion" value="<%=poblacion%>" maxlength="100" styleClass="boxConsulta" readonly="true" style="width:220"></html:text>
+		   		<html:text property="poblacion" value="<%=poblacion%>" maxlength="100" styleClass="boxConsulta" readonly="true" ></html:text>
 		   <%
 		   	} else {
 		   %>
@@ -1570,7 +1658,8 @@
 	</tr>
 		</table>
 	</siga:ConjCampos>
-
+	
+	
 	<siga:ConjCampos leyenda="gratuita.personaJG.literal.inforAdicional">
 	<table   align="center" width="100%" border="0">
 	<tr>
@@ -2723,6 +2812,10 @@ function limpiarPersonaContrario() {
 				fin();
 				return false;
 			}
+			
+			if (document.forms[0].tipoDir.value == '' || document.forms[0].tipoDir.value == null){
+				document.forms[0].tipoDir.value = 'COMUNICA';
+			}
 							
 			document.forms[0].importeIngresosAnuales.value=document.forms[0].importeIngresosAnuales.value.replace(/,/,".").trim();
 			document.forms[0].importeBienesInmuebles.value=document.forms[0].importeBienesInmuebles.value.replace(/,/,".").trim();
@@ -2870,6 +2963,10 @@ function limpiarPersonaContrario() {
 				return false;
 			}
 						
+			if (document.forms[0].tipoDir.value == '' || document.forms[0].tipoDir.value == null){
+				document.forms[0].tipoDir.value = 'COMUNICA';
+			}			
+			
 			document.forms[0].importeIngresosAnuales.value=document.forms[0].importeIngresosAnuales.value.replace(/,/,".").trim();
 			document.forms[0].importeBienesInmuebles.value=document.forms[0].importeBienesInmuebles.value.replace(/,/,".").trim();
 			document.forms[0].importeBienesMuebles.value=document.forms[0].importeBienesMuebles.value.replace(/,/,".").trim();
@@ -3016,6 +3113,10 @@ function limpiarPersonaContrario() {
 				return false;
 			}
 			
+			if (document.forms[0].tipoDir.value == '' || document.forms[0].tipoDir.value == null){
+				document.forms[0].tipoDir.value = 'COMUNICA';
+			}			
+			
 			if(document.forms[0].NIdentificacion.value=="") 
 				document.forms[0].tipoId.value = "";
 				
@@ -3103,6 +3204,10 @@ function limpiarPersonaContrario() {
 				return false;
 			}
 				
+			if (document.forms[0].tipoDir.value == '' || document.forms[0].tipoDir.value == null){
+				document.forms[0].tipoDir.value = 'COMUNICA';
+			}			
+			
 		 	document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarAsistencia';
 			document.forms[0].target="submitArea2";
@@ -3170,6 +3275,10 @@ function limpiarPersonaContrario() {
 				fin();
 				return false;
 			}
+			
+			if (document.forms[0].tipoDir.value == '' || document.forms[0].tipoDir.value == null){
+				document.forms[0].tipoDir.value = 'COMUNICA';
+			}			
 			
 			if(document.forms[0].NIdentificacion.value=="")
 			 	document.forms[0].tipoId.value = "";
@@ -3249,6 +3358,10 @@ function limpiarPersonaContrario() {
 				fin();
 				return false;
 			}
+			
+			if (document.forms[0].tipoDir.value == '' || document.forms[0].tipoDir.value == null){
+				document.forms[0].tipoDir.value = 'COMUNICA';
+			}			
 			
 			if(document.forms[0].NIdentificacion.value=="") 
 				document.forms[0].tipoId.value = "";
@@ -3332,6 +3445,10 @@ function limpiarPersonaContrario() {
 				fin();
 				return false;
 			}
+			
+			if (document.forms[0].tipoDir.value == '' || document.forms[0].tipoDir.value == null){
+				document.forms[0].tipoDir.value = 'COMUNICA';
+			}			
 			
 		 	document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarPersona';
@@ -3418,6 +3535,10 @@ function limpiarPersonaContrario() {
 				fin();
 				return false;
 			}
+			
+			if (document.forms[0].tipoDir.value == '' || document.forms[0].tipoDir.value == null){
+				document.forms[0].tipoDir.value = 'COMUNICA';
+			}			
 			
 			if(document.forms[0].NIdentificacion.value=="") 
 				document.forms[0].tipoId.value = "";
@@ -3522,6 +3643,10 @@ function accionGuardarCerrar()	{
 		fin();
 		return false;
 	}
+	
+	if (document.forms[0].tipoDir.value == '' || document.forms[0].tipoDir.value == null){
+		document.forms[0].tipoDir.value = 'COMUNICA';
+	}	
 
 	var error = "";
 	if (document.getElementById('calidad2')){				 

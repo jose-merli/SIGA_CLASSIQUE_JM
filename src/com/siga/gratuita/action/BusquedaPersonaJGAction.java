@@ -275,6 +275,12 @@ public class BusquedaPersonaJGAction extends MasterAction {
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_EDAD,bean.getEdad());				
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_FAX,bean.getFax());
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_CORREOELECTRONICO,bean.getCorreoElectronico().trim());
+				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDTIPODIR,bean.getIdTipoDir());
+				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_NUMERODIR,bean.getNumeroDir());
+				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_ESCALERADIR,bean.getEscaleraDir());
+				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_PISODIR,bean.getPisoDir());
+				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_PUERTADIR,bean.getPuertaDir());
+				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDTIPOVIA,bean.getIdTipoVia());				
 				
 				//dataBackup.put(ScsPersonaJGBean.T_NOMBRETABLA,hash);
 				if (miFormulario.getConceptoE().equals(PersonaJGAction.PERSONAJG)) {

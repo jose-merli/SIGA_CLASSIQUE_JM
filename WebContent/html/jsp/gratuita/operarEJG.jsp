@@ -379,7 +379,7 @@
 		jQuery.noConflict();
 		
 		jQuery(function($){
-			jQuery("#nig2").mask("99999 99 9 9999 9999999",{placeholder:" "}); //10037 41 1 2012 0022668
+			jQuery("#nig2").mask("***** ** * **** *******",{placeholder:" "}); //10037 41 1 2012 0022668
 		});	
 		
 

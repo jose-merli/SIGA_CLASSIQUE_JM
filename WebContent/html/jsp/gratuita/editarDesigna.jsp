@@ -127,7 +127,7 @@
 	String turno = "";
 	String[] datoJuzgado 	= null;
 	String filtrarModulos = "N";
-	String comboJuzgados ="", comboModulos="";
+	String comboJuzgados ="", comboModulos="",comboPretensionesEjis="";
 	String art27 = "";
 	
 	 
@@ -158,12 +158,14 @@
 	    	datoJuzgado [4] = "-1";
 	    	comboJuzgados = "comboJuzgadosTurnosModulos";
 	    	comboModulos = "comboProcedimientosVigencia";
+	    	comboPretensionesEjis= "comboPretensionesEjisModulosFiltros";
 	    }else{
 	    	datoJuzgado = new String[2];
 	    	datoJuzgado [0] = usr.getLocation();
 			datoJuzgado [1] = "-1";
 			comboJuzgados = "comboJuzgadosTurno";
 	    	comboModulos = "comboProcedimientos";
+	    	comboPretensionesEjis= "comboPretensionesEjisModulos";
 	    }
 
 		tipo = (String) resultado.get("IDTIPODESIGNACOLEGIO");
@@ -309,7 +311,7 @@
 	String nombreGuardiaAsistencia = (String) request.getAttribute("nombreGuardiaAsistencia");
 	
 	// datos2 es para idPresentacion
-	String[] datos2={usr.getLocation(),usr.getLanguage(),"-1"};
+	String[] datos2={usr.getLocation(),usr.getLanguage()};
 	if(beanDesigna.getIdPretension()!=null && (!beanDesigna.getIdPretension().toString().equals("")))
 		datos2[1]= beanDesigna.getIdPretension().toString();
 	
@@ -405,7 +407,7 @@
 		}		
 		
 		jQuery(function($){
-			jQuery("#nig").mask("99999 99 9 9999 9999999",{placeholder:" "}); //10037 41 1 2012 0022668
+			jQuery("#nig").mask("***** ** * **** *******",{placeholder:" "}); //10037 41 1 2012 0022668
 		});			
 		
 	<%}else{%>
@@ -1097,9 +1099,9 @@
 				<%if (ejisActivo>0 || pcajgActivo == 4){%>		
 						<td  colspan="7">
 							<%if(modo.equals("editar")){%>
-								<siga:ComboBD nombre="idPretension" tipo="comboPretensionesEjisModulos" ancho="380" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false" parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="false"/>           	   
+								<siga:ComboBD nombre="idPretension" tipo="<%=comboPretensionesEjis%>" ancho="380" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false" parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="false"/>           	   
 							<%}else{%>
-								<siga:ComboBD nombre="idPretension" tipo="comboPretensionesEjisModulos" ancho="380" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="true"/>           	   
+								<siga:ComboBD nombre="idPretension" tipo="<%=comboPretensionesEjis%>" ancho="380" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="true"/>           	   
 							<%}%>
 						</td>
 				<%}else{%>		

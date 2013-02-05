@@ -201,8 +201,10 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 							ScsPersonaJGBean.C_NIF,                 ScsPersonaJGBean.C_IDREPRESENTANTEJG,
 							ScsPersonaJGBean.C_SEXO,                ScsPersonaJGBean.C_IDIOMA,
 							ScsPersonaJGBean.C_HIJOS, 				ScsPersonaJGBean.C_EDAD, 
-							ScsPersonaJGBean.C_FAX,					ScsPersonaJGBean.C_CORREOELECTRONICO
-							
+							ScsPersonaJGBean.C_FAX,					ScsPersonaJGBean.C_CORREOELECTRONICO,
+							ScsPersonaJGBean.C_IDTIPODIR,			ScsPersonaJGBean.C_NUMERODIR,
+							ScsPersonaJGBean.C_PISODIR,				ScsPersonaJGBean.C_PUERTADIR,
+							ScsPersonaJGBean.C_ESCALERADIR,			ScsPersonaJGBean.C_IDTIPOVIA
 						};
 
 		return campos;
@@ -254,10 +256,12 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			bean.setEdad(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_EDAD));			
 			bean.setFax(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_FAX));
 			bean.setCorreoElectronico(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_CORREOELECTRONICO));
-			
-			
-			
-			
+			bean.setIdTipoDir(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_IDTIPODIR));
+			bean.setNumeroDir(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_NUMERODIR));
+			bean.setEscaleraDir(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_ESCALERADIR));
+			bean.setPisoDir(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_PISODIR));
+			bean.setPuertaDir(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_PUERTADIR));
+			bean.setIdTipoVia(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_IDTIPOVIA));
 			
 		}
 		catch(Exception e){
@@ -306,6 +310,12 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_EDAD,miBean.getEdad());			
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_FAX,miBean.getFax());
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_CORREOELECTRONICO,miBean.getCorreoElectronico());
+			UtilidadesHash.set(hash,ScsPersonaJGBean.C_IDTIPODIR,miBean.getIdTipoDir());
+			UtilidadesHash.set(hash,ScsPersonaJGBean.C_NUMERODIR,miBean.getNumeroDir());
+			UtilidadesHash.set(hash,ScsPersonaJGBean.C_ESCALERADIR,miBean.getEscaleraDir());
+			UtilidadesHash.set(hash,ScsPersonaJGBean.C_PISODIR,miBean.getPisoDir());
+			UtilidadesHash.set(hash,ScsPersonaJGBean.C_PUERTADIR,miBean.getPuertaDir());
+			UtilidadesHash.set(hash,ScsPersonaJGBean.C_IDTIPOVIA,miBean.getIdTipoVia());
 			
 			
 		

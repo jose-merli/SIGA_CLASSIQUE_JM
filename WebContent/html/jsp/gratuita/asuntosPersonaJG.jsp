@@ -143,6 +143,12 @@
 			<html:hidden property="correoElectronico"/>
 			<html:hidden property="fax"/>			
 			<html:hidden property="existeDomicilio"/>
+			<html:hidden property="tipoVia"/>
+			<html:hidden property="tipoDir"/>
+			<html:hidden property="pisoDir"/>
+			<html:hidden property="escaleraDir"/>
+			<html:hidden property="puertaDir"/>			
+			<html:hidden property="numeroDir"/>			
 			<input type="hidden" name="actionModal" value="">
 		</html:form>
 

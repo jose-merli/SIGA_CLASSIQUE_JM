@@ -292,6 +292,54 @@ public class PersonaJGForm extends MasterForm {
 	public String getDireccion() {
 		return UtilidadesHash.getString(this.datos,"Direccion");
 	}
+	
+	public String getPuertaDir() {
+		return UtilidadesHash.getString(this.datos,"PuertaDir");
+	}
+	
+	public void setPuertaDir(String dato) {
+		UtilidadesHash.set(this.datos,"PuertaDir",dato);
+	}	
+
+	public String getNumeroDir() {
+		return UtilidadesHash.getString(this.datos,"NumeroDir");
+	}
+
+	public void setNumeroDir(String dato) {
+		UtilidadesHash.set(this.datos,"NumeroDir",dato);
+	}
+
+	public String getEscaleraDir() {
+		return UtilidadesHash.getString(this.datos,"EscaleraDir");
+	}
+	
+	public void setEscaleraDir(String dato) {
+		UtilidadesHash.set(this.datos,"EscaleraDir",dato);
+	}	
+	
+	public String getPisoDir() {
+		return UtilidadesHash.getString(this.datos,"PisoDir");
+	}
+	
+	public void setPisoDir(String dato) {
+		UtilidadesHash.set(this.datos,"PisoDir",dato);
+	}
+	public String getTipoVia() {
+		return UtilidadesHash.getString(this.datos,"TipoVia");
+	}
+	
+	public void setTipoVia(String dato) {
+		UtilidadesHash.set(this.datos,"TipoVia",dato);
+	}
+	
+	public String getTipoDir() {
+		return UtilidadesHash.getString(this.datos,"TipoDir");
+	}
+	
+	public void setTipoDir(String dato) {
+		UtilidadesHash.set(this.datos,"TipoDir",dato);
+	}
+	
 	public void setCp(String dato) {
 		UtilidadesHash.set(this.datos,"Cp",dato);
 	}
