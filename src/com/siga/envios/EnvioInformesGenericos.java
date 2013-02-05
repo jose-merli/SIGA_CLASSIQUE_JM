@@ -2763,7 +2763,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		// envioProgramadoBean.getIdTipoEnvios()!=null
 		// &&!envioProgramadoBean.getIdTipoEnvios().toString().equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))
 		envio.getEnviosBean().setIdEstado(
-				new Integer(EnvEnviosAdm.ESTADO_PROCESADO));
+				new Integer(EnvEnviosAdm.ESTADO_PENDIENTE_AUTOMATICO));
 
 		enviosBean.setFechaProgramada(envioProgramadoBean.getFechaProgramada());
 		enviosBean.setIdPlantillaEnvios(envioProgramadoBean
