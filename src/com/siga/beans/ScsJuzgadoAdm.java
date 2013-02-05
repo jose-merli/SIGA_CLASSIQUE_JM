@@ -133,7 +133,11 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 			hash.put(ScsJuzgadoBean.C_USUMODIFICACION, String.valueOf(b.getUsuMod()));
 			hash.put(ScsJuzgadoBean.C_FECHAMODIFICACION, b.getFechaMod());
 			hash.put(ScsJuzgadoBean.C_MOVIL, b.getMovil());
-			hash.put(ScsJuzgadoBean.C_ISCODIGOEJIS, b.getIsCodigoEjis());
+			if (b.getIsCodigoEjis() != null){
+				hash.put(ScsJuzgadoBean.C_ISCODIGOEJIS, b.getIsCodigoEjis());
+			}else{
+				hash.put(ScsJuzgadoBean.C_ISCODIGOEJIS, "0"); //Valor por defecto
+			}
 			//hash.put(ScsJuzgadoBean.C_EMAIL, b.getEmail());
 		}
 		catch (Exception e){

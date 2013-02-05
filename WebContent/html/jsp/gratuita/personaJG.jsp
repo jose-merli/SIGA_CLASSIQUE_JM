@@ -604,6 +604,13 @@
 
 				//edad	
 				document.forms[0].edad.value = resultado[24];
+				
+				//DATOS DE DOMICILIO
+				document.forms[0].numeroDir.value=resultado[26];
+				document.forms[0].escaleraDir.value=resultado[27];
+				document.forms[0].pisoDir.value=resultado[28];
+				document.forms[0].puertaDir.value=resultado[29];
+				document.forms[0].tipoVia.value=resultado[30];
 
 				//existeDomicilio
 				document.forms[0].existeDomicilio.value = resultado[25];

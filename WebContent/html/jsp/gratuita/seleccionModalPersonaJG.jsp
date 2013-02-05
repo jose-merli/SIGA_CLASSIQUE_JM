@@ -75,6 +75,13 @@
 		aux[22]="<%=myBean.getTipo()%>"; //Este es El tipo persona F o J 	
 		aux[23]="<%=myBean.getIdMinusvalia()%>";
 		aux[24]="<%=myBean.getEdad()%>";
+		
+		aux[26]="<%=myBean.getNumeroDir()%>";
+		aux[27]="<%=myBean.getEscaleraDir()%>";
+		aux[28]="<%=myBean.getPisoDir()%>";
+		aux[29]="<%=myBean.getPuertaDir()%>";
+		aux[30]="<%=myBean.getIdTipoVia()%>";
+		
 		<% 		
 		String nom = (String) request.getAttribute("nombreRepresentante");
 		if (nom==null) nom="";
