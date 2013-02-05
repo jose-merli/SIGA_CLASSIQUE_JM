@@ -39,6 +39,7 @@ import com.atos.utils.GstDate;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.Paginador;
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.service.InformesService;
 import com.siga.beans.AdmInformeAdm;
@@ -883,7 +884,26 @@ public class DefinirEnviosAction extends MasterAction {
 				idPersona = null;
 			}
 
+
+			Hashtable hash = new Hashtable();
+			CenSolicitudIncorporacionBean bean = null;
+			UtilidadesHash.set(hash, CenSolicitudIncorporacionBean.C_IDSOLICITUD, idSolicitud);
+			CenSolicitudIncorporacionAdm solicitudAdm = new CenSolicitudIncorporacionAdm (userBean);
+			Vector datosSelect = solicitudAdm.selectByPK(hash);
+			if ((datosSelect != null) && (datosSelect.size() > 0)) {
+				bean = (CenSolicitudIncorporacionBean) datosSelect.get(0);
+			}
 			
+			tx.begin();
+			
+			//mhg - INC_10323_SIGA
+			if(idPersona==null){
+				CenClienteAdm adminCli = new CenClienteAdm(userBean);
+				CenClienteBean beanCli = new CenClienteBean ();
+				beanCli = adminCli.insertarNoColegiadoParaEnvio(bean, null, request);
+				idPersona = beanCli.getIdPersona().toString(); 
+				
+			}
 			
 			
 			String idEnvio = form.getIdEnvio();
@@ -936,8 +956,6 @@ public class DefinirEnviosAction extends MasterAction {
 
 
 			CerSolicitudCertificadosAdm admCer = new CerSolicitudCertificadosAdm(userBean);
-
-			tx.begin();
 
 			if (subModo!=null && subModo.equalsIgnoreCase("SolicitudCertificado")){
 
@@ -1041,7 +1059,10 @@ public class DefinirEnviosAction extends MasterAction {
 				//Generamos el envío de la solicitud de incorporacion:
 				Envio envio = new Envio(enviosBean,userBean);
 				envio.generarEnvio(idPersona, EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA, vDocs);
-				envio.addDestinatarioIndividualDocAdjuntos(dest,null,true);
+				
+				//mhg Se comenta la linea anterior porque en el método generarEnvio ya se esta llamando.
+				//envio.addDestinatarioIndividualDocAdjuntos(dest,null,true);
+				
 				// RGG envio.addDestinatarioIndividual(dest,null,true);
 			} 
 			else {
