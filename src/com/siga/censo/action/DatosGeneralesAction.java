@@ -1306,8 +1306,6 @@ public class DatosGeneralesAction extends MasterAction {
 			else{
 				hash.put(CenClienteBean.C_FOTOGRAFIA, "");	
 			}
-    		
-		    hash.put(CenClienteBean.C_FECHAALTA,GstDate.getApplicationFormatDate("",miForm.getFechaAlta()));
 		    
 			// Comienzo control de transacciones
 			tx = usr.getTransactionPesada();
