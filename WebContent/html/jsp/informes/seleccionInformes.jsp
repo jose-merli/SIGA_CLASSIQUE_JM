@@ -1,4 +1,4 @@
-<!-- seleccionPlantillasModal.jsp -->
+<!-- seleccionInformes.jsp -->
 <!-- 
 	 Permite mostrar/editar datos sobre lols precios asociados a los servicios
 	 VERSIONES:
