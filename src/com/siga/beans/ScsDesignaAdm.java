@@ -3337,7 +3337,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			
 			String sListadoFechaResolucionCajg="";
 			String sListadoFechaResolucionCajgLetra="";
-			String sListadoNumeroEjg="";
 			String sListadoFechaAperturaEjg="";
 			String sListadoFechaAperturaEjgLetra="";
 				
@@ -3399,14 +3398,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					}						
 				}
 				
-				if (anioNumeroEjg != null) {
-					if (sListadoNumeroEjg.equals("")) {
-						sListadoNumeroEjg = anioNumeroEjg;
-					} else {
-						sListadoNumeroEjg += "," + anioNumeroEjg;
-					}						
-				}
-				
 				if (sFechaAperturaEJG != null) {
 					if (sListadoFechaAperturaEjg.equals("")) {
 						sListadoFechaAperturaEjg = sFechaAperturaEJG;
@@ -3420,7 +3411,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			
 			UtilidadesHash.set(registro, "FECHARESOLUCIONCAJG", sListadoFechaResolucionCajg);
 			UtilidadesHash.set(registro, "FECHARESOLUCIONCAJGLETRA", sListadoFechaResolucionCajgLetra);
-			UtilidadesHash.set(registro, "NUMERO_EJG", sListadoNumeroEjg);
 			UtilidadesHash.set(registro, "FECHAAPERTURA_EJG", sListadoFechaAperturaEjg);
 			UtilidadesHash.set(registro, "FECHAAPERTURA_EJG_LETRA", sListadoFechaAperturaEjgLetra);				
 			
