@@ -81,10 +81,30 @@
 			}
 		}		
 
+		//MHG Incidencia 45 Método para limpiar los campos del formulario.
 		function limpiar()
 		{
-			document.MantenimientoDuplicadosForm.reset();
-		}	
+			  var elements =  document.forms[0].elements; 
+			  document.forms[0].reset();
+		
+			  for(i=0; i<elements.length; i++) {
+			 
+				  if(elements[i].type=="text"){
+					  elements[i].value = ""; 
+				  }
+				  
+				  if(elements[i].type =="radio" || elements[i].type =="checkbox"){
+					  if (elements[i].checked) {
+				          elements[i].checked = false; 
+				      }
+				  }
+				  
+				  if(elements[i].type =="select-one" || elements[i].type =="select-multi"){
+					  elements[i].selectedIndex = 0;
+				  }
+			  }
+		}
+		
 		function refrescarLocal(){
 			buscar();
 		}

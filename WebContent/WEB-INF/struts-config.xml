@@ -657,6 +657,7 @@
 		<action path="/CEN_ModificacionDatos" type="com.siga.censo.action.SolicitudesModificacionAction" name="SolicitudesModificacionForm" scope="request">
 			<forward name="abrir" path="/html/jsp/censo/solicitudTextoLibre.jsp"/>
 			<forward name="insertar" path="/html/jsp/censo/insercionOK.jsp"/>
+			<forward name="solicitarModificacionDatos" path="/html/jsp/censo/solicitudTextoLibre.jsp"/>
 		</action>
 
 		<!-- ***** Censo / Documentos Solicitados ***** -->
@@ -1459,6 +1460,7 @@
 		<action path="/EXP_TiposExpedientes_Campos" type="com.siga.expedientes.action.CampoTipoExpedienteAction" name="camposForm" scope="request">
 			<forward name="abrir" path="/html/jsp/expedientes/abrirCampoTipoExpediente.jsp"/>
 			<forward name="refresh" path="/html/jsp/general/genericLoadForm.jsp"/>
+			<forward name="preguntaExpEJGs" path="/html/jsp/censo/preguntaExpEJGs.jsp"/>
 		</action>
 
 		<action path="/EXP_TiposExpedientes_CamposConf" type="com.siga.expedientes.action.CamposConfigurablesAction" name="camposConfigurablesForm" scope="request">

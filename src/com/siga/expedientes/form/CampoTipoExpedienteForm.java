@@ -55,8 +55,17 @@ public class CampoTipoExpedienteForm extends MasterForm {
 	private String idPlantillaEnvios;
 	private String idPlantilla;
 	private String comboTipoExpediente;
+	
+	//mhg Incidencia EJGs
+	private String modificarEJG;
 
-    public boolean isRelacionExpediente() {
+    public String getModificarEJG() {
+		return modificarEJG;
+	}
+	public void setModificarEJG(String modificarEJG) {
+		this.modificarEJG = modificarEJG;
+	}
+	public boolean isRelacionExpediente() {
 		return relacionExpediente;
 	}
 	public void setRelacionExpediente(boolean relacionExpediente) {

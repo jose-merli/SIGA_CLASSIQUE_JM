@@ -303,6 +303,7 @@ public class CampoTipoExpedienteAction extends MasterAction {
 	        
 	        //mhg Incidencia EJGs
 	        //Verificamos si existe algun otro tipo con el check de relacionados. Solo puede existir un tipo con ese check en todo el colegio.
+	        //modicarEJG es un control para que solo sea pregunte una vez por el check y no se quede en un bucle
 	        String modificarEJG = null;
 	        if (request.getParameter("modificarEJG")!=null){
 	        	modificarEJG = request.getParameter("modificarEJG");
@@ -310,8 +311,8 @@ public class CampoTipoExpedienteAction extends MasterAction {
 			
 			int valor = tipoExp.getRelacionEjg();
 	        if (valor == 1){
-	        	if(existe && !modificarEJG.equals("1")){
-	        		return "preguntaExpEJGs";
+	        	if(existe && "".equals(modificarEJG)){
+		        	return "preguntaExpEJGs";
 	        	}else{
 	        		ExpCampoTipoExpedienteBean beanSolicitanteEJG = (ExpCampoTipoExpedienteBean)camposExp.elementAt(17);
 		 	        //  Modificamos el bean antiguo
