@@ -834,7 +834,9 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 						UtilidadesHash.set(h , CenGruposClienteBean.C_IDINSTITUCION, beanGrupo.getIdInstitucionGrupo());
 
 						Hashtable hDatos = new Hashtable();
-						UtilidadesHash.set (hDatos, "GRUPOS FIJOS", ((CenGruposClienteBean)adm.selectByPK(h).get(0)).getNombre());
+						//aalg: se añade la utilidadMultidioma para obtener el nombre del grupo no el identificador
+						String grupo = ((CenGruposClienteBean)adm.selectByPK(h).get(0)).getNombre();
+						UtilidadesHash.set (hDatos, "GRUPOS FIJOS", UtilidadesMultidioma.getDatoMaestroIdioma(grupo,usrbean));
 						hBeanAsociado = (Hashtable)hDatos.clone();
 					}
 					catch (Exception e) {}

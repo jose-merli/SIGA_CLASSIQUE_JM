@@ -12,6 +12,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
 
 
@@ -1686,4 +1687,28 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 		
 		return resultado;
 	}
+	/** 
+	 * aalg. inc 504
+	 * Procesa la actualización del campo SITUACIONEJERCICIO según la fecha actual y los estados
+	 * que tenga grabados en cen_datoscolegialesestados 
+	 * @return  boolean - resultado de la operacion  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */	
+	public boolean calcularSituacionEjercicio() throws ClsExceptions, SIGAException {
+
+       try {
+			// Lanzamos el proceso de cálculo de la situación de ejercicio de todos los colegiados
+			String resultado[] = EjecucionPLs.ejecutarPL_CalculoSituacionEjercicio();
+			if ((resultado == null) || (!resultado[0].equals("0")))
+				throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROC_CALC_SITUACIONEJERCICIO");
+	
+       }
+		catch (SIGAException e) {
+			throw e;
+		}
+       catch (Exception e) {
+       	throw new ClsExceptions (e, "Error al procesar la situación de ejercicio");
+       }       
+       return true;                        
+    }	
 }

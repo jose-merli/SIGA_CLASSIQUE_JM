@@ -115,8 +115,9 @@ public class CenGruposClienteAdm extends MasterBeanAdministrador {
 			
 			
 			//ORDER BY:
-			select += " ORDER BY grupo."+CenGruposClienteBean.C_IDINSTITUCION+",grupo."+CenGruposClienteBean.C_NOMBRE;
-			orden="order by idinstitucion,nombre desc";
+			//aalg: se añade la ordenacion en español
+			select += " ORDER BY grupo."+CenGruposClienteBean.C_IDINSTITUCION+", NLSSORT(grupo."+CenGruposClienteBean.C_NOMBRE+", 'NLS_SORT=SPANISH')";
+			orden="order by idinstitucion,NLSSORT(nombre, 'NLS_SORT=SPANISH') desc";
 			//Consulta:
 			//datos = this.selectGenerico(select);
 			/*** PAGINACION ***/ 

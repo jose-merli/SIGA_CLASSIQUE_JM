@@ -1406,8 +1406,11 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 				h.put (claves[i], hash.get(claves[i]));
 			}
 
-			String [] campos = {CenDireccionesBean.C_FECHABAJA};
+			//aalg: se elimina el dato del campo C_PREFERENTE. INC_06957_SIGA 
+			String [] campos = {CenDireccionesBean.C_FECHABAJA,CenDireccionesBean.C_PREFERENTE};
 			UtilidadesHash.set(h, CenDireccionesBean.C_FECHABAJA, "SYSDATE");
+			UtilidadesHash.set(h, CenDireccionesBean.C_PREFERENTE, "");
+			
 
 			if (this.updateDirect(h, claves, campos)) {
 				return true;
