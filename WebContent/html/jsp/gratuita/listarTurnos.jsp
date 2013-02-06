@@ -45,7 +45,8 @@
 		nombrePestanha = "";
 		numeroPestanha = "";
 	}
-
+		//aalg: se obtiene el modo de acceso para controlar los permisos 
+	String accion = String.valueOf(request.getSession().getAttribute("modoPestanha"));
 	//Si entrada=2 venimos de la pestanha de SJCS:
 	String entrada = (String)ses.getAttribute("entrada");
 	String activaSeleccionFila = "true";
@@ -498,11 +499,17 @@
 		
 		<% 	if (!bMant) { %>
 		<% if (!estaDeBaja) { %>
-			<% if (!busquedaVolver.equals("volverNo")) { %>
-					<siga:ConjBotonesAccion botones="V,bajaEnTodosLosTurnos,L" clase="botonesDetalle"  />	
-			<%  } else { %>
-					<siga:ConjBotonesAccion botones="bajaEnTodosLosTurnos,L" clase="botonesDetalle"  />	
-			<%  } %>
+				<!--aalg: se controlan los permisos según el modo de acceso  -->
+			<% if (!busquedaVolver.equals("volverNo")) { 
+			if (accion.equals("editar")){%>
+					<siga:ConjBotonesAccion botones="V,bajaEnTodosLosTurnos,L" clase="botonesDetalle"  />
+				<%  } else { %>
+					<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
+				<%  } %>	
+			<%  } else { 
+				if (accion.equals("editar")){%>
+					<siga:ConjBotonesAccion botones="bajaEnTodosLosTurnos,L" clase="botonesDetalle"  />
+			<%  }} %>
 		<% } else { %>
 			<% if (!busquedaVolver.equals("volverNo")) { 
 			%>
