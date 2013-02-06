@@ -472,7 +472,7 @@
 					leyenda="gratuita.mantActuacion.literal.justificacion">
 					<table width="100%" border="0">
 						<tr>
-							<td width="15%"></td>
+							<td width="15%">1</td>
 							<td width="15%"></td>
 							<td width="10%"></td>
 							<td width="20%"></td>
@@ -514,7 +514,7 @@
 					leyenda="gratuita.mantActuacion.literal.justificacion">
 					<table width="100%" border="0">
 						<tr>
-							<td width="15%"></td>
+							<td width="15%"><c:out value="${ActuacionAsistenciaFormEdicion.fechaJustificacion}"></c:out> </td>
 							<td width="15%"></td>
 							<td width="10%"></td>
 							<td width="20%"></td>
@@ -713,6 +713,8 @@
 	}
 	
 	function inicio() {
+		
+		
 		//Para que se rellene el combo de costes
 		if( document.getElementsByName("ActuacionAsistenciaForm")[0].modo.value != "ver" ) {
 		// if(document.ActuacionAsistenciaForm.modo.value=='ver' && document.ActuacionAsistenciaFormEdicion.validada.value != "1"){	
@@ -722,30 +724,33 @@
 		document.getElementById("checkAnulacion").checked = document.ActuacionAsistenciaFormEdicion.anulacion.value=='1';
 		if(document.ActuacionAsistenciaFormEdicion.validada.value=="1"){
 			document.getElementById('fechaJustificacion').className="boxConsulta";
-			if(document.getElementById("tdValidada"))
+			if(document.getElementById("tdValidada")){
 				document.getElementById("tdValidada").innerHTML = '<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>';
-			if(document.getElementById("fechaJustificacion"))
-				document.getElementById("fechaJustificacion").style.visibility="hidden";
+			}
+			if(document.getElementById("calendario_fechaJustificacion")){
+				document.getElementById("calendario_fechaJustificacion").style.visibility="hidden";
+			}
 		} else {
 			document.getElementById('fechaJustificacion').className="box";
 			if(document.getElementById("tdValidada")) {
 				document.getElementById("tdValidada").innerHTML = "";
 			}
-			if(document.getElementById("fechaJustificacion")) {
-				document.getElementById("fechaJustificacion").style.visibility="visible";
+			if(document.getElementById("calendario_fechaJustificacion")) {
+				document.getElementById("calendario_fechaJustificacion").style.visibility="visible";
 			}
 		}
 		
 		// if(document.ActuacionAsistenciaForm.modo.value=='ver' || document.ActuacionAsistenciaFormEdicion.validada.value=="1" || document.ActuacionAsistenciaFormEdicion.anulacion.value=='1'){
 		if(document.getElementsByName("ActuacionAsistenciaForm")[0].modo.value == 'ver' ){
 			habilitarCampos(false);			
-		} else {			
+		} else {
 			if(document.getElementById('isLetrado').value=='false') {							
 				if(document.ActuacionAsistenciaFormEdicion.anulacion.value=="1") {
 					habilitarCampos(false);
 					document.getElementById('fechaJustificacion').className="boxConsulta";
-					if(document.getElementById("fechaJustificacion")) 
-						document.getElementById("fechaJustificacion").style.visibility="hidden";
+					if(document.getElementById("calendario_fechaJustificacion")){ 
+						document.getElementById("calendario_fechaJustificacion").style.visibility="hidden";
+					}
 					document.getElementById("idValidacion").style.visibility="hidden";
 					jQuery("#checkAnulacion").removeAttr("disabled");
 				} else if(document.ActuacionAsistenciaFormEdicion.validada.value=="1") {
@@ -941,21 +946,25 @@
 	function onclickCheckAnulacion () {		
 	}
 	
-	function validaJustificacion () {		
+	function validaJustificacion () {
+		
 		if(document.ActuacionAsistenciaFormEdicion.validada.value=="1"){
 			document.getElementById('fechaJustificacion').className="box";
 			document.ActuacionAsistenciaFormEdicion.validada.value="0";
 			document.getElementById("tdValidada").innerHTML = '';
-			if(document.getElementById("fechaJustificacion")) 
-				document.getElementById("fechaJustificacion").style.visibility="visible";
+			if(document.getElementById("calendario_fechaJustificacion")){ 
+				document.getElementById("calendario_fechaJustificacion").style.visibility="visible";
+			}
 			document.getElementById('fechaJustificacion').value="";			
 		} else {
+
 			document.getElementById('fechaJustificacion').className="boxConsulta";
 			document.ActuacionAsistenciaFormEdicion.validada.value="1";
-			if(document.getElementById("fechaJustificacion")) 
-				document.getElementById("fechaJustificacion").style.visibility="hidden";
+			if(document.getElementById("calendario_fechaJustificacion")){ 
+				document.getElementById("calendario_fechaJustificacion").style.visibility="hidden";
+			}
 			document.getElementById("tdValidada").innerHTML = '<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>';
-			if(document.ActuacionAsistenciaFormEdicion.fechaJustificacion.value==''){	
+			if(document.ActuacionAsistenciaFormEdicion.fechaJustificacion.value==''){
 				document.getElementById('fechaJustificacion').value=getFechaActualDDMMYYYY();
 				
 			}			
@@ -1000,6 +1009,7 @@
 		cambioComisaria();
 		cambioJuzgado();
 	}
+	
 </script>
 
 </body>
