@@ -1174,4 +1174,27 @@ public static String[] ejecutarF_SIGA_COMPROBAR_ANTICIPAR (
 	    //Resultado del PL        
 	    return resultado;
 	}
+	
+	/**
+ 	 * PL para el cálculo de la situación de ejercicio según la fecha actual
+	 * @return
+	 * @throws SIGAException
+	 */
+	public static String[] ejecutarPL_CalculoSituacionEjercicio () throws SIGAException
+	{
+		try {
+			Object[] paramIn = new Object[0];
+	    	String resultado[] = new String[2];
+	    	resultado = ClsMngBBDD.callPLProcedure("{call PROC_CALC_SITUACIONEJERCICIO(?,?)}", 2, paramIn);
+	    	if (!resultado[0].equalsIgnoreCase("0")) {
+	    		//ClsLogging.writeFileLog("Error en PL = "+(String)resultado[3],3);
+	    		throw new ClsExceptions ("Ha ocurrido un error al ejecutar el cálculo de la situación de ejercicio."+
+	    				"\nError en PL = "+(String)resultado[1]);
+	    	}
+	    	return resultado;
+	    	
+		}catch (Exception e) {
+			throw new SIGAException ("error.messages.application",e);
+		}
+	}
 }
