@@ -5581,14 +5581,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 						}
 
 						String idPersona = String.valueOf(destBean.getIdPersona());
-						String consulta = envBean.getConsulta().equals("")?null:envBean.getConsulta();
-
-						// destinatario
-						String sTo = destBean.getMovil();
-						sTo = getNumeroConPrefijo(sTo);						
-						if (sTo==null || sTo.trim().equals("")) {
-							throw new ClsExceptions("No existe número de móvil para el destinatario.");
-						}
+						String consulta = envBean.getConsulta().equals("")?null:envBean.getConsulta();						
 
 						// texto
 						String sTexto = getTextoSMS(envBean,destBean, Long.valueOf(idPersona),consulta);
@@ -5604,12 +5597,27 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 						ServiciosECOSService_ServiceLocator locator = new ServiciosECOSService_ServiceLocator();
 						ServiciosECOSServiceSOAPStub stub = new ServiciosECOSServiceSOAPStub(new URL(url_service),locator);
 
+						// destinatario
+						String sTo = destBean.getMovil();										
+						if (sTo==null || sTo.trim().equals("")) {
+							throw new ClsExceptions("No existe número de móvil válido para el destinatario.");
+						}
+						sTo = UtilidadesString.getNumeroConPrefijoECOS(sTo);
+						
+						//BEGIN BNS INC_09400_SIGA
+						//Comprobamos que el destinatario del SMS tienen número de movil y este tiene un formato correcto
+						//Realmente ya se ha comprobado en Envio.addDocumentosDestinatario (444/452)
+						if (!UtilidadesString.esNumMovilECOS(sTo)){
+							throw new ClsExceptions("El formato del número de móvil "+sTo+" es incorrecto. Formato correcto (+xx)6xxxxxxxx / (+xx)7xxxxxxxx");
+						}
+						String[] listaTOs = new String[] {sTo};
+						//END BNS INC_09400_SIGA
 
 						//SMS
 						SolicitudEnvioSMS sesms01 = new SolicitudEnvioSMS();
 						sesms01.setIdClienteECOS(idClienteECOS);
 						sesms01.setIdColegio(destBean.getIdInstitucion().toString());
-						sesms01.setListaTOs(new String[] {sTo});
+						sesms01.setListaTOs(listaTOs);
 						sesms01.setTexto(sTexto);
 						sesms01.setIsProgramado(false);
 						sesms01.setIsSMSCertificado(false);
@@ -5810,13 +5818,6 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		            String idPersona = String.valueOf(destBean.getIdPersona());
 		    	    String consulta = envBean.getConsulta().equals("")?null:envBean.getConsulta();
 
-					// destinatario
-					String sTo = destBean.getMovil();
-					sTo = getNumeroConPrefijo(sTo);						
-					if (sTo==null || sTo.trim().equals("")) {
-						throw new ClsExceptions("No existe número de móvil para el destinatario.");
-					}
-
 		            
 		    	    if (sFrom==null || sFrom.trim().equals("")) {
 		    	       throw new ClsExceptions("No existe número de email de remitente para la confiración.");
@@ -5836,12 +5837,27 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 					ServiciosECOSService_ServiceLocator locator = new ServiciosECOSService_ServiceLocator(url_locator);
 					ServiciosECOSServiceSOAPStub stub = new ServiciosECOSServiceSOAPStub(new URL(url_service), locator);
 					
+					// destinatario
+					String sTo = destBean.getMovil();									
+					if (sTo==null || sTo.trim().equals("")) {
+						throw new ClsExceptions("No existe número de móvil válido para el destinatario.");
+					}
+					sTo = UtilidadesString.getNumeroConPrefijoECOS(sTo);
+					
+					//BEGIN BNS INC_09400_SIGA
+					//Comprobamos que el destinatario del SMS tienen número de movil y este tiene un formato correcto
+					// Realmente ya se ha comprobado en Envio.addDocumentosDestinatario (444/452)
+					if (!UtilidadesString.esNumMovilECOS(sTo)){
+						throw new ClsExceptions("El formato del número de móvil "+sTo+" es incorrecto. Formato correcto (+xx)6xxxxxxxx / (+xx)7xxxxxxxx");
+					}
+					String[] listaTOs = new String[] {sTo};
+					//END BNS INC_09400_SIGA
 					
 					//SMS
 					SolicitudEnvioSMS sesms01 = new SolicitudEnvioSMS();
 					sesms01.setIdClienteECOS(idClienteECOS);
 					sesms01.setIdColegio(destBean.getIdInstitucion().toString());
-					sesms01.setListaTOs(new String[] {sTo});
+					sesms01.setListaTOs(listaTOs);
 					sesms01.setTexto(sTexto);
 					sesms01.setIsProgramado(false);
 					sesms01.setIsSMSCertificado(true);
@@ -5929,24 +5945,5 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			return getDirecciones(idInstitucion, idPersona, idTipoEnvio);
 		}
 	}
-
-	
-    /**
-     * Devuelve un numero de movil con el prefijo del pais entre parentesis.
-     * Si no tiene prefijo de pais se utiliza el de España
-     * @param numero
-     * @return
-     */
-	private String getNumeroConPrefijo(String numero) {
-    	String prefijo = "+34";
-    	if (numero.startsWith("+")){
-    		prefijo = numero.substring(0, 3);
-    		numero = numero.substring(3);
-    	}
-    	numero = "("+prefijo+")"+numero;
-    	ClsLogging.writeFileLog("NUMERO DE MOVIL:" + numero,10);    		
-    	return numero;
-    }
-
 
 }

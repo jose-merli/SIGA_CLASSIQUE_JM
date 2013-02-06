@@ -26,6 +26,7 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenPersonaAdm;
@@ -435,13 +436,26 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 			        destBean.setFax1(personaJGBean.getFax());
 			        Vector vTelefonos = personaJGBean.getTelefonos();
 			        if(vTelefonos!=null && vTelefonos.size()>0){
+			        	boolean bTienePreferenteSMS = false;
 				        for (int i = 0; i < vTelefonos.size(); i++) {
 				        	ScsTelefonosPersonaJGBean telefono = (ScsTelefonosPersonaJGBean)vTelefonos.get(i);
 				        	if(telefono.getpreferenteSms()!=null && telefono.getpreferenteSms().equals("1")){
-				        		destBean.setMovil(telefono.getNumeroTelefono());
-				        		break;
+				        		bTienePreferenteSMS = true;
+				        		if (UtilidadesString.esNumMovilECOS(telefono.getNumeroTelefono())){
+					        		destBean.setMovil(telefono.getNumeroTelefono());
+					        		break;
+				        		}
 				        	}
+				        	//BEGIN BNS INC_09399_SIGA
+				        	else if (!bTienePreferenteSMS){
+				        		//Buscamos si existe algún teléfono que parezca movil aunque no tenga el preferenteSMS
+				        		if (UtilidadesString.esNumMovilECOS(telefono.getNumeroTelefono())){
+				        			destBean.setMovil(telefono.getNumeroTelefono());
+				        		}
+				        	}
+				        	// END BNS INC_09399_SIGA
 						}
+				        
 			        }
 			        
 	    			
