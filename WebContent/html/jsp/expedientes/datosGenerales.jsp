@@ -374,13 +374,20 @@
 		function accionRestablecer() 
 		{		
 			var elemento=parent.document.getElementById('pestana.auditoriaexp.datosgenerales');
-			parent.pulsar(elemento,'mainPestanas') 
+			parent.pulsar(elemento,'mainPestanas'); 
 		}
 		
 		<!-- Asociada al boton Guardar -->
 		function accionGuardar() 
 		{	
 			sub();	
+			//Incidencia 177. Validacion del campo anioExpDisciplinario/numExpDisciplinario
+			//if(isNaN(document.ExpDatosGeneralesForm.anioExpDisciplinario.value) || isNaN(document.ExpDatosGeneralesForm.numExpDisciplinario.value)){
+				alert('<siga:Idioma key="messages.general.aviso.valorCampo"/> <siga:Idioma key="<%=nombreExpDisciplinario%>" /> <siga:Idioma key="messages.general.aviso.numericoEntero"/>');
+				
+				fin();
+				return false;
+			//}
 				
 			if (validateExpDatosGeneralesForm(document.ExpDatosGeneralesForm)){
 				if (document.ExpDatosGeneralesForm.idPersonaDenunciado.value == ""){
@@ -998,7 +1005,7 @@
 		<%
 			}
 		%>
-				<td class="labelText"><siga:Idioma 	key="expedientes.gestionarExpedientes.fApert" /></td>
+				<td class="labelText"><siga:Idioma 	key="expedientes.gestionarExpedientes.fApert" />&nbsp(*)</td>
 				<td>
 		<%
 			if (accion.equals("nuevo") || copia.equals("s")) 
@@ -1260,7 +1267,7 @@
 				<%
 					if (bEditable) {
 				%>		
-				<siga:ComboBD  nombre = "comboEstados" tipo="cmbEstados" ancho="400" clase="boxCombo" obligatorio="true" accion="parent.limpiarFechas();" ElementoSel="<%=vEstado%>" hijo="t" pestana="t"/>						
+				<siga:ComboBD  nombre = "comboEstados" tipo="cmbEstados" ancho="390" clase="boxCombo" obligatorio="true" accion="parent.limpiarFechas();" ElementoSel="<%=vEstado%>" hijo="t" pestana="t"/>						
 				<%
 											} else {
 										%>
