@@ -69,9 +69,11 @@
 		if (colegiado.equals(ClsConstants.DB_TRUE)) {
 			//colegiados
 			titu = "censo.busquedaClientesAvanzada.colegiados.titulo";
-		} else {
+		} else if (colegiado.equals(ClsConstants.DB_FALSE)){
 			//no colegiados
 			titu = "censo.busquedaClientesAvanzada.noColegiados.titulo";
+		} else {
+			titu = "censo.busquedaClientesAvanzada.letrados.titulo";
 		}
 
 		Vector resultado = null;
@@ -227,9 +229,12 @@
 					nombresCol += "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientesAvanzada.literal.nif,censo.busquedaClientesAvanzada.literal.nColegiado,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientesAvanzada.literal.fechaIngreso,censo.busquedaClientes.literal.institucion,censo.busquedaClientesAvanzada.literal.estadoColegial,censo.busquedaClientesAvanzada.literal.residente,censo.busquedaClientesAvanzada.literal.fechaNacimiento,";
 				}
 
-			} else {
+			} else  if (colegiado.equals(ClsConstants.DB_FALSE)){
 				tamanosCol = "3,12,42,15,15,16";
 				nombresCol = "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientesAvanzada.literal.nif,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientes.literal.institucion,censo.busquedaClientes.literal.FechaNacimientoConstitucion,";
+			} else {
+				tamanosCol = "3,12,30,27,15,16";
+				nombresCol = "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientesAvanzada.literal.nif,censo.busquedaClientesAvanzada.literal.nombre,gratuita.personaJG.literal.direccion,censo.busquedaClientes.literal.FechaNacimientoConstitucion,";
 			}
 		%>
 
@@ -364,7 +369,7 @@
 				} else {
 					modo = "consulta";
 				}
-				if (!colegiado.equals(ClsConstants.DB_TRUE)) {
+				if (colegiado.equals(ClsConstants.DB_FALSE)) {
 					permisos += ",B";
 				}
 
@@ -384,6 +389,9 @@
 						.mostrarDatoJSP(GstDate.getFormatedDateShort(
 								usrbean.getLanguage(),
 								registro.get(CenPersonaBean.C_FECHANACIMIENTO)));
+				String domicilio = UtilidadesString.mostrarDatoJSP(registro.get(CenDireccionesBean.C_DOMICILIO));
+				String poblacion = UtilidadesString.mostrarDatoJSP(registro.get("POBLACION"));
+				String CP = UtilidadesString.mostrarDatoJSP(registro.get(CenDireccionesBean.C_CODIGOPOSTAL));
 
 				String ncomunitario = "";
 				String ncolegiado = "";
@@ -557,7 +565,7 @@
 				</td>
 
 <%
-	} else {
+	} else if (colegiado.equals(ClsConstants.DB_FALSE)){
 %>
 
 				<td>
@@ -578,6 +586,31 @@
 				<td>
 					<%=fechaNacimiento%>
 				</td>
+<%
+	} else {
+%>
+<td><!-- campos hidden --> 
+			<input type="hidden" name="oculto<%=cont%>_1" id="oculto<%=cont%>_1" value="<%=idPersona%>" /> 
+			<input type="hidden" name="oculto<%=cont%>_2" id="oculto<%=cont%>_2" value="<%=idInstitucion%>" />
+			<input type="hidden" name="oculto<%=cont%>_3" id="oculto<%=cont%>_3" value="LETRADO" />
+			<%=nif%>
+		</td>
+		
+		<td><%=nombre + " " + apellido1 + " " + apellido2%></td>
+		
+		<%
+				if (domicilio != null && !domicilio.equals("&nbsp")) {
+			%>
+				<td><%=domicilio + ", " + CP + ", " + poblacion%></td>
+			<%
+				} else {
+			%>
+			<td>&nbsp;</td>
+				
+			<%
+				}
+			%>
+		<td><%=fechaNacimiento%></td>				
 <%
 	}
 %>

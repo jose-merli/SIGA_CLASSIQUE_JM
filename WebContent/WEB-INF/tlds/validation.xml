@@ -1219,7 +1219,7 @@
   <!-- FIN: cuentasBancariasSolicForm 22-01-2005 -->
   
 <!-- INICIO: ExpDatosGeneralesForm emilio.grau 24-01-2005 -->
-
+<!-- aalg: no se está usando -->
 <form name="ExpDatosGeneralesForm">
     <!-- Incidencia 177. Se quitan las validaciones para hacerlo en el jsp -->
     <field property = "asunto" depends = "required">

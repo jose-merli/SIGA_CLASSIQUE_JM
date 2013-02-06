@@ -274,6 +274,11 @@
 	}
 	String tituloDenunciado = (String) request
 			.getAttribute("tituloDenunciado");
+	String tituloDenunciadoMensajeError = "";
+	if(tituloDenunciado == null || tituloDenunciado.equals(""))
+		tituloDenunciadoMensajeError = "gratuita.busquedaEJG.interesado";
+	else
+		tituloDenunciadoMensajeError = tituloDenunciado;
 
 	String tituloDenunciante = (String) request
 			.getAttribute("tituloDenunciante");
@@ -374,20 +379,136 @@
 		function accionRestablecer() 
 		{		
 			var elemento=parent.document.getElementById('pestana.auditoriaexp.datosgenerales');
-			parent.pulsar(elemento,'mainPestanas'); 
+			parent.pulsar(elemento,'mainPestanas') 
 		}
 		
 		<!-- Asociada al boton Guardar -->
+		//aalg: añadida para quitar la validación con structs y poder sacar todos los mensajes juntos con un mensaje variable según el tipo de interesado
+		function validarGuardar(){
+			var mensajeError = "";
+			//Incidencia 177. Validacion del campo anioExpDisciplinario/numExpDisciplinario			
+			if ($("#numExpDisciplinario").length != 0){
+				if ($.isNumeric($("#numExpDisciplinario").val())==false || $("#numExpDisciplinario").val().length == 4)
+					mensajeError = '<siga:Idioma key="expedientes.auditoria.literal.nexpdisciplinario"/> <siga:Idioma key="messages.campoObligatorio.error"/> \n';
+			}
+			
+			if ($("#anioExpDisciplinario").length != 0){
+				if ($.isNumeric($("#anioExpDisciplinario").val())==false || $("#anioExpDisciplinario").val().length == 4)
+					mensajeError = '<siga:Idioma key="expedientes.auditoria.literal.nexpdisciplinario"/> <siga:Idioma key="messages.campoObligatorio.error"/> \n';
+			}
+			
+			if ($("#clasificacion").val()=="")
+				mensajeError = mensajeError + '<siga:Idioma key="expedientes.auditoria.literal.clasificacion"/> <siga:Idioma key="messages.campoObligatorio.error"/> \n';
+
+			if ($("#asunto").val()=="")
+				mensajeError = mensajeError + '<siga:Idioma key="expedientes.auditoria.literal.asunto"/> <siga:Idioma key="messages.campoObligatorio.error"/> \n';
+				
+			if ($("#comboFases").length != 0){
+				if ($("#comboFases").val()=="")
+					mensajeError = mensajeError + '<siga:Idioma key="expedientes.auditoria.literal.fase"/> <siga:Idioma key="messages.campoObligatorio.error"/> \n';
+			}
+			
+			if ($("#comboEstados").length != 0){
+				if ($("#comboEstados").val()=="")
+					mensajeError = mensajeError + '<siga:Idioma key="expedientes.auditoria.literal.estado"/> <siga:Idioma key="messages.campoObligatorio.error"/> \n';
+			}
+			
+			if ($("#fechaInicial").val()=="")
+				mensajeError = mensajeError + '<siga:Idioma key="expedientes.auditoria.literal.fechainicial"/> <siga:Idioma key="messages.campoObligatorio.error"/> \n';
+			
+			if ($("#idPersona").val()=="")
+				mensajeError = mensajeError + '<siga:Idioma key="<%=tituloDenunciadoMensajeError%>"/> <siga:Idioma key="messages.campoObligatorio.error"/> \n';
+			
+			return mensajeError;
+			
+		}
 		function accionGuardar() 
 		{	
 			sub();	
-			//Incidencia 177. Validacion del campo anioExpDisciplinario/numExpDisciplinario
-			if(isNaN(document.ExpDatosGeneralesForm.anioExpDisciplinario.value) || isNaN(document.ExpDatosGeneralesForm.numExpDisciplinario.value)){
-				alert('<siga:Idioma key="messages.general.aviso.valorCampo"/> <siga:Idioma key="<%=nombreExpDisciplinario%>" /> <siga:Idioma key="messages.general.aviso.numericoEntero"/>');
+			var mensajeError = validarGuardar();
+			if (mensajeError == ""){
+				if ((document.ExpDatosGeneralesForm.fechaInicial && document.ExpDatosGeneralesForm.fechaInicial.value != '') || (document.ExpDatosGeneralesForm.fechaFinal.value && document.ExpDatosGeneralesForm.fechaFinal.value!='')) {
+					if (compararFecha (document.ExpDatosGeneralesForm.fechaInicial, document.ExpDatosGeneralesForm.fechaFinal) == 1) {
+						mensaje = '<siga:Idioma key="messages.expediente.rangoFechasIniFin"/>'
+						alert(mensaje);
+						fin();
+						return false;
+					}
+				}
+				if ((document.ExpDatosGeneralesForm.fechaInicial && document.ExpDatosGeneralesForm.fechaInicial.value != '') || (document.ExpDatosGeneralesForm.fechaProrroga.value && document.ExpDatosGeneralesForm.fechaProrroga.value!='')) {
+					if (compararFecha (document.ExpDatosGeneralesForm.fechaInicial, document.ExpDatosGeneralesForm.fechaProrroga) == 1) {
+						mensaje = '<siga:Idioma key="messages.expediente.rangoFechasIniPro"/>'
+						alert(mensaje);
+						fin();
+						return false;
+					}
+				}				
+		
+				if ((document.ExpDatosGeneralesForm.fechaFinal && document.ExpDatosGeneralesForm.fechaFinal.value != '') || (document.ExpDatosGeneralesForm.fechaProrroga.value && document.ExpDatosGeneralesForm.fechaProrroga.value!='')) {
+					if (compararFecha (document.ExpDatosGeneralesForm.fechaFinal, document.ExpDatosGeneralesForm.fechaProrroga) == 1) {
+						mensaje = '<siga:Idioma key="messages.expediente.rangoFechasFinPro"/>'
+						alert(mensaje);
+						fin();
+						return false;
+					}
+				}
+				if (document.forms[0].minuta){
+					  document.forms[0].minuta.value = document.forms[0].minuta.value.replace(/,/,".");		
+				}
+				if (document.forms[0].importeTotal){
+					  document.forms[0].importeTotal.value = document.forms[0].importeTotal.value.replace(/,/,".");
+				}
+				if (document.forms[0].importeIVA){
+					  document.forms[0].importeIVA.value = document.forms[0].importeIVA.value.replace(/,/,".");
+				}
+				if (document.forms[0].minutaFinal){
+					  document.forms[0].minutaFinal.value = document.forms[0].minutaFinal.value.replace(/,/,".");
+				}
+				if (document.forms[0].importeTotalFinal){
+					  document.forms[0].importeTotalFinal.value = document.forms[0].importeTotalFinal.value.replace(/,/,".");
+				}
+				if (document.forms[0].solicitanteEJG){
+					  document.forms[0].solicitanteEJG.value = document.forms[0].solicitanteEJG.value.replace(/,/,".");
+				}
+				if (document.forms[0].importeIVAFinal){
+					  document.forms[0].importeIVAFinal.value = document.forms[0].importeIVAFinal.value.replace(/,/,".");
+				}
+				if (document.forms[0].porcentajeIVA){							
+					 document.forms[0].porcentajeIVA.value = document.forms[0].porcentajeIVA.value.replace(/,/,".");	
+					if (document.forms[0].porcentajeIVAFinal){	
+					 	document.forms[0].porcentajeIVAFinal.value = document.forms[0].porcentajeIVA.value.replace(/,/,".");
+					}							  
+				}						
+
+				if (document.forms[0].derechosColegiales){
+					  document.forms[0].derechosColegiales.value = document.forms[0].derechosColegiales.value.replace(/,/,".");
+				}
+								
+				<% 
+				if (accion.equals("nuevo") || copia.equals("s")) { %>
+					document.ExpDatosGeneralesForm.accion.value="nuevo";
+					document.forms[0].modo.value="insertar";
+					
+				<%} else {%>
+				document.ExpDatosGeneralesForm.accion.value="edicion";
+					document.forms[0].modo.value="modificar";
+				<%}%>
 				
+				document.forms[0].target="submitArea";	
+				document.forms[0].submit();	
+			}
+			else{
+				alert(mensajeError);
 				fin();
 				return false;
 			}
+		}
+	
+	<%-- aalg: sustituida por la anterior para unificar las validaciones quitando la de structs por 
+		necesitar validaciones variables según la opción seleccionada 	
+	function accionGuardar() 
+		{	
+			sub();	
 				
 			if (validateExpDatosGeneralesForm(document.ExpDatosGeneralesForm)){
 				if (document.ExpDatosGeneralesForm.idPersonaDenunciado.value == ""){
@@ -471,7 +592,7 @@
 				fin();
 				return false;
 			}
-		}
+		} --%>
 		
 		function relacionarConEJG() 
 		{
@@ -993,7 +1114,7 @@
 											name="ExpDatosGeneralesForm" property="numExpediente" /> <html:hidden
 											name="ExpDatosGeneralesForm" property="anioExpediente" /></td>
 				<td class="labelText"><siga:Idioma key="expedientes.auditoria.literal.tipo" /></td>
-				<td colspan="1"><html:text name="ExpDatosGeneralesForm" property="tipoExpediente" style="width:200" styleClass="boxConsulta" readonly="true"></html:text></td>
+				<td colspan="1"><html:text name="ExpDatosGeneralesForm" property="tipoExpediente" style="width:200" styleClass="boxConsulta" readonly="true" styleId="tipoExpediente"></html:text></td>
 		<%
 			} 
 			else 
@@ -1018,7 +1139,7 @@
 			else 
 			{
 		%> 
-				<html:text name="ExpDatosGeneralesForm" property="fecha" styleClass="boxConsulta" readonly="true"></html:text>
+				<html:text name="ExpDatosGeneralesForm" property="fecha" styleClass="boxConsulta" readonly="true" styleId="fecha"></html:text>
 		<%
 			}
 		%>
@@ -1066,17 +1187,17 @@
 		%>
 						
 							<td class="labelTextValue">
-								<html:text name="ExpDatosGeneralesForm" property="anioExpDisciplinario" value="<%=anioExpOrigen%>" maxlength="4" styleClass="box"	style="text-align:right;width:40px;"></html:text>
+								<html:text name="ExpDatosGeneralesForm" property="anioExpDisciplinario" styleId="anioExpDisciplinario" value="<%=anioExpOrigen%>" maxlength="4" styleClass="box"	style="text-align:right;width:40px;"></html:text>
 								&nbsp;/&nbsp;
-								<html:text	name="ExpDatosGeneralesForm" property="numExpDisciplinario" value="<%=numExpOrigen%>" maxlength="6" styleClass="box"	style="text-align:right;width:60px;"></html:text>
+								<html:text	name="ExpDatosGeneralesForm" property="numExpDisciplinario" styleId="numExpDisciplinario" value="<%=numExpOrigen%>" maxlength="6" styleClass="box"	style="text-align:right;width:60px;"></html:text>
 							</td>
 											
 		<%				} else {	%>
 			
 							<td class="labelTextValue">
-								<html:text name="ExpDatosGeneralesForm" property="anioExpDisciplinario" maxlength="4" styleClass="box"	style="text-align:right;width:40px;"></html:text>
+								<html:text name="ExpDatosGeneralesForm" property="anioExpDisciplinario" styleId="anioExpDisciplinario" maxlength="4" styleClass="box"	style="text-align:right;width:40px;"></html:text>
 								&nbsp;/&nbsp;
-								<html:text	name="ExpDatosGeneralesForm" property="numExpDisciplinario"	maxlength="6" styleClass="box"	style="text-align:right;width:60px;"></html:text>
+								<html:text	name="ExpDatosGeneralesForm" property="numExpDisciplinario" styleId="numExpDisciplinario" maxlength="6" styleClass="box"	style="text-align:right;width:60px;"></html:text>
 							</td>			
 		
 											
@@ -1089,10 +1210,12 @@
 							<table>
 									<tr>
 										<td class="labelTextValue"><html:text name="ExpDatosGeneralesForm" property="anioExpDisciplinario" maxlength="4"
+														styleId="anioExpDisciplinario"
 														style="text-align:right;width:40px;" readonly="true"
 														styleClass="boxConsulta"></html:text>&nbsp;/&nbsp;<html:text
 														name="ExpDatosGeneralesForm"
 														property="numExpDisciplinarioCalc" style="width:60px;"
+														styleId="numExpDisciplinarioCalc"
 														maxlength="6" readonly="true" styleClass="boxConsulta"></html:text> <html:hidden
 														name="ExpDatosGeneralesForm"
 														property="numExpDisciplinario" /></td>
@@ -1138,7 +1261,7 @@
 				else 
 				{
 		%>
-					<html:text name="ExpDatosGeneralesForm" property="clasificacionSel" styleClass="boxConsulta" readonly="true"></html:text> 
+					<html:text name="ExpDatosGeneralesForm" property="clasificacionSel" styleId="clasificacionSel" styleClass="boxConsulta" readonly="true"></html:text> 
 		<%
 				}
 		%>
@@ -1195,7 +1318,7 @@
 	<%
 			} else {
 	%>
-				<html:text name="ExpDatosGeneralesForm" property="fechaCaducidad" size="10" maxlength="10" styleClass="<%=boxStyle%>" readonly="true" styleId="fechaCaducidad"></html:text>					 
+				<html:text name="ExpDatosGeneralesForm" property="fechaCaducidad" styleId="fechaCaducidad" size="10" maxlength="10" styleClass="<%=boxStyle%>" readonly="true" tabindex="-1"></html:text>					 
 				 
 	<%
 			} }
@@ -1204,7 +1327,7 @@
 			{
 	%>
 
-				<html:text name="ExpDatosGeneralesForm" property="fechaCaducidad" size="10" maxlength="10" styleClass="<%=boxStyle%>" readonly="true" styleId="fechaCaducidad"></html:text>
+				<html:text name="ExpDatosGeneralesForm" property="fechaCaducidad" styleId="fechaCaducidad" size="10" maxlength="10" styleClass="<%=boxStyle%>" tabindex="-1"></html:text>
 				
 	<% 			
 
@@ -1212,7 +1335,7 @@
 	%>	
 			</td>
 			<td class="labelText"><siga:Idioma 	key="expedientes.auditoria.literal.asunto" />&nbsp(*)</td>
-			<td colspan="3"><html:text name="ExpDatosGeneralesForm"
+			<td colspan="3"><html:text name="ExpDatosGeneralesForm" styleId="asunto"
 											property="asunto" size="78" maxlength="100"
 											styleClass="<%=boxStyle%>" readonly="<%=!bEditable%>"></html:text>
 			</td>
@@ -1253,7 +1376,7 @@
 				<%
 					} else {
 				%>
-				<html:text name="ExpDatosGeneralesForm" property="faseSel"  styleClass="boxConsulta" readonly="true"></html:text>
+				<html:text name="ExpDatosGeneralesForm" property="faseSel" styleId="faseSel"  styleClass="boxConsulta" readonly="true"></html:text>
 				<%
 					}
 				%>
@@ -1271,7 +1394,7 @@
 				<%
 											} else {
 										%>
-				<html:text name="ExpDatosGeneralesForm" property="estadoSel"  styleClass="boxConsulta" readonly="true"></html:text>
+				<html:text name="ExpDatosGeneralesForm" property="estadoSel" styleId="estadoSel"  styleClass="boxConsulta" readonly="true"></html:text>
 				<%
 					}
 				%>
@@ -1286,7 +1409,7 @@
 				<%
 					} else {
 				%>
-					<html:text name="ExpDatosGeneralesForm" property="fechaInicial" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true">
+					<html:text name="ExpDatosGeneralesForm" property="fechaInicial" styleId="fechaInicial" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true">
 					</html:text>
 				<%
 					}
@@ -1321,7 +1444,7 @@
 				<%
 					} else {
 				%>	
-					<html:text name="ExpDatosGeneralesForm" property="fechaFinal" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true">
+					<html:text name="ExpDatosGeneralesForm" property="fechaFinal" styleId="fechaFinal" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true">
 					</html:text>
 				<%
 					}
@@ -1340,7 +1463,7 @@
 				<%
 					} else {
 				%>
-					<html:text name="ExpDatosGeneralesForm" property="fechaProrroga" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true"></html:text>
+					<html:text name="ExpDatosGeneralesForm" property="fechaProrroga" styleId="fechaProrroga" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true"></html:text>
 				<%
 					}
 				%>
@@ -1378,28 +1501,28 @@
 					<siga:Idioma key="expedientes.auditoria.literal.minuta"/>
 				</td>
 				<td class="labelTextValue">
-					<html:text name="ExpDatosGeneralesForm" property="minuta" size="10" maxlength="10" styleClass="<%=boxNumero%>" readonly="<%=!bEditable%>" onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);" onblur="calcularTotalMinuta();" ></html:text> &euro;
+					<html:text name="ExpDatosGeneralesForm" property="minuta" styleId="minuta" size="10" maxlength="10" styleClass="<%=boxNumero%>" readonly="<%=!bEditable%>" onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);" onblur="calcularTotalMinuta();" ></html:text> &euro;
 				</td>
 				
 				<td class="labelText">
 					<siga:Idioma key="expedientes.auditoria.literal.porcentajeIVA"/>
 				</td>				
 				<td class="labelTextValue">
-					<html:text name="ExpDatosGeneralesForm" property="porcentajeIVA" size="6" maxlength="6" styleClass="<%=boxNumero%>" readonly="<%=!bEditable%>" onkeypress="filterCharsNumberEs(this,false,true);" onkeyup="filterCharsUp(this);" onblur="calcularTotalMinuta2();" ></html:text> %
+					<html:text name="ExpDatosGeneralesForm" property="porcentajeIVA" styleId="porcentajeIVA" size="6" maxlength="6" styleClass="<%=boxNumero%>" readonly="<%=!bEditable%>" onkeypress="filterCharsNumberEs(this,false,true);" onkeyup="filterCharsUp(this);" onblur="calcularTotalMinuta2();" ></html:text> %
 				</td>
 				
 				<td class="labelText">
 					<siga:Idioma key="expedientes.auditoria.literal.importeIVA"/>
 				</td>				
 				<td class="labelTextValue">
-					<html:text name="ExpDatosGeneralesForm" property="importeIVA" size="10" maxlength="10" styleClass="boxConsultaNumber" readonly="true"  onblur="filterCharsNaN(this);" ></html:text> &euro;
+					<html:text name="ExpDatosGeneralesForm" property="importeIVA" styleId="importeIVA" size="10" maxlength="10" styleClass="boxConsultaNumber" readonly="true"  onblur="filterCharsNaN(this);" ></html:text> &euro;
 				</td>
 				
 				<td class="labelText" width="10%">
 					<siga:Idioma key="expedientes.auditoria.literal.totalMinuta"/>
 				</td>				
 				<td class="labelTextValue">
-					<html:text name="ExpDatosGeneralesForm" property="importeTotal" size="10" maxlength="10" styleClass="boxConsultaNumber" readonly="true" onblur="filterCharsNaN(this);" ></html:text> &euro;
+					<html:text name="ExpDatosGeneralesForm" property="importeTotal" styleId="importeTotal" size="10" maxlength="10" styleClass="boxConsultaNumber" readonly="true" onblur="filterCharsNaN(this);" ></html:text> &euro;
 				</td>
 			</tr>
 		</table>
@@ -1421,28 +1544,28 @@
 					<siga:Idioma key="expedientes.auditoria.literal.minutafinal"/>
 				</td>
 				<td class="labelTextValue">
-					<html:text name="ExpDatosGeneralesForm" property="minutaFinal" size="10" maxlength="10" styleClass="<%=boxNumero%>" readonly="<%=!bEditable%>" onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);" onblur="calcularTotalMinutaFinal();" ></html:text> &euro;
+					<html:text name="ExpDatosGeneralesForm" property="minutaFinal" styleId="minutaFinal" size="10" maxlength="10" styleClass="<%=boxNumero%>" readonly="<%=!bEditable%>" onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);" onblur="calcularTotalMinutaFinal();" ></html:text> &euro;
 				</td>
 				
 				<td class="labelText">
 					<siga:Idioma key="expedientes.auditoria.literal.porcentajeIVA"/>
 				</td>				
 				<td class="labelTextValue">
-					<html:text name="ExpDatosGeneralesForm" property="porcentajeIVAFinal" size="6" maxlength="6" styleClass="boxConsultaNumber" readonly="true"  onblur="filterCharsNaN(this);"></html:text> %
+					<html:text name="ExpDatosGeneralesForm" property="porcentajeIVAFinal" styleId="porcentajeIVAFinal" size="6" maxlength="6" styleClass="boxConsultaNumber" readonly="true"  onblur="filterCharsNaN(this);"></html:text> %
 				</td>
 				
 				<td class="labelText">
 					<siga:Idioma key="expedientes.auditoria.literal.importeIVA"/>
 				</td>				
 				<td class="labelTextValue">
-					<html:text name="ExpDatosGeneralesForm" property="importeIVAFinal" size="10" maxlength="10" styleClass="boxConsultaNumber" readonly="true"  onblur="filterCharsNaN(this);" ></html:text> &euro;
+					<html:text name="ExpDatosGeneralesForm" property="importeIVAFinal" styleId="importeIVAFinal" size="10" maxlength="10" styleClass="boxConsultaNumber" readonly="true"  onblur="filterCharsNaN(this);" ></html:text> &euro;
 				</td>
 				
 				<td class="labelText" width="10%">
 					<siga:Idioma key="expedientes.auditoria.literal.totalMinuta"/>
 				</td>				
 				<td class="labelTextValue">
-					<html:text name="ExpDatosGeneralesForm" property="importeTotalFinal" size="10" maxlength="10" styleClass="boxConsultaNumber" readonly="true"  onblur="filterCharsNaN(this);" ></html:text> &euro;
+					<html:text name="ExpDatosGeneralesForm" property="importeTotalFinal" styleId="importeTotalFinal" size="10" maxlength="10" styleClass="boxConsultaNumber" readonly="true"  onblur="filterCharsNaN(this);" ></html:text> &euro;
 				</td>
 			</tr>
 			</table>
@@ -1455,7 +1578,7 @@
 						<siga:Idioma key="expedientes.auditoria.literal.derechoscolegiales"/>
 					</td>
 					<td class="labelTextValue" >
-						<html:text name="ExpDatosGeneralesForm" property="derechosColegiales" size="10" maxlength="10" styleClass="<%=boxNumero%>" readonly="<%=!bEditable%>" onkeypress="filterCharsNumberEs(this,false,true);" onkeyup="filterCharsUp(this);" onblur="formateoDerechos();"></html:text> &euro;
+						<html:text name="ExpDatosGeneralesForm" property="derechosColegiales" styleId="derechosColegiales" size="10" maxlength="10" styleClass="<%=boxNumero%>" readonly="<%=!bEditable%>" onkeypress="filterCharsNumberEs(this,false,true);" onkeyup="filterCharsUp(this);" onblur="formateoDerechos();"></html:text> &euro;
 					</td>
 				</table>
 			<%
@@ -1478,35 +1601,35 @@
 				<siga:Idioma key="expedientes.auditoria.literal.nif"/>&nbsp;&nbsp;&nbsp;&nbsp;(*)
 			</td>				
 			<td width="<%=nifTamanio%>">				
-				<html:text name="ExpDatosGeneralesForm" size="<%=nifTamanio%>"  property="nifDenunciado" styleClass="boxConsulta" readonly="true"></html:text>
+				<html:text name="ExpDatosGeneralesForm" size="<%=nifTamanio%>"  property="nifDenunciado" styleId="nifDenunciado" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 
 			<td class="labelText"  NOWRAP >
 				<siga:Idioma key="expedientes.auditoria.literal.ncolegiado"/>			
 			</td>
 			<td width="<%=numColegiadoTamanio%>" >
-				<html:text name="ExpDatosGeneralesForm" property="nColDenunciado" size="<%=numColegiadoTamanio%>" styleClass="boxConsulta" readonly="true"></html:text>
+				<html:text name="ExpDatosGeneralesForm" property="nColDenunciado" styleId="nColDenunciado" size="<%=numColegiadoTamanio%>" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 
 			<td class="labelText" >
-				<html:hidden name="ExpDatosGeneralesForm" property = "idPersonaDenunciado"/>
-				<html:hidden name="ExpDatosGeneralesForm" property = "idInstitucionOrigenDenunciado"/>
-				<html:hidden name="ExpDatosGeneralesForm" property = "idDireccionDenunciado"/>
+				<html:hidden name="ExpDatosGeneralesForm" property = "idPersonaDenunciado" styleId="idPersonaDenunciado"/>
+				<html:hidden name="ExpDatosGeneralesForm" property = "idInstitucionOrigenDenunciado" styleId="idInstitucionOrigenDenunciado"/>
+				<html:hidden name="ExpDatosGeneralesForm" property = "idDireccionDenunciado" styleId="idDireccionDenunciado"/>
 				
 				<siga:Idioma key="expedientes.auditoria.literal.nombre"/>
 			</td>				
 			
 			<td   width="<%=nombreTamanio%>">
-				<html:text name="ExpDatosGeneralesForm" property="nombreDenunciado" size="<%=nombreTamanio%>" styleClass="boxConsulta" readonly="true"></html:text>																								 				 																										
+				<html:text name="ExpDatosGeneralesForm" property="nombreDenunciado" styleId="nombreDenunciado" size="<%=nombreTamanio%>" styleClass="boxConsulta" readonly="true"></html:text>																								 				 																										
 			</td>		
 			
 			
 			<td  width="<%=ape1Tamanio%>">
-				<html:text name="ExpDatosGeneralesForm" property="primerApellidoDenunciado" size="<%=ape1Tamanio%>" styleClass="boxConsulta" readonly="true"></html:text>
+				<html:text name="ExpDatosGeneralesForm" property="primerApellidoDenunciado" styleId="primerApellidoDenunciado" size="<%=ape1Tamanio%>" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 			
 			<td   width="<%=ape2Tamanio%>">
-				<html:text name="ExpDatosGeneralesForm" property="segundoApellidoDenunciado" size="<%=ape2Tamanio%>"styleClass="boxConsulta" readonly="true"></html:text>
+				<html:text name="ExpDatosGeneralesForm" property="segundoApellidoDenunciado" styleId="segundoApellidoDenunciado" size="<%=ape2Tamanio%>"styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 			
 							 			
@@ -1540,7 +1663,7 @@
 			<siga:Idioma key="expedientes.auditoria.literal.solicitanteEJG"/>
 		</td>
 		<td class="labelTextValor"><html:text
-			 name="ExpDatosGeneralesForm" property="solicitanteEjgDescripcion" styleClass="boxConsulta" style="width:500" readonly="true"/>	
+			 name="ExpDatosGeneralesForm" property="solicitanteEjgDescripcion" styleId="solicitanteEjgDescripcion" styleClass="boxConsulta" style="width:500" readonly="true"/>	
 		</td>
 		
 						
@@ -1563,15 +1686,16 @@
 			<td class="labelText">
 				<siga:Idioma key="expedientes.auditoria.literal.nif"/>&nbsp;&nbsp;&nbsp;&nbsp;(*)
 			</td>				
+				
 			<td width="<%=nifDenuncianteTamanio%>">				
-				<html:text name="ExpDatosGeneralesForm" size="<%=nifDenuncianteTamanio%>"  property="nifDenunciante" styleClass="boxConsulta" readonly="true"></html:text>
+				<html:text name="ExpDatosGeneralesForm" size="<%=nifDenuncianteTamanio%>"  property="nifDenunciante" styleId="nifDenunciante" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 
 			<td class="labelText"  NOWRAP >
 				<siga:Idioma key="expedientes.auditoria.literal.ncolegiado"/>			
 			</td>
 			<td width="<%=nColDenuncianteTamanio%>" >
-				<html:text name="ExpDatosGeneralesForm" property="nColDenunciante" size="<%=nColDenuncianteTamanio%>" styleClass="boxConsulta" readonly="true"></html:text>
+				<html:text name="ExpDatosGeneralesForm" property="nColDenunciante" styleId="nColDenunciante" size="<%=nColDenuncianteTamanio%>" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 
 			<td class="labelText" >
@@ -1583,16 +1707,16 @@
 			</td>				
 			
 			<td   width="<%=nombreDenuncianteTamanio%>">
-				<html:text name="ExpDatosGeneralesForm" property="nombreDenunciante" size="<%=nombreDenuncianteTamanio%>" styleClass="boxConsulta" readonly="true"></html:text>																								 				 																										
+				<html:text name="ExpDatosGeneralesForm" property="nombreDenunciante" styleId="nombreDenunciante" size="<%=nombreDenuncianteTamanio%>" styleClass="boxConsulta" readonly="true"></html:text>																								 				 																										
 			</td>		
 			
 			
 			<td  width="<%=ape1DenuncianteTamanio%>">
-				<html:text name="ExpDatosGeneralesForm" property="primerApellidoDenunciante" size="<%=ape1DenuncianteTamanio%>" styleClass="boxConsulta" readonly="true"></html:text>
+				<html:text name="ExpDatosGeneralesForm" property="primerApellidoDenunciante" styleId="primerApellidoDenunciante" size="<%=ape1DenuncianteTamanio%>" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 			
 			<td   width="<%=ape2DenuncianteTamanio%>">
-				<html:text name="ExpDatosGeneralesForm" property="segundoApellidoDenunciante" size="<%=ape2DenuncianteTamanio%>"styleClass="boxConsulta" readonly="true"></html:text>
+				<html:text name="ExpDatosGeneralesForm" property="segundoApellidoDenunciante" styleId="segundoApellidoDenunciante" size="<%=ape2DenuncianteTamanio%>"styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 			
 							 			
@@ -1671,7 +1795,7 @@
 				<siga:Idioma key="expedientes.auditoria.literal.nasunto"/>
 			</td>
 			<td>
-				<html:text name="ExpDatosGeneralesForm" property="numAsunto" size="10" maxlength="20" styleClass="<%=boxStyle%>" readonly="<%=!bEditable%>"></html:text>
+				<html:text name="ExpDatosGeneralesForm" property="numAsunto" styleId="numAsunto" size="10" maxlength="20" styleClass="<%=boxStyle%>" readonly="<%=!bEditable%>"></html:text>
 			</td>	
 		</tr>
 
@@ -1687,7 +1811,7 @@
 				<siga:Idioma key="expedientes.auditoria.literal.otrasPretensiones"/>
 			</td>
 			<td>
-				<html:text name="ExpDatosGeneralesForm" property="otrasPretensiones" size="50" maxlength="500" styleClass="<%=boxStyle%>" readonly="<%=!bEditable%>"></html:text>
+				<html:text name="ExpDatosGeneralesForm" property="otrasPretensiones" styleId="otrasPretensiones" size="50" maxlength="500" styleClass="<%=boxStyle%>" readonly="<%=!bEditable%>"></html:text>
 			</td>	
 		</tr>
 	
