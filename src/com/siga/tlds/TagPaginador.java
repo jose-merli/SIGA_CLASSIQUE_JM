@@ -153,10 +153,10 @@ public class TagPaginador extends TagSupport {
 				
 				
 				//Anhadimos un formulario, para pasar al action el modo y el número de página a visualizar
-				sb.append("<form id=\""+FORM+"\" action=\"").append(this.action).append("\" method=\"POST\">").append(INTRO);
-				sb.append("<input type=\"hidden\" name = \"modo\" value = \"\"/>").append(INTRO);
-				sb.append("<input type=\"hidden\" name = \"pagina\" value = \"\"/>").append(INTRO);
-				sb.append("<input type=\"hidden\" name = \"Seleccion\" value = \"\"/>").append(INTRO);
+				sb.append("<form id=\""+FORM+"\" name=\""+FORM+"\" action=\"").append(this.action).append("\" method=\"POST\">").append(INTRO);
+				sb.append("<input type=\"hidden\" name = \"modo\" id = \"modo\" value = \"\"/>").append(INTRO);
+				sb.append("<input type=\"hidden\" name = \"pagina\" id = \"pagina\" value = \"\"/>").append(INTRO);
+				sb.append("<input type=\"hidden\" name = \"Seleccion\" id = \"Seleccion\" value = \"\"/>").append(INTRO);
 				
 				sb.append("</form>").append(INTRO).append(INTRO);
 				

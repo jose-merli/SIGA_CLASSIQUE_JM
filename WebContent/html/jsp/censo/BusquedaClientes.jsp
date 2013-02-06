@@ -243,7 +243,8 @@
 	  </td>
 	  <td align="left">
 		<html:select name="busquedaClientesForm" property="residente" styleClass="boxCombo">
-			<html:option value="0">&nbsp;</html:option>
+			<!-- aalg: cambio el valor del primero de 0 a '' para igualarlo a la búsqueda avanzada -->
+			<html:option value="">&nbsp;</html:option>
 			<html:option value="<%=ClsConstants.COMBO_SIN_RESIDENCIA%>" key="censo.busquedaClientes.sinResidencia"></html:option>
 			<html:option value="<%=ClsConstants.COMBO_RESIDENCIA_MULTIPLE%>" key="censo.busquedaClientes.residenciaMultiple"></html:option>
 		</html:select>
@@ -331,10 +332,7 @@
 		botones += ",A,N,NS";
 		//botones += ",N,NS";
 	}else{
-	  if (colegiado.equals(ClsConstants.DB_TRUE)) {
 	    botones +=",L,A";
-
-	  }
 	} 
 %>
 
@@ -399,7 +397,8 @@
 			document.forms[0].nombrePersona.value="";
 			document.forms[0].apellido1.value="";
 			document.forms[0].apellido2.value="";
-			document.forms[0].numeroColegiado.value="";
+			if ($("#numeroColegiado").length != 0)
+				document.forms[0].numeroColegiado.value="";
 			document.forms[0].nif.value="";
 			document.forms[0].modo.value="abrir";
 			document.forms[0].target="mainWorkArea";	
