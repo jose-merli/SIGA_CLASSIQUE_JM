@@ -3,6 +3,10 @@
 //
 package com.siga.beans;
 
+import com.siga.Utilidades.AjaxXMLBuilderAnnotation;
+import com.siga.Utilidades.AjaxXMLBuilderNameAnnotation;
+import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
+
 
 /**
  * Bean de la tabla FCS_FACTURACIONJG
@@ -10,6 +14,7 @@ package com.siga.beans;
  * @author AtosOrigin 08-03-2005
  * 
  */
+@AjaxXMLBuilderAnnotation 
 public class FcsFacturacionJGBean extends MasterBean {
 	
 	/* Variables */
@@ -67,6 +72,7 @@ public class FcsFacturacionJGBean extends MasterBean {
 	/**
 	 * @return Returns the idFacturacion.
 	 */
+	@AjaxXMLBuilderValueAnnotation(isCData=false)
 	public Integer getIdFacturacion() {
 		return idFacturacion;
 	}
@@ -163,6 +169,7 @@ public class FcsFacturacionJGBean extends MasterBean {
 	/**
 	 * @return Returns the nombre.
 	 */
+	@AjaxXMLBuilderNameAnnotation
 	public String getNombre() {
 		return nombre;
 	}

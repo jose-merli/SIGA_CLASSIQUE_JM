@@ -866,12 +866,15 @@ public class InformesGenericosAction extends MasterAction {
 		String idioma = null;
 		
 		// obteniendo valores del formulario
-		try {
-			idinstitucion = usr.getLocation();
+		try {			
 			Hashtable aux = (Hashtable) this.obtenerDatosFormulario((InformesGenericosForm) formulario).get(0);
-			if (aux.size()==3)
-				idfacturaciones = EjecucionPLs.ejecutarFuncFacturacionesIntervaloGrupos(idinstitucion, (String) aux
-						.get("idFacturacionIni"), (String) aux.get("idFacturacionFin"), (String) aux.get("grupoFacturacion"));
+			if (aux.containsKey("idInstitucion"))
+				idinstitucion = (String) aux.get("idInstitucion");
+			else
+				idinstitucion = usr.getLocation();
+			
+			if (aux.size()==4)
+				idfacturaciones = EjecucionPLs.ejecutarFuncFacturacionesIntervaloGrupos(idinstitucion, (String) aux.get("idFacturacionIni"), (String) aux.get("idFacturacionFin"), (String) aux.get("grupoFacturacion"));
 			else
 				idfacturaciones = (String) aux.get ("idFacturacion");
 				

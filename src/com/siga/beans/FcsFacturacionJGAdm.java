@@ -20,6 +20,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -4812,4 +4813,52 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		return datos;	
 	}
 	
+	public List<FcsFacturacionJGBean> getFacturacionesInformes(String idInstitucion, String idTurno, String sEstados) throws ClsExceptions {
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		
+		String sql = " SELECT F." + FcsFacturacionJGBean.C_IDFACTURACION + ", " +
+				" TO_CHAR (F." + FcsFacturacionJGBean.C_FECHADESDE + ", 'dd/mm/yyyy') || '-' || TO_CHAR (F." + FcsFacturacionJGBean.C_FECHAHASTA + ", 'dd/mm/yyyy') || ' - ' || F." + FcsFacturacionJGBean.C_NOMBRE + " AS " + FcsFacturacionJGBean.C_NOMBRE +
+			" FROM " + FcsFacturacionJGBean.T_NOMBRETABLA + " F, " +
+				FcsFactEstadosFacturacionBean.T_NOMBRETABLA + " EST, " +
+				FcsFactGrupoFactHitoBean.T_NOMBRETABLA + " HITO " +
+			" WHERE (HITO.idgrupofacturacion = " + idTurno + " OR " + idTurno + " = -1) " +
+				" AND F." + FcsFacturacionJGBean.C_IDINSTITUCION + " = " + idInstitucion + 
+				" AND (F." + FcsFacturacionJGBean.C_PREVISION + " IS NULL OR F." + FcsFacturacionJGBean.C_PREVISION + " ='0') " +
+				" AND F." + FcsFacturacionJGBean.C_IDINSTITUCION + " = EST." + FcsFactEstadosFacturacionBean.C_IDINSTITUCION +
+				" AND F." + FcsFacturacionJGBean.C_IDFACTURACION + " = EST." + FcsFactEstadosFacturacionBean.C_IDFACTURACION +
+				" AND EST." + FcsFactEstadosFacturacionBean.C_IDORDENESTADO + " = ( " +
+					" SELECT MAX(EST2." + FcsFactEstadosFacturacionBean.C_IDORDENESTADO + ") " +
+					" FROM " + FcsFactEstadosFacturacionBean.T_NOMBRETABLA + " EST2 " +
+					" WHERE EST2." + FcsFactEstadosFacturacionBean.C_IDINSTITUCION + " = EST." + FcsFactEstadosFacturacionBean.C_IDINSTITUCION +
+					" AND EST2." + FcsFactEstadosFacturacionBean.C_IDFACTURACION + " = EST." + FcsFactEstadosFacturacionBean.C_IDFACTURACION + ") " +
+				" AND EST.IDESTADOFACTURACION IN (" + sEstados + ") " +
+				" AND F." + FcsFacturacionJGBean.C_IDINSTITUCION + " = HITO." + FcsFactGrupoFactHitoBean.C_IDINSTITUCION +
+				" AND F." + FcsFacturacionJGBean.C_IDFACTURACION + " = HITO." + FcsFactGrupoFactHitoBean.C_IDFACTURACION +
+			" GROUP BY F." + FcsFacturacionJGBean.C_IDFACTURACION + ", " +
+				" F." + FcsFacturacionJGBean.C_FECHADESDE + ", " +
+				" F." + FcsFacturacionJGBean.C_FECHAHASTA + ", " +
+				" F." + FcsFacturacionJGBean.C_NOMBRE + 
+			" ORDER BY F." + FcsFacturacionJGBean.C_FECHADESDE + " DESC";
+		
+		List<FcsFacturacionJGBean> aFacturas = new ArrayList<FcsFacturacionJGBean>();
+		try {
+			RowsContainer rc = new RowsContainer();
+			
+			if (rc.query(sql)) {
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		
+            		FcsFacturacionJGBean facturaBean = new FcsFacturacionJGBean();            		
+            		facturaBean.setIdFacturacion(UtilidadesHash.getInteger(htFila, FcsFacturacionJGBean.C_IDFACTURACION));
+            		facturaBean.setNombre(UtilidadesHash.getString(htFila, FcsFacturacionJGBean.C_NOMBRE));
+            		aFacturas.add(facturaBean);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }
+		
+       return aFacturas;		
+	}	
 }

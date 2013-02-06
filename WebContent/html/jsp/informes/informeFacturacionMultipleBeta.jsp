@@ -1,10 +1,5 @@
 <!-- informeFacturacionMultipleBeta.jsp -->
 
-<!-- Pantalla con los combos para seleccionar las facturaciones entre las que se genera el informe
-	 VERSIONES:
-	 jose.barrientos creado el  19-06-2009.
--->
-
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
@@ -15,146 +10,242 @@
 
 <!-- TAGLIBS -->
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
-<%@ taglib uri="struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="struts-html.tld" prefix="html"%>
-<%@ taglib uri="struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="ajaxtags.tld" prefix="ajax" %>
 
 <!-- IMPORTS -->
-<%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.siga.facturacionSJCS.form.MantenimientoPagoForm"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
-<%@ page import="java.util.Properties"%>
 
 <!-- JSP -->
 <%
-	String app = request.getContextPath();
 	UsrBean usrbean = (UsrBean) session.getAttribute(ClsConstants.USERBEAN);
-
-	//Combo Facturaciones
-	String comboParams[] = new String[1];
-	comboParams[0] = usrbean.getLocation();
-	String informeUnico =(String) request.getAttribute("informeUnico");
-
+	String sInstitucion=usrbean.getLocation();	
+	String informeUnico=(String)request.getAttribute("informeUnico");	
+	String optionsInstituciones="";
+	boolean esConsejo=false;
+	int idConsejo = new Integer(sInstitucion).intValue();
+	if (idConsejo == ClsConstants.INSTITUCION_CONSEJOGENERAL || idConsejo >= ClsConstants.INSTITUCION_CONSEJO) {
+		esConsejo=true;
+		optionsInstituciones=(String)request.getAttribute("optionsInstituciones");
+	}
 %>
 
-
 <html>
-<head>
-
-<link id="default" rel="stylesheet" type="text/css"	href="<%=app%>/html/jsp/general/stylesheet.jsp">
-<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
-<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
-
-<!-- Validaciones de los campos en cliente -->
-<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
-<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-
-<!-- El nombre del formulario se obtiene del struts-config -->
-<html:javascript formName="InformesFacturacionMultipleForm"	staticJavascript="false" />
-
-<!-- Titulo y localizacion -->
-<siga:Titulo titulo="menu.justiciaGratuita.informes.informeMultipleNuevo" localizacion="factSJCS.informes.ruta" />
-
-</head>
-<body>
-
-
-<!-- Campos -->
-<siga:ConjCampos leyenda="menu.justiciaGratuita.informes.informeMultipleNuevo">
-<input type="hidden" id= "informeUnico" value="<%=informeUnico%>">
-
-	<table class="tablaCampos" align="center">
-		<tr>
-			<td class="labelText" width="150">
-				<siga:Idioma key="gratuita.definirTurnosIndex.literal.grupoFacturacion"/>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-			<td><siga:ComboBD estilo="true" obligatorio="true" nombre="grupoFacturacion" filasMostrar="1" ancho="700" accion="Hijo:idFacturacionInicio;Hijo:idFacturacionFin" seleccionMultiple="false" tipo="grupoFacturacionTodos" clase="boxCombo"  parametro="<%=comboParams%>"/>
-			</td>
-		</tr>
-		<tr>
-			<td class="labelText" width="150"><siga:Idioma
-				key="factSJCS.informes.informeMultiple.factInicial" />&nbsp;(*)</td>
-			<td><siga:ComboBD nombre="idFacturacionInicio"
-				tipo="cmb_FactInformesTodos" parametro="<%=comboParams%>"
-				clase="boxCombo" obligatorio="true"  hijo="t"  ancho="700"
-				obligatorioSinTextoSeleccionar="true" /></td>
-		</tr>
-		<tr>
-			<td class="labelText" width="150"><siga:Idioma
-				key="factSJCS.informes.informeMultiple.factFinal" />&nbsp;(*)</td>
-			<td><siga:ComboBD nombre="idFacturacionFin"
-				tipo="cmb_FactInformesTodos" parametro="<%=comboParams%>"
-				clase="boxCombo" obligatorio="true"  hijo="t"  ancho="700"
-				obligatorioSinTextoSeleccionar="true" /></td>
-		</tr>
-	</table>
-</siga:ConjCampos>
-
-
-<!-- Formularios -->
-<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
-	<html:hidden property="idInstitucion" value="<%=usrbean.getLocation()%>"/>
-	<html:hidden property="idTipoInforme" value="FACJ2"/>
-	<html:hidden property="enviar" value="0"/>
-	<html:hidden property="descargar" value="1"/>
-	<html:hidden property="datosInforme"/>
-	<html:hidden property="modo" value = "preSeleccionInformes"/>
-		<input type='hidden' name='actionModal'>
+	<head>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>">
+		
+		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>	
+		<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
+		
+		<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>		
 	
-	
-</html:form>
-<!-- Formulario para la edicion del envio -->
-<form name="DefinirEnviosForm" method="POST" action="/SIGA/ENV_DefinirEnvios.do" target="mainWorkArea">
-	<input type="hidden" name="modo" value="">
-	<input type="hidden" name="tablaDatosDinamicosD" value="">
-
-</form>
-
-
-
-<!-- Botones -->
-<siga:ConjBotonesAccion clase="botonesSeguido" botones="GM" />
-
-
-<!-- Scripts de botones -->
-<script language="JavaScript">
-	// Funcion asociada a boton Generar Informe
-	function accionGenerarInforme() {
-		idFactIni = document.getElementById("idFacturacionInicio").value;
-		idFactFin = document.getElementById("idFacturacionFin").value;
-		if (idFactIni != "") {
-			grupoFact =  document.getElementById("grupoFacturacion").value;
-			datos = "idFacturacionIni" + "==" + idFactIni + "##"
-					+ "idFacturacionFin" + "==" + idFactFin+ "##"+ "grupoFacturacion" + "==" + grupoFact;
-			document.InformesGenericosForm.datosInforme.value=datos;
-			if(document.getElementById("informeUnico").value=='1'){
-				sub();
-				document.InformesGenericosForm.submit();
-			}else{
-				var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
-				if (arrayResultado==undefined||arrayResultado[0]==undefined){
-				   		
-			   	}else {
-			   		
+		<!-- Titulo y localizacion -->
+		<siga:Titulo titulo="menu.justiciaGratuita.informes.informeMultipleNuevo" localizacion="factSJCS.informes.ruta" />
+		
+		<!-- Scripts de botones -->
+		<script type="text/javascript">
+			jQuery.noConflict();
+		
+			// Funcion asociada a boton Generar Informe
+			function accionGenerarInforme() {
+				var idFactIni = document.getElementById("idFacturacionInicio").value;
+				var idFactFin = document.getElementById("idFacturacionFin").value;
+				var idInstitucion = <%=sInstitucion%>
+				<% if (esConsejo) { %>
+					idInstitucion = document.getElementById("colegioFacturacion").value;
+				<% } %>
+					
 				
-				}
+				if (idFactIni != "") {					
+					if (idFactFin == "")
+						idFactFin=idFactIni;						
+					
+					var grupoFact =  document.getElementById("grupoFacturacion").value;
+					var datos = "idFacturacionIni" + "==" + idFactIni + "##" + "idFacturacionFin" + "==" + idFactFin + "##"+ "grupoFacturacion" + "==" + grupoFact + "##"+ "idInstitucion" + "==" + idInstitucion;
+					document.InformesGenericosForm.datosInforme.value=datos;
+					
+					if(document.getElementById("informeUnico").value=='1'){
+						sub();
+						document.InformesGenericosForm.submit();
+						
+					} else {
+						var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
+						/*
+						if (arrayResultado==undefined||arrayResultado[0]==undefined){
+						   		
+					   	}else {
+					   						
+						}
+						*/
+					}
+					
+				} else {
+					alert("Seleccione una facturacion");
+					fin();
+					return false;
+				} 
 			}
-		} else {
-			alert("Seleccione una facturacion");
-			fin();
-			return false;
-		} 
+			
+			function postAccionTurno () {
+				jQuery('#idFacturacionFin option').remove();
+				jQuery("#idFacturacionFin").removeAttr("disabled");
+				
+				jQuery('#idFacturacionFin').append('<option value=""></option>');
+				jQuery("#idFacturacionInicio option").clone().appendTo(jQuery('#idFacturacionFin'));
+				
+				if(jQuery("#idFacturacionInicio").attr("disabled") == "disabled")
+					jQuery("#idFacturacionFin").attr("disabled", "disabled");
+			}
+		</script>				
+	</head>
+
+	<body>
+		<!-- Campos -->
+		<siga:ConjCampos leyenda="menu.justiciaGratuita.informes.informeMultipleNuevo">
+			<input type="hidden" id= "informeUnico" value="<%=informeUnico%>" />			
+
+			<table class="tablaCampos" align="center" border="0">
+			
+				<% if (esConsejo) { %>
+					<tr>
+						<td class="labelText" width="140px">
+							<siga:Idioma key="factSJCS.informes.informeMultiple.institucion"/>&nbsp;(*)
+						</td>
+						<td>
+							<select styleClass="boxCombo" style="width:800px;" id="colegioFacturacion">
+								<%=optionsInstituciones%>
+							</select>
+						</td>
+					</tr>							
+				
+					<tr>
+						<td class="labelText" width="140px">
+							<siga:Idioma key="factSJCS.informes.informeMultiple.grupo"/>&nbsp;(*)
+						</td>
+						<td>
+							<select styleClass="boxCombo" style="width:800px;" id="grupoFacturacion" disabled>
+							</select>						
+						</td>
+					</tr>
+					
+					<tr>
+						<td class="labelText" width="140px">
+							<siga:Idioma key="factSJCS.informes.informeMultiple.factInicial" />&nbsp;(*)
+						</td>
+						<td>
+							<select styleClass="boxCombo" style="width:800px" id="idFacturacionInicio" disabled>
+							</select>						
+						</td>
+					</tr>
+					
+					<tr>
+						<td class="labelText" width="140px">
+							<siga:Idioma key="factSJCS.informes.informeMultiple.factFinal" />
+						</td>
+						<td>
+							<select styleClass="boxCombo" style="width:800px;" id="idFacturacionFin" disabled>
+							</select>											
+						</td>
+					</tr>							
+					
+					<ajax:select
+						baseUrl="/SIGA/INF_InformesMultiples.do"
+						source="colegioFacturacion" target="grupoFacturacion" 
+						parameters="colegioFacturacion={colegioFacturacion},modo=ajaxObtenerTurnos"/>
+						
+					<ajax:select
+						baseUrl="/SIGA/INF_InformesMultiples.do"
+						source="grupoFacturacion" target="idFacturacionInicio"
+						parameters="colegioFacturacion={colegioFacturacion},grupoFacturacion={grupoFacturacion},modo=ajaxObtenerFacturas"
+						postFunction="postAccionTurno" />							
+
+				<% 	} else { %>
+					<tr>
+						<td class="labelText" width="140px">
+							<siga:Idioma key="factSJCS.informes.informeMultiple.grupo"/>&nbsp;(*)
+						</td>
+						<td>
+							<select styleClass="boxCombo" style="width:800px;" id="grupoFacturacion">
+							</select>						
+						</td>
+					</tr>	
+					
+					<tr>
+						<td class="labelText" width="140px">
+							<siga:Idioma key="factSJCS.informes.informeMultiple.factInicial" />&nbsp;(*)
+						</td>
+						<td>
+							<select styleClass="boxCombo" style="width:800px" id="idFacturacionInicio" disabled>
+							</select>						
+						</td>
+					</tr>
+					
+					<tr>
+						<td class="labelText" width="140px">
+							<siga:Idioma key="factSJCS.informes.informeMultiple.factFinal" />
+						</td>
+						<td>
+							<select styleClass="boxCombo" style="width:800px;" id="idFacturacionFin" disabled>
+							</select>											
+						</td>
+					</tr>							
+					
+					<input type="hidden" id= "idInstitucion" value="<%=sInstitucion%>" />
+					
+					<ajax:select
+						baseUrl="/SIGA/INF_InformesMultiples.do"
+						source="idInstitucion" target="grupoFacturacion" 
+						parameters="colegioFacturacion={idInstitucion},modo=ajaxObtenerTurnos"
+						executeOnLoad="true"/>			
+												
+					<ajax:select
+						baseUrl="/SIGA/INF_InformesMultiples.do"
+						source="grupoFacturacion" target="idFacturacionInicio"
+						parameters="colegioFacturacion={idInstitucion},grupoFacturacion={grupoFacturacion},modo=ajaxObtenerFacturas"
+						postFunction="postAccionTurno" />								
+				<% } %>			
+				
+				<tr>
+					<td class="labelText" colspan="2">
+						<siga:Idioma key="factSJCS.informes.informeMultiple.mensaje" />
+					</td>
+				</tr>				
+			</table>
+		</siga:ConjCampos>
 		
+
+
+		<!-- Formularios -->
+		<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
+			<html:hidden property="idInstitucion" value="<%=sInstitucion%>"/>
+			<html:hidden property="idTipoInforme" value="FACJ2"/>
+			<html:hidden property="enviar" value="0"/>
+			<html:hidden property="descargar" value="1"/>
+			<html:hidden property="datosInforme"/>
+			<html:hidden property="modo" value = "preSeleccionInformes"/>
+			<input type='hidden' name='actionModal' />
+		</html:form>
 		
-	}
-</script>
+		<!-- Formulario para la edicion del envio -->
+		<form name="DefinirEnviosForm" method="POST" action="/SIGA/ENV_DefinirEnvios.do" target="mainWorkArea">
+			<input type="hidden" name="modo" value="">
+			<input type="hidden" name="tablaDatosDinamicosD" value="">
+		</form>
 
+		<!-- Botones -->
+		<siga:ConjBotonesAccion clase="botonesSeguido" botones="GM" />
 
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
-<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display: none"></iframe>
-<!-- FIN: SUBMIT AREA -->
-
-
-</body>
+		<!-- INICIO: SUBMIT AREA -->
+		<!-- Obligatoria en todas las páginas-->
+		<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display:none"></iframe>	
+		<!-- FIN: SUBMIT AREA -->
+	</body>
 </html>

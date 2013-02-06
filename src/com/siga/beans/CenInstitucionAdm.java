@@ -12,7 +12,6 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
 
 /**
@@ -508,4 +507,38 @@ public class CenInstitucionAdm extends MasterBeanAdministrador {
 		return profesion + ClsConstants.INSTITUCION_CONSEJOGENERAL;
 	}
 
+	public List<CenInstitucionBean> getInstitucionesConsejo (String sIdConsejo) throws ClsExceptions {
+		String sql = "SELECT " + CenInstitucionBean.C_IDINSTITUCION + ", " +
+				CenInstitucionBean.C_ABREVIATURA +
+			" FROM " + CenInstitucionBean.T_NOMBRETABLA + 
+			" WHERE " +  CenInstitucionBean.C_IDINSTITUCION + " <> " + ClsConstants.INSTITUCION_CONSEJOGENERAL +
+				" AND " +  CenInstitucionBean.C_IDINSTITUCION + " < " + ClsConstants.INSTITUCION_CONSEJO +
+				" AND " +  CenInstitucionBean.C_FECHAENPRODUCCION + " IS NOT NULL " +
+				" CONNECT BY PRIOR " +  CenInstitucionBean.C_IDINSTITUCION + " = " +  CenInstitucionBean.C_CEN_INST_IDINSTITUCION + 
+				" START WITH " +  CenInstitucionBean.C_IDINSTITUCION + " = " + sIdConsejo +
+			" ORDER BY 2";
+		
+		List<CenInstitucionBean> aInstituciones = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.query(sql)) {
+            	aInstituciones = new ArrayList<CenInstitucionBean>();        
+    			
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		
+            		CenInstitucionBean institucionBean = new CenInstitucionBean();            		
+            		institucionBean.setIdInstitucion(UtilidadesHash.getInteger(htFila, CenInstitucionBean.C_IDINSTITUCION));
+            		institucionBean.setAbreviatura(UtilidadesHash.getString(htFila, CenInstitucionBean.C_ABREVIATURA));
+            		aInstituciones.add(institucionBean);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }
+		
+       return aInstituciones;
+	}
 }
