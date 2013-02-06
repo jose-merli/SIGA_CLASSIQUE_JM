@@ -5,11 +5,15 @@
  */
 package com.siga.beans;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -464,11 +468,41 @@ public class ExpAnotacionAdm extends MasterBeanAdministrador {
 		datosAnot.put(ExpAnotacionBean.C_ANIOEXPEDIENTE,anioExpediente);
 
 		anotBean.setIdAnotacion(anotAdm.getNewIdAnotacion(datosAnot));
-
+		
+		//mhg - Comprobamos si existe la anotación para el tipo de expediente. En caso que no exista la insertamos.
+		boolean existe = existeAnotacion(new Integer(idInstitucion), ExpTiposAnotacionesAdm.codigoTipoComunicacion, idTipoExp);
+		if(!existe){
+			String nombre = "expedientes.tipoAnotacion.comunicacion.nombre";
+			String mensaje = "expedientes.tipoAnotacion.comunicacion.mensaje";
+			insertarAnotacion(usrBean, ExpTiposAnotacionesAdm.codigoTipoComunicacion, new Integer(idInstitucion), idTipoExp, nombre, mensaje);
+		}
 		//Ahora procedemos a insertarlo
 		anotAdm.insert(anotBean);	 
 
-}
+	}
+	
+	//mhg Se comprueba si la anotacion existe en el tipo de expediente
+	public boolean existeAnotacion(Integer idInstitucion, Integer idTipoAnotacion, Integer idTipoExp) throws ClsExceptions{
+		 
+		boolean valor = false;
+		
+		try {
+			ExpTiposAnotacionesAdm tipoAnotAdm = new ExpTiposAnotacionesAdm(usrbean);
+			Hashtable datosTipoAnot = new Hashtable();
+			datosTipoAnot.put(ExpTiposAnotacionesBean.C_IDINSTITUCION,idInstitucion);
+			datosTipoAnot.put(ExpTiposAnotacionesBean.C_IDTIPOANOTACION,idTipoAnotacion);
+			datosTipoAnot.put(ExpTiposAnotacionesBean.C_IDTIPOEXPEDIENTE,idTipoExp);
+			Vector v = tipoAnotAdm.select(datosTipoAnot);
+			 
+			if (v != null && !v.isEmpty())
+				valor = true;
+			
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar el \"select\" en B.D.");
+		}
+		
+		return valor;  
+   }
 	
     public boolean insertarAnotacionAutomatica(ExpExpedienteBean expBean, String texto) throws ClsExceptions 
 	{
@@ -492,6 +526,13 @@ public class ExpAnotacionAdm extends MasterBeanAdministrador {
 			anotacionBean.setIdInstitucion_Usuario(expBean.getIdInstitucion());
 			anotacionBean.setIdTipoAnotacion(ExpTiposAnotacionesAdm.codigoTipoAutomatico);	    
 			
+			boolean existe = existeAnotacion(expBean.getIdInstitucion(), ExpTiposAnotacionesAdm.codigoTipoAutomatico, expBean.getIdTipoExpediente());
+			if(!existe){
+				String nombre = "expedientes.tipoAnotacion.automatica.nombre";
+				String mensaje = "expedientes.tipoAnotacion.automatica.mensaje";
+				insertarAnotacion(usrbean, ExpTiposAnotacionesAdm.codigoTipoAutomatico, new Integer(expBean.getIdInstitucion()), expBean.getIdTipoExpediente(), nombre, mensaje);
+			}
+			
 	        if (!this.insert(anotacionBean)){
 	            throw new ClsExceptions("Error al insertar anotación: "+this.getError());
 	        }
@@ -499,8 +540,31 @@ public class ExpAnotacionAdm extends MasterBeanAdministrador {
 		} catch (ClsExceptions e) {
 	        throw new ClsExceptions (e, "Error al insertar alerta en B.D.");
 	    }	    
-		
 	}
-    
 	
+    /*
+	 * Método para insertar anotaciones
+	 */
+	public void insertarAnotacion(UsrBean usrBean, Integer tipoAnotacion, Integer idInstitucion, Integer idTipoExp, String nombre, String mensaje)
+			throws ClsExceptions {
+	    try{
+	    	
+	    	ExpTiposAnotacionesAdm admTipoAnotacion = new ExpTiposAnotacionesAdm(usrBean);
+	        ExpTiposAnotacionesBean beanTipoAnotacion = new ExpTiposAnotacionesBean();
+	        beanTipoAnotacion.setIdInstitucion(idInstitucion);
+	        beanTipoAnotacion.setIdTipoExpediente(idTipoExp);
+	        beanTipoAnotacion.setIdTipoAnotacion(tipoAnotacion);
+	        ///
+	        String idRecurso = GenRecursosCatalogosAdm.getNombreIdRecurso(ExpTiposAnotacionesBean.T_NOMBRETABLA, ExpTiposAnotacionesBean.C_NOMBRE, new Integer(idInstitucion), idTipoExp+"_"+tipoAnotacion);
+	        beanTipoAnotacion.setNombre((idRecurso!=null)?""+idRecurso:UtilidadesString.getMensajeIdioma(usrBean,nombre));
+	        beanTipoAnotacion.setMensaje(UtilidadesString.getMensajeIdioma(usrBean,mensaje));	    
+		    //Ahora procedemos a insertarlo
+		    if (!admTipoAnotacion.insert(beanTipoAnotacion)) {
+		        throw new ClsExceptions("Error al insertar anotación. "+admTipoAnotacion.getError());
+		    }
+		    
+	    } catch (ClsExceptions e) {
+	        throw new ClsExceptions (e, "Error al insertar alerta en B.D.");
+	    }	
+	}
 }

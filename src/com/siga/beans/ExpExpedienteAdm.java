@@ -726,7 +726,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 
 			}
 			
-			
+			//MHG Incidencia 194 Se añade a todos los order by la ordenación por fecha y número de expediente descendente.
 			switch (Integer.parseInt(form.getOrden())) 
 			{
 				case 1:
@@ -1095,6 +1095,8 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		String T_EXP_EXPEDIENTE = ExpExpedienteBean.T_NOMBRETABLA;
 		String T_EXP_TIPOEXPEDIENTE = ExpTipoExpedienteBean.T_NOMBRETABLA + " T";
 		String T_EXP_ESTADOS = ExpEstadosBean.T_NOMBRETABLA + " ES";
+		//mhg
+		String T_EXP_DENUNCIADO = ExpDenunciadoBean.T_NOMBRETABLA + " D";
 		
 		//NOMBRES COLUMNAS PARA LA JOIN
 		//Tabla exp_expediente 
@@ -1146,10 +1148,10 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 	        String sql = "SELECT ";
 	        
 	        sql += "e." + E_IDINSTITUCION + ", ";
-	        sql += E_IDINSTITUCION_TIPOEXPEDIENTE + ", ";
+	        sql += "e." + E_IDINSTITUCION_TIPOEXPEDIENTE + ", ";
 	        sql += "e." + E_IDTIPOEXPEDIENTE + ", ";
-	        sql += E_ANIOEXPEDIENTE + ", ";
-	        sql += E_NUMEROEXPEDIENTE + ", ";
+	        sql += "e." + E_ANIOEXPEDIENTE + ", ";
+	        sql += "e." + E_NUMEROEXPEDIENTE + ", ";
 	        sql += E_SANCIONADO + ", ";
 	        sql += E_SANCIONFINALIZADA + ", ";		    
 		    sql += T_TIPOEXPEDIENTE + " as TIPOEXPEDIENTE, ";	
@@ -1157,13 +1159,37 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		    sql += ES_ESEJECUCIONSANCION + " as EJECUCIONSANCION, ";
 		    sql += subselect;	
 		    
-			sql += " FROM ";
-		    sql += T_EXP_EXPEDIENTE + " e, " + 
+		    
+		    //mhg Incidencia 179. Nueva query. Ahora la tabla principal es exp_denunciado y se han introducido Left Join
+		    sql += " FROM ";
+		    sql += T_EXP_DENUNCIADO + ", "+ T_EXP_EXPEDIENTE + " e, " + T_EXP_TIPOEXPEDIENTE+", " + T_EXP_ESTADOS;
+		    sql += " WHERE ";
+		    sql += "d." + ExpDenunciadoBean.C_IDINSTITUCION + "= e." + E_IDINSTITUCION + "(+) and ";
+		    sql += "d." + ExpDenunciadoBean.C_IDINSTITUCION_TIPOEXPEDIENTE + "= e." + E_IDINSTITUCION_TIPOEXPEDIENTE + "(+) and ";
+		    sql += "d." + ExpDenunciadoBean.C_NUMEROEXPEDIENTE + "= e." + E_NUMEROEXPEDIENTE + "(+) and ";
+		    sql += "d." + ExpDenunciadoBean.C_ANIOEXPEDIENTE + "= e." + E_ANIOEXPEDIENTE + "(+) and ";
+		    
+		    sql += "e." + E_IDINSTITUCION + " = " + "t." + ExpTipoExpedienteBean.C_IDINSTITUCION + " (+) and ";
+		    sql += "e." + E_IDTIPOEXPEDIENTE + " = " + "t." + ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE + " (+) and ";
+		    
+		    sql += "e." + E_IDINSTITUCION + " = " + "es." + ExpEstadosBean.C_IDINSTITUCION + " (+) and ";
+		    sql += "e." + E_IDTIPOEXPEDIENTE + " = " + "es." + ExpEstadosBean.C_IDTIPOEXPEDIENTE + " (+) and ";
+		    sql += "e." + E_IDFASE + " = " + "es." + ExpEstadosBean.C_IDFASE + " (+) and ";
+		    sql += "e." + E_IDESTADO + " = " + "es." + ExpEstadosBean.C_IDESTADO + " (+) and ";
+		    
+		    sql += "d." + E_IDINSTITUCION + " = " + idInstitucion + " and ";
+		    sql += "d." + ExpDenunciadoBean.C_IDPERSONA + " = " + idPersona + " and ";
+			sql += "e." + E_ESVISIBLEENFICHA + " = 'S' ";
+		    
+		   		
+			//Query antigua
+		    /*sql += T_EXP_EXPEDIENTE + " e, " + 
 		    		T_EXP_TIPOEXPEDIENTE+", " + 
 		    		T_EXP_ESTADOS;
 		    		    		
 			sql += " WHERE ";
 			sql += "e." + E_IDINSTITUCION + " = " + idInstitucion + " and ";
+			sql += "e." + E_IDPERSONA + " = " + idPersona + " and ";
 			sql += "e." + E_ESVISIBLEENFICHA + " = 'S' and ";
 			sql += "e." + E_IDINSTITUCION + " = " + T_IDINSTITUCION + " and ";
 			sql += "e." + E_IDTIPOEXPEDIENTE + " = " + T_IDTIPOEXPEDIENTE + " and ";
@@ -1171,7 +1197,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			sql += "e." + E_IDTIPOEXPEDIENTE + " = " + ES_IDTIPOEXPEDIENTE + " and ";
 			sql += "e." + E_IDFASE + " = " + ES_IDFASE + "(+) and ";
 			sql += "e." + E_IDESTADO + " = " + ES_IDESTADO + "(+)";
-			
+			*/
 			ClsLogging.writeFileLog("ExpExpedienteAdm, selectExpedientesCliente() -> QUERY: " + sql,3);
 	        
 			if (rc.query(sql)) {
@@ -1467,7 +1493,23 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 
 	    try {
            anotBean.setIdAnotacion(anotAdm.getNewIdAnotacion(datosAnot));
-		   anotAdm.insert(anotBean);
+		   
+           //mhg - Comprobamos si existe la anotación para el tipo de expediente. En caso que no exista la insertamos.
+	   	   ExpAnotacionAdm expAnotacionAdm = new ExpAnotacionAdm(this.usrbean);
+           boolean existe = expAnotacionAdm.existeAnotacion(exp.getIdInstitucion_tipoExpediente(), anotBean.getIdTipoAnotacion(), exp.getIdTipoExpediente());
+	   	   if(!existe){
+	   		   
+	   		   String nombre = "expedientes.tipoAnotacion.cambioEstado.nombre";
+			   String mensaje = "expedientes.tipoAnotacion.cambioEstado.mensaje";
+	   		   
+			   if(automatico){
+	   			   nombre = "expedientes.tipoAnotacion.automatica.nombre";
+	   			   mensaje = "expedientes.tipoAnotacion.automatica.mensaje";
+	   		   }
+			   expAnotacionAdm.insertarAnotacion(this.usrbean, anotBean.getIdTipoAnotacion(), exp.getIdInstitucion(), exp.getIdTipoExpediente(), nombre, mensaje);
+	   	   }
+           
+           anotAdm.insert(anotBean);
            logAdm.insertarEntrada(exp,estAntiguo,estNuevo);
         } catch (ClsExceptions e) {
             throw new ClsExceptions (e, "Error al recuperar datos en B.D.");
@@ -1520,7 +1562,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 						// Nueva anotación de estado caducado + cambio de estado automático. Ya no se inserta alerta.
 						ExpExpedienteBean expBean=this.getExpediente(fila1.getString("IDTIPOEXPEDIENTE"),fila1.getString("IDINSTITUCION"),fila1.getString("IDINSTITUCION_TIPOEXPEDIENTE"),fila1.getString("ANIOEXPEDIENTE"),fila1.getString("NUMEROEXPEDIENTE"));
 
-						if (!anotacionAdm.insertarAnotacionAutomatica(expBean,UtilidadesString.getMensajeIdioma(this.usrbean,"expedientes.alertasyanotaciones.mensajes.estadoVencido"))) {
+						if (!anotacionAdm.insertarAnotacionAutomatica(expBean,UtilidadesString.getMensajeIdioma(this.usrbean.getLanguageInstitucion(),"expedientes.alertasyanotaciones.mensajes.estadoVencido"))) {
 						    throw new ClsExceptions("1.Error al insertar anotacion. "+anotacionAdm.getError());
 						}
 				        ClsLogging.writeFileLog("1.Anotacion insertada.",7);
@@ -1593,7 +1635,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 				        //    throw new ClsExceptions("2.Error al insertar alarma. "+alertaAdm.getError());
 				        //}
 				        //ClsLogging.writeFileLog("2.Alerta insertada.",7);
-						if (!anotacionAdm.insertarAnotacionAutomatica(expBean,UtilidadesString.getMensajeIdioma(this.usrbean,"expedientes.alertasyanotaciones.mensajes.expedienteCaducado"))) {
+						if (!anotacionAdm.insertarAnotacionAutomatica(expBean,UtilidadesString.getMensajeIdioma(this.usrbean.getLanguageInstitucion(),"expedientes.alertasyanotaciones.mensajes.expedienteCaducado"))) {
 						    throw new ClsExceptions("2.Error al insertar anotacion. "+anotacionAdm.getError());
 						}
 				        ClsLogging.writeFileLog("2.Anotacion insertada.",7);
@@ -1640,7 +1682,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 						// Nueva alerta de aviso de que está en un estado final.
 						ExpExpedienteBean expBean=this.getExpediente(fila1.getString("IDTIPOEXPEDIENTE"),fila1.getString("IDINSTITUCION"),fila1.getString("IDINSTITUCION_TIPOEXPEDIENTE"),fila1.getString("ANIOEXPEDIENTE"),fila1.getString("NUMEROEXPEDIENTE"));
 						
-				        if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(this.usrbean,"expedientes.alertasyanotaciones.mensajes.estadoFinal") + " ("+fila1.getString("NOMBRE")+")")) {
+				        if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(this.usrbean.getLanguageInstitucion(),"expedientes.alertasyanotaciones.mensajes.estadoFinal") + " ("+fila1.getString("NOMBRE")+")")) {
 				            throw new ClsExceptions("3.Error al insertar alarma. "+alertaAdm.getError());
 				        }
 				        ClsLogging.writeFileLog("3.Alerta insertada.",7);
@@ -1690,7 +1732,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 						// Nueva anotación de cambio de fase + cambio de fase automático
 						ExpExpedienteBean expBean=this.getExpediente(fila1.getString("IDTIPOEXPEDIENTE"),fila1.getString("IDINSTITUCION"),fila1.getString("IDINSTITUCION_TIPOEXPEDIENTE"),fila1.getString("ANIOEXPEDIENTE"),fila1.getString("NUMEROEXPEDIENTE"));
 
-				        if (!anotacionAdm.insertarAnotacionAutomatica(expBean,UtilidadesString.getMensajeIdioma(this.usrbean,"expedientes.alertasyanotaciones.mensajes.faseVencida")  + " ("+fila1.getString("NOMBRE")+")")) {
+				        if (!anotacionAdm.insertarAnotacionAutomatica(expBean,UtilidadesString.getMensajeIdioma(this.usrbean.getLanguageInstitucion(),"expedientes.alertasyanotaciones.mensajes.faseVencida")  + " ("+fila1.getString("NOMBRE")+")")) {
 				            throw new ClsExceptions("4.Error al insertar anotación. "+anotacionAdm.getError());
 				        }
 				        ClsLogging.writeFileLog("4.Anotacion insertada.",7);
@@ -1744,7 +1786,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 							// Nueva alerta de aviso de vencimiento de la fase
 							ExpExpedienteBean expBean=this.getExpediente(fila1.getString("IDTIPOEXPEDIENTE"),fila1.getString("IDINSTITUCION"),fila1.getString("IDINSTITUCION_TIPOEXPEDIENTE"),fila1.getString("ANIOEXPEDIENTE"),fila1.getString("NUMEROEXPEDIENTE"));
 					        
-							if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(this.usrbean,"expedientes.alertasyanotaciones.mensajes.antelacionFase",new String[] {GstDate.getFormatedDateShort("ES",fila1.getString("FECHAFINALFASE"))}) + " ("+fila1.getString("NOMBRE")+")")) {
+							if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(this.usrbean.getLanguageInstitucion(),"expedientes.alertasyanotaciones.mensajes.antelacionFase",new String[] {GstDate.getFormatedDateShort("ES",fila1.getString("FECHAFINALFASE"))}) + " ("+fila1.getString("NOMBRE")+")")) {
 					            throw new ClsExceptions("5.Error al insertar alarma. "+alertaAdm.getError());
 					        }
 					        ClsLogging.writeFileLog("5.Alerta insertada.",7);
@@ -1815,7 +1857,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 							// Nueva alerta de aviso de vencimiento del estado
 							ExpExpedienteBean expBean=this.getExpediente(fila1.getString("IDTIPOEXPEDIENTE"),fila1.getString("IDINSTITUCION"),fila1.getString("IDINSTITUCION_TIPOEXPEDIENTE"),fila1.getString("ANIOEXPEDIENTE"),fila1.getString("NUMEROEXPEDIENTE"));
 	
-							if (!alertaAdm.insertarAlerta(expBean,fila1.getString("MENSAJE") + ". "+UtilidadesString.getMensajeIdioma(this.usrbean,"expedientes.alertasyanotaciones.mensajes.aviso6")+" "+GstDate.getFormatedDateShort("ES",fila1.getString("FECHAFINALESTADO"))+". ("+fila1.getString("NOMBRE")+")")) {
+							if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(this.usrbean.getLanguageInstitucion(),"expedientes.alertasyanotaciones.mensajes.aviso6")+" "+GstDate.getFormatedDateShort("ES",fila1.getString("FECHAFINALESTADO"))+". ("+fila1.getString("NOMBRE")+")")) {
 					            throw new ClsExceptions("6.Error al insertar alarma. "+alertaAdm.getError());
 					        }
 					        ClsLogging.writeFileLog("6.Alerta insertada.",7);
@@ -1871,7 +1913,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 							// Nueva alerta de aviso de vencimiento del estado
 							ExpExpedienteBean expBean=this.getExpediente(fila1.getString("IDTIPOEXPEDIENTE"),fila1.getString("IDINSTITUCION"),fila1.getString("IDINSTITUCION_TIPOEXPEDIENTE"),fila1.getString("ANIOEXPEDIENTE"),fila1.getString("NUMEROEXPEDIENTE"));
 	
-							if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(this.usrbean,"expedientes.alertasyanotaciones.mensajes.aviso7")+" "+GstDate.getFormatedDateShort("ES",fila1.getString("FECHACADUCIDAD"))+".")) {
+							if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(this.usrbean.getLanguageInstitucion(),"expedientes.alertasyanotaciones.mensajes.aviso7")+" "+GstDate.getFormatedDateShort("ES",fila1.getString("FECHACADUCIDAD"))+".")) {
 					            throw new ClsExceptions("7.Error al insertar alarma. "+alertaAdm.getError());
 					        }
 					        ClsLogging.writeFileLog("7.Alerta insertada.",7);
