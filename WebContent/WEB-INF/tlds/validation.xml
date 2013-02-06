@@ -1221,13 +1221,7 @@
 <!-- INICIO: ExpDatosGeneralesForm emilio.grau 24-01-2005 -->
 
 <form name="ExpDatosGeneralesForm">
-    <field property = "numExpDisciplinario" depends = "integer">
-        <arg0 key="expedientes.auditoria.literal.nexpdisciplinario"/> 
-    </field>
-    <field property = "anioExpDisciplinario" depends = "integer,mask">
-        <arg0 key="expedientes.auditoria.literal.nexpdisciplinario"/>
-        <var><var-name>mask</var-name> <var-value>^[0-9]{4}</var-value></var>
-    </field>
+    <!-- Incidencia 177. Se quitan las validaciones para hacerlo en el jsp -->
     <field property = "asunto" depends = "required">
         <arg0 key="expedientes.auditoria.literal.asunto"/>
     </field> 
@@ -1245,6 +1239,10 @@
     </field> 
     <field property = "idPersonaDenunciado" depends = "required">
         <arg0 key="expedientes.auditoria.literal.denunciado"/>
+    </field>
+    <!-- mhg Incidencia 182 Recordamos que el campo Fecha Apertura es obligatorio -->
+    <field property = "fecha" depends = "required">
+        <arg0 key="informes.cartaEJG.fechaApertura"/>
     </field> 
 </form>
 

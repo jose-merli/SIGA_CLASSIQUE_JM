@@ -44,6 +44,8 @@
 	// Obtengo manejadores para colegiado y persona
 	CenPersonaAdm personaAdm = new CenPersonaAdm(usr);
 	CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(usr);
+	CenNoColegiadoAdm noColegiadoAdm = new CenNoColegiadoAdm(usr);
+	CenNoColegiadoBean beanNoCol = null;
 
 	// Establezco los botones del action
 	String	botones="MT,DT,PS,DS";
@@ -113,7 +115,32 @@
 			   document.forms[0].submit();
 
 			 }					
-		
+			
+			//mhg LLamamos la método editar pasandole un LETRADO como tipo
+			function editarLetrado(fila) {
+				document.busquedaClientesForm.filaSelD.value = fila;					
+				var idInst = <%=idInstitucion%>;			   				   	
+			    var auxPers = 'oculto' + fila + '_1';
+			    var idPers = document.getElementById(auxPers);
+				document.busquedaClientesForm.tablaDatosDinamicosD.value=idPers.value + ',' + idInst + ',LETRADO' + '%';		
+				document.busquedaClientesForm.modo.value="editar";
+				var verLetradoAux = 'oculto' + fila + '_4';
+			    var verLetrado = document.getElementById(verLetradoAux);			    
+				document.busquedaClientesForm.verFichaLetrado.value=verLetrado.value;
+			   	document.busquedaClientesForm.submit();
+			}
+			
+						//mhg LLamamos la método editar pasandole un 1 como tipo
+			function editarNoColegiado(fila) {
+				document.busquedaClientesForm.filaSelD.value = fila;					
+				var idInst = <%=idInstitucion%>;			   				   	
+			    var auxPers = 'oculto' + fila + '_1';
+			    var idPers = document.getElementById(auxPers);
+				document.busquedaClientesForm.tablaDatosDinamicosD.value=idPers.value + ',' + idInst + ',1' + '%';		
+				document.busquedaClientesForm.modo.value="editar";
+			   	document.busquedaClientesForm.submit();
+			}
+			
 			function enviar(fila)
 			{
 			   	
@@ -199,9 +226,23 @@
 	            		Row row = (Row) en.nextElement(); 
 						FilaExtElement[] elementos=null;
 						if (row.getString("IDESTADOSOLIC").equalsIgnoreCase(String.valueOf(ClsConstants.ESTADO_SOLICITUD_MODIF_PENDIENTE))){
-							elementos = new FilaExtElement[2];
-  			 				elementos[0]=new FilaExtElement("modificarDatos","modificarDatos",SIGAConstants.ACCESS_FULL);
-							elementos[1]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
+							//mhg Se comprueba que pertenece a CGAE y es Letrado
+							if (String.valueOf(ClsConstants.INSTITUCION_CGAE).equals(row.getString("IDINSTITUCION")) && row.getString("LETRADO").equals("1")){
+									elementos = new FilaExtElement[2];
+									elementos[0]=new FilaExtElement("editar","editarLetrado",SIGAConstants.ACCESS_FULL);
+									elementos[1]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
+							} else {
+								//Comprobamos si la persona es no colegiado. En caso de serla podemos modificarla.
+								beanNoCol = noColegiadoAdm.existeNoColegiado(new Long(idPersona));
+								if (beanNoCol != null) {
+									elementos = new FilaExtElement[2];
+  				 					elementos[0]=new FilaExtElement("editar","editarNoColegiado",SIGAConstants.ACCESS_FULL);
+									elementos[1]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
+								}else{
+									elementos = new FilaExtElement[1];
+  				 					elementos[0]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
+								}
+							}
   			 			} else {
 							elementos = new FilaExtElement[1];
 							elementos[0]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
@@ -402,7 +443,14 @@
 			<html:hidden property = "descEnvio" value = ""/>
 			
 		</html:form>
-
+		
+		<html:form action="/CEN_BusquedaClientes.do" method="POST" target="mainWorkArea"  style="display:none">
+			<input type="hidden" name="modo" value="editar">
+			<html:hidden property = "actionModal" value = ""/>
+			<html:hidden property = "tablaDatosDinamicosD" value = ""/>
+			<html:hidden property = "filaSelD" value = ""/>
+			<html:hidden property = "verFichaLetrado" value = ""/>
+		</html:form>
 	<!-- INICIO: SUBMIT AREA -->
 	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
