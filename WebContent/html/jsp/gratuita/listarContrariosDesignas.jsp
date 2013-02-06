@@ -99,7 +99,7 @@
 			<input type="hidden" id="pantallaE" name="pantallaE" value="M">
 		</html:form>	
 		
-       <table class="tablaTitulo" cellspacing="0" heigth="38">
+       <table class="tablaTitulo" cellspacing="0" heigth="310">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 	
@@ -123,15 +123,16 @@
 		</tr>
 		</table>
 
-
+<table width="100%" border ="0"><tr><td>
 			<siga:TablaCabecerasFijas 
 			   nombre="tablaDatos"
 			   borde="1"
 			   clase="tableTitle"
 			   nombreCol="gratuita.defendidosDesigna.literal.nif,gratuita.defendidosDesigna.literal.nombreApellidos,envios.etiquetas.tipoCliente.abogado,gratuita.personaJG.literal.procurador,"
 			   tamanoCol="10,30,25,25,15"
-		   			alto="100%"
+			   alto="100%"
 			   modal="G"
+			   
 			  >
 
 		<% if (obj==null || obj.size()==0){%>
@@ -168,7 +169,7 @@
 				<%recordNumber++;%>
 				<%}%>	
 		<%}%>
-
+		</td></tr></table>
 			</siga:TablaCabecerasFijas>
 
 

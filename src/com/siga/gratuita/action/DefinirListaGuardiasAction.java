@@ -258,9 +258,12 @@ public class DefinirListaGuardiasAction extends MasterAction {
 						miForm.setComunicacion("true");
 					}else{
 						miForm.setComunicacion("");
-						request.getSession().removeAttribute("DATABACKUP");
-						request.getSession().setAttribute("DATABACKUP",backupHash);	
+
 					}
+					
+					request.getSession().removeAttribute("DATABACKUP");
+					request.getSession().setAttribute("DATABACKUP",backupHash);						
+					
 					request.getSession().setAttribute("datosLista",backupHash);					
 					request.setAttribute("accion",miForm.getAccion());
 					request.setAttribute("modo",miForm.getModo());	

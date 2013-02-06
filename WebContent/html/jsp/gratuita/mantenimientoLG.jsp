@@ -36,7 +36,10 @@
 	if (modo.equalsIgnoreCase("ver")) { desactivado=true; clase="boxConsulta"; valida="disabled";}
 	
 	String nombre = request.getAttribute("NOMBRE")==null?"":(String)request.getAttribute("NOMBRE");
-	String lugar = request.getAttribute("LUGAR")==null?"":(String)request.getAttribute("LUGAR");
+	String lugar = "";
+	if(request.getAttribute("LUGAR") != null && !((String)request.getAttribute("LUGAR")).equals("&nbsp;")){
+			lugar = (String)request.getAttribute("LUGAR");
+	}
 	String observaciones = request.getAttribute("OBSERVACIONES")==null?"":(String)request.getAttribute("OBSERVACIONES");
 	String idlista = request.getAttribute("IDLISTA")==null?"":(String)request.getAttribute("IDLISTA");
 	String idinstitucion = request.getAttribute("IDINSTITUCION")==null?"":(String)request.getAttribute("IDINSTITUCION");

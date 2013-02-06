@@ -166,7 +166,8 @@ function accionCerrar() {
 			</td>
 		</tr>
 		</table>
-
+		
+		<table width="100%" border ="0"><tr><td>
 			<!-- Campo obligatorio -->
 			<siga:TablaCabecerasFijas 
 			   nombre="listadoDefendidos"
@@ -219,6 +220,7 @@ function accionCerrar() {
 		<%}%>
 
 			</siga:TablaCabecerasFijas>
+		</td></tr></table>	
 <html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
 	<html:hidden property="idInstitucion" value = "<%=idInstitucionLocation%>"/>
 	<html:hidden property="idTipoInforme" value="OFICI"/>

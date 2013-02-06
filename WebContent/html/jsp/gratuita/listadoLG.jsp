@@ -17,6 +17,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="java.util.*"%>
+<%@page import="com.siga.Utilidades.UtilidadesString"%>
 
 <!-- JSP --> 
 <% 
@@ -91,12 +92,12 @@
 				2- LUGAR
 			-->		
 			<%
-			String lugar = ((String)hash.get("LUGAR")).equals("")?"&nbsp;":(String)hash.get("LUGAR");
-			String observaciones = ((String)hash.get("OBSERVACIONES")).equals("")?"&nbsp;":(String)hash.get("OBSERVACIONES");
+			String lugar = ((String)hash.get("LUGAR")).equals("")?"":(String)hash.get("LUGAR");
+			String observaciones = ((String)hash.get("OBSERVACIONES")).equals("")?"":(String)hash.get("OBSERVACIONES");
 			%>
 	       	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="C,E,B" clase="listaNonEdit">
 				<td><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=hash.get("IDINSTITUCION")%>'><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=hash.get("IDLISTA")%>'><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=observaciones%>'><%=hash.get("NOMBRE")%></td>			
-				<td><%=lugar%></td>			
+				<td><%=UtilidadesString.mostrarDatoJSP(lugar)%></td>			
 			</siga:FilaConIconos>		
 				<% 		recordNumber++; %>
 				<% } %>
