@@ -14,12 +14,14 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
 import org.apache.struts.upload.FormFile;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.form.InformeForm;
@@ -50,7 +52,7 @@ import es.satec.businessManager.template.JtaBusinessServiceTemplate;
 
 public class AtosInformesService extends JtaBusinessServiceTemplate 
 	implements InformesService {
-
+	private static Logger log = Logger.getLogger(AtosInformesService.class);
 	public AtosInformesService(BusinessManager businessManager) {
 		super(businessManager);
 	}
@@ -466,34 +468,44 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 	}
 	public void uploadFile(InformeForm informeForm) throws  SIGAException{
 		
+		ClsLogging.writeFileLog("Entramos uploadFile...",3);
    		FormFile theFile = informeForm.getTheFile();
    		
    			InputStream stream =null;
    			OutputStream bos = null;
    			try {
    			// InformeForm informeEdicion =  informeForm.getInformes().get(informeForm.getFilaSeleccionada());
+   				ClsLogging.writeFileLog("Entramos uploadFile.getDirectorio...",3);
    	   			String directorio = getDirectorio(informeForm);
+   	   			ClsLogging.writeFileLog("uploadFile.directorio..."+directorio,3);
    	   			File fDirectorio = new File(directorio);
-   	   			if(!fDirectorio.exists())
+   	   			
+   	   			if(fDirectorio!=null && !fDirectorio.exists())
    	   				fDirectorio.mkdirs();
+   	   			ClsLogging.writeFileLog("uploadFile.inputStream...",3);
    				stream = theFile.getInputStream();
    				StringBuffer pathInforme = new StringBuffer(directorio);
    				int indiceExtension = theFile.getFileName().lastIndexOf(".");
+   				ClsLogging.writeFileLog("uploadFile.indiceExtension..."+indiceExtension,3);
+   				
+   				ClsLogging.writeFileLog("uploadFile.Extension..."+theFile.getFileName().substring(indiceExtension),3);
    				
 				if (theFile.getFileName().substring(indiceExtension).equals(".jpg")
 						|| theFile.getFileName().substring(indiceExtension).equals(".bmp")
 						|| theFile.getFileName().substring(indiceExtension).equals(".gif")
 						|| theFile.getFileName().substring(indiceExtension).equals(".png")) {
-							
+					
+					
 					pathInforme.append(ClsConstants.FILE_SEP);
 					pathInforme.append("recursos");
 					pathInforme.append(ClsConstants.FILE_SEP);
 					File directorioFile = new File(pathInforme.toString());
-					if (!directorioFile.exists()) {
+					if (directorio!=null && directorioFile.exists()) {
 						directorioFile.mkdir();
 					}
 					
 					pathInforme.append(theFile.getFileName());
+					ClsLogging.writeFileLog("uploadFile.pathInforme..."+pathInforme,3);
 	
 				} else {
 					pathInforme.append(ClsConstants.FILE_SEP);
@@ -503,13 +515,16 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 					// pathInforme.append("ES");
 					if (indiceExtension != -1)
 						pathInforme.append(theFile.getFileName().substring(indiceExtension));
+					ClsLogging.writeFileLog("uploadFile.pathInforme..."+pathInforme,3);
 				}
    				
    				String idIntitucionPropietario = informeForm.getIdInstitucion();
    				String  idInstitucionUsuario = informeForm.getUsrBean().getLocation();
    				//solo se tendra pemiso de borrado cuando sea de su propia intitucion o
+   				
    				boolean isPermitidoBorrar =(idIntitucionPropietario.equals("0")&&idInstitucionUsuario.equals("2000"))
    						|| !idIntitucionPropietario.equals("0")&&idIntitucionPropietario.equals(idInstitucionUsuario);
+   				ClsLogging.writeFileLog("uploadFile.isPermitidoBorrar..."+isPermitidoBorrar,3);
    				informeForm.getDirectorioFile().getFiles().add(new FileInforme(theFile.getFileName(),"","",new File(pathInforme.toString()),isPermitidoBorrar));
    				bos = new FileOutputStream(pathInforme.toString());
    	   			
@@ -533,7 +548,7 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 	    				stream.close();
 	    		}
 		    	catch (Exception e) {
-		    		
+		    		ClsLogging.writeFileLog("uploadFile.Error..."+e,3);
 		    	}
 	    	}
    			

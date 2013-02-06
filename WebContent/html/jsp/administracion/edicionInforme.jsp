@@ -318,7 +318,7 @@ function onChangeTipoIntercambio() {
 				<siga:Idioma key="administracion.informes.literal.nombre"/>(*)
 			</td>
 			<td class="labelText">
-				<html:text name="InformeFormEdicion"  property="alias"  styleClass="box" onblur="onBlurAlias();"></html:text>
+				<html:text name="InformeFormEdicion"  property="alias"  styleClass="box" maxlength="50" onblur="onBlurAlias();"></html:text>
 			</td>
 			
 		
@@ -751,11 +751,19 @@ function accionGuardar()
 			return false;	
 		
 		}
+	}else{
+		
+		if(document.getElementById("alias").value.length>50){
+			document.getElementById("alias").value = document.getElementById("alias").value.substring(0,50);
+		}
+		document.getElementById("alias").disabled="";
+		
 	}
 
 	document.getElementById("directorio").disabled="";
 	document.getElementById("idInstitucion").disabled="";
 	document.getElementById("idPlantilla").disabled="";
+	
 
 	document.getElementById("idTipoInforme").disabled="";
 	// document.getElementById("tipoFormato").disabled="";
@@ -848,7 +856,8 @@ function accionGuardar()
  	}
 	document.getElementById("idInstitucion").disabled="disabled";
 	document.getElementById("idPlantilla").disabled="disabled";
-
+	if(document.InformeFormEdicion.idTipoInforme.value=='CON')
+		document.getElementById("alias").disabled="disabled";
 	document.getElementById("idTipoInforme").disabled="disabled";
 	// document.getElementById("tipoFormato").disabled="disabled";
 	document.getElementById("directorio").disabled = "disabled";

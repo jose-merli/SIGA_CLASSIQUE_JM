@@ -16,6 +16,7 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.form.InformeForm;
@@ -876,11 +877,14 @@ public class GestionInformesAction extends MasterAction {
 		InformeForm informeForm = (InformeForm) formulario;
    		
    			try {
+   				ClsLogging.writeFileLog("GestionInformesAction.uploadFile.Action...",3);
    				BusinessManager bm = getBusinessManager();
    				InformesService informeService = (InformesService)bm.getService(InformesService.class);
+   				ClsLogging.writeFileLog("GestionInformesAction.uploadFile.cogemos el servicio y llamamos al uploadFile...",3);
    				informeService.uploadFile(informeForm);
 
 			} catch (SIGAException e) {
+				ClsLogging.writeFileLog("GestionInformesAction.error..."+e.toString(),3);
 				throw e;
 			}
    		
