@@ -130,7 +130,7 @@
 						<input type="hidden" id="oculto<%=""+(i+1)%>_2"  name="oculto<%=""+(i+1)%>_2" value=" <%=htDatos.get(CerFormatosBean.C_IDFORMATO)%>">
 						<input type="hidden" id="oculto<%=""+(i+1)%>_3"  name="oculto<%=""+(i+1)%>_3" value=" <%=htDatos.get(CerCamposCertificadosBean.C_TIPOCAMPO)%>">
 						<input type="hidden" id="oculto<%=""+(i+1)%>_4"  name="oculto<%=""+(i+1)%>_4" value=" <%=htDatos.get(CerCamposCertificadosBean.C_CAPTURARDATOS)%>">
-						<input type="hidden" id="oculto<%=""+(i+1)%>_5"  name="oculto<%=""+(i+1)%>_5" value=" <%=htDatos.get(CerProducInstiCampCertifBean.C_VALOR)%>">
+						<input type="hidden" id="oculto<%=""+(i+1)%>_5"  name="oculto<%=""+(i+1)%>_5" value=" <%=((String)htDatos.get(CerProducInstiCampCertifBean.C_VALOR)).replace(" ","&nbsp")%>">
 						
 						<%=htDatos.get(CerCamposCertificadosBean.C_NOMBRE)%>
 					</td>

@@ -50,6 +50,8 @@
 			}			
 		}		
 	</script>
+	<!--aalg: se obtiene el modo de acceso para controlar los permisos  -->
+	<% String accion = String.valueOf(request.getSession().getAttribute("modoPestanha")); %>
 <head>
 
 <body  onload="onInit();">
@@ -160,23 +162,26 @@
 	<table class="botonesDetalle" align="center">
 		<tr>
 			<td style="width: 900px;">&nbsp;</td>
-			<td class="tdBotones">
-<input type="button" alt="<siga:Idioma key="general.boton.new"/>"  id="idButton" onclick="return accionNuevo(true,'<siga:Idioma key="general.message.seleccionar"/>');" class="button" name="idButton" value="<siga:Idioma key="general.boton.new"/>">
-</td>
-			<td class="tdBotones"><input type="button"
-				alt="<siga:Idioma key="censo.bajastemporales.boton.aceptarSolicitud"/>"
-				  id="idValidarSolicitud"
-				onclick="return accionValidarSolicitud('<siga:Idioma key="general.message.seleccionar"/>');" class="button"
-				name="idValidarSolicitud"
-				value="<siga:Idioma key="censo.bajastemporales.boton.aceptarSolicitud"/>">
-			</td>
-			<td class="tdBotones"><input type="button"
-				alt="<siga:Idioma key="censo.bajastemporales.boton.denegarSolicitud"/>"
-				  id="idDenegarSolicitud"
-				onclick="return accionDenegarSolicitud('<siga:Idioma key="general.message.seleccionar"/>');" class="button"
-				name="idDenegarSolicitud"
-				value="<siga:Idioma key="censo.bajastemporales.boton.denegarSolicitud"/>"">
-			</td>
+				<!--aalg: se controlan los permisos según el modo de acceso -->
+			<% if (accion.equals("editar")){%>
+				<td class="tdBotones">
+					<input type="button" alt="<siga:Idioma key="general.boton.new"/>"  id="idButton" onclick="return accionNuevo(true,'<siga:Idioma key="general.message.seleccionar"/>');" class="button" name="idButton" value="<siga:Idioma key="general.boton.new"/>">
+				</td>
+				<td class="tdBotones"><input type="button"
+					alt="<siga:Idioma key="censo.bajastemporales.boton.aceptarSolicitud"/>"
+					  id="idValidarSolicitud"
+					onclick="return accionValidarSolicitud('<siga:Idioma key="general.message.seleccionar"/>');" class="button"
+					name="idValidarSolicitud"
+					value="<siga:Idioma key="censo.bajastemporales.boton.aceptarSolicitud"/>">
+				</td>
+				<td class="tdBotones"><input type="button"
+					alt="<siga:Idioma key="censo.bajastemporales.boton.denegarSolicitud"/>"
+					  id="idDenegarSolicitud"
+					onclick="return accionDenegarSolicitud('<siga:Idioma key="general.message.seleccionar"/>');" class="button"
+					name="idDenegarSolicitud"
+					value="<siga:Idioma key="censo.bajastemporales.boton.denegarSolicitud"/>"">
+				</td>
+			<% }%>
 		</tr>
 	</table>
 	

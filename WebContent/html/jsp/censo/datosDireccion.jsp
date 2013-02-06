@@ -315,6 +315,9 @@
 		   		document.getElementById("poblacion").value="";
 		   		document.getElementById("provincia").value="";
 			   	jQuery("#provincia").attr("disabled","disabled");
+			   	//aalg: se quita la marca de obligatoriedad
+			   	document.getElementById("provinciaSinAsterisco").className="labelText";
+				document.getElementById("provinciaConAsterisco").className="ocultar";
 				document.getElementById("poblacionEspanola").className="ocultar";
 				document.getElementById("poblacionExtranjera").className="";
 	       } else {
@@ -322,6 +325,8 @@
 				jQuery("#provincia").removeAttr("disabled");
 				document.getElementById("poblacionEspanola").className="";
 				document.getElementById("poblacionExtranjera").className="ocultar";
+				//aalg: se restaura la marca de obligatoriedad si es pertinente
+				comprobarTelefonoAsterico();
 	       }
 	    }
 		

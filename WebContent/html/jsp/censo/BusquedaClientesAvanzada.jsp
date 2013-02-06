@@ -81,9 +81,12 @@
 	if (colegiado.equals(ClsConstants.DB_TRUE)) {
 		//colegiados
 		titu = "censo.busquedaClientesAvanzada.colegiados.titulo";
-	} else {
+	} else if(colegiado.equals(ClsConstants.DB_FALSE)){
 		//no colegiados
 		titu = "censo.busquedaClientesAvanzada.noColegiados.titulo";
+	} else { 
+		//letrados
+		titu = "censo.busquedaClientesAvanzada.letrados.titulo";
 	}
 
 
@@ -184,74 +187,7 @@
 	<table class="tablaCampos" align="center" border="0">
 	
 	<!-- FILA -->
-	<tr>				
-
-		<td class="labelText" width="19%">
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.colegio"/>
-		</td>				
-		<td colspan="5">
-			<!-- MAV 14/7/05 Mostrar combo solo para aquellos colegios que permitan busquedas en más de una institucion -->
-			<% if (institucionAcceso.equalsIgnoreCase(institucionesVisibles)){ %>
-				<html:hidden name="busquedaClientesForm" property = "nombreInstitucion" value = "<%=institucionAcceso%>"/>
-				<html:text property="" styleClass="boxConsulta" size="80" value='<%=nombreInstitucionAcceso%>' readOnly="true"></html:text>
-			<% }else{ %>
-			<% if (colegiado.equals(ClsConstants.DB_TRUE)) { %>
-		     	  <siga:ComboBD nombre = "nombreInstitucion" tipo="cmbNombreColegiosTodos" parametro="<%=parametro %>" clase="boxCombo" obligatorio="false" elementoSel="<%=colegioSel %>"/>
-				<% }else{ %>
-					<siga:ComboBD nombre = "nombreInstitucion" tipo="cmbInstitucion" parametro="<%=parametro %>" clase="boxCombo" obligatorio="false" elementoSel="<%=colegioSel %>"/>	
-				<% } %>
-			<% } %>
-		</td>
 	
-	</tr>
-	<!-- FILA -->
-	<tr>				
-
-<% if (colegiado.equals(ClsConstants.DB_TRUE)) { %>
-		<!-- -->
-		<td class="labelText" >
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.nColegiado"/>
-		</td>
-		<td >
-			<html:text name="busquedaClientesAvanzadaForm" property="numeroColegiado" maxlength="20" size="10" styleClass="box"></html:text>
-		</td>
-		<td class="labelText" >
-			&nbsp;
-		</td>
-		<td  colspan="3">
-			<input type="hidden" name="tipoCliente">
-		</td>
-<% } else { %>
-
-	<td class="labelText" >
-		<siga:Idioma key="censo.busquedaClientes.literal.tipoCliente"/>
-	</td>
-	<td >
-		<!-- TIPO -->
-		<siga:ComboBD nombre = "tipo" tipo="cmbTiposNoColegiadoBusqueda" clase="boxCombo" obligatorio="false" />
-<!--
-		<html:select name="busquedaClientesForm" property="tipo" styleClass="boxCombo">
-				<html:option value=""></html:option>
-				<html:option value="<%=ClsConstants.COMBO_TIPO_SOCIEDAD_SERVICIOS_JURIDICOS%>" key="censo.general.literal.sociedadSJ"></html:option>
-				<html:option value="<%=ClsConstants.COMBO_TIPO_SOCIEDAD_CIVIL%>" key="censo.general.literal.SociedadCivil"></html:option>
-				<html:option value="<%=ClsConstants.COMBO_TIPO_SOCIEDAD_LIMITADA%>" key="censo.general.literal.SociedadLimitada"></html:option>
-				<html:option value="<%=ClsConstants.COMBO_TIPO_SOCIEDAD_ANONIMA%>" key="censo.general.literal.SociedadAnonima"></html:option>
-				<html:option value="<%=ClsConstants.COMBO_TIPO_PERSONAL%>" key="censo.general.literal.Personal"></html:option>
-				<html:option value="<%=ClsConstants.COMBO_TIPO_OTROS%>" key="censo.general.literal.Otros"></html:option>
-		</html:select>
--->
-	</td>
-		<!-- -->
-		<td class="labelText" >
-			&nbsp;
-		</td>
-		<td >
-			<input type="hidden" name="numeroColegiado">
-		</td>
-<% } %>
-
-	
-	</tr>
 	<!-- FILA -->
 	<tr>				
 
@@ -266,10 +202,12 @@
 
 		<!-- -->
 		<td class="labelText" width="20%">
-			<% if (colegiado.equals(ClsConstants.DB_TRUE)) { %>
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.nombre"/>
-			<% } else { %>
+			<% if (colegiado.equals(ClsConstants.DB_FALSE)) { %>
+				<!-- caso de no colegiado-->
 			<siga:Idioma key="censo.busquedaClientes.literal.nombreDenominacion" />
+			<% } else { %>
+				<!-- casos de letrado y colegiado-->
+			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.nombre"/>
 			<% } %>
 		</td>				
 		<td colspan="3">
@@ -399,12 +337,76 @@
 
 	</siga:ConjCampos>
 
-<% if (colegiado.equals(ClsConstants.DB_TRUE)) { %>
+<% if (colegiado.equals(ClsConstants.DB_TRUE) || colegiado.equals("2") || (colegiado.equals(ClsConstants.DB_FALSE) && !institucionAcceso.equalsIgnoreCase(institucionesVisibles))) { %>
 
 	<siga:ConjCampos leyenda="censo.busquedaClientesAvanzada.literal.titulo2">
 
 		<table class="tablaCampos" align="center" width="100%" border="0">
+		<!-- FILA. aalg: se informa del significado de los campos de colegiado en el caso de letrado -->
+		<% if (colegiado.equals("2")) { %>
+			<tr>
+				<td class="labelText" colspan="6">
+					<siga:Idioma key="censo.busquedaClientesAvanzada.messages.colegiadoLetrado"/>
+				</td>
+			</tr>
+		<%} %>
+			
+		<!-- FILA. aalg: se pasan los datos del colegio y número de colegiado al conjunto de campos referentes al colegio  -->
+		<!-- MAV 14/7/05 Mostrar combo solo para aquellos colegios que permitan busquedas en más de una institucion -->
+		<% if (!institucionAcceso.equalsIgnoreCase(institucionesVisibles)){%> 
+		<tr>				
+
+			<td class="labelText" width="19%">
+				<siga:Idioma key="censo.busquedaClientesAvanzada.literal.colegio"/>
+			</td>				
+			<td colspan="5">
+				<% if (colegiado.equals(ClsConstants.DB_FALSE)) { %>
+		     	  <siga:ComboBD nombre = "nombreInstitucion" tipo="cmbNombreColegiosTodos" parametro="<%=parametro %>" clase="boxCombo" obligatorio="false" elementoSel="<%=colegioSel %>"/>
+				<% }else{ %>
+					<siga:ComboBD nombre = "nombreInstitucion" tipo="cmbInstitucion" parametro="<%=parametro %>" clase="boxCombo" obligatorio="false" elementoSel="<%=colegioSel %>"/>	
+				<% } %>
+			</td>
+		
+		</tr>
+				<% } %>
+		<!-- FILA -->
+		<tr>				
 	
+	<% if (colegiado.equals(ClsConstants.DB_FALSE)) { %>
+			<td class="labelText" >
+			<siga:Idioma key="censo.busquedaClientes.literal.tipoCliente"/>
+		</td>
+		<td >
+			<!-- TIPO -->
+			<siga:ComboBD nombre = "tipo" tipo="cmbTiposNoColegiadoBusqueda" clase="boxCombo" obligatorio="false" />
+		</td>
+			<!-- -->
+			<td class="labelText" >
+				&nbsp;
+			</td>
+			<td >
+				<input type="hidden" name="numeroColegiado">
+			</td>
+	<% } else { %>
+		<!-- -->
+			<td class="labelText" >
+				<siga:Idioma key="censo.busquedaClientesAvanzada.literal.nColegiado"/>
+			</td>
+			<td >
+				<html:text name="busquedaClientesAvanzadaForm" property="numeroColegiado" maxlength="20" size="10" styleClass="box"></html:text>
+			</td>
+			<td class="labelText" >
+				&nbsp;
+			</td>
+			<td  colspan="3">
+				<input type="hidden" name="tipoCliente">
+			</td>
+		
+	<% } %>
+	
+		
+		</tr>
+		<% if (colegiado.equals(ClsConstants.DB_TRUE) || colegiado.equals("2")){ %>
 		<!-- FILA -->
 		<tr>				
 	
@@ -472,7 +474,7 @@
 		</td>
 
 		</tr>				
-
+	<%} %>
 		</table>
 		
 	</siga:ConjCampos>
@@ -542,7 +544,7 @@
 
 <%  
 	String botones = "B,S";
-	if (!colegiado.equals(ClsConstants.DB_TRUE)) {
+	if (colegiado.equals(ClsConstants.DB_FALSE)) {
 		botones += ",N,NS";
 	} 
 %>
